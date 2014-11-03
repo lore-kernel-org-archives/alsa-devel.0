@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic23: add dependencies on
-	I2C/SPI_MASTER
-Date: Mon, 3 Nov 2014 11:31:53 +0000
-Message-ID: <20141103113153.GB3815@sirena.org.uk>
-References: <1415009453-1018-1-git-send-email-jcmvbkbc@gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: Add Merrifield machine driver
+Date: Mon, 3 Nov 2014 12:07:50 +0000
+Message-ID: <20141103120750.GD3815@sirena.org.uk>
+References: <1414750298-23287-1-git-send-email-vinod.koul@intel.com>
+ <20141031171127.GG18557@sirena.org.uk>
+ <20141103050158.GL28745@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4121563873876179125=="
+Content-Type: multipart/mixed; boundary="===============3579042781851539903=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A8BD6260441
- for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 12:33:07 +0100 (CET)
-In-Reply-To: <1415009453-1018-1-git-send-email-jcmvbkbc@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 847452604A0
+ for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 13:09:05 +0100 (CET)
+In-Reply-To: <20141103050158.GL28745@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4121563873876179125==
+--===============3579042781851539903==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+	protocol="application/pgp-signature"; boundary="sgneBHv3152wZ8jf"
 Content-Disposition: inline
 
 
---U+BazGySraz5kW0T
+--sgneBHv3152wZ8jf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 03, 2014 at 01:10:53PM +0300, Max Filippov wrote:
-> This fixes build errors in configurations with I2C/SPI master disabled.
+On Mon, Nov 03, 2014 at 10:31:58AM +0530, Vinod Koul wrote:
+> On Fri, Oct 31, 2014 at 05:11:27PM +0000, Mark Brown wrote:
 
-Applied, thanks.
+> > > +	snd_jack_set_key(ctx->jack.jack, SND_JACK_BTN_1, KEY_MEDIA);
+> > > +	snd_jack_set_key(ctx->jack.jack, SND_JACK_BTN_0, KEY_MEDIA);
 
---U+BazGySraz5kW0T
+> > Two buttons both reporting the same key?  Might be worth a comment.
+
+> Okay loooking back I am not sure why we added two here, let me check and
+> clean this up.
+
+I was assuming it was because the tolerance desired on the button was
+wider than a single detection range on the device so this was ensuring
+that the button was reliably detected.
+
+--sgneBHv3152wZ8jf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUV2eoAAoJECTWi3JdVIfQsoIH/3cC7pY750QPoLxqUAEs7k/F
-q4zQv8pkEQpBZkHuqZ3TvdFTku2GmUCXsYTXmJZDaX+fbwPtE3QqixUrVI2jA/37
-5BxcOmSQtoIv3oocXyxeTMd4AuVT5otED+tQpsVhBQ0/joKezZItFBCVfxVAH3gy
-tT8WFl0h1QW5MmQqm5MA4ii4G/xZlx1hOvojneQLnjpBvgkjblWNIVBZe0gGO0TH
-vdtWTJ05umX1XZdGvZx5TE7zxzj4eCgb3HOqng4T/gGO2a1BcNsrh2OLM2lJeoTF
-ImGEh7HNDBQVzAj4+KmI0T9fnNaqs+Fqows6pZYj5z4yjulMknkXomOl52S2EBw=
-=K4PI
+iQEcBAEBAgAGBQJUV3AVAAoJECTWi3JdVIfQ6A4H/13fyXZxO63JEtmxMTItTLx1
+eradtPkBHtpawOfd0SZsG1UlK2sgUPpt+UwqYPtPAIEZCrhYDSiICUER3CScFnC0
+AGTloUJouLjHGqrRRCwpXzzn2Cc++OAUth/ElzhwDnmMRTHOOaTrXMs0cZAV24jg
+4sb63CFCc8MbgGKjNOBJF66QoZk/LByRTXNDB3rOVI/ZzCGDklyZ+fml+Z2vW+y1
+RvnNykaGprreOkiJJWHp/rvl0/HIVMcyco3klY3C31VelCmrBmFFwL1HyZjtZB6/
+RAXRjfTNkuTtY6mRM3DtDTOu6Hus3IGtOLuFyEnZ6WiSfxftfNO+ZUpZ7HSBceI=
+=IuZJ
 -----END PGP SIGNATURE-----
 
---U+BazGySraz5kW0T--
+--sgneBHv3152wZ8jf--
 
---===============4121563873876179125==
+--===============3579042781851539903==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4121563873876179125==--
+--===============3579042781851539903==--
