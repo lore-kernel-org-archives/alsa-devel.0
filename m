@@ -1,80 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Add Merrifield machine driver
-Date: Mon, 3 Nov 2014 12:07:50 +0000
-Message-ID: <20141103120750.GD3815@sirena.org.uk>
-References: <1414750298-23287-1-git-send-email-vinod.koul@intel.com>
- <20141031171127.GG18557@sirena.org.uk>
- <20141103050158.GL28745@intel.com>
+Subject: Re: [PATCH v2] ASoC: rockchip: i2s: add text after tristate for
+ SND_SOC_ROCKCHIP_I2S
+Date: Mon, 3 Nov 2014 12:09:56 +0000
+Message-ID: <20141103120956.GF3815@sirena.org.uk>
+References: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
+ <1414810698-5609-1-git-send-email-jay.xu@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3579042781851539903=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 847452604A0
- for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 13:09:05 +0100 (CET)
-In-Reply-To: <20141103050158.GL28745@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1414810698-5609-1-git-send-email-jay.xu@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jianqun <jay.xu@rock-chips.com>
+Cc: heiko@sntech.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, huangtao@rock-chips.com, cf@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3579042781851539903==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sgneBHv3152wZ8jf"
-Content-Disposition: inline
-
-
---sgneBHv3152wZ8jf
+--eDB11BtaWSyaBkpc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 03, 2014 at 10:31:58AM +0530, Vinod Koul wrote:
-> On Fri, Oct 31, 2014 at 05:11:27PM +0000, Mark Brown wrote:
+On Sat, Nov 01, 2014 at 10:58:18AM +0800, Jianqun wrote:
+> For SND_SOC_ROCKCHIP_I2S, adding some text after the
+> tristate to make this directly user selectable.
 
-> > > +	snd_jack_set_key(ctx->jack.jack, SND_JACK_BTN_1, KEY_MEDIA);
-> > > +	snd_jack_set_key(ctx->jack.jack, SND_JACK_BTN_0, KEY_MEDIA);
+Applied, thanks.
 
-> > Two buttons both reporting the same key?  Might be worth a comment.
-
-> Okay loooking back I am not sure why we added two here, let me check and
-> clean this up.
-
-I was assuming it was because the tolerance desired on the button was
-wider than a single detection range on the device so this was ensuring
-that the button was reliably detected.
-
---sgneBHv3152wZ8jf
+--eDB11BtaWSyaBkpc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUV3AVAAoJECTWi3JdVIfQ6A4H/13fyXZxO63JEtmxMTItTLx1
-eradtPkBHtpawOfd0SZsG1UlK2sgUPpt+UwqYPtPAIEZCrhYDSiICUER3CScFnC0
-AGTloUJouLjHGqrRRCwpXzzn2Cc++OAUth/ElzhwDnmMRTHOOaTrXMs0cZAV24jg
-4sb63CFCc8MbgGKjNOBJF66QoZk/LByRTXNDB3rOVI/ZzCGDklyZ+fml+Z2vW+y1
-RvnNykaGprreOkiJJWHp/rvl0/HIVMcyco3klY3C31VelCmrBmFFwL1HyZjtZB6/
-RAXRjfTNkuTtY6mRM3DtDTOu6Hus3IGtOLuFyEnZ6WiSfxftfNO+ZUpZ7HSBceI=
-=IuZJ
+iQEcBAEBAgAGBQJUV3CTAAoJECTWi3JdVIfQi+IH/1mB2GQ5hxk5sSLsvQ3pILzB
+ZMY0VAAFAl6d1O7Nn5WHBAvMrG5rYMNQGQ72ohfsZFeKu3aG602xByxFXoco4uJc
+zPd/lOTH/E7Q84KMIuu3AbHsKz+YCnIKdKDT/ObmAkNfSDXZl9bsZWWGYHz217X3
+KZ5jwcuR6rGyBiHGuEyZcpEizg89ezGTGU0tbFNLNGpncBuN7s5MiBCh+nAqC+kX
+6viwuRZAkx02JImGNCxcutacN3fcgX5Kzt0y6jG5tZqxdPJ8eFfQu8prz3p0r2F3
+knTvDbg3hiw6TPzj1XkmZ4KdPr5Ervd1fG6ihME+L6cysZ5CYP2ZZh84ujVXCbE=
+=Ehcc
 -----END PGP SIGNATURE-----
 
---sgneBHv3152wZ8jf--
-
---===============3579042781851539903==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3579042781851539903==--
+--eDB11BtaWSyaBkpc--
