@@ -1,21 +1,21 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5677: Use specific r/w function
-	for DSP mode
-Date: Mon, 3 Nov 2014 02:31:41 +0000
-Message-ID: <7EB0DE829A537248AF2ED30C97D12694F320FF@RTITMBSV03.realtek.com.tw>
-References: <1414378351-2329-1-git-send-email-oder_chiou@realtek.com>
- <20141028222915.GG18557@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694F30527@RTITMBSV03.realtek.com.tw>
- <20141031175226.GN18557@sirena.org.uk>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH] audio: sai: Add Power Management support
+Date: Mon, 3 Nov 2014 02:35:44 +0000
+Message-ID: <7faebd6fe4b44e67b7b0c4e0289b0334@BY2PR0301MB0613.namprd03.prod.outlook.com>
+References: <1414552896-20797-1-git-send-email-b18965@freescale.com>
+ <20141029113634.GF18557@sirena.org.uk>
+ <718ee124537a4f4091bdf5242d256705@BY2PR0301MB0613.namprd03.prod.outlook.com>
+ <20141030112243.GV18557@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id B74A0260448
- for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 03:31:49 +0100 (CET)
-In-Reply-To: <20141031175226.GN18557@sirena.org.uk>
-Content-Language: zh-TW
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bon0118.outbound.protection.outlook.com [157.56.111.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id C784A260448
+ for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 03:35:47 +0100 (CET)
+In-Reply-To: <20141030112243.GV18557@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,39 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@google.com" <benzh@google.com>, "anatol@google.com" <anatol@google.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Huan Wang <alison.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
+
+Hi Mark,
+
+
 
 > -----Original Message-----
 > From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Saturday, November 01, 2014 1:52 AM
-> To: Oder Chiou
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Bard Liao; Flove;
-> anatol@google.com; benzh@google.com
-> Subject: Re: [PATCH] ASoC: rt5677: Use specific r/w function for DSP mode
+> Sent: Thursday, October 30, 2014 7:23 PM
+> To: Xiubo Li-B47053
+> Cc: Wang Huan-B18965; alsa-devel@alsa-project.org; tiwai@suse.de; linux-
+> kernel@vger.kernel.org; lgirdwood@gmail.com; perex@perex.cz; linux-arm-
+> kernel@lists.infradead.org
+> Subject: Re: [PATCH] audio: sai: Add Power Management support
 > 
-> On Wed, Oct 29, 2014 at 01:44:57AM +0000, Oder Chiou wrote:
+> On Thu, Oct 30, 2014 at 03:30:40AM +0000, Li.Xiubo@freescale.com wrote:
 > 
-> > > This looks like standard regmap stuff - what's different?
+> > One more thing, if the device is not performance critical, then shouldn't we
+> > Take care of the cache memory consumption to determine using flat or rbtree
+> > Type ?
 > 
-> > They are not different with regmap stuff, but they are called by
-> > rt5677_dsp_mode_i2c_write_addr(), rt5677_dsp_mode_i2c_read_addr(),
-> > rt5677_read() and rt5677_write().
+> Yes, it's always fine to use a rbtree if it makes sense - it was just an
+> unusual choice for a device like this that didn't seem to be discussed.
 > 
-> > The customize access function is implemented by rt5677_read() and
-> > rt5677_write() that are assigned to regmap_config "rt5677_regmap" for
-> > using between codec mode or DSP mode.
-> 
-> Sorry, I'm not quite following what you're saying here - if you're saying that they're
-> slightly different to the main register map I/O for this device then it's OK to create
-> two regmaps and only access the DSP one through separate functions.
-> 
-Sorry for my weak explanations. In this codec, there are 2 access modes, and it
-only can be chosen one mode at the same time. In codec mode, we use the normal
-access method to access codec settings, and in DSP mode, we also can access the
-codec settings, but it should use the method of memory address map to access.
-Ex. If we want to access the MX-01 in the DSP mode, we need to convert to
-memory address 0x18020000 + (01 * 2). We want to use the same regmap table to
-handle the codec settings, so the customize r/w functions are needed in it.
-In the DSP mode, the registers MX-00 ~ MX-04 are used for DSP address access,
-so it also need the native function to avoid the regmap handle, thanks.
+> Depending on the register map a flat cache can actually be more memory
+> efficient sometimes since there's some overhead for the rbtree data
+> structures, if you've just got one block of registers with no gaps a
+> flat cache is going to be a win there.
+
+Yes, so my comprehension of it was right.
+
+Thanks very much,
+
+BRs
+Xiubo
