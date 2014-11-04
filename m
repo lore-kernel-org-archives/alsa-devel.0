@@ -1,118 +1,66 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6] ASoC: dapm: add code to configure dai link parameters
-Date: Tue, 4 Nov 2014 19:40:49 +0000
-Message-ID: <20141104194049.GU3815@sirena.org.uk>
-References: <1410513064-2916-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+From: Chris J Arges <chris.j.arges@canonical.com>
+Subject: Re: [PATCH 4/4 v4] ALSA: usb-audio: Scarlett mixer
+ interface for 6i6, 18i6, 18i8 and 18i20
+Date: Tue, 4 Nov 2014 13:45:23 -0600
+Message-ID: <20141104194522.GA9229@canonical.com>
+References: <s5hd29ac9qn.wl-tiwai@suse.de>
+ <1415055496-11151-1-git-send-email-chris.j.arges@canonical.com>
+ <1415055496-11151-5-git-send-email-chris.j.arges@canonical.com>
+ <s5hppd39sm8.wl-tiwai@suse.de> <5458D19D.7050206@gmx.de>
+ <5458D49E.6060305@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SqO8Hf1xXlNBrDgg"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 437E5260623
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 20:45:29 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1410513064-2916-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+In-Reply-To: <5458D49E.6060305@gmx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tobias Hoffmann <th55@gmx.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, robin@gareus.org, clemens@ladisch.de, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Nov 04, 2014 at 02:29:02PM +0100, Tobias Hoffmann wrote:
+> On 04/11/14 14:16, Tobias Hoffmann wrote:
+> >But maybe (as Clemens suggested) the strings *for .opt_master and
+> >.opt_matrix* should just be created dynamically in
+> >scarlett_ctl_enum_info, instead of using snd_ctl_enum_info.
+> >I want to point out that scarlett_device_info already contains the
+> >necessary information to do this:
+> >
+> >    .matrix_out = 6,
+> >...
+> >    .pcm_start = 0,  // pcm(1) .. pcm(analog_start-pcm_start)=pcm(12)
+> >    .analog_start = 12, // analog(1) .. analog(4)
+> >    .spdif_start = 16, // spdif(1) .. spdif(2)
+> >    .adat_start = 18,  // adat(1) .. adat(0)  [i.e. no adat]
+> >    .mix_start = 18, // mix('A') .. mix('F')=mix('A' + matrix_out)
+> >
+> >
+> >
+> >and Off(-1). Only elem->private_data has to be of type
+> >scarlett_mixer_elem_enum_info for the usual enums (impedance, pad,
+> >...), but of type scarlett_device_info for the master and mixer
+> >enums...
+> >
+> 
+> Hmm, as the same options are required for a lot of master and mixer
+> enums, the strings should probably be generated only once (and a
+> dynamic scarlett_mixer_elem_enum_info would require no modifications
+> of scarlett_ctl_enum_info).
+> 
+>   Tobias
 
---SqO8Hf1xXlNBrDgg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Sep 12, 2014 at 10:11:04AM +0100, Nikesh Oswal wrote:
-> dai-link params for codec-codec links were fixed. The fixed
-> link between codec and another chip which may be another codec,
-> baseband, bluetooth codec etc may require run time configuaration
-> changes. This change provides an optional alsa control to select
-> one of the params from a list of params.
-
-The shape of this looks OK, though there are some issues below.  I
-intend to test this before applying but couldn't do that since it
-doesn't apply against current code.
-
-> +	/* Select the configuration set by alsa control */
-> +	config += w->params_select;
-> +
-
-Do an array lookup, code legibility is important.
-
-> +static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
-> +			  struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
-> +
-> +	if (ucontrol->value.integer.value[0] == w->params_select)
-> +		return 0;
-> +
-> +	if (ucontrol->value.integer.value[0] >= w->num_params)
-> +		return -EINVAL;
-> +
-> +	w->params_select = ucontrol->value.integer.value[0];
-> +
-> +	return 0;
-> +}
-
-This will just silently not immediately do anything if an attempt is
-made to change the parameters while the link is active.  There needs to
-at least be a log message, and probably it's better to return -EBUSY
-as well otherwise userspace might be going on reconfiguring things
-assuming that this succeeded.
-
-It'd be even better to actually reconfigure the link but that's a more
-involved operation which might need us to power things down and can be
-punted for now.
-
->  	len = strlen(source->name) + strlen(sink->name) + 2;
->  	link_name = devm_kzalloc(card->dev, len, GFP_KERNEL);
-> -	if (!link_name)
-> -		return -ENOMEM;
-> +	if (!link_name) {
-> +		ret = -ENOMEM;
-> +		goto  outfree_w_param;
-> +	}
-
-Random extra space here and in some other gotos.
-
-> +	for (count = 0 ; count < num_params; count++) {
-> +		if (!config->stream_name)
-> +			dev_warn(card->dapm.dev,
-> +				"ASoC: anonymous config %d for dai link %s\n",
-> +				count, link_name);
-> +		w_param_text[count] = kmemdup((void *)(config->stream_name),
-> +			strlen(config->stream_name) + 1, GFP_KERNEL);
-
-Why are you casting to void * here?  This looks like it's open coding
-kstrdup() and we're mixing devm_ and non-devm_ allocations in this
-function.
-
-This is also dereferencing stream_name immediately after finding that
-it's NULL which isn't good.
-
-> +	template.num_kcontrols = 1;
-> +	private_value =
-> +	(unsigned long) kmemdup((void *)(kcontrol_dai_link[0].private_value),
-> +		sizeof(struct soc_enum), GFP_KERNEL);
-> +	if (!private_value) {
-> +		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
-
-So, we need to kmemdup() this thing that we just allocated?  If this is
-needed it should be clear to the reader why we're doing this, especially
-given all the funky casts.
-
---SqO8Hf1xXlNBrDgg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUWSvAAAoJECTWi3JdVIfQfK0H/AiMmKFOU36QQD+jbhWnvCPA
-LjJA9FziSzOuuqniOWCfMNq34rXKM4a//nY85S7V9HAk4S05EYDgBUttDTwXZu2W
-6TBqUf/zdmfb1pin9xgAm6iehWscjBJCvCZoHGmsaiFJ75hhtQP1j/r1UYghZBxx
-L7ekwDlfB0N61WmH1R6dKguZmzaz3wiSvg6vsGZzIkEuUqFa39lHw8dkMw+oacBG
-ceX/RXpdGyK/pI4/lrrvG3c3X/zxdRvmcr5yjrcuUolZLexpbkJ8RhIWE7CywoHr
-P5+2qjfk22WYFlkmQDrk38tGr1lJiDW3IMLZtSBBbM9P6CBqGpt3gaXyCHikQvg=
-=DA7/
------END PGP SIGNATURE-----
-
---SqO8Hf1xXlNBrDgg--
+Yes this would be the plan dynamially generate them once and reuse them. I'll work on implementing this.
+--chris 
