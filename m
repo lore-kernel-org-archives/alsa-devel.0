@@ -1,23 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] add Steinberg UR44 USB Audio
-	Interface	support to quirks-table
-Date: Tue, 04 Nov 2014 10:00:29 +0100
-Message-ID: <545895AD.7020004@ladisch.de>
-References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>
- <531DAB14.5080201@ladisch.de>
- <76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>
- <531DDD04.5050902@ladisch.de>
- <0EFBCC9F-93CA-4368-9530-B9049B3743FB@bobobeach.com>
- <531EC9CC.4060203@ladisch.de>
- <88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH v2 0/5] ASoC: Intel: ACPI support and
+	machines
+Date: Tue, 04 Nov 2014 11:05:34 +0200
+Message-ID: <545896DE.4030305@linux.intel.com>
+References: <1415079068-4979-1-git-send-email-vinod.koul@intel.com>
+ <545889C4.5000509@linux.intel.com> <20141104082510.GC1870@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id CA8062606CC
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 10:00:32 +0100 (CET)
-In-Reply-To: <88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32A3A2605F2
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 10:05:51 +0100 (CET)
+In-Reply-To: <20141104082510.GC1870@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,62 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cyrus Harmon <cyrus@bobobeach.com>, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, liam.r.girdwood@intel.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Cyrus Harmon wrote:
-> On Mar 11, 2014, at 1:31 AM, Clemens Ladisch wrote:
->> Strange; in theory, the driver should be able to pick up these
->> descriptors.
+Hi
+
+On 11/04/2014 10:25 AM, Vinod Koul wrote:
+> On Tue, Nov 04, 2014 at 10:09:40AM +0200, Jarkko Nikula wrote:
 >>
->> Are there any error messages in the system log when you plug it in or
->> reload the unpatch snd-usb-audio driver?
+>> I think there is need to have some consolidation with current
+>> byt-rt5640 and byt-max98090. Since existing drivers and this set are
+>> using the same ACPI IDs "80860F28" for the ADSP and "10EC5640" codec
+>> ACPIID for the machine driver probing these drivers won't work
+>> together.
+> Liam's suggestion was to remove the current driver when all the bits are
+> upstream
+
+Yeah, I'm not against it but we must avoid regressions and perhaps try 
+to do seamless handover if possible. It's always more nice to find 
+regression in a small than big patch when bisecting :-)
+
+>> One difference at the moment is that byt-rt5640 machines out there
+>> have differences in audio routings but those are not too difficult
+>> to handle in the same machine driver.
+>>
+>> Bigger question how to handle platform part? I.e. can these use the
+>> same drivers and ADSP firmware? If they can, is the firmware
+>> available for distributions to take?
+> The two firmware are *not* compatible and that is the big reason why we
+> can't reuse the parts available
+
+Ok, so firmware appears to works on other than CR Baytrails too. Is it 
+available in linux-firmware since if it's not when changing the platform 
+drivers there will be obvious regressions to users?
+
+>> Optimally all machines out there would use the same drivers and get
+>> support for compressed audio but meanwhile we should not break
+>> existing machines.
+> Yes, I have tested this one on T100 and doesn't seem to break anything.
+> Please do test and revert if you find issues on any other available board (I
+> don't have any other board)
 >
-> Mar 11 02:25:11 cbox kernel: [   82.426640] usb 2-1.6: new high-speed USB device number 4 using ehci-pci
-> Mar 11 02:25:12 cbox kernel: [   82.515364] usb 2-1.6: New USB device found, idVendor=0499, idProduct=150e
-> Mar 11 02:25:12 cbox kernel: [   82.515368] usb 2-1.6: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-> Mar 11 02:25:12 cbox kernel: [   82.515370] usb 2-1.6: Product: Steinberg UR44
-> Mar 11 02:25:12 cbox kernel: [   82.515372] usb 2-1.6: Manufacturer: Yamaha Corporation
-> Mar 11 02:25:12 cbox kernel: [   82.518134] snd-usb-audio: probe of 2-1.6:1.0 failed with error -5
-> Mar 11 02:25:12 cbox kernel: [   82.523317] snd-usb-audio: probe of 2-1.6:1.1 failed with error -5
+Well, those audio routing differences require to have DMI quirks. E.g. 
+T100 has analogue internal mic, Dell Venue 8 Pro 5830 has digital mic 
+connected to DMIC2 of the RT564x and some have it connected to DMIC1.
 
-Please try the patch below to get more information in the log.
-
-
-Regards,
-Clemens
-
-
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -196,19 +196,23 @@
- 	 * future ones might change, so ensure that we fail silently if the
- 	 * interface doesn't look exactly right.
- 	 */
-+	dev_info(&iface->dev, "checking PCM interface\n");
-
- 	/* must have a non-zero altsetting for streaming */
- 	if (iface->num_altsetting < 2)
- 		return -ENODEV;
-+	dev_info(&iface->dev, "altsets found\n");
- 	alts = &iface->altsetting[1];
- 	altsd = get_iface_desc(alts);
-
- 	/* must have an isochronous endpoint for streaming */
- 	if (altsd->bNumEndpoints < 1)
- 		return -ENODEV;
-+	dev_info(&iface->dev, "endpoint found\n");
- 	epd = get_endpoint(alts, 0);
- 	if (!usb_endpoint_xfer_isoc(epd))
- 		return -ENODEV;
-+	dev_info(&iface->dev, "iso found\n");
-
- 	/* must have format descriptors */
- 	ashd = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL,
-@@ -219,6 +223,7 @@
- 	    !fmtd || fmtd->bLength < 8)
- 		return -ENODEV;
-
-+	dev_info(&iface->dev, "descriptors found\n");
- 	return create_standard_audio_quirk(chip, iface, driver, NULL);
- }
+-- 
+Jarkko
