@@ -1,20 +1,17 @@
-From: Tobias Hoffmann <th55@gmx.de>
-Subject: Re: [PATCH 4/4 v4] ALSA: usb-audio: Scarlett mixer
- interface for 6i6, 18i6, 18i8 and 18i20
-Date: Tue, 04 Nov 2014 14:29:02 +0100
-Message-ID: <5458D49E.6060305@gmx.de>
-References: <s5hd29ac9qn.wl-tiwai@suse.de>
- <1415055496-11151-1-git-send-email-chris.j.arges@canonical.com>
- <1415055496-11151-5-git-send-email-chris.j.arges@canonical.com>
- <s5hppd39sm8.wl-tiwai@suse.de> <5458D19D.7050206@gmx.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Fix build with CONFIG_SLEEP
+	enabled.
+Date: Tue, 4 Nov 2014 15:13:45 +0000
+Message-ID: <20141104151345.GR3815@sirena.org.uk>
+References: <1415107665-17460-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4289706561776349880=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 59452260619
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 14:29:22 +0100 (CET)
-In-Reply-To: <5458D19D.7050206@gmx.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AC8026056A
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 16:15:11 +0100 (CET)
+In-Reply-To: <1415107665-17460-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, robin@gareus.org, clemens@ladisch.de, david.henningsson@canonical.com, Chris J Arges <chris.j.arges@canonical.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/11/14 14:16, Tobias Hoffmann wrote:
-> But maybe (as Clemens suggested) the strings *for .opt_master and 
-> .opt_matrix* should just be created dynamically in 
-> scarlett_ctl_enum_info, instead of using snd_ctl_enum_info.
-> I want to point out that scarlett_device_info already contains the 
-> necessary information to do this:
->
->     .matrix_out = 6,
-> ...
->     .pcm_start = 0,  // pcm(1) .. pcm(analog_start-pcm_start)=pcm(12)
->     .analog_start = 12, // analog(1) .. analog(4)
->     .spdif_start = 16, // spdif(1) .. spdif(2)
->     .adat_start = 18,  // adat(1) .. adat(0)  [i.e. no adat]
->     .mix_start = 18, // mix('A') .. mix('F')=mix('A' + matrix_out)
->
->
->
-> and Off(-1). Only elem->private_data has to be of type 
-> scarlett_mixer_elem_enum_info for the usual enums (impedance, pad, 
-> ...), but of type scarlett_device_info for the master and mixer enums...
->
 
-Hmm, as the same options are required for a lot of master and mixer 
-enums, the strings should probably be generated only once (and a dynamic 
-scarlett_mixer_elem_enum_info would require no modifications of 
-scarlett_ctl_enum_info).
+--===============4289706561776349880==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vk2EvGhio7iZz8DU"
+Content-Disposition: inline
 
-   Tobias
+
+--vk2EvGhio7iZz8DU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 04, 2014 at 01:27:45PM +0000, Liam Girdwood wrote:
+> Fix the following build error when CONFIG_SLEEP is enabled and CONFIG_RUNTIME
+> is disabled. The BDW ADSP sleep PM functionality depends on the runtime pm
+> calls for context save/restore.
+
+Applied, thanks.
+
+--vk2EvGhio7iZz8DU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUWO0oAAoJECTWi3JdVIfQPfQH/j1ykORoaAkEmJHR+yw/CEYu
+WOpLAI7d3LBs526xnTrI1QPDOKlg40xT4y3iCoCiq3ICAzXjfPSFOIiV+XG7ROfH
+dZEsvLrmFstb8yZUvrdwOuOodM1tKsmIpOZwuwvVidvD6HRgu9pCjit2KwT92j5v
+o5TMUSTeju61kFpk+stDSeVnH9behJzUBcWWInIpukC5znicL7ZTIhOi3pM12+F7
+F1Ep8f9+JzIP5gyuKeH5dGOfXVkQTMwN215IzFP2RFxCrfcQs3jtNFvIrIIPfRKY
+uV8a9bDaKnNDS4kl460Tx8f/6eAcXqRxl0LPQcoPsdoS3v5a49crB2vwCfsf370=
+=fZzd
+-----END PGP SIGNATURE-----
+
+--vk2EvGhio7iZz8DU--
+
+--===============4289706561776349880==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4289706561776349880==--
