@@ -1,17 +1,23 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix the driver data not set
-	issue
-Date: Tue, 4 Nov 2014 11:44:15 +0000
-Message-ID: <20141104114415.GK3815@sirena.org.uk>
-References: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH 8/8] ASoC: rsnd: Add Volume Ramp support
+Date: Tue, 4 Nov 2014 11:45:41 +0000
+Message-ID: <20141104114541.GL3815@sirena.org.uk>
+References: <8761fc7vpx.wl%kuninori.morimoto.gx@gmail.com>
+ <87tx2w6h2r.wl%kuninori.morimoto.gx@gmail.com>
+ <20141028223814.GM18557@sirena.org.uk>
+ <87oasviuw0.wl%kuninori.morimoto.gx@gmail.com>
+ <20141029225659.GS18557@sirena.org.uk>
+ <87r3xqxf1z.wl%kuninori.morimoto.gx@gmail.com>
+ <20141031115330.GN18557@sirena.org.uk>
+ <87389zakvi.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4816817726566811551=="
+Content-Type: multipart/mixed; boundary="===============4528017083782474328=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1410626060F
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 12:45:31 +0100 (CET)
-In-Reply-To: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0131626060F
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 12:46:55 +0100 (CET)
+In-Reply-To: <87389zakvi.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +27,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4816817726566811551==
+--===============4528017083782474328==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gCatpCT2/Jx0qRyG"
+	protocol="application/pgp-signature"; boundary="1ypm5kX6DjiKlr0N"
 Content-Disposition: inline
 
 
---gCatpCT2/Jx0qRyG
+--1ypm5kX6DjiKlr0N
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 04, 2014 at 02:45:24PM +0800, Jie Yang wrote:
-> The priv_data is allocated again here wrongly, and it
-> is not set to the driver data after assignment. This
-> make the pdata->dev is NULL and oops occurs on the first
-> call to hsw_volume_put.
+On Mon, Nov 03, 2014 at 04:07:44PM -0800, Kuninori Morimoto wrote:
 
-Applied, thanks.
+> > No, just quote it as you've listed it above rather than with the
+> > absolute time.
 
---gCatpCT2/Jx0qRyG
+> Sorry, do you mean list it in source code as comment ?
+> or, do you mean like this ?
+
+> amixer "DVC Ramp time" "128db/1step"
+
+Like this second one (just say 128dB/step if it's only one step).
+
+--1ypm5kX6DjiKlr0N
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUWLwPAAoJECTWi3JdVIfQwEQH/08odXRbdIEwSUSTtK5C/9bc
-Zz5dCWjWwjKaCOY+6HVY/NWXbM/B2VSjQOl6MqKcAPQbzeMO7dE4EyW30Hp2c2zm
-oCRddoXouC1UugnGaTbezuLTD5/uqFP8YNxj/OP4vjWDO33Pmw3/7yc8hj1gJs6D
-Tos8M8Vrb6NhkTwGLncS86gl9za8xSiGM8KoHiW0+jp/Z+5tpTVZpS4M2pe73HK5
-cLI8m+MH5X4uqO6po8UiPkkhELaQn4BFFzs5sHcw73irixNdpV3EHnb1HK6hxwqA
-ipQ+HQ6ltpq+0AAWJaiu9cry4/luXAb7nAbRIYhvzGAZwmNd8J1/GeSstZWdROA=
-=Yzmf
+iQEcBAEBAgAGBQJUWLxkAAoJECTWi3JdVIfQOycH/RshNcklPwl+NjkRTPI/8Y8o
+LbSbVHTjchQchpfzf4gx4PuBws59uvYBT/EDYCnKkyeil2+JRpClUsKLtJgvc4Yd
+5i7Y5q4nb6HPDsAB73HCwn2oX+Mm+k6Z8cKcQZTvVBw0WgrqhWCafAIs5hWL67Ax
+YTUA71zae18kuXPa2oDJLWOHhjAqhJNFOqOSb5wb4Y8Mj2Tr3K0ltM4YM4D/VVTT
+2IC33j1+mB5Un5iqlVRAncVzp1FGGlkCvqPIMOZvk9uf1g7tiY+jonEYxqep07tR
+C+VMBe4XCagRF9PLwULSBrfCUjNoVfHbeNr8PwLT5qCSeQwHZEgWOBpzhUUN1ZA=
+=MrBK
 -----END PGP SIGNATURE-----
 
---gCatpCT2/Jx0qRyG--
+--1ypm5kX6DjiKlr0N--
 
---===============4816817726566811551==
+--===============4528017083782474328==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4816817726566811551==--
+--===============4528017083782474328==--
