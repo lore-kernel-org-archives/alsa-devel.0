@@ -1,35 +1,85 @@
-From: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
-Subject: [PATCH v6 3/3] ARM: imx_v6_v7_defconfig: enable tlv320aic3x audio codec by default
-Date: Tue, 4 Nov 2014 16:05:49 +0300
-Message-ID: <1415106349-18846-4-git-send-email-d.lavnikevich@sam-solutions.com>
-References: <1415106349-18846-1-git-send-email-d.lavnikevich@sam-solutions.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Fix build with CONFIG_SLEEP
+	enabled.
+Date: Tue,  4 Nov 2014 13:27:45 +0000
+Message-ID: <1415107665-17460-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1415106349-18846-1-git-send-email-d.lavnikevich@sam-solutions.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: shawn.guo@linaro.org, shawn.guo@freescale.com, kernel@pengutronix.de, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF037260619
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 14:27:55 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Used on Phytec PBAB01 board.
+Fix the following build error when CONFIG_SLEEP is enabled and CONFIG_RUNTIME
+is disabled. The BDW ADSP sleep PM functionality depends on the runtime pm
+calls for context save/restore.
 
-Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+All error/warnings:
+
+>> ERROR: "snd_soc_suspend" undefined!
+>> ERROR: "snd_soc_resume" undefined!
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- arch/arm/configs/imx_v6_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/sst-haswell-pcm.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index 8fca6e2..cac07d6 100644
---- a/arch/arm/configs/imx_v6_v7_defconfig
-+++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -210,6 +210,7 @@ CONFIG_SND_SOC_IMX_WM8962=y
- CONFIG_SND_SOC_IMX_SGTL5000=y
- CONFIG_SND_SOC_IMX_SPDIF=y
- CONFIG_SND_SOC_IMX_MC13783=y
-+CONFIG_SND_SOC_TLV320AIC3X=y
- CONFIG_SND_SIMPLE_CARD=y
- CONFIG_USB=y
- CONFIG_USB_EHCI_HCD=y
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index 3cb9ed7..afbcc9b 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -1011,7 +1011,6 @@ static int hsw_pcm_dev_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+ #ifdef CONFIG_PM_RUNTIME
+ 
+ static int hsw_pcm_runtime_idle(struct device *dev)
+@@ -1071,6 +1070,8 @@ static int hsw_pcm_runtime_resume(struct device *dev)
+ #define hsw_pcm_runtime_resume		NULL
+ #endif
+ 
++#if defined(CONFIG_PM_SLEEP) && defined(CONFIG_PM_RUNTIME)
++
+ static void hsw_pcm_complete(struct device *dev)
+ {
+ 	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
+@@ -1166,6 +1167,11 @@ static int hsw_pcm_prepare(struct device *dev)
+ 	return 0;
+ }
+ 
++#else
++#define hsw_pcm_prepare		NULL
++#define hsw_pcm_complete	NULL
++#endif
++
+ static const struct dev_pm_ops hsw_pcm_pm = {
+ 	.runtime_idle = hsw_pcm_runtime_idle,
+ 	.runtime_suspend = hsw_pcm_runtime_suspend,
+@@ -1173,9 +1179,6 @@ static const struct dev_pm_ops hsw_pcm_pm = {
+ 	.prepare = hsw_pcm_prepare,
+ 	.complete = hsw_pcm_complete,
+ };
+-#else
+-#define hsw_pcm_pm	NULL
+-#endif
+ 
+ static struct platform_driver hsw_pcm_driver = {
+ 	.driver = {
 -- 
-2.1.2
+2.1.0
