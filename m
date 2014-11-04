@@ -1,19 +1,33 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 0/5] ASoC: Intel: ACPI support and
- machines
-Date: Tue, 4 Nov 2014 13:55:10 +0530
-Message-ID: <20141104082510.GC1870@intel.com>
-References: <1415079068-4979-1-git-send-email-vinod.koul@intel.com>
- <545889C4.5000509@linux.intel.com>
+From: Cyrus Harmon <cyrus@bobobeach.com>
+Subject: Re: [PATCH] add Steinberg UR44 USB Audio Interface
+ support to quirks-table
+Date: Tue, 04 Nov 2014 00:55:11 -0800
+Message-ID: <5458946F.5060100@bobobeach.com>
+References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>
+ <531DAB14.5080201@ladisch.de>
+ <76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>
+ <531DDD04.5050902@ladisch.de>
+ <0EFBCC9F-93CA-4368-9530-B9049B3743FB@bobobeach.com>
+ <531EC9CC.4060203@ladisch.de>
+ <88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>
+ <54581FAA.6050703@bobobeach.com> <s5hfvdzv5rc.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4716326055E
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 09:24:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <545889C4.5000509@linux.intel.com>
+Received: from aspen.bobobeach.com (unknown [208.79.93.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CAF52605F4
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 09:55:13 +0100 (CET)
+Received: from aspen.bobobeach.com (localhost [127.0.0.1])
+ by aspen.bobobeach.com (Postfix) with ESMTP id 1798B10165
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 00:57:29 -0800 (PST)
+Received: from [192.168.1.224] (adsl-172-11-236-93.dsl.pltn13.sbcglobal.net
+ [172.11.236.93])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (Client did not present a certificate)
+ by aspen.bobobeach.com (Postfix) with ESMTPSA id D6C5B1014D
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 00:57:28 -0800 (PST)
+In-Reply-To: <s5hfvdzv5rc.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,49 +37,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, liam.r.girdwood@intel.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 04, 2014 at 10:09:40AM +0200, Jarkko Nikula wrote:
-> On 11/04/2014 07:31 AM, Vinod Koul wrote:
-> >This is second rev of patch series which fixes the modules split as
-> >discussed in ML. The core part is now module along with PCI and ACPI one.
-> >Added fix reported by Dan as well. Also added the BYTCR machine driver
-> >
-> >Subhransu S. Prusty (1):
-> >   ASoC: Intel: add BYTCR machine driver with RT5640
-> >
-> >Vinod Koul (4):
-> >   ASoC: Intel: mrfld - remove unnecessary check for pointer
-> >   ASoC: Intel: mrfld - create separate module for pci part
-> >   ASoC: Intel: mrfld - add shim save restore
-> >   ASoC: Intel: mrfld- add ACPI module
-> >
-> I think there is need to have some consolidation with current
-> byt-rt5640 and byt-max98090. Since existing drivers and this set are
-> using the same ACPI IDs "80860F28" for the ADSP and "10EC5640" codec
-> ACPIID for the machine driver probing these drivers won't work
-> together.
-Liam's suggestion was to remove the current driver when all the bits are
-upstream
-
-> One difference at the moment is that byt-rt5640 machines out there
-> have differences in audio routings but those are not too difficult
-> to handle in the same machine driver.
-> 
-> Bigger question how to handle platform part? I.e. can these use the
-> same drivers and ADSP firmware? If they can, is the firmware
-> available for distributions to take?
-The two firmware are *not* compatible and that is the big reason why we
-can't reuse the parts available
-
-> Optimally all machines out there would use the same drivers and get
-> support for compressed audio but meanwhile we should not break
-> existing machines.
-Yes, I have tested this one on T100 and doesn't seem to break anything.
-Please do test and revert if you find issues on any other available board (I
-don't have any other board)
-
--- 
-~Vinod
+CkkgaGF2ZSB1c2VkIGEgbnVtYmVyIG9mIDMuMXgga2VybmVscy4gQXQgdGhlIG1vbWVudCwgSSdt
+IHdyaXRpbmcgdGhpcyAKZnJvbSBhIDMuMTcuMCBrZXJuZWwgdGhhdCBkb2Vzbid0IHJlY29nbml6
+ZSB0aGUgVVI0NCB3aXRob3V0IG15IHBhdGNoLgoKdGhhbmtzLAoKQ3lydXMKCk9uIDExLzAzLzIw
+MTQgMTA6MjggUE0sIFRha2FzaGkgSXdhaSB3cm90ZToKPiBBdCBNb24sIDAzIE5vdiAyMDE0IDE2
+OjM2OjU4IC0wODAwLAo+IEN5cnVzIEhhcm1vbiB3cm90ZToKPj4KPj4gV2VsbCwgaXQncyA3IG1v
+bnRocyBvbiBhbmQgSSdtIHN0aWxsIHVzaW5nIGEgcGF0Y2hlZCBrZXJuZWwgdG8gYWNjZXNzIG15
+Cj4+IFVSNDQuIEFueSBjaGFuY2Ugb2YgZWl0aGVyIHNlZWluZyBteSBvcmlnaW5hbCBwYXRjaCBj
+b21taXR0ZWQsIG9yIHNvbWUKPj4gc3VnZ2VzdGlvbnMgb24gYSBtb3JlIHByb3BlciBmaXgsIGlm
+IHRoZXJlJ3Mgc29tZXRoaW5nIHdpdGggbXkgb3JpZ2luYWwKPj4gcGF0Y2g/Cj4gV2hpY2gga2Vy
+bmVsIHZlcnNpb24gYXJlIHlvdSB0ZXN0aW5nPwo+Cj4KPiBUYWthc2hpCj4KPj4gdGhhbmtzLAo+
+Pgo+PiBDeXJ1cwo+Pgo+PiBPbiAwMy8xNy8yMDE0IDA5OjI5IEFNLCBDeXJ1cyBIYXJtb24gd3Jv
+dGU6Cj4+PiBPbiBNYXIgMTEsIDIwMTQsIGF0IDE6MzEgQU0sIENsZW1lbnMgTGFkaXNjaCA8Y2xl
+bWVuc0BsYWRpc2NoLmRlPiB3cm90ZToKPj4+Cj4+Pj4gQ3lydXMgSGFybW9uIHdyb3RlOgo+Pj4+
+PiBPbiBNYXIgMTAsIDIwMTQsIGF0IDg6NDAgQU0sIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0Bs
+YWRpc2NoLmRlPiB3cm90ZToKPj4+Pj4+IEluIHRoZW9yeSwga2VybmVsIDMuMTEgYW5kIGxhdGVy
+IHNob3VsZCBzdXBwb3J0IHRoaXMgZGV2aWNlIHdpdGhvdXQKPj4+Pj4+IGEgcXVpcmsgZW50cnku
+ICBJIGd1ZXNzIGl0IGFjdHVhbGx5IGRvZXMgbm90Pwo+Pj4+PiBubywgdGhlIHN0b2NrIGtlcm5l
+bCBkb2VzbuKAmXQgc3VwcG9ydCB0aGlzIGRldmljZS4KPj4+PiBTdHJhbmdlOyBpbiB0aGVvcnks
+IHRoZSBkcml2ZXIgc2hvdWxkIGJlIGFibGUgdG8gcGljayB1cCB0aGVzZQo+Pj4+IGRlc2NyaXB0
+b3JzLgo+Pj4+Cj4+Pj4gQXJlIHRoZXJlIGFueSBlcnJvciBtZXNzYWdlcyBpbiB0aGUgc3lzdGVt
+IGxvZyB3aGVuIHlvdSBwbHVnIGl0IGluIG9yCj4+Pj4gcmVsb2FkIHRoZSB1bnBhdGNoIHNuZC11
+c2ItYXVkaW8gZHJpdmVyPwo+Pj4gRm9sbG93aW5nIHVwIG9uIHRoaXMgZnJvbSBsYXN0IHdlZWss
+IGhlcmXigJlzIHRoZSBlcnJvciBtZXNzYWdlIEkgc2VlIHdpdGggYW4gdW5wYXRjaGVkIGtlcm5l
+bDoKPj4+Cj4+PiBNYXIgMTEgMDI6MjU6MTEgY2JveCBrZXJuZWw6IFsgICA4Mi40MjY2NDBdIHVz
+YiAyLTEuNjogbmV3IGhpZ2gtc3BlZWQgVVNCIGRldmljZSBudW1iZXIgNCB1c2luZyBlaGNpLXBj
+aQo+Pj4gTWFyIDExIDAyOjI1OjEyIGNib3gga2VybmVsOiBbICAgODIuNTE1MzY0XSB1c2IgMi0x
+LjY6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0wNDk5LCBpZFByb2R1Y3Q9MTUwZQo+
+Pj4gTWFyIDExIDAyOjI1OjEyIGNib3gga2VybmVsOiBbICAgODIuNTE1MzY4XSB1c2IgMi0xLjY6
+IE5ldyBVU0IgZGV2aWNlIHN0cmluZ3M6IE1mcj0xLCBQcm9kdWN0PTIsIFNlcmlhbE51bWJlcj0w
+Cj4+PiBNYXIgMTEgMDI6MjU6MTIgY2JveCBrZXJuZWw6IFsgICA4Mi41MTUzNzBdIHVzYiAyLTEu
+NjogUHJvZHVjdDogU3RlaW5iZXJnIFVSNDQKPj4+IE1hciAxMSAwMjoyNToxMiBjYm94IGtlcm5l
+bDogWyAgIDgyLjUxNTM3Ml0gdXNiIDItMS42OiBNYW51ZmFjdHVyZXI6IFlhbWFoYSBDb3Jwb3Jh
+dGlvbgo+Pj4gTWFyIDExIDAyOjI1OjEyIGNib3gga2VybmVsOiBbICAgODIuNTE4MTM0XSBzbmQt
+dXNiLWF1ZGlvOiBwcm9iZSBvZiAyLTEuNjoxLjAgZmFpbGVkIHdpdGggZXJyb3IgLTUKPj4+IE1h
+ciAxMSAwMjoyNToxMiBjYm94IGtlcm5lbDogWyAgIDgyLjUyMzMxN10gc25kLXVzYi1hdWRpbzog
+cHJvYmUgb2YgMi0xLjY6MS4xIGZhaWxlZCB3aXRoIGVycm9yIC01Cj4+PiBNYXIgMTEgMDI6MjU6
+MTIgY2JveCBtdHAtcHJvYmU6IGNoZWNraW5nIGJ1cyAyLCBkZXZpY2UgNDogIi9zeXMvZGV2aWNl
+cy9wY2kwMDAwOjAwLzAwMDA6MDA6MWQuMC91c2IyLzItMS8yLTEuNiIKPj4+IE1hciAxMSAwMjoy
+NToxMiBjYm94IG10cC1wcm9iZTogYnVzOiAyLCBkZXZpY2U6IDQgd2FzIG5vdCBhbiBNVFAgZGV2
+aWNlCj4+Pgo+Pj4gQW55IHN1Z2dlc3Rpb25zIGZvciBmdXJ0aGVyIGRlYnVnZ2luZyB0aGlzPwo+
+Pj4KPj4+IEFsc28sIGZyb20gYW4gZWFybGllciBtZXNzYWdlLAo+Pj4KPj4+IE9uIE1hciAxMCwg
+MjAxNCwgYXQgODo0MCBBTSwgQ2xlbWVucyBMYWRpc2NoIDxjbGVtZW5zQGxhZGlzY2guZGU+IHdy
+b3RlOgo+Pj4KPj4+PiBUaGlzIHNvdW5kcyBhcyBpZiB0aGUgcGxheWJhY2sgc3RyZWFtIG5lZWRz
+IHRvIGJlIHN5bmNocm9uaXplZCB0byB0aGUKPj4+PiByZWNvcmRpbmcgc3RyZWFtCj4+PiBBbnkg
+cG9pbnRlcnMgb24gd2hlcmUgSSBtaWdodCBsb29rIHRvIGZpZ3VyZSBvdXQgaG93IHRvIGRvIHRo
+aXM/Cj4+Pgo+Pj4gdGhhbmtzIGFnYWluLAo+Pj4KPj4+IEN5cnVzCj4+Pgo+Pj4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+IEFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0Cj4+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4+IGh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Pgo+IF9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
