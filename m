@@ -1,15 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 2/6] ASoC: Intel: mrfld - create separate
-	module for pci part
-Date: Tue,  4 Nov 2014 16:25:16 +0530
-Message-ID: <1415098520-14113-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 4/6] ASoC: Intel: mrfld- add ACPI module
+Date: Tue,  4 Nov 2014 16:25:18 +0530
+Message-ID: <1415098520-14113-5-git-send-email-vinod.koul@intel.com>
 References: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 77A0B2612E3
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 150C72612E7
  for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 11:55:20 +0100 (CET)
 In-Reply-To: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,40 +24,30 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Now the SST_IPC will support both ACPI and PCI, separate into core module
-and PCI module. This also move probe function into PCI module and exports
-the required symbols from core module
+Add the last ACPI module support which also uses core module like the PCI
+part
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/Kconfig       |    6 +-
- sound/soc/intel/sst/Makefile  |    8 +-
- sound/soc/intel/sst/sst.c     |  212 +++-------------------------------------
- sound/soc/intel/sst/sst.h     |    6 +
- sound/soc/intel/sst/sst_pci.c |  209 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/intel/sst/sst_pvt.c |    1 +
- 6 files changed, 243 insertions(+), 199 deletions(-)
- create mode 100644 sound/soc/intel/sst/sst_pci.c
+ sound/soc/intel/Kconfig        |    4 +
+ sound/soc/intel/sst/Makefile   |    4 +-
+ sound/soc/intel/sst/sst.c      |   20 ++
+ sound/soc/intel/sst/sst.h      |    3 +-
+ sound/soc/intel/sst/sst_acpi.c |  377 ++++++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_pvt.c  |    2 +
+ 6 files changed, 406 insertions(+), 4 deletions(-)
+ create mode 100644 sound/soc/intel/sst/sst_acpi.c
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index ae7f872..c963a5d 100644
+index c963a5d..edff4a3 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -3,7 +3,7 @@ config SND_MFLD_MACHINE
- 	depends on INTEL_SCU_IPC
- 	select SND_SOC_SN95031
- 	select SND_SST_MFLD_PLATFORM
--	select SND_SST_IPC
-+	select SND_SST_IPC_PCI
- 	help
-           This adds support for ASoC machine driver for Intel(R) MID Medfield platform
-           used as alsa device in audio substem in Intel(R) MID devices
-@@ -16,6 +16,10 @@ config SND_SST_MFLD_PLATFORM
- config SND_SST_IPC
+@@ -20,6 +20,10 @@ config SND_SST_IPC_PCI
  	tristate
+ 	select SND_SST_IPC
  
-+config SND_SST_IPC_PCI
++config SND_SST_IPC_ACPI
 +	tristate
 +	select SND_SST_IPC
 +
@@ -66,546 +55,497 @@ index ae7f872..c963a5d 100644
  	tristate "ASoC support for Intel(R) Smart Sound Technology"
  	select SND_SOC_INTEL_SST_ACPI if ACPI
 diff --git a/sound/soc/intel/sst/Makefile b/sound/soc/intel/sst/Makefile
-index 4d0e79b..b8aa1d3 100644
+index b8aa1d3..fd21726 100644
 --- a/sound/soc/intel/sst/Makefile
 +++ b/sound/soc/intel/sst/Makefile
-@@ -1,3 +1,7 @@
--snd-intel-sst-objs := sst.o sst_ipc.o sst_stream.o sst_drv_interface.o sst_loader.o sst_pvt.o
-+snd-intel-sst-core-objs := sst.o sst_ipc.o sst_stream.o sst_drv_interface.o sst_loader.o sst_pvt.o
-+snd-intel-sst-pci-objs += sst_pci.o
-+
-+
-+obj-$(CONFIG_SND_SST_IPC) += snd-intel-sst-core.o
-+obj-$(CONFIG_SND_SST_IPC_PCI) += snd-intel-sst-pci.o
+@@ -1,7 +1,7 @@
+ snd-intel-sst-core-objs := sst.o sst_ipc.o sst_stream.o sst_drv_interface.o sst_loader.o sst_pvt.o
+ snd-intel-sst-pci-objs += sst_pci.o
+-
++snd-intel-sst-acpi-objs += sst_acpi.o
  
--obj-$(CONFIG_SND_SST_IPC) += snd-intel-sst.o
+ obj-$(CONFIG_SND_SST_IPC) += snd-intel-sst-core.o
+ obj-$(CONFIG_SND_SST_IPC_PCI) += snd-intel-sst-pci.o
+-
++obj-$(CONFIG_SND_SST_IPC_ACPI) += snd-intel-sst-acpi.o
 diff --git a/sound/soc/intel/sst/sst.c b/sound/soc/intel/sst/sst.c
-index 2bfb404..8753754 100644
+index b97c231..c17a79b 100644
 --- a/sound/soc/intel/sst/sst.c
 +++ b/sound/soc/intel/sst/sst.c
-@@ -20,20 +20,14 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- #include <linux/module.h>
--#include <linux/pci.h>
- #include <linux/fs.h>
- #include <linux/interrupt.h>
- #include <linux/firmware.h>
- #include <linux/pm_runtime.h>
- #include <linux/pm_qos.h>
- #include <linux/async.h>
--#include <linux/delay.h>
--#include <linux/acpi.h>
- #include <sound/core.h>
--#include <sound/pcm.h>
- #include <sound/soc.h>
--#include <sound/compress_driver.h>
--#include <asm/intel-mid.h>
- #include <asm/platform_sst_audio.h>
- #include "../sst-mfld-platform.h"
- #include "sst.h"
-@@ -242,6 +236,7 @@ int sst_alloc_drv_context(struct intel_sst_drv **ctx,
+@@ -181,6 +181,7 @@ int sst_driver_ops(struct intel_sst_drv *sst)
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(sst_alloc_drv_context);
- 
- int sst_context_init(struct intel_sst_drv *ctx)
- {
-@@ -260,6 +255,7 @@ int sst_context_init(struct intel_sst_drv *ctx)
- 		return -EINVAL;
- 
- 	sst_init_locks(ctx);
-+	sst_set_fw_state_locked(ctx, SST_RESET);
- 
- 	/* pvt_id 0 reserved for async messages */
- 	ctx->pvt_id = 1;
-@@ -307,12 +303,22 @@ int sst_context_init(struct intel_sst_drv *ctx)
- 	}
- 	pm_qos_add_request(ctx->qos, PM_QOS_CPU_DMA_LATENCY,
- 				PM_QOS_DEFAULT_VALUE);
-+
-+	dev_dbg(ctx->dev, "Requesting FW %s now...\n", ctx->firmware_name);
-+	ret = request_firmware_nowait(THIS_MODULE, true, ctx->firmware_name,
-+				      ctx->dev, GFP_KERNEL, ctx, sst_firmware_load_cb);
-+	if (ret) {
-+		dev_err(ctx->dev, "Firmware download failed:%d\n", ret);
-+		goto do_free_mem;
-+	}
-+	sst_register(ctx->dev);
- 	return 0;
- 
- do_free_mem:
- 	destroy_workqueue(ctx->post_msg_wq);
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(sst_context_init);
- 
+ 	switch (sst->dev_id) {
+ 	case SST_MRFLD_PCI_ID:
++	case SST_BYT_ACPI_ID:
+ 		sst->tstamp = SST_TIME_STAMP_MRFLD;
+ 		sst->ops = &mrfld_ops;
+ 		return 0;
+@@ -323,7 +324,11 @@ EXPORT_SYMBOL_GPL(sst_context_init);
  void sst_context_cleanup(struct intel_sst_drv *ctx)
  {
-@@ -331,6 +337,7 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
- 	sst_memcpy_free_resources(ctx);
- 	ctx = NULL;
- }
-+EXPORT_SYMBOL_GPL(sst_context_cleanup);
- 
- void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
+ 	pm_runtime_get_noresume(ctx->dev);
++#if IS_ENABLED(CONFIG_ACPI)
++	pm_runtime_disable(ctx->dev);
++#else
+ 	pm_runtime_forbid(ctx->dev);
++#endif
+ 	sst_unregister(ctx->dev);
+ 	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
+ 	flush_scheduled_work();
+@@ -371,8 +376,19 @@ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
  {
-@@ -339,175 +346,7 @@ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
+ 	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
+ 	pm_runtime_use_autosuspend(ctx->dev);
++#if IS_ENABLED(CONFIG_ACPI)
++	/*
++	 * For acpi devices, the actual physical device state is
++	 * initially active. So change the state to active before
++	 * enabling the pm
++	 */
++	pm_runtime_set_active(ctx->dev);
++	pm_runtime_enable(ctx->dev);
++	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
++#else
  	pm_runtime_allow(ctx->dev);
  	pm_runtime_put_noidle(ctx->dev);
++#endif
  }
--
--static int sst_platform_get_resources(struct intel_sst_drv *ctx)
--{
--	int ddr_base, ret = 0;
--	struct pci_dev *pci = ctx->pci;
--	ret = pci_request_regions(pci, SST_DRV_NAME);
--	if (ret)
--		return ret;
--
--	/* map registers */
--	/* DDR base */
--	if (ctx->dev_id == SST_MRFLD_PCI_ID) {
--		ctx->ddr_base = pci_resource_start(pci, 0);
--		/* check that the relocated IMR base matches with FW Binary */
--		ddr_base = relocate_imr_addr_mrfld(ctx->ddr_base);
--		if (!ctx->pdata->lib_info) {
--			dev_err(ctx->dev, "lib_info pointer NULL\n");
--			ret = -EINVAL;
--			goto do_release_regions;
--		}
--		if (ddr_base != ctx->pdata->lib_info->mod_base) {
--			dev_err(ctx->dev,
--					"FW LSP DDR BASE does not match with IFWI\n");
--			ret = -EINVAL;
--			goto do_release_regions;
--		}
--		ctx->ddr_end = pci_resource_end(pci, 0);
--
--		ctx->ddr = pcim_iomap(pci, 0,
--					pci_resource_len(pci, 0));
--		if (!ctx->ddr) {
--			ret = -EINVAL;
--			goto do_release_regions;
--		}
--		dev_dbg(ctx->dev, "sst: DDR Ptr %p\n", ctx->ddr);
--	} else {
--		ctx->ddr = NULL;
--	}
--	/* SHIM */
--	ctx->shim_phy_add = pci_resource_start(pci, 1);
--	ctx->shim = pcim_iomap(pci, 1, pci_resource_len(pci, 1));
--	if (!ctx->shim) {
--		ret = -EINVAL;
--		goto do_release_regions;
--	}
--	dev_dbg(ctx->dev, "SST Shim Ptr %p\n", ctx->shim);
--
--	/* Shared SRAM */
--	ctx->mailbox_add = pci_resource_start(pci, 2);
--	ctx->mailbox = pcim_iomap(pci, 2, pci_resource_len(pci, 2));
--	if (!ctx->mailbox) {
--		ret = -EINVAL;
--		goto do_release_regions;
--	}
--	dev_dbg(ctx->dev, "SRAM Ptr %p\n", ctx->mailbox);
--
--	/* IRAM */
--	ctx->iram_end = pci_resource_end(pci, 3);
--	ctx->iram_base = pci_resource_start(pci, 3);
--	ctx->iram = pcim_iomap(pci, 3, pci_resource_len(pci, 3));
--	if (!ctx->iram) {
--		ret = -EINVAL;
--		goto do_release_regions;
--	}
--	dev_dbg(ctx->dev, "IRAM Ptr %p\n", ctx->iram);
--
--	/* DRAM */
--	ctx->dram_end = pci_resource_end(pci, 4);
--	ctx->dram_base = pci_resource_start(pci, 4);
--	ctx->dram = pcim_iomap(pci, 4, pci_resource_len(pci, 4));
--	if (!ctx->dram) {
--		ret = -EINVAL;
--		goto do_release_regions;
--	}
--	dev_dbg(ctx->dev, "DRAM Ptr %p\n", ctx->dram);
--do_release_regions:
--	pci_release_regions(pci);
--	return 0;
--}
--/*
--* intel_sst_probe - PCI probe function
--*
--* @pci:	PCI device structure
--* @pci_id: PCI device ID structure
--*
--*/
--static int intel_sst_probe(struct pci_dev *pci,
--			const struct pci_device_id *pci_id)
--{
--	int ret = 0;
--	struct intel_sst_drv *sst_drv_ctx;
--	struct sst_platform_info *sst_pdata = pci->dev.platform_data;
--
--	dev_dbg(&pci->dev, "Probe for DID %x\n", pci->device);
--
--	ret = sst_alloc_drv_context(&sst_drv_ctx, &pci->dev, pci->device);
--	if (ret < 0)
--		return ret;
--
--	sst_drv_ctx->pdata = sst_pdata;
--	sst_drv_ctx->irq_num = pci->irq;
--
--	ret = sst_context_init(sst_drv_ctx);
--	if (ret < 0)
--		goto do_free_drv_ctx;
--
--
--	/* Init the device */
--	ret = pcim_enable_device(pci);
--	if (ret) {
--		dev_err(sst_drv_ctx->dev,
--			"device can't be enabled. Returned err: %d\n", ret);
--		goto do_destroy_wq;
--	}
--	sst_drv_ctx->pci = pci_dev_get(pci);
--
--	ret = sst_platform_get_resources(sst_drv_ctx);
--	if (ret < 0)
--		goto do_destroy_wq;
--
--	sst_set_fw_state_locked(sst_drv_ctx, SST_RESET);
--	snprintf(sst_drv_ctx->firmware_name, sizeof(sst_drv_ctx->firmware_name),
--			"%s%04x%s", "fw_sst_",
--			sst_drv_ctx->dev_id, ".bin");
--	dev_dbg(sst_drv_ctx->dev,
--		"Requesting FW %s now...\n", sst_drv_ctx->firmware_name);
--	ret = request_firmware_nowait(THIS_MODULE, 1,
--			sst_drv_ctx->firmware_name, sst_drv_ctx->dev,
--			GFP_KERNEL, sst_drv_ctx, sst_firmware_load_cb);
--
--	if (ret) {
--		dev_err(sst_drv_ctx->dev,
--			"Firmware load failed with error: %d\n", ret);
--		goto do_release_regions;
--	}
--
--
--	pci_set_drvdata(pci, sst_drv_ctx);
--	sst_configure_runtime_pm(sst_drv_ctx);
--	sst_register(sst_drv_ctx->dev);
--
--	return ret;
--
--do_release_regions:
--	pci_release_regions(pci);
--do_destroy_wq:
--	destroy_workqueue(sst_drv_ctx->post_msg_wq);
--do_free_drv_ctx:
--	dev_err(sst_drv_ctx->dev, "Probe failed with %d\n", ret);
--	return ret;
--}
--
--/**
--* intel_sst_remove - PCI remove function
--*
--* @pci:	PCI device structure
--*
--* This function is called by OS when a device is unloaded
--* This frees the interrupt etc
--*/
--static void intel_sst_remove(struct pci_dev *pci)
--{
--	struct intel_sst_drv *sst_drv_ctx = pci_get_drvdata(pci);
--
--	sst_context_cleanup(sst_drv_ctx);
--	pci_dev_put(sst_drv_ctx->pci);
--	pci_release_regions(pci);
--	pci_set_drvdata(pci, NULL);
--}
-+EXPORT_SYMBOL_GPL(sst_configure_runtime_pm);
+ EXPORT_SYMBOL_GPL(sst_configure_runtime_pm);
  
- static int intel_sst_runtime_suspend(struct device *dev)
- {
-@@ -546,27 +385,8 @@ static int intel_sst_runtime_resume(struct device *dev)
+@@ -395,6 +411,10 @@ static int intel_sst_runtime_suspend(struct device *dev)
+ 	synchronize_irq(ctx->irq_num);
+ 	flush_workqueue(ctx->post_msg_wq);
+ 
++	/* save the shim registers because PMC doesn't save state */
++	if (ctx->dev_id == SST_BYT_ACPI_ID)
++		sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
++
  	return ret;
  }
  
--static const struct dev_pm_ops intel_sst_pm = {
-+const struct dev_pm_ops intel_sst_pm = {
- 	.runtime_suspend = intel_sst_runtime_suspend,
- 	.runtime_resume = intel_sst_runtime_resume,
- };
--
--/* PCI Routines */
--static struct pci_device_id intel_sst_ids[] = {
--	{ PCI_VDEVICE(INTEL, SST_MRFLD_PCI_ID), 0},
--	{ 0, }
--};
--
--static struct pci_driver sst_driver = {
--	.name = SST_DRV_NAME,
--	.id_table = intel_sst_ids,
--	.probe = intel_sst_probe,
--	.remove = intel_sst_remove,
--#ifdef CONFIG_PM
--	.driver = {
--		.pm = &intel_sst_pm,
--	},
--#endif
--};
--
--module_pci_driver(sst_driver);
-+EXPORT_SYMBOL_GPL(intel_sst_pm);
 diff --git a/sound/soc/intel/sst/sst.h b/sound/soc/intel/sst/sst.h
-index b65b9c0..3ee555e 100644
+index 3ee555e..683dc71 100644
 --- a/sound/soc/intel/sst/sst.h
 +++ b/sound/soc/intel/sst/sst.h
-@@ -40,6 +40,7 @@
- #define MRFLD_FW_FEATURE_BASE_OFFSET 0x4
- #define MRFLD_FW_BSS_RESET_BIT 0
+@@ -29,6 +29,7 @@
+ /* driver names */
+ #define SST_DRV_NAME "intel_sst_driver"
+ #define SST_MRFLD_PCI_ID 0x119A
++#define SST_BYT_ACPI_ID	0x80860F28
  
-+extern const struct dev_pm_ops intel_sst_pm;
- enum sst_states {
- 	SST_FW_LOADING = 1,
- 	SST_FW_RUNNING,
-@@ -537,4 +538,9 @@ void sst_fill_header_dsp(struct ipc_dsp_hdr *dsp, int msg,
- int sst_register(struct device *);
- int sst_unregister(struct device *);
+ #define SST_SUSPEND_DELAY 2000
+ #define FW_CONTEXT_MEM (64*1024)
+@@ -508,8 +509,6 @@ int sst_prepare_and_post_msg(struct intel_sst_drv *sst,
+ 		size_t mbox_data_len, const void *mbox_data, void **data,
+ 		bool large, bool fill_dsp, bool sync, bool response);
  
-+int sst_alloc_drv_context(struct intel_sst_drv **ctx,
-+		struct device *dev, unsigned int dev_id);
-+int sst_context_init(struct intel_sst_drv *ctx);
-+void sst_context_cleanup(struct intel_sst_drv *ctx);
-+void sst_configure_runtime_pm(struct intel_sst_drv *ctx);
- #endif
-diff --git a/sound/soc/intel/sst/sst_pci.c b/sound/soc/intel/sst/sst_pci.c
+-void sst_save_shim64(struct intel_sst_drv *ctx, void __iomem *shim,
+-		struct sst_shim_regs64 *shim_regs);
+ void sst_process_pending_msg(struct work_struct *work);
+ int sst_assign_pvt_id(struct intel_sst_drv *sst_drv_ctx);
+ void sst_init_stream(struct stream_info *stream,
+diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
 new file mode 100644
-index 0000000..3a0b3bf
+index 0000000..1f5fde2
 --- /dev/null
-+++ b/sound/soc/intel/sst/sst_pci.c
-@@ -0,0 +1,209 @@
++++ b/sound/soc/intel/sst/sst_acpi.c
+@@ -0,0 +1,377 @@
 +/*
-+ *  sst_pci.c - SST (LPE) driver init file for pci enumeration.
++ * sst_acpi.c - SST (LPE) driver init file for ACPI enumeration.
 + *
-+ *  Copyright (C) 2008-14	Intel Corp
-+ *  Authors:	Vinod Koul <vinod.koul@intel.com>
-+ *		Harsha Priya <priya.harsha@intel.com>
-+ *		Dharageswari R <dharageswari.r@intel.com>
-+ *		KP Jeeja <jeeja.kp@intel.com>
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ * Copyright (c) 2013, Intel Corporation.
 + *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
++ *  Authors:	Ramesh Babu K V <Ramesh.Babu@intel.com>
++ *  Authors:	Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
 + *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
 + *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ *
 + */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
 +#include <linux/module.h>
-+#include <linux/pci.h>
 +#include <linux/fs.h>
++#include <linux/interrupt.h>
++#include <linux/slab.h>
++#include <linux/io.h>
++#include <linux/miscdevice.h>
++#include <linux/platform_device.h>
 +#include <linux/firmware.h>
 +#include <linux/pm_runtime.h>
++#include <linux/pm_qos.h>
++#include <linux/acpi.h>
++#include <asm/platform_sst_audio.h>
 +#include <sound/core.h>
 +#include <sound/soc.h>
-+#include <asm/platform_sst_audio.h>
++#include <sound/compress_driver.h>
++#include <acpi/acbuffer.h>
++#include <acpi/platform/acenv.h>
++#include <acpi/platform/aclinux.h>
++#include <acpi/actypes.h>
++#include <acpi/acpi_bus.h>
 +#include "../sst-mfld-platform.h"
++#include "../sst-dsp.h"
 +#include "sst.h"
 +
++struct sst_machines {
++	char codec_id[32];
++	char board[32];
++	char machine[32];
++	void (*machine_quirk)(void);
++	char firmware[32];
++	struct sst_platform_info *pdata;
++
++};
++
++/* LPE viewpoint addresses */
++#define SST_BYT_IRAM_PHY_START	0xff2c0000
++#define SST_BYT_IRAM_PHY_END	0xff2d4000
++#define SST_BYT_DRAM_PHY_START	0xff300000
++#define SST_BYT_DRAM_PHY_END	0xff320000
++#define SST_BYT_IMR_VIRT_START	0xc0000000 /* virtual addr in LPE */
++#define SST_BYT_IMR_VIRT_END	0xc01fffff
++#define SST_BYT_SHIM_PHY_ADDR	0xff340000
++#define SST_BYT_MBOX_PHY_ADDR	0xff344000
++#define SST_BYT_DMA0_PHY_ADDR	0xff298000
++#define SST_BYT_DMA1_PHY_ADDR	0xff29c000
++#define SST_BYT_SSP0_PHY_ADDR	0xff2a0000
++#define SST_BYT_SSP2_PHY_ADDR	0xff2a2000
++
++#define BYT_FW_MOD_TABLE_OFFSET	0x80000
++#define BYT_FW_MOD_TABLE_SIZE	0x100
++#define BYT_FW_MOD_OFFSET	(BYT_FW_MOD_TABLE_OFFSET + BYT_FW_MOD_TABLE_SIZE)
++
++static const struct sst_info byt_fwparse_info = {
++	.use_elf	= false,
++	.max_streams	= 25,
++	.iram_start	= SST_BYT_IRAM_PHY_START,
++	.iram_end	= SST_BYT_IRAM_PHY_END,
++	.iram_use	= true,
++	.dram_start	= SST_BYT_DRAM_PHY_START,
++	.dram_end	= SST_BYT_DRAM_PHY_END,
++	.dram_use	= true,
++	.imr_start	= SST_BYT_IMR_VIRT_START,
++	.imr_end	= SST_BYT_IMR_VIRT_END,
++	.imr_use	= true,
++	.mailbox_start	= SST_BYT_MBOX_PHY_ADDR,
++	.num_probes	= 0,
++	.lpe_viewpt_rqd  = true,
++};
++
++static const struct sst_ipc_info byt_ipc_info = {
++	.ipc_offset = 0,
++	.mbox_recv_off = 0x400,
++};
++
++static const struct sst_lib_dnld_info  byt_lib_dnld_info = {
++	.mod_base           = SST_BYT_IMR_VIRT_START,
++	.mod_end            = SST_BYT_IMR_VIRT_END,
++	.mod_table_offset   = BYT_FW_MOD_TABLE_OFFSET,
++	.mod_table_size     = BYT_FW_MOD_TABLE_SIZE,
++	.mod_ddr_dnld       = false,
++};
++
++static const struct sst_res_info byt_rvp_res_info = {
++	.shim_offset = 0x140000,
++	.shim_size = 0x000100,
++	.shim_phy_addr = SST_BYT_SHIM_PHY_ADDR,
++	.ssp0_offset = 0xa0000,
++	.ssp0_size = 0x1000,
++	.dma0_offset = 0x98000,
++	.dma0_size = 0x4000,
++	.dma1_offset = 0x9c000,
++	.dma1_size = 0x4000,
++	.iram_offset = 0x0c0000,
++	.iram_size = 0x14000,
++	.dram_offset = 0x100000,
++	.dram_size = 0x28000,
++	.mbox_offset = 0x144000,
++	.mbox_size = 0x1000,
++	.acpi_lpe_res_index = 0,
++	.acpi_ddr_index = 2,
++	.acpi_ipc_irq_index = 5,
++};
++
++struct sst_platform_info byt_rvp_platform_data = {
++	.probe_data = &byt_fwparse_info,
++	.ipc_info = &byt_ipc_info,
++	.lib_info = &byt_lib_dnld_info,
++	.res_info = &byt_rvp_res_info,
++	.platform = "sst-mfld-platform",
++};
++
++#if IS_ENABLED(CONFIG_ACPI)
 +static int sst_platform_get_resources(struct intel_sst_drv *ctx)
 +{
-+	int ddr_base, ret = 0;
-+	struct pci_dev *pci = ctx->pci;
++	struct resource *rsrc;
++	struct platform_device *pdev = to_platform_device(ctx->dev);
 +
-+	ret = pci_request_regions(pci, SST_DRV_NAME);
-+	if (ret)
-+		return ret;
-+
-+	/* map registers */
-+	/* DDR base */
-+	if (ctx->dev_id == SST_MRFLD_PCI_ID) {
-+		ctx->ddr_base = pci_resource_start(pci, 0);
-+		/* check that the relocated IMR base matches with FW Binary */
-+		ddr_base = relocate_imr_addr_mrfld(ctx->ddr_base);
-+		if (!ctx->pdata->lib_info) {
-+			dev_err(ctx->dev, "lib_info pointer NULL\n");
-+			ret = -EINVAL;
-+			goto do_release_regions;
-+		}
-+		if (ddr_base != ctx->pdata->lib_info->mod_base) {
-+			dev_err(ctx->dev,
-+					"FW LSP DDR BASE does not match with IFWI\n");
-+			ret = -EINVAL;
-+			goto do_release_regions;
-+		}
-+		ctx->ddr_end = pci_resource_end(pci, 0);
-+
-+		ctx->ddr = pcim_iomap(pci, 0,
-+					pci_resource_len(pci, 0));
-+		if (!ctx->ddr) {
-+			ret = -EINVAL;
-+			goto do_release_regions;
-+		}
-+		dev_dbg(ctx->dev, "sst: DDR Ptr %p\n", ctx->ddr);
-+	} else {
-+		ctx->ddr = NULL;
++	/* All ACPI resource request here */
++	/* Get Shim addr */
++	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
++					ctx->pdata->res_info->acpi_lpe_res_index);
++	if (!rsrc) {
++		dev_err(ctx->dev, "Invalid SHIM base from IFWI");
++		return -EIO;
 +	}
-+	/* SHIM */
-+	ctx->shim_phy_add = pci_resource_start(pci, 1);
-+	ctx->shim = pcim_iomap(pci, 1, pci_resource_len(pci, 1));
-+	if (!ctx->shim) {
-+		ret = -EINVAL;
-+		goto do_release_regions;
-+	}
-+	dev_dbg(ctx->dev, "SST Shim Ptr %p\n", ctx->shim);
++	dev_info(ctx->dev, "LPE base: %#x size:%#x", (unsigned int) rsrc->start,
++					(unsigned int)resource_size(rsrc));
 +
-+	/* Shared SRAM */
-+	ctx->mailbox_add = pci_resource_start(pci, 2);
-+	ctx->mailbox = pcim_iomap(pci, 2, pci_resource_len(pci, 2));
-+	if (!ctx->mailbox) {
-+		ret = -EINVAL;
-+		goto do_release_regions;
-+	}
-+	dev_dbg(ctx->dev, "SRAM Ptr %p\n", ctx->mailbox);
-+
-+	/* IRAM */
-+	ctx->iram_end = pci_resource_end(pci, 3);
-+	ctx->iram_base = pci_resource_start(pci, 3);
-+	ctx->iram = pcim_iomap(pci, 3, pci_resource_len(pci, 3));
++	ctx->iram_base = rsrc->start + ctx->pdata->res_info->iram_offset;
++	ctx->iram_end =  ctx->iram_base + ctx->pdata->res_info->iram_size - 1;
++	dev_info(ctx->dev, "IRAM base: %#x", ctx->iram_base);
++	ctx->iram = devm_ioremap_nocache(ctx->dev, ctx->iram_base,
++					 ctx->pdata->res_info->iram_size);
 +	if (!ctx->iram) {
-+		ret = -EINVAL;
-+		goto do_release_regions;
++		dev_err(ctx->dev, "unable to map IRAM");
++		return -EIO;
 +	}
-+	dev_dbg(ctx->dev, "IRAM Ptr %p\n", ctx->iram);
 +
-+	/* DRAM */
-+	ctx->dram_end = pci_resource_end(pci, 4);
-+	ctx->dram_base = pci_resource_start(pci, 4);
-+	ctx->dram = pcim_iomap(pci, 4, pci_resource_len(pci, 4));
++	ctx->dram_base = rsrc->start + ctx->pdata->res_info->dram_offset;
++	ctx->dram_end = ctx->dram_base + ctx->pdata->res_info->dram_size - 1;
++	dev_info(ctx->dev, "DRAM base: %#x", ctx->dram_base);
++	ctx->dram = devm_ioremap_nocache(ctx->dev, ctx->dram_base,
++					 ctx->pdata->res_info->dram_size);
 +	if (!ctx->dram) {
-+		ret = -EINVAL;
-+		goto do_release_regions;
++		dev_err(ctx->dev, "unable to map DRAM");
++		return -EIO;
 +	}
-+	dev_dbg(ctx->dev, "DRAM Ptr %p\n", ctx->dram);
-+do_release_regions:
-+	pci_release_regions(pci);
++
++	ctx->shim_phy_add = rsrc->start + ctx->pdata->res_info->shim_offset;
++	dev_info(ctx->dev, "SHIM base: %#x", ctx->shim_phy_add);
++	ctx->shim = devm_ioremap_nocache(ctx->dev, ctx->shim_phy_add,
++					ctx->pdata->res_info->shim_size);
++	if (!ctx->shim) {
++		dev_err(ctx->dev, "unable to map SHIM");
++		return -EIO;
++	}
++
++	/* reassign physical address to LPE viewpoint address */
++	ctx->shim_phy_add = ctx->pdata->res_info->shim_phy_addr;
++
++	/* Get mailbox addr */
++	ctx->mailbox_add = rsrc->start + ctx->pdata->res_info->mbox_offset;
++	dev_info(ctx->dev, "Mailbox base: %#x", ctx->mailbox_add);
++	ctx->mailbox = devm_ioremap_nocache(ctx->dev, ctx->mailbox_add,
++					    ctx->pdata->res_info->mbox_size);
++	if (!ctx->mailbox) {
++		dev_err(ctx->dev, "unable to map mailbox");
++		return -EIO;
++	}
++
++	/* reassign physical address to LPE viewpoint address */
++	ctx->mailbox_add = ctx->info.mailbox_start;
++
++	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
++					ctx->pdata->res_info->acpi_ddr_index);
++	if (!rsrc) {
++		dev_err(ctx->dev, "Invalid DDR base from IFWI");
++		return -EIO;
++	}
++	ctx->ddr_base = rsrc->start;
++	ctx->ddr_end = rsrc->end;
++	dev_info(ctx->dev, "DDR base: %#x", ctx->ddr_base);
++	ctx->ddr = devm_ioremap_nocache(ctx->dev, ctx->ddr_base,
++					resource_size(rsrc));
++	if (!ctx->ddr) {
++		dev_err(ctx->dev, "unable to map DDR");
++		return -EIO;
++	}
++
++	/* Find the IRQ */
++	ctx->irq_num = platform_get_irq(pdev,
++				ctx->pdata->res_info->acpi_ipc_irq_index);
 +	return 0;
 +}
 +
-+/*
-+ * intel_sst_probe - PCI probe function
-+ *
-+ * @pci:	PCI device structure
-+ * @pci_id: PCI device ID structure
-+ *
-+ */
-+static int intel_sst_probe(struct pci_dev *pci,
-+			const struct pci_device_id *pci_id)
++static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
++				       void *context, void **ret)
 +{
++	*(bool *)context = true;
++	return AE_OK;
++}
++
++static struct sst_machines *sst_acpi_find_machine(
++	struct sst_machines *machines)
++{
++	struct sst_machines *mach;
++	bool found = false;
++
++	for (mach = machines; mach->codec_id; mach++)
++		if (ACPI_SUCCESS(acpi_get_devices(mach->codec_id,
++						  sst_acpi_mach_match,
++						  &found, NULL)) && found)
++			return mach;
++
++	return NULL;
++}
++
++int sst_acpi_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
 +	int ret = 0;
-+	struct intel_sst_drv *sst_drv_ctx;
-+	struct sst_platform_info *sst_pdata = pci->dev.platform_data;
++	struct intel_sst_drv *ctx;
++	const struct acpi_device_id *id;
++	struct sst_machines *mach;
++	struct platform_device *mdev;
++	struct platform_device *plat_dev;
++	unsigned int dev_id;
 +
-+	dev_dbg(&pci->dev, "Probe for DID %x\n", pci->device);
-+	ret = sst_alloc_drv_context(&sst_drv_ctx, &pci->dev, pci->device);
-+	if (ret < 0)
-+		return ret;
++	id = acpi_match_device(dev->driver->acpi_match_table, dev);
++	if (!id)
++		return -ENODEV;
++	dev_dbg(dev, "for %s", id->id);
 +
-+	sst_drv_ctx->pdata = sst_pdata;
-+	sst_drv_ctx->irq_num = pci->irq;
-+	snprintf(sst_drv_ctx->firmware_name, sizeof(sst_drv_ctx->firmware_name),
-+			"%s%04x%s", "fw_sst_",
-+			sst_drv_ctx->dev_id, ".bin");
-+
-+	ret = sst_context_init(sst_drv_ctx);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Init the device */
-+	ret = pcim_enable_device(pci);
-+	if (ret) {
-+		dev_err(sst_drv_ctx->dev,
-+			"device can't be enabled. Returned err: %d\n", ret);
-+		goto do_free_drv_ctx;
++	mach = (struct sst_machines *)id->driver_data;
++	mach = sst_acpi_find_machine(mach);
++	if (mach == NULL) {
++		dev_err(dev, "No matching machine driver found\n");
++		return -ENODEV;
 +	}
-+	sst_drv_ctx->pci = pci_dev_get(pci);
-+	ret = sst_platform_get_resources(sst_drv_ctx);
++
++	ret = kstrtouint(id->id, 16, &dev_id);
++	if (ret < 0) {
++		dev_err(dev, "Unique device id conversion error: %d\n", ret);
++		return ret;
++	}
++
++	dev_dbg(dev, "ACPI device id: %x\n", dev_id);
++
++	plat_dev = platform_device_register_data(dev, mach->pdata->platform, -1, NULL, 0);
++	if (plat_dev == NULL) {
++		dev_err(dev, "Failed to create machine device: %s\n", mach->pdata->platform);
++		return -ENODEV;
++	}
++
++	/* Create platform device for sst machine driver */
++	mdev = platform_device_register_data(dev, mach->machine, -1, NULL, 0);
++	if (mdev == NULL) {
++		dev_err(dev, "Failed to create machine device: %s\n", mach->machine);
++		return -ENODEV;
++	}
++
++	ret = sst_alloc_drv_context(&ctx, dev, dev_id);
 +	if (ret < 0)
-+		goto do_free_drv_ctx;
++		return ret;
 +
-+	pci_set_drvdata(pci, sst_drv_ctx);
-+	sst_configure_runtime_pm(sst_drv_ctx);
++	/* Fill sst platform data */
++	ctx->pdata = mach->pdata;
++	strcpy(ctx->firmware_name, mach->firmware);
 +
++	ret = sst_platform_get_resources(ctx);
++	if (ret)
++		return ret;
++
++	ret = sst_context_init(ctx);
++	if (ret < 0)
++		return ret;
++
++	/* need to save shim registers in BYT */
++	ctx->shim_regs64 = devm_kzalloc(ctx->dev, sizeof(*ctx->shim_regs64),
++					GFP_KERNEL);
++	if (!ctx->shim_regs64) {
++		return -ENOMEM;
++		goto do_sst_cleanup;
++	}
++
++	sst_configure_runtime_pm(ctx);
++	platform_set_drvdata(pdev, ctx);
 +	return ret;
 +
-+do_free_drv_ctx:
-+	sst_context_cleanup(sst_drv_ctx);
-+	dev_err(sst_drv_ctx->dev, "Probe failed with %d\n", ret);
++do_sst_cleanup:
++	sst_context_cleanup(ctx);
++	platform_set_drvdata(pdev, NULL);
++	dev_err(ctx->dev, "failed with %d\n", ret);
 +	return ret;
 +}
 +
 +/**
-+ * intel_sst_remove - PCI remove function
-+ *
-+ * @pci:	PCI device structure
-+ *
-+ * This function is called by OS when a device is unloaded
-+ * This frees the interrupt etc
-+ */
-+static void intel_sst_remove(struct pci_dev *pci)
++* intel_sst_remove - remove function
++*
++* @pdev:	platform device structure
++*
++* This function is called by OS when a device is unloaded
++* This frees the interrupt etc
++*/
++int sst_acpi_remove(struct platform_device *pdev)
 +{
-+	struct intel_sst_drv *sst_drv_ctx = pci_get_drvdata(pci);
++	struct intel_sst_drv *ctx;
 +
-+	sst_context_cleanup(sst_drv_ctx);
-+	pci_dev_put(sst_drv_ctx->pci);
-+	pci_release_regions(pci);
-+	pci_set_drvdata(pci, NULL);
++	ctx = platform_get_drvdata(pdev);
++	sst_context_cleanup(ctx);
++	platform_set_drvdata(pdev, NULL);
++	return 0;
 +}
 +
-+/* PCI Routines */
-+static struct pci_device_id intel_sst_ids[] = {
-+	{ PCI_VDEVICE(INTEL, SST_MRFLD_PCI_ID), 0},
-+	{ 0, }
-+};
++#else
++int sst_acpi_probe(struct platform_device *pdev)
++{
++	return -EINVAL;
++}
 +
-+static struct pci_driver sst_driver = {
-+	.name = SST_DRV_NAME,
-+	.id_table = intel_sst_ids,
-+	.probe = intel_sst_probe,
-+	.remove = intel_sst_remove,
-+#ifdef CONFIG_PM
-+	.driver = {
-+		.pm = &intel_sst_pm,
-+	},
++int sst_acpi_remove(struct platform_device *pdev)
++{
++	return -EINVAL;
++}
 +#endif
++
++static struct sst_machines sst_acpi_bytcr[] = {
++	{"10EC5640", "T100", "bytt100_rt5640", NULL, "fw_sst_0f28.bin",
++						&byt_rvp_platform_data },
++	{},
 +};
 +
-+module_pci_driver(sst_driver);
++static const struct acpi_device_id sst_acpi_ids[] = {
++	{ "80860F28", (unsigned long)&sst_acpi_bytcr},
++	{ },
++};
 +
-+MODULE_DESCRIPTION("Intel (R) SST(R) Audio Engine PCI Driver");
-+MODULE_AUTHOR("Vinod Koul <vinod.koul@intel.com>");
-+MODULE_AUTHOR("Harsha Priya <priya.harsha@intel.com>");
-+MODULE_AUTHOR("Dharageswari R <dharageswari.r@intel.com>");
-+MODULE_AUTHOR("KP Jeeja <jeeja.kp@intel.com>");
++static struct platform_driver sst_acpi_driver = {
++	.driver = {
++		.name			= "intel_sst_acpi",
++		.owner			= THIS_MODULE,
++		.acpi_match_table	= ACPI_PTR(sst_acpi_ids),
++		.pm			= &intel_sst_pm,
++	},
++	.probe	= sst_acpi_probe,
++	.remove	= sst_acpi_remove,
++};
++
++module_platform_driver(sst_acpi_driver);
++
++MODULE_DESCRIPTION("Intel (R) SST(R) Audio Engine ACPI Driver");
++MODULE_AUTHOR("Ramesh Babu K V");
++MODULE_AUTHOR("Omair Mohammed Abdullah");
 +MODULE_LICENSE("GPL v2");
 +MODULE_ALIAS("sst");
 diff --git a/sound/soc/intel/sst/sst_pvt.c b/sound/soc/intel/sst/sst_pvt.c
-index 1c2e081..9a5df19 100644
+index 9a5df19..4b77208 100644
 --- a/sound/soc/intel/sst/sst_pvt.c
 +++ b/sound/soc/intel/sst/sst_pvt.c
-@@ -433,6 +433,7 @@ u32 relocate_imr_addr_mrfld(u32 base_addr)
- 	base_addr = MRFLD_FW_VIRTUAL_BASE + (base_addr % (512 * 1024 * 1024));
- 	return base_addr;
- }
-+EXPORT_SYMBOL_GPL(relocate_imr_addr_mrfld);
+@@ -117,6 +117,7 @@ unsigned long long read_shim_data(struct intel_sst_drv *sst, int addr)
  
- void sst_add_to_dispatch_list_and_post(struct intel_sst_drv *sst,
- 						struct ipc_post *msg)
+ 	switch (sst->dev_id) {
+ 	case SST_MRFLD_PCI_ID:
++	case SST_BYT_ACPI_ID:
+ 		val = sst_shim_read64(sst->shim, addr);
+ 		break;
+ 	}
+@@ -128,6 +129,7 @@ void write_shim_data(struct intel_sst_drv *sst, int addr,
+ {
+ 	switch (sst->dev_id) {
+ 	case SST_MRFLD_PCI_ID:
++	case SST_BYT_ACPI_ID:
+ 		sst_shim_write64(sst->shim, addr, (u64) data);
+ 		break;
+ 	}
 -- 
 1.7.0.4
