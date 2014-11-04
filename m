@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix build with CONFIG_SLEEP
-	enabled.
-Date: Tue, 4 Nov 2014 15:13:45 +0000
-Message-ID: <20141104151345.GR3815@sirena.org.uk>
-References: <1415107665-17460-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Fix the driver data not set
+	issue
+Date: Tue, 04 Nov 2014 15:48:20 +0000
+Message-ID: <1415116100.7168.30.camel@loki>
+References: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4289706561776349880=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AC8026056A
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 16:15:11 +0100 (CET)
-In-Reply-To: <1415107665-17460-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B028726056A
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 16:49:30 +0100 (CET)
+In-Reply-To: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4289706561776349880==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vk2EvGhio7iZz8DU"
-Content-Disposition: inline
-
-
---vk2EvGhio7iZz8DU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 04, 2014 at 01:27:45PM +0000, Liam Girdwood wrote:
-> Fix the following build error when CONFIG_SLEEP is enabled and CONFIG_RUNTIME
-> is disabled. The BDW ADSP sleep PM functionality depends on the runtime pm
-> calls for context save/restore.
-
-Applied, thanks.
-
---vk2EvGhio7iZz8DU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUWO0oAAoJECTWi3JdVIfQPfQH/j1ykORoaAkEmJHR+yw/CEYu
-WOpLAI7d3LBs526xnTrI1QPDOKlg40xT4y3iCoCiq3ICAzXjfPSFOIiV+XG7ROfH
-dZEsvLrmFstb8yZUvrdwOuOodM1tKsmIpOZwuwvVidvD6HRgu9pCjit2KwT92j5v
-o5TMUSTeju61kFpk+stDSeVnH9behJzUBcWWInIpukC5znicL7ZTIhOi3pM12+F7
-F1Ep8f9+JzIP5gyuKeH5dGOfXVkQTMwN215IzFP2RFxCrfcQs3jtNFvIrIIPfRKY
-uV8a9bDaKnNDS4kl460Tx8f/6eAcXqRxl0LPQcoPsdoS3v5a49crB2vwCfsf370=
-=fZzd
------END PGP SIGNATURE-----
-
---vk2EvGhio7iZz8DU--
-
---===============4289706561776349880==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4289706561776349880==--
+T24gVHVlLCAyMDE0LTExLTA0IGF0IDE0OjQ1ICswODAwLCBKaWUgWWFuZyB3cm90ZToKPiBUaGUg
+cHJpdl9kYXRhIGlzIGFsbG9jYXRlZCBhZ2FpbiBoZXJlIHdyb25nbHksIGFuZCBpdAo+IGlzIG5v
+dCBzZXQgdG8gdGhlIGRyaXZlciBkYXRhIGFmdGVyIGFzc2lnbm1lbnQuIFRoaXMKPiBtYWtlIHRo
+ZSBwZGF0YS0+ZGV2IGlzIE5VTEwgYW5kIG9vcHMgb2NjdXJzIG9uIHRoZSBmaXJzdAo+IGNhbGwg
+dG8gaHN3X3ZvbHVtZV9wdXQuCj4gCj4gVGhlIHJlc291cmNlIGhhcyBiZWVuIGFsbG9jYXRlZCBp
+biBkcml2ZXIgcHJvYmUgY2FsbGJhY2sKPiBoc3dfcGNtX2Rldl9wcm9iZSwgc28gaGVyZSBqdXN0
+IHJlbW92ZSB0aGlzIHNlbmNvbmQKPiBhbGxvY2F0aW9uIGlzIE9LLgo+IAo+IFNpZ25lZC1vZmYt
+Ynk6IEppZSBZYW5nIDx5YW5nLmppZUBpbnRlbC5jb20+Cj4gLS0tCj4gIHNvdW5kL3NvYy9pbnRl
+bC9zc3QtaGFzd2VsbC1wY20uYyB8IDEgLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigt
+KQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvc3N0LWhhc3dlbGwtcGNtLmMgYi9z
+b3VuZC9zb2MvaW50ZWwvc3N0LWhhc3dlbGwtcGNtLmMKPiBpbmRleCAyMWYxMzE2Li5iYzAyYTZl
+IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9pbnRlbC9zc3QtaGFzd2VsbC1wY20uYwo+ICsrKyBi
+L3NvdW5kL3NvYy9pbnRlbC9zc3QtaGFzd2VsbC1wY20uYwo+IEBAIC04NjYsNyArODY2LDYgQEAg
+c3RhdGljIGludCBoc3dfcGNtX3Byb2JlKHN0cnVjdCBzbmRfc29jX3BsYXRmb3JtICpwbGF0Zm9y
+bSkKPiAgCWRldiA9IHBsYXRmb3JtLT5kZXY7Cj4gIAlkbWFfZGV2ID0gcGRhdGEtPmRtYV9kZXY7
+Cj4gIAo+IC0JcHJpdl9kYXRhID0gZGV2bV9remFsbG9jKHBsYXRmb3JtLT5kZXYsIHNpemVvZigq
+cHJpdl9kYXRhKSwgR0ZQX0tFUk5FTCk7Cj4gIAlwcml2X2RhdGEtPmhzdyA9IHBkYXRhLT5kc3A7
+Cj4gIAlwcml2X2RhdGEtPmRldiA9IHBsYXRmb3JtLT5kZXY7Cj4gIAlwcml2X2RhdGEtPnBtX3N0
+YXRlID0gSFNXX1BNX1NUQVRFX0QwOwoKS2V5b24sIEkndmUganVzdCB1cGRhdGVkIGdpdCBhbmQg
+aXQgbG9va3MgbGlrZSB0aGlzIHBhdGNoIGlzIHByb2JhYmx5Cm1pc3Npbmcgc29tZSBwYXJ0cyA6
+LQoKICBDQyBbTV0gIHNvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsLm8Kc291bmQvc29jL2ludGVsL3Nz
+dC1oYXN3ZWxsLXBjbS5jOiBJbiBmdW5jdGlvbiDigJhoc3dfcGNtX3Byb2Jl4oCZOgpzb3VuZC9z
+b2MvaW50ZWwvc3N0LWhhc3dlbGwtcGNtLmM6ODcwOjE3OiB3YXJuaW5nOiDigJhwcml2X2RhdGHi
+gJkgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV21heWJlLXVu
+aW5pdGlhbGl6ZWRdCiAgcHJpdl9kYXRhLT5oc3cgPSBwZGF0YS0+ZHNwOwogICAgICAgICAgICAg
+ICAgIF4KCkNhbiB5b3UgZml4IHRoaXMgYW5kIHJlLXRlc3QuCgpUaGFua3MKCkxpYW0KCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
