@@ -1,17 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 6/6] ASoC: Intel: Add Merrifield machine
-	driver
-Date: Tue,  4 Nov 2014 16:25:20 +0530
-Message-ID: <1415098520-14113-7-git-send-email-vinod.koul@intel.com>
-References: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/5] ASoC: Intel: ACPI support and
+ machines
+Date: Tue, 4 Nov 2014 11:15:13 +0000
+Message-ID: <20141104111513.GE3815@sirena.org.uk>
+References: <1415079068-4979-1-git-send-email-vinod.koul@intel.com>
+ <545889C4.5000509@linux.intel.com>
+ <20141104082510.GC1870@intel.com>
+ <545896DE.4030305@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5702591569323463626=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A59026148A
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 11:55:25 +0100 (CET)
-In-Reply-To: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 112282606A4
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 12:16:40 +0100 (CET)
+In-Reply-To: <545896DE.4030305@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,485 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, lgirdwood@gmail.com, tiwai@suse.de, liam.r.girdwood@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds machine driver support for Merrifield platform.
-Patch has dependency on Merrifield DSP driver.
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/Kconfig            |   15 ++
- sound/soc/intel/Makefile           |    2 +
- sound/soc/intel/merr_dpcm_wm8958.c |  416 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 433 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/intel/merr_dpcm_wm8958.c
+--===============5702591569323463626==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s8uQA167RD2xhjBe"
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index a8ccc3d..06401d8 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -97,3 +97,18 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
-           used as alsa device in audio substem in Intel(R) MID devices
-           Say Y if you have such a device
-           If unsure select "N".
-+
-+config SND_SOC_INTEL_MRFLD_WM8958_MACH
-+	tristate "SOC Machine Audio driver for Intel Merrifield MID platform"
-+	depends on X86
-+	select SND_SOC_WM8994
-+	select MFD_CORE
-+	select MFD_WM8994
-+	select REGULATOR_WM8994
-+	select SND_SST_MFLD_PLATFORM
-+	select SND_SST_IPC_PCI
-+	help
-+	  This adds support for ASoC machine driver for Intel(R) MID Merrifield platform
-+          used as alsa device in audio substem in Intel(R) MID devices
-+          Say Y if you have such a device
-+          If unsure select "N".
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index fbde4b0..f23ff6a 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -27,12 +27,14 @@ snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
- snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
- snd-soc-sst-broadwell-objs := broadwell.o
- snd-soc-sst-bytcr-dpcm-rt5640-objs := bytcr_dpcm_rt5640.o
-+snd-soc-sst-merr-dpcm-wm8958-objs := merr_dpcm_wm8958.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
- obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
- obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH) += snd-soc-sst-bytcr-dpcm-rt5640.o
-+obj-$(CONFIG_SND_SOC_INTEL_MRFLD_WM8958_MACH) += snd-soc-sst-merr-dpcm-wm8958.o
- 
- # DSP driver
- obj-$(CONFIG_SND_SST_IPC) += sst/
-diff --git a/sound/soc/intel/merr_dpcm_wm8958.c b/sound/soc/intel/merr_dpcm_wm8958.c
-new file mode 100644
-index 0000000..4a53211
---- /dev/null
-+++ b/sound/soc/intel/merr_dpcm_wm8958.c
-@@ -0,0 +1,416 @@
-+/*
-+ *  merr_dpcm_wm8958.c - ASoc DPCM Machine driver for Intel Merrfield MID platform
-+ *
-+ *  Copyright (C) 2013-14 Intel Corp
-+ *  Author: Vinod Koul <vinod.koul@intel.com>
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ */
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/device.h>
-+#include <linux/slab.h>
-+#include <linux/io.h>
-+#include <linux/async.h>
-+#include <linux/delay.h>
-+#include <linux/gpio.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+#include <linux/input.h>
-+
-+#include <linux/mfd/wm8994/core.h>
-+#include <linux/mfd/wm8994/registers.h>
-+#include <linux/mfd/wm8994/pdata.h>
-+#include "../codecs/wm8994.h"
-+#include "sst-atom-controls.h"
-+
-+/* Codec PLL output clk rate */
-+#define CODEC_SYSCLK_RATE			24576000
-+/* Input clock to codec at MCLK1 PIN */
-+#define CODEC_IN_MCLK1_RATE			19200000
-+/* Input clock to codec at MCLK2 PIN */
-+#define CODEC_IN_MCLK2_RATE			32768
-+/*  define to select between MCLK1 and MCLK2 input to codec as its clock */
-+#define CODEC_IN_MCLK1				1
-+#define CODEC_IN_MCLK2				2
-+#define CODEC_BE				1
-+
-+struct mrfld_8958_mc_private {
-+	struct snd_soc_jack jack;
-+	int jack_retry;
-+};
-+
-+/*
-+ * Function to switch the input clock for codec,  When audio is in
-+ * progress input clock to codec will be through MCLK1 which is 19.2MHz
-+ * while in off state input clock to codec will be through 32KHz through
-+ * MCLK2
-+ * card	: Sound card structure
-+ * src	: Input clock source to codec
-+ */
-+static int mrfld_8958_set_codec_clk(struct snd_soc_card *card, int src)
-+{
-+	int ret;
-+	struct snd_soc_dai *aif1_dai = card->rtd[CODEC_BE].codec_dai;
-+
-+	if (!aif1_dai)
-+		return -ENODEV;
-+
-+	switch (src) {
-+	case CODEC_IN_MCLK1:
-+		/* Turn ON the PLL to generate required sysclk rate
-+		 * from MCLK1
-+		 */
-+		ret = snd_soc_dai_set_pll(aif1_dai,
-+			WM8994_FLL1, WM8994_FLL_SRC_MCLK1,
-+			CODEC_IN_MCLK1_RATE, CODEC_SYSCLK_RATE);
-+		if (ret < 0) {
-+			dev_err(card->dev, "Failed to start FLL: %d\n", ret);
-+			return ret;
-+		}
-+		/* Switch to MCLK1 input */
-+		ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_FLL1,
-+				CODEC_SYSCLK_RATE, SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			dev_err(card->dev, "Failed to set codec sysclk configuration %d\n",
-+				 ret);
-+			return ret;
-+		}
-+		break;
-+	case CODEC_IN_MCLK2:
-+		/* Switch to MCLK2 */
-+		ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_MCLK2,
-+				32768, SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			dev_err(card->dev, "Failed to switch to MCLK2: %d\n", ret);
-+			return ret;
-+		}
-+		/* Turn off PLL for MCLK1 */
-+		ret = snd_soc_dai_set_pll(aif1_dai, WM8994_FLL1, 0, 0, 0);
-+		if (ret < 0) {
-+			dev_err(card->dev, "Failed to stop the FLL: %d", ret);
-+			return ret;
-+		}
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static int mrfld_wm8958_set_clk(struct snd_soc_dai *codec_dai)
-+{
-+	int ret = 0;
-+	struct snd_soc_card *card = codec_dai->card;
-+
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf0, 0xf0, 4, 24);
-+	if (ret < 0) {
-+		dev_err(card->dev, "can't set codec pcm format %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = mrfld_8958_set_codec_clk(card, CODEC_IN_MCLK1);
-+
-+	return ret;
-+}
-+
-+static int mrfld_8958_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	return mrfld_wm8958_set_clk(codec_dai);
-+}
-+
-+static const struct snd_soc_pcm_stream mrfld_wm8958_dai_params = {
-+	.formats = SNDRV_PCM_FMTBIT_S24_LE,
-+	.rate_min = 48000,
-+	.rate_max = 48000,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+};
-+
-+static int merr_codec_fixup(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+			SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+						SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
-+
-+	/* set SSP2 to 24-bit */
-+	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
-+				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
-+				    SNDRV_PCM_FORMAT_S24_LE);
-+	return 0;
-+}
-+
-+static int mrfld_8958_set_bias_level(struct snd_soc_card *card,
-+				struct snd_soc_dapm_context *dapm,
-+				enum snd_soc_bias_level level)
-+{
-+	int ret = 0;
-+	/* "wm8994-aif1" */
-+	struct snd_soc_dai *aif1_dai = card->rtd[CODEC_BE].codec_dai;
-+
-+	if (!aif1_dai)
-+		return -ENODEV;
-+
-+	if (dapm->dev != aif1_dai->dev)
-+		return 0;
-+	switch (level) {
-+	case SND_SOC_BIAS_PREPARE:
-+		if (card->dapm.bias_level == SND_SOC_BIAS_STANDBY)
-+
-+			ret = mrfld_wm8958_set_clk(aif1_dai);
-+		break;
-+	default:
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int mrfld_8958_set_bias_level_post(struct snd_soc_card *card,
-+		 struct snd_soc_dapm_context *dapm,
-+		 enum snd_soc_bias_level level)
-+{
-+	int ret = 0;
-+	/* "wm8994-aif1" */
-+	struct snd_soc_dai *aif1_dai = card->rtd[CODEC_BE].codec_dai;
-+
-+	if (!aif1_dai)
-+		return -ENODEV;
-+
-+	if (dapm->dev != aif1_dai->dev)
-+		return 0;
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_STANDBY:
-+		/*
-+		 * We are in standby down so Switch to 32KHz MCLK2 input
-+		 * clock for codec
-+		 */
-+		ret = mrfld_8958_set_codec_clk(card, CODEC_IN_MCLK2);
-+		break;
-+	default:
-+		break;
-+	}
-+	if (&card->dapm == dapm)
-+		card->dapm.bias_level = level;
-+	return ret;
-+}
-+
-+static const struct snd_soc_dapm_widget widgets[] = {
-+	SND_SOC_DAPM_HP("Headphones", NULL),
-+	SND_SOC_DAPM_MIC("AMIC", NULL),
-+	SND_SOC_DAPM_MIC("DMIC", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route map[] = {
-+	{ "Headphones", NULL, "HPOUT1L" },
-+	{ "Headphones", NULL, "HPOUT1R" },
-+
-+	/*
-+	 * This machine uses 2 DMICs, other configs may use more so change
-+	 * below accordingly
-+	 */
-+	{ "DMIC1DAT", NULL, "DMIC" },
-+	{ "DMIC2DAT", NULL, "DMIC" },
-+
-+	/*
-+	 * MICBIAS2 is connected as Bias for AMIC so we link it
-+	 * here. Also AMIC wires up to IN1LP pin.
-+	 * DMIC is externally connected to 1.8V rail, so no link rqd.
-+	 */
-+	{ "AMIC", NULL, "MICBIAS2" },
-+	{ "IN1LP", NULL, "AMIC" },
-+
-+	/* dsp map link the SWM outs to codec AIF */
-+	{ "AIF1 Playback", NULL, "ssp2 Tx"},
-+	{ "ssp2 Tx", NULL, "codec_out0"},
-+	{ "ssp2 Tx", NULL, "codec_out1"},
-+	{ "codec_in0", NULL, "ssp2 Rx" },
-+	{ "codec_in1", NULL, "ssp2 Rx" },
-+	{ "ssp2 Rx", NULL, "AIF1 Capture"},
-+
-+};
-+
-+static int mrfld_8958_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	int ret;
-+	struct snd_soc_card *card = runtime->card;
-+	struct mrfld_8958_mc_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *aif1_dai = card->rtd[CODEC_BE].codec_dai;
-+	struct snd_soc_codec *codec = aif1_dai->codec;
-+
-+	if (!aif1_dai)
-+		return -ENODEV;
-+
-+	ret = snd_soc_dai_set_tdm_slot(aif1_dai, 0xf0, 0xf0, 4, 24);
-+	if (ret < 0) {
-+		dev_err(card->dev, "can't set codec pcm format %d\n", ret);
-+		return ret;
-+	}
-+
-+	card->dapm.idle_bias_off = true;
-+
-+	if (!codec) {
-+		dev_err(card->dev, "%s: we didnt find the codec pointer!\n", __func__);
-+		return -ENODEV;
-+	}
-+
-+	ctx->jack_retry = 0;
-+	ret = snd_soc_jack_new(codec, "Intel MID Audio Jack",
-+			       SND_JACK_HEADSET | SND_JACK_HEADPHONE |
-+				SND_JACK_BTN_0 | SND_JACK_BTN_1,
-+				&ctx->jack);
-+	if (ret) {
-+		dev_err(card->dev, "jack creation failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* the WM8958 codec reports two keys BTN_0/1 for headset key
-+	 * presses. This mostly happens due to varying impendance
-+	 * measurement, so report both as media key for getting good
-+	 * performance
-+	 */
-+	snd_jack_set_key(ctx->jack.jack, SND_JACK_BTN_1, KEY_MEDIA);
-+	snd_jack_set_key(ctx->jack.jack, SND_JACK_BTN_0, KEY_MEDIA);
-+
-+	wm8958_mic_detect(codec, &ctx->jack, NULL, NULL, NULL, NULL);
-+
-+	return 0;
-+}
-+
-+static unsigned int rates_48000[] = {
-+	48000,
-+};
-+
-+static struct snd_pcm_hw_constraint_list constraints_48000 = {
-+	.count = ARRAY_SIZE(rates_48000),
-+	.list  = rates_48000,
-+};
-+static int mrfld_8958_startup(struct snd_pcm_substream *substream)
-+{
-+	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+			SNDRV_PCM_HW_PARAM_RATE,
-+			&constraints_48000);
-+}
-+
-+static struct snd_soc_ops mrfld_8958_ops = {
-+	.startup = mrfld_8958_startup,
-+};
-+
-+static struct snd_soc_ops mrfld_8958_be_ssp2_ops = {
-+	.hw_params = mrfld_8958_hw_params,
-+};
-+
-+struct snd_soc_dai_link mrfld_8958_msic_dailink[] = {
-+	[MERR_DPCM_AUDIO] = {
-+		.name = "Merrifield Audio Port",
-+		.stream_name = "Merrifield Audio",
-+		.cpu_dai_name = "Headset-cpu-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.platform_name = "sst-platform",
-+		.init = mrfld_8958_init,
-+		.ignore_suspend = 1,
-+		.dynamic = 1,
-+		.ops = &mrfld_8958_ops,
-+	},
-+	[MERR_DPCM_COMPR] = {
-+		.name = "Merrifield Compress Port",
-+		.stream_name = "Merrifield Compress",
-+		.platform_name = "sst-platform",
-+		.cpu_dai_name = "Compress-cpu-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.dynamic = 1,
-+		.init = mrfld_8958_init,
-+	},
-+
-+	/* back ends */
-+	{
-+		.name = "SSP2-Codec",
-+		.be_id = 1,
-+		.cpu_dai_name = "ssp2-port",
-+		.platform_name = "sst-platform",
-+		.no_pcm = 1,
-+		.codec_dai_name = "wm8994-aif1",
-+		.codec_name = "wm8994-codec",
-+		.dai_fmt = SND_SOC_DAIFMT_DSP_B |
-+			SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_CBS_CFS,
-+		.be_hw_params_fixup = merr_codec_fixup,
-+		.ignore_suspend = 1,
-+		.ops = &mrfld_8958_be_ssp2_ops,
-+	},
-+};
-+
-+/* SoC card */
-+static struct snd_soc_card snd_soc_card_mrfld = {
-+	.name = "wm8958-audio",
-+	.dai_link = mrfld_8958_msic_dailink,
-+	.num_links = ARRAY_SIZE(mrfld_8958_msic_dailink),
-+	.set_bias_level = mrfld_8958_set_bias_level,
-+	.set_bias_level_post = mrfld_8958_set_bias_level_post,
-+	.dapm_widgets = widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(widgets),
-+	.dapm_routes = map,
-+	.num_dapm_routes = ARRAY_SIZE(map),
-+	.fully_routed = true,
-+};
-+
-+static int snd_mrfld_8958_mc_probe(struct platform_device *pdev)
-+{
-+	int ret_val = 0;
-+	struct mrfld_8958_mc_private *drv;
-+
-+	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
-+	if (!drv)
-+		return -ENOMEM;
-+
-+	/* register the soc card */
-+	snd_soc_card_mrfld.dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(&snd_soc_card_mrfld, drv);
-+	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_mrfld);
-+	if (ret_val) {
-+		dev_err(&pdev->dev, "devm_snd_soc_register_card failed %d\n", ret_val);
-+		goto unalloc;
-+	}
-+	platform_set_drvdata(pdev, &snd_soc_card_mrfld);
-+	return ret_val;
-+
-+unalloc:
-+	return ret_val;
-+}
-+
-+static struct platform_driver snd_mrfld_8958_mc_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "mrfld_wm8958",
-+	},
-+	.probe = snd_mrfld_8958_mc_probe,
-+};
-+module_platform_driver(snd_mrfld_8958_mc_driver);
-+
-+MODULE_DESCRIPTION("ASoC Intel(R) Merrifield MID Machine driver");
-+MODULE_AUTHOR("Vinod Koul <vinod.koul@intel.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:mrfld_wm8958");
--- 
-1.7.0.4
+
+--s8uQA167RD2xhjBe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 04, 2014 at 11:05:34AM +0200, Jarkko Nikula wrote:
+> On 11/04/2014 10:25 AM, Vinod Koul wrote:
+> >On Tue, Nov 04, 2014 at 10:09:40AM +0200, Jarkko Nikula wrote:
+
+> >>One difference at the moment is that byt-rt5640 machines out there
+> >>have differences in audio routings but those are not too difficult
+> >>to handle in the same machine driver.
+
+> >>Bigger question how to handle platform part? I.e. can these use the
+> >>same drivers and ADSP firmware? If they can, is the firmware
+> >>available for distributions to take?
+
+> >The two firmware are *not* compatible and that is the big reason why we
+> >can't reuse the parts available
+
+> Ok, so firmware appears to works on other than CR Baytrails too. Is it
+> available in linux-firmware since if it's not when changing the platform
+> drivers there will be obvious regressions to users?
+
+Can we take a step back here: what are the firmwares and hardware
+platforms we're talking about here?
+
+> >Yes, I have tested this one on T100 and doesn't seem to break anything.
+> >Please do test and revert if you find issues on any other available board (I
+> >don't have any other board)
+
+> Well, those audio routing differences require to have DMI quirks. E.g. T100
+> has analogue internal mic, Dell Venue 8 Pro 5830 has digital mic connected
+> to DMIC2 of the RT564x and some have it connected to DMIC1.
+
+Are any of these things on sale at the minute?  Looks like T100 and the
+Dell both are but I'm not sure if they're current or previous models.
+
+--s8uQA167RD2xhjBe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUWLVAAAoJECTWi3JdVIfQ6OkH+gNoLQjBOilMV+sF5kgCkHT+
+7R7e3BwrSf1izJ6pXEHh7IjsDk+WOYCQQIEQ6Ho6yhdKIoDOxb+AwIKbuKjNCaaT
+vH7J4JNdokpt53Eng7k+wMiYTK1H1XPVic3XSuSVVe+bo7WNbsLI0tsJspJaNhMz
+mTZeirruwcQmobHXOwnGP3MvE+TFEms+5DpF9TEEpYn8SCe9Ea8z5gxj4/z5uHLr
+D2HM/jKkPvGecjap7Tni+MEpwSWKMBOAgWYwzQv0z/O73ZTU2zUl5PMW7rWt4L9x
+4nSpbSRKeP2OoBhdrQMrRDCUJfkQkHH5STC2R5j9H+spRWVOo8wYq4nMbbnhLTk=
+=Koyv
+-----END PGP SIGNATURE-----
+
+--s8uQA167RD2xhjBe--
+
+--===============5702591569323463626==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5702591569323463626==--
