@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/5] ALSA: pcm: Add xrun_injection proc entry
-Date: Tue,  4 Nov 2014 14:28:16 +0100
-Message-ID: <1415107696-17123-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/5] ALSA: pcm: Simplify
+	snd_pcm_action_lock_irq()
+Date: Tue,  4 Nov 2014 14:28:12 +0100
+Message-ID: <1415107696-17123-2-git-send-email-tiwai@suse.de>
 References: <1415107696-17123-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 020F226152E
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 14:28:19 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DD2C261534
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 14:28:20 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6420EAD55
+ by mx2.suse.de (Postfix) with ESMTP id 656C1AD66
  for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 13:28:19 +0000 (UTC)
 In-Reply-To: <1415107696-17123-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,108 +27,79 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a new proc entry for PCM substreams to inject an
-XRUN.  When a PCM substream is running and any value is written to its
-xrun_injection proc file, the driver triggers XRUN.  This is a useful
-feature for debugging XRUN and error handling code paths.
-
-Note that this entry is enabled only when CONFIG_SND_PCM_XRUN_DEBUG is
-set.
+The function snd_pcm_action_lock_irq() can be much simplified by
+simply wrapping snd_pcm_action() with the stream lock.  This was
+rather the original idea, but later it was open coded for
+optimization.  However, looking at the optimization part closely, one
+notices that the probability of the optimized path is quite low; in
+normal situations, the linked stream action happens only for the
+triggered substream, thus the operation becomes identical.  So the
+code simplification has a clear win, especially because we have now
+doubly codes for both atomic and non-atomic locks.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/alsa/Procfile.txt |  4 ++++
- include/sound/pcm.h                   |  3 +++
- sound/core/pcm.c                      | 33 +++++++++++++++++++++++++++++++++
- 3 files changed, 40 insertions(+)
+ sound/core/pcm_native.c | 41 +++--------------------------------------
+ 1 file changed, 3 insertions(+), 38 deletions(-)
 
-diff --git a/Documentation/sound/alsa/Procfile.txt b/Documentation/sound/alsa/Procfile.txt
-index cfc49567b9dc..7f8a0d325905 100644
---- a/Documentation/sound/alsa/Procfile.txt
-+++ b/Documentation/sound/alsa/Procfile.txt
-@@ -133,6 +133,10 @@ card*/pcm*/sub*/sw_params
- card*/pcm*/sub*/prealloc
- 	The buffer pre-allocation information.
- 
-+card*/pcm*/sub*/xrun_injection
-+	Triggers an XRUN to the running stream when any value is
-+	written to this proc file.  Used for fault injection.
-+	This entry is write-only.
- 
- AC97 Codec Information
- ----------------------
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 29eb09ef2969..0b8daeed0a33 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -416,7 +416,10 @@ struct snd_pcm_substream {
- 	struct snd_info_entry *proc_status_entry;
- 	struct snd_info_entry *proc_prealloc_entry;
- 	struct snd_info_entry *proc_prealloc_max_entry;
-+#ifdef CONFIG_SND_PCM_XRUN_DEBUG
-+	struct snd_info_entry *proc_xrun_injection_entry;
- #endif
-+#endif /* CONFIG_SND_VERBOSE_PROCFS */
- 	/* misc flags */
- 	unsigned int hw_opened: 1;
- };
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 31acc3df62cd..8f624b7af0ca 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -483,6 +483,19 @@ static void snd_pcm_substream_proc_status_read(struct snd_info_entry *entry,
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 4d5795d8b9f7..b92b605fc784 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -947,28 +947,6 @@ static int snd_pcm_action(struct action_ops *ops,
+ 	return res;
  }
  
- #ifdef CONFIG_SND_PCM_XRUN_DEBUG
-+static void snd_pcm_xrun_injection_write(struct snd_info_entry *entry,
-+					 struct snd_info_buffer *buffer)
-+{
-+	struct snd_pcm_substream *substream = entry->private_data;
-+	struct snd_pcm_runtime *runtime;
-+
-+	snd_pcm_stream_lock_irq(substream);
-+	runtime = substream->runtime;
-+	if (runtime && runtime->status->state == SNDRV_PCM_STATE_RUNNING)
-+		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
-+	snd_pcm_stream_unlock_irq(substream);
-+}
-+
- static void snd_pcm_xrun_debug_read(struct snd_info_entry *entry,
- 				    struct snd_info_buffer *buffer)
+-static int snd_pcm_action_lock_mutex(struct action_ops *ops,
+-				     struct snd_pcm_substream *substream,
+-				     int state)
+-{
+-	int res;
+-
+-	down_read(&snd_pcm_link_rwsem);
+-	if (snd_pcm_stream_linked(substream)) {
+-		mutex_lock(&substream->group->mutex);
+-		mutex_lock(&substream->self_group.mutex);
+-		res = snd_pcm_action_group(ops, substream, state, 1);
+-		mutex_unlock(&substream->self_group.mutex);
+-		mutex_unlock(&substream->group->mutex);
+-	} else {
+-		mutex_lock(&substream->self_group.mutex);
+-		res = snd_pcm_action_single(ops, substream, state);
+-		mutex_unlock(&substream->self_group.mutex);
+-	}
+-	up_read(&snd_pcm_link_rwsem);
+-	return res;
+-}
+-
+ /*
+  *  Note: don't use any locks before
+  */
+@@ -978,22 +956,9 @@ static int snd_pcm_action_lock_irq(struct action_ops *ops,
  {
-@@ -614,6 +627,22 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
- 	}
- 	substream->proc_status_entry = entry;
+ 	int res;
  
-+#ifdef CONFIG_SND_PCM_XRUN_DEBUG
-+	entry = snd_info_create_card_entry(card, "xrun_injection",
-+					   substream->proc_root);
-+	if (entry) {
-+		entry->private_data = substream;
-+		entry->c.text.read = NULL;
-+		entry->c.text.write = snd_pcm_xrun_injection_write;
-+		entry->mode = S_IFREG | S_IWUSR;
-+		if (snd_info_register(entry) < 0) {
-+			snd_info_free_entry(entry);
-+			entry = NULL;
-+		}
-+	}
-+	substream->proc_xrun_injection_entry = entry;
-+#endif /* CONFIG_SND_PCM_XRUN_DEBUG */
-+
- 	return 0;
+-	if (substream->pcm->nonatomic)
+-		return snd_pcm_action_lock_mutex(ops, substream, state);
+-
+-	read_lock_irq(&snd_pcm_link_rwlock);
+-	if (snd_pcm_stream_linked(substream)) {
+-		spin_lock(&substream->group->lock);
+-		spin_lock(&substream->self_group.lock);
+-		res = snd_pcm_action_group(ops, substream, state, 1);
+-		spin_unlock(&substream->self_group.lock);
+-		spin_unlock(&substream->group->lock);
+-	} else {
+-		spin_lock(&substream->self_group.lock);
+-		res = snd_pcm_action_single(ops, substream, state);
+-		spin_unlock(&substream->self_group.lock);
+-	}
+-	read_unlock_irq(&snd_pcm_link_rwlock);
++	snd_pcm_stream_lock_irq(substream);
++	res = snd_pcm_action(ops, substream, state);
++	snd_pcm_stream_unlock_irq(substream);
+ 	return res;
  }
  
-@@ -627,6 +656,10 @@ static int snd_pcm_substream_proc_done(struct snd_pcm_substream *substream)
- 	substream->proc_sw_params_entry = NULL;
- 	snd_info_free_entry(substream->proc_status_entry);
- 	substream->proc_status_entry = NULL;
-+#ifdef CONFIG_SND_PCM_XRUN_DEBUG
-+	snd_info_free_entry(substream->proc_xrun_injection_entry);
-+	substream->proc_xrun_injection_entry = NULL;
-+#endif
- 	snd_info_free_entry(substream->proc_root);
- 	substream->proc_root = NULL;
- 	return 0;
 -- 
 2.1.3
