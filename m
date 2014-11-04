@@ -1,49 +1,72 @@
-From: Dmitry Lavnikevich <D.Lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Subject: Re: [PATCH v5 2/3] ARM: dts: pbab01: enable I2S audio on
- phyFLEX-i.MX6 boards
-Date: Tue, 4 Nov 2014 11:40:32 +0000
-Message-ID: <76742380-95D6-4E0C-8622-E9FA27993A42@sam-solutions.com>
-References: <1414590424-25585-1-git-send-email-d.lavnikevich@sam-solutions.com>
- <1414590424-25585-3-git-send-email-d.lavnikevich@sam-solutions.com>
- <20141103061408.GA21210@tiger>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Fix the driver data not set
+	issue
+Date: Tue, 4 Nov 2014 11:44:15 +0000
+Message-ID: <20141104114415.GK3815@sirena.org.uk>
+References: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20141103061408.GA21210@tiger>
-Content-Language: en-US
-Content-ID: <21147BB21AF23B4987237294F68A1FEC-H6HfJ9slvY2ikuSvNLsyVV6hYfS7NtTn@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: "shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, "kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org" <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org" <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============4816817726566811551=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1410626060F
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 12:45:31 +0100 (CET)
+In-Reply-To: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
-> On 3Nov, 2014, at 09:14, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org> wrote:
-> On Wed, Oct 29, 2014 at 04:47:03PM +0300, Dmitry Lavnikevich wrote:
->> +		fsl,audmux-port = <4>;
->> +		fsl,port-config = <
->> +			0x00000000
->> +			IMX_AUDMUX_V2_PDCR_RXDSEL(1)
->> +		>;
->> +	};
->> +};
->> +
->> &i2c2 {
->> 	status = "okay";
->> 
->> -	tlv320@18 {
->> -		compatible = "ti,tlv320aic3x";
->> +	codec: tlv320@18 {
->> +		compatible = "ti,tlv320aic3007";
-> 
-> Both compatible strings are documented in
-> Documentation/devicetree/bindings/sound/tlv320aic3x.txt.  But I hope
-> this change will not cause any DT compatible issues.
+--===============4816817726566811551==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gCatpCT2/Jx0qRyG"
+Content-Disposition: inline
 
-This change is needed because unlike other tlv320aic3x-codecs tlv320aic3007 has D-class amplifier which is controlled by set of registers that in case of 3x-codecs control mono output.
 
-I will correct patches according to other notes and soon will resend patchset.--
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--gCatpCT2/Jx0qRyG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 04, 2014 at 02:45:24PM +0800, Jie Yang wrote:
+> The priv_data is allocated again here wrongly, and it
+> is not set to the driver data after assignment. This
+> make the pdata->dev is NULL and oops occurs on the first
+> call to hsw_volume_put.
+
+Applied, thanks.
+
+--gCatpCT2/Jx0qRyG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUWLwPAAoJECTWi3JdVIfQwEQH/08odXRbdIEwSUSTtK5C/9bc
+Zz5dCWjWwjKaCOY+6HVY/NWXbM/B2VSjQOl6MqKcAPQbzeMO7dE4EyW30Hp2c2zm
+oCRddoXouC1UugnGaTbezuLTD5/uqFP8YNxj/OP4vjWDO33Pmw3/7yc8hj1gJs6D
+Tos8M8Vrb6NhkTwGLncS86gl9za8xSiGM8KoHiW0+jp/Z+5tpTVZpS4M2pe73HK5
+cLI8m+MH5X4uqO6po8UiPkkhELaQn4BFFzs5sHcw73irixNdpV3EHnb1HK6hxwqA
+ipQ+HQ6ltpq+0AAWJaiu9cry4/luXAb7nAbRIYhvzGAZwmNd8J1/GeSstZWdROA=
+=Yzmf
+-----END PGP SIGNATURE-----
+
+--gCatpCT2/Jx0qRyG--
+
+--===============4816817726566811551==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4816817726566811551==--
