@@ -1,19 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC] AXD Audio Processing IP ALSA support -
- Questions
-Date: Tue, 4 Nov 2014 16:10:50 +0530
-Message-ID: <20141104104050.GI1870@intel.com>
-References: <5458A0E2.4010602@imgtec.com>
- <5458A35C.9050405@ladisch.de>
+Subject: [PATCH v3 0/6] ASoC: Intel: ACPI support and machines
+Date: Tue,  4 Nov 2014 16:25:14 +0530
+Message-ID: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id B27D42612AD
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 11:40:29 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <5458A35C.9050405@ladisch.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id D67522605F2
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 11:54:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +18,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Qais Yousef <qais.yousef@imgtec.com>, Neil Jones <neil.jones@imgtec.com>, Lars-Peter Clausen <lars@metafoo.de>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 04, 2014 at 10:58:52AM +0100, Clemens Ladisch wrote:
-> Qais Yousef wrote:
-> > 3- Can we get an example of how transcoding (back to disk) is supposed to be working?
-> 
-> ALSA PCM devices are assumed to run with their own clock, i.e., it is
-> not directly possible for applications to control when a playback device
-> reads data from the ring buffer, of when a capture device writes data to
-> it.  The ALSA API is designed for real-time opertation; it would not be
-> a good choice for batch conversions.
-ALSA Compressed devices can be used here
+This is third rev of patch series which fixes the modules split as
+discussed in ML. The core part is now module along with PCI and ACPI one.
+Added fix reported by Dan as well. Also added the BYTCR machine driver and
+MERR machine driver
 
--- 
-~Vinod
+Updates in v3:
+- Fix export fo few more symbols
+- fix cleanup of probe and setup code
+- add MERR machine code
+
+Subhransu S. Prusty (1):
+  ASoC: Intel: add BYTCR machine driver with RT5640
+
+Vinod Koul (5):
+  ASoC: Intel: mrfld - remove unnecessary check for pointer
+  ASoC: Intel: mrfld - create separate module for pci part
+  ASoC: Intel: mrfld - add shim save restore
+  ASoC: Intel: mrfld- add ACPI module
+  ASoC: Intel: Add Merrifield machine driver
+
+ sound/soc/intel/Kconfig             |   37 +++-
+ sound/soc/intel/Makefile            |    4 +
+ sound/soc/intel/bytcr_dpcm_rt5640.c |  258 ++++++++++++++++++++++
+ sound/soc/intel/merr_dpcm_wm8958.c  |  416 +++++++++++++++++++++++++++++++++++
+ sound/soc/intel/sst-atom-controls.c |    2 +-
+ sound/soc/intel/sst/Makefile        |    8 +-
+ sound/soc/intel/sst/sst.c           |  254 +++++----------------
+ sound/soc/intel/sst/sst.h           |    9 +-
+ sound/soc/intel/sst/sst_acpi.c      |  377 +++++++++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_pci.c       |  209 ++++++++++++++++++
+ sound/soc/intel/sst/sst_pvt.c       |    3 +
+ 11 files changed, 1378 insertions(+), 199 deletions(-)
+ create mode 100644 sound/soc/intel/bytcr_dpcm_rt5640.c
+ create mode 100644 sound/soc/intel/merr_dpcm_wm8958.c
+ create mode 100644 sound/soc/intel/sst/sst_acpi.c
+ create mode 100644 sound/soc/intel/sst/sst_pci.c
