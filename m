@@ -1,15 +1,19 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Fix build with CONFIG_SLEEP
-	enabled.
-Date: Tue,  4 Nov 2014 13:27:45 +0000
-Message-ID: <1415107665-17460-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/5] ALSA: pcm: Refactoring snd_pcm_action()
+Date: Tue,  4 Nov 2014 14:28:13 +0100
+Message-ID: <1415107696-17123-3-git-send-email-tiwai@suse.de>
+References: <1415107696-17123-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id AF037260619
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 14:27:55 +0100 (CET)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id F18252614FB
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 14:28:19 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 6005EAC66
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 13:28:19 +0000 (UTC)
+In-Reply-To: <1415107696-17123-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,67 +23,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix the following build error when CONFIG_SLEEP is enabled and CONFIG_RUNTIME
-is disabled. The BDW ADSP sleep PM functionality depends on the runtime pm
-calls for context save/restore.
+Just a small code refactoring to reduce more lines.
 
-All error/warnings:
-
->> ERROR: "snd_soc_suspend" undefined!
->> ERROR: "snd_soc_resume" undefined!
-
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/intel/sst-haswell-pcm.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/core/pcm_native.c | 35 ++++++++++-------------------------
+ 1 file changed, 10 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 3cb9ed7..afbcc9b 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -1011,7 +1011,6 @@ static int hsw_pcm_dev_remove(struct platform_device *pdev)
- 	return 0;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index b92b605fc784..ca224fa2a33a 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -900,14 +900,19 @@ static int snd_pcm_action_single(struct action_ops *ops,
+ 	return res;
  }
  
--#ifdef CONFIG_PM
- #ifdef CONFIG_PM_RUNTIME
- 
- static int hsw_pcm_runtime_idle(struct device *dev)
-@@ -1071,6 +1070,8 @@ static int hsw_pcm_runtime_resume(struct device *dev)
- #define hsw_pcm_runtime_resume		NULL
- #endif
- 
-+#if defined(CONFIG_PM_SLEEP) && defined(CONFIG_PM_RUNTIME)
-+
- static void hsw_pcm_complete(struct device *dev)
+-/* call in mutex-protected context */
+-static int snd_pcm_action_mutex(struct action_ops *ops,
+-				struct snd_pcm_substream *substream,
+-				int state)
++/*
++ *  Note: call with stream lock
++ */
++static int snd_pcm_action(struct action_ops *ops,
++			  struct snd_pcm_substream *substream,
++			  int state)
  {
- 	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
-@@ -1166,6 +1167,11 @@ static int hsw_pcm_prepare(struct device *dev)
- 	return 0;
- }
+ 	int res;
  
-+#else
-+#define hsw_pcm_prepare		NULL
-+#define hsw_pcm_complete	NULL
-+#endif
+-	if (snd_pcm_stream_linked(substream)) {
++	if (!snd_pcm_stream_linked(substream))
++		return snd_pcm_action_single(ops, substream, state);
 +
- static const struct dev_pm_ops hsw_pcm_pm = {
- 	.runtime_idle = hsw_pcm_runtime_idle,
- 	.runtime_suspend = hsw_pcm_runtime_suspend,
-@@ -1173,9 +1179,6 @@ static const struct dev_pm_ops hsw_pcm_pm = {
- 	.prepare = hsw_pcm_prepare,
- 	.complete = hsw_pcm_complete,
- };
--#else
--#define hsw_pcm_pm	NULL
--#endif
- 
- static struct platform_driver hsw_pcm_driver = {
- 	.driver = {
++	if (substream->pcm->nonatomic) {
+ 		if (!mutex_trylock(&substream->group->mutex)) {
+ 			mutex_unlock(&substream->self_group.mutex);
+ 			mutex_lock(&substream->group->mutex);
+@@ -916,24 +921,6 @@ static int snd_pcm_action_mutex(struct action_ops *ops,
+ 		res = snd_pcm_action_group(ops, substream, state, 1);
+ 		mutex_unlock(&substream->group->mutex);
+ 	} else {
+-		res = snd_pcm_action_single(ops, substream, state);
+-	}
+-	return res;
+-}
+-
+-/*
+- *  Note: call with stream lock
+- */
+-static int snd_pcm_action(struct action_ops *ops,
+-			  struct snd_pcm_substream *substream,
+-			  int state)
+-{
+-	int res;
+-
+-	if (substream->pcm->nonatomic)
+-		return snd_pcm_action_mutex(ops, substream, state);
+-
+-	if (snd_pcm_stream_linked(substream)) {
+ 		if (!spin_trylock(&substream->group->lock)) {
+ 			spin_unlock(&substream->self_group.lock);
+ 			spin_lock(&substream->group->lock);
+@@ -941,8 +928,6 @@ static int snd_pcm_action(struct action_ops *ops,
+ 		}
+ 		res = snd_pcm_action_group(ops, substream, state, 1);
+ 		spin_unlock(&substream->group->lock);
+-	} else {
+-		res = snd_pcm_action_single(ops, substream, state);
+ 	}
+ 	return res;
+ }
 -- 
-2.1.0
+2.1.3
