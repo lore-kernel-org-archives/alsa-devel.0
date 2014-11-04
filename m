@@ -1,25 +1,14 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: Add Cherrytrail & Braswell
- machine driver cht_bsw_rt5672
-Date: Tue, 4 Nov 2014 09:45:15 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B7069B1@SHSMSX101.ccr.corp.intel.com>
-References: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
- <c716a6624d4227908ee879cbbc9de6d9bca1a0c0.1414495605.git.mengdong.lin@intel.com>
- <20141028164822.GB18557@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F82B702FF6@SHSMSX101.ccr.corp.intel.com>
- <20141029103053.GX18557@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F82B704DC6@SHSMSX101.ccr.corp.intel.com>
- <20141031125415.GA18557@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F82B705DA4@SHSMSX101.ccr.corp.intel.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [RFC] AXD Audio Processing IP ALSA support - Questions
+Date: Tue, 4 Nov 2014 09:48:18 +0000
+Message-ID: <5458A0E2.4010602@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id DC5CC26060F
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 10:46:12 +0100 (CET)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B705DA4@SHSMSX101.ccr.corp.intel.com>
-Content-Language: en-US
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02A4E260684
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 10:48:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,73 +18,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Prusty,
- Subhransu S" <subhransu.s.prusty@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Neil Jones <neil.jones@imgtec.com>, Lars-Peter Clausen <lars@metafoo.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi,
 
-I've posted the v3 patch. Would you please have a review?
+I have several questions on the best way to add AXD support in ALSA.
 
-There are other Intel machine drivers submitted at the same time, hope they
-can be integrated smoothly to avoid conflict on Kconfig and Makefile.
+The discussion of the previous patch can be found here:
 
-Thanks
-Mengdong
+https://lkml.org/lkml/2014/10/28/465
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Lin, Mengdong
-> Sent: Monday, November 03, 2014 8:11 PM
-> To: Mark Brown
-> Cc: Koul, Vinod; alsa-devel@alsa-project.org; Prusty, Subhransu S; Girdwood,
-> Liam R
-> Subject: Re: [alsa-devel] [PATCH v2] ASoC: Intel: Add Cherrytrail & Braswell
-> machine driver cht_bsw_rt5672
-> 
-> > -----Original Message-----
-> > From: Mark Brown [mailto:broonie@kernel.org]
-> > Sent: Friday, October 31, 2014 8:54 PM
-> 
-> > On Fri, Oct 31, 2014 at 12:48:26PM +0000, Lin, Mengdong wrote:
-> >
-> > > Now we're working with Realtek to enable runtime PM on RT5672 codec
-> > driver.
-> > > With help of ACPI,
-> > > - the codec will be in suspended to D3 when idle , switch to its
-> > > internal clock,  and BIOS will turn off the platform clock output
-> > > (MCLK) to
-> > save power.
-> > > - And when the codec resumes to D0, BIOS will turn on the clock at
-> > > first. And  hw_params will make the codec use PLL and lock to MCLK again.
-> >
-> > > Thus the machine driver does not need to explicitly turn on/off the
-> > > platform codec by itself.
-> >
-> > If the machine driver has asked for the PLL to be on I'd expect the
-> > CODEC driver to be respecting that...
-> 
-> The codec driver rt5670 defines a supply widget to control the power of PLL.
-> So the PLL will be power on when there is active audio streaming and power off
-> when Idle.
-> The machine driver need not explicitly turn on/off the PLL, but only need to
-> select PLL source to MCLK in hw_params and configure the in/out frequency.
-> 
-> And we've verified to enable runtime PM on the codec driver and trigger ACPI
-> method to dynamically control the MCLK output from SOC to the codec:
-> - When codec is active (D0), BIOS will turn on MCLK at first
-> - When codec is suspended on idle (D3), codec will switch to its internal clock,
-> and BIOS will turn off MCLK
-> 
-> I'll post V3 machine driver based on your comments on v2.
-> After an internal sync, this machine driver will be moved to sound/soc/intel
-> directory, with other existing Intel machines.
-> 
-> Thanks
-> Mengdong
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Questions:
+
+1- What is the best example to follow to add a simple mp3 support for 
+AXD? The only one I find is in sst-mfld-platform-compress.c in 
+sound/soc/intel directory but it's a bit confusing. I think because it's 
+sharing code with several other sst drivers/platforms.
+
+I find the documentation for compress_offload generally lacking. Is 
+there a plan to improve on that? Being a new comer to ALSA framework 
+api, I'm confused what is the correct way to do things :-/
+
+So far I know I need to call snd_soc_register_card(). I thought 
+snd_compress_register() (from compress_driver.h) is how you add 
+compressed nodes to the card but apparently not. It looks like I need to 
+define a compress_dai? Hmmm.
+
+2- Is tinycompress the only userland support for compress_offload? Is 
+there anyone working on gstreamer and omx plugins to support that?
+
+Would tinycompress be part of alsa-utils and alsa-libs in the future? I 
+know it needs more work at the moment but it'd be nice if 
+compress_offload support is part of the standard alsa-utils and alsa-libs.
+
+3- Can we get an example of how transcoding (back to disk) is supposed 
+to be working?
+
+4- How can we reconfigure complex audio effect components (like shelving 
+filters) which need filter co-effecient changes to be applied all at 
+once atomically to avoid instability?
+
+My plan is to add mp3 driver first then build on that to add the rest of 
+the features. Hopefully I can minimise the amount of work that needs 
+doing (due to me doing it wrongly) and get features upstream sooner.
+
+Thanks,
+Qais
