@@ -1,17 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Fix the driver data not set
-	issue
-Date: Tue, 04 Nov 2014 15:48:20 +0000
-Message-ID: <1415116100.7168.30.camel@loki>
-References: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: dpcm: Fix race between FE/BE updates and
+	trigger
+Date: Tue,  4 Nov 2014 16:52:28 +0100
+Message-ID: <1415116348-11792-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B028726056A
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 16:49:30 +0100 (CET)
-In-Reply-To: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56B8926056A
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 16:52:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,36 +19,254 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Qiao Zhou <zhouqiao@marvell.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE0LTExLTA0IGF0IDE0OjQ1ICswODAwLCBKaWUgWWFuZyB3cm90ZToKPiBUaGUg
-cHJpdl9kYXRhIGlzIGFsbG9jYXRlZCBhZ2FpbiBoZXJlIHdyb25nbHksIGFuZCBpdAo+IGlzIG5v
-dCBzZXQgdG8gdGhlIGRyaXZlciBkYXRhIGFmdGVyIGFzc2lnbm1lbnQuIFRoaXMKPiBtYWtlIHRo
-ZSBwZGF0YS0+ZGV2IGlzIE5VTEwgYW5kIG9vcHMgb2NjdXJzIG9uIHRoZSBmaXJzdAo+IGNhbGwg
-dG8gaHN3X3ZvbHVtZV9wdXQuCj4gCj4gVGhlIHJlc291cmNlIGhhcyBiZWVuIGFsbG9jYXRlZCBp
-biBkcml2ZXIgcHJvYmUgY2FsbGJhY2sKPiBoc3dfcGNtX2Rldl9wcm9iZSwgc28gaGVyZSBqdXN0
-IHJlbW92ZSB0aGlzIHNlbmNvbmQKPiBhbGxvY2F0aW9uIGlzIE9LLgo+IAo+IFNpZ25lZC1vZmYt
-Ynk6IEppZSBZYW5nIDx5YW5nLmppZUBpbnRlbC5jb20+Cj4gLS0tCj4gIHNvdW5kL3NvYy9pbnRl
-bC9zc3QtaGFzd2VsbC1wY20uYyB8IDEgLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigt
-KQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvc3N0LWhhc3dlbGwtcGNtLmMgYi9z
-b3VuZC9zb2MvaW50ZWwvc3N0LWhhc3dlbGwtcGNtLmMKPiBpbmRleCAyMWYxMzE2Li5iYzAyYTZl
-IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9pbnRlbC9zc3QtaGFzd2VsbC1wY20uYwo+ICsrKyBi
-L3NvdW5kL3NvYy9pbnRlbC9zc3QtaGFzd2VsbC1wY20uYwo+IEBAIC04NjYsNyArODY2LDYgQEAg
-c3RhdGljIGludCBoc3dfcGNtX3Byb2JlKHN0cnVjdCBzbmRfc29jX3BsYXRmb3JtICpwbGF0Zm9y
-bSkKPiAgCWRldiA9IHBsYXRmb3JtLT5kZXY7Cj4gIAlkbWFfZGV2ID0gcGRhdGEtPmRtYV9kZXY7
-Cj4gIAo+IC0JcHJpdl9kYXRhID0gZGV2bV9remFsbG9jKHBsYXRmb3JtLT5kZXYsIHNpemVvZigq
-cHJpdl9kYXRhKSwgR0ZQX0tFUk5FTCk7Cj4gIAlwcml2X2RhdGEtPmhzdyA9IHBkYXRhLT5kc3A7
-Cj4gIAlwcml2X2RhdGEtPmRldiA9IHBsYXRmb3JtLT5kZXY7Cj4gIAlwcml2X2RhdGEtPnBtX3N0
-YXRlID0gSFNXX1BNX1NUQVRFX0QwOwoKS2V5b24sIEkndmUganVzdCB1cGRhdGVkIGdpdCBhbmQg
-aXQgbG9va3MgbGlrZSB0aGlzIHBhdGNoIGlzIHByb2JhYmx5Cm1pc3Npbmcgc29tZSBwYXJ0cyA6
-LQoKICBDQyBbTV0gIHNvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsLm8Kc291bmQvc29jL2ludGVsL3Nz
-dC1oYXN3ZWxsLXBjbS5jOiBJbiBmdW5jdGlvbiDigJhoc3dfcGNtX3Byb2Jl4oCZOgpzb3VuZC9z
-b2MvaW50ZWwvc3N0LWhhc3dlbGwtcGNtLmM6ODcwOjE3OiB3YXJuaW5nOiDigJhwcml2X2RhdGHi
-gJkgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV21heWJlLXVu
-aW5pdGlhbGl6ZWRdCiAgcHJpdl9kYXRhLT5oc3cgPSBwZGF0YS0+ZHNwOwogICAgICAgICAgICAg
-ICAgIF4KCkNhbiB5b3UgZml4IHRoaXMgYW5kIHJlLXRlc3QuCgpUaGFua3MKCkxpYW0KCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+DPCM can update the FE/BE connection states totally asynchronously
+from the FE's PCM state.  Most of FE/BE state changes are protected by
+mutex, so that they won't race, but there are still some actions that
+are uncovered.  For example, suppose to switch a BE while a FE's
+stream is running.  This would call soc_dpcm_runtime_update(), which
+sets FE's runtime_update flag, then sets up and starts BEs, and clears
+FE's runtime_update flag again.
+
+When a device emits XRUN during this operation, the PCM core triggers
+snd_pcm_stop(XRUN).  Since the trigger action is an atomic ops, this
+isn't blocked by the mutex, thus it kicks off DPCM's trigger action.
+It eventually updates and clears FE's runtime_update flag while
+soc_dpcm_runtime_update() is running concurrently, and it results in
+confusion.
+
+Usually, for avoiding such a race, we take a lock.  There is a PCM
+stream lock for that purpose.  However, as already mentioned, the
+trigger action is atomic, and we can't take the lock for the whole
+soc_dpcm_runtime_update() or other operations that include the lengthy
+jobs like hw_params or prepare.
+
+This patch provides an alternative solution.  This adds a way to defer
+the conflicting trigger callback to be executed at the end of FE/BE
+state changes.  For doing it, two things are introduced:
+
+- Each runtime_update state change of FEs is protected via PCM stream
+  lock.
+- The FE's trigger callback checks the runtime_update flag.  If it's
+  not set, the trigger action is executed there.  If set, mark the
+  pending trigger action and returns immediately.
+- At the exit of runtime_update state change, it checks whether the
+  pending trigger is present.  If yes, it executes the trigger action
+  at this point.
+
+Reported-and-tested-by: Qiao Zhou <zhouqiao@marvell.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/soc-dpcm.h |  2 ++
+ sound/soc/soc-pcm.c      | 72 +++++++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 58 insertions(+), 16 deletions(-)
+
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index 2883a7a6f9f3..98f2ade0266e 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -102,6 +102,8 @@ struct snd_soc_dpcm_runtime {
+ 	/* state and update */
+ 	enum snd_soc_dpcm_update runtime_update;
+ 	enum snd_soc_dpcm_state state;
++
++	int trigger_pending; /* trigger cmd + 1 if pending, 0 if not */
+ };
+ 
+ /* can this BE stop and free */
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 002311afdeaa..57277dd79e11 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1522,13 +1522,36 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
+ 		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture);
+ }
+ 
++static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd);
++
++/* Set FE's runtime_update state; the state is protected via PCM stream lock
++ * for avoiding the race with trigger callback.
++ * If the state is unset and a trigger is pending while the previous operation,
++ * process the pending trigger action here.
++ */
++static void dpcm_set_fe_update_state(struct snd_soc_pcm_runtime *fe,
++				     int stream, enum snd_soc_dpcm_update state)
++{
++	struct snd_pcm_substream *substream =
++		snd_soc_dpcm_get_substream(fe, stream);
++
++	snd_pcm_stream_lock_irq(substream);
++	if (state == SND_SOC_DPCM_UPDATE_NO && fe->dpcm[stream].trigger_pending) {
++		dpcm_fe_dai_do_trigger(substream,
++				       fe->dpcm[stream].trigger_pending - 1);
++		fe->dpcm[stream].trigger_pending = 0;
++	}
++	fe->dpcm[stream].runtime_update = state;
++	snd_pcm_stream_unlock_irq(substream);
++}
++
+ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ {
+ 	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
+ 	struct snd_pcm_runtime *runtime = fe_substream->runtime;
+ 	int stream = fe_substream->stream, ret = 0;
+ 
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	ret = dpcm_be_dai_startup(fe, fe_substream->stream);
+ 	if (ret < 0) {
+@@ -1550,13 +1573,13 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 	dpcm_set_fe_runtime(fe_substream);
+ 	snd_pcm_limit_hw_rates(runtime);
+ 
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	return 0;
+ 
+ unwind:
+ 	dpcm_be_dai_startup_unwind(fe, fe_substream->stream);
+ be_err:
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	return ret;
+ }
+ 
+@@ -1603,7 +1626,7 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *fe = substream->private_data;
+ 	int stream = substream->stream;
+ 
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	/* shutdown the BEs */
+ 	dpcm_be_dai_shutdown(fe, substream->stream);
+@@ -1617,7 +1640,7 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+ 	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
+ 
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	return 0;
+ }
+ 
+@@ -1665,7 +1688,7 @@ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
+ 	int err, stream = substream->stream;
+ 
+ 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	dev_dbg(fe->dev, "ASoC: hw_free FE %s\n", fe->dai_link->name);
+ 
+@@ -1680,7 +1703,7 @@ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
+ 	err = dpcm_be_dai_hw_free(fe, stream);
+ 
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_FREE;
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 
+ 	mutex_unlock(&fe->card->mutex);
+ 	return 0;
+@@ -1773,7 +1796,7 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 	int ret, stream = substream->stream;
+ 
+ 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	memcpy(&fe->dpcm[substream->stream].hw_params, params,
+ 			sizeof(struct snd_pcm_hw_params));
+@@ -1796,7 +1819,7 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_PARAMS;
+ 
+ out:
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	mutex_unlock(&fe->card->mutex);
+ 	return ret;
+ }
+@@ -1910,7 +1933,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ }
+ EXPORT_SYMBOL_GPL(dpcm_be_dai_trigger);
+ 
+-static int dpcm_fe_dai_trigger(struct snd_pcm_substream *substream, int cmd)
++static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *fe = substream->private_data;
+ 	int stream = substream->stream, ret;
+@@ -1984,6 +2007,23 @@ out:
+ 	return ret;
+ }
+ 
++static int dpcm_fe_dai_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_soc_pcm_runtime *fe = substream->private_data;
++	int stream = substream->stream;
++
++	/* if FE's runtime_update is already set, we're in race;
++	 * process this trigger later at exit
++	 */
++	if (fe->dpcm[stream].runtime_update != SND_SOC_DPCM_UPDATE_NO) {
++		fe->dpcm[stream].trigger_pending = cmd + 1;
++		return 0; /* delayed, assuming it's successful */
++	}
++
++	/* we're alone, let's trigger */
++	return dpcm_fe_dai_do_trigger(substream, cmd);
++}
++
+ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+ 	struct snd_soc_dpcm *dpcm;
+@@ -2027,7 +2067,7 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ 
+ 	dev_dbg(fe->dev, "ASoC: prepare FE %s\n", fe->dai_link->name);
+ 
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	/* there is no point preparing this FE if there are no BEs */
+ 	if (list_empty(&fe->dpcm[stream].be_clients)) {
+@@ -2054,7 +2094,7 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PREPARE;
+ 
+ out:
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	mutex_unlock(&fe->card->mutex);
+ 
+ 	return ret;
+@@ -2201,11 +2241,11 @@ static int dpcm_run_new_update(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+ 	int ret;
+ 
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_BE;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
+ 	ret = dpcm_run_update_startup(fe, stream);
+ 	if (ret < 0)
+ 		dev_err(fe->dev, "ASoC: failed to startup some BEs\n");
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 
+ 	return ret;
+ }
+@@ -2214,11 +2254,11 @@ static int dpcm_run_old_update(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+ 	int ret;
+ 
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_BE;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
+ 	ret = dpcm_run_update_shutdown(fe, stream);
+ 	if (ret < 0)
+ 		dev_err(fe->dev, "ASoC: failed to shutdown some BEs\n");
+-	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 
+ 	return ret;
+ }
+-- 
+2.1.3
