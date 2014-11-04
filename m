@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 4/6] ASoC: Intel: mrfld- add ACPI module
-Date: Tue,  4 Nov 2014 16:25:18 +0530
-Message-ID: <1415098520-14113-5-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 5/6] ASoC: Intel: add BYTCR machine driver
+	with RT5640
+Date: Tue,  4 Nov 2014 16:25:19 +0530
+Message-ID: <1415098520-14113-6-git-send-email-vinod.koul@intel.com>
 References: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 150C72612E7
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 11:55:20 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id C65352606A1
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 11:55:24 +0100 (CET)
 In-Reply-To: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,528 +25,318 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the last ACPI module support which also uses core module like the PCI
-part
+From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/Kconfig        |    4 +
- sound/soc/intel/sst/Makefile   |    4 +-
- sound/soc/intel/sst/sst.c      |   20 ++
- sound/soc/intel/sst/sst.h      |    3 +-
- sound/soc/intel/sst/sst_acpi.c |  377 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/intel/sst/sst_pvt.c  |    2 +
- 6 files changed, 406 insertions(+), 4 deletions(-)
- create mode 100644 sound/soc/intel/sst/sst_acpi.c
+ sound/soc/intel/Kconfig             |   12 ++
+ sound/soc/intel/Makefile            |    2 +
+ sound/soc/intel/bytcr_dpcm_rt5640.c |  258 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 272 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/intel/bytcr_dpcm_rt5640.c
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index c963a5d..edff4a3 100644
+index edff4a3..a8ccc3d 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -20,6 +20,10 @@ config SND_SST_IPC_PCI
- 	tristate
- 	select SND_SST_IPC
- 
-+config SND_SST_IPC_ACPI
-+	tristate
-+	select SND_SST_IPC
+@@ -85,3 +85,15 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	  Ultrabook platforms.
+ 	  Say Y if you have such a device
+ 	  If unsure select "N".
 +
- config SND_SOC_INTEL_SST
- 	tristate "ASoC support for Intel(R) Smart Sound Technology"
- 	select SND_SOC_INTEL_SST_ACPI if ACPI
-diff --git a/sound/soc/intel/sst/Makefile b/sound/soc/intel/sst/Makefile
-index b8aa1d3..fd21726 100644
---- a/sound/soc/intel/sst/Makefile
-+++ b/sound/soc/intel/sst/Makefile
-@@ -1,7 +1,7 @@
- snd-intel-sst-core-objs := sst.o sst_ipc.o sst_stream.o sst_drv_interface.o sst_loader.o sst_pvt.o
- snd-intel-sst-pci-objs += sst_pci.o
--
-+snd-intel-sst-acpi-objs += sst_acpi.o
++config SND_SOC_INTEL_BYTCR_RT5640_MACH
++	tristate "ASoC Audio DSP Support for MID BYT Platform"
++	depends on X86
++	select SND_SOC_RT5640
++	select SND_SST_MFLD_PLATFORM
++	select SND_SST_IPC_ACPI
++	help
++	  This adds support for ASoC machine driver for Intel(R) MID Baytrail platform
++          used as alsa device in audio substem in Intel(R) MID devices
++          Say Y if you have such a device
++          If unsure select "N".
+diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+index 9ab43be..fbde4b0 100644
+--- a/sound/soc/intel/Makefile
++++ b/sound/soc/intel/Makefile
+@@ -26,11 +26,13 @@ snd-soc-sst-haswell-objs := haswell.o
+ snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
+ snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
+ snd-soc-sst-broadwell-objs := broadwell.o
++snd-soc-sst-bytcr-dpcm-rt5640-objs := bytcr_dpcm_rt5640.o
  
- obj-$(CONFIG_SND_SST_IPC) += snd-intel-sst-core.o
- obj-$(CONFIG_SND_SST_IPC_PCI) += snd-intel-sst-pci.o
--
-+obj-$(CONFIG_SND_SST_IPC_ACPI) += snd-intel-sst-acpi.o
-diff --git a/sound/soc/intel/sst/sst.c b/sound/soc/intel/sst/sst.c
-index b97c231..c17a79b 100644
---- a/sound/soc/intel/sst/sst.c
-+++ b/sound/soc/intel/sst/sst.c
-@@ -181,6 +181,7 @@ int sst_driver_ops(struct intel_sst_drv *sst)
+ obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
++obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH) += snd-soc-sst-bytcr-dpcm-rt5640.o
  
- 	switch (sst->dev_id) {
- 	case SST_MRFLD_PCI_ID:
-+	case SST_BYT_ACPI_ID:
- 		sst->tstamp = SST_TIME_STAMP_MRFLD;
- 		sst->ops = &mrfld_ops;
- 		return 0;
-@@ -323,7 +324,11 @@ EXPORT_SYMBOL_GPL(sst_context_init);
- void sst_context_cleanup(struct intel_sst_drv *ctx)
- {
- 	pm_runtime_get_noresume(ctx->dev);
-+#if IS_ENABLED(CONFIG_ACPI)
-+	pm_runtime_disable(ctx->dev);
-+#else
- 	pm_runtime_forbid(ctx->dev);
-+#endif
- 	sst_unregister(ctx->dev);
- 	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
- 	flush_scheduled_work();
-@@ -371,8 +376,19 @@ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
- {
- 	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
- 	pm_runtime_use_autosuspend(ctx->dev);
-+#if IS_ENABLED(CONFIG_ACPI)
-+	/*
-+	 * For acpi devices, the actual physical device state is
-+	 * initially active. So change the state to active before
-+	 * enabling the pm
-+	 */
-+	pm_runtime_set_active(ctx->dev);
-+	pm_runtime_enable(ctx->dev);
-+	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
-+#else
- 	pm_runtime_allow(ctx->dev);
- 	pm_runtime_put_noidle(ctx->dev);
-+#endif
- }
- EXPORT_SYMBOL_GPL(sst_configure_runtime_pm);
- 
-@@ -395,6 +411,10 @@ static int intel_sst_runtime_suspend(struct device *dev)
- 	synchronize_irq(ctx->irq_num);
- 	flush_workqueue(ctx->post_msg_wq);
- 
-+	/* save the shim registers because PMC doesn't save state */
-+	if (ctx->dev_id == SST_BYT_ACPI_ID)
-+		sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
-+
- 	return ret;
- }
- 
-diff --git a/sound/soc/intel/sst/sst.h b/sound/soc/intel/sst/sst.h
-index 3ee555e..683dc71 100644
---- a/sound/soc/intel/sst/sst.h
-+++ b/sound/soc/intel/sst/sst.h
-@@ -29,6 +29,7 @@
- /* driver names */
- #define SST_DRV_NAME "intel_sst_driver"
- #define SST_MRFLD_PCI_ID 0x119A
-+#define SST_BYT_ACPI_ID	0x80860F28
- 
- #define SST_SUSPEND_DELAY 2000
- #define FW_CONTEXT_MEM (64*1024)
-@@ -508,8 +509,6 @@ int sst_prepare_and_post_msg(struct intel_sst_drv *sst,
- 		size_t mbox_data_len, const void *mbox_data, void **data,
- 		bool large, bool fill_dsp, bool sync, bool response);
- 
--void sst_save_shim64(struct intel_sst_drv *ctx, void __iomem *shim,
--		struct sst_shim_regs64 *shim_regs);
- void sst_process_pending_msg(struct work_struct *work);
- int sst_assign_pvt_id(struct intel_sst_drv *sst_drv_ctx);
- void sst_init_stream(struct stream_info *stream,
-diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
+ # DSP driver
+ obj-$(CONFIG_SND_SST_IPC) += sst/
+diff --git a/sound/soc/intel/bytcr_dpcm_rt5640.c b/sound/soc/intel/bytcr_dpcm_rt5640.c
 new file mode 100644
-index 0000000..1f5fde2
+index 0000000..8a15bce
 --- /dev/null
-+++ b/sound/soc/intel/sst/sst_acpi.c
-@@ -0,0 +1,377 @@
++++ b/sound/soc/intel/bytcr_dpcm_rt5640.c
+@@ -0,0 +1,258 @@
 +/*
-+ * sst_acpi.c - SST (LPE) driver init file for ACPI enumeration.
++ *  byt_cr_dpcm_rt5640.c - ASoc Machine driver for Intel Byt CR platform
 + *
-+ * Copyright (c) 2013, Intel Corporation.
++ *  Copyright (C) 2014 Intel Corp
++ *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
-+ *  Authors:	Ramesh Babu K V <Ramesh.Babu@intel.com>
-+ *  Authors:	Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
 + *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
 + *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + */
 +
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
++#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/fs.h>
-+#include <linux/interrupt.h>
-+#include <linux/slab.h>
-+#include <linux/io.h>
-+#include <linux/miscdevice.h>
 +#include <linux/platform_device.h>
-+#include <linux/firmware.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/pm_qos.h>
-+#include <linux/acpi.h>
-+#include <asm/platform_sst_audio.h>
-+#include <sound/core.h>
++#include <linux/device.h>
++#include <linux/gpio.h>
++#include <linux/slab.h>
++#include <linux/input.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include <sound/compress_driver.h>
-+#include <acpi/acbuffer.h>
-+#include <acpi/platform/acenv.h>
-+#include <acpi/platform/aclinux.h>
-+#include <acpi/actypes.h>
-+#include <acpi/acpi_bus.h>
-+#include "../sst-mfld-platform.h"
-+#include "../sst-dsp.h"
-+#include "sst.h"
++#include "../codecs/rt5640.h"
++#include "sst-atom-controls.h"
 +
-+struct sst_machines {
-+	char codec_id[32];
-+	char board[32];
-+	char machine[32];
-+	void (*machine_quirk)(void);
-+	char firmware[32];
-+	struct sst_platform_info *pdata;
-+
++static const struct snd_soc_dapm_widget byt_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
 +};
 +
-+/* LPE viewpoint addresses */
-+#define SST_BYT_IRAM_PHY_START	0xff2c0000
-+#define SST_BYT_IRAM_PHY_END	0xff2d4000
-+#define SST_BYT_DRAM_PHY_START	0xff300000
-+#define SST_BYT_DRAM_PHY_END	0xff320000
-+#define SST_BYT_IMR_VIRT_START	0xc0000000 /* virtual addr in LPE */
-+#define SST_BYT_IMR_VIRT_END	0xc01fffff
-+#define SST_BYT_SHIM_PHY_ADDR	0xff340000
-+#define SST_BYT_MBOX_PHY_ADDR	0xff344000
-+#define SST_BYT_DMA0_PHY_ADDR	0xff298000
-+#define SST_BYT_DMA1_PHY_ADDR	0xff29c000
-+#define SST_BYT_SSP0_PHY_ADDR	0xff2a0000
-+#define SST_BYT_SSP2_PHY_ADDR	0xff2a2000
++static const struct snd_soc_dapm_route byt_audio_map[] = {
++	{"IN2P", NULL, "Headset Mic"},
++	{"IN2N", NULL, "Headset Mic"},
++	{"Headset Mic", NULL, "MICBIAS1"},
++	{"IN1P", NULL, "MICBIAS1"},
++	{"LDO2", NULL, "Int Mic"},
++	{"Headphone", NULL, "HPOL"},
++	{"Headphone", NULL, "HPOR"},
++	{"Ext Spk", NULL, "SPOLP"},
++	{"Ext Spk", NULL, "SPOLN"},
++	{"Ext Spk", NULL, "SPORP"},
++	{"Ext Spk", NULL, "SPORN"},
 +
-+#define BYT_FW_MOD_TABLE_OFFSET	0x80000
-+#define BYT_FW_MOD_TABLE_SIZE	0x100
-+#define BYT_FW_MOD_OFFSET	(BYT_FW_MOD_TABLE_OFFSET + BYT_FW_MOD_TABLE_SIZE)
-+
-+static const struct sst_info byt_fwparse_info = {
-+	.use_elf	= false,
-+	.max_streams	= 25,
-+	.iram_start	= SST_BYT_IRAM_PHY_START,
-+	.iram_end	= SST_BYT_IRAM_PHY_END,
-+	.iram_use	= true,
-+	.dram_start	= SST_BYT_DRAM_PHY_START,
-+	.dram_end	= SST_BYT_DRAM_PHY_END,
-+	.dram_use	= true,
-+	.imr_start	= SST_BYT_IMR_VIRT_START,
-+	.imr_end	= SST_BYT_IMR_VIRT_END,
-+	.imr_use	= true,
-+	.mailbox_start	= SST_BYT_MBOX_PHY_ADDR,
-+	.num_probes	= 0,
-+	.lpe_viewpt_rqd  = true,
++	{"AIF1 Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx"},
++	{"codec_in1", NULL, "ssp2 Rx"},
++	{"ssp2 Rx", NULL, "AIF1 Capture"},
 +};
 +
-+static const struct sst_ipc_info byt_ipc_info = {
-+	.ipc_offset = 0,
-+	.mbox_recv_off = 0x400,
++static const struct snd_kcontrol_new byt_mc_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Int Mic"),
++	SOC_DAPM_PIN_SWITCH("Ext Spk"),
 +};
 +
-+static const struct sst_lib_dnld_info  byt_lib_dnld_info = {
-+	.mod_base           = SST_BYT_IMR_VIRT_START,
-+	.mod_end            = SST_BYT_IMR_VIRT_END,
-+	.mod_table_offset   = BYT_FW_MOD_TABLE_OFFSET,
-+	.mod_table_size     = BYT_FW_MOD_TABLE_SIZE,
-+	.mod_ddr_dnld       = false,
-+};
-+
-+static const struct sst_res_info byt_rvp_res_info = {
-+	.shim_offset = 0x140000,
-+	.shim_size = 0x000100,
-+	.shim_phy_addr = SST_BYT_SHIM_PHY_ADDR,
-+	.ssp0_offset = 0xa0000,
-+	.ssp0_size = 0x1000,
-+	.dma0_offset = 0x98000,
-+	.dma0_size = 0x4000,
-+	.dma1_offset = 0x9c000,
-+	.dma1_size = 0x4000,
-+	.iram_offset = 0x0c0000,
-+	.iram_size = 0x14000,
-+	.dram_offset = 0x100000,
-+	.dram_size = 0x28000,
-+	.mbox_offset = 0x144000,
-+	.mbox_size = 0x1000,
-+	.acpi_lpe_res_index = 0,
-+	.acpi_ddr_index = 2,
-+	.acpi_ipc_irq_index = 5,
-+};
-+
-+struct sst_platform_info byt_rvp_platform_data = {
-+	.probe_data = &byt_fwparse_info,
-+	.ipc_info = &byt_ipc_info,
-+	.lib_info = &byt_lib_dnld_info,
-+	.res_info = &byt_rvp_res_info,
-+	.platform = "sst-mfld-platform",
-+};
-+
-+#if IS_ENABLED(CONFIG_ACPI)
-+static int sst_platform_get_resources(struct intel_sst_drv *ctx)
++static int byt_aif1_hw_params(struct snd_pcm_substream *substream,
++					struct snd_pcm_hw_params *params)
 +{
-+	struct resource *rsrc;
-+	struct platform_device *pdev = to_platform_device(ctx->dev);
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
 +
-+	/* All ACPI resource request here */
-+	/* Get Shim addr */
-+	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
-+					ctx->pdata->res_info->acpi_lpe_res_index);
-+	if (!rsrc) {
-+		dev_err(ctx->dev, "Invalid SHIM base from IFWI");
-+		return -EIO;
-+	}
-+	dev_info(ctx->dev, "LPE base: %#x size:%#x", (unsigned int) rsrc->start,
-+					(unsigned int)resource_size(rsrc));
++	if (strncmp(codec_dai->name, "rt5640-aif1", 11))
++		return 0;
 +
-+	ctx->iram_base = rsrc->start + ctx->pdata->res_info->iram_offset;
-+	ctx->iram_end =  ctx->iram_base + ctx->pdata->res_info->iram_size - 1;
-+	dev_info(ctx->dev, "IRAM base: %#x", ctx->iram_base);
-+	ctx->iram = devm_ioremap_nocache(ctx->dev, ctx->iram_base,
-+					 ctx->pdata->res_info->iram_size);
-+	if (!ctx->iram) {
-+		dev_err(ctx->dev, "unable to map IRAM");
-+		return -EIO;
-+	}
-+
-+	ctx->dram_base = rsrc->start + ctx->pdata->res_info->dram_offset;
-+	ctx->dram_end = ctx->dram_base + ctx->pdata->res_info->dram_size - 1;
-+	dev_info(ctx->dev, "DRAM base: %#x", ctx->dram_base);
-+	ctx->dram = devm_ioremap_nocache(ctx->dev, ctx->dram_base,
-+					 ctx->pdata->res_info->dram_size);
-+	if (!ctx->dram) {
-+		dev_err(ctx->dev, "unable to map DRAM");
-+		return -EIO;
-+	}
-+
-+	ctx->shim_phy_add = rsrc->start + ctx->pdata->res_info->shim_offset;
-+	dev_info(ctx->dev, "SHIM base: %#x", ctx->shim_phy_add);
-+	ctx->shim = devm_ioremap_nocache(ctx->dev, ctx->shim_phy_add,
-+					ctx->pdata->res_info->shim_size);
-+	if (!ctx->shim) {
-+		dev_err(ctx->dev, "unable to map SHIM");
-+		return -EIO;
-+	}
-+
-+	/* reassign physical address to LPE viewpoint address */
-+	ctx->shim_phy_add = ctx->pdata->res_info->shim_phy_addr;
-+
-+	/* Get mailbox addr */
-+	ctx->mailbox_add = rsrc->start + ctx->pdata->res_info->mbox_offset;
-+	dev_info(ctx->dev, "Mailbox base: %#x", ctx->mailbox_add);
-+	ctx->mailbox = devm_ioremap_nocache(ctx->dev, ctx->mailbox_add,
-+					    ctx->pdata->res_info->mbox_size);
-+	if (!ctx->mailbox) {
-+		dev_err(ctx->dev, "unable to map mailbox");
-+		return -EIO;
-+	}
-+
-+	/* reassign physical address to LPE viewpoint address */
-+	ctx->mailbox_add = ctx->info.mailbox_start;
-+
-+	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
-+					ctx->pdata->res_info->acpi_ddr_index);
-+	if (!rsrc) {
-+		dev_err(ctx->dev, "Invalid DDR base from IFWI");
-+		return -EIO;
-+	}
-+	ctx->ddr_base = rsrc->start;
-+	ctx->ddr_end = rsrc->end;
-+	dev_info(ctx->dev, "DDR base: %#x", ctx->ddr_base);
-+	ctx->ddr = devm_ioremap_nocache(ctx->dev, ctx->ddr_base,
-+					resource_size(rsrc));
-+	if (!ctx->ddr) {
-+		dev_err(ctx->dev, "unable to map DDR");
-+		return -EIO;
-+	}
-+
-+	/* Find the IRQ */
-+	ctx->irq_num = platform_get_irq(pdev,
-+				ctx->pdata->res_info->acpi_ipc_irq_index);
-+	return 0;
-+}
-+
-+static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
-+				       void *context, void **ret)
-+{
-+	*(bool *)context = true;
-+	return AE_OK;
-+}
-+
-+static struct sst_machines *sst_acpi_find_machine(
-+	struct sst_machines *machines)
-+{
-+	struct sst_machines *mach;
-+	bool found = false;
-+
-+	for (mach = machines; mach->codec_id; mach++)
-+		if (ACPI_SUCCESS(acpi_get_devices(mach->codec_id,
-+						  sst_acpi_mach_match,
-+						  &found, NULL)) && found)
-+			return mach;
-+
-+	return NULL;
-+}
-+
-+int sst_acpi_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	int ret = 0;
-+	struct intel_sst_drv *ctx;
-+	const struct acpi_device_id *id;
-+	struct sst_machines *mach;
-+	struct platform_device *mdev;
-+	struct platform_device *plat_dev;
-+	unsigned int dev_id;
-+
-+	id = acpi_match_device(dev->driver->acpi_match_table, dev);
-+	if (!id)
-+		return -ENODEV;
-+	dev_dbg(dev, "for %s", id->id);
-+
-+	mach = (struct sst_machines *)id->driver_data;
-+	mach = sst_acpi_find_machine(mach);
-+	if (mach == NULL) {
-+		dev_err(dev, "No matching machine driver found\n");
-+		return -ENODEV;
-+	}
-+
-+	ret = kstrtouint(id->id, 16, &dev_id);
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
++				     params_rate(params) * 512,
++				     SND_SOC_CLOCK_IN);
 +	if (ret < 0) {
-+		dev_err(dev, "Unique device id conversion error: %d\n", ret);
++		dev_err(rtd->dev, "can't set codec clock %d\n", ret);
++		return ret;
++	}
++	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
++				  params_rate(params) * 50,
++				  params_rate(params) * 512);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
 +		return ret;
 +	}
 +
-+	dev_dbg(dev, "ACPI device id: %x\n", dev_id);
-+
-+	plat_dev = platform_device_register_data(dev, mach->pdata->platform, -1, NULL, 0);
-+	if (plat_dev == NULL) {
-+		dev_err(dev, "Failed to create machine device: %s\n", mach->pdata->platform);
-+		return -ENODEV;
-+	}
-+
-+	/* Create platform device for sst machine driver */
-+	mdev = platform_device_register_data(dev, mach->machine, -1, NULL, 0);
-+	if (mdev == NULL) {
-+		dev_err(dev, "Failed to create machine device: %s\n", mach->machine);
-+		return -ENODEV;
-+	}
-+
-+	ret = sst_alloc_drv_context(&ctx, dev, dev_id);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Fill sst platform data */
-+	ctx->pdata = mach->pdata;
-+	strcpy(ctx->firmware_name, mach->firmware);
-+
-+	ret = sst_platform_get_resources(ctx);
-+	if (ret)
-+		return ret;
-+
-+	ret = sst_context_init(ctx);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* need to save shim registers in BYT */
-+	ctx->shim_regs64 = devm_kzalloc(ctx->dev, sizeof(*ctx->shim_regs64),
-+					GFP_KERNEL);
-+	if (!ctx->shim_regs64) {
-+		return -ENOMEM;
-+		goto do_sst_cleanup;
-+	}
-+
-+	sst_configure_runtime_pm(ctx);
-+	platform_set_drvdata(pdev, ctx);
-+	return ret;
-+
-+do_sst_cleanup:
-+	sst_context_cleanup(ctx);
-+	platform_set_drvdata(pdev, NULL);
-+	dev_err(ctx->dev, "failed with %d\n", ret);
-+	return ret;
-+}
-+
-+/**
-+* intel_sst_remove - remove function
-+*
-+* @pdev:	platform device structure
-+*
-+* This function is called by OS when a device is unloaded
-+* This frees the interrupt etc
-+*/
-+int sst_acpi_remove(struct platform_device *pdev)
-+{
-+	struct intel_sst_drv *ctx;
-+
-+	ctx = platform_get_drvdata(pdev);
-+	sst_context_cleanup(ctx);
-+	platform_set_drvdata(pdev, NULL);
++	snd_soc_dai_set_bclk_ratio(codec_dai, 50);
 +	return 0;
 +}
 +
-+#else
-+int sst_acpi_probe(struct platform_device *pdev)
++static const struct snd_soc_pcm_stream byt_dai_params = {
++	.formats = SNDRV_PCM_FMTBIT_S24_LE,
++	.rate_min = 48000,
++	.rate_max = 48000,
++	.channels_min = 2,
++	.channels_max = 2,
++};
++static int byt_codec_fixup(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hw_params *params)
 +{
-+	return -EINVAL;
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	/* set SSP2 to 24-bit */
++	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
++				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
++				    SNDRV_PCM_FORMAT_S24_LE);
++	return 0;
 +}
 +
-+int sst_acpi_remove(struct platform_device *pdev)
++static unsigned int rates_48000[] = {
++	48000,
++};
++
++static struct snd_pcm_hw_constraint_list constraints_48000 = {
++	.count = ARRAY_SIZE(rates_48000),
++	.list  = rates_48000,
++};
++
++static int byt_aif1_startup(struct snd_pcm_substream *substream)
 +{
-+	return -EINVAL;
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE,
++			&constraints_48000);
 +}
++
++static struct snd_soc_ops byt_aif1_ops = {
++	.startup = byt_aif1_startup,
++};
++
++static struct snd_soc_ops byt_be_ssp2_ops = {
++	.hw_params = byt_aif1_hw_params,
++};
++
++static struct snd_soc_dai_link byt_dailink[] = {
++	[MERR_DPCM_AUDIO] = {
++		.name = "Baytrail Audio Port",
++		.stream_name = "Baytrail Audio",
++		.cpu_dai_name = "media-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.ignore_suspend = 1,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &byt_aif1_ops,
++	},
++	[MERR_DPCM_COMPR] = {
++		.name = "Baytrail Compressed Port",
++		.stream_name = "Baytrail Compress",
++		.cpu_dai_name = "compress-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++	},
++		/* back ends */
++	{
++		.name = "SSP2-Codec",
++		.be_id = 1,
++		.cpu_dai_name = "ssp2-port",
++		.platform_name = "sst-mfld-platform",
++		.no_pcm = 1,
++		.codec_dai_name = "rt5640-aif1",
++		.codec_name = "i2c-10EC5640:00",
++		.dai_fmt = SND_SOC_DAIFMT_I2S| SND_SOC_DAIFMT_NB_NF
++						| SND_SOC_DAIFMT_CBS_CFS,
++		.be_hw_params_fixup = byt_codec_fixup,
++		.ignore_suspend = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &byt_be_ssp2_ops,
++	},
++};
++
++#ifdef CONFIG_PM_SLEEP
++static int snd_byt_prepare(struct device *dev)
++{
++	return snd_soc_suspend(dev);
++}
++
++static void snd_byt_complete(struct device *dev)
++{
++	snd_soc_resume(dev);
++}
++
++static int snd_byt_poweroff(struct device *dev)
++{
++	return snd_soc_poweroff(dev);
++}
++#else
++#define snd_byt_prepare NULL
++#define snd_byt_complete NULL
++#define snd_byt_poweroff NULL
 +#endif
 +
-+static struct sst_machines sst_acpi_bytcr[] = {
-+	{"10EC5640", "T100", "bytt100_rt5640", NULL, "fw_sst_0f28.bin",
-+						&byt_rvp_platform_data },
-+	{},
++/* SoC card */
++static struct snd_soc_card snd_soc_card_byt = {
++	.name = "baytrailcraudio",
++	.dai_link = byt_dailink,
++	.num_links = ARRAY_SIZE(byt_dailink),
++	.dapm_widgets = byt_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(byt_dapm_widgets),
++	.dapm_routes = byt_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(byt_audio_map),
++	.controls = byt_mc_controls,
++	.num_controls = ARRAY_SIZE(byt_mc_controls),
 +};
 +
-+static const struct acpi_device_id sst_acpi_ids[] = {
-+	{ "80860F28", (unsigned long)&sst_acpi_bytcr},
-+	{ },
++static int snd_byt_mc_probe(struct platform_device *pdev)
++{
++	int ret_val = 0;
++
++	/* register the soc card */
++	snd_soc_card_byt.dev = &pdev->dev;
++
++	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_byt);
++	if (ret_val) {
++		dev_err(&pdev->dev, "devm_snd_soc_register_card failed %d\n", ret_val);
++		return ret_val;
++	}
++	platform_set_drvdata(pdev, &snd_soc_card_byt);
++	return ret_val;
++}
++
++static const struct dev_pm_ops snd_byt_mc_pm_ops = {
++	.prepare = snd_byt_prepare,
++	.complete = snd_byt_complete,
++	.poweroff = snd_byt_poweroff,
 +};
 +
-+static struct platform_driver sst_acpi_driver = {
++static struct platform_driver snd_byt_mc_driver = {
 +	.driver = {
-+		.name			= "intel_sst_acpi",
-+		.owner			= THIS_MODULE,
-+		.acpi_match_table	= ACPI_PTR(sst_acpi_ids),
-+		.pm			= &intel_sst_pm,
++		.owner = THIS_MODULE,
++		.name = "bytt100_rt5640",
++		.pm = &snd_byt_mc_pm_ops,
 +	},
-+	.probe	= sst_acpi_probe,
-+	.remove	= sst_acpi_remove,
++	.probe = snd_byt_mc_probe,
 +};
 +
-+module_platform_driver(sst_acpi_driver);
++module_platform_driver(snd_byt_mc_driver);
 +
-+MODULE_DESCRIPTION("Intel (R) SST(R) Audio Engine ACPI Driver");
-+MODULE_AUTHOR("Ramesh Babu K V");
-+MODULE_AUTHOR("Omair Mohammed Abdullah");
++MODULE_DESCRIPTION("ASoC Intel(R) Baytrail CR Machine driver");
++MODULE_AUTHOR("Subhransu S. Prusty <subhransu.s.prusty@intel.com>");
 +MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("sst");
-diff --git a/sound/soc/intel/sst/sst_pvt.c b/sound/soc/intel/sst/sst_pvt.c
-index 9a5df19..4b77208 100644
---- a/sound/soc/intel/sst/sst_pvt.c
-+++ b/sound/soc/intel/sst/sst_pvt.c
-@@ -117,6 +117,7 @@ unsigned long long read_shim_data(struct intel_sst_drv *sst, int addr)
- 
- 	switch (sst->dev_id) {
- 	case SST_MRFLD_PCI_ID:
-+	case SST_BYT_ACPI_ID:
- 		val = sst_shim_read64(sst->shim, addr);
- 		break;
- 	}
-@@ -128,6 +129,7 @@ void write_shim_data(struct intel_sst_drv *sst, int addr,
- {
- 	switch (sst->dev_id) {
- 	case SST_MRFLD_PCI_ID:
-+	case SST_BYT_ACPI_ID:
- 		sst_shim_write64(sst->shim, addr, (u64) data);
- 		break;
- 	}
++MODULE_ALIAS("platform:bytrt5640-audio");
 -- 
 1.7.0.4
