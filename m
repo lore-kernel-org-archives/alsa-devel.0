@@ -1,20 +1,21 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 5/5] ASoC: Intel: add BYTCR machine
- driver with RT5640
-Date: Tue, 4 Nov 2014 15:02:44 +0530
-Message-ID: <20141104093244.GE1870@intel.com>
+Subject: Re: [PATCH v2 0/5] ASoC: Intel: ACPI support and
+ machines
+Date: Tue, 4 Nov 2014 15:03:27 +0530
+Message-ID: <20141104093327.GF1870@intel.com>
 References: <1415079068-4979-1-git-send-email-vinod.koul@intel.com>
- <1415079068-4979-6-git-send-email-vinod.koul@intel.com>
- <54589A0E.5040301@linux.intel.com>
+ <545889C4.5000509@linux.intel.com>
+ <20141104082510.GC1870@intel.com>
+ <545896DE.4030305@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id D8B66260A56
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 10:32:23 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D2922606E9
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 10:32:47 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <54589A0E.5040301@linux.intel.com>
+In-Reply-To: <545896DE.4030305@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,49 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, lgirdwood@gmail.com, broonie@kernel.org, liam.r.girdwood@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 04, 2014 at 11:19:10AM +0200, Jarkko Nikula wrote:
-> On 11/04/2014 07:31 AM, Vinod Koul wrote:
-> >From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> >
-> >Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> >Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> >---
-> >  sound/soc/intel/Kconfig             |   12 ++
-> >  sound/soc/intel/Makefile            |    2 +
-> >  sound/soc/intel/bytcr_dpcm_rt5640.c |  258 +++++++++++++++++++++++++++++++++++
-> >  3 files changed, 272 insertions(+), 0 deletions(-)
-> >  create mode 100644 sound/soc/intel/bytcr_dpcm_rt5640.c
-> >
-> ...
-> >+static const struct snd_kcontrol_new byt_mc_controls[] = {
-> >+	SOC_DAPM_PIN_SWITCH("Headphone"),
-> >+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-> >+	SOC_DAPM_PIN_SWITCH("Int Mic"),
-> >+	SOC_DAPM_PIN_SWITCH("Ext Spk"),
-> >+};
-> ...
-> >+static struct snd_soc_dai_link byt_dailink[] = {
-> >+	[MERR_DPCM_AUDIO] = {
-> >+		.name = "Baytrail Audio Port",
-> >+		.stream_name = "Baytrail Audio",
-> >
-> ...
-> >+/* SoC card */
-> >+static struct snd_soc_card snd_soc_card_byt = {
-> >+	.name = "baytrailcraudio",
-> >
-> I think it's worth to have same kcontrol and card names than
-> byt-rt5640 in case this is going to replace byt-rt5640.c since then
-> users can continue to use the same asound.state file. E.g. speakers
-> won't mute because of "Speaker" changes to "Ext Spk".
-It would have helped if the DSP controls were not there. The DSP controls
-need to be routed too, so existing conf files would need to be updated.
-
-So, do you still recommend changing :)
+On Tue, Nov 04, 2014 at 11:05:34AM +0200, Jarkko Nikula wrote:
+> Hi
+> 
+> On 11/04/2014 10:25 AM, Vinod Koul wrote:
+> >On Tue, Nov 04, 2014 at 10:09:40AM +0200, Jarkko Nikula wrote:
+> >>
+> >>I think there is need to have some consolidation with current
+> >>byt-rt5640 and byt-max98090. Since existing drivers and this set are
+> >>using the same ACPI IDs "80860F28" for the ADSP and "10EC5640" codec
+> >>ACPIID for the machine driver probing these drivers won't work
+> >>together.
+> >Liam's suggestion was to remove the current driver when all the bits are
+> >upstream
+> 
+> Yeah, I'm not against it but we must avoid regressions and perhaps
+> try to do seamless handover if possible. It's always more nice to
+> find regression in a small than big patch when bisecting :-)
+> 
+> >>One difference at the moment is that byt-rt5640 machines out there
+> >>have differences in audio routings but those are not too difficult
+> >>to handle in the same machine driver.
+> >>
+> >>Bigger question how to handle platform part? I.e. can these use the
+> >>same drivers and ADSP firmware? If they can, is the firmware
+> >>available for distributions to take?
+> >The two firmware are *not* compatible and that is the big reason why we
+> >can't reuse the parts available
+> 
+> Ok, so firmware appears to works on other than CR Baytrails too. Is
+> it available in linux-firmware since if it's not when changing the
+> platform drivers there will be obvious regressions to users?
+I will send it this week, was focusing on getting the code done, whcih is
+now mostly complete.
 
 -- 
 ~Vinod
+
+> 
+> >>Optimally all machines out there would use the same drivers and get
+> >>support for compressed audio but meanwhile we should not break
+> >>existing machines.
+> >Yes, I have tested this one on T100 and doesn't seem to break anything.
+> >Please do test and revert if you find issues on any other available board (I
+> >don't have any other board)
+> >
+> Well, those audio routing differences require to have DMI quirks.
+> E.g. T100 has analogue internal mic, Dell Venue 8 Pro 5830 has
+> digital mic connected to DMIC2 of the RT564x and some have it
+> connected to DMIC1.
+> 
+> -- 
+> Jarkko
+
+-- 
