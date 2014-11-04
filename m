@@ -1,17 +1,20 @@
 From: Damien Zammit <damien.zammit@gmail.com>
-Subject: [PATCH 0/2] Digidesign Mbox 1 duplex mode and mixer
-Date: Tue,  4 Nov 2014 11:06:35 +1100
-Message-ID: <1415059597-18344-1-git-send-email-damien@zamaudio.com>
+Subject: [PATCH 1/2] snd-usb-audio: Add mixer control for
+	Digidesign Mbox 1 clock source
+Date: Tue,  4 Nov 2014 11:06:36 +1100
+Message-ID: <1415059597-18344-2-git-send-email-damien@zamaudio.com>
+References: <1415059597-18344-1-git-send-email-damien@zamaudio.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
- [209.85.220.41])
- by alsa0.perex.cz (Postfix) with ESMTP id B8E33260561
- for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 01:06:58 +0100 (CET)
-Received: by mail-pa0-f41.google.com with SMTP id rd3so13181681pab.14
- for <alsa-devel@alsa-project.org>; Mon, 03 Nov 2014 16:06:57 -0800 (PST)
+Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
+ [209.85.220.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5B7E26056C
+ for <alsa-devel@alsa-project.org>; Tue,  4 Nov 2014 01:07:01 +0100 (CET)
+Received: by mail-pa0-f49.google.com with SMTP id lj1so13010933pab.8
+ for <alsa-devel@alsa-project.org>; Mon, 03 Nov 2014 16:07:00 -0800 (PST)
+In-Reply-To: <1415059597-18344-1-git-send-email-damien@zamaudio.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,25 +28,233 @@ To: alsa-devel@alsa-project.org
 Cc: Damien Zammit <damien@zamaudio.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi asked me to rewrite the patches and send them without
-attachments.  I hope this email series works and they can be
-reviewed.
-
-These two patches provide the following for Digidesign Mbox 1:
- o Mixer control for clock source selection: Internal/SPDIF
- o Duplex mode (playback and capture)
-
-Damien Zammit (2):
-  snd-usb-audio: Add mixer control for Digidesign Mbox 1 clock source
-  snd-usb-audio: Add duplex mode for Digidesign Mbox 1 and enable mixer
-
- sound/usb/card.h         |   5 ++
+Signed-off-by: Damien Zammit <damien@zamaudio.com>
+---
  sound/usb/mixer_maps.c   |   9 +++
  sound/usb/mixer_quirks.c | 177 +++++++++++++++++++++++++++++++++++++++++++++++
- sound/usb/quirks-table.h |  73 ++++++++++++-------
- sound/usb/quirks.c       |  30 ++++++++
- sound/usb/usbaudio.h     |   1 +
- 6 files changed, 271 insertions(+), 24 deletions(-)
+ 2 files changed, 186 insertions(+)
 
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index d1d72ff..9ee3fc2 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -179,6 +179,11 @@ static struct usbmix_name_map audigy2nx_map[] = {
+ 	{ 0 } /* terminator */
+ };
+ 
++static struct usbmix_name_map mbox1_map[] = {
++	{ 1, "Control" },
++	{ 0 } /* terminator */
++};
++
+ static struct usbmix_selector_map c400_selectors[] = {
+ 	{
+ 		.id = 0x80,
+@@ -416,6 +421,10 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 		.map = aureon_51_2_map,
+ 	},
+ 	{
++		.id = USB_ID(0x0dba, 0x1000),
++		.map = mbox1_map,
++	},
++	{
+ 		.id = USB_ID(0x13e5, 0x0001),
+ 		.map = scratch_live_map,
+ 		.ignore_ctl_error = 1,
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 3980bf5..716c32c 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -565,6 +565,176 @@ static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixer)
+ 	return 0;
+ }
+ 
++/* Digidesign Mbox 1 clock source switch (internal/spdif) */
++
++struct snd_mbox1_switch_priv_val {
++	struct usb_mixer_interface *mixer;
++	int cached_value;
++	int is_cached;
++};
++
++static int snd_mbox1_switch_get(struct snd_kcontrol *kctl,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_mbox1_switch_priv_val *pval;
++	unsigned char value;
++
++	value = 0x00;
++
++	pval = (struct snd_mbox1_switch_priv_val *)
++		kctl->private_value;
++
++	if (pval->is_cached) {
++		ucontrol->value.enumerated.item[0] = pval->cached_value;
++		return 0;
++	}
++
++	ucontrol->value.enumerated.item[0] = value;
++	pval->cached_value = value;
++	pval->is_cached = 1;
++
++	return 0;
++}
++
++static int snd_mbox1_switch_put(struct snd_kcontrol *kctl,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_usb_audio *chip;
++	struct snd_mbox1_switch_priv_val *pval;
++
++	struct usb_mixer_interface *mixer;
++	int changed, cur_val, err, new_val;
++	unsigned char value[2];
++	unsigned char buff[3];
++
++	changed = 0;
++	value[0] = 0x00;
++	value[1] = 0x00;
++
++	pval = (struct snd_mbox1_switch_priv_val *)
++		kctl->private_value;
++	cur_val = pval->cached_value;
++	new_val = ucontrol->value.enumerated.item[0];
++
++	mixer = (struct usb_mixer_interface *) pval->mixer;
++	if (snd_BUG_ON(!mixer))
++		return -EINVAL;
++
++	chip = (struct snd_usb_audio *) mixer->chip;
++	if (snd_BUG_ON(!chip))
++		return -EINVAL;
++
++	if (!pval->is_cached) {
++		cur_val = value[0];
++		pval->cached_value = cur_val;
++		pval->is_cached = 1;
++	}
++	/* update value if needed */
++	if (cur_val != new_val) {
++		value[0] = new_val;
++		value[1] = 0;
++		down_read(&mixer->chip->shutdown_rwsem);
++		if (mixer->chip->shutdown) {
++			err = -ENODEV;
++		} else {
++			err = snd_usb_ctl_msg(mixer->chip->dev,
++				usb_rcvctrlpipe(mixer->chip->dev, 0), 0x81,
++				USB_DIR_IN |
++				USB_TYPE_CLASS |
++				USB_RECIP_INTERFACE, 0x00, 0x500, buff, 1);
++			if (err < 0)
++				return err;
++			err = snd_usb_ctl_msg(mixer->chip->dev,
++				usb_rcvctrlpipe(mixer->chip->dev, 0), 0x81,
++				USB_DIR_IN |
++				USB_TYPE_CLASS |
++				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
++			if (err < 0)
++				return err;
++			if (new_val == 0) {
++				buff[0] = 0x80;
++				buff[1] = 0xbb;
++				buff[2] = 0x00;
++			} else {
++				buff[0] = buff[1] = buff[2] = 0;
++			}
++			err = snd_usb_ctl_msg(mixer->chip->dev,
++				usb_sndctrlpipe(mixer->chip->dev, 0), 0x1,
++				USB_TYPE_CLASS |
++				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
++			if (err < 0)
++				return err;
++			err = snd_usb_ctl_msg(mixer->chip->dev,
++				usb_rcvctrlpipe(mixer->chip->dev, 0), 0x81,
++				USB_DIR_IN |
++				USB_TYPE_CLASS |
++				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
++			if (err < 0)
++				return err;
++			err = snd_usb_ctl_msg(mixer->chip->dev,
++				usb_rcvctrlpipe(mixer->chip->dev, 0), 0x81,
++				USB_DIR_IN |
++				USB_TYPE_CLASS |
++				USB_RECIP_ENDPOINT, 0x100, 0x2, buff, 3);
++			if (err < 0)
++				return err;
++		}
++		up_read(&mixer->chip->shutdown_rwsem);
++		if (err < 0)
++			return err;
++
++		pval->cached_value = new_val;
++		pval->is_cached = 1;
++		changed = 1;
++	}
++
++	return changed;
++}
++
++static int snd_mbox1_switch_info(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_info *uinfo)
++{
++	static const char *const texts[2] = {
++		"Internal",
++		"S/PDIF"
++	};
++
++	return snd_ctl_enum_info(uinfo, 1, ARRAY_SIZE(texts), texts);
++}
++
++static int snd_mbox1_create_sync_switch(struct usb_mixer_interface *mixer)
++{
++	static struct snd_kcontrol_new template = {
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Clock Source",
++		.index = 0,
++		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
++		.info = snd_mbox1_switch_info,
++		.get = snd_mbox1_switch_get,
++		.put = snd_mbox1_switch_put
++	};
++
++	struct snd_kcontrol *kctl;
++	struct snd_mbox1_switch_priv_val *pval;
++
++	pval = kzalloc(sizeof(*pval), GFP_KERNEL);
++	if (!pval)
++		return -ENOMEM;
++
++	pval->cached_value = 0;
++	pval->is_cached = 0;
++	pval->mixer = mixer;
++
++	template.private_value = (unsigned long) pval;
++	kctl = snd_ctl_new1(&template, mixer->chip);
++	if (!kctl) {
++		kfree(pval);
++		return -ENOMEM;
++	}
++
++	return snd_ctl_add(mixer->chip->card, kctl);
++}
++
+ /* Native Instruments device quirks */
+ 
+ #define _MAKE_NI_CONTROL(bRequest,wIndex) ((bRequest) << 16 | (wIndex))
+@@ -1605,6 +1775,13 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 					      snd_audigy2nx_proc_read);
+ 		break;
+ 
++	/* Digidesign Mbox 1 */
++	case USB_ID(0x0dba, 0x1000):
++		err = snd_mbox1_create_sync_switch(mixer);
++		if (err < 0)
++			break;
++		break;
++
+ 	/* EMU0204 */
+ 	case USB_ID(0x041e, 0x3f19):
+ 		err = snd_emu0204_controls_create(mixer);
 -- 
 1.9.1
