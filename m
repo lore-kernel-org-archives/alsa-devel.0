@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: Add MODULE_DEVICE_TABLE for
-	Snow
-Date: Wed, 5 Nov 2014 17:09:57 +0000
-Message-ID: <20141105170957.GE8509@sirena.org.uk>
-References: <1415205892-5553-1-git-send-email-afaerber@suse.de>
+Subject: Re: [PATCH] ASoC:rt286: set combo jack by dmi
+Date: Wed, 5 Nov 2014 17:23:11 +0000
+Message-ID: <20141105172311.GF8509@sirena.org.uk>
+References: <1415164166-15512-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0637669521999875653=="
+Content-Type: multipart/mixed; boundary="===============1623546135762474809=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EC8F42606D6
- for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 18:10:32 +0100 (CET)
-In-Reply-To: <1415205892-5553-1-git-send-email-afaerber@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D11062606E0
+ for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 18:23:32 +0100 (CET)
+In-Reply-To: <1415164166-15512-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene.kim@samsung.com>, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0637669521999875653==
+--===============1623546135762474809==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qFgkTsE6LiHkLPZw"
+	protocol="application/pgp-signature"; boundary="O98KdSgI27dgYlM5"
 Content-Disposition: inline
 
 
---qFgkTsE6LiHkLPZw
-Content-Type: text/plain; charset=iso-8859-1
+--O98KdSgI27dgYlM5
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 05, 2014 at 05:44:52PM +0100, Andreas F=E4rber wrote:
-> This enables the snd_soc_snow module to be auto-loaded.
+On Wed, Nov 05, 2014 at 01:09:26PM +0800, bardliao@realtek.com wrote:
 
-Applied, thanks.
+> +static struct dmi_system_id intel_platform[] __initdata = {
+> +	{
 
---qFgkTsE6LiHkLPZw
+This is fine but can you please rename the variable from intel_platform
+to something more meaningful like the name of the reference design these
+are derived from or something?  That way if we need to add some other
+quirk (and I guess we will) we won't have to rename this table - I guess
+anything that's using a DMI quirk will be some Intel based platform.
+
+--O98KdSgI27dgYlM5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUWlnkAAoJECTWi3JdVIfQAxcH/24fJ8D3hNabx766iowaxIr2
-ffBTF7jHgSZ9wQSwmE5PlAuS4Co4sHsWBpPH7Dyes3h4/G54n/ryGPMaDR/Lrzvf
-ZXxy5WIKLbO9g919thZSsmMglugQKFQWasiUZeeT0PWP1sZwptOwJgTVhpF58rtR
-+jfwBE0tn58ppk3tkeav1XFPNwI3tpgGR0w3DwmifS+eXmto24kBXHT7WPCpupqH
-yP3Y+MX/hta2Qv4sZTXqat9yDNuvsUKokjdxQpSETvbgoSgnUItrlI1OusL+5PFU
-h6/3WkGWRGGUlt2AyEl8W3a/JsjYEraTm1FzYG8GzzDg0m4Yfq3YKZB1S5D85oQ=
-=JpWr
+iQEcBAEBAgAGBQJUWlz+AAoJECTWi3JdVIfQDBgH/06RPr1cjchUK2BqyyKM5rPF
+vdLNm6hTjyEVWmv6eIoSt9Wj1r8og+PmMs5jPe9y6Ntr+QSPwHanCh/j/hfV8Ahg
+03N50ntXfUpW5k4DI+7tNLu5G6iRzQ1VEcW3lHDo02VargmVN1qK3/rvj4Sf9xrm
+SPu1knztLZGUI9fSeQqKGsg3XnA39HULQMWpjGGc7nXob0f7buUImjzzBAWAprkI
+4QNS6RtrO7uv+6EcKLe4BLBZME7k5U906xgXnTuAdUOfsLLwBuG25dywVwlZFvYN
+kqEUwu08XtBFB9M/Cy0RexF4NGqKtDEREX1Kc1DTnamITOwsbKu8JtVGBoUpvp4=
+=51gK
 -----END PGP SIGNATURE-----
 
---qFgkTsE6LiHkLPZw--
+--O98KdSgI27dgYlM5--
 
---===============0637669521999875653==
+--===============1623546135762474809==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0637669521999875653==--
+--===============1623546135762474809==--
