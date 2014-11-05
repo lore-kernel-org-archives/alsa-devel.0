@@ -1,19 +1,23 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC] AXD Audio Processing IP ALSA support -
-	Questions
-Date: Wed, 5 Nov 2014 14:08:40 +0530
-Message-ID: <20141105083840.GJ1870@intel.com>
-References: <20141104104002.GH1870@intel.com>
- <5458C0CA.9080903@imgtec.com>
+Subject: Re: [PATCH v2 0/5] ASoC: Intel: ACPI support and
+ machines
+Date: Wed, 5 Nov 2014 14:13:12 +0530
+Message-ID: <20141105084312.GK1870@intel.com>
+References: <1415079068-4979-1-git-send-email-vinod.koul@intel.com>
+ <545889C4.5000509@linux.intel.com>
+ <20141104082510.GC1870@intel.com>
+ <545896DE.4030305@linux.intel.com>
+ <20141104111513.GE3815@sirena.org.uk>
+ <5459D68F.6030100@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 28E69261A0D
- for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 09:38:09 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01943261A0D
+ for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 09:42:33 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <5458C0CA.9080903@imgtec.com>
+In-Reply-To: <5459D68F.6030100@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,119 +27,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qais Yousef <qais.yousef@imgtec.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Neil Jones <neil.jones@imgtec.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, liam.r.girdwood@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 04, 2014 at 12:04:26PM +0000, Qais Yousef wrote:
-> On 11/04/2014 10:40 AM, Vinod Koul wrote:
-> >On Tue, Nov 04, 2014 at 09:48:18AM +0000, Qais Yousef wrote:
-> >>Hi,
-> >>
-> >>I have several questions on the best way to add AXD support in ALSA.
-> >1st rule pls CC maintainers, so that it gets rights attention.
-> >
+On Wed, Nov 05, 2014 at 09:49:35AM +0200, Jarkko Nikula wrote:
+> On 11/04/2014 01:15 PM, Mark Brown wrote:
+> >>Ok, so firmware appears to works on other than CR Baytrails too. Is it
+> >>available in linux-firmware since if it's not when changing the platform
+> >>drivers there will be obvious regressions to users?
+> >Can we take a step back here: what are the firmwares and hardware
+> >platforms we're talking about here?
 > 
-> OK sorry about that.
+> Only Baytrail and its variants. Current upstreamed drivers use
+> "intel/fw_sst_0f28.bin-48kHz_i2s_master" but that FW doesn't have as
+> much features like compressed audio and is not compatible with the
+> one Vinod's team is upstreaming.
 > 
-> >>The discussion of the previous patch can be found here:
-> >>
-> >>https://lkml.org/lkml/2014/10/28/465
-> >>
-> >>Questions:
-> >>
-> >>1- What is the best example to follow to add a simple mp3 support
-> >>for AXD? The only one I find is in sst-mfld-platform-compress.c in
-> >>sound/soc/intel directory but it's a bit confusing. I think because
-> >>it's sharing code with several other sst drivers/platforms.
-> >There are two ways
-> >1. If you are a ASoC driver which is most likely the case, then add a
-> >compress dai and then a compress dai-link. The device with compress device
-> >will be created.
-> >2. Directly call compress_register the way asoc does
-> >
-> >For both you need to implement the compressed ops
-> 
-> Thanks for the pointers :)
-> 
-> >>I find the documentation for compress_offload generally lacking. Is
-> >>there a plan to improve on that? Being a new comer to ALSA framework
-> >>api, I'm confused what is the correct way to do things :-/
-> >Are you talking about kernel API or driver API? Can you please elaborate
-> 
-> Driver API. A new section in 'Writing an ALSA Driver' for compress
-> offload would be helpful for example.
-Not really. I think Writing ASoC driver would help :)
+> Goal is to switch to new implementation since it covers more
+> platforms but do switchover as seamlessly as possible for Baytrail.
+> Problem at the moment for Baytrail that both current and new drivers
+> probe using the same ACPIIDs and FW for new drivers is not yet in
+> linux-firmware.
+Shouldn't that be okay, as user wouldn't select the new driver. Default is n :)
 
-More I think of you issues, it seems to me that first you need to comprehend
-how ASoC works and model your device properly. The things like registers
-which were in last post would be modeled as ASoC widgets. Once you
-comprehend that then the compress is just a dai, dailink and ops addition.
-
-> 
-> snd_compress_register() for example is not clear in what context it
-> needs to be called. I failed to find any reference to a user. In
-> your pointers above I was trying to do 1 and 2 simultaneously - I
-> didn't realise that 1 makes 2 unnecessary.
-If you are asoc driver then you do need to worry about it as based on
-dailinks, core will call this.
-
-> 
-> It might be that I just need to spend more time on it to get it.
-> 
-> >>So far I know I need to call snd_soc_register_card(). I thought
-> >>snd_compress_register() (from compress_driver.h) is how you add
-> >>compressed nodes to the card but apparently not. It looks like I
-> >>need to define a compress_dai? Hmmm.
-> >You need to define a compress_dai if you are a asoc device just like the pcm
-> >dai's, it is similar to what you would need to do for PCM
-> >
-> >>2- Is tinycompress the only userland support for compress_offload?
-> >>Is there anyone working on gstreamer and omx plugins to support
-> >>that?
-> >Yes, I don't know of anyone working on omx support.
-> >>Would tinycompress be part of alsa-utils and alsa-libs in the
-> >>future? I know it needs more work at the moment but it'd be nice if
-> >>compress_offload support is part of the standard alsa-utils and
-> >>alsa-libs.
-> >It is alsa-lib, for packaging we can make it part of alsa packages. Most
-> >users are right now in Android so no one asked yet
-> 
-> I'm using buildroot for my testing. So if it's included part of alsa
-> packages that would be helpful.
-> Also it'll help with getting gstreamer support.
-> 
-> >>3- Can we get an example of how transcoding (back to disk) is
-> >>supposed to be working?
-> >As I have replied to you last week, it would be done using two FEs and these
-> >FEs should be "routed"
-> 
-> OK. I need to read more to completely understand this to be honest.
-> I don't know what's an FE and I don't know how they can be 'routed'.
-> That's why I was hoping to get an example or a pointer to anything
-> that does a similar thing.
-> Just to clarify, all the necessary bits are there and I just need to
-> use them?
-Mostly yes, but if you have a typical example which doesnt work, we should
-be able to add support for that in framework.
-I think transcoding (FE-FE) should work like we have BE-BE loopback
-working today. Noone has built it for this usage and tested it. So I would
-expect some fixes to framework too.
+Only when driver is stable and verfied by users should we enable this and
+then start removing older driver
 
 -- 
 ~Vinod
 > 
-> >>4- How can we reconfigure complex audio effect components (like
-> >>shelving filters) which need filter co-effecient changes to be
-> >>applied all at once atomically to avoid instability?
-> >Add an ALSA control which models sync, then in driver apply once you
-> >get sync control
 > >
+> >>Well, those audio routing differences require to have DMI quirks. E.g. T100
+> >>has analogue internal mic, Dell Venue 8 Pro 5830 has digital mic connected
+> >>to DMIC2 of the RT564x and some have it connected to DMIC1.
+> >Are any of these things on sale at the minute?  Looks like T100 and the
+> >Dell both are but I'm not sure if they're current or previous models.
 > 
-> OK. It's good to know the support for this type of operations is
-> already available.
+> T100 and Dell are. Third known audio routing difference is used in
+> reference design so I guess that setup is found on some models too.
+> Then there are byt-max98090 based Chromebooks that use current
+> drivers and FW.
 > 
-> Thanks,
-> Qais
+> -- 
+> Jarkko
 
 -- 
