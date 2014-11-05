@@ -1,65 +1,45 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: Add Cherrytrail & Braswell
- machine driver cht_bsw_rt5672
-Date: Wed, 5 Nov 2014 01:44:20 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B7073D9@SHSMSX101.ccr.corp.intel.com>
-References: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
- <c716a6624d4227908ee879cbbc9de6d9bca1a0c0.1414495605.git.mengdong.lin@intel.com>
- <20141028164822.GB18557@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F82B702FF6@SHSMSX101.ccr.corp.intel.com>
- <20141029103053.GX18557@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F82B704DC6@SHSMSX101.ccr.corp.intel.com>
- <20141031125415.GA18557@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F82B705DA4@SHSMSX101.ccr.corp.intel.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B7069B1@SHSMSX101.ccr.corp.intel.com>
- <20141104114726.GM3815@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id AC7DB260663
- for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 02:45:33 +0100 (CET)
-In-Reply-To: <20141104114726.GM3815@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Prusty,
- Subhransu S" <subhransu.s.prusty@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - fix mute led problem for three HP laptops
+Date: Wed,  5 Nov 2014 12:17:58 +0800
+Message-ID: <1415161078-11866-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com, tienfu.chen@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Mark Brown
-> Sent: Tuesday, November 04, 2014 7:47 PM
-> To: Lin, Mengdong
-> Cc: Koul, Vinod; alsa-devel@alsa-project.org; Prusty, Subhransu S; Girdwood,
-> Liam R
-> Subject: Re: [alsa-devel] [PATCH v2] ASoC: Intel: Add Cherrytrail & Braswell
-> machine driver cht_bsw_rt5672
-> 
-> On Tue, Nov 04, 2014 at 09:45:15AM +0000, Lin, Mengdong wrote:
-> > Hi Mark,
-> >
-> > I've posted the v3 patch. Would you please have a review?
-> 
-> You only posted it yesterday.  Please allow reasonable time for review,
-> demanding a review within a day is not reasonable and will only annoy
-> maintainers.
+Without the fix, the mute led can't work on these three machines.
 
-I'm sorry for this. 
-Vinod is posting other Intel machine drivers at the same time now. 
-He will add this machine driver in his v3 patch series to avoid conflict in 
-Kconfig and Makefile.
+After apply this fix, these three machines will fall back on the led
+control quirk as below, and through testing, the mute led works very
+well.
+PIN_QUIRK(0x10ec0282, 0x103c, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED,
+            ALC282_STANDARD_PINS,
+            {0x12, 0x90a60140},
+            ...
 
-Thanks
-Mengdong
+BugLink: https://bugs.launchpad.net/bugs/1389497
+Tested-by: TieFu Chen <tienfu.chen@canonical.com>
+Cc: Kailang Yang <kailang@realtek.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ba72fff..1af917f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4744,9 +4744,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x2221, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2225, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2246, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2247, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2248, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2249, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2253, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2254, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2255, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+-- 
+1.9.1
