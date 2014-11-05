@@ -1,18 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 5/6] ASoC: wm8961: Use table based DAPM and
-	control setup
-Date: Wed,  5 Nov 2014 10:46:35 +0100
-Message-ID: <1415180796-31129-5-git-send-email-lars@metafoo.de>
-References: <1415180796-31129-1-git-send-email-lars@metafoo.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 4/4 v4] ALSA: usb-audio: Scarlett mixer
+ interface for 6i6, 18i6, 18i8 and 18i20
+Date: Wed, 05 Nov 2014 10:55:38 +0100
+Message-ID: <5459F41A.5060207@canonical.com>
+References: <s5hd29ac9qn.wl-tiwai@suse.de>
+ <1415055496-11151-1-git-send-email-chris.j.arges@canonical.com>
+ <1415055496-11151-5-git-send-email-chris.j.arges@canonical.com>
+ <54593304.8080701@canonical.com> <545934A3.4010600@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-084.synserver.de (smtp-out-084.synserver.de
- [212.40.185.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 119DC2625D7
- for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 10:46:42 +0100 (CET)
-In-Reply-To: <1415180796-31129-1-git-send-email-lars@metafoo.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23B51260695
+ for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 10:55:40 +0100 (CET)
+In-Reply-To: <545934A3.4010600@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +25,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, patches@opensource.wolfsonmicro.com, Dan Murphy <dmurphy@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Chris J Arges <chris.j.arges@canonical.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, th55@gmx.de, robin@gareus.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Makes the code a bit cleaner.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/wm8961.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
-index 41d23e9..e077bb2 100644
---- a/sound/soc/codecs/wm8961.c
-+++ b/sound/soc/codecs/wm8961.c
-@@ -835,7 +835,6 @@ static struct snd_soc_dai_driver wm8961_dai = {
- 
- static int wm8961_probe(struct snd_soc_codec *codec)
- {
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	u16 reg;
- 
- 	/* Enable class W */
-@@ -873,12 +872,6 @@ static int wm8961_probe(struct snd_soc_codec *codec)
- 
- 	wm8961_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
--	snd_soc_add_codec_controls(codec, wm8961_snd_controls,
--				ARRAY_SIZE(wm8961_snd_controls));
--	snd_soc_dapm_new_controls(dapm, wm8961_dapm_widgets,
--				  ARRAY_SIZE(wm8961_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, audio_paths, ARRAY_SIZE(audio_paths));
--
- 	return 0;
- }
- 
-@@ -915,6 +908,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8961 = {
- 	.suspend =	wm8961_suspend,
- 	.resume =	wm8961_resume,
- 	.set_bias_level = wm8961_set_bias_level,
-+
-+	.controls = wm8961_snd_controls,
-+	.num_controls = ARRAY_SIZE(wm8961_snd_controls),
-+	.dapm_widgets = wm8961_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm8961_dapm_widgets),
-+	.dapm_routes = audio_paths,
-+	.num_dapm_routes = ARRAY_SIZE(audio_paths),
- };
- 
- static const struct regmap_config wm8961_regmap = {
+On 2014-11-04 21:18, Chris J Arges wrote:
+>
+>
+> On 11/04/2014 02:11 PM, David Henningsson wrote:
+>>
+>>
+>> On 2014-11-03 23:58, Chris J Arges wrote:
+>>> This code contains the Scarlett mixer interface code that was originally
+>>> written by Tobias Hoffman and Robin Gareus. Because the device doesn't
+>>> properly implement UAC2 this code adds a mixer quirk for the device.
+>>
+>> Thanks a lot for taking over - it surely has been done with better speed
+>> than I would have.
+>>
+>>> + *   Code cleanup:
+>>> + *   David Henningsson <david.henningsson at canonical.com>
+>>
+>> Thanks for the credit, not sure I deserve it though, all I did was to
+>> squash the patches and fix the checkpatch errors :-)
+>>
+> : )
+>
+>>> +static int scarlett_ctl_save_put(struct snd_kcontrol *kctl,
+>>> +                 struct snd_ctl_elem_value *ucontrol)
+>>> +{
+>>> +    struct usb_mixer_elem_info *elem = kctl->private_data;
+>>> +    struct snd_usb_audio *chip = elem->mixer->chip;
+>>> +    char buf[] = { 0x00, 0xa5 };
+>>> +    int err;
+>>> +
+>>> +    if (ucontrol->value.enumerated.item[0] > 0) {
+>>> +        err = snd_usb_ctl_msg(chip->dev,
+>>> +            usb_sndctrlpipe(chip->dev, 0), UAC2_CS_MEM,
+>>> +            USB_RECIP_INTERFACE | USB_TYPE_CLASS |
+>>> +            USB_DIR_OUT, 0x005a, snd_usb_ctrl_intf(chip) |
+>>> +            (0x3c << 8), buf, 2);
+>>> +        if (err < 0)
+>>> +            return err;
+>>> +
+>>> +        usb_audio_info(elem->mixer->chip,
+>>> +             "scarlett: saved settings to hardware.\n");
+>>> +    }
+>>> +    return 0;
+>>> +}
+>>
+>> To elaborate on Takashi's concern about this control, imagine e g what
+>> alsactl restore/store being run on startup/shutdown. On shutdown,
+>> alsactl store would read "0", and on startup, alsactl restore would
+>> write "0", with the result that the hw would not store the values set.
+>>
+>> Would it be possible to have an autosave instead? E g, whenever a value
+>> is changed, it saves that value to the hardware. That's how other
+>> hardware works and what userspace expects.
+>> If you want to avoid a lot of autosaves, e g if the autosave takes a lot
+>> of time before the hw responds, maybe you could do the autosave in a 10
+>> ms delayed_work, or similar.
+>>
+>
+> David,
+> Hey, as Tobias mentioned this is a HW saving (to the mixer's NVRAM)
+> function used for using the mixer disconnected from a computer. We
+> wouldn't want to continually write the NVRAM on every control update as
+> I'm unsure of how many write-cycles the device is capable of.
+>
+> So without it you can still plug the mixer into the computer and alsa
+> will restore any saved settings automatically. I'm planning on dropping
+> the HW Save in v5 until we can figure out a proper control mechanism for
+> this.
+
+Aha, sorry for not grasping that. Maybe "save to HW" could be labelled 
+"save for offline use" or so. (Cool feature, btw. I didn't know that was 
+possible.)
+
+I think a sysfs node would be simplest for this case. Just like we do 
+"echo 1 > /sys/class/sound/hwC0D0/reconfig" to tell the HDA driver to 
+reconfigure itself, there could be a "save_mixer_for_offline_use" node 
+for this feature.
+
+
 -- 
-1.8.0
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
