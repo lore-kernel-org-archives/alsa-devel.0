@@ -1,24 +1,112 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 01/15] mfd: add new driver for Sharp LoCoMo
-Date: Wed, 05 Nov 2014 21:42:07 +0100
-Message-ID: <545A8B9F.1090204@metafoo.de>
-References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>	<1414454528-24240-2-git-send-email-dbaryshkov@gmail.com>	<CACRpkdbW3NA00zMZr216ZeZpgVkXwKUo30biTVd5kcHKGGtkHg@mail.gmail.com>	<CALT56yNX8v4mZn=o1ZoVLHPmg6wq0dgFNowpqNuFtU=eCc+d8w@mail.gmail.com>	<CACRpkdaKUZjbSEH75M9xudTF9HefwOCVEe5otv9-9f2UG8=hVg@mail.gmail.com> <CALT56yM8B3ffYb0=EZVbRRGDZSxMci2sRp9XVtjQuLa5abN+cg@mail.gmail.com> <545A8965.2010406@metafoo.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] add Steinberg UR44 USB Audio
+	Interface	support to quirks-table
+Date: Wed, 05 Nov 2014 22:17:23 +0100
+Message-ID: <545A93E3.7020906@ladisch.de>
+References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>	<531DAB14.5080201@ladisch.de>	<76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>	<531DDD04.5050902@ladisch.de>	<0EFBCC9F-93CA-4368-9530-B9049B3743FB@bobobeach.com>	<531EC9CC.4060203@ladisch.de>	<88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>
+ <545895AD.7020004@ladisch.de> <545A697C.5070800@bobobeach.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-leds-owner@vger.kernel.org>
-In-Reply-To: <545A8965.2010406@metafoo.de>
-Sender: linux-leds-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Linus Walleij <linus.walleij@linaro.org>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 60CEF2614FF
+ for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 22:17:34 +0100 (CET)
+In-Reply-To: <545A697C.5070800@bobobeach.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Cyrus Harmon <cyrus@bobobeach.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/05/2014 09:32 PM, Lars-Peter Clausen wrote:
-> If it is a generic DAC it should go into drivers/iio/, this will allow code
-> sharing and code re-usability. Given the simplicity of the DAC there might
-> even be other existing drivers that can be used to control it.
+Cyrus Harmon wrote:
+> [    2.964094] snd-usb-audio 3-3.2:1.0: checking PCM interface
+> [    2.964104] snd-usb-audio: probe of 3-3.2:1.0 failed with error -5
+> [    2.966339] snd-usb-audio 3-3.2:1.1: checking PCM interface
+> [    2.966341] snd-usb-audio 3-3.2:1.1: altsets found
+> [    2.966342] snd-usb-audio 3-3.2:1.1: endpoint found
+> [    2.966343] snd-usb-audio 3-3.2:1.1: iso found
+> [    2.966344] snd-usb-audio 3-3.2:1.1: descriptors found
+> [    2.968544] usb 3-3.2:1.0: checking PCM interface
+> [    2.968546] usb 3-3.2:1.2: checking PCM interface
+> [    2.968547] usb 3-3.2:1.2: altsets found
+> [    2.968547] usb 3-3.2:1.2: endpoint found
+> [    2.968548] usb 3-3.2:1.2: iso found
+> [    2.968549] usb 3-3.2:1.2: descriptors found
+> [    2.970657] usb 3-3.2:1.3: checking PCM interface
+> [    2.970666] usb 3-3.2:1.4: checking PCM interface
+> [    2.970930] snd-usb-audio: probe of 3-3.2:1.1 failed with error -5
 
-I just had a quick look and I think the M62332 will work out of the box with 
-the max517 driver.
+Strange; in theory, this cannot happen.
 
-- Lars
+Please add this patch and try again.
+
+
+Regards,
+Clemens
+
+
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -536,7 +536,9 @@ snd_usb_audio_probe(struct usb_device *dev,
+ 	err = 1; /* continue */
+ 	if (quirk && quirk->ifnum != QUIRK_NO_INTERFACE) {
+ 		/* need some special handlings */
+-		if ((err = snd_usb_create_quirk(chip, intf, &usb_audio_driver, quirk)) < 0)
++		err = snd_usb_create_quirk(chip, intf, &usb_audio_driver, quirk);
++		dev_info(&intf->dev, "quirk return code: %d\n", err);
++		if (err < 0)
+ 			goto __error;
+ 	}
+
+@@ -547,11 +549,13 @@ snd_usb_audio_probe(struct usb_device *dev,
+ 			goto __error;
+ 		}
+ 	}
++	dev_info(&intf->dev, "probe step 2\n");
+
+ 	/* we are allowed to call snd_card_register() many times */
+ 	if (snd_card_register(chip->card) < 0) {
+ 		goto __error;
+ 	}
++	dev_info(&intf->dev, "probe step 3\n");
+
+ 	usb_chip[chip->index] = chip;
+ 	chip->num_interfaces++;
+@@ -560,6 +564,7 @@ snd_usb_audio_probe(struct usb_device *dev,
+ 	return chip;
+
+  __error:
++	dev_info(&intf->dev, "probe failed\n");
+ 	if (chip) {
+ 		if (!chip->num_interfaces)
+ 			snd_card_free(chip->card);
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -367,6 +367,7 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
+ 	err = create_autodetect_quirk(chip, iface, driver);
+ 	if (err < 0)
+ 		return err;
++	dev_info(&iface->dev, "first interface successful\n");
+
+ 	/*
+ 	 * ALSA PCM playback/capture devices cannot be registered in two steps,
+@@ -385,9 +386,13 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
+
+ 		err = create_autodetect_quirk(chip, iface, driver);
+ 		if (err >= 0)
++		{
+ 			usb_driver_claim_interface(driver, iface, (void *)-1L);
++			dev_info(&iface->dev, "interface %d successful\n", ifnum);
++		}
+ 	}
+
++	dev_info(&iface->dev, "create_autodetect_quirks successful\n");
+ 	return 0;
+ }
