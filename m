@@ -1,83 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: Add MODULE_DEVICE_TABLE for
-	Snow
-Date: Wed, 5 Nov 2014 18:44:38 +0000
-Message-ID: <20141105184438.GI8509@sirena.org.uk>
-References: <1415205892-5553-1-git-send-email-afaerber@suse.de>
- <20141105170957.GE8509@sirena.org.uk> <545A683A.9010301@suse.de>
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: Re: [PATCH 01/15] mfd: add new driver for Sharp LoCoMo
+Date: Thu, 6 Nov 2014 00:02:49 +0400
+Message-ID: <CALT56yM8B3ffYb0=EZVbRRGDZSxMci2sRp9XVtjQuLa5abN+cg@mail.gmail.com>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+	<1414454528-24240-2-git-send-email-dbaryshkov@gmail.com>
+	<CACRpkdbW3NA00zMZr216ZeZpgVkXwKUo30biTVd5kcHKGGtkHg@mail.gmail.com>
+	<CALT56yNX8v4mZn=o1ZoVLHPmg6wq0dgFNowpqNuFtU=eCc+d8w@mail.gmail.com>
+	<CACRpkdaKUZjbSEH75M9xudTF9HefwOCVEe5otv9-9f2UG8=hVg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7744786725278573915=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 315442606FC
- for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 19:45:12 +0100 (CET)
-In-Reply-To: <545A683A.9010301@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene.kim@samsung.com>, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-leds-owner@vger.kernel.org>
+In-Reply-To: <CACRpkdaKUZjbSEH75M9xudTF9HefwOCVEe5otv9-9f2UG8=hVg@mail.gmail.com>
+Sender: linux-leds-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo
 List-Id: alsa-devel@alsa-project.org
 
+2014-11-03 16:41 GMT+03:00 Linus Walleij <linus.walleij@linaro.org>:
+> On Fri, Oct 31, 2014 at 10:54 AM, Dmitry Eremin-Solenikov
+> <dbaryshkov@gmail.com> wrote:
+>> 2014-10-31 10:42 GMT+03:00 Linus Walleij <linus.walleij@linaro.org>:
+>
+>>> It seems some DAC handling is part of the MFD driver, and we recently
+>>> discussed that MFD should not be doing misc stuff but mainly act as
+>>> arbiter and switching station.
+>>>
+>>> Can you please move the DAC parts of the driver to
+>>> drivers/iio/dac?
+>>>
+>>> The IIO DAC subsystem will likely add other goodies to
+>>> the driver for free and give a nice API to consumers.
+>>
+>> I wanted this part to be as simple as possible. I will look into IIO
+>> DAC subsystem.
+>> The DAC is as simple 2 channel 8-bit i2c device connected to a separate i2c bus
+>> controlled through a register in LoCoMo device. One channel is used
+>> for backlight,
+>> other will be used for volume control. So (in theory) I can add the
+>> following device
+>> chain:  locomo -> i2c-locomo -> m62332 -> IIO DAC client.  However isn't that
+>> quite an overkill for just backlight & volume control? Please advice me on this.
+>
+> The point is still the same: no unrelated code in drivers/mfd,
+> then either use IIO DAC as a middle layer or sink the DAC handling
+> into respective subdriver, i.e. push it into the backlight or
+> volume directly then.
 
---===============7744786725278573915==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="a7XSrSxqzVsaECgU"
-Content-Disposition: inline
+The problem is that the DAC is equally used by backlight and by sound
+device (WIP).
+What about true i2c device driver sitting in drivers/misc and exporting a regmap
+of 2 8-bit registers?
 
-
---a7XSrSxqzVsaECgU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 05, 2014 at 07:11:06PM +0100, Andreas F=E4rber wrote:
-> Am 05.11.2014 um 18:09 schrieb Mark Brown:
-> > On Wed, Nov 05, 2014 at 05:44:52PM +0100, Andreas F=E4rber wrote:
-> >> This enables the snd_soc_snow module to be auto-loaded.
-
-> > Applied, thanks.
-
-> Thanks. I notice you dropped my Fixes: line that SubmittingPatches asks
-> for. When do I need it and when should I leave it out? I thought it
-> tells GregKH more precisely which stable branches are affected for
-> backports than just a CC.
-
-It's not really adding anything if it's just identifying the patch that
-created the file in the first place and what actually happened here is
-that I applied it without the tag then later went back and decided to
-add a stable Cc since it was probably worth that.
-
---a7XSrSxqzVsaECgU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUWnAVAAoJECTWi3JdVIfQzDcH/iyWEAs3xvkRXU8qDtNuEgPr
-kay9p+HJ/dRc20hw7bqjxnjCzEefu0kgLMjzSwqIX7QcUiTn9XmqoNfkEEz+DvLO
-lGgpPai53oHZPSjSwC0AQmYeTnZzDw8xJJW64K4CbKj+8pTSK3rUyToCyGh962C+
-kJE5iRqIUaiVmzutEw5oIcQYNbXOQ6rKltb8VDK1SF/YKfum7wPkBmmktB7SkfPZ
-3qaFq0PEsn2SbzYFqaJU7r4HhPp8WsO+l91PWnole2Gc6t40t1vgEHQikip6T8RW
-TGr5JsCXcRgKMRbv+UXvAU67BKQ/dDSX4kHFybzEy2XwYf9L3iJHDz0vOwPJRhY=
-=xYy6
------END PGP SIGNATURE-----
-
---a7XSrSxqzVsaECgU--
-
---===============7744786725278573915==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7744786725278573915==--
+-- 
+With best wishes
+Dmitry
