@@ -1,18 +1,19 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Fix the driver data not set
-	issue
-Date: Wed, 05 Nov 2014 07:41:37 +0000
-Message-ID: <1415173297.2646.5.camel@loki>
-References: <1415083524-22756-1-git-send-email-yang.jie@intel.com>
- <1415116100.7168.30.camel@loki>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH v2 0/5] ASoC: Intel: ACPI support and
+	machines
+Date: Wed, 05 Nov 2014 09:49:35 +0200
+Message-ID: <5459D68F.6030100@linux.intel.com>
+References: <1415079068-4979-1-git-send-email-vinod.koul@intel.com>
+ <545889C4.5000509@linux.intel.com> <20141104082510.GC1870@intel.com>
+ <545896DE.4030305@linux.intel.com> <20141104111513.GE3815@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D5F6261A12
- for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 08:41:43 +0100 (CET)
-In-Reply-To: <1415116100.7168.30.camel@loki>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD48D261A12
+ for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 08:50:06 +0100 (CET)
+In-Reply-To: <20141104111513.GE3815@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, lgirdwood@gmail.com, tiwai@suse.de, liam.r.girdwood@intel.com, subhransu.s.prusty@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE0LTExLTA0IGF0IDE1OjQ4ICswMDAwLCBMaWFtIEdpcmR3b29kIHdyb3RlOgo+
-IE9uIFR1ZSwgMjAxNC0xMS0wNCBhdCAxNDo0NSArMDgwMCwgSmllIFlhbmcgd3JvdGU6Cj4gPiBU
-aGUgcHJpdl9kYXRhIGlzIGFsbG9jYXRlZCBhZ2FpbiBoZXJlIHdyb25nbHksIGFuZCBpdAo+ID4g
-aXMgbm90IHNldCB0byB0aGUgZHJpdmVyIGRhdGEgYWZ0ZXIgYXNzaWdubWVudC4gVGhpcwo+ID4g
-bWFrZSB0aGUgcGRhdGEtPmRldiBpcyBOVUxMIGFuZCBvb3BzIG9jY3VycyBvbiB0aGUgZmlyc3QK
-PiA+IGNhbGwgdG8gaHN3X3ZvbHVtZV9wdXQuCj4gPiAKPiA+IFRoZSByZXNvdXJjZSBoYXMgYmVl
-biBhbGxvY2F0ZWQgaW4gZHJpdmVyIHByb2JlIGNhbGxiYWNrCj4gPiBoc3dfcGNtX2Rldl9wcm9i
-ZSwgc28gaGVyZSBqdXN0IHJlbW92ZSB0aGlzIHNlbmNvbmQKPiA+IGFsbG9jYXRpb24gaXMgT0su
-Cj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IEppZSBZYW5nIDx5YW5nLmppZUBpbnRlbC5jb20+Cj4g
-PiAtLS0KPiA+ICBzb3VuZC9zb2MvaW50ZWwvc3N0LWhhc3dlbGwtcGNtLmMgfCAxIC0KPiA+ICAx
-IGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2ludGVsL3NzdC1oYXN3ZWxsLXBjbS5jIGIvc291bmQvc29jL2ludGVsL3NzdC1oYXN3ZWxs
-LXBjbS5jCj4gPiBpbmRleCAyMWYxMzE2Li5iYzAyYTZlIDEwMDY0NAo+ID4gLS0tIGEvc291bmQv
-c29jL2ludGVsL3NzdC1oYXN3ZWxsLXBjbS5jCj4gPiArKysgYi9zb3VuZC9zb2MvaW50ZWwvc3N0
-LWhhc3dlbGwtcGNtLmMKPiA+IEBAIC04NjYsNyArODY2LDYgQEAgc3RhdGljIGludCBoc3dfcGNt
-X3Byb2JlKHN0cnVjdCBzbmRfc29jX3BsYXRmb3JtICpwbGF0Zm9ybSkKPiA+ICAJZGV2ID0gcGxh
-dGZvcm0tPmRldjsKPiA+ICAJZG1hX2RldiA9IHBkYXRhLT5kbWFfZGV2Owo+ID4gIAo+ID4gLQlw
-cml2X2RhdGEgPSBkZXZtX2t6YWxsb2MocGxhdGZvcm0tPmRldiwgc2l6ZW9mKCpwcml2X2RhdGEp
-LCBHRlBfS0VSTkVMKTsKPiA+ICAJcHJpdl9kYXRhLT5oc3cgPSBwZGF0YS0+ZHNwOwo+ID4gIAlw
-cml2X2RhdGEtPmRldiA9IHBsYXRmb3JtLT5kZXY7Cj4gPiAgCXByaXZfZGF0YS0+cG1fc3RhdGUg
-PSBIU1dfUE1fU1RBVEVfRDA7Cj4gCj4gS2V5b24sIEkndmUganVzdCB1cGRhdGVkIGdpdCBhbmQg
-aXQgbG9va3MgbGlrZSB0aGlzIHBhdGNoIGlzIHByb2JhYmx5Cj4gbWlzc2luZyBzb21lIHBhcnRz
-IDotCj4gCj4gICBDQyBbTV0gIHNvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsLm8KPiBzb3VuZC9zb2Mv
-aW50ZWwvc3N0LWhhc3dlbGwtcGNtLmM6IEluIGZ1bmN0aW9uIOKAmGhzd19wY21fcHJvYmXigJk6
-Cj4gc291bmQvc29jL2ludGVsL3NzdC1oYXN3ZWxsLXBjbS5jOjg3MDoxNzogd2FybmluZzog4oCY
-cHJpdl9kYXRh4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbiBb
-LVdtYXliZS11bmluaXRpYWxpemVkXQo+ICAgcHJpdl9kYXRhLT5oc3cgPSBwZGF0YS0+ZHNwOwo+
-ICAgICAgICAgICAgICAgICAgXgo+IAo+IENhbiB5b3UgZml4IHRoaXMgYW5kIHJlLXRlc3QuCj4g
-CgpJdCdzIGFjdHVhbGx5IGEgc3Vic2VxdWVudCBub24gdXBzdHJlYW0gcGF0Y2ggb24gdG9wIG9m
-IHRoaXMgb25lIHRoYXQgaXMKY2F1c2luZyB0aGUgd2FybmluZy4gU28gbm90aGluZyB0byBiZSBk
-b25lIGV4Y2VwdCBmaXhpbmcgdGhlIG5vbgp1cHN0cmVhbSBwYXRjaC4KCkxpYW0KCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 11/04/2014 01:15 PM, Mark Brown wrote:
+>> Ok, so firmware appears to works on other than CR Baytrails too. Is it
+>> available in linux-firmware since if it's not when changing the platform
+>> drivers there will be obvious regressions to users?
+> Can we take a step back here: what are the firmwares and hardware
+> platforms we're talking about here?
+
+Only Baytrail and its variants. Current upstreamed drivers use 
+"intel/fw_sst_0f28.bin-48kHz_i2s_master" but that FW doesn't have as 
+much features like compressed audio and is not compatible with the one 
+Vinod's team is upstreaming.
+
+Goal is to switch to new implementation since it covers more platforms 
+but do switchover as seamlessly as possible for Baytrail. Problem at the 
+moment for Baytrail that both current and new drivers probe using the 
+same ACPIIDs and FW for new drivers is not yet in linux-firmware.
+
+>
+>> Well, those audio routing differences require to have DMI quirks. E.g. T100
+>> has analogue internal mic, Dell Venue 8 Pro 5830 has digital mic connected
+>> to DMIC2 of the RT564x and some have it connected to DMIC1.
+> Are any of these things on sale at the minute?  Looks like T100 and the
+> Dell both are but I'm not sure if they're current or previous models.
+
+T100 and Dell are. Third known audio routing difference is used in 
+reference design so I guess that setup is found on some models too. Then 
+there are byt-max98090 based Chromebooks that use current drivers and FW.
+
+-- 
+Jarkko
