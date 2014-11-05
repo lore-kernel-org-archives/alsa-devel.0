@@ -1,18 +1,17 @@
-From: Chris J Arges <chris.j.arges@canonical.com>
-Subject: Re: [PATCH v2] Scarlett mixer interface inclusion
-Date: Wed, 05 Nov 2014 08:30:21 -0600
-Message-ID: <545A347D.4000203@canonical.com>
-References: <1413920787-4877-1-git-send-email-chris.j.arges@canonical.com>	<s5h38agehkt.wl-tiwai@suse.de>	<s5h1tphvq3y.wl-tiwai@suse.de>
- <s5hsihxu8hp.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/6] ASoC: sn95031: Use table based control
+	setup
+Date: Wed, 5 Nov 2014 14:50:12 +0000
+Message-ID: <20141105145012.GA8509@sirena.org.uk>
+References: <1415180796-31129-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7068520139529529129=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D6C1F2650C5
- for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 15:30:24 +0100 (CET)
-In-Reply-To: <s5hsihxu8hp.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C18BB2606BB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 15:50:52 +0100 (CET)
+In-Reply-To: <1415180796-31129-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, robin@gareus.org, clemens@ladisch.de, th55@gmx.de, david.henningsson@canonical.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Dan Murphy <dmurphy@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On 11/05/2014 06:39 AM, Takashi Iwai wrote:
-> At Wed, 05 Nov 2014 12:33:37 +0100,
-> Takashi Iwai wrote:
->>
->> At Wed, 22 Oct 2014 08:36:50 +0200,
->> Takashi Iwai wrote:
->>>
->>>> 2) When unloading a device there are numerous sysfs_remove_group issues:
->>>> usb 1-1.1: USB disconnect, device number 6
->>>> ------------[ cut here ]------------
->>>> WARNING: CPU: 0 PID: 54 at /build/buildd/linux-3.16.0/fs/sysfs/group.c:219 sysfs_remove_group+0x99/0xa0()
->>>> sysfs group ffffffff82cbd6e0 not found for kobject 'midi1'
->>> (snip)
->>>> However this issue occured even without the patch applied.
->>>
->>> Yes, there was a similar report, but we couldn't reproduce here.
->>> It's a Oops coming from OSS midi device.  This is fairly harmless, but
->>> annoying.  Could you give your kernel config?  Maybe there's some
->>> difference.
->>
->> I'm now checking this issue again, and I still couldn't reproduce it
->> on my local machines.  Could you give your kernel config if this still
->> happens?
->>
->> Also, as a blind shot: does the patch below give any difference?
-> 
-> Try the one below instead.  This is for 3.18 but should be applicable
-> to older kernels, too.  (It's not applicable to for-next branch due to
-> the recent cleanups, though.) 
+--===============7068520139529529129==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
 
 
-I've tested this against 3.18-rc3 on my laptop and it no longer produces
-any warnings on disconnection!
-Thanks,
---chris
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/usb/card.c b/sound/usb/card.c
-> index 7ecd0e8a5c51..f61ebb17cc64 100644
-> --- a/sound/usb/card.c
-> +++ b/sound/usb/card.c
-> @@ -591,18 +591,19 @@ static void snd_usb_audio_disconnect(struct usb_device *dev,
->  {
->  	struct snd_card *card;
->  	struct list_head *p;
-> +	bool was_shutdown;
->  
->  	if (chip == (void *)-1L)
->  		return;
->  
->  	card = chip->card;
->  	down_write(&chip->shutdown_rwsem);
-> +	was_shutdown = chip->shutdown;
->  	chip->shutdown = 1;
->  	up_write(&chip->shutdown_rwsem);
->  
->  	mutex_lock(&register_mutex);
-> -	chip->num_interfaces--;
-> -	if (chip->num_interfaces <= 0) {
-> +	if (!was_shutdown) {
->  		struct snd_usb_endpoint *ep;
->  
->  		snd_card_disconnect(card);
-> @@ -622,6 +623,10 @@ static void snd_usb_audio_disconnect(struct usb_device *dev,
->  		list_for_each(p, &chip->mixer_list) {
->  			snd_usb_mixer_disconnect(p);
->  		}
-> +	}
-> +
-> +	chip->num_interfaces--;
-> +	if (chip->num_interfaces <= 0) {
->  		usb_chip[chip->index] = NULL;
->  		mutex_unlock(&register_mutex);
->  		snd_card_free_when_closed(card);
-> 
+On Wed, Nov 05, 2014 at 10:46:31AM +0100, Lars-Peter Clausen wrote:
+> Makes the code a bit cleaner.
+
+Applied, thanks.
+
+--OXfL5xGRrasGEqWY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUWjkfAAoJECTWi3JdVIfQUgIH/Rr7wiX/Hba2M5hhU3mAirKL
+7o4vixSYZhdHkcl3ROfduhbK/THEoe5xubjsmJEK2Y3S2bEQrgCUrEHQdgr407xi
+uvrmLkjY/gWp3RqNMsqLHXp9pRO/RbsnMd8TTG7f7EW7H85cQf6FXwsWX8fasRTr
+Fp3XhKmiQMuESEWDJhAfnZKopVgF6ZGGkavSOd6jYRDH914esTFl4nep7N22aXQK
+9q5Jry1IP2rfhY35Oa6ls31uxqmv17LaQJwtrcpzT9IpI6K6XxEa71LqqeYczM3h
+ZlHglWRJEbLoNAOlqkq2MlUJWqLcRkzNIemxUskaDs4FTj5LERZjEqvIPexZRY8=
+=6jcl
+-----END PGP SIGNATURE-----
+
+--OXfL5xGRrasGEqWY--
+
+--===============7068520139529529129==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7068520139529529129==--
