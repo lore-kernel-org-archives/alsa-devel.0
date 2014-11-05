@@ -1,55 +1,62 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 5/5] ASoC: Intel: add BYTCR machine
- driver with RT5640
-Date: Wed, 5 Nov 2014 14:14:52 +0530
-Message-ID: <20141105084452.GL1870@intel.com>
-References: <1415079068-4979-1-git-send-email-vinod.koul@intel.com>
- <1415079068-4979-6-git-send-email-vinod.koul@intel.com>
- <54589A0E.5040301@linux.intel.com>
- <20141104093244.GE1870@intel.com>
- <5459D7D3.3090501@linux.intel.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH] ALSA: echoaudio: cleanup of unnecessary messages
+Date: Wed, 5 Nov 2014 14:18:19 +0530
+Message-ID: <20141105084819.GA6878@sudip-PC>
+References: <1415125074-28006-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <1415125681.23168.1.camel@perches.com>
+ <20141105070150.GA4881@sudip-PC>
+ <s5hppd29l8l.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id CB8BB261A0D
- for <alsa-devel@alsa-project.org>; Wed,  5 Nov 2014 09:44:13 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5459D7D3.3090501@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>, lgirdwood@gmail.com, broonie@kernel.org, subhransu.s.prusty@intel.com
+In-Reply-To: <s5hppd29l8l.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Joe Perches <joe@perches.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 05, 2014 at 09:54:59AM +0200, Jarkko Nikula wrote:
-> On 11/04/2014 11:32 AM, Vinod Koul wrote:
-> >On Tue, Nov 04, 2014 at 11:19:10AM +0200, Jarkko Nikula wrote:
-> >>
-> >>I think it's worth to have same kcontrol and card names than
-> >>byt-rt5640 in case this is going to replace byt-rt5640.c since then
-> >>users can continue to use the same asound.state file. E.g. speakers
-> >>won't mute because of "Speaker" changes to "Ext Spk".
-> >It would have helped if the DSP controls were not there. The DSP controls
-> >need to be routed too, so existing conf files would need to be updated.
-> >
-> >So, do you still recommend changing :)
-> >
-> Do new controls affect PCM pass through? I was thinking if they
-> affect only compressed streams then it'd be useful if existing state
-> files continue working for PCM pass through. It's always painful if
-> kcontol name changes render audio muted and user have to go through
-> gazillions of kcontrols :-(
-Yes they do and yes we have large number of controls :(
-Plus there are some algorithms like EQ etc which can be programmed using
-kcontrols
+On Wed, Nov 05, 2014 at 08:09:46AM +0100, Takashi Iwai wrote:
+> At Wed, 5 Nov 2014 12:31:50 +0530,
+> Sudip Mukherjee wrote:
+> > 
+> > On Tue, Nov 04, 2014 at 10:28:01AM -0800, Joe Perches wrote:
+> > > On Tue, 2014-11-04 at 23:47 +0530, Sudip Mukherjee wrote:
+> > > > commit "b5b4a41b392960010fccf1f9ccf8334d612bd450" was dereferencing
+> > > > chip after it has been freed. This patch fixes that and at the same
+> > > > time removes some debugging messages, which are unnecessary, as they
+> > > > are just printing information about entry and exit from a function.
+> > > > This information we can easily get from ftrace.
+> > > 
+> > > Mostly true.
+> > > 
+> > > > diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+> > > []
+> > > > @@ -763,10 +755,8 @@ static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+> > > >  	spin_lock(&chip->lock);
+> > > >  	switch (cmd) {
+> > > >  	case SNDRV_PCM_TRIGGER_RESUME:
+> > > > -		dev_dbg(chip->card->dev, "pcm_trigger resume\n");
+> > > >  	case SNDRV_PCM_TRIGGER_START:
+> > > >  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> > > > -		dev_dbg(chip->card->dev, "pcm_trigger start\n");
+> > > >  		for (i = 0; i < DSP_MAXPIPES; i++) {
+> > > >  			if (channelmask & (1 << i)) {
+> > > >  				pipe = chip->substream[i]->runtime->private_data;
+> > > 
+> > > These may not be useful but this switch state information
+> > > can't be got from ftrace.
+> > is this information required? trigger callback will be called everytime pcm is started, stopped or paused. then log will be full of just these messages.
+> > if it is required then i can send a v2, if not required then also i can send another cleanup patch to clear the other prints in the
+> > switch-case of other devices in echoaudio.
+> 
+> There has been never such "requirement".  It's merely a debug code.
 
--- 
-~Vinod
+then i will send you a v2 of this patch which will also cleanup similar debug messages in the switch-case of other devices in echoaudio.
+
+thanks
+sudip
+
+> 
+> 
+> Takashi
