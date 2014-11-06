@@ -1,22 +1,26 @@
-From: Frans Klaver <fransklaver@gmail.com>
-Subject: Re: NXP Semiconductors TFA9879 Amplifier Driver
-Date: Thu, 6 Nov 2014 14:15:32 +0100
-Message-ID: <CAH6sp9PCYaFEjgssgWp9TOVPFt60YxKAqZBwFV+vQBwZKWGi9g@mail.gmail.com>
-References: <1415278441-27866-1-git-send-email-peda@lysator.liu.se>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: tfa9879: Add bass and treble gain/freq
+ controls.
+Date: Thu, 06 Nov 2014 14:17:11 +0100
+Message-ID: <545B74D7.4060400@metafoo.de>
+References: <1415278441-27866-1-git-send-email-peda@lysator.liu.se> <1415278441-27866-3-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1415278441-27866-1-git-send-email-peda@lysator.liu.se>
+In-Reply-To: <1415278441-27866-3-git-send-email-peda@lysator.liu.se>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@lysator.liu.se>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Peter Rosin <peda@axentia.se>
+To: Peter Rosin <peda@lysator.liu.se>, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 6, 2014 at 1:53 PM, Peter Rosin <peda@lysator.liu.se> wrote:
+On 11/06/2014 01:54 PM, Peter Rosin wrote:
+> From: Peter Rosin <peda@axentia.se>
 >
-> Sorry for not sending this from my axentia.se account, but I tend to
-> get high spam-scores from there when I use git send-email.
+> Signed-off-by: Peter Rosin <peda@axentia.se>
+> ---
+>   sound/soc/codecs/tfa9879.c |   16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
 
-I don't know if you already tried it, but I had the same issue until I
-switched from sendmail to actually using an smtp server in the
-git-send-mail config.
+Is there any specific reason why this is separate and not part of the 
+initial patch?
