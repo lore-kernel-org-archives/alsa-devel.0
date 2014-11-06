@@ -1,18 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm: Update the state properly before
-	notification
-Date: Thu,  6 Nov 2014 12:17:46 +0100
-Message-ID: <1415272666-543-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC:rt5645:Add JD function support
+Date: Thu, 6 Nov 2014 12:34:11 +0000
+Message-ID: <20141106123411.GX8509@sirena.org.uk>
+References: <1415170928-29408-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3135543811973953417=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 015C326516D
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 12:17:58 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D8249ADA8
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 11:17:57 +0000 (UTC)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26A0526517F
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 13:34:32 +0100 (CET)
+In-Reply-To: <1415170928-29408-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, yang.a.fang@intel.com, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Some state changes (e.g. snd_pcm_stop()) sets the runtime state after
-calling snd_timer_notify().  This is basically racy, since the
-notification may wakes up the user even before the state change.
-Although the possibility is low, we should set the state before the
-notifications.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+--===============3135543811973953417==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fqQSV+MVmQEkpBtA"
+Content-Disposition: inline
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index ca224fa2a33a..dfb5031969f8 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1052,10 +1052,10 @@ static void snd_pcm_post_stop(struct snd_pcm_substream *substream, int state)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	if (runtime->status->state != state) {
- 		snd_pcm_trigger_tstamp(substream);
-+		runtime->status->state = state;
- 		if (substream->timer)
- 			snd_timer_notify(substream->timer, SNDRV_TIMER_EVENT_MSTOP,
- 					 &runtime->trigger_tstamp);
--		runtime->status->state = state;
- 	}
- 	wake_up(&runtime->sleep);
- 	wake_up(&runtime->tsleep);
-@@ -1204,11 +1204,11 @@ static void snd_pcm_post_suspend(struct snd_pcm_substream *substream, int state)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_trigger_tstamp(substream);
-+	runtime->status->suspended_state = runtime->status->state;
-+	runtime->status->state = SNDRV_PCM_STATE_SUSPENDED;
- 	if (substream->timer)
- 		snd_timer_notify(substream->timer, SNDRV_TIMER_EVENT_MSUSPEND,
- 				 &runtime->trigger_tstamp);
--	runtime->status->suspended_state = runtime->status->state;
--	runtime->status->state = SNDRV_PCM_STATE_SUSPENDED;
- 	wake_up(&runtime->sleep);
- 	wake_up(&runtime->tsleep);
- }
-@@ -1311,10 +1311,10 @@ static void snd_pcm_post_resume(struct snd_pcm_substream *substream, int state)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_trigger_tstamp(substream);
-+	runtime->status->state = runtime->status->suspended_state;
- 	if (substream->timer)
- 		snd_timer_notify(substream->timer, SNDRV_TIMER_EVENT_MRESUME,
- 				 &runtime->trigger_tstamp);
--	runtime->status->state = runtime->status->suspended_state;
- }
- 
- static struct action_ops snd_pcm_action_resume = {
--- 
-2.1.3
+
+--fqQSV+MVmQEkpBtA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 05, 2014 at 03:02:08PM +0800, bardliao@realtek.com wrote:
+> From: Bard Liao <bardliao@realtek.com>
+>=20
+> rt5645 codec support jack detection function. The patch will set
+> related registers if JD function is used.
+
+Applied, thanks.
+
+--fqQSV+MVmQEkpBtA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUW2q+AAoJECTWi3JdVIfQLMAH/2vf5jS6cpNZ2R6ppWJzGBII
+m5x0vdRkxrkkOrBN4OIDMPiA2SrSd2qQpUJZHeS2on3CU0yxcJFZ7l/MAhRPXYgg
+J10CaZcO9Nk5p4VQJT05Lh3A1+zX6SkiL9hogCMOihCstTMeL0zd4UdhMgoj1h8Q
+YI4O2UeXw5EkdJiXBgDhH61c+OyqK7l4ZOcDUAMweHFw5rrrK2QLBlkj5/EDshC0
+2Xul6eFn5QK+BKBxl/EN5ie0MyWZvLZlnnaEOO0GfGDkYFMMRMt+xQ5zTZqmauyB
+Dz21rbjWGWfWmLbAde0tU7nzEmMP0/yq7LIimUg0gFv6zcaAT6Zf60Z9Waq5NMI=
+=R3rg
+-----END PGP SIGNATURE-----
+
+--fqQSV+MVmQEkpBtA--
+
+--===============3135543811973953417==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3135543811973953417==--
