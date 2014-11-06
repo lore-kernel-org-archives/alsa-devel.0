@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: ssm4567: Add DAC
-	high-pass-filter control
-Date: Thu, 6 Nov 2014 16:05:18 +0000
-Message-ID: <20141106160518.GN8509@sirena.org.uk>
-References: <1415285964-15930-1-git-send-email-lars@metafoo.de>
+From: Cyrus Harmon <cyrus@bobobeach.com>
+Subject: Re: [PATCH] add Steinberg UR44 USB Audio Interface
+ support to quirks-table
+Date: Thu, 06 Nov 2014 08:05:43 -0800
+Message-ID: <545B9C57.1070304@bobobeach.com>
+References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>	<531DAB14.5080201@ladisch.de>	<76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>	<531DDD04.5050902@ladisch.de>	<0EFBCC9F-93CA-4368-9530-B9049B3743FB@bobobeach.com>	<531EC9CC.4060203@ladisch.de>	<88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>	<545895AD.7020004@ladisch.de>
+ <545A697C.5070800@bobobeach.com> <545A93E3.7020906@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2055790603224198087=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 34C7A260695
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 17:05:31 +0100 (CET)
-In-Reply-To: <1415285964-15930-1-git-send-email-lars@metafoo.de>
+Received: from aspen.bobobeach.com (unknown [208.79.93.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90A35260695
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 17:05:53 +0100 (CET)
+In-Reply-To: <545A93E3.7020906@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +22,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Anatol Pomozov <anatol.pomozov@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2055790603224198087==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5Tc+o1dszy8XVyXI"
-Content-Disposition: inline
+On a somewhat related note, is there a way to apply changes to things 
+in, say, sound/usb and compile/install those changes without a few 
+kernel rebuild/install? Or, even better, without a reboot? Would 
+certainly shorting the debug cycle time for me. In this case I'm 
+interested in finding out what quirk->type is when it gets to 
+snd_usb_create_quirk as it looks like the function in the quirk_funcs 
+table that gets called here produces the first suspect error. Adding a 
+dev_info, followed by a kernel rebuild, reinstall, reboot (and the fact 
+that my broken nvidia drivers require reinstalling the video driver 
+every time I install a new kernel) makes for a tedious process!
 
+thanks!
 
---5Tc+o1dszy8XVyXI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cyrus
 
-On Thu, Nov 06, 2014 at 03:59:22PM +0100, Lars-Peter Clausen wrote:
-> Add a switch which can be used to enable/disable the DAC high-pass-filter.
-
-Applied all, thanks.
-
---5Tc+o1dszy8XVyXI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUW5w+AAoJECTWi3JdVIfQXVoH/0v3dYHHRDrP/qJTUmcQvLjG
-Fo2KRhxcZky4v1mhkLhWVYUQzdsdvMOIfYf4TtC74yx8RYGe8HjITHPDQWfgMfVw
-mUHrtQyc5PAfXmekYBUOgyQ4RedxskOGHGwmZyyuulitysWKezuS64JBx0Geihqc
-2ZOgs4cQtgsMblLi/Lmtco9TIsaHS88AwVW6O4zb4ZDcnBnhmYxhLbtVChfLrUQX
-81ewnxbH2G9XQBs9ckZT07GQlrkZErW5eJdGe/J/AlC5fTkq2O5la0bSvajxURO4
-mctPJAHDCCxmcSduUO1jgEZmR7mXWkYaWtlfHaFrMUIwtCeREeLViD7nHmsrd/4=
-=25LL
------END PGP SIGNATURE-----
-
---5Tc+o1dszy8XVyXI--
-
---===============2055790603224198087==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2055790603224198087==--
+On 11/05/2014 01:17 PM, Clemens Ladisch wrote:
+> Cyrus Harmon wrote:
+>> [    2.964094] snd-usb-audio 3-3.2:1.0: checking PCM interface
+>> [    2.964104] snd-usb-audio: probe of 3-3.2:1.0 failed with error -5
+>> [    2.966339] snd-usb-audio 3-3.2:1.1: checking PCM interface
+>> [    2.966341] snd-usb-audio 3-3.2:1.1: altsets found
+>> [    2.966342] snd-usb-audio 3-3.2:1.1: endpoint found
+>> [    2.966343] snd-usb-audio 3-3.2:1.1: iso found
+>> [    2.966344] snd-usb-audio 3-3.2:1.1: descriptors found
+>> [    2.968544] usb 3-3.2:1.0: checking PCM interface
+>> [    2.968546] usb 3-3.2:1.2: checking PCM interface
+>> [    2.968547] usb 3-3.2:1.2: altsets found
+>> [    2.968547] usb 3-3.2:1.2: endpoint found
+>> [    2.968548] usb 3-3.2:1.2: iso found
+>> [    2.968549] usb 3-3.2:1.2: descriptors found
+>> [    2.970657] usb 3-3.2:1.3: checking PCM interface
+>> [    2.970666] usb 3-3.2:1.4: checking PCM interface
+>> [    2.970930] snd-usb-audio: probe of 3-3.2:1.1 failed with error -5
+> Strange; in theory, this cannot happen.
+>
+> Please add this patch and try again.
+>
+>
+> Regards,
+> Clemens
+>
+>
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -536,7 +536,9 @@ snd_usb_audio_probe(struct usb_device *dev,
+>   	err = 1; /* continue */
+>   	if (quirk && quirk->ifnum != QUIRK_NO_INTERFACE) {
+>   		/* need some special handlings */
+> -		if ((err = snd_usb_create_quirk(chip, intf, &usb_audio_driver, quirk)) < 0)
+> +		err = snd_usb_create_quirk(chip, intf, &usb_audio_driver, quirk);
+> +		dev_info(&intf->dev, "quirk return code: %d\n", err);
+> +		if (err < 0)
+>   			goto __error;
+>   	}
+>
+> @@ -547,11 +549,13 @@ snd_usb_audio_probe(struct usb_device *dev,
+>   			goto __error;
+>   		}
+>   	}
+> +	dev_info(&intf->dev, "probe step 2\n");
+>
+>   	/* we are allowed to call snd_card_register() many times */
+>   	if (snd_card_register(chip->card) < 0) {
+>   		goto __error;
+>   	}
+> +	dev_info(&intf->dev, "probe step 3\n");
+>
+>   	usb_chip[chip->index] = chip;
+>   	chip->num_interfaces++;
+> @@ -560,6 +564,7 @@ snd_usb_audio_probe(struct usb_device *dev,
+>   	return chip;
+>
+>    __error:
+> +	dev_info(&intf->dev, "probe failed\n");
+>   	if (chip) {
+>   		if (!chip->num_interfaces)
+>   			snd_card_free(chip->card);
+> --- a/sound/usb/quirks.c
+> +++ b/sound/usb/quirks.c
+> @@ -367,6 +367,7 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
+>   	err = create_autodetect_quirk(chip, iface, driver);
+>   	if (err < 0)
+>   		return err;
+> +	dev_info(&iface->dev, "first interface successful\n");
+>
+>   	/*
+>   	 * ALSA PCM playback/capture devices cannot be registered in two steps,
+> @@ -385,9 +386,13 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
+>
+>   		err = create_autodetect_quirk(chip, iface, driver);
+>   		if (err >= 0)
+> +		{
+>   			usb_driver_claim_interface(driver, iface, (void *)-1L);
+> +			dev_info(&iface->dev, "interface %d successful\n", ifnum);
+> +		}
+>   	}
+>
+> +	dev_info(&iface->dev, "create_autodetect_quirks successful\n");
+>   	return 0;
+>   }
+>
