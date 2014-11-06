@@ -1,16 +1,18 @@
-From: <bardliao@realtek.com>
-Subject: [PATCH 3/4] ASoC:rt5670: add rt5672 codec support
-Date: Thu, 6 Nov 2014 12:23:53 +0800
-Message-ID: <1415247834-14278-3-git-send-email-bardliao@realtek.com>
-References: <1415247834-14278-1-git-send-email-bardliao@realtek.com>
+From: Cyrus Harmon <cyrus@bobobeach.com>
+Subject: Re: [PATCH] add Steinberg UR44 USB Audio Interface
+ support to quirks-table
+Date: Wed, 05 Nov 2014 20:39:27 -0800
+Message-ID: <545AFB7F.4040701@bobobeach.com>
+References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>	<531DAB14.5080201@ladisch.de>	<76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>	<531DDD04.5050902@ladisch.de>	<0EFBCC9F-93CA-4368-9530-B9049B3743FB@bobobeach.com>	<531EC9CC.4060203@ladisch.de>	<88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>	<54581FAA.6050703@bobobeach.com>	<s5hfvdzv5rc.wl-tiwai@suse.de>	<5458946F.5060100@bobobeach.com>
+ <s5hvbmt8cl3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id CEC1026506E
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 05:24:36 +0100 (CET)
-In-Reply-To: <1415247834-14278-1-git-send-email-bardliao@realtek.com>
+Received: from aspen.bobobeach.com (unknown [208.79.93.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id C02552614D6
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 05:39:31 +0100 (CET)
+In-Reply-To: <s5hvbmt8cl3.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,171 +22,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard Liao <bardliao@realtek.com>
-
-rt5672 is very similar to rt5670. Therefore we use one codec driver
-to support both codecs. The difference between rt5670 and rt5672 is
-there is some difference in their dapm routing table.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5670.c | 71 ++++++++++++++++++++++++++++++++++++++---------
- sound/soc/codecs/rt5670.h |  6 ++++
- 2 files changed, 64 insertions(+), 13 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 7592814..c3914e8 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -1635,29 +1635,39 @@ static const struct snd_soc_dapm_widget rt5670_dapm_widgets[] = {
- 	/* PDM */
- 	SND_SOC_DAPM_SUPPLY("PDM1 Power", RT5670_PWR_DIG2,
- 		RT5670_PWR_PDM1_BIT, 0, NULL, 0),
--	SND_SOC_DAPM_SUPPLY("PDM2 Power", RT5670_PWR_DIG2,
--		RT5670_PWR_PDM2_BIT, 0, NULL, 0),
--
- 	SND_SOC_DAPM_MUX("PDM1 L Mux", RT5670_PDM_OUT_CTRL,
- 			 RT5670_M_PDM1_L_SFT, 1, &rt5670_pdm1_l_mux),
- 	SND_SOC_DAPM_MUX("PDM1 R Mux", RT5670_PDM_OUT_CTRL,
- 			 RT5670_M_PDM1_R_SFT, 1, &rt5670_pdm1_r_mux),
--	SND_SOC_DAPM_MUX("PDM2 L Mux", RT5670_PDM_OUT_CTRL,
--			 RT5670_M_PDM2_L_SFT, 1, &rt5670_pdm2_l_mux),
--	SND_SOC_DAPM_MUX("PDM2 R Mux", RT5670_PDM_OUT_CTRL,
--			 RT5670_M_PDM2_R_SFT, 1, &rt5670_pdm2_r_mux),
- 
- 	/* Output Lines */
- 	SND_SOC_DAPM_OUTPUT("HPOL"),
- 	SND_SOC_DAPM_OUTPUT("HPOR"),
- 	SND_SOC_DAPM_OUTPUT("LOUTL"),
- 	SND_SOC_DAPM_OUTPUT("LOUTR"),
-+};
-+
-+static const struct snd_soc_dapm_widget rt5670_specific_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("PDM2 Power", RT5670_PWR_DIG2,
-+		RT5670_PWR_PDM2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("PDM2 L Mux", RT5670_PDM_OUT_CTRL,
-+			 RT5670_M_PDM2_L_SFT, 1, &rt5670_pdm2_l_mux),
-+	SND_SOC_DAPM_MUX("PDM2 R Mux", RT5670_PDM_OUT_CTRL,
-+			 RT5670_M_PDM2_R_SFT, 1, &rt5670_pdm2_r_mux),
- 	SND_SOC_DAPM_OUTPUT("PDM1L"),
- 	SND_SOC_DAPM_OUTPUT("PDM1R"),
- 	SND_SOC_DAPM_OUTPUT("PDM2L"),
- 	SND_SOC_DAPM_OUTPUT("PDM2R"),
- };
- 
-+static const struct snd_soc_dapm_widget rt5672_specific_dapm_widgets[] = {
-+	SND_SOC_DAPM_PGA("SPO Amp", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("SPOLP"),
-+	SND_SOC_DAPM_OUTPUT("SPOLN"),
-+	SND_SOC_DAPM_OUTPUT("SPORP"),
-+	SND_SOC_DAPM_OUTPUT("SPORN"),
-+};
-+
- static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
- 	{ "ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc },
- 	{ "ADC Stereo2 Filter", NULL, "ADC STO2 ASRC", is_using_asrc },
-@@ -2010,12 +2020,6 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
- 	{ "PDM1 R Mux", "Stereo DAC", "Stereo DAC MIXR" },
- 	{ "PDM1 R Mux", "Mono DAC", "Mono DAC MIXR" },
- 	{ "PDM1 R Mux", NULL, "PDM1 Power" },
--	{ "PDM2 L Mux", "Stereo DAC", "Stereo DAC MIXL" },
--	{ "PDM2 L Mux", "Mono DAC", "Mono DAC MIXL" },
--	{ "PDM2 L Mux", NULL, "PDM2 Power" },
--	{ "PDM2 R Mux", "Stereo DAC", "Stereo DAC MIXR" },
--	{ "PDM2 R Mux", "Mono DAC", "Mono DAC MIXR" },
--	{ "PDM2 R Mux", NULL, "PDM2 Power" },
- 
- 	{ "HP Amp", NULL, "HPO MIX" },
- 	{ "HP Amp", NULL, "Mic Det Power" },
-@@ -2033,13 +2037,30 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
- 	{ "LOUTR", NULL, "LOUT R Playback" },
- 	{ "LOUTL", NULL, "Improve HP Amp Drv" },
- 	{ "LOUTR", NULL, "Improve HP Amp Drv" },
-+};
- 
-+static const struct snd_soc_dapm_route rt5670_specific_dapm_routes[] = {
-+	{ "PDM2 L Mux", "Stereo DAC", "Stereo DAC MIXL" },
-+	{ "PDM2 L Mux", "Mono DAC", "Mono DAC MIXL" },
-+	{ "PDM2 L Mux", NULL, "PDM2 Power" },
-+	{ "PDM2 R Mux", "Stereo DAC", "Stereo DAC MIXR" },
-+	{ "PDM2 R Mux", "Mono DAC", "Mono DAC MIXR" },
-+	{ "PDM2 R Mux", NULL, "PDM2 Power" },
- 	{ "PDM1L", NULL, "PDM1 L Mux" },
- 	{ "PDM1R", NULL, "PDM1 R Mux" },
- 	{ "PDM2L", NULL, "PDM2 L Mux" },
- 	{ "PDM2R", NULL, "PDM2 R Mux" },
- };
- 
-+static const struct snd_soc_dapm_route rt5672_specific_dapm_routes[] = {
-+	{ "SPO Amp", NULL, "PDM1 L Mux" },
-+	{ "SPO Amp", NULL, "PDM1 R Mux" },
-+	{ "SPOLP", NULL, "SPO Amp" },
-+	{ "SPOLN", NULL, "SPO Amp" },
-+	{ "SPORP", NULL, "SPO Amp" },
-+	{ "SPORN", NULL, "SPO Amp" },
-+};
-+
- static int rt5670_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
-@@ -2371,6 +2392,29 @@ static int rt5670_probe(struct snd_soc_codec *codec)
- {
- 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
- 
-+	switch (snd_soc_read(codec, RT5670_RESET) & RT5670_ID_MASK) {
-+	case RT5670_ID_5670:
-+	case RT5670_ID_5671:
-+		snd_soc_dapm_new_controls(&codec->dapm,
-+			rt5670_specific_dapm_widgets,
-+			ARRAY_SIZE(rt5670_specific_dapm_widgets));
-+		snd_soc_dapm_add_routes(&codec->dapm,
-+			rt5670_specific_dapm_routes,
-+			ARRAY_SIZE(rt5670_specific_dapm_routes));
-+		break;
-+	case RT5670_ID_5672:
-+		snd_soc_dapm_new_controls(&codec->dapm,
-+			rt5672_specific_dapm_widgets,
-+			ARRAY_SIZE(rt5672_specific_dapm_widgets));
-+		snd_soc_dapm_add_routes(&codec->dapm,
-+			rt5672_specific_dapm_routes,
-+			ARRAY_SIZE(rt5672_specific_dapm_routes));
-+		break;
-+	default:
-+		dev_err(codec->dev,
-+			"The driver is for RT5670 RT5671 or RT5672 only\n");
-+		return -ENODEV;
-+	}
- 	rt5670->codec = codec;
- 	rt5670_dsp_probe(codec);
- 
-@@ -2493,6 +2537,7 @@ static const struct regmap_config rt5670_regmap = {
- 
- static const struct i2c_device_id rt5670_i2c_id[] = {
- 	{ "rt5670", 0 },
-+	{ "rt5672", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, rt5670_i2c_id);
-diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
-index 70285c9..8b2ab69 100644
---- a/sound/soc/codecs/rt5670.h
-+++ b/sound/soc/codecs/rt5670.h
-@@ -228,6 +228,12 @@
- #define RT5670_R_VOL_MASK			(0x3f)
- #define RT5670_R_VOL_SFT			0
- 
-+/* SW Reset & Device ID (0x00) */
-+#define RT5670_ID_MASK				(0x3 << 1)
-+#define RT5670_ID_5670				(0x0 << 1)
-+#define RT5670_ID_5672				(0x1 << 1)
-+#define RT5670_ID_5671				(0x2 << 1)
-+
- /* Combo Jack Control 1 (0x0a) */
- #define RT5670_CBJ_BST1_MASK			(0xf << 12)
- #define RT5670_CBJ_BST1_SFT			(12)
--- 
-1.8.1.1.439.g50a6b54
+CkhpIFRha2FzaGksCgpDbGVtZW5zIGhhcyBzZW50IG1lIGFub3RoZXIgZGlhZ25vc3RpYy9kZWJ1
+Z2dpbmcgcGF0Y2ggdG8gdHJ5LiBQZXJoYXBzIAp3ZSBzaG91bGQgd2FpdCB0byBzZWUgdGhlIHJl
+c3VsdHMgb2YgdGhhdCBiZWZvcmUgcHVzaGluZyB0byBmb3ItbmV4dC4gSWYgCndlIGRvbid0IGdl
+dCBhIGRlZXBlciB1bmRlcnN0YW5kaW5nIG9mIHRoZSBwcm9ibGVtIGluIHRoZSBuZXh0IGNvdXBs
+ZSBvZiAKZGF5cywgSSdsbCBzZW5kIGFsb25nIHRoZSBvcmlnaW5hbCBwYXRjaC4KCnRoYW5rcywK
+CkN5cnVzCgpPbiAxMS8wNS8yMDE0IDAzOjE0IFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gQXQg
+VHVlLCAwNCBOb3YgMjAxNCAwMDo1NToxMSAtMDgwMCwKPiBDeXJ1cyBIYXJtb24gd3JvdGU6Cj4+
+Cj4+IEkgaGF2ZSB1c2VkIGEgbnVtYmVyIG9mIDMuMXgga2VybmVscy4gQXQgdGhlIG1vbWVudCwg
+SSdtIHdyaXRpbmcgdGhpcwo+PiBmcm9tIGEgMy4xNy4wIGtlcm5lbCB0aGF0IGRvZXNuJ3QgcmVj
+b2duaXplIHRoZSBVUjQ0IHdpdGhvdXQgbXkgcGF0Y2guCj4gT0ssIGNvdWxkIHlvdSByZXBvc3Qg
+dGhlIHBhdGNoIChhbmQgcHV0IG1lIHRvIENjKSBzbyB0aGF0IEkgY2FuIGFwcGx5Cj4gdG8gZm9y
+LW5leHQgYnJhbmNoPwo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4KPgo+PiB0aGFua3MsCj4+
+Cj4+IEN5cnVzCj4+Cj4+IE9uIDExLzAzLzIwMTQgMTA6MjggUE0sIFRha2FzaGkgSXdhaSB3cm90
+ZToKPj4+IEF0IE1vbiwgMDMgTm92IDIwMTQgMTY6MzY6NTggLTA4MDAsCj4+PiBDeXJ1cyBIYXJt
+b24gd3JvdGU6Cj4+Pj4gV2VsbCwgaXQncyA3IG1vbnRocyBvbiBhbmQgSSdtIHN0aWxsIHVzaW5n
+IGEgcGF0Y2hlZCBrZXJuZWwgdG8gYWNjZXNzIG15Cj4+Pj4gVVI0NC4gQW55IGNoYW5jZSBvZiBl
+aXRoZXIgc2VlaW5nIG15IG9yaWdpbmFsIHBhdGNoIGNvbW1pdHRlZCwgb3Igc29tZQo+Pj4+IHN1
+Z2dlc3Rpb25zIG9uIGEgbW9yZSBwcm9wZXIgZml4LCBpZiB0aGVyZSdzIHNvbWV0aGluZyB3aXRo
+IG15IG9yaWdpbmFsCj4+Pj4gcGF0Y2g/Cj4+PiBXaGljaCBrZXJuZWwgdmVyc2lvbiBhcmUgeW91
+IHRlc3Rpbmc/Cj4+Pgo+Pj4KPj4+IFRha2FzaGkKPj4+Cj4+Pj4gdGhhbmtzLAo+Pj4+Cj4+Pj4g
+Q3lydXMKPj4+Pgo+Pj4+IE9uIDAzLzE3LzIwMTQgMDk6MjkgQU0sIEN5cnVzIEhhcm1vbiB3cm90
+ZToKPj4+Pj4gT24gTWFyIDExLCAyMDE0LCBhdCAxOjMxIEFNLCBDbGVtZW5zIExhZGlzY2ggPGNs
+ZW1lbnNAbGFkaXNjaC5kZT4gd3JvdGU6Cj4+Pj4+Cj4+Pj4+PiBDeXJ1cyBIYXJtb24gd3JvdGU6
+Cj4+Pj4+Pj4gT24gTWFyIDEwLCAyMDE0LCBhdCA4OjQwIEFNLCBDbGVtZW5zIExhZGlzY2ggPGNs
+ZW1lbnNAbGFkaXNjaC5kZT4gd3JvdGU6Cj4+Pj4+Pj4+IEluIHRoZW9yeSwga2VybmVsIDMuMTEg
+YW5kIGxhdGVyIHNob3VsZCBzdXBwb3J0IHRoaXMgZGV2aWNlIHdpdGhvdXQKPj4+Pj4+Pj4gYSBx
+dWlyayBlbnRyeS4gIEkgZ3Vlc3MgaXQgYWN0dWFsbHkgZG9lcyBub3Q/Cj4+Pj4+Pj4gbm8sIHRo
+ZSBzdG9jayBrZXJuZWwgZG9lc27igJl0IHN1cHBvcnQgdGhpcyBkZXZpY2UuCj4+Pj4+PiBTdHJh
+bmdlOyBpbiB0aGVvcnksIHRoZSBkcml2ZXIgc2hvdWxkIGJlIGFibGUgdG8gcGljayB1cCB0aGVz
+ZQo+Pj4+Pj4gZGVzY3JpcHRvcnMuCj4+Pj4+Pgo+Pj4+Pj4gQXJlIHRoZXJlIGFueSBlcnJvciBt
+ZXNzYWdlcyBpbiB0aGUgc3lzdGVtIGxvZyB3aGVuIHlvdSBwbHVnIGl0IGluIG9yCj4+Pj4+PiBy
+ZWxvYWQgdGhlIHVucGF0Y2ggc25kLXVzYi1hdWRpbyBkcml2ZXI/Cj4+Pj4+IEZvbGxvd2luZyB1
+cCBvbiB0aGlzIGZyb20gbGFzdCB3ZWVrLCBoZXJl4oCZcyB0aGUgZXJyb3IgbWVzc2FnZSBJIHNl
+ZSB3aXRoIGFuIHVucGF0Y2hlZCBrZXJuZWw6Cj4+Pj4+Cj4+Pj4+IE1hciAxMSAwMjoyNToxMSBj
+Ym94IGtlcm5lbDogWyAgIDgyLjQyNjY0MF0gdXNiIDItMS42OiBuZXcgaGlnaC1zcGVlZCBVU0Ig
+ZGV2aWNlIG51bWJlciA0IHVzaW5nIGVoY2ktcGNpCj4+Pj4+IE1hciAxMSAwMjoyNToxMiBjYm94
+IGtlcm5lbDogWyAgIDgyLjUxNTM2NF0gdXNiIDItMS42OiBOZXcgVVNCIGRldmljZSBmb3VuZCwg
+aWRWZW5kb3I9MDQ5OSwgaWRQcm9kdWN0PTE1MGUKPj4+Pj4gTWFyIDExIDAyOjI1OjEyIGNib3gg
+a2VybmVsOiBbICAgODIuNTE1MzY4XSB1c2IgMi0xLjY6IE5ldyBVU0IgZGV2aWNlIHN0cmluZ3M6
+IE1mcj0xLCBQcm9kdWN0PTIsIFNlcmlhbE51bWJlcj0wCj4+Pj4+IE1hciAxMSAwMjoyNToxMiBj
+Ym94IGtlcm5lbDogWyAgIDgyLjUxNTM3MF0gdXNiIDItMS42OiBQcm9kdWN0OiBTdGVpbmJlcmcg
+VVI0NAo+Pj4+PiBNYXIgMTEgMDI6MjU6MTIgY2JveCBrZXJuZWw6IFsgICA4Mi41MTUzNzJdIHVz
+YiAyLTEuNjogTWFudWZhY3R1cmVyOiBZYW1haGEgQ29ycG9yYXRpb24KPj4+Pj4gTWFyIDExIDAy
+OjI1OjEyIGNib3gga2VybmVsOiBbICAgODIuNTE4MTM0XSBzbmQtdXNiLWF1ZGlvOiBwcm9iZSBv
+ZiAyLTEuNjoxLjAgZmFpbGVkIHdpdGggZXJyb3IgLTUKPj4+Pj4gTWFyIDExIDAyOjI1OjEyIGNi
+b3gga2VybmVsOiBbICAgODIuNTIzMzE3XSBzbmQtdXNiLWF1ZGlvOiBwcm9iZSBvZiAyLTEuNjox
+LjEgZmFpbGVkIHdpdGggZXJyb3IgLTUKPj4+Pj4gTWFyIDExIDAyOjI1OjEyIGNib3ggbXRwLXBy
+b2JlOiBjaGVja2luZyBidXMgMiwgZGV2aWNlIDQ6ICIvc3lzL2RldmljZXMvcGNpMDAwMDowMC8w
+MDAwOjAwOjFkLjAvdXNiMi8yLTEvMi0xLjYiCj4+Pj4+IE1hciAxMSAwMjoyNToxMiBjYm94IG10
+cC1wcm9iZTogYnVzOiAyLCBkZXZpY2U6IDQgd2FzIG5vdCBhbiBNVFAgZGV2aWNlCj4+Pj4+Cj4+
+Pj4+IEFueSBzdWdnZXN0aW9ucyBmb3IgZnVydGhlciBkZWJ1Z2dpbmcgdGhpcz8KPj4+Pj4KPj4+
+Pj4gQWxzbywgZnJvbSBhbiBlYXJsaWVyIG1lc3NhZ2UsCj4+Pj4+Cj4+Pj4+IE9uIE1hciAxMCwg
+MjAxNCwgYXQgODo0MCBBTSwgQ2xlbWVucyBMYWRpc2NoIDxjbGVtZW5zQGxhZGlzY2guZGU+IHdy
+b3RlOgo+Pj4+Pgo+Pj4+Pj4gVGhpcyBzb3VuZHMgYXMgaWYgdGhlIHBsYXliYWNrIHN0cmVhbSBu
+ZWVkcyB0byBiZSBzeW5jaHJvbml6ZWQgdG8gdGhlCj4+Pj4+PiByZWNvcmRpbmcgc3RyZWFtCj4+
+Pj4+IEFueSBwb2ludGVycyBvbiB3aGVyZSBJIG1pZ2h0IGxvb2sgdG8gZmlndXJlIG91dCBob3cg
+dG8gZG8gdGhpcz8KPj4+Pj4KPj4+Pj4gdGhhbmtzIGFnYWluLAo+Pj4+Pgo+Pj4+PiBDeXJ1cwo+
+Pj4+Pgo+Pj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xwo+Pj4+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+Pj4+PiBBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKPj4+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwKPj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+Pj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+Pj4gQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCj4+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4+Pgo+Pj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+
+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+IF9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
