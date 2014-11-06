@@ -1,23 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 8/8] ASoC: rsnd: Add Volume Ramp support
-Date: Thu, 6 Nov 2014 16:11:06 +0000
-Message-ID: <20141106161106.GP8509@sirena.org.uk>
-References: <8761fc7vpx.wl%kuninori.morimoto.gx@gmail.com>
- <87tx2w6h2r.wl%kuninori.morimoto.gx@gmail.com>
- <20141028223814.GM18557@sirena.org.uk>
- <87oasviuw0.wl%kuninori.morimoto.gx@gmail.com>
- <20141029225659.GS18557@sirena.org.uk>
- <87y4ryxuxs.wl%kuninori.morimoto.gx@gmail.com>
- <20141031115111.GM18557@sirena.org.uk>
- <871tpjaju6.wl%kuninori.morimoto.gx@gmail.com>
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: [v2] NXP Semiconductors TFA9879 Amplifier Driver
+Date: Thu,  6 Nov 2014 17:39:44 +0100
+Message-ID: <1415291985-9784-1-git-send-email-peda@lysator.liu.se>
+References: <20141106160241.GM8509@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7347217100135074049=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EC7B42652AA
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 17:11:35 +0100 (CET)
-In-Reply-To: <871tpjaju6.wl%kuninori.morimoto.gx@gmail.com>
+Received: from mail.lysator.liu.se (mail.lysator.liu.se [130.236.254.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E767260695
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 17:40:01 +0100 (CET)
+In-Reply-To: <20141106160241.GM8509@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,66 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 2014-11-06 17:02, Mark Brown wrote:> On Thu, Nov 06, 2014 at 02:37:31PM +0000, Peter Rosin wrote:
+>> > Mark Brown wrote:
+>>>> > > > +	if (tfa9879->lsb_justified)
+>>>> > > > +		TFA9879_REG(codec, SERIAL_INTERFACE_1, I2S_SET, i2s_set);
+>>> > > Why does this need to be reset every time, shouldn't we just be setting the
+>>> > > register in set_fmt().?
+>> > Yes, I'd sure like to do that, but how do I get to the width in set_fmt()?
+> Oh, this has some width related thing in it?
 
---===============7347217100135074049==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QCvc+0a4DZLbIBWe"
-Content-Disposition: inline
+Yes, the amp has a different setting for each lsb-justified width.
+(It also supports 18 and 20 bits wide data)
 
+>>>> > > > +	{ TFA9879_MISC_STATUS,		0x0000 }, /* 0x15, read-only */
+>>>> > > > +};
+>>>> > > > +static bool tfa9879_volatile_register(struct device *dev, unsigned
+>>>> > > > +int reg) {
+>>>> > > > +	return reg == TFA9879_MISC_STATUS;
+>>> > > If the register is volatile it shouldn't have a default value provided.
+>> > Then I misunderstood what volatile was meant to do. I'll just nuke the
+>> > function. It works fine anyway...
+> A volatile register is one that the chip may change autonomously (eg, an
+> interrupt status register).
 
---QCvc+0a4DZLbIBWe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That was what I assumed, and the register behaves like that. I naively
+thought that declaring it as volatile would prevent the asoc core from
+writing to it. In retrospect, I don't understand why I thought that...
+Anyway, that bit can wait until someone actually needs to read the staus.
 
-On Mon, Nov 03, 2014 at 04:30:00PM -0800, Kuninori Morimoto wrote:
-> > > /*
-> > >  * target volume for "start" is Mute.
-> > >  * volume X x 0 time = volume 0
-> > >  */
-> > > amixer set "DVC Out Ramp" 0%		// Mute as default
+Here's an update with the following changes since v1:
 
-> > I'm sorry, this explanation still isn't at all clear to me.  Can you
-> > explain it in words please?
+- squashed patch 2/2
+- zapped the TFA9879_REG macro
+- zapped tfa9879_probe (which needlessly registered the regmap)
+- moved tfa9879_prepare/_shutdown to a DAPM_SUPPLY widget
+- zapped the tfa9879_volatile() thing
+- made tfa9879_dai_ops const
+- erased the redundant "Gain" from the bass/treble volume controls
+- using params_width() instead of params_format()
 
-> Our DVC Volume Ramp is doing "Normal volume" x "Volume scale".
-> "Volume scale" exchange Volume in "X db / Y step" (= speed).
-> Our "Volume Ramp" exchange this "Volume scale" in "X db / Y step" speed.
-
-> "Normal Volume" x 0 => "Normal Volume" x 1
-
-> Does this good answer for you ?
-
-OK, that's what I'd thought that the control should be doing based on
-the naming but the examples you were showing were confusing.  Let me
-take a look at the new version you posted...
-
---QCvc+0a4DZLbIBWe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUW52ZAAoJECTWi3JdVIfQ6swH/RzjfK2Z3Jzk/iY3A5Id+EPg
-QZwn/QRnPkdl7LKurb45Si5O/FaE5yf9Kbi9p5b/uwEQdAO33+ZuZvMYVJB6yz/9
-BtW/NMfVJGHA5j1fNlh4PCombe6xBhM2CYvbgh7yvvCGHTyASTZVv7kLM3lnEkIA
-qNYcUh/rGCrroEp4Z/CY3NUGnNN5IxEdzXjU/fK7RW2XCrR9uA8pKq1X6kPFRASJ
-EL0P2V/dKS3tsv3ihyPwHvXOAFcNFXb8q3e3E7u/iXhrVVAYgGoKZqaZkIGUskw1
-5vSGWQRuDAqcdzyZzbyiiijNTMFTq91ySucBgGXV9Qdbe4+JNYcyqR4urgtKqYM=
-=iTRG
------END PGP SIGNATURE-----
-
---QCvc+0a4DZLbIBWe--
-
---===============7347217100135074049==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7347217100135074049==--
+Cheers,
+Peter
