@@ -1,18 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/3] ASoC: ssm4567: Add support for disabling
-	the boost stage
-Date: Thu,  6 Nov 2014 15:59:24 +0100
-Message-ID: <1415285964-15930-3-git-send-email-lars@metafoo.de>
-References: <1415285964-15930-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: tfa9879: New driver for NXP
+ Semiconductors TFA9879 amplifier.
+Date: Thu, 6 Nov 2014 16:02:41 +0000
+Message-ID: <20141106160241.GM8509@sirena.org.uk>
+References: <1415278441-27866-1-git-send-email-peda@lysator.liu.se>
+ <1415278441-27866-2-git-send-email-peda@lysator.liu.se>
+ <20141106133720.GG8509@sirena.org.uk>
+ <8798d3c4cf124aa9879225d08d8477f5@EMAIL.axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5450558815465174986=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-022.synserver.de (smtp-out-023.synserver.de
- [212.40.185.23])
- by alsa0.perex.cz (Postfix) with ESMTP id F10BB2614A1
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 15:59:27 +0100 (CET)
-In-Reply-To: <1415285964-15930-1-git-send-email-lars@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DB68260695
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 17:03:10 +0100 (CET)
+In-Reply-To: <8798d3c4cf124aa9879225d08d8477f5@EMAIL.axentia.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Anatol Pomozov <anatol.pomozov@gmail.com>
+To: Peter Rosin <peda@axentia.se>
+Cc: Peter Rosin <peda@lysator.liu.se>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a switch to enable/disable boost stage of the output
-amplifier. Applications that know that they do not need the output
-amplifier boost stage can disable it to conserve a bit of power.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/ssm4567.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+--===============5450558815465174986==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="m8OSOHsVCl6s45tG"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-index 2176679..a984485 100644
---- a/sound/soc/codecs/ssm4567.c
-+++ b/sound/soc/codecs/ssm4567.c
-@@ -165,13 +165,20 @@ static const struct snd_kcontrol_new ssm4567_snd_controls[] = {
- 		5, 1, 0),
- };
- 
-+static const struct snd_kcontrol_new ssm4567_amplifier_boost_control =
-+	SOC_DAPM_SINGLE("Switch", SSM4567_REG_POWER_CTRL, 1, 1, 1);
-+
- static const struct snd_soc_dapm_widget ssm4567_dapm_widgets[] = {
- 	SND_SOC_DAPM_DAC("DAC", "HiFi Playback", SSM4567_REG_POWER_CTRL, 2, 1),
-+	SND_SOC_DAPM_SWITCH("Amplifier Boost", SSM4567_REG_POWER_CTRL, 3, 1,
-+		&ssm4567_amplifier_boost_control),
- 
- 	SND_SOC_DAPM_OUTPUT("OUT"),
- };
- 
- static const struct snd_soc_dapm_route ssm4567_routes[] = {
-+	{ "OUT", NULL, "Amplifier Boost" },
-+	{ "Amplifier Boost", "Switch", "DAC" },
- 	{ "OUT", NULL, "DAC" },
- };
- 
--- 
-1.8.0
+
+--m8OSOHsVCl6s45tG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 06, 2014 at 02:37:31PM +0000, Peter Rosin wrote:
+> Mark Brown wrote:
+
+> > > +	if (tfa9879->lsb_justified)
+> > > +		TFA9879_REG(codec, SERIAL_INTERFACE_1, I2S_SET, i2s_set);
+
+> > Why does this need to be reset every time, shouldn't we just be setting the
+> > register in set_fmt().?
+
+> Yes, I'd sure like to do that, but how do I get to the width in set_fmt()?
+
+Oh, this has some width related thing in it?
+
+> > > +	{ TFA9879_MISC_STATUS,		0x0000 }, /* 0x15, read-only */
+> > > +};
+
+> > > +static bool tfa9879_volatile_register(struct device *dev, unsigned
+> > > +int reg) {
+> > > +	return reg == TFA9879_MISC_STATUS;
+
+> > If the register is volatile it shouldn't have a default value provided.
+
+> Then I misunderstood what volatile was meant to do. I'll just nuke the
+> function. It works fine anyway...
+
+A volatile register is one that the chip may change autonomously (eg, an
+interrupt status register).
+
+--m8OSOHsVCl6s45tG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUW5ugAAoJECTWi3JdVIfQqWYH/1ePW+CKQjzMlhMYefy/HF2F
+NQlY6DOpUFOpxNYtFIVeWYXgP3YlcyHGLlT9Ym/Cpu2unSVq4Edoqvt66OMn4jx+
+QF4BE2AJvohaPPZYb30ndZfBQ3pdHW9A08fPeGLCp6LiTTZqulNk/z22VtIOF1M+
+ib+8+eT5hXKEcDPv0JGE594RPKVWkWs7lh6GWtrZcg/ri6Up2XWRMMf9HJGiwBsw
+1bpkORGhHzMfrVEm2wZv0wJUwtKgwMKfOuV4ff2/qSHoMhjTLH4pbL/RRtRD8VeK
+po25v923vwFAjkMxoA1Z7W1YgRLPGGkldMzgPZ41DsWB7pByHRqy15Xz9hKVYXU=
+=2ICw
+-----END PGP SIGNATURE-----
+
+--m8OSOHsVCl6s45tG--
+
+--===============5450558815465174986==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5450558815465174986==--
