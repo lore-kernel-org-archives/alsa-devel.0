@@ -1,89 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: tfa9879: New driver for NXP Semiconductors
- TFA9879 amplifier.
-Date: Thu, 6 Nov 2014 13:37:20 +0000
-Message-ID: <20141106133720.GG8509@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: tfa9879: Add bass and treble gain/freq
+ controls.
+Date: Thu, 6 Nov 2014 13:40:28 +0000
+Message-ID: <20141106134028.GH8509@sirena.org.uk>
 References: <1415278441-27866-1-git-send-email-peda@lysator.liu.se>
- <1415278441-27866-2-git-send-email-peda@lysator.liu.se>
+ <1415278441-27866-3-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vsHhinrhaqUzFcVS"
+	protocol="application/pgp-signature"; boundary="2l43pqSnz0CmKuGJ"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1415278441-27866-2-git-send-email-peda@lysator.liu.se>
+In-Reply-To: <1415278441-27866-3-git-send-email-peda@lysator.liu.se>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Peter Rosin <peda@lysator.liu.se>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
 
---vsHhinrhaqUzFcVS
+--2l43pqSnz0CmKuGJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 06, 2014 at 01:54:00PM +0100, Peter Rosin wrote:
+On Thu, Nov 06, 2014 at 01:54:01PM +0100, Peter Rosin wrote:
 
-> +#define TFA9879_REG(codec, reg, field, value)				\
-> +	snd_soc_update_bits(codec, TFA9879_ ## reg,			\
-> +			    TFA9879_ ## field ## _MASK,			\
-> +			    (value) << TFA9879_ ## field ## _SHIFT)
+> From: Peter Rosin <peda@axentia.se>
 
-Please don't do stuff like this, it just makes the code look more
-obscure than it should be for people who work with multiple devices -
-just use update_bits() directly.
+Like Lars suggested just squash this into the previous patch.
 
-> +static int tfa9879_prepare(struct snd_pcm_substream *substream,
-> +			   struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_codec *codec = dai->codec;
-> +
-> +	TFA9879_REG(codec, DEVICE_CONTROL, POWERUP, 1);
+> +	SOC_SINGLE_TLV("Treble Gain Volume", TFA9879_BASS_TREBLE,
+> +		       TFA9879_G_TRBLE_SHIFT, 18, 0, tb_gain_tlv),
+> +	SOC_SINGLE_TLV("Bass Gain Volume", TFA9879_BASS_TREBLE,
+> +		       TFA9879_G_BASS_SHIFT, 18, 0, tb_gain_tlv),
 
-Use DAPM to manage power, you're probably looking for a supply widget.
+X Volume, the Gain is redundant.
 
-> +	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_S16_LE:
-
-Use params_width() rather than a specific memory layout.
-
-> +	if (tfa9879->lsb_justified)
-> +		TFA9879_REG(codec, SERIAL_INTERFACE_1, I2S_SET, i2s_set);
-
-Why does this need to be reset every time, shouldn't we just be setting
-the register in set_fmt().?
-
-> +static int tfa9879_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct tfa9879_priv *tfa9879 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	codec->control_data = tfa9879->regmap;
-
-This is redundant, just remove the entire function - ASoC will get the
-regmap automatically.
-
-> +	{ TFA9879_MISC_STATUS,		0x0000 }, /* 0x15, read-only */
-> +};
-> +
-> +static bool tfa9879_volatile_register(struct device *dev, unsigned int reg)
-> +{
-> +	return reg == TFA9879_MISC_STATUS;
-
-If the register is volatile it shouldn't have a default value provided.
-
---vsHhinrhaqUzFcVS
+--2l43pqSnz0CmKuGJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUW3mQAAoJECTWi3JdVIfQNzcH/jkrpR2hbM0+Nc3CidJvFmB/
-TVDQ0pwlCkt94NndEhQ6NXESGdIW6hRfe69cVLEacVrab/PO+BqYWW1UG1ALHLPV
-gQUgkKNdfdw124Dg3rZr4P7kvUBoOoFsXAklsgC7Vv2siIWEkHZ3m96xFOeK9QTI
-9AwjkImeolPzMSAEkpl0WQQQ6++nRHePQaGCyRFdk7B7/hreq5vW0qKcH10gRqT+
-VxhyEgpDTKLEPfXw+zBOy0jmbQO61wKzjSDjgkTRK2IElRu+qsyo3bpIuYys4amv
-GLp4705u+F2qZs+E1xSymBivokZjjonHnuOI42aWqiqE3km+oTm7sCX5uUuCfzE=
-=2899
+iQEcBAEBAgAGBQJUW3pLAAoJECTWi3JdVIfQLMcH+QFLZnLsbVkYTbkyX6BPNZdY
+LVtY88PhKl0oio3dU66QDP6FfFjuF1TLDUyrpL4EgtGKVaSgo1NfqShQeF5DGfdR
+sanU9WaVNoP6ZIAd1pI9KnCDPnu+rVlgw7rvBfNgUl750gOGitNia8aEAK7G5Hmh
+sl0LqufY9LL4DQFrdHl8hu9b1tOF8Y/ojG/bPv25aLkJegTJz8D+dDaEWZNCdBOI
+JRBQ8cz8J17t+dhi9pRyTR3wLIV1d32dyixYC14aYQgjXdcbaRc0DpCBuD2CITsw
+1cIiPOq0JlkwzQKx6qd09XvdlYrxI7uusE1YRdK3apgXTkLSFJOe4uAgWfoPjCU=
+=Vrs9
 -----END PGP SIGNATURE-----
 
---vsHhinrhaqUzFcVS--
+--2l43pqSnz0CmKuGJ--
