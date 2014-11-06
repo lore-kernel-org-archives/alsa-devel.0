@@ -1,17 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 4/6] ASoC: Intel: mrfld- add ACPI module
-Date: Thu, 6 Nov 2014 18:39:09 +0530
-Message-ID: <20141106130909.GC1870@intel.com>
+Subject: Re: [PATCH v3 5/6] ASoC: Intel: add BYTCR machine
+ driver with RT5640
+Date: Thu, 6 Nov 2014 18:41:42 +0530
+Message-ID: <20141106131141.GD1870@intel.com>
 References: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
- <1415098520-14113-5-git-send-email-vinod.koul@intel.com>
- <20141106124349.GB8509@sirena.org.uk>
+ <1415098520-14113-6-git-send-email-vinod.koul@intel.com>
+ <20141106124854.GC8509@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3649951738701676946=="
+Content-Type: multipart/mixed; boundary="===============4719357652157373429=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 507C3260632
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 14:08:31 +0100 (CET)
-In-Reply-To: <20141106124349.GB8509@sirena.org.uk>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8DA8260632
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 14:11:20 +0100 (CET)
+In-Reply-To: <20141106124854.GC8509@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,123 +27,84 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lg
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3649951738701676946==
+--===============4719357652157373429==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dTy3Mrz/UPE2dbVg"
+	protocol="application/pgp-signature"; boundary="VywGB/WGlW4DM4P8"
 Content-Disposition: inline
 
 
---dTy3Mrz/UPE2dbVg
+--VywGB/WGlW4DM4P8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 06, 2014 at 12:43:49PM +0000, Mark Brown wrote:
-> On Tue, Nov 04, 2014 at 04:25:18PM +0530, Vinod Koul wrote:
+On Thu, Nov 06, 2014 at 12:48:54PM +0000, Mark Brown wrote:
+> On Tue, Nov 04, 2014 at 04:25:19PM +0530, Vinod Koul wrote:
 >=20
-> > @@ -323,7 +324,11 @@ EXPORT_SYMBOL_GPL(sst_context_init);
-> >  void sst_context_cleanup(struct intel_sst_drv *ctx)
-> >  {
-> >  	pm_runtime_get_noresume(ctx->dev);
-> > +#if IS_ENABLED(CONFIG_ACPI)
-> > +	pm_runtime_disable(ctx->dev);
-> > +#else
-> >  	pm_runtime_forbid(ctx->dev);
-> > +#endif
-> >  	sst_unregister(ctx->dev);
-> >  	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
-> >  	flush_scheduled_work();
+> > +static int byt_aif1_hw_params(struct snd_pcm_substream *substream,
+> > +					struct snd_pcm_hw_params *params)
+> > +{
+> > +	struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+> > +	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+> > +	int ret;
+> > +
+> > +	if (strncmp(codec_dai->name, "rt5640-aif1", 11))
+> > +		return 0;
 >=20
-> No, we should be able to build a kernel which runs with or without ACPI
-> - make this a runtime check if it's required (a comment might be in
-> order too since this is a weird thing to do).
-yes that is doable by adding a parameter and setting that in specfic probe,
-will add.
+> This looks wrong...  fairly sure I queried this on an earlier version of
+> the patch and was told it wasn't required.
+This was supposed to be removed, not sure why it creeped back in, will fix
+now
 
 >=20
-> > @@ -371,8 +376,19 @@ void sst_configure_runtime_pm(struct intel_sst_drv=
- *ctx)
-> >  {
-> >  	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
-> >  	pm_runtime_use_autosuspend(ctx->dev);
-> > +#if IS_ENABLED(CONFIG_ACPI)
-> > +	/*
-> > +	 * For acpi devices, the actual physical device state is
-> > +	 * initially active. So change the state to active before
-> > +	 * enabling the pm
-> > +	 */
-> > +	pm_runtime_set_active(ctx->dev);
-> > +	pm_runtime_enable(ctx->dev);
-> > +	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
-> > +#else
-> >  	pm_runtime_allow(ctx->dev);
-> >  	pm_runtime_put_noidle(ctx->dev);
-> > +#endif
+> > +	ret =3D snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
+> > +				     params_rate(params) * 512,
+> > +				     SND_SOC_CLOCK_IN);
+> > +	if (ret < 0) {
+> > +		dev_err(rtd->dev, "can't set codec clock %d\n", ret);
+> > +		return ret;
+> > +	}
+> > +	ret =3D snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
 >=20
-> The general idiom for runtime PM is that we should default to bringing
-> the device to power up anyway, that way the kernel continues to work if
-> runtime PM has been disabled.
+> Missing blank line here and in several places throughout the file.  I'd
+> expect the PLL to be enabled before the sysclk is told to use it, error
+> checking might kick in otherwise.
 ok
 
 >=20
-> > +	/* save the shim registers because PMC doesn't save state */
-> > +	if (ctx->dev_id =3D=3D SST_BYT_ACPI_ID)
-> > +		sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
->=20
-> Is there any harm in doing this unconditionally?
-Shouldnt be, let me verify
-
->=20
-> > +static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
-> > +				       void *context, void **ret)
+> > +#ifdef CONFIG_PM_SLEEP
+> > +static int snd_byt_prepare(struct device *dev)
 > > +{
-> > +	*(bool *)context =3D true;
-> > +	return AE_OK;
+> > +	return snd_soc_suspend(dev);
 > > +}
 > > +
-> > +static struct sst_machines *sst_acpi_find_machine(
-> > +	struct sst_machines *machines)
+> > +static void snd_byt_complete(struct device *dev)
 > > +{
-> > +	struct sst_machines *mach;
-> > +	bool found =3D false;
+> > +	snd_soc_resume(dev);
+> > +}
 > > +
-> > +	for (mach =3D machines; mach->codec_id; mach++)
-> > +		if (ACPI_SUCCESS(acpi_get_devices(mach->codec_id,
-> > +						  sst_acpi_mach_match,
-> > +						  &found, NULL)) && found)
-> > +			return mach;
->=20
-> acpi_get_devices() seems painful.
->=20
+> > +static int snd_byt_poweroff(struct device *dev)
+> > +{
+> > +	return snd_soc_poweroff(dev);
+> > +}
 > > +#else
-> > +int sst_acpi_probe(struct platform_device *pdev)
-> > +{
-> > +	return -EINVAL;
-> > +}
-> > +
-> > +int sst_acpi_remove(struct platform_device *pdev)
-> > +{
-> > +	return -EINVAL;
-> > +}
+> > +#define snd_byt_prepare NULL
+> > +#define snd_byt_complete NULL
+> > +#define snd_byt_poweroff NULL
 > > +#endif
 >=20
-> Why not just not build this file if !CONFIG_ACPI?
-Yes, anway this is only for ACPI systems.
+> Don't bother with the wrapper functions, they're not adding anything.
+> Why are we using prepare() and complete() here - other machine drivers
+> don't need to do that?  Comments might be helpful...
+due to I2C. We have seen that codec is resumed but I2C is still
+not ready causing i2c failures, so moving to complete and prepare helps. I
+will add this comment. Will remove wrappers.
 
->=20
-> > +static struct sst_machines sst_acpi_bytcr[] =3D {
-> > +	{"10EC5640", "T100", "bytt100_rt5640", NULL, "fw_sst_0f28.bin",
-> > +						&byt_rvp_platform_data },
-> > +	{},
-> > +};
->=20
-> Yay.  Much win.  Not that there's much that can be done at this point.
-Yup, hopefully _DSD migration will help us here
-
+Thanks
 --=20
 ~Vinod
 
---dTy3Mrz/UPE2dbVg
+--VywGB/WGlW4DM4P8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -150,28 +112,28 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQIcBAEBAgAGBQJUW3L1AAoJEHwUBw8lI4NHrGMP/323urSDd0bOa9SY5zdAoXPk
-Ygc1VxihQhuOVoRvwSuqA7D5cZ+g3ONtmugK7nFNHrupLjQIVdaKOuglE/FPWVyV
-9em34KovmaxgCL6ucIeZZ9BIWLegrVf5oifofaMrD4KiRw9YYKGOdAOyopdAHJbh
-q4w9SZH4ZU79VADCt7n1arXQmVEmsaS9SUnNOYyFWYziq08FKsawknKykdnhSMzV
-XfMGjLl392YfdNxN1DG1bNAtvlu++498O0WfDAtoFou3gG3Sr9/kC29O5S5rqcrF
-vFJ7d6jQbPfzURmllc8vSOyBhIJ9lGqoQyzm2E729kJWqI4Ujnm+TPbCU1/QQzNG
-TFgi5UB5p67hENmvef3cotL/QmsPlDjAMcXZRZprIk622/bB5GcF3fEm7t1KYuP3
-Zd3eRLh8YuOUw8BDf2cNwMtT0A/FSPhbAyuuHeCrITfF8QlgAmyatrIo5rP7W2Io
-g604+toMzNHA41Mz4NnL1s1Js0MaHR5DHty5S7950a+MKPJSPVQwAwXRP7Yz6Zg3
-7bP1Cu0U83s3dfeZd7wemgSfYkclmxnY/+MyJBF9IlcRjMf72VGLDLiz/wGlWQYQ
-tmKUF7MnbHjlNr4YD2QayxaeC5qyB0Dunql4ju7A6JSvEmy40eRKT25TwZtyA9ID
-L7V3qQHYYIKlvKPS5IL+
-=ODw5
+iQIcBAEBAgAGBQJUW3ONAAoJEHwUBw8lI4NHR6sP/jZq6wuhmsu8dWFBVazAAXDA
+gHJ9keL8tvGrgSzSfbhZ7wok8rkSolQsxW//Ja6TRCKXv/sS1QY10/MsLsBmJ4Dp
+jjB9alV6xIZTIjsueE7ZOtZ196OJ65BqeCOv1zSQEegCEjHcvoiFChKxdURpBoo8
+TRKbwhVDPgG7GPIvmT3hezLJSrFoVYbBHcl1/OFpVpjDYJm6g5JMDNUyCgu6DW+W
+V8sWZLsARehc4quBiHCDOejG9lCQ/N5eQFZ8CXDi8FVGVtXshgMe31crjlMcXL7e
+sVBH8t/f80RFc+hVSCXZUzXNRFpYLH/aj/1jLFoSymyxGcc7E1LqTYXYsQ6vZnjd
+4EV1hbxi+AAnfHpWHCsV72emeDsJ8REd0xoPWRa5xT25Vjr/jJT+UYMkTaFcHhtq
+9tPIXViP21sT9xO1IQKqRQU2J8Ol34MHmfsPbJFAJ/8FHHjpAjB+MirclWfZxo42
+W0CV6i67hFldm6i2vieNiM9F2MrZZPP9vL13p8NcsyL0SN06/R0T9+/mnSkAKBN8
+Tc4bjIAyrj3dNJ8As20ACKfwt1jtKjm+jfHkplY9ZX+sT5l/dr+tf+k/LJBo8KD/
+DaMjUqhLz6IAPTN7q41SFmMsAcyMe+djJ4YGFsxrQcYyrJIjGhYwWyXymhqjeXtw
+0DsOOcDik9R95flqWHT7
+=5TeM
 -----END PGP SIGNATURE-----
 
---dTy3Mrz/UPE2dbVg--
+--VywGB/WGlW4DM4P8--
 
---===============3649951738701676946==
+--===============4719357652157373429==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3649951738701676946==--
+--===============4719357652157373429==--
