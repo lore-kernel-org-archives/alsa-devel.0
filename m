@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC:rt5670: add rt5672 codec support
-Date: Thu, 6 Nov 2014 06:00:15 +0000
-Message-ID: <20141106060015.GP8509@sirena.org.uk>
+Subject: Re: [PATCH 4/4] ASoC:rt5670:change dapm routes of PLL
+	connection
+Date: Thu, 6 Nov 2014 06:01:08 +0000
+Message-ID: <20141106060108.GQ8509@sirena.org.uk>
 References: <1415247834-14278-1-git-send-email-bardliao@realtek.com>
- <1415247834-14278-3-git-send-email-bardliao@realtek.com>
+ <1415247834-14278-4-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2960195769791889479=="
+Content-Type: multipart/mixed; boundary="===============6046280555797175425=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 80B472650C5
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 07:00:26 +0100 (CET)
-In-Reply-To: <1415247834-14278-3-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FEEA26512A
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 07:01:24 +0100 (CET)
+In-Reply-To: <1415247834-14278-4-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +27,48 @@ Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdo
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2960195769791889479==
+--===============6046280555797175425==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+W7ryvxEk4RRyt+P"
+	protocol="application/pgp-signature"; boundary="5AmtYbcgdBTTPS58"
 Content-Disposition: inline
 
 
---+W7ryvxEk4RRyt+P
+--5AmtYbcgdBTTPS58
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 06, 2014 at 12:23:53PM +0800, bardliao@realtek.com wrote:
+On Thu, Nov 06, 2014 at 12:23:54PM +0800, bardliao@realtek.com wrote:
+> From: Bard Liao <bardliao@realtek.com>
+>=20
+> PLL should be powered up once filter power is on. So, "PLL1"
+> should be connected to filters instead of DACs.
 
-> +	case RT5670_ID_5670:
-> +	case RT5670_ID_5671:
+Applied, thanks.
 
-This looks like it also adds rt5671 support but...
-
->  static const struct i2c_device_id rt5670_i2c_id[] = {
->  	{ "rt5670", 0 },
-> +	{ "rt5672", 0 },
->  	{ }
->  };
-
-...not here.  Otherwise this is fine, though it would be better to warn
-if the user registered the device as one type but it turns out to be
-another when we read the ID register.
-
---+W7ryvxEk4RRyt+P
+--5AmtYbcgdBTTPS58
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUWw5vAAoJECTWi3JdVIfQp5AIAIaN03wA6vgI+WySMHXjRAq4
-px9nrtdihD+zJeC9bJYXrhvPeLqVycQ0RhCT3PC3y6nIyN98XKsM6UODNTZhHUqH
-tG7lAAkTL8Bj/7/Lebrj30uOf9o1AfZIH8Lgdw8UYRTSG2NW7j0a3rtouSO3ojzg
-dV3IqRBwFcO7W2m8OB/78PhcTxZ97oPYgCqDoNeX9cAKEW8mDob0gaD/AeOBR2Ci
-ho2AccBT2Arjrj+/Dz3e44MvxtbGPErwNcdZcYS6OswFimA1orBXGMUBGxpZa7+S
-89xeXBzPuM6zLyCvrNdiko+POOlRsVmh1QrJu70dtHhBN5caMO1zmWB2sIqdgco=
-=zhRm
+iQEcBAEBAgAGBQJUWw6jAAoJECTWi3JdVIfQlkkH/2vmJ/SxFeMV/SN/31+dB8jJ
+IXLOLBSzeIR+Smd949/eQVS1BnTLAUE8eo40I9q3pBB7rivIzIpzFAtLCZOpT5aD
+cmyWGr8XPM88Qo1iSUF7tdp0VgiB3UTNKluCJYcwLx9yqS/BZoy+49aTCEnlwfj1
+QB48kzZHLhiNALh9Qe/QBqathECyrIy0aojQywYw0Os4qNRRnu+8JKZI7F57oLki
+1CVMAfUW3Y6YuUZut36+7PGgwbBwAuhvrAWLaMgr6bPRJDgfMssCLpVoLHCD6ZJz
+UddDpgPayKO/ZcrSdkpHch5k8+GBzjPH3sRBQQY6bshZi8uUjR++i1X+Z7dXI6w=
+=vcC3
 -----END PGP SIGNATURE-----
 
---+W7ryvxEk4RRyt+P--
+--5AmtYbcgdBTTPS58--
 
---===============2960195769791889479==
+--===============6046280555797175425==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2960195769791889479==--
+--===============6046280555797175425==--
