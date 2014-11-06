@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC:rt5645:Add JD function support
-Date: Thu, 6 Nov 2014 12:34:11 +0000
-Message-ID: <20141106123411.GX8509@sirena.org.uk>
-References: <1415170928-29408-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH v3 1/6] ASoC: Intel: mrfld - remove
+ unnecessary check for pointer
+Date: Thu, 6 Nov 2014 12:36:26 +0000
+Message-ID: <20141106123626.GY8509@sirena.org.uk>
+References: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
+ <1415098520-14113-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3135543811973953417=="
+Content-Type: multipart/mixed; boundary="===============3053391746239354837=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 26A0526517F
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 13:34:32 +0100 (CET)
-In-Reply-To: <1415170928-29408-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8144626517F
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 13:36:38 +0100 (CET)
+In-Reply-To: <1415098520-14113-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,53 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, yang.a.fang@intel.com, lgirdwood@gmail.com, flove@realtek.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3135543811973953417==
+--===============3053391746239354837==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fqQSV+MVmQEkpBtA"
+	protocol="application/pgp-signature"; boundary="rmLdANEyqdgxlbgR"
 Content-Disposition: inline
 
 
---fqQSV+MVmQEkpBtA
+--rmLdANEyqdgxlbgR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 05, 2014 at 03:02:08PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> rt5645 codec support jack detection function. The patch will set
-> related registers if JD function is used.
+On Tue, Nov 04, 2014 at 04:25:15PM +0530, Vinod Koul wrote:
+> the 'platform' pointer in sst_map_modules_to_pipe() is deref in caller
+> function so we need to check for it in this function
 
 Applied, thanks.
 
---fqQSV+MVmQEkpBtA
+--rmLdANEyqdgxlbgR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUW2q+AAoJECTWi3JdVIfQLMAH/2vf5jS6cpNZ2R6ppWJzGBII
-m5x0vdRkxrkkOrBN4OIDMPiA2SrSd2qQpUJZHeS2on3CU0yxcJFZ7l/MAhRPXYgg
-J10CaZcO9Nk5p4VQJT05Lh3A1+zX6SkiL9hogCMOihCstTMeL0zd4UdhMgoj1h8Q
-YI4O2UeXw5EkdJiXBgDhH61c+OyqK7l4ZOcDUAMweHFw5rrrK2QLBlkj5/EDshC0
-2Xul6eFn5QK+BKBxl/EN5ie0MyWZvLZlnnaEOO0GfGDkYFMMRMt+xQ5zTZqmauyB
-Dz21rbjWGWfWmLbAde0tU7nzEmMP0/yq7LIimUg0gFv6zcaAT6Zf60Z9Waq5NMI=
-=R3rg
+iQEcBAEBAgAGBQJUW2tKAAoJECTWi3JdVIfQEKQH/AnGG4sCWkmHeEz2/QlL2rak
+nzPELlzekqOgLXYHvxntD8O+gx+fhLebLZ6WwHfG/bUWEkNvCaoltWBiXM3+iw6h
+qm4E7BBsIBKynyyDfYgW/T5tPWQwBMHD+bkz88kXB9hLfWvzI0AgHxY7ohTtfGZD
+lUGRQMTcMnggqaHK4hIGB4PxkP0AqasHkG8+9M8FL7R2KJFvjrBNB1G29vcp9Req
+4GzcYprVsDbCISS4ifOMcR4wW7sW6xRBp6vNVWLBSx/sv8Wqu+2ztq3feSrs40R/
+N0xYNcB+wM2LfjxRuoInrmwp/7/XHn3ZRkx430q3AEqRZML/TJoUrE/6X+F/5N0=
+=dm25
 -----END PGP SIGNATURE-----
 
---fqQSV+MVmQEkpBtA--
+--rmLdANEyqdgxlbgR--
 
---===============3135543811973953417==
+--===============3053391746239354837==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3135543811973953417==--
+--===============3053391746239354837==--
