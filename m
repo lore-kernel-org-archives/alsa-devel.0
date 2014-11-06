@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 4/6] ASoC: Intel: mrfld- add ACPI module
-Date: Thu, 6 Nov 2014 12:43:49 +0000
-Message-ID: <20141106124349.GB8509@sirena.org.uk>
+Subject: Re: [PATCH v3 5/6] ASoC: Intel: add BYTCR machine
+	driver with RT5640
+Date: Thu, 6 Nov 2014 12:48:54 +0000
+Message-ID: <20141106124854.GC8509@sirena.org.uk>
 References: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
- <1415098520-14113-5-git-send-email-vinod.koul@intel.com>
+ <1415098520-14113-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8171997745854102402=="
+Content-Type: multipart/mixed; boundary="===============4095837236083756470=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 515CD265114
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 13:45:08 +0100 (CET)
-In-Reply-To: <1415098520-14113-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F4BB265114
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 13:49:14 +0100 (CET)
+In-Reply-To: <1415098520-14113-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,129 +27,92 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lg
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8171997745854102402==
+--===============4095837236083756470==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T0u6oYl84yPn00Od"
+	protocol="application/pgp-signature"; boundary="iluUylAmeNVF81ZM"
 Content-Disposition: inline
 
 
---T0u6oYl84yPn00Od
+--iluUylAmeNVF81ZM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 04, 2014 at 04:25:18PM +0530, Vinod Koul wrote:
+On Tue, Nov 04, 2014 at 04:25:19PM +0530, Vinod Koul wrote:
 
-> @@ -323,7 +324,11 @@ EXPORT_SYMBOL_GPL(sst_context_init);
->  void sst_context_cleanup(struct intel_sst_drv *ctx)
->  {
->  	pm_runtime_get_noresume(ctx->dev);
-> +#if IS_ENABLED(CONFIG_ACPI)
-> +	pm_runtime_disable(ctx->dev);
-> +#else
->  	pm_runtime_forbid(ctx->dev);
-> +#endif
->  	sst_unregister(ctx->dev);
->  	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
->  	flush_scheduled_work();
-
-No, we should be able to build a kernel which runs with or without ACPI
-- make this a runtime check if it's required (a comment might be in
-order too since this is a weird thing to do).
-
-> @@ -371,8 +376,19 @@ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
->  {
->  	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
->  	pm_runtime_use_autosuspend(ctx->dev);
-> +#if IS_ENABLED(CONFIG_ACPI)
-> +	/*
-> +	 * For acpi devices, the actual physical device state is
-> +	 * initially active. So change the state to active before
-> +	 * enabling the pm
-> +	 */
-> +	pm_runtime_set_active(ctx->dev);
-> +	pm_runtime_enable(ctx->dev);
-> +	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
-> +#else
->  	pm_runtime_allow(ctx->dev);
->  	pm_runtime_put_noidle(ctx->dev);
-> +#endif
-
-The general idiom for runtime PM is that we should default to bringing
-the device to power up anyway, that way the kernel continues to work if
-runtime PM has been disabled.
-
-> +	/* save the shim registers because PMC doesn't save state */
-> +	if (ctx->dev_id == SST_BYT_ACPI_ID)
-> +		sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
-
-Is there any harm in doing this unconditionally?
-
-> +static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
-> +				       void *context, void **ret)
+> +static int byt_aif1_hw_params(struct snd_pcm_substream *substream,
+> +					struct snd_pcm_hw_params *params)
 > +{
-> +	*(bool *)context = true;
-> +	return AE_OK;
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> +	int ret;
+> +
+> +	if (strncmp(codec_dai->name, "rt5640-aif1", 11))
+> +		return 0;
+
+This looks wrong...  fairly sure I queried this on an earlier version of
+the patch and was told it wasn't required.
+
+> +	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
+> +				     params_rate(params) * 512,
+> +				     SND_SOC_CLOCK_IN);
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "can't set codec clock %d\n", ret);
+> +		return ret;
+> +	}
+> +	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
+
+Missing blank line here and in several places throughout the file.  I'd
+expect the PLL to be enabled before the sysclk is told to use it, error
+checking might kick in otherwise.
+
+> +#ifdef CONFIG_PM_SLEEP
+> +static int snd_byt_prepare(struct device *dev)
+> +{
+> +	return snd_soc_suspend(dev);
 > +}
 > +
-> +static struct sst_machines *sst_acpi_find_machine(
-> +	struct sst_machines *machines)
+> +static void snd_byt_complete(struct device *dev)
 > +{
-> +	struct sst_machines *mach;
-> +	bool found = false;
+> +	snd_soc_resume(dev);
+> +}
 > +
-> +	for (mach = machines; mach->codec_id; mach++)
-> +		if (ACPI_SUCCESS(acpi_get_devices(mach->codec_id,
-> +						  sst_acpi_mach_match,
-> +						  &found, NULL)) && found)
-> +			return mach;
-
-acpi_get_devices() seems painful.
-
+> +static int snd_byt_poweroff(struct device *dev)
+> +{
+> +	return snd_soc_poweroff(dev);
+> +}
 > +#else
-> +int sst_acpi_probe(struct platform_device *pdev)
-> +{
-> +	return -EINVAL;
-> +}
-> +
-> +int sst_acpi_remove(struct platform_device *pdev)
-> +{
-> +	return -EINVAL;
-> +}
+> +#define snd_byt_prepare NULL
+> +#define snd_byt_complete NULL
+> +#define snd_byt_poweroff NULL
 > +#endif
 
-Why not just not build this file if !CONFIG_ACPI?
+Don't bother with the wrapper functions, they're not adding anything.
+Why are we using prepare() and complete() here - other machine drivers
+don't need to do that?  Comments might be helpful...
 
-> +static struct sst_machines sst_acpi_bytcr[] = {
-> +	{"10EC5640", "T100", "bytt100_rt5640", NULL, "fw_sst_0f28.bin",
-> +						&byt_rvp_platform_data },
-> +	{},
-> +};
-
-Yay.  Much win.  Not that there's much that can be done at this point.
-
---T0u6oYl84yPn00Od
+--iluUylAmeNVF81ZM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUW20EAAoJECTWi3JdVIfQ0NQH/j+DedCyzaaoAdBqsPDJS1g/
-H1vp3839GVX3sj6UHx+Kqna5Kno5gk1hxJdM/uFsUS2PhIAKje8i8rz1UrE1Npqm
-/K9bQmM0aPo+mmyHyo0SlWsMe3rhQemtwdxg9x2wmpWgp6YGe8W9mqw0jaV46upI
-hzXmhY+hswiA3GTot4kqaloydQO0fwNK09P+xVL5dm2Twg2e+i4HJ64jdTpY3JK9
-mQwOVJZPULq351VoaRKrdMEqMikAA8vZFXB/g+l3HZkjBLl/rM5ZLgIELyVO2QJc
-vd1zThwrSc05G5MBzlzZMqxPU6aAhRr7a9Rx2q/8eQBrVE9AVgGkS7lm0o58cIs=
-=AwSJ
+iQEcBAEBAgAGBQJUW241AAoJECTWi3JdVIfQsNsH/0Jm++282kmYVS3EdDZYiCJE
+osM9QBCWi1dxvRZB3qxsvDnYdEvEXlfdLjDuFJFGiz5A8C6uCk1nHNyO81yTvZW7
+cQDzGRaN1rWzixhFLqkPkrXnlMao6Jkfky0eEBOd/+zI3zE7V7mpRZu7ZpQXEE6P
+vzV8YVqBu2rQuRl6MihY+NAgtsKLBsVYfe7pZlbckg2OMvI4GPqgiB5t5nihVIqU
+JQn9tIn2JKVEWEpSuH2Hg7w6ZSn/5omtZOZO2KlNP8zona7s97IR6e/Vlt8zJbdS
+4PMBi+07cPyzt1hG5PfU8vwjHQ8utE1go2EwosmnBRgx8rRSQcC5nMi+Kbe7T1I=
+=+mqc
 -----END PGP SIGNATURE-----
 
---T0u6oYl84yPn00Od--
+--iluUylAmeNVF81ZM--
 
---===============8171997745854102402==
+--===============4095837236083756470==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8171997745854102402==--
+--===============4095837236083756470==--
