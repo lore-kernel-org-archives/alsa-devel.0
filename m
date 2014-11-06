@@ -1,17 +1,15 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Trigger PCM XRUN at XRUN
-Date: Thu,  6 Nov 2014 13:59:06 +0100
-Message-ID: <1415278746-5112-1-git-send-email-tiwai@suse.de>
+From: Manish Badarkhe <manishvb@ti.com>
+Subject: [PATCH] ASoC: tlv320aic3x: Remove '.owner' field of
+	driver
+Date: Thu, 6 Nov 2014 10:46:56 +0530
+Message-ID: <1415251016-3730-1-git-send-email-manishvb@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id BF4EA2651A8
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 13:59:07 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 95EF4AB07
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 12:59:07 +0000 (UTC)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75C4D2606FD
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 06:17:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, tiwai@suse.de, manishvb@ti.com, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-The usb-audio driver detects XRUN at its complete callback, but the
-actual code to trigger PCM XRUN is commented out because it caused
-deadlock in the past.  This patch revives the PCM trigger properly.
-It resulted in more than just enabling snd_pcm_stop(), but it had to
-deduce the PCM substream with proper NULL checks and holds the stream
-lock around the call.
+Remove '.owner' field of driver structure as it is
+going to be filled via "module_i2c_driver" call.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Manish Badarkhe <manishvb@ti.com>
 ---
- sound/usb/endpoint.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+:100644 100644 0307909... 191b423... M	sound/soc/codecs/tlv320aic31xx.c
+ sound/soc/codecs/tlv320aic31xx.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 167d0c1643e1..a4679913b0aa 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -348,6 +348,8 @@ static void snd_complete_urb(struct urb *urb)
- {
- 	struct snd_urb_ctx *ctx = urb->context;
- 	struct snd_usb_endpoint *ep = ctx->ep;
-+	struct snd_pcm_substream *substream;
-+	unsigned long flags;
- 	int err;
- 
- 	if (unlikely(urb->status == -ENOENT ||		/* unlinked */
-@@ -364,8 +366,6 @@ static void snd_complete_urb(struct urb *urb)
- 			goto exit_clear;
- 
- 		if (snd_usb_endpoint_implicit_feedback_sink(ep)) {
--			unsigned long flags;
--
- 			spin_lock_irqsave(&ep->lock, flags);
- 			list_add_tail(&ctx->ready_list, &ep->ready_playback_urbs);
- 			spin_unlock_irqrestore(&ep->lock, flags);
-@@ -389,7 +389,12 @@ static void snd_complete_urb(struct urb *urb)
- 		return;
- 
- 	usb_audio_err(ep->chip, "cannot submit urb (err = %d)\n", err);
--	//snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
-+	if (ep->data_subs && ep->data_subs->pcm_substream) {
-+		substream = ep->data_subs->pcm_substream;
-+		snd_pcm_stream_lock_irqsave(substream, flags);
-+		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
-+		snd_pcm_stream_unlock_irqrestore(substream, flags);
-+	}
- 
- exit_clear:
- 	clear_bit(ctx->index, &ep->active_mask);
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 0307909..191b423 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1303,7 +1303,6 @@ MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
+ static struct i2c_driver aic31xx_i2c_driver = {
+ 	.driver = {
+ 		.name	= "tlv320aic31xx-codec",
+-		.owner	= THIS_MODULE,
+ 		.of_match_table = of_match_ptr(tlv320aic31xx_of_match),
+ 	},
+ 	.probe		= aic31xx_i2c_probe,
 -- 
-2.1.3
+1.7.9.5
