@@ -1,64 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 02/15] GPIO: port LoCoMo gpio support from old driver
-Date: Thu, 6 Nov 2014 06:03:35 +0000
-Message-ID: <20141106060335.GR8509@sirena.org.uk>
-References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
- <1414454528-24240-3-git-send-email-dbaryshkov@gmail.com>
- <CACRpkdY7tRadod2vQfEytmw-ubaMAvr_=XTczD5bUMkqie0xkg@mail.gmail.com>
- <CALT56yOgMUA7o2dzfHph=S2zkDV4zERzMh4ishpPwpAx7Cqj6Q@mail.gmail.com>
- <CACRpkdb7v3LmOhbhQ9TPk1_bnLnpwizawW6RQvhQRLSjRewAaQ@mail.gmail.com>
- <CALT56yO9f8wzaArnmfQSDzCM3S+2oT+62anH5kbFY3WdEt_HZg@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH alsa-lib] pcm: dmix: Don't ignore
+	SND_TIMER_EVENT_MSTOP
+Date: Thu,  6 Nov 2014 12:14:13 +0100
+Message-ID: <1415272453-31507-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YttKMwf6abDJOSyE"
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CALT56yO9f8wzaArnmfQSDzCM3S+2oT+62anH5kbFY3WdEt_HZg@mail.gmail.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECFFE26516D
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 12:14:15 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 70D03ADA8
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 11:14:15 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+When a slave PCM gets an error like XRUN, it stops and notifies with
+SND_TIMER_EVENT_MSTOP event.  But the current code filters out this
+type and eventually hang due to the empty timer queue.  The fix is to
+just add this event type to the filter bit mask.
 
---YttKMwf6abDJOSyE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/pcm/pcm_direct.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Thu, Nov 06, 2014 at 01:33:24AM +0400, Dmitry Eremin-Solenikov wrote:
-> 2014-11-03 16:43 GMT+03:00 Linus Walleij <linus.walleij@linaro.org>:
-
-> > Yes that's the point: if you use regmap mmio you get the RMW-locking
-> > for free, with the regmap implementation.
-
-> Just to be more concrete. Currently locomo_gpio_ack_irq() function uses
-> one lock and one unlock for doing 3 consecutive RMW I I convert locomo
-> to regmap, will that be 3 lock/unlock calls or still one? (Or maybe I'm
-> trying to be over-protective here and adding more lock/unlock cycles
-> won't matter that much?)
-
-You'll get three lock/unlocks, we could add an interface for bulk
-updates under one lock if it's important though.
-
-> Next question: if I have to export regmap to several subdrivers, is it better
-> to have one big regmap or to have one-map-per-driver approach?
-
-One regmap for the physical register map which is shared between all the
-users.
-
---YttKMwf6abDJOSyE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUWw82AAoJECTWi3JdVIfQzMAH/27/lKZbrTrd1rIoHTVxu3Pz
-qQzFDvoBmssvSLHk0fMkvcx7cJ9IahKBs9EtmyM5dR3lhDIfZZi5OYTw+dmyiyVu
-07BxmlnkvP7mv5HuI1VrUyfz0SeBxfAIQDsLgiwwikXZD+3eUZgjlZVuWHt3WlAM
-ITH5dFFv3enp692X0hMRz9XWiFwqlW3w5SXhpqlP5h3PgWPEjIei1QNqe3H9ELBr
-5Or31N42bBWSzA1FA5HzBoEbOx8D11E8RUtnhWgixmzFcKoYQmXHDPe+DJ11XCPe
-9hhOpeDthhrSKUFi4M6kQxJ218uHjoWNjYsgRAIYgL2bG8dFLKSjSsAUgSXZY94=
-=saoU
------END PGP SIGNATURE-----
-
---YttKMwf6abDJOSyE--
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 8e37bcba5e19..195fddf06cda 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -1148,6 +1148,7 @@ int snd_pcm_direct_initialize_poll_fd(snd_pcm_direct_t *dmix)
+ 
+ 	dmix->timer_events = (1<<SND_TIMER_EVENT_MSUSPEND) |
+ 			     (1<<SND_TIMER_EVENT_MRESUME) |
++			     (1<<SND_TIMER_EVENT_MSTOP) |
+ 			     (1<<SND_TIMER_EVENT_STOP);
+ 
+ 	/*
+-- 
+2.1.3
