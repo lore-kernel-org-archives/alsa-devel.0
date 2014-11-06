@@ -1,74 +1,64 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC:rt5670:change dapm routes of PLL
-	connection
-Date: Thu, 6 Nov 2014 06:01:08 +0000
-Message-ID: <20141106060108.GQ8509@sirena.org.uk>
-References: <1415247834-14278-1-git-send-email-bardliao@realtek.com>
- <1415247834-14278-4-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH 02/15] GPIO: port LoCoMo gpio support from old driver
+Date: Thu, 6 Nov 2014 06:03:35 +0000
+Message-ID: <20141106060335.GR8509@sirena.org.uk>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+ <1414454528-24240-3-git-send-email-dbaryshkov@gmail.com>
+ <CACRpkdY7tRadod2vQfEytmw-ubaMAvr_=XTczD5bUMkqie0xkg@mail.gmail.com>
+ <CALT56yOgMUA7o2dzfHph=S2zkDV4zERzMh4ishpPwpAx7Cqj6Q@mail.gmail.com>
+ <CACRpkdb7v3LmOhbhQ9TPk1_bnLnpwizawW6RQvhQRLSjRewAaQ@mail.gmail.com>
+ <CALT56yO9f8wzaArnmfQSDzCM3S+2oT+62anH5kbFY3WdEt_HZg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6046280555797175425=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FEEA26512A
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 07:01:24 +0100 (CET)
-In-Reply-To: <1415247834-14278-4-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YttKMwf6abDJOSyE"
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CALT56yO9f8wzaArnmfQSDzCM3S+2oT+62anH5kbFY3WdEt_HZg@mail.gmail.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6046280555797175425==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5AmtYbcgdBTTPS58"
-Content-Disposition: inline
-
-
---5AmtYbcgdBTTPS58
+--YttKMwf6abDJOSyE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 06, 2014 at 12:23:54PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> PLL should be powered up once filter power is on. So, "PLL1"
-> should be connected to filters instead of DACs.
+On Thu, Nov 06, 2014 at 01:33:24AM +0400, Dmitry Eremin-Solenikov wrote:
+> 2014-11-03 16:43 GMT+03:00 Linus Walleij <linus.walleij@linaro.org>:
 
-Applied, thanks.
+> > Yes that's the point: if you use regmap mmio you get the RMW-locking
+> > for free, with the regmap implementation.
 
---5AmtYbcgdBTTPS58
+> Just to be more concrete. Currently locomo_gpio_ack_irq() function uses
+> one lock and one unlock for doing 3 consecutive RMW I I convert locomo
+> to regmap, will that be 3 lock/unlock calls or still one? (Or maybe I'm
+> trying to be over-protective here and adding more lock/unlock cycles
+> won't matter that much?)
+
+You'll get three lock/unlocks, we could add an interface for bulk
+updates under one lock if it's important though.
+
+> Next question: if I have to export regmap to several subdrivers, is it better
+> to have one big regmap or to have one-map-per-driver approach?
+
+One regmap for the physical register map which is shared between all the
+users.
+
+--YttKMwf6abDJOSyE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUWw6jAAoJECTWi3JdVIfQlkkH/2vmJ/SxFeMV/SN/31+dB8jJ
-IXLOLBSzeIR+Smd949/eQVS1BnTLAUE8eo40I9q3pBB7rivIzIpzFAtLCZOpT5aD
-cmyWGr8XPM88Qo1iSUF7tdp0VgiB3UTNKluCJYcwLx9yqS/BZoy+49aTCEnlwfj1
-QB48kzZHLhiNALh9Qe/QBqathECyrIy0aojQywYw0Os4qNRRnu+8JKZI7F57oLki
-1CVMAfUW3Y6YuUZut36+7PGgwbBwAuhvrAWLaMgr6bPRJDgfMssCLpVoLHCD6ZJz
-UddDpgPayKO/ZcrSdkpHch5k8+GBzjPH3sRBQQY6bshZi8uUjR++i1X+Z7dXI6w=
-=vcC3
+iQEcBAEBAgAGBQJUWw82AAoJECTWi3JdVIfQzMAH/27/lKZbrTrd1rIoHTVxu3Pz
+qQzFDvoBmssvSLHk0fMkvcx7cJ9IahKBs9EtmyM5dR3lhDIfZZi5OYTw+dmyiyVu
+07BxmlnkvP7mv5HuI1VrUyfz0SeBxfAIQDsLgiwwikXZD+3eUZgjlZVuWHt3WlAM
+ITH5dFFv3enp692X0hMRz9XWiFwqlW3w5SXhpqlP5h3PgWPEjIei1QNqe3H9ELBr
+5Or31N42bBWSzA1FA5HzBoEbOx8D11E8RUtnhWgixmzFcKoYQmXHDPe+DJ11XCPe
+9hhOpeDthhrSKUFi4M6kQxJ218uHjoWNjYsgRAIYgL2bG8dFLKSjSsAUgSXZY94=
+=saoU
 -----END PGP SIGNATURE-----
 
---5AmtYbcgdBTTPS58--
-
---===============6046280555797175425==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6046280555797175425==--
+--YttKMwf6abDJOSyE--
