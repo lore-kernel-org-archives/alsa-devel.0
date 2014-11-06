@@ -1,52 +1,89 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: tfa9879: New driver for NXP Semiconductors
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: tfa9879: New driver for NXP Semiconductors
  TFA9879 amplifier.
-Date: Thu, 06 Nov 2014 14:27:26 +0100
-Message-ID: <545B773E.3020103@metafoo.de>
-References: <1415278441-27866-1-git-send-email-peda@lysator.liu.se> <1415278441-27866-2-git-send-email-peda@lysator.liu.se>
+Date: Thu, 6 Nov 2014 13:37:20 +0000
+Message-ID: <20141106133720.GG8509@sirena.org.uk>
+References: <1415278441-27866-1-git-send-email-peda@lysator.liu.se>
+ <1415278441-27866-2-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vsHhinrhaqUzFcVS"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <1415278441-27866-2-git-send-email-peda@lysator.liu.se>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@lysator.liu.se>, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org
+To: Peter Rosin <peda@lysator.liu.se>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/06/2014 01:54 PM, Peter Rosin wrote:
-[...]
+
+--vsHhinrhaqUzFcVS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 06, 2014 at 01:54:00PM +0100, Peter Rosin wrote:
+
 > +#define TFA9879_REG(codec, reg, field, value)				\
 > +	snd_soc_update_bits(codec, TFA9879_ ## reg,			\
 > +			    TFA9879_ ## field ## _MASK,			\
 > +			    (value) << TFA9879_ ## field ## _SHIFT)
+
+Please don't do stuff like this, it just makes the code look more
+obscure than it should be for people who work with multiple devices -
+just use update_bits() directly.
+
+> +static int tfa9879_prepare(struct snd_pcm_substream *substream,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
 > +
+> +	TFA9879_REG(codec, DEVICE_CONTROL, POWERUP, 1);
 
-I'm not sure I like this macro. Just using snd_soc_update_bits should make 
-it easier to review the patch since people understand its sematnics.
+Use DAPM to manage power, you're probably looking for a supply widget.
 
-[...]
+> +	switch (params_format(params)) {
+> +	case SNDRV_PCM_FORMAT_S16_LE:
+
+Use params_width() rather than a specific memory layout.
+
+> +	if (tfa9879->lsb_justified)
+> +		TFA9879_REG(codec, SERIAL_INTERFACE_1, I2S_SET, i2s_set);
+
+Why does this need to be reset every time, shouldn't we just be setting
+the register in set_fmt().?
+
 > +static int tfa9879_probe(struct snd_soc_codec *codec)
 > +{
 > +	struct tfa9879_priv *tfa9879 = snd_soc_codec_get_drvdata(codec);
 > +
 > +	codec->control_data = tfa9879->regmap;
 
-This is no longer necessary and won't even build with the latest ASoC tree.
+This is redundant, just remove the entire function - ASoC will get the
+regmap automatically.
 
-> +
-> +	return 0;
-> +}
-> +
-[...]
-> +static struct snd_soc_dai_ops tfa9879_dai_ops = {
-
-const
-
-> +	.prepare = tfa9879_prepare,
-> +	.hw_params = tfa9879_hw_params,
-> +	.shutdown = tfa9879_shutdown,
-> +	.digital_mute = tfa9879_digital_mute,
-> +	.set_fmt = tfa9879_set_fmt,
+> +	{ TFA9879_MISC_STATUS,		0x0000 }, /* 0x15, read-only */
 > +};
-[...]
+> +
+> +static bool tfa9879_volatile_register(struct device *dev, unsigned int reg)
+> +{
+> +	return reg == TFA9879_MISC_STATUS;
+
+If the register is volatile it shouldn't have a default value provided.
+
+--vsHhinrhaqUzFcVS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUW3mQAAoJECTWi3JdVIfQNzcH/jkrpR2hbM0+Nc3CidJvFmB/
+TVDQ0pwlCkt94NndEhQ6NXESGdIW6hRfe69cVLEacVrab/PO+BqYWW1UG1ALHLPV
+gQUgkKNdfdw124Dg3rZr4P7kvUBoOoFsXAklsgC7Vv2siIWEkHZ3m96xFOeK9QTI
+9AwjkImeolPzMSAEkpl0WQQQ6++nRHePQaGCyRFdk7B7/hreq5vW0qKcH10gRqT+
+VxhyEgpDTKLEPfXw+zBOy0jmbQO61wKzjSDjgkTRK2IElRu+qsyo3bpIuYys4amv
+GLp4705u+F2qZs+E1xSymBivokZjjonHnuOI42aWqiqE3km+oTm7sCX5uUuCfzE=
+=2899
+-----END PGP SIGNATURE-----
+
+--vsHhinrhaqUzFcVS--
