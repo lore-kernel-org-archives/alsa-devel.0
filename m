@@ -1,14 +1,16 @@
 From: <bardliao@realtek.com>
-Subject: [PATCH 1/2] ASoC:rt286: set combo jack by dmi
-Date: Thu, 6 Nov 2014 09:59:59 +0800
-Message-ID: <1415239200-13788-1-git-send-email-bardliao@realtek.com>
+Subject: [PATCH 2/2] ASoC:rt286:fix comment style
+Date: Thu, 6 Nov 2014 10:00:00 +0800
+Message-ID: <1415239200-13788-2-git-send-email-bardliao@realtek.com>
+References: <1415239200-13788-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id D9932261A74
+ by alsa0.perex.cz (Postfix) with ESMTP id 78F7C2617AD
  for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 03:00:45 +0100 (CET)
+In-Reply-To: <1415239200-13788-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,54 +26,48 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Bard Liao <bardliao@realtek.com>
 
-This patch enables combo jack configuration according to dmi.
+Adds spaces around the /* */.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
-* rename intel_platform to force_combo_jack_table
----
----
- sound/soc/codecs/rt286.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/soc/codecs/rt286.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 97daa80..d4acb64 100644
+index d4acb64..2e818aa 100644
 --- a/sound/soc/codecs/rt286.c
 +++ b/sound/soc/codecs/rt286.c
-@@ -17,6 +17,7 @@
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
-+#include <linux/dmi.h>
- #include <linux/acpi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -1205,6 +1206,16 @@ static const struct acpi_device_id rt286_acpi_match[] = {
- };
- MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
+@@ -191,7 +191,7 @@ static int rt286_hw_write(void *context, unsigned int reg, unsigned int value)
+ 	u8 data[4];
+ 	int ret, i;
  
-+static struct dmi_system_id force_combo_jack_table[] __initdata = {
-+	{
-+		.ident = "Intel Wilson Beach",
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_NAME, "Wilson Beach SDS")
-+		}
-+	},
-+	{ }
-+};
-+
- static int rt286_i2c_probe(struct i2c_client *i2c,
- 			   const struct i2c_device_id *id)
- {
-@@ -1240,6 +1251,9 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	if (pdata)
- 		rt286->pdata = *pdata;
+-	/*handle index registers*/
++	/* handle index registers */
+ 	if (reg <= 0xff) {
+ 		rt286_hw_write(client, RT286_COEF_INDEX, reg);
+ 		for (i = 0; i < INDEX_CACHE_SIZE; i++) {
+@@ -234,7 +234,7 @@ static int rt286_hw_read(void *context, unsigned int reg, unsigned int *value)
+ 	__be32 be_reg;
+ 	unsigned int index, vid, buf = 0x0;
  
-+	if (dmi_check_system(force_combo_jack_table))
-+		rt286->pdata.cbj_en = true;
-+
- 	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
+-	/*handle index registers*/
++	/* handle index registers */
+ 	if (reg <= 0xff) {
+ 		rt286_hw_write(client, RT286_COEF_INDEX, reg);
+ 		reg = RT286_PROC_COEF;
+@@ -1281,11 +1281,11 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	mdelay(10);
  
- 	for (i = 0; i < RT286_POWER_REG_LEN; i++)
+ 	regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
+-	/*Power down LDO, VREF*/
++	/* Power down LDO, VREF */
+ 	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0xc, 0x0);
+ 	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL1, 0x1001, 0x1001);
+ 
+-	/*Set depop parameter*/
++	/* Set depop parameter */
+ 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL2, 0x403a, 0x401a);
+ 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL3, 0xf777, 0x4737);
+ 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL4, 0x00ff, 0x003f);
 -- 
 1.8.1.1.439.g50a6b54
