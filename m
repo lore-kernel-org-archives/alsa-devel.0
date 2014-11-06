@@ -1,18 +1,18 @@
-From: Cyrus Harmon <cyrus@bobobeach.com>
-Subject: Re: [PATCH] add Steinberg UR44 USB Audio Interface
- support to quirks-table
-Date: Thu, 06 Nov 2014 08:54:26 -0800
-Message-ID: <545BA7C2.5010402@bobobeach.com>
-References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>	<531DAB14.5080201@ladisch.de>	<76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>	<531DDD04.5050902@ladisch.de>	<0EFBCC9F-93CA-4368-9530-B9049B3743FB@bobobeach.com>	<531EC9CC.4060203@ladisch.de>	<88C9DBF9-92A3-4885-87C5-A9966C326D0F@bobobeach.com>	<545895AD.7020004@ladisch.de>	<545A697C.5070800@bobobeach.com>	<545A93E3.7020906@ladisch.de>	<545B9C57.1070304@bobobeach.com>
- <s5hmw841dh2.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 6/6 v3] ASoC: rsnd: Add Volume Ramp support
+Date: Thu, 6 Nov 2014 16:58:29 +0000
+Message-ID: <20141106165829.GQ8509@sirena.org.uk>
+References: <87egtp2g05.wl%kuninori.morimoto.gx@gmail.com>
+ <87egti46j7.wl%kuninori.morimoto.gx@gmail.com>
+ <8761eu46cz.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5624026049729265146=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aspen.bobobeach.com (unknown [208.79.93.82])
- by alsa0.perex.cz (Postfix) with ESMTP id AE1D2265275
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 17:54:28 +0100 (CET)
-In-Reply-To: <s5hmw841dh2.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 729F2265275
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 17:58:53 +0100 (CET)
+In-Reply-To: <8761eu46cz.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-That's what I was looking for!
 
-Thanks!
+--===============5624026049729265146==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BEpf3/qOw8tl8wP0"
+Content-Disposition: inline
 
-On 11/06/2014 08:49 AM, Takashi Iwai wrote:
-> At Thu, 06 Nov 2014 08:05:43 -0800,
-> Cyrus Harmon wrote:
->>
->> On a somewhat related note, is there a way to apply changes to things
->> in, say, sound/usb and compile/install those changes without a few
->> kernel rebuild/install? Or, even better, without a reboot? Would
->> certainly shorting the debug cycle time for me. In this case I'm
->> interested in finding out what quirk->type is when it gets to
->> snd_usb_create_quirk as it looks like the function in the quirk_funcs
->> table that gets called here produces the first suspect error. Adding a
->> dev_info, followed by a kernel rebuild, reinstall, reboot (and the fact
->> that my broken nvidia drivers require reinstalling the video driver
->> every time I install a new kernel) makes for a tedious process!
-> It's a standard procedure, something like...
->
-> 	% mkdir /somewhere
-> 	% cd /somewhere
-> 	% cp -a /there/linux/sound .
-> 	% patch -p1 < your-usb.patch
-> 	% make -C /lib/modules/`uname -r`/build M=$PWD/sound/usb
-> 	% su
-> 	# make -C /lib/modules/`uname -r`/build M=$PWD/sound/usb modules_install
-> 	# modprobe -r snd-usb-audio
-> 	# modprobe snd-usb-audio
->
->
-> Takashi
+
+--BEpf3/qOw8tl8wP0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 04, 2014 at 08:29:53PM -0800, Kuninori Morimoto wrote:
+
+> amixer set "DVC Out" 100%      // = Normal Volume
+> amixer set "DVC Out Ramp Up Rate"   "0.125 dB/64 steps"
+> amixer set "DVC Out Ramp Down Rate" "0.125 dB/512 steps"
+> amixer set "DVC Out Ramp" 0%   // Mute = Normal Volume x 0%
+> amixer set "DVC Out Ramp" on   // Volume Ramp ON
+> aplay xxx.wav &
+> amixer set "DVC Out Ramp" 100% // Mute to Normal Volume x 100%
+> amixer set "DVC Out Ramp" 0%   // Normal Volume x 100% to Mute
+
+Correct me if I'm wrong but I think what's confusing me here is that
+what I'd expect to happen is that setting the ramp rate would cause any
+volume change done by the user to ramp to the target volume (or mute)
+but it looks like what's actually happening is that the ramp control is
+providing an additional layer of volume control on top of the normal
+volume control.
+
+--BEpf3/qOw8tl8wP0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUW6i0AAoJECTWi3JdVIfQBwwH/Rpo5h5k5YDwaqcCh8/rYLyW
+aOmO15WnAdhjPy1WmgmFmwO21MMtr84R6FLnNzgOju4Pf+erouZrrTiAn8lT+KnE
+oS05LQD+X4T/IVyc5ljfCvDNaCNrVqg8vw7rr63NOxXFBGsPU1q9eRR8tKtDtqNW
+eLgMEMHfn9GdvjV77DfGkUXYAnZME3sCAFX0OZPALceYGwujFJHquFnGqIfPvcqD
+/RMJa8KINesUOiUoK1n/1/DXuMlv9ZKqCOAQu44RZWVrqPfhxWGZJ+ISIB0lgk00
+S0rwZSrQMU1xxuSOf6fbdSdBSp4YYX4B0wfkwShSQHet+tfxu6+NRYtbCJEK4E8=
+=Iba2
+-----END PGP SIGNATURE-----
+
+--BEpf3/qOw8tl8wP0--
+
+--===============5624026049729265146==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5624026049729265146==--
