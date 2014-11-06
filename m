@@ -1,15 +1,14 @@
-From: Manish Badarkhe <manishvb@ti.com>
-Subject: [PATCH] ASoC: tlv320aic3x: Remove '.owner' field of
-	driver
-Date: Thu, 6 Nov 2014 10:46:56 +0530
-Message-ID: <1415251016-3730-1-git-send-email-manishvb@ti.com>
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: NXP Semiconductors TFA9879 Amplifier Driver
+Date: Thu,  6 Nov 2014 13:53:59 +0100
+Message-ID: <1415278441-27866-1-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 75C4D2606FD
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 06:17:02 +0100 (CET)
+Received: from mail.lysator.liu.se (mail.lysator.liu.se [130.236.254.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 790F326517F
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 13:54:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,30 +18,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, tiwai@suse.de, manishvb@ti.com, jsarha@ti.com
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Remove '.owner' field of driver structure as it is
-going to be filled via "module_i2c_driver" call.
+Hi!
 
-Signed-off-by: Manish Badarkhe <manishvb@ti.com>
----
-:100644 100644 0307909... 191b423... M	sound/soc/codecs/tlv320aic31xx.c
- sound/soc/codecs/tlv320aic31xx.c |    1 -
- 1 file changed, 1 deletion(-)
+Sorry for not sending this from my axentia.se account, but I tend to
+get high spam-scores from there when I use git send-email.
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 0307909..191b423 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1303,7 +1303,6 @@ MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
- static struct i2c_driver aic31xx_i2c_driver = {
- 	.driver = {
- 		.name	= "tlv320aic31xx-codec",
--		.owner	= THIS_MODULE,
- 		.of_match_table = of_match_ptr(tlv320aic31xx_of_match),
- 	},
- 	.probe		= aic31xx_i2c_probe,
--- 
-1.7.9.5
+This is a new driver, and it's pretty minimalistic with support for
+only a few basic controls. However, it is usable and I'd be happy
+to see it included.
+
+I don't know if it's presumptious to add myself as a maintainer, but
+checkpatch complained...
+
+Are the alsa control names wisely chosen?
+
+Please review!
+
+Cheers,
+Peter
