@@ -1,92 +1,48 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: RE: [PATCH 1/2] ASoC: tfa9879: New driver for NXP Semiconductors
- TFA9879 amplifier.
-Date: Thu, 6 Nov 2014 14:37:31 +0000
-Message-ID: <8798d3c4cf124aa9879225d08d8477f5@EMAIL.axentia.se>
-References: <1415278441-27866-1-git-send-email-peda@lysator.liu.se>
- <1415278441-27866-2-git-send-email-peda@lysator.liu.se>
- <20141106133720.GG8509@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/3] ASoC: ssm4567: Add DAC high-pass-filter
+	control
+Date: Thu,  6 Nov 2014 15:59:22 +0100
+Message-ID: <1415285964-15930-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141106133720.GG8509@sirena.org.uk>
-Content-Language: sv-SE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Peter Rosin <peda@lysator.liu.se>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-022.synserver.de (smtp-out-023.synserver.de
+ [212.40.185.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id A795F260695
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 15:59:26 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review! I'm answering here, but would like to thank
-Lars-Peter for the review as well.
+Add a switch which can be used to enable/disable the DAC high-pass-filter.
 
-Mark Brown wrote:
-> On Thu, Nov 06, 2014 at 01:54:00PM +0100, Peter Rosin wrote:
-> 
-> > +#define TFA9879_REG(codec, reg, field, value) 	\
-> > +	snd_soc_update_bits(codec, TFA9879_ ## reg,			\
-> > +			    TFA9879_ ## field ## _MASK, 	\
-> > +			    (value) << TFA9879_ ## field ## _SHIFT)
-> 
-> Please don't do stuff like this, it just makes the code look more obscure than
-> it should be for people who work with multiple devices - just use
-> update_bits() directly.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ssm4567.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Ok, I'll zap it. Pity though, I really liked the actual code even if the macro was a
-bit hard to digest...
-
-> > +static int tfa9879_prepare(struct snd_pcm_substream *substream,
-> > +			   struct snd_soc_dai *dai)
-> > +{
-> > +	struct snd_soc_codec *codec = dai->codec;
-> > +
-> > +	TFA9879_REG(codec, DEVICE_CONTROL, POWERUP, 1);
-> 
-> Use DAPM to manage power, you're probably looking for a supply widget.
-
-I'll try to find out how to hook that up. BTW, there is very limited info about
-the supply widget at http://www.alsa-project.org/main/index.php/DAPM
-
-> > +	switch (params_format(params)) {
-> > +	case SNDRV_PCM_FORMAT_S16_LE:
-> 
-> Use params_width() rather than a specific memory layout.
-
-Ok.
-
-> > +	if (tfa9879->lsb_justified)
-> > +		TFA9879_REG(codec, SERIAL_INTERFACE_1, I2S_SET,
-> i2s_set);
-> 
-> Why does this need to be reset every time, shouldn't we just be setting the
-> register in set_fmt().?
-
-Yes, I'd sure like to do that, but how do I get to the width in set_fmt()?
-
-> > +static int tfa9879_probe(struct snd_soc_codec *codec) {
-> > +	struct tfa9879_priv *tfa9879 = snd_soc_codec_get_drvdata(codec);
-> > +
-> > +	codec->control_data = tfa9879->regmap;
-> 
-> This is redundant, just remove the entire function - ASoC will get the regmap
-> automatically.
-
-Oops, sorry. Forward-porting in progress...
-
-> > +	{ TFA9879_MISC_STATUS,		0x0000 }, /* 0x15, read-only */
-> > +};
-> > +
-> > +static bool tfa9879_volatile_register(struct device *dev, unsigned
-> > +int reg) {
-> > +	return reg == TFA9879_MISC_STATUS;
-> 
-> If the register is volatile it shouldn't have a default value provided.
-
-Then I misunderstood what volatile was meant to do. I'll just nuke the
-function. It works fine anyway...
-
-I'll send a v2 later, with the other bits from Lars-Peter taken care of, and
-with 2/2 squashed. Need to test first though...
-
-Cheers,
-Peter
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index 4b5c17f..e1e33d8 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -145,6 +145,8 @@ static const struct snd_kcontrol_new ssm4567_snd_controls[] = {
+ 	SOC_SINGLE_TLV("Master Playback Volume", SSM4567_REG_DAC_VOLUME, 0,
+ 		0xff, 1, ssm4567_vol_tlv),
+ 	SOC_SINGLE("DAC Low Power Mode Switch", SSM4567_REG_DAC_CTRL, 4, 1, 0),
++	SOC_SINGLE("DAC High Pass Filter Switch", SSM4567_REG_DAC_CTRL,
++		5, 1, 0),
+ };
+ 
+ static const struct snd_soc_dapm_widget ssm4567_dapm_widgets[] = {
+-- 
+1.8.0
