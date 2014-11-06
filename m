@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/6 v3] ASoC: rsnd: enable single DVC
+Subject: Re: [PATCH 5/6 v3] ASoC: rsnd: enable enumerated DVC
 	valume settings
-Date: Thu, 6 Nov 2014 17:05:35 +0000
-Message-ID: <20141106170535.GU8509@sirena.org.uk>
+Date: Thu, 6 Nov 2014 17:05:56 +0000
+Message-ID: <20141106170556.GV8509@sirena.org.uk>
 References: <87egtp2g05.wl%kuninori.morimoto.gx@gmail.com>
  <87egti46j7.wl%kuninori.morimoto.gx@gmail.com>
- <878ujq46fv.wl%kuninori.morimoto.gx@gmail.com>
+ <877fza46eq.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8611680623664030197=="
+Content-Type: multipart/mixed; boundary="===============2964285972214252366=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D059526545A
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 18:05:51 +0100 (CET)
-In-Reply-To: <878ujq46fv.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 692072652AC
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 18:06:12 +0100 (CET)
+In-Reply-To: <877fza46eq.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,49 +28,49 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam G
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8611680623664030197==
+--===============2964285972214252366==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iDpyORI+WvZmjlkd"
+	protocol="application/pgp-signature"; boundary="xoUDadTz98C4LPSf"
 Content-Disposition: inline
 
 
---iDpyORI+WvZmjlkd
+--xoUDadTz98C4LPSf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 04, 2014 at 08:28:10PM -0800, Kuninori Morimoto wrote:
+On Tue, Nov 04, 2014 at 08:28:50PM -0800, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
 > DVC controls some digital volume features.
-> Some of them requests values for "each channels",
-> but, some of them requests values for "feature".
+> Volume Ramp is listed as "XX dB / YY steps",
+> and this enumerated settings are easy for users.
 
 Applied, thanks.
 
---iDpyORI+WvZmjlkd
+--xoUDadTz98C4LPSf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUW6peAAoJECTWi3JdVIfQCWQH/A7zK3eJyfZIjF5PRtFInZgH
-pEdCFqx2+/9ftULj6Dw6ocAqDrXyfJuXsQsCTpctoP28JrtQJWsmQY7eThOMIyD9
-CMpmWxRyNPbbTVfieDkfZKCDjAUz4kUEnNn9x0UoP5mx8LD3X7a/8qv/xz7eY32s
-T3XQ9QStycOYxIKuTaRQCNnMXWJf159OsobKzntq270wrpZdfdsQwnM92pvdtbTX
-JbMTMRjwarEYGNAny5pPFrhGuKQnC4KKwTGZ9Q+2phB5yf2ZAhM0lZMXz2yZJQ8O
-J5i39QLL/v7M65e1wZILvTl2wcorJkndmbfsS+S5CCtry/tnLW1BPXzHvIl9eXQ=
-=QrfJ
+iQEcBAEBAgAGBQJUW6p0AAoJECTWi3JdVIfQrcEH/0g4/NgUi3OU04YDWN1YDwD8
+Kmu1CnIq8xi7NVkVIZiRwortirNBhZlD7vhBRHcntntbSVV4WwxGDj7odQ3Q/oia
+3qt/aZjRu2sWzVhc6UPzE/2pxIRz6/n3U7f+4pfa2LQBJM9VI9Do75YyHZigOoBj
+jB8VT01fJaR1JsOiPsKF84pwsQO8TmVza1MRoeZ/U2MpkeHa1pAZys/DKnnzcjlP
+xLeU+0YlNNWZnDPwReyH7hSVcIuWaelUb2xlAh3gujuIC13j+5LAo54V3m03Uw0n
+Yy+m5x21c6Kegrh+2/3qfV8GMfrKNfbOFq/5VpYCV1mGPn4dKhL0MN0KkshS9y8=
+=yABa
 -----END PGP SIGNATURE-----
 
---iDpyORI+WvZmjlkd--
+--xoUDadTz98C4LPSf--
 
---===============8611680623664030197==
+--===============2964285972214252366==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8611680623664030197==--
+--===============2964285972214252366==--
