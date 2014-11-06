@@ -1,20 +1,17 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Restore hidden register for default value
-Date: Thu, 6 Nov 2014 02:36:09 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A179FAB55@RTITMBSV09.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A179F9CEA@RTITMBSV09.realtek.com.tw>
- <s5hr3y0cz5k.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A179FAAFE@RTITMBSV09.realtek.com.tw>
- <s5hlhnq9jtm.wl-tiwai@suse.de> <s5hwq798cp8.wl-tiwai@suse.de>
+From: <bardliao@realtek.com>
+Subject: [PATCH 4/4] ASoC:rt5670:change dapm routes of PLL
+	connection
+Date: Thu, 6 Nov 2014 12:23:54 +0800
+Message-ID: <1415247834-14278-4-git-send-email-bardliao@realtek.com>
+References: <1415247834-14278-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 474B62650C5
- for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 03:36:41 +0100 (CET)
-In-Reply-To: <s5hwq798cp8.wl-tiwai@suse.de>
-Content-Language: zh-TW
+ by alsa0.perex.cz (Postfix) with ESMTP id 21DD02606FD
+ for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2014 05:24:36 +0100 (CET)
+In-Reply-To: <1415247834-14278-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,50 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Bard Liao <bardliao@realtek.com>
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Thursday, November 06, 2014 7:12 AM
-> To: Kailang
-> Cc: (alsa-devel@alsa-project.org)
-> Subject: Re: Restore hidden register for default value
-> 
-> At Wed, 05 Nov 2014 08:40:21 +0100,
-> Takashi Iwai wrote:
-> > 
-> > At Wed, 5 Nov 2014 07:20:06 +0000,
-> > Kailang wrote:
-> > > 
-> > >  Hi Takashi,
-> > > 
-> > >  I mail it again.
-> > 
-> > Oh, your previous post didn't include the patch, so I just 
-> waited for 
-> > it.
-> > 
-> > Now I took a look at the patch.  One thing I'd like to 
-> change is the 
-> > place to set spec->init_hook.  It'd be better to set around 
-> the code 
-> > where alc662_fill_coef is passed.  Since ALC668 is irrelevant with 
-> > this, move the switch/case there, apply both spec->init_hook 
-> > conditionally.
-> 
-> I changed that part manually and applied the patch now.
+PLL should be powered up once filter power is on. So, "PLL1"
+should be connected to filters instead of DACs.
 
-Oh! Thank you ... I just want to do this modify to you today.
-Many Thanks. ^^
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5670.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
-> 
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index c3914e8..c4d4e3f 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -1927,6 +1927,10 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 	{ "DAC1 MIXR", "DAC1 Switch", "DAC1 R Mux" },
+ 	{ "DAC1 MIXR", NULL, "DAC Stereo1 Filter" },
+ 
++	{ "DAC Stereo1 Filter", NULL, "PLL1", is_sys_clk_from_pll },
++	{ "DAC Mono Left Filter", NULL, "PLL1", is_sys_clk_from_pll },
++	{ "DAC Mono Right Filter", NULL, "PLL1", is_sys_clk_from_pll },
++
+ 	{ "DAC MIX", NULL, "DAC1 MIXL" },
+ 	{ "DAC MIX", NULL, "DAC1 MIXR" },
+ 
+@@ -1976,14 +1980,10 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 
+ 	{ "DAC L1", NULL, "DAC L1 Power" },
+ 	{ "DAC L1", NULL, "Stereo DAC MIXL" },
+-	{ "DAC L1", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC R1", NULL, "DAC R1 Power" },
+ 	{ "DAC R1", NULL, "Stereo DAC MIXR" },
+-	{ "DAC R1", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC L2", NULL, "Mono DAC MIXL" },
+-	{ "DAC L2", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC R2", NULL, "Mono DAC MIXR" },
+-	{ "DAC R2", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "OUT MIXL", "BST1 Switch", "BST1" },
+ 	{ "OUT MIXL", "INL Switch", "INL VOL" },
+-- 
+1.8.1.1.439.g50a6b54
