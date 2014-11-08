@@ -1,8 +1,8 @@
-From: Vlad Catoi <vcatoi@gmail.com>
+From: Vlad Catoi <vladcatoi@gmail.com>
 Subject: Re: [PATCH] add Steinberg UR44 USB Audio Interface
  support to quirks-table
-Date: Fri, 07 Nov 2014 22:24:03 -0600
-Message-ID: <1415420643.2456.5.camel@kgwgk>
+Date: Fri, 07 Nov 2014 22:25:04 -0600
+Message-ID: <1415420704.2456.6.camel@kgwgk>
 References: <1394388767-23658-1-git-send-email-cyrus@bobobeach.com>
  <531DAB14.5080201@ladisch.de>
  <76F78615-8762-4A6C-B601-97380805F450@bobobeach.com>
@@ -17,12 +17,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f171.google.com (mail-qc0-f171.google.com
- [209.85.216.171])
- by alsa0.perex.cz (Postfix) with ESMTP id E8B5C26044C
- for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2014 05:24:07 +0100 (CET)
-Received: by mail-qc0-f171.google.com with SMTP id m20so3570305qcx.2
- for <alsa-devel@alsa-project.org>; Fri, 07 Nov 2014 20:24:07 -0800 (PST)
+Received: from mail-qg0-f44.google.com (mail-qg0-f44.google.com
+ [209.85.192.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9912D260452
+ for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2014 05:25:06 +0100 (CET)
+Received: by mail-qg0-f44.google.com with SMTP id q107so3316141qgd.17
+ for <alsa-devel@alsa-project.org>; Fri, 07 Nov 2014 20:25:05 -0800 (PST)
 In-Reply-To: <545BA7C2.5010402@bobobeach.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
