@@ -1,43 +1,57 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/2] ASoC: rt5645: Add ASRC support
-Date: Sat, 08 Nov 2014 09:18:04 +0100
-Message-ID: <545DD1BC.9000208@metafoo.de>
-References: <1414741076-26685-1-git-send-email-bardliao@realtek.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/3] ASoC: twl4030: don't report EBUSY if no change
+ requested.
+Date: Sat, 8 Nov 2014 09:22:42 +0000
+Message-ID: <20141108092242.GB2722@sirena.org.uk>
+References: <20141108002637.6561.19002.stgit@notabene.brown>
+ <20141108003803.6561.42934.stgit@notabene.brown>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-036.synserver.de (smtp-out-036.synserver.de
- [212.40.185.36])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C5C8260453
- for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2014 09:18:00 +0100 (CET)
-In-Reply-To: <1414741076-26685-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VrqPEDrXMn8OVzN4"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20141108003803.6561.42934.stgit-wvvUuzkyo1EYVZTmpyfIwg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: NeilBrown <neilb-l3A5Bk7waGM@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, GTA04 owners <gta04-owner-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/31/2014 08:37 AM, bardliao@realtek.com wrote:
-> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-> index bc442f4..3131e91 100644
-> --- a/sound/soc/codecs/rt5645.c
-> +++ b/sound/soc/codecs/rt5645.c
-> @@ -443,6 +443,65 @@ static SOC_ENUM_SINGLE_DECL(rt5645_tdm_adc_sel_enum,
->   				RT5645_TDM_CTRL_1, 8,
->   				rt5645_tdm_adc_data_select);
->
-> +static int rt5645_clk_sel_put(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_value *ucontrol)
-> +{
-> [...]
- > +}
 
-This function seems to be completely unused.
+--VrqPEDrXMn8OVzN4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Nov 08, 2014 at 11:38:03AM +1100, NeilBrown wrote:
+
+> +	int val = ucontrol->value.integer.value[0];
+> +
+> +	if (!!(twl4030_read(codec, TWL4030_REG_CODEC_MODE)
+> +	       & TWL4030_OPTION_1) == !!val)
+> +		/* No change */
+> +		return 0;
+
+We shouldn't be accepting attempts to set out of range values so there
+should be no need for the !! on val (which confused me when I was
+reading this).
+
+--VrqPEDrXMn8OVzN4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUXeDhAAoJECTWi3JdVIfQ1XcH/RJqfPlYEBnb4iLaKsPfm8tN
+RyoEOUlJYmg//4n3ndaam/M6dllUyR3JXRJq2iaE9ZonUGHdMhtaLSFuJb3UmZsU
+9BO6uqYe09HMgZobAsk4YTbu9dzFgVKpZsbFD19n5MpScO2EKnSimUyi9iMBztcN
+G+YAQ3feVyAgnGJWIZx4DMWBdZ4ACiCYW8G+G4vnA3unefdMfybPn4LVDN6+ekDh
+7YaQ+5K6wMtmLcF5hGsXAhr2vH0FY4WZKUYnCKvO6s2/EX0jP1yegMwe6d+irBvR
+LucPyGXjJNGDX2//gUgyuWMfHLWBXp0qDbfvcYD5EWAEonnMyydN19HXkoHJqaE=
+=E2Wg
+-----END PGP SIGNATURE-----
+
+--VrqPEDrXMn8OVzN4--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
