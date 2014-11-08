@@ -1,57 +1,75 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/3] ASoC: twl4030: don't report EBUSY if no change
- requested.
-Date: Sat, 8 Nov 2014 09:22:42 +0000
-Message-ID: <20141108092242.GB2722@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/3] ASoC: twl4030: allow voice port to be
+ connected externally.
+Date: Sat, 8 Nov 2014 09:26:22 +0000
+Message-ID: <20141108092622.GC2722@sirena.org.uk>
 References: <20141108002637.6561.19002.stgit@notabene.brown>
- <20141108003803.6561.42934.stgit@notabene.brown>
+ <20141108003803.6561.57464.stgit@notabene.brown>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VrqPEDrXMn8OVzN4"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20141108003803.6561.42934.stgit-wvvUuzkyo1EYVZTmpyfIwg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: NeilBrown <neilb-l3A5Bk7waGM@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, GTA04 owners <gta04-owner-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============8502852284987343554=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6CF6260453
+ for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2014 10:26:41 +0100 (CET)
+In-Reply-To: <20141108003803.6561.57464.stgit@notabene.brown>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: NeilBrown <neilb@suse.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, GTA04 owners <gta04-owner@goldelico.com>, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---VrqPEDrXMn8OVzN4
+--===============8502852284987343554==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="NKoe5XOeduwbEQHU"
+Content-Disposition: inline
+
+
+--NKoe5XOeduwbEQHU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 On Sat, Nov 08, 2014 at 11:38:03AM +1100, NeilBrown wrote:
 
-> +	int val = ucontrol->value.integer.value[0];
-> +
-> +	if (!!(twl4030_read(codec, TWL4030_REG_CODEC_MODE)
-> +	       & TWL4030_OPTION_1) == !!val)
-> +		/* No change */
-> +		return 0;
+> If voice port on twl4030 is not connected to a McBSP (or similar)
+> then we cannot configure the format the way we normally do for a DAI.
 
-We shouldn't be accepting attempts to set out of range values so there
-should be no need for the !! on val (which confused me when I was
-reading this).
+Yes we can, you need to represent the DAI link to whatever else the
+device is connected to in the driver like we do anything else - and in
+any case this isn't a device specific issue so we shouldn't be doing
+something driver specific to solve it.  Look at something like speyside.
 
---VrqPEDrXMn8OVzN4
+--NKoe5XOeduwbEQHU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUXeDhAAoJECTWi3JdVIfQ1XcH/RJqfPlYEBnb4iLaKsPfm8tN
-RyoEOUlJYmg//4n3ndaam/M6dllUyR3JXRJq2iaE9ZonUGHdMhtaLSFuJb3UmZsU
-9BO6uqYe09HMgZobAsk4YTbu9dzFgVKpZsbFD19n5MpScO2EKnSimUyi9iMBztcN
-G+YAQ3feVyAgnGJWIZx4DMWBdZ4ACiCYW8G+G4vnA3unefdMfybPn4LVDN6+ekDh
-7YaQ+5K6wMtmLcF5hGsXAhr2vH0FY4WZKUYnCKvO6s2/EX0jP1yegMwe6d+irBvR
-LucPyGXjJNGDX2//gUgyuWMfHLWBXp0qDbfvcYD5EWAEonnMyydN19HXkoHJqaE=
-=E2Wg
+iQEcBAEBAgAGBQJUXeG9AAoJECTWi3JdVIfQc4QH/1l0g9IioGYeCiZI3hZeipn2
+QJUO3LMztZZuximUm03fKQggDZ1mw/TahdVKVOFhMgD++poaljjboOlyy9akat14
+1TFyjLa3Q6f7S93kcuDi0kuxhQoY6mgVFN2zOYC1z9q1bAqfElOkaJjbk/rdTKtn
+2ubSjrX1vQ7ZGGrGNvTpQTcOKiQBEzdL9HW6Z/ZtoKy1OF2+pqZh0B17GFnB+U2d
+YeHRMeEz4XUZGDk7RofQ4HbeVg+dqNesp683wFaWu1zMn9Xmmxc5ANaMM5ASJEsW
+TVyg5Sri69ALJHaIAqVVJzQV8oq4rd0KstLBVdWpDSR4RX0VybIC9KxaFVl1bpE=
+=Y39v
 -----END PGP SIGNATURE-----
 
---VrqPEDrXMn8OVzN4--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--NKoe5XOeduwbEQHU--
+
+--===============8502852284987343554==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8502852284987343554==--
