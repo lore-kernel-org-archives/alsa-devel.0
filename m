@@ -1,58 +1,33 @@
-From: Mark Brown <broonie@debian.org>
-Subject: Re: sound: enable sound support on n900 on devicetree-based boot
-Date: Sun, 9 Nov 2014 12:37:53 +0000
-Message-ID: <20141109123753.GO2722@sirena.org.uk>
-References: <20141109120222.GA3815@amd>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="R+Rs1qz93vBJxC1z"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141109120222.GA3815@amd>
-Sender: linux-omap-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: pali.rohar@gmail.com, sre@debian.org, sre@ring0.de, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, freemangordon@abv.bg, peter.ujfalusi@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
+From: Anil Kumar <anilk4.v@gmail.com>
+Subject: [PATCH] ASoC: davinvi-mcasp: Balance pm_runtime_enable() on probe failure
+Date: Sun,  9 Nov 2014 18:15:14 +0530
+Message-ID: <1415537114-9642-1-git-send-email-anilk4.v@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org
+Cc: perex@perex.cz, tiwai@suse.de, peter.ujfalusi@ti.com, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, anilk4.v@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+If probe fails then we need to call pm_runtime_disable() to balance
+out the previous pm_runtime_enable() call.
 
---R+Rs1qz93vBJxC1z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Anil Kumar <anilk4.v@gmail.com>
+---
+:100644 100644 0eed9b1... 99c747d... M	sound/soc/davinci/davinci-mcasp.c
+ sound/soc/davinci/davinci-mcasp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Sun, Nov 09, 2014 at 01:02:22PM +0100, Pavel Machek wrote:
->=20
-> With device tree, it is possible (and encouraged) to build N900
-> kernels without CONFIG_MACH_NOKIA_RX51. Update config file to enable
-> the driver build in this case.
-
-Please do try to use subject lines reflecting the style for the
-subsystem.
-
->  config SND_OMAP_SOC_RX51
->  	tristate "SoC Audio support for Nokia RX-51"
-> -	depends on SND_OMAP_SOC && ARM && (MACH_NOKIA_RX51 || COMPILE_TEST) && =
-I2C
-> +	depends on SND_OMAP_SOC && ARM && I2C
-
-Please also update the config text so users have a chance to figure out
-that this driver is the one they need for their system - I guess most
-people won't know what RX-51 is.
-
---R+Rs1qz93vBJxC1z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUX2AcAAoJECTWi3JdVIfQO24H/05h2tWewTxcTo0Z/g7jpSv7
-xHUVI2U49zpyTGArWFU9SxgqKYBYz5oHHKeJ6lTklLVfuZ7VaQooeWjf9EnLmVBc
-Du6UV3Gojrtj72+RCOw4riDcgdxdbnLDDEaLm8TkSId0hFSp4K6HhULlAHTtdhCW
-UdngZUDhKXrw7PG2+Ouo3tzzG0h9GVzmMkRKYGE5Yu7svJAb3AbTJYXRzKyRGQic
-/zMjI2i0vlUBca1BbcYymOHnSqs/x1dJpy3PO+pLln+qN6es6UIXjZDexB3tygY5
-1JFGhfT/qZe7DaXS7T8JqGkzOqzaOA6pqxX3rvfRm+WW5i3U5cBqCRuMio6xf7A=
-=TRyJ
------END PGP SIGNATURE-----
-
---R+Rs1qz93vBJxC1z--
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 0eed9b1..99c747d 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1235,6 +1235,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+ 	if (IS_ERR_VALUE(ret)) {
+ 		dev_err(&pdev->dev, "pm_runtime_get_sync() failed\n");
++		pm_runtime_disable(&pdev->dev);
+ 		return ret;
+ 	}
+ 
+-- 
+1.9.2
