@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/8] ASoC: ab8500-codec: Move control lock to
-	the driver level
-Date: Sun,  9 Nov 2014 17:00:57 +0100
-Message-ID: <1415548864-27203-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/8] ASoC: max98095: Move mutex to the driver
+	level
+Date: Sun,  9 Nov 2014 17:00:58 +0100
+Message-ID: <1415548864-27203-3-git-send-email-lars@metafoo.de>
 References: <1415548864-27203-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-180.synserver.de (smtp-out-182.synserver.de
  [212.40.185.182])
- by alsa0.perex.cz (Postfix) with ESMTP id F0B5226054C
- for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2014 17:01:03 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D88026054F
+ for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2014 17:01:04 +0100 (CET)
 In-Reply-To: <1415548864-27203-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,150 +26,76 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Tushar Behera <tushar.behera@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The ab8500 driver uses a driver specific lock to protect concurrent access
-to some of the control put/get handlers and uses the snd_soc_codec mutex for
-some others. This patch updates the driver to consistently use the driver
-specific lock for all controls. This will allow us to eventually remove the
-snd_soc_codec mutex.
+The max98095 uses the snd_soc_codec mutex to protect against concurrent
+access in some of its control put handlers. Move this mutex to the driver
+level so we can eventually remove the snd_soc_codec mutex.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ab8500-codec.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ sound/soc/codecs/max98095.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index fd43827..7dfbc99 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -126,13 +126,13 @@ struct ab8500_codec_drvdata_dbg {
- /* Private data for AB8500 device-driver */
- struct ab8500_codec_drvdata {
- 	struct regmap *regmap;
-+	struct mutex ctrl_lock;
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index 0ee6797..01f3cc9 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -16,6 +16,7 @@
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+ #include <linux/clk.h>
++#include <linux/mutex.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -57,6 +58,7 @@ struct max98095_priv {
+ 	unsigned int mic2pre;
+ 	struct snd_soc_jack *headphone_jack;
+ 	struct snd_soc_jack *mic_jack;
++	struct mutex lock;
+ };
  
- 	/* Sidetone */
- 	long *sid_fir_values;
- 	enum sid_state sid_status;
- 
- 	/* ANC */
--	struct mutex anc_lock;
- 	long *anc_fir_values;
- 	long *anc_iir_values;
- 	enum anc_state anc_status;
-@@ -1129,9 +1129,9 @@ static int sid_status_control_get(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(codec->dev);
- 
--	mutex_lock(&codec->mutex);
-+	mutex_lock(&drvdata->ctrl_lock);
- 	ucontrol->value.integer.value[0] = drvdata->sid_status;
--	mutex_unlock(&codec->mutex);
-+	mutex_unlock(&drvdata->ctrl_lock);
- 
- 	return 0;
- }
-@@ -1154,7 +1154,7 @@ static int sid_status_control_put(struct snd_kcontrol *kcontrol,
- 		return -EIO;
- 	}
+ static const struct reg_default max98095_reg_def[] = {
+@@ -1803,7 +1805,7 @@ static int max98095_put_eq_enum(struct snd_kcontrol *kcontrol,
+ 	regsave = snd_soc_read(codec, M98095_088_CFG_LEVEL);
+ 	snd_soc_update_bits(codec, M98095_088_CFG_LEVEL, regmask, 0);
  
 -	mutex_lock(&codec->mutex);
-+	mutex_lock(&drvdata->ctrl_lock);
- 
- 	sidconf = snd_soc_read(codec, AB8500_SIDFIRCONF);
- 	if (((sidconf & BIT(AB8500_SIDFIRCONF_FIRSIDBUSY)) != 0)) {
-@@ -1185,7 +1185,7 @@ static int sid_status_control_put(struct snd_kcontrol *kcontrol,
- 	drvdata->sid_status = SID_FIR_CONFIGURED;
- 
- out:
++	mutex_lock(&max98095->lock);
+ 	snd_soc_update_bits(codec, M98095_00F_HOST_CFG, M98095_SEG, M98095_SEG);
+ 	m98095_eq_band(codec, channel, 0, coef_set->band1);
+ 	m98095_eq_band(codec, channel, 1, coef_set->band2);
+@@ -1811,7 +1813,7 @@ static int max98095_put_eq_enum(struct snd_kcontrol *kcontrol,
+ 	m98095_eq_band(codec, channel, 3, coef_set->band4);
+ 	m98095_eq_band(codec, channel, 4, coef_set->band5);
+ 	snd_soc_update_bits(codec, M98095_00F_HOST_CFG, M98095_SEG, 0);
 -	mutex_unlock(&codec->mutex);
-+	mutex_unlock(&drvdata->ctrl_lock);
++	mutex_unlock(&max98095->lock);
  
- 	dev_dbg(codec->dev, "%s: Exit\n", __func__);
- 
-@@ -1198,9 +1198,9 @@ static int anc_status_control_get(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct ab8500_codec_drvdata *drvdata = dev_get_drvdata(codec->dev);
+ 	/* Restore the original on/off state */
+ 	snd_soc_update_bits(codec, M98095_088_CFG_LEVEL, regmask, regsave);
+@@ -1957,12 +1959,12 @@ static int max98095_put_bq_enum(struct snd_kcontrol *kcontrol,
+ 	regsave = snd_soc_read(codec, M98095_088_CFG_LEVEL);
+ 	snd_soc_update_bits(codec, M98095_088_CFG_LEVEL, regmask, 0);
  
 -	mutex_lock(&codec->mutex);
-+	mutex_lock(&drvdata->ctrl_lock);
- 	ucontrol->value.integer.value[0] = drvdata->anc_status;
++	mutex_lock(&max98095->lock);
+ 	snd_soc_update_bits(codec, M98095_00F_HOST_CFG, M98095_SEG, M98095_SEG);
+ 	m98095_biquad_band(codec, channel, 0, coef_set->band1);
+ 	m98095_biquad_band(codec, channel, 1, coef_set->band2);
+ 	snd_soc_update_bits(codec, M98095_00F_HOST_CFG, M98095_SEG, 0);
 -	mutex_unlock(&codec->mutex);
-+	mutex_unlock(&drvdata->ctrl_lock);
++	mutex_unlock(&max98095->lock);
  
- 	return 0;
- }
-@@ -1217,7 +1217,7 @@ static int anc_status_control_put(struct snd_kcontrol *kcontrol,
+ 	/* Restore the original on/off state */
+ 	snd_soc_update_bits(codec, M98095_088_CFG_LEVEL, regmask, regsave);
+@@ -2395,6 +2397,8 @@ static int max98095_i2c_probe(struct i2c_client *i2c,
+ 	if (max98095 == NULL)
+ 		return -ENOMEM;
  
- 	dev_dbg(dev, "%s: Enter.\n", __func__);
- 
--	mutex_lock(&drvdata->anc_lock);
-+	mutex_lock(&drvdata->ctrl_lock);
- 
- 	req = ucontrol->value.integer.value[0];
- 	if (req >= ARRAY_SIZE(enum_anc_state)) {
-@@ -1244,9 +1244,7 @@ static int anc_status_control_put(struct snd_kcontrol *kcontrol,
- 	}
- 	snd_soc_dapm_sync(&codec->dapm);
- 
--	mutex_lock(&codec->mutex);
- 	anc_configure(codec, apply_fir, apply_iir);
--	mutex_unlock(&codec->mutex);
- 
- 	if (apply_fir) {
- 		if (drvdata->anc_status == ANC_IIR_CONFIGURED)
-@@ -1265,7 +1263,7 @@ static int anc_status_control_put(struct snd_kcontrol *kcontrol,
- 	snd_soc_dapm_sync(&codec->dapm);
- 
- cleanup:
--	mutex_unlock(&drvdata->anc_lock);
-+	mutex_unlock(&drvdata->ctrl_lock);
- 
- 	if (status < 0)
- 		dev_err(dev, "%s: Unable to configure ANC! (status = %d)\n",
-@@ -1294,14 +1292,15 @@ static int filter_control_get(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct ab8500_codec_drvdata *drvdata = snd_soc_codec_get_drvdata(codec);
- 	struct filter_control *fc =
- 			(struct filter_control *)kcontrol->private_value;
- 	unsigned int i;
- 
--	mutex_lock(&codec->mutex);
-+	mutex_lock(&drvdata->ctrl_lock);
- 	for (i = 0; i < fc->count; i++)
- 		ucontrol->value.integer.value[i] = fc->value[i];
--	mutex_unlock(&codec->mutex);
-+	mutex_unlock(&drvdata->ctrl_lock);
- 
- 	return 0;
- }
-@@ -1310,14 +1309,15 @@ static int filter_control_put(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct ab8500_codec_drvdata *drvdata = snd_soc_codec_get_drvdata(codec);
- 	struct filter_control *fc =
- 			(struct filter_control *)kcontrol->private_value;
- 	unsigned int i;
- 
--	mutex_lock(&codec->mutex);
-+	mutex_lock(&drvdata->ctrl_lock);
- 	for (i = 0; i < fc->count; i++)
- 		fc->value[i] = ucontrol->value.integer.value[i];
--	mutex_unlock(&codec->mutex);
-+	mutex_unlock(&drvdata->ctrl_lock);
- 
- 	return 0;
- }
-@@ -2545,7 +2545,7 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
- 
- 	(void)snd_soc_dapm_disable_pin(&codec->dapm, "ANC Configure Input");
- 
--	mutex_init(&drvdata->anc_lock);
-+	mutex_init(&drvdata->ctrl_lock);
- 
- 	return status;
- }
++	mutex_init(&max98095->lock);
++
+ 	max98095->regmap = devm_regmap_init_i2c(i2c, &max98095_regmap);
+ 	if (IS_ERR(max98095->regmap)) {
+ 		ret = PTR_ERR(max98095->regmap);
 -- 
 1.8.0
