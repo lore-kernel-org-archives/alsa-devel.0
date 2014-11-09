@@ -1,39 +1,43 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v3 2/2] ASoC: simple-card: add multi-CODECs
- in DT
-Date: Sun, 9 Nov 2014 19:42:33 +0100
-Message-ID: <20141109194233.66eae626@armhf>
-References: <cover.1415096705.git.moinejf@free.fr>
-	<53ef077d2174f8eb5b861d6cebe7c9e732f06d52.1415096705.git.moinejf@free.fr>
-	<20141107123035.GO8509@sirena.org.uk>
-	<20141107200557.78971e08@armhf>
-	<545D2667.4070707@metafoo.de>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: sound: enable sound support on n900 on devicetree-based boot
+Date: Sun, 9 Nov 2014 20:39:53 +0100
+Message-ID: <20141109193953.GA7852@amd>
+References: <20141109120222.GA3815@amd>
+ <20141109123753.GO2722@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <545D2667.4070707-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Benoit Cousson <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141109123753.GO2722@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@debian.org>
+Cc: pali.rohar@gmail.com, sre@debian.org, sre@ring0.de, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, freemangordon@abv.bg, peter.ujfalusi@ti.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 07 Nov 2014 21:07:03 +0100
-Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org> wrote:
+On Sun 2014-11-09 12:37:53, Mark Brown wrote:
+> On Sun, Nov 09, 2014 at 01:02:22PM +0100, Pavel Machek wrote:
+> > 
+> > With device tree, it is possible (and encouraged) to build N900
+> > kernels without CONFIG_MACH_NOKIA_RX51. Update config file to enable
+> > the driver build in this case.
+> 
+> Please do try to use subject lines reflecting the style for the
+> subsystem.
 
-> Casting const away is usually a sign that something is wrong and has =
-the=20
-> potential to result in undefined behavior. The correct fix in this ca=
-se is=20
-> probably to make the np argument for of_clk_get() const.
+Ok.
 
-Thanks. I am sending a patch for that.
+> >  config SND_OMAP_SOC_RX51
+> >  	tristate "SoC Audio support for Nokia RX-51"
+> > -	depends on SND_OMAP_SOC && ARM && (MACH_NOKIA_RX51 || COMPILE_TEST) && I2C
+> > +	depends on SND_OMAP_SOC && ARM && I2C
+> 
+> Please also update the config text so users have a chance to figure out
+> that this driver is the one they need for their system - I guess most
+> people won't know what RX-51 is.
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Actually help text below already explains that. I'll update tristate
+text, too.
+									Pavel
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
