@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 6/8] ASoC: wm8958: Move DSP firmware lock to
+Subject: [PATCH 7/8] ASoC: wm8962: Move DSP enable lock to the
 	driver level
-Date: Sun,  9 Nov 2014 17:01:02 +0100
-Message-ID: <1415548864-27203-7-git-send-email-lars@metafoo.de>
+Date: Sun,  9 Nov 2014 17:01:03 +0100
+Message-ID: <1415548864-27203-8-git-send-email-lars@metafoo.de>
 References: <1415548864-27203-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-180.synserver.de (smtp-out-182.synserver.de
  [212.40.185.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EAFB260560
- for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2014 17:01:09 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D82F260563
+ for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2014 17:01:10 +0100 (CET)
 In-Reply-To: <1415548864-27203-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,93 +26,61 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Tushar Behera <tushar.behera@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The wm8958 driver uses the snd_soc_codec mutex to protect the various
-firmware pointers from concurrent assignment. This patch moves this lock to
-the driver level. This will allow us to eventually remove the snd_soc_codec
-mutex.
+The wm8962 uses the snd_soc_codec mutex to protect the wm8962_dsp2_ena_put()
+function from concurrent execution. This patch moves that lock to the driver
+level. This will allow us to eventually remove the snd_soc_codec mutex.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-To be honest I'm not sure what this lock actually protects against. The
-assignments should be atomic already.
----
- sound/soc/codecs/wm8958-dsp2.c | 12 ++++++------
- sound/soc/codecs/wm8994.c      |  2 ++
- sound/soc/codecs/wm8994.h      |  2 ++
- 3 files changed, 10 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm8962.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
-index 0dada7f..3cbc82b 100644
---- a/sound/soc/codecs/wm8958-dsp2.c
-+++ b/sound/soc/codecs/wm8958-dsp2.c
-@@ -867,9 +867,9 @@ static void wm8958_enh_eq_loaded(const struct firmware *fw, void *context)
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (fw && (wm8958_dsp2_fw(codec, "ENH_EQ", fw, true) == 0)) {
--		mutex_lock(&codec->mutex);
-+		mutex_lock(&wm8994->fw_lock);
- 		wm8994->enh_eq = fw;
--		mutex_unlock(&codec->mutex);
-+		mutex_unlock(&wm8994->fw_lock);
- 	}
- }
- 
-@@ -879,9 +879,9 @@ static void wm8958_mbc_vss_loaded(const struct firmware *fw, void *context)
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (fw && (wm8958_dsp2_fw(codec, "MBC+VSS", fw, true) == 0)) {
--		mutex_lock(&codec->mutex);
-+		mutex_lock(&wm8994->fw_lock);
- 		wm8994->mbc_vss = fw;
--		mutex_unlock(&codec->mutex);
-+		mutex_unlock(&wm8994->fw_lock);
- 	}
- }
- 
-@@ -891,9 +891,9 @@ static void wm8958_mbc_loaded(const struct firmware *fw, void *context)
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (fw && (wm8958_dsp2_fw(codec, "MBC", fw, true) == 0)) {
--		mutex_lock(&codec->mutex);
-+		mutex_lock(&wm8994->fw_lock);
- 		wm8994->mbc = fw;
--		mutex_unlock(&codec->mutex);
-+		mutex_unlock(&wm8994->fw_lock);
- 	}
- }
- 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 1fcb9f3..dbca6e0 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -4457,6 +4457,8 @@ static int wm8994_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	platform_set_drvdata(pdev, wm8994);
- 
-+	mutex_init(&wm8994->fw_lock);
-+
- 	wm8994->wm8994 = dev_get_drvdata(pdev->dev.parent);
- 
- 	pm_runtime_enable(&pdev->dev);
-diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index 6536f8d..dd73387 100644
---- a/sound/soc/codecs/wm8994.h
-+++ b/sound/soc/codecs/wm8994.h
-@@ -13,6 +13,7 @@
- #include <linux/firmware.h>
- #include <linux/completion.h>
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 9077411..61ca4a7 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -26,6 +26,7 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
  #include <linux/workqueue.h>
 +#include <linux/mutex.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/pcm.h>
+@@ -67,6 +68,7 @@ struct wm8962_priv {
+ 	int fll_fref;
+ 	int fll_fout;
  
- #include "wm_hubs.h"
++	struct mutex dsp2_ena_lock;
+ 	u16 dsp2_ena;
  
-@@ -156,6 +157,7 @@ struct wm8994_priv {
- 	unsigned int aif1clk_disable:1;
- 	unsigned int aif2clk_disable:1;
+ 	struct delayed_work mic_work;
+@@ -1570,7 +1572,7 @@ static int wm8962_dsp2_ena_put(struct snd_kcontrol *kcontrol,
+ 	int dsp2_running = snd_soc_read(codec, WM8962_DSP2_POWER_MANAGEMENT) &
+ 		WM8962_DSP2_ENA;
  
-+	struct mutex fw_lock;
- 	int dsp_active;
- 	const struct firmware *cur_fw;
- 	const struct firmware *mbc;
+-	mutex_lock(&codec->mutex);
++	mutex_lock(&wm8962->dsp2_ena_lock);
+ 
+ 	if (ucontrol->value.integer.value[0])
+ 		wm8962->dsp2_ena |= 1 << shift;
+@@ -1590,7 +1592,7 @@ static int wm8962_dsp2_ena_put(struct snd_kcontrol *kcontrol,
+ 	}
+ 
+ out:
+-	mutex_unlock(&codec->mutex);
++	mutex_unlock(&wm8962->dsp2_ena_lock);
+ 
+ 	return ret;
+ }
+@@ -3557,6 +3559,8 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 	if (wm8962 == NULL)
+ 		return -ENOMEM;
+ 
++	mutex_init(&wm8962->dsp2_ena_lock);
++
+ 	i2c_set_clientdata(i2c, wm8962);
+ 
+ 	INIT_DELAYED_WORK(&wm8962->mic_work, wm8962_mic_work);
 -- 
 1.8.0
