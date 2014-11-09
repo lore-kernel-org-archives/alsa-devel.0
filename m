@@ -1,80 +1,143 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v2 2/2] ASoC: simple-card: Remove useless casts
-Date: Sun, 9 Nov 2014 12:38:56 +0100
-Message-ID: <7d82dde0dc838d41bfb44ab734d10f838b49c47b.1415562021.git.moinejf@free.fr>
-References: <cover.1415562021.git.moinejf@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1415562021.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Russell King <linux@arm.linux.org.uk>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH 2/3] ASoC: twl4030: allow voice port to be
+ connected externally.
+Date: Mon, 10 Nov 2014 10:25:51 +1100
+Message-ID: <20141110102551.2678d342@notabene.brown>
+References: <20141108002637.6561.19002.stgit@notabene.brown>
+ <20141108003803.6561.57464.stgit@notabene.brown>
+ <20141108092622.GC2722@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7843894543514871539=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B85D26058D
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 00:26:03 +0100 (CET)
+In-Reply-To: <20141108092622.GC2722@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, GTA04 owners <gta04-owner@goldelico.com>, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is no need to cast the cpu_of_node or codec_of_node of the
-dai_links when calling of_put_node.
+--===============7843894543514871539==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ boundary="Sig_/q+_O70ObzbDZp1yJD37T1cz"; protocol="application/pgp-signature"
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- sound/soc/generic/simple-card.c       | 7 ++-----
- sound/soc/samsung/odroidx2_max98090.c | 4 ++--
- sound/soc/ux500/mop500.c              | 6 ++----
- 3 files changed, 6 insertions(+), 11 deletions(-)
+--Sig_/q+_O70ObzbDZp1yJD37T1cz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index cd49d50..3e3fec4 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -457,16 +457,13 @@ static int asoc_simple_card_unref(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
- 	struct snd_soc_dai_link *dai_link;
--	struct device_node *np;
- 	int num_links;
- 
- 	for (num_links = 0, dai_link = card->dai_link;
- 	     num_links < card->num_links;
- 	     num_links++, dai_link++) {
--		np = (struct device_node *) dai_link->cpu_of_node;
--		of_node_put(np);
--		np = (struct device_node *) dai_link->codec_of_node;
--		of_node_put(np);
-+		of_node_put(dai_link->cpu_of_node);
-+		of_node_put(dai_link->codec_of_node);
- 	}
- 	return 0;
- }
-diff --git a/sound/soc/samsung/odroidx2_max98090.c b/sound/soc/samsung/odroidx2_max98090.c
-index 3c8f604..d7640e7 100644
---- a/sound/soc/samsung/odroidx2_max98090.c
-+++ b/sound/soc/samsung/odroidx2_max98090.c
-@@ -153,8 +153,8 @@ static int odroidx2_audio_remove(struct platform_device *pdev)
- 
- 	snd_soc_unregister_card(card);
- 
--	of_node_put((struct device_node *)odroidx2_dai[0].cpu_of_node);
--	of_node_put((struct device_node *)odroidx2_dai[0].codec_of_node);
-+	of_node_put(odroidx2_dai[0].cpu_of_node);
-+	of_node_put(odroidx2_dai[0].codec_of_node);
- 
- 	return 0;
- }
-diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
-index b3b66aa..ea9ba284 100644
---- a/sound/soc/ux500/mop500.c
-+++ b/sound/soc/ux500/mop500.c
-@@ -64,11 +64,9 @@ static void mop500_of_node_put(void)
- 
- 	for (i = 0; i < 2; i++) {
- 		if (mop500_dai_links[i].cpu_of_node)
--			of_node_put((struct device_node *)
--				mop500_dai_links[i].cpu_of_node);
-+			of_node_put(mop500_dai_links[i].cpu_of_node);
- 		if (mop500_dai_links[i].codec_of_node)
--			of_node_put((struct device_node *)
--				mop500_dai_links[i].codec_of_node);
-+			of_node_put(mop500_dai_links[i].codec_of_node);
- 	}
- }
- 
--- 
-2.1.3
+On Sat, 8 Nov 2014 09:26:22 +0000 Mark Brown <broonie@kernel.org> wrote:
+
+> On Sat, Nov 08, 2014 at 11:38:03AM +1100, NeilBrown wrote:
+>=20
+> > If voice port on twl4030 is not connected to a McBSP (or similar)
+> > then we cannot configure the format the way we normally do for a DAI.
+>=20
+> Yes we can, you need to represent the DAI link to whatever else the
+> device is connected to in the driver like we do anything else - and in
+> any case this isn't a device specific issue so we shouldn't be doing
+> something driver specific to solve it.  Look at something like speyside.
+
+Hi Mark,
+ thanks for the reply ... I might need a little bit more help though.
+
+I had a look at sound/soc/samsung/speyside.c, but I'm not entirely sure what
+I'm looking for.
+Presumably this is an audio processor not unlike the audio module in the
+twl4030.
+
+I see that there are 3 dai-links:
+  CPU-DSP
+  DSP-CODEC
+  Baseband
+
+Presumably "Baseband" is similar, in purpose at least, to the "voice"
+interface on the twl4030.
+
+Each dai-link has a "cpu_dai_name" and a "codec_dai_name", even though it
+appears that only "CPU-DSP" is connected to the CPU.  Maybe that naming is
+the source of some of my confusion.
+
+"Baseband" declares
+                .cpu_dai_name =3D "wm8996-aif2",
+so wm8996 is something with 2 audio interfaces, (aif), and this is the seco=
+nd
+one?  Maybe the  wm8996 is the audio module, so what is the "speyside"?
+
+http://opensource.wolfsonmicro.com/content/speyside-audio
+
+says it is a "reference platform".  Does that mean it is a board with a bun=
+ch
+of chips soldered onto it?  If it were a board it should be described by a
+dts file, not by a pile of C code (I thought), so I must be wrong about tha=
+t.
+
+
+In my case, I have a board with a GSM module and the twl4030 module.  Each
+has an audio interface and these are connected.  I assume that I need to
+express this connection in the dts file.
+The GSM module doesn't currently appear in the dts file as it is usb-attach=
+ed.
+However I've been thinking that we will need to add it so we can express
+power-on controls (twiddling some GPIOs).  So let's suppose we have the GSM
+module in the dts file (child of a USB interface) and the twl4030 as well
+(beneath an i2c interface).
+
+The twl4030 needs to know the master/polarity of the clk/frm lines.  The GSM
+module declares that these are.  So presumably we need some sort of linkage.
+Ahhhh... I found Documentation/devicetree/bindings/sound/simple-card.txt
+
+So I need to make the "voice" port on the twl4030 look like a "cpu" end of a
+dai-link, and create a "codec" end in the GSM module, and use "sound-dai" to
+point from the twl4030 to the GSM module.
+Then I use frame-master, bitclock-master, bitclock-inversion, frame-inversi=
+on
+for the settings I need.
+
+I suspect I can make that work.
+
+Am I on the right track?
+
+Thanks,
+NeilBrown
+
+--Sig_/q+_O70ObzbDZp1yJD37T1cz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIVAwUBVF/3/znsnt1WYoG5AQLjhw//aEDPnYz+D3TTOrrpi5gTXRlqNTiNmq6W
+dOSPSXR1tfUI3gevIXkjO+NlHbRf74/2dOpQ5PJdzIG0tpkdXRr2M+y1zwj/KzIp
+hvjLLbc43xiX/pLfp7MnIe0MEeOIMDgbF9q6v9oeBNLpIqgb0Naa5vd6Q97NET4W
+ey4uJfkVp9jI6v9JgUeK+2/cTHgCkxJEW2eLrInpoBbHhGuuijIxGPjzPLr+yrv9
+6pcIp+JB1LH4RXZgssVw87dm5EYq8mFDNt86GxLKm0Mm0rbi6lojku1LGBC1s0gz
+VpUhVi65iXLA8krQaX9RGHIyD4kuLiVVKiQyCo3fTs2fwoHAWJ1moRoCcn96uC9k
+GKGcpJnvNXU5qjuTS25U2VvG5mYoGxpwAQHvfL0qAVNEUA+4xGMmooRMyYLVgdRe
+PLif6/JVmPQB5hHW3/B88NjdvNjEBCFOZUyTHbxzi5ublElvPAZSqQdSOnd4MEyC
+qV14AlThWI9g51f/ARd4wuybfQlpWvFQceIh1JpbYIc+7OP7KiBEdqSXJDsv0na8
+h68LiqesfTnALyGI3T3CRtwOozou9dchXjTsXsmmx4ssiZvf26/RR7TDT1yB5OqQ
+D3BE89cVdHI3au19ZCJsBmF49KE8rWwdKa/95i0BedWg29xNn9nbjr3YQK8bsOk5
+rWwdUid+aJY=
+=EZoe
+-----END PGP SIGNATURE-----
+
+--Sig_/q+_O70ObzbDZp1yJD37T1cz--
+
+--===============7843894543514871539==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7843894543514871539==--
