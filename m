@@ -1,19 +1,19 @@
 From: damien.zammit@gmail.com
-Subject: [PATCH 1/2 v2] ALSA: usb-audio: Add mixer control for
-	Digidesign mbox 1 clock source
-Date: Sun,  9 Nov 2014 11:37:07 +1100
-Message-ID: <1415493428-31653-2-git-send-email-damien.zammit@gmail.com>
+Subject: [PATCH 2/2 v2] ALSA: usb-audio: Add duplex mode for
+	Digidesign Mbox 1 and enable mixer
+Date: Sun,  9 Nov 2014 11:37:08 +1100
+Message-ID: <1415493428-31653-3-git-send-email-damien.zammit@gmail.com>
 References: <1415493428-31653-1-git-send-email-damien.zammit@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f176.google.com (mail-pd0-f176.google.com
- [209.85.192.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 7347D2604C5
- for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2014 01:37:55 +0100 (CET)
-Received: by mail-pd0-f176.google.com with SMTP id ft15so5510021pdb.7
- for <alsa-devel@alsa-project.org>; Sat, 08 Nov 2014 16:37:54 -0800 (PST)
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5698E2604BF
+ for <alsa-devel@alsa-project.org>; Sun,  9 Nov 2014 01:37:59 +0100 (CET)
+Received: by mail-pd0-f174.google.com with SMTP id p10so5520817pdj.19
+ for <alsa-devel@alsa-project.org>; Sat, 08 Nov 2014 16:37:58 -0800 (PST)
 In-Reply-To: <1415493428-31653-1-git-send-email-damien.zammit@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,193 +30,199 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Damien Zammit <damien@zamaudio.com>
 
-This patch provides the infrastructure for the Digidesign Mbox 1
-to have a mixer control for selecting the clock source.
-Valid options are Internal and S/PDIF external sync.
+This patch provides duplex support for the Digidesign Mbox 1 sound
+card and has been a work in progress for about a year.
+Users have confirmed on my website that previous versions of this patch
+have worked on the hardware and I have been testing extensively.
+
+It also enables the mixer control for providing clock source
+selector based on the previous patch.
+
+The sample rate has been hardcoded to 48kHz because it works better with
+the S/PDIF sync mode when the sample rate is locked.  This is the
+highest rate that the device supports and no loss of functionality
+is observed by restricting the sample rate.
 
 Signed-off-by: Damien Zammit <damien@zamaudio.com>
 ---
- sound/usb/mixer_maps.c   |   9 ++++
- sound/usb/mixer_quirks.c | 133 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 142 insertions(+)
+ sound/usb/card.h         |  5 ++++
+ sound/usb/quirks-table.h | 73 ++++++++++++++++++++++++++++++++----------------
+ sound/usb/quirks.c       | 30 ++++++++++++++++++++
+ sound/usb/usbaudio.h     |  1 +
+ 4 files changed, 85 insertions(+), 24 deletions(-)
 
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index d1d72ff..1994d41 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -179,6 +179,11 @@ static struct usbmix_name_map audigy2nx_map[] = {
- 	{ 0 } /* terminator */
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 97acb90..a8fe22f 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -33,6 +33,11 @@ struct audioformat {
+ 	bool dsd_bitrev;		/* reverse the bits of each DSD sample */
  };
  
-+static struct usbmix_name_map mbox1_map[] = {
-+	{ 1, "Clock" },
-+	{ 0 } /* terminator */
++struct audioformats {
++	unsigned int n_formats;
++	const struct audioformat *format;
 +};
 +
- static struct usbmix_selector_map c400_selectors[] = {
- 	{
- 		.id = 0x80,
-@@ -416,6 +421,10 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.map = aureon_51_2_map,
- 	},
- 	{
-+		.id = USB_ID(0x0dba, 0x1000),
-+		.map = mbox1_map,
-+	},
-+	{
- 		.id = USB_ID(0x13e5, 0x0001),
- 		.map = scratch_live_map,
- 		.ignore_ctl_error = 1,
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 3980bf5..d6e5ee1 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -565,6 +565,132 @@ static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixer)
+ struct snd_usb_substream;
+ struct snd_usb_endpoint;
+ 
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index c657752..0b5f4fb 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2937,43 +2937,68 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	/* Thanks to Clemens Ladisch <clemens@ladisch.de> */
+ 	USB_DEVICE(0x0dba, 0x1000),
+ 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+-		.vendor_name = "Digidesign",
+-		.product_name = "MBox",
+-		.ifnum = QUIRK_ANY_INTERFACE,
+-		.type = QUIRK_COMPOSITE,
+-		.data = (const struct snd_usb_audio_quirk[]){
+-			{
+-				.ifnum = 0,
+-				.type = QUIRK_IGNORE_INTERFACE,
+-			},
+-			{
+-				.ifnum = 1,
+-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+-				.data = &(const struct audioformat) {
++	.vendor_name = "Digidesign",
++	.product_name = "MBox",
++	.ifnum = QUIRK_ANY_INTERFACE,
++	.type = QUIRK_COMPOSITE,
++	.data = (const struct snd_usb_audio_quirk[]) {
++		{
++			.ifnum = 0,
++			.type = QUIRK_AUDIO_STANDARD_MIXER,
++		},
++		{
++			.ifnum = 1,
++			.type = QUIRK_AUDIO_FIXED_MULTI_ENDPOINT,
++			.data = &(const struct audioformats)
++			{
++				.n_formats = 2,
++				.format = (const struct audioformat[]) {
++					{
+ 					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
+ 					.channels = 2,
+ 					.iface = 1,
+ 					.altsetting = 1,
+ 					.altset_idx = 1,
+-					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.attributes = 0x4,
+ 					.endpoint = 0x02,
+-					.ep_attr = 0x01,
+-					.rates = SNDRV_PCM_RATE_44100 |
+-						 SNDRV_PCM_RATE_48000,
+-					.rate_min = 44100,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						USB_ENDPOINT_SYNC_SYNC,
++					.maxpacksize = 0x130,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
+ 					.rate_max = 48000,
+-					.nr_rates = 2,
++					.nr_rates = 1,
+ 					.rate_table = (unsigned int[]) {
+-						44100, 48000
++						48000
++					}
++					},
++					{
++					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
++					.channels = 2,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0x4,
++					.endpoint = 0x81,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						USB_ENDPOINT_SYNC_ASYNC,
++					.maxpacksize = 0x130,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) {
++						48000
++					}
+ 					}
+ 				}
+-			},
+-			{
+-				.ifnum = -1
+ 			}
++		},
++		{
++			.ifnum = -1
+ 		}
+-
+ 	}
++}
+ },
+ 
+ /* DIGIDESIGN MBOX 2 */
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index d2aa45a..90227cd 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -180,6 +180,34 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
  	return 0;
  }
  
-+/* Digidesign Mbox 1 clock source switch (internal/spdif) */
-+
-+static int snd_mbox1_switch_get(struct snd_kcontrol *kctl,
-+				struct snd_ctl_elem_value *ucontrol)
++/*
++ * create N streams for an interface without proper descriptors but with
++ * multiple endpoints
++ */
++static int create_fixed_multi_stream_quirk(struct snd_usb_audio *chip,
++				     struct usb_interface *iface,
++				     struct usb_driver *driver,
++				     const struct snd_usb_audio_quirk *quirk)
 +{
-+	if (kctl->private_value) {
-+		ucontrol->value.enumerated.item[0] = true;
-+		return 0;
-+	}
++	struct audioformats *fp;
++	int i;
 +
-+	ucontrol->value.enumerated.item[0] = false;
++	fp = kmemdup(quirk->data, sizeof(*fp), GFP_KERNEL);
++	if (!fp) {
++		usb_audio_err(chip, "cannot memdup\n");
++		return -ENOMEM;
++	}
++	for (i = 0; i < fp->n_formats; i++) {
++		struct snd_usb_audio_quirk nquirk = {
++			.ifnum = quirk->ifnum,
++			.type = QUIRK_AUDIO_FIXED_MULTI_ENDPOINT,
++			.data = (const struct audioformat *) &fp->format[i]
++		};
++		create_fixed_stream_quirk(chip, iface, driver, &nquirk);
++	}
 +	return 0;
 +}
 +
-+static int snd_mbox1_switch_put(struct snd_kcontrol *kctl,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_audio *chip;
-+	struct usb_mixer_interface *mixer;
-+	int err;
-+	bool changed, cur_val, new_val;
-+	bool value;
-+	unsigned char buff[3];
-+
-+	changed = false;
-+	value = false;
-+
-+	cur_val = kctl->private_value;
-+	new_val = ucontrol->value.enumerated.item[0];
-+
-+	mixer = snd_kcontrol_chip(kctl);
-+	if (snd_BUG_ON(!mixer))
-+		return -EINVAL;
-+
-+	chip = mixer->chip;
-+	if (snd_BUG_ON(!chip))
-+		return -EINVAL;
-+
-+	/* update value if needed */
-+	if (cur_val != new_val) {
-+		value = new_val;
-+		down_read(&chip->shutdown_rwsem);
-+		if (chip->shutdown) {
-+			err = -ENODEV;
-+		} else {
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), 0x81,
-+				USB_DIR_IN |
-+				USB_TYPE_CLASS |
-+				USB_RECIP_INTERFACE, 0x00, 0x500, buff, 1);
-+			if (err < 0)
-+				return err;
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), 0x81,
-+				USB_DIR_IN |
-+				USB_TYPE_CLASS |
-+				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
-+			if (err < 0)
-+				return err;
-+			if (new_val == 0) {
-+				buff[0] = 0x80;
-+				buff[1] = 0xbb;
-+				buff[2] = 0x00;
-+			} else {
-+				buff[0] = buff[1] = buff[2] = 0x00;
-+			}
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_sndctrlpipe(chip->dev, 0), 0x1,
-+				USB_TYPE_CLASS |
-+				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
-+			if (err < 0)
-+				return err;
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), 0x81,
-+				USB_DIR_IN |
-+				USB_TYPE_CLASS |
-+				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
-+			if (err < 0)
-+				return err;
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), 0x81,
-+				USB_DIR_IN |
-+				USB_TYPE_CLASS |
-+				USB_RECIP_ENDPOINT, 0x100, 0x2, buff, 3);
-+			if (err < 0)
-+				return err;
-+		}
-+		up_read(&chip->shutdown_rwsem);
-+		if (err < 0)
-+			return err;
-+
-+		kctl->private_value = new_val;
-+		changed = true;
-+	}
-+
-+	return changed;
-+}
-+
-+static int snd_mbox1_switch_info(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *const texts[2] = {
-+		"Internal",
-+		"S/PDIF"
-+	};
-+
-+	return snd_ctl_enum_info(uinfo, 1, ARRAY_SIZE(texts), texts);
-+}
-+
-+static struct snd_kcontrol_new snd_mbox1_switch = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Clock Source",
-+	.index = 0,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = snd_mbox1_switch_info,
-+	.get = snd_mbox1_switch_get,
-+	.put = snd_mbox1_switch_put,
-+	.private_value = 0
-+};
-+
-+static int snd_mbox1_create_sync_switch(struct usb_mixer_interface *mixer)
-+{
-+	return snd_ctl_add(mixer->chip->card,
-+			snd_ctl_new1(&snd_mbox1_switch, mixer));
-+}
-+
- /* Native Instruments device quirks */
- 
- #define _MAKE_NI_CONTROL(bRequest,wIndex) ((bRequest) << 16 | (wIndex))
-@@ -1605,6 +1731,13 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 					      snd_audigy2nx_proc_read);
- 		break;
- 
-+	/* Digidesign Mbox 1 */
-+	case USB_ID(0x0dba, 0x1000):
-+		err = snd_mbox1_create_sync_switch(mixer);
-+		if (err < 0)
-+			break;
-+		break;
-+
- 	/* EMU0204 */
- 	case USB_ID(0x041e, 0x3f19):
- 		err = snd_emu0204_controls_create(mixer);
+ static int create_auto_pcm_quirk(struct snd_usb_audio *chip,
+ 				 struct usb_interface *iface,
+ 				 struct usb_driver *driver)
+@@ -528,6 +556,8 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
+ 		[QUIRK_MIDI_FTDI] = create_any_midi_quirk,
+ 		[QUIRK_AUDIO_STANDARD_INTERFACE] = create_standard_audio_quirk,
+ 		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
++		[QUIRK_AUDIO_FIXED_MULTI_ENDPOINT] =
++			create_fixed_multi_stream_quirk,
+ 		[QUIRK_AUDIO_EDIROL_UAXX] = create_uaxx_quirk,
+ 		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk,
+ 		[QUIRK_AUDIO_STANDARD_MIXER] = create_standard_mixer_quirk,
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 91d0380..31d8ff0 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -96,6 +96,7 @@ enum quirk_type {
+ 	QUIRK_MIDI_FTDI,
+ 	QUIRK_AUDIO_STANDARD_INTERFACE,
+ 	QUIRK_AUDIO_FIXED_ENDPOINT,
++	QUIRK_AUDIO_FIXED_MULTI_ENDPOINT,
+ 	QUIRK_AUDIO_EDIROL_UAXX,
+ 	QUIRK_AUDIO_ALIGN_TRANSFER,
+ 	QUIRK_AUDIO_STANDARD_MIXER,
 -- 
 1.9.1
