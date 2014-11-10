@@ -1,55 +1,60 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v2 1/2] ASoC: Remove 'const' from the device_node pointers
-Date: Mon, 10 Nov 2014 19:25:39 +0000
-Message-ID: <20141110192539.GK3815@sirena.org.uk>
+Date: Mon, 10 Nov 2014 19:37:04 +0000
+Message-ID: <20141110193704.GL3815@sirena.org.uk>
 References: <cover.1415562021.git.moinejf@free.fr>
  <d5d74f6993e9f2392008a27a2938c58d47dc8062.1415562021.git.moinejf@free.fr>
- <20141110190332.GG3815@sirena.org.uk>
- <20141110201254.65674552@armhf>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AMEHvcA7tHoZVye7"
+	protocol="application/pgp-signature"; boundary="l/31HQTn6peyh0iH"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20141110201254.65674552@armhf>
+In-Reply-To: <d5d74f6993e9f2392008a27a2938c58d47dc8062.1415562021.git.moinejf@free.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jean-Francois Moine <moinejf@free.fr>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, Russell King <linux@arm.linux.org.uk>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---AMEHvcA7tHoZVye7
+--l/31HQTn6peyh0iH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 10, 2014 at 08:12:54PM +0100, Jean-Francois Moine wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+On Sun, Nov 09, 2014 at 08:33:45PM +0100, Jean-Francois Moine wrote:
 
-> > Did Russell write this patch (in which case it's missing a signoff and
-> > his e-mail address above) or are you trying to say "Russell King
-> > said..."?
+> index 7ba7130..405f967 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -886,7 +886,7 @@ struct snd_soc_platform_driver {
+> =20
+>  struct snd_soc_dai_link_component {
+>  	const char *name;
+> -	const struct device_node *of_node;
+> +	struct device_node *of_node;
+>  	const char *dai_name;
+>  };
+> =20
 
-> Sorry, that was "Russell said ...".
-> Do you want I resubmit the patch?
+The changelog talked about of_node_put() but I'm not seeing anything in
+the code which calls that except snd_soc_of_get_dai_name()?  Everything
+else just does comparisons of the pointer AFIACT from a quick scan
+through.
 
-Let me look at the change, I didn't do that yet (what you wrote looks
-awfully like the patch submission format for sending code someone else
-wrote...).
-
---AMEHvcA7tHoZVye7
+--l/31HQTn6peyh0iH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUYREyAAoJECTWi3JdVIfQOcIH/R4OtaBEhnS7rt7ToCgswYjA
-yiStjkk3UyuUHKF6Ec2QAdSGF50lZAYSHMsQF+tIC1b7vVg+rWLQjCBFTJg91jKE
-sWQau96W6FY5V/1Q6i6dzA0OgYWDunpq5YXiEp+6B/2afDcLb/SgCWBdturDj3fN
-g+L1Km86kpYOJqk3hHd+G2LTgR/abrEotdpr9uo44L9LcCVB1ubjEwlXRqGar1Pw
-C6Dgwi17Swkjl7qsXH7F8H9VI/rPQLfzFM2SrXRYyXOGxkn1SqoZw/0f49Zdu3NB
-4pDiD8Hf8xcL5UvbS0iejphbGasqwrsUzZFqn9CW8F/FVLQbdWWaDWSM1nFTP8k=
-=0aLE
+iQEcBAEBAgAGBQJUYRPfAAoJECTWi3JdVIfQCLoH+wVGAQLCw+nWR1YK8qNAE9OX
+eRWX8IViBBMfor6/9dm/Tx6vLwlrVy4nyhfabIg50xcvaFcgY4Mx1mGaL1U+UjnR
+PSzhD1lXpkdLru6wzVvS1o81RW1Sg8MMCw7brP5GdN/y3q8eULIW3b+iuQvPo+RP
+O4eEXxxYpP6zVUlzYMtZjHQXY2natUR4an+LafrfopGvFNsHyPgUfZ6iUJy57Oxi
+mp8TX9etJbezm7wGWifCPmwkjiGA4+CnELnNBYqAOjgdJ2nV/Y9+Yz8621FdQKgP
+QjK3G3RKJyjxWhxdPiiTTYssUEH7li1VVaqX1VJy6AsMnEEHTPEH8gPC2PxxXlw=
+=z5Kq
 -----END PGP SIGNATURE-----
 
---AMEHvcA7tHoZVye7--
+--l/31HQTn6peyh0iH--
