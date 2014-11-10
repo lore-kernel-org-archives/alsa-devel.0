@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 1/5] ASoC: sh: fsi: Document SoC-specific bindings
-Date: Mon, 10 Nov 2014 20:00:40 +0100
-Message-ID: <1415646044-4168-2-git-send-email-geert+renesas@glider.be>
+Subject: [PATCH 4/5] ARM: shmobile: r8a7790 dtsi: Drop "renesas,rcar_sound" compatible value
+Date: Mon, 10 Nov 2014 20:00:43 +0100
+Message-ID: <1415646044-4168-5-git-send-email-geert+renesas@glider.be>
 References: <1415646044-4168-1-git-send-email-geert+renesas@glider.be>
 Return-path: <linux-sh-owner@vger.kernel.org>
 In-Reply-To: <1415646044-4168-1-git-send-email-geert+renesas@glider.be>
@@ -10,41 +10,27 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon 
 Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, devicetree@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: alsa-devel@alsa-project.org
 
-The documentation only mentioned the generic fallback compatible
-property.
-Add the missing SoC-specific compatible properties, some of which are
-already in use.
-
-Also fix a small typo, while we're at it.
+The "renesas,rcar_sound" compatible property value was never processed
+nor documented.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- Documentation/devicetree/bindings/sound/renesas,fsi.txt | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/r8a7790.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,fsi.txt b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
-index c5be003f413e3aa3..0d0ab51105b01ece 100644
---- a/Documentation/devicetree/bindings/sound/renesas,fsi.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
-@@ -1,11 +1,16 @@
- Renesas FSI
+diff --git a/arch/arm/boot/dts/r8a7790.dtsi b/arch/arm/boot/dts/r8a7790.dtsi
+index 46d6898de290d2d0..2548890925a9f16e 100644
+--- a/arch/arm/boot/dts/r8a7790.dtsi
++++ b/arch/arm/boot/dts/r8a7790.dtsi
+@@ -1389,7 +1389,7 @@
  
- Required properties:
--- compatible			: "renesas,sh_fsi2" or "renesas,sh_fsi"
-+- compatible			: "renesas,fsi2-<soctype>",
-+				  "renesas,sh_fsi2" or "renesas,sh_fsi" as
-+				  fallback.
-+				  Examples with soctypes are:
-+				    - "renesas,fsi2-r8a7740" (R-Mobile A1)
-+				    - "renesas,fsi2-sh73a0" (SH-Mobile AG5)
- - reg				: Should contain the register physical address and length
- - interrupts			: Should contain FSI interrupt
- 
--- fsia,spdif-connection		: FSI is connected by S/PDFI
-+- fsia,spdif-connection		: FSI is connected by S/PDIF
- - fsia,stream-mode-support	: FSI supports 16bit stream mode.
- - fsia,use-internal-clock	: FSI uses internal clock when master mode.
- 
+ 	rcar_sound: rcar_sound@ec500000 {
+ 		#sound-dai-cells = <1>;
+-		compatible =  "renesas,rcar_sound-r8a7790", "renesas,rcar_sound-gen2", "renesas,rcar_sound";
++		compatible =  "renesas,rcar_sound-r8a7790", "renesas,rcar_sound-gen2";
+ 		reg =	<0 0xec500000 0 0x1000>, /* SCU */
+ 			<0 0xec5a0000 0 0x100>,  /* ADG */
+ 			<0 0xec540000 0 0x1000>, /* SSIU */
 -- 
 1.9.1
 
