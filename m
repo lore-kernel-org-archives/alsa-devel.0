@@ -1,62 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: ALC5631: Add device tree binding documentation
-Date: Mon, 10 Nov 2014 14:50:55 +0000
-Message-ID: <20141110145055.GS3815@sirena.org.uk>
-References: <1415606519-30744-1-git-send-email-krishna.md@samsung.com>
- <1415606519-30744-2-git-send-email-krishna.md@samsung.com>
- <20141110133708.GQ3815@sirena.org.uk>
- <E07FA6F208344BC093C8D95F677E8F4A@sisodomain.com>
+Subject: Re: [PATCH] ASoC: rsnd: tidyup debug message format
+	and timing
+Date: Mon, 10 Nov 2014 14:54:18 +0000
+Message-ID: <20141110145418.GT3815@sirena.org.uk>
+References: <874mu7ogbo.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2CmXnuBWhlSJqbcw"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <E07FA6F208344BC093C8D95F677E8F4A@sisodomain.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: D Krishna Mohan <krishna.md@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com
+Content-Type: multipart/mixed; boundary="===============7504677987382327511=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8278C26154C
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 15:55:36 +0100 (CET)
+In-Reply-To: <874mu7ogbo.wl%kuninori.morimoto.gx@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---2CmXnuBWhlSJqbcw
-Content-Type: text/plain; charset=us-ascii
+--===============7504677987382327511==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="awI2n36DLSPuU52Q"
 Content-Disposition: inline
 
-On Mon, Nov 10, 2014 at 07:39:51PM +0530, D Krishna Mohan wrote:
-> Hi Mark Brown,
 
-Don't top post.
+--awI2n36DLSPuU52Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->     The codec driver is present in mainline as rt5631.c., Its realtek's
-> alc5631 so retained that name.
-> Similarly machine driver also is named as arndale_rt5631.c but inside that
-> driver I have used alc5631 naming as the
-> audio daughter card on arndale board mentions alc5631 so I have used this
-> convention here so that user should not
-> feel the absence of the driver.
+On Sun, Nov 09, 2014 at 08:00:30PM -0800, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Current Renesas R-Car sound driver debug message
+> is using random format
 
-> Is that ok or do you want to have one naming all over?
+Applied, thanks.
 
-Ugh, OK.  That was hidden at the back end of the series.  Please:
-
- - Use subject lines matching the style for the subsystem.
- - Support both variants of the device name, not just one.
- - of_match_table() is there to reduce ifdefs.
-
---2CmXnuBWhlSJqbcw
+--awI2n36DLSPuU52Q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUYNDOAAoJECTWi3JdVIfQhWgH+gMPQQKju4CX559ktRMsnunI
-UOpvVTwnAzHnOqFYct1zIRoVnFIaz5kCh3gKIx1Xf5KVwkJGumdAbVxBfVG/NNn5
-nC7zUn5Hbf+D7xcs2JrQpRxVb2DRHd5Ytl/suNaZUIJpkgbyRqO1wo7lssbMIMkZ
-OvdmbPZutlwsCqTUqdS3k82JsnpiQFx8jumDUeqMvgxfWHqYcJ33AlcRrvc5Ip3/
-YATVfUJi6NTvxvqTxK3NXTCezVeTW6rDiBPje2Q3OlXBitvbCelePuuseB2O787q
-H2vz6pYcMV5ryv681NkrrPM9tM3VaCJ5WJdn0hucEiux1billVBtucBOTQe6YxU=
-=KXO1
+iQEcBAEBAgAGBQJUYNGaAAoJECTWi3JdVIfQhpYH/1VOpyFsLUm+KSXFok6yasl0
+ufW3BLDgjOtqLBmFiSn4nllsVuiypJ5MdHqFM07ItMSagVlEnkzZ9LkDK4iKnrHo
+lap5ShUKM+KQmpOA7eM4uQCxxW83Jdtr4mWWjZxPmKATYiMtLAvE1IkPlZrew3/s
+Awyy38fdiPy8QakquVTuibFoKzujTrxdDghtd2eB2slkMimwhARQhLDklJWQtqkv
+gtNQOza66+A1/q3rWvOilevMdizbYJmZH7QH+AXiHoC7e0I4B5+GAass3PNyMRJ0
+Tm7puJACQ7DT7fTPiqi/oTcjAejz3VODOsSQtaj0RTj3RDf6CKtDBgO8jgCoTrI=
+=9lJ2
 -----END PGP SIGNATURE-----
 
---2CmXnuBWhlSJqbcw--
+--awI2n36DLSPuU52Q--
+
+--===============7504677987382327511==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7504677987382327511==--
