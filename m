@@ -1,73 +1,55 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/8] ASoC: Replace remaining users of the
-	CODEC mutex
-Date: Mon, 10 Nov 2014 08:49:30 +0000
-Message-ID: <20141110084930.GA23178@opensource.wolfsonmicro.com>
-References: <1415548864-27203-1-git-send-email-lars@metafoo.de>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [PATCH v4 3/4] ASoC: simple-card: add multi-CODECs in DT
+Date: Mon, 10 Nov 2014 10:05:26 +0100
+Message-ID: <20141110100526.76790f55@armhf>
+References: <cover.1415605716.git.moinejf@free.fr>
+	<d49d348da24fbd96e7be51ba2839ee8bc821ddec.1415605717.git.moinejf@free.fr>
+	<3271244.uSgBKXChSS@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A857A260653
- for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 09:49:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1415548864-27203-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Tushar Behera <tushar.behera@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <3271244.uSgBKXChSS@wuerfel>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 09, 2014 at 05:00:56PM +0100, Lars-Peter Clausen wrote:
-> We've stopped using the snd_soc_codec mutex in the ASoC core itself a while
-> ago. There is still a handful of drivers which use the mutex to protect some
-> of their data structures. This patch moves the lock for the remaining users
-> to the drivers private data struct and then removes it from the
-> snd_soc_codec struct.
-> 
-> - Lars
-> 
-> Lars-Peter Clausen (8):
->   ASoC: ab8500-codec: Move control lock to the driver level
->   ASoC: max98095: Move mutex to the driver level
->   ASoC: wm5102: Move ultrasonic response settings lock to the driver
->     level
->   ASoC: wm8731: Move the deemph lock to the driver level
->   ASoC: wm8903: Move the deemph lock to the driver level
->   ASoC: wm8958: Move DSP firmware lock to driver level
->   ASoC: wm8962: Move DSP enable lock to the driver level
->   ASoC: Remove CODEC mutex
-> 
->  include/linux/mfd/arizona/core.h |  1 +
->  include/sound/soc.h              |  1 -
->  sound/soc/codecs/ab8500-codec.c  | 32 ++++++++++++++++----------------
->  sound/soc/codecs/arizona.c       |  4 ++--
->  sound/soc/codecs/max98095.c      | 12 ++++++++----
->  sound/soc/codecs/wm5102.c        | 16 ++++++++--------
->  sound/soc/codecs/wm8731.c        |  9 +++++++--
->  sound/soc/codecs/wm8903.c        |  8 ++++++--
->  sound/soc/codecs/wm8958-dsp2.c   | 12 ++++++------
->  sound/soc/codecs/wm8962.c        |  8 ++++++--
->  sound/soc/codecs/wm8994.c        |  2 ++
->  sound/soc/codecs/wm8994.h        |  2 ++
->  sound/soc/soc-core.c             |  1 -
->  13 files changed, 64 insertions(+), 44 deletions(-)
-> 
-> -- 
-> 1.8.0
-> 
+On Mon, 10 Nov 2014 09:39:57 +0100
+Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org> wrote:
 
-For the Wolfson parts:
+> On Sunday 09 November 2014 12:22:21 Jean-Francois Moine wrote:
+> > -- sound-dai                            : phandle and port of CPU/C=
+ODEC
+> > +either
+> > +  - sound-dai                          : phandle and port of CPU/C=
+ODEC
+> > +or
+> > +  - sound-dais                         : list of phandle and port =
+of CODECs
+>=20
+> Is it really necessary to change the property name here? I woudl thin=
+k
+> that you can make it all work more consistently with just the existin=
+g
+> 'sound-dai' property, just extend it to allow multiple codecs
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+This was an idea from Benoit Cousson:
 
-Thanks,
-Charles
+ "Something like that:
+
+   sound-dais =3D <&spdif_codec 1>, <&hdmi 0>;
+
+ That being said, it will require changing the name with a plural form,=
+"
+
+As I coded it, both names are accepted for a single or many codecs.
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
