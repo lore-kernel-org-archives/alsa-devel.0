@@ -1,49 +1,80 @@
-From: Krishna Mohan Dani <krishna.md@samsung.com>
-Subject: [PATCH 4/4] Sound: DT: Adding Device Tree compatibility to Realtek's
- ALC5631 codec driver
-Date: Mon, 10 Nov 2014 13:31:59 +0530
-Message-ID: <1415606519-30744-5-git-send-email-krishna.md@samsung.com>
-References: <1415606519-30744-1-git-send-email-krishna.md@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1415606519-30744-1-git-send-email-krishna.md@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: kgene.kim@samsung.com, broonie@kernel.org
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/2 v3] ALSA: usb-audio: Add mixer
+	control	for Digidesign mbox 1 clock source
+Date: Mon, 10 Nov 2014 09:23:47 +0100
+Message-ID: <54607613.30802@ladisch.de>
+References: <1415605612-2977-1-git-send-email-damien@zamaudio.com>
+ <1415605612-2977-2-git-send-email-damien@zamaudio.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 35C51260650
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 09:23:49 +0100 (CET)
+In-Reply-To: <1415605612-2977-2-git-send-email-damien@zamaudio.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Damien Zammit <damien.zammit@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Damien Zammit <damien@zamaudio.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Krishna Mohan Dani <krishna.md@samsung.com>
----
- sound/soc/codecs/rt5631.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+Damien Zammit wrote:
+> This patch provides the infrastructure for the Digidesign Mbox 1
+> to have a mixer control for selecting the clock source.
+> Valid options are Internal and S/PDIF external sync.
+> A non-documented command is sent to the device to enable this feature
+> found by reverse engineering and bus snooping.
+>
+> Signed-off-by: Damien Zammit <damien@zamaudio.com>
+> ---
+>  sound/usb/mixer_maps.c   |   9 +++
+>  sound/usb/mixer_quirks.c | 142 +++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 151 insertions(+)
+>
+> +++ b/sound/usb/mixer_maps.c
+> +static int snd_mbox1_switch_put(struct snd_kcontrol *kctl,
+> +				struct snd_ctl_elem_value *ucontrol)
+> +{
+> ...
+> +		down_read(&chip->shutdown_rwsem);
+> +		if (chip->shutdown) {
+> +			err = -ENODEV;
+> +		} else {
+> +			/* Prepare for magic command to toggle clock source */
+> +			err = snd_usb_ctl_msg(chip->dev,
+> +				usb_rcvctrlpipe(chip->dev, 0), 0x81,
+> +				USB_DIR_IN |
+> +				USB_TYPE_CLASS |
+> +				USB_RECIP_INTERFACE, 0x00, 0x500, buff, 1);
+> +			if (err < 0)
+> +				return err;
 
-diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
-index 1ba27db..d7c3f42 100644
---- a/sound/soc/codecs/rt5631.c
-+++ b/sound/soc/codecs/rt5631.c
-@@ -1690,6 +1690,14 @@ static const struct i2c_device_id rt5631_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt5631_i2c_id);
- 
-+#ifdef CONFIG_OF
-+static struct of_device_id rt5631_i2c_dt_ids[] = {
-+	{ .compatible = "realtek,alc5631"},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rt5631_i2c_dt_ids);
-+#endif
-+
- static const struct regmap_config rt5631_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 16,
-@@ -1734,6 +1742,9 @@ static struct i2c_driver rt5631_i2c_driver = {
- 	.driver = {
- 		.name = "rt5631",
- 		.owner = THIS_MODULE,
-+#ifdef CONFIG_OF
-+		.of_match_table = of_match_ptr(rt5631_i2c_dt_ids),
-+#endif
- 	},
- 	.probe = rt5631_i2c_probe,
- 	.remove   = rt5631_i2c_remove,
--- 
-1.7.9.5
+The semaphore is still locked.
+
+> @@ -1605,6 +1740,13 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+>  					      snd_audigy2nx_proc_read);
+>  		break;
+>
+> +	/* Digidesign Mbox 1 */
+> +	case USB_ID(0x0dba, 0x1000):
+
+The IDs are supposed to be sorted by their value.
+
+> +		err = snd_mbox1_create_sync_switch(mixer);
+> +		if (err < 0)
+> +			break;
+> +		break;
+
+This if() is meaningless.
+
+
+Regards,
+Clemens
