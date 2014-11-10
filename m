@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/8] ASoC: Replace remaining users of the
-	CODEC mutex
-Date: Mon, 10 Nov 2014 19:08:45 +0000
-Message-ID: <20141110190845.GI3815@sirena.org.uk>
-References: <1415548864-27203-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Fix kerneldoc errors
+Date: Mon, 10 Nov 2014 19:22:11 +0000
+Message-ID: <20141110192211.GJ3815@sirena.org.uk>
+References: <1415637045-20868-1-git-send-email-tiwai@suse.de>
+ <20141110175508.GD3815@sirena.org.uk>
+ <s5hlhniswhy.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9007139818847733475=="
+Content-Type: multipart/mixed; boundary="===============8285004409603736089=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AFFF2667E4
- for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 20:10:04 +0100 (CET)
-In-Reply-To: <1415548864-27203-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 91EA3265AD3
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 20:23:28 +0100 (CET)
+In-Reply-To: <s5hlhniswhy.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Tushar Behera <tushar.behera@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9007139818847733475==
+--===============8285004409603736089==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="V0nQ2sto/tqFewMv"
+	protocol="application/pgp-signature"; boundary="SfiY5U5w26VY+QNu"
 Content-Disposition: inline
 
 
---V0nQ2sto/tqFewMv
+--SfiY5U5w26VY+QNu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Nov 09, 2014 at 05:00:56PM +0100, Lars-Peter Clausen wrote:
-> We've stopped using the snd_soc_codec mutex in the ASoC core itself a while
-> ago. There is still a handful of drivers which use the mutex to protect some
-> of their data structures. This patch moves the lock for the remaining users
-> to the drivers private data struct and then removes it from the
-> snd_soc_codec struct.
+On Mon, Nov 10, 2014 at 08:09:45PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Applied all, thanks.
+> > On Mon, Nov 10, 2014 at 05:30:45PM +0100, Takashi Iwai wrote:
 
---V0nQ2sto/tqFewMv
+> > > + * @list:   linked list of assigned pins to the same jack
+
+> > I thought there was a way to mark implementation details that the user
+> > isn't supposed to look at as such in kerneldoc?
+
+> You can put /* private: */ and /* public: */ comments.  See
+> Documentation/kernel-doc-nano-HOWTO.txt.
+
+> But in this case, the list item appears as the first, so it'd become a
+> bit ugly.  Also, struct snd_soc_jack_zone has already the description
+> of list item, so having only one shown and one hidden would be
+> inconsistent.  For these reasons, I chose to add a comment on it,
+> too.
+
+If we are going to do this sort of stuff and have people looking at the
+output I'd prefer that we did do those annotations (and move things
+around).  This just happened to be the first change in the diff but I'd
+guess there may be some other things that are undocumented because
+people aren't supposed to be looking at them (as well as ones that were
+just missed).
+
+--SfiY5U5w26VY+QNu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUYQ08AAoJECTWi3JdVIfQHgQH/ihU0BBGJj5mj6XsMtXfT4he
-WCX+sUzAPL7AK68kmkCYSQlN5XqKFKS8eh9o6iuo/5uwLl0aGBxEwyDQ2ChCCmNi
-nLB0Q1WJtryhfQaUjexDbWKddglX0ZM8aUF0I3vYW6jRvtv/UsMBw7wgJMat4z83
-GYjdtGxUmFt8YWjm3ybVLkw9Tx/aS8FUlvsZm+0ZG7FbMTtE7fEvHuFEOWsMLOoA
-GMIye4S1FiBV7VxJgto4xtQJ7VKvjVjBPrc6tbzhbLGmR9Vyych7Wi078Fz0Fm6p
-npYH4NEZK8q4gIzencepHYQyDOVNAo9NSFwJ4Haj3zvEzAJguz65xPMBnQcZS/g=
-=FeV5
+iQEcBAEBAgAGBQJUYRBiAAoJECTWi3JdVIfQ1qoIAIYfFB507GqTBaju0r+Iq2J9
+lziBrsJ0BM/6fUr96oQvM9jNdrEBmfQlxlSV0zfmDv/me0RtYcrX0KPD+O0DtCfe
+98eaBYVeHSt768+35R2VPMrf5Sdps95rVVqKI76OMO6syks28oFYVzBcVfXBgy87
+qRe97eRXxfSMUBfmcGpYEYAYvd2Jcq2cHXUX2hhljw/hrarRgjdCio+FxKALNfcC
+Nr4BcEZIPk/JdX+77iGDEkdyV3d8Sm9UPbcDm890CITA8SVV/A8aRDvBsCK87vO9
+xK3MyIQIPJm8FDrO4Pr/IvsNm7grdP102rHdepAIcpm8s8KLd9oD57NVdIriwA0=
+=GiaL
 -----END PGP SIGNATURE-----
 
---V0nQ2sto/tqFewMv--
+--SfiY5U5w26VY+QNu--
 
---===============9007139818847733475==
+--===============8285004409603736089==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9007139818847733475==--
+--===============8285004409603736089==--
