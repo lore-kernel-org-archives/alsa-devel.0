@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/6] ASoC: davinci-mcasp: Place constraint
- on number of channels
-Date: Mon, 10 Nov 2014 15:00:24 +0000
-Message-ID: <20141110150024.GY3815@sirena.org.uk>
+Subject: Re: [PATCH 3/6] ASoC: davinci-mcasp: Active slots
+ depend on active serializers
+Date: Mon, 10 Nov 2014 15:00:33 +0000
+Message-ID: <20141110150033.GZ3815@sirena.org.uk>
 References: <1415615540-28981-1-git-send-email-peter.ujfalusi@ti.com>
- <1415615540-28981-3-git-send-email-peter.ujfalusi@ti.com>
+ <1415615540-28981-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0114952752390273916=="
+Content-Type: multipart/mixed; boundary="===============4462312384065206111=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EE4C426154C
- for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 16:01:43 +0100 (CET)
-In-Reply-To: <1415615540-28981-3-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C39326155D
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 16:01:50 +0100 (CET)
+In-Reply-To: <1415615540-28981-4-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,48 +27,50 @@ Cc: daniel@zonque.org, Misael Lopez Cruz <misael.lopez@ti.com>, Jyri Sarha <jsar
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0114952752390273916==
+--===============4462312384065206111==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="36OpTq80o519DUb3"
+	protocol="application/pgp-signature"; boundary="yImwRA5k0rgsu8pT"
 Content-Disposition: inline
 
 
---36OpTq80o519DUb3
+--yImwRA5k0rgsu8pT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 10, 2014 at 12:32:16PM +0200, Peter Ujfalusi wrote:
-> In IIS (I2S, TDM, etc) mode the maximum number of allowed channels for
-> either direction can be:
-> number of serializers for the direction * tdm_slots.
-> This constraint applicable for the first stream, while consequent stream
-> should not have more channels then the first stream.
+On Mon, Nov 10, 2014 at 12:32:17PM +0200, Peter Ujfalusi wrote:
+> From: Misael Lopez Cruz <misael.lopez@ti.com>
+>=20
+> Active slots count depends on the number of channels in the stream
+> and the number of active serializers. Each serializer will handle
+> at most the number of channels specified via 'tdm-slots' parameter
+> in DT.
 
 Applied, thanks.
 
---36OpTq80o519DUb3
+--yImwRA5k0rgsu8pT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUYNMHAAoJECTWi3JdVIfQ3OUH/2vA3L6+I/iRzk7E9+0SLI1m
-yfjNzJpMJSWrX8eHLrobtYQeaoJLdL3CnCYgzCnpDcWYhQoPyYoaN9x3FWml+3po
-E+VQQNQdOtSxsgK6hURetEoi1XkQnGwPM2LInNuAx+TgZmbsZH/q8II4AdZt11B1
-ILfLV92OytPcm6S8s3q1V8AA+m4PQeidHkyNCU/2/w/CSCEJRW+JsZ3rRkVCwiZB
-9BzwfAY5xh3WWBm6qbhjen4/s5c9YiUHSKS5MUMyimVfDp/7VhsAiOKgLpdeddsN
-NeZ7Gv0v5J0Pw4br9/ouuJN5Q5uw5V2f2vrkfkGu8XkZtfPxYsnRztEeX1fVAQA=
-=EZBk
+iQEcBAEBAgAGBQJUYNMRAAoJECTWi3JdVIfQVrAH/jZOHFScpWUeIGOd1++5EYuE
+CKE5RrcW+rd+8JZoRSX0pRiSiPINhLqx4EYGBVfVpuZRfUZO9jQqFAfDe2uOKZ2E
+bORnL4t+reiqfKXZzvqZq2PMMrlELO0bJ9tqgtulfDPYRxWm65FzeP7J2rPK+Fuj
+pG2atQ7JJv83FOkxSEiJsMgT4mKGuqFtsxxl1XEXa7T3DSBOnxE1TWSb4J34tlIz
+NlSwnm+LbPOGdyvAgYjsAmIhuwa41pIKzE4hoODDlZjV9JAusTw6QTAEu/EF9j8H
+jvnOZQ2qgtodl9RdsR+sXcPBiFxMHprOLPAS7H7qNxAcCsvgRf4u/WlUiLyR1Kw=
+=xxm2
 -----END PGP SIGNATURE-----
 
---36OpTq80o519DUb3--
+--yImwRA5k0rgsu8pT--
 
---===============0114952752390273916==
+--===============4462312384065206111==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0114952752390273916==--
+--===============4462312384065206111==--
