@@ -1,45 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinvi-mcasp: Balance pm_runtime_enable() on
- probe failure
-Date: Mon, 10 Nov 2014 13:45:48 +0000
-Message-ID: <20141110134548.GR3815@sirena.org.uk>
-References: <1415537114-9642-1-git-send-email-anilk4.v@gmail.com>
+From: D Krishna Mohan <krishna.md@samsung.com>
+Subject: Re: [PATCH 1/4] ASoC: ALC5631: Add device tree binding documentation
+Date: Mon, 10 Nov 2014 19:39:51 +0530
+Message-ID: <E07FA6F208344BC093C8D95F677E8F4A@sisodomain.com>
+References: <1415606519-30744-1-git-send-email-krishna.md@samsung.com>
+ <1415606519-30744-2-git-send-email-krishna.md@samsung.com>
+ <20141110133708.GQ3815@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0p6fkQojZ86Dx7oG"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1415537114-9642-1-git-send-email-anilk4.v@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Anil Kumar <anilk4.v@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, peter.ujfalusi@ti.com, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; format=flowed; charset=iso-8859-1; reply-type=original
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20141110133708.GQ3815@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark Brown,
 
---0p6fkQojZ86Dx7oG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+     The codec driver is present in mainline as rt5631.c., Its realtek's 
+alc5631 so retained that name.
+Similarly machine driver also is named as arndale_rt5631.c but inside that 
+driver I have used alc5631 naming as the
+audio daughter card on arndale board mentions alc5631 so I have used this 
+convention here so that user should not
+feel the absence of the driver.
 
-On Sun, Nov 09, 2014 at 06:15:14PM +0530, Anil Kumar wrote:
-> If probe fails then we need to call pm_runtime_disable() to balance
-> out the previous pm_runtime_enable() call.
+Is that ok or do you want to have one naming all over?
 
-applied, thanks.
+-Krishna
 
---0p6fkQojZ86Dx7oG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+--------------------------------------------------
+From: "Mark Brown" <broonie@kernel.org>
+Sent: Monday, November 10, 2014 7:07 PM
+To: "Krishna Mohan Dani" <krishna.md@samsung.com>
+Cc: <linux-samsung-soc@vger.kernel.org>; 
+<linux-arm-kernel@lists.infradead.org>; <alsa-devel@alsa-project.org>; 
+<kgene.kim@samsung.com>
+Subject: Re: [PATCH 1/4] ASoC: ALC5631: Add device tree binding 
+documentation
 
-iQEcBAEBAgAGBQJUYMGLAAoJECTWi3JdVIfQTl8H+gK/cfvzkG0eHQ2fzjLswA3v
-QFZsS2nm9EJWB3bLJEV7JhAYyTeMWFHepv/pmMiANBi2pL0ZbbYRS1gH9A9VJy/U
-+VDnhgn5KNBod7musETF24x+Nshba5BXoOyF9Btr2xEXHkOv4OgwhCtupU/c4YCc
-f+AZtge6mm8TpCKrbHOnV5L8mmvZobHWerD5/f8g4ZohI9mWGtwY+0B03SnVQGu8
-4vLXcu3AWJH3HgU0Rw8ARae1s9/VYKOlifoVqdwI2PCGucSDSsvwq6G7OSIvQMcK
-+7Zrkwxb+h5xY4YQY6gX4pVSm72S1frfOXo1ckuH9Nhf0MisLz7LzJo0cnDicwA=
-=cq7Z
------END PGP SIGNATURE-----
+On Mon, Nov 10, 2014 at 01:31:56PM +0530, Krishna Mohan Dani wrote:
+> Document the device tree binding for the ALC5631 codec and update vendor
+> specific prefix for the Realtek.
 
---0p6fkQojZ86Dx7oG--
+This driver isn't in mainline, you need to submit the driver. 
