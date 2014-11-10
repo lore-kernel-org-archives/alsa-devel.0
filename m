@@ -1,76 +1,103 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: twl4030: don't report EBUSY if
- no change requested.
-Date: Mon, 10 Nov 2014 22:49:35 +0100
-Message-ID: <546132EF.7070008@metafoo.de>
-References: <20141108002637.6561.19002.stgit@notabene.brown>	<20141108003803.6561.42934.stgit@notabene.brown>	<20141108092242.GB2722@sirena.org.uk>	<20141110114518.715dcd4e@notabene.brown>	<54606446.7030907@metafoo.de> <20141111084537.1b4e726c@notabene.brown>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 00/11] ASoC: Untangle AC'97 support form the
+	core
+Date: Mon, 10 Nov 2014 22:41:42 +0100
+Message-ID: <1415655713-29842-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20141111084537.1b4e726c-wvvUuzkyo1EYVZTmpyfIwg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: NeilBrown <neilb-l3A5Bk7waGM@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, GTA04 owners <gta04-owner-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-111.synserver.de (smtp-out-111.synserver.de
+ [212.40.185.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A2C4261AC1
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 22:42:15 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Sangbeom Kim <sbkim73@samsung.com>, patches@opensource.wolfsonmicro.com, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/10/2014 10:45 PM, NeilBrown wrote:
-> On Mon, 10 Nov 2014 08:07:50 +0100 Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org> wrote:
->
->> On 11/10/2014 01:45 AM, NeilBrown wrote:
->>> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
->>> index b6b0cb399599..613b61cee081 100644
->>> --- a/sound/soc/codecs/twl4030.c
->>> +++ b/sound/soc/codecs/twl4030.c
->>> @@ -957,6 +957,16 @@ static int snd_soc_put_twl4030_opmode_enum_double(struct snd_kcontrol *kcontrol,
->>>    {
->>>    	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
->>>    	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
->>> +	struct snd_ctl_elem_value currentval;
->>>
->>
->> snd_ctl_elem_value is a bit to big to be put onto the kernel stack. Just
->> using twl4030_read() should be fine.
->
-> That's a shame, it looked so neat....
->
-> Using twl4030_read forces i2c access and misses out on the regmap caching.
->
-> What do you think of this?
+The AC'97 support has had a special role within the ASoC framework with it
+being (in contrast to other audio buses) tightly integrated into the core.
+This patch series creates a clean separation between the core and the AC'97
+support making AC'97 from the point of view of the core just another bus.
+Some of the changes in this series are required for the upcoming conversion
+of the AC'97 drivers to regmap, the other changes just fit nicely with the
+idea of componentization and having a generic ASoC core.
 
-That looks good, but either snd_soc_kcontrol_component() instead of 
-snd_kcontrol_chip() or just snd_soc_read(codec, ...
+The series starts with moving AC'97 support to its own file and doing a few
+general cleanups. After that it drops support of two features which were
+mainly responsible for the tight integration but are seemingly unused.
+This is
+a) Delaying the initialization and registration of the AC'97 device until
+   after the card has been registered. There doesn't seem to be a good
+   reason to delay to registration, all the information we need to register
+   the device is available at the time when the device is created.
+   Furthermore this will be needed for regmap.
+b) Setting platform data for the AC'97 via the CPU DAI. This hasn't been
+   used in the last 5 years and doesn't seem to be that useful in general.
 
->
-> Thanks,
-> NeilBrown
->
-> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-> index b6b0cb399599..bdb47a045aa5 100644
-> --- a/sound/soc/codecs/twl4030.c
-> +++ b/sound/soc/codecs/twl4030.c
-> @@ -957,6 +957,18 @@ static int snd_soc_put_twl4030_opmode_enum_double(struct snd_kcontrol *kcontrol,
->   {
->   	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
->   	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
-> +	const struct soc_enum *e = &twl4030_op_modes_enum;
-> +	unsigned int reg_val;
-> +	int ret;
-> +
-> +	ret = snd_soc_component_read(snd_kcontrol_chip(kcontrol),
-> +				     e->reg, &reg_val);
-> +	if (ret)
-> +		return ret;
-> +	if (ucontrol->value.enumerated.item[0] ==
-> +	    ((reg_val >> e->shift_l) & e->mask))
-> +		/* no change requested, so do nothing */
-> +		return 0;
->
->   	if (twl4030->configured) {
->   		dev_err(codec->dev,
->
+If we should ever have a need for those features again they can still be
+implemented on top of the current code while keeping the clean separation.
+But for the time being it is simpler to just drop unused code rather than
+restructuring it.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Finally the series pushes the pointer to the AC'97 device from the
+snd_soc_codec struct out to the driver private structs.
+
+Depends on asoc/topic/ad1980, asoc/topic/wm9705 and asoc/topic/wm971x
+
+- Lars
+
+Lars-Peter Clausen (11):
+  ASoC: mpc5200_psc_ac97: Remove unused on-stack snd_ac97 device
+  ASoC: mpc5200_dma: Don't overwrite ac97 device private_data
+  ASoC: Properly handle AC'97 device lifetime management
+  ASoC: Move AC'97 support to its own file
+  ASoC: ac97: Use static ac97_bus
+  ASoC: ac97: Merge
+    soc_ac97_dev_{un,}register()/soc_{un,}register_ac97_codec()
+  ASoC: ac97: Drop support for setting platform data via the CPU DAI
+  ASoC: ac97: Drop delayed device registration
+  ASoC: Drop ac97_control initialization from CODEC driver DAIs
+  ASoC: Rename snd_soc_dai_driver struct ac97_control field to
+    bus_control
+  ASoC: ac97: Push snd_ac97 pointer to the driver level
+
+ include/sound/soc-dai.h          |   4 +-
+ include/sound/soc.h              |  25 ++-
+ sound/soc/Makefile               |   4 +
+ sound/soc/au1x/ac97c.c           |   2 +-
+ sound/soc/au1x/psc-ac97.c        |   2 +-
+ sound/soc/blackfin/bf5xx-ac97.c  |   2 +-
+ sound/soc/cirrus/ep93xx-ac97.c   |   2 +-
+ sound/soc/codecs/ac97.c          |  18 +-
+ sound/soc/codecs/ad1980.c        |  28 +--
+ sound/soc/codecs/stac9766.c      |  40 +++--
+ sound/soc/codecs/wm9705.c        |  32 ++--
+ sound/soc/codecs/wm9712.c        |  33 ++--
+ sound/soc/codecs/wm9713.c        |  32 ++--
+ sound/soc/fsl/fsl_ssi.c          |   2 +-
+ sound/soc/fsl/imx-ssi.c          |   2 +-
+ sound/soc/fsl/mpc5200_dma.c      |   3 -
+ sound/soc/fsl/mpc5200_psc_ac97.c |   6 +-
+ sound/soc/nuc900/nuc900-ac97.c   |   2 +-
+ sound/soc/pxa/pxa2xx-ac97.c      |   6 +-
+ sound/soc/samsung/ac97.c         |   4 +-
+ sound/soc/sh/hac.c               |   2 +-
+ sound/soc/soc-ac97.c             | 256 +++++++++++++++++++++++++++
+ sound/soc/soc-core.c             | 372 ++-------------------------------------
+ sound/soc/tegra/tegra20_ac97.c   |   2 +-
+ sound/soc/txx9/txx9aclc-ac97.c   |   2 +-
+ 25 files changed, 428 insertions(+), 455 deletions(-)
+ create mode 100644 sound/soc/soc-ac97.c
+
+-- 
+1.8.0
