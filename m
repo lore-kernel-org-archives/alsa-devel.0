@@ -1,60 +1,91 @@
-From: Mark Brown <broonie@kernel.org>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [PATCH v2 1/2] ASoC: Remove 'const' from the device_node pointers
-Date: Mon, 10 Nov 2014 19:37:04 +0000
-Message-ID: <20141110193704.GL3815@sirena.org.uk>
+Date: Mon, 10 Nov 2014 19:51:22 +0000
+Message-ID: <20141110195122.GY4042@n2100.arm.linux.org.uk>
 References: <cover.1415562021.git.moinejf@free.fr>
  <d5d74f6993e9f2392008a27a2938c58d47dc8062.1415562021.git.moinejf@free.fr>
+ <20141110193704.GL3815@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l/31HQTn6peyh0iH"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <d5d74f6993e9f2392008a27a2938c58d47dc8062.1415562021.git.moinejf@free.fr>
+In-Reply-To: <20141110193704.GL3815@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Russell King <linux@arm.linux.org.uk>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Nov 10, 2014 at 07:37:04PM +0000, Mark Brown wrote:
+> On Sun, Nov 09, 2014 at 08:33:45PM +0100, Jean-Francois Moine wrote:
+> 
+> > index 7ba7130..405f967 100644
+> > --- a/include/sound/soc.h
+> > +++ b/include/sound/soc.h
+> > @@ -886,7 +886,7 @@ struct snd_soc_platform_driver {
+> >  
+> >  struct snd_soc_dai_link_component {
+> >  	const char *name;
+> > -	const struct device_node *of_node;
+> > +	struct device_node *of_node;
+> >  	const char *dai_name;
+> >  };
+> >  
+> 
+> The changelog talked about of_node_put() but I'm not seeing anything in
+> the code which calls that except snd_soc_of_get_dai_name()?  Everything
+> else just does comparisons of the pointer AFIACT from a quick scan
+> through.
 
---l/31HQTn6peyh0iH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think it comes from these files (from a previous patch from Jean
+adding a load of inappropriate const's to places where they do not
+belong):
 
-On Sun, Nov 09, 2014 at 08:33:45PM +0100, Jean-Francois Moine wrote:
+ sound/soc/generic/simple-card.c       | 7 ++-----
+ sound/soc/samsung/odroidx2_max98090.c | 4 ++--
+ sound/soc/ux500/mop500.c              | 6 ++----
 
-> index 7ba7130..405f967 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -886,7 +886,7 @@ struct snd_soc_platform_driver {
-> =20
->  struct snd_soc_dai_link_component {
->  	const char *name;
-> -	const struct device_node *of_node;
-> +	struct device_node *of_node;
->  	const char *dai_name;
->  };
-> =20
+That patch was trying to do this to those three files:
 
-The changelog talked about of_node_put() but I'm not seeing anything in
-the code which calls that except snd_soc_of_get_dai_name()?  Everything
-else just does comparisons of the pointer AFIACT from a quick scan
-through.
+-               np = (struct device_node *) dai_link->cpu_of_node;
+-               of_node_put(np);
+-               np = (struct device_node *) dai_link->codec_of_node;
+-               of_node_put(np);
++               of_node_put(dai_link->cpu_of_node);
++               of_node_put(dai_link->codec_of_node);
+...
+-       of_node_put((struct device_node *)odroidx2_dai[0].cpu_of_node);
+-       of_node_put((struct device_node *)odroidx2_dai[0].codec_of_node);
++       of_node_put(odroidx2_dai[0].cpu_of_node);
++       of_node_put(odroidx2_dai[0].codec_of_node);
+...
+                if (mop500_dai_links[i].cpu_of_node)
+-                       of_node_put((struct device_node *)
+-                               mop500_dai_links[i].cpu_of_node);
++                       of_node_put(mop500_dai_links[i].cpu_of_node);
+                if (mop500_dai_links[i].codec_of_node)
+-                       of_node_put((struct device_node *)
+-                               mop500_dai_links[i].codec_of_node);
++                       of_node_put(mop500_dai_links[i].codec_of_node);
 
---l/31HQTn6peyh0iH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+having made of_node_put() take a const pointer.  Since of_node_put()
+ultimately modifies the data pointed to by that pointer, making its
+argument "const" is incorrect.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Moreover, Jean's latest patch is absolutely the right thing to do.
+Had he quoted me fully, then the reason would become clear.
 
-iQEcBAEBAgAGBQJUYRPfAAoJECTWi3JdVIfQCLoH+wVGAQLCw+nWR1YK8qNAE9OX
-eRWX8IViBBMfor6/9dm/Tx6vLwlrVy4nyhfabIg50xcvaFcgY4Mx1mGaL1U+UjnR
-PSzhD1lXpkdLru6wzVvS1o81RW1Sg8MMCw7brP5GdN/y3q8eULIW3b+iuQvPo+RP
-O4eEXxxYpP6zVUlzYMtZjHQXY2natUR4an+LafrfopGvFNsHyPgUfZ6iUJy57Oxi
-mp8TX9etJbezm7wGWifCPmwkjiGA4+CnELnNBYqAOjgdJ2nV/Y9+Yz8621FdQKgP
-QjK3G3RKJyjxWhxdPiiTTYssUEH7li1VVaqX1VJy6AsMnEEHTPEH8gPC2PxxXlw=
-=z5Kq
------END PGP SIGNATURE-----
+struct device_node is a ref-counted structure.  That means if you
+store a reference to it, you should "get" it, and you should "put"
+it once you've done.  The act of "put"ing the pointed-to structure
+involves writing to that structure, so it is totally unappropriate
+to store a device_node structure as a const pointer.  It forces you
+to have to cast it back to a non-const pointer at various points
+in time to use various OF function calls.
 
---l/31HQTn6peyh0iH--
+So, what you have is a pointer that you would /like/ to be const, but
+ultimately you violate its const-ness at some point in time when you
+need to call of_node_put() on it.  So it isn't really const at all.
+
+-- 
+FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
+according to speedtest.net.
