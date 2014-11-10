@@ -1,19 +1,19 @@
 From: Damien Zammit <damien.zammit@gmail.com>
-Subject: [PATCH 2/3 v4] ALSA: usb-audio: Add mixer control for
-	Digidesign mbox 1 clock source
-Date: Mon, 10 Nov 2014 20:40:36 +1100
-Message-ID: <1415612437-5557-3-git-send-email-damien@zamaudio.com>
+Subject: [PATCH 3/3 v4] ALSA: usb-audio: Add duplex mode for
+	Digidesign Mbox 1 and enable mixer
+Date: Mon, 10 Nov 2014 20:40:37 +1100
+Message-ID: <1415612437-5557-4-git-send-email-damien@zamaudio.com>
 References: <1415612437-5557-1-git-send-email-damien@zamaudio.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B3B32605B6
- for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 10:41:01 +0100 (CET)
-Received: by mail-pa0-f48.google.com with SMTP id ey11so7863383pad.7
- for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 01:41:00 -0800 (PST)
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 377F6260550
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 10:41:04 +0100 (CET)
+Received: by mail-pa0-f53.google.com with SMTP id kx10so7904829pab.12
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 01:41:03 -0800 (PST)
 In-Reply-To: <1415612437-5557-1-git-send-email-damien@zamaudio.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,213 +28,97 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Damien Zammit <damien@zamaudio.com>, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This patch provides the infrastructure for the Digidesign Mbox 1
-to have a mixer control for selecting the clock source.
-Valid options are Internal and S/PDIF external sync.
-A non-documented command is sent to the device to enable this feature
-found by reverse engineering and bus snooping.
+This patch provides duplex support for the Digidesign Mbox 1 sound
+card and has been a work in progress for about a year.
+Users have confirmed on my website that previous versions of this patch
+have worked on the hardware and I have been testing extensively.
+
+It also enables the mixer control for providing clock source
+selector based on the previous patch.
+
+The sample rate has been hardcoded to 48kHz because it works better with
+the S/PDIF sync mode when the sample rate is locked.  This is the
+highest rate that the device supports and no loss of functionality
+is observed by restricting the sample rate apart from the inability to select
+a lower rate.
 
 Signed-off-by: Damien Zammit <damien@zamaudio.com>
 ---
- sound/usb/mixer_maps.c   |   9 +++
- sound/usb/mixer_quirks.c | 144 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 153 insertions(+)
+ sound/usb/quirks-table.h | 43 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 33 insertions(+), 10 deletions(-)
 
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index d1d72ff..1994d41 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -179,6 +179,11 @@ static struct usbmix_name_map audigy2nx_map[] = {
- 	{ 0 } /* terminator */
- };
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index c657752..19eee96 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2941,10 +2941,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.product_name = "MBox",
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+ 		.type = QUIRK_COMPOSITE,
+-		.data = (const struct snd_usb_audio_quirk[]){
++		.data = &(const struct snd_usb_audio_quirk[]){
+ 			{
+ 				.ifnum = 0,
+-				.type = QUIRK_IGNORE_INTERFACE,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
+ 			},
+ 			{
+ 				.ifnum = 1,
+@@ -2955,16 +2955,40 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 					.iface = 1,
+ 					.altsetting = 1,
+ 					.altset_idx = 1,
+-					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.attributes = 0x4,
+ 					.endpoint = 0x02,
+-					.ep_attr = 0x01,
+-					.rates = SNDRV_PCM_RATE_44100 |
+-						 SNDRV_PCM_RATE_48000,
+-					.rate_min = 44100,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						USB_ENDPOINT_SYNC_SYNC,
++					.maxpacksize = 0x130,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
+ 					.rate_max = 48000,
+-					.nr_rates = 2,
++					.nr_rates = 1,
+ 					.rate_table = (unsigned int[]) {
+-						44100, 48000
++						48000
++					}
++				}
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
++					.channels = 2,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0x4,
++					.endpoint = 0x81,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						USB_ENDPOINT_SYNC_ASYNC,
++					.maxpacksize = 0x130,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) {
++						48000
+ 					}
+ 				}
+ 			},
+@@ -2972,7 +2996,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 				.ifnum = -1
+ 			}
+ 		}
+-
+ 	}
+ },
  
-+static struct usbmix_name_map mbox1_map[] = {
-+	{ 1, "Clock" },
-+	{ 0 } /* terminator */
-+};
-+
- static struct usbmix_selector_map c400_selectors[] = {
- 	{
- 		.id = 0x80,
-@@ -416,6 +421,10 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.map = aureon_51_2_map,
- 	},
- 	{
-+		.id = USB_ID(0x0dba, 0x1000),
-+		.map = mbox1_map,
-+	},
-+	{
- 		.id = USB_ID(0x13e5, 0x0001),
- 		.map = scratch_live_map,
- 		.ignore_ctl_error = 1,
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 3980bf5..448ac42 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -28,6 +28,7 @@
-  */
- 
- #include <linux/init.h>
-+#include <linux/mutex.h>
- #include <linux/slab.h>
- #include <linux/usb.h>
- #include <linux/usb/audio.h>
-@@ -565,6 +566,145 @@ static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixer)
- 	return 0;
- }
- 
-+/* Digidesign Mbox 1 clock source switch (internal/spdif) */
-+
-+static int snd_mbox1_switch_get(struct snd_kcontrol *kctl,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	if (kctl->private_value) {
-+		ucontrol->value.enumerated.item[0] = true;
-+		return 0;
-+	}
-+
-+	ucontrol->value.enumerated.item[0] = false;
-+	return 0;
-+}
-+
-+static int snd_mbox1_switch_put(struct snd_kcontrol *kctl,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_usb_audio *chip;
-+	struct usb_mixer_interface *mixer;
-+	int err;
-+	bool changed, cur_val, new_val;
-+	bool value;
-+	unsigned char buff[3];
-+
-+	changed = false;
-+	value = false;
-+
-+	cur_val = kctl->private_value;
-+	new_val = ucontrol->value.enumerated.item[0];
-+
-+	mixer = snd_kcontrol_chip(kctl);
-+	if (snd_BUG_ON(!mixer))
-+		return -EINVAL;
-+
-+	chip = mixer->chip;
-+	if (snd_BUG_ON(!chip))
-+		return -EINVAL;
-+
-+	/* update value if needed */
-+	if (cur_val != new_val) {
-+		value = new_val;
-+		down_read(&chip->shutdown_rwsem);
-+		if (chip->shutdown) {
-+			err = -ENODEV;
-+		} else {
-+			/* Prepare for magic command to toggle clock source */
-+			mutex_unlock(&register_mutex);
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), 0x81,
-+				USB_DIR_IN |
-+				USB_TYPE_CLASS |
-+				USB_RECIP_INTERFACE, 0x00, 0x500, buff, 1);
-+			if (err < 0)
-+				goto err;
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), 0x81,
-+				USB_DIR_IN |
-+				USB_TYPE_CLASS |
-+				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
-+			if (err < 0)
-+				goto err;
-+			/* 2 possibilities: Internal    -> send sample rate
-+			 * 		    S/PDIF sync -> send zeroes
-+			 * NB: Sample rate locked to 48kHz on purpose to
-+			 *     prevent user from resetting the sample rate
-+			 *     while S/PDIF sync is enabled and confusing
-+			 *     this configuration.
-+			 */
-+			if (new_val == 0) {
-+				buff[0] = 0x80;
-+				buff[1] = 0xbb;
-+				buff[2] = 0x00;
-+			} else {
-+				buff[0] = buff[1] = buff[2] = 0x00;
-+			}
-+			/* Send the magic command to toggle the clock source */
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_sndctrlpipe(chip->dev, 0), 0x1,
-+				USB_TYPE_CLASS |
-+				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
-+			if (err < 0)
-+				goto err;
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), 0x81,
-+				USB_DIR_IN |
-+				USB_TYPE_CLASS |
-+				USB_RECIP_ENDPOINT, 0x100, 0x81, buff, 3);
-+			if (err < 0)
-+				goto err;
-+			err = snd_usb_ctl_msg(chip->dev,
-+				usb_rcvctrlpipe(chip->dev, 0), 0x81,
-+				USB_DIR_IN |
-+				USB_TYPE_CLASS |
-+				USB_RECIP_ENDPOINT, 0x100, 0x2, buff, 3);
-+			if (err < 0)
-+				goto err;
-+		}
-+		up_read(&chip->shutdown_rwsem);
-+		if (err < 0)
-+			goto err;
-+		mutex_lock(&register_mutex);
-+		kctl->private_value = new_val;
-+		changed = true;
-+	}
-+
-+	return changed;
-+err:
-+	mutex_lock(&register_mutex);
-+	return err;
-+}
-+
-+static int snd_mbox1_switch_info(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *const texts[2] = {
-+		"Internal",
-+		"S/PDIF"
-+	};
-+
-+	return snd_ctl_enum_info(uinfo, 1, ARRAY_SIZE(texts), texts);
-+}
-+
-+static struct snd_kcontrol_new snd_mbox1_switch = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Clock Source",
-+	.index = 0,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = snd_mbox1_switch_info,
-+	.get = snd_mbox1_switch_get,
-+	.put = snd_mbox1_switch_put,
-+	.private_value = 0
-+};
-+
-+static int snd_mbox1_create_sync_switch(struct usb_mixer_interface *mixer)
-+{
-+	return snd_ctl_add(mixer->chip->card,
-+			snd_ctl_new1(&snd_mbox1_switch, mixer));
-+}
-+
- /* Native Instruments device quirks */
- 
- #define _MAKE_NI_CONTROL(bRequest,wIndex) ((bRequest) << 16 | (wIndex))
-@@ -1632,6 +1772,10 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 		err = snd_microii_controls_create(mixer);
- 		break;
- 
-+	case USB_ID(0x0dba, 0x1000): /* Digidesign Mbox 1 */
-+		err = snd_mbox1_create_sync_switch(mixer);
-+		break;
-+
- 	case USB_ID(0x17cc, 0x1011): /* Traktor Audio 6 */
- 		err = snd_nativeinstruments_create_mixer(mixer,
- 				snd_nativeinstruments_ta6_mixers,
 -- 
 1.9.1
