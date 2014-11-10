@@ -1,19 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 4/6] ASoC: Intel: mrfld- add ACPI module
-Date: Mon, 10 Nov 2014 11:48:31 +0530
-Message-ID: <20141110061831.GB18555@intel.com>
+Subject: Re: [PATCH v3 5/6] ASoC: Intel: add BYTCR machine
+ driver with RT5640
+Date: Mon, 10 Nov 2014 11:50:56 +0530
+Message-ID: <20141110062056.GC18555@intel.com>
 References: <1415098520-14113-1-git-send-email-vinod.koul@intel.com>
- <1415098520-14113-5-git-send-email-vinod.koul@intel.com>
- <20141106124349.GB8509@sirena.org.uk>
- <20141106130909.GC1870@intel.com>
- <20141106134426.GI8509@sirena.org.uk>
+ <1415098520-14113-6-git-send-email-vinod.koul@intel.com>
+ <20141106124854.GC8509@sirena.org.uk>
+ <20141106131141.GD1870@intel.com>
+ <20141106134559.GJ8509@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4591456391509020435=="
+Content-Type: multipart/mixed; boundary="===============3939074973408772415=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 889222605D6
- for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 07:18:12 +0100 (CET)
-In-Reply-To: <20141106134426.GI8509@sirena.org.uk>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECC4F2605D6
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 07:20:06 +0100 (CET)
+In-Reply-To: <20141106134559.GJ8509@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,38 +29,44 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lg
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4591456391509020435==
+--===============3939074973408772415==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QKdGvSO+nmPlgiQ/"
+	protocol="application/pgp-signature"; boundary="IpbVkmxF4tDyP/Kb"
 Content-Disposition: inline
 
 
---QKdGvSO+nmPlgiQ/
+--IpbVkmxF4tDyP/Kb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 06, 2014 at 01:44:26PM +0000, Mark Brown wrote:
-> On Thu, Nov 06, 2014 at 06:39:09PM +0530, Vinod Koul wrote:
-> > On Thu, Nov 06, 2014 at 12:43:49PM +0000, Mark Brown wrote:
-> > > On Tue, Nov 04, 2014 at 04:25:18PM +0530, Vinod Koul wrote:
+On Thu, Nov 06, 2014 at 01:46:00PM +0000, Mark Brown wrote:
+> On Thu, Nov 06, 2014 at 06:41:42PM +0530, Vinod Koul wrote:
+> > On Thu, Nov 06, 2014 at 12:48:54PM +0000, Mark Brown wrote:
 >=20
-> > > No, we should be able to build a kernel which runs with or without AC=
-PI
-> > > - make this a runtime check if it's required (a comment might be in
-> > > order too since this is a weird thing to do).
+> > > Don't bother with the wrapper functions, they're not adding anything.
+> > > Why are we using prepare() and complete() here - other machine drivers
+> > > don't need to do that?  Comments might be helpful...
 >=20
-> > yes that is doable by adding a parameter and setting that in specfic pr=
-obe,
-> > will add.
+> > due to I2C. We have seen that codec is resumed but I2C is still
+> > not ready causing i2c failures, so moving to complete and prepare helps=
+=2E I
+> > will add this comment. Will remove wrappers.
 >=20
-> There's a variable acpi_disabled you can check.
-Thanks, thats a very good suggestion indeed :)
+> That doesn't sound right - this would affect almost all systems.
+> Deferred probe should ensure that the machine driver can't load until
+> after all the component devices (including the CODEC driver) are
+> instantiated and we should be suspending in the reverse order that we
+> probe the devices.
+Yes defer probe is the right solution here. But in machine driver loading
+how does it ensure that codec and platform are already loaded, should the
+sound card registration be treated as failure and deferred?
 
+Thanks
 --=20
 ~Vinod
 
---QKdGvSO+nmPlgiQ/
+--IpbVkmxF4tDyP/Kb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -67,28 +74,28 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQIcBAEBAgAGBQJUYFi3AAoJEHwUBw8lI4NHOhgP/3zWlFD62ETyjZmi3SN2U6PS
-1mxdkEOpuK/RzjIfMDK7VlhuY2FzhjAy5RGB9h63ndXXPwvZcJ2l6PSGyEB6Kb7h
-/wCf692B0OrXa3eIHm9A9O+u1ksuqCfi9Pi9eWK1kWlwfz8wUL+pKUpzavQy3vUy
-TE2Ivl+zKbE5vs0JFRUlmK/7WCblccrndsJihRSix+o1Zw+H9EiLx/kiC8ZhuVzl
-S+LVIbKO7Ue59j3MIQowBctRCihFlwogcuVBijxRC1Y+AdeadLFD2DGHCOBPHSCj
-lFqH4PwXegL0bPMH3+ys9vp4HSbBgZkF4S6NqEGKtdI5aAjUptvYX/ADZcB719HD
-VU1FLZgAO44z4qoaBbHbJNGdA4m8xIMxKQ/AMDOoziOphb4WZyzLw5wXcsUBaDEa
-4t3b/vKgUfmNk2OPq3AqE57co5mIyuTPAhl4lG7OrPU10E6ZOyRK23rZoFqUCEWu
-BTnGUGf4uNDwWw8MHE4OIPGAAL53la2yYgCrAAKAvuU8Ib5oKKQAQU6TfbtsTqgp
-gVn0R12VeTXltTDXkcKYKZLFAmv1MkN8ixqVNPf3CjkbC3bOmfNXm7Z2YSupmpsE
-Po+ydeQfZWD7wHv/6smzP/boeka0cdBRIY0DwwKxqkQjbQgS6b1ZnhJ/6r0TBRB5
-urkT1u0JfhHkv+YUfvXC
-=c5n4
+iQIcBAEBAgAGBQJUYFlIAAoJEHwUBw8lI4NHAG4P/R6oXu4onceJ2rYBMN92vVOn
+6bPlfFXxsbUEemJh4Uwtpsj43+M5cEabYVG94wESkDVHkzNn29S4Oh+K4kaMkacQ
+dzKazHbYGx5GU+YIhGe5SU7us6zBxRGPWeR5RYNCVRV/11V2D2lHtvI8FxxjQPr5
+3RRqAv2rOdEzo1FifcZClQIJMzNK4M4/VXNdpKmcJgBoCczZi1oWUtOqavJTFqOM
+XGLszIoWOcaL1fomHl2zhmqDtCKxecYV8SBsiW0gq8qJOG2j/xG5tHERh5qo8zpU
+rpQjLQmP4rPXwwCPiEiSfQaNTmyTyxykjHdBCEy1wN919yi96ZAS6QVVHBL0fJwh
+/20dwx7/Lzjk4ZL3ONj2IIZPdHN/11T6UE/oQy8MzCwXaKhYa1In4DvLs5J9h9Ti
+lFNbb0Q+jtNZ++f8SqRbSU2f82+CVPtV0ZAkVD0drgRSh7V6jt9DD9gJcvTCS/T6
+fdB799qVWKYQ0OST5GIKSnMmosxX0vCyhOiPdiFrUnHiw5oCf81wzqCKPHcrxKwn
+q0aDP7b87W6lSxkkf4Qr4n9/1eYHVzx3x6mdBX5gxp5txI1x1KwzNTJG96uba8Ds
+j6qzVYADRsUPtYiaBqxQuYDVhOR+wlMQVvlzdl+YBUpeEnz7As6txeMxjibRcJ/v
+sYPqrNKMWGwY4VV9m+tK
+=vEsa
 -----END PGP SIGNATURE-----
 
---QKdGvSO+nmPlgiQ/--
+--IpbVkmxF4tDyP/Kb--
 
---===============4591456391509020435==
+--===============3939074973408772415==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4591456391509020435==--
+--===============3939074973408772415==--
