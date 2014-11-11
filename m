@@ -1,17 +1,17 @@
-From: Daniel Silverstone <dsilvers@digital-scurf.org>
-Subject: Re: Issue with hda_intel on i7+Z97 chipset
-Date: Mon, 10 Nov 2014 22:43:32 +0000
-Message-ID: <20141110224332.GA4696@somnambulist.local>
-References: <20141028205725.GA3839@somnambulist.local>
+From: Damien Zammit <damien.zammit@gmail.com>
+Subject: [PATCH 0/2 v6] Digidesign Mbox 1 enhancements
+Date: Tue, 11 Nov 2014 11:20:15 +1100
+Message-ID: <1415665217-7748-1-git-send-email-damien@zamaudio.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bagpuss.pepperfish.net (bagpuss.pepperfish.net [148.251.8.16])
- by alsa0.perex.cz (Postfix) with ESMTP id B344B26071E
- for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 23:43:35 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20141028205725.GA3839@somnambulist.local>
+Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6C4D261537
+ for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2014 01:20:35 +0100 (CET)
+Received: by mail-pd0-f172.google.com with SMTP id r10so8880515pdi.17
+ for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 16:20:34 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: tiwai@suse.de, Damien Zammit <damien@zamaudio.com>, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 28, 2014 at 20:57:25 +0000, Daniel Silverstone wrote:
-[enormous snip]
+Revision 6.
 
-I have managed to get 3.16 booting (needed to do some on-CPU GPU disabling to
-stop i915 locking solid) and I am pleased to report that sound is now perfect.
+Damien Zammit (2):
+  ALSA: usb-audio: Add mixer control for Digidesign Mbox 1 clock source
+  ALSA: usb-audio: Add duplex mode for Digidesign Mbox 1 and enable
+    mixer
 
-Sorry to have disturbed you before, and thank you very much for your work on
-ALSA.
-
-Regards,
-
-Daniel (now enjoying flawless sound once more :-)
+ sound/usb/mixer_maps.c   |   9 ++++
+ sound/usb/mixer_quirks.c | 129 +++++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/quirks-table.h |  43 ++++++++++++----
+ 3 files changed, 171 insertions(+), 10 deletions(-)
 
 -- 
-Daniel Silverstone                         http://www.digital-scurf.org/
-PGP mail accepted and encouraged.            Key Id: 3CCE BABE 206C 3B69
+1.9.1
