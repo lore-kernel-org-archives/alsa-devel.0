@@ -1,53 +1,44 @@
-From: Krishna Mohan Dani <krishna.md@samsung.com>
-Subject: [PATCH 4/4] ASoC: rt5631: Adding Device Tree compatibility to
- Realtek's ALC5631 codec driver
-Date: Tue, 11 Nov 2014 14:28:24 +0530
-Message-ID: <1415696304-12023-5-git-send-email-krishna.md@samsung.com>
-References: <1415696304-12023-1-git-send-email-krishna.md@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1415696304-12023-1-git-send-email-krishna.md@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: kgene.kim@samsung.com, broonie@kernel.org
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/2] Subject: [PATCH 0/2] ASoC: tlv320aic3x:
+	soc_enum array conversion and pop reduction
+Date: Tue, 11 Nov 2014 10:58:59 +0200
+Message-ID: <1415696341-12802-1-git-send-email-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9EC0264F36
+ for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2014 09:59:07 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Krishna Mohan Dani <krishna.md@samsung.com>
----
- sound/soc/codecs/rt5631.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+Hi,
 
-diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
-index 1ba27db..101b205 100644
---- a/sound/soc/codecs/rt5631.c
-+++ b/sound/soc/codecs/rt5631.c
-@@ -1686,10 +1686,18 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5631 = {
- 
- static const struct i2c_device_id rt5631_i2c_id[] = {
- 	{ "rt5631", 0 },
-+	{ "alc5631", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, rt5631_i2c_id);
- 
-+static struct of_device_id rt5631_i2c_dt_ids[] = {
-+	{ .compatible = "realtek,rt5631"},
-+	{ .compatible = "realtek,alc5631"},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rt5631_i2c_dt_ids);
-+
- static const struct regmap_config rt5631_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 16,
-@@ -1734,6 +1742,9 @@ static struct i2c_driver rt5631_i2c_driver = {
- 	.driver = {
- 		.name = "rt5631",
- 		.owner = THIS_MODULE,
-+#ifdef CONFIG_OF
-+		.of_match_table = of_match_ptr(rt5631_i2c_dt_ids),
-+#endif
- 	},
- 	.probe = rt5631_i2c_probe,
- 	.remove   = rt5631_i2c_remove,
+Convert the soc_enum arrays to individual items and add the pop reduction patch
+on top of this change.
+
+Regards,
+Peter
+---
+Misael Lopez Cruz (1):
+  ASoC: tlv320aic3x: Add output driver pop reduction controls
+
+Peter Ujfalusi (1):
+  ASoC: tlv320aic3x: Convert SOC_ENUM_SINGLE/DOUBLE arrays to individual
+
+ sound/soc/codecs/tlv320aic3x.c | 165 +++++++++++++++++++++++------------------
+ 1 file changed, 93 insertions(+), 72 deletions(-)
+
 -- 
-1.7.9.5
+2.1.3
