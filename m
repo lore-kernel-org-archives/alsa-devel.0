@@ -1,65 +1,98 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 3/5] ASoC: rsnd: Document SoC-specific bindings
-Date: Tue, 11 Nov 2014 09:25:18 +0900
-Message-ID: <20141111002517.GF29665@verge.net.au>
-References: <1415646044-4168-1-git-send-email-geert+renesas@glider.be>
- <1415646044-4168-4-git-send-email-geert+renesas@glider.be>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Fix kerneldoc errors
+Date: Tue, 11 Nov 2014 00:32:05 +0000
+Message-ID: <20141111003205.GR3815@sirena.org.uk>
+References: <1415637045-20868-1-git-send-email-tiwai@suse.de>
+ <20141110175508.GD3815@sirena.org.uk>
+ <s5hlhniswhy.wl-tiwai@suse.de>
+ <20141110192211.GJ3815@sirena.org.uk>
+ <s5hioimsvpm.wl-tiwai@suse.de>
+ <20141110195802.GO3815@sirena.org.uk>
+ <s5hfvdqss2h.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1415646044-4168-4-git-send-email-geert+renesas@glider.be>
-Sender: linux-sh-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7827949862579219661=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A330226153F
+ for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2014 01:33:22 +0100 (CET)
+In-Reply-To: <s5hfvdqss2h.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 10, 2014 at 08:00:42PM +0100, Geert Uytterhoeven wrote:
-> The documentation only mentioned the generic fallback compatible
-> property.
-> Add the missing SoC-specific compatible properties, which are already in
-> use.
-> 
-> Also drop a bogus 0x unit-address prefix while we're at it.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Acked-by: Simon Horman <horms+renesas@verge.net.au>
+--===============7827949862579219661==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="63hYKvmiPmCTzAfQ"
+Content-Disposition: inline
 
-> ---
->  Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> index aa697abf337e7aa6..2dd690bc19cc6436 100644
-> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> @@ -1,8 +1,12 @@
->  Renesas R-Car sound
->  
->  Required properties:
-> -- compatible			: "renesas,rcar_sound-gen1" if generation1
-> +- compatible			: "renesas,rcar_sound-<soctype>", fallbacks
-> +				  "renesas,rcar_sound-gen1" if generation1, and
->  				  "renesas,rcar_sound-gen2" if generation2
-> +				  Examples with soctypes are:
-> +				    - "renesas,rcar_sound-r8a7790" (R-Car H2)
-> +				    - "renesas,rcar_sound-r8a7791" (R-Car M2-W)
->  - reg				: Should contain the register physical address.
->  				  required register is
->  				   SRU/ADG/SSI      if generation1
-> @@ -35,9 +39,9 @@ DAI subnode properties:
->  
->  Example:
->  
-> -rcar_sound: rcar_sound@0xffd90000 {
-> +rcar_sound: rcar_sound@ec500000 {
->  	#sound-dai-cells = <1>;
-> -	compatible = "renesas,rcar_sound-gen2";
-> +	compatible = "renesas,rcar_sound-r8a7791", "renesas,rcar_sound-gen2";
->  	reg =	<0 0xec500000 0 0x1000>, /* SCU */
->  		<0 0xec5a0000 0 0x100>,  /* ADG */
->  		<0 0xec540000 0 0x1000>, /* SSIU */
-> -- 
-> 1.9.1
-> 
+
+--63hYKvmiPmCTzAfQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Nov 10, 2014 at 09:45:26PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
+
+> > > I don't mind in which ways.  Showing and hiding have both pros and
+> > > cons.  Please just fix your code before I pull for 3.19!
+
+> > Well, I think someone who cares should fix it!  :P
+
+> Heh, *we* agreed on fixing / enhancing documentation in the previous
+> meeting.
+
+I totally agree that someone should do that work :)
+
+> > More seriously it's on the list but I'm having a hard time seeing it as
+> > being super urgent - it's more in the nice to have range for me.
+
+> Well, I see this a bit differently.  As discussed, we should be really
+> more strict on documentation.  From now on, any new API function and
+> struct should mandate kerneldoc comments.  At least, I'll watch out in
+> the future pull request and patch reviews.  And, fixing these trivial
+> kerneldoc makes things a bit easier; otherwise the new warnings will
+> be buried in other old warnings.
+
+Right, and I am enforcing that for new stuff.  Since we don't currently
+generate linuxdoc outputs we don't currently get any warnings and I'm
+not seeing much demand for the actual outputs (as opposed to the
+comments in the code which are useful; AFAICT that's the way most people
+consume linuxdoc).
+
+--63hYKvmiPmCTzAfQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUYVkFAAoJECTWi3JdVIfQcs8H/2jeGHePdhP9khXKabdjZbqv
+7HrN8x7b/XlISD/JJMmstyjB2iHDS3IhpH7DbCuHuh9G/V3YlacsCllQqcB7n45A
+yWON6F3Yi5gauOTSgS879uVCTdoj+DETsDkzm3eKzpavUEv6emTJlvJmC7kfeMQc
+Jt0quKZFVbmv5CC3DZL0lkz+5nwwN3RvG1m08ZeRcmIOrAgmCDjUhce7h+DDoRti
+cM2E1yXXFTdMTe42WESKTyAmVeM18m4bjQUV0umR37BpWxaQ7cZubmbWyYlSQ2Lk
+8oMcIeLtRvjDa3g2ZjQIuA3Mm8XsmkZU+0a4ORIhJsm1o/XJzW0hD2olh97zOxQ=
+=8fVH
+-----END PGP SIGNATURE-----
+
+--63hYKvmiPmCTzAfQ--
+
+--===============7827949862579219661==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7827949862579219661==--
