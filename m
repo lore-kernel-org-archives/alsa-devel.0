@@ -1,35 +1,71 @@
-From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 1/3] ARM: dts: pbab01: move i2c pins and frequency
- configuration into pfla02
-Date: Tue, 11 Nov 2014 21:33:33 +0800
-Message-ID: <20141111133331.GA2704@dragon>
-References: <1415106349-18846-1-git-send-email-d.lavnikevich@sam-solutions.com>
- <1415106349-18846-2-git-send-email-d.lavnikevich@sam-solutions.com>
+From: Bogdan Veringioiu <bogdan.veringioiu@amano.eu>
+Subject: Re: Problems with usb soundcard in kernels > 3.3
+Date: Tue, 11 Nov 2014 15:06:53 +0100
+Message-ID: <546217FD.1030806@amano.eu>
+References: <5461EFAF.7040205@amano.eu> <54620FEF.3000201@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1415106349-18846-2-git-send-email-d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Cc: shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.amano.be (84-199-99-210.ifiber.telenet-ops.be
+ [84.199.99.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id 270EA2606B4
+ for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2014 15:06:57 +0100 (CET)
+In-Reply-To: <54620FEF.3000201@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 04, 2014 at 04:05:47PM +0300, Dmitry Lavnikevich wrote:
-> Since pins and frequency are specific to module (pfla02), not base board
-> (pbab02), it is better to be initialized in corresponding dts file.
-> 
-> This patch fixes i2c2, i2c3 pin configuration which caused messages:
-> 
-> imx6q-pinctrl 20e0000.iomuxc: no groups defined in /soc/aips-bus@02000000/iomuxc@020e0000/i2c2grp
-> imx6q-pinctrl 20e0000.iomuxc: no groups defined in /soc/aips-bus@02000000/iomuxc@020e0000/i2c3grp
-> imx6q-pinctrl 20e0000.iomuxc: unable to find group for node i2c2grp
-> imx6q-pinctrl 20e0000.iomuxc: unable to find group for node i2c3grp
-> 
-> Signed-off-by: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Hi,
 
-Applied all 3, thanks.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+thanks for your availability.
+There is one message that appears in syslog, but it is always displayed when I test with aplay, unregarding the kernel version. It shows both with the working kernel (3.2) and with the problematic one (3.16).
+
+--> with kernel 3.2.0-4-686-pae
+/var/log/syslog
+...
+kernel: [ 2829.369380] 2:1:1: cannot get freq at ep 0x2
+...
+
+--> with kernel 3.16-0.bpo.2-686-pae
+/var/log/syslog
+...
+kernel: [  199.353227] usb 2-1: 1:1: cannot get freq at ep 0x2
+...
+
+Bogdan
+
+On 11/11/2014 02:32 PM, Clemens Ladisch wrote:
+> Bogdan Veringioiu wrote:
+> > The issue I am experiencing is a ~4 seconds delay in playing sound.
+> > I am reproducing the problem using aplay. The sound play is being
+> > delayed by more or less 4 seconds from the moment the file is sent
+> > to the card. I have tested with kernels 3.2 and 3.3, which work
+> > properly. I have noticed this delay/wait when using kernels 3.15,
+> > 3.16.
+>
+> Any messages in the system log when this happens?
+>
+>
+> Regards,
+> Clemens
+>
+
+-- 
+Bogdan Veringioiu
+
+Amano Parking Europe N.V.
+Uersfeld 24
+52072 Aachen, Germany
+
+e-mail: bogdan.veringioiu@amano.eu
+web: www.amano.eu
