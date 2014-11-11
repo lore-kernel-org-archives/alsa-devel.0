@@ -1,124 +1,58 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: [PATCH 2/2 v6] ALSA: usb-audio: Add duplex mode for
-	Digidesign Mbox 1 and enable mixer
-Date: Tue, 11 Nov 2014 11:20:17 +1100
-Message-ID: <1415665217-7748-3-git-send-email-damien@zamaudio.com>
-References: <1415665217-7748-1-git-send-email-damien@zamaudio.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 1/5] ASoC: sh: fsi: Document SoC-specific bindings
+Date: Tue, 11 Nov 2014 09:24:59 +0900
+Message-ID: <20141111002458.GE29665@verge.net.au>
+References: <1415646044-4168-1-git-send-email-geert+renesas@glider.be>
+ <1415646044-4168-2-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
- [209.85.220.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F7D92616F6
- for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2014 01:20:43 +0100 (CET)
-Received: by mail-pa0-f43.google.com with SMTP id eu11so9358925pac.16
- for <alsa-devel@alsa-project.org>; Mon, 10 Nov 2014 16:20:41 -0800 (PST)
-In-Reply-To: <1415665217-7748-1-git-send-email-damien@zamaudio.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Damien Zammit <damien@zamaudio.com>, clemens@ladisch.de
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1415646044-4168-2-git-send-email-geert+renesas@glider.be>
+Sender: linux-sh-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch provides duplex support for the Digidesign Mbox 1 sound
-card and has been a work in progress for about a year.
-Users have confirmed on my website that previous versions of this patch
-have worked on the hardware and I have been testing extensively.
+On Mon, Nov 10, 2014 at 08:00:40PM +0100, Geert Uytterhoeven wrote:
+> The documentation only mentioned the generic fallback compatible
+> property.
+> Add the missing SoC-specific compatible properties, some of which are
+> already in use.
+> 
+> Also fix a small typo, while we're at it.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-It also enables the mixer control for providing clock source
-selector based on the previous patch.
+Acked-by: Simon Horman <horms+renesas@verge.net.au>
 
-The sample rate has been hardcoded to 48kHz because it works better with
-the S/PDIF sync mode when the sample rate is locked.  This is the
-highest rate that the device supports and no loss of functionality
-is observed by restricting the sample rate apart from the inability to select
-a lower rate.
-
-Signed-off-by: Damien Zammit <damien@zamaudio.com>
----
- sound/usb/quirks-table.h | 43 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 33 insertions(+), 10 deletions(-)
-
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index c657752..19eee96 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2941,10 +2941,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.product_name = "MBox",
- 		.ifnum = QUIRK_ANY_INTERFACE,
- 		.type = QUIRK_COMPOSITE,
--		.data = (const struct snd_usb_audio_quirk[]){
-+		.data = &(const struct snd_usb_audio_quirk[]){
- 			{
- 				.ifnum = 0,
--				.type = QUIRK_IGNORE_INTERFACE,
-+				.type = QUIRK_AUDIO_STANDARD_MIXER,
- 			},
- 			{
- 				.ifnum = 1,
-@@ -2955,16 +2955,40 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 					.iface = 1,
- 					.altsetting = 1,
- 					.altset_idx = 1,
--					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.attributes = 0x4,
- 					.endpoint = 0x02,
--					.ep_attr = 0x01,
--					.rates = SNDRV_PCM_RATE_44100 |
--						 SNDRV_PCM_RATE_48000,
--					.rate_min = 44100,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						USB_ENDPOINT_SYNC_SYNC,
-+					.maxpacksize = 0x130,
-+					.rates = SNDRV_PCM_RATE_48000,
-+					.rate_min = 48000,
- 					.rate_max = 48000,
--					.nr_rates = 2,
-+					.nr_rates = 1,
- 					.rate_table = (unsigned int[]) {
--						44100, 48000
-+						48000
-+					}
-+				}
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
-+					.channels = 2,
-+					.iface = 1,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = 0x4,
-+					.endpoint = 0x81,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						USB_ENDPOINT_SYNC_ASYNC,
-+					.maxpacksize = 0x130,
-+					.rates = SNDRV_PCM_RATE_48000,
-+					.rate_min = 48000,
-+					.rate_max = 48000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) {
-+						48000
- 					}
- 				}
- 			},
-@@ -2972,7 +2996,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 				.ifnum = -1
- 			}
- 		}
--
- 	}
- },
- 
--- 
-1.9.1
+> ---
+>  Documentation/devicetree/bindings/sound/renesas,fsi.txt | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,fsi.txt b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
+> index c5be003f413e3aa3..0d0ab51105b01ece 100644
+> --- a/Documentation/devicetree/bindings/sound/renesas,fsi.txt
+> +++ b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
+> @@ -1,11 +1,16 @@
+>  Renesas FSI
+>  
+>  Required properties:
+> -- compatible			: "renesas,sh_fsi2" or "renesas,sh_fsi"
+> +- compatible			: "renesas,fsi2-<soctype>",
+> +				  "renesas,sh_fsi2" or "renesas,sh_fsi" as
+> +				  fallback.
+> +				  Examples with soctypes are:
+> +				    - "renesas,fsi2-r8a7740" (R-Mobile A1)
+> +				    - "renesas,fsi2-sh73a0" (SH-Mobile AG5)
+>  - reg				: Should contain the register physical address and length
+>  - interrupts			: Should contain FSI interrupt
+>  
+> -- fsia,spdif-connection		: FSI is connected by S/PDFI
+> +- fsia,spdif-connection		: FSI is connected by S/PDIF
+>  - fsia,stream-mode-support	: FSI supports 16bit stream mode.
+>  - fsia,use-internal-clock	: FSI uses internal clock when master mode.
+>  
+> -- 
+> 1.9.1
+> 
