@@ -1,74 +1,35 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] Subject: [PATCH 0/2] ASoC:
- tlv320aic3x: soc_enum array conversion and pop reduction
-Date: Tue, 11 Nov 2014 13:31:24 +0000
-Message-ID: <20141111133124.GY3815@sirena.org.uk>
-References: <1415696341-12802-1-git-send-email-peter.ujfalusi@ti.com>
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v6 1/3] ARM: dts: pbab01: move i2c pins and frequency
+ configuration into pfla02
+Date: Tue, 11 Nov 2014 21:33:33 +0800
+Message-ID: <20141111133331.GA2704@dragon>
+References: <1415106349-18846-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1415106349-18846-2-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7218399698782108974=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 992B82606F5
- for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2014 14:32:42 +0100 (CET)
-In-Reply-To: <1415696341-12802-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1415106349-18846-2-git-send-email-d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Cc: shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Nov 04, 2014 at 04:05:47PM +0300, Dmitry Lavnikevich wrote:
+> Since pins and frequency are specific to module (pfla02), not base board
+> (pbab02), it is better to be initialized in corresponding dts file.
+> 
+> This patch fixes i2c2, i2c3 pin configuration which caused messages:
+> 
+> imx6q-pinctrl 20e0000.iomuxc: no groups defined in /soc/aips-bus@02000000/iomuxc@020e0000/i2c2grp
+> imx6q-pinctrl 20e0000.iomuxc: no groups defined in /soc/aips-bus@02000000/iomuxc@020e0000/i2c3grp
+> imx6q-pinctrl 20e0000.iomuxc: unable to find group for node i2c2grp
+> imx6q-pinctrl 20e0000.iomuxc: unable to find group for node i2c3grp
+> 
+> Signed-off-by: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
 
---===============7218399698782108974==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+pCbwNSso2dU8n3g"
-Content-Disposition: inline
-
-
---+pCbwNSso2dU8n3g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Nov 11, 2014 at 10:58:59AM +0200, Peter Ujfalusi wrote:
-> Hi,
->=20
-> Convert the soc_enum arrays to individual items and add the pop reduction=
- patch
-> on top of this change.
-
-Applied both, thanks.
-
---+pCbwNSso2dU8n3g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUYg+rAAoJECTWi3JdVIfQeycH/iZV96+2fqgos/B4l5hFrDJj
-tUZ5MEEGYwW218pEPMGQyfdQPmC8W65FMUABYMZz0LjFmytoIrWSpomKIKsT7aKZ
-3mfqPckqR/lY0R7WIYocxDJXnUQ24hATo148APErxJoYalmqW0aE9xipII/K8W4Z
-e77MPR3TXR/XoMckyxvBN0DeG5fXU+ovEg2CFMl7bgLyddvAZc4lCkuHse9PKGUi
-P01m2aomr3xnt7043iqauNWiRH+x0y+o1tt66Ky0odu0SCaSff5dvirPCVyny6Fw
-USjygyywB8vAskG3IxH6By6UFssbfqfsBHgjGbV1WTwCjmt/NtPVMxGzwLmj3Lw=
-=N4Sl
------END PGP SIGNATURE-----
-
---+pCbwNSso2dU8n3g--
-
---===============7218399698782108974==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7218399698782108974==--
+Applied all 3, thanks.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
