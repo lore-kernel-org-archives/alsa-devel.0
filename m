@@ -1,17 +1,14 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 2/2] ASoC: tlv320aic3x: Add output driver
-	pop reduction controls
-Date: Tue, 11 Nov 2014 10:59:01 +0200
-Message-ID: <1415696341-12802-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1415696341-12802-1-git-send-email-peter.ujfalusi@ti.com>
+From: <bardliao@realtek.com>
+Subject: [PATCH v2] ASoC: rt5670: add rt5672 codec support
+Date: Tue, 11 Nov 2014 17:59:50 +0800
+Message-ID: <1415699990-5344-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 81EBB264F52
- for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2014 09:59:11 +0100 (CET)
-In-Reply-To: <1415696341-12802-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DF0F2614D6
+ for <alsa-devel@alsa-project.org>; Tue, 11 Nov 2014 11:00:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +18,174 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Misael Lopez Cruz <misael.lopez@ti.com>
+From: Bard Liao <bardliao@realtek.com>
 
-Output driver has two parameters that can be configured to reduce
-pop noise: power-on delay and ramp-up step time. Two new kcontrols
-have been added to set these parameters.
+rt5672 is very similar to rt5670. Therefore we use one codec driver
+to support both codecs. The difference between rt5670 and rt5672 is
+there is some difference in their dapm routing table.
 
-Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/tlv320aic3x.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+* Add { "rt5671", 0 }, in rt5670_i2c_id[]
+---
+ sound/soc/codecs/rt5670.c | 71 +++++++++++++++++++++++++++++++++++++++--------
+ sound/soc/codecs/rt5670.h |  6 ++++
+ 2 files changed, 65 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 990140058aa6..f0a828119aba 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -279,6 +279,16 @@ static SOC_ENUM_SINGLE_DECL(aic3x_lagc_decay_enum, LAGC_CTRL_A, 0,
- static SOC_ENUM_SINGLE_DECL(aic3x_ragc_decay_enum, RAGC_CTRL_A, 0,
- 			    aic3x_agc_decay);
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 9bd8b4f..c4c42d5 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -1595,29 +1595,40 @@ static const struct snd_soc_dapm_widget rt5670_dapm_widgets[] = {
+ 	/* PDM */
+ 	SND_SOC_DAPM_SUPPLY("PDM1 Power", RT5670_PWR_DIG2,
+ 		RT5670_PWR_PDM1_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("PDM2 Power", RT5670_PWR_DIG2,
+-		RT5670_PWR_PDM2_BIT, 0, NULL, 0),
  
-+static const char * const aic3x_poweron_time[] = {
-+	"0us", "10us", "100us", "1ms", "10ms", "50ms",
-+	"100ms", "200ms", "400ms", "800ms", "2s", "4s" };
-+static SOC_ENUM_SINGLE_DECL(aic3x_poweron_time_enum, HPOUT_POP_REDUCTION, 4,
-+			    aic3x_poweron_time);
-+
-+static const char * const aic3x_rampup_step[] = { "0ms", "1ms", "2ms", "4ms" };
-+static SOC_ENUM_SINGLE_DECL(aic3x_rampup_step_enum, HPOUT_POP_REDUCTION, 2,
-+			    aic3x_rampup_step);
-+
- /*
-  * DAC digital volumes. From -63.5 to 0 dB in 0.5 dB steps
-  */
-@@ -408,6 +418,10 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
- 	SOC_DOUBLE_R("PGA Capture Switch", LADC_VOL, RADC_VOL, 7, 0x01, 1),
+ 	SND_SOC_DAPM_MUX("PDM1 L Mux", RT5670_PDM_OUT_CTRL,
+ 			 RT5670_M_PDM1_L_SFT, 1, &rt5670_pdm1_l_mux),
+ 	SND_SOC_DAPM_MUX("PDM1 R Mux", RT5670_PDM_OUT_CTRL,
+ 			 RT5670_M_PDM1_R_SFT, 1, &rt5670_pdm1_r_mux),
+-	SND_SOC_DAPM_MUX("PDM2 L Mux", RT5670_PDM_OUT_CTRL,
+-			 RT5670_M_PDM2_L_SFT, 1, &rt5670_pdm2_l_mux),
+-	SND_SOC_DAPM_MUX("PDM2 R Mux", RT5670_PDM_OUT_CTRL,
+-			 RT5670_M_PDM2_R_SFT, 1, &rt5670_pdm2_r_mux),
  
- 	SOC_ENUM("ADC HPF Cut-off", aic3x_adc_hpf_enum),
+ 	/* Output Lines */
+ 	SND_SOC_DAPM_OUTPUT("HPOL"),
+ 	SND_SOC_DAPM_OUTPUT("HPOR"),
+ 	SND_SOC_DAPM_OUTPUT("LOUTL"),
+ 	SND_SOC_DAPM_OUTPUT("LOUTR"),
++};
 +
-+	/* Pop reduction */
-+	SOC_ENUM("Output Driver Power-On time", aic3x_poweron_time_enum),
-+	SOC_ENUM("Output Driver Ramp-up step", aic3x_rampup_step_enum),
++static const struct snd_soc_dapm_widget rt5670_specific_dapm_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("PDM2 Power", RT5670_PWR_DIG2,
++		RT5670_PWR_PDM2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MUX("PDM2 L Mux", RT5670_PDM_OUT_CTRL,
++			 RT5670_M_PDM2_L_SFT, 1, &rt5670_pdm2_l_mux),
++	SND_SOC_DAPM_MUX("PDM2 R Mux", RT5670_PDM_OUT_CTRL,
++			 RT5670_M_PDM2_R_SFT, 1, &rt5670_pdm2_r_mux),
+ 	SND_SOC_DAPM_OUTPUT("PDM1L"),
+ 	SND_SOC_DAPM_OUTPUT("PDM1R"),
+ 	SND_SOC_DAPM_OUTPUT("PDM2L"),
+ 	SND_SOC_DAPM_OUTPUT("PDM2R"),
  };
  
- static const struct snd_kcontrol_new aic3x_mono_controls[] = {
++static const struct snd_soc_dapm_widget rt5672_specific_dapm_widgets[] = {
++	SND_SOC_DAPM_PGA("SPO Amp", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("SPOLP"),
++	SND_SOC_DAPM_OUTPUT("SPOLN"),
++	SND_SOC_DAPM_OUTPUT("SPORP"),
++	SND_SOC_DAPM_OUTPUT("SPORN"),
++};
++
+ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 	{ "ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc },
+ 	{ "ADC Stereo2 Filter", NULL, "ADC STO2 ASRC", is_using_asrc },
+@@ -1970,12 +1981,6 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 	{ "PDM1 R Mux", "Stereo DAC", "Stereo DAC MIXR" },
+ 	{ "PDM1 R Mux", "Mono DAC", "Mono DAC MIXR" },
+ 	{ "PDM1 R Mux", NULL, "PDM1 Power" },
+-	{ "PDM2 L Mux", "Stereo DAC", "Stereo DAC MIXL" },
+-	{ "PDM2 L Mux", "Mono DAC", "Mono DAC MIXL" },
+-	{ "PDM2 L Mux", NULL, "PDM2 Power" },
+-	{ "PDM2 R Mux", "Stereo DAC", "Stereo DAC MIXR" },
+-	{ "PDM2 R Mux", "Mono DAC", "Mono DAC MIXR" },
+-	{ "PDM2 R Mux", NULL, "PDM2 Power" },
+ 
+ 	{ "HP Amp", NULL, "HPO MIX" },
+ 	{ "HP Amp", NULL, "Mic Det Power" },
+@@ -1993,13 +1998,30 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 	{ "LOUTR", NULL, "LOUT R Playback" },
+ 	{ "LOUTL", NULL, "Improve HP Amp Drv" },
+ 	{ "LOUTR", NULL, "Improve HP Amp Drv" },
++};
+ 
++static const struct snd_soc_dapm_route rt5670_specific_dapm_routes[] = {
++	{ "PDM2 L Mux", "Stereo DAC", "Stereo DAC MIXL" },
++	{ "PDM2 L Mux", "Mono DAC", "Mono DAC MIXL" },
++	{ "PDM2 L Mux", NULL, "PDM2 Power" },
++	{ "PDM2 R Mux", "Stereo DAC", "Stereo DAC MIXR" },
++	{ "PDM2 R Mux", "Mono DAC", "Mono DAC MIXR" },
++	{ "PDM2 R Mux", NULL, "PDM2 Power" },
+ 	{ "PDM1L", NULL, "PDM1 L Mux" },
+ 	{ "PDM1R", NULL, "PDM1 R Mux" },
+ 	{ "PDM2L", NULL, "PDM2 L Mux" },
+ 	{ "PDM2R", NULL, "PDM2 R Mux" },
+ };
+ 
++static const struct snd_soc_dapm_route rt5672_specific_dapm_routes[] = {
++	{ "SPO Amp", NULL, "PDM1 L Mux" },
++	{ "SPO Amp", NULL, "PDM1 R Mux" },
++	{ "SPOLP", NULL, "SPO Amp" },
++	{ "SPOLN", NULL, "SPO Amp" },
++	{ "SPORP", NULL, "SPO Amp" },
++	{ "SPORN", NULL, "SPO Amp" },
++};
++
+ static int rt5670_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+@@ -2331,6 +2353,29 @@ static int rt5670_probe(struct snd_soc_codec *codec)
+ {
+ 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
+ 
++	switch (snd_soc_read(codec, RT5670_RESET) & RT5670_ID_MASK) {
++	case RT5670_ID_5670:
++	case RT5670_ID_5671:
++		snd_soc_dapm_new_controls(&codec->dapm,
++			rt5670_specific_dapm_widgets,
++			ARRAY_SIZE(rt5670_specific_dapm_widgets));
++		snd_soc_dapm_add_routes(&codec->dapm,
++			rt5670_specific_dapm_routes,
++			ARRAY_SIZE(rt5670_specific_dapm_routes));
++		break;
++	case RT5670_ID_5672:
++		snd_soc_dapm_new_controls(&codec->dapm,
++			rt5672_specific_dapm_widgets,
++			ARRAY_SIZE(rt5672_specific_dapm_widgets));
++		snd_soc_dapm_add_routes(&codec->dapm,
++			rt5672_specific_dapm_routes,
++			ARRAY_SIZE(rt5672_specific_dapm_routes));
++		break;
++	default:
++		dev_err(codec->dev,
++			"The driver is for RT5670 RT5671 or RT5672 only\n");
++		return -ENODEV;
++	}
+ 	rt5670->codec = codec;
+ 
+ 	return 0;
+@@ -2452,6 +2497,8 @@ static const struct regmap_config rt5670_regmap = {
+ 
+ static const struct i2c_device_id rt5670_i2c_id[] = {
+ 	{ "rt5670", 0 },
++	{ "rt5671", 0 },
++	{ "rt5672", 0 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5670_i2c_id);
+diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
+index a0b5c85..d11b9c2 100644
+--- a/sound/soc/codecs/rt5670.h
++++ b/sound/soc/codecs/rt5670.h
+@@ -228,6 +228,12 @@
+ #define RT5670_R_VOL_MASK			(0x3f)
+ #define RT5670_R_VOL_SFT			0
+ 
++/* SW Reset & Device ID (0x00) */
++#define RT5670_ID_MASK				(0x3 << 1)
++#define RT5670_ID_5670				(0x0 << 1)
++#define RT5670_ID_5672				(0x1 << 1)
++#define RT5670_ID_5671				(0x2 << 1)
++
+ /* Combo Jack Control 1 (0x0a) */
+ #define RT5670_CBJ_BST1_MASK			(0xf << 12)
+ #define RT5670_CBJ_BST1_SFT			(12)
 -- 
-2.1.3
+1.8.1.1.439.g50a6b54
