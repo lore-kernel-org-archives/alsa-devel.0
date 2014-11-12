@@ -1,56 +1,72 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v7 05/20] OMAPDSS: hdmi4_core: Remove unused hdmi4_audio_get_dma_port()
-Date: Wed, 12 Nov 2014 12:49:07 +0200
-Message-ID: <82d7787bcd3ac79c863c8026bf0e3bc7f31f0ffc.1415786458.git.jsarha@ti.com>
-References: <cover.1415786458.git.jsarha@ti.com>
+From: Bogdan Veringioiu <bogdan.veringioiu@amano.eu>
+Subject: Re: Problems with usb soundcard in kernels > 3.3
+Date: Wed, 12 Nov 2014 12:22:17 +0100
+Message-ID: <546342E9.1010101@amano.eu>
+References: <5461EFAF.7040205@amano.eu> <54620FEF.3000201@ladisch.de>
+ <546217FD.1030806@amano.eu>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1415786458.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.amano.be (84-199-99-210.ifiber.telenet-ops.be
+ [84.199.99.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id 131D2261292
+ for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 12:22:18 +0100 (CET)
+In-Reply-To: <546217FD.1030806@amano.eu>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hdmi4_audio_get_dma_port() is unused and and broken.
+Hi,
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- drivers/video/fbdev/omap2/dss/hdmi4_core.c |    9 ---------
- drivers/video/fbdev/omap2/dss/hdmi4_core.h |    2 --
- 2 files changed, 11 deletions(-)
+any idea on how to further debug this issue?
+Thanks,
+Bogdan
 
-diff --git a/drivers/video/fbdev/omap2/dss/hdmi4_core.c b/drivers/video/fbdev/omap2/dss/hdmi4_core.c
-index 3b448d9..7eafea5 100644
---- a/drivers/video/fbdev/omap2/dss/hdmi4_core.c
-+++ b/drivers/video/fbdev/omap2/dss/hdmi4_core.c
-@@ -874,15 +874,6 @@ void hdmi4_audio_stop(struct hdmi_core_data *core, struct hdmi_wp_data *wp)
- 	hdmi_wp_audio_core_req_enable(wp, false);
- }
- 
--int hdmi4_audio_get_dma_port(u32 *offset, u32 *size)
--{
--	if (!offset || !size)
--		return -EINVAL;
--	*offset = HDMI_WP_AUDIO_DATA;
--	*size = 4;
--	return 0;
--}
--
- int hdmi4_core_init(struct platform_device *pdev, struct hdmi_core_data *core)
- {
- 	struct resource *res;
-diff --git a/drivers/video/fbdev/omap2/dss/hdmi4_core.h b/drivers/video/fbdev/omap2/dss/hdmi4_core.h
-index c1959f7..a069f96 100644
---- a/drivers/video/fbdev/omap2/dss/hdmi4_core.h
-+++ b/drivers/video/fbdev/omap2/dss/hdmi4_core.h
-@@ -270,6 +270,4 @@ int hdmi4_audio_start(struct hdmi_core_data *core, struct hdmi_wp_data *wp);
- void hdmi4_audio_stop(struct hdmi_core_data *core, struct hdmi_wp_data *wp);
- int hdmi4_audio_config(struct hdmi_core_data *core, struct hdmi_wp_data *wp,
- 		struct omap_dss_audio *audio, u32 pclk);
--int hdmi4_audio_get_dma_port(u32 *offset, u32 *size);
--
- #endif
--- 
-1.7.9.5
-
+On 11/11/2014 03:06 PM, Bogdan Veringioiu wrote:
+> Hi,
+>
+> thanks for your availability.
+> There is one message that appears in syslog, but it is always displayed
+> when I test with aplay, unregarding the kernel version. It shows both
+> with the working kernel (3.2) and with the problematic one (3.16).
+>
+> --> with kernel 3.2.0-4-686-pae
+> /var/log/syslog
+> ...
+> kernel: [ 2829.369380] 2:1:1: cannot get freq at ep 0x2
+> ...
+>
+> --> with kernel 3.16-0.bpo.2-686-pae
+> /var/log/syslog
+> ...
+> kernel: [  199.353227] usb 2-1: 1:1: cannot get freq at ep 0x2
+> ...
+>
+> Bogdan
+>
+> On 11/11/2014 02:32 PM, Clemens Ladisch wrote:
+>> Bogdan Veringioiu wrote:
+>> > The issue I am experiencing is a ~4 seconds delay in playing sound.
+>> > I am reproducing the problem using aplay. The sound play is being
+>> > delayed by more or less 4 seconds from the moment the file is sent
+>> > to the card. I have tested with kernels 3.2 and 3.3, which work
+>> > properly. I have noticed this delay/wait when using kernels 3.15,
+>> > 3.16.
+>>
+>> Any messages in the system log when this happens?
+>>
+>>
+>> Regards,
+>> Clemens
+>>
+>
