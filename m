@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: davinci-mcasp: Add
- overrun/underrun event handling
-Date: Wed, 12 Nov 2014 11:52:58 +0000
-Message-ID: <20141112115258.GH3815@sirena.org.uk>
-References: <1415781730-31271-1-git-send-email-peter.ujfalusi@ti.com>
+From: <bardliao@realtek.com>
+Subject: [PATCH 2/4] ASoC: rt5670: check if asrc is useable
+Date: Wed, 12 Nov 2014 19:54:31 +0800
+Message-ID: <1415793273-7844-2-git-send-email-bardliao@realtek.com>
+References: <1415793273-7844-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8766334990328356449=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CBB8265342
- for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 12:54:24 +0100 (CET)
-In-Reply-To: <1415781730-31271-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D8A1265598
+ for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 12:55:00 +0100 (CET)
+In-Reply-To: <1415793273-7844-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: daniel@zonque.org, Misael Lopez Cruz <misael.lopez@ti.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, Bard Liao <bardliao@realtek.com>, yao.jin@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Bard Liao <bardliao@realtek.com>
 
---===============8766334990328356449==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gpD07/c6JxvXcqO5"
-Content-Disposition: inline
+To use ASRC, the sysclk should be faster than 384 times sample
+rate of I2S1.
 
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5670.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
---gpD07/c6JxvXcqO5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 12, 2014 at 10:42:10AM +0200, Peter Ujfalusi wrote:
-
-> +	if (!handled_mask)
-> +		dev_warn(mcasp->dev, "unhandled tx event. txstat: 0x%08x\n",
-> +			 stat);
-> +
-> +	if (stat & XRERR)
-> +		handled_mask |= XRERR;
-> +
-> +	/* Ack the handled event only */
-> +	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG, handled_mask);
-> +
-> +	return IRQ_HANDLED;
-
-If nothing was handled the driver should be returning IRQ_NONE (I guess
-saying we handled XRERR is OK, looks like it's an or of the other
-sources).  Either unconditionally ack everything or return IRQ_NONE if
-the driver doesn't handle anything - the latter option is better and
-closer to what you have here.
-
---gpD07/c6JxvXcqO5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUY0oZAAoJECTWi3JdVIfQusYH/iPLW0Qee9Yr42GT/JY5VRqz
-awwgE6pORT5LcRoZi5/I8M1N0kZzu/fUKqzeCnEWqj4D1XIHazXB/QUErpBi8GSV
-V4+urXCFvp6o/XIIriOxx1Y3+BhsLvTIGWu0nR4KpusDEVygfX8aP5NSGJQkO00c
-ALlrxcKxo+nja11IsrECAJi+3DzuM24MWE+LoJ2mmSS/of869aRaafkbPNPZnMVm
-zJz77VJuWmP8D88cc4aayh0usKlVlWJBvRkRdzri2wb6Oah124tHbJ7p5apkBLII
-zH4SCOiIy/rwbuEo3LMBQSxwEAnFVMWOGxULHjngVoXgaXHkk5KJkoJnfd4CKMU=
-=RbYf
------END PGP SIGNATURE-----
-
---gpD07/c6JxvXcqO5--
-
---===============8766334990328356449==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8766334990328356449==--
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 85dc210..898b17f 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -575,6 +575,17 @@ static int is_using_asrc(struct snd_soc_dapm_widget *source,
+ 
+ }
+ 
++static int can_use_asrc(struct snd_soc_dapm_widget *source,
++			 struct snd_soc_dapm_widget *sink)
++{
++	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(source->codec);
++
++	if (rt5670->sysclk > rt5670->lrck[RT5670_AIF1] * 384)
++		return 1;
++
++	return 0;
++}
++
+ /* Digital Mixer */
+ static const struct snd_kcontrol_new rt5670_sto1_adc_l_mix[] = {
+ 	SOC_DAPM_SINGLE("ADC1 Switch", RT5670_STO1_ADC_MIXER,
+@@ -1638,8 +1649,8 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 	{ "DAC Mono Right Filter", NULL, "DAC MONO R ASRC", is_using_asrc },
+ 	{ "DAC Stereo1 Filter", NULL, "DAC STO ASRC", is_using_asrc },
+ 
+-	{ "I2S1", NULL, "I2S1 ASRC" },
+-	{ "I2S2", NULL, "I2S2 ASRC" },
++	{ "I2S1", NULL, "I2S1 ASRC", can_use_asrc},
++	{ "I2S2", NULL, "I2S2 ASRC", can_use_asrc},
+ 
+ 	{ "DMIC1", NULL, "DMIC L1" },
+ 	{ "DMIC1", NULL, "DMIC R1" },
+-- 
+1.8.1.1.439.g50a6b54
