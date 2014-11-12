@@ -1,50 +1,105 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Wed, 12 Nov 2014 22:23:44 +0000
-Message-ID: <20141112222344.GU3815@sirena.org.uk>
-References: <cover.1415803064.git.jsarha@ti.com>
+Subject: Re: [PATCH 2/4 V2] ASoC: Samsung: Add arndale_rt5631 machine driver
+Date: Wed, 12 Nov 2014 22:29:02 +0000
+Message-ID: <20141112222902.GV3815@sirena.org.uk>
+References: <1415781339-16089-1-git-send-email-krishna.md@samsung.com>
+ <1415781339-16089-3-git-send-email-krishna.md@samsung.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="150V3TWQMAK77Hrh"
-Return-path: <linux-omap-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="KMpoMTeiOjOCaFAr"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <cover.1415803064.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
+In-Reply-To: <1415781339-16089-3-git-send-email-krishna.md@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Krishna Mohan Dani <krishna.md@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 
---150V3TWQMAK77Hrh
+--KMpoMTeiOjOCaFAr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 12, 2014 at 04:40:51PM +0200, Jyri Sarha wrote:
+On Wed, Nov 12, 2014 at 02:05:37PM +0530, Krishna Mohan Dani wrote:
 
-> It would make the most sense to get these in trough fbdev tree. So it
-> would be nice to get acked-bys (if the patches are Ok) for ASoC side
-> changes from appropriate maintainers.
+> +	bfs = 32;
+> +
+> +	rfs = 256;
+> +
+> +	rclk = params_rate(params) * rfs;
+> +
+> +	psr = 4;
+> +
+> +	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
+> +					0, SND_SOC_CLOCK_OUT);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_RCLKSRC_0,
+> +					0, SND_SOC_CLOCK_OUT);
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = snd_soc_dai_set_sysclk(codec_dai, 0, rclk, SND_SOC_CLOCK_OUT);
+> +	if (ret < 0)
+> +		return ret;
 
-So, this is a very large series which gets reposted every so often to no
-apparent interest from the video side, there's been no response at all
-that I can remember and even the earlier bits of the series before it
-starts touching audio don't seem to be getting merged.  What's going on
-here?
+Would it make more sense to push the rate configuration into the I2S
+controller driver, it doesn't look very board specific?  Ideally the I2S
+driver would be smart enough by default to be used with the simple-card
+driver.
 
---150V3TWQMAK77Hrh
+> +static int arndale_alc5631_init_paiftx(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +	struct snd_soc_codec *codec = rtd->codec;
+> +	struct snd_soc_dapm_context *dapm = &codec->dapm;
+> +
+> +	snd_soc_dapm_sync(dapm);
+> +
+> +	return 0;
+> +}
+
+This does nothing and can be removed.
+
+> +static struct snd_soc_card arndale = {
+> +	.name = "Arndale-I2S",
+> +	.dai_link = arndale_dai,
+> +	.num_links = ARRAY_SIZE(arndale_dai),
+> +};
+
+Please give the card a more specific name like "Arndale RT5631" and
+similarly update the symbol names, there are other modules for the
+Arndale board.
+
+> +	ret = snd_soc_register_card(card);
+
+devm_snd_soc_register_card().
+
+> +
+> +	if (ret)
+
+Extra blank line here after the function call.
+
+> +MODULE_AUTHOR("Claude <claude@insignal.co.kr>");
+
+You're saying Claude is the author but there is no signoff from him.  It
+is very important to get signoffs from all authors.
+
+--KMpoMTeiOjOCaFAr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUY93vAAoJECTWi3JdVIfQrAsH/jIGK5dQow19yRwIbSSotJJj
-p7B3EuLOqO6SHTHoUrkuSFzslxJogFjT3soeNKE6oGDiO3WCdWd2GAEoyTPI7XIi
-dHZBmwwrx9L87WfUqISKEcKZtksyLpKBLshnQ+TpqH41IfnicJNPIPxGPh1NMYZT
-a79T+hjA3gt7MoX4Mu6ZdI+nQTt5tmJsDvFOLwo9Cf+dJ+b9gH9SUWRNhPSh0zG0
-D073OUVlEA9ELloF93fSdt5GU98mDUjUO+7pL7a0b16R8DIsudQSI/lUM4yD8HON
-G6ngwSZQC33zK5lBmqmbRmEYItKkW7RUumeCBL0mQ8HNnyUJ6QjzBGT7xxdATa0=
-=K25l
+iQEcBAEBAgAGBQJUY98tAAoJECTWi3JdVIfQKiQH/Awi1KKuDbU0zg7keeJb9xiF
+f5zKuWNm2d9orglu2XZe/Zc26d/fJ2APXlirOZrBsM2AvHeJm+uj1pwRYIE7VxBe
+wiCdUtqRYoovm3rAhoYYJWyN8PTtU4sG03Q72rI69iz5zE4g7WpPPbf0F8iBUaHO
+X+YAk2WRrsAiAIux8fQ2UyKcfW4bWc8riw0BukrbTZdwn8gwP60NzEBoNvxwlwKm
+DaoIwdN0RQDjv/A3whnbr25drH4kqPAyMjuHt2ACdzS8kqBP7xBEWtopTZLnf4IQ
+p8u9c39Wo76xg+QxPslXGkHGKlnZrqleRcHGxnShbfQsj6ynJZ8TK8uekLsFEgA=
+=j4qV
 -----END PGP SIGNATURE-----
 
---150V3TWQMAK77Hrh--
+--KMpoMTeiOjOCaFAr--
