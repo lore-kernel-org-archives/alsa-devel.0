@@ -1,82 +1,96 @@
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCHv2] ASoC: cs42l51: re-hook of_match_table pointer
-Date: Wed, 12 Nov 2014 15:40:44 +0100
-Message-ID: <1415803244-7010-1-git-send-email-thomas.petazzoni@free-electrons.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Tawfik Bayouk <tawfik@marvell.com>, Nadav Haklai <nadavh@marvell.com>, Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, stable@vger.kernel.org, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
+Date: Wed, 12 Nov 2014 16:40:51 +0200
+Message-ID: <cover.1415803064.git.jsarha@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-In commit a1253ef6d3fa ("ASoC: cs42l51: split i2c from codec driver"),
-the I2C part of the CS42L51 was moved to a separate file, but the
-definition of the of_device_id array was left in the driver file
-itself, no longer connected to the platform_driver structure using the
-.of_match_table pointer.
+The patches are based on:
+git://git.kernel.org/pub/scm/linux/kernel/git/tomba/linux.git for-next
 
-This commit exports the of_device_id array in cs42l51, and uses it as
-.of_match_able in cs42l51-i2c.c. This solution was suggested by Brian
-Austin.
+The base, the patches, and couple of additional not-to-be-merged
+omap2plus_defconfig patches can be found here:
+https://github.com/jsarha/linux.git omap-hdmi-audio
 
-Fixes: a1253ef6d3fa ("ASoC: cs42l51: split i2c from codec driver")
-Cc: <stable@vger.kernel.org> # v3.16+
-Cc: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
-Cc: Brian Austin <brian.austin@cirrus.com>
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
----
- sound/soc/codecs/cs42l51-i2c.c | 1 +
- sound/soc/codecs/cs42l51.c     | 4 +++-
- sound/soc/codecs/cs42l51.h     | 1 +
- 3 files changed, 5 insertions(+), 1 deletion(-)
----
-Changes since v1:
+It would make the most sense to get these in trough fbdev tree. So it
+would be nice to get acked-bys (if the patches are Ok) for ASoC side
+changes from appropriate maintainers.
 
- - Instead of moving the of_device_id array definition to the I2C
-   specific file, keep it in the core file, and export it so it can be
-   used by the I2C specific file. Suggested by Brian Austin.
+Changes since v7:
+- Squash: 
+  - "OMAPDSS: omapdss.h: Remove audio_state member of struct omap_dss_device"
+  - into "OMAPDSS: Remove all references to obsolete HDMI audio callbacks"
 
-diff --git a/sound/soc/codecs/cs42l51-i2c.c b/sound/soc/codecs/cs42l51-i2c.c
-index cee51ae..c40428f 100644
---- a/sound/soc/codecs/cs42l51-i2c.c
-+++ b/sound/soc/codecs/cs42l51-i2c.c
-@@ -46,6 +46,7 @@ static struct i2c_driver cs42l51_i2c_driver = {
- 	.driver = {
- 		.name = "cs42l51",
- 		.owner = THIS_MODULE,
-+		.of_match_table = cs42l51_of_match,
- 	},
- 	.probe = cs42l51_i2c_probe,
- 	.remove = cs42l51_i2c_remove,
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 09488d9..669c38f 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -558,11 +558,13 @@ error:
- }
- EXPORT_SYMBOL_GPL(cs42l51_probe);
- 
--static const struct of_device_id cs42l51_of_match[] = {
-+const struct of_device_id cs42l51_of_match[] = {
- 	{ .compatible = "cirrus,cs42l51", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, cs42l51_of_match);
-+EXPORT_SYMBOL_GPL(cs42l51_of_match);
-+
- MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
- MODULE_DESCRIPTION("Cirrus Logic CS42L51 ALSA SoC Codec Driver");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/cs42l51.h b/sound/soc/codecs/cs42l51.h
-index 8c55bf3..0ca8054 100644
---- a/sound/soc/codecs/cs42l51.h
-+++ b/sound/soc/codecs/cs42l51.h
-@@ -22,6 +22,7 @@ struct device;
- 
- extern const struct regmap_config cs42l51_regmap;
- int cs42l51_probe(struct device *dev, struct regmap *regmap);
-+extern const struct of_device_id cs42l51_of_match[];
- 
- #define CS42L51_CHIP_ID			0x1B
- #define CS42L51_CHIP_REV_A		0x00
+Changes since v6:
+- "ASoC: omap-hdmi-audio: Add platform device for OMAP HDMI audio support"
+  - Fix Kconfig help text
+  - Remove #include <sound/simple_card.h>
+  - Use snd-soc-dummy codec instead of hdmi-audio-codec
+- Add: OMAPDSS: hdmi_wp: Protect reserved bits in hdmi_wp_audio_config_format()
+- Add: OMAPDSS: hdmi5_core: Initialize mandatory sample_order parameter
+- Add: "OMAPDSS: omapdss.h: Remove audio_state member of struct omap_dss_device"
+- "OMAPDSS: hdmi4: Register ASoC platform device for omap hdmi audio"
+  - Register "omap-hdmi-audio" with PLATFORM_DEVID_AUTO
+- "OMAPDSS: hdmi5: Register ASoC platform device for omap hdmi audio"
+  - Register "omap-hdmi-audio" with PLATFORM_DEVID_AUTO
+- Add: "OMAPDSS: hdmi5: Change hdmi_wp idlemode to to no_idle for audio playback"
+
+Jyri Sarha (19):
+  OMAPDSS: hdmi_wp: Protect reserved bits in
+    hdmi_wp_audio_config_format()
+  OMAPDSS: hdmi5_core: Initialize mandatory sample_order parameter
+  OMAPDSS: hdmi.h: Add HDMI_AUDIO_LAYOUT_6CH enum value
+  OMAPDSS: hdmi: Remove most of OMAP[45]_DSS_HDMI_AUDIO ifdefs
+  OMAPDSS: hdmi4_core: Remove unused hdmi4_audio_get_dma_port()
+  OMAPDSS: hdmi_wp: Add function for getting audio dma address
+  OMAPDSS: hdmi: Make hdmi structure public
+  OMAPDSS: hdmi: Add pdev pointer for audio_pdev in HDMI DRV data
+  ASoC: omap-hdmi-audio: Add platform device for OMAP HDMI audio
+    support
+  OMAPDSS: Kconfig: Remove HDMI audio booleans from Kconfig
+  OMAPDSS: hdmi: Make hdmi_mode_has_audio() more user friedly
+  OMAPDSS: hdmi.h: Add members to hdmi drvdata for audio implementation
+  OMAPDSS: hdmi4: Remove callbacks for the old ASoC DAI driver
+  OMAPDSS: hdmi4: Register ASoC platform device for omap hdmi audio
+  OMAPDSS: hdmi5: Remove callbacks for the old ASoC DAI driver
+  OMAPDSS: hdmi5: Register ASoC platform device for omap hdmi audio
+  ASoC: omap: Remove obsolete HDMI audio code and Kconfig options
+  OMAPDSS: Remove all references to obsolete HDMI audio callbacks
+  OMAPDSS: hdmi5: Change hdmi_wp idlemode to to no_idle for audio
+    playback
+
+ .../fbdev/omap2/displays-new/connector-hdmi.c      |   99 -----
+ .../fbdev/omap2/displays-new/encoder-tpd12s015.c   |   56 ---
+ drivers/video/fbdev/omap2/dss/Kconfig              |    7 -
+ drivers/video/fbdev/omap2/dss/hdmi.h               |   38 +-
+ drivers/video/fbdev/omap2/dss/hdmi4.c              |  269 +++++++------
+ drivers/video/fbdev/omap2/dss/hdmi4_core.c         |   14 -
+ drivers/video/fbdev/omap2/dss/hdmi4_core.h         |    4 -
+ drivers/video/fbdev/omap2/dss/hdmi5.c              |  265 ++++++-------
+ drivers/video/fbdev/omap2/dss/hdmi5_core.c         |    9 +-
+ drivers/video/fbdev/omap2/dss/hdmi5_core.h         |    2 -
+ drivers/video/fbdev/omap2/dss/hdmi_common.c        |    2 -
+ drivers/video/fbdev/omap2/dss/hdmi_wp.c            |   16 +-
+ include/sound/omap-hdmi-audio.h                    |   43 +++
+ include/video/omapdss.h                            |   40 --
+ sound/soc/omap/Kconfig                             |   26 +-
+ sound/soc/omap/Makefile                            |    6 +-
+ sound/soc/omap/omap-hdmi-audio.c                   |  407 ++++++++++++++++++++
+ sound/soc/omap/omap-hdmi-card.c                    |   87 -----
+ sound/soc/omap/omap-hdmi.c                         |  364 -----------------
+ sound/soc/omap/omap-hdmi.h                         |   38 --
+ 20 files changed, 781 insertions(+), 1011 deletions(-)
+ create mode 100644 include/sound/omap-hdmi-audio.h
+ create mode 100644 sound/soc/omap/omap-hdmi-audio.c
+ delete mode 100644 sound/soc/omap/omap-hdmi-card.c
+ delete mode 100644 sound/soc/omap/omap-hdmi.c
+ delete mode 100644 sound/soc/omap/omap-hdmi.h
+
 -- 
-2.0.0
+1.7.9.5
+
