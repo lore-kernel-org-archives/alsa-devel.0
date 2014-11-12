@@ -1,14 +1,15 @@
 From: <bardliao@realtek.com>
-Subject: [PATCH 2/4] ASoC: rt5670: check if asrc is useable
-Date: Wed, 12 Nov 2014 14:21:30 +0800
-Message-ID: <1415773292-2299-2-git-send-email-bardliao@realtek.com>
+Subject: [PATCH 4/4] ASoC:rt5670:change dapm routes of PLL
+	connection
+Date: Wed, 12 Nov 2014 14:21:32 +0800
+Message-ID: <1415773292-2299-4-git-send-email-bardliao@realtek.com>
 References: <1415773292-2299-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id BC54C26525F
+ by alsa0.perex.cz (Postfix) with ESMTP id C1810265275
  for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 07:22:02 +0100 (CET)
 In-Reply-To: <1415773292-2299-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,46 +27,43 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Bard Liao <bardliao@realtek.com>
 
-To use ASRC, the sysclk should be faster than 384 times sample
-rate of I2S1.
+PLL should be powered up once filter power is on. So, "PLL1"
+should be connected to filters instead of DACs.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/rt5670.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5670.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 85dc210..898b17f 100644
+index c3914e8..c4d4e3f 100644
 --- a/sound/soc/codecs/rt5670.c
 +++ b/sound/soc/codecs/rt5670.c
-@@ -575,6 +575,17 @@ static int is_using_asrc(struct snd_soc_dapm_widget *source,
+@@ -1927,6 +1927,10 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 	{ "DAC1 MIXR", "DAC1 Switch", "DAC1 R Mux" },
+ 	{ "DAC1 MIXR", NULL, "DAC Stereo1 Filter" },
  
- }
- 
-+static int can_use_asrc(struct snd_soc_dapm_widget *source,
-+			 struct snd_soc_dapm_widget *sink)
-+{
-+	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(source->codec);
++	{ "DAC Stereo1 Filter", NULL, "PLL1", is_sys_clk_from_pll },
++	{ "DAC Mono Left Filter", NULL, "PLL1", is_sys_clk_from_pll },
++	{ "DAC Mono Right Filter", NULL, "PLL1", is_sys_clk_from_pll },
 +
-+	if (rt5670->sysclk > rt5670->lrck[RT5670_AIF1] * 384)
-+		return 1;
-+
-+	return 0;
-+}
-+
- /* Digital Mixer */
- static const struct snd_kcontrol_new rt5670_sto1_adc_l_mix[] = {
- 	SOC_DAPM_SINGLE("ADC1 Switch", RT5670_STO1_ADC_MIXER,
-@@ -1638,8 +1649,8 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
- 	{ "DAC Mono Right Filter", NULL, "DAC MONO R ASRC", is_using_asrc },
- 	{ "DAC Stereo1 Filter", NULL, "DAC STO ASRC", is_using_asrc },
+ 	{ "DAC MIX", NULL, "DAC1 MIXL" },
+ 	{ "DAC MIX", NULL, "DAC1 MIXR" },
  
--	{ "I2S1", NULL, "I2S1 ASRC" },
--	{ "I2S2", NULL, "I2S2 ASRC" },
-+	{ "I2S1", NULL, "I2S1 ASRC", can_use_asrc},
-+	{ "I2S2", NULL, "I2S2 ASRC", can_use_asrc},
+@@ -1976,14 +1980,10 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
  
- 	{ "DMIC1", NULL, "DMIC L1" },
- 	{ "DMIC1", NULL, "DMIC R1" },
+ 	{ "DAC L1", NULL, "DAC L1 Power" },
+ 	{ "DAC L1", NULL, "Stereo DAC MIXL" },
+-	{ "DAC L1", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC R1", NULL, "DAC R1 Power" },
+ 	{ "DAC R1", NULL, "Stereo DAC MIXR" },
+-	{ "DAC R1", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC L2", NULL, "Mono DAC MIXL" },
+-	{ "DAC L2", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC R2", NULL, "Mono DAC MIXR" },
+-	{ "DAC R2", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "OUT MIXL", "BST1 Switch", "BST1" },
+ 	{ "OUT MIXL", "INL Switch", "INL VOL" },
 -- 
 1.8.1.1.439.g50a6b54
