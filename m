@@ -1,16 +1,15 @@
 From: <bardliao@realtek.com>
-Subject: [PATCH 3/4] ASoC: rt5670: add DMIC ASRC support
-Date: Wed, 12 Nov 2014 14:21:31 +0800
-Message-ID: <1415773292-2299-3-git-send-email-bardliao@realtek.com>
-References: <1415773292-2299-1-git-send-email-bardliao@realtek.com>
+Subject: [PATCH 1/4] ASoC: rt5670: make bias level more
+	reasonable
+Date: Wed, 12 Nov 2014 14:21:29 +0800
+Message-ID: <1415773292-2299-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id BE0FE26526D
+ by alsa0.perex.cz (Postfix) with ESMTP id BFCAF265274
  for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 07:22:02 +0100 (CET)
-In-Reply-To: <1415773292-2299-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,42 +25,62 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Bard Liao <bardliao@realtek.com>
 
-This patch will enable ASRC for DMIC if ASRC is useable.
+This patah separate bias level off to standby and off. The standby
+level will provide the necessary power for JD and push button
+functions.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/rt5670.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/rt5670.c | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 898b17f..89fa507 100644
+index c4c42d5..85dc210 100644
 --- a/sound/soc/codecs/rt5670.c
 +++ b/sound/soc/codecs/rt5670.c
-@@ -1292,6 +1292,14 @@ static const struct snd_soc_dapm_widget rt5670_dapm_widgets[] = {
- 			      9, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY_S("DAC MONO R ASRC", 1, RT5670_ASRC_1,
- 			      8, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC STO1 ASRC", 1, RT5670_ASRC_1,
-+			      7, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC STO2 ASRC", 1, RT5670_ASRC_1,
-+			      6, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC MONO L ASRC", 1, RT5670_ASRC_1,
-+			      5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC MONO R ASRC", 1, RT5670_ASRC_1,
-+			      4, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY_S("ADC STO1 ASRC", 1, RT5670_ASRC_1,
- 			      3, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY_S("ADC STO2 ASRC", 1, RT5670_ASRC_1,
-@@ -1648,6 +1656,10 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
- 	{ "DAC Mono Left Filter", NULL, "DAC MONO L ASRC", is_using_asrc },
- 	{ "DAC Mono Right Filter", NULL, "DAC MONO R ASRC", is_using_asrc },
- 	{ "DAC Stereo1 Filter", NULL, "DAC STO ASRC", is_using_asrc },
-+	{ "Stereo1 DMIC Mux", NULL, "DMIC STO1 ASRC", can_use_asrc },
-+	{ "Stereo2 DMIC Mux", NULL, "DMIC STO2 ASRC", can_use_asrc },
-+	{ "Mono DMIC L Mux", NULL, "DMIC MONO L ASRC", can_use_asrc },
-+	{ "Mono DMIC R Mux", NULL, "DMIC MONO R ASRC", can_use_asrc },
+@@ -2309,6 +2309,8 @@ static int rt5670_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
+ 			enum snd_soc_bias_level level)
+ {
++	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
++
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+ 		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level) {
+@@ -2330,16 +2332,27 @@ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
+ 		}
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		snd_soc_write(codec, RT5670_PWR_DIG1, 0x0000);
+-		snd_soc_write(codec, RT5670_PWR_DIG2, 0x0001);
+-		snd_soc_write(codec, RT5670_PWR_VOL, 0x0000);
+-		snd_soc_write(codec, RT5670_PWR_MIXER, 0x0001);
+-		snd_soc_write(codec, RT5670_PWR_ANLG1, 0x2800);
+-		snd_soc_write(codec, RT5670_PWR_ANLG2, 0x0004);
+-		snd_soc_update_bits(codec, RT5670_DIG_MISC, 0x1, 0x0);
++		snd_soc_update_bits(codec, RT5670_PWR_ANLG1,
++				RT5670_PWR_VREF1 | RT5670_PWR_VREF2 |
++				RT5670_PWR_FV1 | RT5670_PWR_FV2, 0);
+ 		snd_soc_update_bits(codec, RT5670_PWR_ANLG1,
+ 				RT5670_LDO_SEL_MASK, 0x1);
+ 		break;
++	case SND_SOC_BIAS_OFF:
++		if (rt5670->pdata.jd_mode)
++			snd_soc_update_bits(codec, RT5670_PWR_ANLG1,
++				RT5670_PWR_VREF1 | RT5670_PWR_MB |
++				RT5670_PWR_BG | RT5670_PWR_VREF2 |
++				RT5670_PWR_FV1 | RT5670_PWR_FV2,
++				RT5670_PWR_MB | RT5670_PWR_BG);
++		else
++			snd_soc_update_bits(codec, RT5670_PWR_ANLG1,
++				RT5670_PWR_VREF1 | RT5670_PWR_MB |
++				RT5670_PWR_BG | RT5670_PWR_VREF2 |
++				RT5670_PWR_FV1 | RT5670_PWR_FV2, 0);
++
++		snd_soc_update_bits(codec, RT5670_DIG_MISC, 0x1, 0x0);
++		break;
  
- 	{ "I2S1", NULL, "I2S1 ASRC", can_use_asrc},
- 	{ "I2S2", NULL, "I2S2 ASRC", can_use_asrc},
+ 	default:
+ 		break;
 -- 
 1.8.1.1.439.g50a6b54
