@@ -1,14 +1,16 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5645: add register setting for TDM
-Date: Wed, 12 Nov 2014 19:38:23 +0800
-Message-ID: <1415792303-7728-1-git-send-email-bardliao@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/4] ASoC: rt5670: add codec irq support
+Date: Wed, 12 Nov 2014 11:46:13 +0000
+Message-ID: <20141112114613.GF3815@sirena.org.uk>
+References: <1415773681-2394-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1336684027681167163=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EE29265340
- for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 12:38:51 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04A25265338
+ for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 12:47:37 +0100 (CET)
+In-Reply-To: <1415773681-2394-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,47 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, yang.a.fang@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, yao.jin@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-We need to set extra register to avoid a recording issue in TDM
-mode.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5645.c | 5 ++++-
- sound/soc/codecs/rt5645.h | 1 +
- 2 files changed, 5 insertions(+), 1 deletion(-)
+--===============1336684027681167163==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="iJ4DPVtG7O6+M1+H"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index d6298b3..ac7a52a 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2114,8 +2114,11 @@ static int rt5645_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 	struct snd_soc_codec *codec = dai->codec;
- 	unsigned int val = 0;
- 
--	if (rx_mask || tx_mask)
-+	if (rx_mask || tx_mask) {
- 		val |= (1 << 14);
-+		regmap_update_bits(rt5645->regmap, RT5645_BASS_BACK,
-+			RT5645_G_BB_BST_MASK, RT5645_G_BB_BST_25DB);
-+	}
- 
- 	switch (slots) {
- 	case 4:
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index 82f681b..196daf0 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -1855,6 +1855,7 @@
- #define RT5645_M_BB_HPF_R_SFT			6
- #define RT5645_G_BB_BST_MASK			(0x3f)
- #define RT5645_G_BB_BST_SFT			0
-+#define RT5645_G_BB_BST_25DB			0x14
- 
- /* MP3 Plus Control 1 (0xd0) */
- #define RT5645_M_MP3_L_MASK			(0x1 << 15)
--- 
-1.8.1.1.439.g50a6b54
+
+--iJ4DPVtG7O6+M1+H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 12, 2014 at 02:28:01PM +0800, bardliao@realtek.com wrote:
+> From: Bard Liao <bardliao@realtek.com>
+>=20
+> This patch provide the jack function of rt5670. We use a irq pin
+> to notice the jack event. rt5670_irq_detection will determine
+> which status should be reported.
+> We can get gpio information from gpio number or gpiod_dev. That's
+> why we define both on platform data.
+
+I'm missing patches 1-3 of this series.
+
+--iJ4DPVtG7O6+M1+H
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUY0iEAAoJECTWi3JdVIfQqcMH+wfMMsOM+QOL04puknJrZ9pU
+gB1o22OD8NckQeUJ0QTYwdMPpNJnxHJxPSIHj4ieO7kLJAhJRn3DyQ09wF8vGsxw
+jUfcnxKGVKLxyll7y/adStdwqqMcbO+07MjgabR2Zd3xddX2xFfrAoVMEzZYzvP8
+9nOeqY0NArIZ4mVDDBDqHTxJGqlpqQHCzb3Je0JLnWAYisfeuZOyvuOgBObY9fcP
+8CHuRHtv5Yd5gPVLeMRQ16VAOkpJDshMM7eJcMYKKrNk/AK0bc4JNR7FKMNmFDAL
+MLCDhJyqQlTScNuaMrAz67eMuGTzja03rDfLmtxKnJCPVnz7CPecjOvU1vEYprE=
+=FnTI
+-----END PGP SIGNATURE-----
+
+--iJ4DPVtG7O6+M1+H--
+
+--===============1336684027681167163==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1336684027681167163==--
