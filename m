@@ -1,70 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: arizona: Add support for 768kHz DMIC
-	operation
-Date: Wed, 12 Nov 2014 15:24:44 +0000
-Message-ID: <20141112152444.GM3815@sirena.org.uk>
-References: <1415804126-19168-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHv2] ASoC: cs42l51: re-hook of_match_table pointer
+Date: Wed, 12 Nov 2014 15:56:26 +0000
+Message-ID: <20141112155626.GN3815@sirena.org.uk>
+References: <1415803244-7010-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5621444614184591489=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 782742656EE
- for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 16:26:15 +0100 (CET)
-In-Reply-To: <1415804126-19168-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dq1bAwW2kQB+exoT"
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1415803244-7010-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Sender: stable-owner@vger.kernel.org
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Tawfik Bayouk <tawfik@marvell.com>, Nadav Haklai <nadavh@marvell.com>, Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, stable@vger.kernel.org, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5621444614184591489==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ce1l0HA6wm8WicvA"
-Content-Disposition: inline
-
-
---ce1l0HA6wm8WicvA
+--dq1bAwW2kQB+exoT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 12, 2014 at 02:55:26PM +0000, Charles Keepax wrote:
-> The new IPs supports a new lower frequency 768kHz DMIC operation
-> add support for this into the OSR control.
+On Wed, Nov 12, 2014 at 03:40:44PM +0100, Thomas Petazzoni wrote:
+> In commit a1253ef6d3fa ("ASoC: cs42l51: split i2c from codec driver"),
+> the I2C part of the CS42L51 was moved to a separate file, but the
 
 Applied, thanks.
 
---ce1l0HA6wm8WicvA
+--dq1bAwW2kQB+exoT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUY3u7AAoJECTWi3JdVIfQ6HUH/Axy898Wya/cEP0mF91GmJBQ
-CbOc2YqFu/inNLIuD0+ZUOuA8jVhjqyziMyPktLfBy7sN6nGijW5UZTFmspsYgWw
-esRtrXKkBcYdf9ZwlomGlpC2af11wiEotIcMZQJqHwNqY5j6P3qFTr32J2f5a7Cr
-rckOvQR9+oIzkf+MmkbI0Tgc4YrcGDLcExJJpAKomfDQ7octGZbZqYuVR3yez2nW
-s8ZYW68Q6K83z76QOHHE4lpFmZSVDxtTta2jbZ25PM3a6KnEDcoaWQidLKSJXg5W
-FfhwvfWBZr0rlJSoJCxtPgkqKIUvd03Ej2MPfPg9n3qJSMvm9gHM9T56C+Wlero=
-=oTL7
+iQEcBAEBAgAGBQJUY4MqAAoJECTWi3JdVIfQAHsH/ibdJY4F94w+8etIt7AaHp/X
+iKbkWLT1kX1bUmztXp6p+Cjhb3st6ihAmGwNOy2wD3KAZihVmixPS1JBUVQ5Rf/3
+E5uWeGFzCndHUXqGNH4A/KtsBEI3xi4wzBdQpv/G0NB0EZ1ePOhdmUwJiOpx5lHZ
+JXwf9tmmLrl6dBfhoJsUxC9D4tpTyl5qrQNvdKx/GO953YyDk6BXNN3xtby/EJMi
+FlHbL65YObqIYFm26FZ8CK3dsJbz/t4Nev+TUK67WTqPu/d3NdMcW8HuC7mW3HpK
+CHQ6iSls3/wQFPaKGstgNMw/jMyNRF8MLVI+GMNKzrnHhoHdfn1rBP8+i9Uex00=
+=ZWzQ
 -----END PGP SIGNATURE-----
 
---ce1l0HA6wm8WicvA--
-
---===============5621444614184591489==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5621444614184591489==--
+--dq1bAwW2kQB+exoT--
