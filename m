@@ -1,8 +1,8 @@
 From: Chris J Arges <chris.j.arges@canonical.com>
-Subject: [PATCH 1/4 v7] Revert "ALSA: usb-audio: Add quirk for
-	Focusrite Scarlett
-Date: Wed, 12 Nov 2014 12:06:59 -0600
-Message-ID: <1415815622-31015-2-git-send-email-chris.j.arges@canonical.com>
+Subject: [PATCH 2/4 v7] ALSA: usb-audio: Add private_data
+	pointer to usb_mixer_elem_info
+Date: Wed, 12 Nov 2014 12:07:00 -0600
+Message-ID: <1415815622-31015-3-git-send-email-chris.j.arges@canonical.com>
 References: <s5hk332svu5.wl-tiwai@suse.de>
  <1415815622-31015-1-git-send-email-chris.j.arges@canonical.com>
 Mime-Version: 1.0
@@ -11,8 +11,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 022942657BA
- for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 19:07:08 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7457F2657C6
+ for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 19:07:09 +0100 (CET)
 In-Reply-To: <1415815622-31015-1-git-send-email-chris.j.arges@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,76 +27,25 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, th55@gmx.de, robin@gareus.org, clemens@ladisch.de, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit 1762a59d8e8b5e99f6f4a0f292b40f3cacb108ba.
-
-This quirk is not needed because support for the Scarlett mixers will be added.
+Add a private_data pointer to usb_mixer_elem_info to allow other mixer
+implementations to extend the structure as necessary.
 
 Signed-off-by: Chris J Arges <chris.j.arges@canonical.com>
 ---
- sound/usb/quirks-table.h | 51 ------------------------------------------------
- 1 file changed, 51 deletions(-)
+ sound/usb/mixer.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index c657752..51686c7 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2667,57 +2667,6 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.type = QUIRK_MIDI_NOVATION
- 	}
- },
--{
--	/*
--	 * Focusrite Scarlett 18i6
--	 *
--	 * Avoid mixer creation, which otherwise fails because some of
--	 * the interface descriptor subtypes for interface 0 are
--	 * unknown.  That should be fixed or worked-around but this at
--	 * least allows the device to be used successfully with a DAW
--	 * and an external mixer.  See comments below about other
--	 * ignored interfaces.
--	 */
--	USB_DEVICE(0x1235, 0x8004),
--	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
--		.vendor_name = "Focusrite",
--		.product_name = "Scarlett 18i6",
--		.ifnum = QUIRK_ANY_INTERFACE,
--		.type = QUIRK_COMPOSITE,
--		.data = & (const struct snd_usb_audio_quirk[]) {
--			{
--				/* InterfaceSubClass 1 (Control Device) */
--				.ifnum = 0,
--				.type = QUIRK_IGNORE_INTERFACE
--			},
--			{
--				.ifnum = 1,
--				.type = QUIRK_AUDIO_STANDARD_INTERFACE
--			},
--			{
--				.ifnum = 2,
--				.type = QUIRK_AUDIO_STANDARD_INTERFACE
--			},
--			{
--				/* InterfaceSubClass 1 (Control Device) */
--				.ifnum = 3,
--				.type = QUIRK_IGNORE_INTERFACE
--			},
--			{
--				.ifnum = 4,
--				.type = QUIRK_MIDI_STANDARD_INTERFACE
--			},
--			{
--				/* InterfaceSubClass 1 (Device Firmware Update) */
--				.ifnum = 5,
--				.type = QUIRK_IGNORE_INTERFACE
--			},
--			{
--				.ifnum = -1
--			}
--		}
--	}
--},
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index 73b1f64..8df9a73 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -53,6 +53,7 @@ struct usb_mixer_elem_info {
+ 	int cached;
+ 	int cache_val[MAX_CHANNELS];
+ 	u8 initialized;
++	void *private_data;
+ };
  
- /* Access Music devices */
- {
+ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
 -- 
 2.1.3
