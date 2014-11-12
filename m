@@ -1,60 +1,45 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v7 06/20] OMAPDSS: omapdss.h: Remove audio_state member
- of struct omap_dss_device
-Date: Wed, 12 Nov 2014 16:34:33 +0200
-Message-ID: <54636FF9.5000303@ti.com>
-References: <cover.1415786458.git.jsarha@ti.com> <2c129e22e96eba98ec1d825d01c25571272da13b.1415786458.git.jsarha@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problems with usb soundcard in kernels > 3.3
+Date: Wed, 12 Nov 2014 15:36:12 +0100
+Message-ID: <5463705C.8060808@ladisch.de>
+References: <5461EFAF.7040205@amano.eu> <54620FEF.3000201@ladisch.de>
+ <546217FD.1030806@amano.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <2c129e22e96eba98ec1d825d01c25571272da13b.1415786458.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 2F20D2656F6
+ for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 15:36:18 +0100 (CET)
+In-Reply-To: <546217FD.1030806@amano.eu>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bogdan Veringioiu <bogdan.veringioiu@amano.eu>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Damn, this patch should have gone to second last for it not not to break 
-bisect. I'll squash it into "OMAPDSS: Remove all references to obsolete 
-HDMI audio callbacks" an mail v7.1 patch-set shortly.
+Bogdan Veringioiu wrote:
+> There is one message that appears in syslog, but it is always
+> displayed when I test with aplay, unregarding the kernel version.
+>
+> --> with kernel 3.2.0-4-686-pae
+> kernel: [ 2829.369380] 2:1:1: cannot get freq at ep 0x2
+>
+> --> with kernel 3.16-0.bpo.2-686-pae
+> kernel: [  199.353227] usb 2-1: 1:1: cannot get freq at ep 0x2
 
-Best regards,
-Jyri
+This indicates a bug in the device's firmware.
 
-On 11/12/2014 12:49 PM, Jyri Sarha wrote:
-> The audio_state member is not used.
->
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
->   include/video/omapdss.h |    9 ---------
->   1 file changed, 9 deletions(-)
->
-> diff --git a/include/video/omapdss.h b/include/video/omapdss.h
-> index 069dfca..9f2699f 100644
-> --- a/include/video/omapdss.h
-> +++ b/include/video/omapdss.h
-> @@ -166,13 +166,6 @@ enum omap_dss_display_state {
->   	OMAP_DSS_DISPLAY_ACTIVE,
->   };
->
-> -enum omap_dss_audio_state {
-> -	OMAP_DSS_AUDIO_DISABLED = 0,
-> -	OMAP_DSS_AUDIO_ENABLED,
-> -	OMAP_DSS_AUDIO_CONFIGURED,
-> -	OMAP_DSS_AUDIO_PLAYING,
-> -};
-> -
->   struct omap_dss_audio {
->   	struct snd_aes_iec958 *iec;
->   	struct snd_cea_861_aud_if *cea;
-> @@ -783,8 +776,6 @@ struct omap_dss_device {
->
->   	enum omap_dss_display_state state;
->
-> -	enum omap_dss_audio_state audio_state;
-> -
->   	/* OMAP DSS output specific fields */
->
->   	struct list_head list;
->
+The timeout for control messages was increased from 100 ms to 1000 ms
+in kernel 3.3.
 
+
+Regards,
+Clemens
