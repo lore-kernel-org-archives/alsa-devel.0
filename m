@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: arizona: Add DSP_B and LEFT_J mode
-	support
-Date: Wed, 12 Nov 2014 17:33:01 +0000
-Message-ID: <20141112173301.GP3815@sirena.org.uk>
-References: <1415808766-18364-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Chris J Arges <chris.j.arges@canonical.com>
+Subject: [PATCH 0/4 v7] Scarlett mixer interface inclusion
+Date: Wed, 12 Nov 2014 12:06:58 -0600
+Message-ID: <1415815622-31015-1-git-send-email-chris.j.arges@canonical.com>
+References: <s5hk332svu5.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5059577043643652299=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73D0D265756
- for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 18:34:21 +0100 (CET)
-In-Reply-To: <1415808766-18364-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 388F82657B0
+ for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 19:07:07 +0100 (CET)
+In-Reply-To: <s5hk332svu5.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, th55@gmx.de, robin@gareus.org, clemens@ladisch.de, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
+This is v5 of the patchset to merge what Tobias Hoffman and Robin Gareus have
+done to enable the Focusrite Scarlett mixers for use with ALSA.
 
---===============5059577043643652299==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fClRb0lhqPwgRkrA"
-Content-Disposition: inline
+[v3]
 
+I have split the commits into hopefully a logical series. First the original
+quirk is reverted for one model of a Scarlett device. Next an additional
+structure is added to be able to more easily reuse usb_mixer_elem_info.
+After this mixer functions that were useful to this code were made public.
+Finally the last patch adds the necessary functions to make this mixer work.
 
---fClRb0lhqPwgRkrA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[v4]
 
-On Wed, Nov 12, 2014 at 04:12:46PM +0000, Charles Keepax wrote:
-> From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
->=20
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+This version removes the per-mixer control creation functions and uses a
+generic function based on structure data. Macros used for control addition
+are removed and the plain function is used instead. Hardcoded text block is
+removed and macros to define strings are used instead. Hardcoded control
+initialization has been removed.
 
-Applied, thanks.
+[v5]
 
---fClRb0lhqPwgRkrA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+In this version, HW saving functionality has been removed in this initial
+patchset. Macros for function calls are removed for readability. Strings for
+enums are created dynamically using the info structures. String lengths for
+controls are now all SNDRV_CTL_ELEM_ID_NAME_MAXLEN in length.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+[v6]
 
-iQEcBAEBAgAGBQJUY5nNAAoJECTWi3JdVIfQosQH/iUgsAautmHtwqHFhn90O+HR
-gnhMOeZPKMNAlH13d6N7NVvHdM9Vu4Zxm3C/16o7yijrlvd8Gjbb6sAnwpBnbGKk
-rS9E2Aj+O65myBLZzP8ZoBrkXwKIf6aX3C6QB9MwExIoiqTvxaV5wQfVWxxoj3DY
-0nsodW8dNX1MqRWXD0Jd9HkSWO6kqsFivKqW0zLrxDexs0lhruSSnzpTVEFwmIzx
-L/obbTwZKuCfeGAJAFK7zMtIFpk93dN/1jXVtwdvV3T2FjutqsmsoQ3UXvfVQ9fq
-SMrduuYAL+Zx6DQcyBkgD0hA5TPkhle6Uw2Ck7HEuJTN3n0vnxBw7GfByJAe2GM=
-=A1q6
------END PGP SIGNATURE-----
+Removed dead variables. Made names const char * const * again. Adjusted
+scarlett_ctl_enum_* functions to be a bit clearer. Used strlcpy where
+appropriate. Properly free two dimensional array.
 
---fClRb0lhqPwgRkrA--
+[v7]
 
---===============5059577043643652299==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Generate strings directly in enum_info function instead of dynamically
+allocating into another array and copying. Remove unnecessary initializations,
+kfrees and use kmalloc instead of kmalloc_array. Update comments to reflect
+current mixer functionality.
 
+Chris J Arges (4):
+  Revert "ALSA: usb-audio: Add quirk for Focusrite Scarlett
+  ALSA: usb-audio: Add private_data pointer to usb_mixer_elem_info
+  ALSA: usb-audio: make set_*_mix_values functions public
+  ALSA: usb-audio: Scarlett mixer interface for 6i6, 18i6, 18i8 and
+    18i20
 
---===============5059577043643652299==--
+ sound/usb/Makefile         |    1 +
+ sound/usb/mixer.c          |   34 +-
+ sound/usb/mixer.h          |    9 +
+ sound/usb/mixer_quirks.c   |   18 +-
+ sound/usb/mixer_scarlett.c | 1001 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/mixer_scarlett.h |    6 +
+ sound/usb/quirks-table.h   |   51 ---
+ 7 files changed, 1044 insertions(+), 76 deletions(-)
+ create mode 100644 sound/usb/mixer_scarlett.c
+ create mode 100644 sound/usb/mixer_scarlett.h
+
+-- 
+2.1.3
