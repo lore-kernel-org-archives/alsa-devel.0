@@ -1,62 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH][resend] of: Add vendor 2nd prefix for Asahi Kasei Corp
-Date: Thu, 13 Nov 2014 11:07:40 +0000
-Message-ID: <20141113110740.GE3815@sirena.org.uk>
-References: <5398AB07.4040304@wwwdotorg.org>
- <87sinbdk44.wl%kuninori.morimoto.gx@renesas.com>
- <878ulzx6hr.wl%kuninori.morimoto.gx@gmail.com>
- <20140922130026.GK3290@leverpostej>
- <CAMuHMdX22z97SbGS1HDiYfJ1PXxyEN2S8D7w4sr+4bUwD+mJZw@mail.gmail.com>
- <20140922132743.GM3290@leverpostej>
- <87y4rfhmgl.wl%kuninori.morimoto.gx@renesas.com>
- <1415845309.4269.6.camel@perches.com>
- <20141113025105.GA16652@verge.net.au>
- <87vbmjhj00.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2] ASoC: rt5645: add register setting for
+	TDM
+Date: Thu, 13 Nov 2014 11:34:49 +0000
+Message-ID: <20141113113449.GG3815@sirena.org.uk>
+References: <1415843722-9003-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uYGmg1LLWPQm165X"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87vbmjhj00.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Simon Horman <horms@verge.net.au>, Joe Perches <joe@perches.com>, Mark Rutland <mark.rutland@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Olof Johansson <olof@lixom.net>, Stephen Warren <swarren@wwwdotorg.org>, Rob Herring <robh@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>
+Content-Type: multipart/mixed; boundary="===============2398623972397812571=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7633F260487
+ for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 12:36:18 +0100 (CET)
+In-Reply-To: <1415843722-9003-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, yang.a.fang@intel.com, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---uYGmg1LLWPQm165X
+--===============2398623972397812571==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kw0rhxMYHDYgsix2"
+Content-Disposition: inline
+
+
+--kw0rhxMYHDYgsix2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 13, 2014 at 03:33:38AM +0000, Kuninori Morimoto wrote:
+On Thu, Nov 13, 2014 at 09:55:22AM +0800, Bard Liao wrote:
+> We need to set extra register to avoid a recording issue in TDM
+> mode.
 
-> > I think that what Morimoto-san wanted to say was something like this:
+applied, htanks.
 
-> >   I guess that removing the "ak" line from vendor-prefixes.txt would
-> >   be sufficient to cause checkpatch to generate a warning about
-> >   using the deprecated "ak" vendor prefix. Is that a good approach?
-
-> Yes, this is.
-> Thank you Simon, Sorry Joe.
-
-It'd be a bit nicer to be able to leave it there with a note saying it
-was legacy (if only so people don't try to add it back) but I don't mind
-too much.
-
---uYGmg1LLWPQm165X
+--kw0rhxMYHDYgsix2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUZJD7AAoJECTWi3JdVIfQTcwH/iqbf8HyIXkT9aD8GTzeQF+E
-QjfY2W/KOY6HGjGPuCixw2+tvHCWg6oUzFLti0q0q3VJctk/S3nvynGcMujndTGi
-HsLHd7JZ/2fJkr8Ov1g5DXX8BzbklfE9uG2YzBa9blFyqI24QO16VJlVRsTigarz
-osaC9BPvGu96leqvXWdpwJDK+rRef27kuMKnaeb+3tqpRUMCCmmn55iaxWYIIvwz
-jbVXYbTBm1gdNi7Nf411YTJ3Hwe463qFemX2/XgVe32qjX7HF7mrEmBHbjGHeAWz
-F0j3dmSEoRsFvQm0yG5LuMoYGQtFss0dd/AyE+rokv6ykGZdl/OJRgpWvCPpjms=
-=ts6R
+iQEcBAEBAgAGBQJUZJdYAAoJECTWi3JdVIfQk9EH/3twSCq+MjeToyL2R4/zcYRB
+I88NTjJQzaCyw88Wp8VSqqly2AzNO3ePEMXT9hcDN42vAMV8GOXWhl1PO50fXcMJ
+3veGAF3Zg/PfMyB+M49KO9cVfIS+wkTjIz7oceM54EWhFgI5ORl9AgStEnFk12ve
+riF64TuJhFVSNo1nTN/BUCEgjYDTExPmcQuce3OcGCccE7+gIp6ywzX2zaZoOUqk
+S1Liur46y8mYImTb1MxuLpCOeTLJbxXqVAu8FCrtAbuZ5kZxGvJ0tTeykNNyusZN
+ukrtSQEHV1JqG/Qh4oXO33urvTYhkLEID3MWuUT8/hCGTxgUvnge8xTI4k883Go=
+=P4Vg
 -----END PGP SIGNATURE-----
 
---uYGmg1LLWPQm165X--
+--kw0rhxMYHDYgsix2--
+
+--===============2398623972397812571==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2398623972397812571==--
