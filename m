@@ -1,43 +1,37 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] mfd: arizona: Add support for CS47L24
-Date: Thu, 13 Nov 2014 16:40:17 +0000
-Message-ID: <20141113164017.GA12443@opensource.wolfsonmicro.com>
-References: <20141111165227.GA24344@opensource.wolfsonmicro.com> <20141111171532.GA26106@opensource.wolfsonmicro.com> <20141113101228.GE24004@x1>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/6] Add support for the WM8280 and WM8281 codecs
+Date: Thu, 13 Nov 2014 17:50:40 +0000
+Message-ID: <1415901046-3391-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141113101228.GE24004@x1>
 Sender: linux-gpio-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+To: lee.jones@linaro.org, lgirdwood@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, linus.walleij@linaro.org, gnurou@gmail.com, broonie@kernel.org, tiwai@suse.de
+Cc: perex@perex.cz, sameo@linux.intel.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, ckeepax@opensource.wolfsonmicro.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 13, 2014 at 10:12:28AM +0000, Lee Jones wrote:
-> On Tue, 11 Nov 2014, Richard Fitzgerald wrote:
-> 
-> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> > ---
-> >  drivers/mfd/Kconfig              |    6 +
-> >  drivers/mfd/Makefile             |    3 +
-> >  drivers/mfd/arizona-core.c       |   91 ++-
-> >  drivers/mfd/arizona-irq.c        |   42 +-
-> >  drivers/mfd/arizona-spi.c        |    9 +
-> >  drivers/mfd/arizona.h            |    5 +
-> >  drivers/mfd/cs47l24-tables.c     | 1632 ++++++++++++++++++++++++++++++++++++++
-> 
-> No chance.
-> 
-> Please resend with these in a header file (like all of the others).
-> 
-> I'd also like Charles' Reviewed-by before accepting.
+This set of patches adds support for the WM8280 and WM8281
+codecs to the Wolfson Arizona drivers.
 
-This looks good to me. I don't quite follow what you are
-requesting with the header file? This still uses the header file
-for the registers but just defining which are available on this
-chip.
+Richard Fitzgerald (6):
+  mfd: arizona: add support for WM8280/WM8281
+  Documentation: devicetree: arizona: Add bindings for WM8280
+  regulator: arizona-micsupp: Add support for WM8280/WM8281
+  gpio: arizona: Add support for WM8280/WM8281
+  extcon: arizona: Add support for WM8280/WM8281
+  ASoC: arizona: Add support for WM8280/WM8281
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+ Documentation/devicetree/bindings/mfd/arizona.txt |   10 ++++++----
+ drivers/extcon/extcon-arizona.c                   |    1 +
+ drivers/gpio/gpio-arizona.c                       |    1 +
+ drivers/mfd/Kconfig                               |    5 +++--
+ drivers/mfd/arizona-core.c                        |   14 ++++++++++++--
+ drivers/mfd/arizona-i2c.c                         |    2 ++
+ drivers/mfd/arizona-irq.c                         |    1 +
+ drivers/mfd/arizona-spi.c                         |    2 ++
+ drivers/regulator/arizona-micsupp.c               |    1 +
+ include/linux/mfd/arizona/core.h                  |    1 +
+ sound/soc/codecs/arizona.c                        |    2 ++
+ 11 files changed, 32 insertions(+), 8 deletions(-)
 
-Thanks,
-Charles
+-- 
+1.7.2.5
+
