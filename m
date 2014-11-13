@@ -1,70 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5645: add register setting for
-	TDM
-Date: Thu, 13 Nov 2014 11:34:49 +0000
-Message-ID: <20141113113449.GG3815@sirena.org.uk>
-References: <1415843722-9003-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2398623972397812571=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7633F260487
- for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 12:36:18 +0100 (CET)
-In-Reply-To: <1415843722-9003-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, yang.a.fang@intel.com, lgirdwood@gmail.com, flove@realtek.com
+From: Krishna Mohan Dani <krishna.md@samsung.com>
+Subject: [PATCH 0/4 V3] Arndale: Adding Sound Machine Driver for ALC5631 Codec
+Date: Thu, 13 Nov 2014 17:44:20 +0530
+Message-ID: <1415880864-2246-1-git-send-email-krishna.md@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: kgene.kim@samsung.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+These patches add machine driver to instantiate I2S based realtek's
+ ALC5631 based sound card on Arndale board.
 
---===============2398623972397812571==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kw0rhxMYHDYgsix2"
-Content-Disposition: inline
+There are other variants of Audio Daughter Cards for Arndale
+Board for which support already exists but there is no support for
+Realtek's alc5631 codec based card hence support for ALC5631 based
+machine driver is being added.
 
+Most of the code has been pulled from insignal's git for Arndale and
+modified to suit the maintain syntax. Machine driver has been made
+DT compatible.
 
---kw0rhxMYHDYgsix2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes done:
+        - Removed ifdef for of_device_id structure as commented by Mark Brown
+        - Supporting both variants of device name:alc5631 and rt5631 as
+          commented by Mark Brown
+        - Added "return -EINVAL" if cpu_of_node or codec_of_node is not
+          found in dtb, as commented by Anil Kumar
+        - Removed i2s specific changes
+        - Added signed off of claude
+        - Removed CONFIG_OF check from rt5631.c codec driver and other changes
 
-On Thu, Nov 13, 2014 at 09:55:22AM +0800, Bard Liao wrote:
-> We need to set extra register to avoid a recording issue in TDM
-> mode.
+Krishna Mohan Dani (4):
+  ASoC: ALC5631/RT5631: Add device tree binding documentation
+  ASoC: Samsung: Add arndale_rt5631 machine driver
+  Sound: Kconfig: Adding the description of the codec
+  ASoC: rt5631: Adding Device Tree compatibility to Realtek's
+    ALC5631/RT5631 codec driver
 
-applied, htanks.
+ Documentation/devicetree/bindings/sound/rt5631.txt |   48 +++++++
+ sound/soc/codecs/Kconfig                           |    3 +-
+ sound/soc/codecs/rt5631.c                          |    9 ++
+ sound/soc/samsung/Kconfig                          |    6 +
+ sound/soc/samsung/Makefile                         |    2 +
+ sound/soc/samsung/arndale_rt5631.c                 |  150 ++++++++++++++++++++
+ 6 files changed, 217 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/rt5631.txt
+ create mode 100644 sound/soc/samsung/arndale_rt5631.c
 
---kw0rhxMYHDYgsix2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUZJdYAAoJECTWi3JdVIfQk9EH/3twSCq+MjeToyL2R4/zcYRB
-I88NTjJQzaCyw88Wp8VSqqly2AzNO3ePEMXT9hcDN42vAMV8GOXWhl1PO50fXcMJ
-3veGAF3Zg/PfMyB+M49KO9cVfIS+wkTjIz7oceM54EWhFgI5ORl9AgStEnFk12ve
-riF64TuJhFVSNo1nTN/BUCEgjYDTExPmcQuce3OcGCccE7+gIp6ywzX2zaZoOUqk
-S1Liur46y8mYImTb1MxuLpCOeTLJbxXqVAu8FCrtAbuZ5kZxGvJ0tTeykNNyusZN
-ukrtSQEHV1JqG/Qh4oXO33urvTYhkLEID3MWuUT8/hCGTxgUvnge8xTI4k883Go=
-=P4Vg
------END PGP SIGNATURE-----
-
---kw0rhxMYHDYgsix2--
-
---===============2398623972397812571==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2398623972397812571==--
+-- 
+1.7.9.5
