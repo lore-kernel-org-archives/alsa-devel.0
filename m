@@ -1,17 +1,14 @@
-From: Andrej Falout <andrej@falout.org>
-Subject: Re: Compressed audio support over HDMI
-Date: Thu, 13 Nov 2014 13:30:32 +1300
-Message-ID: <CAGzU1+H1qnK0H08J0hpftTeGb7aOjm1a5XQgS7ysVgMf6-3aSQ@mail.gmail.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH v2] ASoC: rt5645: add register setting for TDM
+Date: Thu, 13 Nov 2014 09:55:22 +0800
+Message-ID: <1415843722-9003-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f181.google.com (mail-lb0-f181.google.com
- [209.85.217.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FB712657DD
- for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 01:30:33 +0100 (CET)
-Received: by mail-lb0-f181.google.com with SMTP id l4so10467284lbv.12
- for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 16:30:33 -0800 (PST)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBEA5260430
+ for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 02:56:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,38 +18,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, yang.a.fang@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-> On 11/4/14, 3:40 PM, D K wrote:
-> > Hi,
-> >     I recently came across the compressed audio framework used with
-> ALSA-SOC.
-> > Can the framework be used to send compressed audio to HDMI driver?.Like
-> > using tinycompress from usespace .
-> > thanks,
->
-> HDMI already supports IEC modes when you can send AC3, DTS, etc payloads
-> without decoding. All you need to do is packetize the data in userspace
-> and send the result over the HDMI PCM device (and set some control bits
-> to help the receiver lock faster).
->
->
+We need to set extra register to avoid a recording issue in TDM
+mode.
 
-Apologies for jumping in on this subject, I'm wondering if anyone knows if
-this method is of sending audio over HDMI is aplocable to DSD streams too?
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+* Change regmap_update_bits(rt5645->regmap to snd_soc_update_bits(codec
+  since rt5645 struct is not in rt5645_set_tdm_slot
+---
+ sound/soc/codecs/rt5645.c | 5 ++++-
+ sound/soc/codecs/rt5645.h | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-The reasoning being that once audio is compressed, and encoded (AC3, DTS,
-etc), there is not much inherently "PCM" about it. It only becomes PCM
-again after it is decoded and uncompressed, right?
-
-In short, it is simply a bitstream, packetized and with "some control bits
-set". Which is exactly what I see in HDMI specs in regards to DSD.
-
-So, does anyone know of a reason why this same method wont work for sending
-DSD bitstream over HDMI?
-
-Any advice very much appreciated!
-
-Kind regards,
-Andrej Falout
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index d6298b3..82d705a 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2114,8 +2114,11 @@ static int rt5645_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	unsigned int val = 0;
+ 
+-	if (rx_mask || tx_mask)
++	if (rx_mask || tx_mask) {
+ 		val |= (1 << 14);
++		snd_soc_update_bits(codec, RT5645_BASS_BACK,
++			RT5645_G_BB_BST_MASK, RT5645_G_BB_BST_25DB);
++	}
+ 
+ 	switch (slots) {
+ 	case 4:
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index 82f681b..196daf0 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -1855,6 +1855,7 @@
+ #define RT5645_M_BB_HPF_R_SFT			6
+ #define RT5645_G_BB_BST_MASK			(0x3f)
+ #define RT5645_G_BB_BST_SFT			0
++#define RT5645_G_BB_BST_25DB			0x14
+ 
+ /* MP3 Plus Control 1 (0xd0) */
+ #define RT5645_M_MP3_L_MASK			(0x1 << 15)
+-- 
+1.8.1.1.439.g50a6b54
