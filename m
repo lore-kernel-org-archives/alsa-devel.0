@@ -1,7 +1,7 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/6] gpio: arizona: Add support for WM8280/WM8281
-Date: Thu, 13 Nov 2014 17:50:44 +0000
-Message-ID: <1415901046-3391-5-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/6] extcon: arizona: Add support for WM8280/WM8281
+Date: Thu, 13 Nov 2014 17:50:45 +0000
+Message-ID: <1415901046-3391-6-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1415901046-3391-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1415901046-3391-1-git-send-email-rf@opensource.wolfsonmicro.com>
@@ -12,20 +12,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- drivers/gpio/gpio-arizona.c |    1 +
+ drivers/extcon/extcon-arizona.c |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
-index fe369f5..9665d0a 100644
---- a/drivers/gpio/gpio-arizona.c
-+++ b/drivers/gpio/gpio-arizona.c
-@@ -116,6 +116,7 @@ static int arizona_gpio_probe(struct platform_device *pdev)
- 	switch (arizona->type) {
- 	case WM5102:
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index ba51588..3abe866 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -1149,6 +1149,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
+ 		}
+ 		break;
  	case WM5110:
 +	case WM8280:
- 	case WM8997:
- 		arizona_gpio->gpio_chip.ngpio = 5;
- 		break;
+ 		switch (arizona->rev) {
+ 		case 0 ... 2:
+ 			break;
 -- 
 1.7.2.5
