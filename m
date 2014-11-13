@@ -1,20 +1,15 @@
-From: Chris Pemberton <cjpembo@gmail.com>
-Subject: Re: possible snd_hda_intel jack-sensing issue with
- device 8086:1c20
-Date: Thu, 13 Nov 2014 00:07:12 -0600
-Message-ID: <54644A90.3030507@gmail.com>
-References: <546256C1.80604@gmail.com> <s5hegt8rh2m.wl-tiwai@suse.de>
+From: Craig McQueen <craig.mcqueen@beamcommunications.com>
+Subject: Low sample rates for SGTL5000 on i.MX28
+Date: Thu, 13 Nov 2014 17:34:13 +1100
+Message-ID: <546450E5.9090203@beamcommunications.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f178.google.com (mail-ob0-f178.google.com
- [209.85.214.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DAF2260452
- for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 07:07:15 +0100 (CET)
-Received: by mail-ob0-f178.google.com with SMTP id vb8so10261712obc.23
- for <alsa-devel@alsa-project.org>; Wed, 12 Nov 2014 22:07:13 -0800 (PST)
-In-Reply-To: <s5hegt8rh2m.wl-tiwai@suse.de>
+Received: from APAC01-SG1-obe.outbound.protection.outlook.com
+ (mail-sg1on0087.outbound.protection.outlook.com [134.170.132.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF47E260452
+ for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 07:34:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I opened up the machine and re-seated the connector to the motherboard.  
-The problem persists.
+I'm testing the 3.18 kernel for i.MX28 EVK, which has an SGTL5000 CODEC. 
+I notice that audio cannot be output at 8 kHz or 11.025 kHz, although 
+the SGTL5000 data sheet table 8 indicates this should be possible.
 
-The motherboard has two adjacent ports for front panel audio; one marked 
-"HD" and the second "AC97".  The single cable from the front audio jacks 
-has two connectors at the end; one marked "HD" and the other "AC97".
+If I try to play or record at 8 kHz or 11.025 kHz, I get an error message:
 
-If I connect the cable end marked "AC97" to the port marked "AC97" and 
-set the BIOS for "AC97 front panel", should I expect everything to 
-work?  I'd have HD audio at the rear ports and AC97 at the front?  That 
-would be fine as I only expect to be using headphones at the front from 
-time to time.
+     # aplay test_8k.wav
+     [ 6168.910201] mxs_evk_startup: Skipped programming wolfson codec
+     Playing WAVE 'test_8k.wav' : Signed 16 bit Little Endian, Rate 8000 
+Hz, Mono
+     [ 6168.941211] sgtl5000 0-000a: Invalid mclk frequency: 4.096MHz
+     [ 6168.947047] mxs-sgtl5000 sound.11: ASoC: machine hw_params 
+failed: -22
+     aplay: set_params:1145: Unable to install hw params:
+     ...
 
-Thanks
+For an 8 kHz sample rate, I get
 
-On 11/12/2014 01:52 AM, Takashi Iwai wrote:
-> At Tue, 11 Nov 2014 12:34:41 -0600,
-> Chris Pemberton wrote:
->> CentOS 7 x86_64
->> Asus P8Z68-V motherboard
->> Realtek ALC892
->> Gnome 3 desktop
->> nVidia GTX 770 with nVidia's driver
->>
->> With BIOS set to HD for both rear and front jacks, I experience the problems I reported here:
->>
->> https://bugs.freedesktop.org/show_bug.cgi?id=86158
->>
->> Basically, sound works, but the selected output keeps auto-magically flipping from Analog-Out to Headphones and back so fast you barely hear a click..
->>
->> Tried all sorts of snd_hda_intel module options and it didn't change.
->>
->> Finally changed BIOS to set front jacks to AC97 (left rear jacks as HD) and sound works great... but no jack sensing occurs at all...
->>
->> I can live without the jack sensing... but if anyone wants a stab at a fix, I'm game.
->>
->> I've got the HDA Analyzer downloaded and running if that helps.
->>
->> My device has id 8086:1c20
->>
->> Perhaps similar to this bug that was brought to my attention?
->>
->> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=1565cc358585be40608b46f18f7ac431a1aae2bc
->>
->> Output of alsa-info.sh is here:
->>
->> http://www.alsa-project.org/db/?f=8cf116b0bc230524bcfa7285b2adb698078d4224
-> Could you check the pin connection again?  The symptom appears more like
-> a hardware problem.
->
->
-> Takashi
+     Invalid mclk frequency: 4.096MHz
+
+For 11.025 kHz sample rate, I get
+
+     Invalid mclk frequency: 5.644MHz
+
+Looking in the code (/sound/soc/mxs/mxs-sgtl5000c), I see:
+
+          /* Sgtl5000 sysclk should be >= 8MHz and <= 27M */
+          if (mclk < 8000000 || mclk > 27000000) {
+               dev_err(codec_dai->dev, "Invalid mclk frequency: 
+%u.%03uMHz\n",
+                    mclk / 1000000, mclk / 1000 % 1000);
+               return -EINVAL;
+          }
+
+But a sysclk constraint of 8 to 27 MHz only applies if the supplied 
+clock is asynchronous to the frame clock, and the internal clock is 
+being generated by PLL (which it's not in this case). So I tried 
+removing this constraint. But I found that from codecs/sgtl5000.c, I 
+would get the error "PLL not supported in slave mode". I tried changing 
+the switch (sgtl5000->sysclk / sys_fs) to switch (sgtl5000->sysclk / 
+frame_rate), on the basis of the SGTL5000 data sheet table 8. But the 
+resulting audio sounds funny (frequency shifted).
+
+Looking in the SGTL5000 data sheet table 18, it seems unclear whether 
+the MCLK_FREQ field is a multiple of the sample rate (Fs) or the 
+internal system sample rate SYS_FS. It seems that there is some 
+inconsistency in the interpretation of this in codecs/sgtl5000.c 
+compared to mxs/mxs-sgtl5000.c.
+
+What is the correct interpretation of the SGTL5000 data sheet MCLK_FREQ 
+field, and can the mxs-sgtl5000 driver be fixed to support 8 kHz and 
+11.025 kHz sample rates?
+
+-- 
+Craig McQueen
