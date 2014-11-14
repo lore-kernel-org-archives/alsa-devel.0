@@ -1,82 +1,57 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v7.1 11/19] OMAPDSS: hdmi: Make
- hdmi_mode_has_audio() more user friedly
-Date: Fri, 14 Nov 2014 17:05:20 +0200
-Message-ID: <54661A30.3010708@ti.com>
-References: <cover.1415803064.git.jsarha@ti.com>
- <8047b50c76efecd72e7219f7871c59cc4a8ee5f5.1415803065.git.jsarha@ti.com>
- <5466139E.5040308@mentor.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 01/15] mfd: add new driver for Sharp LoCoMo
+Date: Fri, 14 Nov 2014 15:10:00 +0000
+Message-ID: <20141114151000.GC3815@sirena.org.uk>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+ <1414454528-24240-2-git-send-email-dbaryshkov@gmail.com>
+ <CACRpkdbW3NA00zMZr216ZeZpgVkXwKUo30biTVd5kcHKGGtkHg@mail.gmail.com>
+ <CALT56yNX8v4mZn=o1ZoVLHPmg6wq0dgFNowpqNuFtU=eCc+d8w@mail.gmail.com>
+ <CACRpkdaKUZjbSEH75M9xudTF9HefwOCVEe5otv9-9f2UG8=hVg@mail.gmail.com>
+ <CALT56yM8B3ffYb0=EZVbRRGDZSxMci2sRp9XVtjQuLa5abN+cg@mail.gmail.com>
+ <20141105202405.GJ8509@sirena.org.uk>
+ <CALT56yOtjNbYOWM4ba5yP8pz7bNLY5BWpkkpfmv5QZU-7Y5u_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 57C0D260524
- for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 16:05:25 +0100 (CET)
-In-Reply-To: <5466139E.5040308@mentor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0hFlL8mdTQLjOaTk"
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CALT56yOtjNbYOWM4ba5yP8pz7bNLY5BWpkkpfmv5QZU-7Y5u_g@mail.gmail.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/14/2014 04:37 PM, Vladimir Zapolskiy wrote:
-> Hi Jyri,
->
-> On 12.11.2014 16:41, Jyri Sarha wrote:
->> Signed-off-by: Jyri Sarha <jsarha@ti.com>
->> ---
->>   drivers/video/fbdev/omap2/dss/hdmi.h |    4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev/omap2/dss/hdmi.h
->> index a6e08ff..6d129f2 100644
->> --- a/drivers/video/fbdev/omap2/dss/hdmi.h
->> +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
->> @@ -345,9 +345,9 @@ void hdmi_wp_audio_config_format(struct hdmi_wp_data *wp,
->>   		struct hdmi_audio_format *aud_fmt);
->>   void hdmi_wp_audio_config_dma(struct hdmi_wp_data *wp,
->>   		struct hdmi_audio_dma *aud_dma);
->> -static inline bool hdmi_mode_has_audio(int mode)
->> +static inline bool hdmi_mode_has_audio(struct hdmi_config *cfg)
->>   {
->> -	return mode == HDMI_HDMI ? true : false;
->> +	return cfg->hdmi_dvi_mode == HDMI_HDMI ? true : false;
->>   }
->>
->>   /* HDMI DRV data */
->>
->
-> would it be possible for you to rearrange the changes preserving the
-> following sequence?
->
-> 1) 13/19
-> 2) 15/19
-> 3) 11/19
-> 4) 14/19
-> 5) 16/19
->
 
-Sure, I can do that. Everything should be fine in that order too.
+--0hFlL8mdTQLjOaTk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Otherwise I'm worried that someone's git rebase may fail.
->
+On Fri, Nov 14, 2014 at 04:47:00PM +0400, Dmitry Eremin-Solenikov wrote:
 
-But do not follow why. Did you notice that 10/19 removes the config 
-options that enable the pieces of code that are deleted in 13/19 and 
-15/19. IOW, the code that uses hdmi_mode_has_audio() (and would become 
-broken by 11/19) is already disabled by 10/19. Git-wise I see no problem 
-either.
+> I'm actually looking at the regulator interface. Since this DAC serves mostly
+> like a (semi-)constant voltage interface, would it be rather logical to use
+> regulator subsystem to drive it?
 
-I'll rearrange the patches if you still insist there is a problem with 
-current order, but I would like to understand why.
+Possibly...  it's mostly a function of what the consumers of the
+functionality look like - if that code looks weird calling into the
+regulator API then it's bad, if that code looks OK it's fine.  I haven't
+looked at the hardware at all so don't have strong feelings either way
+so long as the result looks tasteful.
 
-Best regards,
-Jyri
+--0hFlL8mdTQLjOaTk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUZhtHAAoJECTWi3JdVIfQ9u0H/0MiTrLksAi3U2z6tRBVRifd
+8X7vBDcAuPO8IdYuNRiUzB8b6jaDmnAmUc5lrJ4rrAwhrhMKk6I+wNNTAvXXWSRz
+FVjX3yHZomhQ1+Jlz98zcFSnEVxxHpJpN3pRXKL7BN5NTd7fedq5mvdN6899KRIa
+VQ8ByRl5sA8PkMvHN85dT+ECCQbTNQ8Szw96k5/LIRLAR+53rb8oB4y6d23Sqbvh
+mbXzzzjj0ap0LypK8XP7pNrXage5XVY/Y7bLusETEgdhR2Bxkc3YzlhgKY8/gHo4
+x3xdPJAUB/KUQxxEchL/wysUIlC1P8K5Tj29lyuhfztFM9RFxkpnyp8CoCusZtw=
+=Pl/n
+-----END PGP SIGNATURE-----
+
+--0hFlL8mdTQLjOaTk--
