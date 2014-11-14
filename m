@@ -1,24 +1,165 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 4/6] gpio: arizona: Add support for WM8280/WM8281
-Date: Fri, 14 Nov 2014 11:17:34 +0100
-Message-ID: <CACRpkdaioWGtJ6HAOK629Z166uvnD22TkdTEgGpQ7Veu4PpxiQ@mail.gmail.com>
-References: <1415901046-3391-1-git-send-email-rf@opensource.wolfsonmicro.com>
-	<1415901046-3391-5-git-send-email-rf@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <1415901046-3391-5-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Lee Jones <lee.jones@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, MyungJoo Ham <myungjoo.ham@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, Alexandre Courbot <gnurou@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, "perex@perex.cz" <perex@perex.cz>, Samuel Ortiz <sameo@linux.intel.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, patches@opensource.wolfsonmicro.com, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH v2 1/3] ALSA: ice1712: remove unneeded return statement
+Date: Fri, 14 Nov 2014 16:09:05 +0530
+Message-ID: <1415961547-10330-1-git-send-email-sudipm.mukherjee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 13, 2014 at 6:50 PM, Richard Fitzgerald
-<rf@opensource.wolfsonmicro.com> wrote:
+the functions:
+        snd_ice1712_akm4xxx_build_controls
+        snd_ice1712_build_pro_mixer
+        snd_ctl_add
+        snd_ak4114_build
+        prodigy192_ak4114_init
+        snd_ak4113_build
+are all returning either 0 or a negetive error value.
+so we can easily remove the check for a negative value and return
+the value instead.
 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+change in v2: returning the return value of the function directly.
 
-Yours,
-Linus Walleij
+ sound/pci/ice1712/hoontech.c   |  6 +-----
+ sound/pci/ice1712/ice1712.c    | 19 ++++++-------------
+ sound/pci/ice1712/ice1724.c    |  7 ++-----
+ sound/pci/ice1712/juli.c       |  5 +----
+ sound/pci/ice1712/prodigy192.c |  4 +---
+ sound/pci/ice1712/quartet.c    |  5 +----
+ 6 files changed, 12 insertions(+), 34 deletions(-)
+
+diff --git a/sound/pci/ice1712/hoontech.c b/sound/pci/ice1712/hoontech.c
+index 59e37c5..a40001c 100644
+--- a/sound/pci/ice1712/hoontech.c
++++ b/sound/pci/ice1712/hoontech.c
+@@ -309,11 +309,7 @@ static int snd_ice1712_value_init(struct snd_ice1712 *ice)
+ 		return err;
+ 
+ 	/* ak4524 controls */
+-	err = snd_ice1712_akm4xxx_build_controls(ice);
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
++	return snd_ice1712_akm4xxx_build_controls(ice);
+ }
+ 
+ static int snd_ice1712_ez8_init(struct snd_ice1712 *ice)
+diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
+index 48a0c33..5975334 100644
+--- a/sound/pci/ice1712/ice1712.c
++++ b/sound/pci/ice1712/ice1712.c
+@@ -1295,10 +1295,7 @@ static int snd_ice1712_pcm_profi(struct snd_ice1712 *ice, int device, struct snd
+ 			return err;
+ 	}
+ 
+-	err = snd_ice1712_build_pro_mixer(ice);
+-	if (err < 0)
+-		return err;
+-	return 0;
++	return snd_ice1712_build_pro_mixer(ice);
+ }
+ 
+ /*
+@@ -1545,10 +1542,9 @@ static int snd_ice1712_ac97_mixer(struct snd_ice1712 *ice)
+ 			dev_warn(ice->card->dev,
+ 				 "cannot initialize ac97 for consumer, skipped\n");
+ 		else {
+-			err = snd_ctl_add(ice->card, snd_ctl_new1(&snd_ice1712_mixer_digmix_route_ac97, ice));
+-			if (err < 0)
+-				return err;
+-			return 0;
++			return snd_ctl_add(ice->card,
++			snd_ctl_new1(&snd_ice1712_mixer_digmix_route_ac97,
++				     ice));
+ 		}
+ 	}
+ 
+@@ -2497,11 +2493,8 @@ static int snd_ice1712_build_controls(struct snd_ice1712 *ice)
+ 	err = snd_ctl_add(ice->card, snd_ctl_new1(&snd_ice1712_mixer_pro_volume_rate, ice));
+ 	if (err < 0)
+ 		return err;
+-	err = snd_ctl_add(ice->card, snd_ctl_new1(&snd_ice1712_mixer_pro_peak, ice));
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
++	return snd_ctl_add(ice->card,
++			   snd_ctl_new1(&snd_ice1712_mixer_pro_peak, ice));
+ }
+ 
+ static int snd_ice1712_free(struct snd_ice1712 *ice)
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index f633e3b..ea53167 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -2497,11 +2497,8 @@ static int snd_vt1724_build_controls(struct snd_ice1712 *ice)
+ 			return err;
+ 	}
+ 
+-	err = snd_ctl_add(ice->card, snd_ctl_new1(&snd_vt1724_mixer_pro_peak, ice));
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
++	return snd_ctl_add(ice->card,
++			   snd_ctl_new1(&snd_vt1724_mixer_pro_peak, ice));
+ }
+ 
+ static int snd_vt1724_free(struct snd_ice1712 *ice)
+diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
+index 7a6c078..a1536c1 100644
+--- a/sound/pci/ice1712/juli.c
++++ b/sound/pci/ice1712/juli.c
+@@ -475,11 +475,8 @@ static int juli_add_controls(struct snd_ice1712 *ice)
+ 		return err;
+ 
+ 	/* only capture SPDIF over AK4114 */
+-	err = snd_ak4114_build(spec->ak4114, NULL,
++	return snd_ak4114_build(spec->ak4114, NULL,
+ 			ice->pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream);
+-	if (err < 0)
+-		return err;
+-	return 0;
+ }
+ 
+ /*
+diff --git a/sound/pci/ice1712/prodigy192.c b/sound/pci/ice1712/prodigy192.c
+index 1eb151aa..3919aed 100644
+--- a/sound/pci/ice1712/prodigy192.c
++++ b/sound/pci/ice1712/prodigy192.c
+@@ -758,10 +758,8 @@ static int prodigy192_init(struct snd_ice1712 *ice)
+ 			"AK4114 initialized with status %d\n", err);
+ 	} else
+ 		dev_dbg(ice->card->dev, "AK4114 not found\n");
+-	if (err < 0)
+-		return err;
+ 
+-	return 0;
++	return err;
+ }
+ 
+ 
+diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
+index d4caf9d..6f55e02 100644
+--- a/sound/pci/ice1712/quartet.c
++++ b/sound/pci/ice1712/quartet.c
+@@ -833,11 +833,8 @@ static int qtet_add_controls(struct snd_ice1712 *ice)
+ 	if (err < 0)
+ 		return err;
+ 	/* only capture SPDIF over AK4113 */
+-	err = snd_ak4113_build(spec->ak4113,
++	return snd_ak4113_build(spec->ak4113,
+ 			ice->pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream);
+-	if (err < 0)
+-		return err;
+-	return 0;
+ }
+ 
+ static inline int qtet_is_spdif_master(struct snd_ice1712 *ice)
+-- 
+1.8.1.2
