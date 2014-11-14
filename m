@@ -1,71 +1,80 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ASoC: rt5670 : Add ACPI match ID for Intel
-	CHT/BSW platforms
-Date: Fri, 14 Nov 2014 15:51:34 +0800
-Message-ID: <7008ba4e47e5b26da2114bfbc65b634e4c409212.1415951477.git.mengdong.lin@intel.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: ice1712: remove unused variable
+Date: Fri, 14 Nov 2014 13:49:07 +0530
+Message-ID: <20141114081907.GA6796@sudip-PC>
+References: <1415891657-7244-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <1415891657-7244-2-git-send-email-sudipm.mukherjee@gmail.com>
+ <s5h1tp7jfay.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 9385126650F
- for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 08:45:09 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, bardliao@realtek.com
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h1tp7jfay.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+On Thu, Nov 13, 2014 at 04:22:45PM +0100, Takashi Iwai wrote:
+> At Thu, 13 Nov 2014 20:44:17 +0530,
+> Sudip Mukherjee wrote:
+> > 
+<snip>
+> >  	if (snd_pcm_format_width(runtime->format) == 16)
+> >  		tmp &= ~0x04;
+> > diff --git a/sound/pci/ice1712/revo.c b/sound/pci/ice1712/revo.c
+> > index 1112ec1..1f40dab 100644
+> > --- a/sound/pci/ice1712/revo.c
+> > +++ b/sound/pci/ice1712/revo.c
+> > @@ -481,7 +481,6 @@ static int ap192_ak4114_init(struct snd_ice1712 *ice)
+> >  	static const unsigned char ak4114_init_txcsb[] = {
+> >  		0x41, 0x02, 0x2c, 0x00, 0x00
+> >  	};
+> > -	int err;
+> >  
+> >  	struct revo51_spec *spec;
+> >  	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+> > @@ -489,11 +488,9 @@ static int ap192_ak4114_init(struct snd_ice1712 *ice)
+> >  		return -ENOMEM;
+> >  	ice->spec = spec;
+> >  
+> > -	err = snd_ak4114_create(ice->card,
+> > -				 ap192_ak4114_read,
+> > -				 ap192_ak4114_write,
+> > -				 ak4114_init_vals, ak4114_init_txcsb,
+> > -				 ice, &spec->ak4114);
+> > +	snd_ak4114_create(ice->card, ap192_ak4114_read, ap192_ak4114_write,
+> > +			  ak4114_init_vals, ak4114_init_txcsb, ice,
+> > +			  &spec->ak4114);
+> 
+> IMO, this is rather a bug.  It should return the error (with a proper
+> error handling).
+> 
+error handling is already there. ap192_ak4114_init is being called by revo_init,
+where the return value is being checked. revo_init is the callback function of
+chip_init, so if we return the error value here then chip_init will fail.
+but since the author commented "error ignored; it's no fatal error", so i also
+thought of ignoring the error.
+I will send you a revised patch.
 
-This patch adds the ACPI match ID for rt5670/5672 codec.
-So on Intel CherryTrail/Braswell platforms, the codec can be enumerated from
-ACPI and depends on ACPI to get platform-specific info and power saving.
+thanks
+sudip
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Reviewed-by: Bard Liao <bardliao@realtek.com>
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index c4c42d5..fd32501 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -16,6 +16,7 @@
- #include <linux/pm.h>
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
-+#include <linux/acpi.h>
- #include <linux/spi/spi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -2503,6 +2504,14 @@ static const struct i2c_device_id rt5670_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt5670_i2c_id);
- 
-+#ifdef CONFIG_ACPI
-+static struct acpi_device_id rt5670_acpi_match[] = {
-+	{ "10EC5670", 0},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, rt5670_acpi_match);
-+#endif
-+
- static int rt5670_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-@@ -2691,6 +2700,7 @@ static struct i2c_driver rt5670_i2c_driver = {
- 	.driver = {
- 		.name = "rt5670",
- 		.owner = THIS_MODULE,
-+		.acpi_match_table = ACPI_PTR(rt5670_acpi_match),
- 	},
- 	.probe = rt5670_i2c_probe,
- 	.remove   = rt5670_i2c_remove,
--- 
-1.9.1
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
+> >  	/* AK4114 in Revo cannot detect external rate correctly.
+> >  	 * No reason to stop capture stream due to incorrect checks */
+> >  	spec->ak4114->check_flags = AK4114_CHECK_NO_RATE;
+> > -- 
+> > 1.8.1.2
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
