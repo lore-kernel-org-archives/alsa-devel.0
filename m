@@ -1,45 +1,82 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 1/2] spi: Fix mapping from vmalloc-ed buffer to scatter
-	list
-Date: Fri, 14 Nov 2014 16:06:07 +0000
-Message-ID: <20141114160607.GB12443@opensource.wolfsonmicro.com>
-References: <1415979645-26264-1-git-send-email-ckeepax@opensource.wolfsonmicro.com> <20141114155222.GF3815@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] Question on Compressed offload session
+Date: Fri, 14 Nov 2014 10:28:54 -0600
+Message-ID: <54662DC6.7070302@linux.intel.com>
+References: <85499f52ebd29581bf58b9cafbae6864.squirrel@www.codeaurora.org> <5464CDE2.2070406@linux.intel.com> <fd33d16f31eb73cc6f0585c192601d9e.squirrel@www.codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20141114155222.GF3815-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <fd33d16f31eb73cc6f0585c192601d9e.squirrel@www.codeaurora.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: gsantosh@codeaurora.org
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>, devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, grant.likely@linaro.org, alsa-devel-bounces@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 14, 2014 at 03:52:22PM +0000, Mark Brown wrote:
-> On Fri, Nov 14, 2014 at 03:40:44PM +0000, Charles Keepax wrote:
-> > We can only use page_address on memory that has been mapped using kmap,
-> > when the buffer passed to the SPI has been allocated by vmalloc the page
-> > has not necessarily been mapped through kmap. This means sometimes
-> > page_address will return NULL causing the pointer we pass to sg_set_buf
-> > to be invalid.
-> 
-> Hrm, this is a bug in the mxs driver (which is where we copied the core
-> code from) - care to fix that too?
+On 11/13/14, 10:08 PM, gsantosh@codeaurora.org wrote:
+>> On 11/12/14, 9:02 PM, gsantosh@codeaurora.org wrote:
+>>> Hi All,
+>>>
+>>> The Question is for the compressed offload session.
+>>>
+>>> For a generic codec driver during the startup function it will set some
+>>> of
+>>> the hw_constraints rule similarly like this.
+>>>
+>>>           snd_pcm_hw_constraint_list(substream->runtime, 0,
+>>>                       SNDRV_PCM_HW_PARAM_RATE,
+>>>                       &constraints_12_24);
+>>>
+>>> pcm_lib.c will try to add the rule to the runtime structure by accessing
+>>> the pointers which will be initialized during opening of the session,
+>>> as The Constraints added by the codec driver will be updated in the
+>>>
+>>> struct snd_pcm_hw_constraints of runtime structure which will be part of
+>>> substream handle.
+>>>
+>>> But for the compressed offload I do not see the initialization done for
+>>> HW
+>>> constraints, as done in pcm session
+>>>
+>>> 2092int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
+>>> 2093			   struct file *file,
+>>> 2094			   struct snd_pcm_substream **rsubstream)
+>>>
+>>> most of the existing drivers which has the hw_constraint_list code will
+>>> not be applicable for compress offload session, how to solve this?
+>>
+>> You can't directly link physical output/input with the decoder/encoder
+>> in general.
+>> For decoders, the sample-rate may not always be known ahead of time,
+>> e.g. with AAC-SBR implicit signaling. There is no way to add constraints
+>> on open, there is an assumption that a sample-rate converter is part of
+>> the chain to take care of the difference between the output of the
+>> offloaded decoder and the back-end actual sampling frequency (same with
+>> number of channels and bit-width btw).
+>> Likewise if you encode the frequency may not be the same as what the
+>> backend provides and some SRC might be needed.
+>> -Pierre
+>>
+>
+> I Agree we cannot have a direct link between physical output  / input with
+> decoder / encoder, during compressed playback.
+> My concern here is, if we have a legacy codec driver which is used for the
+> PCM out, and in the start up of this codec driver it is adding
+> hw_constraints list, now the same codec driver is used for the compressed
+> session FE or PCM session FE,
+> If the routing is such that compressed FE -> codec the hw_constraints
+> added by this driver is not valid here,
+> and legacy drivers needs to be changed,
+> Now the question comes how to change this drivers?
+> I can think of following things
+> if the routing is done for Compressed FE -> codec
+>
+> 1) in Codec driver avoid adding hw_constraint during startup if compressed
+> session is routed, this recommend for codec driver to know that compress
+> session is routed to codec which I feel not the correct way to handle this
+>
+> I was checking how to handle this situation in much better way.
 
-Yeah no problem, won't be able to test it, but should be a fairly
-trivial change and hopefully someone else can test.
+What exactly do you call a 'legacy codec'? If there is a DAI i am not 
+sure I understand the problem.
 
-> 
-> > As we only call page_address such that we can pass a virtual address to
-> 
-> s/such/so/
-
-Will ping a respin and include the mxs fixup too.
-
-Thanks,
-Charles
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
