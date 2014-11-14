@@ -1,111 +1,64 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio
- support
-Date: Fri, 14 Nov 2014 11:59:16 +0100
-Message-ID: <20141114115916.6af5adce@armhf>
-References: <cover.1415803064.git.jsarha@ti.com>
-	<20141112222344.GU3815@sirena.org.uk>
-	<54646648.5030807@ti.com>
-	<20141113101738.6338bb1c@armhf>
-	<54648149.9070104@ti.com>
-	<20141113160002.7a1157a5@armhf>
-	<5464D1E6.4050508@ti.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH v2 2/3] ALSA: ice1712: consider error value
+Date: Fri, 14 Nov 2014 16:29:15 +0530
+Message-ID: <20141114105915.GA10385@sudip-PC>
+References: <1415961547-10330-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <1415961547-10330-2-git-send-email-sudipm.mukherjee@gmail.com>
+ <s5h61eihxkc.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5464D1E6.4050508@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: Mark Brown <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h61eihxkc.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 Nov 2014 17:44:38 +0200
-Tomi Valkeinen <tomi.valkeinen@ti.com> wrote:
-	[snip]
-> >> a) Always keep the audio device operational, no matter what is the
-> >> status of the video side. How should this work if the HDMI videomo=
-de or
-> >> the HDMI monitor does not support audio? Is it desirable that the
-> >> userspace has no idea that the audio is not actually going anywher=
-e?
-> >>
-> >> b) Remove the audio device when audio support is not available. Th=
-is
-> >> kind of makes sense, as, well, there's no possibility for audio ou=
-tput.
-> >> But maybe this is not how linux sound devices are supposed to beha=
-ve?
-> >>
-> >> c) Return errors when playback is attempted when audio support is =
-not
-> >> available. Again, this kind of makes sense, as audio playback is n=
-ot
-> >> possible. But maybe this is also not how audio devices generally w=
-ork.
-> >>
-> >> Jyri, were there some other options we discussed?
-> >>
-> >> Currently, the OMAP HDMI version does c). It's the easiest solutio=
-n for us. =20
-> >=20
-> > Same for me, but checking the audio capability is done on audio str=
-eaming
-> > start only. =20
->=20
-> Hmm, I understood you have option a)? You said "I even let audio
-> streaming start when the HDMI cable is
-> disconnected".
+On Fri, Nov 14, 2014 at 11:43:31AM +0100, Takashi Iwai wrote:
+> At Fri, 14 Nov 2014 16:09:06 +0530,
+> Sudip Mukherjee wrote:
+> > 
+> > earlier we were ignoring the return value of snd_ak4114_create and
+> > always returning 0.
+> > now we are returning the actual status. revo_init is calling this
+> > function, and revo_init is checking the return value.
+> 
+> It's not enough only to change there.  The problem is that
+> spec->ak4114 is dereferenced after snd_ak4114_create(), and this might
+> be NULL.  So it should return the error before that point.
+> 
 
-The option a) is the one of the patch, but I am moving towards option c=
-).
+oops .. i should have looked carefully.
 
-> With "audio support is not available" I mean also the case when the
-> cable is not connected, as then we don't have EDID information, and t=
-hus
-> we don't have a HDMI monitor with audio support on the other end.
+one more thought:
+shouldn't we also do a kfree(spec) on error ?
 
-What I was saying is: when the cable is connected, all audio/video
-parameters are known. Then, when the cable is disconnected, there is
-no reason, a priori, to change these parameters, and audio/video
-streaming may continue. The problem might be raised later when an other
-monitor with different parameters will be connected.
+thanks
+sudip
 
-> So to clarify, our driver only has "audio support available" if:
-> - we successfully read EDID
-> - EDID shows it's a HDMI monitor
-> - EDID shows it has audio support for the format we support (this we
-> don't actually do yet)
->=20
-> Otherwise we default to DVI, which means no audio.
->=20
-> If, at any point, the situation changes to "no audio support availabl=
-e",
-> the audio playback is aborted and starting new audio playback fails.
-	[snip]
-
-So, to summarize, you need the information 'audio support available' on
-the audio side.
-
-It should not be difficult to export a function in the generic HDMI
-driver for this job. This function would have the following arguments:
-
-- device (child device of the HDMI transmitter)
-- pin (output widget name)
-- status (enable/disable)
-
-and would:
-
-- set the pin status so that the HDMI output would be included or not
-  in the audio path, and
-
-- abort audio streaming on disabling audio.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> Takashi
+> 
+> 
+> > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> > ---
+> >  sound/pci/ice1712/revo.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/pci/ice1712/revo.c b/sound/pci/ice1712/revo.c
+> > index 1112ec1..2835196 100644
+> > --- a/sound/pci/ice1712/revo.c
+> > +++ b/sound/pci/ice1712/revo.c
+> > @@ -498,7 +498,7 @@ static int ap192_ak4114_init(struct snd_ice1712 *ice)
+> >  	 * No reason to stop capture stream due to incorrect checks */
+> >  	spec->ak4114->check_flags = AK4114_CHECK_NO_RATE;
+> >  
+> > -	return 0; /* error ignored; it's no fatal error */
+> > +	return err;
+> >  }
+> >  
+> >  static int revo_init(struct snd_ice1712 *ice)
+> > -- 
+> > 1.8.1.2
+> > 
