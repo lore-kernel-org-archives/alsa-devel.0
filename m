@@ -1,81 +1,80 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5670 : Add ACPI match ID for Intel
- CHT/BSW platforms
-Date: Fri, 14 Nov 2014 10:34:31 +0000
-Message-ID: <20141114103431.GS3815@sirena.org.uk>
-References: <7008ba4e47e5b26da2114bfbc65b634e4c409212.1415951477.git.mengdong.lin@intel.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH v4] ALSA: ice1712: consider error value
+Date: Fri, 14 Nov 2014 19:35:06 +0530
+Message-ID: <20141114140506.GA16619@sudip-PC>
+References: <1415968941-14181-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <s5h389lj4yg.wl-tiwai@suse.de>
+ <20141114134502.GA16479@sudip-PC>
+ <s5hvbmhhp30.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3260766490833410262=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A6AF1266614
- for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 15:03:23 +0100 (CET)
-Received: from cpc11-sgyl31-2-0-cust672.sgyl.cable.virginm.net
- ([94.175.94.161] helo=debutante)
- by mezzanine.sirena.org.uk with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
- (Exim 4.80) (envelope-from <broonie@sirena.org.uk>)
- id 1XpHT7-00025w-ND
- for alsa-devel@alsa-project.org; Fri, 14 Nov 2014 14:03:22 +0000
-In-Reply-To: <7008ba4e47e5b26da2114bfbc65b634e4c409212.1415951477.git.mengdong.lin@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hvbmhhp30.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Nov 14, 2014 at 02:46:43PM +0100, Takashi Iwai wrote:
+> At Fri, 14 Nov 2014 19:15:02 +0530,
+> Sudip Mukherjee wrote:
+> > 
+> > On Fri, Nov 14, 2014 at 02:18:31PM +0100, Takashi Iwai wrote:
+> > > At Fri, 14 Nov 2014 18:12:21 +0530,
+> > > Sudip Mukherjee wrote:
+> > > > 
+> > > > earlier we were ignoring the return value of snd_ak4114_create and
+> > > > always returning 0.
+> > > > now we are returning the actual status. revo_init is calling this
+> > > > function, and revo_init is checking the return value.
+> > > > 
+> > > > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> > > > ---
+> > > > 
+> > > > change in v3: spec->ak4114 is now dereferenced if we dont get an
+> > > > error value from snd_ak4114_create.
+> > > > 
+> > > > change in v4: error value returned according to coding style.
+> > > 
+> > > Applied but I had to fix your From address (two others, too).  That
+> > > doesn't match with your sign-off.  Please fix your git config to have
+> > > a proper author address as same as sign-off.
+> > 
+> > i know it does not match. Previously Dan Carpenter also told me the same thing, and I sent a patch from my corporate account. You can find reference of that conversation here https://lkml.org/lkml/2014/9/3/473 
+> > 
+> > copying some part from there :
+> > "I have given strict DMARC check for the corporate mail server. DMARC = domain based message authentication.
+> > So the mail i sent reached all the list subscriber from a different server than our designated server,
+> > and as a result it has been marked as spam in many places. I have already received a few complaints regarding that."
+> > 
+> > since i do use office resources for patches (though it is not part of my job), so i should atleast put Signed-off to the patches i send. You will see all my patches having different Signed-off and different from adderess.
+> > 
+> > again copying from the previous conversation:
+> > "Is there any other way that i send the patch from my personal account, and use my corporate mail in Signed-off-by ... "
+> 
+> You just need to put another "From: xxx" in the patch itself.  Then
+> git will take it as the author address.
+> 
+i did that also. reference : https://lkml.org/lkml/2014/9/2/473
 
---===============3260766490833410262==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="uQ3geqO/wycIFb3P"
-Content-Disposition: inline
+and reply from Dan Carpenter at: https://lkml.org/lkml/2014/9/3/135
 
+copying from reply of  Dan Carpenter:
+"I really would prefer if you just figured out your email settings so
+this isn't needed.  The From: header is mostly used for people
+forwarding patches from other people.  We have allowed people to use
+the From header like this if they can't get their corporate email
+configured properly but I try to discorage it.  If everyone starts using
+>From headers like this then it becomes a pain to deal with."
 
---uQ3geqO/wycIFb3P
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+:(
 
-On Fri, Nov 14, 2014 at 03:51:34PM +0800, mengdong.lin@intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@intel.com>
->=20
-> This patch adds the ACPI match ID for rt5670/5672 codec.
-> So on Intel CherryTrail/Braswell platforms, the codec can be enumerated f=
-rom
-> ACPI and depends on ACPI to get platform-specific info and power saving.
+for my next patches to you i will add the extra "From:" in the patch.
+next is that pending one of korg1212.
 
-Applied, thanks.
+thanks
+sudip
 
---uQ3geqO/wycIFb3P
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUZdq3AAoJECTWi3JdVIfQ/MgH/1Rl8Zso/3RwkSF2iI8TIqvD
-KD46zDlqZmGr+umhl6zcatXDZQXxCUxHFg5jln9papTdsfAdYEzGVqAz4xaFIHby
-0sXymzoJkYxcmnyiPg51QkUTTYzNncgVErZmGxXIVZ3Z52LE7UQ0kAWXAFhp5UVP
-VzFTjWigSY2PqEoRaATC0KfOzDV/ZTOsWvqOWHyXof00xdJWEGj40Fnay6tpWh1I
-JdRRodTAyVR7YWpzdsDSxB7i13ADQRlcTBWhN4VRXAMNaTMHM11c/mbK92d0vW30
-tcJ2zkeO5yUkH8pxUQKGRXihCXGZjO0Ym1Zm4DFSJncSA/sRhewgfk2O9hK5pUQ=
-=9T9D
------END PGP SIGNATURE-----
-
---uQ3geqO/wycIFb3P--
-
---===============3260766490833410262==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3260766490833410262==--
+> 
+> Takashi
