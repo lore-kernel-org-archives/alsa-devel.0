@@ -1,76 +1,89 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Pop and offsets at start of audio playback/record
- for SGTL5000 on i.MX28
-Date: Fri, 14 Nov 2014 01:59:04 -0200
-Message-ID: <CAOMZO5CXzFj__SE+pDkHwmAUMREzebuEWsQ1tHRjgKN8EAMPXw@mail.gmail.com>
-References: <54655E35.9000807@beamcommunications.com>
+From: gsantosh@codeaurora.org
+Subject: Re: [alsa-devel] Question on Compressed offload session
+Date: Fri, 14 Nov 2014 04:08:28 -0000
+Message-ID: <fd33d16f31eb73cc6f0585c192601d9e.squirrel@www.codeaurora.org>
+References: <85499f52ebd29581bf58b9cafbae6864.squirrel@www.codeaurora.org>
+    <5464CDE2.2070406@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
- [209.85.217.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DE7A2604E8
- for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 04:59:05 +0100 (CET)
-Received: by mail-lb0-f179.google.com with SMTP id l4so12268400lbv.10
- for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 19:59:04 -0800 (PST)
-In-Reply-To: <54655E35.9000807@beamcommunications.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Craig McQueen <craig.mcqueen@beamcommunications.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <5464CDE2.2070406@linux.intel.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: gsantosh@codeaurora.org, alsa-devel-bounces@alsa-project.org, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, grant.likely@linaro.org, devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Olof Johansson <olof@lixom.net>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 13, 2014 at 11:43 PM, Craig McQueen
-<craig.mcqueen@beamcommunications.com> wrote:
-> I'm testing the 3.14.19 kernel for i.MX28 EVK, which has an SGTL5000 CODEC.
-> I've also tested on the 3.18-rc4 kernel and confirmed this issue still
-> occurs.
+> On 11/12/14, 9:02 PM, gsantosh@codeaurora.org wrote:
+>> Hi All,
+>>
+>> The Question is for the compressed offload session.
+>>
+>> For a generic codec driver during the startup function it will set some
+>> of
+>> the hw_constraints rule similarly like this.
+>>
+>>          snd_pcm_hw_constraint_list(substream->runtime, 0,
+>>                      SNDRV_PCM_HW_PARAM_RATE,
+>>                      &constraints_12_24);
+>>
+>> pcm_lib.c will try to add the rule to the runtime structure by accessing
+>> the pointers which will be initialized during opening of the session,
+>> as The Constraints added by the codec driver will be updated in the
+>>
+>> struct snd_pcm_hw_constraints of runtime structure which will be part of
+>> substream handle.
+>>
+>> But for the compressed offload I do not see the initialization done for
+>> HW
+>> constraints, as done in pcm session
+>>
+>> 2092int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
+>> 2093			   struct file *file,
+>> 2094			   struct snd_pcm_substream **rsubstream)
+>>
+>> most of the existing drivers which has the hw_constraint_list code will
+>> not be applicable for compress offload session, how to solve this?
 >
+> You can't directly link physical output/input with the decoder/encoder
+> in general.
+> For decoders, the sample-rate may not always be known ahead of time,
+> e.g. with AAC-SBR implicit signaling. There is no way to add constraints
+> on open, there is an assumption that a sample-rate converter is part of
+> the chain to take care of the difference between the output of the
+> offloaded decoder and the back-end actual sampling frequency (same with
+> number of channels and bit-width btw).
+> Likewise if you encode the frequency may not be the same as what the
+> backend provides and some SRC might be needed.
+> -Pierre
 >
-> Playback
+
+I Agree we cannot have a direct link between physical output  / input with
+decoder / encoder, during compressed playback.
+My concern here is, if we have a legacy codec driver which is used for the
+PCM out, and in the start up of this codec driver it is adding
+hw_constraints list, now the same codec driver is used for the compressed
+session FE or PCM session FE,
+If the routing is such that compressed FE -> codec the hw_constraints
+added by this driver is not valid here,
+and legacy drivers needs to be changed,
+Now the question comes how to change this drivers?
+I can think of following things
+if the routing is done for Compressed FE -> codec
+
+1) in Codec driver avoid adding hw_constraint during startup if compressed
+session is routed, this recommend for codec driver to know that compress
+session is routed to codec which I feel not the correct way to handle this
+
+I was checking how to handle this situation in much better way.
+
+Regards
+Santosh
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
-> When doing audio playback, I notice that the audio "fades in" over the first
-> (approximately) 500 ms of playback. This is very noticeable and not ideal in
-> certain applications (e.g. audio notifications that are of short duration).
 
-It seems that this behaviour can be controlled by the SMALL_POP bit:
-"Setting this bit slows down the VAG ramp from ~200ms to ~400ms to
-reduce the startup
-pop, but increases the turn on/off time."
 
-Looking at the code I see its definition is wrong:
-
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1307,8 +1307,7 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
-
-        /* enable small pop, introduce 400ms delay in turning off */
-        snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL,
--                               SGTL5000_SMALL_POP,
--                               SGTL5000_SMALL_POP);
-+                               SGTL5000_SMALL_POP, 1);
-
-        /* disable short cut detector */
-        snd_soc_write(codec, SGTL5000_CHIP_SHORT_CTRL, 0);
-diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-index 2f8c889..bd7a344 100644
---- a/sound/soc/codecs/sgtl5000.h
-+++ b/sound/soc/codecs/sgtl5000.h
-@@ -275,7 +275,7 @@
- #define SGTL5000_BIAS_CTRL_MASK                        0x000e
- #define SGTL5000_BIAS_CTRL_SHIFT               1
- #define SGTL5000_BIAS_CTRL_WIDTH               3
--#define SGTL5000_SMALL_POP                     0x0001
-+#define SGTL5000_SMALL_POP                     0
-
-This change keeps the original intention of enabling 'small pop'. You
-can try 'SGTL5000_SMALL_POP, 0);' to see if you get a quicker
-response.
