@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: rt5670: make bias level more
-	reasonable
-Date: Fri, 14 Nov 2014 11:11:48 +0000
-Message-ID: <20141114111148.GZ3815@sirena.org.uk>
-References: <1415793273-7844-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Fix SMALL_POP bit
+	definition
+Date: Fri, 14 Nov 2014 10:35:32 +0000
+Message-ID: <20141114103532.GT3815@sirena.org.uk>
+References: <1415938487-20196-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1797233258211256565=="
+Content-Type: multipart/mixed; boundary="===============8809035192189473889=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF7CD26660F
- for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 15:03:47 +0100 (CET)
-In-Reply-To: <1415793273-7844-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E8DA266623
+ for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 15:04:08 +0100 (CET)
+In-Reply-To: <1415938487-20196-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, yao.jin@intel.com, flove@realtek.com
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, craig.mcqueen@beamcommunications.com, michael@amarulasolutions.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1797233258211256565==
+--===============8809035192189473889==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="c8jeM6GlsTyYq3Gb"
+	protocol="application/pgp-signature"; boundary="/1KIQvsSd9dqOVfA"
 Content-Disposition: inline
 
 
---c8jeM6GlsTyYq3Gb
+--/1KIQvsSd9dqOVfA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 12, 2014 at 07:54:30PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
+On Fri, Nov 14, 2014 at 02:14:47AM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 >=20
-> This patah separate bias level off to standby and off. The standby
-> level will provide the necessary power for JD and push button
-> functions.
+> On a mx28evk with a sgtl5000 codec we notice a loud 'click' sound  to hap=
+pen
+> 5 seconds after the end of a playback.
 
 Applied, thanks.
 
---c8jeM6GlsTyYq3Gb
+--/1KIQvsSd9dqOVfA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUZeNzAAoJECTWi3JdVIfQdmwH/ieL1UfHLz2qAZZPd3p6BA0T
-kV77kU/V/BjDN3ROd9uNVGW+b/xLTRzH+u7jRDdT2X9OW782mMxFniU3XLX85MXu
-asIFnPSD2b8oXSEQZsNI2GeHRiSsy7ivGWHQF5itiH/TBsRce9HMytGwmi3R6j3i
-OmOl5rMTyWP6R4d0TheMfKtldhReI2YSQKURZBX21RRiCHy5MhyvzGZ434xwNQ0X
-b6CcXLdxebvkUt1XhcG+32t2vEo5h29kO0TDdhxppbgGBMuuV5zQ/1k5iboWb4wd
-NIMLrLrdr2gW5oMfMHD7dt8SZNvxMMkXOVQL60JX3Tx3tqZk+73zYGr97sgeobQ=
-=JENf
+iQEcBAEBAgAGBQJUZdrzAAoJECTWi3JdVIfQip8H+wRd2qB2zLkL8JlWCRsP9a6M
+xMZMNZkfEj4GPtcUiN92oberLkiH3C8NWzBFkvYMCaAZ9M54uxk5nTS+wDVhNkT7
+fqmbymmEUuGigR5oKfodFD+vLYmCuJKps6Pi4AM88mr0qw3x/AT8WWM8HFQPXjg+
+VMQvyWmEsze1H470DDkrnum9wLGTYZ83EmTcjM688Sw541E9Tg1yF33+RehgnS8e
+29fb5zYYmO7BCf/ffknLwT29YRl5lRwzImQ53XFAsKHs0RdzpB1FhsuoBacuGF5a
+sRWmSAK5f/vOZx6gEakMz/JGkhhT8J3dwo6j/OyohD9KOWDd6BqTY3VaDefp9xM=
+=MSHe
 -----END PGP SIGNATURE-----
 
---c8jeM6GlsTyYq3Gb--
+--/1KIQvsSd9dqOVfA--
 
---===============1797233258211256565==
+--===============8809035192189473889==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1797233258211256565==--
+--===============8809035192189473889==--
