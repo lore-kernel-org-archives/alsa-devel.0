@@ -1,59 +1,79 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] spi: Fix mapping from vmalloc-ed buffer to scatter
- list
-Date: Fri, 14 Nov 2014 17:26:26 +0000
-Message-ID: <20141114172626.GI3815@sirena.org.uk>
-References: <1415979645-26264-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20141114155222.GF3815@sirena.org.uk>
- <20141114160607.GB12443@opensource.wolfsonmicro.com>
- <20141114171133.GC12443@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: Fix kerneldoc errors
+Date: Fri, 14 Nov 2014 17:29:24 +0000
+Message-ID: <20141114172924.GJ3815@sirena.org.uk>
+References: <1415652427-827-1-git-send-email-tiwai@suse.de>
+ <20141114125704.GA3815@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Fs+4yvttfcUcVuyi"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20141114171133.GC12443-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============4787730141277676831=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E823260554
+ for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 18:30:50 +0100 (CET)
+In-Reply-To: <20141114125704.GA3815@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Fs+4yvttfcUcVuyi
-Content-Type: text/plain; charset=us-ascii
+--===============4787730141277676831==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="g9b6WCOLI3ybFZyi"
 Content-Disposition: inline
 
-On Fri, Nov 14, 2014 at 05:11:33PM +0000, Charles Keepax wrote:
 
-> Ah... ok I think I see the difference here. The MXS architecture
-> has CONFIG_HIGHMEM=n whereas Arndale has CONFIG_HIGHMEM=y. So
-> that means on MXS all the pages will always be in low mem so I
-> think will always be mapped into the kernel logical address space
-> hence no problems. Not sure if it would be worth updating the
-> driver or not, what do you think?
+--g9b6WCOLI3ybFZyi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is a user configurable option, it's not something that depends on
-the architecture (and in any case it's better not to leave people
-wondering why things are different when they consider consolidation).
+On Fri, Nov 14, 2014 at 12:57:04PM +0000, Mark Brown wrote:
+> On Mon, Nov 10, 2014 at 09:47:07PM +0100, Takashi Iwai wrote:
+> > Lots of typos and missing parameter descriptions.
+> >=20
+> > Some private struct fields are moved to the end of struct and put
+> > markers to make kerneldoc happy (and it make even easier for human
+> > readers).
+>=20
+> This would've been better split up more.  I've applied it, a couple of
+> smaller things though:
 
---Fs+4yvttfcUcVuyi
+Actually I had to revert this, it applies cleanly against Linus' tree
+but is causing annoying merge/apply issues with my current tree.
+
+--g9b6WCOLI3ybFZyi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUZjtBAAoJECTWi3JdVIfQdfkH/RhIichPpQVi17vMrn2r6ADd
-8NeC0BjiUaFq7/zcURxBivwX6u603++7fYBALcgv1zaZF75j3Hg7Cayo+BxvHM+K
-upokfi//XBYSFtKjt9m7S0WR2WN5J65pSkDIC4uYt/fmwybSjaNGvMlmhacmrWtA
-GlxwR7Pvzq06LUpP4igl/Np9EQXyVJfrsdfQTSbhEnLcEeCoskndAjoGnZZ33/HJ
-97L9Cj0jWyXkdw0KaHbsWqTFTWbyMZDm5mL5dv7xjk2oAQjNI/iLQTSePj+6lmrE
-n0xnMZXU28NWMpYUg0n4EFZcozS6OMtMCvX2RG9uYISuIhb0IFM0HyEMg1OBrJ8=
-=IQPw
+iQEcBAEBAgAGBQJUZjv0AAoJECTWi3JdVIfQG7oH/AqyPCOUCg8F+wiE3JJ+ZsMM
+5G3akCevgJrHcsTh5bRXMzG2xL7q1QeoLNvzDTyiSH6sxVkDuqt5IyeIG0r0635t
+QUahkw9lEKfixoy/3GJESyEPkhPv0UP71nax5HCl0Y4q2+CDyHshXMjpfeoM5/5t
+YvWH/EKmmUe+Pnc5AHmBc9TXdshzOCy+AbxSkDsekgGezUUuERzGetL5b3/GNHYJ
+bMZz9zgYpQT108izsLY8XBlfS9RtVzsVBnIcO1uzR1EPaPGBZb84GEhAScsxEeSp
+6htPv14dXlIzyBlcI3j5nTI0P1L6beVTLlxVnOVlzJeOnhi+O8dYB/Nk0in2ti0=
+=vmMn
 -----END PGP SIGNATURE-----
 
---Fs+4yvttfcUcVuyi--
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--g9b6WCOLI3ybFZyi--
+
+--===============4787730141277676831==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4787730141277676831==--
