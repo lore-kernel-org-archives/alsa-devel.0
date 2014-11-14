@@ -1,58 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] Question on Compressed offload session
-Date: Fri, 14 Nov 2014 17:06:50 +0000
-Message-ID: <20141114170650.GG3815@sirena.org.uk>
-References: <85499f52ebd29581bf58b9cafbae6864.squirrel@www.codeaurora.org>
- <5464CDE2.2070406@linux.intel.com>
- <fd33d16f31eb73cc6f0585c192601d9e.squirrel@www.codeaurora.org>
- <54662DC6.7070302@linux.intel.com>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 1/2] spi: Fix mapping from vmalloc-ed buffer to scatter
+	list
+Date: Fri, 14 Nov 2014 17:11:33 +0000
+Message-ID: <20141114171133.GC12443@opensource.wolfsonmicro.com>
+References: <1415979645-26264-1-git-send-email-ckeepax@opensource.wolfsonmicro.com> <20141114155222.GF3815@sirena.org.uk> <20141114160607.GB12443@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6cotLj5rESeNB5ig"
-Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <54662DC6.7070302@linux.intel.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: gsantosh@codeaurora.org, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>, devicetree@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, grant.likely@linaro.org, alsa-devel-bounces@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+In-Reply-To: <20141114160607.GB12443-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Nov 14, 2014 at 04:06:07PM +0000, Charles Keepax wrote:
+> On Fri, Nov 14, 2014 at 03:52:22PM +0000, Mark Brown wrote:
+> > On Fri, Nov 14, 2014 at 03:40:44PM +0000, Charles Keepax wrote:
+> > > We can only use page_address on memory that has been mapped using kmap,
+> > > when the buffer passed to the SPI has been allocated by vmalloc the page
+> > > has not necessarily been mapped through kmap. This means sometimes
+> > > page_address will return NULL causing the pointer we pass to sg_set_buf
+> > > to be invalid.
+> > 
+> > Hrm, this is a bug in the mxs driver (which is where we copied the core
+> > code from) - care to fix that too?
+> 
+> Yeah no problem, won't be able to test it, but should be a fairly
+> trivial change and hopefully someone else can test.
 
---6cotLj5rESeNB5ig
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ah... ok I think I see the difference here. The MXS architecture
+has CONFIG_HIGHMEM=n whereas Arndale has CONFIG_HIGHMEM=y. So
+that means on MXS all the pages will always be in low mem so I
+think will always be mapped into the kernel logical address space
+hence no problems. Not sure if it would be worth updating the
+driver or not, what do you think?
 
-On Fri, Nov 14, 2014 at 10:28:54AM -0600, Pierre-Louis Bossart wrote:
-> On 11/13/14, 10:08 PM, gsantosh@codeaurora.org wrote:
-
-> >1) in Codec driver avoid adding hw_constraint during startup if compressed
-> >session is routed, this recommend for codec driver to know that compress
-> >session is routed to codec which I feel not the correct way to handle this
-
-> >I was checking how to handle this situation in much better way.
-
-> What exactly do you call a 'legacy codec'? If there is a DAI i am not sure I
-> understand the problem.
-
-I think what he's trying to say is that there's nothing automatic which
-will ensure that constraints on the back end set by the CODEC driver
-will be paid attention to.  This is true, it's pretty much entirely up
-to the machine driver to make sure it gets the back end links right.
-
---6cotLj5rESeNB5ig
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUZjaqAAoJECTWi3JdVIfQuFAH/13RyikXZ58DwaCl7jN85TQ8
-BV4EwR+3FqqXVcXw4fX8JLkRyNmUnkv4GSQyFTNEICL2qoHHKSlnd1fbow1tOWdn
-NGuhgFL1yqraNjguNS8/bBKfbwFOZ2OwhQruKXWuZdeOyKJ6qZ+GffsR/ov/7LY4
-Ggrfl4PqjPowCWMulNgwCkCfdy84/E1tzPOfInBj6YXDeORs+Ros6kgnOiyAyXHf
-UVUnExmdreqnqHpnVeBS4TT68hM2Wnh8A7jmWISM6taB6bHe9BAiXpiqtEOx6DBq
-6Kwqjn8w0jZ1jfVUuof+cJs6t/C+MYSabOLn+M6brV8ZY5Z1P7AZvW4W2PmBkC8=
-=hWv8
------END PGP SIGNATURE-----
-
---6cotLj5rESeNB5ig--
+Thanks,
+Charles
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
