@@ -1,89 +1,76 @@
-From: gsantosh@codeaurora.org
-Subject: Re: [alsa-devel] Question on Compressed offload session
-Date: Fri, 14 Nov 2014 04:08:28 -0000
-Message-ID: <fd33d16f31eb73cc6f0585c192601d9e.squirrel@www.codeaurora.org>
-References: <85499f52ebd29581bf58b9cafbae6864.squirrel@www.codeaurora.org>
-    <5464CDE2.2070406@linux.intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: sgtl5000: Fix SMALL_POP bit definition
+Date: Fri, 14 Nov 2014 02:14:47 -0200
+Message-ID: <1415938487-20196-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <5464CDE2.2070406@linux.intel.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: gsantosh@codeaurora.org, alsa-devel-bounces@alsa-project.org, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, grant.likely@linaro.org, devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Olof Johansson <olof@lixom.net>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qg0-f52.google.com (mail-qg0-f52.google.com
+ [209.85.192.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 140772604E8
+ for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 05:15:10 +0100 (CET)
+Received: by mail-qg0-f52.google.com with SMTP id z60so585742qgd.25
+ for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 20:15:09 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, craig.mcqueen@beamcommunications.com, michael@amarulasolutions.com
 List-Id: alsa-devel@alsa-project.org
 
-> On 11/12/14, 9:02 PM, gsantosh@codeaurora.org wrote:
->> Hi All,
->>
->> The Question is for the compressed offload session.
->>
->> For a generic codec driver during the startup function it will set some
->> of
->> the hw_constraints rule similarly like this.
->>
->>          snd_pcm_hw_constraint_list(substream->runtime, 0,
->>                      SNDRV_PCM_HW_PARAM_RATE,
->>                      &constraints_12_24);
->>
->> pcm_lib.c will try to add the rule to the runtime structure by accessing
->> the pointers which will be initialized during opening of the session,
->> as The Constraints added by the codec driver will be updated in the
->>
->> struct snd_pcm_hw_constraints of runtime structure which will be part of
->> substream handle.
->>
->> But for the compressed offload I do not see the initialization done for
->> HW
->> constraints, as done in pcm session
->>
->> 2092int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
->> 2093			   struct file *file,
->> 2094			   struct snd_pcm_substream **rsubstream)
->>
->> most of the existing drivers which has the hw_constraint_list code will
->> not be applicable for compress offload session, how to solve this?
->
-> You can't directly link physical output/input with the decoder/encoder
-> in general.
-> For decoders, the sample-rate may not always be known ahead of time,
-> e.g. with AAC-SBR implicit signaling. There is no way to add constraints
-> on open, there is an assumption that a sample-rate converter is part of
-> the chain to take care of the difference between the output of the
-> offloaded decoder and the back-end actual sampling frequency (same with
-> number of channels and bit-width btw).
-> Likewise if you encode the frequency may not be the same as what the
-> backend provides and some SRC might be needed.
-> -Pierre
->
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-I Agree we cannot have a direct link between physical output  / input with
-decoder / encoder, during compressed playback.
-My concern here is, if we have a legacy codec driver which is used for the
-PCM out, and in the start up of this codec driver it is adding
-hw_constraints list, now the same codec driver is used for the compressed
-session FE or PCM session FE,
-If the routing is such that compressed FE -> codec the hw_constraints
-added by this driver is not valid here,
-and legacy drivers needs to be changed,
-Now the question comes how to change this drivers?
-I can think of following things
-if the routing is done for Compressed FE -> codec
+On a mx28evk with a sgtl5000 codec we notice a loud 'click' sound  to happen
+5 seconds after the end of a playback.
 
-1) in Codec driver avoid adding hw_constraint during startup if compressed
-session is routed, this recommend for codec driver to know that compress
-session is routed to codec which I feel not the correct way to handle this
+The SMALL_POP bit should fix this, but its definition is incorrect:
+according to the sgtl5000 manual it is bit 0 of CHIP_REF_CTRL register, not
+bit 1.
 
-I was checking how to handle this situation in much better way.
+Fix the definition accordingly and enable the bit as intended per the code 
+comment.
 
-Regards
-Santosh
+After applying this change, no loud 'click' sound is heard after playback
 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/codecs/sgtl5000.c | 3 +--
+ sound/soc/codecs/sgtl5000.h | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 6bb77d7..dab9b15 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1299,8 +1299,7 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ 
+ 	/* enable small pop, introduce 400ms delay in turning off */
+ 	snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL,
+-				SGTL5000_SMALL_POP,
+-				SGTL5000_SMALL_POP);
++				SGTL5000_SMALL_POP, 1);
+ 
+ 	/* disable short cut detector */
+ 	snd_soc_write(codec, SGTL5000_CHIP_SHORT_CTRL, 0);
+diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+index 2f8c889..bd7a344 100644
+--- a/sound/soc/codecs/sgtl5000.h
++++ b/sound/soc/codecs/sgtl5000.h
+@@ -275,7 +275,7 @@
+ #define SGTL5000_BIAS_CTRL_MASK			0x000e
+ #define SGTL5000_BIAS_CTRL_SHIFT		1
+ #define SGTL5000_BIAS_CTRL_WIDTH		3
+-#define SGTL5000_SMALL_POP			0x0001
++#define SGTL5000_SMALL_POP			0
+ 
+ /*
+  * SGTL5000_CHIP_MIC_CTRL
+-- 
+1.9.1
