@@ -1,57 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/15] mfd: add new driver for Sharp LoCoMo
-Date: Fri, 14 Nov 2014 15:10:00 +0000
-Message-ID: <20141114151000.GC3815@sirena.org.uk>
-References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
- <1414454528-24240-2-git-send-email-dbaryshkov@gmail.com>
- <CACRpkdbW3NA00zMZr216ZeZpgVkXwKUo30biTVd5kcHKGGtkHg@mail.gmail.com>
- <CALT56yNX8v4mZn=o1ZoVLHPmg6wq0dgFNowpqNuFtU=eCc+d8w@mail.gmail.com>
- <CACRpkdaKUZjbSEH75M9xudTF9HefwOCVEe5otv9-9f2UG8=hVg@mail.gmail.com>
- <CALT56yM8B3ffYb0=EZVbRRGDZSxMci2sRp9XVtjQuLa5abN+cg@mail.gmail.com>
- <20141105202405.GJ8509@sirena.org.uk>
- <CALT56yOtjNbYOWM4ba5yP8pz7bNLY5BWpkkpfmv5QZU-7Y5u_g@mail.gmail.com>
+Subject: Re: [PATCH 2/4] ASoC: rt5670: check if asrc is useable
+Date: Fri, 14 Nov 2014 15:11:25 +0000
+Message-ID: <20141114151125.GD3815@sirena.org.uk>
+References: <1415793273-7844-1-git-send-email-bardliao@realtek.com>
+ <1415793273-7844-2-git-send-email-bardliao@realtek.com>
+ <5463B82E.7070303@metafoo.de>
+ <ABFD875FF5FB574BA706497D987D48D701021F56@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0hFlL8mdTQLjOaTk"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CALT56yOtjNbYOWM4ba5yP8pz7bNLY5BWpkkpfmv5QZU-7Y5u_g@mail.gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>
+Content-Type: multipart/mixed; boundary="===============8883314326995496527=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2B75260534
+ for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 16:12:53 +0100 (CET)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701021F56@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "mengdong.lin@intel.com" <mengdong.lin@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "yao.jin@intel.com" <yao.jin@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---0hFlL8mdTQLjOaTk
+--===============8883314326995496527==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QKD3J7bvzdTQU03f"
+Content-Disposition: inline
+
+
+--QKD3J7bvzdTQU03f
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Nov 14, 2014 at 04:47:00PM +0400, Dmitry Eremin-Solenikov wrote:
+On Fri, Nov 14, 2014 at 11:38:51AM +0000, Bard Liao wrote:
 
-> I'm actually looking at the regulator interface. Since this DAC serves mostly
-> like a (semi-)constant voltage interface, would it be rather logical to use
-> regulator subsystem to drive it?
+> Sure, I will resend the patch. Another question is that the patch is one
+> of 4 patches series. Should I resend all of them?
 
-Possibly...  it's mostly a function of what the consumers of the
-functionality look like - if that code looks weird calling into the
-regulator API then it's bad, if that code looks OK it's fine.  I haven't
-looked at the hardware at all so don't have strong feelings either way
-so long as the result looks tasteful.
+No need to send patch 1 since I applied it but please resend the rest -
+I assumed that patches 3 and 4 depended on patch 2.  In general resend
+anything that hasn't been applied.
 
---0hFlL8mdTQLjOaTk
+--QKD3J7bvzdTQU03f
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUZhtHAAoJECTWi3JdVIfQ9u0H/0MiTrLksAi3U2z6tRBVRifd
-8X7vBDcAuPO8IdYuNRiUzB8b6jaDmnAmUc5lrJ4rrAwhrhMKk6I+wNNTAvXXWSRz
-FVjX3yHZomhQ1+Jlz98zcFSnEVxxHpJpN3pRXKL7BN5NTd7fedq5mvdN6899KRIa
-VQ8ByRl5sA8PkMvHN85dT+ECCQbTNQ8Szw96k5/LIRLAR+53rb8oB4y6d23Sqbvh
-mbXzzzjj0ap0LypK8XP7pNrXage5XVY/Y7bLusETEgdhR2Bxkc3YzlhgKY8/gHo4
-x3xdPJAUB/KUQxxEchL/wysUIlC1P8K5Tj29lyuhfztFM9RFxkpnyp8CoCusZtw=
-=Pl/n
+iQEcBAEBAgAGBQJUZhucAAoJECTWi3JdVIfQ+isIAIZ5Nh2YjnNSoCFq6TbUTTj0
+Rf0ysNPooNajC8PaHIyYdFf3Nmtgux5tIKYptQ2c2sdrgfNUjCqL2UvMXY8r490X
+aD0yXEGIDaWXkXrVPVmWtNK5jA/gkyJjtM+W0c2Pw0ZdQm1CL5qRiQACafRAdHI8
+i4y0mvP2kv7eqQ2FeT7UiVb6aEZ8DkhnYxmO/8v0ZiemPPR/VwLhRPWT9kFRfESV
+h8UVkgMjKz1bUiD5jW/+5Gm8qTSj6FinrhQVbMohnEgFwzDnLbhnL3Y3VUWblQhd
+pMIcFYxZ6XdIUuYIJq1drP7+Hz5jFIJSQJMzzB1u1FoHyvxmyrYQleAu2AeCJJg=
+=LmYF
 -----END PGP SIGNATURE-----
 
---0hFlL8mdTQLjOaTk--
+--QKD3J7bvzdTQU03f--
+
+--===============8883314326995496527==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8883314326995496527==--
