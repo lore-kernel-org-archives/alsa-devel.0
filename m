@@ -1,56 +1,44 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/6 V2] Documentation: devicetree: arizona: Add bindings
-	for WM8280
-Date: Fri, 14 Nov 2014 10:04:37 +0000
-Message-ID: <20141114100437.GA12913@opensource.wolfsonmicro.com>
-References: <1415901046-3391-1-git-send-email-rf@opensource.wolfsonmicro.com> <1415901046-3391-3-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 02/15] GPIO: port LoCoMo gpio support from old driver
+Date: Fri, 14 Nov 2014 11:11:51 +0100
+Message-ID: <CACRpkdZiari6CtWq1kBCvX3cwwatJiHAuWUb40WSUEfjZjk+Lg@mail.gmail.com>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+	<1414454528-24240-3-git-send-email-dbaryshkov@gmail.com>
+	<CACRpkdY7tRadod2vQfEytmw-ubaMAvr_=XTczD5bUMkqie0xkg@mail.gmail.com>
+	<CALT56yOgMUA7o2dzfHph=S2zkDV4zERzMh4ishpPwpAx7Cqj6Q@mail.gmail.com>
+	<CACRpkdb7v3LmOhbhQ9TPk1_bnLnpwizawW6RQvhQRLSjRewAaQ@mail.gmail.com>
+	<CALT56yO9f8wzaArnmfQSDzCM3S+2oT+62anH5kbFY3WdEt_HZg@mail.gmail.com>
+	<20141106060335.GR8509@sirena.org.uk>
+	<CALT56yPr42FV66USngocw=eWPt81d5R2MJxmzBnv02HOMmXAkA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1415901046-3391-3-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lee.jones@linaro.org, lgirdwood@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, linus.walleij@linaro.org, gnurou@gmail.com, broonie@kernel.org, tiwai@suse.de
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, sameo@linux.intel.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, robh+dt@kernel.org, galak@codeaurora.org, ckeepax@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CALT56yPr42FV66USngocw=eWPt81d5R2MJxmzBnv02HOMmXAkA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Input <linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-leds-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-leds-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Andrea Adami <andrea.adami-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bryan Wu <cooloney-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Richard Purdie <rpurdie-Fm38FmjxZ/leoWH0uzbU5w@public.gmane.org>, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jingoo
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- Documentation/devicetree/bindings/mfd/arizona.txt |   15 +++++++++++----
- 1 files changed, 11 insertions(+), 4 deletions(-)
+On Tue, Nov 11, 2014 at 2:16 PM, Dmitry Eremin-Solenikov
+<dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
 
-diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-index 7bd1273..dc81b71 100644
---- a/Documentation/devicetree/bindings/mfd/arizona.txt
-+++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-@@ -8,6 +8,7 @@ Required properties:
-   - compatible : One of the following chip-specific strings:
-         "wlf,wm5102"
-         "wlf,wm5110"
-+        "wlf,wm8280"
-         "wlf,wm8997"
-   - reg : I2C slave address when connected using I2C, chip select number when
-     using SPI.
-@@ -26,10 +27,16 @@ Required properties:
-   - #gpio-cells : Must be 2. The first cell is the pin number and the
-     second cell is used to specify optional parameters (currently unused).
- 
--  - AVDD-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply (wm5102, wm5110),
--    CPVDD-supply, SPKVDDL-supply (wm5102, wm5110), SPKVDDR-supply (wm5102,
--    wm5110), SPKVDD-supply (wm8997) : Power supplies for the device, as covered
--    in Documentation/devicetree/bindings/regulator/regulator.txt
-+  - AVDD-supply, DBVDD1-supply, CPVDD-supply : Power supplies for the device,
-+    as covered in Documentation/devicetree/bindings/regulator/regulator.txt
-+  
-+  - DBVDD2-supply, DBVDD3-supply : Additional databus power supplies (wm5102,
-+    wm5110, wm8280)
-+
-+  - SPKVDDL-supply, SPKVDDR-supply : Speaker driver power supplies (wm5102,
-+    wm5110, wm8280)
-+  
-+  - SPKVDD-supply : Speaker driver power supply (wm8997)
- 
- Optional properties:
- 
--- 
-1.7.2.5
+> Just to better understand your suggestions: do you want me to convert
+> to regmap only gpio driver or do you suggest to convert all LoCoMo drivers?
+
+Um... I was just thinking about this one usecase.
+
+It's no big deal, the other review comments are more important.
+
+> That is doable, of course, but the amount of changes is overwhelming.
+> Also I'm concerned about the performance impact from going through
+> regmap layers.
+
+Is it on a critical path? The current locking isn't any less invasive
+AFAICT.
+
+Yours,
+Linus Walleij
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
