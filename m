@@ -1,57 +1,37 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5677: Modify the default value and add
-	it to patch table
-Date: Fri, 14 Nov 2014 16:47:33 +0800
-Message-ID: <1415954853-2768-1-git-send-email-oder_chiou@realtek.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3] of: replace Asahi Kasei Corp venter prefix
+Date: Fri, 14 Nov 2014 10:16:18 +0100
+Message-ID: <2984171.bo9yu8oQT6@wuerfel>
+References: <5398AB07.4040304@wwwdotorg.org> <87k32yd0bd.wl%kuninori.morimoto.gx@renesas.com> <5465BFA2.9050706@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id C60D1266573
- for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 09:47:41 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5465BFA2.9050706@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alexandre Courbot <acourbot@nvidia.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Simon Horman <horms@verge.net.au>, Joe Perches <joe@perches.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Olof Johansson <olof@lixom.net>, Stephen Warren <swarren@wwwdotorg.org>, Rob Herring <robh@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, "grant.likely@linaro.org" <grant.likely@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Modify the default value and add it to patch table
+On Friday 14 November 2014 17:38:58 Alexandre Courbot wrote:
+> > diff --git a/arch/arm/boot/dts/tegra20-seaboard.dts b/arch/arm/boot/dts/tegra20-seaboard.dts
+> > index a1d4bf9..7f5cf80 100644
+> > --- a/arch/arm/boot/dts/tegra20-seaboard.dts
+> > +++ b/arch/arm/boot/dts/tegra20-seaboard.dts
+> > @@ -405,7 +405,7 @@
+> >               clock-frequency = <400000>;
+> >
+> >               magnetometer@c {
+> > -                     compatible = "ak,ak8975";
+> > +                     compatible = "asahi-kasei,ak8975";
+> 
+> Mmm. So does this mean this device was never probed because the driver 
+> did not recognize its compatible property? I cannot find "ak,ak8975" 
+> anywhere else in the kernel.
+> 
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5677.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+No, the i2c bus behaves in a special way by matching the "ak8975"
+i2c driver name with any "*,ak8975" DT compatible string. Both
+of the above will work with existing kernels.
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 5d317c68..9ae2e84 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -55,7 +55,8 @@ static const struct regmap_range_cfg rt5677_ranges[] = {
- };
- 
- static const struct reg_default init_list[] = {
--	{RT5677_PR_BASE + 0x3d,	0x364d},
-+	{RT5677_ASRC_12, 0x0018},
-+	{RT5677_PR_BASE + 0x3d, 0x364d},
- 	{RT5677_PR_BASE + 0x17, 0x4fc0},
- 	{RT5677_PR_BASE + 0x13, 0x0312},
- 	{RT5677_PR_BASE + 0x1e, 0x0000},
-@@ -173,7 +174,7 @@ static const struct reg_default rt5677_reg[] = {
- 	{RT5677_ASRC_9			, 0x0000},
- 	{RT5677_ASRC_10			, 0x0000},
- 	{RT5677_ASRC_11			, 0x0000},
--	{RT5677_ASRC_12			, 0x0008},
-+	{RT5677_ASRC_12			, 0x0018},
- 	{RT5677_ASRC_13			, 0x0000},
- 	{RT5677_ASRC_14			, 0x0000},
- 	{RT5677_ASRC_15			, 0x0000},
--- 
-1.9.1
+	Arnd
