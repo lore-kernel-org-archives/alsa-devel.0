@@ -1,21 +1,24 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: Pop and offsets at start of audio playback/record
- for SGTL5000 on i.MX28
-Date: Fri, 14 Nov 2014 03:04:51 +0100
-Message-ID: <CAOf5uw=weZczcJNegd6P9Q7tnE3grbiLzYUHJo6xEOijYfeDRQ@mail.gmail.com>
-References: <54655E35.9000807@beamcommunications.com>
- <CAOf5uwkh7inpgOO8affswziTnKV3-9_4U6v2G55JnTHb-RkCyA@mail.gmail.com>
- <546561D0.9090401@beamcommunications.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: Low sample rates for SGTL5000 on i.MX28
+Date: Fri, 14 Nov 2014 00:53:24 -0200
+Message-ID: <CAOMZO5BW0atG5yHhFGBA-NJfVR1ap_Ud=df5mdwE4pHTUSHWjg@mail.gmail.com>
+References: <546450E5.9090203@beamcommunications.com>
+ <CAOMZO5BAaL8cP+7NetvNyEiGfokiyLWdpXw3r=AJspLj1dfzxw@mail.gmail.com>
+ <54653283.5070404@beamcommunications.com>
+ <CAOMZO5ADTTgcvQY=HMt0dk2bAaO23YeBQBbwBzV5HyPOSUu=bQ@mail.gmail.com>
+ <CAOMZO5C=pSuW9wkpAwy6aNA3tbPNETvjvgAYer3wNe-T5LrGeQ@mail.gmail.com>
+ <CAOMZO5CGnQT0NwQR-Tos3rZvgWAwa2BKxpFZ16yyxtoeO+zr=A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f41.google.com (mail-wg0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 532CF2604E8
- for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 03:04:52 +0100 (CET)
-Received: by mail-wg0-f41.google.com with SMTP id l18so2782731wgh.28
- for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 18:04:52 -0800 (PST)
-In-Reply-To: <546561D0.9090401@beamcommunications.com>
+Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4137C260503
+ for <alsa-devel@alsa-project.org>; Fri, 14 Nov 2014 03:53:25 +0100 (CET)
+Received: by mail-la0-f51.google.com with SMTP id q1so14443960lam.10
+ for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2014 18:53:24 -0800 (PST)
+In-Reply-To: <CAOMZO5CGnQT0NwQR-Tos3rZvgWAwa2BKxpFZ16yyxtoeO+zr=A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,38 +29,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Craig McQueen <craig.mcqueen@beamcommunications.com>
-Cc: alsa-devel@alsa-project.org
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Thu, Nov 13, 2014 at 10:59 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> On Thu, Nov 13, 2014 at 10:29 PM, Fabio Estevam <festevam@gmail.com> wrote:
+>
+>> Ok, so the 'aplay stereo_8k.wav' is converting the rate to 44.1kHz, so
+>> that's why it does not fail.
+>
+> From the sgtl5000 datasheet, it looks like the MCLK range of 8 to
+> 27MHz limitation does not apply when sgtl5000 runs in slave mode.
+>
+> A quick hack that allows 'aplay -D hw:0,0 stereo_8k.wav' to play:
 
-Il 14/nov/2014 09:58 "Craig McQueen" <craig.mcqueen@beamcommunications.com>
-ha scritto:
->
-> On 14/11/14 12:45, Michael Trimarchi wrote:
->>
->> Hi
->>
->> Il 14/nov/2014 09:44 "Craig McQueen" <
-craig.mcqueen@beamcommunications.com> ha scritto:
->> >
->> > I'm testing the 3.14.19 kernel for i.MX28 EVK, which has an SGTL5000
-CODEC. I've also tested on the 3.18-rc4 kernel and confirmed this issue
-still occurs.
->> >
->>
->> Are you using it in master or slave mode?
->
->
+I don't have a scope handy to measure the MCLK, LRCLK, but I found a
+bug below where we use sys_fs instead of frame_rate:
 
-Try to change the pin mux of data line in order to be hz in idle mode and
-add a small pull down resistor. Can you check if the dataline is up when
-clocks go off?
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 6bb77d7..a46ec7e 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -605,7 +605,7 @@ static int sgtl5000_set_clock(struct snd_soc_codec
+*codec, int frame_rate)
+         * calculate the divider of mclk/sample_freq,
+         * factor of freq =96k can only be 256, since mclk in range (12m,27m)
+         */
+-       switch (sgtl5000->sysclk / sys_fs) {
++       switch (sgtl5000->sysclk / frame_rate) {
+        case 256:
+                clk_ctl |= SGTL5000_MCLK_FREQ_256FS <<
+                        SGTL5000_MCLK_FREQ_SHIFT;
+@@ -1441,14 +1441,6 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+                return ret;
+        }
 
-Michael
+-       /* SGTL5000 SYS_MCLK should be between 8 and 27 MHz */
+-       mclk = clk_get_rate(sgtl5000->mclk);
+-       if (mclk < 8000000 || mclk > 27000000) {
+-               dev_err(&client->dev, "Invalid SYS_CLK frequency: %u.%03uMHz\n",
+-                       mclk / 1000000, mclk / 1000 % 1000);
+-               return -EINVAL;
+-       }
+-
+        ret = clk_prepare_enable(sgtl5000->mclk);
+        if (ret)
+                return ret;
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index 61822cc..3bba6cf 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -49,13 +49,6 @@ static int mxs_sgtl5000_hw_params(struct
+snd_pcm_substream *substream,
+                break;
+        }
 
-> For the i.MX28 EVK, the SGTL5000 is in slave mode.
->
-> --
-> Craig McQueen
->
+-       /* Sgtl5000 sysclk should be >= 8MHz and <= 27M */
+-       if (mclk < 8000000 || mclk > 27000000) {
+-               dev_err(codec_dai->dev, "Invalid mclk frequency: %u.%03uMHz\n",
+-                       mclk / 1000000, mclk / 1000 % 1000);
+-               return -EINVAL;
+-       }
+-
+        /* Set SGTL5000's SYSCLK (provided by SAIF MCLK) */
+        ret = snd_soc_dai_set_sysclk(codec_dai, SGTL5000_SYSCLK, mclk, 0);
+        if (ret) {
+
+aplay -D hw:0,0 /home/stereo_8k.wav plays in a incorrect pitch, so we
+still need to adjust the clocking.
