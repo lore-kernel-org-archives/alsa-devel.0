@@ -1,73 +1,62 @@
-From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: [PATCH] usb-audio: Add ctrl message delay quirk for
-	Marantz/Denon devices
-Date: Sat, 15 Nov 2014 14:01:21 +0100
-Message-ID: <1416056481-5086-1-git-send-email-gtmkramer@xs4all.nl>
+From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+Subject: Re: [PATCH v7.1 11/19] OMAPDSS: hdmi: Make hdmi_mode_has_audio()
+ more user friedly
+Date: Sat, 15 Nov 2014 17:52:00 +0200
+Message-ID: <546776A0.2060305@mentor.com>
+References: <cover.1415803064.git.jsarha@ti.com> <8047b50c76efecd72e7219f7871c59cc4a8ee5f5.1415803065.git.jsarha@ti.com> <5466139E.5040308@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb2-smtp-cloud6.xs4all.net (lb2-smtp-cloud6.xs4all.net
- [194.109.24.28])
- by alsa0.perex.cz (Postfix) with ESMTP id E4D4A2605E7
- for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2014 14:01:25 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <5466139E.5040308@mentor.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a USB control message delay quirk for a few specific Marantz/Denon
-devices. Without the delay the DACs will not work properly and produces the
-following type of messages:
+Hi Jyri,
 
-Nov 15 10:09:21 orwell kernel: [   91.342880] usb 3-13: clock source 41 is not valid, cannot use
-Nov 15 10:09:21 orwell kernel: [   91.343775] usb 3-13: clock source 41 is not valid, cannot use
+On 14.11.2014 16:37, Vladimir Zapolskiy wrote:
+> Hi Jyri,
+> 
+> On 12.11.2014 16:41, Jyri Sarha wrote:
+>> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+>> ---
+>>  drivers/video/fbdev/omap2/dss/hdmi.h |    4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev/omap2/dss/hdmi.h
+>> index a6e08ff..6d129f2 100644
+>> --- a/drivers/video/fbdev/omap2/dss/hdmi.h
+>> +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
+>> @@ -345,9 +345,9 @@ void hdmi_wp_audio_config_format(struct hdmi_wp_data *wp,
+>>  		struct hdmi_audio_format *aud_fmt);
+>>  void hdmi_wp_audio_config_dma(struct hdmi_wp_data *wp,
+>>  		struct hdmi_audio_dma *aud_dma);
+>> -static inline bool hdmi_mode_has_audio(int mode)
+>> +static inline bool hdmi_mode_has_audio(struct hdmi_config *cfg)
+>>  {
+>> -	return mode == HDMI_HDMI ? true : false;
+>> +	return cfg->hdmi_dvi_mode == HDMI_HDMI ? true : false;
+>>  }
+>>  
+>>  /* HDMI DRV data */
+>>
+> 
+> would it be possible for you to rearrange the changes preserving the
+> following sequence?
+> 
+> 1) 13/19
+> 2) 15/19
+> 3) 11/19
+> 4) 14/19
+> 5) 16/19
+> 
+> Otherwise I'm worried that someone's git rebase may fail.
 
-There are likely other Marantz/Denon devices using the same USB module which exhibit the
-same problems. But as this cannot be verified I limited the patch to the devices
-I could test.
+sorry, git bisect of course.
 
-The following two devices are covered by this path:
-- Marantz SA-14S1
-- Marantz HD-DAC1
+--
+With best wishes,
+Vladimir
 
-Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
----
- sound/usb/quirks.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index d2aa45a..a5941f8 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1146,6 +1146,20 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 	if ((le16_to_cpu(dev->descriptor.idVendor) == 0x23ba) &&
- 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
- 		mdelay(20);
-+
-+	/* Marantz/Denon devices with USB DAC functionality need a delay
-+	 * after each class compliant request
-+	 */
-+	if ((le16_to_cpu(dev->descriptor.idVendor) == 0x154e) &&
-+	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS) {
-+
-+		switch (le16_to_cpu(dev->descriptor.idProduct)) {
-+		case 0x3005: /* Marantz HD-DAC1 */
-+		case 0x3006: /* Marantz SA-14S1 */
-+			mdelay(20);
-+			break;
-+		}
-+	}
- }
- 
- /*
--- 
-1.9.3
