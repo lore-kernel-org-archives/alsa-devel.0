@@ -1,16 +1,17 @@
-From: Kip Warner <kip@thevertigo.com>
-Subject: Re: DTS-HD over HDMI
-Date: Sat, 15 Nov 2014 09:11:52 -0800
-Message-ID: <1416071512.3038.6.camel@kip-laptop>
-References: <1415908278.3076.63.camel@kip-laptop> <546784A5.4000200@iki.fi>
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: [PATCH] ASoC: pxa: prepare/unprepare clocks in pxa-ssp
+Date: Sat, 15 Nov 2014 22:51:46 +0300
+Message-ID: <1416081106-28324-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1513498412993634909=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homiemail-a59.g.dreamhost.com (sub5.mail.dreamhost.com
- [208.113.200.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 855DD2605E4
- for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2014 18:11:54 +0100 (CET)
-In-Reply-To: <546784A5.4000200@iki.fi>
+Received: from mail-wi0-f182.google.com (mail-wi0-f182.google.com
+ [209.85.212.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14D072605FA
+ for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2014 20:51:59 +0100 (CET)
+Received: by mail-wi0-f182.google.com with SMTP id h11so5631431wiw.9
+ for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2014 11:51:58 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,53 +21,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Change clk_enable/disable() calls to clk_prepare_enable() and
+clk_disable_unrepapre().
 
---===============1513498412993634909==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-QyfijlFV8SMCCPrYrM2c"
+Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+---
+ sound/soc/pxa/pxa-ssp.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-
---=-QyfijlFV8SMCCPrYrM2c
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, 2014-11-15 at 18:51 +0200, Anssi Hannula wrote:
-> Yes, it is possible with cards that support HBR. Support is in for
-> Intel, NVIDIA and AMD/ATI cards.
-
-Thanks a lot Anssi. It is a good thing to know my code so far isn't a
-lost shot in the dark.
-
---=20
-Kip Warner -- Senior Software Engineer
-OpenPGP encrypted/signed mail preferred
-http://www.thevertigo.com
-
---=-QyfijlFV8SMCCPrYrM2c
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iEYEABECAAYFAlRniVgACgkQLXnfK7bii20fDACgsJO8HuSPuH5V/6FOPYyuuoHf
-82EAmwbdHZkK37Q/12qveVHZEjZ3sOfl
-=UY+i
------END PGP SIGNATURE-----
-
---=-QyfijlFV8SMCCPrYrM2c--
-
-
---===============1513498412993634909==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1513498412993634909==--
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index a8e0974..cbba063 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -97,7 +97,7 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
+ 	int ret = 0;
+ 
+ 	if (!cpu_dai->active) {
+-		clk_enable(ssp->clk);
++		clk_prepare_enable(ssp->clk);
+ 		pxa_ssp_disable(ssp);
+ 	}
+ 
+@@ -121,7 +121,7 @@ static void pxa_ssp_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	if (!cpu_dai->active) {
+ 		pxa_ssp_disable(ssp);
+-		clk_disable(ssp->clk);
++		clk_disable_unprepare(ssp->clk);
+ 	}
+ 
+ 	kfree(snd_soc_dai_get_dma_data(cpu_dai, substream));
+@@ -136,7 +136,7 @@ static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
+ 	struct ssp_device *ssp = priv->ssp;
+ 
+ 	if (!cpu_dai->active)
+-		clk_enable(ssp->clk);
++		clk_prepare_enable(ssp->clk);
+ 
+ 	priv->cr0 = __raw_readl(ssp->mmio_base + SSCR0);
+ 	priv->cr1 = __raw_readl(ssp->mmio_base + SSCR1);
+@@ -144,7 +144,7 @@ static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
+ 	priv->psp = __raw_readl(ssp->mmio_base + SSPSP);
+ 
+ 	pxa_ssp_disable(ssp);
+-	clk_disable(ssp->clk);
++	clk_disable_unprepare(ssp->clk);
+ 	return 0;
+ }
+ 
+@@ -154,7 +154,7 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
+ 	struct ssp_device *ssp = priv->ssp;
+ 	uint32_t sssr = SSSR_ROR | SSSR_TUR | SSSR_BCE;
+ 
+-	clk_enable(ssp->clk);
++	clk_prepare_enable(ssp->clk);
+ 
+ 	__raw_writel(sssr, ssp->mmio_base + SSSR);
+ 	__raw_writel(priv->cr0 & ~SSCR0_SSE, ssp->mmio_base + SSCR0);
+@@ -165,7 +165,7 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
+ 	if (cpu_dai->active)
+ 		pxa_ssp_enable(ssp);
+ 	else
+-		clk_disable(ssp->clk);
++		clk_disable_unprepare(ssp->clk);
+ 
+ 	return 0;
+ }
+@@ -256,11 +256,11 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	/* The SSP clock must be disabled when changing SSP clock mode
+ 	 * on PXA2xx.  On PXA3xx it must be enabled when doing so. */
+ 	if (ssp->type != PXA3xx_SSP)
+-		clk_disable(ssp->clk);
++		clk_disable_unprepare(ssp->clk);
+ 	val = pxa_ssp_read_reg(ssp, SSCR0) | sscr0;
+ 	pxa_ssp_write_reg(ssp, SSCR0, val);
+ 	if (ssp->type != PXA3xx_SSP)
+-		clk_enable(ssp->clk);
++		clk_prepare_enable(ssp->clk);
+ 
+ 	return 0;
+ }
+-- 
+2.1.1
