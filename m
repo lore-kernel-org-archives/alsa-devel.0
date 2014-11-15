@@ -1,104 +1,124 @@
-From: Ben Zhang <benzh@chromium.org>
-Subject: [PATCH 2/2] ASoC: rt5677: add a platform config option for PDM clock divider
-Date: Fri, 14 Nov 2014 22:56:48 -0800
-Message-ID: <1416034608-24238-2-git-send-email-benzh@chromium.org>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1416034608-24238-1-git-send-email-benzh@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, linux-kernel@vger.kernel.org, Ben Zhang <benzh@chromium.org>
+From: John Spencer <maillist-alsa@barfooze.de>
+Subject: [PATCH] snd_dlsym: only do versioning checks if built
+	--with-versioning
+Date: Sat, 15 Nov 2014 13:55:54 +0100
+Message-ID: <54674D5A.3010500@barfooze.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------070107010405070503040906"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hindenburg.barfooze.de (hindenburg.barfooze.de [195.154.9.123])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3E562605B1
+ for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2014 13:57:11 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: sabotage@lists.openwall.com
 List-Id: alsa-devel@alsa-project.org
 
-The PDM output clock can use a divider of 1/2/3/4 based on the system clock
+This is a multi-part message in MIME format.
+--------------070107010405070503040906
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
+ From 291553a0132936611d48f41e924601dff8941537 Mon Sep 17 00:00:00 2001
+From: John Spencer <maillist-alsa@barfooze.de>
+Date: Sat, 15 Nov 2014 13:41:00 +0100
+Subject: [PATCH] snd_dlsym: only do versioning checks if built 
+--with-versioning
+
+a combination of some of the following garbage collecting LD/CFLAGS
+-Os -g0 -fdata-sections -ffunction-sections -s -Wl,--gc-sections
+-fno-unwind-tables -fno-asynchronous-unwind-tables
+causes the symbol versioning marker symbols to be removed from BSS
+since they're otherwise unreferenced. this causes dlsym failing to
+find them which results in runtime breakage:
+
+$ alsamixer
+ALSA lib dlmisc.c:142:(snd_dlsym_verify) unable to verify version for 
+symbol snd_config_hook_load
+ALSA lib conf.c:3328:(snd_config_hooks_call) symbol snd_config_hook_load 
+is not defined inside (null)
+ALSA lib conf.c:3788:(snd_config_update_r) hooks failed, removing 
+configuration
+cannot open mixer: No such device or address
+
+correct DSO:
+$ objdump -T libasound.so.2.strip | grep 
+_snd_config_hook_load_dlsym_config_hook_001
+001196bc g    DO .bss   00000001 _snd_config_hook_load_dlsym_config_hook_001
+
+incorrect DSO:
+$ objdump -T libs/libasound.so.2 | grep 
+_snd_config_hook_load_dlsym_config_hook_001
+00000000 g    DO *ABS*  00000001 _snd_config_hook_load_dlsym_config_hook_001
+
+since alsa was built with --without-versioning, doing those versioning
+checks at all is unnecessary and harmful and thus now disabled in this case.
+
+Signed-off-by: John Spencer <maillist-alsa@barfooze.de>
+
 ---
- Documentation/devicetree/bindings/sound/rt5677.txt | 5 +++++
- include/sound/rt5677.h                             | 8 ++++++++
- sound/soc/codecs/rt5677.c                          | 7 +++++++
- 3 files changed, 20 insertions(+)
+  src/dlmisc.c | 2 ++
+  1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
-index 740ff77..141f3e1 100644
---- a/Documentation/devicetree/bindings/sound/rt5677.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5677.txt
-@@ -27,6 +27,10 @@ Optional properties:
-   Boolean. Indicate MIC1/2 input and LOUT1/2/3 outputs are differential,
-   rather than single-ended.
- 
-+- realtek,pdm_clk_div
-+  Select 0/1/2/3 as PDM clock divider 1/2/4/3 respectively.
-+  PDM clock = system clock / PDM clock divider
-+
- - realtek,gpio-config
-   Array of six 8bit elements that configures GPIO.
-     0 - floating (reset value)
-@@ -71,6 +75,7 @@ rt5677 {
- 	realtek,pow-ldo2-gpio =
- 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
- 	realtek,in1-differential = "true";
-+	realtek,pdm_clk_div = <1>  /* PDM clock = system clock / 2 */
- 	realtek,gpio-config = /bits/ 8  <0 0 0 0 0 2>;   /* pull up GPIO6 */
- 	realtek,jd2-gpio = <3>;  /* Enables Jack detection for GPIO6 */
- };
-diff --git a/include/sound/rt5677.h b/include/sound/rt5677.h
-index d9eb7d8..368aa33 100644
---- a/include/sound/rt5677.h
-+++ b/include/sound/rt5677.h
-@@ -17,6 +17,12 @@ enum rt5677_dmic2_clk {
- 	RT5677_DMIC_CLK2 = 1,
- };
- 
-+enum rt5677_pdm_clk_div {
-+	RT5677_PDM_CLK_DIV1 = 0,
-+	RT5677_PDM_CLK_DIV2 = 1,
-+	RT5677_PDM_CLK_DIV4 = 2,
-+	RT5677_PDM_CLK_DIV3 = 3,
-+};
- 
- struct rt5677_platform_data {
- 	/* IN1/IN2/LOUT1/LOUT2/LOUT3 can optionally be differential */
-@@ -27,6 +33,8 @@ struct rt5677_platform_data {
- 	bool lout3_diff;
- 	/* DMIC2 clock source selection */
- 	enum rt5677_dmic2_clk dmic2_clk_pin;
-+	/* System clock to PDM filter divider */
-+	enum rt5677_pdm_clk_div pdm_clk_div;
- 
- 	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
- 	u8 gpio_config[6];
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 384281d..383cb61 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4502,6 +4502,8 @@ static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
- 					"realtek,lout2-differential");
- 	rt5677->pdata.lout3_diff = of_property_read_bool(np,
- 					"realtek,lout3-differential");
-+	of_property_read_u32(np, "realtek,pdm_clk_div",
-+					&rt5677->pdata.pdm_clk_div);
- 
- 	rt5677->pow_ldo2 = of_get_named_gpio(np,
- 					"realtek,pow-ldo2-gpio", 0);
-@@ -4548,6 +4550,8 @@ static void rt5677_parse_acpi(struct rt5677_priv *rt5677, struct device *dev)
- {
- 	rt5677->pdata.dmic2_clk_pin = (enum rt5677_dmic2_clk)
- 		rt5677_parse_acpi_entry(dev, "DCLK");
-+	rt5677->pdata.pdm_clk_div = (enum rt5677_pdm_clk_div)
-+		rt5677_parse_acpi_entry(dev, "PCLK");
- 	rt5677->pdata.in1_diff = (bool)rt5677_parse_acpi_entry(dev, "IN1");
- 	rt5677->pdata.in2_diff = (bool)rt5677_parse_acpi_entry(dev, "IN2");
- 	rt5677->pdata.lout1_diff = (bool)rt5677_parse_acpi_entry(dev, "OUT1");
-@@ -4730,6 +4734,9 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 					RT5677_GPIO5_DIR_OUT);
- 	}
- 
-+	regmap_update_bits(rt5677->regmap, RT5677_PDM_DATA_CTRL1,
-+			RT5677_PDM_DIV_MASK, rt5677->pdata.pdm_clk_div);
-+
- 	rt5677_init_gpio(i2c);
- 	rt5677_irq_init(i2c);
- 
--- 
-2.1.0.rc2.206.gedb03e5
+
+--------------070107010405070503040906
+Content-Type: text/plain;
+ name*0="0001-snd_dlsym-only-do-versioning-checks-if-built-with-ve.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename*0="0001-snd_dlsym-only-do-versioning-checks-if-built-with-ve.pa";
+ filename*1="tch"
+
+RnJvbSAyOTE1NTNhMDEzMjkzNjYxMWQ0OGY0MWU5MjQ2MDFkZmY4OTQxNTM3IE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBKb2huIFNwZW5jZXIgPG1haWxsaXN0LWFsc2FAYmFy
+Zm9vemUuZGU+CkRhdGU6IFNhdCwgMTUgTm92IDIwMTQgMTM6NDE6MDAgKzAxMDAKU3ViamVj
+dDogW1BBVENIXSBzbmRfZGxzeW06IG9ubHkgZG8gdmVyc2lvbmluZyBjaGVja3MgaWYgYnVp
+bHQgLS13aXRoLXZlcnNpb25pbmcKCmEgY29tYmluYXRpb24gb2Ygc29tZSBvZiB0aGUgZm9s
+bG93aW5nIGdhcmJhZ2UgY29sbGVjdGluZyBMRC9DRkxBR1MKLU9zIC1nMCAtZmRhdGEtc2Vj
+dGlvbnMgLWZmdW5jdGlvbi1zZWN0aW9ucyAtcyAtV2wsLS1nYy1zZWN0aW9ucwotZm5vLXVu
+d2luZC10YWJsZXMgLWZuby1hc3luY2hyb25vdXMtdW53aW5kLXRhYmxlcwpjYXVzZXMgdGhl
+IHN5bWJvbCB2ZXJzaW9uaW5nIG1hcmtlciBzeW1ib2xzIHRvIGJlIHJlbW92ZWQgZnJvbSBC
+U1MKc2luY2UgdGhleSdyZSBvdGhlcndpc2UgdW5yZWZlcmVuY2VkLiB0aGlzIGNhdXNlcyBk
+bHN5bSBmYWlsaW5nIHRvCmZpbmQgdGhlbSB3aGljaCByZXN1bHRzIGluIHJ1bnRpbWUgYnJl
+YWthZ2U6CgokIGFsc2FtaXhlcgpBTFNBIGxpYiBkbG1pc2MuYzoxNDI6KHNuZF9kbHN5bV92
+ZXJpZnkpIHVuYWJsZSB0byB2ZXJpZnkgdmVyc2lvbiBmb3Igc3ltYm9sIHNuZF9jb25maWdf
+aG9va19sb2FkCkFMU0EgbGliIGNvbmYuYzozMzI4OihzbmRfY29uZmlnX2hvb2tzX2NhbGwp
+IHN5bWJvbCBzbmRfY29uZmlnX2hvb2tfbG9hZCBpcyBub3QgZGVmaW5lZCBpbnNpZGUgKG51
+bGwpCkFMU0EgbGliIGNvbmYuYzozNzg4OihzbmRfY29uZmlnX3VwZGF0ZV9yKSBob29rcyBm
+YWlsZWQsIHJlbW92aW5nIGNvbmZpZ3VyYXRpb24KY2Fubm90IG9wZW4gbWl4ZXI6IE5vIHN1
+Y2ggZGV2aWNlIG9yIGFkZHJlc3MKCmNvcnJlY3QgRFNPOgokIG9iamR1bXAgLVQgbGliYXNv
+dW5kLnNvLjIuc3RyaXAgfCBncmVwIF9zbmRfY29uZmlnX2hvb2tfbG9hZF9kbHN5bV9jb25m
+aWdfaG9va18wMDEKMDAxMTk2YmMgZyAgICBETyAuYnNzICAgMDAwMDAwMDEgX3NuZF9jb25m
+aWdfaG9va19sb2FkX2Rsc3ltX2NvbmZpZ19ob29rXzAwMQoKaW5jb3JyZWN0IERTTzoKJCBv
+YmpkdW1wIC1UIGxpYnMvbGliYXNvdW5kLnNvLjIgfCBncmVwIF9zbmRfY29uZmlnX2hvb2tf
+bG9hZF9kbHN5bV9jb25maWdfaG9va18wMDEKMDAwMDAwMDAgZyAgICBETyAqQUJTKiAgMDAw
+MDAwMDEgX3NuZF9jb25maWdfaG9va19sb2FkX2Rsc3ltX2NvbmZpZ19ob29rXzAwMQoKc2lu
+Y2UgYWxzYSB3YXMgYnVpbHQgd2l0aCAtLXdpdGhvdXQtdmVyc2lvbmluZywgZG9pbmcgdGhv
+c2UgdmVyc2lvbmluZwpjaGVja3MgYXQgYWxsIGlzIHVubmVjZXNzYXJ5IGFuZCBoYXJtZnVs
+IGFuZCB0aHVzIG5vdyBkaXNhYmxlZCBpbiB0aGlzIGNhc2UuCgpTaWduZWQtb2ZmLWJ5OiBK
+b2huIFNwZW5jZXIgPG1haWxsaXN0LWFsc2FAYmFyZm9vemUuZGU+CgotLS0KIHNyYy9kbG1p
+c2MuYyB8IDIgKysKIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKCmRpZmYgLS1n
+aXQgYS9zcmMvZGxtaXNjLmMgYi9zcmMvZGxtaXNjLmMKaW5kZXggNGI4YTAyYy4uNjJmNzA0
+NyAxMDA2NDQKLS0tIGEvc3JjL2RsbWlzYy5jCisrKyBiL3NyYy9kbG1pc2MuYwpAQCAtMTc3
+LDExICsxNzcsMTMgQEAgdm9pZCAqc25kX2Rsc3ltKHZvaWQgKmhhbmRsZSwgY29uc3QgY2hh
+ciAqbmFtZSwgY29uc3QgY2hhciAqdmVyc2lvbikKIAl9CiAjZW5kaWYKICNpZmRlZiBIQVZF
+X0xJQkRMCisjaWZkZWYgVkVSU0lPTkVEX1NZTUJPTFMKIAlpZiAodmVyc2lvbikgewogCQll
+cnIgPSBzbmRfZGxzeW1fdmVyaWZ5KGhhbmRsZSwgbmFtZSwgdmVyc2lvbik7CiAJCWlmIChl
+cnIgPCAwKQogCQkJcmV0dXJuIE5VTEw7CiAJfQorI2VuZGlmCiAJcmV0dXJuIGRsc3ltKGhh
+bmRsZSwgbmFtZSk7CiAjZWxzZQogCXJldHVybiBOVUxMOwotLSAKMS44LjQKCg==
+--------------070107010405070503040906
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------070107010405070503040906--
