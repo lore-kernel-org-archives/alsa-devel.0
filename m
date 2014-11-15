@@ -1,62 +1,44 @@
-From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
-Subject: Re: [PATCH v7.1 11/19] OMAPDSS: hdmi: Make hdmi_mode_has_audio()
- more user friedly
-Date: Sat, 15 Nov 2014 17:52:00 +0200
-Message-ID: <546776A0.2060305@mentor.com>
-References: <cover.1415803064.git.jsarha@ti.com> <8047b50c76efecd72e7219f7871c59cc4a8ee5f5.1415803065.git.jsarha@ti.com> <5466139E.5040308@mentor.com>
+From: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
+Subject: usb-audio: check_input_term (mixer.c) iterating to
+	clock selectors?
+Date: Sat, 15 Nov 2014 16:57:05 +0100
+Message-ID: <CAMFLXsAzbJ=TSV1rBhVp4fjqmiGwgarrXJb0NWOEM89yVH5VUA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5466139E.5040308@mentor.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f171.google.com (mail-ig0-f171.google.com
+ [209.85.213.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2AF72605E4
+ for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2014 16:57:06 +0100 (CET)
+Received: by mail-ig0-f171.google.com with SMTP id uq10so1267752igb.10
+ for <alsa-devel@alsa-project.org>; Sat, 15 Nov 2014 07:57:05 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jyri,
-
-On 14.11.2014 16:37, Vladimir Zapolskiy wrote:
-> Hi Jyri,
-> 
-> On 12.11.2014 16:41, Jyri Sarha wrote:
->> Signed-off-by: Jyri Sarha <jsarha@ti.com>
->> ---
->>  drivers/video/fbdev/omap2/dss/hdmi.h |    4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev/omap2/dss/hdmi.h
->> index a6e08ff..6d129f2 100644
->> --- a/drivers/video/fbdev/omap2/dss/hdmi.h
->> +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
->> @@ -345,9 +345,9 @@ void hdmi_wp_audio_config_format(struct hdmi_wp_data *wp,
->>  		struct hdmi_audio_format *aud_fmt);
->>  void hdmi_wp_audio_config_dma(struct hdmi_wp_data *wp,
->>  		struct hdmi_audio_dma *aud_dma);
->> -static inline bool hdmi_mode_has_audio(int mode)
->> +static inline bool hdmi_mode_has_audio(struct hdmi_config *cfg)
->>  {
->> -	return mode == HDMI_HDMI ? true : false;
->> +	return cfg->hdmi_dvi_mode == HDMI_HDMI ? true : false;
->>  }
->>  
->>  /* HDMI DRV data */
->>
-> 
-> would it be possible for you to rearrange the changes preserving the
-> following sequence?
-> 
-> 1) 13/19
-> 2) 15/19
-> 3) 11/19
-> 4) 14/19
-> 5) 16/19
-> 
-> Otherwise I'm worried that someone's git rebase may fail.
-
-sorry, git bisect of course.
-
---
-With best wishes,
-Vladimir
-
+SGkgZXZlcnlib2R5ISBJJ3ZlIGp1c3Qgc3RhcnRlZCBsb29raW5nIGF0IEFMU0EgYmVjYXVzZSBJ
+IHdhbnQgdG8gZ2V0IHRoZQptaWMgd29ya2luZyB3aXRoIG15IEFzdXMgWG9uYXIgVTcuIFNvbWUg
+b2YgeW91IG1pZ2h0IGhhdmUgc2VlbiBtZSBvbiBJUkMgYXMKam9oYW5hci4KCkknbSB3b25kZXJp
+bmcgYWJvdXQgY2hlY2tfaW5wdXRfdGVybSguLi4pIGluIHNvdW5kL3VzYi9taXhlci5jLCB3aGlj
+aCBmb3IKY2FzZSBVQUNfSU5QVVRfVEVSTUlOQUwgYW5kIFVBQ19WRVJTSU9OXzIgd2lsbCByZWN1
+cnNpdmVseSBnbyBpbnRvIHRoZQpjbG9jayBzb3VyY2UuIElzIHRoaXMgY29ycmVjdCBiZWhhdmlv
+dXI/IEZvciBteSBjYXJkIGJvdGggbWljIGFuZCBsaW5lIHdpbGwKc2hvdyB1cCBhcyAiVW5pdCAy
+MiIgd2hlbiBJIGNhbGwgImFtaXhlciBjb250ZW50cyIgc2luY2UgdGhlIHR3byBpbnB1dHMKaGF2
+ZSB0aGUgc2FtZSB1bm5hbWVkIGNsb2NrIHNvdXJjZSAodGhleSBhbHNvIHNoYXJlIHBoeXNpY2Fs
+IGNvbm5lY3RvcikuCkhvd2V2ZXIsIGlmIEkgY29tbWVudCBvdXQgdGhlIHJlY3Vyc2l2ZSBjYWxs
+IHRoZXkgc2hvdyB1cCBhcyAibWljIiBhbmQKImxpbmUiIGFzIHRoZXkncmUgc3VwcG9zZWQgdG8u
+CgpCdHcsIGlmIHRoaXMgaXMgY29ycmVjdCwgY291bGRuJ3Qgd2Ugc2V0IGlkID0gZC0+YkNTb3Vy
+Y2VJRCBhbmQgYnJlYWs7IGluCnRoZSBzYW1lIHdheSB0aGF0IGNhc2UgVUFDX0ZFQVRVUkVfVU5J
+VCBkb2VzPwoKLy9Kb2hhbiBSYXN0w6luCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
