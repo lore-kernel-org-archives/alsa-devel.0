@@ -1,73 +1,70 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: samsung-i2s: Add 192kHz config option
-Date: Mon, 17 Nov 2014 10:57:54 +0000
-Message-ID: <1416221874-22092-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, ben-linux@fluff.org, kgene.kim@samsung.com, broonie@kernel.org
-Cc: perex@perex.cz, tiwai@suse.de, galak@codeaurora.org, sbkim73@samsung.com, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: pxa: prepare/unprepare clocks in
+	pxa-ssp
+Date: Mon, 17 Nov 2014 11:01:17 +0000
+Message-ID: <20141117110117.GW2722@sirena.org.uk>
+References: <1416081106-28324-1-git-send-email-dbaryshkov@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0762591215015349223=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57857261615
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 12:02:28 +0100 (CET)
+In-Reply-To: <1416081106-28324-1-git-send-email-dbaryshkov@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-Adds QUIRK_SUPPORTS_192KHZ to allow 192kHz rate
-to be selected for hardware that supports it.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- .../devicetree/bindings/sound/samsung-i2s.txt      |    2 ++
- include/linux/platform_data/asoc-s3c.h             |    1 +
- sound/soc/samsung/i2s.c                            |    8 ++++++++
- 3 files changed, 11 insertions(+), 0 deletions(-)
+--===============0762591215015349223==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WjpOG6URjntW8FAF"
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung-i2s.txt b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-index d188296..c3f3950 100644
---- a/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/samsung-i2s.txt
-@@ -40,6 +40,8 @@ Optional SoC Specific Properties:
-   sub system(used in secondary sound source).
- - pinctrl-0: Should specify pin control groups used for this controller.
- - pinctrl-names: Should contain only one value - "default".
-+- samsung,supports-192khz: specify this (without a value) if you want to allow
-+    192000 sample rate over the I2S link.
- 
- Example:
- 
-diff --git a/include/linux/platform_data/asoc-s3c.h b/include/linux/platform_data/asoc-s3c.h
-index 5e0bc77..6d0702d 100644
---- a/include/linux/platform_data/asoc-s3c.h
-+++ b/include/linux/platform_data/asoc-s3c.h
-@@ -28,6 +28,7 @@ struct samsung_i2s {
- #define QUIRK_NEED_RSTCLR	(1 << 3)
- #define QUIRK_SUPPORTS_TDM	(1 << 4)
- #define QUIRK_SUPPORTS_IDMA	(1 << 5)
-+#define QUIRK_SUPPORTS_192KHZ	(1 << 6)
- 	/* Quirks of the I2S controller */
- 	u32 quirks;
- 	dma_addr_t idma_addr;
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 947352d..f688e89 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1219,6 +1219,9 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 						"specified");
- 			}
- 		}
-+
-+		if (of_find_property(np, "samsung,supports-192khz", NULL))
-+			quirks |= QUIRK_SUPPORTS_192KHZ;
- 	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -1247,6 +1250,11 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	if (quirks & QUIRK_PRI_6CHAN)
- 		pri_dai->i2s_dai_drv.playback.channels_max = 6;
- 
-+	if (quirks & QUIRK_SUPPORTS_192KHZ) {
-+		pri_dai->i2s_dai_drv.playback.rates |= SNDRV_PCM_RATE_192000;
-+		pri_dai->i2s_dai_drv.capture.rates |= SNDRV_PCM_RATE_192000;
-+	}
-+
- 	if (quirks & QUIRK_SEC_DAI) {
- 		sec_dai = i2s_alloc_dai(pdev, true);
- 		if (!sec_dai) {
--- 
-1.7.2.5
+
+--WjpOG6URjntW8FAF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Nov 15, 2014 at 10:51:46PM +0300, Dmitry Eremin-Solenikov wrote:
+> Change clk_enable/disable() calls to clk_prepare_enable() and
+> clk_disable_unrepapre().
+
+Applied, thanks.
+
+--WjpOG6URjntW8FAF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUadV8AAoJECTWi3JdVIfQZbMH/RpkDPyQvWPUEyR3R8HJ1Kau
+f07wa3VA0H7h4CoehU5kSnqQ2fef86A7ax79mYvGdaNIFeiuPdW9Ym/Si+8v/x10
+KqDl13Wf9WlyD3jBaGYMOR2HRae1H8NdDMA3XaX/lQbHo/F7nFcy2r0aa+K65Xv0
+KE0Mjg5MakY6yq6eiSdCSF9WrnB/owhcifnGvInJuWd9vdKYXFD/SKWIxiHa+keU
+0k2EdFctUgo0qKglBU3eo/R8FRpdgF8xWFHpBBs18AlJY1ldmvk8TZL+ppqP1UZd
+G/vQyfOzhbFMIj5kIOI9d6mvW1TMQG3KcNIlx3JKmZRqdqVoNNTSYTe9ibvB5WQ=
+=r/GK
+-----END PGP SIGNATURE-----
+
+--WjpOG6URjntW8FAF--
+
+--===============0762591215015349223==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0762591215015349223==--
