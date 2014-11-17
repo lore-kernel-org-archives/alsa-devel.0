@@ -1,61 +1,70 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/1] ALSA: ice17xx: Deletion of unnecessary checks before
- the function call "snd_ac97_resume"
-Date: Mon, 17 Nov 2014 11:34:22 +0100
-Message-ID: <5469CF2E.6040408@users.sourceforge.net>
-References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
- urceforge.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: adav80x: Replace w->codec with
+ snd_soc_dapm_to_codec(w->dapm)
+Date: Mon, 17 Nov 2014 10:24:42 +0000
+Message-ID: <20141117102442.GQ2722@sirena.org.uk>
+References: <1416213456-5987-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Coccinelle <cocci@systeme.lip6.fr>
+Content-Type: multipart/mixed; boundary="===============1713213334900063912=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E804F26152E
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 11:49:53 +0100 (CET)
+In-Reply-To: <1416213456-5987-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 17 Nov 2014 11:28:02 +0100
 
-The snd_ac97_resume() function tests whether its argument is NULL and then
-returns immediately. Thus the test around the call is not needed.
+--===============1713213334900063912==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rUztinBX/EQDJOOk"
+Content-Disposition: inline
 
-This issue was detected by using the Coccinelle software.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/ice1712/ice1712.c | 3 +--
- sound/pci/ice1712/ice1724.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+--rUztinBX/EQDJOOk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
-index 87f7fc4..e1e18b5 100644
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -2905,8 +2905,7 @@ static int snd_ice1712_resume(struct device *dev)
- 	outw(ice->pm_saved_spdif_ctrl, ICEMT(ice, ROUTE_SPDOUT));
- 	outw(ice->pm_saved_route, ICEMT(ice, ROUTE_PSDOUT03));
- 
--	if (ice->ac97)
--		snd_ac97_resume(ice->ac97);
-+	snd_ac97_resume(ice->ac97);
- 
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 	return 0;
-diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index 08cb08a..0e56835 100644
---- a/sound/pci/ice1712/ice1724.c
-+++ b/sound/pci/ice1712/ice1724.c
-@@ -2884,8 +2884,7 @@ static int snd_vt1724_resume(struct device *dev)
- 	outb(ice->pm_saved_spdif_cfg, ICEREG1724(ice, SPDIF_CFG));
- 	outl(ice->pm_saved_route, ICEMT1724(ice, ROUTE_PLAYBACK));
- 
--	if (ice->ac97)
--		snd_ac97_resume(ice->ac97);
-+	snd_ac97_resume(ice->ac97);
- 
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 	return 0;
--- 
-2.1.3
+On Mon, Nov 17, 2014 at 09:37:34AM +0100, Lars-Peter Clausen wrote:
+> The codec field of the snd_soc_widget struct is eventually going to be
+> removed, use snd_soc_dapm_to_codec(w->dapm) instead.
+
+Applied, thanks.
+
+--rUztinBX/EQDJOOk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUaczpAAoJECTWi3JdVIfQktoH/2D6afsQZE6WcZpb7UW3jvqL
+94PO3q89pib/i8wANSPBSwl3rqlj0aqAAxFqfuj9wOTTFskqfTpGkEXYHT+jcsUO
+xoGEGqCPCHKGaScASvLSOc0dwtJglXCwrbuk4VKgtJM77bYllV4COlLB/olj+AL/
+BjK23UZsLTlY3/NrFv9BS6OnfrkfEf/CrHfQsVur+JkH8Cbq25bw9yobIfBGX3lC
+oIXkTS8kSqCfk6t70ilxvBn7Lnh+pOSovkw98WxBH8kcj40oC3CrInpXqaiDKUjI
+suDYeohGWc+UU7PWsLGNvRSxtkHwFQzD1JOHDpTCAJo2XaxyWD+DtCfTUa5M0Iw=
+=y+ZD
+-----END PGP SIGNATURE-----
+
+--rUztinBX/EQDJOOk--
+
+--===============1713213334900063912==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1713213334900063912==--
