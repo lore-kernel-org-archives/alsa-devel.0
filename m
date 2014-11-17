@@ -1,82 +1,75 @@
-From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
-Subject: Re: [PATCH v7.1 11/19] OMAPDSS: hdmi: Make hdmi_mode_has_audio()
- more user friedly
-Date: Mon, 17 Nov 2014 17:12:59 +0200
-Message-ID: <546A107B.1030800@mentor.com>
-References: <cover.1415803064.git.jsarha@ti.com> <8047b50c76efecd72e7219f7871c59cc4a8ee5f5.1415803065.git.jsarha@ti.com> <5466139E.5040308@mentor.com> <54661A30.3010708@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] mfd: arizona: Add support for CS47L24
+Date: Mon, 17 Nov 2014 15:13:18 +0000
+Message-ID: <20141117151318.GE12443@opensource.wolfsonmicro.com>
+References: <20141111165227.GA24344@opensource.wolfsonmicro.com> <20141111171532.GA26106@opensource.wolfsonmicro.com> <20141113101228.GE24004@x1> <20141113164017.GA12443@opensource.wolfsonmicro.com> <20141117121648.GP24004@x1> <20141117125433.GA29518@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <54661A30.3010708@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141117125433.GA29518@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Lee Jones <lee.jones@linaro.org>, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jyri,
-
-On 14.11.2014 17:05, Jyri Sarha wrote:
-> On 11/14/2014 04:37 PM, Vladimir Zapolskiy wrote:
->> Hi Jyri,
->>
->> On 12.11.2014 16:41, Jyri Sarha wrote:
->>> Signed-off-by: Jyri Sarha <jsarha@ti.com>
->>> ---
->>>   drivers/video/fbdev/omap2/dss/hdmi.h |    4 ++--
->>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev/omap2/dss/hdmi.h
->>> index a6e08ff..6d129f2 100644
->>> --- a/drivers/video/fbdev/omap2/dss/hdmi.h
->>> +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
->>> @@ -345,9 +345,9 @@ void hdmi_wp_audio_config_format(struct hdmi_wp_data *wp,
->>>   		struct hdmi_audio_format *aud_fmt);
->>>   void hdmi_wp_audio_config_dma(struct hdmi_wp_data *wp,
->>>   		struct hdmi_audio_dma *aud_dma);
->>> -static inline bool hdmi_mode_has_audio(int mode)
->>> +static inline bool hdmi_mode_has_audio(struct hdmi_config *cfg)
->>>   {
->>> -	return mode == HDMI_HDMI ? true : false;
->>> +	return cfg->hdmi_dvi_mode == HDMI_HDMI ? true : false;
->>>   }
->>>
->>>   /* HDMI DRV data */
->>>
->>
->> would it be possible for you to rearrange the changes preserving the
->> following sequence?
->>
->> 1) 13/19
->> 2) 15/19
->> 3) 11/19
->> 4) 14/19
->> 5) 16/19
->>
+On Mon, Nov 17, 2014 at 12:54:33PM +0000, Richard Fitzgerald wrote:
+> On Mon, Nov 17, 2014 at 12:16:48PM +0000, Lee Jones wrote:
+> > On Thu, 13 Nov 2014, Charles Keepax wrote:
+> > > This looks good to me. I don't quite follow what you are
+> > > requesting with the header file? This still uses the header file
+> > > for the registers but just defining which are available on this
+> > > chip.
+> > 
+> > Looks like I was a little hasty with my comments.  However 8000 lines
+> > over 4 platforms just to describe which registers are readable is all
+> > a little bit grim.  Is there any way you can use ranges instead of
+> > listing every single register on the chip?  How many gaps are there? 
+> > 
 > 
-> Sure, I can do that. Everything should be fine in that order too.
+> It's debatable. Ranges would be possible but there are a lot of gaps.
+> Personally, speaking as someone who has to maintain these drivers, I
+> like that fact that I can look at this file and see exactly which registers
+> are readable and volatile because they are all explicitly listed. It's also
+> useful that the files are searchable for specific registers.
 > 
->> Otherwise I'm worried that someone's git rebase may fail.
->>
+> I'll point Charles at this to get his opinion.
 
-sorry again, I meant git-bisect, git rebase is fine.
+Main thing is I do quite like being able to easily grep/search
+for a register and have it turn up. Would get pretty annoying
+having to search for the register and a few guesses at reasonable
+start/end of ranges it might be in. There are also quite a lot of
+gaps as the designers tend to leave some room to expand between
+IP blocks.
 
-> But do not follow why. Did you notice that 10/19 removes the config 
-> options that enable the pieces of code that are deleted in 13/19 and 
-> 15/19. IOW, the code that uses hdmi_mode_has_audio() (and would become 
-> broken by 11/19) is already disabled by 10/19. Git-wise I see no problem 
-> either.
+I do see what you are saying here the Arizona devices are pretty
+massive and the tables get pretty large and there is a fair
+amount of duplication between chips. A couple of ideas come to
+mind but they all have fairly debatable properties:
 
-Right, I was worried by changed hdmi_mode_has_audio() API and still
-present source code, which uses the old API (it is fixed in the
-following patches). If the code that uses hdmi_mode_has_audio() is
-disabled by 10/19 and the kernel can be successfully compiled and
-working on partial application of the changeset, then there should be no
-problem with git-bisect, and probably no need to rearrange the commits.
+1) We could add #defines for various IP blocks and the readable
+callback could include these defines for various blocks. Which
+would reduce the duplication between chips. Although a lot of the
+blocks have small differences between chips which might hurt some
+of the benefits and this does also have some negative affects on the
+greppability of it all. This could also be done as functions then
+some of the differences could be taken into account locally for
+each block but that hurts the performance and probably
+readability.
 
-> I'll rearrange the patches if you still insist there is a problem with 
-> current order, but I would like to understand why.
+2) We could add a function to the regmap core that makes any
+register with a default or marked as volatile readable. That
+would remove the readable callback completely and not really hurt
+greppability (assuming we could change the default array to use
+the #defines for the register) but at fairly large runtime cost.
+We would have to search the default array everytime we wanted to
+check if a register is readable.
 
---
-With best wishes,
-Vladimir
+I would probably like to see Mark's thoughts on either of those
+before we did anything as neither of them feel like great
+suggestions to me.
+
+Thanks,
+Charles
+
+
