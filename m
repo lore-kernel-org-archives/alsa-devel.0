@@ -1,40 +1,60 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 2/2] ASoC: Intel: add support for
- Cherrytrail and Braswell in SST driver
-Date: Mon, 17 Nov 2014 21:06:06 +0530
-Message-ID: <20141117153606.GB2074@intel.com>
-References: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
- <14c8d095785c6a33e60b3a9e03fc1a2d8445a15f.1416216640.git.mengdong.lin@intel.com>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+	<u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: rt5631: Fixing compilation warning when DT is
+ disabled
+Date: Mon, 17 Nov 2014 16:56:17 +0100
+Message-ID: <20141117155617.GJ27002@pengutronix.de>
+References: <1416232589-31319-1-git-send-email-krishna.md@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CDFC264F3A
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 16:35:04 +0100 (CET)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <14c8d095785c6a33e60b3a9e03fc1a2d8445a15f.1416216640.git.mengdong.lin@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, liam.r.girdwood@intel.com
+In-Reply-To: <1416232589-31319-1-git-send-email-krishna.md@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Krishna Mohan Dani <krishna.md@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, broonie@kernel.org, kgene.kim@samsung.com, Claude Youn <claude.youn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 17, 2014 at 05:34:27PM +0800, mengdong.lin@intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> This patch add ACPI device ID and platform data for two Cherryview-based
-> platforms, Cherrytrail and Braswell. Also reuse mfld driver ops in sst driver.
-> 
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+On Mon, Nov 17, 2014 at 07:26:29PM +0530, Krishna Mohan Dani wrote:
+> Fixes the following compilation warning:
+> Warning: 'rt5631_i2c_dt_ids' defined but not used - when DT is not us=
+ed.
+>=20
+> Signed-off-by: Claude Youn <claude.youn@gmail.com>
+> Signed-off-by: Krishna Mohan Dani <krishna.md@samsung.com>
+> ---
+>  sound/soc/codecs/rt5631.c |    2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
+> index 3b7d5e4..9425545 100644
+> --- a/sound/soc/codecs/rt5631.c
+> +++ b/sound/soc/codecs/rt5631.c
+> @@ -1691,12 +1691,14 @@ static const struct i2c_device_id rt5631_i2c_=
+id[] =3D {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, rt5631_i2c_id);
+> =20
+> +#ifdef CONFIG_OF
+>  static struct of_device_id rt5631_i2c_dt_ids[] =3D {
+>  	{ .compatible =3D "realtek,rt5631"},
+>  	{ .compatible =3D "realtek,alc5631"},
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(of, rt5631_i2c_dt_ids);
+> +#endif
 
--- 
-~Vinod
+An (IMHO nicer) alternative is:
+
+-static struct of_device_id rt5631_i2c_dt_ids[] =3D {
++static struct of_device_id rt5631_i2c_dt_ids[] __maybe_unused =3D {
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig        =
+    |
+Industrial Linux Solutions                 | http://www.pengutronix.de/=
+  |
