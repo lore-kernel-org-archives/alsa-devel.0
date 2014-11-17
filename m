@@ -1,70 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pxa: prepare/unprepare clocks in
-	pxa-ssp
-Date: Mon, 17 Nov 2014 11:01:17 +0000
-Message-ID: <20141117110117.GW2722@sirena.org.uk>
-References: <1416081106-28324-1-git-send-email-dbaryshkov@gmail.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 1/1] ALSA: lola: Deletion of an unnecessary check before the
+ function call "vfree"
+Date: Mon, 17 Nov 2014 12:48:44 +0100
+Message-ID: <5469E09C.6040808@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0762591215015349223=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 57857261615
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 12:02:28 +0100 (CET)
-In-Reply-To: <1416081106-28324-1-git-send-email-dbaryshkov@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Coccinelle <cocci@systeme.lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 17 Nov 2014 12:42:16 +0100
 
---===============0762591215015349223==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WjpOG6URjntW8FAF"
-Content-Disposition: inline
+The vfree() function performs also input parameter validation. Thus the test
+around the call is not needed.
 
+This issue was detected by using the Coccinelle software.
 
---WjpOG6URjntW8FAF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/pci/lola/lola_mixer.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On Sat, Nov 15, 2014 at 10:51:46PM +0300, Dmitry Eremin-Solenikov wrote:
-> Change clk_enable/disable() calls to clk_prepare_enable() and
-> clk_disable_unrepapre().
-
-Applied, thanks.
-
---WjpOG6URjntW8FAF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUadV8AAoJECTWi3JdVIfQZbMH/RpkDPyQvWPUEyR3R8HJ1Kau
-f07wa3VA0H7h4CoehU5kSnqQ2fef86A7ax79mYvGdaNIFeiuPdW9Ym/Si+8v/x10
-KqDl13Wf9WlyD3jBaGYMOR2HRae1H8NdDMA3XaX/lQbHo/F7nFcy2r0aa+K65Xv0
-KE0Mjg5MakY6yq6eiSdCSF9WrnB/owhcifnGvInJuWd9vdKYXFD/SKWIxiHa+keU
-0k2EdFctUgo0qKglBU3eo/R8FRpdgF8xWFHpBBs18AlJY1ldmvk8TZL+ppqP1UZd
-G/vQyfOzhbFMIj5kIOI9d6mvW1TMQG3KcNIlx3JKmZRqdqVoNNTSYTe9ibvB5WQ=
-=r/GK
------END PGP SIGNATURE-----
-
---WjpOG6URjntW8FAF--
-
---===============0762591215015349223==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0762591215015349223==--
+diff --git a/sound/pci/lola/lola_mixer.c b/sound/pci/lola/lola_mixer.c
+index 782f4d8..e7fe15d 100644
+--- a/sound/pci/lola/lola_mixer.c
++++ b/sound/pci/lola/lola_mixer.c
+@@ -108,8 +108,7 @@ int lola_init_pins(struct lola *chip, int dir, int *nidp)
+ 
+ void lola_free_mixer(struct lola *chip)
+ {
+-	if (chip->mixer.array_saved)
+-		vfree(chip->mixer.array_saved);
++	vfree(chip->mixer.array_saved);
+ }
+ 
+ int lola_init_mixer_widget(struct lola *chip, int nid)
+-- 
+2.1.3
