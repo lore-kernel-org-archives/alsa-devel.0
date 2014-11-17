@@ -1,18 +1,16 @@
-From: =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
-Subject: [PATCH] usb-audio: Set the Control Selector to
-	SU_SELECTOR_CONTROL for UAC2
-Date: Mon, 17 Nov 2014 08:39:33 +0100
-Message-ID: <1416209973-7773-1-git-send-email-johan@oljud.se>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: [PATCH] ASoC: soc-pcm: skip dpcm path checking with
+	incapable/unready FE
+Date: Mon, 17 Nov 2014 16:02:57 +0800
+Message-ID: <1416211377-9559-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f54.google.com (mail-la0-f54.google.com
- [209.85.215.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C4AB2614DD
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 08:39:45 +0100 (CET)
-Received: by mail-la0-f54.google.com with SMTP id gf13so5966562lab.27
- for <alsa-devel@alsa-project.org>; Sun, 16 Nov 2014 23:39:44 -0800 (PST)
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
+ [67.231.156.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29A9D2614E3
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 09:03:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
+To: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.de, perex@perex.cz, alsa-devel@alsa-project.org
+Cc: Qiao Zhou <zhouqiao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-U3BlY2lmaWVkIGluIHNlY3Rpb24gNS4yLjUuNi4xIG9mIHRoZSBVU0IgQXVkaW8gQ2xhc3MgMi4w
-IGRlZmluaXRpb24uCgpTb2x2ZXMgdGhlIGZvbGxvd2luZyBlcnJvciBmb3IgQy1NZWRpYSA2NjMy
-QSAoQXN1cyBYb25hciBVNyk6ClsgODIxOS42NzYxNjRdIGNhbm5vdCBnZXQgY3RsIHZhbHVlOiBy
-ZXEgPSAweDgxLCB3VmFsdWUgPSAweDAsIHdJbmRleCA9IDB4MTQwMCwgdHlwZSA9IDMKClNpZ25l
-ZC1vZmYtYnk6IEpvaGFuIFJhc3TDqW4gPGpvaGFuQG9sanVkLnNlPgotLS0KIHNvdW5kL3VzYi9t
-aXhlci5jIHwgNyArKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAzIGRl
-bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlci5jIGIvc291bmQvdXNiL21p
-eGVyLmMKaW5kZXggMTRlMTQ1NS4uYzYyMDljZSAxMDA2NDQKLS0tIGEvc291bmQvdXNiL21peGVy
-LmMKKysrIGIvc291bmQvdXNiL21peGVyLmMKQEAgLTIwMzIsMTAgKzIwMzIsMTEgQEAgc3RhdGlj
-IGludCBwYXJzZV9hdWRpb19zZWxlY3Rvcl91bml0KHN0cnVjdCBtaXhlcl9idWlsZCAqc3RhdGUs
-IGludCB1bml0aWQsCiAJY3ZhbC0+cmVzID0gMTsKIAljdmFsLT5pbml0aWFsaXplZCA9IDE7CiAK
-LQlpZiAoZGVzYy0+YkRlc2NyaXB0b3JTdWJ0eXBlID09IFVBQzJfQ0xPQ0tfU0VMRUNUT1IpCi0J
-CWN2YWwtPmNvbnRyb2wgPSBVQUMyX0NYX0NMT0NLX1NFTEVDVE9SOwotCWVsc2UKKwlpZiAoc3Rh
-dGUtPm1peGVyLT5wcm90b2NvbCA9PSBVQUNfVkVSU0lPTl8xKQogCQljdmFsLT5jb250cm9sID0g
-MDsKKwllbHNlIC8qIFVBQ19WRVJTSU9OXzIgKi8KKwkJY3ZhbC0+Y29udHJvbCA9IChkZXNjLT5i
-RGVzY3JpcHRvclN1YnR5cGUgPT0gVUFDMl9DTE9DS19TRUxFQ1RPUikgPworCQkJVUFDMl9DWF9D
-TE9DS19TRUxFQ1RPUiA6IFVBQzJfU1VfU0VMRUNUT1I7CiAKIAluYW1lbGlzdCA9IGttYWxsb2Mo
-c2l6ZW9mKGNoYXIgKikgKiBkZXNjLT5iTnJJblBpbnMsIEdGUF9LRVJORUwpOwogCWlmICghbmFt
-ZWxpc3QpIHsKLS0gCjIuMS4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Skip dpcm path checking for playback or capture, if corresponding FE
+doesn't support playback or capture, or currently is not ready. It
+can reduce the unnecessary cost to search connected widgets.
+
+Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+---
+ sound/soc/soc-pcm.c |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 002311a..3b068d4 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2248,7 +2248,13 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
+ 			fe->dai_link->name);
+ 
+ 		/* skip if FE doesn't have playback capability */
+-		if (!fe->cpu_dai->driver->playback.channels_min)
++		if (!fe->cpu_dai->driver->playback.channels_min
++		    || !fe->codec_dai->driver->playback.channels_min)
++			goto capture;
++
++		/* skip if FE doesn't do playback */
++		if (!fe->cpu_dai->playback_active
++		    || !fe->codec_dai->playback_active)
+ 			goto capture;
+ 
+ 		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
+@@ -2278,7 +2284,13 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
+ 		dpcm_path_put(&list);
+ capture:
+ 		/* skip if FE doesn't have capture capability */
+-		if (!fe->cpu_dai->driver->capture.channels_min)
++		if (!fe->cpu_dai->driver->capture.channels_min
++		    || !fe->codec_dai->driver->capture.channels_min)
++			continue;
++
++		/* skip if FE doesn't do capture */
++		if (!fe->cpu_dai->capture_active
++		    || !fe->codec_dai->capture_active)
+ 			continue;
+ 
+ 		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
+-- 
+1.7.9.5
