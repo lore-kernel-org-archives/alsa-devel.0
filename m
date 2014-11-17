@@ -1,48 +1,62 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/1] ALSA: hdsp: Deletion of an unnecessary check before the
- function call "release_firmware"
-Date: Mon, 17 Nov 2014 13:12:15 +0100
-Message-ID: <5469E61F.6000002@users.sourceforge.net>
-References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
- urceforge.net>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/3] mfd: arizona: Add support for CS47L24
+Date: Mon, 17 Nov 2014 12:16:48 +0000
+Message-ID: <20141117121648.GP24004@x1>
+References: <20141111165227.GA24344@opensource.wolfsonmicro.com>
+ <20141111171532.GA26106@opensource.wolfsonmicro.com>
+ <20141113101228.GE24004@x1>
+ <20141113164017.GA12443@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Coccinelle <cocci@systeme.lip6.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141113164017.GA12443@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 17 Nov 2014 13:04:14 +0100
+On Thu, 13 Nov 2014, Charles Keepax wrote:
 
-The release_firmware() function tests whether its argument is NULL and then
-return immediately. Thus the test around the call is not needed.
+> On Thu, Nov 13, 2014 at 10:12:28AM +0000, Lee Jones wrote:
+> > On Tue, 11 Nov 2014, Richard Fitzgerald wrote:
+> >=20
+> > > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com=
+>
+> > > ---
+> > >  drivers/mfd/Kconfig              |    6 +
+> > >  drivers/mfd/Makefile             |    3 +
+> > >  drivers/mfd/arizona-core.c       |   91 ++-
+> > >  drivers/mfd/arizona-irq.c        |   42 +-
+> > >  drivers/mfd/arizona-spi.c        |    9 +
+> > >  drivers/mfd/arizona.h            |    5 +
+> > >  drivers/mfd/cs47l24-tables.c     | 1632 ++++++++++++++++++++++++=
+++++++++++++++
+> >=20
+> > No chance.
+> >=20
+> > Please resend with these in a header file (like all of the others).
+> >=20
+> > I'd also like Charles' Reviewed-by before accepting.
+>=20
+> This looks good to me. I don't quite follow what you are
+> requesting with the header file? This still uses the header file
+> for the registers but just defining which are available on this
+> chip.
 
-This issue was detected by using the Coccinelle software.
+Looks like I was a little hasty with my comments.  However 8000 lines
+over 4 platforms just to describe which registers are readable is all
+a little bit grim.  Is there any way you can use ranges instead of
+listing every single register on the chip?  How many gaps are there?=20
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/rme9652/hdsp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 7646ba1..0ae568d 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -5368,8 +5368,7 @@ static int snd_hdsp_free(struct hdsp *hdsp)
- 
- 	snd_hdsp_free_buffers(hdsp);
- 
--	if (hdsp->firmware)
--		release_firmware(hdsp->firmware);
-+	release_firmware(hdsp->firmware);
- 	vfree(hdsp->fw_uploaded);
- 
- 	if (hdsp->iobase)
--- 
-2.1.3
-
-
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
+--
+To unsubscribe from this list: send the line "unsubscribe linux-gpio" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
