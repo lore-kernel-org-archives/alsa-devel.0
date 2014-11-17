@@ -1,18 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 3/3] ASoC: rt5670: add codec irq support
-Date: Mon, 17 Nov 2014 09:22:34 +0100
-Message-ID: <5469B04A.8070305@metafoo.de>
-References: <1416209243-4879-1-git-send-email-bardliao@realtek.com>
- <1416209243-4879-3-git-send-email-bardliao@realtek.com>
+Subject: [PATCH 1/3] ASoC: adav80x: Replace w->codec with
+	snd_soc_dapm_to_codec(w->dapm)
+Date: Mon, 17 Nov 2014 09:37:34 +0100
+Message-ID: <1416213456-5987-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-035.synserver.de (smtp-out-134.synserver.de
  [212.40.185.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AE402614E2
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 09:26:37 +0100 (CET)
-In-Reply-To: <1416209243-4879-3-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 418C3261522
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 09:37:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,16 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, mengdong.lin@intel.com, alsa-devel@alsa-project.org, flove@realtek.com
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/17/2014 08:27 AM, Bard Liao wrote:
-> This patch provide the jack function of rt5670. We use a irq pin to notice the jack event. rt5670_irq_detection will determine which status should be reported.
-> We can get gpio information from gpio number or gpiod_dev. That's why we define both on platform data.
+The codec field of the snd_soc_widget struct is eventually going to be
+removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
-New code should only use the descriptor GPIO API. The old way of passing 
-GPIO numbers as platform data is considered deprecated and will be removed 
-once there are no drivers left using it.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/adav80x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-- Lars
+diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+index ce3cdca..b67480f 100644
+--- a/sound/soc/codecs/adav80x.c
++++ b/sound/soc/codecs/adav80x.c
+@@ -212,7 +212,7 @@ static const struct snd_soc_dapm_widget adav80x_dapm_widgets[] = {
+ static int adav80x_dapm_sysclk_check(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+-	struct snd_soc_codec *codec = source->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
+ 	const char *clk;
+ 
+@@ -236,7 +236,7 @@ static int adav80x_dapm_sysclk_check(struct snd_soc_dapm_widget *source,
+ static int adav80x_dapm_pll_check(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+-	struct snd_soc_codec *codec = source->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
+ 
+ 	return adav80x->pll_src == ADAV80X_PLL_SRC_XTAL;
+-- 
+1.8.0
