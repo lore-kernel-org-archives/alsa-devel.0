@@ -1,58 +1,82 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: samsung-i2s: Add 192kHz config option
-Date: Mon, 17 Nov 2014 14:57:17 +0000
-Message-ID: <20141117145717.GE2722@sirena.org.uk>
-References: <1416221874-22092-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+Subject: Re: [PATCH v7.1 11/19] OMAPDSS: hdmi: Make hdmi_mode_has_audio()
+ more user friedly
+Date: Mon, 17 Nov 2014 17:12:59 +0200
+Message-ID: <546A107B.1030800@mentor.com>
+References: <cover.1415803064.git.jsarha@ti.com> <8047b50c76efecd72e7219f7871c59cc4a8ee5f5.1415803065.git.jsarha@ti.com> <5466139E.5040308@mentor.com> <54661A30.3010708@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1C2QhcYtVTlNtC1j"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1416221874-22092-1-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, ben-linux-elnMNo+KYs3YtjvyW6yDsg@public.gmane.org, kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <54661A30.3010708@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jyri,
 
---1C2QhcYtVTlNtC1j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 14.11.2014 17:05, Jyri Sarha wrote:
+> On 11/14/2014 04:37 PM, Vladimir Zapolskiy wrote:
+>> Hi Jyri,
+>>
+>> On 12.11.2014 16:41, Jyri Sarha wrote:
+>>> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+>>> ---
+>>>   drivers/video/fbdev/omap2/dss/hdmi.h |    4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev/omap2/dss/hdmi.h
+>>> index a6e08ff..6d129f2 100644
+>>> --- a/drivers/video/fbdev/omap2/dss/hdmi.h
+>>> +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
+>>> @@ -345,9 +345,9 @@ void hdmi_wp_audio_config_format(struct hdmi_wp_data *wp,
+>>>   		struct hdmi_audio_format *aud_fmt);
+>>>   void hdmi_wp_audio_config_dma(struct hdmi_wp_data *wp,
+>>>   		struct hdmi_audio_dma *aud_dma);
+>>> -static inline bool hdmi_mode_has_audio(int mode)
+>>> +static inline bool hdmi_mode_has_audio(struct hdmi_config *cfg)
+>>>   {
+>>> -	return mode == HDMI_HDMI ? true : false;
+>>> +	return cfg->hdmi_dvi_mode == HDMI_HDMI ? true : false;
+>>>   }
+>>>
+>>>   /* HDMI DRV data */
+>>>
+>>
+>> would it be possible for you to rearrange the changes preserving the
+>> following sequence?
+>>
+>> 1) 13/19
+>> 2) 15/19
+>> 3) 11/19
+>> 4) 14/19
+>> 5) 16/19
+>>
+> 
+> Sure, I can do that. Everything should be fine in that order too.
+> 
+>> Otherwise I'm worried that someone's git rebase may fail.
+>>
 
-On Mon, Nov 17, 2014 at 10:57:54AM +0000, Richard Fitzgerald wrote:
-> Adds QUIRK_SUPPORTS_192KHZ to allow 192kHz rate
-> to be selected for hardware that supports it.
+sorry again, I meant git-bisect, git rebase is fine.
 
-> +- samsung,supports-192khz: specify this (without a value) if you want to allow
-> +    192000 sample rate over the I2S link.
+> But do not follow why. Did you notice that 10/19 removes the config 
+> options that enable the pieces of code that are deleted in 13/19 and 
+> 15/19. IOW, the code that uses hdmi_mode_has_audio() (and would become 
+> broken by 11/19) is already disabled by 10/19. Git-wise I see no problem 
+> either.
 
-Two things here.  One is that the first half is a funny way of saying
-"boolean property" (the other standard idiom is "present if...").  The
-other is that "if you want to allow" suggests that this is a bit of
-runtime configuration (which shouldn't be in device tree at all).  If
-there's a quirk here it should be a fixed property of the hardware, if
-this is a system integration choice then it should at most be specified
-in the machine driver and the I2S controller should just advertise
-whatever it's physically capable of.
+Right, I was worried by changed hdmi_mode_has_audio() API and still
+present source code, which uses the old API (it is fixed in the
+following patches). If the code that uses hdmi_mode_has_audio() is
+disabled by 10/19 and the kernel can be successfully compiled and
+working on partial application of the changeset, then there should be no
+problem with git-bisect, and probably no need to rearrange the commits.
 
---1C2QhcYtVTlNtC1j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> I'll rearrange the patches if you still insist there is a problem with 
+> current order, but I would like to understand why.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUagzMAAoJECTWi3JdVIfQDl4H/0sMrAOagfVTHzLUgaXfmG1L
-wtZnJo0MuhJW3QBKEh9W4vSsebAWBtFfBfGtaCElwBskwQo3Ty8Y6IxkauZRXx9y
-DEMDI1x65RX7zQtYHbJhVvQi3vP/OxbFBu6KpGlChHRhQV/QDHOzq5AE5fqLzzPv
-32ZrmB3h/6UsI58gx04MShrJQf4nUDEugadH7RS5nstb8sEi4/fadi1oT00vIltW
-rtTjAU0sJd7YKGmrPUy2g7fjlvr8I8MpyCI1UGI1brTbnvceWqCQfL9oS2XOR/54
-aPv4CdCsddblAEXj53Itac/N713LB/2kbYWF8+iPVXXYHJ511uRTwp2mRMTsre0=
-=5YU/
------END PGP SIGNATURE-----
-
---1C2QhcYtVTlNtC1j--
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+With best wishes,
+Vladimir
