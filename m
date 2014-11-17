@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/3] ASoC: adau1373: Replace w->codec with
+Subject: [PATCH 3/3] ASoC: adau17x1: Replace w->codec with
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Mon, 17 Nov 2014 09:37:35 +0100
-Message-ID: <1416213456-5987-2-git-send-email-lars@metafoo.de>
+Date: Mon, 17 Nov 2014 09:37:36 +0100
+Message-ID: <1416213456-5987-3-git-send-email-lars@metafoo.de>
 References: <1416213456-5987-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-035.synserver.de (smtp-out-134.synserver.de
  [212.40.185.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CCDF26153F
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 09:37:41 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F63A261552
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 09:37:42 +0100 (CET)
 In-Reply-To: <1416213456-5987-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,39 +31,51 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/adau1373.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/adau1761.c | 3 ++-
+ sound/soc/codecs/adau1781.c | 2 +-
+ sound/soc/codecs/adau17x1.c | 3 ++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 7c784ad..783dcb5 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -551,7 +551,7 @@ static const struct snd_kcontrol_new adau1373_drc_controls[] = {
- static int adau1373_pll_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index 91f6028..16093dc 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -255,7 +255,8 @@ static const struct snd_kcontrol_new adau1761_input_mux_control =
+ static int adau1761_dejitter_fixup(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(w->codec);
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct adau *adau = snd_soc_codec_get_drvdata(codec);
+ 
+ 	/* After any power changes have been made the dejitter circuit
+ 	 * has to be reinitialized. */
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
+index e9fc00f..aa6a37c 100644
+--- a/sound/soc/codecs/adau1781.c
++++ b/sound/soc/codecs/adau1781.c
+@@ -174,7 +174,7 @@ static const struct snd_kcontrol_new adau1781_mono_mixer_controls[] = {
+ static int adau1781_dejitter_fixup(struct snd_soc_dapm_widget *w,
  	struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct adau1373 *adau1373 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int pll_id = w->name[3] - '1';
- 	unsigned int val;
-@@ -823,7 +823,7 @@ static const struct snd_soc_dapm_widget adau1373_dapm_widgets[] = {
- static int adau1373_check_aif_clk(struct snd_soc_dapm_widget *source,
- 	struct snd_soc_dapm_widget *sink)
- {
--	struct snd_soc_codec *codec = source->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
- 	struct adau1373 *adau1373 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int dai;
- 	const char *clk;
-@@ -844,7 +844,7 @@ static int adau1373_check_aif_clk(struct snd_soc_dapm_widget *source,
- static int adau1373_check_src(struct snd_soc_dapm_widget *source,
- 	struct snd_soc_dapm_widget *sink)
- {
--	struct snd_soc_codec *codec = source->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
- 	struct adau1373 *adau1373 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int dai;
+ 	struct adau *adau = snd_soc_codec_get_drvdata(codec);
  
+ 	/* After any power changes have been made the dejitter circuit
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 3e16c1c..427ad77 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -61,7 +61,8 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
+ static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct adau *adau = snd_soc_codec_get_drvdata(w->codec);
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct adau *adau = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 
+ 	if (SND_SOC_DAPM_EVENT_ON(event)) {
 -- 
 1.8.0
