@@ -1,62 +1,52 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/1] ALSA: hda: Deletion of unnecessary checks before two
- function calls
-Date: Mon, 17 Nov 2014 11:07:04 +0100
-Message-ID: <5469C8C8.8010306@users.sourceforge.net>
-References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
- urceforge.net>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v4] of: replace Asahi Kasei Corp venter prefix
+Date: Mon, 17 Nov 2014 13:26:15 +0300
+Message-ID: <5469CD47.3040409@cogentembedded.com>
+References: <878ulzx6hr.wl%kuninori.morimoto.gx@gmail.com>	<20140922130026.GK3290@leverpostej>	<CAMuHMdX22z97SbGS1HDiYfJ1PXxyEN2S8D7w4sr+4bUwD+mJZw@mail.gmail.com>	<20140922132743.GM3290@leverpostej>	<87y4rfhmgl.wl%kuninori.morimoto.gx@renesas.com>	<1415845309.4269.6.camel@perches.com>	<20141113025105.GA16652@verge.net.au>	<87vbmjhj00.wl%kuninori.morimoto.gx@renesas.com>	<20141113110740.GE3815@sirena.org.uk>	<87k32yd0bd.wl%kuninori.morimoto.gx@renesas.com>	<20141114093554.GC3810@ulmo> <87y4ra8xac.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Coccinelle <cocci@systeme.lip6.fr>
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <87y4ra8xac.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Rob Herring <robh@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Thierry Reding <thierry.reding@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-tegra@vger.kernel.org, Stephen Warren <swarren@wwwdotorg.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Olof Johansson <olof@lixom.net>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert@linux-m68k.org>, Joe Perches <joe@perches.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, linux-arm-kernel@lists.infradead.org, "grant.likely@linaro.org" <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 17 Nov 2014 10:44:33 +0100
+Hello.
 
-The functions kfree() and release_firmware() test whether their argument
-is NULL and then return immediately. Thus the test around the call
-is not needed.
+On 11/17/2014 3:51 AM, Kuninori Morimoto wrote:
 
-This issue was detected by using the Coccinelle software.
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/hda/hda_codec.c | 3 +--
- sound/pci/hda/hda_intel.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+    s/venter/vendor/ in the subject. Sorry for a late comment.
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index ec6a7d0..3fe8859 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -827,8 +827,7 @@ static void snd_hda_bus_free(struct hda_bus *bus)
- 	WARN_ON(!list_empty(&bus->codec_list));
- 	if (bus->workq)
- 		flush_workqueue(bus->workq);
--	if (bus->unsol)
--		kfree(bus->unsol);
-+	kfree(bus->unsol);
- 	if (bus->ops.private_free)
- 		bus->ops.private_free(bus);
- 	if (bus->workq)
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 0a7f848..b4ec4e1 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1129,8 +1129,7 @@ static int azx_free(struct azx *chip)
- 	pci_disable_device(chip->pci);
- 	kfree(chip->azx_dev);
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
--	if (chip->fw)
--		release_firmware(chip->fw);
-+	release_firmware(chip->fw);
- #endif
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
- 		hda_display_power(false);
--- 
-2.1.3
+> Current vendor-prefixes.txt already has "ak" prefix for Asahi Kasei Corp
+> by ae8c4209af2c(of: Add vendor prefix for Asahi Kasei Corp.)
+
+> It went through the appropriate review process. But, almost all
+> Asahi Kasei chip drivers are using "asahi-kasei" prefix today.
+> (arch/arm/boot/dts/tegra20-seaboard.dts only is using "ak,ak8975",
+>   but there are instances of "asahi-kasei,ak8975" in other dts files.
+>   And drivers/iio/magnetometer/ak8975.c doesn't support "ak,ak8975")
+> So, we made a mistake there.
+
+> In addition, checkpatch.pl reports WARNING if it is using "asahi-kasei"
+> prerfix in DT file.
+> (DT compatible string vendor "asahi-kasei" appears un-documented)
+
+> Marking it deprecated and warning with checkpatch is certainly
+> preferable. So, this patch replace "ak" to "asahi-kasei" in
+> vendor-prefixes.txt. (and fixup tegra20-seaboard)
+
+> OTOH, Asahi Kasei is usually referred to as "AKM", but this patch
+> doesn't care about it. Because no DT is using that today.
+
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> Acked-by: Alexandre Courbot <acourbot@nvidia.com>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+    One normally places ACKs after his own sign-off.
+
+WBR, Sergei
+
