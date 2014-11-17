@@ -1,18 +1,15 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Remove comment about SSI
-	running only in slave mode
-Date: Mon, 17 Nov 2014 00:16:19 -0200
-Message-ID: <1416190579-14006-1-git-send-email-festevam@gmail.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5677: Modify the default value of the
+	MX-8E[4] for ASRC function
+Date: Mon, 17 Nov 2014 10:18:11 +0800
+Message-ID: <1416190691-26634-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f47.google.com (mail-qg0-f47.google.com
- [209.85.192.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 282C426147A
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 03:16:53 +0100 (CET)
-Received: by mail-qg0-f47.google.com with SMTP id z60so1948197qgd.6
- for <alsa-devel@alsa-project.org>; Sun, 16 Nov 2014 18:16:52 -0800 (PST)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E1D126145B
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 03:18:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+Modify the default value of the MX-8E[4] to 1 for ASRC function. It could
+prevent the pop noise with ASRC function.
 
-Current driver can also run in I2S master mode, so remove the old comment.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/rt5677.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index ab05262..1ef0c84 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -67,8 +67,6 @@
- /**
-  * FSLSSI_I2S_FORMATS: audio formats supported by the SSI
-  *
-- * This driver currently only supports the SSI running in I2S slave mode.
-- *
-  * The SSI has a limitation in that the samples must be in the same byte
-  * order as the host CPU.  This is because when multiple bytes are written
-  * to the STX register, the bytes and bits must be written in the same
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index d659237..49ac9ba 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -55,7 +55,8 @@ static const struct regmap_range_cfg rt5677_ranges[] = {
+ };
+ 
+ static const struct reg_default init_list[] = {
+-	{RT5677_PR_BASE + 0x3d,	0x364d},
++	{RT5677_ASRC_12, 0x0018},
++	{RT5677_PR_BASE + 0x3d, 0x364d},
+ 	{RT5677_PR_BASE + 0x17, 0x4fc0},
+ 	{RT5677_PR_BASE + 0x13, 0x0312},
+ 	{RT5677_PR_BASE + 0x1e, 0x0000},
+@@ -173,7 +174,7 @@ static const struct reg_default rt5677_reg[] = {
+ 	{RT5677_ASRC_9			, 0x0000},
+ 	{RT5677_ASRC_10			, 0x0000},
+ 	{RT5677_ASRC_11			, 0x0000},
+-	{RT5677_ASRC_12			, 0x0008},
++	{RT5677_ASRC_12			, 0x0018},
+ 	{RT5677_ASRC_13			, 0x0000},
+ 	{RT5677_ASRC_14			, 0x0000},
+ 	{RT5677_ASRC_15			, 0x0000},
 -- 
-1.9.1
+1.8.1.1.439.g50a6b54
