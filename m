@@ -1,30 +1,62 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] gpio: arizona: Add support for CS47L24
-Date: Mon, 17 Nov 2014 09:58:01 +0000
-Message-ID: <20141117095801.GA25618@opensource.wolfsonmicro.com>
-References: <20141111165227.GA24344@opensource.wolfsonmicro.com> <20141111170432.GB25738@opensource.wolfsonmicro.com> <CACRpkdazkS0M6G_gNvfKayZdrU+BMhSSF9iJp=fZEbc=+jDKsA@mail.gmail.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 1/1] ALSA: hda: Deletion of unnecessary checks before two
+ function calls
+Date: Mon, 17 Nov 2014 11:07:04 +0100
+Message-ID: <5469C8C8.8010306@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CACRpkdazkS0M6G_gNvfKayZdrU+BMhSSF9iJp=fZEbc=+jDKsA@mail.gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Alexandre Courbot <gnurou@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Coccinelle <cocci@systeme.lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 17, 2014 at 07:41:53AM +0100, Linus Walleij wrote:
-> On Tue, Nov 11, 2014 at 6:04 PM, Richard Fitzgerald
-> <rf@opensource.wolfsonmicro.com> wrote:
-> 
-> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> 
-> Apart from the whitespace fix pointed out by Mark,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 17 Nov 2014 10:44:33 +0100
 
-THe line Mark commented on isn't a whitespace error. It matches
-the copyright line style used by Cirrus in other files.
+The functions kfree() and release_firmware() test whether their argument
+is NULL and then return immediately. Thus the test around the call
+is not needed.
 
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> Yours,
-> Linus Walleij
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/pci/hda/hda_codec.c | 3 +--
+ sound/pci/hda/hda_intel.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index ec6a7d0..3fe8859 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -827,8 +827,7 @@ static void snd_hda_bus_free(struct hda_bus *bus)
+ 	WARN_ON(!list_empty(&bus->codec_list));
+ 	if (bus->workq)
+ 		flush_workqueue(bus->workq);
+-	if (bus->unsol)
+-		kfree(bus->unsol);
++	kfree(bus->unsol);
+ 	if (bus->ops.private_free)
+ 		bus->ops.private_free(bus);
+ 	if (bus->workq)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 0a7f848..b4ec4e1 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1129,8 +1129,7 @@ static int azx_free(struct azx *chip)
+ 	pci_disable_device(chip->pci);
+ 	kfree(chip->azx_dev);
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+-	if (chip->fw)
+-		release_firmware(chip->fw);
++	release_firmware(chip->fw);
+ #endif
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+ 		hda_display_power(false);
+-- 
+2.1.3
