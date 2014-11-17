@@ -1,63 +1,61 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH (alsa-lib)] USB-audio: Add five more cards to
-	IEC958 blacklist
-Date: Mon, 17 Nov 2014 11:29:34 +0100
-Message-ID: <1416220174-4073-1-git-send-email-david.henningsson@canonical.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 1/1] ALSA: ice17xx: Deletion of unnecessary checks before
+ the function call "snd_ac97_resume"
+Date: Mon, 17 Nov 2014 11:34:22 +0100
+Message-ID: <5469CF2E.6040408@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 38742261A57
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 11:29:33 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: 1002952@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Coccinelle <cocci@systeme.lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-These devices do not have any IEC958 outputs, so prevent them from
-being opened.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 17 Nov 2014 11:28:02 +0100
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+The snd_ac97_resume() function tests whether its argument is NULL and then
+returns immediately. Thus the test around the call is not needed.
+
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- src/conf/cards/USB-Audio.conf | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/ice1712/ice1712.c | 3 +--
+ sound/pci/ice1712/ice1724.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index a6754d9..05e5d09 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -38,10 +38,14 @@ USB-Audio.pcm.iec958_device {
- 	# "NoiseBlaster 3000" 42
+diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
+index 87f7fc4..e1e18b5 100644
+--- a/sound/pci/ice1712/ice1712.c
++++ b/sound/pci/ice1712/ice1712.c
+@@ -2905,8 +2905,7 @@ static int snd_ice1712_resume(struct device *dev)
+ 	outw(ice->pm_saved_spdif_ctrl, ICEMT(ice, ROUTE_SPDOUT));
+ 	outw(ice->pm_saved_route, ICEMT(ice, ROUTE_PSDOUT03));
  
- 	# The below don't have digital in/out, so prevent them from being opened.
-+	"Andrea PureAudio USB-SA Headset" 999
- 	"Blue Snowball" 999
- 	"HP Digital Stereo Headset" 999
-+	"GN 9330" 999
- 	"Logitech Speaker Lapdesk N700" 999
-+	"Logitech G35 Headset" 999
- 	"Logitech USB Headset" 999
-+	"Logitech USB Headset H540" 999
- 	"Logitech Wireless Headset" 999
- 	"Plantronics GameCom 780" 999
- 	"Plantronics USB Headset" 999
-@@ -50,6 +54,7 @@ USB-Audio.pcm.iec958_device {
- 	"Scarlett 2i2 USB" 999
- 	"Scarlett 2i4 USB" 999
- 	"Sennheiser USB headset" 999
-+	"SWTOR Gaming Headset by Razer" 999
- 	"USB Device 0x46d:0x992" 999
- }
+-	if (ice->ac97)
+-		snd_ac97_resume(ice->ac97);
++	snd_ac97_resume(ice->ac97);
  
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+ 	return 0;
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index 08cb08a..0e56835 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -2884,8 +2884,7 @@ static int snd_vt1724_resume(struct device *dev)
+ 	outb(ice->pm_saved_spdif_cfg, ICEREG1724(ice, SPDIF_CFG));
+ 	outl(ice->pm_saved_route, ICEMT1724(ice, ROUTE_PLAYBACK));
+ 
+-	if (ice->ac97)
+-		snd_ac97_resume(ice->ac97);
++	snd_ac97_resume(ice->ac97);
+ 
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+ 	return 0;
 -- 
-1.9.1
+2.1.3
