@@ -1,52 +1,71 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v4] of: replace Asahi Kasei Corp venter prefix
-Date: Mon, 17 Nov 2014 13:26:15 +0300
-Message-ID: <5469CD47.3040409@cogentembedded.com>
-References: <878ulzx6hr.wl%kuninori.morimoto.gx@gmail.com>	<20140922130026.GK3290@leverpostej>	<CAMuHMdX22z97SbGS1HDiYfJ1PXxyEN2S8D7w4sr+4bUwD+mJZw@mail.gmail.com>	<20140922132743.GM3290@leverpostej>	<87y4rfhmgl.wl%kuninori.morimoto.gx@renesas.com>	<1415845309.4269.6.camel@perches.com>	<20141113025105.GA16652@verge.net.au>	<87vbmjhj00.wl%kuninori.morimoto.gx@renesas.com>	<20141113110740.GE3815@sirena.org.uk>	<87k32yd0bd.wl%kuninori.morimoto.gx@renesas.com>	<20141114093554.GC3810@ulmo> <87y4ra8xac.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: adau17x1: Replace w->codec with
+ snd_soc_dapm_to_codec(w->dapm)
+Date: Mon, 17 Nov 2014 10:28:03 +0000
+Message-ID: <20141117102803.GS2722@sirena.org.uk>
+References: <1416213456-5987-1-git-send-email-lars@metafoo.de>
+ <1416213456-5987-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87y4ra8xac.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Rob Herring <robh@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Thierry Reding <thierry.reding@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-tegra@vger.kernel.org, Stephen Warren <swarren@wwwdotorg.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Olof Johansson <olof@lixom.net>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert@linux-m68k.org>, Joe Perches <joe@perches.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, linux-arm-kernel@lists.infradead.org, "grant.likely@linaro.org" <grant.likely@linaro.org>
+Content-Type: multipart/mixed; boundary="===============0343229908120121948=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8292D2615F3
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 11:28:37 +0100 (CET)
+In-Reply-To: <1416213456-5987-3-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
 
-On 11/17/2014 3:51 AM, Kuninori Morimoto wrote:
+--===============0343229908120121948==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xUq7mlTLx96rFlBf"
+Content-Disposition: inline
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-    s/venter/vendor/ in the subject. Sorry for a late comment.
+--xUq7mlTLx96rFlBf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Current vendor-prefixes.txt already has "ak" prefix for Asahi Kasei Corp
-> by ae8c4209af2c(of: Add vendor prefix for Asahi Kasei Corp.)
+On Mon, Nov 17, 2014 at 09:37:36AM +0100, Lars-Peter Clausen wrote:
+> The codec field of the snd_soc_widget struct is eventually going to be
+> removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
-> It went through the appropriate review process. But, almost all
-> Asahi Kasei chip drivers are using "asahi-kasei" prefix today.
-> (arch/arm/boot/dts/tegra20-seaboard.dts only is using "ak,ak8975",
->   but there are instances of "asahi-kasei,ak8975" in other dts files.
->   And drivers/iio/magnetometer/ak8975.c doesn't support "ak,ak8975")
-> So, we made a mistake there.
+Applied, thanks.
 
-> In addition, checkpatch.pl reports WARNING if it is using "asahi-kasei"
-> prerfix in DT file.
-> (DT compatible string vendor "asahi-kasei" appears un-documented)
+--xUq7mlTLx96rFlBf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> Marking it deprecated and warning with checkpatch is certainly
-> preferable. So, this patch replace "ak" to "asahi-kasei" in
-> vendor-prefixes.txt. (and fixup tegra20-seaboard)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-> OTOH, Asahi Kasei is usually referred to as "AKM", but this patch
-> doesn't care about it. Because no DT is using that today.
+iQEcBAEBAgAGBQJUac2yAAoJECTWi3JdVIfQ7owH/ArvoL7IwoW3/WjOV7cSDEw9
+ELSDZwiSREHM7zyCkBUUbDidDQ9wi4GoYVl2aYyG/7La0dCYsiG/5LLgfE6DpzTf
+8YeInHyZuIXDMbOyS/nKpsaT+ubs3yuYFVB01aJlfVrsnBl27L9ymTKw9U7J+/2g
+l4u2Nd/XtINIxsTAcjV6wMAo624hPy4+RC+tbmJJB4OB1tQtJtNFl/CS6VcaBb06
+u9pOExfyYdxNzAlKSVi2U+4mUbAodfr1o8utOOKgurGSMEG8Btm3crtA0aUd3AvZ
+NhmmPHB2NxRU1OfqtlwIJrpnliFOLyIVwUzEirk8eBCcIm9ZZKx0i9zMMUc5oR8=
+=fUjK
+-----END PGP SIGNATURE-----
 
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> Acked-by: Alexandre Courbot <acourbot@nvidia.com>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+--xUq7mlTLx96rFlBf--
 
-    One normally places ACKs after his own sign-off.
+--===============0343229908120121948==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-WBR, Sergei
 
+--===============0343229908120121948==--
