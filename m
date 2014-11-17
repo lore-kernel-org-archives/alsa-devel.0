@@ -1,19 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 1/2] ASoC: Intel: Add Cherrytrail &
- Braswell machine driver cht_bsw_rt5672
-Date: Mon, 17 Nov 2014 21:05:28 +0530
-Message-ID: <20141117153528.GA2074@intel.com>
+Subject: Re: [PATCH v4 2/2] ASoC: Intel: add support for
+ Cherrytrail and Braswell in SST driver
+Date: Mon, 17 Nov 2014 21:06:06 +0530
+Message-ID: <20141117153606.GB2074@intel.com>
 References: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
- <59ead992379b0a224a2482888a6e6dc1ab611f36.1416216640.git.mengdong.lin@intel.com>
+ <14c8d095785c6a33e60b3a9e03fc1a2d8445a15f.1416216640.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 17CEE264E9F
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 16:34:27 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CDFC264F3A
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 16:35:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <59ead992379b0a224a2482888a6e6dc1ab611f36.1416216640.git.mengdong.lin@intel.com>
+In-Reply-To: <14c8d095785c6a33e60b3a9e03fc1a2d8445a15f.1416216640.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,33 +27,14 @@ To: mengdong.lin@intel.com
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 17, 2014 at 05:34:09PM +0800, mengdong.lin@intel.com wrote:
+On Mon, Nov 17, 2014 at 05:34:27PM +0800, mengdong.lin@intel.com wrote:
 > From: Mengdong Lin <mengdong.lin@intel.com>
 > 
-> Add machine driver for two Intel Cherryview-based platforms, Cherrytrail and
-> Braswell, with RT5672 codec.
+> This patch add ACPI device ID and platform data for two Cherryview-based
+> platforms, Cherrytrail and Braswell. Also reuse mfld driver ops in sst driver.
 > 
 > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index a992e85..0a02d88 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -86,3 +86,17 @@ config SND_SOC_INTEL_BROADWELL_MACH
->  	  Ultrabook platforms.
->  	  Say Y if you have such a device
->  	  If unsure select "N".
-> +
-> +config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
-> +        tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
-> +        depends on X86_INTEL_LPSS
-> +        select SND_SOC_RT5670
-> +        select SND_SST_MFLD_PLATFORM
-> +        select SND_SOC_INTEL_SST
-This is not correct, it could have been SND_INTEL_IPC but that is selected
-by below entry so adding SND_SST_IPC_ACPI is enough.
-
-> +        select SND_SST_IPC_ACPI
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
 -- 
 ~Vinod
