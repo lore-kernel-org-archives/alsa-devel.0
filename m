@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: adau1373: Replace w->codec with
- snd_soc_dapm_to_codec(w->dapm)
-Date: Mon, 17 Nov 2014 10:27:20 +0000
-Message-ID: <20141117102720.GR2722@sirena.org.uk>
-References: <1416213456-5987-1-git-send-email-lars@metafoo.de>
- <1416213456-5987-2-git-send-email-lars@metafoo.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH (alsa-lib)] USB-audio: Add five more cards to
+	IEC958 blacklist
+Date: Mon, 17 Nov 2014 11:29:34 +0100
+Message-ID: <1416220174-4073-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4495842799849290365=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 26C8D261643
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 11:28:43 +0100 (CET)
-In-Reply-To: <1416213456-5987-2-git-send-email-lars@metafoo.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38742261A57
+ for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 11:29:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: 1002952@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+These devices do not have any IEC958 outputs, so prevent them from
+being opened.
 
---===============4495842799849290365==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="phbq2bkSb+hZnunM"
-Content-Disposition: inline
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ src/conf/cards/USB-Audio.conf | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-
---phbq2bkSb+hZnunM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 17, 2014 at 09:37:35AM +0100, Lars-Peter Clausen wrote:
-> The codec field of the snd_soc_widget struct is eventually going to be
-> removed, use snd_soc_dapm_to_codec(w->dapm) instead.
-
-Applied, thanks.
-
---phbq2bkSb+hZnunM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUac2HAAoJECTWi3JdVIfQeDwH/0WqWwAtXxfk3UDCDI1Wqnrs
-/RoTOMGNz9hYnVJ031ODp6XUiio2rOr3jlywvS+MpOz8rVbeTnEQH6rxUqt89hxu
-gGOxcUDiLul8VuiDo3AYDo8CbgF3rnnIS6FBS1/YxpcNb9ntqawLkxqPQCmoVkXv
-ddoJ2vR2EN9m6JFP/QMGlLcL+XKSgoa7S9bga3j9q3c6H/Cqi1zk8JzpH5hPxurF
-78sn9qMHbzz2AI+laVJoMTIX3xZ0JTanH8DGrcVSdRkupcZ3xr85ipEb0cl/oPcO
-e8fXW25kY3Zz1G8c+itrwCJm78Uc49DvdjjFYp0icwJA/0lHJgDsqPpmVLTJ5TU=
-=MJ84
------END PGP SIGNATURE-----
-
---phbq2bkSb+hZnunM--
-
---===============4495842799849290365==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4495842799849290365==--
+diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
+index a6754d9..05e5d09 100644
+--- a/src/conf/cards/USB-Audio.conf
++++ b/src/conf/cards/USB-Audio.conf
+@@ -38,10 +38,14 @@ USB-Audio.pcm.iec958_device {
+ 	# "NoiseBlaster 3000" 42
+ 
+ 	# The below don't have digital in/out, so prevent them from being opened.
++	"Andrea PureAudio USB-SA Headset" 999
+ 	"Blue Snowball" 999
+ 	"HP Digital Stereo Headset" 999
++	"GN 9330" 999
+ 	"Logitech Speaker Lapdesk N700" 999
++	"Logitech G35 Headset" 999
+ 	"Logitech USB Headset" 999
++	"Logitech USB Headset H540" 999
+ 	"Logitech Wireless Headset" 999
+ 	"Plantronics GameCom 780" 999
+ 	"Plantronics USB Headset" 999
+@@ -50,6 +54,7 @@ USB-Audio.pcm.iec958_device {
+ 	"Scarlett 2i2 USB" 999
+ 	"Scarlett 2i4 USB" 999
+ 	"Sennheiser USB headset" 999
++	"SWTOR Gaming Headset by Razer" 999
+ 	"USB Device 0x46d:0x992" 999
+ }
+ 
+-- 
+1.9.1
