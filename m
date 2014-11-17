@@ -1,46 +1,25 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ASoC: Intel: add missing ACPI device table
-Date: Mon, 17 Nov 2014 14:36:40 +0800
-Message-ID: <1416206200-26703-1-git-send-email-mengdong.lin@intel.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/3] gpio: arizona: Add support for CS47L24
+Date: Mon, 17 Nov 2014 07:41:53 +0100
+Message-ID: <CACRpkdazkS0M6G_gNvfKayZdrU+BMhSSF9iJp=fZEbc=+jDKsA@mail.gmail.com>
+References: <20141111165227.GA24344@opensource.wolfsonmicro.com>
+	<20141111170432.GB25738@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id AEC0D2614D1
- for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2014 07:30:12 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, vinod.koul@intel.com, subhransu.s.prusty@intel.com, liam.r.girdwood@intel.com
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <20141111170432.GB25738@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Alexandre Courbot <gnurou@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+On Tue, Nov 11, 2014 at 6:04 PM, Richard Fitzgerald
+<rf@opensource.wolfsonmicro.com> wrote:
 
-The ACPI device table will generate the driver module alias for
-Intel audio devices enumerated from ACPI.
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Apart from the whitespace fix pointed out by Mark,
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
-index 2b1c5d9..b261821 100644
---- a/sound/soc/intel/sst/sst_acpi.c
-+++ b/sound/soc/intel/sst/sst_acpi.c
-@@ -342,6 +342,8 @@ static const struct acpi_device_id sst_acpi_ids[] = {
- 	{ },
- };
- 
-+MODULE_DEVICE_TABLE(acpi, sst_acpi_ids);
-+
- static struct platform_driver sst_acpi_driver = {
- 	.driver = {
- 		.name			= "intel_sst_acpi",
--- 
-1.9.1
+Yours,
+Linus Walleij
