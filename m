@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 25/29] ALSA: oxfw: Add support
-	for	Behringer/Mackie devices
-Date: Wed, 19 Nov 2014 00:24:40 +0900
-Message-ID: <546B64B8.5040405@sakamocchi.jp>
+Subject: Re: [PATCH 02/29] ALSA: dice: Move file to its
+	own	directory
+Date: Wed, 19 Nov 2014 00:29:29 +0900
+Message-ID: <546B65D9.9090901@sakamocchi.jp>
 References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
- <1414328610-12729-26-git-send-email-o-takashi@sakamocchi.jp>
- <54690FC0.6020909@ladisch.de>
+ <1414328610-12729-3-git-send-email-o-takashi@sakamocchi.jp>
+ <546B4237.30706@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 7408D2604B6
- for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 16:25:00 +0100 (CET)
-In-Reply-To: <54690FC0.6020909@ladisch.de>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 324EB2604B0
+ for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 16:29:33 +0100 (CET)
+In-Reply-To: <546B4237.30706@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,51 +27,33 @@ To: Clemens Ladisch <clemens@ladisch.de>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
-
-On Nov 17 2014 05:57, Clemens Ladisch wrote:
+On Nov 18 2014 21:57, Clemens Ladisch wrote:
 > Takashi Sakamoto wrote:
->> +++ b/sound/firewire/oxfw/oxfw.c
->> +static bool detect_loud_models(struct fw_unit *unit)
->> +{
->> +	const char *const models[] = {
->> +		"Onyxi",
->> +		"Onyx-i",
->> +		"d.Pro",
->> +		"Mackie Onyx Satellite",
->> +		"Tapco LINK.firewire 4x6",
->> +		"U.420"};
->> +	char model[32] = {0};
+>> In followed commits, dice driver is split into several files. For easily
+>> managing these files, this commit adds subdirectory and move file into
+>> the directory.
 > 
-> This initialization is not needed.
+>> -// TODO: rx index
+>> +/* TODO: rx index */
 > 
->> +	unsigned int i;
->> +	int err;
->> +
->> +	err = fw_csr_string(unit->directory, CSR_MODEL,
->> +			    model, sizeof(model));
->> +	if (err < 0)
->> +		return err;
->> +
->> +	model[31] = '\0';
+>> -		event.dice_notification.type = SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
+>> +		event.dice_notification.type =
+>> +					SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
 > 
-> The returned string is guaranteed to be zero-terminated.
+>> -		count = min(count, (long)sizeof(event.dice_notification));
+>> +		count = min_t(long, count, sizeof(event.dice_notification));
 > 
->> +	for (i = 0; i < ARRAY_SIZE(models); i++) {
->> +		if (strncmp(models[i], model, strlen(model) == 0))
+>> -static void dice_bus_reset(struct fw_unit *unit)
+>> +static void dice_update(struct fw_unit *unit)
 > 
-> Why not simply strcmp()?
-> 
->>  static int name_card(struct snd_oxfw *oxfw)
->>  {
->>  	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
->> +	char vendor[24] = {0};
->> +	char model[32] = {0};
-> 
-> Same unneeded initialization.
+> Please mention these changes in the commit message, or move them into
+> a separate patch.
 
-I forgot that fw_csr_string() guarantees to return string with
-null-terminated...
+OK. The breaking-line and replacing with min_t is due to checkpatch.pl.
+The renaming is to apply the same way which I use on bebob/fireworks but
+is unnecessary.
+
+As you mentioned, it's better to add a separete patch as a fix for them.
 
 
 Thanks
