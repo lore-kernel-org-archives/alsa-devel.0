@@ -1,44 +1,52 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ASoC: rt286: build warning of section mismatch
-Date: Tue, 18 Nov 2014 17:42:54 +0530
-Message-ID: <1416312774-4472-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 02/29] ALSA: dice: Move file to its
+	own	directory
+Date: Tue, 18 Nov 2014 13:57:27 +0100
+Message-ID: <546B4237.30706@ladisch.de>
+References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1414328610-12729-3-git-send-email-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id A42FC265175
+ for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 13:57:29 +0100 (CET)
+In-Reply-To: <1414328610-12729-3-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-From: Sudip Mukherjee <sudip@vectorindia.org>
+Takashi Sakamoto wrote:
+> In followed commits, dice driver is split into several files. For easily
+> managing these files, this commit adds subdirectory and move file into
+> the directory.
 
-while building we were getting the following build warning:
+> -// TODO: rx index
+> +/* TODO: rx index */
 
-Section mismatch in reference from the function rt286_i2c_probe()
-to the variable .init.data:force_combo_jack_table
-The function rt286_i2c_probe() references
-the variable __initdata force_combo_jack_table.
-This is often because rt286_i2c_probe lacks a __initdata
-annotation or the annotation of force_combo_jack_table is wrong.
+> -		event.dice_notification.type = SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
+> +		event.dice_notification.type =
+> +					SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
 
-we were getting the warning as force_combo_jack_table was marked
-with __initdata
+> -		count = min(count, (long)sizeof(event.dice_notification));
+> +		count = min_t(long, count, sizeof(event.dice_notification));
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
- sound/soc/codecs/rt286.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> -static void dice_bus_reset(struct fw_unit *unit)
+> +static void dice_update(struct fw_unit *unit)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 2e818aa..2cd4fe4 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1206,7 +1206,7 @@ static const struct acpi_device_id rt286_acpi_match[] = {
- };
- MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
- 
--static struct dmi_system_id force_combo_jack_table[] __initdata = {
-+static struct dmi_system_id force_combo_jack_table[] = {
- 	{
- 		.ident = "Intel Wilson Beach",
- 		.matches = {
--- 
-1.8.1.2
+Please mention these changes in the commit message, or move them into
+a separate patch.
+
+
+Regards,
+Clemens
