@@ -1,97 +1,75 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire-lib: fix kerneldoc errors
-Date: Tue, 18 Nov 2014 23:59:40 +0900
-Message-ID: <1416322780-16097-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] mfd: arizona: Add support for CS47L24
+Date: Tue, 18 Nov 2014 15:00:39 +0000
+Message-ID: <20141118150039.GO22111@sirena.org.uk>
+References: <20141111165227.GA24344@opensource.wolfsonmicro.com>
+ <20141111171532.GA26106@opensource.wolfsonmicro.com>
+ <20141113101228.GE24004@x1>
+ <20141113164017.GA12443@opensource.wolfsonmicro.com>
+ <20141117121648.GP24004@x1>
+ <20141117125433.GA29518@opensource.wolfsonmicro.com>
+ <20141117151318.GE12443@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id D1B5D260492
- for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 15:59:45 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XMHqbYJb993HXwLR"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141117151318.GE12443@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, linus.walleij@linaro.org, gnurou@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Complete missing parameters, correct wrong reference, and add an explaination
-about the differences between the latest specification and our implementation.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp.h | 24 ++++++++++++++++++++++--
- sound/firewire/cmp.c   |  2 ++
- 2 files changed, 24 insertions(+), 2 deletions(-)
+--XMHqbYJb993HXwLR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 4823c08..e6e8926 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -23,7 +23,7 @@
-  *	corresponds to the end of event in the packet. Out of IEC 61883.
-  * @CIP_WRONG_DBS: Only for in-stream. The value of dbs is wrong in in-packets.
-  *	The value of data_block_quadlets is used instead of reported value.
-- * @SKIP_DBC_ZERO_CHECK: Only for in-stream.  Packets with zero in dbc is
-+ * @CIP_SKIP_DBC_ZERO_CHECK: Only for in-stream.  Packets with zero in dbc is
-  *	skipped for detecting discontinuity.
-  * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
-  *	packet is not continuous from an initial value.
-@@ -43,7 +43,27 @@ enum cip_flags {
- };
- 
- /**
-- * enum cip_sfc - a stream's sample rate
-+ * enum cip_sfc - supported Sampling Frequency Codes (SFCs)
-+ * @CIP_SFC_32000:   32,000 data blocks
-+ * @CIP_SFC_44100:   44,100 data blocks
-+ * @CIP_SFC_48000:   48,000 data blocks
-+ * @CIP_SFC_88200:   88,200 data blocks
-+ * @CIP_SFC_96000:   96,000 data blocks
-+ * @CIP_SFC_176400: 176,400 data blocks
-+ * @CIP_SFC_192000: 192,000 data blocks
-+ * @CIP_SFC_COUNT: the number of supported SFCs
-+ *
-+ * These values are used to show nominal Sampling Frequency Code in
-+ * Format Dependent Field (FDF) of AMDTP packet header. In IEC 61883-6:2002,
-+ * this code means the number of events per second. Actually the code
-+ * represents the number of data blocks transferred per second in an AMDTP
-+ * stream.
-+ *
-+ * In IEC 61883-6:2005, some extensions were added to support more types of
-+ * data such as 'One Bit LInear Audio', therefore the meaning of SFC became
-+ * different depending on the types.
-+ *
-+ * Currently our implementation is compatible with IEC 61883-6:2002.
-  */
- enum cip_sfc {
- 	CIP_SFC_32000  = 0,
-diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index ba8df5a..ae3bc19 100644
---- a/sound/firewire/cmp.c
-+++ b/sound/firewire/cmp.c
-@@ -114,6 +114,7 @@ static int pcr_modify(struct cmp_connection *c,
-  * cmp_connection_init - initializes a connection manager
-  * @c: the connection manager to initialize
-  * @unit: a unit of the target device
-+ * @direction: input or output
-  * @pcr_index: the index of the iPCR/oPCR on the target device
-  */
- int cmp_connection_init(struct cmp_connection *c,
-@@ -154,6 +155,7 @@ EXPORT_SYMBOL(cmp_connection_init);
- /**
-  * cmp_connection_check_used - check connection is already esablished or not
-  * @c: the connection manager to be checked
-+ * @used: the pointer to store the result of checking the connection
-  */
- int cmp_connection_check_used(struct cmp_connection *c, bool *used)
- {
--- 
-2.1.0
+On Mon, Nov 17, 2014 at 03:13:18PM +0000, Charles Keepax wrote:
+
+> 1) We could add #defines for various IP blocks and the readable
+> callback could include these defines for various blocks. Which
+> would reduce the duplication between chips. Although a lot of the
+> blocks have small differences between chips which might hurt some
+> of the benefits and this does also have some negative affects on the
+> greppability of it all. This could also be done as functions then
+> some of the differences could be taken into account locally for
+> each block but that hurts the performance and probably
+> readability.
+
+I don't follow this suggestion, sorry.
+
+> 2) We could add a function to the regmap core that makes any
+> register with a default or marked as volatile readable. That
+> would remove the readable callback completely and not really hurt
+> greppability (assuming we could change the default array to use
+> the #defines for the register) but at fairly large runtime cost.
+> We would have to search the default array everytime we wanted to
+> check if a register is readable.
+
+This sounds far too expensive at runtime, especially for large register
+sets.  You can do tables of ranges but that's much more efficient since
+the expecation is that if you're using that there's an order of
+magnitude size difference.
+
+Honestly I'm not sure I see a big problem with the large tables; they're
+large but not hard to think about, from my point of view large blocks of
+code are scary but large blocks of data, meh.
+
+--XMHqbYJb993HXwLR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUa18WAAoJECTWi3JdVIfQx3wH/RKKaJBIleU5rrOwi5AxJweQ
+xRRFSuhxjq6i357ZPoDctGjsU9AEBsm1NjgreyqgxeL2t8PZv6GiICmRMo9KWU3e
+CgoqlfsVZYvtt8jZZ+NLkBy39oPIaJbFPZEDhe+F2Gks5SgNsPyGJWLAwEneTTt7
+NrahWPA9j304ll4bco+4MVCOs5IE7YXx+PNADTCFiIV3mcWq2AdVi90ZT8Thi//A
+W8GUVj8oTcfK4ntIKCrm5TxX9TH/FOIcTMHiwBYI3V0cfNTTxpRlb+9NqwAWL+ZF
+pwFEm87CMzB8Ph0Q5XhaazgHklZJzkEyGkTVP7QKf83dgMa9X1+UavESWddYclc=
+=xleV
+-----END PGP SIGNATURE-----
+
+--XMHqbYJb993HXwLR--
