@@ -1,239 +1,320 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/4] ASoC: ad1980: Convert to regmap
-Date: Tue, 18 Nov 2014 19:45:53 +0100
-Message-ID: <1416336354-32148-4-git-send-email-lars@metafoo.de>
-References: <1416336354-32148-1-git-send-email-lars@metafoo.de>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [RFCv2] Media Token API Spec.
+Date: Tue, 18 Nov 2014 23:15:12 +0200
+Message-ID: <20141118211512.GV8907@valkosipuli.retiisi.org.uk>
+References: <CAGoCfixD-zv1MMHUXLnjGV5KVB-DGdp2ZqZ0hUTR14UvLh-Gvw@mail.gmail.com>
+ <544804F1.7090606@linux.intel.com>
+ <20141025114115.292ff5d2@recife.lan>
+ <s5hk33n8ccj.wl-tiwai@suse.de>
+ <20141027105237.5f5ec7fd@recife.lan>
+ <5450077F.70101@osg.samsung.com>
+ <20141028214250.27f0c869@recife.lan>
+ <5451109B.3000604@osg.samsung.com>
+ <20141029155639.5529bf70@recife.lan>
+ <54595C82.10404@osg.samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1416336354-32148-1-git-send-email-lars@metafoo.de>
+Content-Disposition: inline
+In-Reply-To: <54595C82.10404@osg.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Devin Heitmueller <dheitmueller@kernellabs.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Linux Media Mailing List <linux-media@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans Verkuil <hverkuil@xs4all.nl>, Sander Eikelenboom <linux@eikelenboom.it>, prabhakar.csengg@gmail.com, Antti Palosaari <crope@iki.fi>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Tim Gardner <tim.gardner@canonical.com>, "olebowle@gmx.com" <olebowle@gmx.com>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch converts the ad1980 driver to use regmap for its IO.
+Hi Shuah,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/Kconfig  |   1 +
- sound/soc/codecs/ad1980.c | 141 ++++++++++++++++++++++++++++------------------
- 2 files changed, 88 insertions(+), 54 deletions(-)
+Many thanks for the RFC, for and being so patient with my terrible review
+schedule. My comments below.
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 072b784..883c577 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -226,6 +226,7 @@ config SND_SOC_AD193X_I2C
- 	select SND_SOC_AD193X
- 
- config SND_SOC_AD1980
-+	select REGMAP_AC97
- 	tristate
- 
- config SND_SOC_AD73311
-diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-index 93bd47d..5fd4a29 100644
---- a/sound/soc/codecs/ad1980.c
-+++ b/sound/soc/codecs/ad1980.c
-@@ -24,32 +24,86 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/device.h>
-+#include <linux/regmap.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/ac97_codec.h>
- #include <sound/initval.h>
- #include <sound/soc.h>
- 
--/*
-- * AD1980 register cache
-- */
--static const u16 ad1980_reg[] = {
--	0x0090, 0x8000, 0x8000, 0x8000, /* 0 - 6  */
--	0x0000, 0x0000, 0x8008, 0x8008, /* 8 - e  */
--	0x8808, 0x8808, 0x0000, 0x8808, /* 10 - 16 */
--	0x8808, 0x0000, 0x8000, 0x0000, /* 18 - 1e */
--	0x0000, 0x0000, 0x0000, 0x0000, /* 20 - 26 */
--	0x03c7, 0x0000, 0xbb80, 0xbb80, /* 28 - 2e */
--	0xbb80, 0xbb80, 0x0000, 0x8080, /* 30 - 36 */
--	0x8080, 0x2000, 0x0000, 0x0000, /* 38 - 3e */
--	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
--	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
--	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
--	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
--	0x8080, 0x0000, 0x0000, 0x0000, /* 60 - 66 */
--	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
--	0x0000, 0x0000, 0x1001, 0x0000, /* 70 - 76 */
--	0x0000, 0x0000, 0x4144, 0x5370  /* 78 - 7e */
-+static const struct reg_default ad1980_reg_defaults[] = {
-+	{ 0x02, 0x8000 },
-+	{ 0x04, 0x8000 },
-+	{ 0x06, 0x8000 },
-+	{ 0x0c, 0x8008 },
-+	{ 0x0e, 0x8008 },
-+	{ 0x10, 0x8808 },
-+	{ 0x12, 0x8808 },
-+	{ 0x16, 0x8808 },
-+	{ 0x18, 0x8808 },
-+	{ 0x1a, 0x0000 },
-+	{ 0x1c, 0x8000 },
-+	{ 0x20, 0x0000 },
-+	{ 0x28, 0x03c7 },
-+	{ 0x2c, 0xbb80 },
-+	{ 0x2e, 0xbb80 },
-+	{ 0x30, 0xbb80 },
-+	{ 0x32, 0xbb80 },
-+	{ 0x36, 0x8080 },
-+	{ 0x38, 0x8080 },
-+	{ 0x3a, 0x2000 },
-+	{ 0x60, 0x0000 },
-+	{ 0x62, 0x0000 },
-+	{ 0x72, 0x0000 },
-+	{ 0x74, 0x1001 },
-+	{ 0x76, 0x0000 },
-+};
-+
-+static bool ad1980_readable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case AC97_RESET ... AC97_MASTER_MONO:
-+	case AC97_PHONE ... AC97_CD:
-+	case AC97_AUX ... AC97_GENERAL_PURPOSE:
-+	case AC97_POWERDOWN ... AC97_PCM_LR_ADC_RATE:
-+	case AC97_SPDIF:
-+	case AC97_CODEC_CLASS_REV:
-+	case AC97_PCI_SVID:
-+	case AC97_AD_CODEC_CFG:
-+	case AC97_AD_JACK_SPDIF:
-+	case AC97_AD_SERIAL_CFG:
-+	case AC97_VENDOR_ID1:
-+	case AC97_VENDOR_ID2:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool ad1980_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case AC97_VENDOR_ID1:
-+	case AC97_VENDOR_ID2:
-+		return false;
-+	default:
-+		return ad1980_readable_reg(dev, reg);
-+	}
-+}
-+
-+static const struct regmap_config ad1980_regmap_config = {
-+	.reg_bits = 16,
-+	.reg_stride = 2,
-+	.val_bits = 16,
-+	.max_register = 0x7e,
-+	.cache_type = REGCACHE_RBTREE,
-+
-+	.volatile_reg = regmap_ac97_default_volatile,
-+	.readable_reg = ad1980_readable_reg,
-+	.writeable_reg = ad1980_writeable_reg,
-+
-+	.reg_defaults = ad1980_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(ad1980_reg_defaults),
- };
- 
- static const char *ad1980_rec_sel[] = {"Mic", "CD", "NC", "AUX", "Line",
-@@ -135,39 +189,13 @@ static const struct snd_soc_dapm_route ad1980_dapm_routes[] = {
- static unsigned int ac97_read(struct snd_soc_codec *codec,
- 	unsigned int reg)
- {
--	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
--	u16 *cache = codec->reg_cache;
--
--	switch (reg) {
--	case AC97_RESET:
--	case AC97_INT_PAGING:
--	case AC97_POWERDOWN:
--	case AC97_EXTENDED_STATUS:
--	case AC97_VENDOR_ID1:
--	case AC97_VENDOR_ID2:
--		return soc_ac97_ops->read(ac97, reg);
--	default:
--		reg = reg >> 1;
--
--		if (reg >= ARRAY_SIZE(ad1980_reg))
--			return -EINVAL;
--
--		return cache[reg];
--	}
-+	return snd_soc_read(codec, reg);
- }
- 
- static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
- 	unsigned int val)
- {
--	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
--	u16 *cache = codec->reg_cache;
--
--	soc_ac97_ops->write(ac97, reg, val);
--	reg = reg >> 1;
--	if (reg < ARRAY_SIZE(ad1980_reg))
--		cache[reg] = val;
--
--	return 0;
-+	return snd_soc_write(codec, reg, val);
- }
- 
- static struct snd_soc_dai_driver ad1980_dai = {
-@@ -219,6 +247,7 @@ static int ad1980_reset(struct snd_soc_codec *codec, int try_warm)
- static int ad1980_soc_probe(struct snd_soc_codec *codec)
- {
- 	struct snd_ac97 *ac97;
-+	struct regmap *regmap;
- 	int ret;
- 	u16 vendor_id2;
- 	u16 ext_status;
-@@ -230,6 +259,13 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
- 		return ret;
- 	}
- 
-+	regmap = regmap_init_ac97(ac97, &ad1980_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		ret = PTR_ERR(regmap);
-+		goto err_free_ac97;
-+	}
-+
-+	snd_soc_codec_init_regmap(codec, regmap);
- 	snd_soc_codec_set_drvdata(codec, ac97);
- 
- 	ret = ad1980_reset(codec, 0);
-@@ -268,6 +304,8 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
- 	return 0;
- 
- reset_err:
-+	snd_soc_codec_exit_regmap(codec);
-+err_free_ac97:
- 	snd_soc_free_ac97_codec(ac97);
- 	return ret;
- }
-@@ -276,6 +314,7 @@ static int ad1980_soc_remove(struct snd_soc_codec *codec)
- {
- 	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
- 
-+	snd_soc_codec_exit_regmap(codec);
- 	snd_soc_free_ac97_codec(ac97);
- 	return 0;
- }
-@@ -283,12 +322,6 @@ static int ad1980_soc_remove(struct snd_soc_codec *codec)
- static struct snd_soc_codec_driver soc_codec_dev_ad1980 = {
- 	.probe = 	ad1980_soc_probe,
- 	.remove = 	ad1980_soc_remove,
--	.reg_cache_size = ARRAY_SIZE(ad1980_reg),
--	.reg_word_size = sizeof(u16),
--	.reg_cache_default = ad1980_reg,
--	.reg_cache_step = 2,
--	.write = ac97_write,
--	.read = ac97_read,
- 
- 	.controls = ad1980_snd_ac97_controls,
- 	.num_controls = ARRAY_SIZE(ad1980_snd_ac97_controls),
+On Tue, Nov 04, 2014 at 04:08:50PM -0700, Shuah Khan wrote:
+> Hi Mauro,
+> 
+> Here is the RFC as promised. I also included the Media controller
+> as a an alternative and captured the discussion in the thread on
+> that topic. Please review.
+> 
+> -- Shuah
+> 
+> -----------------------------------------------------------------
+> RFC Media Token API Specification
+> 
+> Let's start with a diagram of a media device (without IR, eeprom
+> and others):
+> 
+> http://linuxtv.org/downloads/presentations/typical_hybrid_hardware.png
+> 
+> The dot lines represent the parts of the graph that are switched by
+> the tuner, DMA or input select.
+> 
+> Please notice that the DMA engines, together with the stuff needed to
+> control A/V switches is at one single chip. Changing the registers there
+> can affect the other streams, specially on most sophisticated devices
+> like cx231xx, where it even has a power management IP block that
+> validates if a device to be turned on/off won't exceed the maximum
+> drain current of 500mA. That's basically why we need to do a temporary
+> lock alsa, dvb, v4l and IR drivers when doing certain changes.
+> 
+> Also, please notice that I2C buses that can be as slow as 10kbps
+> are used to control for several devices, like:
+>         - the tuner
+>         - the Digital TV (DTV) demod
+>         - Analog and/or Video demod (sometimes embedded at the main
+>           chip)
+>         - DTV demux (sometimes embedded at the main chip)
+>         - The remote controller (sometimes embedded at the main chip)
+> 
+> For some devices, after powered on, or when certain parameters change, a
+> new firmware (and sometimes a hardware reset) is required. The firmware
+> size can be about 64KB or even bigger.
+> 
+> Also, the A/V switch it is actually two independent switches (or one
+> switch for video and one audio mux for audio) that needs to be changed
+> together when the source changes.
+> 
+> There are two components that are shared there between analog and
+> digital: the tuner (where the signal is captured) and the DMA engine
+> used to stream analog and Digital TV (dvb).
+> 
+> PS.: the diagram is over-simplified, as the tuner is just one of the
+> possible inputs for the analog part of the device. Other possible
+> inputs are S-Video, composite, HDMI, etc.
+> 
+> Sometimes, the audio DMA is also shared, e. g. just one stream comes
+> from the hardware. It is up to the driver to split audio and video and
+> send them to the V4L2 and ALSA APIs. This is the case of tm6000 driver.
+> 
+> Those shared components can be used either at analog or digital mode,
+> but not at the same time.
+> 
+> Also, programming the V4L2 analog and audio DMA and demods should be
+> done via V4L2 API, as this API allows the selection of the proper
+> audio/video input (almost all devices have multiple analog inputs).
+> 
+> Please notice that, if the tuner is on digital mode, the entire analog
+> path is disabled, including ALSA output.
+> 
+> If the tuner is on analog mode, both ALSA and V4L2 can work at the
+> same time. However, during the period where the tuner firmware is
+> loaded, and during the DMA configuration and input selection time,
+> neither ALSA or V4L2 can stream. Such configuration/firmware load
+> is commanded via V4L2 API, as ALSA knows nothing about tuner or
+> input selection.
+> 
+> At a higher level the problem description is:
+> 
+> There are 3 different device files that get created to control
+> tuner and audio functions on a media device. 4 drivers (dvb,
+> v4l2, alsa, and the main usb driver for the usb device), and
+> 3 core APIs (dvb-core, v4l-core, audio) that control the tuner
+> and audio hardware and provide user API to these 3 device files.
+> 
+> The above driver model is simplified, there's 4th component for
+> some drivers: the mceusb driver, that handles remote controllers.
+> The mceusb handles the Microsoft Media Center Remote Control
+> protocol. It supports stand alone remote controller devices, but
+> it also supports a few USB devices that use a separate interface
+> for IR.
+> 
+> There are currently some issues on cx231xx and mceusb, as both drivers
+> can be used at the same time, but, when cx231xx sends certain commands,
+> the mceusb IR polls fail. This is out of the scope of the audio lock,
+> but it also needs to be addressed some day.
+> 
+> Most media user applications, drivers and the core have no knowledge
+> of each other. The only thing that is common across all these drivers
+> is the parent device for the main usb device which is controlled by
+> the usb driver.
+> 
+> Some media user applications like MythTV can handle all 3 APIs,
+> however, MythTV doesn't know how to associate ALSA, V4L2 and DVB
+> devnodes that belong to the same device. If MythTV finds, 3 V4L2
+> nodes, 3 ALSA nodes, and 1 DVB node, it doesn't know which device
+> is associated with the DVB node.
+> 
+> Almost all applications that are aware of V4L2 API are also aware of
+> ALSA API and may associate audio and video, as there is a way to
+> associate it using sysfs. However, several applications don't use it.
+> 
+> The premise for the main design idea in this series is creating
+> a common construct at the parent device structure that is visible
+> to all drivers to act as a master access control (lock). Let's call
+> this media token object with two sub-tokens one for tuner and another
+> for audio.
+> 
+> Each of the APIS evolved separately, hence have their own backwards
+> compatibility to maintain. Starting with v4l2:
+> 
+> V4L2 case:
+> Multiple v4l2 applications are allowed to open /dev/video0 in
+> read/write mode with no restrictions as long as the tuner is in
+> analog mode. V4L2-core handles conflicting requests between v4l2
+> applications. V4L2-core doesn't have the knowledge that the tuner
+> is in use by a dvb and/or audio is in use. Individual drivers
+> may have this knowledge as, except for one case (bttv driver),
+> they share some data.
+> 
+> As soon as a V4L2 application starts, digital stream glitches and
+> audio glitches.
+> 
+> DVB case:
+> Multiple dvb applications can open the dvb device in read only mode.
+> As soon an application open the device read/write mode a separate
+> kthread is kicked off to handle the request. Only one application
+> can open the device in read/write mode. There's no issue with ALSA
+> in R/O mode, as the application is not allowed to modify anything
+> with the stream. This is used only to monitor an already opened
+> device in R/W mode.
+> 
+> Similar to V4L2-core case, dvb-core doesn't have any knowledge that
+> the tuner is in use by v4l2 and/or audio is in use. As soon as a
+> dvb application starts v4l2 video glitches and audio glitches.
+> 
+> Audio case:
+> Same scenario is applicable to audio application. When a v4l2 or dvb
+> application starts, audio application gets impacted.
+> 
+> Problems to address:
+> 
+> Dvb owns tuner and audio: another dvb, v4l2 application and
+>                           ALSA application should detect
+>                           tuner/audio busy right away and exit.
+>                           Dvb applications don't use audio node,
+>                           however, devices can't use audio hardware
+>                           while in DVB mode.
+> 
+> V4l2 owns tuner and audio: dvb should detect tuner/audio busy
+>                            right away and exit.
+>                            The V4L2-core should only hold the token for
+>                            the required time to initialize the device
+>                            and/or load the firmware.
+>                            ALSA applications should wait for v4L2-core
+> 			   to finish programming at audio, and should
+>                            keep working after that.
+> 
+> Audio owns audio: dvb applications should detect audio busy and
+> exit. V4L2 applications should work. However, when certain V4L2
+> ioctls are issued, the audio device driver should not send any
+> command to the hardware. After such commands, the audio mixers
+> may change. This is why two tokens are necessary, one for tuner
+> and another for audio.
+> 
+> Because of the above mentioned difference in behavior between dvb
+> and v4l applications when audio is busy, two tokens (one for tuner
+> and another for audio) are necessary and audio token lock should not
+> be held at ALSA open/close.
+> 
+> Special cases:
+> 
+> Dvb applications access tuner in exclusive mode. i.e only one dvb
+> application at a time is allowed to open the device read/write mode.
+> Dvb applications don't use audio node, however, devices can't use
+> audio hardware while in DVB mode. Dvb applications receive data as
+> MPEG-TS, using a separate device node. The same DMA engine that
+> provides video (and, sometimes audio) is used by the DVB device
+> node, making it inaccessible to audio applications while tuner
+> is in DVB mode. Hence, the need to prevent audio applications from
+> accessing audio node when tuner is in DVB mode. As a result, dvb-core
+> will have to hold tuner and audio tokens so v4l2-core and ALSA know
+> that audio is not available. Dvb disables audio hardware so it could
+> be powered-off in some cases.
+> 
+> Audio applications access audio in exclusive mode. i.e only one audio
+> application at a time is allowed to open the device in read/write mode.
+> Audio applications create threads and thread closes and re-opens the
+> audio device. Threads can do this and hence something that higher level
+> construct has to allow. Audio application has to hold audio token so
+> dvb and v4l2 know that it is in use.
+> 
+> V4l2 applications access tuner and audio in shared v4l2 mode.
+> i.e several v4l2 processes and threads could use tuner and audio
+> at the same time. V4L2 core handles concurrency. There's just
+> one file handler with full control to start/stop stream at V4L2
+> side. The higher level construct should not break the ability of
+> multiple v4l2 applications to access tuner and audio in shared
+> mode, and disallow dvb and audio applications access when they
+> are in use by the V4L2-core.
+> 
+> Dvb-core when it gets the tuner, it should also obtain audio right
+> away. v4l2-core when it gets the tuner, it should get the audio at
+> the same time. When dvb-core has the tuner, v4l2 shouldn't get it
+> and vice versa.
+> 
+> When dvb-core has the audio locked, audio application should detect
+> condition and stop streaming, as part of the hardware can be powered
+> off. It can only return opening the device after DVB releases audio
+> token.
+> 
+> When v4l2-core has audio locked, audio application should detect the
+> condition and stop sending commands to audio hardware. It can only
+> resume audio access after V4L2 releases audio token.
+> 
+> Open issues:
+> During testing, snd_pcm_lib_ioctls are coming from dvb application.
+> It is likely that these are related to the audio output and not audio
+> capture or the application in question is an hybrid one. This issue
+> needs further investigation.
+> 
+> Alternatives: (proposed by Sakari Ailus)
+> Can Media controller be used to solve the problem?
+> 
+> The usage of the media controller for this specific usage is that
+> we should not force userspace applications to be aware of the
+> media controller just because of hardware locking.
+> 
+> Currently, media entities may only be entities bound to a given
+> subsystem, but likely need to change media controller for complex
+> embedded DVB device support ...
+> 
+> In case of the Media controller, mutual exclusion of different users
+> is currently performed by adding the entities to a pipeline and
+> incrementing the streaming count once streaming is enabled --- on
+> different interfaces streaming may mean a different thing.
+> 
+> However, we'll still need to find a way for ALSA to prevent it to use
+> the audio demod and DMA engine that will be powered off when DVB is
+> streaming.
+> 
+> The Media controller interface does not handle serializing potential
+> users that may wish to configure the device. Handling serializing is
+> necessary if Media controller is extended instead of pursuing Media
+> Token API to solve the problem.
+> 
+> Reconfiguring the DMA engine and some other registers via V4L2 API
+> should be blocked. The same applies to firmware load, if the device
+> is using tuner input for analog TV.
+> 
+> If we use the media controller, we'll need to add a state to it,
+> to indicate that a block at the pipeline is being reconfigured.
+> 
+> It is dependent on Media Controller adoption on ALSA as well.
+
+Thank you for the detailed description of the problem domain.
+
+Using Media controller for this at this point isn't straightforward, and
+especially for existing drivers for which the current APIs serve the
+existing devices well enough, perhaps not the best solution even when the
+missing pieces were implemented.
+
+More complex devices, though, still need MC in order to control them in a
+meaningful way. If a tuner is connected into one, the media token framework
+wouldn't help there. In other words, we'll need something for such devices
+as well. That'd be proper MC support for DVB and ALSA, but it'll be a
+separate discussion.
+
+One big upside in this patchset is that it does not change the user space
+interface.
+
+One concern I have is how generic this framework really is. Do you see
+potential use cases outside the current one?
+
+I'd move this under drivers/media, and possibly think of the naming of the
+framework a little bit.
+
+I'll review the rest of the v2.
+
 -- 
-1.8.0
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
