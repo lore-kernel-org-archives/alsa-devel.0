@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: wm_adsp: Fix memory leak in
-	wm_adsp_setup_algs
-Date: Tue, 18 Nov 2014 17:15:55 +0000
-Message-ID: <20141118171555.GT22111@sirena.org.uk>
-References: <1416328152-8713-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Jarkko Nikula <jarkko.nikula@intel.com>
+Subject: Re: Baytrail init file for alsa-utils
+Date: Tue, 18 Nov 2014 14:41:54 +0200
+Message-ID: <546B3E92.2050109@intel.com>
+References: <1415008294.2406.107.camel@hadess.net>	
+ <1415013073.2471.11.camel@loki> <1415019823.4506.1.camel@hadess.net>
+ <1416312355.19132.19.camel@hadess.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3787044484935294493=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F255826047F
- for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 18:16:13 +0100 (CET)
-In-Reply-To: <1416328152-8713-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E54CE265074
+ for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 13:41:57 +0100 (CET)
+In-Reply-To: <1416312355.19132.19.camel@hadess.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, aitdark.park@samsung.com
+To: Bastien Nocera <hadess@hadess.net>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---===============3787044484935294493==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QCC2I/2CckNfI+Tr"
-Content-Disposition: inline
+On 11/18/2014 02:05 PM, Bastien Nocera wrote:
+> On Mon, 2014-11-03 at 14:03 +0100, Bastien Nocera wrote:
+>> On Mon, 2014-11-03 at 11:11 +0000, Liam Girdwood wrote:
+>>> On Mon, 2014-11-03 at 10:51 +0100, Bastien Nocera wrote:
+>>>> Hey,
+>>>>
+>>>> I've done some work on the community generated "alsa state" file for
+>>>> Baytrail tablets, and shrunk it massively:
+>>>> https://github.com/AdamWill/baytrail-m/blob/master/alsa/t100_B.state
+>>>>
+>>>> Are there any tools, or hints as to how I might convert that to an
+>>>> "init" file that alsactl could run to set the default state of the
+>>>> mixer?
+>>>
+>>> "alsactl store" should write it to the correct system directory.
+>>
+>> alsactl store doesn't use a format similar to the files installed
+>> in /usr/lib/alsa/init though, which is what I'm looking for.
+>>
+>>>> Or have any Intel folks already done that work?
+>>>>
+>>>
+>>> Jarkko has been working on Baytrail so best for him to answer.
+>>
+>> OK, thanks
+>
+> Jarkko?
+>
+Ah, sorry. No I have used just the alsamixer and alsactl.
 
+-- 
+Jarkko
+---------------------------------------------------------------------
+Intel Finland Oy
+Registered Address: PL 281, 00181 Helsinki 
+Business Identity Code: 0357606 - 4 
+Domiciled in Helsinki 
 
---QCC2I/2CckNfI+Tr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Nov 18, 2014 at 04:29:12PM +0000, Charles Keepax wrote:
-> From: JS Park <aitdark.park@samsung.com>
->=20
-> If we fail to allocate memory for one of the memory regions whilst
-> parsing the DSP firmware, we will leak the buffer holding the algorithm
-> information. This patch ensures that this buffer is freed on all error
-> paths.
-
-I already applied this, this was a request for future patches.
-
---QCC2I/2CckNfI+Tr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUa37KAAoJECTWi3JdVIfQLuQH/1fkwqcSxODZu285su+sH7Lk
-G8GHwupNV8iyEfc1xGETn+PDI3tOwGA595QoZuSEKBbcORqGH7TmRilfbk0wYZYC
-luRNkpsXbV6LCLa7cS1k+x5jmb9NcZqvRCcBEjv3i/TLywbQa+Q9VaM/ipXMkllw
-ZkjAPFOZbiH/+5l1Oh99YzEpIVW0pg5WDyhtuH+tPNKuuGC+qNdQh7okuZ7+zUj/
-eM9qFtJzNAlYTGVSc5QyidzsaMNdQhZ/ssFnR6tb0L5nX/GQAs0ntrq5kS0b7Vwq
-vDSCRsG11ZVTslVa7yZbNGjZIyndCIB3vD1pp16Goi+6ULt+6WRswf9k7O7PkXw=
-=gk5b
------END PGP SIGNATURE-----
-
---QCC2I/2CckNfI+Tr--
-
---===============3787044484935294493==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3787044484935294493==--
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
