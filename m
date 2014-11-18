@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/4] ASoC: Add helper functions for deferred regmap setup
-Date: Tue, 18 Nov 2014 19:45:52 +0100
-Message-ID: <1416336354-32148-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/4] ASoC: ad1980: Convert to regmap
+Date: Tue, 18 Nov 2014 19:45:53 +0100
+Message-ID: <1416336354-32148-4-git-send-email-lars@metafoo.de>
 References: <1416336354-32148-1-git-send-email-lars@metafoo.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1416336354-32148-1-git-send-email-lars@metafoo.de>
@@ -10,139 +10,230 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Some drivers (most notably the AC'97 drivers) do not have access to their
-regmap struct when the component/codec is registered. For those drivers the
-automatic regmap setup will not work and needs to be done manually,
-typically from the component/CODEC drivers probe callback.
-
-This patch adds a set of helper function to handle deferred regmap
-initialization as well as early regmap tear-down.
+This patch converts the ad1980 driver to use regmap for its IO.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h  | 35 +++++++++++++++++++++++++++++++
- sound/soc/soc-core.c | 58 ++++++++++++++++++++++++++++++++++++++++++----------
- 2 files changed, 82 insertions(+), 11 deletions(-)
+ sound/soc/codecs/Kconfig  |   1 +
+ sound/soc/codecs/ad1980.c | 141 ++++++++++++++++++++++++++++------------------
+ 2 files changed, 88 insertions(+), 54 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 86b2c77..879e2b3 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1283,6 +1283,41 @@ void snd_soc_component_async_complete(struct snd_soc_component *component);
- int snd_soc_component_test_bits(struct snd_soc_component *component,
- 	unsigned int reg, unsigned int mask, unsigned int value);
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 072b784..883c577 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -226,6 +226,7 @@ config SND_SOC_AD193X_I2C
+ 	select SND_SOC_AD193X
  
-+void snd_soc_component_init_regmap(struct snd_soc_component *component,
-+	struct regmap *regmap);
-+void snd_soc_component_exit_regmap(struct snd_soc_component *component);
+ config SND_SOC_AD1980
++	select REGMAP_AC97
+ 	tristate
+ 
+ config SND_SOC_AD73311
+diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+index 93bd47d..5fd4a29 100644
+--- a/sound/soc/codecs/ad1980.c
++++ b/sound/soc/codecs/ad1980.c
+@@ -24,32 +24,86 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/device.h>
++#include <linux/regmap.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/ac97_codec.h>
+ #include <sound/initval.h>
+ #include <sound/soc.h>
+ 
+-/*
+- * AD1980 register cache
+- */
+-static const u16 ad1980_reg[] = {
+-	0x0090, 0x8000, 0x8000, 0x8000, /* 0 - 6  */
+-	0x0000, 0x0000, 0x8008, 0x8008, /* 8 - e  */
+-	0x8808, 0x8808, 0x0000, 0x8808, /* 10 - 16 */
+-	0x8808, 0x0000, 0x8000, 0x0000, /* 18 - 1e */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 20 - 26 */
+-	0x03c7, 0x0000, 0xbb80, 0xbb80, /* 28 - 2e */
+-	0xbb80, 0xbb80, 0x0000, 0x8080, /* 30 - 36 */
+-	0x8080, 0x2000, 0x0000, 0x0000, /* 38 - 3e */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
+-	0x8080, 0x0000, 0x0000, 0x0000, /* 60 - 66 */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* reserved */
+-	0x0000, 0x0000, 0x1001, 0x0000, /* 70 - 76 */
+-	0x0000, 0x0000, 0x4144, 0x5370  /* 78 - 7e */
++static const struct reg_default ad1980_reg_defaults[] = {
++	{ 0x02, 0x8000 },
++	{ 0x04, 0x8000 },
++	{ 0x06, 0x8000 },
++	{ 0x0c, 0x8008 },
++	{ 0x0e, 0x8008 },
++	{ 0x10, 0x8808 },
++	{ 0x12, 0x8808 },
++	{ 0x16, 0x8808 },
++	{ 0x18, 0x8808 },
++	{ 0x1a, 0x0000 },
++	{ 0x1c, 0x8000 },
++	{ 0x20, 0x0000 },
++	{ 0x28, 0x03c7 },
++	{ 0x2c, 0xbb80 },
++	{ 0x2e, 0xbb80 },
++	{ 0x30, 0xbb80 },
++	{ 0x32, 0xbb80 },
++	{ 0x36, 0x8080 },
++	{ 0x38, 0x8080 },
++	{ 0x3a, 0x2000 },
++	{ 0x60, 0x0000 },
++	{ 0x62, 0x0000 },
++	{ 0x72, 0x0000 },
++	{ 0x74, 0x1001 },
++	{ 0x76, 0x0000 },
++};
 +
-+/**
-+ * snd_soc_codec_init_regmap() - Initialize regmap instance for the CODEC
-+ * @codec: The CODEC for which to initialize the regmap instance
-+ * @regmap: The regmap instance that should be used by the CODEC
-+ *
-+ * This function allows deferred assignment of the regmap instance that is
-+ * associated with the CODEC. Only use this if the regmap instance is not yet
-+ * ready when the CODEC is registered. The function must also be called before
-+ * the first IO attempt of the CODEC.
-+ */
-+static inline void snd_soc_codec_init_regmap(struct snd_soc_codec *codec,
-+	struct regmap *regmap)
++static bool ad1980_readable_reg(struct device *dev, unsigned int reg)
 +{
-+	snd_soc_component_init_regmap(&codec->component, regmap);
++	switch (reg) {
++	case AC97_RESET ... AC97_MASTER_MONO:
++	case AC97_PHONE ... AC97_CD:
++	case AC97_AUX ... AC97_GENERAL_PURPOSE:
++	case AC97_POWERDOWN ... AC97_PCM_LR_ADC_RATE:
++	case AC97_SPDIF:
++	case AC97_CODEC_CLASS_REV:
++	case AC97_PCI_SVID:
++	case AC97_AD_CODEC_CFG:
++	case AC97_AD_JACK_SPDIF:
++	case AC97_AD_SERIAL_CFG:
++	case AC97_VENDOR_ID1:
++	case AC97_VENDOR_ID2:
++		return true;
++	default:
++		return false;
++	}
 +}
 +
-+/**
-+ * snd_soc_codec_exit_regmap() - De-initialize regmap instance for the CODEC
-+ * @codec: The CODEC for which to de-initialize the regmap instance
-+ *
-+ * Calls regmap_exit() on the regmap instance associated to the CODEC and
-+ * removes the regmap instance from the CODEC.
-+ *
-+ * This function should only be used if snd_soc_codec_init_regmap() was used to
-+ * initialize the regmap instance.
-+ */
-+static inline void snd_soc_codec_exit_regmap(struct snd_soc_codec *codec)
++static bool ad1980_writeable_reg(struct device *dev, unsigned int reg)
 +{
-+	snd_soc_component_exit_regmap(&codec->component);
++	switch (reg) {
++	case AC97_VENDOR_ID1:
++	case AC97_VENDOR_ID2:
++		return false;
++	default:
++		return ad1980_readable_reg(dev, reg);
++	}
 +}
 +
- /* device driver data */
++static const struct regmap_config ad1980_regmap_config = {
++	.reg_bits = 16,
++	.reg_stride = 2,
++	.val_bits = 16,
++	.max_register = 0x7e,
++	.cache_type = REGCACHE_RBTREE,
++
++	.volatile_reg = regmap_ac97_default_volatile,
++	.readable_reg = ad1980_readable_reg,
++	.writeable_reg = ad1980_writeable_reg,
++
++	.reg_defaults = ad1980_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(ad1980_reg_defaults),
+ };
  
- static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 649dd8b..cc52ea1 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2603,22 +2603,58 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
+ static const char *ad1980_rec_sel[] = {"Mic", "CD", "NC", "AUX", "Line",
+@@ -135,39 +189,13 @@ static const struct snd_soc_dapm_route ad1980_dapm_routes[] = {
+ static unsigned int ac97_read(struct snd_soc_codec *codec,
+ 	unsigned int reg)
+ {
+-	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-	u16 *cache = codec->reg_cache;
+-
+-	switch (reg) {
+-	case AC97_RESET:
+-	case AC97_INT_PAGING:
+-	case AC97_POWERDOWN:
+-	case AC97_EXTENDED_STATUS:
+-	case AC97_VENDOR_ID1:
+-	case AC97_VENDOR_ID2:
+-		return soc_ac97_ops->read(ac97, reg);
+-	default:
+-		reg = reg >> 1;
+-
+-		if (reg >= ARRAY_SIZE(ad1980_reg))
+-			return -EINVAL;
+-
+-		return cache[reg];
+-	}
++	return snd_soc_read(codec, reg);
+ }
+ 
+ static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	unsigned int val)
+ {
+-	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-	u16 *cache = codec->reg_cache;
+-
+-	soc_ac97_ops->write(ac97, reg, val);
+-	reg = reg >> 1;
+-	if (reg < ARRAY_SIZE(ad1980_reg))
+-		cache[reg] = val;
+-
+-	return 0;
++	return snd_soc_write(codec, reg, val);
+ }
+ 
+ static struct snd_soc_dai_driver ad1980_dai = {
+@@ -219,6 +247,7 @@ static int ad1980_reset(struct snd_soc_codec *codec, int try_warm)
+ static int ad1980_soc_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_ac97 *ac97;
++	struct regmap *regmap;
+ 	int ret;
+ 	u16 vendor_id2;
+ 	u16 ext_status;
+@@ -230,6 +259,13 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
+ 
++	regmap = regmap_init_ac97(ac97, &ad1980_regmap_config);
++	if (IS_ERR(regmap)) {
++		ret = PTR_ERR(regmap);
++		goto err_free_ac97;
++	}
++
++	snd_soc_codec_init_regmap(codec, regmap);
+ 	snd_soc_codec_set_drvdata(codec, ac97);
+ 
+ 	ret = ad1980_reset(codec, 0);
+@@ -268,6 +304,8 @@ static int ad1980_soc_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ 
+ reset_err:
++	snd_soc_codec_exit_regmap(codec);
++err_free_ac97:
+ 	snd_soc_free_ac97_codec(ac97);
+ 	return ret;
+ }
+@@ -276,6 +314,7 @@ static int ad1980_soc_remove(struct snd_soc_codec *codec)
+ {
+ 	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+ 
++	snd_soc_codec_exit_regmap(codec);
+ 	snd_soc_free_ac97_codec(ac97);
  	return 0;
  }
+@@ -283,12 +322,6 @@ static int ad1980_soc_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_ad1980 = {
+ 	.probe = 	ad1980_soc_probe,
+ 	.remove = 	ad1980_soc_remove,
+-	.reg_cache_size = ARRAY_SIZE(ad1980_reg),
+-	.reg_word_size = sizeof(u16),
+-	.reg_cache_default = ad1980_reg,
+-	.reg_cache_step = 2,
+-	.write = ac97_write,
+-	.read = ac97_read,
  
--static void snd_soc_component_init_regmap(struct snd_soc_component *component)
-+static void snd_soc_component_setup_regmap(struct snd_soc_component *component)
- {
--	if (!component->regmap)
--		component->regmap = dev_get_regmap(component->dev, NULL);
--	if (component->regmap) {
--		int val_bytes = regmap_get_val_bytes(component->regmap);
--		/* Errors are legitimate for non-integer byte multiples */
--		if (val_bytes > 0)
--			component->val_bytes = val_bytes;
--	}
-+	int val_bytes = regmap_get_val_bytes(component->regmap);
-+
-+	/* Errors are legitimate for non-integer byte multiples */
-+	if (val_bytes > 0)
-+		component->val_bytes = val_bytes;
-+}
-+
-+/**
-+ * snd_soc_component_init_regmap() - Initialize regmap instance for the component
-+ * @component: The component for which to initialize the regmap instance
-+ * @regmap: The regmap instance that should be used by the component
-+ *
-+ * This function allows deferred assignment of the regmap instance that is
-+ * associated with the component. Only use this if the regmap instance is not
-+ * yet ready when the component is registered. The function must also be called
-+ * before the first IO attempt of the component.
-+ */
-+void snd_soc_component_init_regmap(struct snd_soc_component *component,
-+	struct regmap *regmap)
-+{
-+	component->regmap = regmap;
-+	snd_soc_component_setup_regmap(component);
- }
-+EXPORT_SYMBOL_GPL(snd_soc_component_init_regmap);
-+
-+/**
-+ * snd_soc_component_exit_regmap() - De-initialize regmap instance for the component
-+ * @component: The component for which to de-initialize the regmap instance
-+ *
-+ * Calls regmap_exit() on the regmap instance associated to the component and
-+ * removes the regmap instance from the component.
-+ *
-+ * This function should only be used if snd_soc_component_init_regmap() was used
-+ * to initialize the regmap instance.
-+ */
-+void snd_soc_component_exit_regmap(struct snd_soc_component *component)
-+{
-+	regmap_exit(component->regmap);
-+	component->regmap = NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_exit_regmap);
- 
- static void snd_soc_component_add_unlocked(struct snd_soc_component *component)
- {
--	if (!component->write && !component->read)
--		snd_soc_component_init_regmap(component);
-+	if (!component->write && !component->read) {
-+		if (!component->regmap)
-+			component->regmap = dev_get_regmap(component->dev, NULL);
-+		if (component->regmap)
-+			snd_soc_component_setup_regmap(component);
-+	}
- 
- 	list_add(&component->list, &component_list);
- }
+ 	.controls = ad1980_snd_ac97_controls,
+ 	.num_controls = ARRAY_SIZE(ad1980_snd_ac97_controls),
 -- 
 1.8.0
