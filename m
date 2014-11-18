@@ -1,328 +1,412 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [RFCv2] Media Token API Spec.
-Date: Tue, 18 Nov 2014 14:27:53 -0700
-Message-ID: <546BB9D9.6020204@osg.samsung.com>
-References: <CAGoCfixD-zv1MMHUXLnjGV5KVB-DGdp2ZqZ0hUTR14UvLh-Gvw@mail.gmail.com> <544804F1.7090606@linux.intel.com> <20141025114115.292ff5d2@recife.lan> <s5hk33n8ccj.wl-tiwai@suse.de> <20141027105237.5f5ec7fd@recife.lan> <5450077F.70101@osg.samsung.com> <20141028214250.27f0c869@recife.lan> <5451109B.3000604@osg.samsung.com> <20141029155639.5529bf70@recife.lan> <54595C82.10404@osg.samsung.com> <20141118211512.GV8907@valkosipuli.retiisi.org.uk>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH v2 1/6] media: add media token device resource framework
+Date: Tue, 18 Nov 2014 23:33:42 +0200
+Message-ID: <20141118213342.GW8907@valkosipuli.retiisi.org.uk>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com>
+ <c8bae1d475b1086302fcb83bc463ec01437c3f95.1413246372.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141118211512.GV8907@valkosipuli.retiisi.org.uk>
+Content-Disposition: inline
+In-Reply-To: <c8bae1d475b1086302fcb83bc463ec01437c3f95.1413246372.git.shuahkh@osg.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Devin Heitmueller <dheitmueller@kernellabs.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Linux Media Mailing List <linux-media@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans Verkuil <hverkuil@xs4all.nl>, Sander Eikelenboom <linux@eikelenboom.it>, prabhakar.csengg@gmail.com, Antti Palosaari <crope@iki.fi>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Tim Gardner <tim.gardner@canonical.com>, "olebowle@gmx.com" <olebowle@gmx.com>, Linux Kernel <linux-kernel@vger.kernel.org>
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, hverkuil@xs4all.nl, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, tiwai@suse.de, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/18/2014 02:15 PM, Sakari Ailus wrote:
-> Hi Shuah,
-> 
-> Many thanks for the RFC, for and being so patient with my terrible review
-> schedule. My comments below.
-> 
-> On Tue, Nov 04, 2014 at 04:08:50PM -0700, Shuah Khan wrote:
->> Hi Mauro,
->>
->> Here is the RFC as promised. I also included the Media controller
->> as a an alternative and captured the discussion in the thread on
->> that topic. Please review.
->>
->> -- Shuah
->>
->> -----------------------------------------------------------------
->> RFC Media Token API Specification
->>
->> Let's start with a diagram of a media device (without IR, eeprom
->> and others):
->>
->> http://linuxtv.org/downloads/presentations/typical_hybrid_hardware.png
->>
->> The dot lines represent the parts of the graph that are switched by
->> the tuner, DMA or input select.
->>
->> Please notice that the DMA engines, together with the stuff needed to
->> control A/V switches is at one single chip. Changing the registers there
->> can affect the other streams, specially on most sophisticated devices
->> like cx231xx, where it even has a power management IP block that
->> validates if a device to be turned on/off won't exceed the maximum
->> drain current of 500mA. That's basically why we need to do a temporary
->> lock alsa, dvb, v4l and IR drivers when doing certain changes.
->>
->> Also, please notice that I2C buses that can be as slow as 10kbps
->> are used to control for several devices, like:
->>         - the tuner
->>         - the Digital TV (DTV) demod
->>         - Analog and/or Video demod (sometimes embedded at the main
->>           chip)
->>         - DTV demux (sometimes embedded at the main chip)
->>         - The remote controller (sometimes embedded at the main chip)
->>
->> For some devices, after powered on, or when certain parameters change, a
->> new firmware (and sometimes a hardware reset) is required. The firmware
->> size can be about 64KB or even bigger.
->>
->> Also, the A/V switch it is actually two independent switches (or one
->> switch for video and one audio mux for audio) that needs to be changed
->> together when the source changes.
->>
->> There are two components that are shared there between analog and
->> digital: the tuner (where the signal is captured) and the DMA engine
->> used to stream analog and Digital TV (dvb).
->>
->> PS.: the diagram is over-simplified, as the tuner is just one of the
->> possible inputs for the analog part of the device. Other possible
->> inputs are S-Video, composite, HDMI, etc.
->>
->> Sometimes, the audio DMA is also shared, e. g. just one stream comes
->> from the hardware. It is up to the driver to split audio and video and
->> send them to the V4L2 and ALSA APIs. This is the case of tm6000 driver.
->>
->> Those shared components can be used either at analog or digital mode,
->> but not at the same time.
->>
->> Also, programming the V4L2 analog and audio DMA and demods should be
->> done via V4L2 API, as this API allows the selection of the proper
->> audio/video input (almost all devices have multiple analog inputs).
->>
->> Please notice that, if the tuner is on digital mode, the entire analog
->> path is disabled, including ALSA output.
->>
->> If the tuner is on analog mode, both ALSA and V4L2 can work at the
->> same time. However, during the period where the tuner firmware is
->> loaded, and during the DMA configuration and input selection time,
->> neither ALSA or V4L2 can stream. Such configuration/firmware load
->> is commanded via V4L2 API, as ALSA knows nothing about tuner or
->> input selection.
->>
->> At a higher level the problem description is:
->>
->> There are 3 different device files that get created to control
->> tuner and audio functions on a media device. 4 drivers (dvb,
->> v4l2, alsa, and the main usb driver for the usb device), and
->> 3 core APIs (dvb-core, v4l-core, audio) that control the tuner
->> and audio hardware and provide user API to these 3 device files.
->>
->> The above driver model is simplified, there's 4th component for
->> some drivers: the mceusb driver, that handles remote controllers.
->> The mceusb handles the Microsoft Media Center Remote Control
->> protocol. It supports stand alone remote controller devices, but
->> it also supports a few USB devices that use a separate interface
->> for IR.
->>
->> There are currently some issues on cx231xx and mceusb, as both drivers
->> can be used at the same time, but, when cx231xx sends certain commands,
->> the mceusb IR polls fail. This is out of the scope of the audio lock,
->> but it also needs to be addressed some day.
->>
->> Most media user applications, drivers and the core have no knowledge
->> of each other. The only thing that is common across all these drivers
->> is the parent device for the main usb device which is controlled by
->> the usb driver.
->>
->> Some media user applications like MythTV can handle all 3 APIs,
->> however, MythTV doesn't know how to associate ALSA, V4L2 and DVB
->> devnodes that belong to the same device. If MythTV finds, 3 V4L2
->> nodes, 3 ALSA nodes, and 1 DVB node, it doesn't know which device
->> is associated with the DVB node.
->>
->> Almost all applications that are aware of V4L2 API are also aware of
->> ALSA API and may associate audio and video, as there is a way to
->> associate it using sysfs. However, several applications don't use it.
->>
->> The premise for the main design idea in this series is creating
->> a common construct at the parent device structure that is visible
->> to all drivers to act as a master access control (lock). Let's call
->> this media token object with two sub-tokens one for tuner and another
->> for audio.
->>
->> Each of the APIS evolved separately, hence have their own backwards
->> compatibility to maintain. Starting with v4l2:
->>
->> V4L2 case:
->> Multiple v4l2 applications are allowed to open /dev/video0 in
->> read/write mode with no restrictions as long as the tuner is in
->> analog mode. V4L2-core handles conflicting requests between v4l2
->> applications. V4L2-core doesn't have the knowledge that the tuner
->> is in use by a dvb and/or audio is in use. Individual drivers
->> may have this knowledge as, except for one case (bttv driver),
->> they share some data.
->>
->> As soon as a V4L2 application starts, digital stream glitches and
->> audio glitches.
->>
->> DVB case:
->> Multiple dvb applications can open the dvb device in read only mode.
->> As soon an application open the device read/write mode a separate
->> kthread is kicked off to handle the request. Only one application
->> can open the device in read/write mode. There's no issue with ALSA
->> in R/O mode, as the application is not allowed to modify anything
->> with the stream. This is used only to monitor an already opened
->> device in R/W mode.
->>
->> Similar to V4L2-core case, dvb-core doesn't have any knowledge that
->> the tuner is in use by v4l2 and/or audio is in use. As soon as a
->> dvb application starts v4l2 video glitches and audio glitches.
->>
->> Audio case:
->> Same scenario is applicable to audio application. When a v4l2 or dvb
->> application starts, audio application gets impacted.
->>
->> Problems to address:
->>
->> Dvb owns tuner and audio: another dvb, v4l2 application and
->>                           ALSA application should detect
->>                           tuner/audio busy right away and exit.
->>                           Dvb applications don't use audio node,
->>                           however, devices can't use audio hardware
->>                           while in DVB mode.
->>
->> V4l2 owns tuner and audio: dvb should detect tuner/audio busy
->>                            right away and exit.
->>                            The V4L2-core should only hold the token for
->>                            the required time to initialize the device
->>                            and/or load the firmware.
->>                            ALSA applications should wait for v4L2-core
->> 			   to finish programming at audio, and should
->>                            keep working after that.
->>
->> Audio owns audio: dvb applications should detect audio busy and
->> exit. V4L2 applications should work. However, when certain V4L2
->> ioctls are issued, the audio device driver should not send any
->> command to the hardware. After such commands, the audio mixers
->> may change. This is why two tokens are necessary, one for tuner
->> and another for audio.
->>
->> Because of the above mentioned difference in behavior between dvb
->> and v4l applications when audio is busy, two tokens (one for tuner
->> and another for audio) are necessary and audio token lock should not
->> be held at ALSA open/close.
->>
->> Special cases:
->>
->> Dvb applications access tuner in exclusive mode. i.e only one dvb
->> application at a time is allowed to open the device read/write mode.
->> Dvb applications don't use audio node, however, devices can't use
->> audio hardware while in DVB mode. Dvb applications receive data as
->> MPEG-TS, using a separate device node. The same DMA engine that
->> provides video (and, sometimes audio) is used by the DVB device
->> node, making it inaccessible to audio applications while tuner
->> is in DVB mode. Hence, the need to prevent audio applications from
->> accessing audio node when tuner is in DVB mode. As a result, dvb-core
->> will have to hold tuner and audio tokens so v4l2-core and ALSA know
->> that audio is not available. Dvb disables audio hardware so it could
->> be powered-off in some cases.
->>
->> Audio applications access audio in exclusive mode. i.e only one audio
->> application at a time is allowed to open the device in read/write mode.
->> Audio applications create threads and thread closes and re-opens the
->> audio device. Threads can do this and hence something that higher level
->> construct has to allow. Audio application has to hold audio token so
->> dvb and v4l2 know that it is in use.
->>
->> V4l2 applications access tuner and audio in shared v4l2 mode.
->> i.e several v4l2 processes and threads could use tuner and audio
->> at the same time. V4L2 core handles concurrency. There's just
->> one file handler with full control to start/stop stream at V4L2
->> side. The higher level construct should not break the ability of
->> multiple v4l2 applications to access tuner and audio in shared
->> mode, and disallow dvb and audio applications access when they
->> are in use by the V4L2-core.
->>
->> Dvb-core when it gets the tuner, it should also obtain audio right
->> away. v4l2-core when it gets the tuner, it should get the audio at
->> the same time. When dvb-core has the tuner, v4l2 shouldn't get it
->> and vice versa.
->>
->> When dvb-core has the audio locked, audio application should detect
->> condition and stop streaming, as part of the hardware can be powered
->> off. It can only return opening the device after DVB releases audio
->> token.
->>
->> When v4l2-core has audio locked, audio application should detect the
->> condition and stop sending commands to audio hardware. It can only
->> resume audio access after V4L2 releases audio token.
->>
->> Open issues:
->> During testing, snd_pcm_lib_ioctls are coming from dvb application.
->> It is likely that these are related to the audio output and not audio
->> capture or the application in question is an hybrid one. This issue
->> needs further investigation.
->>
->> Alternatives: (proposed by Sakari Ailus)
->> Can Media controller be used to solve the problem?
->>
->> The usage of the media controller for this specific usage is that
->> we should not force userspace applications to be aware of the
->> media controller just because of hardware locking.
->>
->> Currently, media entities may only be entities bound to a given
->> subsystem, but likely need to change media controller for complex
->> embedded DVB device support ...
->>
->> In case of the Media controller, mutual exclusion of different users
->> is currently performed by adding the entities to a pipeline and
->> incrementing the streaming count once streaming is enabled --- on
->> different interfaces streaming may mean a different thing.
->>
->> However, we'll still need to find a way for ALSA to prevent it to use
->> the audio demod and DMA engine that will be powered off when DVB is
->> streaming.
->>
->> The Media controller interface does not handle serializing potential
->> users that may wish to configure the device. Handling serializing is
->> necessary if Media controller is extended instead of pursuing Media
->> Token API to solve the problem.
->>
->> Reconfiguring the DMA engine and some other registers via V4L2 API
->> should be blocked. The same applies to firmware load, if the device
->> is using tuner input for analog TV.
->>
->> If we use the media controller, we'll need to add a state to it,
->> to indicate that a block at the pipeline is being reconfigured.
->>
->> It is dependent on Media Controller adoption on ALSA as well.
-> 
-> Thank you for the detailed description of the problem domain.
-> 
-> Using Media controller for this at this point isn't straightforward, and
-> especially for existing drivers for which the current APIs serve the
-> existing devices well enough, perhaps not the best solution even when the
-> missing pieces were implemented.
-> 
-> More complex devices, though, still need MC in order to control them in a
-> meaningful way. If a tuner is connected into one, the media token framework
-> wouldn't help there. In other words, we'll need something for such devices
-> as well. That'd be proper MC support for DVB and ALSA, but it'll be a
-> separate discussion.
-> 
-> One big upside in this patchset is that it does not change the user space
-> interface.
+Hi Shuah,
 
-Right that is the goal.
+A few comments below.
 
+On Tue, Oct 14, 2014 at 08:58:37AM -0600, Shuah Khan wrote:
+> Add media token device resource framework to allow sharing
+> resources such as tuner, dma, audio etc. across media drivers
+> and non-media sound drivers that control media hardware. The
+> Media token resource is created at the main struct device that
+> is common to all drivers that claim various pieces of the main
+> media device, which allows them to find the resource using the
+> main struct device. As an example, digital, analog, and
+> snd-usb-audio drivers can use the media token resource API
+> using the main struct device for the interface the media device
+> is attached to.
 > 
-> One concern I have is how generic this framework really is. Do you see
-> potential use cases outside the current one?
+> A shared media tokens resource is created using devres framework
+> for drivers to find and lock/unlock. Creating a shared devres
+> helps avoid creating data structure dependencies between drivers.
+> This media token resource contains media token for tuner, and
+> audio. When tuner token is requested, audio token is issued.
+> Subsequent token (for tuner and audio) gets from the same task
+> and task in the same tgid succeed. This allows applications that
+> make multiple v4l2 ioctls to work with the first call acquiring
+> the token and applications that create separate threads to handle
+> video and audio functions.
 > 
-> I'd move this under drivers/media, and possibly think of the naming of the
-> framework a little bit.
-
-Others gave the same feedback on both of your points on generic and
-location. I moved it under drivers/media for the patch v3 pre-work
-I did before we started the RFC discussion. So we are good there.
-
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> ---
+>  MAINTAINERS                  |    2 +
+>  include/linux/media_tknres.h |   50 +++++++++
+>  lib/Makefile                 |    2 +
+>  lib/media_tknres.c           |  237 ++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 291 insertions(+)
+>  create mode 100644 include/linux/media_tknres.h
+>  create mode 100644 lib/media_tknres.c
 > 
-> I'll review the rest of the v2.
-> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e80a275..9216179 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5864,6 +5864,8 @@ F:	include/uapi/linux/v4l2-*
+>  F:	include/uapi/linux/meye.h
+>  F:	include/uapi/linux/ivtv*
+>  F:	include/uapi/linux/uvcvideo.h
+> +F:	include/linux/media_tknres.h
+> +F:	lib/media_tknres.c
+>  
+>  MEDIAVISION PRO MOVIE STUDIO DRIVER
+>  M:	Hans Verkuil <hverkuil@xs4all.nl>
+> diff --git a/include/linux/media_tknres.h b/include/linux/media_tknres.h
+> new file mode 100644
+> index 0000000..6d37327
+> --- /dev/null
+> +++ b/include/linux/media_tknres.h
+> @@ -0,0 +1,50 @@
+> +/*
+> + * media_tknres.h - managed media token resource
+> + *
+> + * Copyright (c) 2014 Shuah Khan <shuahkh@osg.samsung.com>
+> + * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+> + *
+> + * This file is released under the GPLv2.
+> + */
+> +#ifndef __LINUX_MEDIA_TOKEN_H
+> +#define __LINUX_MEDIA_TOKEN_H
+> +
+> +struct device;
+> +
+> +#if defined(CONFIG_MEDIA_SUPPORT)
+> +extern int media_tknres_create(struct device *dev);
+> +extern int media_tknres_destroy(struct device *dev);
+> +
+> +extern int media_get_tuner_tkn(struct device *dev);
+> +extern int media_put_tuner_tkn(struct device *dev);
+> +
+> +extern int media_get_audio_tkn(struct device *dev);
+> +extern int media_put_audio_tkn(struct device *dev);
+> +#else
+> +static inline int media_tknres_create(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static inline int media_tknres_destroy(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static inline int media_get_tuner_tkn(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static inline int media_put_tuner_tkn(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static int media_get_audio_tkn(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static int media_put_audio_tkn(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+> +#endif	/* __LINUX_MEDIA_TOKEN_H */
+> diff --git a/lib/Makefile b/lib/Makefile
+> index d6b4bc4..6f21695 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -139,6 +139,8 @@ obj-$(CONFIG_DQL) += dynamic_queue_limits.o
+>  
+>  obj-$(CONFIG_GLOB) += glob.o
+>  
+> +obj-$(CONFIG_MEDIA_SUPPORT) += media_tknres.o
 
-Great. Please do and give me feedback. I will wait for that before
-I get started with patch v3 work.
+I'd add a new Kconfig option for this, as it's only needed by a very
+specific kind of drivers. It could be automatically selected by those that
+need it.
 
-thanks,
--- Shuah
+> +
+>  obj-$(CONFIG_MPILIB) += mpi/
+>  obj-$(CONFIG_SIGNATURE) += digsig.o
+>  
+> diff --git a/lib/media_tknres.c b/lib/media_tknres.c
+> new file mode 100644
+> index 0000000..e0a36cb
+> --- /dev/null
+> +++ b/lib/media_tknres.c
+> @@ -0,0 +1,237 @@
+> +/*
+> + * media_tknres.c - managed media token resource
+> + *
+> + * Copyright (c) 2014 Shuah Khan <shuahkh@osg.samsung.com>
+> + * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+> + *
+> + * This file is released under the GPLv2.
+> + */
+> +/*
+> + * Media devices often have hardware resources that are shared
+> + * across several functions. For instance, TV tuner cards often
+> + * have MUXes, converters, radios, tuners, etc. that are shared
+> + * across various functions. However, v4l2, alsa, DVB, usbfs, and
+> + * all other drivers have no knowledge of what resources are
+> + * shared. For example, users can't access DVB and alsa at the same
+> + * time, or the DVB and V4L analog API at the same time, since many
+> + * only have one converter that can be in either analog or digital
+> + * mode. Accessing and/or changing mode of a converter while it is
+> + * in use by another function results in video stream error.
+> + *
+> + * A shared media tokens resource is created using devres framework
+> + * for drivers to find and lock/unlock. Creating a shared devres
+> + * helps avoid creating data structure dependencies between drivers.
+> + * This media token resource contains media token for tuner, and
+> + * audio. When tuner token is requested, audio token is issued.
+> + * Subsequent token (for tuner and audio) gets from the same task
+> + * and task in the same tgid succeed. This allows applications that
+> + * make multiple v4l2 ioctls to work with the first call acquiring
+> + * the token and applications that create separate threads to handle
+> + * video and audio functions.
+> + *
+> + * API
+> + *	int media_tknres_create(struct device *dev);
+> + *	int media_tknres_destroy(struct device *dev);
+> + *
+> + *	int media_get_tuner_tkn(struct device *dev);
+> + *	int media_put_tuner_tkn(struct device *dev);
+> + *
+> + *	int media_get_audio_tkn(struct device *dev);
+> + *	int media_put_audio_tkn(struct device *dev);
+> +*/
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/device.h>
+> +#include <linux/sched.h>
+> +#include <linux/media_tknres.h>
 
+Alphabetical order, please.
+
+> +
+> +struct media_tkn {
+> +	spinlock_t lock;
+> +	unsigned int owner;	/* owner task pid */
+> +	unsigned int tgid;	/* owner task gid */
+> +	struct task_struct *task;
+> +};
+> +
+> +struct media_tknres {
+> +	struct media_tkn tuner;
+> +	struct media_tkn audio;
+> +};
+> +
+> +#define TUNER	"Tuner"
+> +#define AUDIO	"Audio"
+> +
+> +static void media_tknres_release(struct device *dev, void *res)
+> +{
+> +	dev_info(dev, "%s: Media Token Resource released\n", __func__);
+> +}
+> +
+> +int media_tknres_create(struct device *dev)
+> +{
+> +	struct media_tknres *tkn;
+> +
+> +	tkn = devres_alloc(media_tknres_release, sizeof(struct media_tknres),
+> +				GFP_KERNEL);
+> +	if (!tkn)
+> +		return -ENOMEM;
+> +
+> +	spin_lock_init(&tkn->tuner.lock);
+> +	tkn->tuner.owner = 0;
+> +	tkn->tuner.tgid = 0;
+> +	tkn->tuner.task = NULL;
+> +
+> +	spin_lock_init(&tkn->audio.lock);
+> +	tkn->audio.owner = 0;
+> +	tkn->audio.tgid = 0;
+> +	tkn->audio.task = NULL;
+> +
+> +	devres_add(dev, tkn);
+> +
+> +	dev_info(dev, "%s: Media Token Resource created\n", __func__);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(media_tknres_create);
+> +
+> +static int __media_get_tkn(struct media_tkn *tkn, char *tkn_str)
+> +{
+> +	int rc = 0;
+> +	unsigned tpid;
+> +	unsigned tgid;
+> +
+> +	spin_lock(&tkn->lock);
+> +
+> +	tpid = task_pid_nr(current);
+> +	tgid = task_tgid_nr(current);
+> +
+> +	/* allow task in the same group id to release */
+> +	if (tkn->task && ((tkn->task != current) && (tkn->tgid != tgid))) {
+> +			rc = -EBUSY;
+
+Indentation.
+
+I'd like to someone else comment on this approach in general, but I'm not
+aware of better ways to do this either as there's no common device node (so
+file handles can't be used either).
+
+> +	} else {
+> +		tkn->owner = tpid;
+> +		tkn->tgid = tgid;
+> +		tkn->task = current;
+> +	}
+> +	pr_debug("%s: Media %s Token get: owner (%d,%d) req (%d,%d) rc %d\n",
+> +		__func__, tkn_str, tkn->owner, tkn->tgid, tpid, tgid, rc);
+> +
+> +	spin_unlock(&tkn->lock);
+> +	return rc;
+> +}
+> +
+> +static int __media_put_tkn(struct media_tkn *tkn, char *tkn_str)
+> +{
+> +	int rc = 0;
+> +	unsigned tpid;
+> +	unsigned tgid;
+> +
+> +	spin_lock(&tkn->lock);
+> +
+> +	tpid = task_pid_nr(current);
+> +	tgid = task_tgid_nr(current);
+> +
+> +	/* allow task in the same group id to release */
+> +	if (tkn->task == NULL ||
+> +		((tkn->task != current) && (tkn->tgid != tgid))) {
+> +			rc = -EINVAL;
+
+Indentation.
+
+> +	} else {
+> +		tkn->owner = 0;
+> +		tkn->tgid = 0;
+> +		tkn->task = NULL;
+> +	}
+> +	pr_debug("%s: Media %s Token put: owner (%d,%d) req (%d,%d) rc %d\n",
+> +		__func__, tkn_str, tkn->owner, tkn->tgid, tpid, tgid, rc);
+> +
+> +	spin_unlock(&tkn->lock);
+
+No need to print things while holding the lock.
+
+> +	return rc;
+> +}
+> +
+> +/*
+> + * When media tknres doesn't exist, get and put interfaces
+> + * return 0 to let the callers take legacy code paths. This
+> + * will also cover the drivers that don't create media tknres.
+> + * Returning -ENODEV will require additional checks by callers.
+> + * Instead handle the media tknres not present case as a driver
+> + * not supporting media tknres and return 0.
+> +*/
+> +int media_get_tuner_tkn(struct device *dev)
+> +{
+> +	struct media_tknres *tkn_ptr;
+> +	int ret = 0;
+> +
+> +	tkn_ptr = devres_find(dev, media_tknres_release, NULL, NULL);
+> +	if (tkn_ptr == NULL) {
+> +		dev_dbg(dev, "%s: Media Token Resource not found\n",
+> +				__func__);
+> +		return 0;
+> +	}
+> +
+> +	ret = __media_get_tkn(&tkn_ptr->tuner, TUNER);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* get audio token */
+> +	ret = __media_get_tkn(&tkn_ptr->audio, AUDIO);
+> +	if (ret)
+> +		__media_put_tkn(&tkn_ptr->tuner, TUNER);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(media_get_tuner_tkn);
+
+You're calling media_get_tuner_tkn() from a number of V4L2 framework
+functions that handle common and often performance critical IOCTLs.
+devres_find() will loop over the entire list of resources associated with
+that device. I think this would be just fine if it was done just once in a
+non-performance critical time, but not every time everywhere.
+
+> +
+> +int media_put_tuner_tkn(struct device *dev)
+> +{
+> +	struct media_tknres *tkn_ptr;
+> +
+> +	tkn_ptr = devres_find(dev, media_tknres_release, NULL, NULL);
+> +	if (tkn_ptr == NULL) {
+> +		dev_dbg(dev, "%s: Media Token Resource not found\n",
+> +			__func__);
+> +		return 0;
+> +	}
+> +
+> +	/* put audio token and then tuner token */
+> +	__media_put_tkn(&tkn_ptr->audio, AUDIO);
+> +
+> +	return __media_put_tkn(&tkn_ptr->tuner, TUNER);
+> +}
+> +EXPORT_SYMBOL_GPL(media_put_tuner_tkn);
+> +
+> +int media_get_audio_tkn(struct device *dev)
+> +{
+> +	struct media_tknres *tkn_ptr;
+> +
+> +	tkn_ptr = devres_find(dev, media_tknres_release, NULL, NULL);
+> +	if (tkn_ptr == NULL) {
+> +		dev_dbg(dev, "%s: Media Token Resource not found\n",
+> +			__func__);
+> +		return 0;
+> +	}
+> +
+> +	return __media_get_tkn(&tkn_ptr->audio, AUDIO);
+> +}
+> +EXPORT_SYMBOL_GPL(media_get_audio_tkn);
+> +
+> +int media_put_audio_tkn(struct device *dev)
+> +{
+> +	struct media_tknres *tkn_ptr;
+> +
+> +	tkn_ptr = devres_find(dev, media_tknres_release, NULL, NULL);
+> +	if (tkn_ptr == NULL) {
+> +		dev_dbg(dev, "%s: Media Token Resource not found\n",
+> +			__func__);
+> +		return 0;
+> +	}
+> +
+> +	return __media_put_tkn(&tkn_ptr->audio, AUDIO);
+> +}
+> +EXPORT_SYMBOL_GPL(media_put_audio_tkn);
+> +
+> +int media_tknres_destroy(struct device *dev)
+> +{
+> +	int rc;
+> +
+> +	rc = devres_release(dev, media_tknres_release, NULL, NULL);
+> +	WARN_ON(rc);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(media_tknres_destroy);
 
 -- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
