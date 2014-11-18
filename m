@@ -1,73 +1,55 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/3] mfd: arizona: Add support for CS47L24
-Date: Tue, 18 Nov 2014 11:34:01 +0000
-Message-ID: <20141118113401.GW24004@x1>
-References: <20141111165227.GA24344@opensource.wolfsonmicro.com>
- <20141111171532.GA26106@opensource.wolfsonmicro.com>
- <20141113101228.GE24004@x1>
- <20141113164017.GA12443@opensource.wolfsonmicro.com>
- <20141117121648.GP24004@x1>
- <20141117125433.GA29518@opensource.wolfsonmicro.com>
- <20141117150107.GF2722@sirena.org.uk>
+From: Bastien Nocera <hadess@hadess.net>
+Subject: Re: Baytrail init file for alsa-utils
+Date: Tue, 18 Nov 2014 13:05:55 +0100
+Message-ID: <1416312355.19132.19.camel@hadess.net>
+References: <1415008294.2406.107.camel@hadess.net>
+ <1415013073.2471.11.camel@loki> <1415019823.4506.1.camel@hadess.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141117150107.GF2722@sirena.org.uk>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linus.walleij@linaro.org, gnurou@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+ [217.70.183.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1A2C260476
+ for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 13:06:55 +0100 (CET)
+In-Reply-To: <1415019823.4506.1.camel@hadess.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Nov 2014, Mark Brown wrote:
+On Mon, 2014-11-03 at 14:03 +0100, Bastien Nocera wrote:
+> On Mon, 2014-11-03 at 11:11 +0000, Liam Girdwood wrote:
+> > On Mon, 2014-11-03 at 10:51 +0100, Bastien Nocera wrote:
+> > > Hey,
+> > > 
+> > > I've done some work on the community generated "alsa state" file for
+> > > Baytrail tablets, and shrunk it massively:
+> > > https://github.com/AdamWill/baytrail-m/blob/master/alsa/t100_B.state
+> > > 
+> > > Are there any tools, or hints as to how I might convert that to an
+> > > "init" file that alsactl could run to set the default state of the
+> > > mixer?
+> > 
+> > "alsactl store" should write it to the correct system directory.
+> 
+> alsactl store doesn't use a format similar to the files installed
+> in /usr/lib/alsa/init though, which is what I'm looking for.
+> 
+> > > Or have any Intel folks already done that work?
+> > > 
+> > 
+> > Jarkko has been working on Baytrail so best for him to answer.
+> 
+> OK, thanks
 
-> On Mon, Nov 17, 2014 at 12:54:33PM +0000, Richard Fitzgerald wrote:
-> > On Mon, Nov 17, 2014 at 12:16:48PM +0000, Lee Jones wrote:
->=20
-> > > Looks like I was a little hasty with my comments.  However 8000 l=
-ines
-> > > over 4 platforms just to describe which registers are readable is=
- all
-> > > a little bit grim.  Is there any way you can use ranges instead o=
-f
-> > > listing every single register on the chip?  How many gaps are the=
-re?=20
->=20
-> > It's debatable. Ranges would be possible but there are a lot of gap=
-s.
-> > Personally, speaking as someone who has to maintain these drivers, =
-I
-> > like that fact that I can look at this file and see exactly which r=
-egisters
-> > are readable and volatile because they are all explicitly listed. I=
-t's also
-> > useful that the files are searchable for specific registers.
->=20
-> > I'll point Charles at this to get his opinion.
->=20
-> It's probably also worth pointing out that while ranges do compress t=
-he
-> data a bit they make it harder to answer questions like "is this
-> register mapped properly" since the question becomes "is the numeric
-> value of this symbol between the numeric values of any of these other
-> pairs of symbols we have listed here".  I generally find it harder to
-> review drivers using ranges since when checking that things are mappe=
-d
-> voatile or whatever you have to do lookups like that.
-
-Very well, thanks Mark and Charles.
-
-How about we go back to my original idea then and chucking all of
-these massive tables into a nice header file in include?
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
---
-To unsubscribe from this list: send the line "unsubscribe linux-gpio" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Jarkko?
