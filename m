@@ -1,18 +1,17 @@
-From: Jarkko Nikula <jarkko.nikula@intel.com>
-Subject: Re: Baytrail init file for alsa-utils
-Date: Tue, 18 Nov 2014 14:41:54 +0200
-Message-ID: <546B3E92.2050109@intel.com>
-References: <1415008294.2406.107.camel@hadess.net>	
- <1415013073.2471.11.camel@loki> <1415019823.4506.1.camel@hadess.net>
- <1416312355.19132.19.camel@hadess.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm_adsp: Move core_ena to be
+ co-located with start bit
+Date: Tue, 18 Nov 2014 17:27:11 +0000
+Message-ID: <20141118172711.GU22111@sirena.org.uk>
+References: <1416327927-8559-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9203703401588413212=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E54CE265074
- for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 13:41:57 +0100 (CET)
-In-Reply-To: <1416312355.19132.19.camel@hadess.net>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C72C626047F
+ for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2014 18:27:23 +0100 (CET)
+In-Reply-To: <1416327927-8559-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bastien Nocera <hadess@hadess.net>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-On 11/18/2014 02:05 PM, Bastien Nocera wrote:
-> On Mon, 2014-11-03 at 14:03 +0100, Bastien Nocera wrote:
->> On Mon, 2014-11-03 at 11:11 +0000, Liam Girdwood wrote:
->>> On Mon, 2014-11-03 at 10:51 +0100, Bastien Nocera wrote:
->>>> Hey,
->>>>
->>>> I've done some work on the community generated "alsa state" file for
->>>> Baytrail tablets, and shrunk it massively:
->>>> https://github.com/AdamWill/baytrail-m/blob/master/alsa/t100_B.state
->>>>
->>>> Are there any tools, or hints as to how I might convert that to an
->>>> "init" file that alsactl could run to set the default state of the
->>>> mixer?
->>>
->>> "alsactl store" should write it to the correct system directory.
->>
->> alsactl store doesn't use a format similar to the files installed
->> in /usr/lib/alsa/init though, which is what I'm looking for.
->>
->>>> Or have any Intel folks already done that work?
->>>>
->>>
->>> Jarkko has been working on Baytrail so best for him to answer.
->>
->> OK, thanks
->
-> Jarkko?
->
-Ah, sorry. No I have used just the alsamixer and alsactl.
+--===============9203703401588413212==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fxBYc4U7HLIDBZ2G"
+Content-Disposition: inline
 
--- 
-Jarkko
----------------------------------------------------------------------
-Intel Finland Oy
-Registered Address: PL 281, 00181 Helsinki 
-Business Identity Code: 0357606 - 4 
-Domiciled in Helsinki 
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+--fxBYc4U7HLIDBZ2G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 18, 2014 at 04:25:27PM +0000, Charles Keepax wrote:
+> Many firmwares do not wait for the start bit before they begin
+> processing audio, whilst this is a bug on the firmware side there are
+
+Applied, thanks.
+
+--fxBYc4U7HLIDBZ2G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUa4FuAAoJECTWi3JdVIfQe7QIAIX2mE+tijUT+JCFZRAKS1UD
+RELUPqNrGCjzT1z2uKgRU3EIhAFAJ3ileNmzFi8Q+/Reg1yEEvq/bRSgglnV46SU
+OYdSRZ0MNwFeR47GtJRUDSEvzZvsh6OcNrH8e6cB0pNPdtA3v9DqjLVTnKJJdh+g
+6My7BhzrEMsepX1jMqcPze7OIDdLazAXtilVX8Ynh9Qst1wcvQZnV5KHuAg3zDuR
+r+xLfWMX82mzeWXNoVzqhVTlEYH49LMhl7SKMv2Ysh7arxuE0CDfrdkzKyA1Hjpz
+yQJzWl5voosyFyPtt8ZKcOcUYkgtEFiI4BW/6iLaXLMtOznzSxTh8oNVawseum0=
+=2OpD
+-----END PGP SIGNATURE-----
+
+--fxBYc4U7HLIDBZ2G--
+
+--===============9203703401588413212==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9203703401588413212==--
