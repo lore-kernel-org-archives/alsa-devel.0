@@ -1,50 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4 V3] ASoC: Samsung: Add arndale_rt5631 machine driver
-Date: Wed, 19 Nov 2014 17:51:54 +0000
-Message-ID: <20141119175154.GI22111@sirena.org.uk>
-References: <1415880864-2246-1-git-send-email-krishna.md@samsung.com>
- <1415880864-2246-3-git-send-email-krishna.md@samsung.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mu9njEoJVcULXJK5"
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung: Fix IISMOD setting in i2s_set_sysclk()
+Date: Wed, 19 Nov 2014 19:11:04 +0100
+Message-ID: <1416420664-20952-1-git-send-email-s.nawrocki@samsung.com>
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1415880864-2246-3-git-send-email-krishna.md@samsung.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Krishna Mohan Dani <krishna.md@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com, Claude Youn <claude.youn@gmail.com>
+To: broonie@kernel.org
+Cc: sbkim73@samsung.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, Padmavathi Venna <padma.v@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+In the i2s_set_sysclk() callback we are currently clearing all bits
+of the IISMOD register when clk_id is SAMSUNG_I2S_CDCLK and dir
+is SND_SOC_CLOCK_OUT. It's due to an incorrect mask used for the AND
+operation and breaks the I2S interface operation when we attempt to
+use the CDCLK output clock.
 
---mu9njEoJVcULXJK5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It fixes commit a5a56871f804edac93a53b5e871c0e9818fb9033
+("ASoC: samsung: add support for exynos7 I2S controller") and restores
+sound support for Odroid X2/U3.
 
-On Thu, Nov 13, 2014 at 05:44:22PM +0530, Krishna Mohan Dani wrote:
+Cc: Padmavathi Venna <padma.v@samsung.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/i2s.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Signed-off-by: Krishna Mohan Dani <krishna.md@samsung.com>
-> ---
->  sound/soc/samsung/Kconfig          |    6 ++
->  sound/soc/samsung/Makefile         |    2 +
->  sound/soc/samsung/arndale_rt5631.c |  150 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 158 insertions(+)
-
-This is fine but it is missing a binding document, please add one.
-
---mu9njEoJVcULXJK5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUbNi6AAoJECTWi3JdVIfQ2NEH/37mmpxTvTXTW+uD8knAg4em
-C7e9lptsBKYEHErl2SqfYVbobFC/GbJydOtrzneaUDGvmkRz8SITrM72GyudyV0P
-MazV3tAYV1q7Rq5885rPQD+DPKduF67fbaj5YX8edech/flLPBDl+0umVmE0I6q/
-kvPbA1JKz95hxHsgOvt+myoxAgY1z61HJ9G0xV/4Xp1PP/q/s2cYsP8y2GK8ppZ0
-dGSsqWIEKzt1wglyq8jXsDo3xBLPmhcqV7hgHuB7FVLOvYMAwJU1jAELk/aEaYDR
-thow9116iZ4MS1y68atOtzwU1EV+CFz04VGzdJ+5cwOyoHAEiRSHsK5WK/CFzA8=
-=jA/T
------END PGP SIGNATURE-----
-
---mu9njEoJVcULXJK5--
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 947352d..8db8c66 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -494,7 +494,7 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
+ 		if (dir == SND_SOC_CLOCK_IN)
+ 			mod |= 1 << i2s_regs->cdclkcon_off;
+ 		else
+-			mod &= 0 << i2s_regs->cdclkcon_off;
++			mod &= ~(1 << i2s_regs->cdclkcon_off);
+ 
+ 		i2s->rfs = rfs;
+ 		break;
+-- 
+1.7.9.5
