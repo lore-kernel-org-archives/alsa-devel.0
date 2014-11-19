@@ -1,25 +1,48 @@
-From: Kever Yang <kever.yang@rock-chips.com>
-Subject: Re: [PATCH v2 2/2] ASoC: rockchip: i2s: add support for grabbing
- output clock to codec
-Date: Wed, 19 Nov 2014 18:27:51 +0800
-Message-ID: <546C70A7.2040601@rock-chips.com>
-References: <1416366468-4744-1-git-send-email-jay.xu@rock-chips.com> <1416384567-29476-1-git-send-email-jay.xu@rock-chips.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] regmap: ac97: Add generic AC'97 callbacks
+Date: Wed, 19 Nov 2014 10:37:13 +0000
+Message-ID: <20141119103713.GZ22111@sirena.org.uk>
+References: <1416336354-32148-1-git-send-email-lars@metafoo.de>
+ <1416336354-32148-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lKbk9CFItQTD29wm"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1416384567-29476-1-git-send-email-jay.xu@rock-chips.com>
+Content-Disposition: inline
+In-Reply-To: <1416336354-32148-2-git-send-email-lars@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jianqun Xu <jay.xu@rock-chips.com>, heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, huangtao@rock-chips.com
-Cc: Sonny Rao <sonnyrao@chromium.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jay,
 
-On 11/19/2014 04:09 PM, Jianqun Xu wrote:
-> Patch is from Sonny Rao <sonnyrao@chromium.org>
-Here should be,
+--lKbk9CFItQTD29wm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-From: Sonny Rao <sonnyrao@chromium.org>
+On Tue, Nov 18, 2014 at 07:45:51PM +0100, Lars-Peter Clausen wrote:
+> From: Mark Brown <broonie@linaro.org>
+>=20
+> Use the recently added support for bus operations to provide a standard
+> mapping for AC'97 register I/O.
 
-- Kever
+Applied, thanks.
+
+--lKbk9CFItQTD29wm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUbHLYAAoJECTWi3JdVIfQyAYH/RMswVANRS2KwNr7T6XYPDWY
+qCTaCt3bLuKAUzwTErJ7BtmsJ7ncBhpWCrbcMBAfmb+Rmj5AahuwuwA1TcTDTtVC
+nrG6lH2pQaQYGh711mngoPcQAf2rbz0rrRystaofr43jMPBnKyY084bMh1Pl/XRA
+0VtyKMWZpCDbPmvObR8ExEfD5djZeYAWqZJHPeiElZH0JF2S8N8wXBbZd64ngxmp
+xLPTd+TMjgT1v89B5f9kXZKY22xL7nQDhhSCPBD1qwe+86uHFD3pZqFpRKubdUZt
+fMc2q8uzu+9N/0d9XpGOntq0T6RzNBko9Smmq3+L4dTYRf6M5j6BXK6f3Y5JsTs=
+=dRm/
+-----END PGP SIGNATURE-----
+
+--lKbk9CFItQTD29wm--
