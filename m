@@ -1,121 +1,49 @@
-From: Kailang <kailang@realtek.com>
-Subject: HP mute led for ALC286
-Date: Wed, 19 Nov 2014 07:13:16 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A179FB7CA@RTITMBSV09.realtek.com.tw>
-References: <s5hr3x9qz5j.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A179FB004@RTITMBSV09.realtek.com.tw>
- <s5h8ujgrext.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A179FB7CARTITMBSV09realt_"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 54D0C260452
- for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 08:13:35 +0100 (CET)
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+From: Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH v2 1/2] ASoC: rockchip-i2s: dt: add an optional property "i2s_clk_out"
+Date: Wed, 19 Nov 2014 16:07:27 +0800
+Message-ID: <1416384447-29391-1-git-send-email-jay.xu@rock-chips.com>
+References: <1416366365-4632-2-git-send-email-jay.xu@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1416366365-4632-2-git-send-email-jay.xu@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, huangtao@rock-chips.com
+Cc: Jianqun Xu <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A179FB7CARTITMBSV09realt_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Add an property "i2s_clk_out", which enables to output clock to outside
+of rockchip SoCs. Let's make it optional since not each board needs it.
 
-Hi Takashi,
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+---
+changes since v1:
+- make "i2s_clk_out" optional, suggested by Sonny
 
-I had sent the discussion mail about the DMI string for HP.
-But no body response.
-So, I just send the patch to fix this issue.
+ Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-BR,
-Kailang=
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A179FB7CARTITMBSV09realt_
-Content-Type: application/octet-stream;
-	name="0000-supported-HP-mute-led-alc286.patch"
-Content-Description: 0000-supported-HP-mute-led-alc286.patch
-Content-Disposition: attachment;
-	filename="0000-supported-HP-mute-led-alc286.patch"; size=3423;
-	creation-date="Wed, 19 Nov 2014 07:06:52 GMT";
-	modification-date="Wed, 19 Nov 2014 07:05:39 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSA5ZjY0ZGE5MDVlYzdkYmZlYWVlNjdmMWIxODUwZDllNmRiMmI4NTcxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFdlZCwgMTkgTm92IDIwMTQgMTQ6NTg6MTkgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIFN1cHBvcnRlZCBIUCBtdXRlIExlZCBmb3IgQUxDMjg2CgpOZXcgSFAg
-bWFjaGluZSBzdXBwb3J0ZWQgb3V0cHV0IG11dGUgbGVkIGFuZCBpbnB1dCBtdXRlIGxlZC4KQUxD
-Mjg2OgpHUElPMSB0byBjb250cm9sIG91dHB1dCBtdXRlIGxlZC4KR1BJTzUgdG8gY29udHJvbCBp
-bnB1dCBtdXRlIGxlZC4KClNpZ25lZC1vZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFs
-dGVrLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3Nv
-dW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IDE3MjM5NTQuLmI3MWFlN2MgMTAwNjQ0
-Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEv
-cGF0Y2hfcmVhbHRlay5jCkBAIC0zNDQ4LDYgKzM0NDgsNjAgQEAgc3RhdGljIHZvaWQgYWxjMjY5
-X2ZpeHVwX2hwX2xpbmUxX21pYzFfbGVkKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAogCX0KIH0K
-IAorc3RhdGljIHZvaWQgYWxjMjg2X2ZpeHVwX2hwX2dwaW9fbXV0ZV9ob29rKHZvaWQgKnByaXZh
-dGVfZGF0YSwgaW50IGVuYWJsZWQpCit7CisJc3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBwcml2
-YXRlX2RhdGE7CisJc3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisJdW5zaWdu
-ZWQgaW50IG9sZHZhbCA9IHNwZWMtPmdwaW9fbGVkOworCisJaWYgKGVuYWJsZWQpCisJCXNwZWMt
-PmdwaW9fbGVkICY9IH4weDAyOworCWVsc2UKKwkJc3BlYy0+Z3Bpb19sZWQgfD0gMHgwMjsKKwlp
-ZiAoc3BlYy0+Z3Bpb19sZWQgIT0gb2xkdmFsKQorCQlzbmRfaGRhX2NvZGVjX3dyaXRlKGNvZGVj
-LCAweDAxLCAwLCBBQ19WRVJCX1NFVF9HUElPX0RBVEEsCisJCQkJICAgIHNwZWMtPmdwaW9fbGVk
-KTsKK30KKworLyogdHVybiBvbi9vZmYgbWljLW11dGUgTEVEIHBlciBjYXB0dXJlIGhvb2sgKi8K
-K3N0YXRpYyB2b2lkIGFsYzI4Nl9maXh1cF9ocF9ncGlvX21pY19tdXRlX2hvb2soc3RydWN0IGhk
-YV9jb2RlYyAqY29kZWMsCisJCQkJCSAgICAgICBzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJv
-bCwKKwkJCQkJICAgICAgIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQorewor
-CXN0cnVjdCBhbGNfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOworCXVuc2lnbmVkIGludCBvbGR2
-YWwgPSBzcGVjLT5ncGlvX2xlZDsKKworCWlmICghdWNvbnRyb2wpCisJCXJldHVybjsKKworCWlm
-ICh1Y29udHJvbC0+dmFsdWUuaW50ZWdlci52YWx1ZVswXSB8fAorCSAgICB1Y29udHJvbC0+dmFs
-dWUuaW50ZWdlci52YWx1ZVsxXSkKKwkJc3BlYy0+Z3Bpb19sZWQgJj0gfjB4MjA7CisJZWxzZQor
-CQlzcGVjLT5ncGlvX2xlZCB8PSAweDIwOworCWlmIChzcGVjLT5ncGlvX2xlZCAhPSBvbGR2YWwp
-CisJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MDEsIDAsIEFDX1ZFUkJfU0VUX0dQSU9f
-REFUQSwKKwkJCQkgICAgc3BlYy0+Z3Bpb19sZWQpOworfQorCitzdGF0aWMgdm9pZCBhbGMyODZf
-Zml4dXBfaHBfZ3Bpb19sZWQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCisJCQkJY29uc3Qgc3Ry
-dWN0IGhkYV9maXh1cCAqZml4LCBpbnQgYWN0aW9uKQoreworCXN0cnVjdCBhbGNfc3BlYyAqc3Bl
-YyA9IGNvZGVjLT5zcGVjOworCXN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX3ZlcmIgZ3Bpb19pbml0
-W10gPSB7CisJCXsgMHgwMSwgQUNfVkVSQl9TRVRfR1BJT19NQVNLLCAweDIyIH0sCisJCXsgMHgw
-MSwgQUNfVkVSQl9TRVRfR1BJT19ESVJFQ1RJT04sIDB4MjIgfSwKKwkJe30KKwl9OworCisJaWYg
-KGFjdGlvbiA9PSBIREFfRklYVVBfQUNUX1BSRV9QUk9CRSkgeworCQlzcGVjLT5nZW4udm1hc3Rl
-cl9tdXRlLmhvb2sgPSBhbGMyODZfZml4dXBfaHBfZ3Bpb19tdXRlX2hvb2s7CisJCXNwZWMtPmdl
-bi5jYXBfc3luY19ob29rID0gYWxjMjg2X2ZpeHVwX2hwX2dwaW9fbWljX211dGVfaG9vazsKKwkJ
-c3BlYy0+Z3Bpb19sZWQgPSAwOworCQlzbmRfaGRhX2FkZF92ZXJicyhjb2RlYywgZ3Bpb19pbml0
-KTsKKwl9Cit9CisKIHN0YXRpYyB2b2lkIGFsY19oZWFkc2V0X21vZGVfdW5wbHVnZ2VkKHN0cnVj
-dCBoZGFfY29kZWMgKmNvZGVjKQogewogCXN0YXRpYyBzdHJ1Y3QgY29lZl9mdyBjb2VmMDI1NVtd
-ID0gewpAQCAtNDMwMCw2ICs0MzU0LDcgQEAgZW51bSB7CiAJQUxDMjU1X0ZJWFVQX0RFTExfV01J
-X01JQ19NVVRFX0xFRCwKIAlBTEMyODJfRklYVVBfQVNQSVJFX1Y1X1BJTlMsCiAJQUxDMjgwX0ZJ
-WFVQX0hQX0dQSU80LAorCUFMQzI4Nl9GSVhVUF9IUF9HUElPX0xFRCwKIH07CiAKIHN0YXRpYyBj
-b25zdCBzdHJ1Y3QgaGRhX2ZpeHVwIGFsYzI2OV9maXh1cHNbXSA9IHsKQEAgLTQ3NjcsNiArNDgy
-MiwxMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7
-CiAJCS50eXBlID0gSERBX0ZJWFVQX0ZVTkMsCiAJCS52LmZ1bmMgPSBhbGMyODBfZml4dXBfaHBf
-Z3BpbzQsCiAJfSwKKwlbQUxDMjg2X0ZJWFVQX0hQX0dQSU9fTEVEXSA9IHsKKwkJLnR5cGUgPSBI
-REFfRklYVVBfRlVOQywKKwkJLnYuZnVuYyA9IGFsYzI4Nl9maXh1cF9ocF9ncGlvX2xlZCwKKwl9
-LAogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2OV9maXh1cF90
-YmxbXSA9IHsKQEAgLTQ4MDcsNiArNDg2Niw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3Bj
-aV9xdWlyayBhbGMyNjlfZml4dXBfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4
-MjI2YSwgIkhQIiwgQUxDMjY5X0ZJWFVQX0hQX01VVEVfTEVEX01JQzEpLAogCVNORF9QQ0lfUVVJ
-UksoMHgxMDNjLCAweDIyNmIsICJIUCIsIEFMQzI2OV9GSVhVUF9IUF9NVVRFX0xFRF9NSUMxKSwK
-IAlTTkRfUENJX1FVSVJLKDB4MTAzYywgMHgyMjZlLCAiSFAiLCBBTEMyNjlfRklYVVBfSFBfTVVU
-RV9MRURfTUlDMSksCisJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MjI3MSwgIkhQIiwgQUxDMjg2
-X0ZJWFVQX0hQX0dQSU9fTEVEKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAzYywgMHgyMjllLCAiSFAi
-LCBBTEMyNjlfRklYVVBfSFBfTVVURV9MRURfTUlDMSksCiAJU05EX1BDSV9RVUlSSygweDEwM2Ms
-IDB4MjJiMiwgIkhQIiwgQUxDMjY5X0ZJWFVQX0hQX01VVEVfTEVEX01JQzEpLAogCVNORF9QQ0lf
-UVVJUksoMHgxMDNjLCAweDIyYjcsICJIUCIsIEFMQzI2OV9GSVhVUF9IUF9NVVRFX0xFRF9NSUMx
-KSwK
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A179FB7CARTITMBSV09realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A179FB7CARTITMBSV09realt_--
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+index 9b82c20..6dedd0d 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+@@ -22,6 +22,10 @@ Required properties:
+    - "i2s_hclk": clock for I2S BUS
+    - "i2s_clk" : clock for I2S controller
+ 
++Optional property:
++   - "i2s_clk_out" : clock output to outside of chip, usally as master clock for audio
++   codec chip
++
+ Example for rk3288 I2S controller:
+ 
+ i2s@ff890000 {
+@@ -32,6 +36,6 @@ i2s@ff890000 {
+ 	#size-cells = <0>;
+ 	dmas = <&pdma1 0>, <&pdma1 1>;
+ 	dma-names = "tx", "rx";
+-	clock-names = "i2s_hclk", "i2s_clk";
+-	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
++	clock-names = "i2s_hclk", "i2s_clk", "i2s_clk_out";
++	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>, <&cru SCLK_I2S0_CLKOUT>;
+ };
+-- 
+1.9.1
