@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [PATCH 7/9] ASoC: qcom: Add ability to build QCOM drivers
-Date: Wed, 19 Nov 2014 10:52:47 -0800
-Message-ID: <1416423169-21865-8-git-send-email-kwestfie@codeaurora.org>
+Subject: [PATCH 9/9] ARM: dts: Model IPQ LPASS audio hardware
+Date: Wed, 19 Nov 2014 10:52:49 -0800
+Message-ID: <1416423169-21865-10-git-send-email-kwestfie@codeaurora.org>
 References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,83 +12,65 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Now all drivers are in place, allow them to build.
+Model the LPASS audio hardware for the IPQ806X.
 
-Change-Id: I16b9c4c2796bc1cf86aecae5fc500e685906fa8f
+Change-Id: Ide1aa0d09c23d4496aa9c40e3c9878a968261f11
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/qcom/Kconfig  | 43 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/Makefile | 11 +++++++++++
- 2 files changed, 54 insertions(+)
- create mode 100644 sound/soc/qcom/Kconfig
- create mode 100644 sound/soc/qcom/Makefile
+ arch/arm/boot/dts/qcom-ipq8064.dtsi | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-new file mode 100644
-index 0000000000000000000000000000000000000000..00cbdf8b29e68d32154a854a8bbfe2ac13b8b985
---- /dev/null
-+++ b/sound/soc/qcom/Kconfig
-@@ -0,0 +1,43 @@
-+#
-+# Copyright (c) 2013-2014 The Linux Foundation. All rights reserved.
-+#
-+# Permission to use, copy, modify, and/or distribute this software for any
-+# purpose with or without fee is hereby granted, provided that the above
-+# copyright notice and this permission notice appear in all copies.
-+#
-+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+index 63b2146f563b541e4994697af5ee1bbb41a4abd1..0e5b3b625f0442964aa7fbbc993c6c818fe99041 100644
+--- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+@@ -2,6 +2,7 @@
+ 
+ #include "skeleton.dtsi"
+ #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
++#include <dt-bindings/clock/qcom,lcc-ipq806x.h>
+ #include <dt-bindings/soc/qcom,gsbi.h>
+ 
+ / {
+@@ -66,6 +67,38 @@
+ 		ranges;
+ 		compatible = "simple-bus";
+ 
++		sound {
++			compatible = "qcom,ipq806x-snd-card";
++			status = "disabled";
++			clocks = <&lcc AHBIX_CLK>;
++			clock-names = "ahbix_clk";
++			asoc-platform = <&pcm0>;
++			asoc-platform-names = "lpass-pcm-mi2s";
++			asoc-cpu = <&dai_mi2s>;
++			asoc-cpu-names = "lpass-cpu-dai";
++		};
 +
-+config SND_SOC_CPU_DAI
-+	bool
-+	depends on SND_SOC_QCOM
++		lpass-lpaif {
++			compatible = "qcom,lpass-lpaif";
++			status = "disabled";
++			reg = <0x28100000 0x10000>;
++			reg-names = "lpass-lpaif-mem";
++			interrupts = <0 85 1>;
++			interrupt-names = "lpass-lpaif-irq";
++		};
 +
-+config SND_SOC_IPQ806X
-+	bool "SoC Audio support for IPQ806x based platforms"
-+	depends on SND_SOC_QCOM || ARCH_QCOM
-+	select SND_SOC_PCM_I2S
-+	select SND_SOC_CPU_DAI
-+	select SND_SOC_LPAIF
-+	help
-+          Support for Qualcomm Technologies LPASS audio block in IPQ806X SOC-based systems.
-+          Say Y if you want to use audio devices that will run on these boards.
++		dai_mi2s: lpass-cpu-dai {
++			compatible = "qcom,lpass-cpu-dai";
++			status = "disabled";
++			clocks = <&lcc MI2S_OSR_CLK>, <&lcc MI2S_BIT_CLK>;
++			clock-names = "mi2s_osr_clk", "mi2s_bit_clk";
++		};
 +
-+config SND_SOC_LPAIF
-+	bool
-+	depends on SND_SOC_QCOM
++		pcm0: lpass-pcm-mi2s {
++			compatible = "qcom,lpass-pcm-mi2s";
++			status = "disabled";
++		};
 +
-+config SND_SOC_PCM_I2S
-+	bool
-+	depends on SND_SOC_QCOM
-+
-+config SND_SOC_QCOM
-+	bool "SoC Audio support for QCOM platforms"
-+	help
-+          Support for audio in Qualcomm Technologies SOC-based systems.
-+          Say Y if you want to use audio devices that will run on IPQ806x and similar SOCs.
-+
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-new file mode 100644
-index 0000000000000000000000000000000000000000..0a74177df75f7aa5f7fbaab35da9b92689fa3d6a
---- /dev/null
-+++ b/sound/soc/qcom/Makefile
-@@ -0,0 +1,11 @@
-+#QCOM SOUNDCARDS
-+
-+snd-soc-ipq806x-objs := ipq806x.o
-+snd-soc-lpass-pcm-mi2s-objs := lpass-pcm-mi2s.o
-+snd-soc-lpass-cpu-dai-objs := lpass-cpu-dai.o
-+snd-soc-lpass-lpaif-objs := lpass-lpaif.o
-+
-+obj-$(CONFIG_SND_SOC_IPQ806X) += snd-soc-ipq806x.o
-+obj-$(CONFIG_SND_SOC_PCM_I2S) += snd-soc-lpass-pcm-mi2s.o
-+obj-$(CONFIG_SND_SOC_CPU_DAI) += snd-soc-lpass-cpu-dai.o
-+obj-$(CONFIG_SND_SOC_LPAIF) += snd-soc-lpass-lpaif.o
+ 		qcom_pinmux: pinmux@800000 {
+ 			compatible = "qcom,ipq8064-pinctrl";
+ 			reg = <0x800000 0x4000>;
 -- 
 1.8.2.1
