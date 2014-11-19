@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [PATCH 3/9] ASoC: ipq806x: add native LPAIF driver
-Date: Wed, 19 Nov 2014 10:52:43 -0800
-Message-ID: <1416423169-21865-4-git-send-email-kwestfie@codeaurora.org>
+Subject: [PATCH 5/9] ASoC: ipq806x: Add I2S PCM platform driver
+Date: Wed, 19 Nov 2014 10:52:45 -0800
+Message-ID: <1416423169-21865-6-git-send-email-kwestfie@codeaurora.org>
 References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,25 +12,24 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add the native LPAIF driver for LPASS block in Qualcomm
-Technologies SoCs.
+Add PCM platform driver for the LPASS I2S port.
 
-Change-Id: I0f06f73a1267d7721209e58ce18e0d4897001141
+Change-Id: If6516fb615b16551817fd9248c1c704fe521fb32
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/qcom/lpass-lpaif.c | 488 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/lpass-lpaif.h | 181 ++++++++++++++++
- 2 files changed, 669 insertions(+)
- create mode 100644 sound/soc/qcom/lpass-lpaif.c
- create mode 100644 sound/soc/qcom/lpass-lpaif.h
+ sound/soc/qcom/lpass-pcm-mi2s.c | 390 ++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/lpass-pcm-mi2s.h |  40 +++++
+ 2 files changed, 430 insertions(+)
+ create mode 100644 sound/soc/qcom/lpass-pcm-mi2s.c
+ create mode 100644 sound/soc/qcom/lpass-pcm-mi2s.h
 
-diff --git a/sound/soc/qcom/lpass-lpaif.c b/sound/soc/qcom/lpass-lpaif.c
+diff --git a/sound/soc/qcom/lpass-pcm-mi2s.c b/sound/soc/qcom/lpass-pcm-mi2s.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..e62843fe9bc4c63c3c7c119a9f076085b16a56b3
+index 0000000000000000000000000000000000000000..110b088d156c6d06cbe054920fc63fd064a0ac45
 --- /dev/null
-+++ b/sound/soc/qcom/lpass-lpaif.c
-@@ -0,0 +1,488 @@
++++ b/sound/soc/qcom/lpass-pcm-mi2s.c
+@@ -0,0 +1,390 @@
 +/*
 + * Copyright (c) 2010-2011,2013-2014 The Linux Foundation. All rights reserved.
 + *
@@ -45,488 +44,390 @@ index 0000000000000000000000000000000000000000..e62843fe9bc4c63c3c7c119a9f076085
 + */
 +
 +#include <linux/module.h>
-+#include <linux/platform_device.h>
 +#include <linux/dma-mapping.h>
-+#include <linux/clk.h>
-+#include <linux/types.h>
 +#include <sound/soc.h>
 +#include "lpass-lpaif.h"
++#include "lpass-pcm-mi2s.h"
 +
-+#define DRV_NAME	"lpass-lpaif"
++#define DRV_NAME	"lpass-pcm-mi2s"
 +#define DRV_VERSION	"1.0"
 +
-+struct lpaif_dai_baseinfo {
-+	void __iomem *base;
++/* MI2S Hw params */
++#define LPASS_MI2S_NO_OF_PERIODS	(65)
++#define LPASS_MI2S_PERIOD_BYTES_MIN	(8064)
++#define LPASS_MI2S_BUFF_SIZE		(LPASS_MI2S_PERIOD_BYTES_MIN * \
++					LPASS_MI2S_NO_OF_PERIODS)
++
++static struct snd_pcm_hardware lpass_pcm_hardware_playback = {
++	.info			=	SNDRV_PCM_INFO_MMAP |
++					SNDRV_PCM_INFO_BLOCK_TRANSFER |
++					SNDRV_PCM_INFO_MMAP_VALID |
++					SNDRV_PCM_INFO_INTERLEAVED |
++					SNDRV_PCM_INFO_PAUSE |
++					SNDRV_PCM_INFO_RESUME,
++	.formats		=	SNDRV_PCM_FMTBIT_S16 |
++					SNDRV_PCM_FMTBIT_S24 |
++					SNDRV_PCM_FMTBIT_S32,
++	.rates			=	SNDRV_PCM_RATE_8000_192000,
++	.rate_min		=	8000,
++	.rate_max		=	192000,
++	.channels_min		=	2,
++	.channels_max		=	8,
++	.buffer_bytes_max	=	LPASS_MI2S_BUFF_SIZE,
++	.period_bytes_max	=	(LPASS_MI2S_BUFF_SIZE) / 2,
++	.period_bytes_min	=	LPASS_MI2S_PERIOD_BYTES_MIN,
++	.periods_min		=	LPASS_MI2S_NO_OF_PERIODS,
++	.periods_max		=	LPASS_MI2S_NO_OF_PERIODS,
++	.fifo_size		=	0,
 +};
 +
-+struct lpaif_dai_drv {
-+	unsigned char *buffer;
-+	dma_addr_t buffer_phys;
-+	int channels;
-+	irqreturn_t (*callback)(int intrsrc, void *private_data);
-+	void *private_data;
-+	int in_use;
-+	unsigned int buffer_len;
-+	unsigned int period_len;
-+	unsigned int master_mode;
-+};
-+
-+static struct lpaif_dai_baseinfo lpaif_dai_info;
-+static struct lpaif_dai_drv *lpaif_dai[LPAIF_MAX_CHANNELS];
-+static spinlock_t lpaif_lock;
-+static struct resource *lpaif_irq;
-+
-+static int lpaif_pcm_int_enable(uint8_t dma_ch)
++static int lpass_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
 +{
-+	uint32_t intr_val;
-+	uint32_t status_val;
-+	unsigned long flags;
++	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++	size_t size;
 +
-+	if (dma_ch >= LPAIF_MAX_CHANNELS) {
-+		pr_err("%s: invalid DMA channel given: %hhu\n",
-+				__func__, dma_ch);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		size = lpass_pcm_hardware_playback.buffer_bytes_max;
++	} else {
++		pr_err("%s: Invalid stream direction\n", __func__);
 +		return -EINVAL;
 +	}
 +
-+	spin_lock_irqsave(&lpaif_lock, flags);
-+
-+	/* clear status before enabling interrupt */
-+	status_val = readl(lpaif_dai_info.base + LPAIF_IRQ_CLEAR(0));
-+	status_val |= LPAIF_PER_CH(dma_ch);
-+	writel(status_val, lpaif_dai_info.base + LPAIF_IRQ_CLEAR(0));
-+
-+	intr_val = readl(lpaif_dai_info.base + LPAIF_IRQ_EN(0));
-+	intr_val |= LPAIF_PER_CH(dma_ch);
-+	writel(intr_val, lpaif_dai_info.base + LPAIF_IRQ_EN(0));
-+
-+	spin_unlock_irqrestore(&lpaif_lock, flags);
-+
-+	return 0;
-+}
-+
-+static int lpaif_pcm_int_disable(uint8_t dma_ch)
-+{
-+	uint32_t intr_val;
-+	unsigned long flags;
-+
-+	if (dma_ch >= LPAIF_MAX_CHANNELS) {
-+		pr_err("%s: invalid DMA channel given: %hhu\n",
-+				__func__, dma_ch);
-+		return -EINVAL;
-+	}
-+
-+	spin_lock_irqsave(&lpaif_lock, flags);
-+
-+	intr_val = readl(lpaif_dai_info.base + LPAIF_IRQ_EN(0));
-+	intr_val &= ~LPAIF_PER_CH(dma_ch);
-+	writel(intr_val, lpaif_dai_info.base + LPAIF_IRQ_EN(0));
-+
-+	spin_unlock_irqrestore(&lpaif_lock, flags);
-+
-+	return 0;
-+}
-+
-+void lpaif_cfg_i2s_playback(uint8_t enable, uint32_t mode, uint32_t off)
-+{
-+	uint32_t cfg;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&lpaif_lock, flags);
-+
-+	cfg = readl(lpaif_dai_info.base + LPAIF_MI2S_CTL_OFFSET(off));
-+
-+	if (enable)
-+		cfg |= LPAIF_SPK_EN;
-+	else
-+		cfg &= ~LPAIF_SPK_EN;
-+
-+	cfg |= mode << LPAIF_SPK_MODE;
-+	cfg &= ~LPAIF_WS;
-+
-+	writel(cfg, lpaif_dai_info.base + LPAIF_MI2S_CTL_OFFSET(off));
-+
-+	spin_unlock_irqrestore(&lpaif_lock, flags);
-+}
-+
-+int lpaif_cfg_mi2s_hwparams_bit_width(uint32_t bit_width, uint32_t off)
-+{
-+	int ret = 0;
-+	uint32_t cfg;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&lpaif_lock, flags);
-+
-+	cfg = readl(lpaif_dai_info.base + LPAIF_MI2S_CTL_OFFSET(off));
-+	cfg &= ~LPAIF_BIT_MASK;
-+
-+	switch (bit_width) {
-+	case SNDRV_PCM_FORMAT_S16:
-+		cfg |= LPAIF_BIT_RATE16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24:
-+		cfg |= LPAIF_BIT_RATE24;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32:
-+		cfg |= LPAIF_BIT_RATE32;
-+		break;
-+	default:
-+		pr_err("%s: invalid bitwidth given: %u\n",
-+				__func__, bit_width);
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	if (!ret)
-+		writel(cfg, lpaif_dai_info.base + LPAIF_MI2S_CTL_OFFSET(off));
-+
-+	spin_unlock_irqrestore(&lpaif_lock, flags);
-+
-+	return ret;
-+}
-+
-+int lpaif_cfg_mi2s_playback_hwparams_channels(uint32_t channels, uint32_t off,
-+		uint32_t bit_width)
-+{
-+	int ret = 0;
-+	uint32_t cfg;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&lpaif_lock, flags);
-+
-+	cfg = readl(lpaif_dai_info.base + LPAIF_MI2S_CTL_OFFSET(off));
-+	cfg &= ~LPAIF_SPK_MODE_MASK;
-+
-+	switch (channels) {
-+	case 2:
-+		cfg |= LPAIF_SPK_MODE_SD0;
-+		break;
-+	case 4:
-+		cfg |= LPAIF_SPK_MODE_QUAD01;
-+		break;
-+	case 6:
-+		cfg |= LPAIF_SPK_MODE_6CH;
-+		break;
-+	case 8:
-+		cfg |= LPAIF_SPK_MODE_8CH;
-+		break;
-+	default:
-+		pr_err("%s: invalid channels given: %u\n", __func__, channels);
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	if (!ret)
-+		writel(cfg, lpaif_dai_info.base + LPAIF_MI2S_CTL_OFFSET(off));
-+
-+	spin_unlock_irqrestore(&lpaif_lock, flags);
-+
-+	return ret;
-+}
-+
-+static int lpaif_dai_config_dma(uint32_t dma_ch)
-+{
-+	if (dma_ch >= LPAIF_MAX_CHANNELS) {
-+		pr_err("%s: invalid DMA channel given: %u\n",
-+				__func__, dma_ch);
-+		return -EINVAL;
-+	}
-+
-+	writel(lpaif_dai[dma_ch]->buffer_phys,
-+			lpaif_dai_info.base + LPAIF_DMA_BASE(dma_ch));
-+	writel(((lpaif_dai[dma_ch]->buffer_len >> 2) - 1),
-+			lpaif_dai_info.base + LPAIF_DMA_BUFF_LEN(dma_ch));
-+	writel(((lpaif_dai[dma_ch]->period_len >> 2) - 1),
-+			lpaif_dai_info.base + LPAIF_DMA_PER_LEN(dma_ch));
-+
-+	return 0;
-+}
-+
-+static int lpaif_dai_cfg_dma_ch(uint32_t dma_ch, uint32_t channels,
-+		uint32_t bit_width)
-+{
-+	int ret = 0;
-+	uint32_t cfg;
-+	unsigned long flags;
-+
-+	if (dma_ch >= LPAIF_MAX_CHANNELS) {
-+		pr_err("%s: invalid DMA channel given: %u\n",
-+				__func__, dma_ch);
-+		return -EINVAL;
-+	}
-+
-+	spin_lock_irqsave(&lpaif_lock, flags);
-+
-+	cfg = readl(lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+
-+	if ((dma_ch == LPAIF_MI2S_DMA_RD_CH) ||
-+			(dma_ch == LPAIF_MI2S_DMA_WR_CH)) {
-+		cfg |= LPAIF_DMACTL_AUDIO_INTF_MI2S;
-+		cfg &= ~LPAIF_DMACTL_WPSCNT_MASK;
-+
-+		if ((bit_width == 16) && (channels == 2)) {
-+			cfg |= LPAIF_DMACTL_WPSCNT_MONO;
-+		} else if (((bit_width == 16) && (channels == 4)) ||
-+				(((bit_width == 24) || (bit_width == 32)) &&
-+				(channels == 2))) {
-+			cfg |= LPAIF_DMACTL_WPSCNT_STEREO;
-+		} else if ((bit_width == 16) && (channels == 6)) {
-+			cfg |= LPAIF_DMACTL_WPSCNT_3CH;
-+		} else if (((bit_width == 16) && (channels == 8)) ||
-+				(((bit_width == 32) || (bit_width == 24)) &&
-+				(channels == 4))) {
-+			cfg |= LPAIF_DMACTL_WPSCNT_4CH;
-+		} else if (((bit_width == 24) || (bit_width == 32)) &&
-+				(channels == 6)) {
-+			cfg |= LPAIF_DMACTL_WPSCNT_6CH;
-+		} else if (((bit_width == 24) || (bit_width == 32)) &&
-+				(channels == 8)) {
-+			cfg |= LPAIF_DMACTL_WPSCNT_8CH;
-+		} else {
-+			pr_err("%s: invalid PCM config given: bw=%u, ch=%u\n",
-+					__func__, bit_width, channels);
-+			ret = -EINVAL;
-+		}
-+	}
-+
-+	if (!ret)
-+		writel(cfg, lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+
-+	spin_unlock_irqrestore(&lpaif_lock, flags);
-+	return ret;
-+}
-+
-+int lpaif_cfg_dma(uint32_t dma_ch, struct lpaif_dai_dma_params *params,
-+		uint32_t bit_width, bool enable_intr)
-+{
-+	int ret;
-+	uint32_t cfg;
-+
-+	lpaif_dai[dma_ch]->buffer = params->buffer;
-+	lpaif_dai[dma_ch]->buffer_phys = params->src_start;
-+	lpaif_dai[dma_ch]->channels = params->channels;
-+	lpaif_dai[dma_ch]->buffer_len = params->buffer_size;
-+	lpaif_dai[dma_ch]->period_len = params->period_size;
-+
-+	ret = lpaif_dai_config_dma(dma_ch);
-+	if (ret) {
-+		pr_err("%s: error configuring DMA block: %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	if (enable_intr)
-+		lpaif_pcm_int_enable(dma_ch);
-+
-+	ret = lpaif_dai_cfg_dma_ch(dma_ch, params->channels, bit_width);
-+	if (ret) {
-+		pr_err("%s: error configuring DMA channel: %d\n",
-+				__func__, ret);
-+		lpaif_pcm_int_disable(dma_ch);
-+		return ret;
-+	}
-+
-+	cfg = readl(lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+	cfg |= LPAIF_DMACTL_FIFO_WM_8 | LPAIF_DMACTL_BURST_EN;
-+	writel(cfg, lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+
-+	cfg = readl(lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+	cfg |= LPAIF_DMACTL_ENABLE;
-+	writel(cfg, lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+
-+	return 0;
-+}
-+
-+int lpaif_dai_stop(uint32_t dma_ch)
-+{
-+	writel(0x0, lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+	return 0;
-+}
-+
-+uint8_t lpaif_dma_stop(uint8_t dma_ch)
-+{
-+	uint32_t cfg;
-+
-+	cfg = readl(lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+	cfg &= ~LPAIF_DMACTL_ENABLE;
-+	writel(cfg, lpaif_dai_info.base + LPAIF_DMA_CTL(dma_ch));
-+	return 0;
-+}
-+
-+void lpaif_register_dma_irq_handler(int dma_ch,
-+		irqreturn_t (*callback)(int intrsrc, void *private_data),
-+		void *private_data)
-+{
-+	lpaif_dai[dma_ch]->callback = callback;
-+	lpaif_dai[dma_ch]->private_data = private_data;
-+}
-+
-+void lpaif_unregister_dma_irq_handler(int dma_ch)
-+{
-+	lpaif_dai[dma_ch]->callback = NULL;
-+	lpaif_dai[dma_ch]->private_data = NULL;
-+}
-+
-+/*
-+ * Logic to find the dma channel from interrupt.
-+ * In total we have 9 channels, each channel records the transcation
-+ * status. Either one of ths 3 status will be recorded per transcation
-+ * (PER_CH,UNDER_RUN,OVER_RUN)
-+ */
-+static int lpaif_dai_find_dma_channel(uint32_t intrsrc)
-+{
-+	uint32_t dma_channel = 0;
-+
-+	while (dma_channel < LPAIF_MAX_CHANNELS) {
-+		if (intrsrc & LPAIF_PER_CH(dma_channel))
-+			return dma_channel;
-+
-+		dma_channel++;
-+	}
-+
-+	return -1;
-+}
-+
-+/* ISR for handling LPAIF interrupts  */
-+static irqreturn_t lpaif_dai_irq_handler(int irq, void *data)
-+{
-+	unsigned long flag;
-+	uint32_t intrsrc;
-+	uint32_t dma_ch;
-+	irqreturn_t ret = IRQ_NONE;
-+
-+	spin_lock_irqsave(&lpaif_lock, flag);
-+	intrsrc = readl(lpaif_dai_info.base + LPAIF_IRQ_STAT(0));
-+	writel(intrsrc, lpaif_dai_info.base + LPAIF_IRQ_CLEAR(0));
-+	spin_unlock_irqrestore(&lpaif_lock, flag);
-+
-+	while (intrsrc) {
-+		dma_ch = lpaif_dai_find_dma_channel(intrsrc);
-+		if (dma_ch != -1) {
-+			if (lpaif_dai[dma_ch]->callback) {
-+
-+				ret = lpaif_dai[dma_ch]->callback(intrsrc,
-+					lpaif_dai[dma_ch]->private_data);
-+			}
-+			intrsrc &= ~LPAIF_PER_CH(dma_ch);
-+		} else {
-+			pr_err("%s: error getting channel\n", __func__);
-+			break;
-+		}
-+	}
-+	return ret;
-+}
-+
-+static void lpaif_dai_ch_free(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < LPAIF_MAX_CHANNELS; i++)
-+		kfree(lpaif_dai[i]);
-+}
-+
-+static int lpaif_dai_probe(struct platform_device *pdev)
-+{
-+	uint8_t i;
-+	int32_t rc;
-+	struct resource *lpa_res;
-+	struct device *lpaif_device;
-+
-+	lpaif_device = &pdev->dev;
-+
-+	lpa_res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+			"lpass-lpaif-mem");
-+	if (!lpa_res) {
-+		dev_err(&pdev->dev, "%s: error getting resource\n", __func__);
-+		return -ENODEV;
-+	}
-+	lpaif_dai_info.base = ioremap(lpa_res->start,
-+			(lpa_res->end - lpa_res->start));
-+	if (!lpaif_dai_info.base) {
-+		dev_err(&pdev->dev, "%s: error remapping resource\n",
-+				__func__);
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = pcm->card->dev;
++	buf->private_data = NULL;
++	buf->area = dma_alloc_coherent(pcm->card->dev, size,
++					&buf->addr, GFP_KERNEL);
++	if (!buf->area) {
++		pr_err("%s: Could not allocate DMA buffer\n", __func__);
 +		return -ENOMEM;
 +	}
++	buf->bytes = size;
 +
-+	lpaif_irq = platform_get_resource_byname(
-+			pdev, IORESOURCE_IRQ, "lpass-lpaif-irq");
-+	if (!lpaif_irq) {
-+		dev_err(&pdev->dev, "%s: failed get irq res\n", __func__);
-+		rc = -ENODEV;
-+		goto error;
++	return 0;
++}
++
++static void lpass_pcm_free_dma_buffer(struct snd_pcm *pcm, int stream)
++{
++	struct snd_pcm_substream *substream;
++	struct snd_dma_buffer *buf;
++
++	substream = pcm->streams[stream].substream;
++	buf = &substream->dma_buffer;
++	if (buf->area) {
++		dma_free_coherent(pcm->card->dev, buf->bytes,
++					buf->area, buf->addr);
++	}
++	buf->area = NULL;
++}
++
++static irqreturn_t lpass_pcm_mi2s_irq(int intrsrc, void *data)
++{
++	int dma_ch;
++	uint32_t ret = IRQ_NONE;
++	uint32_t has_xrun, pending;
++
++	struct snd_pcm_substream *substream = data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct lpass_runtime_data_t *prtd = runtime->private_data;
++
++	if (prtd) {
++		dma_ch = prtd->lpaif_info.dma_ch;
++	} else {
++		pr_debug("%s: received interrupt w/o runtime\n", __func__);
++		return IRQ_NONE;
 +	}
 +
-+	rc = request_irq(lpaif_irq->start, lpaif_dai_irq_handler,
-+			IRQF_TRIGGER_RISING, "lpass-lpaif-intr", NULL);
++	pending = intrsrc & (LPAIF_UNDER_CH(dma_ch) | LPAIF_PER_CH(dma_ch) |
++				LPAIF_ERR_CH(dma_ch));
 +
-+	if (rc < 0) {
-+		dev_err(&pdev->dev, "%s: irq resource request failed\n",
-+				__func__);
-+		goto error;
++	has_xrun = pending & LPAIF_UNDER_CH(dma_ch);
++
++	if (unlikely(has_xrun) && substream->runtime &&
++			snd_pcm_running(substream)) {
++		pr_debug("%s: xrun warning\n", __func__);
++		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
++		pending &= ~LPAIF_UNDER_CH(dma_ch);
++		ret = IRQ_HANDLED;
++	}
++
++	if (pending & LPAIF_PER_CH(dma_ch)) {
++		if (++prtd->pcm_stream_info.period_index >= runtime->periods)
++			prtd->pcm_stream_info.period_index = 0;
++		snd_pcm_period_elapsed(substream);
++		pending &= ~LPAIF_PER_CH(dma_ch);
++		ret = IRQ_HANDLED;
++	}
++
++	if (pending & LPAIF_UNDER_CH(dma_ch)) {
++		snd_pcm_period_elapsed(substream);
++		pr_debug("%s: xrun warning\n", __func__);
++		ret = IRQ_HANDLED;
++	}
++
++	if (pending & LPAIF_ERR_CH(dma_ch)) {
++		pr_debug("%s: Bus access warning\n", __func__);
++		ret = IRQ_HANDLED;
++	}
++
++	return ret;
++}
++
++static snd_pcm_uframes_t lpass_pcm_mi2s_pointer(
++				struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct lpass_runtime_data_t *prtd = runtime->private_data;
++	snd_pcm_uframes_t offset;
++
++	offset = prtd->pcm_stream_info.period_index * runtime->period_size;
++
++	return offset >= (runtime->buffer_size) ? 0 : offset;
++}
++
++static int lpass_pcm_mi2s_mmap(struct snd_pcm_substream *substream,
++				struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	return dma_mmap_coherent(substream->pcm->card->dev, vma,
++		runtime->dma_area, runtime->dma_addr, runtime->dma_bytes);
++}
++
++static int lpass_pcm_mi2s_prepare(struct snd_pcm_substream *substream)
++{
++	int ret;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct lpaif_dai_dma_params dma_params;
++	struct lpass_runtime_data_t *prtd = runtime->private_data;
++
++	if (!prtd) {
++		pr_err("%s: Error in getting runtime data\n", __func__);
++		return -EINVAL;
 +	}
 +
 +	/*
-+	 * Allocating memory for all the LPA_IF DMA channels
++	 * This is the case for under\over-run, we have already
++	 * configured the DMA registers for this stream
 +	 */
-+	for (i = 0; i < LPAIF_MAX_CHANNELS; i++) {
-+		lpaif_dai[i] = kzalloc(sizeof(struct lpaif_dai_drv),
-+				GFP_KERNEL);
-+		if (!lpaif_dai[i]) {
-+			rc = -ENOMEM;
-+			goto error_irq;
-+		}
++	if (prtd->pcm_stream_info.pcm_prepare_start)
++		return 0;
++
++	lpaif_dma_stop(prtd->lpaif_info.dma_ch);
++	prtd->pcm_stream_info.pcm_prepare_start = 1;
++	prtd->lpaif_info.lpa_if_dma_start = 0;
++
++	memset(&dma_params, 0, sizeof(dma_params));
++	dma_params.src_start = runtime->dma_addr;
++	dma_params.buffer_size = snd_pcm_lib_buffer_bytes(substream);
++	dma_params.period_size = snd_pcm_lib_period_bytes(substream);
++	dma_params.channels = runtime->channels;
++	ret = lpaif_cfg_dma(prtd->lpaif_info.dma_ch, &dma_params,
++					prtd->pcm_stream_info.bit_width,
++					1 /*enable intr*/);
++	if (ret) {
++		pr_err("%s: Error in configuring DMA\n", __func__);
++		return -EINVAL;
 +	}
-+	spin_lock_init(&lpaif_lock);
-+	return 0;
 +
-+error_irq:
-+	free_irq(lpaif_irq->start, NULL);
-+	lpaif_dai_ch_free();
-+error:
-+	iounmap(lpaif_dai_info.base);
-+	return rc;
++	lpaif_register_dma_irq_handler(prtd->lpaif_info.dma_ch,
++					lpass_pcm_mi2s_irq, substream);
++
++	return 0;
 +}
 +
-+static int lpaif_dai_remove(struct platform_device *pdev)
++static int lpass_pcm_mi2s_close(struct snd_pcm_substream *substream)
 +{
-+	int i;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct lpass_runtime_data_t *prtd = runtime->private_data;
 +
-+	for (i = 0; i < LPAIF_MAX_CHANNELS; i++)
-+		lpaif_dai_stop(i);
-+	synchronize_irq(lpaif_irq->start);
-+	free_irq(lpaif_irq->start, NULL);
-+	iounmap(lpaif_dai_info.base);
-+	lpaif_dai_ch_free();
++	if (prtd) {
++		lpaif_dai_stop(prtd->lpaif_info.dma_ch);
++		lpaif_unregister_dma_irq_handler(prtd->lpaif_info.dma_ch);
++		kfree(prtd);
++	}
++
 +	return 0;
 +}
 +
-+static const struct of_device_id lpaif_dai_dt_match[] = {
-+	{.compatible = "qcom,lpass-lpaif"},
++static int lpass_pcm_mi2s_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			lpaif_cfg_i2s_playback(1, 0, LPAIF_MI2S);
++		} else {
++			pr_err("%s: Invalid stream direction\n", __func__);
++			ret = -EINVAL;
++		}
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			lpaif_cfg_i2s_playback(0, 0, LPAIF_MI2S);
++		} else {
++			pr_err("%s: Invalid stream direction\n", __func__);
++			ret = -EINVAL;
++		}
++		break;
++	default:
++		pr_err("%s: Invalid trigger command given\n", __func__);
++		ret = -EINVAL;
++		break;
++	}
++	return ret;
++}
++
++static int lpass_pcm_mi2s_hw_params(struct snd_pcm_substream *substream,
++					struct snd_pcm_hw_params *params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct lpass_runtime_data_t *prtd = runtime->private_data;
++
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++	prtd->pcm_stream_info.pcm_prepare_start = 0;
++	prtd->pcm_stream_info.period_index = 0;
++	return 0;
++}
++
++static int lpass_pcm_mi2s_open(struct snd_pcm_substream *substream)
++{
++	int ret;
++	struct lpass_runtime_data_t *prtd;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		runtime->dma_bytes =
++			lpass_pcm_hardware_playback.buffer_bytes_max;
++		snd_soc_set_runtime_hwparams(substream,
++				&lpass_pcm_hardware_playback);
++	} else {
++		pr_err("%s: Invalid stream direction\n", __func__);
++		return -EINVAL;
++	}
++
++	ret = snd_pcm_hw_constraint_integer(runtime,
++			SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		pr_err("%s: snd_pcm_hw_constraint_integer failed\n", __func__);
++		return -EINVAL;
++	}
++
++	prtd = kzalloc(sizeof(struct lpass_runtime_data_t), GFP_KERNEL);
++	if (prtd == NULL)
++		return -ENOMEM;
++
++	prtd->pcm_stream_info.pcm_prepare_start = 0;
++	prtd->lpaif_clk.is_bit_clk_enabled = 0;
++	prtd->lpaif_clk.is_osr_clk_enabled = 0;
++	prtd->lpaif_info.dma_ch = LPAIF_MI2S_DMA_RD_CH;
++
++	prtd->pcm_stream_info.substream = substream;
++	runtime->private_data = prtd;
++
++	return 0;
++}
++
++static struct snd_pcm_ops lpass_asoc_pcm_mi2s_ops = {
++	.open		= lpass_pcm_mi2s_open,
++	.hw_params	= lpass_pcm_mi2s_hw_params,
++	.trigger	= lpass_pcm_mi2s_trigger,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.close		= lpass_pcm_mi2s_close,
++	.prepare	= lpass_pcm_mi2s_prepare,
++	.mmap		= lpass_pcm_mi2s_mmap,
++	.pointer	= lpass_pcm_mi2s_pointer,
++};
++
++static void lpass_asoc_pcm_mi2s_free(struct snd_pcm *pcm)
++{
++	lpass_pcm_free_dma_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
++}
++
++static int lpass_asoc_pcm_mi2s_new(struct snd_soc_pcm_runtime *prtd)
++{
++	struct snd_card *card = prtd->card->snd_card;
++	struct snd_pcm *pcm = prtd->pcm;
++	int ret = 0;
++
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
++
++	if (!card->dev->dma_mask)
++		card->dev->dma_mask = &card->dev->coherent_dma_mask;
++
++	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
++		ret = lpass_pcm_preallocate_dma_buffer(pcm,
++				SNDRV_PCM_STREAM_PLAYBACK);
++	} else {
++		pr_err("%s: Invalid stream direction\n", __func__);
++		return -EINVAL;
++	}
++
++	return ret;
++}
++
++static struct snd_soc_platform_driver lpass_asoc_pcm_mi2s_platform = {
++	.ops		= &lpass_asoc_pcm_mi2s_ops,
++	.pcm_new	= lpass_asoc_pcm_mi2s_new,
++	.pcm_free	= lpass_asoc_pcm_mi2s_free,
++};
++
++static int lpass_pcm_mi2s_driver_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = snd_soc_register_platform(&pdev->dev,
++			&lpass_asoc_pcm_mi2s_platform);
++	if (ret)
++		dev_err(&pdev->dev, "%s: Failed to register pcm device: %d\n",
++				__func__, ret);
++
++	return ret;
++}
++
++static int lpass_pcm_mi2s_driver_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_platform(&pdev->dev);
++
++	return 0;
++}
++
++static const struct of_device_id lpass_pcm_mi2s_dt_match[] = {
++	{ .compatible = "qcom,lpass-pcm-mi2s", },
 +	{}
 +};
 +
-+static struct platform_driver lpass_lpaif_driver = {
-+	.probe = lpaif_dai_probe,
-+	.remove = lpaif_dai_remove,
-+	.driver = {
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+		.of_match_table = lpaif_dai_dt_match,
-+		},
++static struct platform_driver lpass_pcm_mi2s_driver = {
++	.driver	= {
++		.name	= DRV_NAME,
++		.owner	= THIS_MODULE,
++		.of_match_table = lpass_pcm_mi2s_dt_match,
++	},
++	.probe	= lpass_pcm_mi2s_driver_probe,
++	.remove	= lpass_pcm_mi2s_driver_remove,
 +};
-+module_platform_driver(lpass_lpaif_driver);
++module_platform_driver(lpass_pcm_mi2s_driver);
 +
-+MODULE_DESCRIPTION("QCOM LPASS LPAIF Driver");
++MODULE_DESCRIPTION("LPASS PCM MI2S Platform Driver");
 +MODULE_LICENSE("GPL v2");
 +MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_DEVICE_TABLE(of, lpaif_dai_dt_match);
++MODULE_DEVICE_TABLE(of, lpass_pcm_mi2s_dt_match);
 +MODULE_VERSION(DRV_VERSION);
-diff --git a/sound/soc/qcom/lpass-lpaif.h b/sound/soc/qcom/lpass-lpaif.h
+diff --git a/sound/soc/qcom/lpass-pcm-mi2s.h b/sound/soc/qcom/lpass-pcm-mi2s.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..e10731bb2cef96e31ebf7a92b9ba3e8ee22e0360
+index 0000000000000000000000000000000000000000..edd43c4d419d1999babe20d4e6f58c77df38c6e1
 --- /dev/null
-+++ b/sound/soc/qcom/lpass-lpaif.h
-@@ -0,0 +1,181 @@
++++ b/sound/soc/qcom/lpass-pcm-mi2s.h
+@@ -0,0 +1,40 @@
 +/*
-+ * Copyright (c) 2010-2011,2013-2014 The Linux Foundation. All rights reserved.
++ * Copyright (c) 2014 The Linux Foundation. All rights reserved.
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 and
@@ -538,173 +439,32 @@ index 0000000000000000000000000000000000000000..e10731bb2cef96e31ebf7a92b9ba3e8e
 + * GNU General Public License for more details.
 + */
 +
-+#ifndef _LPASS_LPAIF_H
-+#define _LPASS_LPAIF_H
++#ifndef _LPASS_PCM_MI2S_H
++#define _LPAS_PCM_MI2S_H
 +
-+#define LPAIF_BANK_OFFSET			0x1000
-+
-+/* Audio DMA registers for DMA channel confuguration */
-+#define LPAIF_DMA_CH_CTL_BASE			0x6000
-+#define LPAIF_DMA_CH_INDEX(ch)			(LPAIF_BANK_OFFSET * ch)
-+
-+#define LPAIF_DMA_CTRL_ADDR(ch, addr)		(LPAIF_DMA_CH_CTL_BASE \
-+						+ (LPAIF_DMA_CH_INDEX(ch) \
-+						+ addr))
-+
-+#define LPAIF_DMA_CTL(x)			LPAIF_DMA_CTRL_ADDR(x, 0x00)
-+#define LPAIF_BURST_EN				(1 << 11)
-+#define LPAIF_WPSCNT_ONE			(0 << 8)
-+#define LPAIF_WPSCNT_TWO			(1 << 8)
-+#define LPAIF_WPSCNT_THREE			(2 << 8)
-+#define LPAIF_WPSCNT_FOUR			(3 << 8)
-+#define LPAIF_WPSCNT_SIX			(5 << 8)
-+#define LPAIF_WPSCNT_EIGHT			(7 << 8)
-+#define LPAIF_AUDIO_INTF_NONE			(0 << 4)
-+#define LPAIF_AUDIO_INTF_CODEC			(1 << 4)
-+#define LPAIF_AUDIO_INTF_PCM			(2 << 4)
-+#define LPAIF_AUDIO_INTF_SEC_I2S		(3 << 4)
-+#define LPAIF_AUDIO_INTF_MI2S			(4 << 4)
-+#define LPAIF_AUDIO_INTF_HDMI			(5 << 4)
-+#define LPAIF_AUDIO_INTF_MIXOUT			(6 << 4)
-+#define LPAIF_AUDIO_INTF_LOOPBACK1		(7 << 4)
-+#define LPAIF_AUDIO_INTF_LOOPBACK2		(8 << 4)
-+#define LPAIF_FIFO_WATERMRK(x)			((x & 0x7) << 1)
-+#define LPAIF_ENABLE				(1 << 0)
-+
-+#define LPAIF_DMA_BASE(x)			LPAIF_DMA_CTRL_ADDR(x, 0x04)
-+#define LPAIF_BASE_ADDR				(0xFFFFFFFF << 4)
-+
-+#define	LPAIF_DMA_BUFF_LEN(x)			LPAIF_DMA_CTRL_ADDR(x, 0x08)
-+#define LPAIF_DMA_CURR_ADDR(x)			LPAIF_DMA_CTRL_ADDR(x, 0x0c)
-+#define	LPAIF_DMA_PER_LEN(x)			LPAIF_DMA_CTRL_ADDR(x, 0x10)
-+#define	LPAIF_DMA_PER_CNT(x)			LPAIF_DMA_CTRL_ADDR(x, 0x14)
-+#define	LPAIF_DMA_FRM(x)			LPAIF_DMA_CTRL_ADDR(x, 0x18)
-+#define LPAIF_DMA_FRMCLR(x)			LPAIF_DMA_CTRL_ADDR(x, 0x1c)
-+#define LPAIF_DMA_SET_BUFF_CNT(x)		LPAIF_DMA_CTRL_ADDR(x, 0x20)
-+#define	LPAIF_DMA_SET_PER_CNT(x)		LPAIF_DMA_CTRL_ADDR(x, 0x24)
-+
-+#define LPAIF_MAX_CHANNELS			9
-+
-+#define LPAIF_CODEC_SPK				0x0
-+#define LPAIF_CODEC_MIC				0x1
-+#define LPAIF_SEC_SPK				0x2
-+#define LPAIF_SEC_MIC				0x3
-+#define LPAIF_MI2S				0x4
-+
-+#define LPAIF_LB				(1 << 15)
-+#define LPAIF_SPK_EN				(1 << 14)
-+
-+#define LPAIF_SPK_MODE_MASK			0x3C00
-+#define LPAIF_SPK_MODE				10
-+#define LPAIF_SPK_MODE_NONE			(0 << 10)
-+#define LPAIF_SPK_MODE_SD0			(1 << 10)
-+#define LPAIF_SPK_MODE_SD1			(2 << 10)
-+#define LPAIF_SPK_MODE_SD2			(3 << 10)
-+#define LPAIF_SPK_MODE_SD3			(4 << 10)
-+#define LPAIF_SPK_MODE_QUAD01			(5 << 10)
-+#define LPAIF_SPK_MODE_QUAD23			(6 << 10)
-+#define LPAIF_SPK_MODE_6CH			(7 << 10)
-+#define LPAIF_SPK_MODE_8CH			(8 << 10)
-+
-+#define LPAIF_WS				(1 << 2)
-+
-+#define LPAIF_BIT_MASK				(0x3)
-+#define LPAIF_BIT_RATE16			(0 << 0)
-+#define LPAIF_BIT_RATE24			(1 << 0)
-+#define LPAIF_BIT_RATE32			(2 << 0)
-+
-+#define LPAIF_MI2S_CTL_OFFSET(x)		(0x0010 + (0x4 * x))
-+
-+/* LPAIF INTERRUPT CTRL */
-+
-+#define LPAIF_DMA_IRQ_BASE			0x3000
-+#define LPAIF_DMA_IRQ_INDEX(x)			(LPAIF_BANK_OFFSET * x)
-+#define LPAIF_DMA_IRQ_ADDR(irq, addr)		(LPAIF_DMA_IRQ_BASE  \
-+						+ LPAIF_DMA_IRQ_INDEX(irq) \
-+						+ addr)
-+
-+#define LPAIF_IRQ_EN(x)				LPAIF_DMA_IRQ_ADDR(x, 0x00)
-+#define LPAIF_IRQ_STAT(x)			LPAIF_DMA_IRQ_ADDR(x, 0x04)
-+#define LPAIF_IRQ_RAW_STAT(x)			LPAIF_DMA_IRQ_ADDR(x, 0x08)
-+#define LPAIF_IRQ_CLEAR(x)			LPAIF_DMA_IRQ_ADDR(x, 0x0c)
-+#define LPAIF_IRQ_FORCE(x)			LPAIF_DMA_IRQ_ADDR(x, 0x10)
-+#define LPAIF_PER_CH(x)				(1 << (3 * x))
-+#define LPAIF_UNDER_CH(x)			(2 << (3 * x))
-+#define LPAIF_ERR_CH(x)				(4 << (3 * x))
-+
-+/* DMA CTRL */
-+
-+#define LPAIF_DMACTL_BURST_EN			(1 << 11)
-+#define LPAIF_DMACTL_WPSCNT_MASK		(0x700)
-+#define LPAIF_DMACTL_WPSCNT_MONO		(0 << 8)
-+#define LPAIF_DMACTL_WPSCNT_STEREO		(1 << 8)
-+#define LPAIF_DMACTL_WPSCNT_STEREO_2CH		(0 << 8)
-+#define LPAIF_DMACTL_WPSCNT_3CH			(2 << 8)
-+#define LPAIF_DMACTL_WPSCNT_4CH			(3 << 8)
-+#define LPAIF_DMACTL_WPSCNT_5CH			(4 << 8)
-+#define LPAIF_DMACTL_WPSCNT_6CH			(5 << 8)
-+#define LPAIF_DMACTL_WPSCNT_7CH			(6 << 8)
-+#define LPAIF_DMACTL_WPSCNT_8CH			(7 << 8)
-+
-+#define LPAIF_DMACTL_AUDIO_INTF_MASK		(0xF0)
-+#define LPAIF_DMACTL_AUDIO_INTF_NONE		(0 << 4)
-+#define LPAIF_DMACTL_AUDIO_INTF_CODEC		(1 << 4)
-+#define LPAIF_DMACTL_AUDIO_INTF_PCM		(2 << 4)
-+#define LPAIF_DMACTL_AUDIO_INTF_SEC_I2S		(3 << 4)
-+#define LPAIF_DMACTL_AUDIO_INTF_MI2S		(4 << 4)
-+#define LPAIF_DMACTL_AUDIO_INTF_HDMI		(5 << 4)
-+#define LPAIF_DMACTL_AUDIO_INTF_MIXOUT		(6 << 4)
-+#define LPAIF_DMACTL_AUDIO_INTF_LB1		(7 << 4)
-+#define LPAIF_DMACTL_AUDIO_INTF_LB2		(8 << 4)
-+
-+#define LPAIF_DMACTL_FIFO_WM_1			(0 << 1)
-+#define LPAIF_DMACTL_FIFO_WM_2			(1 << 1)
-+#define LPAIF_DMACTL_FIFO_WM_3			(2 << 1)
-+#define LPAIF_DMACTL_FIFO_WM_4			(3 << 1)
-+#define LPAIF_DMACTL_FIFO_WM_5			(4 << 1)
-+#define LPAIF_DMACTL_FIFO_WM_6			(5 << 1)
-+#define LPAIF_DMACTL_FIFO_WM_7			(6 << 1)
-+#define LPAIF_DMACTL_FIFO_WM_8			(7 << 1)
-+
-+#define LPAIF_DMACTL_ENABLE			(1 << 0)
-+
-+enum lpaif_dma_intf_wr_ch {
-+	LPAIF_MIN_DMA_WR_CH	= 5,
-+	LPAIF_PCM0_DMA_WR_CH	= 5,
-+	LPAIF_PCM1_DMA_WR_CH	= 6,
-+	LPAIF_MI2S_DMA_WR_CH	= 6,
-+	LPAIF_MAX_DMA_WR_CH	= 8,
++struct lpass_pcm_stream_t {
++	uint8_t pcm_prepare_start;
++	uint32_t period_index;
++	struct snd_pcm_substream *substream;
++	uint32_t bit_width;
 +};
 +
-+enum lpaif_dma_intf_rd_ch {
-+	LPAIF_MIN_DMA_RD_CH	= 0,
-+	LPAIF_MI2S_DMA_RD_CH	= 0,
-+	LPAIF_PCM0_DMA_RD_CH	= 1,
-+	LPAIF_PCM1_DMA_RD_CH	= 2,
-+	LPAIF_MAX_DMA_RD_CH	= 4,
++struct lpass_lpaif_t {
++	uint8_t lpa_if_dma_start;
++	uint8_t dma_ch;
 +};
 +
-+struct lpaif_dai_dma_params {
-+	u8 *buffer;
-+	uint32_t src_start;
-+	uint32_t bus_id;
-+	int buffer_size;
-+	int period_size;
-+	int channels;
++struct lpass_lpaif_clk_t {
++	uint8_t is_bit_clk_enabled;
++	uint8_t is_osr_clk_enabled;
 +};
 +
-+void lpaif_cfg_i2s_playback(uint8_t enable, uint32_t mode, uint32_t off);
-+int lpaif_cfg_mi2s_hwparams_bit_width(uint32_t bit_width, uint32_t off);
-+int lpaif_cfg_mi2s_playback_hwparams_channels(uint32_t channels,
-+		uint32_t off, uint32_t bit_width);
-+int lpaif_cfg_dma(uint32_t dma_ch, struct lpaif_dai_dma_params *params,
-+		uint32_t bit_width, bool enable_intr);
-+int lpaif_dai_stop(uint32_t dma_ch);
-+uint8_t lpaif_dma_stop(uint8_t dma_ch);
-+void lpaif_register_dma_irq_handler(int dma_ch,
-+		irqreturn_t (*callback)(int intr_src, void *private_data),
-+		void *private_data);
-+void lpaif_unregister_dma_irq_handler(int dma_ch);
-+#endif /* _LPASS_LPAIF_H */
++struct lpass_runtime_data_t {
++	struct lpass_pcm_stream_t pcm_stream_info;
++	struct lpass_lpaif_t lpaif_info;
++	struct lpass_lpaif_clk_t lpaif_clk;
++};
++
++#endif /* _LPASS_PCM_MI2S_H */
 -- 
 1.8.2.1
