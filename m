@@ -1,50 +1,56 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [PATCH 8/9] ASoC: Allow for building QCOM drivers
-Date: Wed, 19 Nov 2014 10:52:48 -0800
-Message-ID: <1416423169-21865-9-git-send-email-kwestfie@codeaurora.org>
-References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
-Cc: Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: Re: [PATCH] pcm: add new 32-bit DSD sample format
+Date: Wed, 19 Nov 2014 21:50:30 +0200
+Message-ID: <546CF486.7010009@sonarnerd.net>
+References: <1410332428-16571-1-git-send-email-gtmkramer@xs4all.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7F172604EB
+ for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 20:50:31 +0100 (CET)
+In-Reply-To: <1410332428-16571-1-git-send-email-gtmkramer@xs4all.nl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jurgen Kramer <gtmkramer@xs4all.nl>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Kenneth Westfield <kwestfie@codeaurora.org>
+Hi,
 
-Allow for the QCOM LPASS drivers to build.
+Sorry for catching up late on this patch...
 
-Change-Id: Ic870d8e9487cebe634c8bd2f1c7263c27237febc
-Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
-Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
----
- sound/soc/Kconfig  | 1 +
- sound/soc/Makefile | 1 +
- 2 files changed, 2 insertions(+)
+On 10.09.2014 10:00, Jurgen Kramer wrote:
+> +	FORMATD(DSD_U32_LE, "Direct Stream Digital, 4-byte (x32), little endian, oldest bits in MSB"),
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 7d5d6444a83737ffa3c01acbe1925de619e0390a..b98eebf0e30bba19ec24acc7f0e6ab155e5e602b 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -47,6 +47,7 @@ source "sound/soc/kirkwood/Kconfig"
- source "sound/soc/intel/Kconfig"
- source "sound/soc/mxs/Kconfig"
- source "sound/soc/pxa/Kconfig"
-+source "sound/soc/qcom/Kconfig"
- source "sound/soc/rockchip/Kconfig"
- source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 865e090c80616024a552da5e33d2796b9be1dbbd..3d78a8d874dc98dd6219b33e3f2c100ef0334bfc 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -28,6 +28,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
- obj-$(CONFIG_SND_SOC)	+= omap/
- obj-$(CONFIG_SND_SOC)	+= kirkwood/
- obj-$(CONFIG_SND_SOC)	+= pxa/
-+obj-$(CONFIG_SND_SOC)	+= qcom/
- obj-$(CONFIG_SND_SOC)	+= rockchip/
- obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
--- 
-1.8.2.1
+There is bug in this patch. The spec for these formats is, as above says 
+"little endian, oldest bits in MSB", however with the iFi iDSD Nano this 
+doesn't seem to be the case. Oldest bits are in MSB of the byte, but 
+byte order is big endian. IOW, following alone will produce incorrect 
+output:
+
+size_t N = 32;
+uint32_t x = 0;
+while (N--)
+{
+	x <<= 1;
+	x |= nextbit;
+}
+
+But if you add __builtin_byteswap32(x) then the output is correct.
+
+I guess this has not been caught because of just memcpy()'ing the 
+oldest-bit-in-MSB byte stream to the sample buffer instead of 
+constructing the words...
+
+
+Best regards,
+
+	- Jussi
