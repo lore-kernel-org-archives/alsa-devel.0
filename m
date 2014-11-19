@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [PATCH 9/9] ARM: dts: Model IPQ LPASS audio hardware
-Date: Wed, 19 Nov 2014 10:52:49 -0800
-Message-ID: <1416423169-21865-10-git-send-email-kwestfie@codeaurora.org>
+Subject: [PATCH 8/9] ASoC: Allow for building QCOM drivers
+Date: Wed, 19 Nov 2014 10:52:48 -0800
+Message-ID: <1416423169-21865-9-git-send-email-kwestfie@codeaurora.org>
 References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,65 +12,39 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Model the LPASS audio hardware for the IPQ806X.
+Allow for the QCOM LPASS drivers to build.
 
-Change-Id: Ide1aa0d09c23d4496aa9c40e3c9878a968261f11
+Change-Id: Ic870d8e9487cebe634c8bd2f1c7263c27237febc
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- arch/arm/boot/dts/qcom-ipq8064.dtsi | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ sound/soc/Kconfig  | 1 +
+ sound/soc/Makefile | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-index 63b2146f563b541e4994697af5ee1bbb41a4abd1..0e5b3b625f0442964aa7fbbc993c6c818fe99041 100644
---- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-@@ -2,6 +2,7 @@
- 
- #include "skeleton.dtsi"
- #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-+#include <dt-bindings/clock/qcom,lcc-ipq806x.h>
- #include <dt-bindings/soc/qcom,gsbi.h>
- 
- / {
-@@ -66,6 +67,38 @@
- 		ranges;
- 		compatible = "simple-bus";
- 
-+		sound {
-+			compatible = "qcom,ipq806x-snd-card";
-+			status = "disabled";
-+			clocks = <&lcc AHBIX_CLK>;
-+			clock-names = "ahbix_clk";
-+			asoc-platform = <&pcm0>;
-+			asoc-platform-names = "lpass-pcm-mi2s";
-+			asoc-cpu = <&dai_mi2s>;
-+			asoc-cpu-names = "lpass-cpu-dai";
-+		};
-+
-+		lpass-lpaif {
-+			compatible = "qcom,lpass-lpaif";
-+			status = "disabled";
-+			reg = <0x28100000 0x10000>;
-+			reg-names = "lpass-lpaif-mem";
-+			interrupts = <0 85 1>;
-+			interrupt-names = "lpass-lpaif-irq";
-+		};
-+
-+		dai_mi2s: lpass-cpu-dai {
-+			compatible = "qcom,lpass-cpu-dai";
-+			status = "disabled";
-+			clocks = <&lcc MI2S_OSR_CLK>, <&lcc MI2S_BIT_CLK>;
-+			clock-names = "mi2s_osr_clk", "mi2s_bit_clk";
-+		};
-+
-+		pcm0: lpass-pcm-mi2s {
-+			compatible = "qcom,lpass-pcm-mi2s";
-+			status = "disabled";
-+		};
-+
- 		qcom_pinmux: pinmux@800000 {
- 			compatible = "qcom,ipq8064-pinctrl";
- 			reg = <0x800000 0x4000>;
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 7d5d6444a83737ffa3c01acbe1925de619e0390a..b98eebf0e30bba19ec24acc7f0e6ab155e5e602b 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -47,6 +47,7 @@ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/intel/Kconfig"
+ source "sound/soc/mxs/Kconfig"
+ source "sound/soc/pxa/Kconfig"
++source "sound/soc/qcom/Kconfig"
+ source "sound/soc/rockchip/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/sh/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 865e090c80616024a552da5e33d2796b9be1dbbd..3d78a8d874dc98dd6219b33e3f2c100ef0334bfc 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -28,6 +28,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= kirkwood/
+ obj-$(CONFIG_SND_SOC)	+= pxa/
++obj-$(CONFIG_SND_SOC)	+= qcom/
+ obj-$(CONFIG_SND_SOC)	+= rockchip/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= sh/
 -- 
 1.8.2.1
