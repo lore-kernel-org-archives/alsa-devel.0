@@ -1,49 +1,80 @@
 From: Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH v2 1/2] ASoC: rockchip-i2s: dt: add an optional property "i2s_clk_out"
-Date: Wed, 19 Nov 2014 16:07:27 +0800
-Message-ID: <1416384447-29391-1-git-send-email-jay.xu@rock-chips.com>
-References: <1416366365-4632-2-git-send-email-jay.xu@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1416366365-4632-2-git-send-email-jay.xu@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v2 2/2] ASoC: rockchip: i2s: add support for
+	grabbing output clock to codec
+Date: Wed, 19 Nov 2014 16:09:27 +0800
+Message-ID: <1416384567-29476-1-git-send-email-jay.xu@rock-chips.com>
+References: <1416366468-4744-1-git-send-email-jay.xu@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 876A1265455
+ for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 09:09:34 +0100 (CET)
+In-Reply-To: <1416366468-4744-1-git-send-email-jay.xu@rock-chips.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, huangtao@rock-chips.com
-Cc: Jianqun Xu <jay.xu@rock-chips.com>
+Cc: Sonny Rao <sonnyrao@chromium.org>, Jianqun Xu <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add an property "i2s_clk_out", which enables to output clock to outside
-of rockchip SoCs. Let's make it optional since not each board needs it.
+Patch is from Sonny Rao <sonnyrao@chromium.org>
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+We need to claim the clock which is driving the codec so that when we enable
+clock gating, we continue to clock the codec when needed.  I make this an
+optional clock since there might be some applications where we don't need it
+but can still use the I2S block.
+
+Signed-off-by: Sonny Rao <sonnyrao@chromium.org>
 ---
 changes since v1:
-- make "i2s_clk_out" optional, suggested by Sonny
+- modify commit message
 
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index 9b82c20..6dedd0d 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -22,6 +22,10 @@ Required properties:
-    - "i2s_hclk": clock for I2S BUS
-    - "i2s_clk" : clock for I2S controller
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index c74ba37..2820ade 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -28,6 +28,7 @@ struct rk_i2s_dev {
  
-+Optional property:
-+   - "i2s_clk_out" : clock output to outside of chip, usally as master clock for audio
-+   codec chip
+ 	struct clk *hclk;
+ 	struct clk *mclk;
++	struct clk *oclk;
+ 
+ 	struct snd_dmaengine_dai_dma_data capture_dma_data;
+ 	struct snd_dmaengine_dai_dma_data playback_dma_data;
+@@ -439,6 +440,14 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 		return PTR_ERR(i2s->mclk);
+ 	}
+ 
++	i2s->oclk = devm_clk_get(&pdev->dev, "i2s_clk_out");
++	if (IS_ERR(i2s->oclk)) {
++		dev_dbg(&pdev->dev, "Didn't find output clock\n");
++		i2s->oclk = NULL;
++	}
++	if (i2s->oclk)
++		ret = clk_prepare_enable(i2s->oclk);
 +
- Example for rk3288 I2S controller:
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(regs))
+@@ -505,6 +514,8 @@ static int rockchip_i2s_remove(struct platform_device *pdev)
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		i2s_runtime_suspend(&pdev->dev);
  
- i2s@ff890000 {
-@@ -32,6 +36,6 @@ i2s@ff890000 {
- 	#size-cells = <0>;
- 	dmas = <&pdma1 0>, <&pdma1 1>;
- 	dma-names = "tx", "rx";
--	clock-names = "i2s_hclk", "i2s_clk";
--	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
-+	clock-names = "i2s_hclk", "i2s_clk", "i2s_clk_out";
-+	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>, <&cru SCLK_I2S0_CLKOUT>;
- };
++	if (i2s->oclk)
++		clk_disable_unprepare(i2s->oclk);
+ 	clk_disable_unprepare(i2s->mclk);
+ 	clk_disable_unprepare(i2s->hclk);
+ 	snd_dmaengine_pcm_unregister(&pdev->dev);
 -- 
 1.9.1
