@@ -1,52 +1,50 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel][PATCH] ASoC: wm8960: Add shared_lrclk and capless
-	to device tree
-Date: Wed, 19 Nov 2014 17:51:32 +0000
-Message-ID: <20141119175132.GF12443@opensource.wolfsonmicro.com>
-References: <1416400568-7512-1-git-send-email-b50113@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/4 V3] ASoC: Samsung: Add arndale_rt5631 machine driver
+Date: Wed, 19 Nov 2014 17:51:54 +0000
+Message-ID: <20141119175154.GI22111@sirena.org.uk>
+References: <1415880864-2246-1-git-send-email-krishna.md@samsung.com>
+ <1415880864-2246-3-git-send-email-krishna.md@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mu9njEoJVcULXJK5"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1416400568-7512-1-git-send-email-b50113@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <b50113@freescale.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1415880864-2246-3-git-send-email-krishna.md@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Krishna Mohan Dani <krishna.md@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com, Claude Youn <claude.youn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 19, 2014 at 08:36:08PM +0800, Zidan Wang wrote:
-> wm8960 codec has a wm8960_data struct which has two fields shared_lrclk and capless.
-> The wm8960_data is get from platform_data and it is reasonable to set it from device
-> tree when platform_data is null.
-> And when shared_lrclk is set, LRCM will be enabled. But the following software reset
-> in wm8960_probe will reset it to the default state. So LRCM operation should after
-> software reset.
-> 
-> Signed-off-by: Zidan Wang <b50113@freescale.com>
+
+--mu9njEoJVcULXJK5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 13, 2014 at 05:44:22PM +0530, Krishna Mohan Dani wrote:
+
+> Signed-off-by: Krishna Mohan Dani <krishna.md@samsung.com>
 > ---
->  sound/soc/codecs/wm8960.c | 49 ++++++++++++++++++++++++++++++-----------------
->  1 file changed, 31 insertions(+), 18 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-> index 4dc4e85..1d56c90 100644
-> --- a/sound/soc/codecs/wm8960.c
-> +++ b/sound/soc/codecs/wm8960.c
-> @@ -1038,6 +1055,7 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
->  
->  	wm8960 = devm_kzalloc(&i2c->dev, sizeof(struct wm8960_priv),
->  			      GFP_KERNEL);
-> +
->  	if (wm8960 == NULL)
->  		return -ENOMEM;
+>  sound/soc/samsung/Kconfig          |    6 ++
+>  sound/soc/samsung/Makefile         |    2 +
+>  sound/soc/samsung/arndale_rt5631.c |  150 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 158 insertions(+)
 
-Extra blank line accidentally being added here.
+This is fine but it is missing a binding document, please add one.
 
-Also I would probably make the shifting of the shared_lrclk
-handling a different patch as that is a bug fix and shouldn't
-really be tided into a patch adding DT bindings.
+--mu9njEoJVcULXJK5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-As pointed out this will need a corresponding DT documentaion
-patch, but apart from those things looks good to me.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Charles
+iQEcBAEBAgAGBQJUbNi6AAoJECTWi3JdVIfQ2NEH/37mmpxTvTXTW+uD8knAg4em
+C7e9lptsBKYEHErl2SqfYVbobFC/GbJydOtrzneaUDGvmkRz8SITrM72GyudyV0P
+MazV3tAYV1q7Rq5885rPQD+DPKduF67fbaj5YX8edech/flLPBDl+0umVmE0I6q/
+kvPbA1JKz95hxHsgOvt+myoxAgY1z61HJ9G0xV/4Xp1PP/q/s2cYsP8y2GK8ppZ0
+dGSsqWIEKzt1wglyq8jXsDo3xBLPmhcqV7hgHuB7FVLOvYMAwJU1jAELk/aEaYDR
+thow9116iZ4MS1y68atOtzwU1EV+CFz04VGzdJ+5cwOyoHAEiRSHsK5WK/CFzA8=
+=jA/T
+-----END PGP SIGNATURE-----
+
+--mu9njEoJVcULXJK5--
