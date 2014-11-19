@@ -1,46 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: ad1980: Remove ac97_read/ac97_write wrappers
-Date: Wed, 19 Nov 2014 10:49:57 +0000
-Message-ID: <20141119104956.GC22111@sirena.org.uk>
-References: <1416336354-32148-1-git-send-email-lars@metafoo.de>
- <1416336354-32148-5-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: Intel: cleanup runtime_pm
+	initialization
+Date: Wed, 19 Nov 2014 10:56:55 +0000
+Message-ID: <20141119105655.GE22111@sirena.org.uk>
+References: <1416390207-11020-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aHyShe78FfJzbeER"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1416336354-32148-5-git-send-email-lars@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6693023075698266295=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D91C2260543
+ for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 11:57:18 +0100 (CET)
+In-Reply-To: <1416390207-11020-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---aHyShe78FfJzbeER
+--===============6693023075698266295==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="z3ND3gJe4e1E4uwh"
+Content-Disposition: inline
+
+
+--z3ND3gJe4e1E4uwh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 18, 2014 at 07:45:54PM +0100, Lars-Peter Clausen wrote:
-> Since the regmap conversion ac97_read/ac97_write are just simple wrappers
-> around snd_soc_read/snd_soc_write. Use those instead directly and remove the
-> wrappers.
+On Wed, Nov 19, 2014 at 03:13:26PM +0530, Vinod Koul wrote:
+> For ACPI we missed to pm_runtime_enable() call which is required to tell PM
+> core that runtime on this device is enabled now. Since this is common to
+> both PCI and APCI move it out. Also for ACPI we do not require
+> pm_runtime_allow() call, so remove that
 
 Applied, thanks.
 
---aHyShe78FfJzbeER
+--z3ND3gJe4e1E4uwh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUbHXUAAoJECTWi3JdVIfQH78H+wW+1N1PLGwgco3ZAv7EWEKO
-lAGvY+MJTE0mkHkf8gYCbAuHAgXl+RgUQWOwwh4JCZNLqN8c10DISYZz2la4hnTR
-Gavww37mDXFv5wV3rE8xZPyoj7sK+3FKzrFzuwc2QoNBXsqIeWyaP2FqygoLBahH
-GpmRQ5/ku+8xgibWpuLECUm5V52iwk32ILVvy+hBQfR8SEXzypQWQAqmkgfgv+Xd
-nB8DjGogNEz5RyZR78iYUPFCUPNGDwtzkgZkQvLrXaHbSfCUOumTFgBlyEH8UmWC
-Uv95JgRrAkc5v/MAF9/o82xxsjVShTmw6vvyPBPcbHO5Ie+dfwVxAtmBBvzelRg=
-=/YfP
+iQEcBAEBAgAGBQJUbHd2AAoJECTWi3JdVIfQM8UH/2sxEfwlx9bLfazYb9/0m6b+
+imqfUbI3uZ1CSioO0pkuZMdUmM2hMM/9vhr1Hg0XLuNmCeGhlPftsU2BDy7ZN2T7
+UDl4feWu8fYUZ5Rc9FSXmsB+f5TklcP1i+/pX5C4d1t0R8dFi6RzUN8gaOntmJrg
+0Abchox9x0BUqhMHxakqjF8Ev2tHyJEAPfGOQFXNZ9SLvNhYYkw4B2/RxAKbwRpI
+LeM7asLEv5S4d959SEAjC7uGoeT8aK7kHyYsfqeVvPMgAULyEoQcLwTLS8AgqvAN
+XXfj133cccNWI85dlIThEQO2IUPhGMmPe79o3Vjo0QqR5fdzg7exynVIDXw3RdQ=
+=xNVC
 -----END PGP SIGNATURE-----
 
---aHyShe78FfJzbeER--
+--z3ND3gJe4e1E4uwh--
+
+--===============6693023075698266295==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6693023075698266295==--
