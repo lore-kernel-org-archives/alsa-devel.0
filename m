@@ -1,17 +1,19 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 3/3] ASoC: rt5677: Set the slow charge of the
-	vref in the end of the power sequences
-Date: Wed, 19 Nov 2014 13:52:20 +0800
-Message-ID: <1416376340-4789-3-git-send-email-oder_chiou@realtek.com>
-References: <1416376340-4789-1-git-send-email-oder_chiou@realtek.com>
+From: Jianqun <xjq@rock-chips.com>
+Subject: Re: [PATCH 2/2] ASoC: rockchip: i2s: add support for
+ grabbing output clock to codec
+Date: Wed, 19 Nov 2014 14:41:40 +0800
+Message-ID: <546C3BA4.9090607@rock-chips.com>
+References: <1416366365-4632-1-git-send-email-jay.xu@rock-chips.com>
+ <1416366468-4744-1-git-send-email-jay.xu@rock-chips.com>
+ <CAPz6YkXGUh5aw3=nNaLM+O-FfVeSJWb-xyQGciZOsm2mw_txfw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EE5C265456
- for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 06:53:05 +0100 (CET)
-In-Reply-To: <1416376340-4789-1-git-send-email-oder_chiou@realtek.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EDFD265382
+ for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 07:42:00 +0100 (CET)
+In-Reply-To: <CAPz6YkXGUh5aw3=nNaLM+O-FfVeSJWb-xyQGciZOsm2mw_txfw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,132 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
+To: Sonny Rao <sonnyrao@chromium.org>, Jianqun Xu <jay.xu@rock-chips.com>
+Cc: Tao Huang <huangtao@rock-chips.com>, alsa-devel@alsa-project.org, xjq@rock-chips.com, =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>, tiwai@suse.de, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, broonie@kernel.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Set the slow charge of the vref in the end of the power sequences
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5677.c | 56 ++++++++++++++++++++++++++++++++++++++---------
- sound/soc/codecs/rt5677.h |  1 +
- 2 files changed, 47 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index dd080cd..f2211f1 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -2184,6 +2184,31 @@ static int rt5677_if2_adc_tdm_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int rt5677_vref_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		if (codec->dapm.bias_level != SND_SOC_BIAS_ON &&
-+			!rt5677->is_vref_slow) {
-+			mdelay(20);
-+			regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG1,
-+				RT5677_PWR_FV1 | RT5677_PWR_FV2,
-+				RT5677_PWR_FV1 | RT5677_PWR_FV2);
-+			rt5677->is_vref_slow = true;
-+		}
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("PLL1", RT5677_PWR_ANLG2, RT5677_PWR_PLL1_BIT,
- 		0, rt5677_set_pll1_event, SND_SOC_DAPM_POST_PMU),
-@@ -2669,13 +2694,20 @@ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("PDM2 R Mux", RT5677_PDM_OUT_CTRL, RT5677_M_PDM2_R_SFT,
- 		1, &rt5677_pdm2_r_mux),
- 
--	SND_SOC_DAPM_PGA_S("LOUT1 amp", 1, RT5677_PWR_ANLG1, RT5677_PWR_LO1_BIT,
-+	SND_SOC_DAPM_PGA_S("LOUT1 amp", 0, RT5677_PWR_ANLG1, RT5677_PWR_LO1_BIT,
- 		0, NULL, 0),
--	SND_SOC_DAPM_PGA_S("LOUT2 amp", 1, RT5677_PWR_ANLG1, RT5677_PWR_LO2_BIT,
-+	SND_SOC_DAPM_PGA_S("LOUT2 amp", 0, RT5677_PWR_ANLG1, RT5677_PWR_LO2_BIT,
- 		0, NULL, 0),
--	SND_SOC_DAPM_PGA_S("LOUT3 amp", 1, RT5677_PWR_ANLG1, RT5677_PWR_LO3_BIT,
-+	SND_SOC_DAPM_PGA_S("LOUT3 amp", 0, RT5677_PWR_ANLG1, RT5677_PWR_LO3_BIT,
- 		0, NULL, 0),
- 
-+	SND_SOC_DAPM_PGA_S("LOUT1 vref", 1, SND_SOC_NOPM, 0, 0,
-+		rt5677_vref_event, SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_PGA_S("LOUT2 vref", 1, SND_SOC_NOPM, 0, 0,
-+		rt5677_vref_event, SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_PGA_S("LOUT3 vref", 1, SND_SOC_NOPM, 0, 0,
-+		rt5677_vref_event, SND_SOC_DAPM_POST_PMU),
-+
- 	/* Output Lines */
- 	SND_SOC_DAPM_OUTPUT("LOUT1"),
- 	SND_SOC_DAPM_OUTPUT("LOUT2"),
-@@ -2684,6 +2716,8 @@ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("PDM1R"),
- 	SND_SOC_DAPM_OUTPUT("PDM2L"),
- 	SND_SOC_DAPM_OUTPUT("PDM2R"),
-+
-+	SND_SOC_DAPM_POST("vref", rt5677_vref_event),
- };
- 
- static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
-@@ -3572,9 +3606,13 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
- 	{ "LOUT2 amp", NULL, "DAC 2" },
- 	{ "LOUT3 amp", NULL, "DAC 3" },
- 
--	{ "LOUT1", NULL, "LOUT1 amp" },
--	{ "LOUT2", NULL, "LOUT2 amp" },
--	{ "LOUT3", NULL, "LOUT3 amp" },
-+	{ "LOUT1 vref", NULL, "LOUT1 amp" },
-+	{ "LOUT2 vref", NULL, "LOUT2 amp" },
-+	{ "LOUT3 vref", NULL, "LOUT3 amp" },
-+
-+	{ "LOUT1", NULL, "LOUT1 vref" },
-+	{ "LOUT2", NULL, "LOUT2 vref" },
-+	{ "LOUT3", NULL, "LOUT3 vref" },
- 
- 	{ "PDM1L", NULL, "PDM1 L Mux" },
- 	{ "PDM1R", NULL, "PDM1 R Mux" },
-@@ -3957,14 +3995,12 @@ static int rt5677_set_bias_level(struct snd_soc_codec *codec,
- 				RT5677_PR_BASE + RT5677_BIAS_CUR4,
- 				0x0f00, 0x0f00);
- 			regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG1,
-+				RT5677_PWR_FV1 | RT5677_PWR_FV2 |
- 				RT5677_PWR_VREF1 | RT5677_PWR_MB |
- 				RT5677_PWR_BG | RT5677_PWR_VREF2,
- 				RT5677_PWR_VREF1 | RT5677_PWR_MB |
- 				RT5677_PWR_BG | RT5677_PWR_VREF2);
--			mdelay(20);
--			regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG1,
--				RT5677_PWR_FV1 | RT5677_PWR_FV2,
--				RT5677_PWR_FV1 | RT5677_PWR_FV2);
-+			rt5677->is_vref_slow = false;
- 			regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG2,
- 				RT5677_PWR_CORE, RT5677_PWR_CORE);
- 			regmap_update_bits(rt5677->regmap, RT5677_DIG_MISC,
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 2979d5a..a02f64c 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1687,6 +1687,7 @@ struct rt5677_priv {
- 	bool dsp_vad_en;
- 	struct regmap_irq_chip_data *irq_data;
- 	bool is_dsp_mode;
-+	bool is_vref_slow;
- };
- 
- #endif /* __RT5677_H__ */
--- 
-1.8.1.1.439.g50a6b54
+SGkgc29ubnkKClRoYW5rcywgSSdtIG5vdCBmYW1pbGlhciB3aXRoIGl0LCB0aGFua3MgdG8gcmVt
+YWluZCBtZTotKQpJIHdpbGwgbW9kaWZ5IGl0IGF0IG5leHQgdmVyc2lvbiB0b2dldGhlciB3aXRo
+IG90aGVyIGNoYW5nZXMgaWYgc29tZW9uZSByZXZpZXcgaXQKCuWcqCAxMS8xOS8yMDE0IDExOjU3
+IEFNLCBTb25ueSBSYW8g5YaZ6YGTOgo+IEpheSwKPgo+IE9uIFR1ZSwgTm92IDE4LCAyMDE0IGF0
+IDc6MDcgUE0sIEppYW5xdW4gWHUgPGpheS54dUByb2NrLWNoaXBzLmNvbT4gd3JvdGU6Cj4KPiBN
+b3N0bHkgRllJLCBidXQgaWYgeW91IHRha2Ugc29tZW9uZSBlbHNlJ3MgcGF0Y2gsIHlvdSBzaG91
+bGQgYWxzbwo+IHJldGFpbiB0aGVpciBhdXRob3JzaGlwIGJ5IHNheWluZzoKPiBGcm9tOiA8cGVy
+c29uPgo+IGF0IHRoZSB0b3Agb2YgdGhlIG1lc3NhZ2UuIEkgZG9uJ3QgcmVhbGx5IG1pbmQsIGJ1
+dCBwbGVhc2Uga2VlcCBpdCBpbgo+IG1pbmQgZm9yIHRoZSBmdXR1cmUsIHRoYW5rcy4KPgo+PiBX
+ZSBuZWVkIHRvIGNsYWltIHRoZSBjbG9jayB3aGljaCBpcyBkcml2aW5nIHRoZSBjb2RlYyBzbyB0
+aGF0IHdoZW4gd2UgZW5hYmxlCj4+IGNsb2NrIGdhdGluZywgd2UgY29udGludWUgdG8gY2xvY2sg
+dGhlIGNvZGVjIHdoZW4gbmVlZGVkLiAgSSBtYWtlIHRoaXMgYW4KPj4gb3B0aW9uYWwgY2xvY2sg
+c2luY2UgdGhlcmUgbWlnaHQgYmUgc29tZSBhcHBsaWNhdGlvbnMgd2hlcmUgd2UgZG9uJ3QgbmVl
+ZCBpdAo+PiBidXQgY2FuIHN0aWxsIHVzZSB0aGUgSTJTIGJsb2NrLgo+Pgo+PiBTaWduZWQtb2Zm
+LWJ5OiBTb25ueSBSYW8gPHNvbm55cmFvQGNocm9taXVtLm9yZz4KPj4gU2lnbmVkLW9mZi1ieTog
+SmlhbnF1biBYdSA8amF5Lnh1QHJvY2stY2hpcHMuY29tPgo+PiAtLS0KPj4gIHNvdW5kL3NvYy9y
+b2NrY2hpcC9yb2NrY2hpcF9pMnMuYyB8IDExICsrKysrKysrKysrCj4+ICAxIGZpbGUgY2hhbmdl
+ZCwgMTEgaW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3JvY2tjaGlw
+L3JvY2tjaGlwX2kycy5jIGIvc291bmQvc29jL3JvY2tjaGlwL3JvY2tjaGlwX2kycy5jCj4+IGlu
+ZGV4IGM3NGJhMzcuLjI4MjBhZGUgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9yb2NrY2hpcC9y
+b2NrY2hpcF9pMnMuYwo+PiArKysgYi9zb3VuZC9zb2Mvcm9ja2NoaXAvcm9ja2NoaXBfaTJzLmMK
+Pj4gQEAgLTI4LDYgKzI4LDcgQEAgc3RydWN0IHJrX2kyc19kZXYgewo+Pgo+PiAgICAgICAgIHN0
+cnVjdCBjbGsgKmhjbGs7Cj4+ICAgICAgICAgc3RydWN0IGNsayAqbWNsazsKPj4gKyAgICAgICBz
+dHJ1Y3QgY2xrICpvY2xrOwo+Pgo+PiAgICAgICAgIHN0cnVjdCBzbmRfZG1hZW5naW5lX2RhaV9k
+bWFfZGF0YSBjYXB0dXJlX2RtYV9kYXRhOwo+PiAgICAgICAgIHN0cnVjdCBzbmRfZG1hZW5naW5l
+X2RhaV9kbWFfZGF0YSBwbGF5YmFja19kbWFfZGF0YTsKPj4gQEAgLTQzOSw2ICs0NDAsMTQgQEAg
+c3RhdGljIGludCByb2NrY2hpcF9pMnNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRl
+dikKPj4gICAgICAgICAgICAgICAgIHJldHVybiBQVFJfRVJSKGkycy0+bWNsayk7Cj4+ICAgICAg
+ICAgfQo+Pgo+PiArICAgICAgIGkycy0+b2NsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAi
+aTJzX2Nsa19vdXQiKTsKPj4gKyAgICAgICBpZiAoSVNfRVJSKGkycy0+b2NsaykpIHsKPj4gKyAg
+ICAgICAgICAgICAgIGRldl9kYmcoJnBkZXYtPmRldiwgIkRpZG4ndCBmaW5kIG91dHB1dCBjbG9j
+a1xuIik7Cj4+ICsgICAgICAgICAgICAgICBpMnMtPm9jbGsgPSBOVUxMOwo+PiArICAgICAgIH0K
+Pj4gKyAgICAgICBpZiAoaTJzLT5vY2xrKQo+PiArICAgICAgICAgICAgICAgcmV0ID0gY2xrX3By
+ZXBhcmVfZW5hYmxlKGkycy0+b2Nsayk7Cj4+ICsKPj4gICAgICAgICByZXMgPSBwbGF0Zm9ybV9n
+ZXRfcmVzb3VyY2UocGRldiwgSU9SRVNPVVJDRV9NRU0sIDApOwo+PiAgICAgICAgIHJlZ3MgPSBk
+ZXZtX2lvcmVtYXBfcmVzb3VyY2UoJnBkZXYtPmRldiwgcmVzKTsKPj4gICAgICAgICBpZiAoSVNf
+RVJSKHJlZ3MpKQo+PiBAQCAtNTA1LDYgKzUxNCw4IEBAIHN0YXRpYyBpbnQgcm9ja2NoaXBfaTJz
+X3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiAgICAgICAgIGlmICghcG1f
+cnVudGltZV9zdGF0dXNfc3VzcGVuZGVkKCZwZGV2LT5kZXYpKQo+PiAgICAgICAgICAgICAgICAg
+aTJzX3J1bnRpbWVfc3VzcGVuZCgmcGRldi0+ZGV2KTsKPj4KPj4gKyAgICAgICBpZiAoaTJzLT5v
+Y2xrKQo+PiArICAgICAgICAgICAgICAgY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGkycy0+b2Nsayk7
+Cj4+ICAgICAgICAgY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGkycy0+bWNsayk7Cj4+ICAgICAgICAg
+Y2xrX2Rpc2FibGVfdW5wcmVwYXJlKGkycy0+aGNsayk7Cj4+ICAgICAgICAgc25kX2RtYWVuZ2lu
+ZV9wY21fdW5yZWdpc3RlcigmcGRldi0+ZGV2KTsKPj4gLS0KPj4gMS45LjEKPj4KPgo+CgotLSAK
+SmlhbnF1biBYdQoKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgoqSU1QT1JUQU5UIE5PVElDRToqVGhpcyBl
+bWFpbCBpcyBmcm9tIEZ1emhvdSBSb2NrY2hpcCBFbGVjdHJvbmljcyBDby4sCkx0ZCAuVGhlIGNv
+bnRlbnRzIG9mIHRoaXMgZW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFpbgppbmZv
+cm1hdGlvbiB0aGF0IGlzIHByaXZpbGVnZWQsIGNvbmZpZGVudGlhbCBhbmQvb3IgZXhlbXB0IGZy
+b20KZGlzY2xvc3VyZSB1bmRlciBhcHBsaWNhYmxlIGxhdyBhbmQgcmVsZXZhbnQgTkRBLiBJZiB5
+b3UgYXJlIG5vdCB0aGUKaW50ZW5kZWQgcmVjaXBpZW50LCB5b3UgYXJlIGhlcmVieSBub3RpZmll
+ZCB0aGF0IGFueSBkaXNjbG9zdXJlLApjb3B5aW5nLCBkaXN0cmlidXRpb24sIG9yIHVzZSBvZiB0
+aGUgaW5mb3JtYXRpb24gaXMgU1RSSUNUTFkgUFJPSElCSVRFRC4KUGxlYXNlIGltbWVkaWF0ZWx5
+IGNvbnRhY3QgdGhlIHNlbmRlciBhcyBzb29uIGFzIHBvc3NpYmxlIGFuZCBkZXN0cm95CnRoZSBt
+YXRlcmlhbCBpbiBpdHMgZW50aXJldHkgaW4gYW55IGZvcm1hdC4gVGhhbmsgeW91LgoqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
