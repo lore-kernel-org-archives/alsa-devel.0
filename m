@@ -1,50 +1,58 @@
-From: Courtney Cavin <courtney.cavin@sonymobile.com>
-Subject: Re: [PATCH 9/9] ARM: dts: Model IPQ LPASS audio hardware
-Date: Wed, 19 Nov 2014 14:54:43 -0800
-Message-ID: <20141119225443.GB13013@sonymobile.com>
-References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
- <1416423169-21865-10-git-send-email-kwestfie@codeaurora.org>
+From: Ben Zhang <benzh@google.com>
+Subject: Re: [PATCH v2 2/2] ASoC: rt5677: Use specific r/w
+	function for DSP mode
+Date: Wed, 19 Nov 2014 15:56:57 -0800
+Message-ID: <CAOV7By+3vpkWJOUDN31hcnKyPj18-X8XObGsxeiyxf4qW0Mzmw@mail.gmail.com>
+References: <1415166173-7504-1-git-send-email-oder_chiou@realtek.com>
+ <1415166173-7504-2-git-send-email-oder_chiou@realtek.com>
+ <20141107111912.GK8509@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1416423169-21865-10-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f179.google.com (mail-ie0-f179.google.com
+ [209.85.223.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D9AA26581B
+ for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 00:56:58 +0100 (CET)
+Received: by mail-ie0-f179.google.com with SMTP id rp18so1656228iec.24
+ for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 15:56:57 -0800 (PST)
+In-Reply-To: <20141107111912.GK8509@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, Anatol Pomazau <anatol@google.com>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@google.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 19, 2014 at 07:52:49PM +0100, Kenneth Westfield wrote:
-> From: Kenneth Westfield <kwestfie@codeaurora.org>
-> 
-> Model the LPASS audio hardware for the IPQ806X.
-> 
-> Change-Id: Ide1aa0d09c23d4496aa9c40e3c9878a968261f11
+Hi Oder,
 
-As Kumar mentioned, please exclude this.
+I found that this patch breaks rt5677 private register access. Private
+register read/write becomes no-op after this patch.
 
-> Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
-> Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+When we provide our own reg_read()/reg_write() implementation, regmap
+won't do the translation for indirectly accessed or paged registers
+according to the provided regmap_range_cfg, since translation code is
+in _regmap_raw_read()/_regmap_raw_write(). Thus
+rt5677->regmap_physical receives register address like 0x1XX for
+private registers and thinks it's out of range.
 
-Typically, the order of these SoB should match some sort of chain of delivery:
- - The first should be the author of the patch
- - The last should match the email source (you) <-- doesn't seem to be the case
+I'm not sure what's the right fix. Maybe we can do the translation in
+rt5677_read()/rt5677_write(), or attach the regmap_range_cfg struct to
+rt5677->regmap_physical instead.
 
-> ---
->  arch/arm/boot/dts/qcom-ipq8064.dtsi | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> index 63b2146f563b541e4994697af5ee1bbb41a4abd1..0e5b3b625f0442964aa7fbbc993c6c818fe99041 100644
-> --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> @@ -2,6 +2,7 @@
->  
->  #include "skeleton.dtsi"
->  #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-> +#include <dt-bindings/clock/qcom,lcc-ipq806x.h>
+Thanks,
+Ben
 
-Neither this file nor an associated clock controller driver exists in
-mainline.  Is there some other series this depends on?
-
--Courtney
+On Fri, Nov 7, 2014 at 3:19 AM, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, Nov 05, 2014 at 01:42:53PM +0800, Oder Chiou wrote:
+> > In DSP mode, the register r/w should use the specific function to access
+> > that is invoked by address mapping of the DSP.
+>
+> Applied, thanks.
