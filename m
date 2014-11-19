@@ -1,17 +1,15 @@
-From: Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH v2 2/2] ASoC: rockchip: i2s: add support for
-	grabbing output clock to codec
-Date: Wed, 19 Nov 2014 16:09:27 +0800
-Message-ID: <1416384567-29476-1-git-send-email-jay.xu@rock-chips.com>
-References: <1416366468-4744-1-git-send-email-jay.xu@rock-chips.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: cleanup runtime_pm
+	initialization
+Date: Wed, 19 Nov 2014 15:13:26 +0530
+Message-ID: <1416390207-11020-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 876A1265455
- for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 09:09:34 +0100 (CET)
-In-Reply-To: <1416366468-4744-1-git-send-email-jay.xu@rock-chips.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45FAF26053C
+ for <alsa-devel@alsa-project.org>; Wed, 19 Nov 2014 10:49:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, huangtao@rock-chips.com
-Cc: Sonny Rao <sonnyrao@chromium.org>, Jianqun Xu <jay.xu@rock-chips.com>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Patch is from Sonny Rao <sonnyrao@chromium.org>
+For ACPI we missed to pm_runtime_enable() call which is required to tell PM
+core that runtime on this device is enabled now. Since this is common to
+both PCI and APCI move it out. Also for ACPI we do not require
+pm_runtime_allow() call, so remove that
 
-We need to claim the clock which is driving the codec so that when we enable
-clock gating, we continue to clock the codec when needed.  I make this an
-optional clock since there might be some applications where we don't need it
-but can still use the I2S block.
-
-Signed-off-by: Sonny Rao <sonnyrao@chromium.org>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
-changes since v1:
-- modify commit message
+ sound/soc/intel/sst/sst.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
- sound/soc/rockchip/rockchip_i2s.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index c74ba37..2820ade 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -28,6 +28,7 @@ struct rk_i2s_dev {
- 
- 	struct clk *hclk;
- 	struct clk *mclk;
-+	struct clk *oclk;
- 
- 	struct snd_dmaengine_dai_dma_data capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data playback_dma_data;
-@@ -439,6 +440,14 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 		return PTR_ERR(i2s->mclk);
- 	}
- 
-+	i2s->oclk = devm_clk_get(&pdev->dev, "i2s_clk_out");
-+	if (IS_ERR(i2s->oclk)) {
-+		dev_dbg(&pdev->dev, "Didn't find output clock\n");
-+		i2s->oclk = NULL;
-+	}
-+	if (i2s->oclk)
-+		ret = clk_prepare_enable(i2s->oclk);
+diff --git a/sound/soc/intel/sst/sst.c b/sound/soc/intel/sst/sst.c
+index b2b5604..9e68a7c 100644
+--- a/sound/soc/intel/sst/sst.c
++++ b/sound/soc/intel/sst/sst.c
+@@ -378,13 +378,13 @@ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
+ 	 * initially active. So change the state to active before
+ 	 * enabling the pm
+ 	 */
+-	if (acpi_disabled) {
++	pm_runtime_enable(ctx->dev);
 +
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(regs))
-@@ -505,6 +514,8 @@ static int rockchip_i2s_remove(struct platform_device *pdev)
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		i2s_runtime_suspend(&pdev->dev);
- 
-+	if (i2s->oclk)
-+		clk_disable_unprepare(i2s->oclk);
- 	clk_disable_unprepare(i2s->mclk);
- 	clk_disable_unprepare(i2s->hclk);
- 	snd_dmaengine_pcm_unregister(&pdev->dev);
++	if (acpi_disabled)
+ 		pm_runtime_set_active(ctx->dev);
+-		pm_runtime_enable(ctx->dev);
+-	} else {
+-		pm_runtime_allow(ctx->dev);
++	else
+ 		pm_runtime_put_noidle(ctx->dev);
+-	}
++
+ 	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
+ }
+ EXPORT_SYMBOL_GPL(sst_configure_runtime_pm);
 -- 
-1.9.1
+1.7.0.4
