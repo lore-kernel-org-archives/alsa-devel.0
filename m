@@ -1,81 +1,90 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 4/9] ASoC: ipq806x: Add LPASS CPU DAI driver
-Date: Thu, 20 Nov 2014 13:36:38 +0100
-Message-ID: <546DE056.3070601@metafoo.de>
-References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org> <1416423169-21865-5-git-send-email-kwestfie@codeaurora.org>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: Re: [PATCH] pcm: add new 32-bit DSD sample format
+Date: Thu, 20 Nov 2014 17:34:48 +0100
+Message-ID: <1416501288.2996.1.camel@xs4all.nl>
+References: <1410332428-16571-1-git-send-email-gtmkramer@xs4all.nl>
+ <546CF486.7010009@sonarnerd.net> <s5hy4r6xkfu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1416423169-21865-5-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@linuxfoundation.org>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Bryan Huntsman <bryanh@codeaurora.org>, Mark Brown <broonie@kernel.org>, David Brown <davidb@codeaurora.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb1-smtp-cloud3.xs4all.net (lb1-smtp-cloud3.xs4all.net
+ [194.109.24.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 844F62605BF
+ for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 17:34:50 +0100 (CET)
+In-Reply-To: <s5hy4r6xkfu.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jussi Laako <jussi@sonarnerd.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/19/2014 07:52 PM, Kenneth Westfield wrote:
-[...]
-> +static struct clk *lpaif_mi2s_bit_clk;
-> +static struct clk *lpaif_mi2s_osr_clk;
-> +static struct mi2s_hw_params mi2s_params;
+On Thu, 2014-11-20 at 10:58 +0100, Takashi Iwai wrote:
+> At Wed, 19 Nov 2014 21:50:30 +0200,
+> Jussi Laako wrote:
+> > 
+> > Hi,
+> > 
+> > Sorry for catching up late on this patch...
+> > 
+> > On 10.09.2014 10:00, Jurgen Kramer wrote:
+> > > +	FORMATD(DSD_U32_LE, "Direct Stream Digital, 4-byte (x32), little endian, oldest bits in MSB"),
+> > 
+> > There is bug in this patch. The spec for these formats is, as above says 
+> > "little endian, oldest bits in MSB", however with the iFi iDSD Nano this 
+> > doesn't seem to be the case. Oldest bits are in MSB of the byte, but 
+> > byte order is big endian.
+> 
+> Is it a bug of spec, or a bug of device?
+> In the latter case, we'd need to introduce DSD_U32_BE format and apply
+> a quirk, for example.
+DSD is a bit odd wrt LE/BE. Both formats are allowed and used.
+The device (XMOS based/Marantz+Denon) want the following order of
+samples: 
+L1 L2 L3 L4 R1 R2 R3 R4. Where Lx/Rx are 8-bit DSD samples, L1-L4 are
+packed to 1 32-bit sample.
 
-Again, no global state please.
-[...]
-> +static int lpass_cpu_mi2s_prepare(struct snd_pcm_substream *substream,
-> +					struct snd_soc_dai *dai)
-> +{
-> +	return 0;
-> +}
-[...]
-> +static int lpass_cpu_mi2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-> +{
-> +	return 0;
-> +}
+I do think real BE will not work.
 
-There is no need to implement empty dummy functions the core handles it just 
-fine if the callbacks are NULL.
-
-> +
-[...]
-> +
-> +static struct snd_soc_dai_driver lpass_cpu_dais[] = {
-> +	{
-> +		.playback = {
-> +			.rates		= SNDRV_PCM_RATE_8000_192000,
-> +			.formats	= SNDRV_PCM_FMTBIT_S16 |
-> +					SNDRV_PCM_FMTBIT_S24 |
-> +					SNDRV_PCM_FMTBIT_S32,
-> +			.channels_min	= 2,
-> +			.channels_max	= 2,
-> +			.rate_min	= 8000,
-> +			.rate_max	= 192000,
-> +		},
-> +		.ops    = &lpass_cpu_mi2s_ops,
-> +		.name = "lpass-mi2s-dai"
-> +	},
-> +};
-
-
-If there is only one DAI no need to make this a array.
-
-> +
-> +static const struct snd_soc_component_driver lpass_cpu_component = {
-> +	.name           = DRV_NAME,
-> +};
-> +
-> +static int lpass_cpu_dai_probe(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +
-> +	ret = snd_soc_register_component(&pdev->dev, &lpass_cpu_component,
-> +			lpass_cpu_dais, ARRAY_SIZE(lpass_cpu_dais));
-
-devm_
-
-> +	if (ret)
-> +		dev_err(&pdev->dev, "%s: error registering soc dais\n",
-> +				__func__);
-> +
-> +	return ret;
-> +}
-[...]
+Jurgen
+> 
+> Takashi
+> 
+> > IOW, following alone will produce incorrect 
+> > output:
+> > 
+> > size_t N = 32;
+> > uint32_t x = 0;
+> > while (N--)
+> > {
+> > 	x <<= 1;
+> > 	x |= nextbit;
+> > }
+> > 
+> > But if you add __builtin_byteswap32(x) then the output is correct.
+> > 
+> > I guess this has not been caught because of just memcpy()'ing the 
+> > oldest-bit-in-MSB byte stream to the sample buffer instead of 
+> > constructing the words...
+> > 
+> > 
+> > Best regards,
+> > 
+> > 	- Jussi
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
