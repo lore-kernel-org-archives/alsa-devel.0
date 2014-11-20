@@ -1,19 +1,16 @@
-From: Bastien Nocera <hadess@hadess.net>
-Subject: Re: Baytrail init file for alsa-utils
-Date: Thu, 20 Nov 2014 05:56:56 +0100
-Message-ID: <1416459416.2237.5.camel@hadess.net>
-References: <1415008294.2406.107.camel@hadess.net>
- <1415013073.2471.11.camel@loki> <1415019823.4506.1.camel@hadess.net>
- <1416312355.19132.19.camel@hadess.net> <546B3E92.2050109@intel.com>
+From: humbert.olivier.1@free.fr
+Subject: Re: AKAI EIE PRO
+Date: Thu, 20 Nov 2014 06:09:44 +0100 (CET)
+Message-ID: <1783980152.390791265.1416460184634.JavaMail.root@zimbra61-e11.priv.proxad.net>
+References: <1521662222.376637110.1416154142216.JavaMail.root@zimbra61-e11.priv.proxad.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
- by alsa0.perex.cz (Postfix) with ESMTP id 74437265873
- for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 05:57:46 +0100 (CET)
-In-Reply-To: <546B3E92.2050109@intel.com>
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55D29265873
+ for <Alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 06:09:45 +0100 (CET)
+In-Reply-To: <1521662222.376637110.1416154142216.JavaMail.root@zimbra61-e11.priv.proxad.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Alsa-devel@alsa-project.org
+Cc: michal rydlo <michal.rydlo@gmail.com>, Martin Svensson <martin.svensson@ztealmax.se>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2014-11-18 at 14:41 +0200, Jarkko Nikula wrote:
-> Hi
-> 
-> On 11/18/2014 02:05 PM, Bastien Nocera wrote:
-> > On Mon, 2014-11-03 at 14:03 +0100, Bastien Nocera wrote:
-> >> On Mon, 2014-11-03 at 11:11 +0000, Liam Girdwood wrote:
-> >>> On Mon, 2014-11-03 at 10:51 +0100, Bastien Nocera wrote:
-> >>>> Hey,
-> >>>>
-> >>>> I've done some work on the community generated "alsa state" file for
-> >>>> Baytrail tablets, and shrunk it massively:
-> >>>> https://github.com/AdamWill/baytrail-m/blob/master/alsa/t100_B.state
-> >>>>
-> >>>> Are there any tools, or hints as to how I might convert that to an
-> >>>> "init" file that alsactl could run to set the default state of the
-> >>>> mixer?
-> >>>
-> >>> "alsactl store" should write it to the correct system directory.
-> >>
-> >> alsactl store doesn't use a format similar to the files installed
-> >> in /usr/lib/alsa/init though, which is what I'm looking for.
-> >>
-> >>>> Or have any Intel folks already done that work?
-> >>>>
-> >>>
-> >>> Jarkko has been working on Baytrail so best for him to answer.
-> >>
-> >> OK, thanks
-> >
-> > Jarkko?
-> >
-> Ah, sorry. No I have used just the alsamixer and alsactl.
+On 09/07/2014 01:30 PM, humbert.olivier.1@free.fr wrote:
+>>> if that can help, we had an user on http://www.linuxmao.org with an EIE PRO.
+>>> Here you have his lsusb -v :
+>>> 
+>>> Bus 001 Device 006: ID 09e8:0010 AKAI  Professional M.I. Corp. 
+>>> Couldn't open device, some information will be missing
+>>> Device Descriptor:
+>>>   bLength                18
+>>>   bDescriptorType         1
+>>>   bcdUSB               2.00
+>>>   bDeviceClass          255 Vendor Specific Class
+>>>   bDeviceSubClass       255 Vendor Specific Subclass
+>>>   bDeviceProtocol       255 Vendor Specific Protocol
+>>
+>> According to the tech specs, this should be a USB hub, but it isn't. Or
+>> is this just one of the sub-devices? What does 'lsusb -t' say, and does
+>> Linux see something like a mouse or mass storage device when connected
+>> to one of the hub ports?
+>
+>[...zip...]
+>
+>Hi Daniel and all,
+>
+>A linuxmao.org user gave answers to these questions today. Here you go:
+>
+>maxime@Ubuntu-MAO:~$ lsusb -t
+>/:  Bus 04.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/4p, 5000M
+>/:  Bus 03.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/4p, 480M
+>    |__ Port 2: Dev 4, If 0, Class=Hub, Driver=hub/4p, 480M
+>       |__ Port 4: Dev 5, If 0, Class=Vendor Specific Class, Driver=, 480M
+>        |__ Port 4: Dev 5, If 1, Class=Vendor Specific Class, Driver=, 480M
+>    |__ Port 3: Dev 3, If 0, Class=Wireless, Driver=btusb, 12M
+>    |__ Port 3: Dev 3, If 1, Class=Wireless, Driver=btusb, 12M
+>/:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=ehci-pci/2p, 480M
+>    |__ Port 1: Dev 2, If 0, Class=Hub, Driver=hub/6p, 480M
+>/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=ehci-pci/2p, 480M
+>    |__ Port 1: Dev 2, If 0, Class=Hub, Driver=hub/6p, 480M
+>        |__ Port 2: Dev 6, If 0, Class=Human Interface Device, Driver=usbhid, 12M
+>        |__ Port 2: Dev 6, If 1, Class=Human Interface Device, Driver=usbhid, 12M
+>        |__ Port 3: Dev 5, If 0, Class=Video, Driver=uvcvideo, 480M
+>        |__ Port 3: Dev 5, If 1, Class=Video, Driver=uvcvideo, 480M
+>
+>
+>maxime@Ubuntu-MAO:~$ dmesg | tail
+>[12078.955863] usb 3-2: New USB device found, idVendor=0409, idProduct=005a
+>[12078.955870] usb 3-2: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+>[12078.956401] hub 3-2:1.0: USB hub found
+>[12078.956452] hub 3-2:1.0: 4 ports detected
+>[12079.243626] usb 3-2.4: new high-speed USB device number 7 using xhci_hcd
+>[12079.348372] usb 3-2.4: New USB device found, idVendor=09e8, idProduct=0010
+>[12079.348379] usb 3-2.4: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+>[12079.348383] usb 3-2.4: Product: EIE pro
+>[12079.348386] usb 3-2.4: Manufacturer: Akai Professional, LP
+>[12079.348389] usb 3-2.4: SerialNumber: no serial number
+>
+>I'll be asking him to try connecting a mouse to one of the hub port and to get a dmesg from there.
+>
+>Hope that can help in any way. If you would need some more information, please let me know.
+>
+>Olivier
+>
+>source : http://www.linuxmao.org/tiki-view_forum_thread.php?forumId=2&comments_parentId=56440#threadId58184
 
-Could you answer this couple of questions though?
+Hi to everyone,
+I've been asking the user to test the USB hub thing. He did and it worked as usual. He tried twice, once with a mouse and the other with an external hard-drive. 
 
-* Is this trimmed down ALSA init state correct, can we trim more?
-https://github.com/AdamWill/baytrail-m/blob/master/alsa/t100_B.state
-If you have access to more hardware than me, I would appreciate if you
-could test it so I can be sure I didn't break anything, before writing
-the init file for alsactl.
-
-* Jack sensing doesn't seem to work, though I can switch manually to the
-headphones and Headphones Left and Right are inverted.
-
-Are those hardware issues (that could be quirked in the driver), driver
-issues or configuration issues?
-
-Cheers
+Hope that helps.
+Olivier
