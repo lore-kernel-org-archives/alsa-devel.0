@@ -1,16 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: sirf-audio-codec: Replace w->codec
-	snd_soc_dapm_to_codec(w->dapm)
-Date: Thu, 20 Nov 2014 21:28:15 +0100
-Message-ID: <1416515295-30851-1-git-send-email-lars@metafoo.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Use snd_usb_ctl_msg() for
+	Native Instruments quirk
+Date: Thu, 20 Nov 2014 21:44:07 +0100
+Message-ID: <1416516247-1425-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-076.synserver.de (smtp-out-076.synserver.de
- [212.40.185.76])
- by alsa0.perex.cz (Postfix) with ESMTP id 67C242605FF
- for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 21:28:15 +0100 (CET)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC9A32605FF
+ for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 21:44:11 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E06AAAB07
+ for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 20:44:10 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,43 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The codec field of the snd_soc_widget struct is eventually going to be
-removed, use snd_soc_dapm_to_codec(w->dapm) instead.
+snd_nativeinstruments_control_get() uses a stack as a buffer for
+usb_control_msg(), but it's basically not allowed.  Replace the call
+with a safer helper, snd_usb_ctl_msg(), instead.
 
-While we are at it also replace dev_get_drvdata() with snd_soc_codec_get_drvdata().
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/sirf-audio-codec.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/usb/mixer_quirks.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
-index 06ba492..07eea20 100644
---- a/sound/soc/codecs/sirf-audio-codec.c
-+++ b/sound/soc/codecs/sirf-audio-codec.c
-@@ -120,7 +120,8 @@ static int atlas6_codec_enable_and_reset_event(struct snd_soc_dapm_widget *w,
- {
- #define ATLAS6_CODEC_ENABLE_BITS (1 << 29)
- #define ATLAS6_CODEC_RESET_BITS (1 << 28)
--	struct sirf_audio_codec *sirf_audio_codec = dev_get_drvdata(w->codec->dev);
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct sirf_audio_codec *sirf_audio_codec = snd_soc_codec_get_drvdata(codec);
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
- 		enable_and_reset_codec(sirf_audio_codec->regmap,
-@@ -142,7 +143,8 @@ static int prima2_codec_enable_and_reset_event(struct snd_soc_dapm_widget *w,
- {
- #define PRIMA2_CODEC_ENABLE_BITS (1 << 27)
- #define PRIMA2_CODEC_RESET_BITS (1 << 26)
--	struct sirf_audio_codec *sirf_audio_codec = dev_get_drvdata(w->codec->dev);
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct sirf_audio_codec *sirf_audio_codec = snd_soc_codec_get_drvdata(codec);
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		enable_and_reset_codec(sirf_audio_codec->regmap,
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 03405b93b438..8b55c0667f60 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -702,10 +702,10 @@ static int snd_nativeinstruments_control_get(struct snd_kcontrol *kcontrol,
+ 	if (mixer->chip->shutdown)
+ 		ret = -ENODEV;
+ 	else
+-		ret = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0), bRequest,
++		ret = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), bRequest,
+ 				  USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+ 				  0, wIndex,
+-				  &tmp, sizeof(tmp), 1000);
++				  &tmp, sizeof(tmp));
+ 	up_read(&mixer->chip->shutdown_rwsem);
+ 
+ 	if (ret < 0) {
 -- 
-1.8.0
+2.1.3
