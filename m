@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/3] ASoC: max98088: Replace w->codec
+Subject: [PATCH 2/3] ASoC: max98090: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Thu, 20 Nov 2014 21:21:53 +0100
-Message-ID: <1416514915-29836-1-git-send-email-lars@metafoo.de>
+Date: Thu, 20 Nov 2014 21:21:54 +0100
+Message-ID: <1416514915-29836-2-git-send-email-lars@metafoo.de>
+References: <1416514915-29836-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-076.synserver.de (smtp-out-076.synserver.de
  [212.40.185.76])
- by alsa0.perex.cz (Postfix) with ESMTP id C218D2605FC
- for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 21:21:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A73AC2605FF
+ for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 21:21:55 +0100 (CET)
+In-Reply-To: <1416514915-29836-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,30 +31,21 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/max98088.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index bb892b3..805b3f8 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -875,7 +875,7 @@ static const struct snd_kcontrol_new max98088_right_ADC_mixer_controls[] = {
- static int max98088_mic_event(struct snd_soc_dapm_widget *w,
-                             struct snd_kcontrol *kcontrol, int event)
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index a65861c..2ad381c 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -806,7 +806,7 @@ static const struct snd_kcontrol_new max98091_snd_controls[] = {
+ static int max98090_micinput_event(struct snd_soc_dapm_widget *w,
+ 				 struct snd_kcontrol *kcontrol, int event)
  {
--       struct snd_soc_codec *codec = w->codec;
-+       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
  
-        switch (event) {
-@@ -905,7 +905,7 @@ static int max98088_mic_event(struct snd_soc_dapm_widget *w,
- static int max98088_line_pga(struct snd_soc_dapm_widget *w,
-                             int event, int line, u8 channel)
- {
--       struct snd_soc_codec *codec = w->codec;
-+       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
-        u8 *state;
- 
+ 	unsigned int val = snd_soc_read(codec, w->reg);
 -- 
 1.8.0
