@@ -1,64 +1,61 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: samsung: Fix IISMOD setting in i2s_set_sysclk()
-Date: Thu, 20 Nov 2014 12:34:51 +0530
-Message-ID: <CAAgF-BemHSdcmzkqOUX+JNMLu0-GXs0EGm8YWHt+CBRP8Wa5DA@mail.gmail.com>
-References: <1416420664-20952-1-git-send-email-s.nawrocki@samsung.com>
+From: Zidan Wang <b50113@freescale.com>
+Subject: [alsa-devel][PATCH v2 2/2] ASoC: wm8960: LRCM operation should after software reset
+Date: Thu, 20 Nov 2014 16:41:18 +0800
+Message-ID: <1416472878-12108-2-git-send-email-b50113@freescale.com>
+References: <1416472878-12108-1-git-send-email-b50113@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1416420664-20952-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Padmavathi Venna <padma.v@samsung.com>, sbkim73@samsung.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1416472878-12108-1-git-send-email-b50113@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <b50113@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sylwester,
+When shared_lrclk is set, LRCM will be enabled. But the following software
+reset in wm8960_probe will reset it to the default state. So LRCM operation
+should after software reset.
 
-On 11/19/14, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
-> In the i2s_set_sysclk() callback we are currently clearing all bits
-> of the IISMOD register when clk_id is SAMSUNG_I2S_CDCLK and dir
-> is SND_SOC_CLOCK_OUT. It's due to an incorrect mask used for the AND
-> operation and breaks the I2S interface operation when we attempt to
-> use the CDCLK output clock.
->
-> It fixes commit a5a56871f804edac93a53b5e871c0e9818fb9033
-> ("ASoC: samsung: add support for exynos7 I2S controller") and restores
-> sound support for Odroid X2/U3.
->
-> Cc: Padmavathi Venna <padma.v@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  sound/soc/samsung/i2s.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-> index 947352d..8db8c66 100644
-> --- a/sound/soc/samsung/i2s.c
-> +++ b/sound/soc/samsung/i2s.c
-> @@ -494,7 +494,7 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
->  		if (dir == SND_SOC_CLOCK_IN)
->  			mod |= 1 << i2s_regs->cdclkcon_off;
->  		else
-> -			mod &= 0 << i2s_regs->cdclkcon_off;
-> +			mod &= ~(1 << i2s_regs->cdclkcon_off);
+Signed-off-by: Zidan Wang <b50113@freescale.com>
+---
+ sound/soc/codecs/wm8960.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-Thanks for pointing this. In my local machine it was properly done but
-while rebasing on linux-next I did some mistake. There is one more
-place in set_sysclk which need to be corrected here
-mod &= 0 << i2s_regs->rclksrc_off
-can you include this change also in your patch or should I post a new
-patch for all?
-
-Thanks
-Padma
-
->  		i2s->rfs = rfs;
->  		break;
-> --
-> 1.7.9.5
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index e5d89a2..a7f60b7 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -976,6 +976,14 @@ static int wm8960_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
+ 
++    if (pdata->shared_lrclk) {
++		ret = snd_soc_update_bits(codec, WM8960_ADDCTL2, 0x4, 0x4);
++		if (ret < 0) {
++			dev_err(codec->dev, "Failed to enable LRCM: %d\n", ret);
++			return ret;
++		}
++	}
++
+ 	wm8960->set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	/* Latch the update bits */
+@@ -1059,16 +1067,6 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
+ 	else if (i2c->dev.of_node)
+ 		wm8960_set_pdata_from_of(i2c, &wm8960->pdata);
+ 
+-	if (pdata && pdata->shared_lrclk) {
+-		ret = regmap_update_bits(wm8960->regmap, WM8960_ADDCTL2,
+-					 0x4, 0x4);
+-		if (ret != 0) {
+-			dev_err(&i2c->dev, "Failed to enable LRCM: %d\n",
+-				ret);
+-			return ret;
+-		}
+-	}
+-
+ 	i2c_set_clientdata(i2c, wm8960);
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+-- 
+1.9.1
