@@ -1,65 +1,97 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: samsung: ASoC: samsung: Fix IISMOD
- setting in i2s_set_sysclk()
-Date: Thu, 20 Nov 2014 11:44:33 +0100
-Message-ID: <546DC611.8090806@samsung.com>
-References: <1416477797-27332-1-git-send-email-padma.v@samsung.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
+Date: Thu, 20 Nov 2014 12:59:44 +0200
+Message-ID: <546DC9A0.8060700@ti.com>
+References: <cover.1415803064.git.jsarha@ti.com> <20141112222344.GU3815@sirena.org.uk> <54646648.5030807@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1416477797-27332-1-git-send-email-padma.v@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Padmavathi Venna <padma.v@samsung.com>, alsa-devel@alsa-project.org
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, kgene.kim@samsung.com, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="KOm0QGWw94tfVQ6w097nXl6lFc0Hrw5Tp"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <54646648.5030807@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 20/11/14 11:03, Padmavathi Venna wrote:
-> In the i2s_set_sysclk() callback we are currently clearing all bits
-> of the IISMOD register in i2s_set_sysclk. It's due to an incorrect
-> mask used for the AND operation which is introduced in commit
-> a5a56871f804edac93a53b5e871c0e9818fb9033 (ASoC: samsung:
-> add support for exynos7 I2S controller) and also adds the missing
+--KOm0QGWw94tfVQ6w097nXl6lFc0Hrw5Tp
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-The patch looks good to me, I'd just write about the missing break
-in a separate sentence, i.e. s/and also adds/. Also add/
+Hi Mark,
 
-> break statement.
-> 
-> Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Padmavathi Venna <padma.v@samsung.com>
-> ---
->  sound/soc/samsung/i2s.c |    5 +++--
->  1 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-> index 0df6547..e1ace52 100644
-> --- a/sound/soc/samsung/i2s.c
-> +++ b/sound/soc/samsung/i2s.c
-> @@ -494,7 +494,7 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
->  		if (dir == SND_SOC_CLOCK_IN)
->  			mod |= 1 << i2s_regs->cdclkcon_off;
->  		else
-> -			mod &= 0 << i2s_regs->cdclkcon_off;
-> +			mod &= ~(1 << i2s_regs->cdclkcon_off);
->  
->  		i2s->rfs = rfs;
->  		break;
-> @@ -551,10 +551,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
->  		}
->  
->  		if (clk_id == 0)
-> -			mod &= 0 << i2s_regs->rclksrc_off;
-> +			mod &= ~(1 << i2s_regs->rclksrc_off);
->  		else
->  			mod |= 1 << i2s_regs->rclksrc_off;
->  
-> +		break;
->  	default:
->  		dev_err(&i2s->pdev->dev, "We don't serve that!\n");
->  		return -EINVAL;
+On 13/11/14 10:05, Tomi Valkeinen wrote:
+> Hi Mark,
+>=20
+> On 13/11/14 00:23, Mark Brown wrote:
+>> On Wed, Nov 12, 2014 at 04:40:51PM +0200, Jyri Sarha wrote:
+>>
+>>> It would make the most sense to get these in trough fbdev tree. So it=
 
---
-Regards,
-Sylwester
+>>> would be nice to get acked-bys (if the patches are Ok) for ASoC side
+>>> changes from appropriate maintainers.
+>>
+>> So, this is a very large series which gets reposted every so often to =
+no
+>> apparent interest from the video side, there's been no response at all=
+
+>=20
+> Sorry for the lack of communication. We've been discussing this series
+> on irc. It's been mostly about how to manage the device/driver split
+> between drivers/video/ and sound/ sides.
+>=20
+>> that I can remember and even the earlier bits of the series before it
+>> starts touching audio don't seem to be getting merged.  What's going o=
+n
+>> here?
+>=20
+> The series is all audio in terms of functionality. The first few patche=
+s
+> could probably be merged independently, but I've wanted this whole OMAP=
+
+> HDMI audio rewrite to be in one series.
+>=20
+> I'll start testing this latest series, and I hope we can merge it for
+> the next merge window so that we'll finally get the OMAP HDMI audio wor=
+king.
+>=20
+> I don't have much knowledge of the asoc architecture, so I probably
+> can't comment much on the sound/ side design. For me the most important=
+
+> things are that 1) it works 2) I can easily unload/load the modules
+> (which was broken in some of the earlier versions).
+
+The series looks good to me, and works for me.
+
+Do you have any comments for the sound/ parts? If not, I can merge this
+series via fbdev tree, and for that I'd like your ack on the sound/ patch=
+es.
+
+ Tomi
+
+
+
+--KOm0QGWw94tfVQ6w097nXl6lFc0Hrw5Tp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUbcmgAAoJEPo9qoy8lh71tSoQAJib29Jg0UfS/a3bbi5Ck4wJ
+EIR3qvutuUj7LGemWrAGTwe/lbAuwnTjcgW4uBfY6qEIOTkh5N8VALfKTOla/gei
+W7punQ2wDNGrXtN9infG+cBI/WMxk4TZEcrZNVpAD0rWoewwgZfh1v8lcn+wfgHI
+t7z2blyyMqWNFFpGF7H5NU4Q5i6xjNXqbSNdWiCHNsOZWDaJVae55UKJcISRKs5z
+xLtvG5oeToNLfz00Y11ZqBzRkncf+4hugVegx+o1LR6NWzP0AMu9EEtKAhC6GgHn
+f34Rw5Nn5ErVHY2JBS4mNTwUK/5OhoAg3Acb4oEH2ixVtLB6LFvb07759mKP9owP
+/2VVJfZMZ9PVdG1aN/2LdPKPt6KmMWp1DFlhjXClFj9Mh+XAfPmphtarq+LtyZQo
+4WBYXrn2sGQAczo5pSd4s34cL2PUWkIHlQ0mBCntrBIK9Hy/066BR6UYRJbWMiCf
+O2+rai2Dt58gCHp7+IuBBnJMA3Y+Pn1Zj1EcXZrv1zFwxf4Q32cq1d7zB/tFKruD
+wU+BOY6fkp8xJM7sH1ZYYj1/5XYIAsYQGy9WGYm9XM2PkJ4j9/+SxMts3BGTmqS4
+A+jLwk9E30Oj58WVlBMRZiA76osvRAiq18XILLtPftT4crD7EVDliMMyHstgB7ed
+Ivdpi0gtWblT2iPYZh3H
+=A7KX
+-----END PGP SIGNATURE-----
+
+--KOm0QGWw94tfVQ6w097nXl6lFc0Hrw5Tp--
