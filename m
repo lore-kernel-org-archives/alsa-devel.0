@@ -1,68 +1,32 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: cleanup runtime_pm
- initialization
-Date: Thu, 20 Nov 2014 14:42:08 +0530
-Message-ID: <20141120091208.GF2074@intel.com>
-References: <1416390207-11020-1-git-send-email-vinod.koul@intel.com>
- <20141119105655.GE22111@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F82B7427B5@SHSMSX101.ccr.corp.intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel][PATCH v2 2/2] ASoC: wm8960: LRCM operation should
+	after software reset
+Date: Thu, 20 Nov 2014 09:12:20 +0000
+Message-ID: <20141120091220.GG12443@opensource.wolfsonmicro.com>
+References: <1416472878-12108-1-git-send-email-b50113@freescale.com> <1416472878-12108-2-git-send-email-b50113@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B032F2605F5
- for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 10:11:03 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B7427B5@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+In-Reply-To: <1416472878-12108-2-git-send-email-b50113@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <b50113@freescale.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 20, 2014 at 02:35:33PM +0530, Lin, Mengdong wrote:
-> Hi Mark and Vinod,
-Please don't top post
-
+On Thu, Nov 20, 2014 at 04:41:18PM +0800, Zidan Wang wrote:
+> When shared_lrclk is set, LRCM will be enabled. But the following software
+> reset in wm8960_probe will reset it to the default state. So LRCM operation
+> should after software reset.
 > 
-> Could you tell me where are the two patches in git repo?
-> 
-> I cannot find them on topic/intel branch.
-> I want to rebase the Cherrytrail/Braswell machine driver on the two
-> applied patches.
+> Signed-off-by: Zidan Wang <b50113@freescale.com>
+> ---
 
-I think Mark forgot to push :) don't see update to tree since yesterday
+For patch 2 here:
 
--- 
-~Vinod
-> 
-> Thanks
-> Mengdong
-> 
-> > -----Original Message-----
-> > From: alsa-devel-bounces@alsa-project.org
-> > [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Mark Brown
-> > Sent: Wednesday, November 19, 2014 6:57 PM
-> > To: Koul, Vinod
-> > Cc: alsa-devel@alsa-project.org; lgirdwood@gmail.com
-> > Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: Intel: cleanup runtime_pm
-> > initialization
-> > 
-> > On Wed, Nov 19, 2014 at 03:13:26PM +0530, Vinod Koul wrote:
-> > > For ACPI we missed to pm_runtime_enable() call which is required to
-> > > tell PM core that runtime on this device is enabled now. Since this is
-> > > common to both PCI and APCI move it out. Also for ACPI we do not
-> > > require
-> > > pm_runtime_allow() call, so remove that
-> > 
-> > Applied, thanks.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
--- 
+Patch 1 could still use the docs fixups Lars suggested.
+
+Thanks,
+Charles
