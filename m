@@ -1,97 +1,168 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Thu, 20 Nov 2014 12:59:44 +0200
-Message-ID: <546DC9A0.8060700@ti.com>
-References: <cover.1415803064.git.jsarha@ti.com> <20141112222344.GU3815@sirena.org.uk> <54646648.5030807@ti.com>
+From: Zidan Wang <b50113@freescale.com>
+Subject: [PATCH v3] ASoC: wm8960: Add device tree support
+Date: Thu, 20 Nov 2014 19:07:48 +0800
+Message-ID: <1416481668-22321-1-git-send-email-b50113@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="KOm0QGWw94tfVQ6w097nXl6lFc0Hrw5Tp"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <54646648.5030807@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1on0144.outbound.protection.outlook.com [157.56.110.144])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE1B6265A01
+ for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 12:07:07 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Li.Xiubo@freescale.com, Zidan Wang <b50113@freescale.com>, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
---KOm0QGWw94tfVQ6w097nXl6lFc0Hrw5Tp
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+Document the device tree binding for the WM8960 codec, and modify the
+driver to extract the platform data from device tree, if present.
 
-Hi Mark,
+Signed-off-by: Zidan Wang <b50113@freescale.com>
+---
+ Documentation/devicetree/bindings/sound/wm8960.txt | 31 ++++++++++++++++
+ sound/soc/codecs/wm8960.c                          | 41 ++++++++++++++++------
+ 2 files changed, 62 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/wm8960.txt
 
-On 13/11/14 10:05, Tomi Valkeinen wrote:
-> Hi Mark,
->=20
-> On 13/11/14 00:23, Mark Brown wrote:
->> On Wed, Nov 12, 2014 at 04:40:51PM +0200, Jyri Sarha wrote:
->>
->>> It would make the most sense to get these in trough fbdev tree. So it=
-
->>> would be nice to get acked-bys (if the patches are Ok) for ASoC side
->>> changes from appropriate maintainers.
->>
->> So, this is a very large series which gets reposted every so often to =
-no
->> apparent interest from the video side, there's been no response at all=
-
->=20
-> Sorry for the lack of communication. We've been discussing this series
-> on irc. It's been mostly about how to manage the device/driver split
-> between drivers/video/ and sound/ sides.
->=20
->> that I can remember and even the earlier bits of the series before it
->> starts touching audio don't seem to be getting merged.  What's going o=
-n
->> here?
->=20
-> The series is all audio in terms of functionality. The first few patche=
-s
-> could probably be merged independently, but I've wanted this whole OMAP=
-
-> HDMI audio rewrite to be in one series.
->=20
-> I'll start testing this latest series, and I hope we can merge it for
-> the next merge window so that we'll finally get the OMAP HDMI audio wor=
-king.
->=20
-> I don't have much knowledge of the asoc architecture, so I probably
-> can't comment much on the sound/ side design. For me the most important=
-
-> things are that 1) it works 2) I can easily unload/load the modules
-> (which was broken in some of the earlier versions).
-
-The series looks good to me, and works for me.
-
-Do you have any comments for the sound/ parts? If not, I can merge this
-series via fbdev tree, and for that I'd like your ack on the sound/ patch=
-es.
-
- Tomi
-
-
-
---KOm0QGWw94tfVQ6w097nXl6lFc0Hrw5Tp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUbcmgAAoJEPo9qoy8lh71tSoQAJib29Jg0UfS/a3bbi5Ck4wJ
-EIR3qvutuUj7LGemWrAGTwe/lbAuwnTjcgW4uBfY6qEIOTkh5N8VALfKTOla/gei
-W7punQ2wDNGrXtN9infG+cBI/WMxk4TZEcrZNVpAD0rWoewwgZfh1v8lcn+wfgHI
-t7z2blyyMqWNFFpGF7H5NU4Q5i6xjNXqbSNdWiCHNsOZWDaJVae55UKJcISRKs5z
-xLtvG5oeToNLfz00Y11ZqBzRkncf+4hugVegx+o1LR6NWzP0AMu9EEtKAhC6GgHn
-f34Rw5Nn5ErVHY2JBS4mNTwUK/5OhoAg3Acb4oEH2ixVtLB6LFvb07759mKP9owP
-/2VVJfZMZ9PVdG1aN/2LdPKPt6KmMWp1DFlhjXClFj9Mh+XAfPmphtarq+LtyZQo
-4WBYXrn2sGQAczo5pSd4s34cL2PUWkIHlQ0mBCntrBIK9Hy/066BR6UYRJbWMiCf
-O2+rai2Dt58gCHp7+IuBBnJMA3Y+Pn1Zj1EcXZrv1zFwxf4Q32cq1d7zB/tFKruD
-wU+BOY6fkp8xJM7sH1ZYYj1/5XYIAsYQGy9WGYm9XM2PkJ4j9/+SxMts3BGTmqS4
-A+jLwk9E30Oj58WVlBMRZiA76osvRAiq18XILLtPftT4crD7EVDliMMyHstgB7ed
-Ivdpi0gtWblT2iPYZh3H
-=A7KX
------END PGP SIGNATURE-----
-
---KOm0QGWw94tfVQ6w097nXl6lFc0Hrw5Tp--
+diff --git a/Documentation/devicetree/bindings/sound/wm8960.txt b/Documentation/devicetree/bindings/sound/wm8960.txt
+new file mode 100644
+index 0000000..2deb8a3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/wm8960.txt
+@@ -0,0 +1,31 @@
++WM8960 audio CODEC
++
++This device supports I2C only.
++
++Required properties:
++
++  - compatible : "wlf,wm8960"
++
++  - reg : the I2C address of the device.
++
++Optional properties:
++  - wlf,shared-lrclk: This is a boolean property. If present, the LRCM bit of
++	R24 (Additional control 2) gets set, indicating that ADCLRC and DACLRC pins
++	will be disabled only when ADC (Left and Right) and DAC (Left and Right)
++	are disabled.
++	When wm8960 works on synchronize mode and DACLRC pin is used to supply
++	frame clock, it will no frame clock for captrue unless enable DAC to enable
++	DACLRC pin. If shared-lrclk is present, no need to enable DAC for captrue.
++
++  - wlf,capless: This is a boolean property. If present, OUT3 pin will be
++	enabled and disabled together with HP_L and HP_R pins in response to jack
++	detect events.
++
++Example:
++
++codec: wm8960@1a {
++	compatible = "wlf,wm8960";
++	reg = <0x1a>;
++
++	wlf,shared-lrclk;
++};
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 4dc4e85..99d6457 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -125,6 +125,7 @@ struct wm8960_priv {
+ 	struct snd_soc_dapm_widget *out3;
+ 	bool deemph;
+ 	int playback_fs;
++	struct wm8960_data pdata;
+ };
+ 
+ #define wm8960_reset(c)	snd_soc_write(c, WM8960_RESET, 0)
+@@ -440,8 +441,8 @@ static const struct snd_soc_dapm_route audio_paths_capless[] = {
+ 
+ static int wm8960_add_widgets(struct snd_soc_codec *codec)
+ {
+-	struct wm8960_data *pdata = codec->dev->platform_data;
+ 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
++	struct wm8960_data *pdata = &wm8960->pdata;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	struct snd_soc_dapm_widget *w;
+ 
+@@ -961,17 +962,13 @@ static int wm8960_resume(struct snd_soc_codec *codec)
+ static int wm8960_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+-	struct wm8960_data *pdata = dev_get_platdata(codec->dev);
++	struct wm8960_data *pdata = &wm8960->pdata;
+ 	int ret;
+ 
+-	wm8960->set_bias_level = wm8960_set_bias_level_out3;
+-
+-	if (!pdata) {
+-		dev_warn(codec->dev, "No platform data supplied\n");
+-	} else {
+-		if (pdata->capless)
+-			wm8960->set_bias_level = wm8960_set_bias_level_capless;
+-	}
++	if (pdata->capless)
++		wm8960->set_bias_level = wm8960_set_bias_level_capless;
++	else
++		wm8960->set_bias_level = wm8960_set_bias_level_out3;
+ 
+ 	ret = wm8960_reset(codec);
+ 	if (ret < 0) {
+@@ -1029,6 +1026,18 @@ static const struct regmap_config wm8960_regmap = {
+ 	.volatile_reg = wm8960_volatile,
+ };
+ 
++static void wm8960_set_pdata_from_of(struct i2c_client *i2c,
++				struct wm8960_data *pdata)
++{
++	const struct device_node *np = i2c->dev.of_node;
++
++	if (of_property_read_bool(np, "wlf,capless"))
++		pdata->capless = true;
++
++	if (of_property_read_bool(np, "wlf,shared-lrclk"))
++		pdata->shared_lrclk = true;
++}
++
+ static int wm8960_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+@@ -1045,6 +1054,11 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
+ 	if (IS_ERR(wm8960->regmap))
+ 		return PTR_ERR(wm8960->regmap);
+ 
++	if (pdata)
++		memcpy(&wm8960->pdata, pdata, sizeof(struct wm8960_data));
++	else if (i2c->dev.of_node)
++		wm8960_set_pdata_from_of(i2c, &wm8960->pdata);
++
+ 	if (pdata && pdata->shared_lrclk) {
+ 		ret = regmap_update_bits(wm8960->regmap, WM8960_ADDCTL2,
+ 					 0x4, 0x4);
+@@ -1075,10 +1089,17 @@ static const struct i2c_device_id wm8960_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, wm8960_i2c_id);
+ 
++static const struct of_device_id wm8960_of_match[] = {
++       { .compatible = "wlf,wm8960", },
++       { }
++};
++MODULE_DEVICE_TABLE(of, wm8960_of_match);
++
+ static struct i2c_driver wm8960_i2c_driver = {
+ 	.driver = {
+ 		.name = "wm8960",
+ 		.owner = THIS_MODULE,
++		.of_match_table = wm8960_of_match,
+ 	},
+ 	.probe =    wm8960_i2c_probe,
+ 	.remove =   wm8960_i2c_remove,
+-- 
+1.9.1
