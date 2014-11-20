@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ASoC: cs42l51: Replace w->codec
+Subject: [PATCH 2/2] ASoC: cs42l73: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Thu, 20 Nov 2014 21:05:38 +0100
-Message-ID: <1416513940-28717-1-git-send-email-lars@metafoo.de>
+Date: Thu, 20 Nov 2014 21:05:39 +0100
+Message-ID: <1416513940-28717-2-git-send-email-lars@metafoo.de>
+References: <1416513940-28717-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-076.synserver.de (smtp-out-076.synserver.de
  [212.40.185.76])
- by alsa0.perex.cz (Postfix) with ESMTP id BB4192605F4
- for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 21:05:40 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E88D2605FC
+ for <alsa-devel@alsa-project.org>; Thu, 20 Nov 2014 21:05:41 +0100 (CET)
+In-Reply-To: <1416513940-28717-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,32 +31,39 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/cs42l51.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs42l73.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 669c38f..b395152 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -153,15 +153,17 @@ static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
- static int cs42l51_pdn_event(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *kcontrol, int event)
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index 2f8b946..7c55537 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -584,7 +584,7 @@ static const struct snd_kcontrol_new cs42l73_snd_controls[] = {
+ static int cs42l73_spklo_spk_amp_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
  {
+-	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
+ 	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
  	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMD:
--		snd_soc_update_bits(w->codec, CS42L51_POWER_CTL1,
-+		snd_soc_update_bits(codec, CS42L51_POWER_CTL1,
- 				    CS42L51_POWER_CTL1_PDN,
- 				    CS42L51_POWER_CTL1_PDN);
- 		break;
- 	default:
  	case SND_SOC_DAPM_POST_PMD:
--		snd_soc_update_bits(w->codec, CS42L51_POWER_CTL1,
-+		snd_soc_update_bits(codec, CS42L51_POWER_CTL1,
- 				    CS42L51_POWER_CTL1_PDN, 0);
- 		break;
- 	}
+@@ -600,7 +600,7 @@ static int cs42l73_spklo_spk_amp_event(struct snd_soc_dapm_widget *w,
+ static int cs42l73_ear_amp_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMD:
+@@ -618,7 +618,7 @@ static int cs42l73_ear_amp_event(struct snd_soc_dapm_widget *w,
+ static int cs42l73_hp_amp_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMD:
 -- 
 1.8.0
