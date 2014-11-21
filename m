@@ -1,17 +1,17 @@
 From: Jussi Laako <jussi@sonarnerd.net>
-Subject: [PATCH 1/1] Add big-endian DSD sample formats and fix
-	XMOS DSD sample format
-Date: Fri, 21 Nov 2014 10:52:15 +0200
-Message-ID: <1416559935-3465-2-git-send-email-jussi@sonarnerd.net>
-References: <1416559935-3465-1-git-send-email-jussi@sonarnerd.net>
+Subject: [PATCH 1/1] Fix DSD sample format endianess and add
+	big-endian format
+Date: Fri, 21 Nov 2014 10:53:44 +0200
+Message-ID: <1416560024-3672-2-git-send-email-jussi@sonarnerd.net>
+References: <1416560024-3672-1-git-send-email-jussi@sonarnerd.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F48226661D
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 09:52:22 +0100 (CET)
-In-Reply-To: <1416559935-3465-1-git-send-email-jussi@sonarnerd.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 806A6265E17
+ for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 09:53:53 +0100 (CET)
+In-Reply-To: <1416560024-3672-1-git-send-email-jussi@sonarnerd.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,30 +27,33 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Jussi Laako <jussi@sonarnerd.net>
 ---
- include/sound/pcm.h         | 2 ++
- include/uapi/sound/asound.h | 4 +++-
- sound/core/pcm.c            | 2 ++
- sound/core/pcm_misc.c       | 8 ++++++++
- sound/usb/quirks.c          | 4 ++--
- 5 files changed, 17 insertions(+), 3 deletions(-)
+ include/pcm.h          |  6 +++++-
+ include/sound/asound.h |  4 +++-
+ src/pcm/pcm.c          |  4 ++++
+ src/pcm/pcm_misc.c     | 17 ++++++++++++++---
+ 4 files changed, 26 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 40289ec..1e7f74a 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -184,6 +184,8 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_DSD_U8		_SNDRV_PCM_FMTBIT(DSD_U8)
- #define SNDRV_PCM_FMTBIT_DSD_U16_LE	_SNDRV_PCM_FMTBIT(DSD_U16_LE)
- #define SNDRV_PCM_FMTBIT_DSD_U32_LE	_SNDRV_PCM_FMTBIT(DSD_U32_LE)
-+#define SNDRV_PCM_FMTBIT_DSD_U16_BE	_SNDRV_PCM_FMTBIT(DSD_U16_BE)
-+#define SNDRV_PCM_FMTBIT_DSD_U32_BE	_SNDRV_PCM_FMTBIT(DSD_U32_BE)
+diff --git a/include/pcm.h b/include/pcm.h
+index db88ad5..0655e7f 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -213,7 +213,11 @@ typedef enum _snd_pcm_format {
+ 	SND_PCM_FORMAT_DSD_U16_LE,
+ 	/* Direct Stream Digital (DSD) in 4-byte samples (x32) */
+ 	SND_PCM_FORMAT_DSD_U32_LE,
+-	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_DSD_U32_LE,
++	/* Direct Stream Digital (DSD) in 2-byte samples (x16) */
++	SND_PCM_FORMAT_DSD_U16_BE,
++	/* Direct Stream Digital (DSD) in 4-byte samples (x32) */
++	SND_PCM_FORMAT_DSD_U32_BE,
++	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_DSD_U32_BE,
  
- #ifdef SNDRV_LITTLE_ENDIAN
- #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_LE
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+ #if __BYTE_ORDER == __LITTLE_ENDIAN
+ 	/** Signed 16 bit CPU endian */
+diff --git a/include/sound/asound.h b/include/sound/asound.h
 index 6ee5867..941d32f 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
 @@ -220,7 +220,9 @@ typedef int __bitwise snd_pcm_format_t;
  #define	SNDRV_PCM_FORMAT_DSD_U8		((__force snd_pcm_format_t) 48) /* DSD, 1-byte samples DSD (x8) */
  #define	SNDRV_PCM_FORMAT_DSD_U16_LE	((__force snd_pcm_format_t) 49) /* DSD, 2-byte samples DSD (x16), little endian */
@@ -62,11 +65,11 @@ index 6ee5867..941d32f 100644
  
  #ifdef SNDRV_LITTLE_ENDIAN
  #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 8f624b7..cfc56c8 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -216,6 +216,8 @@ static char *snd_pcm_format_names[] = {
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 4a7be6c..3904256 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -1566,6 +1566,8 @@ static const char *const snd_pcm_format_names[] = {
  	FORMAT(DSD_U8),
  	FORMAT(DSD_U16_LE),
  	FORMAT(DSD_U32_LE),
@@ -74,44 +77,106 @@ index 8f624b7..cfc56c8 100644
 +	FORMAT(DSD_U32_BE),
  };
  
- /**
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index ae7a0fe..ebe8444 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -152,6 +152,14 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
- 		.width = 32, .phys = 32, .le = 1, .signd = 0,
- 		.silence = { 0x69, 0x69, 0x69, 0x69 },
- 	},
-+	[SNDRV_PCM_FORMAT_DSD_U16_BE] = {
-+		.width = 16, .phys = 16, .le = 0, .signd = 0,
-+		.silence = { 0x69, 0x69 },
-+	},
-+	[SNDRV_PCM_FORMAT_DSD_U32_BE] = {
-+		.width = 32, .phys = 32, .le = 0, .signd = 0,
-+		.silence = { 0x69, 0x69, 0x69, 0x69 },
-+	},
- 	/* FIXME: the following three formats are not defined properly yet */
- 	[SNDRV_PCM_FORMAT_MPEG] = {
- 		.le = -1, .signd = -1,
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 2c1018e..bc9ebb6 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1202,12 +1202,12 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 	/* iFi Audio micro/nano iDSD */
- 	case USB_ID(0x20b1, 0x3008):
- 		if (fp->altsetting == 2)
--			return SNDRV_PCM_FMTBIT_DSD_U32_LE;
-+			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
- 		break;
- 	/* DIYINHK DSD DXD 384kHz USB to I2S/DSD */
- 	case USB_ID(0x20b1, 0x2009):
- 		if (fp->altsetting == 3)
--			return SNDRV_PCM_FMTBIT_DSD_U32_LE;
-+			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
- 		break;
+ static const char *const snd_pcm_format_aliases[SND_PCM_FORMAT_LAST+1] = {
+@@ -1626,6 +1628,8 @@ static const char *const snd_pcm_format_descriptions[] = {
+ 	FORMATD(DSD_U8,  "Direct Stream Digital, 1-byte (x8), oldest bit in MSB"),
+ 	FORMATD(DSD_U16_LE, "Direct Stream Digital, 2-byte (x16), little endian, oldest bits in MSB"),
+ 	FORMATD(DSD_U32_LE, "Direct Stream Digital, 4-byte (x32), little endian, oldest bits in MSB"),
++	FORMATD(DSD_U16_BE, "Direct Stream Digital, 2-byte (x16), big endian, oldest bits in MSB"),
++	FORMATD(DSD_U32_BE, "Direct Stream Digital, 4-byte (x32), big endian, oldest bits in MSB"),
+ };
+ 
+ static const char *const snd_pcm_type_names[] = {
+diff --git a/src/pcm/pcm_misc.c b/src/pcm/pcm_misc.c
+index 9272179..5870f82 100644
+--- a/src/pcm/pcm_misc.c
++++ b/src/pcm/pcm_misc.c
+@@ -65,6 +65,8 @@ int snd_pcm_format_signed(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_DSD_U8:
+ 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
+ 	case SNDRV_PCM_FORMAT_DSD_U32_LE:
++	case SNDRV_PCM_FORMAT_DSD_U16_BE:
++	case SNDRV_PCM_FORMAT_DSD_U32_BE:
+ 		return 0;
  	default:
- 		break;
+ 		return -EINVAL;
+@@ -137,6 +139,8 @@ int snd_pcm_format_little_endian(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_U24_3LE:
+ 	case SNDRV_PCM_FORMAT_U20_3LE:
+ 	case SNDRV_PCM_FORMAT_U18_3LE:
++	case SNDRV_PCM_FORMAT_DSD_U16_LE:
++	case SNDRV_PCM_FORMAT_DSD_U32_LE:
+ 		return 1;
+ 	case SNDRV_PCM_FORMAT_S16_BE:
+ 	case SNDRV_PCM_FORMAT_U16_BE:
+@@ -153,9 +157,8 @@ int snd_pcm_format_little_endian(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_U24_3BE:
+ 	case SNDRV_PCM_FORMAT_U20_3BE:
+ 	case SNDRV_PCM_FORMAT_U18_3BE:
+-	case SNDRV_PCM_FORMAT_DSD_U8:
+-	case SNDRV_PCM_FORMAT_DSD_U16_LE:
+-	case SNDRV_PCM_FORMAT_DSD_U32_LE:
++	case SNDRV_PCM_FORMAT_DSD_U16_BE:
++	case SNDRV_PCM_FORMAT_DSD_U32_BE:
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
+@@ -208,6 +211,7 @@ int snd_pcm_format_width(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_U16_LE:
+ 	case SNDRV_PCM_FORMAT_U16_BE:
+ 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
++	case SNDRV_PCM_FORMAT_DSD_U16_BE:
+ 		return 16;
+ 	case SNDRV_PCM_FORMAT_S18_3LE:
+ 	case SNDRV_PCM_FORMAT_S18_3BE:
+@@ -235,6 +239,7 @@ int snd_pcm_format_width(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_FLOAT_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT_BE:
+ 	case SNDRV_PCM_FORMAT_DSD_U32_LE:
++	case SNDRV_PCM_FORMAT_DSD_U32_BE:
+ 		return 32;
+ 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
+@@ -269,6 +274,7 @@ int snd_pcm_format_physical_width(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_U16_LE:
+ 	case SNDRV_PCM_FORMAT_U16_BE:
+ 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
++	case SNDRV_PCM_FORMAT_DSD_U16_BE:
+ 		return 16;
+ 	case SNDRV_PCM_FORMAT_S18_3LE:
+ 	case SNDRV_PCM_FORMAT_S18_3BE:
+@@ -296,6 +302,7 @@ int snd_pcm_format_physical_width(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE:
+ 	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE:
+ 	case SNDRV_PCM_FORMAT_DSD_U32_LE:
++	case SNDRV_PCM_FORMAT_DSD_U32_BE:
+ 		return 32;
+ 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
+@@ -328,6 +335,7 @@ ssize_t snd_pcm_format_size(snd_pcm_format_t format, size_t samples)
+ 	case SNDRV_PCM_FORMAT_U16_LE:
+ 	case SNDRV_PCM_FORMAT_U16_BE:
+ 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
++	case SNDRV_PCM_FORMAT_DSD_U16_BE:
+ 		return samples * 2;
+ 	case SNDRV_PCM_FORMAT_S18_3LE:
+ 	case SNDRV_PCM_FORMAT_S18_3BE:
+@@ -353,6 +361,7 @@ ssize_t snd_pcm_format_size(snd_pcm_format_t format, size_t samples)
+ 	case SNDRV_PCM_FORMAT_FLOAT_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT_BE:
+ 	case SNDRV_PCM_FORMAT_DSD_U32_LE:
++	case SNDRV_PCM_FORMAT_DSD_U32_BE:
+ 		return samples * 4;
+ 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
+@@ -400,6 +409,8 @@ u_int64_t snd_pcm_format_silence_64(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_DSD_U8:
+ 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
+ 	case SNDRV_PCM_FORMAT_DSD_U32_LE:
++	case SNDRV_PCM_FORMAT_DSD_U16_BE:
++	case SNDRV_PCM_FORMAT_DSD_U32_BE:
+ 		return 0x6969696969696969ULL;
+ #ifdef SNDRV_LITTLE_ENDIAN
+ 	case SNDRV_PCM_FORMAT_U16_LE:
 -- 
 1.9.1
