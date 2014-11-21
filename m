@@ -1,41 +1,61 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/6] ASoC: adau17x1: Mark DSP parameter
- memory as readable and precious
-Date: Fri, 21 Nov 2014 17:30:30 +0100
-Message-ID: <546F68A6.2040008@metafoo.de>
-References: <1416418148-14803-1-git-send-email-lars@metafoo.de>
- <1416418148-14803-2-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
+Date: Fri, 21 Nov 2014 16:38:15 +0000
+Message-ID: <20141121163815.GT3815@sirena.org.uk>
+References: <cover.1415803064.git.jsarha@ti.com>
+ <20141112222344.GU3815@sirena.org.uk>
+ <54646648.5030807@ti.com>
+ <546DC9A0.8060700@ti.com>
+ <20141121112317.GQ3815@sirena.org.uk>
+ <546F2BA3.9050203@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-170.synserver.de (smtp-out-170.synserver.de
- [212.40.185.170])
- by alsa0.perex.cz (Postfix) with ESMTP id E15772606E0
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 17:30:25 +0100 (CET)
-In-Reply-To: <1416418148-14803-2-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eEMbiT5PVwodlmOQ"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <546F2BA3.9050203@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/19/2014 06:29 PM, Lars-Peter Clausen wrote:
-> To be able to read back data from the DSP parameter memory the register
-> range needs to be marked as readable. At the same time we do not want them
-> to e.g. appear in debugfs output so mark them as precious as well.
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
+--eEMbiT5PVwodlmOQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It looks like this one was lost, shall I resend?
+On Fri, Nov 21, 2014 at 02:10:11PM +0200, Jyri Sarha wrote:
 
-Thanks,
-- Lars
+> OMAP HDMI audio is fundamentally different to the case on Armada or on BBB.
+> In omap the whole HDMI IP is integrated to the SoC and there really is no
+> codec in the ASoC sense. The the cpu-dai transmits the audio directly to
+> hdmi wire and there is no i2s bus involved. So this case should not be mixed
+> with the patches Jean-Francois working on. The code is also orthogonal in
+> that sense that the latest omap-hdmi-audio uses the generic dymmy codec.
+
+The discussion seemed to be about what to do with unplugged connections
+which isn't what you're talking about there and does seem like an area
+where we should at least be aiming for common behaviour even if not a
+common implementation.
+
+There's also all the stuff about parsing EDIDs for capabilities which
+would seem to be related to that but seems to have gone off into the
+weeds.
+
+--eEMbiT5PVwodlmOQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUb2p2AAoJECTWi3JdVIfQq8YH/i3MInS0Eb59xtMT5mVcW8nO
+CxYacQ/f6F/APa9sFkKnMmXHjRRGEukPIXdGD5ywckrfmhtX7FKYoEiqxeOFg1Us
+IQgQPrQoiTAmlIOcOLRZTFdoAR+8leJ0qyUralsO1SkXOXqXr22oLFWzqez1Jt4W
+qcP+3RhXoF3aDytD8yuvIxcBp0WEC/JlO6FKIChQC9W+yMjScuCU/Hvjo8ODvHy3
+kcHXVLY6lABFNJUXg59FbSVrJlG0UQHYmUFaihF/hLMgDiR5l48i4WGpxuRPo6LO
+lITjKIa4kNtA78jTmkZGOfH6UHxN78vRxiIV/+9ucQYmhdobB0iZi6K86dHTLJc=
+=iGAJ
+-----END PGP SIGNATURE-----
+
+--eEMbiT5PVwodlmOQ--
