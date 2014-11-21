@@ -1,15 +1,15 @@
 From: Jussi Laako <jussi@sonarnerd.net>
-Subject: [PATCH 0/1] Fix DSD sample format endianess and add
-	big-endian format
-Date: Fri, 21 Nov 2014 10:53:43 +0200
-Message-ID: <1416560024-3672-1-git-send-email-jussi@sonarnerd.net>
+Subject: [PATCH 0/1] Add big-endian DSD sample formats and fix
+	XMOS DSD sample format
+Date: Fri, 21 Nov 2014 10:57:18 +0200
+Message-ID: <1416560239-3859-1-git-send-email-jussi@sonarnerd.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 2ED31266BC5
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 09:53:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C38B6266D19
+ for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 09:57:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,17 +23,20 @@ To: alsa-devel@alsa-project.org
 Cc: Jussi Laako <jussi@sonarnerd.net>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds big-endian DSD sample format and fixes return value of DSD
-formats for snd_pcm_format_little_endian().
+Resend, previous had non matching subject for cover letter vs patch.
+
+This patch fixes XMOS DSD sample format to DSD_U32_BE and also adds
+DSD_U16_BE and DSD_U32_BE sample formats.
 
 Jussi Laako (1):
-  Fix DSD sample format endianess and add big-endian format
+  Add big-endian DSD sample formats and fix XMOS DSD sample format
 
- include/pcm.h          |  6 +++++-
- include/sound/asound.h |  4 +++-
- src/pcm/pcm.c          |  4 ++++
- src/pcm/pcm_misc.c     | 17 ++++++++++++++---
- 4 files changed, 26 insertions(+), 5 deletions(-)
+ include/sound/pcm.h         | 2 ++
+ include/uapi/sound/asound.h | 4 +++-
+ sound/core/pcm.c            | 2 ++
+ sound/core/pcm_misc.c       | 8 ++++++++
+ sound/usb/quirks.c          | 4 ++--
+ 5 files changed, 17 insertions(+), 3 deletions(-)
 
 -- 
 1.9.1
