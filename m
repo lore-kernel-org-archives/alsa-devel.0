@@ -1,23 +1,17 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: HP mute led for ALC286
-Date: Fri, 21 Nov 2014 07:56:29 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A179FBA32@RTITMBSV09.realtek.com.tw>
-References: <s5hr3x9qz5j.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A179FB004@RTITMBSV09.realtek.com.tw>
- <s5h8ujgrext.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A179FB7CA@RTITMBSV09.realtek.com.tw>
- <s5h8uj71lci.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A179FB92A@RTITMBSV09.realtek.com.tw>
- <s5htx1uxk3l.wl-tiwai@suse.de>
+From: mengdong.lin@intel.com
+Subject: [PATCH v6 1/2] ASoC: Intel: Add Cherrytrail & Braswell
+	machine driver cht_bsw_rt5672
+Date: Fri, 21 Nov 2014 16:08:59 +0800
+Message-ID: <94743e6e5951a3a63ed97d595eb7d7b15f773013.1416556905.git.mengdong.lin@intel.com>
+References: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A179FBA32RTITMBSV09realt_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id A844B265B51
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 08:56:48 +0100 (CET)
-In-Reply-To: <s5htx1uxk3l.wl-tiwai@suse.de>
-Content-Language: zh-TW
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F911265AFF
+ for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 09:02:22 +0100 (CET)
+In-Reply-To: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,136 +21,347 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, broonie@kernel.org, vinod.koul@intel.com, subhransu.s.prusty@intel.com, liam.r.girdwood@intel.com
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A179FBA32RTITMBSV09realt_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Hi Takashi,
+Add machine driver for two Intel Cherryview-based platforms, Cherrytrail and
+Braswell, with RT5672 codec.
 
-I'm sorry for that. Maybe I had not do git pull.
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
-BR,
-Kailang
-=20
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]=20
-> Sent: Thursday, November 20, 2014 6:06 PM
-> To: Kailang
-> Cc: (alsa-devel@alsa-project.org)
-> Subject: Re: HP mute led for ALC286
->=20
-> At Thu, 20 Nov 2014 07:04:01 +0000,
-> Kailang wrote:
-> >=20
-> > =20
-> >=20
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Wednesday, November 19, 2014 7:28 PM
-> > > To: Kailang
-> > > Cc: (alsa-devel@alsa-project.org)
-> > > Subject: Re: HP mute led for ALC286
-> > >=20
-> > > At Wed, 19 Nov 2014 07:13:16 +0000,
-> > > Kailang wrote:
-> > > >=20
-> > > > Hi Takashi,
-> > > >=20
-> > > > I had sent the discussion mail about the DMI string for HP.
-> > > > But no body response.
-> > > > So, I just send the patch to fix this issue.
-> > >=20
-> > > I'd like to avoid the duplicated open codes, so could you try the=20
-> > > patch below and rewrite your patch to follow this?  You'd=20
-> just need=20
-> > > to set like:
-> > >   spec->gpio_mute_led_mask =3D 0x02;
-> > >   spec->gpio_mic_led_mask =3D 0x20;
-> > >   pec->mute_led_polarity =3D 0;
-> > > then you can use the existing alc_fixup_gpio_mute_hook and=20
-> > > alc_fixup_gpio_mic_mute_hook.
-> >=20
-> > I modified as attach patch. ^^
->=20
-> Oh, no, I meant an additional patch on top of my previous=20
-> patch, not folding into that one.
->=20
-> For your ease, I applied my patch to for-next branch now, so=20
-> that you can rewrite the patch to be applicable to there.
->=20
->=20
-> thanks,
->=20
-> Takashi
->=20
-> ------Please consider the environment before printing this e-mail.
-> =
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A179FBA32RTITMBSV09realt_
-Content-Type: application/octet-stream;
-	name="0002-supported-HP-mute-led-alc286.patch"
-Content-Description: 0002-supported-HP-mute-led-alc286.patch
-Content-Disposition: attachment;
-	filename="0002-supported-HP-mute-led-alc286.patch"; size=2562;
-	creation-date="Fri, 21 Nov 2014 07:53:46 GMT";
-	modification-date="Fri, 21 Nov 2014 07:50:55 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBjODhiMjNjYWVlNjI4N2Y5YmU0ZWJlNGEzM2FkMGEzYTg2N2RmM2ExIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IEZyaSwgMjEgTm92IDIwMTQgMTU6NDk6MTEgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIFN1cHBvcnRlZCBIUCBtdXRlIExlZCBmb3IgQUxDMjg2CgpOZXcgSFAg
-bWFjaGluZSBzdXBwb3J0ZWQgb3V0cHV0IG11dGUgbGVkIGFuZCBpbnB1dCBtdXRlIGxlZC4KQUxD
-Mjg2OgpHUElPMSB0byBjb250cm9sIG91dHB1dCBtdXRlIGxlZC4KR1BJTzUgdG8gY29udHJvbCBp
-bnB1dCBtdXRlIGxlZC4KClNpZ25lZC1vZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFs
-dGVrLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3Nv
-dW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IGNkMDhkOGEuLjBjMWNhZDUgMTAwNjQ0
-Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEv
-cGF0Y2hfcmVhbHRlay5jCkBAIC0zMzc0LDYgKzMzNzQsMjcgQEAgc3RhdGljIHZvaWQgYWxjMjY5
-X2ZpeHVwX2hwX2dwaW9fbGVkKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAogCX0KIH0KIAorc3Rh
-dGljIHZvaWQgYWxjMjg2X2ZpeHVwX2hwX2dwaW9fbGVkKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVj
-LAorCQkJCWNvbnN0IHN0cnVjdCBoZGFfZml4dXAgKmZpeCwgaW50IGFjdGlvbikKK3sKKwlzdHJ1
-Y3QgYWxjX3NwZWMgKnNwZWMgPSBjb2RlYy0+c3BlYzsKKwlzdGF0aWMgY29uc3Qgc3RydWN0IGhk
-YV92ZXJiIGdwaW9faW5pdFtdID0geworCQl7IDB4MDEsIEFDX1ZFUkJfU0VUX0dQSU9fTUFTSywg
-MHgyMiB9LAorCQl7IDB4MDEsIEFDX1ZFUkJfU0VUX0dQSU9fRElSRUNUSU9OLCAweDIyIH0sCisJ
-CXt9CisJfTsKKworCWlmIChhY3Rpb24gPT0gSERBX0ZJWFVQX0FDVF9QUkVfUFJPQkUpIHsKKwkJ
-c3BlYy0+Z2VuLnZtYXN0ZXJfbXV0ZS5ob29rID0gYWxjX2ZpeHVwX2dwaW9fbXV0ZV9ob29rOwor
-CQlzcGVjLT5nZW4uY2FwX3N5bmNfaG9vayA9IGFsY19maXh1cF9ncGlvX21pY19tdXRlX2hvb2s7
-CisJCXNwZWMtPmdwaW9fbGVkID0gMDsKKwkJc3BlYy0+bXV0ZV9sZWRfcG9sYXJpdHkgPSAwOwor
-CQlzcGVjLT5ncGlvX211dGVfbGVkX21hc2sgPSAweDAyOworCQlzcGVjLT5ncGlvX21pY19sZWRf
-bWFzayA9IDB4MjA7CisJCXNuZF9oZGFfYWRkX3ZlcmJzKGNvZGVjLCBncGlvX2luaXQpOworCX0K
-K30KKwogLyogdHVybiBvbi9vZmYgbWljLW11dGUgTEVEIHBlciBjYXB0dXJlIGhvb2sgKi8KIHN0
-YXRpYyB2b2lkIGFsYzI2OV9maXh1cF9ocF9jYXBfbWljX211dGVfaG9vayhzdHJ1Y3QgaGRhX2Nv
-ZGVjICpjb2RlYywKIAkJCQkJICAgICAgIHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLApA
-QCAtNDMxMyw2ICs0MzM0LDcgQEAgZW51bSB7CiAJQUxDMjU1X0ZJWFVQX0RFTExfV01JX01JQ19N
-VVRFX0xFRCwKIAlBTEMyODJfRklYVVBfQVNQSVJFX1Y1X1BJTlMsCiAJQUxDMjgwX0ZJWFVQX0hQ
-X0dQSU80LAorCUFMQzI4Nl9GSVhVUF9IUF9HUElPX0xFRCwKIH07CiAKIHN0YXRpYyBjb25zdCBz
-dHJ1Y3QgaGRhX2ZpeHVwIGFsYzI2OV9maXh1cHNbXSA9IHsKQEAgLTQ3ODIsNiArNDgwNCwxMCBA
-QCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7CiAJCS50
-eXBlID0gSERBX0ZJWFVQX0ZVTkMsCiAJCS52LmZ1bmMgPSBhbGMyODBfZml4dXBfaHBfZ3BpbzQs
-CiAJfSwKKwlbQUxDMjg2X0ZJWFVQX0hQX0dQSU9fTEVEXSA9IHsKKwkJLnR5cGUgPSBIREFfRklY
-VVBfRlVOQywKKwkJLnYuZnVuYyA9IGFsYzI4Nl9maXh1cF9ocF9ncGlvX2xlZCwKKwl9LAogfTsK
-IAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9
-IHsKQEAgLTQ4MjAsNiArNDg0Niw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjaV9xdWly
-ayBhbGMyNjlfZml4dXBfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MjI2YSwg
-IkhQIiwgQUxDMjY5X0ZJWFVQX0hQX01VVEVfTEVEX01JQzEpLAogCVNORF9QQ0lfUVVJUksoMHgx
-MDNjLCAweDIyNmIsICJIUCIsIEFMQzI2OV9GSVhVUF9IUF9NVVRFX0xFRF9NSUMxKSwKIAlTTkRf
-UENJX1FVSVJLKDB4MTAzYywgMHgyMjZlLCAiSFAiLCBBTEMyNjlfRklYVVBfSFBfTVVURV9MRURf
-TUlDMSksCisJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MjI3MSwgIkhQIiwgQUxDMjg2X0ZJWFVQ
-X0hQX0dQSU9fTEVEKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAzYywgMHgyMjllLCAiSFAiLCBBTEMy
-NjlfRklYVVBfSFBfTVVURV9MRURfTUlDMSksCiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MjJi
-MiwgIkhQIiwgQUxDMjY5X0ZJWFVQX0hQX01VVEVfTEVEX01JQzEpLAogCVNORF9QQ0lfUVVJUkso
-MHgxMDNjLCAweDIyYjcsICJIUCIsIEFMQzI2OV9GSVhVUF9IUF9NVVRFX0xFRF9NSUMxKSwK
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A179FBA32RTITMBSV09realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A179FBA32RTITMBSV09realt_--
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index a26e8e8..e989ecf 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -98,3 +98,15 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+           used as alsa device in audio substem in Intel(R) MID devices
+           Say Y if you have such a device
+           If unsure select "N".
++
++config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
++        tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
++        depends on X86_INTEL_LPSS
++        select SND_SOC_RT5670
++        select SND_SST_MFLD_PLATFORM
++        select SND_SST_IPC_ACPI
++        help
++          This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
++          platforms with RT5672 audio codec.
++          Say Y if you have such a device
++          If unsure select "N".
+diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+index fbde4b07..e928ec3 100644
+--- a/sound/soc/intel/Makefile
++++ b/sound/soc/intel/Makefile
+@@ -27,12 +27,14 @@ snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
+ snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
+ snd-soc-sst-broadwell-objs := broadwell.o
+ snd-soc-sst-bytcr-dpcm-rt5640-objs := bytcr_dpcm_rt5640.o
++snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH) += snd-soc-sst-bytcr-dpcm-rt5640.o
++obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
+ 
+ # DSP driver
+ obj-$(CONFIG_SND_SST_IPC) += sst/
+diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
+new file mode 100644
+index 0000000..9b8b561
+--- /dev/null
++++ b/sound/soc/intel/cht_bsw_rt5672.c
+@@ -0,0 +1,285 @@
++/*
++ *  cht_bsw_rt5672.c - ASoc Machine driver for Intel Cherryview-based platforms
++ *                     Cherrytrail and Braswell, with RT5672 codec.
++ *
++ *  Copyright (C) 2014 Intel Corp
++ *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
++ *          Mengdong Lin <mengdong.lin@intel.com>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "../codecs/rt5670.h"
++#include "sst-atom-controls.h"
++
++/* The platform clock #3 outputs 19.2Mhz clock to codec as I2S MCLK */
++#define CHT_PLAT_CLK_3_HZ	19200000
++#define CHT_CODEC_DAI	"rt5670-aif1"
++
++static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
++{
++	int i;
++
++	for (i = 0; i < card->num_rtd; i++) {
++		struct snd_soc_pcm_runtime *rtd;
++
++		rtd = card->rtd + i;
++		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
++			     strlen(CHT_CODEC_DAI)))
++			return rtd->codec_dai;
++	}
++	return NULL;
++}
++
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++		struct snd_kcontrol *k, int  event)
++{
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *codec_dai;
++
++	codec_dai = cht_get_codec_dai(card);
++	if (!codec_dai) {
++		dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
++		return -EIO;
++	}
++
++	if (!SND_SOC_DAPM_EVENT_OFF(event))
++		return 0;
++
++	/* Set codec sysclk source to its internal clock because codec PLL will
++	 * be off when idle and MCLK will also be off by ACPI when codec is
++	 * runtime suspended. Codec needs clock for jack detection and button
++	 * press.
++	 */
++	snd_soc_dai_set_sysclk(codec_dai, RT5670_SCLK_S_RCCLK,
++			       0, SND_SOC_CLOCK_IN);
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control, SND_SOC_DAPM_POST_PMD),
++};
++
++static const struct snd_soc_dapm_route cht_audio_map[] = {
++	{"IN1P", NULL, "Headset Mic"},
++	{"IN1N", NULL, "Headset Mic"},
++	{"DMIC L1", NULL, "Int Mic"},
++	{"DMIC R1", NULL, "Int Mic"},
++	{"Headphone", NULL, "HPOL"},
++	{"Headphone", NULL, "HPOR"},
++	{"Ext Spk", NULL, "SPOLP"},
++	{"Ext Spk", NULL, "SPOLN"},
++	{"Ext Spk", NULL, "SPORP"},
++	{"Ext Spk", NULL, "SPORN"},
++	{"AIF1 Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx"},
++	{"codec_in1", NULL, "ssp2 Rx"},
++	{"ssp2 Rx", NULL, "AIF1 Capture"},
++	{"Headphone", NULL, "Platform Clock"},
++	{"Headset Mic", NULL, "Platform Clock"},
++	{"Int Mic", NULL, "Platform Clock"},
++	{"Ext Spk", NULL, "Platform Clock"},
++};
++
++static const struct snd_kcontrol_new cht_mc_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Int Mic"),
++	SOC_DAPM_PIN_SWITCH("Ext Spk"),
++};
++
++static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
++					struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	/* set codec PLL source to the 19.2MHz platform clock (MCLK) */
++	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5670_PLL1_S_MCLK,
++				  CHT_PLAT_CLK_3_HZ, params_rate(params) * 512);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
++		return ret;
++	}
++
++	/* set codec sysclk source to PLL */
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5670_SCLK_S_PLL1,
++				     params_rate(params) * 512,
++				     SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec sysclk: %d\n", ret);
++		return ret;
++	}
++	return 0;
++}
++
++static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
++{
++	int ret;
++	struct snd_soc_dai *codec_dai = runtime->codec_dai;
++
++	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
++	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
++	if (ret < 0) {
++		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	/* set SSP2 to 24-bit */
++	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
++				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
++				    SNDRV_PCM_FORMAT_S24_LE);
++	return 0;
++}
++
++static unsigned int rates_48000[] = {
++	48000,
++};
++
++static struct snd_pcm_hw_constraint_list constraints_48000 = {
++	.count = ARRAY_SIZE(rates_48000),
++	.list  = rates_48000,
++};
++
++static int cht_aif1_startup(struct snd_pcm_substream *substream)
++{
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE,
++			&constraints_48000);
++}
++
++static struct snd_soc_ops cht_aif1_ops = {
++	.startup = cht_aif1_startup,
++};
++
++static struct snd_soc_ops cht_be_ssp2_ops = {
++	.hw_params = cht_aif1_hw_params,
++};
++
++static struct snd_soc_dai_link cht_dailink[] = {
++	/* Front End DAI links */
++	[MERR_DPCM_AUDIO] = {
++		.name = "Audio Port",
++		.stream_name = "Audio",
++		.cpu_dai_name = "media-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.ignore_suspend = 1,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &cht_aif1_ops,
++	},
++	[MERR_DPCM_COMPR] = {
++		.name = "Compressed Port",
++		.stream_name = "Compress",
++		.cpu_dai_name = "compress-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++	},
++
++	/* Back End DAI links */
++	{
++		/* SSP2 - Codec */
++		.name = "SSP2-Codec",
++		.be_id = 1,
++		.cpu_dai_name = "ssp2-port",
++		.platform_name = "sst-mfld-platform",
++		.no_pcm = 1,
++		.codec_dai_name = "rt5670-aif1",
++		.codec_name = "i2c-10EC5670:00",
++		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
++					| SND_SOC_DAIFMT_CBS_CFS,
++		.init = cht_codec_init,
++		.be_hw_params_fixup = cht_codec_fixup,
++		.ignore_suspend = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &cht_be_ssp2_ops,
++	},
++};
++
++/* SoC card */
++static struct snd_soc_card snd_soc_card_cht = {
++	.name = "cherrytrailcraudio",
++	.dai_link = cht_dailink,
++	.num_links = ARRAY_SIZE(cht_dailink),
++	.dapm_widgets = cht_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(cht_dapm_widgets),
++	.dapm_routes = cht_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(cht_audio_map),
++	.controls = cht_mc_controls,
++	.num_controls = ARRAY_SIZE(cht_mc_controls),
++};
++
++static int snd_cht_mc_probe(struct platform_device *pdev)
++{
++	int ret_val = 0;
++
++	/* register the soc card */
++	snd_soc_card_cht.dev = &pdev->dev;
++	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
++	if (ret_val) {
++		dev_err(&pdev->dev,
++			"snd_soc_register_card failed %d\n", ret_val);
++		return ret_val;
++	}
++	platform_set_drvdata(pdev, &snd_soc_card_cht);
++	return ret_val;
++}
++
++static struct platform_driver snd_cht_mc_driver = {
++	.driver = {
++		.owner = THIS_MODULE,
++		.name = "cht-bsw-rt5672",
++		.pm = &snd_soc_pm_ops,
++	},
++	.probe = snd_cht_mc_probe,
++};
++
++module_platform_driver(snd_cht_mc_driver);
++
++MODULE_DESCRIPTION("ASoC Intel(R) Baytrail CR Machine driver");
++MODULE_AUTHOR("Subhransu S. Prusty, Mengdong Lin");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:cht-bsw-rt5672");
+-- 
+1.9.1
