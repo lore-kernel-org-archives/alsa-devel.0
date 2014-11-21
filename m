@@ -1,17 +1,21 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH v6 2/2] ASoC: Intel: add support for
-	Cherrytrail and Braswell in SST driver
-Date: Fri, 21 Nov 2014 16:09:17 +0800
-Message-ID: <c6ffd3359cec3412e5a43c90f6308cb2d75ed070.1416556905.git.mengdong.lin@intel.com>
-References: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel: cleanup runtime_pm
+ initialization
+Date: Fri, 21 Nov 2014 08:12:55 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B74356A@SHSMSX101.ccr.corp.intel.com>
+References: <1416390207-11020-1-git-send-email-vinod.koul@intel.com>
+ <20141119105655.GE22111@sirena.org.uk>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B7427B5@SHSMSX101.ccr.corp.intel.com>
+ <20141120091208.GF2074@intel.com> <20141120093849.GJ22111@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 60936265AF5
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 09:02:40 +0100 (CET)
-In-Reply-To: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CDB9265CAC
+ for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 09:13:12 +0100 (CET)
+In-Reply-To: <20141120093849.GJ22111@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,80 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, vinod.koul@intel.com, subhransu.s.prusty@intel.com, liam.r.girdwood@intel.com
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Mark Brown <broonie@kernel.org>, "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Thursday, November 20, 2014 5:39 PM
+> 
+> On Thu, Nov 20, 2014 at 02:42:08PM +0530, Vinod Koul wrote:
+> > On Thu, Nov 20, 2014 at 02:35:33PM +0530, Lin, Mengdong wrote:
+> 
+> > > Could you tell me where are the two patches in git repo?
+> 
+> > > I cannot find them on topic/intel branch.
+> > > I want to rebase the Cherrytrail/Braswell machine driver on the two
+> > > applied patches.
+> 
+> > I think Mark forgot to push :) don't see update to tree since
+> > yesterday
+> 
+> No, I haven't forgotten.  I've got spotty connectivity since I'm travelling.
 
-This patch add ACPI device ID and platform data for two Cherryview-based
-platforms, Cherrytrail and Braswell. Also reuse mfld driver ops in sst driver.
+Got it. Thanks!
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+I posted the new v6 Cherrytrail & Braswell patches based on Vinod's patches:
+[PATCH v6 1/2] ASoC: Intel: Add Cherrytrail & Braswell machine driver cht_bsw_rt5672
+[PATCH v6 2/2] ASoC: Intel: add support for Cherrytrail and Braswell in SST driver
 
-diff --git a/sound/soc/intel/sst/sst.c b/sound/soc/intel/sst/sst.c
-index b2b5604..2be4f3f 100644
---- a/sound/soc/intel/sst/sst.c
-+++ b/sound/soc/intel/sst/sst.c
-@@ -183,6 +183,7 @@ int sst_driver_ops(struct intel_sst_drv *sst)
- 	switch (sst->dev_id) {
- 	case SST_MRFLD_PCI_ID:
- 	case SST_BYT_ACPI_ID:
-+	case SST_CHV_ACPI_ID:
- 		sst->tstamp = SST_TIME_STAMP_MRFLD;
- 		sst->ops = &mrfld_ops;
- 		return 0;
-diff --git a/sound/soc/intel/sst/sst.h b/sound/soc/intel/sst/sst.h
-index 683dc71..7f4bbfc 100644
---- a/sound/soc/intel/sst/sst.h
-+++ b/sound/soc/intel/sst/sst.h
-@@ -30,6 +30,7 @@
- #define SST_DRV_NAME "intel_sst_driver"
- #define SST_MRFLD_PCI_ID 0x119A
- #define SST_BYT_ACPI_ID	0x80860F28
-+#define SST_CHV_ACPI_ID	0x808622A8
- 
- #define SST_SUSPEND_DELAY 2000
- #define FW_CONTEXT_MEM (64*1024)
-diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
-index b261821..c2e5edf 100644
---- a/sound/soc/intel/sst/sst_acpi.c
-+++ b/sound/soc/intel/sst/sst_acpi.c
-@@ -129,6 +129,17 @@ struct sst_platform_info byt_rvp_platform_data = {
- 	.platform = "sst-mfld-platform",
- };
- 
-+/* Cherryview (Cherrytrail and Braswell) uses same mrfld dpcm fw as Baytrail,
-+ * so pdata is same as Baytrail.
-+ */
-+struct sst_platform_info chv_platform_data = {
-+	.probe_data = &byt_fwparse_info,
-+	.ipc_info = &byt_ipc_info,
-+	.lib_info = &byt_lib_dnld_info,
-+	.res_info = &byt_rvp_res_info,
-+	.platform = "sst-mfld-platform",
-+};
-+
- static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- {
- 	struct resource *rsrc;
-@@ -337,8 +348,16 @@ static struct sst_machines sst_acpi_bytcr[] = {
- 	{},
- };
- 
-+/* Cherryview-based platforms: CherryTrail and Braswell */
-+static struct sst_machines sst_acpi_chv[] = {
-+	{"10EC5670", "cht-bsw", "cht-bsw-rt5672", NULL, "fw_sst_22a8.bin",
-+						&chv_platform_data },
-+	{},
-+};
-+
- static const struct acpi_device_id sst_acpi_ids[] = {
- 	{ "80860F28", (unsigned long)&sst_acpi_bytcr},
-+	{ "808622A8", (unsigned long) &sst_acpi_chv},
- 	{ },
- };
- 
--- 
-1.9.1
+Regards
+Mengdong
