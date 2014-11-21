@@ -1,16 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ASoC: adau17x1: Mark DSP parameter memory
-	as readable and precious
-Date: Fri, 21 Nov 2014 18:53:51 +0100
-Message-ID: <1416592432-29132-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/2] ASoC: sigmadsp: Fix endianness conversion
+Date: Fri, 21 Nov 2014 18:53:52 +0100
+Message-ID: <1416592432-29132-2-git-send-email-lars@metafoo.de>
+References: <1416592432-29132-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-173.synserver.de (smtp-out-173.synserver.de
  [212.40.185.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 724C5260694
+ by alsa0.perex.cz (Postfix) with ESMTP id CDDD72606E1
  for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 18:54:01 +0100 (CET)
+In-Reply-To: <1416592432-29132-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,80 +25,46 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-To be able to read back data from the DSP parameter memory the register
-range needs to be marked as readable. At the same time we do not want them
-to e.g. appear in debugfs output so mark them as precious as well.
+Make sure to always convert the firmware data to local endianness before
+using it.
 
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Fixes: a35daac77a03 ("ASoC: sigmadsp: Add support for fw v2")
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/adau1761.c |  1 +
- sound/soc/codecs/adau1781.c |  1 +
- sound/soc/codecs/adau17x1.c | 14 ++++++++++++++
- sound/soc/codecs/adau17x1.h |  1 +
- 4 files changed, 17 insertions(+)
+ sound/soc/codecs/sigmadsp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
-index 109fd78..a1baeee 100644
---- a/sound/soc/codecs/adau1761.c
-+++ b/sound/soc/codecs/adau1761.c
-@@ -798,6 +798,7 @@ const struct regmap_config adau1761_regmap_config = {
- 	.num_reg_defaults = ARRAY_SIZE(adau1761_reg_defaults),
- 	.readable_reg = adau1761_readable_register,
- 	.volatile_reg = adau17x1_volatile_register,
-+	.precious_reg = adau17x1_precious_register,
- 	.cache_type = REGCACHE_RBTREE,
- };
- EXPORT_SYMBOL_GPL(adau1761_regmap_config);
-diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
-index 17966b6..35581f4 100644
---- a/sound/soc/codecs/adau1781.c
-+++ b/sound/soc/codecs/adau1781.c
-@@ -472,6 +472,7 @@ const struct regmap_config adau1781_regmap_config = {
- 	.num_reg_defaults	= ARRAY_SIZE(adau1781_reg_defaults),
- 	.readable_reg		= adau1781_readable_register,
- 	.volatile_reg		= adau17x1_volatile_register,
-+	.precious_reg		= adau17x1_precious_register,
- 	.cache_type		= REGCACHE_RBTREE,
- };
- EXPORT_SYMBOL_GPL(adau1781_regmap_config);
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index d49bc7e..fa2e690 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -707,8 +707,22 @@ int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
- }
- EXPORT_SYMBOL_GPL(adau17x1_set_micbias_voltage);
+diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
+index 55af596..6abefd2 100644
+--- a/sound/soc/codecs/sigmadsp.c
++++ b/sound/soc/codecs/sigmadsp.c
+@@ -235,7 +235,7 @@ static int sigma_fw_load_control(struct sigmadsp *sigmadsp,
  
-+bool adau17x1_precious_register(struct device *dev, unsigned int reg)
-+{
-+	/* SigmaDSP parameter memory */
-+	if (reg < 0x400)
-+		return true;
-+
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(adau17x1_precious_register);
-+
- bool adau17x1_readable_register(struct device *dev, unsigned int reg)
- {
-+	/* SigmaDSP parameter memory */
-+	if (reg < 0x400)
-+		return true;
-+
- 	switch (reg) {
- 	case ADAU17X1_CLOCK_CONTROL:
- 	case ADAU17X1_PLL_CONTROL:
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index 6861aa3..e13583e 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -56,6 +56,7 @@ int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
- 	enum adau17x1_micbias_voltage micbias);
- bool adau17x1_readable_register(struct device *dev, unsigned int reg);
- bool adau17x1_volatile_register(struct device *dev, unsigned int reg);
-+bool adau17x1_precious_register(struct device *dev, unsigned int reg);
- int adau17x1_resume(struct snd_soc_codec *codec);
+ 	ctrl->addr = le16_to_cpu(ctrl_chunk->addr);
+ 	ctrl->num_bytes = num_bytes;
+-	ctrl->samplerates = chunk->samplerates;
++	ctrl->samplerates = le32_to_cpu(chunk->samplerates);
  
- extern const struct snd_soc_dai_ops adau17x1_dai_ops;
+ 	list_add_tail(&ctrl->head, &sigmadsp->ctrl_list);
+ 
+@@ -266,7 +266,7 @@ static int sigma_fw_load_data(struct sigmadsp *sigmadsp,
+ 
+ 	data->addr = le16_to_cpu(data_chunk->addr);
+ 	data->length = length;
+-	data->samplerates = chunk->samplerates;
++	data->samplerates = le32_to_cpu(chunk->samplerates);
+ 	memcpy(data->data, data_chunk->data, length);
+ 	list_add_tail(&data->head, &sigmadsp->data_list);
+ 
+@@ -329,7 +329,7 @@ static int sigmadsp_fw_load_v2(struct sigmadsp *sigmadsp,
+ 		if (length > fw->size - pos || length < sizeof(*chunk))
+ 			return -EINVAL;
+ 
+-		switch (chunk->tag) {
++		switch (le32_to_cpu(chunk->tag)) {
+ 		case SIGMA_FW_CHUNK_TYPE_DATA:
+ 			ret = sigma_fw_load_data(sigmadsp, chunk, length);
+ 			break;
 -- 
 1.8.0
