@@ -1,43 +1,50 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Fri, 21 Nov 2014 14:35:07 +0200
-Message-ID: <546F317B.9030004@ti.com>
-References: <cover.1415803064.git.jsarha@ti.com> <20141112222344.GU3815@sirena.org.uk> <54646648.5030807@ti.com> <546DC9A0.8060700@ti.com> <20141121112317.GQ3815@sirena.org.uk>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: Re: [PATCH 0/1] Add big-endian DSD sample formats and
+ fix XMOS DSD sample format
+Date: Fri, 21 Nov 2014 12:50:51 +0100
+Message-ID: <1416570651.7009.1.camel@xs4all.nl>
+References: <1416564029-6018-1-git-send-email-jussi@sonarnerd.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20141121112317.GQ3815@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb2-smtp-cloud2.xs4all.net (lb2-smtp-cloud2.xs4all.net
+ [194.109.24.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 915C92667B2
+ for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 12:50:54 +0100 (CET)
+In-Reply-To: <1416564029-6018-1-git-send-email-jussi@sonarnerd.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jussi Laako <jussi@sonarnerd.net>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/21/2014 01:23 PM, Mark Brown wrote:
-> With this specific series I also need to figure out what all the video
-> side is about (like I said earlier a lot of the patches look like
-> they're supposed to be simple fixes for the video code not terribly
-> closely tied to the rest of the series but none of them are getting
-> applied) and what the end goal is beyond mechanically moving code.
+On Fri, 2014-11-21 at 12:00 +0200, Jussi Laako wrote:
+> Resend, previous had non matching subject for cover letter vs patch.
+> 
+> This patch fixes XMOS DSD sample format to DSD_U32_BE and also adds
+> DSD_U16_BE and DSD_U32_BE sample formats.
+> 
+> Jussi Laako (1):
+>   Add big-endian DSD sample formats and fix XMOS DSD sample format
+> 
+>  include/sound/pcm.h         | 2 ++
+>  include/uapi/sound/asound.h | 4 +++-
+>  sound/core/pcm.c            | 2 ++
+>  sound/core/pcm_misc.c       | 8 ++++++++
+>  sound/usb/quirks.c          | 4 ++--
+>  5 files changed, 17 insertions(+), 3 deletions(-)
+> 
+Acked-by: Jurgen Kramer <gtmkramer@xs4all.nl>
 
-(Sorry, I forgot to comment this part.)
+I have tested the complete chain (added DSD_BE to kernel, alsa-lib,
+alsa-utils) with the change to BE. Everything still works.
 
-The end goal of this series is to fix OMAP HDMI audio, that got broken 
-couple of releases ago. At the same time I cleaned up the old complex 
-scheme to make the connection between the video and audio parts and 
-allow multiple HDMI devices (DSS side is not ready for this yet, but 
-audio side is).
-
-Another target was to make configuring the audio as simple as possible. 
-Because everything needed for HDMI audio is always there if the video 
-side is correctly configured, there should be no need for any additional 
-configuration (in DT or otherwise) to get the audio working. Now simply 
-selecting omap-hdmi-audio is enough. There is no complex cross 
-dependencies to the video side any more, the audio driver simply does 
-find its device if the HDMI video driver is not probed.
-
-But indeed, in functional sense the whole series - apart from the couple 
-of fixes in the beginning - is just moving the code around.
-
-Best regards,
-Jyri
+Jurgen
