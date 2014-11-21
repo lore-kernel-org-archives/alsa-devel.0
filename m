@@ -1,20 +1,15 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: cs42l51: Replace w->codec
- snd_soc_dapm_to_codec(w->dapm)
-Date: Fri, 21 Nov 2014 01:38:35 +0000
-Message-ID: <6F07E569-1EFA-4F4C-B15E-50B97D9D2DD7@cirrus.com>
-References: <1416513940-28717-1-git-send-email-lars@metafoo.de>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5677: Fix the issue that the private
+	value cannot be accessed
+Date: Fri, 21 Nov 2014 09:54:38 +0800
+Message-ID: <1416534878-25279-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0111.outbound.protection.outlook.com [157.56.111.111])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A8FE260638
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 02:38:39 +0100 (CET)
-In-Reply-To: <1416513940-28717-1-git-send-email-lars@metafoo.de>
-Content-Language: en-US
-Content-ID: <A685A8C39C50464C90C24FCA6611B7CC@ad.cirrus.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7997E265AD2
+ for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 02:55:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,19 +19,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+Fix the issue that the private value cannot be accessed.
 
-> On Nov 21, 2014, at 05:05, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> 
-> The codec field of the snd_soc_widget struct is eventually going to be
-> removed, use snd_soc_dapm_to_codec(w->dapm) instead.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
-For both
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5677.c | 37 ++++++++++++++++++++++++++++++-------
+ sound/soc/codecs/rt5677.h |  2 +-
+ 2 files changed, 31 insertions(+), 8 deletions(-)
 
-Thanks 
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index f2211f1..133010d 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -4287,6 +4287,7 @@ static int rt5677_probe(struct snd_soc_codec *codec)
+ 	}
+ 
+ 	mutex_init(&rt5677->dsp_cmd_lock);
++	mutex_init(&rt5677->dsp_pri_lock);
+ 
+ 	return 0;
+ }
+@@ -4344,10 +4345,19 @@ static int rt5677_read(void *context, unsigned int reg, unsigned int *val)
+ 	struct i2c_client *client = context;
+ 	struct rt5677_priv *rt5677 = i2c_get_clientdata(client);
+ 
+-	if (rt5677->is_dsp_mode)
+-		rt5677_dsp_mode_i2c_read(rt5677, reg, val);
+-	else
++	if (rt5677->is_dsp_mode) {
++		if (reg > 0xff) {
++			mutex_lock(&rt5677->dsp_pri_lock);
++			rt5677_dsp_mode_i2c_write(rt5677, RT5677_PRIV_INDEX,
++				reg & 0xff);
++			rt5677_dsp_mode_i2c_read(rt5677, RT5677_PRIV_DATA, val);
++			mutex_unlock(&rt5677->dsp_pri_lock);
++		} else {
++			rt5677_dsp_mode_i2c_read(rt5677, reg, val);
++		}
++	} else {
+ 		regmap_read(rt5677->regmap_physical, reg, val);
++	}
+ 
+ 	return 0;
+ }
+@@ -4357,10 +4367,20 @@ static int rt5677_write(void *context, unsigned int reg, unsigned int val)
+ 	struct i2c_client *client = context;
+ 	struct rt5677_priv *rt5677 = i2c_get_clientdata(client);
+ 
+-	if (rt5677->is_dsp_mode)
+-		rt5677_dsp_mode_i2c_write(rt5677, reg, val);
+-	else
++	if (rt5677->is_dsp_mode) {
++		if (reg > 0xff) {
++			mutex_lock(&rt5677->dsp_pri_lock);
++			rt5677_dsp_mode_i2c_write(rt5677, RT5677_PRIV_INDEX,
++				reg & 0xff);
++			rt5677_dsp_mode_i2c_write(rt5677, RT5677_PRIV_DATA,
++				val);
++			mutex_unlock(&rt5677->dsp_pri_lock);
++		} else {
++			rt5677_dsp_mode_i2c_write(rt5677, reg, val);
++		}
++	} else {
+ 		regmap_write(rt5677->regmap_physical, reg, val);
++	}
+ 
+ 	return 0;
+ }
+@@ -4495,10 +4515,13 @@ static const struct regmap_config rt5677_regmap_physical = {
+ 	.reg_bits = 8,
+ 	.val_bits = 16,
+ 
+-	.max_register = RT5677_VENDOR_ID2 + 1,
++	.max_register = RT5677_VENDOR_ID2 + 1 + (ARRAY_SIZE(rt5677_ranges) *
++						RT5677_PR_SPACING),
+ 	.readable_reg = rt5677_readable_register,
+ 
+ 	.cache_type = REGCACHE_NONE,
++	.ranges = rt5677_ranges,
++	.num_ranges = ARRAY_SIZE(rt5677_ranges),
+ };
+ 
+ static const struct regmap_config rt5677_regmap = {
+diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
+index a02f64c..dbd9ffd 100644
+--- a/sound/soc/codecs/rt5677.h
++++ b/sound/soc/codecs/rt5677.h
+@@ -1670,7 +1670,7 @@ struct rt5677_priv {
+ 	struct rt5677_platform_data pdata;
+ 	struct regmap *regmap, *regmap_physical;
+ 	const struct firmware *fw1, *fw2;
+-	struct mutex dsp_cmd_lock;
++	struct mutex dsp_cmd_lock, dsp_pri_lock;
+ 
+ 	int sysclk;
+ 	int sysclk_src;
+-- 
+1.8.1.1.439.g50a6b54
