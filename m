@@ -1,62 +1,53 @@
 From: Andreas Ruprecht <rupran@einserver.de>
-Subject: Re: [PATCH] ASoC: rockchip: i2s: Add dependency to I2S device driver
-Date: Fri, 21 Nov 2014 20:42:54 +0100
-Message-ID: <546F95BE.8080808@einserver.de>
-References: <1416594913-30187-1-git-send-email-rupran@einserver.de> <20141121185856.GJ3815@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH v2] ASoC: rockchip: i2s: Fix Kconfig for I2S device driver
+Date: Fri, 21 Nov 2014 20:50:46 +0100
+Message-ID: <1416599446-32310-1-git-send-email-rupran@einserver.de>
+References: <20141121185856.GJ3815@sirena.org.uk>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20141121185856.GJ3815@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andreas Ruprecht <rupran@einserver.de>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Currently, CONFIG_SND_SOC_ROCKCHIP_I2S could also be selected
+without having CONFIG_SND_SOC_ROCKCHIP enabled.
 
-On 21.11.2014 19:58, Mark Brown wrote:
-> On Fri, Nov 21, 2014 at 07:35:13PM +0100, Andreas Ruprecht wrote:
->> Currently, CONFIG_SND_SOC_ROCKCHIP_I2S could also be selected 
->> without having CONFIG_SND_SOC_ROCKCHIP enabled.
->> 
->> As this makes no sense (and breaks the build, when the option 
->> CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM - which would be selected
->> by CONFIG_SND_SOC_ROCKCHIP - is not enabled), a Kconfig
->> dependency is added to CONFIG_SND_SOC_ROCKCHIP_I2S. This will
->> make the item visible only if CONFIG_SND_SOC_ROCKCHIP is
->> enabled.
-> 
-> This doesn't seem like an obvious fix - why is the fix not to put
-> the select on the I2S driver (which is the thing that actually
-> depends on the dmaengine stuff)?
-> 
+As this makes no sense, a Kconfig dependency is added to
+CONFIG_SND_SOC_ROCKCHIP_I2S. This will make the item visible only if
+CONFIG_SND_SOC_ROCKCHIP is enabled.
 
-I didn't look a lot further into it, I just saw the build error report
-and from the other commits touching the Kconfig file it looked like
-there could be more options in the future.
+Additionally, as the code connected to CONFIG_SND_SOC_ROCKCHIP_I2S
+depends on CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM, the dependency
+is moved to reflect this more clearly.
 
-I will submit a v2 of the patch in a minute with the select for the
-dmaengine support moved to the I2S option.
+Signed-off-by: Andreas Ruprecht <rupran@einserver.de>
+Reported-by: Jim Davis <jim.epost@gmail.com>
+---
+ sound/soc/rockchip/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Regards,
-
-Andreas
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUb5W9AAoJEJBoQA9qo224gp0P/0tSHqlwTn1CnB3KQR+sEdnN
-KzJwEZr5NbdXZyu6eBq0n7IS7MdmusW4BZrFkO2YNwyTPCb0kQPo8gD8IRXYYqdv
-Hlkx0k4X8lZrkIFQJak1w3ZNVds6pl81ljf33GAZ82cYJA4c/wPDBv6HVggXjlwc
-0sVn4i+JuHXnvhTuiQPs1kPC6S0NGo69yow1xK2W2t46WCFqiI4b6ZSPqC3RP3CA
-8wMpdzYzA9VXKpwuAkMzFy+uTBfiJFEkAQhhb8kEiOMQoOsIO5SAMMHce7HodFpd
-m3nWfIl+C8ZPtIWuJPKcA8BY+L58bjE3OneCLTK50WRQn36AFeLQC7DPij5zHCDJ
-lBxEpCP78dv/N058h9hpIloRzbESCjtQxhvyW3nkNbFLYUqKy1MW9yJkKDCzC1v2
-yAYmxlo6JAQHzvZGOcy3RVX8Rar5JS7raNygPizLkQCPqrUfqhWUg6h2h32wKgUN
-CXRO1pf0Sz9Uaxjx6CBowwxJlIZN9EiVQpCPmV+BeIeIuRgsPZF3rDPuHHw+WwCp
-F2Oih8U5ytNBfVwQgcTEM1doYmaYQpFTSBDMIerTTxZKTZsEa+x1EyX3f2aievIW
-EPJgOM15cODsAepRh74PsofmPYe6aFL+lTSIVwPv351exK2ELJwfCUBzsk50Hu8z
-MQOsYmY33VXh2VemTlek
-=xmsJ
------END PGP SIGNATURE-----
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index b1fc0ca..e181826 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -1,7 +1,6 @@
+ config SND_SOC_ROCKCHIP
+ 	tristate "ASoC support for Rockchip"
+ 	depends on COMPILE_TEST || ARCH_ROCKCHIP
+-	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the Rockchip SoCs' Audio interfaces. You will also need to
+@@ -9,7 +8,8 @@ config SND_SOC_ROCKCHIP
+ 
+ config SND_SOC_ROCKCHIP_I2S
+ 	tristate "Rockchip I2S Device Driver"
+-	depends on CLKDEV_LOOKUP
++	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
++	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y or M if you want to add support for I2S driver for
+ 	  Rockchip I2S device. The device supports upto maximum of
+-- 
+1.9.1
