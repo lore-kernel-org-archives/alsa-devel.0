@@ -1,69 +1,103 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/1] ALSA: core: Deletion of unnecessary checks before two
- function calls
-Date: Fri, 21 Nov 2014 18:40:49 +0100
-Message-ID: <546F7921.2000406@users.sourceforge.net>
-References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
- urceforge.net>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: adau17x1: Mark DSP parameter memory
+	as readable and precious
+Date: Fri, 21 Nov 2014 18:53:51 +0100
+Message-ID: <1416592432-29132-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-173.synserver.de (smtp-out-173.synserver.de
+ [212.40.185.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 724C5260694
+ for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 18:54:01 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 21 Nov 2014 18:34:48 +0100
+To be able to read back data from the DSP parameter memory the register
+range needs to be marked as readable. At the same time we do not want them
+to e.g. appear in debugfs output so mark them as precious as well.
 
-The functions snd_seq_oss_timer_delete() and vunmap() perform also input
-parameter validation. Thus the test around the call is not needed.
-
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/core/seq/oss/seq_oss_init.c | 9 +++------
- sound/core/sgbuf.c                | 3 +--
- 2 files changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/codecs/adau1761.c |  1 +
+ sound/soc/codecs/adau1781.c |  1 +
+ sound/soc/codecs/adau17x1.c | 14 ++++++++++++++
+ sound/soc/codecs/adau17x1.h |  1 +
+ 4 files changed, 17 insertions(+)
 
-diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
-index b9184d2..b0e32e1 100644
---- a/sound/core/seq/oss/seq_oss_init.c
-+++ b/sound/core/seq/oss/seq_oss_init.c
-@@ -403,14 +403,11 @@ free_devinfo(void *private)
- {
- 	struct seq_oss_devinfo *dp = (struct seq_oss_devinfo *)private;
- 
--	if (dp->timer)
--		snd_seq_oss_timer_delete(dp->timer);
-+	snd_seq_oss_timer_delete(dp->timer);
- 		
--	if (dp->writeq)
--		snd_seq_oss_writeq_delete(dp->writeq);
-+	snd_seq_oss_writeq_delete(dp->writeq);
- 
--	if (dp->readq)
--		snd_seq_oss_readq_delete(dp->readq);
-+	snd_seq_oss_readq_delete(dp->readq);
- 	
- 	kfree(dp);
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index 109fd78..a1baeee 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -798,6 +798,7 @@ const struct regmap_config adau1761_regmap_config = {
+ 	.num_reg_defaults = ARRAY_SIZE(adau1761_reg_defaults),
+ 	.readable_reg = adau1761_readable_register,
+ 	.volatile_reg = adau17x1_volatile_register,
++	.precious_reg = adau17x1_precious_register,
+ 	.cache_type = REGCACHE_RBTREE,
+ };
+ EXPORT_SYMBOL_GPL(adau1761_regmap_config);
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
+index 17966b6..35581f4 100644
+--- a/sound/soc/codecs/adau1781.c
++++ b/sound/soc/codecs/adau1781.c
+@@ -472,6 +472,7 @@ const struct regmap_config adau1781_regmap_config = {
+ 	.num_reg_defaults	= ARRAY_SIZE(adau1781_reg_defaults),
+ 	.readable_reg		= adau1781_readable_register,
+ 	.volatile_reg		= adau17x1_volatile_register,
++	.precious_reg		= adau17x1_precious_register,
+ 	.cache_type		= REGCACHE_RBTREE,
+ };
+ EXPORT_SYMBOL_GPL(adau1781_regmap_config);
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index d49bc7e..fa2e690 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -707,8 +707,22 @@ int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
  }
-diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
-index 0a41850..84fffab 100644
---- a/sound/core/sgbuf.c
-+++ b/sound/core/sgbuf.c
-@@ -39,8 +39,7 @@ int snd_free_sgbuf_pages(struct snd_dma_buffer *dmab)
- 	if (! sgbuf)
- 		return -EINVAL;
+ EXPORT_SYMBOL_GPL(adau17x1_set_micbias_voltage);
  
--	if (dmab->area)
--		vunmap(dmab->area);
-+	vunmap(dmab->area);
- 	dmab->area = NULL;
++bool adau17x1_precious_register(struct device *dev, unsigned int reg)
++{
++	/* SigmaDSP parameter memory */
++	if (reg < 0x400)
++		return true;
++
++	return false;
++}
++EXPORT_SYMBOL_GPL(adau17x1_precious_register);
++
+ bool adau17x1_readable_register(struct device *dev, unsigned int reg)
+ {
++	/* SigmaDSP parameter memory */
++	if (reg < 0x400)
++		return true;
++
+ 	switch (reg) {
+ 	case ADAU17X1_CLOCK_CONTROL:
+ 	case ADAU17X1_PLL_CONTROL:
+diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
+index 6861aa3..e13583e 100644
+--- a/sound/soc/codecs/adau17x1.h
++++ b/sound/soc/codecs/adau17x1.h
+@@ -56,6 +56,7 @@ int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
+ 	enum adau17x1_micbias_voltage micbias);
+ bool adau17x1_readable_register(struct device *dev, unsigned int reg);
+ bool adau17x1_volatile_register(struct device *dev, unsigned int reg);
++bool adau17x1_precious_register(struct device *dev, unsigned int reg);
+ int adau17x1_resume(struct snd_soc_codec *codec);
  
- 	tmpb.dev.type = SNDRV_DMA_TYPE_DEV;
+ extern const struct snd_soc_dai_ops adau17x1_dai_ops;
 -- 
-2.1.3
+1.8.0
