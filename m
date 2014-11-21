@@ -1,71 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: max98095: Replace w->codec
- snd_soc_dapm_to_codec(w->dapm)
-Date: Fri, 21 Nov 2014 18:17:29 +0000
-Message-ID: <20141121181729.GE3815@sirena.org.uk>
-References: <1416514915-29836-1-git-send-email-lars@metafoo.de>
- <1416514915-29836-3-git-send-email-lars@metafoo.de>
+Subject: Re: [alsa-devel][PATCH v3] ASoC: wm8960: Add device tree support
+Date: Fri, 21 Nov 2014 18:19:49 +0000
+Message-ID: <20141121181949.GG3815@sirena.org.uk>
+References: <1416481668-22321-1-git-send-email-b50113@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7934368078808749186=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ABDD265D9E
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 19:18:58 +0100 (CET)
-In-Reply-To: <1416514915-29836-3-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UrS3HlPIImnL8SYr"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1416481668-22321-1-git-send-email-b50113@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <b50113@freescale.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7934368078808749186==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="j60k8TkprPtporUA"
-Content-Disposition: inline
-
-
---j60k8TkprPtporUA
+--UrS3HlPIImnL8SYr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 20, 2014 at 09:21:55PM +0100, Lars-Peter Clausen wrote:
-> The codec field of the snd_soc_widget struct is eventually going to be
-> removed, use snd_soc_dapm_to_codec(w->dapm) instead.
+On Thu, Nov 20, 2014 at 07:07:48PM +0800, Zidan Wang wrote:
+> Document the device tree binding for the WM8960 codec, and modify the
+> driver to extract the platform data from device tree, if present.
 
 Applied, thanks.
 
---j60k8TkprPtporUA
+--UrS3HlPIImnL8SYr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUb4G4AAoJECTWi3JdVIfQhRkH/3GkSIa0pM5pAhXab1JOVV1t
-dYK3asKr2lLhM579zFQ4Ns1M2RtvU/JvWRBZaYhoWl68hIM8zSDAeiMsjg5loTY3
-WH4mGVjk4XiUBW1dNqARjCw/dEqXzp2lduWW1Bs9Qmhqa/U07FCZHrdO0h4LL2R7
-+rUmlsaogzxrDJbeWNAJkg/3+/INecFUAgbqu4xeOeVPuM/YVd07U03e9oFWvfgU
-1U4lhT7o6YocHhQN85Rw3/UVbd23+H95UfwabjAAcCkyLMXGxUrVee2Qp5/flzVJ
-LWEllPmTEHoQJe6dF9BpCwZ2xthgXnH2WCqNK9iQ3GztjWxPAjFh+YkNzUNqW0U=
-=Y7ta
+iQEcBAEBAgAGBQJUb4JFAAoJECTWi3JdVIfQAfcH/RetDQIp18AS41nDiKafV5ns
+EPs2pVcQAHky5dpln5vO2ioj+LAzWSj2aqkVeaY8lJ0mRhnx6eVl84c232+Hx4R7
+5i+rHyb+WBciiCooTgDwKHrjzajZcLN+beP1/o+e1QYBGz6Z9jqRwoYkgyX3MrmQ
+OzfxStaSz/ePeBqpt2bfzFBLdSTVxri4Vw4S8086AeYYDmKMDnceSN1xGIg7YaF3
+mHZ/oWvTlGfP++XWghP1rqLca+bzIrrTga6PxOi0anKUsAhaZqaW5ikLDk4vR7++
+W0ejbejuTOIvxYyBBHhQ2eQbFpiCb/plxt4Vxppd28CQBNk9mc6oamkNWzMDzJA=
+=LJ44
 -----END PGP SIGNATURE-----
 
---j60k8TkprPtporUA--
-
---===============7934368078808749186==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7934368078808749186==--
+--UrS3HlPIImnL8SYr--
