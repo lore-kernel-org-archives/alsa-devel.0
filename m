@@ -1,53 +1,70 @@
-From: Andreas Ruprecht <rupran@einserver.de>
-Subject: [PATCH v2] ASoC: rockchip: i2s: Fix Kconfig for I2S device driver
-Date: Fri, 21 Nov 2014 20:50:46 +0100
-Message-ID: <1416599446-32310-1-git-send-email-rupran@einserver.de>
-References: <20141121185856.GJ3815@sirena.org.uk>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141121185856.GJ3815@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Heiko Stuebner <heiko@sntech.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andreas Ruprecht <rupran@einserver.de>
+From: "Kenneth Westfield" <kwestfie@codeaurora.org>
+Subject: Re: [alsa-devel] [PATCH 9/9] ARM: dts: Model IPQ LPASS audio
+ hardware
+Date: Fri, 21 Nov 2014 12:17:25 -0800
+Message-ID: <cfe24f81daa727ba7e7ace434784a04d.squirrel@www.codeaurora.org>
+References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
+    <1416423169-21865-10-git-send-email-kwestfie@codeaurora.org>
+    <20141119225443.GB13013@sonymobile.com>
+Reply-To: kwestfie@codeaurora.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20141119225443.GB13013@sonymobile.com>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Courtney Cavin <courtney.cavin@sonymobile.com>
+Cc: Device Tree Mailing List <devicetree@vger.kernel.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Bryan Huntsman <bryanh@codeaurora.org>, Mark Brown <broonie@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Currently, CONFIG_SND_SOC_ROCKCHIP_I2S could also be selected
-without having CONFIG_SND_SOC_ROCKCHIP enabled.
+On Wed, November 19, 2014 2:54 pm, Courtney Cavin wrote:
 
-As this makes no sense, a Kconfig dependency is added to
-CONFIG_SND_SOC_ROCKCHIP_I2S. This will make the item visible only if
-CONFIG_SND_SOC_ROCKCHIP is enabled.
+> On Wed, Nov 19, 2014 at 07:52:49PM +0100, Kenneth Westfield wrote:
+>> From: Kenneth Westfield <kwestfie@codeaurora.org>
+>>
+>> Model the LPASS audio hardware for the IPQ806X.
+>>
+>> Change-Id: Ide1aa0d09c23d4496aa9c40e3c9878a968261f11
+>
+> As Kumar mentioned, please exclude this.
+>
+>> Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
+>> Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+>
+> Typically, the order of these SoB should match some sort of chain of delivery:
+>  - The first should be the author of the patch
+>  - The last should match the email source (you) <-- doesn't seem to be the case
+>
+>> ---
+>>  arch/arm/boot/dts/qcom-ipq8064.dtsi | 33 +++++++++++++++++++++++++++++++++
+>>  1 file changed, 33 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+>> index 63b2146f563b541e4994697af5ee1bbb41a4abd1..0e5b3b625f0442964aa7fbbc993c6c818fe99041 100644
+>> --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
+>> +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+>> @@ -2,6 +2,7 @@
+>>
+>>  #include "skeleton.dtsi"
+>>  #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
+>> +#include <dt-bindings/clock/qcom,lcc-ipq806x.h>
+>
+> Neither this file nor an associated clock controller driver exists in
+> mainline.  Is there some other series this depends on?
+>
+> -Courtney
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-Additionally, as the code connected to CONFIG_SND_SOC_ROCKCHIP_I2S
-depends on CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM, the dependency
-is moved to reflect this more clearly.
+Courtney
 
-Signed-off-by: Andreas Ruprecht <rupran@einserver.de>
-Reported-by: Jim Davis <jim.epost@gmail.com>
----
- sound/soc/rockchip/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you for your comments.  I will separately address each comment shortly.
 
-diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index b1fc0ca..e181826 100644
---- a/sound/soc/rockchip/Kconfig
-+++ b/sound/soc/rockchip/Kconfig
-@@ -1,7 +1,6 @@
- config SND_SOC_ROCKCHIP
- 	tristate "ASoC support for Rockchip"
- 	depends on COMPILE_TEST || ARCH_ROCKCHIP
--	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the Rockchip SoCs' Audio interfaces. You will also need to
-@@ -9,7 +8,8 @@ config SND_SOC_ROCKCHIP
- 
- config SND_SOC_ROCKCHIP_I2S
- 	tristate "Rockchip I2S Device Driver"
--	depends on CLKDEV_LOOKUP
-+	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	  Say Y or M if you want to add support for I2S driver for
- 	  Rockchip I2S device. The device supports upto maximum of
 -- 
-1.9.1
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
