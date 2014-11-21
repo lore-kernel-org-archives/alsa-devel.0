@@ -1,72 +1,69 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/6] ASoC: adau17x1: Mark DSP parameter
- memory as readable and precious
-Date: Fri, 21 Nov 2014 16:38:41 +0000
-Message-ID: <20141121163841.GU3815@sirena.org.uk>
-References: <1416418148-14803-1-git-send-email-lars@metafoo.de>
- <1416418148-14803-2-git-send-email-lars@metafoo.de>
- <546F68A6.2040008@metafoo.de>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 1/1] ALSA: core: Deletion of unnecessary checks before two
+ function calls
+Date: Fri, 21 Nov 2014 18:40:49 +0100
+Message-ID: <546F7921.2000406@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3408958208611070613=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A1E92607F8
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 17:40:04 +0100 (CET)
-In-Reply-To: <546F68A6.2040008@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 21 Nov 2014 18:34:48 +0100
 
---===============3408958208611070613==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A3noTcXr9qiSVQFk"
-Content-Disposition: inline
+The functions snd_seq_oss_timer_delete() and vunmap() perform also input
+parameter validation. Thus the test around the call is not needed.
 
+This issue was detected by using the Coccinelle software.
 
---A3noTcXr9qiSVQFk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/core/seq/oss/seq_oss_init.c | 9 +++------
+ sound/core/sgbuf.c                | 3 +--
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-On Fri, Nov 21, 2014 at 05:30:30PM +0100, Lars-Peter Clausen wrote:
-
-> It looks like this one was lost, shall I resend?
-
-Yes.
-
---A3noTcXr9qiSVQFk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUb2qQAAoJECTWi3JdVIfQs+UH/Ai3UVpbQNf2faRa4QtLFM8+
-W8RY4D/mPrN6mUAzELjoR2XTEJlH+rjcDLTPVQXsRYQBYAcqiJKqT9H3VMSyu2ig
-CCCvySFEQpiFcKw6+J0f4RdfTYoP2IhPtfO9lGDnSPq/x0fYv2yhYSyFnetRyuss
-P9mPbZFzMElscoGQDxTN6oTk6BwmPBR7QHVt0TkRq/mbNcaJfeB8VFI/+e52pmiX
-MY3QCz1Fvyti2GM2FPdsywukiKDNyTpOVxm3Bq5KpFISOpXybvSoWx2zJ7vMufoH
-FVSEl3tOe70jwPmhPSVyF7v6+ZbWRZAJmPRtoVXaFFGHpW52Xs+L/OpcC0lJJgI=
-=lfrQ
------END PGP SIGNATURE-----
-
---A3noTcXr9qiSVQFk--
-
---===============3408958208611070613==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3408958208611070613==--
+diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
+index b9184d2..b0e32e1 100644
+--- a/sound/core/seq/oss/seq_oss_init.c
++++ b/sound/core/seq/oss/seq_oss_init.c
+@@ -403,14 +403,11 @@ free_devinfo(void *private)
+ {
+ 	struct seq_oss_devinfo *dp = (struct seq_oss_devinfo *)private;
+ 
+-	if (dp->timer)
+-		snd_seq_oss_timer_delete(dp->timer);
++	snd_seq_oss_timer_delete(dp->timer);
+ 		
+-	if (dp->writeq)
+-		snd_seq_oss_writeq_delete(dp->writeq);
++	snd_seq_oss_writeq_delete(dp->writeq);
+ 
+-	if (dp->readq)
+-		snd_seq_oss_readq_delete(dp->readq);
++	snd_seq_oss_readq_delete(dp->readq);
+ 	
+ 	kfree(dp);
+ }
+diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
+index 0a41850..84fffab 100644
+--- a/sound/core/sgbuf.c
++++ b/sound/core/sgbuf.c
+@@ -39,8 +39,7 @@ int snd_free_sgbuf_pages(struct snd_dma_buffer *dmab)
+ 	if (! sgbuf)
+ 		return -EINVAL;
+ 
+-	if (dmab->area)
+-		vunmap(dmab->area);
++	vunmap(dmab->area);
+ 	dmab->area = NULL;
+ 
+ 	tmpb.dev.type = SNDRV_DMA_TYPE_DEV;
+-- 
+2.1.3
