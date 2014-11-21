@@ -1,57 +1,40 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: cleanup runtime_pm
- initialization
-Date: Fri, 21 Nov 2014 08:12:55 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B74356A@SHSMSX101.ccr.corp.intel.com>
-References: <1416390207-11020-1-git-send-email-vinod.koul@intel.com>
- <20141119105655.GE22111@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F82B7427B5@SHSMSX101.ccr.corp.intel.com>
- <20141120091208.GF2074@intel.com> <20141120093849.GJ22111@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CDB9265CAC
- for <alsa-devel@alsa-project.org>; Fri, 21 Nov 2014 09:13:12 +0100 (CET)
-In-Reply-To: <20141120093849.GJ22111@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - One more HP machine needs to change mute led quirk
+Date: Fri, 21 Nov 2014 17:05:01 +0800
+Message-ID: <1416560701-3693-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com, tienfu.chen@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Thursday, November 20, 2014 5:39 PM
-> 
-> On Thu, Nov 20, 2014 at 02:42:08PM +0530, Vinod Koul wrote:
-> > On Thu, Nov 20, 2014 at 02:35:33PM +0530, Lin, Mengdong wrote:
-> 
-> > > Could you tell me where are the two patches in git repo?
-> 
-> > > I cannot find them on topic/intel branch.
-> > > I want to rebase the Cherrytrail/Braswell machine driver on the two
-> > > applied patches.
-> 
-> > I think Mark forgot to push :) don't see update to tree since
-> > yesterday
-> 
-> No, I haven't forgotten.  I've got spotty connectivity since I'm travelling.
+The machine originally use the quirk ALC269_FIXUP_HP_GPIO_MIC1_LED,
+but the LED doesn't work at all.
 
-Got it. Thanks!
+After this change, the machine will change to use
+ALC269_FIXUP_HP_MUTE_LED_MIC1 through pin_fixup_tbl[], and the LED
+works well.
 
-I posted the new v6 Cherrytrail & Braswell patches based on Vinod's patches:
-[PATCH v6 1/2] ASoC: Intel: Add Cherrytrail & Braswell machine driver cht_bsw_rt5672
-[PATCH v6 2/2] ASoC: Intel: add support for Cherrytrail and Braswell in SST driver
+BugLink: https://bugs.launchpad.net/bugs/1389497
+Tested-by: TieFu Chen <tienfu.chen@canonical.com>
+Cc: Kailang Yang <kailang@realtek.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Regards
-Mengdong
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index cd08d8a..2ac9e23 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4831,7 +4831,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x221b, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2221, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2225, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2246, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2253, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2254, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2255, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+-- 
+1.9.1
