@@ -1,82 +1,65 @@
-From: "Kenneth Westfield" <kwestfie@codeaurora.org>
-Subject: Re: [alsa-devel] [PATCH 0/9] ASoC: QCOM: Add support for ipq806x
- SOC
-Date: Fri, 21 Nov 2014 12:24:33 -0800
-Message-ID: <9e2e849728c593bf1b8cde3ede3a1628.squirrel@www.codeaurora.org>
-References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
-    <AE8D85F1-A1E0-4656-B160-37AA3300FE58@codeaurora.org>
-Reply-To: kwestfie@codeaurora.org
+From: Marco <marco@cowpride.com>
+Subject: Headset jack and intel based Macmini6,2
+Date: Sat, 22 Nov 2014 12:29:49 +0100
+Message-ID: <CAGUiwu0Qyd2R9NdGBmACrei3BS4gAXpG4jOfBLmk+zh4-C4VLw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <AE8D85F1-A1E0-4656-B160-37AA3300FE58@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kumar Gala <galak@codeaurora.org>
-Cc: Device Tree Mailing List <devicetree@vger.kernel.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <rob.herring@calxeda.com>, Bryan Huntsman <bryanh@codeaurora.org>, Mark Brown <broonie@kernel.org>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f170.google.com (mail-ig0-f170.google.com
+ [209.85.213.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2329B2614CA
+ for <alsa-devel@alsa-project.org>; Sat, 22 Nov 2014 12:30:11 +0100 (CET)
+Received: by mail-ig0-f170.google.com with SMTP id r2so2903772igi.3
+ for <alsa-devel@alsa-project.org>; Sat, 22 Nov 2014 03:30:10 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, November 19, 2014 12:16 pm, Kumar Gala wrote:
->
-> On Nov 19, 2014, at 12:52 PM, Kenneth Westfield <kwestfie@codeaurora.=
-org> wrote:
->
->> From: Kenneth Westfield <kwestfie@codeaurora.org>
->>
->> This set of patches adds support for audio on the Qualcomm Technolog=
-ies
->> ipq806x SOC.
->>
->> The ipq806x SOC has audio-related hardware blocks in its low-power a=
-udio
->> subsystem (or LPASS).  One of the relevant blocks in the LPASS is it=
-s
->> low-power audio interface (or LPAIF).  This encapsulates the MI2S po=
-rt,
->> which is what these drivers are configured to use.  The I2S pins are
->> connected to an external DAC/amp chip.  In addition, a single GPIO i=
-s
->> connected to the same DAC/amp, which gives the SOC enable/disable
->> control.
->>
->> The specific drivers added are:
->> - a machine driver that handles the board-specific pins
->> - a native driver that handles hardware access to the LPAIF
->> - a CPU DAI driver for controlling the LPAIF block
->> - a PCM MI2S platform driver
->>
->> Corresponding additions to the device tree for the ipq806x and its
->> documentation has also been added.  Also, as this is a new directory=
-,
->> the MAINTAINERS file has been updated as well.
->>
->> - Ken
->
-> Some general comments, you shouldn=92t have gerrit Change-Id=92s in c=
-ommit messages, the
-> Kconfig/Makefile changes should be part of the patch that adds the co=
-de associated with them.
->
-> - k
->
-> --
-> Qualcomm Innovation Center, Inc.
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora F=
-orum,
-> a Linux Foundation Collaborative Project
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+/cc David Henningsson that has done something like that for some Dell HW
+and might have some suggestions
 
-Thank you for your comments.  I will separately address each comment sh=
-ortly.
+Hello,
+even if poorly advertised, recent mac.* have an headset jack (amplified)
+along with the non amplified line jack. For example, for MacMini, from:
+apple.com/mac-mini/specs/
+> Support for Apple iPhone headset with microphone
 
---=20
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora For=
-um,
-a Linux Foundation Collaborative Project
+Where iPhone headset means a simple headset not preamplified, really.
+
+I own a MacMini6,2 (the october 2012 one) and with Mac OSX it works...
+under linux... well... it is a simple out jack.
+This jeopardize the ability to use any video conference software (who
+doesn't today?) on linux if you don't own a USB audio device (or you don't
+want that extra piece of relatively large hw)
+
+The card is a HDA based Cirrus Logic CS4206/4207 and the two specific
+models do not work (imac27 and mbp55) while auto works (except the headset
+of course :)
+
+I tried to change the pinconfig but on the intel HDA documentation it is
+not really clear how the code for an headset jack (in/out) would look like.
+
+I saw that for card ALC269/270/275/276/28x/29x there are models that
+support the headset codes but... well.. they don't really seem "standard"
+intel codes
+
+I tried to look if it was possible to extract these codes from OSX but I
+haven't found anything interesting (but I might have missed something)
+
+Any suggestion dear esteemed Alsa developers? :)
+
+Any help appreciated,
+
+Thanks!
+
+Marco
