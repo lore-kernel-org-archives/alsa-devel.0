@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 18/32] ASoC: wm8961: Cleanup manual bias level
+Subject: [PATCH 19/32] ASoC: wm8974: Cleanup manual bias level
 	transitions
-Date: Sun, 23 Nov 2014 13:37:34 +0100
-Message-ID: <1416746269-4935-18-git-send-email-lars@metafoo.de>
+Date: Sun, 23 Nov 2014 13:37:35 +0100
+Message-ID: <1416746269-4935-19-git-send-email-lars@metafoo.de>
 References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
  [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id D41DE2617DF
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:38:03 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BF002619D9
+ for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:38:04 +0100 (CET)
 In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -40,58 +40,57 @@ has been probed.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8961.c | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+ sound/soc/codecs/wm8974.c | 25 +------------------------
+ 1 file changed, 1 insertion(+), 24 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
-index e077bb2..eeffd05 100644
---- a/sound/soc/codecs/wm8961.c
-+++ b/sound/soc/codecs/wm8961.c
-@@ -870,44 +870,26 @@ static int wm8961_probe(struct snd_soc_codec *codec)
- 	reg &= ~WM8961_MANUAL_MODE;
- 	snd_soc_write(codec, WM8961_CLOCKING_3, reg);
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index 682e9ed..ff0e464 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -568,18 +568,6 @@ static struct snd_soc_dai_driver wm8974_dai = {
+ 	.symmetric_rates = 1,
+ };
  
--	wm8961_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
+-static int wm8974_suspend(struct snd_soc_codec *codec)
+-{
+-	wm8974_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	return 0;
 -}
 -
--static int wm8961_remove(struct snd_soc_codec *codec)
+-static int wm8974_resume(struct snd_soc_codec *codec)
 -{
--	wm8961_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	return 0;
- }
- 
- #ifdef CONFIG_PM
--static int wm8961_suspend(struct snd_soc_codec *codec)
--{
--	wm8961_set_bias_level(codec, SND_SOC_BIAS_OFF);
--
+-	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -	return 0;
 -}
- 
- static int wm8961_resume(struct snd_soc_codec *codec)
- {
- 	snd_soc_cache_sync(codec);
- 
--	wm8961_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -
+ static const struct regmap_config wm8974_regmap = {
+ 	.reg_bits = 7,
+ 	.val_bits = 9,
+@@ -599,24 +587,13 @@ static int wm8974_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
+ 
+-	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-	return ret;
+-}
+-
+-/* power down chip */
+-static int wm8974_remove(struct snd_soc_codec *codec)
+-{
+-	wm8974_set_bias_level(codec, SND_SOC_BIAS_OFF);
  	return 0;
  }
- #else
--#define wm8961_suspend NULL
- #define wm8961_resume NULL
- #endif
  
- static struct snd_soc_codec_driver soc_codec_dev_wm8961 = {
- 	.probe =	wm8961_probe,
--	.remove =	wm8961_remove,
--	.suspend =	wm8961_suspend,
- 	.resume =	wm8961_resume,
- 	.set_bias_level = wm8961_set_bias_level,
+ static struct snd_soc_codec_driver soc_codec_dev_wm8974 = {
+ 	.probe = 	wm8974_probe,
+-	.remove = 	wm8974_remove,
+-	.suspend = 	wm8974_suspend,
+-	.resume =	wm8974_resume,
+ 	.set_bias_level = wm8974_set_bias_level,
 +	.suspend_bias_off = true,
  
- 	.controls = wm8961_snd_controls,
- 	.num_controls = ARRAY_SIZE(wm8961_snd_controls),
+ 	.controls = wm8974_snd_controls,
+ 	.num_controls = ARRAY_SIZE(wm8974_snd_controls),
 -- 
 1.8.0
