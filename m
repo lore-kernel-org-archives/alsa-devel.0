@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 09/32] ASoC: wm8737: Cleanup manual bias level
+Subject: [PATCH 11/32] ASoC: wm8776: Cleanup manual bias level
 	transitions
-Date: Sun, 23 Nov 2014 13:37:25 +0100
-Message-ID: <1416746269-4935-9-git-send-email-lars@metafoo.de>
+Date: Sun, 23 Nov 2014 13:37:27 +0100
+Message-ID: <1416746269-4935-11-git-send-email-lars@metafoo.de>
 References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
  [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id EAE9D26167D
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:37:56 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ED80261692
+ for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:37:58 +0100 (CET)
 In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,58 +34,73 @@ Since the ASoC core now takes care of setting the bias level to
 SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
 anymore either.
 
+The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
+can also be removed as the core will automatically do this after the CODEC
+has been probed.
+
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8737.c | 27 +--------------------------
- 1 file changed, 1 insertion(+), 26 deletions(-)
+ sound/soc/codecs/wm8776.c | 31 +------------------------------
+ 1 file changed, 1 insertion(+), 30 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index fe41dd2b..ada9ac1 100644
---- a/sound/soc/codecs/wm8737.c
-+++ b/sound/soc/codecs/wm8737.c
-@@ -537,23 +537,6 @@ static struct snd_soc_dai_driver wm8737_dai = {
- 	.ops = &wm8737_dai_ops,
+diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
+index 70952ce..c13050b 100644
+--- a/sound/soc/codecs/wm8776.c
++++ b/sound/soc/codecs/wm8776.c
+@@ -408,24 +408,6 @@ static struct snd_soc_dai_driver wm8776_dai[] = {
+ 	},
  };
  
 -#ifdef CONFIG_PM
--static int wm8737_suspend(struct snd_soc_codec *codec)
+-static int wm8776_suspend(struct snd_soc_codec *codec)
 -{
--	wm8737_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	wm8776_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-
 -	return 0;
 -}
 -
--static int wm8737_resume(struct snd_soc_codec *codec)
+-static int wm8776_resume(struct snd_soc_codec *codec)
 -{
--	wm8737_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8776_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -	return 0;
 -}
 -#else
--#define wm8737_suspend NULL
--#define wm8737_resume NULL
+-#define wm8776_suspend NULL
+-#define wm8776_resume NULL
 -#endif
 -
- static int wm8737_probe(struct snd_soc_codec *codec)
+ static int wm8776_probe(struct snd_soc_codec *codec)
  {
- 	struct wm8737_priv *wm8737 = snd_soc_codec_get_drvdata(codec);
-@@ -590,18 +573,10 @@ err_get:
+ 	int ret = 0;
+@@ -436,8 +418,6 @@ static int wm8776_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
+ 
+-	wm8776_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+ 	/* Latch the update bits; right channel only since we always
+ 	 * update both. */
+ 	snd_soc_update_bits(codec, WM8776_HPRVOL, 0x100, 0x100);
+@@ -446,19 +426,10 @@ static int wm8776_probe(struct snd_soc_codec *codec)
  	return ret;
  }
  
--static int wm8737_remove(struct snd_soc_codec *codec)
+-/* power down chip */
+-static int wm8776_remove(struct snd_soc_codec *codec)
 -{
--	wm8737_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	wm8776_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	return 0;
 -}
 -
- static struct snd_soc_codec_driver soc_codec_dev_wm8737 = {
- 	.probe		= wm8737_probe,
--	.remove		= wm8737_remove,
--	.suspend	= wm8737_suspend,
--	.resume		= wm8737_resume,
- 	.set_bias_level = wm8737_set_bias_level,
+ static struct snd_soc_codec_driver soc_codec_dev_wm8776 = {
+ 	.probe = 	wm8776_probe,
+-	.remove = 	wm8776_remove,
+-	.suspend = 	wm8776_suspend,
+-	.resume =	wm8776_resume,
+ 	.set_bias_level = wm8776_set_bias_level,
 +	.suspend_bias_off = true,
  
- 	.controls = wm8737_snd_controls,
- 	.num_controls = ARRAY_SIZE(wm8737_snd_controls),
+ 	.controls = wm8776_snd_controls,
+ 	.num_controls = ARRAY_SIZE(wm8776_snd_controls),
 -- 
 1.8.0
