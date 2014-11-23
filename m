@@ -1,82 +1,56 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Debian Bug#770122: patch as workaround/solution
-Date: Sun, 23 Nov 2014 20:07:24 +0100
-Message-ID: <20141123190724.GA20422@baumbart.home.lxtec.de>
-Reply-To: Teutone <whiteteutone@gmail.com>, 770122@bugs.debian.org
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH 6/9] sound/pci/ctxfi/ctatc.c: fix error return code
+Date: Sun, 23 Nov 2014 20:11:15 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1411232010410.2071@localhost6.localdomain6>
+References: <1416746890-22719-1-git-send-email-Julia.Lawall@lip6.fr> <1416746890-22719-6-git-send-email-Julia.Lawall@lip6.fr> <20141123171505.GA8265@sudip-PC>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6566118386858919524=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.hostsharing.net (mailout1.hostsharing.net
- [83.223.95.204])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FA7026048E
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 20:07:59 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Teutone <whiteteutone@gmail.com>, 770122@bugs.debian.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141123171505.GA8265@sudip-PC>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6566118386858919524==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
 
+On Sun, 23 Nov 2014, Sudip Mukherjee wrote:
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Sun, Nov 23, 2014 at 01:48:06PM +0100, Julia Lawall wrote:
+> > From: Julia Lawall <Julia.Lawall@lip6.fr>
+> > 
+> > Initialize err before returning on failure, as done elsewhere in the
+> > function.
+> <snip>
+> > 
+> > Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+> > 
+> > ---
+> >  sound/pci/ctxfi/ctatc.c |    4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
+> > index 58b235c..a2f997a 100644
+> > --- a/sound/pci/ctxfi/ctatc.c
+> > +++ b/sound/pci/ctxfi/ctatc.c
+> > @@ -1725,8 +1725,10 @@ int __devinit ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+> >  	atc_connect_resources(atc);
+> >  
+> >  	atc->timer = ct_timer_new(atc);
+> > -	if (!atc->timer)
+> > +	if (!atc->timer) {
+> > +		err = -ENOMEM;
+> >  		goto error1;
+> > +	}
+> >  
+> >  	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, atc, &ops);
+> >  	if (err < 0)
+> > 
+> just a small doubt..
+> looks like this patch you have already sent on 19 Aug 2012 and has been already applied via 4d8ce1c9966663bad69e738952179f3cc52710bf
+> 
+> or am i missing something?
 
-Hi,
+Yes, very sorry.  I sent out the wrong patch series.
 
-I am forwarding this Debian bug [0] to alsa-devel due to a not maintained
-BugTracker at alsa project. Could one please have a look at it?
-
-[0] http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D770122
-
-Thanks
-Elimar
---=20
-  Alles was viel bedacht wird ist bedenklich!;-)
-         Friedrich Nietzsche
-
---fdj2RfSjLxBAspz7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBCAAGBQJUcjBrAAoJED2rN0233PG7deQQAM4eTLaEnphf7epcPiWbxyLr
-BWjBKKCb2QaKc5+p8hFc3lVkxhIedXndpZKVL+tBIxDcCuJB+tg9WHNswYgK6Pcs
-Kq5lRFweP7Bf+JVaLqSbwE5VYiBpeGTYSrGhABSvAEmwmSWH8i6dBpaDorVuBjrR
-RKKNK1sFRO1cCB3xPOGfe3MOFAOlHIp/zlYJs2yIt+Z5tgObYaPpMYunhiFsKBsm
-nza7KmwH19D3E+KaO5/uoFSkGuYvNesRuViSE3qMTlA2UJdCcKFY+3UOBxEKFU1r
-+V/RGVraOONIXd4wQacZaveybn9c0JuVtMO9iOj1fBREnbZLa3xf1K0oIaAMkmI8
-/mV/5dPOZ00PQgjPULw6iU4J7S1U/OCye8C/xLKCIAQuq6uSOMgCgxMvOScz/rsi
-pEpOm+hl9LttdxhqMxqdcc2vlHknJKfhuPGuWUOsM0eChFFFnzEm8zu0fQrvM01e
-ii5LprwTYoFEuDqgYjQhlSy6g5R53g+ntTjfGlIrWT96MYGQVpx7rJ+FuyRd7SAD
-gpCQP3yOFGuQzwzGZcd0fFan3L9QG+NMOnaLdMDGxEBKTOvu+n5tkXO0MFvakw5o
-yXaV8Tk1S+Y0JvgV+QqHRgzZnpTAC3eSioN7+2AW0DZjJV52W6v4N1Yn90voaUAD
-dUeM/tlw08tqAnuAFc7q
-=l2hX
------END PGP SIGNATURE-----
-
---fdj2RfSjLxBAspz7--
-
---===============6566118386858919524==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6566118386858919524==--
+julia
