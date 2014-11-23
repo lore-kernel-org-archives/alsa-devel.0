@@ -1,18 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] amixer: Make "dB" case-insensitive in set
-	commands
-Date: Sun, 23 Nov 2014 10:16:01 +0100
-Message-ID: <1416734162-24748-1-git-send-email-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 01/32] ASoC: wm8350: Cleanup manual bias level
+	transitions
+Date: Sun, 23 Nov 2014 13:37:17 +0100
+Message-ID: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 40B0A2605A6
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 10:16:04 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 00F42AB07
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 09:16:03 +0000 (UTC)
+Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
+ [212.40.185.218])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0467A26155A
+ for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:37:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +20,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-We don't have to be necessarily too strict about case-sensitivity of
-"dB" suffix used in set commands.
+Set the CODEC driver's suspend_bias_off flag rather than manually going to
+SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
+the code a bit shorter and cleaner.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Since the ASoC core now takes care of setting the bias level to
+SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+anymore either.
+
+The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
+can also be removed as the core will automatically do this after the CODEC
+has been probed.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- amixer/amixer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm8350.c | 21 +--------------------
+ 1 file changed, 1 insertion(+), 20 deletions(-)
 
-diff --git a/amixer/amixer.c b/amixer/amixer.c
-index cf82892bfa2f..6a2fdb96c62f 100644
---- a/amixer/amixer.c
-+++ b/amixer/amixer.c
-@@ -346,7 +346,7 @@ static int set_volume_simple(snd_mixer_elem_t *elem,
- 	if (*p == '%') {
- 		percent = 1;
- 		p++;
--	} else if (p[0] == 'd' && p[1] == 'B') {
-+	} else if (toupper(p[0]) == 'D' && toupper(p[1]) == 'B') {
- 		vol_type = VOL_DB;
- 		p += 2;
- 		scale = 100;
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index 628ec77..87f664b 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -1242,19 +1242,6 @@ static int wm8350_set_bias_level(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
+-static int wm8350_suspend(struct snd_soc_codec *codec)
+-{
+-	wm8350_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	return 0;
+-}
+-
+-static int wm8350_resume(struct snd_soc_codec *codec)
+-{
+-	wm8350_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-	return 0;
+-}
+-
+ static void wm8350_hp_work(struct wm8350_data *priv,
+ 			   struct wm8350_jack_data *jack,
+ 			   u16 mask)
+@@ -1565,9 +1552,6 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
+ 	wm8350_register_irq(wm8350, WM8350_IRQ_CODEC_MICD,
+ 			    wm8350_mic_handler, 0, "Microphone detect", priv);
+ 
+-
+-	wm8350_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+ 	return 0;
+ }
+ 
+@@ -1596,8 +1580,6 @@ static int  wm8350_codec_remove(struct snd_soc_codec *codec)
+ 	 * wait for its completion */
+ 	flush_delayed_work(&codec->dapm.delayed_work);
+ 
+-	wm8350_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-
+ 	wm8350_clear_bits(wm8350, WM8350_POWER_MGMT_5, WM8350_CODEC_ENA);
+ 
+ 	return 0;
+@@ -1613,10 +1595,9 @@ static struct regmap *wm8350_get_regmap(struct device *dev)
+ static struct snd_soc_codec_driver soc_codec_dev_wm8350 = {
+ 	.probe =	wm8350_codec_probe,
+ 	.remove =	wm8350_codec_remove,
+-	.suspend = 	wm8350_suspend,
+-	.resume =	wm8350_resume,
+ 	.get_regmap =	wm8350_get_regmap,
+ 	.set_bias_level = wm8350_set_bias_level,
++	.suspend_bias_off = true,
+ 
+ 	.controls = wm8350_snd_controls,
+ 	.num_controls = ARRAY_SIZE(wm8350_snd_controls),
 -- 
-2.1.3
+1.8.0
