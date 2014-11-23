@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/32] ASoC: wm8750: Cleanup manual bias level
+Subject: [PATCH 09/32] ASoC: wm8737: Cleanup manual bias level
 	transitions
-Date: Sun, 23 Nov 2014 13:37:26 +0100
-Message-ID: <1416746269-4935-10-git-send-email-lars@metafoo.de>
+Date: Sun, 23 Nov 2014 13:37:25 +0100
+Message-ID: <1416746269-4935-9-git-send-email-lars@metafoo.de>
 References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
  [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id 96F9B261683
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:37:57 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id EAE9D26167D
+ for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:37:56 +0100 (CET)
 In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,67 +34,58 @@ Since the ASoC core now takes care of setting the bias level to
 SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
 anymore either.
 
-The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
-can also be removed as the core will automatically do this after the CODEC
-has been probed.
-
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8750.c | 25 +------------------------
- 1 file changed, 1 insertion(+), 24 deletions(-)
+ sound/soc/codecs/wm8737.c | 27 +--------------------------
+ 1 file changed, 1 insertion(+), 26 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
-index 67653a2d..f6847fd 100644
---- a/sound/soc/codecs/wm8750.c
-+++ b/sound/soc/codecs/wm8750.c
-@@ -686,18 +686,6 @@ static struct snd_soc_dai_driver wm8750_dai = {
- 	.ops = &wm8750_dai_ops,
+diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
+index fe41dd2b..ada9ac1 100644
+--- a/sound/soc/codecs/wm8737.c
++++ b/sound/soc/codecs/wm8737.c
+@@ -537,23 +537,6 @@ static struct snd_soc_dai_driver wm8737_dai = {
+ 	.ops = &wm8737_dai_ops,
  };
  
--static int wm8750_suspend(struct snd_soc_codec *codec)
+-#ifdef CONFIG_PM
+-static int wm8737_suspend(struct snd_soc_codec *codec)
 -{
--	wm8750_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	wm8737_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	return 0;
 -}
 -
--static int wm8750_resume(struct snd_soc_codec *codec)
+-static int wm8737_resume(struct snd_soc_codec *codec)
 -{
--	wm8750_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8737_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -	return 0;
 -}
+-#else
+-#define wm8737_suspend NULL
+-#define wm8737_resume NULL
+-#endif
 -
- static int wm8750_probe(struct snd_soc_codec *codec)
+ static int wm8737_probe(struct snd_soc_codec *codec)
  {
- 	int ret;
-@@ -708,9 +696,6 @@ static int wm8750_probe(struct snd_soc_codec *codec)
- 		return ret;
- 	}
- 
--	/* charge output caps */
--	wm8750_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
- 	/* set the update bits */
- 	snd_soc_update_bits(codec, WM8750_LDAC, 0x0100, 0x0100);
- 	snd_soc_update_bits(codec, WM8750_RDAC, 0x0100, 0x0100);
-@@ -724,18 +709,10 @@ static int wm8750_probe(struct snd_soc_codec *codec)
+ 	struct wm8737_priv *wm8737 = snd_soc_codec_get_drvdata(codec);
+@@ -590,18 +573,10 @@ err_get:
  	return ret;
  }
  
--static int wm8750_remove(struct snd_soc_codec *codec)
+-static int wm8737_remove(struct snd_soc_codec *codec)
 -{
--	wm8750_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	wm8737_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	return 0;
 -}
 -
- static struct snd_soc_codec_driver soc_codec_dev_wm8750 = {
- 	.probe =	wm8750_probe,
--	.remove =	wm8750_remove,
--	.suspend =	wm8750_suspend,
--	.resume =	wm8750_resume,
- 	.set_bias_level = wm8750_set_bias_level,
+ static struct snd_soc_codec_driver soc_codec_dev_wm8737 = {
+ 	.probe		= wm8737_probe,
+-	.remove		= wm8737_remove,
+-	.suspend	= wm8737_suspend,
+-	.resume		= wm8737_resume,
+ 	.set_bias_level = wm8737_set_bias_level,
 +	.suspend_bias_off = true,
  
- 	.controls = wm8750_snd_controls,
- 	.num_controls = ARRAY_SIZE(wm8750_snd_controls),
+ 	.controls = wm8737_snd_controls,
+ 	.num_controls = ARRAY_SIZE(wm8737_snd_controls),
 -- 
 1.8.0
