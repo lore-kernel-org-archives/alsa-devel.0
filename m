@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 21/32] ASoC: wm8983: Cleanup manual bias level
+Subject: [PATCH 22/32] ASoC: wm8985: Cleanup manual bias level
 	transitions
-Date: Sun, 23 Nov 2014 13:37:37 +0100
-Message-ID: <1416746269-4935-21-git-send-email-lars@metafoo.de>
+Date: Sun, 23 Nov 2014 13:37:38 +0100
+Message-ID: <1416746269-4935-22-git-send-email-lars@metafoo.de>
 References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
  [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id 02DD92619DC
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:38:05 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A538D2619E3
+ for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:38:06 +0100 (CET)
 In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,56 +34,68 @@ Since the ASoC core now takes care of setting the bias level to
 SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
 anymore either.
 
+The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
+can also be removed as the core will automatically do this after the CODEC
+has been probed.
+
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8983.c | 27 +--------------------------
- 1 file changed, 1 insertion(+), 26 deletions(-)
+ sound/soc/codecs/wm8985.c | 28 +---------------------------
+ 1 file changed, 1 insertion(+), 27 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8983.c b/sound/soc/codecs/wm8983.c
-index ac5defd..5d1cf08 100644
---- a/sound/soc/codecs/wm8983.c
-+++ b/sound/soc/codecs/wm8983.c
-@@ -967,29 +967,6 @@ static int wm8983_set_bias_level(struct snd_soc_codec *codec,
+diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
+index ee38019..0b3b54c 100644
+--- a/sound/soc/codecs/wm8985.c
++++ b/sound/soc/codecs/wm8985.c
+@@ -961,29 +961,6 @@ static int wm8985_set_bias_level(struct snd_soc_codec *codec,
  	return 0;
  }
  
 -#ifdef CONFIG_PM
--static int wm8983_suspend(struct snd_soc_codec *codec)
+-static int wm8985_suspend(struct snd_soc_codec *codec)
 -{
--	wm8983_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	wm8985_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	return 0;
 -}
 -
--static int wm8983_resume(struct snd_soc_codec *codec)
+-static int wm8985_resume(struct snd_soc_codec *codec)
 -{
--	wm8983_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8985_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -	return 0;
 -}
 -#else
--#define wm8983_suspend NULL
--#define wm8983_resume NULL
+-#define wm8985_suspend NULL
+-#define wm8985_resume NULL
 -#endif
 -
--static int wm8983_remove(struct snd_soc_codec *codec)
+-static int wm8985_remove(struct snd_soc_codec *codec)
 -{
--	wm8983_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	wm8985_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	return 0;
 -}
 -
- static int wm8983_probe(struct snd_soc_codec *codec)
+ static int wm8985_probe(struct snd_soc_codec *codec)
  {
- 	int ret;
-@@ -1055,10 +1032,8 @@ static struct snd_soc_dai_driver wm8983_dai = {
+ 	size_t i;
+@@ -1023,7 +1000,6 @@ static int wm8985_probe(struct snd_soc_codec *codec)
+ 	snd_soc_update_bits(codec, WM8985_BIAS_CTRL, WM8985_BIASCUT,
+ 			    WM8985_BIASCUT);
  
- static struct snd_soc_codec_driver soc_codec_dev_wm8983 = {
- 	.probe = wm8983_probe,
--	.remove = wm8983_remove,
--	.suspend = wm8983_suspend,
--	.resume = wm8983_resume,
- 	.set_bias_level = wm8983_set_bias_level,
+-	wm8985_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	return 0;
+ 
+ err_reg_enable:
+@@ -1064,10 +1040,8 @@ static struct snd_soc_dai_driver wm8985_dai = {
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_wm8985 = {
+ 	.probe = wm8985_probe,
+-	.remove = wm8985_remove,
+-	.suspend = wm8985_suspend,
+-	.resume = wm8985_resume,
+ 	.set_bias_level = wm8985_set_bias_level,
 +	.suspend_bias_off = true,
- 	.controls = wm8983_snd_controls,
- 	.num_controls = ARRAY_SIZE(wm8983_snd_controls),
- 	.dapm_widgets = wm8983_dapm_widgets,
+ 
+ 	.controls = wm8985_snd_controls,
+ 	.num_controls = ARRAY_SIZE(wm8985_snd_controls),
 -- 
 1.8.0
