@@ -1,18 +1,22 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/3] ASoC: uda1380: Cleanup manual bias level
-	transitions
-Date: Sun, 23 Nov 2014 15:04:14 +0100
-Message-ID: <1416751454-16916-3-git-send-email-lars@metafoo.de>
-References: <1416751454-16916-1-git-send-email-lars@metafoo.de>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH 6/9] sound/pci/ctxfi/ctatc.c: fix error
+	return code
+Date: Sun, 23 Nov 2014 22:45:05 +0530
+Message-ID: <20141123171505.GA8265@sudip-PC>
+References: <1416746890-22719-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1416746890-22719-6-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
- [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id D09E626167A
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 15:04:17 +0100 (CET)
-In-Reply-To: <1416751454-16916-1-git-send-email-lars@metafoo.de>
+Received: from mail-pa0-f44.google.com (mail-pa0-f44.google.com
+ [209.85.220.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D2E32604BC
+ for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 18:15:19 +0100 (CET)
+Received: by mail-pa0-f44.google.com with SMTP id et14so8083400pad.31
+ for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 09:15:18 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <1416746890-22719-6-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,81 +26,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Set the CODEC driver's suspend_bias_off flag rather than manually going to
-SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
-the code a bit shorter and cleaner.
+On Sun, Nov 23, 2014 at 01:48:06PM +0100, Julia Lawall wrote:
+> From: Julia Lawall <Julia.Lawall@lip6.fr>
+> 
+> Initialize err before returning on failure, as done elsewhere in the
+> function.
+<snip>
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+> 
+> ---
+>  sound/pci/ctxfi/ctatc.c |    4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
+> index 58b235c..a2f997a 100644
+> --- a/sound/pci/ctxfi/ctatc.c
+> +++ b/sound/pci/ctxfi/ctatc.c
+> @@ -1725,8 +1725,10 @@ int __devinit ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+>  	atc_connect_resources(atc);
+>  
+>  	atc->timer = ct_timer_new(atc);
+> -	if (!atc->timer)
+> +	if (!atc->timer) {
+> +		err = -ENOMEM;
+>  		goto error1;
+> +	}
+>  
+>  	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, atc, &ops);
+>  	if (err < 0)
+> 
+just a small doubt..
+looks like this patch you have already sent on 19 Aug 2012 and has been already applied via 4d8ce1c9966663bad69e738952179f3cc52710bf
 
-Since the ASoC core now takes care of setting the bias level to
-SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-anymore either.
+or am i missing something?
 
-The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
-can also be removed as the core will automatically do this after the CODEC
-has been probed.
+sudip
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/uda1380.c | 20 ++------------------
- 1 file changed, 2 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index e62e707..dc7778b 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -693,18 +693,6 @@ static struct snd_soc_dai_driver uda1380_dai[] = {
- },
- };
- 
--static int uda1380_suspend(struct snd_soc_codec *codec)
--{
--	uda1380_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	return 0;
--}
--
--static int uda1380_resume(struct snd_soc_codec *codec)
--{
--	uda1380_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--	return 0;
--}
--
- static int uda1380_probe(struct snd_soc_codec *codec)
- {
- 	struct uda1380_platform_data *pdata =codec->dev->platform_data;
-@@ -739,8 +727,6 @@ static int uda1380_probe(struct snd_soc_codec *codec)
- 
- 	INIT_WORK(&uda1380->work, uda1380_flush_work);
- 
--	/* power on device */
--	uda1380_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	/* set clock input */
- 	switch (pdata->dac_clk) {
- 	case UDA1380_DAC_CLK_SYSCLK:
-@@ -766,8 +752,6 @@ static int uda1380_remove(struct snd_soc_codec *codec)
- {
- 	struct uda1380_platform_data *pdata =codec->dev->platform_data;
- 
--	uda1380_set_bias_level(codec, SND_SOC_BIAS_OFF);
--
- 	gpio_free(pdata->gpio_reset);
- 	gpio_free(pdata->gpio_power);
- 
-@@ -777,11 +761,11 @@ static int uda1380_remove(struct snd_soc_codec *codec)
- static struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
- 	.probe =	uda1380_probe,
- 	.remove =	uda1380_remove,
--	.suspend =	uda1380_suspend,
--	.resume =	uda1380_resume,
- 	.read =		uda1380_read_reg_cache,
- 	.write =	uda1380_write,
- 	.set_bias_level = uda1380_set_bias_level,
-+	.suspend_bias_off = true,
-+
- 	.reg_cache_size = ARRAY_SIZE(uda1380_reg),
- 	.reg_word_size = sizeof(u16),
- 	.reg_cache_default = uda1380_reg,
--- 
-1.8.0
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
