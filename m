@@ -1,52 +1,125 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 32/32] ASoC: wm9713: Cleanup manual bias level
-	transitions
-Date: Sun, 23 Nov 2014 13:37:48 +0100
-Message-ID: <1416746269-4935-32-git-send-email-lars@metafoo.de>
-References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH 0/10] fix error return code
+Date: Sun, 23 Nov 2014 14:15:37 +0100 (CET)
+Message-ID: <alpine.DEB.2.02.1411231415030.2261@localhost6.localdomain6>
+References: <1416746890-22719-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
- [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id 48C6D26155D
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:38:14 +0100 (CET)
-In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1416746890-22719-1-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
-can also be removed as the core will automatically do this after the CODEC
-has been probed.
+Oops!!!  These are ancient patches.  I meant to send something else.  
+Sorry for the noise.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/wm9713.c | 2 --
- 1 file changed, 2 deletions(-)
+julia
 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 6c95d98b..5df7f6d 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1236,8 +1236,6 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
- 	if (ret < 0)
- 		goto reset_err;
- 
--	wm9713_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
- 	/* unmute the adc - move to kcontrol */
- 	reg = ac97_read(codec, AC97_CD) & 0x7fff;
- 	ac97_write(codec, AC97_CD, reg);
--- 
-1.8.0
+On Sun, 23 Nov 2014, Julia Lawall wrote:
+
+> These patches fix cases where the return code appears to be unintentially
+> nonnegative.
+> 
+> The complete semantic match that finds the problem is as follows:
+> (http://coccinelle.lip6.fr/)
+> 
+> // <smpl>
+> @ok exists@
+> identifier f,ret,i;
+> expression e;
+> constant c;
+> @@
+> 
+> f(...) {
+> <+...
+> (
+> return -c@i;
+> |
+> ret = -c@i;
+> ... when != ret = e
+> return ret;
+> |
+> if (ret < 0) { ... return ret; }
+> )
+> ...+> }
+> 
+> @r exists@
+> identifier ret,l,ok.f;
+> expression e1,e2,e3;
+> statement S;
+> position p1,p2,p3;
+> @@
+> 
+> f(...) {
+> ... when any
+> (
+> if@p1 (\(ret < 0\|ret != 0\))
+>  { ... return ret; }
+> |
+> ret@p1 = 0
+> )
+> ... when != ret = e1
+>     when != &ret
+> (
+>  if (<+... ret = e3 ...+>) S
+> |
+>  if (<+... &ret ...+>) S
+> |
+> if@p2(...)
+>  {
+>   ... when != ret = e2
+>       when forall
+>  return@p3 ret;
+> }
+> )
+> ... when any
+> }
+> 
+> @bad exists@
+> position r.p1,r.p2;
+> statement S1,S2;
+> identifier r.ret;
+> expression e1;
+> @@
+> 
+> (
+> if@p1 (\(ret < 0\|ret != 0\)) S1
+> |
+> ret@p1 = 0
+> )
+> ... when any
+> ret = e1
+> ... when any
+> if@p2(...) S2
+> 
+> @bad2@
+> position r.p1,r.p2;
+> identifier r.ret;
+> expression e1;
+> statement S2;
+> @@
+> 
+> ret@p1 = 0
+> ... when != if (...) { ... ret = e1 ... return ret; }
+>     when any
+> if@p2(...) S2
+> 
+> 
+> @script:python depends on !bad && !bad2@
+> p1 << r.p1;
+> p2 << r.p2;
+> p3 << r.p3;
+> @@
+> 
+> cocci.print_main("",p1)
+> cocci.print_secs("",p2)
+> cocci.print_secs("",p3)
+> // </smpl>
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
