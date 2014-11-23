@@ -1,60 +1,88 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 6/9] sound/pci/ctxfi/ctatc.c: fix error return code
-Date: Sun, 23 Nov 2014 13:48:06 +0100
-Message-ID: <1416746890-22719-6-git-send-email-Julia.Lawall@lip6.fr>
-References: <1416746890-22719-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1416746890-22719-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 24/32] ASoC: wm8990: Cleanup manual bias level
+	transitions
+Date: Sun, 23 Nov 2014 13:37:40 +0100
+Message-ID: <1416746269-4935-24-git-send-email-lars@metafoo.de>
+References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
+ [212.40.185.218])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3595261A34
+ for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:38:08 +0100 (CET)
+In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+Set the CODEC driver's suspend_bias_off flag rather than manually going to
+SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
+the code a bit shorter and cleaner.
 
-Initialize err before returning on failure, as done elsewhere in the
-function.
+Since the ASoC core now takes care of setting the bias level to
+SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+anymore either.
 
-A simplified version of the semantic match that finds this problem is as
-follows: (http://coccinelle.lip6.fr/)
-
-// <smpl>
-(
-if@p1 (\(ret < 0\|ret != 0\))
- { ... return ret; }
-|
-ret@p1 = 0
-)
-... when != ret = e1
-    when != &ret
-*if(...)
-{
-  ... when != ret = e2
-      when forall
- return ret;
-}
-
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/ctxfi/ctatc.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8990.c | 24 ++----------------------
+ 1 file changed, 2 insertions(+), 22 deletions(-)
 
-diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
-index 58b235c..a2f997a 100644
---- a/sound/pci/ctxfi/ctatc.c
-+++ b/sound/pci/ctxfi/ctatc.c
-@@ -1725,8 +1725,10 @@ int __devinit ct_atc_create(struct snd_card *card, struct pci_dev *pci,
- 	atc_connect_resources(atc);
+diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
+index 03e43e3..8a58422 100644
+--- a/sound/soc/codecs/wm8990.c
++++ b/sound/soc/codecs/wm8990.c
+@@ -1271,18 +1271,6 @@ static struct snd_soc_dai_driver wm8990_dai = {
+ 	.ops = &wm8990_dai_ops,
+ };
  
- 	atc->timer = ct_timer_new(atc);
--	if (!atc->timer)
-+	if (!atc->timer) {
-+		err = -ENOMEM;
- 		goto error1;
-+	}
+-static int wm8990_suspend(struct snd_soc_codec *codec)
+-{
+-	wm8990_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	return 0;
+-}
+-
+-static int wm8990_resume(struct snd_soc_codec *codec)
+-{
+-	wm8990_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	return 0;
+-}
+-
+ /*
+  * initialise the WM8990 driver
+  * register the mixer and dsp interfaces with the kernel
+@@ -1309,19 +1297,11 @@ static int wm8990_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
  
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, atc, &ops);
- 	if (err < 0)
+-/* power down chip */
+-static int wm8990_remove(struct snd_soc_codec *codec)
+-{
+-	wm8990_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	return 0;
+-}
+-
+ static struct snd_soc_codec_driver soc_codec_dev_wm8990 = {
+ 	.probe =	wm8990_probe,
+-	.remove =	wm8990_remove,
+-	.suspend =	wm8990_suspend,
+-	.resume =	wm8990_resume,
+ 	.set_bias_level = wm8990_set_bias_level,
++	.suspend_bias_off = true,
++
+ 	.controls =	wm8990_snd_controls,
+ 	.num_controls = ARRAY_SIZE(wm8990_snd_controls),
+ 	.dapm_widgets = wm8990_dapm_widgets,
+-- 
+1.8.0
