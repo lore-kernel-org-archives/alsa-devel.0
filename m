@@ -1,99 +1,108 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 23/32] ASoC: wm8988: Cleanup manual bias level
-	transitions
-Date: Sun, 23 Nov 2014 13:37:39 +0100
-Message-ID: <1416746269-4935-23-git-send-email-lars@metafoo.de>
-References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
- [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id AE480261A06
- for <alsa-devel@alsa-project.org>; Sun, 23 Nov 2014 13:38:07 +0100 (CET)
-In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 0/10] fix error return code
+Date: Sun, 23 Nov 2014 13:48:01 +0100
+Message-ID: <1416746890-22719-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Set the CODEC driver's suspend_bias_off flag rather than manually going to
-SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
-the code a bit shorter and cleaner. Also remove the regcache_mark_dirty()
-from the suspend handler since it is already called by the ASoC core.
+These patches fix cases where the return code appears to be unintentially
+nonnegative.
 
-Since the ASoC core now takes care of setting the bias level to
-SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-anymore either.
+The complete semantic match that finds the problem is as follows:
+(http://coccinelle.lip6.fr/)
 
-The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
-can also be removed as the core will automatically do this after the CODEC
-has been probed.
+// <smpl>
+@ok exists@
+identifier f,ret,i;
+expression e;
+constant c;
+@@
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/wm8988.c | 27 +--------------------------
- 1 file changed, 1 insertion(+), 26 deletions(-)
+f(...) {
+<+...
+(
+return -c@i;
+|
+ret = -c@i;
+... when != ret = e
+return ret;
+|
+if (ret < 0) { ... return ret; }
+)
+...+> }
 
-diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
-index a5130d9..e418199 100644
---- a/sound/soc/codecs/wm8988.c
-+++ b/sound/soc/codecs/wm8988.c
-@@ -793,21 +793,6 @@ static struct snd_soc_dai_driver wm8988_dai = {
- 	.symmetric_rates = 1,
- };
- 
--static int wm8988_suspend(struct snd_soc_codec *codec)
--{
--	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
--
--	wm8988_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	regcache_mark_dirty(wm8988->regmap);
--	return 0;
--}
--
--static int wm8988_resume(struct snd_soc_codec *codec)
--{
--	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--	return 0;
--}
--
- static int wm8988_probe(struct snd_soc_codec *codec)
+@r exists@
+identifier ret,l,ok.f;
+expression e1,e2,e3;
+statement S;
+position p1,p2,p3;
+@@
+
+f(...) {
+... when any
+(
+if@p1 (\(ret < 0\|ret != 0\))
+ { ... return ret; }
+|
+ret@p1 = 0
+)
+... when != ret = e1
+    when != &ret
+(
+ if (<+... ret = e3 ...+>) S
+|
+ if (<+... &ret ...+>) S
+|
+if@p2(...)
  {
- 	int ret = 0;
-@@ -825,23 +810,13 @@ static int wm8988_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, WM8988_ROUT2V, 0x0100, 0x0100);
- 	snd_soc_update_bits(codec, WM8988_RINVOL, 0x0100, 0x0100);
- 
--	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
--	return 0;
--}
--
--static int wm8988_remove(struct snd_soc_codec *codec)
--{
--	wm8988_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	return 0;
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_wm8988 = {
- 	.probe =	wm8988_probe,
--	.remove =	wm8988_remove,
--	.suspend =	wm8988_suspend,
--	.resume =	wm8988_resume,
- 	.set_bias_level = wm8988_set_bias_level,
-+	.suspend_bias_off = true,
- 
- 	.controls = wm8988_snd_controls,
- 	.num_controls = ARRAY_SIZE(wm8988_snd_controls),
--- 
-1.8.0
+  ... when != ret = e2
+      when forall
+ return@p3 ret;
+}
+)
+... when any
+}
+
+@bad exists@
+position r.p1,r.p2;
+statement S1,S2;
+identifier r.ret;
+expression e1;
+@@
+
+(
+if@p1 (\(ret < 0\|ret != 0\)) S1
+|
+ret@p1 = 0
+)
+... when any
+ret = e1
+... when any
+if@p2(...) S2
+
+@bad2@
+position r.p1,r.p2;
+identifier r.ret;
+expression e1;
+statement S2;
+@@
+
+ret@p1 = 0
+... when != if (...) { ... ret = e1 ... return ret; }
+    when any
+if@p2(...) S2
+
+
+@script:python depends on !bad && !bad2@
+p1 << r.p1;
+p2 << r.p2;
+p3 << r.p3;
+@@
+
+cocci.print_main("",p1)
+cocci.print_secs("",p2)
+cocci.print_secs("",p3)
+// </smpl>
