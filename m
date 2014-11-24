@@ -1,100 +1,100 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2] ALSA: korg1212: cleanup of printk
-Date: Mon, 24 Nov 2014 09:25:10 -0800
-Message-ID: <1416849910.8797.1.camel@perches.com>
-References: <1416730251-5194-1-git-send-email-sudipm.mukherjee@gmail.com>
-	 <s5hh9xottl9.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
+Date: Mon, 24 Nov 2014 17:39:20 +0000
+Message-ID: <20141124173920.GL7712@sirena.org.uk>
+References: <cover.1415803064.git.jsarha@ti.com>
+ <20141112222344.GU3815@sirena.org.uk>
+ <54646648.5030807@ti.com>
+ <546DC9A0.8060700@ti.com>
+ <20141121112317.GQ3815@sirena.org.uk>
+ <546F317B.9030004@ti.com>
+ <20141121161435.GS3815@sirena.org.uk>
+ <5472E9D7.7000908@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hh9xottl9.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="j3olVFx0FsM75XyV"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5472E9D7.7000908@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2014-11-24 at 18:08 +0100, Takashi Iwai wrote:
-> At Sun, 23 Nov 2014 13:40:51 +0530, Sudip Mukherjee wrote:
-[]
-> > replaced all references of the debug messages via printk
-> > with dev_* macro (mostly dev_dbg).
-> > one reference was changed to pr_err as there the card might have been
-> > uninitialized.
-> > 
-> > this patch will generate warning from checkpatch about broken quoted
-> > strings. but that was not fixed intentionally to improve the
-> > readability.
 
-I think it'd be easier to read and grep coalesced.
+--j3olVFx0FsM75XyV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-[]
+On Mon, Nov 24, 2014 at 10:18:31AM +0200, Tomi Valkeinen wrote:
+> On 21/11/14 18:14, Mark Brown wrote:
 
-> > in your review of v1, you said about some lines which are not ending
-> > with \n. but i was not able to find them. did i miss them somewhere?
-[]
-> The problem is the one with multiple "\n", for example:
-> 
-> 	dev_dbg(korg1212->card->dev, "dspMemPhy = %08x U[%08x], "
-> 		"PlayDataPhy = %08x L[%08x]\n"
-> 		"korg1212: RecDataPhy = %08x L[%08x], "
-> 		"VolumeTablePhy = %08x L[%08x]\n"
-> 		"korg1212: RoutingTablePhy = %08x L[%08x], "
-> 		"AdatTimeCodePhy = %08x L[%08x]\n",
+> > But in what way is it broken and how did this happen?  Why are none of
 
-I think these should be individual dev_dbg calls
+> I don't have a clear answer, but it probably involves lack of use, and
+> buggy and hard to use implementation. Things have changed around the
+> original HDMI audio implementation, and it stopped working at some point.
 
-	dev_dbg(korg1212->card->dev, "dspMemPhy = %08x U[%08x]\n", val, val2)
-	dev_dbg(korg1212->card->dev, "PhyDataPhy = %08x L[%08x]\n", val, val2);
-	dev_dbg(korg1212->card->dev, "RecDataPhy = %08x L[%08x]\n", val, val2);
-	dev_dbg(korg1212->card->dev, "VolumeTablePhy = %08x L[%08x]\n", val, val2);
+> As the original implementation was found rather lacking, and with some
+> fundamental issues, it was deemed better to have a fresh approach.
 
-	etc..
+OK...  this is all telling me that I *really* need to scrub this in
+detail.  It's all sounding very vague, it's an area which seems to cause
+lots of problems and I don't want to be sitting here next time around
+trying to figure out if another rewrite makes things better or worse or
+if another driver should look similar or different.
 
-Another possibility is to use another macro like:
+> > the patches which look like they're supposed to be bug fixes early on in
+> > the series getting applied?  I had thought this was just a lack of
+> > interest on the video side but it seems there's some other problems
+> > since the series has apparently been discussed off-list and still it's
+> > just as big as it was initially.
 
-#define k1212_dbg(k1212, fmt, ...)			\
-	dev_dbg((k)->card->dev, fmt, ##__VA_ARGS__)
+> The whole series is about HDMI audio, not video.
 
-and change all these to
+You know exactly what I mean - the early patches are in drivers/video,
+don't touch anything outside of that and have no obvious dependencies.
 
-	k1212_dbg(korg1212, "dspMemPhy = %08x U[%08x]\n", val, val2)
-	k1212_dbg(korg1212, "PhyDataPhy = %08x L[%08x]\n", val, val2);
-	k1212_dbg(korg1212, "RecDataPhy = %08x L[%08x]\n", val, val2);
-	k1212_dbg(korg1212, "VolumeTablePhy = %08x L[%08x]\n", val, val2);
+> This series only touch the parts about HDMI audio, so the fixes early on
+> don't really fix anything without the rest of the series (as the current
+> HDMI audio doesn't work).
 
-etc.
+> And in any case, I don't like applying individual patches from a series.
+> Usually that just complicates things. If I would apply some of the early
+> patches to fbdev, then this series would no longer work on plain
+> mainline kernel, and would instead depend on fbdev tree. The situation
 
-> My biggest concern right now is, however, about the unnecessary code
-> increase by this patch.  Currently, most of debug prints were simply
-> not built, because of:
-> 
-> >  // ----------------------------------------------------------------------------
-> > -// Debug Stuff
-> > -// ----------------------------------------------------------------------------
-> > -#define K1212_DEBUG_LEVEL		0
-> > -#if K1212_DEBUG_LEVEL > 0
-> > -#define K1212_DEBUG_PRINTK(fmt,args...)	printk(KERN_DEBUG fmt,##args)
-> > -#else
-> > -#define K1212_DEBUG_PRINTK(fmt,...)
-> > -#endif
-> > -#if K1212_DEBUG_LEVEL > 1
-> > -#define K1212_DEBUG_PRINTK_VERBOSE(fmt,args...)	printk(KERN_DEBUG fmt,##args)
-> > -#else
-> > -#define K1212_DEBUG_PRINTK_VERBOSE(fmt,...)
-> > -#endif
-> 
-> With your patch, now all these codes are compiled.
+But I thought everyone was saying this hardware doesn't work anyway and
+that you want to apply all these changes to fbdev?
 
-Not really.
+> would be ever worse if you'd also pick some of the audio patches to
+> sound tree, creating a dependency to two subsystem trees.
 
-dev_dbg is a no-op unless DEBUG is #defined
-or CONFIG_DYNAMIC_DEBUG is set.
+> So if there's no particular important reason to pick patches from a
+> series, I rather keep it as a whole to simplify merging and testing.
 
-> I have no clear answer what would be the best in such a case.  I'd say
-> it really depends.  If they are just silly messages that can be
-> covered in a better way (like ftrace), just get rid of them.  If they
-> are intended for some good register dumps, then dev_dbg() might make
-> sense.
+This means we're all then stuck reading reposts of the same enormous
+series over and over again - as a reviewer a really big series that
+appears from the subject lines to be mostly about another system is
+really offputting.  If you're going to do something like this please at
+least reply to the messages, that way it's clearer that there's not
+going to be a dependency problem getting the patches applied (which is
+part of what makes things offputting).
 
-very true.
+--j3olVFx0FsM75XyV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUc21IAAoJECTWi3JdVIfQkQEH/0TwF2YImsmrtx8xGeglQDK4
+uFQDuTDQJ+qbmmRMHcS3aqqb6D4SsUYbMBL+M9VMJWwek6cxQbyTbNQGNHSaBT3h
+t9ex3GkqeapUbvT2Vn8yxJmG0gyA4wuOna9gDYuFP3TXjcTtnEZa9zkWGewOv2r9
+OFGCXku8L3AGF8SWRFmjQHlX1QS50BD+CDtrhcVuiU0EE1kBwc482Zt4SR1SCHda
+RpmazBIVBW5v/nX0oiQSvRxqcLgwmZ4+n+aXOp2trVYDupMcNV0Rx562Op5K6y6Y
+wlD3vn41TvM6Bk4Mj1+L/H5qegwvwtfZVMxf+5Z1KE8LpEJzWtP/T6BfjavWzYY=
+=ipBV
+-----END PGP SIGNATURE-----
+
+--j3olVFx0FsM75XyV--
