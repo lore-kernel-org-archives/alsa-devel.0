@@ -1,50 +1,49 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 01/32] ASoC: wm8350: Cleanup manual bias
-	level	transitions
-Date: Mon, 24 Nov 2014 10:00:10 +0000
-Message-ID: <20141124100010.GA13764@opensource.wolfsonmicro.com>
-References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5631: Fixing compilation warning when DT is
+ disabled
+Date: Mon, 24 Nov 2014 11:05:39 +0000
+Message-ID: <20141124110539.GA7712@sirena.org.uk>
+References: <1416232589-31319-1-git-send-email-krishna.md@samsung.com>
+ <20141117155617.GJ27002@pengutronix.de>
+ <C8902B5E8A6B4B63A3B9A732345B33AD@sisodomain.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB085260490
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 11:00:11 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
+In-Reply-To: <C8902B5E8A6B4B63A3B9A732345B33AD@sisodomain.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: D Krishna Mohan <krishna.md@samsung.com>
+Cc: =?iso-8859-1?Q?UweKleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com, Claude Youn <claude.youn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 23, 2014 at 01:37:17PM +0100, Lars-Peter Clausen wrote:
-> Set the CODEC driver's suspend_bias_off flag rather than manually going to
-> SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
-> the code a bit shorter and cleaner.
-> 
-> Since the ASoC core now takes care of setting the bias level to
-> SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-> anymore either.
-> 
-> The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
-> can also be removed as the core will automatically do this after the CODEC
-> has been probed.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
 
-Whole series looks good to me:
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Mon, Nov 24, 2014 at 12:48:31PM +0530, D Krishna Mohan wrote:
+> Attaching the patch with changes suggested by Uwe. Though there is another
+> patch which I submitted, but I leave it to Mark Brown as to which patch to
+> pick.
 
-Thanks,
-Charles
+Please send patches in the format covered in SubmittingPatches, the
+tools can't apply this.
+
+--gBBFr7Ir9EOA20Yy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUcxECAAoJECTWi3JdVIfQ36MH/2Y0eOdcnSUuB24hE7BBQA8I
+hLAkah0CPWb5/Gv6mJxDxEHynGFOsroWP9vNIRodJBD3R5IKrxdXQgCBPnUq3qnb
+FSzwKvwfXCFqSgEWNSR3wzltlADyFGM00bm2E4uSB/Ytdm5vHdHCIfeHF5RjzFml
+x9E3F/qgjt6lyBEAodbbE4itEu8iC9zmTcHgDUp0qX9F3VDBEwttFnxlaZLHkT4Y
+/rbEJbbjvSMzomyZfwyu55k1WA71H2kpXqBa4KPJMK7/2WniE5PYmSaHCCBQzJ7W
+kd5CIP+6p9aQQ8uDPEBz4gSyLmIlRbSIdYm81RUcAbqZRJDQFvEkksmmjyWqikA=
+=FCZ0
+-----END PGP SIGNATURE-----
+
+--gBBFr7Ir9EOA20Yy--
