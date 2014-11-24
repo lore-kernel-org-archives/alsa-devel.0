@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/32] ASoC: wm8728: Cleanup manual bias
+Subject: Re: [PATCH 08/32] ASoC: wm8731: Cleanup manual bias
 	level transitions
-Date: Mon, 24 Nov 2014 18:21:40 +0000
-Message-ID: <20141124182140.GA7712@sirena.org.uk>
+Date: Mon, 24 Nov 2014 18:21:57 +0000
+Message-ID: <20141124182157.GB7712@sirena.org.uk>
 References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
- <1416746269-4935-7-git-send-email-lars@metafoo.de>
+ <1416746269-4935-8-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4387751931291263437=="
+Content-Type: multipart/mixed; boundary="===============4288606153415978487=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BDEE2652CF
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 19:23:45 +0100 (CET)
-In-Reply-To: <1416746269-4935-7-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 80458260A5D
+ for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 19:24:02 +0100 (CET)
+In-Reply-To: <1416746269-4935-8-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,46 +27,46 @@ Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wol
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4387751931291263437==
+--===============4288606153415978487==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AhCCdIwQf0d0uSA5"
+	protocol="application/pgp-signature"; boundary="leQ0ainWKcxhm+Q3"
 Content-Disposition: inline
 
 
---AhCCdIwQf0d0uSA5
+--leQ0ainWKcxhm+Q3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Nov 23, 2014 at 01:37:23PM +0100, Lars-Peter Clausen wrote:
+On Sun, Nov 23, 2014 at 01:37:24PM +0100, Lars-Peter Clausen wrote:
 > Set the CODEC driver's suspend_bias_off flag rather than manually going to
 > SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
 > the code a bit shorter and cleaner.
 
 Applied, thanks.
 
---AhCCdIwQf0d0uSA5
+--leQ0ainWKcxhm+Q3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUc3czAAoJECTWi3JdVIfQn6QH/RVAUutwB9iSblRkHKVlphPe
-BiNYXzF8sM7THj7O0x4TnBlr3NZGhzFsAf8fBEiCoicfB7tk07DKt/4pGCWkwff9
-MQ0WC1knIPMgQXdof8UxRUVb763b5JnpbK33i2rjJ72KAvprObRi9shTt9PN7SzD
-a6a3ItMWPQILt9jRnJDowbRxBlZrrgsPr5Nk7DBCKFeQqjF+TH0MYFO8VJ/zbz1T
-W9eOHo0yF7bsJLxjp1+7mr7ZMYiKSW1tVhmULI+fYZBdM878e+t0rEFEDkUqpUbS
-QxRPYh2kecH2qX5lxanTa38pZNDHZbd3cw5l9PtjFgJrMWsfoN2ulU+QVB4dVvk=
-=j7Ih
+iQEcBAEBAgAGBQJUc3dEAAoJECTWi3JdVIfQHgYH/ArUnpQtMaNtFBv9leZ4oRh4
+zPZNrhWhE5ulvyl6aZvEQlIBpx+2nYwZ/iaSmJDKX9+2brs4nM42F/3Gi5k7kZ3F
+iOb9rk46388MHMAj/N+gSl8T5T4UNC74U1BeqVTJQVH8bGqizhrLUYi74ulzo0pu
+bJx4YsLcFRB83aM3jbPkvvjxV8JpA6+hiD0vWXiPNc2BIhXoz3UZ3ZFOLmoXGIWe
+i/blf4Aa8yyIu4avNo+58ieBkf9i48cHxC2Y4YNtHLUOfeFD79YolEqMlTn8U+6i
+pFemYcDuRFKeTgTkKlHn7MXcw7aJ/EhcrUpUgNqARWOqm6yMAyc+uX3yEEdY3lg=
+=AEi1
 -----END PGP SIGNATURE-----
 
---AhCCdIwQf0d0uSA5--
+--leQ0ainWKcxhm+Q3--
 
---===============4387751931291263437==
+--===============4288606153415978487==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4387751931291263437==--
+--===============4288606153415978487==--
