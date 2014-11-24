@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: bt-sco: support wide band speech
-Date: Mon, 24 Nov 2014 14:36:02 +0100
-Message-ID: <54733442.6020409@metafoo.de>
-References: <1416832172-4875-1-git-send-email-21cnbao@gmail.com>
- <54732875.5070605@metafoo.de>
- <CAGsJ_4wTHDGBW19PHSyyeOx-9HYJsXojTUWk3ub_eESLgEXmog@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 26/29] ALSA: oxfw: Add support AMDTP
+	in-stream
+Date: Mon, 24 Nov 2014 14:54:17 +0100
+Message-ID: <54733889.8050303@ladisch.de>
+References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>	<1414328610-12729-27-git-send-email-o-takashi@sakamocchi.jp>	<54691544.2020501@ladisch.de>
+ <546DC356.8010207@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-176.synserver.de (smtp-out-179.synserver.de
- [212.40.185.179])
- by alsa0.perex.cz (Postfix) with ESMTP id C81942650C3
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 14:36:01 +0100 (CET)
-In-Reply-To: <CAGsJ_4wTHDGBW19PHSyyeOx-9HYJsXojTUWk3ub_eESLgEXmog@mail.gmail.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B193E264F33
+ for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 14:54:19 +0100 (CET)
+In-Reply-To: <546DC356.8010207@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Yibo Cai <yibo.cai@csr.com>, Liam Girdwood <lgirdwood@gmail.com>, DL-SHA-WorkGroupLinux <workgroup.linux@csr.com>, Mark Brown <broonie@kernel.org>, Barry Song <Baohua.Song@csr.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 11/24/2014 01:58 PM, Barry Song wrote:
-> 2014-11-24 20:45 GMT+08:00 Lars-Peter Clausen <lars@metafoo.de>:
->> On 11/24/2014 01:29 PM, Barry Song wrote:
->>>
->>> From: Yibo Cai <yibo.cai@csr.com>
->>>
->>> HFP1.6 requires support for wide band speech(16KHz) over Bluetooth.
->>>
->>> Signed-off-by: Yibo Cai <yibo.cai@csr.com>
->>> Signed-off-by: Barry Song <Baohua.Song@csr.com>
->>> ---
->>>    sound/soc/codecs/bt-sco.c | 4 ++--
->>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
->>> index c4cf069..fc0664b 100644
->>> --- a/sound/soc/codecs/bt-sco.c
->>> +++ b/sound/soc/codecs/bt-sco.c
->>> @@ -31,14 +31,14 @@ static struct snd_soc_dai_driver bt_sco_dai = {
->>>                  .stream_name = "Playback",
->>>                  .channels_min = 1,
->>>                  .channels_max = 1,
->>> -               .rates = SNDRV_PCM_RATE_8000,
->>> +               .rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
->>
->>
->> This will break those bluetooth modules that only work with 8k.
+Takashi Sakamoto wrote:
+> On Nov 17 2014 06:21, Clemens Ladisch wrote:
+>> And why are the substreams counters atomic?
+>> Can't they just be normal variables accessed from inside the mutex?
 >
-> how do you think if we use device-tree "compatible" to differentiate
-> these two kinds of BT modules?
-> for non-DT platform, platform_device_id?
+> Just for my convinience. I didn't want to write many
+> mutex_lock()/mutex_unlock() because wrong coding of them causes-dead
+> lock
 
-Yes, I think that's what we need to do.
+Just use a kernel compiled with CONFIG_PROVE_LOCKING.
 
-- Lars
+> An attached patch achieves your idea over my patchset. Handling
+> reference counter is easy to understand (because it's arithmetric
+> operation) but I don't like much mutex_lock()/mutex_unlock().
+>
+> Can I request you to explain about the advantages of your idea?
+
+It makes the driver work correctly.
+
+There's nothing wrong with atomic_t itself, but in this case, none of
+the accesses would be valid outside of the lock, so it is not necessary
+for them to be atomic.
+
+In theory, it would be possible to use atomic_t to synchronize multiple
+streams, but this requires that
+1. two CPUs that start a stream at the same time do not both think they
+   are the first, so you *must* use something like atomic_inc_and_test(),
+   and
+2. when one CPU is still starting a stream, code on all other CPUs must
+   be able to work correctly, without synchronization.  This is not
+   possible if the code requires to know that the DMA actually has
+   started; consider the following code:
+
+   void start_some_substream(...)
+   {
+       if (atomic_inc_and_test(substreams)) {
+           mutex_lock();
+           // lots of stuff to start DMA ...
+           mutex_unlock();
+       } else {
+           // wait for the DMA to be started
+       }
+       ...
+   }
+
+   How could the 'else' branch ensure that the DMA engine is started?
+   Just taking the mutex is not enough, because it could happen before
+   the mutex_lock() of the first stream.  This is not possible without
+   moving the inc_and_test into the locked region.
+
+
+Regards,
+Clemens
