@@ -1,72 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 32/32] ASoC: wm9713: Cleanup manual bias
-	level transitions
-Date: Mon, 24 Nov 2014 18:44:01 +0000
-Message-ID: <20141124184401.GZ7712@sirena.org.uk>
-References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
- <1416746269-4935-32-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH v2] ASoC: rockchip: i2s: Fix Kconfig for I2S device driver
+Date: Mon, 24 Nov 2014 19:01:28 +0000
+Message-ID: <20141124190128.GI7712@sirena.org.uk>
+References: <20141121185856.GJ3815@sirena.org.uk>
+ <1416599446-32310-1-git-send-email-rupran@einserver.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2856466390816592434=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5781F266198
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 19:45:59 +0100 (CET)
-In-Reply-To: <1416746269-4935-32-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YszDAcSgCu6rDIlP"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1416599446-32310-1-git-send-email-rupran@einserver.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andreas Ruprecht <rupran@einserver.de>
+Cc: Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2856466390816592434==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="j8HTHu8OFBZ8oR7J"
-Content-Disposition: inline
-
-
---j8HTHu8OFBZ8oR7J
+--YszDAcSgCu6rDIlP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Nov 23, 2014 at 01:37:48PM +0100, Lars-Peter Clausen wrote:
-> The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
-> can also be removed as the core will automatically do this after the CODEC
-> has been probed.
+On Fri, Nov 21, 2014 at 08:50:46PM +0100, Andreas Ruprecht wrote:
+> Currently, CONFIG_SND_SOC_ROCKCHIP_I2S could also be selected
+> without having CONFIG_SND_SOC_ROCKCHIP enabled.
 
 Applied, thanks.
 
---j8HTHu8OFBZ8oR7J
+--YszDAcSgCu6rDIlP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUc3xwAAoJECTWi3JdVIfQZsUH/1wkWFDh51lqG4J1W6VcKNZc
-X7NLioSmU1iWM8Z/DoCvjM32HBWC/RXuPqxfMgPKbLKmUWp8jA66j6V38Xvb9NPn
-tTcibxpQBe83DQ+8KBI5xy/zjUZz7b/bTGW41J5goIE+y6EX/20PijoB7txbhuKj
-oxbJVlr+dvBQTGIqL4aPIDQWWsZ72f35t7Bo5RGUKVPk7nlWHbvaJAG5Imt/I7Oy
-7OYRRm3SqSq4apB44/csuwQYXQePj5/2qzUQLtySsuHY+UawT3PkhiF8wokbo0oI
-M5ZXh8GscW/Wzgu9s3h0PRo6S6Q9CvJ+K2bkl4JmDNZ/CX3D9j5J3qylobm7hmQ=
-=htn8
+iQEcBAEBAgAGBQJUc4CHAAoJECTWi3JdVIfQPgsH/2nfn7uCaKD1s2yDlNg46fYb
+U+fcxES2gJITRmXlEXx2Gvl2kem9x6Lrh0H0XNLsSseBnL/3iSEqPQHdzn7gA7W9
+uKH2cXyWtP+dzEoSQuRixIcyw79GNW0ZkRuwYZ3mTaoFHxqZHHoAbw9st2JngM0G
++2dLi0TSZCJBhicznnPV6S9vEJIRiZK8Vu9aoFAnR3FxR9vKVwhgU1MPpGUFcGHC
+3uf6m26Mre74UPh70gQ1xBbMcHOYt8Un7kNmIq69dnYlw2Oue8Yqee27CBLaDBED
+eroSPau7m6p2nnFxF5pdi9MoXR57H9veqtFmSx/2rT1FixvFa4kq2ktmP64b8Jo=
+=vInt
 -----END PGP SIGNATURE-----
 
---j8HTHu8OFBZ8oR7J--
-
---===============2856466390816592434==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2856466390816592434==--
+--YszDAcSgCu6rDIlP--
