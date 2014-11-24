@@ -1,85 +1,50 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Mon, 24 Nov 2014 10:48:01 +0200
-Message-ID: <5472F0C1.6030707@ti.com>
-References: <cover.1415803064.git.jsarha@ti.com> <20141112222344.GU3815@sirena.org.uk> <54646648.5030807@ti.com> <546DC9A0.8060700@ti.com> <20141121112317.GQ3815@sirena.org.uk> <546F2BA3.9050203@ti.com> <20141121163815.GT3815@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 01/32] ASoC: wm8350: Cleanup manual bias
+	level	transitions
+Date: Mon, 24 Nov 2014 10:00:10 +0000
+Message-ID: <20141124100010.GA13764@opensource.wolfsonmicro.com>
+References: <1416746269-4935-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="aPTDb4JClJ34mL2OSiEtVU5XCECwUufPq"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20141121163815.GT3815@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB085260490
+ for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 11:00:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1416746269-4935-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
---aPTDb4JClJ34mL2OSiEtVU5XCECwUufPq
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+On Sun, Nov 23, 2014 at 01:37:17PM +0100, Lars-Peter Clausen wrote:
+> Set the CODEC driver's suspend_bias_off flag rather than manually going to
+> SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
+> the code a bit shorter and cleaner.
+> 
+> Since the ASoC core now takes care of setting the bias level to
+> SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+> anymore either.
+> 
+> The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
+> can also be removed as the core will automatically do this after the CODEC
+> has been probed.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
 
-On 21/11/14 18:38, Mark Brown wrote:
-> On Fri, Nov 21, 2014 at 02:10:11PM +0200, Jyri Sarha wrote:
->=20
->> OMAP HDMI audio is fundamentally different to the case on Armada or on=
- BBB.
->> In omap the whole HDMI IP is integrated to the SoC and there really is=
- no
->> codec in the ASoC sense. The the cpu-dai transmits the audio directly =
-to
->> hdmi wire and there is no i2s bus involved. So this case should not be=
- mixed
->> with the patches Jean-Francois working on. The code is also orthogonal=
- in
->> that sense that the latest omap-hdmi-audio uses the generic dymmy code=
-c.
->=20
-> The discussion seemed to be about what to do with unplugged connections=
+Whole series looks good to me:
 
-> which isn't what you're talking about there and does seem like an area
-> where we should at least be aiming for common behaviour even if not a
-> common implementation.
->=20
-> There's also all the stuff about parsing EDIDs for capabilities which
-> would seem to be related to that but seems to have gone off into the
-> weeds.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-I agree all these should be studied and worked further. However, I would
-still like to merge this series in the next merge window:
-
-a) The series does fix the OMAP HDMI audio, so that users can actually
-use it.
-
-b) The series does make the driver model much better, so that I can
-actually be bothered to keep it enabled (earlier, even when it more or
-less worked, it was too much hassle when doing development using modules)=
-=2E
-
- Tomi
-
-
-
---aPTDb4JClJ34mL2OSiEtVU5XCECwUufPq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUcvDBAAoJEPo9qoy8lh71krkP/2uPrWy2ZUoTHtGz9YlSTYoi
-hbjwXRtpYrmYqwT1RwGYEE5DVJWsZJ0osYprs3ILJoGTB5hJDAPDXWASxMRVjhd2
-1XHu/6eEP5hFpT4GxCnjYuxLbaVVHd4nSTuNffSO42ktzUVV2VvFIm3mptLFey1W
-GzaaT3ufFyr7wT3z5IKPzWJ/OVCBi7S3yEEGvHbH3X9TeWY1dBqHI+2fW8cX/j9S
-G0SEHKSyBWVw4fEXVdJfZt3wLbrt+zdhRMhfr96Xo0VETLqfo0iG90c5WctGpMwN
-CEitNfLF1UKyqu/CUZjtfuCEYENP2YUod9FUFW5oZ9PsphvWLUpJN2/zVLaFwZiF
-Fj5770mrYPmYtkWo9Rs7RzsBVJeEGlPmtslm6zq1vZ2WtGdKPYDeZbDHkTULqQtJ
-1uiL5MPWK0ffnDplf1XsQn6+gchMwesQKpg+3+4f8o3gQqcSKL9JYTtyEYMo+62Y
-eR3QMPTloZi0tt3cV4tPy8rmFFc4YTgjyBbuxExOu4x3Nb+kkcHNNMshLWNJv/1d
-lql2ZidwVwFz9WFDDbDmkwXumItIUTp/0a6/KwYud7+uOSC3c6LPomFYW/Hr2gFk
-ZKqTMHr1dR3nUQ7tEyuEIXgSagp/5/8AiOnaoKEYQ9qg82V1jrv6cjB4IsQPfk0H
-3wRddb4Bvf/zuj58IetD
-=KyuB
------END PGP SIGNATURE-----
-
---aPTDb4JClJ34mL2OSiEtVU5XCECwUufPq--
+Thanks,
+Charles
