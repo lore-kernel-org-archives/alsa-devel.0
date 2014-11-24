@@ -1,45 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rockchip: i2s: Fix Kconfig for I2S device driver
-Date: Mon, 24 Nov 2014 19:01:28 +0000
-Message-ID: <20141124190128.GI7712@sirena.org.uk>
-References: <20141121185856.GJ3815@sirena.org.uk>
- <1416599446-32310-1-git-send-email-rupran@einserver.de>
+From: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
+Subject: usb-audio: I'd like to change two things in usb audio,
+ but I'm not sure if it's right
+Date: Mon, 24 Nov 2014 22:16:37 +0100
+Message-ID: <CAMFLXsBpYLeFTbAaqbYUA3FC_emWcZi2TZDSU+7zb41OFmg8Xg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YszDAcSgCu6rDIlP"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1416599446-32310-1-git-send-email-rupran@einserver.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andreas Ruprecht <rupran@einserver.de>
-Cc: Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f175.google.com (mail-ie0-f175.google.com
+ [209.85.223.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85A05264ED3
+ for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 22:16:38 +0100 (CET)
+Received: by mail-ie0-f175.google.com with SMTP id at20so9793859iec.34
+ for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 13:16:37 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladish.de, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---YszDAcSgCu6rDIlP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Nov 21, 2014 at 08:50:46PM +0100, Andreas Ruprecht wrote:
-> Currently, CONFIG_SND_SOC_ROCKCHIP_I2S could also be selected
-> without having CONFIG_SND_SOC_ROCKCHIP enabled.
-
-Applied, thanks.
-
---YszDAcSgCu6rDIlP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUc4CHAAoJECTWi3JdVIfQPgsH/2nfn7uCaKD1s2yDlNg46fYb
-U+fcxES2gJITRmXlEXx2Gvl2kem9x6Lrh0H0XNLsSseBnL/3iSEqPQHdzn7gA7W9
-uKH2cXyWtP+dzEoSQuRixIcyw79GNW0ZkRuwYZ3mTaoFHxqZHHoAbw9st2JngM0G
-+2dLi0TSZCJBhicznnPV6S9vEJIRiZK8Vu9aoFAnR3FxR9vKVwhgU1MPpGUFcGHC
-3uf6m26Mre74UPh70gQ1xBbMcHOYt8Un7kNmIq69dnYlw2Oue8Yqee27CBLaDBED
-eroSPau7m6p2nnFxF5pdi9MoXR57H9veqtFmSx/2rT1FixvFa4kq2ktmP64b8Jo=
-=vInt
------END PGP SIGNATURE-----
-
---YszDAcSgCu6rDIlP--
+U28gSSdsbCB0cnkgYWdhaW4sIHRoaXMgdGltZSB3aXRoIHRoZSBwcm9wZXIgY2M6cyBhbmQgYSBz
+ZWNvbmQgcXVlc3Rpb24uCgpJJ3ZlIGNvbWUgYWNyb3NzIHR3byBpc3N1ZXMgaW4gdGhlIHVzYiBh
+dWRpbyBtb2R1bGUgdGhhdCBhcmUgY2F1c2luZwpwcm9ibGVtcyB3aXRoIG15IHNvdW5kIGNhcmQs
+IGJ1dCBJJ20gdGhpbmtpbmcgdGhhdCBjaGFuZ2luZyB0aGVtIG1pZ2h0CmJyZWFrIHNvbWV0aGlu
+ZyBmb3Igc29tZSBvdGhlciBjYXJkLgoKSW4gc291bmQvdXNiL21peGVyLmMgZnVuY3Rpb24gY2hl
+Y2tfaW5wdXRfdGVybSguLi4pLCBmb3IgdGhlIGNhc2UKVUFDX0lOUFVUX1RFUk1JTkFMIGFuZCBV
+QUNfVkVSU0lPTl8yOgoKVGhlIHJlY3Vyc2l2ZSBjYWxsIHRvIGdldCBjbG9jayBzZWxlY3RvcnMg
+bWVzc2VzIHVwIHRoZSBuYW1pbmcgb2YgbXkKdGVybWluYWxzLiBBdCB0aGlzIHN0YWdlIHRoZSB0
+ZXJtaW5hbHMgYXJlIGFscmVhZHkgcHJvcGVybHkgbmFtZWQgTWljIGFuZApMaW5lIGJ1dCB0aGUg
+Y2FsbCBvdmVyd3JpdGVzIHRoZW0gYm90aCB3aXRoIHRoZSB1bm5hbWVkIGNsb2NrIHNlbGVjdG9y
+CiJVbml0IDIyIi4gQXJlIG90aGVyIFVBQzIgY2FyZHMgZGlmZmVyZW50LCBzbyB0aGF0IHRoZSBj
+bG9jayBzZWxlY3Rvcgpjb250YWlucyB0aGUgY29ycmVjdCB0ZXJtaW5hbCBuYW1lLCBvciBpcyB0
+aGVyZSBzb21lIG90aGVyIHJlYXNvbmluZyBoZXJlCnRoYXQgSSdtIG5vdCBzZWVpbmc/CgpDb3Vs
+ZCB0aGUgY2FsbCBiZSByZW1vdmVkLCBvciBwZXJoYXBzIG9ubHkgZG9uZSBpZiBubyB0ZXJtaW5h
+bCBuYW1lIGhhcwpiZWVuIGZvdW5kIHlldD8KCkluIHNvdW5kL3VzYi9zdHJlYW0uYyBmdW5jdGlv
+biBzbmRfdXNiX2FkZF9hdWRpb19zdHJlYW0oLi4uKSwgbmVhciB0aGUgZW5kCm9mIHRoZSBmdW5j
+dGlvbjoKCkEgbmV3bHkgY3JlYXRlZCBwY20gaXMgYWRkZWQgd2l0aCAibGlzdF9hZGQoJmFzLT5s
+aXN0LCAmY2hpcC0+cGNtX2xpc3QpOyIKd2hpY2ggY2F1c2VzIGRldmljZXMgdG8gYmUgbGlzdGVk
+IGluIHJldmVyc2Ugb3JkZXIsIGkuZS4gZGV2aWNlIDAgd2lsbCBiZQphdCB0aGUgZW5kIG9mIHRo
+ZSBsaXN0LCBhbmQgdGhpcyBsZWFkcyB0byB0aGF0IGNhcHR1cmUgc3RyZWFtcyBlbmQgdXAgaW4K
+dGhlIHdyb25nIGRldmljZSB1bmRlciBjZXJ0YWluIGNpcmN1bXN0YW5jZXMuCgpUaGUgcHJvYmxl
+bSBhcmlzZXMgd2hlbiB0aGUgY29kZSB1bmRlciAibG9vayBmb3IgYW4gZW1wdHkgc3RyZWFtIiBl
+YXJsaWVyCmluIHRoZSBzYW1lIGZ1bmN0aW9uIGV4ZWN1dGVzLiBJdCB3aWxsIGF0dGFjaCB0aGUg
+Y2FwdHVyZSBzdHJlYW0gdG8gdGhlCmZpcnN0IGNvbXBhdGlibGUgZXhpc3Rpbmcgc3RyZWFtLCBi
+dXQgc2luY2UgdGhleSBhcmUgcmV2ZXJzZWQgaXQgd2lsbCBmaW5kCnRoZSBoaWdoZXN0IG51bWJl
+cmVkIGRldmljZS4gSW4gbXkgY2FzZSBhbmFsb2cgaW5wdXQgd2lsbCBiZSBncm91cGVkIHdpdGgK
+ZGlnaXRhbCBvdXQgKGRldmljZSAxKSBpbnN0ZWFkIG9mIGFuYWxvZyBvdXQgKGRldmljZSAwKS4K
+ClRoaXMgaXMgYXNzdW1pbmcgdGhhdCBwbGF5YmFjayBzdHJlYW1zIGFyZSBkZWZpbmVkIGJlZm9y
+ZSBjYXB0dXJlIHN0cmVhbXMKYnV0IGl0IGNvdWxkIGhhcHBlbiBpbiB0aGUgb3RoZXIgZGlyZWN0
+aW9uIGFzIGxvbmcgYXMgdGhlcmUgYXJlIHNldmVyYWwKc3RyZWFtcyBvZiBvbmUgdHlwZS4KCkkg
+YWxzbyBzdXNwZWN0IHRoYXQgdGhpcyBpcyB3aGF0IGNhdXNlcyB0aGUgTS1BdWRpbyBBdWRpb3Bo
+aWxlIFVTQiB0byBoYXZlCnN3YXBwZWQgaW5wdXRzLCBmb3Igd2hpY2ggdGhlcmUncyBhIGZpeCBp
+biBVU0ItQXVkaW8uY29uZiAoCmh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLWxp
+Yi5naXQ7YT1ibG9iO2Y9c3JjL2NvbmYvY2FyZHMvVVNCLUF1ZGlvLmNvbmYjbDcwCikuIFRoYW5r
+cyB0byBkZWJpYW51c2VyIG9uIElSQyBmb3IgaGVscGluZyBtZSBmaW5kIGl0LgoKSSB3b3VsZCBs
+aWtlIHRvIGNoYW5nZSB0aGlzIGNhbGwgdG8gdXNlIGxpc3RfYWRkX3RhaWwgZm9yIGFkZGluZyBu
+ZXcgaXRlbXMKaW5zdGVhZCwgYnV0IEknbSB3b3JyaWVkIHRoYXQgdGhlcmUgYXJlIHF1aXJrcyBv
+ciBvdGhlciBmaXhlcyB0aGF0IGV4cGVjdAp0aGUgY3VycmVudCBiZWhhdmlvdXIuIFRoZXJlIGFy
+ZSB2ZXJ5IGZldyBvdGhlciByZWZlcmVuY2VzIHRvIHBjbV9saXN0IGFuZApub25lIG9mIHRoZW0g
+c2VlbSB0byBjYXJlIGFib3V0IG9yZGVyaW5nLgoKU29ycnkgZm9yIGJlaW5nIGJhZCBhdCByZWZl
+cmVuY2luZyBjb2RlLCBJJ20gbmV3IGF0IHRoaXMuCgovL0pvaGFuIFJhc3TDqW4KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
