@@ -1,18 +1,15 @@
-From: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
-Subject: usb-audio: I'd like to change two things in usb audio,
- but I'm not sure if it's right
-Date: Mon, 24 Nov 2014 22:16:37 +0100
-Message-ID: <CAMFLXsBpYLeFTbAaqbYUA3FC_emWcZi2TZDSU+7zb41OFmg8Xg@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ASoC: Intel: mrfld- add ACPI module
+Date: Tue, 25 Nov 2014 02:52:09 +0300
+Message-ID: <20141124235209.GA16222@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f175.google.com (mail-ie0-f175.google.com
- [209.85.223.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 85A05264ED3
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 22:16:38 +0100 (CET)
-Received: by mail-ie0-f175.google.com with SMTP id at20so9793859iec.34
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 13:16:37 -0800 (PST)
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25C09260692
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 00:52:27 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladish.de, Daniel Mack <daniel@zonque.org>
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-U28gSSdsbCB0cnkgYWdhaW4sIHRoaXMgdGltZSB3aXRoIHRoZSBwcm9wZXIgY2M6cyBhbmQgYSBz
-ZWNvbmQgcXVlc3Rpb24uCgpJJ3ZlIGNvbWUgYWNyb3NzIHR3byBpc3N1ZXMgaW4gdGhlIHVzYiBh
-dWRpbyBtb2R1bGUgdGhhdCBhcmUgY2F1c2luZwpwcm9ibGVtcyB3aXRoIG15IHNvdW5kIGNhcmQs
-IGJ1dCBJJ20gdGhpbmtpbmcgdGhhdCBjaGFuZ2luZyB0aGVtIG1pZ2h0CmJyZWFrIHNvbWV0aGlu
-ZyBmb3Igc29tZSBvdGhlciBjYXJkLgoKSW4gc291bmQvdXNiL21peGVyLmMgZnVuY3Rpb24gY2hl
-Y2tfaW5wdXRfdGVybSguLi4pLCBmb3IgdGhlIGNhc2UKVUFDX0lOUFVUX1RFUk1JTkFMIGFuZCBV
-QUNfVkVSU0lPTl8yOgoKVGhlIHJlY3Vyc2l2ZSBjYWxsIHRvIGdldCBjbG9jayBzZWxlY3RvcnMg
-bWVzc2VzIHVwIHRoZSBuYW1pbmcgb2YgbXkKdGVybWluYWxzLiBBdCB0aGlzIHN0YWdlIHRoZSB0
-ZXJtaW5hbHMgYXJlIGFscmVhZHkgcHJvcGVybHkgbmFtZWQgTWljIGFuZApMaW5lIGJ1dCB0aGUg
-Y2FsbCBvdmVyd3JpdGVzIHRoZW0gYm90aCB3aXRoIHRoZSB1bm5hbWVkIGNsb2NrIHNlbGVjdG9y
-CiJVbml0IDIyIi4gQXJlIG90aGVyIFVBQzIgY2FyZHMgZGlmZmVyZW50LCBzbyB0aGF0IHRoZSBj
-bG9jayBzZWxlY3Rvcgpjb250YWlucyB0aGUgY29ycmVjdCB0ZXJtaW5hbCBuYW1lLCBvciBpcyB0
-aGVyZSBzb21lIG90aGVyIHJlYXNvbmluZyBoZXJlCnRoYXQgSSdtIG5vdCBzZWVpbmc/CgpDb3Vs
-ZCB0aGUgY2FsbCBiZSByZW1vdmVkLCBvciBwZXJoYXBzIG9ubHkgZG9uZSBpZiBubyB0ZXJtaW5h
-bCBuYW1lIGhhcwpiZWVuIGZvdW5kIHlldD8KCkluIHNvdW5kL3VzYi9zdHJlYW0uYyBmdW5jdGlv
-biBzbmRfdXNiX2FkZF9hdWRpb19zdHJlYW0oLi4uKSwgbmVhciB0aGUgZW5kCm9mIHRoZSBmdW5j
-dGlvbjoKCkEgbmV3bHkgY3JlYXRlZCBwY20gaXMgYWRkZWQgd2l0aCAibGlzdF9hZGQoJmFzLT5s
-aXN0LCAmY2hpcC0+cGNtX2xpc3QpOyIKd2hpY2ggY2F1c2VzIGRldmljZXMgdG8gYmUgbGlzdGVk
-IGluIHJldmVyc2Ugb3JkZXIsIGkuZS4gZGV2aWNlIDAgd2lsbCBiZQphdCB0aGUgZW5kIG9mIHRo
-ZSBsaXN0LCBhbmQgdGhpcyBsZWFkcyB0byB0aGF0IGNhcHR1cmUgc3RyZWFtcyBlbmQgdXAgaW4K
-dGhlIHdyb25nIGRldmljZSB1bmRlciBjZXJ0YWluIGNpcmN1bXN0YW5jZXMuCgpUaGUgcHJvYmxl
-bSBhcmlzZXMgd2hlbiB0aGUgY29kZSB1bmRlciAibG9vayBmb3IgYW4gZW1wdHkgc3RyZWFtIiBl
-YXJsaWVyCmluIHRoZSBzYW1lIGZ1bmN0aW9uIGV4ZWN1dGVzLiBJdCB3aWxsIGF0dGFjaCB0aGUg
-Y2FwdHVyZSBzdHJlYW0gdG8gdGhlCmZpcnN0IGNvbXBhdGlibGUgZXhpc3Rpbmcgc3RyZWFtLCBi
-dXQgc2luY2UgdGhleSBhcmUgcmV2ZXJzZWQgaXQgd2lsbCBmaW5kCnRoZSBoaWdoZXN0IG51bWJl
-cmVkIGRldmljZS4gSW4gbXkgY2FzZSBhbmFsb2cgaW5wdXQgd2lsbCBiZSBncm91cGVkIHdpdGgK
-ZGlnaXRhbCBvdXQgKGRldmljZSAxKSBpbnN0ZWFkIG9mIGFuYWxvZyBvdXQgKGRldmljZSAwKS4K
-ClRoaXMgaXMgYXNzdW1pbmcgdGhhdCBwbGF5YmFjayBzdHJlYW1zIGFyZSBkZWZpbmVkIGJlZm9y
-ZSBjYXB0dXJlIHN0cmVhbXMKYnV0IGl0IGNvdWxkIGhhcHBlbiBpbiB0aGUgb3RoZXIgZGlyZWN0
-aW9uIGFzIGxvbmcgYXMgdGhlcmUgYXJlIHNldmVyYWwKc3RyZWFtcyBvZiBvbmUgdHlwZS4KCkkg
-YWxzbyBzdXNwZWN0IHRoYXQgdGhpcyBpcyB3aGF0IGNhdXNlcyB0aGUgTS1BdWRpbyBBdWRpb3Bo
-aWxlIFVTQiB0byBoYXZlCnN3YXBwZWQgaW5wdXRzLCBmb3Igd2hpY2ggdGhlcmUncyBhIGZpeCBp
-biBVU0ItQXVkaW8uY29uZiAoCmh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLWxp
-Yi5naXQ7YT1ibG9iO2Y9c3JjL2NvbmYvY2FyZHMvVVNCLUF1ZGlvLmNvbmYjbDcwCikuIFRoYW5r
-cyB0byBkZWJpYW51c2VyIG9uIElSQyBmb3IgaGVscGluZyBtZSBmaW5kIGl0LgoKSSB3b3VsZCBs
-aWtlIHRvIGNoYW5nZSB0aGlzIGNhbGwgdG8gdXNlIGxpc3RfYWRkX3RhaWwgZm9yIGFkZGluZyBu
-ZXcgaXRlbXMKaW5zdGVhZCwgYnV0IEknbSB3b3JyaWVkIHRoYXQgdGhlcmUgYXJlIHF1aXJrcyBv
-ciBvdGhlciBmaXhlcyB0aGF0IGV4cGVjdAp0aGUgY3VycmVudCBiZWhhdmlvdXIuIFRoZXJlIGFy
-ZSB2ZXJ5IGZldyBvdGhlciByZWZlcmVuY2VzIHRvIHBjbV9saXN0IGFuZApub25lIG9mIHRoZW0g
-c2VlbSB0byBjYXJlIGFib3V0IG9yZGVyaW5nLgoKU29ycnkgZm9yIGJlaW5nIGJhZCBhdCByZWZl
-cmVuY2luZyBjb2RlLCBJJ20gbmV3IGF0IHRoaXMuCgovL0pvaGFuIFJhc3TDqW4KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hello Vinod Koul,
+
+The patch 336cfbb05edf: "ASoC: Intel: mrfld- add ACPI module" from
+Nov 11, 2014, leads to the following static checker warning:
+
+	sound/soc/intel/sst/sst_acpi.c:313 sst_acpi_probe()
+	info: ignoring unreachable code.
+
+sound/soc/intel/sst/sst_acpi.c
+   304          ret = sst_context_init(ctx);
+   305          if (ret < 0)
+   306                  return ret;
+   307  
+   308          /* need to save shim registers in BYT */
+   309          ctx->shim_regs64 = devm_kzalloc(ctx->dev, sizeof(*ctx->shim_regs64),
+   310                                          GFP_KERNEL);
+   311          if (!ctx->shim_regs64) {
+   312                  return -ENOMEM;
+                        ^^^^^^^^^^^^^^^
+   313                  goto do_sst_cleanup;
+                        ^^^^^^^^^^^^^^^^^^^^
+   314          }
+   315  
+   316          sst_configure_runtime_pm(ctx);
+   317          platform_set_drvdata(pdev, ctx);
+   318          return ret;
+   319  
+   320  do_sst_cleanup:
+   321          sst_context_cleanup(ctx);
+   322          platform_set_drvdata(pdev, NULL);
+   323          dev_err(ctx->dev, "failed with %d\n", ret);
+   324          return ret;
+   325  }
+
+regards,
+dan carpenter
