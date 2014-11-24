@@ -1,127 +1,105 @@
-From: D Krishna Mohan <krishna.md@samsung.com>
-Subject: Re: [PATCH] ASoC: rt5631: Fixing compilation warning when DT is
- disabled
-Date: Mon, 24 Nov 2014 12:48:31 +0530
-Message-ID: <C8902B5E8A6B4B63A3B9A732345B33AD@sisodomain.com>
-References: <1416232589-31319-1-git-send-email-krishna.md@samsung.com>
- <20141117155617.GJ27002@pengutronix.de>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
+Date: Mon, 24 Nov 2014 10:18:31 +0200
+Message-ID: <5472E9D7.7000908@ti.com>
+References: <cover.1415803064.git.jsarha@ti.com> <20141112222344.GU3815@sirena.org.uk> <54646648.5030807@ti.com> <546DC9A0.8060700@ti.com> <20141121112317.GQ3815@sirena.org.uk> <546F317B.9030004@ti.com> <20141121161435.GS3815@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Boundary_(ID_dEee6aALfrCa8Vw9I7jVig)"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20141117155617.GJ27002@pengutronix.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: =?iso-8859-1?Q?UweKleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com, Claude Youn <claude.youn@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="5d8k6rOX1jHBdt6q3X0WKsFp7cdqJbFRp"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20141121161435.GS3815@sirena.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+--5d8k6rOX1jHBdt6q3X0WKsFp7cdqJbFRp
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
---Boundary_(ID_dEee6aALfrCa8Vw9I7jVig)
-Content-type: text/plain; format=flowed; charset=iso-8859-1; reply-type=original
-Content-transfer-encoding: 8BIT
+On 21/11/14 18:14, Mark Brown wrote:
+> On Fri, Nov 21, 2014 at 02:35:07PM +0200, Jyri Sarha wrote:
+>> On 11/21/2014 01:23 PM, Mark Brown wrote:
+>=20
+>>> With this specific series I also need to figure out what all the vide=
+o
+>>> side is about (like I said earlier a lot of the patches look like
+>>> they're supposed to be simple fixes for the video code not terribly
+>>> closely tied to the rest of the series but none of them are getting
+>>> applied) and what the end goal is beyond mechanically moving code.
+>=20
+>> The end goal of this series is to fix OMAP HDMI audio, that got broken=
 
-Attaching the patch with changes suggested by Uwe. Though there is another 
-patch which I submitted, but I leave it to Mark Brown as to which patch to 
-pick.
+>> couple of releases ago. At the same time I cleaned up the old complex =
+scheme
+>> to make the connection between the video and audio parts and allow mul=
+tiple
+>> HDMI devices (DSS side is not ready for this yet, but audio side is).
+>=20
+> But in what way is it broken and how did this happen?  Why are none of
 
-Previous patch :
->From 80b55f898d0a31b63fd6ed3bd82c548a0559b07b Mon Sep 17 00:00:00 2001
-From: Krishna Mohan Dani <krishna.md@samsung.com>
-Date: Mon, 17 Nov 2014 19:24:46 +0530
-Subject: [PATCH 1/2] ASoC: rt5631: Fixing compilation warning when DT is
- disabled
+I don't have a clear answer, but it probably involves lack of use, and
+buggy and hard to use implementation. Things have changed around the
+original HDMI audio implementation, and it stopped working at some point.=
 
--Krishna
 
---------------------------------------------------
-From: "UweKleine-König" <u.kleine-koenig@pengutronix.de>
-Sent: Monday, November 17, 2014 9:26 PM
-To: "Krishna Mohan Dani" <krishna.md@samsung.com>
-Cc: <linux-samsung-soc@vger.kernel.org>; 
-<linux-arm-kernel@lists.infradead.org>; <alsa-devel@alsa-project.org>; 
-<broonie@kernel.org>; <kgene.kim@samsung.com>; "Claude Youn" 
-<claude.youn@gmail.com>
-Subject: Re: [PATCH] ASoC: rt5631: Fixing compilation warning when DT is 
-disabled
+As the original implementation was found rather lacking, and with some
+fundamental issues, it was deemed better to have a fresh approach.
 
-> On Mon, Nov 17, 2014 at 07:26:29PM +0530, Krishna Mohan Dani wrote:
->> Fixes the following compilation warning:
->> Warning: 'rt5631_i2c_dt_ids' defined but not used - when DT is not used.
->>
->> Signed-off-by: Claude Youn <claude.youn@gmail.com>
->> Signed-off-by: Krishna Mohan Dani <krishna.md@samsung.com>
->> ---
->>  sound/soc/codecs/rt5631.c |    2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
->> index 3b7d5e4..9425545 100644
->> --- a/sound/soc/codecs/rt5631.c
->> +++ b/sound/soc/codecs/rt5631.c
->> @@ -1691,12 +1691,14 @@ static const struct i2c_device_id rt5631_i2c_id[] 
->> = {
->>  };
->>  MODULE_DEVICE_TABLE(i2c, rt5631_i2c_id);
->>
->> +#ifdef CONFIG_OF
->>  static struct of_device_id rt5631_i2c_dt_ids[] = {
->>  { .compatible = "realtek,rt5631"},
->>  { .compatible = "realtek,alc5631"},
->>  { }
->>  };
->>  MODULE_DEVICE_TABLE(of, rt5631_i2c_dt_ids);
->> +#endif
->
-> An (IMHO nicer) alternative is:
->
-> -static struct of_device_id rt5631_i2c_dt_ids[] = {
-> +static struct of_device_id rt5631_i2c_dt_ids[] __maybe_unused = {
->
-> Best regards
-> Uwe
->
-> -- 
-> Pengutronix e.K.                           | Uwe Kleine-König            |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  | 
+> the patches which look like they're supposed to be bug fixes early on i=
+n
+> the series getting applied?  I had thought this was just a lack of
+> interest on the video side but it seems there's some other problems
+> since the series has apparently been discussed off-list and still it's
+> just as big as it was initially.
 
---Boundary_(ID_dEee6aALfrCa8Vw9I7jVig)
-Content-type: application/octet-stream;
- name=0001-ASoC-rt5631-Fixing-compilation-warning-when-DT-is-di.patch
-Content-transfer-encoding: quoted-printable
-Content-disposition: attachment;
- filename=0001-ASoC-rt5631-Fixing-compilation-warning-when-DT-is-di.patch
+The whole series is about HDMI audio, not video.
 
->From 8d9e91b5dfe666f1a424297c016cf85fc3e35dd4 Mon Sep 17 00:00:00 2001=0A=
-From: Krishna Mohan Dani <krishna.md@samsung.com>=0A=
-Date: Mon, 24 Nov 2014 12:41:20 +0530=0A=
-Subject: [PATCH] ASoC: rt5631: Fixing compilation warning when DT is =
-disabled=0A=
-=0A=
-Fixes the following compilation warning:=0A=
-Warning: 'rt5631_i2c_dt_ids' defined but not used - when DT is not used.=0A=
-=0A=
-Signed-off-by: Claude Youn <claude.youn@gmail.com>=0A=
-Signed-off-by: Krishna Mohan Dani <krishna.md@samsung.com>=0A=
----=0A=
- sound/soc/codecs/rt5631.c |    2 +-=0A=
- 1 file changed, 1 insertion(+), 1 deletion(-)=0A=
-=0A=
-diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c=0A=
-index 3b7d5e4..5c65915 100644=0A=
---- a/sound/soc/codecs/rt5631.c=0A=
-+++ b/sound/soc/codecs/rt5631.c=0A=
-@@ -1691,7 +1691,7 @@ static const struct i2c_device_id rt5631_i2c_id[] =
-=3D {=0A=
- };=0A=
- MODULE_DEVICE_TABLE(i2c, rt5631_i2c_id);=0A=
- =0A=
--static struct of_device_id rt5631_i2c_dt_ids[] =3D {=0A=
-+static struct of_device_id rt5631_i2c_dt_ids[] __maybe_unused =3D {=0A=
- 	{ .compatible =3D "realtek,rt5631"},=0A=
- 	{ .compatible =3D "realtek,alc5631"},=0A=
- 	{ }=0A=
--- =0A=
-1.7.9.5=0A=
-=0A=
+The main HDMI driver resides in the fbdev directory, as the video side
+is the "master" here, and it contains the code to access the registers
+(including audio related registers). The sound/ part in this series acts
+as a logic between the asoc and the low level HDMI driver.
 
---Boundary_(ID_dEee6aALfrCa8Vw9I7jVig)--
+This series only touch the parts about HDMI audio, so the fixes early on
+don't really fix anything without the rest of the series (as the current
+HDMI audio doesn't work).
+
+And in any case, I don't like applying individual patches from a series.
+Usually that just complicates things. If I would apply some of the early
+patches to fbdev, then this series would no longer work on plain
+mainline kernel, and would instead depend on fbdev tree. The situation
+would be ever worse if you'd also pick some of the audio patches to
+sound tree, creating a dependency to two subsystem trees.
+
+So if there's no particular important reason to pick patches from a
+series, I rather keep it as a whole to simplify merging and testing.
+
+ Tomi
+
+
+
+--5d8k6rOX1jHBdt6q3X0WKsFp7cdqJbFRp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUcunXAAoJEPo9qoy8lh71d8EP/0WHc8cwEHiD9BzPBd2WgijN
+eQNmfNrMbGBp4xQokJZGaLFpr7TtMFwhBk/bl1DKRE509wZZ3E+scD9YqYa3p+iW
+z0iPJdbUmGggkzkGYK3Vn67LzegOBdwRUR87w4R9RYv4sgrkOb7AFvz0Hg+QpHOq
+qu+kPH6MCGis6OMjHQIntAc/FppbAYEr6rA0fBvw+j3xhGG1zdctvsTFk5BCxaIF
+Dd9fZrzYgC3Lig7tQkT/uvbROmfcIi/sy5EvSBS+GrMPlkhtD0CHXWeSP9HSJ5Bt
+CCKaROj2L3CtGEkGZsO4edtf5X8EMI+DPyHN3wbQEhhOo8rUVy74Y92dBx/U/h9k
+lEkX1pgUmkMEYVQ89A14jmOAzWwmK2HRQvnLB6slCzq3tgzmA5NcvNTFbU2r1K1R
+4+0WJ5fj+lPv6c62b5kGWBE9OOta+ZcIRNUHLFZO61SbytHUqVMP0PnuWgAM9SeM
+285Tbwq5ccs1Vugjbczf4QNqBOIEMqyL3ped/P4xfHBtTA+Gxqs5BWlR2lzVWGPM
+gR/OB7hs1p2U9EOzJtxwORS95vD403UvfsWjMoAHsIfQxDvGp66ka8cSeKkQaJf7
+bl1Gju4DAo9lUdbm6o0gww1uRADBJeQwUeVdnDDHZ9amg1q5calpB7mtpIebldK6
+CSXddzXlBTcaum64sBl+
+=Vwhp
+-----END PGP SIGNATURE-----
+
+--5d8k6rOX1jHBdt6q3X0WKsFp7cdqJbFRp--
