@@ -1,70 +1,100 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: max98090: Fix right sidetone
-	connection
-Date: Mon, 24 Nov 2014 17:14:44 +0000
-Message-ID: <20141124171444.GK7712@sirena.org.uk>
-References: <1416835957-14153-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1416835957-14153-3-git-send-email-jarkko.nikula@linux.intel.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2] ALSA: korg1212: cleanup of printk
+Date: Mon, 24 Nov 2014 09:25:10 -0800
+Message-ID: <1416849910.8797.1.camel@perches.com>
+References: <1416730251-5194-1-git-send-email-sudipm.mukherjee@gmail.com>
+	 <s5hh9xottl9.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6560620458298157319=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 02BE52650FE
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 18:16:46 +0100 (CET)
-In-Reply-To: <1416835957-14153-3-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hh9xottl9.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2014-11-24 at 18:08 +0100, Takashi Iwai wrote:
+> At Sun, 23 Nov 2014 13:40:51 +0530, Sudip Mukherjee wrote:
+[]
+> > replaced all references of the debug messages via printk
+> > with dev_* macro (mostly dev_dbg).
+> > one reference was changed to pr_err as there the card might have been
+> > uninitialized.
+> > 
+> > this patch will generate warning from checkpatch about broken quoted
+> > strings. but that was not fixed intentionally to improve the
+> > readability.
 
---===============6560620458298157319==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2WS97oupGEGbYNpW"
-Content-Disposition: inline
+I think it'd be easier to read and grep coalesced.
 
+[]
 
---2WS97oupGEGbYNpW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > in your review of v1, you said about some lines which are not ending
+> > with \n. but i was not able to find them. did i miss them somewhere?
+[]
+> The problem is the one with multiple "\n", for example:
+> 
+> 	dev_dbg(korg1212->card->dev, "dspMemPhy = %08x U[%08x], "
+> 		"PlayDataPhy = %08x L[%08x]\n"
+> 		"korg1212: RecDataPhy = %08x L[%08x], "
+> 		"VolumeTablePhy = %08x L[%08x]\n"
+> 		"korg1212: RoutingTablePhy = %08x L[%08x], "
+> 		"AdatTimeCodePhy = %08x L[%08x]\n",
 
-On Mon, Nov 24, 2014 at 03:32:37PM +0200, Jarkko Nikula wrote:
-> It is right not left sidetone which goes to "DACR".
+I think these should be individual dev_dbg calls
 
-Applied, thanks.
+	dev_dbg(korg1212->card->dev, "dspMemPhy = %08x U[%08x]\n", val, val2)
+	dev_dbg(korg1212->card->dev, "PhyDataPhy = %08x L[%08x]\n", val, val2);
+	dev_dbg(korg1212->card->dev, "RecDataPhy = %08x L[%08x]\n", val, val2);
+	dev_dbg(korg1212->card->dev, "VolumeTablePhy = %08x L[%08x]\n", val, val2);
 
---2WS97oupGEGbYNpW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+	etc..
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Another possibility is to use another macro like:
 
-iQEcBAEBAgAGBQJUc2eDAAoJECTWi3JdVIfQUX4H/3n6eK5Uo0+rHh6joxMNZV5B
-29eVsvw328yV7qIALCFUg33lx5q8yEsKrIvChwqzrW/wRPLHDaiVfhh779JtvVMO
-UDokRf9tdlmtYkM0A7b/HQZJY3FImi3VfrTkyz5PnuaC/VISfoQR0VB8NjZqpeQ7
-FJ3m/vWHRKznjoJbM6nYdtnKBhnJ6G3enSpJFjSwVxcfAD2RgvghgDUnfZfHgTUD
-38Hkx8HkQAs7bMhCPhZZ5uqgC6iPDKtCC3iq3IKWqRLvt0wbnn7zGy7SavRqN5BL
-/zloi2rV+vKpjeHBztJiDESI9CIrme7eDSaKLdKd2g6+hJFiT1i/LqN09F5VthA=
-=pJVR
------END PGP SIGNATURE-----
+#define k1212_dbg(k1212, fmt, ...)			\
+	dev_dbg((k)->card->dev, fmt, ##__VA_ARGS__)
 
---2WS97oupGEGbYNpW--
+and change all these to
 
---===============6560620458298157319==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	k1212_dbg(korg1212, "dspMemPhy = %08x U[%08x]\n", val, val2)
+	k1212_dbg(korg1212, "PhyDataPhy = %08x L[%08x]\n", val, val2);
+	k1212_dbg(korg1212, "RecDataPhy = %08x L[%08x]\n", val, val2);
+	k1212_dbg(korg1212, "VolumeTablePhy = %08x L[%08x]\n", val, val2);
 
+etc.
 
---===============6560620458298157319==--
+> My biggest concern right now is, however, about the unnecessary code
+> increase by this patch.  Currently, most of debug prints were simply
+> not built, because of:
+> 
+> >  // ----------------------------------------------------------------------------
+> > -// Debug Stuff
+> > -// ----------------------------------------------------------------------------
+> > -#define K1212_DEBUG_LEVEL		0
+> > -#if K1212_DEBUG_LEVEL > 0
+> > -#define K1212_DEBUG_PRINTK(fmt,args...)	printk(KERN_DEBUG fmt,##args)
+> > -#else
+> > -#define K1212_DEBUG_PRINTK(fmt,...)
+> > -#endif
+> > -#if K1212_DEBUG_LEVEL > 1
+> > -#define K1212_DEBUG_PRINTK_VERBOSE(fmt,args...)	printk(KERN_DEBUG fmt,##args)
+> > -#else
+> > -#define K1212_DEBUG_PRINTK_VERBOSE(fmt,...)
+> > -#endif
+> 
+> With your patch, now all these codes are compiled.
+
+Not really.
+
+dev_dbg is a no-op unless DEBUG is #defined
+or CONFIG_DYNAMIC_DEBUG is set.
+
+> I have no clear answer what would be the best in such a case.  I'd say
+> it really depends.  If they are just silly messages that can be
+> covered in a better way (like ftrace), just get rid of them.  If they
+> are intended for some good register dumps, then dev_dbg() might make
+> sense.
+
+very true.
