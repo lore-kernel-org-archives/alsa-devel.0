@@ -1,20 +1,17 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH] ASoC: bt-sco: support wide band speech
-Date: Mon, 24 Nov 2014 20:58:37 +0800
-Message-ID: <CAGsJ_4wTHDGBW19PHSyyeOx-9HYJsXojTUWk3ub_eESLgEXmog@mail.gmail.com>
-References: <1416832172-4875-1-git-send-email-21cnbao@gmail.com>
- <54732875.5070605@metafoo.de>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: max98090: Fix ill-defined sidetone
+	route
+Date: Mon, 24 Nov 2014 15:32:36 +0200
+Message-ID: <1416835957-14153-2-git-send-email-jarkko.nikula@linux.intel.com>
+References: <1416835957-14153-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 14660260548
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 13:58:59 +0100 (CET)
-Received: by mail-pa0-f47.google.com with SMTP id kq14so9496615pab.20
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 04:58:58 -0800 (PST)
-In-Reply-To: <54732875.5070605@metafoo.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12C3A260505
+ for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 14:33:20 +0100 (CET)
+In-Reply-To: <1416835957-14153-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,42 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Yibo Cai <yibo.cai@csr.com>, Liam Girdwood <lgirdwood@gmail.com>, DL-SHA-WorkGroupLinux <workgroup.linux@csr.com>, Mark Brown <broonie@kernel.org>, Barry Song <Baohua.Song@csr.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-2014-11-24 20:45 GMT+08:00 Lars-Peter Clausen <lars@metafoo.de>:
-> On 11/24/2014 01:29 PM, Barry Song wrote:
->>
->> From: Yibo Cai <yibo.cai@csr.com>
->>
->> HFP1.6 requires support for wide band speech(16KHz) over Bluetooth.
->>
->> Signed-off-by: Yibo Cai <yibo.cai@csr.com>
->> Signed-off-by: Barry Song <Baohua.Song@csr.com>
->> ---
->>   sound/soc/codecs/bt-sco.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
->> index c4cf069..fc0664b 100644
->> --- a/sound/soc/codecs/bt-sco.c
->> +++ b/sound/soc/codecs/bt-sco.c
->> @@ -31,14 +31,14 @@ static struct snd_soc_dai_driver bt_sco_dai = {
->>                 .stream_name = "Playback",
->>                 .channels_min = 1,
->>                 .channels_max = 1,
->> -               .rates = SNDRV_PCM_RATE_8000,
->> +               .rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
->
->
-> This will break those bluetooth modules that only work with 8k.
+Commit 5fe5b767dc6f ("ASoC: dapm: Do not pretend to support controls for non
+mixer/mux widgets") revealed ill-defined control in a route between
+"STENL Mux" and DACs in max98090.c:
 
-how do you think if we use device-tree "compatible" to differentiate
-these two kinds of BT modules?
-for non-DT platform, platform_device_id?
+max98090 i2c-193C9890:00: Control not supported for path STENL Mux -> [NULL] -> DACL
+max98090 i2c-193C9890:00: ASoC: no dapm match for STENL Mux --> NULL --> DACL
+max98090 i2c-193C9890:00: ASoC: Failed to add route STENL Mux -> NULL -> DACL
+max98090 i2c-193C9890:00: Control not supported for path STENL Mux -> [NULL] -> DACR
+max98090 i2c-193C9890:00: ASoC: no dapm match for STENL Mux --> NULL --> DACR
+max98090 i2c-193C9890:00: ASoC: Failed to add route STENL Mux -> NULL -> DACR
 
->
-> - Lars
+Since there is no control between "STENL Mux" and DACs the control name must
+be NULL not "NULL".
 
--barry
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/max98090.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 19258a910974..331b3e473c51 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -1397,8 +1397,8 @@ static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
+ 	{"STENL Mux", "Sidetone Left", "DMICL"},
+ 	{"STENR Mux", "Sidetone Right", "ADCR"},
+ 	{"STENR Mux", "Sidetone Right", "DMICR"},
+-	{"DACL", "NULL", "STENL Mux"},
+-	{"DACR", "NULL", "STENL Mux"},
++	{"DACL", NULL, "STENL Mux"},
++	{"DACR", NULL, "STENL Mux"},
+ 
+ 	{"AIFINL", NULL, "SHDN"},
+ 	{"AIFINR", NULL, "SHDN"},
+-- 
+2.1.3
