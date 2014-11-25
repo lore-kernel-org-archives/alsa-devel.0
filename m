@@ -1,74 +1,89 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Tue, 25 Nov 2014 20:27:22 +0000
-Message-ID: <20141125202722.GA25261@sirena.org.uk>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
- <20141125184304.GK7712@sirena.org.uk>
- <5474D35A.3000601@linux.intel.com>
- <2580837.YI0IvfXqRR@vostro.rjw.lan>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Disable regmap helpers if regmap is
+	disabled
+Date: Tue, 25 Nov 2014 21:41:03 +0100
+Message-ID: <1416948063-1692-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2580837.YI0IvfXqRR@vostro.rjw.lan>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Al Stone <al.stone@linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-210.synserver.de (smtp-out-210.synserver.de
+ [212.40.185.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id A21352605A8
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 21:41:06 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+If regmap is disabled there will be no users of the ASoC regmap helpers.
+Furthermore regmap_exit() will no be defined causing the following compile
+error:
+	sound/soc/soc-core.c: In function 'snd_soc_component_exit_regmap':
+	sound/soc/soc-core.c:2645:2: error: implicit declaration of function
+		'regmap_exit' [-Werror=implicit-function-declaration]
 
---ReaqsoxgOBHFXBhH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So disable the helpers if regmap is disabled.
 
-On Tue, Nov 25, 2014 at 09:31:27PM +0100, Rafael J. Wysocki wrote:
-> On Tuesday, November 25, 2014 11:07:06 AM Darren Hart wrote:
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Fixes: 20feb881988c ASoC: Add helper functions for deferred regmap setup")
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/soc.h  | 4 ++++
+ sound/soc/soc-core.c | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-> > This is a current topic with the ACPI working group. We have the
-> > following document:
-
-> > http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
-
-> This hasn't been discussed a lot at the meetings I attended.
-
-> The bindings management process is being set up within the UEFI Forum, but I'm
-> not sure if/how the existing DT bindings documented in the kernel tree are
-> going to be covered by it ATM.
-
-Al Stone (CCed) pointed me at the following two documents:
-
-http://www.uefi.org/sites/default/files/resources/web-page-v2.pdf
-http://www.uefi.org/sites/default/files/resources/nic-request-v2.pdf
-
-(the first one being the actual process in so far as it exists).  The
-process appears to be to mail requests in a specific format to the ASWG
-chairperson (the address is apparently supposed to be awsg@uefi.org).
-It looks like all the properties are expected to end up in one or more
-PDF files like the second one.
-
-My initial thought would be to require that we send any DT properties
-defined for devices with ACPI identifiers registered there and hope the
-volume doesn't DoS them.
-
-A more defined format for DT documentation that we can script into the
-ASWG format (or vice versa) might be helpful here, and we should add
-notes to the DT documentation if this is how we want to proceed.
-
---ReaqsoxgOBHFXBhH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdOYpAAoJECTWi3JdVIfQxkUH/3ucwBHvyyGmuxNn4Qq8YRBo
-qQ3b6rSsRqYgGZh/DaM0pMh24o4Z29th5xyM+6IRAtAsGNxkvVhlb+fckyCGrCi8
-TcWmofOXsT6vyQ6dJuLypDZwcjSAYYSfdLu27r1ZXKyXKZQrHongQyUD4BiYtlyN
-H0gh3mtTNLoS3HErB8OTM0s51L3QsU17/Hmt3ntPIixXoHCE5o2A+3AOWthhy50S
-1EV5PxFGX8k77UVzpFD7WKCuQ53YuccPxGXwEgCqFOygmXaLlBMOimOHLVvhRu87
-3My2Lyeo9vebeE9D3QT9WruCAkdqS7shphSzs5318OLihHqstOiisnM7iCfFdm4=
-=x5UG
------END PGP SIGNATURE-----
-
---ReaqsoxgOBHFXBhH--
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 879e2b3..4cef90cc 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1283,6 +1283,8 @@ void snd_soc_component_async_complete(struct snd_soc_component *component);
+ int snd_soc_component_test_bits(struct snd_soc_component *component,
+ 	unsigned int reg, unsigned int mask, unsigned int value);
+ 
++#ifdef CONFIG_REGMAP
++
+ void snd_soc_component_init_regmap(struct snd_soc_component *component,
+ 	struct regmap *regmap);
+ void snd_soc_component_exit_regmap(struct snd_soc_component *component);
+@@ -1318,6 +1320,8 @@ static inline void snd_soc_codec_exit_regmap(struct snd_soc_codec *codec)
+ 	snd_soc_component_exit_regmap(&codec->component);
+ }
+ 
++#endif
++
+ /* device driver data */
+ 
+ static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index cc52ea1..7904eda 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2612,6 +2612,8 @@ static void snd_soc_component_setup_regmap(struct snd_soc_component *component)
+ 		component->val_bytes = val_bytes;
+ }
+ 
++#ifdef CONFIG_REGMAP
++
+ /**
+  * snd_soc_component_init_regmap() - Initialize regmap instance for the component
+  * @component: The component for which to initialize the regmap instance
+@@ -2647,6 +2649,8 @@ void snd_soc_component_exit_regmap(struct snd_soc_component *component)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_exit_regmap);
+ 
++#endif
++
+ static void snd_soc_component_add_unlocked(struct snd_soc_component *component)
+ {
+ 	if (!component->write && !component->read) {
+-- 
+1.8.0
