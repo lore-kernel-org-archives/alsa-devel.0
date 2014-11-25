@@ -1,148 +1,139 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 2/2] ALSA: firewire-lib: limit the MIDI data
-	rate
-Date: Tue, 25 Nov 2014 22:54:10 +0100
-Message-ID: <5474FA82.4030408@ladisch.de>
-References: <5474FA18.7000501@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/9] ASoC: ipq806x: Add LPASS CPU DAI driver
+Date: Tue, 25 Nov 2014 21:53:42 +0000
+Message-ID: <20141125215342.GU7712@sirena.org.uk>
+References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
+ <1416423169-21865-5-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 2E70C260654
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 22:54:30 +0100 (CET)
-In-Reply-To: <5474FA18.7000501@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="e7QQlpvAaNXS6X0y"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1416423169-21865-5-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Do no send MIDI bytes at the full rate at which FireWire packets happen
-to be sent, but restrict them to the actual rate of a real MIDI port.
-This is required by the specification, and prevents data loss when the
-device's buffer overruns.
 
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/firewire/amdtp.c |   61 +++++++++++++++++++++++++++++++++++++++++++-----
- sound/firewire/amdtp.h |    2 ++
- 2 files changed, 57 insertions(+), 6 deletions(-)
+--e7QQlpvAaNXS6X0y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 17548d8..c0c0c5e 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -22,6 +22,12 @@
- #define TICKS_PER_SECOND	(TICKS_PER_CYCLE * CYCLES_PER_SECOND)
+On Wed, Nov 19, 2014 at 10:52:44AM -0800, Kenneth Westfield wrote:
 
- /*
-+ * Nominally 3125 bytes/second, but the MIDI port's clock might be
-+ * 1% too slow, and the bus clock 100 ppm too fast.
-+ */
-+#define MIDI_BYTES_PER_SECOND	3093
-+
-+/*
-  * Several devices look only at the first eight data blocks.
-  * In any case, this is more than enough for the MIDI data rate.
-  */
-@@ -226,6 +232,14 @@ sfc_found:
- 	for (i = 0; i < pcm_channels; i++)
- 		s->pcm_positions[i] = i;
- 	s->midi_position = s->pcm_channels;
-+
-+	/*
-+	 * We do not know the actual MIDI FIFO size of most devices.  Just
-+	 * assume two bytes, i.e., one byte can be received over the bus while
-+	 * the previous one is transmitted over MIDI.
-+	 * (The value here is adjusted for midi_ratelimit_per_packet().)
-+	 */
-+	s->midi_fifo_limit = rate - MIDI_BYTES_PER_SECOND * s->syt_interval + 1;
- }
- EXPORT_SYMBOL(amdtp_stream_set_parameters);
+> +	if (channels == 8) {
+> +		if (bit_width == 24 &&
+> +			((samp_freq != 176400) &&
+> +			(samp_freq != 192000)))
+> +			return 2;
+> +		return 1;
 
-@@ -467,6 +481,36 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
- 	}
- }
+Coding style - there's more brackets than are needed coupled with some
+strange indentation (eg, the second samp_freq line being indented to the
+outside bracket when it's still within that bracket).  Use of switch
+statements would probably help, at least on channels.
 
-+/*
-+ * To avoid sending MIDI bytes at too high a rate, assume that the receiving
-+ * device has a FIFO, and track how much it is filled.  This values increases
-+ * by one whenever we send one byte in a packet, but the FIFO empties at
-+ * a constant rate independent of our packet rate.  One packet has syt_interval
-+ * samples, so the number of bytes that empty out of the FIFO, per packet(!),
-+ * is MIDI_BYTES_PER_SECOND * syt_interval / sample_rate.  To avoid storing
-+ * fractional values, the values in midi_fifo_used[] are measured in bytes
-+ * multiplied by the sample rate.
-+ */
-+static bool midi_ratelimit_per_packet(struct amdtp_stream *s, unsigned int port)
-+{
-+	int used;
-+
-+	used = s->midi_fifo_used[port];
-+	if (used == 0) /* common shortcut */
-+		return true;
-+
-+	used -= MIDI_BYTES_PER_SECOND * s->syt_interval;
-+	used = max(used, 0);
-+	s->midi_fifo_used[port] = used;
-+
-+	return used < s->midi_fifo_limit;
-+}
-+
-+static void midi_rate_use_one_byte(struct amdtp_stream *s, unsigned int port)
-+{
-+	s->midi_fifo_used[port] += amdtp_rate_table[s->sfc];
-+}
-+
- static void amdtp_fill_midi(struct amdtp_stream *s,
- 			    __be32 *buffer, unsigned int frames)
- {
-@@ -474,16 +518,21 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
- 	u8 *b;
+> +static int lpass_cpu_mi2s_hw_params(struct snd_pcm_substream *substream,
+> +					struct snd_pcm_hw_params *params,
+> +					struct snd_soc_dai *dai)
+> +{
+> +	uint32_t ret = 0;
+> +	uint32_t bit_act;
+> +	uint16_t bit_div;
+> +	uint32_t bit_width = params_format(params);
+> +	uint32_t channels = params_channels(params);
+> +	uint32_t rate = params_rate(params);
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	struct lpass_runtime_data_t *prtd = runtime->private_data;
+> +	struct mi2s_hw_params curr_params;
+> +
+> +	bit_act = snd_pcm_format_width(bit_width);
+> +	if (bit_act == LPASS_INVALID) {
 
- 	for (f = 0; f < frames; f++) {
--		buffer[s->midi_position] = 0;
- 		b = (u8 *)&buffer[s->midi_position];
+snd_pcm_format_width() returns an error code on error, LPASS_INVALID is
+not an error code.  Check the return value for error codes...
 
- 		port = (s->data_block_counter + f) % 8;
--		if ((f >= MAX_MIDI_RX_BLOCKS) ||
--		    (s->midi[port] == NULL) ||
--		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0))
--			b[0] = 0x80;
--		else
-+		if (f < MAX_MIDI_RX_BLOCKS &&
-+		    midi_ratelimit_per_packet(s, port) &&
-+		    s->midi[port] != NULL &&
-+		    snd_rawmidi_transmit(s->midi[port], &b[1], 1) == 1) {
-+			midi_rate_use_one_byte(s, port);
- 			b[0] = 0x81;
-+		} else {
-+			b[0] = 0x80;
-+			b[1] = 0;
-+		}
-+		b[2] = 0;
-+		b[3] = 0;
+> +		dev_err(dai->dev, "%s: Invalid bit width given\n", __func__);
+> +		return -EINVAL;
 
- 		buffer += s->data_block_quadlets;
- 	}
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index cd4c4df..8a03a91 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -148,6 +148,8 @@ struct amdtp_stream {
- 	bool double_pcm_frames;
+...and just return them.
 
- 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
-+	int midi_fifo_limit;
-+	int midi_fifo_used[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		/* disable SPKR to make sure it will start in sane state */
+> +		lpaif_cfg_i2s_playback(0, 0, LPAIF_MI2S);
 
- 	/* quirk: fixed interval of dbc between previos/current packets. */
- 	unsigned int tx_dbc_interval;
+Shouldn't we be doing this on probe and/or resume if it's required?
+
+> +
+> +		/*
+> +		 * Set channel info, it will take effect only if SPKR is
+> +		 * enabled
+> +		 */
+> +		ret = lpaif_cfg_mi2s_playback_hwparams_channels(channels,
+> +						LPAIF_MI2S, bit_act);
+> +	} else {
+> +		dev_err(dai->dev, "%s: Invalid stream direction\n", __func__);
+> +		return -EINVAL;
+> +	}
+
+If the device only supports playback no need to have any conditional
+code here, the core will prevent capture being started.
+
+> +	ret = clk_set_rate(lpaif_mi2s_osr_clk,
+> +		(rate * bit_act * channels * bit_div));
+> +	if (ret) {
+> +		dev_err(dai->dev, "%s: error in setting mi2s osr clk\n",
+> +				__func__);
+> +		return ret;
+> +	}
+> +	ret = clk_prepare_enable(lpaif_mi2s_osr_clk);
+> +	if (ret) {
+> +		dev_err(dai->dev, "%s: error in enabling mi2s osr clk\n",
+> +				__func__);
+> +		return ret;
+> +	}
+> +	prtd->lpaif_clk.is_osr_clk_enabled = 1;
+
+Coding style, more blank lines between blocks here.  Also not clear why
+we're tracking if the clock is enabled when we do it unconditonally.
+
+> +static int lpass_cpu_mi2s_prepare(struct snd_pcm_substream *substream,
+> +					struct snd_soc_dai *dai)
+> +{
+> +	return 0;
+> +}
+
+Remove empty functions.
+
+> +static int lpass_cpu_mi2s_startup(struct snd_pcm_substream *substream,
+> +					struct snd_soc_dai *dai)
+> +{
+> +
+> +	lpaif_mi2s_osr_clk = clk_get(dai->dev, "mi2s_osr_clk");
+> +	if (IS_ERR(lpaif_mi2s_osr_clk)) {
+> +		dev_err(dai->dev, "%s: Error in getting mi2s_osr_clk\n",
+> +				__func__);
+> +		return PTR_ERR(lpaif_mi2s_osr_clk);
+> +	}
+
+No, request resources in probe().  That way deferred probe works and we
+don't get mysterious errors at runtime if things go wrong.
+
+--e7QQlpvAaNXS6X0y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUdPplAAoJECTWi3JdVIfQmPgH/AgJcwctbPFljgqASvsSRgz4
+EgJfUKA+0q/jHStT4NljEqLJfCdcS2lYv/nJmEu+mjWnSZ0FBpmAln1fWCAf7+YX
++cqAzXcgafwNftdQ7Ss+m9AS1r0gNhNKdHFtZZKXSldaJL5+27McRAlS8i/6WZDZ
+dE6kVHDjdue1qePo5ve31DChUV+KRZrKkBveoJRbVuE3+UUla8B9/ZJCCT9Q1Sv0
+7eD9EDtoKlnXw8p89kLQhM5IGYSxilKPOofLQqF3oqBY740yoPgXwlk1fL0xB5Nd
+pcNcEXlYkueY92HQCualexrvtewI6FPuI6kTpeLbHXVK/PcvXmOOErU9zRpzzyg=
+=mdCi
+-----END PGP SIGNATURE-----
+
+--e7QQlpvAaNXS6X0y--
