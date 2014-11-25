@@ -1,15 +1,15 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: Intel: mrfld- add ACPI module
-Date: Tue, 25 Nov 2014 02:52:09 +0300
-Message-ID: <20141124235209.GA16222@mwanda>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH v2] ASoC: rt5677: Fix the issue that the
+	regmap_range "rt5677_ranges" cannot be accessed
+Date: Tue, 25 Nov 2014 09:51:41 +0800
+Message-ID: <1416880301-6815-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 25C09260692
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 00:52:27 +0100 (CET)
-Content-Disposition: inline
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FD5926545F
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 02:52:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,43 +19,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@intel.com
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Vinod Koul,
+After the patch "ASoC: rt5677: Use specific r/w function for DSP mode", the
+regmap_range "rt5677_ranges" was not registered in rt5677_regmap_physical, and
+it caused that the regmap_range "rt5677_ranges" cannot be accessed by the
+specific r/w function. The patch fixes this issue.
 
-The patch 336cfbb05edf: "ASoC: Intel: mrfld- add ACPI module" from
-Nov 11, 2014, leads to the following static checker warning:
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5677.c | 37 ++++++++++++++++++++++++++++++-------
+ sound/soc/codecs/rt5677.h |  2 +-
+ 2 files changed, 31 insertions(+), 8 deletions(-)
 
-	sound/soc/intel/sst/sst_acpi.c:313 sst_acpi_probe()
-	info: ignoring unreachable code.
-
-sound/soc/intel/sst/sst_acpi.c
-   304          ret = sst_context_init(ctx);
-   305          if (ret < 0)
-   306                  return ret;
-   307  
-   308          /* need to save shim registers in BYT */
-   309          ctx->shim_regs64 = devm_kzalloc(ctx->dev, sizeof(*ctx->shim_regs64),
-   310                                          GFP_KERNEL);
-   311          if (!ctx->shim_regs64) {
-   312                  return -ENOMEM;
-                        ^^^^^^^^^^^^^^^
-   313                  goto do_sst_cleanup;
-                        ^^^^^^^^^^^^^^^^^^^^
-   314          }
-   315  
-   316          sst_configure_runtime_pm(ctx);
-   317          platform_set_drvdata(pdev, ctx);
-   318          return ret;
-   319  
-   320  do_sst_cleanup:
-   321          sst_context_cleanup(ctx);
-   322          platform_set_drvdata(pdev, NULL);
-   323          dev_err(ctx->dev, "failed with %d\n", ret);
-   324          return ret;
-   325  }
-
-regards,
-dan carpenter
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index f2211f1..133010d 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -4287,6 +4287,7 @@ static int rt5677_probe(struct snd_soc_codec *codec)
+ 	}
+ 
+ 	mutex_init(&rt5677->dsp_cmd_lock);
++	mutex_init(&rt5677->dsp_pri_lock);
+ 
+ 	return 0;
+ }
+@@ -4344,10 +4345,19 @@ static int rt5677_read(void *context, unsigned int reg, unsigned int *val)
+ 	struct i2c_client *client = context;
+ 	struct rt5677_priv *rt5677 = i2c_get_clientdata(client);
+ 
+-	if (rt5677->is_dsp_mode)
+-		rt5677_dsp_mode_i2c_read(rt5677, reg, val);
+-	else
++	if (rt5677->is_dsp_mode) {
++		if (reg > 0xff) {
++			mutex_lock(&rt5677->dsp_pri_lock);
++			rt5677_dsp_mode_i2c_write(rt5677, RT5677_PRIV_INDEX,
++				reg & 0xff);
++			rt5677_dsp_mode_i2c_read(rt5677, RT5677_PRIV_DATA, val);
++			mutex_unlock(&rt5677->dsp_pri_lock);
++		} else {
++			rt5677_dsp_mode_i2c_read(rt5677, reg, val);
++		}
++	} else {
+ 		regmap_read(rt5677->regmap_physical, reg, val);
++	}
+ 
+ 	return 0;
+ }
+@@ -4357,10 +4367,20 @@ static int rt5677_write(void *context, unsigned int reg, unsigned int val)
+ 	struct i2c_client *client = context;
+ 	struct rt5677_priv *rt5677 = i2c_get_clientdata(client);
+ 
+-	if (rt5677->is_dsp_mode)
+-		rt5677_dsp_mode_i2c_write(rt5677, reg, val);
+-	else
++	if (rt5677->is_dsp_mode) {
++		if (reg > 0xff) {
++			mutex_lock(&rt5677->dsp_pri_lock);
++			rt5677_dsp_mode_i2c_write(rt5677, RT5677_PRIV_INDEX,
++				reg & 0xff);
++			rt5677_dsp_mode_i2c_write(rt5677, RT5677_PRIV_DATA,
++				val);
++			mutex_unlock(&rt5677->dsp_pri_lock);
++		} else {
++			rt5677_dsp_mode_i2c_write(rt5677, reg, val);
++		}
++	} else {
+ 		regmap_write(rt5677->regmap_physical, reg, val);
++	}
+ 
+ 	return 0;
+ }
+@@ -4495,10 +4515,13 @@ static const struct regmap_config rt5677_regmap_physical = {
+ 	.reg_bits = 8,
+ 	.val_bits = 16,
+ 
+-	.max_register = RT5677_VENDOR_ID2 + 1,
++	.max_register = RT5677_VENDOR_ID2 + 1 + (ARRAY_SIZE(rt5677_ranges) *
++						RT5677_PR_SPACING),
+ 	.readable_reg = rt5677_readable_register,
+ 
+ 	.cache_type = REGCACHE_NONE,
++	.ranges = rt5677_ranges,
++	.num_ranges = ARRAY_SIZE(rt5677_ranges),
+ };
+ 
+ static const struct regmap_config rt5677_regmap = {
+diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
+index a02f64c..dbd9ffd 100644
+--- a/sound/soc/codecs/rt5677.h
++++ b/sound/soc/codecs/rt5677.h
+@@ -1670,7 +1670,7 @@ struct rt5677_priv {
+ 	struct rt5677_platform_data pdata;
+ 	struct regmap *regmap, *regmap_physical;
+ 	const struct firmware *fw1, *fw2;
+-	struct mutex dsp_cmd_lock;
++	struct mutex dsp_cmd_lock, dsp_pri_lock;
+ 
+ 	int sysclk;
+ 	int sysclk_src;
+-- 
+1.8.1.1.439.g50a6b54
