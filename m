@@ -1,166 +1,92 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/9] ASoC: ipq806x: add native LPAIF driver
-Date: Tue, 25 Nov 2014 21:44:45 +0000
-Message-ID: <20141125214445.GT7712@sirena.org.uk>
-References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
- <1416423169-21865-4-git-send-email-kwestfie@codeaurora.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH 1/2] ALSA: firewire-lib: remove
+	rx_blocks_for_midi quirk
+Date: Tue, 25 Nov 2014 22:52:24 +0100
+Message-ID: <5474FA18.7000501@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jDJZvxmnOWiGS9cs"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1416423169-21865-4-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id DE04E260610
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 22:52:44 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-
---jDJZvxmnOWiGS9cs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 19, 2014 at 10:52:43AM -0800, Kenneth Westfield wrote:
-
-> +#define DRV_NAME	"lpass-lpaif"
-> +#define DRV_VERSION	"1.0"
-
-Don't add versions like this, the kernel is already more than adequately
-versioned and nobody is ever going to bother to update it.
-
-> +static int lpaif_pcm_int_enable(uint8_t dma_ch)
-> +{
-> +	uint32_t intr_val;
-> +	uint32_t status_val;
-> +	unsigned long flags;
-> +
-> +	if (dma_ch >=3D LPAIF_MAX_CHANNELS) {
-> +		pr_err("%s: invalid DMA channel given: %hhu\n",
-> +				__func__, dma_ch);
-
-dev_err().
-
-> +void lpaif_cfg_i2s_playback(uint8_t enable, uint32_t mode, uint32_t off)
-> +{
-
-The kernel types for fixed size unsigned integers are u8, u32 and so on.
-
-> +		if ((bit_width =3D=3D 16) && (channels =3D=3D 2)) {
-> +			cfg |=3D LPAIF_DMACTL_WPSCNT_MONO;
-> +		} else if (((bit_width =3D=3D 16) && (channels =3D=3D 4)) ||
-
-switch statements please, it's both more legible and more extensible.
-
-> +void lpaif_register_dma_irq_handler(int dma_ch,
-> +		irqreturn_t (*callback)(int intrsrc, void *private_data),
-> +		void *private_data)
-> +{
-> +	lpaif_dai[dma_ch]->callback =3D callback;
-> +	lpaif_dai[dma_ch]->private_data =3D private_data;
-> +}
-> +
-> +void lpaif_unregister_dma_irq_handler(int dma_ch)
-> +{
-> +	lpaif_dai[dma_ch]->callback =3D NULL;
-> +	lpaif_dai[dma_ch]->private_data =3D NULL;
-> +}
-
-What is this doing?  Linux already has a perfectly good interface for
-requesting and releasing interrupts...
-
-> +static int lpaif_dai_find_dma_channel(uint32_t intrsrc)
-> +{
-> +	uint32_t dma_channel =3D 0;
-> +
-> +	while (dma_channel < LPAIF_MAX_CHANNELS) {
-> +		if (intrsrc & LPAIF_PER_CH(dma_channel))
-> +			return dma_channel;
-> +
-> +		dma_channel++;
-> +	}
-
-A comment explaining why we can't just map directly might be helpful
-here.
-
-> +
-> +	return -1;
-
-Real error codes please.
-
-> +static irqreturn_t lpaif_dai_irq_handler(int irq, void *data)
-> +{
-> +	unsigned long flag;
-> +	uint32_t intrsrc;
-> +	uint32_t dma_ch;
-> +	irqreturn_t ret =3D IRQ_NONE;
-> +
-> +	spin_lock_irqsave(&lpaif_lock, flag);
-> +	intrsrc =3D readl(lpaif_dai_info.base + LPAIF_IRQ_STAT(0));
-> +	writel(intrsrc, lpaif_dai_info.base + LPAIF_IRQ_CLEAR(0));
-> +	spin_unlock_irqrestore(&lpaif_lock, flag);
-
-This appears to be unconditionally acknowleding all interrupts, even
-those we don't understand.  This is bad practice - we should at least be
-logging an error and ideally returning IRQ_NONE if we don't understand
-the interrupt and letting the core error handling work for us.  For
-example it looks like this will happily and silently acknowledge both
-error and underrun interrupts from the hardware.
-
-It's also not at all obvious why we're taking this spinlock in the
-interrupt handler, that's *extremely* unusual.  What is being protected
-- the code needs to make that clear?
-
-> +	while (intrsrc) {
-> +		dma_ch =3D lpaif_dai_find_dma_channel(intrsrc);
-> +		if (dma_ch !=3D -1) {
-> +			if (lpaif_dai[dma_ch]->callback) {
-> +
-> +				ret =3D lpaif_dai[dma_ch]->callback(intrsrc,
-> +					lpaif_dai[dma_ch]->private_data);
-> +			}
-> +			intrsrc &=3D ~LPAIF_PER_CH(dma_ch);
-> +		} else {
-> +			pr_err("%s: error getting channel\n", __func__);
-> +			break;
-> +		}
-> +	}
-> +	return ret;
-> +}
-
-This all looks like a very simple demux of a single register - don't we
-have a generic irqchip that can handle it?  It looks like that's what
-you're trying to implement here, each DMA channel could be requesting
-the three interrupts it has separately rather than open coding an
-interrupt controller here. =20
-
-I'm not actually immediately seeing one right now but it'd be simple to
-add (or regmap-irq could do it if we used a regmap, though it assumes
-threading and isn't a great fit).
-
-> +static struct platform_driver lpass_lpaif_driver =3D {
-> +	.probe =3D lpaif_dai_probe,
-> +	.remove =3D lpaif_dai_remove,
-> +	.driver =3D {
-> +		.name =3D DRV_NAME,
-> +		.owner =3D THIS_MODULE,
-
-No need for .owner on platform devices any more.
-
---jDJZvxmnOWiGS9cs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdPhNAAoJECTWi3JdVIfQyVgH/RQNJ8suVgNj09Yujw8ZwLND
-l8P28Su2JzyxL+S2h1jCo+BES9JpHH6YR9IJoZTLctqLUtnotRTSPQiav65i41F3
-2ZMyR/bNHZx1aUUuPi8V52k1hapjwgLHZvZXk7UwdZhZjEPJJEY9o5HqUUndH0DM
-KfKYDN5AIZaCn4XqlVFqk6UjmT3Nn2FmIOrAWlF/GBZHBh1ujv9cnXmA6N9Ydls3
-o9SJ5y55NfktUNTVOnFSX753njiUujtL+UZMlzM/Mnq62cFJcCznq8rPmM8QLpa3
-77QrbFLuX4sFOdr0qp5vLWBef/Z0NkzN1ZzWSGbPiwaaBmuQqbi8u0FlYniwsE8=
-=/K2Z
------END PGP SIGNATURE-----
-
---jDJZvxmnOWiGS9cs--
+VGhlcmUgYXJlIHNldmVyYWwgZGV2aWNlcyB0aGF0IGV4cGVjdCB0byByZWNlaXZlIE1JREkgZGF0
+YSBvbmx5IGluIHRoZQpmaXJzdCBlaWdodCBkYXRhIGJsb2NrcyBvZiBhIHBhY2tldC4gIElmIHRo
+ZSBkcml2ZXIgcmVzdHJpY3RzIHRoZSBkYXRhCnJhdGUgdG8gdGhlIGFsbG93ZWQgcmF0ZSAoYXMg
+bWFuZGF0ZWQgYnkgdGhlIHNwZWNpZmljYXRpb24sIGJ1dCBub3QgeWV0CmltcGxlbWVudGVkIGJ5
+IHRoaXMgZHJpdmVyKSwgdGhpcyBoYXBwZW5zIG5hdHVyYWxseS4gIFRoZXJlZm9yZSwgdGhlcmUK
+aXMgbm8gcmVhc29uIHRvIGV2ZXIgdHJ5IHRvIHVzZSBtb3JlIGRhdGEgcGFja2V0cyB3aXRoIGFu
+eSBkZXZpY2UuCgpTaWduZWQtb2ZmLWJ5OiBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNj
+aC5kZT4KLS0tCiBzb3VuZC9maXJld2lyZS9hbWR0cC5jICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAxMCArKysrKysrLS0tCiBzb3VuZC9maXJld2lyZS9hbWR0cC5oICAgICAgICAgICAgICAgICAg
+ICAgIHwgICAgMyAtLS0KIHNvdW5kL2ZpcmV3aXJlL2JlYm9iL2JlYm9iX3N0cmVhbS5jICAgICAg
+ICAgfCAgICA3IC0tLS0tLS0KIHNvdW5kL2ZpcmV3aXJlL2ZpcmV3b3Jrcy9maXJld29ya3Nfc3Ry
+ZWFtLmMgfCAgICA1IC0tLS0tCiA0IGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwgMTgg
+ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYW1kdHAuYyBiL3NvdW5k
+L2ZpcmV3aXJlL2FtZHRwLmMKaW5kZXggM2JhZGM3MC4uMTc1NDhkOCAxMDA2NDQKLS0tIGEvc291
+bmQvZmlyZXdpcmUvYW1kdHAuYworKysgYi9zb3VuZC9maXJld2lyZS9hbWR0cC5jCkBAIC0yMSw2
+ICsyMSwxMiBAQAogI2RlZmluZSBDWUNMRVNfUEVSX1NFQ09ORAk4MDAwCiAjZGVmaW5lIFRJQ0tT
+X1BFUl9TRUNPTkQJKFRJQ0tTX1BFUl9DWUNMRSAqIENZQ0xFU19QRVJfU0VDT05EKQoKKy8qCisg
+KiBTZXZlcmFsIGRldmljZXMgbG9vayBvbmx5IGF0IHRoZSBmaXJzdCBlaWdodCBkYXRhIGJsb2Nr
+cy4KKyAqIEluIGFueSBjYXNlLCB0aGlzIGlzIG1vcmUgdGhhbiBlbm91Z2ggZm9yIHRoZSBNSURJ
+IGRhdGEgcmF0ZS4KKyAqLworI2RlZmluZSBNQVhfTUlESV9SWF9CTE9DS1MJOAorCiAjZGVmaW5l
+IFRSQU5TRkVSX0RFTEFZX1RJQ0tTCTB4MmUwMCAvKiA0NzkuMTcgw4LCtXMgKi8KCiAvKiBpc29j
+aHJvbm91cyBoZWFkZXIgcGFyYW1ldGVycyAqLwpAQCAtNzgsOCArODQsNiBAQCBpbnQgYW1kdHBf
+c3RyZWFtX2luaXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgc3RydWN0IGZ3X3VuaXQgKnVuaXQs
+CiAJcy0+Y2FsbGJhY2tlZCA9IGZhbHNlOwogCXMtPnN5bmNfc2xhdmUgPSBOVUxMOwoKLQlzLT5y
+eF9ibG9ja3NfZm9yX21pZGkgPSBVSU5UX01BWDsKLQogCXJldHVybiAwOwogfQogRVhQT1JUX1NZ
+TUJPTChhbWR0cF9zdHJlYW1faW5pdCk7CkBAIC00NzQsNyArNDc4LDcgQEAgc3RhdGljIHZvaWQg
+YW1kdHBfZmlsbF9taWRpKHN0cnVjdCBhbWR0cF9zdHJlYW0gKnMsCiAJCWIgPSAodTggKikmYnVm
+ZmVyW3MtPm1pZGlfcG9zaXRpb25dOwoKIAkJcG9ydCA9IChzLT5kYXRhX2Jsb2NrX2NvdW50ZXIg
+KyBmKSAlIDg7Ci0JCWlmICgoZiA+PSBzLT5yeF9ibG9ja3NfZm9yX21pZGkpIHx8CisJCWlmICgo
+ZiA+PSBNQVhfTUlESV9SWF9CTE9DS1MpIHx8CiAJCSAgICAocy0+bWlkaVtwb3J0XSA9PSBOVUxM
+KSB8fAogCQkgICAgKHNuZF9yYXdtaWRpX3RyYW5zbWl0KHMtPm1pZGlbcG9ydF0sIGIgKyAxLCAx
+KSA8PSAwKSkKIAkJCWJbMF0gPSAweDgwOwpkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYW1k
+dHAuaCBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmgKaW5kZXggZTZlODkyNi4uY2Q0YzRkZiAxMDA2
+NDQKLS0tIGEvc291bmQvZmlyZXdpcmUvYW1kdHAuaAorKysgYi9zb3VuZC9maXJld2lyZS9hbWR0
+cC5oCkBAIC0xNTIsOSArMTUyLDYgQEAgc3RydWN0IGFtZHRwX3N0cmVhbSB7CiAJLyogcXVpcms6
+IGZpeGVkIGludGVydmFsIG9mIGRiYyBiZXR3ZWVuIHByZXZpb3MvY3VycmVudCBwYWNrZXRzLiAq
+LwogCXVuc2lnbmVkIGludCB0eF9kYmNfaW50ZXJ2YWw7CgotCS8qIHF1aXJrOiB0aGUgZmlyc3Qg
+Y291bnQgb2YgZGF0YSBibG9ja3MgaW4gYW4gcnggcGFja2V0IGZvciBNSURJICovCi0JdW5zaWdu
+ZWQgaW50IHJ4X2Jsb2Nrc19mb3JfbWlkaTsKLQogCWJvb2wgY2FsbGJhY2tlZDsKIAl3YWl0X3F1
+ZXVlX2hlYWRfdCBjYWxsYmFja193YWl0OwogCXN0cnVjdCBhbWR0cF9zdHJlYW0gKnN5bmNfc2xh
+dmU7CmRpZmYgLS1naXQgYS9zb3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYyBiL3Nv
+dW5kL2ZpcmV3aXJlL2JlYm9iL2JlYm9iX3N0cmVhbS5jCmluZGV4IDFhYWIwYTMyLi4wZWJjYWJm
+IDEwMDY0NAotLS0gYS9zb3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYworKysgYi9z
+b3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYwpAQCAtNDg0LDEzICs0ODQsNiBAQCBp
+bnQgc25kX2JlYm9iX3N0cmVhbV9pbml0X2R1cGxleChzdHJ1Y3Qgc25kX2JlYm9iICpiZWJvYikK
+IAkJYW1kdHBfc3RyZWFtX2Rlc3Ryb3koJmJlYm9iLT5yeF9zdHJlYW0pOwogCQlkZXN0cm95X2Jv
+dGhfY29ubmVjdGlvbnMoYmVib2IpOwogCX0KLQkvKgotCSAqIFRoZSBmaXJtd2FyZSBmb3IgdGhl
+c2UgZGV2aWNlcyBpZ25vcmUgTUlESSBtZXNzYWdlcyBpbiBtb3JlIHRoYW4KLQkgKiBmaXJzdCA4
+IGRhdGEgYmxvY2tzIG9mIGFuIHJlY2VpdmVkIEFNRFRQIHBhY2tldC4KLQkgKi8KLQlpZiAoYmVi
+b2ItPnNwZWMgPT0gJm1hdWRpb19mdzQxMF9zcGVjIHx8Ci0JICAgIGJlYm9iLT5zcGVjID09ICZt
+YXVkaW9fc3BlY2lhbF9zcGVjKQotCQliZWJvYi0+cnhfc3RyZWFtLnJ4X2Jsb2Nrc19mb3JfbWlk
+aSA9IDg7CiBlbmQ6CiAJcmV0dXJuIGVycjsKIH0KZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJl
+L2ZpcmV3b3Jrcy9maXJld29ya3Nfc3RyZWFtLmMgYi9zb3VuZC9maXJld2lyZS9maXJld29ya3Mv
+ZmlyZXdvcmtzX3N0cmVhbS5jCmluZGV4IGI5ODVmYzUuLjRmNDQwZTEgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL2ZpcmV3aXJlL2ZpcmV3b3Jrcy9maXJld29ya3Nfc3RyZWFtLmMKKysrIGIvc291bmQvZmly
+ZXdpcmUvZmlyZXdvcmtzL2ZpcmV3b3Jrc19zdHJlYW0uYwpAQCAtMTc5LDExICsxNzksNiBAQCBp
+bnQgc25kX2Vmd19zdHJlYW1faW5pdF9kdXBsZXgoc3RydWN0IHNuZF9lZncgKmVmdykKIAkJZGVz
+dHJveV9zdHJlYW0oZWZ3LCAmZWZ3LT50eF9zdHJlYW0pOwogCQlnb3RvIGVuZDsKIAl9Ci0JLyoK
+LQkgKiBGaXJld29ya3MgaWdub3JlcyBNSURJIG1lc3NhZ2VzIGluIG1vcmUgdGhhbiBmaXJzdCA4
+IGRhdGEKLQkgKiBibG9ja3Mgb2YgYW4gcmVjZWl2ZWQgQU1EVFAgcGFja2V0LgotCSAqLwotCWVm
+dy0+cnhfc3RyZWFtLnJ4X2Jsb2Nrc19mb3JfbWlkaSA9IDg7CgogCS8qIHNldCBJRUM2MTg4MyBj
+b21wbGlhbnQgbW9kZSAoYWN0dWFsbHkgbm90IGZ1bGx5IGNvbXBsaWFudC4uLikgKi8KIAllcnIg
+PSBzbmRfZWZ3X2NvbW1hbmRfc2V0X3R4X21vZGUoZWZ3LCBTTkRfRUZXX1RSQU5TUE9SVF9NT0RF
+X0lFQzYxODgzKTsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
