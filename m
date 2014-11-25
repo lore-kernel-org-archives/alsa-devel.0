@@ -1,20 +1,15 @@
-From: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
-Subject: Re: usb-audio: I'd like to change two things in usb
- audio, but I'm not sure if it's right
-Date: Tue, 25 Nov 2014 08:39:47 +0100
-Message-ID: <CAMFLXsDPHAQzXOgcG17PL_6CcToEDBTWpdFcTec+sc2uxEkkMA@mail.gmail.com>
-References: <CAMFLXsBpYLeFTbAaqbYUA3FC_emWcZi2TZDSU+7zb41OFmg8Xg@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ASoC: Intel: sst: Add IPC handling
+Date: Tue, 25 Nov 2014 12:20:31 +0300
+Message-ID: <20141125092031.GA21784@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f178.google.com (mail-ig0-f178.google.com
- [209.85.213.178])
- by alsa0.perex.cz (Postfix) with ESMTP id DF8762604B6
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 08:39:48 +0100 (CET)
-Received: by mail-ig0-f178.google.com with SMTP id hl2so243236igb.5
- for <alsa-devel@alsa-project.org>; Mon, 24 Nov 2014 23:39:47 -0800 (PST)
-In-Reply-To: <CAMFLXsBpYLeFTbAaqbYUA3FC_emWcZi2TZDSU+7zb41OFmg8Xg@mail.gmail.com>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 516562604B6
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 10:20:46 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <daniel@zonque.org>
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TWFuYWdlZCB0byBtaXNzcGVsbCBDbGVtZW5zJyBhZGRyZXNzIGluIG15IHByZXZpb3VzIG1haWwu
-CgpPbiAyNCBOb3ZlbWJlciAyMDE0IGF0IDIyOjE2LCBKb2hhbiBBaXJlcyBSYXN0w6luIDxqb2hh
-bkBvbGp1ZC5zZT4gd3JvdGU6Cgo+IFNvIEknbGwgdHJ5IGFnYWluLCB0aGlzIHRpbWUgd2l0aCB0
-aGUgcHJvcGVyIGNjOnMgYW5kIGEgc2Vjb25kIHF1ZXN0aW9uLgo+Cj4gSSd2ZSBjb21lIGFjcm9z
-cyB0d28gaXNzdWVzIGluIHRoZSB1c2IgYXVkaW8gbW9kdWxlIHRoYXQgYXJlIGNhdXNpbmcKPiBw
-cm9ibGVtcyB3aXRoIG15IHNvdW5kIGNhcmQsIGJ1dCBJJ20gdGhpbmtpbmcgdGhhdCBjaGFuZ2lu
-ZyB0aGVtIG1pZ2h0Cj4gYnJlYWsgc29tZXRoaW5nIGZvciBzb21lIG90aGVyIGNhcmQuCj4KPiBJ
-biBzb3VuZC91c2IvbWl4ZXIuYyBmdW5jdGlvbiBjaGVja19pbnB1dF90ZXJtKC4uLiksIGZvciB0
-aGUgY2FzZQo+IFVBQ19JTlBVVF9URVJNSU5BTCBhbmQgVUFDX1ZFUlNJT05fMjoKPgo+IFRoZSBy
-ZWN1cnNpdmUgY2FsbCB0byBnZXQgY2xvY2sgc2VsZWN0b3JzIG1lc3NlcyB1cCB0aGUgbmFtaW5n
-IG9mIG15Cj4gdGVybWluYWxzLiBBdCB0aGlzIHN0YWdlIHRoZSB0ZXJtaW5hbHMgYXJlIGFscmVh
-ZHkgcHJvcGVybHkgbmFtZWQgTWljIGFuZAo+IExpbmUgYnV0IHRoZSBjYWxsIG92ZXJ3cml0ZXMg
-dGhlbSBib3RoIHdpdGggdGhlIHVubmFtZWQgY2xvY2sgc2VsZWN0b3IKPiAiVW5pdCAyMiIuIEFy
-ZSBvdGhlciBVQUMyIGNhcmRzIGRpZmZlcmVudCwgc28gdGhhdCB0aGUgY2xvY2sgc2VsZWN0b3IK
-PiBjb250YWlucyB0aGUgY29ycmVjdCB0ZXJtaW5hbCBuYW1lLCBvciBpcyB0aGVyZSBzb21lIG90
-aGVyIHJlYXNvbmluZyBoZXJlCj4gdGhhdCBJJ20gbm90IHNlZWluZz8KPgo+IENvdWxkIHRoZSBj
-YWxsIGJlIHJlbW92ZWQsIG9yIHBlcmhhcHMgb25seSBkb25lIGlmIG5vIHRlcm1pbmFsIG5hbWUg
-aGFzCj4gYmVlbiBmb3VuZCB5ZXQ/Cj4KPiBJbiBzb3VuZC91c2Ivc3RyZWFtLmMgZnVuY3Rpb24g
-c25kX3VzYl9hZGRfYXVkaW9fc3RyZWFtKC4uLiksIG5lYXIgdGhlIGVuZAo+IG9mIHRoZSBmdW5j
-dGlvbjoKPgo+IEEgbmV3bHkgY3JlYXRlZCBwY20gaXMgYWRkZWQgd2l0aCAibGlzdF9hZGQoJmFz
-LT5saXN0LCAmY2hpcC0+cGNtX2xpc3QpOyIKPiB3aGljaCBjYXVzZXMgZGV2aWNlcyB0byBiZSBs
-aXN0ZWQgaW4gcmV2ZXJzZSBvcmRlciwgaS5lLiBkZXZpY2UgMCB3aWxsIGJlCj4gYXQgdGhlIGVu
-ZCBvZiB0aGUgbGlzdCwgYW5kIHRoaXMgbGVhZHMgdG8gdGhhdCBjYXB0dXJlIHN0cmVhbXMgZW5k
-IHVwIGluCj4gdGhlIHdyb25nIGRldmljZSB1bmRlciBjZXJ0YWluIGNpcmN1bXN0YW5jZXMuCj4K
-PiBUaGUgcHJvYmxlbSBhcmlzZXMgd2hlbiB0aGUgY29kZSB1bmRlciAibG9vayBmb3IgYW4gZW1w
-dHkgc3RyZWFtIiBlYXJsaWVyCj4gaW4gdGhlIHNhbWUgZnVuY3Rpb24gZXhlY3V0ZXMuIEl0IHdp
-bGwgYXR0YWNoIHRoZSBjYXB0dXJlIHN0cmVhbSB0byB0aGUKPiBmaXJzdCBjb21wYXRpYmxlIGV4
-aXN0aW5nIHN0cmVhbSwgYnV0IHNpbmNlIHRoZXkgYXJlIHJldmVyc2VkIGl0IHdpbGwgZmluZAo+
-IHRoZSBoaWdoZXN0IG51bWJlcmVkIGRldmljZS4gSW4gbXkgY2FzZSBhbmFsb2cgaW5wdXQgd2ls
-bCBiZSBncm91cGVkIHdpdGgKPiBkaWdpdGFsIG91dCAoZGV2aWNlIDEpIGluc3RlYWQgb2YgYW5h
-bG9nIG91dCAoZGV2aWNlIDApLgo+Cj4gVGhpcyBpcyBhc3N1bWluZyB0aGF0IHBsYXliYWNrIHN0
-cmVhbXMgYXJlIGRlZmluZWQgYmVmb3JlIGNhcHR1cmUgc3RyZWFtcwo+IGJ1dCBpdCBjb3VsZCBo
-YXBwZW4gaW4gdGhlIG90aGVyIGRpcmVjdGlvbiBhcyBsb25nIGFzIHRoZXJlIGFyZSBzZXZlcmFs
-Cj4gc3RyZWFtcyBvZiBvbmUgdHlwZS4KPgo+IEkgYWxzbyBzdXNwZWN0IHRoYXQgdGhpcyBpcyB3
-aGF0IGNhdXNlcyB0aGUgTS1BdWRpbyBBdWRpb3BoaWxlIFVTQiB0byBoYXZlCj4gc3dhcHBlZCBp
-bnB1dHMsIGZvciB3aGljaCB0aGVyZSdzIGEgZml4IGluIFVTQi1BdWRpby5jb25mICgKPiBodHRw
-Oi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS1saWIuZ2l0O2E9YmxvYjtmPXNyYy9jb25m
-L2NhcmRzL1VTQi1BdWRpby5jb25mI2w3MAo+ICkuIFRoYW5rcyB0byBkZWJpYW51c2VyIG9uIElS
-QyBmb3IgaGVscGluZyBtZSBmaW5kIGl0Lgo+Cj4gSSB3b3VsZCBsaWtlIHRvIGNoYW5nZSB0aGlz
-IGNhbGwgdG8gdXNlIGxpc3RfYWRkX3RhaWwgZm9yIGFkZGluZyBuZXcgaXRlbXMKPiBpbnN0ZWFk
-LCBidXQgSSdtIHdvcnJpZWQgdGhhdCB0aGVyZSBhcmUgcXVpcmtzIG9yIG90aGVyIGZpeGVzIHRo
-YXQgZXhwZWN0Cj4gdGhlIGN1cnJlbnQgYmVoYXZpb3VyLiBUaGVyZSBhcmUgdmVyeSBmZXcgb3Ro
-ZXIgcmVmZXJlbmNlcyB0byBwY21fbGlzdCBhbmQKPiBub25lIG9mIHRoZW0gc2VlbSB0byBjYXJl
-IGFib3V0IG9yZGVyaW5nLgo+Cj4gU29ycnkgZm9yIGJlaW5nIGJhZCBhdCByZWZlcmVuY2luZyBj
-b2RlLCBJJ20gbmV3IGF0IHRoaXMuCj4KPiAvL0pvaGFuIFJhc3TDqW4KPgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello Vinod Koul,
+
+The patch ea12aa4acd70: "ASoC: Intel: sst: Add IPC handling" from Oct
+16, 2014, leads to the following static checker warning:
+
+	sound/soc/intel/sst/sst_ipc.c:340 sst_process_reply_mrfld()
+	warn: we tested 'drv_id' before and it was 'true'
+
+sound/soc/intel/sst/sst_ipc.c
+   330          drv_id = msg_high.part.drv_id;
+   331  
+   332          /* Check for async messages first */
+   333          if (drv_id == SST_ASYNC_DRV_ID) {
+                              ^^^^^^^^^^^^^^^^
+This is zero.
+
+   334                  /*FW sent async large message*/
+   335                  process_fw_async_msg(sst_drv_ctx, msg);
+   336                  return;
+   337          }
+   338  
+   339          /* FW sent short error response for an IPC */
+   340          if (msg_high.part.result && drv_id && !msg_high.part.large) {
+                                            ^^^^^^
+So this is non-zero.  The thinking behind these warnings is that maybe
+a different test was intended.  What does a non-zero drv_id mean which
+is different from checking SST_ASYNC_DRV_ID?  The intent is not clear.
+
+In other words, would it be more readable to test "drv_id != SST_ASYNC_DRV_ID"?
+But in that case, we would just leave the test out since we obviously
+tested for that earlier.
+
+   341                  /* 32-bit FW error code in msg_low */
+   342                  dev_err(sst_drv_ctx->dev, "FW sent error response 0x%x", msg_low);
+   343                  sst_wake_up_block(sst_drv_ctx, msg_high.part.result,
+   344                          msg_high.part.drv_id,
+   345                          msg_high.part.msg_id, NULL, 0);
+   346                  return;
+   347          }
+   348  
+
+regards,
+dan carpenter
