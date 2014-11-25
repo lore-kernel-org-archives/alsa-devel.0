@@ -1,104 +1,55 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 26/29] ALSA: oxfw: Add support AMDTP
-	in-stream
-Date: Wed, 26 Nov 2014 07:41:36 +0900
-Message-ID: <547505A0.9000409@sakamocchi.jp>
-References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>	<1414328610-12729-27-git-send-email-o-takashi@sakamocchi.jp>	<54691544.2020501@ladisch.de>	<546DC356.8010207@sakamocchi.jp>	<54733889.8050303@ladisch.de>
- <54746395.4070807@sakamocchi.jp> <54747039.6030105@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
+Date: Tue, 25 Nov 2014 22:45:32 +0000
+Message-ID: <20141125224532.GC7712@sirena.org.uk>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
+ <2580837.YI0IvfXqRR@vostro.rjw.lan>
+ <20141125202722.GA25261@sirena.org.uk>
+ <1926483.B4ieFnCBlM@vostro.rjw.lan>
+ <CAOV7By+7g19p_-4R-sSM_2q04fKCmOq3um+S_L=5z=T5SVdwAw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C3D12659E5
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 23:41:44 +0100 (CET)
-In-Reply-To: <54747039.6030105@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="F20q8ig/xCX9TrYX"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAOV7By+7g19p_-4R-sSM_2q04fKCmOq3um+S_L=5z=T5SVdwAw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ben Zhang <benzh@chromium.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Duncan Laurie <dlaurie@google.com>, Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, Flove <flove@realtek.com>, Al Stone <al.stone@linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 15 2014 21:04, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> If I rewrite your pseudo code, like this:
->>
->>>    void start_some_substream(...)
->>>    {
->>>        if (atomic_inc_and_test(substreams)) {
->>>            mutex_lock();
->>>            // lots of stuff to start DMA ...
->>
->>              if (wait_for_first_packet() == ETIMEDOUT) {
->>                  stop_dma();
->>                  release_streams();
->>                  mutex_unlock();
->>                  return ETIMEDOUT;
->>              }
->>>            mutex_unlock();
->>>        }
->>>        ...
->>>    }
-> 
-> This is an even better example of why atomic_t is incorrect:  when the
-> startup fails, the second call to start_some_substream() at the same
-> time, which just sees that substreams>0, cannot notice the error, and
-> thinks its own substream has been started successfully.
 
-Yes. The reference counter is invalid in this pseudo code which I
-showrf. I left your insistence about 'atomic_inc_and_test()' what it is.
+--F20q8ig/xCX9TrYX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-More precisely, current implementations (bebob/fireworks/dice) are (or
-should be for oxfw) like:
+On Tue, Nov 25, 2014 at 02:41:28PM -0800, Ben Zhang wrote:
+> +Duncan who works on our firmware project.
+>=20
+> Please correct me if I'm wrong. Here is the summary of what I understand.=
+ Looks
+> like the recommended practice for passing device platform data is using _=
+DSD and
+> the new device_property_read_ API from include/linux/property.h
 
-void start_some_substream(...)
-{
-    mutex_lock();
+Your understanding matches mine here.  Doesn't mean I'm not confused
+though!
 
-    if (atomic_read(substreams) == 0)
-        goto end;
+--F20q8ig/xCX9TrYX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-    if (streams_are_running())
-        goto end;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-    if (!start_isochronous_context_and_dma()) {
-        release_isochronous_context_and_dma();
-        release_streams();
-        goto end;
-    }
+iQEcBAEBAgAGBQJUdQaLAAoJECTWi3JdVIfQl0EH/3AKlhqcvDyf2DjalUSe3SAq
+tMgxU5n4Ai6ssi7O27uT1tBI9xttDhSoHYtjYmOwoPh66xwBIeXvqqyU9oOaSdZC
+oPr3MXb7QxOUKqQXIA5s/O0MlHXtazC1o6TDtwZXmLo0VQaw2/h4CbidaJNPJD5O
+DJyRswWK5S5SrDKob5Y2kkMgjFAJ83UeFv5UQMS5yB8ypkEdooP5bQ2TW0xPbcrD
+WatgFZJKVqMhXOpbilmgOuESamazwtB08BkTZpDvoudpFUmhABetm7nt8ozNlv0h
+fhV/oALVaL32UVfGSdolz87odfm/Rqu6SxBd8yhwb44sAlVMw1djI1u9tjclmT4=
+=SPwo
+-----END PGP SIGNATURE-----
 
-    if (wait_for_first_packet() == ETIMEDOUT) {
-        release_isochronous_context_and_dma();
-        release_streams();
-    }
-end:
-    mutex_unlock();
-    return err;
-}
-
-I believe that the reference counter with atomic_t is valid regardless
-of inner/outer the lock (mutex). For this critical section, it's just a
-importance that some substreams already subscribe the stream or not,
-instead of the number of substreams.
-
-If the reference counter is non-zero, it means that 'a stream is
-requested to run for some substream, even if the substreams are not for
-current caller'.
-
-I don't show in the pseudo code; when the streams are already running
-but the sampling transfer frequency is not the same as the one which the
-caller requested, then the streams are stopped once and set sampling
-transfer frequency and restart them.
-
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+--F20q8ig/xCX9TrYX--
