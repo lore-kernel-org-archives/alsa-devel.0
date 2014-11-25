@@ -1,61 +1,67 @@
-From: Darren Hart <dvhart@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Tue, 25 Nov 2014 11:07:06 -0800
-Message-ID: <5474D35A.3000601@linux.intel.com>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <CACxGe6stjCvaQZkh=hFcF-56v5qJVar11jRZz0PRSd2wz6EUyA@mail.gmail.com> <5474A78C.7030805@linux.intel.com> <20141125172120.GI7712@sirena.org.uk> <5474CB5D.9050807@linux.intel.com> <20141125184304.GK7712@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: qi_lb60: Pass flags to gpiod_get()
+Date: Tue, 25 Nov 2014 20:29:40 +0100
+Message-ID: <1416943780-1016-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141125184304.GK7712@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-208.synserver.de (smtp-out-210.synserver.de
+ [212.40.185.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id C94B5260600
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 20:28:52 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+Pass flags to gpiod_get() to automatically configure the GPIOs. This is shorter
+and not passing any flags to gpiod_get() will eventually no longer be supported.
 
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/jz4740/qi_lb60.c |   11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-On 11/25/14 10:43, Mark Brown wrote:
-> On Tue, Nov 25, 2014 at 10:33:01AM -0800, Darren Hart wrote:
->> On 11/25/14 09:21, Mark Brown wrote:
-> 
->>> Given the design of _DSD is to share with DT and we already 
->>> have device tree bindings for the device we should be using, 
->>> it's not clear to me if we want to grind them all through UEFI 
->>> and I suspect they'd be unhappy if we tried but pretty much
->>> all audio CODECs are good candidates for use with ACPI given
->>> the new hardware designs Intel have so if we are doing it I
->>> ought to be bouncing everyone to UEFI forum.
-> 
->> Right, I realized between sending and driving into the office 
->> that my statement might be construed this way. I meant *new*
->> _DSD bindings should go through the ACPI/UEFI forum. Where we
->> can reuse DT bindings, we should absolutely do that, agreed. We 
->> should still document this and link to the DT binding so it can 
->> be referenced and used even when Linux is not the target OS.
-> 
-> Link from where - do we want to talk to the ACPI/UEFI forum and 
-> figure out some kind of fast track process for them to add an
-> "it's already covered by DT, see here" entry to their database for 
-> example?  We also ought to work out how to make sure ACPI IDs are 
-> registered there as well, should be possible to have something 
-> simple as part of that.
-> 
-
-This is a current topic with the ACPI working group. We have the
-following document:
-
-http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
-
-I don't know if we want to have a list of them here, or if a separate
-document is needed. The important point is that it is independent from
-the ACPI specification itself so that it can be updated out of band
-with the specification, and not be subject to rather plodding pace
-that would imply.
-
-Rafael, I've missed several of these meetings unfortunately, and I'm
-not sure if we've closed on this point. Do you know?
-
+diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
+index 5cb91f9..0fb7d2a 100644
+--- a/sound/soc/jz4740/qi_lb60.c
++++ b/sound/soc/jz4740/qi_lb60.c
+@@ -77,25 +77,18 @@ static int qi_lb60_probe(struct platform_device *pdev)
+ {
+ 	struct qi_lb60 *qi_lb60;
+ 	struct snd_soc_card *card = &qi_lb60_card;
+-	int ret;
+ 
+ 	qi_lb60 = devm_kzalloc(&pdev->dev, sizeof(*qi_lb60), GFP_KERNEL);
+ 	if (!qi_lb60)
+ 		return -ENOMEM;
+ 
+-	qi_lb60->snd_gpio = devm_gpiod_get(&pdev->dev, "snd");
++	qi_lb60->snd_gpio = devm_gpiod_get(&pdev->dev, "snd", GPIOD_OUT_LOW);
+ 	if (IS_ERR(qi_lb60->snd_gpio))
+ 		return PTR_ERR(qi_lb60->snd_gpio);
+-	ret = gpiod_direction_output(qi_lb60->snd_gpio, 0);
+-	if (ret)
+-		return ret;
+ 
+-	qi_lb60->amp_gpio = devm_gpiod_get(&pdev->dev, "amp");
++	qi_lb60->amp_gpio = devm_gpiod_get(&pdev->dev, "amp", GPIOD_OUT_LOW);
+ 	if (IS_ERR(qi_lb60->amp_gpio))
+ 		return PTR_ERR(qi_lb60->amp_gpio);
+-	ret = gpiod_direction_output(qi_lb60->amp_gpio, 0);
+-	if (ret)
+-		return ret;
+ 
+ 	card->dev = &pdev->dev;
+ 
 -- 
-Darren Hart
-Intel Open Source Technology Center
+1.7.10.4
