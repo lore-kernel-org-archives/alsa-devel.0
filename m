@@ -1,66 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Tue, 25 Nov 2014 18:10:20 +0000
-Message-ID: <20141125181020.GJ7712@sirena.org.uk>
-References: <cover.1415803064.git.jsarha@ti.com>
- <20141112222344.GU3815@sirena.org.uk>
- <54646648.5030807@ti.com>
- <546DC9A0.8060700@ti.com>
- <20141121112317.GQ3815@sirena.org.uk>
- <546F317B.9030004@ti.com>
- <20141121161435.GS3815@sirena.org.uk>
- <5472E9D7.7000908@ti.com>
- <20141124173920.GL7712@sirena.org.uk>
- <54744B4C.2030105@ti.com>
+From: Darren Hart <dvhart@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
+Date: Tue, 25 Nov 2014 10:33:01 -0800
+Message-ID: <5474CB5D.9050807@linux.intel.com>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <CACxGe6stjCvaQZkh=hFcF-56v5qJVar11jRZz0PRSd2wz6EUyA@mail.gmail.com> <5474A78C.7030805@linux.intel.com> <20141125172120.GI7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TDAnSvu4oNjXIbzm"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <54744B4C.2030105@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141125172120.GI7712@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
 List-Id: alsa-devel@alsa-project.org
 
 
---TDAnSvu4oNjXIbzm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Nov 25, 2014 at 11:26:36AM +0200, Tomi Valkeinen wrote:
-> On 24/11/14 19:39, Mark Brown wrote:
+On 11/25/14 09:21, Mark Brown wrote:
+> On Tue, Nov 25, 2014 at 08:00:12AM -0800, Darren Hart wrote:
+>> On 11/25/14 04:11, Grant Likely wrote:
+> 
+>>> Also, since this patch is targeted at v3.19 or later, the 
+>>> device-properties API should be used. Don't create something
+>>> custom.
+> 
+>> Right. The ACPI/UEFI forum is managing the creation of new DSD
+>> bindings and ensuring they are documented online. I believe this
+>> is the... 3rd so far? So we're still optimizing the process. But
+>> yes, please, send the schema itself for review and let's get this
+>> documented and migrated over to _DSD.
+> 
+> To be clear the main reason I'm querying this is that it doesn't
+> appear to be a _DSD based binding at all (as far as I understand
+> it, the API it's using is from before the dawn of time or at least
+> the dawn of git).
+> 
+> Given the design of _DSD is to share with DT and we already have
+> device tree bindings for the device we should be using, it's not
+> clear to me if we want to grind them all through UEFI and I suspect
+> they'd be unhappy if we tried but pretty much all audio CODECs are
+> good candidates for use with ACPI given the new hardware designs
+> Intel have so if we are doing it I ought to be bouncing everyone to
+> UEFI forum.
 
-> >> The whole series is about HDMI audio, not video.
+Right, I realized between sending and driving into the office that my
+statement might be construed this way. I meant *new* _DSD bindings
+should go through the ACPI/UEFI forum. Where we can reuse DT bindings,
+we should absolutely do that, agreed. We should still document this
+and link to the DT binding so it can be referenced and used even when
+Linux is not the target OS.
 
-> > You know exactly what I mean - the early patches are in drivers/video,
-> > don't touch anything outside of that and have no obvious dependencies.
-
-> My point was, there's no particular reason to apply those patches
-> individually. It's an independent series, about HDMI audio, and applying
-> only some of the earlier patches does not improve the kernel in visible
-> manner.
-
-Can you please apply them, I'll try to get round to reviewing the audio
-bits soon but either these will need applying if the rest of it's OK or
-if there does turn out to be a problem they cut down on the size of the
-series.  I really do want to read it closely, but hopefully by the
-weekend.
-
---TDAnSvu4oNjXIbzm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdMYLAAoJECTWi3JdVIfQQPgH/A6vSSwUvvI/MUvLc/A8qIH7
-u3LJ1gXi6Hf+5jieAqtauaeg+vPDoQ3vreE+zShUWQWycBsI5iU71Eqv0ZyvOFnS
-9L2XShwPCn71puUzByjdbnEmcdf5s3iBCq99Zo6UqPXRTob0u7jtEG6a237TEGrz
-gUKId/CgM+0WspPeuH3ryIvw2drQEzyvy/egnwUxo5ISdFNL0eJRT6Z1lfZwNEyr
-ZZSMYpBT/whsXilHPePg0oFwEh2u+zq+Hl2MBHY4rYtWZjwSrWfDulaQdl/m/5DX
-IfU6ISAX6f5SGebLFmGVoj+rRtz/1/L4pGReZ/yehAwOCP3DA8IO/mjkTlcxBcM=
-=72E2
------END PGP SIGNATURE-----
-
---TDAnSvu4oNjXIbzm--
+-- 
+Darren Hart
+Intel Open Source Technology Center
