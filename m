@@ -1,61 +1,74 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Tue, 25 Nov 2014 21:32:58 +0100
-Message-ID: <2374046.oRBoy0cD3d@vostro.rjw.lan>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <5474D35A.3000601@linux.intel.com> <20141125193623.GL7712@sirena.org.uk>
+Date: Tue, 25 Nov 2014 20:27:22 +0000
+Message-ID: <20141125202722.GA25261@sirena.org.uk>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
+ <20141125184304.GK7712@sirena.org.uk>
+ <5474D35A.3000601@linux.intel.com>
+ <2580837.YI0IvfXqRR@vostro.rjw.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141125193623.GL7712@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <2580837.YI0IvfXqRR@vostro.rjw.lan>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Al Stone <al.stone@linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, November 25, 2014 07:36:23 PM Mark Brown wrote:
-> 
-> --njUEgrJvs9ryr/H/
-> Content-Type: text/plain; charset=us-ascii
-> Content-Disposition: inline
-> Content-Transfer-Encoding: quoted-printable
-> 
-> On Tue, Nov 25, 2014 at 11:07:06AM -0800, Darren Hart wrote:
-> > On 11/25/14 10:43, Mark Brown wrote:
-> 
-> > > Link from where - do we want to talk to the ACPI/UEFI forum and=20
-> > > figure out some kind of fast track process for them to add an
-> > > "it's already covered by DT, see here" entry to their database for=20
-> > > example?  We also ought to work out how to make sure ACPI IDs are=20
-> > > registered there as well, should be possible to have something=20
-> > > simple as part of that.
-> 
+
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 25, 2014 at 09:31:27PM +0100, Rafael J. Wysocki wrote:
+> On Tuesday, November 25, 2014 11:07:06 AM Darren Hart wrote:
+
 > > This is a current topic with the ACPI working group. We have the
 > > following document:
-> 
-> > http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-=
-> UUID.pdf
-> 
-> > I don't know if we want to have a list of them here, or if a separate
-> > document is needed. The important point is that it is independent from
-> 
-> Seems to me like some indirection is going to be better rather than
-> having one big document if there's widespread adoption, avoids lots of
-> document churn.
-> 
-> > the ACPI specification itself so that it can be updated out of band
-> > with the specification, and not be subject to rather plodding pace
-> > that would imply.
-> 
-> > Rafael, I've missed several of these meetings unfortunately, and I'm
-> > not sure if we've closed on this point. Do you know?
-> 
-> OK, I'll see if any of the people at work have been following as well.
-> For now continuing to just document everything as DT bindings in the way
-> we are already seems like a sensible interim approach.
 
-Yes, that currently is the case in my view too.
+> > http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
 
--- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+> This hasn't been discussed a lot at the meetings I attended.
+
+> The bindings management process is being set up within the UEFI Forum, but I'm
+> not sure if/how the existing DT bindings documented in the kernel tree are
+> going to be covered by it ATM.
+
+Al Stone (CCed) pointed me at the following two documents:
+
+http://www.uefi.org/sites/default/files/resources/web-page-v2.pdf
+http://www.uefi.org/sites/default/files/resources/nic-request-v2.pdf
+
+(the first one being the actual process in so far as it exists).  The
+process appears to be to mail requests in a specific format to the ASWG
+chairperson (the address is apparently supposed to be awsg@uefi.org).
+It looks like all the properties are expected to end up in one or more
+PDF files like the second one.
+
+My initial thought would be to require that we send any DT properties
+defined for devices with ACPI identifiers registered there and hope the
+volume doesn't DoS them.
+
+A more defined format for DT documentation that we can script into the
+ASWG format (or vice versa) might be helpful here, and we should add
+notes to the DT documentation if this is how we want to proceed.
+
+--ReaqsoxgOBHFXBhH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUdOYpAAoJECTWi3JdVIfQxkUH/3ucwBHvyyGmuxNn4Qq8YRBo
+qQ3b6rSsRqYgGZh/DaM0pMh24o4Z29th5xyM+6IRAtAsGNxkvVhlb+fckyCGrCi8
+TcWmofOXsT6vyQ6dJuLypDZwcjSAYYSfdLu27r1ZXKyXKZQrHongQyUD4BiYtlyN
+H0gh3mtTNLoS3HErB8OTM0s51L3QsU17/Hmt3ntPIixXoHCE5o2A+3AOWthhy50S
+1EV5PxFGX8k77UVzpFD7WKCuQ53YuccPxGXwEgCqFOygmXaLlBMOimOHLVvhRu87
+3My2Lyeo9vebeE9D3QT9WruCAkdqS7shphSzs5318OLihHqstOiisnM7iCfFdm4=
+=x5UG
+-----END PGP SIGNATURE-----
+
+--ReaqsoxgOBHFXBhH--
