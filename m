@@ -1,72 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 1/4] ASoC: core: add multi-codec support
-	in DT
-Date: Tue, 25 Nov 2014 13:21:28 +0000
-Message-ID: <20141125132128.GD7712@sirena.org.uk>
-References: <cover.1416918909.git.moinejf@free.fr>
- <d380c3d09646c9dda14639b5aa5f0f2b2dc80e33.1416918909.git.moinejf@free.fr>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v3] ASoC: Remove 'const' from the device_node pointers
+Date: Tue, 25 Nov 2014 14:36:15 +0100
+Message-ID: <547485CF.4050600@metafoo.de>
+References: <20141125131351.GC7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2072126618999132381=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 55B22265756
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 14:23:37 +0100 (CET)
-In-Reply-To: <d380c3d09646c9dda14639b5aa5f0f2b2dc80e33.1416918909.git.moinejf@free.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141125131351.GC7712@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Jean-Francois Moine <moinejf@free.fr>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/25/2014 02:13 PM, Mark Brown wrote:
+> On Tue, Nov 25, 2014 at 12:14:48PM +0100, Jean-Francois Moine wrote:
+>> As Russell King's explained it, there should not be pointers to
+>> struct device_node:
+>>
+>> "struct device_node is a ref-counted structure.  That means if you
+>>   store a reference to it, you should "get" it, and you should "put"
+>>   it once you've done.  The act of "put"ing the pointed-to structure
+>>   involves writing to that structure, so it is totally unappropriate
+>>   to store a device_node structure as a const pointer.  It forces you
+>>   to have to cast it back to a non-const pointer at various points
+>>   in time to use various OF function calls."
+>
+> So, we're not holding references here (we're just doing comparisons, the
+> references need to be owned before we get into the core)
 
---===============2072126618999132381==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dDWkrvKzM17iuZge"
-Content-Disposition: inline
+The core itself will only do the comparisons and it is the board drivers 
+responsibility to get and put the references. Making the pointers non const 
+allows the board driver to use them to put the reference once the card has 
+been unregistered rather than having to keep a separate set of pointers 
+around. This should probably be mentioned in the commit message though.
 
+> I'm not seeing anything here removing casts?
 
---dDWkrvKzM17iuZge
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 25, 2014 at 01:16:12PM +0100, Jean-Francois Moine wrote:
-> This patch exports a core function which handles the DT description
-> of multi-codec links (as: "sound-dai = <&hdmi 0>, <&spdif_codec>;")
-> and creates a CODEC component array in the DAI link.
-
-Applied, thanks.
-
---dDWkrvKzM17iuZge
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdIJXAAoJECTWi3JdVIfQDY8H/jVuQZCRI8Ra81oQENYBS2AZ
-kA2VXXS8q+GDwc/1lne9ys6uizVSnaovBJtrwIfjMi8nri5wpdqAkPTMJiCHnuF/
-PmZ5b2wKnM7r85v7PB9xg2xJ0ko4+JURETKmiHm89ZRijwnxnbvt1zxYkOJCQij5
-hXdSX8xe9mrgZA8UWS7hQaFi5uVLnp/OU3SH8RHSycDGMHSK3FJNtoPkgVrHUmKW
-n/SyfHEycN/J60qgStricuN21h0M9ue9F5xbOd17ucJSlRGU+ZocGEGrKPRSVDST
-UJE5EqF03cJe7ZLDdoujM9nqWDjeSdY0AnxEoUINZXdj1b5Divei/BKIAWGZ4N4=
-=bRME
------END PGP SIGNATURE-----
-
---dDWkrvKzM17iuZge--
-
---===============2072126618999132381==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2072126618999132381==--
+This patch used to be part of a two part series where the second patch 
+removed the casts. This patch as already been applied though.
