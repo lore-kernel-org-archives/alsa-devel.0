@@ -1,17 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Tue, 25 Nov 2014 14:28:06 +0000
-Message-ID: <1416925686.7260.28.camel@loki>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
- <CACxGe6stjCvaQZkh=hFcF-56v5qJVar11jRZz0PRSd2wz6EUyA@mail.gmail.com>
+From: Tim Cussins <timcussins@eml.cc>
+Subject: [PATCH] alsa-lib: Fix assorted tstamp_type
+	bugs/omissions.
+Date: Tue, 25 Nov 2014 14:44:54 +0000
+Message-ID: <1416926694-25174-1-git-send-email-timcussins@eml.cc>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 129E226582D
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 15:30:16 +0100 (CET)
-In-Reply-To: <CACxGe6stjCvaQZkh=hFcF-56v5qJVar11jRZz0PRSd2wz6EUyA@mail.gmail.com>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 8A379265824
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 15:47:14 +0100 (CET)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id C399A20930
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 09:47:13 -0500 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel <alsa-devel@alsa-project.org>, Darren Hart <dvhart@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>, Anatol Pomozov <anatol@google.com>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com
+To: alsa-devel@alsa-project.org
+Cc: Tim Cussins <timcussins@eml.cc>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2014-11-25 at 12:11 +0000, Grant Likely wrote:
-> On Sat, Nov 15, 2014 at 6:56 AM, Ben Zhang <benzh@chromium.org> wrote:
-> > The rt5677 codec driver looks for ACPI device ID "RT5677CE",
-> > which is specified in coreboot. This patch allows platform
-> > data to be obtained via ACPI
-> >
-> > Signed-off-by: Ben Zhang <benzh@chromium.org>
-> 
-> This looks like an ideal time to talk about shared DT and ACPI driver
-> bindings. This driver /already/ has a firmware binding. It is
-> documented in the kernel under
-> Documentation/bindings/sound/rt5677.txt. We now have a standard method
-> for sharing bindings between DT and ACPI in the _DSD method[1].
-> Support for DSD is in linux-next and getting merged into v3.19. This
-> is exactly the case that _DSD should be used for passing additional
-> data to the driver, and it should use the existing binding.
-> 
-> [1] http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
-> 
-> For a long time we've had the rule on DT that new bindings must be
-> documented before we merge a patch. That rule I think has been a good
-> one, even if it is a little chaoitc. I think when it comes to ACPI
-> drivers that we should be requiring the same: Document the binding,
-> either in the kernel as a DT binding, or point to somewhere else that
-> has the binding documented.
-> 
-> Also, since this patch is targeted at v3.19 or later, the
-> device-properties API should be used. Don't create something custom.
-> 
+Just a couple of quick fixes related to tstamp_type.
 
-My sentiments exactly, there would be little point having bespoke device
-properties for every single device. Btw, we also need to align here with
-Windows too !
+- snd_pcm_sw_params(): copy tstamp_type field
+- snd_pcm_tstamp_type_name(): fix argument type
+- snd_pcm_dump_sw_setup(): fix dumping of tstamp_type field
 
-Liam
+---
+ src/pcm/pcm.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 3904256..baa47c7 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -897,6 +897,7 @@ int snd_pcm_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
+ 	if (err < 0)
+ 		return err;
+ 	pcm->tstamp_mode = params->tstamp_mode;
++	pcm->tstamp_type = params->tstamp_type;
+ 	pcm->period_step = params->period_step;
+ 	pcm->avail_min = params->avail_min;
+ 	pcm->period_event = sw_get_period_event(params);
+@@ -1843,7 +1844,7 @@ const char *snd_pcm_tstamp_mode_name(snd_pcm_tstamp_t mode)
+  * \param mode PCM tstamp type
+  * \return ascii name of PCM tstamp type setting
+  */
+-const char *snd_pcm_tstamp_type_name(snd_pcm_tstamp_t type)
++const char *snd_pcm_tstamp_type_name(snd_pcm_tstamp_type_t type)
+ {
+ 	if (type > SND_PCM_TSTAMP_TYPE_LAST)
+ 		return NULL;
+@@ -1924,7 +1925,7 @@ int snd_pcm_dump_sw_setup(snd_pcm_t *pcm, snd_output_t *out)
+ 		return -EIO;
+ 	}
+ 	snd_output_printf(out, "  tstamp_mode  : %s\n", snd_pcm_tstamp_mode_name(pcm->tstamp_mode));
+-	snd_output_printf(out, "  tstamp_type  : %s\n", snd_pcm_tstamp_type_name(pcm->tstamp_mode));
++	snd_output_printf(out, "  tstamp_type  : %s\n", snd_pcm_tstamp_type_name(pcm->tstamp_type));
+ 	snd_output_printf(out, "  period_step  : %d\n", pcm->period_step);
+ 	snd_output_printf(out, "  avail_min    : %ld\n", pcm->avail_min);
+ 	snd_output_printf(out, "  period_event : %i\n", pcm->period_event);
+-- 
+1.7.10.4
