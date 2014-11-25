@@ -1,68 +1,121 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Tue, 25 Nov 2014 22:40:53 +0100
-Message-ID: <1926483.B4ieFnCBlM@vostro.rjw.lan>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <2580837.YI0IvfXqRR@vostro.rjw.lan> <20141125202722.GA25261@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/9] ASoC: qcom: Add device tree binding docs
+Date: Tue, 25 Nov 2014 21:26:28 +0000
+Message-ID: <20141125212628.GS7712@sirena.org.uk>
+References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org>
+ <1416423169-21865-3-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141125202722.GA25261@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Al Stone <al.stone@linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5Zxee1w1CL9fzjN4"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1416423169-21865-3-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, November 25, 2014 08:27:22 PM Mark Brown wrote:
-> 
-> --ReaqsoxgOBHFXBhH
-> Content-Type: text/plain; charset=us-ascii
-> Content-Disposition: inline
-> 
-> On Tue, Nov 25, 2014 at 09:31:27PM +0100, Rafael J. Wysocki wrote:
-> > On Tuesday, November 25, 2014 11:07:06 AM Darren Hart wrote:
-> 
-> > > This is a current topic with the ACPI working group. We have the
-> > > following document:
-> 
-> > > http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
-> 
-> > This hasn't been discussed a lot at the meetings I attended.
-> 
-> > The bindings management process is being set up within the UEFI Forum, but I'm
-> > not sure if/how the existing DT bindings documented in the kernel tree are
-> > going to be covered by it ATM.
-> 
-> Al Stone (CCed) pointed me at the following two documents:
-> 
-> http://www.uefi.org/sites/default/files/resources/web-page-v2.pdf
-> http://www.uefi.org/sites/default/files/resources/nic-request-v2.pdf
-> 
-> (the first one being the actual process in so far as it exists).  The
-> process appears to be to mail requests in a specific format to the ASWG
-> chairperson (the address is apparently supposed to be awsg@uefi.org).
-> It looks like all the properties are expected to end up in one or more
-> PDF files like the second one.
-> 
-> My initial thought would be to require that we send any DT properties
-> defined for devices with ACPI identifiers registered there and hope the
-> volume doesn't DoS them.
 
-We absolutely need to start registering the existing bindings in there, but
-that needs to be rate limited somehow, because the process may not be very
-efficient to start with.
+--5Zxee1w1CL9fzjN4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> A more defined format for DT documentation that we can script into the
-> ASWG format (or vice versa) might be helpful here, and we should add
-> notes to the DT documentation if this is how we want to proceed.
+On Wed, Nov 19, 2014 at 10:52:42AM -0800, Kenneth Westfield wrote:
 
-That's a good point.
+> +* Qualcomm Technologies IPQ806x SoundCard
+> +
+> +This node models the Qualcomm Technologies IPQ806x LPASS Audio SoundCard,
+> +with a connection between the CPU MI2S DAI and the external DAC.
 
-Unfortunately, the timing is pretty bad (Thanksgiving) and the closest
-ASWG meeting is next Thursday, but that one's likely to be busy for other
-reasons.  I presume, then, that the earliest we can seriously get back to
-that in the ASWG is mid-December.
+> +Required properties:
+> +- compatible        : "qcom,ipq806x-snd-card"
+> +- qcom,model        : The user-visible name of this sound card
+> +- pinctrl-0         : The default state of the MI2S pins
+> +- pinctrl-names     : The name of the default state
 
--- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+Why is a sound card doing pin control?  I would expect that the
+component devices would do their own pin control.  Also if you have
+named pin control states the set of valid names should be specified.
+
+> +- dac-gpios         : GPIO specifier to the GPIO -> DAC SDMODE pin
+
+Simiarly why is a sound card controlling the DAC GPIOs, is this not part
+of the CODEC?
+
+> +- clocks            : A list of clock specifiers in the following order:
+> +                        * AHBIX bus clock
+> +- clock-names       : A list of names in the following order:
+> +                        * ahbix_clk
+
+Again I'd really expect any devices on the AHB to be controlling the AHB
+related clocks rather than a sound card doing it.
+
+> +asoc-platform       : This is phandle list containing the references to platform device
+> +                      nodes that are used as part of the sound card dai-links.
+> +asoc-platform-names : This property contains list of platform names. The order of
+> +                      the platform names should match to that of the phandle order
+> +                      given in "asoc-platform".
+
+The device tree bindings should be OS neutral but ASoC is a Linux thing.
+This needs to be written in terms of the hardware it's describing.
+
+> +Required properties:
+> +- compatible  : "qcom,lpass-cpu-dai"
+> +- clocks      : A list of clock specifiers in the following order:
+> +                        * MI2S OSR clock
+> +                        * MI2S Bit clock
+> +- clock-names : A list of names in the following order:
+> +                        * mi2s_osr_clk
+> +                        * mi2s_bit_clk
+
+If there are names (which is good) why is the ordering important?  The
+whole point in having a mandatory list of names is to remove the
+ordering and completeness requirements.
+
+> +Required properties:
+> +- compatible      : "qcom,lpass-lpaif"
+> +- reg             : Address space for the LPASS subsystem registers
+> +- reg-names       : The name of the LPASS subsystem register address space
+> +- interrupts      : Phandle to the LPASS interrupt
+> +- interrupt-names : The names of the LPASS interrupt
+
+Again you need to document the valid names.
+
+> index 0000000000000000000000000000000000000000..d2ff501d44f7b7aa790cdadc8ba75c6a8bf37ccd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-pcm-mi2s.txt
+> @@ -0,0 +1,12 @@
+> +* Qualcomm Technologies IPQ806x PCM audio interface
+> +
+> +This node models the Qualcomm Technologies IPQ806x PCM audio interface.
+> +
+> +Required properties:
+> +- compatible: "qcom,lpass-pcm-mi2s"
+> +
+> +Example:
+> +
+> +lpass-pcm-mi2s {
+> +	compatible = "qcom,lpass-pcm-mi2s";
+> +};
+
+This doesn't appear to describe hardware - there are no register
+addresses or anything.  I'd guess this is most likely part of another
+hardware block and should be handled by the driver for that device.
+
+--5Zxee1w1CL9fzjN4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUdPQDAAoJECTWi3JdVIfQ1i4H/0pI1VFahaYWrWxJt7QGBDd6
+sITPJ0NMafCdfc+2bvUgV49y8K6KeU8cZ8Fj3Y8eGJAHw05j3m0laenLEmhZbwh1
+yoJVOgZWTvg2hBJkKdweDMDL1m4R4WqDVqUm4iomSFR9rj4CLqhLePI2ry58gioJ
+8QwzPpIGfuZD5ZHxNhFgj3rQG7tdZMbM4ruBI1ZWJTKoCc/jnDZG7eadYkTrzQ8N
+2LwoO/lFs1dm27fDqawWeyK/bo4rQ2s/K+BhmW2J2NsOcut3AZXFA1kEHUJNkbKD
+24Uis8gUYkL5wQlBE4BHJze9+XSzoL1QeWCywXMtnXYG2gFJfu5Cg5I+FOQNaR8=
+=vRS3
+-----END PGP SIGNATURE-----
+
+--5Zxee1w1CL9fzjN4--
