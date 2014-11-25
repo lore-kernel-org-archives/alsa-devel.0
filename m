@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix stream volume set no
- effect issue on Broadwell
-Date: Tue, 25 Nov 2014 13:08:53 +0000
-Message-ID: <20141125130853.GB7712@sirena.org.uk>
-References: <1416920453-21342-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH v3] ASoC: Remove 'const' from the
+	device_node pointers
+Date: Tue, 25 Nov 2014 13:13:51 +0000
+Message-ID: <20141125131351.GC7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6258029684548789464=="
+Content-Type: multipart/mixed; boundary="===============4192869409827974951=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 36D4D2605F6
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 14:11:01 +0100 (CET)
-In-Reply-To: <1416920453-21342-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D8BC265756
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 14:16:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6258029684548789464==
+--===============4192869409827974951==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="er3ccdgDRx8g9EQQ"
+	protocol="application/pgp-signature"; boundary="cmojth4sdaU3VRJa"
 Content-Disposition: inline
 
 
---er3ccdgDRx8g9EQQ
+--cmojth4sdaU3VRJa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 25, 2014 at 09:00:53PM +0800, Jie Yang wrote:
-> The volume setting control for capture stream doesn't take effect on intel
-> Broadwell platform. Root cause it at 2 points:
-> 1. set stream volume with channel=2 is wrongly bapassed;
-> 2. the saved stream volume should be restored after stream is commit.
+On Tue, Nov 25, 2014 at 12:14:48PM +0100, Jean-Francois Moine wrote:
+> As Russell King's explained it, there should not be pointers to
+> struct device_node:
+>=20
+> "struct device_node is a ref-counted structure.  That means if you
+>  store a reference to it, you should "get" it, and you should "put"
+>  it once you've done.  The act of "put"ing the pointed-to structure
+>  involves writing to that structure, so it is totally unappropriate
+>  to store a device_node structure as a const pointer.  It forces you
+>  to have to cast it back to a non-const pointer at various points
+>  in time to use various OF function calls."
 
-Applied, thanks.
+So, we're not holding references here (we're just doing comparisons, the
+references need to be owned before we get into the core) and I'm not
+seeing anything here removing casts?
 
---er3ccdgDRx8g9EQQ
+--cmojth4sdaU3VRJa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUdH9kAAoJECTWi3JdVIfQbMIH/AxB+oWGZP8aKQGNOY5HTZs2
-jDZ+LgXnc1ki6glTA3iUwQVdMsPFTjLBBHgCKBxPCDQLIM/vj/QRz+RUdOLX0oTa
-C6xzjmrxO6BHCSnkRlt6zhc7bgBo46QTthiKdRHVM/hulFvBix3+r5YePxHASiVB
-v9M6m0oeW7/0GkXgi0HPXUfcFLZN0ZtgKkbeIxxCaJHqMFY1IvZC+X2pGc9BlSVw
-Xg7JkbOkDLeNed7dSxc9VKXtEM+20CCHxcpC8o3N8CaAFrdnbLGKbpUWGzFmLsV6
-ZQ3n0jqLrMv4E/eeqj6h3QUncfLB/WKHrnKVxxTEt2G6Ap4Xo2tQ/BL+taQ2uIs=
-=2CXH
+iQEcBAEBAgAGBQJUdICOAAoJECTWi3JdVIfQcggH/jVqi1O/AWH3tQmTsDEkFXT4
+et8yGx03au/zpgWbEr+UFD5jFLTep1StgnZD5kgAmpzierEAkxbYf0/GJ68QKSzl
+8zZgniyrhHsZosYwfId9d8hk0OuXLEAtX2U9F4LjPrTKOjebd/vzzaTmloaBVfXI
+DlZmVYv2U3qaxDhD5tnG0qClG3ae86cSkZLKu99F4ktSmKPex5PCVn3bR/y1vwgP
+2uc+n1q27Va9NF2fS3E3IJxdtJbvv1itlpTcNE7F6Z+8ydtUX3pbbSCYQbEA5Uud
+V1vlEzZZvrkINEQArmho90MZPzs5ba13o/t2Bd96Rvss5vURvQSQQ10pB6BZjgQ=
+=Hdvy
 -----END PGP SIGNATURE-----
 
---er3ccdgDRx8g9EQQ--
+--cmojth4sdaU3VRJa--
 
---===============6258029684548789464==
+--===============4192869409827974951==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6258029684548789464==--
+--===============4192869409827974951==--
