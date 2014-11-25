@@ -1,55 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Tue, 25 Nov 2014 22:45:32 +0000
-Message-ID: <20141125224532.GC7712@sirena.org.uk>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
- <2580837.YI0IvfXqRR@vostro.rjw.lan>
- <20141125202722.GA25261@sirena.org.uk>
- <1926483.B4ieFnCBlM@vostro.rjw.lan>
- <CAOV7By+7g19p_-4R-sSM_2q04fKCmOq3um+S_L=5z=T5SVdwAw@mail.gmail.com>
+From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Subject: Re: Where to find Alsa experienced programmer?
+Date: Wed, 26 Nov 2014 11:55:41 +1300
+Message-ID: <m531de$bag$1@ger.gmane.org>
+References: <CAGzU1+EqqUVJWWSEeassEwSWYxEHKBpMVA1WpFV7pvHKSyUK6w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="F20q8ig/xCX9TrYX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOV7By+7g19p_-4R-sSM_2q04fKCmOq3um+S_L=5z=T5SVdwAw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ben Zhang <benzh@chromium.org>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Duncan Laurie <dlaurie@google.com>, Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, Flove <flove@realtek.com>, Al Stone <al.stone@linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3358C265A18
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 23:55:58 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1XtP1Z-0000eY-3m
+ for alsa-devel@alsa-project.org; Tue, 25 Nov 2014 23:55:57 +0100
+Received: from 121-72-250-62.cable.telstraclear.net ([121.72.250.62])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 23:55:57 +0100
+Received: from eliot by 121-72-250-62.cable.telstraclear.net with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 23:55:57 +0100
+In-Reply-To: <CAGzU1+EqqUVJWWSEeassEwSWYxEHKBpMVA1WpFV7pvHKSyUK6w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 25/11/14 18:14, Andrej Falout wrote:
+> Hello,
+> 
+> I have a client that would like to hire services of an skilled programmer
+> with  Alsa related experience, for a particular project contract task.
+> 
+> They advertised locally, but came up with nothing, which is probably not a
+> big surprise. They have accepted remote/online working as an option.
+> 
+> Could anyone suggest the appropriate method/place to seek such a person?
 
---F20q8ig/xCX9TrYX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here, or http://lists.linuxaudio.org/listinfo/linux-audio-dev
 
-On Tue, Nov 25, 2014 at 02:41:28PM -0800, Ben Zhang wrote:
-> +Duncan who works on our firmware project.
->=20
-> Please correct me if I'm wrong. Here is the summary of what I understand.=
- Looks
-> like the recommended practice for passing device platform data is using _=
-DSD and
-> the new device_property_read_ API from include/linux/property.h
+but I suggest that you need to actually describe the job rather than
+saying "ALSA related" to get much interest.
 
-Your understanding matches mine here.  Doesn't mean I'm not confused
-though!
-
---F20q8ig/xCX9TrYX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdQaLAAoJECTWi3JdVIfQl0EH/3AKlhqcvDyf2DjalUSe3SAq
-tMgxU5n4Ai6ssi7O27uT1tBI9xttDhSoHYtjYmOwoPh66xwBIeXvqqyU9oOaSdZC
-oPr3MXb7QxOUKqQXIA5s/O0MlHXtazC1o6TDtwZXmLo0VQaw2/h4CbidaJNPJD5O
-DJyRswWK5S5SrDKob5Y2kkMgjFAJ83UeFv5UQMS5yB8ypkEdooP5bQ2TW0xPbcrD
-WatgFZJKVqMhXOpbilmgOuESamazwtB08BkTZpDvoudpFUmhABetm7nt8ozNlv0h
-fhV/oALVaL32UVfGSdolz87odfm/Rqu6SxBd8yhwb44sAlVMw1djI1u9tjclmT4=
-=SPwo
------END PGP SIGNATURE-----
-
---F20q8ig/xCX9TrYX--
+Do they want a kernel driver or an ALSA application or something else?
+What timeframe?
+Will the result be FOSS or closed source?
+etc
