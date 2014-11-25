@@ -1,69 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: qi_lb60: Pass flags to gpiod_get()
-Date: Tue, 25 Nov 2014 19:37:09 +0000
-Message-ID: <20141125193709.GM7712@sirena.org.uk>
-References: <1416943780-1016-1-git-send-email-lars@metafoo.de>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
+Date: Tue, 25 Nov 2014 21:31:27 +0100
+Message-ID: <2580837.YI0IvfXqRR@vostro.rjw.lan>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <20141125184304.GK7712@sirena.org.uk> <5474D35A.3000601@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1605239811857329500=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 24B5C265945
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 20:39:16 +0100 (CET)
-In-Reply-To: <1416943780-1016-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5474D35A.3000601@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Darren Hart <dvhart@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday, November 25, 2014 11:07:06 AM Darren Hart wrote:
+> 
+> On 11/25/14 10:43, Mark Brown wrote:
+> > On Tue, Nov 25, 2014 at 10:33:01AM -0800, Darren Hart wrote:
+> >> On 11/25/14 09:21, Mark Brown wrote:
+> > 
+> >>> Given the design of _DSD is to share with DT and we already 
+> >>> have device tree bindings for the device we should be using, 
+> >>> it's not clear to me if we want to grind them all through UEFI 
+> >>> and I suspect they'd be unhappy if we tried but pretty much
+> >>> all audio CODECs are good candidates for use with ACPI given
+> >>> the new hardware designs Intel have so if we are doing it I
+> >>> ought to be bouncing everyone to UEFI forum.
+> > 
+> >> Right, I realized between sending and driving into the office 
+> >> that my statement might be construed this way. I meant *new*
+> >> _DSD bindings should go through the ACPI/UEFI forum. Where we
+> >> can reuse DT bindings, we should absolutely do that, agreed. We 
+> >> should still document this and link to the DT binding so it can 
+> >> be referenced and used even when Linux is not the target OS.
+> > 
+> > Link from where - do we want to talk to the ACPI/UEFI forum and 
+> > figure out some kind of fast track process for them to add an
+> > "it's already covered by DT, see here" entry to their database for 
+> > example?  We also ought to work out how to make sure ACPI IDs are 
+> > registered there as well, should be possible to have something 
+> > simple as part of that.
+> > 
+> 
+> This is a current topic with the ACPI working group. We have the
+> following document:
+> 
+> http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
+> 
+> I don't know if we want to have a list of them here, or if a separate
+> document is needed. The important point is that it is independent from
+> the ACPI specification itself so that it can be updated out of band
+> with the specification, and not be subject to rather plodding pace
+> that would imply.
+> 
+> Rafael, I've missed several of these meetings unfortunately, and I'm
+> not sure if we've closed on this point. Do you know?
 
---===============1605239811857329500==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KhDKIZ8emI+Lr8f6"
-Content-Disposition: inline
+This hasn't been discussed a lot at the meetings I attended.
+
+The bindings management process is being set up within the UEFI Forum, but I'm
+not sure if/how the existing DT bindings documented in the kernel tree are
+going to be covered by it ATM.
 
 
---KhDKIZ8emI+Lr8f6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 25, 2014 at 08:29:40PM +0100, Lars-Peter Clausen wrote:
-> Pass flags to gpiod_get() to automatically configure the GPIOs. This is shorter
-> and not passing any flags to gpiod_get() will eventually no longer be supported.
-
-Applied, thanks.
-
---KhDKIZ8emI+Lr8f6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdNplAAoJECTWi3JdVIfQIPgH/3I96cI6+GX/2yzT0xFg+Bqu
-Pac4a6+nE51Lriybq+v6SACA7S2Vefg0H2vf8Q+HZRBuNivk1GfeTLJMPVhC0P4M
-W27ImMQ3FCMGfeYs48+JQ2DPqmbIDsaw3XnwUYT5TAkVyZtm2VCzcLpiB7TOWSSS
-+1rDdmwNKo+REqoTbmHA+G9CLIuKPsck026anqqoSK/IDdvdWAJrtme3vmWGsti8
-hVZtPAa5jU7ZAFT9tfw/XMuGieWNLP4fSxVFUrmlvKGyLOz+Cc+1fcc9j5Hbkjhz
-QkY/BqmimmJHFZzbzMLSdRUjcmKitgpyUXDa+hJwwsNceeTnI1PlO9hqtSOR+B8=
-=AP1L
------END PGP SIGNATURE-----
-
---KhDKIZ8emI+Lr8f6--
-
---===============1605239811857329500==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1605239811857329500==--
+-- 
+I speak only for myself.
+Rafael J. Wysocki, Intel Open Source Technology Center.
