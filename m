@@ -1,15 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 1/2] ALSA: firewire-lib: remove
-	rx_blocks_for_midi quirk
-Date: Tue, 25 Nov 2014 22:52:24 +0100
-Message-ID: <5474FA18.7000501@ladisch.de>
+Subject: [PATCH 2/2] ALSA: firewire-lib: limit the MIDI data
+	rate
+Date: Tue, 25 Nov 2014 22:54:10 +0100
+Message-ID: <5474FA82.4030408@ladisch.de>
+References: <5474FA18.7000501@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id DE04E260610
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 22:52:44 +0100 (CET)
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 2E70C260654
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 22:54:30 +0100 (CET)
+In-Reply-To: <5474FA18.7000501@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,70 +25,124 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlcmUgYXJlIHNldmVyYWwgZGV2aWNlcyB0aGF0IGV4cGVjdCB0byByZWNlaXZlIE1JREkgZGF0
-YSBvbmx5IGluIHRoZQpmaXJzdCBlaWdodCBkYXRhIGJsb2NrcyBvZiBhIHBhY2tldC4gIElmIHRo
-ZSBkcml2ZXIgcmVzdHJpY3RzIHRoZSBkYXRhCnJhdGUgdG8gdGhlIGFsbG93ZWQgcmF0ZSAoYXMg
-bWFuZGF0ZWQgYnkgdGhlIHNwZWNpZmljYXRpb24sIGJ1dCBub3QgeWV0CmltcGxlbWVudGVkIGJ5
-IHRoaXMgZHJpdmVyKSwgdGhpcyBoYXBwZW5zIG5hdHVyYWxseS4gIFRoZXJlZm9yZSwgdGhlcmUK
-aXMgbm8gcmVhc29uIHRvIGV2ZXIgdHJ5IHRvIHVzZSBtb3JlIGRhdGEgcGFja2V0cyB3aXRoIGFu
-eSBkZXZpY2UuCgpTaWduZWQtb2ZmLWJ5OiBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNj
-aC5kZT4KLS0tCiBzb3VuZC9maXJld2lyZS9hbWR0cC5jICAgICAgICAgICAgICAgICAgICAgIHwg
-ICAxMCArKysrKysrLS0tCiBzb3VuZC9maXJld2lyZS9hbWR0cC5oICAgICAgICAgICAgICAgICAg
-ICAgIHwgICAgMyAtLS0KIHNvdW5kL2ZpcmV3aXJlL2JlYm9iL2JlYm9iX3N0cmVhbS5jICAgICAg
-ICAgfCAgICA3IC0tLS0tLS0KIHNvdW5kL2ZpcmV3aXJlL2ZpcmV3b3Jrcy9maXJld29ya3Nfc3Ry
-ZWFtLmMgfCAgICA1IC0tLS0tCiA0IGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwgMTgg
-ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYW1kdHAuYyBiL3NvdW5k
-L2ZpcmV3aXJlL2FtZHRwLmMKaW5kZXggM2JhZGM3MC4uMTc1NDhkOCAxMDA2NDQKLS0tIGEvc291
-bmQvZmlyZXdpcmUvYW1kdHAuYworKysgYi9zb3VuZC9maXJld2lyZS9hbWR0cC5jCkBAIC0yMSw2
-ICsyMSwxMiBAQAogI2RlZmluZSBDWUNMRVNfUEVSX1NFQ09ORAk4MDAwCiAjZGVmaW5lIFRJQ0tT
-X1BFUl9TRUNPTkQJKFRJQ0tTX1BFUl9DWUNMRSAqIENZQ0xFU19QRVJfU0VDT05EKQoKKy8qCisg
-KiBTZXZlcmFsIGRldmljZXMgbG9vayBvbmx5IGF0IHRoZSBmaXJzdCBlaWdodCBkYXRhIGJsb2Nr
-cy4KKyAqIEluIGFueSBjYXNlLCB0aGlzIGlzIG1vcmUgdGhhbiBlbm91Z2ggZm9yIHRoZSBNSURJ
-IGRhdGEgcmF0ZS4KKyAqLworI2RlZmluZSBNQVhfTUlESV9SWF9CTE9DS1MJOAorCiAjZGVmaW5l
-IFRSQU5TRkVSX0RFTEFZX1RJQ0tTCTB4MmUwMCAvKiA0NzkuMTcgw4LCtXMgKi8KCiAvKiBpc29j
-aHJvbm91cyBoZWFkZXIgcGFyYW1ldGVycyAqLwpAQCAtNzgsOCArODQsNiBAQCBpbnQgYW1kdHBf
-c3RyZWFtX2luaXQoc3RydWN0IGFtZHRwX3N0cmVhbSAqcywgc3RydWN0IGZ3X3VuaXQgKnVuaXQs
-CiAJcy0+Y2FsbGJhY2tlZCA9IGZhbHNlOwogCXMtPnN5bmNfc2xhdmUgPSBOVUxMOwoKLQlzLT5y
-eF9ibG9ja3NfZm9yX21pZGkgPSBVSU5UX01BWDsKLQogCXJldHVybiAwOwogfQogRVhQT1JUX1NZ
-TUJPTChhbWR0cF9zdHJlYW1faW5pdCk7CkBAIC00NzQsNyArNDc4LDcgQEAgc3RhdGljIHZvaWQg
-YW1kdHBfZmlsbF9taWRpKHN0cnVjdCBhbWR0cF9zdHJlYW0gKnMsCiAJCWIgPSAodTggKikmYnVm
-ZmVyW3MtPm1pZGlfcG9zaXRpb25dOwoKIAkJcG9ydCA9IChzLT5kYXRhX2Jsb2NrX2NvdW50ZXIg
-KyBmKSAlIDg7Ci0JCWlmICgoZiA+PSBzLT5yeF9ibG9ja3NfZm9yX21pZGkpIHx8CisJCWlmICgo
-ZiA+PSBNQVhfTUlESV9SWF9CTE9DS1MpIHx8CiAJCSAgICAocy0+bWlkaVtwb3J0XSA9PSBOVUxM
-KSB8fAogCQkgICAgKHNuZF9yYXdtaWRpX3RyYW5zbWl0KHMtPm1pZGlbcG9ydF0sIGIgKyAxLCAx
-KSA8PSAwKSkKIAkJCWJbMF0gPSAweDgwOwpkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYW1k
-dHAuaCBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmgKaW5kZXggZTZlODkyNi4uY2Q0YzRkZiAxMDA2
-NDQKLS0tIGEvc291bmQvZmlyZXdpcmUvYW1kdHAuaAorKysgYi9zb3VuZC9maXJld2lyZS9hbWR0
-cC5oCkBAIC0xNTIsOSArMTUyLDYgQEAgc3RydWN0IGFtZHRwX3N0cmVhbSB7CiAJLyogcXVpcms6
-IGZpeGVkIGludGVydmFsIG9mIGRiYyBiZXR3ZWVuIHByZXZpb3MvY3VycmVudCBwYWNrZXRzLiAq
-LwogCXVuc2lnbmVkIGludCB0eF9kYmNfaW50ZXJ2YWw7CgotCS8qIHF1aXJrOiB0aGUgZmlyc3Qg
-Y291bnQgb2YgZGF0YSBibG9ja3MgaW4gYW4gcnggcGFja2V0IGZvciBNSURJICovCi0JdW5zaWdu
-ZWQgaW50IHJ4X2Jsb2Nrc19mb3JfbWlkaTsKLQogCWJvb2wgY2FsbGJhY2tlZDsKIAl3YWl0X3F1
-ZXVlX2hlYWRfdCBjYWxsYmFja193YWl0OwogCXN0cnVjdCBhbWR0cF9zdHJlYW0gKnN5bmNfc2xh
-dmU7CmRpZmYgLS1naXQgYS9zb3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYyBiL3Nv
-dW5kL2ZpcmV3aXJlL2JlYm9iL2JlYm9iX3N0cmVhbS5jCmluZGV4IDFhYWIwYTMyLi4wZWJjYWJm
-IDEwMDY0NAotLS0gYS9zb3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYworKysgYi9z
-b3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYwpAQCAtNDg0LDEzICs0ODQsNiBAQCBp
-bnQgc25kX2JlYm9iX3N0cmVhbV9pbml0X2R1cGxleChzdHJ1Y3Qgc25kX2JlYm9iICpiZWJvYikK
-IAkJYW1kdHBfc3RyZWFtX2Rlc3Ryb3koJmJlYm9iLT5yeF9zdHJlYW0pOwogCQlkZXN0cm95X2Jv
-dGhfY29ubmVjdGlvbnMoYmVib2IpOwogCX0KLQkvKgotCSAqIFRoZSBmaXJtd2FyZSBmb3IgdGhl
-c2UgZGV2aWNlcyBpZ25vcmUgTUlESSBtZXNzYWdlcyBpbiBtb3JlIHRoYW4KLQkgKiBmaXJzdCA4
-IGRhdGEgYmxvY2tzIG9mIGFuIHJlY2VpdmVkIEFNRFRQIHBhY2tldC4KLQkgKi8KLQlpZiAoYmVi
-b2ItPnNwZWMgPT0gJm1hdWRpb19mdzQxMF9zcGVjIHx8Ci0JICAgIGJlYm9iLT5zcGVjID09ICZt
-YXVkaW9fc3BlY2lhbF9zcGVjKQotCQliZWJvYi0+cnhfc3RyZWFtLnJ4X2Jsb2Nrc19mb3JfbWlk
-aSA9IDg7CiBlbmQ6CiAJcmV0dXJuIGVycjsKIH0KZGlmZiAtLWdpdCBhL3NvdW5kL2ZpcmV3aXJl
-L2ZpcmV3b3Jrcy9maXJld29ya3Nfc3RyZWFtLmMgYi9zb3VuZC9maXJld2lyZS9maXJld29ya3Mv
-ZmlyZXdvcmtzX3N0cmVhbS5jCmluZGV4IGI5ODVmYzUuLjRmNDQwZTEgMTAwNjQ0Ci0tLSBhL3Nv
-dW5kL2ZpcmV3aXJlL2ZpcmV3b3Jrcy9maXJld29ya3Nfc3RyZWFtLmMKKysrIGIvc291bmQvZmly
-ZXdpcmUvZmlyZXdvcmtzL2ZpcmV3b3Jrc19zdHJlYW0uYwpAQCAtMTc5LDExICsxNzksNiBAQCBp
-bnQgc25kX2Vmd19zdHJlYW1faW5pdF9kdXBsZXgoc3RydWN0IHNuZF9lZncgKmVmdykKIAkJZGVz
-dHJveV9zdHJlYW0oZWZ3LCAmZWZ3LT50eF9zdHJlYW0pOwogCQlnb3RvIGVuZDsKIAl9Ci0JLyoK
-LQkgKiBGaXJld29ya3MgaWdub3JlcyBNSURJIG1lc3NhZ2VzIGluIG1vcmUgdGhhbiBmaXJzdCA4
-IGRhdGEKLQkgKiBibG9ja3Mgb2YgYW4gcmVjZWl2ZWQgQU1EVFAgcGFja2V0LgotCSAqLwotCWVm
-dy0+cnhfc3RyZWFtLnJ4X2Jsb2Nrc19mb3JfbWlkaSA9IDg7CgogCS8qIHNldCBJRUM2MTg4MyBj
-b21wbGlhbnQgbW9kZSAoYWN0dWFsbHkgbm90IGZ1bGx5IGNvbXBsaWFudC4uLikgKi8KIAllcnIg
-PSBzbmRfZWZ3X2NvbW1hbmRfc2V0X3R4X21vZGUoZWZ3LCBTTkRfRUZXX1RSQU5TUE9SVF9NT0RF
-X0lFQzYxODgzKTsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+Do no send MIDI bytes at the full rate at which FireWire packets happen
+to be sent, but restrict them to the actual rate of a real MIDI port.
+This is required by the specification, and prevents data loss when the
+device's buffer overruns.
+
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/firewire/amdtp.c |   61 +++++++++++++++++++++++++++++++++++++++++++-----
+ sound/firewire/amdtp.h |    2 ++
+ 2 files changed, 57 insertions(+), 6 deletions(-)
+
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 17548d8..c0c0c5e 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -22,6 +22,12 @@
+ #define TICKS_PER_SECOND	(TICKS_PER_CYCLE * CYCLES_PER_SECOND)
+
+ /*
++ * Nominally 3125 bytes/second, but the MIDI port's clock might be
++ * 1% too slow, and the bus clock 100 ppm too fast.
++ */
++#define MIDI_BYTES_PER_SECOND	3093
++
++/*
+  * Several devices look only at the first eight data blocks.
+  * In any case, this is more than enough for the MIDI data rate.
+  */
+@@ -226,6 +232,14 @@ sfc_found:
+ 	for (i = 0; i < pcm_channels; i++)
+ 		s->pcm_positions[i] = i;
+ 	s->midi_position = s->pcm_channels;
++
++	/*
++	 * We do not know the actual MIDI FIFO size of most devices.  Just
++	 * assume two bytes, i.e., one byte can be received over the bus while
++	 * the previous one is transmitted over MIDI.
++	 * (The value here is adjusted for midi_ratelimit_per_packet().)
++	 */
++	s->midi_fifo_limit = rate - MIDI_BYTES_PER_SECOND * s->syt_interval + 1;
+ }
+ EXPORT_SYMBOL(amdtp_stream_set_parameters);
+
+@@ -467,6 +481,36 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+ 	}
+ }
+
++/*
++ * To avoid sending MIDI bytes at too high a rate, assume that the receiving
++ * device has a FIFO, and track how much it is filled.  This values increases
++ * by one whenever we send one byte in a packet, but the FIFO empties at
++ * a constant rate independent of our packet rate.  One packet has syt_interval
++ * samples, so the number of bytes that empty out of the FIFO, per packet(!),
++ * is MIDI_BYTES_PER_SECOND * syt_interval / sample_rate.  To avoid storing
++ * fractional values, the values in midi_fifo_used[] are measured in bytes
++ * multiplied by the sample rate.
++ */
++static bool midi_ratelimit_per_packet(struct amdtp_stream *s, unsigned int port)
++{
++	int used;
++
++	used = s->midi_fifo_used[port];
++	if (used == 0) /* common shortcut */
++		return true;
++
++	used -= MIDI_BYTES_PER_SECOND * s->syt_interval;
++	used = max(used, 0);
++	s->midi_fifo_used[port] = used;
++
++	return used < s->midi_fifo_limit;
++}
++
++static void midi_rate_use_one_byte(struct amdtp_stream *s, unsigned int port)
++{
++	s->midi_fifo_used[port] += amdtp_rate_table[s->sfc];
++}
++
+ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 			    __be32 *buffer, unsigned int frames)
+ {
+@@ -474,16 +518,21 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 	u8 *b;
+
+ 	for (f = 0; f < frames; f++) {
+-		buffer[s->midi_position] = 0;
+ 		b = (u8 *)&buffer[s->midi_position];
+
+ 		port = (s->data_block_counter + f) % 8;
+-		if ((f >= MAX_MIDI_RX_BLOCKS) ||
+-		    (s->midi[port] == NULL) ||
+-		    (snd_rawmidi_transmit(s->midi[port], b + 1, 1) <= 0))
+-			b[0] = 0x80;
+-		else
++		if (f < MAX_MIDI_RX_BLOCKS &&
++		    midi_ratelimit_per_packet(s, port) &&
++		    s->midi[port] != NULL &&
++		    snd_rawmidi_transmit(s->midi[port], &b[1], 1) == 1) {
++			midi_rate_use_one_byte(s, port);
+ 			b[0] = 0x81;
++		} else {
++			b[0] = 0x80;
++			b[1] = 0;
++		}
++		b[2] = 0;
++		b[3] = 0;
+
+ 		buffer += s->data_block_quadlets;
+ 	}
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index cd4c4df..8a03a91 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -148,6 +148,8 @@ struct amdtp_stream {
+ 	bool double_pcm_frames;
+
+ 	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
++	int midi_fifo_limit;
++	int midi_fifo_used[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
+
+ 	/* quirk: fixed interval of dbc between previos/current packets. */
+ 	unsigned int tx_dbc_interval;
