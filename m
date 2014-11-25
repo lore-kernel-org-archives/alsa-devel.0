@@ -1,43 +1,46 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v5 2/4] ASoC: simple-card: Remove useless function argument
-Date: Tue, 25 Nov 2014 13:22:45 +0100
-Message-ID: <2ade2a90025d3dd4fe8872d36956ac08f0a81103.1416918909.git.moinejf@free.fr>
-References: <cover.1416918909.git.moinejf@free.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/2] ASoC: fsl: Use dynamic slot width for ESAI.
+Date: Tue, 25 Nov 2014 12:47:42 +0000
+Message-ID: <20141125124742.GZ7712@sirena.org.uk>
+References: <cover.1414193668.git.nicoleotsuka@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zrEArbvrm/ur3HOL"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1416918909.git.moinejf@free.fr>
+Content-Disposition: inline
+In-Reply-To: <cover.1414193668.git.nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: b02247@freescale.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The device node pointer 'cpu' is not used in the function
-asoc_simple_card_parse_daifmt().
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- sound/soc/generic/simple-card.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+--zrEArbvrm/ur3HOL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 3e3fec4..ece22d5 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -232,7 +232,6 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 
- static int asoc_simple_card_parse_daifmt(struct device_node *node,
- 					 struct simple_card_data *priv,
--					 struct device_node *cpu,
- 					 struct device_node *codec,
- 					 char *prefix, int idx)
- {
-@@ -309,7 +308,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	}
- 
- 	ret = asoc_simple_card_parse_daifmt(node, priv,
--					    cpu, codec, prefix, idx);
-+					    codec, prefix, idx);
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
--- 
-2.1.3
+On Fri, Oct 24, 2014 at 04:48:10PM -0700, Nicolin Chen wrote:
+> This series of patches add the support of dynamic slot width for
+> ESAI driver. To do this, the PATCH-1 removes the fixed width. In
+> order not to break those platforms that use fixed width, there
+> comes the PATCH-2 to apply an override of slot_width.
+
+Applied both, thanks.
+
+--zrEArbvrm/ur3HOL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUdHpuAAoJECTWi3JdVIfQuPEH+wU2vOjKzHpwHUpL0Q6P920z
+XyUuRWZaWgL/wqp6ugDRcopn41Ow4IrngI9Ju/Fx+GOM2jjUupBScqOUkh+dPLWE
+lQ8kwpRw0CZld59Q2W2hBL6VmCG8njGmZ7W6Q4F0wtdPfEjk89wE35b0qSsis2G4
+xovNV+kmMBozkXS0FF+26bav3k3b1Ppk+SEG77bmL7BbjWDI/QFtoSZPF+28tpkS
+XbGLU9yrz8+UvvJbqlHZ+flBISzE0RsskIR+5mBU0wD1Ms3ECgAWrvvR4UE4Lgye
+NOelEPmcssGqNAwprwKP8XTh0urxtNTjNFIk4TQVkKbUHaXOAWN7s7KyT66C2Os=
+=wNgc
+-----END PGP SIGNATURE-----
+
+--zrEArbvrm/ur3HOL--
