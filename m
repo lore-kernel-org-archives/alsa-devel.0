@@ -1,117 +1,151 @@
-From: Mark Brown <broonie@kernel.org>
+From: Grant Likely <grant.likely@secretlab.ca>
 Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Tue, 25 Nov 2014 12:07:24 +0000
-Message-ID: <20141125120724.GP7712@sirena.org.uk>
+Date: Tue, 25 Nov 2014 12:11:32 +0000
+Message-ID: <CACxGe6stjCvaQZkh=hFcF-56v5qJVar11jRZz0PRSd2wz6EUyA@mail.gmail.com>
 References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1273475465712767685=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B618B2605B4
- for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 13:09:23 +0100 (CET)
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1416034608-24238-1-git-send-email-benzh@chromium.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Ben Zhang <benzh@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Darren Hart <dvhart@linux.intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Anatol Pomozov <anatol@google.com>, Grant Likely <grant.likely@linaro.org>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Darren Hart <dvhart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1273475465712767685==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="epRuUhiNkW/O9uqo"
-Content-Disposition: inline
-
-
---epRuUhiNkW/O9uqo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Nov 14, 2014 at 10:56:47PM -0800, Ben Zhang wrote:
-
+On Sat, Nov 15, 2014 at 6:56 AM, Ben Zhang <benzh@chromium.org> wrote:
 > The rt5677 codec driver looks for ACPI device ID "RT5677CE",
 > which is specified in coreboot. This patch allows platform
 > data to be obtained via ACPI
+>
+> Signed-off-by: Ben Zhang <benzh@chromium.org>
 
-This actually does two things - it adds the ACPI device probing and it
-adds the ACPI platform data.  That last bit is a bit fun, I've added
-several of the people working on ACPI here since this is another variant
-on the whole ACPI platform data thing which probably needs addressing in
-the best practice dissemination which ought to be going on now.
+This looks like an ideal time to talk about shared DT and ACPI driver
+bindings. This driver /already/ has a firmware binding. It is
+documented in the kernel under
+Documentation/bindings/sound/rt5677.txt. We now have a standard method
+for sharing bindings between DT and ACPI in the _DSD method[1].
+Support for DSD is in linux-next and getting merged into v3.19. This
+is exactly the case that _DSD should be used for passing additional
+data to the driver, and it should use the existing binding.
 
-> +static unsigned long long rt5677_parse_acpi_entry(struct device *dev,
-> +		acpi_string name)
-> +{
-> +	acpi_handle handle = ACPI_HANDLE(dev);
-> +	unsigned long long val;
-> +	acpi_status status;
+[1] http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
+
+For a long time we've had the rule on DT that new bindings must be
+documented before we merge a patch. That rule I think has been a good
+one, even if it is a little chaoitc. I think when it comes to ACPI
+drivers that we should be requiring the same: Document the binding,
+either in the kernel as a DT binding, or point to somewhere else that
+has the binding documented.
+
+Also, since this patch is targeted at v3.19 or later, the
+device-properties API should be used. Don't create something custom.
+
+g.
+
+> ---
+>  sound/soc/codecs/rt5677.c | 52 +++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 50 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+> index 5d317c68..384281d 100644
+> --- a/sound/soc/codecs/rt5677.c
+> +++ b/sound/soc/codecs/rt5677.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/i2c.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/spi/spi.h>
+> +#include <linux/acpi.h>
+>  #include <linux/firmware.h>
+>  #include <linux/gpio.h>
+>  #include <sound/core.h>
+> @@ -4525,6 +4526,43 @@ static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
+>         return 0;
+>  }
+>
+> +#ifdef CONFIG_ACPI
 > +
-> +	status = acpi_evaluate_integer(handle, name, NULL, &val);
-> +	if (ACPI_FAILURE(status)) {
-
-So, here were defining what's essentially an ACPI property read API
-which uses something other than _DSD which is the way all the ACPI
-platform data specification for devices is apparently supposed to be
-going in order to reuse work between DT and ACPI.
-
+> +static unsigned long long rt5677_parse_acpi_entry(struct device *dev,
+> +               acpi_string name)
+> +{
+> +       acpi_handle handle = ACPI_HANDLE(dev);
+> +       unsigned long long val;
+> +       acpi_status status;
+> +
+> +       status = acpi_evaluate_integer(handle, name, NULL, &val);
+> +       if (ACPI_FAILURE(status)) {
+> +               dev_err(dev, "Failed to parse ACPI entry %s, default to 0: %d\n",
+> +                               name, status);
+> +               return 0;
+> +       }
+> +       return val;
+> +}
+> +
 > +static void rt5677_parse_acpi(struct rt5677_priv *rt5677, struct device *dev)
 > +{
-> +	rt5677->pdata.dmic2_clk_pin = (enum rt5677_dmic2_clk)
-> +		rt5677_parse_acpi_entry(dev, "DCLK");
-> +	rt5677->pdata.in1_diff = (bool)rt5677_parse_acpi_entry(dev, "IN1");
-> +	rt5677->pdata.in2_diff = (bool)rt5677_parse_acpi_entry(dev, "IN2");
-> +	rt5677->pdata.lout1_diff = (bool)rt5677_parse_acpi_entry(dev, "OUT1");
-> +	rt5677->pdata.lout2_diff = (bool)rt5677_parse_acpi_entry(dev, "OUT2");
-> +	rt5677->pdata.lout3_diff = (bool)rt5677_parse_acpi_entry(dev, "OUT3");
-> +	rt5677->pdata.jd1_gpio = rt5677_parse_acpi_entry(dev, "JD1");
-> +	rt5677->pdata.jd2_gpio = rt5677_parse_acpi_entry(dev, "JD2");
-> +	rt5677->pdata.jd3_gpio = rt5677_parse_acpi_entry(dev, "JD3");
-
-Here we read a bunch of properties named with a most definitely non-DT
-idiom.  The names here don't look great in general, in particular all
-the properties for differential outputs are just boolean flags for the
-output name which I'd expect to be flags saying if the output is in use
-or not rather than saying if it's in differential mode or single ended
-mode.  Things like foo_DIFF would seem better.
-
-My understanding is that best practice for ACPI is to use the new
-device_property_read_ APIs which idiomatically take DT style property
-names.  However if there's BIOSs out there we need to support perhaps we
-just have to deal with this but judging from your e-mail address it
-seems this may be for a system intended to run Linux natively so perhaps
-that's not an issue.
-
---epRuUhiNkW/O9uqo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdHD7AAoJECTWi3JdVIfQS+cH/086wR38jeZWLn7aRPa8DX+p
-ii5R+xTJBAmwmfCs6+e8Xl3fCGJZ7u6Vmv01oAXMom2xO3+eNFojHNfz1IbdExVE
-dU+U2iIRvEr5y2ZdCCuK3IqgH/nAPiJ283MvTycVpjyYE9y048R3yqaREfqfAhMh
-/A0DKIP2KajtaOZgoVf++9QHFjgsK5l68UI/kauHgm3sllhObwj9aQty5mcNoCHq
-q1ua4fk5+R3YDRiE9noq8wXRFKZQ9KS6QKHXWfirN3RLkeI1fIyJsqzNAyAlTiBJ
-SNOMFfEH3Ysi3Dpnuouamo06GJLimnQtCqN50iZghsYIJiZatMc/AB2ZD9WodAQ=
-=Ccnp
------END PGP SIGNATURE-----
-
---epRuUhiNkW/O9uqo--
-
---===============1273475465712767685==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1273475465712767685==--
+> +       rt5677->pdata.dmic2_clk_pin = (enum rt5677_dmic2_clk)
+> +               rt5677_parse_acpi_entry(dev, "DCLK");
+> +       rt5677->pdata.in1_diff = (bool)rt5677_parse_acpi_entry(dev, "IN1");
+> +       rt5677->pdata.in2_diff = (bool)rt5677_parse_acpi_entry(dev, "IN2");
+> +       rt5677->pdata.lout1_diff = (bool)rt5677_parse_acpi_entry(dev, "OUT1");
+> +       rt5677->pdata.lout2_diff = (bool)rt5677_parse_acpi_entry(dev, "OUT2");
+> +       rt5677->pdata.lout3_diff = (bool)rt5677_parse_acpi_entry(dev, "OUT3");
+> +       rt5677->pdata.jd1_gpio = rt5677_parse_acpi_entry(dev, "JD1");
+> +       rt5677->pdata.jd2_gpio = rt5677_parse_acpi_entry(dev, "JD2");
+> +       rt5677->pdata.jd3_gpio = rt5677_parse_acpi_entry(dev, "JD3");
+> +}
+> +#else
+> +static void rt5677_parse_acpi(struct rt5677_priv *rt5677, struct device *dev)
+> +{
+> +}
+> +#endif
+> +
+>  static struct regmap_irq rt5677_irqs[] = {
+>         [RT5677_IRQ_JD1] = {
+>                 .reg_offset = 0,
+> @@ -4604,6 +4642,7 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
+>         if (pdata)
+>                 rt5677->pdata = *pdata;
+>
+> +       rt5677->pow_ldo2 = -EINVAL;
+>         if (i2c->dev.of_node) {
+>                 ret = rt5677_parse_dt(rt5677, i2c->dev.of_node);
+>                 if (ret) {
+> @@ -4611,8 +4650,8 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
+>                                 ret);
+>                         return ret;
+>                 }
+> -       } else {
+> -               rt5677->pow_ldo2 = -EINVAL;
+> +       } else if (ACPI_HANDLE(&i2c->dev)) {
+> +               rt5677_parse_acpi(rt5677, &i2c->dev);
+>         }
+>
+>         if (gpio_is_valid(rt5677->pow_ldo2)) {
+> @@ -4708,10 +4747,19 @@ static int rt5677_i2c_remove(struct i2c_client *i2c)
+>         return 0;
+>  }
+>
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id rt5677_acpi_id[] = {
+> +       { "RT5677CE", 0 },
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(acpi, rt5677_acpi_id);
+> +#endif
+> +
+>  static struct i2c_driver rt5677_i2c_driver = {
+>         .driver = {
+>                 .name = "rt5677",
+>                 .owner = THIS_MODULE,
+> +               .acpi_match_table = ACPI_PTR(rt5677_acpi_id),
+>         },
+>         .probe = rt5677_i2c_probe,
+>         .remove   = rt5677_i2c_remove,
+> --
+> 2.1.0.rc2.206.gedb03e5
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
