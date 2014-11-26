@@ -1,101 +1,250 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/2] ALSA: firewire-lib:
-	remove	rx_blocks_for_midi quirk
-Date: Wed, 26 Nov 2014 10:17:19 +0100
-Message-ID: <54759A9F.4070702@ladisch.de>
-References: <5474FA18.7000501@ladisch.de> <s5h8uiyjqru.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id BF49C2651C0
- for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 10:17:21 +0100 (CET)
-In-Reply-To: <s5h8uiyjqru.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Krishna Mohan Dani <krishna.md@samsung.com>
+Subject: [PATCH] ASoC: Samsung: Add arndale_rt5631 machine driver and binding
+Date: Wed, 26 Nov 2014 14:53:04 +0530
+Message-ID: <1416993784-29239-1-git-send-email-krishna.md@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: kgene.kim@samsung.com, broonie@kernel.org, Claude Youn <claude.youn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlOgo+IENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPj4KPj4gVGhlcmUg
-YXJlIHNldmVyYWwgZGV2aWNlcyB0aGF0IGV4cGVjdCB0byByZWNlaXZlIE1JREkgZGF0YSBvbmx5
-IGluIHRoZQo+PiBmaXJzdCBlaWdodCBkYXRhIGJsb2NrcyBvZiBhIHBhY2tldC4gIElmIHRoZSBk
-cml2ZXIgcmVzdHJpY3RzIHRoZSBkYXRhCj4+IHJhdGUgdG8gdGhlIGFsbG93ZWQgcmF0ZSAoYXMg
-bWFuZGF0ZWQgYnkgdGhlIHNwZWNpZmljYXRpb24sIGJ1dCBub3QgeWV0Cj4+IGltcGxlbWVudGVk
-IGJ5IHRoaXMgZHJpdmVyKSwgdGhpcyBoYXBwZW5zIG5hdHVyYWxseS4gIFRoZXJlZm9yZSwgdGhl
-cmUKPj4gaXMgbm8gcmVhc29uIHRvIGV2ZXIgdHJ5IHRvIHVzZSBtb3JlIGRhdGEgcGFja2V0cyB3
-aXRoIGFueSBkZXZpY2UuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IENsZW1lbnMgTGFkaXNjaCA8Y2xl
-bWVuc0BsYWRpc2NoLmRlPgo+Cj4gVG8gd2hpY2ggYnJhbmNoIGlzIHRoZSBwYXRjaCBhcHBsaWVk
-PwoKU29ycnk7IHRoaXMgaXMgaW50ZW5kZWQgZm9yIDMuMTkuCgoKUmVnYXJkcywKQ2xlbWVucwoK
-Pgo+Cj4gVGFrYXNoaQo+Cj4+IC0tLQo+PiAgc291bmQvZmlyZXdpcmUvYW1kdHAuYyAgICAgICAg
-ICAgICAgICAgICAgICB8ICAgMTAgKysrKysrKy0tLQo+PiAgc291bmQvZmlyZXdpcmUvYW1kdHAu
-aCAgICAgICAgICAgICAgICAgICAgICB8ICAgIDMgLS0tCj4+ICBzb3VuZC9maXJld2lyZS9iZWJv
-Yi9iZWJvYl9zdHJlYW0uYyAgICAgICAgIHwgICAgNyAtLS0tLS0tCj4+ICBzb3VuZC9maXJld2ly
-ZS9maXJld29ya3MvZmlyZXdvcmtzX3N0cmVhbS5jIHwgICAgNSAtLS0tLQo+PiAgNCBmaWxlcyBj
-aGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDE4IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0
-IGEvc291bmQvZmlyZXdpcmUvYW1kdHAuYyBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKPj4gaW5k
-ZXggM2JhZGM3MC4uMTc1NDhkOCAxMDA2NDQKPj4gLS0tIGEvc291bmQvZmlyZXdpcmUvYW1kdHAu
-Ywo+PiArKysgYi9zb3VuZC9maXJld2lyZS9hbWR0cC5jCj4+IEBAIC0yMSw2ICsyMSwxMiBAQAo+
-PiAgI2RlZmluZSBDWUNMRVNfUEVSX1NFQ09ORAk4MDAwCj4+ICAjZGVmaW5lIFRJQ0tTX1BFUl9T
-RUNPTkQJKFRJQ0tTX1BFUl9DWUNMRSAqIENZQ0xFU19QRVJfU0VDT05EKQo+Pgo+PiArLyoKPj4g
-KyAqIFNldmVyYWwgZGV2aWNlcyBsb29rIG9ubHkgYXQgdGhlIGZpcnN0IGVpZ2h0IGRhdGEgYmxv
-Y2tzLgo+PiArICogSW4gYW55IGNhc2UsIHRoaXMgaXMgbW9yZSB0aGFuIGVub3VnaCBmb3IgdGhl
-IE1JREkgZGF0YSByYXRlLgo+PiArICovCj4+ICsjZGVmaW5lIE1BWF9NSURJX1JYX0JMT0NLUwk4
-Cj4+ICsKPj4gICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8qIDQ3OS4xNyDD
-gsK1cyAqLwo+Pgo+PiAgLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KPj4gQEAg
-LTc4LDggKzg0LDYgQEAgaW50IGFtZHRwX3N0cmVhbV9pbml0KHN0cnVjdCBhbWR0cF9zdHJlYW0g
-KnMsIHN0cnVjdCBmd191bml0ICp1bml0LAo+PiAgCXMtPmNhbGxiYWNrZWQgPSBmYWxzZTsKPj4g
-IAlzLT5zeW5jX3NsYXZlID0gTlVMTDsKPj4KPj4gLQlzLT5yeF9ibG9ja3NfZm9yX21pZGkgPSBV
-SU5UX01BWDsKPj4gLQo+PiAgCXJldHVybiAwOwo+PiAgfQo+PiAgRVhQT1JUX1NZTUJPTChhbWR0
-cF9zdHJlYW1faW5pdCk7Cj4+IEBAIC00NzQsNyArNDc4LDcgQEAgc3RhdGljIHZvaWQgYW1kdHBf
-ZmlsbF9taWRpKHN0cnVjdCBhbWR0cF9zdHJlYW0gKnMsCj4+ICAJCWIgPSAodTggKikmYnVmZmVy
-W3MtPm1pZGlfcG9zaXRpb25dOwo+Pgo+PiAgCQlwb3J0ID0gKHMtPmRhdGFfYmxvY2tfY291bnRl
-ciArIGYpICUgODsKPj4gLQkJaWYgKChmID49IHMtPnJ4X2Jsb2Nrc19mb3JfbWlkaSkgfHwKPj4g
-KwkJaWYgKChmID49IE1BWF9NSURJX1JYX0JMT0NLUykgfHwKPj4gIAkJICAgIChzLT5taWRpW3Bv
-cnRdID09IE5VTEwpIHx8Cj4+ICAJCSAgICAoc25kX3Jhd21pZGlfdHJhbnNtaXQocy0+bWlkaVtw
-b3J0XSwgYiArIDEsIDEpIDw9IDApKQo+PiAgCQkJYlswXSA9IDB4ODA7Cj4+IGRpZmYgLS1naXQg
-YS9zb3VuZC9maXJld2lyZS9hbWR0cC5oIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuaAo+PiBpbmRl
-eCBlNmU4OTI2Li5jZDRjNGRmIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9maXJld2lyZS9hbWR0cC5o
-Cj4+ICsrKyBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmgKPj4gQEAgLTE1Miw5ICsxNTIsNiBAQCBz
-dHJ1Y3QgYW1kdHBfc3RyZWFtIHsKPj4gIAkvKiBxdWlyazogZml4ZWQgaW50ZXJ2YWwgb2YgZGJj
-IGJldHdlZW4gcHJldmlvcy9jdXJyZW50IHBhY2tldHMuICovCj4+ICAJdW5zaWduZWQgaW50IHR4
-X2RiY19pbnRlcnZhbDsKPj4KPj4gLQkvKiBxdWlyazogdGhlIGZpcnN0IGNvdW50IG9mIGRhdGEg
-YmxvY2tzIGluIGFuIHJ4IHBhY2tldCBmb3IgTUlESSAqLwo+PiAtCXVuc2lnbmVkIGludCByeF9i
-bG9ja3NfZm9yX21pZGk7Cj4+IC0KPj4gIAlib29sIGNhbGxiYWNrZWQ7Cj4+ICAJd2FpdF9xdWV1
-ZV9oZWFkX3QgY2FsbGJhY2tfd2FpdDsKPj4gIAlzdHJ1Y3QgYW1kdHBfc3RyZWFtICpzeW5jX3Ns
-YXZlOwo+PiBkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMg
-Yi9zb3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYwo+PiBpbmRleCAxYWFiMGEzMi4u
-MGViY2FiZiAxMDA2NDQKPj4gLS0tIGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFt
-LmMKPj4gKysrIGIvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMKPj4gQEAgLTQ4
-NCwxMyArNDg0LDYgQEAgaW50IHNuZF9iZWJvYl9zdHJlYW1faW5pdF9kdXBsZXgoc3RydWN0IHNu
-ZF9iZWJvYiAqYmVib2IpCj4+ICAJCWFtZHRwX3N0cmVhbV9kZXN0cm95KCZiZWJvYi0+cnhfc3Ry
-ZWFtKTsKPj4gIAkJZGVzdHJveV9ib3RoX2Nvbm5lY3Rpb25zKGJlYm9iKTsKPj4gIAl9Cj4+IC0J
-LyoKPj4gLQkgKiBUaGUgZmlybXdhcmUgZm9yIHRoZXNlIGRldmljZXMgaWdub3JlIE1JREkgbWVz
-c2FnZXMgaW4gbW9yZSB0aGFuCj4+IC0JICogZmlyc3QgOCBkYXRhIGJsb2NrcyBvZiBhbiByZWNl
-aXZlZCBBTURUUCBwYWNrZXQuCj4+IC0JICovCj4+IC0JaWYgKGJlYm9iLT5zcGVjID09ICZtYXVk
-aW9fZnc0MTBfc3BlYyB8fAo+PiAtCSAgICBiZWJvYi0+c3BlYyA9PSAmbWF1ZGlvX3NwZWNpYWxf
-c3BlYykKPj4gLQkJYmVib2ItPnJ4X3N0cmVhbS5yeF9ibG9ja3NfZm9yX21pZGkgPSA4Owo+PiAg
-ZW5kOgo+PiAgCXJldHVybiBlcnI7Cj4+ICB9Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9maXJld2ly
-ZS9maXJld29ya3MvZmlyZXdvcmtzX3N0cmVhbS5jIGIvc291bmQvZmlyZXdpcmUvZmlyZXdvcmtz
-L2ZpcmV3b3Jrc19zdHJlYW0uYwo+PiBpbmRleCBiOTg1ZmM1Li40ZjQ0MGUxIDEwMDY0NAo+PiAt
-LS0gYS9zb3VuZC9maXJld2lyZS9maXJld29ya3MvZmlyZXdvcmtzX3N0cmVhbS5jCj4+ICsrKyBi
-L3NvdW5kL2ZpcmV3aXJlL2ZpcmV3b3Jrcy9maXJld29ya3Nfc3RyZWFtLmMKPj4gQEAgLTE3OSwx
-MSArMTc5LDYgQEAgaW50IHNuZF9lZndfc3RyZWFtX2luaXRfZHVwbGV4KHN0cnVjdCBzbmRfZWZ3
-ICplZncpCj4+ICAJCWRlc3Ryb3lfc3RyZWFtKGVmdywgJmVmdy0+dHhfc3RyZWFtKTsKPj4gIAkJ
-Z290byBlbmQ7Cj4+ICAJfQo+PiAtCS8qCj4+IC0JICogRmlyZXdvcmtzIGlnbm9yZXMgTUlESSBt
-ZXNzYWdlcyBpbiBtb3JlIHRoYW4gZmlyc3QgOCBkYXRhCj4+IC0JICogYmxvY2tzIG9mIGFuIHJl
-Y2VpdmVkIEFNRFRQIHBhY2tldC4KPj4gLQkgKi8KPj4gLQllZnctPnJ4X3N0cmVhbS5yeF9ibG9j
-a3NfZm9yX21pZGkgPSA4Owo+Pgo+PiAgCS8qIHNldCBJRUM2MTg4MyBjb21wbGlhbnQgbW9kZSAo
-YWN0dWFsbHkgbm90IGZ1bGx5IGNvbXBsaWFudC4uLikgKi8KPj4gIAllcnIgPSBzbmRfZWZ3X2Nv
-bW1hbmRfc2V0X3R4X21vZGUoZWZ3LCBTTkRfRUZXX1RSQU5TUE9SVF9NT0RFX0lFQzYxODgzKTsK
-Pj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Adding machine driver to instantiate I2S based realtek's ALC5631
+sound card on Arndale board.
+
+There are other variants of Audio Daughter Cards for Arndale
+Board for which support already exists but there is no support for
+Realtek's alc5631 codec hence support for ALC5631 based machine
+driver is being added.
+This patch also documents the device tree binding for the Arndale
+board based machine driver.
+
+Signed-off-by: Claude Youn <claude.youn@gmail.com>
+Signed-off-by: Krishna Mohan Dani <krishna.md@samsung.com>
+---
+ .../devicetree/bindings/sound/arndale.txt          |   24 ++++
+ sound/soc/samsung/Kconfig                          |    6 +
+ sound/soc/samsung/Makefile                         |    2 +
+ sound/soc/samsung/arndale_rt5631.c                 |  150 ++++++++++++++++++++
+ 4 files changed, 182 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/arndale.txt
+ create mode 100644 sound/soc/samsung/arndale_rt5631.c
+
+diff --git a/Documentation/devicetree/bindings/sound/arndale.txt b/Documentation/devicetree/bindings/sound/arndale.txt
+new file mode 100644
+index 0000000..0e76946
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/arndale.txt
+@@ -0,0 +1,24 @@
++Audio Binding for Arndale boards
++
++Required properties:
++- compatible : Can be the following,
++			"samsung,arndale-rt5631"
++
++- samsung,audio-cpu: The phandle of the Samsung I2S controller
++- samsung,audio-codec: The phandle of the audio codec
++
++Optional:
++- samsung,model: The name of the sound-card
++
++Arndale Boards has many audio daughter cards, one of them is
++rt5631/alc5631. Below example shows audio bindings for rt5631/
++alc5631 based codec.
++
++Example:
++
++sound {
++		compatible = "samsung,arndale-rt5631";
++
++		samsung,audio-cpu = <&i2s0>
++		samsung,audio-codec = <&rt5631>;
++};
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 55a3869..80b5c61 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -239,3 +239,9 @@ config SND_SOC_ODROIDX2
+ 	select SND_SAMSUNG_I2S
+ 	help
+ 	  Say Y here to enable audio support for the Odroid-X2/U3.
++
++config SND_SOC_ARNDALE_RT5631_ALC5631
++        tristate "Audio support for RT5631(ALC5631) on Arndale Board"
++        depends on SND_SOC_SAMSUNG
++        select SND_SAMSUNG_I2S
++        select SND_SOC_RT5631
+diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+index 91505dd..31e3dba 100644
+--- a/sound/soc/samsung/Makefile
++++ b/sound/soc/samsung/Makefile
+@@ -45,6 +45,7 @@ snd-soc-lowland-objs := lowland.o
+ snd-soc-littlemill-objs := littlemill.o
+ snd-soc-bells-objs := bells.o
+ snd-soc-odroidx2-max98090-objs := odroidx2_max98090.o
++snd-soc-arndale-rt5631-objs := arndale_rt5631.o
+ 
+ obj-$(CONFIG_SND_SOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
+@@ -71,3 +72,4 @@ obj-$(CONFIG_SND_SOC_LOWLAND) += snd-soc-lowland.o
+ obj-$(CONFIG_SND_SOC_LITTLEMILL) += snd-soc-littlemill.o
+ obj-$(CONFIG_SND_SOC_BELLS) += snd-soc-bells.o
+ obj-$(CONFIG_SND_SOC_ODROIDX2) += snd-soc-odroidx2-max98090.o
++obj-$(CONFIG_SND_SOC_ARNDALE_RT5631_ALC5631) += snd-soc-arndale-rt5631.o
+diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
+new file mode 100644
+index 0000000..1e2b61c
+--- /dev/null
++++ b/sound/soc/samsung/arndale_rt5631.c
+@@ -0,0 +1,150 @@
++/*
++ *  arndale_rt5631.c
++ *
++ *  Copyright (c) 2014, Insignal Co., Ltd.
++ *
++ *  Author: Claude <claude@insginal.co.kr>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/clk.h>
++
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++
++#include "i2s.h"
++
++static int arndale_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int rfs, ret;
++	unsigned long rclk;
++
++	rfs = 256;
++
++	rclk = params_rate(params) * rfs;
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
++					0, SND_SOC_CLOCK_OUT);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_RCLKSRC_0,
++					0, SND_SOC_CLOCK_OUT);
++
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, rclk, SND_SOC_CLOCK_OUT);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static struct snd_soc_ops arndale_ops = {
++	.hw_params = arndale_hw_params,
++};
++
++static struct snd_soc_dai_link arndale_rt5631_dai[] = {
++	{
++		.name = "RT5631 HiFi",
++		.stream_name = "Primary",
++		.codec_dai_name = "rt5631-hifi",
++		.dai_fmt = SND_SOC_DAIFMT_I2S
++			| SND_SOC_DAIFMT_NB_NF
++			| SND_SOC_DAIFMT_CBS_CFS,
++		.ops = &arndale_ops,
++	},
++};
++
++static struct snd_soc_card arndale_rt5631 = {
++	.name = "Arndale RT5631",
++	.dai_link = arndale_rt5631_dai,
++	.num_links = ARRAY_SIZE(arndale_rt5631_dai),
++};
++
++static int arndale_audio_probe(struct platform_device *pdev)
++{
++	int n, ret;
++	struct device_node *np = pdev->dev.of_node;
++	struct snd_soc_card *card = &arndale_rt5631;
++
++	card->dev = &pdev->dev;
++
++	for (n = 0; np && n < ARRAY_SIZE(arndale_rt5631_dai); n++) {
++		if (!arndale_rt5631_dai[n].cpu_dai_name) {
++			arndale_rt5631_dai[n].cpu_of_node = of_parse_phandle(np,
++					"samsung,audio-cpu", n);
++
++			if (!arndale_rt5631_dai[n].cpu_of_node) {
++				dev_err(&pdev->dev,
++				"Property 'samsung,audio-cpu' missing or invalid\n");
++				return -EINVAL;
++			}
++		}
++		if (!arndale_rt5631_dai[n].platform_name)
++			arndale_rt5631_dai[n].platform_of_node =
++					arndale_rt5631_dai[n].cpu_of_node;
++
++		arndale_rt5631_dai[n].codec_name = NULL;
++		arndale_rt5631_dai[n].codec_of_node = of_parse_phandle(np,
++					"samsung,audio-codec", n);
++		if (!arndale_rt5631_dai[0].codec_of_node) {
++			dev_err(&pdev->dev,
++			"Property 'samsung,audio-codec' missing or invalid\n");
++			return -EINVAL;
++		}
++	}
++
++	ret = devm_snd_soc_register_card(card->dev, card);
++
++	if (ret)
++		dev_err(&pdev->dev, "snd_soc_register_card() failed:%d\n", ret);
++
++	return ret;
++}
++
++static int arndale_audio_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++
++	return 0;
++}
++
++static const struct of_device_id samsung_arndale_rt5631_of_match[] __maybe_unused = {
++	{ .compatible = "samsung,arndale-rt5631", },
++	{ .compatible = "samsung,arndale-alc5631", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, samsung_arndale_rt5631_of_match);
++
++static struct platform_driver arndale_audio_driver = {
++	.driver = {
++		.name   = "arndale-audio",
++		.owner  = THIS_MODULE,
++		.pm = &snd_soc_pm_ops,
++		.of_match_table = of_match_ptr(samsung_arndale_rt5631_of_match),
++	},
++	.probe = arndale_audio_probe,
++	.remove = arndale_audio_remove,
++};
++
++module_platform_driver(arndale_audio_driver);
++
++MODULE_AUTHOR("Claude <claude@insignal.co.kr>");
++MODULE_DESCRIPTION("ALSA SoC Driver for Arndale Board");
++MODULE_LICENSE("GPL");
+-- 
+1.7.9.5
