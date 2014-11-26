@@ -1,57 +1,87 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2] ALSA: korg1212: cleanup of printk
-Date: Wed, 26 Nov 2014 10:27:05 -0800
-Message-ID: <1417026425.19695.10.camel@perches.com>
-References: <1416730251-5194-1-git-send-email-sudipm.mukherjee@gmail.com>
-	 <s5hh9xottl9.wl-tiwai@suse.de> <1416849910.8797.1.camel@perches.com>
-	 <20141125062132.GA3380@sudip-PC> <1416941965.8358.6.camel@perches.com>
-	 <20141126104912.GA1085@sudip-PC>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 06/11] ASoC: tlv320aix31xx: Cleanup manual bias
+	level transitions
+Date: Wed, 26 Nov 2014 20:57:55 +0100
+Message-ID: <1417031880-11364-6-git-send-email-lars@metafoo.de>
+References: <1417031880-11364-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141126104912.GA1085@sudip-PC>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-046.synserver.de (smtp-out-049.synserver.de
+ [212.40.185.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF51A2610B7
+ for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 22:26:29 +0100 (CET)
+In-Reply-To: <1417031880-11364-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2014-11-26 at 16:19 +0530, Sudip Mukherjee wrote:
-> On Tue, Nov 25, 2014 at 10:59:25AM -0800, Joe Perches wrote:
-> > On Tue, 2014-11-25 at 11:51 +0530, Sudip Mukherjee wrote:
-> > > problems with this way:
-> > > 1) macro name is little misleading - macro says printk, but we are using dev_dbg
-> > > 2) if some one later wants to add something to this file, and doesnot want to use the variable name korg1212 in his function.
-> > > 
-> > > any suggestions ?
-> > 
-> > Some code is so old and unlikely to be ever used
-> > again, it may be better to move it to an "ancient
-> > and crufty" folder and forget about it.
-> > 
-> > This may be one of those.
-> > 
-> > If the debugging was written in a more current style,
-> > it might look like this: (with various format/argument
-> > mismatches fixed, formatting changes, etc)
-> 
-> ok. and can't we delete some of the messages like "DSP download is
-> complete." and then printing the statename. there are lots of messages
-> like that which is just printing the function name and the
-> statename ..
+Set the CODEC driver's suspend_bias_off flag rather than manually going to
+SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
+the code a bit shorter and cleaner.
 
-Dunno.  Maybe somebody cares about the state of
-the dsp download, but I doubt it as I suspect
-the hardware isn't used much.
+Since the ASoC core now takes care of setting the bias level to
+SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+anymore either.
 
-> and, even if i modify it a little and send it, most of the work has
-> been done by you. so how do i send the patch in your name or add your
-> name in the patch ? I have not done anything so my name should not be
-> there.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/tlv320aic31xx.c | 18 ++----------------
+ 1 file changed, 2 insertions(+), 16 deletions(-)
 
-<shrug> you started it.
-
-I spend a couple minutes running a couple scripts.
-
-I don't have the hardware, I've never looked at
-that code before, do what you think appropriate.
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 93de5dd..dc3223d 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1057,18 +1057,6 @@ static int aic31xx_set_bias_level(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
+-static int aic31xx_suspend(struct snd_soc_codec *codec)
+-{
+-	aic31xx_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	return 0;
+-}
+-
+-static int aic31xx_resume(struct snd_soc_codec *codec)
+-{
+-	aic31xx_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	return 0;
+-}
+-
+ static int aic31xx_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	int ret = 0;
+@@ -1111,8 +1099,6 @@ static int aic31xx_codec_remove(struct snd_soc_codec *codec)
+ {
+ 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
+ 	int i;
+-	/* power down chip */
+-	aic31xx_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++)
+ 		regulator_unregister_notifier(aic31xx->supplies[i].consumer,
+@@ -1124,9 +1110,9 @@ static int aic31xx_codec_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_driver_aic31xx = {
+ 	.probe			= aic31xx_codec_probe,
+ 	.remove			= aic31xx_codec_remove,
+-	.suspend		= aic31xx_suspend,
+-	.resume			= aic31xx_resume,
+ 	.set_bias_level		= aic31xx_set_bias_level,
++	.suspend_bias_off	= true,
++
+ 	.controls		= aic31xx_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(aic31xx_snd_controls),
+ 	.dapm_widgets		= aic31xx_dapm_widgets,
+-- 
+1.8.0
