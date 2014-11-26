@@ -1,46 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 3/6] regulator: arizona-micsupp: Add support for
- WM8280/WM8281
-Date: Wed, 26 Nov 2014 15:38:51 +0000
-Message-ID: <20141126153851.GG7712@sirena.org.uk>
-References: <1417014788-8311-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1417014788-8311-4-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel][PATCH] ASoC: wm8960: LRCM operation should after
+ software reset
+Date: Wed, 26 Nov 2014 16:36:01 +0000
+Message-ID: <20141126163601.GH7712@sirena.org.uk>
+References: <1416999740-21805-1-git-send-email-b50113@freescale.com>
+ <5475BA76.8080809@metafoo.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="v3PO+W4hh3dRkCny"
+	protocol="application/pgp-signature"; boundary="iMgEUbSC7F9Xm20w"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1417014788-8311-4-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <5475BA76.8080809@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, cw00.choi@samsung.com, linus.walleij@linaro.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Zidan Wang <b50113@freescale.com>, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---v3PO+W4hh3dRkCny
+--iMgEUbSC7F9Xm20w
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 26, 2014 at 03:13:05PM +0000, Richard Fitzgerald wrote:
+On Wed, Nov 26, 2014 at 12:33:10PM +0100, Lars-Peter Clausen wrote:
+> On 11/26/2014 12:02 PM, Zidan Wang wrote:
+> >When shared_lrclk is set, LRCM will be enabled. But the following software
+> >reset in wm8960_probe will reset it to the default state. So LRCM operation
+> >should after software reset.
 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> It's probably a better idea to move the reset (together with the other
+> register updates) to the I2C driver probe.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+Yes, this is not a good fix.
 
---v3PO+W4hh3dRkCny
+--iMgEUbSC7F9Xm20w
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUdfQLAAoJECTWi3JdVIfQrT8H/jQfSpqmlDOMA2iNb1GTt27v
-ZrXe9ynN6u6LNkRY6MSEQRPpGV4xWLjJL1WjygPFi1lHg/it34NIN+aHIxqBIJgK
-MYA//+Mo/+dtcstrYa3F05p1KJ4kpm7qt2g3Sb0ItJwsY4iiBPRj96ca3/29TQYU
-Bpv7mwLuoJFMIoRKshC0P+4fVMw4WUib89D0igNTSkXnCb4RHmwYsQ+ZBNHgaL65
-RvFASlQPIFaJO05lqzU4uGyinQFMlNGGdjpvr6HjuMZBsLmb3RGOk44HkgAu2kql
-A7qzUJA5Wsys7TC8xRp9RWoO/DN6nQ6SvE1Ux4i1V3o7EyCvv8elU1frfIwFyiY=
-=6W8O
+iQEcBAEBAgAGBQJUdgFwAAoJECTWi3JdVIfQlIoH/A7i3L4kRDUMymQ7qDR9Bsib
+dDTpun+T1aT5YCnJ1LcpeEPv8f6lihDRN08AB9Arz9asnnnQd9Y8DwulMbPNtbOU
+fz0w7rWitorqLBLzhBju388DFYxfUiAfO7hySVBzUbbOF54MfzjHOrpV3ylgG7Td
+Y0WTjAkTMoBa2tMjUgy6gVTC5q+6RNuYzO7m+LFCfkZZ0i/jitk9/ljD7IZoR/QZ
+e/iOA4mt/Ygh3Oh0w9dAac9P0ACnvBuplh60DxLVGUBTfqjewG8rf1RrBmO3aY3B
+v/vLIzMDV3QOp35KFOv1An/x83Rkr6koGW0NtfkVVIa/eIVloOc4pnZ6viB6jEs=
+=pGhp
 -----END PGP SIGNATURE-----
 
---v3PO+W4hh3dRkCny--
+--iMgEUbSC7F9Xm20w--
