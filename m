@@ -1,68 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Wed, 26 Nov 2014 11:17:16 +0000
-Message-ID: <20141126111716.GE7712@sirena.org.uk>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
- <CACxGe6stjCvaQZkh=hFcF-56v5qJVar11jRZz0PRSd2wz6EUyA@mail.gmail.com>
- <5474A78C.7030805@linux.intel.com>
- <20141125172120.GI7712@sirena.org.uk>
- <5474CB5D.9050807@linux.intel.com>
- <20141125184304.GK7712@sirena.org.uk>
- <54753168.9010303@linux.intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2] ASoC: bt-sco: support wide band speech
+Date: Wed, 26 Nov 2014 12:30:45 +0100
+Message-ID: <5475B9E5.7040705@metafoo.de>
+References: <1416978538-3318-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4mL5lf+nIvB09VHj"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <54753168.9010303@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Darren Hart <dvhart@linux.intel.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-231.synserver.de (smtp-out-231.synserver.de
+ [212.40.185.231])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E1972652C3
+ for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 12:30:42 +0100 (CET)
+In-Reply-To: <1416978538-3318-1-git-send-email-21cnbao@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Cc: Yibo Cai <Yibo.Cai@csr.com>, workgroup.linux@csr.com, Barry Song <Baohua.Song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 11/26/2014 06:08 AM, Barry Song wrote:
+> From: Yibo Cai <Yibo.Cai@csr.com>
+>
+> HFP1.6 requires support for wide band speech(16KHz) over Bluetooth.
+>
+> Signed-off-by: Yibo Cai <Yibo.Cai@csr.com>
+> Signed-off-by: Barry Song <Baohua.Song@csr.com>
+> ---
+>   sound/soc/codecs/bt-sco.c | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+>
+> diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
+> index c4cf069..3878491 100644
+> --- a/sound/soc/codecs/bt-sco.c
+> +++ b/sound/soc/codecs/bt-sco.c
+> @@ -52,6 +52,14 @@ static struct snd_soc_codec_driver soc_codec_dev_bt_sco = {
+>
+>   static int bt_sco_probe(struct platform_device *pdev)
+>   {
+> +	const struct platform_device_id *id = platform_get_device_id(pdev);
+> +
+> +	/* Check wide band SCO(16KHz) support */
+> +	if (id && (strcmp(id->name, "bt-sco-wb") == 0)) {
 
---4mL5lf+nIvB09VHj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Use id->driver_data instead of strcmp.
 
-On Tue, Nov 25, 2014 at 05:48:24PM -0800, Darren Hart wrote:
-> On 11/25/14 10:43, Mark Brown wrote:
+> +		bt_sco_dai.playback.rates |= SNDRV_PCM_RATE_16000;
+> +		bt_sco_dai.capture.rates |= SNDRV_PCM_RATE_16000;
 
-> > Link from where - do we want to talk to the ACPI/UEFI forum and
-> > figure out some kind of fast track process for them to add an "it's
-> > already covered by DT, see here" entry to their database for
-> > example?  We also ought to work out how to make sure ACPI IDs are
-> > registered there as well, should be possible to have something
-> > simple as part of that.
-
-> As to registering ACPI IDs, I believe this is the right link:
-> http://www.uefi.org/PNP_ACPI_Registry
-
-No, those are vendors as far as I can tell.  I mean identifiers for
-specific devices - it appears to be common for for example Intel to
-allocate identifiers for devices they don't produce, I'd expect there to
-be some effort to keep track of that especially given that _DSD
-properties may well end up being specific to the identifier used to
-register in cases of parallel evolution.
-
-> Or did you mean a HID/CID<->DSD mapping?
-
-I don't really know what that is, sorry.
-
---4mL5lf+nIvB09VHj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdba7AAoJECTWi3JdVIfQl+EH/05OwjjXJShHKp/BUtfOENKZ
-8YftwVKN6JcxV8bMCirUrmW8SUU7e30SczJCNO1M/6d+eIStGINKidD0WH8xsN/t
-frPLB51T2BLbZi66hp4H/SQPUzi1HLK+RvBD1+SnObY04vn0vbQBUgkerBs2zU4G
-c3E/uMcjG2ZuMb7bVphC7nnuHs3edz99gyAEGZW9ZCz0uvPqS3BUm7UTIXb5UsVF
-fQkOzIZeioRRjw81dSzFV3ruJFMxbxe0Sb5BfoobuGDRBl9ZM32QwzSIZl3pyVdh
-KuJTar+zYpgT5sdZWcY+7088uE1aGvHl0Cn+7B0LnrponBT958EibrEqeg3w9cA=
-=13eO
------END PGP SIGNATURE-----
-
---4mL5lf+nIvB09VHj--
+This is modifying a driver global struct with device local data. This is a 
+no-go. Either add second snd_soc_dai_driver with the new rates or add a 
+startup callback and add the constraints using snd_pcm_hw_constraint_list().
