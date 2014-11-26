@@ -1,15 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 01/11] ASoC: cq93vc: Remove unused state struct
-Date: Wed, 26 Nov 2014 20:57:50 +0100
-Message-ID: <1417031880-11364-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 11/11] ASoC: twl6040: Cleanup manual bias level
+	transitions
+Date: Wed, 26 Nov 2014 20:58:00 +0100
+Message-ID: <1417031880-11364-11-git-send-email-lars@metafoo.de>
+References: <1417031880-11364-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-046.synserver.de (smtp-out-051.synserver.de
  [212.40.185.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 5910D265DC3
- for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 22:28:59 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E78E6265DDF
+ for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 22:29:03 +0100 (CET)
+In-Reply-To: <1417031880-11364-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,69 +26,69 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-While two of the fields in the cq93vc driver state struct are initialized
-none of them are ever acutally read again. So remove the whole struct.
+Set the CODEC driver's suspend_bias_off flag rather than manually going to
+SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
+the code a bit shorter and cleaner.
+
+Since the ASoC core now takes care of setting the bias level to
+SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+anymore either.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/linux/mfd/davinci_voicecodec.h | 7 -------
- sound/soc/codecs/cq93vc.c              | 8 --------
- 2 files changed, 15 deletions(-)
+ sound/soc/codecs/twl6040.c | 23 +----------------------
+ 1 file changed, 1 insertion(+), 22 deletions(-)
 
-diff --git a/include/linux/mfd/davinci_voicecodec.h b/include/linux/mfd/davinci_voicecodec.h
-index cb01496..8e1cdbe 100644
---- a/include/linux/mfd/davinci_voicecodec.h
-+++ b/include/linux/mfd/davinci_voicecodec.h
-@@ -99,12 +99,6 @@ struct davinci_vcif {
- 	dma_addr_t dma_rx_addr;
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 0f6067f..5ff2b1e 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -1095,25 +1095,6 @@ static struct snd_soc_dai_driver twl6040_dai[] = {
+ },
  };
  
--struct cq93vc {
--	struct platform_device *pdev;
--	struct snd_soc_codec *codec;
--	u32 sysclk;
--};
+-#ifdef CONFIG_PM
+-static int twl6040_suspend(struct snd_soc_codec *codec)
+-{
+-	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -
- struct davinci_vc;
- 
- struct davinci_vc {
-@@ -122,7 +116,6 @@ struct davinci_vc {
- 
- 	/* Client devices */
- 	struct davinci_vcif davinci_vcif;
--	struct cq93vc cq93vc;
- };
- 
- #endif
-diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
-index 537327c..036a877 100644
---- a/sound/soc/codecs/cq93vc.c
-+++ b/sound/soc/codecs/cq93vc.c
-@@ -62,14 +62,10 @@ static int cq93vc_mute(struct snd_soc_dai *dai, int mute)
- static int cq93vc_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 				 int clk_id, unsigned int freq, int dir)
+-	return 0;
+-}
+-
+-static int twl6040_resume(struct snd_soc_codec *codec)
+-{
+-	twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-	return 0;
+-}
+-#else
+-#define twl6040_suspend NULL
+-#define twl6040_resume NULL
+-#endif
+-
+ static int twl6040_probe(struct snd_soc_codec *codec)
  {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct davinci_vc *davinci_vc = codec->dev->platform_data;
--
- 	switch (freq) {
- 	case 22579200:
- 	case 27000000:
- 	case 33868800:
--		davinci_vc->cq93vc.sysclk = freq;
- 		return 0;
- 	}
+ 	struct twl6040_data *priv;
+@@ -1160,7 +1141,6 @@ static int twl6040_remove(struct snd_soc_codec *codec)
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
  
-@@ -135,10 +131,6 @@ static int cq93vc_resume(struct snd_soc_codec *codec)
+ 	free_irq(priv->plug_irq, codec);
+-	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
  
- static int cq93vc_probe(struct snd_soc_codec *codec)
- {
--	struct davinci_vc *davinci_vc = codec->dev->platform_data;
--
--	davinci_vc->cq93vc.codec = codec;
--
- 	/* Off, with power on */
- 	cq93vc_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	return 0;
+ }
+@@ -1168,11 +1148,10 @@ static int twl6040_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_twl6040 = {
+ 	.probe = twl6040_probe,
+ 	.remove = twl6040_remove,
+-	.suspend = twl6040_suspend,
+-	.resume = twl6040_resume,
+ 	.read = twl6040_read,
+ 	.write = twl6040_write,
+ 	.set_bias_level = twl6040_set_bias_level,
++	.suspend_bias_off = true,
+ 	.ignore_pmdown_time = true,
  
+ 	.controls = twl6040_snd_controls,
 -- 
 1.8.0
