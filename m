@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 11/11] ASoC: twl6040: Cleanup manual bias level
-	transitions
-Date: Wed, 26 Nov 2014 20:58:00 +0100
-Message-ID: <1417031880-11364-11-git-send-email-lars@metafoo.de>
-References: <1417031880-11364-1-git-send-email-lars@metafoo.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: hda - using uninitialized data
+Date: Thu, 27 Nov 2014 01:34:43 +0300
+Message-ID: <20141126223443.GA443@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-046.synserver.de (smtp-out-051.synserver.de
- [212.40.185.51])
- by alsa0.perex.cz (Postfix) with ESMTP id E78E6265DDF
- for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 22:29:03 +0100 (CET)
-In-Reply-To: <1417031880-11364-1-git-send-email-lars@metafoo.de>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 993A92612AE
+ for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 23:35:12 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>
+To: Jaroslav Kysela <perex@perex.cz>, Danny Tholen <obiwan@mailmij.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Set the CODEC driver's suspend_bias_off flag rather than manually going to
-SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
-the code a bit shorter and cleaner.
+In olden times the snd_hda_param_read() function always set "*start_id"
+but in 2007 we introduced a new return and it causes uninitialized data
+bugs in a couple of the callers: print_codec_info() and
+hdmi_parse_codec().
 
-Since the ASoC core now takes care of setting the bias level to
-SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-anymore either.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Fixes: e8a7f136f5ed ('[ALSA] hda-intel - Improve HD-audio codec probing robustness')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- sound/soc/codecs/twl6040.c | 23 +----------------------
- 1 file changed, 1 insertion(+), 22 deletions(-)
+This is from static analysis.  Untested.
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 0f6067f..5ff2b1e 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1095,25 +1095,6 @@ static struct snd_soc_dai_driver twl6040_dai[] = {
- },
- };
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index b2d5899..2fe86d2 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -346,8 +346,10 @@ int snd_hda_get_sub_nodes(struct hda_codec *codec, hda_nid_t nid,
+ 	unsigned int parm;
  
--#ifdef CONFIG_PM
--static int twl6040_suspend(struct snd_soc_codec *codec)
--{
--	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
--
--	return 0;
--}
--
--static int twl6040_resume(struct snd_soc_codec *codec)
--{
--	twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
--	return 0;
--}
--#else
--#define twl6040_suspend NULL
--#define twl6040_resume NULL
--#endif
--
- static int twl6040_probe(struct snd_soc_codec *codec)
- {
- 	struct twl6040_data *priv;
-@@ -1160,7 +1141,6 @@ static int twl6040_remove(struct snd_soc_codec *codec)
- 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
- 
- 	free_irq(priv->plug_irq, codec);
--	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
- 	return 0;
+ 	parm = snd_hda_param_read(codec, nid, AC_PAR_NODE_COUNT);
+-	if (parm == -1)
++	if (parm == -1) {
++		*start_id = 0;
+ 		return 0;
++	}
+ 	*start_id = (parm >> 16) & 0x7fff;
+ 	return (int)(parm & 0x7fff);
  }
-@@ -1168,11 +1148,10 @@ static int twl6040_remove(struct snd_soc_codec *codec)
- static struct snd_soc_codec_driver soc_codec_dev_twl6040 = {
- 	.probe = twl6040_probe,
- 	.remove = twl6040_remove,
--	.suspend = twl6040_suspend,
--	.resume = twl6040_resume,
- 	.read = twl6040_read,
- 	.write = twl6040_write,
- 	.set_bias_level = twl6040_set_bias_level,
-+	.suspend_bias_off = true,
- 	.ignore_pmdown_time = true,
- 
- 	.controls = twl6040_snd_controls,
--- 
-1.8.0
