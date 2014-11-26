@@ -1,57 +1,101 @@
-From: D Krishna Mohan <krishna.md@samsung.com>
-Subject: Re: [PATCH] ASoC: rt5631: Fixing compilation warning when DT is
- disabled
-Date: Wed, 26 Nov 2014 14:26:07 +0530
-Message-ID: <F186754307084FE3B13FB03E93EF318A@sisodomain.com>
-References: <1416828162-8216-1-git-send-email-krishna.md@samsung.com>
- <20141124170409.GF7712@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/2] ALSA: firewire-lib:
+	remove	rx_blocks_for_midi quirk
+Date: Wed, 26 Nov 2014 10:17:19 +0100
+Message-ID: <54759A9F.4070702@ladisch.de>
+References: <5474FA18.7000501@ladisch.de> <s5h8uiyjqru.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1; reply-type=original
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20141124170409.GF7712@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com, Claude Youn <claude.youn@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id BF49C2651C0
+ for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 10:17:21 +0100 (CET)
+In-Reply-To: <s5h8uiyjqru.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-FYI your Suggestion was:
-"You need to add an ifdef around the struct (or perhaps a __maybey_unused 
-type annotation if there's something suitable) for such configurations."
-
-Following your suggestion I have sent a patch 
-(187024b36c635bd454c1b1587b58c9439d3a46ad on your git, branch: rt5631 ) 
-using ifdef which you have already applied.
-Since there are more suggestion asking for second (__maybe_unused) method, I 
-have sent another patch for which below is the link.
-
-You may be applying the second patch on the already applied first patch. so 
-I request you to apply only second patch in place of first and abandon first 
-patch.
-
-
-Already applied patch in your git: 
-http://www.spinics.net/lists/linux-samsung-soc/msg39044.html  [pls remove 
-this and instead apply the below mentioned patch]
-Patch to apply: 
-http://www.spinics.net/lists/linux-samsung-soc/msg39465.html
-
-
--Krishna
-
---------------------------------------------------
-From: "Mark Brown" <broonie@kernel.org>
-Sent: Monday, November 24, 2014 10:34 PM
-To: "Krishna Mohan Dani" <krishna.md@samsung.com>
-Cc: <linux-samsung-soc@vger.kernel.org>; 
-<linux-arm-kernel@lists.infradead.org>; <alsa-devel@alsa-project.org>; 
-<kgene.kim@samsung.com>; "Claude Youn" <claude.youn@gmail.com>
-Subject: Re: [PATCH] ASoC: rt5631: Fixing compilation warning when DT is 
-disabled
-
-On Mon, Nov 24, 2014 at 04:52:42PM +0530, Krishna Mohan Dani wrote:
-> Fixes the following compilation warning:
-> Warning: 'rt5631_i2c_dt_ids' defined but not used - when DT is not used.
-
-This doesn't apply, please check and resend.
- 
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPj4KPj4gVGhlcmUg
+YXJlIHNldmVyYWwgZGV2aWNlcyB0aGF0IGV4cGVjdCB0byByZWNlaXZlIE1JREkgZGF0YSBvbmx5
+IGluIHRoZQo+PiBmaXJzdCBlaWdodCBkYXRhIGJsb2NrcyBvZiBhIHBhY2tldC4gIElmIHRoZSBk
+cml2ZXIgcmVzdHJpY3RzIHRoZSBkYXRhCj4+IHJhdGUgdG8gdGhlIGFsbG93ZWQgcmF0ZSAoYXMg
+bWFuZGF0ZWQgYnkgdGhlIHNwZWNpZmljYXRpb24sIGJ1dCBub3QgeWV0Cj4+IGltcGxlbWVudGVk
+IGJ5IHRoaXMgZHJpdmVyKSwgdGhpcyBoYXBwZW5zIG5hdHVyYWxseS4gIFRoZXJlZm9yZSwgdGhl
+cmUKPj4gaXMgbm8gcmVhc29uIHRvIGV2ZXIgdHJ5IHRvIHVzZSBtb3JlIGRhdGEgcGFja2V0cyB3
+aXRoIGFueSBkZXZpY2UuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IENsZW1lbnMgTGFkaXNjaCA8Y2xl
+bWVuc0BsYWRpc2NoLmRlPgo+Cj4gVG8gd2hpY2ggYnJhbmNoIGlzIHRoZSBwYXRjaCBhcHBsaWVk
+PwoKU29ycnk7IHRoaXMgaXMgaW50ZW5kZWQgZm9yIDMuMTkuCgoKUmVnYXJkcywKQ2xlbWVucwoK
+Pgo+Cj4gVGFrYXNoaQo+Cj4+IC0tLQo+PiAgc291bmQvZmlyZXdpcmUvYW1kdHAuYyAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgMTAgKysrKysrKy0tLQo+PiAgc291bmQvZmlyZXdpcmUvYW1kdHAu
+aCAgICAgICAgICAgICAgICAgICAgICB8ICAgIDMgLS0tCj4+ICBzb3VuZC9maXJld2lyZS9iZWJv
+Yi9iZWJvYl9zdHJlYW0uYyAgICAgICAgIHwgICAgNyAtLS0tLS0tCj4+ICBzb3VuZC9maXJld2ly
+ZS9maXJld29ya3MvZmlyZXdvcmtzX3N0cmVhbS5jIHwgICAgNSAtLS0tLQo+PiAgNCBmaWxlcyBj
+aGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDE4IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0
+IGEvc291bmQvZmlyZXdpcmUvYW1kdHAuYyBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKPj4gaW5k
+ZXggM2JhZGM3MC4uMTc1NDhkOCAxMDA2NDQKPj4gLS0tIGEvc291bmQvZmlyZXdpcmUvYW1kdHAu
+Ywo+PiArKysgYi9zb3VuZC9maXJld2lyZS9hbWR0cC5jCj4+IEBAIC0yMSw2ICsyMSwxMiBAQAo+
+PiAgI2RlZmluZSBDWUNMRVNfUEVSX1NFQ09ORAk4MDAwCj4+ICAjZGVmaW5lIFRJQ0tTX1BFUl9T
+RUNPTkQJKFRJQ0tTX1BFUl9DWUNMRSAqIENZQ0xFU19QRVJfU0VDT05EKQo+Pgo+PiArLyoKPj4g
+KyAqIFNldmVyYWwgZGV2aWNlcyBsb29rIG9ubHkgYXQgdGhlIGZpcnN0IGVpZ2h0IGRhdGEgYmxv
+Y2tzLgo+PiArICogSW4gYW55IGNhc2UsIHRoaXMgaXMgbW9yZSB0aGFuIGVub3VnaCBmb3IgdGhl
+IE1JREkgZGF0YSByYXRlLgo+PiArICovCj4+ICsjZGVmaW5lIE1BWF9NSURJX1JYX0JMT0NLUwk4
+Cj4+ICsKPj4gICNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgyZTAwIC8qIDQ3OS4xNyDD
+gsK1cyAqLwo+Pgo+PiAgLyogaXNvY2hyb25vdXMgaGVhZGVyIHBhcmFtZXRlcnMgKi8KPj4gQEAg
+LTc4LDggKzg0LDYgQEAgaW50IGFtZHRwX3N0cmVhbV9pbml0KHN0cnVjdCBhbWR0cF9zdHJlYW0g
+KnMsIHN0cnVjdCBmd191bml0ICp1bml0LAo+PiAgCXMtPmNhbGxiYWNrZWQgPSBmYWxzZTsKPj4g
+IAlzLT5zeW5jX3NsYXZlID0gTlVMTDsKPj4KPj4gLQlzLT5yeF9ibG9ja3NfZm9yX21pZGkgPSBV
+SU5UX01BWDsKPj4gLQo+PiAgCXJldHVybiAwOwo+PiAgfQo+PiAgRVhQT1JUX1NZTUJPTChhbWR0
+cF9zdHJlYW1faW5pdCk7Cj4+IEBAIC00NzQsNyArNDc4LDcgQEAgc3RhdGljIHZvaWQgYW1kdHBf
+ZmlsbF9taWRpKHN0cnVjdCBhbWR0cF9zdHJlYW0gKnMsCj4+ICAJCWIgPSAodTggKikmYnVmZmVy
+W3MtPm1pZGlfcG9zaXRpb25dOwo+Pgo+PiAgCQlwb3J0ID0gKHMtPmRhdGFfYmxvY2tfY291bnRl
+ciArIGYpICUgODsKPj4gLQkJaWYgKChmID49IHMtPnJ4X2Jsb2Nrc19mb3JfbWlkaSkgfHwKPj4g
+KwkJaWYgKChmID49IE1BWF9NSURJX1JYX0JMT0NLUykgfHwKPj4gIAkJICAgIChzLT5taWRpW3Bv
+cnRdID09IE5VTEwpIHx8Cj4+ICAJCSAgICAoc25kX3Jhd21pZGlfdHJhbnNtaXQocy0+bWlkaVtw
+b3J0XSwgYiArIDEsIDEpIDw9IDApKQo+PiAgCQkJYlswXSA9IDB4ODA7Cj4+IGRpZmYgLS1naXQg
+YS9zb3VuZC9maXJld2lyZS9hbWR0cC5oIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuaAo+PiBpbmRl
+eCBlNmU4OTI2Li5jZDRjNGRmIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9maXJld2lyZS9hbWR0cC5o
+Cj4+ICsrKyBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmgKPj4gQEAgLTE1Miw5ICsxNTIsNiBAQCBz
+dHJ1Y3QgYW1kdHBfc3RyZWFtIHsKPj4gIAkvKiBxdWlyazogZml4ZWQgaW50ZXJ2YWwgb2YgZGJj
+IGJldHdlZW4gcHJldmlvcy9jdXJyZW50IHBhY2tldHMuICovCj4+ICAJdW5zaWduZWQgaW50IHR4
+X2RiY19pbnRlcnZhbDsKPj4KPj4gLQkvKiBxdWlyazogdGhlIGZpcnN0IGNvdW50IG9mIGRhdGEg
+YmxvY2tzIGluIGFuIHJ4IHBhY2tldCBmb3IgTUlESSAqLwo+PiAtCXVuc2lnbmVkIGludCByeF9i
+bG9ja3NfZm9yX21pZGk7Cj4+IC0KPj4gIAlib29sIGNhbGxiYWNrZWQ7Cj4+ICAJd2FpdF9xdWV1
+ZV9oZWFkX3QgY2FsbGJhY2tfd2FpdDsKPj4gIAlzdHJ1Y3QgYW1kdHBfc3RyZWFtICpzeW5jX3Ns
+YXZlOwo+PiBkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMg
+Yi9zb3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYwo+PiBpbmRleCAxYWFiMGEzMi4u
+MGViY2FiZiAxMDA2NDQKPj4gLS0tIGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFt
+LmMKPj4gKysrIGIvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMKPj4gQEAgLTQ4
+NCwxMyArNDg0LDYgQEAgaW50IHNuZF9iZWJvYl9zdHJlYW1faW5pdF9kdXBsZXgoc3RydWN0IHNu
+ZF9iZWJvYiAqYmVib2IpCj4+ICAJCWFtZHRwX3N0cmVhbV9kZXN0cm95KCZiZWJvYi0+cnhfc3Ry
+ZWFtKTsKPj4gIAkJZGVzdHJveV9ib3RoX2Nvbm5lY3Rpb25zKGJlYm9iKTsKPj4gIAl9Cj4+IC0J
+LyoKPj4gLQkgKiBUaGUgZmlybXdhcmUgZm9yIHRoZXNlIGRldmljZXMgaWdub3JlIE1JREkgbWVz
+c2FnZXMgaW4gbW9yZSB0aGFuCj4+IC0JICogZmlyc3QgOCBkYXRhIGJsb2NrcyBvZiBhbiByZWNl
+aXZlZCBBTURUUCBwYWNrZXQuCj4+IC0JICovCj4+IC0JaWYgKGJlYm9iLT5zcGVjID09ICZtYXVk
+aW9fZnc0MTBfc3BlYyB8fAo+PiAtCSAgICBiZWJvYi0+c3BlYyA9PSAmbWF1ZGlvX3NwZWNpYWxf
+c3BlYykKPj4gLQkJYmVib2ItPnJ4X3N0cmVhbS5yeF9ibG9ja3NfZm9yX21pZGkgPSA4Owo+PiAg
+ZW5kOgo+PiAgCXJldHVybiBlcnI7Cj4+ICB9Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9maXJld2ly
+ZS9maXJld29ya3MvZmlyZXdvcmtzX3N0cmVhbS5jIGIvc291bmQvZmlyZXdpcmUvZmlyZXdvcmtz
+L2ZpcmV3b3Jrc19zdHJlYW0uYwo+PiBpbmRleCBiOTg1ZmM1Li40ZjQ0MGUxIDEwMDY0NAo+PiAt
+LS0gYS9zb3VuZC9maXJld2lyZS9maXJld29ya3MvZmlyZXdvcmtzX3N0cmVhbS5jCj4+ICsrKyBi
+L3NvdW5kL2ZpcmV3aXJlL2ZpcmV3b3Jrcy9maXJld29ya3Nfc3RyZWFtLmMKPj4gQEAgLTE3OSwx
+MSArMTc5LDYgQEAgaW50IHNuZF9lZndfc3RyZWFtX2luaXRfZHVwbGV4KHN0cnVjdCBzbmRfZWZ3
+ICplZncpCj4+ICAJCWRlc3Ryb3lfc3RyZWFtKGVmdywgJmVmdy0+dHhfc3RyZWFtKTsKPj4gIAkJ
+Z290byBlbmQ7Cj4+ICAJfQo+PiAtCS8qCj4+IC0JICogRmlyZXdvcmtzIGlnbm9yZXMgTUlESSBt
+ZXNzYWdlcyBpbiBtb3JlIHRoYW4gZmlyc3QgOCBkYXRhCj4+IC0JICogYmxvY2tzIG9mIGFuIHJl
+Y2VpdmVkIEFNRFRQIHBhY2tldC4KPj4gLQkgKi8KPj4gLQllZnctPnJ4X3N0cmVhbS5yeF9ibG9j
+a3NfZm9yX21pZGkgPSA4Owo+Pgo+PiAgCS8qIHNldCBJRUM2MTg4MyBjb21wbGlhbnQgbW9kZSAo
+YWN0dWFsbHkgbm90IGZ1bGx5IGNvbXBsaWFudC4uLikgKi8KPj4gIAllcnIgPSBzbmRfZWZ3X2Nv
+bW1hbmRfc2V0X3R4X21vZGUoZWZ3LCBTTkRfRUZXX1RSQU5TUE9SVF9NT0RFX0lFQzYxODgzKTsK
+Pj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
