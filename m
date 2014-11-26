@@ -1,57 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5631: Fixing compilation warning when DT is
- disabled
-Date: Wed, 26 Nov 2014 18:14:35 +0000
-Message-ID: <20141126181435.GO7712@sirena.org.uk>
-References: <1416828162-8216-1-git-send-email-krishna.md@samsung.com>
- <20141124170409.GF7712@sirena.org.uk>
- <F186754307084FE3B13FB03E93EF318A@sisodomain.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2] ALSA: korg1212: cleanup of printk
+Date: Wed, 26 Nov 2014 10:27:05 -0800
+Message-ID: <1417026425.19695.10.camel@perches.com>
+References: <1416730251-5194-1-git-send-email-sudipm.mukherjee@gmail.com>
+	 <s5hh9xottl9.wl-tiwai@suse.de> <1416849910.8797.1.camel@perches.com>
+	 <20141125062132.GA3380@sudip-PC> <1416941965.8358.6.camel@perches.com>
+	 <20141126104912.GA1085@sudip-PC>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Sj0nNMHKr1XTtrga"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <F186754307084FE3B13FB03E93EF318A@sisodomain.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: D Krishna Mohan <krishna.md@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com, Claude Youn <claude.youn@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141126104912.GA1085@sudip-PC>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2014-11-26 at 16:19 +0530, Sudip Mukherjee wrote:
+> On Tue, Nov 25, 2014 at 10:59:25AM -0800, Joe Perches wrote:
+> > On Tue, 2014-11-25 at 11:51 +0530, Sudip Mukherjee wrote:
+> > > problems with this way:
+> > > 1) macro name is little misleading - macro says printk, but we are using dev_dbg
+> > > 2) if some one later wants to add something to this file, and doesnot want to use the variable name korg1212 in his function.
+> > > 
+> > > any suggestions ?
+> > 
+> > Some code is so old and unlikely to be ever used
+> > again, it may be better to move it to an "ancient
+> > and crufty" folder and forget about it.
+> > 
+> > This may be one of those.
+> > 
+> > If the debugging was written in a more current style,
+> > it might look like this: (with various format/argument
+> > mismatches fixed, formatting changes, etc)
+> 
+> ok. and can't we delete some of the messages like "DSP download is
+> complete." and then printing the statename. there are lots of messages
+> like that which is just printing the function name and the
+> statename ..
 
---Sj0nNMHKr1XTtrga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Dunno.  Maybe somebody cares about the state of
+the dsp download, but I doubt it as I suspect
+the hardware isn't used much.
 
-On Wed, Nov 26, 2014 at 02:26:07PM +0530, D Krishna Mohan wrote:
+> and, even if i modify it a little and send it, most of the work has
+> been done by you. so how do i send the patch in your name or add your
+> name in the patch ? I have not done anything so my name should not be
+> there.
 
-> Following your suggestion I have sent a patch
-> (187024b36c635bd454c1b1587b58c9439d3a46ad on your git, branch: rt5631 )
-> using ifdef which you have already applied.
-> Since there are more suggestion asking for second (__maybe_unused) method, I
-> have sent another patch for which below is the link.
+<shrug> you started it.
 
-> You may be applying the second patch on the already applied first patch. so
-> I request you to apply only second patch in place of first and abandon first
-> patch.
+I spend a couple minutes running a couple scripts.
 
-Once something is applied in git you should always send further patches
-as incrmental updates to that, this is much easier to manage and avoids
-any potential confusion to other people looking at the tree.
-
---Sj0nNMHKr1XTtrga
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdhiKAAoJECTWi3JdVIfQOYgH+wcW6HqvSi/jo7VLKmL7S02I
-LqroGgt6CHgSHJXfz3IkHS3XlriiX0f+oV2xK0db+B/imdPl+Og6nlNogJ87DigY
-MarYtqFaprZO/pO0RTtdRM3JfmnMq+649WJkpdD4QSOiKNG/gZpBOBv5KPsCiZGj
-VriV+aF7363jbJ68pptmMhGk8vR5xZM3/zM7/1ATGYij04ULQLHB3MBTyUg3ATU8
-iLA7lZ7JW7HLcHrljsWYXHpxV4ZOgQ4KT2MRuOLrPFCfRyP+/kjLjq0V2STWGLQ+
-WsAnKxEGASxrAf/mhd3Y1onQySToXq8Ew+6+j5uLy1/TqbMBnkkn8X5z6x0ckQI=
-=fksJ
------END PGP SIGNATURE-----
-
---Sj0nNMHKr1XTtrga--
+I don't have the hardware, I've never looked at
+that code before, do what you think appropriate.
