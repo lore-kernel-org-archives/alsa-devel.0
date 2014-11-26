@@ -1,25 +1,53 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel][PATCH] ASoC: wm8960: LRCM operation should after
- software reset
-Date: Wed, 26 Nov 2014 12:33:10 +0100
-Message-ID: <5475BA76.8080809@metafoo.de>
-References: <1416999740-21805-1-git-send-email-b50113@freescale.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/2] ALSA: firewire-lib: remove
+	rx_blocks_for_midi quirk
+Date: Wed, 26 Nov 2014 23:22:09 +0900
+Message-ID: <5475E211.3040106@sakamocchi.jp>
+References: <5474FA18.7000501@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1416999740-21805-1-git-send-email-b50113@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <b50113@freescale.com>, broonie@kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 053282652C3
+ for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 15:22:14 +0100 (CET)
+In-Reply-To: <5474FA18.7000501@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/26/2014 12:02 PM, Zidan Wang wrote:
-> When shared_lrclk is set, LRCM will be enabled. But the following software
-> reset in wm8960_probe will reset it to the default state. So LRCM operation
-> should after software reset.
+Clemens,
 
-It's probably a better idea to move the reset (together with the other 
-register updates) to the I2C driver probe.
+On Nov 26 2014 06:52, Clemens Ladisch wrote:
+> There are several devices that expect to receive MIDI data only in the
+> first eight data blocks of a packet.  If the driver restricts the data
+> rate to the allowed rate (as mandated by the specification, but not yet
+> implemented by this driver), this happens naturally.  Therefore, there
+> is no reason to ever try to use more data packets with any device.
+> 
+> Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+> ---
+>  sound/firewire/amdtp.c                      |   10 +++++++---
+>  sound/firewire/amdtp.h                      |    3 ---
+>  sound/firewire/bebob/bebob_stream.c         |    7 -------
+>  sound/firewire/fireworks/fireworks_stream.c |    5 -----
+>  4 files changed, 7 insertions(+), 18 deletions(-)
 
-- Lars
+Can I ask your opinion about applying this patch to devices with
+non-blocking mode? At least, your comment of this patch is for blocking
+mode (the fixed number of data blocks in a packet).
+
+
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
