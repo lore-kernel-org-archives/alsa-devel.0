@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 08/11] ASoC: tlv320aic3x: Cleanup manual bias
-	level transitions
-Date: Wed, 26 Nov 2014 20:57:57 +0100
-Message-ID: <1417031880-11364-8-git-send-email-lars@metafoo.de>
+Subject: [PATCH 10/11] ASoC: twl4030: Cleanup manual bias level
+	transitions
+Date: Wed, 26 Nov 2014 20:57:59 +0100
+Message-ID: <1417031880-11364-10-git-send-email-lars@metafoo.de>
 References: <1417031880-11364-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-046.synserver.de (smtp-out-050.synserver.de
  [212.40.185.50])
- by alsa0.perex.cz (Postfix) with ESMTP id B05392610B7
- for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 22:26:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 60330265B65
+ for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 22:27:03 +0100 (CET)
 In-Reply-To: <1417031880-11364-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,20 +32,21 @@ anymore.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/tlv320aic3x.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/twl4030.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index f0a8281..b7ebce0 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1491,7 +1491,6 @@ static int aic3x_remove(struct snd_soc_codec *codec)
- 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
- 	int i;
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index b6b0cb3..27f3b21 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -2177,8 +2177,6 @@ static int twl4030_soc_remove(struct snd_soc_codec *codec)
+ 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+ 	struct twl4030_codec_data *pdata = twl4030->pdata;
  
--	aic3x_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	list_del(&aic3x->list);
- 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
- 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
+-	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-
+ 	if (pdata && pdata->hs_extmute && gpio_is_valid(pdata->hs_extmute_gpio))
+ 		gpio_free(pdata->hs_extmute_gpio);
+ 
 -- 
 1.8.0
