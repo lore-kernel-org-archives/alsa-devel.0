@@ -1,52 +1,68 @@
-From: Darren Hart <dvhart@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Tue, 25 Nov 2014 17:48:24 -0800
-Message-ID: <54753168.9010303@linux.intel.com>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <CACxGe6stjCvaQZkh=hFcF-56v5qJVar11jRZz0PRSd2wz6EUyA@mail.gmail.com> <5474A78C.7030805@linux.intel.com> <20141125172120.GI7712@sirena.org.uk> <5474CB5D.9050807@linux.intel.com> <20141125184304.GK7712@sirena.org.uk>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH v2] ASoC: bt-sco: support wide band speech
+Date: Wed, 26 Nov 2014 13:08:58 +0800
+Message-ID: <1416978538-3318-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141125184304.GK7712@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA4A3261A40
+ for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2014 06:11:22 +0100 (CET)
+Received: by mail-pa0-f52.google.com with SMTP id eu11so2076530pac.25
+ for <alsa-devel@alsa-project.org>; Tue, 25 Nov 2014 21:11:21 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Cc: Yibo Cai <Yibo.Cai@csr.com>, workgroup.linux@csr.com, Barry Song <Baohua.Song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Yibo Cai <Yibo.Cai@csr.com>
 
+HFP1.6 requires support for wide band speech(16KHz) over Bluetooth.
 
-On 11/25/14 10:43, Mark Brown wrote:
-> On Tue, Nov 25, 2014 at 10:33:01AM -0800, Darren Hart wrote:
->> On 11/25/14 09:21, Mark Brown wrote:
-> 
->>> Given the design of _DSD is to share with DT and we already
->>> have device tree bindings for the device we should be using,
->>> it's not clear to me if we want to grind them all through UEFI
->>> and I suspect they'd be unhappy if we tried but pretty much all
->>> audio CODECs are good candidates for use with ACPI given the
->>> new hardware designs Intel have so if we are doing it I ought
->>> to be bouncing everyone to UEFI forum.
-> 
->> Right, I realized between sending and driving into the office
->> that my statement might be construed this way. I meant *new* _DSD
->> bindings should go through the ACPI/UEFI forum. Where we can
->> reuse DT bindings, we should absolutely do that, agreed. We
->> should still document this and link to the DT binding so it can
->> be referenced and used even when Linux is not the target OS.
-> 
-> Link from where - do we want to talk to the ACPI/UEFI forum and
-> figure out some kind of fast track process for them to add an "it's
-> already covered by DT, see here" entry to their database for
-> example?  We also ought to work out how to make sure ACPI IDs are
-> registered there as well, should be possible to have something
-> simple as part of that.
-> 
+Signed-off-by: Yibo Cai <Yibo.Cai@csr.com>
+Signed-off-by: Barry Song <Baohua.Song@csr.com>
+---
+ sound/soc/codecs/bt-sco.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-As to registering ACPI IDs, I believe this is the right link:
-http://www.uefi.org/PNP_ACPI_Registry
-
-Or did you mean a HID/CID<->DSD mapping?
-
+diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
+index c4cf069..3878491 100644
+--- a/sound/soc/codecs/bt-sco.c
++++ b/sound/soc/codecs/bt-sco.c
+@@ -52,6 +52,14 @@ static struct snd_soc_codec_driver soc_codec_dev_bt_sco = {
+ 
+ static int bt_sco_probe(struct platform_device *pdev)
+ {
++	const struct platform_device_id *id = platform_get_device_id(pdev);
++
++	/* Check wide band SCO(16KHz) support */
++	if (id && (strcmp(id->name, "bt-sco-wb") == 0)) {
++		bt_sco_dai.playback.rates |= SNDRV_PCM_RATE_16000;
++		bt_sco_dai.capture.rates |= SNDRV_PCM_RATE_16000;
++	}
++
+ 	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_bt_sco,
+ 			&bt_sco_dai, 1);
+ }
+@@ -70,6 +78,9 @@ static struct platform_device_id bt_sco_driver_ids[] = {
+ 	{
+ 		.name		= "bt-sco",
+ 	},
++	{
++		.name		= "bt-sco-wb",
++	},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(platform, bt_sco_driver_ids);
 -- 
-Darren Hart
-Intel Open Source Technology Center
+2.1.3
