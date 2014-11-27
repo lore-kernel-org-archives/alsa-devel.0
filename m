@@ -1,46 +1,50 @@
-From: Bryan Huntsman <bryanh@codeaurora.org>
-Subject: Re: [PATCH 7/9] ASoC: qcom: Add ability to build QCOM drivers
-Date: Wed, 26 Nov 2014 17:26:28 -0800
-Message-ID: <54767DC4.7060808@codeaurora.org>
-References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org> <1416423169-21865-8-git-send-email-kwestfie@codeaurora.org> <20141125220737.GX7712@sirena.org.uk>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ASoC: Intel: Remove useless loopback volume
+	control for Broadwell
+Date: Thu, 27 Nov 2014 14:04:23 +0800
+Message-ID: <1417068263-12026-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <20141125220737.GX7712@sirena.org.uk>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C358426582C
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 07:03:39 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/25/2014 02:07 PM, Mark Brown wrote:
-> On Wed, Nov 19, 2014 at 10:52:47AM -0800, Kenneth Westfield wrote:
-> 
->> +++ b/sound/soc/qcom/Kconfig
->> @@ -0,0 +1,43 @@
-...
->> +# Permission to use, copy, modify, and/or distribute this software for any
->> +# purpose with or without fee is hereby granted, provided that the above
->> +# copyright notice and this permission notice appear in all copies.
->> +#
->> +# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
->> +# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
->> +# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
->> +# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
->> +# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
->> +# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
->> +# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-> 
-> Please just license the file under the GPL, all the drivers that get
-> built from here are GPLed - I can't see any reason for this to have an
-> odd license.
+On Broadwell, the ADSP FW don't support loopback record volume tuning,
+so here remove this control.
 
-Why is there even a license blurb here?  Just drop it.
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+---
+ sound/soc/intel/sst-haswell-pcm.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-- Bryan
-
-
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index 331237f..20561ca 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -308,10 +308,6 @@ static const struct snd_kcontrol_new hsw_volume_controls[] = {
+ 	SOC_DOUBLE_EXT_TLV("Media1 Playback Volume", 2, 0, 8,
+ 		ARRAY_SIZE(volume_map), 0,
+ 		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
+-	/* Loopback volume */
+-	SOC_DOUBLE_EXT_TLV("Loopback Capture Volume", 3, 0, 8,
+-		ARRAY_SIZE(volume_map), 0,
+-		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
+ 	/* Mic Capture volume */
+ 	SOC_DOUBLE_EXT_TLV("Mic Capture Volume", 4, 0, 8,
+ 		ARRAY_SIZE(volume_map), 0,
 -- 
-Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a
-Linux Foundation Collaborative Project
+1.9.1
