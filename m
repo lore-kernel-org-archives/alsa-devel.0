@@ -1,92 +1,31 @@
-From: Peter Rosin <peda@lysator.liu.se>
-Subject: [PATCH] ASoC: Augment existing card DAPM routes in
-	snd_soc_of_parse_audio_routing
-Date: Thu, 27 Nov 2014 22:02:42 +0100
-Message-ID: <1417122162-8122-1-git-send-email-peda@lysator.liu.se>
+From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Subject: Re: [PATCH 2/3] ARM: edma: Rename header file for dmaengine filter function definition
+Date: Thu, 27 Nov 2014 22:52:10 +0100
+Message-ID: <4859328.eEV7jzKEaA@wuerfel>
+References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com> <3300340.ou8f7H2hIc@wuerfel> <54777174.4070203@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.lysator.liu.se (mail.lysator.liu.se [130.236.254.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 370B1261536
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 22:03:27 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <54777174.4070203-l0cyMroinI0@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nsekhar-l0cyMroinI0@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, chris-OsFVWbfNK3isTnJN9+BGXg@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Rosin <peda@axentia.se>
+On Thursday 27 November 2014 20:46:12 Peter Ujfalusi wrote:
+> 
+> I see. With this series I did not planed to fix all edma related issues, just
+> as a start clean up the related header files. I would rather not add fixes to
+> mmc, spi, etc drivers since while you have valid point it is not in the scope
+> of this series.
+> Can we do the changes you are suggesting in an incremental manner?
 
-If a snd_soc_card has any DAPM routes when it calls
-snd_soc_of_parse_audio_routing, those are clobbered without this change.
+Sure, but I'd leave the existing filter function declaration alone then
+and not move it, since we wouldn't want to keep it in the long run.
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
----
- sound/soc/soc-core.c |   14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b60ff56ebc0f..377db486852e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4585,7 +4585,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 				   const char *propname)
- {
- 	struct device_node *np = card->dev->of_node;
--	int num_routes;
-+	int num_routes, old_routes;
- 	struct snd_soc_dapm_route *routes;
- 	int i, ret;
- 
-@@ -4603,7 +4603,9 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 		return -EINVAL;
- 	}
- 
--	routes = devm_kzalloc(card->dev, num_routes * sizeof(*routes),
-+	old_routes = card->num_dapm_routes;
-+	routes = devm_kzalloc(card->dev,
-+			      (old_routes + num_routes) * sizeof(*routes),
- 			      GFP_KERNEL);
- 	if (!routes) {
- 		dev_err(card->dev,
-@@ -4611,9 +4613,11 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 		return -EINVAL;
- 	}
- 
-+	memcpy(routes, card->dapm_routes, old_routes * sizeof(*routes));
-+
- 	for (i = 0; i < num_routes; i++) {
- 		ret = of_property_read_string_index(np, propname,
--			2 * i, &routes[i].sink);
-+			2 * i, &routes[old_routes + i].sink);
- 		if (ret) {
- 			dev_err(card->dev,
- 				"ASoC: Property '%s' index %d could not be read: %d\n",
-@@ -4621,7 +4625,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 			return -EINVAL;
- 		}
- 		ret = of_property_read_string_index(np, propname,
--			(2 * i) + 1, &routes[i].source);
-+			(2 * i) + 1, &routes[old_routes + i].source);
- 		if (ret) {
- 			dev_err(card->dev,
- 				"ASoC: Property '%s' index %d could not be read: %d\n",
-@@ -4630,7 +4634,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 		}
- 	}
- 
--	card->num_dapm_routes = num_routes;
-+	card->num_dapm_routes += num_routes;
- 	card->dapm_routes = routes;
- 
- 	return 0;
--- 
-1.7.10.4
+	Arnd
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
