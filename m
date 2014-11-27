@@ -1,20 +1,15 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 3/3] ASoC: sgtl5000: Allow 8kHz playback in
-	codec slave mode
-Date: Thu, 27 Nov 2014 13:02:01 -0200
-Message-ID: <1417100521-8483-3-git-send-email-festevam@gmail.com>
-References: <1417100521-8483-1-git-send-email-festevam@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ASoC: core: Call mute for cpu dais as well
+Date: Thu, 27 Nov 2014 19:15:03 +0300
+Message-ID: <20141127161503.GA21893@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f54.google.com (mail-qg0-f54.google.com
- [209.85.192.54])
- by alsa0.perex.cz (Postfix) with ESMTP id C15AA266192
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 16:02:29 +0100 (CET)
-Received: by mail-qg0-f54.google.com with SMTP id q107so3616563qgd.13
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 07:02:29 -0800 (PST)
-In-Reply-To: <1417100521-8483-1-git-send-email-festevam@gmail.com>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23A16266192
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 17:13:28 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +19,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, craig.mcqueen@beamcommunications.com
+To: ramesh.babu@intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+Hello Ramesh Babu,
 
-When trying to play a 8kHz file with codec in slave mode we get the following
-error on a mx28evk:
+This is a semi-automatic email about new static checker warnings.
 
-$ aplay -Dhw:0,0 stereo_8k.wav 
-Playing WAVE 'stereo_8k.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
-[   21.218647] sgtl5000 0-000a: PLL not supported in slave mode
-[   21.224559] sgtl5000 0-000a: 128 ratio is not supported. SYS_MCLK needs to be 256, 384 or 512 * fs
-[   21.233687] sgtl5000 0-000a: ASoC: can't set sgtl5000 hw params: -22
-aplay: set_params:1123: Unable to install hw params:
+The patch ae11601b80b9: "ASoC: core: Call mute for cpu dais as well" 
+from Oct 15, 2014, leads to the following Smatch complaint:
 
-This error happens because we are using 'sys_fs' instead of 'frame_rate' in the
-valid ratio check.
+sound/soc/soc-pcm.c:777 soc_pcm_prepare()
+	 error: we previously assumed 'cpu_dai->driver->ops' could be null (see line 755)
 
-Use the real'frame_rate' so that the ratio is correctly calculated and the 
-playback can run. 
+sound/soc/soc-pcm.c
+   754	
+   755		if (cpu_dai->driver->ops && cpu_dai->driver->ops->prepare) {
+                    ^^^^^^^^^^^^^^^^^^^^
+I don't think this can be NULL.  Probably we should remove this check.
 
-sgtl5000 codec manual states that in 'Synchronous SYS_MCLK input' mode that the
-following SYS_CLK frequencies are allowed: 256*fs, 384*fs, 512*fs.
+   756			ret = cpu_dai->driver->ops->prepare(substream, cpu_dai);
+   757			if (ret < 0) {
+   758				dev_err(cpu_dai->dev, "ASoC: DAI prepare error: %d\n",
+   759					ret);
+   760				goto out;
+   761			}
+   762		}
+   763	
+   764		/* cancel any delayed stream shutdown that is pending */
+   765		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+   766		    rtd->pop_wait) {
+   767			rtd->pop_wait = 0;
+   768			cancel_delayed_work(&rtd->delayed_work);
+   769		}
+   770	
+   771		snd_soc_dapm_stream_event(rtd, substream->stream,
+   772				SND_SOC_DAPM_STREAM_START);
+   773	
+   774		for (i = 0; i < rtd->num_codecs; i++)
+   775			snd_soc_dai_digital_mute(rtd->codec_dais[i], 0,
+   776						 substream->stream);
+   777		snd_soc_dai_digital_mute(cpu_dai, 0, substream->stream);
+                                         ^^^^^^^
+But if it were NULL then this newly introduced function call would Oops.
 
-, where fs is the sampling frequency, which can be in the range of:
-8, 11.025, 16, 22.5, 32, 44.1, 48, 96 kHz.
+   778	
+   779	out:
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/sgtl5000.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 8dea6b3..29cf7ce 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -618,7 +618,7 @@ static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
- 	 * factor of freq = 96 kHz can only be 256, since mclk is in the range
- 	 * of 8 MHz - 27 MHz
- 	 */
--	switch (sgtl5000->sysclk / sys_fs) {
-+	switch (sgtl5000->sysclk / frame_rate) {
- 	case 256:
- 		clk_ctl |= SGTL5000_MCLK_FREQ_256FS <<
- 			SGTL5000_MCLK_FREQ_SHIFT;
-@@ -641,7 +641,7 @@ static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
- 				"PLL not supported in slave mode\n");
- 			dev_err(codec->dev, "%d ratio is not supported. "
- 				"SYS_MCLK needs to be 256, 384 or 512 * fs\n",
--				sgtl5000->sysclk / sys_fs);
-+				sgtl5000->sysclk / frame_rate);
- 			return -EINVAL;
- 		}
- 	}
--- 
-1.9.1
+regards,
+dan carpenter
