@@ -1,56 +1,46 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Thu, 27 Nov 2014 00:09:55 +0100
-Message-ID: <7202604.4LK4s7RH1S@vostro.rjw.lan>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <54753168.9010303@linux.intel.com> <20141126111716.GE7712@sirena.org.uk>
+From: Bryan Huntsman <bryanh@codeaurora.org>
+Subject: Re: [PATCH 7/9] ASoC: qcom: Add ability to build QCOM drivers
+Date: Wed, 26 Nov 2014 17:26:28 -0800
+Message-ID: <54767DC4.7060808@codeaurora.org>
+References: <1416423169-21865-1-git-send-email-kwestfie@codeaurora.org> <1416423169-21865-8-git-send-email-kwestfie@codeaurora.org> <20141125220737.GX7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141126111716.GE7712@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20141125220737.GX7712@sirena.org.uk>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, David Brown <davidb@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, November 26, 2014 11:17:16 AM Mark Brown wrote:
+On 11/25/2014 02:07 PM, Mark Brown wrote:
+> On Wed, Nov 19, 2014 at 10:52:47AM -0800, Kenneth Westfield wrote:
 > 
-> --4mL5lf+nIvB09VHj
-> Content-Type: text/plain; charset=us-ascii
-> Content-Disposition: inline
+>> +++ b/sound/soc/qcom/Kconfig
+>> @@ -0,0 +1,43 @@
+...
+>> +# Permission to use, copy, modify, and/or distribute this software for any
+>> +# purpose with or without fee is hereby granted, provided that the above
+>> +# copyright notice and this permission notice appear in all copies.
+>> +#
+>> +# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+>> +# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+>> +# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+>> +# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+>> +# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+>> +# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+>> +# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 > 
-> On Tue, Nov 25, 2014 at 05:48:24PM -0800, Darren Hart wrote:
-> > On 11/25/14 10:43, Mark Brown wrote:
-> 
-> > > Link from where - do we want to talk to the ACPI/UEFI forum and
-> > > figure out some kind of fast track process for them to add an "it's
-> > > already covered by DT, see here" entry to their database for
-> > > example?  We also ought to work out how to make sure ACPI IDs are
-> > > registered there as well, should be possible to have something
-> > > simple as part of that.
-> 
-> > As to registering ACPI IDs, I believe this is the right link:
-> > http://www.uefi.org/PNP_ACPI_Registry
-> 
-> No, those are vendors as far as I can tell.  I mean identifiers for
-> specific devices - it appears to be common for for example Intel to
-> allocate identifiers for devices they don't produce, I'd expect there to
-> be some effort to keep track of that especially given that _DSD
-> properties may well end up being specific to the identifier used to
-> register in cases of parallel evolution.
+> Please just license the file under the GPL, all the drivers that get
+> built from here are GPLed - I can't see any reason for this to have an
+> odd license.
 
-The vendor (or more precisely the owner of the initial 3 or 4 letter code)
-is supposed to do that.  I'm not aware of any common registry of those IDs
-for all vendors.
+Why is there even a license blurb here?  Just drop it.
 
-> > Or did you mean a HID/CID<->DSD mapping?
-> 
-> I don't really know what that is, sorry.
+- Bryan
 
-The device ID is supposed to determine the way all of the ACPI objects for that
-device will work, including what is returned by _DSD.  Pretty much in analogy
-with PCI device IDs.
 
 -- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a
+Linux Foundation Collaborative Project
