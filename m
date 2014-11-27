@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 11/11] ASoC: twl6040: Cleanup manual bias
- level transitions
-Date: Thu, 27 Nov 2014 11:18:37 +0000
-Message-ID: <20141127111837.GU7712@sirena.org.uk>
-References: <1417031880-11364-1-git-send-email-lars@metafoo.de>
- <1417031880-11364-11-git-send-email-lars@metafoo.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/2] ALSA: firewire-lib: remove
+	rx_blocks_for_midi quirk
+Date: Thu, 27 Nov 2014 21:45:00 +0900
+Message-ID: <54771CCC.4090101@sakamocchi.jp>
+References: <5474FA18.7000501@ladisch.de> <5475E211.3040106@sakamocchi.jp>
+ <5475E5F6.2080709@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6370819136185605133=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2780F266021
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 12:20:33 +0100 (CET)
-In-Reply-To: <1417031880-11364-11-git-send-email-lars@metafoo.de>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 490F9265E24
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 13:45:07 +0100 (CET)
+In-Reply-To: <5475E5F6.2080709@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>
+To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Nov 26 2014 23:38, Clemens Ladisch wrote:
+> Takashi Sakamoto wrote:
+>> On Nov 26 2014 06:52, Clemens Ladisch wrote:
+>>> There are several devices that expect to receive MIDI data only in the
+>>> first eight data blocks of a packet.  If the driver restricts the data
+>>> rate to the allowed rate (as mandated by the specification, but not yet
+>>> implemented by this driver), this happens naturally.  Therefore, there
+>>> is no reason to ever try to use more data packets with any device.
+>>>
+>>> Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+>>> ---
+>>>  sound/firewire/amdtp.c                      |   10 +++++++---
+>>>  sound/firewire/amdtp.h                      |    3 ---
+>>>  sound/firewire/bebob/bebob_stream.c         |    7 -------
+>>>  sound/firewire/fireworks/fireworks_stream.c |    5 -----
+>>>  4 files changed, 7 insertions(+), 18 deletions(-)
+>>
+>> Can I ask your opinion about applying this patch to devices with
+>> non-blocking mode? At least, your comment of this patch is for blocking
+>> mode (the fixed number of data blocks in a packet).
+> 
+> This patch does not assume that there is a fixed number of data blocks.
+> 
+> It does not matter whether a stream is (non-)blocking: eight data blocks
+> per packet (i.e., one MIDI byte per MPX-MIDI data channel per packet) is
+> always enough for MIDI.  Even at 32 kHz, there are about 4000 packets
+> per seconds in blocking mode.  In non-blocking mode, the packets are
+> smaller (so not ecery MPX-MIDI data channels gets sent in every packet),
+> but there are exactly 8000 packets per second, so the overall number of
+> samples (= data blocks) does not change.
 
---===============6370819136185605133==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WWsWR30MuS+K6DX1"
-Content-Disposition: inline
+I was suspicious of unfairless for 8 MPX-MIDI data streams to transfer
+MIDI messages in non-blocking mode, because .the MPX-MIDI data stream in
+the first data block is different per packet.
+
+But this is not matter. At 32.0/44.1/48.0, the number of data blocks in
+a packet is lesser than 8 therefore all of MPX-MIDI data stream has the
+same chances to transfer MIDI messages. At 88.2 kHz or higher, the
+number of data blocks in a packet is bigger than 8 but8 MPX-MIDI data
+streams has a chance per packet. As a result, All of MPX-MIDI data
+stream has the same opportunity to transfer MIDI messages.
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+I tested these two patch with below devices. All of them can transmit
+MIDI messages correctly at any sampling transfer tates.
+
+M-Audio: FIreWire 1814 (snd-bebob)
+M-Audio: FireWire 410 (snd-bebob)
+M-Audio: FireWire AudioPhile (snd-bebob)
+M-Audio: Ozonic (snd-bebob)
+Yamaha: GO44 (snd-bebob)
+Yamaha: GO46 (snd-bebob)
+Echo Audio: AudioFire4 (snd-fireworks)
+Echo Audio: AudioFirePre8 (snd-fireworks)
+TC Electronic: Impact Twin (snd-dice)
+
+These two patches solves one of issues which I wrote in my report.
+9.5 A lack of throttles for MIDI messages in outgoing stream
+https://github.com/takaswie/alsa-firewire-report
 
 
---WWsWR30MuS+K6DX1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks
 
-On Wed, Nov 26, 2014 at 08:58:00PM +0100, Lars-Peter Clausen wrote:
-> Set the CODEC driver's suspend_bias_off flag rather than manually going to
-> SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
-> the code a bit shorter and cleaner.
-
-Applied, thanks.
-
---WWsWR30MuS+K6DX1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUdwiMAAoJECTWi3JdVIfQ014H/RrN/IF5tpAnP5qvkoGF0MJz
-5+tbc/bMhWrvbkKoJvYFLT7f7xOCJ2QpT6ZveDYyAEhjmwfSWtpVLvTIND4qIDNY
-5jDjAWSM6g/GP2lWnr0KcKcoPGBDo/rdFRHC152z1Eph4SbtO2YEjmkdDlo0N3IU
-y/CBiiv7OflmK9EGlWedHmRlLB7PqicxcEUPbx+WLoretkreYcnKFzuVS5cEOmdO
-cWh3uFVLvVYK8gtoGrDbks/Li/67ZzN103ZOOW9cStXNA5a1zcI2KKbz3msOgsQp
-4xX+VqysXS5JTBSSz9du3qkKPkeKon/B9BK1KFM6SaPJiOdKf8wdjltv1eKq0KY=
-=PED1
------END PGP SIGNATURE-----
-
---WWsWR30MuS+K6DX1--
-
---===============6370819136185605133==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6370819136185605133==--
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
