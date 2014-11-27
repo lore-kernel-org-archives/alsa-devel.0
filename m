@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: mxs-sgtl5000: Remove MCLK
-	restriction
-Date: Thu, 27 Nov 2014 17:42:54 +0000
-Message-ID: <20141127174254.GA7712@sirena.org.uk>
-References: <1417100521-8483-1-git-send-email-festevam@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/3] ARM: edma: Rename header file for
+ dmaengine filter function definition
+Date: Thu, 27 Nov 2014 20:46:12 +0200
+Message-ID: <54777174.4070203@ti.com>
+References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
+ <8235185.7qUDHu9jso@wuerfel> <547733E3.3020408@ti.com>
+ <3300340.ou8f7H2hIc@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6941128065652864086=="
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 72FFD261533
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 18:43:09 +0100 (CET)
-In-Reply-To: <1417100521-8483-1-git-send-email-festevam@gmail.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id D83D12614FD
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 19:46:21 +0100 (CET)
+In-Reply-To: <3300340.ou8f7H2hIc@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, craig.mcqueen@beamcommunications.com
+To: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux@arm.linux.org.uk, vinod.koul@intel.com, nsekhar@ti.com, linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, khilman@deeprootsystems.com, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, chris@printf.net, dmaengine@vger.kernel.org, ulf.hansson@linaro.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/27/2014 04:50 PM, Arnd Bergmann wrote:
+> On Thursday 27 November 2014 16:23:31 Peter Ujfalusi wrote:
+>> This will only work in case of legacy boot. When booting with DT we do n=
+ot
+>> have pdata and after this patch in dt boot we are not going to be able t=
+o get
+>> the DMA resources either.
+> =
 
---===============6941128065652864086==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yyNREU0woCyfxUz6"
-Content-Disposition: inline
+> No, when booting with DT, the filter_fn and data are not used at all,
+> we get the dma channel by parsing the DT instead.
 
+Correct.
 
---yyNREU0woCyfxUz6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> I think if we want to do something like this, it has to be done within t=
+he
+>> dmaengine framework. The dma controller's of_dma_filter_info already have
+>> .filter_fn which could be used by the framework.
+> =
 
-On Thu, Nov 27, 2014 at 01:01:59PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> According to the sgtl5000 datasheet the MCLK frequency range restriction =
-of
-> 8 to 27 MHz only applies when the PLL is used - synchronous SYS_MCLK inpu=
-t mode.
+> No, of_dma_filter_info/of_dma_simple_xlate was a mistake, we should never
+> have even introduced that. All drivers that rely on this can simply
+> provide their own xlate function that calls of_dma_get_slave_channel()
+> or one of the related functions.
+> =
 
-Applied all, thanks.
+> edma is particularly trivial, it can just use of_dma_xlate_by_chan_id()
+> instead of of_dma_simple_xlate, as it looks up the channel by its number.
 
---yyNREU0woCyfxUz6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I see. With this series I did not planed to fix all edma related issues, ju=
+st
+as a start clean up the related header files. I would rather not add fixes =
+to
+mmc, spi, etc drivers since while you have valid point it is not in the sco=
+pe
+of this series.
+Can we do the changes you are suggesting in an incremental manner?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+-- =
 
-iQEcBAEBAgAGBQJUd2KdAAoJECTWi3JdVIfQOL8H/iOE4lwLB3HPAXVmObzmQF3S
-HyWXrBukFXrkOQ+rOd5NgLlw8vaAp54x9yf4XzOUO2gWZO82CiQFmaGpIWESWleA
-6SyDEYwwcCtRNhEje8yJKnWsd36DI2nBBO0X4DlY1eqgD8NgY9yQs6WvBLL83yfp
-6WCJMR8wCk/ZmG5KNR+JvTgH/xZQmL1TWqTr9BzYVXwlIvYCLu7SfYX9FnN02klM
-apmdX9foiWDwpcwiqrcrccQP3Jrbf9TWRUCKJr9WiA2sYCR9V427PrO1c2c4n+R3
-XFYw3YxaotFdUfLsDFGYKUFfIyKugjXs+Ej/K4ks4I/Gf+35yEEEikxFZgnMgbA=
-=n47t
------END PGP SIGNATURE-----
-
---yyNREU0woCyfxUz6--
-
---===============6941128065652864086==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6941128065652864086==--
+P=E9ter
