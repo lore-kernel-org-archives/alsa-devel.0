@@ -1,15 +1,17 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: core: Call mute for cpu dais as well
-Date: Thu, 27 Nov 2014 19:15:03 +0300
-Message-ID: <20141127161503.GA21893@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: mxs-sgtl5000: Remove MCLK
+	restriction
+Date: Thu, 27 Nov 2014 17:42:54 +0000
+Message-ID: <20141127174254.GA7712@sirena.org.uk>
+References: <1417100521-8483-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6941128065652864086=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 23A16266192
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 17:13:28 +0100 (CET)
-Content-Disposition: inline
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72FFD261533
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 18:43:09 +0100 (CET)
+In-Reply-To: <1417100521-8483-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,53 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ramesh.babu@intel.com
-Cc: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, craig.mcqueen@beamcommunications.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Ramesh Babu,
 
-This is a semi-automatic email about new static checker warnings.
+--===============6941128065652864086==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yyNREU0woCyfxUz6"
+Content-Disposition: inline
 
-The patch ae11601b80b9: "ASoC: core: Call mute for cpu dais as well" 
-from Oct 15, 2014, leads to the following Smatch complaint:
 
-sound/soc/soc-pcm.c:777 soc_pcm_prepare()
-	 error: we previously assumed 'cpu_dai->driver->ops' could be null (see line 755)
+--yyNREU0woCyfxUz6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-sound/soc/soc-pcm.c
-   754	
-   755		if (cpu_dai->driver->ops && cpu_dai->driver->ops->prepare) {
-                    ^^^^^^^^^^^^^^^^^^^^
-I don't think this can be NULL.  Probably we should remove this check.
+On Thu, Nov 27, 2014 at 01:01:59PM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> According to the sgtl5000 datasheet the MCLK frequency range restriction =
+of
+> 8 to 27 MHz only applies when the PLL is used - synchronous SYS_MCLK inpu=
+t mode.
 
-   756			ret = cpu_dai->driver->ops->prepare(substream, cpu_dai);
-   757			if (ret < 0) {
-   758				dev_err(cpu_dai->dev, "ASoC: DAI prepare error: %d\n",
-   759					ret);
-   760				goto out;
-   761			}
-   762		}
-   763	
-   764		/* cancel any delayed stream shutdown that is pending */
-   765		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
-   766		    rtd->pop_wait) {
-   767			rtd->pop_wait = 0;
-   768			cancel_delayed_work(&rtd->delayed_work);
-   769		}
-   770	
-   771		snd_soc_dapm_stream_event(rtd, substream->stream,
-   772				SND_SOC_DAPM_STREAM_START);
-   773	
-   774		for (i = 0; i < rtd->num_codecs; i++)
-   775			snd_soc_dai_digital_mute(rtd->codec_dais[i], 0,
-   776						 substream->stream);
-   777		snd_soc_dai_digital_mute(cpu_dai, 0, substream->stream);
-                                         ^^^^^^^
-But if it were NULL then this newly introduced function call would Oops.
+Applied all, thanks.
 
-   778	
-   779	out:
+--yyNREU0woCyfxUz6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-regards,
-dan carpenter
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUd2KdAAoJECTWi3JdVIfQOL8H/iOE4lwLB3HPAXVmObzmQF3S
+HyWXrBukFXrkOQ+rOd5NgLlw8vaAp54x9yf4XzOUO2gWZO82CiQFmaGpIWESWleA
+6SyDEYwwcCtRNhEje8yJKnWsd36DI2nBBO0X4DlY1eqgD8NgY9yQs6WvBLL83yfp
+6WCJMR8wCk/ZmG5KNR+JvTgH/xZQmL1TWqTr9BzYVXwlIvYCLu7SfYX9FnN02klM
+apmdX9foiWDwpcwiqrcrccQP3Jrbf9TWRUCKJr9WiA2sYCR9V427PrO1c2c4n+R3
+XFYw3YxaotFdUfLsDFGYKUFfIyKugjXs+Ej/K4ks4I/Gf+35yEEEikxFZgnMgbA=
+=n47t
+-----END PGP SIGNATURE-----
+
+--yyNREU0woCyfxUz6--
+
+--===============6941128065652864086==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6941128065652864086==--
