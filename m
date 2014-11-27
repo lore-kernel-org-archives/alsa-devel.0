@@ -1,17 +1,19 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 1/3] ASoC: mxs-sgtl5000: Remove MCLK restriction
-Date: Thu, 27 Nov 2014 13:01:59 -0200
-Message-ID: <1417100521-8483-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH 2/3] ASoC: sgtl5000: Remove MCLK restriction
+Date: Thu, 27 Nov 2014 13:02:00 -0200
+Message-ID: <1417100521-8483-2-git-send-email-festevam@gmail.com>
+References: <1417100521-8483-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f181.google.com (mail-qc0-f181.google.com
- [209.85.216.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 25C18266199
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 16:02:24 +0100 (CET)
-Received: by mail-qc0-f181.google.com with SMTP id m20so3623661qcx.40
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 07:02:23 -0800 (PST)
+Received: from mail-qg0-f54.google.com (mail-qg0-f54.google.com
+ [209.85.192.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF1002661A7
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 16:02:26 +0100 (CET)
+Received: by mail-qg0-f54.google.com with SMTP id q107so3616499qgd.13
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 07:02:26 -0800 (PST)
+In-Reply-To: <1417100521-8483-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,9 +32,8 @@ From: Fabio Estevam <fabio.estevam@freescale.com>
 According to the sgtl5000 datasheet the MCLK frequency range restriction of
 8 to 27 MHz only applies when the PLL is used - synchronous SYS_MCLK input mode.
 
-mxs-sgtl5000 machine sets the codec as slave, and mx28 generates MCLK in the 
-range of 256*fs, 384*fs or 512*fs, which is called asynchronous SYS_MCLK 
-input.
+When running the codec as slave, the master should generate MCLK in the range of
+256*fs, 384*fs or 512*fs, which is called asynchronous SYS_MCLK input mode.
 
 In asynchronous SYS_MCLK we cannot have the 8 to 27 MHz check because if we
 want to play a 8KHz sample rate track, with a MCLK of 8k * 512 = 4.096MHz the
@@ -43,26 +44,35 @@ synchronous SYS_MCLK input case.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/mxs/mxs-sgtl5000.c | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
-index 7515cd4..6f1916b 100644
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -49,13 +49,6 @@ static int mxs_sgtl5000_hw_params(struct snd_pcm_substream *substream,
- 		break;
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 600c072..8dea6b3 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1434,7 +1434,6 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ {
+ 	struct sgtl5000_priv *sgtl5000;
+ 	int ret, reg, rev;
+-	unsigned int mclk;
+ 	struct device_node *np = client->dev.of_node;
+ 	u32 value;
+ 
+@@ -1459,14 +1458,6 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 		return ret;
  	}
  
--	/* Sgtl5000 sysclk should be >= 8MHz and <= 27M */
+-	/* SGTL5000 SYS_MCLK should be between 8 and 27 MHz */
+-	mclk = clk_get_rate(sgtl5000->mclk);
 -	if (mclk < 8000000 || mclk > 27000000) {
--		dev_err(codec_dai->dev, "Invalid mclk frequency: %u.%03uMHz\n",
+-		dev_err(&client->dev, "Invalid SYS_CLK frequency: %u.%03uMHz\n",
 -			mclk / 1000000, mclk / 1000 % 1000);
 -		return -EINVAL;
 -	}
 -
- 	/* Set SGTL5000's SYSCLK (provided by SAIF MCLK) */
- 	ret = snd_soc_dai_set_sysclk(codec_dai, SGTL5000_SYSCLK, mclk, 0);
- 	if (ret) {
+ 	ret = clk_prepare_enable(sgtl5000->mclk);
+ 	if (ret)
+ 		return ret;
 -- 
 1.9.1
