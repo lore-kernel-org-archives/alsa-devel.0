@@ -1,18 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/3] ARM: edma: Rename header file for
-	dmaengine filter function definition
-Date: Thu, 27 Nov 2014 15:50:46 +0100
-Message-ID: <3300340.ou8f7H2hIc@wuerfel>
-References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
- <8235185.7qUDHu9jso@wuerfel> <547733E3.3020408@ti.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/3] ASoC: mxs-sgtl5000: Remove MCLK restriction
+Date: Thu, 27 Nov 2014 13:01:59 -0200
+Message-ID: <1417100521-8483-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id C3C582660F6
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 15:51:04 +0100 (CET)
-In-Reply-To: <547733E3.3020408@ti.com>
+Received: from mail-qc0-f181.google.com (mail-qc0-f181.google.com
+ [209.85.216.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25C18266199
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 16:02:24 +0100 (CET)
+Received: by mail-qc0-f181.google.com with SMTP id m20so3623661qcx.40
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 07:02:23 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, linux@arm.linux.org.uk, vinod.koul@intel.com, nsekhar@ti.com, linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, khilman@deeprootsystems.com, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, chris@printf.net, dmaengine@vger.kernel.org, ulf.hansson@linaro.org, linux-omap@vger.kernel.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@linaro.org, craig.mcqueen@beamcommunications.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 27 November 2014 16:23:31 Peter Ujfalusi wrote:
-> This will only work in case of legacy boot. When booting with DT we do not
-> have pdata and after this patch in dt boot we are not going to be able to get
-> the DMA resources either.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-No, when booting with DT, the filter_fn and data are not used at all,
-we get the dma channel by parsing the DT instead.
+According to the sgtl5000 datasheet the MCLK frequency range restriction of
+8 to 27 MHz only applies when the PLL is used - synchronous SYS_MCLK input mode.
 
-> I think if we want to do something like this, it has to be done within the
-> dmaengine framework. The dma controller's of_dma_filter_info already have
-> .filter_fn which could be used by the framework.
+mxs-sgtl5000 machine sets the codec as slave, and mx28 generates MCLK in the 
+range of 256*fs, 384*fs or 512*fs, which is called asynchronous SYS_MCLK 
+input.
 
-No, of_dma_filter_info/of_dma_simple_xlate was a mistake, we should never
-have even introduced that. All drivers that rely on this can simply
-provide their own xlate function that calls of_dma_get_slave_channel()
-or one of the related functions.
+In asynchronous SYS_MCLK we cannot have the 8 to 27 MHz check because if we
+want to play a 8KHz sample rate track, with a MCLK of 8k * 512 = 4.096MHz the
+current check would return -EINVAL, which is not correct.
 
-edma is particularly trivial, it can just use of_dma_xlate_by_chan_id()
-instead of of_dma_simple_xlate, as it looks up the channel by its number.
+Remove the 8 to 27MHz frequency check, since this only applies to the 
+synchronous SYS_MCLK input case.
 
-	Arnd
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/mxs/mxs-sgtl5000.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index 7515cd4..6f1916b 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -49,13 +49,6 @@ static int mxs_sgtl5000_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	}
+ 
+-	/* Sgtl5000 sysclk should be >= 8MHz and <= 27M */
+-	if (mclk < 8000000 || mclk > 27000000) {
+-		dev_err(codec_dai->dev, "Invalid mclk frequency: %u.%03uMHz\n",
+-			mclk / 1000000, mclk / 1000 % 1000);
+-		return -EINVAL;
+-	}
+-
+ 	/* Set SGTL5000's SYSCLK (provided by SAIF MCLK) */
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, SGTL5000_SYSCLK, mclk, 0);
+ 	if (ret) {
+-- 
+1.9.1
