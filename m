@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Remove useless loopback
- volume control for Broadwell
-Date: Thu, 27 Nov 2014 11:01:03 +0000
-Message-ID: <20141127110103.GH7712@sirena.org.uk>
-References: <1417068263-12026-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH 01/11] ASoC: cq93vc: Remove unused state
+	struct
+Date: Thu, 27 Nov 2014 11:11:40 +0000
+Message-ID: <20141127111140.GK7712@sirena.org.uk>
+References: <1417031880-11364-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4919806280514016980=="
+Content-Type: multipart/mixed; boundary="===============3798522820834233758=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8563F265E28
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 12:02:56 +0100 (CET)
-In-Reply-To: <1417068263-12026-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AA778265DB6
+ for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 12:13:39 +0100 (CET)
+In-Reply-To: <1417031880-11364-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4919806280514016980==
+--===============3798522820834233758==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FrBUKLANcJUwWlBH"
+	protocol="application/pgp-signature"; boundary="/WyilgS7+6IU2yVA"
 Content-Disposition: inline
 
 
---FrBUKLANcJUwWlBH
+--/WyilgS7+6IU2yVA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 27, 2014 at 02:04:23PM +0800, Jie Yang wrote:
-> On Broadwell, the ADSP FW don't support loopback record volume tuning,
-> so here remove this control.
+On Wed, Nov 26, 2014 at 08:57:50PM +0100, Lars-Peter Clausen wrote:
+> While two of the fields in the cq93vc driver state struct are initialized
+> none of them are ever acutally read again. So remove the whole struct.
 
 Applied, thanks.
 
---FrBUKLANcJUwWlBH
+--/WyilgS7+6IU2yVA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUdwRuAAoJECTWi3JdVIfQN3sH+wexgLbiFUSAmTN+NoImvwQf
-BXu2fBt0F1BHOhNPjF67Hk1xhMO+vTC2O+p66T0qkHyIHixWK47qDMZfFtuEyfIu
-5R44LdY8Ww4XVojpcrtGvAsTX7WLk7Yn2eAvzDbyS9BKqkwE1sTTuVKkZdLRzK5Y
-KVr4ZT63IpIB2vO2vAyrtXscrPI7kvLXwpTiXqn00Cw8ENY68WySOCEUSaR9K877
-9HKIOog3hrGpGojF8XWgTiJhP7LbEeBLo0eGAJXyc2HhhnPn7vEUOYTGOJmfCAgc
-ROge5W/2LXNELI8PUbcxGnU3GF757wNvRzEfQbtpTfT+XN1RS12w7EixKdzSDgE=
-=lnhv
+iQEcBAEBAgAGBQJUdwbsAAoJECTWi3JdVIfQXUIH/2nksjuZ8cpruOi0KQu22zPy
+m4GXpoZkCkyTL68AZdVGHEuem5OX2dQHdafE6EIz+OYoes7I9tB7qRbqqoMm4UvH
+3VTufRG/it0ziHIYFULLi0/MP+TX9RQyq24jQI3rrJa8BUoAvE3CkWTOsMQPNbQ+
+uNj3eCeZtZ7OdBu6NCS8jjJfcp4ywyYz8Uh/WkSInPH+ZUuQDzeISH4rKdrqMwDJ
+QBI8AR4LFNDKc6IRNoEg+2Bjud4ruxJCSXzg4LucBLzxQHDfNTm4s9zdi4bEssi3
+y+qEz+M9Qyj6nKvSA8ssAE896IHfAOdvM1lIE/fpqrv5XRbaq6sifr/SDWcx+2s=
+=9RsZ
 -----END PGP SIGNATURE-----
 
---FrBUKLANcJUwWlBH--
+--/WyilgS7+6IU2yVA--
 
---===============4919806280514016980==
+--===============3798522820834233758==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4919806280514016980==--
+--===============3798522820834233758==--
