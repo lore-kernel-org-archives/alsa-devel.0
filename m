@@ -1,73 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: davinci-evm: Do not include edma
-	headers
-Date: Thu, 27 Nov 2014 10:58:15 +0000
-Message-ID: <20141127105815.GE7712@sirena.org.uk>
-References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
- <1417084891-17990-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [patch] ASoC: sigmadsp: uninitialized variable in
+ sigmadsp_activate_ctrl()
+Date: Thu, 27 Nov 2014 10:59:41 +0000
+Message-ID: <20141127105941.GF7712@sirena.org.uk>
+References: <20141126223516.GB443@mwanda>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5591616059259594004=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 06F1F265DB6
- for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2014 12:00:41 +0100 (CET)
-In-Reply-To: <1417084891-17990-2-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux@arm.linux.org.uk, arnd@arndb.de, vinod.koul@intel.com, linux-mmc@vger.kernel.org, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, khilman@deeprootsystems.com, Tony Lindgren <tony@atomide.com>, chris@printf.net, dmaengine@vger.kernel.org, ulf.hansson@linaro.org, linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2br5ESIskQR/DsXr"
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141126223516.GB443@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5591616059259594004==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PcDVawgyoD+Fem/v"
-Content-Disposition: inline
-
-
---PcDVawgyoD+Fem/v
+--2br5ESIskQR/DsXr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 27, 2014 at 12:41:29PM +0200, Peter Ujfalusi wrote:
-> The machine driver has no business with the underlying dma.
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Thu, Nov 27, 2014 at 01:35:16AM +0300, Dan Carpenter wrote:
+> The "changed" variable should be set to false at the start.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Applied, thanks.
 
---PcDVawgyoD+Fem/v
+--2br5ESIskQR/DsXr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUdwPGAAoJECTWi3JdVIfQ7MAH/RnpLGoXRwTP9XeiV2TTbYT5
-tJZBqFx5ZrFhdJICHzRhGTMnbKKEcYZ+zjVIs5ln6jEgn/YhOxAfR1lfwNUs9T+/
-m3RZqF1ZBHPHWP+dLSwXSsdzZNxSO1G+4sx/+GtmXMeUZLODJb9ZJguMSDd7I+f7
-jYH41qW9Y5/z7yp3Oo0Jx2BDwQZA0KmJ0jffN7XGmXMd+/fHUWFLknujfeq1XPkD
-VDMElbg3PMqLKYLXNE1yCfP3jb/Sn50DEyyiotRFNU5pyU2vp+0nmIeygtRsukmE
-RPdeQI6UAn/Wdj6PBVVhx7DbvVOjdIkwfdopP47RQolnFtf44Q9wmMtJwCaqNVM=
-=fVaF
+iQEcBAEBAgAGBQJUdwQdAAoJECTWi3JdVIfQvO4H/3TRnw0fyBYi0iJOkOtdh3Rj
++pwLMgavF/Ha+lrPe0mgS5RC/7WSS9QZ+OyfeX2VCPDezUdQr4jH7G/Zw4jTGDSc
+O2kstEhbrw8IbvrZFZP3SelHjB29ccKBsXmop9KA9HJXvtBCYkZ1HvUXv5VybVm1
+tyYooNJVabN+/HiZQ7rQhm+jiiYJQWsasyy7EXdsbzjNZvBgOM7NmDTo5xTGlQyM
+jISkvVYknAH6W5UVaQtI9OKOdjKTUsJvN4k3oAyajZ1CZIySwqRff+YkpanNT3bv
+//ha9tbvcWjQM67iXB/5Sbdz9qA0nUaCZrFN7LjMwE78EPgqPKtTaUx0vYjzKlM=
+=MFKq
 -----END PGP SIGNATURE-----
 
---PcDVawgyoD+Fem/v--
-
---===============5591616059259594004==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5591616059259594004==--
+--2br5ESIskQR/DsXr--
