@@ -1,20 +1,16 @@
 From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: Re: [PATCH 2/2] usb: Add mode select quirk
-	for	Denon/Marantz DACs
-Date: Fri, 28 Nov 2014 17:08:19 +0100
-Message-ID: <1417190899.2777.1.camel@xs4all.nl>
-References: <1417179871-7395-1-git-send-email-gtmkramer@xs4all.nl>
- <1417179871-7395-3-git-send-email-gtmkramer@xs4all.nl>
- <s5hr3wnwhzz.wl-tiwai@suse.de>
+Subject: [PATCH v3 0/2] usb: Add native DSD support for
+	Denon/Marantz
+Date: Fri, 28 Nov 2014 17:32:52 +0100
+Message-ID: <1417192374-21980-1-git-send-email-gtmkramer@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb3-smtp-cloud6.xs4all.net (lb3-smtp-cloud6.xs4all.net
- [194.109.24.31])
- by alsa0.perex.cz (Postfix) with ESMTP id E9EF426163C
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 17:08:21 +0100 (CET)
-In-Reply-To: <s5hr3wnwhzz.wl-tiwai@suse.de>
+Received: from lb3-smtp-cloud3.xs4all.net (lb3-smtp-cloud3.xs4all.net
+ [194.109.24.30])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34A0E260513
+ for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 17:32:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,97 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2014-11-28 at 14:51 +0100, Takashi Iwai wrote:
-> At Fri, 28 Nov 2014 14:04:31 +0100,
-> Jurgen Kramer wrote:
-> > 
-> > Denon/Marantz USB DACs need a specific vendor command to switch between PCM and
-> > DSD mode. This patch adds a new quirk function to switch between the two modes
-> > using the specific USB vendor command.
-> > 
-> > This patch applies to the following devices:
-> > - Marantz SA-14S1
-> > - Marantz HD-DAC1
-> > 
-> > Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
-> > ---
-> >  sound/usb/pcm.c    |  5 +++++
-> >  sound/usb/quirks.c | 42 ++++++++++++++++++++++++++++++++++++++++++
-> >  sound/usb/quirks.h |  3 +++
-> >  3 files changed, 50 insertions(+)
-> > 
-> > diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> > index c62a165..0d8aba5 100644
-> > --- a/sound/usb/pcm.c
-> > +++ b/sound/usb/pcm.c
-> > @@ -482,6 +482,11 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
-> >  	/* set interface */
-> >  	if (subs->interface != fmt->iface ||
-> >  	    subs->altset_idx != fmt->altset_idx) {
-> > +
-> > +		err = snd_usb_select_mode_quirk(subs, fmt);
-> > +		if (err < 0)
-> > +			return -EIO;
-> > +
-> >  		err = usb_set_interface(dev, fmt->iface, fmt->altsetting);
-> >  		if (err < 0) {
-> >  			dev_err(&dev->dev,
-> > diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> > index cc07388..40fb87f 100644
-> > --- a/sound/usb/quirks.c
-> > +++ b/sound/usb/quirks.c
-> > @@ -1111,6 +1111,48 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
-> >  	}
-> >  }
-> >  
-> > +
-> > +/* Marantz/Denon USB DACs need a vendor cmd to switch
-> > + * between PCM and native DSD mode */
-> > +int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
-> > +			      struct audioformat *fmt)
-> > +{
-> > +	struct usb_device *dev = subs->dev;
-> > +	int err;
-> > +
-> > +	switch (subs->stream->chip->usb_id) {
-> > +	case USB_ID(0x154e, 0x3005): /* Marantz HD-DAC1 */
-> > +	case USB_ID(0x154e, 0x3006): /* Marantz SA-14S1 */
-> > +
-> > +		/* First switch to alt set 0, otherwise the mode switch cmd
-> > +		 * will not be accepted by the DAC */
-> > +		err = usb_set_interface(dev, fmt->iface, 0);
-> > +		if (err < 0)
-> > +			return err;
-> > +
-> > +		mdelay(20); /* Delay needed after setting the interface */
-> > +
-> > +		switch(fmt->altsetting) {
-> 
-> Put a space between switch and '('.
-> Found in another patch, too.
-> 
-> > +		case 2: /* DSD mode requested */
-> > +			err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0,
-> > +					      USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
-> > +					      1, 1, NULL, 0);
-> > +			if (err < 0)
-> > +				return err;
-> > +			break;
-> > +		case 1: /* PCM mode requested */
-> > +			err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0,
-> > +					      USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
-> > +					      0, 1, NULL, 0);
-> > +			if (err < 0)
-> > +				return err;
-> > +			break;
-> 
-> These two cases can combined one by passing fmt->altsetting-1 as the
-> argument, right?
-> 
-Thanks, will fix the missing spaces and use the fmt->altsetting-1 suggestion in v3.
+This patchset adds native DSD support for Denon/Marantz devices. A specific
+vendor command is needed to switch between PCM and DSD mode. This is implemented
+as a new quirk function.
 
-Jurgen
+Changes from v2:
+- switch) -> switch (
+- combine PCM and DSD mode select to a single USB ctrl msg
+
+Changes from v1:
+- fix compare in err check
+- remove unneeded brackets
+
+Jurgen Kramer (2):
+  usb: Add native DSD support for Denon/Marantz DACs
+  usb: Add mode select quirk for Denon/Marantz DACs
+
+ sound/usb/pcm.c    |  5 +++++
+ sound/usb/quirks.c | 47 +++++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/quirks.h |  3 +++
+ 3 files changed, 55 insertions(+)
+
+-- 
+1.9.3
