@@ -1,70 +1,83 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/30] ALSA: dice: suppress checkpatch.pl
-	warnings
-Date: Sat, 29 Nov 2014 00:59:10 +0900
-Message-ID: <1417190379-4172-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
+Date: Fri, 28 Nov 2014 16:00:36 +0000
+Message-ID: <20141128160036.GW7712@sirena.org.uk>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
+ <54753168.9010303@linux.intel.com>
+ <20141126111716.GE7712@sirena.org.uk>
+ <7202604.4LK4s7RH1S@vostro.rjw.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E53C26048B
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:48 +0100 (CET)
-In-Reply-To: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k9ssVBY1NpawPNl1"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <7202604.4LK4s7RH1S@vostro.rjw.lan>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The checkpatch.pl generates some warnings due to:
- - C99 comment
- - a line over 80 characters
- - min() for parameters with different types
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+--k9ssVBY1NpawPNl1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index e3a04d6..72af110 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -133,7 +133,7 @@ static inline u64 global_address(struct dice *dice, unsigned int offset)
- 	return DICE_PRIVATE_SPACE + dice->global_offset + offset;
- }
- 
--// TODO: rx index
-+/* TODO: rx index */
- static inline u64 rx_address(struct dice *dice, unsigned int offset)
- {
- 	return DICE_PRIVATE_SPACE + dice->rx_offset + offset;
-@@ -721,13 +721,14 @@ static long dice_hwdep_read(struct snd_hwdep *hwdep, char __user *buf,
- 		event.lock_status.status = dice->dev_lock_count > 0;
- 		dice->dev_lock_changed = false;
- 
--		count = min(count, (long)sizeof(event.lock_status));
-+		count = min_t(long, count, sizeof(event.lock_status));
- 	} else {
--		event.dice_notification.type = SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
-+		event.dice_notification.type =
-+					SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
- 		event.dice_notification.notification = dice->notification_bits;
- 		dice->notification_bits = 0;
- 
--		count = min(count, (long)sizeof(event.dice_notification));
-+		count = min_t(long, count, sizeof(event.dice_notification));
- 	}
- 
- 	spin_unlock_irq(&dice->lock);
--- 
-2.1.0
+On Thu, Nov 27, 2014 at 12:09:55AM +0100, Rafael J. Wysocki wrote:
+> On Wednesday, November 26, 2014 11:17:16 AM Mark Brown wrote:
+
+> > > As to registering ACPI IDs, I believe this is the right link:
+> > > http://www.uefi.org/PNP_ACPI_Registry
+
+> > No, those are vendors as far as I can tell.  I mean identifiers for
+> > specific devices - it appears to be common for for example Intel to
+> > allocate identifiers for devices they don't produce, I'd expect there to
+> > be some effort to keep track of that especially given that _DSD
+> > properties may well end up being specific to the identifier used to
+> > register in cases of parallel evolution.
+
+> The vendor (or more precisely the owner of the initial 3 or 4 letter code)
+> is supposed to do that.  I'm not aware of any common registry of those IDs
+> for all vendors.
+
+OK, we probably should have one to aid discoverability since as far as I
+can tell what's happening is that people (hi Intel!) are allocating
+their own identifiers for devices produced by other vendors that turn up
+on their boards.  If people can find the set of IDs in use there's more
+chance they'll use the same ones as other people.
+
+> > > Or did you mean a HID/CID<->DSD mapping?
+
+> > I don't really know what that is, sorry.
+
+> The device ID is supposed to determine the way all of the ACPI objects for that
+> device will work, including what is returned by _DSD.  Pretty much in analogy
+> with PCI device IDs.
+
+So the HID and CID are device IDs then?  Please bear in mind that we're
+not all familiar with the acronym soup that tends to go along with ACPI!
+
+If those are device IDs then what you're saying is what I'd expect to
+happen and it's part of the reason I'd expect us to be registering IDs
+along with registering properties - if people are defining device
+specific properties they really ought to be tied to the IDs that are in
+use especially if (as seems likely to be the case with the current state
+of the world) people are doing things without attempting to coordinate
+and we're ending up trying to document the deployed reality.
+
+--k9ssVBY1NpawPNl1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUeJwjAAoJECTWi3JdVIfQxtMH/2cuOV21Uzdi4IFBLyfUPBIa
+p8BDMGt8BGM5NGXpm0yqBASgXmn+PMNMPFjP+PHH1hMNiZrnf31ujH3b9E3N6yMG
+VRLyrrQH0yskR72vxmhMntv6UN/PMvi0YLUXg6acEOjJJpMjWY2PKUAAPeHQWdc3
+e9LPeLrdKc6PXQmN3WKM3APASfAeq3+hySDXb5T0efUEJbXo28zUnTJkW/sXpajo
+PcvxwxT/v4vl85v4YBO00G76XJMYKEy4P3CX2ebIk0MEp3/h0c6r8EES7nVY9kmP
+O2hllc17iDHacjCtgv+jaVCBfIHsnkDWqxm2MPGivVMeZsaChbVk1+D39E6WjPk=
+=R77u
+-----END PGP SIGNATURE-----
+
+--k9ssVBY1NpawPNl1--
