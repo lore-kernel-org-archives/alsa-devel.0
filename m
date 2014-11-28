@@ -1,14 +1,19 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: Intel: Correct the xmax volume
-Date: Fri, 28 Nov 2014 10:41:28 +0800
-Message-ID: <1417142488-14577-1-git-send-email-yang.jie@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/3] ARM: edma: Rename header file for
+ dmaengine filter function definition
+Date: Fri, 28 Nov 2014 09:16:24 +0200
+Message-ID: <54782148.6040108@ti.com>
+References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
+ <3300340.ou8f7H2hIc@wuerfel> <54777174.4070203@ti.com>
+ <4859328.eEV7jzKEaA@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C841C26040C
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 03:40:44 +0100 (CET)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3DFD260431
+ for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 08:16:39 +0100 (CET)
+In-Reply-To: <4859328.eEV7jzKEaA@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,45 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, linux@arm.linux.org.uk, vinod.koul@intel.com, nsekhar@ti.com, linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, khilman@deeprootsystems.com, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, chris@printf.net, dmaengine@vger.kernel.org, ulf.hansson@linaro.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The xmax volume should be corrected to ARRAY_SIZE(volume_map)-1, otherwise,
-the xmax value will be mapped to 0 wrongly.
+On 11/27/2014 11:52 PM, Arnd Bergmann wrote:
+> On Thursday 27 November 2014 20:46:12 Peter Ujfalusi wrote:
+>>
+>> I see. With this series I did not planed to fix all edma related issues,=
+ just
+>> as a start clean up the related header files. I would rather not add fix=
+es to
+>> mmc, spi, etc drivers since while you have valid point it is not in the =
+scope
+>> of this series.
+>> Can we do the changes you are suggesting in an incremental manner?
+> =
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/soc/intel/sst-haswell-pcm.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> Sure, but I'd leave the existing filter function declaration alone then
+> and not move it, since we wouldn't want to keep it in the long run.
 
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 20561ca..5f70d81 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -298,19 +298,19 @@ static const DECLARE_TLV_DB_SCALE(hsw_vol_tlv, -9000, 300, 1);
- static const struct snd_kcontrol_new hsw_volume_controls[] = {
- 	/* Global DSP volume */
- 	SOC_DOUBLE_EXT_TLV("Master Playback Volume", 0, 0, 8,
--		ARRAY_SIZE(volume_map) -1, 0,
-+		ARRAY_SIZE(volume_map) - 1, 0,
- 		hsw_volume_get, hsw_volume_put, hsw_vol_tlv),
- 	/* Offload 0 volume */
- 	SOC_DOUBLE_EXT_TLV("Media0 Playback Volume", 1, 0, 8,
--		ARRAY_SIZE(volume_map), 0,
-+		ARRAY_SIZE(volume_map) - 1, 0,
- 		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
- 	/* Offload 1 volume */
- 	SOC_DOUBLE_EXT_TLV("Media1 Playback Volume", 2, 0, 8,
--		ARRAY_SIZE(volume_map), 0,
-+		ARRAY_SIZE(volume_map) - 1, 0,
- 		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
- 	/* Mic Capture volume */
- 	SOC_DOUBLE_EXT_TLV("Mic Capture Volume", 4, 0, 8,
--		ARRAY_SIZE(volume_map), 0,
-+		ARRAY_SIZE(volume_map) - 1, 0,
- 		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
- };
- 
--- 
-1.9.1
+but if you want to reference the filter function (which is in
+drivers/dma/edma.c) in arch/arm/mach-davinci/ directory, we will need it.
+Don't we?
+
+If I leave the header as it is, then how would we clean up the edma headers=
+? I
+would not put the API definitions for the arch code into the same file as we
+have the filter definition.
+
+
+> =
+
+> 	Arnd
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> =
+
+
+
+-- =
+
+P=E9ter
