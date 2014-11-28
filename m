@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 26/30] ALSA: oxfw: Add support for
-	Behringer/Mackie devices
-Date: Sat, 29 Nov 2014 00:59:35 +0900
-Message-ID: <1417190379-4172-27-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 24/30] ALSA: oxfw: Add proc interface for
+	debugging purpose
+Date: Sat, 29 Nov 2014 00:59:33 +0900
+Message-ID: <1417190379-4172-25-git-send-email-o-takashi@sakamocchi.jp>
 References: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BCFB2604FC
+ by alsa0.perex.cz (Postfix) with ESMTP id 684B52604FA
  for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:53 +0100 (CET)
 In-Reply-To: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,183 +25,187 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Some devices produced by Behringer/Mackie are based on OXFW970/971. This
-commit adds support for them. Additionally, this commit changes the way to
-name card with some information in config rom.
-
-Ids of some Mackie(Loud) models are not identified, therefore this commit
-applies name detection for these models.
-
-The devices support capture/playback of PCM-samples and some of them
-supports capture/playback of MIDI messages. These functionalities are
-implemented by followed commits.
+This commit adds proc interface to get information about stream
+formation. This commit also adds snd_oxfw_stream_get_current_formation()
+to get current stream formation.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig     |  6 +++
- sound/firewire/oxfw/oxfw.c | 91 +++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 91 insertions(+), 6 deletions(-)
+ sound/firewire/oxfw/Makefile      |  3 +-
+ sound/firewire/oxfw/oxfw-proc.c   | 84 +++++++++++++++++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw-stream.c | 27 +++++++++++++
+ sound/firewire/oxfw/oxfw.c        |  2 +
+ sound/firewire/oxfw/oxfw.h        |  3 ++
+ 5 files changed, 118 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/oxfw/oxfw-proc.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 0932860..6364e5b 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -31,6 +31,12 @@ config SND_OXFW
- 	  Oxford Semiconductor FW970/971 chipset.
- 	   * Griffin Firewave
- 	   * LaCie Firewire Speakers
-+	   * Behringer F-Control Audio 202
-+	   * Mackie(Loud) Onyx-i series (former models)
-+	   * Mackie(Loud) Onyx Satellite
-+	   * Mackie(Loud) Tapco Link.Firewire
-+	   * Mackie(Loud) d.2 pro/d.4 pro
-+	   * Mackie(Loud) U.420/U.420d
- 
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-oxfw.
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index b53aa1d..85315e3 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -14,7 +14,9 @@
- #define OXFORD_HARDWARE_ID_OXFW970	0x39443841
- #define OXFORD_HARDWARE_ID_OXFW971	0x39373100
- 
-+#define VENDOR_LOUD		0x000ff2
- #define VENDOR_GRIFFIN		0x001292
-+#define VENDOR_BEHRINGER	0x001564
- #define VENDOR_LACIE		0x00d04b
- 
- #define SPECIFIER_1394TA	0x00a02d
-@@ -41,22 +43,69 @@ static const struct device_info lacie_speakers = {
- 	.volume_fb_id = 0x01,
- };
- 
-+static bool detect_loud_models(struct fw_unit *unit)
+diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
+index b107134..e9297c6 100644
+--- a/sound/firewire/oxfw/Makefile
++++ b/sound/firewire/oxfw/Makefile
+@@ -1,2 +1,3 @@
+-snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
++snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o \
++		 oxfw-proc.o oxfw.o
+ obj-m += snd-oxfw.o
+diff --git a/sound/firewire/oxfw/oxfw-proc.c b/sound/firewire/oxfw/oxfw-proc.c
+new file mode 100644
+index 0000000..18e0305
+--- /dev/null
++++ b/sound/firewire/oxfw/oxfw-proc.c
+@@ -0,0 +1,84 @@
++/*
++ * oxfw_proc.c - a part of driver for OXFW970/971 based devices
++ *
++ * Copyright (c) 2014 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "./oxfw.h"
++
++static void proc_read_formation(struct snd_info_entry *entry,
++				struct snd_info_buffer *buffer)
 +{
-+	const char *const models[] = {
-+		"Onyxi",
-+		"Onyx-i",
-+		"d.Pro",
-+		"Mackie Onyx Satellite",
-+		"Tapco LINK.firewire 4x6",
-+		"U.420"};
-+	char model[32];
-+	unsigned int i;
-+	int err;
++	struct snd_oxfw *oxfw = entry->private_data;
++	struct snd_oxfw_stream_formation formation, curr;
++	u8 *format;
++	char flag;
++	unsigned int i, err;
 +
-+	err = fw_csr_string(unit->directory, CSR_MODEL,
-+			    model, sizeof(model));
++	/* Show input. */
++	err = snd_oxfw_stream_get_current_formation(oxfw,
++						    AVC_GENERAL_PLUG_DIR_IN,
++						    &curr);
 +	if (err < 0)
-+		return err;
++		return;
 +
-+	for (i = 0; i < ARRAY_SIZE(models); i++) {
-+		if (strcmp(models[i], model) == 0)
-+			break;
++	snd_iprintf(buffer, "Input Stream to device:\n");
++	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
++	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
++		format = oxfw->rx_stream_formats[i];
++		if (format == NULL)
++			continue;
++
++		err = snd_oxfw_stream_parse_format(format, &formation);
++		if (err < 0)
++			continue;
++
++		if (memcmp(&formation, &curr, sizeof(curr)) == 0)
++			flag = '*';
++		else
++			flag = ' ';
++
++		snd_iprintf(buffer, "%c\t%d\t%d\t%d\n", flag,
++			    formation.rate, formation.pcm, formation.midi);
 +	}
 +
-+	return (i < ARRAY_SIZE(models));
 +}
 +
- static int name_card(struct snd_oxfw *oxfw)
- {
- 	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
-+	char vendor[24];
-+	char model[32];
- 	const char *d, *v, *m;
- 	u32 firmware;
- 	int err;
- 
-+	/* get vendor name from root directory */
-+	err = fw_csr_string(fw_dev->config_rom + 5, CSR_VENDOR,
-+			    vendor, sizeof(vendor));
-+	if (err < 0)
-+		goto end;
++static void add_node(struct snd_oxfw *oxfw, struct snd_info_entry *root,
++		     const char *name,
++		     void (*op)(struct snd_info_entry *e,
++				struct snd_info_buffer *b))
++{
++	struct snd_info_entry *entry;
 +
-+	/* get model name from unit directory */
-+	err = fw_csr_string(oxfw->unit->directory, CSR_MODEL,
-+			    model, sizeof(model));
-+	if (err < 0)
-+		goto end;
++	entry = snd_info_create_card_entry(oxfw->card, name, root);
++	if (entry == NULL)
++		return;
 +
- 	err = snd_fw_transaction(oxfw->unit, TCODE_READ_QUADLET_REQUEST,
- 				 OXFORD_FIRMWARE_ID_ADDRESS, &firmware, 4, 0);
- 	if (err < 0)
- 		goto end;
- 	be32_to_cpus(&firmware);
- 
--	d = oxfw->device_info->driver_name;
--	v = oxfw->device_info->vendor_name;
--	m = oxfw->device_info->driver_name;
-+	/* to apply card definitions */
-+	if (oxfw->device_info) {
-+		d = oxfw->device_info->driver_name;
-+		v = oxfw->device_info->vendor_name;
-+		m = oxfw->device_info->driver_name;
-+	} else {
-+		d = "OXFW";
-+		v = vendor;
-+		m = model;
++	snd_info_set_text_ops(entry, oxfw, op);
++	if (snd_info_register(entry) < 0)
++		snd_info_free_entry(entry);
++}
++
++void snd_oxfw_proc_init(struct snd_oxfw *oxfw)
++{
++	struct snd_info_entry *root;
++
++	/*
++	 * All nodes are automatically removed at snd_card_disconnect(),
++	 * by following to link list.
++	 */
++	root = snd_info_create_card_entry(oxfw->card, "firewire",
++					  oxfw->card->proc_root);
++	if (root == NULL)
++		return;
++	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
++	if (snd_info_register(root) < 0) {
++		snd_info_free_entry(root);
++		return;
 +	}
- 
- 	strcpy(oxfw->card->driver, d);
- 	strcpy(oxfw->card->shortname, m);
-@@ -89,6 +138,9 @@ static int oxfw_probe(struct fw_unit *unit,
- 	struct snd_oxfw *oxfw;
- 	int err;
- 
-+	if ((id->vendor_id == VENDOR_LOUD) && !detect_loud_models(unit))
-+		return -ENODEV;
 +
- 	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
- 			   sizeof(*oxfw), &card);
- 	if (err < 0)
-@@ -113,9 +165,11 @@ static int oxfw_probe(struct fw_unit *unit,
++	add_node(oxfw, root, "formation", proc_read_formation);
++}
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 17e3802..210bf5a 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -108,6 +108,33 @@ void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw)
+ 		amdtp_stream_update(&oxfw->rx_stream);
+ }
+ 
++int snd_oxfw_stream_get_current_formation(struct snd_oxfw *oxfw,
++				enum avc_general_plug_dir dir,
++				struct snd_oxfw_stream_formation *formation)
++{
++	u8 *format;
++	unsigned int len;
++	int err;
++
++	len = AVC_GENERIC_FRAME_MAXIMUM_BYTES;
++	format = kmalloc(len, GFP_KERNEL);
++	if (format == NULL)
++		return -ENOMEM;
++
++	err = avc_stream_get_format_single(oxfw->unit, dir, 0, format, &len);
++	if (err < 0)
++		goto end;
++	if (len < 3) {
++		err = -EIO;
++		goto end;
++	}
++
++	err = snd_oxfw_stream_parse_format(format, formation);
++end:
++	kfree(format);
++	return err;
++}
++
+ /*
+  * See Table 6.16 - AM824 Stream Format
+  *     Figure 6.19 - format_information field for AM824 Compound
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 4514650..b53aa1d 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -117,6 +117,8 @@ static int oxfw_probe(struct fw_unit *unit,
  	if (err < 0)
  		goto error;
  
--	err = snd_oxfw_create_mixer(oxfw);
--	if (err < 0)
--		goto error;
-+	if (oxfw->device_info) {
-+		err = snd_oxfw_create_mixer(oxfw);
-+		if (err < 0)
-+			goto error;
-+	}
++	snd_oxfw_proc_init(oxfw);
++
+ 	err = snd_oxfw_stream_init_simplex(oxfw);
+ 	if (err < 0)
+ 		goto error;
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index c4c1acd..6bc2ac3 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -18,6 +18,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/info.h>
  
- 	snd_oxfw_proc_init(oxfw);
+ #include "../lib.h"
+ #include "../fcp.h"
+@@ -107,3 +108,5 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw);
+ int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
  
-@@ -181,6 +235,31 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
- 		.version      = VERSION_AVC,
- 		.driver_data  = (kernel_ulong_t)&lacie_speakers,
- 	},
-+	/* Behringer,F-Control Audio 202 */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= VENDOR_BEHRINGER,
-+		.model_id	= 0x00fc22,
-+	},
-+	/*
-+	 * Any Mackie(Loud) models (name string/model id):
-+	 *  Onyx-i series (former models):	0x081216
-+	 *  Mackie Onyx Satellite:		0x00200f
-+	 *  Tapco LINK.firewire 4x6:		0x000460
-+	 *  d.2 pro:				Unknown
-+	 *  d.4 pro:				Unknown
-+	 *  U.420:				Unknown
-+	 *  U.420d:				Unknown
-+	 */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_SPECIFIER_ID |
-+				  IEEE1394_MATCH_VERSION,
-+		.vendor_id	= VENDOR_LOUD,
-+		.specifier_id	= SPECIFIER_1394TA,
-+		.version	= VERSION_AVC,
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(ieee1394, oxfw_id_table);
+ int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
++
++void snd_oxfw_proc_init(struct snd_oxfw *oxfw);
 -- 
 2.1.0
