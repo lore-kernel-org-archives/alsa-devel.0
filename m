@@ -1,166 +1,150 @@
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH 2/3] ARM: edma: Rename header file for dmaengine filter
- function definition
-Date: Fri, 28 Nov 2014 11:57:58 +0100
-Message-ID: <CAPDyKFpB_06x1OMLJ1bWWcf4c0Tob4k=TfEOkE1JpaA+uXouPw@mail.gmail.com>
-References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
-	<1417084891-17990-3-git-send-email-peter.ujfalusi@ti.com>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ASoC: Intel: Move capture PCM pin to PCM0 for
+	Broadwell
+Date: Fri, 28 Nov 2014 19:20:43 +0800
+Message-ID: <1417173643-25331-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <1417084891-17990-3-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, nsekhar@ti.com, Arnd Bergmann <arnd@arndb.de>, Vinod Koul <vinod.koul@intel.com>, Kevin Hilman <khilman@deeprootsystems.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chris Ball <chris@printf.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-mmc <linux-mmc@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, linux-omap <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>, dmaengine@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id D42CD260446
+ for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 12:20:01 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 27 November 2014 at 11:41, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
-> Rename the include/linux/edma.h to include/linux/edma-dmaengine.h
->
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Move capture PCM pin from PCM4 to PCM0 for Broadwell.
+This will allow us to integrate with pulseaudio better
+for usually default device is set to 0.
 
-For the mmc parts:
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+---
+ sound/soc/intel/broadwell.c       | 15 ++-------------
+ sound/soc/intel/sst-haswell-pcm.c | 34 ++++++++++++++++------------------
+ 2 files changed, 18 insertions(+), 31 deletions(-)
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
-
-> ---
->  arch/arm/common/edma.c         |  2 +-
->  drivers/mmc/host/davinci_mmc.c |  3 +--
->  drivers/spi/spi-davinci.c      |  2 +-
->  include/linux/edma-dmaengine.h | 29 +++++++++++++++++++++++++++++
->  include/linux/edma.h           | 29 -----------------------------
->  sound/soc/davinci/edma-pcm.c   |  2 +-
->  6 files changed, 33 insertions(+), 34 deletions(-)
->  create mode 100644 include/linux/edma-dmaengine.h
->  delete mode 100644 include/linux/edma.h
->
-> diff --git a/arch/arm/common/edma.c b/arch/arm/common/edma.c
-> index 5662a872689b..bac677e65c76 100644
-> --- a/arch/arm/common/edma.c
-> +++ b/arch/arm/common/edma.c
-> @@ -25,7 +25,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/io.h>
->  #include <linux/slab.h>
-> -#include <linux/edma.h>
-> +#include <linux/edma-dmaengine.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/of_address.h>
->  #include <linux/of_device.h>
-> diff --git a/drivers/mmc/host/davinci_mmc.c b/drivers/mmc/host/davinci_mmc.c
-> index 1625f908dc70..47323662c818 100644
-> --- a/drivers/mmc/host/davinci_mmc.c
-> +++ b/drivers/mmc/host/davinci_mmc.c
-> @@ -32,12 +32,11 @@
->  #include <linux/delay.h>
->  #include <linux/dmaengine.h>
->  #include <linux/dma-mapping.h>
-> -#include <linux/edma.h>
-> +#include <linux/edma-dmaengine.h>
->  #include <linux/mmc/mmc.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->
-> -#include <linux/platform_data/edma.h>
->  #include <linux/platform_data/mmc-davinci.h>
->
->  /*
-> diff --git a/drivers/spi/spi-davinci.c b/drivers/spi/spi-davinci.c
-> index b3707badb1e5..d61b7cdb2deb 100644
-> --- a/drivers/spi/spi-davinci.c
-> +++ b/drivers/spi/spi-davinci.c
-> @@ -27,7 +27,7 @@
->  #include <linux/clk.h>
->  #include <linux/dmaengine.h>
->  #include <linux/dma-mapping.h>
-> -#include <linux/edma.h>
-> +#include <linux/edma-dmaengine.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/of_gpio.h>
-> diff --git a/include/linux/edma-dmaengine.h b/include/linux/edma-dmaengine.h
-> new file mode 100644
-> index 000000000000..8a2602809a77
-> --- /dev/null
-> +++ b/include/linux/edma-dmaengine.h
-> @@ -0,0 +1,29 @@
-> +/*
-> + * TI EDMA DMA engine driver
-> + *
-> + * Copyright 2012 Texas Instruments
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation version 2.
-> + *
-> + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
-> + * kind, whether express or implied; without even the implied warranty
-> + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + */
-> +#ifndef __LINUX_EDMA_DMAENGINE_H
-> +#define __LINUX_EDMA_DMAENGINE_H
-> +
-> +struct dma_chan;
-> +
-> +#if defined(CONFIG_TI_EDMA) || defined(CONFIG_TI_EDMA_MODULE)
-> +bool edma_filter_fn(struct dma_chan *, void *);
-> +#else
-> +static inline bool edma_filter_fn(struct dma_chan *chan, void *param)
-> +{
-> +       return false;
-> +}
-> +#endif
-> +
-> +#endif
-> diff --git a/include/linux/edma.h b/include/linux/edma.h
-> deleted file mode 100644
-> index a1307e7827e8..000000000000
-> --- a/include/linux/edma.h
-> +++ /dev/null
-> @@ -1,29 +0,0 @@
-> -/*
-> - * TI EDMA DMA engine driver
-> - *
-> - * Copyright 2012 Texas Instruments
-> - *
-> - * This program is free software; you can redistribute it and/or
-> - * modify it under the terms of the GNU General Public License as
-> - * published by the Free Software Foundation version 2.
-> - *
-> - * This program is distributed "as is" WITHOUT ANY WARRANTY of any
-> - * kind, whether express or implied; without even the implied warranty
-> - * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License for more details.
-> - */
-> -#ifndef __LINUX_EDMA_H
-> -#define __LINUX_EDMA_H
-> -
-> -struct dma_chan;
-> -
-> -#if defined(CONFIG_TI_EDMA) || defined(CONFIG_TI_EDMA_MODULE)
-> -bool edma_filter_fn(struct dma_chan *, void *);
-> -#else
-> -static inline bool edma_filter_fn(struct dma_chan *chan, void *param)
-> -{
-> -       return false;
-> -}
-> -#endif
-> -
-> -#endif
-> diff --git a/sound/soc/davinci/edma-pcm.c b/sound/soc/davinci/edma-pcm.c
-> index 59e588abe54b..873c8a090427 100644
-> --- a/sound/soc/davinci/edma-pcm.c
-> +++ b/sound/soc/davinci/edma-pcm.c
-> @@ -23,7 +23,7 @@
->  #include <sound/pcm_params.h>
->  #include <sound/soc.h>
->  #include <sound/dmaengine_pcm.h>
-> -#include <linux/edma.h>
-> +#include <linux/edma-dmaengine.h>
->
->  #include "edma-pcm.h"
->
-> --
-> 2.1.3
->
+diff --git a/sound/soc/intel/broadwell.c b/sound/soc/intel/broadwell.c
+index 52cb764..c256764 100644
+--- a/sound/soc/intel/broadwell.c
++++ b/sound/soc/intel/broadwell.c
+@@ -171,7 +171,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+ 	/* Front End DAI links */
+ 	{
+ 		.name = "System PCM",
+-		.stream_name = "System Playback",
++		.stream_name = "System Playback/Capture",
+ 		.cpu_dai_name = "System Pin",
+ 		.platform_name = "haswell-pcm-audio",
+ 		.dynamic = 1,
+@@ -180,6 +180,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+ 		.init = broadwell_rtd_init,
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.dpcm_playback = 1,
++		.dpcm_capture = 1,
+ 	},
+ 	{
+ 		.name = "Offload0",
+@@ -214,18 +215,6 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+ 		.dpcm_capture = 1,
+ 	},
+-	{
+-		.name = "Capture PCM",
+-		.stream_name = "Capture",
+-		.cpu_dai_name = "Capture Pin",
+-		.platform_name = "haswell-pcm-audio",
+-		.dynamic = 1,
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
+-		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+-		.dpcm_capture = 1,
+-	},
+-
+ 	/* Back End DAI links */
+ 	{
+ 		/* SSP0 - Codec */
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index 5f70d81..0180b38 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -309,7 +309,7 @@ static const struct snd_kcontrol_new hsw_volume_controls[] = {
+ 		ARRAY_SIZE(volume_map) - 1, 0,
+ 		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
+ 	/* Mic Capture volume */
+-	SOC_DOUBLE_EXT_TLV("Mic Capture Volume", 4, 0, 8,
++	SOC_DOUBLE_EXT_TLV("Mic Capture Volume", 0, 0, 8,
+ 		ARRAY_SIZE(volume_map) - 1, 0,
+ 		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
+ };
+@@ -396,8 +396,14 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	/* DSP stream type depends on DAI ID */
+ 	switch (rtd->cpu_dai->id) {
+ 	case 0:
+-		stream_type = SST_HSW_STREAM_TYPE_SYSTEM;
+-		module_id = SST_HSW_MODULE_PCM_SYSTEM;
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			stream_type = SST_HSW_STREAM_TYPE_SYSTEM;
++			module_id = SST_HSW_MODULE_PCM_SYSTEM;
++		}
++		else {
++			stream_type = SST_HSW_STREAM_TYPE_CAPTURE;
++			module_id = SST_HSW_MODULE_PCM_CAPTURE;
++		}
+ 		break;
+ 	case 1:
+ 	case 2:
+@@ -410,10 +416,6 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		path_id = SST_HSW_STREAM_PATH_SSP0_OUT;
+ 		module_id = SST_HSW_MODULE_PCM_REFERENCE;
+ 		break;
+-	case 4:
+-		stream_type = SST_HSW_STREAM_TYPE_CAPTURE;
+-		module_id = SST_HSW_MODULE_PCM_CAPTURE;
+-		break;
+ 	default:
+ 		dev_err(rtd->dev, "error: invalid DAI ID %d\n",
+ 			rtd->cpu_dai->id);
+@@ -779,6 +781,13 @@ static struct snd_soc_dai_driver hsw_dais[] = {
+ 			.rates = SNDRV_PCM_RATE_48000,
+ 			.formats = SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
++		.capture = {
++			.stream_name = "Analog Capture",
++			.channels_min = 2,
++			.channels_max = 4,
++			.rates = SNDRV_PCM_RATE_48000,
++			.formats = SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE,
++		},
+ 	},
+ 	{
+ 		/* PCM */
+@@ -815,17 +824,6 @@ static struct snd_soc_dai_driver hsw_dais[] = {
+ 			.formats = SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
+ 	},
+-	{
+-		.name  = "Capture Pin",
+-		.id = HSW_PCM_DAI_ID_CAPTURE,
+-		.capture = {
+-			.stream_name = "Analog Capture",
+-			.channels_min = 2,
+-			.channels_max = 4,
+-			.rates = SNDRV_PCM_RATE_48000,
+-			.formats = SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE,
+-		},
+-	},
+ };
+ 
+ static const struct snd_soc_dapm_widget widgets[] = {
+-- 
+1.9.1
