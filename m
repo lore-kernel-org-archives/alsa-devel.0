@@ -1,83 +1,182 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Fri, 28 Nov 2014 16:00:36 +0000
-Message-ID: <20141128160036.GW7712@sirena.org.uk>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
- <54753168.9010303@linux.intel.com>
- <20141126111716.GE7712@sirena.org.uk>
- <7202604.4LK4s7RH1S@vostro.rjw.lan>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/30] ALSA: dice: Add new functions for
+	constraints of PCM parameters
+Date: Sat, 29 Nov 2014 00:59:18 +0900
+Message-ID: <1417190379-4172-10-git-send-email-o-takashi@sakamocchi.jp>
+References: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="k9ssVBY1NpawPNl1"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <7202604.4LK4s7RH1S@vostro.rjw.lan>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FE432604DB
+ for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:51 +0100 (CET)
+In-Reply-To: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This commit adds a new functions and some arrangement for PCM restriction.
+This arrangement is due to the number of channels which each Dice device has.
 
---k9ssVBY1NpawPNl1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I note that minimum number for period becomes 2, instead of 1 because its PCM
+functionality has SNDRV_PCM_INFO_BATCH, this means that the driver uses double
+(or more) buffering so the minimum number for period should be 2.
 
-On Thu, Nov 27, 2014 at 12:09:55AM +0100, Rafael J. Wysocki wrote:
-> On Wednesday, November 26, 2014 11:17:16 AM Mark Brown wrote:
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-pcm.c | 109 ++++++++++++++++++++++++-----------------
+ 1 file changed, 65 insertions(+), 44 deletions(-)
 
-> > > As to registering ACPI IDs, I believe this is the right link:
-> > > http://www.uefi.org/PNP_ACPI_Registry
-
-> > No, those are vendors as far as I can tell.  I mean identifiers for
-> > specific devices - it appears to be common for for example Intel to
-> > allocate identifiers for devices they don't produce, I'd expect there to
-> > be some effort to keep track of that especially given that _DSD
-> > properties may well end up being specific to the identifier used to
-> > register in cases of parallel evolution.
-
-> The vendor (or more precisely the owner of the initial 3 or 4 letter code)
-> is supposed to do that.  I'm not aware of any common registry of those IDs
-> for all vendors.
-
-OK, we probably should have one to aid discoverability since as far as I
-can tell what's happening is that people (hi Intel!) are allocating
-their own identifiers for devices produced by other vendors that turn up
-on their boards.  If people can find the set of IDs in use there's more
-chance they'll use the same ones as other people.
-
-> > > Or did you mean a HID/CID<->DSD mapping?
-
-> > I don't really know what that is, sorry.
-
-> The device ID is supposed to determine the way all of the ACPI objects for that
-> device will work, including what is returned by _DSD.  Pretty much in analogy
-> with PCI device IDs.
-
-So the HID and CID are device IDs then?  Please bear in mind that we're
-not all familiar with the acronym soup that tends to go along with ACPI!
-
-If those are device IDs then what you're saying is what I'd expect to
-happen and it's part of the reason I'd expect us to be registering IDs
-along with registering properties - if people are defining device
-specific properties they really ought to be tied to the IDs that are in
-use especially if (as seems likely to be the case with the current state
-of the world) people are doing things without attempting to coordinate
-and we're ending up trying to document the deployed reality.
-
---k9ssVBY1NpawPNl1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUeJwjAAoJECTWi3JdVIfQxtMH/2cuOV21Uzdi4IFBLyfUPBIa
-p8BDMGt8BGM5NGXpm0yqBASgXmn+PMNMPFjP+PHH1hMNiZrnf31ujH3b9E3N6yMG
-VRLyrrQH0yskR72vxmhMntv6UN/PMvi0YLUXg6acEOjJJpMjWY2PKUAAPeHQWdc3
-e9LPeLrdKc6PXQmN3WKM3APASfAeq3+hySDXb5T0efUEJbXo28zUnTJkW/sXpajo
-PcvxwxT/v4vl85v4YBO00G76XJMYKEy4P3CX2ebIk0MEp3/h0c6r8EES7nVY9kmP
-O2hllc17iDHacjCtgv+jaVCBfIHsnkDWqxm2MPGivVMeZsaChbVk1+D39E6WjPk=
-=R77u
------END PGP SIGNATURE-----
-
---k9ssVBY1NpawPNl1--
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index deacb53..2e531bd 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -67,71 +67,92 @@ static int dice_channels_constraint(struct snd_pcm_hw_params *params,
+ 	return snd_interval_refine(c, &channels);
+ }
+ 
+-
+-static int pcm_open(struct snd_pcm_substream *substream)
++static void limit_channels_and_rates(struct snd_dice *dice,
++				     struct snd_pcm_runtime *runtime,
++				     unsigned int *pcm_channels)
+ {
+-	static const struct snd_pcm_hardware hardware = {
+-		.info = SNDRV_PCM_INFO_MMAP |
+-			SNDRV_PCM_INFO_MMAP_VALID |
+-			SNDRV_PCM_INFO_BATCH |
+-			SNDRV_PCM_INFO_INTERLEAVED |
+-			SNDRV_PCM_INFO_BLOCK_TRANSFER,
+-		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
+-		.channels_min = UINT_MAX,
+-		.channels_max = 0,
+-		.buffer_bytes_max = 16 * 1024 * 1024,
+-		.period_bytes_min = 1,
+-		.period_bytes_max = UINT_MAX,
+-		.periods_min = 1,
+-		.periods_max = UINT_MAX,
+-	};
+-	struct snd_dice *dice = substream->private_data;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	unsigned int i;
+-	int err;
++	struct snd_pcm_hardware *hw = &runtime->hw;
++	unsigned int i, rate, mode;
+ 
+-	err = snd_dice_stream_lock_try(dice);
+-	if (err < 0)
+-		goto error;
+-
+-	runtime->hw = hardware;
++	hw->channels_min = UINT_MAX;
++	hw->channels_max = 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
+-		if (dice->clock_caps & (1 << i))
+-			runtime->hw.rates |=
+-				snd_pcm_rate_to_rate_bit(snd_dice_rates[i]);
++		rate = snd_dice_rates[i];
++		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
++			continue;
++		hw->rates |= snd_pcm_rate_to_rate_bit(rate);
++
++		if (pcm_channels[mode] == 0)
++			continue;
++		hw->channels_min = min(hw->channels_min, pcm_channels[mode]);
++		hw->channels_max = max(hw->channels_max, pcm_channels[mode]);
+ 	}
++
+ 	snd_pcm_limit_hw_rates(runtime);
++}
+ 
+-	for (i = 0; i < 3; ++i) {
+-		if (dice->rx_channels[i]) {
+-			runtime->hw.channels_min = min(runtime->hw.channels_min,
+-						       dice->rx_channels[i]);
+-			runtime->hw.channels_max = max(runtime->hw.channels_max,
+-						       dice->rx_channels[i]);
+-		}
+-	}
++static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
++{
++	hw->periods_min = 2;			/* SNDRV_PCM_INFO_BATCH */
++	hw->periods_max = UINT_MAX;
++
++	hw->period_bytes_min = 4 * hw->channels_max;    /* byte for a frame */
++
++	/* Just to prevent from allocating much pages. */
++	hw->period_bytes_max = hw->period_bytes_min * 2048;
++	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
++}
++
++static int init_hw_info(struct snd_dice *dice,
++			struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_pcm_hardware *hw = &runtime->hw;
++	int err;
++
++	hw->info = SNDRV_PCM_INFO_MMAP |
++		   SNDRV_PCM_INFO_MMAP_VALID |
++		   SNDRV_PCM_INFO_BATCH |
++		   SNDRV_PCM_INFO_INTERLEAVED |
++		   SNDRV_PCM_INFO_BLOCK_TRANSFER;
++	hw->formats = AMDTP_OUT_PCM_FORMAT_BITS;
++
++	limit_channels_and_rates(dice, runtime, dice->rx_channels);
++	limit_period_and_buffer(hw);
+ 
+ 	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+ 				  dice_rate_constraint, dice,
+ 				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+ 	if (err < 0)
+-		goto err_lock;
++		goto end;
+ 	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+ 				  dice_channels_constraint, dice,
+ 				  SNDRV_PCM_HW_PARAM_RATE, -1);
+ 	if (err < 0)
+-		goto err_lock;
++		goto end;
+ 
+ 	err = amdtp_stream_add_pcm_hw_constraints(&dice->rx_stream, runtime);
+-	if (err < 0)
+-		goto err_lock;
++end:
++	return err;
++}
+ 
+-	return 0;
++static int pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_dice *dice = substream->private_data;
++	int err;
+ 
+-err_lock:
++	err = snd_dice_stream_lock_try(dice);
++	if (err < 0)
++		goto end;
++
++	err = init_hw_info(dice, substream);
++	if (err < 0)
++		goto err_locked;
++end:
++	return err;
++err_locked:
+ 	snd_dice_stream_lock_release(dice);
+-error:
+ 	return err;
+ }
+ 
+-- 
+2.1.0
