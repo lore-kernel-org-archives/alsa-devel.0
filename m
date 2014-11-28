@@ -1,18 +1,18 @@
-From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: [PATCH 2/2] usb: Add mode select quirk for
-	Denon/Marantz DACs
-Date: Fri, 28 Nov 2014 14:04:31 +0100
-Message-ID: <1417179871-7395-3-git-send-email-gtmkramer@xs4all.nl>
-References: <1417179871-7395-1-git-send-email-gtmkramer@xs4all.nl>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Move capture PCM pin to PCM0
+	for Broadwell
+Date: Fri, 28 Nov 2014 13:40:23 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901B73294@SHSMSX101.ccr.corp.intel.com>
+References: <1417173643-25331-1-git-send-email-yang.jie@intel.com>
+ <20141128113958.GI7712@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb1-smtp-cloud3.xs4all.net (lb1-smtp-cloud3.xs4all.net
- [194.109.24.22])
- by alsa0.perex.cz (Postfix) with ESMTP id ECE4426044B
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 14:04:46 +0100 (CET)
-In-Reply-To: <1417179871-7395-1-git-send-email-gtmkramer@xs4all.nl>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A9BC260467
+ for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 14:40:33 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,107 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Denon/Marantz USB DACs need a specific vendor command to switch between PCM and
-DSD mode. This patch adds a new quirk function to switch between the two modes
-using the specific USB vendor command.
 
-This patch applies to the following devices:
-- Marantz SA-14S1
-- Marantz HD-DAC1
+Hi Mark,
 
-Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
----
- sound/usb/pcm.c    |  5 +++++
- sound/usb/quirks.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- sound/usb/quirks.h |  3 +++
- 3 files changed, 50 insertions(+)
+Please ignore my previous mail. Liam comment that it's better to update the haswell machine driver at the same time.
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index c62a165..0d8aba5 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -482,6 +482,11 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 	/* set interface */
- 	if (subs->interface != fmt->iface ||
- 	    subs->altset_idx != fmt->altset_idx) {
-+
-+		err = snd_usb_select_mode_quirk(subs, fmt);
-+		if (err < 0)
-+			return -EIO;
-+
- 		err = usb_set_interface(dev, fmt->iface, fmt->altsetting);
- 		if (err < 0) {
- 			dev_err(&dev->dev,
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index cc07388..40fb87f 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1111,6 +1111,48 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 	}
- }
- 
-+
-+/* Marantz/Denon USB DACs need a vendor cmd to switch
-+ * between PCM and native DSD mode */
-+int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
-+			      struct audioformat *fmt)
-+{
-+	struct usb_device *dev = subs->dev;
-+	int err;
-+
-+	switch (subs->stream->chip->usb_id) {
-+	case USB_ID(0x154e, 0x3005): /* Marantz HD-DAC1 */
-+	case USB_ID(0x154e, 0x3006): /* Marantz SA-14S1 */
-+
-+		/* First switch to alt set 0, otherwise the mode switch cmd
-+		 * will not be accepted by the DAC */
-+		err = usb_set_interface(dev, fmt->iface, 0);
-+		if (err < 0)
-+			return err;
-+
-+		mdelay(20); /* Delay needed after setting the interface */
-+
-+		switch(fmt->altsetting) {
-+		case 2: /* DSD mode requested */
-+			err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0,
-+					      USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
-+					      1, 1, NULL, 0);
-+			if (err < 0)
-+				return err;
-+			break;
-+		case 1: /* PCM mode requested */
-+			err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0,
-+					      USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
-+					      0, 1, NULL, 0);
-+			if (err < 0)
-+				return err;
-+			break;
-+		}
-+		mdelay(20);
-+	}
-+	return 0;
-+}
-+
- void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep)
- {
- 	/*
-diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-index 665e972..1b86238 100644
---- a/sound/usb/quirks.h
-+++ b/sound/usb/quirks.h
-@@ -31,6 +31,9 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 			   __u8 request, __u8 requesttype, __u16 value,
- 			   __u16 index, void *data, __u16 size);
- 
-+int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
-+			      struct audioformat *fmt);
-+
- u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 					struct audioformat *fp,
- 					unsigned int sample_bytes);
--- 
-1.9.3
+Will resend v2 for the patch.
+
+Thanks,
+~Keyon
+
+
+> -----Original Message-----
+> From: Jie, Yang
+> Sent: Friday, November 28, 2014 8:00 PM
+> To: 'Mark Brown'
+> Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
+> Subject: RE: [PATCH] ASoC: Intel: Move capture PCM pin to PCM0 for Broadwell
+> 
+> 
+> Hi Mark,
+> 
+> Thanks for reviewing. Seems it need to be applied after commit ' [PATCH] ASoC:
+> Intel: Correct the xmax volume' is accepted.
+> I can apply it base on the commit
+> 1e2f1a5f8c4826e3d09fd67dec5f09e64b25c0d5.
+> 
+> Regards,
+> ~Keyon
+> 
+> 
+> > -----Original Message-----
+> > From: Mark Brown [mailto:broonie@kernel.org]
+> > Sent: Friday, November 28, 2014 7:40 PM
+> > To: Jie, Yang
+> > Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
+> > Subject: Re: [PATCH] ASoC: Intel: Move capture PCM pin to PCM0 for
+> > Broadwell
+> >
+> > On Fri, Nov 28, 2014 at 07:20:43PM +0800, Jie Yang wrote:
+> > > Move capture PCM pin from PCM4 to PCM0 for Broadwell.
+> > > This will allow us to integrate with pulseaudio better for usually
+> > > default device is set to 0.
+> >
+> > This doesn't apply, please check and resend.
