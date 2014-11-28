@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 15/30] ALSA: dice: remove experimental state
-Date: Sat, 29 Nov 2014 00:59:24 +0900
-Message-ID: <1417190379-4172-16-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 14/30] ALSA: dice: Add support for MIDI
+	capture/playback
+Date: Sat, 29 Nov 2014 00:59:23 +0900
+Message-ID: <1417190379-4172-15-git-send-email-o-takashi@sakamocchi.jp>
 References: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 507EF2604E5
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D64C22604DF
+ for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:51 +0100 (CET)
 In-Reply-To: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,32 +25,278 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Some developers test this driver, thus it's better to remove its
-experimental state.
+This commit adds a support for MIDI capture/playback
+
+When MIDI substrams already start streaming and PCM substreams are going to
+join at different sampling rate, streams are stopped once. Then sampling rate
+is changed and streams are restarted.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/firewire/dice/Makefile      |   4 +-
+ sound/firewire/dice/dice-midi.c   | 194 ++++++++++++++++++++++++++++++++++++++
+ sound/firewire/dice/dice-stream.c |   2 +
+ sound/firewire/dice/dice.c        |   4 +
+ sound/firewire/dice/dice.h        |   3 +
+ 5 files changed, 205 insertions(+), 2 deletions(-)
+ create mode 100644 sound/firewire/dice/dice-midi.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index c8e704c..860e21c 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -13,12 +13,12 @@ config SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
+diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
+index 9a48289..9ef228e 100644
+--- a/sound/firewire/dice/Makefile
++++ b/sound/firewire/dice/Makefile
+@@ -1,3 +1,3 @@
+-snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-pcm.o \
+-		 dice-hwdep.o dice.o
++snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-midi.o \
++		 dice-pcm.o dice-hwdep.o dice.o
+ obj-m += snd-dice.o
+diff --git a/sound/firewire/dice/dice-midi.c b/sound/firewire/dice/dice-midi.c
+new file mode 100644
+index 0000000..fc35055
+--- /dev/null
++++ b/sound/firewire/dice/dice-midi.c
+@@ -0,0 +1,194 @@
++/*
++ * dice_midi.c - a part of driver for Dice based devices
++ *
++ * Copyright (c) 2014 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++#include "dice.h"
++
++static int capture_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_dice *dice = substream->rmidi->private_data;
++	int err;
++
++	err = snd_dice_stream_lock_try(dice);
++	if (err < 0)
++		return err;
++
++	mutex_lock(&dice->mutex);
++
++	dice->substreams_counter++;
++	err = snd_dice_stream_start_duplex(dice, 0);
++
++	mutex_unlock(&dice->mutex);
++
++	if (err < 0)
++		snd_dice_stream_lock_release(dice);
++
++	return err;
++}
++
++static int playback_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_dice *dice = substream->rmidi->private_data;
++	int err;
++
++	err = snd_dice_stream_lock_try(dice);
++	if (err < 0)
++		return err;
++
++	mutex_lock(&dice->mutex);
++
++	dice->substreams_counter++;
++	err = snd_dice_stream_start_duplex(dice, 0);
++
++	mutex_unlock(&dice->mutex);
++
++	if (err < 0)
++		snd_dice_stream_lock_release(dice);
++
++	return err;
++}
++
++static int capture_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_dice *dice = substream->rmidi->private_data;
++
++	mutex_lock(&dice->mutex);
++
++	dice->substreams_counter--;
++	snd_dice_stream_stop_duplex(dice);
++
++	mutex_unlock(&dice->mutex);
++
++	snd_dice_stream_lock_release(dice);
++	return 0;
++}
++
++static int playback_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_dice *dice = substream->rmidi->private_data;
++
++	mutex_lock(&dice->mutex);
++
++	dice->substreams_counter--;
++	snd_dice_stream_stop_duplex(dice);
++
++	mutex_unlock(&dice->mutex);
++
++	snd_dice_stream_lock_release(dice);
++	return 0;
++}
++
++static void capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_dice *dice = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&dice->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&dice->tx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&dice->tx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&dice->lock, flags);
++}
++
++static void playback_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_dice *dice = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&dice->lock, flags);
++
++	if (up)
++		amdtp_stream_midi_trigger(&dice->rx_stream,
++					  substrm->number, substrm);
++	else
++		amdtp_stream_midi_trigger(&dice->rx_stream,
++					  substrm->number, NULL);
++
++	spin_unlock_irqrestore(&dice->lock, flags);
++}
++
++static struct snd_rawmidi_ops capture_ops = {
++	.open		= capture_open,
++	.close		= capture_close,
++	.trigger	= capture_trigger,
++};
++
++static struct snd_rawmidi_ops playback_ops = {
++	.open		= playback_open,
++	.close		= playback_close,
++	.trigger	= playback_trigger,
++};
++
++static void set_midi_substream_names(struct snd_dice *dice,
++				     struct snd_rawmidi_str *str)
++{
++	struct snd_rawmidi_substream *subs;
++
++	list_for_each_entry(subs, &str->substreams, list) {
++		snprintf(subs->name, sizeof(subs->name),
++			 "%s MIDI %d", dice->card->shortname, subs->number + 1);
++	}
++}
++
++int snd_dice_create_midi(struct snd_dice *dice)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
++	unsigned int i, midi_in_ports, midi_out_ports;
++	int err;
++
++	midi_in_ports = midi_out_ports = 0;
++	for (i = 0; i < 3; i++) {
++		midi_in_ports = max(dice->tx_midi_ports[i], midi_in_ports);
++		midi_out_ports = max(dice->rx_midi_ports[i], midi_out_ports);
++	}
++
++	if (midi_in_ports + midi_out_ports == 0)
++		return 0;
++
++	/* create midi ports */
++	err = snd_rawmidi_new(dice->card, dice->card->driver, 0,
++			      midi_out_ports, midi_in_ports,
++			      &rmidi);
++	if (err < 0)
++		return err;
++
++	snprintf(rmidi->name, sizeof(rmidi->name),
++		 "%s MIDI", dice->card->shortname);
++	rmidi->private_data = dice;
++
++	if (midi_in_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++				    &capture_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++		set_midi_substream_names(dice, str);
++	}
++
++	if (midi_out_ports > 0) {
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++
++		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++				    &playback_ops);
++
++		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++		set_midi_substream_names(dice, str);
++	}
++
++	if ((midi_out_ports > 0) && (midi_in_ports > 0))
++		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++
++	return 0;
++}
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index 20765a0..fa9cf76 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -218,6 +218,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ 			"fail to get sampling rate\n");
+ 		goto end;
+ 	}
++	if (rate == 0)
++		rate = curr_rate;
+ 	if (rate != curr_rate)
+ 		stop_stream(dice, master);
  
- config SND_DICE
--	tristate "DICE-based DACs (EXPERIMENTAL)"
-+	tristate "DICE-based DACs support"
- 	select SND_HWDEP
- 	select SND_FIREWIRE_LIB
- 	help
- 	  Say Y here to include support for many DACs based on the DICE
--	  chip family (DICE-II/Jr/Mini) from TC Applied Technologies.
-+	  chip family (DICE-II/Jr/Mini) which TC Applied Technologies produces.
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 85bcfaf..90d8f40 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -279,6 +279,10 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
  
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-dice.
+ 	snd_dice_create_proc(dice);
+ 
++	err = snd_dice_create_midi(dice);
++	if (err < 0)
++		goto error;
++
+ 	err = snd_dice_stream_init_duplex(dice);
+ 	if (err < 0)
+ 		goto error;
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index f30326e..ecf5dc8 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -32,6 +32,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/rawmidi.h>
+ 
+ #include "../amdtp.h"
+ #include "../iso-resources.h"
+@@ -183,4 +184,6 @@ int snd_dice_create_hwdep(struct snd_dice *dice);
+ 
+ void snd_dice_create_proc(struct snd_dice *dice);
+ 
++int snd_dice_create_midi(struct snd_dice *dice);
++
+ #endif
 -- 
 2.1.0
