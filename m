@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/30] ALSA: dice: Add support for MIDI
-	capture/playback
-Date: Sat, 29 Nov 2014 00:59:23 +0900
-Message-ID: <1417190379-4172-15-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 21/30] ALSA: oxfw: Change the way to name card
+Date: Sat, 29 Nov 2014 00:59:30 +0900
+Message-ID: <1417190379-4172-22-git-send-email-o-takashi@sakamocchi.jp>
 References: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id D64C22604DF
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C3ED22604ED
+ for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:52 +0100 (CET)
 In-Reply-To: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,278 +24,132 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a support for MIDI capture/playback
+The 'struct snd_card' has 4 members for name. They're 'driver', 'shortname',
+'longname' and 'mixername'. This commit names these 4 members according to
+two members in model-specific structure and reduce rest of members in the
+structure.
 
-When MIDI substrams already start streaming and PCM substreams are going to
-join at different sampling rate, streams are stopped once. Then sampling rate
-is changed and streams are restarted.
+The reason that alias names are still used is that currently supported devices,
+Griffin FireWave and LaCie Firewire Speaker have too long names for model and
+vendor field in their config rom to be over allocated buffer for the names.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/Makefile      |   4 +-
- sound/firewire/dice/dice-midi.c   | 194 ++++++++++++++++++++++++++++++++++++++
- sound/firewire/dice/dice-stream.c |   2 +
- sound/firewire/dice/dice.c        |   4 +
- sound/firewire/dice/dice.h        |   3 +
- 5 files changed, 205 insertions(+), 2 deletions(-)
- create mode 100644 sound/firewire/dice/dice-midi.c
+ sound/firewire/oxfw/oxfw.c | 51 +++++++++++++++++++++++++++-------------------
+ sound/firewire/oxfw/oxfw.h |  3 +--
+ 2 files changed, 31 insertions(+), 23 deletions(-)
 
-diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
-index 9a48289..9ef228e 100644
---- a/sound/firewire/dice/Makefile
-+++ b/sound/firewire/dice/Makefile
-@@ -1,3 +1,3 @@
--snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-pcm.o \
--		 dice-hwdep.o dice.o
-+snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-midi.o \
-+		 dice-pcm.o dice-hwdep.o dice.o
- obj-m += snd-dice.o
-diff --git a/sound/firewire/dice/dice-midi.c b/sound/firewire/dice/dice-midi.c
-new file mode 100644
-index 0000000..fc35055
---- /dev/null
-+++ b/sound/firewire/dice/dice-midi.c
-@@ -0,0 +1,194 @@
-+/*
-+ * dice_midi.c - a part of driver for Dice based devices
-+ *
-+ * Copyright (c) 2014 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+#include "dice.h"
-+
-+static int capture_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dice *dice = substream->rmidi->private_data;
-+	int err;
-+
-+	err = snd_dice_stream_lock_try(dice);
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 951d9a4..3308253 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -25,14 +25,34 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("snd-firewire-speakers");
+ 
+-static u32 oxfw_read_firmware_version(struct fw_unit *unit)
++static int name_card(struct snd_oxfw *oxfw)
+ {
+-	__be32 data;
++	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
++	const char *d, *v, *m;
++	u32 firmware;
+ 	int err;
+ 
+-	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+-				 OXFORD_FIRMWARE_ID_ADDRESS, &data, 4, 0);
+-	return err >= 0 ? be32_to_cpu(data) : 0;
++	err = snd_fw_transaction(oxfw->unit, TCODE_READ_QUADLET_REQUEST,
++				 OXFORD_FIRMWARE_ID_ADDRESS, &firmware, 4, 0);
 +	if (err < 0)
-+		return err;
++		goto end;
++	be32_to_cpus(&firmware);
 +
-+	mutex_lock(&dice->mutex);
++	d = oxfw->device_info->driver_name;
++	v = oxfw->device_info->vendor_name;
++	m = oxfw->device_info->driver_name;
 +
-+	dice->substreams_counter++;
-+	err = snd_dice_stream_start_duplex(dice, 0);
++	strcpy(oxfw->card->driver, d);
++	strcpy(oxfw->card->shortname, m);
++	strcpy(oxfw->card->mixername, m);
 +
-+	mutex_unlock(&dice->mutex);
-+
-+	if (err < 0)
-+		snd_dice_stream_lock_release(dice);
-+
++	snprintf(oxfw->card->longname, sizeof(oxfw->card->longname),
++		 "%s %s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
++		 v, m, firmware >> 20, firmware & 0xffff,
++		 fw_dev->config_rom[3], fw_dev->config_rom[4],
++		 dev_name(&oxfw->unit->device), 100 << fw_dev->max_speed);
++end:
 +	return err;
-+}
-+
-+static int playback_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dice *dice = substream->rmidi->private_data;
-+	int err;
-+
-+	err = snd_dice_stream_lock_try(dice);
-+	if (err < 0)
-+		return err;
-+
-+	mutex_lock(&dice->mutex);
-+
-+	dice->substreams_counter++;
-+	err = snd_dice_stream_start_duplex(dice, 0);
-+
-+	mutex_unlock(&dice->mutex);
-+
-+	if (err < 0)
-+		snd_dice_stream_lock_release(dice);
-+
-+	return err;
-+}
-+
-+static int capture_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dice *dice = substream->rmidi->private_data;
-+
-+	mutex_lock(&dice->mutex);
-+
-+	dice->substreams_counter--;
-+	snd_dice_stream_stop_duplex(dice);
-+
-+	mutex_unlock(&dice->mutex);
-+
-+	snd_dice_stream_lock_release(dice);
-+	return 0;
-+}
-+
-+static int playback_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dice *dice = substream->rmidi->private_data;
-+
-+	mutex_lock(&dice->mutex);
-+
-+	dice->substreams_counter--;
-+	snd_dice_stream_stop_duplex(dice);
-+
-+	mutex_unlock(&dice->mutex);
-+
-+	snd_dice_stream_lock_release(dice);
-+	return 0;
-+}
-+
-+static void capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_dice *dice = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dice->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&dice->tx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&dice->tx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&dice->lock, flags);
-+}
-+
-+static void playback_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_dice *dice = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dice->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&dice->rx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&dice->rx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&dice->lock, flags);
-+}
-+
-+static struct snd_rawmidi_ops capture_ops = {
-+	.open		= capture_open,
-+	.close		= capture_close,
-+	.trigger	= capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops playback_ops = {
-+	.open		= playback_open,
-+	.close		= playback_close,
-+	.trigger	= playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct snd_dice *dice,
-+				     struct snd_rawmidi_str *str)
-+{
-+	struct snd_rawmidi_substream *subs;
-+
-+	list_for_each_entry(subs, &str->substreams, list) {
-+		snprintf(subs->name, sizeof(subs->name),
-+			 "%s MIDI %d", dice->card->shortname, subs->number + 1);
-+	}
-+}
-+
-+int snd_dice_create_midi(struct snd_dice *dice)
-+{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *str;
-+	unsigned int i, midi_in_ports, midi_out_ports;
-+	int err;
-+
-+	midi_in_ports = midi_out_ports = 0;
-+	for (i = 0; i < 3; i++) {
-+		midi_in_ports = max(dice->tx_midi_ports[i], midi_in_ports);
-+		midi_out_ports = max(dice->rx_midi_ports[i], midi_out_ports);
-+	}
-+
-+	if (midi_in_ports + midi_out_ports == 0)
-+		return 0;
-+
-+	/* create midi ports */
-+	err = snd_rawmidi_new(dice->card, dice->card->driver, 0,
-+			      midi_out_ports, midi_in_ports,
-+			      &rmidi);
-+	if (err < 0)
-+		return err;
-+
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", dice->card->shortname);
-+	rmidi->private_data = dice;
-+
-+	if (midi_in_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+				    &capture_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
-+
-+		set_midi_substream_names(dice, str);
-+	}
-+
-+	if (midi_out_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+				    &playback_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
-+
-+		set_midi_substream_names(dice, str);
-+	}
-+
-+	if ((midi_out_ports > 0) && (midi_in_ports > 0))
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
-+
-+	return 0;
-+}
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 20765a0..fa9cf76 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -218,6 +218,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 			"fail to get sampling rate\n");
- 		goto end;
- 	}
-+	if (rate == 0)
-+		rate = curr_rate;
- 	if (rate != curr_rate)
- 		stop_stream(dice, master);
+ }
  
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 85bcfaf..90d8f40 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -279,6 +279,10 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ static void oxfw_card_free(struct snd_card *card)
+@@ -45,10 +65,8 @@ static void oxfw_card_free(struct snd_card *card)
+ static int oxfw_probe(struct fw_unit *unit,
+ 		       const struct ieee1394_device_id *id)
+ {
+-	struct fw_device *fw_dev = fw_parent_device(unit);
+ 	struct snd_card *card;
+ 	struct snd_oxfw *oxfw;
+-	u32 firmware;
+ 	int err;
  
- 	snd_dice_create_proc(dice);
+ 	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
+@@ -63,16 +81,9 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	oxfw->unit = unit;
+ 	oxfw->device_info = (const struct device_info *)id->driver_data;
  
-+	err = snd_dice_create_midi(dice);
+-	strcpy(card->driver, oxfw->device_info->driver_name);
+-	strcpy(card->shortname, oxfw->device_info->short_name);
+-	firmware = oxfw_read_firmware_version(unit);
+-	snprintf(card->longname, sizeof(card->longname),
+-		 "%s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
+-		 oxfw->device_info->long_name,
+-		 firmware >> 20, firmware & 0xffff,
+-		 fw_dev->config_rom[3], fw_dev->config_rom[4],
+-		 dev_name(&unit->device), 100 << fw_dev->max_speed);
+-	strcpy(card->mixername, "OXFW");
++	err = name_card(oxfw);
 +	if (err < 0)
 +		goto error;
-+
- 	err = snd_dice_stream_init_duplex(dice);
+ 
+ 	err = snd_oxfw_create_pcm(oxfw);
  	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index f30326e..ecf5dc8 100644
---- a/sound/firewire/dice/dice.h
-+++ b/sound/firewire/dice/dice.h
-@@ -32,6 +32,7 @@
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/rawmidi.h>
+@@ -122,9 +133,8 @@ static void oxfw_remove(struct fw_unit *unit)
+ }
  
- #include "../amdtp.h"
- #include "../iso-resources.h"
-@@ -183,4 +184,6 @@ int snd_dice_create_hwdep(struct snd_dice *dice);
+ static const struct device_info griffin_firewave = {
++	.vendor_name = "Griffin",
+ 	.driver_name = "FireWave",
+-	.short_name  = "FireWave",
+-	.long_name   = "Griffin FireWave Surround",
+ 	.pcm_constraints = firewave_constraints,
+ 	.mixer_channels = 6,
+ 	.mute_fb_id   = 0x01,
+@@ -132,9 +142,8 @@ static const struct device_info griffin_firewave = {
+ };
  
- void snd_dice_create_proc(struct snd_dice *dice);
+ static const struct device_info lacie_speakers = {
++	.vendor_name = "LaCie",
+ 	.driver_name = "FWSpeakers",
+-	.short_name  = "FireWire Speakers",
+-	.long_name   = "LaCie FireWire Speakers",
+ 	.pcm_constraints = lacie_speakers_constraints,
+ 	.mixer_channels = 1,
+ 	.mute_fb_id   = 0x01,
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index 6164bf3..b60e91d 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -27,9 +27,8 @@
+ #include "../cmp.h"
  
-+int snd_dice_create_midi(struct snd_dice *dice);
-+
- #endif
+ struct device_info {
++	const char *vendor_name;
+ 	const char *driver_name;
+-	const char *short_name;
+-	const char *long_name;
+ 	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
+ 	unsigned int mixer_channels;
+ 	u8 mute_fb_id;
 -- 
 2.1.0
