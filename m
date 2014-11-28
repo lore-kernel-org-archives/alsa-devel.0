@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 28/30] ALSA: oxfw: add support for capturing
-	PCM samples
-Date: Sat, 29 Nov 2014 00:59:37 +0900
-Message-ID: <1417190379-4172-29-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 26/30] ALSA: oxfw: Add support for
+	Behringer/Mackie devices
+Date: Sat, 29 Nov 2014 00:59:35 +0900
+Message-ID: <1417190379-4172-27-git-send-email-o-takashi@sakamocchi.jp>
 References: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D4A62604FD
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BCFB2604FC
  for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:53 +0100 (CET)
 In-Reply-To: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,308 +25,183 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, a support for transmitted packets is added. This commit
-add a support for capturing PCM samples.
+Some devices produced by Behringer/Mackie are based on OXFW970/971. This
+commit adds support for them. Additionally, this commit changes the way to
+name card with some information in config rom.
 
-When any streams are already started, this driver should not change sampling
-rate of the device, thus this commit also adds a restriction of sampling rate
-in this situation.
+Ids of some Mackie(Loud) models are not identified, therefore this commit
+applies name detection for these models.
+
+The devices support capture/playback of PCM-samples and some of them
+supports capture/playback of MIDI messages. These functionalities are
+implemented by followed commits.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-pcm.c | 201 +++++++++++++++++++++++++++++++++++++----
- 1 file changed, 181 insertions(+), 20 deletions(-)
+ sound/firewire/Kconfig     |  6 +++
+ sound/firewire/oxfw/oxfw.c | 91 +++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 91 insertions(+), 6 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
-index a78339c..9db40bf 100644
---- a/sound/firewire/oxfw/oxfw-pcm.c
-+++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -118,21 +118,31 @@ static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
- 	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
- }
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 0932860..6364e5b 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -31,6 +31,12 @@ config SND_OXFW
+ 	  Oxford Semiconductor FW970/971 chipset.
+ 	   * Griffin Firewave
+ 	   * LaCie Firewire Speakers
++	   * Behringer F-Control Audio 202
++	   * Mackie(Loud) Onyx-i series (former models)
++	   * Mackie(Loud) Onyx Satellite
++	   * Mackie(Loud) Tapco Link.Firewire
++	   * Mackie(Loud) d.2 pro/d.4 pro
++	   * Mackie(Loud) U.420/U.420d
  
--static int pcm_open(struct snd_pcm_substream *substream)
-+static int init_hw_params(struct snd_oxfw *oxfw,
-+			  struct snd_pcm_substream *substream)
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-oxfw.
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index b53aa1d..85315e3 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -14,7 +14,9 @@
+ #define OXFORD_HARDWARE_ID_OXFW970	0x39443841
+ #define OXFORD_HARDWARE_ID_OXFW971	0x39373100
+ 
++#define VENDOR_LOUD		0x000ff2
+ #define VENDOR_GRIFFIN		0x001292
++#define VENDOR_BEHRINGER	0x001564
+ #define VENDOR_LACIE		0x00d04b
+ 
+ #define SPECIFIER_1394TA	0x00a02d
+@@ -41,22 +43,69 @@ static const struct device_info lacie_speakers = {
+ 	.volume_fb_id = 0x01,
+ };
+ 
++static bool detect_loud_models(struct fw_unit *unit)
++{
++	const char *const models[] = {
++		"Onyxi",
++		"Onyx-i",
++		"d.Pro",
++		"Mackie Onyx Satellite",
++		"Tapco LINK.firewire 4x6",
++		"U.420"};
++	char model[32];
++	unsigned int i;
++	int err;
++
++	err = fw_csr_string(unit->directory, CSR_MODEL,
++			    model, sizeof(model));
++	if (err < 0)
++		return err;
++
++	for (i = 0; i < ARRAY_SIZE(models); i++) {
++		if (strcmp(models[i], model) == 0)
++			break;
++	}
++
++	return (i < ARRAY_SIZE(models));
++}
++
+ static int name_card(struct snd_oxfw *oxfw)
  {
--	struct snd_oxfw *oxfw = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	u8 **formats;
-+	struct amdtp_stream *stream;
+ 	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
++	char vendor[24];
++	char model[32];
+ 	const char *d, *v, *m;
+ 	u32 firmware;
  	int err;
  
--	formats = oxfw->rx_stream_formats;
--
- 	runtime->hw.info = SNDRV_PCM_INFO_BATCH |
- 			   SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 			   SNDRV_PCM_INFO_INTERLEAVED |
-+			   SNDRV_PCM_INFO_JOINT_DUPLEX |
- 			   SNDRV_PCM_INFO_MMAP |
- 			   SNDRV_PCM_INFO_MMAP_VALID;
++	/* get vendor name from root directory */
++	err = fw_csr_string(fw_dev->config_rom + 5, CSR_VENDOR,
++			    vendor, sizeof(vendor));
++	if (err < 0)
++		goto end;
++
++	/* get model name from unit directory */
++	err = fw_csr_string(oxfw->unit->directory, CSR_MODEL,
++			    model, sizeof(model));
++	if (err < 0)
++		goto end;
++
+ 	err = snd_fw_transaction(oxfw->unit, TCODE_READ_QUADLET_REQUEST,
+ 				 OXFORD_FIRMWARE_ID_ADDRESS, &firmware, 4, 0);
+ 	if (err < 0)
+ 		goto end;
+ 	be32_to_cpus(&firmware);
  
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
-+		stream = &oxfw->tx_stream;
-+		formats = oxfw->tx_stream_formats;
+-	d = oxfw->device_info->driver_name;
+-	v = oxfw->device_info->vendor_name;
+-	m = oxfw->device_info->driver_name;
++	/* to apply card definitions */
++	if (oxfw->device_info) {
++		d = oxfw->device_info->driver_name;
++		v = oxfw->device_info->vendor_name;
++		m = oxfw->device_info->driver_name;
 +	} else {
-+		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		stream = &oxfw->rx_stream;
-+		formats = oxfw->rx_stream_formats;
++		d = "OXFW";
++		v = vendor;
++		m = model;
 +	}
-+
- 	limit_channels_and_rates(&runtime->hw, formats);
- 	limit_period_and_buffer(&runtime->hw);
  
-@@ -148,10 +158,55 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	if (err < 0)
- 		goto end;
- 
--	err = amdtp_stream_add_pcm_hw_constraints(&oxfw->rx_stream, runtime);
-+	err = amdtp_stream_add_pcm_hw_constraints(stream, runtime);
-+end:
-+	return err;
-+}
-+
-+static int limit_to_current_params(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_oxfw_stream_formation formation;
-+	enum avc_general_plug_dir dir;
-+	int err;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		dir = AVC_GENERAL_PLUG_DIR_OUT;
-+	else
-+		dir = AVC_GENERAL_PLUG_DIR_IN;
-+
-+	err = snd_oxfw_stream_get_current_formation(oxfw, dir, &formation);
-+	if (err < 0)
-+		goto end;
-+
-+	substream->runtime->hw.channels_min = formation.pcm;
-+	substream->runtime->hw.channels_max = formation.pcm;
-+	substream->runtime->hw.rate_min = formation.rate;
-+	substream->runtime->hw.rate_max = formation.rate;
-+end:
-+	return err;
-+}
-+
-+static int pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	int err;
-+
-+	err = init_hw_params(oxfw, substream);
- 	if (err < 0)
- 		goto end;
- 
-+	/*
-+	 * When any PCM streams are already running, the available sampling
-+	 * rate is limited at current value.
-+	 */
-+	if (amdtp_stream_pcm_running(&oxfw->tx_stream) ||
-+	    amdtp_stream_pcm_running(&oxfw->rx_stream)) {
-+		err = limit_to_current_params(substream);
-+		if (err < 0)
-+			goto end;
-+	}
-+
- 	snd_pcm_set_sync(substream);
- end:
- 	return err;
-@@ -162,28 +217,90 @@ static int pcm_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int pcm_hw_params(struct snd_pcm_substream *substream,
--			 struct snd_pcm_hw_params *hw_params)
-+static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+
-+	mutex_lock(&oxfw->mutex);
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
-+		oxfw->capture_substreams++;
-+
-+	mutex_unlock(&oxfw->mutex);
-+
-+	amdtp_stream_set_pcm_format(&oxfw->tx_stream, params_format(hw_params));
-+
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *hw_params)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
- 
-+	mutex_lock(&oxfw->mutex);
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
-+		oxfw->playback_substreams++;
-+
-+	mutex_unlock(&oxfw->mutex);
-+
- 	amdtp_stream_set_pcm_format(&oxfw->rx_stream, params_format(hw_params));
-+
- 	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
- 						params_buffer_bytes(hw_params));
- }
- 
--static int pcm_hw_free(struct snd_pcm_substream *substream)
-+static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
- 
- 	mutex_lock(&oxfw->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		oxfw->capture_substreams--;
-+
-+	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->tx_stream);
-+
-+	mutex_unlock(&oxfw->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+
-+	mutex_lock(&oxfw->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		oxfw->playback_substreams--;
-+
- 	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->rx_stream);
-+
- 	mutex_unlock(&oxfw->mutex);
- 
- 	return snd_pcm_lib_free_vmalloc_buffer(substream);
- }
- 
--static int pcm_prepare(struct snd_pcm_substream *substream)
-+static int pcm_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	mutex_lock(&oxfw->mutex);
-+	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->tx_stream,
-+					    runtime->rate, runtime->channels);
-+	mutex_unlock(&oxfw->mutex);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_pcm_prepare(&oxfw->tx_stream);
-+end:
-+	return err;
-+}
-+static int pcm_playback_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -201,7 +318,25 @@ end:
- 	return err;
- }
- 
--static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_substream *pcm;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		pcm = substream;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		pcm = NULL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	amdtp_stream_pcm_trigger(&oxfw->tx_stream, pcm);
-+	return 0;
-+}
-+static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
- 	struct snd_pcm_substream *pcm;
-@@ -220,35 +355,61 @@ static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return 0;
- }
- 
--static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstm)
- {
--	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_oxfw *oxfw = sbstm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&oxfw->tx_stream);
-+}
-+static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstm)
-+{
-+	struct snd_oxfw *oxfw = sbstm->private_data;
- 
- 	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
- }
- 
- int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
- {
--	static struct snd_pcm_ops ops = {
-+	static struct snd_pcm_ops capture_ops = {
- 		.open      = pcm_open,
- 		.close     = pcm_close,
- 		.ioctl     = snd_pcm_lib_ioctl,
--		.hw_params = pcm_hw_params,
--		.hw_free   = pcm_hw_free,
--		.prepare   = pcm_prepare,
--		.trigger   = pcm_trigger,
--		.pointer   = pcm_pointer,
-+		.hw_params = pcm_capture_hw_params,
-+		.hw_free   = pcm_capture_hw_free,
-+		.prepare   = pcm_capture_prepare,
-+		.trigger   = pcm_capture_trigger,
-+		.pointer   = pcm_capture_pointer,
-+		.page      = snd_pcm_lib_get_vmalloc_page,
-+		.mmap      = snd_pcm_lib_mmap_vmalloc,
-+	};
-+	static struct snd_pcm_ops playback_ops = {
-+		.open      = pcm_open,
-+		.close     = pcm_close,
-+		.ioctl     = snd_pcm_lib_ioctl,
-+		.hw_params = pcm_playback_hw_params,
-+		.hw_free   = pcm_playback_hw_free,
-+		.prepare   = pcm_playback_prepare,
-+		.trigger   = pcm_playback_trigger,
-+		.pointer   = pcm_playback_pointer,
- 		.page      = snd_pcm_lib_get_vmalloc_page,
- 		.mmap      = snd_pcm_lib_mmap_vmalloc,
- 	};
- 	struct snd_pcm *pcm;
-+	unsigned int cap = 0;
+ 	strcpy(oxfw->card->driver, d);
+ 	strcpy(oxfw->card->shortname, m);
+@@ -89,6 +138,9 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	struct snd_oxfw *oxfw;
  	int err;
  
--	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, 0, &pcm);
-+	if (oxfw->has_output)
-+		cap = 1;
++	if ((id->vendor_id == VENDOR_LOUD) && !detect_loud_models(unit))
++		return -ENODEV;
 +
-+	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, cap, &pcm);
+ 	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
+ 			   sizeof(*oxfw), &card);
  	if (err < 0)
- 		return err;
-+
- 	pcm->private_data = oxfw;
- 	strcpy(pcm->name, oxfw->card->shortname);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
-+	if (cap > 0)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
-+
- 	return 0;
- }
+@@ -113,9 +165,11 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
+-	err = snd_oxfw_create_mixer(oxfw);
+-	if (err < 0)
+-		goto error;
++	if (oxfw->device_info) {
++		err = snd_oxfw_create_mixer(oxfw);
++		if (err < 0)
++			goto error;
++	}
+ 
+ 	snd_oxfw_proc_init(oxfw);
+ 
+@@ -181,6 +235,31 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
+ 		.version      = VERSION_AVC,
+ 		.driver_data  = (kernel_ulong_t)&lacie_speakers,
+ 	},
++	/* Behringer,F-Control Audio 202 */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= VENDOR_BEHRINGER,
++		.model_id	= 0x00fc22,
++	},
++	/*
++	 * Any Mackie(Loud) models (name string/model id):
++	 *  Onyx-i series (former models):	0x081216
++	 *  Mackie Onyx Satellite:		0x00200f
++	 *  Tapco LINK.firewire 4x6:		0x000460
++	 *  d.2 pro:				Unknown
++	 *  d.4 pro:				Unknown
++	 *  U.420:				Unknown
++	 *  U.420d:				Unknown
++	 */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_SPECIFIER_ID |
++				  IEEE1394_MATCH_VERSION,
++		.vendor_id	= VENDOR_LOUD,
++		.specifier_id	= SPECIFIER_1394TA,
++		.version	= VERSION_AVC,
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(ieee1394, oxfw_id_table);
 -- 
 2.1.0
