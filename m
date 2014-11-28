@@ -1,19 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 2/3] ARM: edma: Rename header file for
- dmaengine filter function definition
-Date: Fri, 28 Nov 2014 13:48:42 +0200
-Message-ID: <5478611A.5060404@ti.com>
-References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
- <4859328.eEV7jzKEaA@wuerfel> <54782148.6040108@ti.com>
- <6448422.mtUnef24Xp@wuerfel>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Move capture PCM pin to PCM0
+	for Broadwell
+Date: Fri, 28 Nov 2014 12:00:27 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901B73226@SHSMSX101.ccr.corp.intel.com>
+References: <1417173643-25331-1-git-send-email-yang.jie@intel.com>
+ <20141128113958.GI7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 00CFF26044B
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 12:48:49 +0100 (CET)
-In-Reply-To: <6448422.mtUnef24Xp@wuerfel>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3FD526044B
+ for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 13:00:46 +0100 (CET)
+In-Reply-To: <20141128113958.GI7712@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, linux@arm.linux.org.uk, vinod.koul@intel.com, nsekhar@ti.com, linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, khilman@deeprootsystems.com, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, chris@printf.net, dmaengine@vger.kernel.org, ulf.hansson@linaro.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/28/2014 12:51 PM, Arnd Bergmann wrote:
-> On Friday 28 November 2014 09:16:24 Peter Ujfalusi wrote:
->> On 11/27/2014 11:52 PM, Arnd Bergmann wrote:
->>> On Thursday 27 November 2014 20:46:12 Peter Ujfalusi wrote:
->>>>
->>>> I see. With this series I did not planed to fix all edma related issue=
-s, just
->>>> as a start clean up the related header files. I would rather not add f=
-ixes to
->>>> mmc, spi, etc drivers since while you have valid point it is not in th=
-e scope
->>>> of this series.
->>>> Can we do the changes you are suggesting in an incremental manner?
->>>
->>> Sure, but I'd leave the existing filter function declaration alone then
->>> and not move it, since we wouldn't want to keep it in the long run.
->>
->> but if you want to reference the filter function (which is in
->> drivers/dma/edma.c) in arch/arm/mach-davinci/ directory, we will need it.
->> Don't we?
-> =
 
-> Yes, unless you move the definition of the filter function into
-> arch/arm/common/edma.c or arch/arm/mach-davinci/devices.c, but that
-> would require other changes.
+Hi Mark,
 
-At the end the aim is to get rid of the edma code form arch/arm and have on=
-ly
-dmaengine API towards eDMA. The ASoC davinci-pcm is the only user of the
-legacy API AFAIK. It has a mode called ping-pong which is not possible with
-the dmaeingine at all. This is to overcome underflow situations on parts wh=
-ere
-the audio IP does not have FIFO.
-My edma-pcm (which is using dmaengine) should be able to handle this
-situation, but I need to verify it before I can remove the davinci-pcm and
-then we can get rid of the direct eDMA API and code.
+Thanks for reviewing. Seems it need to be applied after commit ' [PATCH] ASoC: Intel: Correct the xmax volume' is accepted.
+I can apply it base on the commit 1e2f1a5f8c4826e3d09fd67dec5f09e64b25c0d5.
 
->> If I leave the header as it is, then how would we clean up the edma head=
-ers? I
->> would not put the API definitions for the arch code into the same file a=
-s we
->> have the filter definition.
-> =
-
-> Ok, just go ahead with your current patch then, we can always follow up.
-> The most important cleanup for edma is elsewhere anyway, so once the asoc
-> drivers can use the dmaengine interface, this should be easier.
-> =
-
-> 	Arnd
-> =
+Regards,
+~Keyon
 
 
-
--- =
-
-P=E9ter
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, November 28, 2014 7:40 PM
+> To: Jie, Yang
+> Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
+> Subject: Re: [PATCH] ASoC: Intel: Move capture PCM pin to PCM0 for Broadwell
+> 
+> On Fri, Nov 28, 2014 at 07:20:43PM +0800, Jie Yang wrote:
+> > Move capture PCM pin from PCM4 to PCM0 for Broadwell.
+> > This will allow us to integrate with pulseaudio better for usually
+> > default device is set to 0.
+> 
+> This doesn't apply, please check and resend.
