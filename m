@@ -1,184 +1,91 @@
-From: Loki Harfagr <loki.harfagr@gmail.com>
-Subject: AKAI EIE PRO
-Date: Fri, 28 Nov 2014 19:58:57 +0100
-Message-ID: <20141128195858.62a011ae@fenris.thedarkdesign.free.fr>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
+Date: Sat, 29 Nov 2014 00:51:59 +0100
+Message-ID: <2127240.rWRTDu6LHQ@vostro.rjw.lan>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <7202604.4LK4s7RH1S@vostro.rjw.lan> <20141128160036.GW7712@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f41.google.com (mail-wg0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 765842604D2
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 19:59:03 +0100 (CET)
-Received: by mail-wg0-f41.google.com with SMTP id y19so9490231wgg.14
- for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 10:59:03 -0800 (PST)
-Received: from fenris.thedarkdesign.free.fr
- (men75-4-82-226-69-167.fbx.proxad.net. [82.226.69.167])
- by mx.google.com with ESMTPSA id eu15sm17014634wid.18.2014.11.28.10.59.01
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 28 Nov 2014 10:59:02 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141128160036.GW7712@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-KGhvcGUgdGhhdCdzIGNvcnJlY3QgdG8gcG9zdCB0aGF0IHdheSB0aHJvdWdoIGVtYWlsIHNpbmNl
-IEknbSBqdXN0IGFkZGluZyBhbgogYW5zd2VyIHRvIGEgc3BlY2lmaWMgcXVlc3Rpb24gaW4gYSBz
-cGVjaWZpYyB0aHJlYWQpLCBoZXJlIHdlIGdvOgoKPiBEYW5pZWwgTWFjayBkYW5pZWwgYXQgem9u
-cXVlLm9yZyAKPiBTdW4gU2VwIDcgMTM6Mzk6MTIgQ0VTVCAyMDE0Cj4gUHJldmlvdXMgbWVzc2Fn
-ZTogW2Fsc2EtZGV2ZWxdIEFLQUkgRUlFIFBSTwo+IE5leHQgbWVzc2FnZTogW2Fsc2EtZGV2ZWxd
-IEFLQUkgRUlFIFBSTwo+IE1lc3NhZ2VzIHNvcnRlZCBieTogWyBkYXRlIF0gWyB0aHJlYWQgXSBb
-IHN1YmplY3QgXSBbIGF1dGhvciBdCj4gT24gMDkvMDcvMjAxNCAwMTozMCBQTSwgaHVtYmVydC5v
-bGl2aWVyLjEgYXQgZnJlZS5mciB3cm90ZToKPiA+IGlmIHRoYXQgY2FuIGhlbHAsIHdlIGhhZCBh
-biB1c2VyIG9uIGh0dHA6Ly93d3cubGludXhtYW8ub3JnIHdpdGggYW4gRUlFIFBSTy4KPiA+IEhl
-cmUgeW91IGhhdmUgaGlzIGxzdXNiIC12IDoKPiA+IAo+ID4gQnVzIDAwMSBEZXZpY2UgMDA2OiBJ
-RCAwOWU4OjAwMTAgQUtBSSAgUHJvZmVzc2lvbmFsIE0uSS4gQ29ycC4gCj4gPiBDb3VsZG4ndCBv
-cGVuIGRldmljZSwgc29tZSBpbmZvcm1hdGlvbiB3aWxsIGJlIG1pc3NpbmcKPiA+IERldmljZSBE
-ZXNjcmlwdG9yOgo+ID4gICBiTGVuZ3RoICAgICAgICAgICAgICAgIDE4Cj4gPiAgIGJEZXNjcmlw
-dG9yVHlwZSAgICAgICAgIDEKPiA+ICAgYmNkVVNCICAgICAgICAgICAgICAgMi4wMAo+ID4gICBi
-RGV2aWNlQ2xhc3MgICAgICAgICAgMjU1IFZlbmRvciBTcGVjaWZpYyBDbGFzcwo+ID4gICBiRGV2
-aWNlU3ViQ2xhc3MgICAgICAgMjU1IFZlbmRvciBTcGVjaWZpYyBTdWJjbGFzcwo+ID4gICBiRGV2
-aWNlUHJvdG9jb2wgICAgICAgMjU1IFZlbmRvciBTcGVjaWZpYyBQcm90b2NvbAo+IAo+IEFjY29y
-ZGluZyB0byB0aGUgdGVjaCBzcGVjcywgdGhpcyBzaG91bGQgYmUgYSBVU0IgaHViLCBidXQgaXQg
-aXNuJ3QuIE9yCj4gaXMgdGhpcyBqdXN0IG9uZSBvZiB0aGUgc3ViLWRldmljZXM/IFdoYXQgZG9l
-cyAnbHN1c2IgLXQnIHNheSwgYW5kIGRvZXMKPiBMaW51eCBzZWUgc29tZXRoaW5nIGxpa2UgYSBt
-b3VzZSBvciBtYXNzIHN0b3JhZ2UgZGV2aWNlIHdoZW4gY29ubmVjdGVkCj4gdG8gb25lIG9mIHRo
-ZSBodWIgcG9ydHM/CgpUbyB0ZXN0IGFjY29yZGluZ2x5IHRvIHRoZSBxdWVzdGlvbiBhIFVTQiBk
-ZXZpY2UgKFdlYmNhbSBDOTA1KSBpcyBwbHVnZ2VkIGluIG9uZSBvZiB0aGUgRUlFIFByby4gaHVi
-IHBvcnRzCgoKMSkgQUtBSSBFSUUgUHJvICpPRkYqOgoKLS0tLS0tLS0tLS0tLS0tLS0tLQokIGxz
-dXNiCkJ1cyAwMDIgRGV2aWNlIDAwMjogSUQgMTUyZDowNTUxIEpNaWNyb24gVGVjaG5vbG9neSBD
-b3JwLiAvIEpNaWNyb24gVVNBIFRlY2hub2xvZ3kgQ29ycC4gCkJ1cyAwMDUgRGV2aWNlIDAwMjog
-SUQgODA4NzowMDI0IEludGVsIENvcnAuIEludGVncmF0ZWQgUmF0ZSBNYXRjaGluZyBIdWIKQnVz
-IDAwNiBEZXZpY2UgMDAyOiBJRCA4MDg3OjAwMjQgSW50ZWwgQ29ycC4gSW50ZWdyYXRlZCBSYXRl
-IE1hdGNoaW5nIEh1YgpCdXMgMDAxIERldmljZSAwMDE6IElEIDFkNmI6MDAwMiBMaW51eCBGb3Vu
-ZGF0aW9uIDIuMCByb290IGh1YgpCdXMgMDAyIERldmljZSAwMDE6IElEIDFkNmI6MDAwMyBMaW51
-eCBGb3VuZGF0aW9uIDMuMCByb290IGh1YgpCdXMgMDAzIERldmljZSAwMDE6IElEIDFkNmI6MDAw
-MiBMaW51eCBGb3VuZGF0aW9uIDIuMCByb290IGh1YgpCdXMgMDA0IERldmljZSAwMDE6IElEIDFk
-NmI6MDAwMyBMaW51eCBGb3VuZGF0aW9uIDMuMCByb290IGh1YgpCdXMgMDA1IERldmljZSAwMDE6
-IElEIDFkNmI6MDAwMiBMaW51eCBGb3VuZGF0aW9uIDIuMCByb290IGh1YgpCdXMgMDA2IERldmlj
-ZSAwMDE6IElEIDFkNmI6MDAwMiBMaW51eCBGb3VuZGF0aW9uIDIuMCByb290IGh1YgpCdXMgMDA1
-IERldmljZSAwMDM6IElEIDA1ZTM6MDYwOCBHZW5lc3lzIExvZ2ljLCBJbmMuIFVTQi0yLjAgNC1Q
-b3J0IEhVQgpCdXMgMDA1IERldmljZSAwMDQ6IElEIDE3NGM6NTEwNiBBU01lZGlhIFRlY2hub2xv
-Z3kgSW5jLiBUcmFuc2NlbmQgU3RvcmVKZXQgMjVNMwpCdXMgMDA2IERldmljZSAwMDM6IElEIDA1
-OGY6NjM2MiBBbGNvciBNaWNybyBDb3JwLiBGbGFzaCBDYXJkIFJlYWRlci9Xcml0ZXIKQnVzIDAw
-NSBEZXZpY2UgMDA2OiBJRCAwNDZkOmMzMTggTG9naXRlY2gsIEluYy4gSWxsdW1pbmF0ZWQgS2V5
-Ym9hcmQKQnVzIDAwNSBEZXZpY2UgMDA3OiBJRCAwNDdkOjEwMjAgS2Vuc2luZ3RvbiBFeHBlcnQg
-TW91c2UgVHJhY2tiYWxsCkJ1cyAwMDUgRGV2aWNlIDAxMjogSUQgMDU4Zjo5MjU0IEFsY29yIE1p
-Y3JvIENvcnAuIEh1YgotLS0tLS0tLS0tLS0tLS0tLS0tCgoyKSBBS0FJIEVJRSBQcm8gKk9OKjoK
-Ci0tLS0tLS0tLS0tLS0tLS0tLS0KJCBsc3VzYgpCdXMgMDAyIERldmljZSAwMDI6IElEIDE1MmQ6
-MDU1MSBKTWljcm9uIFRlY2hub2xvZ3kgQ29ycC4gLyBKTWljcm9uIFVTQSBUZWNobm9sb2d5IENv
-cnAuIApCdXMgMDA1IERldmljZSAwMDI6IElEIDgwODc6MDAyNCBJbnRlbCBDb3JwLiBJbnRlZ3Jh
-dGVkIFJhdGUgTWF0Y2hpbmcgSHViICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2ZW4uIG5vdi4gMjggMTk6
-Mjc6NTggQ0VUIDIwMTQKQnVzIDAwNiBEZXZpY2UgMDAyOiBJRCA4MDg3OjAwMjQgSW50ZWwgQ29y
-cC4gSW50ZWdyYXRlZCBSYXRlIE1hdGNoaW5nIEh1YgpCdXMgMDAxIERldmljZSAwMDE6IElEIDFk
-NmI6MDAwMiBMaW51eCBGb3VuZGF0aW9uIDIuMCByb290IGh1YgpCdXMgMDAyIERldmljZSAwMDE6
-IElEIDFkNmI6MDAwMyBMaW51eCBGb3VuZGF0aW9uIDMuMCByb290IGh1YgpCdXMgMDAzIERldmlj
-ZSAwMDE6IElEIDFkNmI6MDAwMiBMaW51eCBGb3VuZGF0aW9uIDIuMCByb290IGh1YgpCdXMgMDA0
-IERldmljZSAwMDE6IElEIDFkNmI6MDAwMyBMaW51eCBGb3VuZGF0aW9uIDMuMCByb290IGh1YgpC
-dXMgMDA1IERldmljZSAwMDE6IElEIDFkNmI6MDAwMiBMaW51eCBGb3VuZGF0aW9uIDIuMCByb290
-IGh1YgpCdXMgMDA2IERldmljZSAwMDE6IElEIDFkNmI6MDAwMiBMaW51eCBGb3VuZGF0aW9uIDIu
-MCByb290IGh1YgpCdXMgMDA1IERldmljZSAwMDM6IElEIDA1ZTM6MDYwOCBHZW5lc3lzIExvZ2lj
-LCBJbmMuIFVTQi0yLjAgNC1Qb3J0IEhVQgpCdXMgMDA1IERldmljZSAwMDQ6IElEIDE3NGM6NTEw
-NiBBU01lZGlhIFRlY2hub2xvZ3kgSW5jLiBUcmFuc2NlbmQgU3RvcmVKZXQgMjVNMwpCdXMgMDA1
-IERldmljZSAwMTg6IElEIDA0MDk6MDA1YSBORUMgQ29ycC4gSGlnaFNwZWVkIEh1YgpCdXMgMDA2
-IERldmljZSAwMDM6IElEIDA1OGY6NjM2MiBBbGNvciBNaWNybyBDb3JwLiBGbGFzaCBDYXJkIFJl
-YWRlci9Xcml0ZXIKQnVzIDAwNSBEZXZpY2UgMDA2OiBJRCAwNDZkOmMzMTggTG9naXRlY2gsIElu
-Yy4gSWxsdW1pbmF0ZWQgS2V5Ym9hcmQKQnVzIDAwNSBEZXZpY2UgMDA3OiBJRCAwNDdkOjEwMjAg
-S2Vuc2luZ3RvbiBFeHBlcnQgTW91c2UgVHJhY2tiYWxsCkJ1cyAwMDUgRGV2aWNlIDAxMjogSUQg
-MDU4Zjo5MjU0IEFsY29yIE1pY3JvIENvcnAuIEh1YgpCdXMgMDA1IERldmljZSAwMTk6IElEIDA0
-NmQ6MDgwYSBMb2dpdGVjaCwgSW5jLiBQb3J0YWJsZSBXZWJjYW0gQzkwNQpCdXMgMDA1IERldmlj
-ZSAwMjA6IElEIDA5ZTg6MDAxMCBBS0FJICBQcm9mZXNzaW9uYWwgTS5JLiBDb3JwLgotLS0tLS0t
-LS0tLS0tLS0tLS0tCiAKLS0tLS0tLS0tLS0tLS0tLS0tLQokIGxzdXNiIC10Ci86ICBCdXMgMDYu
-UG9ydCAxOiBEZXYgMSwgQ2xhc3M9cm9vdF9odWIsIERyaXZlcj1laGNpLXBjaS8ycCwgNDgwTQog
-ICAgfF9fIFBvcnQgMTogRGV2IDIsIElmIDAsIENsYXNzPUh1YiwgRHJpdmVyPWh1Yi84cCwgNDgw
-TQogICAgICAgIHxfXyBQb3J0IDc6IERldiAzLCBJZiAwLCBDbGFzcz1NYXNzIFN0b3JhZ2UsIERy
-aXZlcj11c2Itc3RvcmFnZSwgNDgwTQovOiAgQnVzIDA1LlBvcnQgMTogRGV2IDEsIENsYXNzPXJv
-b3RfaHViLCBEcml2ZXI9ZWhjaS1wY2kvMnAsIDQ4ME0KICAgIHxfXyBQb3J0IDE6IERldiAyLCBJ
-ZiAwLCBDbGFzcz1IdWIsIERyaXZlcj1odWIvNnAsIDQ4ME0KICAgICAgICB8X18gUG9ydCAxOiBE
-ZXYgMywgSWYgMCwgQ2xhc3M9SHViLCBEcml2ZXI9aHViLzRwLCA0ODBNCiAgICAgICAgICAgIHxf
-XyBQb3J0IDE6IERldiA2LCBJZiAwLCBDbGFzcz1IdW1hbiBJbnRlcmZhY2UgRGV2aWNlLCBEcml2
-ZXI9dXNiaGlkLCAxMk0KICAgICAgICAgICAgfF9fIFBvcnQgMTogRGV2IDYsIElmIDEsIENsYXNz
-PUh1bWFuIEludGVyZmFjZSBEZXZpY2UsIERyaXZlcj11c2JoaWQsIDEyTQogICAgICAgICAgICB8
-X18gUG9ydCAyOiBEZXYgNywgSWYgMCwgQ2xhc3M9SHVtYW4gSW50ZXJmYWNlIERldmljZSwgRHJp
-dmVyPXVzYmhpZCwgMS41TQogICAgICAgICAgICB8X18gUG9ydCAzOiBEZXYgMTIsIElmIDAsIENs
-YXNzPUh1YiwgRHJpdmVyPWh1Yi80cCwgMTJNCiAgICAgICAgfF9fIFBvcnQgMjogRGV2IDQsIElm
-IDAsIENsYXNzPU1hc3MgU3RvcmFnZSwgRHJpdmVyPXVzYi1zdG9yYWdlLCA0ODBNCiAgICAgICAg
-fF9fIFBvcnQgNDogRGV2IDE4LCBJZiAwLCBDbGFzcz1IdWIsIERyaXZlcj1odWIvNHAsIDQ4ME0K
-ICAgICAgICAgICAgfF9fIFBvcnQgMTogRGV2IDE5LCBJZiAwLCBDbGFzcz1WaWRlbywgRHJpdmVy
-PXV2Y3ZpZGVvLCA0ODBNCiAgICAgICAgICAgIHxfXyBQb3J0IDE6IERldiAxOSwgSWYgMSwgQ2xh
-c3M9VmlkZW8sIERyaXZlcj11dmN2aWRlbywgNDgwTQogICAgICAgICAgICB8X18gUG9ydCAxOiBE
-ZXYgMTksIElmIDIsIENsYXNzPUF1ZGlvLCBEcml2ZXI9c25kLXVzYi1hdWRpbywgNDgwTQogICAg
-ICAgICAgICB8X18gUG9ydCAxOiBEZXYgMTksIElmIDMsIENsYXNzPUF1ZGlvLCBEcml2ZXI9c25k
-LXVzYi1hdWRpbywgNDgwTQogICAgICAgICAgICB8X18gUG9ydCA0OiBEZXYgMjAsIElmIDAsIENs
-YXNzPVZlbmRvciBTcGVjaWZpYyBDbGFzcywgRHJpdmVyPSwgNDgwTQogICAgICAgICAgICB8X18g
-UG9ydCA0OiBEZXYgMjAsIElmIDEsIENsYXNzPVZlbmRvciBTcGVjaWZpYyBDbGFzcywgRHJpdmVy
-PSwgNDgwTQovOiAgQnVzIDA0LlBvcnQgMTogRGV2IDEsIENsYXNzPXJvb3RfaHViLCBEcml2ZXI9
-eGhjaV9oY2QvMnAsIDUwMDBNCi86ICBCdXMgMDMuUG9ydCAxOiBEZXYgMSwgQ2xhc3M9cm9vdF9o
-dWIsIERyaXZlcj14aGNpX2hjZC8ycCwgNDgwTQovOiAgQnVzIDAyLlBvcnQgMTogRGV2IDEsIENs
-YXNzPXJvb3RfaHViLCBEcml2ZXI9eGhjaV9oY2QvMnAsIDUwMDBNCiAgICB8X18gUG9ydCAyOiBE
-ZXYgMiwgSWYgMCwgQ2xhc3M9TWFzcyBTdG9yYWdlLCBEcml2ZXI9dXNiLXN0b3JhZ2UsIDUwMDBN
-Ci86ICBCdXMgMDEuUG9ydCAxOiBEZXYgMSwgQ2xhc3M9cm9vdF9odWIsIERyaXZlcj14aGNpX2hj
-ZC8ycCwgNDgwTQotLS0tLS0tLS0tLS0tLS0tLS0tCgoKMykgVGhlbiwgdGhlIFdlYmNhbSBwbHVn
-Z2VkIGluIHRoZSBFSUUgUHJvLiBoYXMgYmVlbiB1bnBsdWdnZWQ6CgotLS0tLS0tLS0tLS0tLS0t
-LS0tCiQgbHN1c2IgLXQKLzogIEJ1cyAwNi5Qb3J0IDE6IERldiAxLCBDbGFzcz1yb290X2h1Yiwg
-RHJpdmVyPWVoY2ktcGNpLzJwLCA0ODBNCiAgICB8X18gUG9ydCAxOiBEZXYgMiwgSWYgMCwgQ2xh
-c3M9SHViLCBEcml2ZXI9aHViLzhwLCA0ODBNCiAgICAgICAgfF9fIFBvcnQgNzogRGV2IDMsIElm
-IDAsIENsYXNzPU1hc3MgU3RvcmFnZSwgRHJpdmVyPXVzYi1zdG9yYWdlLCA0ODBNCi86ICBCdXMg
-MDUuUG9ydCAxOiBEZXYgMSwgQ2xhc3M9cm9vdF9odWIsIERyaXZlcj1laGNpLXBjaS8ycCwgNDgw
-TQogICAgfF9fIFBvcnQgMTogRGV2IDIsIElmIDAsIENsYXNzPUh1YiwgRHJpdmVyPWh1Yi82cCwg
-NDgwTQogICAgICAgIHxfXyBQb3J0IDE6IERldiAzLCBJZiAwLCBDbGFzcz1IdWIsIERyaXZlcj1o
-dWIvNHAsIDQ4ME0KICAgICAgICAgICAgfF9fIFBvcnQgMTogRGV2IDYsIElmIDAsIENsYXNzPUh1
-bWFuIEludGVyZmFjZSBEZXZpY2UsIERyaXZlcj11c2JoaWQsIDEyTQogICAgICAgICAgICB8X18g
-UG9ydCAxOiBEZXYgNiwgSWYgMSwgQ2xhc3M9SHVtYW4gSW50ZXJmYWNlIERldmljZSwgRHJpdmVy
-PXVzYmhpZCwgMTJNCiAgICAgICAgICAgIHxfXyBQb3J0IDI6IERldiA3LCBJZiAwLCBDbGFzcz1I
-dW1hbiBJbnRlcmZhY2UgRGV2aWNlLCBEcml2ZXI9dXNiaGlkLCAxLjVNCiAgICAgICAgICAgIHxf
-XyBQb3J0IDM6IERldiAxMiwgSWYgMCwgQ2xhc3M9SHViLCBEcml2ZXI9aHViLzRwLCAxMk0KICAg
-ICAgICB8X18gUG9ydCAyOiBEZXYgNCwgSWYgMCwgQ2xhc3M9TWFzcyBTdG9yYWdlLCBEcml2ZXI9
-dXNiLXN0b3JhZ2UsIDQ4ME0KICAgICAgICB8X18gUG9ydCA0OiBEZXYgMTgsIElmIDAsIENsYXNz
-PUh1YiwgRHJpdmVyPWh1Yi80cCwgNDgwTQogICAgICAgICAgICB8X18gUG9ydCA0OiBEZXYgMjAs
-IElmIDAsIENsYXNzPVZlbmRvciBTcGVjaWZpYyBDbGFzcywgRHJpdmVyPSwgNDgwTQogICAgICAg
-ICAgICB8X18gUG9ydCA0OiBEZXYgMjAsIElmIDEsIENsYXNzPVZlbmRvciBTcGVjaWZpYyBDbGFz
-cywgRHJpdmVyPSwgNDgwTQovOiAgQnVzIDA0LlBvcnQgMTogRGV2IDEsIENsYXNzPXJvb3RfaHVi
-LCBEcml2ZXI9eGhjaV9oY2QvMnAsIDUwMDBNCi86ICBCdXMgMDMuUG9ydCAxOiBEZXYgMSwgQ2xh
-c3M9cm9vdF9odWIsIERyaXZlcj14aGNpX2hjZC8ycCwgNDgwTQovOiAgQnVzIDAyLlBvcnQgMTog
-RGV2IDEsIENsYXNzPXJvb3RfaHViLCBEcml2ZXI9eGhjaV9oY2QvMnAsIDUwMDBNCiAgICB8X18g
-UG9ydCAyOiBEZXYgMiwgSWYgMCwgQ2xhc3M9TWFzcyBTdG9yYWdlLCBEcml2ZXI9dXNiLXN0b3Jh
-Z2UsIDUwMDBNCi86ICBCdXMgMDEuUG9ydCAxOiBEZXYgMSwgQ2xhc3M9cm9vdF9odWIsIERyaXZl
-cj14aGNpX2hjZC8ycCwgNDgwTQotLS0tLS0tLS0tLS0tLS0tLS0tCgotLS0tLS0tLS0tLS0tLS0t
-LS0tCiQgbHN1c2IKQnVzIDAwMiBEZXZpY2UgMDAyOiBJRCAxNTJkOjA1NTEgSk1pY3JvbiBUZWNo
-bm9sb2d5IENvcnAuIC8gSk1pY3JvbiBVU0EgVGVjaG5vbG9neSBDb3JwLiAKQnVzIDAwNSBEZXZp
-Y2UgMDAyOiBJRCA4MDg3OjAwMjQgSW50ZWwgQ29ycC4gSW50ZWdyYXRlZCBSYXRlIE1hdGNoaW5n
-IEh1YgpCdXMgMDA2IERldmljZSAwMDI6IElEIDgwODc6MDAyNCBJbnRlbCBDb3JwLiBJbnRlZ3Jh
-dGVkIFJhdGUgTWF0Y2hpbmcgSHViCkJ1cyAwMDEgRGV2aWNlIDAwMTogSUQgMWQ2YjowMDAyIExp
-bnV4IEZvdW5kYXRpb24gMi4wIHJvb3QgaHViCkJ1cyAwMDIgRGV2aWNlIDAwMTogSUQgMWQ2Yjow
-MDAzIExpbnV4IEZvdW5kYXRpb24gMy4wIHJvb3QgaHViCkJ1cyAwMDMgRGV2aWNlIDAwMTogSUQg
-MWQ2YjowMDAyIExpbnV4IEZvdW5kYXRpb24gMi4wIHJvb3QgaHViCkJ1cyAwMDQgRGV2aWNlIDAw
-MTogSUQgMWQ2YjowMDAzIExpbnV4IEZvdW5kYXRpb24gMy4wIHJvb3QgaHViCkJ1cyAwMDUgRGV2
-aWNlIDAwMTogSUQgMWQ2YjowMDAyIExpbnV4IEZvdW5kYXRpb24gMi4wIHJvb3QgaHViCkJ1cyAw
-MDYgRGV2aWNlIDAwMTogSUQgMWQ2YjowMDAyIExpbnV4IEZvdW5kYXRpb24gMi4wIHJvb3QgaHVi
-CkJ1cyAwMDUgRGV2aWNlIDAwMzogSUQgMDVlMzowNjA4IEdlbmVzeXMgTG9naWMsIEluYy4gVVNC
-LTIuMCA0LVBvcnQgSFVCCkJ1cyAwMDUgRGV2aWNlIDAwNDogSUQgMTc0Yzo1MTA2IEFTTWVkaWEg
-VGVjaG5vbG9neSBJbmMuIFRyYW5zY2VuZCBTdG9yZUpldCAyNU0zCkJ1cyAwMDUgRGV2aWNlIDAx
-ODogSUQgMDQwOTowMDVhIE5FQyBDb3JwLiBIaWdoU3BlZWQgSHViCkJ1cyAwMDYgRGV2aWNlIDAw
-MzogSUQgMDU4Zjo2MzYyIEFsY29yIE1pY3JvIENvcnAuIEZsYXNoIENhcmQgUmVhZGVyL1dyaXRl
-cgpCdXMgMDA1IERldmljZSAwMDY6IElEIDA0NmQ6YzMxOCBMb2dpdGVjaCwgSW5jLiBJbGx1bWlu
-YXRlZCBLZXlib2FyZApCdXMgMDA1IERldmljZSAwMDc6IElEIDA0N2Q6MTAyMCBLZW5zaW5ndG9u
-IEV4cGVydCBNb3VzZSBUcmFja2JhbGwKQnVzIDAwNSBEZXZpY2UgMDEyOiBJRCAwNThmOjkyNTQg
-QWxjb3IgTWljcm8gQ29ycC4gSHViCkJ1cyAwMDUgRGV2aWNlIDAyMDogSUQgMDllODowMDEwIEFL
-QUkgIFByb2Zlc3Npb25hbCBNLkkuIENvcnAuIAotLS0tLS0tLS0tLS0tLS0tLS0tCgpTaW5jZXJl
-bHkgaG9waW5nIGl0J2xsIGhlbHAgdG8gaW5jbHVkZSBmdWxsIHN1cHBvcnQgaW4gQUxTQSBmb3Ig
-dGhlIEFLQUkgRUlFIFBybwphcyBpdCdzIHZlcnkgZ29vZCBzdHVmZiwgbmljZWx5IGJ1aWx0IGFu
-ZCBjb252ZW5pZW50IChmb3IgaXRzIGh1YikgdG8gVVNCIHBvcnRzCmVhdGVycyBhcyB3ZSdyZSBh
-bGwgaW4gdGhlIG11c2ljIHBoeWx1bSA6LSkKCkNoZWVycyEKCi0tIAo8CiDCsC9fCiAvfAogICDC
-uSAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Friday, November 28, 2014 04:00:36 PM Mark Brown wrote:
+> 
+> --k9ssVBY1NpawPNl1
+> Content-Type: text/plain; charset=us-ascii
+> Content-Disposition: inline
+> 
+> On Thu, Nov 27, 2014 at 12:09:55AM +0100, Rafael J. Wysocki wrote:
+> > On Wednesday, November 26, 2014 11:17:16 AM Mark Brown wrote:
+> 
+> > > > As to registering ACPI IDs, I believe this is the right link:
+> > > > http://www.uefi.org/PNP_ACPI_Registry
+> 
+> > > No, those are vendors as far as I can tell.  I mean identifiers for
+> > > specific devices - it appears to be common for for example Intel to
+> > > allocate identifiers for devices they don't produce, I'd expect there to
+> > > be some effort to keep track of that especially given that _DSD
+> > > properties may well end up being specific to the identifier used to
+> > > register in cases of parallel evolution.
+> 
+> > The vendor (or more precisely the owner of the initial 3 or 4 letter code)
+> > is supposed to do that.  I'm not aware of any common registry of those IDs
+> > for all vendors.
+> 
+> OK, we probably should have one to aid discoverability since as far as I
+> can tell what's happening is that people (hi Intel!) are allocating
+> their own identifiers for devices produced by other vendors that turn up
+> on their boards.  If people can find the set of IDs in use there's more
+> chance they'll use the same ones as other people.
+
+There's the PRP0001 ID that can be use to in combination with the
+"compatible" property which then works the same way as for DT.
+
+That should be sufficient if the properties are going to be the
+same for ACPI (_DSD) and DT.
+
+> > > > Or did you mean a HID/CID<->DSD mapping?
+> 
+> > > I don't really know what that is, sorry.
+> 
+> > The device ID is supposed to determine the way all of the ACPI objects for that
+> > device will work, including what is returned by _DSD.  Pretty much in analogy
+> > with PCI device IDs.
+> 
+> So the HID and CID are device IDs then?  Please bear in mind that we're
+> not all familiar with the acronym soup that tends to go along with ACPI!
+
+Yes, they are supposed to be treated this way.
+
+> If those are device IDs then what you're saying is what I'd expect to
+> happen and it's part of the reason I'd expect us to be registering IDs
+> along with registering properties - if people are defining device
+> specific properties they really ought to be tied to the IDs that are in
+> use especially if (as seems likely to be the case with the current state
+> of the world) people are doing things without attempting to coordinate
+> and we're ending up trying to document the deployed reality.
+
+The rule of thumb (in my view) should be that if the device object's _DSD is
+going to return the same set of properties as for DT and no other special
+handling determined by the ID is required (ie. nothing along the lines of
+"if the device ID is X, the _ABC method works like that" which has to be known
+by the driver), "PRP0001" should be returned by _HID and then the value of the
+"compatible" property should be the same as for DT.
+
+In other words, "PRP0001" means "a generic device with properties as returned
+by _DSD".
+
+Otherwise, a new device ID needs to be allocated for the device and _HID
+should return that ID.  Also, if the device is compatible with another
+device with an already allocated ID (for _HID), _CID may return the device ID
+of the compatible device.  [Of course, it's better if _HID is the same for
+identical devices.]
+
+
+-- 
+I speak only for myself.
+Rafael J. Wysocki, Intel Open Source Technology Center.
