@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 19/30] ALSA: oxfw: Split PCM functionality to a
-	new file
-Date: Sat, 29 Nov 2014 00:59:28 +0900
-Message-ID: <1417190379-4172-20-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 22/30] ALSA: oxfw: Add support for AV/C stream
+	format command to get/set supported stream formation
+Date: Sat, 29 Nov 2014 00:59:31 +0900
+Message-ID: <1417190379-4172-23-git-send-email-o-takashi@sakamocchi.jp>
 References: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 7830D2604E8
+ by alsa0.perex.cz (Postfix) with ESMTP id C3A8A2604EB
  for <alsa-devel@alsa-project.org>; Fri, 28 Nov 2014 16:59:52 +0100 (CET)
 In-Reply-To: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,549 +25,244 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a help for works in followed patches.
+OXFW970/971 may supports AV/C Stream Format Information Specification 1.1
+Working Draft (Apr 2005, 1394TA). By using this command, drivers can get to know
+stream formations which device supports.
+
+This commit adds 'EXTENDED STREAM FORMAT INFORMATION' command. This command
+has two subfunctions, 'SINGLE' and 'LIST'. Drivers can use 'SINGLE' subfunction
+to know/set current formation of AMDTP stream, Drivers can use 'LIST'
+subfunction to know an available formation of AMDTP stream in a certain sampling
+rate.
+
+But some devices don't implement the 'LIST' subfunction. So this commit uses
+an assumption that 'if they don't implement it, they don't change stream
+formation depending on current each sampling rate'. With this assumption, this
+driver generates formations for such devices by:
+ 1.getting current formation by SINGLE subfunction
+ 2.getting supported sampling rates
+ 3.applying current formation for all of supported sampling rates
+
+Followed commit implements a parser of this format information.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/Makefile   |   2 +-
- sound/firewire/oxfw/oxfw-pcm.c | 249 +++++++++++++++++++++++++++++++++++++++++
- sound/firewire/oxfw/oxfw.c     | 240 +--------------------------------------
- sound/firewire/oxfw/oxfw.h     |   4 +
- 4 files changed, 255 insertions(+), 240 deletions(-)
- create mode 100644 sound/firewire/oxfw/oxfw-pcm.c
+ sound/firewire/oxfw/Makefile       |   2 +-
+ sound/firewire/oxfw/oxfw-command.c | 153 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw.h         |  33 ++++++++
+ 3 files changed, 187 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/oxfw/oxfw-command.c
 
 diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index e15c4c0..7fb4d09 100644
+index 0cf48fd..b107134 100644
 --- a/sound/firewire/oxfw/Makefile
 +++ b/sound/firewire/oxfw/Makefile
 @@ -1,2 +1,2 @@
--snd-oxfw-objs := oxfw-stream.o oxfw.o
-+snd-oxfw-objs := oxfw-stream.o oxfw-pcm.o oxfw.o
+-snd-oxfw-objs := oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
++snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
  obj-m += snd-oxfw.o
-diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
+diff --git a/sound/firewire/oxfw/oxfw-command.c b/sound/firewire/oxfw/oxfw-command.c
 new file mode 100644
-index 0000000..d39f17a
+index 0000000..8c603c5
 --- /dev/null
-+++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -0,0 +1,249 @@
++++ b/sound/firewire/oxfw/oxfw-command.c
+@@ -0,0 +1,153 @@
 +/*
-+ * oxfw_pcm.c - a part of driver for OXFW970/971 based devices
++ * oxfw_command.c - a part of driver for OXFW970/971 based devices
 + *
-+ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
++ * Copyright (c) 2014 Takashi Sakamoto
++ *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
 +#include "oxfw.h"
 +
-+static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
-+				    struct snd_pcm_hw_rule *rule)
++int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
++			  unsigned int pid, u8 *format, unsigned int len)
 +{
-+	static unsigned int stereo_rates[] = { 48000, 96000 };
-+	struct snd_interval *channels =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval *rate =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+
-+	/* two channels work only at 48/96 kHz */
-+	if (snd_interval_max(channels) < 6)
-+		return snd_interval_list(rate, 2, stereo_rates, 0);
-+	return 0;
-+}
-+
-+static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
-+					struct snd_pcm_hw_rule *rule)
-+{
-+	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
-+	struct snd_interval *rate =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	/* 32/44.1 kHz work only with all six channels */
-+	if (snd_interval_max(rate) < 48000)
-+		return snd_interval_refine(channels, &all_channels);
-+	return 0;
-+}
-+
-+int firewave_constraints(struct snd_pcm_runtime *runtime)
-+{
-+	static unsigned int channels_list[] = { 2, 6 };
-+	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
-+		.count = 2,
-+		.list = channels_list,
-+	};
++	u8 *buf;
 +	int err;
 +
-+	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
-+			    SNDRV_PCM_RATE_44100 |
-+			    SNDRV_PCM_RATE_48000 |
-+			    SNDRV_PCM_RATE_96000;
-+	runtime->hw.channels_max = 6;
++	buf = kmalloc(len + 10, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
 +
-+	err = snd_pcm_hw_constraint_list(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_CHANNELS,
-+					 &channels_list_constraint);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				  firewave_rate_constraint, NULL,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  firewave_channels_constraint, NULL,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		return err;
++	buf[0] = 0x00;		/* CONTROL */
++	buf[1] = 0xff;		/* UNIT */
++	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
++	buf[3] = 0xc0;		/* SINGLE subfunction */
++	buf[4] = dir;		/* Plug Direction */
++	buf[5] = 0x00;		/* UNIT */
++	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
++	buf[7] = 0xff & pid;	/* Plug ID */
++	buf[8] = 0xff;		/* Padding */
++	buf[9] = 0xff;		/* Support status in response */
++	memcpy(buf + 10, format, len);
 +
-+	return 0;
-+}
++	/* do transaction and check buf[1-7] are the same against command */
++	err = fcp_avc_transaction(unit, buf, len + 10, buf, len + 10,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
++				  BIT(6) | BIT(7) | BIT(8));
++	if ((err > 0) && (err < len + 10))
++		err = -EIO;
++	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a) /* REJECTED */
++		err = -EINVAL;
++	else
++		err = 0;
 +
-+int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
-+{
-+	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
-+			    SNDRV_PCM_RATE_44100 |
-+			    SNDRV_PCM_RATE_48000 |
-+			    SNDRV_PCM_RATE_88200 |
-+			    SNDRV_PCM_RATE_96000;
++	kfree(buf);
 +
-+	return 0;
-+}
-+
-+static int pcm_open(struct snd_pcm_substream *substream)
-+{
-+	static const struct snd_pcm_hardware hardware = {
-+		.info = SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER,
-+		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.buffer_bytes_max = 4 * 1024 * 1024,
-+		.period_bytes_min = 1,
-+		.period_bytes_max = UINT_MAX,
-+		.periods_min = 1,
-+		.periods_max = UINT_MAX,
-+	};
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	bool used;
-+	int err;
-+
-+	err = cmp_connection_check_used(&oxfw->in_conn, &used);
-+	if ((err < 0) || used)
-+		goto end;
-+
-+	runtime->hw = hardware;
-+
-+	err = oxfw->device_info->pcm_constraints(runtime);
-+	if (err < 0)
-+		goto end;
-+	err = snd_pcm_limit_hw_rates(runtime);
-+	if (err < 0)
-+		goto end;
-+
-+	err = amdtp_stream_add_pcm_hw_constraints(&oxfw->rx_stream, runtime);
-+end:
 +	return err;
 +}
 +
-+static int pcm_close(struct snd_pcm_substream *substream)
++int avc_stream_get_format(struct fw_unit *unit,
++			  enum avc_general_plug_dir dir, unsigned int pid,
++			  u8 *buf, unsigned int *len, unsigned int eid)
 +{
-+	return 0;
-+}
-+
-+static int pcm_hw_params(struct snd_pcm_substream *substream,
-+			 struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
++	unsigned int subfunc;
 +	int err;
 +
-+	mutex_lock(&oxfw->mutex);
++	if (eid == 0xff)
++		subfunc = 0xc0;	/* SINGLE */
++	else
++		subfunc = 0xc1;	/* LIST */
 +
-+	snd_oxfw_stream_stop_simplex(oxfw);
++	buf[0] = 0x01;		/* STATUS */
++	buf[1] = 0xff;		/* UNIT */
++	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
++	buf[3] = subfunc;	/* SINGLE or LIST */
++	buf[4] = dir;		/* Plug Direction */
++	buf[5] = 0x00;		/* Unit */
++	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
++	buf[7] = 0xff & pid;	/* Plug ID */
++	buf[8] = 0xff;		/* Padding */
++	buf[9] = 0xff;		/* support status in response */
++	buf[10] = 0xff & eid;	/* entry ID for LIST subfunction */
++	buf[11] = 0xff;		/* padding */
 +
-+	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+					       params_buffer_bytes(hw_params));
++	/* do transaction and check buf[1-7] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 12, buf, *len,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
++				  BIT(6) | BIT(7));
++	if ((err > 0) && (err < 10))
++		err = -EIO;
++	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a)	/* REJECTED */
++		err = -EINVAL;
++	else if (buf[0] == 0x0b)	/* IN TRANSITION */
++		err = -EAGAIN;
++	/* LIST subfunction has entry ID */
++	else if ((subfunc == 0xc1) && (buf[10] != eid))
++		err = -EIO;
 +	if (err < 0)
-+		goto error;
++		goto end;
 +
-+	amdtp_stream_set_parameters(&oxfw->rx_stream,
-+				    params_rate(hw_params),
-+				    params_channels(hw_params),
-+				    0);
-+
-+	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
-+				    params_format(hw_params));
-+
-+	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
-+				      AVC_GENERAL_PLUG_DIR_IN, 0);
-+	if (err < 0) {
-+		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
-+		goto err_buffer;
++	/* keep just stream format information */
++	if (subfunc == 0xc0) {
++		memmove(buf, buf + 10, err - 10);
++		*len = err - 10;
++	} else {
++		memmove(buf, buf + 11, err - 11);
++		*len = err - 11;
 +	}
 +
-+	return 0;
-+
-+err_buffer:
-+	snd_pcm_lib_free_vmalloc_buffer(substream);
-+error:
-+	mutex_unlock(&oxfw->mutex);
++	err = 0;
++end:
 +	return err;
 +}
 +
-+static int pcm_hw_free(struct snd_pcm_substream *substream)
++int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
++				enum avc_general_plug_dir dir,
++				unsigned short pid)
 +{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+
-+	mutex_lock(&oxfw->mutex);
-+	snd_oxfw_stream_stop_simplex(oxfw);
-+	mutex_unlock(&oxfw->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int pcm_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
++	unsigned int sfc;
++	u8 *buf;
 +	int err;
 +
-+	mutex_lock(&oxfw->mutex);
-+
-+	snd_oxfw_stream_stop_simplex(oxfw);
-+
-+	err = snd_oxfw_stream_start_simplex(oxfw);
-+	if (err < 0)
-+		goto end;
-+
-+	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
-+end:
-+	mutex_unlock(&oxfw->mutex);
-+	return err;
-+}
-+
-+static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_substream *pcm;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		pcm = substream;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		pcm = NULL;
-+		break;
-+	default:
++	for (sfc = 0; sfc < CIP_SFC_COUNT; sfc++) {
++		if (amdtp_rate_table[sfc] == rate)
++			break;
++	}
++	if (sfc == CIP_SFC_COUNT)
 +		return -EINVAL;
-+	}
-+	amdtp_stream_pcm_trigger(&oxfw->rx_stream, pcm);
-+	return 0;
-+}
 +
-+static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
++	buf = kzalloc(8, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
 +
-+	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
-+}
++	buf[0] = 0x02;		/* SPECIFIC INQUIRY */
++	buf[1] = 0xff;		/* UNIT */
++	if (dir == AVC_GENERAL_PLUG_DIR_IN)
++		buf[2] = 0x19;	/* INPUT PLUG SIGNAL FORMAT */
++	else
++		buf[2] = 0x18;	/* OUTPUT PLUG SIGNAL FORMAT */
++	buf[3] = 0xff & pid;	/* plug id */
++	buf[4] = 0x90;		/* EOH_1, Form_1, FMT. AM824 */
++	buf[5] = 0x07 & sfc;	/* FDF-hi. AM824, frequency */
++	buf[6] = 0xff;		/* FDF-mid. AM824, SYT hi (not used) */
++	buf[7] = 0xff;		/* FDF-low. AM824, SYT lo (not used) */
 +
-+int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
-+{
-+	static struct snd_pcm_ops ops = {
-+		.open      = pcm_open,
-+		.close     = pcm_close,
-+		.ioctl     = snd_pcm_lib_ioctl,
-+		.hw_params = pcm_hw_params,
-+		.hw_free   = pcm_hw_free,
-+		.prepare   = pcm_prepare,
-+		.trigger   = pcm_trigger,
-+		.pointer   = pcm_pointer,
-+		.page      = snd_pcm_lib_get_vmalloc_page,
-+		.mmap      = snd_pcm_lib_mmap_vmalloc,
-+	};
-+	struct snd_pcm *pcm;
-+	int err;
-+
-+	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, 0, &pcm);
++	/* do transaction and check buf[1-5] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
++	if ((err > 0) && (err < 8))
++		err = -EIO;
++	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
++		err = -ENOSYS;
 +	if (err < 0)
-+		return err;
-+	pcm->private_data = oxfw;
-+	strcpy(pcm->name, oxfw->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
-+	return 0;
++		goto end;
++
++	err = 0;
++end:
++	kfree(buf);
++	return err;
 +}
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 4055667..24bb6df 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,244 +25,6 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
- 
--static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
--				    struct snd_pcm_hw_rule *rule)
--{
--	static unsigned int stereo_rates[] = { 48000, 96000 };
--	struct snd_interval *channels =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--	struct snd_interval *rate =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--
--	/* two channels work only at 48/96 kHz */
--	if (snd_interval_max(channels) < 6)
--		return snd_interval_list(rate, 2, stereo_rates, 0);
--	return 0;
--}
--
--static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
--					struct snd_pcm_hw_rule *rule)
--{
--	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
--	struct snd_interval *rate =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--
--	/* 32/44.1 kHz work only with all six channels */
--	if (snd_interval_max(rate) < 48000)
--		return snd_interval_refine(channels, &all_channels);
--	return 0;
--}
--
--static int firewave_constraints(struct snd_pcm_runtime *runtime)
--{
--	static unsigned int channels_list[] = { 2, 6 };
--	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
--		.count = 2,
--		.list = channels_list,
--	};
--	int err;
--
--	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
--			    SNDRV_PCM_RATE_44100 |
--			    SNDRV_PCM_RATE_48000 |
--			    SNDRV_PCM_RATE_96000;
--	runtime->hw.channels_max = 6;
--
--	err = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_CHANNELS,
--					 &channels_list_constraint);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
--				  firewave_rate_constraint, NULL,
--				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				  firewave_channels_constraint, NULL,
--				  SNDRV_PCM_HW_PARAM_RATE, -1);
--	if (err < 0)
--		return err;
--
--	return 0;
--}
--
--static int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
--{
--	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
--			    SNDRV_PCM_RATE_44100 |
--			    SNDRV_PCM_RATE_48000 |
--			    SNDRV_PCM_RATE_88200 |
--			    SNDRV_PCM_RATE_96000;
--
--	return 0;
--}
--
--static int oxfw_open(struct snd_pcm_substream *substream)
--{
--	static const struct snd_pcm_hardware hardware = {
--		.info = SNDRV_PCM_INFO_MMAP |
--			SNDRV_PCM_INFO_MMAP_VALID |
--			SNDRV_PCM_INFO_BATCH |
--			SNDRV_PCM_INFO_INTERLEAVED |
--			SNDRV_PCM_INFO_BLOCK_TRANSFER,
--		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
--		.channels_min = 2,
--		.channels_max = 2,
--		.buffer_bytes_max = 4 * 1024 * 1024,
--		.period_bytes_min = 1,
--		.period_bytes_max = UINT_MAX,
--		.periods_min = 1,
--		.periods_max = UINT_MAX,
--	};
--	struct snd_oxfw *oxfw = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int err;
--
--	runtime->hw = hardware;
--
--	err = oxfw->device_info->pcm_constraints(runtime);
--	if (err < 0)
--		return err;
--	err = snd_pcm_limit_hw_rates(runtime);
--	if (err < 0)
--		return err;
--
--	err = amdtp_stream_add_pcm_hw_constraints(&oxfw->rx_stream, runtime);
--	if (err < 0)
--		return err;
--
--	return 0;
--}
--
--static int oxfw_close(struct snd_pcm_substream *substream)
--{
--	return 0;
--}
--
--static int oxfw_hw_params(struct snd_pcm_substream *substream,
--			   struct snd_pcm_hw_params *hw_params)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--	int err;
--
--	mutex_lock(&oxfw->mutex);
--
--	snd_oxfw_stream_stop_simplex(oxfw);
--
--	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
--					       params_buffer_bytes(hw_params));
--	if (err < 0)
--		goto error;
--
--	amdtp_stream_set_parameters(&oxfw->rx_stream,
--				    params_rate(hw_params),
--				    params_channels(hw_params),
--				    0);
--
--	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
--				    params_format(hw_params));
--
--	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
--				      AVC_GENERAL_PLUG_DIR_IN, 0);
--	if (err < 0) {
--		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
--		goto err_buffer;
--	}
--
--	return 0;
--
--err_buffer:
--	snd_pcm_lib_free_vmalloc_buffer(substream);
--error:
--	mutex_unlock(&oxfw->mutex);
--	return err;
--}
--
--static int oxfw_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--
--	mutex_lock(&oxfw->mutex);
--	snd_oxfw_stream_stop_simplex(oxfw);
--	mutex_unlock(&oxfw->mutex);
--
--	return snd_pcm_lib_free_vmalloc_buffer(substream);
--}
--
--static int oxfw_prepare(struct snd_pcm_substream *substream)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--	int err;
--
--	mutex_lock(&oxfw->mutex);
--
--	snd_oxfw_stream_stop_simplex(oxfw);
--
--	err = snd_oxfw_stream_start_simplex(oxfw);
--	if (err < 0)
--		goto end;
--
--	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
--end:
--	mutex_unlock(&oxfw->mutex);
--	return err;
--}
--
--static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--	struct snd_pcm_substream *pcm;
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		pcm = substream;
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--		pcm = NULL;
--		break;
--	default:
--		return -EINVAL;
--	}
--	amdtp_stream_pcm_trigger(&oxfw->rx_stream, pcm);
--	return 0;
--}
--
--static snd_pcm_uframes_t oxfw_pointer(struct snd_pcm_substream *substream)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--
--	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
--}
--
--static int oxfw_create_pcm(struct snd_oxfw *oxfw)
--{
--	static struct snd_pcm_ops ops = {
--		.open      = oxfw_open,
--		.close     = oxfw_close,
--		.ioctl     = snd_pcm_lib_ioctl,
--		.hw_params = oxfw_hw_params,
--		.hw_free   = oxfw_hw_free,
--		.prepare   = oxfw_prepare,
--		.trigger   = oxfw_trigger,
--		.pointer   = oxfw_pointer,
--		.page      = snd_pcm_lib_get_vmalloc_page,
--		.mmap      = snd_pcm_lib_mmap_vmalloc,
--	};
--	struct snd_pcm *pcm;
--	int err;
--
--	err = snd_pcm_new(oxfw->card, "OXFW", 0, 1, 0, &pcm);
--	if (err < 0)
--		return err;
--	pcm->private_data = oxfw;
--	strcpy(pcm->name, oxfw->device_info->short_name);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
--	return 0;
--}
--
- enum control_action { CTL_READ, CTL_WRITE };
- enum control_attribute {
- 	CTL_MIN		= 0x02,
-@@ -587,7 +349,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 		 dev_name(&unit->device), 100 << fw_dev->max_speed);
- 	strcpy(card->mixername, "OXFW");
- 
--	err = oxfw_create_pcm(oxfw);
-+	err = snd_oxfw_create_pcm(oxfw);
- 	if (err < 0)
- 		goto error;
- 
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index e5836e0..1196db8 100644
+index b60e91d..583ee7b 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -54,3 +54,7 @@ int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
+@@ -48,6 +48,39 @@ struct snd_oxfw {
+ 	s16 volume_max;
+ };
+ 
++/*
++ * AV/C Stream Format Information Specification 1.1 Working Draft
++ * (Apr 2005, 1394TA)
++ */
++int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
++			  unsigned int pid, u8 *format, unsigned int len);
++int avc_stream_get_format(struct fw_unit *unit,
++			  enum avc_general_plug_dir dir, unsigned int pid,
++			  u8 *buf, unsigned int *len, unsigned int eid);
++static inline int
++avc_stream_get_format_single(struct fw_unit *unit,
++			     enum avc_general_plug_dir dir, unsigned int pid,
++			     u8 *buf, unsigned int *len)
++{
++	return avc_stream_get_format(unit, dir, pid, buf, len, 0xff);
++}
++static inline int
++avc_stream_get_format_list(struct fw_unit *unit,
++			   enum avc_general_plug_dir dir, unsigned int pid,
++			   u8 *buf, unsigned int *len,
++			   unsigned int eid)
++{
++	return avc_stream_get_format(unit, dir, pid, buf, len, eid);
++}
 +
-+int firewave_constraints(struct snd_pcm_runtime *runtime);
-+int lacie_speakers_constraints(struct snd_pcm_runtime *runtime);
-+int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
++/*
++ * AV/C Digital Interface Command Set General Specification 4.2
++ * (Sep 2004, 1394TA)
++ */
++int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
++				enum avc_general_plug_dir dir,
++				unsigned short pid);
++
+ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
+ int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
 -- 
 2.1.0
