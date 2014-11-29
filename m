@@ -1,54 +1,103 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Sat, 29 Nov 2014 11:59:57 +0000
-Message-ID: <20141129115957.GE7712@sirena.org.uk>
-References: <cover.1415803064.git.jsarha@ti.com>
+From: Panu Matilainen <pmatilai@laiskiainen.org>
+Subject: [PATCH] ALSA: usb: Add support for Zoom R16/24 capture
+	and midi interfaces
+Date: Sat, 29 Nov 2014 21:35:04 +0200
+Message-ID: <1417289704-23774-1-git-send-email-pmatilai@laiskiainen.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E9xT1P6Q9DbJSWaX"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1415803064.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from homiemail-a82.g.dreamhost.com (sub5.mail.dreamhost.com
+ [208.113.200.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A136260410
+ for <alsa-devel@alsa-project.org>; Sat, 29 Nov 2014 20:35:21 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Panu Matilainen <pmatilai@laiskiainen.org>
 List-Id: alsa-devel@alsa-project.org
 
+This makes the midi interface and capture work out of the box with
+R16 (and presumably R24 too but untested). Playback stream would also
+seem to function fine except for one caveat: no sound is produced,
+so it is disabled for now.
 
---E9xT1P6Q9DbJSWaX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Panu Matilainen <pmatilai@laiskiainen.org>
+---
+ sound/usb/quirks-table.h | 34 ++++++++++++++++++++++++++++++++++
+ sound/usb/quirks.c       |  8 ++++++++
+ 2 files changed, 42 insertions(+)
 
-On Wed, Nov 12, 2014 at 04:40:51PM +0200, Jyri Sarha wrote:
-> The patches are based on:
-> git://git.kernel.org/pub/scm/linux/kernel/git/tomba/linux.git for-next
->=20
-> The base, the patches, and couple of additional not-to-be-merged
-> omap2plus_defconfig patches can be found here:
-> https://github.com/jsarha/linux.git omap-hdmi-audio
-
-I guess I'm OK with these so
-
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
-but like I said in reply to the patch adding the new driver I think
-we're going to want to generalize this a bit.
-
---E9xT1P6Q9DbJSWaX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUebU8AAoJECTWi3JdVIfQ78IH/2AdWVLRYBvFDrw9S/whhca+
-B79+Nh36/btjkb8YuAtjFnd+VjQtEbkSSHLa5sZ3Y0R/LSu3bmHsslRtJs+m3RVG
-ds041/+3sbIkJtTxrcYHJEVhOxUDbT9poKtIE8Tkh2/1ZERrzSY2qgTFNVu2SMYM
-MAskTD81ns/DKZb7vv+5VbQqyA8sbWMckBdpdYK3ssKPGt+d0yQ+4XJ9J73oxljd
-3TudKYFRfP/TyFgdHeTu/W4dB+GjYmaFTo5X9mtYP47t53N1QoGYQw/6rTkuTlW9
-Jq4fCTN4sG//mvluThUnT5HuIdBjydP/lPjUI83ysibxjQen7ECUKGwwl5oLrw8=
-=6fpC
------END PGP SIGNATURE-----
-
---E9xT1P6Q9DbJSWaX--
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index c657752..73621c9 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3202,6 +3202,40 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ },
+ 
+ {
++	/* ZOOM R16/24 in audio interface mode */
++	USB_DEVICE(0x1686, 0x00dd),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				/* Control */
++				.ifnum = 0,
++				.type = QUIRK_IGNORE_INTERFACE,
++			},
++			{
++				/* Playback, sound is missing atm  */
++				.ifnum = 1,
++				.type = QUIRK_IGNORE_INTERFACE,
++			},
++			{
++				/* Capture */
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE,
++			},
++			{
++				/* Midi */
++				.ifnum = 3,
++				.type = QUIRK_MIDI_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = -1
++			},
++		}
++	}
++},
++
++{
+ 	/*
+ 	 * Some USB MIDI devices don't have an audio control interface,
+ 	 * so we have to grab MIDI streaming interfaces here.
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index a5941f8..2e49193 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1160,6 +1160,14 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 			break;
+ 		}
+ 	}
++
++	/* Zoom R16/24 needs a tiny delay here, otherwise requests like
++	 * get/set frequency return as failed despite actually succeeding.
++	 */
++	if ((le16_to_cpu(dev->descriptor.idVendor) == 0x1686) &&
++	    (le16_to_cpu(dev->descriptor.idProduct) == 0x00dd) &&
++	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
++		mdelay(1);
+ }
+ 
+ /*
+-- 
+1.9.3
