@@ -1,135 +1,125 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH] sound: use enum names instead of magic numbers
-Date: Sat, 29 Nov 2014 12:58:12 -0800
-Message-ID: <1417294692.818.3.camel@perches.com>
-References: <1417201196-12392-1-git-send-email-KyleChamberlin@project20million.org>
-	 <s5h7fydbv6w.wl-tiwai@suse.de>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
+Date: Sat, 29 Nov 2014 23:27:52 +0100
+Message-ID: <1820241.GUleD5gbzs@vostro.rjw.lan>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <2127240.rWRTDu6LHQ@vostro.rjw.lan> <20141129115209.GD7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h7fydbv6w.wl-tiwai@suse.de>
+In-Reply-To: <20141129115209.GD7712@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-There's an enum defined for these magic numbers,
-might as well use it.
+On Saturday, November 29, 2014 11:52:09 AM Mark Brown wrote:
+> 
+> --9GYGtdBumnmR69ER
+> Content-Type: text/plain; charset=us-ascii
+> Content-Disposition: inline
+> Content-Transfer-Encoding: quoted-printable
+> 
+> On Sat, Nov 29, 2014 at 12:51:59AM +0100, Rafael J. Wysocki wrote:
+> > On Friday, November 28, 2014 04:00:36 PM Mark Brown wrote:
+> 
+> > > OK, we probably should have one to aid discoverability since as far as I
+> > > can tell what's happening is that people (hi Intel!) are allocating
+> > > their own identifiers for devices produced by other vendors that turn up
+> > > on their boards.  If people can find the set of IDs in use there's more
+> > > chance they'll use the same ones as other people.
+> 
+> > There's the PRP0001 ID that can be use to in combination with the
+> > "compatible" property which then works the same way as for DT.
+> 
+> > That should be sufficient if the properties are going to be the
+> > same for ACPI (_DSD) and DT.
+> 
+> We've got people making BIOSs right now for systems you can actually buy=20
+> that are intended to run Windows which we need to support; right now the
+> pressing problem I'm seeing is that we've got BIOS vendors not using
+> properties at all and we're going to be ending up with configuration
+> coming from big DMI tables instead which is miserable, Windows is
+> perfectly happy to have custom drivers installed per machine.  Do we
+> know if Windows supports PRP0001 as it currently stands?
 
-Miscellanea:
-o Use ##__VA_ARGS__
+No, it doesn't.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- include/sound/core.h | 28 +++++++++++++++-------------
- sound/core/misc.c    |  6 +++---
- 2 files changed, 18 insertions(+), 16 deletions(-)
+Separate device IDs are necessary for Windows compatibility AFAICS.
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 1df3f2f..40418e7 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -325,7 +325,7 @@ void release_and_free_resource(struct resource *res);
- /* --- */
- 
- /* sound printk debug levels */
--enum {
-+enum snd_level {
- 	SND_PR_ALWAYS,
- 	SND_PR_DEBUG,
- 	SND_PR_VERBOSE,
-@@ -333,11 +333,11 @@ enum {
- 
- #if defined(CONFIG_SND_DEBUG) || defined(CONFIG_SND_VERBOSE_PRINTK)
- __printf(4, 5)
--void __snd_printk(unsigned int level, const char *file, int line,
-+void __snd_printk(enum snd_level snd_level, const char *file, int line,
- 		  const char *format, ...);
- #else
--#define __snd_printk(level, file, line, format, args...) \
--	printk(format, ##args)
-+#define __snd_printk(snd_level, file, line, format, ...) \
-+	printk(format, ##__VA_ARGS__)
- #endif
- 
- /**
-@@ -347,8 +347,8 @@ void __snd_printk(unsigned int level, const char *file, int line,
-  * Works like printk() but prints the file and the line of the caller
-  * when configured with CONFIG_SND_VERBOSE_PRINTK.
-  */
--#define snd_printk(fmt, args...) \
--	__snd_printk(0, __FILE__, __LINE__, fmt, ##args)
-+#define snd_printk(fmt, ...) \
-+	__snd_printk(SND_PR_ALWAYS, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
- 
- #ifdef CONFIG_SND_DEBUG
- /**
-@@ -358,10 +358,10 @@ void __snd_printk(unsigned int level, const char *file, int line,
-  * Works like snd_printk() for debugging purposes.
-  * Ignored when CONFIG_SND_DEBUG is not set.
-  */
--#define snd_printd(fmt, args...) \
--	__snd_printk(1, __FILE__, __LINE__, fmt, ##args)
--#define _snd_printd(level, fmt, args...) \
--	__snd_printk(level, __FILE__, __LINE__, fmt, ##args)
-+#define snd_printd(fmt, ...) \
-+	__snd_printk(SND_PR_DEBUG, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
-+#define _snd_printd(level, fmt, ...) \
-+	__snd_printk(level, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
- 
- /**
-  * snd_BUG - give a BUG warning message and stack trace
-@@ -390,7 +390,8 @@ void __snd_printk(unsigned int level, const char *file, int line,
- __printf(1, 2)
- static inline void snd_printd(const char *format, ...) {}
- __printf(2, 3)
--static inline void _snd_printd(int level, const char *format, ...) {}
-+static inline void _snd_printd(enum snd_level snd_level,
-+			       const char *format, ...) {}
- 
- #define snd_BUG()			do { } while (0)
- 
-@@ -411,8 +412,9 @@ static inline bool snd_printd_ratelimit(void) { return false; }
-  * Works like snd_printk() for debugging purposes.
-  * Ignored when CONFIG_SND_DEBUG_VERBOSE is not set.
-  */
--#define snd_printdd(format, args...) \
--	__snd_printk(2, __FILE__, __LINE__, format, ##args)
-+#define snd_printdd(format, ...)				\
-+	__snd_printk(SND_PR_VERBOSE, __FILE__, __LINE__,	\
-+		     format, ##__VA_ARGS__)
- #else
- __printf(1, 2)
- static inline void snd_printdd(const char *format, ...) {}
-diff --git a/sound/core/misc.c b/sound/core/misc.c
-index f2e8226..03b3f56 100644
---- a/sound/core/misc.c
-+++ b/sound/core/misc.c
-@@ -63,7 +63,7 @@ static const char *sanity_file_name(const char *path)
- #endif
- 
- #if defined(CONFIG_SND_DEBUG) || defined(CONFIG_SND_VERBOSE_PRINTK)
--void __snd_printk(unsigned int level, const char *path, int line,
-+void __snd_printk(enum snd_level snd_level, const char *path, int line,
- 		  const char *format, ...)
- {
- 	va_list args;
-@@ -74,7 +74,7 @@ void __snd_printk(unsigned int level, const char *path, int line,
- #endif
- 
- #ifdef CONFIG_SND_DEBUG
--	if (debug < level)
-+	if (debug < snd_level)
- 		return;
- #endif
- 
-@@ -88,7 +88,7 @@ void __snd_printk(unsigned int level, const char *path, int line,
- 		const char *end_of_header = printk_skip_level(format);
- 		memcpy(verbose_fmt, format, end_of_header - format);
- 		vaf.fmt = end_of_header;
--	} else if (level)
-+	} else if (snd_level)
- 		memcpy(verbose_fmt, KERN_DEBUG, sizeof(KERN_DEBUG) - 1);
- 	printk(verbose_fmt, sanity_file_name(path), line, &vaf);
- 
+But that also means any device ID registered by us won't be suitable in that
+case, because Windows won't use it.
+
+There are two different problems here, though.  The first one is a way to
+provide the existing Linux drivers with the information expected by them via
+ACPI and that's what _DSD (plus PRP0001 optionally) is.  The second one is
+to be able to handle systems with ACPI tables from a random vendor who only
+cares about Windows and that's more difficult to address, because our
+ecosystem is different from theirs.
+
+There basically are two ways around that.  The first one is to have all
+knowledge related to device IDs in drivers (which effectively is what
+Windows does and which implies "board files" of sorts) and the second one is
+to make it possible to use overlays on top of the existing ACPI tables that
+will allow people to provide the properties expected by a more generic driver
+(this way, if the vendor didn't care to provide _DSD, for example, in the
+original ACPI tables, the system integrator would be able to use an overlay
+in an initramfs or boot partition to amend them).
+
+There is a plan to do the latter, but that is going to take some time to
+complete.
+
+> > > If those are device IDs then what you're saying is what I'd expect to
+> > > happen and it's part of the reason I'd expect us to be registering IDs
+> > > along with registering properties - if people are defining device
+> > > specific properties they really ought to be tied to the IDs that are in
+> > > use especially if (as seems likely to be the case with the current state
+> > > of the world) people are doing things without attempting to coordinate
+> > > and we're ending up trying to document the deployed reality.
+> 
+> > The rule of thumb (in my view) should be that if the device object's _DSD=
+>  is
+> > going to return the same set of properties as for DT and no other special
+> > handling determined by the ID is required (ie. nothing along the lines of
+> > "if the device ID is X, the _ABC method works like that" which has to be =
+> known
+> > by the driver), "PRP0001" should be returned by _HID and then the value o=
+> f the
+> > "compatible" property should be the same as for DT.
+> 
+> This is a reasonable idea but we do need it to be compatible with
+> Windows and we still need to make sure we have a process in place that
+> BIOS authors and driver authors focused on Windows can reasonably be
+> expected to work with.  That's not something we have right now for DT
+> (our DT process involves contributing to Linux) so the problem remains
+> effectively the same.
+
+We can't make Windows use our stuff and they have a different model
+(a custom driver per device ID vs a common driver per IP block possibly
+matching multiple device IDs).
+
+> We also need a way of getting the word out to people that they should be
+> doing this (also a problem no matter if we use PRP0001 or something UEFI
+> specific).
+
+What do you mean by "something UEFI specific"?
+
+> > Otherwise, a new device ID needs to be allocated for the device and _HID
+> > should return that ID.  Also, if the device is compatible with another
+> > device with an already allocated ID (for _HID), _CID may return the devic=
+> e ID
+> > of the compatible device.  [Of course, it's better if _HID is the same for
+> > identical devices.]
+> 
+> I honestly don't see BIOS authors as being likely to care about adding
+> things to the CID if their systems are working (I'm assuming that HID is
+> the primary device ID and CID are further backup compatible IDs).
+
+They will if they care to be compatible with old (binary) OSes that didn't
+know about the new device ID, but shipped drivers that could handle the
+device (although possibly in a "crippled" way).
+
+
+-- 
+I speak only for myself.
+Rafael J. Wysocki, Intel Open Source Technology Center.
