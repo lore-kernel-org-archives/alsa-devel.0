@@ -1,91 +1,53 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Sat, 29 Nov 2014 00:51:59 +0100
-Message-ID: <2127240.rWRTDu6LHQ@vostro.rjw.lan>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <7202604.4LK4s7RH1S@vostro.rjw.lan> <20141128160036.GW7712@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v7.1 09/19] ASoC: omap-hdmi-audio: Add platform device
+ for OMAP HDMI audio support
+Date: Sat, 29 Nov 2014 11:32:30 +0000
+Message-ID: <20141129113230.GC7712@sirena.org.uk>
+References: <cover.1415803064.git.jsarha@ti.com>
+ <9a528990bbe116d9bb073f690b835c847b3fa0bf.1415803065.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141128160036.GW7712@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EqMiG03fNEfpmvTL"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9a528990bbe116d9bb073f690b835c847b3fa0bf.1415803065.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, November 28, 2014 04:00:36 PM Mark Brown wrote:
-> 
-> --k9ssVBY1NpawPNl1
-> Content-Type: text/plain; charset=us-ascii
-> Content-Disposition: inline
-> 
-> On Thu, Nov 27, 2014 at 12:09:55AM +0100, Rafael J. Wysocki wrote:
-> > On Wednesday, November 26, 2014 11:17:16 AM Mark Brown wrote:
-> 
-> > > > As to registering ACPI IDs, I believe this is the right link:
-> > > > http://www.uefi.org/PNP_ACPI_Registry
-> 
-> > > No, those are vendors as far as I can tell.  I mean identifiers for
-> > > specific devices - it appears to be common for for example Intel to
-> > > allocate identifiers for devices they don't produce, I'd expect there to
-> > > be some effort to keep track of that especially given that _DSD
-> > > properties may well end up being specific to the identifier used to
-> > > register in cases of parallel evolution.
-> 
-> > The vendor (or more precisely the owner of the initial 3 or 4 letter code)
-> > is supposed to do that.  I'm not aware of any common registry of those IDs
-> > for all vendors.
-> 
-> OK, we probably should have one to aid discoverability since as far as I
-> can tell what's happening is that people (hi Intel!) are allocating
-> their own identifiers for devices produced by other vendors that turn up
-> on their boards.  If people can find the set of IDs in use there's more
-> chance they'll use the same ones as other people.
 
-There's the PRP0001 ID that can be use to in combination with the
-"compatible" property which then works the same way as for DT.
+--EqMiG03fNEfpmvTL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-That should be sufficient if the properties are going to be the
-same for ACPI (_DSD) and DT.
+On Wed, Nov 12, 2014 at 04:41:00PM +0200, Jyri Sarha wrote:
+> The platform device should only be registered from OMAPDSS HDMI
+> driver. The platform driver registers and unregisters all ASoC
+> components needed for OMAP HDMI audio.
 
-> > > > Or did you mean a HID/CID<->DSD mapping?
-> 
-> > > I don't really know what that is, sorry.
-> 
-> > The device ID is supposed to determine the way all of the ACPI objects for that
-> > device will work, including what is returned by _DSD.  Pretty much in analogy
-> > with PCI device IDs.
-> 
-> So the HID and CID are device IDs then?  Please bear in mind that we're
-> not all familiar with the acronym soup that tends to go along with ACPI!
+So, this basically seems fine but I'm looking at this code and I'm not
+really seeing a huge amount of OMAP specificness here.  Why is this an
+OMAP driver and not something more generic - can't we have other HDMI
+controllers offering the same interface?  There's a few serial numbers
+that would need filing off but since the ASoC driver is basically just
+interface matching and not talking to the hardware it looks like it
+ought to be usable by more than just OMAP.
 
-Yes, they are supposed to be treated this way.
+--EqMiG03fNEfpmvTL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> If those are device IDs then what you're saying is what I'd expect to
-> happen and it's part of the reason I'd expect us to be registering IDs
-> along with registering properties - if people are defining device
-> specific properties they really ought to be tied to the IDs that are in
-> use especially if (as seems likely to be the case with the current state
-> of the world) people are doing things without attempting to coordinate
-> and we're ending up trying to document the deployed reality.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-The rule of thumb (in my view) should be that if the device object's _DSD is
-going to return the same set of properties as for DT and no other special
-handling determined by the ID is required (ie. nothing along the lines of
-"if the device ID is X, the _ABC method works like that" which has to be known
-by the driver), "PRP0001" should be returned by _HID and then the value of the
-"compatible" property should be the same as for DT.
+iQEcBAEBAgAGBQJUea7NAAoJECTWi3JdVIfQ0X8H/0Y3bNETmcOTTVhJ9DT/6weI
+euk6WVkAborw1stVRQQwblkdZRis66LjCpHTCNGgut8RUXqbQo1If1QIZgY0Q7Gg
+CAzmNgRZVVyP7irda/SywKzstfRdBVEf/d/pIiyeAkRu3IgF23NvSIkkBMOWHax/
+0/vNpmS1FC/RvLP22fP5EmNeuQKvHA2xF+PlX9yLkB5fqW7tgGF4oSJ5Bma1kuEQ
+rdGEwCYWbREaaS+Yzbt+1YpcsDFBSrVR36p0LlL+GLLMTF5lgr8uLYRyIjS7pyGZ
+cZquXpPgnMpNZ2r5FjlYhMw++MOP451qstnkdqqvSArQZXCrMGj3T3hiBq5CfbY=
+=5ctB
+-----END PGP SIGNATURE-----
 
-In other words, "PRP0001" means "a generic device with properties as returned
-by _DSD".
-
-Otherwise, a new device ID needs to be allocated for the device and _HID
-should return that ID.  Also, if the device is compatible with another
-device with an already allocated ID (for _HID), _CID may return the device ID
-of the compatible device.  [Of course, it's better if _HID is the same for
-identical devices.]
-
-
--- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+--EqMiG03fNEfpmvTL--
