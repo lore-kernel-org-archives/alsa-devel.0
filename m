@@ -1,125 +1,52 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Sat, 29 Nov 2014 23:27:52 +0100
-Message-ID: <1820241.GUleD5gbzs@vostro.rjw.lan>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org> <2127240.rWRTDu6LHQ@vostro.rjw.lan> <20141129115209.GD7712@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 00/30 v3] ALSA: Enhancement for existed
+	FireWire drivers
+Date: Sun, 30 Nov 2014 12:21:18 +0900
+Message-ID: <547A8D2E.5010801@sakamocchi.jp>
+References: <1417190379-4172-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hd285by11.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141129115209.GD7712@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id E39E5260434
+ for <alsa-devel@alsa-project.org>; Sun, 30 Nov 2014 04:21:23 +0100 (CET)
+In-Reply-To: <s5hd285by11.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: clemens@ladisch.de, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday, November 29, 2014 11:52:09 AM Mark Brown wrote:
-> 
-> --9GYGtdBumnmR69ER
-> Content-Type: text/plain; charset=us-ascii
-> Content-Disposition: inline
-> Content-Transfer-Encoding: quoted-printable
-> 
-> On Sat, Nov 29, 2014 at 12:51:59AM +0100, Rafael J. Wysocki wrote:
-> > On Friday, November 28, 2014 04:00:36 PM Mark Brown wrote:
-> 
-> > > OK, we probably should have one to aid discoverability since as far as I
-> > > can tell what's happening is that people (hi Intel!) are allocating
-> > > their own identifiers for devices produced by other vendors that turn up
-> > > on their boards.  If people can find the set of IDs in use there's more
-> > > chance they'll use the same ones as other people.
-> 
-> > There's the PRP0001 ID that can be use to in combination with the
-> > "compatible" property which then works the same way as for DT.
-> 
-> > That should be sufficient if the properties are going to be the
-> > same for ACPI (_DSD) and DT.
-> 
-> We've got people making BIOSs right now for systems you can actually buy=20
-> that are intended to run Windows which we need to support; right now the
-> pressing problem I'm seeing is that we've got BIOS vendors not using
-> properties at all and we're going to be ending up with configuration
-> coming from big DMI tables instead which is miserable, Windows is
-> perfectly happy to have custom drivers installed per machine.  Do we
-> know if Windows supports PRP0001 as it currently stands?
-
-No, it doesn't.
-
-Separate device IDs are necessary for Windows compatibility AFAICS.
-
-But that also means any device ID registered by us won't be suitable in that
-case, because Windows won't use it.
-
-There are two different problems here, though.  The first one is a way to
-provide the existing Linux drivers with the information expected by them via
-ACPI and that's what _DSD (plus PRP0001 optionally) is.  The second one is
-to be able to handle systems with ACPI tables from a random vendor who only
-cares about Windows and that's more difficult to address, because our
-ecosystem is different from theirs.
-
-There basically are two ways around that.  The first one is to have all
-knowledge related to device IDs in drivers (which effectively is what
-Windows does and which implies "board files" of sorts) and the second one is
-to make it possible to use overlays on top of the existing ACPI tables that
-will allow people to provide the properties expected by a more generic driver
-(this way, if the vendor didn't care to provide _DSD, for example, in the
-original ACPI tables, the system integrator would be able to use an overlay
-in an initramfs or boot partition to amend them).
-
-There is a plan to do the latter, but that is going to take some time to
-complete.
-
-> > > If those are device IDs then what you're saying is what I'd expect to
-> > > happen and it's part of the reason I'd expect us to be registering IDs
-> > > along with registering properties - if people are defining device
-> > > specific properties they really ought to be tied to the IDs that are in
-> > > use especially if (as seems likely to be the case with the current state
-> > > of the world) people are doing things without attempting to coordinate
-> > > and we're ending up trying to document the deployed reality.
-> 
-> > The rule of thumb (in my view) should be that if the device object's _DSD=
->  is
-> > going to return the same set of properties as for DT and no other special
-> > handling determined by the ID is required (ie. nothing along the lines of
-> > "if the device ID is X, the _ABC method works like that" which has to be =
-> known
-> > by the driver), "PRP0001" should be returned by _HID and then the value o=
-> f the
-> > "compatible" property should be the same as for DT.
-> 
-> This is a reasonable idea but we do need it to be compatible with
-> Windows and we still need to make sure we have a process in place that
-> BIOS authors and driver authors focused on Windows can reasonably be
-> expected to work with.  That's not something we have right now for DT
-> (our DT process involves contributing to Linux) so the problem remains
-> effectively the same.
-
-We can't make Windows use our stuff and they have a different model
-(a custom driver per device ID vs a common driver per IP block possibly
-matching multiple device IDs).
-
-> We also need a way of getting the word out to people that they should be
-> doing this (also a problem no matter if we use PRP0001 or something UEFI
-> specific).
-
-What do you mean by "something UEFI specific"?
-
-> > Otherwise, a new device ID needs to be allocated for the device and _HID
-> > should return that ID.  Also, if the device is compatible with another
-> > device with an already allocated ID (for _HID), _CID may return the devic=
-> e ID
-> > of the compatible device.  [Of course, it's better if _HID is the same for
-> > identical devices.]
-> 
-> I honestly don't see BIOS authors as being likely to care about adding
-> things to the CID if their systems are working (I'm assuming that HID is
-> the primary device ID and CID are further backup compatible IDs).
-
-They will if they care to be compatible with old (binary) OSes that didn't
-know about the new device ID, but shipped drivers that could handle the
-device (although possibly in a "crippled" way).
-
-
--- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+T24gMjAxNOW5tDEx5pyIMzDml6UgMDQ6MzUsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBGb3IgZWFz
+ZSBvZiBmdXJ0aGVyIGRldmVsb3BtZW50LCBJIG1lcmdlZCBhIHBhcnQgb2YgdGhpcyBiaWcgcGF0
+Y2gKPiBzZXJpZXMsIHRoZSBvbmVzIGRvaW5nIG1lcmVseSBjb2RlIHNodWZmbGluZyBvciBzb21l
+IG9idmlvdXMgdGhpbmdzLgo+IE5hbWVseSwgdGhlIGRpY2UgY2hhbmdlcyBiZWxvdzoKClRoYW5r
+IHlvdS4gQnV0Cgo+PiAgIEFMU0E6IGRpY2U6IHJlbW92ZSBleHBlcmltZW50YWwgc3RhdGUKCkkg
+dGhpbmsgdGhpcyBpcyBoYXN0eSBmb3IgZm9yLW5leHQgYnJhbmNoLgoKV2l0aCB0aGUgYXBwbGll
+ZCBwYXRjaGVzLCB0aGUgRGljZSBkcml2ZXIgY2Fubm90IHN0aWxsIGhhbmRsZSBhIGRldmljZQp3
+aGljaCBJIG93bi4gRnVydGhlcm1vcmUsIEkndmUgZ290IHNvbWUgcmVwb3J0cyBmcm9tIHJldGlj
+ZW50IHRlc3RlcnMKdGhhdCB0aGV5IHVzZSB0aGUgZHJpdmVyIHdpdGhvdXQgYmVsb3cgY29kZXM6
+CgpodHRwOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5k
+LmdpdC90cmVlL3NvdW5kL2ZpcmV3aXJlL2RpY2UvZGljZS5jI244OAoKSSBndWVzcyBtb3N0IG9m
+ICBEaWNlIGRldmljZXMgc3VwcG9ydCBib3RoIGRpcmVjdGlvbiBvZiBzdHJlYW1zLCBkdWUgdG8K
+aGFuZGxpbmcgdGltZXN0YW1wLiBJbiBkZXRhaWwsIHBsZWFzZSByZWFkIG15IHJlcG9ydDoKCjMu
+NCBEdXBsZXggc3RyZWFtcyB3aXRoIHRpbWVzdGFtcCBzeW5jaHJvbml6YXRpb24KaHR0cHM6Ly9n
+aXRodWIuY29tL3Rha2Fzd2llL2Fsc2EtZmlyZXdpcmUtcmVwb3J0CgpDYW4gSSByZXF1ZXN0IHlv
+dSB0byByZW1vdmUgdGhlIHBhdGNoIGZyb20gbGludXgtbmV4dCBicmFuY2g/IFRoaXMgcGF0Y2gK
+c2hvdWxkIGJlIGFwcGxpZWQgYWZ0ZXIgMjd0aCBwYXRjaCwgYXQgbGVhc3Q6CgpbYWxzYS1kZXZl
+bF0gW1BBVENIIDI3LzMwXSBBTFNBOiBveGZ3OiBBZGQgc3VwcG9ydCBBTURUUCBpbi1zdHJlYW0K
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE0
+LU5vdmVtYmVyLzA4NDgxNi5odG1sCgoKUmVnYXJkcwoKVGFrYXNoaSBTYWthbW90bwpvLXRha2Fz
+aGlAc2FrYW1vY2NoaS5qcAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
