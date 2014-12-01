@@ -1,66 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Mon, 1 Dec 2014 19:31:12 +0000
-Message-ID: <20141201193112.GN7712@sirena.org.uk>
-References: <cover.1415803064.git.jsarha@ti.com>
- <20141129115957.GE7712@sirena.org.uk>
- <547C2FBA.4030204@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_ssi: free irq before irq_dispose_mapping()
+Date: Mon, 01 Dec 2014 20:39:51 +0100
+Message-ID: <547CC407.30308@metafoo.de>
+References: <1417402251-6596-1-git-send-email-jiada_wang@mentor.com> <20141201065046.GB27289@pengutronix.de> <547C9C34.9080602@metafoo.de> <547CB817.10806@tabi.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eSIQo8/L/IVtUaNr"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <547C2FBA.4030204@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <547CB817.10806@tabi.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>, Markus Pargmann <mpa@pengutronix.de>, Jiada Wang <jiada_wang@mentor.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, Li.Xiubo@freescale.com, nicoleotsuka@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 12/01/2014 07:48 PM, Timur Tabi wrote:
+> On 12/01/2014 10:49 AM, Lars-Peter Clausen wrote:
+>> The driver creates the mapping by calling irq_of_parse_and_map(), so it
+>> also has to dispose the mapping.
+>
+> I agree with Markus, this does seem weird.  It sounds like you're saying
+> that irq_of_parse_and_map() and devm_request_irq() are incompatible.
 
---eSIQo8/L/IVtUaNr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+They probably are. You have to create the mapping before you request the IRQ 
+and if devm_request_irq() is used the IRQ is only freed again after the 
+remove function of the driver been called. Yet if a driver creates a mapping 
+in its probe function it should also dispose it in its remove function. So 
+you are stuck with either freeing the mapping before freeing the IRQ or 
+leaking the mapping.
 
-On Mon, Dec 01, 2014 at 11:07:06AM +0200, Tomi Valkeinen wrote:
-> On 29/11/14 13:59, Mark Brown wrote:
+My opinion on this is that devices should not create mappings and should 
+leave that to the core. This quite easily solves the dilemma.
 
-> > Reviewed-by: Mark Brown <broonie@kernel.org>
+> A quick grep shows the following drivers that call both functions:
+>
 
-> Thanks. And just to be sure, that's "ok, we can merge these in the next
-> merge window"?
+Most of these drivers will probably work fine without irq_of_parse_and_map().
 
-Yes.
-
-> > but like I said in reply to the patch adding the new driver I think
-> > we're going to want to generalize this a bit.
-
-> Yep, if I'm not mistaken I did suggest that to Jyri at some point. We
-> can continue working on that, but I'd rather not do anything big on that
-> front before there is some other SoC that has the same setup.
-
-I really want to see people making an effort to make code shareable here
-- I think one of the reasons nobody is upstreaming any of their code is
-that there's nothing generic in place to handle generic tasks so people
-just look at their code, think it's too much of a device specific hack
-and think they'll get back to looking at it later.  If this is a
-sensible set of callbacks to have to pass configuration around let's
-make that discoverable without requiring people to look through the OMAP
-drivers.
-
---eSIQo8/L/IVtUaNr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUfMH/AAoJECTWi3JdVIfQg5IH/i3sTbK4INdyckCWZ873u1cU
-5nuZ99BN8e/5Dzl8Juvy0uqovDFcysVjyB4q8lBqxH/O1sEAnH6CaX+qu3rfWgTZ
-4xX/7gp4qmrF6SR5LJ7DFFWUbP91V04ciabM+WKu/3z7EIJtJLZs3zaLEQ01rv8U
-OlM//Zy4Zmh1DhBbAxRHCIqZ1dHET9o0SE7v+IMiuFwWR9mQXdv3mXqJFf1TJ2Bq
-EPKKdKW+DO453MKwE4lkBuYYfX3ZTpwQZkzAbb6jvyaEs+DKQ9hXB3ovBbnQZ53b
-vbLRmVTQgaVjp5/zsjBRtPyu9KAHc3oXxVr6OMCKf+XQSax3rls+37qHr2ehhrc=
-=AAsU
------END PGP SIGNATURE-----
-
---eSIQo8/L/IVtUaNr--
+> ata/pata_mpc52xx.c
+> built-in.o
+> cpufreq/exynos5440-cpufreq.c
+> crypto/omap-sham.c
+> dma/moxart-dma.c
+> edac/mpc85xx_edac.c
+> hsi/clients/nokia-modem.c
+> i2c/busses/i2c-wmt.c
+> input/serio/apbps2.c
+> mmc/host/omap_hsmmc.c
+> mmc/host/moxart-mmc.c
+> mtd/nand/mpc5121_nfc.c
+> net/ethernet/arc/emac_main.c
+> net/ethernet/moxa/moxart_ether.c
+> pci/host/pcie-rcar.c
+> pinctrl/samsung/pinctrl-exynos5440.c
+> pinctrl/samsung/pinctrl-exynos.c
+> pinctrl/pinctrl-bcm2835.c
+> spi/spi-bcm2835.c
+> spi/spi-mpc512x-psc.c
+> staging/xillybus/xillybus_of.c
+> thermal/samsung/exynos_tmu.c
+>
