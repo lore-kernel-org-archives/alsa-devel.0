@@ -1,16 +1,16 @@
 From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: [PATCHv6 8/9] ASOC: wm8971: use regcache_sync to
-	replace snd_soc_cache_sync
-Date: Mon,  1 Dec 2014 14:52:00 +0800
-Message-ID: <1417416721-17271-8-git-send-email-xavier.hsu@linaro.org>
+Subject: [PATCHv6 7/9] ASOC: wm8971: use msleep to replace work
+	queue
+Date: Mon,  1 Dec 2014 14:51:59 +0800
+Message-ID: <1417416721-17271-7-git-send-email-xavier.hsu@linaro.org>
 References: <1417416721-17271-1-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from Kraken (unknown [124.219.7.128])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CC0E260627
- for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2014 07:52:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id ACF5C260621
+ for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2014 07:52:41 +0100 (CET)
 In-Reply-To: <1417416721-17271-1-git-send-email-xavier.hsu@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,61 +25,86 @@ To: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@li
 Cc: Xavier Hsu <xavier.hsu@linaro.org>, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, Andy Green <andy.green@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+We use msleep to replace work queue.
+"As suggested by Mark Brown"
+
 Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
 Signed-off-by: Andy Green <andy.green@linaro.org>
 ---
- sound/soc/codecs/wm8971.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8971.c |   27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-index 60139bc..b2641a6 100755
+index 1f3abbb..60139bc 100755
 --- a/sound/soc/codecs/wm8971.c
 +++ b/sound/soc/codecs/wm8971.c
-@@ -38,6 +38,7 @@
+@@ -36,8 +36,6 @@
  
+ #define WM8971_REG_COUNT	43
+ 
+-static struct workqueue_struct *wm8971_workq;
+-
  /* codec private data */
  struct wm8971_priv {
-+	struct regmap *regmap;
  	/* MCLK */
- 	unsigned int sysclk;
- 	struct snd_pcm_hw_constraint_list *sysclk_constraints;
-@@ -721,6 +722,7 @@ static int wm8971_mute(struct snd_soc_dai *dai, int mute)
- static int wm8971_set_bias_level(struct snd_soc_codec *codec,
- 				 enum snd_soc_bias_level level)
+@@ -780,16 +778,6 @@ static struct snd_soc_dai_driver wm8971_dai = {
+ 	.ops = &wm8971_dai_ops,
+ };
+ 
+-static void wm8971_work(struct work_struct *work)
+-{
+-	struct snd_soc_dapm_context *dapm =
+-		container_of(work, struct snd_soc_dapm_context,
+-			     delayed_work.work);
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
+-
+-	wm8971_set_bias_level(codec, codec->dapm.bias_level);
+-}
+-
+ static int wm8971_suspend(struct snd_soc_codec *codec)
  {
-+	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
- 	u16 pwr_reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+ 	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
+@@ -807,8 +795,8 @@ static int wm8971_resume(struct snd_soc_codec *codec)
+ 		reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+ 		snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+ 		codec->dapm.bias_level = SND_SOC_BIAS_ON;
+-		queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+-				   msecs_to_jiffies(1000));
++		msleep(1000);
++		wm8971_set_bias_level(codec, codec->dapm.bias_level);
+ 	}
  
- 	switch (level) {
-@@ -732,7 +734,7 @@ static int wm8971_set_bias_level(struct snd_soc_codec *codec,
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
--			snd_soc_cache_sync(codec);
-+			regcache_sync(wm8971->regmap);
+ 	return 0;
+@@ -819,19 +807,14 @@ static int wm8971_probe(struct snd_soc_codec *codec)
+ 	int ret = 0;
+ 	u16 reg;
  
- 		/* mute dac and set vmid to 500k, enable VREF */
- 		snd_soc_write(codec, WM8971_PWR1, pwr_reg | 0x0140);
-@@ -866,7 +868,6 @@ static int wm8971_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
+-	INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8971_work);
+-	wm8971_workq = create_workqueue("wm8971");
+-	if (wm8971_workq == NULL)
+-		return -ENOMEM;
+-
+ 	wm8971_reset(codec);
+ 
+ 	/* charge output caps - set vmid to 5k for quick power up */
+ 	reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+ 	snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+ 	codec->dapm.bias_level = SND_SOC_BIAS_STANDBY;
+-	queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+-			   msecs_to_jiffies(1000));
++	msleep(1000);
++	wm8971_set_bias_level(codec, codec->dapm.bias_level);
+ 
+ 	/* set the update bits */
+ 	snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
+@@ -851,8 +834,6 @@ static int wm8971_remove(struct snd_soc_codec *codec)
  {
- 	struct wm8971_priv *wm8971;
--	struct regmap *regmap;
- 	int ret;
+ 	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
  
- 	wm8971 = devm_kzalloc(&i2c->dev, sizeof(struct wm8971_priv),
-@@ -876,9 +877,9 @@ static int wm8971_i2c_probe(struct i2c_client *i2c,
- 
- 	mutex_init(&wm8971->deemph_mutex);
- 
--	regmap = devm_regmap_init_i2c(i2c, &wm8971_regmap);
--	if (IS_ERR(regmap))
--		return PTR_ERR(regmap);
-+	wm8971->regmap = devm_regmap_init_i2c(i2c, &wm8971_regmap);
-+	if (IS_ERR(wm8971->regmap))
-+		return PTR_ERR(wm8971->regmap);
- 
- 	i2c_set_clientdata(i2c, wm8971);
+-	if (wm8971_workq)
+-		destroy_workqueue(wm8971_workq);
+ 	return 0;
+ }
  
 -- 
 1.7.9.5
