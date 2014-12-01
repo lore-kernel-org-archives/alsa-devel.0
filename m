@@ -1,84 +1,66 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_ssi: free irq before
- irq_dispose_mapping()
-Date: Mon, 1 Dec 2014 19:24:22 +0000
-Message-ID: <20141201192422.GL7712@sirena.org.uk>
-References: <1417402251-6596-1-git-send-email-jiada_wang@mentor.com>
- <20141201065046.GB27289@pengutronix.de>
- <547C9C34.9080602@metafoo.de>
+Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
+Date: Mon, 1 Dec 2014 19:31:12 +0000
+Message-ID: <20141201193112.GN7712@sirena.org.uk>
+References: <cover.1415803064.git.jsarha@ti.com>
+ <20141129115957.GE7712@sirena.org.uk>
+ <547C2FBA.4030204@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3618644249516435723=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ECE43260610
- for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2014 20:24:36 +0100 (CET)
-In-Reply-To: <547C9C34.9080602@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Jiada Wang <jiada_wang@mentor.com>, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, timur@tabi.org, nicoleotsuka@gmail.com, tiwai@suse.de, Li.Xiubo@freescale.com, Markus Pargmann <mpa@pengutronix.de>, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eSIQo8/L/IVtUaNr"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <547C2FBA.4030204@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3618644249516435723==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YsbR7IM8mFrcghHU"
-Content-Disposition: inline
-
-
---YsbR7IM8mFrcghHU
+--eSIQo8/L/IVtUaNr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 01, 2014 at 05:49:56PM +0100, Lars-Peter Clausen wrote:
-> On 12/01/2014 07:50 AM, Markus Pargmann wrote:
+On Mon, Dec 01, 2014 at 11:07:06AM +0200, Tomi Valkeinen wrote:
+> On 29/11/14 13:59, Mark Brown wrote:
 
-> >devm_request_irq() is used by other drivers too, this should not be a
-> >problem. Looking at the code it seems that irq_dispose_mapping may not
-> >be necessary with devm_request_irq(). So I think it would be better to
-> >remove irq_dispose_mapping() instead.
+> > Reviewed-by: Mark Brown <broonie@kernel.org>
 
-> The driver creates the mapping by calling irq_of_parse_and_map(), so it also
-> has to dispose the mapping. But the easy way out is to simply use
-> platform_get_irq() instead of irq_of_parse_map(). In this case the mapping
-> is not managed by the device but by the of core, so the device has not to
-> dispose the mapping.
+> Thanks. And just to be sure, that's "ok, we can merge these in the next
+> merge window"?
 
-It also has the advantage of not being DT specific so providing some
-chance that future firmware interfaces can be supported without driver
-modification.
+Yes.
 
---YsbR7IM8mFrcghHU
+> > but like I said in reply to the patch adding the new driver I think
+> > we're going to want to generalize this a bit.
+
+> Yep, if I'm not mistaken I did suggest that to Jyri at some point. We
+> can continue working on that, but I'd rather not do anything big on that
+> front before there is some other SoC that has the same setup.
+
+I really want to see people making an effort to make code shareable here
+- I think one of the reasons nobody is upstreaming any of their code is
+that there's nothing generic in place to handle generic tasks so people
+just look at their code, think it's too much of a device specific hack
+and think they'll get back to looking at it later.  If this is a
+sensible set of callbacks to have to pass configuration around let's
+make that discoverable without requiring people to look through the OMAP
+drivers.
+
+--eSIQo8/L/IVtUaNr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUfMBmAAoJECTWi3JdVIfQQQIH/iCp85C3j3tZK021HeqxyEwY
-1QWrbS+5j6rW3D+UcSC/BYqRF+ClS/1ZOeFgH5b6hP4Jp1ng00iYKOaCkv3EdqRh
-DULbFmlBPkEnV8Zrq4yZ64Lmjdfg1JcSZ+iwsqkIU4RuI67BmFLKlcOtapojKSby
-SCCjRe1LJBGlb1IgO/5Rnv1Clesu5OBblyL0xMDAp54QWVD2fGtVwhxk3KjC3G0o
-oqbhdZ77Y0P97IH8RYBj4xZU5AN32KgE65PvQTYRvwmcknG09gMoELs45XLzcP0w
-5fqwPGZvRLGxqkBbHxITRPVYqTD7QmmB1mn7HsamDycHOwMFjdFHmwCcVb0gyn8=
-=hd9f
+iQEcBAEBAgAGBQJUfMH/AAoJECTWi3JdVIfQg5IH/i3sTbK4INdyckCWZ873u1cU
+5nuZ99BN8e/5Dzl8Juvy0uqovDFcysVjyB4q8lBqxH/O1sEAnH6CaX+qu3rfWgTZ
+4xX/7gp4qmrF6SR5LJ7DFFWUbP91V04ciabM+WKu/3z7EIJtJLZs3zaLEQ01rv8U
+OlM//Zy4Zmh1DhBbAxRHCIqZ1dHET9o0SE7v+IMiuFwWR9mQXdv3mXqJFf1TJ2Bq
+EPKKdKW+DO453MKwE4lkBuYYfX3ZTpwQZkzAbb6jvyaEs+DKQ9hXB3ovBbnQZ53b
+vbLRmVTQgaVjp5/zsjBRtPyu9KAHc3oXxVr6OMCKf+XQSax3rls+37qHr2ehhrc=
+=AAsU
 -----END PGP SIGNATURE-----
 
---YsbR7IM8mFrcghHU--
-
---===============3618644249516435723==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3618644249516435723==--
+--eSIQo8/L/IVtUaNr--
