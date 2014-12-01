@@ -1,54 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_ssi: free irq before
- irq_dispose_mapping()
-Date: Mon, 1 Dec 2014 19:41:47 +0000
-Message-ID: <20141201194147.GP7712@sirena.org.uk>
-References: <1417402251-6596-1-git-send-email-jiada_wang@mentor.com>
- <20141201065046.GB27289@pengutronix.de>
- <547C9C34.9080602@metafoo.de>
- <547CB817.10806@tabi.org>
- <547CC407.30308@metafoo.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_ssi: free irq before irq_dispose_mapping()
+Date: Mon, 01 Dec 2014 20:56:23 +0100
+Message-ID: <2547588.Qc4F2IfZke@wuerfel>
+References: <1417402251-6596-1-git-send-email-jiada_wang@mentor.com> <547CC407.30308@metafoo.de> <20141201194147.GP7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A4pi7p1avD4z6Uqy"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <547CC407.30308@metafoo.de>
+In-Reply-To: <20141201194147.GP7712@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Timur Tabi <timur@tabi.org>, Markus Pargmann <mpa@pengutronix.de>, Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, Li.Xiubo@freescale.com, nicoleotsuka@gmail.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: linuxppc-dev@lists.ozlabs.org
+Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Jiada Wang <jiada_wang@mentor.com>, linux-kernel@vger.kernel.org, Timur Tabi <timur@tabi.org>, lgirdwood@gmail.com, nicoleotsuka@gmail.com, tiwai@suse.de, Li.Xiubo@freescale.com, Markus Pargmann <mpa@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Monday 01 December 2014 19:41:47 Mark Brown wrote:
+> On Mon, Dec 01, 2014 at 08:39:51PM +0100, Lars-Peter Clausen wrote:
+> > On 12/01/2014 07:48 PM, Timur Tabi wrote:
+> 
+> > >A quick grep shows the following drivers that call both functions:
+> 
+> > Most of these drivers will probably work fine without irq_of_parse_and_map().
+> 
+> I'd also note that quite a few of these drivers look pretty legacy - a
+> very large proportion are for old PowerPC hardware, though by no means
+> all.
 
---A4pi7p1avD4z6Uqy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Right, from the times before we were using platform_device for probing
+device tree based devices and they had to map the interrupt themselves.
 
-On Mon, Dec 01, 2014 at 08:39:51PM +0100, Lars-Peter Clausen wrote:
-> On 12/01/2014 07:48 PM, Timur Tabi wrote:
+Some of them like arch/powerpc/sysdev/fsl_pci.c seem fine, this one
+is does not expect to ever destroy a device, and it only unmaps the
+interrupt if request_irq fails. drivers/ata/pata_mpc52xx.c on the
+other hand seems wrong in the same was as drivers/edac/mpc85xx_edac.c
+and sound/soc/fsl/fsl_ssi.c.
 
-> >A quick grep shows the following drivers that call both functions:
+All other drivers that call irq_of_parse_and_map and pass that into
+devm_request_irq just never unmap, and their interrupts are already
+mapped by the platform code, so I think it's not even a leak.
 
-> Most of these drivers will probably work fine without irq_of_parse_and_map().
-
-I'd also note that quite a few of these drivers look pretty legacy - a
-very large proportion are for old PowerPC hardware, though by no means
-all.
-
---A4pi7p1avD4z6Uqy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUfMR7AAoJECTWi3JdVIfQxC4H/Rw91cGM/GoVnm+lMlkCjMT8
-b0OZH4hfeGQfs5roSNkjab0foHUwXfKEmOcUnh4eHUiO3OJdAuLA2s4LWWKwf7Tp
-I8+oYR268oi/uf4bhiREBOzrbj3+I8gqZmE7C9lXi3VVqjJm+/CgsoK+C+ntcf0N
-LSJMaOMPQtu5CAAQNlSJCsaGbCdAdhEKOBTRyxaPHrR9HVnBI3nwXqthtqhntZDw
-JMIlHh/v5rJsFW4oWuX6ym/g0VHQ2jvdmJJ9doJrrHdODdJrW16CYAU8ATY9iIY1
-D+MMxQqoPYYfATRC7i6IkD+pKXxRm9PEg6efhPR89m0sndwXDTrCvzNBQRvdbgs=
-=DYcS
------END PGP SIGNATURE-----
-
---A4pi7p1avD4z6Uqy--
+	Arnd
