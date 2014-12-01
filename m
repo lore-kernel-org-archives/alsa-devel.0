@@ -1,136 +1,119 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Fix module unbound
-Date: Mon,  1 Dec 2014 19:57:14 -0200
-Message-ID: <1417471034-28880-1-git-send-email-festevam@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
+Date: Mon, 1 Dec 2014 22:19:07 +0000
+Message-ID: <20141201221907.GR7712@sirena.org.uk>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
+ <1820241.GUleD5gbzs@vostro.rjw.lan>
+ <20141201175100.GH7712@sirena.org.uk>
+ <1437951.HUEy7xa933@vostro.rjw.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f176.google.com (mail-qc0-f176.google.com
- [209.85.216.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 456452606FD
- for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2014 22:57:44 +0100 (CET)
-Received: by mail-qc0-f176.google.com with SMTP id i17so8552833qcy.35
- for <alsa-devel@alsa-project.org>; Mon, 01 Dec 2014 13:57:43 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, arnd@arndb.de, timur@tabi.org, nicoleotsuka@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wBRMoyAtsbmwI0yu"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1437951.HUEy7xa933@vostro.rjw.lan>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Darren Hart <dvhart@linux.intel.com>, Grant Likely <grant.likely@secretlab.ca>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Trying to remove the snd-soc-fsl-ssi module leads to the following warning:
+--wBRMoyAtsbmwI0yu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-[   31.515336] ------------[ cut here ]------------
-[   31.520091] WARNING: CPU: 2 PID: 434 at fs/proc/generic.c:521 remove_proc_entry+0x14c/0x16c()
-[   31.528708] remove_proc_entry: removing non-empty directory 'irq/79', leaking at least '202c000.ss'
-[   31.537911] Modules linked in: snd_soc_wm8962 snd_soc_imx_wm8962 snd_soc_fsl_ssi(-) evbug
-[   31.546249] CPU: 2 PID: 434 Comm: rmmod Not tainted 3.18.0-rc6-00028-g3314bf6-dirty #1
-[   31.554235] Backtrace:
-[   31.556816] [<80011ea8>] (dump_backtrace) from [<80012044>] (show_stack+0x18/0x1c)
-[   31.564416]  r6:80142c88 r5:00000000 r4:00000000 r3:00000000
-[   31.570267] [<8001202c>] (show_stack) from [<806980ec>] (dump_stack+0x88/0xa4)
-[   31.577588] [<80698064>] (dump_stack) from [<80029d78>] (warn_slowpath_common+0x70/0x94)
-[   31.585711]  r5:00000009 r4:bb61fd90
-[   31.589423] [<80029d08>] (warn_slowpath_common) from [<80029e40>] (warn_slowpath_fmt+0x38/0x40)
-[   31.598187]  r8:bb61fdfe r7:be05d76d r6:be05d9a8 r5:00000002 r4:be05d700
-[   31.605054] [<80029e0c>] (warn_slowpath_fmt) from [<80142c88>] (remove_proc_entry+0x14c/0x16c)
-[   31.613709]  r3:806a79c0 r2:808229a0
-[   31.617371] [<80142b3c>] (remove_proc_entry) from [<80070380>] (unregister_irq_proc+0x94/0xb8)
-[   31.625989]  r10:00000000 r8:8000ede4 r7:80955f2c r6:0000004f r5:8118e738 r4:be00af00
-[   31.633952] [<800702ec>] (unregister_irq_proc) from [<80069dac>] (free_desc+0x2c/0x64)
-[   31.641898]  r6:0000004f r5:80955f38 r4:be00af00
-[   31.646604] [<80069d80>] (free_desc) from [<80069e68>] (irq_free_descs+0x4c/0x8c)
-[   31.654092]  r7:00000081 r6:00000001 r5:0000004f r4:00000001
-[   31.659863] [<80069e1c>] (irq_free_descs) from [<8006fc3c>] (irq_dispose_mapping+0x40/0x5c)
-[   31.668247]  r6:be17b844 r5:be17b800 r4:0000004f r3:802c5ec0
-[   31.673998] [<8006fbfc>] (irq_dispose_mapping) from [<7f004ea4>] (fsl_ssi_remove+0x58/0x70 [snd_so)
-[   31.683948]  r4:bb5bba10 r3:00000001
-[   31.687618] [<7f004e4c>] (fsl_ssi_remove [snd_soc_fsl_ssi]) from [<803720a0>] (platform_drv_remove)
-[   31.697564]  r5:7f0064f8 r4:be17b810
-[   31.701195] [<80372080>] (platform_drv_remove) from [<80370494>] (__device_release_driver+0x78/0xc)
-[   31.710361]  r5:7f0064f8 r4:be17b810
-[   31.713987] [<8037041c>] (__device_release_driver) from [<80370d20>] (driver_detach+0xbc/0xc0)
-[   31.722631]  r5:7f0064f8 r4:be17b810
-[   31.726259] [<80370c64>] (driver_detach) from [<80370304>] (bus_remove_driver+0x54/0x98)
-[   31.734382]  r6:00000800 r5:00000000 r4:7f0064f8 r3:bb67f500
-[   31.740149] [<803702b0>] (bus_remove_driver) from [<80371398>] (driver_unregister+0x30/0x50)
-[   31.748617]  r4:7f0064f8 r3:bd9f7080
-[   31.752245] [<80371368>] (driver_unregister) from [<80371f3c>] (platform_driver_unregister+0x14/0x)
-[   31.761498]  r4:7f00655c r3:7f005a70
-[   31.765130] [<80371f28>] (platform_driver_unregister) from [<7f005a84>] (fsl_ssi_driver_exit+0x14/)
-[   31.776147] [<7f005a70>] (fsl_ssi_driver_exit [snd_soc_fsl_ssi]) from [<8008ed80>] (SyS_delete_mod)
-[   31.786553] [<8008ec64>] (SyS_delete_module) from [<8000ec20>] (ret_fast_syscall+0x0/0x48)
-[   31.794824]  r6:00c46d18 r5:00000800 r4:00c46d18
-[   31.799530] ---[ end trace 954e8a3a15379e52 ]---
+On Mon, Dec 01, 2014 at 11:16:31PM +0100, Rafael J. Wysocki wrote:
+> On Monday, December 01, 2014 05:51:00 PM Mark Brown wrote:
 
-The cause of problem and solution are well explained by Lars-Peter:
+> > The dream here is that people working on building systems, people
+> > working on Windows drivers and people working on Linux drivers will at
+> > some point be able to collaborate. If we're going to go off and do our
+> > own thing for Linux without talking to anyone that's not really addressing
+> > the issue.
 
-"The driver creates the mapping by calling irq_of_parse_and_map(), so it also 
-has to dispose the mapping. But the easy way out is to simply use 
-platform_get_irq() instead of irq_of_parse_map(). In this case the mapping is
-not managed by the device but by the of core, so the device has not to dispose
-the mapping."
+> Well, that's already going on in the DT land, isn't it?  It has been going on
+> for quite a while AFAICS.
 
-Tested on a imx6q-sabresd board.
+In theory (and where it's actually relevant in practice to at least some
+extent) this stuff is all OS neutral, there's a definite willingness for
+it to be so.
 
-Reported-by: Jiada Wang <jiada_wang@mentor.com>
-Suggested-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+> > There's also the option that Windows drivers start using _DSD themselves
+> > which is, I understand, the goal towards which the people working on at
+> > least audio are heading.
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 32a31d9..c528f16 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1361,7 +1361,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		return PTR_ERR(ssi_private->regs);
- 	}
- 
--	ssi_private->irq = irq_of_parse_and_map(np, 0);
-+	ssi_private->irq = platform_get_irq(pdev, 0);
- 	if (!ssi_private->irq) {
- 		dev_err(&pdev->dev, "no irq for node %s\n", np->full_name);
- 		return -ENXIO;
-@@ -1387,7 +1387,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (ssi_private->soc->imx) {
- 		ret = fsl_ssi_imx_probe(pdev, ssi_private, iomem);
- 		if (ret)
--			goto error_irqmap;
-+			return ret;
- 	}
- 
- 	ret = snd_soc_register_component(&pdev->dev, &fsl_ssi_component,
-@@ -1458,10 +1458,6 @@ error_asoc_register:
- 	if (ssi_private->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi_private);
- 
--error_irqmap:
--	if (ssi_private->use_dma)
--		irq_dispose_mapping(ssi_private->irq);
--
- 	return ret;
- }
- 
-@@ -1478,9 +1474,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	if (ssi_private->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi_private);
- 
--	if (ssi_private->use_dma)
--		irq_dispose_mapping(ssi_private->irq);
--
- 	return 0;
- }
- 
--- 
-1.9.1
+> Technically, Windows driver writers can evaluate _DSD and handle the
+> information the way we do, but I'm not sure if this is really convenient for
+> them.
+
+I'm not sure how convenient it is, though I'm reasonably sure a helper
+library could make it so.
+
+> We use _DSD, because we want drivers to work with DT as well with ACPI without
+> adding special DT-specific or ACPI-specific code to them.  The people who work
+> on Windows drivers don't have this problem, so as I said, if they care about
+> Linux at all, that may be a good enough motivation for them to look at _DSD,
+> but if they don't, I honestly don't see why they would do that.
+
+They care about getting properties out, or at least they should, and in
+this market many of the device vendors care about Linux at least as much
+as they do Windows (sometimes even more than they care about Windows,
+there's overlap with the Android market).
+
+> > Note that all this discussion is pretty much about drivers for single
+> > devices which can be wired into the system in a flexible manner, even in
+> > a Windows world you won't vary the device ID.  At present we're quirking
+> > on DMI.
+
+> So the answer to that in my view is: Use _DSD and allocate your own device IDs
+> for Windows drivers to bind to.
+
+Right, so we circle back to the original question about documenting
+those IDs and _DSD properties.  :)
+
+> > > > We also need a way of getting the word out to people that they should be
+> > > > doing this (also a problem no matter if we use PRP0001 or something UEFI
+> > > > specific).
+
+> > > What do you mean by "something UEFI specific"?
+
+> > Sorry, I mean ACPI specific (UEFI forum).
+
+> Do you mean a special device ID of some sort, then?
+
+No, just a regular one.
+
+> > It's not just the device IDs you need, it's the properties too.
+
+> I suppose you have some specific examples in mind that I may not be familiar
+> with and we may spend an arbitrary amount of time speaking past each other. :-)
+
+Things like Documentation/devicetree/bindings/sound/wm8962.txt (at least
+the optional properties), basically "how is this device wired into the
+board" properties.
+
+> That's where we are today.  Do you have any suggestions on what else we can do?
+
+I'd like to see a space where people working with a device can publish
+what they've done in terms of firmware binding for it in a manner that
+might work for them; at present it seems like the UEFI forum is the best
+place to start doing that, there's the start of a register and process
+for updating it there at least.
+
+--wBRMoyAtsbmwI0yu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUfOlbAAoJECTWi3JdVIfQuBMH/RxtbwTXic0lu7vaq06vzh/g
+lZyQPL5wjJNt/tcsqDRw3LNC+heau1YFqGj/lU4tIdjmKwmKEwXmS7Lmnf1Uu4mR
+gBl0RLjkuTG4WjO6W7Nht5gGYruevbubxYLIU3zeg+FoHC6amvXlX63blCoEENo4
+ncGYS0tzqhnfRDKm6dXHzKGJt5mzaPVKBiBa+K20oUZY3byCBc6iCS/o7fY95Zmg
+KNH3/uUOPeSOhsiTwH1e9aaYhd4eyEQZs1UYF3Asbv31YK1VbqqdscDckqt2bEro
+J/NaCQfJaa4tcM/gJ12uYZXszhbILmMS1rjxZwuW6h66YxRyNH7QRcXD4EdBwiw=
+=5o5C
+-----END PGP SIGNATURE-----
+
+--wBRMoyAtsbmwI0yu--
