@@ -1,98 +1,24 @@
-From: Fabio Estevam <festevam@gmail.com>
+From: Timur Tabi <timur@tabi.org>
 Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_ssi: free irq before irq_dispose_mapping()
-Date: Mon, 1 Dec 2014 18:40:51 -0200
-Message-ID: <CAOMZO5B7MxLSaETUW0QyajdHMMX2nLg=t=5dVCNRePb6UzizRQ@mail.gmail.com>
-References: <1417402251-6596-1-git-send-email-jiada_wang@mentor.com>
-	<2547588.Qc4F2IfZke@wuerfel>
-	<547CC89F.1030205@tabi.org>
-	<3401240.VsRpsiV8WN@wuerfel>
-	<547CCB78.5090007@tabi.org>
-	<547CCFF7.2000205@metafoo.de>
+Date: Mon, 01 Dec 2014 14:42:46 -0600
+Message-ID: <547CD2C6.2060107@tabi.org>
+References: <1417402251-6596-1-git-send-email-jiada_wang@mentor.com>	<2547588.Qc4F2IfZke@wuerfel>	<547CC89F.1030205@tabi.org>	<3401240.VsRpsiV8WN@wuerfel>	<547CCB78.5090007@tabi.org>	<547CCFF7.2000205@metafoo.de> <CAOMZO5B7MxLSaETUW0QyajdHMMX2nLg=t=5dVCNRePb6UzizRQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <547CCFF7.2000205@metafoo.de>
+In-Reply-To: <CAOMZO5B7MxLSaETUW0QyajdHMMX2nLg=t=5dVCNRePb6UzizRQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Timur Tabi <timur@tabi.org>, Arnd Bergmann <arnd@arndb.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jiada Wang <jiada_wang@mentor.com>, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Markus Pargmann <mpa@pengutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Fabio Estevam <festevam@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jiada Wang <jiada_wang@mentor.com>, Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Markus Pargmann <mpa@pengutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 1, 2014 at 6:30 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> On 12/01/2014 09:11 PM, Timur Tabi wrote:
->>
->> On 12/01/2014 02:01 PM, Arnd Bergmann wrote:
->>>>
->>>> >Does this mean that fsl_ssi.c should not be calling
->>>> >irq_of_parse_and_map?  How else should it get the IRQ?
->>>
->>> platform_get_irq()
->>
->>
->> Ok, but that function also calls irq_create_of_mapping().  So it still
->> appears that the only way to get the IRQ is to map it, but then we can't
->> use
->> devm_request_irq().
->>
->
-> Hm... that's new. But it's not really a driver issue anymore if it is done
-> in the core. So I guess for now just use platform_get_irq() and ignore the
-> other issue.
+On 12/01/2014 02:40 PM, Fabio Estevam wrote:
+>> >Hm... that's new. But it's not really a driver issue anymore if it is done
+>> >in the core. So I guess for now just use platform_get_irq() and ignore the
+>> >other issue.
 
-With the suggested changes below, the removal of the driver works fine on a mx6:
+> With the suggested changes below, the removal of the driver works fine on a mx6:
 
-root@freescale /$ modprobe   snd-soc-fsl-ssi
-root@freescale /$ modprobe snd-soc-imx-wm8962
-[  319.517679] input: WM8962 Beep Generator as
-/devices/soc0/soc/2100000.aips-bus/21a0000.i2c/i2c-0/0-001a/input/input7
-[  319.543225] imx-wm8962 sound: wm8962 <-> 202c000.ssi mapping ok
-root@freescale /$ rmmod  snd-soc-imx-wm8962
-root@freescale /$ rmmod   snd-soc-fsl-ssi
-
- sound/soc/fsl/fsl_ssi.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 32a31d9..c528f16 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1361,7 +1361,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-         return PTR_ERR(ssi_private->regs);
-     }
-
--    ssi_private->irq = irq_of_parse_and_map(np, 0);
-+    ssi_private->irq = platform_get_irq(pdev, 0);
-     if (!ssi_private->irq) {
-         dev_err(&pdev->dev, "no irq for node %s\n", np->full_name);
-         return -ENXIO;
-@@ -1387,7 +1387,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-     if (ssi_private->soc->imx) {
-         ret = fsl_ssi_imx_probe(pdev, ssi_private, iomem);
-         if (ret)
--            goto error_irqmap;
-+            return ret;
-     }
-
-     ret = snd_soc_register_component(&pdev->dev, &fsl_ssi_component,
-@@ -1458,10 +1458,6 @@ error_asoc_register:
-     if (ssi_private->soc->imx)
-         fsl_ssi_imx_clean(pdev, ssi_private);
-
--error_irqmap:
--    if (ssi_private->use_dma)
--        irq_dispose_mapping(ssi_private->irq);
--
-     return ret;
- }
-
-@@ -1478,9 +1474,6 @@ static int fsl_ssi_remove(struct platform_device *pdev)
-     if (ssi_private->soc->imx)
-         fsl_ssi_imx_clean(pdev, ssi_private);
-
--    if (ssi_private->use_dma)
--        irq_dispose_mapping(ssi_private->irq);
--
-     return 0;
- }
-
--- 
-1.9.1
+Would the mapping continue to exist after the driver is unloaded?  Can 
+you try multiple loads/unloads and see if interrupts still work?
