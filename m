@@ -1,68 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7.1 09/19] ASoC: omap-hdmi-audio: Add platform device
- for OMAP HDMI audio support
-Date: Mon, 1 Dec 2014 19:21:52 +0000
-Message-ID: <20141201192152.GK7712@sirena.org.uk>
-References: <cover.1415803064.git.jsarha@ti.com>
- <9a528990bbe116d9bb073f690b835c847b3fa0bf.1415803065.git.jsarha@ti.com>
- <20141129113230.GC7712@sirena.org.uk>
- <547C1598.1000509@ti.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: free irq before
+ irq_dispose_mapping()
+Date: Mon, 1 Dec 2014 19:24:22 +0000
+Message-ID: <20141201192422.GL7712@sirena.org.uk>
+References: <1417402251-6596-1-git-send-email-jiada_wang@mentor.com>
+ <20141201065046.GB27289@pengutronix.de>
+ <547C9C34.9080602@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="66JA64BHvaVFYarG"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <547C1598.1000509@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
+Content-Type: multipart/mixed; boundary="===============3618644249516435723=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECE43260610
+ for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2014 20:24:36 +0100 (CET)
+In-Reply-To: <547C9C34.9080602@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Jiada Wang <jiada_wang@mentor.com>, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, timur@tabi.org, nicoleotsuka@gmail.com, tiwai@suse.de, Li.Xiubo@freescale.com, Markus Pargmann <mpa@pengutronix.de>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---66JA64BHvaVFYarG
+--===============3618644249516435723==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YsbR7IM8mFrcghHU"
+Content-Disposition: inline
+
+
+--YsbR7IM8mFrcghHU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 01, 2014 at 09:15:36AM +0200, Jyri Sarha wrote:
+On Mon, Dec 01, 2014 at 05:49:56PM +0100, Lars-Peter Clausen wrote:
+> On 12/01/2014 07:50 AM, Markus Pargmann wrote:
 
-> The only reason is that I have not encountered any other audio capable HDMI
-> device falling in this category (cpu-dai integrated within HDMI device
-> block). Without at least two devices utilizing this code it remains
-> questionable whether the code is really generic. At least the dss_version
-> should be replaced with some explicit data to fill struct
-> snd_soc_dai_driver. Also struct omap_dss_audio is coming directly from omap
-> dss code, its contents is generic but I am not sure if the information
-> within struct snd_aes_iec958 and struct snd_cea_861_aud_if is enough to
-> configure the HDMI IP in all possible cases.
+> >devm_request_irq() is used by other drivers too, this should not be a
+> >problem. Looking at the code it seems that irq_dispose_mapping may not
+> >be necessary with devm_request_irq(). So I think it would be better to
+> >remove irq_dispose_mapping() instead.
 
-It should be no big deal to add extra information if required.  Given
-how poor the upstreaming state is for HDMI I expect we'd get people
-coming out of the woodwork if there were infrastructure, some of the
-Exynos stuff looked similar to your situation for example.
+> The driver creates the mapping by calling irq_of_parse_and_map(), so it also
+> has to dispose the mapping. But the easy way out is to simply use
+> platform_get_irq() instead of irq_of_parse_map(). In this case the mapping
+> is not managed by the device but by the of core, so the device has not to
+> dispose the mapping.
 
-> I can work on making this API look more generic, but before there is another
-> candidate to use this API it is questionable if the code will ever be used
-> by any other device.
+It also has the advantage of not being DT specific so providing some
+chance that future firmware interfaces can be supported without driver
+modification.
 
-Unless there is something obviously terrible about the hardware design
-that I'm missing which means nobody else would ever have implemented
-something like it I'd expect there will be at least one other system
-that can make use of the code.
-
---66JA64BHvaVFYarG
+--YsbR7IM8mFrcghHU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUfL/QAAoJECTWi3JdVIfQvpsIAIAVOmnFJVHllx/jP1YZDmNd
-0tY0PUpiCl9a7N5nTkegNtWDJA1IT+qMEcPavj8o/w5Uzto/ZvWHDMfTqsNr0ps5
-mSyyxvDw4aSZYZhNSlNXP3/9Ml3UR58r30GYmUUEekAbqu+alpguIJAR/Fb1G6Fy
-JvF5tZCv4G1b7o3JrRePyiq/zfCSUaYdNxfkOEhGCW/4WWq+81cpazx2eYQtky4+
-6Tc5OkX9yi2LiQ7+Kl6CVDbvp0xVsyVb2dvdKzKEYWUSK9wcKzkFZP6vzbui1WmF
-FcQ5owT1/Bd4cokGPE5+AetnfxL/y3CS9dn/MDib4QLK1iBMXGblL8A9hPsTLXg=
-=xl8q
+iQEcBAEBAgAGBQJUfMBmAAoJECTWi3JdVIfQQQIH/iCp85C3j3tZK021HeqxyEwY
+1QWrbS+5j6rW3D+UcSC/BYqRF+ClS/1ZOeFgH5b6hP4Jp1ng00iYKOaCkv3EdqRh
+DULbFmlBPkEnV8Zrq4yZ64Lmjdfg1JcSZ+iwsqkIU4RuI67BmFLKlcOtapojKSby
+SCCjRe1LJBGlb1IgO/5Rnv1Clesu5OBblyL0xMDAp54QWVD2fGtVwhxk3KjC3G0o
+oqbhdZ77Y0P97IH8RYBj4xZU5AN32KgE65PvQTYRvwmcknG09gMoELs45XLzcP0w
+5fqwPGZvRLGxqkBbHxITRPVYqTD7QmmB1mn7HsamDycHOwMFjdFHmwCcVb0gyn8=
+=hd9f
 -----END PGP SIGNATURE-----
 
---66JA64BHvaVFYarG--
+--YsbR7IM8mFrcghHU--
+
+--===============3618644249516435723==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3618644249516435723==--
