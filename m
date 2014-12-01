@@ -1,15 +1,14 @@
 From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: [PATCHv6 5/9] ASOC: wm8971: improve the function of
-	wm8971_set_dai_fmt()
-Date: Mon,  1 Dec 2014 14:51:57 +0800
-Message-ID: <1417416721-17271-5-git-send-email-xavier.hsu@linaro.org>
+Subject: [PATCHv6 4/9] ASOC: wm8971: add TLV information
+Date: Mon,  1 Dec 2014 14:51:56 +0800
+Message-ID: <1417416721-17271-4-git-send-email-xavier.hsu@linaro.org>
 References: <1417416721-17271-1-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from Kraken (unknown [124.219.7.128])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D62A2605F4
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EBE226061F
  for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2014 07:52:39 +0100 (CET)
 In-Reply-To: <1417416721-17271-1-git-send-email-xavier.hsu@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,78 +24,121 @@ To: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@li
 Cc: Xavier Hsu <xavier.hsu@linaro.org>, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, Andy Green <andy.green@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-We use snd_soc_update_bits() to replace snd_soc_write().
-"As suggested by Mark Brown"
+We add TLV information because all volume
+controls should have TLV information.
 
 Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
 Signed-off-by: Andy Green <andy.green@linaro.org>
 ---
- sound/soc/codecs/wm8971.c |   18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ sound/soc/codecs/wm8971.c |   57 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 39 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-index b06bd83..5f711bd 100755
+index b5cb636..b06bd83 100755
 --- a/sound/soc/codecs/wm8971.c
 +++ b/sound/soc/codecs/wm8971.c
-@@ -552,12 +552,11 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			      unsigned int fmt)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
--	u16 iface = 0;
+@@ -30,6 +30,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/initval.h>
++#include <sound/tlv.h>
  
- 	/* set master/slave audio interface */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		iface = 0x0040;
-+		snd_soc_update_bits(codec, WM8971_IFACE, 0x0040, 0x0040);
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFS:
- 		break;
-@@ -568,18 +567,18 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	/* interface format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--		iface |= 0x0002;
-+		snd_soc_update_bits(codec, WM8971_IFACE, 0x0002, 0x0002);
- 		break;
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
--		iface |= 0x0001;
-+		snd_soc_update_bits(codec, WM8971_IFACE, 0x0001, 0x0001);
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
--		iface |= 0x0003;
-+		snd_soc_update_bits(codec, WM8971_IFACE, 0x0003, 0x0003);
- 		break;
- 	case SND_SOC_DAIFMT_DSP_B:
--		iface |= 0x0013;
-+		snd_soc_update_bits(codec, WM8971_IFACE, 0x0013, 0x0013);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -590,19 +589,18 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_NB_NF:
- 		break;
- 	case SND_SOC_DAIFMT_IB_IF:
--		iface |= 0x0090;
-+		snd_soc_update_bits(codec, WM8971_IFACE, 0x0090, 0x0090);
- 		break;
- 	case SND_SOC_DAIFMT_IB_NF:
--		iface |= 0x0080;
-+		snd_soc_update_bits(codec, WM8971_IFACE, 0x0080, 0x0080);
- 		break;
- 	case SND_SOC_DAIFMT_NB_IF:
--		iface |= 0x0010;
-+		snd_soc_update_bits(codec, WM8971_IFACE, 0x0010, 0x0010);
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
+ #include "wm8971.h"
  
--	snd_soc_write(codec, WM8971_IFACE, iface);
- 	return 0;
- }
+@@ -207,8 +208,19 @@ static const SOC_ENUM_SINGLE_DECL(capture_polarity, WM8971_ADCDAC,
+ 				  5, wm8971_adcpol);
+ static const SOC_ENUM_SINGLE_DECL(monomux, WM8971_ADCIN, 6, wm8971_mono_mux);
  
++static const DECLARE_TLV_DB_SCALE(in_vol, -1725, 75, 0);
++static const DECLARE_TLV_DB_SCALE(out_vol, -6700, 91, 0);
++static const DECLARE_TLV_DB_SCALE(attenuate_6db, -600, 600, 0);
++static const DECLARE_TLV_DB_SCALE(dac_vol, -12700, 50, 0);
++static const DECLARE_TLV_DB_SCALE(tone_vol, -600, 150, 0);
++static const DECLARE_TLV_DB_SCALE(alc_tar_vol, -2850, 150, 0);
++static const DECLARE_TLV_DB_SCALE(alc_max_vol, -1200, 600, 0);
++static const DECLARE_TLV_DB_SCALE(adc_vol, -9700, 50, 0);
++static const DECLARE_TLV_DB_SCALE(bypass_out_vol, -1500, 300, 0);
++
+ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+-	SOC_DOUBLE_R("Capture Volume", WM8971_LINVOL, WM8971_RINVOL, 0, 63, 0),
++	SOC_DOUBLE_R_TLV("Capture Volume", WM8971_LINVOL, WM8971_RINVOL,
++			 0, 63, 0, in_vol),
+ 	SOC_DOUBLE_R("Capture ZC Switch", WM8971_LINVOL, WM8971_RINVOL,
+ 		     6, 1, 0),
+ 	SOC_DOUBLE_R("Capture Switch", WM8971_LINVOL, WM8971_RINVOL, 7, 1, 1),
+@@ -219,31 +231,35 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+ 		     WM8971_ROUT2V, 7, 1, 0),
+ 	SOC_SINGLE("Mono Playback ZC Switch", WM8971_MOUTV, 7, 1, 0),
+ 
+-	SOC_DOUBLE_R("PCM Volume", WM8971_LDAC, WM8971_RDAC, 0, 255, 0),
++	SOC_DOUBLE_R_TLV("PCM Volume", WM8971_LDAC, WM8971_RDAC,
++			 0, 255, 0, dac_vol),
+ 
+-	SOC_DOUBLE_R("Bypass Left Playback Volume", WM8971_LOUTM1,
+-		     WM8971_LOUTM2, 4, 7, 1),
+-	SOC_DOUBLE_R("Bypass Right Playback Volume", WM8971_ROUTM1,
+-		     WM8971_ROUTM2, 4, 7, 1),
+-	SOC_DOUBLE_R("Bypass Mono Playback Volume", WM8971_MOUTM1,
+-		     WM8971_MOUTM2, 4, 7, 1),
++	SOC_DOUBLE_R_TLV("Bypass Left Playback Volume", WM8971_LOUTM1,
++			 WM8971_LOUTM2, 4, 7, 1, bypass_out_vol),
++	SOC_DOUBLE_R_TLV("Bypass Right Playback Volume", WM8971_ROUTM1,
++			 WM8971_ROUTM2, 4, 7, 1, bypass_out_vol),
++	SOC_DOUBLE_R_TLV("Bypass Mono Playback Volume", WM8971_MOUTM1,
++			 WM8971_MOUTM2, 4, 7, 1, bypass_out_vol),
+ 
+-	SOC_DOUBLE_R("Headphone Playback Volume", WM8971_LOUT1V,
+-		     WM8971_ROUT1V, 0, 127, 0),
+-	SOC_DOUBLE_R("Speaker Playback Volume", WM8971_LOUT2V,
+-		     WM8971_ROUT2V, 0, 127, 0),
++	SOC_DOUBLE_R_TLV("Headphone Playback Volume", WM8971_LOUT1V,
++			 WM8971_ROUT1V, 0, 127, 0, out_vol),
++	SOC_DOUBLE_R_TLV("Speaker Playback Volume", WM8971_LOUT2V,
++			 WM8971_ROUT2V, 0, 127, 0, out_vol),
++	SOC_SINGLE_TLV("Mono Playback Volume", WM8971_MOUTV,
++		       0, 127, 0, out_vol),
+ 
+ 	SOC_ENUM("Bass Boost", bass_boost),
+ 	SOC_ENUM("Bass Filter", bass_filter),
+-	SOC_SINGLE("Bass Volume", WM8971_BASS, 0, 7, 1),
++	SOC_SINGLE_TLV("Bass Volume", WM8971_BASS, 0, 15, 1, tone_vol),
+ 
+-	SOC_SINGLE("Treble Volume", WM8971_TREBLE, 0, 7, 0),
++	SOC_SINGLE_TLV("Treble Volume", WM8971_TREBLE, 0, 15, 0, tone_vol),
+ 	SOC_ENUM("Treble Cut-off", treble_cutoff),
+ 
+ 	SOC_SINGLE("Capture Filter Switch", WM8971_ADCDAC, 0, 1, 1),
+ 
+-	SOC_SINGLE("ALC Target Volume", WM8971_ALC1, 0, 7, 0),
+-	SOC_SINGLE("ALC Max Volume", WM8971_ALC1, 4, 7, 0),
++	SOC_SINGLE_TLV("ALC Target Volume", WM8971_ALC1,
++		       0, 15, 0, alc_tar_vol),
++	SOC_SINGLE_TLV("ALC Max Volume", WM8971_ALC1, 4, 7, 0, alc_max_vol),
+ 
+ 	SOC_SINGLE("ALC Capture Target Volume", WM8971_ALC1, 0, 7, 0),
+ 	SOC_SINGLE("ALC Capture Max Volume", WM8971_ALC1, 4, 7, 0),
+@@ -256,8 +272,10 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+ 	SOC_ENUM("ALC Capture NG Type", alc_capture_ngtype),
+ 	SOC_SINGLE("ALC Capture NG Switch", WM8971_NGATE, 0, 1, 0),
+ 
+-	SOC_SINGLE("Capture 6dB Attenuate", WM8971_ADCDAC, 8, 1, 0),
+-	SOC_SINGLE("Playback 6dB Attenuate", WM8971_ADCDAC, 7, 1, 0),
++	SOC_SINGLE_TLV("Capture 6dB Attenuate", WM8971_ADCDAC,
++		       8, 1, 0, attenuate_6db),
++	SOC_SINGLE_TLV("Playback 6dB Attenuate", WM8971_ADCDAC,
++		       7, 1, 0, attenuate_6db),
+ 
+ 	SOC_SINGLE_BOOL_EXT("Playback De-emphasis Switch", 0,
+ 			    wm8971_get_deemph, wm8971_put_deemph),
+@@ -265,6 +283,9 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+ 	SOC_ENUM("Playback Phase", dac_phase_inv),
+ 
+ 	SOC_DOUBLE_R("Mic Boost", WM8971_LADCIN, WM8971_RADCIN, 4, 3, 0),
++
++	SOC_DOUBLE_R_TLV("ADC Volume", WM8971_LADC, WM8971_RADC,
++			 0, 255, 0, adc_vol),
+ };
+ 
+ /*
 -- 
 1.7.9.5
