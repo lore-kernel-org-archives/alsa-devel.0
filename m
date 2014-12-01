@@ -1,72 +1,50 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Mon, 1 Dec 2014 11:07:06 +0200
-Message-ID: <547C2FBA.4030204@ti.com>
-References: <cover.1415803064.git.jsarha@ti.com> <20141129115957.GE7712@sirena.org.uk>
+From: Kyle McMartin <kyle@infradead.org>
+Subject: Re: [GIT PULL] Add sst audio firmware for baytrail
+	platforms
+Date: Sun, 30 Nov 2014 21:11:58 -0500
+Message-ID: <20141201021158.GD2930@merlin.infradead.org>
+References: <20141110093358.GD18555@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="blQAtojEKCpEraSF8CEc62QM0jTNWlldg"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20141129115957.GE7712@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E6D926056F
+ for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2014 03:12:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20141110093358.GD18555@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-firmware@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---blQAtojEKCpEraSF8CEc62QM0jTNWlldg
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+On Mon, Nov 10, 2014 at 03:03:58PM +0530, Vinod Koul wrote:
+> Hello Linux firmware maintainers,
+> 
+> Please PULL to receive the Intel audio firmware for audio DSP in Baytrail
+> platforms. This firmware is using the same license as another version of
+> the Baytrail firmware already available in linux-firmware git.
+> 
+> The following changes since commit 0e5f63771d0df6d7859f7c4100a74d737c62ac88:
+> are available in the git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git byt
+> 
+> Vinod Koul (1):
+>       linux-firmware: add sst audio firmware for baytrail platforms
+> 
+>  WHENCE                |    8 ++++++++
+>  intel/fw_sst_0f28.bin |  Bin 0 -> 647078 bytes
+>  2 files changed, 8 insertions(+), 0 deletions(-)
+>  create mode 100644 intel/fw_sst_0f28.bin
+> 
 
-On 29/11/14 13:59, Mark Brown wrote:
-> On Wed, Nov 12, 2014 at 04:40:51PM +0200, Jyri Sarha wrote:
->> The patches are based on:
->> git://git.kernel.org/pub/scm/linux/kernel/git/tomba/linux.git for-next=
-
->>
->> The base, the patches, and couple of additional not-to-be-merged
->> omap2plus_defconfig patches can be found here:
->> https://github.com/jsarha/linux.git omap-hdmi-audio
->=20
-> I guess I'm OK with these so
->=20
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-
-Thanks. And just to be sure, that's "ok, we can merge these in the next
-merge window"?
-
-> but like I said in reply to the patch adding the new driver I think
-> we're going to want to generalize this a bit.
-
-Yep, if I'm not mistaken I did suggest that to Jyri at some point. We
-can continue working on that, but I'd rather not do anything big on that
-front before there is some other SoC that has the same setup.
-
- Tomi
-
-
-
---blQAtojEKCpEraSF8CEc62QM0jTNWlldg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJUfC+6AAoJEPo9qoy8lh71N+EP/0AYndnEucrVPo1Wg9ARmSu2
-o8CDwQlVAijTtsF2g0tHyk2dwUfWQAu7bXGs9poCMPckAxPQ0jcO8R4CYnOpH+ot
-pWqMj3/x6HBLbzMI9Lt50ucj4nVMWX9+aBLt7gux4vJja1OPw05jNzYRg+mHarKE
-9+M/sb6aI06/XcDB4Pi+7RqiquqyQGU5FioqSlamiU9jx11aPFWCJKYc43QOfAYn
-JGoYaBuX+95LKurfUdn2s8R8dfSU4Vi3GIOosfsMrW7E5ZAPbqP1kSYf6A78hzkz
-QAP+t0TCBRGJ/FxXQPleY5TL0Qpskt49suqMjJhzTJ4biiQQdTqgmau43EiSePHD
-AsTS6CPlMy8NE1XJlVlYq0QZ/dgReM519M3Po5CF1ZLZ4YriONcBEYWNay/nJhHq
-4Q9ASgjYCXTAG7JkKt8LH2uAw3RDifj1ILqIZ16dUnOf74ZNIPzFb5pnRitERqOa
-FLJYjDRdKFLpDYIex+HD8g1MsUrI2MzxcvvD+mX3uYjaoMcTHQVTI1/69U47Ival
-OUVT93TeAjFGt2cP47FU126DUn1Q1hIp08xVZFbzNyCNJ3grNsT8f/xpf/MnHDQv
-qFZ6k9r1dRiRsgfb9Cc23NrxxcdRzQvRD4Dls1H7HD0oFqcmZVS19VYqOet/cf1B
-PwtILvmX7JcGQb98yA6E
-=W/24
------END PGP SIGNATURE-----
-
---blQAtojEKCpEraSF8CEc62QM0jTNWlldg--
+applied, thanks very much vinod.
