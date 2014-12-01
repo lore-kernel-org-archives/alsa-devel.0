@@ -1,76 +1,68 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Intel: Move capture PCM pin to
- PCM0 for Broadwell/Haswell
-Date: Mon, 1 Dec 2014 19:12:22 +0000
-Message-ID: <20141201191222.GJ7712@sirena.org.uk>
-References: <1417182731-26576-1-git-send-email-yang.jie@intel.com>
- <20141128153519.GV7712@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A901B73B20@SHSMSX101.ccr.corp.intel.com>
+Subject: Re: [PATCH v7.1 09/19] ASoC: omap-hdmi-audio: Add platform device
+ for OMAP HDMI audio support
+Date: Mon, 1 Dec 2014 19:21:52 +0000
+Message-ID: <20141201192152.GK7712@sirena.org.uk>
+References: <cover.1415803064.git.jsarha@ti.com>
+ <9a528990bbe116d9bb073f690b835c847b3fa0bf.1415803065.git.jsarha@ti.com>
+ <20141129113230.GC7712@sirena.org.uk>
+ <547C1598.1000509@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6131991700112529762=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B3DDF260691
- for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2014 20:12:27 +0100 (CET)
-In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901B73B20@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Jie, Yang" <yang.jie@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="66JA64BHvaVFYarG"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <547C1598.1000509@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6131991700112529762==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4jNi/oGpyYl7qGEq"
-Content-Disposition: inline
-
-
---4jNi/oGpyYl7qGEq
+--66JA64BHvaVFYarG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 01, 2014 at 03:34:10AM +0000, Jie, Yang wrote:
+On Mon, Dec 01, 2014 at 09:15:36AM +0200, Jyri Sarha wrote:
 
-> Seems it isn't applied yet, I can't find it on any branch of your tree. :(
-> Maybe some network issue?
+> The only reason is that I have not encountered any other audio capable HDMI
+> device falling in this category (cpu-dai integrated within HDMI device
+> block). Without at least two devices utilizing this code it remains
+> questionable whether the code is really generic. At least the dss_version
+> should be replaced with some explicit data to fill struct
+> snd_soc_dai_driver. Also struct omap_dss_audio is coming directly from omap
+> dss code, its contents is generic but I am not sure if the information
+> within struct snd_aes_iec958 and struct snd_cea_861_aud_if is enough to
+> configure the HDMI IP in all possible cases.
 
-Please don't nag like this for at least one working day; I batch push
-all my branches at once and don't always do this before I finish for the
-day.
+It should be no big deal to add extra information if required.  Given
+how poor the upstreaming state is for HDMI I expect we'd get people
+coming out of the woodwork if there were infrastructure, some of the
+Exynos stuff looked similar to your situation for example.
 
---4jNi/oGpyYl7qGEq
+> I can work on making this API look more generic, but before there is another
+> candidate to use this API it is questionable if the code will ever be used
+> by any other device.
+
+Unless there is something obviously terrible about the hardware design
+that I'm missing which means nobody else would ever have implemented
+something like it I'd expect there will be at least one other system
+that can make use of the code.
+
+--66JA64BHvaVFYarG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUfL2VAAoJECTWi3JdVIfQYiIH/0yEeGIkMEHzL6SnjOCZVHA4
-g25fm0COrzwjcTFCZ3Qqw1H0w1GsXxFdlIetPssg8jIstquZFtATvMrqj+DPj8/i
-ZsW5BcKnJMibRYiKT0LHpTgcf0gM7VVLu1c5ueCfs9pK+Y+lMOptnCFoTgqsau0Q
-NG7XYog2rFZd4nj9u0+0DvnIKowuVm06jLxEeC3c4ziIpUdEavwBnzF1SPq8DGwI
-Jaa/WQ+TU40Dtc5I4M8wA3dyysqZ/BXcpNvtGdOy3m2wPdtFJsk7tVrwLt7R19Xu
-L3JhU99HLi9A+HBZW/5E+uek2qL/6Bv0A2/TSiltxlvem/dzmZqTRyJiCQULV0s=
-=C5Ub
+iQEcBAEBAgAGBQJUfL/QAAoJECTWi3JdVIfQvpsIAIAVOmnFJVHllx/jP1YZDmNd
+0tY0PUpiCl9a7N5nTkegNtWDJA1IT+qMEcPavj8o/w5Uzto/ZvWHDMfTqsNr0ps5
+mSyyxvDw4aSZYZhNSlNXP3/9Ml3UR58r30GYmUUEekAbqu+alpguIJAR/Fb1G6Fy
+JvF5tZCv4G1b7o3JrRePyiq/zfCSUaYdNxfkOEhGCW/4WWq+81cpazx2eYQtky4+
+6Tc5OkX9yi2LiQ7+Kl6CVDbvp0xVsyVb2dvdKzKEYWUSK9wcKzkFZP6vzbui1WmF
+FcQ5owT1/Bd4cokGPE5+AetnfxL/y3CS9dn/MDib4QLK1iBMXGblL8A9hPsTLXg=
+=xl8q
 -----END PGP SIGNATURE-----
 
---4jNi/oGpyYl7qGEq--
-
---===============6131991700112529762==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6131991700112529762==--
+--66JA64BHvaVFYarG--
