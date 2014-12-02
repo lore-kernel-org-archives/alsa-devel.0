@@ -1,45 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Kconfig: remove not used SND_AT91_SOC_AFEB9260
- option
-Date: Tue, 2 Dec 2014 11:59:28 +0000
-Message-ID: <20141202115928.GS7712@sirena.org.uk>
-References: <1417461001.30245.35.camel@x220>
- <1417511075-13725-1-git-send-email-nicolas.ferre@atmel.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 1/1] ASoC: fsi: Deletion of unnecessary checks before the
+ function call "clk_disable"
+Date: Tue, 02 Dec 2014 14:41:47 +0100
+Message-ID: <547DC19B.5080302@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DreyolINzixGV+Ru"
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1417511075-13725-1-git-send-email-nicolas.ferre@atmel.com>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: pebolle@tiscali.nl, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Bo Shen <voice.shen@atmel.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 2 Dec 2014 14:34:30 +0100
 
---DreyolINzixGV+Ru
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The clk_disable() function tests whether its argument is NULL and then
+returns immediately. Thus the test around the call is not needed.
 
-On Tue, Dec 02, 2014 at 10:04:35AM +0100, Nicolas Ferre wrote:
-> Now that the driver snd-soc-afeb9260.c is deleted, remove its Kconfig option.
+This issue was detected by using the Coccinelle software.
 
-Applied, thanks.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/soc/sh/fsi.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---DreyolINzixGV+Ru
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUfamfAAoJECTWi3JdVIfQRGsH/0ndC/TsdROt8TsVTA3L01ZJ
-3SpGHH1PRjgS+QLDzfHDW/3xB2/EemjzfzmgaekO6+FL56gnF5cmuRlt1N9Fwt68
-yzW9J78EvK/mZueOEIJsxvE79Zh6eyoIrxjgOJGaU9PJ6jYvUKJa1XypM3I2cOlB
-wg5e4td7vwRXKOUFyN59wsmtdeKU9VwkWRV2/7bGDMVW73wJYb3XFoevRsxWOQp3
-AEcOkA30VPqxCYFqHxEpGNGu6tn/e1IPecnB75Nh2yxiPGtyJRWRz7W69NqDzVkc
-O+3JwuWgf509tGTmcEd/hC9KgptoM3a691TbYYrO3wc0JEIpK0cRKo+0UMd9okE=
-=wEbe
------END PGP SIGNATURE-----
-
---DreyolINzixGV+Ru--
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 88e5df4..8869971 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -842,12 +842,9 @@ static int fsi_clk_disable(struct device *dev,
+ 		return -EINVAL;
+ 
+ 	if (1 == clock->count--) {
+-		if (clock->xck)
+-			clk_disable(clock->xck);
+-		if (clock->ick)
+-			clk_disable(clock->ick);
+-		if (clock->div)
+-			clk_disable(clock->div);
++		clk_disable(clock->xck);
++		clk_disable(clock->ick);
++		clk_disable(clock->div);
+ 	}
+ 
+ 	return 0;
+-- 
+2.1.3
