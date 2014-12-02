@@ -1,52 +1,29 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/1] ASoC: fsi: Deletion of unnecessary checks before the
- function call "clk_disable"
-Date: Tue, 02 Dec 2014 14:41:47 +0100
-Message-ID: <547DC19B.5080302@users.sourceforge.net>
-References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
- urceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+From: Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH 0/2] rockchip: i2s: patches to add optional clock output from
+Date: Tue,  2 Dec 2014 22:49:24 +0800
+Message-ID: <1417531766-29669-1-git-send-email-jay.xu@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 2 Dec 2014 14:34:30 +0100
+The clock output from rockchip SoCs' CRU to chip outside is from the same source
+as hclk which is for i2s controller. We make it optional because some audio
+codec outside not need the master clock from SoC but from other clock source.
 
-The clk_disable() function tests whether its argument is NULL and then
-returns immediately. Thus the test around the call is not needed.
+Jianqun Xu (2):
+  ASoC: rockchip-i2s: dt: add an optional property "i2s_clk_out"
+  ASoC: rockchip: i2s: add support for grabbing output clock to codec
 
-This issue was detected by using the Coccinelle software.
+ Documentation/devicetree/bindings/sound/rockchip-i2s.txt |  8 ++++++--
+ sound/soc/rockchip/rockchip_i2s.c                        | 11 +++++++++++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/soc/sh/fsi.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index 88e5df4..8869971 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -842,12 +842,9 @@ static int fsi_clk_disable(struct device *dev,
- 		return -EINVAL;
- 
- 	if (1 == clock->count--) {
--		if (clock->xck)
--			clk_disable(clock->xck);
--		if (clock->ick)
--			clk_disable(clock->ick);
--		if (clock->div)
--			clk_disable(clock->div);
-+		clk_disable(clock->xck);
-+		clk_disable(clock->ick);
-+		clk_disable(clock->div);
- 	}
- 
- 	return 0;
 -- 
-2.1.3
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
