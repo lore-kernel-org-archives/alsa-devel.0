@@ -1,76 +1,45 @@
-From: "Babu, Ramesh" <ramesh.babu@intel.com>
-Subject: Re: ASoC: core: Call mute for cpu dais as well
-Date: Tue, 2 Dec 2014 17:13:40 +0000
-Message-ID: <32F4D3A311A1404B92CF923AFF38C3C52E12D4DA@BGSMSX104.gar.corp.intel.com>
-References: <20141127161503.GA21893@mwanda>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 1/1] ALSA: echoaudio: Deletion of a check before release_and_free_resource()
+Date: Tue, 02 Dec 2014 18:38:25 +0100
+Message-ID: <547DF911.9040008@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0250A26149D
- for <alsa-devel@alsa-project.org>; Tue,  2 Dec 2014 18:14:54 +0100 (CET)
-In-Reply-To: <20141127161503.GA21893@mwanda>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-> This is a semi-automatic email about new static checker warnings.
-> 
-> The patch ae11601b80b9: "ASoC: core: Call mute for cpu dais as well"
-> from Oct 15, 2014, leads to the following Smatch complaint:
-> 
-> sound/soc/soc-pcm.c:777 soc_pcm_prepare()
-> 	 error: we previously assumed 'cpu_dai->driver->ops' could be null
-> (see line 755)
-> 
-> sound/soc/soc-pcm.c
->    754
->    755		if (cpu_dai->driver->ops && cpu_dai->driver->ops->prepare)
-> {
->                     ^^^^^^^^^^^^^^^^^^^^ I don't think this can be NULL.  Probably
-> we should remove this check.
-Nope. ops can be NULL.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 2 Dec 2014 18:34:45 +0100
 
-> 
->    756			ret = cpu_dai->driver->ops->prepare(substream,
-> cpu_dai);
->    757			if (ret < 0) {
->    758				dev_err(cpu_dai->dev, "ASoC: DAI prepare
-> error: %d\n",
->    759					ret);
->    760				goto out;
->    761			}
->    762		}
->    763
->    764		/* cancel any delayed stream shutdown that is pending */
->    765		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK
-> &&
->    766		    rtd->pop_wait) {
->    767			rtd->pop_wait = 0;
->    768			cancel_delayed_work(&rtd->delayed_work);
->    769		}
->    770
->    771		snd_soc_dapm_stream_event(rtd, substream->stream,
->    772				SND_SOC_DAPM_STREAM_START);
->    773
->    774		for (i = 0; i < rtd->num_codecs; i++)
->    775			snd_soc_dai_digital_mute(rtd->codec_dais[i], 0,
->    776						 substream->stream);
->    777		snd_soc_dai_digital_mute(cpu_dai, 0, substream->stream);
->                                          ^^^^^^^ But if it were NULL then this newly introduced
-> function call would Oops.
-> 
-I think the fix needs to be inside the snd_soc_dai_digital_mute().
-Instead of checking dai->driver, it needs to check for dai->driver->ops.
-It applies multple functions in soc-core.c.
+The release_and_free_resource() function tests whether its argument is NULL
+and then returns immediately. Thus the test around the call is not needed.
+
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/pci/echoaudio/echoaudio.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index 60e4003..21228ad 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -1875,8 +1875,7 @@ static int snd_echo_free(struct echoaudio *chip)
+ 	if (chip->dsp_registers)
+ 		iounmap(chip->dsp_registers);
+ 
+-	if (chip->iores)
+-		release_and_free_resource(chip->iores);
++	release_and_free_resource(chip->iores);
+ 
+ 
+ 	pci_disable_device(chip->pci);
+-- 
+2.1.3
