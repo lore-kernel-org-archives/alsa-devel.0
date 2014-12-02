@@ -1,49 +1,31 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC: core: Call mute for cpu dais as well
-Date: Tue, 02 Dec 2014 20:26:54 +0100
-Message-ID: <547E127E.6080408@metafoo.de>
-References: <20141127161503.GA21893@mwanda>
- <32F4D3A311A1404B92CF923AFF38C3C52E12D4DA@BGSMSX104.gar.corp.intel.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/2] ALSA: ctxfi: Delete an unnecessary check before kfree()
+Date: Tue, 02 Dec 2014 21:50:26 +0100
+Message-ID: <547E2612.6010304@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-009.synserver.de (smtp-out-013.synserver.de
- [212.40.185.13])
- by alsa0.perex.cz (Postfix) with ESMTP id F044626069A
- for <alsa-devel@alsa-project.org>; Tue,  2 Dec 2014 20:26:44 +0100 (CET)
-In-Reply-To: <32F4D3A311A1404B92CF923AFF38C3C52E12D4DA@BGSMSX104.gar.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Babu, Ramesh" <ramesh.babu@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/02/2014 06:13 PM, Babu, Ramesh wrote:
->> This is a semi-automatic email about new static checker warnings.
->>
->> The patch ae11601b80b9: "ASoC: core: Call mute for cpu dais as well"
->> from Oct 15, 2014, leads to the following Smatch complaint:
->>
->> sound/soc/soc-pcm.c:777 soc_pcm_prepare()
->> 	 error: we previously assumed 'cpu_dai->driver->ops' could be null
->> (see line 755)
->>
->> sound/soc/soc-pcm.c
->>     754
->>     755		if (cpu_dai->driver->ops && cpu_dai->driver->ops->prepare)
->> {
->>                      ^^^^^^^^^^^^^^^^^^^^ I don't think this can be NULL.  Probably
->> we should remove this check.
-> Nope. ops can be NULL.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 2 Dec 2014 20:35:41 +0100
 
-It can't. If it is the core will update it to point to null_dai_ops.
+Another update suggestion was taken into account after a patch was applied
+from static source code analysis.
 
-- Lars
+Markus Elfring (2):
+  Deletion of an unnecessary check before the function call "kfree"
+  One function call less in get_daio_rsc() after error detection
+
+ sound/pci/ctxfi/ctdaio.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+-- 
+2.1.3
