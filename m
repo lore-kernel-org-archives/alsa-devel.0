@@ -1,50 +1,53 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v7.1 00/19] Rework OMAP4+ HDMI audio support
-Date: Tue, 2 Dec 2014 10:52:26 +0200
-Message-ID: <547D7DCA.5010407@ti.com>
-References: <cover.1415803064.git.jsarha@ti.com> <20141129115957.GE7712@sirena.org.uk> <547C2FBA.4030204@ti.com> <20141201193112.GN7712@sirena.org.uk>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: [PATCH] ASoC: Kconfig: remove not used SND_AT91_SOC_AFEB9260 option
+Date: Tue, 2 Dec 2014 10:04:35 +0100
+Message-ID: <1417511075-13725-1-git-send-email-nicolas.ferre@atmel.com>
+References: <1417461001.30245.35.camel@x220>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20141201193112.GN7712@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1417461001.30245.35.camel@x220>
+Sender: linux-kernel-owner@vger.kernel.org
+To: pebolle@tiscali.nl, broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Bo Shen <voice.shen@atmel.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Boris BREZILLON <boris.brezillon@free-electrons.com>, Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/01/2014 09:31 PM, Mark Brown wrote:
-> On Mon, Dec 01, 2014 at 11:07:06AM +0200, Tomi Valkeinen wrote:
->> On 29/11/14 13:59, Mark Brown wrote:
->
->>> Reviewed-by: Mark Brown <broonie@kernel.org>
->
->> Thanks. And just to be sure, that's "ok, we can merge these in the next
->> merge window"?
->
-> Yes.
->
->>> but like I said in reply to the patch adding the new driver I think
->>> we're going to want to generalize this a bit.
->
->> Yep, if I'm not mistaken I did suggest that to Jyri at some point. We
->> can continue working on that, but I'd rather not do anything big on that
->> front before there is some other SoC that has the same setup.
->
-> I really want to see people making an effort to make code shareable here
-> - I think one of the reasons nobody is upstreaming any of their code is
-> that there's nothing generic in place to handle generic tasks so people
-> just look at their code, think it's too much of a device specific hack
-> and think they'll get back to looking at it later.  If this is a
-> sensible set of callbacks to have to pass configuration around let's
-> make that discoverable without requiring people to look through the OMAP
-> drivers.
->
+Now that the driver snd-soc-afeb9260.c is deleted, remove its Kconfig option.
 
-Ok, I'll make the API more generic after this merge window and maybe 
-move omap-hdmi-audio under sound/soc/generic and rename it. These 
-changes should still be merged under fbdev because of changes to the API 
-header.
+Reported-by: Paul Bolle <pebolle@tiscali.nl>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+Hi Paul,
 
-Cheers,
-Jyri
+Indeed, I forgot to include the Kconfig removal: sorry for the noise.
+
+Mark,
+
+I send another patch so that it is easier for you to stack it or squash it on
+top of your branch. 
+
+Thanks, bye.
+ Nicolas
+
+ sound/soc/atmel/Kconfig | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 27e3fc4a536b..fb3878312bf8 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -52,12 +52,3 @@ config SND_AT91_SOC_SAM9X5_WM8731
+ 	help
+ 	  Say Y if you want to add support for audio SoC on an
+ 	  at91sam9x5 based board that is using WM8731 codec.
+-
+-config SND_AT91_SOC_AFEB9260
+-	tristate "SoC Audio support for AFEB9260 board"
+-	depends on ARCH_AT91 && ATMEL_SSC && ARCH_AT91 && MACH_AFEB9260 && SND_ATMEL_SOC
+-	select SND_ATMEL_SOC_PDC
+-	select SND_ATMEL_SOC_SSC
+-	select SND_SOC_TLV320AIC23_I2C
+-	help
+-	  Say Y here to support sound on AFEB9260 board.
+-- 
+2.1.3
