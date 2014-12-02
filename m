@@ -1,76 +1,49 @@
-From: <bencoxdev@gmail.com>
-Subject: Nodes, Widgets,
-	ELD and Digital Surround 5.1 (HDMI) Output?
-Date: Tue, 2 Dec 2014 15:28:50 -0000
-Message-ID: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
-Reply-To: bencoxdev@gmail.com
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 1/1] ASoC: mop500: Deletion of unnecessary checks before the
+ function call "of_node_put"
+Date: Tue, 02 Dec 2014 17:40:11 +0100
+Message-ID: <547DEB6B.5000105@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f176.google.com (mail-wi0-f176.google.com
- [209.85.212.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 16454261497
- for <alsa-devel@alsa-project.org>; Tue,  2 Dec 2014 16:29:12 +0100 (CET)
-Received: by mail-wi0-f176.google.com with SMTP id ex7so28444727wid.3
- for <alsa-devel@alsa-project.org>; Tue, 02 Dec 2014 07:29:11 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA Mailing list <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQWxsLAogICAgSSBoYXZlIGFuIEludGVsIEhEQSBjb21wYXRpYmxlIGRldmljZSB0aGF0IHN1
-cHBvcnRzIDUuMSBkaWdpdGFsIAphdWRpbyBvdXRwdXQgb3ZlciBIRE1JLiBJdCByZXBvcnRzIHR3
-byBub2RlcyBhbmQgdHdvIHdpZGdldHM6LQoKICAgICAgICAgICAgICAgICAgIFJvb3QoMCkgICAK
-ICAgICAgICAgICAgICAgICAgICAgfAogICAgICAgICAgICAgICAgICAgIEFGRygxKQogICAgICAg
-ICAgICAgICAgICAgIC8gXAogICAgICAgICAgICAgICAgICAgLyAgIFwKICAgICAgICAgICAgICAg
-ICAgLyAgICAgXAogICAgICBBdWRpbyBvdXRwdXQoMikgICAgUGluIENvbXBsZXgoMykKClRoaXMg
-c2V0dXAgcHJvZHVjZXMgYSDigJxEaWdpdGFsIFN0ZXJlbyAoSERNSSkgT3V0cHV04oCdIGRldmlj
-ZSBhdCB1c2VyIApsZXZlbCBpbiB0aGUgb3BlcmF0aW5nIHN5c3RlbS4KClRoZSBjb2RlYyByZXBv
-cnRzIGl0cyBzZWxmICB0byB0aGUgb3BlcmF0aW5nIHN5c3RlbSBhcyBmb2xsb3dzIAooZnJvbSAv
-cHJvYy9hc291bmQvY2FyZDAvY29kZWMjMSkKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQUZHIEZ1bmN0aW9uIElkOiAw
-eDEgKHVuc29sIDEpCk5vIE1vZGVtIEZ1bmN0aW9uIEdyb3VwIGZvdW5kCkRlZmF1bHQgUENNOgog
-ICAgcmF0ZXMgWzB4N2YwXTogMzIwMDAgNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5
-MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQpEZWZh
-dWx0IEFtcC1JbiBjYXBzOiBOL0EKRGVmYXVsdCBBbXAtT3V0IGNhcHM6IE4vQQpHUElPOiBpbz0w
-LCBvPTAsIGk9MCwgdW5zb2xpY2l0ZWQ9MCwgd2FrZT0wCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk5vZGUgMHgwMiBb
-QXVkaW8gT3V0cHV0XSB3Y2FwcyAweDIwMTogU3RlcmVvIERpZ2l0YWwKICBEZXZpY2U6IG5hbWU9
-IlMzIEhETUkgMSIsIHR5cGU9IkF1ZGlvIiwgZGV2aWNlPTAKICBDb252ZXJ0ZXI6IHN0cmVhbT0w
-LCBjaGFubmVsPTAKICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQpOb2RlIDB4MDMgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDM4MTogU3RlcmVvIERpZ2l0YWwK
-ICBQaW5jYXAgMHgwMDAwMDA5MDogT1VUIEhETUkKICBQaW4gRGVmYXVsdCAweDE4NTY1MGYwOiBb
-SmFja10gRGlnaXRhbCBPdXQgYXQgSW50IEhETUkKICAgIENvbm4gPSBEaWdpdGFsLCBDb2xvciA9
-IFJlZAogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6
-IDB4NDA6IE9VVAogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIENvbm5lY3Rpb246
-IDEKICAgICAweDAyCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgp0aGUgRUxEIGZyb20gdGhlIHJlY2VpdmluZyBkZXZp
-Y2UgaXM6LQoKbW9uaXRvcl9wcmVzZW50ICAgICAgMQplbGRfdmFsaWQgICAgICAgICAgICAxCm1v
-bml0b3JfbmFtZSAgICAgICAgIEVQLUhETUktUlgKY29ubmVjdGlvbl90eXBlICAgICAgSERNSQpl
-bGRfdmVyc2lvbiAgICAgICAgICBbMHgyXSBDRUEtODYxRCBvciBiZWxvdwplZGlkX3ZlcnNpb24g
-ICAgICAgICBbMHgzXSBDRUEtODYxLUIsIEMgb3IgRAptYW51ZmFjdHVyZV9pZCAgICAgICAweDEw
-MTcKcHJvZHVjdF9pZCAgICAgICAgICAgMHg5MDEKcG9ydF9pZCAgICAgICAgICAgICAgMHgwCnN1
-cHBvcnRfaGRjcCAgICAgICAgIDAKc3VwcG9ydF9haSAgICAgICAgICAgMQphdWRpb19zeW5jX2Rl
-bGF5ICAgICAwCnNwZWFrZXJzICAgICAgICAgICAgIFsweDRmXSBGTC9GUiBMRkUgRkMgUkwvUlIg
-UkxDL1JSQwoKc2FkX2NvdW50ICAgICAgICAgICAgMgoKc2FkMF9jb2RpbmdfdHlwZSAgICAgWzB4
-Ml0gQUMtMwpzYWQwX2NoYW5uZWxzICAgICAgICA2CnNhZDBfcmF0ZXMgICAgICAgICAgIFsweGUw
-XSAzMjAwMCA0NDEwMCA0ODAwMApzYWQwX21heF9iaXRyYXRlICAgICA2NDAwMDAKCnNhZDFfY29k
-aW5nX3R5cGUgICAgIFsweDddIERUUwpzYWQxX2NoYW5uZWxzICAgICAgICA3CnNhZDFfcmF0ZXMg
-ICAgICAgICAgIFsweGMwXSA0NDEwMCA0ODAwMApzYWQxX21heF9iaXRyYXRlICAgICAxNTM2MDAw
-CgoKRG9lcyBhbnlvbmUga25vdyB3aGF0IGNoYW5nZXMgd291bGQgYmUgcmVxdWlyZWQgdG8gdGhp
-cyBzZXR1cCBpbiAKb3JkZXIgZm9yIHRoZSBkZXZpY2UgdG8gYmUgcmVjb2duaXNlZCBhcyAK4oCc
-RGlnaXRhbCBTdXJyb3VuZCA1LjEgKEhETUkpIE91dHB1dOKAnSAKYnkgYWxzYT8KClRJQQotLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tClJlZ2FyZHMKQmVuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 2 Dec 2014 17:15:11 +0100
+
+The of_node_put() function tests whether its argument is NULL and then
+returns immediately. Thus the test around the call is not needed.
+
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/soc/ux500/mop500.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index 7f7093b..4e0c0e5 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -63,10 +63,8 @@ static void mop500_of_node_put(void)
+ 	int i;
+ 
+ 	for (i = 0; i < 2; i++) {
+-		if (mop500_dai_links[i].cpu_of_node)
+-			of_node_put(mop500_dai_links[i].cpu_of_node);
+-		if (mop500_dai_links[i].codec_of_node)
+-			of_node_put(mop500_dai_links[i].codec_of_node);
++		of_node_put(mop500_dai_links[i].cpu_of_node);
++		of_node_put(mop500_dai_links[i].codec_of_node);
+ 	}
+ }
+ 
+-- 
+2.1.3
