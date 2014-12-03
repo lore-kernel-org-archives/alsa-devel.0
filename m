@@ -1,73 +1,46 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] ASoC: rockchip: i2s: add support for grabbing
- output clock to codec
-Date: Wed, 3 Dec 2014 20:03:07 +0000
-Message-ID: <20141203200307.GM7712@sirena.org.uk>
-References: <1417531766-29669-1-git-send-email-jay.xu@rock-chips.com>
- <1417591118-18695-1-git-send-email-jay.xu@rock-chips.com>
- <1417591118-18695-3-git-send-email-jay.xu@rock-chips.com>
- <20141203192024.GL7712@sirena.org.uk>
- <CAPz6YkXRmRzYpW7xuDsq69A9H-Qm2-j6t-a+B1w9+OLOPf_YnA@mail.gmail.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH v2] ASoC: rt5677: make volume TLV closer to
+	reality
+Date: Wed, 3 Dec 2014 12:10:52 -0800
+Message-ID: <CAOMFOmWJgceaLYbZ_yk_40eDrO7manNw9MEh0uDUH+_sW3GbCA@mail.gmail.com>
+References: <1412892687-1264-1-git-send-email-dgreid@chromium.org>
+ <20141009231042.GC18557@sirena.org.uk>
+ <CAEUnVG72KL7iYGVgg8UMM6NyeSEe8vFADjFKzE4cLUUYwqTq5w@mail.gmail.com>
+ <20141013080110.GE27755@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gz7Dl29304g/DuvU"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAPz6YkXRmRzYpW7xuDsq69A9H-Qm2-j6t-a+B1w9+OLOPf_YnA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
+ [209.85.217.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DC2426042F
+ for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 21:10:52 +0100 (CET)
+Received: by mail-lb0-f169.google.com with SMTP id p9so12827090lbv.14
+ for <alsa-devel@alsa-project.org>; Wed, 03 Dec 2014 12:10:52 -0800 (PST)
+In-Reply-To: <20141013080110.GE27755@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>, Dylan Reid <dgreid@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, benzh@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---gz7Dl29304g/DuvU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Oct 13, 2014 at 1:01 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Oct 09, 2014 at 07:27:40PM -0700, Dylan Reid wrote:
+>
+>> I can easily add a flag to the UCM config to hint userspace to divide by 10, so
+>> I'm not strongly tied to making this change if it isn't bothering anyone else.
+>
+> I was thinking about just doing this in the driver rather than working
+> around it in userspace.
 
-On Wed, Dec 03, 2014 at 11:38:13AM -0800, Sonny Rao wrote:
-> On Wed, Dec 3, 2014 at 11:20 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-
-> > I would expect that the clock for the CODEC should be managed by the
-> > CODEC if at all possible - that seems more logical than having the CPU
-> > I2S controller request and manage it if it's a separate clock.  Why add
-> > this to the CPU side driver?
-
-> This output clock has a mux and can either be a fixed 12Mhz output or
-> can be derived from the same fractional divider which drives the i2s
-> block.   I thought it was simpler to keep them all the same, but need
-> to put ownership in the i2s in anticipation of the i2s driver setting
-> it's own clock rate.
-
-> If you think this is an implementation detail and this output clock
-> should just be owned by the codec driver, even though I'm guessing it
-> will just have to be the same as i2s, then I think we can drop this
-> and make sure simple card (or whatever other codec driver) claims this
-> clock.
-
-simple-card obviously isn't a CODEC driver...  For generality I think
-the clock does need to be exposed to the CODEC driver, otherwise this
-will work differently to how other systems are working and we can't
-substitute in a different clock on the CODEC side so easily if it
-doesn't happen to use the output from the I2S block.
-
---gz7Dl29304g/DuvU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUf2x6AAoJECTWi3JdVIfQor4H/R8QlkqfCU1Ht8Ka0ICFucYS
-I79180Ndm9Ulbi7VE7FusGljeVINcXw1GWWw34nkG5zjGVoFlVY3flV7ZNbfOlyM
-5LQHM8j11BUqQB7WQ1AGtBJ3XTB3yO74MXMva4zCufePubbG72HNgn1CdkvgMXT5
-Ty5JrgwWMBxeLZ77xrt4zVZMlGSNPgk/fKGiGxE8qb82kHMZYeodDRXnU/GR4LHC
-UPGDFvzILh7eZXGUKtmG33+YRay44JLW3gfLZd27iDoPmxoVCNzvS7CIn1yUls0I
-cQbklM9JMBlt/bjzWs8g9aOFeqZ8IKzwGzMlqTrWcgwEpW2PXpBhmHxFlj9hUnw=
-=Bt5J
------END PGP SIGNATURE-----
-
---gz7Dl29304g/DuvU--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+If kernel solution is preferable are you going to accept Dylan's
+solution then? Or you think it should be implemented other way?
