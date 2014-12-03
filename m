@@ -1,44 +1,51 @@
-From: Andrew Jackson <Andrew.Jackson@arm.com>
-Subject: [PATCH 5/5] ASoC: dwc: Ensure FIFOs are flushed to prevent channel
- swap
-Date: Wed, 03 Dec 2014 16:39:14 +0000
-Message-ID: <547F3CB2.5070306@arm.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH 1/5] ASoC: dwc: Allocate resources with devm_ioremap_resource
+Date: Wed, 03 Dec 2014 17:44:00 +0100
+Message-ID: <547F3DD0.10405@metafoo.de>
+References: <547F3C96.9070509@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <547F3C96.9070509@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Liviu Dudau <Liviu.Dudau@arm.com>
+To: Andrew Jackson <Andrew.Jackson@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-If the FIFOs aren't flushed, the left/right channels may be swapped:
-this may occur if the FIFOs are not empty when the streams start.
+On 12/03/2014 05:38 PM, Andrew Jackson wrote:
+[,,,[
+> +	dw_i2s_dai = devm_kzalloc(&pdev->dev, sizeof(*dw_i2s_dai), GFP_KERNEL);
+> +	if (!dw_i2s_dai) {
+> +		dev_err(&pdev->dev, "mem allocation failed for dai driver\n");
 
-Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
----
- sound/soc/dwc/designware_i2s.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+All the memory alloc functions already print a error message.
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 083779d..932abfd 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -258,6 +258,7 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
- 	/* Iterate over set of channels - independently controlled. */
- 	do {
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			i2s_write_reg(dev->i2s_base, TXFFR, 1);
- 			i2s_write_reg(dev->i2s_base, TCR(ch_reg),
- 				      xfer_resolution);
- 			i2s_write_reg(dev->i2s_base, TFCR(ch_reg), 0x02);
-@@ -265,6 +266,7 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
- 			i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x30);
- 			i2s_write_reg(dev->i2s_base, TER(ch_reg), 1);
- 		} else {
-+			i2s_write_reg(dev->i2s_base, RXFFR, 1);
- 			i2s_write_reg(dev->i2s_base, RCR(ch_reg),
- 				      xfer_resolution);
- 			i2s_write_reg(dev->i2s_base, RFCR(ch_reg), 0x07);
--- 
-1.7.1
+>   		return -ENOMEM;
+>   	}
+>
+> +	dw_i2s_dai->ops = &dw_i2s_dai_ops;
+> +	dw_i2s_dai->suspend = dw_i2s_suspend;
+> +	dw_i2s_dai->resume = dw_i2s_resume;
+
+This seems to be separate from the devm_ioremap_resource() change.
+
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+
+You don't actually have to check it devm_ioremap_resource does this for you.
+
+> +		dev_err(&pdev->dev, "no i2s resource defined\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	dev->i2s_base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(dev->i2s_base)) {
+> +		dev_err(&pdev->dev, "ioremap fail for i2s_region\n");
+
+Same here devm_ioremap_resource() will already print a appropriate error 
+message.
+
+> +		return PTR_ERR(dev->i2s_base);
+> +	}
