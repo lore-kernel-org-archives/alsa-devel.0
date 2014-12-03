@@ -1,51 +1,100 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: ALSA: ctxfi: Delete an unnecessary check before kfree()
-Date: Wed, 03 Dec 2014 09:14:48 -0800
-Message-ID: <1417626888.2902.13.camel@perches.com>
-References: <5307CAA2.8060406@users.sourceforge.net>
-	 <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
-	 <530A086E.8010901@users.sourceforge.net>
-	 <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
-	 <530A72AA.3000601@users.sourceforge.net>
-	 <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
-	 <530B5FB6.6010207@users.sourceforge.net>
-	 <alpine.DEB.2.10.1402241710370.2074@hadrien>
-	 <530C5E18.1020800@users.sourceforge.net>
-	 <alpine.DEB.2.10.1402251014170.2080@hadrien>
-	 <530CD2C4.4050903@users.sourceforge.net>
-	 <alpine.DEB.2.10.1402251840450.7035@hadrien>
-	 <530CF8FF.8080600@users.sourceforge.net>
-	 <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
-	 <530DD06F.4090703@users.sourceforge.net>
-	 <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
-	 <5317A59D.4@users.sourceforge.net> <547E2612.6010304@users.sourceforge.net>
-	 <s5hvblt6xav.wl-tiwai@suse.de> <547EF64B.1080403@users.sourceforge.net>
-	 <s5h61dssy5n.wl-tiwai@suse.de>
+From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Subject: Re: [PATCH] sound: pci: cmipci.c: Cleaning up function that are not
+ used anywhere
+Date: Wed, 3 Dec 2014 18:17:39 +0100
+Message-ID: <CAFo99gZ_+AH2h0fxNfcy3Rm9ciiRe5HFs2zhqdN3GXhZUymYig@mail.gmail.com>
+References: <1417561975-27627-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+ <s5htx1d6x49.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h61dssy5n.wl-tiwai@suse.de>
+In-Reply-To: <s5htx1d6x49.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: SF Markus Elfring <elfring@users.sourceforge.net>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+Cc: Jaroslav Kysela <perex@perex.cz>, Benoit Taine <benoit.taine@lip6.fr>, Bjorn Helgaas <bhelgaas@google.com>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2014-12-03 at 13:41 +0100, Takashi Iwai wrote:
-> At Wed, 03 Dec 2014 12:38:51 +0100,
-> SF Markus Elfring wrote:
-> > 
-> > >>   Deletion of an unnecessary check before the function call "kfree"
-> > >>   One function call less in get_daio_rsc() after error detection
-> > > 
-> > > In these cases, the changes aren't so straightforward, and they don't
-> > > improve the readability.
-> > 
-> > How do you prefer to improve the affected source code here?
-> 
-> Don't touch then.  There are no bugs to fix there.
+2014-12-03 7:55 GMT+01:00 Takashi Iwai <tiwai@suse.de>:
+> At Wed,  3 Dec 2014 00:12:55 +0100,
+> Rickard Strandqvist wrote:
+>>
+>> Remove function snd_cmipci_pll_rmn() that is not used anywhere.
+>
+> It's an experimental code that is currently disabled.  Keeping such a
+> code would be still meaningful if anyone wants to start a similar
+> experiment again.
+>
+>
+> Takashi
+>
+>> This was partially found by using a static code analysis program called cppcheck.
+>>
+>> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+>> ---
+>>  sound/pci/cmipci.c |   41 -----------------------------------------
+>>  1 file changed, 41 deletions(-)
+>>
+>> diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
+>> index 85ed403..e33edae 100644
+>> --- a/sound/pci/cmipci.c
+>> +++ b/sound/pci/cmipci.c
+>> @@ -615,47 +615,6 @@ static unsigned int snd_cmipci_rate_freq(unsigned int rate)
+>>
+>>  #ifdef USE_VAR48KRATE
+>>  /*
+>> - * Determine PLL values for frequency setup, maybe the CMI8338 (CMI8738???)
+>> - * does it this way .. maybe not.  Never get any information from C-Media about
+>> - * that <werner@suse.de>.
+>> - */
+>> -static int snd_cmipci_pll_rmn(unsigned int rate, unsigned int adcmult, int *r, int *m, int *n)
+>> -{
+>> -     unsigned int delta, tolerance;
+>> -     int xm, xn, xr;
+>> -
+>> -     for (*r = 0; rate < CM_MAXIMUM_RATE/adcmult; *r += (1<<5))
+>> -             rate <<= 1;
+>> -     *n = -1;
+>> -     if (*r > 0xff)
+>> -             goto out;
+>> -     tolerance = rate*CM_TOLERANCE_RATE;
+>> -
+>> -     for (xn = (1+2); xn < (0x1f+2); xn++) {
+>> -             for (xm = (1+2); xm < (0xff+2); xm++) {
+>> -                     xr = ((CM_REFFREQ_XIN/adcmult) * xm) / xn;
+>> -
+>> -                     if (xr < rate)
+>> -                             delta = rate - xr;
+>> -                     else
+>> -                             delta = xr - rate;
+>> -
+>> -                     /*
+>> -                      * If we found one, remember this,
+>> -                      * and try to find a closer one
+>> -                      */
+>> -                     if (delta < tolerance) {
+>> -                             tolerance = delta;
+>> -                             *m = xm - 2;
+>> -                             *n = xn - 2;
+>> -                     }
+>> -             }
+>> -     }
+>> -out:
+>> -     return (*n > -1);
+>> -}
+>> -
+>> -/*
+>>   * Program pll register bits, I assume that the 8 registers 0xf8 up to 0xff
+>>   * are mapped onto the 8 ADC/DAC sampling frequency which can be chosen
+>>   * at the register CM_REG_FUNCTRL1 (0x04).
+>> --
+>> 1.7.10.4
 
-Takashi, what did you think of this?
-https://lkml.org/lkml/2014/12/2/771
 
-Just unnecessary?
+Hi
+
+Maybe it had been appropriate to add some comment or something then....?
+
+And thanks Bjorn, was a better idea to write like in the patch text.
+
+Kind regards
+Rickard Strandqvist
