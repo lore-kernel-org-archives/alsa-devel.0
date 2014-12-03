@@ -1,95 +1,86 @@
-From: Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH] sound: pci: cmipci.c: Cleaning up function that are not
- used anywhere
-Date: Tue, 2 Dec 2014 16:51:30 -0700
-Message-ID: <CAErSpo5kFRHjUtNghkL_Db2BaKFOG5vM-rnUOTZAsvFPDd8ebw@mail.gmail.com>
-References: <1417561975-27627-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Jianqun <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: rockchip: i2s: add support for grabbing output
+ clock to codec
+Date: Wed, 03 Dec 2014 09:03:40 +0800
+Message-ID: <547E616C.1020503@rock-chips.com>
+References: <1417531766-29669-1-git-send-email-jay.xu@rock-chips.com>	<1417531977-30094-1-git-send-email-jay.xu@rock-chips.com> <CAD=FV=Uwb1NxxCoXHzHu6DJCpnG_HV2RhCr3JaJaXbJja8kd7A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1417561975-27627-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Benoit Taine <benoit.taine@lip6.fr>, alsa-devel <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAD=FV=Uwb1NxxCoXHzHu6DJCpnG_HV2RhCr3JaJaXbJja8kd7A-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "open list:ARM/Rockchip SoC..." <linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rickard,
+Hi Doug:
 
-Thanks a lot for fixing cruft like this.  It makes life better for everybody.
+=E5=9C=A8 12/03/2014 01:54 AM, Doug Anderson =E5=86=99=E9=81=93:
+> Jianqun,
+>=20
+> This ought to be a "v3" patch and ideally ought to describe
+> differences from v2 (after the cut).  Please have Kever or Chris
+> review your next patch before sending it out since I think they are
+> familiar with the process.
+>=20
+>=20
+> On Tue, Dec 2, 2014 at 6:52 AM, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org> wr=
+ote:
+>> From: Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+>>
+>> We need to claim the clock which is driving the codec so that when w=
+e enable
+>> clock gating, we continue to clock the codec when needed.  I make th=
+is an
+>> optional clock since there might be some applications where we don't=
+ need it
+>> but can still use the I2S block.
+>>
+>> Signed-off-by: Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+>=20
+> You still forgot your own signed-off-by.  Please try again.  See
+> <https://patchwork.kernel.org/patch/5334991/>
+ok, I will add my signed-off-by
+>=20
+>=20
+>> +       i2s->oclk =3D devm_clk_get(&pdev->dev, "i2s_clk_out");
+>> +       if (IS_ERR(i2s->oclk)) {
+>> +               dev_dbg(&pdev->dev, "Didn't find output clock\n");
+>> +               i2s->oclk =3D NULL;
+>> +       }
+>=20
+> You still forgot the blank line here requested by Heiko.  Please try
+> again.  See <https://patchwork.kernel.org/patch/5334991/>
+Although I thought there needn't a blank ~, I wll add it next patch
+>=20
+>=20
+>> +       if (i2s->oclk)
+>> +               ret =3D clk_prepare_enable(i2s->oclk);
+>> +
+>=20
+>=20
+>=20
 
-I'll let the maintainer of this driver take care of this patch, but
-I'll just point out that your subject ("Cleaning up function ...") is
-slightly ambiguous because sometimes "cleanup" means simplification,
-not removal.  My personal preference would be "Remove unused
-snd_cmipci_pll_rmn()" because it is unambiguous, shorter, and contains
-a little more information.  That makes "git log --oneline" output more
- useful.
+--=20
+Jianqun Xu
 
-Bjorn
+***********************************************************************=
+*****
+*IMPORTANT NOTICE:*This email is from Fuzhou Rockchip Electronics Co.,
+Ltd .The contents of this email and any attachments may contain
+information that is privileged, confidential and/or exempt from
+disclosure under applicable law and relevant NDA. If you are not the
+intended recipient, you are hereby notified that any disclosure,
+copying, distribution, or use of the information is STRICTLY PROHIBITED=
+=2E
+Please immediately contact the sender as soon as possible and destroy
+the material in its entirety in any format. Thank you.
+***********************************************************************=
+*****
 
-On Tue, Dec 2, 2014 at 4:12 PM, Rickard Strandqvist
-<rickard_strandqvist@spectrumdigital.se> wrote:
-> Remove function snd_cmipci_pll_rmn() that is not used anywhere.
->
-> This was partially found by using a static code analysis program called cppcheck.
->
-> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-> ---
->  sound/pci/cmipci.c |   41 -----------------------------------------
->  1 file changed, 41 deletions(-)
->
-> diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
-> index 85ed403..e33edae 100644
-> --- a/sound/pci/cmipci.c
-> +++ b/sound/pci/cmipci.c
-> @@ -615,47 +615,6 @@ static unsigned int snd_cmipci_rate_freq(unsigned int rate)
->
->  #ifdef USE_VAR48KRATE
->  /*
-> - * Determine PLL values for frequency setup, maybe the CMI8338 (CMI8738???)
-> - * does it this way .. maybe not.  Never get any information from C-Media about
-> - * that <werner@suse.de>.
-> - */
-> -static int snd_cmipci_pll_rmn(unsigned int rate, unsigned int adcmult, int *r, int *m, int *n)
-> -{
-> -       unsigned int delta, tolerance;
-> -       int xm, xn, xr;
-> -
-> -       for (*r = 0; rate < CM_MAXIMUM_RATE/adcmult; *r += (1<<5))
-> -               rate <<= 1;
-> -       *n = -1;
-> -       if (*r > 0xff)
-> -               goto out;
-> -       tolerance = rate*CM_TOLERANCE_RATE;
-> -
-> -       for (xn = (1+2); xn < (0x1f+2); xn++) {
-> -               for (xm = (1+2); xm < (0xff+2); xm++) {
-> -                       xr = ((CM_REFFREQ_XIN/adcmult) * xm) / xn;
-> -
-> -                       if (xr < rate)
-> -                               delta = rate - xr;
-> -                       else
-> -                               delta = xr - rate;
-> -
-> -                       /*
-> -                        * If we found one, remember this,
-> -                        * and try to find a closer one
-> -                        */
-> -                       if (delta < tolerance) {
-> -                               tolerance = delta;
-> -                               *m = xm - 2;
-> -                               *n = xn - 2;
-> -                       }
-> -               }
-> -       }
-> -out:
-> -       return (*n > -1);
-> -}
-> -
-> -/*
->   * Program pll register bits, I assume that the 8 registers 0xf8 up to 0xff
->   * are mapped onto the 8 ADC/DAC sampling frequency which can be chosen
->   * at the register CM_REG_FUNCTRL1 (0x04).
-> --
-> 1.7.10.4
->
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
