@@ -1,48 +1,84 @@
-From: Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH v2 1/2] ASoC: dt-bindings: rockchip-i2s: add an optional property "i2s_clk_out"
-Date: Wed,  3 Dec 2014 15:18:37 +0800
-Message-ID: <1417591118-18695-2-git-send-email-jay.xu@rock-chips.com>
-References: <1417531766-29669-1-git-send-email-jay.xu@rock-chips.com>
- <1417591118-18695-1-git-send-email-jay.xu@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1417591118-18695-1-git-send-email-jay.xu@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, sonnyrao@chromium.org, heiko@sntech.de
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org, Jianqun Xu <jay.xu@rock-chips.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Nodes, Widgets,
+ ELD and Digital Surround 5.1 (HDMI) Output?
+Date: Wed, 03 Dec 2014 08:34:23 +0100
+Message-ID: <547EBCFF.5030204@canonical.com>
+References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56C87260437
+ for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 08:34:20 +0100 (CET)
+In-Reply-To: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: bencoxdev@gmail.com, ALSA Mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add an property "i2s_clk_out", which enables to output clock to outside
-of rockchip SoCs. Let's make it optional since not each board needs it.
-
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-Reviewed-by: Doug Anderson <dianders@chromium.org>
----
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index 9b82c20..c8f5ac0 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -22,6 +22,10 @@ Required properties:
-    - "i2s_hclk": clock for I2S BUS
-    - "i2s_clk" : clock for I2S controller
- 
-+Optional property:
-+- "i2s_clk_out" : clock output to outside of chip, usally as master clock for audio
-+	codec chip
-+
- Example for rk3288 I2S controller:
- 
- i2s@ff890000 {
-@@ -32,6 +36,6 @@ i2s@ff890000 {
- 	#size-cells = <0>;
- 	dmas = <&pdma1 0>, <&pdma1 1>;
- 	dma-names = "tx", "rx";
--	clock-names = "i2s_hclk", "i2s_clk";
--	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
-+	clock-names = "i2s_hclk", "i2s_clk", "i2s_clk_out";
-+	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>, <&cru SCLK_I2S0_CLKOUT>;
- };
--- 
-1.9.1
+CgpPbiAyMDE0LTEyLTAyIDE2OjI4LCBiZW5jb3hkZXZAZ21haWwuY29tIHdyb3RlOgo+IEhpIEFs
+bCwKPiAgICAgIEkgaGF2ZSBhbiBJbnRlbCBIREEgY29tcGF0aWJsZSBkZXZpY2UgdGhhdCBzdXBw
+b3J0cyA1LjEgZGlnaXRhbAo+IGF1ZGlvIG91dHB1dCBvdmVyIEhETUkuIEl0IHJlcG9ydHMgdHdv
+IG5vZGVzIGFuZCB0d28gd2lkZ2V0czotCj4KPiAgICAgICAgICAgICAgICAgICAgIFJvb3QoMCkK
+PiAgICAgICAgICAgICAgICAgICAgICAgfAo+ICAgICAgICAgICAgICAgICAgICAgIEFGRygxKQo+
+ICAgICAgICAgICAgICAgICAgICAgIC8gXAo+ICAgICAgICAgICAgICAgICAgICAgLyAgIFwKPiAg
+ICAgICAgICAgICAgICAgICAgLyAgICAgXAo+ICAgICAgICBBdWRpbyBvdXRwdXQoMikgICAgUGlu
+IENvbXBsZXgoMykKPgo+IFRoaXMgc2V0dXAgcHJvZHVjZXMgYSDigJxEaWdpdGFsIFN0ZXJlbyAo
+SERNSSkgT3V0cHV04oCdIGRldmljZSBhdCB1c2VyCj4gbGV2ZWwgaW4gdGhlIG9wZXJhdGluZyBz
+eXN0ZW0uCj4KPiBUaGUgY29kZWMgcmVwb3J0cyBpdHMgc2VsZiAgdG8gdGhlIG9wZXJhdGluZyBz
+eXN0ZW0gYXMgZm9sbG93cwo+IChmcm9tIC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYyMxKQo+IC0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCj4gQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29sIDEpCj4gTm8gTW9kZW0gRnVu
+Y3Rpb24gR3JvdXAgZm91bmQKPiBEZWZhdWx0IFBDTToKPiAgICAgIHJhdGVzIFsweDdmMF06IDMy
+MDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDAKPiAgICAgIGJpdHMgWzB4
+ZV06IDE2IDIwIDI0Cj4gICAgICBmb3JtYXRzIFsweDFdOiBQQ00KPiBEZWZhdWx0IEFtcC1JbiBj
+YXBzOiBOL0EKPiBEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BCj4gR1BJTzogaW89MCwgbz0wLCBp
+PTAsIHVuc29saWNpdGVkPTAsIHdha2U9MAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gTm9kZSAweDAyIFtBdWRp
+byBPdXRwdXRdIHdjYXBzIDB4MjAxOiBTdGVyZW8gRGlnaXRhbAo+ICAgIERldmljZTogbmFtZT0i
+UzMgSERNSSAxIiwgdHlwZT0iQXVkaW8iLCBkZXZpY2U9MAo+ICAgIENvbnZlcnRlcjogc3RyZWFt
+PTAsIGNoYW5uZWw9MAo+ICAgIERpZ2l0YWw6Cj4gICAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCj4g
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KPiBOb2RlIDB4MDMgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDM4MTogU3Rl
+cmVvIERpZ2l0YWwKPiAgICBQaW5jYXAgMHgwMDAwMDA5MDogT1VUIEhETUkKPiAgICBQaW4gRGVm
+YXVsdCAweDE4NTY1MGYwOiBbSmFja10gRGlnaXRhbCBPdXQgYXQgSW50IEhETUkKPiAgICAgIENv
+bm4gPSBEaWdpdGFsLCBDb2xvciA9IFJlZAo+ICAgICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNl
+cXVlbmNlID0gMHgwCj4gICAgUGluLWN0bHM6IDB4NDA6IE9VVAo+ICAgIFVuc29saWNpdGVkOiB0
+YWc9MDAsIGVuYWJsZWQ9MAo+ICAgIENvbm5lY3Rpb246IDEKPiAgICAgICAweDAyCj4gLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KPgo+IHRoZSBFTEQgZnJvbSB0aGUgcmVjZWl2aW5nIGRldmljZSBpczotCj4KPiBtb25p
+dG9yX3ByZXNlbnQgICAgICAxCj4gZWxkX3ZhbGlkICAgICAgICAgICAgMQo+IG1vbml0b3JfbmFt
+ZSAgICAgICAgIEVQLUhETUktUlgKPiBjb25uZWN0aW9uX3R5cGUgICAgICBIRE1JCj4gZWxkX3Zl
+cnNpb24gICAgICAgICAgWzB4Ml0gQ0VBLTg2MUQgb3IgYmVsb3cKPiBlZGlkX3ZlcnNpb24gICAg
+ICAgICBbMHgzXSBDRUEtODYxLUIsIEMgb3IgRAo+IG1hbnVmYWN0dXJlX2lkICAgICAgIDB4MTAx
+Nwo+IHByb2R1Y3RfaWQgICAgICAgICAgIDB4OTAxCj4gcG9ydF9pZCAgICAgICAgICAgICAgMHgw
+Cj4gc3VwcG9ydF9oZGNwICAgICAgICAgMAo+IHN1cHBvcnRfYWkgICAgICAgICAgIDEKPiBhdWRp
+b19zeW5jX2RlbGF5ICAgICAwCj4gc3BlYWtlcnMgICAgICAgICAgICAgWzB4NGZdIEZML0ZSIExG
+RSBGQyBSTC9SUiBSTEMvUlJDCj4KPiBzYWRfY291bnQgICAgICAgICAgICAyCj4KPiBzYWQwX2Nv
+ZGluZ190eXBlICAgICBbMHgyXSBBQy0zCj4gc2FkMF9jaGFubmVscyAgICAgICAgNgo+IHNhZDBf
+cmF0ZXMgICAgICAgICAgIFsweGUwXSAzMjAwMCA0NDEwMCA0ODAwMAo+IHNhZDBfbWF4X2JpdHJh
+dGUgICAgIDY0MDAwMAo+Cj4gc2FkMV9jb2RpbmdfdHlwZSAgICAgWzB4N10gRFRTCj4gc2FkMV9j
+aGFubmVscyAgICAgICAgNwo+IHNhZDFfcmF0ZXMgICAgICAgICAgIFsweGMwXSA0NDEwMCA0ODAw
+MAo+IHNhZDFfbWF4X2JpdHJhdGUgICAgIDE1MzYwMDAKPgo+Cj4gRG9lcyBhbnlvbmUga25vdyB3
+aGF0IGNoYW5nZXMgd291bGQgYmUgcmVxdWlyZWQgdG8gdGhpcyBzZXR1cCBpbgo+IG9yZGVyIGZv
+ciB0aGUgZGV2aWNlIHRvIGJlIHJlY29nbmlzZWQgYXMKPiDigJxEaWdpdGFsIFN1cnJvdW5kIDUu
+MSAoSERNSSkgT3V0cHV04oCdCj4gYnkgYWxzYT8KCllvdSdyZSBjb25mdXNpbmcgQUxTQSBhbmQg
+UHVsc2VBdWRpbyBhIGJpdCBoZXJlOyBJIHRoaW5rIHlvdSBzaG91bGQgCmZpcnN0IHRyeSB0byBn
+ZXQgYSBQdWxzZUF1ZGlvIHZlcmJvc2UgbG9nICggCmh0dHBzOi8vd2lraS51YnVudHUuY29tL1B1
+bHNlQXVkaW8vTG9nICksIGxvb2sgZm9yIHdoZW4gaXQgdHJpZXMgdG8gb3BlbiAKaGRtaTowLDEg
+aW4gc3Vycm91bmQgNS4xIHZlcnNpb24gYW5kIHNlZSBpZiB5b3UgY2FuIGZpbmQgZXJyb3JzLiBU
+aG9zZSAKZXJyb3JzIG1pZ2h0IHN0aWxsIGJlIEFMU0EgZXJyb3JzIHRob3VnaCwgYW5kIGNvbWUg
+ZnJvbSBhbHNhLWxpYi4KCgotLSAKRGF2aWQgSGVubmluZ3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0
+dHBzOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
