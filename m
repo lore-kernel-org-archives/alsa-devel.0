@@ -1,58 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: mop500: Deletion of unnecessary checks before
- the function call "of_node_put"
-Date: Wed, 3 Dec 2014 18:31:23 +0000
-Message-ID: <20141203183123.GJ7712@sirena.org.uk>
-References: <530C5E18.1020800@users.sourceforge.net>
- <alpine.DEB.2.10.1402251014170.2080@hadrien>
- <530CD2C4.4050903@users.sourceforge.net>
- <alpine.DEB.2.10.1402251840450.7035@hadrien>
- <530CF8FF.8080600@users.sourceforge.net>
- <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
- <530DD06F.4090703@users.sourceforge.net>
- <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
- <5317A59D.4@users.sourceforge.net>
- <547DEB6B.5000105@users.sourceforge.net>
+Subject: Re: [PATCH 16/20] ASoC: rsnd: remove un-necessary
+ parameter from rsnd_src_start/stop()
+Date: Wed, 3 Dec 2014 18:52:07 +0000
+Message-ID: <20141203185207.GK7712@sirena.org.uk>
+References: <877fyh9ilx.wl%kuninori.morimoto.gx@renesas.com>
+ <87k32h83sm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ViqsC9kT1FfWPhoo"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <547DEB6B.5000105@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+Content-Type: multipart/mixed; boundary="===============9162928320216026849=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48211260533
+ for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 19:52:15 +0100 (CET)
+In-Reply-To: <87k32h83sm.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---ViqsC9kT1FfWPhoo
+--===============9162928320216026849==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9Bm7/c0bURfYEv9c"
+Content-Disposition: inline
+
+
+--9Bm7/c0bURfYEv9c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 02, 2014 at 05:40:11PM +0100, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 2 Dec 2014 17:15:11 +0100
+On Thu, Nov 27, 2014 at 08:07:28AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> The of_node_put() function tests whether its argument is NULL and then
-> returns immediately. Thus the test around the call is not needed.
+> rsnd_src_start/stop() requests struct rsnd_dai as parameter.
+> but, it is not used, and become more complex in L/R error handling.
+> Let's remove it.
 
-Sorry, realised what the dependency was - applied, thanks.
+Applied everything up to here, thanks.  I've not yet looked at the rest
+of the patches.
 
---ViqsC9kT1FfWPhoo
+--9Bm7/c0bURfYEv9c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUf1b6AAoJECTWi3JdVIfQQOgH/3liXIlkPdYxHxPHrJe0UfPP
-W99frMcq24UGybTyBgNMs/V3maC4/p/z6U23Tj3Ik0OubNdT8P+M6CjKH2Hf8tqb
-wOiirSqdqi+6Myf+/ziEDk0/7dJuJnVmQxN37KiOUA32q4r94bLoqgMQwpNyE1K8
-sEY8xzD1vKegHm8ynnCxe2gNpweHE6XAms1eN+PCL4dvv2BKygz3WbRGDPIBnCrY
-6/v55sPEtFf2/SB7Gq86YwwLhzoOkdI74qbNUh4FUFmQG73/8ABnVbUL6oaFSMfE
-uSzfDdw/Iuf4aGyWKQBj3PHs34SIf/BlV3EMhDSo2sxftDQBjsNOvDb2tc/kdwA=
-=AOHg
+iQEcBAEBAgAGBQJUf1vWAAoJECTWi3JdVIfQ5ZkH/0nZMuo/erkUFvRiIbLxqMcG
+VBNkINkQutOLitOLQJeyKYgS1FgdigTovM98SZ9JBROI+EaCkuKhNKAoMOZlDYYU
+biUlK4CzBCaW16XJg0lLywQJHCtjd27WijjhfiaIzJChcJYF2KitVO5eap6aO1jP
+U22My1oPDsyq9KVy8Zt35muyZyANsXhp1+9tVom91BjTwVt2Brd+pZT67FyI1wx6
+aDhEK8fYKntZIv9s5sHSsCHJW39LR7ppqND/Xc3cgfhl8gT0c/JG+XOH5rUTj8C8
+m3PCkZtKRAItkV+5mymtsFlByiuTlQ7gdjeEge8lpvb2d+GiYnDu/c3Bao4/yNM=
+=EmKZ
 -----END PGP SIGNATURE-----
 
---ViqsC9kT1FfWPhoo--
+--9Bm7/c0bURfYEv9c--
+
+--===============9162928320216026849==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9162928320216026849==--
