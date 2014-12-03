@@ -1,21 +1,18 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: Nodes, Widgets,
- ELD and Digital Surround 5.1 (HDMI) Output?
-Date: Wed, 03 Dec 2014 12:58:55 +0500
-Message-ID: <547EC2BF.3080601@gmail.com>
-References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
- <547EBCFF.5030204@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Define the DCAPS preset for
+	the old Intel chipsets
+Date: Wed,  3 Dec 2014 10:02:12 +0100
+Message-ID: <1417597333-15749-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 12FBA26043A
- for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 08:58:58 +0100 (CET)
-Received: by mail-wi0-f181.google.com with SMTP id r20so23447822wiv.14
- for <alsa-devel@alsa-project.org>; Tue, 02 Dec 2014 23:58:57 -0800 (PST)
-In-Reply-To: <547EBCFF.5030204@canonical.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5DA226043B
+ for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 10:02:15 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7E946AD05
+ for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 09:02:15 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,78 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, bencoxdev@gmail.com, ALSA Mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MDMuMTIuMjAxNCAxMjozNCwgRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6Cj4KPgo+IE9uIDIwMTQt
-MTItMDIgMTY6MjgsIGJlbmNveGRldkBnbWFpbC5jb20gd3JvdGU6Cj4+IEhpIEFsbCwKPj4gICAg
-ICBJIGhhdmUgYW4gSW50ZWwgSERBIGNvbXBhdGlibGUgZGV2aWNlIHRoYXQgc3VwcG9ydHMgNS4x
-IGRpZ2l0YWwKPj4gYXVkaW8gb3V0cHV0IG92ZXIgSERNSS4gSXQgcmVwb3J0cyB0d28gbm9kZXMg
-YW5kIHR3byB3aWRnZXRzOi0KPj4KPj4gICAgICAgICAgICAgICAgICAgICBSb290KDApCj4+ICAg
-ICAgICAgICAgICAgICAgICAgICB8Cj4+ICAgICAgICAgICAgICAgICAgICAgIEFGRygxKQo+PiAg
-ICAgICAgICAgICAgICAgICAgICAvIFwKPj4gICAgICAgICAgICAgICAgICAgICAvICAgXAo+PiAg
-ICAgICAgICAgICAgICAgICAgLyAgICAgXAo+PiAgICAgICAgQXVkaW8gb3V0cHV0KDIpICAgIFBp
-biBDb21wbGV4KDMpCj4+Cj4+IFRoaXMgc2V0dXAgcHJvZHVjZXMgYSDigJxEaWdpdGFsIFN0ZXJl
-byAoSERNSSkgT3V0cHV04oCdIGRldmljZSBhdCB1c2VyCj4+IGxldmVsIGluIHRoZSBvcGVyYXRp
-bmcgc3lzdGVtLgo+Pgo+PiBUaGUgY29kZWMgcmVwb3J0cyBpdHMgc2VsZiAgdG8gdGhlIG9wZXJh
-dGluZyBzeXN0ZW0gYXMgZm9sbG93cwo+PiAoZnJvbSAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMj
-MSkKPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KPj4gQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29sIDEpCj4+IE5v
-IE1vZGVtIEZ1bmN0aW9uIEdyb3VwIGZvdW5kCj4+IERlZmF1bHQgUENNOgo+PiAgICAgIHJhdGVz
-IFsweDdmMF06IDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDAKPj4g
-ICAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAo+PiAgICAgIGZvcm1hdHMgWzB4MV06IFBDTQo+PiBE
-ZWZhdWx0IEFtcC1JbiBjYXBzOiBOL0EKPj4gRGVmYXVsdCBBbXAtT3V0IGNhcHM6IE4vQQo+PiBH
-UElPOiBpbz0wLCBvPTAsIGk9MCwgdW5zb2xpY2l0ZWQ9MCwgd2FrZT0wCj4+IC0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-Cj4+IE5vZGUgMHgwMiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDIwMTogU3RlcmVvIERpZ2l0YWwK
-Pj4gICAgRGV2aWNlOiBuYW1lPSJTMyBIRE1JIDEiLCB0eXBlPSJBdWRpbyIsIGRldmljZT0wCj4+
-ICAgIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAo+PiAgICBEaWdpdGFsOgo+PiAgICBE
-aWdpdGFsIGNhdGVnb3J5OiAweDAKPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gTm9kZSAweDAzIFtQaW4gQ29t
-cGxleF0gd2NhcHMgMHg0MDAzODE6IFN0ZXJlbyBEaWdpdGFsCj4+ICAgIFBpbmNhcCAweDAwMDAw
-MDkwOiBPVVQgSERNSQo+PiAgICBQaW4gRGVmYXVsdCAweDE4NTY1MGYwOiBbSmFja10gRGlnaXRh
-bCBPdXQgYXQgSW50IEhETUkKPj4gICAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBSZWQKPj4g
-ICAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKPj4gICAgUGluLWN0bHM6
-IDB4NDA6IE9VVAo+PiAgICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKPj4gICAgQ29u
-bmVjdGlvbjogMQo+PiAgICAgICAweDAyCj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+Cj4+IHRoZSBFTEQgZnJv
-bSB0aGUgcmVjZWl2aW5nIGRldmljZSBpczotCj4+Cj4+IG1vbml0b3JfcHJlc2VudCAgICAgIDEK
-Pj4gZWxkX3ZhbGlkICAgICAgICAgICAgMQo+PiBtb25pdG9yX25hbWUgICAgICAgICBFUC1IRE1J
-LVJYCj4+IGNvbm5lY3Rpb25fdHlwZSAgICAgIEhETUkKPj4gZWxkX3ZlcnNpb24gICAgICAgICAg
-WzB4Ml0gQ0VBLTg2MUQgb3IgYmVsb3cKPj4gZWRpZF92ZXJzaW9uICAgICAgICAgWzB4M10gQ0VB
-LTg2MS1CLCBDIG9yIEQKPj4gbWFudWZhY3R1cmVfaWQgICAgICAgMHgxMDE3Cj4+IHByb2R1Y3Rf
-aWQgICAgICAgICAgIDB4OTAxCj4+IHBvcnRfaWQgICAgICAgICAgICAgIDB4MAo+PiBzdXBwb3J0
-X2hkY3AgICAgICAgICAwCj4+IHN1cHBvcnRfYWkgICAgICAgICAgIDEKPj4gYXVkaW9fc3luY19k
-ZWxheSAgICAgMAo+PiBzcGVha2VycyAgICAgICAgICAgICBbMHg0Zl0gRkwvRlIgTEZFIEZDIFJM
-L1JSIFJMQy9SUkMKPj4KPj4gc2FkX2NvdW50ICAgICAgICAgICAgMgo+Pgo+PiBzYWQwX2NvZGlu
-Z190eXBlICAgICBbMHgyXSBBQy0zCj4+IHNhZDBfY2hhbm5lbHMgICAgICAgIDYKPj4gc2FkMF9y
-YXRlcyAgICAgICAgICAgWzB4ZTBdIDMyMDAwIDQ0MTAwIDQ4MDAwCj4+IHNhZDBfbWF4X2JpdHJh
-dGUgICAgIDY0MDAwMAo+Pgo+PiBzYWQxX2NvZGluZ190eXBlICAgICBbMHg3XSBEVFMKPj4gc2Fk
-MV9jaGFubmVscyAgICAgICAgNwo+PiBzYWQxX3JhdGVzICAgICAgICAgICBbMHhjMF0gNDQxMDAg
-NDgwMDAKPj4gc2FkMV9tYXhfYml0cmF0ZSAgICAgMTUzNjAwMAo+Pgo+Pgo+PiBEb2VzIGFueW9u
-ZSBrbm93IHdoYXQgY2hhbmdlcyB3b3VsZCBiZSByZXF1aXJlZCB0byB0aGlzIHNldHVwIGluCj4+
-IG9yZGVyIGZvciB0aGUgZGV2aWNlIHRvIGJlIHJlY29nbmlzZWQgYXMKPj4g4oCcRGlnaXRhbCBT
-dXJyb3VuZCA1LjEgKEhETUkpIE91dHB1dOKAnQo+PiBieSBhbHNhPwo+Cj4gWW91J3JlIGNvbmZ1
-c2luZyBBTFNBIGFuZCBQdWxzZUF1ZGlvIGEgYml0IGhlcmU7IEkgdGhpbmsgeW91IHNob3VsZAo+
-IGZpcnN0IHRyeSB0byBnZXQgYSBQdWxzZUF1ZGlvIHZlcmJvc2UgbG9nICgKPiBodHRwczovL3dp
-a2kudWJ1bnR1LmNvbS9QdWxzZUF1ZGlvL0xvZyApLCBsb29rIGZvciB3aGVuIGl0IHRyaWVzIHRv
-IG9wZW4KPiBoZG1pOjAsMSBpbiBzdXJyb3VuZCA1LjEgdmVyc2lvbiBhbmQgc2VlIGlmIHlvdSBj
-YW4gZmluZCBlcnJvcnMuIFRob3NlCj4gZXJyb3JzIG1pZ2h0IHN0aWxsIGJlIEFMU0EgZXJyb3Jz
-IHRob3VnaCwgYW5kIGNvbWUgZnJvbSBhbHNhLWxpYi4KClRvIGFkZDogaWYgeW91ciBIRE1JIGF1
-ZGlvIGNvbnRyb2xsZXIgd2FzLCBpbiBmYWN0LCBtYWRlIGJ5IEFNRCwgdGhlbiAKUHVsc2VBdWRp
-byA1LjAgd2lsbCBub3QgZXZlbiB0cnkgdG8gb3BlbiBpdCBpbiA1LjEgbW9kZS4gVGhpcyBidWcg
-aGFzIApiZWVuIGZpeGVkIGluIDYuMC1yYzEuIFlvdSBjYW4gdHJ5IGNyZWF0aW5nIG5ldyB1ZGV2
-IHJ1bGVzIGlmIHlvdSBkb24ndCAKd2FudCB0byB1cGdyYWRlLiBUaGVyZSBpcyBhIGxpbmUgaW4g
-L2xpYi91ZGV2L3J1bGVzLmQvOTAtcHVsc2VhdWRpby5ydWxlczoKCi9saWIvdWRldi9ydWxlcy5k
-LzkwLXB1bHNlYXVkaW8ucnVsZXM6QVRUUlN7dmVuZG9yfT09IjB4ODA4NiIsIApFTlZ7UFVMU0Vf
-UFJPRklMRV9TRVR9PSJleHRyYS1oZG1pLmNvbmYiCgpBbGwgeW91IG5lZWQgdG8gZG8gaXMgdG8g
-ZmlndXJlIG91dCB0aGUgdmVuZG9yIElEIChmcm9tIGxzcGNpIC1ubikgYW5kIAp3cml0ZSBhIHNp
-bWlsYXIgbGluZSB0byAvZXRjL3VkZXYvcnVsZXMuZC85MS1teS1wdWxzZWF1ZGlvLnJ1bGVzICwg
-dGhlbiAKcnVuICJ1ZGV2YWRtIHRyaWdnZXIiIGFuZCBwb3NzaWJseSBsb2dvdXQgYW5kIGxvZ2lu
-IGFnYWluLiBPciByZWJvb3QuCgpIb3dldmVyLCB0aGUgdXBzdHJlYW0gZml4IHdhcyB0byByZW1v
-dmUgdGhlICJleHRyYS1oZG1pLmNvbmYiIGZpbGUgCmNvbXBsZXRlbHkgYW5kIG1lcmdlIGFsbCBw
-cm9maWxlcyBjb250YWluZWQgdGhlcmUgdG8gdGhlIGRlZmF1bHQgc2V0LgoKLS0gCkFsZXhhbmRl
-ciBFLiBQYXRyYWtvdgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+Just for improving readability.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index fc7aff0eb562..53e43d111a3b 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -276,6 +276,10 @@ enum {
+ 	(((chip)->driver_caps & AZX_DCAPS_SNOOP_MASK) >> 10)
+ #define AZX_DCAPS_SNOOP_TYPE(type) ((AZX_SNOOP_TYPE_ ## type) << 10)
+ 
++/* quirks for old Intel chipsets */
++#define AZX_DCAPS_INTEL_ICH \
++	(AZX_DCAPS_OLD_SSYNC | AZX_DCAPS_BUFSIZE)
++
+ /* quirks for Intel PCH */
+ #define AZX_DCAPS_INTEL_PCH_NOPM \
+ 	(AZX_DCAPS_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY |\
+@@ -2054,31 +2058,30 @@ static const struct pci_device_id azx_ids[] = {
+ 	/* Braswell */
+ 	{ PCI_DEVICE(0x8086, 0x2284),
+ 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
+-	/* ICH */
++	/* ICH6 */
+ 	{ PCI_DEVICE(0x8086, 0x2668),
+-	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+-	  AZX_DCAPS_BUFSIZE },  /* ICH6 */
++	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
++	/* ICH7 */
+ 	{ PCI_DEVICE(0x8086, 0x27d8),
+-	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+-	  AZX_DCAPS_BUFSIZE },  /* ICH7 */
++	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
++	/* ESB2 */
+ 	{ PCI_DEVICE(0x8086, 0x269a),
+-	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+-	  AZX_DCAPS_BUFSIZE },  /* ESB2 */
++	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
++	/* ICH8 */
+ 	{ PCI_DEVICE(0x8086, 0x284b),
+-	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+-	  AZX_DCAPS_BUFSIZE },  /* ICH8 */
++	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
++	/* ICH9 */
+ 	{ PCI_DEVICE(0x8086, 0x293e),
+-	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+-	  AZX_DCAPS_BUFSIZE },  /* ICH9 */
++	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
++	/* ICH9 */
+ 	{ PCI_DEVICE(0x8086, 0x293f),
+-	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+-	  AZX_DCAPS_BUFSIZE },  /* ICH9 */
++	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
++	/* ICH10 */
+ 	{ PCI_DEVICE(0x8086, 0x3a3e),
+-	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+-	  AZX_DCAPS_BUFSIZE },  /* ICH10 */
++	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
++	/* ICH10 */
+ 	{ PCI_DEVICE(0x8086, 0x3a6e),
+-	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+-	  AZX_DCAPS_BUFSIZE },  /* ICH10 */
++	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
+ 	/* Generic Intel */
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_ANY_ID),
+ 	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
+-- 
+2.1.3
