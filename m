@@ -1,18 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/5] ASoC: dwc: Add devicetree support for
-	Designware I2S
-Date: Wed, 3 Dec 2014 20:19:05 +0000
-Message-ID: <20141203201905.GO7712@sirena.org.uk>
-References: <547F3CAC.9050105@arm.com>
- <2041200.ZjakFFAZAU@wuerfel>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH v2] ASoC: rt5677: make volume TLV closer to
+	reality
+Date: Wed, 3 Dec 2014 13:04:56 -0800
+Message-ID: <CAEUnVG40K+mABKU8D34gMpU2j9n-vBv85VRUowNhEKWfQ7SWuw@mail.gmail.com>
+References: <1412892687-1264-1-git-send-email-dgreid@chromium.org>
+ <20141009231042.GC18557@sirena.org.uk>
+ <CAEUnVG72KL7iYGVgg8UMM6NyeSEe8vFADjFKzE4cLUUYwqTq5w@mail.gmail.com>
+ <20141013080110.GE27755@sirena.org.uk>
+ <CAOMFOmWJgceaLYbZ_yk_40eDrO7manNw9MEh0uDUH+_sW3GbCA@mail.gmail.com>
+ <20141203201353.GN7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4645114241075374645=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 31A222604D2
- for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 21:19:42 +0100 (CET)
-In-Reply-To: <2041200.ZjakFFAZAU@wuerfel>
+Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
+ [209.85.214.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17220260533
+ for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 22:05:19 +0100 (CET)
+Received: by mail-ob0-f169.google.com with SMTP id vb8so1775396obc.0
+ for <alsa-devel@alsa-project.org>; Wed, 03 Dec 2014 13:05:17 -0800 (PST)
+In-Reply-To: <20141203201353.GN7712@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +29,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, benzh@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Dec 3, 2014 at 12:13 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Dec 03, 2014 at 12:10:52PM -0800, Anatol Pomozov wrote:
+>
+>> If kernel solution is preferable are you going to accept Dylan's
+>> solution then? Or you think it should be implemented other way?
+>
+> To repeat my original review comment:
+>
+> | The usual thing to do with these is just to halve the resolution of the
+> | control by ignoring the low bit so that you get exact values, though for
+> | this device that does result in a relatively large step (step sizes like
+> | 0.125dB are more common).  I dunno, doesn't make much difference either
+> | way from my point of view.
 
---===============4645114241075374645==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pmewarBF2ZzreSyu"
-Content-Disposition: inline
-
-
---pmewarBF2ZzreSyu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Dec 03, 2014 at 09:13:18PM +0100, Arnd Bergmann wrote:
-
-> I don't think we even have to worry about the platform_data case here:
-> the only platform using this hardware in Linux is arm/mach-spear, and
-> it defines a device node with a binding that is similar to the one you
-> document here but that is not implemented in the driver.
-
-Not all the world uses DT, this is a DesignWare IP so it's likely to get
-deployed widely - potentially on PCI cards and things like that.
-
---pmewarBF2ZzreSyu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUf3A4AAoJECTWi3JdVIfQH4gH/R3yPL0BX9ABaSL9ZtwgNQXC
-PKfHlsCE3P24RrJ7Tzy42n8UkkZv1BWMq1wLGAp8ZQ1foep2BCdPlD+dcmeKMe/S
-/g/8X7KhJ8j/sT2Hr6z0M8oRQfuagV6/Y9rZZu3HrymOB/PiPWUGvq+rejcuHqGH
-tbtchpaAquuNW3QhPT42s1I6+iryoes83Kx7dB6pegQMJNUDrmaiFmrXQnb6x+NU
-98Q8YOOtoFq79+KqQfTVMK4Auq1bmkNouj07tCdKhNoCZcPNdxcXQNT4BviWtTAb
-pw04LM75ZoyoVgb5MPCEnMdlffP14PdJJ179/UdFy79qXhTydsZhnFFLTBzg7Ds=
-=Cm/k
------END PGP SIGNATURE-----
-
---pmewarBF2ZzreSyu--
-
---===============4645114241075374645==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4645114241075374645==--
+Sorry, My fault here.  I forgot to send a v2 after I got back from
+ELCE.  I'll try to dig up the machine I have that change on and get it
+sent out later in the week.
