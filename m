@@ -1,38 +1,129 @@
-From: Ploumistos Alexandros <ch02499@cc.uoi.gr>
-Subject: Re: Analog sound (ALC262) lost on linux (any distro
-	and kernel) on a dual boot system
-Date: Wed,  3 Dec 2014 19:59:17 +0200
-Message-ID: <1417629557.547f4f753ead8@webmail.uoi.gr>
-References: <1414065684.5448ee14f02dd@webmail.uoi.gr>
- <1414065856.5448eec062674@webmail.uoi.gr>
- <1416769883.5472315be7d15@webmail.uoi.gr>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] ALSA: ctxfi: Neaten get_daio_rsc
+Date: Wed, 03 Dec 2014 09:59:31 -0800
+Message-ID: <1417629571.2902.16.camel@perches.com>
+References: <5307CAA2.8060406@users.sourceforge.net>
+	 <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
+	 <530A086E.8010901@users.sourceforge.net>
+	 <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
+	 <530A72AA.3000601@users.sourceforge.net>
+	 <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
+	 <530B5FB6.6010207@users.sourceforge.net>
+	 <alpine.DEB.2.10.1402241710370.2074@hadrien>
+	 <530C5E18.1020800@users.sourceforge.net>
+	 <alpine.DEB.2.10.1402251014170.2080@hadrien>
+	 <530CD2C4.4050903@users.sourceforge.net>
+	 <alpine.DEB.2.10.1402251840450.7035@hadrien>
+	 <530CF8FF.8080600@users.sourceforge.net>
+	 <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
+	 <530DD06F.4090703@users.sourceforge.net>
+	 <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
+	 <5317A59D.4@users.sourceforge.net> <547E2612.6010304@users.sourceforge.net>
+	 <s5hvblt6xav.wl-tiwai@suse.de> <547EF64B.1080403@users.sourceforge.net>
+	 <s5h61dssy5n.wl-tiwai@suse.de> <1417626888.2902.13.camel@perches.com>
+	 <s5hh9xcr68v.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from phoenix.noc.uoi.gr (phoenix.noc.uoi.gr [195.130.120.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 01C2726049C
- for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2014 18:59:19 +0100 (CET)
-In-Reply-To: <1416769883.5472315be7d15@webmail.uoi.gr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ploumistos Alexandros <ch02499@cc.uoi.gr>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hh9xcr68v.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: SF Markus Elfring <elfring@users.sourceforge.net>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-After a six-hour session trying different kernel versions and all of the
-possible combinations in hda-jack-retask, I officially declare this as
-unfixable - at least by me. At least my friend has sound in windows. I told her
-to monitor this mailing list just in case someone else stumbles upon the same
-problem with ALC262.
+Move the pointer declarations into the blocks that use them.
+Neaten the kfree calls when the _init functions fail.
 
-If anyone fond of riddles find themselves with a lot of time in their hands, the
-description of the problem along with a ton of log files is here:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/thread.html#82749
+Trivially reduces object size (defconfig x86-64)
+
+$ size sound/pci/ctxfi/ctdaio.o.*
+   text	   data	    bss	    dec	    hex	filename
+   5287	    224	      0	   5511	   1587	sound/pci/ctxfi/ctdaio.o.new
+   5319	    224	      0	   5543	   15a7	sound/pci/ctxfi/ctdaio.o.old
+
+Signed-off-by: Joe Perches <joe@perches.com>
+Noticed-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+On Wed, 2014-12-03 at 18:30 +0100, Takashi Iwai wrote:
+> At Wed, 03 Dec 2014 09:14:48 -0800, Joe Perches wrote:
+> > On Wed, 2014-12-03 at 13:41 +0100, Takashi Iwai wrote:
+> > Takashi, what did you think of this?
+> > https://lkml.org/lkml/2014/12/2/771
+> > 
+> > Just unnecessary?
+> 
+> Well, this one looks more consistent.  But honestly speaking, it's
+> rather a matter of taste.  So I'm not so much inclined to merge the
+> stuff, too, sorry.  If it's proven to reduce the compiled size, etc,
+> I'll happily apply it, though.
+
+ sound/pci/ctxfi/ctdaio.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
+
+diff --git a/sound/pci/ctxfi/ctdaio.c b/sound/pci/ctxfi/ctdaio.c
+index c1c3f88..9b87dd2 100644
+--- a/sound/pci/ctxfi/ctdaio.c
++++ b/sound/pci/ctxfi/ctdaio.c
+@@ -528,8 +528,6 @@ static int get_daio_rsc(struct daio_mgr *mgr,
+ 			struct daio **rdaio)
+ {
+ 	int err;
+-	struct dai *dai = NULL;
+-	struct dao *dao = NULL;
+ 	unsigned long flags;
+ 
+ 	*rdaio = NULL;
+@@ -544,27 +542,30 @@ static int get_daio_rsc(struct daio_mgr *mgr,
+ 		return err;
+ 	}
+ 
++	err = -ENOMEM;
+ 	/* Allocate mem for daio resource */
+ 	if (desc->type <= DAIO_OUT_MAX) {
+-		dao = kzalloc(sizeof(*dao), GFP_KERNEL);
+-		if (!dao) {
+-			err = -ENOMEM;
++		struct dao *dao = kzalloc(sizeof(*dao), GFP_KERNEL);
++		if (!dao)
+ 			goto error;
+-		}
++
+ 		err = dao_rsc_init(dao, desc, mgr);
+-		if (err)
++		if (err) {
++			kfree(dao);
+ 			goto error;
++		}
+ 
+ 		*rdaio = &dao->daio;
+ 	} else {
+-		dai = kzalloc(sizeof(*dai), GFP_KERNEL);
+-		if (!dai) {
+-			err = -ENOMEM;
++		struct dai *dai = kzalloc(sizeof(*dai), GFP_KERNEL);
++		if (!dai)
+ 			goto error;
+-		}
++
+ 		err = dai_rsc_init(dai, desc, mgr);
+-		if (err)
++		if (err) {
++			kfree(dai);
+ 			goto error;
++		}
+ 
+ 		*rdaio = &dai->daio;
+ 	}
+@@ -575,11 +576,6 @@ static int get_daio_rsc(struct daio_mgr *mgr,
+ 	return 0;
+ 
+ error:
+-	if (dao)
+-		kfree(dao);
+-	else if (dai)
+-		kfree(dai);
+-
+ 	spin_lock_irqsave(&mgr->mgr_lock, flags);
+ 	daio_mgr_put_rsc(&mgr->mgr, desc->type);
+ 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
