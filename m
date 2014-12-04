@@ -1,51 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: dwc: Allocate resources with
- devm_ioremap_resource
-Date: Thu, 4 Dec 2014 10:42:36 +0000
-Message-ID: <20141204104236.GP7712@sirena.org.uk>
-References: <547F3C96.9070509@arm.com>
- <20141203182659.GG7712@sirena.org.uk>
- <548023BD.8020804@arm.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HgiFDCkkoIStfUUG"
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
+Date: Thu, 04 Dec 2014 10:48:19 +0000
+Message-ID: <20141204104819.25015C40992@trevor.secretlab.ca>
+References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
+	<2580837.YI0IvfXqRR@vostro.rjw.lan> <20141125202722.GA25261@sirena.org.uk>
+	<1926483.B4ieFnCBlM@vostro.rjw.lan>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <548023BD.8020804@arm.com>
+In-Reply-To: <1926483.B4ieFnCBlM@vostro.rjw.lan>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Jackson <Andrew.Jackson@arm.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Liviu Dudau <Liviu.Dudau@arm.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Mark Brown <broonie@kernel.org>
+Cc: Darren Hart <dvhart@linux.intel.com>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Al Stone <al.stone@linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 25 Nov 2014 22:40:53 +0100
+, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+ wrote:
+> On Tuesday, November 25, 2014 08:27:22 PM Mark Brown wrote:
+> > 
+> > --ReaqsoxgOBHFXBhH
+> > Content-Type: text/plain; charset=us-ascii
+> > Content-Disposition: inline
+> > 
+> > On Tue, Nov 25, 2014 at 09:31:27PM +0100, Rafael J. Wysocki wrote:
+> > > On Tuesday, November 25, 2014 11:07:06 AM Darren Hart wrote:
+> > 
+> > > > This is a current topic with the ACPI working group. We have the
+> > > > following document:
+> > 
+> > > > http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
+> > 
+> > > This hasn't been discussed a lot at the meetings I attended.
+> > 
+> > > The bindings management process is being set up within the UEFI Forum, but I'm
+> > > not sure if/how the existing DT bindings documented in the kernel tree are
+> > > going to be covered by it ATM.
+> > 
+> > Al Stone (CCed) pointed me at the following two documents:
+> > 
+> > http://www.uefi.org/sites/default/files/resources/web-page-v2.pdf
+> > http://www.uefi.org/sites/default/files/resources/nic-request-v2.pdf
+> > 
+> > (the first one being the actual process in so far as it exists).  The
+> > process appears to be to mail requests in a specific format to the ASWG
+> > chairperson (the address is apparently supposed to be awsg@uefi.org).
+> > It looks like all the properties are expected to end up in one or more
+> > PDF files like the second one.
+> > 
+> > My initial thought would be to require that we send any DT properties
+> > defined for devices with ACPI identifiers registered there and hope the
+> > volume doesn't DoS them.
+> 
+> We absolutely need to start registering the existing bindings in there, but
+> that needs to be rate limited somehow, because the process may not be very
+> efficient to start with.
 
---HgiFDCkkoIStfUUG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Beyond having the document point to the existing DT binding
+documentation, I think this is a non-starter. It won't be helpful for
+anyone to have two separate repositories containing the same bindings.
+They will get out of sync and we will have pain as a result.
 
-On Thu, Dec 04, 2014 at 09:05:01AM +0000, Andrew Jackson wrote:
+For existing bindings we need to have a way to share the documentation,
+and I don't think we can even talk about whether it makes sense to
+migrate the documetation to the UEFI managed repo before the UEFI process is
+fully flushed out.
 
-> Lars-Peter Clausen had some comments on this patch so I was intending
-> to resubmit it.  Would you prefer that I submit a patch to my
-> original?
-
-Incremental patches, same as is standard for upstream.  Please also fix
-your mail client to word wrap within paragraphs so your mails are
-readable.
-
---HgiFDCkkoIStfUUG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUgDqbAAoJECTWi3JdVIfQA2gH/0BVUEQuLWuUrvYgzcb3UMwr
-qCPMh0AxWYPfOYHNj3IQXoUh8SfrdqSYB5E2ahBqZrXC6AC8NglaK0c85V2imcCa
-yOJh7a5Hgj1wtOk3xDMm64wXuUs/CP/erkbYry2xNsstBFplUg3RPmrNKn8yEtqN
-/5XVVl1JA7BEdjK/fAFvjcKAZtA4gZqIDyPV56wvBFNC8CfWnpJ4YT4LFkImN8wK
-EeGZiAeh3xZPYq9r8EFfjdD1S+4iCyB9wttBshgKYKwezWaatgk4+HkxMdXpurs2
-S6gBp0JSzefjKUJoAXK1FlBf83cYiObQqn57CPyhel49dLzAWjts5+M5h+OmZQ4=
-=SzDV
------END PGP SIGNATURE-----
-
---HgiFDCkkoIStfUUG--
+g.
