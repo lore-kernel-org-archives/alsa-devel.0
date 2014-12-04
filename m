@@ -1,18 +1,18 @@
 From: Andrew Jackson <Andrew.Jackson@arm.com>
-Subject: Re: [PATCH 3/5] ASoC: dwc: Iterate over all channels
-Date: Thu, 04 Dec 2014 09:13:01 +0000
-Message-ID: <5480259D.6040106@arm.com>
-References: <547F3CA5.2010500@arm.com>	<20141203172928.GD7712@sirena.org.uk>
- <CAA7nrthuG_4837JArAmmEkcBqfqRRUM5rzyZ1UcH3TqhfF79bg@mail.gmail.com>
+Subject: Re: [PATCH 4/5] ASoC: dwc: Add devicetree support for
+ Designware I2S
+Date: Thu, 04 Dec 2014 09:42:13 +0000
+Message-ID: <54802C75.9060609@arm.com>
+References: <547F3CAC.9050105@arm.com> <20141203182351.GF7712@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
  [217.140.96.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C983260549
- for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 10:13:03 +0100 (CET)
-In-Reply-To: <CAA7nrthuG_4837JArAmmEkcBqfqRRUM5rzyZ1UcH3TqhfF79bg@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 950222606D3
+ for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 10:42:14 +0100 (CET)
+In-Reply-To: <20141203182351.GF7712@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: rajeev kumar <rajeevkumar.linux@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Liviu Dudau <Liviu.Dudau@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/04/14 06:55, rajeev kumar wrote:
-> On Wed, Dec 3, 2014 at 10:59 PM, Mark Brown <broonie@kernel.org> wrote:
->> On Wed, Dec 03, 2014 at 04:39:01PM +0000, Andrew Jackson wrote:
->>
->>> +     /* Iterate over set of channels - independently controlled.
->>> +      */
->>> +     do {
->>> +             if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->>> +                     i2s_write_reg(dev->i2s_base, TCR(ch_reg),
->>> +                                   xfer_resolution);
->>> +                     i2s_write_reg(dev->i2s_base, TFCR(ch_reg), 0x02);
->>> +                     irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
->>> +                     i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x30);
->>> +                     i2s_write_reg(dev->i2s_base, TER(ch_reg), 1);
->>> +             } else {
->>> +                     i2s_write_reg(dev->i2s_base, RCR(ch_reg),
->>> +                                   xfer_resolution);
->>> +                     i2s_write_reg(dev->i2s_base, RFCR(ch_reg), 0x07);
->>> +                     irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
->>> +                     i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x03);
->>> +                     i2s_write_reg(dev->i2s_base, RER(ch_reg), 1);
->>> +             }
->>> +     } while (ch_reg-- > 0);
->>
->> The normal way to write an iteration would be with a for loop - why are
->> we not doing that?
->>
->> Also I see that you've not sent these as a single thread - please use
->> --thread.
+On 12/03/14 18:23, Mark Brown wrote:
+> On Wed, Dec 03, 2014 at 04:39:08PM +0000, Andrew Jackson wrote:
 > 
-> designware i2s has individual register for channel support. It is like
-> TCR(0), TCR(1) and so on.. So a macro is defined to capture these
-> please check below #define
+>> Convert to driver to use either platform_data or device-tree for configuration
+>> of the device.  When using device-tree, the I2S block's configuration is read
+>> from the relevant registers: this reduces the amount of information required in
+>> the device tree.
 > 
-> #define TCR(x)      (0x40 * x + 0x034)
-> 
-> and the same is true for capture also. So there is no need for
-> iteration. Only writing to the particular register will do the work.
+> This really needs to be split into two or more patches, there's a whole
+> bunch of refactoring to support this DT stuff which should be separate
+> from the DT addition itself.  Right now it's hard to tell what each
+> individual bit of the code is supposed to be doing, the patch is far too
+> large and doing far too many individual things.
 
-However params_channels returns the number of channels that the device needs to configure.  So, for example, when there are four channels two sets of channel registers need to be programmed.
+I will have look at how it might be split.  The majority of the new code is in reading and processing the device's configuration: I didn't want to change the platform data handling to do that because some of the comments in the driver suggested that there were ST specific changes to the Designware IP.  I wasn't in a position to know whether, if I changed the configuration reading, the driver would still function correctly on the SPEAR platform.
 
+>> +	if (dev->using_pd) {
+>> +		ret = dev->i2s_clk_cfg(config);
+>> +		if (ret < 0) {
+>> +			dev_err(dev->dev, "runtime audio clk config fail\n");
+>> +			return ret;
+>> +		}
+>> +	} else {
+>> +		u32	bitclk;
+> 
+> Having this whole separate path for using platform data feels icky, we
+> don't want to have completely separate flows like this.  Checking for
+> the callbacks being there is probably fine but just having totally
+> separate code paths is a bit icky.
+
+I wasn't very happy either but making the test explicit seemed reasonable at the time.  I'll change the code to test for the presence of the callback instead.
 
 	Andrew
-> 
-> ~Rajeev
-> 
