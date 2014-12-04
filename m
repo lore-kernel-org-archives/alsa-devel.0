@@ -1,28 +1,13 @@
 From: Wolfram Sang <wsa@the-dreams.de>
-Subject: [RFC 1/2] macintosh: therm_windtunnel: drop using
-	attach adapter
-Date: Thu,  4 Dec 2014 17:41:52 +0100
-Message-ID: <1417711313-7257-2-git-send-email-wsa@the-dreams.de>
+Subject: [RFC 2/2] sound: ppc: keywest: drop using attach adapter
+Date: Thu,  4 Dec 2014 17:41:53 +0100
+Message-ID: <1417711313-7257-3-git-send-email-wsa@the-dreams.de>
 References: <1417711313-7257-1-git-send-email-wsa@the-dreams.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pokefinder.org (sauhun.de [89.238.76.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 75CE7264ED4
- for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 17:42:16 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1417711313-7257-1-git-send-email-wsa@the-dreams.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linuxppc-dev@ozlabs.org
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Wolfram Sang <wsa@the-dreams.de>
 List-Id: alsa-devel@alsa-project.org
 
 As we now have deferred probing, we can use a custom mechanism and
@@ -30,51 +15,63 @@ finally get rid of the legacy interface from the i2c core.
 
 Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
 ---
- drivers/macintosh/therm_windtunnel.c | 25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ sound/ppc/keywest.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/macintosh/therm_windtunnel.c b/drivers/macintosh/therm_windtunnel.c
-index 3b4a157714b1..9de83cdd0bca 100644
---- a/drivers/macintosh/therm_windtunnel.c
-+++ b/drivers/macintosh/therm_windtunnel.c
-@@ -431,7 +431,6 @@ static struct i2c_driver g4fan_driver = {
- 	.driver = {
- 		.name	= "therm_windtunnel",
- 	},
--	.attach_adapter = do_attach,
- 	.probe		= do_probe,
- 	.remove		= do_remove,
- 	.id_table	= therm_windtunnel_id,
-@@ -444,7 +443,29 @@ static struct i2c_driver g4fan_driver = {
+diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
+index 0d1c27e911b8..a957f32368fa 100644
+--- a/sound/ppc/keywest.c
++++ b/sound/ppc/keywest.c
+@@ -52,7 +52,7 @@ static int keywest_attach_adapter(struct i2c_adapter *adapter)
+ 		return -EINVAL;
  
- static int therm_of_probe(struct platform_device *dev)
+ 	if (strncmp(adapter->name, "mac-io", 6))
+-		return 0; /* ignored */
++		return -EINVAL; /* ignored */
+ 
+ 	memset(&info, 0, sizeof(struct i2c_board_info));
+ 	strlcpy(info.type, "keywest", I2C_NAME_SIZE);
+@@ -100,7 +100,6 @@ static struct i2c_driver keywest_driver = {
+ 	.driver = {
+ 		.name = "PMac Keywest Audio",
+ 	},
+-	.attach_adapter = keywest_attach_adapter,
+ 	.probe = keywest_probe,
+ 	.remove = keywest_remove,
+ 	.id_table = keywest_i2c_id,
+@@ -132,16 +131,32 @@ int snd_pmac_tumbler_post_init(void)
+ /* exported */
+ int snd_pmac_keywest_init(struct pmac_keywest *i2c)
  {
--	return i2c_add_driver( &g4fan_driver );
+-	int err;
 +	struct i2c_adapter *adap;
-+	int ret, i = 0;
-+
++	int err, i = 0;
+ 
+ 	if (keywest_ctx)
+ 		return -EBUSY;
+ 
 +	adap = i2c_get_adapter(0);
 +	if (!adap)
 +		return -EPROBE_DEFER;
 +
-+	ret = i2c_add_driver(&g4fan_driver);
-+	if (ret) {
+ 	keywest_ctx = i2c;
+ 
+ 	if ((err = i2c_add_driver(&keywest_driver))) {
+ 		snd_printk(KERN_ERR "cannot register keywest i2c driver\n");
 +		i2c_put_adapter(adap);
-+		return ret;
-+	}
+ 		return err;
+ 	}
 +
 +	/* We assume Macs have consecutive I2C bus numbers starting at 0 */
 +	while (adap) {
-+		do_attach(adap);
-+		if (x.running)
++		err = keywest_attach_adapter(adap);
++		if (!err)
 +			break;
 +		i2c_put_adapter(adap);
 +		adap = i2c_get_adapter(++i);
 +	}
 +
-+	return 0;
+ 	return 0;
  }
- 
- static int
 -- 
 2.1.3
