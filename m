@@ -1,32 +1,18 @@
 From: rajeev kumar <rajeevkumar.linux@gmail.com>
-Subject: Re: [PATCH 4/5] ASoC: dwc: Add devicetree support for
-	Designware I2S
-Date: Thu, 4 Dec 2014 12:32:47 +0530
-Message-ID: <CAA7nrtjRX+pkg7NHY_wuHYn534_ddfj5r6EGOM4NKTD2vJW0DQ@mail.gmail.com>
+Subject: Re: [PATCH 4/5] ASoC: dwc: Add devicetree support for Designware I2S
+Date: Thu, 4 Dec 2014 13:13:48 +0530
+Message-ID: <CAA7nrtiQzRhRcrzKw-kR_-oT6=WuTD-OTshKK7xE9mAGxQG3gw@mail.gmail.com>
 References: <547F3CAC.9050105@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f171.google.com (mail-ig0-f171.google.com
- [209.85.213.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EF9A260470
- for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 08:02:49 +0100 (CET)
-Received: by mail-ig0-f171.google.com with SMTP id z20so14161543igj.4
- for <alsa-devel@alsa-project.org>; Wed, 03 Dec 2014 23:02:48 -0800 (PST)
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <547F3CAC.9050105@arm.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Andrew Jackson <Andrew.Jackson@arm.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Liviu Dudau <Liviu.Dudau@arm.com>
 List-Id: alsa-devel@alsa-project.org
+
+Sorry for the last blank mail.
 
 On Wed, Dec 3, 2014 at 10:09 PM, Andrew Jackson <Andrew.Jackson@arm.com> wrote:
 > Convert to driver to use either platform_data or device-tree for configuration
@@ -169,6 +155,12 @@ On Wed, Dec 3, 2014 at 10:09 PM, Andrew Jackson <Andrew.Jackson@arm.com> wrote:
 > -       /* Iterate over set of channels - independently controlled.
 > -        */
 > +       /* Iterate over set of channels - independently controlled. */
+
+I dont think so this iteration is required as there are independent
+channels available.
+
+I don't have the h/w to test this patch. Can anyone test this ?
+
 >         do {
 >                 if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 >                         i2s_write_reg(dev->i2s_base, TCR(ch_reg),
@@ -238,6 +230,9 @@ On Wed, Dec 3, 2014 at 10:09 PM, Andrew Jackson <Andrew.Jackson@arm.com> wrote:
 > -               return -EINVAL;
 > -       }
 > -
+
+This check is required..
+
 >         dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
 >         if (!dev) {
 >                 dev_warn(&pdev->dev, "kzalloc fail\n");
@@ -252,6 +247,14 @@ On Wed, Dec 3, 2014 at 10:09 PM, Andrew Jackson <Andrew.Jackson@arm.com> wrote:
 > +               dev->using_pd = true;
 > +               cap = pdata->cap;
 > +               dev->capability = cap;
+
+We should take take capability from DT, as
+
+   if (of_get_property(np, "play", NULL))
+        cap |= DWC_I2S_PLAY;
+    if (of_get_property(np, "record", NULL))
+        cap |= DWC_I2S_RECORD;
+
 > +               dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
 > +               if (!dev->i2s_clk_cfg) {
 > +                       dev_err(&pdev->dev, "no clock device\n");
@@ -262,6 +265,9 @@ On Wed, Dec 3, 2014 at 10:09 PM, Andrew Jackson <Andrew.Jackson@arm.com> wrote:
 > +               /* Set DMA slaves info */
 > +
 > +               dev->play_dma_data.pd.data = pdata->play_dma_data;
+
+As pdata null check is removed it may create issue here !
+
 > +               dev->capture_dma_data.pd.data = pdata->capture_dma_data;
 > +               dev->play_dma_data.pd.addr = res->start + I2S_TXDMA;
 > +               dev->capture_dma_data.pd.addr = res->start + I2S_RXDMA;
@@ -323,6 +329,17 @@ On Wed, Dec 3, 2014 at 10:09 PM, Andrew Jackson <Andrew.Jackson@arm.com> wrote:
 > +                * Code presumes all channels are configured with the same
 > +                * word size.
 > +                */
+
+But why all channels ? You should configure only those channel which
+are required. The number of channel you can pass from either pdata or
+DT.
+This is also not required as before play start you are going to enable
+only those channel which are required and disable others.
+
+Best Regards
+Rajeev
+
+
 > +               if (COMP1_TX_ENABLED(comp1)) {
 > +                       dev_dbg(&pdev->dev, "playback capable\n");
 > +
