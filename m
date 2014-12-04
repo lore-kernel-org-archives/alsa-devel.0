@@ -1,153 +1,59 @@
-From: Zidan Wang <b50113@freescale.com>
-Subject: [alsa-devel][PATCH v3] ASoC: wm8960: Let wm8960 codec driver manage its own MCLK
-Date: Thu, 4 Dec 2014 20:41:19 +0800
-Message-ID: <1417696879-15402-1-git-send-email-b50113@freescale.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] sound/soc/adi/axi-spdif.c: Support programmable master
+ clock
+Date: Thu, 04 Dec 2014 13:45:49 +0100
+Message-ID: <5480577D.4010106@metafoo.de>
+References: <1417675940-3754-1-git-send-email-mike.looijmans@topic.nl>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1417675940-3754-1-git-send-email-mike.looijmans@topic.nl>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <b50113@freescale.com>
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When we want to use wm8960 codec, we should enable its MCLK in machine
-driver. It's reasonable for wm8960 codec driver to manage its own MCLK to
-save power.
+On 12/04/2014 07:52 AM, Mike Looijmans wrote:
+> If the master clock supports programmable rates, program it to generate
+> the desired frequency. Only apply constraints when the clock is fixed.
+> This allows proper clock generation for both 44100 and 48000 Hz based
+> sampling rates if the platform supports it.
+>
+> The clock frequency must be set before enabling it. Enabling the clock
+> was done in "startup", but that occurs before "hw_params" where the rate
+> is known. Move the clock start to the hw_params routine, and keep track
+> of whether the clock has been started, because shutdown may be called
+> without having called hw_params first.
 
-If platform data is not supplied, we will get MCLK from device tree and check
-the return code to handle probe deferral.
+Usually that shouldn't be a problem. If your clock chip requires it to be 
+disabled in order to be reprogrammed than the CLK_SET_RATE_GATE flag should 
+be set. This will tell the core to disable the clock before changing it.
 
-Enable runtime power management, and auto enable/disable MCLK in pm_runtime
-resume and suspend. When wm8960 codec is being used, it will triger resume()
-to enable MCLK. When codec is not being used, it will triger suspend() to
-disable MCLK.
+[...]
+>   static const struct snd_soc_dai_ops axi_spdif_dai_ops = {
+> @@ -216,14 +227,17 @@ static int axi_spdif_probe(struct platform_device *pdev)
+>   	spdif->dma_data.addr_width = 4;
+>   	spdif->dma_data.maxburst = 1;
+>
+> -	spdif->ratnum.num = clk_get_rate(spdif->clk_ref) / 128;
+> -	spdif->ratnum.den_step = 1;
+> -	spdif->ratnum.den_min = 1;
+> -	spdif->ratnum.den_max = 64;
+> -
+> -	spdif->rate_constraints.rats = &spdif->ratnum;
+> -	spdif->rate_constraints.nrats = 1;
+> +	/* Determine if the clock rate is fixed. If it cannot change frequency,
+> +	 * it returns an error here. */
+> +	if (clk_round_rate(spdif->clk_ref, 128 * 44100) < 0) {
 
-Signed-off-by: Zidan Wang <b50113@freescale.com>
----
- include/sound/wm8960.h    |  1 +
- sound/soc/codecs/wm8960.c | 56 ++++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 54 insertions(+), 3 deletions(-)
+I don't think this works. For a fixed clock clk_round_rate() will return the 
+fixed rate rather than an error. I tried the patch and even though I have a 
+fixed clock the constraints are no longer set.
 
-diff --git a/include/sound/wm8960.h b/include/sound/wm8960.h
-index e8ce8ee..d7e84ed 100644
---- a/include/sound/wm8960.h
-+++ b/include/sound/wm8960.h
-@@ -16,6 +16,7 @@
- #define WM8960_DRES_MAX  3
- 
- struct wm8960_data {
-+	struct clk *mclk;
- 	bool capless;  /* Headphone outputs configured in capless mode */
- 
- 	bool shared_lrclk;  /* DAC and ADC LRCLKs are wired together */
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 031a1ae..ea5f0b7 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -15,6 +15,8 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
-+#include <linux/clk.h>
-+#include <linux/pm_runtime.h>
- #include <linux/i2c.h>
- #include <linux/slab.h>
- #include <sound/core.h>
-@@ -978,7 +980,7 @@ static const struct regmap_config wm8960_regmap = {
- 	.volatile_reg = wm8960_volatile,
- };
- 
--static void wm8960_set_pdata_from_of(struct i2c_client *i2c,
-+static int wm8960_set_pdata_from_of(struct i2c_client *i2c,
- 				struct wm8960_data *pdata)
- {
- 	const struct device_node *np = i2c->dev.of_node;
-@@ -988,6 +990,15 @@ static void wm8960_set_pdata_from_of(struct i2c_client *i2c,
- 
- 	if (of_property_read_bool(np, "wlf,shared-lrclk"))
- 		pdata->shared_lrclk = true;
-+
-+	pdata->mclk = devm_clk_get(&i2c->dev, NULL);
-+
-+	if (IS_ERR(pdata->mclk)) {
-+		if (PTR_ERR(pdata->mclk) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+	}
-+
-+	return 0;
- }
- 
- static int wm8960_i2c_probe(struct i2c_client *i2c,
-@@ -1008,8 +1019,11 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
- 
- 	if (pdata)
- 		memcpy(&wm8960->pdata, pdata, sizeof(struct wm8960_data));
--	else if (i2c->dev.of_node)
--		wm8960_set_pdata_from_of(i2c, &wm8960->pdata);
-+	else if (i2c->dev.of_node) {
-+		ret = wm8960_set_pdata_from_of(i2c, &wm8960->pdata);
-+		if (ret != 0)
-+			return ret;
-+	}
- 
- 	ret = wm8960_reset(wm8960->regmap);
- 	if (ret != 0) {
-@@ -1041,6 +1055,9 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm8960);
- 
-+	pm_runtime_enable(&i2c->dev);
-+	pm_request_idle(&i2c->dev);
-+
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm8960, &wm8960_dai, 1);
- 
-@@ -1053,6 +1070,38 @@ static int wm8960_i2c_remove(struct i2c_client *client)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_RUNTIME
-+static int wm8960_runtime_resume(struct device *dev)
-+{
-+	struct wm8960_priv *wm8960 = dev_get_drvdata(dev);
-+	int ret;
-+
-+	if (!IS_ERR(wm8960->pdata.mclk)) {
-+		ret = clk_prepare_enable(wm8960->pdata.mclk);
-+		if (ret) {
-+			dev_err(dev, "Failed to enable MCLK: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int wm8960_runtime_suspend(struct device *dev)
-+{
-+	struct wm8960_priv *wm8960 = dev_get_drvdata(dev);
-+
-+	if (!IS_ERR(wm8960->pdata.mclk))
-+		clk_disable_unprepare(wm8960->pdata.mclk);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops wm8960_pm = {
-+	SET_RUNTIME_PM_OPS(wm8960_runtime_suspend, wm8960_runtime_resume, NULL)
-+};
-+
- static const struct i2c_device_id wm8960_i2c_id[] = {
- 	{ "wm8960", 0 },
- 	{ }
-@@ -1070,6 +1119,7 @@ static struct i2c_driver wm8960_i2c_driver = {
- 		.name = "wm8960",
- 		.owner = THIS_MODULE,
- 		.of_match_table = wm8960_of_match,
-+		.pm = &wm8960_pm,
- 	},
- 	.probe =    wm8960_i2c_probe,
- 	.remove =   wm8960_i2c_remove,
--- 
-1.9.1
+There is unfortunately no good way to enumerate which frequencies are 
+supported by a clock other than just calling round_rate for all possible rates.
+
+I think the best way to implement this for now is to try e.g. 32000 * 128, 
+44100 * 128, 48000 * 128 and then check if clk_round_rate returns the 
+expected rate and if it does set up a rate constraint for that rate.
