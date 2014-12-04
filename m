@@ -1,38 +1,42 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: DMA buffer alignment
-Date: Thu, 04 Dec 2014 17:20:51 +0100
-Message-ID: <548089E3.4060105@ladisch.de>
-References: <CAOQ7t2b5Rr6OjpQQ8uvwQ+7O2RL=tTKyjWG1HSJuOc3X4-NDag@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EEB30262634
- for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 17:21:18 +0100 (CET)
-In-Reply-To: <CAOQ7t2b5Rr6OjpQQ8uvwQ+7O2RL=tTKyjWG1HSJuOc3X4-NDag@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Carlo Caione <carlo@caione.org>, alsa-devel@alsa-project.org
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: [RFC 0/2] get rid of remaining users of attach_adapter
+Date: Thu,  4 Dec 2014 17:41:51 +0100
+Message-ID: <1417711313-7257-1-git-send-email-wsa@the-dreams.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linuxppc-dev@ozlabs.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Wolfram Sang <wsa@the-dreams.de>
 List-Id: alsa-devel@alsa-project.org
 
-Carlo Caione wrote:
-> Several user-space programs (like aplay) work well with my hw, since
-> the buffer sent from the user-space is always (padded) of period-size
-> bytes, that is aligned to my 64 bytes boundary. Others (like
-> speaker-test) are not working because sometimes they snd_pcm_writei()
-> a buffer that is not multiple of 64 bytes.
+The attach_adapter mechanism of the I2C framework is deprecated for years.
+There are two users left, drivers for old Macintosh computers. I recently got
+the idea of replacing this mechanism with a custom one with the help of
+deferred probing. Because I don't have the hardware, I worked on a seperate
+branch where I modified the windtunnel driver to be runnable on my Renesas
+Lager board (ARM). I first verified that the attach_adapter method was used,
+then the driver rightfully failed on detecting the i2c clients. Using my custom
+mechanism, the same happens: all busses get scanned, then the clients cannot be
+detected. Since I didn't change the actual detection code, I assume that it
+should be working on those Macintosh devices as well. The keywest driver is
+only compile-tested. That being said, I'd be more than happy, if we could find
+someone willing to test these patches. If they could be applied, we can
+_finally_ get rid of this legacy mechanism and clean up the i2c core.
 
-When a program writes two chunks of 32 bytes each, the final contents of
-the memory are the same.  So what exactly is the problem?
+The branch I used for ARM compilation is here:
 
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/attach_adapter_removal_with_arm_compile-experimental
 
-Regards,
-Clemens
+Thanks,
+
+   Wolfram
+
+Wolfram Sang (2):
+  macintosh: therm_windtunnel: drop using attach adapter
+  sound: ppc: keywest: drop using attach adapter
+
+ drivers/macintosh/therm_windtunnel.c | 25 +++++++++++++++++++++++--
+ sound/ppc/keywest.c                  | 21 ++++++++++++++++++---
+ 2 files changed, 41 insertions(+), 5 deletions(-)
+
+-- 
+2.1.3
