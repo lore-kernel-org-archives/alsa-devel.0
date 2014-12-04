@@ -1,67 +1,64 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI device probing
-Date: Thu, 04 Dec 2014 10:48:19 +0000
-Message-ID: <20141204104819.25015C40992@trevor.secretlab.ca>
-References: <1416034608-24238-1-git-send-email-benzh@chromium.org>
-	<2580837.YI0IvfXqRR@vostro.rjw.lan> <20141125202722.GA25261@sirena.org.uk>
-	<1926483.B4ieFnCBlM@vostro.rjw.lan>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/5] ASoC: dwc: Don't allow negative use counts
+Date: Thu, 4 Dec 2014 10:51:21 +0000
+Message-ID: <20141204105121.GQ7712@sirena.org.uk>
+References: <547F3C9F.8080102@arm.com>
+ <20141203172526.GC7712@sirena.org.uk>
+ <548022B3.8050105@arm.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LAiFTeWIOasiK8aw"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1926483.B4ieFnCBlM@vostro.rjw.lan>
+Content-Disposition: inline
+In-Reply-To: <548022B3.8050105@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Mark Brown <broonie@kernel.org>
-Cc: Darren Hart <dvhart@linux.intel.com>, Ben Zhang <benzh@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, flove@realtek.com, Al Stone <al.stone@linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Andrew Jackson <Andrew.Jackson@arm.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Liviu Dudau <Liviu.Dudau@arm.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 25 Nov 2014 22:40:53 +0100
-, "Rafael J. Wysocki" <rjw@rjwysocki.net>
- wrote:
-> On Tuesday, November 25, 2014 08:27:22 PM Mark Brown wrote:
-> > 
-> > --ReaqsoxgOBHFXBhH
-> > Content-Type: text/plain; charset=us-ascii
-> > Content-Disposition: inline
-> > 
-> > On Tue, Nov 25, 2014 at 09:31:27PM +0100, Rafael J. Wysocki wrote:
-> > > On Tuesday, November 25, 2014 11:07:06 AM Darren Hart wrote:
-> > 
-> > > > This is a current topic with the ACPI working group. We have the
-> > > > following document:
-> > 
-> > > > http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
-> > 
-> > > This hasn't been discussed a lot at the meetings I attended.
-> > 
-> > > The bindings management process is being set up within the UEFI Forum, but I'm
-> > > not sure if/how the existing DT bindings documented in the kernel tree are
-> > > going to be covered by it ATM.
-> > 
-> > Al Stone (CCed) pointed me at the following two documents:
-> > 
-> > http://www.uefi.org/sites/default/files/resources/web-page-v2.pdf
-> > http://www.uefi.org/sites/default/files/resources/nic-request-v2.pdf
-> > 
-> > (the first one being the actual process in so far as it exists).  The
-> > process appears to be to mail requests in a specific format to the ASWG
-> > chairperson (the address is apparently supposed to be awsg@uefi.org).
-> > It looks like all the properties are expected to end up in one or more
-> > PDF files like the second one.
-> > 
-> > My initial thought would be to require that we send any DT properties
-> > defined for devices with ACPI identifiers registered there and hope the
-> > volume doesn't DoS them.
-> 
-> We absolutely need to start registering the existing bindings in there, but
-> that needs to be rate limited somehow, because the process may not be very
-> efficient to start with.
 
-Beyond having the document point to the existing DT binding
-documentation, I think this is a non-starter. It won't be helpful for
-anyone to have two separate repositories containing the same bindings.
-They will get out of sync and we will have pain as a result.
+--LAiFTeWIOasiK8aw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-For existing bindings we need to have a way to share the documentation,
-and I don't think we can even talk about whether it makes sense to
-migrate the documetation to the UEFI managed repo before the UEFI process is
-fully flushed out.
+On Thu, Dec 04, 2014 at 09:00:35AM +0000, Andrew Jackson wrote:
+> On 12/03/14 17:25, Mark Brown wrote:
+> > On Wed, Dec 03, 2014 at 04:38:55PM +0000, Andrew Jackson wrote:
 
-g.
+> >>  	case SNDRV_PCM_TRIGGER_STOP:
+> >>  	case SNDRV_PCM_TRIGGER_SUSPEND:
+> >>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> >> -		dev->active--;
+> >> +		if (dev->active > 0)
+> >> +			dev->active--;
+
+> > How is this triggering - this sounds like you're papering over some
+> > other bug somewhere?
+
+> When I looked at the code paths I couldn't convince myself that STOP
+> wouldn't be called more than once.  Then actuve would be negative and
+> the device might not be restartable.  I didn't have a problem per se,
+> it was just that it seemed to be something of a loophole.
+
+If you're just adding the check on the off chance that it might fire you
+need to add a warning message as well - what your change does is make
+the code look like it's supposed to have broken reference counting since
+it has a check to silently fix up and ignore problems.
+
+--LAiFTeWIOasiK8aw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUgDyoAAoJECTWi3JdVIfQfc0H/0H5QpvvaNkaDK5Oq85Z9OMi
+C6DtQwIUqGy7NpjNCW/Poo0+08qVOu/tfWPfpOogtI1nX7R/aUnHID/YzaMdtyNb
+nUpwEQD1Z3UOjrQ38R/otGAOQSCnkeohZjMnrcjsIgFN8WuLLeDadMBWIBSgT72d
+QNVKvdLMSczCwYfLFkWh35ixB6YUc9+Th3Ypw8pMD8agwyYVF24C9ZBdop2z4cLY
+VguuB8bFJ+WTfvMeEt4EE5o0QgmafqjUBsFxBS3Y8zHiEkoKjhE0GUALFniSa1iV
+ftkOate+mJE8FQX7rFTNFwHdMKZuLBkAS7HeB7CjeEQaqqlg7KR/etFDYBtc+rU=
+=jXAI
+-----END PGP SIGNATURE-----
+
+--LAiFTeWIOasiK8aw--
