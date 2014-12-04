@@ -1,35 +1,77 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 4/5] ASoC: dwc: Add devicetree support for Designware I2S
-Date: Thu, 04 Dec 2014 12:17:15 +0100
-Message-ID: <2090131.rL6S1lx8Ky@wuerfel>
-References: <547F3CAC.9050105@arm.com> <2240364.fL8B0EDbFB@wuerfel> <20141204110746.GR7712@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: wm8960: Let wm8960 codec driver
+ manage its own MCLK
+Date: Thu, 4 Dec 2014 11:25:12 +0000
+Message-ID: <20141204112512.GS7712@sirena.org.uk>
+References: <1417681425-4360-1-git-send-email-b50113@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141204110746.GR7712@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rajeev Kumar <rajeevkumar.linux@gmail.com>
+Content-Type: multipart/mixed; boundary="===============7681136663148844804=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F8422614DA
+ for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 12:25:36 +0100 (CET)
+In-Reply-To: <1417681425-4360-1-git-send-email-b50113@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zidan Wang <b50113@freescale.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Li.Xiubo@freescale.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 04 December 2014 11:07:46 Mark Brown wrote:
-> On Thu, Dec 04, 2014 at 10:55:55AM +0100, Arnd Bergmann wrote:
-> > On Wednesday 03 December 2014 20:19:05 Mark Brown wrote:
-> 
-> > > Not all the world uses DT, this is a DesignWare IP so it's likely to get
-> > > deployed widely - potentially on PCI cards and things like that.
-> 
-> > It's not really new though, and we are only seeing the second user.
-> > Maybe this one just isn't as common as a lot of the other designware IP?
-> 
-> It's relatively common with newer companies - it's like UARTs, any
-> company that's been around for a long time will have a homebrew IP
-> already but places that don't (or get fed up with their existing IP)
-> will tend to buy something in.
 
-I see, but are any of the newer designs going to use platform_data?
-My general feeling was that the only places that still depend on that
-are legacy platforms and architectures.
+--===============7681136663148844804==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6jbJE0PFwegn7S6c"
+Content-Disposition: inline
 
-	Arnd
+
+--6jbJE0PFwegn7S6c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Dec 04, 2014 at 04:23:45PM +0800, Zidan Wang wrote:
+
+> If we use PLL to generate sysclk, wm8960_set_dai_pll() will enable PLL. But
+> PLL doesn't power down after using codec. So power down PLL in suspend().
+
+That would be a bug in the machine driver, the machine driver should be
+disabling the PLL when it suspends since the startup and shutdown of the
+PLL need to be coordinated with the input clocks.  Besides, if we were
+doing this in the CODEC driver then as I said last time the PLL needs to
+be restored on resume since the machine driver should be able to expect
+that settings it has made are preserved (eg, if it sets things up on
+init).
+
+--6jbJE0PFwegn7S6c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUgESXAAoJECTWi3JdVIfQw9MH/A0OeNQyJsQ7PrtyEcAxizRt
+A8+y/S4gjduYNIOfGTaNfz+U7UVnU0YI2EaCTlJ0JzVetMcADfspe3/LYs53s+PR
+K/eJwDOQX54FpDXR8oEOCdOgMkSYl4NunlaP+Yhc0FdjX5WmpawS6D0R3IZIeqdC
+tFXxvrC1U41FVcVkzbSapbX1oMq0Kautlm3Yy5jZcAJoeRCIaOMolJ2RgYNYAITu
+Q4PBHKnYvs/GAsZD20cIsbyHV+bggwN2T0YXXKajknH0GH3Zd743LALAqGkpYz8k
+LZ2D16ZmH0xrJugTUM7fEjXH27cioJ9m3jIo1x2ltXXcZbHfit/IRSnlNYZvbRg=
+=wYSk
+-----END PGP SIGNATURE-----
+
+--6jbJE0PFwegn7S6c--
+
+--===============7681136663148844804==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7681136663148844804==--
