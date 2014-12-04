@@ -1,59 +1,38 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Nodes, Widgets,
-	ELD and Digital Surround 5.1 (HDMI) Output?
-Date: Thu, 4 Dec 2014 20:08:23 +0800
-Message-ID: <CAN8cciZSkyh5V7_dppmzt5Fs-8nJCpkcGD4zurqn94=XJymZ6A@mail.gmail.com>
-References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
- <547EBCFF.5030204@canonical.com> <547EC2BF.3080601@gmail.com>
- <46543BFB759444F4B56F5153F4727DEE@Lyra>
+From: Zidan Wang <B50113@freescale.com>
+Subject: RE: [alsa-devel][PATCH v2] ASoC: wm8960: Let wm8960 codec driver
+ manage its own MCLK
+Date: Thu, 4 Dec 2014 12:34:20 +0000
+Message-ID: <BY1PR0301MB1253AD2792540463CD7D70F68D780@BY1PR0301MB1253.namprd03.prod.outlook.com>
+References: <1417681425-4360-1-git-send-email-b50113@freescale.com>
+ <20141204112512.GS7712@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
- [209.85.216.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 9963C260538
- for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 13:08:24 +0100 (CET)
-Received: by mail-qa0-f43.google.com with SMTP id bm13so11625012qab.2
- for <alsa-devel@alsa-project.org>; Thu, 04 Dec 2014 04:08:23 -0800 (PST)
-In-Reply-To: <46543BFB759444F4B56F5153F4727DEE@Lyra>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bencoxdev@gmail.com
-Cc: ALSA Mailing list <alsa-devel@alsa-project.org>, "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141204112512.GS7712@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "lars@metafoo.de" <lars@metafoo.de>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Hi Guys,
->     Thank you for your input it's much appreciated.
->
->     I have now produced the pulse audio log as suggested and it appears
-that
-> when an attempt to open the Digital Surround 5.1 device, it fails with a
-> "No such file or directory" error. Here is a snippet of the log showing
-the
-> error.
->
-> (   0.456|   0.000) D: [pulseaudio] alsa-mixer.c: Looking at profile
-output:iec958-ac3-surround-51
-> (   0.456|   0.000) D: [pulseaudio] alsa-mixer.c: Checking for playback
-on Digital Surround 5.1 (IEC958/AC3) (iec958-ac3-surround-51)
-> (   0.456|   0.000) D: [pulseaudio] alsa-util.c: Trying a52:1 with
-SND_PCM_NO_AUTO_FORMAT ...
-> (   0.456|   0.000) I: [pulseaudio] (alsa-lib)pcm.c: Unknown PCM a52:1
-> (   0.456|   0.000) I: [pulseaudio] alsa-util.c: Error opening PCM device
-a52:1: No such file or directory
->
-> So I guess the next question is what is responsible for producing the
-> required device?
->
+Thanks for your reply. 
+You are right, the machine driver should disable the PLL.
 
-http://git.alsa-project.org/?p=alsa-plugins.git;a=blob;f=doc/a52.txt;hb=HEAD
 
-card number and channels are  hardcoded
+Best Regards,
+Zidan
+
+-----Original Message-----
+From: Mark Brown [mailto:broonie@kernel.org] 
+Sent: Thursday, December 04, 2014 7:25 PM
+To: Wang Zidan-B50113
+Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.de; lars@metafoo.de; ckeepax@opensource.wolfsonmicro.com; Xiubo Li-B47053; patches@opensource.wolfsonmicro.com; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel][PATCH v2] ASoC: wm8960: Let wm8960 codec driver manage its own MCLK
+
+On Thu, Dec 04, 2014 at 04:23:45PM +0800, Zidan Wang wrote:
+
+> If we use PLL to generate sysclk, wm8960_set_dai_pll() will enable 
+> PLL. But PLL doesn't power down after using codec. So power down PLL in suspend().
+
+That would be a bug in the machine driver, the machine driver should be disabling the PLL when it suspends since the startup and shutdown of the PLL need to be coordinated with the input clocks.  Besides, if we were doing this in the CODEC driver then as I said last time the PLL needs to be restored on resume since the machine driver should be able to expect that settings it has made are preserved (eg, if it sets things up on init).
