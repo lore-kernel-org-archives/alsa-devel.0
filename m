@@ -1,159 +1,73 @@
-From: Zidan Wang <b50113@freescale.com>
-Subject: [alsa-devel][PATCH v2] ASoC: wm8960: Let wm8960 codec driver manage its own MCLK
-Date: Thu, 4 Dec 2014 16:23:45 +0800
-Message-ID: <1417681425-4360-1-git-send-email-b50113@freescale.com>
+From: Andrew Jackson <Andrew.Jackson@arm.com>
+Subject: Re: [PATCH 1/5] ASoC: dwc: Allocate resources with
+	devm_ioremap_resource
+Date: Thu, 04 Dec 2014 08:57:06 +0000
+Message-ID: <548021E2.2080506@arm.com>
+References: <547F3C96.9070509@arm.com> <547F3DD0.10405@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <b50113@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
+ [217.140.96.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A6C0260525
+ for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 09:57:09 +0100 (CET)
+In-Reply-To: <547F3DD0.10405@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-When we want to use wm8960 codec, we should enable its MCLK in machine
-driver. It's reasonable for wm8960 codec driver to manage its own MCLK to
-save power.
+On 12/03/14 16:44, Lars-Peter Clausen wrote:
+> On 12/03/2014 05:38 PM, Andrew Jackson wrote:
+> [,,,[
+>> +	dw_i2s_dai = devm_kzalloc(&pdev->dev, sizeof(*dw_i2s_dai), GFP_KERNEL);
+>> +	if (!dw_i2s_dai) {
+>> +		dev_err(&pdev->dev, "mem allocation failed for dai driver\n");
+> 
+> All the memory alloc functions already print a error message.
 
-If platform data is not supplied, we will get MCLK from device tree and check
-the return code to handle probe deferral.
+I will remove the error message(s).
 
-Enable runtime power management, and auto enable/disable MCLK in pm_runtime
-resume and suspend. When wm8960 codec is being used, it will triger resume()
-to enable MCLK. When codec is not being used, it will triger suspend() to
-disable MCLK.
+>>   		return -ENOMEM;
+>>   	}
+>>
+>> +	dw_i2s_dai->ops = &dw_i2s_dai_ops;
+>> +	dw_i2s_dai->suspend = dw_i2s_suspend;
+>> +	dw_i2s_dai->resume = dw_i2s_resume;
+> 
+> This seems to be separate from the devm_ioremap_resource() change.
 
-If we use PLL to generate sysclk, wm8960_set_dai_pll() will enable PLL. But
-PLL doesn't power down after using codec. So power down PLL in suspend().
+It seemed reasonable to assign these known values to the dw_i2s_dai as soon as it had been allocated. Would you prefer this in a separate patch?
 
-Signed-off-by: Zidan Wang <b50113@freescale.com>
----
- include/sound/wm8960.h    |  1 +
- sound/soc/codecs/wm8960.c | 59 ++++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 57 insertions(+), 3 deletions(-)
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	if (!res) {
+> 
+> You don't actually have to check it devm_ioremap_resource does this for you.
 
-diff --git a/include/sound/wm8960.h b/include/sound/wm8960.h
-index e8ce8ee..d7e84ed 100644
---- a/include/sound/wm8960.h
-+++ b/include/sound/wm8960.h
-@@ -16,6 +16,7 @@
- #define WM8960_DRES_MAX  3
- 
- struct wm8960_data {
-+	struct clk *mclk;
- 	bool capless;  /* Headphone outputs configured in capless mode */
- 
- 	bool shared_lrclk;  /* DAC and ADC LRCLKs are wired together */
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 031a1ae..2c7a97a 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -15,6 +15,8 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
-+#include <linux/clk.h>
-+#include <linux/pm_runtime.h>
- #include <linux/i2c.h>
- #include <linux/slab.h>
- #include <sound/core.h>
-@@ -978,7 +980,7 @@ static const struct regmap_config wm8960_regmap = {
- 	.volatile_reg = wm8960_volatile,
- };
- 
--static void wm8960_set_pdata_from_of(struct i2c_client *i2c,
-+static int wm8960_set_pdata_from_of(struct i2c_client *i2c,
- 				struct wm8960_data *pdata)
- {
- 	const struct device_node *np = i2c->dev.of_node;
-@@ -988,6 +990,15 @@ static void wm8960_set_pdata_from_of(struct i2c_client *i2c,
- 
- 	if (of_property_read_bool(np, "wlf,shared-lrclk"))
- 		pdata->shared_lrclk = true;
-+
-+	pdata->mclk = devm_clk_get(&i2c->dev, NULL);
-+
-+	if (IS_ERR(pdata->mclk)) {
-+		if (PTR_ERR(pdata->mclk) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+	}
-+
-+	return 0;
- }
- 
- static int wm8960_i2c_probe(struct i2c_client *i2c,
-@@ -1008,8 +1019,11 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
- 
- 	if (pdata)
- 		memcpy(&wm8960->pdata, pdata, sizeof(struct wm8960_data));
--	else if (i2c->dev.of_node)
--		wm8960_set_pdata_from_of(i2c, &wm8960->pdata);
-+	else if (i2c->dev.of_node) {
-+		ret = wm8960_set_pdata_from_of(i2c, &wm8960->pdata);
-+		if (ret != 0)
-+			return ret;
-+	}
- 
- 	ret = wm8960_reset(wm8960->regmap);
- 	if (ret != 0) {
-@@ -1041,6 +1055,9 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm8960);
- 
-+	pm_runtime_enable(&i2c->dev);
-+	pm_request_idle(&i2c->dev);
-+
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm8960, &wm8960_dai, 1);
- 
-@@ -1053,6 +1070,41 @@ static int wm8960_i2c_remove(struct i2c_client *client)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_RUNTIME
-+static int wm8960_runtime_resume(struct device *dev)
-+{
-+	struct wm8960_priv *wm8960 = dev_get_drvdata(dev);
-+	int ret;
-+
-+	if (!IS_ERR(wm8960->pdata.mclk)) {
-+		ret = clk_prepare_enable(wm8960->pdata.mclk);
-+		if (ret) {
-+			dev_err(dev, "Failed to enable MCLK: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int wm8960_runtime_suspend(struct device *dev)
-+{
-+	struct wm8960_priv *wm8960 = dev_get_drvdata(dev);
-+
-+	/* Power down PLL to save power */
-+	regmap_update_bits(wm8960->regmap, WM8960_POWER2, 0x1, 0);
-+
-+	if (!IS_ERR(wm8960->pdata.mclk))
-+		clk_disable_unprepare(wm8960->pdata.mclk);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops wm8960_pm = {
-+	SET_RUNTIME_PM_OPS(wm8960_runtime_suspend, wm8960_runtime_resume, NULL)
-+};
-+
- static const struct i2c_device_id wm8960_i2c_id[] = {
- 	{ "wm8960", 0 },
- 	{ }
-@@ -1070,6 +1122,7 @@ static struct i2c_driver wm8960_i2c_driver = {
- 		.name = "wm8960",
- 		.owner = THIS_MODULE,
- 		.of_match_table = wm8960_of_match,
-+		.pm = &wm8960_pm,
- 	},
- 	.probe =    wm8960_i2c_probe,
- 	.remove =   wm8960_i2c_remove,
--- 
-1.9.1
+Oh, thanks, paranoia was taking over.
+
+>> +		dev_err(&pdev->dev, "no i2s resource defined\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	dev->i2s_base = devm_ioremap_resource(&pdev->dev, res);
+>> +	if (IS_ERR(dev->i2s_base)) {
+>> +		dev_err(&pdev->dev, "ioremap fail for i2s_region\n");
+> 
+> Same here devm_ioremap_resource() will already print a appropriate error 
+> message.
+> 
+>> +		return PTR_ERR(dev->i2s_base);
+>> +	}
+> 
+> 
