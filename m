@@ -1,148 +1,54 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: [PATCH] sound/soc/adi/axi-spdif.c: Support programmable master clock
-Date: Thu,  4 Dec 2014 07:52:19 +0100
-Message-ID: <1417675940-3754-1-git-send-email-mike.looijmans@topic.nl>
+From: rajeev kumar <rajeevkumar.linux@gmail.com>
+Subject: Re: [PATCH 3/5] ASoC: dwc: Iterate over all channels
+Date: Thu, 4 Dec 2014 12:25:30 +0530
+Message-ID: <CAA7nrthuG_4837JArAmmEkcBqfqRRUM5rzyZ1UcH3TqhfF79bg@mail.gmail.com>
+References: <547F3CA5.2010500@arm.com>
+	<20141203172928.GD7712@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141203172928.GD7712@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lars@metafoo.de
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mike Looijmans <mike.looijmans@topic.nl>
+To: Mark Brown <broonie@kernel.org>
+Cc: Andrew Jackson <Andrew.Jackson@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Liviu Dudau <Liviu.Dudau@arm.com>
 List-Id: alsa-devel@alsa-project.org
 
-If the master clock supports programmable rates, program it to generate
-the desired frequency. Only apply constraints when the clock is fixed.
-This allows proper clock generation for both 44100 and 48000 Hz based
-sampling rates if the platform supports it.
+On Wed, Dec 3, 2014 at 10:59 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Dec 03, 2014 at 04:39:01PM +0000, Andrew Jackson wrote:
+>
+>> +     /* Iterate over set of channels - independently controlled.
+>> +      */
+>> +     do {
+>> +             if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>> +                     i2s_write_reg(dev->i2s_base, TCR(ch_reg),
+>> +                                   xfer_resolution);
+>> +                     i2s_write_reg(dev->i2s_base, TFCR(ch_reg), 0x02);
+>> +                     irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
+>> +                     i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x30);
+>> +                     i2s_write_reg(dev->i2s_base, TER(ch_reg), 1);
+>> +             } else {
+>> +                     i2s_write_reg(dev->i2s_base, RCR(ch_reg),
+>> +                                   xfer_resolution);
+>> +                     i2s_write_reg(dev->i2s_base, RFCR(ch_reg), 0x07);
+>> +                     irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
+>> +                     i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x03);
+>> +                     i2s_write_reg(dev->i2s_base, RER(ch_reg), 1);
+>> +             }
+>> +     } while (ch_reg-- > 0);
+>
+> The normal way to write an iteration would be with a for loop - why are
+> we not doing that?
+>
+> Also I see that you've not sent these as a single thread - please use
+> --thread.
 
-The clock frequency must be set before enabling it. Enabling the clock
-was done in "startup", but that occurs before "hw_params" where the rate
-is known. Move the clock start to the hw_params routine, and keep track
-of whether the clock has been started, because shutdown may be called
-without having called hw_params first.
+designware i2s has individual register for channel support. It is like
+TCR(0), TCR(1) and so on.. So a macro is defined to capture these
+please check below #define
 
-Starting the clock and enabling the SPDIF output AFTER programming the
-dividers is a more logical order anyway.
+#define TCR(x)      (0x40 * x + 0x034)
 
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
----
- sound/soc/adi/axi-spdif.c |   56 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 35 insertions(+), 21 deletions(-)
+and the same is true for capture also. So there is no need for
+iteration. Only writing to the particular register will do the work.
 
-diff --git a/sound/soc/adi/axi-spdif.c b/sound/soc/adi/axi-spdif.c
-index 198e3a4..d67e010 100644
---- a/sound/soc/adi/axi-spdif.c
-+++ b/sound/soc/adi/axi-spdif.c
-@@ -4,7 +4,6 @@
-  *
-  * Licensed under the GPL-2.
-  */
--
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -44,6 +43,8 @@ struct axi_spdif {
- 
- 	struct snd_ratnum ratnum;
- 	struct snd_pcm_hw_constraint_ratnums rate_constraints;
-+
-+	bool clk_ref_running;
- };
- 
- static int axi_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
-@@ -79,6 +80,7 @@ static int axi_spdif_hw_params(struct snd_pcm_substream *substream,
- 	struct axi_spdif *spdif = snd_soc_dai_get_drvdata(dai);
- 	unsigned int rate = params_rate(params);
- 	unsigned int clkdiv, stat;
-+	int ret;
- 
- 	switch (params_rate(params)) {
- 	case 32000:
-@@ -95,6 +97,9 @@ static int axi_spdif_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 
-+	/* Try to set the master clock */
-+	clk_set_rate(spdif->clk_ref, rate * 128);
-+
- 	clkdiv = DIV_ROUND_CLOSEST(clk_get_rate(spdif->clk_ref),
- 			rate * 64 * 2) - 1;
- 	clkdiv <<= AXI_SPDIF_CTRL_CLKDIV_OFFSET;
-@@ -103,6 +108,14 @@ static int axi_spdif_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(spdif->regmap, AXI_SPDIF_REG_CTRL,
- 		AXI_SPDIF_CTRL_CLKDIV_MASK, clkdiv);
- 
-+	ret = clk_prepare_enable(spdif->clk_ref);
-+	if (ret)
-+		return ret;
-+	spdif->clk_ref_running = true;
-+
-+	regmap_update_bits(spdif->regmap, AXI_SPDIF_REG_CTRL,
-+		AXI_SPDIF_CTRL_TXEN, AXI_SPDIF_CTRL_TXEN);
-+
- 	return 0;
- }
- 
-@@ -121,18 +134,13 @@ static int axi_spdif_startup(struct snd_pcm_substream *substream,
- 	struct axi_spdif *spdif = snd_soc_dai_get_drvdata(dai);
- 	int ret;
- 
--	ret = snd_pcm_hw_constraint_ratnums(substream->runtime, 0,
--			   SNDRV_PCM_HW_PARAM_RATE,
--			   &spdif->rate_constraints);
--	if (ret)
--		return ret;
--
--	ret = clk_prepare_enable(spdif->clk_ref);
--	if (ret)
--		return ret;
--
--	regmap_update_bits(spdif->regmap, AXI_SPDIF_REG_CTRL,
--		AXI_SPDIF_CTRL_TXEN, AXI_SPDIF_CTRL_TXEN);
-+	if (spdif->rate_constraints.nrats) {
-+		ret = snd_pcm_hw_constraint_ratnums(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE,
-+				&spdif->rate_constraints);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	return 0;
- }
-@@ -145,7 +153,10 @@ static void axi_spdif_shutdown(struct snd_pcm_substream *substream,
- 	regmap_update_bits(spdif->regmap, AXI_SPDIF_REG_CTRL,
- 		AXI_SPDIF_CTRL_TXEN, 0);
- 
--	clk_disable_unprepare(spdif->clk_ref);
-+	if (spdif->clk_ref_running) {
-+		clk_disable_unprepare(spdif->clk_ref);
-+		spdif->clk_ref_running = false;
-+	}
- }
- 
- static const struct snd_soc_dai_ops axi_spdif_dai_ops = {
-@@ -216,14 +227,17 @@ static int axi_spdif_probe(struct platform_device *pdev)
- 	spdif->dma_data.addr_width = 4;
- 	spdif->dma_data.maxburst = 1;
- 
--	spdif->ratnum.num = clk_get_rate(spdif->clk_ref) / 128;
--	spdif->ratnum.den_step = 1;
--	spdif->ratnum.den_min = 1;
--	spdif->ratnum.den_max = 64;
--
--	spdif->rate_constraints.rats = &spdif->ratnum;
--	spdif->rate_constraints.nrats = 1;
-+	/* Determine if the clock rate is fixed. If it cannot change frequency,
-+	 * it returns an error here. */
-+	if (clk_round_rate(spdif->clk_ref, 128 * 44100) < 0) {
-+		spdif->ratnum.num = clk_get_rate(spdif->clk_ref) / 128;
-+		spdif->ratnum.den_step = 1;
-+		spdif->ratnum.den_min = 1;
-+		spdif->ratnum.den_max = 64;
- 
-+		spdif->rate_constraints.rats = &spdif->ratnum;
-+		spdif->rate_constraints.nrats = 1;
-+	}
- 	ret = devm_snd_soc_register_component(&pdev->dev, &axi_spdif_component,
- 					 &axi_spdif_dai, 1);
- 	if (ret)
--- 
-1.7.9.5
+~Rajeev
