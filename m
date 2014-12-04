@@ -1,83 +1,43 @@
-From: Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 2/2] ASoC: rockchip: i2s: add support for
- grabbing output clock to codec
-Date: Wed, 3 Dec 2014 15:52:59 -0800
-Message-ID: <CAPz6YkULCXPL=E+Kabp8S7LuH4dzwtQUb-Hbm+uMzOW8=Scq0A@mail.gmail.com>
-References: <1417531766-29669-1-git-send-email-jay.xu@rock-chips.com>
- <1417591118-18695-1-git-send-email-jay.xu@rock-chips.com> <1417591118-18695-3-git-send-email-jay.xu@rock-chips.com>
- <20141203192024.GL7712@sirena.org.uk> <CAPz6YkXRmRzYpW7xuDsq69A9H-Qm2-j6t-a+B1w9+OLOPf_YnA@mail.gmail.com>
- <20141203200307.GM7712@sirena.org.uk> <CAPz6YkWSQhqX-wAp5hZReo==MuG_Tju_0mk+kGrJo9XhjQ3ttA@mail.gmail.com>
- <CAEUnVG4qbnNaV26N9AgeKDJkEEvqi1QqdcYh=cLwjxY-aPor4w@mail.gmail.com>
+From: rajeev kumar <rajeevkumar.linux@gmail.com>
+Subject: Re: [PATCH 2/5] ASoC: dwc: Don't allow negative use
+	counts
+Date: Thu, 4 Dec 2014 12:10:17 +0530
+Message-ID: <CAA7nrtjrQ5SpDrZRPb58zqmZrWahY3XOMWnmdH70WLr3q46_bA@mail.gmail.com>
+References: <547F3C9F.8080102@arm.com>
+	<20141203172526.GC7712@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAEUnVG4qbnNaV26N9AgeKDJkEEvqi1QqdcYh=cLwjxY-aPor4w-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f178.google.com (mail-ig0-f178.google.com
+ [209.85.213.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 168FD2604BC
+ for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 07:40:19 +0100 (CET)
+Received: by mail-ig0-f178.google.com with SMTP id hl2so14136183igb.17
+ for <alsa-devel@alsa-project.org>; Wed, 03 Dec 2014 22:40:18 -0800 (PST)
+In-Reply-To: <20141203172526.GC7712@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 3, 2014 at 3:22 PM, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org> wrote:
-> On Wed, Dec 3, 2014 at 3:03 PM, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org> wrote:
->> On Wed, Dec 3, 2014 at 12:03 PM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
->>> On Wed, Dec 03, 2014 at 11:38:13AM -0800, Sonny Rao wrote:
->>>> On Wed, Dec 3, 2014 at 11:20 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
->>>
->>>> > I would expect that the clock for the CODEC should be managed by the
->>>> > CODEC if at all possible - that seems more logical than having the CPU
->>>> > I2S controller request and manage it if it's a separate clock.  Why add
->>>> > this to the CPU side driver?
->>>
->>>> This output clock has a mux and can either be a fixed 12Mhz output or
->>>> can be derived from the same fractional divider which drives the i2s
->>>> block.   I thought it was simpler to keep them all the same, but need
->>>> to put ownership in the i2s in anticipation of the i2s driver setting
->>>> it's own clock rate.
->>>
->>>> If you think this is an implementation detail and this output clock
->>>> should just be owned by the codec driver, even though I'm guessing it
->>>> will just have to be the same as i2s, then I think we can drop this
->>>> and make sure simple card (or whatever other codec driver) claims this
->>>> clock.
->>>
->>> simple-card obviously isn't a CODEC driver...
->>
->> Yeah, sorry.
->>
->>> For generality I think
->>> the clock does need to be exposed to the CODEC driver, otherwise this
->>> will work differently to how other systems are working and we can't
->>> substitute in a different clock on the CODEC side so easily if it
->>> doesn't happen to use the output from the I2S block.
->>
->> Ok, then I think what we will do is abandon this patch and I will send
->> something that adds this functionality to the particular codec that
->> I'm interested in -- max98090.
+On Wed, Dec 3, 2014 at 10:55 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Dec 03, 2014 at 04:38:55PM +0000, Andrew Jackson wrote:
 >
-> Sorry I didn't read this earlier.  I don't think that this belongs in
-> the max98090.  The original patch description is a bit confusing.  The
-> clock being grabbed here is actually i2s mclk.  My understanding is
-> that, on this SoC, the mclk is driven from a different IP block than
-> the rest of the i2s signals.  The i2s driver needs to be told about
-> the clock and enable/disable it at the appropriate times.  I'm
-> assuming it's optional because there are boards using this SoC with
-> i2s slave mode that don't drive mclk at all.
+>>       case SNDRV_PCM_TRIGGER_STOP:
+>>       case SNDRV_PCM_TRIGGER_SUSPEND:
+>>       case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+>> -             dev->active--;
+>> +             if (dev->active > 0)
+>> +                     dev->active--;
 >
-> Please correct me if I'm wrong on any of the above.
-
-I don't think you're wrong, and I'm an audio/i2s neophyte so I think
-you're probably right and hopefully Mark can confirm that this is how
-we want it.
-
-One important thing to point out, which might be causing confusion, is
-that this driver is claiming a clock which it internally calls "mclk"
-but the way it's specified for rk3288 in the DT, that one is just the
-one which drives the internal logic and has a gate.
-
-This clock I'm adding is the actual mclk which is being driven to the
-i2s slave device, and it has it's own gate and also has a mux, and we
-need to claim both to be able to enable proper clock gating.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> How is this triggering - this sounds like you're papering over some
+> other bug somewhere?
