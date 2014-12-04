@@ -1,44 +1,55 @@
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH] ASoC: soc-dapm: Fix comparison of pointers
-Date: Tue,  9 Dec 2014 22:53:41 +0100
-Message-ID: <1418162021-32229-1-git-send-email-linux@rasmusvillemoes.dk>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Darren Hart <dvhart@infradead.org>
+Subject: Re: [PATCH v3 1/2] thinkpad-acpi: Try to use full software mute
+ control
+Date: Thu, 4 Dec 2014 03:50:31 -0800
+Message-ID: <20141204115031.GC100190@vmdeb7>
+References: <cover.1413590510.git.luto@amacapital.net>
+ <378856925c5ceecd27a6490585ee60362a714ef6.1413590510.git.luto@amacapital.net>
+ <20141031230700.GA11745@khazad-dum.debian.net>
+ <CALCETrWbu6NUFo2gv+gNEPATm=1jnLRY16iEvv7ZV-3TicZR_A@mail.gmail.com>
+ <20141209195342.GC361@khazad-dum.debian.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141209195342.GC361@khazad-dum.debian.net>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: Andy Lutomirski <luto@amacapital.net>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@mit.edu>
 List-Id: alsa-devel@alsa-project.org
 
-The idiom 'return a - b;' often used in comparison functions is wrong
-unless one is certain the values being compared lie in a sufficiently
-small range. In this case dapm_seq_compare would also return 0 if the
-->dapm pointers happened to differ by a multiple of 2^32.
+On Tue, Dec 09, 2014 at 05:53:42PM -0200, Henrique de Moraes Holschuh wrote:
+> On Mon, 08 Dec 2014, Andy Lutomirski wrote:
+> > On Fri, Oct 31, 2014 at 4:07 PM, Henrique de Moraes Holschuh
+> > <hmh@hmh.eng.br> wrote:
+> 
+> ...
+> 
+> > >> Signed-off-by: Andy Lutomirski <luto@mit.edu>
+> > >
+> > > Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+> > 
+> > What tree do these go through?  I haven't spotted them in linux-next.
+> 
+> X86 PLATFORM DRIVERS
+> M:      Darren Hart <dvhart@infradead.org>
+> L:      platform-driver-x86@vger.kernel.org
+> T:      git
+> git://git.infradead.org/users/dvhart/linux-platform-drivers-x86.git
+> S:      Maintained
+> F:      drivers/platform/x86/
+> 
+> Darren, could you pick up this patch series, please?
+> 
+> You were missing in the Cc list, and it seems to have fallen through the
+> cracks  :-(
+> 
+> Maybe we could use https://patchwork.kernel.org/ for platform-driver-x86 ?
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
+For the time being, please continue to Cc the maintainer on all patches. That's
+a minimum requirement anyway. I'm not opposed to discussing patchwork, but I
+don't want it to be a substitute to following standard mailing list practices.
 
-Notes:
-    I don't know if the other occurences of the idiom in this function are
-    ok; that depends on whether the values always lie in [0, 2^31-1].
-
- sound/soc/soc-dapm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c61cb9cedbcd..a894a7c71557 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1255,8 +1255,10 @@ static int dapm_seq_compare(struct snd_soc_dapm_widget *a,
- 	}
- 	if (a->reg != b->reg)
- 		return a->reg - b->reg;
--	if (a->dapm != b->dapm)
--		return (unsigned long)a->dapm - (unsigned long)b->dapm;
-+	if (a->dapm < b->dapm)
-+		return -1;
-+	if (a->dapm > b->dapm)
-+		return 1;
- 
- 	return 0;
- }
 -- 
-2.1.3
+Darren Hart
+Intel Open Source Technology Center
