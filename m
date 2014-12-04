@@ -1,54 +1,63 @@
 From: Darren Hart <dvhart@infradead.org>
-Subject: Re: [PATCH v3 1/2] thinkpad-acpi: Try to use full software mute
- control
-Date: Thu, 4 Dec 2014 03:50:31 -0800
-Message-ID: <20141204115031.GC100190@vmdeb7>
+Subject: Re: [PATCH v3 0/2] Disable the ThinkPad HW mute/level control when
+ possible
+Date: Thu, 4 Dec 2014 03:55:15 -0800
+Message-ID: <20141204115515.GD100190@vmdeb7>
 References: <cover.1413590510.git.luto@amacapital.net>
- <378856925c5ceecd27a6490585ee60362a714ef6.1413590510.git.luto@amacapital.net>
- <20141031230700.GA11745@khazad-dum.debian.net>
- <CALCETrWbu6NUFo2gv+gNEPATm=1jnLRY16iEvv7ZV-3TicZR_A@mail.gmail.com>
- <20141209195342.GC361@khazad-dum.debian.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <platform-driver-x86-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20141209195342.GC361@khazad-dum.debian.net>
+In-Reply-To: <cover.1413590510.git.luto@amacapital.net>
 Sender: platform-driver-x86-owner@vger.kernel.org
-To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Cc: Andy Lutomirski <luto@amacapital.net>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@mit.edu>
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 09, 2014 at 05:53:42PM -0200, Henrique de Moraes Holschuh wrote:
-> On Mon, 08 Dec 2014, Andy Lutomirski wrote:
-> > On Fri, Oct 31, 2014 at 4:07 PM, Henrique de Moraes Holschuh
-> > <hmh@hmh.eng.br> wrote:
+On Fri, Oct 17, 2014 at 05:04:28PM -0700, Andy Lutomirski wrote:
+> This series is being resurrected after several years, and it's quite
+> different from before, so I'm restarting the version numbers :)
 > 
-> ...
+> ThinkPad volume and mute controls are a mess.  For whatever reason,
+> ThinkPads have mute buttons that send KEY_MUTE *and* control an
+> invisible-to-ALSA mute switch.  Some of them have volume controls that
+> interact with this switch as well.
 > 
-> > >> Signed-off-by: Andy Lutomirski <luto@mit.edu>
-> > >
-> > > Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-> > 
-> > What tree do these go through?  I haven't spotted them in linux-next.
+> This is a perennial source of problems.  On most ThinkPads, if you press
+> mute and then unmute using GUI controls, you have no sound, because
+> userspace and ALSA state gets out of sync with the hardware switch.
+> There's a separate "sound card" that exposes the hardware switch, but
+> userspace code generally doesn't understand that.
 > 
-> X86 PLATFORM DRIVERS
-> M:      Darren Hart <dvhart@infradead.org>
-> L:      platform-driver-x86@vger.kernel.org
-> T:      git
-> git://git.infradead.org/users/dvhart/linux-platform-drivers-x86.git
-> S:      Maintained
-> F:      drivers/platform/x86/
+> There are already a few _OSI(Linux) overrides to turn all the hardware
+> buttons into regular buttons.  Rather than quirking ACPI everywhere,
+> just teach thinkpad-acpi to program the buttons for full software
+> control and to disable hardware controls.  That allows us to remove the
+> ACPI quirks and have normal mute controls.  This approach should be
+> much simpler than adding even more kludgey ALSA integration for
+> questionable gain.
 > 
-> Darren, could you pick up this patch series, please?
+> Tested on an X200s (with latching mute by default) and an X220 (with
+> a mute light and toggle mute by default).  Everything works as expected.
 > 
-> You were missing in the Cc list, and it seems to have fallen through the
-> cracks  :-(
+> Changes from v2:
+>  - Don't try to change the mute mode on IBM ThinkPads.
+>  - Further minor cleanups.
+>  - Try to restore the mode on module unload.
 > 
-> Maybe we could use https://patchwork.kernel.org/ for platform-driver-x86 ?
+> Changes from v1:
+>  - Simplified the code a bit.
+>  - Improved suspend/hibernate behavior.
+> 
+> Andy Lutomirski (2):
+>   thinkpad-acpi: Try to use full software mute control
+>   acpi: Remove _OSI(Linux) for ThinkPads
+> 
+>  drivers/acpi/blacklist.c             |  54 ----------------
+>  drivers/platform/x86/thinkpad_acpi.c | 116 ++++++++++++++++++++++++++++++++---
+>  2 files changed, 106 insertions(+), 64 deletions(-)
 
-For the time being, please continue to Cc the maintainer on all patches. That's
-a minimum requirement anyway. I'm not opposed to discussing patchwork, but I
-don't want it to be a substitute to following standard mailing list practices.
+Andy, is this the latest version?
 
 -- 
 Darren Hart
