@@ -1,19 +1,17 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH] sound/soc/adi/axi-spdif.c: Support
- programmable master clock
-Date: Thu, 4 Dec 2014 15:18:54 +0100
-Message-ID: <54806D4E.8040504@topic.nl>
-References: <1417675940-3754-1-git-send-email-mike.looijmans@topic.nl>
- <5480577D.4010106@metafoo.de>
+From: Carlo Caione <carlo@caione.org>
+Subject: DMA buffer alignment
+Date: Thu, 4 Dec 2014 16:54:01 +0100
+Message-ID: <CAOQ7t2b5Rr6OjpQQ8uvwQ+7O2RL=tTKyjWG1HSJuOc3X4-NDag@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
- [217.149.192.139])
- by alsa0.perex.cz (Postfix) with ESMTP id 83CA726053E
- for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 15:19:00 +0100 (CET)
-In-Reply-To: <5480577D.4010106@metafoo.de>
+Received: from mail-vc0-f176.google.com (mail-vc0-f176.google.com
+ [209.85.220.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90E7C26262D
+ for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 16:54:02 +0100 (CET)
+Received: by mail-vc0-f176.google.com with SMTP id hq12so7849258vcb.7
+ for <alsa-devel@alsa-project.org>; Thu, 04 Dec 2014 07:54:01 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,82 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-77u/T24gMTIvMDQvMjAxNCAwMTo0NSBQTSwgTGFycy1QZXRlciBDbGF1c2VuIHdyb3RlOgo+IE9u
-IDEyLzA0LzIwMTQgMDc6NTIgQU0sIE1pa2UgTG9vaWptYW5zIHdyb3RlOgo+PiBJZiB0aGUgbWFz
-dGVyIGNsb2NrIHN1cHBvcnRzIHByb2dyYW1tYWJsZSByYXRlcywgcHJvZ3JhbSBpdCB0byBnZW5l
-cmF0ZQo+PiB0aGUgZGVzaXJlZCBmcmVxdWVuY3kuIE9ubHkgYXBwbHkgY29uc3RyYWludHMgd2hl
-biB0aGUgY2xvY2sgaXMgZml4ZWQuCj4+IFRoaXMgYWxsb3dzIHByb3BlciBjbG9jayBnZW5lcmF0
-aW9uIGZvciBib3RoIDQ0MTAwIGFuZCA0ODAwMCBIeiBiYXNlZAo+PiBzYW1wbGluZyByYXRlcyBp
-ZiB0aGUgcGxhdGZvcm0gc3VwcG9ydHMgaXQuCj4+Cj4+IFRoZSBjbG9jayBmcmVxdWVuY3kgbXVz
-dCBiZSBzZXQgYmVmb3JlIGVuYWJsaW5nIGl0LiBFbmFibGluZyB0aGUgY2xvY2sKPj4gd2FzIGRv
-bmUgaW4gInN0YXJ0dXAiLCBidXQgdGhhdCBvY2N1cnMgYmVmb3JlICJod19wYXJhbXMiIHdoZXJl
-IHRoZSByYXRlCj4+IGlzIGtub3duLiBNb3ZlIHRoZSBjbG9jayBzdGFydCB0byB0aGUgaHdfcGFy
-YW1zIHJvdXRpbmUsIGFuZCBrZWVwIHRyYWNrCj4+IG9mIHdoZXRoZXIgdGhlIGNsb2NrIGhhcyBi
-ZWVuIHN0YXJ0ZWQsIGJlY2F1c2Ugc2h1dGRvd24gbWF5IGJlIGNhbGxlZAo+PiB3aXRob3V0IGhh
-dmluZyBjYWxsZWQgaHdfcGFyYW1zIGZpcnN0Lgo+Cj4gVXN1YWxseSB0aGF0IHNob3VsZG4ndCBi
-ZSBhIHByb2JsZW0uIElmIHlvdXIgY2xvY2sgY2hpcCByZXF1aXJlcyBpdCB0byBiZQo+IGRpc2Fi
-bGVkIGluIG9yZGVyIHRvIGJlIHJlcHJvZ3JhbW1lZCB0aGFuIHRoZSBDTEtfU0VUX1JBVEVfR0FU
-RSBmbGFnIHNob3VsZCBiZQo+IHNldC4gVGhpcyB3aWxsIHRlbGwgdGhlIGNvcmUgdG8gZGlzYWJs
-ZSB0aGUgY2xvY2sgYmVmb3JlIGNoYW5naW5nIGl0LgoKVGhlIGlzc3VlIGhlcmUgaXMgbm90IHRo
-ZSBjbG9jaydzIGNhcGFiaWxpdGllcywgYnV0IHRoZSBvcmRlciBpbiB3aGljaCB0aGluZ3MgCmFy
-ZSBiZWluZyBkb25lLiBJZiB0aGUgZHJpdmVyIGp1c3QgZW5hYmxlcyB0aGUgY2xvY2sgd2l0aG91
-dCBldmVyIGhhdmluZyBzZXQgYSAKcmF0ZSwgdGhlIGNsb2NrIHdpbGwgcnVuIGF0IHdoYXRldmVy
-IGhhcHBlbnMgdG8gYmUgdGhlIGRlZmF1bHQuIFRoYXQgZGVmYXVsdCAKbWF5IGhhdmUgdW5wcmVk
-aWN0YWJsZSByZXN1bHRzIG9yIGV2ZW4gYmUgaGFybWZ1bCB0byB0aGUgc3lzdGVtLiBTbyB0aGUg
-ZHJpdmVyIApzaG91bGQgZmlyc3Qgc2V0IGEgdmFsaWQgY2xvY2sgcmF0ZSBiZWZvcmUgZW5hYmxp
-bmcgdGhlIGNsb2NrLiBTdWdnZXN0aW9ucyBvbiAKcmV3b3JkaW5nIG15IGNvbW1lbnRzIHRvIGJl
-dHRlciByZWZsZWN0IHRoYXQgYXJlIHdlbGNvbWUuCgo+Cj4gWy4uLl0KPj4gICBzdGF0aWMgY29u
-c3Qgc3RydWN0IHNuZF9zb2NfZGFpX29wcyBheGlfc3BkaWZfZGFpX29wcyA9IHsKPj4gQEAgLTIx
-NiwxNCArMjI3LDE3IEBAIHN0YXRpYyBpbnQgYXhpX3NwZGlmX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKnBkZXYpCj4+ICAgICAgIHNwZGlmLT5kbWFfZGF0YS5hZGRyX3dpZHRoID0gNDsK
-Pj4gICAgICAgc3BkaWYtPmRtYV9kYXRhLm1heGJ1cnN0ID0gMTsKPj4KPj4gLSAgICBzcGRpZi0+
-cmF0bnVtLm51bSA9IGNsa19nZXRfcmF0ZShzcGRpZi0+Y2xrX3JlZikgLyAxMjg7Cj4+IC0gICAg
-c3BkaWYtPnJhdG51bS5kZW5fc3RlcCA9IDE7Cj4+IC0gICAgc3BkaWYtPnJhdG51bS5kZW5fbWlu
-ID0gMTsKPj4gLSAgICBzcGRpZi0+cmF0bnVtLmRlbl9tYXggPSA2NDsKPj4gLQo+PiAtICAgIHNw
-ZGlmLT5yYXRlX2NvbnN0cmFpbnRzLnJhdHMgPSAmc3BkaWYtPnJhdG51bTsKPj4gLSAgICBzcGRp
-Zi0+cmF0ZV9jb25zdHJhaW50cy5ucmF0cyA9IDE7Cj4+ICsgICAgLyogRGV0ZXJtaW5lIGlmIHRo
-ZSBjbG9jayByYXRlIGlzIGZpeGVkLiBJZiBpdCBjYW5ub3QgY2hhbmdlIGZyZXF1ZW5jeSwKPj4g
-KyAgICAgKiBpdCByZXR1cm5zIGFuIGVycm9yIGhlcmUuICovCj4+ICsgICAgaWYgKGNsa19yb3Vu
-ZF9yYXRlKHNwZGlmLT5jbGtfcmVmLCAxMjggKiA0NDEwMCkgPCAwKSB7Cj4KPiBJIGRvbid0IHRo
-aW5rIHRoaXMgd29ya3MuIEZvciBhIGZpeGVkIGNsb2NrIGNsa19yb3VuZF9yYXRlKCkgd2lsbCBy
-ZXR1cm4gdGhlCj4gZml4ZWQgcmF0ZSByYXRoZXIgdGhhbiBhbiBlcnJvci4gSSB0cmllZCB0aGUg
-cGF0Y2ggYW5kIGV2ZW4gdGhvdWdoIEkgaGF2ZSBhCj4gZml4ZWQgY2xvY2sgdGhlIGNvbnN0cmFp
-bnRzIGFyZSBubyBsb25nZXIgc2V0Lgo+Cj4gVGhlcmUgaXMgdW5mb3J0dW5hdGVseSBubyBnb29k
-IHdheSB0byBlbnVtZXJhdGUgd2hpY2ggZnJlcXVlbmNpZXMgYXJlCj4gc3VwcG9ydGVkIGJ5IGEg
-Y2xvY2sgb3RoZXIgdGhhbiBqdXN0IGNhbGxpbmcgcm91bmRfcmF0ZSBmb3IgYWxsIHBvc3NpYmxl
-IHJhdGVzLgo+Cj4gSSB0aGluayB0aGUgYmVzdCB3YXkgdG8gaW1wbGVtZW50IHRoaXMgZm9yIG5v
-dyBpcyB0byB0cnkgZS5nLiAzMjAwMCAqIDEyOCwKPiA0NDEwMCAqIDEyOCwgNDgwMDAgKiAxMjgg
-YW5kIHRoZW4gY2hlY2sgaWYgY2xrX3JvdW5kX3JhdGUgcmV0dXJucyB0aGUgZXhwZWN0ZWQKPiBy
-YXRlIGFuZCBpZiBpdCBkb2VzIHNldCB1cCBhIHJhdGUgY29uc3RyYWludCBmb3IgdGhhdCByYXRl
-LgoKRm9yIHdoYXQgSSBjb3VsZCBzZWUsIEFMU0EgbmV2ZXIgcmVwb3J0ZWQgb3IgbGltaXRlZCB0
-aGUgc2FtcGxlIHJhdGUgY29ycmVjdGx5IApldmVuIGJlZm9yZSB0aGlzIHBhdGNoLCBzbyBtYXli
-ZSB0aGUgZXZlbiBzaW1wbGVyIGFwcHJvYWNoIGlzIGJldHRlcjogSnVzdCAKcmVtb3ZlIHRoZSBj
-b25zdHJhaW50LiBJIHdvbmRlciBob3cgeW91IGNvbmNsdWRlZCB0aGF0IHRoZSBjb25zdHJhaW50
-IGRpZG4ndCAKZ2V0IGFkZGVkPwoKQWN0dWFsbHksIHRoZSBTUERJRiBsb2dpYyB3YW50cyBhIGNs
-b2NrIHRoYXQgaXMgYW4gImludGVnZXIgbXVsdGlwbGUgb2YgCjEyOCpzYW1wbGVyYXRlIGluIHRo
-ZSByYW5nZSBvZiAxLi42NCIuIE90aGVyIHRoYW4ganVzdCBsb29waW5nIHRocm91Z2ggdGhlbSAK
-YWxsLCB0aGVyZSdzIGFsc28gbm8gd2F5IHRvIHJlcXVlc3QgdGhlIGNsb2NrIGZyYW1ld29yayBm
-b3Igc3VjaCBhIHJlcXVpcmVtZW50LgoKWW91ciBzdWdnZXN0aW9uIGlzIHF1aXRlIHJvYnVzdCB0
-aG91Z2gsIGJ1dCB0aGUgZml4ZWQgY2xvY2sgbWF5IGJlIHNldCB0byBhbnkgCmludGVnZXIgbXVs
-dGlwbGUgb2YgdGhlIGRlc2lyZWQgZnJlcXVlbmN5LCBzbyB0aGUgYWxnb3JpdGhtIHdvdWxkIG5v
-dCB3b3JrIGlmIAp0aGUgZml4ZWQgY2xvY2sgaXMgcnVubmluZyBhdCA0ODAwMCoyNTYgKDEyLjhN
-SHogbGlrZSBpbiB0aGUgcmVmZXJlbmNlIApkZXNpZ24pLiBTbyBJIGd1ZXNzIHRoZSBiZXN0IEkg
-Y291bGQgZG8gaGVyZSBpcyBqdXN0IGNoZWNrIHRoYXQ6CgpjbGtfcm91bmRfcmF0ZShzcGRpZi0+
-Y2xrX3JlZiwgMTI4ICogNDQxMDApICE9IGNsa19yb3VuZF9yYXRlKHNwZGlmLT5jbGtfcmVmLCAK
-MTI4ICogNDgwMDApCgpPbmx5IGEgY29uZmlndXJhYmxlIGNsb2NrIHRoYXQgaXMgY29tcGF0aWJs
-ZSB3aXRoIHRoZSBwYXRjaCB3b3VsZCBkbyB0aGF0LgoKCgoKTWV0IHZyaWVuZGVsaWprZSBncm9l
-dCAvIGtpbmQgcmVnYXJkcywKCk1pa2UgTG9vaWptYW5zClN5c3RlbSBFeHBlcnQKCgpUT1BJQyBF
-bWJlZGRlZCBTeXN0ZW1zCkVpbmRob3ZlbnNld2VnIDMyLUMsIE5MLTU2ODMgS0ggQmVzdApQb3N0
-YnVzIDQ0MCwgTkwtNTY4MCBBSyBCZXN0ClRlbGVmb29uOiAoKzMxKSAoMCkgNDk5IDMzIDY5IDc5
-ClRlbGVmYXg6ICAoKzMxKSAoMCkgNDk5IDMzIDY5IDcwCkUtbWFpbDogbWlrZS5sb29pam1hbnNA
-dG9waWMubmwKV2Vic2l0ZTogd3d3LnRvcGljLm5sCgpQbGVhc2UgY29uc2lkZXIgdGhlIGVudmly
-b25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbAoKVG9waWMgem9la3QgZ2VkcmV2ZW4g
-KGVtYmVkZGVkKSBzb2Z0d2FyZSBzcGVjaWFsaXN0ZW4hCmh0dHA6Ly90b3BpYy5ubC92YWNhdHVy
-ZXMvdG9waWMtem9la3Qtc29mdHdhcmUtZW5naW5lZXJzLwoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+I'm working with a SoC sound hw that requires that all the data
+written into the DMA memory is aligned a 64 byte boundary. Actually
+the alignment is required since the format of the data into the DMA
+memory is (for a 2 channel 16bit audio): 16 samples for the left
+channel followed by 16 samples for the right channel. If I try to
+write anything that is not aligned to the 64 bytes I got audio
+corruption (high pitched noise).
+Several user-space programs (like aplay) work well with my hw, since
+the buffer sent from the user-space is always (padded) of period-size
+bytes, that is aligned to my 64 bytes boundary. Others (like
+speaker-test) are not working because sometimes they snd_pcm_writei()
+a buffer that is not multiple of 64 bytes. In general every time I
+write into the DMA area a buffer that is not aligned, my hw pointer is
+not aligned anymore with the 64 bytes and the noise starts.
+
+IIUC it is not possible to force the user-space programs to send
+buffers with a fixed size so the problem should be solved in
+kernel-space (am I wrong on this point?).
+Any suggestion on how to tackle this problem?
+
+Thanks,
+
+-- 
+Carlo Caione
