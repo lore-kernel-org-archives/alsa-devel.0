@@ -1,77 +1,55 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: wm8960: Let wm8960 codec driver
- manage its own MCLK
-Date: Thu, 4 Dec 2014 11:25:12 +0000
-Message-ID: <20141204112512.GS7712@sirena.org.uk>
-References: <1417681425-4360-1-git-send-email-b50113@freescale.com>
+Subject: Re: [PATCH 4/5] ASoC: dwc: Add devicetree support for Designware I2S
+Date: Thu, 4 Dec 2014 11:33:46 +0000
+Message-ID: <20141204113346.GT7712@sirena.org.uk>
+References: <547F3CAC.9050105@arm.com>
+ <2240364.fL8B0EDbFB@wuerfel>
+ <20141204110746.GR7712@sirena.org.uk>
+ <2090131.rL6S1lx8Ky@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7681136663148844804=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F8422614DA
- for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2014 12:25:36 +0100 (CET)
-In-Reply-To: <1417681425-4360-1-git-send-email-b50113@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <b50113@freescale.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Li.Xiubo@freescale.com, ckeepax@opensource.wolfsonmicro.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SQKdhnb/5YOpdZ6f"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2090131.rL6S1lx8Ky@wuerfel>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rajeev Kumar <rajeevkumar.linux@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7681136663148844804==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6jbJE0PFwegn7S6c"
-Content-Disposition: inline
-
-
---6jbJE0PFwegn7S6c
+--SQKdhnb/5YOpdZ6f
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 04, 2014 at 04:23:45PM +0800, Zidan Wang wrote:
+On Thu, Dec 04, 2014 at 12:17:15PM +0100, Arnd Bergmann wrote:
+> On Thursday 04 December 2014 11:07:46 Mark Brown wrote:
 
-> If we use PLL to generate sysclk, wm8960_set_dai_pll() will enable PLL. But
-> PLL doesn't power down after using codec. So power down PLL in suspend().
+> > It's relatively common with newer companies - it's like UARTs, any
+> > company that's been around for a long time will have a homebrew IP
+> > already but places that don't (or get fed up with their existing IP)
+> > will tend to buy something in.
 
-That would be a bug in the machine driver, the machine driver should be
-disabling the PLL when it suspends since the startup and shutdown of the
-PLL need to be coordinated with the input clocks.  Besides, if we were
-doing this in the CODEC driver then as I said last time the PLL needs to
-be restored on resume since the machine driver should be able to expect
-that settings it has made are preserved (eg, if it sets things up on
-init).
+> I see, but are any of the newer designs going to use platform_data?
+> My general feeling was that the only places that still depend on that
+> are legacy platforms and architectures.
 
---6jbJE0PFwegn7S6c
+And x86 which does have things like PCI cards.
+
+--SQKdhnb/5YOpdZ6f
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUgESXAAoJECTWi3JdVIfQw9MH/A0OeNQyJsQ7PrtyEcAxizRt
-A8+y/S4gjduYNIOfGTaNfz+U7UVnU0YI2EaCTlJ0JzVetMcADfspe3/LYs53s+PR
-K/eJwDOQX54FpDXR8oEOCdOgMkSYl4NunlaP+Yhc0FdjX5WmpawS6D0R3IZIeqdC
-tFXxvrC1U41FVcVkzbSapbX1oMq0Kautlm3Yy5jZcAJoeRCIaOMolJ2RgYNYAITu
-Q4PBHKnYvs/GAsZD20cIsbyHV+bggwN2T0YXXKajknH0GH3Zd743LALAqGkpYz8k
-LZ2D16ZmH0xrJugTUM7fEjXH27cioJ9m3jIo1x2ltXXcZbHfit/IRSnlNYZvbRg=
-=wYSk
+iQEcBAEBAgAGBQJUgEaZAAoJECTWi3JdVIfQ6oAH/j7/+GnToU54d8lUYEOk7/BK
+3fmMJ7FjjgTy7OUqlnvoGFgz6e6tj2CIiDT/QAH+u9Nifw3ZqndaByf9Shs021gv
+MaUlSPjdMQ4F6AO3Wb7ft4J+fCa2N5sRDAlMQXWRWHGr9r3sOuuUe/aYtYhDNX0m
+qS8mJ+oCDRgtb9YqD+RMknc+9vY9hzc4Sab445FzghosWVvwnEuYgrhAIyNaixNG
+zv685ysEeQD4vFbwzDQBd8R2s+ENWNbpUBSg5d7otfdszd9Qf5RGrZf4ZQeYK5+I
+H6bKOC9t21pGJKexMWgv6/KlHuEfzSQn7k7MYHzwKPy13rXE0cWyXg9H9iA60dc=
+=HDXC
 -----END PGP SIGNATURE-----
 
---6jbJE0PFwegn7S6c--
-
---===============7681136663148844804==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7681136663148844804==--
+--SQKdhnb/5YOpdZ6f--
