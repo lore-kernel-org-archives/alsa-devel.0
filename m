@@ -1,118 +1,111 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7] ASoC: dapm: add code to configure dai link parameters
-Date: Fri, 5 Dec 2014 18:32:13 +0000
-Message-ID: <20141205183213.GO11764@sirena.org.uk>
-References: <1417194101-24938-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+From: Alexander Stein <alexanders83@web.de>
+Subject: [PATCH v2 2/2] ALSA: atmel_abdac: Add missing clock
+	prepare
+Date: Fri,  5 Dec 2014 20:10:07 +0100
+Message-ID: <1417806607-8433-2-git-send-email-alexanders83@web.de>
+References: <1417806607-8433-1-git-send-email-alexanders83@web.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3snK74p7ddXn3Qrx"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1417194101-24938-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id E174D264F37
+ for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2014 20:10:19 +0100 (CET)
+In-Reply-To: <1417806607-8433-1-git-send-email-alexanders83@web.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Alexander Stein <alexanders83@web.de>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
+Clocks must be prepared before enabling them. Do this in one step.
+Replace clk_enable with clk_prepare_enable and clk_disable with
+clk_disable_unprepare.
 
---3snK74p7ddXn3Qrx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Alexander Stein <alexanders83@web.de>
+---
+Note: This is compile-tested only!
 
-On Fri, Nov 28, 2014 at 05:01:41PM +0000, Nikesh Oswal wrote:
+ sound/atmel/abdac.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-This doesn't apply cleanly against current code, it appears to have been
-generated against Linus' tree rather than latest ASoC.
-
-> index 7ba7130..db60701 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -942,6 +942,7 @@ struct snd_soc_dai_link {
->  	int be_id;	/* optional ID for machine driver BE identification */
-> =20
->  	const struct snd_soc_pcm_stream *params;
-> +	unsigned int num_params;
-> =20
->  	unsigned int dai_fmt;           /* format to set on init */
-> =20
-
-Here we add num_params to the existing params; several existing drivers
-use params but they've not been updated.
-
-> +/* create new dapm dai link control */
-> +static int dapm_new_dai_link(struct snd_soc_dapm_widget *w)
-> +{
-> +	int i, ret;
-> +	struct snd_kcontrol *kcontrol;
-> +	struct snd_soc_dapm_context *dapm =3D w->dapm;
-> +	struct snd_card *card =3D dapm->card->snd_card;
-> +
-> +	/* skip control creation for links with 1 config */
-> +	if (w->num_params =3D=3D 1)
-> +		return 0;
-
-Here we skip control creation if num_params is not 1.  This means we'll
-try to create a control if num_params is zero which it will be for all
-existing users.  This should actually work out fine due to the way loop
-iteration works but this appears to be entirely by accident, it's not
-obvious from the code.  Either num_params needs to become mandatory for
-users and all existing users updated to provide it or the code should
-explicitly cope with num_params being zero.
-
-> @@ -3206,6 +3239,9 @@ static int snd_soc_dai_link_event(struct snd_soc_da=
-pm_widget *w,
->  	source =3D source_p->source->priv;
->  	sink =3D sink_p->sink->priv;
-> =20
-> +	/* Select the configuration set by alsa control */
-> +	config =3D &config[w->params_select];
-> +
-
-This is needlessly obscure.  We're first using config as shorthand for
-the array of configuration options and then using it as the option we
-selected.  It'd be better to change the initial dereference to also have
-the array selection.
-
-> +	private_value =3D
-> +		(unsigned long) devm_kmemdup(card->dev,
-> +		(void *)(kcontrol_dai_link[0].private_value),
-> +		sizeof(struct soc_enum), GFP_KERNEL);
-
-This doesn't resemble the Linux coding style very strongly; normally the
-arguments of the function call would be indented with respect to the
-line with the function name.
-
-> +outfree_w:
-> +	kfree(w);
-> +outfree_kcontrol_news:
-> +	kfree(template.kcontrol_news);
-> +outfree_private_value:
-> +	kfree((void *)private_value);
-> +outfree_link_name:
-> +	kfree(link_name);
-> +outfree_w_param:
-> +	for (count =3D 0 ; count < num_params; count++)
-> +		kfree(w_param_text[count]);
-> +	kfree(w_param_text);
-
-You're paring devm_ allocations with kfree(), that's going to break.
-Managed allocations need managed frees.
-
---3snK74p7ddXn3Qrx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUgfosAAoJECTWi3JdVIfQ2bMH/i2DIkq/AmSi58ZStbiOw2Kb
-t89wQSGumoV+M481iOluvSQB/wSGeDu+Q8+c/TgmNNnTWM0a5jXAx1jSTQZ7yuDQ
-9AoieH94F9HSq+PIE4TCqM3H6dJLZNwIZ3VM7vHqRPZf7z1yykOAHjHPhMGQdrj2
-JOwkwNc8OrF8wAFq2/l54FSSXr2EKcsuHdZLjFWr7HG5FImGiuuiAZ8J824iDUdi
-bs6hkzfipVXbp6eM/UgWXNbhZMYnCy6iaPCy3wefxwE6QKuOTESI8XHOuExfYNhO
-iNlBHhWXpeZquDK00Of9+SpKX0A/7CHRSjj8xNMkiV4sIa8XuBAHMFfWMvMNahc=
-=y61P
------END PGP SIGNATURE-----
-
---3snK74p7ddXn3Qrx--
+diff --git a/sound/atmel/abdac.c b/sound/atmel/abdac.c
+index 31061e3..0231405 100644
+--- a/sound/atmel/abdac.c
++++ b/sound/atmel/abdac.c
+@@ -242,7 +242,7 @@ static int atmel_abdac_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: /* fall through */
+ 	case SNDRV_PCM_TRIGGER_RESUME: /* fall through */
+ 	case SNDRV_PCM_TRIGGER_START:
+-		clk_enable(dac->sample_clk);
++		clk_prepare_enable(dac->sample_clk);
+ 		retval = dw_dma_cyclic_start(dac->dma.chan);
+ 		if (retval)
+ 			goto out;
+@@ -254,7 +254,7 @@ static int atmel_abdac_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		dw_dma_cyclic_stop(dac->dma.chan);
+ 		dac_writel(dac, DATA, 0);
+ 		dac_writel(dac, CTRL, 0);
+-		clk_disable(dac->sample_clk);
++		clk_disable_unprepare(dac->sample_clk);
+ 		break;
+ 	default:
+ 		retval = -EINVAL;
+@@ -429,7 +429,7 @@ static int atmel_abdac_probe(struct platform_device *pdev)
+ 		retval = PTR_ERR(sample_clk);
+ 		goto out_put_pclk;
+ 	}
+-	clk_enable(pclk);
++	clk_prepare_enable(pclk);
+ 
+ 	retval = snd_card_new(&pdev->dev, SNDRV_DEFAULT_IDX1,
+ 			      SNDRV_DEFAULT_STR1, THIS_MODULE,
+@@ -528,7 +528,7 @@ out_free_card:
+ 	snd_card_free(card);
+ out_put_sample_clk:
+ 	clk_put(sample_clk);
+-	clk_disable(pclk);
++	clk_disable_unprepare(pclk);
+ out_put_pclk:
+ 	clk_put(pclk);
+ 	return retval;
+@@ -541,8 +541,8 @@ static int atmel_abdac_suspend(struct device *pdev)
+ 	struct atmel_abdac *dac = card->private_data;
+ 
+ 	dw_dma_cyclic_stop(dac->dma.chan);
+-	clk_disable(dac->sample_clk);
+-	clk_disable(dac->pclk);
++	clk_disable_unprepare(dac->sample_clk);
++	clk_disable_unprepare(dac->pclk);
+ 
+ 	return 0;
+ }
+@@ -552,8 +552,8 @@ static int atmel_abdac_resume(struct device *pdev)
+ 	struct snd_card *card = dev_get_drvdata(pdev);
+ 	struct atmel_abdac *dac = card->private_data;
+ 
+-	clk_enable(dac->pclk);
+-	clk_enable(dac->sample_clk);
++	clk_prepare_enable(dac->pclk);
++	clk_prepare_enable(dac->sample_clk);
+ 	if (test_bit(DMA_READY, &dac->flags))
+ 		dw_dma_cyclic_start(dac->dma.chan);
+ 
+@@ -572,7 +572,7 @@ static int atmel_abdac_remove(struct platform_device *pdev)
+ 	struct atmel_abdac *dac = get_dac(card);
+ 
+ 	clk_put(dac->sample_clk);
+-	clk_disable(dac->pclk);
++	clk_disable_unprepare(dac->pclk);
+ 	clk_put(dac->pclk);
+ 
+ 	dma_release_channel(dac->dma.chan);
+-- 
+2.2.0
