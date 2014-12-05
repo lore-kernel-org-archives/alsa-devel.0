@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: rt5677: make volume TLV closer to
-	reality
-Date: Fri, 5 Dec 2014 11:08:28 +0000
-Message-ID: <20141205110828.GK11764@sirena.org.uk>
-References: <1417741213-11326-1-git-send-email-dgreid@chromium.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: DMA buffer alignment
+Date: Fri, 05 Dec 2014 12:34:58 +0100
+Message-ID: <54819862.9030509@ladisch.de>
+References: <CAOQ7t2b5Rr6OjpQQ8uvwQ+7O2RL=tTKyjWG1HSJuOc3X4-NDag@mail.gmail.com>	<548089E3.4060105@ladisch.de>
+ <CAOQ7t2ZNARpAyfr_q9qjsbvbxQU2-AFgQC6aY=Tuurm3dhWPUA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4447509984367914845=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 53109260599
- for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2014 12:08:45 +0100 (CET)
-In-Reply-To: <1417741213-11326-1-git-send-email-dgreid@chromium.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1CE7726059C
+ for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2014 12:35:31 +0100 (CET)
+In-Reply-To: <CAOQ7t2ZNARpAyfr_q9qjsbvbxQU2-AFgQC6aY=Tuurm3dhWPUA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, tiwai@suse.de, anatol@chromium.org, benzh@chromium.org, bardliao@realtek.com
+To: Carlo Caione <carlo@caione.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Carlo Caione wrote:
+> let's say that our application sends uning snd_pcm_writei() a buffer
+> that is exactly 64 bytes and that our hwoff (appl_ofs)
 
---===============4447509984367914845==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8tUgZ4IE8L4vmMyh"
-Content-Disposition: inline
+The hardware and the software (appl) pointers are independent.
 
+> is pointing to a memory location 0 in the DMA area.
+> When this buffer is taken from the SoC sound driver, the .copy
+> callback writes this buffer as follow: 32 bytes (left channel) to
+> memory locations from *hwoff to *hwoff+31, and 32 bytes (right
+> channel) for *hwoff+32 to *hwoff+63.
+> Problem is when my buffer is not multiple of 64 bytes, for example if
+> the buffer size is < 64. If I receive a buffer of lenght 32 byte than
+> my DMA memory is filled as follows: 16 bytes from *hwoff to *hwoff+15
+> and 16 bytes from *hwoff+32 to *hwoff+47, leaving 32 bytes in the
+> block not initialized.
 
---8tUgZ4IE8L4vmMyh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+These bytes are written later.  And if they are not written fast enough,
+you get an underrun.  This is no difference from any other sound card.
 
-On Thu, Dec 04, 2014 at 05:00:13PM -0800, Dylan Reid wrote:
-> The volume blocks have an step of 0.375dB, but TLV uses 0.01dB for
-> units.  Only use the resolution supported, ignoring the LSB of the
-> volume register.  This results in half the steps and 0.75dB per step,
-> but reports accurate levels through TLV.  Update the masks to reflect
-> that these are registers have the LSB ignored.
+> In some way I should always guarantee that the size of the buffer
+> passed to my .copy callback is multiple of 64 bytes.
 
-Applied, thanks.
+The .copy callback just copies samples to memory; this is possible
+with any alignment.
 
---8tUgZ4IE8L4vmMyh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUgZIsAAoJECTWi3JdVIfQVo0H/2rpX3KMHJZ+u5FrhyuMRbz6
-jvWyq3mB2ftOTL3fH3qju+9kQZMXsqqpfhDJNsxaN3uOYPUG7n06qoGjdCZoNt78
-B9hQEOViiy4JYBeEWCUPxOtmUgBgY4QAvJuzYlDbQjBtzK1O4pXd8AUOJMnvxXqt
-K38ugRnkWsKifX/5derMYpMJonPiIwOYPxJZOjQ1t9IZR0iQ05ThA8K6D2eG2sDQ
-C8PXKqwtnHRBLWzO5AomRGMp4CBD7vpbxCEkAL+RoPs7ATmCLcp60Y8QugCIIM+h
-MZW9h6ySqjY7HUldj3O91Mx5kqba9+W7aS5kmQvxg6hjgykmId2d4AugjhwjBoA=
-=0bWb
------END PGP SIGNATURE-----
-
---8tUgZ4IE8L4vmMyh--
-
---===============4447509984367914845==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The DMA runs asynchronously, and uses its own pointer.
 
 
---===============4447509984367914845==--
+Regards,
+Clemens
