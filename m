@@ -1,22 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: <bencoxdev@gmail.com>
 Subject: Re: Nodes, Widgets,
 	ELD and Digital Surround 5.1 (HDMI) Output?
-Date: Fri, 5 Dec 2014 10:33:20 +0800
-Message-ID: <CAN8cciZ5VmEPqC54NSjL-Txg+i-+9Ftvt0iEN-GVt6cAEEDWAg@mail.gmail.com>
+Date: Fri, 5 Dec 2014 09:41:34 -0000
+Message-ID: <4E4A612742FA4CEF85A52A8A16AADF78@Lyra>
 References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
  <547EBCFF.5030204@canonical.com> <547EC2BF.3080601@gmail.com>
- <46543BFB759444F4B56F5153F4727DEE@Lyra>
- <548054D1.1000302@gmail.com>
+ <46543BFB759444F4B56F5153F4727DEE@Lyra> <548054D1.1000302@gmail.com>
+Reply-To: bencoxdev@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f45.google.com (mail-qg0-f45.google.com
- [209.85.192.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 283F1264F2D
- for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2014 03:33:21 +0100 (CET)
-Received: by mail-qg0-f45.google.com with SMTP id f51so13620903qge.18
- for <alsa-devel@alsa-project.org>; Thu, 04 Dec 2014 18:33:20 -0800 (PST)
+Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EDC4260597
+ for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2014 10:42:07 +0100 (CET)
+Received: by mail-wg0-f52.google.com with SMTP id a1so416259wgh.11
+ for <alsa-devel@alsa-project.org>; Fri, 05 Dec 2014 01:42:06 -0800 (PST)
 In-Reply-To: <548054D1.1000302@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,47 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: bencoxdev@gmail.com, ALSA Mailing list <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>, ALSA Mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->> Hi Guys,
->>     Thank you for your input it's much appreciated.
->>     I have now produced the pulse audio log as suggested and it appears
-that
->> when an attempt to open the Digital Surround 5.1 device, it fails with a
->> "No such file or directory" error. Here is a snippet of the log showing
-the
->> error.
->> (   0.456|   0.000) D: [pulseaudio] alsa-mixer.c: Looking at profile
-output:iec958-ac3-surround-51
->> (   0.456|   0.000) D: [pulseaudio] alsa-mixer.c: Checking for playback
-on Digital Surround 5.1 (IEC958/AC3) (iec958-ac3-surround-51)
->> (   0.456|   0.000) D: [pulseaudio] alsa-util.c: Trying a52:1 with
-SND_PCM_NO_AUTO_FORMAT ...
->> (   0.456|   0.000) I: [pulseaudio] (alsa-lib)pcm.c: Unknown PCM a52:1
->> (   0.456|   0.000) I: [pulseaudio] alsa-util.c: Error opening PCM
-device a52:1: No such file or directory
->> So I guess the next question is what is responsible for producing the
->> required device?
->
->
-> This is not the correct device. This is a software encoder that is not
-installed on your computer. It will degrade audio quality by compression,
-eat CPU time, kill PulseAudio for exhausting the real-time budget, and is
-generally not needed on HDMI, because HDMI can transport PCM 5.1 streams
-just fine.
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/hda_proc.c?id=c4920606757224d0c480f25839f1cef6901a2167
-
-Multi channel lpcm seem need AC_WCAP_CHAN_CNT_EXT
-
-+ if (wid_caps & AC_WCAP_STEREO) {
-+ unsigned int chans;
-+ chans = (wid_caps & AC_WCAP_CHAN_CNT_EXT) >> 13;
-+ chans = ((chans << 1) | 1) + 1;
-+ if (chans == 2)
-+ snd_iprintf(buffer, " Stereo");
-+ else
-+ snd_iprintf(buffer, " %d-Channels", chans);
-+ } else
+SGkgQWxleGFuZGVyLAogICAgICAgICAgICAgVGhhbmtzIGZvciBsb29raW5nIGF0IHRoaXMgZm9y
+IG1lLiBJIGhhdmUgZm9sbG93ZWQgeW91ciBlYXJsaWVyIGFkdmljZSBvbiBzZXR0aW5nIHVwIHRo
+ZSBjb3JyZWN0IEhETUkgZGV2aWNlLCB1bmZvcnR1bmF0ZWx5IGl0IGRvZXNu4oCZdCBzZWVtIHRv
+IGhhdmUgY2hhbmdlZCB0aGUgc2l0dWF0aW9uLgoKICAgIEkgYW0gdHJ5aW5nIHRvIGFjaGlldmUg
+QUMzIHBhc3MtdGhyb3VnaCBhbmQgbm90IGRlY29kZS9lbmNvZGUgdGhlIGF1ZGlvLiBBbnkgdGhv
+dWdodHMgdGhhdCB5b3UgbWF5IGhhdmUgYWJvdXQgdGhpcyB3b3VsZCBiZSBtdWNoIGFwcHJlY2lh
+dGVkLgoKVElBCkJlbgoKRnJvbTogQWxleGFuZGVyIEUuIFBhdHJha292IApTZW50OiBUaHVyc2Rh
+eSwgRGVjZW1iZXIgMDQsIDIwMTQgMTI6MzQgUE0KVG86IGJlbmNveGRldkBnbWFpbC5jb20gOyBE
+YXZpZCBIZW5uaW5nc3NvbiA7IEFMU0EgTWFpbGluZyBsaXN0IApTdWJqZWN0OiBSZTogW2Fsc2Et
+ZGV2ZWxdIE5vZGVzLCBXaWRnZXRzLCBFTEQgYW5kIERpZ2l0YWwgU3Vycm91bmQgNS4xIChIRE1J
+KSBPdXRwdXQ/CjA0LjEyLjIwMTQgMTU6NTUsIGJlbmNveGRldkBnbWFpbC5jb20gd3JvdGU6Cgog
+IEhpIEd1eXMsCiAgICAgIFRoYW5rIHlvdSBmb3IgeW91ciBpbnB1dCBpdCdzIG11Y2ggYXBwcmVj
+aWF0ZWQuCgogICAgICBJIGhhdmUgbm93IHByb2R1Y2VkIHRoZSBwdWxzZSBhdWRpbyBsb2cgYXMg
+c3VnZ2VzdGVkIGFuZCBpdCBhcHBlYXJzIHRoYXQgCiAgd2hlbiBhbiBhdHRlbXB0IHRvIG9wZW4g
+dGhlIERpZ2l0YWwgU3Vycm91bmQgNS4xIGRldmljZSwgaXQgZmFpbHMgd2l0aCBhIAogICJObyBz
+dWNoIGZpbGUgb3IgZGlyZWN0b3J5IiBlcnJvci4gSGVyZSBpcyBhIHNuaXBwZXQgb2YgdGhlIGxv
+ZyBzaG93aW5nIHRoZSAKICBlcnJvci4KCiAgKCAgIDAuNDU2fCAgIDAuMDAwKSBEOiBbcHVsc2Vh
+dWRpb10gYWxzYS1taXhlci5jOiBMb29raW5nIGF0IHByb2ZpbGUgb3V0cHV0OmllYzk1OC1hYzMt
+c3Vycm91bmQtNTEKICAoICAgMC40NTZ8ICAgMC4wMDApIEQ6IFtwdWxzZWF1ZGlvXSBhbHNhLW1p
+eGVyLmM6IENoZWNraW5nIGZvciBwbGF5YmFjayBvbiBEaWdpdGFsIFN1cnJvdW5kIDUuMSAoSUVD
+OTU4L0FDMykgKGllYzk1OC1hYzMtc3Vycm91bmQtNTEpCiAgKCAgIDAuNDU2fCAgIDAuMDAwKSBE
+OiBbcHVsc2VhdWRpb10gYWxzYS11dGlsLmM6IFRyeWluZyBhNTI6MSB3aXRoIFNORF9QQ01fTk9f
+QVVUT19GT1JNQVQgLi4uCiAgKCAgIDAuNDU2fCAgIDAuMDAwKSBJOiBbcHVsc2VhdWRpb10gKGFs
+c2EtbGliKXBjbS5jOiBVbmtub3duIFBDTSBhNTI6MQogICggICAwLjQ1NnwgICAwLjAwMCkgSTog
+W3B1bHNlYXVkaW9dIGFsc2EtdXRpbC5jOiBFcnJvciBvcGVuaW5nIFBDTSBkZXZpY2UgYTUyOjE6
+IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKCiAgU28gSSBndWVzcyB0aGUgbmV4dCBxdWVzdGlv
+biBpcyB3aGF0IGlzIHJlc3BvbnNpYmxlIGZvciBwcm9kdWNpbmcgdGhlIAogIHJlcXVpcmVkIGRl
+dmljZT8KCgpUaGlzIGlzIG5vdCB0aGUgY29ycmVjdCBkZXZpY2UuIFRoaXMgaXMgYSBzb2Z0d2Fy
+ZSBlbmNvZGVyIHRoYXQgaXMgbm90IGluc3RhbGxlZCBvbiB5b3VyIGNvbXB1dGVyLiBJdCB3aWxs
+IGRlZ3JhZGUgYXVkaW8gcXVhbGl0eSBieSBjb21wcmVzc2lvbiwgZWF0IENQVSB0aW1lLCBraWxs
+IFB1bHNlQXVkaW8gZm9yIGV4aGF1c3RpbmcgdGhlIHJlYWwtdGltZSBidWRnZXQsIGFuZCBpcyBn
+ZW5lcmFsbHkgbm90IG5lZWRlZCBvbiBIRE1JLCBiZWNhdXNlIEhETUkgY2FuIHRyYW5zcG9ydCBQ
+Q00gNS4xIHN0cmVhbXMganVzdCBmaW5lLgoKUGxlYXNlIHNlZSBteSBlYXJsaWVyIHJlcGx5IGhv
+dyB0byBmb3JjZSBQdWxzZUF1ZGlvIGludG8gb3BlbmluZyB0aGUgY29ycmVjdCBIRE1JIGRldmlj
+ZS4KCi0tIApBbGV4YW5kZXIgRS4gUGF0cmFrb3YKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
