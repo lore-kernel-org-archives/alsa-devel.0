@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/15] ALSA: oxfw: Add support for
-	Behringer/Mackie devices
-Date: Sun,  7 Dec 2014 22:19:04 +0900
-Message-ID: <1417958348-30333-12-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/15] ALSA: oxfw: Add support for AV/C stream
+	format command to get/set supported stream formation
+Date: Sun,  7 Dec 2014 22:19:00 +0900
+Message-ID: <1417958348-30333-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1417958348-30333-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id CFC26260689
+ by alsa0.perex.cz (Postfix) with ESMTP id BCBFE260682
  for <alsa-devel@alsa-project.org>; Sun,  7 Dec 2014 14:19:16 +0100 (CET)
 In-Reply-To: <1417958348-30333-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,183 +25,244 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Some devices produced by Behringer/Mackie are based on OXFW970/971. This
-commit adds support for them. Additionally, this commit changes the way to
-name card with some information in config rom.
+OXFW970/971 may supports AV/C Stream Format Information Specification 1.1
+Working Draft (Apr 2005, 1394TA). By using this command, drivers can get to know
+stream formations which device supports.
 
-Ids of some Mackie(Loud) models are not identified, therefore this commit
-applies name detection for these models.
+This commit adds 'EXTENDED STREAM FORMAT INFORMATION' command. This command
+has two subfunctions, 'SINGLE' and 'LIST'. Drivers can use 'SINGLE' subfunction
+to know/set current formation of AMDTP stream, Drivers can use 'LIST'
+subfunction to know an available formation of AMDTP stream in a certain sampling
+rate.
 
-The devices support capture/playback of PCM-samples and some of them
-supports capture/playback of MIDI messages. These functionalities are
-implemented by followed commits.
+But some devices don't implement the 'LIST' subfunction. So this commit uses
+an assumption that 'if they don't implement it, they don't change stream
+formation depending on current each sampling rate'. With this assumption, this
+driver generates formations for such devices by:
+ 1.getting current formation by SINGLE subfunction
+ 2.getting supported sampling rates
+ 3.applying current formation for all of supported sampling rates
+
+Followed commit implements a parser of this format information.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig     |  6 +++
- sound/firewire/oxfw/oxfw.c | 91 +++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 91 insertions(+), 6 deletions(-)
+ sound/firewire/oxfw/Makefile       |   2 +-
+ sound/firewire/oxfw/oxfw-command.c | 153 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw.h         |  33 ++++++++
+ 3 files changed, 187 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/oxfw/oxfw-command.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 0932860..6364e5b 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -31,6 +31,12 @@ config SND_OXFW
- 	  Oxford Semiconductor FW970/971 chipset.
- 	   * Griffin Firewave
- 	   * LaCie Firewire Speakers
-+	   * Behringer F-Control Audio 202
-+	   * Mackie(Loud) Onyx-i series (former models)
-+	   * Mackie(Loud) Onyx Satellite
-+	   * Mackie(Loud) Tapco Link.Firewire
-+	   * Mackie(Loud) d.2 pro/d.4 pro
-+	   * Mackie(Loud) U.420/U.420d
- 
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-oxfw.
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 4256398..26ce615 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -14,7 +14,9 @@
- #define OXFORD_HARDWARE_ID_OXFW970	0x39443841
- #define OXFORD_HARDWARE_ID_OXFW971	0x39373100
- 
-+#define VENDOR_LOUD		0x000ff2
- #define VENDOR_GRIFFIN		0x001292
-+#define VENDOR_BEHRINGER	0x001564
- #define VENDOR_LACIE		0x00d04b
- 
- #define SPECIFIER_1394TA	0x00a02d
-@@ -25,22 +27,69 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
- 
-+static bool detect_loud_models(struct fw_unit *unit)
+diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
+index 0cf48fd..b107134 100644
+--- a/sound/firewire/oxfw/Makefile
++++ b/sound/firewire/oxfw/Makefile
+@@ -1,2 +1,2 @@
+-snd-oxfw-objs := oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
++snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
+ obj-m += snd-oxfw.o
+diff --git a/sound/firewire/oxfw/oxfw-command.c b/sound/firewire/oxfw/oxfw-command.c
+new file mode 100644
+index 0000000..8c603c5
+--- /dev/null
++++ b/sound/firewire/oxfw/oxfw-command.c
+@@ -0,0 +1,153 @@
++/*
++ * oxfw_command.c - a part of driver for OXFW970/971 based devices
++ *
++ * Copyright (c) 2014 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "oxfw.h"
++
++int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
++			  unsigned int pid, u8 *format, unsigned int len)
 +{
-+	const char *const models[] = {
-+		"Onyxi",
-+		"Onyx-i",
-+		"d.Pro",
-+		"Mackie Onyx Satellite",
-+		"Tapco LINK.firewire 4x6",
-+		"U.420"};
-+	char model[32];
-+	unsigned int i;
++	u8 *buf;
 +	int err;
 +
-+	err = fw_csr_string(unit->directory, CSR_MODEL,
-+			    model, sizeof(model));
-+	if (err < 0)
-+		return err;
++	buf = kmalloc(len + 10, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
 +
-+	for (i = 0; i < ARRAY_SIZE(models); i++) {
-+		if (strcmp(models[i], model) == 0)
-+			break;
-+	}
++	buf[0] = 0x00;		/* CONTROL */
++	buf[1] = 0xff;		/* UNIT */
++	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
++	buf[3] = 0xc0;		/* SINGLE subfunction */
++	buf[4] = dir;		/* Plug Direction */
++	buf[5] = 0x00;		/* UNIT */
++	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
++	buf[7] = 0xff & pid;	/* Plug ID */
++	buf[8] = 0xff;		/* Padding */
++	buf[9] = 0xff;		/* Support status in response */
++	memcpy(buf + 10, format, len);
 +
-+	return (i < ARRAY_SIZE(models));
++	/* do transaction and check buf[1-7] are the same against command */
++	err = fcp_avc_transaction(unit, buf, len + 10, buf, len + 10,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
++				  BIT(6) | BIT(7) | BIT(8));
++	if ((err > 0) && (err < len + 10))
++		err = -EIO;
++	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a) /* REJECTED */
++		err = -EINVAL;
++	else
++		err = 0;
++
++	kfree(buf);
++
++	return err;
 +}
 +
- static int name_card(struct snd_oxfw *oxfw)
- {
- 	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
-+	char vendor[24];
-+	char model[32];
- 	const char *d, *v, *m;
- 	u32 firmware;
- 	int err;
- 
-+	/* get vendor name from root directory */
-+	err = fw_csr_string(fw_dev->config_rom + 5, CSR_VENDOR,
-+			    vendor, sizeof(vendor));
++int avc_stream_get_format(struct fw_unit *unit,
++			  enum avc_general_plug_dir dir, unsigned int pid,
++			  u8 *buf, unsigned int *len, unsigned int eid)
++{
++	unsigned int subfunc;
++	int err;
++
++	if (eid == 0xff)
++		subfunc = 0xc0;	/* SINGLE */
++	else
++		subfunc = 0xc1;	/* LIST */
++
++	buf[0] = 0x01;		/* STATUS */
++	buf[1] = 0xff;		/* UNIT */
++	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
++	buf[3] = subfunc;	/* SINGLE or LIST */
++	buf[4] = dir;		/* Plug Direction */
++	buf[5] = 0x00;		/* Unit */
++	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
++	buf[7] = 0xff & pid;	/* Plug ID */
++	buf[8] = 0xff;		/* Padding */
++	buf[9] = 0xff;		/* support status in response */
++	buf[10] = 0xff & eid;	/* entry ID for LIST subfunction */
++	buf[11] = 0xff;		/* padding */
++
++	/* do transaction and check buf[1-7] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 12, buf, *len,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
++				  BIT(6) | BIT(7));
++	if ((err > 0) && (err < 10))
++		err = -EIO;
++	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a)	/* REJECTED */
++		err = -EINVAL;
++	else if (buf[0] == 0x0b)	/* IN TRANSITION */
++		err = -EAGAIN;
++	/* LIST subfunction has entry ID */
++	else if ((subfunc == 0xc1) && (buf[10] != eid))
++		err = -EIO;
 +	if (err < 0)
 +		goto end;
 +
-+	/* get model name from unit directory */
-+	err = fw_csr_string(oxfw->unit->directory, CSR_MODEL,
-+			    model, sizeof(model));
-+	if (err < 0)
-+		goto end;
-+
- 	err = snd_fw_transaction(oxfw->unit, TCODE_READ_QUADLET_REQUEST,
- 				 OXFORD_FIRMWARE_ID_ADDRESS, &firmware, 4, 0);
- 	if (err < 0)
- 		goto end;
- 	be32_to_cpus(&firmware);
- 
--	d = oxfw->device_info->driver_name;
--	v = oxfw->device_info->vendor_name;
--	m = oxfw->device_info->model_name;
-+	/* to apply card definitions */
-+	if (oxfw->device_info) {
-+		d = oxfw->device_info->driver_name;
-+		v = oxfw->device_info->vendor_name;
-+		m = oxfw->device_info->model_name;
++	/* keep just stream format information */
++	if (subfunc == 0xc0) {
++		memmove(buf, buf + 10, err - 10);
++		*len = err - 10;
 +	} else {
-+		d = "OXFW";
-+		v = vendor;
-+		m = model;
++		memmove(buf, buf + 11, err - 11);
++		*len = err - 11;
 +	}
- 
- 	strcpy(oxfw->card->driver, d);
- 	strcpy(oxfw->card->mixername, m);
-@@ -75,6 +124,9 @@ static int oxfw_probe(struct fw_unit *unit,
- 	struct snd_oxfw *oxfw;
- 	int err;
- 
-+	if ((id->vendor_id == VENDOR_LOUD) && !detect_loud_models(unit))
-+		return -ENODEV;
 +
- 	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
- 			   sizeof(*oxfw), &card);
- 	if (err < 0)
-@@ -99,9 +151,11 @@ static int oxfw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
--	err = snd_oxfw_create_mixer(oxfw);
--	if (err < 0)
--		goto error;
-+	if (oxfw->device_info) {
-+		err = snd_oxfw_create_mixer(oxfw);
-+		if (err < 0)
-+			goto error;
++	err = 0;
++end:
++	return err;
++}
++
++int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
++				enum avc_general_plug_dir dir,
++				unsigned short pid)
++{
++	unsigned int sfc;
++	u8 *buf;
++	int err;
++
++	for (sfc = 0; sfc < CIP_SFC_COUNT; sfc++) {
++		if (amdtp_rate_table[sfc] == rate)
++			break;
 +	}
- 
- 	snd_oxfw_proc_init(oxfw);
- 
-@@ -185,6 +239,31 @@ static const struct ieee1394_device_id oxfw_id_table[] = {
- 		.version      = VERSION_AVC,
- 		.driver_data  = (kernel_ulong_t)&lacie_speakers,
- 	},
-+	/* Behringer,F-Control Audio 202 */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= VENDOR_BEHRINGER,
-+		.model_id	= 0x00fc22,
-+	},
-+	/*
-+	 * Any Mackie(Loud) models (name string/model id):
-+	 *  Onyx-i series (former models):	0x081216
-+	 *  Mackie Onyx Satellite:		0x00200f
-+	 *  Tapco LINK.firewire 4x6:		0x000460
-+	 *  d.2 pro:				Unknown
-+	 *  d.4 pro:				Unknown
-+	 *  U.420:				Unknown
-+	 *  U.420d:				Unknown
-+	 */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_SPECIFIER_ID |
-+				  IEEE1394_MATCH_VERSION,
-+		.vendor_id	= VENDOR_LOUD,
-+		.specifier_id	= SPECIFIER_1394TA,
-+		.version	= VERSION_AVC,
-+	},
- 	{ }
++	if (sfc == CIP_SFC_COUNT)
++		return -EINVAL;
++
++	buf = kzalloc(8, GFP_KERNEL);
++	if (buf == NULL)
++		return -ENOMEM;
++
++	buf[0] = 0x02;		/* SPECIFIC INQUIRY */
++	buf[1] = 0xff;		/* UNIT */
++	if (dir == AVC_GENERAL_PLUG_DIR_IN)
++		buf[2] = 0x19;	/* INPUT PLUG SIGNAL FORMAT */
++	else
++		buf[2] = 0x18;	/* OUTPUT PLUG SIGNAL FORMAT */
++	buf[3] = 0xff & pid;	/* plug id */
++	buf[4] = 0x90;		/* EOH_1, Form_1, FMT. AM824 */
++	buf[5] = 0x07 & sfc;	/* FDF-hi. AM824, frequency */
++	buf[6] = 0xff;		/* FDF-mid. AM824, SYT hi (not used) */
++	buf[7] = 0xff;		/* FDF-low. AM824, SYT lo (not used) */
++
++	/* do transaction and check buf[1-5] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
++	if ((err > 0) && (err < 8))
++		err = -EIO;
++	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	if (err < 0)
++		goto end;
++
++	err = 0;
++end:
++	kfree(buf);
++	return err;
++}
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index a61c75c..a7031d4 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -49,6 +49,39 @@ struct snd_oxfw {
+ 	s16 volume_max;
  };
- MODULE_DEVICE_TABLE(ieee1394, oxfw_id_table);
+ 
++/*
++ * AV/C Stream Format Information Specification 1.1 Working Draft
++ * (Apr 2005, 1394TA)
++ */
++int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
++			  unsigned int pid, u8 *format, unsigned int len);
++int avc_stream_get_format(struct fw_unit *unit,
++			  enum avc_general_plug_dir dir, unsigned int pid,
++			  u8 *buf, unsigned int *len, unsigned int eid);
++static inline int
++avc_stream_get_format_single(struct fw_unit *unit,
++			     enum avc_general_plug_dir dir, unsigned int pid,
++			     u8 *buf, unsigned int *len)
++{
++	return avc_stream_get_format(unit, dir, pid, buf, len, 0xff);
++}
++static inline int
++avc_stream_get_format_list(struct fw_unit *unit,
++			   enum avc_general_plug_dir dir, unsigned int pid,
++			   u8 *buf, unsigned int *len,
++			   unsigned int eid)
++{
++	return avc_stream_get_format(unit, dir, pid, buf, len, eid);
++}
++
++/*
++ * AV/C Digital Interface Command Set General Specification 4.2
++ * (Sep 2004, 1394TA)
++ */
++int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
++				enum avc_general_plug_dir dir,
++				unsigned short pid);
++
+ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
+ int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
 -- 
 2.1.0
