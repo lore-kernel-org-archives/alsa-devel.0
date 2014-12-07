@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/15] ALSA: dice: Support for non SYT-Match
-	sampling clock source mode
-Date: Sun,  7 Dec 2014 22:18:56 +0900
-Message-ID: <1417958348-30333-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/15] ALSA: dice: Add support for duplex
+	streams with synchronization
+Date: Sun,  7 Dec 2014 22:18:55 +0900
+Message-ID: <1417958348-30333-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1417958348-30333-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id F0489260666
+ by alsa0.perex.cz (Postfix) with ESMTP id 023C3260671
  for <alsa-devel@alsa-project.org>; Sun,  7 Dec 2014 14:19:14 +0100 (CET)
 In-Reply-To: <1417958348-30333-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,168 +25,570 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit allows this driver to handle devices with non SYT-Match
-sampling clock source.
+This commit adds support for AMDTP in-stream. As a result, Dice driver
+supports full duplex streams with synchronization.
 
-When sampling clock source is SYT-Match mode, devices handle
-'presentation timestamp' in received packets and generates sampling clock
-according to the information. In this case, driver is synchronization master
-and must transfer correct value in SYT field of each packets in outgoing
-stream, then the outgoing stream is a master stream.
+AMDTP can transfer timestamps in its packets. By handling the timestamp,
+devices can synchronize to the other devices or drivers on the same bus.
 
-On the other hand, non SYT-Match mode, devices do this. So drivers must pick
-up the value in SYT field of incoming packets and use the value for outgoing
-stream. Currently firewire-lib module achieve this work.
+When Dice chipset is 'enabled', it starts streams with correct settings.
+This 'enable' register is global, thus, when a stream is started to run,
+an opposite stream can't start unless turning off 'enable'. Therefore
+a pair of streams must be running. This causes a loss of CPU usage when
+single stream is needed for neither playbacking or capturing.
 
-Furthermore, without SYT-Match and internal clock source, the sampling rate
-should be fixed for the other devices connected to the handled device. This
-commit add a restriction of sampling rate at this situation.
+This commit assumes that playback-only models also have a functionality
+to transmit stream for delivering timestamps.
 
-With these implementations, this driver has no need to set clock source.
-This commit remove set function.
+Currently, sampling clock source is restricted to SYT-Match mode. This is
+improved in followed commit. I note that at SYT-Match mode, Dice can select
+from 4 streams for synchronization but this driver uses the 1st stream only
+for simplicity.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-pcm.c         | 35 ++++++++++++++++++++++++++++++++++
- sound/firewire/dice/dice-stream.c      | 35 ++++++++++++++++++++++------------
- sound/firewire/dice/dice-transaction.c |  5 -----
- sound/firewire/dice/dice.h             |  2 --
- 4 files changed, 58 insertions(+), 19 deletions(-)
+ sound/firewire/dice/dice-pcm.c    |   4 +-
+ sound/firewire/dice/dice-stream.c | 230 ++++++++++++++++++++++++++++----------
+ sound/firewire/dice/dice.c        |  29 +++--
+ sound/firewire/dice/dice.h        |  26 +++--
+ 4 files changed, 202 insertions(+), 87 deletions(-)
 
 diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
-index b9ce026..062b7a3 100644
+index b185391..b9ce026 100644
 --- a/sound/firewire/dice/dice-pcm.c
 +++ b/sound/firewire/dice/dice-pcm.c
-@@ -140,6 +140,8 @@ end:
- static int pcm_open(struct snd_pcm_substream *substream)
- {
+@@ -181,7 +181,7 @@ static int playback_hw_free(struct snd_pcm_substream *substream)
  	struct snd_dice *dice = substream->private_data;
-+	unsigned int source, rate;
-+	bool internal;
+ 
+ 	mutex_lock(&dice->mutex);
+-	snd_dice_stream_stop(dice);
++	snd_dice_stream_stop_duplex(dice);
+ 	mutex_unlock(&dice->mutex);
+ 
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
+@@ -193,7 +193,7 @@ static int playback_prepare(struct snd_pcm_substream *substream)
  	int err;
  
- 	err = snd_dice_stream_lock_try(dice);
-@@ -149,6 +151,39 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	err = init_hw_info(dice, substream);
- 	if (err < 0)
- 		goto err_locked;
-+
-+	err = snd_dice_transaction_get_clock_source(dice, &source);
-+	if (err < 0)
-+		goto err_locked;
-+	switch (source) {
-+	case CLOCK_SOURCE_AES1:
-+	case CLOCK_SOURCE_AES2:
-+	case CLOCK_SOURCE_AES3:
-+	case CLOCK_SOURCE_AES4:
-+	case CLOCK_SOURCE_AES_ANY:
-+	case CLOCK_SOURCE_ADAT:
-+	case CLOCK_SOURCE_TDIF:
-+	case CLOCK_SOURCE_WC:
-+		internal = false;
-+		break;
-+	default:
-+		internal = true;
-+		break;
-+	}
-+
-+	/*
-+	 * When source of clock is not internal, available sampling rate is
-+	 * limited at current sampling rate.
-+	 */
-+	if (!internal) {
-+		err = snd_dice_transaction_get_rate(dice, &rate);
-+		if (err < 0)
-+			goto err_locked;
-+		substream->runtime->hw.rate_min = rate;
-+		substream->runtime->hw.rate_max = rate;
-+	}
-+
-+	snd_pcm_set_sync(substream);
- end:
- 	return err;
- err_locked:
+ 	mutex_lock(&dice->mutex);
+-	err = snd_dice_stream_start(dice, substream->runtime->rate);
++	err = snd_dice_stream_start_duplex(dice, substream->runtime->rate);
+ 	mutex_unlock(&dice->mutex);
+ 	if (err >= 0)
+ 		amdtp_stream_pcm_prepare(&dice->rx_stream);
 diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index e60b84d..20765a0 100644
+index b9d7a48..e60b84d 100644
 --- a/sound/firewire/dice/dice-stream.c
 +++ b/sound/firewire/dice/dice-stream.c
-@@ -161,9 +161,29 @@ end:
+@@ -41,55 +41,79 @@ int snd_dice_stream_get_rate_mode(struct snd_dice *dice, unsigned int rate,
+ 	return -EINVAL;
+ }
  
- static int get_sync_mode(struct snd_dice *dice, enum cip_flags *sync_mode)
+-static void release_resources(struct snd_dice *dice)
++static void release_resources(struct snd_dice *dice,
++			      struct fw_iso_resources *resources)
  {
--	/* Currently, clock source is fixed at SYT-Match mode. */
--	*sync_mode = 0;
--	return 0;
-+	u32 source;
-+	int err;
+ 	unsigned int channel;
+ 
+ 	/* Reset channel number */
+ 	channel = cpu_to_be32((u32)-1);
+-	snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS, &channel, 4);
+-
+-	fw_iso_resources_free(&dice->rx_resources);
++	if (resources == &dice->tx_resources)
++		snd_dice_transaction_write_tx(dice, TX_ISOCHRONOUS,
++					      &channel, 4);
++	else
++		snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS,
++					      &channel, 4);
 +
-+	err = snd_dice_transaction_get_clock_source(dice, &source);
-+	if (err < 0)
++	fw_iso_resources_free(resources);
+ }
+ 
+-static int keep_resources(struct snd_dice *dice, unsigned int max_payload_bytes)
++static int keep_resources(struct snd_dice *dice,
++			  struct fw_iso_resources *resources,
++			  unsigned int max_payload_bytes)
+ {
+ 	unsigned int channel;
+ 	int err;
+ 
+-	err = fw_iso_resources_allocate(&dice->rx_resources, max_payload_bytes,
++	err = fw_iso_resources_allocate(resources, max_payload_bytes,
+ 				fw_parent_device(dice->unit)->max_speed);
+ 	if (err < 0)
+ 		goto end;
+ 
+ 	/* Set channel number */
+-	channel = cpu_to_be32(dice->rx_resources.channel);
+-	err = snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS,
+-					    &channel, 4);
++	channel = cpu_to_be32(resources->channel);
++	if (resources == &dice->tx_resources)
++		err = snd_dice_transaction_write_tx(dice, TX_ISOCHRONOUS,
++						    &channel, 4);
++	else
++		err = snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS,
++						    &channel, 4);
+ 	if (err < 0)
+-		release_resources(dice);
++		release_resources(dice, resources);
+ end:
+ 	return err;
+ }
+ 
+-static void stop_stream(struct snd_dice *dice)
++static void stop_stream(struct snd_dice *dice, struct amdtp_stream *stream)
+ {
+-	if (!amdtp_stream_running(&dice->rx_stream))
+-		return;
++	amdtp_stream_pcm_abort(stream);
++	amdtp_stream_stop(stream);
+ 
+-	amdtp_stream_pcm_abort(&dice->rx_stream);
+-	amdtp_stream_stop(&dice->rx_stream);
+-	release_resources(dice);
++	if (stream == &dice->tx_stream)
++		release_resources(dice, &dice->tx_resources);
++	else
++		release_resources(dice, &dice->rx_resources);
+ }
+ 
+-static int start_stream(struct snd_dice *dice, unsigned int rate)
++static int start_stream(struct snd_dice *dice, struct amdtp_stream *stream,
++			unsigned int rate)
+ {
++	struct fw_iso_resources *resources;
+ 	unsigned int i, mode, pcm_chs, midi_ports;
+ 	int err;
+ 
+ 	err = snd_dice_stream_get_rate_mode(dice, rate, &mode);
+ 	if (err < 0)
+ 		goto end;
++	if (stream == &dice->tx_stream) {
++		resources = &dice->tx_resources;
++		pcm_chs = dice->tx_channels[mode];
++		midi_ports = dice->tx_midi_ports[mode];
++	} else {
++		resources = &dice->rx_resources;
++		pcm_chs = dice->rx_channels[mode];
++		midi_ports = dice->rx_midi_ports[mode];
++	}
+ 
+ 	/*
+ 	 * At 176.4/192.0 kHz, Dice has a quirk to transfer two PCM frames in
+@@ -101,51 +125,71 @@ static int start_stream(struct snd_dice *dice, unsigned int rate)
+ 	 * For this quirk, blocking mode is required and PCM buffer size should
+ 	 * be aligned to SYT_INTERVAL.
+ 	 */
+-	pcm_chs = dice->rx_channels[mode];
+-	midi_ports = dice->rx_midi_ports[mode];
+ 	if (mode > 1) {
+ 		rate /= 2;
+ 		pcm_chs *= 2;
+-		dice->rx_stream.double_pcm_frames = true;
++		stream->double_pcm_frames = true;
+ 	} else {
+-		dice->rx_stream.double_pcm_frames = false;
++		stream->double_pcm_frames = false;
+ 	}
+ 
+-	amdtp_stream_set_parameters(&dice->rx_stream, rate,
+-				    pcm_chs, midi_ports);
++	amdtp_stream_set_parameters(stream, rate, pcm_chs, midi_ports);
+ 	if (mode > 1) {
+ 		pcm_chs /= 2;
+ 
+ 		for (i = 0; i < pcm_chs; i++) {
+-			dice->rx_stream.pcm_positions[i] = i * 2;
+-			dice->rx_stream.pcm_positions[i + pcm_chs] = i * 2 + 1;
++			stream->pcm_positions[i] = i * 2;
++			stream->pcm_positions[i + pcm_chs] = i * 2 + 1;
+ 		}
+ 	}
+ 
+-	err = keep_resources(dice,
+-			     amdtp_stream_get_max_payload(&dice->rx_stream));
++	err = keep_resources(dice, resources,
++			     amdtp_stream_get_max_payload(stream));
+ 	if (err < 0) {
+ 		dev_err(&dice->unit->device,
+ 			"fail to keep isochronous resources\n");
+ 		goto end;
+ 	}
+ 
+-	err = amdtp_stream_start(&dice->rx_stream, dice->rx_resources.channel,
++	err = amdtp_stream_start(stream, resources->channel,
+ 				 fw_parent_device(dice->unit)->max_speed);
+ 	if (err < 0)
+-		release_resources(dice);
++		release_resources(dice, resources);
+ end:
+ 	return err;
+ }
+ 
+-int snd_dice_stream_start(struct snd_dice *dice, unsigned int rate)
++static int get_sync_mode(struct snd_dice *dice, enum cip_flags *sync_mode)
++{
++	/* Currently, clock source is fixed at SYT-Match mode. */
++	*sync_mode = 0;
++	return 0;
++}
++
++int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+ {
++	struct amdtp_stream *master, *slave;
+ 	unsigned int curr_rate;
+-	int err;
++	enum cip_flags sync_mode;
++	int err = 0;
++
++	if (dice->substreams_counter == 0)
 +		goto end;
 +
-+	switch (source) {
-+	/* So-called 'SYT Match' modes, sync_to_syt value of packets received */
-+	case CLOCK_SOURCE_ARX4:	/* in 4th stream */
-+	case CLOCK_SOURCE_ARX3:	/* in 3rd stream */
-+	case CLOCK_SOURCE_ARX2:	/* in 2nd stream */
-+		err = -ENOSYS;
-+		break;
-+	case CLOCK_SOURCE_ARX1:	/* in 1st stream, which this driver uses */
-+		*sync_mode = 0;
-+		break;
-+	default:
-+		*sync_mode = CIP_SYNC_TO_DEVICE;
-+		break;
++	err = get_sync_mode(dice, &sync_mode);
++	if (err < 0)
++		goto end;
++	if (sync_mode == CIP_SYNC_TO_DEVICE) {
++		master = &dice->tx_stream;
++		slave  = &dice->rx_stream;
++	} else {
++		master = &dice->rx_stream;
++		slave  = &dice->tx_stream;
++	}
+ 
+ 	/* Some packet queueing errors. */
+-	if (amdtp_streaming_error(&dice->rx_stream))
+-		stop_stream(dice);
++	if (amdtp_streaming_error(master) || amdtp_streaming_error(slave))
++		stop_stream(dice, master);
+ 
+ 	/* Stop stream if rate is different. */
+ 	err = snd_dice_transaction_get_rate(dice, &curr_rate);
+@@ -155,11 +199,14 @@ int snd_dice_stream_start(struct snd_dice *dice, unsigned int rate)
+ 		goto end;
+ 	}
+ 	if (rate != curr_rate)
+-		stop_stream(dice);
++		stop_stream(dice, master);
+ 
+-	if (!amdtp_stream_running(&dice->rx_stream)) {
++	if (!amdtp_stream_running(master)) {
++		stop_stream(dice, slave);
+ 		snd_dice_transaction_clear_enable(dice);
+ 
++		amdtp_stream_set_sync(sync_mode, master, slave);
++
+ 		err = snd_dice_transaction_set_rate(dice, rate);
+ 		if (err < 0) {
+ 			dev_err(&dice->unit->device,
+@@ -167,25 +214,35 @@ int snd_dice_stream_start(struct snd_dice *dice, unsigned int rate)
+ 			goto end;
+ 		}
+ 
+-		/* Start stream. */
+-		err = start_stream(dice, rate);
++		/* Start both streams. */
++		err = start_stream(dice, master, rate);
++		if (err < 0) {
++			dev_err(&dice->unit->device,
++				"fail to start AMDTP master stream\n");
++			goto end;
++		}
++		err = start_stream(dice, slave, rate);
+ 		if (err < 0) {
+ 			dev_err(&dice->unit->device,
+-				"fail to start AMDTP stream\n");
++				"fail to start AMDTP slave stream\n");
++			stop_stream(dice, master);
+ 			goto end;
+ 		}
+ 		err = snd_dice_transaction_set_enable(dice);
+ 		if (err < 0) {
+ 			dev_err(&dice->unit->device,
+ 				"fail to enable interface\n");
+-			stop_stream(dice);
++			stop_stream(dice, master);
++			stop_stream(dice, slave);
+ 			goto end;
+ 		}
+ 
+-		if (!amdtp_stream_wait_callback(&dice->rx_stream,
+-						CALLBACK_TIMEOUT)) {
++		/* Wait first callbacks */
++		if (!amdtp_stream_wait_callback(master, CALLBACK_TIMEOUT) ||
++		    !amdtp_stream_wait_callback(slave, CALLBACK_TIMEOUT)) {
+ 			snd_dice_transaction_clear_enable(dice);
+-			stop_stream(dice);
++			stop_stream(dice, master);
++			stop_stream(dice, slave);
+ 			err = -ETIMEDOUT;
+ 		}
+ 	}
+@@ -193,46 +250,93 @@ end:
+ 	return err;
+ }
+ 
+-void snd_dice_stream_stop(struct snd_dice *dice)
++void snd_dice_stream_stop_duplex(struct snd_dice *dice)
+ {
++	if (dice->substreams_counter > 0)
++		return;
++
+ 	snd_dice_transaction_clear_enable(dice);
+-	stop_stream(dice);
++
++	stop_stream(dice, &dice->tx_stream);
++	stop_stream(dice, &dice->rx_stream);
+ }
+ 
+-int snd_dice_stream_init(struct snd_dice *dice)
++static int init_stream(struct snd_dice *dice, struct amdtp_stream *stream)
+ {
+ 	int err;
++	struct fw_iso_resources *resources;
++	enum amdtp_stream_direction dir;
++
++	if (stream == &dice->tx_stream) {
++		resources = &dice->tx_resources;
++		dir = AMDTP_IN_STREAM;
++	} else {
++		resources = &dice->rx_resources;
++		dir = AMDTP_OUT_STREAM;
++	}
+ 
+-	err = fw_iso_resources_init(&dice->rx_resources, dice->unit);
++	err = fw_iso_resources_init(resources, dice->unit);
+ 	if (err < 0)
+ 		goto end;
+-	dice->rx_resources.channels_mask = 0x00000000ffffffffuLL;
++	resources->channels_mask = 0x00000000ffffffffuLL;
+ 
+-	err = amdtp_stream_init(&dice->rx_stream, dice->unit, AMDTP_OUT_STREAM,
+-				CIP_BLOCKING);
++	err = amdtp_stream_init(stream, dice->unit, dir, CIP_BLOCKING);
++	if (err < 0) {
++		amdtp_stream_destroy(stream);
++		fw_iso_resources_destroy(resources);
 +	}
 +end:
 +	return err;
- }
++}
++
++static void destroy_stream(struct snd_dice *dice, struct amdtp_stream *stream)
++{
++	amdtp_stream_destroy(stream);
++
++	if (stream == &dice->tx_stream)
++		fw_iso_resources_destroy(&dice->tx_resources);
++	else
++		fw_iso_resources_destroy(&dice->rx_resources);
++}
++
++int snd_dice_stream_init_duplex(struct snd_dice *dice)
++{
++	int err;
++
++	dice->substreams_counter = 0;
++
++	err = init_stream(dice, &dice->tx_stream);
+ 	if (err < 0)
+-		goto error;
++		goto end;
  
- int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
-@@ -310,15 +330,6 @@ int snd_dice_stream_init_duplex(struct snd_dice *dice)
- 		goto end;
- 
- 	err = init_stream(dice, &dice->rx_stream);
--	if (err < 0)
--		goto end;
--
--	/* Currently, clock source is fixed at SYT-Match mode. */
 -	err = snd_dice_transaction_set_clock_source(dice, CLOCK_SOURCE_ARX1);
--	if (err < 0) {
--		destroy_stream(dice, &dice->rx_stream);
--		destroy_stream(dice, &dice->tx_stream);
--	}
++	err = init_stream(dice, &dice->rx_stream);
+ 	if (err < 0)
+-		goto error;
++		goto end;
++
++	/* Currently, clock source is fixed at SYT-Match mode. */
++	err = snd_dice_transaction_set_clock_source(dice, CLOCK_SOURCE_ARX1);
++	if (err < 0) {
++		destroy_stream(dice, &dice->rx_stream);
++		destroy_stream(dice, &dice->tx_stream);
++	}
  end:
  	return err;
+-error:
+-	amdtp_stream_destroy(&dice->rx_stream);
+-	fw_iso_resources_destroy(&dice->rx_resources);
+-	return err;
  }
-diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
-index 1fe304c..aee7461 100644
---- a/sound/firewire/dice/dice-transaction.c
-+++ b/sound/firewire/dice/dice-transaction.c
-@@ -137,11 +137,6 @@ int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
  
- 	return err;
- }
--int snd_dice_transaction_set_clock_source(struct snd_dice *dice,
--					  unsigned int source)
--{
--	return set_clock_info(dice, UINT_MAX, source);
--}
- 
- int snd_dice_transaction_get_rate(struct snd_dice *dice, unsigned int *rate)
+-void snd_dice_stream_destroy(struct snd_dice *dice)
++void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
  {
+ 	snd_dice_transaction_clear_enable(dice);
+-	stop_stream(dice);
+-	amdtp_stream_destroy(&dice->rx_stream);
+-	fw_iso_resources_destroy(&dice->rx_resources);
++
++	stop_stream(dice, &dice->tx_stream);
++	destroy_stream(dice, &dice->tx_stream);
++
++	stop_stream(dice, &dice->rx_stream);
++	destroy_stream(dice, &dice->rx_stream);
++
++	dice->substreams_counter = 0;
+ }
+ 
+-void snd_dice_stream_update(struct snd_dice *dice)
++void snd_dice_stream_update_duplex(struct snd_dice *dice)
+ {
+ 	/*
+ 	 * On a bus reset, the DICE firmware disables streaming and then goes
+@@ -244,9 +348,11 @@ void snd_dice_stream_update(struct snd_dice *dice)
+ 	 */
+ 	dice->global_enabled = false;
+ 
+-	stop_stream(dice);
++	stop_stream(dice, &dice->rx_stream);
++	stop_stream(dice, &dice->tx_stream);
+ 
+ 	fw_iso_resources_update(&dice->rx_resources);
++	fw_iso_resources_update(&dice->tx_resources);
+ }
+ 
+ static void dice_lock_changed(struct snd_dice *dice)
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 03a7988..85bcfaf 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -30,7 +30,6 @@ static int dice_interface_check(struct fw_unit *unit)
+ 	int key, val, vendor = -1, model = -1, err;
+ 	unsigned int category, i;
+ 	__be32 *pointers, value;
+-	__be32 tx_data[4];
+ 	__be32 version;
+ 
+ 	pointers = kmalloc_array(ARRAY_SIZE(min_values), sizeof(__be32),
+@@ -85,16 +84,6 @@ static int dice_interface_check(struct fw_unit *unit)
+ 		}
+ 	}
+ 
+-	/* We support playback only. Let capture devices be handled by FFADO. */
+-	err = snd_fw_transaction(unit, TCODE_READ_BLOCK_REQUEST,
+-				 DICE_PRIVATE_SPACE +
+-				 be32_to_cpu(pointers[2]) * 4,
+-				 tx_data, sizeof(tx_data), 0);
+-	if (err < 0 || (tx_data[0] && tx_data[3])) {
+-		err = -ENODEV;
+-		goto end;
+-	}
+-
+ 	/*
+ 	 * Check that the implemented DICE driver specification major version
+ 	 * number matches.
+@@ -142,6 +131,8 @@ static int dice_read_mode_params(struct snd_dice *dice, unsigned int mode)
+ 	int err;
+ 
+ 	if (highest_supported_mode_rate(dice, mode, &rate) < 0) {
++		dice->tx_channels[mode] = 0;
++		dice->tx_midi_ports[mode] = 0;
+ 		dice->rx_channels[mode] = 0;
+ 		dice->rx_midi_ports[mode] = 0;
+ 		return 0;
+@@ -151,6 +142,14 @@ static int dice_read_mode_params(struct snd_dice *dice, unsigned int mode)
+ 	if (err < 0)
+ 		return err;
+ 
++	err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO,
++					   values, sizeof(values));
++	if (err < 0)
++		return err;
++
++	dice->tx_channels[mode]   = be32_to_cpu(values[0]);
++	dice->tx_midi_ports[mode] = be32_to_cpu(values[1]);
++
+ 	err = snd_dice_transaction_read_rx(dice, RX_NUMBER_AUDIO,
+ 					   values, sizeof(values));
+ 	if (err < 0)
+@@ -280,13 +279,13 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 
+ 	snd_dice_create_proc(dice);
+ 
+-	err = snd_dice_stream_init(dice);
++	err = snd_dice_stream_init_duplex(dice);
+ 	if (err < 0)
+ 		goto error;
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0) {
+-		snd_dice_stream_destroy(dice);
++		snd_dice_stream_destroy_duplex(dice);
+ 		goto error;
+ 	}
+ 
+@@ -304,7 +303,7 @@ static void dice_remove(struct fw_unit *unit)
+ 
+ 	snd_card_disconnect(dice->card);
+ 
+-	snd_dice_stream_destroy(dice);
++	snd_dice_stream_destroy_duplex(dice);
+ 
+ 	snd_card_free_when_closed(dice->card);
+ }
+@@ -317,7 +316,7 @@ static void dice_bus_reset(struct fw_unit *unit)
+ 	snd_dice_transaction_reinit(dice);
+ 
+ 	mutex_lock(&dice->mutex);
+-	snd_dice_stream_update(dice);
++	snd_dice_stream_update_duplex(dice);
+ 	mutex_unlock(&dice->mutex);
+ }
+ 
 diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index a62ee22..f30326e 100644
+index 8be530f..a62ee22 100644
 --- a/sound/firewire/dice/dice.h
 +++ b/sound/firewire/dice/dice.h
-@@ -152,8 +152,6 @@ static inline int snd_dice_transaction_read_sync(struct snd_dice *dice,
- 					 buf, len);
- }
+@@ -52,18 +52,28 @@ struct snd_dice {
+ 	unsigned int rsrv_offset;
  
--int snd_dice_transaction_set_clock_source(struct snd_dice *dice,
--					  unsigned int source);
- int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
- 					  unsigned int *source);
- int snd_dice_transaction_set_rate(struct snd_dice *dice, unsigned int rate);
+ 	unsigned int clock_caps;
++	unsigned int tx_channels[3];
+ 	unsigned int rx_channels[3];
++	unsigned int tx_midi_ports[3];
+ 	unsigned int rx_midi_ports[3];
++
+ 	struct fw_address_handler notification_handler;
+ 	int owner_generation;
++	u32 notification_bits;
++
++	/* For uapi */
+ 	int dev_lock_count; /* > 0 driver, < 0 userspace */
+ 	bool dev_lock_changed;
+-	bool global_enabled;
+-	struct completion clock_accepted;
+ 	wait_queue_head_t hwdep_wait;
+-	u32 notification_bits;
++
++	/* For streaming */
++	struct fw_iso_resources tx_resources;
+ 	struct fw_iso_resources rx_resources;
++	struct amdtp_stream tx_stream;
+ 	struct amdtp_stream rx_stream;
++	bool global_enabled;
++	struct completion clock_accepted;
++	unsigned int substreams_counter;
+ };
+ 
+ enum snd_dice_addr_type {
+@@ -160,11 +170,11 @@ extern const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT];
+ int snd_dice_stream_get_rate_mode(struct snd_dice *dice,
+ 				  unsigned int rate, unsigned int *mode);
+ 
+-int snd_dice_stream_start(struct snd_dice *dice, unsigned int rate);
+-void snd_dice_stream_stop(struct snd_dice *dice);
+-int snd_dice_stream_init(struct snd_dice *dice);
+-void snd_dice_stream_destroy(struct snd_dice *dice);
+-void snd_dice_stream_update(struct snd_dice *dice);
++int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate);
++void snd_dice_stream_stop_duplex(struct snd_dice *dice);
++int snd_dice_stream_init_duplex(struct snd_dice *dice);
++void snd_dice_stream_destroy_duplex(struct snd_dice *dice);
++void snd_dice_stream_update_duplex(struct snd_dice *dice);
+ 
+ int snd_dice_stream_lock_try(struct snd_dice *dice);
+ void snd_dice_stream_lock_release(struct snd_dice *dice);
 -- 
 2.1.0
