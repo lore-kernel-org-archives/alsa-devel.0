@@ -1,74 +1,90 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 20/20] ASoC: rsnd: rename SSI function name
-	of PIO
-Date: Sun, 7 Dec 2014 13:46:45 +0000
-Message-ID: <20141207134645.GR11764@sirena.org.uk>
-References: <877fyh9ilx.wl%kuninori.morimoto.gx@renesas.com>
- <87egsp83re.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0170896394324156697=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 722692606A7
- for <alsa-devel@alsa-project.org>; Sun,  7 Dec 2014 14:46:50 +0100 (CET)
-In-Reply-To: <87egsp83re.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] sound: pci: asihpi: hpifunc.c:  Remove some unused functions
+Date: Sun,  7 Dec 2014 15:01:15 +0100
+Message-ID: <1417960875-11753-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Removes some functions that are not used anywhere:
+hpi_subsys_get_version_ex() hpi_instream_wait_start()
 
---===============0170896394324156697==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PPxI8paQBs33t8dK"
-Content-Disposition: inline
+This was partially found by using a static code analysis program called cppcheck.
 
+Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+---
+ sound/pci/asihpi/hpi.h     |    4 ----
+ sound/pci/asihpi/hpifunc.c |   27 ---------------------------
+ 2 files changed, 31 deletions(-)
 
---PPxI8paQBs33t8dK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 27, 2014 at 08:08:10AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current R-Car sound SSI PIO/DMA mode are using interrupt.
-> it is no longer "xxx_pio_xxx", rename it.
-
-Applied, thanks.
-
---PPxI8paQBs33t8dK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUhFpFAAoJECTWi3JdVIfQx64H/i7RPTyP76tEU6E+jvp+s0SO
-LHMyh2YEkeQ6Bya3Rs6/SlXrhf4HOYBdjEwQQ+cV/Ms421zMzyzJ7eu76wjYm7g4
-qn/zms99OaH+faEGo/UadrhH6aejHeud0M/Sr3wTH/pJ6nES6oZuu9CfLI4UFFIv
-3Y9ej/Sp+nfplLdTJCEhJx8Q2sCIz4PGNLm39HWFA9pIqEjWswzssLXfx21lRP9+
-JyCz17RS4jyYVjejJ4/mwNXv8HPjMGFX0vo5imoN5SqJO/4TmChzJqTGtFJSlzm3
-2R1CfzzaIAucSf9KVmIg55BhbaH+xC9LW/TP52PyFIUWLBlO3G9URzHwwOwjT/k=
-=0Y9K
------END PGP SIGNATURE-----
-
---PPxI8paQBs33t8dK--
-
---===============0170896394324156697==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0170896394324156697==--
+diff --git a/sound/pci/asihpi/hpi.h b/sound/pci/asihpi/hpi.h
+index 2088724..8338b6e 100644
+--- a/sound/pci/asihpi/hpi.h
++++ b/sound/pci/asihpi/hpi.h
+@@ -1164,8 +1164,6 @@ u16 hpi_stream_estimate_buffer_size(struct hpi_format *pF,
+ /* SubSystem */
+ /*************/
+ 
+-u16 hpi_subsys_get_version_ex(u32 *pversion_ex);
+-
+ u16 hpi_subsys_get_num_adapters(int *pn_num_adapters);
+ 
+ u16 hpi_subsys_get_adapter(int iterator, u32 *padapter_index,
+@@ -1289,8 +1287,6 @@ u16 hpi_instream_read_buf(u32 h_instream, u8 *pb_read_buf, u32 bytes_to_read);
+ 
+ u16 hpi_instream_start(u32 h_instream);
+ 
+-u16 hpi_instream_wait_start(u32 h_instream);
+-
+ u16 hpi_instream_stop(u32 h_instream);
+ 
+ u16 hpi_instream_reset(u32 h_instream);
+diff --git a/sound/pci/asihpi/hpifunc.c b/sound/pci/asihpi/hpifunc.c
+index 510e56c..8fd02dd 100644
+--- a/sound/pci/asihpi/hpifunc.c
++++ b/sound/pci/asihpi/hpifunc.c
+@@ -93,18 +93,6 @@ static inline void hpi_send_recvV1(struct hpi_message_header *m,
+ 	hpi_send_recv((struct hpi_message *)m, (struct hpi_response *)r);
+ }
+ 
+-u16 hpi_subsys_get_version_ex(u32 *pversion_ex)
+-{
+-	struct hpi_message hm;
+-	struct hpi_response hr;
+-
+-	hpi_init_message_response(&hm, &hr, HPI_OBJ_SUBSYSTEM,
+-		HPI_SUBSYS_GET_VERSION);
+-	hpi_send_recv(&hm, &hr);
+-	*pversion_ex = hr.u.s.data;
+-	return hr.error;
+-}
+-
+ u16 hpi_subsys_get_num_adapters(int *pn_num_adapters)
+ {
+ 	struct hpi_message hm;
+@@ -950,21 +938,6 @@ u16 hpi_instream_start(u32 h_instream)
+ 	return hr.error;
+ }
+ 
+-u16 hpi_instream_wait_start(u32 h_instream)
+-{
+-	struct hpi_message hm;
+-	struct hpi_response hr;
+-
+-	hpi_init_message_response(&hm, &hr, HPI_OBJ_ISTREAM,
+-		HPI_ISTREAM_WAIT_START);
+-	if (hpi_handle_indexes(h_instream, &hm.adapter_index, &hm.obj_index))
+-		return HPI_ERROR_INVALID_HANDLE;
+-
+-	hpi_send_recv(&hm, &hr);
+-
+-	return hr.error;
+-}
+-
+ u16 hpi_instream_stop(u32 h_instream)
+ {
+ 	struct hpi_message hm;
+-- 
+1.7.10.4
