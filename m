@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/15] ALSA: oxfw: Add support for AV/C stream
-	format command to get/set supported stream formation
-Date: Sun,  7 Dec 2014 22:19:00 +0900
-Message-ID: <1417958348-30333-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/15] ALSA: oxfw: Add proc interface for
+	debugging purpose
+Date: Sun,  7 Dec 2014 22:19:02 +0900
+Message-ID: <1417958348-30333-10-git-send-email-o-takashi@sakamocchi.jp>
 References: <1417958348-30333-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id BCBFE260682
+ by alsa0.perex.cz (Postfix) with ESMTP id C54FC260684
  for <alsa-devel@alsa-project.org>; Sun,  7 Dec 2014 14:19:16 +0100 (CET)
 In-Reply-To: <1417958348-30333-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,244 +25,187 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-OXFW970/971 may supports AV/C Stream Format Information Specification 1.1
-Working Draft (Apr 2005, 1394TA). By using this command, drivers can get to know
-stream formations which device supports.
-
-This commit adds 'EXTENDED STREAM FORMAT INFORMATION' command. This command
-has two subfunctions, 'SINGLE' and 'LIST'. Drivers can use 'SINGLE' subfunction
-to know/set current formation of AMDTP stream, Drivers can use 'LIST'
-subfunction to know an available formation of AMDTP stream in a certain sampling
-rate.
-
-But some devices don't implement the 'LIST' subfunction. So this commit uses
-an assumption that 'if they don't implement it, they don't change stream
-formation depending on current each sampling rate'. With this assumption, this
-driver generates formations for such devices by:
- 1.getting current formation by SINGLE subfunction
- 2.getting supported sampling rates
- 3.applying current formation for all of supported sampling rates
-
-Followed commit implements a parser of this format information.
+This commit adds proc interface to get information about stream
+formation. This commit also adds snd_oxfw_stream_get_current_formation()
+to get current stream formation.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/Makefile       |   2 +-
- sound/firewire/oxfw/oxfw-command.c | 153 +++++++++++++++++++++++++++++++++++++
- sound/firewire/oxfw/oxfw.h         |  33 ++++++++
- 3 files changed, 187 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/oxfw/oxfw-command.c
+ sound/firewire/oxfw/Makefile      |  3 +-
+ sound/firewire/oxfw/oxfw-proc.c   | 84 +++++++++++++++++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw-stream.c | 27 +++++++++++++
+ sound/firewire/oxfw/oxfw.c        |  2 +
+ sound/firewire/oxfw/oxfw.h        |  3 ++
+ 5 files changed, 118 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/oxfw/oxfw-proc.c
 
 diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index 0cf48fd..b107134 100644
+index b107134..e9297c6 100644
 --- a/sound/firewire/oxfw/Makefile
 +++ b/sound/firewire/oxfw/Makefile
-@@ -1,2 +1,2 @@
--snd-oxfw-objs := oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
-+snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
+@@ -1,2 +1,3 @@
+-snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
++snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o \
++		 oxfw-proc.o oxfw.o
  obj-m += snd-oxfw.o
-diff --git a/sound/firewire/oxfw/oxfw-command.c b/sound/firewire/oxfw/oxfw-command.c
+diff --git a/sound/firewire/oxfw/oxfw-proc.c b/sound/firewire/oxfw/oxfw-proc.c
 new file mode 100644
-index 0000000..8c603c5
+index 0000000..18e0305
 --- /dev/null
-+++ b/sound/firewire/oxfw/oxfw-command.c
-@@ -0,0 +1,153 @@
++++ b/sound/firewire/oxfw/oxfw-proc.c
+@@ -0,0 +1,84 @@
 +/*
-+ * oxfw_command.c - a part of driver for OXFW970/971 based devices
++ * oxfw_proc.c - a part of driver for OXFW970/971 based devices
 + *
 + * Copyright (c) 2014 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "oxfw.h"
++#include "./oxfw.h"
 +
-+int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
-+			  unsigned int pid, u8 *format, unsigned int len)
++static void proc_read_formation(struct snd_info_entry *entry,
++				struct snd_info_buffer *buffer)
 +{
-+	u8 *buf;
-+	int err;
++	struct snd_oxfw *oxfw = entry->private_data;
++	struct snd_oxfw_stream_formation formation, curr;
++	u8 *format;
++	char flag;
++	unsigned int i, err;
 +
-+	buf = kmalloc(len + 10, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	buf[0] = 0x00;		/* CONTROL */
-+	buf[1] = 0xff;		/* UNIT */
-+	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
-+	buf[3] = 0xc0;		/* SINGLE subfunction */
-+	buf[4] = dir;		/* Plug Direction */
-+	buf[5] = 0x00;		/* UNIT */
-+	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
-+	buf[7] = 0xff & pid;	/* Plug ID */
-+	buf[8] = 0xff;		/* Padding */
-+	buf[9] = 0xff;		/* Support status in response */
-+	memcpy(buf + 10, format, len);
-+
-+	/* do transaction and check buf[1-7] are the same against command */
-+	err = fcp_avc_transaction(unit, buf, len + 10, buf, len + 10,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
-+				  BIT(6) | BIT(7) | BIT(8));
-+	if ((err > 0) && (err < len + 10))
-+		err = -EIO;
-+	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
-+		err = -ENOSYS;
-+	else if (buf[0] == 0x0a) /* REJECTED */
-+		err = -EINVAL;
-+	else
-+		err = 0;
-+
-+	kfree(buf);
-+
-+	return err;
-+}
-+
-+int avc_stream_get_format(struct fw_unit *unit,
-+			  enum avc_general_plug_dir dir, unsigned int pid,
-+			  u8 *buf, unsigned int *len, unsigned int eid)
-+{
-+	unsigned int subfunc;
-+	int err;
-+
-+	if (eid == 0xff)
-+		subfunc = 0xc0;	/* SINGLE */
-+	else
-+		subfunc = 0xc1;	/* LIST */
-+
-+	buf[0] = 0x01;		/* STATUS */
-+	buf[1] = 0xff;		/* UNIT */
-+	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
-+	buf[3] = subfunc;	/* SINGLE or LIST */
-+	buf[4] = dir;		/* Plug Direction */
-+	buf[5] = 0x00;		/* Unit */
-+	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
-+	buf[7] = 0xff & pid;	/* Plug ID */
-+	buf[8] = 0xff;		/* Padding */
-+	buf[9] = 0xff;		/* support status in response */
-+	buf[10] = 0xff & eid;	/* entry ID for LIST subfunction */
-+	buf[11] = 0xff;		/* padding */
-+
-+	/* do transaction and check buf[1-7] are the same against command */
-+	err = fcp_avc_transaction(unit, buf, 12, buf, *len,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
-+				  BIT(6) | BIT(7));
-+	if ((err > 0) && (err < 10))
-+		err = -EIO;
-+	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
-+		err = -ENOSYS;
-+	else if (buf[0] == 0x0a)	/* REJECTED */
-+		err = -EINVAL;
-+	else if (buf[0] == 0x0b)	/* IN TRANSITION */
-+		err = -EAGAIN;
-+	/* LIST subfunction has entry ID */
-+	else if ((subfunc == 0xc1) && (buf[10] != eid))
-+		err = -EIO;
++	/* Show input. */
++	err = snd_oxfw_stream_get_current_formation(oxfw,
++						    AVC_GENERAL_PLUG_DIR_IN,
++						    &curr);
 +	if (err < 0)
-+		goto end;
++		return;
 +
-+	/* keep just stream format information */
-+	if (subfunc == 0xc0) {
-+		memmove(buf, buf + 10, err - 10);
-+		*len = err - 10;
-+	} else {
-+		memmove(buf, buf + 11, err - 11);
-+		*len = err - 11;
++	snd_iprintf(buffer, "Input Stream to device:\n");
++	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
++	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
++		format = oxfw->rx_stream_formats[i];
++		if (format == NULL)
++			continue;
++
++		err = snd_oxfw_stream_parse_format(format, &formation);
++		if (err < 0)
++			continue;
++
++		if (memcmp(&formation, &curr, sizeof(curr)) == 0)
++			flag = '*';
++		else
++			flag = ' ';
++
++		snd_iprintf(buffer, "%c\t%d\t%d\t%d\n", flag,
++			    formation.rate, formation.pcm, formation.midi);
 +	}
 +
-+	err = 0;
-+end:
-+	return err;
 +}
 +
-+int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
++static void add_node(struct snd_oxfw *oxfw, struct snd_info_entry *root,
++		     const char *name,
++		     void (*op)(struct snd_info_entry *e,
++				struct snd_info_buffer *b))
++{
++	struct snd_info_entry *entry;
++
++	entry = snd_info_create_card_entry(oxfw->card, name, root);
++	if (entry == NULL)
++		return;
++
++	snd_info_set_text_ops(entry, oxfw, op);
++	if (snd_info_register(entry) < 0)
++		snd_info_free_entry(entry);
++}
++
++void snd_oxfw_proc_init(struct snd_oxfw *oxfw)
++{
++	struct snd_info_entry *root;
++
++	/*
++	 * All nodes are automatically removed at snd_card_disconnect(),
++	 * by following to link list.
++	 */
++	root = snd_info_create_card_entry(oxfw->card, "firewire",
++					  oxfw->card->proc_root);
++	if (root == NULL)
++		return;
++	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
++	if (snd_info_register(root) < 0) {
++		snd_info_free_entry(root);
++		return;
++	}
++
++	add_node(oxfw, root, "formation", proc_read_formation);
++}
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 17e3802..210bf5a 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -108,6 +108,33 @@ void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw)
+ 		amdtp_stream_update(&oxfw->rx_stream);
+ }
+ 
++int snd_oxfw_stream_get_current_formation(struct snd_oxfw *oxfw,
 +				enum avc_general_plug_dir dir,
-+				unsigned short pid)
++				struct snd_oxfw_stream_formation *formation)
 +{
-+	unsigned int sfc;
-+	u8 *buf;
++	u8 *format;
++	unsigned int len;
 +	int err;
 +
-+	for (sfc = 0; sfc < CIP_SFC_COUNT; sfc++) {
-+		if (amdtp_rate_table[sfc] == rate)
-+			break;
-+	}
-+	if (sfc == CIP_SFC_COUNT)
-+		return -EINVAL;
-+
-+	buf = kzalloc(8, GFP_KERNEL);
-+	if (buf == NULL)
++	len = AVC_GENERIC_FRAME_MAXIMUM_BYTES;
++	format = kmalloc(len, GFP_KERNEL);
++	if (format == NULL)
 +		return -ENOMEM;
 +
-+	buf[0] = 0x02;		/* SPECIFIC INQUIRY */
-+	buf[1] = 0xff;		/* UNIT */
-+	if (dir == AVC_GENERAL_PLUG_DIR_IN)
-+		buf[2] = 0x19;	/* INPUT PLUG SIGNAL FORMAT */
-+	else
-+		buf[2] = 0x18;	/* OUTPUT PLUG SIGNAL FORMAT */
-+	buf[3] = 0xff & pid;	/* plug id */
-+	buf[4] = 0x90;		/* EOH_1, Form_1, FMT. AM824 */
-+	buf[5] = 0x07 & sfc;	/* FDF-hi. AM824, frequency */
-+	buf[6] = 0xff;		/* FDF-mid. AM824, SYT hi (not used) */
-+	buf[7] = 0xff;		/* FDF-low. AM824, SYT lo (not used) */
-+
-+	/* do transaction and check buf[1-5] are the same against command */
-+	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
-+				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
-+	if ((err > 0) && (err < 8))
-+		err = -EIO;
-+	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
-+		err = -ENOSYS;
++	err = avc_stream_get_format_single(oxfw->unit, dir, 0, format, &len);
 +	if (err < 0)
 +		goto end;
++	if (len < 3) {
++		err = -EIO;
++		goto end;
++	}
 +
-+	err = 0;
++	err = snd_oxfw_stream_parse_format(format, formation);
 +end:
-+	kfree(buf);
++	kfree(format);
 +	return err;
 +}
++
+ /*
+  * See Table 6.16 - AM824 Stream Format
+  *     Figure 6.19 - format_information field for AM824 Compound
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index d49c12a..4256398 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -103,6 +103,8 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	snd_oxfw_proc_init(oxfw);
++
+ 	err = snd_oxfw_stream_init_simplex(oxfw);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index a61c75c..a7031d4 100644
+index 9c3d3e3..8c832ea 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -49,6 +49,39 @@ struct snd_oxfw {
- 	s16 volume_max;
- };
+@@ -18,6 +18,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/info.h>
  
-+/*
-+ * AV/C Stream Format Information Specification 1.1 Working Draft
-+ * (Apr 2005, 1394TA)
-+ */
-+int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
-+			  unsigned int pid, u8 *format, unsigned int len);
-+int avc_stream_get_format(struct fw_unit *unit,
-+			  enum avc_general_plug_dir dir, unsigned int pid,
-+			  u8 *buf, unsigned int *len, unsigned int eid);
-+static inline int
-+avc_stream_get_format_single(struct fw_unit *unit,
-+			     enum avc_general_plug_dir dir, unsigned int pid,
-+			     u8 *buf, unsigned int *len)
-+{
-+	return avc_stream_get_format(unit, dir, pid, buf, len, 0xff);
-+}
-+static inline int
-+avc_stream_get_format_list(struct fw_unit *unit,
-+			   enum avc_general_plug_dir dir, unsigned int pid,
-+			   u8 *buf, unsigned int *len,
-+			   unsigned int eid)
-+{
-+	return avc_stream_get_format(unit, dir, pid, buf, len, eid);
-+}
+ #include "../lib.h"
+ #include "../fcp.h"
+@@ -108,3 +109,5 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw);
+ int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
+ 
+ int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
 +
-+/*
-+ * AV/C Digital Interface Command Set General Specification 4.2
-+ * (Sep 2004, 1394TA)
-+ */
-+int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
-+				enum avc_general_plug_dir dir,
-+				unsigned short pid);
-+
- int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
- int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
++void snd_oxfw_proc_init(struct snd_oxfw *oxfw);
 -- 
 2.1.0
