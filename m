@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH RFC 2/4] add support for
-	get/set_audio_htstamp_config
-Date: Mon,  8 Dec 2014 16:28:44 -0600
-Message-ID: <1418077726-8516-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RFC 4/4] test: fix audio_time with new get/set
+	audio_tstamp_config
+Date: Mon,  8 Dec 2014 16:28:46 -0600
+Message-ID: <1418077726-8516-5-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1418077726-8516-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id BD87B265325
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:29:03 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C4C8265452
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:29:05 +0100 (CET)
 In-Reply-To: <1418077726-8516-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,105 +25,573 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable kernel-side functionality by letting user select what sort of
-timestamp it desires
-
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/pcm.h | 38 ++++++++++++++++++++++++++++++++++++++
- src/pcm/pcm.c | 24 ++++++++++++++++++++++++
- 2 files changed, 62 insertions(+)
+ test/audio_time.c | 473 ++++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 296 insertions(+), 177 deletions(-)
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 0655e7f..f963b92 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -330,6 +330,22 @@ typedef enum _snd_pcm_tstamp_type {
- 	SND_PCM_TSTAMP_TYPE_LAST = SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW,
- } snd_pcm_tstamp_type_t;
+diff --git a/test/audio_time.c b/test/audio_time.c
+index 7435db6..fc65573 100644
+--- a/test/audio_time.c
++++ b/test/audio_time.c
+@@ -4,13 +4,39 @@
+  * helpful to verify the information reported by drivers.
+  */
  
-+typedef struct _snd_pcm_audio_tstamp_config {
-+	/* input from user space*/
-+	unsigned int type_requested:4; /* will be overridden and DEFAULT tstamp reported if not supported */
-+	unsigned int report_delay:1; /* add delay to A/D or D/A */
-+} snd_pcm_audio_tstamp_config_t;
-+
-+typedef struct _snd_pcm_audio_tstamp_report {
-+	/* actual type if hardware could not support requested timestamp */
-+	unsigned int actual_type:4;
-+
-+	/* returned to userspace, accuracy represented in mantissa/exponent form */
-+	unsigned int accuracy_report:1; /* 0 if accuracy unknown, 1 if rest of structure is valid */
-+	unsigned int accuracy_m:7; /* 0..127, ~3 significant digit for mantissa */
-+	unsigned int accuracy_e:4; /* base10 exponent, 0 for ns, 3 for us, 6 for ms, 9 for s */
-+} snd_pcm_audio_tstamp_report_t;
-+
- /** Unsigned frames quantity */
- typedef unsigned long snd_pcm_uframes_t;
- /** Signed frames quantity */
-@@ -980,6 +996,28 @@ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimest
- void snd_pcm_status_get_tstamp(const snd_pcm_status_t *obj, snd_timestamp_t *ptr);
- void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
- void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
-+void snd_pcm_status_get_audio_htstamp_report(const snd_pcm_status_t *obj,
-+					     snd_pcm_audio_tstamp_report_t *audio_tstamp_report);
-+void snd_pcm_status_set_audio_htstamp_config(snd_pcm_status_t *obj,
-+					     snd_pcm_audio_tstamp_config_t *audio_tstamp_config);
-+
-+static inline void snd_pcm_pack_audio_tstamp_config(unsigned int *data,
-+						snd_pcm_audio_tstamp_config_t *config)
+-#include "../include/asoundlib.h"
++#include <stdio.h>
++#include <malloc.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <string.h>
++#include <getopt.h>
++#include <fcntl.h>
++#include <ctype.h>
++#include <errno.h>
++#include <limits.h>
++#include <time.h>
++#include <locale.h>
+ #include <math.h>
++#include "../include/asoundlib.h"
+ 
+-static char *device = "hw:0,0";
+-
++static char *command;
++static char *pcm_name = "hw:0";
+ snd_output_t *output = NULL;
+ 
++static void usage(char *command)
 +{
-+	*data = config->report_delay;
-+	*data <<= 4;
-+	*data |= config->type_requested;
++	printf("Usage: %s [OPTION]... \n"
++		"\n"
++		"-h, --help              help\n"
++		"-c, --capture           capture tstamps \n"
++		"-d, --delay             add delay \n"
++		"-D, --device=NAME       select PCM by name \n"
++		"-p, --playback          playback tstamps \n"
++		"-t, --ts_type=TYPE      Default(0),link(1),link_estimated(2),synchronized(3) \n"
++		, command);
 +}
 +
-+static inline void snd_pcm_unpack_audio_tstamp_report(unsigned int data,
-+						snd_pcm_audio_tstamp_report_t *report)
-+{
-+	report->actual_type = data & 0xFF;
-+	report->accuracy_report = (data >> 4) & 1;
-+	report->accuracy_m = (data >> 7) & 0x7F;
-+	report->accuracy_e = (data >> 12) & 0xF;
-+}
 +
- snd_pcm_sframes_t snd_pcm_status_get_delay(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_avail(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_avail_max(const snd_pcm_status_t *obj);
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index baa47c7..af7d8c9 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -6334,6 +6334,30 @@ void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestam
+ long long timestamp2ns(snd_htimestamp_t t)
+ {
+ 	long long nsec;
+@@ -31,15 +57,20 @@ long long timediff(snd_htimestamp_t t1, snd_htimestamp_t t2)
+ 	return nsec1 - nsec2;
  }
  
- /**
-+ * \brief Get audio_tstamp_report from a PCM status container
-+ * \param obj pointer to #snd_pcm_status_t
-+ * \param ptr Pointer to returned report (valid fields are accuracy and type)
-+ */
-+void snd_pcm_status_get_audio_htstamp_report(const snd_pcm_status_t *obj,
-+					     snd_pcm_audio_tstamp_report_t *audio_tstamp_report)
-+{
-+	assert(obj && audio_tstamp_report);
-+	snd_pcm_unpack_audio_tstamp_report(obj->audio_tstamp_data, audio_tstamp_report);
-+}
+-void gettimestamp(snd_pcm_t *handle, snd_htimestamp_t *timestamp,
+-		  snd_htimestamp_t *trigger_timestamp,
+-		  snd_htimestamp_t *audio_timestamp,
+-		  snd_pcm_uframes_t *avail, snd_pcm_sframes_t *delay)
++void _gettimestamp(snd_pcm_t *handle, snd_htimestamp_t *timestamp,
++		   snd_htimestamp_t *trigger_timestamp,
++		   snd_htimestamp_t *audio_timestamp,
++		   snd_pcm_audio_tstamp_config_t  *audio_tstamp_config,
++		   snd_pcm_audio_tstamp_report_t  *audio_tstamp_report,
++		   snd_pcm_uframes_t *avail, snd_pcm_sframes_t *delay)
+ {
+ 	int err;
+ 	snd_pcm_status_t *status;
+ 
+ 	snd_pcm_status_alloca(&status);
 +
-+/**
-+ * \brief set audio_tstamp_config from a PCM status container
-+ * \param obj pointer to #snd_pcm_status_t
-+ * \param ptr Pointer to config (valid fields are type and report_analog_delay)
-+ */
-+void snd_pcm_status_set_audio_htstamp_config(snd_pcm_status_t *obj,
-+					     snd_pcm_audio_tstamp_config_t *audio_tstamp_config)
-+{
-+	assert(obj && audio_tstamp_config);
-+	snd_pcm_pack_audio_tstamp_config(&obj->audio_tstamp_data, audio_tstamp_config);
-+}
++	snd_pcm_status_set_audio_htstamp_config(status, audio_tstamp_config);
 +
-+/**
-  * \brief Get delay from a PCM status container (see #snd_pcm_delay)
-  * \return Delay in frames
-  *
+ 	if ((err = snd_pcm_status(handle, status)) < 0) {
+ 		printf("Stream status error: %s\n", snd_strerror(err));
+ 		exit(0);
+@@ -47,6 +78,7 @@ void gettimestamp(snd_pcm_t *handle, snd_htimestamp_t *timestamp,
+ 	snd_pcm_status_get_trigger_htstamp(status, trigger_timestamp);
+ 	snd_pcm_status_get_htstamp(status, timestamp);
+ 	snd_pcm_status_get_audio_htstamp(status, audio_timestamp);
++	snd_pcm_status_get_audio_htstamp_report(status, audio_tstamp_report);
+ 	*avail = snd_pcm_status_get_avail(status);
+ 	*delay = snd_pcm_status_get_delay(status);
+ }
+@@ -55,18 +87,19 @@ void gettimestamp(snd_pcm_t *handle, snd_htimestamp_t *timestamp,
+ #define PCM_LINK        /* sync start for playback and capture */
+ #define TRACK_CAPTURE   /* dump capture timing info  */
+ #define TRACK_PLAYBACK  /* dump playback timing info */
+-#define TRACK_SAMPLE_COUNTS /* show difference between sample counters and audiotimestamps returned by driver */
++/*#define TRACK_SAMPLE_COUNTS */ /* show difference between sample counters and audiotimestamps returned by driver */
+ #define PLAYBACK_BUFFERS 4
+-#define TSTAMP_TYPE	SND_PCM_TSTAMP_TYPE_MONOTONIC
++#define TSTAMP_TYPE	SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW
+ 
+ 
+-int main(void)
++int main(int argc, char *argv[])
+ {
+-        int err;
+-        unsigned int i;
+-        snd_pcm_t *handle_p = NULL;
+-        snd_pcm_t *handle_c = NULL;
+-        snd_pcm_sframes_t frames;
++	int c;
++	int err;
++	unsigned int i;
++	snd_pcm_t *handle_p = NULL;
++	snd_pcm_t *handle_c = NULL;
++	snd_pcm_sframes_t frames;
+ 	snd_htimestamp_t tstamp_c, tstamp_p;
+ 	snd_htimestamp_t trigger_tstamp_c, trigger_tstamp_p;
+ 	snd_htimestamp_t audio_tstamp_c, audio_tstamp_p;
+@@ -87,206 +120,292 @@ int main(void)
+ 	snd_pcm_sframes_t delay_p, delay_c;
+ 	snd_pcm_uframes_t avail_p, avail_c;
+ 
+-	if ((err = snd_pcm_open(&handle_p, device, SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
+-		printf("Playback open error: %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
+-	if ((err = snd_pcm_set_params(handle_p,
+-	                              SND_PCM_FORMAT_S16,
+-	                              SND_PCM_ACCESS_RW_INTERLEAVED,
+-	                              2,
+-	                              48000,
+-	                              0,
+-	                              500000)) < 0) {	/* 0.5sec */
+-		printf("Playback open error: %s\n", snd_strerror(err));
+-		goto _exit;
++	snd_pcm_audio_tstamp_config_t audio_tstamp_config_p;
++	snd_pcm_audio_tstamp_config_t audio_tstamp_config_c;
++	snd_pcm_audio_tstamp_report_t audio_tstamp_report_p;
++	snd_pcm_audio_tstamp_report_t audio_tstamp_report_c;
++
++	int option_index;
++	static const char short_options[] = "hcpdD:t:";
++
++	static const struct option long_options[] = {
++		{"capture", 0, 0, 'c'},
++		{"delay", 0, 0, 'd'},
++		{"device", required_argument, 0, 'D'},
++		{"help", no_argument, 0, 'h'},
++		{"playback", 0, 0, 'p'},
++		{"ts_type", required_argument, 0, 't'},
++		{0, 0, 0, 0}
++	};
++
++	int do_delay = 0;
++	int do_playback = 0;
++	int do_capture = 0;
++	int type = 0;
++
++	while ((c = getopt_long(argc, argv, short_options, long_options, &option_index)) != -1) {
++		switch (c) {
++		case 'h':
++			usage(command);
++			return 0;
++		case 'p':
++			do_playback = 1;
++			break;
++		case 'c':
++			do_capture = 1;
++			break;
++		case 'd':
++			do_delay = 1;
++			break;
++		case 'D':
++			pcm_name = optarg;
++			break;
++		case 't':
++			type = atoi(optarg);
++			break;
++		}
+ 	}
+ 
+-	snd_pcm_hw_params_alloca(&hwparams_p);
+-	/* get the current hwparams */
+-	err = snd_pcm_hw_params_current(handle_p, hwparams_p);
+-	if (err < 0) {
+-		printf("Unable to determine current hwparams_p: %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
+-	if (snd_pcm_hw_params_supports_audio_wallclock_ts(hwparams_p))
+-		printf("Playback relies on audio wallclock timestamps\n");
+-	else
+-		printf("Playback relies on audio sample counter timestamps\n");
+-
+-	snd_pcm_sw_params_alloca(&swparams_p);
+-	/* get the current swparams */
+-	err = snd_pcm_sw_params_current(handle_p, swparams_p);
+-	if (err < 0) {
+-		printf("Unable to determine current swparams_p: %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
++	memset(&audio_tstamp_config_p, 0, sizeof(snd_pcm_audio_tstamp_config_t));
++	memset(&audio_tstamp_config_c, 0, sizeof(snd_pcm_audio_tstamp_config_t));
++	memset(&audio_tstamp_report_p, 0, sizeof(snd_pcm_audio_tstamp_report_t));
++	memset(&audio_tstamp_report_c, 0, sizeof(snd_pcm_audio_tstamp_report_t));
+ 
+-	/* enable tstamp */
+-	err = snd_pcm_sw_params_set_tstamp_mode(handle_p, swparams_p, SND_PCM_TSTAMP_ENABLE);
+-	if (err < 0) {
+-		printf("Unable to set tstamp mode : %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
++	if (do_playback) {
++		if ((err = snd_pcm_open(&handle_p, pcm_name, SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
++			printf("Playback open error: %s\n", snd_strerror(err));
++			goto _exit;
++		}
+ 
+-	err = snd_pcm_sw_params_set_tstamp_type(handle_p, swparams_p, TSTAMP_TYPE);
+-	if (err < 0) {
+-		printf("Unable to set tstamp type : %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
++		if ((err = snd_pcm_set_params(handle_p,
++							SND_PCM_FORMAT_S16,
++							SND_PCM_ACCESS_RW_INTERLEAVED,
++							2,
++							48000,
++							0,
++							500000)) < 0) {	/* 0.5sec */
++			printf("Playback open error: %s\n", snd_strerror(err));
++			goto _exit;
++		}
+ 
+-	/* write the sw parameters */
+-	err = snd_pcm_sw_params(handle_p, swparams_p);
+-	if (err < 0) {
+-		printf("Unable to set swparams_p : %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
++		snd_pcm_hw_params_alloca(&hwparams_p);
++/* get the current hwparams */
++		err = snd_pcm_hw_params_current(handle_p, hwparams_p);
++		if (err < 0) {
++			printf("Unable to determine current hwparams_p: %s\n", snd_strerror(err));
++			goto _exit;
++		}
++		if (snd_pcm_hw_params_supports_audio_link_ts(hwparams_p))
++			printf("Playback supports audio link timestamps\n");
++		if (snd_pcm_hw_params_supports_audio_link_estimated_ts(hwparams_p))
++			printf("Playback supports audio link estimated timestamps\n");
++		if (snd_pcm_hw_params_supports_audio_link_synchronized_ts(hwparams_p))
++			printf("Playback supports audio link synchronized timestamps\n");
++
++		snd_pcm_sw_params_alloca(&swparams_p);
++		/* get the current swparams */
++		err = snd_pcm_sw_params_current(handle_p, swparams_p);
++		if (err < 0) {
++			printf("Unable to determine current swparams_p: %s\n", snd_strerror(err));
++			goto _exit;
++		}
+ 
+-	if ((err = snd_pcm_open(&handle_c, device, SND_PCM_STREAM_CAPTURE, SND_PCM_NONBLOCK)) < 0) {
+-		printf("Capture open error: %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
+-	if ((err = snd_pcm_set_params(handle_c,
+-	                              SND_PCM_FORMAT_S16,
+-	                              SND_PCM_ACCESS_RW_INTERLEAVED,
+-	                              2,
+-	                              48000,
+-	                              0,
+-	                              500000)) < 0) {	/* 0.5sec */
+-		printf("Capture open error: %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
++		/* enable tstamp */
++		err = snd_pcm_sw_params_set_tstamp_mode(handle_p, swparams_p, SND_PCM_TSTAMP_ENABLE);
++		if (err < 0) {
++			printf("Unable to set tstamp mode : %s\n", snd_strerror(err));
++			goto _exit;
++		}
+ 
+-	snd_pcm_hw_params_alloca(&hwparams_c);
+-	/* get the current hwparams */
+-	err = snd_pcm_hw_params_current(handle_c, hwparams_c);
+-	if (err < 0) {
+-		printf("Unable to determine current hwparams_c: %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
+-	if (snd_pcm_hw_params_supports_audio_wallclock_ts(hwparams_c))
+-		printf("Capture relies on audio wallclock timestamps\n");
+-	else
+-		printf("Capture relies on audio sample counter timestamps\n");
+-
+-	snd_pcm_sw_params_alloca(&swparams_c);
+-	/* get the current swparams */
+-	err = snd_pcm_sw_params_current(handle_c, swparams_c);
+-	if (err < 0) {
+-		printf("Unable to determine current swparams_c: %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
++		err = snd_pcm_sw_params_set_tstamp_type(handle_p, swparams_p, TSTAMP_TYPE);
++		if (err < 0) {
++			printf("Unable to set tstamp type : %s\n", snd_strerror(err));
++			goto _exit;
++		}
+ 
+-	/* enable tstamp */
+-	err = snd_pcm_sw_params_set_tstamp_mode(handle_c, swparams_c, SND_PCM_TSTAMP_ENABLE);
+-	if (err < 0) {
+-		printf("Unable to set tstamp mode : %s\n", snd_strerror(err));
+-		goto _exit;
+-	}
++		/* write the sw parameters */
++		err = snd_pcm_sw_params(handle_p, swparams_p);
++		if (err < 0) {
++			printf("Unable to set swparams_p : %s\n", snd_strerror(err));
++			goto _exit;
++		}
+ 
+-	err = snd_pcm_sw_params_set_tstamp_type(handle_c, swparams_c, TSTAMP_TYPE);
+-	if (err < 0) {
+-		printf("Unable to set tstamp type : %s\n", snd_strerror(err));
+-		goto _exit;
+ 	}
+ 
+-	/* write the sw parameters */
+-	err = snd_pcm_sw_params(handle_c, swparams_c);
+-	if (err < 0) {
+-		printf("Unable to set swparams_c : %s\n", snd_strerror(err));
+-		goto _exit;
++	if (do_capture) {
++
++		if ((err = snd_pcm_open(&handle_c, pcm_name, SND_PCM_STREAM_CAPTURE, SND_PCM_NONBLOCK)) < 0) {
++			printf("Capture open error: %s\n", snd_strerror(err));
++			goto _exit;
++		}
++		if ((err = snd_pcm_set_params(handle_c,
++							SND_PCM_FORMAT_S16,
++							SND_PCM_ACCESS_RW_INTERLEAVED,
++							2,
++							48000,
++							0,
++							500000)) < 0) {	/* 0.5sec */
++			printf("Capture open error: %s\n", snd_strerror(err));
++			goto _exit;
++		}
++
++		snd_pcm_hw_params_alloca(&hwparams_c);
++		/* get the current hwparams */
++		err = snd_pcm_hw_params_current(handle_c, hwparams_c);
++		if (err < 0) {
++			printf("Unable to determine current hwparams_c: %s\n", snd_strerror(err));
++			goto _exit;
++		}
++		if (snd_pcm_hw_params_supports_audio_link_ts(hwparams_c))
++			printf("Capture supports audio link timestamps\n");
++		if (snd_pcm_hw_params_supports_audio_link_estimated_ts(hwparams_c))
++			printf("Capture supports audio link estimated timestamps\n");
++		if (snd_pcm_hw_params_supports_audio_link_synchronized_ts(hwparams_c))
++			printf("Capture supports audio link synchronized timestamps\n");
++
++		snd_pcm_sw_params_alloca(&swparams_c);
++		/* get the current swparams */
++		err = snd_pcm_sw_params_current(handle_c, swparams_c);
++		if (err < 0) {
++			printf("Unable to determine current swparams_c: %s\n", snd_strerror(err));
++			goto _exit;
++		}
++
++		/* enable tstamp */
++		err = snd_pcm_sw_params_set_tstamp_mode(handle_c, swparams_c, SND_PCM_TSTAMP_ENABLE);
++		if (err < 0) {
++			printf("Unable to set tstamp mode : %s\n", snd_strerror(err));
++			goto _exit;
++		}
++
++		err = snd_pcm_sw_params_set_tstamp_type(handle_c, swparams_c, TSTAMP_TYPE);
++		if (err < 0) {
++			printf("Unable to set tstamp type : %s\n", snd_strerror(err));
++			goto _exit;
++		}
++
++		/* write the sw parameters */
++		err = snd_pcm_sw_params(handle_c, swparams_c);
++		if (err < 0) {
++			printf("Unable to set swparams_c : %s\n", snd_strerror(err));
++			goto _exit;
++		}
+ 	}
+ 
++	if (do_playback && do_capture) {
+ #ifdef PCM_LINK
+-	if ((err = snd_pcm_link(handle_c, handle_p)) < 0) {
+-		printf("Streams link error: %s\n", snd_strerror(err));
+-		exit(0);
+-	}
++		if ((err = snd_pcm_link(handle_c, handle_p)) < 0) {
++			printf("Streams link error: %s\n", snd_strerror(err));
++			exit(0);
++		}
+ #endif
+-
+-	i = PLAYBACK_BUFFERS;
+-	while (i--) {
+-                frames = snd_pcm_writei(handle_p, buffer_p, PERIOD);
+-                if (frames < 0) {
+-                        printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
+-                        goto _exit;
+-                }
+-		frame_count_p += frames;
+ 	}
+ 
+-	if (PLAYBACK_BUFFERS != 4)
+-		snd_pcm_start(handle_p);
++	if (do_playback) {
++		i = PLAYBACK_BUFFERS;
++		while (i--) {
++			frames = snd_pcm_writei(handle_p, buffer_p, PERIOD);
++			if (frames < 0) {
++				printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
++				goto _exit;
++			}
++			frame_count_p += frames;
++		}
++
++		if (PLAYBACK_BUFFERS != 4)
++			snd_pcm_start(handle_p);
++	}
+ 
++	if (do_capture) {
+ #ifndef PCM_LINK
+-	/* need to start capture explicitly */
+-	snd_pcm_start(handle_c);
++		/* need to start capture explicitly */
++		snd_pcm_start(handle_c);
++#else
++		if (!do_playback)
++			/* need to start capture explicitly */
++			snd_pcm_start(handle_c);
+ #endif
++	}
+ 
+-        while (1) {
+-
+-		frames = snd_pcm_wait(handle_c, -1);
+-		if (frames < 0) {
+-			printf("snd_pcm_wait failed: %s\n", snd_strerror(frames));
+-                        goto _exit;
+-		}
+-
+-		frames = snd_pcm_readi(handle_c, buffer_c, PERIOD);
+-                if (frames < 0) {
+-                        printf("snd_pcm_readi failed: %s\n", snd_strerror(frames));
+-                        goto _exit;
+-                }
+-		frame_count_c += frames;
++	while (1) {
+ 
+-                frames = snd_pcm_writei(handle_p, buffer_p, PERIOD);
+-                if (frames < 0) {
+-                        printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
+-                        goto _exit;
+-                }
++		if (do_capture) {
+ 
+-		frame_count_p += frames;
++			frames = snd_pcm_wait(handle_c, -1);
++			if (frames < 0) {
++				printf("snd_pcm_wait failed: %s\n", snd_strerror(frames));
++				goto _exit;
++			}
+ 
+-#if defined(TRACK_PLAYBACK)
+-		gettimestamp(handle_p, &tstamp_p, &trigger_tstamp_p, &audio_tstamp_p, &avail_p, &delay_p);
++			frames = snd_pcm_readi(handle_c, buffer_c, PERIOD);
++			if (frames < 0) {
++				printf("snd_pcm_readi failed: %s\n", snd_strerror(frames));
++				goto _exit;
++			}
++			frame_count_c += frames;
+ 
++#if defined(TRACK_CAPTURE)
++			audio_tstamp_config_c.type_requested = type;
++			audio_tstamp_config_c.report_analog_delay = do_delay;
++			_gettimestamp(handle_c, &tstamp_c, &trigger_tstamp_c,
++				&audio_tstamp_c, &audio_tstamp_config_c, &audio_tstamp_report_c,
++				&avail_c, &delay_c);
+ #if defined(TRACK_SAMPLE_COUNTS)
+-		curr_count_p = frame_count_p - delay_p; /* written minus queued */
++			curr_count_c = frame_count_c + delay_c; /* read plus queued */
+ 
+-		printf("playback: curr_count %lli driver count %lli, delta %lli\n",
+-		       (long long)curr_count_p * 1000000000LL / 48000 ,
+-		       timestamp2ns(audio_tstamp_p),
+-		       (long long)curr_count_p * 1000000000LL / 48000 - timestamp2ns(audio_tstamp_p)
+-		       );
++
++			printf("capture: curr_count %lli driver count %lli, delta %lli\n",
++				(long long)curr_count_c * 1000000000LL / 48000 ,
++				timestamp2ns(audio_tstamp_c),
++				(long long)curr_count_c * 1000000000LL / 48000 - timestamp2ns(audio_tstamp_c)
++				);
+ #endif
+ 
+-		printf("playback: systime: %lli nsec, audio time %lli nsec, \tsystime delta %lli\n",
+-		       timediff(tstamp_p, trigger_tstamp_p),
+-		       timestamp2ns(audio_tstamp_p),
+-		       timediff(tstamp_p, trigger_tstamp_p) - timestamp2ns(audio_tstamp_p)
+-		       );
++			printf("\t capture: systime: %lli nsec, audio time %lli nsec, \tsystime delta %lli\n",
++				timediff(tstamp_c, trigger_tstamp_c),
++				timestamp2ns(audio_tstamp_c),
++				timediff(tstamp_c, trigger_tstamp_c) - timestamp2ns(audio_tstamp_c)
++				);
+ #endif
++		}
+ 
+-#if defined(TRACK_CAPTURE)
+-		gettimestamp(handle_c, &tstamp_c, &trigger_tstamp_c, &audio_tstamp_c, &avail_c, &delay_c);
++		if (do_playback) {
++			frames = snd_pcm_writei(handle_p, buffer_p, PERIOD);
++			if (frames < 0) {
++				printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
++				goto _exit;
++			}
+ 
+-#if defined(TRACK_SAMPLE_COUNTS)
+-		curr_count_c = frame_count_c + delay_c; /* read plus queued */
++			frame_count_p += frames;
++
++#if defined(TRACK_PLAYBACK)
+ 
++			audio_tstamp_config_p.type_requested = type;
++			audio_tstamp_config_p.report_analog_delay = do_delay;
++			_gettimestamp(handle_p, &tstamp_p, &trigger_tstamp_p,
++				&audio_tstamp_p, &audio_tstamp_config_p, &audio_tstamp_report_p,
++				&avail_p, &delay_p);
+ 
+-		printf("capture: curr_count %lli driver count %lli, delta %lli\n",
+-		       (long long)curr_count_c * 1000000000LL / 48000 ,
+-		       timestamp2ns(audio_tstamp_c),
+-		       (long long)curr_count_c * 1000000000LL / 48000 - timestamp2ns(audio_tstamp_c)
+-		       );
++#if defined(TRACK_SAMPLE_COUNTS)
++			curr_count_p = frame_count_p - delay_p; /* written minus queued */
++
++			printf("playback: curr_count %lli driver count %lli, delta %lli\n",
++				(long long)curr_count_p * 1000000000LL / 48000 ,
++				timestamp2ns(audio_tstamp_p),
++				(long long)curr_count_p * 1000000000LL / 48000 - timestamp2ns(audio_tstamp_p)
++				);
+ #endif
+ 
+-		printf("\t capture: systime: %lli nsec, audio time %lli nsec, \tsystime delta %lli\n",
+-		       timediff(tstamp_c, trigger_tstamp_c),
+-		       timestamp2ns(audio_tstamp_c),
+-		       timediff(tstamp_c, trigger_tstamp_c) - timestamp2ns(audio_tstamp_c)
+-		       );
++			printf("playback: systime: %lli nsec, audio time %lli nsec, \tsystime delta %lli\n",
++				timediff(tstamp_p, trigger_tstamp_p),
++				timestamp2ns(audio_tstamp_p),
++				timediff(tstamp_p, trigger_tstamp_p) - timestamp2ns(audio_tstamp_p)
++				);
+ #endif
++		}
++
+ 
+-        }
++	} /* while(1) */
+ 
+ _exit:
+ 	if (handle_p)
 -- 
 2.1.0
