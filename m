@@ -1,85 +1,73 @@
-From: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH 1/5] drm/i915: add dev_to_i915_priv helper
-Date: Mon, 8 Dec 2014 20:40:20 +0000
-Message-ID: <20141208204020.GQ13586@nuc-i3427.alporthouse.com>
-References: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
- <1418056929-7977-2-git-send-email-imre.deak@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: pcm512x: Trigger auto-increment of
+ register addresses on i2c
+Date: Mon, 8 Dec 2014 20:46:32 +0000
+Message-ID: <20141208204632.GE11764@sirena.org.uk>
+References: <1418052791-4257-1-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <1418056929-7977-2-git-send-email-imre.deak@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Imre Deak <imre.deak@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============5239891657700652109=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A146F2604CA
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 21:46:51 +0100 (CET)
+In-Reply-To: <1418052791-4257-1-git-send-email-peda@lysator.liu.se>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Rosin <peda@lysator.liu.se>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBEZWMgMDgsIDIwMTQgYXQgMDY6NDI6MDVQTSArMDIwMCwgSW1yZSBEZWFrIHdyb3Rl
-Ogo+IFRoaXMgd2lsbCBiZSBuZWVkZWQgYnkgbGF0ZXIgcGF0Y2hlcywgc28gZmFjdG9yIGl0IG91
-dC4KClRoZSBzaW1pbGlhciBmdW5jdGlvbiAoZm9yIGRybV9kZXZpY2UpIGlzIGtub3duIGFzIHRv
-X2k5MTUoKSwgc28ganVzdApjYWxsIHRoaXMgZGV2X3RvX2k5MTUoKS4KPiAKPiBObyBmdW5jdGlv
-bmFsIGNoYW5nZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBJbXJlIERlYWsgPGltcmUuZGVha0BpbnRl
-bC5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMgIHwgMTUgKysr
-KysrLS0tLS0tLS0tCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oIHwgIDggKysr
-KysrKysKPiAgMiBmaWxlcyBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygt
-KQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jIGIvZHJp
-dmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuYwo+IGluZGV4IDcxYmUzYzkuLjMyYzJlMzMgMTAw
-NjQ0Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuYwo+ICsrKyBiL2RyaXZl
-cnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMKPiBAQCAtOTIzLDEwICs5MjMsMTAgQEAgaTkxNV9w
-Y2lfcmVtb3ZlKHN0cnVjdCBwY2lfZGV2ICpwZGV2KQo+ICAKPiAgc3RhdGljIGludCBpOTE1X3Bt
-X3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQo+ICB7Cj4gLQlzdHJ1Y3QgcGNpX2RldiAqcGRl
-diA9IHRvX3BjaV9kZXYoZGV2KTsKPiAtCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gcGNp
-X2dldF9kcnZkYXRhKHBkZXYpOwo+ICsJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2
-ID0gZGV2X3RvX2k5MTVfcHJpdihkZXYpOwo+ICsJc3RydWN0IGRybV9kZXZpY2UgKmRybV9kZXYg
-PSBkZXZfcHJpdi0+ZGV2Owo+ICAKPiAtCWlmICghZHJtX2RldiB8fCAhZHJtX2Rldi0+ZGV2X3By
-aXZhdGUpIHsKPiArCWlmICghZHJtX2RldiB8fCAhZGV2X3ByaXYpIHsKClRoaXMgdGVzdCBpcyBx
-dWl0ZSBub25zZW5zaWNhbCBzaW5jZSB5b3UndmUgZGVyZWZlcmVuY2VkIGJvdGggcG9pbnRlcnMK
-Z2V0dGluZyB0byB0aGlzIHBvaW50LiBJZiBpdCBpcyByZXF1aXJlZCwgd2UgbmVlZCBhIG5ldyBw
-YXRjaC4KCj4gIAkJZGV2X2VycihkZXYsICJEUk0gbm90IGluaXRpYWxpemVkLCBhYm9ydGluZyBz
-dXNwZW5kLlxuIik7Cj4gIAkJcmV0dXJuIC1FTk9ERVY7Cj4gIAl9Cj4gQEAgLTkzOSw4ICs5Mzks
-NyBAQCBzdGF0aWMgaW50IGk5MTVfcG1fc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gIAo+
-ICBzdGF0aWMgaW50IGk5MTVfcG1fc3VzcGVuZF9sYXRlKHN0cnVjdCBkZXZpY2UgKmRldikKPiAg
-ewo+IC0Jc3RydWN0IHBjaV9kZXYgKnBkZXYgPSB0b19wY2lfZGV2KGRldik7Cj4gLQlzdHJ1Y3Qg
-ZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiArCXN0cnVjdCBk
-cm1fZGV2aWNlICpkcm1fZGV2ID0gZGV2X3RvX2k5MTVfcHJpdihkZXYpLT5kZXY7Cj4gIAo+ICAJ
-LyoKPiAgCSAqIFdlIGhhdmUgYSBzdXNwZWRuIG9yZGVyaW5nIGlzc3VlIHdpdGggdGhlIHNuZC1o
-ZGEgZHJpdmVyIGFsc28KPiBAQCAtOTU5LDggKzk1OCw3IEBAIHN0YXRpYyBpbnQgaTkxNV9wbV9z
-dXNwZW5kX2xhdGUoc3RydWN0IGRldmljZSAqZGV2KQo+ICAKPiAgc3RhdGljIGludCBpOTE1X3Bt
-X3Jlc3VtZV9lYXJseShzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gIHsKPiAtCXN0cnVjdCBwY2lfZGV2
-ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+IC0Jc3RydWN0IGRybV9kZXZpY2UgKmRybV9kZXYg
-PSBwY2lfZ2V0X2RydmRhdGEocGRldik7Cj4gKwlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9
-IGRldl90b19pOTE1X3ByaXYoZGV2KS0+ZGV2Owo+ICAKPiAgCWlmIChkcm1fZGV2LT5zd2l0Y2hf
-cG93ZXJfc3RhdGUgPT0gRFJNX1NXSVRDSF9QT1dFUl9PRkYpCj4gIAkJcmV0dXJuIDA7Cj4gQEAg
-LTk3MCw4ICs5NjgsNyBAQCBzdGF0aWMgaW50IGk5MTVfcG1fcmVzdW1lX2Vhcmx5KHN0cnVjdCBk
-ZXZpY2UgKmRldikKPiAgCj4gIHN0YXRpYyBpbnQgaTkxNV9wbV9yZXN1bWUoc3RydWN0IGRldmlj
-ZSAqZGV2KQo+ICB7Cj4gLQlzdHJ1Y3QgcGNpX2RldiAqcGRldiA9IHRvX3BjaV9kZXYoZGV2KTsK
-PiAtCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBkZXYpOwo+
-ICsJc3RydWN0IGRybV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfdG9faTkxNV9wcml2KGRldiktPmRl
-djsKPiAgCj4gIAlpZiAoZHJtX2Rldi0+c3dpdGNoX3Bvd2VyX3N0YXRlID09IERSTV9TV0lUQ0hf
-UE9XRVJfT0ZGKQo+ICAJCXJldHVybiAwOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0v
-aTkxNS9pbnRlbF9kcnYuaCBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oCj4gaW5k
-ZXggNjFhODhmYS4uM2RlN2E1NSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-bnRlbF9kcnYuaAo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oCj4gQEAg
-LTc3NSw2ICs3NzUsMTQgQEAgc3RhdGljIGlubGluZSB1bnNpZ25lZCBpbnQgaW50ZWxfbnVtX3Bs
-YW5lcyhzdHJ1Y3QgaW50ZWxfY3J0YyAqY3J0YykKPiAgCXJldHVybiBJTlRFTF9JTkZPKGNydGMt
-PmJhc2UuZGV2KS0+bnVtX3Nwcml0ZXNbY3J0Yy0+cGlwZV0gKyAxOwo+ICB9Cj4gIAo+ICtzdGF0
-aWMgaW5saW5lIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfdG9faTkxNV9wcml2KHN0cnVj
-dCBkZXZpY2UgKmRldikKPiArewo+ICsJc3RydWN0IHBjaV9kZXYgKnBkZXYgPSB0b19wY2lfZGV2
-KGRldik7Cj4gKwlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShw
-ZGV2KTsKPiArCj4gKwlyZXR1cm4gZHJtX2Rldi0+ZGV2X3ByaXZhdGU7CgpJIHRoaW5rIHlvdSBt
-ZWFudCAKCnN0YXRpYyBpbmxpbmUgc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl90b19pOTE1
-KHN0cnVjdCBkZXZpY2UgKmRldikKewoJcmV0dXJuIHRvX2k5MTUocGNpX2dldF9kcnZkYXRhKHRv
-X3BjaV9kZXYoZGV2KSkpOwp9Ci1DaHJpcwoKLS0gCkNocmlzIFdpbHNvbiwgSW50ZWwgT3BlbiBT
-b3VyY2UgVGVjaG5vbG9neSBDZW50cmUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9pbnRlbC1nZngK
+
+--===============5239891657700652109==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TXtjXAp+Y+VkYOQB"
+Content-Disposition: inline
+
+
+--TXtjXAp+Y+VkYOQB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Dec 08, 2014 at 04:33:11PM +0100, Peter Rosin wrote:
+> From: Peter Rosin <peda@axentia.se>
+>=20
+> When the codec is connected using i2c, it will only auto-increment
+> register addresses if msb (0x80) of the register address byte is set.
+
+Applied, thanks.
+
+--TXtjXAp+Y+VkYOQB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUhg4nAAoJECTWi3JdVIfQBFsH/jgZKWh1oR94M7ImgAm7YCet
+3P2ZpHql2rGjNFwilWNr93NnrNxvXuo41ZwzERjBWwbhGndbCQMeDGAKEo6ZQEOr
+zv2MiAd0PXMOhffTBFmn0tT/PLSMPJbxiY7k2Fb9xaeekbt3yoNLP5LLVKZQSFHq
+uWfpTXJ/Reip0O3gQtste63c4WzXyNwimnbHuEb+bnezSi1lw9xLiZFLD2cpR/US
+S0AQf0xSCAriDHblAExVTXgAfK0IVBW+/HAT9o7XP3yTlzfIiueexBzYlt1NWoPQ
+1wQQnfZ25ewnxuImp7q5o8Y0pmSkB1Vhe5n5HeLTSd2XdOOTlN4vIAjve597lq0=
+=KhOD
+-----END PGP SIGNATURE-----
+
+--TXtjXAp+Y+VkYOQB--
+
+--===============5239891657700652109==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5239891657700652109==--
