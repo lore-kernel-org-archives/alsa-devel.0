@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 05/15] ALSA: dice: Add support for
-	MIDI	capture/playback
-Date: Mon, 08 Dec 2014 09:50:10 +0900
-Message-ID: <5484F5C2.9080801@sakamocchi.jp>
+Subject: Re: [PATCH 07/15] ALSA: oxfw: Add support for AV/C
+ stream	format command to get/set supported stream formation
+Date: Mon, 08 Dec 2014 09:51:56 +0900
+Message-ID: <5484F62C.2010807@sakamocchi.jp>
 References: <1417958348-30333-1-git-send-email-o-takashi@sakamocchi.jp>
- <1417958348-30333-6-git-send-email-o-takashi@sakamocchi.jp>
- <5484CA3D.5070004@ladisch.de>
+ <1417958348-30333-8-git-send-email-o-takashi@sakamocchi.jp>
+ <5484CE49.6090105@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id EFFB72605D3
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 01:50:15 +0100 (CET)
-In-Reply-To: <5484CA3D.5070004@ladisch.de>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9880E26069D
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 01:51:59 +0100 (CET)
+In-Reply-To: <5484CE49.6090105@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,90 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 8 2014 06:44, Clemens Ladisch wrote:
+On Dec 6 2014 07:01, Clemens Ladisch wrote:
 > Takashi Sakamoto wrote:
->> This commit adds a support for MIDI capture/playback
->>
->> +++ b/sound/firewire/dice/dice-midi.c
->> +static int capture_open(struct snd_rawmidi_substream *substream)
+>> +++ b/sound/firewire/oxfw/oxfw-command.c
+>> +int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
+>> +			  unsigned int pid, u8 *format, unsigned int len)
 >> +{
->> ...
->> +}
+>> +	buf[0] = 0x00;		/* CONTROL */
+>> +	buf[1] = 0xff;		/* UNIT */
+>> +	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
+>> +	buf[3] = 0xc0;		/* SINGLE subfunction */
+>> +	buf[4] = dir;		/* Plug Direction */
+>> +	buf[5] = 0x00;		/* UNIT */
+>> +	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
+>> +	buf[7] = 0xff & pid;	/* Plug ID */
+>> +	buf[8] = 0xff;		/* Padding */
+>> +	buf[9] = 0xff;		/* Support status in response */
+>> +	memcpy(buf + 10, format, len);
 >> +
->> +static int playback_open(struct snd_rawmidi_substream *substream)
->> +{
->> ...
->> +}
+>> +	/* do transaction and check buf[1-7] are the same against command */
+>> +	err = fcp_avc_transaction(unit, buf, len + 10, buf, len + 10,
+>> +				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
+>> +				  BIT(6) | BIT(7) | BIT(8));
 > 
-> These two functions are identical.
-> 
->> +static int capture_close(struct snd_rawmidi_substream *substream)
->> +{
->> ...
->> +}
->> +
->> +static int playback_close(struct snd_rawmidi_substream *substream)
->> +{
->> ...
->> +}
-> 
-> These two too.
+> The comment says 1-7, the code says 1-8.
 
-Indeed. We can use the same functions for each of MIDI open/close callback.
+Oops, indeed.
 
->> +static void set_midi_substream_names(struct snd_dice *dice,
->> +				     struct snd_rawmidi_str *str)
->> +{
->> +	list_for_each_entry(subs, &str->substreams, list) {
->> +		snprintf(subs->name, sizeof(subs->name),
->> +			 "%s MIDI %d", dice->card->shortname, subs->number + 1);
-> 
-> This is not really important, but the number is useless when the
-> device has only one MIDI port.
-
-Fireworks/BeBoB/Dice/OXFW drivers have the same codes to name MIDI
-ports. So I want to change them in the same time, later.
-
-This below code is for your idea.
-
-static void set_midi_substream_names(const char *shortname,
-                                     struct snd_rawmidi_str *str)
-{
-    struct snd_rawmidi_substream *subs;
-
-    list_for_each_entry(subs, &str->substreams, list) {
-        if (str->substream_count == 1) {
-                snprintf(subs->name, sizeof(subs->name),
-                     "%s MIDI", shortname);
-                break;
-        }
-
-        snprintf(subs->name, sizeof(subs->name),
-                     "%s MIDI %d", shortname, subs->number + 1);
-    }
-}
-
-Hmm. I can see the 'shortname' again...
-
-If I apply "vendor model" template for the shortname, the length of MIDI
-ports are too long for MIDI port name. For example,
-
-$ cat /proc/asound/card0/midi0
-Echo Digital Audio AudioFire4 MIDI
-...
-
-$ amidi -lDir Device    Name
-IO  hw:0,0,0  Echo Digital Audio AudioFire4 M(trimmed)
-
-Currently I apply "vendor model" template for OXFW driver only, but I
-should reconsider about this...
+I correct it in my next patchset with the other correction, in a few days.
 
 
-Regards
+Thanks
 
 Takashi Sakamoto
 o-takashi@sakamocchi.jp
