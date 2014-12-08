@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH RFC 7/9] ALSA: core: pass audio tstamp config
-	from userspace in compat mode
-Date: Mon,  8 Dec 2014 16:23:44 -0600
-Message-ID: <1418077426-8309-8-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RFC 9/9] ALSA: hda: replace .wallclock by
+	.get_time_info
+Date: Mon,  8 Dec 2014 16:23:46 -0600
+Message-ID: <1418077426-8309-10-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 819312605BA
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:24:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 64D1D26056A
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:24:43 +0100 (CET)
 In-Reply-To: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,47 +25,88 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Let userspace select audio timestamp config, ignore and zero all
-other fields
-Use audio_tstamp_data to retrieve config and pass report back to
-user space
+No real functional change, only take wall clock and system time
+in same routine and add accuracy report.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/core/pcm_compat.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_controller.c | 36 ++++++++++++++++++++++++++----------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index 2d957ba..d71b5b3 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -194,7 +194,7 @@ struct snd_pcm_status32 {
- 	u32 avail_max;
- 	u32 overrange;
- 	s32 suspended_state;
--	u32 reserved_alignment;
-+	u32 audio_tstamp_data;
- 	struct compat_timespec audio_tstamp;
- 	unsigned char reserved[56-sizeof(struct compat_timespec)];
- } __attribute__((packed));
-@@ -206,6 +206,10 @@ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
- 	struct snd_pcm_status status;
- 	int err;
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 6a9f8c8..1bf8589 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -734,17 +734,33 @@ static snd_pcm_uframes_t azx_pcm_pointer(struct snd_pcm_substream *substream)
+ 			       azx_get_position(chip, azx_dev));
+ }
  
-+	/* fetch audio_stamp_config from user-space */
-+	if (get_user(status.audio_tstamp_data, &src->audio_tstamp_data))
-+		return -EFAULT;
+-static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
+-				struct timespec *ts)
++static int azx_get_time_info(struct snd_pcm_substream *substream,
++			struct timespec *system_ts, struct timespec *audio_ts,
++			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
++			struct snd_pcm_audio_tstamp_report *audio_tstamp_report)
+ {
+ 	struct azx_dev *azx_dev = get_azx_dev(substream);
+ 	u64 nsec;
+ 
+-	nsec = timecounter_read(&azx_dev->azx_tc);
+-	nsec = div_u64(nsec, 3); /* can be optimized */
+-	nsec = azx_adjust_codec_delay(substream, nsec);
++	if ((substream->runtime->hw.info & SNDRV_PCM_INFO_HAS_LINK_ATIME) &&
++		(audio_tstamp_config->type_requested == SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK)) {
+ 
+-	*ts = ns_to_timespec(nsec);
++		snd_pcm_gettime(substream->runtime, system_ts);
 +
- 	err = snd_pcm_status(substream, &status);
- 	if (err < 0)
- 		return err;
-@@ -222,6 +226,7 @@ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
- 	    put_user(status.avail_max, &src->avail_max) ||
- 	    put_user(status.overrange, &src->overrange) ||
- 	    put_user(status.suspended_state, &src->suspended_state) ||
-+	    put_user(status.audio_tstamp_data, &src->audio_tstamp_data) ||
- 	    compat_put_timespec(&status.audio_tstamp, &src->audio_tstamp))
- 		return -EFAULT;
++		nsec = timecounter_read(&azx_dev->azx_tc);
++		nsec = div_u64(nsec, 3); /* can be optimized */
++		if (audio_tstamp_config->report_delay)
++			nsec = azx_adjust_codec_delay(substream, nsec);
++
++		*audio_ts = ns_to_timespec(nsec);
++
++		audio_tstamp_report->actual_type = SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK;
++		audio_tstamp_report->accuracy_report = 1; /* rest of structure is valid */
++		audio_tstamp_report->accuracy_m = 42; /* 24 MHz WallClock == 42ns resolution */
++		audio_tstamp_report->accuracy_e = 0;
++
++	} else
++		audio_tstamp_report->actual_type = SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT;
  
+ 	return 0;
+ }
+@@ -758,7 +774,7 @@ static struct snd_pcm_hardware azx_pcm_hw = {
+ 				 /* SNDRV_PCM_INFO_RESUME |*/
+ 				 SNDRV_PCM_INFO_PAUSE |
+ 				 SNDRV_PCM_INFO_SYNC_START |
+-				 SNDRV_PCM_INFO_HAS_WALL_CLOCK |
++				 SNDRV_PCM_INFO_HAS_LINK_ATIME |
+ 				 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP),
+ 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates =		SNDRV_PCM_RATE_48000,
+@@ -844,10 +860,10 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ 		return -EINVAL;
+ 	}
+ 
+-	/* disable WALLCLOCK timestamps for capture streams
++	/* disable LINK_ATIME timestamps for capture streams
+ 	   until we figure out how to handle digital inputs */
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+-		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_WALL_CLOCK;
++		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_LINK_ATIME;
+ 
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	azx_dev->substream = substream;
+@@ -879,7 +895,7 @@ static struct snd_pcm_ops azx_pcm_ops = {
+ 	.prepare = azx_pcm_prepare,
+ 	.trigger = azx_pcm_trigger,
+ 	.pointer = azx_pcm_pointer,
+-	.wall_clock =  azx_get_wallclock_tstamp,
++	.get_time_info =  azx_get_time_info,
+ 	.mmap = azx_pcm_mmap,
+ 	.page = snd_pcm_sgbuf_ops_page,
+ };
 -- 
 2.1.0
