@@ -1,14 +1,18 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: [PATCH] ASoC: atmel_ssc_dai/trivial: typo fix
-Date: Mon, 8 Dec 2014 11:58:29 +0100
-Message-ID: <1418036309-28695-1-git-send-email-nicolas.ferre@atmel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Question on arm64 unaligned faults during playback
+Date: Mon, 08 Dec 2014 12:15:52 +0100
+Message-ID: <54858868.70708@metafoo.de>
+References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>	<54856621.8090107@ladisch.de>
+ <s5hppbumnis.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eusmtp01.atmel.com (eusmtp01.atmel.com [212.144.249.243])
- by alsa0.perex.cz (Postfix) with ESMTP id 87B5726066A
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 11:58:29 +0100 (CET)
+Received: from smtp-out-181.synserver.de (smtp-out-152.synserver.de
+ [212.40.185.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D12D260851
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 12:15:40 +0100 (CET)
+In-Reply-To: <s5hppbumnis.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,30 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, Matthieu Crapet <mcrapet@gmail.com>, Bo Shen <voice.shen@atmel.com>
+To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+Cc: Abhilash Kesavan <kesavan.abhilash@gmail.com>, alsa-devel@alsa-project.org, padma.v@samsung.com, Catalin Marinas <catalin.marinas@arm.com>, b42378@freescale.com, Will Deacon <will.deacon@arm.com>, lgirdwood@gmail.com, broonie@kernel.org, p.zabel@pengutronix.de, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Matthieu Crapet <mcrapet@gmail.com>
+Added ARM64 folks to Cc.
 
-Signed-off-by: Matthieu Crapet <mcrapet@gmail.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
----
- sound/soc/atmel/atmel_ssc_dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 12/08/2014 11:41 AM, Takashi Iwai wrote:
+> At Mon, 08 Dec 2014 09:49:37 +0100,
+> Clemens Ladisch wrote:
+>>
+>> Abhilash Kesavan wrote:
+>>> I am working on a 64-bit ARM SoC (Samsung's Exynos7) and have observed
+>>> unaligned faults while testing certain sound streams with aplay.
+>>>
+>>> [   24.535661] snd_pcm_lib_write_transfer:sound/core/pcm_lib.c hwbuf is ffffff8000085624, runtime->dma_area is ffffff8000080000, hwoff is 5513, frames_to_bytes is 22052, frames is 5513
+>>> [   24.551244] Unhandled fault: alignment fault (0x96000061) at 0xffffff8000085624
+>>> [   24.579944] PC is at __copy_from_user+0x14/0x60
+>>> [   24.584450] LR is at snd_pcm_lib_write_transfer+0xe4/0x104
+>>> [   24.922054] Call trace:
+>>> [   24.924488] [<ffffffc0002d4784>] __copy_from_user+0x14/0x60
+>>> [   24.930040] [<ffffffc0004b7574>] snd_pcm_lib_write1+0x1fc/0x384
+>>>
+>>> We are using the internal sram available for sound, for DMA buffer
+>>> allocation, using the generic SRAM driver. From the above log, the
+>>> buffer address offset is not 8-byte aligned and as we are using the
+>>> SRAM driver which maps the memory as device memory we are getting an
+>>> unaligned fault. Is it incorrect to use the generic sram driver for
+>>> arm64 or am I missing something ?
+>>
+>> When you give the ALSA framework a memory buffer, it is assumed that it
+>> is general-purpose memory, i.e., can be accessed with any alignment.
+>>
+>> If your memory does not allow such accesses, you have to do all the
+>> accesses in your driver, i.e., do everything in the .copy/.silence
+>> callbacks.  (You also have to add constraints so that periods and buffer
+>> are correctly aligned.)
+>
+> You can set runtime->min_align in the own hw_params callback so that
+> the PCM core handle it well, at least, for non-mmap mode.
+>
+> But this feature has been rarely used (currently no driver sets it
+> explicitly), so there might be still some bugs there, too :)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index f403f399808a..775a2badd6a4 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -267,7 +267,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- 	if (!ssc_p->dir_mask) {
- 		if (ssc_p->initialized) {
- 			/* Shutdown the SSC clock. */
--			pr_debug("atmel_ssc_dau: Stopping clock\n");
-+			pr_debug("atmel_ssc_dai: Stopping clock\n");
- 			clk_disable(ssc_p->ssc->clk);
- 
- 			free_irq(ssc_p->ssc->irq, ssc_p);
--- 
-2.1.3
+As far as I can see min_align only aligns the hardware pointer, but not the 
+application pointer. The later causes the issue here.
+
+E.g. if a application writes a unaligned amount of bytes the next write will 
+start at an unaligned buffer address.
+
+How safe is it in general to use IO mapped memory as general purpose memory 
+on ARM64? Are there maybe even more constraints than just that access has to 
+be aligned? Maybe the driver should rather use copy_from_user_toio() instead 
+of copy_from_user() to make sure that things work correctly.
+
+- Lars
