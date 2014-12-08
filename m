@@ -1,29 +1,68 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH] ASoC: samsung: request memory region in driver probe()
-Date: Mon, 08 Dec 2014 19:01:27 +0100
-Message-ID: <5485E777.8070203@samsung.com>
-References: <1418049376-32129-1-git-send-email-s.nawrocki@samsung.com>
+From: thomas chen <tchen61@gmail.com>
+Subject: Re: I2S frame configuration
+Date: Mon, 08 Dec 2014 13:03:17 -0500
+Message-ID: <5485E7E5.7020406@gmail.com>
+References: <5485C5CA.8030402@gmail.com> <5485D96C.3020900@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1418049376-32129-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qg0-f44.google.com (mail-qg0-f44.google.com
+ [209.85.192.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3666260488
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 19:03:25 +0100 (CET)
+Received: by mail-qg0-f44.google.com with SMTP id z60so3825237qgd.17
+ for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 10:03:25 -0800 (PST)
+In-Reply-To: <5485D96C.3020900@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/12/14 15:36, Sylwester Nawrocki wrote:
-> The memory mapped registers region is common for both DAIs so request
-> it in the I2S platform device driver probe for the platform device
-> corresponding to the primary DAI, rather than in the ASoC DAI probe
-> callback. While at it switch to devm_ioremap_resource(). This also
-> drops the hard coded (0x100) register region size in the driver.
 
-Please ignore this patch, there is one iounmap() call removal missing
-in it. I'll resend it updated together with other patch(es) I'm working
-on to get the CDCLK gating issue on Odroid X2/U3 fixed.
+Thanks for the info... so it is possible for Asoc to handle such format...
 
--- 
-Thanks,
-Sylwester
+So where does one specify number of bits in a FRAME/WORD (epsecially if =
+
+we were to be master instead of slave ?)
+
+and, how does one specify number of bits to ignore (before the valid data)
+
+and also how many valid bits (ie size of data word) ???
+
+Thanks...
+
+
+
+
+On 12/8/2014 12:01 PM, Clemens Ladisch wrote:
+> thomas chen wrote:
+>> I am working on a ALSA interface to a particular codec over I2S
+>>
+>> the audio stream format is a bit peculiar...
+>>
+>> there are 24 BCLK cycle between transition of FSYNC...   howver, there a=
+re only 16 bit that are valid
+>>
+>> bit 0: ignore
+>> bit 1-16:   valid pcm data (MSB....LSB)
+>> bit 17-23: ignore
+> This is the 'original' I=B2S format.  The format where the sample begins
+> with the 1st BCLK usually is called left-justified (and uses the
+> opposite FSYNC polarity).
+>
+> Having ignored bits is common.  (Typically, there are 32 BCLK cycles per
+> sample.)
+>
+> In ASoC, this would be SND_SOC_DAIFMT_I2S and SND_SOC_DAIFMT_LEFT_J.
+>
+>
+> Regards,
+> Clemens
