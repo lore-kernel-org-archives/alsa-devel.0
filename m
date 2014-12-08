@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC updates for v3.19
-Date: Mon, 8 Dec 2014 15:53:40 +0000
-Message-ID: <20141208155340.GC11764@sirena.org.uk>
-References: <20141208133826.GA11764@sirena.org.uk>
- <s5h388q9nkw.wl-tiwai@suse.de>
- <20141208154135.GB11764@sirena.org.uk>
- <s5hr3wa87vu.wl-tiwai@suse.de>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: Nodes, Widgets,
+ ELD and Digital Surround 5.1 (HDMI) Output?
+Date: Mon, 08 Dec 2014 21:38:04 +0500
+Message-ID: <5485D3EC.7070109@gmail.com>
+References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
+ <547EBCFF.5030204@canonical.com> <547EC2BF.3080601@gmail.com>
+ <46543BFB759444F4B56F5153F4727DEE@Lyra> <548054D1.1000302@gmail.com>
+ <4E4A612742FA4CEF85A52A8A16AADF78@Lyra> <54818D9C.5030100@gmail.com>
+ <30B3A9113F464BFA8880D53D77A134A8@Lyra>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6854393127586576888=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 20B67260453
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 16:54:01 +0100 (CET)
-In-Reply-To: <s5hr3wa87vu.wl-tiwai@suse.de>
+Received: from mail-wg0-f54.google.com (mail-wg0-f54.google.com [74.125.82.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F6A326045C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 17:38:07 +0100 (CET)
+Received: by mail-wg0-f54.google.com with SMTP id l2so6664825wgh.27
+ for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 08:38:07 -0800 (PST)
+In-Reply-To: <30B3A9113F464BFA8880D53D77A134A8@Lyra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +27,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: bencoxdev@gmail.com, David Henningsson <david.henningsson@canonical.com>, ALSA Mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6854393127586576888==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6nSyB+bcl/pT7+kx"
-Content-Disposition: inline
-
-
---6nSyB+bcl/pT7+kx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Dec 08, 2014 at 04:43:17PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > > For fixing a build error with CONFIG_SND_JACK=3Dn
-> > >   sound/soc/codecs/ts3a227e.c:223:2: error: implicit declaration of f=
-unction =E2=80=98snd_jack_set_key=E2=80=99 [-Werror=3Dimplicit-function-dec=
-laration]
-
-> > The device probably should be ensuring that the jack detection is
-> > enabled - the device doesn't do anything except jack detection.
-
-> Yes.  But apart from that, still it's better to have the corresponding
-> dummy function,=20
-
-That's not always the case - there's some interfaces that should really
-only be used by something that really has a strong dependency on the
-feature, things will go wrong if the driver thinks the feature is doing
-something and it isn't.  This one should be fine though.
-
---6nSyB+bcl/pT7+kx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUhcmDAAoJECTWi3JdVIfQaBgH/3Bjr7cIwJgx9QUpmqGQ83a4
-MV6/smdBKHRWkIOo3QtIPb1mPxH0X3rBiXeqzWIELPM4iKFRW9C8ggl2jkdvg4sk
-3dVgZUZx0QTsCj8wiVnFxq3TCc5zBjndrf5YF8R7Bmz2arSmWEtAJzxldk+k0s+9
-NS9neWtVJcQNULvghdmUHO0a2hlmmEUDrTxgWZCEkWg5Lf3/IKU/Q+wkZQUOD6WE
-iTlT8tV47gxtvWnP+e/LvOqymTrTFQFWbkBi1TfGns5PZvKlqXcxFYYFXqQHnguI
-rKIhc26xF4QiPnFtgM9xI69ihy6OOWJ8/QOloLp5T+8TnIshwpB0Vk1fcIZoekY=
-=KNZ/
------END PGP SIGNATURE-----
-
---6nSyB+bcl/pT7+kx--
-
---===============6854393127586576888==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6854393127586576888==--
+MDguMTIuMjAxNCAxOTo0MCwgYmVuY294ZGV2QGdtYWlsLmNvbSB3cm90ZToKPiBIaSBBbGV4YW5k
+ZXIsCj4gVGhhbmtzIGZvciBsb29raW5nIGF0IHRoaXMgZm9yIG1lIGl0IGlzIHZlcnkgbXVjaCBh
+cHByZWNpYXRlZC4KPiBQbGVhc2Ugc2VlIGJlbG93IHRoZSBkZXRhaWxzIGZyb20gdGhlIGFsbCB0
+aGUgbG9nczsgYXMgeW91IHJlcXVlc3RlZC4KPiBJ4oCZdmUgaGFkIHRvIG9taXQgYQo+IGZldyBk
+ZXRhaWxzICh2ZW5kb3IgbmFtZXMgYW5kIElE4oCZcykgYXMgdGhpcyBwcm9qZWN0IGlzIHByZS1y
+ZWxlYXNlIGFuZCBJCj4gYW0gdW5kZXIgTi5ELkEuCgpVbmZvcnR1bmF0ZWx5LCB5b3UgaGF2ZSBs
+ZWFrZWQgYm90aCB0aGUgZ3JhcGhpY3MgdmVuZG9yICh0aHJvdWdoIApleGNlc3NpdmUgYmxvY2tp
+bmcgb2YgaXQpIGFuZCB0aGUgVFYvbW9uaXRvciB2ZW5kb3IgKHRocm91Z2ggRUxEKS4gU28gCnlv
+dSBib3RoIGJyb2tlIHRoZSBOREEgYW5kIHByZXZlbnRlZCBtZSBmcm9tIHRyb3VibGVzaG9vdGlu
+ZyBmdXJ0aGVyLiBJIAp0aG91Z2h0IEkgbmVlZGVkIHRoZSB2ZW5kb3IgSURzIGluIG9yZGVyIHRv
+IG1hdGNoIHRoZW0gYWdhaW5zdCB1ZGV2IApydWxlcywgYnV0IHNlZSBiZWxvdy4gU3RpbGwsIGEg
+ZmFpbC1mYWlsIHNpdHVhdGlvbiwgZXNwZWNpYWxseSBzaW5jZSAKdGhlcmUgYXJlIGEgbG90IG9m
+IG90aGVyIGhvYmJ5IHByb2plY3RzIHVzaW5nIGRldmVsb3BtZW50IGJvYXJkcyB3aXRoIAp0aGUg
+Z3JhcGhpY3MgYW5kIGF1ZGlvIGNoaXBzIGZyb20gdGhlIHNhbWUgdmVuZG9yLgoKQnV0IGluZGVl
+ZCwgdGhlcmUgaXMgaW5mb3JtYXRpb24gaW4gdGhlIGxvZyB0aGF0IGdpdmVzIGEgYmlnIGNsdWUu
+IFlvdSAKYXJlIHVzaW5nIFB1bHNlQXVkaW8gMS4xLCBhbmQgY29uZmlndXJlZCBpdCBub3QgdG8g
+dXNlIHVkZXYgcnVsZXMgKHNvIAprbm93bGVkZ2Ugb2YgYSB2ZW5kb3IgSUQgaXMgbm93IHVzZWxl
+c3MpLiBBbHNvLCBpdCBjYW5ub3QgYXV0b2RldGVjdCA1LjEgClBDTSBvdmVyIEhETUkgd2l0aCB1
+ZGV2IHJ1bGVzLiBJdCBpcyBhbHNvIG5vdCBzdXBwb3J0ZWQgYW55bW9yZS4gTXkgCnJlY29tbWVu
+ZGF0aW9uIHdvdWxkIGJlIHRvIGVpdGhlciB1cGdyYWRlICh3aGljaCBpcyBpbXBvc3NpYmxlIG9u
+IHRoZSAKVWJ1bnR1IDEyLjA0IHBsYXRmb3JtKSBvciB0byBkcm9wIHRoZSB1c2Ugb2YgUHVsc2VB
+dWRpbyBhbHRvZ2V0aGVyIGlmIAp5b3UgYXJlIHN0dWNrIHdpdGggdGhpcyBhbmNpZW50IHVzZXJz
+cGFjZS4KCkZvciBlbmFibGluZyBwYXNzdGhyb3VnaCBpbiBQdWxzZUF1ZGlvLCB5b3Ugd291bGQg
+bmVlZCB0byBydW4gCnBhdnVjb250cm9sIGFuZCBwbGFjZSBhIGNoZWNrYm94IGluIHRoZSBBQzMg
+YW5kIERUUyBmaWVsZHMuIEFsdGVybmF0aXZlbHk6CgpwYWN0bCBzZXQtc2luay1mb3JtYXRzIDAg
+J3BjbTthYzMtaWVjNjE5Mzc7ZHRzLWllYzYxOTM3JwoKLi4ud2hlcmUgMCBpcyB0aGUgc2luayBp
+bmRleC4KCkFuZCBhbHNvIHlvdSBuZWVkIHRvIGZpbmQgYSBwbGF5ZXIgdGhhdCBzdXBwb3J0cyB0
+aGlzIHBhc3N0aHJvdWdoIApmZWF0dXJlLCBhbmQsIGlmIHlvdSBhcmUgdXNpbmcgR1N0cmVhbWVy
+LCBhbHNvIHRvIG1ha2Ugc3VyZSB0aGF0IHRoZSAKaW5zdGFsbGVkIHZlcnNpb24gc3VwcG9ydHMg
+cGFzc3Rocm91Z2guIE9uIHN1Y2ggYW5jaWVudCBwbGF0Zm9ybSwgSSdkIApyZWNvbW1lbmQgYWdh
+aW5zdCBpdC4KCkZvciBQQ00gNS4xIChpLmUuIHNvZnR3YXJlIGRlY29kaW5nKSB3aXRoIFB1bHNl
+QXVkaW8gMS4xLCB5b3UgbmVlZCBhIApyZWFsIDUuMSByZWNlaXZlciBhbmQgdGhpcyBjb21tYW5k
+OgoKcGFjbWQgbG9hZC1tb2R1bGUgbW9kdWxlLWFsc2Etc2luayBkZXZpY2U9aGRtaTowLDAgY2hh
+bm5lbHM9NgoKPiBVc2luZyAgcGFzdXNwZW5kZXIgLS0gc3BlYWtlci10ZXN0IC1jNiAtYiAxMjUw
+MDAgLVAyIC1EICJwbHVnOidoZG1pOlgsWSciCj4gWCBZIFJlc3VsdAo+IC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQo+IDAgMCBIaXNzIGxlZnQgRnJvbnQgYW5kIFJpZ2h0IEZyb250
+LCBvdGhlcnMgc2lsZW50Cj4gKGV2ZXJ5dGhpbmcgZWxzZSkgUGxheWJhY2sgb3BlbiBlcnJvcjog
+LTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKClRyeSByZXRlc3RpbmcgcGx1ZzonaGRtaTow
+LDAnIHdpdGggYSByZWFsIDUuMSBIRE1JIHJlY2VpdmVyIChlLmcuIGZyb20gCk9ua3lvKSwgbm90
+IHdpdGggYSBTYW1zdW5nIFRWL21vbml0b3IgKHRoYXQgb25seSBhZHZlcnRpc2VzIHRoZSBwcmVz
+ZW5jZSAKb2YgRnJvbnQtTGVmdCBhbmQgRnJvbnQtUmlnaHQgY2hhbm5lbHMgYW5kIExQQ00gZW5j
+b2RpbmcgaW4gdGhlIEVMRCkuCgotLSAKQWxleGFuZGVyIEUuIFBhdHJha292Cl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
