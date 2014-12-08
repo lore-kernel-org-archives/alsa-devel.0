@@ -1,30 +1,36 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Subject: Re: [alsa-devel][PATCH v3] ASoC: wm8960: Let wm8960 codec driver
 	manage its own MCLK
-Date: Mon, 8 Dec 2014 10:15:29 +0000
-Message-ID: <20141208101529.GD14516@opensource.wolfsonmicro.com>
-References: <1417696879-15402-1-git-send-email-b50113@freescale.com> <20141205170156.GB14516@opensource.wolfsonmicro.com> <20141205173932.GN11764@sirena.org.uk> <BN3PR0301MB12511B448B1C0B9E8F0BB6C48D640@BN3PR0301MB1251.namprd03.prod.outlook.com>
+Date: Mon, 8 Dec 2014 10:15:57 +0000
+Message-ID: <20141208101557.GE14516@opensource.wolfsonmicro.com>
+References: <1417696879-15402-1-git-send-email-b50113@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <BN3PR0301MB12511B448B1C0B9E8F0BB6C48D640@BN3PR0301MB1251.namprd03.prod.outlook.com>
+In-Reply-To: <1417696879-15402-1-git-send-email-b50113@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <B50113@freescale.com>
-Cc: Mark Brown <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "lars@metafoo.de" <lars@metafoo.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Zidan Wang <b50113@freescale.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 08, 2014 at 09:49:51AM +0000, Zidan Wang wrote:
-> So I should move mclk to wm8960_priv. 
-> And doing wm8960_priv->mclk = devm_clk_get(&i2c->dev, "codec_mclk") in wm8960_i2c_probe.
+On Thu, Dec 04, 2014 at 08:41:19PM +0800, Zidan Wang wrote:
+> When we want to use wm8960 codec, we should enable its MCLK in machine
+> driver. It's reasonable for wm8960 codec driver to manage its own MCLK to
+> save power.
 > 
-> Best Regards,
-> Zidan
+> If platform data is not supplied, we will get MCLK from device tree and check
+> the return code to handle probe deferral.
 > 
-> -----Original Message-----
+> Enable runtime power management, and auto enable/disable MCLK in pm_runtime
+> resume and suspend. When wm8960 codec is being used, it will triger resume()
+> to enable MCLK. When codec is not being used, it will triger suspend() to
+> disable MCLK.
+> 
+> Signed-off-by: Zidan Wang <b50113@freescale.com>
+> ---
 
->From the sounds of Mark's comment I believe he is happy with it
-where it is, and if he is happy so am I.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
 Thanks,
 Charles
