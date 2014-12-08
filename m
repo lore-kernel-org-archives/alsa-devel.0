@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/15] ALSA: oxfw: Change the way to name card
-Date: Tue,  9 Dec 2014 00:10:40 +0900
-Message-ID: <1418051449-18371-7-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/15] ALSA: dice: Add support for capturing
+	PCM samples
+Date: Tue,  9 Dec 2014 00:10:38 +0900
+Message-ID: <1418051449-18371-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 2921226053B
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 16:11:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 58816260458
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 16:10:58 +0100 (CET)
 In-Reply-To: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,131 +25,320 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a preparation for more models. In following commit, members
-of 'struct snd_card' related to name becomes to consists of vendor and
-model strings in device's config-rom.
+This commit adds a support for capturing PCM samples.
 
-Current supported devices also has strings in their config rom, but the
-strings are too long to name sound card, thus this driver still keep
-hard-coded vendor and model names for them.
+When opposite PCM substream is already running, available sampling rate is
+limited at current one.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c | 53 ++++++++++++++++++++++++++++------------------
- sound/firewire/oxfw/oxfw.h |  4 ++--
- 2 files changed, 34 insertions(+), 23 deletions(-)
+ sound/firewire/Kconfig         |   3 -
+ sound/firewire/dice/dice-pcm.c | 161 +++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 147 insertions(+), 17 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 951d9a4..dd576bf 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,14 +25,34 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 2a5b9a6..0932860 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -20,9 +20,6 @@ config SND_DICE
+ 	  Say Y here to include support for many DACs based on the DICE
+ 	  chip family (DICE-II/Jr/Mini) which TC Applied Technologies produces.
  
--static u32 oxfw_read_firmware_version(struct fw_unit *unit)
-+static int name_card(struct snd_oxfw *oxfw)
+-	  At the moment, this driver supports playback only.  If you
+-	  want to use devices that support capturing, use FFADO instead.
+-
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-dice.
+ 
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index 062b7a3..f7771451 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -12,7 +12,8 @@
+ static int dice_rate_constraint(struct snd_pcm_hw_params *params,
+ 				struct snd_pcm_hw_rule *rule)
  {
--	__be32 data;
-+	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
-+	const char *d, *v, *m;
-+	u32 firmware;
+-	struct snd_dice *dice = rule->private;
++	struct snd_pcm_substream *substream = rule->private;
++	struct snd_dice *dice = substream->private_data;
+ 
+ 	const struct snd_interval *c =
+ 		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+@@ -21,7 +22,12 @@ static int dice_rate_constraint(struct snd_pcm_hw_params *params,
+ 	struct snd_interval rates = {
+ 		.min = UINT_MAX, .max = 0, .integer = 1
+ 	};
+-	unsigned int i, rate, mode, *pcm_channels = dice->rx_channels;
++	unsigned int i, rate, mode, *pcm_channels;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		pcm_channels = dice->tx_channels;
++	else
++		pcm_channels = dice->rx_channels;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
+ 		rate = snd_dice_rates[i];
+@@ -41,7 +47,8 @@ static int dice_rate_constraint(struct snd_pcm_hw_params *params,
+ static int dice_channels_constraint(struct snd_pcm_hw_params *params,
+ 				    struct snd_pcm_hw_rule *rule)
+ {
+-	struct snd_dice *dice = rule->private;
++	struct snd_pcm_substream *substream = rule->private;
++	struct snd_dice *dice = substream->private_data;
+ 
+ 	const struct snd_interval *r =
+ 		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
+@@ -50,7 +57,12 @@ static int dice_channels_constraint(struct snd_pcm_hw_params *params,
+ 	struct snd_interval channels = {
+ 		.min = UINT_MAX, .max = 0, .integer = 1
+ 	};
+-	unsigned int i, rate, mode, *pcm_channels = dice->rx_channels;
++	unsigned int i, rate, mode, *pcm_channels;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		pcm_channels = dice->tx_channels;
++	else
++		pcm_channels = dice->rx_channels;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
+ 		rate = snd_dice_rates[i];
+@@ -109,30 +121,42 @@ static int init_hw_info(struct snd_dice *dice,
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_pcm_hardware *hw = &runtime->hw;
++	struct amdtp_stream *stream;
++	unsigned int *pcm_channels;
  	int err;
  
--	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
--				 OXFORD_FIRMWARE_ID_ADDRESS, &data, 4, 0);
--	return err >= 0 ? be32_to_cpu(data) : 0;
-+	err = snd_fw_transaction(oxfw->unit, TCODE_READ_QUADLET_REQUEST,
-+				 OXFORD_FIRMWARE_ID_ADDRESS, &firmware, 4, 0);
-+	if (err < 0)
-+		goto end;
-+	be32_to_cpus(&firmware);
+ 	hw->info = SNDRV_PCM_INFO_MMAP |
+ 		   SNDRV_PCM_INFO_MMAP_VALID |
+ 		   SNDRV_PCM_INFO_BATCH |
+ 		   SNDRV_PCM_INFO_INTERLEAVED |
++		   SNDRV_PCM_INFO_JOINT_DUPLEX |
+ 		   SNDRV_PCM_INFO_BLOCK_TRANSFER;
+-	hw->formats = AMDTP_OUT_PCM_FORMAT_BITS;
+ 
+-	limit_channels_and_rates(dice, runtime, dice->rx_channels);
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		hw->formats = AMDTP_IN_PCM_FORMAT_BITS;
++		stream = &dice->tx_stream;
++		pcm_channels = dice->tx_channels;
++	} else {
++		hw->formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		stream = &dice->rx_stream;
++		pcm_channels = dice->rx_channels;
++	}
 +
-+	d = oxfw->device_info->driver_name;
-+	v = oxfw->device_info->vendor_name;
-+	m = oxfw->device_info->model_name;
-+
-+	strcpy(oxfw->card->driver, d);
-+	strcpy(oxfw->card->mixername, m);
-+	strcpy(oxfw->card->shortname, m);
-+
-+	snprintf(oxfw->card->longname, sizeof(oxfw->card->longname),
-+		 "%s %s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
-+		 v, m, firmware >> 20, firmware & 0xffff,
-+		 fw_dev->config_rom[3], fw_dev->config_rom[4],
-+		 dev_name(&oxfw->unit->device), 100 << fw_dev->max_speed);
-+end:
-+	return err;
++	limit_channels_and_rates(dice, runtime, pcm_channels);
+ 	limit_period_and_buffer(hw);
+ 
+ 	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+-				  dice_rate_constraint, dice,
++				  dice_rate_constraint, substream,
+ 				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+ 	if (err < 0)
+ 		goto end;
+ 	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-				  dice_channels_constraint, dice,
++				  dice_channels_constraint, substream,
+ 				  SNDRV_PCM_HW_PARAM_RATE, -1);
+ 	if (err < 0)
+ 		goto end;
+ 
+-	err = amdtp_stream_add_pcm_hw_constraints(&dice->rx_stream, runtime);
++	err = amdtp_stream_add_pcm_hw_constraints(stream, runtime);
+ end:
+ 	return err;
+ }
+@@ -172,10 +196,12 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	/*
+-	 * When source of clock is not internal, available sampling rate is
+-	 * limited at current sampling rate.
++	 * When source of clock is not internal or any PCM streams are running,
++	 * available sampling rate is limited at current sampling rate.
+ 	 */
+-	if (!internal) {
++	if (!internal ||
++	    amdtp_stream_pcm_running(&dice->tx_stream) ||
++	    amdtp_stream_pcm_running(&dice->rx_stream)) {
+ 		err = snd_dice_transaction_get_rate(dice, &rate);
+ 		if (err < 0)
+ 			goto err_locked;
+@@ -200,10 +226,34 @@ static int pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
  }
  
- static void oxfw_card_free(struct snd_card *card)
-@@ -45,10 +65,8 @@ static void oxfw_card_free(struct snd_card *card)
- static int oxfw_probe(struct fw_unit *unit,
- 		       const struct ieee1394_device_id *id)
++static int capture_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_dice *dice = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&dice->mutex);
++		dice->substreams_counter++;
++		mutex_unlock(&dice->mutex);
++	}
++
++	amdtp_stream_set_pcm_format(&dice->tx_stream,
++				    params_format(hw_params));
++
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
+ static int playback_hw_params(struct snd_pcm_substream *substream,
+ 			      struct snd_pcm_hw_params *hw_params)
  {
--	struct fw_device *fw_dev = fw_parent_device(unit);
- 	struct snd_card *card;
- 	struct snd_oxfw *oxfw;
--	u32 firmware;
+ 	struct snd_dice *dice = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&dice->mutex);
++		dice->substreams_counter++;
++		mutex_unlock(&dice->mutex);
++	}
++
+ 	amdtp_stream_set_pcm_format(&dice->rx_stream,
+ 				    params_format(hw_params));
+ 
+@@ -211,17 +261,51 @@ static int playback_hw_params(struct snd_pcm_substream *substream,
+ 						params_buffer_bytes(hw_params));
+ }
+ 
++static int capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_dice *dice = substream->private_data;
++
++	mutex_lock(&dice->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		dice->substreams_counter--;
++
++	snd_dice_stream_stop_duplex(dice);
++
++	mutex_unlock(&dice->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
+ static int playback_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_dice *dice = substream->private_data;
+ 
+ 	mutex_lock(&dice->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		dice->substreams_counter--;
++
+ 	snd_dice_stream_stop_duplex(dice);
++
+ 	mutex_unlock(&dice->mutex);
+ 
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
+ }
+ 
++static int capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_dice *dice = substream->private_data;
++	int err;
++
++	mutex_lock(&dice->mutex);
++	err = snd_dice_stream_start_duplex(dice, substream->runtime->rate);
++	mutex_unlock(&dice->mutex);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&dice->tx_stream);
++
++	return 0;
++}
+ static int playback_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_dice *dice = substream->private_data;
+@@ -236,6 +320,23 @@ static int playback_prepare(struct snd_pcm_substream *substream)
+ 	return err;
+ }
+ 
++static int capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_dice *dice = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&dice->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&dice->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
+ static int playback_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_dice *dice = substream->private_data;
+@@ -254,6 +355,12 @@ static int playback_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return 0;
+ }
+ 
++static snd_pcm_uframes_t capture_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_dice *dice = substream->private_data;
++
++	return amdtp_stream_pcm_pointer(&dice->tx_stream);
++}
+ static snd_pcm_uframes_t playback_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_dice *dice = substream->private_data;
+@@ -263,6 +370,18 @@ static snd_pcm_uframes_t playback_pointer(struct snd_pcm_substream *substream)
+ 
+ int snd_dice_create_pcm(struct snd_dice *dice)
+ {
++	static struct snd_pcm_ops capture_ops = {
++		.open      = pcm_open,
++		.close     = pcm_close,
++		.ioctl     = snd_pcm_lib_ioctl,
++		.hw_params = capture_hw_params,
++		.hw_free   = capture_hw_free,
++		.prepare   = capture_prepare,
++		.trigger   = capture_trigger,
++		.pointer   = capture_pointer,
++		.page      = snd_pcm_lib_get_vmalloc_page,
++		.mmap      = snd_pcm_lib_mmap_vmalloc,
++	};
+ 	static struct snd_pcm_ops playback_ops = {
+ 		.open      = pcm_open,
+ 		.close     = pcm_close,
+@@ -276,14 +395,28 @@ int snd_dice_create_pcm(struct snd_dice *dice)
+ 		.mmap      = snd_pcm_lib_mmap_vmalloc,
+ 	};
+ 	struct snd_pcm *pcm;
++	unsigned int i, capture, playback;
  	int err;
  
- 	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-@@ -63,16 +81,9 @@ static int oxfw_probe(struct fw_unit *unit,
- 	oxfw->unit = unit;
- 	oxfw->device_info = (const struct device_info *)id->driver_data;
- 
--	strcpy(card->driver, oxfw->device_info->driver_name);
--	strcpy(card->shortname, oxfw->device_info->short_name);
--	firmware = oxfw_read_firmware_version(unit);
--	snprintf(card->longname, sizeof(card->longname),
--		 "%s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
--		 oxfw->device_info->long_name,
--		 firmware >> 20, firmware & 0xffff,
--		 fw_dev->config_rom[3], fw_dev->config_rom[4],
--		 dev_name(&unit->device), 100 << fw_dev->max_speed);
--	strcpy(card->mixername, "OXFW");
-+	err = name_card(oxfw);
-+	if (err < 0)
-+		goto error;
- 
- 	err = snd_oxfw_create_pcm(oxfw);
+-	err = snd_pcm_new(dice->card, "DICE", 0, 1, 0, &pcm);
++	capture = playback = 0;
++	for (i = 0; i < 3; i++) {
++		if (dice->tx_channels[i] > 0)
++			capture = 1;
++		if (dice->rx_channels[i] > 0)
++			playback = 1;
++	}
++
++	err = snd_pcm_new(dice->card, "DICE", 0, playback, capture, &pcm);
  	if (err < 0)
-@@ -123,8 +134,8 @@ static void oxfw_remove(struct fw_unit *unit)
+ 		return err;
+ 	pcm->private_data = dice;
+ 	strcpy(pcm->name, dice->card->shortname);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
++
++	if (capture > 0)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
++
++	if (playback > 0)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
  
- static const struct device_info griffin_firewave = {
- 	.driver_name = "FireWave",
--	.short_name  = "FireWave",
--	.long_name   = "Griffin FireWave Surround",
-+	.vendor_name = "Griffin",
-+	.model_name = "FireWave",
- 	.pcm_constraints = firewave_constraints,
- 	.mixer_channels = 6,
- 	.mute_fb_id   = 0x01,
-@@ -133,8 +144,8 @@ static const struct device_info griffin_firewave = {
- 
- static const struct device_info lacie_speakers = {
- 	.driver_name = "FWSpeakers",
--	.short_name  = "FireWire Speakers",
--	.long_name   = "LaCie FireWire Speakers",
-+	.vendor_name = "LaCie",
-+	.model_name = "FireWire Speakers",
- 	.pcm_constraints = lacie_speakers_constraints,
- 	.mixer_channels = 1,
- 	.mute_fb_id   = 0x01,
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 6164bf3..a61c75c 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -28,8 +28,8 @@
- 
- struct device_info {
- 	const char *driver_name;
--	const char *short_name;
--	const char *long_name;
-+	const char *vendor_name;
-+	const char *model_name;
- 	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
- 	unsigned int mixer_channels;
- 	u8 mute_fb_id;
+ 	return 0;
+ }
 -- 
 2.1.0
