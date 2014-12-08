@@ -1,24 +1,15 @@
-From: <bencoxdev@gmail.com>
-Subject: Re: Nodes, Widgets,
-	ELD and Digital Surround 5.1 (HDMI) Output?
-Date: Mon, 8 Dec 2014 14:40:54 -0000
-Message-ID: <30B3A9113F464BFA8880D53D77A134A8@Lyra>
-References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
- <547EBCFF.5030204@canonical.com> <547EC2BF.3080601@gmail.com>
- <46543BFB759444F4B56F5153F4727DEE@Lyra> <548054D1.1000302@gmail.com>
- <4E4A612742FA4CEF85A52A8A16AADF78@Lyra> <54818D9C.5030100@gmail.com>
-Reply-To: bencoxdev@gmail.com
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 00/15 v5] ALSA: Enhancement for existed
+	FireWire drivers
+Date: Tue,  9 Dec 2014 00:10:34 +0900
+Message-ID: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B77626044F
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 15:40:57 +0100 (CET)
-Received: by mail-wi0-f172.google.com with SMTP id n3so4884510wiv.11
- for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 06:40:57 -0800 (PST)
-In-Reply-To: <54818D9C.5030100@gmail.com>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59F2B26045C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 16:10:58 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,95 +19,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>, ALSA Mailing list <alsa-devel@alsa-project.org>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQWxleGFuZGVyLAogICAgICAgICAgICAgVGhhbmtzIGZvciBsb29raW5nIGF0IHRoaXMgZm9y
-IG1lIGl0IGlzIHZlcnkgbXVjaCBhcHByZWNpYXRlZC4gCiAKUGxlYXNlIHNlZSBiZWxvdyB0aGUg
-ZGV0YWlscyBmcm9tIHRoZSBhbGwgdGhlIGxvZ3M7IGFzIHlvdSByZXF1ZXN0ZWQuIEnigJl2ZSBo
-YWQgdG8gb21pdCBhIApmZXcgZGV0YWlscyAodmVuZG9yIG5hbWVzIGFuZCBJROKAmXMpIGFzIHRo
-aXMgcHJvamVjdCBpcyBwcmUtcmVsZWFzZSBhbmQgSSBhbSB1bmRlciBOLkQuQS4gIApUaGVyZSBz
-aG91bGQgc3RpbGwgYmUgc3VmZmljaWVudCBpbmZvcm1hdGlvbiB0aGVyZSBmb3IgeW91LCBidXQg
-aWYgeW91IGRvIG5lZWQgYW55dGhpbmcgCnNwZWNpZmljIHBsZWFzZSBsZXQgbWUga25vdyBhbmQg
-SeKAmWxsIHRyeSByZXF1ZXN0aW5nIHBlcm1pc3Npb24gdG8gcmVsZWFzZSBtb3JlIGRldGFpbHMu
-IAoKCgoxKSAgICAgIFRoZSBBTFNBLWluZm8gbG9nIGNhbiBiZSBmb3VuZCBhdDotIGh0dHA6Ly9w
-YXN0ZWJpbi5jb20vTDFKUno1eUMKCjIpICAgICAgVGhlIFB1bHNlQXVkaW8gbG9nIGlzIGF0Oi0g
-aHR0cDovL3Bhc3RlYmluLmNvbS9zdkpnUjJkawoKMykgICAgICBTcGVha2VyIHRlc3QgcmVzdWx0
-czotCgpVc2luZyAgcGFzdXNwZW5kZXIgLS0gc3BlYWtlci10ZXN0IC1jNiAtYiAxMjUwMDAgLVAy
-IC1EICJwbHVnOidoZG1pOlgsWSciCgpYICAgICAgICAgICAgICBZICAgICAgICAgICAgICBSZXN1
-bHQKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCjAgICAgICAgICAgICAgIDAgICAg
-ICAgICAgICAgIEhpc3MgbGVmdCBGcm9udCBhbmQgUmlnaHQgRnJvbnQsIG90aGVycyBzaWxlbnQK
-MCAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5v
-IHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMCAgICAgICAgICAgICAgMiAgICAgICAgICAgICAgUGxh
-eWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMCAgICAgICAg
-ICAgICAgMyAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmls
-ZSBvciBkaXJlY3RvcnkKMSAgICAgICAgICAgICAgMCAgICAgICAgICAgICAgUGxheWJhY2sgb3Bl
-biBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMSAgICAgICAgICAgICAgMSAg
-ICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJl
-Y3RvcnkKMSAgICAgICAgICAgICAgMiAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjog
-LTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMSAgICAgICAgICAgICAgMyAgICAgICAgICAg
-ICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMiAg
-ICAgICAgICAgICAgMCAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1
-Y2ggZmlsZSBvciBkaXJlY3RvcnkKMiAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgUGxheWJh
-Y2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMiAgICAgICAgICAg
-ICAgMiAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBv
-ciBkaXJlY3RvcnkKMiAgICAgICAgICAgICAgMyAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBl
-cnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMyAgICAgICAgICAgICAgMCAgICAg
-ICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3Rv
-cnkKMyAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIs
-IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMyAgICAgICAgICAgICAgMiAgICAgICAgICAgICAg
-UGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMyAgICAg
-ICAgICAgICAgMyAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2gg
-ZmlsZSBvciBkaXJlY3RvcnkKCgoKSWRlYWxseSBJIHdvdWxkIGxpa2UgdG8gdXNlIHBhc3MtdGhy
-b3VnaCBtb2RlIGJlY2F1c2UgdGhlIGludGVuZGVkIGRpc3BsYXkgZGV2aWNlIGNhbiBoYW5kbGUg
-CkFDMyA1LjEgd2l0aG91dCBpc3N1ZTsgYW5kIHNvIEkgd291bGQgcHJlZmVyIG5vdCB0byBwdXQg
-dGhlIGRlY29kaW5nIGxvYWQgb250byB0aGUgQ1BVIChhcyAKaXTigJlzIGEgbG93IHBvd2VyZWQg
-ZGV2aWNlKS4gIEkgaGF2ZSBiZWVuIGFzc3VyZWQgYnkgdGhlIGhhcmR3YXJlIHZlbmRvciB0aGF0
-IHRoZSBjaGlwIGlzIApjYXBhYmxlIG9mIERpZ2l0YWwgcGFzcy10aHJvdWdoIG9mIDUuMSBhdWRp
-by4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUSUEKQmVuLgoKRnJvbTogQWxl
-eGFuZGVyIEUuIFBhdHJha292IApTZW50OiBGcmlkYXksIERlY2VtYmVyIDA1LCAyMDE0IDEwOjQ5
-IEFNClRvOiBiZW5jb3hkZXZAZ21haWwuY29tIDsgRGF2aWQgSGVubmluZ3Nzb24gOyBBTFNBIE1h
-aWxpbmcgbGlzdCAKU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBOb2RlcywgV2lkZ2V0cywgRUxE
-IGFuZCBEaWdpdGFsIFN1cnJvdW5kIDUuMSAoSERNSSkgT3V0cHV0PwowNS4xMi4yMDE0IDE0OjQx
-LCBiZW5jb3hkZXZAZ21haWwuY29tIHdyb3RlOgo+IEhpIEFsZXhhbmRlciwKPiBUaGFua3MgZm9y
-IGxvb2tpbmcgYXQgdGhpcyBmb3IgbWUuIEkgaGF2ZSBmb2xsb3dlZCB5b3VyIGVhcmxpZXIgYWR2
-aWNlCj4gb24gc2V0dGluZyB1cCB0aGUgY29ycmVjdCBIRE1JIGRldmljZSwgdW5mb3J0dW5hdGVs
-eSBpdCBkb2VzbuKAmXQgc2VlbSB0bwo+IGhhdmUgY2hhbmdlZCB0aGUgc2l0dWF0aW9uLgo+ICAg
-ICAgSSBhbSB0cnlpbmcgdG8gYWNoaWV2ZSBBQzMgcGFzcy10aHJvdWdoIGFuZCBub3QgZGVjb2Rl
-L2VuY29kZSB0aGUKPiBhdWRpby4gQW55IHRob3VnaHRzIHRoYXQgeW91IG1heSBoYXZlIGFib3V0
-IHRoaXMgd291bGQgYmUgbXVjaCBhcHByZWNpYXRlZC4KPiBUSUEKPiBCZW4KCkZpcnN0IG9mIGFs
-bCwgc29tZSBtb3JlIGluZm9ybWF0aW9uIGFib3V0IHlvdXIgc2V0dXAgaXMgbmVlZGVkLgoKMS4g
-QUxTQS1pbmZvOgoKd2dldCBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvYWxzYS1pbmZvLnNo
-CmJhc2ggYWxzYS1pbmZvLnNoCgpUaGlzIHdpbGwgdXBsb2FkIHRoZSBpbmZvcm1hdGlvbiB0byBh
-IGNlbnRyYWwgZGF0YWJhc2UgYW5kIHByaW50IG91dCB0aGUgCmxpbmsuIFBsZWFzZSBwb3N0IHRo
-ZSBsaW5rLgoKMi4gRnVsbCBQdWxzZUF1ZGlvIGxvZwoKa2lsbGFsbCBwdWxzZWF1ZGlvIDsgcHVs
-c2VhdWRpbyAtdnZ2IDI+JjEgfCB0ZWUgLWEgcHVsc2UubG9nCgooQWxsIGluIG9uZSBsaW5lLCB3
-aXRoIGEgIjsiIGluIHRoZSBtaWRkbGUsIGluIG9yZGVyIHRvIHdpbiB0aGUgcmFjZSAKYWdhaW5z
-dCBhdXRvcmVzcGF3bi4gSWYgaXQgc2F5cyAiZGFlbW9uIGFscmVhZHkgcnVubmluZyIsIGp1c3Qg
-dHJ5IGFnYWluLikKClBsZWFzZSBwb3N0IHRoZSBsb2cgb24gc29tZSBwYXN0ZWJpbiBhbmQgcHJv
-dmlkZSBhIGxpbmsgaGVyZS4KCjMuIEFuIGF0dGVtcHQgdG8gdXNlIHNwZWFrZXItdGVzdC4gUGxl
-YXNlIHRyeSB0aGlzIGNvbW1hbmQgZm9yIGFsbCAKdmFsdWVzIG9mIFggZnJvbSAwIHRvIDMgYW5k
-IGZvciBhbGwgdmFsdWVzIG9mIFkgZnJvbSAwIHRvIDM6CgpwYXN1c3BlbmRlciAtLSBzcGVha2Vy
-LXRlc3QgLWM2IC1iIDEyNTAwMCAtUDIgLUQgInBsdWc6J2hkbWk6WCxZJyIKCkR1cmluZyBvbmUg
-b2YgdGhlIHRlc3RzLCBpdCB3aWxsIGhpc3MgaW50byB5b3VyIHJlY2VpdmVyLiBQbGVhc2UgbWFr
-ZSBhIApub3RlIG9mIHRoZSBjb3JyZWN0IFggYW5kIFkgdmFsdWVzIChmb3IgY29ycmVsYXRpb24g
-d2l0aCBQdWxzZUF1ZGlvIApsb2dzKSwgYW5kIHdoZXRoZXIgaXQgaGlzc2VkIGludG8gZWFjaCBz
-cGVha2VyIHNlcGFyYXRlbHkuCgpUaGVuLCBtb3JlIGluZm9ybWF0aW9uIGFib3V0IHlvdXIgaW50
-ZW50aW9ucyBpcyBuZWVkZWQuIFdoeSBhcmUgeW91IAp0YWxraW5nIGFib3V0IEFDMyBwYXNzdGhy
-b3VnaD8gSSBhbSBhc2tpbmcgYmVjYXVzZSB0aGVyZSBhcmUgdHdvIHdheXMgdG8gCm91dHB1dCA1
-LjEgYXVkaW8gb3ZlciBIRE1JOiBzb2Z0d2FyZSBkZWNvZGluZyBvbiBhIFBDICh3aGljaCBpcyBJ
-TUhPIApwcmVmZXJhYmxlKSBhbmQgQUMzIHBhc3N0aHJvdWdoIChpLmUuIGhhcmR3YXJlIGRlY29k
-aW5nIG9uIHRoZSByZWNlaXZpbmcgCmVuZCwgd2hpY2ggcmVxdWlyZXMgYSBwbGF5ZXIgdGhhdCBh
-Y3R1YWxseSBzdXBwb3J0cyB0aGlzIGZlYXR1cmUgd2hlbiAKdXNlZCB3aXRoIFB1bHNlQXVkaW8g
-W3doaWNoIGJhc2ljYWxseSBtZWFucyAibm90IG1wbGF5ZXIiXSwgYW5kIG1ha2VzIApzZW5zZSBv
-bmx5IG9uIHZlcnkgc2xvdyBDUFVzIG9yIGlmIHRoZSBIRE1JIGRldmljZSBpcyBhY3R1YWxseSBz
-b21lIGR1bWIgCkhETUktdG8tU1BESUYgY29udmVydGVyKS4KClRoZSBjb3JyZWN0IHByb2ZpbGUg
-dG8gdXNlIGlzICJEaWdpdGFsIFN1cnJvdW5kIDUuMSAoSERNSSkgT3V0cHV0IiwgCndoaWNoLCBk
-dWUgdG8gYSBidWcgdGhhdCBJIGhhdmUgYWxyZWFkeSBleHBsYWluZWQgaG93IHRvIHdvcmsgYXJv
-dW5kLCBpcyAKb25seSBhdmFpbGFibGUgb24gInRydWUiIEludGVsIGFuZCBOVmlkaWEgdmlkZW8g
-Y2FyZHMgYXMgb2YgUHVsc2VBdWRpbyA1LjAuCgotLSAKQWxleGFuZGVyIEUuIFBhdHJha292Cl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This patchset is the rest of patches to enable ALSA Dice and OXFW driver
+to handle more models. This patchset is for linux-next branch.
+
+
+== Updates from my previous post:
+
+[alsa-devel] [PATCH 00/30 v4] ALSA: Enhancement for existed FireWire drivers
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085092.html
+
+ - use the same functions for each of MIDI .open/.close callback (dice)
+ - fix a comment for AV/C stream format information command (oxfw)
+ - revert shortname template, just use model name (oxfw)
+
+I note that OXFW driver uses the shortname for MIDI substream name, which
+has 32 bytes, thus the string in shortname should not be so long.
+
+
+== Supplemental patch for userspace library
+
+This patchset adds Hwdep functionality for OXFW driver, thus userspace
+library needs a patch for entries of snd_hwdep_iface_t. Please apply
+below patch.
+
+[alsa-devel] [PATCH alsa-lib] hwdep: add OXFW driver support
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-November/084824.html
+
+
+Takashi Sakamoto (15):
+  ALSA: dice: Change the way to start stream
+  ALSA: dice: Add support for duplex streams with synchronization
+  ALSA: dice: Support for non SYT-Match sampling clock source mode
+  ALSA: dice: Add support for capturing PCM samples
+  ALSA: dice: Add support for MIDI capture/playback
+  ALSA: oxfw: Change the way to name card
+  ALSA: oxfw: Add support for AV/C stream format command to get/set
+    supported stream formation
+  ALSA: oxfw: Change the way to make PCM rules/constraints
+  ALSA: oxfw: Add proc interface for debugging purpose
+  ALSA: oxfw: Change the way to start stream
+  ALSA: oxfw: Add support for Behringer/Mackie devices
+  ALSA: oxfw: Add support AMDTP in-stream
+  ALSA: oxfw: add support for capturing PCM samples
+  ALSA: oxfw: Add support for capture/playback MIDI messages
+  ALSA: oxfw: Add hwdep interface
+
+ include/uapi/sound/asound.h            |   3 +-
+ include/uapi/sound/firewire.h          |   3 +-
+ sound/firewire/Kconfig                 |  10 +-
+ sound/firewire/dice/Makefile           |   4 +-
+ sound/firewire/dice/dice-midi.c        | 157 ++++++++
+ sound/firewire/dice/dice-pcm.c         | 251 +++++++++----
+ sound/firewire/dice/dice-stream.c      | 332 ++++++++++++----
+ sound/firewire/dice/dice-transaction.c |   5 -
+ sound/firewire/dice/dice.c             |  37 +-
+ sound/firewire/dice/dice.h             |  33 +-
+ sound/firewire/oxfw/Makefile           |   3 +-
+ sound/firewire/oxfw/oxfw-command.c     | 153 ++++++++
+ sound/firewire/oxfw/oxfw-hwdep.c       | 190 ++++++++++
+ sound/firewire/oxfw/oxfw-midi.c        | 207 ++++++++++
+ sound/firewire/oxfw/oxfw-pcm.c         | 425 +++++++++++++++------
+ sound/firewire/oxfw/oxfw-proc.c        | 113 ++++++
+ sound/firewire/oxfw/oxfw-stream.c      | 667 +++++++++++++++++++++++++++++++--
+ sound/firewire/oxfw/oxfw.c             | 179 +++++++--
+ sound/firewire/oxfw/oxfw.h             | 104 ++++-
+ 19 files changed, 2499 insertions(+), 377 deletions(-)
+ create mode 100644 sound/firewire/dice/dice-midi.c
+ create mode 100644 sound/firewire/oxfw/oxfw-command.c
+ create mode 100644 sound/firewire/oxfw/oxfw-hwdep.c
+ create mode 100644 sound/firewire/oxfw/oxfw-midi.c
+ create mode 100644 sound/firewire/oxfw/oxfw-proc.c
+
+-- 
+2.1.0
