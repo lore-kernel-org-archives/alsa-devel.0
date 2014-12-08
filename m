@@ -1,78 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: Fix non-DT use of I2S
- controller
-Date: Mon, 8 Dec 2014 12:12:00 +0000
-Message-ID: <20141208121200.GV11764@sirena.org.uk>
-References: <1417809427-5126-1-git-send-email-broonie@kernel.org>
- <CAAgF-Bfv5OaDYu2Ti=9CCoZ9k-1ZhOG-KRfgXJYanKpLWp9ffQ@mail.gmail.com>
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [alsa-devel] Question on arm64 unaligned faults during playback
+Date: Mon, 8 Dec 2014 12:25:49 +0000
+Message-ID: <20141208122549.GF16185@e104818-lin.cambridge.arm.com>
+References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>
+ <54856621.8090107@ladisch.de> <s5hppbumnis.wl-tiwai@suse.de>
+ <54858868.70708@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1103929920264066152=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C13E426042E
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 13:12:17 +0100 (CET)
-In-Reply-To: <CAAgF-Bfv5OaDYu2Ti=9CCoZ9k-1ZhOG-KRfgXJYanKpLWp9ffQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Padma Venkat <padma.kvr@gmail.com>
-Cc: alsa-devel@alsa-project.org, Padmavathi Venna <padma.v@samsung.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <54858868.70708@metafoo.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Abhilash Kesavan <kesavan.abhilash@gmail.com>, "padma.v@samsung.com" <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Will Deacon <Will.Deacon@arm.com>, "b42378@freescale.com" <b42378@freescale.com>, Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "perex@perex.cz" <perex@perex.cz>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Dec 08, 2014 at 11:15:52AM +0000, Lars-Peter Clausen wrote:
+> Added ARM64 folks to Cc.
 
---===============1103929920264066152==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MUnXZt0Uv08c1hBe"
-Content-Disposition: inline
+Thanks.
 
+> On 12/08/2014 11:41 AM, Takashi Iwai wrote:
+> > At Mon, 08 Dec 2014 09:49:37 +0100,
+> > Clemens Ladisch wrote:
+> >>
+> >> Abhilash Kesavan wrote:
+> >>> I am working on a 64-bit ARM SoC (Samsung's Exynos7) and have observed
+> >>> unaligned faults while testing certain sound streams with aplay.
+> >>>
+> >>> [   24.535661] snd_pcm_lib_write_transfer:sound/core/pcm_lib.c hwbuf is ffffff8000085624, runtime->dma_area is ffffff8000080000, hwoff is 5513, frames_to_bytes is 22052, frames is 5513
+> >>> [   24.551244] Unhandled fault: alignment fault (0x96000061) at 0xffffff8000085624
+> >>> [   24.579944] PC is at __copy_from_user+0x14/0x60
+> >>> [   24.584450] LR is at snd_pcm_lib_write_transfer+0xe4/0x104
+> >>> [   24.922054] Call trace:
+> >>> [   24.924488] [<ffffffc0002d4784>] __copy_from_user+0x14/0x60
+> >>> [   24.930040] [<ffffffc0004b7574>] snd_pcm_lib_write1+0x1fc/0x384
 
---MUnXZt0Uv08c1hBe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I can see copy_from_user() here, I assume the source is a user space
+buffer and the destination is the ioremap'ed SRAM (which causes the
+unaligned fault). Such function is not supposed copy into device memory
+(its prototype does not specify __iomem for the destination pointer).
 
-On Mon, Dec 08, 2014 at 10:21:52AM +0530, Padma Venkat wrote:
-> On 12/6/14, Mark Brown <broonie@kernel.org> wrote:
+If you really want Device memory for the SRAM, I think we need some
+other API. memcpy_toio() could copy into such buffer but the source must
+be kernel. Maybe something like copy_from_user_toio()?
 
-> > +	}, {
-> > +		.name		= "samsung-i2sv4",
-> > +		.driver_data	= (kernel_ulong_t)&i2sv5_dai_type_i2s1,
+Otherwise, if you can remap the buffer as Normal (non-cacheable) memory,
+you could use something like vmap() with pgprot_writecombine for the
+mapping. Even though ioremap_wc() returns (currently) Normal
+non-cacheable memory, such pointer (__iomem) should only be used with
+specific IO accessors (though I can see this assumption broken in a few
+places in the kernel).
 
-> I think here you need to use i2sv5_dai_type because
-> i2sv5_dai_type_i2s1 is introduced for exynos7 on which the i2s1 is of
-> type v5 but with slightly modified bit offsets.
-
-OK, though I presume that's wrong too (otherwise it should be v4).
-
---MUnXZt0Uv08c1hBe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUhZWPAAoJECTWi3JdVIfQC00H/j2lpM97zqgwFUPPSqwerSow
-K9TJr+wljyUN2JUbiT94IEuLOyg+/7QwqZdSGLbV5c9M28QPvPCLzmxxMj6hEfmF
-L1dZb+NuD6mFDKUrKSlqsXbnCFxZd+42VzPcc89BUuotL+HAkInrxmO0F93DUdjq
-9Hm1nBCOetaH3WqFMHBt65w9lRuSQYbhrSdVCLeGEaHQyTmcr7izf++MGV3qrKS1
-CHZYvgb7cE2OjMKotD1QMryCD7OLPMvR9lg7G0ItyCgDi6mUuEFgXqT66uf7jDU7
-bzoU72qSlqTm7oXma0uM+6wwKql6SIEPmbq+VIwhXSvELR25hVNol79XV1lLOCc=
-=Xn6p
------END PGP SIGNATURE-----
-
---MUnXZt0Uv08c1hBe--
-
---===============1103929920264066152==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1103929920264066152==--
+-- 
+Catalin
