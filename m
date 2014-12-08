@@ -1,16 +1,24 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: I2S frame configuration
-Date: Mon, 08 Dec 2014 18:01:32 +0100
-Message-ID: <5485D96C.3020900@ladisch.de>
-References: <5485C5CA.8030402@gmail.com>
+From: <bencoxdev@gmail.com>
+Subject: Re: Nodes, Widgets,
+	ELD and Digital Surround 5.1 (HDMI) Output?
+Date: Mon, 8 Dec 2014 17:42:39 -0000
+Message-ID: <75C0BE20F99F4E1AACB89F1EC368E0E4@Lyra>
+References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
+ <547EBCFF.5030204@canonical.com> <547EC2BF.3080601@gmail.com>
+ <46543BFB759444F4B56F5153F4727DEE@Lyra> <548054D1.1000302@gmail.com>
+ <4E4A612742FA4CEF85A52A8A16AADF78@Lyra> <54818D9C.5030100@gmail.com>
+ <30B3A9113F464BFA8880D53D77A134A8@Lyra> <5485D3EC.7070109@gmail.com>
+Reply-To: bencoxdev@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 7C74726047C
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 18:01:34 +0100 (CET)
-In-Reply-To: <5485C5CA.8030402@gmail.com>
+Received: from mail-wg0-f43.google.com (mail-wg0-f43.google.com [74.125.82.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50F2C260488
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 18:42:43 +0100 (CET)
+Received: by mail-wg0-f43.google.com with SMTP id l18so6865085wgh.2
+ for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 09:42:43 -0800 (PST)
+In-Reply-To: <5485D3EC.7070109@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +28,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: thomas chen <tchen61@gmail.com>, alsa-devel@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>, ALSA Mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-thomas chen wrote:
-> I am working on a ALSA interface to a particular codec over I2S
->
-> the audio stream format is a bit peculiar...
->
-> there are 24 BCLK cycle between transition of FSYNC...   howver, there ar=
-e only 16 bit that are valid
->
-> bit 0: ignore
-> bit 1-16:   valid pcm data (MSB....LSB)
-> bit 17-23: ignore
-
-This is the 'original' I=B2S format.  The format where the sample begins
-with the 1st BCLK usually is called left-justified (and uses the
-opposite FSYNC polarity).
-
-Having ignored bits is common.  (Typically, there are 32 BCLK cycles per
-sample.)
-
-In ASoC, this would be SND_SOC_DAIFMT_I2S and SND_SOC_DAIFMT_LEFT_J.
-
-
-Regards,
-Clemens
+SGkgQWxleGFuZGVyLAogICAgICAgICAgICAgVGhhbmtzIGZvciB5b3VyIGVmZm9ydHMgb24gdGhp
+cy4gVW5mb3J0dW5hdGVseSBJ4oCZbSBzdHVjayB3aXRoIHRoZSBjdXJyZW50IHBsYXRmb3JtIEkg
+aGF2ZS4gSG93ZXZlciBkbyBub3QgaGF2ZSB0byB1c2UgcHVsc2UtYXVkaW8gYW5kIGNvdWxkIHVz
+ZSBhbHNhIGRpcmVjdGx5LgoKICAgIFRoZSBwYXN1c3BlbmRlciB0ZXN0cyB3ZXJlIGRvbmUgd2l0
+aCBhIFlhbWFoYSBIRVItMjg2NiBzdXJyb3VuZCBzb3VuZCBhbXBsaWZpZXIsIGFzIHRoZSBIRE1J
+IHRhcmdldCBkZXZpY2UsIHRoZSByZXN1bHRzIHdlcmUgYXMgZ2l2ZW4gcHJldmlvdXNseS4gCgog
+ICAgQW55IHRob3VnaHRzIG9uIHVzaW5nIHRoZSBhbHNhIGRpcmVjdGx5IGFuZCBob3cgdG8gc2V0
+IGl0IHVwIHRvIG9mZmVyIHRoZSByZXF1aXJlZCBvdXRwdXQgZm9ybWF0IGluIHRoaXMgc2NlbmFy
+aW8gd291bGQgYmUgbXVjaCBhcHByZWNpYXRlZC4KClRpYQpCZW4KCkZyb206IEFsZXhhbmRlciBF
+LiBQYXRyYWtvdiAKU2VudDogTW9uZGF5LCBEZWNlbWJlciAwOCwgMjAxNCA0OjM4IFBNClRvOiBi
+ZW5jb3hkZXZAZ21haWwuY29tIDsgRGF2aWQgSGVubmluZ3Nzb24gOyBBTFNBIE1haWxpbmcgbGlz
+dCAKU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBOb2RlcywgV2lkZ2V0cywgRUxEIGFuZCBEaWdp
+dGFsIFN1cnJvdW5kIDUuMSAoSERNSSkgT3V0cHV0PwowOC4xMi4yMDE0IDE5OjQwLCBiZW5jb3hk
+ZXZAZ21haWwuY29tIHdyb3RlOgo+IEhpIEFsZXhhbmRlciwKPiBUaGFua3MgZm9yIGxvb2tpbmcg
+YXQgdGhpcyBmb3IgbWUgaXQgaXMgdmVyeSBtdWNoIGFwcHJlY2lhdGVkLgo+IFBsZWFzZSBzZWUg
+YmVsb3cgdGhlIGRldGFpbHMgZnJvbSB0aGUgYWxsIHRoZSBsb2dzOyBhcyB5b3UgcmVxdWVzdGVk
+Lgo+IEnigJl2ZSBoYWQgdG8gb21pdCBhCj4gZmV3IGRldGFpbHMgKHZlbmRvciBuYW1lcyBhbmQg
+SUTigJlzKSBhcyB0aGlzIHByb2plY3QgaXMgcHJlLXJlbGVhc2UgYW5kIEkKPiBhbSB1bmRlciBO
+LkQuQS4KClVuZm9ydHVuYXRlbHksIHlvdSBoYXZlIGxlYWtlZCBib3RoIHRoZSBncmFwaGljcyB2
+ZW5kb3IgKHRocm91Z2ggCmV4Y2Vzc2l2ZSBibG9ja2luZyBvZiBpdCkgYW5kIHRoZSBUVi9tb25p
+dG9yIHZlbmRvciAodGhyb3VnaCBFTEQpLiBTbyAKeW91IGJvdGggYnJva2UgdGhlIE5EQSBhbmQg
+cHJldmVudGVkIG1lIGZyb20gdHJvdWJsZXNob290aW5nIGZ1cnRoZXIuIEkgCnRob3VnaHQgSSBu
+ZWVkZWQgdGhlIHZlbmRvciBJRHMgaW4gb3JkZXIgdG8gbWF0Y2ggdGhlbSBhZ2FpbnN0IHVkZXYg
+CnJ1bGVzLCBidXQgc2VlIGJlbG93LiBTdGlsbCwgYSBmYWlsLWZhaWwgc2l0dWF0aW9uLCBlc3Bl
+Y2lhbGx5IHNpbmNlIAp0aGVyZSBhcmUgYSBsb3Qgb2Ygb3RoZXIgaG9iYnkgcHJvamVjdHMgdXNp
+bmcgZGV2ZWxvcG1lbnQgYm9hcmRzIHdpdGggCnRoZSBncmFwaGljcyBhbmQgYXVkaW8gY2hpcHMg
+ZnJvbSB0aGUgc2FtZSB2ZW5kb3IuCgpCdXQgaW5kZWVkLCB0aGVyZSBpcyBpbmZvcm1hdGlvbiBp
+biB0aGUgbG9nIHRoYXQgZ2l2ZXMgYSBiaWcgY2x1ZS4gWW91IAphcmUgdXNpbmcgUHVsc2VBdWRp
+byAxLjEsIGFuZCBjb25maWd1cmVkIGl0IG5vdCB0byB1c2UgdWRldiBydWxlcyAoc28gCmtub3ds
+ZWRnZSBvZiBhIHZlbmRvciBJRCBpcyBub3cgdXNlbGVzcykuIEFsc28sIGl0IGNhbm5vdCBhdXRv
+ZGV0ZWN0IDUuMSAKUENNIG92ZXIgSERNSSB3aXRoIHVkZXYgcnVsZXMuIEl0IGlzIGFsc28gbm90
+IHN1cHBvcnRlZCBhbnltb3JlLiBNeSAKcmVjb21tZW5kYXRpb24gd291bGQgYmUgdG8gZWl0aGVy
+IHVwZ3JhZGUgKHdoaWNoIGlzIGltcG9zc2libGUgb24gdGhlIApVYnVudHUgMTIuMDQgcGxhdGZv
+cm0pIG9yIHRvIGRyb3AgdGhlIHVzZSBvZiBQdWxzZUF1ZGlvIGFsdG9nZXRoZXIgaWYgCnlvdSBh
+cmUgc3R1Y2sgd2l0aCB0aGlzIGFuY2llbnQgdXNlcnNwYWNlLgoKRm9yIGVuYWJsaW5nIHBhc3N0
+aHJvdWdoIGluIFB1bHNlQXVkaW8sIHlvdSB3b3VsZCBuZWVkIHRvIHJ1biAKcGF2dWNvbnRyb2wg
+YW5kIHBsYWNlIGEgY2hlY2tib3ggaW4gdGhlIEFDMyBhbmQgRFRTIGZpZWxkcy4gQWx0ZXJuYXRp
+dmVseToKCnBhY3RsIHNldC1zaW5rLWZvcm1hdHMgMCAncGNtO2FjMy1pZWM2MTkzNztkdHMtaWVj
+NjE5MzcnCgouLi53aGVyZSAwIGlzIHRoZSBzaW5rIGluZGV4LgoKQW5kIGFsc28geW91IG5lZWQg
+dG8gZmluZCBhIHBsYXllciB0aGF0IHN1cHBvcnRzIHRoaXMgcGFzc3Rocm91Z2ggCmZlYXR1cmUs
+IGFuZCwgaWYgeW91IGFyZSB1c2luZyBHU3RyZWFtZXIsIGFsc28gdG8gbWFrZSBzdXJlIHRoYXQg
+dGhlIAppbnN0YWxsZWQgdmVyc2lvbiBzdXBwb3J0cyBwYXNzdGhyb3VnaC4gT24gc3VjaCBhbmNp
+ZW50IHBsYXRmb3JtLCBJJ2QgCnJlY29tbWVuZCBhZ2FpbnN0IGl0LgoKRm9yIFBDTSA1LjEgKGku
+ZS4gc29mdHdhcmUgZGVjb2RpbmcpIHdpdGggUHVsc2VBdWRpbyAxLjEsIHlvdSBuZWVkIGEgCnJl
+YWwgNS4xIHJlY2VpdmVyIGFuZCB0aGlzIGNvbW1hbmQ6CgpwYWNtZCBsb2FkLW1vZHVsZSBtb2R1
+bGUtYWxzYS1zaW5rIGRldmljZT1oZG1pOjAsMCBjaGFubmVscz02Cgo+IFVzaW5nICBwYXN1c3Bl
+bmRlciAtLSBzcGVha2VyLXRlc3QgLWM2IC1iIDEyNTAwMCAtUDIgLUQgInBsdWc6J2hkbWk6WCxZ
+JyIKPiBYIFkgUmVzdWx0Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gMCAw
+IEhpc3MgbGVmdCBGcm9udCBhbmQgUmlnaHQgRnJvbnQsIG90aGVycyBzaWxlbnQKPiAoZXZlcnl0
+aGluZyBlbHNlKSBQbGF5YmFjayBvcGVuIGVycm9yOiAtMiwgTm8gc3VjaCBmaWxlIG9yIGRpcmVj
+dG9yeQoKVHJ5IHJldGVzdGluZyBwbHVnOidoZG1pOjAsMCcgd2l0aCBhIHJlYWwgNS4xIEhETUkg
+cmVjZWl2ZXIgKGUuZy4gZnJvbSAKT25reW8pLCBub3Qgd2l0aCBhIFNhbXN1bmcgVFYvbW9uaXRv
+ciAodGhhdCBvbmx5IGFkdmVydGlzZXMgdGhlIHByZXNlbmNlIApvZiBGcm9udC1MZWZ0IGFuZCBG
+cm9udC1SaWdodCBjaGFubmVscyBhbmQgTFBDTSBlbmNvZGluZyBpbiB0aGUgRUxEKS4KCi0tIApB
+bGV4YW5kZXIgRS4gUGF0cmFrb3YKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
