@@ -1,17 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: endianness problems in fireworks/bebob_maudio
-Date: Mon, 08 Dec 2014 18:08:27 +0900
-Message-ID: <54856A8B.7090600@sakamocchi.jp>
-References: <5484C572.7040606@ladisch.de> <5484E69E.1000009@sakamocchi.jp>
- <54855CA5.5070307@ladisch.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm5102: Initialize dac_comp_lock
+	mutex
+Date: Mon, 8 Dec 2014 09:11:55 +0000
+Message-ID: <20141208091155.GC14516@opensource.wolfsonmicro.com>
+References: <1417810119-7772-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D33E260445
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 10:08:30 +0100 (CET)
-In-Reply-To: <54855CA5.5070307@ladisch.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8BBF2260450
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 10:11:56 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1417810119-7772-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 08 2014 17:09, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> For my information, Would you tell me the way to generate these sparse
->> report?
->
-> make C=1 CF=-D__CHECK_ENDIAN__
+On Fri, Dec 05, 2014 at 08:08:39PM +0000, Mark Brown wrote:
+> Commit d74bcaaeb6682 (ASoC: wm5102: Move ultrasonic response settings
+> lock to the driver level) created a driver local mutex for protecting
+> the ultrasonic response settings but neglected to initialize that mutex,
+> causing loud complaints from lockep and potential runtime failures. Fix
+> this by initializing the mutex.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
 
-I always check with 'make C=2' without the 'CF' flag.
-Firewire drivers handle big-endian data, so the flag is nice.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-Thanks
-
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+Thanks,
+Charles
