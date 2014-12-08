@@ -1,91 +1,268 @@
-From: Imre Deak <imre.deak@intel.com>
-Subject: Re: [PATCH 1/5] drm/i915: add dev_to_i915_priv helper
-Date: Mon, 08 Dec 2014 23:26:22 +0200
-Message-ID: <1418073982.23637.37.camel@ideak-mobl>
-References: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
- <1418056929-7977-2-git-send-email-imre.deak@intel.com>
- <20141208204020.GQ13586@nuc-i3427.alporthouse.com>
-Reply-To: imre.deak@intel.com
+From: Andy Lutomirski <luto@amacapital.net>
+Subject: Re: [PATCH v3 1/2] thinkpad-acpi: Try to use full software mute control
+Date: Mon, 8 Dec 2014 13:44:21 -0800
+Message-ID: <CALCETrWbu6NUFo2gv+gNEPATm=1jnLRY16iEvv7ZV-3TicZR_A@mail.gmail.com>
+References: <cover.1413590510.git.luto@amacapital.net> <378856925c5ceecd27a6490585ee60362a714ef6.1413590510.git.luto@amacapital.net>
+ <20141031230700.GA11745@khazad-dum.debian.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20141208204020.GQ13586@nuc-i3427.alporthouse.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <20141031230700.GA11745@khazad-dum.debian.net>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@mit.edu>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDE0LTEyLTA4IGF0IDIwOjQwICswMDAwLCBDaHJpcyBXaWxzb24gd3JvdGU6Cj4g
-T24gTW9uLCBEZWMgMDgsIDIwMTQgYXQgMDY6NDI6MDVQTSArMDIwMCwgSW1yZSBEZWFrIHdyb3Rl
-Ogo+ID4gVGhpcyB3aWxsIGJlIG5lZWRlZCBieSBsYXRlciBwYXRjaGVzLCBzbyBmYWN0b3IgaXQg
-b3V0Lgo+IAo+IFRoZSBzaW1pbGlhciBmdW5jdGlvbiAoZm9yIGRybV9kZXZpY2UpIGlzIGtub3du
-IGFzIHRvX2k5MTUoKSwgc28ganVzdAo+IGNhbGwgdGhpcyBkZXZfdG9faTkxNSgpLgo+ID4gCj4g
-PiBObyBmdW5jdGlvbmFsIGNoYW5nZS4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogSW1yZSBEZWFr
-IDxpbXJlLmRlYWtAaW50ZWwuY29tPgo+ID4gLS0tCj4gPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aTkxNV9kcnYuYyAgfCAxNSArKysrKystLS0tLS0tLS0KPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkx
-NS9pbnRlbF9kcnYuaCB8ICA4ICsrKysrKysrCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxNCBpbnNl
-cnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
-cHUvZHJtL2k5MTUvaTkxNV9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMK
-PiA+IGluZGV4IDcxYmUzYzkuLjMyYzJlMzMgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9k
-cm0vaTkxNS9pOTE1X2Rydi5jCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Ry
-di5jCj4gPiBAQCAtOTIzLDEwICs5MjMsMTAgQEAgaTkxNV9wY2lfcmVtb3ZlKHN0cnVjdCBwY2lf
-ZGV2ICpwZGV2KQo+ID4gIAo+ID4gIHN0YXRpYyBpbnQgaTkxNV9wbV9zdXNwZW5kKHN0cnVjdCBk
-ZXZpY2UgKmRldikKPiA+ICB7Cj4gPiAtCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2Rl
-dihkZXYpOwo+ID4gLQlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0
-YShwZGV2KTsKPiA+ICsJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZGV2X3Rv
-X2k5MTVfcHJpdihkZXYpOwo+ID4gKwlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IGRldl9w
-cml2LT5kZXY7Cj4gPiAgCj4gPiAtCWlmICghZHJtX2RldiB8fCAhZHJtX2Rldi0+ZGV2X3ByaXZh
-dGUpIHsKPiA+ICsJaWYgKCFkcm1fZGV2IHx8ICFkZXZfcHJpdikgewo+IAo+IFRoaXMgdGVzdCBp
-cyBxdWl0ZSBub25zZW5zaWNhbCBzaW5jZSB5b3UndmUgZGVyZWZlcmVuY2VkIGJvdGggcG9pbnRl
-cnMKPiBnZXR0aW5nIHRvIHRoaXMgcG9pbnQuIElmIGl0IGlzIHJlcXVpcmVkLCB3ZSBuZWVkIGEg
-bmV3IHBhdGNoLgoKWWVwLCBJIG5vdGljZWQgdGhpcyBhZnRlciBKYW5pJ3MgY29tbWVudC4gRm9y
-IG5vdyBJIHdvdWxkIGp1c3QgbGVhdmUKdGhpcyBwYXJ0IHVuY2hhbmdlZC4KCj4gCj4gPiAgCQlk
-ZXZfZXJyKGRldiwgIkRSTSBub3QgaW5pdGlhbGl6ZWQsIGFib3J0aW5nIHN1c3BlbmQuXG4iKTsK
-PiA+ICAJCXJldHVybiAtRU5PREVWOwo+ID4gIAl9Cj4gPiBAQCAtOTM5LDggKzkzOSw3IEBAIHN0
-YXRpYyBpbnQgaTkxNV9wbV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICAKPiA+ICBz
-dGF0aWMgaW50IGk5MTVfcG1fc3VzcGVuZF9sYXRlKHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICB7
-Cj4gPiAtCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+ID4gLQlzdHJ1
-Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+ICsJc3Ry
-dWN0IGRybV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfdG9faTkxNV9wcml2KGRldiktPmRldjsKPiA+
-ICAKPiA+ICAJLyoKPiA+ICAJICogV2UgaGF2ZSBhIHN1c3BlZG4gb3JkZXJpbmcgaXNzdWUgd2l0
-aCB0aGUgc25kLWhkYSBkcml2ZXIgYWxzbwo+ID4gQEAgLTk1OSw4ICs5NTgsNyBAQCBzdGF0aWMg
-aW50IGk5MTVfcG1fc3VzcGVuZF9sYXRlKHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICAKPiA+ICBz
-dGF0aWMgaW50IGk5MTVfcG1fcmVzdW1lX2Vhcmx5KHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICB7
-Cj4gPiAtCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+ID4gLQlzdHJ1
-Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+ICsJc3Ry
-dWN0IGRybV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfdG9faTkxNV9wcml2KGRldiktPmRldjsKPiA+
-ICAKPiA+ICAJaWYgKGRybV9kZXYtPnN3aXRjaF9wb3dlcl9zdGF0ZSA9PSBEUk1fU1dJVENIX1BP
-V0VSX09GRikKPiA+ICAJCXJldHVybiAwOwo+ID4gQEAgLTk3MCw4ICs5NjgsNyBAQCBzdGF0aWMg
-aW50IGk5MTVfcG1fcmVzdW1lX2Vhcmx5KHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICAKPiA+ICBz
-dGF0aWMgaW50IGk5MTVfcG1fcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICB7Cj4gPiAt
-CXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+ID4gLQlzdHJ1Y3QgZHJt
-X2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+ICsJc3RydWN0IGRy
-bV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfdG9faTkxNV9wcml2KGRldiktPmRldjsKPiA+ICAKPiA+
-ICAJaWYgKGRybV9kZXYtPnN3aXRjaF9wb3dlcl9zdGF0ZSA9PSBEUk1fU1dJVENIX1BPV0VSX09G
-RikKPiA+ICAJCXJldHVybiAwOwo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2ludGVsX2Rydi5oIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfZHJ2LmgKPiA+IGluZGV4
-IDYxYTg4ZmEuLjNkZTdhNTUgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-bnRlbF9kcnYuaAo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfZHJ2LmgKPiA+
-IEBAIC03NzUsNiArNzc1LDE0IEBAIHN0YXRpYyBpbmxpbmUgdW5zaWduZWQgaW50IGludGVsX251
-bV9wbGFuZXMoc3RydWN0IGludGVsX2NydGMgKmNydGMpCj4gPiAgCXJldHVybiBJTlRFTF9JTkZP
-KGNydGMtPmJhc2UuZGV2KS0+bnVtX3Nwcml0ZXNbY3J0Yy0+cGlwZV0gKyAxOwo+ID4gIH0KPiA+
-ICAKPiA+ICtzdGF0aWMgaW5saW5lIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfdG9faTkx
-NV9wcml2KHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICt7Cj4gPiArCXN0cnVjdCBwY2lfZGV2ICpw
-ZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+ID4gKwlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9
-IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+ICsKPiA+ICsJcmV0dXJuIGRybV9kZXYtPmRldl9w
-cml2YXRlOwo+IAo+IEkgdGhpbmsgeW91IG1lYW50IAo+IAo+IHN0YXRpYyBpbmxpbmUgc3RydWN0
-IGRybV9pOTE1X3ByaXZhdGUgKmRldl90b19pOTE1KHN0cnVjdCBkZXZpY2UgKmRldikKPiB7Cj4g
-CXJldHVybiB0b19pOTE1KHBjaV9nZXRfZHJ2ZGF0YSh0b19wY2lfZGV2KGRldikpKTsKPiB9CgpZ
-ZXMsIGxvb2tzIHNpbXBsZXIuCgo+IC1DaHJpcwo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4
-QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
-YW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On Fri, Oct 31, 2014 at 4:07 PM, Henrique de Moraes Holschuh
+<hmh@hmh.eng.br> wrote:
+> On Fri, 17 Oct 2014, Andy Lutomirski wrote:
+>> ThinkPads have hardware volume controls and three buttons to control
+>> them.  (These are separate from the standard mixer.)  By default,
+>> the buttons are:
+>>
+>>  - Mute: Mutes the hardware volume control and, on some models,
+>>    generates KEY_MUTE.
+>>
+>>  - Up: Unmutes, generates KEY_VOLUMEUP, and increases volume if
+>>    applicable.  (Newer thinkpads only have hardware mute/unmute.)
+>>
+>>  - Down: Unmutes, generates KEY_VOLUMEDOWN, and decreases volume
+>>    if applicable.
+>>
+>> This behavior is unfortunate, since modern userspace will also
+>> handle the hotkeys and change the other mixer.  If the software
+>> mixer is muted and the hardware mixer is unmuted and you push mute,
+>> hilarity ensues as they both switch state.
+>>
+>> Rather than adding a lot of complex ALSA integration to fix this,
+>> just disable the special ThinkPad volume controls when possible.
+>> This turns the mute and volume buttons into regular buttons, and
+>> standard software controls will work as expected.
+>>
+>> ALSA already knows about the mute light on models with a mute light,
+>> so everything should just work.
+>>
+>> This should also allow us to remove _OSI(Linux) for all ThinkPads.
+>>
+>> For future reference: It turns out that we can ask ACPI for one of
+>> three behaviors directly on very new models.  They are "latch" (the
+>> default), "none" (no automatic control), and "toggle" (mute unmutes
+>> when muted).  All of the modes besides "none" seem to be a bit
+>> buggy, though, and there doesn't seem to be a consistent way to get
+>> any notification when the HW mute state is changed.
+>>
+>> Signed-off-by: Andy Lutomirski <luto@mit.edu>
+>
+> Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+
+What tree do these go through?  I haven't spotted them in linux-next.
+
+Thanks,
+Andy
+
+>
+>> ---
+>>  drivers/platform/x86/thinkpad_acpi.c | 116 ++++++++++++++++++++++++++++++++---
+>>  1 file changed, 106 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+>> index 3bbc6eb60de5..cfc317f2de23 100644
+>> --- a/drivers/platform/x86/thinkpad_acpi.c
+>> +++ b/drivers/platform/x86/thinkpad_acpi.c
+>> @@ -6559,6 +6559,17 @@ static struct ibm_struct brightness_driver_data = {
+>>   * bits 3-0 (volume).  Other bits in NVRAM may have other functions,
+>>   * such as bit 7 which is used to detect repeated presses of MUTE,
+>>   * and we leave them unchanged.
+>> + *
+>> + * On newer Lenovo ThinkPads, the EC can automatically change the volume
+>> + * in response to user input.  Unfortunately, this rarely works well.
+>> + * The laptop changes the state of its internal MUTE gate and, on some
+>> + * models, sends KEY_MUTE, causing any user code that responds to the
+>> + * mute button to get confused.  The hardware MUTE gate is also
+>> + * unnecessary, since user code can handle the mute button without
+>> + * kernel or EC help.
+>> + *
+>> + * To avoid confusing userspace, we simply disable all EC-based mute
+>> + * and volume controls when possible.
+>>   */
+>>
+>>  #ifdef CONFIG_THINKPAD_ACPI_ALSA_SUPPORT
+>> @@ -6613,11 +6624,21 @@ enum tpacpi_volume_capabilities {
+>>       TPACPI_VOL_CAP_MAX
+>>  };
+>>
+>> +enum tpacpi_mute_btn_mode {
+>> +     TP_EC_MUTE_BTN_LATCH  = 0,      /* Mute mutes; up/down unmutes */
+>> +     /* We don't know what mode 1 is. */
+>> +     TP_EC_MUTE_BTN_NONE   = 2,      /* Mute and up/down are just keys */
+>> +     TP_EC_MUTE_BTN_TOGGLE = 3,      /* Mute toggles; up/down unmutes */
+>> +};
+>> +
+>>  static enum tpacpi_volume_access_mode volume_mode =
+>>       TPACPI_VOL_MODE_MAX;
+>>
+>>  static enum tpacpi_volume_capabilities volume_capabilities;
+>>  static bool volume_control_allowed;
+>> +static bool software_mute_requested = true;
+>> +static bool software_mute_active;
+>> +static int software_mute_orig_mode;
+>>
+>>  /*
+>>   * Used to syncronize writers to TP_EC_AUDIO and
+>> @@ -6635,6 +6656,8 @@ static void tpacpi_volume_checkpoint_nvram(void)
+>>               return;
+>>       if (!volume_control_allowed)
+>>               return;
+>> +     if (software_mute_active)
+>> +             return;
+>>
+>>       vdbg_printk(TPACPI_DBG_MIXER,
+>>               "trying to checkpoint mixer state to NVRAM...\n");
+>> @@ -6696,6 +6719,12 @@ static int volume_set_status_ec(const u8 status)
+>>
+>>       dbg_printk(TPACPI_DBG_MIXER, "set EC mixer to 0x%02x\n", status);
+>>
+>> +     /*
+>> +      * On X200s, and possibly on others, it can take a while for
+>> +      * reads to become correct.
+>> +      */
+>> +     msleep(1);
+>> +
+>>       return 0;
+>>  }
+>>
+>> @@ -6778,6 +6807,57 @@ unlock:
+>>       return rc;
+>>  }
+>>
+>> +static int volume_set_software_mute(bool startup)
+>> +{
+>> +     int result;
+>> +
+>> +     if (!tpacpi_is_lenovo())
+>> +             return -ENODEV;
+>> +
+>> +     if (startup) {
+>> +             if (!acpi_evalf(ec_handle, &software_mute_orig_mode,
+>> +                             "HAUM", "qd"))
+>> +                     return -EIO;
+>> +
+>> +             dbg_printk(TPACPI_DBG_INIT | TPACPI_DBG_MIXER,
+>> +                         "Initial HAUM setting was %d\n",
+>> +                         software_mute_orig_mode);
+>> +     }
+>> +
+>> +     if (!acpi_evalf(ec_handle, &result, "SAUM", "qdd",
+>> +                     (int)TP_EC_MUTE_BTN_NONE))
+>> +             return -EIO;
+>> +
+>> +     if (result != TP_EC_MUTE_BTN_NONE)
+>> +             pr_warn("Unexpected SAUM result %d\n",
+>> +                     result);
+>> +
+>> +     /*
+>> +      * In software mute mode, the standard codec controls take
+>> +      * precendence, so we unmute the ThinkPad HW switch at
+>> +      * startup.  Just on case there are SAUM-capable ThinkPads
+>> +      * with level controls, set max HW volume as well.
+>> +      */
+>> +     if (tp_features.mixer_no_level_control)
+>> +             result = volume_set_mute(false);
+>> +     else
+>> +             result = volume_set_status(TP_EC_VOLUME_MAX);
+>> +
+>> +     if (result != 0)
+>> +             pr_warn("Failed to unmute the HW mute switch\n");
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static void volume_exit_software_mute(void)
+>> +{
+>> +     int r;
+>> +
+>> +     if (!acpi_evalf(ec_handle, &r, "SAUM", "qdd", software_mute_orig_mode)
+>> +         || r != software_mute_orig_mode)
+>> +             pr_warn("Failed to restore mute mode\n");
+>> +}
+>> +
+>>  static int volume_alsa_set_volume(const u8 vol)
+>>  {
+>>       dbg_printk(TPACPI_DBG_MIXER,
+>> @@ -6885,7 +6965,12 @@ static void volume_suspend(void)
+>>
+>>  static void volume_resume(void)
+>>  {
+>> -     volume_alsa_notify_change();
+>> +     if (software_mute_active) {
+>> +             if (volume_set_software_mute(false) < 0)
+>> +                     pr_warn("Failed to restore software mute\n");
+>> +     } else {
+>> +             volume_alsa_notify_change();
+>> +     }
+>>  }
+>>
+>>  static void volume_shutdown(void)
+>> @@ -6901,6 +6986,9 @@ static void volume_exit(void)
+>>       }
+>>
+>>       tpacpi_volume_checkpoint_nvram();
+>> +
+>> +     if (software_mute_active)
+>> +             volume_exit_software_mute();
+>>  }
+>>
+>>  static int __init volume_create_alsa_mixer(void)
+>> @@ -7085,16 +7173,20 @@ static int __init volume_init(struct ibm_init_struct *iibm)
+>>                       "mute is supported, volume control is %s\n",
+>>                       str_supported(!tp_features.mixer_no_level_control));
+>>
+>> -     rc = volume_create_alsa_mixer();
+>> -     if (rc) {
+>> -             pr_err("Could not create the ALSA mixer interface\n");
+>> -             return rc;
+>> -     }
+>> +     if (software_mute_requested && volume_set_software_mute(true) == 0) {
+>> +             software_mute_active = true;
+>> +     } else {
+>> +             rc = volume_create_alsa_mixer();
+>> +             if (rc) {
+>> +                     pr_err("Could not create the ALSA mixer interface\n");
+>> +                     return rc;
+>> +             }
+>>
+>> -     pr_info("Console audio control enabled, mode: %s\n",
+>> -             (volume_control_allowed) ?
+>> -                     "override (read/write)" :
+>> -                     "monitor (read only)");
+>> +             pr_info("Console audio control enabled, mode: %s\n",
+>> +                     (volume_control_allowed) ?
+>> +                             "override (read/write)" :
+>> +                             "monitor (read only)");
+>> +     }
+>>
+>>       vdbg_printk(TPACPI_DBG_INIT | TPACPI_DBG_MIXER,
+>>               "registering volume hotkeys as change notification\n");
+>> @@ -9091,6 +9183,10 @@ MODULE_PARM_DESC(volume_control,
+>>                "Enables software override for the console audio "
+>>                "control when true");
+>>
+>> +module_param_named(software_mute, software_mute_requested, bool, 0444);
+>> +MODULE_PARM_DESC(software_mute,
+>> +              "Request full software mute control");
+>> +
+>>  /* ALSA module API parameters */
+>>  module_param_named(index, alsa_index, int, 0444);
+>>  MODULE_PARM_DESC(index, "ALSA index for the ACPI EC Mixer");
+>
+> --
+>   "One disk to rule them all, One disk to find them. One disk to bring
+>   them all and in the darkness grind them. In the Land of Redmond
+>   where the shadows lie." -- The Silicon Valley Tarot
+>   Henrique Holschuh
+
+
+
+-- 
+Andy Lutomirski
+AMA Capital Management, LLC
