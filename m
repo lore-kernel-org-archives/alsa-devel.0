@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 05/15] ALSA: dice: Add support for MIDI
-	capture/playback
-Date: Tue,  9 Dec 2014 00:10:39 +0900
-Message-ID: <1418051449-18371-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/15] ALSA: oxfw: Change the way to start
+	stream
+Date: Tue,  9 Dec 2014 00:10:44 +0900
+Message-ID: <1418051449-18371-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 28311260496
+ by alsa0.perex.cz (Postfix) with ESMTP id 84C0F260675
  for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 16:11:01 +0100 (CET)
 In-Reply-To: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,241 +25,286 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a support for MIDI capture/playback
+In past commit, this driver can keep stream formations for each sampling
+rate. So its stream functionality can decide stream formations with given
+some parameters.
 
-When MIDI substrams already start streaming and PCM substreams are going to
-join at different sampling rate, streams are stopped once. Then sampling rate
-is changed and streams are restarted.
+This commit moves related codes from PCM functionality to stream
+functionality. Furthermore, to set stream format correctly, this commit
+uses AV/C Stream Format Information command instead of AV/C Input/Output
+Plug Signal Format command.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/Makefile      |   4 +-
- sound/firewire/dice/dice-midi.c   | 157 ++++++++++++++++++++++++++++++++++++++
- sound/firewire/dice/dice-stream.c |   2 +
- sound/firewire/dice/dice.c        |   4 +
- sound/firewire/dice/dice.h        |   3 +
- 5 files changed, 168 insertions(+), 2 deletions(-)
- create mode 100644 sound/firewire/dice/dice-midi.c
+ sound/firewire/oxfw/oxfw-pcm.c    |  44 ++----------
+ sound/firewire/oxfw/oxfw-stream.c | 139 +++++++++++++++++++++++++++++++++++---
+ sound/firewire/oxfw/oxfw.h        |   3 +-
+ 3 files changed, 138 insertions(+), 48 deletions(-)
 
-diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
-index 9a48289..9ef228e 100644
---- a/sound/firewire/dice/Makefile
-+++ b/sound/firewire/dice/Makefile
-@@ -1,3 +1,3 @@
--snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-pcm.o \
--		 dice-hwdep.o dice.o
-+snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-midi.o \
-+		 dice-pcm.o dice-hwdep.o dice.o
- obj-m += snd-dice.o
-diff --git a/sound/firewire/dice/dice-midi.c b/sound/firewire/dice/dice-midi.c
-new file mode 100644
-index 0000000..fe43ce7
---- /dev/null
-+++ b/sound/firewire/dice/dice-midi.c
-@@ -0,0 +1,157 @@
-+/*
-+ * dice_midi.c - a part of driver for Dice based devices
-+ *
-+ * Copyright (c) 2014 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+#include "dice.h"
-+
-+static int midi_open(struct snd_rawmidi_substream *substream)
+diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
+index 0c0be98..ea2b439 100644
+--- a/sound/firewire/oxfw/oxfw-pcm.c
++++ b/sound/firewire/oxfw/oxfw-pcm.c
+@@ -166,39 +166,10 @@ static int pcm_hw_params(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+-	int err;
+-
+-	mutex_lock(&oxfw->mutex);
+-
+-	snd_oxfw_stream_stop_simplex(oxfw);
+-
+-	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+-					       params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		goto error;
+-
+-	amdtp_stream_set_parameters(&oxfw->rx_stream,
+-				    params_rate(hw_params),
+-				    params_channels(hw_params),
+-				    0);
+-
+-	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
+-				    params_format(hw_params));
+-
+-	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
+-				      AVC_GENERAL_PLUG_DIR_IN, 0);
+-	if (err < 0) {
+-		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
+-		goto err_buffer;
+-	}
+ 
+-	return 0;
+-
+-err_buffer:
+-	snd_pcm_lib_free_vmalloc_buffer(substream);
+-error:
+-	mutex_unlock(&oxfw->mutex);
+-	return err;
++	amdtp_stream_set_pcm_format(&oxfw->rx_stream, params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
+ }
+ 
+ static int pcm_hw_free(struct snd_pcm_substream *substream)
+@@ -215,19 +186,18 @@ static int pcm_hw_free(struct snd_pcm_substream *substream)
+ static int pcm_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int err;
+ 
+ 	mutex_lock(&oxfw->mutex);
+-
+-	snd_oxfw_stream_stop_simplex(oxfw);
+-
+-	err = snd_oxfw_stream_start_simplex(oxfw);
++	err = snd_oxfw_stream_start_simplex(oxfw, runtime->rate,
++					    runtime->channels);
++	mutex_unlock(&oxfw->mutex);
+ 	if (err < 0)
+ 		goto end;
+ 
+ 	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
+ end:
+-	mutex_unlock(&oxfw->mutex);
+ 	return err;
+ }
+ 
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 210bf5a..1820497 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -7,8 +7,10 @@
+  */
+ 
+ #include "oxfw.h"
++#include <linux/delay.h>
+ 
+ #define AVC_GENERIC_FRAME_MAXIMUM_BYTES	512
++#define CALLBACK_TIMEOUT	200
+ 
+ /*
+  * According to datasheet of Oxford Semiconductor:
+@@ -37,6 +39,47 @@ static const unsigned int avc_stream_rate_table[] = {
+ 	[5] = 0x07,
+ };
+ 
++static int set_stream_format(struct snd_oxfw *oxfw, struct amdtp_stream *s,
++			     unsigned int rate, unsigned int pcm_channels)
 +{
-+	struct snd_dice *dice = substream->rmidi->private_data;
-+	int err;
++	u8 **formats;
++	struct snd_oxfw_stream_formation formation;
++	enum avc_general_plug_dir dir;
++	unsigned int i, err, len;
 +
-+	err = snd_dice_stream_lock_try(dice);
++	formats = oxfw->rx_stream_formats;
++	dir = AVC_GENERAL_PLUG_DIR_IN;
++
++	/* Seek stream format for requirements. */
++	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
++		err = snd_oxfw_stream_parse_format(formats[i], &formation);
++		if (err < 0)
++			return err;
++
++		if ((formation.rate == rate) && (formation.pcm == pcm_channels))
++			break;
++	}
++	if (i == SND_OXFW_STREAM_FORMAT_ENTRIES)
++		return -EINVAL;
++
++	/* If assumed, just change rate. */
++	if (oxfw->assumed)
++		return avc_general_set_sig_fmt(oxfw->unit, rate,
++					       AVC_GENERAL_PLUG_DIR_IN, 0);
++
++	/* Calculate format length. */
++	len = 5 + formats[i][4] * 2;
++
++	err = avc_stream_set_format(oxfw->unit, dir, 0, formats[i], len);
 +	if (err < 0)
 +		return err;
 +
-+	mutex_lock(&dice->mutex);
++	/* Some requests just after changing format causes freezing. */
++	msleep(100);
 +
-+	dice->substreams_counter++;
-+	err = snd_dice_stream_start_duplex(dice, 0);
++	return 0;
++}
 +
-+	mutex_unlock(&dice->mutex);
+ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw)
+ {
+ 	int err;
+@@ -63,30 +106,106 @@ static void stop_stream(struct snd_oxfw *oxfw)
+ 	cmp_connection_break(&oxfw->in_conn);
+ }
+ 
+-int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw)
++static int start_stream(struct snd_oxfw *oxfw, unsigned int rate,
++			unsigned int pcm_channels)
+ {
+-	int err = 0;
++	u8 **formats;
++	struct cmp_connection *conn;
++	struct snd_oxfw_stream_formation formation;
++	unsigned int i, midi_ports;
++	struct amdtp_stream *stream;
++	int err;
+ 
+-	if (amdtp_streaming_error(&oxfw->rx_stream))
+-		stop_stream(oxfw);
++	stream = &oxfw->rx_stream;
++	formats = oxfw->rx_stream_formats;
++	conn = &oxfw->in_conn;
+ 
+-	if (amdtp_stream_running(&oxfw->rx_stream))
++	/* Get stream formation */
++	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
++		if (formats[i] == NULL)
++			break;
 +
++		err = snd_oxfw_stream_parse_format(formats[i], &formation);
++		if (err < 0)
++			goto end;
++		if (rate != formation.rate)
++			continue;
++		if (pcm_channels == 0 ||  pcm_channels == formation.pcm)
++			break;
++	}
++	if (i == SND_OXFW_STREAM_FORMAT_ENTRIES) {
++		err = -EINVAL;
+ 		goto end;
++	}
+ 
+-	err = cmp_connection_establish(&oxfw->in_conn,
+-			amdtp_stream_get_max_payload(&oxfw->rx_stream));
++	pcm_channels = formation.pcm;
++	midi_ports = DIV_ROUND_UP(formation.midi, 8);
++
++	/* The stream should have one pcm channels at least */
++	if (pcm_channels == 0) {
++		err = -EINVAL;
++		goto end;
++	}
++	amdtp_stream_set_parameters(stream, rate, pcm_channels, midi_ports);
++
++	err = cmp_connection_establish(conn,
++				       amdtp_stream_get_max_payload(stream));
+ 	if (err < 0)
+ 		goto end;
+ 
+-	err = amdtp_stream_start(&oxfw->rx_stream,
+-				 oxfw->in_conn.resources.channel,
+-				 oxfw->in_conn.speed);
++	err = amdtp_stream_start(stream,
++				 conn->resources.channel,
++				 conn->speed);
++	if (err < 0) {
++		cmp_connection_break(conn);
++		goto end;
++	}
++
++	/* Wait first packet */
++	err = amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT);
+ 	if (err < 0)
+ 		stop_stream(oxfw);
+ end:
+ 	return err;
+ }
+ 
++int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw, unsigned int rate,
++				  unsigned int pcm_channels)
++{
++	struct snd_oxfw_stream_formation formation;
++	int err = 0;
++
++	/* packet queueing error */
++	if (amdtp_streaming_error(&oxfw->rx_stream))
++		stop_stream(oxfw);
++
++	err = snd_oxfw_stream_get_current_formation(oxfw,
++						    AVC_GENERAL_PLUG_DIR_IN,
++						    &formation);
 +	if (err < 0)
-+		snd_dice_stream_lock_release(dice);
++		goto end;
 +
++	if ((formation.rate != rate) || (formation.pcm != pcm_channels)) {
++		stop_stream(oxfw);
++
++		/* arrange sampling rate */
++		err = set_stream_format(oxfw, &oxfw->rx_stream, rate,
++					pcm_channels);
++		if (err < 0) {
++			dev_err(&oxfw->unit->device,
++				"fail to set stream format: %d\n", err);
++			goto end;
++		}
++	}
++
++	err = start_stream(oxfw, rate, pcm_channels);
++	if (err < 0)
++		dev_err(&oxfw->unit->device,
++			"fail to start stream: %d\n", err);
++end:
 +	return err;
 +}
 +
-+static int midi_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dice *dice = substream->rmidi->private_data;
-+
-+	mutex_lock(&dice->mutex);
-+
-+	dice->substreams_counter--;
-+	snd_dice_stream_stop_duplex(dice);
-+
-+	mutex_unlock(&dice->mutex);
-+
-+	snd_dice_stream_lock_release(dice);
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_dice *dice = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dice->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&dice->tx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&dice->tx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&dice->lock, flags);
-+}
-+
-+static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_dice *dice = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dice->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&dice->rx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&dice->rx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&dice->lock, flags);
-+}
-+
-+static struct snd_rawmidi_ops capture_ops = {
-+	.open		= midi_open,
-+	.close		= midi_close,
-+	.trigger	= midi_capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops playback_ops = {
-+	.open		= midi_open,
-+	.close		= midi_close,
-+	.trigger	= midi_playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct snd_dice *dice,
-+				     struct snd_rawmidi_str *str)
-+{
-+	struct snd_rawmidi_substream *subs;
-+
-+	list_for_each_entry(subs, &str->substreams, list) {
-+		snprintf(subs->name, sizeof(subs->name),
-+			 "%s MIDI %d", dice->card->shortname, subs->number + 1);
-+	}
-+}
-+
-+int snd_dice_create_midi(struct snd_dice *dice)
-+{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *str;
-+	unsigned int i, midi_in_ports, midi_out_ports;
-+	int err;
-+
-+	midi_in_ports = midi_out_ports = 0;
-+	for (i = 0; i < 3; i++) {
-+		midi_in_ports = max(dice->tx_midi_ports[i], midi_in_ports);
-+		midi_out_ports = max(dice->rx_midi_ports[i], midi_out_ports);
-+	}
-+
-+	if (midi_in_ports + midi_out_ports == 0)
-+		return 0;
-+
-+	/* create midi ports */
-+	err = snd_rawmidi_new(dice->card, dice->card->driver, 0,
-+			      midi_out_ports, midi_in_ports,
-+			      &rmidi);
-+	if (err < 0)
-+		return err;
-+
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", dice->card->shortname);
-+	rmidi->private_data = dice;
-+
-+	if (midi_in_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+				    &capture_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
-+
-+		set_midi_substream_names(dice, str);
-+	}
-+
-+	if (midi_out_ports > 0) {
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+
-+		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+				    &playback_ops);
-+
-+		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
-+
-+		set_midi_substream_names(dice, str);
-+	}
-+
-+	if ((midi_out_ports > 0) && (midi_in_ports > 0))
-+		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
-+
-+	return 0;
-+}
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 20765a0..fa9cf76 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -218,6 +218,8 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
- 			"fail to get sampling rate\n");
- 		goto end;
- 	}
-+	if (rate == 0)
-+		rate = curr_rate;
- 	if (rate != curr_rate)
- 		stop_stream(dice, master);
+ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw)
+ {
+ 	stop_stream(oxfw);
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index 8c832ea..c09ef38 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -89,7 +89,8 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
+ 				unsigned short pid);
  
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 85bcfaf..90d8f40 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -279,6 +279,10 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 
- 	snd_dice_create_proc(dice);
- 
-+	err = snd_dice_create_midi(dice);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_dice_stream_init_duplex(dice);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index f30326e..ecf5dc8 100644
---- a/sound/firewire/dice/dice.h
-+++ b/sound/firewire/dice/dice.h
-@@ -32,6 +32,7 @@
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/rawmidi.h>
- 
- #include "../amdtp.h"
- #include "../iso-resources.h"
-@@ -183,4 +184,6 @@ int snd_dice_create_hwdep(struct snd_dice *dice);
- 
- void snd_dice_create_proc(struct snd_dice *dice);
- 
-+int snd_dice_create_midi(struct snd_dice *dice);
-+
- #endif
+ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
+-int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
++int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw, unsigned int rate,
++				  unsigned int pcm_channels);
+ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
 -- 
 2.1.0
