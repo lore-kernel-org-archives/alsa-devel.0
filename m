@@ -1,112 +1,247 @@
 From: Imre Deak <imre.deak@intel.com>
-Subject: [PATCH 5/5] drm/i915: remove unused
-	power_well/get_cdclk_freq api
-Date: Mon,  8 Dec 2014 18:42:09 +0200
-Message-ID: <1418056929-7977-6-git-send-email-imre.deak@intel.com>
+Subject: [PATCH 4/5] ALSA: hda: add component support
+Date: Mon,  8 Dec 2014 18:42:08 +0200
+Message-ID: <1418056929-7977-5-git-send-email-imre.deak@intel.com>
 References: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DDD326047E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 17:44:45 +0100 (CET)
 In-Reply-To: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-QWZ0ZXIgc3dpdGNoaW5nIHRvIHVzaW5nIHRoZSBjb21wb25lbnQgaW50ZXJmYWNlIHRoaXMgQVBJ
-IGlzbid0IG5lZWRlZAphbnkgbW9yZS4KClNpZ25lZC1vZmYtYnk6IEltcmUgRGVhayA8aW1yZS5k
-ZWFrQGludGVsLmNvbT4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9ydW50aW1lX3Bt
-LmMgfCA1NiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGluY2x1ZGUvZHJtL2k5
-MTVfcG93ZXJ3ZWxsLmggICAgICAgICAgICB8IDM3IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIDIg
-ZmlsZXMgY2hhbmdlZCwgOTMgZGVsZXRpb25zKC0pCiBkZWxldGUgbW9kZSAxMDA2NDQgaW5jbHVk
-ZS9kcm0vaTkxNV9wb3dlcndlbGwuaAoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2ludGVsX3J1bnRpbWVfcG0uYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX3J1bnRpbWVf
-cG0uYwppbmRleCA4YTJiZDE4Li4wYzlhYjMyIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0v
-aTkxNS9pbnRlbF9ydW50aW1lX3BtLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxf
-cnVudGltZV9wbS5jCkBAIC0zMSw3ICszMSw2IEBACiAKICNpbmNsdWRlICJpOTE1X2Rydi5oIgog
-I2luY2x1ZGUgImludGVsX2Rydi5oIgotI2luY2x1ZGUgPGRybS9pOTE1X3Bvd2Vyd2VsbC5oPgog
-CiAvKioKICAqIERPQzogcnVudGltZSBwbQpAQCAtNTAsOCArNDksNiBAQAogICogcHJlc2VudCBm
-b3IgYSBnaXZlbiBwbGF0Zm9ybS4KICAqLwogCi1zdGF0aWMgc3RydWN0IGk5MTVfcG93ZXJfZG9t
-YWlucyAqaHN3X3B3cjsKLQogI2RlZmluZSBmb3JfZWFjaF9wb3dlcl93ZWxsKGksIHBvd2VyX3dl
-bGwsIGRvbWFpbl9tYXNrLCBwb3dlcl9kb21haW5zKQlcCiAJZm9yIChpID0gMDsJCQkJCQkJXAog
-CSAgICAgaSA8IChwb3dlcl9kb21haW5zKS0+cG93ZXJfd2VsbF9jb3VudCAmJgkJCVwKQEAgLTEw
-OTgsMTAgKzEwOTUsOCBAQCBpbnQgaW50ZWxfcG93ZXJfZG9tYWluc19pbml0KHN0cnVjdCBkcm1f
-aTkxNV9wcml2YXRlICpkZXZfcHJpdikKIAkgKi8KIAlpZiAoSVNfSEFTV0VMTChkZXZfcHJpdi0+
-ZGV2KSkgewogCQlzZXRfcG93ZXJfd2VsbHMocG93ZXJfZG9tYWlucywgaHN3X3Bvd2VyX3dlbGxz
-KTsKLQkJaHN3X3B3ciA9IHBvd2VyX2RvbWFpbnM7CiAJfSBlbHNlIGlmIChJU19CUk9BRFdFTEwo
-ZGV2X3ByaXYtPmRldikpIHsKIAkJc2V0X3Bvd2VyX3dlbGxzKHBvd2VyX2RvbWFpbnMsIGJkd19w
-b3dlcl93ZWxscyk7Ci0JCWhzd19wd3IgPSBwb3dlcl9kb21haW5zOwogCX0gZWxzZSBpZiAoSVNf
-Q0hFUlJZVklFVyhkZXZfcHJpdi0+ZGV2KSkgewogCQlzZXRfcG93ZXJfd2VsbHMocG93ZXJfZG9t
-YWlucywgY2h2X3Bvd2VyX3dlbGxzKTsKIAl9IGVsc2UgaWYgKElTX1ZBTExFWVZJRVcoZGV2X3By
-aXYtPmRldikpIHsKQEAgLTExNDUsOCArMTE0MCw2IEBAIHZvaWQgaW50ZWxfcG93ZXJfZG9tYWlu
-c19maW5pKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKIAkgKiB0aGUgcG93ZXIg
-d2VsbCBpcyBub3QgZW5hYmxlZCwgc28ganVzdCBlbmFibGUgaXQgaW4gY2FzZQogCSAqIHdlJ3Jl
-IGdvaW5nIHRvIHVubG9hZC9yZWxvYWQuICovCiAJaW50ZWxfZGlzcGxheV9zZXRfaW5pdF9wb3dl
-cihkZXZfcHJpdiwgdHJ1ZSk7Ci0KLQloc3dfcHdyID0gTlVMTDsKIH0KIAogc3RhdGljIHZvaWQg
-aW50ZWxfcG93ZXJfZG9tYWluc19yZXN1bWUoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9w
-cml2KQpAQCAtMTM1NSw1MiArMTM0OCwzIEBAIHZvaWQgaW50ZWxfcnVudGltZV9wbV9lbmFibGUo
-c3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KQogCXBtX3J1bnRpbWVfcHV0X2F1dG9z
-dXNwZW5kKGRldmljZSk7CiB9CiAKLS8qIERpc3BsYXkgYXVkaW8gZHJpdmVyIHBvd2VyIHdlbGwg
-cmVxdWVzdCAqLwotaW50IGk5MTVfcmVxdWVzdF9wb3dlcl93ZWxsKHZvaWQpCi17Ci0Jc3RydWN0
-IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2OwotCi0JaWYgKCFoc3dfcHdyKQotCQlyZXR1cm4g
-LUVOT0RFVjsKLQotCWRldl9wcml2ID0gY29udGFpbmVyX29mKGhzd19wd3IsIHN0cnVjdCBkcm1f
-aTkxNV9wcml2YXRlLAotCQkJCXBvd2VyX2RvbWFpbnMpOwotCWludGVsX2Rpc3BsYXlfcG93ZXJf
-Z2V0KGRldl9wcml2LCBQT1dFUl9ET01BSU5fQVVESU8pOwotCXJldHVybiAwOwotfQotRVhQT1JU
-X1NZTUJPTF9HUEwoaTkxNV9yZXF1ZXN0X3Bvd2VyX3dlbGwpOwotCi0vKiBEaXNwbGF5IGF1ZGlv
-IGRyaXZlciBwb3dlciB3ZWxsIHJlbGVhc2UgKi8KLWludCBpOTE1X3JlbGVhc2VfcG93ZXJfd2Vs
-bCh2b2lkKQotewotCXN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdjsKLQotCWlmICgh
-aHN3X3B3cikKLQkJcmV0dXJuIC1FTk9ERVY7Ci0KLQlkZXZfcHJpdiA9IGNvbnRhaW5lcl9vZiho
-c3dfcHdyLCBzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSwKLQkJCQlwb3dlcl9kb21haW5zKTsKLQlp
-bnRlbF9kaXNwbGF5X3Bvd2VyX3B1dChkZXZfcHJpdiwgUE9XRVJfRE9NQUlOX0FVRElPKTsKLQly
-ZXR1cm4gMDsKLX0KLUVYUE9SVF9TWU1CT0xfR1BMKGk5MTVfcmVsZWFzZV9wb3dlcl93ZWxsKTsK
-LQotLyoKLSAqIFByaXZhdGUgaW50ZXJmYWNlIGZvciB0aGUgYXVkaW8gZHJpdmVyIHRvIGdldCBD
-RENMSyBpbiBrSHouCi0gKgotICogQ2FsbGVyIG11c3QgcmVxdWVzdCBwb3dlciB3ZWxsIHVzaW5n
-IGk5MTVfcmVxdWVzdF9wb3dlcl93ZWxsKCkgcHJpb3IgdG8KLSAqIG1ha2luZyB0aGUgY2FsbC4K
-LSAqLwotaW50IGk5MTVfZ2V0X2NkY2xrX2ZyZXEodm9pZCkKLXsKLQlzdHJ1Y3QgZHJtX2k5MTVf
-cHJpdmF0ZSAqZGV2X3ByaXY7Ci0KLQlpZiAoIWhzd19wd3IpCi0JCXJldHVybiAtRU5PREVWOwot
-Ci0JZGV2X3ByaXYgPSBjb250YWluZXJfb2YoaHN3X3B3ciwgc3RydWN0IGRybV9pOTE1X3ByaXZh
-dGUsCi0JCQkJcG93ZXJfZG9tYWlucyk7Ci0KLQlyZXR1cm4gaW50ZWxfZGRpX2dldF9jZGNsa19m
-cmVxKGRldl9wcml2KTsKLX0KLUVYUE9SVF9TWU1CT0xfR1BMKGk5MTVfZ2V0X2NkY2xrX2ZyZXEp
-OwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0vaTkxNV9wb3dlcndlbGwuaCBiL2luY2x1ZGUvZHJt
-L2k5MTVfcG93ZXJ3ZWxsLmgKZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IGJhYTZmMTEu
-LjAwMDAwMDAKLS0tIGEvaW5jbHVkZS9kcm0vaTkxNV9wb3dlcndlbGwuaAorKysgL2Rldi9udWxs
-CkBAIC0xLDM3ICswLDAgQEAKLS8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgotICoKLSAqIENvcHlyaWdodCAy
-MDEzIEludGVsIEluYy4KLSAqIEFsbCBSaWdodHMgUmVzZXJ2ZWQuCi0gKgotICogUGVybWlzc2lv
-biBpcyBoZXJlYnkgZ3JhbnRlZCwgZnJlZSBvZiBjaGFyZ2UsIHRvIGFueSBwZXJzb24gb2J0YWlu
-aW5nIGEKLSAqIGNvcHkgb2YgdGhpcyBzb2Z0d2FyZSBhbmQgYXNzb2NpYXRlZCBkb2N1bWVudGF0
-aW9uIGZpbGVzICh0aGUKLSAqICJTb2Z0d2FyZSIpLCB0byBkZWFsIGluIHRoZSBTb2Z0d2FyZSB3
-aXRob3V0IHJlc3RyaWN0aW9uLCBpbmNsdWRpbmcKLSAqIHdpdGhvdXQgbGltaXRhdGlvbiB0aGUg
-cmlnaHRzIHRvIHVzZSwgY29weSwgbW9kaWZ5LCBtZXJnZSwgcHVibGlzaCwKLSAqIGRpc3RyaWJ1
-dGUsIHN1YiBsaWNlbnNlLCBhbmQvb3Igc2VsbCBjb3BpZXMgb2YgdGhlIFNvZnR3YXJlLCBhbmQg
-dG8KLSAqIHBlcm1pdCBwZXJzb25zIHRvIHdob20gdGhlIFNvZnR3YXJlIGlzIGZ1cm5pc2hlZCB0
-byBkbyBzbywgc3ViamVjdCB0bwotICogdGhlIGZvbGxvd2luZyBjb25kaXRpb25zOgotICoKLSAq
-IFRoZSBhYm92ZSBjb3B5cmlnaHQgbm90aWNlIGFuZCB0aGlzIHBlcm1pc3Npb24gbm90aWNlIChp
-bmNsdWRpbmcgdGhlCi0gKiBuZXh0IHBhcmFncmFwaCkgc2hhbGwgYmUgaW5jbHVkZWQgaW4gYWxs
-IGNvcGllcyBvciBzdWJzdGFudGlhbCBwb3J0aW9ucwotICogb2YgdGhlIFNvZnR3YXJlLgotICoK
-LSAqIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURFRCAiQVMgSVMiLCBXSVRIT1VUIFdBUlJBTlRZIE9G
-IEFOWSBLSU5ELCBFWFBSRVNTIE9SCi0gKiBJTVBMSUVELCBJTkNMVURJTkcgQlVUIE5PVCBMSU1J
-VEVEIFRPIFRIRSBXQVJSQU5USUVTIE9GIE1FUkNIQU5UQUJJTElUWSwKLSAqIEZJVE5FU1MgRk9S
-IEEgUEFSVElDVUxBUiBQVVJQT1NFIEFORCBOT04tSU5GUklOR0VNRU5ULiBJTiBOTyBFVkVOVCBT
-SEFMTAotICogVEhFIENPUFlSSUdIVCBIT0xERVJTLCBBVVRIT1JTIEFORC9PUiBJVFMgU1VQUExJ
-RVJTIEJFIExJQUJMRSBGT1IgQU5ZIENMQUlNLAotICogREFNQUdFUyBPUiBPVEhFUiBMSUFCSUxJ
-VFksIFdIRVRIRVIgSU4gQU4gQUNUSU9OIE9GIENPTlRSQUNULCBUT1JUIE9SCi0gKiBPVEhFUldJ
-U0UsIEFSSVNJTkcgRlJPTSwgT1VUIE9GIE9SIElOIENPTk5FQ1RJT04gV0lUSCBUSEUgU09GVFdB
-UkUgT1IgVEhFCi0gKiBVU0UgT1IgT1RIRVIgREVBTElOR1MgSU4gVEhFIFNPRlRXQVJFLgotICoK
-LSAqCi0gKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKiovCi0KLSNpZm5kZWYgX0k5MTVfUE9XRVJXRUxMX0hfCi0j
-ZGVmaW5lIF9JOTE1X1BPV0VSV0VMTF9IXwotCi0vKiBGb3IgdXNlIGJ5IGhkYV9pOTE1IGRyaXZl
-ciAqLwotZXh0ZXJuIGludCBpOTE1X3JlcXVlc3RfcG93ZXJfd2VsbCh2b2lkKTsKLWV4dGVybiBp
-bnQgaTkxNV9yZWxlYXNlX3Bvd2VyX3dlbGwodm9pZCk7Ci1leHRlcm4gaW50IGk5MTVfZ2V0X2Nk
-Y2xrX2ZyZXEodm9pZCk7Ci0KLSNlbmRpZgkJCQkvKiBfSTkxNV9QT1dFUldFTExfSF8gKi8KLS0g
-CjEuOC40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJ
-bnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0
-cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+Register a component to be used to interface with the i915 driver. This
+is meant to replace the current interface which is based on module
+symbol lookups.
+
+Note that currently we keep the existing behavior and pin the i915
+module while the hda driver is loaded. Using the component interface
+allows us to remove this dependency once support for dynamically
+enabling / disabling the HDMI functionality from the bind/unbind hooks
+is added.
+
+Signed-off-by: Imre Deak <imre.deak@intel.com>
+---
+ sound/pci/hda/hda_i915.c | 120 ++++++++++++++++++++++++++++++++---------------
+ sound/pci/hda/hda_priv.h |   7 +++
+ 2 files changed, 89 insertions(+), 38 deletions(-)
+
+diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
+index 4e4b733..01f5a5d 100644
+--- a/sound/pci/hda/hda_i915.c
++++ b/sound/pci/hda/hda_i915.c
+@@ -18,8 +18,10 @@
+ 
+ #include <linux/init.h>
+ #include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/component.h>
++#include <drm/i915_component.h>
+ #include <sound/core.h>
+-#include <drm/i915_powerwell.h>
+ #include "hda_priv.h"
+ #include "hda_i915.h"
+ 
+@@ -31,32 +33,33 @@
+ #define AZX_REG_EM4			0x100c
+ #define AZX_REG_EM5			0x1010
+ 
+-static int (*get_power)(void);
+-static int (*put_power)(void);
+-static int (*get_cdclk)(void);
+-
+ int hda_display_power(struct azx *chip, bool enable)
+ {
+-	if (!get_power || !put_power)
++	struct hda_component *hdac = &chip->component;
++
++	if (!hdac->i915_ops)
+ 		return -ENODEV;
+ 
+ 	pr_debug("HDA display power %s \n",
+ 			enable ? "Enable" : "Disable");
+ 	if (enable)
+-		return get_power();
++		hdac->i915_ops->get_power(hdac->i915_dev);
+ 	else
+-		return put_power();
++		hdac->i915_ops->put_power(hdac->i915_dev);
++
++	return 0;
+ }
+ 
+ void haswell_set_bclk(struct azx *chip)
+ {
+ 	int cdclk_freq;
+ 	unsigned int bclk_m, bclk_n;
++	struct hda_component *hdac = &chip->component;
+ 
+-	if (!get_cdclk)
++	if (!hdac->i915_ops)
+ 		return;
+ 
+-	cdclk_freq = get_cdclk();
++	cdclk_freq = hdac->i915_ops->get_cdclk(hdac->i915_dev);
+ 	switch (cdclk_freq) {
+ 	case 337500:
+ 		bclk_m = 16;
+@@ -84,47 +87,87 @@ void haswell_set_bclk(struct azx *chip)
+ 	azx_writew(chip, EM5, bclk_n);
+ }
+ 
++static int hda_component_bind(struct device *hda_dev,
++			      struct device *i915_dev, void *data)
++{
++	struct snd_card *card = dev_get_drvdata(hda_dev);
++	struct azx *chip = card->private_data;
++	struct i915_component_ops *i915_ops = data;
++	struct hda_component *hdac = &chip->component;
++
++	if (WARN_ON(!(i915_ops->get_power && i915_ops->put_power &&
++		      i915_ops->get_cdclk)))
++		return -EINVAL;
++
++	/*
++	 * Atm, we don't support dynamic unbinding initiated by the component
++	 * master, so pin its containing module until we unbind.
++	 */
++	if (!try_module_get(i915_ops->owner))
++		return -ENODEV;
++
++	hdac->i915_dev = i915_dev;
++	hdac->i915_ops = i915_ops;
++
++	return 0;
++}
++
++static void hda_component_unbind(struct device *hda_dev,
++				 struct device *i915_dev, void *data)
++{
++	struct snd_card *card = dev_get_drvdata(hda_dev);
++	struct azx *chip = card->private_data;
++	struct hda_component *hdac = &chip->component;
++
++	module_put(hdac->i915_ops->owner);
++
++	hdac->i915_dev = NULL;
++	hdac->i915_ops = NULL;
++}
++
++static struct component_ops hda_component_ops = {
++	.bind = hda_component_bind,
++	.unbind = hda_component_unbind,
++};
+ 
+ int hda_i915_init(struct azx *chip)
+ {
+-	int err = 0;
++	struct device *dev = &chip->pci->dev;
++	int ret;
+ 
+-	get_power = symbol_request(i915_request_power_well);
+-	if (!get_power) {
+-		pr_warn("hda-i915: get_power symbol get fail\n");
+-		return -ENODEV;
+-	}
+-
+-	put_power = symbol_request(i915_release_power_well);
+-	if (!put_power) {
+-		symbol_put(i915_request_power_well);
+-		get_power = NULL;
+-		return -ENODEV;
+-	}
+-
+-	get_cdclk = symbol_request(i915_get_cdclk_freq);
+-	if (!get_cdclk)	/* may have abnormal BCLK and audio playback rate */
+-		pr_warn("hda-i915: get_cdclk symbol get fail\n");
+-
++	ret = component_add(dev, &hda_component_ops);
++	if (ret < 0)
++		goto out_err;
++
++	/*
++	 * Atm, we don't support deferring the component binding, so make sure
++	 * i915 is loaded and that the binding successfully completes.
++	 */
++	ret = request_module("i915");
++	if (ret < 0)
++		goto out_err;
++
++	if (!chip->component.i915_ops) {
++		ret = -ENODEV;
++		goto out_component_del;
++	}
++
+-	pr_debug("HDA driver get symbol successfully from i915 module\n");
++	pr_debug("hda-i915: bound to component master\n");
++
++	return 0;
++out_component_del:
++	component_del(dev, &hda_component_ops);
++out_err:
++	pr_warn("hda-i915: failed to bind to component master (%d)\n", ret);
+ 
+-	return err;
++	return ret;
+ }
+ 
+ int hda_i915_exit(struct azx *chip)
+ {
+-	if (get_power) {
+-		symbol_put(i915_request_power_well);
+-		get_power = NULL;
+-	}
+-	if (put_power) {
+-		symbol_put(i915_release_power_well);
+-		put_power = NULL;
+-	}
+-	if (get_cdclk) {
+-		symbol_put(i915_get_cdclk_freq);
+-		get_cdclk = NULL;
+-	}
++	struct device *dev = &chip->pci->dev;
++
++	component_del(dev, &hda_component_ops);
+ 
+ 	return 0;
+ }
+diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
+index aa484fd..336d401 100644
+--- a/sound/pci/hda/hda_priv.h
++++ b/sound/pci/hda/hda_priv.h
+@@ -18,6 +18,7 @@
+ #include <linux/clocksource.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
++#include <drm/i915_component.h>
+ 
+ /*
+  * registers
+@@ -291,6 +292,12 @@ struct azx {
+ 	struct pci_dev *pci;
+ 	int dev_index;
+ 
++	/* i915 component interface */
++	struct hda_component {
++		struct device *i915_dev;
++		const struct i915_component_ops *i915_ops;
++	} component;
++
+ 	/* chip type specific */
+ 	int driver_type;
+ 	unsigned int driver_caps;
+-- 
+1.8.4
