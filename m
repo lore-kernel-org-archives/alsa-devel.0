@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 00/15 v5] ALSA: Enhancement for existed
-	FireWire drivers
-Date: Tue,  9 Dec 2014 00:10:34 +0900
-Message-ID: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/15] ALSA: dice: Support for non SYT-Match
+	sampling clock source mode
+Date: Tue,  9 Dec 2014 00:10:37 +0900
+Message-ID: <1418051449-18371-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 59F2B26045C
+ by alsa0.perex.cz (Postfix) with ESMTP id 55602260453
  for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 16:10:58 +0100 (CET)
+In-Reply-To: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,76 +25,168 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This patchset is the rest of patches to enable ALSA Dice and OXFW driver
-to handle more models. This patchset is for linux-next branch.
+This commit allows this driver to handle devices with non SYT-Match
+sampling clock source.
 
+When sampling clock source is SYT-Match mode, devices handle
+'presentation timestamp' in received packets and generates sampling clock
+according to the information. In this case, driver is synchronization master
+and must transfer correct value in SYT field of each packets in outgoing
+stream, then the outgoing stream is a master stream.
 
-== Updates from my previous post:
+On the other hand, non SYT-Match mode, devices do this. So drivers must pick
+up the value in SYT field of incoming packets and use the value for outgoing
+stream. Currently firewire-lib module achieve this work.
 
-[alsa-devel] [PATCH 00/30 v4] ALSA: Enhancement for existed FireWire drivers
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085092.html
+Furthermore, without SYT-Match and internal clock source, the sampling rate
+should be fixed for the other devices connected to the handled device. This
+commit add a restriction of sampling rate at this situation.
 
- - use the same functions for each of MIDI .open/.close callback (dice)
- - fix a comment for AV/C stream format information command (oxfw)
- - revert shortname template, just use model name (oxfw)
+With these implementations, this driver has no need to set clock source.
+This commit remove set function.
 
-I note that OXFW driver uses the shortname for MIDI substream name, which
-has 32 bytes, thus the string in shortname should not be so long.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-pcm.c         | 35 ++++++++++++++++++++++++++++++++++
+ sound/firewire/dice/dice-stream.c      | 35 ++++++++++++++++++++++------------
+ sound/firewire/dice/dice-transaction.c |  5 -----
+ sound/firewire/dice/dice.h             |  2 --
+ 4 files changed, 58 insertions(+), 19 deletions(-)
 
-
-== Supplemental patch for userspace library
-
-This patchset adds Hwdep functionality for OXFW driver, thus userspace
-library needs a patch for entries of snd_hwdep_iface_t. Please apply
-below patch.
-
-[alsa-devel] [PATCH alsa-lib] hwdep: add OXFW driver support
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-November/084824.html
-
-
-Takashi Sakamoto (15):
-  ALSA: dice: Change the way to start stream
-  ALSA: dice: Add support for duplex streams with synchronization
-  ALSA: dice: Support for non SYT-Match sampling clock source mode
-  ALSA: dice: Add support for capturing PCM samples
-  ALSA: dice: Add support for MIDI capture/playback
-  ALSA: oxfw: Change the way to name card
-  ALSA: oxfw: Add support for AV/C stream format command to get/set
-    supported stream formation
-  ALSA: oxfw: Change the way to make PCM rules/constraints
-  ALSA: oxfw: Add proc interface for debugging purpose
-  ALSA: oxfw: Change the way to start stream
-  ALSA: oxfw: Add support for Behringer/Mackie devices
-  ALSA: oxfw: Add support AMDTP in-stream
-  ALSA: oxfw: add support for capturing PCM samples
-  ALSA: oxfw: Add support for capture/playback MIDI messages
-  ALSA: oxfw: Add hwdep interface
-
- include/uapi/sound/asound.h            |   3 +-
- include/uapi/sound/firewire.h          |   3 +-
- sound/firewire/Kconfig                 |  10 +-
- sound/firewire/dice/Makefile           |   4 +-
- sound/firewire/dice/dice-midi.c        | 157 ++++++++
- sound/firewire/dice/dice-pcm.c         | 251 +++++++++----
- sound/firewire/dice/dice-stream.c      | 332 ++++++++++++----
- sound/firewire/dice/dice-transaction.c |   5 -
- sound/firewire/dice/dice.c             |  37 +-
- sound/firewire/dice/dice.h             |  33 +-
- sound/firewire/oxfw/Makefile           |   3 +-
- sound/firewire/oxfw/oxfw-command.c     | 153 ++++++++
- sound/firewire/oxfw/oxfw-hwdep.c       | 190 ++++++++++
- sound/firewire/oxfw/oxfw-midi.c        | 207 ++++++++++
- sound/firewire/oxfw/oxfw-pcm.c         | 425 +++++++++++++++------
- sound/firewire/oxfw/oxfw-proc.c        | 113 ++++++
- sound/firewire/oxfw/oxfw-stream.c      | 667 +++++++++++++++++++++++++++++++--
- sound/firewire/oxfw/oxfw.c             | 179 +++++++--
- sound/firewire/oxfw/oxfw.h             | 104 ++++-
- 19 files changed, 2499 insertions(+), 377 deletions(-)
- create mode 100644 sound/firewire/dice/dice-midi.c
- create mode 100644 sound/firewire/oxfw/oxfw-command.c
- create mode 100644 sound/firewire/oxfw/oxfw-hwdep.c
- create mode 100644 sound/firewire/oxfw/oxfw-midi.c
- create mode 100644 sound/firewire/oxfw/oxfw-proc.c
-
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index b9ce026..062b7a3 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -140,6 +140,8 @@ end:
+ static int pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_dice *dice = substream->private_data;
++	unsigned int source, rate;
++	bool internal;
+ 	int err;
+ 
+ 	err = snd_dice_stream_lock_try(dice);
+@@ -149,6 +151,39 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	err = init_hw_info(dice, substream);
+ 	if (err < 0)
+ 		goto err_locked;
++
++	err = snd_dice_transaction_get_clock_source(dice, &source);
++	if (err < 0)
++		goto err_locked;
++	switch (source) {
++	case CLOCK_SOURCE_AES1:
++	case CLOCK_SOURCE_AES2:
++	case CLOCK_SOURCE_AES3:
++	case CLOCK_SOURCE_AES4:
++	case CLOCK_SOURCE_AES_ANY:
++	case CLOCK_SOURCE_ADAT:
++	case CLOCK_SOURCE_TDIF:
++	case CLOCK_SOURCE_WC:
++		internal = false;
++		break;
++	default:
++		internal = true;
++		break;
++	}
++
++	/*
++	 * When source of clock is not internal, available sampling rate is
++	 * limited at current sampling rate.
++	 */
++	if (!internal) {
++		err = snd_dice_transaction_get_rate(dice, &rate);
++		if (err < 0)
++			goto err_locked;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
++	}
++
++	snd_pcm_set_sync(substream);
+ end:
+ 	return err;
+ err_locked:
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index e60b84d..20765a0 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -161,9 +161,29 @@ end:
+ 
+ static int get_sync_mode(struct snd_dice *dice, enum cip_flags *sync_mode)
+ {
+-	/* Currently, clock source is fixed at SYT-Match mode. */
+-	*sync_mode = 0;
+-	return 0;
++	u32 source;
++	int err;
++
++	err = snd_dice_transaction_get_clock_source(dice, &source);
++	if (err < 0)
++		goto end;
++
++	switch (source) {
++	/* So-called 'SYT Match' modes, sync_to_syt value of packets received */
++	case CLOCK_SOURCE_ARX4:	/* in 4th stream */
++	case CLOCK_SOURCE_ARX3:	/* in 3rd stream */
++	case CLOCK_SOURCE_ARX2:	/* in 2nd stream */
++		err = -ENOSYS;
++		break;
++	case CLOCK_SOURCE_ARX1:	/* in 1st stream, which this driver uses */
++		*sync_mode = 0;
++		break;
++	default:
++		*sync_mode = CIP_SYNC_TO_DEVICE;
++		break;
++	}
++end:
++	return err;
+ }
+ 
+ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+@@ -310,15 +330,6 @@ int snd_dice_stream_init_duplex(struct snd_dice *dice)
+ 		goto end;
+ 
+ 	err = init_stream(dice, &dice->rx_stream);
+-	if (err < 0)
+-		goto end;
+-
+-	/* Currently, clock source is fixed at SYT-Match mode. */
+-	err = snd_dice_transaction_set_clock_source(dice, CLOCK_SOURCE_ARX1);
+-	if (err < 0) {
+-		destroy_stream(dice, &dice->rx_stream);
+-		destroy_stream(dice, &dice->tx_stream);
+-	}
+ end:
+ 	return err;
+ }
+diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
+index 1fe304c..aee7461 100644
+--- a/sound/firewire/dice/dice-transaction.c
++++ b/sound/firewire/dice/dice-transaction.c
+@@ -137,11 +137,6 @@ int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
+ 
+ 	return err;
+ }
+-int snd_dice_transaction_set_clock_source(struct snd_dice *dice,
+-					  unsigned int source)
+-{
+-	return set_clock_info(dice, UINT_MAX, source);
+-}
+ 
+ int snd_dice_transaction_get_rate(struct snd_dice *dice, unsigned int *rate)
+ {
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index a62ee22..f30326e 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -152,8 +152,6 @@ static inline int snd_dice_transaction_read_sync(struct snd_dice *dice,
+ 					 buf, len);
+ }
+ 
+-int snd_dice_transaction_set_clock_source(struct snd_dice *dice,
+-					  unsigned int source);
+ int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
+ 					  unsigned int *source);
+ int snd_dice_transaction_set_rate(struct snd_dice *dice, unsigned int rate);
 -- 
 2.1.0
