@@ -1,27 +1,68 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel][PATCH v3] ASoC: wm8960: Let wm8960 codec driver
-	manage its own MCLK
-Date: Mon, 8 Dec 2014 11:57:17 +0000
-Message-ID: <20141208115717.GF14516@opensource.wolfsonmicro.com>
-References: <1417696879-15402-1-git-send-email-b50113@freescale.com> <20141205170156.GB14516@opensource.wolfsonmicro.com> <20141205173932.GN11764@sirena.org.uk> <BN3PR0301MB12511B448B1C0B9E8F0BB6C48D640@BN3PR0301MB1251.namprd03.prod.outlook.com> <20141208111445.GT11764@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai/trivial: typo fix
+Date: Mon, 8 Dec 2014 12:01:13 +0000
+Message-ID: <20141208120113.GU11764@sirena.org.uk>
+References: <1418036309-28695-1-git-send-email-nicolas.ferre@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141208111445.GT11764@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Zidan Wang <B50113@freescale.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "lars@metafoo.de" <lars@metafoo.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============7867277131075352906=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B62EF2608B1
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 13:01:36 +0100 (CET)
+In-Reply-To: <1418036309-28695-1-git-send-email-nicolas.ferre@atmel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: alsa-devel@alsa-project.org, Matthieu Crapet <mcrapet@gmail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 08, 2014 at 11:14:45AM +0000, Mark Brown wrote:
-> On Mon, Dec 08, 2014 at 09:49:51AM +0000, Zidan Wang wrote:
-> > So I should move mclk to wm8960_priv. 
-> > And doing wm8960_priv->mclk = devm_clk_get(&i2c->dev, "codec_mclk") in wm8960_i2c_probe.
-> 
-> Yes, please.
 
-Apologies I totally misread you last email.
+--===============7867277131075352906==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/Rh48Y0bnrojh5Wm"
+Content-Disposition: inline
 
-Thanks,
-Charles
+
+--/Rh48Y0bnrojh5Wm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 08, 2014 at 11:58:29AM +0100, Nicolas Ferre wrote:
+> From: Matthieu Crapet <mcrapet@gmail.com>
+
+Applied, thanks.
+
+--/Rh48Y0bnrojh5Wm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUhZMIAAoJECTWi3JdVIfQbusH/0x+cZrC98fczt8/86qO9gGL
+x/TWHfqbqvg/oQ6qcAuyxHCEDWSSrWlZDHvPQvREmh43HMW7JZJ5yfeuyg9ohFIj
+pncRQv7XsEoy//7yEKKO2K2Wsf5U01z00yWpeXXC2nEnLmtLubX5w6JiKn/xmg0P
+caC0PoU5gaynLhjeWP4qrzUy5lK4kHWZo4o5lopubZ0mB26E64S9pqoVlHP1EPmI
+L5vItQ6AljFwS/uMBeTTIR4VasmuX2E78UBb8nt4l+9S+LvaKYpBEL/u6MbcPey1
+v96owUTuFmLKOgAs0xL6CR+qxS+0vSf6hftEYXKAZ70/vWePUiRCvIAlUB4DqsE=
+=5umh
+-----END PGP SIGNATURE-----
+
+--/Rh48Y0bnrojh5Wm--
+
+--===============7867277131075352906==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7867277131075352906==--
