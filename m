@@ -1,15 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH RFC 1/4] sync asound.h with kernel version
-Date: Mon,  8 Dec 2014 16:28:43 -0600
-Message-ID: <1418077726-8516-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RFC 3/4] pcm: add helper functions to query
+	timestamping capabilities
+Date: Mon,  8 Dec 2014 16:28:45 -0600
+Message-ID: <1418077726-8516-4-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1418077726-8516-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D462265379
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:29:02 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B09FD265382
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:29:04 +0100 (CET)
 In-Reply-To: <1418077726-8516-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,55 +25,104 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+extend support to link, link_estimated and link_synchronized
+timestamp. wall-clock is deprecated
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/asound.h | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ include/pcm.h |  5 ++++-
+ src/pcm/pcm.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 61 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 941d32f..b89ad01 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -266,7 +266,12 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define SNDRV_PCM_INFO_JOINT_DUPLEX	0x00200000	/* playback and capture stream are somewhat correlated */
- #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm support some kind of sync go */
- #define SNDRV_PCM_INFO_NO_PERIOD_WAKEUP	0x00800000	/* period wakeup can be disabled */
--#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* has audio wall clock for audio/system time sync */
+diff --git a/include/pcm.h b/include/pcm.h
+index f963b92..f8c557b 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -684,7 +684,10 @@ int snd_pcm_hw_params_is_half_duplex(const snd_pcm_hw_params_t *params);
+ int snd_pcm_hw_params_is_joint_duplex(const snd_pcm_hw_params_t *params);
+ int snd_pcm_hw_params_can_sync_start(const snd_pcm_hw_params_t *params);
+ int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *params);
+-int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params);
++int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params); /* deprecated */
++int snd_pcm_hw_params_supports_audio_link_ts(const snd_pcm_hw_params_t *params);
++int snd_pcm_hw_params_supports_audio_link_estimated_ts(const snd_pcm_hw_params_t *params);
++int snd_pcm_hw_params_supports_audio_link_synchronized_ts(const snd_pcm_hw_params_t *params);
+ int snd_pcm_hw_params_get_rate_numden(const snd_pcm_hw_params_t *params,
+ 				      unsigned int *rate_num,
+ 				      unsigned int *rate_den);
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index af7d8c9..28a2a4e 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -3190,12 +3190,68 @@ int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *param
+  */
+ int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params)
+ {
++	/* deprecated */
++	return snd_pcm_hw_params_supports_audio_link_ts(params);
++}
 +
-+#define SNDRV_PCM_INFO_HAS_LINK_ATIME   0x01000000      /* report hardware link audio time, reset on startup */
-+#define SNDRV_PCM_INFO_HAS_LINK_ABSOLUTE_ATIME    0x02000000  /* report absolute hardware link audio time, not reset on startup */
-+#define SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME    0x04000000  /* report estimated link audio time */
-+#define SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME 0x08000000  /* report synchronized audio/system time */
-+#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   SNDRV_PCM_INFO_HAS_LINK_ATIME /* deprecated, use LINK_ATIME */
- #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
- 
- typedef int __bitwise snd_pcm_state_t;
-@@ -406,6 +411,15 @@ struct snd_pcm_channel_info {
- 	unsigned int step;		/* samples distance in bits */
- };
- 
-+enum {
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT = 0,           /* DMA time, reported as per hw_ptr */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK = 1,	           /* link time reported by sample or wallclock counter, reset on startup */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_ABSOLUTE = 2,	   /* link time reported by sample or wallclock counter, not reset on startup */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_ESTIMATED = 3,    /* link time estimated indirectly */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED = 4, /* link time synchronized with system time */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LAST = SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED
-+};
++/**
++ * \brief Check if hardware supports audio link timestamps
++ * \param params Configuration space
++ * \retval 0 Hardware doesn't support audio link timestamps
++ * \retval 1 Hardware supports audio link timestamps
++ *
++ * This function should only be called when the configuration space
++ * contains a single configuration. Call #snd_pcm_hw_params to choose
++ * a single configuration from the configuration space.
++ */
++int snd_pcm_hw_params_supports_audio_link_ts(const snd_pcm_hw_params_t *params)
++{
++	assert(params);
++	if (CHECK_SANITY(params->info == ~0U)) {
++		SNDMSG("invalid PCM info field");
++		return 0; /* FIXME: should be a negative error? */
++	}
++	return !!(params->info & SNDRV_PCM_INFO_HAS_LINK_ATIME);
++}
 +
- struct snd_pcm_status {
- 	snd_pcm_state_t state;		/* stream state */
- 	struct timespec trigger_tstamp;	/* time when stream was started/stopped/paused */
-@@ -417,8 +431,8 @@ struct snd_pcm_status {
- 	snd_pcm_uframes_t avail_max;	/* max frames available on hw since last status */
- 	snd_pcm_uframes_t overrange;	/* count of ADC (capture) overrange detections from last status */
- 	snd_pcm_state_t suspended_state; /* suspended stream state */
--	__u32 reserved_alignment;	/* must be filled with zero */
--	struct timespec audio_tstamp;	/* from sample counter or wall clock */
-+	__u32 audio_tstamp_data;	 /* needed for 64-bit alignment, used for configs/report to/from userspace */
-+	struct timespec audio_tstamp;	/* sample counter, wall clock, PHC or on-demand sync'ed */
- 	unsigned char reserved[56-sizeof(struct timespec)]; /* must be filled with zero */
- };
++/**
++ * \brief Check if hardware supports audio link estimated timestamps
++ * \param params Configuration space
++ * \retval 0 Hardware doesn't support audio link estimated timestamps
++ * \retval 1 Hardware supports audio link estimated timestamps
++ *
++ * This function should only be called when the configuration space
++ * contains a single configuration. Call #snd_pcm_hw_params to choose
++ * a single configuration from the configuration space.
++ */
++int snd_pcm_hw_params_supports_audio_link_estimated_ts(const snd_pcm_hw_params_t *params)
++{
++	assert(params);
++	if (CHECK_SANITY(params->info == ~0U)) {
++		SNDMSG("invalid PCM info field");
++		return 0; /* FIXME: should be a negative error? */
++	}
++	return !!(params->info & SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME);
++}
++
++/**
++ * \brief Check if hardware supports audio link synchronized timestamps
++ * \param params Configuration space
++ * \retval 0 Hardware doesn't support audio link synchronized timestamps
++ * \retval 1 Hardware supports audio link synchronized timestamps
++ *
++ * This function should only be called when the configuration space
++ * contains a single configuration. Call #snd_pcm_hw_params to choose
++ * a single configuration from the configuration space.
++ */
++int snd_pcm_hw_params_supports_audio_link_synchronized_ts(const snd_pcm_hw_params_t *params)
++{
+ 	assert(params);
+ 	if (CHECK_SANITY(params->info == ~0U)) {
+ 		SNDMSG("invalid PCM info field");
+ 		return 0; /* FIXME: should be a negative error? */
+ 	}
+-	return !!(params->info & SNDRV_PCM_INFO_HAS_WALL_CLOCK);
++	return !!(params->info & SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME);
+ }
  
+ /**
 -- 
 2.1.0
