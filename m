@@ -1,65 +1,39 @@
-From: Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [alsa-devel] Question on arm64 unaligned faults during playback
-Date: Mon, 8 Dec 2014 12:25:49 +0000
-Message-ID: <20141208122549.GF16185@e104818-lin.cambridge.arm.com>
-References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>
- <54856621.8090107@ladisch.de> <s5hppbumnis.wl-tiwai@suse.de>
- <54858868.70708@metafoo.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 3/3] ARM: edma: Split up header file to platform_data and
+ API file
+Date: Mon, 8 Dec 2014 18:19:17 +0530
+Message-ID: <20141208124917.GI16827@intel.com>
+References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
+ <1417084891-17990-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mmc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <54858868.70708@metafoo.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Abhilash Kesavan <kesavan.abhilash@gmail.com>, "padma.v@samsung.com" <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Will Deacon <Will.Deacon@arm.com>, "b42378@freescale.com" <b42378@freescale.com>, Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "perex@perex.cz" <perex@perex.cz>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <1417084891-17990-4-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, linux@arm.linux.org.uk, nsekhar@ti.com, arnd@arndb.de, khilman@deeprootsystems.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ulf.hansson@linaro.org, chris@printf.net, linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org, linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 08, 2014 at 11:15:52AM +0000, Lars-Peter Clausen wrote:
-> Added ARM64 folks to Cc.
-
-Thanks.
-
-> On 12/08/2014 11:41 AM, Takashi Iwai wrote:
-> > At Mon, 08 Dec 2014 09:49:37 +0100,
-> > Clemens Ladisch wrote:
-> >>
-> >> Abhilash Kesavan wrote:
-> >>> I am working on a 64-bit ARM SoC (Samsung's Exynos7) and have observed
-> >>> unaligned faults while testing certain sound streams with aplay.
-> >>>
-> >>> [   24.535661] snd_pcm_lib_write_transfer:sound/core/pcm_lib.c hwbuf is ffffff8000085624, runtime->dma_area is ffffff8000080000, hwoff is 5513, frames_to_bytes is 22052, frames is 5513
-> >>> [   24.551244] Unhandled fault: alignment fault (0x96000061) at 0xffffff8000085624
-> >>> [   24.579944] PC is at __copy_from_user+0x14/0x60
-> >>> [   24.584450] LR is at snd_pcm_lib_write_transfer+0xe4/0x104
-> >>> [   24.922054] Call trace:
-> >>> [   24.924488] [<ffffffc0002d4784>] __copy_from_user+0x14/0x60
-> >>> [   24.930040] [<ffffffc0004b7574>] snd_pcm_lib_write1+0x1fc/0x384
-
-I can see copy_from_user() here, I assume the source is a user space
-buffer and the destination is the ioremap'ed SRAM (which causes the
-unaligned fault). Such function is not supposed copy into device memory
-(its prototype does not specify __iomem for the destination pointer).
-
-If you really want Device memory for the SRAM, I think we need some
-other API. memcpy_toio() could copy into such buffer but the source must
-be kernel. Maybe something like copy_from_user_toio()?
-
-Otherwise, if you can remap the buffer as Normal (non-cacheable) memory,
-you could use something like vmap() with pgprot_writecombine for the
-mapping. Even though ioremap_wc() returns (currently) Normal
-non-cacheable memory, such pointer (__iomem) should only be used with
-specific IO accessors (though I can see this assumption broken in a few
-places in the kernel).
+On Thu, Nov 27, 2014 at 12:41:31PM +0200, Peter Ujfalusi wrote:
+> include/linux/platform_data/ is not a correct place to keep the API
+> definitions for edma, it is meant to be only for the pdata for the device.
+> Clean up this by moving the API to include/linux/edma.h
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  arch/arm/common/edma.c                     |   3 +-
+>  arch/arm/mach-davinci/devices.c            |   1 +
+>  arch/arm/mach-davinci/include/mach/da8xx.h |   1 +
+>  drivers/dma/edma.c                         |   2 +-
+>  include/linux/edma.h                       | 153 +++++++++++++++++++++++++++++
+>  include/linux/platform_data/edma.h         | 148 ++--------------------------
+>  sound/soc/davinci/davinci-pcm.h            |   1 +
+>  7 files changed, 165 insertions(+), 144 deletions(-)
+>  create mode 100644 include/linux/edma.h
+I was hoping that this will have delete for platform_data/edma.h, do we
+still need that and why shouldn't we get rid of this :)
 
 -- 
-Catalin
+~Vinod
+
