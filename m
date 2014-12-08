@@ -1,145 +1,106 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH 2/5] drm/i915: add component support
-Date: Mon, 08 Dec 2014 20:44:04 +0200
-Message-ID: <87388qkmmj.fsf@intel.com>
-References: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
- <1418056929-7977-3-git-send-email-imre.deak@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: I2S frame configuration
+Date: Mon, 08 Dec 2014 20:37:58 +0100
+Message-ID: <5485FE16.1040005@metafoo.de>
+References: <5485C5CA.8030402@gmail.com> <5485D96C.3020900@ladisch.de>
+ <5485E7E5.7020406@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1418056929-7977-3-git-send-email-imre.deak@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Imre Deak <imre.deak@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-158.synserver.de (smtp-out-158.synserver.de
+ [212.40.185.158])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21E7326049B
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 20:38:02 +0100 (CET)
+In-Reply-To: <5485E7E5.7020406@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: thomas chen <tchen61@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAwOCBEZWMgMjAxNCwgSW1yZSBEZWFrIDxpbXJlLmRlYWtAaW50ZWwuY29tPiB3cm90
-ZToKPiBSZWdpc3RlciBhIGNvbXBvbmVudCBtYXN0ZXIgdG8gYmUgdXNlZCB0byBpbnRlcmZhY2Ug
-d2l0aCB0aGUKPiBzbmRfaGRhX2ludGVsIGRyaXZlci4gVGhpcyBpcyBtZWFudCB0byByZXBsYWNl
-IHRoZSBzYW1lIGludGVyZmFjZSB0aGF0Cj4gaXMgY3VycmVudGx5IGJhc2VkIG9uIG1vZHVsZSBz
-eW1ib2wgbG9va3VwLgoKSSB0aGluayBJJ2QgYWRkIGEgd2hvbGUgbmV3IGludGVsX2NvbXBvbmVu
-dC5jIGZpbGUgZm9yIHRoaXMuCgo+Cj4gU2lnbmVkLW9mZi1ieTogSW1yZSBEZWFrIDxpbXJlLmRl
-YWtAaW50ZWwuY29tPgo+IC0tLQo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2RtYS5jIHwg
-ODAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgaW5jbHVkZS9k
-cm0vaTkxNV9jb21wb25lbnQuaCAgICB8IDM4ICsrKysrKysrKysrKysrKysrKysrCj4gIDIgZmls
-ZXMgY2hhbmdlZCwgMTE4IGluc2VydGlvbnMoKykKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1
-ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0v
-aTkxNS9pOTE1X2RtYS5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kbWEuYwo+IGluZGV4
-IDg4N2Q4OGYuLjZlMGYzYmUgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkx
-NV9kbWEuYwo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZG1hLmMKPiBAQCAtMzUs
-NiArMzUsOCBAQAo+ICAjaW5jbHVkZSA8ZHJtL2RybV9sZWdhY3kuaD4KPiAgI2luY2x1ZGUgImlu
-dGVsX2Rydi5oIgo+ICAjaW5jbHVkZSA8ZHJtL2k5MTVfZHJtLmg+Cj4gKyNpbmNsdWRlIDxsaW51
-eC9jb21wb25lbnQuaD4KPiArI2luY2x1ZGUgPGRybS9pOTE1X2NvbXBvbmVudC5oPgo+ICAjaW5j
-bHVkZSAiaTkxNV9kcnYuaCIKPiAgI2luY2x1ZGUgImk5MTVfdHJhY2UuaCIKPiAgI2luY2x1ZGUg
-PGxpbnV4L3BjaS5oPgo+IEBAIC02MDAsNiArNjAyLDgwIEBAIHN0YXRpYyB2b2lkIGludGVsX2Rl
-dmljZV9pbmZvX3J1bnRpbWVfaW5pdChzdHJ1Y3QgZHJtX2RldmljZSAqZGV2KQo+ICAJfQo+ICB9
-Cj4gIAo+ICtzdGF0aWMgdm9pZCBpOTE1X2NvbXBvbmVudF9nZXRfcG93ZXIoc3RydWN0IGRldmlj
-ZSAqZGV2KQo+ICt7Cj4gKwlpbnRlbF9kaXNwbGF5X3Bvd2VyX2dldChkZXZfdG9faTkxNV9wcml2
-KGRldiksIFBPV0VSX0RPTUFJTl9BVURJTyk7Cj4gK30KPiArCj4gK3N0YXRpYyB2b2lkIGk5MTVf
-Y29tcG9uZW50X3B1dF9wb3dlcihzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gK3sKPiArCWludGVsX2Rp
-c3BsYXlfcG93ZXJfcHV0KGRldl90b19pOTE1X3ByaXYoZGV2KSwgUE9XRVJfRE9NQUlOX0FVRElP
-KTsKPiArfQo+ICsKPiArLyogR2V0IENEQ0xLIGluIGtIeiAgKi8KPiArc3RhdGljIGludCBpOTE1
-X2NvbXBvbmVudF9nZXRfY2RjbGtfZnJlcShzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gK3sKPiArCXN0
-cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiA9IGRldl90b19pOTE1X3ByaXYoZGV2KTsK
-PiArCWludCByZXQ7Cj4gKwo+ICsJaWYgKFdBUk5fT05fT05DRSghSEFTX0RESShkZXZfcHJpdikp
-KQo+ICsJCXJldHVybiAtRU5PREVWOwo+ICsKPiArCWludGVsX2Rpc3BsYXlfcG93ZXJfZ2V0KGRl
-dl9wcml2LCBQT1dFUl9ET01BSU5fQVVESU8pOwo+ICsJcmV0ID0gaW50ZWxfZGRpX2dldF9jZGNs
-a19mcmVxKGRldl9wcml2KTsKPiArCWludGVsX2Rpc3BsYXlfcG93ZXJfcHV0KGRldl9wcml2LCBQ
-T1dFUl9ET01BSU5fQVVESU8pOwo+ICsKPiArCXJldHVybiByZXQ7Cj4gK30KPiArCj4gK3N0YXRp
-YyBzdHJ1Y3QgaTkxNV9jb21wb25lbnRfb3BzIGNvbXBvbmVudF9vcHMgPSB7Cj4gKwkub3duZXIJ
-CT0gVEhJU19NT0RVTEUsCj4gKwkuZ2V0X3Bvd2VyCT0gaTkxNV9jb21wb25lbnRfZ2V0X3Bvd2Vy
-LAo+ICsJLnB1dF9wb3dlcgk9IGk5MTVfY29tcG9uZW50X3B1dF9wb3dlciwKPiArCS5nZXRfY2Rj
-bGsJPSBpOTE1X2NvbXBvbmVudF9nZXRfY2RjbGtfZnJlcSwKCk9rYXksIEknbSB0aGlua2luZyBv
-bmUgc3RlcCBhaGVhZCwgYnV0IEknbSBub3QgZmFtaWxpYXIgd2l0aCB0aGUKY29tcG9uZW50IGRy
-aXZlciBzdHVmZiB5ZXQuIENvdWxkIHdlIHVzZSB0aGUgc2FtZSBjb21wb25lbnQgbW9kZWwgZm9y
-CmNvbW11bmljYXRpbmcgd2l0aCwgc2F5LCB0aGUgcG1pYyBkcml2ZXIgaW4gdGhlIGZ1dHVyZT8g
-U2hvdWxkIHdlIHVzZQp0aGUgc2FtZSBjb21wb25lbnQgb3BzLCBvciBhZGQgYW5vdGhlciBvbmU/
-IElmIHRoZSBzYW1lLCB0aGVuIHRoZXkncmUKYWxsIGluIHRoZSBzYW1lICJuYW1lc3BhY2UiLCBh
-bmQgSSB0aGluayB3ZSBzaG91bGQgdXNlIHNvbWV0aGluZyBtb3JlCnNwZWNpZmljIHRoYW4ganVz
-dCBnZXRfcG93ZXIgYW5kIHB1dF9wb3dlci4KCihUaGUgbWFzdGVyL3NsYXZlIHJlbGF0aW9uc2hp
-cCBtYXkgYmUgdGhlIG90aGVyIHdheSByb3VuZCB3aXRoIHRoZSBwbWljCmRyaXZlciBJIGd1ZXNz
-LiBCdXQgbm9uZXRoZWxlc3MsIHdlIHNob3VsZCB0aGluayBhYm91dCByZXVzaW5nIHRoaXMuKQoK
-PiArfTsKPiArCj4gK3N0YXRpYyBpbnQgaTkxNV9jb21wb25lbnRfbWFzdGVyX2JpbmQoc3RydWN0
-IGRldmljZSAqZGV2KQo+ICt7Cj4gKwlyZXR1cm4gY29tcG9uZW50X2JpbmRfYWxsKGRldiwgJmNv
-bXBvbmVudF9vcHMpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgdm9pZCBpOTE1X2NvbXBvbmVudF9tYXN0
-ZXJfdW5iaW5kKHN0cnVjdCBkZXZpY2UgKmRldikKPiArewo+ICsJcmV0dXJuIGNvbXBvbmVudF91
-bmJpbmRfYWxsKGRldiwgJmNvbXBvbmVudF9vcHMpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgY29uc3Qg
-c3RydWN0IGNvbXBvbmVudF9tYXN0ZXJfb3BzIGk5MTVfY29tcG9uZW50X21hc3Rlcl9vcHMgPSB7
-Cj4gKwkuYmluZAk9IGk5MTVfY29tcG9uZW50X21hc3Rlcl9iaW5kLAo+ICsJLnVuYmluZAk9IGk5
-MTVfY29tcG9uZW50X21hc3Rlcl91bmJpbmQsCj4gK307Cj4gKwo+ICtzdGF0aWMgaW50IGk5MTVf
-Y29tcG9uZW50X21hc3Rlcl9tYXRjaChzdHJ1Y3QgZGV2aWNlICpkZXYsIHZvaWQgKmRhdGEpCj4g
-K3sKPiArCS8qIHNuZF9oZGFfaW50ZWwgaXMgdGhlIG9ubHkgc3VwcG9ydGVkIGNvbXBvbmVudCAq
-Lwo+ICsJcmV0dXJuICFzdHJjbXAoZGV2LT5kcml2ZXItPm5hbWUsICJzbmRfaGRhX2ludGVsIik7
-Cj4gK30KPiArCj4gK3N0YXRpYyB2b2lkIGk5MTVfY29tcG9uZW50X21hc3Rlcl9pbml0KHN0cnVj
-dCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPiArewo+ICsJc3RydWN0IGRldmljZSAqZGV2
-ID0gZGV2X3ByaXYtPmRldi0+ZGV2Owo+ICsJc3RydWN0IGNvbXBvbmVudF9tYXRjaCAqbWF0Y2gg
-PSBOVUxMOwo+ICsJaW50IHJldDsKPiArCj4gKwljb21wb25lbnRfbWF0Y2hfYWRkKGRldiwgJm1h
-dGNoLCBpOTE1X2NvbXBvbmVudF9tYXN0ZXJfbWF0Y2gsIE5VTEwpOwo+ICsJcmV0ID0gY29tcG9u
-ZW50X21hc3Rlcl9hZGRfd2l0aF9tYXRjaChkZXYsICZpOTE1X2NvbXBvbmVudF9tYXN0ZXJfb3Bz
-LAo+ICsJCQkJCSAgICAgIG1hdGNoKTsKPiArCWlmIChyZXQgPCAwKQo+ICsJCURSTV9FUlJPUigi
-ZmFpbGVkIHRvIGFkZCBjb21wb25lbnQgbWFzdGVyICglZClcbiIsIHJldCk7Cj4gKwkvKiBjb250
-aW51ZSB3aXRoIHJlZHVjZWQgZnVuY3Rpb25hbGl0eSAqLwo+ICt9Cj4gKwo+ICtzdGF0aWMgdm9p
-ZCBpOTE1X2NvbXBvbmVudF9tYXN0ZXJfY2xlYW51cChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAq
-ZGV2X3ByaXYpCj4gK3sKPiArCS8qIHRoZSBmb2xsb3dpbmcgaXMgb2sgdG8gY2FsbCBldmVuIGlm
-IGNvbXBvbmVudF9tYXN0ZXJfYWRkIGZhaWxlZCAqLwo+ICsJY29tcG9uZW50X21hc3Rlcl9kZWwo
-ZGV2X3ByaXYtPmRldi0+ZGV2LCAmaTkxNV9jb21wb25lbnRfbWFzdGVyX29wcyk7Cj4gK30KPiAr
-Cj4gIC8qKgo+ICAgKiBpOTE1X2RyaXZlcl9sb2FkIC0gc2V0dXAgY2hpcCBhbmQgY3JlYXRlIGFu
-IGluaXRpYWwgY29uZmlnCj4gICAqIEBkZXY6IERSTSBkZXZpY2UKPiBAQCAtODMwLDYgKzkwNiw4
-IEBAIGludCBpOTE1X2RyaXZlcl9sb2FkKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsIHVuc2lnbmVk
-IGxvbmcgZmxhZ3MpCj4gIAo+ICAJaW50ZWxfcnVudGltZV9wbV9lbmFibGUoZGV2X3ByaXYpOwo+
-ICAKPiArCWk5MTVfY29tcG9uZW50X21hc3Rlcl9pbml0KGRldl9wcml2KTsKPiArCj4gIAlyZXR1
-cm4gMDsKPiAgCj4gIG91dF9wb3dlcl93ZWxsOgo+IEBAIC04NzAsNiArOTQ4LDggQEAgaW50IGk5
-MTVfZHJpdmVyX3VubG9hZChzdHJ1Y3QgZHJtX2RldmljZSAqZGV2KQo+ICAJc3RydWN0IGRybV9p
-OTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZGV2LT5kZXZfcHJpdmF0ZTsKPiAgCWludCByZXQ7Cj4g
-IAo+ICsJaTkxNV9jb21wb25lbnRfbWFzdGVyX2NsZWFudXAoZGV2X3ByaXYpOwo+ICsKPiAgCXJl
-dCA9IGk5MTVfZ2VtX3N1c3BlbmQoZGV2KTsKPiAgCWlmIChyZXQpIHsKPiAgCQlEUk1fRVJST1Io
-ImZhaWxlZCB0byBpZGxlIGhhcmR3YXJlOiAlZFxuIiwgcmV0KTsKPiBkaWZmIC0tZ2l0IGEvaW5j
-bHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaCBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgK
-PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAuLjQ0NTQyYzIKPiAtLS0gL2Rl
-di9udWxsCj4gKysrIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+IEBAIC0wLDAgKzEs
-MzggQEAKPiArLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqCj4gKyAqCj4gKyAqIENvcHlyaWdodCAyMDE0IElu
-dGVsIEluYy4KPiArICogQWxsIFJpZ2h0cyBSZXNlcnZlZC4KPiArICoKPiArICogUGVybWlzc2lv
-biBpcyBoZXJlYnkgZ3JhbnRlZCwgZnJlZSBvZiBjaGFyZ2UsIHRvIGFueSBwZXJzb24gb2J0YWlu
-aW5nIGEKPiArICogY29weSBvZiB0aGlzIHNvZnR3YXJlIGFuZCBhc3NvY2lhdGVkIGRvY3VtZW50
-YXRpb24gZmlsZXMgKHRoZQo+ICsgKiAiU29mdHdhcmUiKSwgdG8gZGVhbCBpbiB0aGUgU29mdHdh
-cmUgd2l0aG91dCByZXN0cmljdGlvbiwgaW5jbHVkaW5nCj4gKyAqIHdpdGhvdXQgbGltaXRhdGlv
-biB0aGUgcmlnaHRzIHRvIHVzZSwgY29weSwgbW9kaWZ5LCBtZXJnZSwgcHVibGlzaCwKPiArICog
-ZGlzdHJpYnV0ZSwgc3ViIGxpY2Vuc2UsIGFuZC9vciBzZWxsIGNvcGllcyBvZiB0aGUgU29mdHdh
-cmUsIGFuZCB0bwo+ICsgKiBwZXJtaXQgcGVyc29ucyB0byB3aG9tIHRoZSBTb2Z0d2FyZSBpcyBm
-dXJuaXNoZWQgdG8gZG8gc28sIHN1YmplY3QgdG8KPiArICogdGhlIGZvbGxvd2luZyBjb25kaXRp
-b25zOgo+ICsgKgo+ICsgKiBUaGUgYWJvdmUgY29weXJpZ2h0IG5vdGljZSBhbmQgdGhpcyBwZXJt
-aXNzaW9uIG5vdGljZSAoaW5jbHVkaW5nIHRoZQo+ICsgKiBuZXh0IHBhcmFncmFwaCkgc2hhbGwg
-YmUgaW5jbHVkZWQgaW4gYWxsIGNvcGllcyBvciBzdWJzdGFudGlhbCBwb3J0aW9ucwo+ICsgKiBv
-ZiB0aGUgU29mdHdhcmUuCj4gKyAqCj4gKyAqIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURFRCAiQVMg
-SVMiLCBXSVRIT1VUIFdBUlJBTlRZIE9GIEFOWSBLSU5ELCBFWFBSRVNTIE9SCj4gKyAqIElNUExJ
-RUQsIElOQ0xVRElORyBCVVQgTk9UIExJTUlURUQgVE8gVEhFIFdBUlJBTlRJRVMgT0YgTUVSQ0hB
-TlRBQklMSVRZLAo+ICsgKiBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRSBBTkQgTk9O
-LUlORlJJTkdFTUVOVC4gSU4gTk8gRVZFTlQgU0hBTEwKPiArICogVEhFIENPUFlSSUdIVCBIT0xE
-RVJTLCBBVVRIT1JTIEFORC9PUiBJVFMgU1VQUExJRVJTIEJFIExJQUJMRSBGT1IgQU5ZIENMQUlN
-LAo+ICsgKiBEQU1BR0VTIE9SIE9USEVSIExJQUJJTElUWSwgV0hFVEhFUiBJTiBBTiBBQ1RJT04g
-T0YgQ09OVFJBQ1QsIFRPUlQgT1IKPiArICogT1RIRVJXSVNFLCBBUklTSU5HIEZST00sIE9VVCBP
-RiBPUiBJTiBDT05ORUNUSU9OIFdJVEggVEhFIFNPRlRXQVJFIE9SIFRIRQo+ICsgKiBVU0UgT1Ig
-T1RIRVIgREVBTElOR1MgSU4gVEhFIFNPRlRXQVJFLgo+ICsgKgo+ICsgKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KiovCj4gKwo+ICsjaWZuZGVmIF9JOTE1X0NPTVBPTkVOVF9IXwo+ICsjZGVmaW5lIF9JOTE1X0NP
-TVBPTkVOVF9IXwo+ICsKPiArc3RydWN0IGk5MTVfY29tcG9uZW50X29wcyB7Cj4gKwlzdHJ1Y3Qg
-bW9kdWxlICpvd25lcjsKPiArCXZvaWQgKCpnZXRfcG93ZXIpKHN0cnVjdCBkZXZpY2UgKik7Cj4g
-Kwl2b2lkICgqcHV0X3Bvd2VyKShzdHJ1Y3QgZGV2aWNlICopOwo+ICsJaW50ICgqZ2V0X2NkY2xr
-KShzdHJ1Y3QgZGV2aWNlICopOwo+ICt9Owo+ICsKPiArI2VuZGlmCQkJCS8qIF9JOTE1X0NPTVBP
-TkVOVF9IXyAqLwo+IC0tIAo+IDEuOC40Cj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwo+IEludGVsLWdmeCBtYWlsaW5nIGxpc3QKPiBJbnRlbC1nZnhA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2ludGVsLWdmeAoKLS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJj
-ZSBUZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2lu
-dGVsLWdmeAo=
+On 12/08/2014 07:03 PM, thomas chen wrote:
+>
+> Thanks for the info... so it is possible for Asoc to handle such format...
+
+Yes, its not a special format, it is just plain and simple I2S like it is =
+
+supported by the majority of all drivers/devices.
+
+>
+> So where does one specify number of bits in a FRAME/WORD (epsecially if we
+> were to be master instead of slave ?)
+
+That's typically specified in the format that is used, e.g. in your case =
+
+SNDRV_PCM_FORMAT_S24_3LE. This is not necessarily ideal for all cases, but =
+
+has work well enough so far.
+
+>
+> and, how does one specify number of bits to ignore (before the valid data)
+
+There are no bits to ignore the valid data. I2S has a delay of 1 bit clock =
+
+cycle between the first bit of the sample and the frame sync signal. So the =
+
+data bit that is transmitted on the same clock cycle as the frame sync is =
+
+actually the last bit of the previous sample. So in your case your sample =
+
+has 16 valid bits followed by 8 ignored bits.
+
+>
+> and also how many valid bits (ie size of data word) ???
+
+You can set a snd_pcm_hw_constraint_msbits() constraint to tell userspace =
+
+that only a certain amount of bits are actually going to be used.
+
+If you are using ASoC you can do this by setting the sig_bits property on =
+
+your snd_soc_dai_driver.
+
+- Lars
+
+>
+> Thanks...
+>
+>
+>
+>
+> On 12/8/2014 12:01 PM, Clemens Ladisch wrote:
+>> thomas chen wrote:
+>>> I am working on a ALSA interface to a particular codec over I2S
+>>>
+>>> the audio stream format is a bit peculiar...
+>>>
+>>> there are 24 BCLK cycle between transition of FSYNC...   howver, there
+>>> are only 16 bit that are valid
+>>>
+>>> bit 0: ignore
+>>> bit 1-16:   valid pcm data (MSB....LSB)
+>>> bit 17-23: ignore
+>> This is the 'original' I=B2S format.  The format where the sample begins
+>> with the 1st BCLK usually is called left-justified (and uses the
+>> opposite FSYNC polarity).
+>>
+>> Having ignored bits is common.  (Typically, there are 32 BCLK cycles per
+>> sample.)
+>>
+>> In ASoC, this would be SND_SOC_DAIFMT_I2S and SND_SOC_DAIFMT_LEFT_J.
+>>
+>>
+>> Regards,
+>> Clemens
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
