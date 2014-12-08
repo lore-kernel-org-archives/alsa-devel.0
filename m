@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/15] ALSA: oxfw: Change the way to start
-	stream
-Date: Tue,  9 Dec 2014 00:10:44 +0900
-Message-ID: <1418051449-18371-11-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 13/15] ALSA: oxfw: add support for capturing
+	PCM samples
+Date: Tue,  9 Dec 2014 00:10:47 +0900
+Message-ID: <1418051449-18371-14-git-send-email-o-takashi@sakamocchi.jp>
 References: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 84C0F260675
+ by alsa0.perex.cz (Postfix) with ESMTP id BED2B2612D0
  for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 16:11:01 +0100 (CET)
 In-Reply-To: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,286 +25,307 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In past commit, this driver can keep stream formations for each sampling
-rate. So its stream functionality can decide stream formations with given
-some parameters.
+In previous commit, a support for transmitted packets is added. This commit
+add a support for capturing PCM samples.
 
-This commit moves related codes from PCM functionality to stream
-functionality. Furthermore, to set stream format correctly, this commit
-uses AV/C Stream Format Information command instead of AV/C Input/Output
-Plug Signal Format command.
+When any streams are already started, this driver should not change sampling
+rate of the device, thus this commit also adds a restriction of sampling rate
+in this situation.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-pcm.c    |  44 ++----------
- sound/firewire/oxfw/oxfw-stream.c | 139 +++++++++++++++++++++++++++++++++++---
- sound/firewire/oxfw/oxfw.h        |   3 +-
- 3 files changed, 138 insertions(+), 48 deletions(-)
+ sound/firewire/oxfw/oxfw-pcm.c | 200 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 180 insertions(+), 20 deletions(-)
 
 diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
-index 0c0be98..ea2b439 100644
+index a78339c..e84fc9c 100644
 --- a/sound/firewire/oxfw/oxfw-pcm.c
 +++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -166,39 +166,10 @@ static int pcm_hw_params(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *hw_params)
- {
- 	struct snd_oxfw *oxfw = substream->private_data;
--	int err;
--
--	mutex_lock(&oxfw->mutex);
--
--	snd_oxfw_stream_stop_simplex(oxfw);
--
--	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
--					       params_buffer_bytes(hw_params));
--	if (err < 0)
--		goto error;
--
--	amdtp_stream_set_parameters(&oxfw->rx_stream,
--				    params_rate(hw_params),
--				    params_channels(hw_params),
--				    0);
--
--	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
--				    params_format(hw_params));
--
--	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
--				      AVC_GENERAL_PLUG_DIR_IN, 0);
--	if (err < 0) {
--		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
--		goto err_buffer;
--	}
- 
--	return 0;
--
--err_buffer:
--	snd_pcm_lib_free_vmalloc_buffer(substream);
--error:
--	mutex_unlock(&oxfw->mutex);
--	return err;
-+	amdtp_stream_set_pcm_format(&oxfw->rx_stream, params_format(hw_params));
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
+@@ -118,21 +118,31 @@ static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
+ 	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
  }
  
- static int pcm_hw_free(struct snd_pcm_substream *substream)
-@@ -215,19 +186,18 @@ static int pcm_hw_free(struct snd_pcm_substream *substream)
- static int pcm_prepare(struct snd_pcm_substream *substream)
+-static int pcm_open(struct snd_pcm_substream *substream)
++static int init_hw_params(struct snd_oxfw *oxfw,
++			  struct snd_pcm_substream *substream)
  {
- 	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 
- 	mutex_lock(&oxfw->mutex);
--
--	snd_oxfw_stream_stop_simplex(oxfw);
--
--	err = snd_oxfw_stream_start_simplex(oxfw);
-+	err = snd_oxfw_stream_start_simplex(oxfw, runtime->rate,
-+					    runtime->channels);
-+	mutex_unlock(&oxfw->mutex);
- 	if (err < 0)
- 		goto end;
- 
- 	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
- end:
--	mutex_unlock(&oxfw->mutex);
- 	return err;
- }
- 
-diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index 210bf5a..1820497 100644
---- a/sound/firewire/oxfw/oxfw-stream.c
-+++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -7,8 +7,10 @@
-  */
- 
- #include "oxfw.h"
-+#include <linux/delay.h>
- 
- #define AVC_GENERIC_FRAME_MAXIMUM_BYTES	512
-+#define CALLBACK_TIMEOUT	200
- 
- /*
-  * According to datasheet of Oxford Semiconductor:
-@@ -37,6 +39,47 @@ static const unsigned int avc_stream_rate_table[] = {
- 	[5] = 0x07,
- };
- 
-+static int set_stream_format(struct snd_oxfw *oxfw, struct amdtp_stream *s,
-+			     unsigned int rate, unsigned int pcm_channels)
-+{
-+	u8 **formats;
-+	struct snd_oxfw_stream_formation formation;
-+	enum avc_general_plug_dir dir;
-+	unsigned int i, err, len;
-+
-+	formats = oxfw->rx_stream_formats;
-+	dir = AVC_GENERAL_PLUG_DIR_IN;
-+
-+	/* Seek stream format for requirements. */
-+	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
-+		err = snd_oxfw_stream_parse_format(formats[i], &formation);
-+		if (err < 0)
-+			return err;
-+
-+		if ((formation.rate == rate) && (formation.pcm == pcm_channels))
-+			break;
-+	}
-+	if (i == SND_OXFW_STREAM_FORMAT_ENTRIES)
-+		return -EINVAL;
-+
-+	/* If assumed, just change rate. */
-+	if (oxfw->assumed)
-+		return avc_general_set_sig_fmt(oxfw->unit, rate,
-+					       AVC_GENERAL_PLUG_DIR_IN, 0);
-+
-+	/* Calculate format length. */
-+	len = 5 + formats[i][4] * 2;
-+
-+	err = avc_stream_set_format(oxfw->unit, dir, 0, formats[i], len);
-+	if (err < 0)
-+		return err;
-+
-+	/* Some requests just after changing format causes freezing. */
-+	msleep(100);
-+
-+	return 0;
-+}
-+
- int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw)
- {
- 	int err;
-@@ -63,30 +106,106 @@ static void stop_stream(struct snd_oxfw *oxfw)
- 	cmp_connection_break(&oxfw->in_conn);
- }
- 
--int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw)
-+static int start_stream(struct snd_oxfw *oxfw, unsigned int rate,
-+			unsigned int pcm_channels)
- {
--	int err = 0;
-+	u8 **formats;
-+	struct cmp_connection *conn;
-+	struct snd_oxfw_stream_formation formation;
-+	unsigned int i, midi_ports;
+-	struct snd_oxfw *oxfw = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	u8 **formats;
 +	struct amdtp_stream *stream;
-+	int err;
+ 	int err;
  
--	if (amdtp_streaming_error(&oxfw->rx_stream))
--		stop_stream(oxfw);
-+	stream = &oxfw->rx_stream;
-+	formats = oxfw->rx_stream_formats;
-+	conn = &oxfw->in_conn;
+-	formats = oxfw->rx_stream_formats;
+-
+ 	runtime->hw.info = SNDRV_PCM_INFO_BATCH |
+ 			   SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 			   SNDRV_PCM_INFO_INTERLEAVED |
++			   SNDRV_PCM_INFO_JOINT_DUPLEX |
+ 			   SNDRV_PCM_INFO_MMAP |
+ 			   SNDRV_PCM_INFO_MMAP_VALID;
  
--	if (amdtp_stream_running(&oxfw->rx_stream))
-+	/* Get stream formation */
-+	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
-+		if (formats[i] == NULL)
-+			break;
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
++		stream = &oxfw->tx_stream;
++		formats = oxfw->tx_stream_formats;
++	} else {
++		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		stream = &oxfw->rx_stream;
++		formats = oxfw->rx_stream_formats;
++	}
 +
-+		err = snd_oxfw_stream_parse_format(formats[i], &formation);
-+		if (err < 0)
-+			goto end;
-+		if (rate != formation.rate)
-+			continue;
-+		if (pcm_channels == 0 ||  pcm_channels == formation.pcm)
-+			break;
-+	}
-+	if (i == SND_OXFW_STREAM_FORMAT_ENTRIES) {
-+		err = -EINVAL;
- 		goto end;
-+	}
+ 	limit_channels_and_rates(&runtime->hw, formats);
+ 	limit_period_and_buffer(&runtime->hw);
  
--	err = cmp_connection_establish(&oxfw->in_conn,
--			amdtp_stream_get_max_payload(&oxfw->rx_stream));
-+	pcm_channels = formation.pcm;
-+	midi_ports = DIV_ROUND_UP(formation.midi, 8);
-+
-+	/* The stream should have one pcm channels at least */
-+	if (pcm_channels == 0) {
-+		err = -EINVAL;
-+		goto end;
-+	}
-+	amdtp_stream_set_parameters(stream, rate, pcm_channels, midi_ports);
-+
-+	err = cmp_connection_establish(conn,
-+				       amdtp_stream_get_max_payload(stream));
+@@ -148,10 +158,55 @@ static int pcm_open(struct snd_pcm_substream *substream)
  	if (err < 0)
  		goto end;
  
--	err = amdtp_stream_start(&oxfw->rx_stream,
--				 oxfw->in_conn.resources.channel,
--				 oxfw->in_conn.speed);
-+	err = amdtp_stream_start(stream,
-+				 conn->resources.channel,
-+				 conn->speed);
-+	if (err < 0) {
-+		cmp_connection_break(conn);
-+		goto end;
-+	}
-+
-+	/* Wait first packet */
-+	err = amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT);
- 	if (err < 0)
- 		stop_stream(oxfw);
- end:
- 	return err;
- }
- 
-+int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw, unsigned int rate,
-+				  unsigned int pcm_channels)
-+{
-+	struct snd_oxfw_stream_formation formation;
-+	int err = 0;
-+
-+	/* packet queueing error */
-+	if (amdtp_streaming_error(&oxfw->rx_stream))
-+		stop_stream(oxfw);
-+
-+	err = snd_oxfw_stream_get_current_formation(oxfw,
-+						    AVC_GENERAL_PLUG_DIR_IN,
-+						    &formation);
-+	if (err < 0)
-+		goto end;
-+
-+	if ((formation.rate != rate) || (formation.pcm != pcm_channels)) {
-+		stop_stream(oxfw);
-+
-+		/* arrange sampling rate */
-+		err = set_stream_format(oxfw, &oxfw->rx_stream, rate,
-+					pcm_channels);
-+		if (err < 0) {
-+			dev_err(&oxfw->unit->device,
-+				"fail to set stream format: %d\n", err);
-+			goto end;
-+		}
-+	}
-+
-+	err = start_stream(oxfw, rate, pcm_channels);
-+	if (err < 0)
-+		dev_err(&oxfw->unit->device,
-+			"fail to start stream: %d\n", err);
+-	err = amdtp_stream_add_pcm_hw_constraints(&oxfw->rx_stream, runtime);
++	err = amdtp_stream_add_pcm_hw_constraints(stream, runtime);
 +end:
 +	return err;
 +}
 +
- void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw)
- {
- 	stop_stream(oxfw);
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 8c832ea..c09ef38 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -89,7 +89,8 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
- 				unsigned short pid);
++static int limit_to_current_params(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_oxfw_stream_formation formation;
++	enum avc_general_plug_dir dir;
++	int err;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		dir = AVC_GENERAL_PLUG_DIR_OUT;
++	else
++		dir = AVC_GENERAL_PLUG_DIR_IN;
++
++	err = snd_oxfw_stream_get_current_formation(oxfw, dir, &formation);
++	if (err < 0)
++		goto end;
++
++	substream->runtime->hw.channels_min = formation.pcm;
++	substream->runtime->hw.channels_max = formation.pcm;
++	substream->runtime->hw.rate_min = formation.rate;
++	substream->runtime->hw.rate_max = formation.rate;
++end:
++	return err;
++}
++
++static int pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	int err;
++
++	err = init_hw_params(oxfw, substream);
+ 	if (err < 0)
+ 		goto end;
  
- int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
--int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
-+int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw, unsigned int rate,
-+				  unsigned int pcm_channels);
- void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
++	/*
++	 * When any PCM streams are already running, the available sampling
++	 * rate is limited at current value.
++	 */
++	if (amdtp_stream_pcm_running(&oxfw->tx_stream) ||
++	    amdtp_stream_pcm_running(&oxfw->rx_stream)) {
++		err = limit_to_current_params(substream);
++		if (err < 0)
++			goto end;
++	}
++
+ 	snd_pcm_set_sync(substream);
+ end:
+ 	return err;
+@@ -162,28 +217,89 @@ static int pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int pcm_hw_params(struct snd_pcm_substream *substream,
+-			 struct snd_pcm_hw_params *hw_params)
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&oxfw->mutex);
++		oxfw->capture_substreams++;
++		mutex_unlock(&oxfw->mutex);
++	}
++
++	amdtp_stream_set_pcm_format(&oxfw->tx_stream, params_format(hw_params));
++
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&oxfw->mutex);
++		oxfw->playback_substreams++;
++		mutex_unlock(&oxfw->mutex);
++	}
++
+ 	amdtp_stream_set_pcm_format(&oxfw->rx_stream, params_format(hw_params));
++
+ 	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
+ 						params_buffer_bytes(hw_params));
+ }
+ 
+-static int pcm_hw_free(struct snd_pcm_substream *substream)
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++
++	mutex_lock(&oxfw->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		oxfw->capture_substreams--;
++
++	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->tx_stream);
++
++	mutex_unlock(&oxfw->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 
+ 	mutex_lock(&oxfw->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		oxfw->playback_substreams--;
++
+ 	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->rx_stream);
++
+ 	mutex_unlock(&oxfw->mutex);
+ 
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
+ }
+ 
+-static int pcm_prepare(struct snd_pcm_substream *substream)
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&oxfw->mutex);
++	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->tx_stream,
++					    runtime->rate, runtime->channels);
++	mutex_unlock(&oxfw->mutex);
++	if (err < 0)
++		goto end;
++
++	amdtp_stream_pcm_prepare(&oxfw->tx_stream);
++end:
++	return err;
++}
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -201,7 +317,25 @@ end:
+ 	return err;
+ }
+ 
+-static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_substream *pcm;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		pcm = substream;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		pcm = NULL;
++		break;
++	default:
++		return -EINVAL;
++	}
++	amdtp_stream_pcm_trigger(&oxfw->tx_stream, pcm);
++	return 0;
++}
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 	struct snd_pcm_substream *pcm;
+@@ -220,35 +354,61 @@ static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return 0;
+ }
+ 
+-static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstm)
+ {
+-	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_oxfw *oxfw = sbstm->private_data;
++
++	return amdtp_stream_pcm_pointer(&oxfw->tx_stream);
++}
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstm)
++{
++	struct snd_oxfw *oxfw = sbstm->private_data;
+ 
+ 	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
+ }
+ 
+ int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
+ {
+-	static struct snd_pcm_ops ops = {
++	static struct snd_pcm_ops capture_ops = {
++		.open      = pcm_open,
++		.close     = pcm_close,
++		.ioctl     = snd_pcm_lib_ioctl,
++		.hw_params = pcm_capture_hw_params,
++		.hw_free   = pcm_capture_hw_free,
++		.prepare   = pcm_capture_prepare,
++		.trigger   = pcm_capture_trigger,
++		.pointer   = pcm_capture_pointer,
++		.page      = snd_pcm_lib_get_vmalloc_page,
++		.mmap      = snd_pcm_lib_mmap_vmalloc,
++	};
++	static struct snd_pcm_ops playback_ops = {
+ 		.open      = pcm_open,
+ 		.close     = pcm_close,
+ 		.ioctl     = snd_pcm_lib_ioctl,
+-		.hw_params = pcm_hw_params,
+-		.hw_free   = pcm_hw_free,
+-		.prepare   = pcm_prepare,
+-		.trigger   = pcm_trigger,
+-		.pointer   = pcm_pointer,
++		.hw_params = pcm_playback_hw_params,
++		.hw_free   = pcm_playback_hw_free,
++		.prepare   = pcm_playback_prepare,
++		.trigger   = pcm_playback_trigger,
++		.pointer   = pcm_playback_pointer,
+ 		.page      = snd_pcm_lib_get_vmalloc_page,
+ 		.mmap      = snd_pcm_lib_mmap_vmalloc,
+ 	};
+ 	struct snd_pcm *pcm;
++	unsigned int cap = 0;
+ 	int err;
+ 
+-	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, 0, &pcm);
++	if (oxfw->has_output)
++		cap = 1;
++
++	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, cap, &pcm);
+ 	if (err < 0)
+ 		return err;
++
+ 	pcm->private_data = oxfw;
+ 	strcpy(pcm->name, oxfw->card->shortname);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
++	if (cap > 0)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
++
+ 	return 0;
+ }
 -- 
 2.1.0
