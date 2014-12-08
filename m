@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH RFC 4/9] ALSA: usb: update trigger timestamp on
-	first non-zero URB submitted
-Date: Mon,  8 Dec 2014 16:23:41 -0600
-Message-ID: <1418077426-8309-5-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RFC 6/9] ALSA: core: pass audio tstamp config
+	from userspace
+Date: Mon,  8 Dec 2014 16:23:43 -0600
+Message-ID: <1418077426-8309-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C9532604EC
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:24:40 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DC9302605B7
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:24:41 +0100 (CET)
 In-Reply-To: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,42 +25,35 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The first URBs are submitted during the prepare stage. When .trigger is
-called, the ALSA core saves a trigger tstamp that doesn't correspond to
-the actual time when the samples are submitted. The trigger_tstamp is
-now updated when the first data are submitted to avoid any time offsets.
+Let userspace select audio timestamp config, ignore and zero all
+other fields
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/usb/pcm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/core/pcm_native.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 0d8aba5..7c36fc1 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1464,6 +1464,14 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 	subs->last_frame_number = usb_get_current_frame_number(subs->dev);
- 	subs->last_frame_number &= 0xFF; /* keep 8 LSBs */
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 37a7137..7dcd6bd 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -706,6 +706,7 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
  
-+	if (runtime->trigger_tstamp_pending_update == 1) {
-+		/* this is the first actual URB submitted,
-+		 * update trigger timestamp to reflect actual start time
-+		 */
-+		snd_pcm_gettime(runtime, &runtime->trigger_tstamp);
-+		runtime->trigger_tstamp_pending_update = 0;
-+	}
-+
- 	spin_unlock_irqrestore(&subs->lock, flags);
- 	urb->transfer_buffer_length = bytes;
- 	if (period_elapsed)
-@@ -1550,6 +1558,7 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-+		substream->runtime->trigger_tstamp_pending_update = 1;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		subs->data_endpoint->prepare_data_urb = prepare_playback_urb;
- 		subs->data_endpoint->retire_data_urb = retire_playback_urb;
+ 	snd_pcm_stream_lock_irq(substream);
++	memset(status, 0, sizeof(*status));
+ 	status->state = runtime->status->state;
+ 	status->suspended_state = runtime->status->suspended_state;
+ 	if (status->state == SNDRV_PCM_STATE_OPEN)
+@@ -757,7 +758,8 @@ static int snd_pcm_status_user(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_status status;
+ 	int res;
+ 	
+-	memset(&status, 0, sizeof(status));
++	if (copy_from_user(&status, _status, sizeof(status)))
++		return -EFAULT;
+ 	res = snd_pcm_status(substream, &status);
+ 	if (res < 0)
+ 		return res;
 -- 
 2.1.0
