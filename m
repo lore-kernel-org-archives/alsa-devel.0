@@ -1,49 +1,91 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: i2s: Add missing assignment of
- variant_regs
-Date: Mon, 8 Dec 2014 20:47:11 +0000
-Message-ID: <20141208204711.GF11764@sirena.org.uk>
-References: <1418060754-7064-1-git-send-email-s.nawrocki@samsung.com>
+From: Imre Deak <imre.deak@intel.com>
+Subject: Re: [PATCH 1/5] drm/i915: add dev_to_i915_priv helper
+Date: Mon, 08 Dec 2014 23:26:22 +0200
+Message-ID: <1418073982.23637.37.camel@ideak-mobl>
+References: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
+ <1418056929-7977-2-git-send-email-imre.deak@intel.com>
+ <20141208204020.GQ13586@nuc-i3427.alporthouse.com>
+Reply-To: imre.deak@intel.com
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qfesBOB4TKwppX3D"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1418060754-7064-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20141208204020.GQ13586@nuc-i3427.alporthouse.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---qfesBOB4TKwppX3D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Dec 08, 2014 at 06:45:54PM +0100, Sylwester Nawrocki wrote:
-
-> Add assignment of the variant_regs field which is missing in commit
-> a5a56871f804edac93a53b5e871c0e9818fb9033 ("ASoC: samsung: add support
-> for exynos7 I2S controller"). Without this attempting to probe the
-> secondary DAI fails with an error like:
-
-Applied, thanks.  Broader testing of changes before sending them
-upstream would be good...
-
---qfesBOB4TKwppX3D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUhg5PAAoJECTWi3JdVIfQp1cH/i+e68G/6FoThfqJq8mmyj4k
-mH/141HzVk8s6/KxZ7hL3DhTsbHkiEbrMp18oj6SF3C+FTuoLqd4ofwWeeeIxoNW
-fRJGGvmISDaj+B6GoXhwJn5ds8r8Ebn/sIDlFyZgnHMhNQs+Fs4fteOa34Dd+TX/
-50ma2q8l2OSX3cDzzhUyGpg3DH92Bl8LBVF8FPAXwPT4rRLp54fViZeZPoMMs66U
-L7rmfkNWkKbwrgWS6umj1bLIT498U1mRqqWO/wPeQMcDojvsPFu2q8tK/Fq4Rmbe
-axTP9bxRHbbwsbRT6Chyq6g5lfsT9wbTQC6adv8UNdact3kgPXgMK8AwGTK7zVM=
-=lq01
------END PGP SIGNATURE-----
-
---qfesBOB4TKwppX3D--
+T24gTW9uLCAyMDE0LTEyLTA4IGF0IDIwOjQwICswMDAwLCBDaHJpcyBXaWxzb24gd3JvdGU6Cj4g
+T24gTW9uLCBEZWMgMDgsIDIwMTQgYXQgMDY6NDI6MDVQTSArMDIwMCwgSW1yZSBEZWFrIHdyb3Rl
+Ogo+ID4gVGhpcyB3aWxsIGJlIG5lZWRlZCBieSBsYXRlciBwYXRjaGVzLCBzbyBmYWN0b3IgaXQg
+b3V0Lgo+IAo+IFRoZSBzaW1pbGlhciBmdW5jdGlvbiAoZm9yIGRybV9kZXZpY2UpIGlzIGtub3du
+IGFzIHRvX2k5MTUoKSwgc28ganVzdAo+IGNhbGwgdGhpcyBkZXZfdG9faTkxNSgpLgo+ID4gCj4g
+PiBObyBmdW5jdGlvbmFsIGNoYW5nZS4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogSW1yZSBEZWFr
+IDxpbXJlLmRlYWtAaW50ZWwuY29tPgo+ID4gLS0tCj4gPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUv
+aTkxNV9kcnYuYyAgfCAxNSArKysrKystLS0tLS0tLS0KPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkx
+NS9pbnRlbF9kcnYuaCB8ICA4ICsrKysrKysrCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxNCBpbnNl
+cnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
+cHUvZHJtL2k5MTUvaTkxNV9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMK
+PiA+IGluZGV4IDcxYmUzYzkuLjMyYzJlMzMgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9k
+cm0vaTkxNS9pOTE1X2Rydi5jCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Ry
+di5jCj4gPiBAQCAtOTIzLDEwICs5MjMsMTAgQEAgaTkxNV9wY2lfcmVtb3ZlKHN0cnVjdCBwY2lf
+ZGV2ICpwZGV2KQo+ID4gIAo+ID4gIHN0YXRpYyBpbnQgaTkxNV9wbV9zdXNwZW5kKHN0cnVjdCBk
+ZXZpY2UgKmRldikKPiA+ICB7Cj4gPiAtCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2Rl
+dihkZXYpOwo+ID4gLQlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0
+YShwZGV2KTsKPiA+ICsJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZGV2X3Rv
+X2k5MTVfcHJpdihkZXYpOwo+ID4gKwlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IGRldl9w
+cml2LT5kZXY7Cj4gPiAgCj4gPiAtCWlmICghZHJtX2RldiB8fCAhZHJtX2Rldi0+ZGV2X3ByaXZh
+dGUpIHsKPiA+ICsJaWYgKCFkcm1fZGV2IHx8ICFkZXZfcHJpdikgewo+IAo+IFRoaXMgdGVzdCBp
+cyBxdWl0ZSBub25zZW5zaWNhbCBzaW5jZSB5b3UndmUgZGVyZWZlcmVuY2VkIGJvdGggcG9pbnRl
+cnMKPiBnZXR0aW5nIHRvIHRoaXMgcG9pbnQuIElmIGl0IGlzIHJlcXVpcmVkLCB3ZSBuZWVkIGEg
+bmV3IHBhdGNoLgoKWWVwLCBJIG5vdGljZWQgdGhpcyBhZnRlciBKYW5pJ3MgY29tbWVudC4gRm9y
+IG5vdyBJIHdvdWxkIGp1c3QgbGVhdmUKdGhpcyBwYXJ0IHVuY2hhbmdlZC4KCj4gCj4gPiAgCQlk
+ZXZfZXJyKGRldiwgIkRSTSBub3QgaW5pdGlhbGl6ZWQsIGFib3J0aW5nIHN1c3BlbmQuXG4iKTsK
+PiA+ICAJCXJldHVybiAtRU5PREVWOwo+ID4gIAl9Cj4gPiBAQCAtOTM5LDggKzkzOSw3IEBAIHN0
+YXRpYyBpbnQgaTkxNV9wbV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICAKPiA+ICBz
+dGF0aWMgaW50IGk5MTVfcG1fc3VzcGVuZF9sYXRlKHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICB7
+Cj4gPiAtCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+ID4gLQlzdHJ1
+Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+ICsJc3Ry
+dWN0IGRybV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfdG9faTkxNV9wcml2KGRldiktPmRldjsKPiA+
+ICAKPiA+ICAJLyoKPiA+ICAJICogV2UgaGF2ZSBhIHN1c3BlZG4gb3JkZXJpbmcgaXNzdWUgd2l0
+aCB0aGUgc25kLWhkYSBkcml2ZXIgYWxzbwo+ID4gQEAgLTk1OSw4ICs5NTgsNyBAQCBzdGF0aWMg
+aW50IGk5MTVfcG1fc3VzcGVuZF9sYXRlKHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICAKPiA+ICBz
+dGF0aWMgaW50IGk5MTVfcG1fcmVzdW1lX2Vhcmx5KHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICB7
+Cj4gPiAtCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+ID4gLQlzdHJ1
+Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+ICsJc3Ry
+dWN0IGRybV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfdG9faTkxNV9wcml2KGRldiktPmRldjsKPiA+
+ICAKPiA+ICAJaWYgKGRybV9kZXYtPnN3aXRjaF9wb3dlcl9zdGF0ZSA9PSBEUk1fU1dJVENIX1BP
+V0VSX09GRikKPiA+ICAJCXJldHVybiAwOwo+ID4gQEAgLTk3MCw4ICs5NjgsNyBAQCBzdGF0aWMg
+aW50IGk5MTVfcG1fcmVzdW1lX2Vhcmx5KHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICAKPiA+ICBz
+dGF0aWMgaW50IGk5MTVfcG1fcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICB7Cj4gPiAt
+CXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+ID4gLQlzdHJ1Y3QgZHJt
+X2RldmljZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+ICsJc3RydWN0IGRy
+bV9kZXZpY2UgKmRybV9kZXYgPSBkZXZfdG9faTkxNV9wcml2KGRldiktPmRldjsKPiA+ICAKPiA+
+ICAJaWYgKGRybV9kZXYtPnN3aXRjaF9wb3dlcl9zdGF0ZSA9PSBEUk1fU1dJVENIX1BPV0VSX09G
+RikKPiA+ICAJCXJldHVybiAwOwo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1
+L2ludGVsX2Rydi5oIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfZHJ2LmgKPiA+IGluZGV4
+IDYxYTg4ZmEuLjNkZTdhNTUgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+bnRlbF9kcnYuaAo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfZHJ2LmgKPiA+
+IEBAIC03NzUsNiArNzc1LDE0IEBAIHN0YXRpYyBpbmxpbmUgdW5zaWduZWQgaW50IGludGVsX251
+bV9wbGFuZXMoc3RydWN0IGludGVsX2NydGMgKmNydGMpCj4gPiAgCXJldHVybiBJTlRFTF9JTkZP
+KGNydGMtPmJhc2UuZGV2KS0+bnVtX3Nwcml0ZXNbY3J0Yy0+cGlwZV0gKyAxOwo+ID4gIH0KPiA+
+ICAKPiA+ICtzdGF0aWMgaW5saW5lIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfdG9faTkx
+NV9wcml2KHN0cnVjdCBkZXZpY2UgKmRldikKPiA+ICt7Cj4gPiArCXN0cnVjdCBwY2lfZGV2ICpw
+ZGV2ID0gdG9fcGNpX2RldihkZXYpOwo+ID4gKwlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9
+IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiA+ICsKPiA+ICsJcmV0dXJuIGRybV9kZXYtPmRldl9w
+cml2YXRlOwo+IAo+IEkgdGhpbmsgeW91IG1lYW50IAo+IAo+IHN0YXRpYyBpbmxpbmUgc3RydWN0
+IGRybV9pOTE1X3ByaXZhdGUgKmRldl90b19pOTE1KHN0cnVjdCBkZXZpY2UgKmRldikKPiB7Cj4g
+CXJldHVybiB0b19pOTE1KHBjaV9nZXRfZHJ2ZGF0YSh0b19wY2lfZGV2KGRldikpKTsKPiB9CgpZ
+ZXMsIGxvb2tzIHNpbXBsZXIuCgo+IC1DaHJpcwo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
+YW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
