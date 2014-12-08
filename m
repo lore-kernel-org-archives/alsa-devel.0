@@ -1,164 +1,122 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: samsung: request memory region in driver probe()
-Date: Mon, 08 Dec 2014 15:36:16 +0100
-Message-ID: <1418049376-32129-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: <bencoxdev@gmail.com>
+Subject: Re: Nodes, Widgets,
+	ELD and Digital Surround 5.1 (HDMI) Output?
+Date: Mon, 8 Dec 2014 14:40:54 -0000
+Message-ID: <30B3A9113F464BFA8880D53D77A134A8@Lyra>
+References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
+ <547EBCFF.5030204@canonical.com> <547EC2BF.3080601@gmail.com>
+ <46543BFB759444F4B56F5153F4727DEE@Lyra> <548054D1.1000302@gmail.com>
+ <4E4A612742FA4CEF85A52A8A16AADF78@Lyra> <54818D9C.5030100@gmail.com>
+Reply-To: bencoxdev@gmail.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
+ [209.85.212.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B77626044F
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 15:40:57 +0100 (CET)
+Received: by mail-wi0-f172.google.com with SMTP id n3so4884510wiv.11
+ for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 06:40:57 -0800 (PST)
+In-Reply-To: <54818D9C.5030100@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>, ALSA Mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The memory mapped registers region is common for both DAIs so request
-it in the I2S platform device driver probe for the platform device
-corresponding to the primary DAI, rather than in the ASoC DAI probe
-callback. While at it switch to devm_ioremap_resource(). This also
-drops the hard coded (0x100) register region size in the driver.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
-Tested on Odroid X2.
-
- sound/soc/samsung/i2s.c |   44 +++++++-------------------------------------
- 1 file changed, 7 insertions(+), 37 deletions(-)
-
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 26d1a1a..fff429da 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -59,10 +59,8 @@ struct samsung_i2s_dai_data {
- struct i2s_dai {
- 	/* Platform device for this DAI */
- 	struct platform_device *pdev;
--	/* IOREMAP'd SFRs */
-+	/* Memory mapped SFR region */
- 	void __iomem	*addr;
--	/* Physical base address of SFRs */
--	u32	base;
- 	/* Rate of RCLK source clock */
- 	unsigned long rclk_srcrate;
- 	/* Frame Clock */
-@@ -980,12 +978,6 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
- 		goto probe_exit;
- 	}
-
--	i2s->addr = ioremap(i2s->base, 0x100);
--	if (i2s->addr == NULL) {
--		dev_err(&i2s->pdev->dev, "cannot ioremap registers\n");
--		return -ENXIO;
--	}
--
- 	i2s->clk = clk_get(&i2s->pdev->dev, "iis");
- 	if (IS_ERR(i2s->clk)) {
- 		dev_err(&i2s->pdev->dev, "failed to get i2s_clock\n");
-@@ -1002,7 +994,6 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
- 	samsung_asoc_init_dma_data(dai, &i2s->dma_playback, &i2s->dma_capture);
-
- 	if (other) {
--		other->addr = i2s->addr;
- 		other->clk = i2s->clk;
- 	}
-
-@@ -1044,8 +1035,6 @@ static int samsung_i2s_dai_remove(struct snd_soc_dai *dai)
-
- 		clk_disable_unprepare(i2s->clk);
- 		clk_put(i2s->clk);
--
--		iounmap(i2s->addr);
- 	}
-
- 	i2s->clk = NULL;
-@@ -1164,7 +1153,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	u32 regs_base, quirks = 0, idma_addr = 0;
- 	struct device_node *np = pdev->dev.of_node;
- 	const struct samsung_i2s_dai_data *i2s_dai_data;
--	int ret = 0;
-
- 	/* Call during Seconday interface registration */
- 	i2s_dai_data = samsung_i2s_get_driver_data(pdev);
-@@ -1229,16 +1217,10 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	}
-
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S SFR address\n");
--		return -ENXIO;
--	}
-+	pri_dai->addr = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(pri_dai->addr))
-+		return PTR_ERR(pri_dai->addr);
-
--	if (!request_mem_region(res->start, resource_size(res),
--							"samsung-i2s")) {
--		dev_err(&pdev->dev, "Unable to request SFR region\n");
--		return -EBUSY;
--	}
- 	regs_base = res->start;
-
- 	pri_dai->dma_playback.dma_addr = regs_base + I2STXD;
-@@ -1247,7 +1229,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	pri_dai->dma_capture.ch_name = "rx";
- 	pri_dai->dma_playback.dma_size = 4;
- 	pri_dai->dma_capture.dma_size = 4;
--	pri_dai->base = regs_base;
- 	pri_dai->quirks = quirks;
- 	pri_dai->variant_regs = i2s_dai_data->i2s_variant_regs;
-
-@@ -1258,8 +1239,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		sec_dai = i2s_alloc_dai(pdev, true);
- 		if (!sec_dai) {
- 			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
--			ret = -ENOMEM;
--			goto err;
-+			return -ENOMEM;
- 		}
- 		sec_dai->dma_playback.dma_addr = regs_base + I2STXDS;
- 		sec_dai->dma_playback.ch_name = "tx-sec";
-@@ -1271,7 +1251,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		}
-
- 		sec_dai->dma_playback.dma_size = 4;
--		sec_dai->base = regs_base;
-+		sec_dai->addr = pri_dai->addr;
- 		sec_dai->quirks = quirks;
- 		sec_dai->idma_playback.dma_addr = idma_addr;
- 		sec_dai->pri_dai = pri_dai;
-@@ -1280,8 +1260,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
-
- 	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
- 		dev_err(&pdev->dev, "Unable to configure gpio\n");
--		ret = -EINVAL;
--		goto err;
-+		return -EINVAL;
- 	}
-
- 	devm_snd_soc_register_component(&pri_dai->pdev->dev,
-@@ -1293,17 +1272,11 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	samsung_asoc_dma_platform_register(&pdev->dev);
-
- 	return 0;
--err:
--	if (res)
--		release_mem_region(regs_base, resource_size(res));
--
--	return ret;
- }
-
- static int samsung_i2s_remove(struct platform_device *pdev)
- {
- 	struct i2s_dai *i2s, *other;
--	struct resource *res;
-
- 	i2s = dev_get_drvdata(&pdev->dev);
- 	other = i2s->pri_dai ? : i2s->sec_dai;
-@@ -1313,9 +1286,6 @@ static int samsung_i2s_remove(struct platform_device *pdev)
- 		other->sec_dai = NULL;
- 	} else {
- 		pm_runtime_disable(&pdev->dev);
--		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--		if (res)
--			release_mem_region(res->start, resource_size(res));
- 	}
-
- 	i2s->pri_dai = NULL;
---
-1.7.9.5
+SGkgQWxleGFuZGVyLAogICAgICAgICAgICAgVGhhbmtzIGZvciBsb29raW5nIGF0IHRoaXMgZm9y
+IG1lIGl0IGlzIHZlcnkgbXVjaCBhcHByZWNpYXRlZC4gCiAKUGxlYXNlIHNlZSBiZWxvdyB0aGUg
+ZGV0YWlscyBmcm9tIHRoZSBhbGwgdGhlIGxvZ3M7IGFzIHlvdSByZXF1ZXN0ZWQuIEnigJl2ZSBo
+YWQgdG8gb21pdCBhIApmZXcgZGV0YWlscyAodmVuZG9yIG5hbWVzIGFuZCBJROKAmXMpIGFzIHRo
+aXMgcHJvamVjdCBpcyBwcmUtcmVsZWFzZSBhbmQgSSBhbSB1bmRlciBOLkQuQS4gIApUaGVyZSBz
+aG91bGQgc3RpbGwgYmUgc3VmZmljaWVudCBpbmZvcm1hdGlvbiB0aGVyZSBmb3IgeW91LCBidXQg
+aWYgeW91IGRvIG5lZWQgYW55dGhpbmcgCnNwZWNpZmljIHBsZWFzZSBsZXQgbWUga25vdyBhbmQg
+SeKAmWxsIHRyeSByZXF1ZXN0aW5nIHBlcm1pc3Npb24gdG8gcmVsZWFzZSBtb3JlIGRldGFpbHMu
+IAoKCgoxKSAgICAgIFRoZSBBTFNBLWluZm8gbG9nIGNhbiBiZSBmb3VuZCBhdDotIGh0dHA6Ly9w
+YXN0ZWJpbi5jb20vTDFKUno1eUMKCjIpICAgICAgVGhlIFB1bHNlQXVkaW8gbG9nIGlzIGF0Oi0g
+aHR0cDovL3Bhc3RlYmluLmNvbS9zdkpnUjJkawoKMykgICAgICBTcGVha2VyIHRlc3QgcmVzdWx0
+czotCgpVc2luZyAgcGFzdXNwZW5kZXIgLS0gc3BlYWtlci10ZXN0IC1jNiAtYiAxMjUwMDAgLVAy
+IC1EICJwbHVnOidoZG1pOlgsWSciCgpYICAgICAgICAgICAgICBZICAgICAgICAgICAgICBSZXN1
+bHQKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCjAgICAgICAgICAgICAgIDAgICAg
+ICAgICAgICAgIEhpc3MgbGVmdCBGcm9udCBhbmQgUmlnaHQgRnJvbnQsIG90aGVycyBzaWxlbnQK
+MCAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5v
+IHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMCAgICAgICAgICAgICAgMiAgICAgICAgICAgICAgUGxh
+eWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMCAgICAgICAg
+ICAgICAgMyAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmls
+ZSBvciBkaXJlY3RvcnkKMSAgICAgICAgICAgICAgMCAgICAgICAgICAgICAgUGxheWJhY2sgb3Bl
+biBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMSAgICAgICAgICAgICAgMSAg
+ICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJl
+Y3RvcnkKMSAgICAgICAgICAgICAgMiAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjog
+LTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMSAgICAgICAgICAgICAgMyAgICAgICAgICAg
+ICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMiAg
+ICAgICAgICAgICAgMCAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1
+Y2ggZmlsZSBvciBkaXJlY3RvcnkKMiAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgUGxheWJh
+Y2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMiAgICAgICAgICAg
+ICAgMiAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBv
+ciBkaXJlY3RvcnkKMiAgICAgICAgICAgICAgMyAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBl
+cnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMyAgICAgICAgICAgICAgMCAgICAg
+ICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3Rv
+cnkKMyAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIs
+IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMyAgICAgICAgICAgICAgMiAgICAgICAgICAgICAg
+UGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKMyAgICAg
+ICAgICAgICAgMyAgICAgICAgICAgICAgUGxheWJhY2sgb3BlbiBlcnJvcjogLTIsIE5vIHN1Y2gg
+ZmlsZSBvciBkaXJlY3RvcnkKCgoKSWRlYWxseSBJIHdvdWxkIGxpa2UgdG8gdXNlIHBhc3MtdGhy
+b3VnaCBtb2RlIGJlY2F1c2UgdGhlIGludGVuZGVkIGRpc3BsYXkgZGV2aWNlIGNhbiBoYW5kbGUg
+CkFDMyA1LjEgd2l0aG91dCBpc3N1ZTsgYW5kIHNvIEkgd291bGQgcHJlZmVyIG5vdCB0byBwdXQg
+dGhlIGRlY29kaW5nIGxvYWQgb250byB0aGUgQ1BVIChhcyAKaXTigJlzIGEgbG93IHBvd2VyZWQg
+ZGV2aWNlKS4gIEkgaGF2ZSBiZWVuIGFzc3VyZWQgYnkgdGhlIGhhcmR3YXJlIHZlbmRvciB0aGF0
+IHRoZSBjaGlwIGlzIApjYXBhYmxlIG9mIERpZ2l0YWwgcGFzcy10aHJvdWdoIG9mIDUuMSBhdWRp
+by4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUSUEKQmVuLgoKRnJvbTogQWxl
+eGFuZGVyIEUuIFBhdHJha292IApTZW50OiBGcmlkYXksIERlY2VtYmVyIDA1LCAyMDE0IDEwOjQ5
+IEFNClRvOiBiZW5jb3hkZXZAZ21haWwuY29tIDsgRGF2aWQgSGVubmluZ3Nzb24gOyBBTFNBIE1h
+aWxpbmcgbGlzdCAKU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBOb2RlcywgV2lkZ2V0cywgRUxE
+IGFuZCBEaWdpdGFsIFN1cnJvdW5kIDUuMSAoSERNSSkgT3V0cHV0PwowNS4xMi4yMDE0IDE0OjQx
+LCBiZW5jb3hkZXZAZ21haWwuY29tIHdyb3RlOgo+IEhpIEFsZXhhbmRlciwKPiBUaGFua3MgZm9y
+IGxvb2tpbmcgYXQgdGhpcyBmb3IgbWUuIEkgaGF2ZSBmb2xsb3dlZCB5b3VyIGVhcmxpZXIgYWR2
+aWNlCj4gb24gc2V0dGluZyB1cCB0aGUgY29ycmVjdCBIRE1JIGRldmljZSwgdW5mb3J0dW5hdGVs
+eSBpdCBkb2VzbuKAmXQgc2VlbSB0bwo+IGhhdmUgY2hhbmdlZCB0aGUgc2l0dWF0aW9uLgo+ICAg
+ICAgSSBhbSB0cnlpbmcgdG8gYWNoaWV2ZSBBQzMgcGFzcy10aHJvdWdoIGFuZCBub3QgZGVjb2Rl
+L2VuY29kZSB0aGUKPiBhdWRpby4gQW55IHRob3VnaHRzIHRoYXQgeW91IG1heSBoYXZlIGFib3V0
+IHRoaXMgd291bGQgYmUgbXVjaCBhcHByZWNpYXRlZC4KPiBUSUEKPiBCZW4KCkZpcnN0IG9mIGFs
+bCwgc29tZSBtb3JlIGluZm9ybWF0aW9uIGFib3V0IHlvdXIgc2V0dXAgaXMgbmVlZGVkLgoKMS4g
+QUxTQS1pbmZvOgoKd2dldCBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvYWxzYS1pbmZvLnNo
+CmJhc2ggYWxzYS1pbmZvLnNoCgpUaGlzIHdpbGwgdXBsb2FkIHRoZSBpbmZvcm1hdGlvbiB0byBh
+IGNlbnRyYWwgZGF0YWJhc2UgYW5kIHByaW50IG91dCB0aGUgCmxpbmsuIFBsZWFzZSBwb3N0IHRo
+ZSBsaW5rLgoKMi4gRnVsbCBQdWxzZUF1ZGlvIGxvZwoKa2lsbGFsbCBwdWxzZWF1ZGlvIDsgcHVs
+c2VhdWRpbyAtdnZ2IDI+JjEgfCB0ZWUgLWEgcHVsc2UubG9nCgooQWxsIGluIG9uZSBsaW5lLCB3
+aXRoIGEgIjsiIGluIHRoZSBtaWRkbGUsIGluIG9yZGVyIHRvIHdpbiB0aGUgcmFjZSAKYWdhaW5z
+dCBhdXRvcmVzcGF3bi4gSWYgaXQgc2F5cyAiZGFlbW9uIGFscmVhZHkgcnVubmluZyIsIGp1c3Qg
+dHJ5IGFnYWluLikKClBsZWFzZSBwb3N0IHRoZSBsb2cgb24gc29tZSBwYXN0ZWJpbiBhbmQgcHJv
+dmlkZSBhIGxpbmsgaGVyZS4KCjMuIEFuIGF0dGVtcHQgdG8gdXNlIHNwZWFrZXItdGVzdC4gUGxl
+YXNlIHRyeSB0aGlzIGNvbW1hbmQgZm9yIGFsbCAKdmFsdWVzIG9mIFggZnJvbSAwIHRvIDMgYW5k
+IGZvciBhbGwgdmFsdWVzIG9mIFkgZnJvbSAwIHRvIDM6CgpwYXN1c3BlbmRlciAtLSBzcGVha2Vy
+LXRlc3QgLWM2IC1iIDEyNTAwMCAtUDIgLUQgInBsdWc6J2hkbWk6WCxZJyIKCkR1cmluZyBvbmUg
+b2YgdGhlIHRlc3RzLCBpdCB3aWxsIGhpc3MgaW50byB5b3VyIHJlY2VpdmVyLiBQbGVhc2UgbWFr
+ZSBhIApub3RlIG9mIHRoZSBjb3JyZWN0IFggYW5kIFkgdmFsdWVzIChmb3IgY29ycmVsYXRpb24g
+d2l0aCBQdWxzZUF1ZGlvIApsb2dzKSwgYW5kIHdoZXRoZXIgaXQgaGlzc2VkIGludG8gZWFjaCBz
+cGVha2VyIHNlcGFyYXRlbHkuCgpUaGVuLCBtb3JlIGluZm9ybWF0aW9uIGFib3V0IHlvdXIgaW50
+ZW50aW9ucyBpcyBuZWVkZWQuIFdoeSBhcmUgeW91IAp0YWxraW5nIGFib3V0IEFDMyBwYXNzdGhy
+b3VnaD8gSSBhbSBhc2tpbmcgYmVjYXVzZSB0aGVyZSBhcmUgdHdvIHdheXMgdG8gCm91dHB1dCA1
+LjEgYXVkaW8gb3ZlciBIRE1JOiBzb2Z0d2FyZSBkZWNvZGluZyBvbiBhIFBDICh3aGljaCBpcyBJ
+TUhPIApwcmVmZXJhYmxlKSBhbmQgQUMzIHBhc3N0aHJvdWdoIChpLmUuIGhhcmR3YXJlIGRlY29k
+aW5nIG9uIHRoZSByZWNlaXZpbmcgCmVuZCwgd2hpY2ggcmVxdWlyZXMgYSBwbGF5ZXIgdGhhdCBh
+Y3R1YWxseSBzdXBwb3J0cyB0aGlzIGZlYXR1cmUgd2hlbiAKdXNlZCB3aXRoIFB1bHNlQXVkaW8g
+W3doaWNoIGJhc2ljYWxseSBtZWFucyAibm90IG1wbGF5ZXIiXSwgYW5kIG1ha2VzIApzZW5zZSBv
+bmx5IG9uIHZlcnkgc2xvdyBDUFVzIG9yIGlmIHRoZSBIRE1JIGRldmljZSBpcyBhY3R1YWxseSBz
+b21lIGR1bWIgCkhETUktdG8tU1BESUYgY29udmVydGVyKS4KClRoZSBjb3JyZWN0IHByb2ZpbGUg
+dG8gdXNlIGlzICJEaWdpdGFsIFN1cnJvdW5kIDUuMSAoSERNSSkgT3V0cHV0IiwgCndoaWNoLCBk
+dWUgdG8gYSBidWcgdGhhdCBJIGhhdmUgYWxyZWFkeSBleHBsYWluZWQgaG93IHRvIHdvcmsgYXJv
+dW5kLCBpcyAKb25seSBhdmFpbGFibGUgb24gInRydWUiIEludGVsIGFuZCBOVmlkaWEgdmlkZW8g
+Y2FyZHMgYXMgb2YgUHVsc2VBdWRpbyA1LjAuCgotLSAKQWxleGFuZGVyIEUuIFBhdHJha292Cl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
