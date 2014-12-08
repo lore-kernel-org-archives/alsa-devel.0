@@ -1,41 +1,48 @@
-From: Peter Rosin <peda@lysator.liu.se>
-Subject: [PATCH] ASoC: pcm512x: Trigger auto-increment of register addresses on i2c
-Date: Mon,  8 Dec 2014 16:33:11 +0100
-Message-ID: <1418052791-4257-1-git-send-email-peda@lysator.liu.se>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+From: thomas chen <tchen61@gmail.com>
+Subject: I2S frame configuration
+Date: Mon, 08 Dec 2014 10:37:46 -0500
+Message-ID: <5485C5CA.8030402@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f173.google.com (mail-qc0-f173.google.com
+ [209.85.216.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43964260453
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 16:37:53 +0100 (CET)
+Received: by mail-qc0-f173.google.com with SMTP id i17so3666859qcy.18
+ for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 07:37:52 -0800 (PST)
+Received: from [192.168.1.55] (pool-108-56-195-196.washdc.fios.verizon.net.
+ [108.56.195.196])
+ by mx.google.com with ESMTPSA id 34sm38035750qgt.19.2014.12.08.07.37.51
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Mon, 08 Dec 2014 07:37:51 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Rosin <peda@axentia.se>
+I am working on a ALSA interface to a particular codec over I2S
 
-When the codec is connected using i2c, it will only auto-increment
-register addresses if msb (0x80) of the register address byte is set.
+the audio stream format is a bit peculiar...  (CODEC being MASTER)
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
----
- sound/soc/codecs/pcm512x-i2c.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+there are 24 BCLK cycle between transition of FSYNC...   howver, there 
+are only 16 bit that are valid
 
-diff --git a/sound/soc/codecs/pcm512x-i2c.c b/sound/soc/codecs/pcm512x-i2c.c
-index 4d62230bd378..d0547fa275fc 100644
---- a/sound/soc/codecs/pcm512x-i2c.c
-+++ b/sound/soc/codecs/pcm512x-i2c.c
-@@ -24,8 +24,13 @@ static int pcm512x_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
- {
- 	struct regmap *regmap;
-+	struct regmap_config config = pcm512x_regmap;
- 
--	regmap = devm_regmap_init_i2c(i2c, &pcm512x_regmap);
-+	/* msb needs to be set to enable auto-increment of addresses */
-+	config.read_flag_mask = 0x80;
-+	config.write_flag_mask = 0x80;
-+
-+	regmap = devm_regmap_init_i2c(i2c, &config);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
--- 
-1.7.10.4
+bit 0: ignore
+bit 1-16:   valid pcm data (MSB....LSB)
+bit 17-23: ignore
+
+
+
+Can anyone suggest how to configure the DAI format ???
+
+Thanks
