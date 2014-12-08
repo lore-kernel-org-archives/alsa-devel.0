@@ -1,92 +1,69 @@
-From: <bencoxdev@gmail.com>
-Subject: Re: Nodes, Widgets,
-	ELD and Digital Surround 5.1 (HDMI) Output?
-Date: Mon, 8 Dec 2014 17:42:39 -0000
-Message-ID: <75C0BE20F99F4E1AACB89F1EC368E0E4@Lyra>
-References: <499A51023C98481A9A8BE9EBEFDDFD70@Lyra>
- <547EBCFF.5030204@canonical.com> <547EC2BF.3080601@gmail.com>
- <46543BFB759444F4B56F5153F4727DEE@Lyra> <548054D1.1000302@gmail.com>
- <4E4A612742FA4CEF85A52A8A16AADF78@Lyra> <54818D9C.5030100@gmail.com>
- <30B3A9113F464BFA8880D53D77A134A8@Lyra> <5485D3EC.7070109@gmail.com>
-Reply-To: bencoxdev@gmail.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f43.google.com (mail-wg0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 50F2C260488
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 18:42:43 +0100 (CET)
-Received: by mail-wg0-f43.google.com with SMTP id l18so6865085wgh.2
- for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 09:42:43 -0800 (PST)
-In-Reply-To: <5485D3EC.7070109@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>, ALSA Mailing list <alsa-devel@alsa-project.org>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung: i2s: Add missing assignment of variant_regs
+Date: Mon, 08 Dec 2014 18:45:54 +0100
+Message-ID: <1418060754-7064-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQWxleGFuZGVyLAogICAgICAgICAgICAgVGhhbmtzIGZvciB5b3VyIGVmZm9ydHMgb24gdGhp
-cy4gVW5mb3J0dW5hdGVseSBJ4oCZbSBzdHVjayB3aXRoIHRoZSBjdXJyZW50IHBsYXRmb3JtIEkg
-aGF2ZS4gSG93ZXZlciBkbyBub3QgaGF2ZSB0byB1c2UgcHVsc2UtYXVkaW8gYW5kIGNvdWxkIHVz
-ZSBhbHNhIGRpcmVjdGx5LgoKICAgIFRoZSBwYXN1c3BlbmRlciB0ZXN0cyB3ZXJlIGRvbmUgd2l0
-aCBhIFlhbWFoYSBIRVItMjg2NiBzdXJyb3VuZCBzb3VuZCBhbXBsaWZpZXIsIGFzIHRoZSBIRE1J
-IHRhcmdldCBkZXZpY2UsIHRoZSByZXN1bHRzIHdlcmUgYXMgZ2l2ZW4gcHJldmlvdXNseS4gCgog
-ICAgQW55IHRob3VnaHRzIG9uIHVzaW5nIHRoZSBhbHNhIGRpcmVjdGx5IGFuZCBob3cgdG8gc2V0
-IGl0IHVwIHRvIG9mZmVyIHRoZSByZXF1aXJlZCBvdXRwdXQgZm9ybWF0IGluIHRoaXMgc2NlbmFy
-aW8gd291bGQgYmUgbXVjaCBhcHByZWNpYXRlZC4KClRpYQpCZW4KCkZyb206IEFsZXhhbmRlciBF
-LiBQYXRyYWtvdiAKU2VudDogTW9uZGF5LCBEZWNlbWJlciAwOCwgMjAxNCA0OjM4IFBNClRvOiBi
-ZW5jb3hkZXZAZ21haWwuY29tIDsgRGF2aWQgSGVubmluZ3Nzb24gOyBBTFNBIE1haWxpbmcgbGlz
-dCAKU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBOb2RlcywgV2lkZ2V0cywgRUxEIGFuZCBEaWdp
-dGFsIFN1cnJvdW5kIDUuMSAoSERNSSkgT3V0cHV0PwowOC4xMi4yMDE0IDE5OjQwLCBiZW5jb3hk
-ZXZAZ21haWwuY29tIHdyb3RlOgo+IEhpIEFsZXhhbmRlciwKPiBUaGFua3MgZm9yIGxvb2tpbmcg
-YXQgdGhpcyBmb3IgbWUgaXQgaXMgdmVyeSBtdWNoIGFwcHJlY2lhdGVkLgo+IFBsZWFzZSBzZWUg
-YmVsb3cgdGhlIGRldGFpbHMgZnJvbSB0aGUgYWxsIHRoZSBsb2dzOyBhcyB5b3UgcmVxdWVzdGVk
-Lgo+IEnigJl2ZSBoYWQgdG8gb21pdCBhCj4gZmV3IGRldGFpbHMgKHZlbmRvciBuYW1lcyBhbmQg
-SUTigJlzKSBhcyB0aGlzIHByb2plY3QgaXMgcHJlLXJlbGVhc2UgYW5kIEkKPiBhbSB1bmRlciBO
-LkQuQS4KClVuZm9ydHVuYXRlbHksIHlvdSBoYXZlIGxlYWtlZCBib3RoIHRoZSBncmFwaGljcyB2
-ZW5kb3IgKHRocm91Z2ggCmV4Y2Vzc2l2ZSBibG9ja2luZyBvZiBpdCkgYW5kIHRoZSBUVi9tb25p
-dG9yIHZlbmRvciAodGhyb3VnaCBFTEQpLiBTbyAKeW91IGJvdGggYnJva2UgdGhlIE5EQSBhbmQg
-cHJldmVudGVkIG1lIGZyb20gdHJvdWJsZXNob290aW5nIGZ1cnRoZXIuIEkgCnRob3VnaHQgSSBu
-ZWVkZWQgdGhlIHZlbmRvciBJRHMgaW4gb3JkZXIgdG8gbWF0Y2ggdGhlbSBhZ2FpbnN0IHVkZXYg
-CnJ1bGVzLCBidXQgc2VlIGJlbG93LiBTdGlsbCwgYSBmYWlsLWZhaWwgc2l0dWF0aW9uLCBlc3Bl
-Y2lhbGx5IHNpbmNlIAp0aGVyZSBhcmUgYSBsb3Qgb2Ygb3RoZXIgaG9iYnkgcHJvamVjdHMgdXNp
-bmcgZGV2ZWxvcG1lbnQgYm9hcmRzIHdpdGggCnRoZSBncmFwaGljcyBhbmQgYXVkaW8gY2hpcHMg
-ZnJvbSB0aGUgc2FtZSB2ZW5kb3IuCgpCdXQgaW5kZWVkLCB0aGVyZSBpcyBpbmZvcm1hdGlvbiBp
-biB0aGUgbG9nIHRoYXQgZ2l2ZXMgYSBiaWcgY2x1ZS4gWW91IAphcmUgdXNpbmcgUHVsc2VBdWRp
-byAxLjEsIGFuZCBjb25maWd1cmVkIGl0IG5vdCB0byB1c2UgdWRldiBydWxlcyAoc28gCmtub3ds
-ZWRnZSBvZiBhIHZlbmRvciBJRCBpcyBub3cgdXNlbGVzcykuIEFsc28sIGl0IGNhbm5vdCBhdXRv
-ZGV0ZWN0IDUuMSAKUENNIG92ZXIgSERNSSB3aXRoIHVkZXYgcnVsZXMuIEl0IGlzIGFsc28gbm90
-IHN1cHBvcnRlZCBhbnltb3JlLiBNeSAKcmVjb21tZW5kYXRpb24gd291bGQgYmUgdG8gZWl0aGVy
-IHVwZ3JhZGUgKHdoaWNoIGlzIGltcG9zc2libGUgb24gdGhlIApVYnVudHUgMTIuMDQgcGxhdGZv
-cm0pIG9yIHRvIGRyb3AgdGhlIHVzZSBvZiBQdWxzZUF1ZGlvIGFsdG9nZXRoZXIgaWYgCnlvdSBh
-cmUgc3R1Y2sgd2l0aCB0aGlzIGFuY2llbnQgdXNlcnNwYWNlLgoKRm9yIGVuYWJsaW5nIHBhc3N0
-aHJvdWdoIGluIFB1bHNlQXVkaW8sIHlvdSB3b3VsZCBuZWVkIHRvIHJ1biAKcGF2dWNvbnRyb2wg
-YW5kIHBsYWNlIGEgY2hlY2tib3ggaW4gdGhlIEFDMyBhbmQgRFRTIGZpZWxkcy4gQWx0ZXJuYXRp
-dmVseToKCnBhY3RsIHNldC1zaW5rLWZvcm1hdHMgMCAncGNtO2FjMy1pZWM2MTkzNztkdHMtaWVj
-NjE5MzcnCgouLi53aGVyZSAwIGlzIHRoZSBzaW5rIGluZGV4LgoKQW5kIGFsc28geW91IG5lZWQg
-dG8gZmluZCBhIHBsYXllciB0aGF0IHN1cHBvcnRzIHRoaXMgcGFzc3Rocm91Z2ggCmZlYXR1cmUs
-IGFuZCwgaWYgeW91IGFyZSB1c2luZyBHU3RyZWFtZXIsIGFsc28gdG8gbWFrZSBzdXJlIHRoYXQg
-dGhlIAppbnN0YWxsZWQgdmVyc2lvbiBzdXBwb3J0cyBwYXNzdGhyb3VnaC4gT24gc3VjaCBhbmNp
-ZW50IHBsYXRmb3JtLCBJJ2QgCnJlY29tbWVuZCBhZ2FpbnN0IGl0LgoKRm9yIFBDTSA1LjEgKGku
-ZS4gc29mdHdhcmUgZGVjb2RpbmcpIHdpdGggUHVsc2VBdWRpbyAxLjEsIHlvdSBuZWVkIGEgCnJl
-YWwgNS4xIHJlY2VpdmVyIGFuZCB0aGlzIGNvbW1hbmQ6CgpwYWNtZCBsb2FkLW1vZHVsZSBtb2R1
-bGUtYWxzYS1zaW5rIGRldmljZT1oZG1pOjAsMCBjaGFubmVscz02Cgo+IFVzaW5nICBwYXN1c3Bl
-bmRlciAtLSBzcGVha2VyLXRlc3QgLWM2IC1iIDEyNTAwMCAtUDIgLUQgInBsdWc6J2hkbWk6WCxZ
-JyIKPiBYIFkgUmVzdWx0Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gMCAw
-IEhpc3MgbGVmdCBGcm9udCBhbmQgUmlnaHQgRnJvbnQsIG90aGVycyBzaWxlbnQKPiAoZXZlcnl0
-aGluZyBlbHNlKSBQbGF5YmFjayBvcGVuIGVycm9yOiAtMiwgTm8gc3VjaCBmaWxlIG9yIGRpcmVj
-dG9yeQoKVHJ5IHJldGVzdGluZyBwbHVnOidoZG1pOjAsMCcgd2l0aCBhIHJlYWwgNS4xIEhETUkg
-cmVjZWl2ZXIgKGUuZy4gZnJvbSAKT25reW8pLCBub3Qgd2l0aCBhIFNhbXN1bmcgVFYvbW9uaXRv
-ciAodGhhdCBvbmx5IGFkdmVydGlzZXMgdGhlIHByZXNlbmNlIApvZiBGcm9udC1MZWZ0IGFuZCBG
-cm9udC1SaWdodCBjaGFubmVscyBhbmQgTFBDTSBlbmNvZGluZyBpbiB0aGUgRUxEKS4KCi0tIApB
-bGV4YW5kZXIgRS4gUGF0cmFrb3YKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+Add assignment of the variant_regs field which is missing in commit
+a5a56871f804edac93a53b5e871c0e9818fb9033 ("ASoC: samsung: add support
+for exynos7 I2S controller"). Without this attempting to probe the
+secondary DAI fails with an error like:
+
+[    1.763026] Unable to handle kernel NULL pointer dereference at virtual address 0000000c
+[    1.780895] pgd = c0004000
+[    1.783606] [0000000c] *pgd=00000000
+[    1.838255] Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+[    1.843514] Modules linked in:
+[    1.846558] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 3.18.0-rc1-00009-g5dcb01e-dirty #1521
+[    1.854887] task: ee00a800 ti: ee088000 task.ti: ee088000
+[    1.860284] PC is at i2s_txctrl+0x40/0x2d4
+[    1.864350] LR is at i2s_txctrl+0x28/0x2d4
+[    1.868428] pc : [<c036ffd4>]    lr : [<c036ffbc>]    psr: 60000153
+[    1.868428] sp : ee089dc0  ip : 00000000  fp : ee21f000
+[    1.879883] r10: 00000000  r9 : ee21fb00  r8 : c06406c4
+[    1.885091] r7 : ee21fb00  r6 : 00000000  r5 : f00f6000  r4 : ed943410
+[    1.891601] r3 : 0000016c  r2 : c0464550  r1 : c055cef8  r0 : ed943610
+[    1.898113] Flags: nZCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment kernel
+[    1.905490] Control: 10c5387d  Table: 4000404a  DAC: 00000015
+[    1.911218] Process swapper/0 (pid: 1, stack limit = 0xee088240)
+[    1.917208] Stack: (0xee089dc0 to 0xee08a000)
+...
+[    2.068431] [<c036ffd4>] (i2s_txctrl) from [<c03719fc>] (samsung_i2s_dai_probe+0xb8/0x450)
+[    2.076676] [<c03719fc>] (samsung_i2s_dai_probe) from [<c03607e0>] (snd_soc_register_card+0xd98/0x1348)
+[    2.086044] [<c03607e0>] (snd_soc_register_card) from [<c03726e4>] (odroidx2_audio_probe+0xa8/0x11c)
+[    2.095160] [<c03726e4>] (odroidx2_audio_probe) from [<c0249dd0>] (platform_drv_probe+0x48/0xa4)
+[    2.103922] [<c0249dd0>] (platform_drv_probe) from [<c0248988>] (driver_probe_device+0x10c/0x22c)
+[    2.112773] [<c0248988>] (driver_probe_device) from [<c0248b34>] (__driver_attach+0x8c/0x90)
+[    2.121192] [<c0248b34>] (__driver_attach) from [<c02471c8>] (bus_for_each_dev+0x54/0x88)
+[    2.129352] [<c02471c8>] (bus_for_each_dev) from [<c0248188>] (bus_add_driver+0xd4/0x1d0)
+[    2.137510] [<c0248188>] (bus_add_driver) from [<c024915c>] (driver_register+0x78/0xf4)
+[    2.145499] [<c024915c>] (driver_register) from [<c0008924>] (do_one_initcall+0x80/0x1b8)
+[    2.153670] [<c0008924>] (do_one_initcall) from [<c05b7d40>] (kernel_init_freeable+0xfc/0x1c8)
+[    2.162260] [<c05b7d40>] (kernel_init_freeable) from [<c04146c0>] (kernel_init+0x8/0xec)
+[    2.170330] [<c04146c0>] (kernel_init) from [<c000e7f8>] (ret_from_fork+0x14/0x3c)
+[    2.177873] Code: e5940000 e59f128c e59f228c e2800010 (e59c700c)
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/i2s.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index c7aafcd..eca17dc 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1261,6 +1261,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 			ret = -ENOMEM;
+ 			goto err;
+ 		}
++
++		sec_dai->variant_regs = pri_dai->variant_regs;
+ 		sec_dai->dma_playback.dma_addr = regs_base + I2STXDS;
+ 		sec_dai->dma_playback.ch_name = "tx-sec";
+ 
+-- 
+1.7.9.5
