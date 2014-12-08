@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH RFC 3/4] pcm: add helper functions to query
-	timestamping capabilities
-Date: Mon,  8 Dec 2014 16:28:45 -0600
-Message-ID: <1418077726-8516-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RFC 2/4] add support for
+	get/set_audio_htstamp_config
+Date: Mon,  8 Dec 2014 16:28:44 -0600
+Message-ID: <1418077726-8516-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1418077726-8516-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B09FD265382
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:29:04 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id BD87B265325
+ for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 23:29:03 +0100 (CET)
 In-Reply-To: <1418077726-8516-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,104 +25,105 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-extend support to link, link_estimated and link_synchronized
-timestamp. wall-clock is deprecated
+Enable kernel-side functionality by letting user select what sort of
+timestamp it desires
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/pcm.h |  5 ++++-
- src/pcm/pcm.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 61 insertions(+), 2 deletions(-)
+ include/pcm.h | 38 ++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm.c | 24 ++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+)
 
 diff --git a/include/pcm.h b/include/pcm.h
-index f963b92..f8c557b 100644
+index 0655e7f..f963b92 100644
 --- a/include/pcm.h
 +++ b/include/pcm.h
-@@ -684,7 +684,10 @@ int snd_pcm_hw_params_is_half_duplex(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_is_joint_duplex(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_can_sync_start(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *params);
--int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params);
-+int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params); /* deprecated */
-+int snd_pcm_hw_params_supports_audio_link_ts(const snd_pcm_hw_params_t *params);
-+int snd_pcm_hw_params_supports_audio_link_estimated_ts(const snd_pcm_hw_params_t *params);
-+int snd_pcm_hw_params_supports_audio_link_synchronized_ts(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_get_rate_numden(const snd_pcm_hw_params_t *params,
- 				      unsigned int *rate_num,
- 				      unsigned int *rate_den);
+@@ -330,6 +330,22 @@ typedef enum _snd_pcm_tstamp_type {
+ 	SND_PCM_TSTAMP_TYPE_LAST = SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW,
+ } snd_pcm_tstamp_type_t;
+ 
++typedef struct _snd_pcm_audio_tstamp_config {
++	/* input from user space*/
++	unsigned int type_requested:4; /* will be overridden and DEFAULT tstamp reported if not supported */
++	unsigned int report_delay:1; /* add delay to A/D or D/A */
++} snd_pcm_audio_tstamp_config_t;
++
++typedef struct _snd_pcm_audio_tstamp_report {
++	/* actual type if hardware could not support requested timestamp */
++	unsigned int actual_type:4;
++
++	/* returned to userspace, accuracy represented in mantissa/exponent form */
++	unsigned int accuracy_report:1; /* 0 if accuracy unknown, 1 if rest of structure is valid */
++	unsigned int accuracy_m:7; /* 0..127, ~3 significant digit for mantissa */
++	unsigned int accuracy_e:4; /* base10 exponent, 0 for ns, 3 for us, 6 for ms, 9 for s */
++} snd_pcm_audio_tstamp_report_t;
++
+ /** Unsigned frames quantity */
+ typedef unsigned long snd_pcm_uframes_t;
+ /** Signed frames quantity */
+@@ -980,6 +996,28 @@ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimest
+ void snd_pcm_status_get_tstamp(const snd_pcm_status_t *obj, snd_timestamp_t *ptr);
+ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
+ void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
++void snd_pcm_status_get_audio_htstamp_report(const snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_report_t *audio_tstamp_report);
++void snd_pcm_status_set_audio_htstamp_config(snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_config_t *audio_tstamp_config);
++
++static inline void snd_pcm_pack_audio_tstamp_config(unsigned int *data,
++						snd_pcm_audio_tstamp_config_t *config)
++{
++	*data = config->report_delay;
++	*data <<= 4;
++	*data |= config->type_requested;
++}
++
++static inline void snd_pcm_unpack_audio_tstamp_report(unsigned int data,
++						snd_pcm_audio_tstamp_report_t *report)
++{
++	report->actual_type = data & 0xFF;
++	report->accuracy_report = (data >> 4) & 1;
++	report->accuracy_m = (data >> 7) & 0x7F;
++	report->accuracy_e = (data >> 12) & 0xF;
++}
++
+ snd_pcm_sframes_t snd_pcm_status_get_delay(const snd_pcm_status_t *obj);
+ snd_pcm_uframes_t snd_pcm_status_get_avail(const snd_pcm_status_t *obj);
+ snd_pcm_uframes_t snd_pcm_status_get_avail_max(const snd_pcm_status_t *obj);
 diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index af7d8c9..28a2a4e 100644
+index baa47c7..af7d8c9 100644
 --- a/src/pcm/pcm.c
 +++ b/src/pcm/pcm.c
-@@ -3190,12 +3190,68 @@ int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *param
-  */
- int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params)
- {
-+	/* deprecated */
-+	return snd_pcm_hw_params_supports_audio_link_ts(params);
-+}
-+
-+/**
-+ * \brief Check if hardware supports audio link timestamps
-+ * \param params Configuration space
-+ * \retval 0 Hardware doesn't support audio link timestamps
-+ * \retval 1 Hardware supports audio link timestamps
-+ *
-+ * This function should only be called when the configuration space
-+ * contains a single configuration. Call #snd_pcm_hw_params to choose
-+ * a single configuration from the configuration space.
-+ */
-+int snd_pcm_hw_params_supports_audio_link_ts(const snd_pcm_hw_params_t *params)
-+{
-+	assert(params);
-+	if (CHECK_SANITY(params->info == ~0U)) {
-+		SNDMSG("invalid PCM info field");
-+		return 0; /* FIXME: should be a negative error? */
-+	}
-+	return !!(params->info & SNDRV_PCM_INFO_HAS_LINK_ATIME);
-+}
-+
-+/**
-+ * \brief Check if hardware supports audio link estimated timestamps
-+ * \param params Configuration space
-+ * \retval 0 Hardware doesn't support audio link estimated timestamps
-+ * \retval 1 Hardware supports audio link estimated timestamps
-+ *
-+ * This function should only be called when the configuration space
-+ * contains a single configuration. Call #snd_pcm_hw_params to choose
-+ * a single configuration from the configuration space.
-+ */
-+int snd_pcm_hw_params_supports_audio_link_estimated_ts(const snd_pcm_hw_params_t *params)
-+{
-+	assert(params);
-+	if (CHECK_SANITY(params->info == ~0U)) {
-+		SNDMSG("invalid PCM info field");
-+		return 0; /* FIXME: should be a negative error? */
-+	}
-+	return !!(params->info & SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME);
-+}
-+
-+/**
-+ * \brief Check if hardware supports audio link synchronized timestamps
-+ * \param params Configuration space
-+ * \retval 0 Hardware doesn't support audio link synchronized timestamps
-+ * \retval 1 Hardware supports audio link synchronized timestamps
-+ *
-+ * This function should only be called when the configuration space
-+ * contains a single configuration. Call #snd_pcm_hw_params to choose
-+ * a single configuration from the configuration space.
-+ */
-+int snd_pcm_hw_params_supports_audio_link_synchronized_ts(const snd_pcm_hw_params_t *params)
-+{
- 	assert(params);
- 	if (CHECK_SANITY(params->info == ~0U)) {
- 		SNDMSG("invalid PCM info field");
- 		return 0; /* FIXME: should be a negative error? */
- 	}
--	return !!(params->info & SNDRV_PCM_INFO_HAS_WALL_CLOCK);
-+	return !!(params->info & SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME);
+@@ -6334,6 +6334,30 @@ void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestam
  }
  
  /**
++ * \brief Get audio_tstamp_report from a PCM status container
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to returned report (valid fields are accuracy and type)
++ */
++void snd_pcm_status_get_audio_htstamp_report(const snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_report_t *audio_tstamp_report)
++{
++	assert(obj && audio_tstamp_report);
++	snd_pcm_unpack_audio_tstamp_report(obj->audio_tstamp_data, audio_tstamp_report);
++}
++
++/**
++ * \brief set audio_tstamp_config from a PCM status container
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to config (valid fields are type and report_analog_delay)
++ */
++void snd_pcm_status_set_audio_htstamp_config(snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_config_t *audio_tstamp_config)
++{
++	assert(obj && audio_tstamp_config);
++	snd_pcm_pack_audio_tstamp_config(&obj->audio_tstamp_data, audio_tstamp_config);
++}
++
++/**
+  * \brief Get delay from a PCM status container (see #snd_pcm_delay)
+  * \return Delay in frames
+  *
 -- 
 2.1.0
