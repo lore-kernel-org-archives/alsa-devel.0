@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch v2 03/11] ASoC: ipq806x: add LPAIF header file
-Date: Mon,  8 Dec 2014 14:01:05 -0800
-Message-ID: <1418076073-12623-4-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch v2 06/11] ASoC: ipq806x: Add I2S PCM platform driver
+Date: Mon,  8 Dec 2014 14:01:08 -0800
+Message-ID: <1418076073-12623-7-git-send-email-kwestfie@codeaurora.org>
 References: <1418076073-12623-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1418076073-12623-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,22 +12,21 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add the LPASS LPAIF header file in Qualcomm Technologies
-SoCs.  This primarily contains the register definitions.
+Add PCM platform driver for the LPASS I2S port.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/qcom/lpass-lpaif.h | 154 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 154 insertions(+)
- create mode 100644 sound/soc/qcom/lpass-lpaif.h
+ sound/soc/qcom/lpass-pcm-mi2s.c | 452 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 452 insertions(+)
+ create mode 100644 sound/soc/qcom/lpass-pcm-mi2s.c
 
-diff --git a/sound/soc/qcom/lpass-lpaif.h b/sound/soc/qcom/lpass-lpaif.h
+diff --git a/sound/soc/qcom/lpass-pcm-mi2s.c b/sound/soc/qcom/lpass-pcm-mi2s.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..cdc81fbe6d0be9d57860b4ba80e0b3549e4cca76
+index 0000000000000000000000000000000000000000..75ae2bc7d038a48845d502169d87ed55a1c0783d
 --- /dev/null
-+++ b/sound/soc/qcom/lpass-lpaif.h
-@@ -0,0 +1,154 @@
++++ b/sound/soc/qcom/lpass-pcm-mi2s.c
+@@ -0,0 +1,452 @@
 +/*
 + * Copyright (c) 2010-2011,2013-2014 The Linux Foundation. All rights reserved.
 + *
@@ -41,146 +40,444 @@ index 0000000000000000000000000000000000000000..cdc81fbe6d0be9d57860b4ba80e0b354
 + * GNU General Public License for more details.
 + */
 +
-+#ifndef _LPASS_LPAIF_H
-+#define _LPASS_LPAIF_H
++#include <linux/module.h>
++#include <linux/dma-mapping.h>
++#include <sound/soc.h>
++#include "lpass-lpaif.h"
++#include "lpass-cpu-mi2s.h"
 +
-+#define LPAIF_BANK_OFFSET		0x1000
++#define DRV_NAME			"lpass-pcm-mi2s"
 +
-+/* LPAIF DMA Configuration/Control */
++/* MI2S HW params */
++#define LPASS_MI2S_PERIOD_SIZE		(8064)
++#define LPASS_MI2S_PERIODS_MIN		(2)
++#define LPASS_MI2S_PERIODS_MAX		(4)
++#define LPASS_MI2S_BUFF_SIZE_MIN	(LPASS_MI2S_PERIOD_SIZE * \
++						LPASS_MI2S_PERIODS_MIN)
++#define LPASS_MI2S_BUFF_SIZE_MAX	(LPASS_MI2S_PERIOD_SIZE * \
++						LPASS_MI2S_PERIODS_MAX)
 +
-+#define LPAIF_DMA_BASE			0x6000
-+#define LPAIF_DMA_INDEX(ch)		(LPAIF_BANK_OFFSET * (ch))
-+#define LPAIF_DMA_ADDR(ch, addr)	(LPAIF_DMA_BASE \
-+						+ (LPAIF_DMA_INDEX(ch) \
-+						+ (addr)))
-+
-+#define LPAIF_DMA_CTL(x)		LPAIF_DMA_ADDR((x), 0x00)
-+#define LPAIF_DMA_BASEADDR(x)		LPAIF_DMA_ADDR((x), 0x04)
-+#define	LPAIF_DMA_BUFFLEN(x)		LPAIF_DMA_ADDR((x), 0x08)
-+#define LPAIF_DMA_CURRADDR(x)		LPAIF_DMA_ADDR((x), 0x0c)
-+#define	LPAIF_DMA_PERLEN(x)		LPAIF_DMA_ADDR((x), 0x10)
-+#define	LPAIF_DMA_PERCNT(x)		LPAIF_DMA_ADDR((x), 0x14)
-+#define	LPAIF_DMA_FRM(x)		LPAIF_DMA_ADDR((x), 0x18)
-+#define LPAIF_DMA_FRMCLR(x)		LPAIF_DMA_ADDR((x), 0x1c)
-+#define LPAIF_DMA_SETBUFFCNT(x)		LPAIF_DMA_ADDR((x), 0x20)
-+#define	LPAIF_DMA_SETPERCNT(x)		LPAIF_DMA_ADDR((x), 0x24)
-+
-+#define LPAIF_DMACTL_BURST_EN_SHIFT	11
-+#define LPAIF_DMACTL_BURST_EN		(1 << LPAIF_DMACTL_BURST_EN_SHIFT)
-+
-+#define LPAIF_DMACTL_WPSCNT_MASK	0x700
-+#define LPAIF_DMACTL_WPSCNT_SHIFT	8
-+#define LPAIF_DMACTL_WPSCNT_SINGLE	(0 << LPAIF_DMACTL_WPSCNT_SHIFT)
-+#define LPAIF_DMACTL_WPSCNT_DOUBLE	(1 << LPAIF_DMACTL_WPSCNT_SHIFT)
-+#define LPAIF_DMACTL_WPSCNT_TRIPLE	(2 << LPAIF_DMACTL_WPSCNT_SHIFT)
-+#define LPAIF_DMACTL_WPSCNT_QUAD	(3 << LPAIF_DMACTL_WPSCNT_SHIFT)
-+#define LPAIF_DMACTL_WPSCNT_SIXPACK	(5 << LPAIF_DMACTL_WPSCNT_SHIFT)
-+#define LPAIF_DMACTL_WPSCNT_OCTAL	(7 << LPAIF_DMACTL_WPSCNT_SHIFT)
-+
-+#define LPAIF_DMACTL_AUDIO_INTF_MASK	0x0F0
-+#define LPAIF_DMACTL_AUDIO_INTF_SHIFT	4
-+#define LPAIF_DMACTL_AUDIO_INTF_NONE	(0 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+#define LPAIF_DMACTL_AUDIO_INTF_CODEC	(1 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+#define LPAIF_DMACTL_AUDIO_INTF_PCM	(2 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+#define LPAIF_DMACTL_AUDIO_INTF_SEC_I2S	(3 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+#define LPAIF_DMACTL_AUDIO_INTF_MI2S	(4 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+#define LPAIF_DMACTL_AUDIO_INTF_HDMI	(5 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+#define LPAIF_DMACTL_AUDIO_INTF_MIXOUT	(6 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+#define LPAIF_DMACTL_AUDIO_INTF_LB1	(7 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+#define LPAIF_DMACTL_AUDIO_INTF_LB2	(8 << LPAIF_DMACTL_AUDIO_INTF_SHIFT)
-+
-+#define LPAIF_DMACTL_FIFO_WM_MASK	0x00E
-+#define LPAIF_DMACTL_FIFO_WM_SHIFT	1
-+#define LPAIF_DMACTL_FIFO_WM_1		(0 << LPAIF_DMACTL_FIFO_WM_SHIFT)
-+#define LPAIF_DMACTL_FIFO_WM_2		(1 << LPAIF_DMACTL_FIFO_WM_SHIFT)
-+#define LPAIF_DMACTL_FIFO_WM_3		(2 << LPAIF_DMACTL_FIFO_WM_SHIFT)
-+#define LPAIF_DMACTL_FIFO_WM_4		(3 << LPAIF_DMACTL_FIFO_WM_SHIFT)
-+#define LPAIF_DMACTL_FIFO_WM_5		(4 << LPAIF_DMACTL_FIFO_WM_SHIFT)
-+#define LPAIF_DMACTL_FIFO_WM_6		(5 << LPAIF_DMACTL_FIFO_WM_SHIFT)
-+#define LPAIF_DMACTL_FIFO_WM_7		(6 << LPAIF_DMACTL_FIFO_WM_SHIFT)
-+#define LPAIF_DMACTL_FIFO_WM_8		(7 << LPAIF_DMACTL_FIFO_WM_SHIFT)
-+
-+#define LPAIF_DMACTL_ENABLE_SHIFT	0
-+#define LPAIF_DMACTL_ENABLE		(1 << LPAIF_DMACTL_ENABLE_SHIFT)
-+
-+/* LPAIF DMA Interrupt Control */
-+
-+#define LPAIF_DMAIRQ_BASE		0x3000
-+#define LPAIF_DMAIRQ_INDEX(x)		(LPAIF_BANK_OFFSET * (x))
-+#define LPAIF_DMAIRQ_ADDR(irq, addr)	(LPAIF_DMAIRQ_BASE  \
-+						+ LPAIF_DMAIRQ_INDEX(irq) \
-+						+ (addr))
-+
-+#define LPAIF_DMAIRQ_EN(x)		LPAIF_DMAIRQ_ADDR((x), 0x00)
-+#define LPAIF_DMAIRQ_STAT(x)		LPAIF_DMAIRQ_ADDR((x), 0x04)
-+#define LPAIF_DMAIRQ_RAW_STAT(x)	LPAIF_DMAIRQ_ADDR((x), 0x08)
-+#define LPAIF_DMAIRQ_CLEAR(x)		LPAIF_DMAIRQ_ADDR((x), 0x0c)
-+#define LPAIF_DMAIRQ_FORCE(x)		LPAIF_DMAIRQ_ADDR((x), 0x10)
-+
-+#define LPAIF_DMAIRQ_SHIFT		3
-+#define LPAIF_DMAIRQ_PER(x)		(1 << (LPAIF_DMAIRQ_SHIFT * (x)))
-+#define LPAIF_DMAIRQ_XRUN(x)		(2 << (LPAIF_DMAIRQ_SHIFT * (x)))
-+#define LPAIF_DMAIRQ_ERR(x)		(4 << (LPAIF_DMAIRQ_SHIFT * (x)))
-+#define LPAIF_DMAIRQ_ALL(x)		(7 << (LPAIF_DMAIRQ_SHIFT * (x)))
-+
-+/* LPAIF I2S Configuration/Control */
-+
-+#define LPAIF_MI2S_CTL_OFFSET(x)	(0x0010 + 0x4 * (x))
-+
-+#define LPAIF_MI2SCTL_LB_SHIFT		15
-+#define LPAIF_MI2SCTL_LB		(1 << LPAIF_MI2SCTL_LB_SHIFT)
-+
-+#define LPAIF_MI2SCTL_SPKEN_SHIFT	14
-+#define LPAIF_MI2SCTL_SPKEN		(1 << LPAIF_MI2SCTL_SPKEN_SHIFT)
-+
-+#define LPAIF_MI2SCTL_SPKMODE_MASK	0x3C00
-+#define LPAIF_MI2SCTL_SPKMODE_SHIFT	10
-+#define LPAIF_MI2SCTL_SPKMODE_NONE	(0 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMODE_SD0	(1 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMODE_SD1	(2 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMODE_SD2	(3 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMODE_SD3	(4 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMODE_QUAD01	(5 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMODE_QUAD23	(6 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMODE_6CH	(7 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMODE_8CH	(8 << LPAIF_MI2SCTL_SPKMODE_SHIFT)
-+
-+#define LPAIF_MI2SCTL_SPKMONO_MASK	0x0200
-+#define LPAIF_MI2SCTL_SPKMONO_SHIFT	9
-+#define LPAIF_MI2SCTL_SPKMONO_STEREO	(0 << LPAIF_MI2SCTL_SPKMONO_SHIFT)
-+#define LPAIF_MI2SCTL_SPKMONO_MONO	(1 << LPAIF_MI2SCTL_SPKMONO_SHIFT)
-+
-+#define LPAIF_MI2SCTL_WS_SHIFT		2
-+#define LPAIF_MI2SCTL_WS		(1 << LPAIF_MI2SCTL_WS_SHIFT)
-+
-+#define LPAIF_MI2SCTL_BITRATE_MASK	0x3
-+#define LPAIF_MI2SCTL_BITRATE_SHIFT	0
-+#define LPAIF_MI2SCTL_BITRATE_16	(0 << LPAIF_MI2SCTL_BITRATE_SHIFT)
-+#define LPAIF_MI2SCTL_BITRATE_24	(1 << LPAIF_MI2SCTL_BITRATE_SHIFT)
-+#define LPAIF_MI2SCTL_BITRATE_32	(2 << LPAIF_MI2SCTL_BITRATE_SHIFT)
-+
-+enum lpaif_dma_interface_channels {
-+	LPAIF_DMA_RD_CH_MI2S = 0,
-+	LPAIF_DMA_RD_CH_PCM0 = 1,
-+	LPAIF_DMA_RD_CH_PCM1 = 2,
-+	LPAIF_DMA_WR_CH_PCM0 = 5,
-+	LPAIF_DMA_WR_CH_PCM1 = 6,
-+	LPAIF_DMA_WR_CH_MI2S = 6,
++static struct snd_pcm_hardware lpass_pcm_mi2s_hardware_playback = {
++	.info			=	SNDRV_PCM_INFO_MMAP |
++					SNDRV_PCM_INFO_BLOCK_TRANSFER |
++					SNDRV_PCM_INFO_MMAP_VALID |
++					SNDRV_PCM_INFO_INTERLEAVED |
++					SNDRV_PCM_INFO_PAUSE |
++					SNDRV_PCM_INFO_RESUME,
++	.formats		=	SNDRV_PCM_FMTBIT_S16 |
++					SNDRV_PCM_FMTBIT_S24 |
++					SNDRV_PCM_FMTBIT_S32,
++	.rates			=	SNDRV_PCM_RATE_8000_192000,
++	.rate_min		=	8000,
++	.rate_max		=	192000,
++	.channels_min		=	1,
++	.channels_max		=	8,
++	.buffer_bytes_max	=	LPASS_MI2S_BUFF_SIZE_MAX,
++	.period_bytes_max	=	LPASS_MI2S_PERIOD_SIZE,
++	.period_bytes_min	=	LPASS_MI2S_PERIOD_SIZE,
++	.periods_min		=	LPASS_MI2S_PERIODS_MIN,
++	.periods_max		=	LPASS_MI2S_PERIODS_MAX,
++	.fifo_size		=	0,
 +};
 +
-+enum lpaif_i2s_interface_ports {
-+	LPAIF_I2S_PORT_CODEC_SPK = 0,
-+	LPAIF_I2S_PORT_CODEC_MIC = 1,
-+	LPAIF_I2S_PORT_SEC_SPK   = 2,
-+	LPAIF_I2S_PORT_SEC_MIC   = 3,
-+	LPAIF_I2S_PORT_MI2S      = 4,
++static int lpass_lpaif_int_enable(struct lpass_cpu_mi2s_data *prtd)
++{
++	u32 intr_val;
++
++	/* clear status before enabling interrupt */
++	writel(LPAIF_DMAIRQ_ALL(LPAIF_DMA_RD_CH_MI2S),
++			prtd->base + LPAIF_DMAIRQ_CLEAR(LPAIF_IRQ_RECV_HOST));
++
++	intr_val = readl(prtd->base + LPAIF_DMAIRQ_EN(LPAIF_IRQ_RECV_HOST));
++	intr_val |= LPAIF_DMAIRQ_ALL(LPAIF_DMA_RD_CH_MI2S);
++	writel(intr_val, prtd->base + LPAIF_DMAIRQ_EN(LPAIF_IRQ_RECV_HOST));
++
++	return 0;
++}
++
++static int lpass_lpaif_int_disable(struct lpass_cpu_mi2s_data *prtd)
++{
++	u32 intr_val;
++
++	intr_val = readl(prtd->base + LPAIF_DMAIRQ_EN(LPAIF_IRQ_RECV_HOST));
++	intr_val &= ~LPAIF_DMAIRQ_ALL(LPAIF_DMA_RD_CH_MI2S);
++	writel(intr_val, prtd->base + LPAIF_DMAIRQ_EN(LPAIF_IRQ_RECV_HOST));
++
++	return 0;
++}
++
++static int lpass_lpaif_cfg_dma(struct lpass_cpu_mi2s_data *prtd,
++		dma_addr_t src_start, int buffer_size, int period_size,
++		int channels, int bitwidth)
++{
++	int ret = 0;
++	u32 cfg;
++
++	lpass_lpaif_int_enable(prtd);
++
++	writel(src_start, prtd->base +
++			LPAIF_DMA_BASEADDR(LPAIF_DMA_RD_CH_MI2S));
++	writel((buffer_size >> 2) - 1, prtd->base +
++			LPAIF_DMA_BUFFLEN(LPAIF_DMA_RD_CH_MI2S));
++	writel((period_size >> 2) - 1, prtd->base +
++			LPAIF_DMA_PERLEN(LPAIF_DMA_RD_CH_MI2S));
++
++	cfg = 0;
++	cfg |= LPAIF_DMACTL_BURST_EN;
++	cfg |= LPAIF_DMACTL_AUDIO_INTF_MI2S;
++	cfg |= LPAIF_DMACTL_FIFO_WM_8;
++	cfg |= LPAIF_DMACTL_ENABLE;
++
++	switch (bitwidth) {
++	case 16:
++		switch (channels) {
++		case 1:
++		case 2:
++			cfg |= LPAIF_DMACTL_WPSCNT_SINGLE;
++			break;
++		case 4:
++			cfg |= LPAIF_DMACTL_WPSCNT_DOUBLE;
++			break;
++		case 6:
++			cfg |= LPAIF_DMACTL_WPSCNT_TRIPLE;
++			break;
++		case 8:
++			cfg |= LPAIF_DMACTL_WPSCNT_QUAD;
++			break;
++		default:
++			pr_err("%s: invalid PCM config given: bw=%u, ch=%u\n",
++					__func__, bitwidth, channels);
++			ret = -EINVAL;
++		}
++		break;
++	case 24:
++	case 32:
++		switch (channels) {
++		case 1:
++			cfg |= LPAIF_DMACTL_WPSCNT_SINGLE;
++			break;
++		case 2:
++			cfg |= LPAIF_DMACTL_WPSCNT_DOUBLE;
++			break;
++		case 4:
++			cfg |= LPAIF_DMACTL_WPSCNT_QUAD;
++			break;
++		case 6:
++			cfg |= LPAIF_DMACTL_WPSCNT_SIXPACK;
++			break;
++		case 8:
++			cfg |= LPAIF_DMACTL_WPSCNT_OCTAL;
++			break;
++		default:
++			pr_err("%s: invalid PCM config given: bw=%u, ch=%u\n",
++					__func__, bitwidth, channels);
++			ret = -EINVAL;
++		}
++		break;
++	default:
++		pr_err("%s: invalid PCM config given: bw=%u, ch=%u\n",
++				__func__, bitwidth, channels);
++		ret = -EINVAL;
++	}
++
++	if (!ret)
++		writel(cfg, prtd->base + LPAIF_DMA_CTL(LPAIF_DMA_RD_CH_MI2S));
++
++	return ret;
++}
++
++static void lpass_lpaif_dma_stop_clear(struct lpass_cpu_mi2s_data *prtd)
++{
++	writel(0x0, prtd->base + LPAIF_DMA_CTL(LPAIF_DMA_RD_CH_MI2S));
++}
++
++static void lpass_lpaif_dma_stop(struct lpass_cpu_mi2s_data *prtd)
++{
++	u32 cfg;
++
++	cfg = readl(prtd->base + LPAIF_DMA_CTL(LPAIF_DMA_RD_CH_MI2S));
++	cfg &= ~LPAIF_DMACTL_ENABLE;
++	writel(cfg, prtd->base + LPAIF_DMA_CTL(LPAIF_DMA_RD_CH_MI2S));
++}
++
++static int lpass_pcm_mi2s_alloc_buffer(struct snd_pcm *pcm, int stream)
++{
++	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
++	struct snd_soc_pcm_runtime *prtd = substream->private_data;
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++	size_t size;
++
++	size = lpass_pcm_mi2s_hardware_playback.buffer_bytes_max;
++
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = pcm->card->dev;
++	buf->private_data = NULL;
++	buf->area = dma_alloc_coherent(pcm->card->dev, size,
++			&buf->addr, GFP_KERNEL);
++	if (!buf->area) {
++		dev_err(prtd->dev, "%s: Could not allocate DMA buffer\n",
++				__func__);
++		return -ENOMEM;
++	}
++	buf->bytes = size;
++
++	return 0;
++}
++
++static void lpass_pcm_mi2s_free_buffer(struct snd_pcm *pcm, int stream)
++{
++	struct snd_pcm_substream *substream;
++	struct snd_dma_buffer *buf;
++
++	substream = pcm->streams[stream].substream;
++	buf = &substream->dma_buffer;
++	if (buf->area) {
++		dma_free_coherent(pcm->card->dev, buf->bytes, buf->area,
++				buf->addr);
++	}
++	buf->area = NULL;
++}
++
++static irqreturn_t lpass_pcm_mi2s_irq(int irq, void *data)
++{
++	irqreturn_t ret = IRQ_NONE;
++	u32 intrsrc;
++	u32 has_xrun, pending;
++	struct snd_pcm_substream *substream = data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct lpass_cpu_mi2s_data *prtd =
++		snd_soc_dai_get_drvdata(soc_prtd->cpu_dai);
++
++	intrsrc = readl(prtd->base + LPAIF_DMAIRQ_STAT(LPAIF_IRQ_RECV_HOST));
++	intrsrc &= LPAIF_DMAIRQ_ALL(LPAIF_DMA_RD_CH_MI2S);
++	writel(intrsrc, prtd->base + LPAIF_DMAIRQ_CLEAR(LPAIF_IRQ_RECV_HOST));
++
++	pending = intrsrc & LPAIF_DMAIRQ_ALL(LPAIF_DMA_RD_CH_MI2S);
++	has_xrun = pending & LPAIF_DMAIRQ_XRUN(LPAIF_DMA_RD_CH_MI2S);
++
++	if (unlikely(has_xrun) && snd_pcm_running(substream)) {
++		dev_warn(soc_prtd->dev, "%s: xrun warning\n", __func__);
++		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
++		pending &= ~LPAIF_DMAIRQ_XRUN(LPAIF_DMA_RD_CH_MI2S);
++		ret = IRQ_HANDLED;
++	}
++
++	if (pending & LPAIF_DMAIRQ_PER(LPAIF_DMA_RD_CH_MI2S)) {
++		if (++prtd->period_index >= runtime->periods)
++			prtd->period_index = 0;
++		snd_pcm_period_elapsed(substream);
++		pending &= ~LPAIF_DMAIRQ_PER(LPAIF_DMA_RD_CH_MI2S);
++		ret = IRQ_HANDLED;
++	}
++
++	if (pending & LPAIF_DMAIRQ_XRUN(LPAIF_DMA_RD_CH_MI2S)) {
++		snd_pcm_period_elapsed(substream);
++		dev_warn(soc_prtd->dev, "%s: xrun warning\n", __func__);
++		ret = IRQ_HANDLED;
++	}
++
++	if (pending & LPAIF_DMAIRQ_ERR(LPAIF_DMA_RD_CH_MI2S)) {
++		dev_err(soc_prtd->dev, "%s: Bus access error\n", __func__);
++		ret = IRQ_HANDLED;
++	}
++
++	return ret;
++}
++
++static int lpass_pcm_mi2s_open(struct snd_pcm_substream *substream)
++{
++	int ret;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct lpass_cpu_mi2s_data *prtd =
++		snd_soc_dai_get_drvdata(soc_prtd->cpu_dai);
++
++	prtd->prepare_start = 0;
++	prtd->period_index = 0;
++
++	runtime->dma_bytes = lpass_pcm_mi2s_hardware_playback.buffer_bytes_max;
++	snd_soc_set_runtime_hwparams(substream,
++			&lpass_pcm_mi2s_hardware_playback);
++
++	ret = snd_pcm_hw_constraint_integer(runtime,
++			SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		dev_err(soc_prtd->dev,
++				"%s: snd_pcm_hw_constraint_integer failed\n",
++				__func__);
++		return -EINVAL;
++	}
++
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++
++	return 0;
++}
++
++static int lpass_pcm_mi2s_close(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct lpass_cpu_mi2s_data *prtd =
++		snd_soc_dai_get_drvdata(soc_prtd->cpu_dai);
++
++	lpass_lpaif_dma_stop_clear(prtd);
++	lpass_lpaif_int_disable(prtd);
++
++	return 0;
++}
++
++static int lpass_pcm_mi2s_prepare(struct snd_pcm_substream *substream)
++{
++	int ret;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct lpass_cpu_mi2s_data *prtd =
++		snd_soc_dai_get_drvdata(soc_prtd->cpu_dai);
++
++	/* xrun recovery */
++	if (prtd->prepare_start)
++		return 0;
++
++	lpass_lpaif_dma_stop(prtd);
++	prtd->prepare_start = 1;
++
++	ret = lpass_lpaif_cfg_dma(prtd, runtime->dma_addr,
++			snd_pcm_lib_buffer_bytes(substream),
++			snd_pcm_lib_period_bytes(substream), runtime->channels,
++			runtime->sample_bits);
++	if (ret) {
++		dev_err(soc_prtd->dev, "%s: Error in configuring DMA\n",
++				__func__);
++		ret = -EINVAL;
++		goto err;
++	}
++
++	return 0;
++
++err:
++	return ret;
++}
++
++static int lpass_pcm_mi2s_mmap(struct snd_pcm_substream *substream,
++		struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	return dma_mmap_coherent(substream->pcm->card->dev, vma,
++		runtime->dma_area, runtime->dma_addr, runtime->dma_bytes);
++}
++
++static snd_pcm_uframes_t lpass_pcm_mi2s_pointer(
++		struct snd_pcm_substream *substream)
++{
++	snd_pcm_uframes_t offset;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct lpass_cpu_mi2s_data *prtd =
++		snd_soc_dai_get_drvdata(soc_prtd->cpu_dai);
++
++	offset = prtd->period_index * runtime->period_size;
++
++	return offset >= (runtime->buffer_size) ? 0 : offset;
++}
++
++static struct snd_pcm_ops lpass_pcm_mi2s_soc_ops = {
++	.open		= lpass_pcm_mi2s_open,
++	.close		= lpass_pcm_mi2s_close,
++	.prepare	= lpass_pcm_mi2s_prepare,
++	.mmap		= lpass_pcm_mi2s_mmap,
++	.pointer	= lpass_pcm_mi2s_pointer,
++	.ioctl		= snd_pcm_lib_ioctl,
 +};
 +
-+enum lpaif_irq_receivers {
-+	LPAIF_IRQ_RECV_HOST = 0,
-+	LPAIF_IRQ_RECV_ADSP = 1,
++static int lpass_pcm_mi2s_soc_new(struct snd_soc_pcm_runtime *soc_prtd)
++{
++	int ret;
++	struct snd_card *card = soc_prtd->card->snd_card;
++	struct snd_pcm *pcm = soc_prtd->pcm;
++	struct lpass_cpu_mi2s_data *prtd =
++		snd_soc_dai_get_drvdata(soc_prtd->cpu_dai);
++	struct snd_pcm_substream *substream =
++		pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
++
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
++
++	if (!card->dev->dma_mask)
++		card->dev->dma_mask = &card->dev->coherent_dma_mask;
++
++	ret = lpass_pcm_mi2s_alloc_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
++	if (ret)
++		return ret;
++
++	ret = request_irq(prtd->irqnum, lpass_pcm_mi2s_irq,
++			IRQF_TRIGGER_RISING, "lpass-lpaif-intr", substream);
++	if (ret) {
++		dev_err(soc_prtd->dev, "%s: irq resource request failed\n",
++				__func__);
++		goto err;
++	}
++	prtd->irq_acquired = 1;
++
++	return 0;
++
++err:
++	lpass_pcm_mi2s_free_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
++	return ret;
++}
++
++static void lpass_pcm_mi2s_soc_free(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream =
++		pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct lpass_cpu_mi2s_data *prtd =
++		snd_soc_dai_get_drvdata(soc_prtd->cpu_dai);
++
++	lpass_pcm_mi2s_free_buffer(pcm, SNDRV_PCM_STREAM_PLAYBACK);
++
++	disable_irq(prtd->irqnum);
++	if (prtd->irq_acquired)
++		free_irq(prtd->irqnum, NULL);
++	prtd->irq_acquired = 0;
++}
++
++static struct snd_soc_platform_driver lpass_pcm_mi2s_soc_driver = {
++	.pcm_new	= lpass_pcm_mi2s_soc_new,
++	.pcm_free	= lpass_pcm_mi2s_soc_free,
++	.ops		= &lpass_pcm_mi2s_soc_ops,
 +};
 +
-+#endif /* _LPASS_LPAIF_H */
++static int lpass_pcm_mi2s_platform_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = devm_snd_soc_register_platform(&pdev->dev,
++			&lpass_pcm_mi2s_soc_driver);
++	if (ret)
++		dev_err(&pdev->dev, "%s: Failed to register pcm device: %d\n",
++				__func__, ret);
++
++	return ret;
++}
++
++static const struct of_device_id lpass_pcm_mi2s_dt_match[] = {
++	{ .compatible = "qcom,lpass-pcm-mi2s", },
++	{}
++};
++
++static struct platform_driver lpass_pcm_mi2s_platform_driver = {
++	.driver	= {
++		.name	= DRV_NAME,
++		.of_match_table = lpass_pcm_mi2s_dt_match,
++	},
++	.probe	= lpass_pcm_mi2s_platform_probe,
++};
++module_platform_driver(lpass_pcm_mi2s_platform_driver);
++
++MODULE_DESCRIPTION("QCOM LPASS MI2S PLATFORM DRIVER");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:" DRV_NAME);
++MODULE_DEVICE_TABLE(of, lpass_pcm_mi2s_dt_match);
 -- 
 1.8.2.1
