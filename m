@@ -1,104 +1,99 @@
 From: Imre Deak <imre.deak@intel.com>
-Subject: [PATCH 1/5] drm/i915: add dev_to_i915_priv helper
-Date: Mon,  8 Dec 2014 18:42:05 +0200
-Message-ID: <1418056929-7977-2-git-send-email-imre.deak@intel.com>
+Subject: [PATCH 3/5] ALSA: hda: pass chip to all i915 interface
+	functions
+Date: Mon,  8 Dec 2014 18:42:07 +0200
+Message-ID: <1418056929-7977-4-git-send-email-imre.deak@intel.com>
 References: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 55BA326045C
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 17:42:20 +0100 (CET)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
 In-Reply-To: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
 To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This will be needed by later patches, so factor it out.
-
-No functional change.
-
-Signed-off-by: Imre Deak <imre.deak@intel.com>
----
- drivers/gpu/drm/i915/i915_drv.c  | 15 ++++++---------
- drivers/gpu/drm/i915/intel_drv.h |  8 ++++++++
- 2 files changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/i915_drv.c b/drivers/gpu/drm/i915/i915_drv.c
-index 71be3c9..32c2e33 100644
---- a/drivers/gpu/drm/i915/i915_drv.c
-+++ b/drivers/gpu/drm/i915/i915_drv.c
-@@ -923,10 +923,10 @@ i915_pci_remove(struct pci_dev *pdev)
- 
- static int i915_pm_suspend(struct device *dev)
- {
--	struct pci_dev *pdev = to_pci_dev(dev);
--	struct drm_device *drm_dev = pci_get_drvdata(pdev);
-+	struct drm_i915_private *dev_priv = dev_to_i915_priv(dev);
-+	struct drm_device *drm_dev = dev_priv->dev;
- 
--	if (!drm_dev || !drm_dev->dev_private) {
-+	if (!drm_dev || !dev_priv) {
- 		dev_err(dev, "DRM not initialized, aborting suspend.\n");
- 		return -ENODEV;
- 	}
-@@ -939,8 +939,7 @@ static int i915_pm_suspend(struct device *dev)
- 
- static int i915_pm_suspend_late(struct device *dev)
- {
--	struct pci_dev *pdev = to_pci_dev(dev);
--	struct drm_device *drm_dev = pci_get_drvdata(pdev);
-+	struct drm_device *drm_dev = dev_to_i915_priv(dev)->dev;
- 
- 	/*
- 	 * We have a suspedn ordering issue with the snd-hda driver also
-@@ -959,8 +958,7 @@ static int i915_pm_suspend_late(struct device *dev)
- 
- static int i915_pm_resume_early(struct device *dev)
- {
--	struct pci_dev *pdev = to_pci_dev(dev);
--	struct drm_device *drm_dev = pci_get_drvdata(pdev);
-+	struct drm_device *drm_dev = dev_to_i915_priv(dev)->dev;
- 
- 	if (drm_dev->switch_power_state == DRM_SWITCH_POWER_OFF)
- 		return 0;
-@@ -970,8 +968,7 @@ static int i915_pm_resume_early(struct device *dev)
- 
- static int i915_pm_resume(struct device *dev)
- {
--	struct pci_dev *pdev = to_pci_dev(dev);
--	struct drm_device *drm_dev = pci_get_drvdata(pdev);
-+	struct drm_device *drm_dev = dev_to_i915_priv(dev)->dev;
- 
- 	if (drm_dev->switch_power_state == DRM_SWITCH_POWER_OFF)
- 		return 0;
-diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
-index 61a88fa..3de7a55 100644
---- a/drivers/gpu/drm/i915/intel_drv.h
-+++ b/drivers/gpu/drm/i915/intel_drv.h
-@@ -775,6 +775,14 @@ static inline unsigned int intel_num_planes(struct intel_crtc *crtc)
- 	return INTEL_INFO(crtc->base.dev)->num_sprites[crtc->pipe] + 1;
- }
- 
-+static inline struct drm_i915_private *dev_to_i915_priv(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	struct drm_device *drm_dev = pci_get_drvdata(pdev);
-+
-+	return drm_dev->dev_private;
-+}
-+
- /* intel_fifo_underrun.c */
- bool intel_set_cpu_fifo_underrun_reporting(struct drm_i915_private *dev_priv,
- 					   enum pipe pipe, bool enable);
--- 
-1.8.4
+Y2hpcCBpcyBhbHJlYWR5IHBhc3NlZCB0byBtb3N0IG9mIHRoZSBpOTE1IGludGVyZmFjZSBmdW5j
+dGlvbnMsIHVuaWZ5CnRoaW5ncyBieSBwYXNzaW5nIGl0IGFsc28gdG8gdGhlIHJlc3QuIFRoaXMg
+d2lsbCBiZSBuZWVkZWQgYnkgYW4KdXBjb21pbmcgcGF0Y2ggYWRkaW5nIGNvbXBvbmVudCBzdXBw
+b3J0LgoKTm8gZnVuY3Rpb25hbCBjaGFuZ2UuCgpTaWduZWQtb2ZmLWJ5OiBJbXJlIERlYWsgPGlt
+cmUuZGVha0BpbnRlbC5jb20+Ci0tLQogc291bmQvcGNpL2hkYS9oZGFfaTkxNS5jICB8ICA2ICsr
+Ky0tLQogc291bmQvcGNpL2hkYS9oZGFfaTkxNS5oICB8IDEyICsrKysrKy0tLS0tLQogc291bmQv
+cGNpL2hkYS9oZGFfaW50ZWwuYyB8IDE2ICsrKysrKysrLS0tLS0tLS0KIDMgZmlsZXMgY2hhbmdl
+ZCwgMTcgaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
+cGNpL2hkYS9oZGFfaTkxNS5jIGIvc291bmQvcGNpL2hkYS9oZGFfaTkxNS5jCmluZGV4IGQ0ZDAz
+NzUuLjRlNGI3MzMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2k5MTUuYworKysgYi9z
+b3VuZC9wY2kvaGRhL2hkYV9pOTE1LmMKQEAgLTM1LDcgKzM1LDcgQEAgc3RhdGljIGludCAoKmdl
+dF9wb3dlcikodm9pZCk7CiBzdGF0aWMgaW50ICgqcHV0X3Bvd2VyKSh2b2lkKTsKIHN0YXRpYyBp
+bnQgKCpnZXRfY2RjbGspKHZvaWQpOwogCi1pbnQgaGRhX2Rpc3BsYXlfcG93ZXIoYm9vbCBlbmFi
+bGUpCitpbnQgaGRhX2Rpc3BsYXlfcG93ZXIoc3RydWN0IGF6eCAqY2hpcCwgYm9vbCBlbmFibGUp
+CiB7CiAJaWYgKCFnZXRfcG93ZXIgfHwgIXB1dF9wb3dlcikKIAkJcmV0dXJuIC1FTk9ERVY7CkBA
+IC04NSw3ICs4NSw3IEBAIHZvaWQgaGFzd2VsbF9zZXRfYmNsayhzdHJ1Y3QgYXp4ICpjaGlwKQog
+fQogCiAKLWludCBoZGFfaTkxNV9pbml0KHZvaWQpCitpbnQgaGRhX2k5MTVfaW5pdChzdHJ1Y3Qg
+YXp4ICpjaGlwKQogewogCWludCBlcnIgPSAwOwogCkBAIC0xMTEsNyArMTExLDcgQEAgaW50IGhk
+YV9pOTE1X2luaXQodm9pZCkKIAlyZXR1cm4gZXJyOwogfQogCi1pbnQgaGRhX2k5MTVfZXhpdCh2
+b2lkKQoraW50IGhkYV9pOTE1X2V4aXQoc3RydWN0IGF6eCAqY2hpcCkKIHsKIAlpZiAoZ2V0X3Bv
+d2VyKSB7CiAJCXN5bWJvbF9wdXQoaTkxNV9yZXF1ZXN0X3Bvd2VyX3dlbGwpOwpkaWZmIC0tZ2l0
+IGEvc291bmQvcGNpL2hkYS9oZGFfaTkxNS5oIGIvc291bmQvcGNpL2hkYS9oZGFfaTkxNS5oCmlu
+ZGV4IGU2MDcyYzYuLjRkNzdkNzMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2k5MTUu
+aAorKysgYi9zb3VuZC9wY2kvaGRhL2hkYV9pOTE1LmgKQEAgLTE3LDE4ICsxNywxOCBAQAogI2Rl
+ZmluZSBfX1NPVU5EX0hEQV9JOTE1X0gKIAogI2lmZGVmIENPTkZJR19TTkRfSERBX0k5MTUKLWlu
+dCBoZGFfZGlzcGxheV9wb3dlcihib29sIGVuYWJsZSk7CitpbnQgaGRhX2Rpc3BsYXlfcG93ZXIo
+c3RydWN0IGF6eCAqY2hpcCwgYm9vbCBlbmFibGUpOwogdm9pZCBoYXN3ZWxsX3NldF9iY2xrKHN0
+cnVjdCBhenggKmNoaXApOwotaW50IGhkYV9pOTE1X2luaXQodm9pZCk7Ci1pbnQgaGRhX2k5MTVf
+ZXhpdCh2b2lkKTsKK2ludCBoZGFfaTkxNV9pbml0KHN0cnVjdCBhenggKmNoaXApOworaW50IGhk
+YV9pOTE1X2V4aXQoc3RydWN0IGF6eCAqY2hpcCk7CiAjZWxzZQotc3RhdGljIGlubGluZSBpbnQg
+aGRhX2Rpc3BsYXlfcG93ZXIoYm9vbCBlbmFibGUpIHsgcmV0dXJuIDA7IH0KK3N0YXRpYyBpbmxp
+bmUgaW50IGhkYV9kaXNwbGF5X3Bvd2VyKHN0cnVjdCBhenggKmNoaXAsIGJvb2wgZW5hYmxlKSB7
+IHJldHVybiAwOyB9CiBzdGF0aWMgaW5saW5lIHZvaWQgaGFzd2VsbF9zZXRfYmNsayhzdHJ1Y3Qg
+YXp4ICpjaGlwKSB7IHJldHVybjsgfQotc3RhdGljIGlubGluZSBpbnQgaGRhX2k5MTVfaW5pdCh2
+b2lkKQorc3RhdGljIGlubGluZSBpbnQgaGRhX2k5MTVfaW5pdChzdHJ1Y3QgYXp4ICpjaGlwKTsK
+IHsKIAlyZXR1cm4gLUVOT0RFVjsKIH0KLXN0YXRpYyBpbmxpbmUgaW50IGhkYV9pOTE1X2V4aXQo
+dm9pZCkKK3N0YXRpYyBpbmxpbmUgaW50IGhkYV9pOTE1X2V4aXQoc3RydWN0IGF6eCAqY2hpcCkK
+IHsKIAlyZXR1cm4gMDsKIH0KZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMg
+Yi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCmluZGV4IDVhYzBkMzkuLmYzYjVkY2QgMTAwNjQ0
+Ci0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKKysrIGIvc291bmQvcGNpL2hkYS9oZGFf
+aW50ZWwuYwpAQCAtODI1LDcgKzgyNSw3IEBAIHN0YXRpYyBpbnQgYXp4X3N1c3BlbmQoc3RydWN0
+IGRldmljZSAqZGV2KQogCXBjaV9zYXZlX3N0YXRlKHBjaSk7CiAJcGNpX3NldF9wb3dlcl9zdGF0
+ZShwY2ksIFBDSV9EM2hvdCk7CiAJaWYgKGNoaXAtPmRyaXZlcl9jYXBzICYgQVpYX0RDQVBTX0k5
+MTVfUE9XRVJXRUxMKQotCQloZGFfZGlzcGxheV9wb3dlcihmYWxzZSk7CisJCWhkYV9kaXNwbGF5
+X3Bvd2VyKGNoaXAsIGZhbHNlKTsKIAlyZXR1cm4gMDsKIH0KIApAQCAtODQ1LDcgKzg0NSw3IEBA
+IHN0YXRpYyBpbnQgYXp4X3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpCiAJCXJldHVybiAwOwog
+CiAJaWYgKGNoaXAtPmRyaXZlcl9jYXBzICYgQVpYX0RDQVBTX0k5MTVfUE9XRVJXRUxMKSB7Ci0J
+CWhkYV9kaXNwbGF5X3Bvd2VyKHRydWUpOworCQloZGFfZGlzcGxheV9wb3dlcihjaGlwLCB0cnVl
+KTsKIAkJaGFzd2VsbF9zZXRfYmNsayhjaGlwKTsKIAl9CiAJcGNpX3NldF9wb3dlcl9zdGF0ZShw
+Y2ksIFBDSV9EMCk7CkBAIC04OTgsNyArODk4LDcgQEAgc3RhdGljIGludCBhenhfcnVudGltZV9z
+dXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKIAlhenhfZW50ZXJfbGlua19yZXNldChjaGlwKTsK
+IAlhenhfY2xlYXJfaXJxX3BlbmRpbmcoY2hpcCk7CiAJaWYgKGNoaXAtPmRyaXZlcl9jYXBzICYg
+QVpYX0RDQVBTX0k5MTVfUE9XRVJXRUxMKQotCQloZGFfZGlzcGxheV9wb3dlcihmYWxzZSk7CisJ
+CWhkYV9kaXNwbGF5X3Bvd2VyKGNoaXAsIGZhbHNlKTsKIAogCXJldHVybiAwOwogfQpAQCAtOTI0
+LDcgKzkyNCw3IEBAIHN0YXRpYyBpbnQgYXp4X3J1bnRpbWVfcmVzdW1lKHN0cnVjdCBkZXZpY2Ug
+KmRldikKIAkJcmV0dXJuIDA7CiAKIAlpZiAoY2hpcC0+ZHJpdmVyX2NhcHMgJiBBWlhfRENBUFNf
+STkxNV9QT1dFUldFTEwpIHsKLQkJaGRhX2Rpc3BsYXlfcG93ZXIodHJ1ZSk7CisJCWhkYV9kaXNw
+bGF5X3Bvd2VyKGNoaXAsIHRydWUpOwogCQloYXN3ZWxsX3NldF9iY2xrKGNoaXApOwogCX0KIApA
+QCAtMTE1MCw4ICsxMTUwLDggQEAgc3RhdGljIGludCBhenhfZnJlZShzdHJ1Y3QgYXp4ICpjaGlw
+KQogCXJlbGVhc2VfZmlybXdhcmUoY2hpcC0+ZncpOwogI2VuZGlmCiAJaWYgKGNoaXAtPmRyaXZl
+cl9jYXBzICYgQVpYX0RDQVBTX0k5MTVfUE9XRVJXRUxMKSB7Ci0JCWhkYV9kaXNwbGF5X3Bvd2Vy
+KGZhbHNlKTsKLQkJaGRhX2k5MTVfZXhpdCgpOworCQloZGFfZGlzcGxheV9wb3dlcihjaGlwLCBm
+YWxzZSk7CisJCWhkYV9pOTE1X2V4aXQoY2hpcCk7CiAJfQogCWtmcmVlKGhkYSk7CiAKQEAgLTE5
+MTAsMTMgKzE5MTAsMTMgQEAgc3RhdGljIGludCBhenhfcHJvYmVfY29udGludWUoc3RydWN0IGF6
+eCAqY2hpcCkKIAkvKiBSZXF1ZXN0IHBvd2VyIHdlbGwgZm9yIEhhc3dlbGwgSERBIGNvbnRyb2xs
+ZXIgYW5kIGNvZGVjICovCiAJaWYgKGNoaXAtPmRyaXZlcl9jYXBzICYgQVpYX0RDQVBTX0k5MTVf
+UE9XRVJXRUxMKSB7CiAjaWZkZWYgQ09ORklHX1NORF9IREFfSTkxNQotCQllcnIgPSBoZGFfaTkx
+NV9pbml0KCk7CisJCWVyciA9IGhkYV9pOTE1X2luaXQoY2hpcCk7CiAJCWlmIChlcnIgPCAwKSB7
+CiAJCQlkZXZfZXJyKGNoaXAtPmNhcmQtPmRldiwKIAkJCQkiRXJyb3IgcmVxdWVzdCBwb3dlci13
+ZWxsIGZyb20gaTkxNVxuIik7CiAJCQlnb3RvIG91dF9mcmVlOwogCQl9Ci0JCWVyciA9IGhkYV9k
+aXNwbGF5X3Bvd2VyKHRydWUpOworCQllcnIgPSBoZGFfZGlzcGxheV9wb3dlcihjaGlwLCB0cnVl
+KTsKIAkJaWYgKGVyciA8IDApIHsKIAkJCWRldl9lcnIoY2hpcC0+Y2FyZC0+ZGV2LAogCQkJCSJD
+YW5ub3QgdHVybiBvbiBkaXNwbGF5IHBvd2VyIG9uIGk5MTVcbiIpOwotLSAKMS44LjQKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWls
+aW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
