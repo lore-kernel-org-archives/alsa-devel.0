@@ -1,68 +1,85 @@
-From: thomas chen <tchen61@gmail.com>
-Subject: Re: I2S frame configuration
-Date: Mon, 08 Dec 2014 13:03:17 -0500
-Message-ID: <5485E7E5.7020406@gmail.com>
-References: <5485C5CA.8030402@gmail.com> <5485D96C.3020900@ladisch.de>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH 1/5] drm/i915: add dev_to_i915_priv helper
+Date: Mon, 08 Dec 2014 20:36:29 +0200
+Message-ID: <8761dmkmz6.fsf@intel.com>
+References: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
+ <1418056929-7977-2-git-send-email-imre.deak@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f44.google.com (mail-qg0-f44.google.com
- [209.85.192.44])
- by alsa0.perex.cz (Postfix) with ESMTP id B3666260488
- for <alsa-devel@alsa-project.org>; Mon,  8 Dec 2014 19:03:25 +0100 (CET)
-Received: by mail-qg0-f44.google.com with SMTP id z60so3825237qgd.17
- for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 10:03:25 -0800 (PST)
-In-Reply-To: <5485D96C.3020900@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1418056929-7977-2-git-send-email-imre.deak@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Imre Deak <imre.deak@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-
-Thanks for the info... so it is possible for Asoc to handle such format...
-
-So where does one specify number of bits in a FRAME/WORD (epsecially if =
-
-we were to be master instead of slave ?)
-
-and, how does one specify number of bits to ignore (before the valid data)
-
-and also how many valid bits (ie size of data word) ???
-
-Thanks...
-
-
-
-
-On 12/8/2014 12:01 PM, Clemens Ladisch wrote:
-> thomas chen wrote:
->> I am working on a ALSA interface to a particular codec over I2S
->>
->> the audio stream format is a bit peculiar...
->>
->> there are 24 BCLK cycle between transition of FSYNC...   howver, there a=
-re only 16 bit that are valid
->>
->> bit 0: ignore
->> bit 1-16:   valid pcm data (MSB....LSB)
->> bit 17-23: ignore
-> This is the 'original' I=B2S format.  The format where the sample begins
-> with the 1st BCLK usually is called left-justified (and uses the
-> opposite FSYNC polarity).
->
-> Having ignored bits is common.  (Typically, there are 32 BCLK cycles per
-> sample.)
->
-> In ASoC, this would be SND_SOC_DAIFMT_I2S and SND_SOC_DAIFMT_LEFT_J.
->
->
-> Regards,
-> Clemens
+T24gTW9uLCAwOCBEZWMgMjAxNCwgSW1yZSBEZWFrIDxpbXJlLmRlYWtAaW50ZWwuY29tPiB3cm90
+ZToKPiBUaGlzIHdpbGwgYmUgbmVlZGVkIGJ5IGxhdGVyIHBhdGNoZXMsIHNvIGZhY3RvciBpdCBv
+dXQuCj4KPiBObyBmdW5jdGlvbmFsIGNoYW5nZS4KPgo+IFNpZ25lZC1vZmYtYnk6IEltcmUgRGVh
+ayA8aW1yZS5kZWFrQGludGVsLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkx
+NV9kcnYuYyAgfCAxNSArKysrKystLS0tLS0tLS0KPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50
+ZWxfZHJ2LmggfCAgOCArKysrKysrKwo+ICAyIGZpbGVzIGNoYW5nZWQsIDE0IGluc2VydGlvbnMo
+KyksIDkgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUv
+aTkxNV9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMKPiBpbmRleCA3MWJl
+M2M5Li4zMmMyZTMzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2
+LmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jCj4gQEAgLTkyMywxMCAr
+OTIzLDEwIEBAIGk5MTVfcGNpX3JlbW92ZShzdHJ1Y3QgcGNpX2RldiAqcGRldikKPiAgCj4gIHN0
+YXRpYyBpbnQgaTkxNV9wbV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKPiAgewo+IC0Jc3Ry
+dWN0IHBjaV9kZXYgKnBkZXYgPSB0b19wY2lfZGV2KGRldik7Cj4gLQlzdHJ1Y3QgZHJtX2Rldmlj
+ZSAqZHJtX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiArCXN0cnVjdCBkcm1faTkxNV9w
+cml2YXRlICpkZXZfcHJpdiA9IGRldl90b19pOTE1X3ByaXYoZGV2KTsKPiArCXN0cnVjdCBkcm1f
+ZGV2aWNlICpkcm1fZGV2ID0gZGV2X3ByaXYtPmRldjsKClNlZW1zIGxpa2UgYSBmdW5ueSBiYWNr
+IGFuZCBmb3J0aCBwb2ludGVyIGRhbmNlLCBidXQgbGV0J3Mgc2VlIHdoYXQgdGhlCm5leHQgcGF0
+Y2hlcyBicmluZyB1cy4uLiA7KQoKPiAgCj4gLQlpZiAoIWRybV9kZXYgfHwgIWRybV9kZXYtPmRl
+dl9wcml2YXRlKSB7Cj4gKwlpZiAoIWRybV9kZXYgfHwgIWRldl9wcml2KSB7Cj4gIAkJZGV2X2Vy
+cihkZXYsICJEUk0gbm90IGluaXRpYWxpemVkLCBhYm9ydGluZyBzdXNwZW5kLlxuIik7Cj4gIAkJ
+cmV0dXJuIC1FTk9ERVY7Cj4gIAl9Cj4gQEAgLTkzOSw4ICs5MzksNyBAQCBzdGF0aWMgaW50IGk5
+MTVfcG1fc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gIAo+ICBzdGF0aWMgaW50IGk5MTVf
+cG1fc3VzcGVuZF9sYXRlKHN0cnVjdCBkZXZpY2UgKmRldikKPiAgewo+IC0Jc3RydWN0IHBjaV9k
+ZXYgKnBkZXYgPSB0b19wY2lfZGV2KGRldik7Cj4gLQlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2Rl
+diA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPiArCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2
+ID0gZGV2X3RvX2k5MTVfcHJpdihkZXYpLT5kZXY7Cj4gIAo+ICAJLyoKPiAgCSAqIFdlIGhhdmUg
+YSBzdXNwZWRuIG9yZGVyaW5nIGlzc3VlIHdpdGggdGhlIHNuZC1oZGEgZHJpdmVyIGFsc28KPiBA
+QCAtOTU5LDggKzk1OCw3IEBAIHN0YXRpYyBpbnQgaTkxNV9wbV9zdXNwZW5kX2xhdGUoc3RydWN0
+IGRldmljZSAqZGV2KQo+ICAKPiAgc3RhdGljIGludCBpOTE1X3BtX3Jlc3VtZV9lYXJseShzdHJ1
+Y3QgZGV2aWNlICpkZXYpCj4gIHsKPiAtCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2Rl
+dihkZXYpOwo+IC0Jc3RydWN0IGRybV9kZXZpY2UgKmRybV9kZXYgPSBwY2lfZ2V0X2RydmRhdGEo
+cGRldik7Cj4gKwlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IGRldl90b19pOTE1X3ByaXYo
+ZGV2KS0+ZGV2Owo+ICAKPiAgCWlmIChkcm1fZGV2LT5zd2l0Y2hfcG93ZXJfc3RhdGUgPT0gRFJN
+X1NXSVRDSF9QT1dFUl9PRkYpCj4gIAkJcmV0dXJuIDA7Cj4gQEAgLTk3MCw4ICs5NjgsNyBAQCBz
+dGF0aWMgaW50IGk5MTVfcG1fcmVzdW1lX2Vhcmx5KHN0cnVjdCBkZXZpY2UgKmRldikKPiAgCj4g
+IHN0YXRpYyBpbnQgaTkxNV9wbV9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQo+ICB7Cj4gLQlz
+dHJ1Y3QgcGNpX2RldiAqcGRldiA9IHRvX3BjaV9kZXYoZGV2KTsKPiAtCXN0cnVjdCBkcm1fZGV2
+aWNlICpkcm1fZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBkZXYpOwo+ICsJc3RydWN0IGRybV9kZXZp
+Y2UgKmRybV9kZXYgPSBkZXZfdG9faTkxNV9wcml2KGRldiktPmRldjsKPiAgCj4gIAlpZiAoZHJt
+X2Rldi0+c3dpdGNoX3Bvd2VyX3N0YXRlID09IERSTV9TV0lUQ0hfUE9XRVJfT0ZGKQo+ICAJCXJl
+dHVybiAwOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaCBi
+L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oCj4gaW5kZXggNjFhODhmYS4uM2RlN2E1
+NSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaAo+ICsrKyBi
+L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oCj4gQEAgLTc3NSw2ICs3NzUsMTQgQEAg
+c3RhdGljIGlubGluZSB1bnNpZ25lZCBpbnQgaW50ZWxfbnVtX3BsYW5lcyhzdHJ1Y3QgaW50ZWxf
+Y3J0YyAqY3J0YykKPiAgCXJldHVybiBJTlRFTF9JTkZPKGNydGMtPmJhc2UuZGV2KS0+bnVtX3Nw
+cml0ZXNbY3J0Yy0+cGlwZV0gKyAxOwo+ICB9Cj4gIAo+ICtzdGF0aWMgaW5saW5lIHN0cnVjdCBk
+cm1faTkxNV9wcml2YXRlICpkZXZfdG9faTkxNV9wcml2KHN0cnVjdCBkZXZpY2UgKmRldikKCkJp
+a2VzaGVkLCBJIHRoaW5rIGRldl90b19pOTE1KCkgaXMgc3VmZmljaWVudCBhbmQgaW4gbGluZSB3
+aXRoCnRvX2k5MTUoKS4KCkJSLApKYW5pLgoKPiArewo+ICsJc3RydWN0IHBjaV9kZXYgKnBkZXYg
+PSB0b19wY2lfZGV2KGRldik7Cj4gKwlzdHJ1Y3QgZHJtX2RldmljZSAqZHJtX2RldiA9IHBjaV9n
+ZXRfZHJ2ZGF0YShwZGV2KTsKPiArCj4gKwlyZXR1cm4gZHJtX2Rldi0+ZGV2X3ByaXZhdGU7Cj4g
+K30KPiArCj4gIC8qIGludGVsX2ZpZm9fdW5kZXJydW4uYyAqLwo+ICBib29sIGludGVsX3NldF9j
+cHVfZmlmb191bmRlcnJ1bl9yZXBvcnRpbmcoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9w
+cml2LAo+ICAJCQkJCSAgIGVudW0gcGlwZSBwaXBlLCBib29sIGVuYWJsZSk7Cj4gLS0gCj4gMS44
+LjQKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
+SW50ZWwtZ2Z4IG1haWxpbmcgbGlzdAo+IEludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcK
+PiBodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4
+CgotLSAKSmFuaSBOaWt1bGEsIEludGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBt
+YWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
