@@ -1,66 +1,37 @@
-From: Imre Deak <imre.deak@intel.com>
-Subject: [PATCH v3 1/5] drm/i915: add dev_to_i915 helper
-Date: Tue,  9 Dec 2014 18:15:53 +0200
-Message-ID: <1418141755-22672-1-git-send-email-imre.deak@intel.com>
-References: <1418118078-3676-1-git-send-email-imre.deak@intel.com>
+From: =?UTF-8?B?RG1pdHJ5IFYuIFppbWlu?= <pfzim@mail.ru>
+Subject: =?utf-8?q?Laptop_Asus_Z99He_internal_speaker_not_wor?=
+ =?utf-8?q?king_until_I_enable_EAPD_with_HDA-Analizer?=
+Date: Tue, 09 Dec 2014 18:01:44 +0300
+Message-ID: <1418137304.333836317@f58.i.mail.ru>
+Reply-To: =?UTF-8?B?RG1pdHJ5IFYuIFppbWlu?= <pfzim@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1418118078-3676-1-git-send-email-imre.deak@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Cc: Jani Nikula <jani.nikula@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from f58.i.mail.ru (f58.i.mail.ru [217.69.128.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id 625B526154F
+ for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 16:01:45 +0100 (CET)
+Received: from [194.85.136.242] (ident=mail)
+ by f58.i.mail.ru with local (envelope-from <pfzim@mail.ru>)
+ id 1XyMIK-0006uj-7r
+ for alsa-devel@alsa-project.org; Tue, 09 Dec 2014 18:01:44 +0300
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyB3aWxsIGJlIG5lZWRlZCBieSBsYXRlciBwYXRjaGVzLCBzbyBmYWN0b3IgaXQgb3V0LgoK
-Tm8gZnVuY3Rpb25hbCBjaGFuZ2UuCgp2MjoKLSBzL2Rldl90b19pOTE1X3ByaXYvZGV2X3RvX2k5
-MTUvIChKYW5pKQotIGRvbid0IHVzZSB0aGUgaGVscGVyIGluIGk5MTVfcG1fc3VzcGVuZCAoQ2hy
-aXMpCi0gc2ltcGxpZnkgdGhlIGhlbHBlciAoQ2hyaXMpCnYzOgotIHJlbW92ZSByZWR1bmRhbnQg
-dXBjYXN0aW5nIGluIHRoZSBoZWxwZXIgKERhbmllbCkKClNpZ25lZC1vZmYtYnk6IEltcmUgRGVh
-ayA8aW1yZS5kZWFrQGludGVsLmNvbT4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Ry
-di5jIHwgOSArKystLS0tLS0KIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggfCA1ICsr
-KysrCiAyIGZpbGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKCmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jIGIvZHJpdmVycy9ncHUv
-ZHJtL2k5MTUvaTkxNV9kcnYuYwppbmRleCA3MWJlM2M5Li5kMmFlMzI3IDEwMDY0NAotLS0gYS9k
-cml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2k5MTVfZHJ2LmMKQEAgLTkzOSw4ICs5MzksNyBAQCBzdGF0aWMgaW50IGk5MTVfcG1fc3VzcGVu
-ZChzdHJ1Y3QgZGV2aWNlICpkZXYpCiAKIHN0YXRpYyBpbnQgaTkxNV9wbV9zdXNwZW5kX2xhdGUo
-c3RydWN0IGRldmljZSAqZGV2KQogewotCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2Rl
-dihkZXYpOwotCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBk
-ZXYpOworCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gZGV2X3RvX2k5MTUoZGV2KS0+ZGV2
-OwogCiAJLyoKIAkgKiBXZSBoYXZlIGEgc3VzcGVkbiBvcmRlcmluZyBpc3N1ZSB3aXRoIHRoZSBz
-bmQtaGRhIGRyaXZlciBhbHNvCkBAIC05NTksOCArOTU4LDcgQEAgc3RhdGljIGludCBpOTE1X3Bt
-X3N1c3BlbmRfbGF0ZShzdHJ1Y3QgZGV2aWNlICpkZXYpCiAKIHN0YXRpYyBpbnQgaTkxNV9wbV9y
-ZXN1bWVfZWFybHkoc3RydWN0IGRldmljZSAqZGV2KQogewotCXN0cnVjdCBwY2lfZGV2ICpwZGV2
-ID0gdG9fcGNpX2RldihkZXYpOwotCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gcGNpX2dl
-dF9kcnZkYXRhKHBkZXYpOworCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gZGV2X3RvX2k5
-MTUoZGV2KS0+ZGV2OwogCiAJaWYgKGRybV9kZXYtPnN3aXRjaF9wb3dlcl9zdGF0ZSA9PSBEUk1f
-U1dJVENIX1BPV0VSX09GRikKIAkJcmV0dXJuIDA7CkBAIC05NzAsOCArOTY4LDcgQEAgc3RhdGlj
-IGludCBpOTE1X3BtX3Jlc3VtZV9lYXJseShzdHJ1Y3QgZGV2aWNlICpkZXYpCiAKIHN0YXRpYyBp
-bnQgaTkxNV9wbV9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQogewotCXN0cnVjdCBwY2lfZGV2
-ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwotCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0g
-cGNpX2dldF9kcnZkYXRhKHBkZXYpOworCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gZGV2
-X3RvX2k5MTUoZGV2KS0+ZGV2OwogCiAJaWYgKGRybV9kZXYtPnN3aXRjaF9wb3dlcl9zdGF0ZSA9
-PSBEUk1fU1dJVENIX1BPV0VSX09GRikKIAkJcmV0dXJuIDA7CmRpZmYgLS1naXQgYS9kcml2ZXJz
-L2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYu
-aAppbmRleCAxMWU4NWNiLi4wOTYxZDdmIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkx
-NS9pOTE1X2Rydi5oCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKQEAgLTE4
-MDAsNiArMTgwMCwxMSBAQCBzdGF0aWMgaW5saW5lIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICp0
-b19pOTE1KGNvbnN0IHN0cnVjdCBkcm1fZGV2aWNlICpkZXYpCiAJcmV0dXJuIGRldi0+ZGV2X3By
-aXZhdGU7CiB9CiAKK3N0YXRpYyBpbmxpbmUgc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl90
-b19pOTE1KHN0cnVjdCBkZXZpY2UgKmRldikKK3sKKwlyZXR1cm4gdG9faTkxNShkZXZfZ2V0X2Ry
-dmRhdGEoZGV2KSk7Cit9CisKIC8qIEl0ZXJhdGUgb3ZlciBpbml0aWFsaXNlZCByaW5ncyAqLwog
-I2RlZmluZSBmb3JfZWFjaF9yaW5nKHJpbmdfXywgZGV2X3ByaXZfXywgaV9fKSBcCiAJZm9yICgo
-aV9fKSA9IDA7IChpX18pIDwgSTkxNV9OVU1fUklOR1M7IChpX18pKyspIFwKLS0gCjEuOC40Cgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZngg
-bWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3Rz
-LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+ Hello!
+
+I have laptop Asus Z99He and internal speaker doesn't work until I enable EAPD through HDA-Analyzer by hand. After connect and disconnect external headphones EAPD setting reset again.
+How to enable it permanently?
+model=eapd, laptop-eapd or many other does not change anything.
+http://www.alsa-project.org/db/?f=df83e22e0c9a047db3778f394c1aa73376dfaf39
+
+Also I try old Live CD with OpenELEC.  He is working properly . http://www.alsa-project.org/db/?f=a5e75412c8230afe9516f0ebf6404afb18d9040c
