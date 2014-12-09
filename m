@@ -1,15 +1,15 @@
-From: weiyj_lk@163.com
-Subject: [PATCH -next] ASoC: Intel: fix sparse non static
-	symbol warnings
-Date: Tue,  9 Dec 2014 09:10:44 +0800
-Message-ID: <1418087444-14504-1-git-send-email-weiyj_lk@163.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH v2] ASoC: rt5645: Fix potential crash in jd
+	function
+Date: Tue, 9 Dec 2014 10:14:45 +0800
+Message-ID: <1418091285-4700-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-18.163.com (m12-18.163.com [220.181.12.18])
- by alsa0.perex.cz (Postfix) with ESMTP id A7D9A26057E
- for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 02:10:48 +0100 (CET)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 198EE2605B7
+ for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 03:15:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,43 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, kbuild test robot <fengguang.wu@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, yang.a.fang@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+If no one defined the rt5645->pdata.hp_det_gpio in coreboot/bios.
+It will cause kernel to reboot because rt5645->pdata.hp_det_gpio
+is 0. So it is worth to add a check in rt5645_jack_detect.
 
-Fixes the following sparse warnings:
-
-sound/soc/intel/sst/sst_acpi.c:248:5: warning:
- symbol 'sst_acpi_probe' was not declared. Should it be static?
-sound/soc/intel/sst/sst_acpi.c:335:5: warning:
- symbol 'sst_acpi_remove' was not declared. Should it be static?
-
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
 ---
- sound/soc/intel/sst/sst_acpi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+* Return an error if gpio number is invalid
+---
+ sound/soc/codecs/rt5645.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
-index 31124aa..98a8f66 100644
---- a/sound/soc/intel/sst/sst_acpi.c
-+++ b/sound/soc/intel/sst/sst_acpi.c
-@@ -245,7 +245,7 @@ static struct sst_machines *sst_acpi_find_machine(
- 	return NULL;
- }
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index a7789a8..27141e2 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2209,6 +2209,10 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec)
+ 	int gpio_state, jack_type = 0;
+ 	unsigned int val;
  
--int sst_acpi_probe(struct platform_device *pdev)
-+static int sst_acpi_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	int ret = 0;
-@@ -332,7 +332,7 @@ do_sst_cleanup:
- * This function is called by OS when a device is unloaded
- * This frees the interrupt etc
- */
--int sst_acpi_remove(struct platform_device *pdev)
-+static int sst_acpi_remove(struct platform_device *pdev)
- {
- 	struct intel_sst_drv *ctx;
++	if (!gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
++		dev_err(codec->dev, "invalid gpio\n");
++		return -EINVAL;
++	}
+ 	gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
  
+ 	dev_dbg(codec->dev, "gpio = %d(%d)\n", rt5645->pdata.hp_det_gpio,
+-- 
+1.8.1.1.439.g50a6b54
