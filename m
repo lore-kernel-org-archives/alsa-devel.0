@@ -1,132 +1,55 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: I2S frame configuration
-Date: Tue, 09 Dec 2014 16:12:29 +0100
-Message-ID: <5487115D.9030001@metafoo.de>
-References: <5485C5CA.8030402@gmail.com> <5485D96C.3020900@ladisch.de>
- <5485E7E5.7020406@gmail.com> <5485FE16.1040005@metafoo.de>
- <5486FE71.8090501@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [Patch v2 02/11] ASoC: qcom: Add device tree binding docs
+Date: Tue, 9 Dec 2014 15:37:11 +0000
+Message-ID: <20141209153711.GB1934@sirena.org.uk>
+References: <1418076073-12623-1-git-send-email-kwestfie@codeaurora.org>
+ <1418076073-12623-3-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-166.synserver.de (smtp-out-166.synserver.de
- [212.40.185.166])
- by alsa0.perex.cz (Postfix) with ESMTP id E549826170F
- for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 16:12:33 +0100 (CET)
-In-Reply-To: <5486FE71.8090501@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: thomas chen <tchen61@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uQr8t48UFsdbeI+V"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1418076073-12623-3-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/09/2014 02:51 PM, thomas chen wrote:
->
-> I have set up according to the thread.... but when I attempt to play a so=
-und
-> file (with aplay)
-> the program just stop ....
-[...]
->
-> Seems like the something (maybe clock ?) is missing ???
 
-Yes, most likely your SoC is not seeing the frameclock/bitclock.
+--uQr8t48UFsdbeI+V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Thx
->
->
->
->
->
->
->
->
->
-> On 12/8/2014 2:37 PM, Lars-Peter Clausen wrote:
->> On 12/08/2014 07:03 PM, thomas chen wrote:
->>>
->>> Thanks for the info... so it is possible for Asoc to handle such format=
-...
->>
->> Yes, its not a special format, it is just plain and simple I2S like it is
->> supported by the majority of all drivers/devices.
->>
->>>
->>> So where does one specify number of bits in a FRAME/WORD (epsecially if=
- we
->>> were to be master instead of slave ?)
->>
->> That's typically specified in the format that is used, e.g. in your case
->> SNDRV_PCM_FORMAT_S24_3LE. This is not necessarily ideal for all cases, b=
-ut
->> has work well enough so far.
->>
->>>
->>> and, how does one specify number of bits to ignore (before the valid da=
-ta)
->>
->> There are no bits to ignore the valid data. I2S has a delay of 1 bit clo=
-ck
->> cycle between the first bit of the sample and the frame sync signal. So
->> the data bit that is transmitted on the same clock cycle as the frame sy=
-nc
->> is actually the last bit of the previous sample. So in your case your
->> sample has 16 valid bits followed by 8 ignored bits.
->>
->>>
->>> and also how many valid bits (ie size of data word) ???
->>
->> You can set a snd_pcm_hw_constraint_msbits() constraint to tell userspace
->> that only a certain amount of bits are actually going to be used.
->>
->> If you are using ASoC you can do this by setting the sig_bits property on
->> your snd_soc_dai_driver.
->>
->> - Lars
->>
->>>
->>> Thanks...
->>>
->>>
->>>
->>>
->>> On 12/8/2014 12:01 PM, Clemens Ladisch wrote:
->>>> thomas chen wrote:
->>>>> I am working on a ALSA interface to a particular codec over I2S
->>>>>
->>>>> the audio stream format is a bit peculiar...
->>>>>
->>>>> there are 24 BCLK cycle between transition of FSYNC... howver, there
->>>>> are only 16 bit that are valid
->>>>>
->>>>> bit 0: ignore
->>>>> bit 1-16:   valid pcm data (MSB....LSB)
->>>>> bit 17-23: ignore
->>>> This is the 'original' I=B2S format.  The format where the sample begi=
-ns
->>>> with the 1st BCLK usually is called left-justified (and uses the
->>>> opposite FSYNC polarity).
->>>>
->>>> Having ignored bits is common.  (Typically, there are 32 BCLK cycles p=
-er
->>>> sample.)
->>>>
->>>> In ASoC, this would be SND_SOC_DAIFMT_I2S and SND_SOC_DAIFMT_LEFT_J.
->>>>
->>>>
->>>> Regards,
->>>> Clemens
->>>
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->
+On Mon, Dec 08, 2014 at 02:01:04PM -0800, Kenneth Westfield wrote:
+> From: Kenneth Westfield <kwestfie@codeaurora.org>
+>=20
+> Add documentation to the sound directory of the
+> device-tree bindings for IPQ806x audio drivers.
+
+Please don't send multiple separate changes in a single patch.  One
+change per patch.
+
+>  .../bindings/sound/qcom,max98357a-codec.txt        | 23 ++++++++++++++++
+
+You are reporting the vendor for this Maxim device as Qualcomm which
+isn't right, please review the meaning of the vendor information in the
+device tree binding strings.
+
+--uQr8t48UFsdbeI+V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUhxcmAAoJECTWi3JdVIfQE9YH/1SL/uaYFks3jdl1oDIEzVwO
+w2XXV7jEGTtQN7JhVYMuW8Tv2XJAtL5fq3qUVhzdK+5p6Q0ezfvar0w+ELuDVWy9
+KU5+8FjDEyJlZFqocTLO3wcSSu+netOzI6TYHwtlJ9G7HctmNCxTUZmlpU60tfoO
+bncHb8B1JCrfcdQgO7uHuwUXSR1bWt464BlQ0sc+fFW7mQS1+cK/fuTV0fEWTVUA
+X5pbqSKeNYVCPnchyDBYCxFIUk4fLET824QN0AemXPKVVcPL0+BebX4XET8zupwq
+qHH+YuqvjtawMkz8+zCWcO+Sz+nts5YvGuHXbAWIzzLvTAh/XKpelXqZERfdwlg=
+=0aqY
+-----END PGP SIGNATURE-----
+
+--uQr8t48UFsdbeI+V--
