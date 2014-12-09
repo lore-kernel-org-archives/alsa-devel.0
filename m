@@ -1,91 +1,90 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch v2 04/11] ASoC: codec: Add Maxim codec driver
-Date: Tue, 9 Dec 2014 15:53:16 +0000
-Message-ID: <20141209155316.GC1934@sirena.org.uk>
+Subject: Re: [Patch v2 05/11] ASoC: ipq806x: Add LPASS CPU DAI driver
+Date: Tue, 9 Dec 2014 16:01:25 +0000
+Message-ID: <20141209160125.GD1934@sirena.org.uk>
 References: <1418076073-12623-1-git-send-email-kwestfie@codeaurora.org>
- <1418076073-12623-5-git-send-email-kwestfie@codeaurora.org>
+ <1418076073-12623-6-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mvpLiMfbWzRoNl4x"
+	protocol="application/pgp-signature"; boundary="GyRA7555PLgSTuth"
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1418076073-12623-5-git-send-email-kwestfie@codeaurora.org>
+In-Reply-To: <1418076073-12623-6-git-send-email-kwestfie@codeaurora.org>
 Sender: linux-arm-msm-owner@vger.kernel.org
 To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---mvpLiMfbWzRoNl4x
+--GyRA7555PLgSTuth
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 08, 2014 at 02:01:06PM -0800, Kenneth Westfield wrote:
+On Mon, Dec 08, 2014 at 02:01:07PM -0800, Kenneth Westfield wrote:
 
+Please stop CCing Rob Herring's Calxeda address, it bounces.
+
+> +	default:
+> +		pr_err("%s: invalid bitwidth given: %u\n", __func__, bitwidth);
+> +		return -EINVAL;
+> +	}
+
+Repeating again: dev_err().
+
+> +	ret = lpass_lpaif_mi2s_channels(prtd, channels, bit_act);
+
+> +	ret = lpass_lpaif_mi2s_bitwidth(prtd, bitwidth);
+
+Just inline these helper functions, they're basically just abstracting a
+single switch statement each which adds little if anything.
+
+> +static int lpass_cpu_mi2s_daiops_hw_free(struct snd_pcm_substream *substream,
+> +		struct snd_soc_dai *dai)
+> +{
+> +	struct lpass_cpu_mi2s_data *prtd = snd_soc_dai_get_drvdata(dai);
+> +
+> +	if (prtd->mi2s_clocks_enabled) {
+> +		clk_disable_unprepare(prtd->mi2s_osr_clk);
+> +		clk_disable_unprepare(prtd->mi2s_bit_clk);
+> +	}
+
+This seems problematic, why is the clock being disabled here rather than
+in a place matching that where it was enabled so we don't need to do
+this checking.  I suspect you should be using a DAPM widget to manage
+the clocks.
+
+> +	prtd->irq_acquired = 0;
+
+What is this supposed to do?  It looks write only.
+
+> +#ifndef _LPASS_CPU_MI2S_H
+> +#define _LPASS_CPU_MI2S_H
+> +
 > +enum pinctrl_pin_state {
 > +	STATE_DISABLED = 0,
 > +	STATE_ENABLED = 1
 > +};
-> +static const char * const pin_states[] = {"Disabled", "Enabled"};
+> +static const char *const pin_states[] = {"Disabled", "Enabled"};
 
-This looks like you are trying to reimplement some of the generic
-support provided by the pinctrl framework - please don't do that.  It
-looks like you should be using the standard idle and default states.
+This apppears to be the same pinctrl stuff you had in the Maxim CODEC
+driver.  Similar issues with reproducing core pinctrl functionality
+apply here too, and the fact that the code has been cut'n'pasted between
+different drivers isn't a good sign.
 
-However I'm also questioning why this device is using pinctrl at all.
-As far as I can see from the code it's a dumb external device with just
-an enable control and hence no pin control support so it's not a device
-I'd expect to have any pinmux to control.  Why is it doing this?  There
-are also substantial problems throughout the relevant code but probably
-the best thing is just to remove it all.
-
-> +static int max98357a_codec_set_pinctrl(struct max98357a_codec_pinctrl *mi2s)
-> +{
-> +	int ret;
-> +
-> +	pr_debug("%s: curr_state = %s\n", __func__,
-> +			pin_states[mi2s->curr_state]);
-
-To repeat my previous review comments: use dev_ prints.
-
-> +static struct snd_soc_dai_driver max98357a_codec_dai_driver = {
-> +	.name = "max98357a-codec-dai",
-> +	.playback = {
-> +		.stream_name	= "max98357a-codec-playback",
-> +		.formats	= SNDRV_PCM_FMTBIT_S16 |
-> +					SNDRV_PCM_FMTBIT_S24 |
-> +					SNDRV_PCM_FMTBIT_S32,
-> +		.rates		= SNDRV_PCM_RATE_8000 |
-> +					SNDRV_PCM_RATE_16000 |
-> +					SNDRV_PCM_RATE_48000 |
-> +					SNDRV_PCM_RATE_96000,
-> +		.rate_min	= 8000,
-> +		.rate_max	= 96000,
-> +		.channels_min	= 1,
-> +		.channels_max	= 2,
-> +	},
-> +	.probe = &max98357a_codec_dai_probe,
-> +	.ops = &max98357a_codec_dai_ops,
-> +};
-
-This CODEC driver has no DAPM support.  I'm surprised this works at all,
-it's certainly not OK for upstream - you need to implement at least stub
-DAPM support.
-
---mvpLiMfbWzRoNl4x
+--GyRA7555PLgSTuth
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUhxrsAAoJECTWi3JdVIfQ8X4H/i4fSGBvm9fGNjym3uH2IHMK
-KSWc3olcgViAL9Ku0wYttDkYswRTsUTes5LHnlyXo4mC6qN+KnWOADNWAYfK9xNm
-IYfGimsHjJfUOAYqm49z+dzgHOQfGx31BQC8yOO6+VIuI0Dl0KbmtD5Lq8lPwY8D
-D+iUJklKKHlgiVHGqFCrQjv6/xAtxAy230HwVO5wqbYGLbMtJFZPtfXH8EHXKdxy
-6fzk4ogvFXqAQ5enwVCIk/y/kSMKgZpRGqeBTuDaY8Q0llq4PvaBJY6K7gQ8tjfg
-ciz2rmXIpxoD4bpPmwDlZDFBxvVqb3CagHPprakL7fY9HLploGoJ5JWLlgE/1D0=
-=KFBo
+iQEcBAEBAgAGBQJUhxzUAAoJECTWi3JdVIfQmfsH/j7iV2Aoj2FZElrbHmf9I92n
+9L2IN5oq5atzr01yRjmkIz6wPIoygx+i4HeOzTT6RZU0QO/czgBFaIrGpckvc4+C
+9pMflLYCpcwHFNUvpbGUil3J73kfyattn5LrzlcJ1WFTgDL8in087OxrOoSrRKPn
+7QLIcU84veQTs2lPTfNRFBt8FnDZ1Xb8q3W7n+kiQTRC/jcSUhMC0NlatK0SaXxp
+rbrk8vPjkeU7oAiPOKBq+hkfczQPCBOpOkixYTfqB7NSaQWvIDz14TpYq2CaBtw8
+hUrdtLrCjr0SuJKyI/xrfqsxfAAyjiaoIeW8Rx+3kFD4RaN3gkeoMBleb/WuDb8=
+=rQ1z
 -----END PGP SIGNATURE-----
 
---mvpLiMfbWzRoNl4x--
+--GyRA7555PLgSTuth--
