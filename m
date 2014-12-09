@@ -1,206 +1,105 @@
-From: Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [PATCH v2 2/5] drm/i915: add component support
-Date: Tue, 09 Dec 2014 12:33:21 +0200
-Message-ID: <87mw6xi03y.fsf@intel.com>
-References: <1418056929-7977-3-git-send-email-imre.deak@intel.com>
- <1418118078-3676-2-git-send-email-imre.deak@intel.com>
- <20141209101228.GS27182@phenom.ffwll.local>
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: Question on arm64 unaligned faults during playback
+Date: Tue, 9 Dec 2014 11:43:43 +0000
+Message-ID: <20141209114343.GA31129@e104818-lin.cambridge.arm.com>
+References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>
+ <54856621.8090107@ladisch.de> <s5hppbumnis.wl-tiwai@suse.de>
+ <54858868.70708@metafoo.de>
+ <20141208122549.GF16185@e104818-lin.cambridge.arm.com>
+ <CAM4voam0h4e1Z8q3eqNpgMhhfw-zJpfh7fi4iznX_Y0bj98nKA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20141209101228.GS27182@phenom.ffwll.local>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Daniel Vetter <daniel@ffwll.ch>, Imre Deak <imre.deak@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from foss-mx-na.foss.arm.com (foss-mx-na.foss.arm.com
+ [217.140.108.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EB62261519
+ for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 12:43:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAM4voam0h4e1Z8q3eqNpgMhhfw-zJpfh7fi4iznX_Y0bj98nKA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Abhilash Kesavan <kesavan.abhilash@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "padma.v@samsung.com" <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Will Deacon <Will.Deacon@arm.com>, "b42378@freescale.com" <b42378@freescale.com>, Clemens Ladisch <clemens@ladisch.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAwOSBEZWMgMjAxNCwgRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPiB3cm90
-ZToKPiBPbiBUdWUsIERlYyAwOSwgMjAxNCBhdCAxMTo0MToxN0FNICswMjAwLCBJbXJlIERlYWsg
-d3JvdGU6Cj4+IFJlZ2lzdGVyIGEgY29tcG9uZW50IHRvIGJlIHVzZWQgdG8gaW50ZXJmYWNlIHdp
-dGggdGhlIHNuZF9oZGFfaW50ZWwKPj4gZHJpdmVyLiBUaGlzIGlzIG1lYW50IHRvIHJlcGxhY2Ug
-dGhlIHNhbWUgaW50ZXJmYWNlIHRoYXQgaXMgY3VycmVudGx5Cj4+IGJhc2VkIG9uIG1vZHVsZSBz
-eW1ib2wgbG9va3VwLgo+PiAKPj4gdjI6Cj4+IC0gY2hhbmdlIHJvbGVzIGJldHdlZW4gdGhlIGhk
-YSBhbmQgaTkxNSBjb21wb25lbnRzIChEYW5pZWwpCj4+IC0gYWRkIHRoZSBpbXBsZW1lbnRhdGlv
-biB0byBhIG5ldyBmaWxlIChKYW5pKQo+Cj4gSSBkaXNhZ3JlZSB3aXRoIHRoZSBuYW1lIGhlcmUg
-LSBpbnRlbF9jb21wb25lbnQuYyBpcyBub3QgcmVhbGx5Cj4gZGVzY3JpcHRpdmUgc2luY2UgaXQn
-cyBub3QgcmVhbGx5LiBJbW8gaXQgbWFrZXMgbXVjaCBtb3JlIHNlbnNlIHRvIHB1dAo+IHRoaXMg
-aW50byBpbnRlbF9hdWRpby5jLiBBZnRlciBhbGwgaXQncyBhbGwgYWJvdXQgaG93IHdlIGludGVy
-YWN0IHdpdGggdGhlCj4gYXVkaW8gc2lkZSwgd2hpY2ggd2lsbCBiZSBldmVuIG1vcmUgb2J2aW91
-cyBvbmNlIHdlIGhhdmUgYSBkZWRpY2F0ZWQKPiBzdWJkZXZpY2UgZm9yIHRoaXMuCgpJZiB3ZSBr
-ZWVwIHRoaXMgY29tcG9uZW50IGF1ZGlvIHNwZWNpZmljLCB0aGVuIEkgZ3Vlc3MgSSBhZ3JlZQpp
-bnRlbF9hdWRpby5jIGlzIHRoZSBiZXR0ZXIgcGxhY2UgZm9yIGl0LiBCdXQgdGhhdCBtZWFucyBh
-bnl0aGluZyBlbHNlCihsaWtlIHBvc3NpYmx5IHBtaWMgZHJpdmVyIGludGVyYWN0aW9uKSB3aWxs
-IG5lZWQgdG8gaGF2ZSBhIGNvbXBvbmVudCBvZgppdHMgb3duLgoKQlIsCkphbmkuCgoKPgo+IEFs
-c28gcGxlYXNlIGFkZCBhIGJpdCBvZiBrZXJuZWxkb2MgdG8gdGhlIF9pbml0L19jbGVhbnVwIGZ1
-bmN0aW9ucyB3aXRoIGEKPiBmZXcgd29yZHMgYWJvdXQgd2hhdCB0aGlzIGlzIHVzZWQgZm9yLiBP
-ciBpZiB5b3Ugd2FudCwgZXh0cmFjdCBhIHNob3J0Cj4gRE9DOiBzZWN0aW9uIGZvciBpdCBldmVu
-IHRvIGRlc2NyaWJlIHRoZSBpbnRlcmFjdGlvbnMuCj4gLURhbmllbAo+Cj4+IC0gdXNlIGJldHRl
-ciBuYW1lc3BhY2luZyAoSmFuaSkKPj4gCj4+IFNpZ25lZC1vZmYtYnk6IEltcmUgRGVhayA8aW1y
-ZS5kZWFrQGludGVsLmNvbT4KPj4gLS0tCj4+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9NYWtlZmls
-ZSAgICAgICAgIHwgICAzICstCj4+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2NvbXBvbmVu
-dC5jIHwgMTA5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPj4gIGRyaXZlcnMv
-Z3B1L2RybS9pOTE1L2k5MTVfZG1hLmMgICAgICAgfCAgIDQgKysKPj4gIGRyaXZlcnMvZ3B1L2Ry
-bS9pOTE1L2k5MTVfZHJ2LmggICAgICAgfCAgIDMgKwo+PiAgZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aW50ZWxfZHJ2LmggICAgICB8ICAgNCArKwo+PiAgaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQu
-aCAgICAgICAgICB8ICAzOCArKysrKysrKysrKysKPj4gIDYgZmlsZXMgY2hhbmdlZCwgMTYwIGlu
-c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJz
-L2dwdS9kcm0vaTkxNS9pOTE1X2NvbXBvbmVudC5jCj4+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5j
-bHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+PiAKPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
-L2RybS9pOTE1L01ha2VmaWxlIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvTWFrZWZpbGUKPj4gaW5k
-ZXggZTQwODNlNC4uNmI1YjA4MiAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUv
-TWFrZWZpbGUKPj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvTWFrZWZpbGUKPj4gQEAgLTcs
-NyArNyw4IEBAIGNjZmxhZ3MteSA6PSAtSWluY2x1ZGUvZHJtCj4+ICAjIFBsZWFzZSBrZWVwIHRo
-ZXNlIGJ1aWxkIGxpc3RzIHNvcnRlZCEKPj4gIAo+PiAgIyBjb3JlIGRyaXZlciBjb2RlCj4+IC1p
-OTE1LXkgOj0gaTkxNV9kcnYubyBcCj4+ICtpOTE1LXkgOj0gaTkxNV9jb21wb25lbnQubyBcCj4+
-ICsJICBpOTE1X2Rydi5vIFwKPj4gIAkgIGk5MTVfcGFyYW1zLm8gXAo+PiAgICAgICAgICAgIGk5
-MTVfc3VzcGVuZC5vIFwKPj4gIAkgIGk5MTVfc3lzZnMubyBcCj4+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2NvbXBvbmVudC5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aTkxNV9jb21wb25lbnQuYwo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+PiBpbmRleCAwMDAwMDAw
-Li40YmI0OWYwCj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aTkxNV9jb21wb25lbnQuYwo+PiBAQCAtMCwwICsxLDEwOSBAQAo+PiArLyoKPj4gKyAqIENvcHly
-aWdodCDCqSAyMDE0IEludGVsIENvcnBvcmF0aW9uCj4+ICsgKgo+PiArICogUGVybWlzc2lvbiBp
-cyBoZXJlYnkgZ3JhbnRlZCwgZnJlZSBvZiBjaGFyZ2UsIHRvIGFueSBwZXJzb24gb2J0YWluaW5n
-IGEKPj4gKyAqIGNvcHkgb2YgdGhpcyBzb2Z0d2FyZSBhbmQgYXNzb2NpYXRlZCBkb2N1bWVudGF0
-aW9uIGZpbGVzICh0aGUgIlNvZnR3YXJlIiksCj4+ICsgKiB0byBkZWFsIGluIHRoZSBTb2Z0d2Fy
-ZSB3aXRob3V0IHJlc3RyaWN0aW9uLCBpbmNsdWRpbmcgd2l0aG91dCBsaW1pdGF0aW9uCj4+ICsg
-KiB0aGUgcmlnaHRzIHRvIHVzZSwgY29weSwgbW9kaWZ5LCBtZXJnZSwgcHVibGlzaCwgZGlzdHJp
-YnV0ZSwgc3VibGljZW5zZSwKPj4gKyAqIGFuZC9vciBzZWxsIGNvcGllcyBvZiB0aGUgU29mdHdh
-cmUsIGFuZCB0byBwZXJtaXQgcGVyc29ucyB0byB3aG9tIHRoZQo+PiArICogU29mdHdhcmUgaXMg
-ZnVybmlzaGVkIHRvIGRvIHNvLCBzdWJqZWN0IHRvIHRoZSBmb2xsb3dpbmcgY29uZGl0aW9uczoK
-Pj4gKyAqCj4+ICsgKiBUaGUgYWJvdmUgY29weXJpZ2h0IG5vdGljZSBhbmQgdGhpcyBwZXJtaXNz
-aW9uIG5vdGljZSAoaW5jbHVkaW5nIHRoZSBuZXh0Cj4+ICsgKiBwYXJhZ3JhcGgpIHNoYWxsIGJl
-IGluY2x1ZGVkIGluIGFsbCBjb3BpZXMgb3Igc3Vic3RhbnRpYWwgcG9ydGlvbnMgb2YgdGhlCj4+
-ICsgKiBTb2Z0d2FyZS4KPj4gKyAqCj4+ICsgKiBUSEUgU09GVFdBUkUgSVMgUFJPVklERUQgIkFT
-IElTIiwgV0lUSE9VVCBXQVJSQU5UWSBPRiBBTlkgS0lORCwgRVhQUkVTUyBPUgo+PiArICogSU1Q
-TElFRCwgSU5DTFVESU5HIEJVVCBOT1QgTElNSVRFRCBUTyBUSEUgV0FSUkFOVElFUyBPRiBNRVJD
-SEFOVEFCSUxJVFksCj4+ICsgKiBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRSBBTkQg
-Tk9OSU5GUklOR0VNRU5ULiAgSU4gTk8gRVZFTlQgU0hBTEwKPj4gKyAqIFRIRSBBVVRIT1JTIE9S
-IENPUFlSSUdIVCBIT0xERVJTIEJFIExJQUJMRSBGT1IgQU5ZIENMQUlNLCBEQU1BR0VTIE9SIE9U
-SEVSCj4+ICsgKiBMSUFCSUxJVFksIFdIRVRIRVIgSU4gQU4gQUNUSU9OIE9GIENPTlRSQUNULCBU
-T1JUIE9SIE9USEVSV0lTRSwgQVJJU0lORwo+PiArICogRlJPTSwgT1VUIE9GIE9SIElOIENPTk5F
-Q1RJT04gV0lUSCBUSEUgU09GVFdBUkUgT1IgVEhFIFVTRSBPUiBPVEhFUiBERUFMSU5HUwo+PiAr
-ICogSU4gVEhFIFNPRlRXQVJFLgo+PiArICovCj4+ICsKPj4gKyNpbmNsdWRlIDxsaW51eC9jb21w
-b25lbnQuaD4KPj4gKyNpbmNsdWRlIDxkcm0vaTkxNV9jb21wb25lbnQuaD4KPj4gKyNpbmNsdWRl
-ICJpbnRlbF9kcnYuaCIKPj4gKwo+PiArc3RhdGljIHZvaWQgZGlzcGxheV9jb21wb25lbnRfZ2V0
-X3Bvd2VyKHN0cnVjdCBkZXZpY2UgKmRldikKPj4gK3sKPj4gKwlpbnRlbF9kaXNwbGF5X3Bvd2Vy
-X2dldChkZXZfdG9faTkxNShkZXYpLCBQT1dFUl9ET01BSU5fQVVESU8pOwo+PiArfQo+PiArCj4+
-ICtzdGF0aWMgdm9pZCBkaXNwbGF5X2NvbXBvbmVudF9wdXRfcG93ZXIoc3RydWN0IGRldmljZSAq
-ZGV2KQo+PiArewo+PiArCWludGVsX2Rpc3BsYXlfcG93ZXJfcHV0KGRldl90b19pOTE1KGRldiks
-IFBPV0VSX0RPTUFJTl9BVURJTyk7Cj4+ICt9Cj4+ICsKPj4gKy8qIEdldCBDRENMSyBpbiBrSHog
-ICovCj4+ICtzdGF0aWMgaW50IGRpc3BsYXlfY29tcG9uZW50X2dldF9jZGNsa19mcmVxKHN0cnVj
-dCBkZXZpY2UgKmRldikKPj4gK3sKPj4gKwlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3By
-aXYgPSBkZXZfdG9faTkxNShkZXYpOwo+PiArCWludCByZXQ7Cj4+ICsKPj4gKwlpZiAoV0FSTl9P
-Tl9PTkNFKCFIQVNfRERJKGRldl9wcml2KSkpCj4+ICsJCXJldHVybiAtRU5PREVWOwo+PiArCj4+
-ICsJaW50ZWxfZGlzcGxheV9wb3dlcl9nZXQoZGV2X3ByaXYsIFBPV0VSX0RPTUFJTl9BVURJTyk7
-Cj4+ICsJcmV0ID0gaW50ZWxfZGRpX2dldF9jZGNsa19mcmVxKGRldl9wcml2KTsKPj4gKwlpbnRl
-bF9kaXNwbGF5X3Bvd2VyX3B1dChkZXZfcHJpdiwgUE9XRVJfRE9NQUlOX0FVRElPKTsKPj4gKwo+
-PiArCXJldHVybiByZXQ7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgaTkxNV9k
-aXNwbGF5X2NvbXBvbmVudF9vcHMgZGlzcGxheV9jb21wb25lbnRfb3BzID0gewo+PiArCS5vd25l
-cgkJPSBUSElTX01PRFVMRSwKPj4gKwkuZ2V0X3Bvd2VyCT0gZGlzcGxheV9jb21wb25lbnRfZ2V0
-X3Bvd2VyLAo+PiArCS5wdXRfcG93ZXIJPSBkaXNwbGF5X2NvbXBvbmVudF9wdXRfcG93ZXIsCj4+
-ICsJLmdldF9jZGNsa19mcmVxCT0gZGlzcGxheV9jb21wb25lbnRfZ2V0X2NkY2xrX2ZyZXEsCj4+
-ICt9Owo+PiArCj4+ICtzdGF0aWMgaW50IGRpc3BsYXlfY29tcG9uZW50X2JpbmQoc3RydWN0IGRl
-dmljZSAqaTkxNV9kZXYsCj4+ICsJCQkJICBzdHJ1Y3QgZGV2aWNlICpoZGFfZGV2LCB2b2lkICpk
-YXRhKQo+PiArewo+PiArCXN0cnVjdCBpOTE1X2Rpc3BsYXlfY29tcG9uZW50ICpkY29tcCA9IGRh
-dGE7Cj4+ICsKPj4gKwlpZiAoV0FSTl9PTihkY29tcC0+b3BzIHx8IGRjb21wLT5kZXYpKQo+PiAr
-CQlyZXR1cm4gLUVFWElTVDsKPj4gKwo+PiArCWRjb21wLT5vcHMgPSAmZGlzcGxheV9jb21wb25l
-bnRfb3BzOwo+PiArCWRjb21wLT5kZXYgPSBpOTE1X2RldjsKPj4gKwo+PiArCXJldHVybiAwOwo+
-PiArfQo+PiArCj4+ICtzdGF0aWMgdm9pZCBkaXNwbGF5X2NvbXBvbmVudF91bmJpbmQoc3RydWN0
-IGRldmljZSAqaTkxNV9kZXYsCj4+ICsJCQkJICAgICBzdHJ1Y3QgZGV2aWNlICpoZGFfZGV2LCB2
-b2lkICpkYXRhKQo+PiArewo+PiArCXN0cnVjdCBpOTE1X2Rpc3BsYXlfY29tcG9uZW50ICpkY29t
-cCA9IGRhdGE7Cj4+ICsKPj4gKwlkY29tcC0+b3BzID0gTlVMTDsKPj4gKwlkY29tcC0+ZGV2ID0g
-TlVMTDsKPj4gK30KPj4gKwo+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBjb21wb25lbnRfb3BzIGRp
-c3BsYXlfY29tcG9uZW50X2JpbmRfb3BzID0gewo+PiArCS5iaW5kCT0gZGlzcGxheV9jb21wb25l
-bnRfYmluZCwKPj4gKwkudW5iaW5kCT0gZGlzcGxheV9jb21wb25lbnRfdW5iaW5kLAo+PiArfTsK
-Pj4gKwo+PiArdm9pZCBpOTE1X2NvbXBvbmVudF9pbml0KHN0cnVjdCBkcm1faTkxNV9wcml2YXRl
-ICpkZXZfcHJpdikKPj4gK3sKPj4gKwlpbnQgcmV0Owo+PiArCj4+ICsJcmV0ID0gY29tcG9uZW50
-X2FkZChkZXZfcHJpdi0+ZGV2LT5kZXYsICZkaXNwbGF5X2NvbXBvbmVudF9iaW5kX29wcyk7Cj4+
-ICsJaWYgKHJldCA8IDApIHsKPj4gKwkJRFJNX0VSUk9SKCJmYWlsZWQgdG8gYWRkIGRpc3BsYXkg
-Y29tcG9uZW50ICglZClcbiIsIHJldCk7Cj4+ICsJCS8qIGNvbnRpbnVlIHdpdGggcmVkdWNlZCBm
-dW5jdGlvbmFsaXR5ICovCj4+ICsJCXJldHVybjsKPj4gKwl9Cj4+ICsKPj4gKwlkZXZfcHJpdi0+
-ZGlzcGxheV9jb21wb25lbnRfcmVnaXN0ZXJlZCA9IHRydWU7Cj4+ICt9Cj4+ICsKPj4gK3ZvaWQg
-aTkxNV9jb21wb25lbnRfY2xlYW51cChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYp
-Cj4+ICt7Cj4+ICsJaWYgKGRldl9wcml2LT5kaXNwbGF5X2NvbXBvbmVudF9yZWdpc3RlcmVkKSB7
-Cj4+ICsJCWNvbXBvbmVudF9kZWwoZGV2X3ByaXYtPmRldi0+ZGV2LCAmZGlzcGxheV9jb21wb25l
-bnRfYmluZF9vcHMpOwo+PiArCQlkZXZfcHJpdi0+ZGlzcGxheV9jb21wb25lbnRfcmVnaXN0ZXJl
-ZCA9IGZhbHNlOwo+PiArCX0KPj4gK30KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9p
-OTE1L2k5MTVfZG1hLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2RtYS5jCj4+IGluZGV4
-IDg4N2Q4OGYuLmI2MjM4YmIgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5
-MTVfZG1hLmMKPj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kbWEuYwo+PiBAQCAt
-ODMwLDYgKzgzMCw4IEBAIGludCBpOTE1X2RyaXZlcl9sb2FkKHN0cnVjdCBkcm1fZGV2aWNlICpk
-ZXYsIHVuc2lnbmVkIGxvbmcgZmxhZ3MpCj4+ICAKPj4gIAlpbnRlbF9ydW50aW1lX3BtX2VuYWJs
-ZShkZXZfcHJpdik7Cj4+ICAKPj4gKwlpOTE1X2NvbXBvbmVudF9pbml0KGRldl9wcml2KTsKPj4g
-Kwo+PiAgCXJldHVybiAwOwo+PiAgCj4+ICBvdXRfcG93ZXJfd2VsbDoKPj4gQEAgLTg3MCw2ICs4
-NzIsOCBAQCBpbnQgaTkxNV9kcml2ZXJfdW5sb2FkKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYpCj4+
-ICAJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZGV2LT5kZXZfcHJpdmF0ZTsK
-Pj4gIAlpbnQgcmV0Owo+PiAgCj4+ICsJaTkxNV9jb21wb25lbnRfY2xlYW51cChkZXZfcHJpdik7
-Cj4+ICsKPj4gIAlyZXQgPSBpOTE1X2dlbV9zdXNwZW5kKGRldik7Cj4+ICAJaWYgKHJldCkgewo+
-PiAgCQlEUk1fRVJST1IoImZhaWxlZCB0byBpZGxlIGhhcmR3YXJlOiAlZFxuIiwgcmV0KTsKPj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggYi9kcml2ZXJzL2dw
-dS9kcm0vaTkxNS9pOTE1X2Rydi5oCj4+IGluZGV4IGZiMjYxNmQuLjNiN2FlMTQgMTAwNjQ0Cj4+
-IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKPj4gKysrIGIvZHJpdmVycy9n
-cHUvZHJtL2k5MTUvaTkxNV9kcnYuaAo+PiBAQCAtMTY4NCw2ICsxNjg0LDkgQEAgc3RydWN0IGRy
-bV9pOTE1X3ByaXZhdGUgewo+PiAgCj4+ICAJYm9vbCBtY2hiYXJfbmVlZF9kaXNhYmxlOwo+PiAg
-Cj4+ICsJLyogaGRhL2k5MTUgZGlzcGxheSBjb21wb25lbnQgKi8KPj4gKwlib29sIGRpc3BsYXlf
-Y29tcG9uZW50X3JlZ2lzdGVyZWQ7Cj4+ICsKPj4gIAlzdHJ1Y3QgaW50ZWxfbDNfcGFyaXR5IGwz
-X3Bhcml0eTsKPj4gIAo+PiAgCS8qIENhbm5vdCBiZSBkZXRlcm1pbmVkIGJ5IFBDSUlELiBZb3Ug
-bXVzdCBhbHdheXMgcmVhZCBhIHJlZ2lzdGVyLiAqLwo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
-cHUvZHJtL2k5MTUvaW50ZWxfZHJ2LmggYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYu
-aAo+PiBpbmRleCA2MWE4OGZhLi44NTY3MDllIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL2dwdS9k
-cm0vaTkxNS9pbnRlbF9kcnYuaAo+PiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9k
-cnYuaAo+PiBAQCAtODA5LDYgKzgwOSwxMCBAQCBzdGF0aWMgaW5saW5lIGJvb2wgaW50ZWxfaXJx
-c19lbmFibGVkKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPj4gIGludCBpbnRl
-bF9nZXRfY3J0Y19zY2FubGluZShzdHJ1Y3QgaW50ZWxfY3J0YyAqY3J0Yyk7Cj4+ICB2b2lkIGdl
-bjhfaXJxX3Bvd2VyX3dlbGxfcG9zdF9lbmFibGUoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRl
-dl9wcml2KTsKPj4gIAo+PiArLyogaTkxNV9jb21wb25lbnQuYyAqLwo+PiArdm9pZCBpOTE1X2Nv
-bXBvbmVudF9pbml0KHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4+ICt2b2lk
-IGk5MTVfY29tcG9uZW50X2NsZWFudXAoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2
-KTsKPj4gKwo+PiAgLyogaW50ZWxfY3J0LmMgKi8KPj4gIHZvaWQgaW50ZWxfY3J0X2luaXQoc3Ry
-dWN0IGRybV9kZXZpY2UgKmRldik7Cj4+ICAKPj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2k5
-MTVfY29tcG9uZW50LmggYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4+IG5ldyBmaWxl
-IG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAwMDAuLjljNjYwY2EKPj4gLS0tIC9kZXYvbnVsbAo+
-PiArKysgYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4+IEBAIC0wLDAgKzEsMzggQEAK
-Pj4gKy8qCj4+ICsgKiBDb3B5cmlnaHQgwqkgMjAxNCBJbnRlbCBDb3Jwb3JhdGlvbgo+PiArICoK
-Pj4gKyAqIFBlcm1pc3Npb24gaXMgaGVyZWJ5IGdyYW50ZWQsIGZyZWUgb2YgY2hhcmdlLCB0byBh
-bnkgcGVyc29uIG9idGFpbmluZyBhCj4+ICsgKiBjb3B5IG9mIHRoaXMgc29mdHdhcmUgYW5kIGFz
-c29jaWF0ZWQgZG9jdW1lbnRhdGlvbiBmaWxlcyAodGhlICJTb2Z0d2FyZSIpLAo+PiArICogdG8g
-ZGVhbCBpbiB0aGUgU29mdHdhcmUgd2l0aG91dCByZXN0cmljdGlvbiwgaW5jbHVkaW5nIHdpdGhv
-dXQgbGltaXRhdGlvbgo+PiArICogdGhlIHJpZ2h0cyB0byB1c2UsIGNvcHksIG1vZGlmeSwgbWVy
-Z2UsIHB1Ymxpc2gsIGRpc3RyaWJ1dGUsIHN1YmxpY2Vuc2UsCj4+ICsgKiBhbmQvb3Igc2VsbCBj
-b3BpZXMgb2YgdGhlIFNvZnR3YXJlLCBhbmQgdG8gcGVybWl0IHBlcnNvbnMgdG8gd2hvbSB0aGUK
-Pj4gKyAqIFNvZnR3YXJlIGlzIGZ1cm5pc2hlZCB0byBkbyBzbywgc3ViamVjdCB0byB0aGUgZm9s
-bG93aW5nIGNvbmRpdGlvbnM6Cj4+ICsgKgo+PiArICogVGhlIGFib3ZlIGNvcHlyaWdodCBub3Rp
-Y2UgYW5kIHRoaXMgcGVybWlzc2lvbiBub3RpY2UgKGluY2x1ZGluZyB0aGUgbmV4dAo+PiArICog
-cGFyYWdyYXBoKSBzaGFsbCBiZSBpbmNsdWRlZCBpbiBhbGwgY29waWVzIG9yIHN1YnN0YW50aWFs
-IHBvcnRpb25zIG9mIHRoZQo+PiArICogU29mdHdhcmUuCj4+ICsgKgo+PiArICogVEhFIFNPRlRX
-QVJFIElTIFBST1ZJREVEICJBUyBJUyIsIFdJVEhPVVQgV0FSUkFOVFkgT0YgQU5ZIEtJTkQsIEVY
-UFJFU1MgT1IKPj4gKyAqIElNUExJRUQsIElOQ0xVRElORyBCVVQgTk9UIExJTUlURUQgVE8gVEhF
-IFdBUlJBTlRJRVMgT0YgTUVSQ0hBTlRBQklMSVRZLAo+PiArICogRklUTkVTUyBGT1IgQSBQQVJU
-SUNVTEFSIFBVUlBPU0UgQU5EIE5PTklORlJJTkdFTUVOVC4gIElOIE5PIEVWRU5UIFNIQUxMCj4+
-ICsgKiBUSEUgQVVUSE9SUyBPUiBDT1BZUklHSFQgSE9MREVSUyBCRSBMSUFCTEUgRk9SIEFOWSBD
-TEFJTSwgREFNQUdFUyBPUiBPVEhFUgo+PiArICogTElBQklMSVRZLCBXSEVUSEVSIElOIEFOIEFD
-VElPTiBPRiBDT05UUkFDVCwgVE9SVCBPUiBPVEhFUldJU0UsIEFSSVNJTkcKPj4gKyAqIEZST00s
-IE9VVCBPRiBPUiBJTiBDT05ORUNUSU9OIFdJVEggVEhFIFNPRlRXQVJFIE9SIFRIRSBVU0UgT1Ig
-T1RIRVIgREVBTElOR1MKPj4gKyAqIElOIFRIRSBTT0ZUV0FSRS4KPj4gKyAqLwo+PiArCj4+ICsj
-aWZuZGVmIF9JOTE1X0NPTVBPTkVOVF9IXwo+PiArI2RlZmluZSBfSTkxNV9DT01QT05FTlRfSF8K
-Pj4gKwo+PiArc3RydWN0IGk5MTVfZGlzcGxheV9jb21wb25lbnQgewo+PiArCXN0cnVjdCBkZXZp
-Y2UgKmRldjsKPj4gKwo+PiArCWNvbnN0IHN0cnVjdCBpOTE1X2Rpc3BsYXlfY29tcG9uZW50X29w
-cyB7Cj4+ICsJCXN0cnVjdCBtb2R1bGUgKm93bmVyOwo+PiArCQl2b2lkICgqZ2V0X3Bvd2VyKShz
-dHJ1Y3QgZGV2aWNlICopOwo+PiArCQl2b2lkICgqcHV0X3Bvd2VyKShzdHJ1Y3QgZGV2aWNlICop
-Owo+PiArCQlpbnQgKCpnZXRfY2RjbGtfZnJlcSkoc3RydWN0IGRldmljZSAqKTsKPj4gKwl9ICpv
-cHM7Cj4+ICt9Owo+PiArCj4+ICsjZW5kaWYgLyogX0k5MTVfQ09NUE9ORU5UX0hfICovCj4+IC0t
-IAo+PiAxLjguNAo+PiAKPgo+IC0tIAo+IERhbmllbCBWZXR0ZXIKPiBTb2Z0d2FyZSBFbmdpbmVl
-ciwgSW50ZWwgQ29ycG9yYXRpb24KPiArNDEgKDApIDc5IDM2NSA1NyA0OCAtIGh0dHA6Ly9ibG9n
-LmZmd2xsLmNoCgotLSAKSmFuaSBOaWt1bGEsIEludGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kg
-Q2VudGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCklu
-dGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On Tue, Dec 09, 2014 at 02:56:59AM +0000, Abhilash Kesavan wrote:
+> On Mon, Dec 8, 2014 at 5:55 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Mon, Dec 08, 2014 at 11:15:52AM +0000, Lars-Peter Clausen wrote:
+> >> On 12/08/2014 11:41 AM, Takashi Iwai wrote:
+> >> > At Mon, 08 Dec 2014 09:49:37 +0100,
+> >> > Clemens Ladisch wrote:
+> >> >>
+> >> >> Abhilash Kesavan wrote:
+> >> >>> I am working on a 64-bit ARM SoC (Samsung's Exynos7) and have observed
+> >> >>> unaligned faults while testing certain sound streams with aplay.
+> >> >>>
+> >> >>> [   24.535661] snd_pcm_lib_write_transfer:sound/core/pcm_lib.c hwbuf is ffffff8000085624, runtime->dma_area is ffffff8000080000, hwoff is 5513, frames_to_bytes is 22052, frames is 5513
+> >> >>> [   24.551244] Unhandled fault: alignment fault (0x96000061) at 0xffffff8000085624
+> >> >>> [   24.579944] PC is at __copy_from_user+0x14/0x60
+> >> >>> [   24.584450] LR is at snd_pcm_lib_write_transfer+0xe4/0x104
+> >> >>> [   24.922054] Call trace:
+> >> >>> [   24.924488] [<ffffffc0002d4784>] __copy_from_user+0x14/0x60
+> >> >>> [   24.930040] [<ffffffc0004b7574>] snd_pcm_lib_write1+0x1fc/0x384
+> >
+> > I can see copy_from_user() here, I assume the source is a user space
+> > buffer and the destination is the ioremap'ed SRAM (which causes the
+> > unaligned fault). Such function is not supposed copy into device memory
+> > (its prototype does not specify __iomem for the destination pointer).
+> >
+> > If you really want Device memory for the SRAM, I think we need some
+> > other API. memcpy_toio() could copy into such buffer but the source must
+> > be kernel. Maybe something like copy_from_user_toio()?
+> 
+> Thanks for the response.
+> 
+> Changing copy_from_user() to copy_from_user_toio() in
+> snd_pcm_lib_write_transfer() (sound/core/pcm_lib.c) works. I am not
+> sure about other effects of making such a change in a core sound file,
+> can someone comment ?
+
+The default implementation uses copy_from_user() to an intermediate
+buffer and another memcpy_toio() to the SRAM destination. So, it will be
+slower.
+
+In general it may be better to copy this function to some more generic
+place and let the arch code override it with a more optimal
+implementation.
+
+> > Otherwise, if you can remap the buffer as Normal (non-cacheable) memory,
+> > you could use something like vmap() with pgprot_writecombine for the
+> > mapping. Even though ioremap_wc() returns (currently) Normal
+> > non-cacheable memory, such pointer (__iomem) should only be used with
+> > specific IO accessors (though I can see this assumption broken in a few
+> > places in the kernel).
+> 
+> Currently, if I continue to use the SRAM allocation driver, two
+> options are working:
+> 1) ioremap to ioremap_wc in drivers/misc/sram.c.
+
+I think the SRAM driver does the correct devm_ioremap_resource() call
+but the implementation in lib/devres.c assumes that if
+IORESOURCE_CACHEABLE it should use devm_ioremap(). AFAIK, ioremap()
+always returns Device memory (even on x86, the default ioremap behaviour
+is nocache).
+
+> 2) copy_from_user to copy_from_user_toio in sound/core/pcm_lib.c
+> 
+> Which would be the preferred option ?
+
+I would prefer the sram changed. It provides an allocation pool from
+SRAM which could as well be mapped as write-combine. If no-one complains
+about changing the SRAM mapping to WC, you could introduce a
+devm_ioremap_wc() in lib/devres.c and call that directly from
+sram_probe(). But I can't tell for sure what the memory type
+expectations for SRAM are.
+
+-- 
+Catalin
