@@ -1,20 +1,20 @@
-From: thomas chen <tchen61@gmail.com>
-Subject: Re: I2S frame configuration
-Date: Tue, 09 Dec 2014 08:51:45 -0500
-Message-ID: <5486FE71.8090501@gmail.com>
-References: <5485C5CA.8030402@gmail.com> <5485D96C.3020900@ladisch.de>
- <5485E7E5.7020406@gmail.com> <5485FE16.1040005@metafoo.de>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH] sound / PM: Replace CONFIG_PM_RUNTIME with
+	CONFIG_PM
+Date: Tue, 9 Dec 2014 15:09:32 +0000
+Message-ID: <D0AC6CA0.260F%Brian.Austin@cirrus.com>
+References: <2064254.7lXiTpmK64@vostro.rjw.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f174.google.com (mail-qc0-f174.google.com
- [209.85.216.174])
- by alsa0.perex.cz (Postfix) with ESMTP id CE2B2260556
- for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 14:51:52 +0100 (CET)
-Received: by mail-qc0-f174.google.com with SMTP id c9so408940qcz.33
- for <alsa-devel@alsa-project.org>; Tue, 09 Dec 2014 05:51:51 -0800 (PST)
-In-Reply-To: <5485FE16.1040005@metafoo.de>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bon0131.outbound.protection.outlook.com [157.56.111.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1DE126170F
+ for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 16:09:43 +0100 (CET)
+In-Reply-To: <2064254.7lXiTpmK64@vostro.rjw.lan>
+Content-Language: en-US
+Content-ID: <F3B38E4FEE1A904B85E89897BF7DEC9A@ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,185 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Linux PM list <linux-pm@vger.kernel.org>, Xiubo Li <Li.Xiubo@freescale.com>, Timur Tabi <timur@tabi.org>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Ben Dooks <ben-linux@fluff.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-I have set up according to the thread.... but when I attempt to play a =
 
-sound file (with aplay)
-the program just stop ....
+On 12/5/14, 8:46 PM, "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
 
-aplay -vvv showed the below....
-
-
-
-Plug PCM: Linear conversion PCM (S24_3LE)
-Its setup is:
-   stream       : PLAYBACK
-   access       : RW_INTERLEAVED
-   format       : S16_LE
-   subformat    : STD
-   channels     : 2
-   rate         : 48000
-   exact rate   : 48000 (48000/1)
-   msbits       : 16
-   buffer_size  : 21844
-   period_size  : 5461
-   period_time  : 113770
-   tstamp_mode  : NONE
-   period_step  : 1
-   avail_min    : 5461
-   period_event : 0
-   start_threshold  : 21844
-   stop_threshold   : 21844
-   silence_threshold: 0
-   silence_size : 0
-   boundary     : 1431568384
-Slave: Hardware PCM card 0 'TI I2S' device 0 subdevice 0
-Its setup is:
-   stream       : PLAYBACK
-   access       : MMAP_INTERLEAVED
-   format       : S24_3LE
-   subformat    : STD
-   channels     : 2
-   rate         : 48000
-   exact rate   : 48000 (48000/1)
-   msbits       : 16
-   buffer_size  : 21844
-   period_size  : 5461
-   period_time  : 113770
-   tstamp_mode  : NONE
-   period_step  : 1
-   avail_min    : 5461
-   period_event : 0
-   start_threshold  : 21844
-   stop_threshold   : 21844
-   silence_threshold: 0
-   silence_size : 0
-   boundary     : 1431568384
-   appl_ptr     : 0
-   hw_ptr       : 0
-Max peak (10922 samples): 0x0000001a # 0%
-Max peak (10922 samples): 0x0000001a # 0%
-Max peak (10922 samples): 0x0000001a # 0%
-Max peak (10922 samples): 0x00002aed ####### 33%
-
-
-
-
-I have
-
-struct snd_soc_dai_link dai_i2s[] =3D {
-     {
-     .name =3D "I2S",
-     .codec_dai_name =3D "i2s-hifi",
-     .dai_fmt =3D SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM | =
-
-SND_SOC_DAI_FMT_IB_NF,
-     }
-
-
-Seems like the something (maybe clock ?) is missing ???
-
-Thx
-
-
-
-
-
-
-
-
-
-On 12/8/2014 2:37 PM, Lars-Peter Clausen wrote:
-> On 12/08/2014 07:03 PM, thomas chen wrote:
->>
->> Thanks for the info... so it is possible for Asoc to handle such =
-
->> format...
+>From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 >
-> Yes, its not a special format, it is just plain and simple I2S like it =
-
-> is supported by the majority of all drivers/devices.
+>After commit b2b49ccbdd54 (PM: Kconfig: Set PM_RUNTIME if PM_SLEEP is
+>selected) PM_RUNTIME is always set if PM is set, so #ifdef blocks
+>depending on CONFIG_PM_RUNTIME may now be changed to depend on
+>CONFIG_PM.
 >
->>
->> So where does one specify number of bits in a FRAME/WORD (epsecially =
-
->> if we
->> were to be master instead of slave ?)
+>Replace CONFIG_PM_RUNTIME with CONFIG_PM everywhere under sound/.
 >
-> That's typically specified in the format that is used, e.g. in your =
-
-> case SNDRV_PCM_FORMAT_S24_3LE. This is not necessarily ideal for all =
-
-> cases, but has work well enough so far.
+>Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>---
 >
->>
->> and, how does one specify number of bits to ignore (before the valid =
-
->> data)
+>Note: This depends on commit b2b49ccbdd54 (PM: Kconfig: Set PM_RUNTIME if
+>PM_SLEEP is selected) which is only in linux-next at the moment (via the
+>linux-pm tree).
 >
-> There are no bits to ignore the valid data. I2S has a delay of 1 bit =
-
-> clock cycle between the first bit of the sample and the frame sync =
-
-> signal. So the data bit that is transmitted on the same clock cycle as =
-
-> the frame sync is actually the last bit of the previous sample. So in =
-
-> your case your sample has 16 valid bits followed by 8 ignored bits.
->
->>
->> and also how many valid bits (ie size of data word) ???
->
-> You can set a snd_pcm_hw_constraint_msbits() constraint to tell =
-
-> userspace that only a certain amount of bits are actually going to be =
-
-> used.
->
-> If you are using ASoC you can do this by setting the sig_bits property =
-
-> on your snd_soc_dai_driver.
->
-> - Lars
->
->>
->> Thanks...
->>
->>
->>
->>
->> On 12/8/2014 12:01 PM, Clemens Ladisch wrote:
->>> thomas chen wrote:
->>>> I am working on a ALSA interface to a particular codec over I2S
->>>>
->>>> the audio stream format is a bit peculiar...
->>>>
->>>> there are 24 BCLK cycle between transition of FSYNC... howver, there
->>>> are only 16 bit that are valid
->>>>
->>>> bit 0: ignore
->>>> bit 1-16:   valid pcm data (MSB....LSB)
->>>> bit 17-23: ignore
->>> This is the 'original' I=B2S format.  The format where the sample begins
->>> with the 1st BCLK usually is called left-justified (and uses the
->>> opposite FSYNC polarity).
->>>
->>> Having ignored bits is common.  (Typically, there are 32 BCLK cycles =
-
->>> per
->>> sample.)
->>>
->>> In ASoC, this would be SND_SOC_DAIFMT_I2S and SND_SOC_DAIFMT_LEFT_J.
->>>
->>>
->>> Regards,
->>> Clemens
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+For the cs35l32
+Acked-by: Brian Austin <brian.austin@cirrus.com>
