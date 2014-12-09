@@ -1,42 +1,79 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Question on arm64 unaligned faults during playback
-Date: Tue, 09 Dec 2014 09:19:55 +0100
-Message-ID: <5486B0AB.7000109@ladisch.de>
-References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>	<54856621.8090107@ladisch.de>
- <s5hppbumnis.wl-tiwai@suse.de>	<54858868.70708@metafoo.de>	<20141208122549.GF16185@e104818-lin.cambridge.arm.com>
- <CAM4voam0h4e1Z8q3eqNpgMhhfw-zJpfh7fi4iznX_Y0bj98nKA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 0EE4A2605B5
- for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 09:19:56 +0100 (CET)
-In-Reply-To: <CAM4voam0h4e1Z8q3eqNpgMhhfw-zJpfh7fi4iznX_Y0bj98nKA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Abhilash Kesavan <kesavan.abhilash@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "padma.v@samsung.com" <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Will Deacon <Will.Deacon@arm.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: [PATCH] ASoC: pcm512x: Also support PCM514x devices
+Date: Tue,  9 Dec 2014 09:28:09 +0100
+Message-ID: <1418113689-21505-1-git-send-email-peda@lysator.liu.se>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-Abhilash Kesavan wrote:
-> Currently, if I continue to use the SRAM allocation driver, two
-> options are working:
-> 1) ioremap to ioremap_wc in drivers/misc/sram.c.
-> 2) copy_from_user to copy_from_user_toio in sound/core/pcm_lib.c
->
-> Which would be the preferred option ?
+From: Peter Rosin <peda@axentia.se>
 
-I don't know how to tell the SRAM allocator to hand out WC memory, but
-copy_from_user_toio() is what you would put into your .copy callback.
+Signed-off-by: Peter Rosin <peda@axentia.se>
+---
+ Documentation/devicetree/bindings/sound/pcm512x.txt |    3 ++-
+ sound/soc/codecs/pcm512x-i2c.c                      |    4 ++++
+ sound/soc/codecs/pcm512x-spi.c                      |    4 ++++
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-
-Regards,
-Clemens
+diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt b/Documentation/devicetree/bindings/sound/pcm512x.txt
+index faff75e64573..98e0d34915e8 100644
+--- a/Documentation/devicetree/bindings/sound/pcm512x.txt
++++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
+@@ -5,7 +5,8 @@ on the board).
+ 
+ Required properties:
+ 
+-  - compatible : One of "ti,pcm5121" or "ti,pcm5122"
++  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141" or
++                 "ti,pcm5142"
+ 
+   - reg : the I2C address of the device for I2C, the chip select
+           number for SPI.
+diff --git a/sound/soc/codecs/pcm512x-i2c.c b/sound/soc/codecs/pcm512x-i2c.c
+index 4d62230bd378..08047ac952f4 100644
+--- a/sound/soc/codecs/pcm512x-i2c.c
++++ b/sound/soc/codecs/pcm512x-i2c.c
+@@ -41,6 +41,8 @@ static int pcm512x_i2c_remove(struct i2c_client *i2c)
+ static const struct i2c_device_id pcm512x_i2c_id[] = {
+ 	{ "pcm5121", },
+ 	{ "pcm5122", },
++	{ "pcm5141", },
++	{ "pcm5142", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, pcm512x_i2c_id);
+@@ -48,6 +50,8 @@ MODULE_DEVICE_TABLE(i2c, pcm512x_i2c_id);
+ static const struct of_device_id pcm512x_of_match[] = {
+ 	{ .compatible = "ti,pcm5121", },
+ 	{ .compatible = "ti,pcm5122", },
++	{ .compatible = "ti,pcm5141", },
++	{ .compatible = "ti,pcm5142", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, pcm512x_of_match);
+diff --git a/sound/soc/codecs/pcm512x-spi.c b/sound/soc/codecs/pcm512x-spi.c
+index f297058c0038..7b64a9cef704 100644
+--- a/sound/soc/codecs/pcm512x-spi.c
++++ b/sound/soc/codecs/pcm512x-spi.c
+@@ -43,6 +43,8 @@ static int pcm512x_spi_remove(struct spi_device *spi)
+ static const struct spi_device_id pcm512x_spi_id[] = {
+ 	{ "pcm5121", },
+ 	{ "pcm5122", },
++	{ "pcm5141", },
++	{ "pcm5142", },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(spi, pcm512x_spi_id);
+@@ -50,6 +52,8 @@ MODULE_DEVICE_TABLE(spi, pcm512x_spi_id);
+ static const struct of_device_id pcm512x_of_match[] = {
+ 	{ .compatible = "ti,pcm5121", },
+ 	{ .compatible = "ti,pcm5122", },
++	{ .compatible = "ti,pcm5141", },
++	{ .compatible = "ti,pcm5142", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, pcm512x_of_match);
+-- 
+1.7.10.4
