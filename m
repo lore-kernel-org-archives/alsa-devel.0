@@ -1,20 +1,19 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH] sound / PM: Replace CONFIG_PM_RUNTIME with
-	CONFIG_PM
-Date: Tue, 9 Dec 2014 15:09:32 +0000
-Message-ID: <D0AC6CA0.260F%Brian.Austin@cirrus.com>
-References: <2064254.7lXiTpmK64@vostro.rjw.lan>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: I2S frame configuration
+Date: Tue, 09 Dec 2014 16:12:29 +0100
+Message-ID: <5487115D.9030001@metafoo.de>
+References: <5485C5CA.8030402@gmail.com> <5485D96C.3020900@ladisch.de>
+ <5485E7E5.7020406@gmail.com> <5485FE16.1040005@metafoo.de>
+ <5486FE71.8090501@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0131.outbound.protection.outlook.com [157.56.111.131])
- by alsa0.perex.cz (Postfix) with ESMTP id D1DE126170F
- for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 16:09:43 +0100 (CET)
-In-Reply-To: <2064254.7lXiTpmK64@vostro.rjw.lan>
-Content-Language: en-US
-Content-ID: <F3B38E4FEE1A904B85E89897BF7DEC9A@ad.cirrus.com>
+Received: from smtp-out-166.synserver.de (smtp-out-166.synserver.de
+ [212.40.185.166])
+ by alsa0.perex.cz (Postfix) with ESMTP id E549826170F
+ for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 16:12:33 +0100 (CET)
+In-Reply-To: <5486FE71.8090501@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +23,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Linux PM list <linux-pm@vger.kernel.org>, Xiubo Li <Li.Xiubo@freescale.com>, Timur Tabi <timur@tabi.org>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Ben Dooks <ben-linux@fluff.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: thomas chen <tchen61@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 12/09/2014 02:51 PM, thomas chen wrote:
+>
+> I have set up according to the thread.... but when I attempt to play a so=
+und
+> file (with aplay)
+> the program just stop ....
+[...]
+>
+> Seems like the something (maybe clock ?) is missing ???
 
+Yes, most likely your SoC is not seeing the frameclock/bitclock.
 
-On 12/5/14, 8:46 PM, "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
-
->From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 >
->After commit b2b49ccbdd54 (PM: Kconfig: Set PM_RUNTIME if PM_SLEEP is
->selected) PM_RUNTIME is always set if PM is set, so #ifdef blocks
->depending on CONFIG_PM_RUNTIME may now be changed to depend on
->CONFIG_PM.
+> Thx
 >
->Replace CONFIG_PM_RUNTIME with CONFIG_PM everywhere under sound/.
 >
->Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->---
 >
->Note: This depends on commit b2b49ccbdd54 (PM: Kconfig: Set PM_RUNTIME if
->PM_SLEEP is selected) which is only in linux-next at the moment (via the
->linux-pm tree).
 >
-For the cs35l32
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+>
+>
+>
+>
+>
+> On 12/8/2014 2:37 PM, Lars-Peter Clausen wrote:
+>> On 12/08/2014 07:03 PM, thomas chen wrote:
+>>>
+>>> Thanks for the info... so it is possible for Asoc to handle such format=
+...
+>>
+>> Yes, its not a special format, it is just plain and simple I2S like it is
+>> supported by the majority of all drivers/devices.
+>>
+>>>
+>>> So where does one specify number of bits in a FRAME/WORD (epsecially if=
+ we
+>>> were to be master instead of slave ?)
+>>
+>> That's typically specified in the format that is used, e.g. in your case
+>> SNDRV_PCM_FORMAT_S24_3LE. This is not necessarily ideal for all cases, b=
+ut
+>> has work well enough so far.
+>>
+>>>
+>>> and, how does one specify number of bits to ignore (before the valid da=
+ta)
+>>
+>> There are no bits to ignore the valid data. I2S has a delay of 1 bit clo=
+ck
+>> cycle between the first bit of the sample and the frame sync signal. So
+>> the data bit that is transmitted on the same clock cycle as the frame sy=
+nc
+>> is actually the last bit of the previous sample. So in your case your
+>> sample has 16 valid bits followed by 8 ignored bits.
+>>
+>>>
+>>> and also how many valid bits (ie size of data word) ???
+>>
+>> You can set a snd_pcm_hw_constraint_msbits() constraint to tell userspace
+>> that only a certain amount of bits are actually going to be used.
+>>
+>> If you are using ASoC you can do this by setting the sig_bits property on
+>> your snd_soc_dai_driver.
+>>
+>> - Lars
+>>
+>>>
+>>> Thanks...
+>>>
+>>>
+>>>
+>>>
+>>> On 12/8/2014 12:01 PM, Clemens Ladisch wrote:
+>>>> thomas chen wrote:
+>>>>> I am working on a ALSA interface to a particular codec over I2S
+>>>>>
+>>>>> the audio stream format is a bit peculiar...
+>>>>>
+>>>>> there are 24 BCLK cycle between transition of FSYNC... howver, there
+>>>>> are only 16 bit that are valid
+>>>>>
+>>>>> bit 0: ignore
+>>>>> bit 1-16:   valid pcm data (MSB....LSB)
+>>>>> bit 17-23: ignore
+>>>> This is the 'original' I=B2S format.  The format where the sample begi=
+ns
+>>>> with the 1st BCLK usually is called left-justified (and uses the
+>>>> opposite FSYNC polarity).
+>>>>
+>>>> Having ignored bits is common.  (Typically, there are 32 BCLK cycles p=
+er
+>>>> sample.)
+>>>>
+>>>> In ASoC, this would be SND_SOC_DAIFMT_I2S and SND_SOC_DAIFMT_LEFT_J.
+>>>>
+>>>>
+>>>> Regards,
+>>>> Clemens
+>>>
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@alsa-project.org
+>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
