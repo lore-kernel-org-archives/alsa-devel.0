@@ -1,86 +1,35 @@
-From: Abhilash Kesavan <kesavan.abhilash@gmail.com>
-Subject: Re: [alsa-devel] Question on arm64 unaligned faults during playback
-Date: Tue, 9 Dec 2014 08:26:59 +0530
-Message-ID: <CAM4voam0h4e1Z8q3eqNpgMhhfw-zJpfh7fi4iznX_Y0bj98nKA@mail.gmail.com>
-References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>
- <54856621.8090107@ladisch.de> <s5hppbumnis.wl-tiwai@suse.de>
- <54858868.70708@metafoo.de>
- <20141208122549.GF16185@e104818-lin.cambridge.arm.com>
+From: Padma Venkat <padma.kvr@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: samsung: i2s: Add missing assignment
+ of variant_regs
+Date: Tue, 9 Dec 2014 08:53:34 +0530
+Message-ID: <CAAgF-BfGXi6PZQxGEUdXjTh-NBzj2T2SmZ=2oBOXV2XUYEGrQw@mail.gmail.com>
+References: <1418060754-7064-1-git-send-email-s.nawrocki@samsung.com>
+	<20141208204711.GF11764@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20141208122549.GF16185@e104818-lin.cambridge.arm.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "padma.v@samsung.com" <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Will Deacon <Will.Deacon@arm.com>, "b42378@freescale.com" <b42378@freescale.com>, Clemens Ladisch <clemens@ladisch.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "broonie@kernel.org" <broonie@kernel.org>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20141208204711.GF11764@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, sbkim73@samsung.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, drake@endlessm.com, padma.v@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Catalin,
+Hi,
 
-On Mon, Dec 8, 2014 at 5:55 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
-> On Mon, Dec 08, 2014 at 11:15:52AM +0000, Lars-Peter Clausen wrote:
->> Added ARM64 folks to Cc.
+On 12/9/14, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Dec 08, 2014 at 06:45:54PM +0100, Sylwester Nawrocki wrote:
 >
-> Thanks.
+>> Add assignment of the variant_regs field which is missing in commit
+>> a5a56871f804edac93a53b5e871c0e9818fb9033 ("ASoC: samsung: add support
+>> for exynos7 I2S controller"). Without this attempting to probe the
+>> secondary DAI fails with an error like:
 >
->> On 12/08/2014 11:41 AM, Takashi Iwai wrote:
->> > At Mon, 08 Dec 2014 09:49:37 +0100,
->> > Clemens Ladisch wrote:
->> >>
->> >> Abhilash Kesavan wrote:
->> >>> I am working on a 64-bit ARM SoC (Samsung's Exynos7) and have observed
->> >>> unaligned faults while testing certain sound streams with aplay.
->> >>>
->> >>> [   24.535661] snd_pcm_lib_write_transfer:sound/core/pcm_lib.c hwbuf is ffffff8000085624, runtime->dma_area is ffffff8000080000, hwoff is 5513, frames_to_bytes is 22052, frames is 5513
->> >>> [   24.551244] Unhandled fault: alignment fault (0x96000061) at 0xffffff8000085624
->> >>> [   24.579944] PC is at __copy_from_user+0x14/0x60
->> >>> [   24.584450] LR is at snd_pcm_lib_write_transfer+0xe4/0x104
->> >>> [   24.922054] Call trace:
->> >>> [   24.924488] [<ffffffc0002d4784>] __copy_from_user+0x14/0x60
->> >>> [   24.930040] [<ffffffc0004b7574>] snd_pcm_lib_write1+0x1fc/0x384
+> Applied, thanks.  Broader testing of changes before sending them
+> upstream would be good...
 >
-> I can see copy_from_user() here, I assume the source is a user space
-> buffer and the destination is the ioremap'ed SRAM (which causes the
-> unaligned fault). Such function is not supposed copy into device memory
-> (its prototype does not specify __iomem for the destination pointer).
->
-> If you really want Device memory for the SRAM, I think we need some
-> other API. memcpy_toio() could copy into such buffer but the source must
-> be kernel. Maybe something like copy_from_user_toio()?
 
-Thanks for the response.
+I am really sorry for introducing so many crashes in the driver. Next
+time will take care of testing all possible cases.
 
-Changing copy_from_user() to copy_from_user_toio() in
-snd_pcm_lib_write_transfer() (sound/core/pcm_lib.c) works. I am not
-sure about other effects of making such a change in a core sound file,
-can someone comment ?
-
->
-> Otherwise, if you can remap the buffer as Normal (non-cacheable) memory,
-> you could use something like vmap() with pgprot_writecombine for the
-> mapping. Even though ioremap_wc() returns (currently) Normal
-> non-cacheable memory, such pointer (__iomem) should only be used with
-> specific IO accessors (though I can see this assumption broken in a few
-> places in the kernel).
-
-Currently, if I continue to use the SRAM allocation driver, two
-options are working:
-1) ioremap to ioremap_wc in drivers/misc/sram.c.
-2) copy_from_user to copy_from_user_toio in sound/core/pcm_lib.c
-
-Which would be the preferred option ?
-
-Regards,
-Abhilash
->
-> --
-> Catalin
+Thanks for the support
+Padma
