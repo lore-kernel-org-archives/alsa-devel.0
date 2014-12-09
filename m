@@ -1,52 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch v2 11/11] ARM: dts: Model IPQ LPASS audio hardware
-Date: Tue, 9 Dec 2014 16:08:47 +0000
-Message-ID: <20141209160847.GI1934@sirena.org.uk>
-References: <1418076073-12623-1-git-send-email-kwestfie@codeaurora.org>
- <1418076073-12623-12-git-send-email-kwestfie@codeaurora.org>
+Subject: Re: [PATCH] sound / PM: Replace CONFIG_PM_RUNTIME with
+	CONFIG_PM
+Date: Tue, 9 Dec 2014 16:15:20 +0000
+Message-ID: <20141209161520.GK1934@sirena.org.uk>
+References: <2064254.7lXiTpmK64@vostro.rjw.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="l0l+eSofNeLXHSnY"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1418076073-12623-12-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============4223912251545695587=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C47D26172C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 17:15:41 +0100 (CET)
+In-Reply-To: <2064254.7lXiTpmK64@vostro.rjw.lan>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Timur Tabi <timur@tabi.org>, Linux PM list <linux-pm@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Ben Dooks <ben-linux@fluff.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---l0l+eSofNeLXHSnY
-Content-Type: text/plain; charset=us-ascii
+--===============4223912251545695587==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vk/v8fjDPiDepTtA"
 Content-Disposition: inline
 
-On Mon, Dec 08, 2014 at 02:01:13PM -0800, Kenneth Westfield wrote:
 
-> +		max98357a_codec: max98357a-codec {
-> +			compatible = "qcom,max98357a-codec";
-> +			status = "disabled";
-> +		};
-> +
->  		qcom_pinmux: pinmux@800000 {
+--vk/v8fjDPiDepTtA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This appears to be adding an off-SoC CODEC driver to the .dtsi for the
-SoC.  Don't do that, just let the relevant boards register the devices
-on them.
+On Sat, Dec 06, 2014 at 03:46:27AM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>=20
+> After commit b2b49ccbdd54 (PM: Kconfig: Set PM_RUNTIME if PM_SLEEP is
+> selected) PM_RUNTIME is always set if PM is set, so #ifdef blocks
+> depending on CONFIG_PM_RUNTIME may now be changed to depend on
+> CONFIG_PM.
 
---l0l+eSofNeLXHSnY
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--vk/v8fjDPiDepTtA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUhx6OAAoJECTWi3JdVIfQBQ0H/3fati7yjW76dYnbjgqczhKA
-QNRIurU2BOhg/QoOEXxlpmia8v8as2madlOttST3dXbDxUNz1x9OyMiGhPR+D1+3
-hrh/s/PIAUynKCDylBRMK4B8vjm1cMypNK/B68ik3cb3jwhapJb5ZTm53TCFyC8j
-rMh49ZH8mliXSYmfVdRZxfYPmy25Ci03Rj6zKJ1KgNQJ6yPpueURRVVjeZonGgV3
-XMHPk+uSfAdmGvJkm+JOE7tSDh+G5lmo1kFopoO1CgA9hz6PkhaYEcxuR+ndZITX
-00ByRMvcx9ikjx4jvtRalWSnWZGngJSgqLvES0Ogdx1K1ousio6gg5Du0SctCTI=
-=HYwH
+iQEcBAEBAgAGBQJUhyAXAAoJECTWi3JdVIfQ+gAH/RtO167WNmJph1mXUpYcElXu
+I4EZb20uXYY4zTHiKzXAYlq/9zJM+IkpW7+3MSe00lA8hQxD03VzeiocmVamMaJX
+PWXGu6ifGJU0sMv+Zvxejxjd2dlhhr9Rd8z85luIKi/70a+3i6cJIUtit0DxSWD/
+ZSPoPJU/qrsFNVLzUy7iXt0ryYBdEUsnTQCCmekRWPQzkTcfQA1OpCH6dpaS2Pic
+yXhZ4fJwl4oQSOVP/XoRPp7SyBgCskwk/dJnz2WRcHqq2tPQkjsE3XSzIBo957NO
+DCXIvFBfM/YvSJQQHGkU6DGhr7tVJYxFxfea0lmtHxk8wfyA3q7agqUxNyu6WaU=
+=wspE
 -----END PGP SIGNATURE-----
 
---l0l+eSofNeLXHSnY--
+--vk/v8fjDPiDepTtA--
+
+--===============4223912251545695587==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4223912251545695587==--
