@@ -1,64 +1,74 @@
-From: Darren Hart <dvhart@infradead.org>
-Subject: Re: [PATCH v3 0/2] Disable the ThinkPad HW mute/level control when
- possible
-Date: Thu, 4 Dec 2014 03:55:15 -0800
-Message-ID: <20141204115515.GD100190@vmdeb7>
-References: <cover.1413590510.git.luto@amacapital.net>
+From: Andy Lutomirski <luto@amacapital.net>
+Subject: Re: [PATCH v3 0/2] Disable the ThinkPad HW mute/level control when possible
+Date: Tue, 9 Dec 2014 14:47:34 -0800
+Message-ID: <CALCETrX8E6ot=UF=4jRt=Ph5zjFsH-3An4-eMzdWyyiyxyArHA@mail.gmail.com>
+References: <cover.1413590510.git.luto@amacapital.net> <20141204115515.GD100190@vmdeb7>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <platform-driver-x86-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1413590510.git.luto@amacapital.net>
+In-Reply-To: <20141204115515.GD100190@vmdeb7>
 Sender: platform-driver-x86-owner@vger.kernel.org
-To: Andy Lutomirski <luto@amacapital.net>
+To: Darren Hart <dvhart@infradead.org>
 Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 17, 2014 at 05:04:28PM -0700, Andy Lutomirski wrote:
-> This series is being resurrected after several years, and it's quite
-> different from before, so I'm restarting the version numbers :)
-> 
-> ThinkPad volume and mute controls are a mess.  For whatever reason,
-> ThinkPads have mute buttons that send KEY_MUTE *and* control an
-> invisible-to-ALSA mute switch.  Some of them have volume controls that
-> interact with this switch as well.
-> 
-> This is a perennial source of problems.  On most ThinkPads, if you press
-> mute and then unmute using GUI controls, you have no sound, because
-> userspace and ALSA state gets out of sync with the hardware switch.
-> There's a separate "sound card" that exposes the hardware switch, but
-> userspace code generally doesn't understand that.
-> 
-> There are already a few _OSI(Linux) overrides to turn all the hardware
-> buttons into regular buttons.  Rather than quirking ACPI everywhere,
-> just teach thinkpad-acpi to program the buttons for full software
-> control and to disable hardware controls.  That allows us to remove the
-> ACPI quirks and have normal mute controls.  This approach should be
-> much simpler than adding even more kludgey ALSA integration for
-> questionable gain.
-> 
-> Tested on an X200s (with latching mute by default) and an X220 (with
-> a mute light and toggle mute by default).  Everything works as expected.
-> 
-> Changes from v2:
->  - Don't try to change the mute mode on IBM ThinkPads.
->  - Further minor cleanups.
->  - Try to restore the mode on module unload.
-> 
-> Changes from v1:
->  - Simplified the code a bit.
->  - Improved suspend/hibernate behavior.
-> 
-> Andy Lutomirski (2):
->   thinkpad-acpi: Try to use full software mute control
->   acpi: Remove _OSI(Linux) for ThinkPads
-> 
->  drivers/acpi/blacklist.c             |  54 ----------------
->  drivers/platform/x86/thinkpad_acpi.c | 116 ++++++++++++++++++++++++++++++++---
->  2 files changed, 106 insertions(+), 64 deletions(-)
+On Thu, Dec 4, 2014 at 3:55 AM, Darren Hart <dvhart@infradead.org> wrote:
+> On Fri, Oct 17, 2014 at 05:04:28PM -0700, Andy Lutomirski wrote:
+>> This series is being resurrected after several years, and it's quite
+>> different from before, so I'm restarting the version numbers :)
+>>
+>> ThinkPad volume and mute controls are a mess.  For whatever reason,
+>> ThinkPads have mute buttons that send KEY_MUTE *and* control an
+>> invisible-to-ALSA mute switch.  Some of them have volume controls that
+>> interact with this switch as well.
+>>
+>> This is a perennial source of problems.  On most ThinkPads, if you press
+>> mute and then unmute using GUI controls, you have no sound, because
+>> userspace and ALSA state gets out of sync with the hardware switch.
+>> There's a separate "sound card" that exposes the hardware switch, but
+>> userspace code generally doesn't understand that.
+>>
+>> There are already a few _OSI(Linux) overrides to turn all the hardware
+>> buttons into regular buttons.  Rather than quirking ACPI everywhere,
+>> just teach thinkpad-acpi to program the buttons for full software
+>> control and to disable hardware controls.  That allows us to remove the
+>> ACPI quirks and have normal mute controls.  This approach should be
+>> much simpler than adding even more kludgey ALSA integration for
+>> questionable gain.
+>>
+>> Tested on an X200s (with latching mute by default) and an X220 (with
+>> a mute light and toggle mute by default).  Everything works as expected.
+>>
+>> Changes from v2:
+>>  - Don't try to change the mute mode on IBM ThinkPads.
+>>  - Further minor cleanups.
+>>  - Try to restore the mode on module unload.
+>>
+>> Changes from v1:
+>>  - Simplified the code a bit.
+>>  - Improved suspend/hibernate behavior.
+>>
+>> Andy Lutomirski (2):
+>>   thinkpad-acpi: Try to use full software mute control
+>>   acpi: Remove _OSI(Linux) for ThinkPads
+>>
+>>  drivers/acpi/blacklist.c             |  54 ----------------
+>>  drivers/platform/x86/thinkpad_acpi.c | 116 ++++++++++++++++++++++++++++++++---
+>>  2 files changed, 106 insertions(+), 64 deletions(-)
+>
+> Andy, is this the latest version?
 
-Andy, is this the latest version?
+Yes.
+
+--Andy
+
+>
+> --
+> Darren Hart
+> Intel Open Source Technology Center
+
+
 
 -- 
-Darren Hart
-Intel Open Source Technology Center
+Andy Lutomirski
+AMA Capital Management, LLC
