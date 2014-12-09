@@ -1,15 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH v2] ASoC: rt5645: Fix potential crash in jd
-	function
-Date: Tue, 9 Dec 2014 10:14:45 +0800
-Message-ID: <1418091285-4700-1-git-send-email-bardliao@realtek.com>
+From: Abhilash Kesavan <kesavan.abhilash@gmail.com>
+Subject: Re: Question on arm64 unaligned faults during playback
+Date: Tue, 9 Dec 2014 08:26:47 +0530
+Message-ID: <CAM4voakyorp6r==7AfZiZbA1kTF1VN1SqJiauJRYptsFnG2ZLA@mail.gmail.com>
+References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>
+ <54856621.8090107@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 198EE2605B7
- for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 03:15:26 +0100 (CET)
+Received: from mail-qg0-f51.google.com (mail-qg0-f51.google.com
+ [209.85.192.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B4582605B7
+ for <alsa-devel@alsa-project.org>; Tue,  9 Dec 2014 03:56:48 +0100 (CET)
+Received: by mail-qg0-f51.google.com with SMTP id e89so3273564qgf.24
+ for <alsa-devel@alsa-project.org>; Mon, 08 Dec 2014 18:56:47 -0800 (PST)
+In-Reply-To: <54856621.8090107@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,36 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, yang.a.fang@intel.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, padma.v@samsung.com, tiwai@suse.de, b42378@freescale.com, Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org, p.zabel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-If no one defined the rt5645->pdata.hp_det_gpio in coreboot/bios.
-It will cause kernel to reboot because rt5645->pdata.hp_det_gpio
-is 0. So it is worth to add a check in rt5645_jack_detect.
+Hi Clemens,
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
-* Return an error if gpio number is invalid
----
- sound/soc/codecs/rt5645.c | 4 ++++
- 1 file changed, 4 insertions(+)
+On Mon, Dec 8, 2014 at 2:19 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Abhilash Kesavan wrote:
+>> I am working on a 64-bit ARM SoC (Samsung's Exynos7) and have observed
+>> unaligned faults while testing certain sound streams with aplay.
+>>
+>> [   24.535661] snd_pcm_lib_write_transfer:sound/core/pcm_lib.c hwbuf is ffffff8000085624, runtime->dma_area is ffffff8000080000, hwoff is 5513, frames_to_bytes is 22052, frames is 5513
+>> [   24.551244] Unhandled fault: alignment fault (0x96000061) at 0xffffff8000085624
+>> [   24.579944] PC is at __copy_from_user+0x14/0x60
+>> [   24.584450] LR is at snd_pcm_lib_write_transfer+0xe4/0x104
+>> [   24.922054] Call trace:
+>> [   24.924488] [<ffffffc0002d4784>] __copy_from_user+0x14/0x60
+>> [   24.930040] [<ffffffc0004b7574>] snd_pcm_lib_write1+0x1fc/0x384
+>>
+>> We are using the internal sram available for sound, for DMA buffer
+>> allocation, using the generic SRAM driver. From the above log, the
+>> buffer address offset is not 8-byte aligned and as we are using the
+>> SRAM driver which maps the memory as device memory we are getting an
+>> unaligned fault. Is it incorrect to use the generic sram driver for
+>> arm64 or am I missing something ?
+>
+> When you give the ALSA framework a memory buffer, it is assumed that it
+> is general-purpose memory, i.e., can be accessed with any alignment.
+>
+> If your memory does not allow such accesses, you have to do all the
+> accesses in your driver, i.e., do everything in the .copy/.silence
+> callbacks.  (You also have to add constraints so that periods and buffer
+> are correctly aligned.)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index a7789a8..27141e2 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2209,6 +2209,10 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec)
- 	int gpio_state, jack_type = 0;
- 	unsigned int val;
- 
-+	if (!gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
-+		dev_err(codec->dev, "invalid gpio\n");
-+		return -EINVAL;
-+	}
- 	gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
- 
- 	dev_dbg(codec->dev, "gpio = %d(%d)\n", rt5645->pdata.hp_det_gpio,
--- 
-1.8.1.1.439.g50a6b54
+Thanks for the reply. Exynos7 is using generic dmaengine and the
+default dmaengine_pcm_ops does not have the copy/silence call-backs
+populated. Is the expectation that I should add the  copy call-back
+for my platform even though it uses the generic dmaengine framework ?
+
+Regards,
+Abhilash
+>
+>
+> Regards,
+> Clemens
