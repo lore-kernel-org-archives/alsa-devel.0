@@ -1,74 +1,115 @@
-From: Andy Lutomirski <luto@amacapital.net>
-Subject: Re: [PATCH v3 0/2] Disable the ThinkPad HW mute/level control when possible
-Date: Tue, 9 Dec 2014 14:47:34 -0800
-Message-ID: <CALCETrX8E6ot=UF=4jRt=Ph5zjFsH-3An4-eMzdWyyiyxyArHA@mail.gmail.com>
-References: <cover.1413590510.git.luto@amacapital.net> <20141204115515.GD100190@vmdeb7>
+From: Abhilash Kesavan <kesavan.abhilash@gmail.com>
+Subject: Re: Question on arm64 unaligned faults during playback
+Date: Wed, 10 Dec 2014 09:40:50 +0530
+Message-ID: <CAM4voakZbZ=4dZBuxyFs8eaoWvSBQzQR36+-E-=F9bDDb9wjfA@mail.gmail.com>
+References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>
+ <54856621.8090107@ladisch.de> <s5hppbumnis.wl-tiwai@suse.de>
+ <54858868.70708@metafoo.de>
+ <20141208122549.GF16185@e104818-lin.cambridge.arm.com>
+ <CAM4voam0h4e1Z8q3eqNpgMhhfw-zJpfh7fi4iznX_Y0bj98nKA@mail.gmail.com>
+ <20141209114343.GA31129@e104818-lin.cambridge.arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <20141204115515.GD100190@vmdeb7>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>
-Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBF53260436
+ for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2014 05:10:51 +0100 (CET)
+Received: by mail-qc0-f179.google.com with SMTP id c9so1576636qcz.24
+ for <alsa-devel@alsa-project.org>; Tue, 09 Dec 2014 20:10:51 -0800 (PST)
+In-Reply-To: <20141209114343.GA31129@e104818-lin.cambridge.arm.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, Li.Xiubo@freescale.com, shc_work@mail.ru, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, nicoleotsuka@gmail.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "padma.v@samsung.com" <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Will Deacon <Will.Deacon@arm.com>, "b42378@freescale.com" <b42378@freescale.com>, Clemens Ladisch <clemens@ladisch.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 4, 2014 at 3:55 AM, Darren Hart <dvhart@infradead.org> wrote:
-> On Fri, Oct 17, 2014 at 05:04:28PM -0700, Andy Lutomirski wrote:
->> This series is being resurrected after several years, and it's quite
->> different from before, so I'm restarting the version numbers :)
+Hi Catalin,
+
+On Tue, Dec 9, 2014 at 5:13 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
+> On Tue, Dec 09, 2014 at 02:56:59AM +0000, Abhilash Kesavan wrote:
+>> On Mon, Dec 8, 2014 at 5:55 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
+>> > On Mon, Dec 08, 2014 at 11:15:52AM +0000, Lars-Peter Clausen wrote:
+>> >> On 12/08/2014 11:41 AM, Takashi Iwai wrote:
+>> >> > At Mon, 08 Dec 2014 09:49:37 +0100,
+>> >> > Clemens Ladisch wrote:
+>> >> >>
+>> >> >> Abhilash Kesavan wrote:
+>> >> >>> I am working on a 64-bit ARM SoC (Samsung's Exynos7) and have observed
+>> >> >>> unaligned faults while testing certain sound streams with aplay.
+>> >> >>>
+>> >> >>> [   24.535661] snd_pcm_lib_write_transfer:sound/core/pcm_lib.c hwbuf is ffffff8000085624, runtime->dma_area is ffffff8000080000, hwoff is 5513, frames_to_bytes is 22052, frames is 5513
+>> >> >>> [   24.551244] Unhandled fault: alignment fault (0x96000061) at 0xffffff8000085624
+>> >> >>> [   24.579944] PC is at __copy_from_user+0x14/0x60
+>> >> >>> [   24.584450] LR is at snd_pcm_lib_write_transfer+0xe4/0x104
+>> >> >>> [   24.922054] Call trace:
+>> >> >>> [   24.924488] [<ffffffc0002d4784>] __copy_from_user+0x14/0x60
+>> >> >>> [   24.930040] [<ffffffc0004b7574>] snd_pcm_lib_write1+0x1fc/0x384
+>> >
+>> > I can see copy_from_user() here, I assume the source is a user space
+>> > buffer and the destination is the ioremap'ed SRAM (which causes the
+>> > unaligned fault). Such function is not supposed copy into device memory
+>> > (its prototype does not specify __iomem for the destination pointer).
+>> >
+>> > If you really want Device memory for the SRAM, I think we need some
+>> > other API. memcpy_toio() could copy into such buffer but the source must
+>> > be kernel. Maybe something like copy_from_user_toio()?
 >>
->> ThinkPad volume and mute controls are a mess.  For whatever reason,
->> ThinkPads have mute buttons that send KEY_MUTE *and* control an
->> invisible-to-ALSA mute switch.  Some of them have volume controls that
->> interact with this switch as well.
+>> Thanks for the response.
 >>
->> This is a perennial source of problems.  On most ThinkPads, if you press
->> mute and then unmute using GUI controls, you have no sound, because
->> userspace and ALSA state gets out of sync with the hardware switch.
->> There's a separate "sound card" that exposes the hardware switch, but
->> userspace code generally doesn't understand that.
->>
->> There are already a few _OSI(Linux) overrides to turn all the hardware
->> buttons into regular buttons.  Rather than quirking ACPI everywhere,
->> just teach thinkpad-acpi to program the buttons for full software
->> control and to disable hardware controls.  That allows us to remove the
->> ACPI quirks and have normal mute controls.  This approach should be
->> much simpler than adding even more kludgey ALSA integration for
->> questionable gain.
->>
->> Tested on an X200s (with latching mute by default) and an X220 (with
->> a mute light and toggle mute by default).  Everything works as expected.
->>
->> Changes from v2:
->>  - Don't try to change the mute mode on IBM ThinkPads.
->>  - Further minor cleanups.
->>  - Try to restore the mode on module unload.
->>
->> Changes from v1:
->>  - Simplified the code a bit.
->>  - Improved suspend/hibernate behavior.
->>
->> Andy Lutomirski (2):
->>   thinkpad-acpi: Try to use full software mute control
->>   acpi: Remove _OSI(Linux) for ThinkPads
->>
->>  drivers/acpi/blacklist.c             |  54 ----------------
->>  drivers/platform/x86/thinkpad_acpi.c | 116 ++++++++++++++++++++++++++++++++---
->>  2 files changed, 106 insertions(+), 64 deletions(-)
+>> Changing copy_from_user() to copy_from_user_toio() in
+>> snd_pcm_lib_write_transfer() (sound/core/pcm_lib.c) works. I am not
+>> sure about other effects of making such a change in a core sound file,
+>> can someone comment ?
 >
-> Andy, is this the latest version?
-
-Yes.
-
---Andy
-
+> The default implementation uses copy_from_user() to an intermediate
+> buffer and another memcpy_toio() to the SRAM destination. So, it will be
+> slower.
 >
-> --
-> Darren Hart
-> Intel Open Source Technology Center
+> In general it may be better to copy this function to some more generic
+> place and let the arch code override it with a more optimal
+> implementation.
+>
+>> > Otherwise, if you can remap the buffer as Normal (non-cacheable) memory,
+>> > you could use something like vmap() with pgprot_writecombine for the
+>> > mapping. Even though ioremap_wc() returns (currently) Normal
+>> > non-cacheable memory, such pointer (__iomem) should only be used with
+>> > specific IO accessors (though I can see this assumption broken in a few
+>> > places in the kernel).
+>>
+>> Currently, if I continue to use the SRAM allocation driver, two
+>> options are working:
+>> 1) ioremap to ioremap_wc in drivers/misc/sram.c.
+>
+> I think the SRAM driver does the correct devm_ioremap_resource() call
+> but the implementation in lib/devres.c assumes that if
+> IORESOURCE_CACHEABLE it should use devm_ioremap(). AFAIK, ioremap()
+> always returns Device memory (even on x86, the default ioremap behaviour
+> is nocache).
+>
+>> 2) copy_from_user to copy_from_user_toio in sound/core/pcm_lib.c
+>>
+>> Which would be the preferred option ?
+>
+> I would prefer the sram changed. It provides an allocation pool from
+> SRAM which could as well be mapped as write-combine. If no-one complains
+> about changing the SRAM mapping to WC, you could introduce a
+> devm_ioremap_wc() in lib/devres.c and call that directly from
+> sram_probe(). But I can't tell for sure what the memory type
+> expectations for SRAM are.
 
+Thanks for the response. I will post patches to do this.
+Also, adding guys who have been working on the generic sram driver and
+internal sram support for sound in case they have any comments
+regarding the change to ioremap_wc.
 
-
--- 
-Andy Lutomirski
-AMA Capital Management, LLC
+Regards,
+Abhilash
