@@ -1,33 +1,63 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 00/15 v5] ALSA: Enhancement for
-	existed	FireWire drivers
-Date: Wed, 10 Dec 2014 10:18:06 +0100
-Message-ID: <54880FCE.8080903@ladisch.de>
-References: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v2 2/5] drm/i915: add component support
+Date: Wed, 10 Dec 2014 10:24:35 +0100
+Message-ID: <20141210092435.GD27182@phenom.ffwll.local>
+References: <1418056929-7977-3-git-send-email-imre.deak@intel.com>
+ <1418118078-3676-2-git-send-email-imre.deak@intel.com>
+ <20141209101228.GS27182@phenom.ffwll.local>
+ <87mw6xi03y.fsf@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id CE4AC260435
- for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2014 10:18:08 +0100 (CET)
-In-Reply-To: <1418051449-18371-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <87mw6xi03y.fsf@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Jani Nikula <jani.nikula@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> This patchset is the rest of patches to enable ALSA Dice and OXFW driver
-> to handle more models. This patchset is for linux-next branch.
-
-For all patches in this patch set:
-Acked-by: Clemens Ladisch <clemens@ladisch.de>
+T24gVHVlLCBEZWMgMDksIDIwMTQgYXQgMTI6MzM6MjFQTSArMDIwMCwgSmFuaSBOaWt1bGEgd3Jv
+dGU6Cj4gT24gVHVlLCAwOSBEZWMgMjAxNCwgRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNo
+PiB3cm90ZToKPiA+IE9uIFR1ZSwgRGVjIDA5LCAyMDE0IGF0IDExOjQxOjE3QU0gKzAyMDAsIElt
+cmUgRGVhayB3cm90ZToKPiA+PiBSZWdpc3RlciBhIGNvbXBvbmVudCB0byBiZSB1c2VkIHRvIGlu
+dGVyZmFjZSB3aXRoIHRoZSBzbmRfaGRhX2ludGVsCj4gPj4gZHJpdmVyLiBUaGlzIGlzIG1lYW50
+IHRvIHJlcGxhY2UgdGhlIHNhbWUgaW50ZXJmYWNlIHRoYXQgaXMgY3VycmVudGx5Cj4gPj4gYmFz
+ZWQgb24gbW9kdWxlIHN5bWJvbCBsb29rdXAuCj4gPj4gCj4gPj4gdjI6Cj4gPj4gLSBjaGFuZ2Ug
+cm9sZXMgYmV0d2VlbiB0aGUgaGRhIGFuZCBpOTE1IGNvbXBvbmVudHMgKERhbmllbCkKPiA+PiAt
+IGFkZCB0aGUgaW1wbGVtZW50YXRpb24gdG8gYSBuZXcgZmlsZSAoSmFuaSkKPiA+Cj4gPiBJIGRp
+c2FncmVlIHdpdGggdGhlIG5hbWUgaGVyZSAtIGludGVsX2NvbXBvbmVudC5jIGlzIG5vdCByZWFs
+bHkKPiA+IGRlc2NyaXB0aXZlIHNpbmNlIGl0J3Mgbm90IHJlYWxseS4gSW1vIGl0IG1ha2VzIG11
+Y2ggbW9yZSBzZW5zZSB0byBwdXQKPiA+IHRoaXMgaW50byBpbnRlbF9hdWRpby5jLiBBZnRlciBh
+bGwgaXQncyBhbGwgYWJvdXQgaG93IHdlIGludGVyYWN0IHdpdGggdGhlCj4gPiBhdWRpbyBzaWRl
+LCB3aGljaCB3aWxsIGJlIGV2ZW4gbW9yZSBvYnZpb3VzIG9uY2Ugd2UgaGF2ZSBhIGRlZGljYXRl
+ZAo+ID4gc3ViZGV2aWNlIGZvciB0aGlzLgo+IAo+IElmIHdlIGtlZXAgdGhpcyBjb21wb25lbnQg
+YXVkaW8gc3BlY2lmaWMsIHRoZW4gSSBndWVzcyBJIGFncmVlCj4gaW50ZWxfYXVkaW8uYyBpcyB0
+aGUgYmV0dGVyIHBsYWNlIGZvciBpdC4gQnV0IHRoYXQgbWVhbnMgYW55dGhpbmcgZWxzZQo+IChs
+aWtlIHBvc3NpYmx5IHBtaWMgZHJpdmVyIGludGVyYWN0aW9uKSB3aWxsIG5lZWQgdG8gaGF2ZSBh
+IGNvbXBvbmVudCBvZgo+IGl0cyBvd24uCgpJIGd1ZXNzIGl0IGRlcGVuZHMgdXBvbiBob3cgd2Un
+bGwgc3RydWN0dXJlIGl0LCBidXQgaWYgaTkxNSBuZWVkcyB0bwphY2Nlc3MgcG1pYyB0aGVuIHBt
+aWMgbmVlZHMgdG8gZXhwb3NlIGEgbmV3IHBsYXRmb3JtIGRldi9jb21wb25lbnQgYW5kCmk5MTUg
+aXMgYSBtYXN0ZXIuIFRoaXMgd29uJ3QgaW50ZXJmZXJlIEkgdGhpbmsgc2luY2UgaXQncyBzb21l
+dGhpbmcgZnJvbQp0aGUgaTkxNSBkZXZpY2UgdGhhdCB3ZSBleHBvc2UgZm9yIHRoZSBhdWRpbyBk
+cml2ZXIuCgpTbyBoaWdoLWxldmVsIHN1bW1hcnkgb2YgY29tcG9uZW50OgotIG1hc3RlcjogdGhl
+IG1haW4gcGFydCB3aGljaCBvd25zIHRoZSB1c2Vyc3BhY2UvbG9naWNhbCBkZXZpY2UgKGUuZy4K
+ICBkcm1fZGV2aWNlLCBzbmRfZGV2LCAuLi4pCi0gY29tcG9uZW50OiB2YXJpb3VzIGJpdHMmcGll
+Y2VzIGFsbCBvdmVyIG5lZWRlZCBmb3IgYSBtYXN0ZXIsIGJ1dCBub3QKICBwYXJ0IG9mIHRoZSBt
+YWluIGRldmljZS4gSW4gRFQtbGFuZCB0aGF0J3MgZXZlcnl0aGluZyBzaW5jZSB0aGUgbWFpbgog
+IGRldmljZSBpcyBqdXN0IGEgZmFrZSBEVCBub2RlIHRvIGJ1bmRsZSBldmVyeXRoaW5nIHVwIHdp
+dGggbm8gcmVhbGF0aW9uCiAgdG8gcmVhbCBody4gSW4gYWNwaSB3ZSdsbCBsaWtlbHkgYWx3YXlz
+IGhhdmUgc29tZSByZWFsIGFjcGkgb3IgcGNpCiAgZGV2aWNlIGFzIG1hc3Rlci4KLURhbmllbAot
+LSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRpb24KKzQx
+ICgwKSA3OSAzNjUgNTcgNDggLSBodHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0Cklu
+dGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
