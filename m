@@ -1,24 +1,19 @@
-From: Abhilash Kesavan <kesavan.abhilash@gmail.com>
-Subject: Re: Question on arm64 unaligned faults during playback
-Date: Wed, 10 Dec 2014 09:40:50 +0530
-Message-ID: <CAM4voakZbZ=4dZBuxyFs8eaoWvSBQzQR36+-E-=F9bDDb9wjfA@mail.gmail.com>
-References: <CAM4voa=kiLsiLEzUbo3D+f1go5px78fXBSjSi7kGK4QCdnwPyQ@mail.gmail.com>
- <54856621.8090107@ladisch.de> <s5hppbumnis.wl-tiwai@suse.de>
- <54858868.70708@metafoo.de>
- <20141208122549.GF16185@e104818-lin.cambridge.arm.com>
- <CAM4voam0h4e1Z8q3eqNpgMhhfw-zJpfh7fi4iznX_Y0bj98nKA@mail.gmail.com>
- <20141209114343.GA31129@e104818-lin.cambridge.arm.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH RFC 0/9] audio timestamping evolutions
+Date: Wed, 10 Dec 2014 12:40:09 +0800
+Message-ID: <CAN8cciaOsP9wk0wvu5S4BXMwZ6mbe6iqBxBc8OfpirF4XN3PgQ@mail.gmail.com>
+References: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id DBF53260436
- for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2014 05:10:51 +0100 (CET)
-Received: by mail-qc0-f179.google.com with SMTP id c9so1576636qcz.24
- for <alsa-devel@alsa-project.org>; Tue, 09 Dec 2014 20:10:51 -0800 (PST)
-In-Reply-To: <20141209114343.GA31129@e104818-lin.cambridge.arm.com>
+Received: from mail-qg0-f43.google.com (mail-qg0-f43.google.com
+ [209.85.192.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF69A260438
+ for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2014 05:40:10 +0100 (CET)
+Received: by mail-qg0-f43.google.com with SMTP id i50so1573321qgf.2
+ for <alsa-devel@alsa-project.org>; Tue, 09 Dec 2014 20:40:10 -0800 (PST)
+In-Reply-To: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,88 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, Li.Xiubo@freescale.com, shc_work@mail.ru, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, nicoleotsuka@gmail.com
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "padma.v@samsung.com" <padma.v@samsung.com>, Takashi Iwai <tiwai@suse.de>, Will Deacon <Will.Deacon@arm.com>, "b42378@freescale.com" <b42378@freescale.com>, Clemens Ladisch <clemens@ladisch.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Catalin,
-
-On Tue, Dec 9, 2014 at 5:13 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
-> On Tue, Dec 09, 2014 at 02:56:59AM +0000, Abhilash Kesavan wrote:
->> On Mon, Dec 8, 2014 at 5:55 PM, Catalin Marinas <catalin.marinas@arm.com> wrote:
->> > On Mon, Dec 08, 2014 at 11:15:52AM +0000, Lars-Peter Clausen wrote:
->> >> On 12/08/2014 11:41 AM, Takashi Iwai wrote:
->> >> > At Mon, 08 Dec 2014 09:49:37 +0100,
->> >> > Clemens Ladisch wrote:
->> >> >>
->> >> >> Abhilash Kesavan wrote:
->> >> >>> I am working on a 64-bit ARM SoC (Samsung's Exynos7) and have observed
->> >> >>> unaligned faults while testing certain sound streams with aplay.
->> >> >>>
->> >> >>> [   24.535661] snd_pcm_lib_write_transfer:sound/core/pcm_lib.c hwbuf is ffffff8000085624, runtime->dma_area is ffffff8000080000, hwoff is 5513, frames_to_bytes is 22052, frames is 5513
->> >> >>> [   24.551244] Unhandled fault: alignment fault (0x96000061) at 0xffffff8000085624
->> >> >>> [   24.579944] PC is at __copy_from_user+0x14/0x60
->> >> >>> [   24.584450] LR is at snd_pcm_lib_write_transfer+0xe4/0x104
->> >> >>> [   24.922054] Call trace:
->> >> >>> [   24.924488] [<ffffffc0002d4784>] __copy_from_user+0x14/0x60
->> >> >>> [   24.930040] [<ffffffc0004b7574>] snd_pcm_lib_write1+0x1fc/0x384
->> >
->> > I can see copy_from_user() here, I assume the source is a user space
->> > buffer and the destination is the ioremap'ed SRAM (which causes the
->> > unaligned fault). Such function is not supposed copy into device memory
->> > (its prototype does not specify __iomem for the destination pointer).
->> >
->> > If you really want Device memory for the SRAM, I think we need some
->> > other API. memcpy_toio() could copy into such buffer but the source must
->> > be kernel. Maybe something like copy_from_user_toio()?
->>
->> Thanks for the response.
->>
->> Changing copy_from_user() to copy_from_user_toio() in
->> snd_pcm_lib_write_transfer() (sound/core/pcm_lib.c) works. I am not
->> sure about other effects of making such a change in a core sound file,
->> can someone comment ?
->
-> The default implementation uses copy_from_user() to an intermediate
-> buffer and another memcpy_toio() to the SRAM destination. So, it will be
-> slower.
->
-> In general it may be better to copy this function to some more generic
-> place and let the arch code override it with a more optimal
-> implementation.
->
->> > Otherwise, if you can remap the buffer as Normal (non-cacheable) memory,
->> > you could use something like vmap() with pgprot_writecombine for the
->> > mapping. Even though ioremap_wc() returns (currently) Normal
->> > non-cacheable memory, such pointer (__iomem) should only be used with
->> > specific IO accessors (though I can see this assumption broken in a few
->> > places in the kernel).
->>
->> Currently, if I continue to use the SRAM allocation driver, two
->> options are working:
->> 1) ioremap to ioremap_wc in drivers/misc/sram.c.
->
-> I think the SRAM driver does the correct devm_ioremap_resource() call
-> but the implementation in lib/devres.c assumes that if
-> IORESOURCE_CACHEABLE it should use devm_ioremap(). AFAIK, ioremap()
-> always returns Device memory (even on x86, the default ioremap behaviour
-> is nocache).
->
->> 2) copy_from_user to copy_from_user_toio in sound/core/pcm_lib.c
->>
->> Which would be the preferred option ?
->
-> I would prefer the sram changed. It provides an allocation pool from
-> SRAM which could as well be mapped as write-combine. If no-one complains
-> about changing the SRAM mapping to WC, you could introduce a
-> devm_ioremap_wc() in lib/devres.c and call that directly from
-> sram_probe(). But I can't tell for sure what the memory type
-> expectations for SRAM are.
-
-Thanks for the response. I will post patches to do this.
-Also, adding guys who have been working on the generic sram driver and
-internal sram support for sound in case they have any comments
-regarding the change to ioremap_wc.
-
-Regards,
-Abhilash
+Pgo+IFRoaXMgc2VyaWVzIG9mIHBhdGNoZXMgd2FzIGluc3BpcmVkIGJ5IHJlY2VudCB0aHJlYWRz
+IG9uIHRoZSBhbHNhCj4gbWFpbGluZyBsaXN0LCBhcyB3ZWxsIGlzc3VlcyBkZXRlY3RlZCB3aXRo
+IGV4aXN0aW5nIGFuZCB1cGNvbWluZwo+IGhhcmR3YXJlOgo+Cj4gMS4gdGhlcmUgd2FzIGEgcmVx
+dWVzdCBmcm9tIHRoZSBQdWxzZUF1ZGlvIGNvbW11bml0eSB0byBnZXQgbW9yZQo+IGluZm9ybWF0
+aW9uIGZyb20gZHJpdmVycyB0byBtYWtlIHJld2luZHMgc2FmZXIuIFdoaWxlIHRoZSBjb25jbHVz
+aW9uCj4gd2FzIHRoYXQgaXQncyBuZWFybHkgaW1wb3NzaWJsZSBmb3IgYSBkcml2ZXIgZGV2ZWxv
+cGVyIHRvIHByb3ZpZGUgdGhpcwo+IGluZm9ybWF0aW9uLCB0aGVyZSBhcmUgaG93ZXZlciB3YXlz
+IHRvIGFzc2VzcyB0aGUgZ3JhbnVsYXJpdHkgb2YgdGhlCj4gaHdfcHRyIHVwZGF0ZXMgdXNpbmcg
+dGltZXN0YW1waW5nIGNhcGFiaWxpdGllcywgYW5kIGluZGlyZWN0bHkKPiB1bmRlcnN0YW5kIGhv
+dyBzYWZlIHJld2luZHMgbWlnaHQgYmUuCgpIb3cgbG9uZyBkbyB0aGUgYXBwbGljYXRpb24gbmVl
+ZCAgdG8gbWVhc3VyZSB0aGUgZ3JhbnVsYXJpdHkgb2YgdGhlIGh3X3B0cgp1cGRhdGVzID8KCkFy
+ZSB0aGVyZSBsaW1pdGF0aW9uIHVzaW5nIHdhbGxjbG9jayA/CgpJdCBzZWVtIHRoYXQgYXVkaW9f
+dGltZS5jIGlzIGhhcmRjb2RlZCB0byB1c2UgNDgwMDBIeiB3aGljaCBpcyB0aGUgaGRhIGxpbmsK
+cmF0ZSwgZG8gdGhlIG1lYXN1cmVtZW50IHN0aWxsIHZhbGlkIHdoZW4gYXBwbGljYXRpb24gdXNl
+IDQ0MTAwSHogPwoKQXMgaGRhIGNvbnRyb2xsZXIgb25seSBrbm93IHRoZSB0aW1pbWcgdXAgdG8g
+aGRhIGxpbmssIHRob3NlIGNvZGVjIGRlbGF5CnNlZW0gbm90IGV4cG9zZWQgdG8gdGhlIHVzZXIg
+c3BhY2UKCjcuMy40LjUgQXVkaW8gRnVuY3Rpb24gR3JvdXAgQ2FwYWJpbGl0aWVzIFRoZSBBdWRp
+byBQYXJhbWV0ZXIgcmV0dXJucyBhIHNldApvZiBiaXQgZmllbGRzIGRlc2NyaWJpbmcgdGhlIGF1
+ZGlvIGNhcGFiaWxpdGllcyBvZiB0aGUgQXVkaW8gRnVuY3Rpb24uCgpJbnB1dCBEZWxheSBpcyBh
+IDQtYml0IHZhbHVlIHJlcHJlc2VudGluZyB0aGUgbnVtYmVyIG9mIHNhbXBsZXMgYmV0d2Vlbgp3
+aGVuIHRoZSBzYW1wbGUgaXMgcmVjZWl2ZWQgYXMgYW4gYW5hbG9nIHNpZ25hbCBhdCB0aGUgcGlu
+IGFuZCB3aGVuIHRoZQpkaWdpdGFsIHJlcHJlc2VudGF0aW9uIGlzIHRyYW5zbWl0dGVkIG9uIHRo
+ZSBIaWdoIERlZmluaXRpb24gQXVkaW8gTGluay4KVGhpcyBtYXkgYmUgYSDigJx0eXBpY2Fs4oCd
+IHZhbHVlLiAgSWYgdGhpcyBpcyAwLCB0aGUgd2lkZ2V0cyBhbG9uZyB0aGUKY3JpdGljYWwgcGF0
+aCBzaG91bGQgYmUgcXVlcmllZCwgYW5kIGVhY2ggaW5kaXZpZHVhbCB3aWRnZXQgbXVzdCByZXBv
+cnQgaXRzCmluZGl2aWR1YWwgZGVsYXkuCgpPdXRwdXQgRGVsYXkgaXMgYSBmb3VyIGJpdCB2YWx1
+ZSByZXByZXNlbnRpbmcgdGhlIG51bWJlciBvZiBzYW1wbGVzIGJldHdlZW4Kd2hlbiB0aGUgc2Ft
+cGxlIGlzIHJlY2VpdmVkIGZyb20gdGhlIExpbmsgYW5kIHdoZW4gaXQgYXBwZWFycyBhcyBhbiBh
+bmFsb2cKc2lnbmFsIGF0IHRoZSBwaW4uICBUaGlzIG1heSBiZSBhIOKAnHR5cGljYWzigJ0gdmFs
+dWUuICBJZiB0aGlzIGlzIDAsIHRoZQp3aWRnZXRzIGFsb25nIHRoZSBjcml0aWNhbCBwYXRoIHNo
+b3VsZCBiZSBxdWVyaWVkLCBhbmQgZWFjaCBpbmRpdmlkdWFsCndpZGdldCBtdXN0IHJlcG9ydCBp
+dHMgaW5kaXZpZHVhbCBkZWxheS4KCnNuZC1oZGEtaW50ZWwgc2VlbSBvbmx5IGV4cG9zZSB3aWRn
+ZXQgZGVsYXkgaW4gaGRhX3Byb2MuYwoKNy4zLjQuNiBBdWRpbyBXaWRnZXQgQ2FwYWJpbGl0aWVz
+CgpEZWxheSBpbmRpY2F0ZXMgdGhlIG51bWJlciBvZiBzYW1wbGUgZGVsYXlzIHRocm91Z2ggdGhl
+IHdpZGdldC4gIFRoaXMgbWF5CmJlIDAgaWYgdGhlIGRlbGF5IHZhbHVlIGluIHRoZSBBdWRpbyBG
+dW5jdGlvbiBQYXJhbWV0ZXJzIGlzIHN1cHBsaWVkIHRvCnJlcHJlc2VudCB0aGUgZW50aXJlIHBh
+dGguCgo+Cj4gMi4gVGhlcmUgd2FzIGFsc28gYSByZXF1ZXN0IHRvIGFkZCBhIHN0YXJ0X2F0IGNh
+cGFiaWxpdHkgYmFzZWQgZWl0aGVyCj4gb24gc3lzdGVtIGhyIHRpbWVycyBvciBhIHdhbGwgY2xv
+Y2ssIHdoaWNoIHJlcXVpcmVzIGEgbWVhbnMgdG8gZXhwb3NlCj4gYm90aCB0eXBlcyBvZiBpbmZv
+cm1hdGlvbiB0byBhcHBsaWNhdGlvbnMuIFJhdGhlciB0aGFuIGFkZGluZyBuZXcgc2V0cwo+IG9m
+IHRpbWVzdGFtcHMsIGl0IGlzIHN1Z2dlc3RlZCB0aGUgbmV3IHN0YXJ0X2F0IGZ1bmN0aW9uYWxp
+dHkgcmVsaWVzCj4gb24gdGhlIG5ldyBhdWRpb190aW1lc3RhbXAgZGVmaW5pdGlvbnMgcHJvdmlk
+ZWQgaGVyZS4KCkRvIHRoZSBhcHBsaWNhdGlvbiBuZWVkIHRvIHNldCBzcGVjaWZpYyBzdGFydCB0
+aHJlc2hvbGQgd2hlbiB1c25nIHN0YXJ0X2F0CnRvIHByZXZlbnQgaXQgc3RhcnQgd2hlbiBidWZm
+ZXIgaXMgZnVsbCA/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
