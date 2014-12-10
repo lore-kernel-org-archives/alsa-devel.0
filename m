@@ -1,63 +1,75 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2 4/5] ALSA: hda: add component support
-Date: Wed, 10 Dec 2014 10:27:10 +0100
-Message-ID: <20141210092710.GE27182@phenom.ffwll.local>
-References: <1418056929-7977-5-git-send-email-imre.deak@intel.com>
- <1418118078-3676-3-git-send-email-imre.deak@intel.com>
- <20141209101934.GT27182@phenom.ffwll.local>
- <s5hmw6wpw73.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2] sound/soc/adi/axi-spdif.c: Support programmable master
+ clock
+Date: Wed, 10 Dec 2014 10:34:36 +0100
+Message-ID: <548813AC.1080105@metafoo.de>
+References: <54806D4E.8040504@topic.nl> <1417783029-22492-1-git-send-email-mike.looijmans@topic.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hmw6wpw73.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jani Nikula <jani.nikula@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1417783029-22492-1-git-send-email-mike.looijmans@topic.nl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBEZWMgMDksIDIwMTQgYXQgMDY6MzA6NDBQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IEF0IFR1ZSwgOSBEZWMgMjAxNCAxMToxOTozNCArMDEwMCwKPiBEYW5pZWwgVmV0dGVy
-IHdyb3RlOgo+ID4gCj4gPiBPbiBUdWUsIERlYyAwOSwgMjAxNCBhdCAxMTo0MToxOEFNICswMjAw
-LCBJbXJlIERlYWsgd3JvdGU6Cj4gPiA+IFJlZ2lzdGVyIGEgY29tcG9uZW50IG1hc3RlciB0byBi
-ZSB1c2VkIHRvIGludGVyZmFjZSB3aXRoIHRoZSBpOTE1Cj4gPiA+IGRyaXZlci4gVGhpcyBpcyBt
-ZWFudCB0byByZXBsYWNlIHRoZSBjdXJyZW50IGludGVyZmFjZSB3aGljaCBpcyBiYXNlZCBvbgo+
-ID4gPiBtb2R1bGUgc3ltYm9sIGxvb2t1cHMuCj4gPiA+IAo+ID4gPiBOb3RlIHRoYXQgY3VycmVu
-dGx5IHdlIGtlZXAgdGhlIGV4aXN0aW5nIGJlaGF2aW9yIGFuZCBwaW4gdGhlIGk5MTUKPiA+ID4g
-bW9kdWxlIHdoaWxlIHRoZSBoZGEgZHJpdmVyIGlzIGxvYWRlZC4gVXNpbmcgdGhlIGNvbXBvbmVu
-dCBpbnRlcmZhY2UKPiA+ID4gYWxsb3dzIHVzIHRvIHJlbW92ZSB0aGlzIGRlcGVuZGVuY3kgb25j
-ZSBzdXBwb3J0IGZvciBkeW5hbWljYWxseQo+ID4gPiBlbmFibGluZyAvIGRpc2FibGluZyB0aGUg
-SERNSSBmdW5jdGlvbmFsaXR5IGlzIGFkZGVkIHRvIHRoZSBkcml2ZXIuCj4gPiA+IAo+ID4gPiB2
-MjoKPiA+ID4gLSBjaGFuZ2Ugcm9sZXMgYmV0d2VlbiB0aGUgaGRhIGFuZCBpOTE1IGNvbXBvbmVu
-dHMgKERhbmllbCkKPiA+ID4gCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEltcmUgRGVhayA8aW1yZS5k
-ZWFrQGludGVsLmNvbT4KPiA+IAo+ID4gT2ssIEkgdGhpbmsgdGhpcyBpcyBhIGdvb2QgZm91bmRh
-dGlvbiB0byBidWlsZCBvbiBhbmQgbGF0ZXIgb24gYWRkIG1vcmUKPiA+IHBpZWNlcyB0byBmaXgg
-c3VzcGVuZC9yZXN1bWUgYW5kIHNpbWlsYXIuCj4gPiAKPiA+IEJ1dCB3ZSBhbHNvIG5lZWQgdG8g
-ZGlzY3VzcyBob3cgdG8gbWVyZ2UgdGhpcy4gTXkgcHJvcG9zYWwgaXMgdGhhdCBJIGRvIGEKPiA+
-IHNwZWNpYWwgdG9waWMgYnJhbmNoIHdpdGgganVzdCB0aGUgcGF0Y2hlcyBpbiB0aGlzIHNlcmll
-cyBhbmQgdGhlbiBwdWxsCj4gPiB0aGF0IGludG8gZHJtLWludGVsLW5leHQgYW5kIHNlbmQgYSBw
-dWxsIHJlcXVlc3QgZm9yIGl0IHRvIFRha2FzaGkgZm9yCj4gPiBzb3VuZC1uZXh0LCB0b28uIFRo
-YXQgd2F5IHdlIGRvbid0IGhhdmUgYW55IGRlcGVuY2llcyBiZXR3ZWVuIGRybSBhbmQKPiA+IHNv
-dW5kIGZvciB0aGUgMy4yMCBtZXJnZSB3aW5kb3cuCj4gPiAKPiA+IFRlc3RpbmcgYnkgaW50ZWwg
-UUEgaXMgYWxzbyBzb2x2ZWQgdGhpcyB3YXkgc2luY2Ugc291bmQtbmV4dCBpcyBhbHJlYWR5Cj4g
-PiBwdWxsZWQgaW50byBkcm0taW50ZWwtbmlnaHRseS4gQW5kIGJvdGggZ2Z4IGFuZCBzb3VuZCBR
-QSB1c2UgdGhhdCBicmFuY2guCj4gPiAKPiA+IFRha2FzaGkvRGF2ZSwgZG9lcyB0aGlzIHNvdW5k
-IGdvb2Q/Cj4gCj4gWWVzLCB0aGlzIHNvdW5kcyBnb29kLiAgTWF5YmUgaXQnZCBiZSBnb29kIHRv
-IGJhc2UgdGhlIGJyYW5jaCBvbgo+IDMuMTktcmMxIHNvIHRoYXQgYWxsIGNoYW5nZXMgYXJlIGNv
-dmVyZWQ/CgpHdWVzcyB0aGF0IGRlcGVuZHMgd2hlbiB0aGUgcGF0Y2hlcyBhcmUgcmVhZHkgZm9y
-IG1lcmdpbmcgYW5kIHdoZXRoZXIKdGhlcmUncyBjb25mbGljdHMuIEkgaGF2ZSBzb3VuZC1uZXh0
-IGluIG15IGludGVncmF0aW9uIHRyZWUgc28gd2lsbApub3RpY2VkIGFuZCBjYW4gYWN0IGFjY29y
-ZGluZ2x5LgotRGFuaWVsCi0tIApEYW5pZWwgVmV0dGVyClNvZnR3YXJlIEVuZ2luZWVyLCBJbnRl
-bCBDb3Jwb3JhdGlvbgorNDEgKDApIDc5IDM2NSA1NyA0OCAtIGh0dHA6Ly9ibG9nLmZmd2xsLmNo
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdm
-eCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On 12/05/2014 01:37 PM, Mike Looijmans wrote:
+> If the master clock supports programmable rates, program it to generate
+> the desired frequency. Only apply constraints when the clock is fixed.
+> This allows proper clock generation for both 44100 and 48000 Hz based
+> sampling rates if the platform supports it.
+>
+> The clock frequency must be set before enabling it. Enabling the clock
+> was done in "startup", but that occurs before "hw_params" where the rate
+> is known. Enabling a programmable clock without first setting a valid
+> frequency may harm the system. Move the clock start to the hw_params
+> routine, and keep track of whether the clock has been started, because
+> shutdown may be called without having called hw_params first.
+> Starting the clock and enabling the SPDIF output AFTER programming the
+> dividers is a more logical order anyway.
+>
+> To detect if the source clock is fixed, the driver calls clk_round_rate
+> for two frequencies. If the results are equal, or if the call returns
+> an error, the driver assumes the clock is fixed.
+>
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+
+Hi,
+
+Sorry for the delay.
+
+[...]
+>
+> +	/* Try to set the master clock */
+> +	clk_set_rate(spdif->clk_ref, rate * 128);
+> +
+>   	clkdiv = DIV_ROUND_CLOSEST(clk_get_rate(spdif->clk_ref),
+>   			rate * 64 * 2) - 1;
+>   	clkdiv <<= AXI_SPDIF_CTRL_CLKDIV_OFFSET;
+> @@ -103,6 +108,14 @@ static int axi_spdif_hw_params(struct snd_pcm_substream *substream,
+>   	regmap_update_bits(spdif->regmap, AXI_SPDIF_REG_CTRL,
+>   		AXI_SPDIF_CTRL_CLKDIV_MASK, clkdiv);
+>
+> +	ret = clk_prepare_enable(spdif->clk_ref);
+
+I'm still not convinced this is the right place. I do see your point. But it 
+just feels wrong to enable the clock in hw_params. It's a bit of a dilemma. 
+the startup callback is to early, hw_params is the wrong place and we can't 
+put it in the trigger callback as the trigger callback can not sleep.
+
+But in any way hwparmas can be called multiple times, so you need to handle 
+the case where the clock is already enabled.
+
+> +	if (ret)
+> +		return ret;
+> +	spdif->clk_ref_running = true;
+> +
+> +	regmap_update_bits(spdif->regmap, AXI_SPDIF_REG_CTRL,
+> +		AXI_SPDIF_CTRL_TXEN, AXI_SPDIF_CTRL_TXEN);
+
+This should probably be moved to the trigger callback though.
+
+> +
+>   	return 0;
+>   }
