@@ -1,18 +1,18 @@
-From: Alexander Stein <alexanders83@web.de>
-Subject: Re: [PATCH v2] ALSA: sound/atmel/ac97c.c: Add device
-	tree support
-Date: Wed, 10 Dec 2014 21:09:19 +0100
-Message-ID: <2706097.m58HT92L1r@kongar>
-References: <1418241578-17049-1-git-send-email-alexanders83@web.de>
- <5488A766.5070206@metafoo.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH RFC 5/9] ALSA: core: selection
+ of	audio_tstamp type and accuracy reports
+Date: Wed, 10 Dec 2014 15:48:06 -0600
+Message-ID: <5488BF96.708@linux.intel.com>
+References: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>	<1418077426-8309-6-git-send-email-pierre-louis.bossart@linux.intel.com>	<s5hsignmphw.wl-tiwai@suse.de>	<5488827E.4030403@linux.intel.com>	<s5hegs7mmki.wl-tiwai@suse.de>
+ <s5hppbr6ze7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FDD326068C
- for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2014 21:09:27 +0100 (CET)
-In-Reply-To: <5488A766.5070206@metafoo.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A79E26060B
+ for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2014 22:48:11 +0100 (CET)
+In-Reply-To: <s5hppbr6ze7.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Arnd Bergmann <arnd@arndb.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Nick Stoughton <nstoughton@aether.com>, alsa-devel@alsa-project.org, Tim Cussins <timcussins@eml.cc>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 10 December 2014, 21:04:54 wrote Lars-Peter Clausen:
-> On 12/10/2014 08:59 PM, Alexander Stein wrote:
-> > This adds device tree support for the AC97 controller. It uses the
-> > soc-ac97link bindings, but actually only ac97-reset is used.
-> >
-> > Signed-off-by: Alexander Stein <alexanders83@web.de>
-> > ---
-> > Changes in v2:
-> > * It now uses the soc-ac97link bindings (partly) instead of defining its own.
-> >    This should ease the transition to ASoC once a new driver has been written.
-> 
-> Partly? How do they differ? And why do they differ? The devicetree should 
-> describe the hardware, which I guess is the same in both cases.
 
-The devicetree is defined the same way, but not all set properties are used.
-The soc-ac97link binding defines 3 GPIOs where 2 are used in conjunction with different pinctl modes for different reset modes.
-The rather old atmel_ac97c driver only supports reset per Reset-GPIO which is the 3rd one given in devicetree. Because this driver only
-uses the 3rd GPIO I've written 'partly'.
+>
+> A few more items that came to my mind later:
+>
+> - It'd be better to align both input and output; namely, the input
+>    struct and output struct must be compatible.
+>    Currently, report_delay flag is overwritten in return.  This bit
+>    should be kept upon read back.
+>
+>    This essentially unifies snd_pcm_audio_tstamp_config and
+>    snd_pcm_audio_tstamp_report.  We don't have to pass two structs to
+>    callbacks.
 
-Best regards,
-Alexander
+ok. this is what I had before and I thought it'd be cleaner to clearly 
+make the distinction between config and report. no issue changing this.
+
+> - Or, we may avoid packing/unpacking by defining the struct like:
+>
+>       unsigned char type;
+>       unsigned char flags;
+>       unsigned char accuracy_mantessa;
+>       unsigned char accuracy_exponent;
+>
+>    where flags field contains the bit flags for report_delay and
+>    accuracy_report.
+>
+>    That said, I'm worrying a bit about the complexity of the new
+>    callback function.
+
+I would prefer a single structure if we want to add something later.
+
+> - The biggest concern I have now is whether it's really feasible to
+>    change the semantics of snd_pcm_status ioctl, i.e. from the
+>    read-only to the write-read.  I guess this would work as the padding
+>    field is very likely zero even in the very old alsa-lib version.
+
+The change doesn't affect anyone really, all my defaults are zero.
+
+> - Another concern is the compatibility with the current wallclock
+>    implementation.  Judging from your patch, the audio_tstamp won't be
+>    obtained from get_time_info callback in the default tstamp mode,
+>    right?  This may result in a regression, as currently the driver
+>    always gives the h/w audio_tstamp when the driver supports the
+>    wallclock.
+
+Is this that big of a deal? To the best of my knowledge this wallclk 
+thing was implemented for HDaudio only when we were prototyping the new 
+hardware, and I don't think we ended-up contributing the corresponding 
+patches for PulseAudio. We've since realized that the wallclock can't be 
+available in all cases and that we need this selection capability in a 
+variety of cases.
+
+Also even if we kept the .wall_clock callback, the wallclock handling 
+could be relative (start at zero) or absolute. I implemented a reset to 
+zero on stream startup, since the counter is not maintained when the 
+hardware is idle, but there are implementations where the wallclock is 
+really absolute and not reset (see below).
+
+> - Last but not least: we're receiving multiple enhancement requests
+>    regarding tstamp at the very same time.  This patchset conflicts
+>    with Tim and Nick's start_at extention.
+>
+>    I believe this can be resolved later, but let's discuss the ground
+>    line at first: the requirement and influence on both changes.
+
+I am aware of this and it's why I posted my patches earlier than planned 
+to avoid merging different concepts later, it's probably best to have 
+compatibility from day1.
+
+My proposal was to have a start_at functionality based on the timestamp 
+definitions I suggested and keep audio and system timestamps separate 
+rather than add mixed typestamps such as 
+SND_PCM_TSTAMP_TYPE_AUDIO_WALLCLOCK. the code could be something like:
+
+start_at(typestamp type, timestamp subtype, timespec value ) {
+
+	if (type == SYSTEM) {
+		_start_using_hrtimers(subtype, value) // would be CLOCK_REALTIME, 
+MONOTONIC, maybe RAW
+	} else if (type == AUDIO) {
+		if (subtype == ABSOLUTE_WALLCLOCK) // not reset on audio subsystem startup
+			_start_using_hardware(value)
+		else
+			// not sure what to do with regular counters, probably bail.
+			error;
+	}
+
+That way you can set what sort of system timestamp and what sort of 
+audio timestamp you want reported by snd_pcm_status, and you can 
+independently select the start timestamp of your choice.
