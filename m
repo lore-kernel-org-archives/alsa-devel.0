@@ -1,78 +1,73 @@
-From: Ben Zhang <benzh@chromium.org>
-Subject: [PATCH 3/3] ASoC: rt5677: add a platform config option for DACREF source
-Date: Wed, 10 Dec 2014 20:15:27 -0800
-Message-ID: <1418271327-14710-3-git-send-email-benzh@chromium.org>
-References: <1418271327-14710-1-git-send-email-benzh@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1418271327-14710-1-git-send-email-benzh@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, Albert Chen <albertchen@realtek.com>, linux-kernel@vger.kernel.org, Ben Zhang <benzh@chromium.org>
+From: Darren Hart <dvhart@infradead.org>
+Subject: Re: [PATCH v3 0/2] Disable the ThinkPad HW mute/level control when
+ possible
+Date: Wed, 10 Dec 2014 20:58:16 -0800
+Message-ID: <20141211045816.GA82668@vmdeb7>
+References: <cover.1413590510.git.luto@amacapital.net>
+ <20141204115515.GD100190@vmdeb7>
+ <CALCETrX8E6ot=UF=4jRt=Ph5zjFsH-3An4-eMzdWyyiyxyArHA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CALCETrX8E6ot=UF=4jRt=Ph5zjFsH-3An4-eMzdWyyiyxyArHA@mail.gmail.com>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-DACREF power source can come from external 1.8V or codec internal 1.8V.
-This patch adds the option to enable the internal DACREF power source.
+On Tue, Dec 09, 2014 at 02:47:34PM -0800, Andy Lutomirski wrote:
+> On Thu, Dec 4, 2014 at 3:55 AM, Darren Hart <dvhart@infradead.org> wrote:
+> > On Fri, Oct 17, 2014 at 05:04:28PM -0700, Andy Lutomirski wrote:
+> >> This series is being resurrected after several years, and it's quite
+> >> different from before, so I'm restarting the version numbers :)
+> >>
+> >> ThinkPad volume and mute controls are a mess.  For whatever reason,
+> >> ThinkPads have mute buttons that send KEY_MUTE *and* control an
+> >> invisible-to-ALSA mute switch.  Some of them have volume controls that
+> >> interact with this switch as well.
+> >>
+> >> This is a perennial source of problems.  On most ThinkPads, if you press
+> >> mute and then unmute using GUI controls, you have no sound, because
+> >> userspace and ALSA state gets out of sync with the hardware switch.
+> >> There's a separate "sound card" that exposes the hardware switch, but
+> >> userspace code generally doesn't understand that.
+> >>
+> >> There are already a few _OSI(Linux) overrides to turn all the hardware
+> >> buttons into regular buttons.  Rather than quirking ACPI everywhere,
+> >> just teach thinkpad-acpi to program the buttons for full software
+> >> control and to disable hardware controls.  That allows us to remove the
+> >> ACPI quirks and have normal mute controls.  This approach should be
+> >> much simpler than adding even more kludgey ALSA integration for
+> >> questionable gain.
+> >>
+> >> Tested on an X200s (with latching mute by default) and an X220 (with
+> >> a mute light and toggle mute by default).  Everything works as expected.
+> >>
+> >> Changes from v2:
+> >>  - Don't try to change the mute mode on IBM ThinkPads.
+> >>  - Further minor cleanups.
+> >>  - Try to restore the mode on module unload.
+> >>
+> >> Changes from v1:
+> >>  - Simplified the code a bit.
+> >>  - Improved suspend/hibernate behavior.
+> >>
+> >> Andy Lutomirski (2):
+> >>   thinkpad-acpi: Try to use full software mute control
+> >>   acpi: Remove _OSI(Linux) for ThinkPads
+> >>
+> >>  drivers/acpi/blacklist.c             |  54 ----------------
+> >>  drivers/platform/x86/thinkpad_acpi.c | 116 ++++++++++++++++++++++++++++++++---
+> >>  2 files changed, 106 insertions(+), 64 deletions(-)
+> >
+> > Andy, is this the latest version?
+> 
+> Yes.
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
----
- Documentation/devicetree/bindings/sound/rt5677.txt | 3 +++
- include/sound/rt5677.h                             | 2 ++
- sound/soc/codecs/rt5677.c                          | 9 +++++++++
- 3 files changed, 14 insertions(+)
+Queued to for-next. Pending anything unforseen, I'll attempt to get this into
+3.19.
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
-index f54d0dd..f06d52a 100644
---- a/Documentation/devicetree/bindings/sound/rt5677.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5677.txt
-@@ -22,6 +22,9 @@ Optional properties:
- - realtek,micbias1
-   Select 0/1/2/3 to set MICBIAS1 voltage to 1.476V/2.970V/1.242V/2.475V
- 
-+- realtek,internal-dacref-en
-+  Select codec internal 1.8V as DACREF source optionally.
-+
- - realtek,in1-differential
- - realtek,in2-differential
- - realtek,lout1-differential
-diff --git a/include/sound/rt5677.h b/include/sound/rt5677.h
-index efa74bb..42866f3 100644
---- a/include/sound/rt5677.h
-+++ b/include/sound/rt5677.h
-@@ -28,6 +28,8 @@ enum rt5677_dmic2_clk {
- struct rt5677_platform_data {
- 	/* MICBIAS output voltage control */
- 	enum rt5677_micbias micbias1;
-+	/* Select codec internal 1.8V as DACREF source optionally */
-+	bool internal_dacref_en;
- 	/* IN1/IN2/LOUT1/LOUT2/LOUT3 can optionally be differential */
- 	bool in1_diff;
- 	bool in2_diff;
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index ac4bee8..e6d7bb4 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4552,6 +4552,8 @@ MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
- static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
- {
- 	of_property_read_u32(np, "realtek,micbias1", &rt5677->pdata.micbias1);
-+	rt5677->pdata.internal_dacref_en = of_property_read_bool(np,
-+					"realtek,internal-dacref-en");
- 	rt5677->pdata.in1_diff = of_property_read_bool(np,
- 					"realtek,in1-differential");
- 	rt5677->pdata.in2_diff = of_property_read_bool(np,
-@@ -4728,6 +4730,13 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 			RT5677_MICBIAS1_CTRL_VDD_MASK,
- 			rt5677->pdata.micbias1 << RT5677_MICBIAS1_CTRL_VDD_SFT);
- 
-+	if (rt5677->pdata.internal_dacref_en) {
-+		regmap_update_bits(rt5677->regmap, RT5677_PR_BASE +
-+				RT5677_TEST_CTRL1, 1 << 9, 1 << 9);
-+		regmap_update_bits(rt5677->regmap, RT5677_PR_BASE +
-+				RT5677_SOFT_DEPOP_DAC_CLK_CTRL, 1 << 5, 1 << 5);
-+	}
-+
- 	if (rt5677->pdata.in1_diff)
- 		regmap_update_bits(rt5677->regmap, RT5677_IN1,
- 					RT5677_IN_DF1, RT5677_IN_DF1);
 -- 
-2.2.0.rc0.207.ga3a616c
+Darren Hart
+Intel Open Source Technology Center
