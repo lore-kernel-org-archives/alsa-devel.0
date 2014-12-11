@@ -1,48 +1,66 @@
-From: wm4 <nfxjfg@googlemail.com>
-Subject: [BUG] dmix reports channel layouts that are not
-	supported
-Date: Thu, 11 Dec 2014 15:48:33 +0100
-Message-ID: <20141211154833.66054938@debian>
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from ioremap
+Date: Thu, 11 Dec 2014 14:58:49 +0000
+Message-ID: <20141211145849.GH31456@e104818-lin.cambridge.arm.com>
+References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
+ <1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
+ <1418292513.3188.4.camel@pengutronix.de>
+ <20141211103919.GA6067@arm.com>
+ <1418298046.3188.10.camel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f176.google.com (mail-wi0-f176.google.com
- [209.85.212.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F1A926500C
- for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 15:48:40 +0100 (CET)
-Received: by mail-wi0-f176.google.com with SMTP id ex7so14802243wid.15
- for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 06:48:40 -0800 (PST)
-Received: from debian (p4FF01420.dip0.t-ipconnect.de. [79.240.20.32])
- by mx.google.com with ESMTPSA id iz19sm3232912wic.8.2014.12.11.06.48.38
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 11 Dec 2014 06:48:39 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1418298046.3188.10.camel@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Will Deacon <Will.Deacon@arm.com>, Abhilash Kesavan <a.kesavan@samsung.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Tony Lindgren <tony@atomide.com>, "heiko@sntech.de" <heiko@sntech.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shc_work@mail.ru" <shc_work@mail.ru>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "arnd@arndb.de" <arnd@arndb.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "padma.v@samsung.com" <padma.v@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Opening a dmix device (i.e. "default" on most distros), and calling
-snd_pcm_query_chmaps() on it, returns some surround audio channel maps,
-for example 5.1. Trying to set it with snd_pcm_set_chmap() will fail
-with ENXIO. Only setting the stereo channel map succeeds, and I suppose
-dmix supports stereo only.
+On Thu, Dec 11, 2014 at 11:40:46AM +0000, Philipp Zabel wrote:
+> Hi Will,
+> 
+> Am Donnerstag, den 11.12.2014, 10:39 +0000 schrieb Will Deacon:
+> > On Thu, Dec 11, 2014 at 10:08:33AM +0000, Philipp Zabel wrote:
+> > > Hi Abhilash,
+> > > 
+> > > Am Donnerstag, den 11.12.2014, 08:28 +0530 schrieb Abhilash Kesavan:
+> > > > Currently, the SRAM allocator returns device memory via ioremap.
+> > > > This causes issues on ARM64 when the internal SoC SRAM allocated by
+> > > > the generic sram driver is used for audio playback. The destination
+> > > > buffer address (which is ioremapped SRAM) is not 64-bit aligned for
+> > > > certain streams (e.g. 44.1k sampling rate). In such cases we get
+> > > > unhandled alignment faults. Use ioremap_wc in place of ioremap which
+> > > > gives us normal non-cacheable memory instead of device memory.
+> > > 
+> > > Could this break the omap_bus_sync() implementation in
+> > > arch/arm/mach-omap2/omap4-common.c?
+> > > 
+> > >     void omap_bus_sync(void)
+> > >     {
+> > >             if (dram_sync && sram_sync) {
+> > >                     writel_relaxed(readl_relaxed(dram_sync), dram_sync);
+> > >                     writel_relaxed(readl_relaxed(sram_sync), sram_sync);
+> > >                     isb();
+> > >             }
+> > >     }
+> > > 
+> > > It is used in wmb() and omap_do_wfi() to drain interconnect write
+> > > buffers on omap4/5. If sram_sync is mapped with write-combining, could
+> > > the last write to sram_sync stay stuck in the write-combining buffer
+> > > until after the function returns?
+> > 
+> > I think you have that issue anyway, since you can get an early write
+> > response even if you use ioremap. Does the write to sram_sync have
+> > side-effects that we need to wait for?
+> 
+> [Added Tony Lindgren and Santosh Shilimkar to Cc:]
+> I don't know.
 
-I think this should be considered a bug. dmix probably merely passes
-through the channel layout of the underlying device, even though it
-supports stereo only - this behavior makes no sense at all. Any device
-should strictly report supported channel maps only.
+In addition to Will's question, do you care about the access size?
+ioremap() returns Device memory which is bufferable (early
+acknowledgement) but it guarantees the access size. With write
+combining, you may get a different access size than requested.
 
-To make matters worse, if you intend to play 5.1, and dmix fails in
-the manner described above, then it will report "FL FR NA NA NA NA" as
-channel map. This would require the application to pad stereo with 4
-channels of silence, which requires extra code and is generally just
-stupid.
+-- 
+Catalin
