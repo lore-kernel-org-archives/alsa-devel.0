@@ -1,53 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: fix possible acpi enumeration panic
-Date: Thu, 11 Dec 2014 13:20:26 +0000
-Message-ID: <20141211132026.GY11764@sirena.org.uk>
-References: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
+From: wm4 <nfxjfg@googlemail.com>
+Subject: [BUG] dmix reports channel layouts that are not
+	supported
+Date: Thu, 11 Dec 2014 15:48:33 +0100
+Message-ID: <20141211154833.66054938@debian>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VBg0eA7b+gOCQW/G"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kevin Strasser <kevin.strasser@intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Yang Fang <yang.a.fang@intel.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f176.google.com (mail-wi0-f176.google.com
+ [209.85.212.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F1A926500C
+ for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 15:48:40 +0100 (CET)
+Received: by mail-wi0-f176.google.com with SMTP id ex7so14802243wid.15
+ for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 06:48:40 -0800 (PST)
+Received: from debian (p4FF01420.dip0.t-ipconnect.de. [79.240.20.32])
+ by mx.google.com with ESMTPSA id iz19sm3232912wic.8.2014.12.11.06.48.38
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 11 Dec 2014 06:48:39 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Opening a dmix device (i.e. "default" on most distros), and calling
+snd_pcm_query_chmaps() on it, returns some surround audio channel maps,
+for example 5.1. Trying to set it with snd_pcm_set_chmap() will fail
+with ENXIO. Only setting the stereo channel map succeeds, and I suppose
+dmix supports stereo only.
 
---VBg0eA7b+gOCQW/G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think this should be considered a bug. dmix probably merely passes
+through the channel layout of the underlying device, even though it
+supports stereo only - this behavior makes no sense at all. Any device
+should strictly report supported channel maps only.
 
-On Wed, Dec 10, 2014 at 11:21:57PM -0800, Kevin Strasser wrote:
-
-> A crash can occur on some platforms where adsp is enumerated but codec
-> is not matched. Check that the codec_id string is valid before
-> attempting to match.
-
-> -	for (mach = machines; mach->codec_id; mach++)
-> +	for (mach = machines; mach->codec_id[0]; mach++)
-
-This changes the check from verifying if a codec_id is present to
-verifying if the first character in the codec_id is non-NULL.  That
-doesn't seem obviously safer and the tables of machines seem to be
-terminated by having an entry with all fields set to zero (which is
-a common idiom in Linux) which would now crash with this change.
-
---VBg0eA7b+gOCQW/G
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUiZoZAAoJECTWi3JdVIfQg8EH/2KJ8UMn3w/EnvG41T+3DPYf
-7ZEYmHAkQeXVjlaM1aaqU22vfN8M3Dkh93VkARAygSEdoVG4OmkIpQF7jitj20kC
-+cfF2t/ws+lWpPoIHaZ5t9+h7RuV6PxaxgPbXsrAv/7LWa6lXHmAPRHADwLdhhh/
-V0L6B2On1OiZb21BDDuxL1lM91KqGTfdAcItY7TOK1+/9QNb+SJEVxl/y4VYRpzy
-wZkKXm/s4dYWaX1cRJoHXTNND8hfZz4RcJPn2CYS096DWnngCjllRqKvUjL+xCdV
-ZBZdeo8/zq9SH7EKUxmf3+LNg95ZI8h4NUa170obU/zqLGzQ5+qMHpXrI4EW40s=
-=OD8U
------END PGP SIGNATURE-----
-
---VBg0eA7b+gOCQW/G--
+To make matters worse, if you intend to play 5.1, and dmix fails in
+the manner described above, then it will report "FL FR NA NA NA NA" as
+channel map. This would require the application to pad stereo with 4
+channels of silence, which requires extra code and is generally just
+stupid.
