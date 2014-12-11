@@ -1,61 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch v2 02/11] ASoC: qcom: Add device tree binding docs
-Date: Thu, 11 Dec 2014 13:15:52 +0000
-Message-ID: <20141211131552.GX11764@sirena.org.uk>
-References: <fdc53daed0c7c41168a14de6b2983895.squirrel@www.codeaurora.org>
+Subject: Re: [PATCH] ASoC: Intel: fix possible acpi enumeration panic
+Date: Thu, 11 Dec 2014 13:20:26 +0000
+Message-ID: <20141211132026.GY11764@sirena.org.uk>
+References: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FclElvQKoGCylS3A"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="VBg0eA7b+gOCQW/G"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <fdc53daed0c7c41168a14de6b2983895.squirrel@www.codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Rob Herring <rob.herring@calxeda.com>, Greg KH <gregkh@linuxfoundation.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
+In-Reply-To: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kevin Strasser <kevin.strasser@intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Yang Fang <yang.a.fang@intel.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---FclElvQKoGCylS3A
+--VBg0eA7b+gOCQW/G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 11, 2014 at 12:23:55AM -0800, Kenneth Westfield wrote:
-> On Tue, December 9, 2014 7:37 am, Mark Brown wrote:
+On Wed, Dec 10, 2014 at 11:21:57PM -0800, Kevin Strasser wrote:
 
-> > Please don't send multiple separate changes in a single patch.  One change per patch.
+> A crash can occur on some platforms where adsp is enumerated but codec
+> is not matched. Check that the codec_id string is valid before
+> attempting to match.
 
-Please fix your mail client to both word wrap within paragraphs and
-avoid corrupting the mails you're replying to.  As things stand your
-messages are excessively hard to read.
+> -	for (mach = machines; mach->codec_id; mach++)
+> +	for (mach = machines; mach->codec_id[0]; mach++)
 
-> In an effort to reduce the number of patches, would it be possible to package the DT doc with its
-> respective driver in one patch?  Or does the DT doc need to be in a patch by itself?  I've seen
-> examples of both.
+This changes the check from verifying if a codec_id is present to
+verifying if the first character in the codec_id is non-NULL.  That
+doesn't seem obviously safer and the tables of machines seem to be
+terminated by having an entry with all fields set to zero (which is
+a common idiom in Linux) which would now crash with this change.
 
-You're supposed to send the documentation in a separate patch.
-
-> Also, I will combine the partial addition of each driver to its respective Kconfig/Makefile
-> entries.  For this, I believe I need to start with an empty Kconfig/Makefile in the first patch?
-
-No, you never need to create an empty file like that - what would the
-value be?  If you are going to add the Makefile components independently
-within the Qualcomm directory please remember to pay attention to
-bisection.
-
---FclElvQKoGCylS3A
+--VBg0eA7b+gOCQW/G
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUiZkIAAoJECTWi3JdVIfQ4ZUH/1Saw3oA9xI2unuyO3s0NxGr
-mMZ+8JuWMZBuC4//KBuHdi/67SlCrH7TZIh4GbiUpAfrtXi/3hsLYKjX8eKxKh7h
-ys9KxY+y3I+3L5AYnxCJgNAdN1Kh9rhj2am8BLPUxn3D5czm1uk2xfw7wQAGMOYf
-wrca6rC/SXoQs8PLmTbELvtKWizerS9n71tLLECO2uqouSPWJGco5qkCaFYmrw19
-vv13zDkLtptYwWo74qR6TQ/nsXBzaw9m96plHJ2rn0Fm7OTEsRLqY5sSxujAjqQC
-UpgIFMQsM+ax528dbOkErJFYxOYbUKUefcX8cLB6rY878YsPN6zbMMIyCsJtd3k=
-=fbtW
+iQEcBAEBAgAGBQJUiZoZAAoJECTWi3JdVIfQg8EH/2KJ8UMn3w/EnvG41T+3DPYf
+7ZEYmHAkQeXVjlaM1aaqU22vfN8M3Dkh93VkARAygSEdoVG4OmkIpQF7jitj20kC
++cfF2t/ws+lWpPoIHaZ5t9+h7RuV6PxaxgPbXsrAv/7LWa6lXHmAPRHADwLdhhh/
+V0L6B2On1OiZb21BDDuxL1lM91KqGTfdAcItY7TOK1+/9QNb+SJEVxl/y4VYRpzy
+wZkKXm/s4dYWaX1cRJoHXTNND8hfZz4RcJPn2CYS096DWnngCjllRqKvUjL+xCdV
+ZBZdeo8/zq9SH7EKUxmf3+LNg95ZI8h4NUa170obU/zqLGzQ5+qMHpXrI4EW40s=
+=OD8U
 -----END PGP SIGNATURE-----
 
---FclElvQKoGCylS3A--
+--VBg0eA7b+gOCQW/G--
