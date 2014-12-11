@@ -1,16 +1,16 @@
 From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 2/4] sound: oss: vidc: Remove softoss_dev
-	declaration
-Date: Thu, 11 Dec 2014 14:19:11 +0200
-Message-ID: <1418300353-13243-2-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: [PATCH 3/4] sound: oss: Remove dead sound card number
+	definitions
+Date: Thu, 11 Dec 2014 14:19:12 +0200
+Message-ID: <1418300353-13243-3-git-send-email-jarkko.nikula@linux.intel.com>
 References: <1418300353-13243-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AB5F264FBA
- for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 13:19:21 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D500A26500C
+ for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 13:19:23 +0100 (CET)
 In-Reply-To: <1418300353-13243-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,24 +25,37 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-int softoss_dev is not defined anywhere.
+None of these is used in kernel tree.
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- sound/oss/vidc.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/oss/dev_table.h | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/sound/oss/vidc.c b/sound/oss/vidc.c
-index 92ca5bee1860..d81f76f72c8c 100644
---- a/sound/oss/vidc.c
-+++ b/sound/oss/vidc.c
-@@ -82,7 +82,6 @@ static unsigned int	vidc_audio_volume_l;	/* left PCM vol, 0 - 65536 */
- static unsigned int	vidc_audio_volume_r;	/* right PCM vol, 0 - 65536 */
+diff --git a/sound/oss/dev_table.h b/sound/oss/dev_table.h
+index 0199a317c5a9..afb3aaff145f 100644
+--- a/sound/oss/dev_table.h
++++ b/sound/oss/dev_table.h
+@@ -21,20 +21,7 @@
+  * Numbers 1000 to N are reserved for driver's internal use.
+  */
  
- extern void	vidc_update_filler(int bits, int channels);
--extern int	softoss_dev;
+-#define SNDCARD_DESKPROXL		27	/* Compaq Deskpro XL */
+-#define SNDCARD_VIDC			28	/* ARMs VIDC */
+-#define SNDCARD_SBPNP			29
+-#define SNDCARD_SOFTOSS			36
+ #define SNDCARD_VMIDI			37
+-#define SNDCARD_OPL3SA1			38	/* Note: clash in msnd.h */
+-#define SNDCARD_OPL3SA1_SB		39
+-#define SNDCARD_OPL3SA1_MPU		40
+-#define SNDCARD_WAVEFRONT               41
+-#define SNDCARD_OPL3SA2                 42
+-#define SNDCARD_OPL3SA2_MPU             43
+-#define SNDCARD_WAVEARTIST              44	/* Waveartist */
+-#define SNDCARD_OPL3SA2_MSS             45	/* Originally missed */
+-#define SNDCARD_AD1816                  88
  
- static void
- vidc_mixer_set(int mdev, unsigned int level)
+ /*
+  *	NOTE! 	NOTE!	NOTE!	NOTE!
 -- 
 2.1.3
