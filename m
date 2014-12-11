@@ -1,66 +1,36 @@
-From: Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from ioremap
-Date: Thu, 11 Dec 2014 14:58:49 +0000
-Message-ID: <20141211145849.GH31456@e104818-lin.cambridge.arm.com>
-References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
- <1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
- <1418292513.3188.4.camel@pengutronix.de>
- <20141211103919.GA6067@arm.com>
- <1418298046.3188.10.camel@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1418298046.3188.10.camel@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Will Deacon <Will.Deacon@arm.com>, Abhilash Kesavan <a.kesavan@samsung.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Tony Lindgren <tony@atomide.com>, "heiko@sntech.de" <heiko@sntech.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shc_work@mail.ru" <shc_work@mail.ru>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "arnd@arndb.de" <arnd@arndb.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "padma.v@samsung.com" <padma.v@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH/RFC 01/14] ASoC: samsung: i2s: Remove unused gpios field from
+ struct i2s
+Date: Thu, 11 Dec 2014 18:45:39 +0100
+Message-ID: <1418319952-10163-2-git-send-email-s.nawrocki@samsung.com>
+References: <1418319952-10163-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1418319952-10163-1-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Cc: broonie@kernel.org, padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 11, 2014 at 11:40:46AM +0000, Philipp Zabel wrote:
-> Hi Will,
-> 
-> Am Donnerstag, den 11.12.2014, 10:39 +0000 schrieb Will Deacon:
-> > On Thu, Dec 11, 2014 at 10:08:33AM +0000, Philipp Zabel wrote:
-> > > Hi Abhilash,
-> > > 
-> > > Am Donnerstag, den 11.12.2014, 08:28 +0530 schrieb Abhilash Kesavan:
-> > > > Currently, the SRAM allocator returns device memory via ioremap.
-> > > > This causes issues on ARM64 when the internal SoC SRAM allocated by
-> > > > the generic sram driver is used for audio playback. The destination
-> > > > buffer address (which is ioremapped SRAM) is not 64-bit aligned for
-> > > > certain streams (e.g. 44.1k sampling rate). In such cases we get
-> > > > unhandled alignment faults. Use ioremap_wc in place of ioremap which
-> > > > gives us normal non-cacheable memory instead of device memory.
-> > > 
-> > > Could this break the omap_bus_sync() implementation in
-> > > arch/arm/mach-omap2/omap4-common.c?
-> > > 
-> > >     void omap_bus_sync(void)
-> > >     {
-> > >             if (dram_sync && sram_sync) {
-> > >                     writel_relaxed(readl_relaxed(dram_sync), dram_sync);
-> > >                     writel_relaxed(readl_relaxed(sram_sync), sram_sync);
-> > >                     isb();
-> > >             }
-> > >     }
-> > > 
-> > > It is used in wmb() and omap_do_wfi() to drain interconnect write
-> > > buffers on omap4/5. If sram_sync is mapped with write-combining, could
-> > > the last write to sram_sync stay stuck in the write-combining buffer
-> > > until after the function returns?
-> > 
-> > I think you have that issue anyway, since you can get an early write
-> > response even if you use ioremap. Does the write to sram_sync have
-> > side-effects that we need to wait for?
-> 
-> [Added Tony Lindgren and Santosh Shilimkar to Cc:]
-> I don't know.
+The 'gpios' field in 'struct i2s' is now unused, this change
+seems to be missing in commit 0429ffeff460c4302bd1520e6
+("ASoC: samsung: Remove obsolete GPIO based DT pinmuxing").
 
-In addition to Will's question, do you care about the access size?
-ioremap() returns Device memory which is bufferable (early
-acknowledgement) but it guarantees the access size. With write
-combining, you may get a different access size than requested.
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/i2s.c |    1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index c1f70fe..2c07592 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -95,7 +95,6 @@ struct i2s_dai {
+ 	u32	suspend_i2smod;
+ 	u32	suspend_i2scon;
+ 	u32	suspend_i2spsr;
+-	unsigned long gpios[7];	/* i2s gpio line numbers */
+ 	const struct samsung_i2s_variant_regs *variant_regs;
+ };
+ 
 -- 
-Catalin
+1.7.9.5
