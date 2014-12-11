@@ -1,53 +1,36 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 2/3] ARM: at91: sama5d3xek/dt: use dt ids for
-	wm8904
-Date: Thu, 11 Dec 2014 11:14:40 +0800
-Message-ID: <1418267681-4091-2-git-send-email-voice.shen@atmel.com>
-References: <1418267681-4091-1-git-send-email-voice.shen@atmel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DVREDG02.corp.atmel.com (nasmtp01.atmel.com [192.199.1.246])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ECA9260700
- for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 04:14:56 +0100 (CET)
-In-Reply-To: <1418267681-4091-1-git-send-email-voice.shen@atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: nicolas.ferre@atmel.com, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, Alexander Morozov <linux@meltdown.ru>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+From: Ben Zhang <benzh@chromium.org>
+Subject: [PATCH 1/3] ASoC: rt5677: add REGMAP_I2C and REGMAP_IRQ dependency
+Date: Wed, 10 Dec 2014 20:15:25 -0800
+Message-ID: <1418271327-14710-1-git-send-email-benzh@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, Albert Chen <albertchen@realtek.com>, linux-kernel@vger.kernel.org, Ben Zhang <benzh@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Alexander Morozov <linux@meltdown.ru>
+The codec driver uses regmap to do i2c read/write.
+The codec driver started to use REGMAP_IRQ since:
 
-Using the wm8904 device tree compatible string.
+5e3363ad1b7b2e1f197a3f56b01e21cb155ad454
+ASoC: rt5677: add GPIO IRQ support
 
-Signed-off-by: Alexander Morozov <linux@meltdown.ru>
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
+Signed-off-by: Ben Zhang <benzh@chromium.org>
 ---
+ sound/soc/codecs/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
- arch/arm/boot/dts/sama5d3xmb.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/sama5d3xmb.dtsi b/arch/arm/boot/dts/sama5d3xmb.dtsi
-index 49c10d3..2a1aa58 100644
---- a/arch/arm/boot/dts/sama5d3xmb.dtsi
-+++ b/arch/arm/boot/dts/sama5d3xmb.dtsi
-@@ -45,7 +45,7 @@
- 			 */
- 			i2c0: i2c@f0014000 {
- 				wm8904: wm8904@1a {
--					compatible = "wm8904";
-+					compatible = "wlf,wm8904";
- 					reg = <0x1a>;
- 					clocks = <&pck0>;
- 					clock-names = "mclk";
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 6f21a76..60f9425 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -503,6 +503,8 @@ config SND_SOC_RT5670
+ 
+ config SND_SOC_RT5677
+ 	tristate
++	select REGMAP_I2C
++	select REGMAP_IRQ
+ 
+ config SND_SOC_RT5677_SPI
+ 	tristate
 -- 
-2.1.0.24.g4109c28
+2.2.0.rc0.207.ga3a616c
