@@ -1,18 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH RFC 5/9] ALSA: core: selection
- of	audio_tstamp type and accuracy reports
-Date: Wed, 10 Dec 2014 17:04:40 -0600
-Message-ID: <5488D188.5030402@linux.intel.com>
-References: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>	<1418077426-8309-6-git-send-email-pierre-louis.bossart@linux.intel.com>	<s5hsignmphw.wl-tiwai@suse.de>	<5488827E.4030403@linux.intel.com>	<s5hegs7mmki.wl-tiwai@suse.de>	<s5hppbr6ze7.wl-tiwai@suse.de>	<5488BF96.708@linux.intel.com>
- <s5hlhmf6szm.wl-tiwai@suse.de>
+From: mobidyc <mobidyc@gmail.com>
+Subject: Re: Audio USB disappears suddenly
+Date: Thu, 11 Dec 2014 01:13:22 +0100
+Message-ID: <CAM4quvbxLf8ROk3WXjrgoxffsRm4UReSsCuMaMkB8q+uYzWMSA@mail.gmail.com>
+References: <CAM4quvZC3L_mcQtt3giUjUqVnN1N1A05m=fP379xh61TDi_-mg@mail.gmail.com>
+ <5488A6FE.5080308@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A65EC260611
- for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 00:04:46 +0100 (CET)
-In-Reply-To: <s5hlhmf6szm.wl-tiwai@suse.de>
+Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8C1426063E
+ for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 01:13:43 +0100 (CET)
+Received: by mail-la0-f48.google.com with SMTP id gf13so3319286lab.7
+ for <alsa-devel@alsa-project.org>; Wed, 10 Dec 2014 16:13:43 -0800 (PST)
+In-Reply-To: <5488A6FE.5080308@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Nick Stoughton <nstoughton@aether.com>, alsa-devel@alsa-project.org, Tim Cussins <timcussins@eml.cc>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/10/14, 4:27 PM, Takashi Iwai wrote:
-> At Wed, 10 Dec 2014 15:48:06 -0600,
-> Pierre-Louis Bossart wrote:
->>
->>> - Another concern is the compatibility with the current wallclock
->>>     implementation.  Judging from your patch, the audio_tstamp won't be
->>>     obtained from get_time_info callback in the default tstamp mode,
->>>     right?  This may result in a regression, as currently the driver
->>>     always gives the h/w audio_tstamp when the driver supports the
->>>     wallclock.
->>
->> Is this that big of a deal? To the best of my knowledge this wallclk
->> thing was implemented for HDaudio only when we were prototyping the new
->> hardware, and I don't think we ended-up contributing the corresponding
->> patches for PulseAudio. We've since realized that the wallclock can't be
->> available in all cases and that we need this selection capability in a
->> variety of cases.
->>
->> Also even if we kept the .wall_clock callback, the wallclock handling
->> could be relative (start at zero) or absolute. I implemented a reset to
->> zero on stream startup, since the counter is not maintained when the
->> hardware is idle, but there are implementations where the wallclock is
->> really absolute and not reset (see below).
+Thanks for this information,
+
+I think it's time to contact the manufacturer.
+
+Do you know if I can take some relevant traces (kernel module to load,
+/proc/asound file to parse, anything else)?
+so I can detail my email to him.
+
+Thanks.
+
+--
+Mobidyc
+
+2014-12-10 21:03 GMT+01:00 Clemens Ladisch <clemens@ladisch.de>:
+
+> mobidyc wrote:
+> > USB DAC suddenly disappears, from dmesg I can see:
+> >
+> > [13083.161157] usb 1-1.3: 1:2: usb_set_interface failed (-110)
+> > [13083.316344] usb 1-1.3: 1:2: usb_set_interface failed (-71)
+> > [13083.471927] usb 1-1.3: 1:2: usb_set_interface failed (-71)
+> > [13083.789810] usb 1-1.3: 1:2: usb_set_interface failed (-71)
 >
-> I'm not asking for keeping the wall_clock callback itself.  The
-> requirement is the compatible kernel *behavior*.  This is essentially
-> a MUST, especially when the backward compatibility isn't too
-> difficult to achieve.
+> These error codes indicate that the device's firmware does not react at
+> all.  Either the firmware has locked up due to a bug, or the hardware
+> has shut down for some reason.
 >
-> For example, leave the type zero = TSTAMP_TYPE_COMPAT or such, and
-> makes the PCM core and driver behaving as compatible as wall_clock.
-> This should be relatively easy.
-
-if someone used alsa-lib with the .get_wall_clock(), the new user-space 
-code will provide the same results as today, no change (wall clock if 
-supported, hw_ptr otherwise). So the library compatibility is preserved.
-
-I don't mind adding a compatible kernel behavior for HDAudio only, but 
-is this really necessary?
-
 >
-> BTW, what if the driver doesn't support the requested tstamp type?
-> Isn't there any need to query the capability beforehand?
-
-if the timestamp type requested is not supported then the logic defaults 
-to using the hw_ptr, same behavior as today.
-
-I added a set of INFO defines and the matching is_supported queries in 
-alsa-lib. I just did a pretty dumb copy/paste/edit there, maybe we can 
-refactor the code here with a single routine taking a type parameter. 
-feedback welcome there.
+> Regards,
+> Clemens
+>
