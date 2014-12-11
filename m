@@ -1,58 +1,62 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from ioremap
-Date: Thu, 11 Dec 2014 12:40:46 +0100
-Message-ID: <1418298046.3188.10.camel@pengutronix.de>
-References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
-	 <1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
-	 <1418292513.3188.4.camel@pengutronix.de> <20141211103919.GA6067@arm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141211103919.GA6067@arm.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Will Deacon <will.deacon@arm.com>
-Cc: Abhilash Kesavan <a.kesavan@samsung.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Tony Lindgren <tony@atomide.com>, Catalin Marinas <Catalin.Marinas@arm.com>, "heiko@sntech.de" <heiko@sntech.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shc_work@mail.ru" <shc_work@mail.ru>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "arnd@arndb.de" <arnd@arndb.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "padma.v@samsung.com" <padma.v@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>"tony@atomide.com" <tony@atomide.com>
+From: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: [PATCH 4/4] sound: oss: Remove dead sound card number definitions part #2
+Date: Thu, 11 Dec 2014 14:19:13 +0200
+Message-ID: <1418300353-13243-4-git-send-email-jarkko.nikula@linux.intel.com>
+References: <1418300353-13243-1-git-send-email-jarkko.nikula@linux.intel.com>
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1418300353-13243-1-git-send-email-jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Will,
+None of these is used in kernel tree.
 
-Am Donnerstag, den 11.12.2014, 10:39 +0000 schrieb Will Deacon:
-> On Thu, Dec 11, 2014 at 10:08:33AM +0000, Philipp Zabel wrote:
-> > Hi Abhilash,
-> > 
-> > Am Donnerstag, den 11.12.2014, 08:28 +0530 schrieb Abhilash Kesavan:
-> > > Currently, the SRAM allocator returns device memory via ioremap.
-> > > This causes issues on ARM64 when the internal SoC SRAM allocated by
-> > > the generic sram driver is used for audio playback. The destination
-> > > buffer address (which is ioremapped SRAM) is not 64-bit aligned for
-> > > certain streams (e.g. 44.1k sampling rate). In such cases we get
-> > > unhandled alignment faults. Use ioremap_wc in place of ioremap which
-> > > gives us normal non-cacheable memory instead of device memory.
-> > 
-> > Could this break the omap_bus_sync() implementation in
-> > arch/arm/mach-omap2/omap4-common.c?
-> > 
-> >     void omap_bus_sync(void)
-> >     {
-> >             if (dram_sync && sram_sync) {
-> >                     writel_relaxed(readl_relaxed(dram_sync), dram_sync);
-> >                     writel_relaxed(readl_relaxed(sram_sync), sram_sync);
-> >                     isb();
-> >             }
-> >     }
-> > 
-> > It is used in wmb() and omap_do_wfi() to drain interconnect write
-> > buffers on omap4/5. If sram_sync is mapped with write-combining, could
-> > the last write to sram_sync stay stuck in the write-combining buffer
-> > until after the function returns?
-> 
-> I think you have that issue anyway, since you can get an early write
-> response even if you use ioremap. Does the write to sram_sync have
-> side-effects that we need to wait for?
+Signed-off-by: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+---
+RFC, I don't know can these be used in user-space?
+---
+ include/uapi/linux/soundcard.h | 22 ----------------------
+ 1 file changed, 22 deletions(-)
 
-[Added Tony Lindgren and Santosh Shilimkar to Cc:]
-I don't know.
-
-regards
-Philipp
+diff --git a/include/uapi/linux/soundcard.h b/include/uapi/linux/soundcard.h
+index f3b21f989872..d2256bf4bdd8 100644
+--- a/include/uapi/linux/soundcard.h
++++ b/include/uapi/linux/soundcard.h
+@@ -48,32 +48,10 @@
+  *	Supported card ID numbers (Should be somewhere else?)
+  */
+ 
+-#define SNDCARD_ADLIB		1
+ #define SNDCARD_SB		2
+ #define SNDCARD_PAS		3
+-#define SNDCARD_GUS		4
+ #define SNDCARD_MPU401		5
+-#define SNDCARD_SB16		6
+-#define SNDCARD_SB16MIDI	7
+ #define SNDCARD_UART6850	8
+-#define SNDCARD_GUS16		9
+-#define SNDCARD_MSS		10
+-#define SNDCARD_PSS     	11
+-#define SNDCARD_SSCAPE		12
+-#define SNDCARD_PSS_MPU     	13
+-#define SNDCARD_PSS_MSS     	14
+-#define SNDCARD_SSCAPE_MSS	15
+-#define SNDCARD_TRXPRO		16
+-#define SNDCARD_TRXPRO_SB	17
+-#define SNDCARD_TRXPRO_MPU	18
+-#define SNDCARD_MAD16		19
+-#define SNDCARD_MAD16_MPU	20
+-#define SNDCARD_CS4232		21
+-#define SNDCARD_CS4232_MPU	22
+-#define SNDCARD_MAUI		23
+-#define SNDCARD_PSEUDO_MSS	24
+-#define SNDCARD_GUSPNP		25
+-#define SNDCARD_UART401		26
+ /* Sound card numbers 27 to N are reserved. Don't add more numbers here. */
+ 
+ /***********************************
+-- 
+2.1.3
