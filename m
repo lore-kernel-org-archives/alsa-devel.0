@@ -1,30 +1,51 @@
-From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Subject: Re: [PATCH v3 0/2] Disable the ThinkPad HW mute/level control when
- possible
-Date: Thu, 11 Dec 2014 08:14:38 -0200
-Message-ID: <20141211101438.GA5273@khazad-dum.debian.net>
-References: <cover.1413590510.git.luto@amacapital.net>
- <20141204115515.GD100190@vmdeb7>
- <CALCETrX8E6ot=UF=4jRt=Ph5zjFsH-3An4-eMzdWyyiyxyArHA@mail.gmail.com>
- <20141211045816.GA82668@vmdeb7>
+From: Will Deacon <will.deacon@arm.com>
+Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from ioremap
+Date: Thu, 11 Dec 2014 10:39:20 +0000
+Message-ID: <20141211103919.GA6067@arm.com>
+References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
+ <1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
+ <1418292513.3188.4.camel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20141211045816.GA82668@vmdeb7>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>
-Cc: Andy Lutomirski <luto@amacapital.net>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org
+In-Reply-To: <1418292513.3188.4.camel@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Abhilash Kesavan <a.kesavan@samsung.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, Catalin Marinas <Catalin.Marinas@arm.com>, "heiko@sntech.de" <heiko@sntech.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shc_work@mail.ru" <shc_work@mail.ru>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "arnd@arndb.de" <arnd@arndb.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "padma.v@samsung.com" <padma.v@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "tony@atomide.com" <tony@atomide.com>, "kernel@pengutronix.de" <kernel@peng>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 10 Dec 2014, Darren Hart wrote:
-> Queued to for-next. Pending anything unforseen, I'll attempt to get this into
-> 3.19.
+On Thu, Dec 11, 2014 at 10:08:33AM +0000, Philipp Zabel wrote:
+> Hi Abhilash,
+> 
+> Am Donnerstag, den 11.12.2014, 08:28 +0530 schrieb Abhilash Kesavan:
+> > Currently, the SRAM allocator returns device memory via ioremap.
+> > This causes issues on ARM64 when the internal SoC SRAM allocated by
+> > the generic sram driver is used for audio playback. The destination
+> > buffer address (which is ioremapped SRAM) is not 64-bit aligned for
+> > certain streams (e.g. 44.1k sampling rate). In such cases we get
+> > unhandled alignment faults. Use ioremap_wc in place of ioremap which
+> > gives us normal non-cacheable memory instead of device memory.
+> 
+> Could this break the omap_bus_sync() implementation in
+> arch/arm/mach-omap2/omap4-common.c?
+> 
+>     void omap_bus_sync(void)
+>     {
+>             if (dram_sync && sram_sync) {
+>                     writel_relaxed(readl_relaxed(dram_sync), dram_sync);
+>                     writel_relaxed(readl_relaxed(sram_sync), sram_sync);
+>                     isb();
+>             }
+>     }
+> 
+> It is used in wmb() and omap_do_wfi() to drain interconnect write
+> buffers on omap4/5. If sram_sync is mapped with write-combining, could
+> the last write to sram_sync stay stuck in the write-combining buffer
+> until after the function returns?
 
-Thank you!
+I think you have that issue anyway, since you can get an early write
+response even if you use ioremap. Does the write to sram_sync have
+side-effects that we need to wait for?
 
--- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
+Will
