@@ -1,21 +1,14 @@
-From: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
-Subject: Re: Audio USB disappears suddenly
-Date: Fri, 12 Dec 2014 08:17:18 +0100
-Message-ID: <CAMFLXsDCfmsFKD1d8uvk45_XaHo=_PEXqSmrkZuiVBWbttfjsA@mail.gmail.com>
-References: <CAM4quvZC3L_mcQtt3giUjUqVnN1N1A05m=fP379xh61TDi_-mg@mail.gmail.com>
- <5488A6FE.5080308@ladisch.de>
- <CAM4quvbxLf8ROk3WXjrgoxffsRm4UReSsCuMaMkB8q+uYzWMSA@mail.gmail.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5670: set platform data by dmi
+Date: Fri, 12 Dec 2014 16:06:07 +0800
+Message-ID: <1418371567-1206-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f182.google.com (mail-ie0-f182.google.com
- [209.85.223.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D246265317
- for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 08:17:19 +0100 (CET)
-Received: by mail-ie0-f182.google.com with SMTP id x19so6371407ier.27
- for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 23:17:18 -0800 (PST)
-In-Reply-To: <CAM4quvbxLf8ROk3WXjrgoxffsRm4UReSsCuMaMkB8q+uYzWMSA@mail.gmail.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ADF226532C
+ for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 09:06:45 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,58 +18,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mobidyc <mobidyc@gmail.com>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, Bard Liao <bardliao@realtek.com>, yao.jin@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Please try the following commands when the card is recently plugged in and
-working and post the output:
+This patch set specific data according to dmi data.
 
-lsusb -d 249c:9313 -v
+Signed-off-by: Jin Yao <yao.jin@intel.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5670.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-amixer -c 1 contents
-
-Assuming 249c:9313 is your card's ID and that it's still enumerated as card
-1 in your system. The output from lsusb might be very long so it could be
-better to use pastebin.com or similar.
-
-//Johan
-
-On 11 December 2014 at 01:13, mobidyc <mobidyc@gmail.com> wrote:
->
-> Thanks for this information,
->
-> I think it's time to contact the manufacturer.
->
-> Do you know if I can take some relevant traces (kernel module to load,
-> /proc/asound file to parse, anything else)?
-> so I can detail my email to him.
->
-> Thanks.
->
-> --
-> Mobidyc
->
-> 2014-12-10 21:03 GMT+01:00 Clemens Ladisch <clemens@ladisch.de>:
->
-> > mobidyc wrote:
-> > > USB DAC suddenly disappears, from dmesg I can see:
-> > >
-> > > [13083.161157] usb 1-1.3: 1:2: usb_set_interface failed (-110)
-> > > [13083.316344] usb 1-1.3: 1:2: usb_set_interface failed (-71)
-> > > [13083.471927] usb 1-1.3: 1:2: usb_set_interface failed (-71)
-> > > [13083.789810] usb 1-1.3: 1:2: usb_set_interface failed (-71)
-> >
-> > These error codes indicate that the device's firmware does not react at
-> > all.  Either the firmware has locked up due to a bug, or the hardware
-> > has shut down for some reason.
-> >
-> >
-> > Regards,
-> > Clemens
-> >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 8bf3a56..6074f04 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -18,6 +18,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/acpi.h>
+ #include <linux/spi/spi.h>
++#include <linux/dmi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -2549,6 +2550,17 @@ static struct acpi_device_id rt5670_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5670_acpi_match);
+ #endif
+ 
++static const struct dmi_system_id dmi_platform_data[] __initconst = {
++	{
++		.ident = "Intel Braswell",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corporation"),
++			DMI_MATCH(DMI_BOARD_NAME, "Braswell CRB"),
++		},
++	},
++	{}
++};
++
+ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -2568,6 +2580,12 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata)
+ 		rt5670->pdata = *pdata;
+ 
++	if (dmi_check_system(dmi_platform_data)) {
++		rt5670->pdata.dmic_en = true;
++		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
++		rt5670->pdata.jd_mode = 1;
++	}
++
+ 	rt5670->regmap = devm_regmap_init_i2c(i2c, &rt5670_regmap);
+ 	if (IS_ERR(rt5670->regmap)) {
+ 		ret = PTR_ERR(rt5670->regmap);
+-- 
+1.8.1.1.439.g50a6b54
