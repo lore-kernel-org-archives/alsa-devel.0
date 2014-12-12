@@ -1,49 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/6] ASoC: dwc: Ensure FIFOs are flushed to prevent
- channel swap
-Date: Fri, 12 Dec 2014 18:12:44 +0000
-Message-ID: <20141212181244.GQ11764@sirena.org.uk>
-References: <cover.1418372910.git.Andrew.Jackson@arm.com>
- <a3b4a11dfe1688eea07471c6cfa27676cc9a58a8.1418372910.git.Andrew.Jackson@arm.com>
- <548AB75E.9030302@metafoo.de>
+Subject: Re: [PATCH/RFC 04/14] ASoC: samsung: i2s: Request memory region in
+ driver probe()
+Date: Fri, 12 Dec 2014 18:49:27 +0000
+Message-ID: <20141212184927.GR11764@sirena.org.uk>
+References: <1418319952-10163-1-git-send-email-s.nawrocki@samsung.com>
+ <1418319952-10163-5-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DgyySQcJ59QCrNUU"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="08WHHcMLi9slgnFE"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <548AB75E.9030302@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Andrew Jackson <andrew.jackson@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1418319952-10163-5-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 
---DgyySQcJ59QCrNUU
+--08WHHcMLi9slgnFE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 12, 2014 at 10:37:34AM +0100, Lars-Peter Clausen wrote:
+On Thu, Dec 11, 2014 at 06:45:42PM +0100, Sylwester Nawrocki wrote:
+> The memory mapped registers region is common for both DAIs so request
+> it in the I2S platform device driver's probe for the platform device
+> corresponding to the primary DAI, rather than in the ASoC DAI's probe
+> callback. While at it switch to devm_ioremap_resource(). This also
+> drops the hard coded (0x100) register region size in the driver.
 
-> This should probably go into the prepare callback. prepare is for example
-> also called when recovering from a underrun/overrun. Whereas hwparams is
-> only called during initial setup of the stream.
+This doesn't apply against current code, please check and resend.
 
-Indeed, that's a better place.
-
---DgyySQcJ59QCrNUU
+--08WHHcMLi9slgnFE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUizAbAAoJECTWi3JdVIfQhV8H/i1tVDyivMVCJ2KEiemPRPh3
-mx5oDLjdRbUVHCrPEyKS+Aur+mWJ7Jn0SVMKbkoajlRPzCp+ZvYsS7BNg7v3IV8E
-ODg0WHetvCNnz/+O4ZDdgSSf9mGjRxv8vzKXsfqzSEuT0P5xRCUQ6tvO9OaWRHns
-s/Lsdu3TBGkGF61qSsnuj97CJxgdGGuoWYjoJ5PLiQxKlVnzgiS5/UX0Az9mI2hA
-DH0kjlVumQVFcmnTlm2S1iwfppPWHqKNFtxMN1miQRBSaOhyc4CCan5Fyeh88Slx
-eY60zbLVE0FbUDpD/4pSHeHrG2MWgwUarz5JngUfokfa7HVLpH6DqxLc1UjXHA8=
-=mSP6
+iQEcBAEBAgAGBQJUizi2AAoJECTWi3JdVIfQ2vAH/AtX6xhF18g8pdbLi9faj4TW
+fItWlAwOFv2mSUeK8RJ3T5dSbJOiBquvrbhftDMZReVSQ75r9JdQS9klVMxE2yHO
+ppm10Ks1KzNGPFyZt03lZRSLhEmSe2wrqdc/8E7FYVGzpy8a6EuKk7V18/JxINRC
++ZgmEReSuiNSNtE7ysUZR/dx4lIWihkJeteA3TEG5HbLxwq1bQDRlPEY/OjOeS4i
+PctrjGmvUpevsNq40lz90Qg1hFQqEXEcvZM1atz8s/+pJlTmeRjgqf1rQ/prscRZ
+/3o55KCLp597SBeQkf5hsPRJYThw7idWwPHuoTq+F2RC/3H87PkBZCdwUWF/G/g=
+=taZ0
 -----END PGP SIGNATURE-----
 
---DgyySQcJ59QCrNUU--
+--08WHHcMLi9slgnFE--
