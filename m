@@ -1,38 +1,64 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 1/6] ASoC: dwc: Remove unnecessary debug messages and
- tests
-Date: Fri, 12 Dec 2014 10:33:23 +0100
-Message-ID: <548AB663.2020207@metafoo.de>
-References: <cover.1418372910.git.Andrew.Jackson@arm.com>	 <97f65b6037b9ac676f6ca7717a230a68cbe81fd1.1418372910.git.Andrew.Jackson@arm.com> <1418376671.18092.40.camel@perches.com>
+Subject: Re: [PATCH v2 2/6] ASoC: dwc: Ensure FIFOs are flushed
+ to prevent channel swap
+Date: Fri, 12 Dec 2014 10:37:34 +0100
+Message-ID: <548AB75E.9030302@metafoo.de>
+References: <cover.1418372910.git.Andrew.Jackson@arm.com>
+ <a3b4a11dfe1688eea07471c6cfa27676cc9a58a8.1418372910.git.Andrew.Jackson@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1418376671.18092.40.camel@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>, Andrew Jackson <andrew.jackson@arm.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-075.synserver.de (smtp-out-075.synserver.de
+ [212.40.185.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B1C326535C
+ for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 10:37:35 +0100 (CET)
+In-Reply-To: <a3b4a11dfe1688eea07471c6cfa27676cc9a58a8.1418372910.git.Andrew.Jackson@arm.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andrew Jackson <andrew.jackson@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/12/2014 10:31 AM, Joe Perches wrote:
-[...]
->>   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> -	if (!res) {
->> -		dev_err(&pdev->dev, "no i2s resource defined\n");
->> -		return -ENODEV;
->> -	}
->> -
+On 12/12/2014 10:25 AM, Andrew Jackson wrote:
+> From: Andrew Jackson <Andrew.Jackson@arm.com>
 >
-> Why delete this?
+> If the FIFOs aren't flushed, the left/right channels may be swapped:
+> this may occur if the FIFOs are not empty when the streams start.
 >
->>   	dev->i2s_base = devm_ioremap_resource(&pdev->dev, res);
->> -	if (IS_ERR(dev->i2s_base)) {
->> -		dev_err(&pdev->dev, "ioremap fail for i2s_region\n");
->> +	if (IS_ERR(dev->i2s_base))
->>   		return PTR_ERR(dev->i2s_base);
->> -	}
+> Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
+> ---
+>   sound/soc/dwc/designware_i2s.c |    2 ++
+>   1 files changed, 2 insertions(+), 0 deletions(-)
 >
-> or this?
+> diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+> index ef771ea..b9d6a25 100644
+> --- a/sound/soc/dwc/designware_i2s.c
+> +++ b/sound/soc/dwc/designware_i2s.c
+> @@ -228,12 +228,14 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
+>   	i2s_disable_channels(dev, substream->stream);
+>
+>   	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		i2s_write_reg(dev->i2s_base, TXFFR, 1);
+>   		i2s_write_reg(dev->i2s_base, TCR(ch_reg), xfer_resolution);
+>   		i2s_write_reg(dev->i2s_base, TFCR(ch_reg), 0x02);
+>   		irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
+>   		i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x30);
+>   		i2s_write_reg(dev->i2s_base, TER(ch_reg), 1);
+>   	} else {
+> +		i2s_write_reg(dev->i2s_base, RXFFR, 1);
+>   		i2s_write_reg(dev->i2s_base, RCR(ch_reg), xfer_resolution);
+>   		i2s_write_reg(dev->i2s_base, RFCR(ch_reg), 0x07);
+>   		irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
+>
 
-devm_ioremap_resource both checks if res is NULL and does also its own error 
-reporting. So the code in the driver is redundant.
+This should probably go into the prepare callback. prepare is for example 
+also called when recovering from a underrun/overrun. Whereas hwparams is 
+only called during initial setup of the stream.
