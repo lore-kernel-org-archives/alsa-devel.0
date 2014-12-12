@@ -1,79 +1,91 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5670: set platform data by dmi
-Date: Fri, 12 Dec 2014 19:35:58 +0000
-Message-ID: <20141212193558.GU11764@sirena.org.uk>
-References: <1418371567-1206-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [alsa-devel] [PATCH/RFC 12/14] ASoC: samsung: i2s: Add clock
+ provider for the I2S internal clocks
+Date: Fri, 12 Dec 2014 20:03:42 +0000
+Message-ID: <20141212200342.GV11764@sirena.org.uk>
+References: <1418319952-10163-1-git-send-email-s.nawrocki@samsung.com>
+ <1418319952-10163-13-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5455585286929910045=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 183E4260688
- for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 20:36:05 +0100 (CET)
-In-Reply-To: <1418371567-1206-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, yao.jin@intel.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="v0nHJk0tUyruD8GZ"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1418319952-10163-13-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, padma.v@samsung.com, sbkim73@samsung.com, drake@endlessm.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5455585286929910045==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BLHJ+CpGSNuhLkFz"
-Content-Disposition: inline
-
-
---BLHJ+CpGSNuhLkFz
+--v0nHJk0tUyruD8GZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 12, 2014 at 04:06:07PM +0800, Bard Liao wrote:
+On Thu, Dec 11, 2014 at 06:45:50PM +0100, Sylwester Nawrocki wrote:
 
-> +static const struct dmi_system_id dmi_platform_data[] __initconst = {
-> +	{
-> +		.ident = "Intel Braswell",
+> +Optional Properties:
+>=20
+>  - samsung,idma-addr: Internal DMA register base address of the audio
+>    sub system(used in secondary sound source).
+>  - pinctrl-0: Should specify pin control groups used for this controller.
+>  - pinctrl-names: Should contain only one value - "default".
+> +- #clock-cells: should be 1, this property must be present if the I2S de=
+vice
+> +  is a clock provider in terms of the common clock bindings, described in
+> +  ../clock/clock-bindings.txt.
+> +- clock-output-names: from the common clock bindings, names of the CDCLK
+> +  I2S output clocks, suggested values are "i2s_cdclk0", "i2s_cdclk1",
+> +  "i2s_cdclk3" for the I2S0, I2S1, I2S2 devices recpectively.
+> +
 
-> +	if (dmi_check_system(dmi_platform_data)) {
-> +		rt5670->pdata.dmic_en = true;
-> +		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
-> +		rt5670->pdata.jd_mode = 1;
+Why not make this mandatory going forwards?  You can add a note saying
+that older DTs may not have it.
+
+> +The assignment of indices for the I2Sx clock provider is as follows:
+> + 0 - the CDCLK (CODECLKO) gate clock,
+> + 1 - the RCLK prescaler divider clock (corresponding to the IISPSR regis=
+ter),
+> + 2 - the RCLKSRC mux clock (corresponding to RCLKSRC bit in register IIS=
+MOD).
+
+Why use the indicies here, they only seem to add obscurity?
+
+> +		clk_put(rclksrc);
 > +	}
+> +	/*
 
-This table is called dmi_platform_data but really it seems to be a list
-of machine IDs to use for this Braswell reference design so it should
-have a name refelecting that.
+Missing blank line.
 
---BLHJ+CpGSNuhLkFz
+> +	 * Register the mux and div clocks only if both source clocks
+> +	 * are available, i.e. for the I2S0 instance and versions with
+> +	 * QUIRK_NO_MUXPSR quirk not set.
+> +	 */
+
+Why not proceed even if one is missing?  This repeats in words the if
+statement but doesn't explain why we're doing this.
+
+> +	ret =3D of_clk_add_provider(dev->of_node, of_clk_src_onecell_get,
+> +				  &i2s->clk_data);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to add clock provider\n");
+
+Best practice is to print the error code.
+
+--v0nHJk0tUyruD8GZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUi0OdAAoJECTWi3JdVIfQNIIH/j8UtoFXRAnK7HVLsk7xp7ZV
-+VPuHtLycZM63d3FR0XpDHEc2ya70Y7505QfeGyVDm0gC7KU3WSH5KRogDXf0FYM
-IhShfwv+cDa0HyribYEWeF7Fiq6yid0qKyKrFOI8lfyB/u1Kx6l1cC1s2WOOPxQA
-o5brlSswAN2Aj4F+SMbfXy/wJuDJMxoNenhso77SsglZCBykg2hglUsmOrl9v3dH
-61vmVinkq39vtXtKCCoZQwt7QU0knuwAYFeS6w8MD4ti9/e4pBOOdM1cXq0Hd/vY
-9NqfqolL76Zi0lVBp6JLf4X1KH9ODlLrTbC0avET/78zBK6cIH2f2+UWsoj8b/w=
-=o8Fw
+iQEcBAEBAgAGBQJUi0odAAoJECTWi3JdVIfQTfwIAIJajeCegYrDXaw7DIEQYqc4
+PiOw9203Q4y6wO2dF7QMoe5DP7TkPa/gIkjPPqX7njVwen3f3XdvbS8jFcE9gJdq
+E+fc1mQdaLJXk8EzZt+e3xDDlCfTiEAUivHYC3SOyAddp5ZPTTS3BLZ3YJ41krxp
+sbsuP9QCARSNnYlgW2XKo8SA2ykDlRIHIQzzRyLrELI5+h1moo+sdl3ruKLjFdsR
+38SkFUnbHzrWi3Uf7i/XujQ6DlNYs8v/BSbGZrVzQJ3OiKEwmuNBGwjdNOrUxOXP
+cGeDG3gRQpwiI2vqc7s5PI2uO+tVLwYKQjbiXEVunrtq+pM3EwtQ/TLu0AT9q+4=
+=nQVx
 -----END PGP SIGNATURE-----
 
---BLHJ+CpGSNuhLkFz--
-
---===============5455585286929910045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5455585286929910045==--
+--v0nHJk0tUyruD8GZ--
