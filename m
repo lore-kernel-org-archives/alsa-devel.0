@@ -1,24 +1,21 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [PATCH] ASoC: samsung: Fix non-DT use of I2S
-	controller
-Date: Fri, 12 Dec 2014 08:53:50 +0530
-Message-ID: <CAAgF-BcEzKMvuiP8jepsrg4k4uxhLXRfzj6jAuEaQ=kVc=5cjA@mail.gmail.com>
-References: <1417809427-5126-1-git-send-email-broonie@kernel.org>
- <CAAgF-Bfv5OaDYu2Ti=9CCoZ9k-1ZhOG-KRfgXJYanKpLWp9ffQ@mail.gmail.com>
- <20141208121200.GV11764@sirena.org.uk>
- <CAAgF-BfCQ8sfT-dH8+yNUrPA=qPChv6G_8bX0qHnkj-Phb=zhw@mail.gmail.com>
- <20141210131937.GR11764@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH RFC 0/9] audio timestamping evolutions
+Date: Fri, 12 Dec 2014 12:55:30 +0800
+Message-ID: <CAN8cciY0_2_FamMDSVkz77D_DwpfZFT-PVv7Cx-Q=+7N1Of0ag@mail.gmail.com>
+References: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <CAN8cciaOsP9wk0wvu5S4BXMwZ6mbe6iqBxBc8OfpirF4XN3PgQ@mail.gmail.com>
+ <54885ED2.8050403@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f182.google.com (mail-yk0-f182.google.com
- [209.85.160.182])
- by alsa0.perex.cz (Postfix) with ESMTP id C177726063F
- for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 04:23:51 +0100 (CET)
-Received: by mail-yk0-f182.google.com with SMTP id 131so2772970ykp.41
- for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 19:23:50 -0800 (PST)
-In-Reply-To: <20141210131937.GR11764@sirena.org.uk>
+Received: from mail-qc0-f182.google.com (mail-qc0-f182.google.com
+ [209.85.216.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29D20260645
+ for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 05:55:32 +0100 (CET)
+Received: by mail-qc0-f182.google.com with SMTP id r5so5073019qcx.13
+ for <alsa-devel@alsa-project.org>; Thu, 11 Dec 2014 20:55:31 -0800 (PST)
+In-Reply-To: <54885ED2.8050403@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,26 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Padmavathi Venna <padma.v@samsung.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/10/14, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Dec 09, 2014 at 09:33:00AM +0530, Padma Venkat wrote:
->> On 12/8/14, Mark Brown <broonie@kernel.org> wrote:
+>>
+>> It seem that audio_time.c is hardcoded to use 48000Hz which is the hda
+>> link rate, do the measurement still valid when application use 44100Hz ?
 >
->> > OK, though I presume that's wrong too (otherwise it should be v4).
 >
->> Yes. It does not have secondary dai, internal DMA, reset control. It
->> has only 5.1ch support. Register offsets are similar to i2sv3_regs. So
->> I think one V4 dai type with name "samsung,s3c64xx-i2s" is required.
+> If you use a wallclock then you really abstract away the actual sampling
+frequency and the transmission pattern discontinuity
+(12-11-11-12-11-11-12-11-11-11 pattern, with an invalid sample every 12 or
+11 samples for HDAudio). It wouldn't matter if you transmitted 44.1 or
+48kHz since they use the same wall clock ticks.
 >
-> OK, then can you or someone else with access to the documentation please
-> provide that?
-
-OK. I will post a patch next week.
-
 >
 
-Thanks
-Padma
+#define PERIOD 6000
+
+#define PLAYBACK_BUFFERS 4
+
+unsigned char buffer_p[PERIOD*4*4];
+unsigned char buffer_c[PERIOD*4*4];
+
+I don't understand why you hard coded PERIOD and PLAYBACK_BUFFERS
+when you use snd_pcm_set_params
+
+since period size and buffer size can be obtained by snd_pcm_get_params()
+after calling snd_pcm_set_params()
+
+if ((err = snd_pcm_set_params(handle_p,
+                              SND_PCM_FORMAT_S16,
+                              SND_PCM_ACCESS_RW_INTERLEAVED,
+                              2,
+                              48000,
+                              0,
+                              500000)) < 0) { /* 0.5sec */
