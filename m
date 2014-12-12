@@ -1,72 +1,42 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8750: Make VREF a VMID instead of
-	OUTPUT widget
-Date: Fri, 12 Dec 2014 13:35:37 +0000
-Message-ID: <20141212133537.GM11764@sirena.org.uk>
-References: <1418034191-28010-1-git-send-email-lars@metafoo.de>
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH] ASoC: soc-dapm: Fix comparison of pointers
+Date: Fri, 12 Dec 2014 14:43:27 +0100
+Message-ID: <87h9x10yrk.fsf@rasmusvillemoes.dk>
+References: <1418162021-32229-1-git-send-email-linux@rasmusvillemoes.dk>
+	<20141212132109.GH11764@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3993608272590572690=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A3808265721
- for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 14:36:00 +0100 (CET)
-In-Reply-To: <1418034191-28010-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141212132109.GH11764@sirena.org.uk> (Mark Brown's message of
+	"Fri, 12 Dec 2014 13:21:09 +0000")
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Dec 12 2014, Mark Brown <broonie@kernel.org> wrote:
 
---===============3993608272590572690==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x1rn9AXKBSVzW9+3"
-Content-Disposition: inline
+> On Tue, Dec 09, 2014 at 10:53:41PM +0100, Rasmus Villemoes wrote:
+>
+>>  	if (a->reg != b->reg)
+>>  		return a->reg - b->reg;
+>> -	if (a->dapm != b->dapm)
+>> -		return (unsigned long)a->dapm - (unsigned long)b->dapm;
+>> +	if (a->dapm < b->dapm)
+>> +		return -1;
+>> +	if (a->dapm > b->dapm)
+>> +		return 1;
+>
+> If we're worrying about standards conformance type stuff here this is
+> also buggy since it's out of spec to compare pointers that are not part
+> of the same array like this.  Casting to uintptr_t is a better fix here.
 
+I'm not worrying about standards conformance. Casting pointers to and
+from [unsigned] long is done everywhere in the kernel, and that's
+fine. But subtracting ints or longs and using the sign of the result for
+comparison is simply wrong. See acbbe6fbb2 (kcmp: fix standard
+comparison bug) for the long story. In this case the narrowing (when
+BITS_PER_LONG==64) of the result from long to int just makes it even
+more wrong.
 
---x1rn9AXKBSVzW9+3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Dec 08, 2014 at 11:23:11AM +0100, Lars-Peter Clausen wrote:
-> Commit 04489eeb02a4 ("ALSA: wm8750: add missing VREF output") added the
-> previously missing VREF widget. And while adding the widget as OUTPUT widget
-> silences the error of the missing widget it should have rather been a VMID
-> widget.
-
-Applied, thanks.
-
---x1rn9AXKBSVzW9+3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUiu8pAAoJECTWi3JdVIfQfnQH/0HVObjIcmCrN6xlJpr3huIH
-zQIRNqUwWpeBxpK6mzYrUyo2LfGVxn6fRecA2OenuxBxvHNtSir2NMEiBaFK03h/
-HvBDIqkMbxvKFA5GJByP2yj/HhAnHFCKq8ISxZFeiRptR+rhDceA8lHPq1evhUMz
-ep93MVFCgGMcUsK1kZge+LOZN80c3l4SVLEBB67GPQERLOTy1TCOf4FFS7Zwl0a1
-6WMfpBZ/dGm5B9PdB4jsfTJZ2eIwpXhmMHcGy2ycAtDlddj3os2lH/nrrGaQmjwe
-O/YY6onqvFHNyt8rny+l5CGkPNKCc1ph36pzJyFJTiZpG7cR+yAT8dBoedBdvbI=
-=wFzp
------END PGP SIGNATURE-----
-
---x1rn9AXKBSVzW9+3--
-
---===============3993608272590572690==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3993608272590572690==--
+Rasmus
