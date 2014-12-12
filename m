@@ -1,16 +1,18 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch 2/2] ALSA: oxfw: fix detect_loud_models()
-	return value
-Date: Fri, 12 Dec 2014 22:28:10 +0300
-Message-ID: <20141212192810.GB22234@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/6] ASoC: dwc: Remove unnecessary debug
+ messages and tests
+Date: Fri, 12 Dec 2014 19:29:36 +0000
+Message-ID: <20141212192936.GT11764@sirena.org.uk>
+References: <cover.1418372910.git.Andrew.Jackson@arm.com>
+ <97f65b6037b9ac676f6ca7717a230a68cbe81fd1.1418372910.git.Andrew.Jackson@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1664134409936452336=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id ED9BD261489
- for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 20:28:10 +0100 (CET)
-Content-Disposition: inline
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22D482606CE
+ for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 20:30:15 +0100 (CET)
+In-Reply-To: <97f65b6037b9ac676f6ca7717a230a68cbe81fd1.1418372910.git.Andrew.Jackson@arm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Andrew Jackson <andrew.jackson@arm.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This code causes a static checker warning:
 
-	sound/firewire/oxfw/oxfw.c:46 detect_loud_models()
-	warn: signedness bug returning '(-2)'
+--===============1664134409936452336==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ddlq+5wZogx8hGrT"
+Content-Disposition: inline
 
-The detect_loud_models() function should return false on falure, so that
-we don't try to set up the loud code for hardware that doesn't support
-it.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+--ddlq+5wZogx8hGrT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index cf1d0b5..60e5cad 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -43,7 +43,7 @@ static bool detect_loud_models(struct fw_unit *unit)
- 	err = fw_csr_string(unit->directory, CSR_MODEL,
- 			    model, sizeof(model));
- 	if (err < 0)
--		return err;
-+		return false;
- 
- 	for (i = 0; i < ARRAY_SIZE(models); i++) {
- 		if (strcmp(models[i], model) == 0)
+On Fri, Dec 12, 2014 at 09:25:00AM +0000, Andrew Jackson wrote:
+> From: Andrew Jackson <Andrew.Jackson@arm.com>
+>=20
+> The devm_XXX allocation functions print a message on failure,
+> so additional messages are not required.
+
+Applied, thanks.
+
+--ddlq+5wZogx8hGrT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUi0IfAAoJECTWi3JdVIfQTDgIAIY5bDThEf6xA3UGvw2Sqov0
+LLrnGf2Lgk8KnuNp3hZweTZzyHddqK3e0BF7rm0cSc83t31zc8sICmaLhlVuam7c
+oLxxPtBFM7ej6TeGXQJQbB681bCoM2pIQuv1leS/GuKNhRb7XSCl/koKy3i7An4q
+0rivYjI7wjoqUUV72QWEBlMzxp7rnfvywRWzJit0v/NN6NzrVvmkJAz1erZC6dkT
+DoBeSHbGZca9xbweVJqMjXf7xSfwNVJtsVMAZD8mSGYMfrMF53x+Nn8Ud4dcXY8T
+mMr0h405UvDyAEIG4uaYH7iek7OFk6+qzlNYfiBg5lclerDsUpxXRBqoRIJBgmQ=
+=6kUA
+-----END PGP SIGNATURE-----
+
+--ddlq+5wZogx8hGrT--
+
+--===============1664134409936452336==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1664134409936452336==--
