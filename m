@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/6] ASoC: dwc: Remove unnecessary debug
- messages and tests
-Date: Fri, 12 Dec 2014 19:29:36 +0000
-Message-ID: <20141212192936.GT11764@sirena.org.uk>
-References: <cover.1418372910.git.Andrew.Jackson@arm.com>
- <97f65b6037b9ac676f6ca7717a230a68cbe81fd1.1418372910.git.Andrew.Jackson@arm.com>
+Subject: Re: [PATCH] ASoC: rt5670: set platform data by dmi
+Date: Fri, 12 Dec 2014 19:35:58 +0000
+Message-ID: <20141212193558.GU11764@sirena.org.uk>
+References: <1418371567-1206-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1664134409936452336=="
+Content-Type: multipart/mixed; boundary="===============5455585286929910045=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 22D482606CE
- for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 20:30:15 +0100 (CET)
-In-Reply-To: <97f65b6037b9ac676f6ca7717a230a68cbe81fd1.1418372910.git.Andrew.Jackson@arm.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 183E4260688
+ for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2014 20:36:05 +0100 (CET)
+In-Reply-To: <1418371567-1206-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrew Jackson <andrew.jackson@arm.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, yao.jin@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1664134409936452336==
+--===============5455585286929910045==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ddlq+5wZogx8hGrT"
+	protocol="application/pgp-signature"; boundary="BLHJ+CpGSNuhLkFz"
 Content-Disposition: inline
 
 
---ddlq+5wZogx8hGrT
+--BLHJ+CpGSNuhLkFz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 12, 2014 at 09:25:00AM +0000, Andrew Jackson wrote:
-> From: Andrew Jackson <Andrew.Jackson@arm.com>
->=20
-> The devm_XXX allocation functions print a message on failure,
-> so additional messages are not required.
+On Fri, Dec 12, 2014 at 04:06:07PM +0800, Bard Liao wrote:
 
-Applied, thanks.
+> +static const struct dmi_system_id dmi_platform_data[] __initconst = {
+> +	{
+> +		.ident = "Intel Braswell",
 
---ddlq+5wZogx8hGrT
+> +	if (dmi_check_system(dmi_platform_data)) {
+> +		rt5670->pdata.dmic_en = true;
+> +		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
+> +		rt5670->pdata.jd_mode = 1;
+> +	}
+
+This table is called dmi_platform_data but really it seems to be a list
+of machine IDs to use for this Braswell reference design so it should
+have a name refelecting that.
+
+--BLHJ+CpGSNuhLkFz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUi0IfAAoJECTWi3JdVIfQTDgIAIY5bDThEf6xA3UGvw2Sqov0
-LLrnGf2Lgk8KnuNp3hZweTZzyHddqK3e0BF7rm0cSc83t31zc8sICmaLhlVuam7c
-oLxxPtBFM7ej6TeGXQJQbB681bCoM2pIQuv1leS/GuKNhRb7XSCl/koKy3i7An4q
-0rivYjI7wjoqUUV72QWEBlMzxp7rnfvywRWzJit0v/NN6NzrVvmkJAz1erZC6dkT
-DoBeSHbGZca9xbweVJqMjXf7xSfwNVJtsVMAZD8mSGYMfrMF53x+Nn8Ud4dcXY8T
-mMr0h405UvDyAEIG4uaYH7iek7OFk6+qzlNYfiBg5lclerDsUpxXRBqoRIJBgmQ=
-=6kUA
+iQEcBAEBAgAGBQJUi0OdAAoJECTWi3JdVIfQNIIH/j8UtoFXRAnK7HVLsk7xp7ZV
++VPuHtLycZM63d3FR0XpDHEc2ya70Y7505QfeGyVDm0gC7KU3WSH5KRogDXf0FYM
+IhShfwv+cDa0HyribYEWeF7Fiq6yid0qKyKrFOI8lfyB/u1Kx6l1cC1s2WOOPxQA
+o5brlSswAN2Aj4F+SMbfXy/wJuDJMxoNenhso77SsglZCBykg2hglUsmOrl9v3dH
+61vmVinkq39vtXtKCCoZQwt7QU0knuwAYFeS6w8MD4ti9/e4pBOOdM1cXq0Hd/vY
+9NqfqolL76Zi0lVBp6JLf4X1KH9ODlLrTbC0avET/78zBK6cIH2f2+UWsoj8b/w=
+=o8Fw
 -----END PGP SIGNATURE-----
 
---ddlq+5wZogx8hGrT--
+--BLHJ+CpGSNuhLkFz--
 
---===============1664134409936452336==
+--===============5455585286929910045==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1664134409936452336==--
+--===============5455585286929910045==--
