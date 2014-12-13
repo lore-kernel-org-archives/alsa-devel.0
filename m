@@ -1,51 +1,60 @@
-From: Ben Zhang <benzh@google.com>
-Subject: Re: [PATCH 2/3] ASoC: rt5677: add a platform config option for
- MICBIAS voltage
-Date: Fri, 12 Dec 2014 15:48:51 -0800
-Message-ID: <CAOV7By+GVAZiqwO9NW3DB87uOzx003K_RPqKhX4+vvf=oB=99A@mail.gmail.com>
-References: <1418271327-14710-1-git-send-email-benzh@chromium.org>
-	<1418271327-14710-2-git-send-email-benzh@chromium.org>
-	<20141212132732.GK11764@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [patch 2/2] ALSA: oxfw: fix detect_loud_models()
+	return value
+Date: Sat, 13 Dec 2014 13:45:55 +0900
+Message-ID: <548BC483.4090703@sakamocchi.jp>
+References: <20141212192810.GB22234@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141212132732.GK11764@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, Dylan Reid <dgreid@chromium.org>, Albert Chen <albertchen@realtek.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FD39260435
+ for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2014 05:46:00 +0100 (CET)
+In-Reply-To: <20141212192810.GB22234@mwanda>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>, Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 12, 2014 at 5:27 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Dec 10, 2014 at 08:15:26PM -0800, Ben Zhang wrote:
->
->> The MICBIAS voltage for IN1 can be set to 1.476V/2.970V/1.242V/2.475V
->
-> The changelog says "platform config" but this is adding DT binding.
->
->> +- realtek,micbias1
->> +  Select 0/1/2/3 to set MICBIAS1 voltage to 1.476V/2.970V/1.242V/2.475V
->> +
->
-> Why is this being specified as some magic number rather than using the
-> voltage (or at least providing defines for the voltage) - this is going
-> to do little to make the DT legible and...
->
->> +enum rt5677_micbias {
->> +     RT5677_MICBIAS_1_476V = 0,
->> +     RT5677_MICBIAS_2_970V = 1,
->> +     RT5677_MICBIAS_1_242V = 2,
->> +     RT5677_MICBIAS_2_475V = 3,
->> +};
->
-> ...I see there are defined for platform data.
+On Dec 13 2014 04:28, Dan Carpenter wrote:
+> This code causes a static checker warning:
+> 
+> 	sound/firewire/oxfw/oxfw.c:46 detect_loud_models()
+> 	warn: signedness bug returning '(-2)'
+> 
+> The detect_loud_models() function should return false on falure, so that
+> we don't try to set up the loud code for hardware that doesn't support
+> it.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+> index cf1d0b5..60e5cad 100644
+> --- a/sound/firewire/oxfw/oxfw.c
+> +++ b/sound/firewire/oxfw/oxfw.c
+> @@ -43,7 +43,7 @@ static bool detect_loud_models(struct fw_unit *unit)
+>  	err = fw_csr_string(unit->directory, CSR_MODEL,
+>  			    model, sizeof(model));
+>  	if (err < 0)
+> -		return err;
+> +		return false;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(models); i++) {
+>  		if (strcmp(models[i], model) == 0)
 
-This patch adds both an entry to the platform data and a DT binding
-for MICBIAS level selection. The 4 voltage options
-(1.476V/2.970V/1.242V/2.475V) are the only ones supported by the codec
-hardware, so it seems an enum is better than specifying the exact
-voltage directly. I was following the two examples below:
+Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Documentation/devicetree/bindings/sound/cs42l52.txt (cirrus,micbias-lvl)
-Documentation/devicetree/bindings/sound/tlv320aic3x.txt (ai3x-micbias-vg)
 
-I'm new to devicetree bindings. Is there something like an enum in DT?
+Thanks
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
