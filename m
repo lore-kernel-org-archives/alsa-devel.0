@@ -1,52 +1,45 @@
-From: "ykk@rock-chips.com" <ykk@rock-chips.com>
-Subject: Re: [PATCH 5/6] dt-bindings: Add documentation for
-	Rockchip hdmi-audio
-Date: Mon, 15 Dec 2014 17:28:12 +0800
-Message-ID: <201412151725475801333@rock-chips.com>
-References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com>,
- <1418612114-19692-1-git-send-email-ykk@rock-chips.com>,
- <548EA3B9.5080407@metafoo.de>
+From: "Kuankuan.Yang" <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: Re: [PATCH 5/6] dt-bindings: Add documentation for Rockchip hdmi-audio
+Date: Mon, 15 Dec 2014 17:46:35 +0800
+Message-ID: <548EADFB.6020903@rock-chips.com>
+References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com> <1418612114-19692-1-git-send-email-ykk@rock-chips.com> <548EA3B9.5080407@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.137])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B51B26044B
- for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 10:28:38 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel <alsa-devel@alsa-project.org>, Heiko Stuebner <heiko@sntech.de>, devicetree <devicetree@vger.kernel.org>, David Airlie <airlied@linux.ie>, dri-devel <dri-devel@lists.freedesktop.org>, Liam Girdwood <lgirdwood@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Bard Liao <bardliao@realtek.com>, Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, linux-rockchip <linux-rockchip@lists.infradead.org>, Grant Likely <grant.likely@linaro.org>, Dylan Reid <dgreid@chromium.org>, Xu Jianqun <jay.xu@rock-chips.com>, Oder Chiou <oder_chiou@realtek.com>, "Zubair.Kakakhel" <Zubair.Kakakhel@imgtec.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jyri Sarha <jsarha@ti.com>, Ben Zhang <benzh@chromium.org>, Rob Herring <robh+dt@kernel.org>, Daniel Kurtz <djkurtz@ch>
+Content-Type: text/plain; charset=utf-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <548EA3B9.5080407-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Cc: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Xu Jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, =?UTF-8?B?U3Tvv73vv71waGFuZSBNYXJjaGVzaW4=?= <marcheu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel@lists
 List-Id: alsa-devel@alsa-project.org
 
-SGkgbGFyczoNCg0KdGhrcyBmb3IgeW91ciByZXZpZXcsIEkgd2lsbCBtb3ZlIGl0IHRvIGhkbWkg
-YXVkaW8gZHJpdmVyLCBnaXZlIHRoZSBjb2RlY19uYW1lICYgY29kZWNfZGFpX25hbWUgYW4gY29u
-c3Qgc3RyaW5nLg0KDQpCZXN0IFJlZ2FyZHMuDQoNCg0KWWFuZyBLdWFuS3VhbiB8IFNvZnR3YXJl
-IEVuZ2luZWVyIHwgMTUwNjA0MTY3ODMgfCB5a2tAcm9jay1jaGlwcy5jb20NCiANCkZyb206IExh
-cnMtUGV0ZXIgQ2xhdXNlbg0KRGF0ZTogMjAxNC0xMi0xNSAxNzowMg0KVG86IFlha2lyIFlhbmcN
-CkNDOiBIZWlrbyBTdHVlYm5lcjsgUm9iIEhlcnJpbmc7IFBhd2VsIE1vbGw7IE1hcmsgUnV0bGFu
-ZDsgSWFuIENhbXBiZWxsOyBLdW1hciBHYWxhOyBSdXNzZWxsIEtpbmc7IFBoaWxpcHAgWmFiZWw7
-IFp1YmFpci5LYWtha2hlbDsgRmFiaW8gRXN0ZXZhbTsgU2hhd24gR3VvOyBkcmktZGV2ZWw7IERh
-bmllbCBLdXJ0ejsgU29ubnkgUmFvOyBEeWxhbiBSZWlkOyBYdSBKaWFucXVuOyBTdO+/ve+/vXBo
-YW5lIE1hcmNoZXNpbjsgQnJpYW4gQXVzdGluOyBCYXJkIExpYW87IE1heCBGaWxpcHBvdjsgT2Rl
-ciBDaGlvdTsgZGV2aWNldHJlZTsgbGludXgta2VybmVsOyBsaW51eC1hcm0ta2VybmVsOyBsaW51
-eC1yb2NrY2hpcDsgYWxzYS1kZXZlbDsgQXJuZCBCZXJnbWFubjsgRGF2aWQgQWlybGllOyBTZWFu
-IENyb3NzOyBHcmFudCBMaWtlbHk7IEdyZWcgS3JvYWgtSGFydG1hbjsgQmVuIFpoYW5nOyBMaWFt
-IEdpcmR3b29kOyBKYXJvc2xhdiBLeXNlbGE7IE1hcmsgQnJvd247IFRha2FzaGkgSXdhaTsgSnly
-aSBTYXJoYQ0KU3ViamVjdDogUmU6IFtQQVRDSCA1LzZdIGR0LWJpbmRpbmdzOiBBZGQgZG9jdW1l
-bnRhdGlvbiBmb3IgUm9ja2NoaXAgaGRtaS1hdWRpbw0KT24gMTIvMTUvMjAxNCAwMzo1NSBBTSwg
-WWFraXIgWWFuZyB3cm90ZToNClsuLi5dDQo+ICstIGNvZGVjLW5hbWU6IHRoZSBkdy1oZG1pIGNv
-ZGVjJ3MgZGV2aWNlIG5hbWUNCj4gKy0gY29kZWMtZGFpLW5hbWU6IHRoZSBkdy1oZG1pIGNvZGVj
-J3MgZGFpIG5hbWUNCiANClBsZWFzZSB5b3UgcGhhbmRsZXMgZm9yIHRoaXMsIHRoZSBuYW1lcyBh
-cmUgTGludXggZHJpdmVyIGFuZCBmcmFtZXdvcmsgDQpzcGVjaWZpYyBkZXRhaWxzLiBUaGF0IHNo
-b3VsZCBub3QgbGVhayBpbnRvIHRoZSBEVCBiaW5kaW5ncy4NCiANClsuLl0NCiANCiANCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi lars:
+
+thks for your review, I will move it to hdmi audio driver, give the=20
+codec_name & codec_dai_name an const string.
+
+Best Regards.
+
+=E5=9C=A8 2014=E5=B9=B412=E6=9C=8815=E6=97=A5 17:02, Lars-Peter Clausen=
+ =E5=86=99=E9=81=93:
+> On 12/15/2014 03:55 AM, Yakir Yang wrote:
+> [...]
+>> +- codec-name: the dw-hdmi codec's device name
+>> +- codec-dai-name: the dw-hdmi codec's dai name
+>
+> Please you phandles for this, the names are Linux driver and framewor=
+k=20
+> specific details. That should not leak into the DT bindings.
+>
+> [..]
+>
+>
+>
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
