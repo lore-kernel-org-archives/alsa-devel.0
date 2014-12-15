@@ -1,40 +1,51 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 5/6] dt-bindings: Add documentation for Rockchip
  hdmi-audio
-Date: Mon, 15 Dec 2014 10:40:29 +0000
-Message-ID: <20141215104029.GE11285@n2100.arm.linux.org.uk>
+Date: Mon, 15 Dec 2014 12:02:05 +0000
+Message-ID: <20141215120205.GZ11764@sirena.org.uk>
 References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com>
  <1418612114-19692-1-git-send-email-ykk@rock-chips.com>
+ <20141215104029.GE11285@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eVN8q1r3v0Uw6/qa"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1418612114-19692-1-git-send-email-ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Xu Jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, =?utf-8?B?U3Tvv73vv71waGFuZQ==?= Marchesin <marcheu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM@public.gmane.org
+In-Reply-To: <20141215104029.GE11285@n2100.arm.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Yakir Yang <ykk@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Philipp Zabel <p.zabel@pengutronix.de>, Zubair.Kakakhel@imgtec.com, Fabio Estevam <fabio.estevam@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, dri-devel@lists.freedesktop.org, Daniel Kurtz <djkurtz@chromium.org>, Sonny Rao <sonnyrao@chromium.org>, Dylan Reid <dgreid@chromium.org>, Xu Jianqun <jay.xu@rock-chips.com>, =?utf-8?B?U3Tvv73vv71waGFuZQ==?= Marchesin <marcheu@chromium.org>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Max Filippov <jcmvbkbc@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org, linux-kernel@vger.kern
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 15, 2014 at 10:55:14AM +0800, Yakir Yang wrote:
-> Required properties:
-> - compatible: platform specific
-> - cpu-of-node: the device node of cpu_dai
-> - codec-name: the dw-hdmi codec's device name
-> - codec-dai-name: the dw-hdmi codec's dai name
 
-This is not actually a separate physical device from the main dw-hdmi
-device.  What you are doing is merely describing the Linux kernel
-internals in DT, which is not what DT is supposed to be about.  DT is
-supposed to describe the hardware in an operating system independent
-manner.
+--eVN8q1r3v0Uw6/qa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Including details like this (because ASoC needs a separate DT node) is
-the wrong approach.
+On Mon, Dec 15, 2014 at 10:40:29AM +0000, Russell King - ARM Linux wrote:
 
--- 
-FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
-according to speedtest.net.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Including details like this (because ASoC needs a separate DT node) is
+> the wrong approach.
+
+And indeed there should be no Linux-internal reason for that - we should
+be able to use whatever DT node makes sense, if there's some reason
+that's not possible we should fix that (we do have several drivers doing
+this sort of thing already though).
+
+--eVN8q1r3v0Uw6/qa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUjs28AAoJECTWi3JdVIfQyuIIAIJDD10SCDDvHTyH/jpnvSpZ
+g7ObS21UKrw3LuBbQkIPqAow0ixm6c3NudWxv8C1QX74osQgpWMFljUlUUDWYARm
+Qbul4Sz49ab0HgNjV3848OQV0NmMGJLmEqCuAoCy0ayoHsUi3jJzgTFlQnfIvxr7
+3y1OGXiZ+BTJLntRbpGbuUHZe36Q7/9YaN8lC+PPQo1MuE26Iz+66SucWT1iYvpb
+i8KgkW5GATtGpWDSTZX/1SfE2kwwx5J9mWZs84MRe319mHHiL44CL6JboCnFt/Ev
+45v15Sba3caEFqwxZB5NwhTlPINfstYG2ZeO11gTScAHgF3jY6VSiD0keOcK4rQ=
+=9XaR
+-----END PGP SIGNATURE-----
+
+--eVN8q1r3v0Uw6/qa--
