@@ -1,64 +1,86 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 5/6] dt-bindings: Add documentation for Rockchip
- hdmi-audio
-Date: Mon, 15 Dec 2014 16:18:27 +0000
-Message-ID: <20141215161827.GE11764@sirena.org.uk>
-References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com>
- <1418612114-19692-1-git-send-email-ykk@rock-chips.com>
- <20141215104029.GE11285@n2100.arm.linux.org.uk>
- <20141215120205.GZ11764@sirena.org.uk>
- <548EDDC2.9050104@rock-chips.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: fix possible acpi enumeration
+	panic
+Date: Mon, 15 Dec 2014 17:06:45 +0000
+Message-ID: <20141215170645.GH11764@sirena.org.uk>
+References: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
+ <20141211132026.GY11764@sirena.org.uk>
+ <51B6C3CD1F10FB47A5702881E0E230A74A0ECAE1@ORSMSX104.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="C64opeEuicNVb5KK"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <548EDDC2.9050104-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Kuankuan.Yang" <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Xu Jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, =?utf-8?B?U3Tvv73vv71waGFuZQ==?= Marchesin <marcheu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.orglin
+Content-Type: multipart/mixed; boundary="===============0201095044417229592=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 085A426049F
+ for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 18:07:15 +0100 (CET)
+In-Reply-To: <51B6C3CD1F10FB47A5702881E0E230A74A0ECAE1@ORSMSX104.amr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Strasser, Kevin" <kevin.strasser@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Fang,
+ Yang A" <yang.a.fang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---C64opeEuicNVb5KK
+--===============0201095044417229592==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aObFJ3I/fcifeQec"
+Content-Disposition: inline
+
+
+--aObFJ3I/fcifeQec
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 15, 2014 at 09:10:26PM +0800, Kuankuan.Yang wrote:
-> Hi Mark & Russell:
+On Thu, Dec 11, 2014 at 09:55:38PM +0000, Strasser, Kevin wrote:
 
-Please don't top post, that way people have some context for what you're
-saying - look at how people normally format their mails on thelist.
+Please fix your mailer to word wrap comfortably under 80 colums so that
+your mails are easily legible.
 
-> In that way, dt will only need compatible for creating sound device. is it
-> ok  ?
-> sound {
->     compatible = "rockchip,rk3288-hdmi-audio";
->     status = "okay";
-> }
-> could you give me some advises.
+> > This changes the check from verifying if a codec_id is present to verifying if
+> > the first character in the codec_id is non-NULL.  That doesn't seem obviously
+> > safer and the tables of machines seem to be terminated by having an entry
+> > with all fields set to zero (which is a common idiom in Linux) which would
+> > now crash with this change.
 
-That'd be good, though the other question is if this can be made to use
-simple-card so we can avoid having a custom driver for this.
+> In this case mach->codec_id is non-NULL, even for the terminating element, because it
+> is defined to be a fixed width. So we have to take a look at the first character to see if it
+> has been initialized.
 
---C64opeEuicNVb5KK
+That's a really unusual and (as you've seen) error prone idiom - is it
+not better to fix the struct to use the more common idiom?
+
+--aObFJ3I/fcifeQec
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUjwnSAAoJECTWi3JdVIfQmAwH/0hdq6BjZ9xYACE0CunvAQcQ
-sBdvJEB0SF8PplZgNYZo+I3FR9J/DgW5cWdO3hyNZtWzgQaQbhUwmbPy5lAfkVqU
-sUhCYsXgGJorvFVdmF2/hUOt4fjwJ/+DwmbLmf7x075P+BecgL27DxIF5PoJKOzT
-PCGxqlnnpcEyyULR7h6ZITB7LpakyvFq9ZVvvdKqZgBhPYAp16EWk6Dn+LmYVFXC
-vXDST0SMgbWAylzHEPQMpmQQbU9ahF4m3nb2PR+9RF09EopV1hM/NMWPXWyn04+7
-RfWoJIYqNavnIXptNKnAwXF1nCqjx/D4kKBBdobCyXaD1R7eOrv1y+ZF20yjLiY=
-=ZeYG
+iQEcBAEBAgAGBQJUjxUlAAoJECTWi3JdVIfQdbwH/jMEToQ6JN4EAR2XOTbT9sKH
+IRhwFhD20wpAqHL/+GbQUOzDRpoE47WgGXsAr7huYCwv10KRv4DNFr+mD+wTFFJM
+eE1eBqjEXcrHS27NEruEZAlSFrpIXLt7Ysd7Aw1NoZ2XefjvVXtQu8fFAgtYRYWA
+FdK2kk+23Gtynrb8a6z05cnxZN8Des6/NepHv6wIQ4+GphsTsZ1FKA9t8TTB7Vny
+Fa4bP4cdK1FJNSmGa8lH9nFua20nTPuGN4nn7kmAjExYLXrttpAVt+G2b956QMmV
+fmB5mBZ/0L6vgkDzvd/c8lQxM1uWbCYEqEPHwNQMT/hdJ+eJkQOVLD0lX/sIXpo=
+=TEl5
 -----END PGP SIGNATURE-----
 
---C64opeEuicNVb5KK--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--aObFJ3I/fcifeQec--
+
+--===============0201095044417229592==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0201095044417229592==--
