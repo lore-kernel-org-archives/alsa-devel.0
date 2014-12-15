@@ -1,61 +1,64 @@
-From: "Kuankuan.Yang" <ykk@rock-chips.com>
-Subject: Re: [RFC PATCH 0/6] Those patches is used for dw_hdmi
-	audio.
-Date: Mon, 15 Dec 2014 19:45:37 +0800
-Message-ID: <548EC9E1.5040206@rock-chips.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 5/6] dt-bindings: Add documentation for Rockchip
+ hdmi-audio
+Date: Mon, 15 Dec 2014 16:18:27 +0000
+Message-ID: <20141215161827.GE11764@sirena.org.uk>
 References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com>
- <20141215103830.GD11285@n2100.arm.linux.org.uk>
+ <1418612114-19692-1-git-send-email-ykk@rock-chips.com>
+ <20141215104029.GE11285@n2100.arm.linux.org.uk>
+ <20141215120205.GZ11764@sirena.org.uk>
+ <548EDDC2.9050104@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.137])
- by alsa0.perex.cz (Postfix) with ESMTP id DB4A0260437
- for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 12:46:06 +0100 (CET)
-In-Reply-To: <20141215103830.GD11285@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Bard Liao <bardliao@realtek.com>, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <pawel.moll@arm.com>, Takashi Iwai <tiwai@suse.de>, linux-rockchip@lists.infradead.org, Grant Likely <grant.likely@linaro.org>, Dylan Reid <dgreid@chromium.org>, Xu Jianqun <jay.xu@rock-chips.com>, Oder Chiou <oder_chiou@realtek.com>, Zubair.Kakakhel@imgtec.com, Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jyri Sarha <jsarha@ti.com>, Ben Zhang <benzh@chromium.org>, Rob Herring <robh+dt@kernel.org>, Daniel Kurtz <djkurtz@chromium.org>, =?UTF-8?B?U3TDqXBoYW5lIE1hcmNoZXNpbg==?= <marcheu@chromium.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="C64opeEuicNVb5KK"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <548EDDC2.9050104-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Kuankuan.Yang" <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Xu Jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, =?utf-8?B?U3Tvv73vv71waGFuZQ==?= Marchesin <marcheu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.orglin
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUnVzc2VsbDoKCiAgIHRoa3MgZm9yIHlvdXIgcmVwbGF5LCBhY3R1YWxseSB5b3UgYWxzbyBo
-YXZlIHNlbmQgbWUgdGhvc2UgCmR3LWhkbWktYXVkaW8uYyBwYXRjaGVzLCBhbmQgSSBhbHNvIGFn
-cmVlIGl0J3MgYW4gYmVhdXRpZnVsIHdheSB0byBtYWtlIApoZG1pLWF1ZGlvIHdvcmtzLiBCZXNp
-ZGUsCkkgdHJ5IHRvIHJldXNlIGl0IGludG8gb3VyIHBsYXRmb3JtLCBhbmQgYWN0dWFsbHkgdGhl
-IHN5c3RlbSBoYXZlIApjcmVhdGVkIHRoZSBEV19IRE1JIHNvdW5kIGNhcmQgc3VjY2Vzc2Z1bGx5
-LCBidXQgaSBjYW5ub3QgcGxheSBhbnkgCnNvdW5kICB3aXRoIHRoaXMgc291bmQgY2FyZC4KICAg
-QWZ0ZXIgZHVtcCB0aGUgcmVnaXN0ZXJzLCBJIGZvdW5kIHRoZSBwYXJ0IG9mICJBdWRpbyBETUEg
-UmVnaXN0ZXJzIiAKY2Fubm90IHdyaXRlIGFuZCBhbHdheXMgcmVhZCB3aXRoIDB4MDAuICBTbyBJ
-IHNlYXJjaGluZyB0aGUgZG9jdW1lbnQgIAoiRGVzaWdud2FyZSBDb3JlCkhETUkgVHJhbnNtaXR0
-ZXIgQ29udHJvbGxlciBEYXRhYm9vayIsIGFuZCBmb3VuZCB0aGF0ICAiQXVkaW8gRE1BIApSZWdp
-c3RlcnMiIG9ubHkgcHJlc2VudCB3aGVuIHRoZSBoYXJkd2FyZSBjb25maWd1cmF0aW9uIHBhcmFt
-ZXRlciAKQVVESU9fSUYgaXMgc2V0IHRvCkFIQkFVRERNQS4gVGhhbiBJIGNvbW11bmljYXRlIHdp
-dGggb3VyIElDIGNvbGxlYWd1ZXMsIHRoZXkgdG9sZCBtZSB0aGF0IApvdXIgY3B1IHJrMzI4OCBv
-bmx5IHN1cHBvcnQgdHdvIHdheSB0byAgdHJhbnNtaXQgYXVkaW8gZGF0YSggSTJTICYgU1BESUYg
-CiksIGluIHRoYXQKd2F5IHdlIGRvIG5vdCBzdXBwb3J0IEFIQl9ETUEsIGl0J3MgdmVyeSBzYWQs
-IGFuZCB0aGlzIGl0IHdoeSBpIGdpdmUgdXAgCnRoaXMgd2F5LCBhbHNvIGl0J3MgbXkgYmFkIHRo
-YXQgaSBzaG91bGQgcmVwbGF5IHRvIHUgZmlyc3QgaW4gdGhlIGJlZm9yZSAKbWFpbC4KCkJlc3Qg
-UmVnYXJkcy4KCuWcqCAyMDE05bm0MTLmnIgxNeaXpSAxODozOCwgUnVzc2VsbCBLaW5nIC0gQVJN
-IExpbnV4IOWGmemBkzoKPiBPbiBNb24sIERlYyAxNSwgMjAxNCBhdCAxMDoxMToyOEFNICswODAw
-LCBZYWtpciBZYW5nIHdyb3RlOgo+PiByazMyODggdXNlIERlc2lnbndhcmUgSERNSSBJUCwgRGVz
-aWdud2FyZSBIRE1JIHN1cHBvcnRzIGZvdXIgaW50ZXJmYWNlcyB0bwo+PiBjb25maWcgaGRtaSBh
-dWRpbyhJMlMsIFMvUERJRiwgR2VuZXJpYyBQYXJhbGxlbCBBdWRpbywgQUhCIEF1ZGlvIERNQSks
-IGJ1dAo+PiByazMyODggb25seSBzdXBwb3J0IHR3byB3YXlzIHRvIGNvbmZpZyBoZG1pIGF1ZGlv
-KEkyUywgUy9QRElGKSwgU28gd2UgdGFrZQo+PiBJMlMgYXMgaGRtaSBhdWRpbyBvcGVyYXRpb24g
-aW50ZXJmYWNlcywgYW5kIHRoZW4gdHJlYXQgaGRtaSBhdWRpbyBhcyBhbgo+PiBzdGFuZGFyZCBB
-TFNBIGRldmljZXMob25seSBnb3QgcGxhdGJhY2sgZnVuY3Rpb24pLgo+IFRoZXJlIGlzIG5vIG5l
-ZWQgZm9yIGR3LWhkbWkgYXVkaW8gdG8gYmUgaW1wbGVtZW50ZWQgYXMgYW4gQVNvQwo+IGRldmlj
-ZSAtIGFzIEkndmUgYWxyZWFkeSBzZW50IHBhdGNoZXMgdG8gQW5keSB3aXRoIG15IEFMU0EgZHJp
-dmVyCj4gd2hpY2ggaGFzIGJlZW4gYXJvdW5kIGZvciB0aGUgbGFzdCB0d28geWVhcnMsIGFuZCB3
-b3JrcyB3ZWxsLCBhbmQKPiBkb2Vzbid0IHJlcXVpcmUgYW55IGFkZGl0aW9uYWwgRFQgZGVzY3Jp
-cHRpb24uCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--C64opeEuicNVb5KK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 15, 2014 at 09:10:26PM +0800, Kuankuan.Yang wrote:
+> Hi Mark & Russell:
+
+Please don't top post, that way people have some context for what you're
+saying - look at how people normally format their mails on thelist.
+
+> In that way, dt will only need compatible for creating sound device. is it
+> ok  ?
+> sound {
+>     compatible = "rockchip,rk3288-hdmi-audio";
+>     status = "okay";
+> }
+> could you give me some advises.
+
+That'd be good, though the other question is if this can be made to use
+simple-card so we can avoid having a custom driver for this.
+
+--C64opeEuicNVb5KK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUjwnSAAoJECTWi3JdVIfQmAwH/0hdq6BjZ9xYACE0CunvAQcQ
+sBdvJEB0SF8PplZgNYZo+I3FR9J/DgW5cWdO3hyNZtWzgQaQbhUwmbPy5lAfkVqU
+sUhCYsXgGJorvFVdmF2/hUOt4fjwJ/+DwmbLmf7x075P+BecgL27DxIF5PoJKOzT
+PCGxqlnnpcEyyULR7h6ZITB7LpakyvFq9ZVvvdKqZgBhPYAp16EWk6Dn+LmYVFXC
+vXDST0SMgbWAylzHEPQMpmQQbU9ahF4m3nb2PR+9RF09EopV1hM/NMWPXWyn04+7
+RfWoJIYqNavnIXptNKnAwXF1nCqjx/D4kKBBdobCyXaD1R7eOrv1y+ZF20yjLiY=
+=ZeYG
+-----END PGP SIGNATURE-----
+
+--C64opeEuicNVb5KK--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
