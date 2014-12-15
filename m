@@ -1,15 +1,14 @@
-From: libin.yang@intel.com
-Subject: [PATCH] ALSA: hda - add codec ID for Skylake display
-	audio codec
-Date: Mon, 15 Dec 2014 12:49:42 +0800
-Message-ID: <1418618982-101137-1-git-send-email-libin.yang@intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH v2] ASoC: rt5670: set platform data by dmi
+Date: Mon, 15 Dec 2014 14:21:12 +0800
+Message-ID: <1418624472-26169-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 93C00260436
- for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 05:55:37 +0100 (CET)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id E269D260436
+ for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 07:22:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,39 +18,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: libin.yang@intel.com, mengdong.lin@intel.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, Bard Liao <bardliao@realtek.com>, yao.jin@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@intel.com>
+This patch set specific data according to dmi data.
 
-This patch adds codec ID (0x80862809) and module alias for Skylake
-display codec.
-
-Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Jin, Yao <yao.jin@intel.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/pci/hda/patch_hdmi.c | 2 ++
- 1 file changed, 2 insertions(+)
+* rename dmi_platform_data to dmi_platform_intel_braswell
+---
+ sound/soc/codecs/rt5670.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 9dc9cf8..95129c2 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -3365,6 +3365,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
- { .id = 0x80862806, .name = "PantherPoint HDMI", .patch = patch_generic_hdmi },
- { .id = 0x80862807, .name = "Haswell HDMI",	.patch = patch_generic_hdmi },
- { .id = 0x80862808, .name = "Broadwell HDMI",	.patch = patch_generic_hdmi },
-+{ .id = 0x80862809, .name = "Skylake HDMI",	.patch = patch_generic_hdmi },
- { .id = 0x80862880, .name = "CedarTrail HDMI",	.patch = patch_generic_hdmi },
- { .id = 0x80862882, .name = "Valleyview2 HDMI",	.patch = patch_generic_hdmi },
- { .id = 0x80862883, .name = "Braswell HDMI",	.patch = patch_generic_hdmi },
-@@ -3425,6 +3426,7 @@ MODULE_ALIAS("snd-hda-codec-id:80862805");
- MODULE_ALIAS("snd-hda-codec-id:80862806");
- MODULE_ALIAS("snd-hda-codec-id:80862807");
- MODULE_ALIAS("snd-hda-codec-id:80862808");
-+MODULE_ALIAS("snd-hda-codec-id:80862809");
- MODULE_ALIAS("snd-hda-codec-id:80862880");
- MODULE_ALIAS("snd-hda-codec-id:80862882");
- MODULE_ALIAS("snd-hda-codec-id:80862883");
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 8bf3a56..09cf100 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -18,6 +18,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/acpi.h>
+ #include <linux/spi/spi.h>
++#include <linux/dmi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -2549,6 +2550,17 @@ static struct acpi_device_id rt5670_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5670_acpi_match);
+ #endif
+ 
++static const struct dmi_system_id dmi_platform_intel_braswell[] __initconst = {
++	{
++		.ident = "Intel Braswell",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corporation"),
++			DMI_MATCH(DMI_BOARD_NAME, "Braswell CRB"),
++		},
++	},
++	{}
++};
++
+ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -2568,6 +2580,12 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata)
+ 		rt5670->pdata = *pdata;
+ 
++	if (dmi_check_system(dmi_platform_intel_braswell)) {
++		rt5670->pdata.dmic_en = true;
++		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
++		rt5670->pdata.jd_mode = 1;
++	}
++
+ 	rt5670->regmap = devm_regmap_init_i2c(i2c, &rt5670_regmap);
+ 	if (IS_ERR(rt5670->regmap)) {
+ 		ret = PTR_ERR(rt5670->regmap);
 -- 
-1.9.1
+1.8.1.1.439.g50a6b54
