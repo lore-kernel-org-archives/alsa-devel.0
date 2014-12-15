@@ -1,60 +1,43 @@
-From: Yakir Yang <ykk@rock-chips.com>
-Subject: [PATCH 5/6] dt-bindings: Add documentation for Rockchip hdmi-audio
-Date: Mon, 15 Dec 2014 10:55:14 +0800
-Message-ID: <1418612114-19692-1-git-send-email-ykk@rock-chips.com>
-References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH 1/3] ASoC: codecs: wm8904: add dt ids table
+Date: Mon, 15 Dec 2014 11:28:20 +0800
+Message-ID: <548E5554.6050900@atmel.com>
+References: <1418267681-4091-1-git-send-email-voice.shen@atmel.com> <20141212132321.GI11764@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1418609494-15820-1-git-send-email-ykk@rock-chips.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: ykk@rock-chips.com
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Bard Liao <bardliao@realtek.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, linux-rockchip@lists.infradead.org, Grant Likely <grant.likely@linaro.org>, Dylan Reid <dgreid@chromium.org>, Xu Jianqun <jay.xu@rock-chips.com>, Oder Chiou <oder_chiou@realtek.com>, Zubair.Kakakhel@imgtec.com, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jyri Sarha <jsarha@ti.com>, Ben Zhang <benzh@chromium.org>, Rob Herring <robh+dt@kernel.org>, Daniel Kurtz <djkurtz@chromium.org>, =?UTF-8?q?St=A8=A6phane=
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20141212132321.GI11764@sirena.org.uk>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Alexander Morozov <linux@meltdown.ru>
 List-Id: alsa-devel@alsa-project.org
 
-Required properties:
-- compatible: platform specific
-- cpu-of-node: the device node of cpu_dai
-- codec-name: the dw-hdmi codec's device name
-- codec-dai-name: the dw-hdmi codec's dai name
+Hi Mark,
 
-Signed-off-by: Yakir Yang <ykk@rock-chips.com>
----
+On 12/12/2014 09:23 PM, Mark Brown wrote:
+> On Thu, Dec 11, 2014 at 11:14:39AM +0800, Bo Shen wrote:
+>
+>> +static const struct of_device_id wm8904_of_match[] = {
+>> +	{ .compatible = "wlf,wm8904", },
+>> +	{ .compatible = "wlf,wm8912", },
+>> +	{ .compatible = "wlf,wm8918", },
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(of, wm8904_of_match);
+>> +
+>>   static struct i2c_driver wm8904_i2c_driver = {
+>>   	.driver = {
+>>   		.name = "wm8904",
+>>   		.owner = THIS_MODULE,
+>> +		.of_match_table = wm8904_of_match,
+>
+> I'm not seeing anything here that ensures that devtype is set correctly
+> when probing using the OF IDs - currently we rely on i2c->driver_data.
+>
 
- .../bindings/sound/rockchip,rockchip-hdmi-audio.txt      | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rockchip-hdmi-audio.txt
+I will add it in v2 patch.
+Thanks.
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rockchip-hdmi-audio.txt b/Documentation/devicetree/bindings/sound/rockchip,rockchip-hdmi-audio.txt
-new file mode 100644
-index 0000000..674cff0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rockchip-hdmi-audio.txt
-@@ -0,0 +1,16 @@
-+Rockchip hdmi audio bindings
-+
-+Required properties:
-+- compatible: platform specific
-+- cpu-of-node: the device node of cpu_dai
-+- codec-name: the dw-hdmi codec's device name
-+- codec-dai-name: the dw-hdmi codec's dai name
-+
-+Example:
-+
-+sound {
-+	compatible = "rockchip,rk3288-hdmi-audio";
-+	cpu-of-node = <&i2s>;
-+	codec-name = "dw-hdmi-audio";
-+	codec-dai-name = "dw-hdmi-hifi";
-+};
--- 
-2.1.2
+Best Regards,
+Bo Shen
