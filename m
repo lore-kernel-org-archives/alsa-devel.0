@@ -1,17 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH v2 2/2] ASoC: rt5670: Keep sysclk on if JD func
-	is used
-Date: Mon, 15 Dec 2014 15:42:34 +0800
-Message-ID: <1418629354-26948-2-git-send-email-bardliao@realtek.com>
-References: <1418629354-26948-1-git-send-email-bardliao@realtek.com>
+From: Andrew Jackson <Andrew.Jackson@arm.com>
+Subject: Re: [PATCH v2 2/6] ASoC: dwc: Ensure FIFOs are flushed
+ to prevent channel swap
+Date: Mon, 15 Dec 2014 08:37:52 +0000
+Message-ID: <548E9DE0.7050502@arm.com>
+References: <cover.1418372910.git.Andrew.Jackson@arm.com>
+ <a3b4a11dfe1688eea07471c6cfa27676cc9a58a8.1418372910.git.Andrew.Jackson@arm.com>
+ <548AB75E.9030302@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id DD5B226057E
- for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 08:43:16 +0100 (CET)
-In-Reply-To: <1418629354-26948-1-git-send-email-bardliao@realtek.com>
+Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
+ [217.140.96.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4D772605BB
+ for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 09:37:54 +0100 (CET)
+In-Reply-To: <548AB75E.9030302@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, Bard Liao <bardliao@realtek.com>, yao.jin@intel.com, flove@realtek.com
+To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnd Bergmann <arnd@arndb.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-System clock is necessary for rt5670 JD function. We assume system
-clock source will be set in machine driver. So there are two things
-left we should do in codec driver.
-1. Set sysclk to codec internal clock in probe since machine driver
-   may not do that before JD function is registered.
-2. Power up PLL once sysclk source is switched to PLL.
+On 12/12/14 09:37, Lars-Peter Clausen wrote:
+> On 12/12/2014 10:25 AM, Andrew Jackson wrote:
+>> From: Andrew Jackson <Andrew.Jackson@arm.com>
+>>
+>> If the FIFOs aren't flushed, the left/right channels may be swapped:
+>> this may occur if the FIFOs are not empty when the streams start.
+>>
+>> Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
+>> ---
+>>   sound/soc/dwc/designware_i2s.c |    2 ++
+>>   1 files changed, 2 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+>> index ef771ea..b9d6a25 100644
+>> --- a/sound/soc/dwc/designware_i2s.c
+>> +++ b/sound/soc/dwc/designware_i2s.c
+>> @@ -228,12 +228,14 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
+>>   	i2s_disable_channels(dev, substream->stream);
+>>
+>>   	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>> +		i2s_write_reg(dev->i2s_base, TXFFR, 1);
+>>   		i2s_write_reg(dev->i2s_base, TCR(ch_reg), xfer_resolution);
+>>   		i2s_write_reg(dev->i2s_base, TFCR(ch_reg), 0x02);
+>>   		irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
+>>   		i2s_write_reg(dev->i2s_base, IMR(ch_reg), irq & ~0x30);
+>>   		i2s_write_reg(dev->i2s_base, TER(ch_reg), 1);
+>>   	} else {
+>> +		i2s_write_reg(dev->i2s_base, RXFFR, 1);
+>>   		i2s_write_reg(dev->i2s_base, RCR(ch_reg), xfer_resolution);
+>>   		i2s_write_reg(dev->i2s_base, RFCR(ch_reg), 0x07);
+>>   		irq = i2s_read_reg(dev->i2s_base, IMR(ch_reg));
+>>
+> 
+> This should probably go into the prepare callback. prepare is for example 
+> also called when recovering from a underrun/overrun. Whereas hwparams is 
+> only called during initial setup of the stream.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5670.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+That's a good idea: thank you.  I'll rework the patch with this in mind.
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index a8a471b..6ff379c 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2190,6 +2190,13 @@ static int rt5670_set_dai_sysclk(struct snd_soc_dai *dai,
- 	if (freq == rt5670->sysclk && clk_id == rt5670->sysclk_src)
- 		return 0;
- 
-+	if (rt5670->pdata.jd_mode) {
-+		if (clk_id == RT5670_SCLK_S_PLL1)
-+			snd_soc_dapm_force_enable_pin(&codec->dapm, "PLL1");
-+		else
-+			snd_soc_dapm_disable_pin(&codec->dapm, "PLL1");
-+		snd_soc_dapm_sync(&codec->dapm);
-+	}
- 	switch (clk_id) {
- 	case RT5670_SCLK_S_MCLK:
- 		reg_val |= RT5670_SCLK_SRC_MCLK;
-@@ -2628,6 +2635,10 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 	}
- 
- 	if (rt5670->pdata.jd_mode) {
-+		regmap_update_bits(rt5670->regmap, RT5670_GLB_CLK,
-+				   RT5670_SCLK_SRC_MASK, RT5670_SCLK_SRC_RCCLK);
-+		rt5670->sysclk = 0;
-+		rt5670->sysclk_src = RT5670_SCLK_S_RCCLK;
- 		regmap_update_bits(rt5670->regmap, RT5670_PWR_ANLG1,
- 				   RT5670_PWR_MB, RT5670_PWR_MB);
- 		regmap_update_bits(rt5670->regmap, RT5670_PWR_ANLG2,
--- 
-1.8.1.1.439.g50a6b54
+	Andrew
