@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: rt5677: add a platform config
- option for MICBIAS voltage
-Date: Mon, 15 Dec 2014 12:20:22 +0000
-Message-ID: <20141215122022.GA11764@sirena.org.uk>
-References: <1418271327-14710-1-git-send-email-benzh@chromium.org>
- <1418271327-14710-2-git-send-email-benzh@chromium.org>
- <20141212132732.GK11764@sirena.org.uk>
- <CAOV7By+GVAZiqwO9NW3DB87uOzx003K_RPqKhX4+vvf=oB=99A@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Create capture source ctls
+	when stereo mix input is added
+Date: Mon, 15 Dec 2014 13:56:41 +0100
+Message-ID: <1418648202-2509-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0593350536688176476=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 226EC260470
- for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 13:20:39 +0100 (CET)
-In-Reply-To: <CAOV7By+GVAZiqwO9NW3DB87uOzx003K_RPqKhX4+vvf=oB=99A@mail.gmail.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC5FE26048B
+ for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 13:56:49 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B0D31AD08
+ for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 12:56:49 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,79 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ben Zhang <benzh@google.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Albert Chen <albertchen@realtek.com>, Anatol Pomozov <anatol@google.com>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+When the stereo mix input is explicitly enabled via a user hint, the
+driver should create always a capture source enum ctl and disable the
+auto-mic switch.  Otherwise the behavior gets confused.  For doing it,
+this patch just sets spec->suppress_auto_mic flag appropriately.
 
---===============0593350536688176476==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZjlDoLon7m/fln42"
-Content-Disposition: inline
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_generic.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
---ZjlDoLon7m/fln42
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Dec 12, 2014 at 03:48:51PM -0800, Ben Zhang wrote:
-> On Fri, Dec 12, 2014 at 5:27 AM, Mark Brown <broonie@kernel.org> wrote:
-> > On Wed, Dec 10, 2014 at 08:15:26PM -0800, Ben Zhang wrote:
-
-> > Why is this being specified as some magic number rather than using the
-> > voltage (or at least providing defines for the voltage) - this is going
-> > to do little to make the DT legible and...
-
-> >> +enum rt5677_micbias {
-> >> +     RT5677_MICBIAS_1_476V = 0,
-> >> +     RT5677_MICBIAS_2_970V = 1,
-> >> +     RT5677_MICBIAS_1_242V = 2,
-> >> +     RT5677_MICBIAS_2_475V = 3,
-> >> +};
-
-> > ...I see there are defined for platform data.
-
-> This patch adds both an entry to the platform data and a DT binding
-> for MICBIAS level selection. The 4 voltage options
-> (1.476V/2.970V/1.242V/2.475V) are the only ones supported by the codec
-> hardware, so it seems an enum is better than specifying the exact
-
-It's not that clear that an enum *is* better, and a magic numbers enum
-is definitely worse for anyone who has to read the resulting DT.
-
-> voltage directly. I was following the two examples below:
-> Documentation/devicetree/bindings/sound/cs42l52.txt (cirrus,micbias-lvl)
-> Documentation/devicetree/bindings/sound/tlv320aic3x.txt (ai3x-micbias-vg)
-
-Old DT bindings are old and often not best practice.
-
-> I'm new to devicetree bindings. Is there something like an enum in DT?
-
-include/dt-bindings
-
---ZjlDoLon7m/fln42
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUjtIFAAoJECTWi3JdVIfQkugIAIK3ofI8Ws8h1SoG9i4yZULp
-QBMy07YzvtxEiLvSWsiYwCyr8UyIWMbj9oJRlrmDoDdaVawgK11RrvVl69GdKSgv
-LzPydSDtud4ztvBrgzcTGu1dmrZfwecu8rnYcZmHh5B6EH2FivBukhwn9QJow9t1
-38brUBUHWt2bzMrkpoZi1+d2g9DfxNSe6dRgr0Ozl45Hjt3uXqqvFxfzBxvBJbW2
-Zs0tK6ONuC+o4RFgg6Xjh+hTLKvZfUSAMNGqfskjQHzsd/EByp70fp5V/NdShsB5
-kroEwjveyMez42dpst9X9BBhJCzc34pjPxI/f3cxST7BkzVcRt2pq2+Ifo2bBSM=
-=y7/8
------END PGP SIGNATURE-----
-
---ZjlDoLon7m/fln42--
-
---===============0593350536688176476==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0593350536688176476==--
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 63b69f750d8e..293af6b5ba3d 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3224,6 +3224,8 @@ static int create_input_ctls(struct hda_codec *codec)
+ 					   "Stereo Mix", 0);
+ 		if (err < 0)
+ 			return err;
++		else
++			spec->suppress_auto_mic = 1;
+ 	}
+ 
+ 	return 0;
+-- 
+2.2.0
