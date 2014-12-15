@@ -1,86 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: fix possible acpi enumeration
-	panic
-Date: Mon, 15 Dec 2014 17:06:45 +0000
-Message-ID: <20141215170645.GH11764@sirena.org.uk>
-References: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
- <20141211132026.GY11764@sirena.org.uk>
- <51B6C3CD1F10FB47A5702881E0E230A74A0ECAE1@ORSMSX104.amr.corp.intel.com>
+Subject: Re: [PATCH -next] ASoC: Intel: fix return value check in
+ sst_acpi_probe()
+Date: Mon, 15 Dec 2014 18:21:49 +0000
+Message-ID: <20141215182149.GM11764@sirena.org.uk>
+References: <1418130877-28923-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0201095044417229592=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 085A426049F
- for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 18:07:15 +0100 (CET)
-In-Reply-To: <51B6C3CD1F10FB47A5702881E0E230A74A0ECAE1@ORSMSX104.amr.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Strasser, Kevin" <kevin.strasser@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Fang,
- Yang A" <yang.a.fang@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ma2IebCqBk9lYfxq"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1418130877-28923-1-git-send-email-weiyj_lk@163.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: weiyj_lk@163.com
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, kbuild test robot <fengguang.wu@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0201095044417229592==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aObFJ3I/fcifeQec"
-Content-Disposition: inline
-
-
---aObFJ3I/fcifeQec
+--Ma2IebCqBk9lYfxq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 11, 2014 at 09:55:38PM +0000, Strasser, Kevin wrote:
+On Tue, Dec 09, 2014 at 09:14:37PM +0800, weiyj_lk@163.com wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> In case of error, the function platform_device_register_data()
+> returns ERR_PTR() and never returns NULL. The NULL test in the
+> return value check should be replaced with IS_ERR().
 
-Please fix your mailer to word wrap comfortably under 80 colums so that
-your mails are easily legible.
+Applied, thanks.
 
-> > This changes the check from verifying if a codec_id is present to verifying if
-> > the first character in the codec_id is non-NULL.  That doesn't seem obviously
-> > safer and the tables of machines seem to be terminated by having an entry
-> > with all fields set to zero (which is a common idiom in Linux) which would
-> > now crash with this change.
-
-> In this case mach->codec_id is non-NULL, even for the terminating element, because it
-> is defined to be a fixed width. So we have to take a look at the first character to see if it
-> has been initialized.
-
-That's a really unusual and (as you've seen) error prone idiom - is it
-not better to fix the struct to use the more common idiom?
-
---aObFJ3I/fcifeQec
+--Ma2IebCqBk9lYfxq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUjxUlAAoJECTWi3JdVIfQdbwH/jMEToQ6JN4EAR2XOTbT9sKH
-IRhwFhD20wpAqHL/+GbQUOzDRpoE47WgGXsAr7huYCwv10KRv4DNFr+mD+wTFFJM
-eE1eBqjEXcrHS27NEruEZAlSFrpIXLt7Ysd7Aw1NoZ2XefjvVXtQu8fFAgtYRYWA
-FdK2kk+23Gtynrb8a6z05cnxZN8Des6/NepHv6wIQ4+GphsTsZ1FKA9t8TTB7Vny
-Fa4bP4cdK1FJNSmGa8lH9nFua20nTPuGN4nn7kmAjExYLXrttpAVt+G2b956QMmV
-fmB5mBZ/0L6vgkDzvd/c8lQxM1uWbCYEqEPHwNQMT/hdJ+eJkQOVLD0lX/sIXpo=
-=TEl5
+iQEcBAEBAgAGBQJUjya8AAoJECTWi3JdVIfQuRoH/iYjyXVJOycs9ImGJwi3WsOb
+zBUBRKR6ooXfuWYcHzE8lTKeps3llXaIeUcphhi+WMS4Z88c29BXYy7ivbjedd2Z
+i9DIklVwxsfHBjb5CP2SIQS4A027zg55jD34QDsd3g1OI5kv5KRLH/Uyb4OvIQJa
+kvrCcIC5pLBqH/DWnEB7x5JVRr4YN8PmOvZsk1a96XFezzwwTyWVa77Wc4w83tvY
+y6Y8fyFOPnFFU1k0SW35JJYV3uHMO1HpON1MtF5iwb5OwwYCQFURGwsGFl0iKuuu
+G/upaDsH+gmLnSL2POjMl7kwK8YmNifp9swg28BSeZ86Yo3jTbzW+suwLbMYeVQ=
+=D8m2
 -----END PGP SIGNATURE-----
 
---aObFJ3I/fcifeQec--
-
---===============0201095044417229592==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0201095044417229592==--
+--Ma2IebCqBk9lYfxq--
