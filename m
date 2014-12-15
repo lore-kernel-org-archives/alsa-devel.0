@@ -1,51 +1,102 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/6] dt-bindings: Add documentation for Rockchip
- hdmi-audio
-Date: Mon, 15 Dec 2014 12:02:05 +0000
-Message-ID: <20141215120205.GZ11764@sirena.org.uk>
-References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com>
- <1418612114-19692-1-git-send-email-ykk@rock-chips.com>
- <20141215104029.GE11285@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: rt5677: add a platform config
+ option for MICBIAS voltage
+Date: Mon, 15 Dec 2014 12:20:22 +0000
+Message-ID: <20141215122022.GA11764@sirena.org.uk>
+References: <1418271327-14710-1-git-send-email-benzh@chromium.org>
+ <1418271327-14710-2-git-send-email-benzh@chromium.org>
+ <20141212132732.GK11764@sirena.org.uk>
+ <CAOV7By+GVAZiqwO9NW3DB87uOzx003K_RPqKhX4+vvf=oB=99A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eVN8q1r3v0Uw6/qa"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141215104029.GE11285@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Yakir Yang <ykk@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Philipp Zabel <p.zabel@pengutronix.de>, Zubair.Kakakhel@imgtec.com, Fabio Estevam <fabio.estevam@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, dri-devel@lists.freedesktop.org, Daniel Kurtz <djkurtz@chromium.org>, Sonny Rao <sonnyrao@chromium.org>, Dylan Reid <dgreid@chromium.org>, Xu Jianqun <jay.xu@rock-chips.com>, =?utf-8?B?U3Tvv73vv71waGFuZQ==?= Marchesin <marcheu@chromium.org>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Max Filippov <jcmvbkbc@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org, linux-kernel@vger.kern
+Content-Type: multipart/mixed; boundary="===============0593350536688176476=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 226EC260470
+ for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2014 13:20:39 +0100 (CET)
+In-Reply-To: <CAOV7By+GVAZiqwO9NW3DB87uOzx003K_RPqKhX4+vvf=oB=99A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ben Zhang <benzh@google.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Albert Chen <albertchen@realtek.com>, Anatol Pomozov <anatol@google.com>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---eVN8q1r3v0Uw6/qa
+--===============0593350536688176476==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZjlDoLon7m/fln42"
+Content-Disposition: inline
+
+
+--ZjlDoLon7m/fln42
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 15, 2014 at 10:40:29AM +0000, Russell King - ARM Linux wrote:
+On Fri, Dec 12, 2014 at 03:48:51PM -0800, Ben Zhang wrote:
+> On Fri, Dec 12, 2014 at 5:27 AM, Mark Brown <broonie@kernel.org> wrote:
+> > On Wed, Dec 10, 2014 at 08:15:26PM -0800, Ben Zhang wrote:
 
-> Including details like this (because ASoC needs a separate DT node) is
-> the wrong approach.
+> > Why is this being specified as some magic number rather than using the
+> > voltage (or at least providing defines for the voltage) - this is going
+> > to do little to make the DT legible and...
 
-And indeed there should be no Linux-internal reason for that - we should
-be able to use whatever DT node makes sense, if there's some reason
-that's not possible we should fix that (we do have several drivers doing
-this sort of thing already though).
+> >> +enum rt5677_micbias {
+> >> +     RT5677_MICBIAS_1_476V = 0,
+> >> +     RT5677_MICBIAS_2_970V = 1,
+> >> +     RT5677_MICBIAS_1_242V = 2,
+> >> +     RT5677_MICBIAS_2_475V = 3,
+> >> +};
 
---eVN8q1r3v0Uw6/qa
+> > ...I see there are defined for platform data.
+
+> This patch adds both an entry to the platform data and a DT binding
+> for MICBIAS level selection. The 4 voltage options
+> (1.476V/2.970V/1.242V/2.475V) are the only ones supported by the codec
+> hardware, so it seems an enum is better than specifying the exact
+
+It's not that clear that an enum *is* better, and a magic numbers enum
+is definitely worse for anyone who has to read the resulting DT.
+
+> voltage directly. I was following the two examples below:
+> Documentation/devicetree/bindings/sound/cs42l52.txt (cirrus,micbias-lvl)
+> Documentation/devicetree/bindings/sound/tlv320aic3x.txt (ai3x-micbias-vg)
+
+Old DT bindings are old and often not best practice.
+
+> I'm new to devicetree bindings. Is there something like an enum in DT?
+
+include/dt-bindings
+
+--ZjlDoLon7m/fln42
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUjs28AAoJECTWi3JdVIfQyuIIAIJDD10SCDDvHTyH/jpnvSpZ
-g7ObS21UKrw3LuBbQkIPqAow0ixm6c3NudWxv8C1QX74osQgpWMFljUlUUDWYARm
-Qbul4Sz49ab0HgNjV3848OQV0NmMGJLmEqCuAoCy0ayoHsUi3jJzgTFlQnfIvxr7
-3y1OGXiZ+BTJLntRbpGbuUHZe36Q7/9YaN8lC+PPQo1MuE26Iz+66SucWT1iYvpb
-i8KgkW5GATtGpWDSTZX/1SfE2kwwx5J9mWZs84MRe319mHHiL44CL6JboCnFt/Ev
-45v15Sba3caEFqwxZB5NwhTlPINfstYG2ZeO11gTScAHgF3jY6VSiD0keOcK4rQ=
-=9XaR
+iQEcBAEBAgAGBQJUjtIFAAoJECTWi3JdVIfQkugIAIK3ofI8Ws8h1SoG9i4yZULp
+QBMy07YzvtxEiLvSWsiYwCyr8UyIWMbj9oJRlrmDoDdaVawgK11RrvVl69GdKSgv
+LzPydSDtud4ztvBrgzcTGu1dmrZfwecu8rnYcZmHh5B6EH2FivBukhwn9QJow9t1
+38brUBUHWt2bzMrkpoZi1+d2g9DfxNSe6dRgr0Ozl45Hjt3uXqqvFxfzBxvBJbW2
+Zs0tK6ONuC+o4RFgg6Xjh+hTLKvZfUSAMNGqfskjQHzsd/EByp70fp5V/NdShsB5
+kroEwjveyMez42dpst9X9BBhJCzc34pjPxI/f3cxST7BkzVcRt2pq2+Ifo2bBSM=
+=y7/8
 -----END PGP SIGNATURE-----
 
---eVN8q1r3v0Uw6/qa--
+--ZjlDoLon7m/fln42--
+
+--===============0593350536688176476==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0593350536688176476==--
