@@ -1,49 +1,42 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next] ASoC: Intel: fix return value check in
- sst_acpi_probe()
-Date: Mon, 15 Dec 2014 18:21:49 +0000
-Message-ID: <20141215182149.GM11764@sirena.org.uk>
-References: <1418130877-28923-1-git-send-email-weiyj_lk@163.com>
+From: Kevin Strasser <kevin.strasser@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: fix possible acpi enumeration
+ panic
+Date: Mon, 15 Dec 2014 15:22:56 -0800
+Message-ID: <20141215232256.GC27822@H87M>
+References: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
+ <20141211132026.GY11764@sirena.org.uk>
+ <51B6C3CD1F10FB47A5702881E0E230A74A0ECAE1@ORSMSX104.amr.corp.intel.com>
+ <20141215170645.GH11764@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ma2IebCqBk9lYfxq"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1418130877-28923-1-git-send-email-weiyj_lk@163.com>
+In-Reply-To: <20141215170645.GH11764@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: weiyj_lk@163.com
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, kbuild test robot <fengguang.wu@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "Strasser, Kevin" <kevin.strasser@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul, Vinod" <vinod.koul@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Fang, Yang A" <yang.a.fang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Dec 15, 2014 at 05:06:45PM +0000, Mark Brown wrote:
+> Please fix your mailer to word wrap comfortably under 80 colums so that your
+> mails are easily legible.
 
---Ma2IebCqBk9lYfxq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Understood
 
-On Tue, Dec 09, 2014 at 09:14:37PM +0800, weiyj_lk@163.com wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> In case of error, the function platform_device_register_data()
-> returns ERR_PTR() and never returns NULL. The NULL test in the
-> return value check should be replaced with IS_ERR().
+> > > This changes the check from verifying if a codec_id is present to
+> > > verifying if the first character in the codec_id is non-NULL.  That
+> > > doesn't seem obviously safer and the tables of machines seem to be
+> > > terminated by having an entry with all fields set to zero (which is a
+> > > common idiom in Linux) which would now crash with this change.
+> 
+> > In this case mach->codec_id is non-NULL, even for the terminating element,
+> > because it is defined to be a fixed width. So we have to take a look at the
+> > first character to see if it has been initialized.
+> 
+> That's a really unusual and (as you've seen) error prone idiom - is it not
+> better to fix the struct to use the more common idiom?
 
-Applied, thanks.
+That seems like a good idea to me. I'll prepare a new patch to change the
+sst_machines definition so that codec_id gets initialized to NULL.
 
---Ma2IebCqBk9lYfxq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUjya8AAoJECTWi3JdVIfQuRoH/iYjyXVJOycs9ImGJwi3WsOb
-zBUBRKR6ooXfuWYcHzE8lTKeps3llXaIeUcphhi+WMS4Z88c29BXYy7ivbjedd2Z
-i9DIklVwxsfHBjb5CP2SIQS4A027zg55jD34QDsd3g1OI5kv5KRLH/Uyb4OvIQJa
-kvrCcIC5pLBqH/DWnEB7x5JVRr4YN8PmOvZsk1a96XFezzwwTyWVa77Wc4w83tvY
-y6Y8fyFOPnFFU1k0SW35JJYV3uHMO1HpON1MtF5iwb5OwwYCQFURGwsGFl0iKuuu
-G/upaDsH+gmLnSL2POjMl7kwK8YmNifp9swg28BSeZ86Yo3jTbzW+suwLbMYeVQ=
-=D8m2
------END PGP SIGNATURE-----
-
---Ma2IebCqBk9lYfxq--
+-Kevin
