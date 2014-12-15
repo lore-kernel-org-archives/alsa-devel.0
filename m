@@ -1,65 +1,44 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v2 1/3] ASoC: codecs: wm8904: add dt ids table
-Date: Mon, 15 Dec 2014 11:31:11 +0800
-Message-ID: <1418614273-2303-1-git-send-email-voice.shen@atmel.com>
+From: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v2 3/3] ARM: at91: at91sam9n12ek/dt: use dt ids for wm8904
+Date: Mon, 15 Dec 2014 11:31:13 +0800
+Message-ID: <1418614273-2303-3-git-send-email-voice.shen@atmel.com>
+References: <1418614273-2303-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: nicolas.ferre@atmel.com, Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Alexander Morozov <linux@meltdown.ru>, Bo Shen <voice.shen@atmel.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1418614273-2303-1-git-send-email-voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Alexander Morozov <linux@meltdown.ru>
+Using the device tree ids for wm8904 codec.
 
-Signed-off-by: Alexander Morozov <linux@meltdown.ru>
-[Add driver data to distinguish device type]
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
+Signed-off-by: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
 ---
 
-Changes in v2:
-- Add driver data for distinguish the device capability.
+Changes in v2: None
 
- sound/soc/codecs/wm8904.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/arm/boot/dts/at91sam9n12ek.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 4d2d2b1..6e3f175 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -2255,10 +2255,32 @@ static const struct i2c_device_id wm8904_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, wm8904_i2c_id);
+diff --git a/arch/arm/boot/dts/at91sam9n12ek.dts b/arch/arm/boot/dts/at91sam9n12ek.dts
+index 13bb24e..9575c0d 100644
+--- a/arch/arm/boot/dts/at91sam9n12ek.dts
++++ b/arch/arm/boot/dts/at91sam9n12ek.dts
+@@ -54,7 +54,7 @@
+ 				status = "okay";
  
-+#ifdef CONFIG_OF
-+static enum wm8904_type wm8904_data = WM8904;
-+static enum wm8904_type wm8912_data = WM8912;
-+
-+static const struct of_device_id wm8904_of_match[] = {
-+	{
-+		.compatible = "wlf,wm8904",
-+		.data = &wm8904_data,
-+	}, {
-+		.compatible = "wlf,wm8912",
-+		.data = &wm8912_data,
-+	}, {
-+		.compatible = "wlf,wm8918",
-+		.data = &wm8904_data,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+MODULE_DEVICE_TABLE(of, wm8904_of_match);
-+#endif
-+
- static struct i2c_driver wm8904_i2c_driver = {
- 	.driver = {
- 		.name = "wm8904",
- 		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(wm8904_of_match),
- 	},
- 	.probe =    wm8904_i2c_probe,
- 	.remove =   wm8904_i2c_remove,
+ 				wm8904: codec@1a {
+-					compatible = "wm8904";
++					compatible = "wlf,wm8904";
+ 					reg = <0x1a>;
+ 					clocks = <&pck0>;
+ 					clock-names = "mclk";
 -- 
 2.1.0.24.g4109c28
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
