@@ -1,301 +1,42 @@
-From: Rastislav Barlik <barlik@zoho.com>
-Subject: [PATCH] ASoC: Intel: Use proper print format for unsigned integers
-Date: Tue, 16 Dec 2014 09:48:01 +0100
-Message-ID: <1418719681-4557-1-git-send-email-barlik@zoho.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Rastislav Barlik <barlik@zoho.com>
+From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Subject: Re: [PATCH 5/6] dt-bindings: Add documentation for Rockchip
+ hdmi-audio
+Date: Tue, 16 Dec 2014 09:34:43 +0000
+Message-ID: <20141216093443.GN11285@n2100.arm.linux.org.uk>
+References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com>
+ <1418612114-19692-1-git-send-email-ykk@rock-chips.com>
+ <20141215104029.GE11285@n2100.arm.linux.org.uk>
+ <20141215120205.GZ11764@sirena.org.uk>
+ <548EDDC2.9050104@rock-chips.com>
+ <20141215161827.GE11764@sirena.org.uk>
+ <548FCE8F.7090106@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <548FCE8F.7090106-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Kuankuan.Yang" <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Xu Jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Ben Zhang <benzh-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, =?utf-8?B?U3Tvv73vv71wa
 List-Id: alsa-devel@alsa-project.org
 
-Use %u instead of %d format for printing unsigned integers. Also use
-unsigned integer for count and pages variables.
+On Tue, Dec 16, 2014 at 02:17:51PM +0800, Kuankuan.Yang wrote:
+> hdmi-audio driver share irq with dw_hdmi driver,  for continuing AHBAUDDMA
+> or for detecting hdmi insert.
+> So maybe it's hard to switch to simple-card way,  Russell what's your
+> opinion ?
 
-Signed-off-by: Rastislav Barlik <barlik@zoho.com>
+My "opinion" is that I need to spend some time looking in depth at both
+your code and my code before I can form an idea of how to proceed.
 
----
- sound/soc/intel/sst-haswell-dsp.c | 11 ++++++-----
- sound/soc/intel/sst-haswell-ipc.c | 30 +++++++++++++++---------------
- sound/soc/intel/sst-haswell-pcm.c | 21 +++++++++++----------
- 3 files changed, 32 insertions(+), 30 deletions(-)
+However, since I seem to be spending a lot of time chasing regressions
+which have appeared in v3.18, I don't have a lot of time to look at this
+right now.
 
-diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index 4b6c163..96c7201 100644
---- a/sound/soc/intel/sst-haswell-dsp.c
-+++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -88,7 +88,7 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- 	struct sst_module *mod;
- 	struct sst_module_data block_data;
- 	struct sst_module_template template;
--	int count;
-+	u32 count;
- 	void __iomem *ram;
- 
- 	/* TODO: allowed module types need to be configurable */
-@@ -127,7 +127,7 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- 
- 		if (block->size <= 0) {
- 			dev_err(dsp->dev,
--				"error: block %d size invalid\n", count);
-+				"error: block %u size invalid\n", count);
- 			sst_module_free(mod);
- 			return -EINVAL;
- 		}
-@@ -156,7 +156,7 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- 		block_data.data = (void *)block + sizeof(*block);
- 		block_data.data_offset = block_data.data - fw->dma_buf;
- 
--		dev_dbg(dsp->dev, "copy firmware block %d type 0x%x "
-+		dev_dbg(dsp->dev, "copy firmware block %u type 0x%x "
- 			"size 0x%x ==> ram %p offset 0x%x\n",
- 			count, block->type, block->size, ram,
- 			block->ram_offset);
-@@ -175,7 +175,8 @@ static int hsw_parse_fw_image(struct sst_fw *sst_fw)
- 	struct fw_module_header *module;
- 	struct sst_dsp *dsp = sst_fw->dsp;
- 	struct sst_hsw *hsw = sst_fw->private;
--	int ret, count;
-+	int ret;
-+	u32 count;
- 
- 	/* Read the header information from the data pointer */
- 	header = (struct fw_header *)sst_fw->dma_buf;
-@@ -198,7 +199,7 @@ static int hsw_parse_fw_image(struct sst_fw *sst_fw)
- 		/* module */
- 		ret = hsw_parse_module(dsp, sst_fw, module);
- 		if (ret < 0) {
--			dev_err(dsp->dev, "error: invalid module %d\n", count);
-+			dev_err(dsp->dev, "error: invalid module %u\n", count);
- 			return ret;
- 		}
- 		module = (void *)module + sizeof(*module) + module->mod_size;
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index b629151..440cadd 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -577,7 +577,7 @@ static void hsw_fw_ready(struct sst_hsw *hsw, u32 header)
- 
- 	offset = (header & 0x1FFFFFFF) << 3;
- 
--	dev_dbg(hsw->dev, "ipc: DSP is ready 0x%8.8x offset %d\n",
-+	dev_dbg(hsw->dev, "ipc: DSP is ready 0x%8.8x offset %u\n",
- 		header, offset);
- 
- 	/* copy data from the DSP FW ready offset */
-@@ -626,7 +626,7 @@ static void hsw_notification_work(struct work_struct *work)
- 			stream->reply.stream_hw_id);
- 		sst_dsp_inbox_read(hsw->dsp, glitch, sizeof(*glitch));
- 
--		dev_err(hsw->dev, "glitch %d pos 0x%x write pos 0x%x\n",
-+		dev_err(hsw->dev, "glitch %u pos 0x%x write pos 0x%x\n",
- 			glitch->glitch_type, glitch->present_pos,
- 			glitch->write_pos);
- 		break;
-@@ -878,7 +878,7 @@ static int hsw_process_notification(struct sst_hsw *hsw)
- 	case IPC_GLB_MAX_IPC_MESSAGE_TYPE:
- 	case IPC_GLB_RESTORE_CONTEXT:
- 	case IPC_GLB_SHORT_REPLY:
--		dev_err(hsw->dev, "error: message type %d header 0x%x\n",
-+		dev_err(hsw->dev, "error: message type %u header 0x%x\n",
- 			type, header);
- 		break;
- 	case IPC_GLB_STREAM_MESSAGE:
-@@ -888,7 +888,7 @@ static int hsw_process_notification(struct sst_hsw *hsw)
- 		handled = hsw_log_message(hsw, header);
- 		break;
- 	default:
--		dev_err(hsw->dev, "error: unexpected type %d hdr 0x%8.8x\n",
-+		dev_err(hsw->dev, "error: unexpected type %u hdr 0x%8.8x\n",
- 			type, header);
- 		break;
- 	}
-@@ -977,7 +977,7 @@ int sst_hsw_stream_mute(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- 
- 	ret = sst_hsw_stream_set_volume(hsw, stream, stage_id, channel, 0);
- 	if (ret < 0) {
--		dev_err(hsw->dev, "error: can't unmute stream %d channel %d\n",
-+		dev_err(hsw->dev, "error: can't unmute stream %u channel %u\n",
- 			stream->reply.stream_hw_id, channel);
- 		return ret;
- 	}
-@@ -996,7 +996,7 @@ int sst_hsw_stream_unmute(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- 	ret = sst_hsw_stream_set_volume(hsw, stream, stage_id, channel,
- 		stream->mute_volume[channel]);
- 	if (ret < 0) {
--		dev_err(hsw->dev, "error: can't unmute stream %d channel %d\n",
-+		dev_err(hsw->dev, "error: can't unmute stream %u channel %u\n",
- 			stream->reply.stream_hw_id, channel);
- 		return ret;
- 	}
-@@ -1076,7 +1076,7 @@ int sst_hsw_mixer_mute(struct sst_hsw *hsw, u32 stage_id, u32 channel)
- 
- 	ret = sst_hsw_mixer_set_volume(hsw, stage_id, channel, 0);
- 	if (ret < 0) {
--		dev_err(hsw->dev, "error: failed to unmute mixer channel %d\n",
-+		dev_err(hsw->dev, "error: failed to unmute mixer channel %u\n",
- 			channel);
- 		return ret;
- 	}
-@@ -1092,7 +1092,7 @@ int sst_hsw_mixer_unmute(struct sst_hsw *hsw, u32 stage_id, u32 channel)
- 	ret = sst_hsw_mixer_set_volume(hsw, stage_id, channel,
- 		hsw->mixer_info.volume_register_address[channel]);
- 	if (ret < 0) {
--		dev_err(hsw->dev, "error: failed to unmute mixer channel %d\n",
-+		dev_err(hsw->dev, "error: failed to unmute mixer channel %u\n",
- 			channel);
- 		return ret;
- 	}
-@@ -1219,7 +1219,7 @@ int sst_hsw_stream_free(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 	ret = ipc_tx_message_wait(hsw, header, &stream->free_req,
- 		sizeof(stream->free_req), NULL, 0);
- 	if (ret < 0) {
--		dev_err(hsw->dev, "error: free stream %d failed\n",
-+		dev_err(hsw->dev, "error: free stream %u failed\n",
- 			stream->free_req.stream_id);
- 		return -EAGAIN;
- 	}
-@@ -1517,7 +1517,7 @@ int sst_hsw_stream_pause(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- 	ret = sst_hsw_stream_operations(hsw, IPC_STR_PAUSE,
- 		stream->reply.stream_hw_id, wait);
- 	if (ret < 0)
--		dev_err(hsw->dev, "error: failed to pause stream %d\n",
-+		dev_err(hsw->dev, "error: failed to pause stream %u\n",
- 			stream->reply.stream_hw_id);
- 
- 	return ret;
-@@ -1533,7 +1533,7 @@ int sst_hsw_stream_resume(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- 	ret = sst_hsw_stream_operations(hsw, IPC_STR_RESUME,
- 		stream->reply.stream_hw_id, wait);
- 	if (ret < 0)
--		dev_err(hsw->dev, "error: failed to resume stream %d\n",
-+		dev_err(hsw->dev, "error: failed to resume stream %u\n",
- 			stream->reply.stream_hw_id);
- 
- 	return ret;
-@@ -1551,7 +1551,7 @@ int sst_hsw_stream_reset(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 	while (stream->running && tries--)
- 		msleep(1);
- 	if (!tries) {
--		dev_err(hsw->dev, "error: reset stream %d still running\n",
-+		dev_err(hsw->dev, "error: reset stream %u still running\n",
- 			stream->reply.stream_hw_id);
- 		return -EINVAL;
- 	}
-@@ -1561,7 +1561,7 @@ int sst_hsw_stream_reset(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 	ret = sst_hsw_stream_operations(hsw, IPC_STR_RESET,
- 		stream->reply.stream_hw_id, 1);
- 	if (ret < 0)
--		dev_err(hsw->dev, "error: failed to reset stream %d\n",
-+		dev_err(hsw->dev, "error: failed to reset stream %u\n",
- 			stream->reply.stream_hw_id);
- 	return ret;
- }
-@@ -1609,7 +1609,7 @@ int sst_hsw_stream_set_write_position(struct sst_hsw *hsw,
- 	ret = ipc_tx_message_nowait(hsw, header, &stream->wpos,
- 		sizeof(stream->wpos));
- 	if (ret < 0)
--		dev_err(hsw->dev, "error: stream %d set position %d failed\n",
-+		dev_err(hsw->dev, "error: stream %u set position %u failed\n",
- 			stream->reply.stream_hw_id, position);
- 
- 	return ret;
-@@ -1670,7 +1670,7 @@ int sst_hsw_dx_set_state(struct sst_hsw *hsw,
- 			dx->mem_info[item].size,
- 			dx->mem_info[item].source);
- 	}
--	dev_dbg(hsw->dev, "ipc: got %d entry numbers for state %d\n",
-+	dev_dbg(hsw->dev, "ipc: got %u entry numbers for state %d\n",
- 		dx->entries_no, state);
- 
- 	memcpy(&hsw->dx, dx, sizeof(*dx));
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 4df867c..7367326 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -278,11 +278,12 @@ static int create_adsp_page_table(struct snd_pcm_substream *substream,
- 	unsigned char *dma_area, size_t size, int pcm)
- {
- 	struct snd_dma_buffer *dmab = snd_pcm_get_dma_buf(substream);
--	int i, pages, stream = substream->stream;
-+	int stream = substream->stream;
-+	unsigned int i, pages;
- 
- 	pages = snd_sgbuf_aligned_pages(size);
- 
--	dev_dbg(rtd->dev, "generating page table for %p size 0x%zu pages %d\n",
-+	dev_dbg(rtd->dev, "generating page table for %p size 0x%zu pages %u\n",
- 		dma_area, size, pages);
- 
- 	for (i = 0; i < pages; i++) {
-@@ -290,7 +291,7 @@ static int create_adsp_page_table(struct snd_pcm_substream *substream,
- 		u32 pfn = snd_sgbuf_get_addr(dmab, i * PAGE_SIZE) >> PAGE_SHIFT;
- 		u32 *pg_table;
- 
--		dev_dbg(rtd->dev, "pfn i %i idx %d pfn %x\n", i, idx, pfn);
-+		dev_dbg(rtd->dev, "pfn i %u idx %u pfn %x\n", i, idx, pfn);
- 
- 		pg_table = (u32 *)(pdata->dmab[pcm][stream].area + idx);
- 
-@@ -388,7 +389,7 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 	rate = params_rate(params);
- 	ret = sst_hsw_stream_set_rate(hsw, pcm_data->stream, rate);
- 	if (ret < 0) {
--		dev_err(rtd->dev, "error: could not set rate %d\n", rate);
-+		dev_err(rtd->dev, "error: could not set rate %u\n", rate);
- 		return ret;
- 	}
- 
-@@ -417,14 +418,14 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 
- 	ret = sst_hsw_stream_set_bits(hsw, pcm_data->stream, bits);
- 	if (ret < 0) {
--		dev_err(rtd->dev, "error: could not set bits %d\n", bits);
-+		dev_err(rtd->dev, "error: could not set bits %u\n", bits);
- 		return ret;
- 	}
- 
- 	/* we only support stereo atm */
- 	channels = params_channels(params);
- 	if (channels != 2) {
--		dev_err(rtd->dev, "error: invalid channels %d\n", channels);
-+		dev_err(rtd->dev, "error: invalid channels %u\n", channels);
- 		return -EINVAL;
- 	}
- 
-@@ -434,14 +435,14 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 
- 	ret = sst_hsw_stream_set_channels(hsw, pcm_data->stream, channels);
- 	if (ret < 0) {
--		dev_err(rtd->dev, "error: could not set channels %d\n",
-+		dev_err(rtd->dev, "error: could not set channels %u\n",
- 			channels);
- 		return ret;
- 	}
- 
- 	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
- 	if (ret < 0) {
--		dev_err(rtd->dev, "error: could not allocate %d bytes for PCM %d\n",
-+		dev_err(rtd->dev, "error: could not allocate %u bytes for PCM %d\n",
- 			params_buffer_bytes(params), ret);
- 		return ret;
- 	}
-@@ -558,7 +559,7 @@ static u32 hsw_notify_pointer(struct sst_hsw_stream *stream, void *data)
- 	pos = frames_to_bytes(runtime,
- 		(runtime->control->appl_ptr % runtime->buffer_size));
- 
--	dev_dbg(rtd->dev, "PCM: App pointer %d bytes\n", pos);
-+	dev_dbg(rtd->dev, "PCM: App pointer %u bytes\n", pos);
- 
- 	/* let alsa know we have play a period */
- 	snd_pcm_period_elapsed(substream);
-@@ -580,7 +581,7 @@ static snd_pcm_uframes_t hsw_pcm_pointer(struct snd_pcm_substream *substream)
- 	offset = bytes_to_frames(runtime, position);
- 	ppos = sst_hsw_get_dsp_presentation_position(hsw, pcm_data->stream);
- 
--	dev_dbg(rtd->dev, "PCM: DMA pointer %du bytes, pos %llu\n",
-+	dev_dbg(rtd->dev, "PCM: DMA pointer %u bytes, pos %llu\n",
- 		position, ppos);
- 	return offset;
- }
 -- 
-2.1.3
+FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
+according to speedtest.net.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
