@@ -1,38 +1,75 @@
-From: Padma Venkat <padma.kvr@gmail.com>
-Subject: Re: [alsa-devel] [PATCH/RFC 00/14] ASoC: samsung: Add clk provider
- for I2S internal clocks
-Date: Tue, 16 Dec 2014 08:46:32 +0530
-Message-ID: <CAAgF-BfY_28PpgChfB-7vEF5z9ETmXJUKGuBYhmAC-CxbFedqA@mail.gmail.com>
-References: <1418319952-10163-1-git-send-email-s.nawrocki@samsung.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Streaming wake-up buffer from DSP to SoC over SPI
+Date: Tue, 16 Dec 2014 10:11:15 +0530
+Message-ID: <20141216044115.GU16827@intel.com>
+References: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1418319952-10163-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, broonie@kernel.org, drake@endlessm.com, padma.v@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id AAF8626056A
+ for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 05:41:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dylan Reid <dgreid@google.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sylwester,
+On Mon, Dec 15, 2014 at 06:45:37PM -0800, Dylan Reid wrote:
+> What is the right way to model a bursty, SPI based audio transfer?
+> There could be hours between samples, then several seconds of audio
+> will be ready.
+> 
+> The codec, an rt5677, is attached to the SoC with both an IIS bus and
+> a SPI bus.  The IIS bus is used for normal audio playback and record.
+> The SPI bus is used for transferring audio that caused a voice wake,
+> "OK Google" in this case.
+> 
+> When the codec detects the wake up phrase, the SoC will read out two
+> plus seconds of buffered data over the SPI bus and continue to stream
+> audio data over SPI for the rest of the query.  Nexus 9 has a custom
+> ioctl to access rt5677-spi and some user-space smarts to poll for more
+> data.
+why do we need custom ioctls :( current framework can address all your
+needs..
 
-> I need some more thought about interaction between the clk API calls on the
-> clocks being exposed and the ASoC calls into sound/soc/samsung/i2s.c.
-> I'm sending teh patches for review though to avoid any waste of time should
-> it turn out the direction taken is wrong.
->
-> This whole series definitely needs more testing, so far I only tested it
-> on Odroid X2, with the I2S working in slave mode.
+> I was thinking of making a separate PCM device.  The odd things are
+> that it would have to originate from soc/codecs, the codec would own
+> the codec and cpu end of the link, and the hw_ptr position would need
+> to be queried over SPI.  But it would make userspace access to it more
+> standard looking.
+okay here we have two things and they need to be decoupled. First is
+detection by the codec for "OK Google". And second is getting the data (some
+buffered while things are setup) to usermode.
 
-your patches looks good to me. I did basic playback and capture test
-of your patches with i2s in master mode on exynos7.  I also added
-secondary dai for testing and verified playback. But I think some more
-testing required to check the serialization of registers. Tried aplay
-with front dai in background and with secondary dai in the foreground.
-But due to one issue on my system backend playback not working.
+For the former, the codec should implement a 'sink' for voice wake, so
+essentially connecting the voice wake widget to MIC pins will power up codec
+and codec can do the detection while rest of the system is sleeping
 
-Thanks
-Padma
+Once the event is detected, codec should send an interrupt to host, thereby
+waking up the system. The driver will figure out that it is voice wake event
+and should set the alsa kcontrol status, on which usermode needs to listen.
 
->
-> [1]
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-September/081753.html
+Now usermode knows the event occurred so lets read the data. During all the
+activation, wakeup etc some data would be buffered, in you case 2 secs. IMO
+PCM devices aren't suited for this, so you need to use a compressed device.
+The data can come from SPI port (we can get all the buffered data in one big
+burst". I know one vendor has implemented such a mechanism.
+
+The device here wont be any different than regular PCM/Compressed devices.
+Assume the data path is SPI rather than I2S so things would be modelled that
+way. You still need to setup SPI port, DMAs like you would do on I2S.
+
+HTH
+-- 
+~Vinod
