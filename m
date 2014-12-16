@@ -1,44 +1,81 @@
-From: "Kuankuan.Yang" <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: Re: [PATCH 5/6] dt-bindings: Add documentation for Rockchip hdmi-audio
-Date: Tue, 16 Dec 2014 17:48:54 +0800
-Message-ID: <54900006.9060701@rock-chips.com>
-References: <1418609494-15820-1-git-send-email-ykk@rock-chips.com> <1418612114-19692-1-git-send-email-ykk@rock-chips.com> <20141215104029.GE11285@n2100.arm.linux.org.uk> <20141215120205.GZ11764@sirena.org.uk> <548EDDC2.9050104@rock-chips.com> <20141215161827.GE11764@sirena.org.uk> <548FCE8F.7090106@rock-chips.com> <20141216093443.GN11285@n2100.arm.linux.org.uk>
+From: mobidyc <mobidyc@gmail.com>
+Subject: Re: Audio USB disappears suddenly
+Date: Tue, 16 Dec 2014 11:08:53 +0100
+Message-ID: <CAM4quvYmTxmPzUQGcOjKuGmtMLqN5SQCC_KmjTLm-yv91Yh3dQ@mail.gmail.com>
+References: <CAM4quvZC3L_mcQtt3giUjUqVnN1N1A05m=fP379xh61TDi_-mg@mail.gmail.com>
+ <5488A6FE.5080308@ladisch.de>
+ <CAM4quvbxLf8ROk3WXjrgoxffsRm4UReSsCuMaMkB8q+uYzWMSA@mail.gmail.com>
+ <CAMFLXsDCfmsFKD1d8uvk45_XaHo=_PEXqSmrkZuiVBWbttfjsA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20141216093443.GN11285-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Xu Jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Ben Zhang <benzh-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, =?UTF-8?B?U3Tvv73vv71wa
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
+ [209.85.215.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BC8D2605D3
+ for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 11:09:16 +0100 (CET)
+Received: by mail-la0-f46.google.com with SMTP id q1so11195888lam.33
+ for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 02:09:15 -0800 (PST)
+In-Reply-To: <CAMFLXsDCfmsFKD1d8uvk45_XaHo=_PEXqSmrkZuiVBWbttfjsA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-
-=E5=9C=A8 2014=E5=B9=B412=E6=9C=8816=E6=97=A5 17:34, Russell King - ARM=
- Linux =E5=86=99=E9=81=93:
-> On Tue, Dec 16, 2014 at 02:17:51PM +0800, Kuankuan.Yang wrote:
->> hdmi-audio driver share irq with dw_hdmi driver,  for continuing AHB=
-AUDDMA
->> or for detecting hdmi insert.
->> So maybe it's hard to switch to simple-card way,  Russell what's you=
-r
->> opinion ?
-> My "opinion" is that I need to spend some time looking in depth at bo=
-th
-> your code and my code before I can form an idea of how to proceed.
->
-> However, since I seem to be spending a lot of time chasing regression=
-s
-> which have appeared in v3.18, I don't have a lot of time to look at t=
-his
-> right now.
->
-okay, if u got any ideas, wish u can let me know, thks.
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGVsbG8sCgpUaGUgcHJvYmxlbSByZWFwcGVhcnMsIGhlcmUgaXMgdGhlIG91dHB1dCB5b3UgYXNr
+ZWQgZm9yLgoKbHN1c2Igb3V0cHV0IGlzIGhlcmU6IGh0dHA6Ly9zcHJ1bmdlLnVzL2JPQ1YKCgoj
+IGFtaXhlciAtYyAxIGNvbnRlbnRzCm51bWlkPTIsaWZhY2U9TUlYRVIsbmFtZT0nTTJUZWNoIENs
+b2NrIFNlbGVjdG9yIFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
+LS0tLS0sdmFsdWVzPTIKICA6IHZhbHVlcz1vbixvbgpudW1pZD0zLGlmYWNlPU1JWEVSLG5hbWU9
+J00yVGVjaCBDbG9jayBTZWxlY3RvciBQbGF5YmFjayBTd2l0Y2gnLGluZGV4PTEKICA7IHR5cGU9
+Qk9PTEVBTixhY2Nlc3M9cnctLS0tLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD00LGlm
+YWNlPU1JWEVSLG5hbWU9J00yVGVjaCBDbG9jayBTZWxlY3RvciBQbGF5YmFjayBWb2x1bWUnCiAg
+OyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tUi0tLHZhbHVlcz0yLG1pbj0wLG1heD0xMjcsc3Rl
+cD0wCiAgOiB2YWx1ZXM9MTI3LDEyNwogIHwgZEJtaW5tYXgtbWluPS0xMjcuMDBkQixtYXg9MC4w
+MGRCCm51bWlkPTUsaWZhY2U9TUlYRVIsbmFtZT0nTTJUZWNoIENsb2NrIFNlbGVjdG9yIFBsYXli
+YWNrIFZvbHVtZScsaW5kZXg9MQogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLVItLSx2YWx1
+ZXM9MSxtaW49MCxtYXg9MTI3LHN0ZXA9MAogIDogdmFsdWVzPTEyNwogIHwgZEJtaW5tYXgtbWlu
+PS0xMjcuMDBkQixtYXg9MC4wMGRCCm51bWlkPTEsaWZhY2U9UENNLG5hbWU9J1BsYXliYWNrIENo
+YW5uZWwgTWFwJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1yLS0tLVItLSx2YWx1ZXM9MixtaW49
+MCxtYXg9MzYsc3RlcD0wCiAgOiB2YWx1ZXM9MCwwCiAgfCBjb250YWluZXIKICAgIHwgY2htYXAt
+Zml4ZWQ9RkwsRlIKCkhvcGUgaXQgd2lsbCBoZWxwIGRpYWdub3N0aWNzLgoKLS0KTW9iaWR5YwoK
+MjAxNC0xMi0xMiA4OjE3IEdNVCswMTowMCBKb2hhbiBBaXJlcyBSYXN0w6luIDxqb2hhbkBvbGp1
+ZC5zZT46Cj4KPiBQbGVhc2UgdHJ5IHRoZSBmb2xsb3dpbmcgY29tbWFuZHMgd2hlbiB0aGUgY2Fy
+ZCBpcyByZWNlbnRseSBwbHVnZ2VkIGluIGFuZAo+IHdvcmtpbmcgYW5kIHBvc3QgdGhlIG91dHB1
+dDoKPgo+IGxzdXNiIC1kIDI0OWM6OTMxMyAtdgo+Cj4gYW1peGVyIC1jIDEgY29udGVudHMKPgo+
+IEFzc3VtaW5nIDI0OWM6OTMxMyBpcyB5b3VyIGNhcmQncyBJRCBhbmQgdGhhdCBpdCdzIHN0aWxs
+IGVudW1lcmF0ZWQgYXMKPiBjYXJkIDEgaW4geW91ciBzeXN0ZW0uIFRoZSBvdXRwdXQgZnJvbSBs
+c3VzYiBtaWdodCBiZSB2ZXJ5IGxvbmcgc28gaXQgY291bGQKPiBiZSBiZXR0ZXIgdG8gdXNlIHBh
+c3RlYmluLmNvbSBvciBzaW1pbGFyLgo+Cj4gLy9Kb2hhbgo+Cj4gT24gMTEgRGVjZW1iZXIgMjAx
+NCBhdCAwMToxMywgbW9iaWR5YyA8bW9iaWR5Y0BnbWFpbC5jb20+IHdyb3RlOgo+Cj4+IFRoYW5r
+cyBmb3IgdGhpcyBpbmZvcm1hdGlvbiwKPj4KPj4gSSB0aGluayBpdCdzIHRpbWUgdG8gY29udGFj
+dCB0aGUgbWFudWZhY3R1cmVyLgo+Pgo+PiBEbyB5b3Uga25vdyBpZiBJIGNhbiB0YWtlIHNvbWUg
+cmVsZXZhbnQgdHJhY2VzIChrZXJuZWwgbW9kdWxlIHRvIGxvYWQsCj4+IC9wcm9jL2Fzb3VuZCBm
+aWxlIHRvIHBhcnNlLCBhbnl0aGluZyBlbHNlKT8KPj4gc28gSSBjYW4gZGV0YWlsIG15IGVtYWls
+IHRvIGhpbS4KPj4KPj4gVGhhbmtzLgo+Pgo+PiAtLQo+PiBNb2JpZHljCj4+Cj4+IDIwMTQtMTIt
+MTAgMjE6MDMgR01UKzAxOjAwIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2NoLmRlPjoK
+Pj4KPj4gPiBtb2JpZHljIHdyb3RlOgo+PiA+ID4gVVNCIERBQyBzdWRkZW5seSBkaXNhcHBlYXJz
+LCBmcm9tIGRtZXNnIEkgY2FuIHNlZToKPj4gPiA+Cj4+ID4gPiBbMTMwODMuMTYxMTU3XSB1c2Ig
+MS0xLjM6IDE6MjogdXNiX3NldF9pbnRlcmZhY2UgZmFpbGVkICgtMTEwKQo+PiA+ID4gWzEzMDgz
+LjMxNjM0NF0gdXNiIDEtMS4zOiAxOjI6IHVzYl9zZXRfaW50ZXJmYWNlIGZhaWxlZCAoLTcxKQo+
+PiA+ID4gWzEzMDgzLjQ3MTkyN10gdXNiIDEtMS4zOiAxOjI6IHVzYl9zZXRfaW50ZXJmYWNlIGZh
+aWxlZCAoLTcxKQo+PiA+ID4gWzEzMDgzLjc4OTgxMF0gdXNiIDEtMS4zOiAxOjI6IHVzYl9zZXRf
+aW50ZXJmYWNlIGZhaWxlZCAoLTcxKQo+PiA+Cj4+ID4gVGhlc2UgZXJyb3IgY29kZXMgaW5kaWNh
+dGUgdGhhdCB0aGUgZGV2aWNlJ3MgZmlybXdhcmUgZG9lcyBub3QgcmVhY3QgYXQKPj4gPiBhbGwu
+ICBFaXRoZXIgdGhlIGZpcm13YXJlIGhhcyBsb2NrZWQgdXAgZHVlIHRvIGEgYnVnLCBvciB0aGUg
+aGFyZHdhcmUKPj4gPiBoYXMgc2h1dCBkb3duIGZvciBzb21lIHJlYXNvbi4KPj4gPgo+PiA+Cj4+
+ID4gUmVnYXJkcywKPj4gPiBDbGVtZW5zCj4+ID4KPj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KPj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4gQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+Cj4KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
