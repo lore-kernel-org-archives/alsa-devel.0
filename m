@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Streaming wake-up buffer from DSP to SoC over SPI
-Date: Tue, 16 Dec 2014 10:11:15 +0530
-Message-ID: <20141216044115.GU16827@intel.com>
-References: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
+From: libin.yang@intel.com
+Subject: [PATCH] ALSA: hda/hdmi - apply Haswell fix-ups to
+	Skylake display codec
+Date: Tue, 16 Dec 2014 13:17:34 +0800
+Message-ID: <1418707054-22891-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id AAF8626056A
- for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 05:41:15 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFAA6260581
+ for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 06:23:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@google.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: libin.yang@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 15, 2014 at 06:45:37PM -0800, Dylan Reid wrote:
-> What is the right way to model a bursty, SPI based audio transfer?
-> There could be hours between samples, then several seconds of audio
-> will be ready.
-> 
-> The codec, an rt5677, is attached to the SoC with both an IIS bus and
-> a SPI bus.  The IIS bus is used for normal audio playback and record.
-> The SPI bus is used for transferring audio that caused a voice wake,
-> "OK Google" in this case.
-> 
-> When the codec detects the wake up phrase, the SoC will read out two
-> plus seconds of buffered data over the SPI bus and continue to stream
-> audio data over SPI for the rest of the query.  Nexus 9 has a custom
-> ioctl to access rt5677-spi and some user-space smarts to poll for more
-> data.
-why do we need custom ioctls :( current framework can address all your
-needs..
+From: Libin Yang <libin.yang@intel.com>
 
-> I was thinking of making a separate PCM device.  The odd things are
-> that it would have to originate from soc/codecs, the codec would own
-> the codec and cpu end of the link, and the hw_ptr position would need
-> to be queried over SPI.  But it would make userspace access to it more
-> standard looking.
-okay here we have two things and they need to be decoupled. First is
-detection by the codec for "OK Google". And second is getting the data (some
-buffered while things are setup) to usermode.
+Skylake and Haswell have the same behavior on display audio. So this patch
+applys Haswell fix-ups to Skylake.
 
-For the former, the codec should implement a 'sink' for voice wake, so
-essentially connecting the voice wake widget to MIC pins will power up codec
-and codec can do the detection while rest of the system is sleeping
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Once the event is detected, codec should send an interrupt to host, thereby
-waking up the system. The driver will figure out that it is voice wake event
-and should set the alsa kcontrol status, on which usermode needs to listen.
-
-Now usermode knows the event occurred so lets read the data. During all the
-activation, wakeup etc some data would be buffered, in you case 2 secs. IMO
-PCM devices aren't suited for this, so you need to use a compressed device.
-The data can come from SPI port (we can get all the buffered data in one big
-burst". I know one vendor has implemented such a mechanism.
-
-The device here wont be any different than regular PCM/Compressed devices.
-Assume the data path is SPI rather than I2S so things would be modelled that
-way. You still need to setup SPI port, DMAs like you would do on I2S.
-
-HTH
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 95129c2..5f13d2d 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -47,7 +47,9 @@ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
+ 
+ #define is_haswell(codec)  ((codec)->vendor_id == 0x80862807)
+ #define is_broadwell(codec)    ((codec)->vendor_id == 0x80862808)
+-#define is_haswell_plus(codec) (is_haswell(codec) || is_broadwell(codec))
++#define is_skylake(codec) ((codec)->vendor_id == 0x80862809)
++#define is_haswell_plus(codec) (is_haswell(codec) || is_broadwell(codec) \
++					|| is_skylake(codec))
+ 
+ #define is_valleyview(codec) ((codec)->vendor_id == 0x80862882)
+ #define is_cherryview(codec) ((codec)->vendor_id == 0x80862883)
 -- 
-~Vinod
+1.9.1
