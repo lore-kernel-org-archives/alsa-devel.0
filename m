@@ -1,42 +1,37 @@
 From: Kevin Strasser <kevin.strasser@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: fix possible acpi enumeration
- panic
-Date: Mon, 15 Dec 2014 15:22:56 -0800
-Message-ID: <20141215232256.GC27822@H87M>
+Subject: [PATCH v2] ASoC: Intel: fix possible acpi enumeration panic
+Date: Mon, 15 Dec 2014 16:15:04 -0800
+Message-ID: <1418688904-26959-1-git-send-email-kevin.strasser@linux.intel.com>
 References: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
- <20141211132026.GY11764@sirena.org.uk>
- <51B6C3CD1F10FB47A5702881E0E230A74A0ECAE1@ORSMSX104.amr.corp.intel.com>
- <20141215170645.GH11764@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141215170645.GH11764@sirena.org.uk>
+In-Reply-To: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "Strasser, Kevin" <kevin.strasser@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul, Vinod" <vinod.koul@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Fang, Yang A" <yang.a.fang@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Mengdong Lin <mengdong.lin@intel.com>, Yang Fang <yang.a.fang@intel.com>, linux-kernel@vger.kernel.org, Kevin Strasser <kevin.strasser@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 15, 2014 at 05:06:45PM +0000, Mark Brown wrote:
-> Please fix your mailer to word wrap comfortably under 80 colums so that your
-> mails are easily legible.
+A crash can occur on some platforms where adsp is enumerated but codec is not
+matched. Define codec_id as a pointer intead of an array so that it gets
+initialized to NULL for the terminating element of sst_acpi_bytcr[] and
+sst_acpi_chv[].
 
-Understood
+Signed-off-by: Kevin Strasser <kevin.strasser@linux.intel.com>
+---
+ sound/soc/intel/sst/sst_acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > This changes the check from verifying if a codec_id is present to
-> > > verifying if the first character in the codec_id is non-NULL.  That
-> > > doesn't seem obviously safer and the tables of machines seem to be
-> > > terminated by having an entry with all fields set to zero (which is a
-> > > common idiom in Linux) which would now crash with this change.
-> 
-> > In this case mach->codec_id is non-NULL, even for the terminating element,
-> > because it is defined to be a fixed width. So we have to take a look at the
-> > first character to see if it has been initialized.
-> 
-> That's a really unusual and (as you've seen) error prone idiom - is it not
-> better to fix the struct to use the more common idiom?
-
-That seems like a good idea to me. I'll prepare a new patch to change the
-sst_machines definition so that codec_id gets initialized to NULL.
-
--Kevin
+diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
+index 31124aa..87b5090 100644
+--- a/sound/soc/intel/sst/sst_acpi.c
++++ b/sound/soc/intel/sst/sst_acpi.c
+@@ -43,7 +43,7 @@
+ #include "sst.h"
+ 
+ struct sst_machines {
+-	char codec_id[32];
++	char *codec_id;
+ 	char board[32];
+ 	char machine[32];
+ 	void (*machine_quirk)(void);
+-- 
+1.9.1
