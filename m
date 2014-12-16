@@ -1,22 +1,18 @@
-From: mobidyc <mobidyc@gmail.com>
-Subject: Re: Audio USB disappears suddenly
-Date: Tue, 16 Dec 2014 11:08:53 +0100
-Message-ID: <CAM4quvYmTxmPzUQGcOjKuGmtMLqN5SQCC_KmjTLm-yv91Yh3dQ@mail.gmail.com>
-References: <CAM4quvZC3L_mcQtt3giUjUqVnN1N1A05m=fP379xh61TDi_-mg@mail.gmail.com>
- <5488A6FE.5080308@ladisch.de>
- <CAM4quvbxLf8ROk3WXjrgoxffsRm4UReSsCuMaMkB8q+uYzWMSA@mail.gmail.com>
- <CAMFLXsDCfmsFKD1d8uvk45_XaHo=_PEXqSmrkZuiVBWbttfjsA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Streaming wake-up buffer from DSP to SoC over SPI
+Date: Tue, 16 Dec 2014 11:40:11 +0000
+Message-ID: <20141216114011.GO11764@sirena.org.uk>
+References: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
+ <20141216044115.GU16827@intel.com>
+ <CAEUnVG4OexC99Cxbd7TF7NQxxk8wQd0WRQS8Q6mzMMY1X5PWgA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5500957970131835028=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
- [209.85.215.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BC8D2605D3
- for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 11:09:16 +0100 (CET)
-Received: by mail-la0-f46.google.com with SMTP id q1so11195888lam.33
- for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 02:09:15 -0800 (PST)
-In-Reply-To: <CAMFLXsDCfmsFKD1d8uvk45_XaHo=_PEXqSmrkZuiVBWbttfjsA@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 010F22605CB
+ for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 12:40:25 +0100 (CET)
+In-Reply-To: <CAEUnVG4OexC99Cxbd7TF7NQxxk8wQd0WRQS8Q6mzMMY1X5PWgA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Johan_Aires_Rast=C3=A9n?= <johan@oljud.se>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Dylan Reid <dgreid@google.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpUaGUgcHJvYmxlbSByZWFwcGVhcnMsIGhlcmUgaXMgdGhlIG91dHB1dCB5b3UgYXNr
-ZWQgZm9yLgoKbHN1c2Igb3V0cHV0IGlzIGhlcmU6IGh0dHA6Ly9zcHJ1bmdlLnVzL2JPQ1YKCgoj
-IGFtaXhlciAtYyAxIGNvbnRlbnRzCm51bWlkPTIsaWZhY2U9TUlYRVIsbmFtZT0nTTJUZWNoIENs
-b2NrIFNlbGVjdG9yIFBsYXliYWNrIFN3aXRjaCcKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnct
-LS0tLS0sdmFsdWVzPTIKICA6IHZhbHVlcz1vbixvbgpudW1pZD0zLGlmYWNlPU1JWEVSLG5hbWU9
-J00yVGVjaCBDbG9jayBTZWxlY3RvciBQbGF5YmFjayBTd2l0Y2gnLGluZGV4PTEKICA7IHR5cGU9
-Qk9PTEVBTixhY2Nlc3M9cnctLS0tLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vbgpudW1pZD00LGlm
-YWNlPU1JWEVSLG5hbWU9J00yVGVjaCBDbG9jayBTZWxlY3RvciBQbGF5YmFjayBWb2x1bWUnCiAg
-OyB0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tUi0tLHZhbHVlcz0yLG1pbj0wLG1heD0xMjcsc3Rl
-cD0wCiAgOiB2YWx1ZXM9MTI3LDEyNwogIHwgZEJtaW5tYXgtbWluPS0xMjcuMDBkQixtYXg9MC4w
-MGRCCm51bWlkPTUsaWZhY2U9TUlYRVIsbmFtZT0nTTJUZWNoIENsb2NrIFNlbGVjdG9yIFBsYXli
-YWNrIFZvbHVtZScsaW5kZXg9MQogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLVItLSx2YWx1
-ZXM9MSxtaW49MCxtYXg9MTI3LHN0ZXA9MAogIDogdmFsdWVzPTEyNwogIHwgZEJtaW5tYXgtbWlu
-PS0xMjcuMDBkQixtYXg9MC4wMGRCCm51bWlkPTEsaWZhY2U9UENNLG5hbWU9J1BsYXliYWNrIENo
-YW5uZWwgTWFwJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1yLS0tLVItLSx2YWx1ZXM9MixtaW49
-MCxtYXg9MzYsc3RlcD0wCiAgOiB2YWx1ZXM9MCwwCiAgfCBjb250YWluZXIKICAgIHwgY2htYXAt
-Zml4ZWQ9RkwsRlIKCkhvcGUgaXQgd2lsbCBoZWxwIGRpYWdub3N0aWNzLgoKLS0KTW9iaWR5YwoK
-MjAxNC0xMi0xMiA4OjE3IEdNVCswMTowMCBKb2hhbiBBaXJlcyBSYXN0w6luIDxqb2hhbkBvbGp1
-ZC5zZT46Cj4KPiBQbGVhc2UgdHJ5IHRoZSBmb2xsb3dpbmcgY29tbWFuZHMgd2hlbiB0aGUgY2Fy
-ZCBpcyByZWNlbnRseSBwbHVnZ2VkIGluIGFuZAo+IHdvcmtpbmcgYW5kIHBvc3QgdGhlIG91dHB1
-dDoKPgo+IGxzdXNiIC1kIDI0OWM6OTMxMyAtdgo+Cj4gYW1peGVyIC1jIDEgY29udGVudHMKPgo+
-IEFzc3VtaW5nIDI0OWM6OTMxMyBpcyB5b3VyIGNhcmQncyBJRCBhbmQgdGhhdCBpdCdzIHN0aWxs
-IGVudW1lcmF0ZWQgYXMKPiBjYXJkIDEgaW4geW91ciBzeXN0ZW0uIFRoZSBvdXRwdXQgZnJvbSBs
-c3VzYiBtaWdodCBiZSB2ZXJ5IGxvbmcgc28gaXQgY291bGQKPiBiZSBiZXR0ZXIgdG8gdXNlIHBh
-c3RlYmluLmNvbSBvciBzaW1pbGFyLgo+Cj4gLy9Kb2hhbgo+Cj4gT24gMTEgRGVjZW1iZXIgMjAx
-NCBhdCAwMToxMywgbW9iaWR5YyA8bW9iaWR5Y0BnbWFpbC5jb20+IHdyb3RlOgo+Cj4+IFRoYW5r
-cyBmb3IgdGhpcyBpbmZvcm1hdGlvbiwKPj4KPj4gSSB0aGluayBpdCdzIHRpbWUgdG8gY29udGFj
-dCB0aGUgbWFudWZhY3R1cmVyLgo+Pgo+PiBEbyB5b3Uga25vdyBpZiBJIGNhbiB0YWtlIHNvbWUg
-cmVsZXZhbnQgdHJhY2VzIChrZXJuZWwgbW9kdWxlIHRvIGxvYWQsCj4+IC9wcm9jL2Fzb3VuZCBm
-aWxlIHRvIHBhcnNlLCBhbnl0aGluZyBlbHNlKT8KPj4gc28gSSBjYW4gZGV0YWlsIG15IGVtYWls
-IHRvIGhpbS4KPj4KPj4gVGhhbmtzLgo+Pgo+PiAtLQo+PiBNb2JpZHljCj4+Cj4+IDIwMTQtMTIt
-MTAgMjE6MDMgR01UKzAxOjAwIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2NoLmRlPjoK
-Pj4KPj4gPiBtb2JpZHljIHdyb3RlOgo+PiA+ID4gVVNCIERBQyBzdWRkZW5seSBkaXNhcHBlYXJz
-LCBmcm9tIGRtZXNnIEkgY2FuIHNlZToKPj4gPiA+Cj4+ID4gPiBbMTMwODMuMTYxMTU3XSB1c2Ig
-MS0xLjM6IDE6MjogdXNiX3NldF9pbnRlcmZhY2UgZmFpbGVkICgtMTEwKQo+PiA+ID4gWzEzMDgz
-LjMxNjM0NF0gdXNiIDEtMS4zOiAxOjI6IHVzYl9zZXRfaW50ZXJmYWNlIGZhaWxlZCAoLTcxKQo+
-PiA+ID4gWzEzMDgzLjQ3MTkyN10gdXNiIDEtMS4zOiAxOjI6IHVzYl9zZXRfaW50ZXJmYWNlIGZh
-aWxlZCAoLTcxKQo+PiA+ID4gWzEzMDgzLjc4OTgxMF0gdXNiIDEtMS4zOiAxOjI6IHVzYl9zZXRf
-aW50ZXJmYWNlIGZhaWxlZCAoLTcxKQo+PiA+Cj4+ID4gVGhlc2UgZXJyb3IgY29kZXMgaW5kaWNh
-dGUgdGhhdCB0aGUgZGV2aWNlJ3MgZmlybXdhcmUgZG9lcyBub3QgcmVhY3QgYXQKPj4gPiBhbGwu
-ICBFaXRoZXIgdGhlIGZpcm13YXJlIGhhcyBsb2NrZWQgdXAgZHVlIHRvIGEgYnVnLCBvciB0aGUg
-aGFyZHdhcmUKPj4gPiBoYXMgc2h1dCBkb3duIGZvciBzb21lIHJlYXNvbi4KPj4gPgo+PiA+Cj4+
-ID4gUmVnYXJkcywKPj4gPiBDbGVtZW5zCj4+ID4KPj4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4gQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+Cj4KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============5500957970131835028==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2GakNc7NZZagqQ4g"
+Content-Disposition: inline
+
+
+--2GakNc7NZZagqQ4g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Dec 16, 2014 at 12:16:40AM -0800, Dylan Reid wrote:
+> On Mon, Dec 15, 2014 at 8:41 PM, Vinod Koul <vinod.koul@intel.com> wrote:
+
+> > The device here wont be any different than regular PCM/Compressed devices.
+> > Assume the data path is SPI rather than I2S so things would be modelled that
+> > way. You still need to setup SPI port, DMAs like you would do on I2S.
+
+> Ah, I hadn't thought about using the compressed framework.  I can see
+> how that would make this easier.  I'll take a closer look at it
+> tomorrow.
+
+You should be able to use a normal device as well, you need to either
+arrange for the driver to buffer data until userspace starts the magic
+stream or arrange for userspace to not mind if it blocks for extended
+periods.  Either compressed or uncompressed should work.
+
+--2GakNc7NZZagqQ4g
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUkBoaAAoJECTWi3JdVIfQ0X0H/3JszFzyTRKYEtnXbp9l9ETe
+8FJxuXDiDs4zb31XyXoX7EI8cgnEAw8ibVj2es0JD5aAQCwcMmFTXr8p1N4MjlpS
+07wiog7FUXE/e7o8iENe3EMR6BmeKEqZC/l1u6rlRNbKRJfEDWT6fbx8IvJzHMly
+KNl6zZUGHh3dWRcThvkh8bmrt0t1nVv/YrMgiGJw7PlZsMzjf+oijzoTWTMjPdP0
+ZTq/nJB9+uUoSB01TGbXCkNdIOpEg+nBB33Dlqkb5fcCZIFZw/Ct+nu0GBGN5Jc5
+4fTPG3+JO8vElgK83mUpeZ8F49zYqx0L/DlSrI/yUvEREPszFRsVr9TVi9w/GII=
+=DQ5g
+-----END PGP SIGNATURE-----
+
+--2GakNc7NZZagqQ4g--
+
+--===============5500957970131835028==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5500957970131835028==--
