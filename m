@@ -1,47 +1,118 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Intel: fix possible acpi enumeration panic
-Date: Tue, 16 Dec 2014 11:52:28 +0000
-Message-ID: <20141216115228.GQ11764@sirena.org.uk>
-References: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
- <1418688904-26959-1-git-send-email-kevin.strasser@linux.intel.com>
+From: Tim Cussins <timcussins@eml.cc>
+Subject: Re: [PATCH RFC 5/9] ALSA: core: selection
+ of	audio_tstamp type and accuracy reports
+Date: Tue, 16 Dec 2014 14:01:28 +0000
+Message-ID: <54903B38.9050907@eml.cc>
+References: <1418077426-8309-1-git-send-email-pierre-louis.bossart@linux.intel.com>	<1418077426-8309-6-git-send-email-pierre-louis.bossart@linux.intel.com>	<s5hsignmphw.wl-tiwai@suse.de>	<5488827E.4030403@linux.intel.com>	<s5hegs7mmki.wl-tiwai@suse.de>	<s5hppbr6ze7.wl-tiwai@suse.de>	<5488BF96.708@linux.intel.com>
+ <s5hlhmf6szm.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sihESFlf63f/fzF3"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1418688904-26959-1-git-send-email-kevin.strasser@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kevin Strasser <kevin.strasser@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Yang Fang <yang.a.fang@intel.com>, linux-kernel@vger.kernel.org, Kevin Strasser <kevin.strasser@intel.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 7F31A26063B
+ for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 15:01:32 +0100 (CET)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 2068920AF0
+ for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 09:01:30 -0500 (EST)
+In-Reply-To: <s5hlhmf6szm.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Nick Stoughton <nstoughton@aether.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi guys,
 
---sihESFlf63f/fzF3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry for the (substantial) delay in responding to this :)
 
-On Mon, Dec 15, 2014 at 04:15:04PM -0800, Kevin Strasser wrote:
-> A crash can occur on some platforms where adsp is enumerated but codec is not
-> matched. Define codec_id as a pointer intead of an array so that it gets
-> initialized to NULL for the terminating element of sst_acpi_bytcr[] and
-> sst_acpi_chv[].
+On 10/12/14 22:27, Takashi Iwai wrote:
+> At Wed, 10 Dec 2014 15:48:06 -0600,
+> Pierre-Louis Bossart wrote:
+>>
+>>> - Another concern is the compatibility with the current wallclock
+>>>     implementation.  Judging from your patch, the audio_tstamp won't be
+>>>     obtained from get_time_info callback in the default tstamp mode,
+>>>     right?  This may result in a regression, as currently the driver
+>>>     always gives the h/w audio_tstamp when the driver supports the
+>>>     wallclock.
+>>
+>> Is this that big of a deal? To the best of my knowledge this wallclk
+>> thing was implemented for HDaudio only when we were prototyping the new
+>> hardware, and I don't think we ended-up contributing the corresponding
+>> patches for PulseAudio. We've since realized that the wallclock can't be
+>> available in all cases and that we need this selection capability in a
+>> variety of cases.
+>>
+>> Also even if we kept the .wall_clock callback, the wallclock handling
+>> could be relative (start at zero) or absolute. I implemented a reset to
+>> zero on stream startup, since the counter is not maintained when the
+>> hardware is idle, but there are implementations where the wallclock is
+>> really absolute and not reset (see below).
+>
+> I'm not asking for keeping the wall_clock callback itself.  The
+> requirement is the compatible kernel *behavior*.  This is essentially
+> a MUST, especially when the backward compatibility isn't too
+> difficult to achieve.
+>
+> For example, leave the type zero = TSTAMP_TYPE_COMPAT or such, and
+> makes the PCM core and driver behaving as compatible as wall_clock.
+> This should be relatively easy.
+>
+> BTW, what if the driver doesn't support the requested tstamp type?
+> Isn't there any need to query the capability beforehand?
+>
+>
+>>> - Last but not least: we're receiving multiple enhancement requests
+>>>     regarding tstamp at the very same time.  This patchset conflicts
+>>>     with Tim and Nick's start_at extention.
+>>>
+>>>     I believe this can be resolved later, but let's discuss the ground
+>>>     line at first: the requirement and influence on both changes.
+>>
+>> I am aware of this and it's why I posted my patches earlier than planned
+>> to avoid merging different concepts later, it's probably best to have
+>> compatibility from day1.
+>
+> Yes, absolutely.
 
-Applied, thanks.
+Agreed :)
 
---sihESFlf63f/fzF3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>> My proposal was to have a start_at functionality based on the timestamp
+>> definitions I suggested and keep audio and system timestamps separate
+>> rather than add mixed typestamps such as
+>> SND_PCM_TSTAMP_TYPE_AUDIO_WALLCLOCK. the code could be something like:
+>>
+>> start_at(typestamp type, timestamp subtype, timespec value ) {
+>>
+>> 	if (type == SYSTEM) {
+>> 		_start_using_hrtimers(subtype, value) // would be CLOCK_REALTIME,
+>> MONOTONIC, maybe RAW
+>> 	} else if (type == AUDIO) {
+>> 		if (subtype == ABSOLUTE_WALLCLOCK) // not reset on audio subsystem startup
+>> 			_start_using_hardware(value)
+>> 		else
+>> 			// not sure what to do with regular counters, probably bail.
+>> 			error;
+>> 	}
+>>
+>> That way you can set what sort of system timestamp and what sort of
+>> audio timestamp you want reported by snd_pcm_status, and you can
+>> independently select the start timestamp of your choice.
+>
+> OK, let's see how other guys receive this idea.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+This seems fine to me!
 
-iQEcBAEBAgAGBQJUkBz7AAoJECTWi3JdVIfQ4rkH+wenNgiZubjVpz+styGfMhR6
-CkhWB9EKg0Dp/OKp1127JvYWcPriHY7v4j9x9tj9T+1Didmd/F8mTl/GHvG3o9CL
-OVFUe6T9eenr0nwEVtnCI+t4Tew7MXGIxd8br51InkegMwDftNn4mrnW0vmPRG6Z
-uCmN6Blh8XLwnbiGNAqA0jIFuM4ZK8alqlDTt7gPwnOcnvWqOhTLWtiOJMR7D2T4
-1vwlD4YU7T1Md5GspGpiqGSzuOV8gsLYBBtL1A43auqFKEJLVw5siZ7gy6oW5uTs
-qnb+beyvxP/SCj0u0mDY1ydFvFJiaILHI8b2ZDu7TZ+tQ6wOpaE9uq8U0+zSh/c=
-=1Fu5
------END PGP SIGNATURE-----
-
---sihESFlf63f/fzF3--
+>
+> thanks,
+>
+> Takashi
+>
