@@ -1,77 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Streaming wake-up buffer from DSP to SoC over SPI
-Date: Tue, 16 Dec 2014 11:42:00 +0000
-Message-ID: <20141216114200.GP11764@sirena.org.uk>
-References: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: Intel: fix possible acpi enumeration panic
+Date: Tue, 16 Dec 2014 11:52:28 +0000
+Message-ID: <20141216115228.GQ11764@sirena.org.uk>
+References: <1418282517-851-1-git-send-email-kevin.strasser@intel.com>
+ <1418688904-26959-1-git-send-email-kevin.strasser@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6664283864614753458=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D6C7260541
- for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 12:42:15 +0100 (CET)
-In-Reply-To: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@google.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sihESFlf63f/fzF3"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1418688904-26959-1-git-send-email-kevin.strasser@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kevin Strasser <kevin.strasser@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Yang Fang <yang.a.fang@intel.com>, linux-kernel@vger.kernel.org, Kevin Strasser <kevin.strasser@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6664283864614753458==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="poAjhhkjx0WzNZgL"
-Content-Disposition: inline
-
-
---poAjhhkjx0WzNZgL
+--sihESFlf63f/fzF3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 15, 2014 at 06:45:37PM -0800, Dylan Reid wrote:
+On Mon, Dec 15, 2014 at 04:15:04PM -0800, Kevin Strasser wrote:
+> A crash can occur on some platforms where adsp is enumerated but codec is not
+> matched. Define codec_id as a pointer intead of an array so that it gets
+> initialized to NULL for the terminating element of sst_acpi_bytcr[] and
+> sst_acpi_chv[].
 
-> I was thinking of making a separate PCM device.  The odd things are
-> that it would have to originate from soc/codecs, the codec would own
-> the codec and cpu end of the link, and the hw_ptr position would need
-> to be queried over SPI.  But it would make userspace access to it more
-> standard looking.
+Applied, thanks.
 
-That's all totally fine from a framework point of view, if the data
-comes from the CODEC with no SoC side involvement other than the control
-interface bus then it's a good way to model things.  The component model
-should make this a more natural fit than it is currently, you can just
-add a DAI to the CODEC device.
-
---poAjhhkjx0WzNZgL
+--sihESFlf63f/fzF3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUkBqIAAoJECTWi3JdVIfQNtAH/R6/1mwvXYEf8lGx7XoQHhLA
-z0+S/hV+j5KRcFxvA4jsUMWIo/ZxBLhn+tYskCWOtG1gHglxTgmw14xlErp9+KdA
-qWtQ5cJGxQ2b+10FXVGcgsx2htJjXpT4vPQaiM+PpMUZR/+KAAENZCcP9DhVH+ms
-t46K162d/gEldWlsR+0aU10HPXiCw9gKDg8SwAxxh8z7mc8+ffD6SMplkBLz7Uip
-+KaMaX8leT0g9+2bZnlglkB0EqWWxjc+0UbfAyN8QQ8JhKViJBZlHjXKdVPscNiZ
-/rqCeZLQrcrO4d5V7wTys2b4tAjhEn9obJJQgZDKt72g/BrOXAIFFJLcPJ0+MuA=
-=00tJ
+iQEcBAEBAgAGBQJUkBz7AAoJECTWi3JdVIfQ4rkH+wenNgiZubjVpz+styGfMhR6
+CkhWB9EKg0Dp/OKp1127JvYWcPriHY7v4j9x9tj9T+1Didmd/F8mTl/GHvG3o9CL
+OVFUe6T9eenr0nwEVtnCI+t4Tew7MXGIxd8br51InkegMwDftNn4mrnW0vmPRG6Z
+uCmN6Blh8XLwnbiGNAqA0jIFuM4ZK8alqlDTt7gPwnOcnvWqOhTLWtiOJMR7D2T4
+1vwlD4YU7T1Md5GspGpiqGSzuOV8gsLYBBtL1A43auqFKEJLVw5siZ7gy6oW5uTs
+qnb+beyvxP/SCj0u0mDY1ydFvFJiaILHI8b2ZDu7TZ+tQ6wOpaE9uq8U0+zSh/c=
+=1Fu5
 -----END PGP SIGNATURE-----
 
---poAjhhkjx0WzNZgL--
-
---===============6664283864614753458==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6664283864614753458==--
+--sihESFlf63f/fzF3--
