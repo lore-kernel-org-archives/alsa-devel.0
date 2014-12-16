@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: Streaming wake-up buffer from DSP to SoC over SPI
-Date: Tue, 16 Dec 2014 11:40:11 +0000
-Message-ID: <20141216114011.GO11764@sirena.org.uk>
+Date: Tue, 16 Dec 2014 11:42:00 +0000
+Message-ID: <20141216114200.GP11764@sirena.org.uk>
 References: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
- <20141216044115.GU16827@intel.com>
- <CAEUnVG4OexC99Cxbd7TF7NQxxk8wQd0WRQS8Q6mzMMY1X5PWgA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5500957970131835028=="
+Content-Type: multipart/mixed; boundary="===============6664283864614753458=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 010F22605CB
- for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 12:40:25 +0100 (CET)
-In-Reply-To: <CAEUnVG4OexC99Cxbd7TF7NQxxk8wQd0WRQS8Q6mzMMY1X5PWgA@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D6C7260541
+ for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2014 12:42:15 +0100 (CET)
+In-Reply-To: <CAEUnVG6n15vNYgZoZXzRZvgAqej1Lb3bHDEy9cyQ+UCJbuv2kg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Dylan Reid <dgreid@google.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5500957970131835028==
+--===============6664283864614753458==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2GakNc7NZZagqQ4g"
+	protocol="application/pgp-signature"; boundary="poAjhhkjx0WzNZgL"
 Content-Disposition: inline
 
 
---2GakNc7NZZagqQ4g
+--poAjhhkjx0WzNZgL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 16, 2014 at 12:16:40AM -0800, Dylan Reid wrote:
-> On Mon, Dec 15, 2014 at 8:41 PM, Vinod Koul <vinod.koul@intel.com> wrote:
+On Mon, Dec 15, 2014 at 06:45:37PM -0800, Dylan Reid wrote:
 
-> > The device here wont be any different than regular PCM/Compressed devices.
-> > Assume the data path is SPI rather than I2S so things would be modelled that
-> > way. You still need to setup SPI port, DMAs like you would do on I2S.
+> I was thinking of making a separate PCM device.  The odd things are
+> that it would have to originate from soc/codecs, the codec would own
+> the codec and cpu end of the link, and the hw_ptr position would need
+> to be queried over SPI.  But it would make userspace access to it more
+> standard looking.
 
-> Ah, I hadn't thought about using the compressed framework.  I can see
-> how that would make this easier.  I'll take a closer look at it
-> tomorrow.
+That's all totally fine from a framework point of view, if the data
+comes from the CODEC with no SoC side involvement other than the control
+interface bus then it's a good way to model things.  The component model
+should make this a more natural fit than it is currently, you can just
+add a DAI to the CODEC device.
 
-You should be able to use a normal device as well, you need to either
-arrange for the driver to buffer data until userspace starts the magic
-stream or arrange for userspace to not mind if it blocks for extended
-periods.  Either compressed or uncompressed should work.
-
---2GakNc7NZZagqQ4g
+--poAjhhkjx0WzNZgL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUkBoaAAoJECTWi3JdVIfQ0X0H/3JszFzyTRKYEtnXbp9l9ETe
-8FJxuXDiDs4zb31XyXoX7EI8cgnEAw8ibVj2es0JD5aAQCwcMmFTXr8p1N4MjlpS
-07wiog7FUXE/e7o8iENe3EMR6BmeKEqZC/l1u6rlRNbKRJfEDWT6fbx8IvJzHMly
-KNl6zZUGHh3dWRcThvkh8bmrt0t1nVv/YrMgiGJw7PlZsMzjf+oijzoTWTMjPdP0
-ZTq/nJB9+uUoSB01TGbXCkNdIOpEg+nBB33Dlqkb5fcCZIFZw/Ct+nu0GBGN5Jc5
-4fTPG3+JO8vElgK83mUpeZ8F49zYqx0L/DlSrI/yUvEREPszFRsVr9TVi9w/GII=
-=DQ5g
+iQEcBAEBAgAGBQJUkBqIAAoJECTWi3JdVIfQNtAH/R6/1mwvXYEf8lGx7XoQHhLA
+z0+S/hV+j5KRcFxvA4jsUMWIo/ZxBLhn+tYskCWOtG1gHglxTgmw14xlErp9+KdA
+qWtQ5cJGxQ2b+10FXVGcgsx2htJjXpT4vPQaiM+PpMUZR/+KAAENZCcP9DhVH+ms
+t46K162d/gEldWlsR+0aU10HPXiCw9gKDg8SwAxxh8z7mc8+ffD6SMplkBLz7Uip
++KaMaX8leT0g9+2bZnlglkB0EqWWxjc+0UbfAyN8QQ8JhKViJBZlHjXKdVPscNiZ
+/rqCeZLQrcrO4d5V7wTys2b4tAjhEn9obJJQgZDKt72g/BrOXAIFFJLcPJ0+MuA=
+=00tJ
 -----END PGP SIGNATURE-----
 
---2GakNc7NZZagqQ4g--
+--poAjhhkjx0WzNZgL--
 
---===============5500957970131835028==
+--===============6664283864614753458==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5500957970131835028==--
+--===============6664283864614753458==--
