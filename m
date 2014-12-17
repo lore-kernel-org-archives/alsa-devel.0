@@ -1,48 +1,37 @@
-From: Aurelien Bouin <a_bouin@yahoo.fr>
-Subject: iMX6 ESAI TDM with underrun and overrun support
-Date: Wed, 17 Dec 2014 15:13:43 +0000 (UTC)
-Message-ID: <1758576875.330121.1418829223072.JavaMail.yahoo@jws11142.mail.ir2.yahoo.com>
-Reply-To: Aurelien Bouin <a_bouin@yahoo.fr>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH/RFC 11/14] ASoC: samsung: odroidx2: Handle I2S CDCLK clock
+ conditionally
+Date: Wed, 17 Dec 2014 16:18:38 +0100
+Message-ID: <54919ECE.7040404@samsung.com>
+References: <1418319952-10163-1-git-send-email-s.nawrocki@samsung.com>
+ <1418319952-10163-12-git-send-email-s.nawrocki@samsung.com>
+ <20141212185332.GS11764@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm39-vm6.bullet.mail.ir2.yahoo.com
- (nm39-vm6.bullet.mail.ir2.yahoo.com [212.82.97.165])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FB082605E3
- for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2014 16:13:44 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20141212185332.GS11764@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I am currently working on an iMX6 board, I work with the master branch of git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
-I have seen some problems in the freescale ESAI implementation :
+On 12/12/14 19:53, Mark Brown wrote:
+> On Thu, Dec 11, 2014 at 06:45:49PM +0100, Sylwester Nawrocki wrote:
+>> > If the codec control it's master clock provider by the I2S module
+>> > we should not be touching it with set_sysclk() calls.
+>> > So skip the set_sysclk() call in the machine driver if "clocks"
+>> > property is found in the codec device node.
+>
+> Please clarify in the changelog here that this is a transition measure
+> to support old DTs, it's not clear why we might want to do things for
+> the I2S controller by fishing around in the CODEC DT otherwise.
 
-1.The registers TCCR and RCCR have TFP and RFP bits in register of a width of 5, not 4 !
-With a value of 5 we are able to use the full range of slots (32)
-Patch : http://pastebin.com/Ai1RZ9mE
-2.The channels number are limited in Playback to 12, but actually we can rise 128, in Capture it is limited to 8 but actually we can rise 128 also
+Indeed, there is some room for improvement. I'll add such note to the
+commit description. Presumably this whole driver could be removed
+after a kernel release or two, since we switched Odroid X2/U3 to
+the simple-card.
 
-Patch : http://pastebin.com/SHk5eHPa
-
-I use the iMX6 ESAI bus to send audio datas to other processors ... but actually I don't have any codec behind ...
-I am wondering if there is any solution with the devicetree to implement such configuration with "simple-audio-card"
-
-Because for the moment I have not find another solution than doing a module : http://pastebin.com/cnGwnEjn
-
-I also see that the chip errata of the iMX6 ERR008000 is not handle ...Which make channel swapping on my ESAI bus ...
-Is there someone that succeed in implementing the underrun overrun catch ?
-
-Thank you for your return,
-
-Regards
-Aurelien BOUIN
+-- 
+Regards,
+Sylwester
