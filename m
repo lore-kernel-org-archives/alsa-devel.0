@@ -1,19 +1,16 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: iMX6 ESAI TDM with underrun and overrun support
-Date: Wed, 17 Dec 2014 14:04:25 -0200
-Message-ID: <CAOMZO5BOfk1HDmFmS+NQx4FWOf-bS9We46aLF89_iducw-KbxA@mail.gmail.com>
-References: <1758576875.330121.1418829223072.JavaMail.yahoo@jws11142.mail.ir2.yahoo.com>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: [PATCH] usb: add native DSD support for Matrix Audio
+	DACs
+Date: Wed, 17 Dec 2014 17:45:20 +0100
+Message-ID: <1418834720-4772-1-git-send-email-gtmkramer@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f177.google.com (mail-lb0-f177.google.com
- [209.85.217.177])
- by alsa0.perex.cz (Postfix) with ESMTP id C4C7926063D
- for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2014 17:04:25 +0100 (CET)
-Received: by mail-lb0-f177.google.com with SMTP id b6so12640410lbj.22
- for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2014 08:04:25 -0800 (PST)
-In-Reply-To: <1758576875.330121.1418829223072.JavaMail.yahoo@jws11142.mail.ir2.yahoo.com>
+Received: from lb2-smtp-cloud3.xs4all.net (lb2-smtp-cloud3.xs4all.net
+ [194.109.24.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 157C526063D
+ for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2014 17:45:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Aurelien Bouin <a_bouin@yahoo.fr>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Aurelien,
+This patch adds native DSD support for two XMOS based DACs from Matrix Audio:
+- X-Sabre
+- Mini-i Pro
 
-[Adding Nicolin and Mark on Cc]
+Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
+---
+ sound/usb/quirks.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-On Wed, Dec 17, 2014 at 1:13 PM, Aurelien Bouin <a_bouin@yahoo.fr> wrote:
-> Hello,
-> I am currently working on an iMX6 board, I work with the master branch of git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
-> I have seen some problems in the freescale ESAI implementation :
->
-> 1.The registers TCCR and RCCR have TFP and RFP bits in register of a width of 5, not 4 !
-> With a value of 5 we are able to use the full range of slots (32)
-> Patch : http://pastebin.com/Ai1RZ9mE
-
-Please send this as a formal patch for review in the list.
-
-> 2.The channels number are limited in Playback to 12, but actually we can rise 128, in Capture it is limited to 8 but actually we can rise 128 also
->
-> Patch : http://pastebin.com/SHk5eHPa
-
-Same here.
-
->
-> I use the iMX6 ESAI bus to send audio datas to other processors ... but actually I don't have any codec behind ...
-> I am wondering if there is any solution with the devicetree to implement such configuration with "simple-audio-card"
->
-> Because for the moment I have not find another solution than doing a module : http://pastebin.com/cnGwnEjn
->
-> I also see that the chip errata of the iMX6 ERR008000 is not handle ...Which make channel swapping on my ESAI bus ...
-> Is there someone that succeed in implementing the underrun overrun catch ?
-
-Are you getting the "isr: Receiving overrun/underrun" warnings from
-the esai driver?
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 4dbfb3d..a739841 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1245,8 +1245,9 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 
+ 	/* XMOS based USB DACs */
+ 	switch (chip->usb_id) {
+-	/* iFi Audio micro/nano iDSD */
+-	case USB_ID(0x20b1, 0x3008):
++	case USB_ID(0x20b1, 0x3008): /* iFi Audio micro/nano iDSD */
++	case USB_ID(0x20b1, 0x2008): /* Matrix Audio X-Sabre */
++	case USB_ID(0x20b1, 0x300a): /* Matrix Audio Mini-i Pro */
+ 		if (fp->altsetting == 2)
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 		break;
+-- 
+1.9.3
