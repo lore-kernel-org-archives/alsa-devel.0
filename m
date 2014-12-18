@@ -1,15 +1,20 @@
-From: Aurelien Bouin <a_bouin@yahoo.fr>
-Subject: Device Tree simple-audio-card without codec HOWTO ?
-Date: Thu, 18 Dec 2014 09:55:30 +0000 (UTC)
-Message-ID: <2137743326.101731.1418896530601.JavaMail.yahoo@jws11132.mail.ir2.yahoo.com>
-Reply-To: Aurelien Bouin <a_bouin@yahoo.fr>
+From: Tim Cussins <timcussins@eml.cc>
+Subject: Re: [PATCH v2 1/1] alsa-lib: Add snd_pcm_start_at.
+Date: Thu, 18 Dec 2014 10:10:01 +0000
+Message-ID: <5492A7F9.8090602@eml.cc>
+References: <1418837267-10896-1-git-send-email-timcussins@eml.cc>
+ <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm19.bullet.mail.ir2.yahoo.com (nm19.bullet.mail.ir2.yahoo.com
- [212.82.96.42]) by alsa0.perex.cz (Postfix) with ESMTP id 8957A261685
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 10:55:32 +0100 (CET)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 00107261685
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 11:10:05 +0100 (CET)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 79D2320ACF
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 05:10:05 -0500 (EST)
+In-Reply-To: <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,31 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: nstoughton@aether.com, tiwai@suse.de, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi Raymond,
 
-I use the iMX6 ESAI bus to send audio datas to other processors ... but actually I don't have any codec behind ...
-I am wondering if there is any solution with the devicetree to implement such configuration with "simple-audio-card"
-That will configure tdm slots and width.
-I tried without success that :
-sound {
-    compatible = "simple-audio-card";
-    simple-audio-card,name = "Generic-ESAI-Sound-Card";
-    simple-audio-card,format = "left_j";
-    simple-audio-card,cpu {
-        sound-dai = <&esai 0>;
-        dai-tdm-slot-num = <32>;
-        dai-tdm-slot-width = <8>;
-    };
-    simple-audio-card,codec {
-        sound-dai = <0 0>;
-    };
-};
+Thanks for the feedback :)
 
-Because for the moment I have not find another solution than doing a module : http://pastebin.com/cnGwnEjn
-Thank you for your help,
-Regards,
+On 18/12/14 01:05, Raymond Yau wrote:
+>  >
+>  > Add notion of TSTAMP_CLASS (SYSTEM/AUDIO) as per Pierre's suggestion.
+>  > Add snd_pcm_start_at()
+>  >
+>
+> Do your implementation need to set specific start threshold to prevent
+> the driver automatically start when you fill the buffer ?
 
-Aurelien BOUIN
+
+> Do the driver allow to start when there is no data ?
+>
+
+It's the responsibility of the client to set the start threshold to a 
+safe and responsible value.
+
+It might suit some applications to allow both threshold start _and_ 
+start_at: My implementation doesn't preclude this.
+
+Cheers,
+Tim
