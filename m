@@ -1,20 +1,20 @@
-From: Tim Cussins <timcussins@eml.cc>
-Subject: Re: [PATCH v2 1/1] alsa-lib: Add snd_pcm_start_at.
-Date: Thu, 18 Dec 2014 10:10:01 +0000
-Message-ID: <5492A7F9.8090602@eml.cc>
-References: <1418837267-10896-1-git-send-email-timcussins@eml.cc>
- <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: iMX6 ESAI TDM with underrun and overrun support
+Date: Thu, 18 Dec 2014 09:00:34 -0200
+Message-ID: <CAOMZO5Bq7WaJo4iVqF4scT_47KwS4K8oWLGMsHPSojbW5B3REQ@mail.gmail.com>
+References: <20141217233623.GA3152@Asurada>
+ <938681467.624323.1418893243288.JavaMail.yahoo@jws11102g.mail.ir2.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 00107261685
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 11:10:05 +0100 (CET)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 79D2320ACF
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 05:10:05 -0500 (EST)
-In-Reply-To: <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
+Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5FC0261685
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 12:00:35 +0100 (CET)
+Received: by mail-lb0-f176.google.com with SMTP id p9so735280lbv.21
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 03:00:34 -0800 (PST)
+In-Reply-To: <938681467.624323.1418893243288.JavaMail.yahoo@jws11102g.mail.ir2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: nstoughton@aether.com, tiwai@suse.de, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+To: Aurelien Bouin <a_bouin@yahoo.fr>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Raymond,
+On Thu, Dec 18, 2014 at 7:00 AM, Aurelien Bouin <a_bouin@yahoo.fr> wrote:
 
-Thanks for the feedback :)
-
-On 18/12/14 01:05, Raymond Yau wrote:
->  >
->  > Add notion of TSTAMP_CLASS (SYSTEM/AUDIO) as per Pierre's suggestion.
->  > Add snd_pcm_start_at()
->  >
+>>Please send your revised patch to alsa-maillist, CC me and Mark.
 >
-> Do your implementation need to set specific start threshold to prevent
-> the driver automatically start when you fill the buffer ?
-
-
-> Do the driver allow to start when there is no data ?
+>>(It'd be better to use ./scripts/get_maintainer.pl to get info)
 >
+> I will send you a formated patch
+> Do you mean that I have to CC the patch to all the maintainers ?
 
-It's the responsibility of the client to set the start threshold to a 
-safe and responsible value.
+Please check Documentation/SubmittingPatches for details.
 
-It might suit some applications to allow both threshold start _and_ 
-start_at: My implementation doesn't preclude this.
-
-Cheers,
-Tim
+You should send the patch to Mark and Nicolin with this list on Cc.
