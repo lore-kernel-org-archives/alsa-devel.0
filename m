@@ -1,51 +1,63 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2 3/3] snd_pcm_start_at: Implement
- snd_pcm_start_at for system and audio tstamp types.
-Date: Thu, 18 Dec 2014 07:37:50 +0800
-Message-ID: <CAN8cciYLnTBreS=wf4Ax4o8r-zLJ9fYaTXeyQd-fosaXdn_nVA@mail.gmail.com>
-References: <1418837365-19398-1-git-send-email-timcussins@eml.cc>
- <1418837365-19398-3-git-send-email-timcussins@eml.cc>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f169.google.com (mail-qc0-f169.google.com
- [209.85.216.169])
- by alsa0.perex.cz (Postfix) with ESMTP id F18F226145B
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 00:37:50 +0100 (CET)
-Received: by mail-qc0-f169.google.com with SMTP id w7so86449qcr.14
- for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2014 15:37:50 -0800 (PST)
-In-Reply-To: <1418837365-19398-3-git-send-email-timcussins@eml.cc>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Cussins <timcussins@eml.cc>
-Cc: nstoughton@aether.com, tiwai@suse.de, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+From: Jiri Jaburek <jjaburek@redhat.com>
+Subject: [PATCH] ALSA: usb-audio: extend KEF X300A FU 10 tweak to Arcam rPAC
+Date: Thu, 18 Dec 2014 02:03:19 +0100
+Message-ID: <1418864599-7092-1-git-send-email-jjaburek@redhat.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
->
-> System tstamp types rely on high-res timers.
-> Audio tstamp types delegate to the pcm driver.
-> Current start_at timer is cancelled on attempt to change stream state.
+The Arcam rPAC seems to have the same problem - whenever anything
+(alsamixer, udevd, 3.9+ kernel from 60af3d037eb8c, ..) attempts to
+access mixer / control interface of the card, the firmware "locks up"
+the entire device, resulting in
+  SNDRV_PCM_IOCTL_HW_PARAMS failed (-5): Input/output error
+from alsa-lib.
 
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob_plain;f=test/timer.c;hb=HEAD
+Other operating systems can somehow read the mixer (there seems to be
+playback volume/mute), but any manipulation is ignored by the device
+(which has hardware volume controls).
 
-Are there any difference between sound card's timer with high res
-timer/wall clock time stamp ?
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+---
+ sound/usb/mixer_maps.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-It seem those sound cards timer have resolution and max tick
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/ymfpci?id=6e2efaacb3579fd9643d0dc59963b58b801c03a1
-
-snd_timer_status_get_resolution
-
-The clock tick counters are 32 bits and wrap around
-
-This may mean that snd_pcm_start_at can only start within certian time
-interval
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index 1994d41..b703cb3 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -333,8 +333,11 @@ static struct usbmix_name_map gamecom780_map[] = {
+ 	{}
+ };
+ 
+-static const struct usbmix_name_map kef_x300a_map[] = {
+-	{ 10, NULL }, /* firmware locks up (?) when we try to access this FU */
++/* some (all?) SCMS USB3318 devices are affected by a firmware lock up
++ * when anything attempts to access FU 10 (control)
++ */
++static const struct usbmix_name_map scms_usb3318_map[] = {
++	{ 10, NULL },
+ 	{ 0 }
+ };
+ 
+@@ -434,8 +437,14 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 		.map = ebox44_map,
+ 	},
+ 	{
++		/* KEF X300A */
+ 		.id = USB_ID(0x27ac, 0x1000),
+-		.map = kef_x300a_map,
++		.map = scms_usb3318_map,
++	},
++	{
++		/* Arcam rPAC */
++		.id = USB_ID(0x25c4, 0x0003),
++		.map = scms_usb3318_map,
+ 	},
+ 	{ 0 } /* terminator */
+ };
+-- 
+2.1.0
