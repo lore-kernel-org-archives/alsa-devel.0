@@ -1,17 +1,20 @@
-From: libin.yang@intel.com
-Subject: [PATCH 2/2] ALSA: hda_intel: apply the Seperate
-	stream_tag for Skylake
-Date: Thu, 18 Dec 2014 14:13:51 +0800
-Message-ID: <1418883231-29170-2-git-send-email-libin.yang@intel.com>
-References: <1418883231-29170-1-git-send-email-libin.yang@intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 1/2] ALSA: hda - Create capture source ctls
+ when stereo mix input is added
+Date: Thu, 18 Dec 2014 15:13:13 +0800
+Message-ID: <CAN8cciat+TW_qxEHPngXkAWzQZ4GSUWrmww3WDt2qA2R0Mnvsw@mail.gmail.com>
+References: <1418648202-2509-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4185E260467
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 07:18:45 +0100 (CET)
-In-Reply-To: <1418883231-29170-1-git-send-email-libin.yang@intel.com>
+Received: from mail-qg0-f47.google.com (mail-qg0-f47.google.com
+ [209.85.192.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 622F126049A
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 08:13:14 +0100 (CET)
+Received: by mail-qg0-f47.google.com with SMTP id q108so441835qgd.6
+ for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2014 23:13:13 -0800 (PST)
+In-Reply-To: <1418648202-2509-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: libin.yang@intel.com, vinod.koul@intel.com, jayachandran.b@intel.com, rafal.f.redzimski@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@intel.com>
+>
+> When the stereo mix input is explicitly enabled via a user hint, the
+> driver should create always a capture source enum ctl and disable the
+> auto-mic switch.  Otherwise the behavior gets confused.  For doing it,
+> this patch just sets spec->suppress_auto_mic flag appropriately.
+>
 
-The total stream number of Skylake's input and output stream
-exceeds 15, which will cause some streams do not work because
-of the overflow on SDxCTL.STRM field if using the legacy
-stream tag allocation method.
+As your patch allow notebook to use stereo mix by hint , does it mean that
+those audio mixer which only have input from audio output but no mic or
+line input can be also enabled on notebook by hint ?
 
-This patch uses the new stream tag allocation method by add
-the flag AZX_DCAPS_SEPARATE_STREAM_TAG for Skylake platform.
+https://bugzilla.kernel.org/attachment.cgi?id=144111
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Reviewed-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/pci/hda/hda_intel.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Node 0x14 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
+  Control: name="Capture Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Control: name="Capture Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Device: name="CX20590 Analog", type="Audio", device=0
+  Amp-In caps: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
+  Amp-In vals:  [0x50 0x50] [0x80 0x80] [0x50 0x50] [0x80 0x80]
+  Converter: stream=1, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 D3cold EPSS
+  Power: setting=D0, actual=D0
+  Connection: 4
+     0x17 0x18 0x23* 0x24
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 5ac0d39..927daf4 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -299,6 +299,9 @@ enum {
- 	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
- 	 AZX_DCAPS_SNOOP_TYPE(SCH))
- 
-+#define AZX_DCAPS_INTEL_SKYLAKE \
-+	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_SEPARATE_STREAM_TAG)
-+
- /* quirks for ATI SB / AMD Hudson */
- #define AZX_DCAPS_PRESET_ATI_SB \
- 	(AZX_DCAPS_NO_TCSEL | AZX_DCAPS_SYNC_WRITE | AZX_DCAPS_POSFIX_LPIB |\
-@@ -2030,7 +2033,7 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
- 	/* Sunrise Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d70),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Haswell */
- 	{ PCI_DEVICE(0x8086, 0x0a0c),
- 	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
--- 
-1.9.1
+Node 0x24 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Amp-In caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Power states:  D0 D1 D2 D3 D3cold EPSS
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x10 0x11
