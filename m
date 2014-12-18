@@ -1,16 +1,15 @@
-From: Aurelien BOUIN <a_bouin@yahoo.fr>
-Subject: [[PATCH] ALSA: In Freescale ESAI driver xDxDC bits in
-	xCCR registers is 5 bits width not 4
-Date: Thu, 18 Dec 2014 15:31:21 +0100
-Message-ID: <1418913081-14439-1-git-send-email-a_bouin@yahoo.fr>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Add I2C dependency to two new
+	machines
+Date: Thu, 18 Dec 2014 16:40:35 +0200
+Message-ID: <1418913635-7422-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm1-vm5.bullet.mail.ir2.yahoo.com
- (nm1-vm5.bullet.mail.ir2.yahoo.com [212.82.96.76])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EF5E2605E9
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 15:32:33 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 148B42605E9
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 15:49:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,24 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, festevam@gmail.com, Aurelien BOUIN <a_bouin@yahoo.fr>
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@intel.com>, Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Aurelien BOUIN <a_bouin@yahoo.fr>
-
-diff --git a/sound/soc/fsl/fsl_esai.h b/sound/soc/fsl/fsl_esai.h
-index 91a550f..5e793bb 100644
---- a/sound/soc/fsl/fsl_esai.h
-+++ b/sound/soc/fsl/fsl_esai.h
-@@ -302,7 +302,7 @@
- #define ESAI_xCCR_xFP_MASK	(((1 << ESAI_xCCR_xFP_WIDTH) - 1) << ESAI_xCCR_xFP_SHIFT)
- #define ESAI_xCCR_xFP(v)	((((v) - 1) << ESAI_xCCR_xFP_SHIFT) & ESAI_xCCR_xFP_MASK)
- #define ESAI_xCCR_xDC_SHIFT     9
--#define ESAI_xCCR_xDC_WIDTH	4
-+#define ESAI_xCCR_xDC_WIDTH	5
- #define ESAI_xCCR_xDC_MASK	(((1 << ESAI_xCCR_xDC_WIDTH) - 1) << ESAI_xCCR_xDC_SHIFT)
- #define ESAI_xCCR_xDC(v)	((((v) - 1) << ESAI_xCCR_xDC_SHIFT) & ESAI_xCCR_xDC_MASK)
- #define ESAI_xCCR_xPSR_SHIFT	8
--- 
-1.9.1
+Rml4IGZvbGxvd2luZyBidWlsZCBlcnJvciB3aGVuIENPTkZJR19JMkMgaXMgbm90IGVuYWJsZWQ6
+Cgpzb3VuZC9zb2MvY29kZWNzL3J0NTY0MC5jOjIyNTI6MTogd2FybmluZzogZGF0YSBkZWZpbml0
+aW9uIGhhcyBubyB0eXBlIG9yIHN0b3JhZ2UgY2xhc3MKIG1vZHVsZV9pMmNfZHJpdmVyKHJ0NTY0
+MF9pMmNfZHJpdmVyKTsKIF4Kc291bmQvc29jL2NvZGVjcy9ydDU2NDAuYzoyMjUyOjE6IGVycm9y
+OiB0eXBlIGRlZmF1bHRzIHRvIOKAmGludOKAmSBpbiBkZWNsYXJhdGlvbiBvZiDigJhtb2R1bGVf
+aTJjX2RyaXZlcuKAmSBbLVdlcnJvcj1pbXBsaWNpdC1pbnRdCnNvdW5kL3NvYy9jb2RlY3MvcnQ1
+NjQwLmM6MjI1MjoxOiB3YXJuaW5nOiBwYXJhbWV0ZXIgbmFtZXMgKHdpdGhvdXQgdHlwZXMpIGlu
+IGZ1bmN0aW9uIGRlY2xhcmF0aW9uCnNvdW5kL3NvYy9jb2RlY3MvcnQ1NjQwLmM6MjI0MToyNjog
+d2FybmluZzog4oCYcnQ1NjQwX2kyY19kcml2ZXLigJkgZGVmaW5lZCBidXQgbm90IHVzZWQgWy1X
+dW51c2VkLXZhcmlhYmxlXQogc3RhdGljIHN0cnVjdCBpMmNfZHJpdmVyIHJ0NTY0MF9pMmNfZHJp
+dmVyID0gewogICAgICAgICAgICAgICAgICAgICAgICAgIF4KY2MxOiBzb21lIHdhcm5pbmdzIGJl
+aW5nIHRyZWF0ZWQgYXMgZXJyb3JzCgpTaWduZWQtb2ZmLWJ5OiBKYXJra28gTmlrdWxhIDxqYXJr
+a28ubmlrdWxhQGxpbnV4LmludGVsLmNvbT4KUmVwb3J0ZWQtYnk6IFJhbmR5IER1bmxhcCA8cmR1
+bmxhcEBpbmZyYWRlYWQub3JnPgpDYzogU3ViaHJhbnN1IFMuIFBydXN0eSA8c3ViaHJhbnN1LnMu
+cHJ1c3R5QGludGVsLmNvbT4KQ2M6IE1lbmdkb25nIExpbiA8bWVuZ2RvbmcubGluQGludGVsLmNv
+bT4KLS0tCiBzb3VuZC9zb2MvaW50ZWwvS2NvbmZpZyB8IDQgKystLQogMSBmaWxlIGNoYW5nZWQs
+IDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+aW50ZWwvS2NvbmZpZyBiL3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnCmluZGV4IGU5ODllY2YwNDZj
+OS4uZjg2ZGUxMjExYjk2IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwvS2NvbmZpZworKysg
+Yi9zb3VuZC9zb2MvaW50ZWwvS2NvbmZpZwpAQCAtODksNyArODksNyBAQCBjb25maWcgU05EX1NP
+Q19JTlRFTF9CUk9BRFdFTExfTUFDSAogCiBjb25maWcgU05EX1NPQ19JTlRFTF9CWVRDUl9SVDU2
+NDBfTUFDSAogCXRyaXN0YXRlICJBU29DIEF1ZGlvIERTUCBTdXBwb3J0IGZvciBNSUQgQllUIFBs
+YXRmb3JtIgotCWRlcGVuZHMgb24gWDg2CisJZGVwZW5kcyBvbiBYODYgJiYgSTJDCiAJc2VsZWN0
+IFNORF9TT0NfUlQ1NjQwCiAJc2VsZWN0IFNORF9TU1RfTUZMRF9QTEFURk9STQogCXNlbGVjdCBT
+TkRfU1NUX0lQQ19BQ1BJCkBAIC0xMDEsNyArMTAxLDcgQEAgY29uZmlnIFNORF9TT0NfSU5URUxf
+QllUQ1JfUlQ1NjQwX01BQ0gKIAogY29uZmlnIFNORF9TT0NfSU5URUxfQ0hUX0JTV19SVDU2NzJf
+TUFDSAogICAgICAgICB0cmlzdGF0ZSAiQVNvQyBBdWRpbyBkcml2ZXIgZm9yIEludGVsIENoZXJy
+eXRyYWlsICYgQnJhc3dlbGwgd2l0aCBSVDU2NzIgY29kZWMiCi0gICAgICAgIGRlcGVuZHMgb24g
+WDg2X0lOVEVMX0xQU1MKKyAgICAgICAgZGVwZW5kcyBvbiBYODZfSU5URUxfTFBTUyAmJiBJMkMK
+ICAgICAgICAgc2VsZWN0IFNORF9TT0NfUlQ1NjcwCiAgICAgICAgIHNlbGVjdCBTTkRfU1NUX01G
+TERfUExBVEZPUk0KICAgICAgICAgc2VsZWN0IFNORF9TU1RfSVBDX0FDUEkKLS0gCjIuMS4zCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
