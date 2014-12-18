@@ -1,18 +1,18 @@
-From: Aurelien Bouin <a_bouin@yahoo.fr>
-Subject: Re: iMX6 ESAI TDM with underrun and overrun support
-Date: Thu, 18 Dec 2014 09:00:43 +0000 (UTC)
-Message-ID: <938681467.624323.1418893243288.JavaMail.yahoo@jws11102g.mail.ir2.yahoo.com>
-References: <20141217233623.GA3152@Asurada>
-Reply-To: Aurelien Bouin <a_bouin@yahoo.fr>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: Don't leave PREPARED state after
+	draining
+Date: Thu, 18 Dec 2014 10:07:19 +0100
+Message-ID: <1418893639-2190-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm30-vm6.bullet.mail.ir2.yahoo.com
- (nm30-vm6.bullet.mail.ir2.yahoo.com [212.82.97.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FC99261734
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 10:00:47 +0100 (CET)
-In-Reply-To: <20141217233623.GA3152@Asurada>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CB07261685
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 10:07:22 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 3009FAD9F
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 09:07:22 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,80 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CkhpIE5pY29saW4sCgoKTGUgSmV1ZGkgMTggZMOpY2VtYnJlIDIwMTQgMGgzNiwgTmljb2xpbiBD
-aGVuIDxuaWNvbGVvdHN1a2FAZ21haWwuY29tPiBhIMOpY3JpdCA6Cj5IaSBBdXJlbGllbiwKPgo+
-Cj5PbiBXZWQsIERlYyAxNywgMjAxNCBhdCAwMjowNDoyNVBNIC0wMjAwLCBGYWJpbyBFc3RldmFt
-IHdyb3RlOgo+PiBPbiBXZWQsIERlYyAxNywgMjAxNCBhdCAxOjEzIFBNLCBBdXJlbGllbiBCb3Vp
-biA8YV9ib3VpbkB5YWhvby5mcj4gd3JvdGU6Cj4+ID4gSGVsbG8sCj4+ID4gSSBhbSBjdXJyZW50
-bHkgd29ya2luZyBvbiBhbiBpTVg2IGJvYXJkLCBJIHdvcmsgd2l0aCB0aGUgbWFzdGVyIGJyYW5j
-aAo+PiA+IG9mIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9z
-dGFibGUvbGludXgtc3RhYmxlLmdpdAo+PiA+IEkgaGF2ZSBzZWVuIHNvbWUgcHJvYmxlbXMgaW4g
-dGhlIGZyZWVzY2FsZSBFU0FJIGltcGxlbWVudGF0aW9uIDoKPj4gPgo+PiA+IDEuVGhlIHJlZ2lz
-dGVycyBUQ0NSIGFuZCBSQ0NSIGhhdmUgVEZQIGFuZCBSRlAgYml0cyBpbiByZWdpc3RlciBvZiBh
-IHdpZHRoCj4+ID4gb2YgNSwgbm90IDQgIQo+PiA+IFdpdGggYSB2YWx1ZSBvZiA1IHdlIGFyZSBh
-YmxlIHRvIHVzZSB0aGUgZnVsbCByYW5nZSBvZiBzbG90cyAoMzIpCj4+ID4gUGF0Y2ggOiBodHRw
-Oi8vcGFzdGViaW4uY29tL0FpMVJaOW1FCj4KPgo+T25seSB0aGUgd2lkdGggb2YgeERDIGZpZWxk
-cyBpcyBpbmNvcnJlY3QgYXMgRmFiaW8gc2FpZC4+CllvdSBhcmUgcmlnaHQgLi4uIG9ubHkgdGhl
-IHhEQyBmaWVsZHMgaXMgaW5jb3JyZWN0IC4uLiAKPgo+UGxlYXNlIHNlbmQgeW91ciByZXZpc2Vk
-IHBhdGNoIHRvIGFsc2EtbWFpbGxpc3QsIENDIG1lIGFuZCBNYXJrLgoKPihJdCdkIGJlIGJldHRl
-ciB0byB1c2UgLi9zY3JpcHRzL2dldF9tYWludGFpbmVyLnBsIHRvIGdldCBpbmZvKQoKSSB3aWxs
-IHNlbmQgeW91IGEgZm9ybWF0ZWQgcGF0Y2gKRG8geW91IG1lYW4gdGhhdCBJIGhhdmUgdG8gQ0Mg
-dGhlIHBhdGNoIHRvIGFsbCB0aGUgbWFpbnRhaW5lcnMgPwoKPgo+Cgo+SSdsbCB3YWl0IGZvciB5
-b3UgcGF0Y2g7IE90aGVyd2lzZSwgSSBjYW4gZml4IGl0IHRoaXMgd2Vla2VuZC4KPgo+Cj4+ID4g
-Mi5UaGUgY2hhbm5lbHMgbnVtYmVyIGFyZSBsaW1pdGVkIGluIFBsYXliYWNrIHRvIDEyLCBidXQg
-YWN0dWFsbHkgd2UgY2FuCj4+ID4gcmlzZSAxMjgsIGluIENhcHR1cmUgaXQgaXMgbGltaXRlZCB0
-byA4IGJ1dCBhY3R1YWxseSB3ZSBjYW4gcmlzZSAxMjggYWxzbwo+PiA+Cj4+ID4gUGF0Y2ggOiBo
-dHRwOi8vcGFzdGViaW4uY29tL1NIazVlSFBhCj4KPgo+VGhlIGxpbWl0YXRpb24gd2FzIGFwcGxp
-ZWQgYmVjYXVzZSBvZiB0aGUgbnVtYmVyIG9mIHRyYW5zbWl0dGVycwo+YW5kIHJlY2VpdmVycy4g
-VERNIGxvb2tzIGEgYml0IGEgc3BlY2lhbCBjYXNlIHRvIG1lLiBTbyBJCj5wZXJzb25hbGx5IGVu
-Y291cmFnZSB5b3UgdG8gZmlyc3QgYXBwbHkgdGhlIGNoYW5nZSBpdCB0byB5b3VyCgo+b3duIGNv
-ZGUuPgo+Cj5UaGUgb3RoZXIgcmVhc29uIGlzIHRoYXQgYWN0dWFsbHkgbmV0d29yayBtb2RlIG9u
-bHkgc3VwcG9ydHMKPnNsb3RzIHVwIHRvIDMyLiBTbyBJIGRvbid0IGdldCB3aHkgeW91IGNhbiBt
-YWtlIGl0IGhhcHBlbiB0bwoKPjEyOC4uLi4uClllcyBhbmQgTm8uCkl0IHN1cHBvcnRzIHVwIHRv
-IDMyIHdvcmRzIChzbG90cykgcGVyIHBlcmlvZCBvbiBlYWNoIHRyYW5zbWl0IGxpbmUsIGluIHRo
-ZSBsaW1pdCBvZiAxMjggd29yZHMgKEZJRk8gbGltaXRhdGlvbnMpCk15IHJlZmVyZW5jZSBpcyBp
-biB0aGUgUmVmZXJlbmNlIE1hbnVhbCBvZiB0aGUgaU1YNiAiMjYuMS4xIEZlYXR1cmVzIiBpbiB0
-aGUgRVNBSSBjaGFwdGVyCgpGWUkgaW4gdGhlIGZzbF9lc2FpLmMgeW91IGNhbiBmaW5kIGhvdyBt
-dWx0aXBsZXMgbGluZXMgYW5kIHNsb3RzIGFyZSBoYW5kbGVkIDogCi0+IGZzbF9lc2FpX2h3X3Bh
-cmFtcyA6IHUzMiBwaW5zID0gRElWX1JPVU5EX1VQKGNoYW5uZWxzLCBlc2FpX3ByaXYtPnNsb3Rz
-KTsKVGhlbiBpdCB3aWxsIGVuYWJsZSB0aGUgbnVtYmVyIG9mIGhhcmR3YXJlIHBpbnMgdXNlZCBp
-biB0cmFuc21pdCBhbmQgcmVjZWl2ZSBtb2RlIHdpdGggVEZDUiBvciBSRkNSIDoKdmFsID0gRVNB
-SV94RkNSX3hXQSh3aWR0aCkgfCBFU0FJX3hGQ1JfeEZXTShlc2FpX3ByaXYtPmZpZm9fZGVwdGgp
-IHwKKHR4ID8gRVNBSV94RkNSX1RFKHBpbnMpIHwgRVNBSV94RkNSX1RJRU4gOiBFU0FJX3hGQ1Jf
-UkUocGlucykpOwoKCgpJIGZpcnN0IGFwcGx5IHRoZSBwYXRjaCBvbiBteSBrZXJuZWwgSSBhbSBj
-dXJyZW50bHkgdXNpbmcgNjQgY2hhbm5lbHMgKDMyIHNsb3RzIG9mIDhiaXRzIHdpZHRoIG9uIDIg
-dHJhbnNtaXRzIHBpbnMpCgpCdXQgZm9yIGV4YW1wbGUgeW91IGNhbiB1c2UgdXAgdG8gNiB0cmFu
-c21pdHMgcGlucyB3aXRoIGEgY29uZmlndXJhdGlvbiBvZiAyIHNsb3RzIG9mIDE2IGJpdHMgd2lk
-dGggYW5kIDEyIGNoYW5uZWxzIGFzayBpbiBhbHNhIC4uLgo+Cj4KPj4gPiBJIHVzZSB0aGUgaU1Y
-NiBFU0FJIGJ1cyB0byBzZW5kIGF1ZGlvIGRhdGFzIHRvIG90aGVyIHByb2Nlc3NvcnMgLi4uIGJ1
-dAo+PiA+IGFjdHVhbGx5IEkgZG9uJ3QgaGF2ZSBhbnkgY29kZWMgYmVoaW5kIC4uLgo+PiA+IEkg
-YW0gd29uZGVyaW5nIGlmIHRoZXJlIGlzIGFueSBzb2x1dGlvbiB3aXRoIHRoZSBkZXZpY2V0cmVl
-IHRvIGltcGxlbWVudGluZwo+PiA+IHN1Y2ggY29uZmlndXJhdGlvbiB3aXRoICJzaW1wbGUtYXVk
-aW8tY2FyZCIKPj4gPgo+PiA+IEJlY2F1c2UgZm9yIHRoZSBtb21lbnQgSSBoYXZlIG5vdCBmaW5k
-IGFub3RoZXIgc29sdXRpb24gdGhhbiBkb2luZyBhIG1vZHVsZQo+PiA+IDogaHR0cDovL3Bhc3Rl
-YmluLmNvbS9jbkd3bkVqbgo+PiA+Cj4+ID4gSSBhbHNvIHNlZSB0aGF0IHRoZSBjaGlwIGVycmF0
-YSBvZiB0aGUgaU1YNiBFUlIwMDgwMDAgaXMgbm90IGhhbmRsZSAuLi4KPj4gPiBXaGljaCBtYWtl
-IGNoYW5uZWwgc3dhcHBpbmcgb24gbXkgRVNBSSBidXMgLi4uCj4+ID4gSXMgdGhlcmUgc29tZW9u
-ZSB0aGF0IHN1Y2NlZWQgaW4gaW1wbGVtZW50aW5nIHRoZSB1bmRlcnJ1biBvdmVycnVuIGNhdGNo
-ID8KPj4gdGhlIGVzYWkgZHJpdmVyPwo+Cj4KPgo+Cj5JIHRoaW5rIHlvdSBtYXkgbGlrZSB0byB0
-cnkgdGhlIG5ld2VyIG9mZmljaWFsIEJTUCByZWxlYXNlIGZyb20KPkZyZWVzY2FsZS4gSSByZW1l
-bWJlciB0aGUgZml4IGlzIGluY2x1ZGVkIGFuZCB0aGUgZml4IGlzIGhhcmQKPnRvIG1lcmdlIGlu
-dG8gdGhlIExpbnV4IG1haW5saW5lIGJlY2F1c2UgaXQgaGFja3Mgc29tZSBjb21tb24KPmludGVy
-ZmFjZXMgaW5zaWRlIEFTb0MuCj4KPgoKPmh0dHA6Ly9naXQuZnJlZXNjYWxlLmNvbS9naXQvY2dp
-dC5jZ2kvaW14L2xpbnV4LTIuNi1pbXguZ2l0CkkgYWxyZWFkeSB0cmllZCB0aGUgYnJhbmNoZXMg
-OgppbXhfMy4xMC4zMV8xLjEuMF9hbHBoYQppbXhfMy4xMC4zMV8xLjEuMF9iZXRhMgpUaGV5IGlt
-cGxlbWVudGVkIGEgZnNsX3Jlc2V0IGZ1bmN0aW9uIHNvbWV3aGVyZSAuLi4gYnV0IGl0IGlzIG5l
-dmVyIGNhbGxlZCAuLi4gYW5kIHRoZSBwcm9ibGVtIHBlcnNpc3QgLi4uCkZZSSBJIGhhdmUgcG9z
-dGVkIHNvbWV0aGluZyBhYm91dCB0aGUgcHJvYmxlbSBhbHNvIG9uIHRoZSBJTVggQ29tbXVuaXR5
-IHlvdSBjYW4gc2VlIHNvbWUgY2FwdHVyZSBvZiB0aGUgcHJvYmxlbSA6IApodHRwczovL2NvbW11
-bml0eS5mcmVlc2NhbGUuY29tL21lc3NhZ2UvNDYzNDkyIzQ2MzQ5MgpJdCBpcyBlYXN5IHRvIHJl
-cHJvZHVjZSBqdXN0IHRha2Ugc29tZSBjcHUgOgp3aGlsZSB0cnVlO2RvIHRydWU7IGRvbmUKPgo+
-Cgo+Tmljb2xpbiBDaGVuCgoKVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgeW91ciBoZWxwLAoKUmVn
-YXJkcywKQXVyZWxpZW4gQk9VSU4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+When a PCM draining is performed to an empty stream that has been
+already in PREPARED state, the current code just ignores and leaves as
+it is, although the drain is supposed to set all such streams to SETUP
+state.  This patch covers that overlooked case.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm_native.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 095d9572ad2b..64d9863d6565 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1546,6 +1546,8 @@ static int snd_pcm_do_drain_init(struct snd_pcm_substream *substream, int state)
+ 			if (! snd_pcm_playback_empty(substream)) {
+ 				snd_pcm_do_start(substream, SNDRV_PCM_STATE_DRAINING);
+ 				snd_pcm_post_start(substream, SNDRV_PCM_STATE_DRAINING);
++			} else {
++				runtime->status->state = SNDRV_PCM_STATE_SETUP;
+ 			}
+ 			break;
+ 		case SNDRV_PCM_STATE_RUNNING:
+-- 
+2.2.0
