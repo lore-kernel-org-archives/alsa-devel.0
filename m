@@ -1,21 +1,19 @@
 From: eliot@blennerhassett.gen.nz
-Subject: [PATCH 3/3] asihpi: update to HPI version 4.14
-Date: Thu, 18 Dec 2014 17:57:15 +1300
-Message-ID: <1418878635-18960-3-git-send-email-eliot@blennerhassett.gen.nz>
-References: <1418878635-18960-1-git-send-email-eliot@blennerhassett.gen.nz>
+Subject: [PATCH 1/3] ALSA: asihpi: relax firmware version check
+Date: Thu, 18 Dec 2014 17:57:13 +1300
+Message-ID: <1418878635-18960-1-git-send-email-eliot@blennerhassett.gen.nz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 73E51261515
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 05:57:36 +0100 (CET)
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06E662614AF
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 05:57:51 +0100 (CET)
 Received: from mxin3-orange.clear.net.nz
  (lb2-srcnat.clear.net.nz [203.97.32.237])
- by smtp5.clear.net.nz (CLEAR Net Mail)
- with ESMTP id <0NGR00BIZHRX7910@smtp5.clear.net.nz> for
- alsa-devel@alsa-project.org; Thu, 18 Dec 2014 17:57:33 +1300 (NZDT)
-In-reply-to: <1418878635-18960-1-git-send-email-eliot@blennerhassett.gen.nz>
+ by smtp4.clear.net.nz (CLEAR Net Mail)
+ with ESMTP id <0NGR009DFHRSW910@smtp4.clear.net.nz> for
+ alsa-devel@alsa-project.org; Thu, 18 Dec 2014 17:57:30 +1300 (NZDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,33 +29,73 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 
-This corresponds with updated asihpi firmware in alsa-firmware repo
+Some products firmware is no longer being updated
+e.g. dsp5000, dsp8700  but it should continue to work
+with updated HPI versions.
+Avoid regression by allowing this firmware to be loaded as
+long as major version is the same.
+Warn about mismatching versions, as matching versions are
+preferred.
 
 Signed-off-by: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 ---
- sound/pci/asihpi/hpi_version.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/pci/asihpi/hpidspcd.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpi_version.h b/sound/pci/asihpi/hpi_version.h
-index e9146e5..6623ab1 100644
---- a/sound/pci/asihpi/hpi_version.h
-+++ b/sound/pci/asihpi/hpi_version.h
-@@ -11,13 +11,13 @@ Production releases have even minor version.
- /* Use single digits for versions less that 10 to avoid octal. */
- /* *** HPI_VER is the only edit required to update version *** */
- /** HPI version */
--#define HPI_VER HPI_VERSION_CONSTRUCTOR(4, 10, 1)
-+#define HPI_VER HPI_VERSION_CONSTRUCTOR(4, 14, 3)
+diff --git a/sound/pci/asihpi/hpidspcd.c b/sound/pci/asihpi/hpidspcd.c
+index ac91637..3603c24 100644
+--- a/sound/pci/asihpi/hpidspcd.c
++++ b/sound/pci/asihpi/hpidspcd.c
+@@ -1,8 +1,9 @@
+-/***********************************************************************/
+-/**
++/***********************************************************************
  
- /** HPI version string in dotted decimal format */
--#define HPI_VER_STRING "4.10.01"
-+#define HPI_VER_STRING "4.14.03"
+     AudioScience HPI driver
+-    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
++    Functions for reading DSP code using hotplug firmware loader
++
++    Copyright (C) 1997-2014  AudioScience Inc. <support@audioscience.com>
  
- /** Library version as documented in hpi-api-versions.txt */
--#define HPI_LIB_VER  HPI_VERSION_CONSTRUCTOR(10, 2, 0)
-+#define HPI_LIB_VER  HPI_VERSION_CONSTRUCTOR(10, 4, 0)
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of version 2 of the GNU General Public License as
+@@ -17,11 +18,7 @@
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
- /** Construct hpi version number from major, minor, release numbers */
- #define HPI_VERSION_CONSTRUCTOR(maj, min, r) ((maj << 16) + (min << 8) + r)
+-\file
+-Functions for reading DSP code using
+-hotplug firmware loader from individual dsp code files
+-*/
+-/***********************************************************************/
++***********************************************************************/
+ #define SOURCEFILE_NAME "hpidspcd.c"
+ #include "hpidspcd.h"
+ #include "hpidebug.h"
+@@ -68,17 +65,18 @@ short hpi_dsp_code_open(u32 adapter, void *os_data, struct dsp_code *dsp_code,
+ 		goto error2;
+ 	}
+ 
+-	if ((header.version >> 9) != (HPI_VER >> 9)) {
+-		/* Consider even and subsequent odd minor versions to be compatible */
+-		dev_err(&dev->dev, "Incompatible firmware version DSP image %X != Driver %X\n",
++	if (HPI_VER_MAJOR(header.version) != HPI_VER_MAJOR(HPI_VER)) {
++		/* Major version change probably means Host-DSP protocol change */
++		dev_err(&dev->dev,
++			"Incompatible firmware version DSP image %X != Driver %X\n",
+ 			header.version, HPI_VER);
+ 		goto error2;
+ 	}
+ 
+ 	if (header.version != HPI_VER) {
+-		dev_info(&dev->dev,
+-			 "Firmware: release version mismatch  DSP image %X != Driver %X\n",
+-			 header.version, HPI_VER);
++		dev_warn(&dev->dev,
++			"Firmware version mismatch: DSP image %X != Driver %X\n",
++			header.version, HPI_VER);
+ 	}
+ 
+ 	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
 -- 
 1.9.1
