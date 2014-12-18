@@ -1,19 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3] sound/soc/adi/axi-spdif.c: Support
- programmable master clock
-Date: Thu, 18 Dec 2014 16:07:53 +0100
-Message-ID: <5492EDC9.5000401@metafoo.de>
-References: <54893D3D.8050100@topic.nl>
- <1418283847-25673-1-git-send-email-mike.looijmans@topic.nl>
+From: Aurelien Bouin <a_bouin@yahoo.fr>
+Subject: [PATCH v2] ASoC: fsl_esai: Fix ESAI_xCCR_xDC_WIDTH
+ definition
+Date: Thu, 18 Dec 2014 16:37:51 +0000 (UTC)
+Message-ID: <302670613.333771.1418920671738.JavaMail.yahoo@jws11119.mail.ir2.yahoo.com>
+Reply-To: Aurelien Bouin <a_bouin@yahoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-207.synserver.de (smtp-out-207.synserver.de
- [212.40.185.207])
- by alsa0.perex.cz (Postfix) with ESMTP id 40AAC260615
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 16:08:00 +0100 (CET)
-In-Reply-To: <1418283847-25673-1-git-send-email-mike.looijmans@topic.nl>
+Received: from nm19-vm3.bullet.mail.ir2.yahoo.com
+ (nm19-vm3.bullet.mail.ir2.yahoo.com [212.82.96.236])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EE25261A0E
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 17:38:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: "patch@alsa-project.org" <patch@alsa-project.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/11/2014 08:44 AM, Mike Looijmans wrote:
-> If the master clock supports programmable rates, program it to generate
-> the desired frequency. Only apply constraints when the clock is fixed.
-> This allows proper clock generation for both 44100 and 48000 Hz based
-> sampling rates if the platform supports it.
->
-> The clock frequency must be set before enabling it. Enabling the clock
-> was done in "startup", but that occurs before "hw_params" where the rate
-> is known. Enabling a programmable clock without first setting a valid
-> frequency may harm the system. Move the clock start to the hw_params
-> routine, and keep track of whether the clock has been started, because
-> shutdown may be called without having called hw_params first, and
-> hw_params may be called multiple times.
-> Starting the clock and enabling the SPDIF output AFTER programming the
-> dividers is a more logical order anyway.
->
-> To detect if the source clock is fixed, the driver calls clk_round_rate
-> for two frequencies. If the results are equal, or if the call returns
-> an error, the driver assumes the clock is fixed.
->
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+>From 9bcae891b8fe7a42cbc2cd88319f7bd4ab44d012 Mon Sep 17 00:00:00 2001
+From: Aurelien BOUIN <a_bouin@yahoo.fr>
+Date: Thu, 18 Dec 2014 15:14:53 +0100
+Subject: [PATCH 1/1] According to the mx6 reference manual the TDC and RDC
+field of registers ESAI_TCCR and ESAI_RCCR have a width of 5 bits, not 4
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Aurelien BOUIN <a_bouin@yahoo.fr>
 
-Thanks.
+diff --git a/sound/soc/fsl/fsl_esai.h b/sound/soc/fsl/fsl_esai.h
+index 91a550f..5e793bb 100644
+--- a/sound/soc/fsl/fsl_esai.h
++++ b/sound/soc/fsl/fsl_esai.h
+@@ -302,7 +302,7 @@
+#define ESAI_xCCR_xFP_MASK    (((1 << ESAI_xCCR_xFP_WIDTH) - 1) << ESAI_xCCR_xFP_SHIFT)
+#define ESAI_xCCR_xFP(v)    ((((v) - 1) << ESAI_xCCR_xFP_SHIFT) & ESAI_xCCR_xFP_MASK)
+#define ESAI_xCCR_xDC_SHIFT     9
+-#define ESAI_xCCR_xDC_WIDTH    4
++#define ESAI_xCCR_xDC_WIDTH    5
+#define ESAI_xCCR_xDC_MASK    (((1 << ESAI_xCCR_xDC_WIDTH) - 1) << ESAI_xCCR_xDC_SHIFT)
+#define ESAI_xCCR_xDC(v)    ((((v) - 1) << ESAI_xCCR_xDC_SHIFT) & ESAI_xCCR_xDC_MASK)
+#define ESAI_xCCR_xPSR_SHIFT    8
+-- 
+1.9.1
