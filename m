@@ -1,15 +1,14 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Add I2C dependency to two new
-	machines
-Date: Thu, 18 Dec 2014 16:40:35 +0200
-Message-ID: <1418913635-7422-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [[PATCH] ALSA: In Freescale ESAI driver xDxDC bits
+ in xCCR registers is 5 bits width not 4
+Date: Thu, 18 Dec 2014 12:59:46 -0200
+Message-ID: <CAOMZO5C_U61WsF22rA6CmkS4vfoerRkUoxpWxPZSbG7FFN6dog@mail.gmail.com>
+References: <1418913081-14439-1-git-send-email-a_bouin@yahoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 148B42605E9
- for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 15:49:49 +0100 (CET)
+In-Reply-To: <1418913081-14439-1-git-send-email-a_bouin@yahoo.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,41 +18,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@intel.com>, Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Aurelien BOUIN <a_bouin@yahoo.fr>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patch@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Rml4IGZvbGxvd2luZyBidWlsZCBlcnJvciB3aGVuIENPTkZJR19JMkMgaXMgbm90IGVuYWJsZWQ6
-Cgpzb3VuZC9zb2MvY29kZWNzL3J0NTY0MC5jOjIyNTI6MTogd2FybmluZzogZGF0YSBkZWZpbml0
-aW9uIGhhcyBubyB0eXBlIG9yIHN0b3JhZ2UgY2xhc3MKIG1vZHVsZV9pMmNfZHJpdmVyKHJ0NTY0
-MF9pMmNfZHJpdmVyKTsKIF4Kc291bmQvc29jL2NvZGVjcy9ydDU2NDAuYzoyMjUyOjE6IGVycm9y
-OiB0eXBlIGRlZmF1bHRzIHRvIOKAmGludOKAmSBpbiBkZWNsYXJhdGlvbiBvZiDigJhtb2R1bGVf
-aTJjX2RyaXZlcuKAmSBbLVdlcnJvcj1pbXBsaWNpdC1pbnRdCnNvdW5kL3NvYy9jb2RlY3MvcnQ1
-NjQwLmM6MjI1MjoxOiB3YXJuaW5nOiBwYXJhbWV0ZXIgbmFtZXMgKHdpdGhvdXQgdHlwZXMpIGlu
-IGZ1bmN0aW9uIGRlY2xhcmF0aW9uCnNvdW5kL3NvYy9jb2RlY3MvcnQ1NjQwLmM6MjI0MToyNjog
-d2FybmluZzog4oCYcnQ1NjQwX2kyY19kcml2ZXLigJkgZGVmaW5lZCBidXQgbm90IHVzZWQgWy1X
-dW51c2VkLXZhcmlhYmxlXQogc3RhdGljIHN0cnVjdCBpMmNfZHJpdmVyIHJ0NTY0MF9pMmNfZHJp
-dmVyID0gewogICAgICAgICAgICAgICAgICAgICAgICAgIF4KY2MxOiBzb21lIHdhcm5pbmdzIGJl
-aW5nIHRyZWF0ZWQgYXMgZXJyb3JzCgpTaWduZWQtb2ZmLWJ5OiBKYXJra28gTmlrdWxhIDxqYXJr
-a28ubmlrdWxhQGxpbnV4LmludGVsLmNvbT4KUmVwb3J0ZWQtYnk6IFJhbmR5IER1bmxhcCA8cmR1
-bmxhcEBpbmZyYWRlYWQub3JnPgpDYzogU3ViaHJhbnN1IFMuIFBydXN0eSA8c3ViaHJhbnN1LnMu
-cHJ1c3R5QGludGVsLmNvbT4KQ2M6IE1lbmdkb25nIExpbiA8bWVuZ2RvbmcubGluQGludGVsLmNv
-bT4KLS0tCiBzb3VuZC9zb2MvaW50ZWwvS2NvbmZpZyB8IDQgKystLQogMSBmaWxlIGNoYW5nZWQs
-IDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
-aW50ZWwvS2NvbmZpZyBiL3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnCmluZGV4IGU5ODllY2YwNDZj
-OS4uZjg2ZGUxMjExYjk2IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwvS2NvbmZpZworKysg
-Yi9zb3VuZC9zb2MvaW50ZWwvS2NvbmZpZwpAQCAtODksNyArODksNyBAQCBjb25maWcgU05EX1NP
-Q19JTlRFTF9CUk9BRFdFTExfTUFDSAogCiBjb25maWcgU05EX1NPQ19JTlRFTF9CWVRDUl9SVDU2
-NDBfTUFDSAogCXRyaXN0YXRlICJBU29DIEF1ZGlvIERTUCBTdXBwb3J0IGZvciBNSUQgQllUIFBs
-YXRmb3JtIgotCWRlcGVuZHMgb24gWDg2CisJZGVwZW5kcyBvbiBYODYgJiYgSTJDCiAJc2VsZWN0
-IFNORF9TT0NfUlQ1NjQwCiAJc2VsZWN0IFNORF9TU1RfTUZMRF9QTEFURk9STQogCXNlbGVjdCBT
-TkRfU1NUX0lQQ19BQ1BJCkBAIC0xMDEsNyArMTAxLDcgQEAgY29uZmlnIFNORF9TT0NfSU5URUxf
-QllUQ1JfUlQ1NjQwX01BQ0gKIAogY29uZmlnIFNORF9TT0NfSU5URUxfQ0hUX0JTV19SVDU2NzJf
-TUFDSAogICAgICAgICB0cmlzdGF0ZSAiQVNvQyBBdWRpbyBkcml2ZXIgZm9yIEludGVsIENoZXJy
-eXRyYWlsICYgQnJhc3dlbGwgd2l0aCBSVDU2NzIgY29kZWMiCi0gICAgICAgIGRlcGVuZHMgb24g
-WDg2X0lOVEVMX0xQU1MKKyAgICAgICAgZGVwZW5kcyBvbiBYODZfSU5URUxfTFBTUyAmJiBJMkMK
-ICAgICAgICAgc2VsZWN0IFNORF9TT0NfUlQ1NjcwCiAgICAgICAgIHNlbGVjdCBTTkRfU1NUX01G
-TERfUExBVEZPUk0KICAgICAgICAgc2VsZWN0IFNORF9TU1RfSVBDX0FDUEkKLS0gCjIuMS4zCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Aurelien,
+
+On Thu, Dec 18, 2014 at 12:31 PM, Aurelien BOUIN <a_bouin@yahoo.fr> wrote:
+> Signed-off-by: Aurelien BOUIN <a_bouin@yahoo.fr>
+>
+> diff --git a/sound/soc/fsl/fsl_esai.h b/sound/soc/fsl/fsl_esai.h
+> index 91a550f..5e793bb 100644
+> --- a/sound/soc/fsl/fsl_esai.h
+> +++ b/sound/soc/fsl/fsl_esai.h
+> @@ -302,7 +302,7 @@
+>  #define ESAI_xCCR_xFP_MASK     (((1 << ESAI_xCCR_xFP_WIDTH) - 1) << ESAI_xCCR_xFP_SHIFT)
+>  #define ESAI_xCCR_xFP(v)       ((((v) - 1) << ESAI_xCCR_xFP_SHIFT) & ESAI_xCCR_xFP_MASK)
+>  #define ESAI_xCCR_xDC_SHIFT     9
+> -#define ESAI_xCCR_xDC_WIDTH    4
+> +#define ESAI_xCCR_xDC_WIDTH    5
+
+The content of the patch is correct, but you need to improve a few things:
+
+- Subject should be something like: ASoC: fsl_esai: Fix
+ESAI_xCCR_xDC_WIDTH definition.
+In the two versions you sent you add an unneeded "["
+
+- It is always good to add a commit log like:
+
+"According to the mx6 reference manual the TDC and RDC field of
+registers ESAI_TCCR and ESAI_RCCR have a width of 5 bits, not 4".
+
+- You missed to Cc the esai driver maintainer Nicolin Chen.
+
+After you fix address these comments you can send a v2 of this patch.
