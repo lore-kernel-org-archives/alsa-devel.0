@@ -1,89 +1,65 @@
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
-Subject: Re: [PATCH 4/6] ARM: mvebu: remove conflicting muxing on Armada 370 DB
-Date: Thu, 18 Dec 2014 19:13:03 +0100
-Message-ID: <5493192F.8060004@free-electrons.com>
-References: <1414512524-24466-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1414512524-24466-5-git-send-email-thomas.petazzoni@free-electrons.com>
- <20141107031542.GB3698@titan.lakedaemon.net>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH] ASoC: Intel: Add I2C dependency to two new
+	machines
+Date: Thu, 18 Dec 2014 12:32:38 -0800
+Message-ID: <549339E6.7000602@infradead.org>
+References: <1418913635-7422-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20141107031542.GB3698@titan.lakedaemon.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Jason Cooper <jason@lakedaemon.net>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Tawfik Bayouk <tawfik@marvell.com>, Liam Girdwood <lgirdwood@gmail.com>, Nadav Haklai <nadavh@marvell.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0482C261ADA
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 21:32:42 +0100 (CET)
+In-Reply-To: <1418913635-7422-1-git-send-email-jarkko.nikula@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jason,
-
-On 07/11/2014 04:15, Jason Cooper wrote:
-> On Tue, Oct 28, 2014 at 05:08:42PM +0100, Thomas Petazzoni wrote:
->> Back when audio was enabled, the muxing of some MPP pins was causing
->> problems. However, since commit fea038ed55ae ("ARM: mvebu: Add proper
->> pin muxing on the Armada 370 DB board"), those problematic MPP pins
->> have been assigned a proper muxing for the Ethernet interfaces. This
->> proper muxing is now conflicting with the hog pins muxing that had
->> been added as part of 249f3822509b ("ARM: mvebu: add audio support to
->> Armada 370 DB").
->>
->> Therefore, this commit simply removes the hog pins muxing, which
->> solves a warning a boot time due to the conflicting muxing
->> requirements.
->>
->> Fixes: fea038ed55ae ("ARM: mvebu: Add proper pin muxing on the Armada 370 DB board")
->> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
->> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
->> ---
->>  arch/arm/boot/dts/armada-370-db.dts | 24 ------------------------
->>  1 file changed, 24 deletions(-)
-> 
-> Patches 5 and 6 applied to mvebu/dt with Andrew's Ack.
-> 
-> I didn't Cc this one to stable since it is only removing a warning.
-
-Actually it didn't just remove a warning. As explained with the patch
-I sent yesterday: "[PATCH] ARM: mvebu: Fix pinctrl configuration for
-Armada 370 DB", it also allows to use the first Ethernet Giga port on
-the Armada 370 DB board.
-
-> Later on, if needed, someone can request it be backported and the Fixes
-> tag will assist with that.
-
-Thanks for you offer and indeed I am not sure on how to do it, so your
-help will be appreciate :)
-
-I thought that I could forward to stable the patch sent by Thomas. I also thought
-that adding the commit id used in linus tree and why we need it should be enough. Am
-I right?
-
-For 3.18 it seemed doable, but the bug on the Ethernet port was
-introduced by the commit 49f3822509b74f8c8d0731aeb7ccea065376c9b ("ARM:
-mvebu: add audio support to Armada 370 DB" in 3.14.")
-
-So this patch won't be enough we also need the one sent by Ezequiel:
-fea038ed55ae ("ARM: mvebu: Add proper pin muxing on the Armada 370 DB
-board"). Then in this case I would have to add the line:
-
-Cc: <stable@vger.kernel.org> # 3.14.x: fea038ed55ae ARM: mvebu: Add
-proper pin muxing on the Armada 370 DB board
-
-
-Thanks,
-
-Gregory
-
-
--- 
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+T24gMTIvMTgvMTQgMDY6NDAsIEphcmtrbyBOaWt1bGEgd3JvdGU6Cj4gRml4IGZvbGxvd2luZyBi
+dWlsZCBlcnJvciB3aGVuIENPTkZJR19JMkMgaXMgbm90IGVuYWJsZWQ6Cj4gCj4gc291bmQvc29j
+L2NvZGVjcy9ydDU2NDAuYzoyMjUyOjE6IHdhcm5pbmc6IGRhdGEgZGVmaW5pdGlvbiBoYXMgbm8g
+dHlwZSBvciBzdG9yYWdlIGNsYXNzCj4gIG1vZHVsZV9pMmNfZHJpdmVyKHJ0NTY0MF9pMmNfZHJp
+dmVyKTsKPiAgXgo+IHNvdW5kL3NvYy9jb2RlY3MvcnQ1NjQwLmM6MjI1MjoxOiBlcnJvcjogdHlw
+ZSBkZWZhdWx0cyB0byDigJhpbnTigJkgaW4gZGVjbGFyYXRpb24gb2Yg4oCYbW9kdWxlX2kyY19k
+cml2ZXLigJkgWy1XZXJyb3I9aW1wbGljaXQtaW50XQo+IHNvdW5kL3NvYy9jb2RlY3MvcnQ1NjQw
+LmM6MjI1MjoxOiB3YXJuaW5nOiBwYXJhbWV0ZXIgbmFtZXMgKHdpdGhvdXQgdHlwZXMpIGluIGZ1
+bmN0aW9uIGRlY2xhcmF0aW9uCj4gc291bmQvc29jL2NvZGVjcy9ydDU2NDAuYzoyMjQxOjI2OiB3
+YXJuaW5nOiDigJhydDU2NDBfaTJjX2RyaXZlcuKAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVd1
+bnVzZWQtdmFyaWFibGVdCj4gIHN0YXRpYyBzdHJ1Y3QgaTJjX2RyaXZlciBydDU2NDBfaTJjX2Ry
+aXZlciA9IHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgIF4KPiBjYzE6IHNvbWUgd2Fybmlu
+Z3MgYmVpbmcgdHJlYXRlZCBhcyBlcnJvcnMKPiAKPiBTaWduZWQtb2ZmLWJ5OiBKYXJra28gTmlr
+dWxhIDxqYXJra28ubmlrdWxhQGxpbnV4LmludGVsLmNvbT4KPiBSZXBvcnRlZC1ieTogUmFuZHkg
+RHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpBY2tlZC1ieTogUmFuZHkgRHVubGFwIDxy
+ZHVubGFwQGluZnJhZGVhZC5vcmc+CgpUaGFua3MuCgo+IENjOiBTdWJocmFuc3UgUy4gUHJ1c3R5
+IDxzdWJocmFuc3Uucy5wcnVzdHlAaW50ZWwuY29tPgo+IENjOiBNZW5nZG9uZyBMaW4gPG1lbmdk
+b25nLmxpbkBpbnRlbC5jb20+Cj4gLS0tCj4gIHNvdW5kL3NvYy9pbnRlbC9LY29uZmlnIHwgNCAr
+Ky0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4g
+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnIGIvc291bmQvc29jL2ludGVs
+L0tjb25maWcKPiBpbmRleCBlOTg5ZWNmMDQ2YzkuLmY4NmRlMTIxMWI5NiAxMDA2NDQKPiAtLS0g
+YS9zb3VuZC9zb2MvaW50ZWwvS2NvbmZpZwo+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9LY29uZmln
+Cj4gQEAgLTg5LDcgKzg5LDcgQEAgY29uZmlnIFNORF9TT0NfSU5URUxfQlJPQURXRUxMX01BQ0gK
+PiAgCj4gIGNvbmZpZyBTTkRfU09DX0lOVEVMX0JZVENSX1JUNTY0MF9NQUNICj4gIAl0cmlzdGF0
+ZSAiQVNvQyBBdWRpbyBEU1AgU3VwcG9ydCBmb3IgTUlEIEJZVCBQbGF0Zm9ybSIKPiAtCWRlcGVu
+ZHMgb24gWDg2Cj4gKwlkZXBlbmRzIG9uIFg4NiAmJiBJMkMKPiAgCXNlbGVjdCBTTkRfU09DX1JU
+NTY0MAo+ICAJc2VsZWN0IFNORF9TU1RfTUZMRF9QTEFURk9STQo+ICAJc2VsZWN0IFNORF9TU1Rf
+SVBDX0FDUEkKPiBAQCAtMTAxLDcgKzEwMSw3IEBAIGNvbmZpZyBTTkRfU09DX0lOVEVMX0JZVENS
+X1JUNTY0MF9NQUNICj4gIAo+ICBjb25maWcgU05EX1NPQ19JTlRFTF9DSFRfQlNXX1JUNTY3Ml9N
+QUNICj4gICAgICAgICAgdHJpc3RhdGUgIkFTb0MgQXVkaW8gZHJpdmVyIGZvciBJbnRlbCBDaGVy
+cnl0cmFpbCAmIEJyYXN3ZWxsIHdpdGggUlQ1NjcyIGNvZGVjIgo+IC0gICAgICAgIGRlcGVuZHMg
+b24gWDg2X0lOVEVMX0xQU1MKPiArICAgICAgICBkZXBlbmRzIG9uIFg4Nl9JTlRFTF9MUFNTICYm
+IEkyQwo+ICAgICAgICAgIHNlbGVjdCBTTkRfU09DX1JUNTY3MAo+ICAgICAgICAgIHNlbGVjdCBT
+TkRfU1NUX01GTERfUExBVEZPUk0KPiAgICAgICAgICBzZWxlY3QgU05EX1NTVF9JUENfQUNQSQo+
+IAoKCi0tIAp+UmFuZHkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
