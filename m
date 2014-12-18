@@ -1,63 +1,38 @@
-From: Jiri Jaburek <jjaburek@redhat.com>
-Subject: [PATCH] ALSA: usb-audio: extend KEF X300A FU 10 tweak to Arcam rPAC
-Date: Thu, 18 Dec 2014 02:03:19 +0100
-Message-ID: <1418864599-7092-1-git-send-email-jjaburek@redhat.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: stable@vger.kernel.org
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2 1/1] alsa-lib: Add snd_pcm_start_at.
+Date: Thu, 18 Dec 2014 09:05:54 +0800
+Message-ID: <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
+References: <1418837267-10896-1-git-send-email-timcussins@eml.cc>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f172.google.com (mail-qc0-f172.google.com
+ [209.85.216.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FD752614A0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Dec 2014 02:05:55 +0100 (CET)
+Received: by mail-qc0-f172.google.com with SMTP id m20so166119qcx.17
+ for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2014 17:05:54 -0800 (PST)
+In-Reply-To: <1418837267-10896-1-git-send-email-timcussins@eml.cc>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tim Cussins <timcussins@eml.cc>
+Cc: nstoughton@aether.com, tiwai@suse.de, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The Arcam rPAC seems to have the same problem - whenever anything
-(alsamixer, udevd, 3.9+ kernel from 60af3d037eb8c, ..) attempts to
-access mixer / control interface of the card, the firmware "locks up"
-the entire device, resulting in
-  SNDRV_PCM_IOCTL_HW_PARAMS failed (-5): Input/output error
-from alsa-lib.
+>
+> Add notion of TSTAMP_CLASS (SYSTEM/AUDIO) as per Pierre's suggestion.
+> Add snd_pcm_start_at()
+>
 
-Other operating systems can somehow read the mixer (there seems to be
-playback volume/mute), but any manipulation is ignored by the device
-(which has hardware volume controls).
+Do your implementation need to set specific start threshold to prevent the
+driver automatically start when you fill the buffer ?
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
----
- sound/usb/mixer_maps.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index 1994d41..b703cb3 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -333,8 +333,11 @@ static struct usbmix_name_map gamecom780_map[] = {
- 	{}
- };
- 
--static const struct usbmix_name_map kef_x300a_map[] = {
--	{ 10, NULL }, /* firmware locks up (?) when we try to access this FU */
-+/* some (all?) SCMS USB3318 devices are affected by a firmware lock up
-+ * when anything attempts to access FU 10 (control)
-+ */
-+static const struct usbmix_name_map scms_usb3318_map[] = {
-+	{ 10, NULL },
- 	{ 0 }
- };
- 
-@@ -434,8 +437,14 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.map = ebox44_map,
- 	},
- 	{
-+		/* KEF X300A */
- 		.id = USB_ID(0x27ac, 0x1000),
--		.map = kef_x300a_map,
-+		.map = scms_usb3318_map,
-+	},
-+	{
-+		/* Arcam rPAC */
-+		.id = USB_ID(0x25c4, 0x0003),
-+		.map = scms_usb3318_map,
- 	},
- 	{ 0 } /* terminator */
- };
--- 
-2.1.0
+Do the driver allow to start when there is no data ?
