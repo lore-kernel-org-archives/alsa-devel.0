@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 04/10] ALSA: usb: update trigger timestamp
-	on first non-zero URB submitted
-Date: Fri, 19 Dec 2014 11:25:07 -0600
-Message-ID: <1419009913-3686-5-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 08/10] ALSA: core: pass audio tstamp config
+	from userspace in compat mode
+Date: Fri, 19 Dec 2014 11:25:11 -0600
+Message-ID: <1419009913-3686-9-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1419009913-3686-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F1AC264F4B
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 18:25:46 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DFC09264FDF
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 18:25:47 +0100 (CET)
 In-Reply-To: <1419009913-3686-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,42 +25,52 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The first URBs are submitted during the prepare stage. When .trigger is
-called, the ALSA core saves a trigger tstamp that doesn't correspond to
-the actual time when the samples are submitted. The trigger_tstamp is
-now updated when the first data are submitted to avoid any time offsets.
+Let userspace select audio timestamp config, ignore and zero all
+other fields
+Use audio_tstamp_data to retrieve config and pass report back to
+user space
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/usb/pcm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/core/pcm_compat.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 0d8aba5..7c36fc1 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1464,6 +1464,14 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 	subs->last_frame_number = usb_get_current_frame_number(subs->dev);
- 	subs->last_frame_number &= 0xFF; /* keep 8 LSBs */
- 
-+	if (runtime->trigger_tstamp_pending_update == 1) {
-+		/* this is the first actual URB submitted,
-+		 * update trigger timestamp to reflect actual start time
-+		 */
-+		snd_pcm_gettime(runtime, &runtime->trigger_tstamp);
-+		runtime->trigger_tstamp_pending_update = 0;
-+	}
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index d7c5669..65e0310 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -195,7 +195,7 @@ struct snd_pcm_status32 {
+ 	u32 avail_max;
+ 	u32 overrange;
+ 	s32 suspended_state;
+-	u32 reserved_alignment;
++	u32 audio_tstamp_data;
+ 	struct compat_timespec audio_tstamp;
+ 	unsigned char reserved[56-sizeof(struct compat_timespec)];
+ } __attribute__((packed));
+@@ -206,6 +206,15 @@ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_pcm_status status;
+ 	int err;
++	u32  audio_tstamp_data;
++	u32  __user *_audio_tstamp_data;
 +
- 	spin_unlock_irqrestore(&subs->lock, flags);
- 	urb->transfer_buffer_length = bytes;
- 	if (period_elapsed)
-@@ -1550,6 +1558,7 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
++	/* get audio_tstamp_data from user, ignore rest of status structure */
++	_audio_tstamp_data = (u32 __user *)(&src->audio_tstamp_data);
++	if (get_user(audio_tstamp_data, _audio_tstamp_data))
++		return -EFAULT;
++	memset(&status, 0, sizeof(status));
++	status.audio_tstamp_data = audio_tstamp_data;
  
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-+		substream->runtime->trigger_tstamp_pending_update = 1;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		subs->data_endpoint->prepare_data_urb = prepare_playback_urb;
- 		subs->data_endpoint->retire_data_urb = retire_playback_urb;
+ 	err = snd_pcm_status(substream, &status);
+ 	if (err < 0)
+@@ -223,6 +232,7 @@ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
+ 	    put_user(status.avail_max, &src->avail_max) ||
+ 	    put_user(status.overrange, &src->overrange) ||
+ 	    put_user(status.suspended_state, &src->suspended_state) ||
++	    put_user(status.audio_tstamp_data, &src->audio_tstamp_data) ||
+ 	    compat_put_timespec(&status.audio_tstamp, &src->audio_tstamp))
+ 		return -EFAULT;
+ 
 -- 
 1.9.1
