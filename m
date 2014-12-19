@@ -1,61 +1,47 @@
-From: Tim Cussins <timcussins@eml.cc>
-Subject: Re: [PATCH v2 3/3] snd_pcm_start_at: Implement
- snd_pcm_start_at for system and audio tstamp types.
-Date: Fri, 19 Dec 2014 11:41:17 +0000
-Message-ID: <54940EDD.8010007@eml.cc>
-References: <1418837365-19398-1-git-send-email-timcussins@eml.cc>	<1418837365-19398-3-git-send-email-timcussins@eml.cc>
- <CAN8cciYLnTBreS=wf4Ax4o8r-zLJ9fYaTXeyQd-fosaXdn_nVA@mail.gmail.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [PATCH/RFC 00/14] ASoC: samsung: Add clk provider for
+ I2S internal clocks
+Date: Fri, 19 Dec 2014 14:53:49 +0100
+Message-ID: <54942DED.4020808@samsung.com>
+References: <1418319952-10163-1-git-send-email-s.nawrocki@samsung.com>
+ <CAAgF-BfY_28PpgChfB-7vEF5z9ETmXJUKGuBYhmAC-CxbFedqA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 686392612D6
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 12:41:21 +0100 (CET)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by mailout.nyi.internal (Postfix) with ESMTP id 34DE820B0D
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 06:41:19 -0500 (EST)
-In-Reply-To: <CAN8cciYLnTBreS=wf4Ax4o8r-zLJ9fYaTXeyQd-fosaXdn_nVA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: nstoughton@aether.com, tiwai@suse.de, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <CAAgF-BfY_28PpgChfB-7vEF5z9ETmXJUKGuBYhmAC-CxbFedqA@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Padma Venkat <padma.kvr@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, broonie@kernel.org, drake@endlessm.com, padma.v@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On 17/12/14 23:37, Raymond Yau wrote:
->  >
->  > System tstamp types rely on high-res timers.
->  > Audio tstamp types delegate to the pcm driver.
->  > Current start_at timer is cancelled on attempt to change stream state.
->
-> http://git.alsa-project.org/?p=alsa-lib.git;a=blob_plain;f=test/timer.c;hb=HEAD
->
-> Are there any difference between sound card's timer with high res
-> timer/wall clock time stamp ?
->
-> It seem those sound cards timer have resolution and max tick
->
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/ymfpci?id=6e2efaacb3579fd9643d0dc59963b58b801c03a1
->
-> snd_timer_status_get_resolution
->
-> The clock tick counters are 32 bits and wrap around
->
-> This may mean that snd_pcm_start_at can only start within certian time
-> interval
->
+Hi Padma,
 
-[and this time I'll post to the list :)]
+On 16/12/14 04:16, Padma Venkat wrote:
+> Hi Sylwester,
+> 
+>> I need some more thought about interaction between the clk API calls on the
+>> clocks being exposed and the ASoC calls into sound/soc/samsung/i2s.c.
+>> I'm sending teh patches for review though to avoid any waste of time should
+>> it turn out the direction taken is wrong.
+>>
+>> This whole series definitely needs more testing, so far I only tested it
+>> on Odroid X2, with the I2S working in slave mode.
+> 
+> your patches looks good to me. I did basic playback and capture test
+> of your patches with i2s in master mode on exynos7.  I also added
+> secondary dai for testing and verified playback. But I think some more
+> testing required to check the serialization of registers. Tried aplay
+> with front dai in background and with secondary dai in the foreground.
+> But due to one issue on my system backend playback not working.
 
-I had presumed it would be pretty simple to use the timer-wrap interrupt 
-to maintain a monotonic sense of time. Hardware that can't support this 
-might not be able to support start_at.
+Thanks a lot for testing! I also tested concurrent playback with the
+primary and the secondary DAI (on Exynos4412), enabling the secondary DAI
+with a bit hackish patch as in this branch:
+git://linuxtv.org/snawrocki/samsung.git sound/odroidx2-simple-card-v2
+I'm planning to do necessary changes to enable the secondary DAI properly
+with simple-card, once we're done with this series.
 
-T
+-- 
+Regards,
+Sylwester
