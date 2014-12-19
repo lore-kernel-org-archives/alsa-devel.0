@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 05/10] ALSA: core: add info_ext field in
-	hw_params and pcm_hardware
-Date: Fri, 19 Dec 2014 11:25:08 -0600
-Message-ID: <1419009913-3686-6-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 07/10] ALSA: core: pass audio tstamp config
+	from userspace
+Date: Fri, 19 Dec 2014 11:25:10 -0600
+Message-ID: <1419009913-3686-8-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1419009913-3686-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E2CE264F52
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 18:25:46 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 59B1B264FBA
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 18:25:47 +0100 (CET)
 In-Reply-To: <1419009913-3686-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,55 +25,35 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-reclaim 4 bytes from reserved bytes to store new info flags related to
-hardware setup and capabilities.
+Let userspace select audio timestamp config, ignore and zero all
+other fields
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/pcm.h         | 1 +
- include/uapi/sound/asound.h | 3 ++-
- sound/core/pcm_compat.c     | 3 ++-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ sound/core/pcm_native.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 2641d86..05df271 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -44,6 +44,7 @@
- 
- struct snd_pcm_hardware {
- 	unsigned int info;		/* SNDRV_PCM_INFO_* */
-+	unsigned int info_ext;		/* SNDRV_PCM_INFO_EXT* */
- 	u64 formats;			/* SNDRV_PCM_FMTBIT_* */
- 	unsigned int rates;		/* SNDRV_PCM_RATE_* */
- 	unsigned int rate_min;		/* min rate */
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 1f23cd6..43e26af 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -375,7 +375,8 @@ struct snd_pcm_hw_params {
- 	unsigned int rate_num;		/* R: rate numerator */
- 	unsigned int rate_den;		/* R: rate denominator */
- 	snd_pcm_uframes_t fifo_size;	/* R: chip FIFO size in frames */
--	unsigned char reserved[64];	/* reserved for future */
-+	unsigned int info_ext;          /* R: additional Info flags for setup */
-+	unsigned char reserved[60];	/* reserved for future */
- };
- 
- enum {
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index 2d957ba..d7c5669 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -87,7 +87,8 @@ struct snd_pcm_hw_params32 {
- 	u32 rate_num;
- 	u32 rate_den;
- 	u32 fifo_size;
--	unsigned char reserved[64];
-+	u32 info_ext;
-+	unsigned char reserved[60];
- };
- 
- struct snd_pcm_sw_params32 {
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index ae2a93a..8f8aab0 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -756,8 +756,16 @@ static int snd_pcm_status_user(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_pcm_status status;
+ 	int res;
+-	
++	u32  audio_tstamp_data;
++	u32  __user *_audio_tstamp_data;
++
++	/* get audio_tstamp_data from user, ignore rest of status structure */
++	_audio_tstamp_data = (u32 __user *)(&_status->audio_tstamp_data);
++	if (get_user(audio_tstamp_data, _audio_tstamp_data))
++		return -EFAULT;
+ 	memset(&status, 0, sizeof(status));
++	status.audio_tstamp_data = audio_tstamp_data;
++
+ 	res = snd_pcm_status(substream, &status);
+ 	if (res < 0)
+ 		return res;
 -- 
 1.9.1
