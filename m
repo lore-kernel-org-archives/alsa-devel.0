@@ -1,17 +1,20 @@
-From: Aurelien Bouin <a_bouin@yahoo.fr>
-Subject: Re: iMX6 ESAI TDM with underrun and overrun support
-Date: Fri, 19 Dec 2014 10:13:32 +0000 (UTC)
-Message-ID: <808899317.634005.1418984012568.JavaMail.yahoo@jws11122.mail.ir2.yahoo.com>
-References: <20141219092304.GA8780@Asurada>
-Reply-To: Aurelien Bouin <a_bouin@yahoo.fr>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] ASoC: dapm: Remove
+ snd_soc_of_parse_audio_routing() due to deferred probe
+Date: Fri, 19 Dec 2014 10:58:40 +0000
+Message-ID: <20141219105840.GE11285@n2100.arm.linux.org.uk>
+References: <1418903548-20935-1-git-send-email-broonie@kernel.org>
+ <20141218180258.GZ11285@n2100.arm.linux.org.uk>
+ <20141218180812.GA11764@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm26.bullet.mail.ir2.yahoo.com (nm26.bullet.mail.ir2.yahoo.com
- [212.82.96.50]) by alsa0.perex.cz (Postfix) with ESMTP id 2EAF62608CF
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 11:13:34 +0100 (CET)
-In-Reply-To: <20141219092304.GA8780@Asurada>
+Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
+ by alsa0.perex.cz (Postfix) with ESMTP id 414992612D6
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 11:58:50 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20141218180812.GA11764@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,67 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTmljb2xpbiwKRmlyc3QgdGhhbmsgeW91IGZvciB5b3VyIHN1cHBvcnQsCgo+Cj5MZSBWZW5k
-cmVkaSAxOSBkw6ljZW1icmUgMjAxNCAxMGgyMywgTmljb2xpbiBDaGVuIDxuaWNvbGVvdHN1a2FA
-Z21haWwuY29tPiBhIMOpY3JpdCA6Cj5PbiBUaHUsIERlYyAxOCwgMjAxNCBhdCAwOTowMDo0M0FN
-ICswMDAwLCBBdXJlbGllbiBCb3VpbiB3cm90ZToKPj4gWWVzIGFuZCBOby4KPj4gSXQgc3VwcG9y
-dHMgdXAgdG8gMzIgd29yZHMgKHNsb3RzKSBwZXIgcGVyaW9kIG9uIGVhY2ggdHJhbnNtaXQgbGlu
-ZSwgaW4gdGhlIGxpbWl0IG9mIDEyOCB3b3JkcyAoRklGTyBsaW1pdGF0aW9ucykKPj4gTXkgcmVm
-ZXJlbmNlIGlzIGluIHRoZSBSZWZlcmVuY2UgTWFudWFsIG9mIHRoZSBpTVg2ICIyNi4xLjEgRmVh
-dHVyZXMiIGluIHRoZSBFU0FJIGNoYXB0ZXIKPj4gCj4+IEZZSSBpbiB0aGUgZnNsX2VzYWkuYyB5
-b3UgY2FuIGZpbmQgaG93IG11bHRpcGxlcyBsaW5lcyBhbmQgc2xvdHMgYXJlIGhhbmRsZWQgOiAK
-Pj4gLT4gZnNsX2VzYWlfaHdfcGFyYW1zIDogdTMyIHBpbnMgPSBESVZfUk9VTkRfVVAoY2hhbm5l
-bHMsIGVzYWlfcHJpdi0+c2xvdHMpOwo+PiBUaGVuIGl0IHdpbGwgZW5hYmxlIHRoZSBudW1iZXIg
-b2YgaGFyZHdhcmUgcGlucyB1c2VkIGluIHRyYW5zbWl0IGFuZCByZWNlaXZlIG1vZGUgd2l0aCBU
-RkNSIG9yIFJGQ1IgOgo+PiB2YWwgPSBFU0FJX3hGQ1JfeFdBKHdpZHRoKSB8IEVTQUlfeEZDUl94
-RldNKGVzYWlfcHJpdi0+Zmlmb19kZXB0aCkgfAo+PiAodHggPyBFU0FJX3hGQ1JfVEUocGlucykg
-fCBFU0FJX3hGQ1JfVElFTiA6IEVTQUlfeEZDUl9SRShwaW5zKSk7Cj4KPgo+PiBJIGZpcnN0IGFw
-cGx5IHRoZSBwYXRjaCBvbiBteSBrZXJuZWwgSSBhbSBjdXJyZW50bHkgdXNpbmcgNjQgY2hhbm5l
-bHMgKDMyIHNsb3RzIG9mIDhiaXRzIHdpZHRoIG9uIDIgdHJhbnNtaXRzIHBpbnMpCj4+IAo+PiBC
-dXQgZm9yIGV4YW1wbGUgeW91IGNhbiB1c2UgdXAgdG8gNiB0cmFuc21pdHMgcGlucyB3aXRoIGEg
-Y29uZmlndXJhdGlvbiBvZiAyIHNsb3RzIG9mIDE2IGJpdHMgd2lkdGggYW5kIDEyIGNoYW5uZWxz
-IGFzayBpbiBhbHNhIC4uLgo+Cj4KPkFoLCBJIGZvcmdvdCB5b3UgY291bGQgdXNlIHNldmVyYWwg
-cGlucy4uLi4KPgo+Cj4+ID5odHRwOi8vZ2l0LmZyZWVzY2FsZS5jb20vZ2l0L2NnaXQuY2dpL2lt
-eC9saW51eC0yLjYtaW14LmdpdAo+PiBJIGFscmVhZHkgdHJpZWQgdGhlIGJyYW5jaGVzIDoKPj4g
-aW14XzMuMTAuMzFfMS4xLjBfYWxwaGEKPj4gaW14XzMuMTAuMzFfMS4xLjBfYmV0YTIKPj4gVGhl
-eSBpbXBsZW1lbnRlZCBhIGZzbF9yZXNldCBmdW5jdGlvbiBzb21ld2hlcmUgLi4uIGJ1dCBpdCBp
-cyBuZXZlciBjYWxsZWQgLi4uIGFuZCB0aGUgcHJvYmxlbSBwZXJzaXN0IC4uLgo+Cj4KPkkgaGF2
-ZSBhIGJpdCBkb3VidCB3aGV0aGVyIHlvdXIgcHJvYmxlbSBpcyB0aGUgdW5kZXJydW4gb3Igbm90
-LiBCZWNhdXNlCj5JIHJlbWVtYmVyIHRoZSB3b3JrIGFyb3VuZCBzdWJtaXR0ZXIgZGlkIHRlc3Qg
-d2l0aCB1bmRlcnJ1biBpc3N1ZS4KPlRoZSByZXNldCBmdW5jdGlvbiB3b3VsZCBiZSB0cmlnZ2Vy
-IGJ5IHRoZSBFU0FJIGludGVybmFsIElTUiBidXQgYmUgY2FsbGVkCj50aHJvdWdoIHRoZSBJU1Ig
-ZnJvbSBkbWEgY2FsbGJhY2suCj4KPgo+VGhlcmUncyBhIGZzbF9lc2FpX2NoZWNrX3hydW4oKSBp
-bnNpZGUgdGhlIEVTQUkuIFlvdSBjYW4gdHJ5IHRvIHNlZSBpZgoKPml0J3MgcmVhbGx5IHVuZGVy
-cnVuIGhhcHBlbmVkLgoKSSBnZXQgYmFjayB0byBsaW51eCBicmFuY2ggaW14XzMuMTAuMzFfMS4x
-LjBfYmV0YTIgYXQgZ2l0Oi8vZ2l0LmZyZWVzY2FsZS5jb20vaW14L2xpbnV4LTIuNi1pbXguZ2l0
-CkkgZmlndXJlZCBvdXQgdGhhdCB0aGUgVElFIGFuZCBURUlFIGJpdHMgaW4gdGhlIFRDUiByZWdp
-c3RlciBhcmUgbm90IHNldCBhdCBhbnkgbW9tZW50IC4uLgpTbyBJIGFkZCBpbiB0aGUgZnNsX2Vz
-YWlfc2V0X2RhaV9mbXQKCgojZGVmaW5lIE1BS0VfVENSX0lOVEVSUlVQVElCTEUKI2lmZGVmIE1B
-S0VfVENSX0lOVEVSUlVQVElCTEUKLy9tYWtlIGl0IGludGVycnVwdGlibGUKcHJpbnRrKEtFUk5f
-RVJSIiVzKCVkKVxuIixfX2Z1bmNfXyxfX0xJTkVfXyk7Cm1hc2sgfD0gRVNBSV94Q1JfeEVJRV9N
-QVNLIHwgRVNBSV94Q1JfeElFX01BU0s7CnhjciB8PSBFU0FJX3hDUl94RUlFIHwgRVNBSV94Q1Jf
-eElFOwovL21ha2UgaXQgaW50ZXJydXB0aWJsZQojZW5kaWYgLyogTUFLRV9UQ1JfSU5URVJSVVBU
-SUJMRSAqLwoKCkkgYWxzbyBhZGQgYSBkdW1wIGZ1bmN0aW9uIHRoYXQgc2hvdyB0aGUgcmVnaXN0
-ZXIgYXQgIGZzbF9lc2FpX2h3X3BhcmFtcyA6IEVTQUlfVENSICAgMHgwMDcyODEwMApJIGFsc28g
-YWRkIGRlYnVnIGluIHRoZSBmdW5jdGlvbiBmc2xfZXNhaV9jaGVja194cnVuIHRoYXQgc2hvdyB0
-aGUgc2Fpc3IgcmVnaXN0ZXIKV2hlbiB1bmRlcnJ1biBvY2N1cmVkICh3aGVuIEkgc2VlIHRoYXQg
-d2l0aCBhbiBvc2NpbGxvc2NvcGUpCgpUaGVyZSBpcyBubyBpbnRlcnJ1cHQgZ2VuZXJhdGVkIC4u
-LgoKSSB0cmllZCB0byBjaGFuZ2UgdGhlIHRyYW5zbWl0IGZpZm8gd2F0ZXJtYWsoVGhlc2UgYml0
-cyBjb25maWd1cmUgdGhlIHRocmVzaG9sZCBhdCB3aGljaCB0aGUgVHJhbnNtaXQgRklGTyBFbXB0
-eSBmbGFnIHdpbGwgc2V0KSB0byBzZXQgaXQgdG8gYSB2YWx1ZSBvZiAyCkJlZm9yZSBJIHdhcyB1
-c2luZyA2NCwgc2luY2UgSSB1c2UgNjQgY2hhbm5lbHMgaW4gdGhpcyBjYXNlIEkgZ2V0IGEgbG90
-IG9mIHVuZGVycnVuIGludGVycnVwdCAuLi4gYW5kIG9mIGNvdXJzZSBpdCBpcyBub3Qgd29ya2lu
-ZyBjb3JyZWN0bHkgLi4gYmVjYXVzZSB0aGUgZG1hIGtub3cgdG8gbGF0ZSB0aGF0IHRoZXJlIGlz
-IG5vdCBlbm91Z2ggZGF0YSBpbiB0aGUgRVNBSSB0cmFuc21pdCBGSUZPLi4uCgpGWUkgaGVyZSBp
-cyBteSBmc2xfZXNhaS5jIG1vZGlmaWVkIDogaHR0cDovL3Bhc3RlYmluLmNvbS94NXZuZkFNOAoK
-Pgo+Cgo+QW5kIGJlc2lkZXMsIHdoaWNoIHBpbnMgZnJvbSBJT01VWCBhcmUgeW91IHVzaW5nIGZv
-ciBFU0FJPwpJIGFtIHVzaW5nIFRYMCwgVFgxIGFuZCBSWDAsIFJYMQpCdXQgZm9yIHRoZSBtb21l
-bnQgSSBhbSBqdXN0IHdvcmtpbmcgb24gdGhlIHBsYXliYWNrICh0cmFuc21pdHMgcGlucykKPgoK
-Pi0tTmljb2xpbgoKUmVnYXJkcywKQXVyZWxpZW4gQk9VSU4KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Thu, Dec 18, 2014 at 06:08:12PM +0000, Mark Brown wrote:
+> On Thu, Dec 18, 2014 at 06:02:58PM +0000, Russell King - ARM Linux wrote:
+> 
+> > Thanks Mark - I'll add it for testing this evening.  Please modify the
+> > Reported-by: line to:
+> 
+> > Reported-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> 
+> > please, thanks.
+> 
+> Done.
+
+Great news, the SDP4430 now boots again.  Thanks for the fix, and
+Merry Christmas.
+
+Tested-by: Russell King <rmk+kernel@arm.linux.org.uk>
+
+omap-abe-twl6040 sound: ASoC: CODEC DAI twl6040-legacy not registered
+omap-abe-twl6040 sound: snd_soc_register_card() failed: -517
+platform sound: Driver omap-abe-twl6040 requests probe deferral
+...
+omap-abe-twl6040 sound: twl6040-legacy <-> 40132000.mcpdm mapping ok
+omap-abe-twl6040 sound: dmic-hifi <-> 4012e000.dmic mapping ok
+
+-- 
+FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
+according to speedtest.net.
