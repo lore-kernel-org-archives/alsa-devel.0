@@ -1,17 +1,17 @@
 From: Alexander Stein <alexanders83@web.de>
 Subject: Re: [PATCH v2] ALSA: sound/atmel/ac97c.c: Add device
 	tree support
-Date: Fri, 19 Dec 2014 21:51:01 +0100
-Message-ID: <2077365.97bOqiEeM9@kongar>
+Date: Fri, 19 Dec 2014 22:05:31 +0100
+Message-ID: <1575490.9FSQKhfrcc@kongar>
 References: <1418241578-17049-1-git-send-email-alexanders83@web.de>
  <20141219204254.GV4885@piout.net> <20141219204724.GW4885@piout.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FEBE2604FA
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 21:51:05 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07A2226051F
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 22:05:35 +0100 (CET)
 In-Reply-To: <20141219204724.GW4885@piout.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -40,15 +40,11 @@ On Friday 19 December 2014, 21:47:24 wrote Alexandre Belloni:
 > > 
 > 
 > This applies for the other patches, else I'm fine with the series.
-
-Is this an
-> Acked-By Alexandre Belloni <alexandre.belloni@free-electrons.com>
-?
-
+> 
 > Maybe you could add CONFIG_SND_ATMEL_AC97C=y in at91_dt_defconfig as all
 > the other defconfigs have disappeared.
 
-Sure, I'll add both suggestions and respin nother round next week.
+BTW: Shouldn't this be rather CONFIG_SND_ATMEL_AC97C=m since it is only applicable on a single microcontroller (AT91SAM9263). There is no need to compile this driver into the kernel on all at91 variants.
 
 Best regards,
 Alexander
