@@ -1,44 +1,58 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v2 16/16] ARM: dts: Fix I2S1, I2S2 compatible for exynos4 SoCs
-Date: Fri, 19 Dec 2014 14:55:36 +0100
-Message-ID: <1418997336-17777-17-git-send-email-s.nawrocki@samsung.com>
-References: <1418997336-17777-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1418997336-17777-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org, kgene@kernel.org, alsa-devel@alsa-project.org
-Cc: padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH] ALSA: atmel: fix building the ac97 driver for at91-multiplatform
+Date: Fri, 19 Dec 2014 17:53:44 +0300
+Message-ID: <54943BF8.4050008@cogentembedded.com>
+References: <1418944390-27719-1-git-send-email-alexandre.belloni@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1418944390-27719-1-git-send-email-alexandre.belloni@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Alexander Stein <alexanders83@web.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-I2S1, I2S2 on Exynos4 SoC series have limited functionality compared
-to I2S0, "samsung,s3c6410-i2s" compatible should be used for them.
+Hello.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- arch/arm/boot/dts/exynos4.dtsi |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 12/19/2014 2:13 AM, Alexandre Belloni wrote:
 
-diff --git a/arch/arm/boot/dts/exynos4.dtsi b/arch/arm/boot/dts/exynos4.dtsi
-index 5f9e72f..71dc876 100644
---- a/arch/arm/boot/dts/exynos4.dtsi
-+++ b/arch/arm/boot/dts/exynos4.dtsi
-@@ -371,7 +371,7 @@
- 	};
- 
- 	i2s1: i2s@13960000 {
--		compatible = "samsung,s5pv210-i2s";
-+		compatible = "samsung,s3c6410-i2s";
- 		reg = <0x13960000 0x100>;
- 		clocks = <&clock CLK_I2S1>;
- 		clock-names = "iis";
-@@ -384,7 +384,7 @@
- 	};
- 
- 	i2s2: i2s@13970000 {
--		compatible = "samsung,s5pv210-i2s";
-+		compatible = "samsung,s3c6410-i2s";
- 		reg = <0x13970000 0x100>;
- 		clocks = <&clock CLK_I2S2>;
- 		clock-names = "iis";
--- 
-1.7.9.5
+> From: Arnd Bergmann <arnd@arndb.de>
+
+> at91 will no longer export the mach/cpu.h and mach/hardware.h header files
+> in the future, which would break building the atmel ac97c driver.
+
+> Since the cpu_is_* check is only used to find out whether we are running
+> on avr32 or arm/at91, we can hardcode that check in the ARM case.
+
+> Unfortunately the driver is missing other work to be useful again on ARM,
+> if anyone wants to actually use it, they need to add a DT binding, and
+> the driver should really be converted to use the ASoC framework.
+
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Link: http://www.spinics.net/lists/arm-kernel/msg382068.html
+> ---
+>   sound/atmel/ac97c.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+
+> diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+> index b59427d5a697..83975f8d5947 100644
+> --- a/sound/atmel/ac97c.c
+> +++ b/sound/atmel/ac97c.c
+> @@ -34,10 +34,10 @@
+>   #include <linux/platform_data/dma-dw.h>
+>   #include <linux/dma/dw.h>
+>
+> +#ifdef CONFIG_AVR32
+>   #include <mach/cpu.h>
+> -
+> -#ifdef CONFIG_ARCH_AT91
+> -#include <mach/hardware.h>
+> +#else
+> +#define cpu_is_at32ap7000() (0)
+
+    () around 0 not needed at all.
+
+[...]
+
+WBR, Sergei
