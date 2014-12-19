@@ -1,77 +1,132 @@
 From: Andrew Jackson <andrew.jackson@arm.com>
-Subject: [PATCH v3 5/5] ASoC: dwc: Add documentation for I2S DT
-Date: Fri, 19 Dec 2014 16:18:09 +0000
-Message-ID: <2842090b2c7a8a98aed0cfa02addcef0b2e8ec6b.1418826016.git.Andrew.Jackson@arm.com>
+Subject: [PATCH v3 3/5] ASoC: dwc: Reorder code in preparation for DT support
+Date: Fri, 19 Dec 2014 16:18:07 +0000
+Message-ID: <cc0f212c245beaefa542194cabe5cf5ebfc81fd3.1418826016.git.Andrew.Jackson@arm.com>
 References: <cover.1418826016.git.Andrew.Jackson@arm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1418826016.git.Andrew.Jackson@arm.com>
 In-Reply-To: <cover.1418826016.git.Andrew.Jackson@arm.com>
 References: <cover.1418826016.git.Andrew.Jackson@arm.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Andrew Jackson <Andrew.Jackson@arm.com>
 
-Add documentation for Designware I2S hardware block.  The block requires
-two clocks (one for audio sampling, the other for APB) and DMA channels
-for receive and transmit.
+Move code that configures the DAI and DMA into a separate function.  This
+reduces the size of the dw_i2s_probe function and will make it easier to
+add support for device tree to the driver.
 
 Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
 ---
- .../devicetree/bindings/sound/designware-i2s.txt   |   32 ++++++++++++++++++++
- 1 files changed, 32 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/designware-i2s.txt
+ sound/soc/dwc/designware_i2s.c |   73 +++++++++++++++++++++------------------
+ 1 files changed, 39 insertions(+), 34 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/designware-i2s.txt b/Documentation/devicetree/bindings/sound/designware-i2s.txt
-new file mode 100644
-index 0000000..cdee591
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/designware-i2s.txt
-@@ -0,0 +1,32 @@
-+DesignWare I2S controller
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 2ba1e2e..06d3a34 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -335,13 +335,47 @@ static int dw_i2s_resume(struct snd_soc_dai *dai)
+ #define dw_i2s_resume	NULL
+ #endif
+ 
++static void dw_configure_dai_by_pd(struct dw_i2s_dev *dev,
++				   struct snd_soc_dai_driver *dw_i2s_dai,
++				   struct resource *res,
++				   const struct i2s_platform_data *pdata)
++{
++	/* Set DMA slaves info */
 +
-+Required properties:
-+ - compatible : Must be "snps,designware-i2s"
-+ - reg : Must contain I2S core's registers location and length
-+ - clocks : Pairs of phandle and specifier referencing the controller's clocks.
-+   The controller expects two clocks, the clock used for the APB interface and
-+   the clock used as the sampling rate reference clock sample.
-+ - clock-names : "apb_plck" for the clock to the APB interface, "i2sclk" for the sample
-+   rate reference clock.
-+ - dmas: Pairs of phandle and specifier for the DMA channels that are used by
-+   the core. The core expects one or two dma channels, one for transmit and one for
-+   receive.
-+ - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
++	dev->play_dma_data.data = pdata->play_dma_data;
++	dev->capture_dma_data.data = pdata->capture_dma_data;
++	dev->play_dma_data.addr = res->start + I2S_TXDMA;
++	dev->capture_dma_data.addr = res->start + I2S_RXDMA;
++	dev->play_dma_data.max_burst = 16;
++	dev->capture_dma_data.max_burst = 16;
++	dev->play_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	dev->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	dev->play_dma_data.filter = pdata->filter;
++	dev->capture_dma_data.filter = pdata->filter;
 +
-+For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
-+please check:
-+	* resource-names.txt
-+	* clock/clock-bindings.txt
-+	* dma/dma.txt
++	if (pdata->cap & DWC_I2S_PLAY) {
++		dev_dbg(dev->dev, " designware: play supported\n");
++		dw_i2s_dai->playback.channels_min = MIN_CHANNEL_NUM;
++		dw_i2s_dai->playback.channels_max = pdata->channel;
++		dw_i2s_dai->playback.formats = pdata->snd_fmts;
++		dw_i2s_dai->playback.rates = pdata->snd_rates;
++	}
 +
-+Example:
++	if (pdata->cap & DWC_I2S_RECORD) {
++		dev_dbg(dev->dev, "designware: record supported\n");
++		dw_i2s_dai->capture.channels_min = MIN_CHANNEL_NUM;
++		dw_i2s_dai->capture.channels_max = pdata->channel;
++		dw_i2s_dai->capture.formats = pdata->snd_fmts;
++		dw_i2s_dai->capture.rates = pdata->snd_rates;
++	}
++}
 +
-+	soc_i2s: i2s@7ff90000 {
-+		compatible = "snps,designware-i2s";
-+		reg = <0x0 0x7ff90000 0x0 0x1000>;
-+		clocks = <&scpi_i2sclk 0>, <&soc_refclk100mhz>;
-+		clock-names = "i2sclk", "apb_pclk";
-+		#sound-dai-cells = <0>;
-+		dmas = <&dma0 5>;
-+		dma-names = "tx";
-+	};
+ static int dw_i2s_probe(struct platform_device *pdev)
+ {
+ 	const struct i2s_platform_data *pdata = pdev->dev.platform_data;
+ 	struct dw_i2s_dev *dev;
+ 	struct resource *res;
+ 	int ret;
+-	unsigned int cap;
+ 	struct snd_soc_dai_driver *dw_i2s_dai;
+ 
+ 	if (!pdata) {
+@@ -368,23 +402,11 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	if (IS_ERR(dev->i2s_base))
+ 		return PTR_ERR(dev->i2s_base);
+ 
+-	cap = pdata->cap;
+-	dev->capability = cap;
+-	dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
+-
+-	/* Set DMA slaves info */
+-
+-	dev->play_dma_data.data = pdata->play_dma_data;
+-	dev->capture_dma_data.data = pdata->capture_dma_data;
+-	dev->play_dma_data.addr = res->start + I2S_TXDMA;
+-	dev->capture_dma_data.addr = res->start + I2S_RXDMA;
+-	dev->play_dma_data.max_burst = 16;
+-	dev->capture_dma_data.max_burst = 16;
+-	dev->play_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+-	dev->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+-	dev->play_dma_data.filter = pdata->filter;
+-	dev->capture_dma_data.filter = pdata->filter;
++	dev->dev = &pdev->dev;
++	dw_configure_dai_by_pd(dev, dw_i2s_dai, res, pdata);
+ 
++	dev->capability = pdata->cap;
++	dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
+ 	dev->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(dev->clk))
+ 		return  PTR_ERR(dev->clk);
+@@ -393,23 +415,6 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto err_clk_put;
+ 
+-	if (cap & DWC_I2S_PLAY) {
+-		dev_dbg(&pdev->dev, " designware: play supported\n");
+-		dw_i2s_dai->playback.channels_min = MIN_CHANNEL_NUM;
+-		dw_i2s_dai->playback.channels_max = pdata->channel;
+-		dw_i2s_dai->playback.formats = pdata->snd_fmts;
+-		dw_i2s_dai->playback.rates = pdata->snd_rates;
+-	}
+-
+-	if (cap & DWC_I2S_RECORD) {
+-		dev_dbg(&pdev->dev, "designware: record supported\n");
+-		dw_i2s_dai->capture.channels_min = MIN_CHANNEL_NUM;
+-		dw_i2s_dai->capture.channels_max = pdata->channel;
+-		dw_i2s_dai->capture.formats = pdata->snd_fmts;
+-		dw_i2s_dai->capture.rates = pdata->snd_rates;
+-	}
+-
+-	dev->dev = &pdev->dev;
+ 	dev_set_drvdata(&pdev->dev, dev);
+ 	ret = snd_soc_register_component(&pdev->dev, &dw_i2s_component,
+ 					 dw_i2s_dai, 1);
 -- 
 1.7.1
