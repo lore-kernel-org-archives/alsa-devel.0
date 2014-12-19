@@ -1,21 +1,16 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: iMX6 ESAI TDM with underrun and overrun support
-Date: Fri, 19 Dec 2014 12:09:28 -0800
-Message-ID: <20141219200927.GA7720@Asurada>
-References: <20141219092304.GA8780@Asurada>
- <808899317.634005.1418984012568.JavaMail.yahoo@jws11122.mail.ir2.yahoo.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH v2 00/10]  audio timestamping evolutions
+Date: Fri, 19 Dec 2014 21:38:41 +0100
+Message-ID: <54948CD1.4080309@perex.cz>
+References: <1419009913-3686-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f169.google.com (mail-yk0-f169.google.com
- [209.85.160.169])
- by alsa0.perex.cz (Postfix) with ESMTP id C12252604EE
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 21:09:36 +0100 (CET)
-Received: by mail-yk0-f169.google.com with SMTP id 79so711065ykr.28
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 12:09:35 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <808899317.634005.1418984012568.JavaMail.yahoo@jws11122.mail.ir2.yahoo.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0242B2604F2
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 21:38:43 +0100 (CET)
+In-Reply-To: <1419009913-3686-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,55 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Aurelien Bouin <a_bouin@yahoo.fr>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 19, 2014 at 10:13:32AM +0000, Aurelien Bouin wrote:
-> >I have a bit doubt whether your problem is the underrun or not. Because
-> >I remember the work around submitter did test with underrun issue.
-> >The reset function would be trigger by the ESAI internal ISR but be called
-> >through the ISR from dma callback.
-> >
-> >
-> >There's a fsl_esai_check_xrun() inside the ESAI. You can try to see if
-> >it's really underrun happened.
+Dne 19.12.2014 v 18:25 Pierre-Louis Bossart napsal(a):
+> This series of patches was inspired by recent threads on the alsa
+> mailing list, as well issues detected with existing and upcoming
+> hardware:
 
-> I also add a dump function that show the register at  fsl_esai_hw_params : ESAI_TCR   0x00728100
-> I also add debug in the function fsl_esai_check_xrun that show the saisr register
-> When underrun occured (when I see that with an oscilloscope)
-> 
-> There is no interrupt generated ...
+I don't like some aspects in the interface:
 
-So I suppose your 'no interrupt generated' also means that the
-underrun flag has never been set: even if you added check debug
-code into the fsl_esai_check_xrun(), it hasn't given you any
-feedback.
+1) ext_info member is not required - the standard info field
+   has enough free bits
+2) the whole struct snd_pcm_status is R/O -
+   _IOR('A', 0x20, struct snd_pcm_status); I believe that it's much
+   better to add new audio_tstamp_type to sw_params, but see (4)
+3) accuracy - I would use uint64_t and report accuracy in pico-seconds
+   (range from 0 picoseconds to 18446744 seconds); yes, use next bytes
+   from the reserved part of status struct. the __u32 might be used only
+   for flags
+4) if there is a motivation to call / obtain timestamps for multiple
+   purposes (audio tstamp types), then offer to return all these
+   timestamps in one shot rather than do multiple queries (again, use
+   reserved bytes)
 
-In that case, I think the channel swap was not resulted from ESAI
-hardware FIFO underrun.
+			Thanks,
+				Jaroslav
 
-> I tried to change the transmit fifo watermak(These bits configure the
-> threshold at which the Transmit FIFO Empty flag will set) to set it to a
-> value of 2
-> Before I was using 64, since I use 64 channels in this case I get a lot of
-> underrun interrupt ... and of course it is not working correctly .. Because
-> the dma know to late that there is not enough data in the ESAI transmit
-> FIFO...
-
-Since you got the underrun error flag after you changed watermark,
-that also proves your previous channel swap issue was not trigger
-by the underrun issue.
-
-> >And besides, which pins from IOMUX are you using for ESAI?
-> I am using TX0, TX1 and RX0, RX1
-
-No, I'm asking the full pin name of IOMUX. Where's the TX0, TX1
-come from the IOMUX. You can check you schematics or the pinctrl
-configuration in your dts/dtsi to see the name.
-
-Another suggestion is for your mail client setting...please try
-to set your mail client to text/plain or auto-wrapping mode. We
-basically write code or mail no more than 80 characters per line.
-
---Nicolin
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
