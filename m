@@ -1,17 +1,16 @@
-From: libin.yang@intel.com
-Subject: [PATCH 2/2] ALSA: hda_intel: apply the Seperate
-	stream_tag for Skylake
-Date: Fri, 19 Dec 2014 08:44:31 +0800
-Message-ID: <1418949871-55413-2-git-send-email-libin.yang@intel.com>
-References: <1418949871-55413-1-git-send-email-libin.yang@intel.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 3/3] ASoC: rt5677: Adjust the routing of "PLL1"
+Date: Fri, 19 Dec 2014 14:11:01 +0800
+Message-ID: <1418969461-22494-3-git-send-email-oder_chiou@realtek.com>
+References: <1418969461-22494-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FD812604A0
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 01:49:25 +0100 (CET)
-In-Reply-To: <1418949871-55413-1-git-send-email-libin.yang@intel.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9F522604CE
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 07:11:11 +0100 (CET)
+In-Reply-To: <1418969461-22494-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +20,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, libin.yang@intel.com, jayachandran.b@intel.com, rafal.f.redzimski@intel.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@intel.com>
+Adjust the routing of "PLL1"
 
-The total stream number of Skylake's input and output stream
-exceeds 15, which will cause some streams do not work because
-of the overflow on SDxCTL.STRM field if using the legacy
-stream tag allocation method.
-
-This patch uses the new stream tag allocation method by add
-the flag AZX_DCAPS_SEPARATE_STREAM_TAG for Skylake platform.
-
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Reviewed-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/pci/hda/hda_intel.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5677.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 5ac0d39..927daf4 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -299,6 +299,9 @@ enum {
- 	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
- 	 AZX_DCAPS_SNOOP_TYPE(SCH))
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 66abfa3..cf39fe6 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -3014,8 +3014,6 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
  
-+#define AZX_DCAPS_INTEL_SKYLAKE \
-+	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_SEPARATE_STREAM_TAG)
-+
- /* quirks for ATI SB / AMD Hudson */
- #define AZX_DCAPS_PRESET_ATI_SB \
- 	(AZX_DCAPS_NO_TCSEL | AZX_DCAPS_SYNC_WRITE | AZX_DCAPS_POSFIX_LPIB |\
-@@ -2030,7 +2033,7 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
- 	/* Sunrise Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d70),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Haswell */
- 	{ PCI_DEVICE(0x8086, 0x0a0c),
- 	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
+ 	{ "Stereo1 ADC MIXL", NULL, "Sto1 ADC MIXL" },
+ 	{ "Stereo1 ADC MIXL", NULL, "adc stereo1 filter" },
+-	{ "adc stereo1 filter", NULL, "PLL1", is_sys_clk_from_pll },
+-
+ 	{ "Stereo1 ADC MIXR", NULL, "Sto1 ADC MIXR" },
+ 	{ "Stereo1 ADC MIXR", NULL, "adc stereo1 filter" },
+ 	{ "adc stereo1 filter", NULL, "PLL1", is_sys_clk_from_pll },
+@@ -3036,8 +3034,6 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 
+ 	{ "Stereo2 ADC MIXL", NULL, "Stereo2 ADC LR Mux" },
+ 	{ "Stereo2 ADC MIXL", NULL, "adc stereo2 filter" },
+-	{ "adc stereo2 filter", NULL, "PLL1", is_sys_clk_from_pll },
+-
+ 	{ "Stereo2 ADC MIXR", NULL, "Sto2 ADC MIXR" },
+ 	{ "Stereo2 ADC MIXR", NULL, "adc stereo2 filter" },
+ 	{ "adc stereo2 filter", NULL, "PLL1", is_sys_clk_from_pll },
+@@ -3052,8 +3048,6 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 
+ 	{ "Stereo3 ADC MIXL", NULL, "Sto3 ADC MIXL" },
+ 	{ "Stereo3 ADC MIXL", NULL, "adc stereo3 filter" },
+-	{ "adc stereo3 filter", NULL, "PLL1", is_sys_clk_from_pll },
+-
+ 	{ "Stereo3 ADC MIXR", NULL, "Sto3 ADC MIXR" },
+ 	{ "Stereo3 ADC MIXR", NULL, "adc stereo3 filter" },
+ 	{ "adc stereo3 filter", NULL, "PLL1", is_sys_clk_from_pll },
+@@ -3068,8 +3062,6 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 
+ 	{ "Stereo4 ADC MIXL", NULL, "Sto4 ADC MIXL" },
+ 	{ "Stereo4 ADC MIXL", NULL, "adc stereo4 filter" },
+-	{ "adc stereo4 filter", NULL, "PLL1", is_sys_clk_from_pll },
+-
+ 	{ "Stereo4 ADC MIXR", NULL, "Sto4 ADC MIXR" },
+ 	{ "Stereo4 ADC MIXR", NULL, "adc stereo4 filter" },
+ 	{ "adc stereo4 filter", NULL, "PLL1", is_sys_clk_from_pll },
+@@ -3686,39 +3678,46 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 	{ "Stereo DAC MIXR", "DAC2 R Switch", "DAC2 R Mux" },
+ 	{ "Stereo DAC MIXR", "DAC1 L Switch", "DAC1 MIXL" },
+ 	{ "Stereo DAC MIXR", NULL, "dac stereo1 filter" },
++	{ "dac stereo1 filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "Mono DAC MIXL", "ST L Switch", "Sidetone Mux" },
+ 	{ "Mono DAC MIXL", "DAC1 L Switch", "DAC1 MIXL" },
+ 	{ "Mono DAC MIXL", "DAC2 L Switch", "DAC2 L Mux" },
+ 	{ "Mono DAC MIXL", "DAC2 R Switch", "DAC2 R Mux" },
+ 	{ "Mono DAC MIXL", NULL, "dac mono2 left filter" },
++	{ "dac mono2 left filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "Mono DAC MIXR", "ST R Switch", "Sidetone Mux" },
+ 	{ "Mono DAC MIXR", "DAC1 R Switch", "DAC1 MIXR" },
+ 	{ "Mono DAC MIXR", "DAC2 R Switch", "DAC2 R Mux" },
+ 	{ "Mono DAC MIXR", "DAC2 L Switch", "DAC2 L Mux" },
+ 	{ "Mono DAC MIXR", NULL, "dac mono2 right filter" },
++	{ "dac mono2 right filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "DD1 MIXL", "Sto DAC Mix L Switch", "Stereo DAC MIXL" },
+ 	{ "DD1 MIXL", "Mono DAC Mix L Switch", "Mono DAC MIXL" },
+ 	{ "DD1 MIXL", "DAC3 L Switch", "DAC3 L Mux" },
+ 	{ "DD1 MIXL", "DAC3 R Switch", "DAC3 R Mux" },
+ 	{ "DD1 MIXL", NULL, "dac mono3 left filter" },
++	{ "dac mono3 left filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DD1 MIXR", "Sto DAC Mix R Switch", "Stereo DAC MIXR" },
+ 	{ "DD1 MIXR", "Mono DAC Mix R Switch", "Mono DAC MIXR" },
+ 	{ "DD1 MIXR", "DAC3 L Switch", "DAC3 L Mux" },
+ 	{ "DD1 MIXR", "DAC3 R Switch", "DAC3 R Mux" },
+ 	{ "DD1 MIXR", NULL, "dac mono3 right filter" },
++	{ "dac mono3 right filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "DD2 MIXL", "Sto DAC Mix L Switch", "Stereo DAC MIXL" },
+ 	{ "DD2 MIXL", "Mono DAC Mix L Switch", "Mono DAC MIXL" },
+ 	{ "DD2 MIXL", "DAC4 L Switch", "DAC4 L Mux" },
+ 	{ "DD2 MIXL", "DAC4 R Switch", "DAC4 R Mux" },
+ 	{ "DD2 MIXL", NULL, "dac mono4 left filter" },
++	{ "dac mono4 left filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DD2 MIXR", "Sto DAC Mix R Switch", "Stereo DAC MIXR" },
+ 	{ "DD2 MIXR", "Mono DAC Mix R Switch", "Mono DAC MIXR" },
+ 	{ "DD2 MIXR", "DAC4 L Switch", "DAC4 L Mux" },
+ 	{ "DD2 MIXR", "DAC4 R Switch", "DAC4 R Mux" },
+ 	{ "DD2 MIXR", NULL, "dac mono4 right filter" },
++	{ "dac mono4 right filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "Stereo DAC MIX", NULL, "Stereo DAC MIXL" },
+ 	{ "Stereo DAC MIX", NULL, "Stereo DAC MIXR" },
+@@ -3740,11 +3739,8 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 	{ "DAC3 SRC Mux", "DD MIX2L", "DD2 MIXL" },
+ 
+ 	{ "DAC 1", NULL, "DAC12 SRC Mux" },
+-	{ "DAC 1", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC 2", NULL, "DAC12 SRC Mux" },
+-	{ "DAC 2", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC 3", NULL, "DAC3 SRC Mux" },
+-	{ "DAC 3", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "PDM1 L Mux", "STO1 DAC MIX", "Stereo DAC MIXL" },
+ 	{ "PDM1 L Mux", "MONO DAC MIX", "Mono DAC MIXL" },
 -- 
-1.9.1
+1.8.1.1.439.g50a6b54
