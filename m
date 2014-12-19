@@ -1,51 +1,61 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH] ALSA: compress_driver.h: include sound/core.h explicitly
-Date: Fri, 19 Dec 2014 11:38:30 +0000
-Message-ID: <1418989110-10011-1-git-send-email-qais.yousef@imgtec.com>
+From: Tim Cussins <timcussins@eml.cc>
+Subject: Re: [PATCH v2 3/3] snd_pcm_start_at: Implement
+ snd_pcm_start_at for system and audio tstamp types.
+Date: Fri, 19 Dec 2014 11:41:17 +0000
+Message-ID: <54940EDD.8010007@eml.cc>
+References: <1418837365-19398-1-git-send-email-timcussins@eml.cc>	<1418837365-19398-3-git-send-email-timcussins@eml.cc>
+ <CAN8cciYLnTBreS=wf4Ax4o8r-zLJ9fYaTXeyQd-fosaXdn_nVA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Qais Yousef <qais.yousef@imgtec.com>, Vinod Koul <vinod.koul@intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 686392612D6
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 12:41:21 +0100 (CET)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id 34DE820B0D
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 06:41:19 -0500 (EST)
+In-Reply-To: <CAN8cciYLnTBreS=wf4Ax4o8r-zLJ9fYaTXeyQd-fosaXdn_nVA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: nstoughton@aether.com, tiwai@suse.de, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-=46ixes the following compilation error:
+On 17/12/14 23:37, Raymond Yau wrote:
+>  >
+>  > System tstamp types rely on high-res timers.
+>  > Audio tstamp types delegate to the pcm driver.
+>  > Current start_at timer is cancelled on attempt to change stream state.
+>
+> http://git.alsa-project.org/?p=alsa-lib.git;a=blob_plain;f=test/timer.c;hb=HEAD
+>
+> Are there any difference between sound card's timer with high res
+> timer/wall clock time stamp ?
+>
+> It seem those sound cards timer have resolution and max tick
+>
+> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/ymfpci?id=6e2efaacb3579fd9643d0dc59963b58b801c03a1
+>
+> snd_timer_status_get_resolution
+>
+> The clock tick counters are 32 bits and wrap around
+>
+> This may mean that snd_pcm_start_at can only start within certian time
+> interval
+>
 
-   include/sound/compress_driver.h: In function =E2=80=98snd_compr_drai=
-n_notify=E2=80=99:
-   include/sound/compress_driver.h:177:2: error: implicit declaration o=
-f function =E2=80=98snd_BUG_ON=E2=80=99 [-Werror=3Dimplicit-function-de=
-claration]
-     if (snd_BUG_ON(!stream))
+[and this time I'll post to the list :)]
 
-snd_BUG_ON() is defined in sound/core.h but the file is not included ex=
-plicitly,
-so include it.
+I had presumed it would be pretty simple to use the timer-wrap interrupt 
+to maintain a monotonic sense of time. Hardware that can't support this 
+might not be able to support start_at.
 
-Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org
-
----
- include/sound/compress_driver.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_d=
-river.h
-index 396e8f73670a..1e2531058b7e 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -27,6 +27,7 @@
-=20
- #include <linux/types.h>
- #include <linux/sched.h>
-+#include <sound/core.h>
- #include <sound/compress_offload.h>
- #include <sound/asound.h>
- #include <sound/pcm.h>
---=20
-2.1.0
+T
