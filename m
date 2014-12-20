@@ -1,17 +1,21 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 00/10]  audio timestamping evolutions
-Date: Fri, 19 Dec 2014 15:17:22 -0600
-Message-ID: <549495E2.5040701@linux.intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2 10/10] ALSA: hda: replace .wallclock by
+	.get_time_info
+Date: Sat, 20 Dec 2014 14:07:44 +0800
+Message-ID: <CAN8cciZS2d68UFRN08dHcyjN8Ajud-_JRyoMLcK9-ZEp2cQhTw@mail.gmail.com>
 References: <1419009913-3686-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <54948CD1.4080309@perex.cz>
+ <1419009913-3686-11-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 157D526051F
- for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 22:17:29 +0100 (CET)
-In-Reply-To: <54948CD1.4080309@perex.cz>
+Received: from mail-qa0-f47.google.com (mail-qa0-f47.google.com
+ [209.85.216.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CC0B260525
+ for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2014 07:07:45 +0100 (CET)
+Received: by mail-qa0-f47.google.com with SMTP id n4so1505707qaq.34
+ for <alsa-devel@alsa-project.org>; Fri, 19 Dec 2014 22:07:44 -0800 (PST)
+In-Reply-To: <1419009913-3686-11-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review Jaroslav
+>
+> No real functional change, only take wall clock and system time
+> in same routine and add accuracy report.
+>
+>
+> +               *audio_ts = ns_to_timespec(nsec);
+> +
+> +               audio_tstamp_report->actual_type =
+SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK;
+> +               audio_tstamp_report->accuracy_report = 1; /* rest of
+structure is valid */
+> +               audio_tstamp_report->accuracy_m = 42; /* 24 MHz WallClock
+== 42ns resolution */
+> +               audio_tstamp_report->accuracy_e = 0;
+> +
 
-> 1) ext_info member is not required - the standard info field
->     has enough free bits
+Do you mean wall clock run at 48000 * 500 Hz ? 42.666ns
 
-Well this was added at Takashi's request, the initial patches didn't 
-rely on this extension...I can roll back those changes if this is the 
-consensus.
-
-> 2) the whole struct snd_pcm_status is R/O -
->     _IOR('A', 0x20, struct snd_pcm_status); I believe that it's much
->     better to add new audio_tstamp_type to sw_params, but see (4)
-
-I thought about this, but
-- selecting the timestamp type with sw_params would require multiple 
-system calls to achieve the same results. Every additional call or delay 
-changes the accuracy of the results and correlation between data 
-consumption and timing reports.
-- existing code already relies on snd_pcm_status to retrieve system and 
-audio timestamps, the selection through other means would make the code 
-more complicated.
-
-> 3) accuracy - I would use uint64_t and report accuracy in pico-seconds
->     (range from 0 picoseconds to 18446744 seconds); yes, use next bytes
->     from the reserved part of status struct. the __u32 might be used only
->     for flags
-
-The timestamps are not better than nanoseconds. I don't actually know of 
-any link that uses a wallclock higher than 24/48Mhz, so that's already 
-~20-40ns already. It seemed overkill to me do use more than 3 
-significant digits and an exponent to represent a nominal value that 
-doesn't take jitter and drift into account anyway. The idea was to 
-provide a qualitative value, not an actual measurement.
-
-> 4) if there is a motivation to call / obtain timestamps for multiple
->     purposes (audio tstamp types), then offer to return all these
->     timestamps in one shot rather than do multiple queries (again, use
->     reserved bytes)
-
-I thought about this case but I couldn't find any practical uses of 
-multiple timestamps at the same time. In the absence of any atomic 
-hardware snapshots of multiple counters, reading multiple values 
-sequentially from different counters would actually water-down the 
-accuracy and value of the timestamps returned. It's already hard-enough 
-to track a single pair of audio and system counters.
+Those aureal sound cards also can provide time stamp using VORTEX_SMP_TIME
+mmio register which tick at 48000 * 256 Hz ?
