@@ -1,33 +1,41 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ALSA: atmel: fix building the ac97 driver for at91-multiplatform
-Date: Sat, 20 Dec 2014 21:21:10 +0100
-Message-ID: <1638172.tTanQ3d90c@wuerfel>
-References: <1418944390-27719-1-git-send-email-alexandre.belloni@free-electrons.com> <54943BF8.4050008@cogentembedded.com> <20141219170221.GU4885@piout.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] sound: pci: hda: patch_analog.c:  Remove unused function
+Date: Sat, 20 Dec 2014 23:31:19 +0100
+Message-ID: <1419114679-11752-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141219170221.GU4885@piout.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Alexander Stein <alexanders83@web.de>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 19 December 2014 18:02:21 Alexandre Belloni wrote:
-> Arnd,
-> 
-> On 19/12/2014 at 17:53:44 +0300, Sergei Shtylyov wrote :
-> > >+#define cpu_is_at32ap7000() (0)
-> > 
-> >    () around 0 not needed at all.
-> > 
-> 
-> Do you want me to fix that and resubmit? I don't have strong opinion
-> about this.
+Remove the function ad198x_ch_mode_get() that is not used anywhere.
 
-Yes, no point debating over this. I copied the definition from
-arch/arm/mach-at91/include/mach/cpu.h and didn't want to do any
-style changes, otherwise I'd probably have turned it into an
-inline function, but any version that works is fine with me.
+This was partially found by using a static code analysis program called cppcheck.
 
-	Arnd
+Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+---
+ sound/pci/hda/patch_analog.c |    9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index 06275f8..9d5257b 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -707,15 +707,6 @@ static int ad198x_ch_mode_info(struct snd_kcontrol *kcontrol,
+ 				    spec->num_channel_mode);
+ }
+ 
+-static int ad198x_ch_mode_get(struct snd_kcontrol *kcontrol,
+-			      struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+-	struct ad198x_spec *spec = codec->spec;
+-	return snd_hda_ch_mode_get(codec, ucontrol, spec->channel_mode,
+-				   spec->num_channel_mode, spec->multiout.max_channels);
+-}
+-
+ static int ad198x_ch_mode_put(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_value *ucontrol)
+ {
+-- 
+1.7.10.4
