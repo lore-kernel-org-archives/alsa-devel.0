@@ -1,43 +1,33 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 10/10] ALSA: hda: replace .wallclock by
- .get_time_info
-Date: Sat, 20 Dec 2014 11:50:45 -0600
-Message-ID: <5495B6F5.2050603@linux.intel.com>
-References: <1419009913-3686-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1419009913-3686-11-git-send-email-pierre-louis.bossart@linux.intel.com>
- <CAN8cciZS2d68UFRN08dHcyjN8Ajud-_JRyoMLcK9-ZEp2cQhTw@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ALSA: atmel: fix building the ac97 driver for at91-multiplatform
+Date: Sat, 20 Dec 2014 21:21:10 +0100
+Message-ID: <1638172.tTanQ3d90c@wuerfel>
+References: <1418944390-27719-1-git-send-email-alexandre.belloni@free-electrons.com> <54943BF8.4050008@cogentembedded.com> <20141219170221.GU4885@piout.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id EE1B6260494
- for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2014 18:50:45 +0100 (CET)
-In-Reply-To: <CAN8cciZS2d68UFRN08dHcyjN8Ajud-_JRyoMLcK9-ZEp2cQhTw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141219170221.GU4885@piout.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Alexander Stein <alexanders83@web.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 19 December 2014 18:02:21 Alexandre Belloni wrote:
+> Arnd,
+> 
+> On 19/12/2014 at 17:53:44 +0300, Sergei Shtylyov wrote :
+> > >+#define cpu_is_at32ap7000() (0)
+> > 
+> >    () around 0 not needed at all.
+> > 
+> 
+> Do you want me to fix that and resubmit? I don't have strong opinion
+> about this.
 
->> +               audio_tstamp_report->accuracy_m = 42; /* 24 MHz WallClock
-> == 42ns resolution */
->> +               audio_tstamp_report->accuracy_e = 0;
->> +
->
-> Do you mean wall clock run at 48000 * 500 Hz ? 42.666ns
+Yes, no point debating over this. I copied the definition from
+arch/arm/mach-at91/include/mach/cpu.h and didn't want to do any
+style changes, otherwise I'd probably have turned it into an
+inline function, but any version that works is fine with me.
 
-HDAudio wall clock (and bit clock) runs at 24MHz. So yes that's 48000 * 500.
-
-> Those aureal sound cards also can provide time stamp using VORTEX_SMP_TIME
-> mmio register which tick at 48000 * 256 Hz ?
-
-then it should be fairly easy to implement the same feature...
+	Arnd
