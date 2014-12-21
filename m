@@ -1,38 +1,34 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: [PATCH 24/28] ASoC: intel: sst: drop owner assignment from platform_drivers
-Date: Sun, 21 Dec 2014 22:14:45 +0100
-Message-ID: <1419196495-9626-25-git-send-email-wsa@the-dreams.de>
-References: <1419196495-9626-1-git-send-email-wsa@the-dreams.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1419196495-9626-1-git-send-email-wsa@the-dreams.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Wolfram Sang <wsa@the-dreams.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Subject: Re: [PATCH] sound: pci: asihpi: hpifunc.c: Remove some
+	unused functions
+Date: Mon, 22 Dec 2014 11:32:06 +1300
+Message-ID: <54974A66.8010209@blennerhassett.gen.nz>
+References: <1419180627-8986-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from omr2.mail.isx.net.nz (omr2.mail.isx.net.nz [111.65.230.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EDA0260617
+ for <alsa-devel@alsa-project.org>; Sun, 21 Dec 2014 23:32:11 +0100 (CET)
+In-Reply-To: <1419180627-8986-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This platform_driver does not need to set an owner, it will be populated by the
-driver core.
+On 22/12/14 05:50, Rickard Strandqvist wrote:
+> Removes some functions that are not used anywhere:
 
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
----
-Generated with coccinelle. SmPL file is in the introductory msg. The big
-cleanup was pulled in this merge window. This series catches the bits fallen
-through. The patches shall go in via the subsystem trees.
+NAK - because  hpi_adapter_set_property() is now used in for-next branch
+of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
 
- sound/soc/intel/sst/sst_acpi.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
-index 3abc29e8a928..f1180ffdc393 100644
---- a/sound/soc/intel/sst/sst_acpi.c
-+++ b/sound/soc/intel/sst/sst_acpi.c
-@@ -366,7 +366,6 @@ MODULE_DEVICE_TABLE(acpi, sst_acpi_ids);
- static struct platform_driver sst_acpi_driver = {
- 	.driver = {
- 		.name			= "intel_sst_acpi",
--		.owner			= THIS_MODULE,
- 		.acpi_match_table	= ACPI_PTR(sst_acpi_ids),
- 		.pm			= &intel_sst_pm,
- 	},
--- 
-2.1.3
+Otherwise I have no problem with the patch.
