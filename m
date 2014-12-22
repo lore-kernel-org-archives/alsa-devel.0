@@ -1,46 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next] ASoC: Intel: fix sparse non static symbol warnings
-Date: Mon, 22 Dec 2014 17:58:45 +0000
-Message-ID: <20141222175845.GG17800@sirena.org.uk>
-References: <1418087444-14504-1-git-send-email-weiyj_lk@163.com>
+Subject: Re: [alsa-devel][PATCH v4] ASoC: wm8960: Let wm8960 codec driver
+ manage its own MCLK
+Date: Mon, 22 Dec 2014 18:10:45 +0000
+Message-ID: <20141222181045.GH17800@sirena.org.uk>
+References: <1418103916-31295-1-git-send-email-b50113@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="J1ldk4ymECC/Y9sn"
+	protocol="application/pgp-signature"; boundary="wO3ULb5M+sQS9v8+"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1418087444-14504-1-git-send-email-weiyj_lk@163.com>
+In-Reply-To: <1418103916-31295-1-git-send-email-b50113@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: weiyj_lk@163.com
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, kbuild test robot <fengguang.wu@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Zidan Wang <b50113@freescale.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---J1ldk4ymECC/Y9sn
+--wO3ULb5M+sQS9v8+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 09, 2014 at 09:10:44AM +0800, weiyj_lk@163.com wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> Fixes the following sparse warnings:
+On Tue, Dec 09, 2014 at 01:45:16PM +0800, Zidan Wang wrote:
 
-Applied, thanks.
+> @@ -1002,6 +1005,13 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
+>  	if (wm8960 =3D=3D NULL)
+>  		return -ENOMEM;
+> =20
+> +	wm8960->mclk =3D devm_clk_get(&i2c->dev, "codec_mclk");
+> +
+> +	if (IS_ERR(wm8960->mclk)) {
+> +		if (PTR_ERR(wm8960->mclk) =3D=3D -EPROBE_DEFER)
+> +			return -EPROBE_DEFER;
+> +	}
+> +
+>  	wm8960->regmap =3D devm_regmap_init_i2c(i2c, &wm8960_regmap);
+>  	if (IS_ERR(wm8960->regmap))
+>  		return PTR_ERR(wm8960->regmap);
+> @@ -1041,6 +1051,9 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
+> =20
+>  	i2c_set_clientdata(i2c, wm8960);
+> =20
+> +	pm_runtime_enable(&i2c->dev);
+> +	pm_request_idle(&i2c->dev);
+> +
+>  	ret =3D snd_soc_register_codec(&i2c->dev,
+>  			&soc_codec_dev_wm8960, &wm8960_dai, 1);
+> =20
 
---J1ldk4ymECC/Y9sn
+This isn't going to work if PM is disabled (which is still a valid
+configuration).  The general idiom for this is that the driver should
+start up with everything powered up then let runtime idle turn things
+off if they're not required.  That way if runtime PM is disabled then
+the system will still work as everything will just stay powered on all
+the time.
+
+--wO3ULb5M+sQS9v8+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmFvUAAoJECTWi3JdVIfQpXIH/j6+9PzKVeLaNFdoD7Mmj9sK
-2FsWIyoVMcbzkHA+kJug/kjDYNhWsSGEeShRn7SGBqwHd0lrXonBiAgHaXWkUbYH
-zT0fuEDPUtAhFJO51yZMeLXQuq/gJ2ubDjha8nId2Dlg+YlPjnHYuvrhnteNGvwo
-U59T22HAUlkefPoh+b7J9KAoYmSYXtCjG9KNAadfMVRzFOQT+lelq7DtEMdirHqn
-YrLvVoKMMyBONLRUG2UU7pQ3XQF/cx29CZPWLQvB6ZwGPTA8s1jC1F78a8IOU3VS
-iRteBXyaIqmY7y5kjamNkFHSQ7oK70716a0pUCNnDHb2xBENokQ1DXYhqpaxjz0=
-=rwWj
+iQEcBAEBAgAGBQJUmF6kAAoJECTWi3JdVIfQ9n8H/jDkI+AF1J45YFitFrMTJjCo
+CQQYAdtDsiHKYxuvnzcAScVD88MKqn2xsCqcOVOjPhbEu2JdrqyJn8oYmnl+jhNe
+6d5Qe4cFEcrbFPhz0Pd50RBUAIGkFYXhCwrCZ7Wj0hHICG+hJTBa2UgnJMEfk1Rk
+4XNH1y029o1rjV4W+jNOM/+bXvyhleuk9ZoGgEefiIhggFwNMQgXj8+wjW30VVjN
+sCoBsFZysq+XKmnRSIXLTCbI9dVo0RBX4qKMStGXoor8O96LP3IdHitYVsIG2JZ6
+YpfxnMDN/9FCFKnpkxN9WPrR0mtTwDtK7AdsYSFMAucfj50fini76hgyTeAfXY0=
+=sRzo
 -----END PGP SIGNATURE-----
 
---J1ldk4ymECC/Y9sn--
+--wO3ULb5M+sQS9v8+--
