@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: rt5677: Adjust the routing of
-	"PLL1"
-Date: Mon, 22 Dec 2014 18:41:33 +0000
-Message-ID: <20141222184133.GL17800@sirena.org.uk>
-References: <1418969461-22494-1-git-send-email-oder_chiou@realtek.com>
- <1418969461-22494-3-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH v2 1/2] ASoC: rt5670: Add runtime PM support
+Date: Mon, 22 Dec 2014 18:44:23 +0000
+Message-ID: <20141222184423.GM17800@sirena.org.uk>
+References: <1418629354-26948-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4748685475711889922=="
+Content-Type: multipart/mixed; boundary="===============0569887547180936791=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D6F962606E4
- for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 19:41:43 +0100 (CET)
-In-Reply-To: <1418969461-22494-3-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EAC602605EC
+ for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 19:44:34 +0100 (CET)
+In-Reply-To: <1418629354-26948-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, john.lin@realtek.com, anatol@google.com, bardliao@realtek.com, benzh@google.com, flove@realtek.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, yao.jin@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4748685475711889922==
+--===============0569887547180936791==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fUjYDmxMtFc8vtOf"
+	protocol="application/pgp-signature"; boundary="AFtOQYyat+o5LZDb"
 Content-Disposition: inline
 
 
---fUjYDmxMtFc8vtOf
+--AFtOQYyat+o5LZDb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 19, 2014 at 02:11:01PM +0800, Oder Chiou wrote:
-> Adjust the routing of "PLL1"
+On Mon, Dec 15, 2014 at 03:42:33PM +0800, Bard Liao wrote:
+> This patch adds runtime PM support on rt5670 codec.
 
-Again this isn't a good description - what is being adjusted and why?
+Applied both, thanks.
 
---fUjYDmxMtFc8vtOf
+--AFtOQYyat+o5LZDb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmGXcAAoJECTWi3JdVIfQOGQH/3Gr7t5TUSMA8PmjxNYBRIlg
-bEkTN8LZwu3i2QEpzX68mrzS2VgXASDEve1K3Ba0IyNDdbNyN2Ww82IDoOqXzmjJ
-UNBn3Cy73kn9QsOBTF0o2rpU/ZG24hkKDkIj5n3ECXwC6MebXpKD5Yq29BJyM6Je
-mJro+SvPksNf9epUD5oVWpslhy4GTJgk3JR+Ve4AvK+ZWbfYBRuBAM+nMJTrVOe7
-Up+eUHkFTfRNH6dbcb255Uc5tHlzJJwA1asGq3+5W38b/NcN3rw721Z4L/OR1Veh
-D5MeU/PfjTen7unRHqZ5Ghj4vPdmV7WAuezYy9rCUOSkYP4aVqXUzq7oJumt2Q0=
-=zSvT
+iQEcBAEBAgAGBQJUmGaGAAoJECTWi3JdVIfQenoH/AuESjCexWtqQocCr/20WtLh
+leXNUqwmtMXcDkcpjvZSO7WIdh1jVrteFk23bGey53AwUpqu2LWCwRgASzFZ4djo
+S60OgeIVMA3aVl48xCfkS0ldZJami4qHzsQMnguNJODcdGcpu3iN5s4EvqmJ4SCa
+Wo33LRxazPf73/IOW+y5eQLrebyCf80rEOOkBCNoQ7TiYxZLSk0SsQ6aP6AD+49N
+KorjuCSEyCHFqWwRHwBRROFVPkcyc2vcTrdNDRqA6C+dpynuQEbUn1DQJA64mFcH
+7LYX6xsttT94FDFYwNVo2H3a5mBE/A8rug2UgTI0pnEbKYBFPS7UiYjqWRboiv0=
+=MzcD
 -----END PGP SIGNATURE-----
 
---fUjYDmxMtFc8vtOf--
+--AFtOQYyat+o5LZDb--
 
---===============4748685475711889922==
+--===============0569887547180936791==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4748685475711889922==--
+--===============0569887547180936791==--
