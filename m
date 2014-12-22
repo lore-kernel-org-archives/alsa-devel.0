@@ -1,46 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 23/28] ASoC: intel: drop owner assignment from
+Subject: Re: [PATCH 24/28] ASoC: intel: sst: drop owner assignment from
  platform_drivers
-Date: Mon, 22 Dec 2014 11:46:04 +0000
-Message-ID: <20141222114604.GC17800@sirena.org.uk>
+Date: Mon, 22 Dec 2014 11:46:16 +0000
+Message-ID: <20141222114616.GD17800@sirena.org.uk>
 References: <1419196495-9626-1-git-send-email-wsa@the-dreams.de>
- <1419196495-9626-24-git-send-email-wsa@the-dreams.de>
+ <1419196495-9626-25-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2/5bycvrmDh4d1IB"
+	protocol="application/pgp-signature"; boundary="WChQLJJJfbwij+9x"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1419196495-9626-24-git-send-email-wsa@the-dreams.de>
+In-Reply-To: <1419196495-9626-25-git-send-email-wsa@the-dreams.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Wolfram Sang <wsa@the-dreams.de>
 Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---2/5bycvrmDh4d1IB
+--WChQLJJJfbwij+9x
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Dec 21, 2014 at 10:14:44PM +0100, Wolfram Sang wrote:
+On Sun, Dec 21, 2014 at 10:14:45PM +0100, Wolfram Sang wrote:
 > This platform_driver does not need to set an owner, it will be populated by the
 > driver core.
 
-This doesn't apply, I've already got a patch for it.
+Applied, thanks.
 
---2/5bycvrmDh4d1IB
+--WChQLJJJfbwij+9x
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmAR7AAoJECTWi3JdVIfQttQH/39ED1DLG383LTz4fAVImtui
-Bkt0IxJSHAN6QLiKnMCaGPBZG1+ecgkilOBMB6pEqZS4VD2axIyHpMGzpjuOmW98
-3C0mw+3H7Bk5nYw2kDyZFDKrS3/DnQoF+acUxS0dGRMiesyi1+BRhu5Agvk3tH3Y
-+NbJXiFXxGKN9aQOuPSnC67b/qsSR3Tgc3wCiMWYdLipsoZ+0qXafMDxIO5Tvtqy
-rX2Q3Bjyls06eIk2UW9QrBDYBlMgIQ2JoiC7VI74NLL3nYgXtkfEHJ74I1pkYjbz
-LmuTQdbe1YO5wHGWAkv6JQ/RSAB0nNrCYncdvgzyxDI9uadJmC4qzSNmUCZZGe8=
-=aagn
+iQEcBAEBAgAGBQJUmASHAAoJECTWi3JdVIfQgA4H/0dwQoP2nZcP5uyxPZFwUN+V
+EJ3afFfJ7wi/m03A+zFafcJDHPrQwHy1uBR+8cd7INSdJF8rz9xX89Pe/+rPiM2f
+vJyockqQH4a+3eQsFKcO6muHFDGcWQBu4ukYJ2udxt4U40lKcvMqpPecBMluJr8Q
+FLl74lsVgDwWOOdnX+EYRHLtSJhdrpGLOLusBcdIybwlAQX/VEixamXY/hXjj8ew
+WXHW24mh0927U3fNejO1nXFP8MmzHStNLr9yzggWSKF7ZuRUouJlzQUYy4FlKEz1
+yAeWcxJPIRgQvwukvf09YJ79jw94WgMIuf8s/+WY1tmQwrhrQ5Ejn5ZgId9zxas=
+=Flip
 -----END PGP SIGNATURE-----
 
---2/5bycvrmDh4d1IB--
+--WChQLJJJfbwij+9x--
