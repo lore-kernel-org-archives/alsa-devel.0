@@ -1,68 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pcm512x: Also support PCM514x devices
-Date: Mon, 22 Dec 2014 17:57:44 +0000
-Message-ID: <20141222175744.GF17800@sirena.org.uk>
-References: <1418113689-21505-1-git-send-email-peda@lysator.liu.se>
+Subject: Re: [PATCH -next] ASoC: Intel: fix sparse non static symbol warnings
+Date: Mon, 22 Dec 2014 17:58:45 +0000
+Message-ID: <20141222175845.GG17800@sirena.org.uk>
+References: <1418087444-14504-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7501934467339706907=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 99EDC260648
- for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 18:58:09 +0100 (CET)
-In-Reply-To: <1418113689-21505-1-git-send-email-peda@lysator.liu.se>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Rosin <peda@lysator.liu.se>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Peter Rosin <peda@axentia.se>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J1ldk4ymECC/Y9sn"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1418087444-14504-1-git-send-email-weiyj_lk@163.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: weiyj_lk@163.com
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, kbuild test robot <fengguang.wu@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7501934467339706907==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tmZL0FsH2xLo8uCy"
-Content-Disposition: inline
-
-
---tmZL0FsH2xLo8uCy
+--J1ldk4ymECC/Y9sn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 09, 2014 at 09:28:09AM +0100, Peter Rosin wrote:
-> From: Peter Rosin <peda@axentia.se>
+On Tue, Dec 09, 2014 at 09:10:44AM +0800, weiyj_lk@163.com wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> Fixes the following sparse warnings:
 
 Applied, thanks.
 
---tmZL0FsH2xLo8uCy
+--J1ldk4ymECC/Y9sn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmFuYAAoJECTWi3JdVIfQha4H/0B8d9sdSSOn0j5I3N25zPHD
-IJ5ki0nsbTnMMxrYp6uJuZ1WkZ05TVhB+dX15X0Uheu/FHAtBMj6N3ImjDKTkYI9
-b6zQQIQEtHO5hP7bazLql6WkVMO6iAl6VYqihx+FAYuPPBe9Khz4lv6COo2ug37A
-R5qGtBXpiDEjFIxOEagE60p54xZq1T41m/8/+lIqhRLeBqhXwBgEutJG377t92vf
-R10YArto14CptS7a/laH9eYPKzhI6trrlxH7oXQMcZVidlAobVL4wdR6BNkXot+B
-WvwcFdwp0p48BA5iVUwqtEat6hJlIm+nq06p4DAFsFO355FQCZ/iP1lWq1OeLOI=
-=fI3q
+iQEcBAEBAgAGBQJUmFvUAAoJECTWi3JdVIfQpXIH/j6+9PzKVeLaNFdoD7Mmj9sK
+2FsWIyoVMcbzkHA+kJug/kjDYNhWsSGEeShRn7SGBqwHd0lrXonBiAgHaXWkUbYH
+zT0fuEDPUtAhFJO51yZMeLXQuq/gJ2ubDjha8nId2Dlg+YlPjnHYuvrhnteNGvwo
+U59T22HAUlkefPoh+b7J9KAoYmSYXtCjG9KNAadfMVRzFOQT+lelq7DtEMdirHqn
+YrLvVoKMMyBONLRUG2UU7pQ3XQF/cx29CZPWLQvB6ZwGPTA8s1jC1F78a8IOU3VS
+iRteBXyaIqmY7y5kjamNkFHSQ7oK70716a0pUCNnDHb2xBENokQ1DXYhqpaxjz0=
+=rwWj
 -----END PGP SIGNATURE-----
 
---tmZL0FsH2xLo8uCy--
-
---===============7501934467339706907==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7501934467339706907==--
+--J1ldk4ymECC/Y9sn--
