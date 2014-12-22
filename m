@@ -1,74 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel][PATCH v4] ASoC: wm8960: Let wm8960 codec driver
- manage its own MCLK
-Date: Mon, 22 Dec 2014 18:10:45 +0000
-Message-ID: <20141222181045.GH17800@sirena.org.uk>
-References: <1418103916-31295-1-git-send-email-b50113@freescale.com>
+Subject: Re: [PATCH 1/3] ASoC: rt5677: Revise the filter powers
+Date: Mon, 22 Dec 2014 18:40:43 +0000
+Message-ID: <20141222184043.GK17800@sirena.org.uk>
+References: <1418969461-22494-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wO3ULb5M+sQS9v8+"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1418103916-31295-1-git-send-email-b50113@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <b50113@freescale.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============5974873960796534073=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97B1D2605EC
+ for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 19:40:56 +0100 (CET)
+In-Reply-To: <1418969461-22494-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, john.lin@realtek.com, anatol@google.com, bardliao@realtek.com, benzh@google.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---wO3ULb5M+sQS9v8+
+--===============5974873960796534073==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KkUfzEtIprrm0TMY"
+Content-Disposition: inline
+
+
+--KkUfzEtIprrm0TMY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 09, 2014 at 01:45:16PM +0800, Zidan Wang wrote:
+On Fri, Dec 19, 2014 at 02:10:59PM +0800, Oder Chiou wrote:
+> Revise the filter powers.
 
-> @@ -1002,6 +1005,13 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
->  	if (wm8960 =3D=3D NULL)
->  		return -ENOMEM;
-> =20
-> +	wm8960->mclk =3D devm_clk_get(&i2c->dev, "codec_mclk");
-> +
-> +	if (IS_ERR(wm8960->mclk)) {
-> +		if (PTR_ERR(wm8960->mclk) =3D=3D -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +	}
-> +
->  	wm8960->regmap =3D devm_regmap_init_i2c(i2c, &wm8960_regmap);
->  	if (IS_ERR(wm8960->regmap))
->  		return PTR_ERR(wm8960->regmap);
-> @@ -1041,6 +1051,9 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
-> =20
->  	i2c_set_clientdata(i2c, wm8960);
-> =20
-> +	pm_runtime_enable(&i2c->dev);
-> +	pm_request_idle(&i2c->dev);
-> +
->  	ret =3D snd_soc_register_codec(&i2c->dev,
->  			&soc_codec_dev_wm8960, &wm8960_dai, 1);
-> =20
+What does "revise" mean - what is being changed here and why?  It looks
+like it might be a bug fix but the description doesn't really say.
 
-This isn't going to work if PM is disabled (which is still a valid
-configuration).  The general idiom for this is that the driver should
-start up with everything powered up then let runtime idle turn things
-off if they're not required.  That way if runtime PM is disabled then
-the system will still work as everything will just stay powered on all
-the time.
-
---wO3ULb5M+sQS9v8+
+--KkUfzEtIprrm0TMY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmF6kAAoJECTWi3JdVIfQ9n8H/jDkI+AF1J45YFitFrMTJjCo
-CQQYAdtDsiHKYxuvnzcAScVD88MKqn2xsCqcOVOjPhbEu2JdrqyJn8oYmnl+jhNe
-6d5Qe4cFEcrbFPhz0Pd50RBUAIGkFYXhCwrCZ7Wj0hHICG+hJTBa2UgnJMEfk1Rk
-4XNH1y029o1rjV4W+jNOM/+bXvyhleuk9ZoGgEefiIhggFwNMQgXj8+wjW30VVjN
-sCoBsFZysq+XKmnRSIXLTCbI9dVo0RBX4qKMStGXoor8O96LP3IdHitYVsIG2JZ6
-YpfxnMDN/9FCFKnpkxN9WPrR0mtTwDtK7AdsYSFMAucfj50fini76hgyTeAfXY0=
-=sRzo
+iQEcBAEBAgAGBQJUmGWrAAoJECTWi3JdVIfQCdoH/2jCZvIzaHeuuo9sdsVcAJej
+Wi0fkGUkGsIbwS1LOW9Ls0MekJE+JnZEXmTXG0AYXY+xtCaUTp2Yh495zny7e+h6
+k/f3WpYKiKchr6Uju2pXe0wwPolFdXeG8+5O7xDLLec2BQdlmKo2UANutpSLoJdQ
+MzkDbZsYZBO+IZpulpe9TVEpTNIOXbtYkxFMFQYH4+CckgqRdaZQfJM2uBGxAzxl
+XT4NkQ6Q8R++a+9kYrdc+paJHPJ+i43i1FrBIsiYOKt/rF7X4kQTEldCEwLeiK30
+GrXoFGkXNv48jD0Fm0cgHWzcTe81xjHKjZbniyDm3U+L2lWyJZl3MYS0SQeDg9A=
+=4W9f
 -----END PGP SIGNATURE-----
 
---wO3ULb5M+sQS9v8+--
+--KkUfzEtIprrm0TMY--
+
+--===============5974873960796534073==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5974873960796534073==--
