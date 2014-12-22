@@ -1,65 +1,44 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: Re: [PATCH v3] ASoC: add xtensa xtfpga I2S interface and platform
-Date: Mon, 22 Dec 2014 11:39:40 +0300
-Message-ID: <CAMo8BfJCPU_ZM0w2Ry9kjU3O+HcWEmp_wgZ44oC7gBLW8DV5jw@mail.gmail.com>
-References: <1417914095-26553-1-git-send-email-jcmvbkbc@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: fix platform_no_drv_owner.cocci warnings
+Date: Mon, 22 Dec 2014 11:44:38 +0000
+Message-ID: <20141222114438.GA17800@sirena.org.uk>
+References: <201412212239.7lsK60Dq%fengguang.wu@intel.com>
+ <20141221144043.GA58352@athens>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1417914095-26553-1-git-send-email-jcmvbkbc@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20141221144043.GA58352@athens>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>, Max Filippov <jcmvbkbc@gmail.com>
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: Mengdong Lin <mengdong.lin@intel.com>, kbuild-all@01.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 7, 2014 at 4:01 AM, Max Filippov <jcmvbkbc@gmail.com> wrote:
-> XTFPGA boards provides an audio subsystem that consists of TI CDCE706
-> clock synthesizer, I2S transmitter and TLV320AIC23 audio codec.
->
-> I2S transmitter has MMIO-based interface that resembles that of the
-> OpenCores I2S transmitter. I2S transmitter is always a master on I2S
-> bus. There's no specialized audio DMA, sample data are transferred to
-> I2S transmitter FIFO by CPU through memory-mapped queue interface.
 
-Ping?
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-> ---
-> Changes v2->v3:
-> - drop .owner = THIS_MODULE from the struct platform_driver initialization;
-> - rebase to 3.18-rc7.
->
-> Changes v1->v2:
-> - fix module name in the sound/soc/xtensa/Makefile;
-> - split PCM data transfer code and I2S interface setup code;
-> - move clock enabling/disabling to runtime PM code;
-> - document I2S interface RATIO field;
-> - rewrite I2S interface LEVEL field calculation to avoid overflows;
-> - drop select statements from Kconfig;
-> - document RCU usage for tx_substream;
-> - clean up code running in RCU read-side critical section;
-> - use threaded IRQ handler instead of IRQ + tasklet;
-> - remove empty PCM callback handlers;
-> - add const to static structures where applicable;
-> - use platform_set_drvdata instead of dev_set_drvdata;
-> - drop redundant error reporting code;
-> - use platform_get_irq instead of platform_get_resource;
-> - clean up xtfpga_i2s_remove;
-> - add comments.
->
->  .../devicetree/bindings/sound/cdns,xtfpga-i2s.txt  |  18 +
->  MAINTAINERS                                        |   1 +
->  sound/soc/Kconfig                                  |   1 +
->  sound/soc/Makefile                                 |   1 +
->  sound/soc/xtensa/Kconfig                           |   7 +
->  sound/soc/xtensa/Makefile                          |   3 +
->  sound/soc/xtensa/xtfpga-i2s.c                      | 675 +++++++++++++++++++++
->  7 files changed, 706 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cdns,xtfpga-i2s.txt
->  create mode 100644 sound/soc/xtensa/Kconfig
->  create mode 100644 sound/soc/xtensa/Makefile
->  create mode 100644 sound/soc/xtensa/xtfpga-i2s.c
+On Sun, Dec 21, 2014 at 10:40:43PM +0800, kbuild test robot wrote:
+> sound/soc/intel/cht_bsw_rt5672.c:273:3-8: No need to set .owner here. The core will do it.
 
--- 
-Thanks.
--- Max
+Applied, thanks.
+
+--pf9I7BMVVzbSWLtt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUmAQlAAoJECTWi3JdVIfQ9oAH/AnI3uZgKfenTphJsmZPIieF
+/vhoL6OVwIhqJEWY8N9EngmlMWVtEyV8eRVpG/ee1unSKJ5GW9IdZ2vOH/OcANag
+SDOpup4q2mK39ZvQBWPN3ruPXTNAcOpY/SkqLH1KIMDUZqNXZ1EE5ZIj1FNfbPOr
+haG1tmnP7r/hQ4Y+MadqltJBjfR0oJaU12bzTnwvdGdCXyOhKv0ZdZpYB9ue8kcd
+l+yheNuQ+ctfBRlywYkbgEAPx85sVObGmewtOqj1K7o27Rzg3kF/WttTb9tsO53P
+k9keCN/K0FDPpQs9IJUkya0VcBG11oUKzFqXqYkmdO4r2x7Iq0+eWjKXBy2UxQQ=
+=ME5Q
+-----END PGP SIGNATURE-----
+
+--pf9I7BMVVzbSWLtt--
