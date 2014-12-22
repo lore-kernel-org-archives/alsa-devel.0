@@ -1,59 +1,49 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3] ASoC: add xtensa xtfpga I2S interface and platform
-Date: Mon, 22 Dec 2014 13:48:23 +0000
-Message-ID: <20141222134823.GP17800@sirena.org.uk>
-References: <1417914095-26553-1-git-send-email-jcmvbkbc@gmail.com>
- <CAMo8BfJCPU_ZM0w2Ry9kjU3O+HcWEmp_wgZ44oC7gBLW8DV5jw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 2/5] ASoC: dwc: Iterate over all channels
+Date: Mon, 22 Dec 2014 13:53:01 +0000
+Message-ID: <20141222135301.GQ17800@sirena.org.uk>
+References: <cover.1418826016.git.Andrew.Jackson@arm.com>
+ <67cea1f0a74c333ec2048c7796cda37302d45e95.1418826016.git.Andrew.Jackson@arm.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5/6IVfYouxg+lu1D"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="UJEqbsikIZBgizPR"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAMo8BfJCPU_ZM0w2Ry9kjU3O+HcWEmp_wgZ44oC7gBLW8DV5jw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org" <linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+In-Reply-To: <67cea1f0a74c333ec2048c7796cda37302d45e95.1418826016.git.Andrew.Jackson@arm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Jackson <andrew.jackson@arm.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---5/6IVfYouxg+lu1D
+--UJEqbsikIZBgizPR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 22, 2014 at 11:39:40AM +0300, Max Filippov wrote:
-> On Sun, Dec 7, 2014 at 4:01 AM, Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> > XTFPGA boards provides an audio subsystem that consists of TI CDCE706
-> > clock synthesizer, I2S transmitter and TLV320AIC23 audio codec.
+On Fri, Dec 19, 2014 at 04:18:06PM +0000, Andrew Jackson wrote:
 
-> > I2S transmitter has MMIO-based interface that resembles that of the
-> > OpenCores I2S transmitter. I2S transmitter is always a master on I2S
-> > bus. There's no specialized audio DMA, sample data are transferred to
-> > I2S transmitter FIFO by CPU through memory-mapped queue interface.
+> The Designware core can be configured with up to four stereo channels.
+> Each stereo channel is individually configured so, when the driver's
+> hw_params call is made, each requested stereo channel has to be
+> programmed.
 
-> Ping?
+This is quite unclear to someone who doesn't know the hardware, is this
+a bug fix or a new feature?  It looks like it's a fix...
 
-Don't send contentless quoted pings; they only add noise - if the patch
-has been lost they can't be applied, if it's waiting for review then
-a nag is just yet more e-mail to read.
-
---5/6IVfYouxg+lu1D
+--UJEqbsikIZBgizPR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmCEmAAoJECTWi3JdVIfQ4lEH/1VozZEL0nqvPHrMlH4eDs82
-hYxbairXMdVhdcUY0uKrCyve6XVWYhCKwSODlWoDKTUaaPmzSTNLj8wHC6vh1xEL
-ta2GJdKcE8JBW1dTlGNi3qjE6I+apvfleg36bDLfGZOm3Gy4G51OHoO3gbxGsMtb
-hpFZJc/yvLTiawJ/rXlpHPTIg1o7zW2d8bd6Jip9XkGTKSD4kMWS4yW9hSYxDT+N
-TLF7kJBnEprf3Xycv3EyK7xRm6Y/f59xtb7thhCwdLH/6dqax0TRjkbp/d7bl0H7
-KIgOnlJxSmX8sm0Ha8aB1F/VjVWaGgjlpneCxnMRgFAqEjZsgzQWZRDjgT0+A74=
-=Nabw
+iQEcBAEBAgAGBQJUmCI8AAoJECTWi3JdVIfQ4UwH/inEk5U0iocLQ+aTXSE3Atnp
+VM/qo3kMfH+Dd+B02dxwB36/jJZ7EC/Xs77iI7lWZlaOadKgK4ZctfLXkaTsDQ4V
+ZbELnBVSGR12/6mjWCRz60YzavpVgX0/ooLrFf+pCGGE39Wnw0w/y3JCowXfB14Y
+jIfsHV4pMb+kj6RbAZ4LgoIrHPLEPCNhMuAUPR1E1HMOo+HAnP/ECY51mQs/Wjyf
+ttdekwDJQv1YpsWr8miNCK46o1m4VF4VYdyXJBvZurMdD0OY1w+IFuUH7t/IvVqw
+KRFJymTXpTY5cd7y1CXKBPeoBdFb9WEMjOW2cxftmnLCZgqE8l3DnC9Te1ntiTU=
+=DUQ4
 -----END PGP SIGNATURE-----
 
---5/6IVfYouxg+lu1D--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--UJEqbsikIZBgizPR--
