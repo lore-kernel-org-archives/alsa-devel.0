@@ -1,48 +1,50 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: Fix BYTCR machine driver
-	MODULE_ALIAS
-Date: Mon, 22 Dec 2014 16:49:20 +0200
-Message-ID: <1419259760-19066-2-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1419259760-19066-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 2/5] ASoC: dwc: Iterate over all channels
+Date: Mon, 22 Dec 2014 15:06:11 +0000
+Message-ID: <20141222150611.GW17800@sirena.org.uk>
+References: <cover.1418826016.git.Andrew.Jackson@arm.com>
+ <67cea1f0a74c333ec2048c7796cda37302d45e95.1418826016.git.Andrew.Jackson@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 331542605EC
- for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 15:49:28 +0100 (CET)
-In-Reply-To: <1419259760-19066-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/Y6L//1es8ezVqBy"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <67cea1f0a74c333ec2048c7796cda37302d45e95.1418826016.git.Andrew.Jackson@arm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Jackson <andrew.jackson@arm.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_sst_bytcr_dpcm_rt5640 doesn't autoload because MODULE_ALIAS doesn't
-match with "bytt100_rt5640" platform device.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- sound/soc/intel/bytcr_dpcm_rt5640.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--/Y6L//1es8ezVqBy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/intel/bytcr_dpcm_rt5640.c b/sound/soc/intel/bytcr_dpcm_rt5640.c
-index f5d0fc1ab10c..eef0c56ec32e 100644
---- a/sound/soc/intel/bytcr_dpcm_rt5640.c
-+++ b/sound/soc/intel/bytcr_dpcm_rt5640.c
-@@ -227,4 +227,4 @@ module_platform_driver(snd_byt_mc_driver);
- MODULE_DESCRIPTION("ASoC Intel(R) Baytrail CR Machine driver");
- MODULE_AUTHOR("Subhransu S. Prusty <subhransu.s.prusty@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:bytrt5640-audio");
-+MODULE_ALIAS("platform:bytt100_rt5640");
--- 
-2.1.3
+On Fri, Dec 19, 2014 at 04:18:06PM +0000, Andrew Jackson wrote:
+> From: Andrew Jackson <Andrew.Jackson@arm.com>
+>=20
+> The Designware core can be configured with up to four stereo channels.
+> Each stereo channel is individually configured so, when the driver's
+> hw_params call is made, each requested stereo channel has to be
+> programmed.
+
+Applied, thanks.
+
+--/Y6L//1es8ezVqBy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUmDNiAAoJECTWi3JdVIfQX2UH/iT2iPHru0FaT/pmSDbvDLpc
+sAHQuWm3pU68wujAMKiEFvcZq0L8POUh7ISWOWF4h4Y8bez+7acPTb95E+2wxRe+
+AUmuOUItU3oh2rv4BZcxT0nqbD3g8G6Kudz56ffJ1Ir9du/syZyt4vZHmaRerHZF
+/vROh3Ccdk2xlw2CadCYvNzWasM6DeE2QnzhTxTZmQtQjdBocXMVgkavuKusomFp
+kr4KFK5W52HWr/0www0UWMZYhhfLW5PRasgnit4PNtBXJeoaxwrH4pguYQhnU8FY
+sNJaZre8cbl7uhFAcUU4vYPyMhxhg0N5geaR7RAz6ygbPLc0cuNE15DkTQya/40=
+=/Mrt
+-----END PGP SIGNATURE-----
+
+--/Y6L//1es8ezVqBy--
