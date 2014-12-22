@@ -1,71 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 25/28] ASoC: omap: drop owner assignment
- from platform_drivers
-Date: Mon, 22 Dec 2014 12:02:01 +0000
-Message-ID: <20141222120201.GE17800@sirena.org.uk>
+Subject: Re: [PATCH 26/28] ASoC: pxa: drop owner assignment from
+ platform_drivers
+Date: Mon, 22 Dec 2014 12:02:24 +0000
+Message-ID: <20141222120224.GF17800@sirena.org.uk>
 References: <1419196495-9626-1-git-send-email-wsa@the-dreams.de>
- <1419196495-9626-26-git-send-email-wsa@the-dreams.de>
+ <1419196495-9626-27-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2561335576189574521=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B85826068B
- for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 13:02:39 +0100 (CET)
-In-Reply-To: <1419196495-9626-26-git-send-email-wsa@the-dreams.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Il7n/DHsA0sMLmDu"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1419196495-9626-27-git-send-email-wsa@the-dreams.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Wolfram Sang <wsa@the-dreams.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: linux-kernel@vger.kernel.org, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2561335576189574521==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FN+gV9K+162wdwwF"
-Content-Disposition: inline
-
-
---FN+gV9K+162wdwwF
+--Il7n/DHsA0sMLmDu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Dec 21, 2014 at 10:14:46PM +0100, Wolfram Sang wrote:
+On Sun, Dec 21, 2014 at 10:14:47PM +0100, Wolfram Sang wrote:
 > This platform_driver does not need to set an owner, it will be populated by the
 > driver core.
 
 Applied, thanks.
 
---FN+gV9K+162wdwwF
+--Il7n/DHsA0sMLmDu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmAg4AAoJECTWi3JdVIfQPsYH/jGOqmG1m9OPV0AQEqMHx7+M
-FPFUfYUrTmIIqXUdc3sjK/6ti1HsgFuoFM0BGOIewI0/xoPgwz0EVUg1JD0ohJnI
-mqX3H37bcqGTL3B6aBkFBzGVodFb/I7p5KsxxgI7QKo3hoJqNoXauaUggnG8EnEc
-0bBDxTyQa02AoSTxDrPM8AHqzCG0vC/2X206dWBM4RZGJvulezTom6LyT/S+M/gK
-Wf1dMfMs+W6qbe1D5QtPzmRUD60WevduoH12pP0oxcE1cVhkoCYZfH17jcSXd7Hn
-GvnbWhl8bixgUGbBZXxZjQhMhzvb7EpzIM0m9Jna2RM5J4zquagmSzGrZxC7ryY=
-=m8sN
+iQEcBAEBAgAGBQJUmAhPAAoJECTWi3JdVIfQyx8H/2O0X8TpMNyaEo+Ek+COW0/w
+bPmORMs8j+IRVIBct9gNlsnjPg3RKStb8/M8gklrSauVnV2R5VLE8e7yzZqWN+Tv
+vsMp1nijA0S7ydUKfCotRf1esoGk5K8Cqrg6cDMRQMJeoyNo4HoxaajZs76OC03s
+0Mgz1OXUqBt4k+balFUIAu67a5Q+HtROMu9J4OdW9Zs8txGNpQ+Hg0RIQTZknKZE
+BW0NOJzEOIUQO6ds8DK0D6GcS2qJfAqkWLH9j32S5P38aokped2XWtkxDghcrnRi
+uIfARcLztkTj6kY5tXRY+DPDENnNUFf168S6fT2OP/zCCcj6U6tNwS+QvzQg15U=
+=8GOH
 -----END PGP SIGNATURE-----
 
---FN+gV9K+162wdwwF--
-
---===============2561335576189574521==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2561335576189574521==--
+--Il7n/DHsA0sMLmDu--
