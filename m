@@ -1,129 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 4/5] ASoC: dwc: Add devicetree support
- for Designware I2S
-Date: Mon, 22 Dec 2014 14:10:14 +0000
-Message-ID: <20141222141014.GS17800@sirena.org.uk>
+Subject: Re: [PATCH v3 5/5] ASoC: dwc: Add documentation for I2S DT
+Date: Mon, 22 Dec 2014 14:26:36 +0000
+Message-ID: <20141222142636.GT17800@sirena.org.uk>
 References: <cover.1418826016.git.Andrew.Jackson@arm.com>
- <9699e11a566938b8d1821f9be3df3276d57cd979.1418826016.git.Andrew.Jackson@arm.com>
+ <2842090b2c7a8a98aed0cfa02addcef0b2e8ec6b.1418826016.git.Andrew.Jackson@arm.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9026219854585354358=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0093126052D
- for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 15:11:06 +0100 (CET)
-In-Reply-To: <9699e11a566938b8d1821f9be3df3276d57cd979.1418826016.git.Andrew.Jackson@arm.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zpd1bWBxfrI+71+6"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2842090b2c7a8a98aed0cfa02addcef0b2e8ec6b.1418826016.git.Andrew.Jackson@arm.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Andrew Jackson <andrew.jackson@arm.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9026219854585354358==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aJ74fq0Y6SrIeKCM"
-Content-Disposition: inline
-
-
---aJ74fq0Y6SrIeKCM
+--zpd1bWBxfrI+71+6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 19, 2014 at 04:18:08PM +0000, Andrew Jackson wrote:
+On Fri, Dec 19, 2014 at 04:18:09PM +0000, Andrew Jackson wrote:
 
-> +union snd_dma_data {
-> +	struct i2s_dma_data pd;
-> +	struct snd_dmaengine_dai_dma_data dt;
-> +};
-> +
+> Add documentation for Designware I2S hardware block.  The block requires
+> two clocks (one for audio sampling, the other for APB) and DMA channels
+> for receive and transmit.
 
-This is a driver local union with a very generic name, it seems likely
-that this will collide in future causing build breaks
+You should generally include the binding before the code to parse it,
+both because the binding is required in order to tell if the code is
+doing the right thing and also because people will often not even look
+at code with a missing binding.
 
-> -	ret = dev->i2s_clk_cfg(config);
-> -	if (ret < 0) {
-> -		dev_err(dev->dev, "runtime audio clk config fail\n");
-> -		return ret;
-> +		/* TODO: Validate sample rate against permissible set */
-> +		bitclk = config->sample_rate * config->data_width * 2;
-> +		clk_set_rate(dev->clk, bitclk);
->  	}
+> + - clocks : Pairs of phandle and specifier referencing the controller's clocks.
+> +   The controller expects two clocks, the clock used for the APB interface and
+> +   the clock used as the sampling rate reference clock sample.
+> + - clock-names : "apb_plck" for the clock to the APB interface, "i2sclk" for the sample
+> +   rate reference clock.
 
-This is ignoring errors in clk_set_rate().
+This is a name based lookup of clocks but the code doesn't use
+apb_pclk at all; it needs to or the binding needs to say that apb_pclk
+must be the first listed clock (which would not be good).
 
-> +/* Maximum resolution of a channel - not uniformly spaced */
-> +static const u32 fifo_width[] = {
-> +	12, 16, 20, 24, 32, 0, 0, 0
-> +};
-> +
-> +/* Width of (DMA) bus */
-> +static const u32 bus_widths[] = {
-> +	DMA_SLAVE_BUSWIDTH_1_BYTE,
-> +	DMA_SLAVE_BUSWIDTH_2_BYTES,
-> +	DMA_SLAVE_BUSWIDTH_4_BYTES,
-> +	DMA_SLAVE_BUSWIDTH_UNDEFINED
-> +};
+> +	soc_i2s: i2s@7ff90000 {
+> +		compatible = "snps,designware-i2s";
+> +		reg = <0x0 0x7ff90000 0x0 0x1000>;
+> +		clocks = <&scpi_i2sclk 0>, <&soc_refclk100mhz>;
+> +		clock-names = "i2sclk", "apb_pclk";
+> +		#sound-dai-cells = <0>;
+> +		dmas = <&dma0 5>;
+> +		dma-names = "tx";
+> +	};
 
-> +	u32 bus_width = bus_widths[COMP1_APB_DATA_WIDTH(comp1)];
-> +	u32 fifo_depth = 1 << (1 + COMP1_FIFO_DEPTH_GLOBAL(comp1));
-> +	u32 max_size;
+This omits a lot of configurability that is in platform data and
+replaces it by reading back the parameters from the hardware.  If this
+is a viable approach to that configuration you should do this for both
+platform data and device tree rather than only device tree.  The point
+with keeping platform data is that it's not good to make the device DT
+only, improving the usability of platform data in a way that happens to
+also make the DT case easier is totally fine.  If we can determine how
+the IP is configured from the hardware that's both less work and more
+robust no matter how the device is instantiated.
 
-I'd feel a lot more comfortable if there were bounds checking on these
-array indexes, especially since the arrays aren't explicitly sized and
-instead just have the number of elements that is (hopefully) safe with
-no comments or anything.  As things stand this is all using really
-fraigle idioms, this could easily be broken if someone is updating the
-driver for new IP features or even just cleaning up the code.
-
-> -	dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
-> -	dev->clk = clk_get(&pdev->dev, NULL);
-> +		dev->clk = clk_get(&pdev->dev, NULL);
-> +	} else {
-> +		dw_configure_dai_by_dt(dev, dw_i2s_dai, res);
-> +
-> +		dev->clk = devm_clk_get(&pdev->dev, "i2sclk");
-> +	}
-
-This changes from clk_get() to devm_clk_get() but I'm not seeing
-anything that removes clk_put() calls.
-
-> +#ifdef CONFIG_OF
-> +		.of_match_table = dw_i2s_of_match,
-> +#endif
-
-of_match_ptr().
-
---aJ74fq0Y6SrIeKCM
+--zpd1bWBxfrI+71+6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmCZFAAoJECTWi3JdVIfQfh8IAIJxu0pzThxkOXZcBZneK6x9
-/R3zl5ZoWlMFKUS9gW0V884W3AA2JcPkEXYCxSWiMb00Gpg/ZU86bU2vhsMTTxFf
-2swDgum7nGIlU0ocHnWUa4gHMZg0zTcUgTuepfgMuHkOXmDDmsUtXEgQwJtQOdlA
-NpAFK2nnQQ3tWUegHBJaqPg7gsz45fEePdHjOT+84XEfOMWQVqIOrVYdadNl3CzF
-+fxLRDaK6+vHh9YxBinqAWqoOaz/FO3b4z8LlTPXY7O1PievOyB8iVFE9mTVMG9p
-Gqhyy1A1JRYwlj4iO69be21tTRwKuSp4ToYbZ7OTCKWA0cu+L0JOS9nsHbC2Uv0=
-=GsEN
+iQEcBAEBAgAGBQJUmCocAAoJECTWi3JdVIfQ5K8H/2qmfWmc1+bHnEMStRLbT1J2
+WmryCtBf8KzYxQG/5oA4emoi9GlJXQV3eqleBO+2GFd7bUQicw//1mq1UUtPqN8I
+gnQC+LC5UvXBXNi7rV9itsLtcokh8xzrC/++cn9myiXG0u2ZPk6cDgczFFOmJT89
+JsDJprnVfYG1JTF5iuavbLad49SG6nZ9Gi64nc2R6mMVhAWp9pEqgu5UQrNb3uBE
+Xm6i6Y9Eg8BXCeVpbL6dUIoRMK2Y3RgZj+eS/MJLsm0VF7lqwvPrp8UJVXrTco13
+jjzBstg1mAwK8uyPyOPeMcPwU2t+xKL2JkOgXlfSUoA+hNWek+dPuzj3mIeJ5cc=
+=zrGe
 -----END PGP SIGNATURE-----
 
---aJ74fq0Y6SrIeKCM--
-
---===============9026219854585354358==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9026219854585354358==--
+--zpd1bWBxfrI+71+6--
