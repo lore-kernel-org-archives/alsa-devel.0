@@ -1,19 +1,18 @@
-From: Andrew Jackson <Andrew.Jackson@arm.com>
-Subject: Re: [PATCH v3 2/5] ASoC: dwc: Iterate over all channels
-Date: Mon, 22 Dec 2014 14:08:44 +0000
-Message-ID: <549825EC.80505@arm.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 4/5] ASoC: dwc: Add devicetree support
+ for Designware I2S
+Date: Mon, 22 Dec 2014 14:10:14 +0000
+Message-ID: <20141222141014.GS17800@sirena.org.uk>
 References: <cover.1418826016.git.Andrew.Jackson@arm.com>
- <67cea1f0a74c333ec2048c7796cda37302d45e95.1418826016.git.Andrew.Jackson@arm.com>
- <20141222135301.GQ17800@sirena.org.uk>
+ <9699e11a566938b8d1821f9be3df3276d57cd979.1418826016.git.Andrew.Jackson@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9026219854585354358=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
- [217.140.96.140])
- by alsa0.perex.cz (Postfix) with ESMTP id E3B43260583
- for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 15:08:45 +0100 (CET)
-In-Reply-To: <20141222135301.GQ17800@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0093126052D
+ for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2014 15:11:06 +0100 (CET)
+In-Reply-To: <9699e11a566938b8d1821f9be3df3276d57cd979.1418826016.git.Andrew.Jackson@arm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,26 +22,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Andrew Jackson <andrew.jackson@arm.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/22/14 13:53, Mark Brown wrote:
-> On Fri, Dec 19, 2014 at 04:18:06PM +0000, Andrew Jackson wrote:
-> 
->> The Designware core can be configured with up to four stereo channels.
->> Each stereo channel is individually configured so, when the driver's
->> hw_params call is made, each requested stereo channel has to be
->> programmed.
-> 
-> This is quite unclear to someone who doesn't know the hardware, is this
-> a bug fix or a new feature?  It looks like it's a fix...
-> 
 
-It is a fix.  In the Designware core, each stereo channel is configured
-individually.  So, when hw_params is called to configure N channels, 
-N/2 stereo channels need to be configured in the core.  The existing
-code doesn't do this and will only configure the highest numbered 
-channel.
+--===============9026219854585354358==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aJ74fq0Y6SrIeKCM"
+Content-Disposition: inline
 
-    Andrew
+
+--aJ74fq0Y6SrIeKCM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Dec 19, 2014 at 04:18:08PM +0000, Andrew Jackson wrote:
+
+> +union snd_dma_data {
+> +	struct i2s_dma_data pd;
+> +	struct snd_dmaengine_dai_dma_data dt;
+> +};
+> +
+
+This is a driver local union with a very generic name, it seems likely
+that this will collide in future causing build breaks
+
+> -	ret = dev->i2s_clk_cfg(config);
+> -	if (ret < 0) {
+> -		dev_err(dev->dev, "runtime audio clk config fail\n");
+> -		return ret;
+> +		/* TODO: Validate sample rate against permissible set */
+> +		bitclk = config->sample_rate * config->data_width * 2;
+> +		clk_set_rate(dev->clk, bitclk);
+>  	}
+
+This is ignoring errors in clk_set_rate().
+
+> +/* Maximum resolution of a channel - not uniformly spaced */
+> +static const u32 fifo_width[] = {
+> +	12, 16, 20, 24, 32, 0, 0, 0
+> +};
+> +
+> +/* Width of (DMA) bus */
+> +static const u32 bus_widths[] = {
+> +	DMA_SLAVE_BUSWIDTH_1_BYTE,
+> +	DMA_SLAVE_BUSWIDTH_2_BYTES,
+> +	DMA_SLAVE_BUSWIDTH_4_BYTES,
+> +	DMA_SLAVE_BUSWIDTH_UNDEFINED
+> +};
+
+> +	u32 bus_width = bus_widths[COMP1_APB_DATA_WIDTH(comp1)];
+> +	u32 fifo_depth = 1 << (1 + COMP1_FIFO_DEPTH_GLOBAL(comp1));
+> +	u32 max_size;
+
+I'd feel a lot more comfortable if there were bounds checking on these
+array indexes, especially since the arrays aren't explicitly sized and
+instead just have the number of elements that is (hopefully) safe with
+no comments or anything.  As things stand this is all using really
+fraigle idioms, this could easily be broken if someone is updating the
+driver for new IP features or even just cleaning up the code.
+
+> -	dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
+> -	dev->clk = clk_get(&pdev->dev, NULL);
+> +		dev->clk = clk_get(&pdev->dev, NULL);
+> +	} else {
+> +		dw_configure_dai_by_dt(dev, dw_i2s_dai, res);
+> +
+> +		dev->clk = devm_clk_get(&pdev->dev, "i2sclk");
+> +	}
+
+This changes from clk_get() to devm_clk_get() but I'm not seeing
+anything that removes clk_put() calls.
+
+> +#ifdef CONFIG_OF
+> +		.of_match_table = dw_i2s_of_match,
+> +#endif
+
+of_match_ptr().
+
+--aJ74fq0Y6SrIeKCM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUmCZFAAoJECTWi3JdVIfQfh8IAIJxu0pzThxkOXZcBZneK6x9
+/R3zl5ZoWlMFKUS9gW0V884W3AA2JcPkEXYCxSWiMb00Gpg/ZU86bU2vhsMTTxFf
+2swDgum7nGIlU0ocHnWUa4gHMZg0zTcUgTuepfgMuHkOXmDDmsUtXEgQwJtQOdlA
+NpAFK2nnQQ3tWUegHBJaqPg7gsz45fEePdHjOT+84XEfOMWQVqIOrVYdadNl3CzF
++fxLRDaK6+vHh9YxBinqAWqoOaz/FO3b4z8LlTPXY7O1PievOyB8iVFE9mTVMG9p
+Gqhyy1A1JRYwlj4iO69be21tTRwKuSp4ToYbZ7OTCKWA0cu+L0JOS9nsHbC2Uv0=
+=GsEN
+-----END PGP SIGNATURE-----
+
+--aJ74fq0Y6SrIeKCM--
+
+--===============9026219854585354358==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9026219854585354358==--
