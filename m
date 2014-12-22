@@ -1,44 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: fix platform_no_drv_owner.cocci warnings
-Date: Mon, 22 Dec 2014 11:44:38 +0000
-Message-ID: <20141222114438.GA17800@sirena.org.uk>
-References: <201412212239.7lsK60Dq%fengguang.wu@intel.com>
- <20141221144043.GA58352@athens>
+Subject: Re: [PATCH 23/28] ASoC: intel: drop owner assignment from
+ platform_drivers
+Date: Mon, 22 Dec 2014 11:46:04 +0000
+Message-ID: <20141222114604.GC17800@sirena.org.uk>
+References: <1419196495-9626-1-git-send-email-wsa@the-dreams.de>
+ <1419196495-9626-24-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+	protocol="application/pgp-signature"; boundary="2/5bycvrmDh4d1IB"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20141221144043.GA58352@athens>
+In-Reply-To: <1419196495-9626-24-git-send-email-wsa@the-dreams.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Mengdong Lin <mengdong.lin@intel.com>, kbuild-all@01.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---pf9I7BMVVzbSWLtt
+--2/5bycvrmDh4d1IB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Dec 21, 2014 at 10:40:43PM +0800, kbuild test robot wrote:
-> sound/soc/intel/cht_bsw_rt5672.c:273:3-8: No need to set .owner here. The core will do it.
+On Sun, Dec 21, 2014 at 10:14:44PM +0100, Wolfram Sang wrote:
+> This platform_driver does not need to set an owner, it will be populated by the
+> driver core.
 
-Applied, thanks.
+This doesn't apply, I've already got a patch for it.
 
---pf9I7BMVVzbSWLtt
+--2/5bycvrmDh4d1IB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUmAQlAAoJECTWi3JdVIfQ9oAH/AnI3uZgKfenTphJsmZPIieF
-/vhoL6OVwIhqJEWY8N9EngmlMWVtEyV8eRVpG/ee1unSKJ5GW9IdZ2vOH/OcANag
-SDOpup4q2mK39ZvQBWPN3ruPXTNAcOpY/SkqLH1KIMDUZqNXZ1EE5ZIj1FNfbPOr
-haG1tmnP7r/hQ4Y+MadqltJBjfR0oJaU12bzTnwvdGdCXyOhKv0ZdZpYB9ue8kcd
-l+yheNuQ+ctfBRlywYkbgEAPx85sVObGmewtOqj1K7o27Rzg3kF/WttTb9tsO53P
-k9keCN/K0FDPpQs9IJUkya0VcBG11oUKzFqXqYkmdO4r2x7Iq0+eWjKXBy2UxQQ=
-=ME5Q
+iQEcBAEBAgAGBQJUmAR7AAoJECTWi3JdVIfQttQH/39ED1DLG383LTz4fAVImtui
+Bkt0IxJSHAN6QLiKnMCaGPBZG1+ecgkilOBMB6pEqZS4VD2axIyHpMGzpjuOmW98
+3C0mw+3H7Bk5nYw2kDyZFDKrS3/DnQoF+acUxS0dGRMiesyi1+BRhu5Agvk3tH3Y
++NbJXiFXxGKN9aQOuPSnC67b/qsSR3Tgc3wCiMWYdLipsoZ+0qXafMDxIO5Tvtqy
+rX2Q3Bjyls06eIk2UW9QrBDYBlMgIQ2JoiC7VI74NLL3nYgXtkfEHJ74I1pkYjbz
+LmuTQdbe1YO5wHGWAkv6JQ/RSAB0nNrCYncdvgzyxDI9uadJmC4qzSNmUCZZGe8=
+=aagn
 -----END PGP SIGNATURE-----
 
---pf9I7BMVVzbSWLtt--
+--2/5bycvrmDh4d1IB--
