@@ -1,50 +1,46 @@
-From: Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH 1/2] ASoC: rockchip: i2s: fix error defination of transmit data level
-Date: Tue, 23 Dec 2014 17:08:28 +0800
-Message-ID: <1419325709-15374-2-git-send-email-jay.xu@rock-chips.com>
-References: <1419325709-15374-1-git-send-email-jay.xu@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1419325709-15374-1-git-send-email-jay.xu@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, heiko@sntech.de, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, sonnyrao@chromium.org
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>
+From: Xuebing Wang <xbing6@gmail.com>
+Subject: Can not rmmod snd_hda_codec_hdmi
+Date: Tue, 23 Dec 2014 19:07:52 +0800
+Message-ID: <1419332872.4067.10.camel@xbing-ubuntu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
+ [209.85.220.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6354F2614EE
+ for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2014 12:07:59 +0100 (CET)
+Received: by mail-pa0-f45.google.com with SMTP id lf10so7698423pab.18
+ for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2014 03:07:58 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "; Takashi Iwai" <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>, ";
+ Libin Yang" <libin.yang@intel.com>, ";
+ Fengguang Wu" <fengguang.wu@intel.com>, ";
+ Mengdong Lin" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-According to description about "Transmit Data Level",
+Hi community,
 
-This bit field controls the level at which a DMA request
-is made by the transmit logic.
+I am trying to implement the function of streaming SACD music over HDMI,
+my PC is Intel Haswell based CPU (Intel i7 4770).
 
-It is equal to the watermark level.
+When I am trying to 'rmmod snd_hda_codec_hdmi', I get the prompt that
+this module is in use (detailed message as below) 
+rmmod: ERROR: Module snd_hda_codec_hdmi is in use
 
-That is, the dma_tx_req signal is generated when the number
-of valid data entries in the TXFIFO
-(TXFIFO0 if CSR=00
- TXFIFO1 if CSR=01
- TXFIFO2 if CSR=10
- TXFIFO3 if CSR=11)
-is equal to or below this field value.
+Is it possible that workqueue [hd-audio] is using this kernel module
+(snd_hda_codec_hdmi)?
 
-Different to receive data level, transmit data level does not need
-to "-1".
+Can I use rmmod / insmod as the way to debug this module?
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
- sound/soc/rockchip/rockchip_i2s.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
-index 89a5d8b..93f456f 100644
---- a/sound/soc/rockchip/rockchip_i2s.h
-+++ b/sound/soc/rockchip/rockchip_i2s.h
-@@ -127,7 +127,7 @@
- #define I2S_DMACR_TDE_DISABLE	(0 << I2S_DMACR_TDE_SHIFT)
- #define I2S_DMACR_TDE_ENABLE	(1 << I2S_DMACR_TDE_SHIFT)
- #define I2S_DMACR_TDL_SHIFT	0
--#define I2S_DMACR_TDL(x)	((x - 1) << I2S_DMACR_TDL_SHIFT)
-+#define I2S_DMACR_TDL(x)	((x) << I2S_DMACR_TDL_SHIFT)
- #define I2S_DMACR_TDL_MASK	(0x1f << I2S_DMACR_TDL_SHIFT)
- 
- /*
--- 
-1.9.1
+Thanks.
+Xuebing Wang
