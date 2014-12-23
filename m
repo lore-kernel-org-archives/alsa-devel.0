@@ -1,69 +1,55 @@
-From: Andrew Jackson <andrew.jackson-5wv7dgnIgG8@public.gmane.org>
-Subject: [PATCH v4 4/5] ASoC: dwc: Add documentation for I2S DT
-Date: Tue, 23 Dec 2014 13:56:26 +0000
-Message-ID: <ffbfb442b3ba3d7dec5a7ba3e0e596678d4e74e5.1419342218.git.Andrew.Jackson@arm.com>
+From: Andrew Jackson <andrew.jackson@arm.com>
+Subject: [PATCH v4 2/5] ASoC: dwc: Switch to managed clock resource
+Date: Tue, 23 Dec 2014 13:56:24 +0000
+Message-ID: <9af8128918e2da97801f1122ae06336b1bd1012f.1419342218.git.Andrew.Jackson@arm.com>
 References: <cover.1419342218.git.Andrew.Jackson@arm.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1419342218.git.Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
-In-Reply-To: <cover.1419342218.git.Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
-References: <cover.1419342218.git.Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rajeev Kumar <rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Liviu Dudau <Liviu.Dudau-5wv7dgnIgG8@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1419342218.git.Andrew.Jackson@arm.com>
+In-Reply-To: <cover.1419342218.git.Andrew.Jackson@arm.com>
+References: <cover.1419342218.git.Andrew.Jackson@arm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
+From: Andrew Jackson <Andrew.Jackson@arm.com>
 
-Add documentation for Designware I2S hardware block.  The block requires
-one clock (for audio sampling) and DMA channels for receive and transmit.
+Simplify error handling during probe by using managed clock
+resources.
 
-Signed-off-by: Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
+Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
 ---
- .../devicetree/bindings/sound/designware-i2s.txt   |   31 ++++++++++++++++++++
- 1 files changed, 31 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/designware-i2s.txt
+ sound/soc/dwc/designware_i2s.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/designware-i2s.txt b/Documentation/devicetree/bindings/sound/designware-i2s.txt
-new file mode 100644
-index 0000000..7bb5424
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/designware-i2s.txt
-@@ -0,0 +1,31 @@
-+DesignWare I2S controller
-+
-+Required properties:
-+ - compatible : Must be "snps,designware-i2s"
-+ - reg : Must contain the I2S core's registers location and length
-+ - clocks : Pairs of phandle and specifier referencing the controller's
-+   clocks. The controller expects one clock: the clock used as the sampling
-+   rate reference clock sample.
-+ - clock-names : "i2sclk" for the sample rate reference clock.
-+ - dmas: Pairs of phandle and specifier for the DMA channels that are used by
-+   the core. The core expects one or two dma channels: one for transmit and
-+   one for receive.
-+ - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
-+
-+For more details on the 'dma', 'dma-names', 'clock' and 'clock-names'
-+properties please check:
-+	* resource-names.txt
-+	* clock/clock-bindings.txt
-+	* dma/dma.txt
-+
-+Example:
-+
-+	soc_i2s: i2s@7ff90000 {
-+		compatible = "snps,designware-i2s";
-+		reg = <0x0 0x7ff90000 0x0 0x1000>;
-+		clocks = <&scpi_i2sclk 0>;
-+		clock-names = "i2sclk";
-+		#sound-dai-cells = <0>;
-+		dmas = <&dma0 5>;
-+		dma-names = "tx";
-+	};
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 9573ec7..b3dc535 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -407,13 +407,13 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 
+ 	dev->capability = pdata->cap;
+ 	dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
+-	dev->clk = clk_get(&pdev->dev, NULL);
++	dev->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(dev->clk))
+ 		return  PTR_ERR(dev->clk);
+ 
+ 	ret = clk_prepare_enable(dev->clk);
+ 	if (ret < 0)
+-		goto err_clk_put;
++		return ret;
+ 
+ 	dev_set_drvdata(&pdev->dev, dev);
+ 	ret = snd_soc_register_component(&pdev->dev, &dw_i2s_component,
+@@ -427,8 +427,6 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 
+ err_clk_disable:
+ 	clk_disable(dev->clk);
+-err_clk_put:
+-	clk_put(dev->clk);
+ 	return ret;
+ }
+ 
 -- 
 1.7.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
