@@ -1,14 +1,15 @@
 From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 2/3 v2] ASoC: rt5677: Add the ASRC support
-Date: Tue, 23 Dec 2014 10:27:55 +0800
-Message-ID: <1419301676-16243-2-git-send-email-oder_chiou@realtek.com>
+Subject: [PATCH 3/3 v2] ASoC: rt5677: Adjust the routing of
+	"PLL1"
+Date: Tue, 23 Dec 2014 10:27:56 +0800
+Message-ID: <1419301676-16243-3-git-send-email-oder_chiou@realtek.com>
 References: <1419301676-16243-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 774542612CD
+ by alsa0.perex.cz (Postfix) with ESMTP id 7ABF8261480
  for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2014 03:28:06 +0100 (CET)
 In-Reply-To: <1419301676-16243-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,192 +25,113 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the ASRC support
+Remove the duplicated PLL1 connections of the adc stereo filters,
+and remove the PLL1 connections of the DACs because the PLL1 should be
+connected to dac filters.
 
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/soc/codecs/rt5677.c | 155 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 155 insertions(+)
+ sound/soc/codecs/rt5677.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index a15e39d..66abfa3 100644
+index 66abfa3..cf39fe6 100644
 --- a/sound/soc/codecs/rt5677.c
 +++ b/sound/soc/codecs/rt5677.c
-@@ -921,6 +921,97 @@ static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
- 		return 0;
- }
+@@ -3014,8 +3014,6 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
  
-+static int is_using_asrc(struct snd_soc_dapm_widget *source,
-+			 struct snd_soc_dapm_widget *sink)
-+{
-+	unsigned int reg, shift, val;
-+
-+	if (source->reg == RT5677_ASRC_1) {
-+		switch (source->shift) {
-+		case 12:
-+			reg = RT5677_ASRC_4;
-+			shift = 0;
-+			break;
-+		case 13:
-+			reg = RT5677_ASRC_4;
-+			shift = 4;
-+			break;
-+		case 14:
-+			reg = RT5677_ASRC_4;
-+			shift = 8;
-+			break;
-+		case 15:
-+			reg = RT5677_ASRC_4;
-+			shift = 12;
-+			break;
-+		default:
-+			return 0;
-+		}
-+	} else {
-+		switch (source->shift) {
-+		case 0:
-+			reg = RT5677_ASRC_6;
-+			shift = 8;
-+			break;
-+		case 1:
-+			reg = RT5677_ASRC_6;
-+			shift = 12;
-+			break;
-+		case 2:
-+			reg = RT5677_ASRC_5;
-+			shift = 0;
-+			break;
-+		case 3:
-+			reg = RT5677_ASRC_5;
-+			shift = 4;
-+			break;
-+		case 4:
-+			reg = RT5677_ASRC_5;
-+			shift = 8;
-+			break;
-+		case 5:
-+			reg = RT5677_ASRC_5;
-+			shift = 12;
-+			break;
-+		case 12:
-+			reg = RT5677_ASRC_3;
-+			shift = 0;
-+			break;
-+		case 13:
-+			reg = RT5677_ASRC_3;
-+			shift = 4;
-+			break;
-+		case 14:
-+			reg = RT5677_ASRC_3;
-+			shift = 12;
-+			break;
-+		default:
-+			return 0;
-+		}
-+	}
-+
-+	val = (snd_soc_read(source->codec, reg) >> shift) & 0xf;
-+	switch (val) {
-+	case 1 ... 6:
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+
-+}
-+
-+static int can_use_asrc(struct snd_soc_dapm_widget *source,
-+			 struct snd_soc_dapm_widget *sink)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (rt5677->sysclk > rt5677->lrck[RT5677_AIF1] * 384)
-+		return 1;
-+
-+	return 0;
-+}
-+
- /* Digital Mixer */
- static const struct snd_kcontrol_new rt5677_sto1_adc_l_mix[] = {
- 	SOC_DAPM_SINGLE("ADC1 Switch", RT5677_STO1_ADC_MIXER,
-@@ -2215,6 +2306,45 @@ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("PLL2", RT5677_PWR_ANLG2, RT5677_PWR_PLL2_BIT,
- 		0, rt5677_set_pll2_event, SND_SOC_DAPM_POST_PMU),
+ 	{ "Stereo1 ADC MIXL", NULL, "Sto1 ADC MIXL" },
+ 	{ "Stereo1 ADC MIXL", NULL, "adc stereo1 filter" },
+-	{ "adc stereo1 filter", NULL, "PLL1", is_sys_clk_from_pll },
+-
+ 	{ "Stereo1 ADC MIXR", NULL, "Sto1 ADC MIXR" },
+ 	{ "Stereo1 ADC MIXR", NULL, "adc stereo1 filter" },
+ 	{ "adc stereo1 filter", NULL, "PLL1", is_sys_clk_from_pll },
+@@ -3036,8 +3034,6 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
  
-+	/* ASRC */
-+	SND_SOC_DAPM_SUPPLY_S("I2S1 ASRC", 1, RT5677_ASRC_1, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("I2S2 ASRC", 1, RT5677_ASRC_1, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("I2S3 ASRC", 1, RT5677_ASRC_1, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("I2S4 ASRC", 1, RT5677_ASRC_1, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC STO ASRC", 1, RT5677_ASRC_2, 14, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC MONO2 L ASRC", 1, RT5677_ASRC_2, 13, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC MONO2 R ASRC", 1, RT5677_ASRC_2, 12, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC MONO3 L ASRC", 1, RT5677_ASRC_1, 15, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC MONO3 R ASRC", 1, RT5677_ASRC_1, 14, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC MONO4 L ASRC", 1, RT5677_ASRC_1, 13, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC MONO4 R ASRC", 1, RT5677_ASRC_1, 12, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC STO1 ASRC", 1, RT5677_ASRC_2, 11, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC STO2 ASRC", 1, RT5677_ASRC_2, 10, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC STO3 ASRC", 1, RT5677_ASRC_2, 9, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC STO4 ASRC", 1, RT5677_ASRC_2, 8, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC MONO L ASRC", 1, RT5677_ASRC_2, 7, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC MONO R ASRC", 1, RT5677_ASRC_2, 6, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC STO1 ASRC", 1, RT5677_ASRC_2, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC STO2 ASRC", 1, RT5677_ASRC_2, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC STO3 ASRC", 1, RT5677_ASRC_2, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC STO4 ASRC", 1, RT5677_ASRC_2, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC MONO L ASRC", 1, RT5677_ASRC_2, 1, 0, NULL,
-+		0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC MONO R ASRC", 1, RT5677_ASRC_2, 0, 0, NULL,
-+		0),
-+
- 	/* Input Side */
- 	/* micbias */
- 	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5677_PWR_ANLG2, RT5677_PWR_MB1_BIT,
-@@ -2729,6 +2859,31 @@ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- };
+ 	{ "Stereo2 ADC MIXL", NULL, "Stereo2 ADC LR Mux" },
+ 	{ "Stereo2 ADC MIXL", NULL, "adc stereo2 filter" },
+-	{ "adc stereo2 filter", NULL, "PLL1", is_sys_clk_from_pll },
+-
+ 	{ "Stereo2 ADC MIXR", NULL, "Sto2 ADC MIXR" },
+ 	{ "Stereo2 ADC MIXR", NULL, "adc stereo2 filter" },
+ 	{ "adc stereo2 filter", NULL, "PLL1", is_sys_clk_from_pll },
+@@ -3052,8 +3048,6 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
  
- static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
-+	{ "Stereo1 DMIC Mux", NULL, "DMIC STO1 ASRC", can_use_asrc },
-+	{ "Stereo2 DMIC Mux", NULL, "DMIC STO2 ASRC", can_use_asrc },
-+	{ "Stereo3 DMIC Mux", NULL, "DMIC STO3 ASRC", can_use_asrc },
-+	{ "Stereo4 DMIC Mux", NULL, "DMIC STO4 ASRC", can_use_asrc },
-+	{ "Mono DMIC L Mux", NULL, "DMIC MONO L ASRC", can_use_asrc },
-+	{ "Mono DMIC R Mux", NULL, "DMIC MONO R ASRC", can_use_asrc },
-+	{ "I2S1", NULL, "I2S1 ASRC", can_use_asrc},
-+	{ "I2S2", NULL, "I2S2 ASRC", can_use_asrc},
-+	{ "I2S3", NULL, "I2S3 ASRC", can_use_asrc},
-+	{ "I2S4", NULL, "I2S4 ASRC", can_use_asrc},
-+
-+	{ "dac stereo1 filter", NULL, "DAC STO ASRC", is_using_asrc },
-+	{ "dac mono2 left filter", NULL, "DAC MONO2 L ASRC", is_using_asrc },
-+	{ "dac mono2 right filter", NULL, "DAC MONO2 R ASRC", is_using_asrc },
-+	{ "dac mono3 left filter", NULL, "DAC MONO3 L ASRC", is_using_asrc },
-+	{ "dac mono3 right filter", NULL, "DAC MONO3 R ASRC", is_using_asrc },
-+	{ "dac mono4 left filter", NULL, "DAC MONO4 L ASRC", is_using_asrc },
-+	{ "dac mono4 right filter", NULL, "DAC MONO4 R ASRC", is_using_asrc },
-+	{ "adc stereo1 filter", NULL, "ADC STO1 ASRC", is_using_asrc },
-+	{ "adc stereo2 filter", NULL, "ADC STO2 ASRC", is_using_asrc },
-+	{ "adc stereo3 filter", NULL, "ADC STO3 ASRC", is_using_asrc },
-+	{ "adc stereo4 filter", NULL, "ADC STO4 ASRC", is_using_asrc },
-+	{ "adc mono left filter", NULL, "ADC MONO L ASRC", is_using_asrc },
-+	{ "adc mono right filter", NULL, "ADC MONO R ASRC", is_using_asrc },
-+
- 	{ "DMIC1", NULL, "DMIC L1" },
- 	{ "DMIC1", NULL, "DMIC R1" },
- 	{ "DMIC2", NULL, "DMIC L2" },
+ 	{ "Stereo3 ADC MIXL", NULL, "Sto3 ADC MIXL" },
+ 	{ "Stereo3 ADC MIXL", NULL, "adc stereo3 filter" },
+-	{ "adc stereo3 filter", NULL, "PLL1", is_sys_clk_from_pll },
+-
+ 	{ "Stereo3 ADC MIXR", NULL, "Sto3 ADC MIXR" },
+ 	{ "Stereo3 ADC MIXR", NULL, "adc stereo3 filter" },
+ 	{ "adc stereo3 filter", NULL, "PLL1", is_sys_clk_from_pll },
+@@ -3068,8 +3062,6 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 
+ 	{ "Stereo4 ADC MIXL", NULL, "Sto4 ADC MIXL" },
+ 	{ "Stereo4 ADC MIXL", NULL, "adc stereo4 filter" },
+-	{ "adc stereo4 filter", NULL, "PLL1", is_sys_clk_from_pll },
+-
+ 	{ "Stereo4 ADC MIXR", NULL, "Sto4 ADC MIXR" },
+ 	{ "Stereo4 ADC MIXR", NULL, "adc stereo4 filter" },
+ 	{ "adc stereo4 filter", NULL, "PLL1", is_sys_clk_from_pll },
+@@ -3686,39 +3678,46 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 	{ "Stereo DAC MIXR", "DAC2 R Switch", "DAC2 R Mux" },
+ 	{ "Stereo DAC MIXR", "DAC1 L Switch", "DAC1 MIXL" },
+ 	{ "Stereo DAC MIXR", NULL, "dac stereo1 filter" },
++	{ "dac stereo1 filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "Mono DAC MIXL", "ST L Switch", "Sidetone Mux" },
+ 	{ "Mono DAC MIXL", "DAC1 L Switch", "DAC1 MIXL" },
+ 	{ "Mono DAC MIXL", "DAC2 L Switch", "DAC2 L Mux" },
+ 	{ "Mono DAC MIXL", "DAC2 R Switch", "DAC2 R Mux" },
+ 	{ "Mono DAC MIXL", NULL, "dac mono2 left filter" },
++	{ "dac mono2 left filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "Mono DAC MIXR", "ST R Switch", "Sidetone Mux" },
+ 	{ "Mono DAC MIXR", "DAC1 R Switch", "DAC1 MIXR" },
+ 	{ "Mono DAC MIXR", "DAC2 R Switch", "DAC2 R Mux" },
+ 	{ "Mono DAC MIXR", "DAC2 L Switch", "DAC2 L Mux" },
+ 	{ "Mono DAC MIXR", NULL, "dac mono2 right filter" },
++	{ "dac mono2 right filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "DD1 MIXL", "Sto DAC Mix L Switch", "Stereo DAC MIXL" },
+ 	{ "DD1 MIXL", "Mono DAC Mix L Switch", "Mono DAC MIXL" },
+ 	{ "DD1 MIXL", "DAC3 L Switch", "DAC3 L Mux" },
+ 	{ "DD1 MIXL", "DAC3 R Switch", "DAC3 R Mux" },
+ 	{ "DD1 MIXL", NULL, "dac mono3 left filter" },
++	{ "dac mono3 left filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DD1 MIXR", "Sto DAC Mix R Switch", "Stereo DAC MIXR" },
+ 	{ "DD1 MIXR", "Mono DAC Mix R Switch", "Mono DAC MIXR" },
+ 	{ "DD1 MIXR", "DAC3 L Switch", "DAC3 L Mux" },
+ 	{ "DD1 MIXR", "DAC3 R Switch", "DAC3 R Mux" },
+ 	{ "DD1 MIXR", NULL, "dac mono3 right filter" },
++	{ "dac mono3 right filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "DD2 MIXL", "Sto DAC Mix L Switch", "Stereo DAC MIXL" },
+ 	{ "DD2 MIXL", "Mono DAC Mix L Switch", "Mono DAC MIXL" },
+ 	{ "DD2 MIXL", "DAC4 L Switch", "DAC4 L Mux" },
+ 	{ "DD2 MIXL", "DAC4 R Switch", "DAC4 R Mux" },
+ 	{ "DD2 MIXL", NULL, "dac mono4 left filter" },
++	{ "dac mono4 left filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DD2 MIXR", "Sto DAC Mix R Switch", "Stereo DAC MIXR" },
+ 	{ "DD2 MIXR", "Mono DAC Mix R Switch", "Mono DAC MIXR" },
+ 	{ "DD2 MIXR", "DAC4 L Switch", "DAC4 L Mux" },
+ 	{ "DD2 MIXR", "DAC4 R Switch", "DAC4 R Mux" },
+ 	{ "DD2 MIXR", NULL, "dac mono4 right filter" },
++	{ "dac mono4 right filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "Stereo DAC MIX", NULL, "Stereo DAC MIXL" },
+ 	{ "Stereo DAC MIX", NULL, "Stereo DAC MIXR" },
+@@ -3740,11 +3739,8 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 	{ "DAC3 SRC Mux", "DD MIX2L", "DD2 MIXL" },
+ 
+ 	{ "DAC 1", NULL, "DAC12 SRC Mux" },
+-	{ "DAC 1", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC 2", NULL, "DAC12 SRC Mux" },
+-	{ "DAC 2", NULL, "PLL1", is_sys_clk_from_pll },
+ 	{ "DAC 3", NULL, "DAC3 SRC Mux" },
+-	{ "DAC 3", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "PDM1 L Mux", "STO1 DAC MIX", "Stereo DAC MIXL" },
+ 	{ "PDM1 L Mux", "MONO DAC MIX", "Mono DAC MIXL" },
 -- 
 1.8.1.1.439.g50a6b54
