@@ -1,15 +1,15 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: pcm: Fix vague codec and cpu DAI prepare
-	error messages
-Date: Tue, 23 Dec 2014 11:04:41 +0200
-Message-ID: <1419325481-32094-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [PATCH] ALSA: ASoC: soc-compress.c: fix NULL
+	dereference
+Date: Tue, 23 Dec 2014 09:09:27 +0000
+Message-ID: <1419325767-30602-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E2AC2605BF
- for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2014 10:04:50 +0100 (CET)
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 669392604BC
+ for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2014 10:10:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,42 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@imgtec.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Both codec and cpu DAI prepare print the same error message making it a bit
-more difficult to grep quickly from sources. Fix this by telling it
-explicitly.
+In soc_new_compress() when rtd->dai_link->daynmic is set, we create the pcm
+substreams with this call:
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+   ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
+                                   1, 0, &be_pcm);
+
+which passes 0 as capture_count leading to
+
+   be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream
+
+being NULL, hence when trying to set rtd a few lines below we get an oops.
+Fix by removing this line of code since CAPTURE substream will always be NULL.
+
+Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+Cc: Vinod Koul <vinod.koul@intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org
 ---
- sound/soc/soc-pcm.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Not sure if this is the correct fix but that's what I could come up with my
+limited knowledge.
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index eb87d96e2cf0..0ae0e2a9eed7 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -746,7 +746,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 							      codec_dai);
- 			if (ret < 0) {
- 				dev_err(codec_dai->dev,
--					"ASoC: DAI prepare error: %d\n", ret);
-+					"ASoC: codec DAI prepare error: %d\n",
-+					ret);
- 				goto out;
- 			}
- 		}
-@@ -755,8 +756,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 	if (cpu_dai->driver->ops && cpu_dai->driver->ops->prepare) {
- 		ret = cpu_dai->driver->ops->prepare(substream, cpu_dai);
- 		if (ret < 0) {
--			dev_err(cpu_dai->dev, "ASoC: DAI prepare error: %d\n",
--				ret);
-+			dev_err(cpu_dai->dev,
-+				"ASoC: cpu DAI prepare error: %d\n", ret);
- 			goto out;
- 		}
- 	}
+I think the more correct solution would be to use the value of
+rtd->dai_link->dpcm_playback and rtd->dai_link->dpcm_capture in the args of
+snd_pcm_new_internal() for playback_count and capture_count.
+
+ sound/soc/soc-compress.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 590a82f01d0b..7ab39f65384c 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -669,7 +669,6 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 		rtd->pcm = be_pcm;
+ 		rtd->fe_compr = 1;
+ 		be_pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->private_data = rtd;
+-		be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->private_data = rtd;
+ 		memcpy(compr->ops, &soc_compr_dyn_ops, sizeof(soc_compr_dyn_ops));
+ 	} else
+ 		memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
 -- 
-2.1.3
+2.1.0
