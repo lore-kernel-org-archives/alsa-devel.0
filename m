@@ -1,70 +1,46 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH] ALSA: ASoC: soc-compress.c: fix NULL
-	dereference
-Date: Tue, 23 Dec 2014 09:09:27 +0000
-Message-ID: <1419325767-30602-1-git-send-email-qais.yousef@imgtec.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 669392604BC
- for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2014 10:10:07 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@imgtec.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+From: Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH 2/2] ASoC: rockchip: i2s: set TDL and RDL to 16 bits
+Date: Tue, 23 Dec 2014 17:08:29 +0800
+Message-ID: <1419325709-15374-3-git-send-email-jay.xu@rock-chips.com>
+References: <1419325709-15374-1-git-send-email-jay.xu@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1419325709-15374-1-git-send-email-jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-In soc_new_compress() when rtd->dai_link->daynmic is set, we create the pcm
-substreams with this call:
+Set Transmit Data Level(TDL) and Receive Data Level(RDL) to 16 bits.
+Without this setting, the TDL is default to be 0x00 (means 1 bit),
+and the RDL is default to be 0x1f (means 16 bits).
 
-   ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
-                                   1, 0, &be_pcm);
+This patch is helpful to fix pop sound, tested on rk3288 board.
 
-which passes 0 as capture_count leading to
-
-   be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream
-
-being NULL, hence when trying to set rtd a few lines below we get an oops.
-Fix by removing this line of code since CAPTURE substream will always be NULL.
-
-Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 ---
-Not sure if this is the correct fix but that's what I could come up with my
-limited knowledge.
+ sound/soc/rockchip/rockchip_i2s.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I think the more correct solution would be to use the value of
-rtd->dai_link->dpcm_playback and rtd->dai_link->dpcm_capture in the args of
-snd_pcm_new_internal() for playback_count and capture_count.
-
- sound/soc/soc-compress.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 590a82f01d0b..7ab39f65384c 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -669,7 +669,6 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		rtd->pcm = be_pcm;
- 		rtd->fe_compr = 1;
- 		be_pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->private_data = rtd;
--		be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->private_data = rtd;
- 		memcpy(compr->ops, &soc_compr_dyn_ops, sizeof(soc_compr_dyn_ops));
- 	} else
- 		memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index c74ba37..1cd7efc 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -247,6 +247,10 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_TXCR, I2S_TXCR_VDW_MASK, val);
+ 	regmap_update_bits(i2s->regmap, I2S_RXCR, I2S_RXCR_VDW_MASK, val);
++	regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_TDL_MASK,
++			   I2S_DMACR_TDL(16));
++	regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
++			   I2S_DMACR_RDL(16));
+ 
+ 	return 0;
+ }
 -- 
-2.1.0
+1.9.1
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
