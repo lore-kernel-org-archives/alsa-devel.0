@@ -1,46 +1,69 @@
-From: Xuebing Wang <xbing6@gmail.com>
-Subject: Can not rmmod snd_hda_codec_hdmi
-Date: Tue, 23 Dec 2014 19:07:52 +0800
-Message-ID: <1419332872.4067.10.camel@xbing-ubuntu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 6354F2614EE
- for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2014 12:07:59 +0100 (CET)
-Received: by mail-pa0-f45.google.com with SMTP id lf10so7698423pab.18
- for <alsa-devel@alsa-project.org>; Tue, 23 Dec 2014 03:07:58 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "; Takashi Iwai" <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>, ";
- Libin Yang" <libin.yang@intel.com>, ";
- Fengguang Wu" <fengguang.wu@intel.com>, ";
- Mengdong Lin" <mengdong.lin@intel.com>
+From: Andrew Jackson <andrew.jackson-5wv7dgnIgG8@public.gmane.org>
+Subject: [PATCH v4 4/5] ASoC: dwc: Add documentation for I2S DT
+Date: Tue, 23 Dec 2014 13:56:26 +0000
+Message-ID: <ffbfb442b3ba3d7dec5a7ba3e0e596678d4e74e5.1419342218.git.Andrew.Jackson@arm.com>
+References: <cover.1419342218.git.Andrew.Jackson@arm.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cover.1419342218.git.Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
+In-Reply-To: <cover.1419342218.git.Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
+References: <cover.1419342218.git.Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rajeev Kumar <rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Liviu Dudau <Liviu.Dudau-5wv7dgnIgG8@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi community,
+From: Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
 
-I am trying to implement the function of streaming SACD music over HDMI,
-my PC is Intel Haswell based CPU (Intel i7 4770).
+Add documentation for Designware I2S hardware block.  The block requires
+one clock (for audio sampling) and DMA channels for receive and transmit.
 
-When I am trying to 'rmmod snd_hda_codec_hdmi', I get the prompt that
-this module is in use (detailed message as below) 
-rmmod: ERROR: Module snd_hda_codec_hdmi is in use
+Signed-off-by: Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
+---
+ .../devicetree/bindings/sound/designware-i2s.txt   |   31 ++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/designware-i2s.txt
 
-Is it possible that workqueue [hd-audio] is using this kernel module
-(snd_hda_codec_hdmi)?
+diff --git a/Documentation/devicetree/bindings/sound/designware-i2s.txt b/Documentation/devicetree/bindings/sound/designware-i2s.txt
+new file mode 100644
+index 0000000..7bb5424
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/designware-i2s.txt
+@@ -0,0 +1,31 @@
++DesignWare I2S controller
++
++Required properties:
++ - compatible : Must be "snps,designware-i2s"
++ - reg : Must contain the I2S core's registers location and length
++ - clocks : Pairs of phandle and specifier referencing the controller's
++   clocks. The controller expects one clock: the clock used as the sampling
++   rate reference clock sample.
++ - clock-names : "i2sclk" for the sample rate reference clock.
++ - dmas: Pairs of phandle and specifier for the DMA channels that are used by
++   the core. The core expects one or two dma channels: one for transmit and
++   one for receive.
++ - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
++
++For more details on the 'dma', 'dma-names', 'clock' and 'clock-names'
++properties please check:
++	* resource-names.txt
++	* clock/clock-bindings.txt
++	* dma/dma.txt
++
++Example:
++
++	soc_i2s: i2s@7ff90000 {
++		compatible = "snps,designware-i2s";
++		reg = <0x0 0x7ff90000 0x0 0x1000>;
++		clocks = <&scpi_i2sclk 0>;
++		clock-names = "i2sclk";
++		#sound-dai-cells = <0>;
++		dmas = <&dma0 5>;
++		dma-names = "tx";
++	};
+-- 
+1.7.1
 
-Can I use rmmod / insmod as the way to debug this module?
-
-Thanks.
-Xuebing Wang
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
