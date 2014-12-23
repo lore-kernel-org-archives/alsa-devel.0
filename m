@@ -1,56 +1,52 @@
 From: Andrew Jackson <andrew.jackson@arm.com>
-Subject: [PATCH v4 0/5] ASoC: dwc: Add device tree support to designware I2S
-Date: Tue, 23 Dec 2014 13:56:22 +0000
-Message-ID: <cover.1419342218.git.Andrew.Jackson@arm.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v4 1/5] ASoC: dwc: Prepare clock before use
+Date: Tue, 23 Dec 2014 13:56:23 +0000
+Message-ID: <63becb5f356c25b226b9dbc5825357e894d0f08b.1419342218.git.Andrew.Jackson@arm.com>
+References: <cover.1419342218.git.Andrew.Jackson@arm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <cover.1419342218.git.Andrew.Jackson@arm.com>
+In-Reply-To: <cover.1419342218.git.Andrew.Jackson@arm.com>
+References: <cover.1419342218.git.Andrew.Jackson@arm.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, pawel.moll@arm.com, Arnd Bergmann <arnd@arndb.de>, ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, robh+dt@kernel.org, galak@codeaurora.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Andrew Jackson <Andrew.Jackson@arm.com>
 
-This patch set extends the DesignWare I2S driver to provide device
-tree support and fixes a couple of small faults.
+Some I2S clocks may require some time to get the clock ready
+for operation and so need to be prepared before they are enabled.
+So, prepare the clock as well as enabling it, but combine the
+two through clk_prepare_enable.
 
-Changes v3->v4
-  + Drop applied patches
-  + Use combined function to prepare clock [Mark Brown]
-  + Use managed clock resources to avoid clk_put [Mark Brown]
-  + Read configuration prameters from hardware for both platform data
-    and device tree [Mark Brown]
-  + Re-order patch sequence [Mark Brown]
-  + Change union name to avoid future collisions [Mark Brown]
-  + Check return code from clk_set_rate [Mark Brown]
-  + Check parametsrs read from hardware agaist array limits and
-    add further comments [Mark Brown]
-  + Add of_match_ptr [Mark Brown]
+Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
+---
+ sound/soc/dwc/designware_i2s.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Changes v2->v3
-  + Drop applied patch
-  + Flush FIFOs in prepare rather than hw_params [Lars-Peter Clausen]
-
-Changes v1->v2
-  + Drop negative use count patch [Mark Brown]
-  + Remove unnecessary debug print messages [Lars-Peter Clausen]
-  + Rewrite iteration as for loop rather than do...while [Mark Brown]
-  + Reorder patches to send fixes first [Mark Brown]
-  + Simplify device tree code [Mark Brown]
-  + Split device tree patch in two [Mark Brown]
-  + Expand explanatory comment on channel configuration [Rajeev Kumar]
-
-Arnd: I've not forgotten about updating the spear entries and
-      will submit as a separate patch.
-
-Andrew Jackson (5):
-  ASoC: dwc: Prepare clock before use
-  ASoC: dwc: Switch to managed clock resource
-  ASoC: dwc: Read I2S block configuration from registers
-  ASoC: dwc: Add documentation for I2S DT
-  ASoC: dwc: Add devicetree support for Designware I2S
-
- .../devicetree/bindings/sound/designware-i2s.txt   |   31 +++
- sound/soc/dwc/Kconfig                              |    1 +
- sound/soc/dwc/designware_i2s.c                     |  275 ++++++++++++++++----
- 3 files changed, 260 insertions(+), 47 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/designware-i2s.txt
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 06d3a34..9573ec7 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -411,7 +411,7 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	if (IS_ERR(dev->clk))
+ 		return  PTR_ERR(dev->clk);
+ 
+-	ret = clk_enable(dev->clk);
++	ret = clk_prepare_enable(dev->clk);
+ 	if (ret < 0)
+ 		goto err_clk_put;
+ 
+-- 
+1.7.1
