@@ -1,22 +1,20 @@
-From: Xuebing Wang <xbing6@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: Can not rmmod snd_hda_codec_hdmi
-Date: Wed, 24 Dec 2014 21:07:54 +0800
-Message-ID: <1419426474.4103.10.camel@xbing-ubuntu>
+Date: Wed, 24 Dec 2014 22:21:08 +0900
+Message-ID: <549ABDC4.7010901@sakamocchi.jp>
 References: <1419332872.4067.10.camel@xbing-ubuntu>
  <680798B3-0846-423E-80F5-11AA542B563A@ladisch.de>
  <1419414572.1861.3.camel@gmail.com> <549A8DF8.1010004@iki.fi>
  <1419422073.1929.5.camel@gmail.com> <549AB171.8030700@sakamocchi.jp>
+ <1419426474.4103.10.camel@xbing-ubuntu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E74E261522
- for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 14:08:02 +0100 (CET)
-Received: by mail-pa0-f53.google.com with SMTP id kq14so9894313pab.26
- for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 05:08:00 -0800 (PST)
-In-Reply-To: <549AB171.8030700@sakamocchi.jp>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FA2E261522
+ for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 14:21:12 +0100 (CET)
+In-Reply-To: <1419426474.4103.10.camel@xbing-ubuntu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,60 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Xuebing Wang <xbing6@gmail.com>
 Cc: "; Libin Yang" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "; Takashi Iwai" <tiwai@suse.de>, ";
  Mengdong Lin" <mengdong.lin@intel.com>, Clemens Ladisch <clemens@ladisch.de>, Anssi Hannula <anssi.hannula@iki.fi>, ";
  Fengguang Wu" <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24g5LiJLCAyMDE0LTEyLTI0IGF0IDIxOjI4ICswOTAwLCBUYWthc2hpIFNha2Ftb3RvIHdyb3Rl
-Ogo+IE9uIERlYyAyNCAyMDE0IDIwOjU0LCBYdWViaW5nIFdhbmcgd3JvdGU6Cj4gPiBBbnNzaSwg
-dGhhbmtzIGZvciB5b3VyIGhlbHAuCj4gPiAKPiA+IDEpIEluIEZlZG9yYSAyMSAoa2VybmVsIDMu
-MTcuNCksIAo+ID4gJ2Z1c2VyIC12IC9kZXYvc25kLyonIHNob3dzIGJlbG93Ogo+ID4gL2Rldi9z
-bmQvY29udHJvbEMwOiAgeGJpbmcgICAgICAyNDAwIEYuLi4uIHB1bHNlYXVkaW8KPiA+IC9kZXYv
-c25kL2NvbnRyb2xDMTogIHhiaW5nICAgICAgMjQwMCBGLi4uLiBwdWxzZWF1ZGlvCj4gPiAvZGV2
-L3NuZC9wY21DMEQzcDogICB4YmluZyAgICAgIDI0MDAgRi4uLm0gcHVsc2VhdWRpbwo+ID4gL2Rl
-di9zbmQvcGNtQzFEMGM6ICAgeGJpbmcgICAgICAyNDAwIEYuLi5tIHB1bHNlYXVkaW8KPiA+IC9k
-ZXYvc25kL3BjbUMxRDBwOiAgIHhiaW5nICAgICAgMjQwMCBGLi4ubSBwdWxzZWF1ZGlvCj4gPiAK
-PiA+IEFmdGVyICdwdWxzZWF1ZGlvIC0ta2lsbCcgdG8ga2lsbCBwdWxzZWF1ZGlvIChhZnRlciBk
-aXNhYmxlIGF1dG9zcGF3biksCj4gPiBsc21vZCBzaG93cyByZWZjb3VudCBvZiBzbmRfaGRhX2lu
-dGVsIGlzIGRvd24gZnJvbSA3IHRvIDIgYXMgYmVsb3c6Cj4gPiAkIGxzbW9kIHwgZ3JlcCBoZGFf
-aW50ZWwKPiA+IHNuZF9oZGFfaW50ZWwgICAgICAgICAgMzA0NzkgIDIKPiA+IAo+ID4gJ3JtbW9k
-IHNuZF9oZGFfaW50ZWwnIHN0aWxsIHNob3dzIHRoaXMgbW9kdWxlIGlzIGluIHVzZS4KPiA+IAo+
-ID4gMikgQnV0LCBpbiBVYnVudHUgMTQuMDQuMSAoa2VybmVsIDMuMTMuMCkgRE9FUyB3b3JrIGFm
-dGVyICdwdWxzZWF1ZGlvIC0ta2lsbCcsIGJlY2F1c2UgbHNtb2Qgc2hvd3MgcmVmY291bnQgb2Yg
-c25kX2hkYV9pbnRlbCBpcyA1Lgo+ID4gCj4gPiBBbnkgc3VnZ2VzdGlvbnM/IENvdWxkIGl0IGJl
-IGJlY2F1c2Ugb2Yga2VybmVsIGRpZmZlcmVuY2UgMy4xNy40IHZzIDMuMTMuMD8KPiAKPiBJbiBV
-YnVudHUsIHB1bHNlYXVkaW8gcHJvY2VzcyByZS1ydW4gZXZlbiBpZiB5b3Uga2lsbCB0aGUgcHJv
-Y2Vzcy4gU2VlOgo+IGh0dHBzOi8vd2lraS51YnVudHUuY29tL1B1bHNlQXVkaW8vTG9nCj4gCj4g
-QnV0IGluIHRoaXMgY2FzZSwgeW91IGRvbid0IG5lZWQgdG8ga2lsbCBwdWxzZWF1ZGlvLiBZb3Ug
-anVzdCBzZXQgJ29mZicKPiBmb3IgY2FyZCBwcm9maWxlLCBvciB1bmxvYWQgYWxzYS1jYXJkIG1v
-ZHVsZS4gVGhlbiB0aGVzZSBjaGFyYWN0ZXIKPiBkZXZpY2VzIGFyZSByZWxlYXNlZC4KPiAKPiBU
-aGUgd2F5IHRvIHNldCBjYXJkIHByb2ZpbGU6Cj4gJCBwYWN0bCBsaXN0IGNhcmRzIHwgZ3JlcCBD
-YXJkCj4gQ2FyZCAjMwo+ICQgcGFjdGwgc2V0LWNhcmQtcHJvZmlsZSAzIG9mZgo+IAo+IE9yIHVz
-ZSAnY29uZmlndXJhdGlvbicgdGFiIGluIHBhdnVjb250cm9sIEdVSS4gSW4gVWJ1bnR1LCB0aGlz
-Cj4gYXBwbGljYXRpb24gaXMgcmVsZWFzZWQgYnkgJ3BhdnVjb250cm9sJyBwYWNrYWdlLgo+IAo+
-IFRoZSB3YXkgdG8gdW5sb2FkIGFsc2EtY2FyZCBtb2R1bGU6Cj4gJCBwYWN0bCBsaXN0IG1vZHVs
-ZXMgfCBncmVwIGFsc2EKPiAoLi4uIHlvdSBjYW4gc2VlIG1vZHVsZS1hbHNhLWNhcmQgaXMgbG9h
-ZGVkLikKPiAkIHBhY3RsIHVubG9hZC1tb2R1bGUgbW9kdWxlLWFsc2EtY2FyZAo+ICQgcGFjdGwg
-bGlzdCBtb2R1bGVzIHwgZ3JlcCBhbHNhCj4gKC4uLiB5b3UgY2FuIHNlZSBtb2R1bGUtYWxzYS1j
-YXJkIGlzIHVubG9hZGVkLikKClNha2Ftb3RvLXNhbiwgdGhhbmsgeW91IHZlcnkgbXVjaCBmb3Ig
-eW91ciBzb3BoaXN0aWNhdGVkIHdheSwgaXQgaGVscHMuCgoxKSBJIGFtIHNvcnJ5IHRoYXQgSSBm
-b3Jnb3QgdG8gbWVudGlvbiB0aGF0IEkgZGlzYWJsZWQgJ3B1bHNlYXVkaW8KYXV0b3NwYXduJyBp
-biBVYnVudHUgdG9vLCBhcyBJIGRpc2FibGVkICdwdWxzZWF1ZGlvIGF1dG9zcGF3bicgaW4KRmVk
-b3JhLiBCb3RoIHNpbXBseSAncHVsc2VhdWRpbyAtLWtpbGwnIChhZnRlciBkaXNhYmxlIGF1dG9z
-cGF3bikgYW5kCnlvdXIgc29waGlzdGljYXRlZCB3YXkgY2FuIGdldCBkb3duIHJlZmNvdW50IG9m
-IHNuZF9oZGFfaW50ZWwgZnJvbSA1IHRvCjAsIHRoZW4gSSBjYW4gcm1tb2Qgc25kX2hkYV9pbnRl
-bC4KCjIpIEhvd2V2ZXIsIGluIEZlZG9yYSwgJ3B1bHNlYXVkaW8gLS1raWxsJyBvciB5b3VyIHdh
-eSBjYW4gZ2V0IHJlZmNvdW50Cm9mIHNuZF9oZGFfaW50ZWwgZnJvbSA3IHRvIDIgKDUgZGVjcmVh
-c2VkKS4gQW55IHN1Z2dlc3Rpb25zIGhvdyB0bwpkZWNyZWFzZSB0aGUgcmVzdCAyIHJlZmNvdW50
-PwoKMykgSSBkaWQgdHJ5IHRvIGJ1aWxkIHRhZyAzLjEzIGZyb20gbWFpbmxpbmUga2VybmVsICh1
-c2luZyBGZWRvcmEgMy4xNy40CmNvbmZpZyBmaWxlKSBhbmQgdHJpZWQgMy4xMyBrZXJuZWwgb24g
-RmVkb3JhLCBhbmQgZ290IHRoZSBzYW1lIHJlc3VsdAoocmVmY291bnQgb2Ygc25kX2hkYV9pbnRl
-bCBpcyBkb3duIGZyb20gNyB0byAyKS4KCkl0IHNlZW1zIHNvbWV0aGluZyBpbiBGZWRvcmEgKGVp
-dGhlciBGZWRvcmEga2VybmVsIG9yIGFwcGxpY2F0aW9uKSBpcwp1c2luZyBzbmRfaGRhX2ludGVs
-LgoKVGhhbmtzIGFnYWluLgoKCj4gUmVnYXJkcwo+IAo+IFRha2FzaGkgU2FrYW1vdG8KPiBvLXRh
-a2FzaGlAc2FrYW1vY2NoaS5qcAo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+On Dec 24 2014 22:07, Xuebing Wang wrote:
+> 2) However, in Fedora, 'pulseaudio --kill' or your way can get refcount
+> of snd_hda_intel from 7 to 2 (5 decreased). Any suggestions how to
+> decrease the rest 2 refcount?
+> 
+> 3) I did try to build tag 3.13 from mainline kernel (using Fedora 3.17.4
+> config file) and tried 3.13 kernel on Fedora, and got the same result
+> (refcount of snd_hda_intel is down from 7 to 2).
+
+Hm. In this case that the refcount is down to 2, how is the output of
+'fuser' command? If any applications use these character devices, we can
+see the name of command.
+
+
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
