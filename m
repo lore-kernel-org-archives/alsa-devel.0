@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V3 02/10] ASoC: qcom: Document MAX98357A bindings
-Date: Wed, 24 Dec 2014 08:42:02 -0800
-Message-ID: <1419439330-2303-3-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V3 09/10] ASoC: Allow for building QCOM drivers
+Date: Wed, 24 Dec 2014 08:42:09 -0800
+Message-ID: <1419439330-2303-10-git-send-email-kwestfie@codeaurora.org>
 References: <1419439330-2303-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1419439330-2303-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,36 +12,38 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add documentation to the sound directory of the
-device-tree bindings for the Maxim MAX98357A audio
-codec driver.
+Allow for the QCOM LPASS drivers to build.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- Documentation/devicetree/bindings/sound/max98357a.txt | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/max98357a.txt
+ sound/soc/Kconfig  | 1 +
+ sound/soc/Makefile | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/max98357a.txt b/Documentation/devicetree/bindings/sound/max98357a.txt
-new file mode 100644
-index 0000000000000000000000000000000000000000..718e9578d42d522db15fc41a42a96eca327ac641
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/max98357a.txt
-@@ -0,0 +1,14 @@
-+Maxim MAX98357A audio DAC
-+
-+This node models the Maxim MAX98357A DAC as a codec DAI.
-+
-+Required properties:
-+- compatible  : "maxim,max98357a"
-+- sdmode-gpios: Phandle to the GPIO specifier for the GPIO -> DAC SDMODE pin
-+
-+Example:
-+
-+max98357a {
-+	compatible = "maxim,max98357a";
-+	sdmode-gpios = <&qcom_pinmux 25 0>;
-+};
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 7d5d6444a83737ffa3c01acbe1925de619e0390a..b98eebf0e30bba19ec24acc7f0e6ab155e5e602b 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -47,6 +47,7 @@ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/intel/Kconfig"
+ source "sound/soc/mxs/Kconfig"
+ source "sound/soc/pxa/Kconfig"
++source "sound/soc/qcom/Kconfig"
+ source "sound/soc/rockchip/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/sh/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 865e090c80616024a552da5e33d2796b9be1dbbd..3d78a8d874dc98dd6219b33e3f2c100ef0334bfc 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -28,6 +28,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= kirkwood/
+ obj-$(CONFIG_SND_SOC)	+= pxa/
++obj-$(CONFIG_SND_SOC)	+= qcom/
+ obj-$(CONFIG_SND_SOC)	+= rockchip/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= sh/
 -- 
 1.8.2.1
