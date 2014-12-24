@@ -1,21 +1,21 @@
-From: Brian McNeil <brian.mcneil@wikinewsie.org>
-Subject: Re: PCI: ICE1712 -- EDIROL2496DA support
-Date: Wed, 24 Dec 2014 11:23:41 +0000
-Message-ID: <4381949d0b2de599221179b591dddf4f@wikinewsie.org>
-References: <1419093962-8789-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Xuebing Wang <xbing6@gmail.com>
+Subject: Re: Can not rmmod snd_hda_codec_hdmi
+Date: Wed, 24 Dec 2014 19:54:33 +0800
+Message-ID: <1419422073.1929.5.camel@gmail.com>
+References: <1419332872.4067.10.camel@xbing-ubuntu>
+ <680798B3-0846-423E-80F5-11AA542B563A@ladisch.de>
+ <1419414572.1861.3.camel@gmail.com> <549A8DF8.1010004@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.vexxhost.net (mx1.vexxhost.net [162.253.52.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 60F562608D3
- for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 12:25:14 +0100 (CET)
-Received: from node62.mtl.net.vexxhost.com ([199.204.44.226])
- by mx1.vexxhost.net with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
- (Exim 4.84) (envelope-from <brian.mcneil@wikinewsie.org>)
- id 1Y3k3u-00016z-Sk
- for alsa-devel@alsa-project.org; Wed, 24 Dec 2014 06:25:10 -0500
-In-Reply-To: <1419093962-8789-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Received: from mail-pa0-f44.google.com (mail-pa0-f44.google.com
+ [209.85.220.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F82A261490
+ for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 12:54:41 +0100 (CET)
+Received: by mail-pa0-f44.google.com with SMTP id et14so9947348pad.17
+ for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 03:54:40 -0800 (PST)
+In-Reply-To: <549A8DF8.1010004@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +25,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: "; Libin Yang" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "; Takashi Iwai" <tiwai@suse.de>, ";
+ Mengdong Lin" <mengdong.lin@intel.com>, Clemens Ladisch <clemens@ladisch.de>, "; Fengguang Wu" <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I've a pair of these, and seeing patches to the driver reminded me to 
-bring up the subject of word-clock sync.
+On Wed, 2014-12-24 at 11:57 +0200, Anssi Hannula wrote:
+> 24.12.2014, 11:49, Xuebing Wang kirjoitti:
+> > On Tue, 2014-12-23 at 17:21 +0100, Clemens Ladisch wrote:
+> >> Xuebing Wang wrote:
+> >>> rmmod: ERROR: Module snd_hda_codec_hdmi is in use
+> >>
+> >> rmmod snd-hda-intel first.
+> >>
+> > Clemens, thanks for your help.
+> > 
+> > I am using Fedora 21 (Ubuntu 14.04.1 has the same problem).
+> > 
+> > 'rmmod snd-hda-intel' shows this module is in use too. 
+> > 
+> > 'modinfo snd-hda-intel', nor file /lib/modules/.../modules.dep shows that any kernel modules depends
+> > on snd-hda-intel or snd_hda_codec_hdmi.
+> > 
+> > Is it possible that a kernel thread is using these 2 modules?
+> > 
+> > Any ideas? Thanks.
+> 
+> Run this to see if some userspace process is using the ALSA devices:
+> fuser -v /dev/snd/*
+> 
 
-I've managed to get the clock-sync working sometimes; either using an 
-inter-card jumper, or light pipe between breakout boxes. However, they 
-do seem to go out of sync without warning, or readily-discerned reason.
+Anssi, thanks for your help.
 
-I'm far from technically clueless, but driver development is 
-well-outside my comfort zone. Happy to work on this off-list if someone 
-wants to let me know what probing/interrogation of the cards is needed. 
-Could - probably - sniff traffic between a Windows VM and the cards, if 
-given pointers; yes, even if that involves building a kernel.
+1) In Fedora 21 (kernel 3.17.4), 
+'fuser -v /dev/snd/*' shows below:
+/dev/snd/controlC0:  xbing      2400 F.... pulseaudio
+/dev/snd/controlC1:  xbing      2400 F.... pulseaudio
+/dev/snd/pcmC0D3p:   xbing      2400 F...m pulseaudio
+/dev/snd/pcmC1D0c:   xbing      2400 F...m pulseaudio
+/dev/snd/pcmC1D0p:   xbing      2400 F...m pulseaudio
 
+After 'pulseaudio --kill' to kill pulseaudio (after disable autospawn),
+lsmod shows refcount of snd_hda_intel is down from 7 to 2 as below:
+$ lsmod | grep hda_intel
+snd_hda_intel          30479  2
 
--- 
-Brian McNeil
--- 
-Wikinewsie.org | http://wikinewsie.org | https://en.wikinews.org
-"Facts don't cease to be facts, but news ceases to be news."
-GPG Fingerprint: 7C3D FFD5 5ED5 B80F 1D18 A52B E84C 8928 6ABC A7AD
+'rmmod snd_hda_intel' still shows this module is in use.
+
+2) But, in Ubuntu 14.04.1 (kernel 3.13.0) DOES work after 'pulseaudio --kill', because lsmod shows refcount of snd_hda_intel is 5.
+
+Any suggestions? Could it be because of kernel difference 3.17.4 vs 3.13.0?
+
+Thanks.
