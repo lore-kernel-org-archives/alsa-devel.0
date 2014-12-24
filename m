@@ -1,79 +1,50 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Can not rmmod snd_hda_codec_hdmi
-Date: Wed, 24 Dec 2014 21:28:33 +0900
-Message-ID: <549AB171.8030700@sakamocchi.jp>
-References: <1419332872.4067.10.camel@xbing-ubuntu>
- <680798B3-0846-423E-80F5-11AA542B563A@ladisch.de>
- <1419414572.1861.3.camel@gmail.com> <549A8DF8.1010004@iki.fi>
- <1419422073.1929.5.camel@gmail.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 0/3] ASoC: rockchip: i2s: fix watermark to 16 and
+ maxburst to 4
+Date: Wed, 24 Dec 2014 12:43:51 +0000
+Message-ID: <20141224124351.GA17800@sirena.org.uk>
+References: <1419325709-15374-1-git-send-email-jay.xu@rock-chips.com>
+ <1419413822-11539-1-git-send-email-jay.xu@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 32874261490
- for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 13:28:37 +0100 (CET)
-In-Reply-To: <1419422073.1929.5.camel@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Xuebing Wang <xbing6@gmail.com>, Anssi Hannula <anssi.hannula@iki.fi>
-Cc: "; Libin Yang" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "; Takashi Iwai" <tiwai@suse.de>, ";
- Mengdong Lin" <mengdong.lin@intel.com>, Clemens Ladisch <clemens@ladisch.de>, "; Fengguang Wu" <fengguang.wu@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cyl6hb1YSGs8e3xM"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1419413822-11539-1-git-send-email-jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 24 2014 20:54, Xuebing Wang wrote:
-> Anssi, thanks for your help.
-> 
-> 1) In Fedora 21 (kernel 3.17.4), 
-> 'fuser -v /dev/snd/*' shows below:
-> /dev/snd/controlC0:  xbing      2400 F.... pulseaudio
-> /dev/snd/controlC1:  xbing      2400 F.... pulseaudio
-> /dev/snd/pcmC0D3p:   xbing      2400 F...m pulseaudio
-> /dev/snd/pcmC1D0c:   xbing      2400 F...m pulseaudio
-> /dev/snd/pcmC1D0p:   xbing      2400 F...m pulseaudio
-> 
-> After 'pulseaudio --kill' to kill pulseaudio (after disable autospawn),
-> lsmod shows refcount of snd_hda_intel is down from 7 to 2 as below:
-> $ lsmod | grep hda_intel
-> snd_hda_intel          30479  2
-> 
-> 'rmmod snd_hda_intel' still shows this module is in use.
-> 
-> 2) But, in Ubuntu 14.04.1 (kernel 3.13.0) DOES work after 'pulseaudio --kill', because lsmod shows refcount of snd_hda_intel is 5.
-> 
-> Any suggestions? Could it be because of kernel difference 3.17.4 vs 3.13.0?
 
-In Ubuntu, pulseaudio process re-run even if you kill the process. See:
-https://wiki.ubuntu.com/PulseAudio/Log
+--cyl6hb1YSGs8e3xM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-But in this case, you don't need to kill pulseaudio. You just set 'off'
-for card profile, or unload alsa-card module. Then these character
-devices are released.
+On Wed, Dec 24, 2014 at 05:36:59PM +0800, Jianqun Xu wrote:
+> To make Bus DMA works more efficiency, DMA may work in burst mode,
+>    we set the watermark of transmit and receive reach to 16 bits.
 
-The way to set card profile:
-$ pactl list cards | grep Card
-Card #3
-$ pactl set-card-profile 3 off
+Applied all, thanks.
 
-Or use 'configuration' tab in pavucontrol GUI. In Ubuntu, this
-application is released by 'pavucontrol' package.
+--cyl6hb1YSGs8e3xM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-The way to unload alsa-card module:
-$ pactl list modules | grep alsa
-(... you can see module-alsa-card is loaded.)
-$ pactl unload-module module-alsa-card
-$ pactl list modules | grep alsa
-(... you can see module-alsa-card is unloaded.)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
+iQEcBAEBAgAGBQJUmrUGAAoJECTWi3JdVIfQtnUH/jlUIaFclxbl8kbSp3+66qUd
+tZmX+3g/aZl5X0D+LrfEzi2AbpZkA39YO+8E9qUT2lITmRQ+ubq0NLcLp5DyTZqu
+Hy4hsYkky+Rf3hCEZUfNteusKJAYZx46cebpYZTQh88CRv5OU/OfGNjyk8f8IVJr
+EsDzXMcSOTxGWrjPgoPLctkRzOqLq1p0WHEGcB6xTSIYmQ7IWAf8TinGL97RXEYw
+1SHb+i8L0RaWsrHSA35NxKk0wqCoV52QxCwUII7VIsRdtBC+PGEnufOvgrjtWNkP
+1MjbSd2NguOMu/XSuFtb1u7MXVyGkirmE82mzHNOtp3SmHiED4MjLQR169+L5u4=
+=9RR4
+-----END PGP SIGNATURE-----
 
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+--cyl6hb1YSGs8e3xM--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
