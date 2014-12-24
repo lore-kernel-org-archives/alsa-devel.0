@@ -1,50 +1,55 @@
-From: Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: [PATCH v2 3/3] ASoC: rockchip: i2s: fix maxburst of dma data to 4
-Date: Wed, 24 Dec 2014 17:37:02 +0800
-Message-ID: <1419413822-11539-4-git-send-email-jay.xu@rock-chips.com>
-References: <1419325709-15374-1-git-send-email-jay.xu@rock-chips.com>
- <1419413822-11539-1-git-send-email-jay.xu@rock-chips.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1419413822-11539-1-git-send-email-jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+From: Xuebing Wang <xbing6@gmail.com>
+Subject: Re: Can not rmmod snd_hda_codec_hdmi
+Date: Wed, 24 Dec 2014 17:49:32 +0800
+Message-ID: <1419414572.1861.3.camel@gmail.com>
+References: <1419332872.4067.10.camel@xbing-ubuntu>
+ <680798B3-0846-423E-80F5-11AA542B563A@ladisch.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA1002612BD
+ for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 10:49:48 +0100 (CET)
+Received: by mail-pa0-f46.google.com with SMTP id lf10so9714404pab.5
+ for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 01:49:47 -0800 (PST)
+In-Reply-To: <680798B3-0846-423E-80F5-11AA542B563A@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "; Libin Yang" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "; Takashi Iwai" <tiwai@suse.de>, ";
+ Mengdong Lin" <mengdong.lin@intel.com>, Anssi Hannula <anssi.hannula@iki.fi>, "; Fengguang Wu" <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since RK3288 DMAC's burst length only support max to 4, here
-set maxburst of playback and capture dma data to 4.
+Clemens, thanks for your help.
 
-Signed-off-by: Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
----
-changes since v1:
-- new patch since v1
+I am using Fedora 21 (Ubuntu 14.04.1 has the same problem).
 
- sound/soc/rockchip/rockchip_i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+'rmmod snd-hda-intel' shows this module is in use too. 
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 1cd7efc..59aeec4 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -458,11 +458,11 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 
- 	i2s->playback_dma_data.addr = res->start + I2S_TXDR;
- 	i2s->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
--	i2s->playback_dma_data.maxburst = 16;
-+	i2s->playback_dma_data.maxburst = 4;
- 
- 	i2s->capture_dma_data.addr = res->start + I2S_RXDR;
- 	i2s->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
--	i2s->capture_dma_data.maxburst = 16;
-+	i2s->capture_dma_data.maxburst = 4;
- 
- 	i2s->dev = &pdev->dev;
- 	dev_set_drvdata(&pdev->dev, i2s);
--- 
-1.9.1
+'modinfo snd-hda-intel', nor file /lib/modules/.../modules.dep shows that any kernel modules depends
+on snd-hda-intel or snd_hda_codec_hdmi.
+
+Is it possible that a kernel thread is using these 2 modules?
+
+Any ideas? Thanks.
 
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Tue, 2014-12-23 at 17:21 +0100, Clemens Ladisch wrote:
+> Xuebing Wang wrote:
+> >rmmod: ERROR: Module snd_hda_codec_hdmi is in use
+> 
+> rmmod snd-hda-intel first.
+> 
+> 
+> Regards,
+> Clemens
+> 
