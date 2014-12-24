@@ -1,50 +1,85 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 0/3] ASoC: rockchip: i2s: fix watermark to 16 and
- maxburst to 4
-Date: Wed, 24 Dec 2014 12:43:51 +0000
-Message-ID: <20141224124351.GA17800@sirena.org.uk>
-References: <1419325709-15374-1-git-send-email-jay.xu@rock-chips.com>
- <1419413822-11539-1-git-send-email-jay.xu@rock-chips.com>
+From: Xuebing Wang <xbing6@gmail.com>
+Subject: Re: Can not rmmod snd_hda_codec_hdmi
+Date: Wed, 24 Dec 2014 21:07:54 +0800
+Message-ID: <1419426474.4103.10.camel@xbing-ubuntu>
+References: <1419332872.4067.10.camel@xbing-ubuntu>
+ <680798B3-0846-423E-80F5-11AA542B563A@ladisch.de>
+ <1419414572.1861.3.camel@gmail.com> <549A8DF8.1010004@iki.fi>
+ <1419422073.1929.5.camel@gmail.com> <549AB171.8030700@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cyl6hb1YSGs8e3xM"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1419413822-11539-1-git-send-email-jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jianqun Xu <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E74E261522
+ for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 14:08:02 +0100 (CET)
+Received: by mail-pa0-f53.google.com with SMTP id kq14so9894313pab.26
+ for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 05:08:00 -0800 (PST)
+In-Reply-To: <549AB171.8030700@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: "; Libin Yang" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "; Takashi Iwai" <tiwai@suse.de>, ";
+ Mengdong Lin" <mengdong.lin@intel.com>, Clemens Ladisch <clemens@ladisch.de>, Anssi Hannula <anssi.hannula@iki.fi>, ";
+ Fengguang Wu" <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---cyl6hb1YSGs8e3xM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Dec 24, 2014 at 05:36:59PM +0800, Jianqun Xu wrote:
-> To make Bus DMA works more efficiency, DMA may work in burst mode,
->    we set the watermark of transmit and receive reach to 16 bits.
-
-Applied all, thanks.
-
---cyl6hb1YSGs8e3xM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUmrUGAAoJECTWi3JdVIfQtnUH/jlUIaFclxbl8kbSp3+66qUd
-tZmX+3g/aZl5X0D+LrfEzi2AbpZkA39YO+8E9qUT2lITmRQ+ubq0NLcLp5DyTZqu
-Hy4hsYkky+Rf3hCEZUfNteusKJAYZx46cebpYZTQh88CRv5OU/OfGNjyk8f8IVJr
-EsDzXMcSOTxGWrjPgoPLctkRzOqLq1p0WHEGcB6xTSIYmQ7IWAf8TinGL97RXEYw
-1SHb+i8L0RaWsrHSA35NxKk0wqCoV52QxCwUII7VIsRdtBC+PGEnufOvgrjtWNkP
-1MjbSd2NguOMu/XSuFtb1u7MXVyGkirmE82mzHNOtp3SmHiED4MjLQR169+L5u4=
-=9RR4
------END PGP SIGNATURE-----
-
---cyl6hb1YSGs8e3xM--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24g5LiJLCAyMDE0LTEyLTI0IGF0IDIxOjI4ICswOTAwLCBUYWthc2hpIFNha2Ftb3RvIHdyb3Rl
+Ogo+IE9uIERlYyAyNCAyMDE0IDIwOjU0LCBYdWViaW5nIFdhbmcgd3JvdGU6Cj4gPiBBbnNzaSwg
+dGhhbmtzIGZvciB5b3VyIGhlbHAuCj4gPiAKPiA+IDEpIEluIEZlZG9yYSAyMSAoa2VybmVsIDMu
+MTcuNCksIAo+ID4gJ2Z1c2VyIC12IC9kZXYvc25kLyonIHNob3dzIGJlbG93Ogo+ID4gL2Rldi9z
+bmQvY29udHJvbEMwOiAgeGJpbmcgICAgICAyNDAwIEYuLi4uIHB1bHNlYXVkaW8KPiA+IC9kZXYv
+c25kL2NvbnRyb2xDMTogIHhiaW5nICAgICAgMjQwMCBGLi4uLiBwdWxzZWF1ZGlvCj4gPiAvZGV2
+L3NuZC9wY21DMEQzcDogICB4YmluZyAgICAgIDI0MDAgRi4uLm0gcHVsc2VhdWRpbwo+ID4gL2Rl
+di9zbmQvcGNtQzFEMGM6ICAgeGJpbmcgICAgICAyNDAwIEYuLi5tIHB1bHNlYXVkaW8KPiA+IC9k
+ZXYvc25kL3BjbUMxRDBwOiAgIHhiaW5nICAgICAgMjQwMCBGLi4ubSBwdWxzZWF1ZGlvCj4gPiAK
+PiA+IEFmdGVyICdwdWxzZWF1ZGlvIC0ta2lsbCcgdG8ga2lsbCBwdWxzZWF1ZGlvIChhZnRlciBk
+aXNhYmxlIGF1dG9zcGF3biksCj4gPiBsc21vZCBzaG93cyByZWZjb3VudCBvZiBzbmRfaGRhX2lu
+dGVsIGlzIGRvd24gZnJvbSA3IHRvIDIgYXMgYmVsb3c6Cj4gPiAkIGxzbW9kIHwgZ3JlcCBoZGFf
+aW50ZWwKPiA+IHNuZF9oZGFfaW50ZWwgICAgICAgICAgMzA0NzkgIDIKPiA+IAo+ID4gJ3JtbW9k
+IHNuZF9oZGFfaW50ZWwnIHN0aWxsIHNob3dzIHRoaXMgbW9kdWxlIGlzIGluIHVzZS4KPiA+IAo+
+ID4gMikgQnV0LCBpbiBVYnVudHUgMTQuMDQuMSAoa2VybmVsIDMuMTMuMCkgRE9FUyB3b3JrIGFm
+dGVyICdwdWxzZWF1ZGlvIC0ta2lsbCcsIGJlY2F1c2UgbHNtb2Qgc2hvd3MgcmVmY291bnQgb2Yg
+c25kX2hkYV9pbnRlbCBpcyA1Lgo+ID4gCj4gPiBBbnkgc3VnZ2VzdGlvbnM/IENvdWxkIGl0IGJl
+IGJlY2F1c2Ugb2Yga2VybmVsIGRpZmZlcmVuY2UgMy4xNy40IHZzIDMuMTMuMD8KPiAKPiBJbiBV
+YnVudHUsIHB1bHNlYXVkaW8gcHJvY2VzcyByZS1ydW4gZXZlbiBpZiB5b3Uga2lsbCB0aGUgcHJv
+Y2Vzcy4gU2VlOgo+IGh0dHBzOi8vd2lraS51YnVudHUuY29tL1B1bHNlQXVkaW8vTG9nCj4gCj4g
+QnV0IGluIHRoaXMgY2FzZSwgeW91IGRvbid0IG5lZWQgdG8ga2lsbCBwdWxzZWF1ZGlvLiBZb3Ug
+anVzdCBzZXQgJ29mZicKPiBmb3IgY2FyZCBwcm9maWxlLCBvciB1bmxvYWQgYWxzYS1jYXJkIG1v
+ZHVsZS4gVGhlbiB0aGVzZSBjaGFyYWN0ZXIKPiBkZXZpY2VzIGFyZSByZWxlYXNlZC4KPiAKPiBU
+aGUgd2F5IHRvIHNldCBjYXJkIHByb2ZpbGU6Cj4gJCBwYWN0bCBsaXN0IGNhcmRzIHwgZ3JlcCBD
+YXJkCj4gQ2FyZCAjMwo+ICQgcGFjdGwgc2V0LWNhcmQtcHJvZmlsZSAzIG9mZgo+IAo+IE9yIHVz
+ZSAnY29uZmlndXJhdGlvbicgdGFiIGluIHBhdnVjb250cm9sIEdVSS4gSW4gVWJ1bnR1LCB0aGlz
+Cj4gYXBwbGljYXRpb24gaXMgcmVsZWFzZWQgYnkgJ3BhdnVjb250cm9sJyBwYWNrYWdlLgo+IAo+
+IFRoZSB3YXkgdG8gdW5sb2FkIGFsc2EtY2FyZCBtb2R1bGU6Cj4gJCBwYWN0bCBsaXN0IG1vZHVs
+ZXMgfCBncmVwIGFsc2EKPiAoLi4uIHlvdSBjYW4gc2VlIG1vZHVsZS1hbHNhLWNhcmQgaXMgbG9h
+ZGVkLikKPiAkIHBhY3RsIHVubG9hZC1tb2R1bGUgbW9kdWxlLWFsc2EtY2FyZAo+ICQgcGFjdGwg
+bGlzdCBtb2R1bGVzIHwgZ3JlcCBhbHNhCj4gKC4uLiB5b3UgY2FuIHNlZSBtb2R1bGUtYWxzYS1j
+YXJkIGlzIHVubG9hZGVkLikKClNha2Ftb3RvLXNhbiwgdGhhbmsgeW91IHZlcnkgbXVjaCBmb3Ig
+eW91ciBzb3BoaXN0aWNhdGVkIHdheSwgaXQgaGVscHMuCgoxKSBJIGFtIHNvcnJ5IHRoYXQgSSBm
+b3Jnb3QgdG8gbWVudGlvbiB0aGF0IEkgZGlzYWJsZWQgJ3B1bHNlYXVkaW8KYXV0b3NwYXduJyBp
+biBVYnVudHUgdG9vLCBhcyBJIGRpc2FibGVkICdwdWxzZWF1ZGlvIGF1dG9zcGF3bicgaW4KRmVk
+b3JhLiBCb3RoIHNpbXBseSAncHVsc2VhdWRpbyAtLWtpbGwnIChhZnRlciBkaXNhYmxlIGF1dG9z
+cGF3bikgYW5kCnlvdXIgc29waGlzdGljYXRlZCB3YXkgY2FuIGdldCBkb3duIHJlZmNvdW50IG9m
+IHNuZF9oZGFfaW50ZWwgZnJvbSA1IHRvCjAsIHRoZW4gSSBjYW4gcm1tb2Qgc25kX2hkYV9pbnRl
+bC4KCjIpIEhvd2V2ZXIsIGluIEZlZG9yYSwgJ3B1bHNlYXVkaW8gLS1raWxsJyBvciB5b3VyIHdh
+eSBjYW4gZ2V0IHJlZmNvdW50Cm9mIHNuZF9oZGFfaW50ZWwgZnJvbSA3IHRvIDIgKDUgZGVjcmVh
+c2VkKS4gQW55IHN1Z2dlc3Rpb25zIGhvdyB0bwpkZWNyZWFzZSB0aGUgcmVzdCAyIHJlZmNvdW50
+PwoKMykgSSBkaWQgdHJ5IHRvIGJ1aWxkIHRhZyAzLjEzIGZyb20gbWFpbmxpbmUga2VybmVsICh1
+c2luZyBGZWRvcmEgMy4xNy40CmNvbmZpZyBmaWxlKSBhbmQgdHJpZWQgMy4xMyBrZXJuZWwgb24g
+RmVkb3JhLCBhbmQgZ290IHRoZSBzYW1lIHJlc3VsdAoocmVmY291bnQgb2Ygc25kX2hkYV9pbnRl
+bCBpcyBkb3duIGZyb20gNyB0byAyKS4KCkl0IHNlZW1zIHNvbWV0aGluZyBpbiBGZWRvcmEgKGVp
+dGhlciBGZWRvcmEga2VybmVsIG9yIGFwcGxpY2F0aW9uKSBpcwp1c2luZyBzbmRfaGRhX2ludGVs
+LgoKVGhhbmtzIGFnYWluLgoKCj4gUmVnYXJkcwo+IAo+IFRha2FzaGkgU2FrYW1vdG8KPiBvLXRh
+a2FzaGlAc2FrYW1vY2NoaS5qcAo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
