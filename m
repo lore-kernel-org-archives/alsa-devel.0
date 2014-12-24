@@ -1,63 +1,100 @@
-From: Xuebing Wang <xbing6@gmail.com>
-Subject: Re: Can not rmmod snd_hda_codec_hdmi
-Date: Wed, 24 Dec 2014 21:27:40 +0800
-Message-ID: <1419427660.2226.4.camel@gmail.com>
-References: <1419332872.4067.10.camel@xbing-ubuntu>
- <680798B3-0846-423E-80F5-11AA542B563A@ladisch.de>
- <1419414572.1861.3.camel@gmail.com> <549A8DF8.1010004@iki.fi>
- <1419422073.1929.5.camel@gmail.com> <549AB171.8030700@sakamocchi.jp>
- <1419426474.4103.10.camel@xbing-ubuntu> <549ABDC4.7010901@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
- [209.85.220.41])
- by alsa0.perex.cz (Postfix) with ESMTP id C70A6261522
- for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 14:27:47 +0100 (CET)
-Received: by mail-pa0-f41.google.com with SMTP id rd3so10054032pab.14
- for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 05:27:46 -0800 (PST)
-In-Reply-To: <549ABDC4.7010901@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: "; Libin Yang" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "; Takashi Iwai" <tiwai@suse.de>, ";
- Mengdong Lin" <mengdong.lin@intel.com>, Clemens Ladisch <clemens@ladisch.de>, Anssi Hannula <anssi.hannula@iki.fi>, "; Fengguang
- Wu" <fengguang.wu@intel.com>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: [Patch V3 00/10] ASoC: QCOM: Add support for ipq806x SOC
+Date: Wed, 24 Dec 2014 08:42:00 -0800
+Message-ID: <1419439330-2303-1-git-send-email-kwestfie@codeaurora.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
+Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2014-12-24 at 22:21 +0900, Takashi Sakamoto wrote:
-> On Dec 24 2014 22:07, Xuebing Wang wrote:
-> > 2) However, in Fedora, 'pulseaudio --kill' or your way can get refcount
-> > of snd_hda_intel from 7 to 2 (5 decreased). Any suggestions how to
-> > decrease the rest 2 refcount?
-> > 
-> > 3) I did try to build tag 3.13 from mainline kernel (using Fedora 3.17.4
-> > config file) and tried 3.13 kernel on Fedora, and got the same result
-> > (refcount of snd_hda_intel is down from 7 to 2).
-> 
-> Hm. In this case that the refcount is down to 2, how is the output of
-> 'fuser' command? If any applications use these character devices, we can
-> see the name of command.
+From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Sakamoto-san, thanks for your help.
+This set of patches adds support for audio on the Qualcomm Technologies
+ipq806x SOC.
 
-I found out that it is alsactl in Fedora. After kill alsactl, refcnt is
-now down to 0, and both snd_hda_intel and snd_hda_codec_hdmi can be
-rmmod'ed. 'fuser -v /dev/snd' does not reveal alsactl.
+The ipq806x SOC has audio-related hardware blocks in its low-power audio
+subsystem (or LPASS).  One of the relevant blocks in the LPASS is its low-power
+audio interface (or LPAIF).  This encapsulates the MI2S port, which is what
+these drivers are configured to use.  The I2S pins are connected to an external
+DAC/amp chip.  In addition, a single GPIO is connected to the same DAC/amp,
+which gives the SOC enable/disable control.
 
-Thanks again.
+The specific drivers added are:
+ - a Codec DAI driver that controls the SOC external pins
+ - a CPU DAI driver for controlling the LPASS-LPAIF block
+ - a PCM MI2S platform driver
+
+These drivers, together, are used by simple-audio-card to complete the audio
+implementation.  Corresponding additions to the device tree for the ipq806x and
+its documentation has also been added.  Also, as this is a new directory, the
+MAINTAINERS file has been updated as well.
+
+== Updates from my previous post:
+
+[Patch v2 00/11] ASoC: QCOM: Add support for ipq806x SOC
+http://thread.gmane.org/gmane.linux.ports.arm.msm/10989
+
+ - Removed the PCM platform driver from the DTS platform and tied it to the
+   CPU DAI driver.
+ - Changed I2S pinctrl to use generic naming convention and moved control to
+   CPU DAI driver.  It should be controlled now by soc-core's pinctrl_pm_*
+   functionality.
+ - Added stub DAPM support in codec driver.  As the DAC GPIO needs to be
+   enabled last when starting playback, and disabled first when stopping
+   playback, it seems as though the trigger function may be the place for this.  
+   Suggestions are welcome for a better place to put this.
+ - Removed machine driver and tied DAI drivers to simple-audio-card.
+ - Packaged the build files and Maxim codec files together in one change.
+ - Removed QCOM as vendor from Maxim code and documentation.
+ - Separated the SOC and board definitions into the correct DTS files.
+ - Update device tree documentation to reflect changes.
+ - General code cleanup.
+
+== Additional patch series upon which this patch series has device-tree
+   dependencies (lcc)
+
+[PATCH v2 0/8] qcom audio clock control drivers
+http://thread.gmane.org/gmane.linux.ports.arm.msm/10793
 
 
-> Regards
-> 
-> Takashi Sakamoto
-> o-takashi@sakamocchi.jp
-> 
+Kenneth Westfield (10):
+  MAINTAINERS: Add QCOM audio ASoC maintainer
+  ASoC: qcom: Document MAX98357A bindings
+  ASoC: qcom: Document LPASS CPU bindings
+  ASoC: codec: Add MAX98357A codec driver
+  ASoC: ipq806x: add LPASS header files
+  ASoC: ipq806x: Add LPASS CPU DAI driver
+  ASoC: ipq806x: Add I2S PCM platform driver
+  ASoC: qcom: Add ability to build QCOM drivers
+  ASoC: Allow for building QCOM drivers
+  ARM: dts: Model IPQ LPASS audio hardware
+
+ .../devicetree/bindings/sound/max98357a.txt        |  14 +
+ .../bindings/sound/qcom,lpass-cpu-mi2s.txt         |  42 ++
+ MAINTAINERS                                        |   7 +
+ arch/arm/boot/dts/qcom-ipq8064.dtsi                |  23 +
+ sound/soc/Kconfig                                  |   1 +
+ sound/soc/Makefile                                 |   1 +
+ sound/soc/codecs/Kconfig                           |   4 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/max98357a.c                       | 136 ++++++
+ sound/soc/qcom/Kconfig                             |  27 ++
+ sound/soc/qcom/Makefile                            |   6 +
+ sound/soc/qcom/lpass-cpu-mi2s.c                    | 378 ++++++++++++++++
+ sound/soc/qcom/lpass-lpaif-reg.h                   | 155 +++++++
+ sound/soc/qcom/lpass-mi2s.h                        |  34 ++
+ sound/soc/qcom/lpass-pcm-mi2s.c                    | 486 +++++++++++++++++++++
+ 15 files changed, 1316 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/max98357a.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu-mi2s.txt
+ create mode 100644 sound/soc/codecs/max98357a.c
+ create mode 100644 sound/soc/qcom/Kconfig
+ create mode 100644 sound/soc/qcom/Makefile
+ create mode 100644 sound/soc/qcom/lpass-cpu-mi2s.c
+ create mode 100644 sound/soc/qcom/lpass-lpaif-reg.h
+ create mode 100644 sound/soc/qcom/lpass-mi2s.h
+ create mode 100644 sound/soc/qcom/lpass-pcm-mi2s.c
+
+-- 
+1.8.2.1
