@@ -1,15 +1,18 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH] ASoC: rt5677: fixed rt5677_dsp_vad_put
-	rt5677_dsp_vad_get panic
-Date: Tue, 23 Dec 2014 23:49:05 -0400
-Message-ID: <1419392945-29971-1-git-send-email-yang.a.fang@intel.com>
+From: Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH v2 1/3] ASoC: rockchip: i2s: fix error
+	defination of transmit data level
+Date: Wed, 24 Dec 2014 17:37:00 +0800
+Message-ID: <1419413822-11539-2-git-send-email-jay.xu@rock-chips.com>
+References: <1419325709-15374-1-git-send-email-jay.xu@rock-chips.com>
+ <1419413822-11539-1-git-send-email-jay.xu@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6507F260882
- for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 08:50:57 +0100 (CET)
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id D34A12614FB
+ for <alsa-devel@alsa-project.org>; Wed, 24 Dec 2014 10:39:11 +0100 (CET)
+In-Reply-To: <1419413822-11539-1-git-send-email-jay.xu@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,47 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, "Fang,
- Yang A" <yang.a.fang@intel.com>, praveen.k.jain@intel.com, kevin.strasser@intel.com, denny.iriawan@intel.com, bardliao@realtek.com
+To: lgirdwood@gmail.com, heiko@sntech.de, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, sonnyrao@chromium.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Jianqun Xu <jay.xu@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+According to description about "Transmit Data Level",
 
-snd_kcontrol_chip should return snd_soc_component instead of
-snd_soc_codec
+This bit field controls the level at which a DMA request
+is made by the transmit logic.
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+It is equal to the watermark level.
+
+That is, the dma_tx_req signal is generated when the number
+of valid data entries in the TXFIFO
+(TXFIFO0 if CSR=00
+ TXFIFO1 if CSR=01
+ TXFIFO2 if CSR=10
+ TXFIFO3 if CSR=11)
+is equal to or below this field value.
+
+Different to receive data level, transmit data level does not need
+to "-1".
+
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
 ---
- sound/soc/codecs/rt5677.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+changes since v1:
+- none
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 81fe146..c0fbe18 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -784,8 +784,8 @@ static unsigned int bst_tlv[] = {
- static int rt5677_dsp_vad_get(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt5677_priv *rt5677 = snd_soc_component_get_drvdata(component);
+ sound/soc/rockchip/rockchip_i2s.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
+index 89a5d8b..93f456f 100644
+--- a/sound/soc/rockchip/rockchip_i2s.h
++++ b/sound/soc/rockchip/rockchip_i2s.h
+@@ -127,7 +127,7 @@
+ #define I2S_DMACR_TDE_DISABLE	(0 << I2S_DMACR_TDE_SHIFT)
+ #define I2S_DMACR_TDE_ENABLE	(1 << I2S_DMACR_TDE_SHIFT)
+ #define I2S_DMACR_TDL_SHIFT	0
+-#define I2S_DMACR_TDL(x)	((x - 1) << I2S_DMACR_TDL_SHIFT)
++#define I2S_DMACR_TDL(x)	((x) << I2S_DMACR_TDL_SHIFT)
+ #define I2S_DMACR_TDL_MASK	(0x1f << I2S_DMACR_TDL_SHIFT)
  
- 	ucontrol->value.integer.value[0] = rt5677->dsp_vad_en;
- 
-@@ -795,8 +795,9 @@ static int rt5677_dsp_vad_get(struct snd_kcontrol *kcontrol,
- static int rt5677_dsp_vad_put(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt5677_priv *rt5677 = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
- 
- 	rt5677->dsp_vad_en = !!ucontrol->value.integer.value[0];
- 
+ /*
 -- 
-1.7.9.5
+1.9.1
