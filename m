@@ -1,17 +1,17 @@
 From: Vaishali Thakkar <vthakkar1994@gmail.com>
 Subject: [PATCH] ASoC: wm5102: Use put_unaligned_be16
-Date: Fri, 26 Dec 2014 10:09:37 +0530
-Message-ID: <20141226043937.GA12723@vaishali-Ideapad-Z570>
+Date: Fri, 26 Dec 2014 10:14:57 +0530
+Message-ID: <20141226044457.GA12777@vaishali-Ideapad-Z570>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
- [209.85.220.50])
- by alsa0.perex.cz (Postfix) with ESMTP id DB10D265141
- for <alsa-devel@alsa-project.org>; Fri, 26 Dec 2014 05:39:46 +0100 (CET)
-Received: by mail-pa0-f50.google.com with SMTP id bj1so12707199pad.9
- for <alsa-devel@alsa-project.org>; Thu, 25 Dec 2014 20:39:45 -0800 (PST)
+Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
+ [209.85.192.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0CA3265132
+ for <alsa-devel@alsa-project.org>; Fri, 26 Dec 2014 05:45:05 +0100 (CET)
+Received: by mail-pd0-f170.google.com with SMTP id v10so12523419pde.29
+ for <alsa-devel@alsa-project.org>; Thu, 25 Dec 2014 20:45:04 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,11 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: broonie@kernel.org
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch introduces the use of function put_unaligned_le16.
+This patch introduces the use of function put_unaligned_be16.
 
 This is done using Coccinelle and semantic patch used is as follows:
 
