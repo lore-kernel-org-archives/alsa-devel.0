@@ -1,48 +1,79 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: [PATCH v3] ALSA: atmel: fix building the ac97 driver for at91-multiplatform
-Date: Fri, 26 Dec 2014 14:27:58 +0100
-Message-ID: <1419600478-16885-1-git-send-email-alexandre.belloni@free-electrons.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Alexander Stein <alexanders83@web.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>, alexandre.belloni@free-electrons.com, Arnd Bergmann <arnd@arndb.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tegra: Add platform driver for
+	rt5677 audio codec
+Date: Fri, 26 Dec 2014 16:38:26 +0000
+Message-ID: <20141226163826.GD17800@sirena.org.uk>
+References: <1419362942-26192-1-git-send-email-anatol.pomozov@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============1203379499492760443=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03F30260423
+ for <alsa-devel@alsa-project.org>; Fri, 26 Dec 2014 17:38:51 +0100 (CET)
+In-Reply-To: <1419362942-26192-1-git-send-email-anatol.pomozov@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, bardliao@realtek.com, ldahan@nvidia.com, dgreid@google.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-at91 will no longer export the mach/cpu.h and mach/hardware.h header files
-in the future, which would break building the atmel ac97c driver.
+--===============1203379499492760443==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XmBYJ+PaUOdJeGy2"
+Content-Disposition: inline
 
-Since the cpu_is_* check is only used to find out whether we are running
-on avr32 or arm/at91, we can hardcode that check in the ARM case.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: http://www.spinics.net/lists/arm-kernel/msg382068.html
-Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
----
-Changes in v3:
- - added my SoB
+--XmBYJ+PaUOdJeGy2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- sound/atmel/ac97c.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Tue, Dec 23, 2014 at 11:29:01AM -0800, Anatol Pomozov wrote:
 
-diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-index b59427d5a697..e458957c5f52 100644
---- a/sound/atmel/ac97c.c
-+++ b/sound/atmel/ac97c.c
-@@ -34,10 +34,10 @@
- #include <linux/platform_data/dma-dw.h>
- #include <linux/dma/dw.h>
- 
-+#ifdef CONFIG_AVR32
- #include <mach/cpu.h>
--
--#ifdef CONFIG_ARCH_AT91
--#include <mach/hardware.h>
-+#else
-+#define cpu_is_at32ap7000() 0
- #endif
- 
- #include "ac97c.h"
--- 
-2.1.0
+> +static int tegra_rt5677_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct snd_soc_card *card = &snd_soc_tegra_rt5677;
+> +	struct tegra_rt5677 *machine;
+> +	int ret;
+> +
+> +#if defined(CONFIG_MODULES) && defined(MODULE)
+> +	request_module("snd_soc_tegra30_i2s");
+> +#endif
+
+What's this all about then?
+
+--XmBYJ+PaUOdJeGy2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUnY79AAoJECTWi3JdVIfQ3AoH/iOPsqoBIsNNPKcCUwwkFsBt
++lL7koB+jicEEPHgKxFNhpCS19DCkrEv72sDnL54G0Irz2dhZYtv8zSe3qAzst5h
+c5l+6FAuL6aJBgMOh5b8uKu6jICcDwEfGKWsYcnrARc0oWMO0UxMi3U3Q20/GqJc
+EM9XObNo/EfjDxyo3ITaIAeqC9NSURWqkuPlfw3SalP6nXoMkI6E2onmtFvNZN4L
+e1BrdTgd1FHwb/5K069wlyy71Sm+9/jZLD5jBur+2yPOVFP1rpcrKYg0HmBEo7pk
+7XIYZV+gQwEAzdl/qVxac/6gsIwLgeHSKPwYxFk9RrEodJsMVi4xptjjzagnk1w=
+=kz/n
+-----END PGP SIGNATURE-----
+
+--XmBYJ+PaUOdJeGy2--
+
+--===============1203379499492760443==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1203379499492760443==--
