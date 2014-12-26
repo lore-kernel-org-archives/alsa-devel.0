@@ -1,79 +1,55 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tegra: Add platform driver for
-	rt5677 audio codec
-Date: Fri, 26 Dec 2014 16:38:26 +0000
-Message-ID: <20141226163826.GD17800@sirena.org.uk>
-References: <1419362942-26192-1-git-send-email-anatol.pomozov@gmail.com>
+Subject: Re: [Patch V3 03/10] ASoC: qcom: Document LPASS CPU bindings
+Date: Fri, 26 Dec 2014 16:43:03 +0000
+Message-ID: <20141226164303.GE17800@sirena.org.uk>
+References: <1419439330-2303-1-git-send-email-kwestfie@codeaurora.org>
+ <1419439330-2303-4-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1203379499492760443=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 03F30260423
- for <alsa-devel@alsa-project.org>; Fri, 26 Dec 2014 17:38:51 +0100 (CET)
-In-Reply-To: <1419362942-26192-1-git-send-email-anatol.pomozov@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, swarren@nvidia.com, bardliao@realtek.com, ldahan@nvidia.com, dgreid@google.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EKglq5eeiLEg3Uj1"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1419439330-2303-4-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1203379499492760443==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XmBYJ+PaUOdJeGy2"
-Content-Disposition: inline
-
-
---XmBYJ+PaUOdJeGy2
+--EKglq5eeiLEg3Uj1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 23, 2014 at 11:29:01AM -0800, Anatol Pomozov wrote:
+On Wed, Dec 24, 2014 at 08:42:03AM -0800, Kenneth Westfield wrote:
 
-> +static int tegra_rt5677_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct snd_soc_card *card = &snd_soc_tegra_rt5677;
-> +	struct tegra_rt5677 *machine;
-> +	int ret;
-> +
-> +#if defined(CONFIG_MODULES) && defined(MODULE)
-> +	request_module("snd_soc_tegra30_i2s");
-> +#endif
+> +- ahbix-frequency	: Specifies AHBIX bus clock frequency
 
-What's this all about then?
+This is a really weird thing to see in a DT, what's going on here?
 
---XmBYJ+PaUOdJeGy2
+> +- pinctrl-names	: A list of names indicating the state of the MI2S pins
+> +				* default
+> +				* idle
+> +- pinctrl-0		: The default state of the MI2S pins
+> +- pinctrl-1		: The idle state of the MI2S pins
+
+This doesn't make much sense.  We've got a name lookup array for the pin
+states but the actual pin states are in distinct numbered properties
+which can't be reordered.  What's going on here?
+
+--EKglq5eeiLEg3Uj1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUnY79AAoJECTWi3JdVIfQ3AoH/iOPsqoBIsNNPKcCUwwkFsBt
-+lL7koB+jicEEPHgKxFNhpCS19DCkrEv72sDnL54G0Irz2dhZYtv8zSe3qAzst5h
-c5l+6FAuL6aJBgMOh5b8uKu6jICcDwEfGKWsYcnrARc0oWMO0UxMi3U3Q20/GqJc
-EM9XObNo/EfjDxyo3ITaIAeqC9NSURWqkuPlfw3SalP6nXoMkI6E2onmtFvNZN4L
-e1BrdTgd1FHwb/5K069wlyy71Sm+9/jZLD5jBur+2yPOVFP1rpcrKYg0HmBEo7pk
-7XIYZV+gQwEAzdl/qVxac/6gsIwLgeHSKPwYxFk9RrEodJsMVi4xptjjzagnk1w=
-=kz/n
+iQEcBAEBAgAGBQJUnZAXAAoJECTWi3JdVIfQOAcH/Rct0XQ2Wkj/EyAvCj22h+gM
+P6oe7Y6HP7uL4+R4ud4ExsJp4cUE4zMwjoyzDiZmPJPyJ70eFCh2RfdxJrqIgIhC
+hU8w81ojfJpJkf/Z0D2fUtknDi+97fQ98jLrxtVMWNBAxwHvwQMLxZpMA7cQm9oh
+XmLLnFhk7nbZDQhvfrF4u5GtL1HJt8mA3NHKYgHzlgkZCqHRVQlLZx2BLO/aIISk
+2YUJxU/NCFXmPgNpdJACsAOX+5glfqSoLYvbJmf2vDZBNMPiIUBTeOARtiY6l/wZ
+DW03He1cNq0RQis6oeOrbWmQioLSXw8P0igGuZzfCfY+PNe+xPzDIc1fks3O/KY=
+=KrIR
 -----END PGP SIGNATURE-----
 
---XmBYJ+PaUOdJeGy2--
-
---===============1203379499492760443==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1203379499492760443==--
+--EKglq5eeiLEg3Uj1--
