@@ -1,43 +1,93 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH v2] ALSA: atmel: fix building the ac97 driver for
- at91-multiplatform
-Date: Thu, 25 Dec 2014 11:48:37 +0100
-Message-ID: <20141225104837.GH4194@piout.net>
-References: <1419160689-20447-1-git-send-email-alexandre.belloni@free-electrons.com>
- <s5hppb8hw13.wl-tiwai@suse.de>
+From: Vaishali Thakkar <vthakkar1994@gmail.com>
+Subject: [PATCH] ASoC: wm5102: Use put_unaligned_be16
+Date: Fri, 26 Dec 2014 10:09:37 +0530
+Message-ID: <20141226043937.GA12723@vaishali-Ideapad-Z570>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
+ [209.85.220.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB10D265141
+ for <alsa-devel@alsa-project.org>; Fri, 26 Dec 2014 05:39:46 +0100 (CET)
+Received: by mail-pa0-f50.google.com with SMTP id bj1so12707199pad.9
+ for <alsa-devel@alsa-project.org>; Thu, 25 Dec 2014 20:39:45 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <s5hppb8hw13.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Alexander Stein <alexanders83@web.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Arnd Bergmann <arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch introduces the use of function put_unaligned_le16.
 
-On 25/12/2014 at 11:19:04 +0100, Takashi Iwai wrote :
-> At Sun, 21 Dec 2014 12:18:09 +0100,
-> Alexandre Belloni wrote:
-> > 
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > at91 will no longer export the mach/cpu.h and mach/hardware.h header files
-> > in the future, which would break building the atmel ac97c driver.
-> > 
-> > Since the cpu_is_* check is only used to find out whether we are running
-> > on avr32 or arm/at91, we can hardcode that check in the ARM case.
-> > 
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > Link: http://www.spinics.net/lists/arm-kernel/msg382068.html
-> 
-> Is this targeted for 3.19 or 3.20?
-> 
+This is done using Coccinelle and semantic patch used is as follows:
 
-It is not urgent, that is definitely for 3.20.
+@a@
+typedef u16, __be16, uint16_t;
+{u16,__be16,uint16_t} e16;
+identifier tmp;
+expression ptr;
+expression y,e;
+type T;
+@@
 
+- tmp = cpu_to_be16(y);
+
+<+... when != tmp
+(
+- memcpy(ptr, (T)&tmp, \(2\|sizeof(u16)\|sizeof(__be16)\|sizeof(uint16_t)\|sizeof(e16)\));
++ put_unaligned_be16(y,ptr);
+|
+- memcpy(ptr, (T)&tmp, ...);
++ put_unaligned_be16(y,ptr);
+)
+...+>
+? tmp = e
+
+@@ type T; identifier a.tmp; @@
+
+- T tmp;
+...when != tmp
+
+Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+---
+ sound/soc/codecs/wm5102.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index f602349..fec21f9 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -28,6 +28,7 @@
+ 
+ #include <linux/mfd/arizona/core.h>
+ #include <linux/mfd/arizona/registers.h>
++#include <asm/unaligned.h>
+ 
+ #include "arizona.h"
+ #include "wm5102.h"
+@@ -617,11 +618,11 @@ static int wm5102_out_comp_coeff_get(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
+-	uint16_t data;
+ 
+ 	mutex_lock(&codec->mutex);
+-	data = cpu_to_be16(arizona->dac_comp_coeff);
+-	memcpy(ucontrol->value.bytes.data, &data, sizeof(data));
++
++	put_unaligned_be16(arizona->dac_comp_coeff,
++			   ucontrol->value.bytes.data);
+ 	mutex_unlock(&codec->mutex);
+ 
+ 	return 0;
 -- 
-Alexandre Belloni, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+1.9.1
