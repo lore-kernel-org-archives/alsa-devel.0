@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: ASoC fixes for v3.19
-Date: Mon, 29 Dec 2014 15:59:12 +0000
-Message-ID: <20141229155912.GN17800@sirena.org.uk>
+Subject: [GIT PULL] ASoC updates for v3.20
+Date: Mon, 29 Dec 2014 16:17:14 +0000
+Message-ID: <20141229161714.GV17800@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7536863729584783145=="
+Content-Type: multipart/mixed; boundary="===============3649909307778328549=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E743F26672D
- for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 16:59:28 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D082B260699
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 17:17:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,13 +23,13 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7536863729584783145==
+--===============3649909307778328549==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KDakB1N7OkbC0NTe"
+	protocol="application/pgp-signature"; boundary="uirbBhP+oL+JcCcl"
 Content-Disposition: inline
 
 
---KDakB1N7OkbC0NTe
+--uirbBhP+oL+JcCcl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -39,78 +39,136 @@ The following changes since commit 97bf6af1f928216fd6c5a66e8a57bfa95a659672:
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v3.19-rc2
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.19-rc2
 
-for you to fetch changes up to f2ec1d3b25776051a9205289dab12e9401d33f8a:
+for you to fetch changes up to 1b9f1ae8907cb13d3d2538d98385b2744c9490d5:
 
-  Merge remote-tracking branches 'asoc/fix/dwc', 'asoc/fix/intel', 'asoc/fix/rockchip' and 'asoc/fix/rt5677' into asoc-linus (2014-12-24 12:56:32 +0000)
-
-----------------------------------------------------------------
-ASoC: Fixes for v3.19
-
-A few fixes for v3.19, a few driver specifics and one core fix which
-fixes a boot crash on OMAP if deferred probing kicks in due to
-attempting to modify static data.
+  Merge remote-tracking branches 'asoc/topic/samsung' and 'asoc/topic/wm8750' into asoc-next (2014-12-24 12:56:48 +0000)
 
 ----------------------------------------------------------------
-Andrew Jackson (2):
+ASoC: Updates for v3.20
+
+Nothing too exciting here yet, a small optimization for DAPM from
+Lars-Peter and a few small bits and pieces for drivers but nothing
+that really stands out.
+
+----------------------------------------------------------------
+Andrew Jackson (4):
+      ASoC: dwc: Remove unnecessary debug messages and tests
+      ASoC: dwc: Reorder code in preparation for DT support
       ASoC: dwc: Ensure FIFOs are flushed to prevent channel swap
       ASoC: dwc: Iterate over all channels
+
+Bard Liao (3):
+      ASoC: rt5670: set platform data by dmi
+      ASoC: rt5670: Add runtime PM support
+      ASoC: rt5670: Keep sysclk on if JD func is used
 
 Fang, Yang A (1):
       ASoC: rt5677: fixed rt5677_dsp_vad_put rt5677_dsp_vad_get panic
 
-Jarkko Nikula (3):
+Jarkko Nikula (4):
       ASoC: Intel: Add I2C dependency to two new machines
       ASoC: Intel: Fix BYTCR firmware name
       ASoC: Intel: Fix BYTCR machine driver MODULE_ALIAS
+      ASoC: pcm: Fix vague codec and cpu DAI prepare error messages
 
-Jianqun Xu (2):
+Jianqun Xu (3):
       ASoC: rockchip: i2s: fix error defination of transmit data level
       ASoC: rockchip: i2s: fix maxburst of dma data to 4
+      ASoC: rockchip: i2s: set TDL and RDL to 16 samples
 
-Jie Yang (1):
+Jie Yang (2):
       ASoC: Intel: correct the fixed free block allocation
+      ASoC: Intel: Store the entry_point read from FW file
 
-Mark Brown (3):
+Lars-Peter Clausen (4):
+      ASoC: wm8750: Make VREF a VMID instead of OUTPUT widget
+      ASoC: wm8750: Cleanup manual bias level transitions
+      ASoC: dapm: Don't mark MICBIAS widgets as auto non-connected
+      ASoC: dapm: Simplify fully route card handling
+
+Mark Brown (9):
       ASoC: dapm: Remove snd_soc_of_parse_audio_routing() due to deferred probe
       Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
       Merge remote-tracking branches 'asoc/fix/dwc', 'asoc/fix/intel', 'asoc/fix/rockchip' and 'asoc/fix/rt5677' into asoc-linus
+      Merge remote-tracking branch 'asoc/topic/dapm' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/pcm' into asoc-next
+      Merge remote-tracking branch 'asoc/topic/pcm512x' into asoc-next
+      Merge remote-tracking branches 'asoc/topic/dwc', 'asoc/topic/intel' and 'asoc/topic/omap' into asoc-next
+      Merge remote-tracking branches 'asoc/topic/pxa', 'asoc/topic/rockchip', 'asoc/topic/rt5670' and 'asoc/topic/rt5677' into asoc-next
+      Merge remote-tracking branches 'asoc/topic/samsung' and 'asoc/topic/wm8750' into asoc-next
 
- sound/soc/codecs/rt5677.c           |  9 ++++---
- sound/soc/dwc/designware_i2s.c      | 49 +++++++++++++++++++++++--------------
- sound/soc/intel/Kconfig             |  4 +--
- sound/soc/intel/bytcr_dpcm_rt5640.c |  2 +-
- sound/soc/intel/sst-firmware.c      |  6 ++++-
- sound/soc/intel/sst/sst_acpi.c      |  2 +-
- sound/soc/rockchip/rockchip_i2s.c   |  4 +--
- sound/soc/rockchip/rockchip_i2s.h   |  2 +-
- sound/soc/soc-core.c                | 14 ++++-------
- 9 files changed, 52 insertions(+), 40 deletions(-)
+Oder Chiou (3):
+      ASoC: rt5677: Revise the filter powers
+      ASoC: rt5677: Add the ASRC support
+      ASoC: rt5677: Adjust the routing of "PLL1"
 
---KDakB1N7OkbC0NTe
+Peter Rosin (1):
+      ASoC: pcm512x: Also support PCM514x devices
+
+Takashi Iwai (1):
+      ASoC: intel: Remove superfluous backslash in Kconfig
+
+Wei Yongjun (1):
+      ASoC: Intel: fix sparse non static symbol warnings
+
+Wolfram Sang (4):
+      ASoC: intel: sst: drop owner assignment from platform_drivers
+      ASoC: omap: drop owner assignment from platform_drivers
+      ASoC: pxa: drop owner assignment from platform_drivers
+      ASoC: samsung: drop owner assignment from platform_drivers
+
+kbuild test robot (2):
+      ASoC: Intel: fix platform_no_drv_owner.cocci warnings
+      ASoC: Intel: fix platform_no_drv_owner.cocci warnings
+
+ .../devicetree/bindings/sound/pcm512x.txt          |   3 +-
+ include/sound/soc-dapm.h                           |   1 -
+ sound/soc/codecs/pcm512x-i2c.c                     |   4 +
+ sound/soc/codecs/pcm512x-spi.c                     |   4 +
+ sound/soc/codecs/rt5670.c                          |  38 ++++
+ sound/soc/codecs/rt5677.c                          | 204 ++++++++++++++++++---
+ sound/soc/codecs/wm8750.c                          |   2 +-
+ sound/soc/dwc/designware_i2s.c                     | 135 +++++++-------
+ sound/soc/intel/Kconfig                            |   8 +-
+ sound/soc/intel/bytcr_dpcm_rt5640.c                |   3 +-
+ sound/soc/intel/cht_bsw_rt5672.c                   |   1 -
+ sound/soc/intel/sst-firmware.c                     |   7 +-
+ sound/soc/intel/sst/sst_acpi.c                     |   7 +-
+ sound/soc/omap/omap-hdmi-audio.c                   |   1 -
+ sound/soc/pxa/spitz.c                              |   1 -
+ sound/soc/rockchip/rockchip_i2s.c                  |   8 +-
+ sound/soc/rockchip/rockchip_i2s.h                  |   2 +-
+ sound/soc/samsung/arndale_rt5631.c                 |   1 -
+ sound/soc/soc-core.c                               |  17 +-
+ sound/soc/soc-dapm.c                               | 105 ++---------
+ sound/soc/soc-pcm.c                                |   7 +-
+ 21 files changed, 349 insertions(+), 210 deletions(-)
+
+--uirbBhP+oL+JcCcl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUoXpPAAoJECTWi3JdVIfQJUkH/27Nima66p+pYnUAY9HB0Eta
-OYnsFCKesGoHmft3to6Av9mhIco3gnV2wyB1NA4YOHAheKwbaz8YcKs4yRN1zCbD
-xIhPsD8Ur7AmCgjTpoHG1mJX7eF4njXeMYgiYxefWjJ6O576Cen2OiMgjA2UJngB
-wXy4nNkkpbaXGCigASx6yzgOv6LPDSuDtyjLMiMyFf3lQRfnSzwVaoaJH3NGYbxN
-xvMx7qvqYBy4ZpBfO+bkCLjdozxpOvt2pifZ5ppztoNDCYtpOr7iqMnbu9qbO/Ax
-NQd1XaJpXyAIHkYPNT4KGYivwUtzs5rYDMNrkt5UmzuDR+3LSoIjLyFxTXMqas4=
-=p5f4
+iQEcBAEBAgAGBQJUoX6JAAoJECTWi3JdVIfQxLAH/AzXFH+Hy78IrHj+9Xgr9WUQ
+xQJMyD1EHezty8cm7ungNeu6OQD0ApqcLi4kAl8jRW79FPUiV9lTYrvZMCqaCh69
+D4Nxh/L/OP771lzeOqDnbaIbM0NM/D6dRSRcAqTtBHSL8x+PQcaX5PvABbFSw2oz
+VgP9NTRTyaWhCfO1bn9M/NLPp8gzoJfnXVSwtt66gXmFhBgb1OT982+VcBT3K1UL
+s/0lvziFVCqBvluMBfRw3PLNV86F0bBLERn1vraey7wAxUhDFHam+yWs7LoINgIg
+Y9JUugL70XzibSiWi13F1bjzmk4oCP3I5yMwU9MQcoSr6+2ix2wTGFJeFvoq02s=
+=ZkfO
 -----END PGP SIGNATURE-----
 
---KDakB1N7OkbC0NTe--
+--uirbBhP+oL+JcCcl--
 
---===============7536863729584783145==
+--===============3649909307778328549==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7536863729584783145==--
+--===============3649909307778328549==--
