@@ -1,68 +1,122 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v8 0/2] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Mon, 29 Dec 2014 19:37:21 +0200
-Message-ID: <54A19151.3090506@ti.com>
-References: <cover.1414053169.git.moinejf@free.fr> <20141229165246.GZ17800@sirena.org.uk>
+From: Alexander Stein <alexanders83@web.de>
+Subject: [PATCH v3] ALSA: sound/atmel/ac97c.c: Add device tree
+	support
+Date: Mon, 29 Dec 2014 13:08:39 +0100
+Message-ID: <1419854922-29338-1-git-send-email-alexanders83@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141229165246.GZ17800@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Jean-Francois Moine <moinejf@free.fr>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9F1B266CC0
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 13:08:53 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Alexander Stein <alexanders83@web.de>, alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/29/2014 06:52 PM, Mark Brown wrote:
-> On Thu, Oct 23, 2014 at 10:32:49AM +0200, Jean-Francois Moine wrote:
->> The NXP TDA998x HDMI transmitter may transmit audio to the HDMI link
->> from 2 different sources, I2S and S/PDIF.
->
-> So, I'm not seeing *any* interest here from any other HDMI users.  This
-> is a continuing theme with HDMI patches and is really very concerning,
-> everyone appears to be working in their own bubbles coming up with their
-> own things and ignoring everyone else's work - what little review I'm
-> seeing seems to be happening only after I explicitly prompt it.  I'm
-> following up to Jean-Francois' patches here but this isn't specific to
-> them, it seems like a general thing with HDMI code.
->
-> This in turn makes me think there's some abstraction problems with
-> what's going on and we're going to have to go through yet more
-> refactorings to fix things up as we do manage to come up with better
-> abstractions.  What I'd really like to see as a bare minimum is some
-> visible conversation about what we're doing and sign that people are
-> at least keeping in mind generic solutions when working on HDMI code.
-> Some commentary on the similarities and differences between hardware
-> and which abstractions work with which devices would also be really
-> helpful in working out if we're going in the right direction.
->
-> Basically at the minute I'm worried that we may be making the problems
-> we've got here worse not better, I've not personally had the time to sit
-> down and study the hardware sufficiently to form a firm impression
-> myself which isn't helping.
->
+This adds device tree support for the AC97 controller. It uses the
+soc-ac97link bindings, but actually only ac97-reset is used.
 
-I have not seen any significant new development since v7 of these 
-patches. My comments for v6 were mostly[1] addressed and I can live with 
-these changes, even develop this approach further if it gets merged.
+Signed-off-by: Alexander Stein <alexanders83@web.de>
+Acked-By Alexandre Belloni <alexandre.belloni@free-electrons.com>
+---
+Changes in v3:
+* Renamed the compatible string to atmel,at91sam9263-ac97c
+* Added 'Acked-By Alexandre Belloni <alexandre.belloni@free-electrons.com>'
 
-However, as a general note I see a need for a generic ASoC hdmi codec 
-abstraction and I don't think this is generic enough. More of the audio 
-specific implementation and HDMI standard specific things should be 
-pushed away from the hdmi encoder driver (tda998x in this case) to the 
-generic ASoC side hdmi codec driver (or library).
+Changes in v2:
+* It now uses the soc-ac97link bindings (partly) instead of defining its own.
+  This should ease the transition to ASoC once a new driver has been written.
 
-I am currently working on something that tries to be a generic solution 
-that should be usable for different encoders and platforms, but 
-unfortunately I have been busy with other things lately and have not 
-been able to put anything working together yet. As soon as I have at 
-least a bare bone API and and a proof of concept implementation working, 
-I send RFC/POF patches out.
+ sound/atmel/ac97c.c | 45 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 42 insertions(+), 3 deletions(-)
 
-Best regards,
-Jyri
-
-[1] I personally do not like the hdmi_get_cdev() approach. I would 
-rather go with only a library for registering from ASoC codec component 
-under the HDMI encoder device or a completely separate device with only 
-a reference to the HDMI encoder.
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 4f6b14d..a0df1b1 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -22,6 +22,9 @@
+ #include <linux/gpio.h>
+ #include <linux/types.h>
+ #include <linux/io.h>
++#include <linux/of.h>
++#include <linux/of_gpio.h>
++#include <linux/of_device.h>
+ 
+ #include <sound/core.h>
+ #include <sound/initval.h>
+@@ -902,6 +905,40 @@ static void atmel_ac97c_reset(struct atmel_ac97c *chip)
+ 	}
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id atmel_ac97c_dt_ids[] = {
++	{ .compatible = "atmel,at91sam9263-ac97c", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, atmel_ac97c_dt_ids);
++
++static struct ac97c_platform_data *atmel_ac97c_probe_dt(struct device *dev)
++{
++	struct ac97c_platform_data *pdata;
++	struct device_node *node = dev->of_node;
++	const struct of_device_id *match;
++
++	if (!node) {
++		dev_err(dev, "Device does not have associated DT data\n");
++		return ERR_PTR(-EINVAL);
++	}
++
++	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
++	if (!pdata)
++		return ERR_PTR(-ENOMEM);
++
++	pdata->reset_pin = of_get_named_gpio(dev->of_node, "ac97-gpios", 2);
++
++	return pdata;
++}
++#else
++static struct ac97c_platform_data *atmel_ac97c_probe_dt(struct device *dev)
++{
++	dev_err(dev, "no platform data defined\n");
++	return ERR_PTR(-ENXIO);
++}
++#endif
++
+ static int atmel_ac97c_probe(struct platform_device *pdev)
+ {
+ 	struct snd_card			*card;
+@@ -922,10 +959,11 @@ static int atmel_ac97c_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
+ 
+-	pdata = pdev->dev.platform_data;
++	pdata = dev_get_platdata(&pdev->dev);
+ 	if (!pdata) {
+-		dev_dbg(&pdev->dev, "no platform data\n");
+-		return -ENXIO;
++		pdata = atmel_ac97c_probe_dt(&pdev->dev);
++		if (IS_ERR(pdata))
++			return PTR_ERR(pdata);
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+@@ -1204,6 +1242,7 @@ static struct platform_driver atmel_ac97c_driver = {
+ 	.driver		= {
+ 		.name	= "atmel_ac97c",
+ 		.pm	= ATMEL_AC97C_PM_OPS,
++		.of_match_table = of_match_ptr(atmel_ac97c_dt_ids),
+ 	},
+ };
+ module_platform_driver(atmel_ac97c_driver);
+-- 
+2.2.1
