@@ -1,61 +1,59 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch V3 02/10] ASoC: qcom: Document MAX98357A bindings
-Date: Mon, 29 Dec 2014 16:07:47 +0000
-Message-ID: <20141229160747.GS17800@sirena.org.uk>
-References: <1419439330-2303-1-git-send-email-kwestfie@codeaurora.org>
- <1419439330-2303-3-git-send-email-kwestfie@codeaurora.org>
+Subject: Re: [PATCH] ALSA: ASoC: soc-compress.c: fix NULL dereference
+Date: Mon, 29 Dec 2014 16:13:03 +0000
+Message-ID: <20141229161303.GU17800@sirena.org.uk>
+References: <1419325767-30602-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gkgJxwboLHM70d2C"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="y7im8bf83ZGtWTRI"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1419439330-2303-3-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>
+In-Reply-To: <1419325767-30602-1-git-send-email-qais.yousef@imgtec.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Qais Yousef <qais.yousef@imgtec.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gkgJxwboLHM70d2C
+--y7im8bf83ZGtWTRI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 24, 2014 at 08:42:02AM -0800, Kenneth Westfield wrote:
-> From: Kenneth Westfield <kwestfie@codeaurora.org>
+On Tue, Dec 23, 2014 at 09:09:27AM +0000, Qais Yousef wrote:
+> In soc_new_compress() when rtd->dai_link->daynmic is set, we create the p=
+cm
+> substreams with this call:
 >=20
-> Add documentation to the sound directory of the
-> device-tree bindings for the Maxim MAX98357A audio
-> codec driver.
+>    ret =3D snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
+>                                    1, 0, &be_pcm);
+>=20
+> which passes 0 as capture_count leading to
+>=20
+>    be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream
+>=20
+> being NULL, hence when trying to set rtd a few lines below we get an oops.
+> Fix by removing this line of code since CAPTURE substream will always be =
+NULL.
 
-Your subject line says "qcom" but this isn't a Qualcomm thing...
+Why will the capture stream always be NULL?  There should be no
+intrinsic reason why we can't have hardware support for capturing
+compressed audio.
 
-> +Required properties:
-> +- compatible  : "maxim,max98357a"
-> +- sdmode-gpios: Phandle to the GPIO specifier for the GPIO -> DAC SDMODE=
- pin
-
-> +max98357a {
-> +	compatible =3D "maxim,max98357a";
-> +	sdmode-gpios =3D <&qcom_pinmux 25 0>;
-
-A GPIO specifier is not a phandle (as your example shows).  Just say
-it's a GPIO specifier.
-
---gkgJxwboLHM70d2C
+--y7im8bf83ZGtWTRI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUoXxSAAoJECTWi3JdVIfQxLkH/iwTP9U3hQUJH34aOYKe8aOV
-AdzM3w9X5V9JNJQxPNZIkkN1wK1a4w6I6z+7vDF6716i8ZnkdAHvjf/iGI/okVz6
-j75vHg0AZZWTv/U8KGkEnoJj14mqH7CZe3SPdFXGjHMKwpB3ZDF9F58rFjtjJks0
-//oMA7tzYVfdoEtBz9hZ7e4WCFYfMe77O7wlNgY2dwwA7TNr338VSAQIa2yaKVcV
-kM1e4e3nORiZgI8vcRVj16/y4P2QjoIMKYloQuvPSRXs4TUBA1T8rfvyl37NoJnt
-FHCBvjUhneFRHRcaAUYmHO/Bsf/cIX0j/EzMWA4iOINKmP5+X3nA3cbjlVC8kj4=
-=y4ng
+iQEcBAEBAgAGBQJUoX2OAAoJECTWi3JdVIfQgA8H/3fe7WH6f0ykKj4clB0cb2Fw
+GS1gEyXayWD6QP1g3Q/prxIe1KoiPnNVzAclNcY7Sfy8lcpRt1LIwvYmUDj2EQDk
+SUI/qjNp3AFGHYFn7yaQ7hIuqXHu0WE32wxZxEd9dcWqgfPIPQ1jcik1+75OLfGa
+sC/yoAmoq3gZ8tLjAsOC4L7coHNzIBlGQ/YQ7LNSkxKtP2pVha7ekkcw6nxja4XI
+14vmg1zsPn2rsbr2i50eXtLCY/CF9BalExQ3LFNTsyaKmEp3pksRFfZ1bbxeCQHh
+llkf0mUA5nNTrvGAHNlPAytDK+vLVZ6ooCFjfKFvwu34IoLW+DrcQ0lCHkfRjKE=
+=bErF
 -----END PGP SIGNATURE-----
 
---gkgJxwboLHM70d2C--
+--y7im8bf83ZGtWTRI--
