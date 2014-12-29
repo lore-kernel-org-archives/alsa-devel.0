@@ -1,105 +1,65 @@
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-Subject: Re: [PATCH] ASoC: wm5102: Use put_unaligned_be16
-Date: Sun, 28 Dec 2014 16:35:00 +0530
-Message-ID: <CAK-LDb+i8ATb5GrA6=dx5Y6EZSct+A6epXwNdEoVN4797Yzmqw@mail.gmail.com>
-References: <20141226044457.GA12777@vaishali-Ideapad-Z570>
+From: Zidan Wang <B50113@freescale.com>
+Subject: RE: [alsa-devel][PATCH v4] ASoC: wm8960: Let wm8960 codec driver
+ manage its own MCLK
+Date: Mon, 29 Dec 2014 10:59:08 +0000
+Message-ID: <BN3PR0301MB125132692CD535B9AC1795A98D510@BN3PR0301MB1251.namprd03.prod.outlook.com>
+References: <1418103916-31295-1-git-send-email-b50113@freescale.com>
+ <20141222181045.GH17800@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f49.google.com (mail-wg0-f49.google.com [74.125.82.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 232A8260506
- for <alsa-devel@alsa-project.org>; Sun, 28 Dec 2014 12:05:01 +0100 (CET)
-Received: by mail-wg0-f49.google.com with SMTP id n12so17104909wgh.36
- for <alsa-devel@alsa-project.org>; Sun, 28 Dec 2014 03:05:00 -0800 (PST)
-In-Reply-To: <20141226044457.GA12777@vaishali-Ideapad-Z570>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141222181045.GH17800@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "lars@metafoo.de" <lars@metafoo.de>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 26, 2014 at 10:14 AM, Vaishali Thakkar
-<vthakkar1994@gmail.com> wrote:
-> This patch introduces the use of function put_unaligned_be16.
->
-> This is done using Coccinelle and semantic patch used is as follows:
->
-> @a@
-> typedef u16, __be16, uint16_t;
-> {u16,__be16,uint16_t} e16;
-> identifier tmp;
-> expression ptr;
-> expression y,e;
-> type T;
-> @@
->
-> - tmp = cpu_to_be16(y);
->
-> <+... when != tmp
-> (
-> - memcpy(ptr, (T)&tmp, \(2\|sizeof(u16)\|sizeof(__be16)\|sizeof(uint16_t)\|sizeof(e16)\));
-> + put_unaligned_be16(y,ptr);
-> |
-> - memcpy(ptr, (T)&tmp, ...);
-> + put_unaligned_be16(y,ptr);
-> )
-> ...+>
-> ? tmp = e
->
-> @@ type T; identifier a.tmp; @@
->
-> - T tmp;
-> ...when != tmp
->
-> Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
-> ---
->  sound/soc/codecs/wm5102.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-> index f602349..fec21f9 100644
-> --- a/sound/soc/codecs/wm5102.c
-> +++ b/sound/soc/codecs/wm5102.c
-> @@ -28,6 +28,7 @@
->
->  #include <linux/mfd/arizona/core.h>
->  #include <linux/mfd/arizona/registers.h>
-> +#include <asm/unaligned.h>
->
->  #include "arizona.h"
->  #include "wm5102.h"
-> @@ -617,11 +618,11 @@ static int wm5102_out_comp_coeff_get(struct snd_kcontrol *kcontrol,
->  {
->         struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
->         struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
-> -       uint16_t data;
->
->         mutex_lock(&codec->mutex);
-> -       data = cpu_to_be16(arizona->dac_comp_coeff);
-> -       memcpy(ucontrol->value.bytes.data, &data, sizeof(data));
+Hi Mark,
+
+I am so sorry for missing this letter. 
+You are right. When PM is disabled, the codec will not work. But there are also some codecs enable mclk in PM, such as wm8962, cs42xx8.
+And some codecs enable codec mclk in i2c probe(), startup() and set_bias_level(). It makes me confused.	
+Can you tell me what's the general idiom to enable mclk. Thanks.
+
+
+Best Regards,
+Zidan
+
+-----Original Message-----
+From: Mark Brown [mailto:broonie@kernel.org] 
+Sent: Tuesday, December 23, 2014 2:11 AM
+To: Wang Zidan-B50113
+Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.de; lars@metafoo.de; ckeepax@opensource.wolfsonmicro.com; Xiubo Li-B47053; patches@opensource.wolfsonmicro.com; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel][PATCH v4] ASoC: wm8960: Let wm8960 codec driver manage its own MCLK
+
+On Tue, Dec 09, 2014 at 01:45:16PM +0800, Zidan Wang wrote:
+
+> @@ -1002,6 +1005,13 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
+>  	if (wm8960 == NULL)
+>  		return -ENOMEM;
+>  
+> +	wm8960->mclk = devm_clk_get(&i2c->dev, "codec_mclk");
 > +
-> +       put_unaligned_be16(arizona->dac_comp_coeff,
-> +                          ucontrol->value.bytes.data);
->         mutex_unlock(&codec->mutex);
->
->         return 0;
-> --
-> 1.9.1
->
+> +	if (IS_ERR(wm8960->mclk)) {
+> +		if (PTR_ERR(wm8960->mclk) == -EPROBE_DEFER)
+> +			return -EPROBE_DEFER;
+> +	}
+> +
+>  	wm8960->regmap = devm_regmap_init_i2c(i2c, &wm8960_regmap);
+>  	if (IS_ERR(wm8960->regmap))
+>  		return PTR_ERR(wm8960->regmap);
+> @@ -1041,6 +1051,9 @@ static int wm8960_i2c_probe(struct i2c_client 
+> *i2c,
+>  
+>  	i2c_set_clientdata(i2c, wm8960);
+>  
+> +	pm_runtime_enable(&i2c->dev);
+> +	pm_request_idle(&i2c->dev);
+> +
+>  	ret = snd_soc_register_codec(&i2c->dev,
+>  			&soc_codec_dev_wm8960, &wm8960_dai, 1);
+>  
 
-Hello...Can someone please review my patch so that I can have idea
-about I am on a right way or not??
-I think this is missed by developers.
-
-Thank You.
-
--- 
-Vaishali
+This isn't going to work if PM is disabled (which is still a valid configuration).  The general idiom for this is that the driver should start up with everything powered up then let runtime idle turn things off if they're not required.  That way if runtime PM is disabled then the system will still work as everything will just stay powered on all the time.
