@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 9/9] ALSA: pcm: Replace custom ld2 function
-	with __fls
-Date: Mon, 29 Dec 2014 19:41:46 +0100
-Message-ID: <1419878506-28684-9-git-send-email-lars@metafoo.de>
-References: <1419878506-28684-1-git-send-email-lars@metafoo.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl_esai: Use dev_name() for registering
+	the irq
+Date: Mon, 29 Dec 2014 19:57:26 -0200
+Message-ID: <1419890246-21985-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-184.synserver.de (smtp-out-184.synserver.de
- [212.40.185.184])
- by alsa0.perex.cz (Postfix) with ESMTP id B5928261A50
- for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 19:41:54 +0100 (CET)
-In-Reply-To: <1419878506-28684-1-git-send-email-lars@metafoo.de>
+Received: from mail-vc0-f170.google.com (mail-vc0-f170.google.com
+ [209.85.220.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72509260568
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 22:57:39 +0100 (CET)
+Received: by mail-vc0-f170.google.com with SMTP id hy4so5419719vcb.15
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 13:57:38 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-__fls has the same semantics as ld2, so there is no need to re-implement it.
-Furthermore a lot of architectures have custom implementations of __fls that
-are able to use special hardware instructions to compute the result. This
-makes the code slightly shorter and faster.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+The 'name' array is currently stored inside the fsl_esai private structure only
+for registering the interrupt name.
+
+This can be simplified by registering it with dev_name() instead.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- include/sound/pcm_params.h | 27 +--------------------------
- 1 file changed, 1 insertion(+), 26 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
-index c99e20b..3c45f39 100644
---- a/include/sound/pcm_params.h
-+++ b/include/sound/pcm_params.h
-@@ -38,31 +38,6 @@ int snd_pcm_hw_param_value(const struct snd_pcm_hw_params *params,
- #define MASK_OFS(i)	((i) >> 5)
- #define MASK_BIT(i)	(1U << ((i) & 31))
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 1c08ab1..dbe9204 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -44,7 +44,6 @@
+  * @sck_div: if using PSR/PM dividers for SCKx clock
+  * @slave_mode: if fully using DAI slave mode
+  * @synchronous: if using tx/rx synchronous mode
+- * @name: driver name
+  */
+ struct fsl_esai {
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+@@ -63,7 +62,6 @@ struct fsl_esai {
+ 	bool sck_div[2];
+ 	bool slave_mode;
+ 	bool synchronous;
+-	char name[32];
+ };
  
--static inline unsigned int ld2(u_int32_t v)
--{
--        unsigned r = 0;
--
--        if (v >= 0x10000) {
--                v >>= 16;
--                r += 16;
--        }
--        if (v >= 0x100) {
--                v >>= 8;
--                r += 8;
--        }
--        if (v >= 0x10) {
--                v >>= 4;
--                r += 4;
--        }
--        if (v >= 4) {
--                v >>= 2;
--                r += 2;
--        }
--        if (v >= 2)
--                r++;
--        return r;
--}
--
- static inline size_t snd_mask_sizeof(void)
- {
- 	return sizeof(struct snd_mask);
-@@ -102,7 +77,7 @@ static inline unsigned int snd_mask_max(const struct snd_mask *mask)
- 	int i;
- 	for (i = SNDRV_MASK_SIZE - 1; i >= 0; i--) {
- 		if (mask->bits[i])
--			return ld2(mask->bits[i]) + (i << 5);
-+			return __fls(mask->bits[i]) + (i << 5);
+ static irqreturn_t esai_isr(int irq, void *devid)
+@@ -739,7 +737,6 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	esai_priv->pdev = pdev;
+-	strncpy(esai_priv->name, np->name, sizeof(esai_priv->name) - 1);
+ 
+ 	/* Get the addresses and IRQ */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+@@ -779,7 +776,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
  	}
- 	return 0;
- }
+ 
+ 	ret = devm_request_irq(&pdev->dev, irq, esai_isr, 0,
+-			       esai_priv->name, esai_priv);
++			       dev_name(&pdev->dev), esai_priv);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to claim irq %u\n", irq);
+ 		return ret;
 -- 
-1.8.0
+1.9.1
