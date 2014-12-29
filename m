@@ -1,22 +1,18 @@
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-Subject: Re: [PATCH] ASoC: wm5102: Use put_unaligned_be16
-Date: Mon, 29 Dec 2014 22:49:12 +0530
-Message-ID: <CAK-LDb+bHn4QWowDHL=XWYSB+ETzspc49j+1Q9o7Tz0zETZM0A@mail.gmail.com>
-References: <20141226044457.GA12777@vaishali-Ideapad-Z570>
- <CAK-LDb+i8ATb5GrA6=dx5Y6EZSct+A6epXwNdEoVN4797Yzmqw@mail.gmail.com>
- <20141229155357.GL17800@sirena.org.uk>
- <CAK-LDb+KCWHz7A5im7cB=dQfCs8ioh2T+jsxk9PdAFHNSOuvzg@mail.gmail.com>
- <20141229165734.GA17800@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/3] ALSA: Add support for wildcard msbits
+	constraints
+Date: Mon, 29 Dec 2014 18:43:37 +0100
+Message-ID: <1419875018-30812-2-git-send-email-lars@metafoo.de>
+References: <1419875018-30812-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 21F362614E3
- for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 18:19:13 +0100 (CET)
-Received: by mail-wg0-f51.google.com with SMTP id x12so19296723wgg.38
- for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 09:19:12 -0800 (PST)
-In-Reply-To: <20141229165734.GA17800@sirena.org.uk>
+Received: from smtp-out-180.synserver.de (smtp-out-181.synserver.de
+ [212.40.185.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AC91261585
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 18:43:43 +0100 (CET)
+In-Reply-To: <1419875018-30812-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,45 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 29, 2014 10:27 PM, "Mark Brown" <broonie@kernel.org> wrote:
->
-> On Mon, Dec 29, 2014 at 10:00:13PM +0530, Vaishali Thakkar wrote:
-> > On Mon, Dec 29, 2014 at 9:23 PM, Mark Brown <broonie@kernel.org> wrote:
->
-> > > You sent this on the 26th, two days later on the 28th you're
-demanding a
-> > > review and complaining that we've missed this with a top posted quote.
-> > > Even during a normal working period this would not be a reasnoable
-> > > demand (a couple of weeks is normally a good *lower* limit, people
-have
-> > > vacations and other things to do), and right now we're in the middle
-of
-> > > the time of year when people from western societies typically take
-> > > vacation.
->
-> > I am really very sorry for this. Actually I am a newbie. I mainly
-> > worked during opw-application period and there we used to work with
-> > staging directory only. This is my first time, I am working with other
-> > parts of kernel. So, I had kind of feeling that I might have done
-> > something wrong that's why I am not getting any comments. But I think
-> > its my fault. I may need to understand workflow of community properly
-> > and I apologizes for that.
->
-> Basically you should be allowing something measured in weeks to get a
-> response rather than days unless there's some ultra critical issue -
-> people might be busy, on vacation or whatever.  Different parts of the
-> kernel will have different working patterns and rules of thumb but in
-> general be patient, try to leave it for a few weeks before doing
-> anything unless you realise that there's some problem (eg, you forgot to
-> CC someone or you spot a mistake yourself in which case do a new version
-> fixing that mistake).  If it's just been a week or two people might just
-> be busy.
+Currently the msbits constraints requires to specify a specific sample
+format width for which the constraint should be applied. But often the
+number of most significant bits is not sample format specific, but rather a
+absolute limit. E.g. the PCM interface might accept 32-bit and 24-bit
+samples, but the DAC has a 16-bit resolution and throws away the LSBs. In
+this case for both 32-bit and 24-bit format msbits should be set to 16. This
+patch extends snd_pcm_hw_constraint_msbits() so that a wildcard constraint
+can be setup that is applied for all formats with a sample width larger than
+the specified msbits. Choosing the wildcard constraint is done by setting
+the sample width parameter of the function to 0.
 
-Ok. I got your point. This makes sense. Ill keep these things in my mind
-and will follow it.
-Also, thanks for your reply.It makes me realize my mistake and got to learn
-about common working pattern of kernel community. :-)
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/core/pcm_lib.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index b0c1535..db05e04 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1299,8 +1299,14 @@ static int snd_pcm_hw_rule_msbits(struct snd_pcm_hw_params *params,
+ 	int width = l & 0xffff;
+ 	unsigned int msbits = l >> 16;
+ 	struct snd_interval *i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
+-	if (snd_interval_single(i) && snd_interval_value(i) == width)
++
++	if (!snd_interval_single(i))
++		return 0;
++
++	if ((snd_interval_value(i) == width) ||
++	    (width == 0 && snd_interval_value(i) > msbits))
+ 		params->msbits = min_not_zero(params->msbits, msbits);
++
+ 	return 0;
+ }
+ 
+@@ -1311,6 +1317,11 @@ static int snd_pcm_hw_rule_msbits(struct snd_pcm_hw_params *params,
+  * @width: sample bits width
+  * @msbits: msbits width
+  *
++ * This constraint will set the number of most significant bits (msbits) if a
++ * sample format with the specified width has been select. If width is set to 0
++ * the msbits will be set for any sample format with a width larger than the
++ * specified msbits.
++ *
+  * Return: Zero if successful, or a negative error code on failure.
+  */
+ int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime, 
+-- 
+1.8.0
