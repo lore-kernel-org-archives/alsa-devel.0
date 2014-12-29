@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5102: Use put_unaligned_be16
-Date: Mon, 29 Dec 2014 15:53:57 +0000
-Message-ID: <20141229155357.GL17800@sirena.org.uk>
-References: <20141226044457.GA12777@vaishali-Ideapad-Z570>
- <CAK-LDb+i8ATb5GrA6=dx5Y6EZSct+A6epXwNdEoVN4797Yzmqw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: tegra: Add platform driver for
+	rt5677 audio codec
+Date: Mon, 29 Dec 2014 15:55:32 +0000
+Message-ID: <20141229155532.GM17800@sirena.org.uk>
+References: <1419362942-26192-1-git-send-email-anatol.pomozov@gmail.com>
+ <20141226163826.GD17800@sirena.org.uk>
+ <CAOMFOmW5BL4HpzC9Q32Q48s90Mnd0cqM5np8gH5RxZEXCAEEdw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3059907523391939817=="
+Content-Type: multipart/mixed; boundary="===============4965606886327384310=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DAD0266717
- for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 16:54:57 +0100 (CET)
-In-Reply-To: <CAK-LDb+i8ATb5GrA6=dx5Y6EZSct+A6epXwNdEoVN4797Yzmqw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 24DB526671D
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 16:55:44 +0100 (CET)
+In-Reply-To: <CAOMFOmW5BL4HpzC9Q32Q48s90Mnd0cqM5np8gH5RxZEXCAEEdw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +23,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Bard Liao <bardliao@realtek.com>, Laurent Dahan <ldahan@nvidia.com>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3059907523391939817==
+--===============4965606886327384310==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="08mGw3CZk5wypUJm"
+	protocol="application/pgp-signature"; boundary="RS1722//baS0C3Tp"
 Content-Disposition: inline
 
 
---08mGw3CZk5wypUJm
+--RS1722//baS0C3Tp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Dec 28, 2014 at 04:35:00PM +0530, Vaishali Thakkar wrote:
-> On Fri, Dec 26, 2014 at 10:14 AM, Vaishali Thakkar
-> <vthakkar1994@gmail.com> wrote:
-> > This patch introduces the use of function put_unaligned_be16.
+On Mon, Dec 29, 2014 at 05:25:59AM -0800, Anatol Pomozov wrote:
+> On Fri, Dec 26, 2014 at 8:38 AM, Mark Brown <broonie@kernel.org> wrote:
 
-> Hello...Can someone please review my patch so that I can have idea
-> about I am on a right way or not??
-> I think this is missed by developers.
+> >> +#if defined(CONFIG_MODULES) && defined(MODULE)
+> >> +     request_module("snd_soc_tegra30_i2s");
+> >> +#endif
 
-You sent this on the 26th, two days later on the 28th you're demanding a
-review and complaining that we've missed this with a top posted quote.
-Even during a normal working period this would not be a reasnoable
-demand (a couple of weeks is normally a good *lower* limit, people have
-vacations and other things to do), and right now we're in the middle of
-the time of year when people from western societies typically take
-vacation.
+> > What's this all about then?
 
-This is not a good way to get people to pay attention, and since I don't
-want to create the impression that it works I'd not be expecting a quick
-response...
+> Sorry, my question was not clear. I meant is it ok to put this
+> request_module() to upstream code? If not then just remove it before
+> merging my patch.
 
---08mGw3CZk5wypUJm
+What question, I'm not seeing a question in the patch (I'd expect it to
+be after the --- if one was being asked)?  I've no idea what it's there
+for so it's hard to tell, my first thought would be no and you need to
+fix whatever you're working around directly.
+
+--RS1722//baS0C3Tp
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUoXkUAAoJECTWi3JdVIfQXBEH/A4FhaetcrrGHqHLygT7+6eB
-/gr1R9ZzmWmo7aUtxppl0/DdUOsOKWRvd3ET1qXgBdSwOo1ovRYe+3RmnJ6/YoHb
-McULYwJ4DWwcE6Y01WZqBYcliqbEaCDaAFQFoINIirMqRzMVagKhV0spzfmX+2IY
-BhlBQ1AbMFxN+12cNT8wONsmKiIG4G2SLVl8vLZK+W3MMifg/jvCHmh2mPyfLy98
-9TgXddNrHbS097/c8qERVncbNxleGzSq+3iHzkBgZ6RW83rr4D3c9MQdfEBrAtf+
-5N1neWxrRopprDMmijrgfHog/3+G5yxaU5pw/jPxOFK7/NWt41r1+ISwUYZKoik=
-=nxyz
+iQEcBAEBAgAGBQJUoXlzAAoJECTWi3JdVIfQIuwH/iJD+htTwXHCMHJC3cVz/2JT
+L+3DpQUIz/kBEUx1cqw0lFl+BP+29OCBl8sBB/pd/sZOLENnrmYAZVD1rAXZcGb7
+XEp+3bsVkoG4S1EnkphkejARik/pJfiGUKms83YgEwhkOMkkTaLV1ueNs0I1MLo5
+C9KhWpBuogtqrFytxBTO5q57ofv1A3YnrYTFm2tuzHsilGVARVyiDUPnDwvGU4AI
+SSnM+3vhhMBPf7je2iYm0g2M5VOT0u4q2Hyj1CiSZUmIGGA8YOKWfDzrzm474ZEv
+9jUWH2aclSqNoYPxhJazwhbW1EWnBcrje034dDRQWJqrgIlxSeFYfqztVTw3a2U=
+=74jq
 -----END PGP SIGNATURE-----
 
---08mGw3CZk5wypUJm--
+--RS1722//baS0C3Tp--
 
---===============3059907523391939817==
+--===============4965606886327384310==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3059907523391939817==--
+--===============4965606886327384310==--
