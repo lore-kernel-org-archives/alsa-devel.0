@@ -1,19 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tegra: Add platform driver for
-	rt5677 audio codec
-Date: Mon, 29 Dec 2014 15:55:32 +0000
-Message-ID: <20141229155532.GM17800@sirena.org.uk>
-References: <1419362942-26192-1-git-send-email-anatol.pomozov@gmail.com>
- <20141226163826.GD17800@sirena.org.uk>
- <CAOMFOmW5BL4HpzC9Q32Q48s90Mnd0cqM5np8gH5RxZEXCAEEdw@mail.gmail.com>
+Subject: ASoC fixes for v3.19
+Date: Mon, 29 Dec 2014 15:59:12 +0000
+Message-ID: <20141229155912.GN17800@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4965606886327384310=="
+Content-Type: multipart/mixed; boundary="===============7536863729584783145=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 24DB526671D
- for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 16:55:44 +0100 (CET)
-In-Reply-To: <CAOMFOmW5BL4HpzC9Q32Q48s90Mnd0cqM5np8gH5RxZEXCAEEdw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E743F26672D
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 16:59:28 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +18,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Bard Liao <bardliao@realtek.com>, Laurent Dahan <ldahan@nvidia.com>, Dylan Reid <dgreid@google.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4965606886327384310==
+--===============7536863729584783145==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RS1722//baS0C3Tp"
+	protocol="application/pgp-signature"; boundary="KDakB1N7OkbC0NTe"
 Content-Disposition: inline
 
 
---RS1722//baS0C3Tp
+--KDakB1N7OkbC0NTe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 29, 2014 at 05:25:59AM -0800, Anatol Pomozov wrote:
-> On Fri, Dec 26, 2014 at 8:38 AM, Mark Brown <broonie@kernel.org> wrote:
+The following changes since commit 97bf6af1f928216fd6c5a66e8a57bfa95a659672:
 
-> >> +#if defined(CONFIG_MODULES) && defined(MODULE)
-> >> +     request_module("snd_soc_tegra30_i2s");
-> >> +#endif
+  Linux 3.19-rc1 (2014-12-20 17:08:50 -0800)
 
-> > What's this all about then?
+are available in the git repository at:
 
-> Sorry, my question was not clear. I meant is it ok to put this
-> request_module() to upstream code? If not then just remove it before
-> merging my patch.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v3.19-rc2
 
-What question, I'm not seeing a question in the patch (I'd expect it to
-be after the --- if one was being asked)?  I've no idea what it's there
-for so it's hard to tell, my first thought would be no and you need to
-fix whatever you're working around directly.
+for you to fetch changes up to f2ec1d3b25776051a9205289dab12e9401d33f8a:
 
---RS1722//baS0C3Tp
+  Merge remote-tracking branches 'asoc/fix/dwc', 'asoc/fix/intel', 'asoc/fix/rockchip' and 'asoc/fix/rt5677' into asoc-linus (2014-12-24 12:56:32 +0000)
+
+----------------------------------------------------------------
+ASoC: Fixes for v3.19
+
+A few fixes for v3.19, a few driver specifics and one core fix which
+fixes a boot crash on OMAP if deferred probing kicks in due to
+attempting to modify static data.
+
+----------------------------------------------------------------
+Andrew Jackson (2):
+      ASoC: dwc: Ensure FIFOs are flushed to prevent channel swap
+      ASoC: dwc: Iterate over all channels
+
+Fang, Yang A (1):
+      ASoC: rt5677: fixed rt5677_dsp_vad_put rt5677_dsp_vad_get panic
+
+Jarkko Nikula (3):
+      ASoC: Intel: Add I2C dependency to two new machines
+      ASoC: Intel: Fix BYTCR firmware name
+      ASoC: Intel: Fix BYTCR machine driver MODULE_ALIAS
+
+Jianqun Xu (2):
+      ASoC: rockchip: i2s: fix error defination of transmit data level
+      ASoC: rockchip: i2s: fix maxburst of dma data to 4
+
+Jie Yang (1):
+      ASoC: Intel: correct the fixed free block allocation
+
+Mark Brown (3):
+      ASoC: dapm: Remove snd_soc_of_parse_audio_routing() due to deferred probe
+      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/dwc', 'asoc/fix/intel', 'asoc/fix/rockchip' and 'asoc/fix/rt5677' into asoc-linus
+
+ sound/soc/codecs/rt5677.c           |  9 ++++---
+ sound/soc/dwc/designware_i2s.c      | 49 +++++++++++++++++++++++--------------
+ sound/soc/intel/Kconfig             |  4 +--
+ sound/soc/intel/bytcr_dpcm_rt5640.c |  2 +-
+ sound/soc/intel/sst-firmware.c      |  6 ++++-
+ sound/soc/intel/sst/sst_acpi.c      |  2 +-
+ sound/soc/rockchip/rockchip_i2s.c   |  4 +--
+ sound/soc/rockchip/rockchip_i2s.h   |  2 +-
+ sound/soc/soc-core.c                | 14 ++++-------
+ 9 files changed, 52 insertions(+), 40 deletions(-)
+
+--KDakB1N7OkbC0NTe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUoXlzAAoJECTWi3JdVIfQIuwH/iJD+htTwXHCMHJC3cVz/2JT
-L+3DpQUIz/kBEUx1cqw0lFl+BP+29OCBl8sBB/pd/sZOLENnrmYAZVD1rAXZcGb7
-XEp+3bsVkoG4S1EnkphkejARik/pJfiGUKms83YgEwhkOMkkTaLV1ueNs0I1MLo5
-C9KhWpBuogtqrFytxBTO5q57ofv1A3YnrYTFm2tuzHsilGVARVyiDUPnDwvGU4AI
-SSnM+3vhhMBPf7je2iYm0g2M5VOT0u4q2Hyj1CiSZUmIGGA8YOKWfDzrzm474ZEv
-9jUWH2aclSqNoYPxhJazwhbW1EWnBcrje034dDRQWJqrgIlxSeFYfqztVTw3a2U=
-=74jq
+iQEcBAEBAgAGBQJUoXpPAAoJECTWi3JdVIfQJUkH/27Nima66p+pYnUAY9HB0Eta
+OYnsFCKesGoHmft3to6Av9mhIco3gnV2wyB1NA4YOHAheKwbaz8YcKs4yRN1zCbD
+xIhPsD8Ur7AmCgjTpoHG1mJX7eF4njXeMYgiYxefWjJ6O576Cen2OiMgjA2UJngB
+wXy4nNkkpbaXGCigASx6yzgOv6LPDSuDtyjLMiMyFf3lQRfnSzwVaoaJH3NGYbxN
+xvMx7qvqYBy4ZpBfO+bkCLjdozxpOvt2pifZ5ppztoNDCYtpOr7iqMnbu9qbO/Ax
+NQd1XaJpXyAIHkYPNT4KGYivwUtzs5rYDMNrkt5UmzuDR+3LSoIjLyFxTXMqas4=
+=p5f4
 -----END PGP SIGNATURE-----
 
---RS1722//baS0C3Tp--
+--KDakB1N7OkbC0NTe--
 
---===============4965606886327384310==
+--===============7536863729584783145==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4965606886327384310==--
+--===============7536863729584783145==--
