@@ -1,18 +1,17 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [RFC] ASoC: wm8962: Allow codec to work when
-	CONFIG_PM=n
-Date: Tue, 30 Dec 2014 13:58:16 -0200
-Message-ID: <1419955096-18810-1-git-send-email-festevam@gmail.com>
+From: Stefan Oltmanns <stefan-oltmanns@gmx.net>
+Subject: Intel HDA / ca0132: Multichannel + S/PDIF support
+Date: Tue, 30 Dec 2014 17:05:25 +0100
+Message-ID: <54A2CD45.9040500@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f175.google.com (mail-vc0-f175.google.com
- [209.85.220.175])
- by alsa0.perex.cz (Postfix) with ESMTP id B31BC260672
- for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 16:58:32 +0100 (CET)
-Received: by mail-vc0-f175.google.com with SMTP id hy10so5670896vcb.6
- for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 07:58:31 -0800 (PST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52E66260672
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 17:05:31 +0100 (CET)
+Received: from [192.168.1.87] ([87.151.147.4]) by mail.gmx.com (mrgmx101) with
+ ESMTPSA (Nemesis) id 0LeALI-1XValD02FI-00prE7 for
+ <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 17:05:31 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b50113@freescale.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
-
-Currently the codec does not work in the CONFIG_PM=n case because the regulators
-and clock are kept disabled.
-
-Allow the codec to be functional by calling wm8962_runtime_resume() when 
-CONFIG_PM=n.
-
-Tested on a imx6sl-evk in the CONFIG_PM=y and CONFIG_PM=n cases.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-
-Probably there is a better solution, hence I am sending it as RFC.
-
-Thanks
-
- sound/soc/codecs/wm8962.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index d32d554..0b041c9 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3546,6 +3546,9 @@ static int wm8962_set_pdata_from_of(struct i2c_client *i2c,
- 	return 0;
- }
- 
-+static int wm8962_runtime_resume(struct device *dev);
-+static int wm8962_runtime_suspend(struct device *dev);
-+
- static int wm8962_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
-@@ -3771,6 +3774,9 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
- 	/* The drivers should power up as needed */
- 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
- 
-+	if (!IS_ENABLED(CONFIG_PM))
-+		wm8962_runtime_resume(&i2c->dev);
-+
- 	return 0;
- 
- err_enable:
-@@ -3781,11 +3787,12 @@ err:
- 
- static int wm8962_i2c_remove(struct i2c_client *client)
- {
-+	if (!IS_ENABLED(CONFIG_PM))
-+		wm8962_runtime_suspend(&client->dev);
- 	snd_soc_unregister_codec(&client->dev);
- 	return 0;
- }
- 
--#ifdef CONFIG_PM
- static int wm8962_runtime_resume(struct device *dev)
- {
- 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
-@@ -3860,7 +3867,6 @@ static int wm8962_runtime_suspend(struct device *dev)
- 
- 	return 0;
- }
--#endif
- 
- static struct dev_pm_ops wm8962_pm = {
- 	SET_RUNTIME_PM_OPS(wm8962_runtime_suspend, wm8962_runtime_resume, NULL)
--- 
-1.9.1
+SGksCgpJIG93biBhIEdpZ2FieXRlIEcxLlNuaXBlciBNMyBaNzcgbWFpbmJvYXJkIHdpdGggY2Ew
+MTMyIG9uYm9hcmQgYXVkaW8uCkN1cnJlbnRseSBvbmx5IHN0ZXJlbyBvdXQgYW5kIGhlYWRwaG9u
+ZSBvdXQgKGF0IHRoZSBiYWNrLCBhbHdheXMgc2FtZQpzaWduYWwpIHdvcmsgYnkgZGVmYXVsdC4K
+SSB3YXMgYWJsZSB0byBmaXggUy9QRElGIG91dCBieSBjaGFuZ2luZyB0aGUgaGVhZHBob25lIHBp
+biBpbiBmdW5jdGlvbgpjYTAxMzJfY29uZmlnIHRvIHNvbWV0aGluZyBiZWxvdyAweDBkLCBsaWtl
+OgoKc3BlYy0+b3V0X3BpbnNbMV0gPSAweDBhOwoKTm8gaWRlYSB3aHkgdGhpcyBmaXhlcyBTL1BE
+SUYsIGJ1dCBubyBvdGhlciBlZmZlY3RzIG5vdGljZWQuIE5vIGlkZWEgaWYKaXTCtHMgZ29pbmcg
+dG8gYnJlYWsgc29tZXRoaW5nIG9uIG90aGVyIGRldmljZXMuIE9yaWdpbmFsIHZhbHVlIGlzIDB4
+MTAuCgpJbiB0aGlzIGZ1bmN0aW9uIGFsc28gMyBEQUNzIGFyZSBsaXN0ZWQuIFRoZSBib2FyZCBo
+YXMgYSB0b3RhbCBvZiA1CnN0ZXJlbyBvdXRwdXRzOgoKLUZyb250cGFuZWwgKEhEQSBwaW4gY29u
+bmVjdG9yIG9uIG1haW5ib2FyZCkKNHggMyw1bW0gb3V0cHV0IGF0IGJhY2twYW5lbDoKLVN0ZXJl
+byBvdXQKLUhlYWRwaG9uZSBvdXQKLVJlYXIgb3V0Ci1DZW50ZXIvTEZFIG91dAoKSSB0cmllZCB0
+byBpbmNyZWFzZSB0aGUgbnVtYmVyIG9mIGNoYW5uZWxzIGFuZCBjcmVhdGUgYWRkaXRpb25hbCBv
+dXRwdXRzCmFuZCBjb25uZWN0ZWQgdG8gdGhlIG90aGVyIERBQ3MuIFRoZSBtYXhpbXVtIEnCtG0g
+YWJsZSB0byBpcyB0byBnZXQKZGlmZmVyZW50IHNpZ25hbHMgb3V0IG9mIHN0ZXJlbyBvdXQgYW5k
+IGZyb250IGhlYWRwaG9uZSAobm90IHVzZWZ1bCwKanVzdCBzb21lIHdlaXJkIG1peGVzKSBvciBz
+YW1lIHNpZ25hbCBmcm9tIGFsbCAzIG91dHB1dHMuIFJlYXIgYW5kIGMvbGZlCm91dCBhbHdheXMg
+bm8gc2lnbmFsLgoKRHVyaW5nIGluaXRpYWxpemF0aW9uIHNuZF9oZGFfcGFyc2VfcGluX2RlZl9j
+b25maWcgaXMgY2FsbGVkIGFuZCB0d28Kb3V0cHV0cyBhcmUgZm91bmQuIEkgdHJpZWQgdG8gb3Zl
+cnJpZGUgdGhhdCBhbmQgY2hhbmdlIHNwZWMtPmF1dG9jZmcKYWZ0ZXIgdGhhdCBmdW5jdGlvbiBp
+cyBjYWxsZWQsIG5vIHN1Y2Nlc3MuCkFsc28gbm8gbWF0dGVyIHdoYXQgSSBjaGFuZ2UgdGhlcmUs
+IGEgbGl0dGxlIGxhdGVyIEkgZ2V0IHRoaXMga2VybmVsCm1lc3NhZ2VzOgoKa2VybmVsOiBbICAg
+IDIuNjQyOTcyXSBpbnB1dDogSERBIEludGVsIFBDSCBMaW5lIE91dCBhcwovZGV2aWNlcy9wY2kw
+MDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9pbnB1dDgKa2VybmVsOiBbICAgIDIuNjQz
+MTQyXSBpbnB1dDogSERBIEludGVsIFBDSCBGcm9udCBIZWFkcGhvbmUgYXMKL2RldmljZXMvcGNp
+MDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5wdXQ3Cmtlcm5lbDogWyAgICAyLjY0
+NDkzMl0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTGluZSBhcwovZGV2aWNlcy9wY2kwMDAwOjAwLzAw
+MDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9pbnB1dDYKa2VybmVsOiBbICAgIDIuNjQ1MDUwXSBpbnB1
+dDogSERBIEludGVsIFBDSCBNaWMgYXMKL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAv
+c291bmQvY2FyZDAvaW5wdXQ1CgpJIGNvdWxkIG5vdCBmaW5kIHRoZSBjb2RlIHdoZXJlIHRoaXMg
+bWVzc2FnZXMgYXJlIGdlbmVyYXRlZCwgd2hlcmUgaXMgdGhhdD8KCkFueSBpZGVhcyB3aGF0IEkg
+Y291bGQvc2hvdWxkIHRyeSB0byBnZXQgbXVsdGljaGFubmVsIHN1cHBvcnQgd29ya2luZz8KSXMg
+dGhlcmUgYW55IGtpbmQgb2YgZG9jdW1lbnRhdGlvbiBvbiB0aGUgY2EwMTMyIHRoYXQgY291bGQg
+YmUgaGVscGZ1bD8KCkJlc3QgcmVnYXJkcwpTdGVmYW4KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
