@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Support for combined
- tx/rx interrupt line
-Date: Tue, 30 Dec 2014 16:44:17 +0000
-Message-ID: <20141230164417.GH17800@sirena.org.uk>
-References: <1419948632-18352-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: mxs-saif: Do not store the irq
+ number in the private structure
+Date: Tue, 30 Dec 2014 16:45:00 +0000
+Message-ID: <20141230164500.GI17800@sirena.org.uk>
+References: <1419948696-18529-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1066821284760827783=="
+Content-Type: multipart/mixed; boundary="===============8077952841176350095=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6268F260679
- for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 17:44:38 +0100 (CET)
-In-Reply-To: <1419948632-18352-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E2BF26067B
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 17:45:14 +0100 (CET)
+In-Reply-To: <1419948696-18529-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, daniel@zonque.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1066821284760827783==
+--===============8077952841176350095==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="MJDoj6C08NHMgYyA"
+	protocol="application/pgp-signature"; boundary="/WhCAuH6pPk3oymB"
 Content-Disposition: inline
 
 
---MJDoj6C08NHMgYyA
+--/WhCAuH6pPk3oymB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 30, 2014 at 04:10:32PM +0200, Peter Ujfalusi wrote:
-> Some SoC, like da850/OMAP-L138 uses one common interrupt request for TX/RX
-> events.
+On Tue, Dec 30, 2014 at 12:11:36PM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> The irq number is only used inside the probe function, so there is really=
+ no
+> need to store it in the private structure.
 
 Applied, thanks.
 
---MJDoj6C08NHMgYyA
+--/WhCAuH6pPk3oymB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUotZgAAoJECTWi3JdVIfQoyQH/1TWSeMLO5K3r1CqUkNGsoqg
-0kfJ1INH8cjWg4M7mEUzmyuGcxlINsi7xphOZMYy50WAdtyUETG5w0XBxpTZGvzS
-oNMtraU2ZYxAoZBp3xn+dm9bmrSik/C4hGt/bRGVP3yyXNwESucU4aCNCMsmUaPg
-E/UFhzMumeEgsV7oJUlIxdPpO+0+il4ZjrS927ZIMFZle5seV5cAji83d8EbpOq1
-s5LM/pIK8flMC3zkUpU+vEC9Cfe3iHS+2KLi2IiTpeG/T/2qJW6PfVu/jE5mIUF6
-T7G5oUqA5l8wNog2D8AYTBbrISPnS01swb1A4loFNSTmjzJciT9oh6YJiJfWr5A=
-=QV1J
+iQEcBAEBAgAGBQJUotaLAAoJECTWi3JdVIfQjukH/R+gKpL3leLOpxROOYFhbcST
+Qo/6AVvB5niWdx938O73/HU8nnQJGEHroZze+rSec07Da/C8TYu683uZ8wFz+LEz
+HqLQS13WQYidfpfFYtJF72X8w3dnOpWEM8UWpJTgGn2/bAncMiE7JhwXaZPXXiR1
+ZUCVZI2gBmUTg1l4eWFBLpRQxVoCw9vpUpHEIrQ1ahAOJl4qumckh6CE02jCFID7
+MP9hfG++OFUiz81kbHjVsTm93CAfp0JTu2IsU9S69C7IWlsFPumSs5E8TIjOZvta
+NxQP/hEHi+OJVYIFjuy6QpkYjRSHrgqlE8g9fL+AJztpHBQE5OoOT45+TssPsG8=
+=kYaY
 -----END PGP SIGNATURE-----
 
---MJDoj6C08NHMgYyA--
+--/WhCAuH6pPk3oymB--
 
---===============1066821284760827783==
+--===============8077952841176350095==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1066821284760827783==--
+--===============8077952841176350095==--
