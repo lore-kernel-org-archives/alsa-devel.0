@@ -1,23 +1,20 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH 1/2] [ALSA] add SNDRV_PCM_TRIGGER_DRAIN
-	trigger
-Date: Tue, 30 Dec 2014 08:42:28 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D195C40F2@SHSMSX103.ccr.corp.intel.com>
-References: <1418888164-41117-1-git-send-email-libin.yang@intel.com>
- <s5htx0tjr7y.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D195C25F9@SHSMSX103.ccr.corp.intel.com>
- <s5hfvccja9t.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D195C2CEF@SHSMSX103.ccr.corp.intel.com>
- <s5hwq5ghwe6.wl-tiwai@suse.de>
+From: Andrew Jackson <andrew.jackson@arm.com>
+Subject: [PATCH v5 3/6] ASoC: dwc: Read I2S block configuration
+	from registers
+Date: Tue, 30 Dec 2014 10:55:45 +0000
+Message-ID: <8bfc76c519c6234bb7c91997aa7385abeb5a013a.1419936132.git.Andrew.Jackson@arm.com>
+References: <cover.1419936132.git.Andrew.Jackson@arm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 83EF32605EB
- for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 09:43:03 +0100 (CET)
-In-Reply-To: <s5hwq5ghwe6.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
+ [217.140.96.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id A24222605F2
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 11:55:59 +0100 (CET)
+In-Reply-To: <cover.1419936132.git.Andrew.Jackson@arm.com>
+In-Reply-To: <cover.1419936132.git.Andrew.Jackson@arm.com>
+References: <cover.1419936132.git.Andrew.Jackson@arm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,183 +24,165 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, pawel.moll@arm.com, Arnd Bergmann <arnd@arndb.de>, ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, robh+dt@kernel.org, galak@codeaurora.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+From: Andrew Jackson <Andrew.Jackson@arm.com>
 
-Regards,
-Libin
+The I2S block provides component parameter registers which
+describe how the block is instantiated.  Use these registers
+to extract the block's configuration rather than relying on
+platform data.
 
+Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
+---
+ sound/soc/dwc/designware_i2s.c |   96 +++++++++++++++++++++++++++++++++++----
+ 1 files changed, 86 insertions(+), 10 deletions(-)
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, December 25, 2014 6:11 PM
-> To: Yang, Libin
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org;
-> liam.r.girdwood@linux.intel.com; Jie, Yang
-> Subject: Re: [PATCH 1/2] [ALSA] add SNDRV_PCM_TRIGGER_DRAIN trigger
-> 
-> At Mon, 22 Dec 2014 07:42:38 +0000,
-> Yang, Libin wrote:
-> >
-> > Hi Takashi,
-> >
-> > > > > Besides, this patch will break many drivers.  Many of them will
-> > > > > spew errors if an unexpected trigger command is issued.  So, you
-> > > > > have to limit this trigger only to some drivers.  A typical
-> > > > > workaround is to add a new
-> > > > > SNDRV_PCM_INFO_* and issue the trigger only when the flag is
-> > > > > set, as done for resume and pause operations.
-> > > >
-> > > > Yes, that's a good suggestion. Thanks for reminding me.
-> > >
-> > > OTOH, the info flag will be exposed to user-space while this is a
-> > > kernel-space- only information.  So, in the code copying the info
-> > > flag
-> > > (snd_pcm_hw_refine()) would need to drop this bit, too.
-> >
-> > Thanks, I will drop this bit in snd_pcm_hw_refine().
-> >
-> > >
-> > > Alternatively, we may add just a new flag in struct snd_pcm or
-> > > struct snd_pcm_substream and let the driver setting it manually.
-> > > This might need more changes in ASoC side, though, as the PCM
-> > > creation isn't directly done by the driver.
-> >
-> > Yes, it is a little complex for asoc if using this method.
-> > Not sure if it is OK we set the flag in snd_soc_ops->startup() each
-> > time when the function is called.
-> >
-> > What do you think we just use the first method?
-> >
-> > >
-> > >
-> > > > > Also, do you want to see this trigger even if the stream isn't
-> > > > > started before drain is issued?  Also, why no need for this
-> > > > > trigger for
-> > > capture streams?
-> > > >
-> > > > In this case, the trigger action will be started. For the stream
-> > > > not started case, if I skip the trigger , I don't know where I can
-> > > > have the chance to trigger later. And I didn't find the suitable
-> > > > place to trigger my
-> > > code.
-> > > > Put the trigger at the end of the function snd_pcm_do_drain_init()
-> > > > or in the function snd_pcm_post_drain_init() will be OK?
-> > > >
-> > > > I didn't include the capture case because we found the capture
-> > > > currently don't need the trigger.
-> > > >
-> > > > Our issue is the fw don't know when to stop fetching the data. For
-> > > > playback we need fill silence data when draining, otherwise the fw
-> > > > will get
-> > > the old data.
-> > > > But for capture, after the driver has fetched the data, it will
-> > > > stopped and no old data will be fetched.
-> > >
-> > > A similar problem here.  If you extend the API, don't build up only
-> > > from the bottom.  Rather define from a higher POV.
-> > >
-> > > If calling the drain trigger for capture stream doesn't make *any*
-> > > sense for all hardware, then we shouldn't add it.  This would be the
-> > > only reason not to do it.  What about empty streams...?
-> > >
-> > > That being said, we need to define the proper abstraction, what this
-> > > trigger does for which purpose, not specific to a certain hardware.
-> > > That is, the requirement goes up from your hardware level while the
-> > > design comes down from the abstraction level.
-> >
-> > Right. I will include the capture.
-> >
-> > My patch will be like:
-> >
-> > @@ -1566,6 +1567,11 @@ static int snd_pcm_do_drain_init(struct
-> snd_pcm_substream *substream, int state)
-> >  			snd_pcm_post_stop(substream, new_state);
-> >  		}
-> >  	}
-> > +
-> > +	if (substream->runtime->trigger_master == substream &&
-> > +		(substream->runtime->hw.info &
-> SNDRV_PCM_INFO_DRAIN_TRIGGER))
-> > +		return substream->ops->trigger(substream,
-> > +				SNDRV_PCM_TRIGGER_DRAIN);
-> > +
-> >  	return 0;
-> >  }
-> >
-> > I moved the trigger at the end of the function. Or do you think we
-> > need trigger before snd_pcm_do_stop() for capture case based on your
-> knowledge?
-> 
-> The place would be OK, but you can't call it unconditionally there.
-> In some cases (e.g. XRUN), the trigger won't be called at all.
-> The trigger state change is a bit tricky, so be careful to track the state change
-> there.
-> 
-
-Right. What do you think the following code?
-
-@@ -1518,6 +1519,8 @@ static int snd_pcm_pre_drain_init(struct snd_pcm_substream *substream, int state
- static int snd_pcm_do_drain_init(struct snd_pcm_substream *substream, int state)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int trigger = 0;
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 08608c1..b3e7567 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -54,6 +54,31 @@
+ #define I2S_COMP_VERSION	0x01F8
+ #define I2S_COMP_TYPE		0x01FC
+ 
++/*
++ * Component parameter register fields - define the I2S block's
++ * configuration.
++ */
++#define	COMP1_TX_WORDSIZE_3(r)	(((r) & GENMASK(27, 25)) >> 25)
++#define	COMP1_TX_WORDSIZE_2(r)	(((r) & GENMASK(24, 22)) >> 22)
++#define	COMP1_TX_WORDSIZE_1(r)	(((r) & GENMASK(21, 19)) >> 19)
++#define	COMP1_TX_WORDSIZE_0(r)	(((r) & GENMASK(18, 16)) >> 16)
++#define	COMP1_TX_CHANNELS(r)	(((r) & GENMASK(10, 9)) >> 9)
++#define	COMP1_RX_CHANNELS(r)	(((r) & GENMASK(8, 7)) >> 7)
++#define	COMP1_RX_ENABLED(r)	(((r) & BIT(6)) >> 6)
++#define	COMP1_TX_ENABLED(r)	(((r) & BIT(5)) >> 5)
++#define	COMP1_MODE_EN(r)	(((r) & BIT(4)) >> 4)
++#define	COMP1_FIFO_DEPTH_GLOBAL(r)	(((r) & GENMASK(3, 2)) >> 2)
++#define	COMP1_APB_DATA_WIDTH(r)	(((r) & GENMASK(1, 0)) >> 0)
 +
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		switch (runtime->status->state) {
- 		case SNDRV_PCM_STATE_PREPARED:
-@@ -1525,10 +1528,12 @@ static int snd_pcm_do_drain_init(struct snd_pcm_substream *substream, int state)
- 			if (! snd_pcm_playback_empty(substream)) {
- 				snd_pcm_do_start(substream, SNDRV_PCM_STATE_DRAINING);
- 				snd_pcm_post_start(substream, SNDRV_PCM_STATE_DRAINING);
-+				trigger = 1;
- 			}
- 			break;
- 		case SNDRV_PCM_STATE_RUNNING:
- 			runtime->status->state = SNDRV_PCM_STATE_DRAINING;
-+			trigger = 1;
- 			break;
- 		case SNDRV_PCM_STATE_XRUN:
- 			runtime->status->state = SNDRV_PCM_STATE_SETUP;
-@@ -1545,6 +1550,12 @@ static int snd_pcm_do_drain_init(struct snd_pcm_substream *substream, int state)
- 			snd_pcm_post_stop(substream, new_state);
- 		}
++#define	COMP2_RX_WORDSIZE_3(r)	(((r) & GENMASK(12, 10)) >> 10)
++#define	COMP2_RX_WORDSIZE_2(r)	(((r) & GENMASK(9, 7)) >> 7)
++#define	COMP2_RX_WORDSIZE_1(r)	(((r) & GENMASK(5, 3)) >> 3)
++#define	COMP2_RX_WORDSIZE_0(r)	(((r) & GENMASK(2, 0)) >> 0)
++
++/* Number of entries in WORDSIZE and DATA_WIDTH parameter registers */
++#define	COMP_MAX_WORDSIZE	(1 << 3)
++#define	COMP_MAX_DATA_WIDTH	(1 << 2)
++
+ #define MAX_CHANNEL_NUM		8
+ #define MIN_CHANNEL_NUM		2
+ 
+@@ -335,11 +360,50 @@ static int dw_i2s_resume(struct snd_soc_dai *dai)
+ #define dw_i2s_resume	NULL
+ #endif
+ 
+-static void dw_configure_dai_by_pd(struct dw_i2s_dev *dev,
++/*
++ * The following tables allow a direct lookup of various parameters
++ * defined in the I2S block's configuration in terms of sound system
++ * parameters.  Each table is sized to the number of entries possible
++ * according to the number of configuration bits describing an I2S
++ * block parameter.
++ */
++
++/* Width of (DMA) bus */
++static const u32 bus_widths[COMP_MAX_DATA_WIDTH] = {
++	DMA_SLAVE_BUSWIDTH_1_BYTE,
++	DMA_SLAVE_BUSWIDTH_2_BYTES,
++	DMA_SLAVE_BUSWIDTH_4_BYTES,
++	DMA_SLAVE_BUSWIDTH_UNDEFINED
++};
++
++/* PCM format to support channel resolution */
++static const u32 formats[COMP_MAX_WORDSIZE] = {
++	SNDRV_PCM_FMTBIT_S16_LE,
++	SNDRV_PCM_FMTBIT_S16_LE,
++	SNDRV_PCM_FMTBIT_S24_LE,
++	SNDRV_PCM_FMTBIT_S24_LE,
++	SNDRV_PCM_FMTBIT_S32_LE,
++	0,
++	0,
++	0
++};
++
++static int dw_configure_dai_by_pd(struct dw_i2s_dev *dev,
+ 				   struct snd_soc_dai_driver *dw_i2s_dai,
+ 				   struct resource *res,
+ 				   const struct i2s_platform_data *pdata)
+ {
++	/*
++	 * Read component parameter registers to extract
++	 * the I2S block's configuration.
++	 */
++	u32 comp1 = i2s_read_reg(dev->i2s_base, I2S_COMP_PARAM_1);
++	u32 comp2 = i2s_read_reg(dev->i2s_base, I2S_COMP_PARAM_2);
++	u32 idx = COMP1_APB_DATA_WIDTH(comp1);
++
++	if (WARN_ON(idx >= ARRAY_SIZE(bus_widths)))
++		return -EINVAL;
++
+ 	/* Set DMA slaves info */
+ 
+ 	dev->play_dma_data.data = pdata->play_dma_data;
+@@ -348,26 +412,36 @@ static void dw_configure_dai_by_pd(struct dw_i2s_dev *dev,
+ 	dev->capture_dma_data.addr = res->start + I2S_RXDMA;
+ 	dev->play_dma_data.max_burst = 16;
+ 	dev->capture_dma_data.max_burst = 16;
+-	dev->play_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+-	dev->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	dev->play_dma_data.addr_width = bus_widths[idx];
++	dev->capture_dma_data.addr_width = bus_widths[idx];
+ 	dev->play_dma_data.filter = pdata->filter;
+ 	dev->capture_dma_data.filter = pdata->filter;
+ 
+-	if (pdata->cap & DWC_I2S_PLAY) {
++	if (COMP1_TX_ENABLED(comp1)) {
+ 		dev_dbg(dev->dev, " designware: play supported\n");
++		idx = COMP1_TX_WORDSIZE_0(comp1);
++		if (WARN_ON(idx >= ARRAY_SIZE(formats)))
++			return -EINVAL;
+ 		dw_i2s_dai->playback.channels_min = MIN_CHANNEL_NUM;
+-		dw_i2s_dai->playback.channels_max = pdata->channel;
+-		dw_i2s_dai->playback.formats = pdata->snd_fmts;
++		dw_i2s_dai->playback.channels_max =
++				1 << (COMP1_TX_CHANNELS(comp1) + 1);
++		dw_i2s_dai->playback.formats = formats[idx];
+ 		dw_i2s_dai->playback.rates = pdata->snd_rates;
+ 	}
+ 
+-	if (pdata->cap & DWC_I2S_RECORD) {
++	if (COMP1_RX_ENABLED(comp1)) {
+ 		dev_dbg(dev->dev, "designware: record supported\n");
++		idx = COMP2_RX_WORDSIZE_0(comp2);
++		if (WARN_ON(idx >= ARRAY_SIZE(formats)))
++			return -EINVAL;
+ 		dw_i2s_dai->capture.channels_min = MIN_CHANNEL_NUM;
+-		dw_i2s_dai->capture.channels_max = pdata->channel;
+-		dw_i2s_dai->capture.formats = pdata->snd_fmts;
++		dw_i2s_dai->capture.channels_max =
++				1 << (COMP1_RX_CHANNELS(comp1) + 1);
++		dw_i2s_dai->capture.formats = formats[idx];
+ 		dw_i2s_dai->capture.rates = pdata->snd_rates;
  	}
 +
-+	if (substream->runtime->trigger_master == substream && trigger &&
-+		(substream->runtime->hw.info & SNDRV_PCM_INFO_DRAIN_TRIGGER))
-+		return substream->ops->trigger(substream,
-+				SNDRV_PCM_TRIGGER_DRAIN);
-+
- 	return 0;
++	return 0;
  }
-
-> >
-> > And in the snd_pcm_hw_refine():
-> >
-> > @@ -420,7 +420,8 @@ int snd_pcm_hw_refine(struct
-> snd_pcm_substream
-> > *substream,
-> >
-> >  	hw = &substream->runtime->hw;
-> >  	if (!params->info) {
-> > -		params->info = hw->info &
-> ~SNDRV_PCM_INFO_FIFO_IN_FRAMES;
-> > +		params->info = hw->info &
-> ~SNDRV_PCM_INFO_FIFO_IN_FRAMES
-> > +			& ~SNDRV_PCM_INFO_DRAIN_TRIGGER;
-> >  		if (!hw_support_mmap(substream))
-> >  			params->info &= ~(SNDRV_PCM_INFO_MMAP |
-> >  					  SNDRV_PCM_INFO_MMAP_VALID);
-> >
-> > Do you think whether it is OK?
-> 
-> Yes.
-> 
-> 
-> thanks,
-> 
-> Takashi
+ 
+ static int dw_i2s_probe(struct platform_device *pdev)
+@@ -403,7 +477,9 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 		return PTR_ERR(dev->i2s_base);
+ 
+ 	dev->dev = &pdev->dev;
+-	dw_configure_dai_by_pd(dev, dw_i2s_dai, res, pdata);
++	ret = dw_configure_dai_by_pd(dev, dw_i2s_dai, res, pdata);
++	if (ret < 0)
++		return ret;
+ 
+ 	dev->capability = pdata->cap;
+ 	dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
+-- 
+1.7.1
