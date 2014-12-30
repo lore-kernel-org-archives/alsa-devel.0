@@ -1,52 +1,47 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: [alsa-devel] [PATCH] mfd: wm8994: set mfd id-base for regulator devs
- creation to avoid conflicts
-Date: Tue, 30 Dec 2014 21:06:51 +0900
-Message-ID: <1419941211-17667-1-git-send-email-ideal.song@samsung.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH v5 2/6] ASoC: dwc: Prepare clock before use
+Date: Tue, 30 Dec 2014 15:39:48 +0300
+Message-ID: <54A29D14.6000705@cogentembedded.com>
+References: <cover.1419936132.git.Andrew.Jackson@arm.com> <faa0193d388fe808c2fae461954bb1730ba29244.1419936132.git.Andrew.Jackson@arm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <faa0193d388fe808c2fae461954bb1730ba29244.1419936132.git.Andrew.Jackson@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, lee.jones@linaro.org
-Cc: sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Inha Song <ideal.song@samsung.com>
+To: Andrew Jackson <andrew.jackson@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, pawel.moll@arm.com, Arnd Bergmann <arnd@arndb.de>, ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, robh+dt@kernel.org, galak@codeaurora.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-After commit: 6e3f62f0793e ("mfd: core: Fix platform-device id generation")
-We must set the id base when register a duplicate name of mfd_cell.
-If not, duplicate filename error was reported.
+Hello.
 
-- sysfs: cannot create duplicate filename '/devices/.../wm8994-ldo'
+On 12/30/2014 1:55 PM, Andrew Jackson wrote:
 
-Signed-off-by: Inha Song <ideal.song@samsung.com>
----
- drivers/mfd/wm8994-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> From: Andrew Jackson <Andrew.Jackson@arm.com>
 
-diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
-index e6fab94..47cd3cc 100644
---- a/drivers/mfd/wm8994-core.c
-+++ b/drivers/mfd/wm8994-core.c
-@@ -36,12 +36,12 @@
- static const struct mfd_cell wm8994_regulator_devs[] = {
- 	{
- 		.name = "wm8994-ldo",
--		.id = 1,
-+		.id = 0,
- 		.pm_runtime_no_callbacks = true,
- 	},
- 	{
- 		.name = "wm8994-ldo",
--		.id = 2,
-+		.id = 1,
- 		.pm_runtime_no_callbacks = true,
- 	},
- };
-@@ -344,7 +344,7 @@ static int wm8994_device_init(struct wm8994 *wm8994, int irq)
- 	dev_set_drvdata(wm8994->dev, wm8994);
- 
- 	/* Add the on-chip regulators first for bootstrapping */
--	ret = mfd_add_devices(wm8994->dev, -1,
-+	ret = mfd_add_devices(wm8994->dev, 0,
- 			      wm8994_regulator_devs,
- 			      ARRAY_SIZE(wm8994_regulator_devs),
- 			      NULL, 0, NULL);
--- 
-2.0.0.390.gcb682f8
+> Some I2S clocks may require some time to get the clock ready
+> for operation and so need to be prepared before they are enabled.
+> So, prepare the clock as well as enabling it, but combine the
+> two through clk_prepare_enable.
+
+> Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
+> ---
+>   sound/soc/dwc/designware_i2s.c |    7 +++++--
+>   1 files changed, 5 insertions(+), 2 deletions(-)
+
+> diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+> index 5e9d163..08608c1 100644
+> --- a/sound/soc/dwc/designware_i2s.c
+> +++ b/sound/soc/dwc/designware_i2s.c
+[...]
+> @@ -426,13 +426,16 @@ static int dw_i2s_probe(struct platform_device *pdev)
+[...]
+>   static int dw_i2s_remove(struct platform_device *pdev)
+>   {
+> +	struct dw_i2s_dev *dev = dev_get_drvdata(&pdev->dev);
+
+    Why not just platform_get_drvdata(pdev)?
+
+[...]
+
+WBR, Sergei
