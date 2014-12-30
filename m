@@ -1,47 +1,58 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v5 2/6] ASoC: dwc: Prepare clock before use
-Date: Tue, 30 Dec 2014 15:39:48 +0300
-Message-ID: <54A29D14.6000705@cogentembedded.com>
-References: <cover.1419936132.git.Andrew.Jackson@arm.com> <faa0193d388fe808c2fae461954bb1730ba29244.1419936132.git.Andrew.Jackson@arm.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 3/3] ARM: edma: Split up header file to
+ platform_data and API file
+Date: Tue, 30 Dec 2014 15:17:17 +0200
+Message-ID: <54A2A5DD.2030502@ti.com>
+References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
+ <1417084891-17990-4-git-send-email-peter.ujfalusi@ti.com>
+ <20141208124917.GI16827@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <faa0193d388fe808c2fae461954bb1730ba29244.1419936132.git.Andrew.Jackson@arm.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Jackson <andrew.jackson@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, pawel.moll@arm.com, Arnd Bergmann <arnd@arndb.de>, ijc+devicetree@hellion.org.uk, linux-kernel@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, robh+dt@kernel.org, galak@codeaurora.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2CC8260620
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 14:17:26 +0100 (CET)
+In-Reply-To: <20141208124917.GI16827@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux@arm.linux.org.uk, arnd@arndb.de, khilman@deeprootsystems.com, linux-mmc@vger.kernel.org, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, chris@printf.net, dmaengine@vger.kernel.org, ulf.hansson@linaro.org, linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+On 12/08/2014 02:49 PM, Vinod Koul wrote:
+> On Thu, Nov 27, 2014 at 12:41:31PM +0200, Peter Ujfalusi wrote:
+>> include/linux/platform_data/ is not a correct place to keep the API
+>> definitions for edma, it is meant to be only for the pdata for the devic=
+e.
+>> Clean up this by moving the API to include/linux/edma.h
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>>  arch/arm/common/edma.c                     |   3 +-
+>>  arch/arm/mach-davinci/devices.c            |   1 +
+>>  arch/arm/mach-davinci/include/mach/da8xx.h |   1 +
+>>  drivers/dma/edma.c                         |   2 +-
+>>  include/linux/edma.h                       | 153 ++++++++++++++++++++++=
++++++++
+>>  include/linux/platform_data/edma.h         | 148 ++--------------------=
+------
+>>  sound/soc/davinci/davinci-pcm.h            |   1 +
+>>  7 files changed, 165 insertions(+), 144 deletions(-)
+>>  create mode 100644 include/linux/edma.h
+> I was hoping that this will have delete for platform_data/edma.h, do we
+> still need that and why shouldn't we get rid of this :)
 
-On 12/30/2014 1:55 PM, Andrew Jackson wrote:
+We still need it for the legacy boot of davinci devices. We can boot some
+davinci SoC/boards with DT, but not all of them.
 
-> From: Andrew Jackson <Andrew.Jackson@arm.com>
+-- =
 
-> Some I2S clocks may require some time to get the clock ready
-> for operation and so need to be prepared before they are enabled.
-> So, prepare the clock as well as enabling it, but combine the
-> two through clk_prepare_enable.
-
-> Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
-> ---
->   sound/soc/dwc/designware_i2s.c |    7 +++++--
->   1 files changed, 5 insertions(+), 2 deletions(-)
-
-> diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-> index 5e9d163..08608c1 100644
-> --- a/sound/soc/dwc/designware_i2s.c
-> +++ b/sound/soc/dwc/designware_i2s.c
-[...]
-> @@ -426,13 +426,16 @@ static int dw_i2s_probe(struct platform_device *pdev)
-[...]
->   static int dw_i2s_remove(struct platform_device *pdev)
->   {
-> +	struct dw_i2s_dev *dev = dev_get_drvdata(&pdev->dev);
-
-    Why not just platform_get_drvdata(pdev)?
-
-[...]
-
-WBR, Sergei
+P=E9ter
