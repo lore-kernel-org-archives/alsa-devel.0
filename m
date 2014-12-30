@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: wm8962: Allow codec to work when
-	CONFIG_PM=n
-Date: Tue, 30 Dec 2014 16:22:03 +0000
-Message-ID: <20141230162203.GF17800@sirena.org.uk>
-References: <1419955096-18810-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: Support for combined
+ tx/rx interrupt line
+Date: Tue, 30 Dec 2014 16:44:17 +0000
+Message-ID: <20141230164417.GH17800@sirena.org.uk>
+References: <1419948632-18352-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2438130572854576077=="
+Content-Type: multipart/mixed; boundary="===============1066821284760827783=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 798A7260672
- for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 17:22:19 +0100 (CET)
-In-Reply-To: <1419955096-18810-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6268F260679
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 17:44:38 +0100 (CET)
+In-Reply-To: <1419948632-18352-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, b50113@freescale.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, daniel@zonque.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2438130572854576077==
+--===============1066821284760827783==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LVR+8coIF8rm+jIU"
+	protocol="application/pgp-signature"; boundary="MJDoj6C08NHMgYyA"
 Content-Disposition: inline
 
 
---LVR+8coIF8rm+jIU
+--MJDoj6C08NHMgYyA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 30, 2014 at 01:58:16PM -0200, Fabio Estevam wrote:
+On Tue, Dec 30, 2014 at 04:10:32PM +0200, Peter Ujfalusi wrote:
+> Some SoC, like da850/OMAP-L138 uses one common interrupt request for TX/RX
+> events.
 
-> +	if (!IS_ENABLED(CONFIG_PM))
-> +		wm8962_runtime_resume(&i2c->dev);
-> +
+Applied, thanks.
 
-A much neater idiom for this is to have the probe() just default the
-device to being runtime PM enabled, then if runtime PM is enabled it'll
-work out that the device is idle and power it off but if runtime PM is
-disabled it'll just stay powered.
-
---LVR+8coIF8rm+jIU
+--MJDoj6C08NHMgYyA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUotEqAAoJECTWi3JdVIfQBcwH/jYsmUA4AhTfAFhTEUhBh5IW
-sumz6Od17dbhjqBFdXJHiMpsa8gXHHXYxKoaGO6Mf/YNgzYB27mOTeGWpsUIV/+a
-hgFGTaZz3aYytZnW/xEfn7MYVSKYYpswU2fg8MaA//emXLxB596cskfsyyeVqeCo
-jMpQ5iH7vhxBuH/WsFAbgb+sLGbb3KY88LKbYcU3s0l821GCfoLmeHawl36zQ9w4
-s1Omgsyno6M0babcx1iXbcc/R2Rg1Jjw7U9St23i2VfZgVYpM3a9FfWdFtyKyob/
-aT4RS/BTJGAOY1YhqLZJ42rcIRJRC1tCg+RifLIit1ytzjWbqmzxb7nlVZ4DrRY=
-=bpW1
+iQEcBAEBAgAGBQJUotZgAAoJECTWi3JdVIfQoyQH/1TWSeMLO5K3r1CqUkNGsoqg
+0kfJ1INH8cjWg4M7mEUzmyuGcxlINsi7xphOZMYy50WAdtyUETG5w0XBxpTZGvzS
+oNMtraU2ZYxAoZBp3xn+dm9bmrSik/C4hGt/bRGVP3yyXNwESucU4aCNCMsmUaPg
+E/UFhzMumeEgsV7oJUlIxdPpO+0+il4ZjrS927ZIMFZle5seV5cAji83d8EbpOq1
+s5LM/pIK8flMC3zkUpU+vEC9Cfe3iHS+2KLi2IiTpeG/T/2qJW6PfVu/jE5mIUF6
+T7G5oUqA5l8wNog2D8AYTBbrISPnS01swb1A4loFNSTmjzJciT9oh6YJiJfWr5A=
+=QV1J
 -----END PGP SIGNATURE-----
 
---LVR+8coIF8rm+jIU--
+--MJDoj6C08NHMgYyA--
 
---===============2438130572854576077==
+--===============1066821284760827783==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2438130572854576077==--
+--===============1066821284760827783==--
