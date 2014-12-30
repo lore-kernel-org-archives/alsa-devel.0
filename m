@@ -1,45 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_esai: Fix incorrect xDC field width of xCCR
- registers
-Date: Tue, 30 Dec 2014 11:29:38 +0000
-Message-ID: <20141230112938.GN11764@sirena.org.uk>
-References: <1419898431-11336-1-git-send-email-nicoleotsuka@gmail.com>
+From: Inha Song <ideal.song@samsung.com>
+Subject: Re: [alsa-devel] [PATCH] mfd: wm8994: use PLATFORM_DEVID_AUTO for
+ regulator devs creation to avoid conflicts
+Date: Tue, 30 Dec 2014 20:46:24 +0900
+Message-ID: <20141230204624.7fb94518@songinha-Samsung-DeskTop-System>
+References: <1419918320-12693-1-git-send-email-ideal.song@samsung.com>
+ <20141230112821.GL11764@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="D504LSv93hbJZH+j"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1419898431-11336-1-git-send-email-nicoleotsuka@gmail.com>
+In-reply-to: <20141230112821.GL11764@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, a_bouin@yahoo.fr, timur@tabi.org, Xiubo.Lee@gmail.com, festevam@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
+Thanks for your reply.
 
---D504LSv93hbJZH+j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sure, Understand. I missed that part.
 
-On Mon, Dec 29, 2014 at 04:13:51PM -0800, Nicolin Chen wrote:
-> The xDC field should have 5 bit width according to Reference Manual.
-> Thus this patch fixes it.
+I will just fix id base to 0 from -1.
+If not, duplicate filename error was reported like this.
+- sysfs: cannot create duplicate filename '/devices/.../wm8994-ldo'
 
-Applied, thanks - I also fixed the patch author up to be him.
+Best Regards,
+Inha Song.
 
---D504LSv93hbJZH+j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+On Tue, 30 Dec 2014 11:28:21 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUooyhAAoJECTWi3JdVIfQsscH/2tn78KxlqXHvPwBr5UzDLk+
-TQhZAiQNl57FMi65A/BbhqRNa8q+LBpwNnDHMi7rVOA8AMdsOQ4v9PxYaQZv3kb9
-nb5D5borblQZ2PUssBm3VB+veix+vH6r7gzBZJ+haYJICyN71ER2/pYcN9BWw856
-zqQQgEcEzC2g23vo/+c+1jpTHyHCfhfTiMi17dMJTsfmAXx9vG5vUY6bWye81naZ
-rG2jbiFv/3JoHyoVt6NsETa2MVTsvDRuEcAV0YFA4QLk2MMpoaEuuWyLRpAASWTF
-y0lwDMuD6i3uIRy2qWkjdGWfXUTvogldo3D+fDDt8jjzNRZhxNN7b8+doxhtcUQ=
-=kztK
------END PGP SIGNATURE-----
-
---D504LSv93hbJZH+j--
+> On Tue, Dec 30, 2014 at 02:45:20PM +0900, Inha Song wrote:
+> > After commit: 6e3f62f0793e ("mfd: core: Fix platform-device id generation")
+> > We must set the id base when register a duplicate name of mfd_cell.
+> > but, if we use PLATFORM_DEVID_AUTO flag, cell ids are automatically
+> > allocated and managed without cell id setting.
+> 
+> The driver relies on getting those specific IDs in order to work out
+> which LDO it's working with, automatically generated numbers may be the
+> same now but can you guarantee that in future?
