@@ -1,22 +1,21 @@
-From: Zidan Wang <b50113@freescale.com>
-Subject: Re: [PATCH v4] ASoC: wm8960: Let wm8960 codec driver
- manage its own MCLK
-Date: Tue, 30 Dec 2014 10:29:18 +0800
-Message-ID: <20141230022917.GA17807@b50113>
-References: <1418103916-31295-1-git-send-email-b50113@freescale.com>
- <20141222181045.GH17800@sirena.org.uk>
- <BN3PR0301MB125132692CD535B9AC1795A98D510@BN3PR0301MB1251.namprd03.prod.outlook.com>
- <20141229160514.GQ17800@sirena.org.uk>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: fsl_spdif: Use dev_name() for
+ registering the irq
+Date: Mon, 29 Dec 2014 19:06:39 -0800
+Message-ID: <20141230030638.GB2870@Alpha>
+References: <1419904356-6865-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0146.outbound.protection.outlook.com [157.56.110.146])
- by alsa0.perex.cz (Postfix) with ESMTP id A5AA8260592
- for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 03:28:26 +0100 (CET)
+Received: from mail-yk0-f170.google.com (mail-yk0-f170.google.com
+ [209.85.160.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22DDB2605B2
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 04:06:44 +0100 (CET)
+Received: by mail-yk0-f170.google.com with SMTP id q200so6866404ykb.15
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 19:06:43 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20141229160514.GQ17800@sirena.org.uk>
+In-Reply-To: <1419904356-6865-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,23 +25,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 29, 2014 at 04:05:14PM +0000, Mark Brown wrote:
-> On Mon, Dec 29, 2014 at 10:59:08AM +0000, Zidan Wang wrote:
-> > Hi Mark,
+On Mon, Dec 29, 2014 at 11:52:35PM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 > 
-> Don't top post and please fix your mailer to word wrap within paragraphs
-> and avoid corrupting the mail it's quoting.
+> The 'name' array is currently stored inside the fsl_spdif_priv private structure
+> only for registering the interrupt name.
 > 
-> > You are right. When PM is disabled, the codec will not work. But there are also some codecs enable mclk in PM, such as wm8962, cs42xx8.
-> > And some codecs enable codec mclk in i2c probe(), startup() and set_bias_level(). It makes me confused.	
-> > Can you tell me what's the general idiom to enable mclk. Thanks.
+> This can be simplified by registering it with dev_name() instead.
 > 
-> Like I said in the mail to which you replied:
-> 
-> > > This isn't going to work if PM is disabled (which is still a valid configuration).  The general idiom for this is that the driver should start up with everything powered up then let runtime idle turn things off if they're not required.  That way if runtime PM is disabled then the system will still work as everything will just stay powered on all the time.
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-I want put mclk enable to set_bias_level. Do you thinks it make sense?
+For both patches.
+
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Thank you
+Nicolin
+
+> ---
+>  sound/soc/fsl/fsl_spdif.c | 15 +++------------
+>  1 file changed, 3 insertions(+), 12 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index af042942..73da1f0 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -90,7 +90,6 @@ struct spdif_mixer_control {
+>   * @sysclk: system clock for rx clock rate measurement
+>   * @dma_params_tx: DMA parameters for transmit channel
+>   * @dma_params_rx: DMA parameters for receive channel
+> - * @name: driver name
+>   */
+>  struct fsl_spdif_priv {
+>  	struct spdif_mixer_control fsl_spdif_control;
+> @@ -109,12 +108,8 @@ struct fsl_spdif_priv {
+>  	struct clk *sysclk;
+>  	struct snd_dmaengine_dai_dma_data dma_params_tx;
+>  	struct snd_dmaengine_dai_dma_data dma_params_rx;
+> -
+> -	/* The name space will be allocated dynamically */
+> -	char name[0];
+>  };
+>  
+> -
+>  /* DPLL locked and lock loss interrupt handler */
+>  static void spdif_irq_dpll_lock(struct fsl_spdif_priv *spdif_priv)
+>  {
+> @@ -1169,19 +1164,15 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+>  	if (!np)
+>  		return -ENODEV;
+>  
+> -	spdif_priv = devm_kzalloc(&pdev->dev,
+> -			sizeof(struct fsl_spdif_priv) + strlen(np->name) + 1,
+> -			GFP_KERNEL);
+> +	spdif_priv = devm_kzalloc(&pdev->dev, sizeof(*spdif_priv), GFP_KERNEL);
+>  	if (!spdif_priv)
+>  		return -ENOMEM;
+>  
+> -	strcpy(spdif_priv->name, np->name);
+> -
+>  	spdif_priv->pdev = pdev;
+>  
+>  	/* Initialize this copy of the CPU DAI driver structure */
+>  	memcpy(&spdif_priv->cpu_dai_drv, &fsl_spdif_dai, sizeof(fsl_spdif_dai));
+> -	spdif_priv->cpu_dai_drv.name = spdif_priv->name;
+> +	spdif_priv->cpu_dai_drv.name = dev_name(&pdev->dev);
+>  
+>  	/* Get the addresses and IRQ */
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> @@ -1203,7 +1194,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	ret = devm_request_irq(&pdev->dev, irq, spdif_isr, 0,
+> -			spdif_priv->name, spdif_priv);
+> +			       dev_name(&pdev->dev), spdif_priv);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "could not claim irq %u\n", irq);
+>  		return ret;
+> -- 
+> 1.9.1
+> 
