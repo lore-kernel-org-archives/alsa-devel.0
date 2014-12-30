@@ -1,15 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: davinci-mcasp: Support for combined
-	tx/rx interrupt line
-Date: Tue, 30 Dec 2014 16:10:32 +0200
-Message-ID: <1419948632-18352-1-git-send-email-peter.ujfalusi@ti.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: mxs-saif: Do not store the irq number in
+	the private structure
+Date: Tue, 30 Dec 2014 12:11:36 -0200
+Message-ID: <1419948696-18529-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 2898626062F
- for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 15:10:38 +0100 (CET)
+Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
+ [209.85.220.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5F6626063E
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 15:11:56 +0100 (CET)
+Received: by mail-vc0-f179.google.com with SMTP id le20so5625846vcb.24
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 06:11:55 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,65 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, daniel@zonque.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Some SoC, like da850/OMAP-L138 uses one common interrupt request for TX/RX
-events.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+The irq number is only used inside the probe function, so there is really no
+need to store it in the private structure.
+
+Use a local 'irq' variable to hold the the irq number instead.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ sound/soc/mxs/mxs-saif.c | 10 +++++-----
+ sound/soc/mxs/mxs-saif.h |  1 -
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 30b94d4f9c5d..95eef582331b 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -364,6 +364,20 @@ static irqreturn_t davinci_mcasp_rx_irq_handler(int irq, void *data)
- 	return IRQ_RETVAL(handled_mask);
- }
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index d986508..c866ade 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -710,7 +710,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct resource *iores;
+ 	struct mxs_saif *saif;
+-	int ret = 0;
++	int irq, ret = 0;
+ 	struct device_node *master;
  
-+static irqreturn_t davinci_mcasp_common_irq_handler(int irq, void *data)
-+{
-+	struct davinci_mcasp *mcasp = (struct davinci_mcasp *)data;
-+	irqreturn_t ret = IRQ_NONE;
-+
-+	if (mcasp->substreams[SNDRV_PCM_STREAM_PLAYBACK])
-+		ret = davinci_mcasp_tx_irq_handler(irq, data);
-+
-+	if (mcasp->substreams[SNDRV_PCM_STREAM_CAPTURE])
-+		ret |= davinci_mcasp_rx_irq_handler(irq, data);
-+
-+	return ret;
-+}
-+
- static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 					 unsigned int fmt)
- {
-@@ -1441,6 +1455,22 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	if (!np)
+@@ -763,16 +763,16 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	if (IS_ERR(saif->base))
+ 		return PTR_ERR(saif->base);
  
- 	mcasp->dev = &pdev->dev;
+-	saif->irq = platform_get_irq(pdev, 0);
+-	if (saif->irq < 0) {
+-		ret = saif->irq;
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0) {
++		ret = irq;
+ 		dev_err(&pdev->dev, "failed to get irq resource: %d\n",
+ 			ret);
+ 		return ret;
+ 	}
  
-+	irq = platform_get_irq_byname(pdev, "common");
-+	if (irq >= 0) {
-+		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_common\n",
-+					  dev_name(&pdev->dev));
-+		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
-+						davinci_mcasp_common_irq_handler,
-+						IRQF_ONESHOT, irq_name, mcasp);
-+		if (ret) {
-+			dev_err(&pdev->dev, "common IRQ request failed\n");
-+			goto err;
-+		}
-+
-+		mcasp->irq_request[SNDRV_PCM_STREAM_PLAYBACK] = XUNDRN;
-+		mcasp->irq_request[SNDRV_PCM_STREAM_CAPTURE] = ROVRN;
-+	}
-+
- 	irq = platform_get_irq_byname(pdev, "rx");
- 	if (irq >= 0) {
- 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_rx\n",
+ 	saif->dev = &pdev->dev;
+-	ret = devm_request_irq(&pdev->dev, saif->irq, mxs_saif_irq, 0,
++	ret = devm_request_irq(&pdev->dev, irq, mxs_saif_irq, 0,
+ 			       dev_name(&pdev->dev), saif);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to request irq\n");
+diff --git a/sound/soc/mxs/mxs-saif.h b/sound/soc/mxs/mxs-saif.h
+index fbaf7ba..9a4c0b2 100644
+--- a/sound/soc/mxs/mxs-saif.h
++++ b/sound/soc/mxs/mxs-saif.h
+@@ -116,7 +116,6 @@ struct mxs_saif {
+ 	unsigned int mclk;
+ 	unsigned int mclk_in_use;
+ 	void __iomem *base;
+-	int irq;
+ 	unsigned int id;
+ 	unsigned int master_id;
+ 	unsigned int cur_rate;
 -- 
-2.2.1
+1.9.1
