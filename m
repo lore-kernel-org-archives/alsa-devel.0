@@ -1,18 +1,20 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 1/2] ASoC: fsl_spdif: Use dev_name() for
+Subject: [PATCH 2/2] ASoC: fsl_asrc: Use dev_name() for
 	registering the irq
-Date: Mon, 29 Dec 2014 23:52:35 -0200
-Message-ID: <1419904356-6865-1-git-send-email-festevam@gmail.com>
+Date: Mon, 29 Dec 2014 23:52:36 -0200
+Message-ID: <1419904356-6865-2-git-send-email-festevam@gmail.com>
+References: <1419904356-6865-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f174.google.com (mail-vc0-f174.google.com
- [209.85.220.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 6965326058F
- for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 02:52:54 +0100 (CET)
-Received: by mail-vc0-f174.google.com with SMTP id id10so5490051vcb.19
- for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 17:52:53 -0800 (PST)
+Received: from mail-vc0-f180.google.com (mail-vc0-f180.google.com
+ [209.85.220.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21D50260592
+ for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2014 02:52:56 +0100 (CET)
+Received: by mail-vc0-f180.google.com with SMTP id im6so5505792vcb.11
+ for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2014 17:52:55 -0800 (PST)
+In-Reply-To: <1419904356-6865-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,71 +30,58 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
 
-The 'name' array is currently stored inside the fsl_spdif_priv private structure
-only for registering the interrupt name.
+The 'name' array is currently stored inside the fsl_asrc private structure only
+for registering the interrupt name.
 
 This can be simplified by registering it with dev_name() instead.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/fsl/fsl_spdif.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 3 +--
+ sound/soc/fsl/fsl_asrc.h | 3 ---
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index af042942..73da1f0 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -90,7 +90,6 @@ struct spdif_mixer_control {
-  * @sysclk: system clock for rx clock rate measurement
-  * @dma_params_tx: DMA parameters for transmit channel
-  * @dma_params_rx: DMA parameters for receive channel
-- * @name: driver name
-  */
- struct fsl_spdif_priv {
- 	struct spdif_mixer_control fsl_spdif_control;
-@@ -109,12 +108,8 @@ struct fsl_spdif_priv {
- 	struct clk *sysclk;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
--
--	/* The name space will be allocated dynamically */
--	char name[0];
- };
- 
--
- /* DPLL locked and lock loss interrupt handler */
- static void spdif_irq_dpll_lock(struct fsl_spdif_priv *spdif_priv)
- {
-@@ -1169,19 +1164,15 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	if (!np)
- 		return -ENODEV;
- 
--	spdif_priv = devm_kzalloc(&pdev->dev,
--			sizeof(struct fsl_spdif_priv) + strlen(np->name) + 1,
--			GFP_KERNEL);
-+	spdif_priv = devm_kzalloc(&pdev->dev, sizeof(*spdif_priv), GFP_KERNEL);
- 	if (!spdif_priv)
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 026a801..5326ca7 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -818,7 +818,6 @@ static int fsl_asrc_probe(struct platform_device *pdev)
  		return -ENOMEM;
  
--	strcpy(spdif_priv->name, np->name);
--
- 	spdif_priv->pdev = pdev;
- 
- 	/* Initialize this copy of the CPU DAI driver structure */
- 	memcpy(&spdif_priv->cpu_dai_drv, &fsl_spdif_dai, sizeof(fsl_spdif_dai));
--	spdif_priv->cpu_dai_drv.name = spdif_priv->name;
-+	spdif_priv->cpu_dai_drv.name = dev_name(&pdev->dev);
+ 	asrc_priv->pdev = pdev;
+-	strncpy(asrc_priv->name, np->name, sizeof(asrc_priv->name) - 1);
  
  	/* Get the addresses and IRQ */
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -1203,7 +1194,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+@@ -842,7 +841,7 @@ static int fsl_asrc_probe(struct platform_device *pdev)
  	}
  
- 	ret = devm_request_irq(&pdev->dev, irq, spdif_isr, 0,
--			spdif_priv->name, spdif_priv);
-+			       dev_name(&pdev->dev), spdif_priv);
+ 	ret = devm_request_irq(&pdev->dev, irq, fsl_asrc_isr, 0,
+-			       asrc_priv->name, asrc_priv);
++			       dev_name(&pdev->dev), asrc_priv);
  	if (ret) {
- 		dev_err(&pdev->dev, "could not claim irq %u\n", irq);
+ 		dev_err(&pdev->dev, "failed to claim irq %u: %d\n", irq, ret);
  		return ret;
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index a3f211f..4aed63c 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -433,7 +433,6 @@ struct fsl_asrc_pair {
+  * @channel_avail: non-occupied channel numbers
+  * @asrc_rate: default sample rate for ASoC Back-Ends
+  * @asrc_width: default sample width for ASoC Back-Ends
+- * @name: driver name
+  */
+ struct fsl_asrc {
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+@@ -452,8 +451,6 @@ struct fsl_asrc {
+ 
+ 	int asrc_rate;
+ 	int asrc_width;
+-
+-	char name[32];
+ };
+ 
+ extern struct snd_soc_platform_driver fsl_asrc_platform;
 -- 
 1.9.1
