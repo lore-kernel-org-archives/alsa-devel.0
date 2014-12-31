@@ -1,16 +1,19 @@
-From: Andrew Jackson <andrew.jackson@arm.com>
-Subject: [PATCH] ASoC: dwc: Remove unnecessary conditional
-	compilation
-Date: Wed, 31 Dec 2014 16:20:43 +0000
-Message-ID: <1420042843-3371-1-git-send-email-andrew.jackson@arm.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 3/3] ASoC: pcm: Use wildcard msbits
+	constraints
+Date: Wed, 31 Dec 2014 17:24:08 +0100
+Message-ID: <54A42328.904@metafoo.de>
+References: <1419875018-30812-1-git-send-email-lars@metafoo.de>	<1419875018-30812-3-git-send-email-lars@metafoo.de>
+ <s5h4msbhk0g.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
- [217.140.96.140])
- by alsa0.perex.cz (Postfix) with ESMTP id CDE56260426
- for <alsa-devel@alsa-project.org>; Wed, 31 Dec 2014 17:20:44 +0100 (CET)
+Received: from smtp-out-118.synserver.de (smtp-out-118.synserver.de
+ [212.40.185.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id DACD9260429
+ for <alsa-devel@alsa-project.org>; Wed, 31 Dec 2014 17:24:09 +0100 (CET)
+In-Reply-To: <s5h4msbhk0g.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,35 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, Liviu Dudau <Liviu.Dudau@arm.com>, linux-kernel@vger.kernel.org, Rajeev Kumar <rajeevkumar.linux@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Andrew Jackson <Andrew.Jackson@arm.com>
+On 12/31/2014 05:16 PM, Takashi Iwai wrote:
+> At Mon, 29 Dec 2014 18:43:38 +0100,
+> Lars-Peter Clausen wrote:
+>>
+>> Use the new wildcard msbits constraints instead of installing a constraint
+>> for each available sample format width.
+>>
+>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>
+> FYI, as this resulted in a warning, I applied the patch below in
+> addition.  Found in topic/msbits branch as well.
+>
 
-of_match_ptr is already conditionally compiled based on
-CONFIG_OF so further conditional compilation is not
-required.  Remove conditional compilation surrounding
-of_match_ptr.
+Thanks. I noticed this today as well when building with a more recent gcc, 
+for some reason it didn't show up with an older version.
 
-Signed-off-by: Andrew Jackson <Andrew.Jackson@arm.com>
----
- sound/soc/dwc/designware_i2s.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 99cf64b..a3e97b4 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -624,9 +624,7 @@ static struct platform_driver dw_i2s_driver = {
- 	.remove		= dw_i2s_remove,
- 	.driver		= {
- 		.name	= "designware-i2s",
--#ifdef CONFIG_OF
- 		.of_match_table = of_match_ptr(dw_i2s_of_match),
--#endif
- 	},
- };
- 
--- 
-1.7.1
+- Lars
