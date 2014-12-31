@@ -1,36 +1,64 @@
-From: Zidan Wang <b50113@freescale.com>
-Subject: [alsa-devel][PATCH 4/4] ASoC: wm8960: Fix capture sample rate from 11250 to 11025
-Date: Wed, 31 Dec 2014 11:39:14 +0800
-Message-ID: <1419997154-860-4-git-send-email-b50113@freescale.com>
-References: <1419997154-860-1-git-send-email-b50113@freescale.com>
+From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Subject: Re: [patch] ALSA: asihpi: fix an information leak in asihpi_hpi_ioctl()
+Date: Wed, 31 Dec 2014 19:26:51 +1300
+Message-ID: <54A3972B.5010703@blennerhassett.gen.nz>
+References: <20141222074946.GA9737@mwanda> <s5hmw6ais9g.wl-tiwai@suse.de> <54A25D49.4000502@blennerhassett.gen.nz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1419997154-860-1-git-send-email-b50113@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <b50113@freescale.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <54A25D49.4000502@blennerhassett.gen.nz>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-wm8960 codec can't support sample rate 11250, it must be 11025.
+Add missing limits to keep copied data within allocated buffer.
 
-Signed-off-by: Zidan Wang <b50113@freescale.com>
+Signed-off-by: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 ---
- sound/soc/codecs/wm8960.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/asihpi/hpi6000.c | 6 +++++-
+ sound/pci/asihpi/hpioctl.c | 2 ++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index cb42385..68790f1 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -560,7 +560,7 @@ static struct {
- 	{ 22050, 2 },
- 	{ 24000, 2 },
- 	{ 16000, 3 },
--	{ 11250, 4 },
-+	{ 11025, 4 },
- 	{ 12000, 4 },
- 	{  8000, 5 },
- };
+diff --git a/sound/pci/asihpi/hpi6000.c b/sound/pci/asihpi/hpi6000.c
+index e0c6715..794df30 100644
+--- a/sound/pci/asihpi/hpi6000.c
++++ b/sound/pci/asihpi/hpi6000.c
+@@ -46,6 +46,7 @@
+ 
+ /* operational/messaging errors */
+ #define HPI6000_ERROR_MSG_RESP_IDLE_TIMEOUT		901
++#define HPI6000_ERROR_RESP_GET_LEN			902
+ #define HPI6000_ERROR_MSG_RESP_GET_RESP_ACK		903
+ #define HPI6000_ERROR_MSG_GET_ADR			904
+ #define HPI6000_ERROR_RESP_GET_ADR			905
+@@ -1363,7 +1364,10 @@ static short hpi6000_message_response_sequence(struct hpi_adapter_obj *pao,
+ 		length = hpi_read_word(pdo, HPI_HIF_ADDR(length));
+ 	} while (hpi6000_check_PCI2040_error_flag(pao, H6READ) && --timeout);
+ 	if (!timeout)
+-		length = sizeof(struct hpi_response);
++		return HPI6000_ERROR_RESP_GET_LEN;
++
++	if (length > phr->size)
++		return HPI_ERROR_RESPONSE_BUFFER_TOO_SMALL;
+ 
+ 	/* get the response */
+ 	p_data = (u32 *)phr;
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index 6aa677e..72af66b 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -153,6 +153,8 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		goto out;
+ 	}
+ 
++	res_max_size = min_t(size_t, res_max_size, sizeof(*hr));
++
+ 	switch (hm->h.function) {
+ 	case HPI_SUBSYS_CREATE_ADAPTER:
+ 	case HPI_ADAPTER_DELETE:
 -- 
 1.9.1
+
+
