@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 15/21] ASoC: s3c24xx_simtec: Use static DAI
+Subject: [PATCH 16/21] ASoC: s3c24xx_uda134x: Use static DAI
 	format setup
-Date: Thu,  1 Jan 2015 17:16:24 +0100
-Message-ID: <1420128990-6872-16-git-send-email-lars@metafoo.de>
+Date: Thu,  1 Jan 2015 17:16:25 +0100
+Message-ID: <1420128990-6872-17-git-send-email-lars@metafoo.de>
 References: <1420128990-6872-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-118.synserver.de (smtp-out-118.synserver.de
  [212.40.185.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CF1226059A
- for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 17:16:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 856B52605A8
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 17:16:56 +0100 (CET)
 In-Reply-To: <1420128990-6872-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,46 +31,38 @@ snd_soc_dai_fmt(). This makes the code cleaner and shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/samsung/s3c24xx_simtec.c | 20 ++------------------
- 1 file changed, 2 insertions(+), 18 deletions(-)
+ sound/soc/samsung/s3c24xx_uda134x.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c24xx_simtec.c b/sound/soc/samsung/s3c24xx_simtec.c
-index 2c015f6..dcc008d 100644
---- a/sound/soc/samsung/s3c24xx_simtec.c
-+++ b/sound/soc/samsung/s3c24xx_simtec.c
-@@ -169,24 +169,6 @@ static int simtec_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
+diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+index 9c6f7db..50849e1 100644
+--- a/sound/soc/samsung/s3c24xx_uda134x.c
++++ b/sound/soc/samsung/s3c24xx_uda134x.c
+@@ -173,16 +173,6 @@ static int s3c24xx_uda134x_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
  
--	/* Set the CODEC as the bus clock master, I2S */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBM_CFM);
--	if (ret) {
--		pr_err("%s: failed set cpu dai format\n", __func__);
--		return ret;
--	}
--
--	/* Set the CODEC as the bus clock master */
 -	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBM_CFM);
--	if (ret) {
--		pr_err("%s: failed set codec dai format\n", __func__);
+-			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+-	if (ret < 0)
 -		return ret;
--	}
 -
- 	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
- 				     CODEC_CLOCK, SND_SOC_CLOCK_IN);
- 	if (ret) {
-@@ -320,6 +302,8 @@ int simtec_audio_core_probe(struct platform_device *pdev,
- 	int ret;
- 
- 	card->dai_link->ops = &simtec_snd_ops;
-+	card->dai_link->dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBM_CFM;
- 
- 	pdata = pdev->dev.platform_data;
- 	if (!pdata) {
+-	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+-			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = snd_soc_dai_set_sysclk(cpu_dai, clk_source , clk,
+ 			SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+@@ -223,6 +213,8 @@ static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
+ 	.codec_name = "uda134x-codec",
+ 	.codec_dai_name = "uda134x-hifi",
+ 	.cpu_dai_name = "s3c24xx-iis",
++	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++		   SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops = &s3c24xx_uda134x_ops,
+ 	.platform_name	= "s3c24xx-iis",
+ };
 -- 
 1.8.0
