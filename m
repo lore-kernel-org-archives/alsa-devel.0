@@ -1,17 +1,18 @@
 From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] [ALSA] add SNDRV_PCM_TRIGGER_DRAIN trigger
-Date: Thu, 1 Jan 2015 00:30:35 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D195C4413@SHSMSX103.ccr.corp.intel.com>
-References: <1420034994-129101-1-git-send-email-libin.yang@intel.com>
- <s5h387vhjyh.wl-tiwai@suse.de>
+Subject: Re: DSD over HDMI: audio data packetization
+Date: Thu, 1 Jan 2015 02:07:23 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D195C4443@SHSMSX103.ccr.corp.intel.com>
+References: <1420032720.2102.14.camel@gmail.com> <54A3FCD7.2010902@iki.fi>
+ <96A12704CE18D347B625EE2D4A099D195C438E@SHSMSX103.ccr.corp.intel.com>
+ <54A4185E.5010900@gmail.com> <54A41A18.3070005@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D1DB26042D
- for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 01:30:41 +0100 (CET)
-In-Reply-To: <s5h387vhjyh.wl-tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id F31C8260430
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 03:07:29 +0100 (CET)
+In-Reply-To: <54A41A18.3070005@iki.fi>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,114 +23,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Anssi Hannula <anssi.hannula@iki.fi>, Xuebing Wang <xbing6@gmail.com>
+Cc: "; Takashi Iwai" <tiwai@suse.de>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "; Wu Fengguang" <wfg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
+Hi,
 
 > -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, January 01, 2015 12:18 AM
-> To: Yang, Libin
-> Cc: alsa-devel@alsa-project.org; liam.r.girdwood@linux.intel.com; Jie, Yang
-> Subject: Re: [PATCH] [ALSA] add SNDRV_PCM_TRIGGER_DRAIN trigger
+> From: Anssi Hannula [mailto:anssi.hannula@iki.fi]
+> Sent: Wednesday, December 31, 2014 11:45 PM
+> To: Xuebing Wang
+> Cc: Yang, Libin; alsa-devel@alsa-project.org; Lin, Mengdong; ; Takashi Iwai; ;
+> Wu Fengguang
+> Subject: Re: [alsa-devel] DSD over HDMI: audio data packetization
 > 
-> At Wed, 31 Dec 2014 22:09:54 +0800,
-> libin.yang@intel.com wrote:
+> 31.12.2014, 17:38, Xuebing Wang kirjoitti:
+> > Anssi, Libin,
 > >
-> > From: Libin Yang <libin.yang@intel.com>
+> > Thank you very much for your help.
 > >
-> > Add SNDRV_PCM_TRIGGER_DRAIN trigger for pcm drain.
-> >
-> > Some audio devices require notification of drain events in order to
-> > properly drain and shutdown an audio stream.
-> >
-> > Signed-off-by: Libin Yang <libin.yang@intel.com>
+> > If L-PCM audio data packetization is done by hardware, is it possible
+> > to implement DSD over HDMI on Intel integrated graphics? Thanks again.
 > 
-> Thanks, applied now with micro optimizations (replacing
-> substream->runtime with runtime) and space alignment.
+> I don't think so, unless:
+> 
+> (a) It is possible to somehow encapsulate the stream in Audio Sample
+> Packets and be accepted by the receiver (like e.g. AC3, DTS). I'm not aware of
+> such a way.
+> 
+> or:
+> (b) There is some undocumented feature in the Intel HDMI codecs allowing
+> the driver to switch to DSD or driver-constructed packets (instead of
+> ASP) in similar way as there is a way to switch to HBR packets.
+> 
 
-Thanks for help.
+Yes, I agree. And I'm not sure whether HDMI spec supports DSD.
 
 > 
 > 
-> Takashi
+> >
+> > On 12/31/2014 10:28 PM, Yang, Libin wrote:
+> >> Hi Xuebing,
+> >>
+> >>
+> >>> -----Original Message-----
+> >>> From: Anssi Hannula [mailto:anssi.hannula@iki.fi]
+> >>> Sent: Wednesday, December 31, 2014 9:41 PM
+> >>> To: Xuebing Wang
+> >>> Cc: alsa-devel@alsa-project.org; Yang, Libin; Lin, Mengdong; ;
+> >>> Takashi Iwai; ; Wu Fengguang
+> >>> Subject: Re: [alsa-devel] DSD over HDMI: audio data packetization
+> >>>
+> >>> 31.12.2014, 15:32, Xuebing Wang kirjoitti:
+> >>>> Hi Community,
+> >>> Hi,
+> >>>
+> >>>> I am trying to implement DSD (one bit audio) over HDMI, for Intel
+> >>>> integrated graphics. I am referencing HDMI specification 1.3a.
+> >>>>
+> >>>> Regarding audio data packetization, I am referencing spec:
+> >>>> 5.3.4 Audio Sample Packet
+> >>>> 7.6 Audio Data Packetization
+> >>>>
+> >>>> Q1) Would you please point to me where is the source code to handle
+> >>>> L-PCM audio sample packetization (to implement 5.3.4 Audio Sample
+> >>>> Packet)?
+> >>> It is done by the hardware.
+> >>>
+> >>>> Q2) I admit that I did not carefully read HD-Audio specification.
+> >>>> Is this possible that this L-PCM audio data packetization is done
+> >>>> by
+> >>>> *hardware* (e.g HDMI related widgets/pins)?
+> >>> Yes.
+> >>>
+> >>>> Q3) Did we implement "7.2 Audio Sample Clock Capture and
+> Regeneration"?
+> >>> That is done by hardware. With some HDA codecs the video driver
+> >>> calculates the N/CTS values "manually", but AFAIK not on Intel HW.
+> >> As the N/CTS need fs and frequency of TMDS info, the hdmi driver does
+> >> not implement this feature.
+> >>
+> >> We currently are designing an audio link between audio subsystem and
+> >> other components, like video or USB.
+> >>
+> >> Maybe we will add the N/CTS information transmission. So we can
+> >> calculate the N/CTS value in audio or gfx driver.
+> >>
+> >>
+> >>>> Thanks.
+> >>>> Xuebing Wang
+> >>>>
+> >>>>
+> >>>
+> >>> --
+> >>> Anssi Hannula
+> >
 > 
-> > ---
-> >  include/sound/pcm.h         |  1 +
-> >  include/uapi/sound/asound.h |  1 +
-> >  sound/core/pcm_native.c     | 10 +++++++++-
-> >  3 files changed, 11 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/sound/pcm.h b/include/sound/pcm.h index
-> > 3652c94..bf32cea 100644
-> > --- a/include/sound/pcm.h
-> > +++ b/include/sound/pcm.h
-> > @@ -106,6 +106,7 @@ struct snd_pcm_ops {
-> >  #define SNDRV_PCM_TRIGGER_PAUSE_RELEASE	4
-> >  #define SNDRV_PCM_TRIGGER_SUSPEND	5
-> >  #define SNDRV_PCM_TRIGGER_RESUME	6
-> > +#define SNDRV_PCM_TRIGGER_DRAIN		7
-> >
-> >  #define SNDRV_PCM_POS_XRUN		((snd_pcm_uframes_t)-1)
-> >
-> > diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> > index 1f23cd6..0e88e7a 100644
-> > --- a/include/uapi/sound/asound.h
-> > +++ b/include/uapi/sound/asound.h
-> > @@ -268,6 +268,7 @@ typedef int __bitwise snd_pcm_subformat_t;
-> >  #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm
-> support some kind of sync go */
-> >  #define SNDRV_PCM_INFO_NO_PERIOD_WAKEUP	0x00800000	/*
-> period wakeup can be disabled */
-> >  #define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* has
-> audio wall clock for audio/system time sync */
-> > +#define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000
-> 	/* internal kernel flag - trigger in drain */
-> >  #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/*
-> internal kernel flag - FIFO size is in frames */
-> >
-> >  typedef int __bitwise snd_pcm_state_t; diff --git
-> > a/sound/core/pcm_native.c b/sound/core/pcm_native.c index
-> > 095d957..a5fe336 100644
-> > --- a/sound/core/pcm_native.c
-> > +++ b/sound/core/pcm_native.c
-> > @@ -420,7 +420,8 @@ int snd_pcm_hw_refine(struct
-> snd_pcm_substream
-> > *substream,
-> >
-> >  	hw = &substream->runtime->hw;
-> >  	if (!params->info) {
-> > -		params->info = hw->info &
-> ~SNDRV_PCM_INFO_FIFO_IN_FRAMES;
-> > +		params->info = hw->info &
-> ~(SNDRV_PCM_INFO_FIFO_IN_FRAMES |
-> > +
-> SNDRV_PCM_INFO_DRAIN_TRIGGER);
-> >  		if (!hw_support_mmap(substream))
-> >  			params->info &= ~(SNDRV_PCM_INFO_MMAP |
-> >  					  SNDRV_PCM_INFO_MMAP_VALID);
-> > @@ -1566,6 +1567,13 @@ static int snd_pcm_do_drain_init(struct
-> snd_pcm_substream *substream, int state)
-> >  			snd_pcm_post_stop(substream, new_state);
-> >  		}
-> >  	}
-> > +
-> > +	if (runtime->status->state == SNDRV_PCM_STATE_DRAINING &&
-> > +		substream->runtime->trigger_master == substream &&
-> > +		(substream->runtime->hw.info &
-> SNDRV_PCM_INFO_DRAIN_TRIGGER))
-> > +		return substream->ops->trigger(substream,
-> > +				SNDRV_PCM_TRIGGER_DRAIN);
-> > +
-> >  	return 0;
-> >  }
-> >
-> > --
-> > 1.9.1
-> >
-
-Regards,
-Libin
+> 
+> --
+> Anssi Hannula
