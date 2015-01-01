@@ -1,16 +1,16 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v6 3/3] ASoC: simple-card: Remove useless check
-Date: Thu, 1 Jan 2015 09:43:24 +0100
-Message-ID: <e57c95c0e966055ddf2c65cddbec665fab7641c6.1420102454.git.moinejf@free.fr>
-References: <cover.1420102454.git.moinejf@free.fr>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: byt-rt5640: Fix
+	snd_soc_dapm_ignore_suspend() calls
+Date: Thu,  1 Jan 2015 11:23:44 +0100
+Message-ID: <1420107825-28506-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id 42F0C2604BC
- for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 10:16:53 +0100 (CET)
-In-Reply-To: <cover.1420102454.git.moinejf@free.fr>
+Received: from smtp-out-118.synserver.de (smtp-out-118.synserver.de
+ [212.40.185.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6799326049D
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 11:23:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The CPU and CODEC names are checked when getting the DAI names.
-There is no need to check them once more.
+To work properly snd_soc_dapm_ignore_suspend() needs to be called on
+endpoint widgets. In this case those are the board level Speaker and
+Headphone widgets and not the CODEC output widgets that are connected to
+them.
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/generic/simple-card.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/intel/byt-rt5640.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index a765869..c28d082 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -319,11 +319,6 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	if (ret < 0)
- 		goto dai_link_of_err;
+diff --git a/sound/soc/intel/byt-rt5640.c b/sound/soc/intel/byt-rt5640.c
+index 0cba783..a51856e 100644
+--- a/sound/soc/intel/byt-rt5640.c
++++ b/sound/soc/intel/byt-rt5640.c
+@@ -171,13 +171,8 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 			return ret;
+ 	}
  
--	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
--		ret = -EINVAL;
--		goto dai_link_of_err;
--	}
+-	snd_soc_dapm_ignore_suspend(dapm, "HPOL");
+-	snd_soc_dapm_ignore_suspend(dapm, "HPOR");
 -
- 	/* Simple Card assumes platform == cpu */
- 	dai_link->platform_of_node = dai_link->cpu_of_node;
+-	snd_soc_dapm_ignore_suspend(dapm, "SPOLP");
+-	snd_soc_dapm_ignore_suspend(dapm, "SPOLN");
+-	snd_soc_dapm_ignore_suspend(dapm, "SPORP");
+-	snd_soc_dapm_ignore_suspend(dapm, "SPORN");
++	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
++	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
  
+ 	return ret;
+ }
 -- 
-2.1.4
+1.8.0
