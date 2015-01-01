@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 18/21] ASoC: smdk_wm8580: Use static DAI format
-	setup
-Date: Thu,  1 Jan 2015 17:16:27 +0100
-Message-ID: <1420128990-6872-19-git-send-email-lars@metafoo.de>
+Subject: [PATCH 19/21] ASoC: smdk_wm8570pcm: Use static DAI
+	format setup
+Date: Thu,  1 Jan 2015 17:16:28 +0100
+Message-ID: <1420128990-6872-20-git-send-email-lars@metafoo.de>
 References: <1420128990-6872-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-118.synserver.de (smtp-out-118.synserver.de
  [212.40.185.118])
- by alsa0.perex.cz (Postfix) with ESMTP id A44B6260578
- for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 17:16:58 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id F0AC42605BF
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 17:16:59 +0100 (CET)
 In-Reply-To: <1420128990-6872-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,74 +31,58 @@ snd_soc_dai_fmt(). This makes the code cleaner and shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/samsung/smdk_wm8580.c | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
+ sound/soc/samsung/smdk_wm8580pcm.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
-index b1a519f..17a2f71 100644
---- a/sound/soc/samsung/smdk_wm8580.c
-+++ b/sound/soc/samsung/smdk_wm8580.c
-@@ -32,7 +32,6 @@ static int smdk_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	unsigned int pll_out;
- 	int bfs, rfs, ret;
-@@ -77,20 +76,6 @@ static int smdk_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	pll_out = params_rate(params) * rfs;
+diff --git a/sound/soc/samsung/smdk_wm8580pcm.c b/sound/soc/samsung/smdk_wm8580pcm.c
+index 05c609c..6deec52 100644
+--- a/sound/soc/samsung/smdk_wm8580pcm.c
++++ b/sound/soc/samsung/smdk_wm8580pcm.c
+@@ -62,20 +62,6 @@ static int smdk_wm8580_pcm_hw_params(struct snd_pcm_substream *substream,
  
--	/* Set the Codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
--					 | SND_SOC_DAIFMT_NB_NF
--					 | SND_SOC_DAIFMT_CBM_CFM);
+ 	rfs = mclk_freq / params_rate(params) / 2;
+ 
+-	/* Set the codec DAI configuration */
+-	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B
+-				| SND_SOC_DAIFMT_IB_NF
+-				| SND_SOC_DAIFMT_CBS_CFS);
 -	if (ret < 0)
 -		return ret;
 -
--	/* Set the AP DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
--					 | SND_SOC_DAIFMT_NB_NF
--					 | SND_SOC_DAIFMT_CBM_CFM);
+-	/* Set the cpu DAI configuration */
+-	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B
+-				| SND_SOC_DAIFMT_IB_NF
+-				| SND_SOC_DAIFMT_CBS_CFS);
 -	if (ret < 0)
 -		return ret;
 -
- 	/* Set WM8580 to drive MCLK from its PLLA */
- 	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_MCLK,
- 					WM8580_CLKSRC_PLLA);
-@@ -168,6 +153,9 @@ enum {
- 	SEC_PLAYBACK,
+ 	if (mclk_freq == xtal_freq) {
+ 		ret = snd_soc_dai_set_sysclk(codec_dai, WM8580_CLKSRC_MCLK,
+ 						mclk_freq, SND_SOC_CLOCK_IN);
+@@ -121,6 +107,9 @@ static struct snd_soc_ops smdk_wm8580_pcm_ops = {
+ 	.hw_params = smdk_wm8580_pcm_hw_params,
  };
  
-+#define SMDK_DAI_FMT (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | \
-+	SND_SOC_DAIFMT_CBM_CFM)
++#define SMDK_DAI_FMT (SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF | \
++	SND_SOC_DAIFMT_CBS_CFS)
 +
  static struct snd_soc_dai_link smdk_dai[] = {
- 	[PRI_PLAYBACK] = { /* Primary Playback i/f */
- 		.name = "WM8580 PAIF RX",
-@@ -176,6 +164,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
+ 	{
+ 		.name = "WM8580 PAIF PCM RX",
+@@ -129,6 +118,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
  		.codec_dai_name = "wm8580-hifi-playback",
- 		.platform_name = "samsung-i2s.0",
+ 		.platform_name = "samsung-audio",
  		.codec_name = "wm8580.0-001b",
 +		.dai_fmt = SMDK_DAI_FMT,
- 		.ops = &smdk_ops,
- 	},
- 	[PRI_CAPTURE] = { /* Primary Capture i/f */
-@@ -185,6 +174,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
+ 		.ops = &smdk_wm8580_pcm_ops,
+ 	}, {
+ 		.name = "WM8580 PAIF PCM TX",
+@@ -137,6 +127,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
  		.codec_dai_name = "wm8580-hifi-capture",
- 		.platform_name = "samsung-i2s.0",
+ 		.platform_name = "samsung-pcm.0",
  		.codec_name = "wm8580.0-001b",
 +		.dai_fmt = SMDK_DAI_FMT,
- 		.init = smdk_wm8580_init_paiftx,
- 		.ops = &smdk_ops,
- 	},
-@@ -195,6 +185,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
- 		.codec_dai_name = "wm8580-hifi-playback",
- 		.platform_name = "samsung-i2s-sec",
- 		.codec_name = "wm8580.0-001b",
-+		.dai_fmt = SMDK_DAI_FMT,
- 		.ops = &smdk_ops,
+ 		.ops = &smdk_wm8580_pcm_ops,
  	},
  };
 -- 
