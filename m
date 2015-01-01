@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 11/21] ASoC: h1940_uda1380: Use static DAI
-	format setup
-Date: Thu,  1 Jan 2015 17:16:20 +0100
-Message-ID: <1420128990-6872-12-git-send-email-lars@metafoo.de>
+Subject: [PATCH 12/21] ASoC: jive_wm8750: Use static DAI format
+	setup
+Date: Thu,  1 Jan 2015 17:16:21 +0100
+Message-ID: <1420128990-6872-13-git-send-email-lars@metafoo.de>
 References: <1420128990-6872-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-118.synserver.de (smtp-out-118.synserver.de
  [212.40.185.118])
- by alsa0.perex.cz (Postfix) with ESMTP id B2F71260544
- for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 17:16:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id BD15E260556
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jan 2015 17:16:49 +0100 (CET)
 In-Reply-To: <1420128990-6872-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,48 +31,42 @@ snd_soc_dai_fmt(). This makes the code cleaner and shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/samsung/h1940_uda1380.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+ sound/soc/samsung/jive_wm8750.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
-index f2d7980..59b0442 100644
---- a/sound/soc/samsung/h1940_uda1380.c
-+++ b/sound/soc/samsung/h1940_uda1380.c
-@@ -76,7 +76,6 @@ static int h1940_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int div;
- 	int ret;
- 	unsigned int rate = params_rate(params);
-@@ -95,18 +94,6 @@ static int h1940_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/samsung/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
+index b5f6abd..6c3b359 100644
+--- a/sound/soc/samsung/jive_wm8750.c
++++ b/sound/soc/samsung/jive_wm8750.c
+@@ -61,20 +61,6 @@ static int jive_hw_params(struct snd_pcm_substream *substream,
+ 	s3c_i2sv2_iis_calc_rate(&div, NULL, params_rate(params),
+ 				s3c_i2sv2_get_clock(cpu_dai));
  
 -	/* set codec DAI configuration */
 -	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+-				  SND_SOC_DAIFMT_NB_NF |
+-				  SND_SOC_DAIFMT_CBS_CFS);
 -	if (ret < 0)
 -		return ret;
 -
 -	/* set cpu DAI configuration */
 -	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+-				  SND_SOC_DAIFMT_NB_NF |
+-				  SND_SOC_DAIFMT_CBS_CFS);
 -	if (ret < 0)
 -		return ret;
 -
- 	/* select clock source */
- 	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C24XX_CLKSRC_PCLK, rate,
- 			SND_SOC_CLOCK_OUT);
-@@ -207,6 +194,8 @@ static struct snd_soc_dai_link h1940_uda1380_dai[] = {
- 		.init		= h1940_uda1380_init,
- 		.platform_name	= "s3c24xx-iis",
- 		.codec_name	= "uda1380-codec.0-001a",
-+		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBS_CFS,
- 		.ops		= &h1940_ops,
- 	},
+ 	/* set the codec system clock for DAC and ADC */
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
+ 				     SND_SOC_CLOCK_IN);
+@@ -121,6 +107,8 @@ static struct snd_soc_dai_link jive_dai = {
+ 	.platform_name	= "s3c2412-i2s",
+ 	.codec_name	= "wm8750.0-001a",
+ 	.init		= jive_wm8750_init,
++	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			  SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops		= &jive_ops,
  };
+ 
 -- 
 1.8.0
