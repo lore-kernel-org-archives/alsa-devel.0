@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/21] ASLA: ad1889: Remove always NULL
+Subject: [PATCH 11/21] ALSA: asihpi: Remove always NULL
 	parameter
-Date: Fri,  2 Jan 2015 12:24:44 +0100
-Message-ID: <1420197895-17696-11-git-send-email-lars@metafoo.de>
+Date: Fri,  2 Jan 2015 12:24:45 +0100
+Message-ID: <1420197895-17696-12-git-send-email-lars@metafoo.de>
 References: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-227.synserver.de (smtp-out-232.synserver.de
  [212.40.185.232])
- by alsa0.perex.cz (Postfix) with ESMTP id E6187260536
- for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:12 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 29E1A26053D
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:15 +0100 (CET)
 In-Reply-To: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,54 +26,53 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-snd_ad1889_pcm_init() takes a pointer to a pointer of a PCM where if this
-parameter is provided the newly allocated PCM is stored. All callers pass
+snd_asihpi_hpi_new() takes a pointer to a pointer of a hwdep where if this
+parameter is provided the newly allocated hwdep is stored. All callers pass
 NULL though, so remove the parameter. This makes the code a bit cleaner and
 shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/ad1889.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ sound/pci/asihpi/asihpi.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index 1610c38..547ee30 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -623,14 +623,11 @@ snd_ad1889_interrupt(int irq, void *dev_id)
- }
- 
- static int
--snd_ad1889_pcm_init(struct snd_ad1889 *chip, int device, struct snd_pcm **rpcm)
-+snd_ad1889_pcm_init(struct snd_ad1889 *chip, int device)
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index e9273fb..7a55fef 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -2832,14 +2832,11 @@ static int snd_asihpi_hpi_ioctl(struct snd_hwdep *hw, struct file *file,
+ /* results in /dev/snd/hwC#D0 file for each card with index #
+    also /proc/asound/hwdep will contain '#-00: asihpi (HPI) for each card'
+ */
+-static int snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi,
+-			      int device, struct snd_hwdep **rhwdep)
++static int snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi, int device)
  {
+ 	struct snd_hwdep *hw;
  	int err;
- 	struct snd_pcm *pcm;
  
--	if (rpcm)
--		*rpcm = NULL;
--
- 	err = snd_pcm_new(chip->card, chip->card->driver, device, 1, 1, &pcm);
+-	if (rhwdep)
+-		*rhwdep = NULL;
+ 	err = snd_hwdep_new(asihpi->card, "HPI", device, &hw);
  	if (err < 0)
  		return err;
-@@ -658,9 +655,6 @@ snd_ad1889_pcm_init(struct snd_ad1889 *chip, int device, struct snd_pcm **rpcm)
- 		return err;
- 	}
- 	
--	if (rpcm)
--		*rpcm = pcm;
--	
+@@ -2849,8 +2846,6 @@ static int snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi,
+ 	hw->ops.ioctl = snd_asihpi_hpi_ioctl;
+ 	hw->ops.release = snd_asihpi_hpi_release;
+ 	hw->private_data = asihpi;
+-	if (rhwdep)
+-		*rhwdep = hw;
  	return 0;
  }
  
-@@ -1016,7 +1010,7 @@ snd_ad1889_probe(struct pci_dev *pci,
- 	if (err < 0)
- 		goto free_and_ret;
- 	
--	err = snd_ad1889_pcm_init(chip, 0, NULL);
-+	err = snd_ad1889_pcm_init(chip, 0);
- 	if (err < 0)
- 		goto free_and_ret;
+@@ -2993,7 +2988,7 @@ static int snd_asihpi_probe(struct pci_dev *pci_dev,
+ 
+ 	/* always create, can be enabled or disabled dynamically
+ 	    by enable_hwdep  module param*/
+-	snd_asihpi_hpi_new(asihpi, 0, NULL);
++	snd_asihpi_hpi_new(asihpi, 0);
+ 
+ 	strcpy(card->driver, "ASIHPI");
  
 -- 
 1.8.0
