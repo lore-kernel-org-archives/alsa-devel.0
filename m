@@ -1,7 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 16/21] ALSA: fm801: Remove always NULL parameter
-Date: Fri,  2 Jan 2015 12:24:50 +0100
-Message-ID: <1420197895-17696-17-git-send-email-lars@metafoo.de>
+Subject: [PATCH 18/21] ALSA: riptide: Remove always NULL
+	parameter
+Date: Fri,  2 Jan 2015 12:24:52 +0100
+Message-ID: <1420197895-17696-19-git-send-email-lars@metafoo.de>
 References: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-227.synserver.de (smtp-out-232.synserver.de
  [212.40.185.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 536C8260554
- for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:21 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AA42A26055C
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:22 +0100 (CET)
 In-Reply-To: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,61 +26,53 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-snd_fm801_pcm() takes a pointer to a pointer of a PCM where if this
+snd_riptide_pcm() takes a pointer to a pointer of a PCM where if this
 parameter is provided the newly allocated PCM is stored. All callers pass
 NULL though, so remove the parameter. This makes the code a bit cleaner and
 shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/fm801.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ sound/pci/riptide/riptide.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index d167aff..9a2122f 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -704,13 +704,11 @@ static struct snd_pcm_ops snd_fm801_capture_ops = {
- 	.pointer =	snd_fm801_capture_pointer,
+diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
+index 6abc2ac..121f2c0 100644
+--- a/sound/pci/riptide/riptide.c
++++ b/sound/pci/riptide/riptide.c
+@@ -1706,14 +1706,11 @@ static struct snd_pcm_ops snd_riptide_capture_ops = {
+ 	.pointer = snd_riptide_pointer,
  };
  
--static int snd_fm801_pcm(struct fm801 *chip, int device, struct snd_pcm **rpcm)
-+static int snd_fm801_pcm(struct fm801 *chip, int device)
+-static int
+-snd_riptide_pcm(struct snd_riptide *chip, int device, struct snd_pcm **rpcm)
++static int snd_riptide_pcm(struct snd_riptide *chip, int device)
  {
  	struct snd_pcm *pcm;
  	int err;
  
 -	if (rpcm)
 -		*rpcm = NULL;
- 	if ((err = snd_pcm_new(chip->card, "FM801", device, 1, 1, &pcm)) < 0)
- 		return err;
- 
-@@ -726,16 +724,10 @@ static int snd_fm801_pcm(struct fm801 *chip, int device, struct snd_pcm **rpcm)
+ 	if ((err =
+ 	     snd_pcm_new(chip->card, "RIPTIDE", device, PLAYBACK_SUBSTREAMS, 1,
+ 			 &pcm)) < 0)
+@@ -1729,8 +1726,6 @@ snd_riptide_pcm(struct snd_riptide *chip, int device, struct snd_pcm **rpcm)
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
  					      snd_dma_pci_data(chip->pci),
- 					      chip->multichannel ? 128*1024 : 64*1024, 128*1024);
- 
--	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-+	return snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
- 				     snd_pcm_alt_chmaps,
- 				     chip->multichannel ? 6 : 2, 0,
- 				     NULL);
--	if (err < 0)
--		return err;
--
+ 					      64 * 1024, 128 * 1024);
 -	if (rpcm)
 -		*rpcm = pcm;
--	return 0;
+ 	return 0;
  }
  
- /*
-@@ -1340,7 +1332,7 @@ static int snd_card_fm801_probe(struct pci_dev *pci,
- 	if (chip->tea575x_tuner & TUNER_ONLY)
- 		goto __fm801_tuner_only;
- 
--	if ((err = snd_fm801_pcm(chip, 0, NULL)) < 0) {
-+	if ((err = snd_fm801_pcm(chip, 0)) < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
+@@ -2092,7 +2087,7 @@ snd_card_riptide_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 	if (err < 0)
+ 		goto error;
+ 	card->private_data = chip;
+-	err = snd_riptide_pcm(chip, 0, NULL);
++	err = snd_riptide_pcm(chip, 0);
+ 	if (err < 0)
+ 		goto error;
+ 	err = snd_riptide_mixer(chip);
 -- 
 1.8.0
