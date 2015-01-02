@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/21] ALSA: sb8: Remove always NULL parameters
-Date: Fri,  2 Jan 2015 12:24:41 +0100
-Message-ID: <1420197895-17696-8-git-send-email-lars@metafoo.de>
+Subject: [PATCH 08/21] ASoC: sb16: Simplify snd_sb16dsp_pcm()
+Date: Fri,  2 Jan 2015 12:24:42 +0100
+Message-ID: <1420197895-17696-9-git-send-email-lars@metafoo.de>
 References: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-227.synserver.de (smtp-out-232.synserver.de
  [212.40.185.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 576562604DD
- for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:06 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C809C2604E0
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:07 +0100 (CET)
 In-Reply-To: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,133 +25,106 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-snd_sb8dsp_pcm() and snd_sb8dsp_midi() take a pointer to a pointer of a
-PCM/MIDI where if this parameter is provided the newly allocated object is
-stored. All callers pass NULL though, so remove the parameter. This makes
-the code a bit cleaner and shorter.
+All callers of snd_sb16dsp_pcm() always pass the pcm field of the first
+parameter as the last parameter. Simplify the function by moving this inside
+the function itself. This makes the code a bit shorter and cleaner.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/sb.h      | 4 ++--
- sound/isa/sb/jazz16.c   | 2 +-
- sound/isa/sb/sb8.c      | 4 ++--
- sound/isa/sb/sb8_main.c | 6 +-----
- sound/isa/sb/sb8_midi.c | 6 +-----
- 5 files changed, 7 insertions(+), 15 deletions(-)
+ include/sound/sb.h       | 2 +-
+ sound/isa/als100.c       | 2 +-
+ sound/isa/sb/sb16.c      | 2 +-
+ sound/isa/sb/sb16_main.c | 8 ++------
+ sound/pci/cs5530.c       | 2 +-
+ 5 files changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/include/sound/sb.h b/include/sound/sb.h
-index ba39603..13438ff 100644
+index 13438ff..33e2d11 100644
 --- a/include/sound/sb.h
 +++ b/include/sound/sb.h
-@@ -308,7 +308,7 @@ void snd_sbmixer_resume(struct snd_sb *chip);
- #endif
- 
- /* sb8_init.c */
--int snd_sb8dsp_pcm(struct snd_sb *chip, int device, struct snd_pcm ** rpcm);
-+int snd_sb8dsp_pcm(struct snd_sb *chip, int device);
- /* sb8.c */
- irqreturn_t snd_sb8dsp_interrupt(struct snd_sb *chip);
- int snd_sb8_playback_open(struct snd_pcm_substream *substream);
-@@ -317,7 +317,7 @@ int snd_sb8_playback_close(struct snd_pcm_substream *substream);
- int snd_sb8_capture_close(struct snd_pcm_substream *substream);
- /* midi8.c */
- irqreturn_t snd_sb8dsp_midi_interrupt(struct snd_sb *chip);
--int snd_sb8dsp_midi(struct snd_sb *chip, int device, struct snd_rawmidi ** rrawmidi);
-+int snd_sb8dsp_midi(struct snd_sb *chip, int device);
+@@ -320,7 +320,7 @@ irqreturn_t snd_sb8dsp_midi_interrupt(struct snd_sb *chip);
+ int snd_sb8dsp_midi(struct snd_sb *chip, int device);
  
  /* sb16_init.c */
- int snd_sb16dsp_pcm(struct snd_sb *chip, int device, struct snd_pcm ** rpcm);
-diff --git a/sound/isa/sb/jazz16.c b/sound/isa/sb/jazz16.c
-index 90d2eba..6b4884d 100644
---- a/sound/isa/sb/jazz16.c
-+++ b/sound/isa/sb/jazz16.c
-@@ -297,7 +297,7 @@ static int snd_jazz16_probe(struct device *devptr, unsigned int dev)
- 		"Media Vision Jazz16 at 0x%lx, irq %d, dma8 %d, dma16 %d",
- 		port[dev], xirq, xdma8, xdma16);
- 
--	err = snd_sb8dsp_pcm(chip, 0, NULL);
-+	err = snd_sb8dsp_pcm(chip, 0);
- 	if (err < 0)
- 		goto err_free;
- 	err = snd_sbmixer_new(chip);
-diff --git a/sound/isa/sb/sb8.c b/sound/isa/sb/sb8.c
-index 6c32b3a..b8e2391 100644
---- a/sound/isa/sb/sb8.c
-+++ b/sound/isa/sb/sb8.c
-@@ -157,7 +157,7 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
- 		goto _err;
+-int snd_sb16dsp_pcm(struct snd_sb *chip, int device, struct snd_pcm ** rpcm);
++int snd_sb16dsp_pcm(struct snd_sb *chip, int device);
+ const struct snd_pcm_ops *snd_sb16dsp_get_pcm_ops(int direction);
+ int snd_sb16dsp_configure(struct snd_sb *chip);
+ /* sb16.c */
+diff --git a/sound/isa/als100.c b/sound/isa/als100.c
+index 32d0152..bc9ea30 100644
+--- a/sound/isa/als100.c
++++ b/sound/isa/als100.c
+@@ -233,7 +233,7 @@ static int snd_card_als100_probe(int dev,
+ 			irq[dev], dma8[dev], dma16[dev]);
  	}
  
--	if ((err = snd_sb8dsp_pcm(chip, 0, NULL)) < 0)
-+	if ((err = snd_sb8dsp_pcm(chip, 0)) < 0)
- 		goto _err;
- 
- 	if ((err = snd_sbmixer_new(chip)) < 0)
-@@ -182,7 +182,7 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
- 			goto _err;
+-	if ((error = snd_sb16dsp_pcm(chip, 0, &chip->pcm)) < 0) {
++	if ((error = snd_sb16dsp_pcm(chip, 0)) < 0) {
+ 		snd_card_free(card);
+ 		return error;
  	}
+diff --git a/sound/isa/sb/sb16.c b/sound/isa/sb/sb16.c
+index 3f69454..4a7d7c8 100644
+--- a/sound/isa/sb/sb16.c
++++ b/sound/isa/sb/sb16.c
+@@ -374,7 +374,7 @@ static int snd_sb16_probe(struct snd_card *card, int dev)
+ 	if (! is_isapnp_selected(dev) && (err = snd_sb16dsp_configure(chip)) < 0)
+ 		return err;
  
--	if ((err = snd_sb8dsp_midi(chip, 0, NULL)) < 0)
-+	if ((err = snd_sb8dsp_midi(chip, 0)) < 0)
- 		goto _err;
+-	if ((err = snd_sb16dsp_pcm(chip, 0, &chip->pcm)) < 0)
++	if ((err = snd_sb16dsp_pcm(chip, 0)) < 0)
+ 		return err;
  
- 	strcpy(card->driver, chip->hardware == SB_HW_PRO ? "SB Pro" : "SB8");
-diff --git a/sound/isa/sb/sb8_main.c b/sound/isa/sb/sb8_main.c
-index 24d4121..d4d8b0e 100644
---- a/sound/isa/sb/sb8_main.c
-+++ b/sound/isa/sb/sb8_main.c
-@@ -594,15 +594,13 @@ static struct snd_pcm_ops snd_sb8_capture_ops = {
- 	.pointer =		snd_sb8_capture_pointer,
+ 	strcpy(card->driver,
+diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
+index 72b10f4..63d11b7 100644
+--- a/sound/isa/sb/sb16_main.c
++++ b/sound/isa/sb/sb16_main.c
+@@ -860,19 +860,18 @@ static struct snd_pcm_ops snd_sb16_capture_ops = {
+ 	.pointer =	snd_sb16_capture_pointer,
  };
  
--int snd_sb8dsp_pcm(struct snd_sb *chip, int device, struct snd_pcm ** rpcm)
-+int snd_sb8dsp_pcm(struct snd_sb *chip, int device)
+-int snd_sb16dsp_pcm(struct snd_sb * chip, int device, struct snd_pcm ** rpcm)
++int snd_sb16dsp_pcm(struct snd_sb *chip, int device)
  {
  	struct snd_card *card = chip->card;
  	struct snd_pcm *pcm;
  	int err;
- 	size_t max_prealloc = 64 * 1024;
  
 -	if (rpcm)
 -		*rpcm = NULL;
- 	if ((err = snd_pcm_new(card, "SB8 DSP", device, 1, 1, &pcm)) < 0)
+ 	if ((err = snd_pcm_new(card, "SB16 DSP", device, 1, 1, &pcm)) < 0)
  		return err;
  	sprintf(pcm->name, "DSP v%i.%i", chip->version >> 8, chip->version & 0xff);
-@@ -618,8 +616,6 @@ int snd_sb8dsp_pcm(struct snd_sb *chip, int device, struct snd_pcm ** rpcm)
- 					      snd_dma_isa_data(),
- 					      64*1024, max_prealloc);
+ 	pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
+ 	pcm->private_data = chip;
++	chip->pcm = pcm;
  
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sb16_playback_ops);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_sb16_capture_ops);
+@@ -885,9 +884,6 @@ int snd_sb16dsp_pcm(struct snd_sb * chip, int device, struct snd_pcm ** rpcm)
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 					      snd_dma_isa_data(),
+ 					      64*1024, 128*1024);
+-
 -	if (rpcm)
 -		*rpcm = pcm;
  	return 0;
  }
  
-diff --git a/sound/isa/sb/sb8_midi.c b/sound/isa/sb/sb8_midi.c
-index 988a8b7..ffc71f0 100644
---- a/sound/isa/sb/sb8_midi.c
-+++ b/sound/isa/sb/sb8_midi.c
-@@ -263,13 +263,11 @@ static struct snd_rawmidi_ops snd_sb8dsp_midi_input =
- 	.trigger =	snd_sb8dsp_midi_input_trigger,
- };
- 
--int snd_sb8dsp_midi(struct snd_sb *chip, int device, struct snd_rawmidi ** rrawmidi)
-+int snd_sb8dsp_midi(struct snd_sb *chip, int device)
- {
- 	struct snd_rawmidi *rmidi;
- 	int err;
- 
--	if (rrawmidi)
--		*rrawmidi = NULL;
- 	if ((err = snd_rawmidi_new(chip->card, "SB8 MIDI", device, 1, 1, &rmidi)) < 0)
+diff --git a/sound/pci/cs5530.c b/sound/pci/cs5530.c
+index b102550..0a8cf94 100644
+--- a/sound/pci/cs5530.c
++++ b/sound/pci/cs5530.c
+@@ -223,7 +223,7 @@ static int snd_cs5530_create(struct snd_card *card,
  		return err;
- 	strcpy(rmidi->name, "SB8 MIDI");
-@@ -280,7 +278,5 @@ int snd_sb8dsp_midi(struct snd_sb *chip, int device, struct snd_rawmidi ** rrawm
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
- 	rmidi->private_data = chip;
- 	chip->rmidi = rmidi;
--	if (rrawmidi)
--		*rrawmidi = rmidi;
- 	return 0;
- }
+ 	}
+ 
+-	err = snd_sb16dsp_pcm(chip->sb, 0, &chip->sb->pcm);
++	err = snd_sb16dsp_pcm(chip->sb, 0);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "Could not create PCM\n");
+ 		snd_cs5530_free(chip);
 -- 
 1.8.0
