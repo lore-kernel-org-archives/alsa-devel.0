@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 02/21] ALSA: ad1816a: Remove always NULL
-	parameters
-Date: Fri,  2 Jan 2015 12:24:36 +0100
-Message-ID: <1420197895-17696-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 03/21] ALSA: es1688: Remove almost always NULL
+	parameter
+Date: Fri,  2 Jan 2015 12:24:37 +0100
+Message-ID: <1420197895-17696-4-git-send-email-lars@metafoo.de>
 References: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-227.synserver.de (smtp-out-232.synserver.de
  [212.40.185.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 63C902604B7
- for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 527AE2604CF
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:02 +0100 (CET)
 In-Reply-To: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,101 +26,99 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-snd_ad1816a_pcm() and snd_ad1816a_timer() take a pointer to a pointer of a
-PCM/timer where if this parameter is provided the newly allocated object is
-stored. All callers pass NULL though, so remove the parameter. This makes
-the code a bit cleaner and shorter.
+snd_es1688_pcm() takes a pointer to a pointer of a PCM where if this
+parameter is provided the newly allocated PCM is stored. This PCM is also
+available from the pcm field of the snd_es1688 struct that got passed to the
+same function. This patch updates all callers which passed a pointer to use
+that field instead and then removes the parameter from the function. This
+makes the code a bit shorter and cleaner.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/ad1816a.h         | 5 ++---
- sound/isa/ad1816a/ad1816a.c     | 5 ++---
- sound/isa/ad1816a/ad1816a_lib.c | 9 ++-------
- 3 files changed, 6 insertions(+), 13 deletions(-)
+ include/sound/es1688.h        | 3 +--
+ sound/isa/es1688/es1688.c     | 7 +++----
+ sound/isa/es1688/es1688_lib.c | 6 +-----
+ sound/isa/gus/gusextreme.c    | 2 +-
+ 4 files changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/ad1816a.h b/include/sound/ad1816a.h
-index abdf609..f2d3a6d 100644
---- a/include/sound/ad1816a.h
-+++ b/include/sound/ad1816a.h
-@@ -170,10 +170,9 @@ extern int snd_ad1816a_create(struct snd_card *card, unsigned long port,
- 			      int irq, int dma1, int dma2,
- 			      struct snd_ad1816a *chip);
+diff --git a/include/sound/es1688.h b/include/sound/es1688.h
+index 1d636a2..b34f23a 100644
+--- a/include/sound/es1688.h
++++ b/include/sound/es1688.h
+@@ -115,8 +115,7 @@ int snd_es1688_create(struct snd_card *card,
+ 		      int mpu_irq,
+ 		      int dma8,
+ 		      unsigned short hardware);
+-int snd_es1688_pcm(struct snd_card *card, struct snd_es1688 *chip, int device,
+-		   struct snd_pcm **rpcm);
++int snd_es1688_pcm(struct snd_card *card, struct snd_es1688 *chip, int device);
+ int snd_es1688_mixer(struct snd_card *card, struct snd_es1688 *chip);
+ int snd_es1688_reset(struct snd_es1688 *chip);
  
--extern int snd_ad1816a_pcm(struct snd_ad1816a *chip, int device, struct snd_pcm **rpcm);
-+extern int snd_ad1816a_pcm(struct snd_ad1816a *chip, int device);
- extern int snd_ad1816a_mixer(struct snd_ad1816a *chip);
--extern int snd_ad1816a_timer(struct snd_ad1816a *chip, int device,
--			     struct snd_timer **rtimer);
-+extern int snd_ad1816a_timer(struct snd_ad1816a *chip, int device);
- #ifdef CONFIG_PM
- extern void snd_ad1816a_suspend(struct snd_ad1816a *chip);
- extern void snd_ad1816a_resume(struct snd_ad1816a *chip);
-diff --git a/sound/isa/ad1816a/ad1816a.c b/sound/isa/ad1816a/ad1816a.c
-index f481a41..7692265 100644
---- a/sound/isa/ad1816a/ad1816a.c
-+++ b/sound/isa/ad1816a/ad1816a.c
-@@ -142,7 +142,6 @@ static int snd_card_ad1816a_probe(int dev, struct pnp_card_link *pcard,
- 	struct snd_card *card;
- 	struct snd_ad1816a *chip;
+diff --git a/sound/isa/es1688/es1688.c b/sound/isa/es1688/es1688.c
+index 76001fe0..1901c2b 100644
+--- a/sound/isa/es1688/es1688.c
++++ b/sound/isa/es1688/es1688.c
+@@ -138,10 +138,9 @@ static int snd_es1688_probe(struct snd_card *card, unsigned int n)
+ {
+ 	struct snd_es1688 *chip = card->private_data;
  	struct snd_opl3 *opl3;
--	struct snd_timer *timer;
+-	struct snd_pcm *pcm;
+ 	int error;
  
- 	error = snd_card_new(&pcard->card->dev,
- 			     index[dev], id[dev], THIS_MODULE,
-@@ -172,7 +171,7 @@ static int snd_card_ad1816a_probe(int dev, struct pnp_card_link *pcard,
- 	sprintf(card->longname, "%s, SS at 0x%lx, irq %d, dma %d&%d",
- 		card->shortname, chip->port, irq[dev], dma1[dev], dma2[dev]);
+-	error = snd_es1688_pcm(card, chip, 0, &pcm);
++	error = snd_es1688_pcm(card, chip, 0);
+ 	if (error < 0)
+ 		return error;
  
--	if ((error = snd_ad1816a_pcm(chip, 0, NULL)) < 0) {
-+	if ((error = snd_ad1816a_pcm(chip, 0)) < 0) {
- 		snd_card_free(card);
+@@ -150,9 +149,9 @@ static int snd_es1688_probe(struct snd_card *card, unsigned int n)
  		return error;
- 	}
-@@ -182,7 +181,7 @@ static int snd_card_ad1816a_probe(int dev, struct pnp_card_link *pcard,
- 		return error;
- 	}
  
--	error = snd_ad1816a_timer(chip, 0, &timer);
-+	error = snd_ad1816a_timer(chip, 0);
- 	if (error < 0) {
- 		snd_card_free(card);
- 		return error;
-diff --git a/sound/isa/ad1816a/ad1816a_lib.c b/sound/isa/ad1816a/ad1816a_lib.c
-index 01a0798..5f99102 100644
---- a/sound/isa/ad1816a/ad1816a_lib.c
-+++ b/sound/isa/ad1816a/ad1816a_lib.c
-@@ -675,7 +675,7 @@ static struct snd_pcm_ops snd_ad1816a_capture_ops = {
- 	.pointer =	snd_ad1816a_capture_pointer,
+ 	strlcpy(card->driver, "ES1688", sizeof(card->driver));
+-	strlcpy(card->shortname, pcm->name, sizeof(card->shortname));
++	strlcpy(card->shortname, chip->pcm->name, sizeof(card->shortname));
+ 	snprintf(card->longname, sizeof(card->longname),
+-		"%s at 0x%lx, irq %i, dma %i", pcm->name, chip->port,
++		"%s at 0x%lx, irq %i, dma %i", chip->pcm->name, chip->port,
+ 		 chip->irq, chip->dma8);
+ 
+ 	if (fm_port[n] == SNDRV_AUTO_PORT)
+diff --git a/sound/isa/es1688/es1688_lib.c b/sound/isa/es1688/es1688_lib.c
+index b545014..52aac84 100644
+--- a/sound/isa/es1688/es1688_lib.c
++++ b/sound/isa/es1688/es1688_lib.c
+@@ -728,8 +728,7 @@ static struct snd_pcm_ops snd_es1688_capture_ops = {
+ 	.pointer =		snd_es1688_capture_pointer,
  };
  
--int snd_ad1816a_pcm(struct snd_ad1816a *chip, int device, struct snd_pcm **rpcm)
-+int snd_ad1816a_pcm(struct snd_ad1816a *chip, int device)
+-int snd_es1688_pcm(struct snd_card *card, struct snd_es1688 *chip,
+-		   int device, struct snd_pcm **rpcm)
++int snd_es1688_pcm(struct snd_card *card, struct snd_es1688 *chip, int device)
  {
- 	int error;
  	struct snd_pcm *pcm;
-@@ -697,13 +697,10 @@ int snd_ad1816a_pcm(struct snd_ad1816a *chip, int device, struct snd_pcm **rpcm)
- 					      64*1024, chip->dma1 > 3 || chip->dma2 > 3 ? 128*1024 : 64*1024);
- 
- 	chip->pcm = pcm;
+ 	int err;
+@@ -749,9 +748,6 @@ int snd_es1688_pcm(struct snd_card *card, struct snd_es1688 *chip,
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 					      snd_dma_isa_data(),
+ 					      64*1024, 64*1024);
+-
 -	if (rpcm)
 -		*rpcm = pcm;
  	return 0;
  }
  
--int snd_ad1816a_timer(struct snd_ad1816a *chip, int device,
--		      struct snd_timer **rtimer)
-+int snd_ad1816a_timer(struct snd_ad1816a *chip, int device)
- {
- 	struct snd_timer *timer;
- 	struct snd_timer_id tid;
-@@ -720,8 +717,6 @@ int snd_ad1816a_timer(struct snd_ad1816a *chip, int device,
- 	timer->private_data = chip;
- 	chip->timer = timer;
- 	timer->hw = snd_ad1816a_timer_table;
--	if (rtimer)
--		*rtimer = timer;
- 	return 0;
- }
+diff --git a/sound/isa/gus/gusextreme.c b/sound/isa/gus/gusextreme.c
+index 28a1693..acc6552 100644
+--- a/sound/isa/gus/gusextreme.c
++++ b/sound/isa/gus/gusextreme.c
+@@ -284,7 +284,7 @@ static int snd_gusextreme_probe(struct device *dev, unsigned int n)
+ 	}
+ 	gus->codec_flag = 1;
+ 
+-	error = snd_es1688_pcm(card, es1688, 0, NULL);
++	error = snd_es1688_pcm(card, es1688, 0);
+ 	if (error < 0)
+ 		goto out;
  
 -- 
 1.8.0
