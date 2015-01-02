@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 7/7] ASoC: txx9: Remove unnecessary
+Subject: [PATCH 4/7] ASoC: nuc900: Remove unnecessary
 	snd_pcm_lib_preallocate_free_for_all()
-Date: Fri,  2 Jan 2015 13:56:13 +0100
-Message-ID: <1420203373-1844-7-git-send-email-lars@metafoo.de>
+Date: Fri,  2 Jan 2015 13:56:10 +0100
+Message-ID: <1420203373-1844-4-git-send-email-lars@metafoo.de>
 References: <1420203373-1844-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-235.synserver.de (smtp-out-236.synserver.de
  [212.40.185.236])
- by alsa0.perex.cz (Postfix) with ESMTP id 7858F260504
- for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 13:56:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 621CC2604D0
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 13:56:34 +0100 (CET)
 In-Reply-To: <1420203373-1844-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,32 +31,32 @@ itself is freed. There is no need to do this manually in the driver.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/txx9/txx9aclc.c | 6 ------
+ sound/soc/nuc900/nuc900-pcm.c | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
-index 070e44e..88eacfd 100644
---- a/sound/soc/txx9/txx9aclc.c
-+++ b/sound/soc/txx9/txx9aclc.c
-@@ -282,11 +282,6 @@ static struct snd_pcm_ops txx9aclc_pcm_ops = {
- 	.pointer	= txx9aclc_pcm_pointer,
+diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
+index b779a3d..b809fa9 100644
+--- a/sound/soc/nuc900/nuc900-pcm.c
++++ b/sound/soc/nuc900/nuc900-pcm.c
+@@ -306,11 +306,6 @@ static struct snd_pcm_ops nuc900_dma_ops = {
+ 	.mmap		= nuc900_dma_mmap,
  };
  
--static void txx9aclc_pcm_free_dma_buffers(struct snd_pcm *pcm)
+-static void nuc900_dma_free_dma_buffers(struct snd_pcm *pcm)
 -{
 -	snd_pcm_lib_preallocate_free_for_all(pcm);
 -}
 -
- static int txx9aclc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ static int nuc900_dma_new(struct snd_soc_pcm_runtime *rtd)
  {
  	struct snd_card *card = rtd->card->snd_card;
-@@ -412,7 +407,6 @@ static struct snd_soc_platform_driver txx9aclc_soc_platform = {
- 	.remove		= txx9aclc_pcm_remove,
- 	.ops		= &txx9aclc_pcm_ops,
- 	.pcm_new	= txx9aclc_pcm_new,
--	.pcm_free	= txx9aclc_pcm_free_dma_buffers,
+@@ -330,7 +325,6 @@ static int nuc900_dma_new(struct snd_soc_pcm_runtime *rtd)
+ static struct snd_soc_platform_driver nuc900_soc_platform = {
+ 	.ops		= &nuc900_dma_ops,
+ 	.pcm_new	= nuc900_dma_new,
+-	.pcm_free	= nuc900_dma_free_dma_buffers,
  };
  
- static int txx9aclc_soc_platform_probe(struct platform_device *pdev)
+ static int nuc900_soc_platform_probe(struct platform_device *pdev)
 -- 
 1.8.0
