@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ALSA: oxygen: Remove unnecessary
+Subject: [PATCH 2/2] ALSA: ps3: Remove unnecessary
 	snd_pcm_lib_preallocate_free_for_all()
-Date: Fri,  2 Jan 2015 15:03:42 +0100
-Message-ID: <1420207423-10184-1-git-send-email-lars@metafoo.de>
+Date: Fri,  2 Jan 2015 15:03:43 +0100
+Message-ID: <1420207423-10184-2-git-send-email-lars@metafoo.de>
+References: <1420207423-10184-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-239.synserver.de (smtp-out-243.synserver.de
  [212.40.185.243])
- by alsa0.perex.cz (Postfix) with ESMTP id A43632604E0
- for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 15:03:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 226CD260504
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 15:03:49 +0100 (CET)
+In-Reply-To: <1420207423-10184-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +26,36 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: Geoff Levand <geoff@infradead.org>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-The ALSA core takes care that all preallocated memory is freed when the PCM
-itself is freed. There is no need to do this manually in the driver.
+The ALSA core takes care that all preallocated memory is freed when the card
+(and the PCM) itself is freed. There is no need to do this manually in the
+driver.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/oxygen/oxygen_pcm.c | 8 --------
- 1 file changed, 8 deletions(-)
+ sound/ppc/snd_ps3.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/pci/oxygen/oxygen_pcm.c b/sound/pci/oxygen/oxygen_pcm.c
-index 0282824..af22a74 100644
---- a/sound/pci/oxygen/oxygen_pcm.c
-+++ b/sound/pci/oxygen/oxygen_pcm.c
-@@ -676,11 +676,6 @@ static struct snd_pcm_ops oxygen_ac97_ops = {
- 	.pointer   = oxygen_pointer,
- };
- 
--static void oxygen_pcm_free(struct snd_pcm *pcm)
--{
--	snd_pcm_lib_preallocate_free_for_all(pcm);
--}
--
- int oxygen_pcm_init(struct oxygen *chip)
- {
- 	struct snd_pcm *pcm;
-@@ -705,7 +700,6 @@ int oxygen_pcm_init(struct oxygen *chip)
- 			snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
- 					&oxygen_rec_b_ops);
- 		pcm->private_data = chip;
--		pcm->private_free = oxygen_pcm_free;
- 		strcpy(pcm->name, "Multichannel");
- 		if (outs)
- 			snd_pcm_lib_preallocate_pages(pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream,
-@@ -734,7 +728,6 @@ int oxygen_pcm_init(struct oxygen *chip)
- 			snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
- 					&oxygen_rec_c_ops);
- 		pcm->private_data = chip;
--		pcm->private_free = oxygen_pcm_free;
- 		strcpy(pcm->name, "Digital");
- 		snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
- 						      snd_dma_pci_data(chip->pci),
-@@ -765,7 +758,6 @@ int oxygen_pcm_init(struct oxygen *chip)
- 			snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
- 					&oxygen_rec_b_ops);
- 		pcm->private_data = chip;
--		pcm->private_free = oxygen_pcm_free;
- 		strcpy(pcm->name, outs ? "Front Panel" : "Analog 2");
- 		snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
- 						      snd_dma_pci_data(chip->pci),
+diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
+index 58f292a..3682425 100644
+--- a/sound/ppc/snd_ps3.c
++++ b/sound/ppc/snd_ps3.c
+@@ -1044,7 +1044,7 @@ static int snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
+ 	if (!the_card.null_buffer_start_vaddr) {
+ 		pr_info("%s: nullbuffer alloc failed\n", __func__);
+ 		ret = -ENOMEM;
+-		goto clean_preallocate;
++		goto clean_card;
+ 	}
+ 	pr_debug("%s: null vaddr=%p dma=%#llx\n", __func__,
+ 		 the_card.null_buffer_start_vaddr,
+@@ -1066,8 +1066,6 @@ clean_dma_map:
+ 			  PAGE_SIZE,
+ 			  the_card.null_buffer_start_vaddr,
+ 			  the_card.null_buffer_start_dma_addr);
+-clean_preallocate:
+-	snd_pcm_lib_preallocate_free_for_all(the_card.pcm);
+ clean_card:
+ 	snd_card_free(the_card.card);
+ clean_irq:
 -- 
 1.8.0
