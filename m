@@ -1,8 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 17/21] ALSA: ice1712: Remove always NULL
-	parameters
-Date: Fri,  2 Jan 2015 12:24:51 +0100
-Message-ID: <1420197895-17696-18-git-send-email-lars@metafoo.de>
+Subject: [PATCH 16/21] ALSA: fm801: Remove always NULL parameter
+Date: Fri,  2 Jan 2015 12:24:50 +0100
+Message-ID: <1420197895-17696-17-git-send-email-lars@metafoo.de>
 References: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +9,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-227.synserver.de (smtp-out-232.synserver.de
  [212.40.185.232])
- by alsa0.perex.cz (Postfix) with ESMTP id DFF002604BD
+ by alsa0.perex.cz (Postfix) with ESMTP id 536C8260554
  for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:21 +0100 (CET)
 In-Reply-To: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,118 +25,61 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-The various PCM allocation functions in this driver take a pointer to a
-pointer of a PCM where if this parameter is provided the newly allocated PCM
-is stored. All callers pass NULL though, so remove the parameter. This makes
-the code a bit cleaner and shorter.
+snd_fm801_pcm() takes a pointer to a pointer of a PCM where if this
+parameter is provided the newly allocated PCM is stored. All callers pass
+NULL though, so remove the parameter. This makes the code a bit cleaner and
+shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/ice1712/ice1712.c | 26 ++++++--------------------
- 1 file changed, 6 insertions(+), 20 deletions(-)
+ sound/pci/fm801.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
-index b039b46..a2ee2982 100644
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -880,13 +880,11 @@ static struct snd_pcm_ops snd_ice1712_capture_ops = {
- 	.pointer =	snd_ice1712_capture_pointer,
+diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+index d167aff..9a2122f 100644
+--- a/sound/pci/fm801.c
++++ b/sound/pci/fm801.c
+@@ -704,13 +704,11 @@ static struct snd_pcm_ops snd_fm801_capture_ops = {
+ 	.pointer =	snd_fm801_capture_pointer,
  };
  
--static int snd_ice1712_pcm(struct snd_ice1712 *ice, int device, struct snd_pcm **rpcm)
-+static int snd_ice1712_pcm(struct snd_ice1712 *ice, int device)
+-static int snd_fm801_pcm(struct fm801 *chip, int device, struct snd_pcm **rpcm)
++static int snd_fm801_pcm(struct fm801 *chip, int device)
  {
  	struct snd_pcm *pcm;
  	int err;
  
 -	if (rpcm)
 -		*rpcm = NULL;
- 	err = snd_pcm_new(ice->card, "ICE1712 consumer", device, 1, 1, &pcm);
- 	if (err < 0)
+ 	if ((err = snd_pcm_new(chip->card, "FM801", device, 1, 1, &pcm)) < 0)
  		return err;
-@@ -902,22 +900,17 @@ static int snd_ice1712_pcm(struct snd_ice1712 *ice, int device, struct snd_pcm *
- 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
- 					      snd_dma_pci_data(ice->pci), 64*1024, 64*1024);
  
+@@ -726,16 +724,10 @@ static int snd_fm801_pcm(struct fm801 *chip, int device, struct snd_pcm **rpcm)
+ 					      snd_dma_pci_data(chip->pci),
+ 					      chip->multichannel ? 128*1024 : 64*1024, 128*1024);
+ 
+-	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
++	return snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+ 				     snd_pcm_alt_chmaps,
+ 				     chip->multichannel ? 6 : 2, 0,
+ 				     NULL);
+-	if (err < 0)
+-		return err;
+-
 -	if (rpcm)
 -		*rpcm = pcm;
--
- 	dev_warn(ice->card->dev,
- 		 "Consumer PCM code does not work well at the moment --jk\n");
- 
- 	return 0;
+-	return 0;
  }
  
--static int snd_ice1712_pcm_ds(struct snd_ice1712 *ice, int device, struct snd_pcm **rpcm)
-+static int snd_ice1712_pcm_ds(struct snd_ice1712 *ice, int device)
- {
- 	struct snd_pcm *pcm;
- 	int err;
+ /*
+@@ -1340,7 +1332,7 @@ static int snd_card_fm801_probe(struct pci_dev *pci,
+ 	if (chip->tea575x_tuner & TUNER_ONLY)
+ 		goto __fm801_tuner_only;
  
--	if (rpcm)
--		*rpcm = NULL;
- 	err = snd_pcm_new(ice->card, "ICE1712 consumer (DS)", device, 6, 0, &pcm);
- 	if (err < 0)
- 		return err;
-@@ -932,9 +925,6 @@ static int snd_ice1712_pcm_ds(struct snd_ice1712 *ice, int device, struct snd_pc
- 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
- 					      snd_dma_pci_data(ice->pci), 64*1024, 128*1024);
- 
--	if (rpcm)
--		*rpcm = pcm;
--
- 	return 0;
- }
- 
-@@ -1260,13 +1250,11 @@ static struct snd_pcm_ops snd_ice1712_capture_pro_ops = {
- 	.pointer =	snd_ice1712_capture_pro_pointer,
- };
- 
--static int snd_ice1712_pcm_profi(struct snd_ice1712 *ice, int device, struct snd_pcm **rpcm)
-+static int snd_ice1712_pcm_profi(struct snd_ice1712 *ice, int device)
- {
- 	struct snd_pcm *pcm;
- 	int err;
- 
--	if (rpcm)
--		*rpcm = NULL;
- 	err = snd_pcm_new(ice->card, "ICE1712 multi", device, 1, 1, &pcm);
- 	if (err < 0)
- 		return err;
-@@ -1282,8 +1270,6 @@ static int snd_ice1712_pcm_profi(struct snd_ice1712 *ice, int device, struct snd
- 					      snd_dma_pci_data(ice->pci), 256*1024, 256*1024);
- 
- 	ice->pcm_pro = pcm;
--	if (rpcm)
--		*rpcm = pcm;
- 
- 	if (ice->cs8427) {
- 		/* assign channels to iec958 */
-@@ -2691,14 +2677,14 @@ static int snd_ice1712_probe(struct pci_dev *pci,
- 	c = &no_matched;
-  __found:
- 
--	err = snd_ice1712_pcm_profi(ice, pcm_dev++, NULL);
-+	err = snd_ice1712_pcm_profi(ice, pcm_dev++);
- 	if (err < 0) {
+-	if ((err = snd_fm801_pcm(chip, 0, NULL)) < 0) {
++	if ((err = snd_fm801_pcm(chip, 0)) < 0) {
  		snd_card_free(card);
  		return err;
  	}
- 
- 	if (ice_has_con_ac97(ice)) {
--		err = snd_ice1712_pcm(ice, pcm_dev++, NULL);
-+		err = snd_ice1712_pcm(ice, pcm_dev++);
- 		if (err < 0) {
- 			snd_card_free(card);
- 			return err;
-@@ -2726,7 +2712,7 @@ static int snd_ice1712_probe(struct pci_dev *pci,
- 	}
- 
- 	if (ice_has_con_ac97(ice)) {
--		err = snd_ice1712_pcm_ds(ice, pcm_dev++, NULL);
-+		err = snd_ice1712_pcm_ds(ice, pcm_dev++);
- 		if (err < 0) {
- 			snd_card_free(card);
- 			return err;
 -- 
 1.8.0
