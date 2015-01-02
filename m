@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 08/21] ASoC: sb16: Simplify snd_sb16dsp_pcm()
-Date: Fri,  2 Jan 2015 12:24:42 +0100
-Message-ID: <1420197895-17696-9-git-send-email-lars@metafoo.de>
+Subject: [PATCH 05/21] ALSA: gus: Remove always NULL parameters
+Date: Fri,  2 Jan 2015 12:24:39 +0100
+Message-ID: <1420197895-17696-6-git-send-email-lars@metafoo.de>
 References: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-227.synserver.de (smtp-out-232.synserver.de
  [212.40.185.232])
- by alsa0.perex.cz (Postfix) with ESMTP id C809C2604E0
- for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:07 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 805512604BD
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jan 2015 12:25:04 +0100 (CET)
 In-Reply-To: <1420197895-17696-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,106 +25,176 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-All callers of snd_sb16dsp_pcm() always pass the pcm field of the first
-parameter as the last parameter. Simplify the function by moving this inside
-the function itself. This makes the code a bit shorter and cleaner.
+snd_gf1_pcm_new() and snd_gf1_rawmidi_new() take a pointer to a pointer of a
+PCM/MIDI where if this parameter is provided the newly allocated object is
+stored. All callers pass NULL though, so remove the parameter. This makes
+the code a bit cleaner and shorter.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/sb.h       | 2 +-
- sound/isa/als100.c       | 2 +-
- sound/isa/sb/sb16.c      | 2 +-
- sound/isa/sb/sb16_main.c | 8 ++------
- sound/pci/cs5530.c       | 2 +-
- 5 files changed, 6 insertions(+), 10 deletions(-)
+ include/sound/gus.h        | 4 ++--
+ sound/isa/gus/gus_pcm.c    | 6 +-----
+ sound/isa/gus/gus_uart.c   | 6 +-----
+ sound/isa/gus/gusclassic.c | 4 ++--
+ sound/isa/gus/gusextreme.c | 2 +-
+ sound/isa/gus/gusmax.c     | 4 ++--
+ sound/isa/gus/interwave.c  | 4 ++--
+ 7 files changed, 11 insertions(+), 19 deletions(-)
 
-diff --git a/include/sound/sb.h b/include/sound/sb.h
-index 13438ff..33e2d11 100644
---- a/include/sound/sb.h
-+++ b/include/sound/sb.h
-@@ -320,7 +320,7 @@ irqreturn_t snd_sb8dsp_midi_interrupt(struct snd_sb *chip);
- int snd_sb8dsp_midi(struct snd_sb *chip, int device);
+diff --git a/include/sound/gus.h b/include/sound/gus.h
+index 42905d8..06bbdc2 100644
+--- a/include/sound/gus.h
++++ b/include/sound/gus.h
+@@ -591,7 +591,7 @@ int snd_gf1_new_mixer(struct snd_gus_card * gus);
  
- /* sb16_init.c */
--int snd_sb16dsp_pcm(struct snd_sb *chip, int device, struct snd_pcm ** rpcm);
-+int snd_sb16dsp_pcm(struct snd_sb *chip, int device);
- const struct snd_pcm_ops *snd_sb16dsp_get_pcm_ops(int direction);
- int snd_sb16dsp_configure(struct snd_sb *chip);
- /* sb16.c */
-diff --git a/sound/isa/als100.c b/sound/isa/als100.c
-index 32d0152..bc9ea30 100644
---- a/sound/isa/als100.c
-+++ b/sound/isa/als100.c
-@@ -233,7 +233,7 @@ static int snd_card_als100_probe(int dev,
- 			irq[dev], dma8[dev], dma16[dev]);
- 	}
+ /* gus_pcm.c */
  
--	if ((error = snd_sb16dsp_pcm(chip, 0, &chip->pcm)) < 0) {
-+	if ((error = snd_sb16dsp_pcm(chip, 0)) < 0) {
- 		snd_card_free(card);
- 		return error;
- 	}
-diff --git a/sound/isa/sb/sb16.c b/sound/isa/sb/sb16.c
-index 3f69454..4a7d7c8 100644
---- a/sound/isa/sb/sb16.c
-+++ b/sound/isa/sb/sb16.c
-@@ -374,7 +374,7 @@ static int snd_sb16_probe(struct snd_card *card, int dev)
- 	if (! is_isapnp_selected(dev) && (err = snd_sb16dsp_configure(chip)) < 0)
- 		return err;
+-int snd_gf1_pcm_new(struct snd_gus_card * gus, int pcm_dev, int control_index, struct snd_pcm ** rpcm);
++int snd_gf1_pcm_new(struct snd_gus_card *gus, int pcm_dev, int control_index);
  
--	if ((err = snd_sb16dsp_pcm(chip, 0, &chip->pcm)) < 0)
-+	if ((err = snd_sb16dsp_pcm(chip, 0)) < 0)
- 		return err;
+ #ifdef CONFIG_SND_DEBUG
+ extern void snd_gf1_print_voice_registers(struct snd_gus_card * gus);
+@@ -620,7 +620,7 @@ void snd_gus_irq_profile_init(struct snd_gus_card *gus);
  
- 	strcpy(card->driver,
-diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
-index 72b10f4..63d11b7 100644
---- a/sound/isa/sb/sb16_main.c
-+++ b/sound/isa/sb/sb16_main.c
-@@ -860,19 +860,18 @@ static struct snd_pcm_ops snd_sb16_capture_ops = {
- 	.pointer =	snd_sb16_capture_pointer,
+ /* gus_uart.c */
+ 
+-int snd_gf1_rawmidi_new(struct snd_gus_card * gus, int device, struct snd_rawmidi **rrawmidi);
++int snd_gf1_rawmidi_new(struct snd_gus_card *gus, int device);
+ 
+ /* gus_dram.c */
+ int snd_gus_dram_write(struct snd_gus_card *gus, char __user *ptr,
+diff --git a/sound/isa/gus/gus_pcm.c b/sound/isa/gus/gus_pcm.c
+index 2dcf45b..25f6788 100644
+--- a/sound/isa/gus/gus_pcm.c
++++ b/sound/isa/gus/gus_pcm.c
+@@ -849,7 +849,7 @@ static struct snd_pcm_ops snd_gf1_pcm_capture_ops = {
+ 	.pointer =	snd_gf1_pcm_capture_pointer,
  };
  
--int snd_sb16dsp_pcm(struct snd_sb * chip, int device, struct snd_pcm ** rpcm)
-+int snd_sb16dsp_pcm(struct snd_sb *chip, int device)
+-int snd_gf1_pcm_new(struct snd_gus_card * gus, int pcm_dev, int control_index, struct snd_pcm ** rpcm)
++int snd_gf1_pcm_new(struct snd_gus_card *gus, int pcm_dev, int control_index)
  {
- 	struct snd_card *card = chip->card;
- 	struct snd_pcm *pcm;
- 	int err;
+ 	struct snd_card *card;
+ 	struct snd_kcontrol *kctl;
+@@ -857,8 +857,6 @@ int snd_gf1_pcm_new(struct snd_gus_card * gus, int pcm_dev, int control_index, s
+ 	struct snd_pcm_substream *substream;
+ 	int capture, err;
  
 -	if (rpcm)
 -		*rpcm = NULL;
- 	if ((err = snd_pcm_new(card, "SB16 DSP", device, 1, 1, &pcm)) < 0)
+ 	card = gus->card;
+ 	capture = !gus->interwave && !gus->ess_flag && !gus->ace_flag ? 1 : 0;
+ 	err = snd_pcm_new(card,
+@@ -903,8 +901,6 @@ int snd_gf1_pcm_new(struct snd_gus_card * gus, int pcm_dev, int control_index, s
  		return err;
- 	sprintf(pcm->name, "DSP v%i.%i", chip->version >> 8, chip->version & 0xff);
- 	pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
- 	pcm->private_data = chip;
-+	chip->pcm = pcm;
+ 	kctl->id.index = control_index;
  
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sb16_playback_ops);
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_sb16_capture_ops);
-@@ -885,9 +884,6 @@ int snd_sb16dsp_pcm(struct snd_sb * chip, int device, struct snd_pcm ** rpcm)
- 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
- 					      snd_dma_isa_data(),
- 					      64*1024, 128*1024);
--
 -	if (rpcm)
 -		*rpcm = pcm;
  	return 0;
  }
  
-diff --git a/sound/pci/cs5530.c b/sound/pci/cs5530.c
-index b102550..0a8cf94 100644
---- a/sound/pci/cs5530.c
-+++ b/sound/pci/cs5530.c
-@@ -223,7 +223,7 @@ static int snd_cs5530_create(struct snd_card *card,
- 		return err;
- 	}
+diff --git a/sound/isa/gus/gus_uart.c b/sound/isa/gus/gus_uart.c
+index 21cc42e..3992912 100644
+--- a/sound/isa/gus/gus_uart.c
++++ b/sound/isa/gus/gus_uart.c
+@@ -241,13 +241,11 @@ static struct snd_rawmidi_ops snd_gf1_uart_input =
+ 	.trigger =	snd_gf1_uart_input_trigger,
+ };
  
--	err = snd_sb16dsp_pcm(chip->sb, 0, &chip->sb->pcm);
-+	err = snd_sb16dsp_pcm(chip->sb, 0);
- 	if (err < 0) {
- 		dev_err(card->dev, "Could not create PCM\n");
- 		snd_cs5530_free(chip);
+-int snd_gf1_rawmidi_new(struct snd_gus_card * gus, int device, struct snd_rawmidi ** rrawmidi)
++int snd_gf1_rawmidi_new(struct snd_gus_card *gus, int device)
+ {
+ 	struct snd_rawmidi *rmidi;
+ 	int err;
+ 
+-	if (rrawmidi)
+-		*rrawmidi = NULL;
+ 	if ((err = snd_rawmidi_new(gus->card, "GF1", device, 1, 1, &rmidi)) < 0)
+ 		return err;
+ 	strcpy(rmidi->name, gus->interwave ? "AMD InterWave" : "GF1");
+@@ -256,7 +254,5 @@ int snd_gf1_rawmidi_new(struct snd_gus_card * gus, int device, struct snd_rawmid
+ 	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT | SNDRV_RAWMIDI_INFO_INPUT | SNDRV_RAWMIDI_INFO_DUPLEX;
+ 	rmidi->private_data = gus;
+ 	gus->midi_uart = rmidi;
+-	if (rrawmidi)
+-		*rrawmidi = rmidi;
+ 	return err;
+ }
+diff --git a/sound/isa/gus/gusclassic.c b/sound/isa/gus/gusclassic.c
+index 7ce29ff..f001971 100644
+--- a/sound/isa/gus/gusclassic.c
++++ b/sound/isa/gus/gusclassic.c
+@@ -181,12 +181,12 @@ static int snd_gusclassic_probe(struct device *dev, unsigned int n)
+ 	if (error < 0)
+ 		goto out;
+ 
+-	error = snd_gf1_pcm_new(gus, 0, 0, NULL);
++	error = snd_gf1_pcm_new(gus, 0, 0);
+ 	if (error < 0)
+ 		goto out;
+ 
+ 	if (!gus->ace_flag) {
+-		error = snd_gf1_rawmidi_new(gus, 0, NULL);
++		error = snd_gf1_rawmidi_new(gus, 0);
+ 		if (error < 0)
+ 			goto out;
+ 	}
+diff --git a/sound/isa/gus/gusextreme.c b/sound/isa/gus/gusextreme.c
+index acc6552..693d95f 100644
+--- a/sound/isa/gus/gusextreme.c
++++ b/sound/isa/gus/gusextreme.c
+@@ -295,7 +295,7 @@ static int snd_gusextreme_probe(struct device *dev, unsigned int n)
+ 	snd_component_add(card, "ES1688");
+ 
+ 	if (pcm_channels[n] > 0) {
+-		error = snd_gf1_pcm_new(gus, 1, 1, NULL);
++		error = snd_gf1_pcm_new(gus, 1, 1);
+ 		if (error < 0)
+ 			goto out;
+ 	}
+diff --git a/sound/isa/gus/gusmax.c b/sound/isa/gus/gusmax.c
+index 39df36c..b2b3734 100644
+--- a/sound/isa/gus/gusmax.c
++++ b/sound/isa/gus/gusmax.c
+@@ -322,14 +322,14 @@ static int snd_gusmax_probe(struct device *pdev, unsigned int dev)
+ 		goto _err;
+ 
+ 	if (pcm_channels[dev] > 0) {
+-		if ((err = snd_gf1_pcm_new(gus, 1, 1, NULL)) < 0)
++		if ((err = snd_gf1_pcm_new(gus, 1, 1)) < 0)
+ 			goto _err;
+ 	}
+ 	err = snd_gusmax_mixer(wss);
+ 	if (err < 0)
+ 		goto _err;
+ 
+-	err = snd_gf1_rawmidi_new(gus, 0, NULL);
++	err = snd_gf1_rawmidi_new(gus, 0);
+ 	if (err < 0)
+ 		goto _err;
+ 
+diff --git a/sound/isa/gus/interwave.c b/sound/isa/gus/interwave.c
+index ad55e5c..8ea54a7 100644
+--- a/sound/isa/gus/interwave.c
++++ b/sound/isa/gus/interwave.c
+@@ -711,7 +711,7 @@ static int snd_interwave_probe(struct snd_card *card, int dev)
+ 		return err;
+ 
+ 	if (pcm_channels[dev] > 0) {
+-		err = snd_gf1_pcm_new(gus, 1, 1, NULL);
++		err = snd_gf1_pcm_new(gus, 1, 1);
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -740,7 +740,7 @@ static int snd_interwave_probe(struct snd_card *card, int dev)
+ #endif
+ 
+ 	gus->uart_enable = midi[dev];
+-	if ((err = snd_gf1_rawmidi_new(gus, 0, NULL)) < 0)
++	if ((err = snd_gf1_rawmidi_new(gus, 0)) < 0)
+ 		return err;
+ 
+ #ifndef SNDRV_STB
 -- 
 1.8.0
