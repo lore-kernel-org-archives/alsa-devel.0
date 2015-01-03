@@ -1,20 +1,15 @@
-From: Stefan Oltmanns <stefan-oltmanns@gmx.net>
-Subject: Re: Intel HDA / ca0132: Multichannel + S/PDIF support
-Date: Sat, 03 Jan 2015 11:43:11 +0100
-Message-ID: <54A7C7BF.5050709@gmx.net>
-References: <54A2CD45.9040500@gmx.net>
- <CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ALSA: pcm: Remove unused functions declaration
+Date: Sat,  3 Jan 2015 17:56:14 +0100
+Message-ID: <1420304174-4078-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 88C62261464
- for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2015 11:43:14 +0100 (CET)
-Received: from [192.168.1.87] ([87.151.157.41]) by mail.gmx.com (mrgmx002)
- with ESMTPSA (Nemesis) id 0MCcja-1Xy2WA0alm-009RzD for
- <alsa-devel@alsa-project.org>; Sat, 03 Jan 2015 11:43:12 +0100
-In-Reply-To: <CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>
+Received: from smtp-out-017.synserver.de (smtp-out-017.synserver.de
+ [212.40.185.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0DB02604B5
+ for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2015 17:56:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,54 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-QW0gMDMuMDEuMjAxNSB1bSAwMjozMCBzY2hyaWViIER5bGFuIFJlaWQ6Cj4gT24gVHVlLCBEZWMg
-MzAsIDIwMTQgYXQgODowNSBBTSwgU3RlZmFuIE9sdG1hbm5zCj4gPHN0ZWZhbi1vbHRtYW5uc0Bn
-bXgubmV0PiB3cm90ZToKPj4gSGksCj4+Cj4+IEkgb3duIGEgR2lnYWJ5dGUgRzEuU25pcGVyIE0z
-IFo3NyBtYWluYm9hcmQgd2l0aCBjYTAxMzIgb25ib2FyZCBhdWRpby4KPj4gQ3VycmVudGx5IG9u
-bHkgc3RlcmVvIG91dCBhbmQgaGVhZHBob25lIG91dCAoYXQgdGhlIGJhY2ssIGFsd2F5cyBzYW1l
-Cj4+IHNpZ25hbCkgd29yayBieSBkZWZhdWx0Lgo+PiBJIHdhcyBhYmxlIHRvIGZpeCBTL1BESUYg
-b3V0IGJ5IGNoYW5naW5nIHRoZSBoZWFkcGhvbmUgcGluIGluIGZ1bmN0aW9uCj4+IGNhMDEzMl9j
-b25maWcgdG8gc29tZXRoaW5nIGJlbG93IDB4MGQsIGxpa2U6Cj4+Cj4+IHNwZWMtPm91dF9waW5z
-WzFdID0gMHgwYTsKPj4KPj4gTm8gaWRlYSB3aHkgdGhpcyBmaXhlcyBTL1BESUYsIGJ1dCBubyBv
-dGhlciBlZmZlY3RzIG5vdGljZWQuIE5vIGlkZWEgaWYKPj4gaXTCtHMgZ29pbmcgdG8gYnJlYWsg
-c29tZXRoaW5nIG9uIG90aGVyIGRldmljZXMuIE9yaWdpbmFsIHZhbHVlIGlzIDB4MTAuCj4+Cj4+
-IEluIHRoaXMgZnVuY3Rpb24gYWxzbyAzIERBQ3MgYXJlIGxpc3RlZC4gVGhlIGJvYXJkIGhhcyBh
-IHRvdGFsIG9mIDUKPj4gc3RlcmVvIG91dHB1dHM6Cj4+Cj4+IC1Gcm9udHBhbmVsIChIREEgcGlu
-IGNvbm5lY3RvciBvbiBtYWluYm9hcmQpCj4+IDR4IDMsNW1tIG91dHB1dCBhdCBiYWNrcGFuZWw6
-Cj4+IC1TdGVyZW8gb3V0Cj4+IC1IZWFkcGhvbmUgb3V0Cj4+IC1SZWFyIG91dAo+PiAtQ2VudGVy
-L0xGRSBvdXQKPj4KPj4gSSB0cmllZCB0byBpbmNyZWFzZSB0aGUgbnVtYmVyIG9mIGNoYW5uZWxz
-IGFuZCBjcmVhdGUgYWRkaXRpb25hbCBvdXRwdXRzCj4+IGFuZCBjb25uZWN0ZWQgdG8gdGhlIG90
-aGVyIERBQ3MuIFRoZSBtYXhpbXVtIEnCtG0gYWJsZSB0byBpcyB0byBnZXQKPj4gZGlmZmVyZW50
-IHNpZ25hbHMgb3V0IG9mIHN0ZXJlbyBvdXQgYW5kIGZyb250IGhlYWRwaG9uZSAobm90IHVzZWZ1
-bCwKPj4ganVzdCBzb21lIHdlaXJkIG1peGVzKSBvciBzYW1lIHNpZ25hbCBmcm9tIGFsbCAzIG91
-dHB1dHMuIFJlYXIgYW5kIGMvbGZlCj4+IG91dCBhbHdheXMgbm8gc2lnbmFsLgo+Pgo+PiBEdXJp
-bmcgaW5pdGlhbGl6YXRpb24gc25kX2hkYV9wYXJzZV9waW5fZGVmX2NvbmZpZyBpcyBjYWxsZWQg
-YW5kIHR3bwo+PiBvdXRwdXRzIGFyZSBmb3VuZC4gSSB0cmllZCB0byBvdmVycmlkZSB0aGF0IGFu
-ZCBjaGFuZ2Ugc3BlYy0+YXV0b2NmZwo+PiBhZnRlciB0aGF0IGZ1bmN0aW9uIGlzIGNhbGxlZCwg
-bm8gc3VjY2Vzcy4KPj4gQWxzbyBubyBtYXR0ZXIgd2hhdCBJIGNoYW5nZSB0aGVyZSwgYSBsaXR0
-bGUgbGF0ZXIgSSBnZXQgdGhpcyBrZXJuZWwKPj4gbWVzc2FnZXM6Cj4+Cj4+IGtlcm5lbDogWyAg
-ICAyLjY0Mjk3Ml0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTGluZSBPdXQgYXMKPj4gL2RldmljZXMv
-cGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5wdXQ4Cj4+IGtlcm5lbDogWyAg
-ICAyLjY0MzE0Ml0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggRnJvbnQgSGVhZHBob25lIGFzCj4+IC9k
-ZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQwL2lucHV0Nwo+PiBrZXJu
-ZWw6IFsgICAgMi42NDQ5MzJdIGlucHV0OiBIREEgSW50ZWwgUENIIExpbmUgYXMKPj4gL2Rldmlj
-ZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5wdXQ2Cj4+IGtlcm5lbDog
-WyAgICAyLjY0NTA1MF0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTWljIGFzCj4+IC9kZXZpY2VzL3Bj
-aTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQwL2lucHV0NQo+Pgo+PiBJIGNvdWxkIG5v
-dCBmaW5kIHRoZSBjb2RlIHdoZXJlIHRoaXMgbWVzc2FnZXMgYXJlIGdlbmVyYXRlZCwgd2hlcmUg
-aXMgdGhhdD8KPj4KPj4gQW55IGlkZWFzIHdoYXQgSSBjb3VsZC9zaG91bGQgdHJ5IHRvIGdldCBt
-dWx0aWNoYW5uZWwgc3VwcG9ydCB3b3JraW5nPwo+PiBJcyB0aGVyZSBhbnkga2luZCBvZiBkb2N1
-bWVudGF0aW9uIG9uIHRoZSBjYTAxMzIgdGhhdCBjb3VsZCBiZSBoZWxwZnVsPwo+IAo+IEEgbG90
-IG9mIHRoZXNlIGNhcGFiaWxpdGllcyBuZWVkIHRvIGJlIGV4cG9zZWQgYnkgdGhlIERTUCBvbiB0
-aGUKPiBjYTAxMzIuICBXaGF0IGZpcm13YXJlIGFyZSB5b3UgbG9hZGluZyBvbiBpdD8KCkkgdHJp
-ZWQgdGhlIG9uZSBpbmNsdWRlZCBhbmQgbm9uZSwgbWFrZXMgbm8gZGlmZmVyZW5jZSBmb3IgdGhh
-dCBwcm9ibGVtLgpBbHNvIHRoZSBmaXJtd2FyZSBnZXRzIGxvYWRlZCBhZnRlciBhbGwgdGhlIGlu
-cHV0L291dHB1dCBjb25maWd1cmF0aW9uLAp5b3XCtHJlIHN1cmUgdGhlIGZpcm13YXJlIGlzIG5l
-ZWRlZCBmb3IgbXVsdGljaGFubmVsIHN1cHBvcnQ/IElzIGl0CnBvc3NpYmxlL2xlZ2FsIHRvIGV4
-dHJhY3QgaXQgZnJvbSB0aGUgd2luZG93cyBkcml2ZXIgc29tZWhvdz8KCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Remove function declarations for functions that don't have a matching
+implementation.
+
+For snd_pcm_build_linear_format the implementation was removed in
+64d27f96cb719cf8 ("[ALSA] Support 3-bytes 24bit format in PCM OSS
+emulation"). All the others never had one (as far as git history goes).
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/pcm.h | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index bf32cea..cd09c1b 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -518,7 +518,6 @@ void snd_pcm_release_substream(struct snd_pcm_substream *substream);
+ int snd_pcm_attach_substream(struct snd_pcm *pcm, int stream, struct file *file,
+ 			     struct snd_pcm_substream **rsubstream);
+ void snd_pcm_detach_substream(struct snd_pcm_substream *substream);
+-void snd_pcm_vma_notify_data(void *client, void *data);
+ int snd_pcm_mmap_data(struct snd_pcm_substream *substream, struct file *file, struct vm_area_struct *area);
+ 
+ 
+@@ -984,21 +983,15 @@ int snd_pcm_format_physical_width(snd_pcm_format_t format);		/* in bits */
+ ssize_t snd_pcm_format_size(snd_pcm_format_t format, size_t samples);
+ const unsigned char *snd_pcm_format_silence_64(snd_pcm_format_t format);
+ int snd_pcm_format_set_silence(snd_pcm_format_t format, void *buf, unsigned int frames);
+-snd_pcm_format_t snd_pcm_build_linear_format(int width, int unsigned, int big_endian);
+ 
+ void snd_pcm_set_ops(struct snd_pcm * pcm, int direction,
+ 		     const struct snd_pcm_ops *ops);
+ void snd_pcm_set_sync(struct snd_pcm_substream *substream);
+-int snd_pcm_lib_interleave_len(struct snd_pcm_substream *substream);
+ int snd_pcm_lib_ioctl(struct snd_pcm_substream *substream,
+ 		      unsigned int cmd, void *arg);                      
+ int snd_pcm_update_state(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_runtime *runtime);
+ int snd_pcm_update_hw_ptr(struct snd_pcm_substream *substream);
+-int snd_pcm_playback_xrun_check(struct snd_pcm_substream *substream);
+-int snd_pcm_capture_xrun_check(struct snd_pcm_substream *substream);
+-int snd_pcm_playback_xrun_asap(struct snd_pcm_substream *substream);
+-int snd_pcm_capture_xrun_asap(struct snd_pcm_substream *substream);
+ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_uframes_t new_hw_ptr);
+ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream);
+ snd_pcm_sframes_t snd_pcm_lib_write(struct snd_pcm_substream *substream,
+-- 
+1.8.0
