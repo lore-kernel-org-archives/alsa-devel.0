@@ -1,29 +1,19 @@
-From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: Re: [PATCH] sound: pci: hda: patch_analog: Remove some
-	unused functions
-Date: Sat, 3 Jan 2015 01:14:54 +0100
-Message-ID: <CAKXHbyMPZ6agrhbCoQQzZvH4cB_gtumhxsB-uhQXqggFq4GQ=g@mail.gmail.com>
-References: <1420221508-32319-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
- <1420222637.9624.36.camel@x220>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: Intel HDA / ca0132: Multichannel + S/PDIF support
+Date: Fri, 2 Jan 2015 17:30:15 -0800
+Message-ID: <CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>
+References: <54A2CD45.9040500@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f175.google.com (mail-ie0-f175.google.com
- [209.85.223.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 92F7E26058A
- for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2015 01:14:56 +0100 (CET)
-Received: by mail-ie0-f175.google.com with SMTP id x19so17325410ier.20
- for <alsa-devel@alsa-project.org>; Fri, 02 Jan 2015 16:14:55 -0800 (PST)
-Received: from mail-ig0-f170.google.com (mail-ig0-f170.google.com.
- [209.85.213.170])
- by mx.google.com with ESMTPSA id n36sm23502589ioe.4.2015.01.02.16.14.54
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Fri, 02 Jan 2015 16:14:54 -0800 (PST)
-Received: by mail-ig0-f170.google.com with SMTP id r2so1003397igi.3
- for <alsa-devel@alsa-project.org>; Fri, 02 Jan 2015 16:14:54 -0800 (PST)
-In-Reply-To: <1420222637.9624.36.camel@x220>
+Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
+ [209.85.218.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DCBD26058A
+ for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2015 02:30:36 +0100 (CET)
+Received: by mail-oi0-f54.google.com with SMTP id u20so41876942oif.13
+ for <alsa-devel@alsa-project.org>; Fri, 02 Jan 2015 17:30:35 -0800 (PST)
+In-Reply-To: <54A2CD45.9040500@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,89 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Stefan Oltmanns <stefan-oltmanns@gmx.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2015-01-02 19:17 GMT+01:00 Paul Bolle <pebolle@tiscali.nl>:
-
-> On Fri, 2015-01-02 at 18:58 +0100, Rickard Strandqvist wrote:
-> > Removes some functions that are not used anywhere:
-> > ad198x_ch_mode_put() ad198x_ch_mode_info()
-> >
-> > This was partially found by using a static code analysis program called
-> cppcheck.
-> >
-> > Signed-off-by: Rickard Strandqvist <
-> rickard_strandqvist@spectrumdigital.se>
-> > ---
->
-> You apparently overlooked _your_ commit 57da6bdd4823 ("ALSA: hda -
-> patch_analog.c: Remove some unused functions") in linux-next.
->
-> >  sound/pci/hda/patch_analog.c |   21 ---------------------
-> >  1 file changed, 21 deletions(-)
-> >
-> > diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-> > index 06275f8..ed0b71c 100644
-> > --- a/sound/pci/hda/patch_analog.c
-> > +++ b/sound/pci/hda/patch_analog.c
-> > @@ -698,15 +698,6 @@ static int patch_ad1981(struct hda_codec *codec)
-> >   */
-> >
-> >  #ifdef ENABLE_AD_STATIC_QUIRKS
-> > -static int ad198x_ch_mode_info(struct snd_kcontrol *kcontrol,
-> > -                            struct snd_ctl_elem_info *uinfo)
-> > -{
-> > -     struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-> > -     struct ad198x_spec *spec = codec->spec;
-> > -     return snd_hda_ch_mode_info(codec, uinfo, spec->channel_mode,
-> > -                                 spec->num_channel_mode);
-> > -}
-> > -
-> >  static int ad198x_ch_mode_get(struct snd_kcontrol *kcontrol,
-> >                             struct snd_ctl_elem_value *ucontrol)
-> >  {
-> > @@ -716,18 +707,6 @@ static int ad198x_ch_mode_get(struct snd_kcontrol
-> *kcontrol,
-> >                                  spec->num_channel_mode,
-> spec->multiout.max_channels);
-> >  }
-> >
-> > -static int ad198x_ch_mode_put(struct snd_kcontrol *kcontrol,
-> > -                           struct snd_ctl_elem_value *ucontrol)
-> > -{
-> > -     struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-> > -     struct ad198x_spec *spec = codec->spec;
-> > -     int err = snd_hda_ch_mode_put(codec, ucontrol, spec->channel_mode,
-> > -                                   spec->num_channel_mode,
-> > -                                   &spec->multiout.max_channels);
-> > -     if (err >= 0 && spec->need_dac_fix)
-> > -             spec->multiout.num_dacs = spec->multiout.max_channels / 2;
-> > -     return err;
-> > -}
-> >  #endif /* ENABLE_AD_STATIC_QUIRKS */
-> >
-> >  static int ad1988_auto_smux_enum_info(struct snd_kcontrol *kcontrol,
->
-> Thanks,
->
->
-> Paul Bolle
->
->
-
-Hi Paul
-
-Sorry about that!
-
-Have tried to change my script to avoid just that, so that all functions to
-be removed in a file, with the same patch.
-
-Everything was solved correctly in the commit 57da6bdd4823
-So ignore this patch.
-
-
-
-Kind regards
-Rickard Strandqvist
+T24gVHVlLCBEZWMgMzAsIDIwMTQgYXQgODowNSBBTSwgU3RlZmFuIE9sdG1hbm5zCjxzdGVmYW4t
+b2x0bWFubnNAZ214Lm5ldD4gd3JvdGU6Cj4gSGksCj4KPiBJIG93biBhIEdpZ2FieXRlIEcxLlNu
+aXBlciBNMyBaNzcgbWFpbmJvYXJkIHdpdGggY2EwMTMyIG9uYm9hcmQgYXVkaW8uCj4gQ3VycmVu
+dGx5IG9ubHkgc3RlcmVvIG91dCBhbmQgaGVhZHBob25lIG91dCAoYXQgdGhlIGJhY2ssIGFsd2F5
+cyBzYW1lCj4gc2lnbmFsKSB3b3JrIGJ5IGRlZmF1bHQuCj4gSSB3YXMgYWJsZSB0byBmaXggUy9Q
+RElGIG91dCBieSBjaGFuZ2luZyB0aGUgaGVhZHBob25lIHBpbiBpbiBmdW5jdGlvbgo+IGNhMDEz
+Ml9jb25maWcgdG8gc29tZXRoaW5nIGJlbG93IDB4MGQsIGxpa2U6Cj4KPiBzcGVjLT5vdXRfcGlu
+c1sxXSA9IDB4MGE7Cj4KPiBObyBpZGVhIHdoeSB0aGlzIGZpeGVzIFMvUERJRiwgYnV0IG5vIG90
+aGVyIGVmZmVjdHMgbm90aWNlZC4gTm8gaWRlYSBpZgo+IGl0wrRzIGdvaW5nIHRvIGJyZWFrIHNv
+bWV0aGluZyBvbiBvdGhlciBkZXZpY2VzLiBPcmlnaW5hbCB2YWx1ZSBpcyAweDEwLgo+Cj4gSW4g
+dGhpcyBmdW5jdGlvbiBhbHNvIDMgREFDcyBhcmUgbGlzdGVkLiBUaGUgYm9hcmQgaGFzIGEgdG90
+YWwgb2YgNQo+IHN0ZXJlbyBvdXRwdXRzOgo+Cj4gLUZyb250cGFuZWwgKEhEQSBwaW4gY29ubmVj
+dG9yIG9uIG1haW5ib2FyZCkKPiA0eCAzLDVtbSBvdXRwdXQgYXQgYmFja3BhbmVsOgo+IC1TdGVy
+ZW8gb3V0Cj4gLUhlYWRwaG9uZSBvdXQKPiAtUmVhciBvdXQKPiAtQ2VudGVyL0xGRSBvdXQKPgo+
+IEkgdHJpZWQgdG8gaW5jcmVhc2UgdGhlIG51bWJlciBvZiBjaGFubmVscyBhbmQgY3JlYXRlIGFk
+ZGl0aW9uYWwgb3V0cHV0cwo+IGFuZCBjb25uZWN0ZWQgdG8gdGhlIG90aGVyIERBQ3MuIFRoZSBt
+YXhpbXVtIEnCtG0gYWJsZSB0byBpcyB0byBnZXQKPiBkaWZmZXJlbnQgc2lnbmFscyBvdXQgb2Yg
+c3RlcmVvIG91dCBhbmQgZnJvbnQgaGVhZHBob25lIChub3QgdXNlZnVsLAo+IGp1c3Qgc29tZSB3
+ZWlyZCBtaXhlcykgb3Igc2FtZSBzaWduYWwgZnJvbSBhbGwgMyBvdXRwdXRzLiBSZWFyIGFuZCBj
+L2xmZQo+IG91dCBhbHdheXMgbm8gc2lnbmFsLgo+Cj4gRHVyaW5nIGluaXRpYWxpemF0aW9uIHNu
+ZF9oZGFfcGFyc2VfcGluX2RlZl9jb25maWcgaXMgY2FsbGVkIGFuZCB0d28KPiBvdXRwdXRzIGFy
+ZSBmb3VuZC4gSSB0cmllZCB0byBvdmVycmlkZSB0aGF0IGFuZCBjaGFuZ2Ugc3BlYy0+YXV0b2Nm
+Zwo+IGFmdGVyIHRoYXQgZnVuY3Rpb24gaXMgY2FsbGVkLCBubyBzdWNjZXNzLgo+IEFsc28gbm8g
+bWF0dGVyIHdoYXQgSSBjaGFuZ2UgdGhlcmUsIGEgbGl0dGxlIGxhdGVyIEkgZ2V0IHRoaXMga2Vy
+bmVsCj4gbWVzc2FnZXM6Cj4KPiBrZXJuZWw6IFsgICAgMi42NDI5NzJdIGlucHV0OiBIREEgSW50
+ZWwgUENIIExpbmUgT3V0IGFzCj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291
+bmQvY2FyZDAvaW5wdXQ4Cj4ga2VybmVsOiBbICAgIDIuNjQzMTQyXSBpbnB1dDogSERBIEludGVs
+IFBDSCBGcm9udCBIZWFkcGhvbmUgYXMKPiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIu
+MC9zb3VuZC9jYXJkMC9pbnB1dDcKPiBrZXJuZWw6IFsgICAgMi42NDQ5MzJdIGlucHV0OiBIREEg
+SW50ZWwgUENIIExpbmUgYXMKPiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3Vu
+ZC9jYXJkMC9pbnB1dDYKPiBrZXJuZWw6IFsgICAgMi42NDUwNTBdIGlucHV0OiBIREEgSW50ZWwg
+UENIIE1pYyBhcwo+IC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQw
+L2lucHV0NQo+Cj4gSSBjb3VsZCBub3QgZmluZCB0aGUgY29kZSB3aGVyZSB0aGlzIG1lc3NhZ2Vz
+IGFyZSBnZW5lcmF0ZWQsIHdoZXJlIGlzIHRoYXQ/Cj4KPiBBbnkgaWRlYXMgd2hhdCBJIGNvdWxk
+L3Nob3VsZCB0cnkgdG8gZ2V0IG11bHRpY2hhbm5lbCBzdXBwb3J0IHdvcmtpbmc/Cj4gSXMgdGhl
+cmUgYW55IGtpbmQgb2YgZG9jdW1lbnRhdGlvbiBvbiB0aGUgY2EwMTMyIHRoYXQgY291bGQgYmUg
+aGVscGZ1bD8KCkEgbG90IG9mIHRoZXNlIGNhcGFiaWxpdGllcyBuZWVkIHRvIGJlIGV4cG9zZWQg
+YnkgdGhlIERTUCBvbiB0aGUKY2EwMTMyLiAgV2hhdCBmaXJtd2FyZSBhcmUgeW91IGxvYWRpbmcg
+b24gaXQ/Cgo+Cj4gQmVzdCByZWdhcmRzCj4gU3RlZmFuCj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
