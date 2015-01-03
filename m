@@ -1,38 +1,42 @@
-From: Man <manle360@yahoo.com>
-Subject: Re: [PATCH - ALSA: snd-virtuoso 1/1] Xonar DSX support
-Date: Sat, 3 Jan 2015 06:16:04 +0000 (UTC)
-Message-ID: <loom.20150103T071338-489@post.gmane.org>
-References: <504c9632.8697320a.1336.4b37@mx.google.com>
+From: Chen Gang <gang.chen@sunrus.com.cn>
+Subject: [PATCH] sound: soc: soc-pcm: Remove useless varialbe 'i'
+Date: Sat, 03 Jan 2015 17:45:57 +0800
+Message-ID: <54A7BA55.3020607@sunrus.com.cn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 45D0226072A
- for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2015 08:05:06 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Y7Ilj-0002mn-B4
- for alsa-devel@alsa-project.org; Sat, 03 Jan 2015 08:05:03 +0100
-Received: from 73.35.178.187 ([73.35.178.187])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sat, 03 Jan 2015 08:05:03 +0100
-Received: from manle360 by 73.35.178.187 with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sat, 03 Jan 2015 08:05:03 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+'i' is useless in soc_pcm_set_msb(), so remove it, the related warning
+(with allmodconfig under s390):
 
+    CC [M]  sound/soc/soc-pcm.o
+  sound/soc/soc-pcm.c: In function 'soc_pcm_set_msb':
+  sound/soc/soc-pcm.c:307:11: warning: unused variable 'i' [-Wunused-variable]
+    int ret, i;
+             ^
 
-What are these codes?  Am I suppose to copy this into a file for the sound
-card to work on linux?
+Signed-off-by: Chen Gang <gang.chen.5i5j@gmail.com>
+---
+ sound/soc/soc-pcm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index d6e8d6b..6b0136e 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -304,7 +304,7 @@ static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
+ static void soc_pcm_set_msb(struct snd_pcm_substream *substream, int bits)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	int ret, i;
++	int ret;
+ 
+ 	if (!bits)
+ 		return;
+-- 
+1.7.9.5
