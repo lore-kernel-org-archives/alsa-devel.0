@@ -1,37 +1,77 @@
-From: Chen Gang S <gang.chen@sunrus.com.cn>
-Subject: Re: [PATCH] sound: soc: soc-pcm: Remove useless varialbe 'i'
-Date: Sat, 03 Jan 2015 18:15:51 +0800
-Message-ID: <54A7C157.40404@sunrus.com.cn>
-References: <54A7BA55.3020607@sunrus.com.cn> <s5htx08dw1q.wl-tiwai@suse.de>
+From: Stefan Oltmanns <stefan-oltmanns@gmx.net>
+Subject: Re: Intel HDA / ca0132: Multichannel + S/PDIF support
+Date: Sat, 03 Jan 2015 11:43:11 +0100
+Message-ID: <54A7C7BF.5050709@gmx.net>
+References: <54A2CD45.9040500@gmx.net>
+ <CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5htx08dw1q.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88C62261464
+ for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2015 11:43:14 +0100 (CET)
+Received: from [192.168.1.87] ([87.151.157.41]) by mail.gmx.com (mrgmx002)
+ with ESMTPSA (Nemesis) id 0MCcja-1Xy2WA0alm-009RzD for
+ <alsa-devel@alsa-project.org>; Sat, 03 Jan 2015 11:43:12 +0100
+In-Reply-To: <CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 1/3/15 17:59, Takashi Iwai wrote:
-> At Sat, 03 Jan 2015 17:45:57 +0800,
-> Chen Gang wrote:
->>
->> 'i' is useless in soc_pcm_set_msb(), so remove it, the related warning
->> (with allmodconfig under s390):
->>
->>     CC [M]  sound/soc/soc-pcm.o
->>   sound/soc/soc-pcm.c: In function 'soc_pcm_set_msb':
->>   sound/soc/soc-pcm.c:307:11: warning: unused variable 'i' [-Wunused-variable]
->>     int ret, i;
->>              ^
-> 
-> Thanks, but this was already fixed.
-> 
-
-OK, thanks.
-
--- 
-Chen Gang
-
-Open, share, and attitude like air, water, and life which God blessed
+QW0gMDMuMDEuMjAxNSB1bSAwMjozMCBzY2hyaWViIER5bGFuIFJlaWQ6Cj4gT24gVHVlLCBEZWMg
+MzAsIDIwMTQgYXQgODowNSBBTSwgU3RlZmFuIE9sdG1hbm5zCj4gPHN0ZWZhbi1vbHRtYW5uc0Bn
+bXgubmV0PiB3cm90ZToKPj4gSGksCj4+Cj4+IEkgb3duIGEgR2lnYWJ5dGUgRzEuU25pcGVyIE0z
+IFo3NyBtYWluYm9hcmQgd2l0aCBjYTAxMzIgb25ib2FyZCBhdWRpby4KPj4gQ3VycmVudGx5IG9u
+bHkgc3RlcmVvIG91dCBhbmQgaGVhZHBob25lIG91dCAoYXQgdGhlIGJhY2ssIGFsd2F5cyBzYW1l
+Cj4+IHNpZ25hbCkgd29yayBieSBkZWZhdWx0Lgo+PiBJIHdhcyBhYmxlIHRvIGZpeCBTL1BESUYg
+b3V0IGJ5IGNoYW5naW5nIHRoZSBoZWFkcGhvbmUgcGluIGluIGZ1bmN0aW9uCj4+IGNhMDEzMl9j
+b25maWcgdG8gc29tZXRoaW5nIGJlbG93IDB4MGQsIGxpa2U6Cj4+Cj4+IHNwZWMtPm91dF9waW5z
+WzFdID0gMHgwYTsKPj4KPj4gTm8gaWRlYSB3aHkgdGhpcyBmaXhlcyBTL1BESUYsIGJ1dCBubyBv
+dGhlciBlZmZlY3RzIG5vdGljZWQuIE5vIGlkZWEgaWYKPj4gaXTCtHMgZ29pbmcgdG8gYnJlYWsg
+c29tZXRoaW5nIG9uIG90aGVyIGRldmljZXMuIE9yaWdpbmFsIHZhbHVlIGlzIDB4MTAuCj4+Cj4+
+IEluIHRoaXMgZnVuY3Rpb24gYWxzbyAzIERBQ3MgYXJlIGxpc3RlZC4gVGhlIGJvYXJkIGhhcyBh
+IHRvdGFsIG9mIDUKPj4gc3RlcmVvIG91dHB1dHM6Cj4+Cj4+IC1Gcm9udHBhbmVsIChIREEgcGlu
+IGNvbm5lY3RvciBvbiBtYWluYm9hcmQpCj4+IDR4IDMsNW1tIG91dHB1dCBhdCBiYWNrcGFuZWw6
+Cj4+IC1TdGVyZW8gb3V0Cj4+IC1IZWFkcGhvbmUgb3V0Cj4+IC1SZWFyIG91dAo+PiAtQ2VudGVy
+L0xGRSBvdXQKPj4KPj4gSSB0cmllZCB0byBpbmNyZWFzZSB0aGUgbnVtYmVyIG9mIGNoYW5uZWxz
+IGFuZCBjcmVhdGUgYWRkaXRpb25hbCBvdXRwdXRzCj4+IGFuZCBjb25uZWN0ZWQgdG8gdGhlIG90
+aGVyIERBQ3MuIFRoZSBtYXhpbXVtIEnCtG0gYWJsZSB0byBpcyB0byBnZXQKPj4gZGlmZmVyZW50
+IHNpZ25hbHMgb3V0IG9mIHN0ZXJlbyBvdXQgYW5kIGZyb250IGhlYWRwaG9uZSAobm90IHVzZWZ1
+bCwKPj4ganVzdCBzb21lIHdlaXJkIG1peGVzKSBvciBzYW1lIHNpZ25hbCBmcm9tIGFsbCAzIG91
+dHB1dHMuIFJlYXIgYW5kIGMvbGZlCj4+IG91dCBhbHdheXMgbm8gc2lnbmFsLgo+Pgo+PiBEdXJp
+bmcgaW5pdGlhbGl6YXRpb24gc25kX2hkYV9wYXJzZV9waW5fZGVmX2NvbmZpZyBpcyBjYWxsZWQg
+YW5kIHR3bwo+PiBvdXRwdXRzIGFyZSBmb3VuZC4gSSB0cmllZCB0byBvdmVycmlkZSB0aGF0IGFu
+ZCBjaGFuZ2Ugc3BlYy0+YXV0b2NmZwo+PiBhZnRlciB0aGF0IGZ1bmN0aW9uIGlzIGNhbGxlZCwg
+bm8gc3VjY2Vzcy4KPj4gQWxzbyBubyBtYXR0ZXIgd2hhdCBJIGNoYW5nZSB0aGVyZSwgYSBsaXR0
+bGUgbGF0ZXIgSSBnZXQgdGhpcyBrZXJuZWwKPj4gbWVzc2FnZXM6Cj4+Cj4+IGtlcm5lbDogWyAg
+ICAyLjY0Mjk3Ml0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTGluZSBPdXQgYXMKPj4gL2RldmljZXMv
+cGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5wdXQ4Cj4+IGtlcm5lbDogWyAg
+ICAyLjY0MzE0Ml0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggRnJvbnQgSGVhZHBob25lIGFzCj4+IC9k
+ZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQwL2lucHV0Nwo+PiBrZXJu
+ZWw6IFsgICAgMi42NDQ5MzJdIGlucHV0OiBIREEgSW50ZWwgUENIIExpbmUgYXMKPj4gL2Rldmlj
+ZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5wdXQ2Cj4+IGtlcm5lbDog
+WyAgICAyLjY0NTA1MF0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTWljIGFzCj4+IC9kZXZpY2VzL3Bj
+aTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQwL2lucHV0NQo+Pgo+PiBJIGNvdWxkIG5v
+dCBmaW5kIHRoZSBjb2RlIHdoZXJlIHRoaXMgbWVzc2FnZXMgYXJlIGdlbmVyYXRlZCwgd2hlcmUg
+aXMgdGhhdD8KPj4KPj4gQW55IGlkZWFzIHdoYXQgSSBjb3VsZC9zaG91bGQgdHJ5IHRvIGdldCBt
+dWx0aWNoYW5uZWwgc3VwcG9ydCB3b3JraW5nPwo+PiBJcyB0aGVyZSBhbnkga2luZCBvZiBkb2N1
+bWVudGF0aW9uIG9uIHRoZSBjYTAxMzIgdGhhdCBjb3VsZCBiZSBoZWxwZnVsPwo+IAo+IEEgbG90
+IG9mIHRoZXNlIGNhcGFiaWxpdGllcyBuZWVkIHRvIGJlIGV4cG9zZWQgYnkgdGhlIERTUCBvbiB0
+aGUKPiBjYTAxMzIuICBXaGF0IGZpcm13YXJlIGFyZSB5b3UgbG9hZGluZyBvbiBpdD8KCkkgdHJp
+ZWQgdGhlIG9uZSBpbmNsdWRlZCBhbmQgbm9uZSwgbWFrZXMgbm8gZGlmZmVyZW5jZSBmb3IgdGhh
+dCBwcm9ibGVtLgpBbHNvIHRoZSBmaXJtd2FyZSBnZXRzIGxvYWRlZCBhZnRlciBhbGwgdGhlIGlu
+cHV0L291dHB1dCBjb25maWd1cmF0aW9uLAp5b3XCtHJlIHN1cmUgdGhlIGZpcm13YXJlIGlzIG5l
+ZWRlZCBmb3IgbXVsdGljaGFubmVsIHN1cHBvcnQ/IElzIGl0CnBvc3NpYmxlL2xlZ2FsIHRvIGV4
+dHJhY3QgaXQgZnJvbSB0aGUgd2luZG93cyBkcml2ZXIgc29tZWhvdz8KCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
