@@ -1,19 +1,25 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: Intel HDA / ca0132: Multichannel + S/PDIF support
-Date: Fri, 2 Jan 2015 17:30:15 -0800
-Message-ID: <CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>
-References: <54A2CD45.9040500@gmx.net>
+From: Man <manle360@yahoo.com>
+Subject: Re: [PATCH - ALSA: snd-virtuoso 1/1] Xonar DSX support
+Date: Sat, 3 Jan 2015 06:16:04 +0000 (UTC)
+Message-ID: <loom.20150103T071338-489@post.gmane.org>
+References: <504c9632.8697320a.1336.4b37@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
- [209.85.218.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DCBD26058A
- for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2015 02:30:36 +0100 (CET)
-Received: by mail-oi0-f54.google.com with SMTP id u20so41876942oif.13
- for <alsa-devel@alsa-project.org>; Fri, 02 Jan 2015 17:30:35 -0800 (PST)
-In-Reply-To: <54A2CD45.9040500@gmx.net>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45D0226072A
+ for <alsa-devel@alsa-project.org>; Sat,  3 Jan 2015 08:05:06 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Y7Ilj-0002mn-B4
+ for alsa-devel@alsa-project.org; Sat, 03 Jan 2015 08:05:03 +0100
+Received: from 73.35.178.187 ([73.35.178.187])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 03 Jan 2015 08:05:03 +0100
+Received: from manle360 by 73.35.178.187 with local (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 03 Jan 2015 08:05:03 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,52 +29,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Oltmanns <stefan-oltmanns@gmx.net>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBEZWMgMzAsIDIwMTQgYXQgODowNSBBTSwgU3RlZmFuIE9sdG1hbm5zCjxzdGVmYW4t
-b2x0bWFubnNAZ214Lm5ldD4gd3JvdGU6Cj4gSGksCj4KPiBJIG93biBhIEdpZ2FieXRlIEcxLlNu
-aXBlciBNMyBaNzcgbWFpbmJvYXJkIHdpdGggY2EwMTMyIG9uYm9hcmQgYXVkaW8uCj4gQ3VycmVu
-dGx5IG9ubHkgc3RlcmVvIG91dCBhbmQgaGVhZHBob25lIG91dCAoYXQgdGhlIGJhY2ssIGFsd2F5
-cyBzYW1lCj4gc2lnbmFsKSB3b3JrIGJ5IGRlZmF1bHQuCj4gSSB3YXMgYWJsZSB0byBmaXggUy9Q
-RElGIG91dCBieSBjaGFuZ2luZyB0aGUgaGVhZHBob25lIHBpbiBpbiBmdW5jdGlvbgo+IGNhMDEz
-Ml9jb25maWcgdG8gc29tZXRoaW5nIGJlbG93IDB4MGQsIGxpa2U6Cj4KPiBzcGVjLT5vdXRfcGlu
-c1sxXSA9IDB4MGE7Cj4KPiBObyBpZGVhIHdoeSB0aGlzIGZpeGVzIFMvUERJRiwgYnV0IG5vIG90
-aGVyIGVmZmVjdHMgbm90aWNlZC4gTm8gaWRlYSBpZgo+IGl0wrRzIGdvaW5nIHRvIGJyZWFrIHNv
-bWV0aGluZyBvbiBvdGhlciBkZXZpY2VzLiBPcmlnaW5hbCB2YWx1ZSBpcyAweDEwLgo+Cj4gSW4g
-dGhpcyBmdW5jdGlvbiBhbHNvIDMgREFDcyBhcmUgbGlzdGVkLiBUaGUgYm9hcmQgaGFzIGEgdG90
-YWwgb2YgNQo+IHN0ZXJlbyBvdXRwdXRzOgo+Cj4gLUZyb250cGFuZWwgKEhEQSBwaW4gY29ubmVj
-dG9yIG9uIG1haW5ib2FyZCkKPiA0eCAzLDVtbSBvdXRwdXQgYXQgYmFja3BhbmVsOgo+IC1TdGVy
-ZW8gb3V0Cj4gLUhlYWRwaG9uZSBvdXQKPiAtUmVhciBvdXQKPiAtQ2VudGVyL0xGRSBvdXQKPgo+
-IEkgdHJpZWQgdG8gaW5jcmVhc2UgdGhlIG51bWJlciBvZiBjaGFubmVscyBhbmQgY3JlYXRlIGFk
-ZGl0aW9uYWwgb3V0cHV0cwo+IGFuZCBjb25uZWN0ZWQgdG8gdGhlIG90aGVyIERBQ3MuIFRoZSBt
-YXhpbXVtIEnCtG0gYWJsZSB0byBpcyB0byBnZXQKPiBkaWZmZXJlbnQgc2lnbmFscyBvdXQgb2Yg
-c3RlcmVvIG91dCBhbmQgZnJvbnQgaGVhZHBob25lIChub3QgdXNlZnVsLAo+IGp1c3Qgc29tZSB3
-ZWlyZCBtaXhlcykgb3Igc2FtZSBzaWduYWwgZnJvbSBhbGwgMyBvdXRwdXRzLiBSZWFyIGFuZCBj
-L2xmZQo+IG91dCBhbHdheXMgbm8gc2lnbmFsLgo+Cj4gRHVyaW5nIGluaXRpYWxpemF0aW9uIHNu
-ZF9oZGFfcGFyc2VfcGluX2RlZl9jb25maWcgaXMgY2FsbGVkIGFuZCB0d28KPiBvdXRwdXRzIGFy
-ZSBmb3VuZC4gSSB0cmllZCB0byBvdmVycmlkZSB0aGF0IGFuZCBjaGFuZ2Ugc3BlYy0+YXV0b2Nm
-Zwo+IGFmdGVyIHRoYXQgZnVuY3Rpb24gaXMgY2FsbGVkLCBubyBzdWNjZXNzLgo+IEFsc28gbm8g
-bWF0dGVyIHdoYXQgSSBjaGFuZ2UgdGhlcmUsIGEgbGl0dGxlIGxhdGVyIEkgZ2V0IHRoaXMga2Vy
-bmVsCj4gbWVzc2FnZXM6Cj4KPiBrZXJuZWw6IFsgICAgMi42NDI5NzJdIGlucHV0OiBIREEgSW50
-ZWwgUENIIExpbmUgT3V0IGFzCj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291
-bmQvY2FyZDAvaW5wdXQ4Cj4ga2VybmVsOiBbICAgIDIuNjQzMTQyXSBpbnB1dDogSERBIEludGVs
-IFBDSCBGcm9udCBIZWFkcGhvbmUgYXMKPiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIu
-MC9zb3VuZC9jYXJkMC9pbnB1dDcKPiBrZXJuZWw6IFsgICAgMi42NDQ5MzJdIGlucHV0OiBIREEg
-SW50ZWwgUENIIExpbmUgYXMKPiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3Vu
-ZC9jYXJkMC9pbnB1dDYKPiBrZXJuZWw6IFsgICAgMi42NDUwNTBdIGlucHV0OiBIREEgSW50ZWwg
-UENIIE1pYyBhcwo+IC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQw
-L2lucHV0NQo+Cj4gSSBjb3VsZCBub3QgZmluZCB0aGUgY29kZSB3aGVyZSB0aGlzIG1lc3NhZ2Vz
-IGFyZSBnZW5lcmF0ZWQsIHdoZXJlIGlzIHRoYXQ/Cj4KPiBBbnkgaWRlYXMgd2hhdCBJIGNvdWxk
-L3Nob3VsZCB0cnkgdG8gZ2V0IG11bHRpY2hhbm5lbCBzdXBwb3J0IHdvcmtpbmc/Cj4gSXMgdGhl
-cmUgYW55IGtpbmQgb2YgZG9jdW1lbnRhdGlvbiBvbiB0aGUgY2EwMTMyIHRoYXQgY291bGQgYmUg
-aGVscGZ1bD8KCkEgbG90IG9mIHRoZXNlIGNhcGFiaWxpdGllcyBuZWVkIHRvIGJlIGV4cG9zZWQg
-YnkgdGhlIERTUCBvbiB0aGUKY2EwMTMyLiAgV2hhdCBmaXJtd2FyZSBhcmUgeW91IGxvYWRpbmcg
-b24gaXQ/Cgo+Cj4gQmVzdCByZWdhcmRzCj4gU3RlZmFuCj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+
+What are these codes?  Am I suppose to copy this into a file for the sound
+card to work on linux?
