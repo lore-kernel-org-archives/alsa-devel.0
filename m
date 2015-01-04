@@ -1,14 +1,21 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ALSA: snd-usb-caiaq: fix stream count check
-Date: Sun,  4 Jan 2015 19:59:29 +0100
-Message-ID: <1420397969-12961-1-git-send-email-daniel@zonque.org>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: Intel HDA / ca0132: Multichannel + S/PDIF support
+Date: Sun, 4 Jan 2015 12:33:33 -0800
+Message-ID: <CAEUnVG74AN21tPbeEoHU6YF7tuGEiWDF=0sAqoBBkG_8=6QXJA@mail.gmail.com>
+References: <54A2CD45.9040500@gmx.net>
+ <CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>
+ <54A7C7BF.5050709@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BFC9260684
- for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 19:59:41 +0100 (CET)
+Received: from mail-oi0-f50.google.com (mail-oi0-f50.google.com
+ [209.85.218.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1723E260684
+ for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 21:33:56 +0100 (CET)
+Received: by mail-oi0-f50.google.com with SMTP id x69so45560029oia.9
+ for <alsa-devel@alsa-project.org>; Sun, 04 Jan 2015 12:33:53 -0800 (PST)
+In-Reply-To: <54A7C7BF.5050709@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,35 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, "[v3.18+]"@mail.zonque.de, stable@kernel.org, Daniel Mack <daniel@zonque.org>
+To: Stefan Oltmanns <stefan-oltmanns@gmx.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 897c329bc ("ALSA: usb: caiaq: check for cdev->n_streams > 1")
-introduced a safety check to protect against bogus data provided by
-devices. However, the n_streams variable is already divided by
-CHANNELS_PER_STREAM, so the correct check is 'n_streams > 0'.
-
-Fix this to un-break support for stereo devices.
-
-Signed-off-by: Daniel Mack <daniel@zonque.org>
-Cc: stable@kernel.org [v3.18+]
----
- sound/usb/caiaq/audio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index 2728447..327f864 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -816,7 +816,7 @@ int snd_usb_caiaq_audio_init(struct snd_usb_caiaqdev *cdev)
- 		return -EINVAL;
- 	}
- 
--	if (cdev->n_streams < 2) {
-+	if (cdev->n_streams < 1) {
- 		dev_err(dev, "bogus number of streams: %d\n", cdev->n_streams);
- 		return -EINVAL;
- 	}
--- 
-2.2.0
+T24gU2F0LCBKYW4gMywgMjAxNSBhdCAyOjQzIEFNLCBTdGVmYW4gT2x0bWFubnMgPHN0ZWZhbi1v
+bHRtYW5uc0BnbXgubmV0PiB3cm90ZToKPiBBbSAwMy4wMS4yMDE1IHVtIDAyOjMwIHNjaHJpZWIg
+RHlsYW4gUmVpZDoKPj4gT24gVHVlLCBEZWMgMzAsIDIwMTQgYXQgODowNSBBTSwgU3RlZmFuIE9s
+dG1hbm5zCj4+IDxzdGVmYW4tb2x0bWFubnNAZ214Lm5ldD4gd3JvdGU6Cj4+PiBIaSwKPj4+Cj4+
+PiBJIG93biBhIEdpZ2FieXRlIEcxLlNuaXBlciBNMyBaNzcgbWFpbmJvYXJkIHdpdGggY2EwMTMy
+IG9uYm9hcmQgYXVkaW8uCj4+PiBDdXJyZW50bHkgb25seSBzdGVyZW8gb3V0IGFuZCBoZWFkcGhv
+bmUgb3V0IChhdCB0aGUgYmFjaywgYWx3YXlzIHNhbWUKPj4+IHNpZ25hbCkgd29yayBieSBkZWZh
+dWx0Lgo+Pj4gSSB3YXMgYWJsZSB0byBmaXggUy9QRElGIG91dCBieSBjaGFuZ2luZyB0aGUgaGVh
+ZHBob25lIHBpbiBpbiBmdW5jdGlvbgo+Pj4gY2EwMTMyX2NvbmZpZyB0byBzb21ldGhpbmcgYmVs
+b3cgMHgwZCwgbGlrZToKPj4+Cj4+PiBzcGVjLT5vdXRfcGluc1sxXSA9IDB4MGE7Cj4+Pgo+Pj4g
+Tm8gaWRlYSB3aHkgdGhpcyBmaXhlcyBTL1BESUYsIGJ1dCBubyBvdGhlciBlZmZlY3RzIG5vdGlj
+ZWQuIE5vIGlkZWEgaWYKPj4+IGl0wrRzIGdvaW5nIHRvIGJyZWFrIHNvbWV0aGluZyBvbiBvdGhl
+ciBkZXZpY2VzLiBPcmlnaW5hbCB2YWx1ZSBpcyAweDEwLgo+Pj4KPj4+IEluIHRoaXMgZnVuY3Rp
+b24gYWxzbyAzIERBQ3MgYXJlIGxpc3RlZC4gVGhlIGJvYXJkIGhhcyBhIHRvdGFsIG9mIDUKPj4+
+IHN0ZXJlbyBvdXRwdXRzOgo+Pj4KPj4+IC1Gcm9udHBhbmVsIChIREEgcGluIGNvbm5lY3RvciBv
+biBtYWluYm9hcmQpCj4+PiA0eCAzLDVtbSBvdXRwdXQgYXQgYmFja3BhbmVsOgo+Pj4gLVN0ZXJl
+byBvdXQKPj4+IC1IZWFkcGhvbmUgb3V0Cj4+PiAtUmVhciBvdXQKPj4+IC1DZW50ZXIvTEZFIG91
+dAo+Pj4KPj4+IEkgdHJpZWQgdG8gaW5jcmVhc2UgdGhlIG51bWJlciBvZiBjaGFubmVscyBhbmQg
+Y3JlYXRlIGFkZGl0aW9uYWwgb3V0cHV0cwo+Pj4gYW5kIGNvbm5lY3RlZCB0byB0aGUgb3RoZXIg
+REFDcy4gVGhlIG1heGltdW0gScK0bSBhYmxlIHRvIGlzIHRvIGdldAo+Pj4gZGlmZmVyZW50IHNp
+Z25hbHMgb3V0IG9mIHN0ZXJlbyBvdXQgYW5kIGZyb250IGhlYWRwaG9uZSAobm90IHVzZWZ1bCwK
+Pj4+IGp1c3Qgc29tZSB3ZWlyZCBtaXhlcykgb3Igc2FtZSBzaWduYWwgZnJvbSBhbGwgMyBvdXRw
+dXRzLiBSZWFyIGFuZCBjL2xmZQo+Pj4gb3V0IGFsd2F5cyBubyBzaWduYWwuCj4+Pgo+Pj4gRHVy
+aW5nIGluaXRpYWxpemF0aW9uIHNuZF9oZGFfcGFyc2VfcGluX2RlZl9jb25maWcgaXMgY2FsbGVk
+IGFuZCB0d28KPj4+IG91dHB1dHMgYXJlIGZvdW5kLiBJIHRyaWVkIHRvIG92ZXJyaWRlIHRoYXQg
+YW5kIGNoYW5nZSBzcGVjLT5hdXRvY2ZnCj4+PiBhZnRlciB0aGF0IGZ1bmN0aW9uIGlzIGNhbGxl
+ZCwgbm8gc3VjY2Vzcy4KPj4+IEFsc28gbm8gbWF0dGVyIHdoYXQgSSBjaGFuZ2UgdGhlcmUsIGEg
+bGl0dGxlIGxhdGVyIEkgZ2V0IHRoaXMga2VybmVsCj4+PiBtZXNzYWdlczoKPj4+Cj4+PiBrZXJu
+ZWw6IFsgICAgMi42NDI5NzJdIGlucHV0OiBIREEgSW50ZWwgUENIIExpbmUgT3V0IGFzCj4+PiAv
+ZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9pbnB1dDgKPj4+IGtl
+cm5lbDogWyAgICAyLjY0MzE0Ml0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggRnJvbnQgSGVhZHBob25l
+IGFzCj4+PiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9pbnB1
+dDcKPj4+IGtlcm5lbDogWyAgICAyLjY0NDkzMl0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTGluZSBh
+cwo+Pj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5wdXQ2
+Cj4+PiBrZXJuZWw6IFsgICAgMi42NDUwNTBdIGlucHV0OiBIREEgSW50ZWwgUENIIE1pYyBhcwo+
+Pj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5wdXQ1Cj4+
+Pgo+Pj4gSSBjb3VsZCBub3QgZmluZCB0aGUgY29kZSB3aGVyZSB0aGlzIG1lc3NhZ2VzIGFyZSBn
+ZW5lcmF0ZWQsIHdoZXJlIGlzIHRoYXQ/Cj4+Pgo+Pj4gQW55IGlkZWFzIHdoYXQgSSBjb3VsZC9z
+aG91bGQgdHJ5IHRvIGdldCBtdWx0aWNoYW5uZWwgc3VwcG9ydCB3b3JraW5nPwo+Pj4gSXMgdGhl
+cmUgYW55IGtpbmQgb2YgZG9jdW1lbnRhdGlvbiBvbiB0aGUgY2EwMTMyIHRoYXQgY291bGQgYmUg
+aGVscGZ1bD8KPj4KPj4gQSBsb3Qgb2YgdGhlc2UgY2FwYWJpbGl0aWVzIG5lZWQgdG8gYmUgZXhw
+b3NlZCBieSB0aGUgRFNQIG9uIHRoZQo+PiBjYTAxMzIuICBXaGF0IGZpcm13YXJlIGFyZSB5b3Ug
+bG9hZGluZyBvbiBpdD8KPgo+IEkgdHJpZWQgdGhlIG9uZSBpbmNsdWRlZCBhbmQgbm9uZSwgbWFr
+ZXMgbm8gZGlmZmVyZW5jZSBmb3IgdGhhdCBwcm9ibGVtLgo+IEFsc28gdGhlIGZpcm13YXJlIGdl
+dHMgbG9hZGVkIGFmdGVyIGFsbCB0aGUgaW5wdXQvb3V0cHV0IGNvbmZpZ3VyYXRpb24sCj4geW91
+wrRyZSBzdXJlIHRoZSBmaXJtd2FyZSBpcyBuZWVkZWQgZm9yIG11bHRpY2hhbm5lbCBzdXBwb3J0
+PyBJcyBpdAo+IHBvc3NpYmxlL2xlZ2FsIHRvIGV4dHJhY3QgaXQgZnJvbSB0aGUgd2luZG93cyBk
+cml2ZXIgc29tZWhvdz8KPgoKSSdtIG5vdCBzdXJlIHlvdSBuZWVkIHRoZSBEU1AgdG8gZG8gdGhp
+cy4gIFlvdSBjb3VsZCB0cnkgdGhlIHdpZG93cwpmaXJtd2FyZSwgYnV0IEkgZG9uJ3QgdGhpbmsg
+dGhlIGRyaXZlciB3aWxsIGtub3cgaG93IHRvIGNvbW11bmljYXRlCndpdGggaXQuClNvcnJ5IEkg
+ZG9uJ3QgaGF2ZSBhbnl0aGluZyBtb3JlIGVuY291cmFnaW5nLgoKPgo+IF9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbApfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
