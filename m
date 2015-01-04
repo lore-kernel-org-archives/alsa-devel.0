@@ -1,93 +1,67 @@
-From: Xuebing Wang <xbing6@gmail.com>
-Subject: Re: DSD over HDMI: audio data packetization
-Date: Sun, 04 Jan 2015 11:10:58 +0800
-Message-ID: <1420341058.1981.6.camel@gmail.com>
-References: <1420032720.2102.14.camel@gmail.com> <54A3FCD7.2010902@iki.fi>
- <96A12704CE18D347B625EE2D4A099D195C438E@SHSMSX103.ccr.corp.intel.com>
- <54A4185E.5010900@gmail.com> <54A41A18.3070005@iki.fi>
- <96A12704CE18D347B625EE2D4A099D195C4443@SHSMSX103.ccr.corp.intel.com>
- <54A4CF03.5030709@iki.fi>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/13] ALSA: Deletion of some unnecessary checks
+Date: Sun, 04 Jan 2015 13:43:11 +0100
+Message-ID: <54A9355F.4050102@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
- [209.85.192.182])
- by alsa0.perex.cz (Postfix) with ESMTP id C32A5260569
- for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 04:11:06 +0100 (CET)
-Received: by mail-pd0-f182.google.com with SMTP id p10so25931445pdj.27
- for <alsa-devel@alsa-project.org>; Sat, 03 Jan 2015 19:11:05 -0800 (PST)
-In-Reply-To: <54A4CF03.5030709@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ";
- Takashi Iwai" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, ";
- Wu Fengguang" <wfg@linux.intel.com>, Andrej Falout <andrej@falout.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Anssi, Libin,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 4 Jan 2015 11:50:12 +0100
 
-Thanks for your help.
+Further update suggestions were taken into account after several patches
+were applied from static source code analysis.
 
-After a little bit of research, I do think it is possible to stream DSD
-over HDMI (the mechanism is as Anssi mentioned, similar way as HBR).
+Markus Elfring (3):
+  seq: Deletion of unnecessary checks before the function call "snd_midi_event_free"
+  oss: Deletion of unnecessary checks before the function call "vfree"
+  emu10k1: Delete an unnecessary check before the function call "kfree"
+  oxygen: Delete an unnecessary check before the function call "snd_pcm_suspend"
+  emux: Delete an unnecessary check before the function call "snd_sf_free"
+  ASoC: Intel: Delete an unnecessary check before the function call "sst_dma_free"
+  ASoC: fsi: Deletion of unnecessary checks before the function call "clk_enable"
+  ASoC: Intel: Delete an unnecessary check before the function call "release_firmware"
+  i2sbus: Delete an unnecessary check before the function call "snd_pcm_suspend_all"
+  sb: Delete an unnecessary check before the function call "snd_emux_free"
+  Deletion of checks before the function call "iounmap"
+  msnd: One function call less in snd_msnd_attach() after error detection
+  msnd: Fix centralized exiting from snd_msnd_attach()
 
-Please see HDA spec:
-3.7.1 Stream Format Structure
-(If the TYPE is set to Non-PCM, the controller just pushes data over the
-link and is not concerned
-with formatting. The base rate, data type, and number of Words (MULT) to
-send each valid frame
-are specified to control the rate at which the non-PCM data is sent.)
+ sound/aoa/soundbus/i2sbus/core.c | 13 ++++++-------
+ sound/arm/aaci.c                 |  4 ++--
+ sound/drivers/ml403-ac97cr.c     |  3 +--
+ sound/isa/msnd/msnd_pinnacle.c   | 31 ++++++++++++++++---------------
+ sound/parisc/harmony.c           |  4 +---
+ sound/pci/ad1889.c               |  5 +----
+ sound/pci/asihpi/hpioctl.c       |  6 ++----
+ sound/pci/atiixp.c               |  3 +--
+ sound/pci/atiixp_modem.c         |  3 +--
+ sound/pci/aw2/aw2-alsa.c         |  4 +---
+ sound/pci/bt87x.c                |  3 +--
+ sound/pci/cs4281.c               |  6 ++----
+ sound/pci/cs46xx/cs46xx_lib.c    |  4 ++--
+ sound/pci/ctxfi/cthw20k1.c       |  5 +----
+ sound/pci/ctxfi/cthw20k2.c       |  5 +----
+ sound/pci/echoaudio/echoaudio.c  |  6 +-----
+ sound/pci/hda/hda_intel.c        |  3 +--
+ sound/pci/lola/lola.c            |  6 ++----
+ sound/pci/mixart/mixart.c        |  7 +++----
+ sound/pci/nm256/nm256.c          |  6 ++----
+ sound/pci/rme9652/hdsp.c         |  4 +---
+ sound/pci/rme9652/hdspm.c        |  4 +---
+ sound/pci/rme9652/rme9652.c      |  3 +--
+ sound/pci/sis7019.c              |  5 +----
+ sound/pci/ymfpci/ymfpci_main.c   |  3 +--
+ sound/ppc/pmac.c                 | 15 +++++----------
+ 26 files changed, 58 insertions(+), 103 deletions(-)
 
-7.3.3.8 Converter Format
-
-What do you think? In order to implement this similiar mechanism
-(similar to HBR), I still have some detailed questions that I will write
-in another email. Thanks.
-
-
-On Thu, 2015-01-01 at 06:37 +0200, Anssi Hannula wrote:
-> 01.01.2015, 04:07, Yang, Libin kirjoitti:
-> > Hi,
-> > 
-> >> -----Original Message-----
-> >> From: Anssi Hannula [mailto:anssi.hannula@iki.fi]
-> >> Sent: Wednesday, December 31, 2014 11:45 PM
-> >> To: Xuebing Wang
-> >> Cc: Yang, Libin; alsa-devel@alsa-project.org; Lin, Mengdong; ; Takashi Iwai; ;
-> >> Wu Fengguang
-> >> Subject: Re: [alsa-devel] DSD over HDMI: audio data packetization
-> >>
-> >> 31.12.2014, 17:38, Xuebing Wang kirjoitti:
-> >>> Anssi, Libin,
-> >>>
-> >>> Thank you very much for your help.
-> >>>
-> >>> If L-PCM audio data packetization is done by hardware, is it possible
-> >>> to implement DSD over HDMI on Intel integrated graphics? Thanks again.
-> >>
-> >> I don't think so, unless:
-> >>
-> >> (a) It is possible to somehow encapsulate the stream in Audio Sample
-> >> Packets and be accepted by the receiver (like e.g. AC3, DTS). I'm not aware of
-> >> such a way.
-> >>
-> >> or:
-> >> (b) There is some undocumented feature in the Intel HDMI codecs allowing
-> >> the driver to switch to DSD or driver-constructed packets (instead of
-> >> ASP) in similar way as there is a way to switch to HBR packets.
-> >>
-> > 
-> > Yes, I agree. And I'm not sure whether HDMI spec supports DSD.
-> 
-> It does, via the "One Bit Audio" and "DST" formats (spec 5.3.9, 5.3.10
-> in 1.3a/1.4a).
+-- 
+2.2.1
