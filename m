@@ -1,8 +1,8 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 8/13] ASoC: Intel: Delete an unnecessary check
- before the function call "release_firmware"
-Date: Sun, 04 Jan 2015 14:14:37 +0100
-Message-ID: <54A93CBD.7090905@users.sourceforge.net>
+Subject: [PATCH 9/13] ALSA: i2sbus: Delete an unnecessary check
+ before the function call "snd_pcm_suspend_all"
+Date: Sun, 04 Jan 2015 14:21:43 +0100
+Message-ID: <54A93E67.8070105@users.sourceforge.net>
 References: <5307CAA2.8060406@users.sourceforge.net>
  <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
  <530A086E.8010901@users.sourceforge.net>
@@ -24,9 +24,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DFDF2605E8
- for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 14:14:53 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id A78F02605E8
+ for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 14:21:58 +0100 (CET)
 In-Reply-To: <54A9355F.4050102@users.sourceforge.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,36 +37,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Johannes Berg <johannes@sipsolutions.net>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 Cc: Julia Lawall <julia.lawall@lip6.fr>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 3 Jan 2015 19:49:37 +0100
+Date: Sat, 3 Jan 2015 20:43:01 +0100
 
-The release_firmware() function tests whether its argument is NULL and then
+The snd_pcm_suspend_all() function tests whether its argument is NULL and then
 returns immediately. Thus the test around the call is not needed.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/soc/intel/sst/sst_loader.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/aoa/soundbus/i2sbus/core.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/sst/sst_loader.c b/sound/soc/intel/sst/sst_loader.c
-index b580f96..7888cd7 100644
---- a/sound/soc/intel/sst/sst_loader.c
-+++ b/sound/soc/intel/sst/sst_loader.c
-@@ -324,8 +324,7 @@ void sst_firmware_load_cb(const struct firmware *fw, void *context)
+diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
+index 4e2b4fb..837ba99 100644
+--- a/sound/aoa/soundbus/i2sbus/core.c
++++ b/sound/aoa/soundbus/i2sbus/core.c
+@@ -381,10 +381,8 @@ static int i2sbus_suspend(struct macio_dev* dev, pm_message_t state)
  
- 	if (ctx->sst_state != SST_RESET ||
- 			ctx->fw_in_mem != NULL) {
--		if (fw != NULL)
--			release_firmware(fw);
-+		release_firmware(fw);
- 		mutex_unlock(&ctx->sst_lock);
- 		return;
- 	}
+ 	list_for_each_entry(i2sdev, &control->list, item) {
+ 		/* Notify Alsa */
+-		if (i2sdev->sound.pcm) {
+-			/* Suspend PCM streams */
+-			snd_pcm_suspend_all(i2sdev->sound.pcm);
+-		}
++		/* Suspend PCM streams */
++		snd_pcm_suspend_all(i2sdev->sound.pcm);
+ 
+ 		/* Notify codecs */
+ 		list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
 -- 
 2.2.1
