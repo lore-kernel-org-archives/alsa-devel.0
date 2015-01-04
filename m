@@ -1,19 +1,17 @@
-From: Stefan Oltmanns <stefan-oltmanns@gmx.net>
-Subject: Re: Intel HDA / ca0132: Multichannel + S/PDIF support
-Date: Sun, 04 Jan 2015 22:26:44 +0100
-Message-ID: <54A9B014.6000306@gmx.net>
-References: <54A2CD45.9040500@gmx.net>
- <CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>
- <54A7C7BF.5050709@gmx.net>
- <CAEUnVG74AN21tPbeEoHU6YF7tuGEiWDF=0sAqoBBkG_8=6QXJA@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH - ALSA: snd-virtuoso 1/1] Xonar DSX support
+Date: Sun, 04 Jan 2015 22:56:37 +0100
+Message-ID: <54A9B715.7080902@ladisch.de>
+References: <504c9632.8697320a.1336.4b37@mx.google.com>
+ <loom.20150103T071338-489@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 86F1A26068A
- for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 22:26:47 +0100 (CET)
-In-Reply-To: <CAEUnVG74AN21tPbeEoHU6YF7tuGEiWDF=0sAqoBBkG_8=6QXJA@mail.gmail.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B6F65260666
+ for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 22:57:24 +0100 (CET)
+In-Reply-To: <loom.20150103T071338-489@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,75 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Man <manle360@yahoo.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QW0gMDQuMDEuMjAxNSB1bSAyMTozMyBzY2hyaWViIER5bGFuIFJlaWQ6Cj4gT24gU2F0LCBKYW4g
-MywgMjAxNSBhdCAyOjQzIEFNLCBTdGVmYW4gT2x0bWFubnMgPHN0ZWZhbi1vbHRtYW5uc0BnbXgu
-bmV0PiB3cm90ZToKPj4gQW0gMDMuMDEuMjAxNSB1bSAwMjozMCBzY2hyaWViIER5bGFuIFJlaWQ6
-Cj4+PiBPbiBUdWUsIERlYyAzMCwgMjAxNCBhdCA4OjA1IEFNLCBTdGVmYW4gT2x0bWFubnMKPj4+
-IDxzdGVmYW4tb2x0bWFubnNAZ214Lm5ldD4gd3JvdGU6Cj4+Pj4gSGksCj4+Pj4KPj4+PiBJIG93
-biBhIEdpZ2FieXRlIEcxLlNuaXBlciBNMyBaNzcgbWFpbmJvYXJkIHdpdGggY2EwMTMyIG9uYm9h
-cmQgYXVkaW8uCj4+Pj4gQ3VycmVudGx5IG9ubHkgc3RlcmVvIG91dCBhbmQgaGVhZHBob25lIG91
-dCAoYXQgdGhlIGJhY2ssIGFsd2F5cyBzYW1lCj4+Pj4gc2lnbmFsKSB3b3JrIGJ5IGRlZmF1bHQu
-Cj4+Pj4gSSB3YXMgYWJsZSB0byBmaXggUy9QRElGIG91dCBieSBjaGFuZ2luZyB0aGUgaGVhZHBo
-b25lIHBpbiBpbiBmdW5jdGlvbgo+Pj4+IGNhMDEzMl9jb25maWcgdG8gc29tZXRoaW5nIGJlbG93
-IDB4MGQsIGxpa2U6Cj4+Pj4KPj4+PiBzcGVjLT5vdXRfcGluc1sxXSA9IDB4MGE7Cj4+Pj4KPj4+
-PiBObyBpZGVhIHdoeSB0aGlzIGZpeGVzIFMvUERJRiwgYnV0IG5vIG90aGVyIGVmZmVjdHMgbm90
-aWNlZC4gTm8gaWRlYSBpZgo+Pj4+IGl0wrRzIGdvaW5nIHRvIGJyZWFrIHNvbWV0aGluZyBvbiBv
-dGhlciBkZXZpY2VzLiBPcmlnaW5hbCB2YWx1ZSBpcyAweDEwLgo+Pj4+Cj4+Pj4gSW4gdGhpcyBm
-dW5jdGlvbiBhbHNvIDMgREFDcyBhcmUgbGlzdGVkLiBUaGUgYm9hcmQgaGFzIGEgdG90YWwgb2Yg
-NQo+Pj4+IHN0ZXJlbyBvdXRwdXRzOgo+Pj4+Cj4+Pj4gLUZyb250cGFuZWwgKEhEQSBwaW4gY29u
-bmVjdG9yIG9uIG1haW5ib2FyZCkKPj4+PiA0eCAzLDVtbSBvdXRwdXQgYXQgYmFja3BhbmVsOgo+
-Pj4+IC1TdGVyZW8gb3V0Cj4+Pj4gLUhlYWRwaG9uZSBvdXQKPj4+PiAtUmVhciBvdXQKPj4+PiAt
-Q2VudGVyL0xGRSBvdXQKPj4+Pgo+Pj4+IEkgdHJpZWQgdG8gaW5jcmVhc2UgdGhlIG51bWJlciBv
-ZiBjaGFubmVscyBhbmQgY3JlYXRlIGFkZGl0aW9uYWwgb3V0cHV0cwo+Pj4+IGFuZCBjb25uZWN0
-ZWQgdG8gdGhlIG90aGVyIERBQ3MuIFRoZSBtYXhpbXVtIEnCtG0gYWJsZSB0byBpcyB0byBnZXQK
-Pj4+PiBkaWZmZXJlbnQgc2lnbmFscyBvdXQgb2Ygc3RlcmVvIG91dCBhbmQgZnJvbnQgaGVhZHBo
-b25lIChub3QgdXNlZnVsLAo+Pj4+IGp1c3Qgc29tZSB3ZWlyZCBtaXhlcykgb3Igc2FtZSBzaWdu
-YWwgZnJvbSBhbGwgMyBvdXRwdXRzLiBSZWFyIGFuZCBjL2xmZQo+Pj4+IG91dCBhbHdheXMgbm8g
-c2lnbmFsLgo+Pj4+Cj4+Pj4gRHVyaW5nIGluaXRpYWxpemF0aW9uIHNuZF9oZGFfcGFyc2VfcGlu
-X2RlZl9jb25maWcgaXMgY2FsbGVkIGFuZCB0d28KPj4+PiBvdXRwdXRzIGFyZSBmb3VuZC4gSSB0
-cmllZCB0byBvdmVycmlkZSB0aGF0IGFuZCBjaGFuZ2Ugc3BlYy0+YXV0b2NmZwo+Pj4+IGFmdGVy
-IHRoYXQgZnVuY3Rpb24gaXMgY2FsbGVkLCBubyBzdWNjZXNzLgo+Pj4+IEFsc28gbm8gbWF0dGVy
-IHdoYXQgSSBjaGFuZ2UgdGhlcmUsIGEgbGl0dGxlIGxhdGVyIEkgZ2V0IHRoaXMga2VybmVsCj4+
-Pj4gbWVzc2FnZXM6Cj4+Pj4KPj4+PiBrZXJuZWw6IFsgICAgMi42NDI5NzJdIGlucHV0OiBIREEg
-SW50ZWwgUENIIExpbmUgT3V0IGFzCj4+Pj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFi
-LjAvc291bmQvY2FyZDAvaW5wdXQ4Cj4+Pj4ga2VybmVsOiBbICAgIDIuNjQzMTQyXSBpbnB1dDog
-SERBIEludGVsIFBDSCBGcm9udCBIZWFkcGhvbmUgYXMKPj4+PiAvZGV2aWNlcy9wY2kwMDAwOjAw
-LzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9pbnB1dDcKPj4+PiBrZXJuZWw6IFsgICAgMi42NDQ5
-MzJdIGlucHV0OiBIREEgSW50ZWwgUENIIExpbmUgYXMKPj4+PiAvZGV2aWNlcy9wY2kwMDAwOjAw
-LzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9pbnB1dDYKPj4+PiBrZXJuZWw6IFsgICAgMi42NDUw
-NTBdIGlucHV0OiBIREEgSW50ZWwgUENIIE1pYyBhcwo+Pj4+IC9kZXZpY2VzL3BjaTAwMDA6MDAv
-MDAwMDowMDoxYi4wL3NvdW5kL2NhcmQwL2lucHV0NQo+Pj4+Cj4+Pj4gSSBjb3VsZCBub3QgZmlu
-ZCB0aGUgY29kZSB3aGVyZSB0aGlzIG1lc3NhZ2VzIGFyZSBnZW5lcmF0ZWQsIHdoZXJlIGlzIHRo
-YXQ/Cj4+Pj4KPj4+PiBBbnkgaWRlYXMgd2hhdCBJIGNvdWxkL3Nob3VsZCB0cnkgdG8gZ2V0IG11
-bHRpY2hhbm5lbCBzdXBwb3J0IHdvcmtpbmc/Cj4+Pj4gSXMgdGhlcmUgYW55IGtpbmQgb2YgZG9j
-dW1lbnRhdGlvbiBvbiB0aGUgY2EwMTMyIHRoYXQgY291bGQgYmUgaGVscGZ1bD8KPj4+Cj4+PiBB
-IGxvdCBvZiB0aGVzZSBjYXBhYmlsaXRpZXMgbmVlZCB0byBiZSBleHBvc2VkIGJ5IHRoZSBEU1Ag
-b24gdGhlCj4+PiBjYTAxMzIuICBXaGF0IGZpcm13YXJlIGFyZSB5b3UgbG9hZGluZyBvbiBpdD8K
-Pj4KPj4gSSB0cmllZCB0aGUgb25lIGluY2x1ZGVkIGFuZCBub25lLCBtYWtlcyBubyBkaWZmZXJl
-bmNlIGZvciB0aGF0IHByb2JsZW0uCj4+IEFsc28gdGhlIGZpcm13YXJlIGdldHMgbG9hZGVkIGFm
-dGVyIGFsbCB0aGUgaW5wdXQvb3V0cHV0IGNvbmZpZ3VyYXRpb24sCj4+IHlvdcK0cmUgc3VyZSB0
-aGUgZmlybXdhcmUgaXMgbmVlZGVkIGZvciBtdWx0aWNoYW5uZWwgc3VwcG9ydD8gSXMgaXQKPj4g
-cG9zc2libGUvbGVnYWwgdG8gZXh0cmFjdCBpdCBmcm9tIHRoZSB3aW5kb3dzIGRyaXZlciBzb21l
-aG93Pwo+Pgo+IAo+IEknbSBub3Qgc3VyZSB5b3UgbmVlZCB0aGUgRFNQIHRvIGRvIHRoaXMuICBZ
-b3UgY291bGQgdHJ5IHRoZSB3aWRvd3MKPiBmaXJtd2FyZSwgYnV0IEkgZG9uJ3QgdGhpbmsgdGhl
-IGRyaXZlciB3aWxsIGtub3cgaG93IHRvIGNvbW11bmljYXRlCj4gd2l0aCBpdC4KPiBTb3JyeSBJ
-IGRvbid0IGhhdmUgYW55dGhpbmcgbW9yZSBlbmNvdXJhZ2luZy4KPiAKClRoZSBmaXJtd2FyZSBz
-ZWVtcyB0byBiZSBkaXJlY3RseSBpbmNsdWRlZCBpbiB0aGUgZHJpdmVyIChmaWxlIGlzIGNhbGxl
-ZApjdEhkYS5zeXMpLCBhcyBJIGNhbiBmaW5kIHRoZSBieXRlIHNlcXVlbmNlIE1YRkwgbWFueSB0
-aW1lcyBpbiBpdCAodGhpcwppcyBob3cgdGhlIGN0ZWZ4LmJpbiBmaWxlIHN0YXJ0cykuIFVuZm9y
-dHVuYXRlbHkgaXQgZG9lcyBub3QgZXZlbiB0byBiZQppbiBvbmUgcGFydCAodGhlcmUgYXJlIHN0
-cmluZ3MgaW4gYmV0d2VlbikuIElzIHRoZXJlIGFueSBpbmZvcm1hdGlvbgphdmFpbGFibGUgb2Yg
-dGhlIGZpbGUgZm9ybWF0IG9mIHRoZSBmaXJtd2FyZSwgbGlrZSBoZWFkZXIgc3RydWN0dXJlLCBz
-bwpJIGNhbiBmaW5kIG91dCBsZW5ndGggb2YgaXQ/CgpTdGlsbCB0aGUgcXVlc3Rpb24gcmVtYWlu
-cywgdGhlIGlucHV0L291dHB1dHMgc2VlbSB0byBiZSBnZW5lcmF0ZWQKYmVmb3JlIHRoZSBmaXJt
-d2FyZSBpcyBsb2FkZWQsIGhvdyBpcyB0aGF0IGRvbmU/IEhvdyBkb2VzIHRoZSBkcml2ZXIKa25v
-dyB0aGF0IHRoZXJlIGFyZSB0aGlzIDQgSS9PcyBhbmQgdGhhdCB0aGV5IGFyZSBuYW1lZCBsaWtl
-IHRoYXQ/ClRoYXTCtHMgbm90IGZyb20gdGhlIHBhdGNoX2NhMTAzMi5jLiBJIGNhbm5vdCBmaW5k
-IGFueSBjb2RlIGZvciB0aGF0LgoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+Man wrote:
+> Am I suppose to copy this into a file for the sound card to work on linux?
+
+This code got merged into the 3.8 kernel two years ago.
+If your kernel is older, update it.
+
+
+Regards,
+Clemens
