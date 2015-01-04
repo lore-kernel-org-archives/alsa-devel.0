@@ -1,8 +1,8 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 9/13] ALSA: i2sbus: Delete an unnecessary check
- before the function call "snd_pcm_suspend_all"
-Date: Sun, 04 Jan 2015 14:21:43 +0100
-Message-ID: <54A93E67.8070105@users.sourceforge.net>
+Subject: [PATCH 10/13] ALSA: sb: Delete an unnecessary check
+ before the function call "snd_emux_free"
+Date: Sun, 04 Jan 2015 14:28:17 +0100
+Message-ID: <54A93FF1.3050108@users.sourceforge.net>
 References: <5307CAA2.8060406@users.sourceforge.net>
  <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
  <530A086E.8010901@users.sourceforge.net>
@@ -24,9 +24,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id A78F02605E8
- for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 14:21:58 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9E662605E8
+ for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 14:28:31 +0100 (CET)
 In-Reply-To: <54A9355F.4050102@users.sourceforge.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,39 +37,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Johannes Berg <johannes@sipsolutions.net>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 Cc: Julia Lawall <julia.lawall@lip6.fr>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 3 Jan 2015 20:43:01 +0100
+Date: Sat, 3 Jan 2015 21:02:32 +0100
 
-The snd_pcm_suspend_all() function tests whether its argument is NULL and then
+The snd_emux_free() function tests whether its argument is NULL and then
 returns immediately. Thus the test around the call is not needed.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/aoa/soundbus/i2sbus/core.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/isa/sb/emu8000_synth.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index 4e2b4fb..837ba99 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -381,10 +381,8 @@ static int i2sbus_suspend(struct macio_dev* dev, pm_message_t state)
- 
- 	list_for_each_entry(i2sdev, &control->list, item) {
- 		/* Notify Alsa */
--		if (i2sdev->sound.pcm) {
--			/* Suspend PCM streams */
--			snd_pcm_suspend_all(i2sdev->sound.pcm);
--		}
-+		/* Suspend PCM streams */
-+		snd_pcm_suspend_all(i2sdev->sound.pcm);
- 
- 		/* Notify codecs */
- 		list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
+diff --git a/sound/isa/sb/emu8000_synth.c b/sound/isa/sb/emu8000_synth.c
+index 95b39be..72332df 100644
+--- a/sound/isa/sb/emu8000_synth.c
++++ b/sound/isa/sb/emu8000_synth.c
+@@ -103,8 +103,7 @@ static int snd_emu8000_delete_device(struct snd_seq_device *dev)
+ 	hw = dev->driver_data;
+ 	if (hw->pcm)
+ 		snd_device_free(dev->card, hw->pcm);
+-	if (hw->emu)
+-		snd_emux_free(hw->emu);
++	snd_emux_free(hw->emu);
+ 	snd_util_memhdr_free(hw->memhdr);
+ 	hw->emu = NULL;
+ 	hw->memhdr = NULL;
 -- 
 2.2.1
