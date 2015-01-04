@@ -1,18 +1,15 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH 01/21] ASoC: sam9g20_wm8731: Use static DAI
-	format setup
-Date: Sun, 4 Jan 2015 09:11:01 +0800
-Message-ID: <54A89325.9030708@atmel.com>
-References: <1420128990-6872-1-git-send-email-lars@metafoo.de>
- <1420128990-6872-2-git-send-email-lars@metafoo.de>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ASoC: Intel: Don't change offset of block
+	allocator during fixed allocate
+Date: Sun,  4 Jan 2015 09:15:04 +0800
+Message-ID: <1420334104-3341-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eusmtp01.atmel.com (eusmtp01.atmel.com [212.144.249.243])
- by alsa0.perex.cz (Postfix) with ESMTP id C736826058D
- for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 02:11:07 +0100 (CET)
-In-Reply-To: <1420128990-6872-2-git-send-email-lars@metafoo.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id B42B326058D
+ for <alsa-devel@alsa-project.org>; Sun,  4 Jan 2015 02:13:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Sangbeom Kim <sbkim73@samsung.com>, Denis Carikli <denis@eukrea.com>, Manuel Lauss <manuel.lauss@googlemail.com>, Shawn Guo <shawn.guo@linaro.org>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Daniel Mack <daniel@zonque.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars-Peter Clausen,
+The offset of block allocator, ba->offset, should not be changed during
+fixed address allocating, for the caller may treat it as the offset of
+allocated memory and use it. In the case that we allocate more than 1
+blocks, we should make sure this offset is correct.
 
-On 01/02/2015 12:16 AM, Lars-Peter Clausen wrote:
-> Set the dai_fmt field in the dai_link struct instead of manually calling
-> snd_soc_dai_fmt(). This makes the code cleaner and shorter.
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Here introduces a temp allocator for the later continuous allocating.
 
-Thanks.
-Acked-by: Bo Shen <voice.shen@atmel.com>
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+---
+ sound/soc/intel/sst-firmware.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-> ---
->   sound/soc/atmel/sam9g20_wm8731.c | 30 ++----------------------------
->   1 file changed, 2 insertions(+), 28 deletions(-)
->
-> diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-> index 66b66d0..98ca634 100644
-> --- a/sound/soc/atmel/sam9g20_wm8731.c
-> +++ b/sound/soc/atmel/sam9g20_wm8731.c
-> @@ -64,33 +64,6 @@
->
->   static struct clk *mclk;
->
-> -static int at91sam9g20ek_hw_params(struct snd_pcm_substream *substream,
-> -	struct snd_pcm_hw_params *params)
-> -{
-> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> -	int ret;
-> -
-> -	/* set codec DAI configuration */
-> -	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-> -		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	/* set cpu DAI configuration */
-> -	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-> -		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	return 0;
-> -}
-> -
-> -static struct snd_soc_ops at91sam9g20ek_ops = {
-> -	.hw_params = at91sam9g20ek_hw_params,
-> -};
-> -
->   static int at91sam9g20ek_set_bias_level(struct snd_soc_card *card,
->   					struct snd_soc_dapm_context *dapm,
->   					enum snd_soc_bias_level level)
-> @@ -173,7 +146,8 @@ static struct snd_soc_dai_link at91sam9g20ek_dai = {
->   	.init = at91sam9g20ek_wm8731_init,
->   	.platform_name = "at91rm9200_ssc.0",
->   	.codec_name = "wm8731.0-001b",
-> -	.ops = &at91sam9g20ek_ops,
-> +	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> +		   SND_SOC_DAIFMT_CBM_CFM,
->   };
->
->   static struct snd_soc_card snd_soc_at91sam9g20ek = {
->
-
-Best Regards,
-Bo Shen
+diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
+index 50d6925..a2ae2c5 100644
+--- a/sound/soc/intel/sst-firmware.c
++++ b/sound/soc/intel/sst-firmware.c
+@@ -707,6 +707,7 @@ static int block_alloc_fixed(struct sst_dsp *dsp, struct sst_block_allocator *ba
+ 	struct list_head *block_list)
+ {
+ 	struct sst_mem_block *block, *tmp;
++	struct sst_block_allocator ba_tmp = *ba;
+ 	u32 end = ba->offset + ba->size, block_end;
+ 	int err;
+ 
+@@ -731,9 +732,9 @@ static int block_alloc_fixed(struct sst_dsp *dsp, struct sst_block_allocator *ba
+ 		if (ba->offset >= block->offset && ba->offset < block_end) {
+ 
+ 			/* align ba to block boundary */
+-			ba->size -= block_end - ba->offset;
+-			ba->offset = block_end;
+-			err = block_alloc_contiguous(dsp, ba, block_list);
++			ba_tmp.size -= block_end - ba->offset;
++			ba_tmp.offset = block_end;
++			err = block_alloc_contiguous(dsp, &ba_tmp, block_list);
+ 			if (err < 0)
+ 				return -ENOMEM;
+ 
+@@ -768,10 +769,10 @@ static int block_alloc_fixed(struct sst_dsp *dsp, struct sst_block_allocator *ba
+ 			list_move(&block->list, &dsp->used_block_list);
+ 			list_add(&block->module_list, block_list);
+ 			/* align ba to block boundary */
+-			ba->size -= block_end - ba->offset;
+-			ba->offset = block_end;
++			ba_tmp.size -= block_end - ba->offset;
++			ba_tmp.offset = block_end;
+ 
+-			err = block_alloc_contiguous(dsp, ba, block_list);
++			err = block_alloc_contiguous(dsp, &ba_tmp, block_list);
+ 			if (err < 0)
+ 				return -ENOMEM;
+ 
+-- 
+1.9.1
