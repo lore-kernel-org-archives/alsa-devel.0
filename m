@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 7/13] ASoC: fsi: Deletion of unnecessary checks before
- the function call "clk_enable"
-Date: Mon, 5 Jan 2015 19:03:09 +0000
-Message-ID: <20150105190309.GE2634@sirena.org.uk>
+Subject: Re: [PATCH 6/13] ASoC: Intel: Delete an unnecessary check before the
+ function call "sst_dma_free"
+Date: Mon, 5 Jan 2015 19:02:44 +0000
+Message-ID: <20150105190244.GD2634@sirena.org.uk>
 References: <alpine.DEB.2.10.1402251014170.2080@hadrien>
  <530CD2C4.4050903@users.sourceforge.net>
  <alpine.DEB.2.10.1402251840450.7035@hadrien>
@@ -12,47 +12,47 @@ References: <alpine.DEB.2.10.1402251014170.2080@hadrien>
  <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
  <5317A59D.4@users.sourceforge.net>
  <54A9355F.4050102@users.sourceforge.net>
- <54A93C1E.4050200@users.sourceforge.net>
+ <54A93B5A.9050504@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+SfteS7bOf3dGlBC"
+	protocol="application/pgp-signature"; boundary="PHCdUe6m4AxPMzOu"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <54A93C1E.4050200@users.sourceforge.net>
+In-Reply-To: <54A93B5A.9050504@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+Cc: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
 
---+SfteS7bOf3dGlBC
+--PHCdUe6m4AxPMzOu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 04, 2015 at 02:11:58PM +0100, SF Markus Elfring wrote:
+On Sun, Jan 04, 2015 at 02:08:42PM +0100, SF Markus Elfring wrote:
 > From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Sat, 3 Jan 2015 19:25:55 +0100
+> Date: Sat, 3 Jan 2015 19:03:55 +0100
 >=20
-> The clk_enable() function tests whether its argument is NULL and then
+> The sst_dma_free() function tests whether its argument is NULL and then
 > returns immediately. Thus the test around the call is not needed.
 
 Applied, thanks.
 
---+SfteS7bOf3dGlBC
+--PHCdUe6m4AxPMzOu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUqt/sAAoJECTWi3JdVIfQ4BMH+gOEfpud37K2w9bgPPi3DsU4
-F51MAqdABOeSYRBq3RKqyHfgmYkpnUt8uMDBZ7w+cu3ip2uEK1487LKNxaRBBxiv
-zaGOKYi8tx3Nvi5VDRl1NjyqMc4GwFbExkKgUL75xIG6+ZmykZ5bQRrCVrsH9gf5
-Gk9vjcGnIclSjfSO5Qmpch7ghvLZQfvfMOKUNl8gC4FdgECAdOqqDcl8uQHvuRxn
-j7GFVr8C2ljwEVHcRBW54rG+/RB17wij9t8x9raVAs5MhcjPugBjce1HcmqtO0kN
-VhZPvuVVO3NsOuNRzmb0lCXhRrIirsRLKR9iixl5YpKm0Ou8n4LAPTTXPm65i4g=
-=9k4d
+iQEcBAEBAgAGBQJUqt/UAAoJECTWi3JdVIfQbzEH/2AfD0z7SEF1hyaG2XpkbGwp
+3iLOAbTCG053WAJ9C0fJuwkewVKS0SrmiP6aiKW16k8OEG+sebPgaOtWKGU5w9xY
+aWon59S/QUgGBXJL44W46S/pTLuj3DVMKuzRbYpVNdxyYQl0xJqg/1/fsDitIY4A
+3ULmylY77/2zK9AOJ5tquCmiXbIpyD9DbGuBbeQPyyxWhf3PUmJUi8VeekfzSckk
+zPImyBDWHEajvRwR4xHag3AD3x0eSmPhpfFWwAqztS6GnGHspVmagQLRxQJRGxBm
+C6//ImuyKc4H5gessBwByApMpSL8MikA9wfAyPEd/RjhCGuKLu/Z2APKvo34aN8=
+=gKx4
 -----END PGP SIGNATURE-----
 
---+SfteS7bOf3dGlBC--
+--PHCdUe6m4AxPMzOu--
