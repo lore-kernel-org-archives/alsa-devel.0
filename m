@@ -1,149 +1,56 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: samsung: Add machine driver for
- Trats2
-Date: Mon, 05 Jan 2015 21:40:39 +0900
-Message-ID: <20150105214039.2f6065fe@songinha-Samsung-DeskTop-System>
-References: <1420457117-11030-1-git-send-email-ideal.song@samsung.com>
- <1420457117-11030-2-git-send-email-ideal.song@samsung.com>
- <54AA7A0B.2070004@metafoo.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix wrong gpio_dir & gpio_mask
+	hint setups for IDT/STAC codecs
+Date: Mon,  5 Jan 2015 14:23:56 +0100
+Message-ID: <1420464236-2625-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <54AA7A0B.2070004@metafoo.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, sbkim73@samsung.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com, tiwai@suse.de, broonie@kernel.org, kgene@kernel.org, s.nawrocki@samsung.com, galak@codeaurora.org, grant.likely@linaro.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id BCBCA260606
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 14:24:03 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 9A2B7AAC9
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 13:24:01 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+stac_store_hints() does utterly wrong for masking the values for
+gpio_dir and gpio_data, likely due to copy&paste errors.  Fortunately,
+this feature is used very rarely, so the impact must be really small.
 
-Thanks for your comments.
+Reported-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_sigmatel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-> Hi,
-> 
-> A few small comments inline.
-> 
-> On 01/05/2015 12:25 PM, Inha Song wrote:
-> > --- /dev/null
-> > +++ b/sound/soc/samsung/trats2_wm1811.c
-> > @@ -0,0 +1,216 @@
-> >[...]
-> > +#include <linux/of.h>
-> > +#include <linux/module.h>
-> > +#include <linux/clk.h>
-> > +#include <sound/soc.h>
-> > +#include <sound/pcm_params.h>
-> > +#include "i2s.h"
-> > +#include "i2s-regs.h"
-> 
-> You probably don't need i2s-regs.h
-
-OK, I will remove.
-
-> 
-> > +#include "../codecs/wm8994.h"
-> > +
-> > +struct trats2_machine_priv {
-> > +	struct clk *clk_mclk;
-> > +};
-> > +
-> > +static struct trats2_machine_priv trats2_wm1811_priv;
-> > +
-> > +static const struct snd_kcontrol_new trats2_controls[] = {
-> > +	SOC_DAPM_PIN_SWITCH("SPK"),
-> > +};
-> > +
-> > +const struct snd_soc_dapm_widget trats2_dapm_widgets[] = {
-> 
-> static
-
-Sorry for my mistake.
-
-> 
-> > +	SND_SOC_DAPM_SPK("SPK", NULL),
-> > +};
-> > +
-> > +static int trats2_aif1_hw_params(struct snd_pcm_substream *substream,
-> > +				 struct snd_pcm_hw_params *params)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> > +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> > +	struct trats2_machine_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-> > +	unsigned int sysclk_rate;
-> > +	unsigned int mclk_rate =
-> > +			(unsigned int)clk_get_rate(priv->clk_mclk);
-> > +	int ret;
-> > +
-> > +	/* Set the codec DAI configuration to Master*/
-> > +	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
-> > +					| SND_SOC_DAIFMT_NB_NF
-> > +					| SND_SOC_DAIFMT_CBM_CFM);
-> > +	if (ret < 0) {
-> > +		dev_err(codec_dai->dev,
-> > +			"Failed to set codec dai format: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	/* Set the cpu DAI configuration to Slave */
-> > +	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
-> > +					| SND_SOC_DAIFMT_NB_NF
-> > +					| SND_SOC_DAIFMT_CBM_CFM);
-> > +	if (ret < 0) {
-> > +		dev_err(cpu_dai->dev,
-> > +			"Failed to set cpu dai format: %d\n", ret);
-> > +		return ret;
-> > +	}
-> 
-> 
-> Use the dai_fmt field in the dai_link struct to setup the DAI link format. 
-> This will configure both the CPU and the CODEC DAI with the specified 
-> format, no need to do it manually.
-
-Ok, move to dai_fmt.
-
-> 
-> >[...]
-> > +static struct snd_soc_ops trats2_aif1_ops = {
-> 
-> const
-
-I will fix this.
-
-> 
-> > +	.hw_params = trats2_aif1_hw_params,
-> > +};
-> > +
-> > +static int trats2_init_paiftx(struct snd_soc_pcm_runtime *rtd)
-> > +{
-> > +	struct snd_soc_codec *codec = rtd->codec;
-> > +	struct snd_soc_card *card = rtd->card;
-> > +	struct trats2_machine_priv *priv = snd_soc_card_get_drvdata(card);
-> > +	int ret;
-> > +
-> > +	ret = clk_prepare_enable(priv->clk_mclk);
-> 
-> Maybe just do this in the platform device probe handler and you should have 
-> a matching disable call somewhere.
-
-Ok, I will move clk_prepare_enable call to snd_soc_ops->startup
-and clk_disable_unprepare call to snd_soc_ops->shutdown.
-
-Best Regards,
-Inha Song.
-
-> 
-> > +	if (ret) {
-> > +		dev_err(codec->dev, "Failed to enable mclk: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> >[...]
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 4f6413e01c13..605d14003d25 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -568,9 +568,9 @@ static void stac_store_hints(struct hda_codec *codec)
+ 			spec->gpio_mask;
+ 	}
+ 	if (get_int_hint(codec, "gpio_dir", &spec->gpio_dir))
+-		spec->gpio_mask &= spec->gpio_mask;
+-	if (get_int_hint(codec, "gpio_data", &spec->gpio_data))
+ 		spec->gpio_dir &= spec->gpio_mask;
++	if (get_int_hint(codec, "gpio_data", &spec->gpio_data))
++		spec->gpio_data &= spec->gpio_mask;
+ 	if (get_int_hint(codec, "eapd_mask", &spec->eapd_mask))
+ 		spec->eapd_mask &= spec->gpio_mask;
+ 	if (get_int_hint(codec, "gpio_mute", &spec->gpio_mute))
+-- 
+2.2.1
