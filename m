@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: rt5670: fix bit definition for
-	ASRC control
-Date: Mon, 5 Jan 2015 18:17:14 +0000
-Message-ID: <20150105181714.GA2634@sirena.org.uk>
-References: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from
+	ioremap
+Date: Mon, 5 Jan 2015 10:18:24 -0800
+Message-ID: <20150105181823.GG4081@atomide.com>
+References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
+ <1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
+ <1418292513.3188.4.camel@pengutronix.de>
+ <20141211103919.GA6067@arm.com>
+ <1418298046.3188.10.camel@pengutronix.de>
+ <20141211145849.GH31456@e104818-lin.cambridge.arm.com>
+ <CAM4voakdfiTecW8YH0znnyB-dTnX_fsrRcH2McABwdk3T9drkQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7217415139279486479=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 67C3B260426
- for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 19:17:30 +0100 (CET)
-In-Reply-To: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
+Received: from mho-01-ewr.mailhop.org (mho-03-ewr.mailhop.org [204.13.248.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50F4B260426
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 19:22:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAM4voakdfiTecW8YH0znnyB-dTnX_fsrRcH2McABwdk3T9drkQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,115 +28,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org
+To: Abhilash Kesavan <kesavan.abhilash@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pawel Moll <Pawel.Moll@arm.com>, "heiko@sntech.de" <heiko@sntech.de>, "shc_work@mail.ru" <shc_work@mail.ru>, "corbet@lwn.net" <corbet@lwn.net>, Catalin Marinas <catalin.marinas@arm.com>, "kgene@kernel.org" <kgene@kernel.org>, "padma.v@samsung.com" <padma.v@samsung.com>, Will Deacon <Will.Deacon@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, Philipp Zabel <p.zabel@pengutronix.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "bcousson@baylibre.com" <bcousson@baylibre.com>kern
 List-Id: alsa-devel@alsa-project.org
 
+* Abhilash Kesavan <kesavan.abhilash@gmail.com> [141217 04:37]:
+> Hi,
+> 
+> On Thu, Dec 11, 2014 at 8:28 PM, Catalin Marinas
+> <catalin.marinas@arm.com> wrote:
+> > On Thu, Dec 11, 2014 at 11:40:46AM +0000, Philipp Zabel wrote:
+> >> Hi Will,
+> >>
+> >> Am Donnerstag, den 11.12.2014, 10:39 +0000 schrieb Will Deacon:
+> >> > On Thu, Dec 11, 2014 at 10:08:33AM +0000, Philipp Zabel wrote:
+> >> > > Hi Abhilash,
+> >> > >
+> >> > > Am Donnerstag, den 11.12.2014, 08:28 +0530 schrieb Abhilash Kesavan:
+> >> > > > Currently, the SRAM allocator returns device memory via ioremap.
+> >> > > > This causes issues on ARM64 when the internal SoC SRAM allocated by
+> >> > > > the generic sram driver is used for audio playback. The destination
+> >> > > > buffer address (which is ioremapped SRAM) is not 64-bit aligned for
+> >> > > > certain streams (e.g. 44.1k sampling rate). In such cases we get
+> >> > > > unhandled alignment faults. Use ioremap_wc in place of ioremap which
+> >> > > > gives us normal non-cacheable memory instead of device memory.
+> >> > >
+> >> > > Could this break the omap_bus_sync() implementation in
+> >> > > arch/arm/mach-omap2/omap4-common.c?
+> >> > >
+> >> > >     void omap_bus_sync(void)
+> >> > >     {
+> >> > >             if (dram_sync && sram_sync) {
+> >> > >                     writel_relaxed(readl_relaxed(dram_sync), dram_sync);
+> >> > >                     writel_relaxed(readl_relaxed(sram_sync), sram_sync);
+> >> > >                     isb();
+> >> > >             }
+> >> > >     }
+> >> > >
+> >> > > It is used in wmb() and omap_do_wfi() to drain interconnect write
+> >> > > buffers on omap4/5. If sram_sync is mapped with write-combining, could
+> >> > > the last write to sram_sync stay stuck in the write-combining buffer
+> >> > > until after the function returns?
+> >> >
+> >> > I think you have that issue anyway, since you can get an early write
+> >> > response even if you use ioremap. Does the write to sram_sync have
+> >> > side-effects that we need to wait for?
+> >>
+> >> [Added Tony Lindgren and Santosh Shilimkar to Cc:]
+> >> I don't know.
+> >
+> > In addition to Will's question, do you care about the access size?
+> > ioremap() returns Device memory which is bufferable (early
+> > acknowledgement) but it guarantees the access size. With write
+> > combining, you may get a different access size than requested.
+> 
+> From the existing dts files, omap, imx, rockchip and exynos seem to be
+> the only users of the sram allocator code. I have tested this on
+> Exynos5420, Exynos5800 and Exynos7; there is no change in behavior
+> seen on these boards. Tested-by for other SoCs would be appreciated.
 
---===============7217415139279486479==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ikeVEW9yuYc//A+q"
-Content-Disposition: inline
+Sorry for the delay, these seems to boot OK on omap4, so from that
+point of view:
 
-
---ikeVEW9yuYc//A+q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jan 05, 2015 at 05:48:15PM +0800, mengdong.lin@intel.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> This patch fixes bit definitions for two ASRC control registers 0x84 and =
-0x85.
-
-This appears to do something more or different to fixing definitions -
-if it was fixing I'd expect to see equal numbers of lines added and
-removed in blocks identical apart from some numbers but this appears to
-be adding some new definitions like these...
-
-> +/* ASRC clock source selection (0x84, 0x85) */
-> +#define RT5670_CLK_SEL_SYS			(0x0)
-> +#define RT5670_CLK_SEL_I2S1_ASRC		(0x1)
-> +#define RT5670_CLK_SEL_I2S2_ASRC		(0x2)
-> +#define RT5670_CLK_SEL_I2S3_ASRC		(0x3)
-> +#define RT5670_CLK_SEL_SYS2			(0x5)
-> +#define RT5670_CLK_SEL_SYS3			(0x6)
-
-=2E..among other things, and this block here:
-
->  /* ASRC Control 2 (0x84) */
-> -#define RT5670_MDA_L_M_MASK			(0x1 << 15)
-> -#define RT5670_MDA_L_M_SFT			15
-> -#define RT5670_MDA_L_M_NOR			(0x0 << 15)
-> -#define RT5670_MDA_L_M_ASYN			(0x1 << 15)
-> -#define RT5670_MDA_R_M_MASK			(0x1 << 14)
-> -#define RT5670_MDA_R_M_SFT			14
-> -#define RT5670_MDA_R_M_NOR			(0x0 << 14)
-> -#define RT5670_MDA_R_M_ASYN			(0x1 << 14)
-> -#define RT5670_MAD_L_M_MASK			(0x1 << 13)
-> -#define RT5670_MAD_L_M_SFT			13
-> -#define RT5670_MAD_L_M_NOR			(0x0 << 13)
-> -#define RT5670_MAD_L_M_ASYN			(0x1 << 13)
-> -#define RT5670_MAD_R_M_MASK			(0x1 << 12)
-> -#define RT5670_MAD_R_M_SFT			12
-> -#define RT5670_MAD_R_M_NOR			(0x0 << 12)
-> -#define RT5670_MAD_R_M_ASYN			(0x1 << 12)
-> -#define RT5670_ADC_M_MASK			(0x1 << 11)
-> -#define RT5670_ADC_M_SFT			11
-> -#define RT5670_ADC_M_NOR			(0x0 << 11)
-> -#define RT5670_ADC_M_ASYN			(0x1 << 11)
-> -#define RT5670_STO_DAC_M_MASK			(0x1 << 5)
-> -#define RT5670_STO_DAC_M_SFT			5
-> -#define RT5670_STO_DAC_M_NOR			(0x0 << 5)
-> -#define RT5670_STO_DAC_M_ASYN			(0x1 << 5)
-> -#define RT5670_I2S1_R_D_MASK			(0x1 << 4)
-> -#define RT5670_I2S1_R_D_SFT			4
-> -#define RT5670_I2S1_R_D_DIS			(0x0 << 4)
-> -#define RT5670_I2S1_R_D_EN			(0x1 << 4)
-> -#define RT5670_I2S2_R_D_MASK			(0x1 << 3)
-> -#define RT5670_I2S2_R_D_SFT			3
-> -#define RT5670_I2S2_R_D_DIS			(0x0 << 3)
-> -#define RT5670_I2S2_R_D_EN			(0x1 << 3)
-> -#define RT5670_PRE_SCLK_MASK			(0x3)
-> -#define RT5670_PRE_SCLK_SFT			0
-> -#define RT5670_PRE_SCLK_512			(0x0)
-> -#define RT5670_PRE_SCLK_1024			(0x1)
-> -#define RT5670_PRE_SCLK_2048			(0x2)
-> +#define RT5670_DA_STO_CLK_SEL_MASK		(0xf << 12)
-> +#define RT5670_DA_STO_CLK_SEL_SFT		12
-> +#define RT5670_DA_MONOL_CLK_SEL_MASK		(0xf << 8)
-> +#define RT5670_DA_MONOL_CLK_SEL_SFT		8
-> +#define RT5670_DA_MONOR_CLK_SEL_MASK		(0xf << 4)
-> +#define RT5670_DA_MONOR_CLK_SEL_SFT		4
-> +#define RT5670_AD_STO1_CLK_SEL_MASK		(0xf << 0)
-> +#define RT5670_AD_STO1_CLK_SEL_SFT		0
-
-removes a lot more things than it adds, with different names too.
-
---ikeVEW9yuYc//A+q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUqtUpAAoJECTWi3JdVIfQPtIH+QGjSe4Jz05qqTU6av/EIGko
-wrSDzp72uEPwdTD2EjzGaUxJjQTk5wbgEp9/gy6DHa6u5lG2grVvnSOwhwTKHGxx
-aa3lqrtyjVYU6XZwxu0GiEaUqYxAvlOOuHdFlRznoAs4h7UXm11/cnp7d4Reme2D
-bn6wXw6ZthOjHaEXPyBD1Pc3gMulkuyCSgXI9y7ZSWb+gzHgXAM5N5Lr0muG3ymy
-fE5pVGWGgT3NySUkScYmBDZGepCYQ7nKwPl1LvlgR7ZAz38b8IHdDdmpn07cAApw
-kmaIKWmSSj+7MPCj45b9pXFalcEWjM6gtU8ZSl5zMyVFWU/vC07Snj/6MUMg7Mg=
-=5M+I
------END PGP SIGNATURE-----
-
---ikeVEW9yuYc//A+q--
-
---===============7217415139279486479==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7217415139279486479==--
+Tested-by: Tony Lindgren <tony@atomide.com>
