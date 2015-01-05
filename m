@@ -1,124 +1,51 @@
-From: Imre Deak <imre.deak@intel.com>
-Subject: Re: [PATCH 0/5] sanitize hda/i915 interface using the
- component fw
-Date: Mon, 05 Jan 2015 17:29:34 +0200
-Message-ID: <1420471774.16056.34.camel@intelbox>
-References: <1418056929-7977-1-git-send-email-imre.deak@intel.com>
- <20141208201405.GJ27182@phenom.ffwll.local>
- <1418115594.15622.56.camel@ideak-mobl>
- <20141209100321.GQ27182@phenom.ffwll.local>
- <1418144167.5014.16.camel@intelbox> <s5hlhmgpw1t.wl-tiwai@suse.de>
-Reply-To: imre.deak@intel.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: samsung: Document Trats2 audio
+ subsystem bindings
+Date: Mon, 5 Jan 2015 15:29:18 +0000
+Message-ID: <20150105152918.GT11764@sirena.org.uk>
+References: <1420457117-11030-1-git-send-email-ideal.song@samsung.com>
+ <1420457117-11030-3-git-send-email-ideal.song@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hlhmgpw1t.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, mengdong <mengdong.lin@intel.com>
-Cc: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QkB+3dXt7G8Wz8Uy"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1420457117-11030-3-git-send-email-ideal.song@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Inha Song <ideal.song@samsung.com>
+Cc: alsa-devel@alsa-project.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, s.nawrocki@samsung.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, kgene@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWVuZ2RvbmcsIFRha2FzaGksCgpPbiBUdWUsIDIwMTQtMTItMDkgYXQgMTg6MzMgKzAxMDAs
-IFRha2FzaGkgSXdhaSB3cm90ZToKPiBBdCBUdWUsIDA5IERlYyAyMDE0IDE4OjU2OjA3ICswMjAw
-LAo+IEltcmUgRGVhayB3cm90ZToKPiA+IAo+ID4gT24gVHVlLCAyMDE0LTEyLTA5IGF0IDExOjAz
-ICswMTAwLCBEYW5pZWwgVmV0dGVyIHdyb3RlOgo+ID4gPiBPbiBUdWUsIERlYyAwOSwgMjAxNCBh
-dCAxMDo1OTo1NEFNICswMjAwLCBJbXJlIERlYWsgd3JvdGU6Cj4gPiA+ID4gT24gTW9uLCAyMDE0
-LTEyLTA4IGF0IDIxOjE0ICswMTAwLCBEYW5pZWwgVmV0dGVyIHdyb3RlOgo+ID4gPiA+ID4gT24g
-TW9uLCBEZWMgMDgsIDIwMTQgYXQgMDY6NDI6MDRQTSArMDIwMCwgSW1yZSBEZWFrIHdyb3RlOgo+
-ID4gPiA+ID4gPiBUaGUgY3VycmVudCBoZGEvaTkxNSBpbnRlcmZhY2UgdG8gZW5hYmxlL2Rpc2Fi
-bGUgcG93ZXIgd2VsbHMgYW5kIHF1ZXJ5Cj4gPiA+ID4gPiA+IHRoZSBDRCBjbG9jayByYXRlIGlz
-IGJhc2VkIG9uIGxvb2tpbmcgdXAgdGhlIHJlbGV2YW50IGk5MTUgbW9kdWxlCj4gPiA+ID4gPiA+
-IHN5bWJvbHMgZnJvbSB0aGUgaGRhIGRyaXZlci4gQnkgdXNpbmcgdGhlIGNvbXBvbmVudCBmcmFt
-ZXdvcmsgd2UgY2FuIGdldAo+ID4gPiA+ID4gPiByaWQgb2Ygc29tZSBnbG9iYWwgc3RhdGUgdHJh
-Y2tpbmcgaW4gdGhlIGk5MTUgZHJpdmVyIGFuZCBwYXZlIHRoZSB3YXkgdG8KPiA+ID4gPiA+ID4g
-ZnVsbHkgZGVjb3VwbGUgdGhlIHR3byBkcml2ZXJzOiBvbmNlIHN1cHBvcnQgaXMgYWRkZWQgdG8g
-ZW5hYmxlL2Rpc2FibGUKPiA+ID4gPiA+ID4gdGhlIEhETUkgZnVuY3Rpb25hbGl0eSBkeW5hbWlj
-YWxseSBpbiB0aGUgaGRhIGRyaXZlciwgaXQgY2FuIGJpbmQvdW5iaW5kCj4gPiA+ID4gPiA+IGl0
-c2VsZiBmcm9tIHRoZSBpOTE1IGNvbXBvbmVudCBtYXN0ZXIsIHdpdGhvdXQgdGhlIG5lZWQgdG8g
-a2VlcCBhCj4gPiA+ID4gPiA+IHJlZmVyZW5jZSBvbiB0aGUgaTkxNSBtb2R1bGUuCj4gPiA+ID4g
-PiA+IAo+ID4gPiA+ID4gPiBUaGlzIGFsc28gZ2V0cyByaWQgb2YgdGhlIHByb2JsZW0gdGhhdCBj
-dXJyZW50bHkgdGhlIGk5MTUgZHJpdmVyIGV4cG9zZXMKPiA+ID4gPiA+ID4gdGhlIGludGVyZmFj
-ZSBvbmx5IG9uIEhTVyBhbmQgQkRXLCB3aGlsZSBpdCdzIGFsc28gbmVlZGVkIGF0IGxlYXN0IG9u
-Cj4gPiA+ID4gPiA+IFZMVi9DSFYuCj4gPiA+ID4gPiAKPiA+ID4gPiA+IEF3ZXNvbWUgdGhhdCB5
-b3UncmUgdGFja2xpbmcgdGhpcywgcmVhbGx5IGhhcHB5IHRvIHNlZSB0aGVzZSBoYWNrcyBnby4K
-PiA+ID4gPiA+IFVuZm9ydHVuYXRlbHkgSSB0aGluayBpdCdzIHVwc2lkZSBkb3duOiBoZGEgc2hv
-dWxkIGJlIHRoZSBjb21wb25lbnQgbWFzdGVyCj4gPiA+ID4gPiBhbmQgaTkxNSBzaG91bGQgb25s
-eSByZWdpc3RlciBhIGNvbXBvbmVudC4KPiA+ID4gPiA+IAo+ID4gPiA+ID4gTG9uZ2VyIHN0b3J5
-OiBUaGUgbWFpbiByZWFzb24gZm9yIHRoZSBjb21wb25lbnQgaGVscGVycyBpcyB0byBiZSBhYmxl
-IHRvCj4gPiA+ID4gPiBtYWdpY2FsbHkgZGVsYXkgcmVnaXN0ZXJpbmcgdGhlIG1haW4vbWFzdGVy
-IGRyaXZlciB1bnRpbCBhbGwgdGhlCj4gPiA+ID4gPiBjb21wb25lbnRzIGFyZSBsb2FkZWQuIE90
-aGVyd2lzZSAtRURFRkVSIGRvZXNuJ3Qgd29yayBhbmQgYWxzbyB0aGUKPiA+ID4gPiA+IHN1c3Bl
-bmQvcmVzdW1lIG9yZGVyaW5nIHRoaXMgc2hvdWxkIHJlc3VsdCBpbi4gTWFzdGVyIGhlcmUgbWVh
-bnMgd2hhdGV2ZXIKPiA+ID4gPiA+IHVzZXJzcGFjZSBldmVudHVhbGx5IHNlZXMgYXMgYSBkZXZp
-Y2Ugbm9kZSBvciBzaW1pbGFyLCBjb21wb25lbnQgaXMKPiA+ID4gPiA+IGFueXRoaW5nIHJlYWxs
-eSB0aGF0IHRoaXMgdXNlcnNwYWNlIGludGVyZmFjZXMgbmVlZHMgdG8gZnVuY3Rpb24KPiA+ID4g
-PiA+IGNvcnJlY3RseS4KPiA+ID4gPiAKPiA+ID4gPiBFREVGRVIgZG9lc24ndCBzb2x2ZSB0aGUg
-c3VzcGVuZC9yZXN1bWUgb3JkZXJpbmcsIGF0IGxlYXN0IG5vdCBpbiB0aGUKPiA+ID4gPiBnZW5l
-cmFsIGFzeW5jIHMvciBjYXNlLiBJbiBhbnkgY2FzZSBJIGRvbid0IHNlZSBhIHByb2JsZW0gaW4g
-bWFraW5nIHRoZQo+ID4gPiA+IGhkYSBjb21wb25lbnQgdGhlIG1hc3RlciBhbmQgSSB0aGluayBp
-dCdzIG1vcmUgbG9naWNhbCB0aGF0IHdheSBhcyB5b3UKPiA+ID4gPiBzYWlkLCBzbyBJIGNoYW5n
-ZWQgdGhhdC4KPiA+ID4gCj4gPiA+IFllYWggZm9yIGZ1bGwgYXN5bmMgcy9yIHdlJ3JlIHNjcmV3
-ZWQgYXMtaXMuIEJ1dCBzZWUgYmVsb3cgZm9yIHNvbWUgY3JhenkKPiA+ID4gaWRlYXMuCj4gPiA+
-ID4gPiBJIHRoaW5rIHdoYXQgd2UgbmVlZCBoZXJlIGlzIHRoZW46Cj4gPiA+ID4gPiAtIFB1dCB0
-aGUgY3VycmVudCBhenhfcHJvYmUgaW50byB0aGUgbWFzdGVyX2JpbmQgY2FsbGJhY2suIFRoZSBu
-ZXcKPiA+ID4gPiA+ICAgYXp4X3Byb2JlIHdpbGwgZG8gbm90aGluZyBlbHNlIHRoYW4gcmVnaXN0
-ZXIgdGhlIG1hc3RlciBjb21wb25lbnQgYW5kCj4gPiA+ID4gPiAgIHRoZSBjb21wb25lbnQgbWF0
-Y2ggbGlzdC4gVG8gZG8gc28gaXQgY2hlY2tzIHRoZSBjaGlwIGZsYWcgYW5kIGlmIGl0Cj4gPiA+
-ID4gPiAgIG5lZWRzIHRvIGNvb3BlcmF0ZSB3aXRoIGk5MTUgaXQgcmVnaXN0ZXJzIG9uZSBjb21w
-b25lbnQgbWF0Y2ggZm9yIHRoYXQuCj4gPiA+ID4gPiAgIFRoZSBtYXN0ZXJfYmluZCAob2xkIHBy
-b2JlKSBmdW5jdGlvbiBjYWxscyBjb21wb25lbnRfYmluZF9hbGwgd2l0aCB0aGUKPiA+ID4gPiA+
-ICAgaGRhX2ludGVsIHBvaW50ZXIgYXMgdm9pZCAqZGF0YSBwYXJhbWV0ZXIuCj4gPiA+ID4gCj4g
-PiA+ID4gSSdtIG5vdCBzdXJlIHRoaXMgaXMgdGhlIGJlc3Qgd2F5IHNpbmNlIGJ5IHRoaXMgdGhl
-IGk5MTUgbW9kdWxlIHdvdWxkCj4gPiA+ID4gbmVlZCB0byBiZSBwaW5uZWQgZXZlbiB3aGVuIG5v
-IEhETUkgZnVuY3Rpb25hbGl0eSBpcyB1c2VkLiBJIHRoaW5rIGEKPiA+ID4gPiBiZXR0ZXIgd2F5
-IHdvdWxkIGJlIHRvIGxldCB0aGUgcHJvYmUgZnVuY3Rpb24gcnVuIGFzIG5vdyBhbmQKPiA+ID4g
-PiBpbml0L3JlZ2lzdGVyIGFsbCB0aGUgbm9uLUhETUkgZnVuY3Rpb25hbGl0eS4gVGhlbiBvbmx5
-IHRoZSBIRE1JCj4gPiA+ID4gZnVuY3Rpb25hbGl0eSB3b3VsZCBiZSBpbml0ZWQvcmVnaXN0ZXJl
-ZCBmcm9tIHRoZSBiaW5kL3VuYmluZCBob29rcy4KPiA+ID4gCj4gPiA+IEhtLCBJIHdhc24ndCBz
-dXJlIHdoZXRoZXIgYWxzYSBhbGxvd3MgdGhpcyBhbmQgdGhvdWdodCB3ZSBuZWVkIGk5MTUgYW55
-d2F5Cj4gPiA+IHRvIGJlIGFibGUgdG8gbG9hZCB0aGUgZHJpdmVyLiBCdXQgaWYgd2UgY2FuIGRl
-ZmVyIGp1c3QgdGhlIGhkbWkgcGFydC4KPiA+ID4gCj4gPiA+ID4gQnV0IHdlIGNvdWxkIGdvIGVp
-dGhlciB3YXkgZXZlbiBhcyBhIGZvbGxvdy11cCB0byB0aGlzIHBhdGNoc2V0Lgo+ID4gPiA+IAo+
-ID4gPiA+ID4gLSBpOTE1IHJlZ2lzdGVycyBhIGNvbXBvbmVudCBmb3IgdGhlIGk5MTUgZ2Z4IGRl
-dmljZS4gSXQgdXNlcyB0aGUKPiA+ID4gPiA+ICAgY29tcG9uZW50IGRldmljZSB0byBnZXQgYXQg
-aTkxNSBzdHVyY3R1cmVzIGFuZCBmaWxscyB0aGUgZGV2K29wcyBpbnRvCj4gPiA+ID4gPiAgIHRo
-ZSBoZGFfaW50ZWwgcG9pbnRlciBpdCBnZXRzIGFzIHZvaWQgKmRhdGEuCj4gPiA+ID4gPgo+ID4g
-PiA+ID4gU3R1ZmYgd2UgdGhlbiBzaG91bGQgZG8gb24gdG9wOgo+ID4gPiA+ID4gLSBBZGQgZGVm
-ZXJyZWQgcHJvYmluZyB0byBhenhfcHJvYmU6IE9ubHkgd2hlbiBhbGwgY29tcG9uZW50cyBhcmUg
-dGhlcmUKPiA+ID4gPiA+ICAgc2hvdWxkIGl0IGFjdHVhbGx5IHJlZ2lzdGVyLiBUaGlzIHdpbGwg
-dGFrZSBjYXJlIG9mIGFsbCB0aGUgbW9kdWxlIGxvYWQKPiA+ID4gPiA+ICAgb3JkZXIgbWVzcy4K
-PiA+ID4gPiAKPiA+ID4gPiBJIGFncmVlIHRoYXQgd2Ugc2hvdWxkIG9ubHkgcmVnaXN0ZXIgdXNl
-ciBpbnRlcmZhY2VzIHdoZW4gZXZlcnl0aGluZyBpcwo+ID4gPiA+IGluIHBsYWNlLiBCdXQgSSdt
-IG5vdCBzdXJlIGRlZmVycmVkIHByb2JlIGlzIHRoZSBiZXN0LCB3ZSBjb3VsZCBkbwo+ID4gPiA+
-IHdpdGhvdXQgaXQgYnkgcmVnaXN0ZXJpbmcgSERNSSBmcm9tIHRoZSBjb21wb25lbnQgYmluZCBo
-b29rLgo+ID4gPiAKPiA+ID4gSXQncyBtb3N0bHkgYSBxdWVzdGlvbiB3aGV0aGVyIGFsc2EgZG9l
-cyBzdXBwb3J0IGRlbGF5ZWQgYWRkaXRpb24gb2YKPiA+ID4gaW50ZXJmYWNlIHBhcnRzLiBEUk0g
-bW9zdCBkZWZpbml0ZWx5IGRvZXMgbm90IChleGNlcHQgZm9yIHJlY2VudGx5IGFkZGVkCj4gPiA+
-IGRwIG1zdCBjb25uZWN0b3IgaG90cGx1ZykuIEJ1dCBJIGd1ZXNzIGlmIHRoZSBjdXJyZW50IGRy
-aXZlciBhbHJlYWR5Cj4gPiA+IGRlbGF5cyByZWdpc3RlcmluZyB0aGUgaGRtaSBwYXJ0IHRoZW4g
-d2UncmUgZmluZS4gSSdtIG5vdCBzdXJlIGFib3V0Cj4gPiA+IHdoZXRoZXIgaXQncyByZWFsbHkg
-c2FmZSAtIEkgc3BvdHRlZCBub3QgYSBsb3Qgb2YgbG9ja2luZyByZWFsbHkgdG8gbWFrZQo+ID4g
-PiBzdXJlIHRoZXJlJ3Mgbm8gcmFjZXMgYmV0d2VlbiBpOTE1IGxvYWRpbmcgYW5kIHVzZXJzcGFj
-ZSB0cnlpbmcgdG8gYWNjZXNzCj4gPiA+IHRoZSBoZG1pIHNpZGUuCj4gPiAKPiA+IE9rLCBJJ20g
-bm90IHN1cmUgZWl0aGVyLiBJZiB0aGF0J3Mgbm90IHBvc3NpYmxlLCBJIGFncmVlIEVERUZFUiB3
-b3VsZCBiZQo+ID4gdGhlIGJlc3QgYW5kIHdpdGggdGhhdCB3ZSBjb3VsZCBhbHNvIGdldCByaWQg
-b2YgdGhlIHJlcXVlc3RfbW9kdWxlKCkgd2UKPiA+IG5lZWQgbm93Lgo+IAo+IFRoZSBwcm9iZSBv
-ZiBIRC1hdWRpbyBkcml2ZXIgaXMgZG9uZSBpbiBhIHdvcmsgYW55d2F5LCBzbyBjaGFuZ2luZyB0
-aGUKPiBjb2RlIHRvIHN5bmMgd2l0aCBjb21wb25lbnQgc2hvdWxkIGJlIGZlYXNpYmxlLiAKPiAK
-PiBJJ20gb2ZmIHRvZGF5IChhbmQgeWVzdGVyZGF5IHdhcyBhIENocmlzdG1hcyBwYXJ0eSA6KSwg
-c28gaGFkIGxpdHRsZQo+IHRpbWUgZm9yIHJldmlldyBzbyBmYXIuICBXaWxsIGNoZWNrIHRoZSBz
-ZXJpZXMgdG9tb3Jyb3cuCgpjb3VsZCBvbmUgb2YgeW91IGhlbHAgcmV2aWV3aW5nIHRoaXMgcGF0
-Y2hzZXQ/IE5vdGUgdGhhdCB0aGVyZSBpcyBhIHYyCnZlcnNpb24gd2l0aCBzb21lIGluZGl2aWR1
-YWwgcGF0Y2hlcyBoYXZpbmcgYSB2MyBhbHJlYWR5LgoKVGhhbmtzLApJbXJlCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBs
-aXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+
+--QkB+3dXt7G8Wz8Uy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jan 05, 2015 at 08:25:16PM +0900, Inha Song wrote:
+
+> + - clocks : Reference to the codec master clock
+> + - clock-names : The clock should be named "mclk"
+
+This should be done in the CODEC driver, not in the machine driver - the
+CODEC always needs the clock, it's not something specific to this
+machine.  Even if we decide that for Linux the best thing to do is to
+manage the clock in the machine driver it should be described in the DT
+as being attached to the CODEC.
+
+--QkB+3dXt7G8Wz8Uy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUqq3NAAoJECTWi3JdVIfQ8cAH/2pVZixTXEAT+S4w4GyZmGNe
+TzjisRZtOWzl+8G5QN5EEZqHsyXh9BZHz9hmNndCWUjZT96e4IKZPmriNK+rPbOF
+QRYzloUrlTPhXsTIiBGOuoLWjam0MJqFoidhQ5wJ3TwuGZ6G18U9n9kPXcfCeJMD
+2OO8uPei+xOy1UX95fZBeQAnrx25+ZgGscNZh6gZXtFNeXoGAMoCQFh8yk2VwL/T
+qtO7yTjgQ4Ubis7MsJPmvUHtxxLU4faLhDD3b+j2WQ/NrDHC/p9500492EGR5Ze8
+nx0tI6za/gewfzuMGzFWgXCROPVxMLt+eYLHdwmOCiEImZ+wz3Rlwi2WIQjA+a4=
+=T/eS
+-----END PGP SIGNATURE-----
+
+--QkB+3dXt7G8Wz8Uy--
