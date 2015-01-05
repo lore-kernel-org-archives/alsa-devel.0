@@ -1,8 +1,8 @@
 From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: [PATCH 8/8] ASoC: wm8804: Constify struct regmap_config and
+Subject: [PATCH 6/8] ASoC: wm8804: Constify struct regmap_config and
  snd_soc_codec_driver
-Date: Mon, 05 Jan 2015 10:18:28 +0100
-Message-ID: <1420449508-10701-8-git-send-email-k.kozlowski@samsung.com>
+Date: Mon, 05 Jan 2015 10:18:26 +0100
+Message-ID: <1420449508-10701-6-git-send-email-k.kozlowski@samsung.com>
 References: <1420449508-10701-1-git-send-email-k.kozlowski@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-reply-to: <1420449508-10701-1-git-send-email-k.kozlowski@samsung.com>
@@ -13,45 +13,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The regmap_config struct may be const because it is not modified by the
 driver and regmap_init() accepts pointer to const. Make struct
-snd_soc_codec_driver (snd_soc_register_codec() accepts pointer to const)
-and array of default register values const as well.
+snd_soc_codec_driver const as well (snd_soc_register_codec() accepts
+pointer to const).
 
 Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
 Cc: patches@opensource.wolfsonmicro.com
 ---
- sound/soc/codecs/wm8995.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm8804.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index c280f0a3a424..120228b6b596 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -44,7 +44,7 @@ static const char *wm8995_supply_names[WM8995_NUM_SUPPLIES] = {
- 	"MICVDD"
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index 1315f7642503..b2b0e68f707e 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -648,7 +648,7 @@ static struct snd_soc_dai_driver wm8804_dai = {
+ 	.symmetric_rates = 1
  };
  
--static struct reg_default wm8995_reg_defaults[] = {
-+static const struct reg_default wm8995_reg_defaults[] = {
- 	{ 0, 0x8995 },
- 	{ 5, 0x0100 },
- 	{ 16, 0x000b },
-@@ -2190,7 +2190,7 @@ static struct snd_soc_dai_driver wm8995_dai[] = {
- 	}
+-static struct snd_soc_codec_driver soc_codec_dev_wm8804 = {
++static const struct snd_soc_codec_driver soc_codec_dev_wm8804 = {
+ 	.probe = wm8804_probe,
+ 	.remove = wm8804_remove,
+ 	.set_bias_level = wm8804_set_bias_level,
+@@ -664,7 +664,7 @@ static const struct of_device_id wm8804_of_match[] = {
  };
+ MODULE_DEVICE_TABLE(of, wm8804_of_match);
  
--static struct snd_soc_codec_driver soc_codec_dev_wm8995 = {
-+static const struct snd_soc_codec_driver soc_codec_dev_wm8995 = {
- 	.probe = wm8995_probe,
- 	.remove = wm8995_remove,
- 	.set_bias_level = wm8995_set_bias_level,
-@@ -2204,7 +2204,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8995 = {
- 	.num_dapm_routes = ARRAY_SIZE(wm8995_intercon),
- };
- 
--static struct regmap_config wm8995_regmap = {
-+static const struct regmap_config wm8995_regmap = {
- 	.reg_bits = 16,
- 	.val_bits = 16,
+-static struct regmap_config wm8804_regmap_config = {
++static const struct regmap_config wm8804_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
  
 -- 
 1.9.1
