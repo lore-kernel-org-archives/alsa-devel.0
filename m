@@ -1,72 +1,192 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/7] ASoC: dmaengine: Remove unnecessary
- snd_pcm_lib_preallocate_free_for_all()
-Date: Mon, 5 Jan 2015 21:30:34 +0000
-Message-ID: <20150105213034.GT2634@sirena.org.uk>
-References: <1420203373-1844-1-git-send-email-lars@metafoo.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH, RFC] MIPS: jz4740: use dma filter function
+Date: Mon, 05 Jan 2015 23:39:35 +0100
+Message-ID: <22569458.nE7JkNNnz3@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3039878550618959864=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A5C62605A3
- for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 22:31:04 +0100 (CET)
-In-Reply-To: <1420203373-1844-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-mmc-owner@vger.kernel.org>
+Sender: linux-mmc-owner@vger.kernel.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Manuel Lauss <manuel.lauss@googlemail.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-mmc@vger.kernel.org, linux-mips@linux-mips.org
 List-Id: alsa-devel@alsa-project.org
 
+As discussed on the topic of shmobile DMA today, jz4740 is the only
+user of the slave_id field in dma_slave_config besides shmobile. This
+use is really incompatible with the way that other drivers use the
+dmaengine API, so we should get rid of it.
 
---===============3039878550618959864==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="su+CkryO4QJrkqP3"
-Content-Disposition: inline
+This adds a trivial filter function that uses the filter param to
+pass the dma type, and uses that in both drivers.
 
+With this patch and the respective shmobile change, we can remove the
+slave_id field from dma_slave_config.
 
---su+CkryO4QJrkqP3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To make the drivers more generic, another patch would be required
+that passes the filter function and the argument through platform_data,
+but that can be done later.
 
-On Fri, Jan 02, 2015 at 01:56:07PM +0100, Lars-Peter Clausen wrote:
-> The ALSA core takes care that all preallocated memory is freed when the PCM
-> itself is freed. There is no need to do this manually in the driver.
-> Similarly there is also no need to do it on the pcm_new() error path as the
-> PCM will be freed if a error is returned.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/mips/include/asm/mach-jz4740/dma.h |  7 +++++++
+ drivers/dma/dma-jz4740.c                | 11 +++++++++--
+ drivers/mmc/host/jz4740_mmc.c           |  8 ++++----
+ sound/soc/jz4740/jz4740-i2s.c           | 18 ++++++++++++------
+ 4 files changed, 32 insertions(+), 12 deletions(-)
 
-Applied all, thanks.
+completely untested
 
---su+CkryO4QJrkqP3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+diff --git a/arch/mips/include/asm/mach-jz4740/dma.h b/arch/mips/include/asm/mach-jz4740/dma.h
+index 14ecc5313d2d..ece7e39cdacb 100644
+--- a/arch/mips/include/asm/mach-jz4740/dma.h
++++ b/arch/mips/include/asm/mach-jz4740/dma.h
+@@ -16,6 +16,13 @@
+ #ifndef __ASM_MACH_JZ4740_DMA_H__
+ #define __ASM_MACH_JZ4740_DMA_H__
+ 
++#include <linux/dmaengine.h>
++
++static inline bool jz4740_dma_filter_fn(struct dma_chan *chan, void *filter_param)
++{
++	chan->private = filter_param;
++}
++
+ enum jz4740_dma_request_type {
+ 	JZ4740_DMA_TYPE_AUTO_REQUEST	= 8,
+ 	JZ4740_DMA_TYPE_UART_TRANSMIT	= 20,
+diff --git a/drivers/dma/dma-jz4740.c b/drivers/dma/dma-jz4740.c
+index bdeafeefa5f6..f02e60e8e5cc 100644
+--- a/drivers/dma/dma-jz4740.c
++++ b/drivers/dma/dma-jz4740.c
+@@ -119,6 +119,7 @@ struct jz4740_dma_desc {
+ struct jz4740_dmaengine_chan {
+ 	struct virt_dma_chan vchan;
+ 	unsigned int id;
++	unsigned int slave;
+ 
+ 	dma_addr_t fifo_addr;
+ 	unsigned int transfer_shift;
+@@ -220,6 +221,11 @@ static int jz4740_dma_slave_config(struct dma_chan *c,
+ 	enum jz4740_dma_flags flags;
+ 	uint32_t cmd;
+ 
++	/* deprecated: all drivers should request the channel with
++	 * the correct slave argument */
++	if (!chan->slave)
++		chan->slave = config->slave_id;
++
+ 	switch (config->direction) {
+ 	case DMA_MEM_TO_DEV:
+ 		flags = JZ4740_DMA_SRC_AUTOINC;
+@@ -265,8 +271,7 @@ static int jz4740_dma_slave_config(struct dma_chan *c,
+ 
+ 	jz4740_dma_write(dmadev, JZ_REG_DMA_CMD(chan->id), cmd);
+ 	jz4740_dma_write(dmadev, JZ_REG_DMA_STATUS_CTRL(chan->id), 0);
+-	jz4740_dma_write(dmadev, JZ_REG_DMA_REQ_TYPE(chan->id),
+-		config->slave_id);
++	jz4740_dma_write(dmadev, JZ_REG_DMA_REQ_TYPE(chan->id), chan->slave);
+ 
+ 	return 0;
+ }
+@@ -513,6 +518,8 @@ static enum dma_status jz4740_dma_tx_status(struct dma_chan *c,
+ 
+ static int jz4740_dma_alloc_chan_resources(struct dma_chan *c)
+ {
++	struct jz4740_dmaengine_chan *chan = to_jz4740_dma_chan(c);
++	chan->slave = (unsigned long)c->private;
+ 	return 0;
+ }
+ 
+diff --git a/drivers/mmc/host/jz4740_mmc.c b/drivers/mmc/host/jz4740_mmc.c
+index 76e8bce6f46e..a6680959ce83 100644
+--- a/drivers/mmc/host/jz4740_mmc.c
++++ b/drivers/mmc/host/jz4740_mmc.c
+@@ -178,13 +178,15 @@ static int jz4740_mmc_acquire_dma_channels(struct jz4740_mmc_host *host)
+ 	dma_cap_zero(mask);
+ 	dma_cap_set(DMA_SLAVE, mask);
+ 
+-	host->dma_tx = dma_request_channel(mask, NULL, host);
++	host->dma_tx = dma_request_channel(mask, jz4740_dma_filter_fn,
++					   (void*)JZ4740_DMA_TYPE_MMC_TRANSMIT);
+ 	if (!host->dma_tx) {
+ 		dev_err(mmc_dev(host->mmc), "Failed to get dma_tx channel\n");
+ 		return -ENODEV;
+ 	}
+ 
+-	host->dma_rx = dma_request_channel(mask, NULL, host);
++	host->dma_rx = dma_request_channel(mask, jz4740_dma_filter_fn,
++					   (void*)JZ4740_DMA_TYPE_MMC_RECEIVE);
+ 	if (!host->dma_rx) {
+ 		dev_err(mmc_dev(host->mmc), "Failed to get dma_rx channel\n");
+ 		goto free_master_write;
+@@ -283,12 +285,10 @@ static int jz4740_mmc_start_dma_transfer(struct jz4740_mmc_host *host,
+ 	if (data->flags & MMC_DATA_WRITE) {
+ 		conf.direction = DMA_MEM_TO_DEV;
+ 		conf.dst_addr = host->mem_res->start + JZ_REG_MMC_TXFIFO;
+-		conf.slave_id = JZ4740_DMA_TYPE_MMC_TRANSMIT;
+ 		chan = host->dma_tx;
+ 	} else {
+ 		conf.direction = DMA_DEV_TO_MEM;
+ 		conf.src_addr = host->mem_res->start + JZ_REG_MMC_RXFIFO;
+-		conf.slave_id = JZ4740_DMA_TYPE_MMC_RECEIVE;
+ 		chan = host->dma_rx;
+ 	}
+ 
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index d3d45c6f064f..7a60c075bd81 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -31,10 +31,12 @@
+ #include <sound/initval.h>
+ #include <sound/dmaengine_pcm.h>
+ 
++#include <asm/mach-jz4740/dma.h>
++
+ #include "jz4740-i2s.h"
+ 
+-#define JZ4740_DMA_TYPE_AIC_TRANSMIT 24
+-#define JZ4740_DMA_TYPE_AIC_RECEIVE 25
++#define JZ4740_DMA_TYPE_AIC_TRANSMIT (void *)24ul
++#define JZ4740_DMA_TYPE_AIC_RECEIVE (void *)25ul
+ 
+ #define JZ_REG_AIC_CONF		0x00
+ #define JZ_REG_AIC_CTRL		0x04
+@@ -337,13 +339,13 @@ static void jz4740_i2c_init_pcm_config(struct jz4740_i2s *i2s)
+ 	/* Playback */
+ 	dma_data = &i2s->playback_dma_data;
+ 	dma_data->maxburst = 16;
+-	dma_data->slave_id = JZ4740_DMA_TYPE_AIC_TRANSMIT;
++	dma_data->filter_data = JZ4740_DMA_TYPE_AIC_TRANSMIT;
+ 	dma_data->addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+ 
+ 	/* Capture */
+ 	dma_data = &i2s->capture_dma_data;
+ 	dma_data->maxburst = 16;
+-	dma_data->slave_id = JZ4740_DMA_TYPE_AIC_RECEIVE;
++	dma_data->filter_data = JZ4740_DMA_TYPE_AIC_RECEIVE;
+ 	dma_data->addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+ }
+ 
+@@ -415,6 +417,10 @@ static const struct snd_soc_component_driver jz4740_i2s_component = {
+ 	.name		= "jz4740-i2s",
+ };
+ 
++static struct snd_dmaengine_pcm_config jz4740_i2s_pcm_config = {
++	.filter_fn = jz4740_dma_filter_fn,
++};
++
+ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
+ {
+ 	struct jz4740_i2s *i2s;
+@@ -447,8 +453,8 @@ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
+-		SND_DMAENGINE_PCM_FLAG_COMPAT);
++	return devm_snd_dmaengine_pcm_register(&pdev->dev,
++		jz4740_i2s_pcm_config, SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ 
+ static struct platform_driver jz4740_i2s_driver = {
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUqwJ5AAoJECTWi3JdVIfQxJ0H/RYb3A5mxEpM4VUUAau6QZqa
-jflPd9h45T7+X3ARxBlA9qjCAjswCXL4EJPFmXjj+9WkvOqOReqziajDN+gcqnr/
-1cUMZb1OidqWZ7LXtZwQ9zAUgk0lHVv+gj8RJjez+Mc3c7u8A5bKLEyy54X/P1de
-eMM9+ulZGDyrradyyxjyuEsTRlTIfKNNIZ8YqY+VtlUXh3ol5TK8iHbxiYG06sgs
-gM2hAWpP9E46g2hO036XiSAuR+1UGMlmtS18DS0u495mUZGnU+W7Ue9xiQvPuIEr
-Q3lzNAR3fAQMV9B9QMyqTDFuBiX4ZlllrqxS5yg9cao+RBisnso8M+JTzuCh7t0=
-=3GXH
------END PGP SIGNATURE-----
-
---su+CkryO4QJrkqP3--
-
---===============3039878550618959864==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3039878550618959864==--
