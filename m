@@ -1,15 +1,17 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH 1/3] ASoC: rt5670: fix bit definition for ASRC
-	control
-Date: Mon,  5 Jan 2015 17:48:15 +0800
-Message-ID: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: Select RT5672 ASRC clock
+	source on Cherrytrail and Braswell
+Date: Mon,  5 Jan 2015 17:48:35 +0800
+Message-ID: <b176b6f0b481a4f8a576d4921b92a4ed62ddc87a.1420451186.git.mengdong.lin@intel.com>
+References: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C509264F1D
- for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 10:40:28 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CA3C2650AF
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 10:40:49 +0100 (CET)
+In-Reply-To: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,91 +25,44 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org, bardliao@realtek.com
 Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard Liao <bardliao@realtek.com>
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-This patch fixes bit definitions for two ASRC control registers 0x84 and 0x85.
+On Cherrytrail and Braswell, the I2S BCLK is 100FS which cannot be supported
+by RT5670 in slave mode and can cause noise.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
-index 54933f3..7c37b00 100644
---- a/sound/soc/codecs/rt5670.h
-+++ b/sound/soc/codecs/rt5670.h
-@@ -1023,50 +1023,33 @@
- #define RT5670_DMIC_2_M_NOR			(0x0 << 8)
- #define RT5670_DMIC_2_M_ASYN			(0x1 << 8)
+diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
+index 9b8b561..54a8f72 100644
+--- a/sound/soc/intel/cht_bsw_rt5672.c
++++ b/sound/soc/intel/cht_bsw_rt5672.c
+@@ -140,6 +140,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	int ret;
+ 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
++	struct snd_soc_codec *codec = codec_dai->codec;
  
-+/* ASRC clock source selection (0x84, 0x85) */
-+#define RT5670_CLK_SEL_SYS			(0x0)
-+#define RT5670_CLK_SEL_I2S1_ASRC		(0x1)
-+#define RT5670_CLK_SEL_I2S2_ASRC		(0x2)
-+#define RT5670_CLK_SEL_I2S3_ASRC		(0x3)
-+#define RT5670_CLK_SEL_SYS2			(0x5)
-+#define RT5670_CLK_SEL_SYS3			(0x6)
-+
- /* ASRC Control 2 (0x84) */
--#define RT5670_MDA_L_M_MASK			(0x1 << 15)
--#define RT5670_MDA_L_M_SFT			15
--#define RT5670_MDA_L_M_NOR			(0x0 << 15)
--#define RT5670_MDA_L_M_ASYN			(0x1 << 15)
--#define RT5670_MDA_R_M_MASK			(0x1 << 14)
--#define RT5670_MDA_R_M_SFT			14
--#define RT5670_MDA_R_M_NOR			(0x0 << 14)
--#define RT5670_MDA_R_M_ASYN			(0x1 << 14)
--#define RT5670_MAD_L_M_MASK			(0x1 << 13)
--#define RT5670_MAD_L_M_SFT			13
--#define RT5670_MAD_L_M_NOR			(0x0 << 13)
--#define RT5670_MAD_L_M_ASYN			(0x1 << 13)
--#define RT5670_MAD_R_M_MASK			(0x1 << 12)
--#define RT5670_MAD_R_M_SFT			12
--#define RT5670_MAD_R_M_NOR			(0x0 << 12)
--#define RT5670_MAD_R_M_ASYN			(0x1 << 12)
--#define RT5670_ADC_M_MASK			(0x1 << 11)
--#define RT5670_ADC_M_SFT			11
--#define RT5670_ADC_M_NOR			(0x0 << 11)
--#define RT5670_ADC_M_ASYN			(0x1 << 11)
--#define RT5670_STO_DAC_M_MASK			(0x1 << 5)
--#define RT5670_STO_DAC_M_SFT			5
--#define RT5670_STO_DAC_M_NOR			(0x0 << 5)
--#define RT5670_STO_DAC_M_ASYN			(0x1 << 5)
--#define RT5670_I2S1_R_D_MASK			(0x1 << 4)
--#define RT5670_I2S1_R_D_SFT			4
--#define RT5670_I2S1_R_D_DIS			(0x0 << 4)
--#define RT5670_I2S1_R_D_EN			(0x1 << 4)
--#define RT5670_I2S2_R_D_MASK			(0x1 << 3)
--#define RT5670_I2S2_R_D_SFT			3
--#define RT5670_I2S2_R_D_DIS			(0x0 << 3)
--#define RT5670_I2S2_R_D_EN			(0x1 << 3)
--#define RT5670_PRE_SCLK_MASK			(0x3)
--#define RT5670_PRE_SCLK_SFT			0
--#define RT5670_PRE_SCLK_512			(0x0)
--#define RT5670_PRE_SCLK_1024			(0x1)
--#define RT5670_PRE_SCLK_2048			(0x2)
-+#define RT5670_DA_STO_CLK_SEL_MASK		(0xf << 12)
-+#define RT5670_DA_STO_CLK_SEL_SFT		12
-+#define RT5670_DA_MONOL_CLK_SEL_MASK		(0xf << 8)
-+#define RT5670_DA_MONOL_CLK_SEL_SFT		8
-+#define RT5670_DA_MONOR_CLK_SEL_MASK		(0xf << 4)
-+#define RT5670_DA_MONOR_CLK_SEL_SFT		4
-+#define RT5670_AD_STO1_CLK_SEL_MASK		(0xf << 0)
-+#define RT5670_AD_STO1_CLK_SEL_SFT		0
+ 	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
+ 	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
+@@ -148,6 +149,19 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
+ 	}
  
- /* ASRC Control 3 (0x85) */
--#define RT5670_I2S1_RATE_MASK			(0xf << 12)
--#define RT5670_I2S1_RATE_SFT			12
--#define RT5670_I2S2_RATE_MASK			(0xf << 8)
--#define RT5670_I2S2_RATE_SFT			8
-+#define RT5670_UP_CLK_SEL_MASK			(0xf << 12)
-+#define RT5670_UP_CLK_SEL_SFT			12
-+#define RT5670_DOWN_CLK_SEL_MASK		(0xf << 8)
-+#define RT5670_DOWN_CLK_SEL_SFT			8
-+#define RT5670_AD_MONOL_CLK_SEL_MASK		(0xf << 4)
-+#define RT5670_AD_MONOL_CLK_SEL_SFT		4
-+#define RT5670_AD_MONOR_CLK_SEL_MASK		(0xf << 0)
-+#define RT5670_AD_MONOR_CLK_SEL_SFT		0
++	/* Select codec ASRC clock source to track I2S1 clock, because codec
++	 * is in slave mode and 100fs I2S format (BCLK = 100 * LRCLK) cannot
++	 * be supported by RT5672. Otherwise, ASRC will be disabled and cause
++	 * noise.
++	 */
++	rt5670_sel_asrc_clk_src(codec,
++				RT5670_DA_STEREO_FILTER
++				| RT5670_DA_MONO_L_FILTER
++				| RT5670_DA_MONO_R_FILTER
++				| RT5670_AD_STEREO_FILTER
++				| RT5670_AD_MONO_L_FILTER
++				| RT5670_AD_MONO_R_FILTER,
++				RT5670_CLK_SEL_I2S1_ASRC);
+ 	return 0;
+ }
  
- /* ASRC Control 4 (0x89) */
- #define RT5670_I2S1_PD_MASK			(0x7 << 12)
 -- 
 1.9.1
