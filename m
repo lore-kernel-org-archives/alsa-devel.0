@@ -1,23 +1,18 @@
-From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: [PATCH 5/8] ASoC: cs42l73: Constify struct
- regmap_config and snd_soc_codec_driver
-Date: Mon, 05 Jan 2015 10:18:25 +0100
-Message-ID: <1420449508-10701-5-git-send-email-k.kozlowski@samsung.com>
-References: <1420449508-10701-1-git-send-email-k.kozlowski@samsung.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH 3/7] ASoC: intel: Remove unnecessary
+	snd_pcm_lib_preallocate_free_for_all()
+Date: Mon, 05 Jan 2015 11:28:40 +0200
+Message-ID: <54AA5948.9010108@linux.intel.com>
+References: <1420203373-1844-1-git-send-email-lars@metafoo.de>
+ <1420203373-1844-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
- [210.118.77.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F36B260A5B
- for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 10:18:49 +0100 (CET)
-Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
- by mailout1.w1.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0NHP0059E61YQS80@mailout1.w1.samsung.com> for
- alsa-devel@alsa-project.org; Mon, 05 Jan 2015 09:22:46 +0000 (GMT)
-In-reply-to: <1420449508-10701-1-git-send-email-k.kozlowski@samsung.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DB432608B4
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jan 2015 10:28:44 +0100 (CET)
+In-Reply-To: <1420203373-1844-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,43 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>, alsa-devel@alsa-project.org, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-The regmap_config struct may be const because it is not modified by the
-driver and regmap_init() accepts pointer to const. Make struct
-snd_soc_codec_driver const as well (snd_soc_register_codec() accepts
-pointer to const).
+On 01/02/2015 02:56 PM, Lars-Peter Clausen wrote:
+> The ALSA core takes care that all preallocated memory is freed when the PCM
+> itself is freed. There is no need to do this manually in the driver.
+>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>   sound/soc/intel/sst-baytrail-pcm.c      | 6 ------
+>   sound/soc/intel/sst-haswell-pcm.c       | 6 ------
+>   sound/soc/intel/sst-mfld-platform-pcm.c | 7 -------
+>   3 files changed, 19 deletions(-)
 
-Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Cc: Brian Austin <brian.austin@cirrus.com>
-Cc: Paul Handrigan <Paul.Handrigan@cirrus.com>
----
- sound/soc/codecs/cs42l73.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 7c55537c69cf..8ecedba79606 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1347,7 +1347,7 @@ static int cs42l73_probe(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static struct snd_soc_codec_driver soc_codec_dev_cs42l73 = {
-+static const struct snd_soc_codec_driver soc_codec_dev_cs42l73 = {
- 	.probe = cs42l73_probe,
- 	.set_bias_level = cs42l73_set_bias_level,
- 	.suspend_bias_off = true,
-@@ -1361,7 +1361,7 @@ static struct snd_soc_codec_driver soc_codec_dev_cs42l73 = {
- 	.num_controls = ARRAY_SIZE(cs42l73_snd_controls),
- };
- 
--static struct regmap_config cs42l73_regmap = {
-+static const struct regmap_config cs42l73_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
- 
--- 
-1.9.1
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
