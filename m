@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sam9g20_wm8731: drop machine_is_xxx
-Date: Tue, 6 Jan 2015 16:01:23 +0000
-Message-ID: <20150106160123.GA2634@sirena.org.uk>
-References: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
- <20150106120049.GX2634@sirena.org.uk>
- <20150106122751.GO4194@piout.net>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from
+	ioremap
+Date: Tue, 06 Jan 2015 17:54:39 +0100
+Message-ID: <1420563279.3719.15.camel@pengutronix.de>
+References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
+ <1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
+ <1418292513.3188.4.camel@pengutronix.de> <20141211103919.GA6067@arm.com>
+ <1418298046.3188.10.camel@pengutronix.de>
+ <20141211145849.GH31456@e104818-lin.cambridge.arm.com>
+ <CAM4voakdfiTecW8YH0znnyB-dTnX_fsrRcH2McABwdk3T9drkQ@mail.gmail.com>
+ <20150105181823.GG4081@atomide.com>
+ <CAM4voa=xoM4AuGxwk0TpLnGz9jbZ02awFOrY_KgWCSzROJR6cA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2738946361762599424=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2BE6E2604F8
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 17:01:53 +0100 (CET)
-In-Reply-To: <20150106122751.GO4194@piout.net>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 09AB32604D1
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 17:55:13 +0100 (CET)
+In-Reply-To: <CAM4voa=xoM4AuGxwk0TpLnGz9jbZ02awFOrY_KgWCSzROJR6cA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+To: Abhilash Kesavan <kesavan.abhilash@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "heiko@sntech.de" <heiko@sntech.de>, "padma.v@samsung.com" <padma.v@samsung.com>, Tony Lindgren <tony@atomide.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <Will.Deacon@arm.com>, "arnd@arndb.de" <arnd@arndb.de>, "shc_work@mail.ru" <shc_work@mail.ru>, "corbet@lwn.net" <corbet@lwn.net>, linux-rockchip@lists.infradead.org, "kgene@kernel.org" <kgene@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, Pawel Moll <Pawel.Moll@arm.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Santosh Shilimkar <santosh.shilimkar@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Abhilash,
 
---===============2738946361762599424==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BEfR2jmXRHrz4elx"
-Content-Disposition: inline
+Am Dienstag, den 06.01.2015, 19:57 +0530 schrieb Abhilash Kesavan:
+> >> From the existing dts files, omap, imx, rockchip and exynos seem to be
+> >> the only users of the sram allocator code. I have tested this on
+> >> Exynos5420, Exynos5800 and Exynos7; there is no change in behavior
+> >> seen on these boards. Tested-by for other SoCs would be appreciated.
+> >
+> > Sorry for the delay, these seems to boot OK on omap4, so from that
+> > point of view:
+> >
+> > Tested-by: Tony Lindgren <tony@atomide.com>
+> 
+> Thanks a lot for testing this. If someone with imx and rockchip boards
+> could help test this out, then we could look to get this in.
 
+This shouldn't be a problem on i.MX, the coda driver doesn't access SRAM
+from the CPU at all.
 
---BEfR2jmXRHrz4elx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jan 06, 2015 at 01:27:51PM +0100, Alexandre Belloni wrote:
-> On 06/01/2015 at 12:00:49 +0000, Mark Brown wrote :
-> > On Tue, Jan 06, 2015 at 12:14:32PM +0100, Alexandre Belloni wrote:
-
-> > > Atmel based boards can now only be used with device tree. Drop non DT
-> > > initialization.
-
-> > This doesn't apply against current code, please check and resend.
-
-> It should apply after "sound: soc: atmel sam9g20_wm8731: remove useless
-> include". I was based on 3.19-rc2.
-
-So, one reason you should use subject lines matching the style for the
-subsystem is that this is a big part of how people find patches to
-review...  I'm not 100% sure I still have the patch, the volume is
-rather high right now.
-
---BEfR2jmXRHrz4elx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUrAbSAAoJECTWi3JdVIfQYLIH/iXGi3OfHhlaLFOtrwN7sCnZ
-QW4fUwjuCMJN+Cn3wkfrq+YpWnCyfycQXvyHV/t6R2XsEarS+DF87bxuffWlcNL4
-nZFwaOjxVcRuRCGQB+7HsyQL2N8kMBWfpRJPpng4FZHzS1NsaxWC7Ijs9AHaZgsN
-0Bh63FUw6HeO++Wnw7M3bbzSuJvP6je7ncsIK0e9yCrMDC8SeDnSvGf1TBtYCTdA
-nBFnXwqUhGCyBiLEbjkHKzo9oF4AfBy+vzWN0YeTvdxbeEwUucQB+Tgc/pRs2BXT
-Zd1+mQxe9cwCdgYyLlCYhj0cm+aEIWgWYDnIOGaT3W/MQKkSPKu0j8yPLKuLgjY=
-=xw0i
------END PGP SIGNATURE-----
-
---BEfR2jmXRHrz4elx--
-
---===============2738946361762599424==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2738946361762599424==--
+regards
+Philipp
