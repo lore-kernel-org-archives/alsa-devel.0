@@ -1,16 +1,15 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH] ALSA: fm801: PCI core handles power state for
-	us
-Date: Tue,  6 Jan 2015 22:39:15 +0200
-Message-ID: <1420576755-23570-1-git-send-email-andy.shevchenko@gmail.com>
+From: Aaron Plattner <aplattner@nvidia.com>
+Subject: [PATCH] ALSA: hda - Add new GPU codec ID 0x10de0072 to
+	snd-hda
+Date: Tue, 6 Jan 2015 13:40:14 -0800
+Message-ID: <1420580414-2662-1-git-send-email-aplattner@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gw02.mail.saunalahti.fi (gw02.mail.saunalahti.fi
- [195.197.172.116])
- by alsa0.perex.cz (Postfix) with ESMTP id 91C9E2606CC
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 21:40:04 +0100 (CET)
+Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id F31002612D0
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 22:40:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,86 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Aaron Plattner <aplattner@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is no need to duplicate the work that is already done in the PCI
-driver core. The patch removes excerpts from suspend and resume
-callbacks.
+Vendor ID 0x10de0072 is used by a yet-to-be-named GPU chip.
 
-While here amend a definition of the snd_fm801_pm. The PM core has the
-stubs for non-PM_SLEEP cases, thus we can always define the variable.
-
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
 ---
- sound/pci/fm801.c | 22 ++--------------------
- 1 file changed, 2 insertions(+), 20 deletions(-)
+Do you think it would make sense to add some kind of wildcard match for
+0x10de* -> patch_nvhdmi?
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index 9a2122f..dcda3c1 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -1384,7 +1384,6 @@ static unsigned char saved_regs[] = {
- 
- static int snd_fm801_suspend(struct device *dev)
- {
--	struct pci_dev *pci = to_pci_dev(dev);
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct fm801 *chip = card->private_data;
- 	int i;
-@@ -1396,29 +1395,15 @@ static int snd_fm801_suspend(struct device *dev)
- 	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
- 		chip->saved_regs[i] = inw(chip->port + saved_regs[i]);
- 	/* FIXME: tea575x suspend */
--
--	pci_disable_device(pci);
--	pci_save_state(pci);
--	pci_set_power_state(pci, PCI_D3hot);
- 	return 0;
- }
- 
- static int snd_fm801_resume(struct device *dev)
- {
--	struct pci_dev *pci = to_pci_dev(dev);
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct fm801 *chip = card->private_data;
- 	int i;
- 
--	pci_set_power_state(pci, PCI_D0);
--	pci_restore_state(pci);
--	if (pci_enable_device(pci) < 0) {
--		dev_err(dev, "pci_enable_device failed, disabling device\n");
--		snd_card_disconnect(card);
--		return -EIO;
--	}
--	pci_set_master(pci);
--
- 	snd_fm801_chip_init(chip, 1);
- 	snd_ac97_resume(chip->ac97);
- 	snd_ac97_resume(chip->ac97_sec);
-@@ -1428,12 +1413,9 @@ static int snd_fm801_resume(struct device *dev)
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 	return 0;
- }
-+#endif /* CONFIG_PM_SLEEP */
- 
- static SIMPLE_DEV_PM_OPS(snd_fm801_pm, snd_fm801_suspend, snd_fm801_resume);
--#define SND_FM801_PM_OPS	&snd_fm801_pm
--#else
--#define SND_FM801_PM_OPS	NULL
--#endif /* CONFIG_PM_SLEEP */
- 
- static struct pci_driver fm801_driver = {
- 	.name = KBUILD_MODNAME,
-@@ -1441,7 +1423,7 @@ static struct pci_driver fm801_driver = {
- 	.probe = snd_card_fm801_probe,
- 	.remove = snd_card_fm801_remove,
- 	.driver = {
--		.pm = SND_FM801_PM_OPS,
-+		.pm = &snd_fm801_pm,
- 	},
- };
- 
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 5f13d2d18079..b422e406a9cb 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -3353,6 +3353,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
+ { .id = 0x10de0067, .name = "MCP67 HDMI",	.patch = patch_nvhdmi_2ch },
+ { .id = 0x10de0070, .name = "GPU 70 HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de0071, .name = "GPU 71 HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0072, .name = "GPU 72 HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de8001, .name = "MCP73 HDMI",	.patch = patch_nvhdmi_2ch },
+ { .id = 0x11069f80, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
+ { .id = 0x11069f81, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
+@@ -3413,6 +3414,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0060");
+ MODULE_ALIAS("snd-hda-codec-id:10de0067");
+ MODULE_ALIAS("snd-hda-codec-id:10de0070");
+ MODULE_ALIAS("snd-hda-codec-id:10de0071");
++MODULE_ALIAS("snd-hda-codec-id:10de0072");
+ MODULE_ALIAS("snd-hda-codec-id:10de8001");
+ MODULE_ALIAS("snd-hda-codec-id:11069f80");
+ MODULE_ALIAS("snd-hda-codec-id:11069f81");
 -- 
-1.8.3.101.g727a46b
+2.2.1
