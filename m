@@ -1,7 +1,7 @@
-From: Xuebing Wang <xbing6@gmail.com>
+From: Andrej Falout <andrej@falout.org>
 Subject: Re: DSD over HDMI: audio data packetization
-Date: Tue, 06 Jan 2015 12:54:37 +0800
-Message-ID: <1420520077.6702.32.camel@gmail.com>
+Date: Tue, 6 Jan 2015 19:15:12 +1300
+Message-ID: <CAGzU1+EDvf-oe6aLLU7UjHBzfXSUWG=+XV5x=khB+H+nd1xAtQ@mail.gmail.com>
 References: <1420032720.2102.14.camel@gmail.com> <54A3FCD7.2010902@iki.fi>
  <96A12704CE18D347B625EE2D4A099D195C438E@SHSMSX103.ccr.corp.intel.com>
  <54A4185E.5010900@gmail.com> <54A41A18.3070005@iki.fi>
@@ -9,17 +9,18 @@ References: <1420032720.2102.14.camel@gmail.com> <54A3FCD7.2010902@iki.fi>
  <54A4CF03.5030709@iki.fi> <1420341058.1981.6.camel@gmail.com>
  <54AA0914.4000109@iki.fi>
  <CAGzU1+F0Os59UwRXRpZQnibDeT0KLK1UqX__Qv9=agwQTkZWyg@mail.gmail.com>
+ <54AB6960.2070202@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id ECFF6260440
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 05:54:44 +0100 (CET)
-Received: by mail-pa0-f52.google.com with SMTP id eu11so30237346pac.39
- for <alsa-devel@alsa-project.org>; Mon, 05 Jan 2015 20:54:43 -0800 (PST)
-In-Reply-To: <CAGzU1+F0Os59UwRXRpZQnibDeT0KLK1UqX__Qv9=agwQTkZWyg@mail.gmail.com>
+Received: from mail-lb0-f173.google.com (mail-lb0-f173.google.com
+ [209.85.217.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FC7026044E
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 07:15:13 +0100 (CET)
+Received: by mail-lb0-f173.google.com with SMTP id z12so18852111lbi.32
+ for <alsa-devel@alsa-project.org>; Mon, 05 Jan 2015 22:15:13 -0800 (PST)
+In-Reply-To: <54AB6960.2070202@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,116 +30,148 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrej Falout <andrej@falout.org>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ",
- Takashi Iwai" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, ",
- Wu Fengguang" <wfg@linux.intel.com>, Anssi Hannula <anssi.hannula@iki.fi>
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xuebing Wang <xbing6@gmail.com>, ", Takashi Iwai" <tiwai@suse.de>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, ", Wu Fengguang" <wfg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-QW5kcmVqLAoKSSBoYXZlIGEgc2xpZ2h0IGRvdWJ0IGFib3V0CiJLU0RBVEFGT1JNQVRfU1VCVFlQ
-RV9JRUM2MTkzN19PTkVfQklUX0FVRElPIi4KClRvIGJlIGNvbmNpc2UgIklFQzYxOTM3X09ORV9C
-SVRfQVVESU8iCgpJIGRvIG5vdCBoYXZlIGFsbCBJRUMgNjE5Mzcgc3BlY3MsIEkgY2FuIG5vdCBm
-aW5kCiJJRUM2MTkzN19PTkVfQklUX0FVRElPIiBpbiB0aGUgbGlzdCBiZWxvdy4KClBhcnQgMTog
-R2VuZXJhbApQYXJ0IDI6IEJ1cnN0LWluZm8KUGFydCAzOiBOb24tbGluZWFyIFBDTSBiaXRzdHJl
-YW1zIGFjY29yZGluZyB0byB0aGUgQUMtMyBmb3JtYXQKUGFydCA0OiBOb24tbGluZWFyIFBDTSBi
-aXRzdHJlYW1zIGFjY29yZGluZyB0byB0aGUgTVBFRyBhdWRpbyBmb3JtYXQKUGFydCA1OiBOb24t
-bGluZWFyIFBDTSBiaXRzdHJlYW1zIGFjY29yZGluZyB0byB0aGUgRFRTIChEaWdpdGFsIFRoZWF0
-ZXIKU3lzdGVtcykgZm9ybWF0KHMpClBhcnQgNjogTm9uLWxpbmVhciBQQ00gYml0c3RyZWFtcyBh
-Y2NvcmRpbmcgdG8gdGhlIE1QRUctMiBBQUMgYW5kIE1QRUctNApBQUMgYXVkaW8gZm9ybWF0cwpQ
-YXJ0IDc6IE5vbi1saW5lYXIgUENNIGJpdHN0cmVhbXMgYWNjb3JkaW5nIHRvIHRoZSBBVFJBQywg
-QVRSQUMyLzMgYW5kCkFUUkFDLVggZm9ybWF0cwpQYXJ0IDg6IE5vbi1saW5lYXIgUENNIGJpdHN0
-cmVhbXMgYWNjb3JkaW5nIHRvIHRoZSBXaW5kb3dzIE1lZGlhIEF1ZGlvCihXTUEpIFByb2Zlc3Np
-b25hbCBmb3JtYXQKUGFydCA5OiBOb24tbGluZWFyIFBDTSBiaXRzdHJlYW1zIGFjY29yZGluZyB0
-byB0aGUgTUFUIGZvcm1hdApQYXJ0IDEwOiBOb24tbGluZWFyIFBDTSBiaXRzdHJlYW1zIGFjY29y
-ZGluZyB0byB0aGUgTVBFRy00IGF1ZGlvCmxvc3NsZXNzIGNvZGluZyAoQUxTKSBmb3JtYXQgLSBF
-ZGl0aW9uIDEuMApQYXJ0IDExOiBNUEVHLTQgQUFDIGFuZCBpdHMgZXh0ZW5zaW9ucyBpbiBMQVRN
-L0xPQVMKUGFydCAxMjogTm9uLWxpbmVhciBQQ00gYml0c3RyZWFtcyBhY2NvcmRpbmcgdG8gdGhl
-IERSQSBmb3JtYXRzCgpUaGFua3MuCgoKT24gVHVlLCAyMDE1LTAxLTA2IGF0IDE3OjMzICsxMzAw
-LCBBbmRyZWogRmFsb3V0IHdyb3RlOgo+IEhpIEFuc3NpLAo+IAo+IAo+IEp1c3Qgd29uZGVyaW5n
-IGhvdyBNaWNyb3NvZnQgZG9jdW1lbnRhdGlvbiBmaXRzIGludG8gdGhpcyBkaXNjdXNzaW9uOgo+
-IAo+ICJSZXByZXNlbnRpbmcgRm9ybWF0cyBmb3IgSUVDIDYxOTM3IFRyYW5zbWlzc2lvbnMiCj4g
-Cj4gaHR0cDovL21zZG4ubWljcm9zb2Z0LmNvbS9lbi11cy9saWJyYXJ5L3dpbmRvd3MvZGVza3Rv
-cC9kZDMxNjc2MSUKPiAyOHY9dnMuODUlMjkuYXNweAo+IAo+IAo+ICJNaWNyb3NvZnQtcHJvdmlk
-ZWQgSEQgQXVkaW8gY2xhc3MgZHJpdmVyIHN1cHBvcnRzIFBDTSwgQUMzLCBEVFMsIEFBQywKPiBE
-b2xieSBEaWdpdGFsIFBsdXMsIFdNQSBQcm8sIE1BVChNTFApIGZvcm1hdHMuIFRoZSBHVUlEcyBm
-b3IgdGhlCj4gY29tcHJlc3NlZCBhdWRpbyBmb3JtYXRzIHRoYXQgYXJlIG5vdCBzdXBwb3J0ZWQg
-YnkgdGhlIEhEIGF1ZGlvIGNsYXNzCj4gZHJpdmVyIGFuZCBjYW4gYmUgaW1wbGVtZW50ZWQgYnkg
-dGhpcmQtcGFydHkgc29sdXRpb25zIGFyZSBsaXN0ZWQgaW4KPiB0aGUgZm9sbG93aW5nIHRhYmxl
-LiAiCj4gCj4gICAgICBDRUEgODYxIFR5cGUKPiAgICAgU3ViRm9ybWF0IEdVSUQKPiAgICAgICBE
-ZXNjcmlwdGlvbgo+IDB4MDgKPiAwMDAwMDAwOC0wY2VhLTAwMTAtODAwMC0wMGFhMDAzODliNzEK
-PiAKPiBLU0RBVEFGT1JNQVRfU1VCVFlQRV9JRUM2MTkzN19BVFJBQwo+IAo+IAo+IEFkYXB0aXZl
-IFRyYW5zZm9ybQo+IEFjb3VzdGljIENvZGluZyAoQVRSQUMpCj4gMHgwOQo+IDAwMDAwMDA5LTBj
-ZWEtMDAxMC04MDAwLTAwYWEwMDM4OWI3MQo+IAo+IEtTREFUQUZPUk1BVF9TVUJUWVBFX0lFQzYx
-OTM3X09ORV9CSVRfQVVESU8KPiAKPiAKPiBPbmUtQml0IEF1ZGlvCj4gMHgwZAo+IDAwMDAwMDBk
-LTBjZWEtMDAxMC04MDAwLTAwYWEwMDM4OWI3MQo+IAo+IEtTREFUQUZPUk1BVF9TVUJUWVBFX0lF
-QzYxOTM3X0RTVAo+IAo+IAo+IERpcmVjdCBTdHJlYW0gVHJhbnNwb3J0Cj4gKERTVCnigJRsb3Nz
-bGVzcwo+IGNvbXByZXNzZWQgRFNEIChEaXJlY3QKPiBTdHJlYW0gRGlnaXRhbCkuCj4gCj4gCj4g
-QW5kIGtub3dpbmcgdGhhdCBJRUMgNjE5MzcgZnJvbSBIRE1JIDEuMyBhbHNvIHN1cHBvcnRzIGFi
-b3ZlIDYuMTQ0Cj4gTWJwcy4uLgo+IAo+IAo+IElzIHRoZXJlIGEgZG91YnQgdGhhdCBhYm92ZSBp
-bmZvcm1hdGlvbiBpcyBjb3JyZWN0LCBhbmQgdGhhdCBEU1QvRFNUCj4gY2FuIGJlIGNhcnJpZWQg
-b3ZlciA2MTkzNyBpbiBNaWNyb3NvZnQgSERBIGNsYXNzIGRyaXZlciwgaW4gdGhpcwo+IGV4YW1w
-bGUsIGJ5ICJpbXBsZW1lbnRpbmcgYSB0aGlyZC1wYXJ0eSBzb2x1dGlvbiIgYXMgZGVzY3JpYmVk
-IGluIHRoaXMKPiB0YWJsZT8KPiAKPiAKPiBUaGFua3MsCj4gCj4gQW5kcmVqIEZhbG91dAo+IAo+
-IAo+IE9uIE1vbiwgSmFuIDUsIDIwMTUgYXQgNDo0NiBQTSwgQW5zc2kgSGFubnVsYSA8YW5zc2ku
-aGFubnVsYUBpa2kuZmk+Cj4gd3JvdGU6Cj4gICAgICAgICAwNC4wMS4yMDE1LCAwNToxMCwgWHVl
-YmluZyBXYW5nIGtpcmpvaXR0aToKPiAgICAgICAgID4gQW5zc2ksIExpYmluLAo+ICAgICAgICAg
-Pgo+ICAgICAgICAgPiBUaGFua3MgZm9yIHlvdXIgaGVscC4KPiAgICAgICAgID4KPiAgICAgICAg
-ID4gQWZ0ZXIgYSBsaXR0bGUgYml0IG9mIHJlc2VhcmNoLCBJIGRvIHRoaW5rIGl0IGlzIHBvc3Np
-YmxlIHRvCj4gICAgICAgICBzdHJlYW0gRFNECj4gICAgICAgICA+IG92ZXIgSERNSSAodGhlIG1l
-Y2hhbmlzbSBpcyBhcyBBbnNzaSBtZW50aW9uZWQsIHNpbWlsYXIgd2F5Cj4gICAgICAgICBhcyBI
-QlIpLgo+ICAgICAgICAgPgo+ICAgICAgICAgPiBQbGVhc2Ugc2VlIEhEQSBzcGVjOgo+ICAgICAg
-ICAgPiAzLjcuMSBTdHJlYW0gRm9ybWF0IFN0cnVjdHVyZQo+ICAgICAgICAgPiAoSWYgdGhlIFRZ
-UEUgaXMgc2V0IHRvIE5vbi1QQ00sIHRoZSBjb250cm9sbGVyIGp1c3QgcHVzaGVzCj4gICAgICAg
-ICBkYXRhIG92ZXIgdGhlCj4gICAgICAgICA+IGxpbmsgYW5kIGlzIG5vdCBjb25jZXJuZWQKPiAg
-ICAgICAgID4gd2l0aCBmb3JtYXR0aW5nLiBUaGUgYmFzZSByYXRlLCBkYXRhIHR5cGUsIGFuZCBu
-dW1iZXIgb2YKPiAgICAgICAgIFdvcmRzIChNVUxUKSB0bwo+ICAgICAgICAgPiBzZW5kIGVhY2gg
-dmFsaWQgZnJhbWUKPiAgICAgICAgID4gYXJlIHNwZWNpZmllZCB0byBjb250cm9sIHRoZSByYXRl
-IGF0IHdoaWNoIHRoZSBub24tUENNIGRhdGEKPiAgICAgICAgIGlzIHNlbnQuKQo+ICAgICAgICAg
-Pgo+ICAgICAgICAgPiA3LjMuMy44IENvbnZlcnRlciBGb3JtYXQKPiAgICAgICAgID4KPiAgICAg
-ICAgID4gV2hhdCBkbyB5b3UgdGhpbms/IEluIG9yZGVyIHRvIGltcGxlbWVudCB0aGlzIHNpbWls
-aWFyCj4gICAgICAgICBtZWNoYW5pc20KPiAgICAgICAgID4gKHNpbWlsYXIgdG8gSEJSKSwgSSBz
-dGlsbCBoYXZlIHNvbWUgZGV0YWlsZWQgcXVlc3Rpb25zIHRoYXQKPiAgICAgICAgIEkgd2lsbCB3
-cml0ZQo+ICAgICAgICAgPiBpbiBhbm90aGVyIGVtYWlsLiBUaGFua3MuCj4gICAgICAgICAKPiAg
-ICAgICAgIFRoYXQgc2V0dGluZyB3aWxsIHN0aWxsIG5vdCBhbGxvdyB5b3UgdG8gc2VuZCBPbmUt
-Yml0IGF1ZGlvIG9yCj4gICAgICAgICBEU1QKPiAgICAgICAgIHBhY2tldHMuIFRoZSBzdHJlYW0g
-d2lsbCBzdGlsbCBiZSBlbmNhcHN1bGF0ZWQgaW4gZWl0aGVyIEFTUAo+ICAgICAgICAgb3IgSEJS
-Cj4gICAgICAgICBwYWNrZXRzLCBkZXBlbmRpbmcgb24gdGhlIHZhbHVlIG9mIHRoZSBFUFQgZmll
-bGQgKEVuY29kZWQKPiAgICAgICAgIFBhY2tldCBUeXBlLAo+ICAgICAgICAgNy4zLjMuMTMpLgo+
-ICAgICAgICAgCj4gICAgICAgICAKPiAgICAgICAgID4KPiAgICAgICAgID4gT24gVGh1LCAyMDE1
-LTAxLTAxIGF0IDA2OjM3ICswMjAwLCBBbnNzaSBIYW5udWxhIHdyb3RlOgo+ICAgICAgICAgPj4g
-MDEuMDEuMjAxNSwgMDQ6MDcsIFlhbmcsIExpYmluIGtpcmpvaXR0aToKPiAgICAgICAgID4+PiBI
-aSwKPiAgICAgICAgID4+Pgo+ICAgICAgICAgPj4+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LQo+ICAgICAgICAgPj4+PiBGcm9tOiBBbnNzaSBIYW5udWxhIFttYWlsdG86YW5zc2kuaGFubnVs
-YUBpa2kuZmldCj4gICAgICAgICA+Pj4+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMzEsIDIw
-MTQgMTE6NDUgUE0KPiAgICAgICAgID4+Pj4gVG86IFh1ZWJpbmcgV2FuZwo+ICAgICAgICAgPj4+
-PiBDYzogWWFuZywgTGliaW47IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgTGluLAo+ICAg
-ICAgICAgTWVuZ2Rvbmc7IDsgVGFrYXNoaSBJd2FpOyA7Cj4gICAgICAgICA+Pj4+IFd1IEZlbmdn
-dWFuZwo+ICAgICAgICAgPj4+PiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIERTRCBvdmVyIEhE
-TUk6IGF1ZGlvIGRhdGEKPiAgICAgICAgIHBhY2tldGl6YXRpb24KPiAgICAgICAgID4+Pj4KPiAg
-ICAgICAgID4+Pj4gMzEuMTIuMjAxNCwgMTc6MzgsIFh1ZWJpbmcgV2FuZyBraXJqb2l0dGk6Cj4g
-ICAgICAgICA+Pj4+PiBBbnNzaSwgTGliaW4sCj4gICAgICAgICA+Pj4+Pgo+ICAgICAgICAgPj4+
-Pj4gVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgeW91ciBoZWxwLgo+ICAgICAgICAgPj4+Pj4KPiAg
-ICAgICAgID4+Pj4+IElmIEwtUENNIGF1ZGlvIGRhdGEgcGFja2V0aXphdGlvbiBpcyBkb25lIGJ5
-IGhhcmR3YXJlLAo+ICAgICAgICAgaXMgaXQgcG9zc2libGUKPiAgICAgICAgID4+Pj4+IHRvIGlt
-cGxlbWVudCBEU0Qgb3ZlciBIRE1JIG9uIEludGVsIGludGVncmF0ZWQgZ3JhcGhpY3M/Cj4gICAg
-ICAgICBUaGFua3MgYWdhaW4uCj4gICAgICAgICA+Pj4+Cj4gICAgICAgICA+Pj4+IEkgZG9uJ3Qg
-dGhpbmsgc28sIHVubGVzczoKPiAgICAgICAgID4+Pj4KPiAgICAgICAgID4+Pj4gKGEpIEl0IGlz
-IHBvc3NpYmxlIHRvIHNvbWVob3cgZW5jYXBzdWxhdGUgdGhlIHN0cmVhbSBpbgo+ICAgICAgICAg
-QXVkaW8gU2FtcGxlCj4gICAgICAgICA+Pj4+IFBhY2tldHMgYW5kIGJlIGFjY2VwdGVkIGJ5IHRo
-ZSByZWNlaXZlciAobGlrZSBlLmcuIEFDMywKPiAgICAgICAgIERUUykuIEknbSBub3QgYXdhcmUg
-b2YKPiAgICAgICAgID4+Pj4gc3VjaCBhIHdheS4KPiAgICAgICAgID4+Pj4KPiAgICAgICAgID4+
-Pj4gb3I6Cj4gICAgICAgICA+Pj4+IChiKSBUaGVyZSBpcyBzb21lIHVuZG9jdW1lbnRlZCBmZWF0
-dXJlIGluIHRoZSBJbnRlbCBIRE1JCj4gICAgICAgICBjb2RlY3MgYWxsb3dpbmcKPiAgICAgICAg
-ID4+Pj4gdGhlIGRyaXZlciB0byBzd2l0Y2ggdG8gRFNEIG9yIGRyaXZlci1jb25zdHJ1Y3RlZCBw
-YWNrZXRzCj4gICAgICAgICAoaW5zdGVhZCBvZgo+ICAgICAgICAgPj4+PiBBU1ApIGluIHNpbWls
-YXIgd2F5IGFzIHRoZXJlIGlzIGEgd2F5IHRvIHN3aXRjaCB0byBIQlIKPiAgICAgICAgIHBhY2tl
-dHMuCj4gICAgICAgICA+Pj4+Cj4gICAgICAgICA+Pj4KPiAgICAgICAgID4+PiBZZXMsIEkgYWdy
-ZWUuIEFuZCBJJ20gbm90IHN1cmUgd2hldGhlciBIRE1JIHNwZWMgc3VwcG9ydHMKPiAgICAgICAg
-IERTRC4KPiAgICAgICAgID4+Cj4gICAgICAgICA+PiBJdCBkb2VzLCB2aWEgdGhlICJPbmUgQml0
-IEF1ZGlvIiBhbmQgIkRTVCIgZm9ybWF0cyAoc3BlYwo+ICAgICAgICAgNS4zLjksIDUuMy4xMAo+
-ICAgICAgICAgPj4gaW4gMS4zYS8xLjRhKS4KPiAgICAgICAgID4KPiAgICAgICAgID4KPiAgICAg
-ICAgIAo+ICAgICAgICAgCj4gICAgICAgICAKPiAgICAgICAgIC0tCj4gICAgICAgICBBbnNzaSBI
-YW5udWxhCj4gCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Hi Anssi,
+
+I think the One-Bit Audio and DST formats are just misnamed here and
+> can't be carried over IEC 61937 (ATRAC can be) - the IEC 61937
+> specification does not cover One-Bit Audio or DST.
+>
+
+Does it have to be? Given that it is defined in CEA 861, and that 61937-1
+makes specific provisions for non-PCM data:
+
+Page 16:
+
+"In cases where the interface is used to convey non-linear PCM audio
+bitstreams..."
+
+
+
+>
+> I think the "third-party solution" refers to a driver implementing
+> support for a non-HDA-spec HW feature which allows One-Bit audio / DST /
+> raw packets to be transmitted (in a similar way "EPT" (Encoded Packet
+> Type field in Pin Widget Control 7.3.3.13) allows setting HBR or ASP
+> packet transmission).
+>
+>
+Why would an "HW feature" be required to "allows One-Bit audio / DST / raw
+packets to be transmitted"?
+
+What would such "HW feature" do? What could it possibly do?
+
+
+Thanks,
+Andrej Falout
+
+
+
+
+>
+> > Thanks,
+> > Andrej Falout
+> >
+> > On Mon, Jan 5, 2015 at 4:46 PM, Anssi Hannula <anssi.hannula@iki.fi
+> > <mailto:anssi.hannula@iki.fi>> wrote:
+> >
+> >     04.01.2015, 05:10, Xuebing Wang kirjoitti:
+> >     > Anssi, Libin,
+> >     >
+> >     > Thanks for your help.
+> >     >
+> >     > After a little bit of research, I do think it is possible to
+> stream DSD
+> >     > over HDMI (the mechanism is as Anssi mentioned, similar way as
+> HBR).
+> >     >
+> >     > Please see HDA spec:
+> >     > 3.7.1 Stream Format Structure
+> >     > (If the TYPE is set to Non-PCM, the controller just pushes data
+> over the
+> >     > link and is not concerned
+> >     > with formatting. The base rate, data type, and number of Words
+> (MULT) to
+> >     > send each valid frame
+> >     > are specified to control the rate at which the non-PCM data is
+> sent.)
+> >     >
+> >     > 7.3.3.8 Converter Format
+> >     >
+> >     > What do you think? In order to implement this similiar mechanism
+> >     > (similar to HBR), I still have some detailed questions that I will
+> write
+> >     > in another email. Thanks.
+> >
+> >     That setting will still not allow you to send One-bit audio or DST
+> >     packets. The stream will still be encapsulated in either ASP or HBR
+> >     packets, depending on the value of the EPT field (Encoded Packet
+> Type,
+> >     7.3.3.13).
+> >
+> >
+> >     >
+> >     > On Thu, 2015-01-01 at 06:37 +0200, Anssi Hannula wrote:
+> >     >> 01.01.2015, 04:07, Yang, Libin kirjoitti:
+> >     >>> Hi,
+> >     >>>
+> >     >>>> -----Original Message-----
+> >     >>>> From: Anssi Hannula [mailto:anssi.hannula@iki.fi
+> >     <mailto:anssi.hannula@iki.fi>]
+> >     >>>> Sent: Wednesday, December 31, 2014 11:45 PM
+> >     >>>> To: Xuebing Wang
+> >     >>>> Cc: Yang, Libin; alsa-devel@alsa-project.org
+> >     <mailto:alsa-devel@alsa-project.org>; Lin, Mengdong; ; Takashi
+> Iwai; ;
+> >     >>>> Wu Fengguang
+> >     >>>> Subject: Re: [alsa-devel] DSD over HDMI: audio data
+> packetization
+> >     >>>>
+> >     >>>> 31.12.2014, 17:38, Xuebing Wang kirjoitti:
+> >     >>>>> Anssi, Libin,
+> >     >>>>>
+> >     >>>>> Thank you very much for your help.
+> >     >>>>>
+> >     >>>>> If L-PCM audio data packetization is done by hardware, is it
+> >     possible
+> >     >>>>> to implement DSD over HDMI on Intel integrated graphics?
+> >     Thanks again.
+> >     >>>>
+> >     >>>> I don't think so, unless:
+> >     >>>>
+> >     >>>> (a) It is possible to somehow encapsulate the stream in Audio
+> >     Sample
+> >     >>>> Packets and be accepted by the receiver (like e.g. AC3, DTS).
+> >     I'm not aware of
+> >     >>>> such a way.
+> >     >>>>
+> >     >>>> or:
+> >     >>>> (b) There is some undocumented feature in the Intel HDMI codecs
+> >     allowing
+> >     >>>> the driver to switch to DSD or driver-constructed packets
+> >     (instead of
+> >     >>>> ASP) in similar way as there is a way to switch to HBR packets.
+> >     >>>>
+> >     >>>
+> >     >>> Yes, I agree. And I'm not sure whether HDMI spec supports DSD.
+> >     >>
+> >     >> It does, via the "One Bit Audio" and "DST" formats (spec 5.3.9,
+> >     5.3.10
+> >     >> in 1.3a/1.4a).
+> >     >
+> >     >
+> >
+> >
+> >     --
+> >     Anssi Hannula
+> >
+> >
+>
+>
+> --
+> Anssi Hannula
+>
