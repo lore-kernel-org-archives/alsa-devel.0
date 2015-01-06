@@ -1,96 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: wm8960: Let wm8960 codec driver
- manage its own MCLK
-Date: Tue, 6 Jan 2015 17:37:11 +0000
-Message-ID: <20150106173711.GH2634@sirena.org.uk>
+Subject: Re: [alsa-devel][PATCH 4/4] ASoC: wm8960: Fix capture sample rate
+ from 11250 to 11025
+Date: Tue, 6 Jan 2015 17:38:38 +0000
+Message-ID: <20150106173838.GI2634@sirena.org.uk>
 References: <1419997154-860-1-git-send-email-b50113@freescale.com>
+ <1419997154-860-4-git-send-email-b50113@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1002642008823718456=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F65C2604D1
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 18:37:31 +0100 (CET)
-In-Reply-To: <1419997154-860-1-git-send-email-b50113@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ca5z/wkVxIQXz1GF"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1419997154-860-4-git-send-email-b50113@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Zidan Wang <b50113@freescale.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Li.Xiubo@freescale.com, ckeepax@opensource.wolfsonmicro.com
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1002642008823718456==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pTYhUwqpXRR/mkN7"
-Content-Disposition: inline
-
-
---pTYhUwqpXRR/mkN7
+--Ca5z/wkVxIQXz1GF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 31, 2014 at 11:39:11AM +0800, Zidan Wang wrote:
+On Wed, Dec 31, 2014 at 11:39:14AM +0800, Zidan Wang wrote:
+> wm8960 codec can't support sample rate 11250, it must be 11025.
 
-> +		if (!IS_ERR(wm8960->mclk)) {
-> +			if (codec->dapm.bias_level =3D=3D SND_SOC_BIAS_ON)
-> +				clk_disable_unprepare(wm8960->mclk);
-> +			else {
+Applied, thanks.
 
-Both sides of the if statement should have braces if one does, though in
-this case nesting a second switch statement would probably be clearer.
-
-> @@ -661,6 +678,7 @@ static int wm8960_set_bias_level_out3(struct snd_soc_=
-codec *codec,
-> =20
->  		/* Disable VMID and VREF, let them discharge */
->  		snd_soc_write(codec, WM8960_POWER1, 0);
-> +
->  		msleep(600);
->  		break;
->  	}
-
-Random while space change here and in a couple of other places.
-
-> +	wm8960->mclk =3D devm_clk_get(&i2c->dev, "codec_mclk");
-> +	if (IS_ERR(wm8960->mclk)) {
-> +		if (PTR_ERR(wm8960->mclk) =3D=3D -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +	}
-> +
-
-Why name this "codec_mclk" - the device calls it just MCLK?
-
---pTYhUwqpXRR/mkN7
+--Ca5z/wkVxIQXz1GF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUrB1GAAoJECTWi3JdVIfQGtMH/0dylKfX2NmAWZpMtbYDJWNk
-mjKWmeHrIKO4qN8o/aYpi4lNPVO/r2/U11WNaHhbzkKu9wlqiefha5MwKr9TBAY4
-NxPa9mUUTkwRKXIPZppS/hloaiKQkXPIooBuHoteEfZOX4e5ohZewFPIiOYMi2kw
-htKOaO00JmbF1ZSN1+IQZ2ds5rZcwsiy4eIUyiw+NsBGr00NRXSvCWB2ly2BXKzv
-S1o11koos9QkMdjR3bCJMF3R1Rw24fz9+dK7krAb40JAHmwr/3ixM7zETBjFZYuM
-dasojOHqVnKIjZHZ2YRsEjQG9LEEZ4mGDPjK3d04/ZojRP6Umy775KPIdn73640=
-=DvHA
+iQEcBAEBAgAGBQJUrB2dAAoJECTWi3JdVIfQelEH/jL3UfPiaRzgn07S0BCZi4dj
+MN9Eyrgraz7g2bmIsii6ghhzARo7HIrjzzGYZKP5Adwf7cwOa8km47jliNUs+3/w
+TBKIKFEa8Qo1y9e8d0ba3FrXnVZ5/5PqBHAihzj9Wbq/ddUvUCDW+MaNZGVMPWhd
+g4ekY4plljK8G+J04efQMUdPNZ227z9B3CQprTfsfM4yXLcJbSKzV49BQ3N1S2/P
+k6E9SCNRX9djUc1ktn5Px87Y/ABZyIH96Im7B+hJSoTEGCh5/EH3MpPBvNwnCdeY
+Zv8pcb/8eltBe7JGyPGHPLttUI0l4bI2p6XNvJZFJt/IppGmUuN5aB62FUXrDgA=
+=zWwH
 -----END PGP SIGNATURE-----
 
---pTYhUwqpXRR/mkN7--
-
---===============1002642008823718456==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1002642008823718456==--
+--Ca5z/wkVxIQXz1GF--
