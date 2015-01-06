@@ -1,19 +1,17 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH 1/3] ASoC: rt5670: fix bit definition for
-	ASRC control
-Date: Tue, 6 Jan 2015 02:08:45 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D70103ABE3@RTITMBSV03.realtek.com.tw>
-References: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
- <20150105181714.GA2634@sirena.org.uk>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: DSD over HDMI: audio data packetization
+Date: Tue, 06 Jan 2015 06:49:36 +0200
+Message-ID: <54AB6960.2070202@iki.fi>
+References: <1420032720.2102.14.camel@gmail.com>	<54A3FCD7.2010902@iki.fi>	<96A12704CE18D347B625EE2D4A099D195C438E@SHSMSX103.ccr.corp.intel.com>	<54A4185E.5010900@gmail.com>	<54A41A18.3070005@iki.fi>	<96A12704CE18D347B625EE2D4A099D195C4443@SHSMSX103.ccr.corp.intel.com>	<54A4CF03.5030709@iki.fi>	<1420341058.1981.6.camel@gmail.com>	<54AA0914.4000109@iki.fi>
+ <CAGzU1+F0Os59UwRXRpZQnibDeT0KLK1UqX__Qv9=agwQTkZWyg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id C1BD726042F
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 03:08:52 +0100 (CET)
-In-Reply-To: <20150105181714.GA2634@sirena.org.uk>
-Content-Language: zh-TW
+Received: from mail3.ippnet.fi (mail3.ippnet.fi [62.197.168.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BFCC260440
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 05:49:39 +0100 (CET)
+In-Reply-To: <CAGzU1+F0Os59UwRXRpZQnibDeT0KLK1UqX__Qv9=agwQTkZWyg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,110 +21,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "mengdong.lin@intel.com" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Andrej Falout <andrej@falout.org>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xuebing Wang <xbing6@gmail.com>, ", Takashi Iwai" <tiwai@suse.de>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, ", Wu Fengguang" <wfg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Tuesday, January 06, 2015 2:17 AM
-> To: mengdong.lin@intel.com
-> Cc: alsa-devel@alsa-project.org; Bard Liao
-> Subject: Re: [PATCH 1/3] ASoC: rt5670: fix bit definition for ASRC control
-> 
-> On Mon, Jan 05, 2015 at 05:48:15PM +0800, mengdong.lin@intel.com
-> wrote:
-> > From: Bard Liao <bardliao@realtek.com>
-> >
-> > This patch fixes bit definitions for two ASRC control registers 0x84 and
-> 0x85.
-> 
-> This appears to do something more or different to fixing definitions - if it
-> was fixing I'd expect to see equal numbers of lines added and removed in
-> blocks identical apart from some numbers but this appears to be adding
-> some new definitions like these...
-
-Maybe we should call redefine rather than fix. The previous definition of
-registers 0x84 and 0x85 doesn't match the register's description. To make
-the code more readable, we would like to rewrite the definition of registers
-0x84 and 0x85.
-
-> 
-> > +/* ASRC clock source selection (0x84, 0x85) */
-> > +#define RT5670_CLK_SEL_SYS			(0x0)
-> > +#define RT5670_CLK_SEL_I2S1_ASRC		(0x1)
-> > +#define RT5670_CLK_SEL_I2S2_ASRC		(0x2)
-> > +#define RT5670_CLK_SEL_I2S3_ASRC		(0x3)
-> > +#define RT5670_CLK_SEL_SYS2			(0x5)
-> > +#define RT5670_CLK_SEL_SYS3			(0x6)
-> 
-> ...among other things, and this block here:
-
-The description above is the same for all ASRC blocks. To save code size,
-we define it in a separate part.
-If we define it in each ASRC block, it would be something like
-+#define RT5670_DA_STO_CLK_SEL_MASK		(0xf << 12)
-+#define RT5670_DA_STO_CLK_SEL_SFT		12
-+#define RT5670_DA_STO_CLK_SEL_SYS		(0 << 12)
-+#define RT5670_DA_STO_CLK_SEL_I2S1_ASRC	(1 << 12)
-+#define RT5670_DA_STO_CLK_SEL_I2S2_ASRC	(2 << 12)
-+#define RT5670_DA_STO_CLK_SEL_I2S3_ASRC	(3 << 12)
-+#define RT5670_DA_STO_CLK_SEL_ SYS2		(5 << 12)
-+#define RT5670_DA_STO_CLK_SEL_ SYS3		(6 << 12)
-And same thing for other ASRC blocks.
-
-> 
-> >  /* ASRC Control 2 (0x84) */
-> > -#define RT5670_MDA_L_M_MASK			(0x1 << 15)
-> > -#define RT5670_MDA_L_M_SFT			15
-> > -#define RT5670_MDA_L_M_NOR			(0x0 << 15)
-> > -#define RT5670_MDA_L_M_ASYN			(0x1 << 15)
-> > -#define RT5670_MDA_R_M_MASK			(0x1 << 14)
-> > -#define RT5670_MDA_R_M_SFT			14
-> > -#define RT5670_MDA_R_M_NOR			(0x0 << 14)
-> > -#define RT5670_MDA_R_M_ASYN			(0x1 << 14)
-> > -#define RT5670_MAD_L_M_MASK			(0x1 << 13)
-> > -#define RT5670_MAD_L_M_SFT			13
-> > -#define RT5670_MAD_L_M_NOR			(0x0 << 13)
-> > -#define RT5670_MAD_L_M_ASYN			(0x1 << 13)
-> > -#define RT5670_MAD_R_M_MASK			(0x1 << 12)
-> > -#define RT5670_MAD_R_M_SFT			12
-> > -#define RT5670_MAD_R_M_NOR			(0x0 << 12)
-> > -#define RT5670_MAD_R_M_ASYN			(0x1 << 12)
-> > -#define RT5670_ADC_M_MASK			(0x1 << 11)
-> > -#define RT5670_ADC_M_SFT			11
-> > -#define RT5670_ADC_M_NOR			(0x0 << 11)
-> > -#define RT5670_ADC_M_ASYN			(0x1 << 11)
-> > -#define RT5670_STO_DAC_M_MASK			(0x1 << 5)
-> > -#define RT5670_STO_DAC_M_SFT			5
-> > -#define RT5670_STO_DAC_M_NOR			(0x0 << 5)
-> > -#define RT5670_STO_DAC_M_ASYN			(0x1 << 5)
-> > -#define RT5670_I2S1_R_D_MASK			(0x1 << 4)
-> > -#define RT5670_I2S1_R_D_SFT			4
-> > -#define RT5670_I2S1_R_D_DIS			(0x0 << 4)
-> > -#define RT5670_I2S1_R_D_EN			(0x1 << 4)
-> > -#define RT5670_I2S2_R_D_MASK			(0x1 << 3)
-> > -#define RT5670_I2S2_R_D_SFT			3
-> > -#define RT5670_I2S2_R_D_DIS			(0x0 << 3)
-> > -#define RT5670_I2S2_R_D_EN			(0x1 << 3)
-> > -#define RT5670_PRE_SCLK_MASK			(0x3)
-> > -#define RT5670_PRE_SCLK_SFT			0
-> > -#define RT5670_PRE_SCLK_512			(0x0)
-> > -#define RT5670_PRE_SCLK_1024			(0x1)
-> > -#define RT5670_PRE_SCLK_2048			(0x2)
-> > +#define RT5670_DA_STO_CLK_SEL_MASK		(0xf << 12)
-> > +#define RT5670_DA_STO_CLK_SEL_SFT		12
-> > +#define RT5670_DA_MONOL_CLK_SEL_MASK		(0xf << 8)
-> > +#define RT5670_DA_MONOL_CLK_SEL_SFT		8
-> > +#define RT5670_DA_MONOR_CLK_SEL_MASK		(0xf << 4)
-> > +#define RT5670_DA_MONOR_CLK_SEL_SFT		4
-> > +#define RT5670_AD_STO1_CLK_SEL_MASK		(0xf << 0)
-> > +#define RT5670_AD_STO1_CLK_SEL_SFT		0
-> 
-> removes a lot more things than it adds, with different names too.
-
-The previous definition is totally wrong, so we just remove it and
-write a new definition for it.
-
-> 
-> ------Please consider the environment before printing this e-mail.
+MDYuMDEuMjAxNSwgMDY6MzMsIEFuZHJlaiBGYWxvdXQga2lyam9pdHRpOgo+IEhpIEFuc3NpLAoK
+SGksCgo+IEp1c3Qgd29uZGVyaW5nIGhvdyBNaWNyb3NvZnQgZG9jdW1lbnRhdGlvbiBmaXRzIGlu
+dG8gdGhpcyBkaXNjdXNzaW9uOgo+IAo+ICJSZXByZXNlbnRpbmcgRm9ybWF0cyBmb3IgSUVDIDYx
+OTM3IFRyYW5zbWlzc2lvbnMiCj4gCj4gaHR0cDovL21zZG4ubWljcm9zb2Z0LmNvbS9lbi11cy9s
+aWJyYXJ5L3dpbmRvd3MvZGVza3RvcC9kZDMxNjc2MSUyOHY9dnMuODUlMjkuYXNweAo+IAo+IAo+
+ICJNaWNyb3NvZnQtcHJvdmlkZWQgSEQgQXVkaW8gY2xhc3MgZHJpdmVyIHN1cHBvcnRzIFBDTSwg
+QUMzLCBEVFMsIEFBQywKPiBEb2xieSBEaWdpdGFsIFBsdXMsIFdNQSBQcm8sIE1BVChNTFApIGZv
+cm1hdHMuIFRoZSBHVUlEcyBmb3IgdGhlCj4gY29tcHJlc3NlZCBhdWRpbyBmb3JtYXRzIHRoYXQg
+YXJlIG5vdCBzdXBwb3J0ZWQgYnkgdGhlIEhEIGF1ZGlvIGNsYXNzCj4gZHJpdmVyIGFuZCBjYW4g
+YmUgaW1wbGVtZW50ZWQgYnkgdGhpcmQtcGFydHkgc29sdXRpb25zIGFyZSBsaXN0ZWQgaW4gdGhl
+Cj4gZm9sbG93aW5nIHRhYmxlLiAiCj4gCj4gQ0VBIDg2MSBUeXBlCVN1YkZvcm1hdCBHVUlECURl
+c2NyaXB0aW9uCj4gMHgwOAkKPiAKPiAwMDAwMDAwOC0wY2VhLTAwMTAtODAwMC0wMGFhMDAzODli
+NzEKPiAKPiBLU0RBVEFGT1JNQVRfU1VCVFlQRV9JRUM2MTkzN19BVFJBQwo+IAo+IAlBZGFwdGl2
+ZSBUcmFuc2Zvcm0gQWNvdXN0aWMgQ29kaW5nIChBVFJBQykKPiAweDA5CQo+IAo+IDAwMDAwMDA5
+LTBjZWEtMDAxMC04MDAwLTAwYWEwMDM4OWI3MQo+IAo+IEtTREFUQUZPUk1BVF9TVUJUWVBFX0lF
+QzYxOTM3X09ORV9CSVRfQVVESU8KPiAKPiAJT25lLUJpdCBBdWRpbwo+IDB4MGQJCj4gCj4gMDAw
+MDAwMGQtMGNlYS0wMDEwLTgwMDAtMDBhYTAwMzg5YjcxCj4gCj4gS1NEQVRBRk9STUFUX1NVQlRZ
+UEVfSUVDNjE5MzdfRFNUCj4gCj4gCURpcmVjdCBTdHJlYW0gVHJhbnNwb3J0IChEU1Qp4oCUbG9z
+c2xlc3MgY29tcHJlc3NlZCBEU0QgKERpcmVjdCBTdHJlYW0KPiBEaWdpdGFsKS4KPiAKPiAKPiBB
+bmQga25vd2luZyB0aGF0IElFQyA2MTkzNyBmcm9tIEhETUkgMS4zIGFsc28gc3VwcG9ydHMgYWJv
+dmUgNi4xNDQgTWJwcy4uLgo+IAo+IElzIHRoZXJlIGEgZG91YnQgdGhhdCBhYm92ZSBpbmZvcm1h
+dGlvbiBpcyBjb3JyZWN0LCBhbmQgdGhhdCBEU1QvRFNUIGNhbgo+IGJlIGNhcnJpZWQgb3ZlciA2
+MTkzNyBpbiBNaWNyb3NvZnQgSERBIGNsYXNzIGRyaXZlciwgaW4gdGhpcyBleGFtcGxlLCBieQo+
+ICJpbXBsZW1lbnRpbmcgYSB0aGlyZC1wYXJ0eSBzb2x1dGlvbiIgYXMgZGVzY3JpYmVkIGluIHRo
+aXMgdGFibGU/CgoKSSB0aGluayB0aGUgT25lLUJpdCBBdWRpbyBhbmQgRFNUIGZvcm1hdHMgYXJl
+IGp1c3QgbWlzbmFtZWQgaGVyZSBhbmQKY2FuJ3QgYmUgY2FycmllZCBvdmVyIElFQyA2MTkzNyAo
+QVRSQUMgY2FuIGJlKSAtIHRoZSBJRUMgNjE5MzcKc3BlY2lmaWNhdGlvbiBkb2VzIG5vdCBjb3Zl
+ciBPbmUtQml0IEF1ZGlvIG9yIERTVC4KCkkgdGhpbmsgdGhlICJ0aGlyZC1wYXJ0eSBzb2x1dGlv
+biIgcmVmZXJzIHRvIGEgZHJpdmVyIGltcGxlbWVudGluZwpzdXBwb3J0IGZvciBhIG5vbi1IREEt
+c3BlYyBIVyBmZWF0dXJlIHdoaWNoIGFsbG93cyBPbmUtQml0IGF1ZGlvIC8gRFNUIC8KcmF3IHBh
+Y2tldHMgdG8gYmUgdHJhbnNtaXR0ZWQgKGluIGEgc2ltaWxhciB3YXkgIkVQVCIgKEVuY29kZWQg
+UGFja2V0ClR5cGUgZmllbGQgaW4gUGluIFdpZGdldCBDb250cm9sIDcuMy4zLjEzKSBhbGxvd3Mg
+c2V0dGluZyBIQlIgb3IgQVNQCnBhY2tldCB0cmFuc21pc3Npb24pLgoKCj4gVGhhbmtzLAo+IEFu
+ZHJlaiBGYWxvdXQKPiAKPiBPbiBNb24sIEphbiA1LCAyMDE1IGF0IDQ6NDYgUE0sIEFuc3NpIEhh
+bm51bGEgPGFuc3NpLmhhbm51bGFAaWtpLmZpCj4gPG1haWx0bzphbnNzaS5oYW5udWxhQGlraS5m
+aT4+IHdyb3RlOgo+IAo+ICAgICAwNC4wMS4yMDE1LCAwNToxMCwgWHVlYmluZyBXYW5nIGtpcmpv
+aXR0aToKPiAgICAgPiBBbnNzaSwgTGliaW4sCj4gICAgID4KPiAgICAgPiBUaGFua3MgZm9yIHlv
+dXIgaGVscC4KPiAgICAgPgo+ICAgICA+IEFmdGVyIGEgbGl0dGxlIGJpdCBvZiByZXNlYXJjaCwg
+SSBkbyB0aGluayBpdCBpcyBwb3NzaWJsZSB0byBzdHJlYW0gRFNECj4gICAgID4gb3ZlciBIRE1J
+ICh0aGUgbWVjaGFuaXNtIGlzIGFzIEFuc3NpIG1lbnRpb25lZCwgc2ltaWxhciB3YXkgYXMgSEJS
+KS4KPiAgICAgPgo+ICAgICA+IFBsZWFzZSBzZWUgSERBIHNwZWM6Cj4gICAgID4gMy43LjEgU3Ry
+ZWFtIEZvcm1hdCBTdHJ1Y3R1cmUKPiAgICAgPiAoSWYgdGhlIFRZUEUgaXMgc2V0IHRvIE5vbi1Q
+Q00sIHRoZSBjb250cm9sbGVyIGp1c3QgcHVzaGVzIGRhdGEgb3ZlciB0aGUKPiAgICAgPiBsaW5r
+IGFuZCBpcyBub3QgY29uY2VybmVkCj4gICAgID4gd2l0aCBmb3JtYXR0aW5nLiBUaGUgYmFzZSBy
+YXRlLCBkYXRhIHR5cGUsIGFuZCBudW1iZXIgb2YgV29yZHMgKE1VTFQpIHRvCj4gICAgID4gc2Vu
+ZCBlYWNoIHZhbGlkIGZyYW1lCj4gICAgID4gYXJlIHNwZWNpZmllZCB0byBjb250cm9sIHRoZSBy
+YXRlIGF0IHdoaWNoIHRoZSBub24tUENNIGRhdGEgaXMgc2VudC4pCj4gICAgID4KPiAgICAgPiA3
+LjMuMy44IENvbnZlcnRlciBGb3JtYXQKPiAgICAgPgo+ICAgICA+IFdoYXQgZG8geW91IHRoaW5r
+PyBJbiBvcmRlciB0byBpbXBsZW1lbnQgdGhpcyBzaW1pbGlhciBtZWNoYW5pc20KPiAgICAgPiAo
+c2ltaWxhciB0byBIQlIpLCBJIHN0aWxsIGhhdmUgc29tZSBkZXRhaWxlZCBxdWVzdGlvbnMgdGhh
+dCBJIHdpbGwgd3JpdGUKPiAgICAgPiBpbiBhbm90aGVyIGVtYWlsLiBUaGFua3MuCj4gCj4gICAg
+IFRoYXQgc2V0dGluZyB3aWxsIHN0aWxsIG5vdCBhbGxvdyB5b3UgdG8gc2VuZCBPbmUtYml0IGF1
+ZGlvIG9yIERTVAo+ICAgICBwYWNrZXRzLiBUaGUgc3RyZWFtIHdpbGwgc3RpbGwgYmUgZW5jYXBz
+dWxhdGVkIGluIGVpdGhlciBBU1Agb3IgSEJSCj4gICAgIHBhY2tldHMsIGRlcGVuZGluZyBvbiB0
+aGUgdmFsdWUgb2YgdGhlIEVQVCBmaWVsZCAoRW5jb2RlZCBQYWNrZXQgVHlwZSwKPiAgICAgNy4z
+LjMuMTMpLgo+IAo+IAo+ICAgICA+Cj4gICAgID4gT24gVGh1LCAyMDE1LTAxLTAxIGF0IDA2OjM3
+ICswMjAwLCBBbnNzaSBIYW5udWxhIHdyb3RlOgo+ICAgICA+PiAwMS4wMS4yMDE1LCAwNDowNywg
+WWFuZywgTGliaW4ga2lyam9pdHRpOgo+ICAgICA+Pj4gSGksCj4gICAgID4+Pgo+ICAgICA+Pj4+
+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gICAgID4+Pj4gRnJvbTogQW5zc2kgSGFubnVs
+YSBbbWFpbHRvOmFuc3NpLmhhbm51bGFAaWtpLmZpCj4gICAgIDxtYWlsdG86YW5zc2kuaGFubnVs
+YUBpa2kuZmk+XQo+ICAgICA+Pj4+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMzEsIDIwMTQg
+MTE6NDUgUE0KPiAgICAgPj4+PiBUbzogWHVlYmluZyBXYW5nCj4gICAgID4+Pj4gQ2M6IFlhbmcs
+IExpYmluOyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiAgICAgPG1haWx0bzphbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmc+OyBMaW4sIE1lbmdkb25nOyA7IFRha2FzaGkgSXdhaTsgOwo+
+ICAgICA+Pj4+IFd1IEZlbmdndWFuZwo+ICAgICA+Pj4+IFN1YmplY3Q6IFJlOiBbYWxzYS1kZXZl
+bF0gRFNEIG92ZXIgSERNSTogYXVkaW8gZGF0YSBwYWNrZXRpemF0aW9uCj4gICAgID4+Pj4KPiAg
+ICAgPj4+PiAzMS4xMi4yMDE0LCAxNzozOCwgWHVlYmluZyBXYW5nIGtpcmpvaXR0aToKPiAgICAg
+Pj4+Pj4gQW5zc2ksIExpYmluLAo+ICAgICA+Pj4+Pgo+ICAgICA+Pj4+PiBUaGFuayB5b3UgdmVy
+eSBtdWNoIGZvciB5b3VyIGhlbHAuCj4gICAgID4+Pj4+Cj4gICAgID4+Pj4+IElmIEwtUENNIGF1
+ZGlvIGRhdGEgcGFja2V0aXphdGlvbiBpcyBkb25lIGJ5IGhhcmR3YXJlLCBpcyBpdAo+ICAgICBw
+b3NzaWJsZQo+ICAgICA+Pj4+PiB0byBpbXBsZW1lbnQgRFNEIG92ZXIgSERNSSBvbiBJbnRlbCBp
+bnRlZ3JhdGVkIGdyYXBoaWNzPwo+ICAgICBUaGFua3MgYWdhaW4uCj4gICAgID4+Pj4KPiAgICAg
+Pj4+PiBJIGRvbid0IHRoaW5rIHNvLCB1bmxlc3M6Cj4gICAgID4+Pj4KPiAgICAgPj4+PiAoYSkg
+SXQgaXMgcG9zc2libGUgdG8gc29tZWhvdyBlbmNhcHN1bGF0ZSB0aGUgc3RyZWFtIGluIEF1ZGlv
+Cj4gICAgIFNhbXBsZQo+ICAgICA+Pj4+IFBhY2tldHMgYW5kIGJlIGFjY2VwdGVkIGJ5IHRoZSBy
+ZWNlaXZlciAobGlrZSBlLmcuIEFDMywgRFRTKS4KPiAgICAgSSdtIG5vdCBhd2FyZSBvZgo+ICAg
+ICA+Pj4+IHN1Y2ggYSB3YXkuCj4gICAgID4+Pj4KPiAgICAgPj4+PiBvcjoKPiAgICAgPj4+PiAo
+YikgVGhlcmUgaXMgc29tZSB1bmRvY3VtZW50ZWQgZmVhdHVyZSBpbiB0aGUgSW50ZWwgSERNSSBj
+b2RlY3MKPiAgICAgYWxsb3dpbmcKPiAgICAgPj4+PiB0aGUgZHJpdmVyIHRvIHN3aXRjaCB0byBE
+U0Qgb3IgZHJpdmVyLWNvbnN0cnVjdGVkIHBhY2tldHMKPiAgICAgKGluc3RlYWQgb2YKPiAgICAg
+Pj4+PiBBU1ApIGluIHNpbWlsYXIgd2F5IGFzIHRoZXJlIGlzIGEgd2F5IHRvIHN3aXRjaCB0byBI
+QlIgcGFja2V0cy4KPiAgICAgPj4+Pgo+ICAgICA+Pj4KPiAgICAgPj4+IFllcywgSSBhZ3JlZS4g
+QW5kIEknbSBub3Qgc3VyZSB3aGV0aGVyIEhETUkgc3BlYyBzdXBwb3J0cyBEU0QuCj4gICAgID4+
+Cj4gICAgID4+IEl0IGRvZXMsIHZpYSB0aGUgIk9uZSBCaXQgQXVkaW8iIGFuZCAiRFNUIiBmb3Jt
+YXRzIChzcGVjIDUuMy45LAo+ICAgICA1LjMuMTAKPiAgICAgPj4gaW4gMS4zYS8xLjRhKS4KPiAg
+ICAgPgo+ICAgICA+Cj4gCj4gCj4gICAgIC0tCj4gICAgIEFuc3NpIEhhbm51bGEKPiAKPiAKCgot
+LSAKQW5zc2kgSGFubnVsYQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
