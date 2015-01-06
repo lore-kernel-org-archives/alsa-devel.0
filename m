@@ -1,44 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Subject: Re: [PATCH] ASoC: sam9g20_wm8731: drop machine_is_xxx
-Date: Tue, 6 Jan 2015 12:00:49 +0000
-Message-ID: <20150106120049.GX2634@sirena.org.uk>
+Date: Tue, 6 Jan 2015 13:27:51 +0100
+Message-ID: <20150106122751.GO4194@piout.net>
 References: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
+ <20150106120049.GX2634@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TXv8ADjWKuT9E31y"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
+In-Reply-To: <20150106120049.GX2634@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---TXv8ADjWKuT9E31y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 06/01/2015 at 12:00:49 +0000, Mark Brown wrote :
+> On Tue, Jan 06, 2015 at 12:14:32PM +0100, Alexandre Belloni wrote:
+> > Atmel based boards can now only be used with device tree. Drop non DT
+> > initialization.
+> 
+> This doesn't apply against current code, please check and resend.
 
-On Tue, Jan 06, 2015 at 12:14:32PM +0100, Alexandre Belloni wrote:
-> Atmel based boards can now only be used with device tree. Drop non DT
-> initialization.
+It should apply after "sound: soc: atmel sam9g20_wm8731: remove useless
+include". I was based on 3.19-rc2.
 
-This doesn't apply against current code, please check and resend.
-
---TXv8ADjWKuT9E31y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUq85wAAoJECTWi3JdVIfQ6NEH/1p4xg9515C4jqbNUkm6lL39
-cAxhvxiIqAHl/clla+v+aXCY3c0zEtnaoLE9u6Lwc79mlS8ZQx1g3iaC8UEvIpNn
-LxD08H2UfTJ4PA2fCdQKEh2iFXPKG83d99uJ/O2H4Nk6orURye3dD1eA9w+Hv/GG
-jJPqrJDbSq54DzOQy1P2fuSjJieoLEwQ5X+YDBQcz0xvbYPn9DmUBrGPOO82AkpT
-7vQeWT1BsHP9JslrAOWAOWg0W7awxNYFoDhD/S2zAUwyJRbBzIp6HtBaQD7y2poC
-zgAE9Wz3dzfHMUNXoT4V950N5hZnmV7EHQ3RLl0JikCNf+15iShgXVtcBbCGGs8=
-=j8+a
------END PGP SIGNATURE-----
-
---TXv8ADjWKuT9E31y--
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
