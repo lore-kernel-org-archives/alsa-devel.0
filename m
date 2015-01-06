@@ -1,21 +1,18 @@
-From: Tim Cussins <timcussins@eml.cc>
-Subject: Re: [PATCH v2 1/1] alsa-lib: Add snd_pcm_start_at.
-Date: Tue, 06 Jan 2015 15:13:28 +0000
-Message-ID: <54ABFB98.3050506@eml.cc>
-References: <1418837267-10896-1-git-send-email-timcussins@eml.cc>
- <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
- <5492A7F9.8090602@eml.cc> <54ABF459.8000504@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sam9g20_wm8731: drop machine_is_xxx
+Date: Tue, 6 Jan 2015 16:01:23 +0000
+Message-ID: <20150106160123.GA2634@sirena.org.uk>
+References: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
+ <20150106120049.GX2634@sirena.org.uk>
+ <20150106122751.GO4194@piout.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2738946361762599424=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id E35B4261294
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 16:13:31 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id 6D49020CC2
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 10:13:31 -0500 (EST)
-In-Reply-To: <54ABF459.8000504@linux.intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BE6E2604F8
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 17:01:53 +0100 (CET)
+In-Reply-To: <20150106122751.GO4194@piout.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,45 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Raymond Yau <superquad.vortex2@gmail.com>
-Cc: nstoughton@aether.com, tiwai@suse.de, alsa-devel@alsa-project.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/01/15 14:42, Pierre-Louis Bossart wrote:
->
->>> Do your implementation need to set specific start threshold to prevent
->>> the driver automatically start when you fill the buffer ?
->>
->>
->>> Do the driver allow to start when there is no data ?
->>>
->>
->> It's the responsibility of the client to set the start threshold to a
->> safe and responsible value.
->>
->> It might suit some applications to allow both threshold start _and_
->> start_at: My implementation doesn't preclude this.
->
-> Now I am confused... My understanding was that this feature is similar
-> to SSYNC in HDAudio, where everything is ready, buffers filled, DMAs
-> armed, FIFOs filled and the start condition only opens the last gate at
-> a specific time - possibly with multiple streams starting at the same
-> time. If you add a condition on the start_threshold you really don't
-> need any hardware-driven start, do you?
 
-What you've described is exactly what I had in mind, so we're still on 
-the same page.
+--===============2738946361762599424==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BEfR2jmXRHrz4elx"
+Content-Disposition: inline
 
-I wanted to make it clear that my implementation of start_at doesn't 
-*prevent* client code starting on a threshold *and* using start_at, even 
-if it seems to us like a strange idea.
 
-Preventing the use of both requires us to show why it's never a useful 
-idea, decide on policy (what do happens when client code tries to use 
-both), and implement that policy. I'd rather just leave it as 'possible' :)
+--BEfR2jmXRHrz4elx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Thanks,
-> -Pierre
->
->
->
+On Tue, Jan 06, 2015 at 01:27:51PM +0100, Alexandre Belloni wrote:
+> On 06/01/2015 at 12:00:49 +0000, Mark Brown wrote :
+> > On Tue, Jan 06, 2015 at 12:14:32PM +0100, Alexandre Belloni wrote:
+
+> > > Atmel based boards can now only be used with device tree. Drop non DT
+> > > initialization.
+
+> > This doesn't apply against current code, please check and resend.
+
+> It should apply after "sound: soc: atmel sam9g20_wm8731: remove useless
+> include". I was based on 3.19-rc2.
+
+So, one reason you should use subject lines matching the style for the
+subsystem is that this is a big part of how people find patches to
+review...  I'm not 100% sure I still have the patch, the volume is
+rather high right now.
+
+--BEfR2jmXRHrz4elx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUrAbSAAoJECTWi3JdVIfQYLIH/iXGi3OfHhlaLFOtrwN7sCnZ
+QW4fUwjuCMJN+Cn3wkfrq+YpWnCyfycQXvyHV/t6R2XsEarS+DF87bxuffWlcNL4
+nZFwaOjxVcRuRCGQB+7HsyQL2N8kMBWfpRJPpng4FZHzS1NsaxWC7Ijs9AHaZgsN
+0Bh63FUw6HeO++Wnw7M3bbzSuJvP6je7ncsIK0e9yCrMDC8SeDnSvGf1TBtYCTdA
+nBFnXwqUhGCyBiLEbjkHKzo9oF4AfBy+vzWN0YeTvdxbeEwUucQB+Tgc/pRs2BXT
+Zd1+mQxe9cwCdgYyLlCYhj0cm+aEIWgWYDnIOGaT3W/MQKkSPKu0j8yPLKuLgjY=
+=xw0i
+-----END PGP SIGNATURE-----
+
+--BEfR2jmXRHrz4elx--
+
+--===============2738946361762599424==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2738946361762599424==--
