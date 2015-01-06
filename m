@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/20] ASoC: rsnd: add Synchronous SRC and
- U/O error salvage support
-Date: Tue, 6 Jan 2015 18:33:19 +0000
-Message-ID: <20150106183319.GS2634@sirena.org.uk>
-References: <877fyh9ilx.wl%kuninori.morimoto.gx@renesas.com>
- <87h9wl7qlb.wl%kuninori.morimoto.gx@renesas.com>
- <20141230171032.GQ17800@sirena.org.uk>
- <874ms6rraj.wl%kuninori.morimoto.gx@renesas.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH] ALSA: fm801: PCI core handles power state for
+	us
+Date: Tue,  6 Jan 2015 22:39:15 +0200
+Message-ID: <1420576755-23570-1-git-send-email-andy.shevchenko@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4819785805967248730=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E57402604F7
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 19:33:31 +0100 (CET)
-In-Reply-To: <874ms6rraj.wl%kuninori.morimoto.gx@renesas.com>
+Received: from gw02.mail.saunalahti.fi (gw02.mail.saunalahti.fi
+ [195.197.172.116])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91C9E2606CC
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 21:40:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,73 +20,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Tim Cussins <timcussins@eml.cc>, Liam Girdwood <lgirdwood@gmail.com>, pierre-louis.bossart@linux.intel.com
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+There is no need to duplicate the work that is already done in the PCI
+driver core. The patch removes excerpts from suspend and resume
+callbacks.
 
---===============4819785805967248730==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="iASP2QDfFF5MN+I5"
-Content-Disposition: inline
+While here amend a definition of the snd_fm801_pm. The PM core has the
+stubs for non-PM_SLEEP cases, thus we can always define the variable.
 
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+ sound/pci/fm801.c | 22 ++--------------------
+ 1 file changed, 2 insertions(+), 20 deletions(-)
 
---iASP2QDfFF5MN+I5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 05, 2015 at 12:42:27AM +0000, Kuninori Morimoto wrote:
-
-> 2nd "dynamic" rate convert which is this patch is used as revision.
-> I don't know detail of use case, but, according to HW team,
-> sound clock has small accidental error.
-> Because of this, if we used 48kHz sound in long term,
-> but, the real sound can be 48001 Hz or 47999 Hz or something like that.
-> So, if we use it without revision in long term, the sound will has
-> small noise. This will be problem for TV or radio (?).
-> Thus, sound player wants to revise it by "dynamic" rate convert.
-> I guess DPCM is good match for "static" rate convert, but not good
-> for "dynamic".
-
-In general it should be fine for anything - the driver for the SoC
-shouldn't need to understand why the rates are being converted, it
-should let the system integration worry about picking the rates.  That
-way we can more easily make the frameworks smarter and get benefits over
-all machines.
-
-Though having said that I'm a little confused as to what exactly this
-control is intended for - am I right in thinking that what's actually
-going on here is that something in userspace is measuring the actual
-measured rate and feeding that information back to the DSP for
-correction?  If that's the case that does seem reasonable but also like
-we ought to have a general control interface for it.
-
-Adding Tim and Pierre since they might have views if my guess is
-correct, I could be wrong though.
-
---iASP2QDfFF5MN+I5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUrCpvAAoJECTWi3JdVIfQMlkH/37KIwQ2OJ0m+csCSXyZyuZE
-XNcNdNUIc769DUm7O+IldArSsUvTvYI7cwKyCbQJNO8gpGVNZi21JFtDP7yQMh/G
-Dhtdned3uh7voTbMJwfgE0dJwwwIefZaBU+AlQg8wV5mHtT7ZYWn9z2nwZt8UU6f
-/3eAT4wWaAu/L5s3qfZ1dOiq27hhyk25LAs2A/xF2V95UFV6E4UIuehLExLPnC75
-9JwxSBEH3C1eArbgm2HBYaXR9fdsh6qEE570mot4EA1XNSALt+Vqcg2VrSmCDE36
-5PbJAyN2smjj6ZRnD6cejuE8ipasaePPSh9XeZjaYjrP8sJBAsnHW1vhomGvK0I=
-=xEt1
------END PGP SIGNATURE-----
-
---iASP2QDfFF5MN+I5--
-
---===============4819785805967248730==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4819785805967248730==--
+diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+index 9a2122f..dcda3c1 100644
+--- a/sound/pci/fm801.c
++++ b/sound/pci/fm801.c
+@@ -1384,7 +1384,6 @@ static unsigned char saved_regs[] = {
+ 
+ static int snd_fm801_suspend(struct device *dev)
+ {
+-	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct fm801 *chip = card->private_data;
+ 	int i;
+@@ -1396,29 +1395,15 @@ static int snd_fm801_suspend(struct device *dev)
+ 	for (i = 0; i < ARRAY_SIZE(saved_regs); i++)
+ 		chip->saved_regs[i] = inw(chip->port + saved_regs[i]);
+ 	/* FIXME: tea575x suspend */
+-
+-	pci_disable_device(pci);
+-	pci_save_state(pci);
+-	pci_set_power_state(pci, PCI_D3hot);
+ 	return 0;
+ }
+ 
+ static int snd_fm801_resume(struct device *dev)
+ {
+-	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct fm801 *chip = card->private_data;
+ 	int i;
+ 
+-	pci_set_power_state(pci, PCI_D0);
+-	pci_restore_state(pci);
+-	if (pci_enable_device(pci) < 0) {
+-		dev_err(dev, "pci_enable_device failed, disabling device\n");
+-		snd_card_disconnect(card);
+-		return -EIO;
+-	}
+-	pci_set_master(pci);
+-
+ 	snd_fm801_chip_init(chip, 1);
+ 	snd_ac97_resume(chip->ac97);
+ 	snd_ac97_resume(chip->ac97_sec);
+@@ -1428,12 +1413,9 @@ static int snd_fm801_resume(struct device *dev)
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+ 	return 0;
+ }
++#endif /* CONFIG_PM_SLEEP */
+ 
+ static SIMPLE_DEV_PM_OPS(snd_fm801_pm, snd_fm801_suspend, snd_fm801_resume);
+-#define SND_FM801_PM_OPS	&snd_fm801_pm
+-#else
+-#define SND_FM801_PM_OPS	NULL
+-#endif /* CONFIG_PM_SLEEP */
+ 
+ static struct pci_driver fm801_driver = {
+ 	.name = KBUILD_MODNAME,
+@@ -1441,7 +1423,7 @@ static struct pci_driver fm801_driver = {
+ 	.probe = snd_card_fm801_probe,
+ 	.remove = snd_card_fm801_remove,
+ 	.driver = {
+-		.pm = SND_FM801_PM_OPS,
++		.pm = &snd_fm801_pm,
+ 	},
+ };
+ 
+-- 
+1.8.3.101.g727a46b
