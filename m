@@ -1,27 +1,16 @@
-From: Rob Herring <robherring2@gmail.com>
-Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from
-	ioremap
-Date: Tue, 6 Jan 2015 11:27:41 -0600
-Message-ID: <CAL_JsqJwdr7WvzLqPmui3N4H-wVgSURN6wYD=dm1HyU2HUmXOg@mail.gmail.com>
-References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
- <1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
- <1418292513.3188.4.camel@pengutronix.de>
- <20141211103919.GA6067@arm.com> <1418298046.3188.10.camel@pengutronix.de>
- <20141211145849.GH31456@e104818-lin.cambridge.arm.com>
- <CAM4voakdfiTecW8YH0znnyB-dTnX_fsrRcH2McABwdk3T9drkQ@mail.gmail.com>
- <20150105181823.GG4081@atomide.com>
- <CAM4voa=xoM4AuGxwk0TpLnGz9jbZ02awFOrY_KgWCSzROJR6cA@mail.gmail.com>
- <1420563279.3719.15.camel@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/21] ASoC: Use static DAI format setup
+Date: Tue, 6 Jan 2015 17:34:17 +0000
+Message-ID: <20150106173417.GG2634@sirena.org.uk>
+References: <1420128990-6872-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0692402500198421788=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f42.google.com (mail-wg0-f42.google.com [74.125.82.42])
- by alsa0.perex.cz (Postfix) with ESMTP id E120F2604F2
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 18:28:01 +0100 (CET)
-Received: by mail-wg0-f42.google.com with SMTP id k14so29984148wgh.29
- for <alsa-devel@alsa-project.org>; Tue, 06 Jan 2015 09:28:01 -0800 (PST)
-In-Reply-To: <1420563279.3719.15.camel@pengutronix.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DD782604D1
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 18:35:02 +0100 (CET)
+In-Reply-To: <1420128990-6872-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,35 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "heiko@sntech.de" <heiko@sntech.de>, "padma.v@samsung.com" <padma.v@samsung.com>, Tony Lindgren <tony@atomide.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <Will.Deacon@arm.com>, Abhilash Kesavan <kesavan.abhilash@gmail.com>, Pawel Moll <Pawel.Moll@arm.com>, "shc_work@mail.ru" <shc_work@mail.ru>, "corbet@lwn.net" <corbet@lwn.net>, linux-rockchip@lists.infradead.org, "kgene@kernel.org" <kgene@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "arnd@arndb.de" <arnd@arndb.de>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, S
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Denis Carikli <denis@eukrea.com>, Manuel Lauss <manuel.lauss@googlemail.com>, Bo Shen <voice.shen@atmel.com>, Shawn Guo <shawn.guo@linaro.org>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 6, 2015 at 10:54 AM, Philipp Zabel <p.zabel@pengutronix.de> wrote:
-> Hi Abhilash,
->
-> Am Dienstag, den 06.01.2015, 19:57 +0530 schrieb Abhilash Kesavan:
->> >> From the existing dts files, omap, imx, rockchip and exynos seem to be
->> >> the only users of the sram allocator code. I have tested this on
->> >> Exynos5420, Exynos5800 and Exynos7; there is no change in behavior
->> >> seen on these boards. Tested-by for other SoCs would be appreciated.
->> >
->> > Sorry for the delay, these seems to boot OK on omap4, so from that
->> > point of view:
->> >
->> > Tested-by: Tony Lindgren <tony@atomide.com>
->>
->> Thanks a lot for testing this. If someone with imx and rockchip boards
->> could help test this out, then we could look to get this in.
->
-> This shouldn't be a problem on i.MX, the coda driver doesn't access SRAM
-> from the CPU at all.
 
-Audio buffers are typically (perhaps not in mainline) in SRAM on i.MX
-chips which are accessed by CPU and probably mmap'ed to userspace.
-That could cause a mismatch in mappings although I would not expect
-both the kernel and user space to touch the buffer. That being said, I
-don't think this change should cause problems for i.MX (from what I
-can remember).
+--===============0692402500198421788==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="C6GqtNjDdnDsBy9k"
+Content-Disposition: inline
 
-Rob
+
+--C6GqtNjDdnDsBy9k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 01, 2015 at 05:16:09PM +0100, Lars-Peter Clausen wrote:
+> There is still a rather large amount of board driver which manually call
+> snd_soc_dai_set_fmt() for both the CPU and the CODEC DAI, while pretty much
+> all of them can use static DAI setup by setting the dai_fmt field in the
+> snd_soc_dai_link struct.
+
+Applied all, thanks.
+
+--C6GqtNjDdnDsBy9k
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUrByYAAoJECTWi3JdVIfQvS8H/RwJ+PL3fn7ykFMJ3ssAaZ7g
+9YNufBDqnCIDgSFp0CdG/YtMghCQhTa9E0DNUzGx5erI5VWEiD1pOIwop/tcF5CR
+8gzjsES/zcW88/Regg++sG/0XZB/4zhQRBcNVyJPLYOyw96IVejRcbFGwS7yugAH
+MaQie/8Tm7ikcxUdEYcTnWEBfPnzzfg2R9roPH7Jhqx6avRafSmNdCEUM7cu6kO3
+E3EZ6phdneq1B5FfwFmF+2a/oQI/0q3MOn0YNYJBpmf3xqqXc1SHnRNAnw6wE951
+MNffuNs+Umk9uq46N7D/fcxbj2j9bkdW7zLbaafw8d65UlBecSXVWtWdH7pZivI=
+=917t
+-----END PGP SIGNATURE-----
+
+--C6GqtNjDdnDsBy9k--
+
+--===============0692402500198421788==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0692402500198421788==--
