@@ -1,15 +1,21 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: Intel: Add NULL checks for the stream
-	pointer
-Date: Tue,  6 Jan 2015 23:04:07 +0800
-Message-ID: <1420556647-17270-1-git-send-email-yang.jie@intel.com>
+From: Tim Cussins <timcussins@eml.cc>
+Subject: Re: [PATCH v2 1/1] alsa-lib: Add snd_pcm_start_at.
+Date: Tue, 06 Jan 2015 15:13:28 +0000
+Message-ID: <54ABFB98.3050506@eml.cc>
+References: <1418837267-10896-1-git-send-email-timcussins@eml.cc>
+ <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
+ <5492A7F9.8090602@eml.cc> <54ABF459.8000504@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id CEF382604FC
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 16:02:48 +0100 (CET)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id E35B4261294
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 16:13:31 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id 6D49020CC2
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 10:13:31 -0500 (EST)
+In-Reply-To: <54ABF459.8000504@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,72 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Raymond Yau <superquad.vortex2@gmail.com>
+Cc: nstoughton@aether.com, tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We should not send IPC stream commands to FW when the stream is
-NULL, dereference the NULL pointer may also occur without precheck.
-Here add NULL pointer checks for these stream APIs.
+On 06/01/15 14:42, Pierre-Louis Bossart wrote:
+>
+>>> Do your implementation need to set specific start threshold to prevent
+>>> the driver automatically start when you fill the buffer ?
+>>
+>>
+>>> Do the driver allow to start when there is no data ?
+>>>
+>>
+>> It's the responsibility of the client to set the start threshold to a
+>> safe and responsible value.
+>>
+>> It might suit some applications to allow both threshold start _and_
+>> start_at: My implementation doesn't preclude this.
+>
+> Now I am confused... My understanding was that this feature is similar
+> to SSYNC in HDAudio, where everything is ready, buffers filled, DMAs
+> armed, FIFOs filled and the start condition only opens the last gate at
+> a specific time - possibly with multiple streams starting at the same
+> time. If you add a condition on the start_threshold you really don't
+> need any hardware-driven start, do you?
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/soc/intel/sst-haswell-ipc.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+What you've described is exactly what I had in mind, so we're still on 
+the same page.
 
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 57d6e89..3fd9838 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -1233,6 +1233,9 @@ int sst_hsw_stream_free(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 	struct sst_dsp *sst = hsw->dsp;
- 	unsigned long flags;
- 
-+	if (!stream)
-+		return 0;
-+
- 	/* dont free DSP streams that are not commited */
- 	if (!stream->commited)
- 		goto out;
-@@ -1420,6 +1423,9 @@ int sst_hsw_stream_commit(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 	u32 header;
- 	int ret;
- 
-+	if (stream->commited)
-+		return 0;
-+
- 	trace_ipc_request("stream alloc", stream->host_id);
- 
- 	header = IPC_GLB_TYPE(IPC_GLB_ALLOCATE_STREAM);
-@@ -1548,6 +1554,9 @@ int sst_hsw_stream_pause(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- {
- 	int ret;
- 
-+	if (!stream)
-+		return 0;
-+
- 	trace_ipc_request("stream pause", stream->reply.stream_hw_id);
- 
- 	ret = sst_hsw_stream_operations(hsw, IPC_STR_PAUSE,
-@@ -1564,6 +1573,9 @@ int sst_hsw_stream_resume(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- {
- 	int ret;
- 
-+	if (!stream)
-+		return 0;
-+
- 	trace_ipc_request("stream resume", stream->reply.stream_hw_id);
- 
- 	ret = sst_hsw_stream_operations(hsw, IPC_STR_RESUME,
-@@ -1579,6 +1591,9 @@ int sst_hsw_stream_reset(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- {
- 	int ret, tries = 10;
- 
-+	if (!stream)
-+		return 0;
-+
- 	/* dont reset streams that are not commited */
- 	if (!stream->commited)
- 		return 0;
--- 
-1.9.1
+I wanted to make it clear that my implementation of start_at doesn't 
+*prevent* client code starting on a threshold *and* using start_at, even 
+if it seems to us like a strange idea.
+
+Preventing the use of both requires us to show why it's never a useful 
+idea, decide on policy (what do happens when client code tries to use 
+both), and implement that policy. I'd rather just leave it as 'possible' :)
+
+> Thanks,
+> -Pierre
+>
+>
+>
