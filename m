@@ -1,45 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel][PATCH 4/4] ASoC: wm8960: Fix capture sample rate
- from 11250 to 11025
-Date: Tue, 6 Jan 2015 17:38:38 +0000
-Message-ID: <20150106173838.GI2634@sirena.org.uk>
-References: <1419997154-860-1-git-send-email-b50113@freescale.com>
- <1419997154-860-4-git-send-email-b50113@freescale.com>
+Subject: Re: [PATCH] ASoC: sam9g20_wm8731: drop machine_is_xxx
+Date: Tue, 6 Jan 2015 17:45:21 +0000
+Message-ID: <20150106174521.GM2634@sirena.org.uk>
+References: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ca5z/wkVxIQXz1GF"
+	protocol="application/pgp-signature"; boundary="5KObZtj3Gjpm0OUY"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1419997154-860-4-git-send-email-b50113@freescale.com>
+In-Reply-To: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <b50113@freescale.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, Li.Xiubo@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---Ca5z/wkVxIQXz1GF
+--5KObZtj3Gjpm0OUY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Dec 31, 2014 at 11:39:14AM +0800, Zidan Wang wrote:
-> wm8960 codec can't support sample rate 11250, it must be 11025.
+On Tue, Jan 06, 2015 at 12:14:32PM +0100, Alexandre Belloni wrote:
+> Atmel based boards can now only be used with device tree. Drop non DT
+> initialization.
 
 Applied, thanks.
 
---Ca5z/wkVxIQXz1GF
+--5KObZtj3Gjpm0OUY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUrB2dAAoJECTWi3JdVIfQelEH/jL3UfPiaRzgn07S0BCZi4dj
-MN9Eyrgraz7g2bmIsii6ghhzARo7HIrjzzGYZKP5Adwf7cwOa8km47jliNUs+3/w
-TBKIKFEa8Qo1y9e8d0ba3FrXnVZ5/5PqBHAihzj9Wbq/ddUvUCDW+MaNZGVMPWhd
-g4ekY4plljK8G+J04efQMUdPNZ227z9B3CQprTfsfM4yXLcJbSKzV49BQ3N1S2/P
-k6E9SCNRX9djUc1ktn5Px87Y/ABZyIH96Im7B+hJSoTEGCh5/EH3MpPBvNwnCdeY
-Zv8pcb/8eltBe7JGyPGHPLttUI0l4bI2p6XNvJZFJt/IppGmUuN5aB62FUXrDgA=
-=zWwH
+iQEcBAEBAgAGBQJUrB8xAAoJECTWi3JdVIfQZ0QH/RN2Xsaj280q6aDYrogvgv2g
+eKYvDKQISUetCM0F0yXokFD4xwgNQRFmveukB+ZAitdbnJ1bjJr18Wt/bdcosXiY
+GmGyt7FR+2tLfw3z0XKSfLFShCTKF7xKY57mCYRNZACCt0PMjkC+ffuCpLiyLcBJ
+r6rxZg/WmaFv+4y3J38csxn/i5p3paFtbD6v6OW2xTGc4l1frsD7EHZlQwrT2nyS
+3rr0hf2jGqDvQa5/cqshgt36bKtc+D+0E0yx9SwpU7c4Opra5wYFYPcVxRb0YBxe
+kLz7ZqeNqnvBdYeuVCX0h50jWnSrX7NtnXdl3MUEistFMHemrPaN4FSJ3msjta0=
+=Ww95
 -----END PGP SIGNATURE-----
 
---Ca5z/wkVxIQXz1GF--
+--5KObZtj3Gjpm0OUY--
