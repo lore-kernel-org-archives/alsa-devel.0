@@ -1,17 +1,19 @@
-From: Stefan Oltmanns <stefan-oltmanns@gmx.net>
-Subject: Re: Intel HDA / ca0132: Multichannel + S/PDIF support
-Date: Tue, 06 Jan 2015 02:06:36 +0100
-Message-ID: <54AB351C.2090200@gmx.net>
-References: <54A2CD45.9040500@gmx.net>	<CAEUnVG4jjfitfLv3Fb0k4gvNmyhA-8S7hLt2ON92UezynuQNOw@mail.gmail.com>	<54A7C7BF.5050709@gmx.net>	<CAEUnVG74AN21tPbeEoHU6YF7tuGEiWDF=0sAqoBBkG_8=6QXJA@mail.gmail.com>	<54A9B014.6000306@gmx.net>
- <s5hwq51d549.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH 1/3] ASoC: rt5670: fix bit definition for
+	ASRC control
+Date: Tue, 6 Jan 2015 02:08:45 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D70103ABE3@RTITMBSV03.realtek.com.tw>
+References: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
+ <20150105181714.GA2634@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C0E37260427
- for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 02:06:40 +0100 (CET)
-In-Reply-To: <s5hwq51d549.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1BD726042F
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2015 03:08:52 +0100 (CET)
+In-Reply-To: <20150105181714.GA2634@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,99 +23,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Dylan Reid <dgreid@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, "mengdong.lin@intel.com" <mengdong.lin@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-QW0gMDUuMDEuMjAxNSB1bSAwOTowNSBzY2hyaWViIFRha2FzaGkgSXdhaToKPiBBdCBTdW4sIDA0
-IEphbiAyMDE1IDIyOjI2OjQ0ICswMTAwLAo+IFN0ZWZhbiBPbHRtYW5ucyB3cm90ZToKPj4KPj4g
-QW0gMDQuMDEuMjAxNSB1bSAyMTozMyBzY2hyaWViIER5bGFuIFJlaWQ6Cj4+PiBPbiBTYXQsIEph
-biAzLCAyMDE1IGF0IDI6NDMgQU0sIFN0ZWZhbiBPbHRtYW5ucyA8c3RlZmFuLW9sdG1hbm5zQGdt
-eC5uZXQ+IHdyb3RlOgo+Pj4+IEFtIDAzLjAxLjIwMTUgdW0gMDI6MzAgc2NocmllYiBEeWxhbiBS
-ZWlkOgo+Pj4+PiBPbiBUdWUsIERlYyAzMCwgMjAxNCBhdCA4OjA1IEFNLCBTdGVmYW4gT2x0bWFu
-bnMKPj4+Pj4gPHN0ZWZhbi1vbHRtYW5uc0BnbXgubmV0PiB3cm90ZToKPj4+Pj4+IEhpLAo+Pj4+
-Pj4KPj4+Pj4+IEkgb3duIGEgR2lnYWJ5dGUgRzEuU25pcGVyIE0zIFo3NyBtYWluYm9hcmQgd2l0
-aCBjYTAxMzIgb25ib2FyZCBhdWRpby4KPj4+Pj4+IEN1cnJlbnRseSBvbmx5IHN0ZXJlbyBvdXQg
-YW5kIGhlYWRwaG9uZSBvdXQgKGF0IHRoZSBiYWNrLCBhbHdheXMgc2FtZQo+Pj4+Pj4gc2lnbmFs
-KSB3b3JrIGJ5IGRlZmF1bHQuCj4+Pj4+PiBJIHdhcyBhYmxlIHRvIGZpeCBTL1BESUYgb3V0IGJ5
-IGNoYW5naW5nIHRoZSBoZWFkcGhvbmUgcGluIGluIGZ1bmN0aW9uCj4+Pj4+PiBjYTAxMzJfY29u
-ZmlnIHRvIHNvbWV0aGluZyBiZWxvdyAweDBkLCBsaWtlOgo+Pj4+Pj4KPj4+Pj4+IHNwZWMtPm91
-dF9waW5zWzFdID0gMHgwYTsKPj4+Pj4+Cj4+Pj4+PiBObyBpZGVhIHdoeSB0aGlzIGZpeGVzIFMv
-UERJRiwgYnV0IG5vIG90aGVyIGVmZmVjdHMgbm90aWNlZC4gTm8gaWRlYSBpZgo+Pj4+Pj4gaXTC
-tHMgZ29pbmcgdG8gYnJlYWsgc29tZXRoaW5nIG9uIG90aGVyIGRldmljZXMuIE9yaWdpbmFsIHZh
-bHVlIGlzIDB4MTAuCj4+Pj4+Pgo+Pj4+Pj4gSW4gdGhpcyBmdW5jdGlvbiBhbHNvIDMgREFDcyBh
-cmUgbGlzdGVkLiBUaGUgYm9hcmQgaGFzIGEgdG90YWwgb2YgNQo+Pj4+Pj4gc3RlcmVvIG91dHB1
-dHM6Cj4+Pj4+Pgo+Pj4+Pj4gLUZyb250cGFuZWwgKEhEQSBwaW4gY29ubmVjdG9yIG9uIG1haW5i
-b2FyZCkKPj4+Pj4+IDR4IDMsNW1tIG91dHB1dCBhdCBiYWNrcGFuZWw6Cj4+Pj4+PiAtU3RlcmVv
-IG91dAo+Pj4+Pj4gLUhlYWRwaG9uZSBvdXQKPj4+Pj4+IC1SZWFyIG91dAo+Pj4+Pj4gLUNlbnRl
-ci9MRkUgb3V0Cj4+Pj4+Pgo+Pj4+Pj4gSSB0cmllZCB0byBpbmNyZWFzZSB0aGUgbnVtYmVyIG9m
-IGNoYW5uZWxzIGFuZCBjcmVhdGUgYWRkaXRpb25hbCBvdXRwdXRzCj4+Pj4+PiBhbmQgY29ubmVj
-dGVkIHRvIHRoZSBvdGhlciBEQUNzLiBUaGUgbWF4aW11bSBJwrRtIGFibGUgdG8gaXMgdG8gZ2V0
-Cj4+Pj4+PiBkaWZmZXJlbnQgc2lnbmFscyBvdXQgb2Ygc3RlcmVvIG91dCBhbmQgZnJvbnQgaGVh
-ZHBob25lIChub3QgdXNlZnVsLAo+Pj4+Pj4ganVzdCBzb21lIHdlaXJkIG1peGVzKSBvciBzYW1l
-IHNpZ25hbCBmcm9tIGFsbCAzIG91dHB1dHMuIFJlYXIgYW5kIGMvbGZlCj4+Pj4+PiBvdXQgYWx3
-YXlzIG5vIHNpZ25hbC4KPj4+Pj4+Cj4+Pj4+PiBEdXJpbmcgaW5pdGlhbGl6YXRpb24gc25kX2hk
-YV9wYXJzZV9waW5fZGVmX2NvbmZpZyBpcyBjYWxsZWQgYW5kIHR3bwo+Pj4+Pj4gb3V0cHV0cyBh
-cmUgZm91bmQuIEkgdHJpZWQgdG8gb3ZlcnJpZGUgdGhhdCBhbmQgY2hhbmdlIHNwZWMtPmF1dG9j
-ZmcKPj4+Pj4+IGFmdGVyIHRoYXQgZnVuY3Rpb24gaXMgY2FsbGVkLCBubyBzdWNjZXNzLgo+Pj4+
-Pj4gQWxzbyBubyBtYXR0ZXIgd2hhdCBJIGNoYW5nZSB0aGVyZSwgYSBsaXR0bGUgbGF0ZXIgSSBn
-ZXQgdGhpcyBrZXJuZWwKPj4+Pj4+IG1lc3NhZ2VzOgo+Pj4+Pj4KPj4+Pj4+IGtlcm5lbDogWyAg
-ICAyLjY0Mjk3Ml0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggTGluZSBPdXQgYXMKPj4+Pj4+IC9kZXZp
-Y2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQwL2lucHV0OAo+Pj4+Pj4ga2Vy
-bmVsOiBbICAgIDIuNjQzMTQyXSBpbnB1dDogSERBIEludGVsIFBDSCBGcm9udCBIZWFkcGhvbmUg
-YXMKPj4+Pj4+IC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQwL2lu
-cHV0Nwo+Pj4+Pj4ga2VybmVsOiBbICAgIDIuNjQ0OTMyXSBpbnB1dDogSERBIEludGVsIFBDSCBM
-aW5lIGFzCj4+Pj4+PiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJk
-MC9pbnB1dDYKPj4+Pj4+IGtlcm5lbDogWyAgICAyLjY0NTA1MF0gaW5wdXQ6IEhEQSBJbnRlbCBQ
-Q0ggTWljIGFzCj4+Pj4+PiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9j
-YXJkMC9pbnB1dDUKPj4+Pj4+Cj4+Pj4+PiBJIGNvdWxkIG5vdCBmaW5kIHRoZSBjb2RlIHdoZXJl
-IHRoaXMgbWVzc2FnZXMgYXJlIGdlbmVyYXRlZCwgd2hlcmUgaXMgdGhhdD8KPj4+Pj4+Cj4+Pj4+
-PiBBbnkgaWRlYXMgd2hhdCBJIGNvdWxkL3Nob3VsZCB0cnkgdG8gZ2V0IG11bHRpY2hhbm5lbCBz
-dXBwb3J0IHdvcmtpbmc/Cj4+Pj4+PiBJcyB0aGVyZSBhbnkga2luZCBvZiBkb2N1bWVudGF0aW9u
-IG9uIHRoZSBjYTAxMzIgdGhhdCBjb3VsZCBiZSBoZWxwZnVsPwo+Pj4+Pgo+Pj4+PiBBIGxvdCBv
-ZiB0aGVzZSBjYXBhYmlsaXRpZXMgbmVlZCB0byBiZSBleHBvc2VkIGJ5IHRoZSBEU1Agb24gdGhl
-Cj4+Pj4+IGNhMDEzMi4gIFdoYXQgZmlybXdhcmUgYXJlIHlvdSBsb2FkaW5nIG9uIGl0Pwo+Pj4+
-Cj4+Pj4gSSB0cmllZCB0aGUgb25lIGluY2x1ZGVkIGFuZCBub25lLCBtYWtlcyBubyBkaWZmZXJl
-bmNlIGZvciB0aGF0IHByb2JsZW0uCj4+Pj4gQWxzbyB0aGUgZmlybXdhcmUgZ2V0cyBsb2FkZWQg
-YWZ0ZXIgYWxsIHRoZSBpbnB1dC9vdXRwdXQgY29uZmlndXJhdGlvbiwKPj4+PiB5b3XCtHJlIHN1
-cmUgdGhlIGZpcm13YXJlIGlzIG5lZWRlZCBmb3IgbXVsdGljaGFubmVsIHN1cHBvcnQ/IElzIGl0
-Cj4+Pj4gcG9zc2libGUvbGVnYWwgdG8gZXh0cmFjdCBpdCBmcm9tIHRoZSB3aW5kb3dzIGRyaXZl
-ciBzb21laG93Pwo+Pj4+Cj4+Pgo+Pj4gSSdtIG5vdCBzdXJlIHlvdSBuZWVkIHRoZSBEU1AgdG8g
-ZG8gdGhpcy4gIFlvdSBjb3VsZCB0cnkgdGhlIHdpZG93cwo+Pj4gZmlybXdhcmUsIGJ1dCBJIGRv
-bid0IHRoaW5rIHRoZSBkcml2ZXIgd2lsbCBrbm93IGhvdyB0byBjb21tdW5pY2F0ZQo+Pj4gd2l0
-aCBpdC4KPj4+IFNvcnJ5IEkgZG9uJ3QgaGF2ZSBhbnl0aGluZyBtb3JlIGVuY291cmFnaW5nLgo+
-Pj4KPj4KPj4gVGhlIGZpcm13YXJlIHNlZW1zIHRvIGJlIGRpcmVjdGx5IGluY2x1ZGVkIGluIHRo
-ZSBkcml2ZXIgKGZpbGUgaXMgY2FsbGVkCj4+IGN0SGRhLnN5cyksIGFzIEkgY2FuIGZpbmQgdGhl
-IGJ5dGUgc2VxdWVuY2UgTVhGTCBtYW55IHRpbWVzIGluIGl0ICh0aGlzCj4+IGlzIGhvdyB0aGUg
-Y3RlZnguYmluIGZpbGUgc3RhcnRzKS4gVW5mb3J0dW5hdGVseSBpdCBkb2VzIG5vdCBldmVuIHRv
-IGJlCj4+IGluIG9uZSBwYXJ0ICh0aGVyZSBhcmUgc3RyaW5ncyBpbiBiZXR3ZWVuKS4gSXMgdGhl
-cmUgYW55IGluZm9ybWF0aW9uCj4+IGF2YWlsYWJsZSBvZiB0aGUgZmlsZSBmb3JtYXQgb2YgdGhl
-IGZpcm13YXJlLCBsaWtlIGhlYWRlciBzdHJ1Y3R1cmUsIHNvCj4+IEkgY2FuIGZpbmQgb3V0IGxl
-bmd0aCBvZiBpdD8KPj4KPj4gU3RpbGwgdGhlIHF1ZXN0aW9uIHJlbWFpbnMsIHRoZSBpbnB1dC9v
-dXRwdXRzIHNlZW0gdG8gYmUgZ2VuZXJhdGVkCj4+IGJlZm9yZSB0aGUgZmlybXdhcmUgaXMgbG9h
-ZGVkLCBob3cgaXMgdGhhdCBkb25lPyBIb3cgZG9lcyB0aGUgZHJpdmVyCj4+IGtub3cgdGhhdCB0
-aGVyZSBhcmUgdGhpcyA0IEkvT3MgYW5kIHRoYXQgdGhleSBhcmUgbmFtZWQgbGlrZSB0aGF0Pwo+
-PiBUaGF0wrRzIG5vdCBmcm9tIHRoZSBwYXRjaF9jYTEwMzIuYy4gSSBjYW5ub3QgZmluZCBhbnkg
-Y29kZSBmb3IgdGhhdC4KPiAKPiBJdCdzIHBhcnNlZCBmcm9tIHRoZSBwaW4tZGVmYXVsdCBjb25m
-aWcgdmFsdWVzIHNldCBieSB0aGUgaGFyZHdhcmUuCj4gSW4gdGhlIGNhc2Ugb2Ygb25ib2FyZCBh
-dWRpbywgdXN1YWxseSB0aGlzIGlzIHNldCBieSBCSU9TLgo+IFN0YW5kLWFsb25lIGJvYXJkcyBz
-aG91bGQgc2V0IGl0IGJ5IHRoZW1zZWx2ZXMsIHRvby4KPiAKPiBUaGUgU1BESUYgSS9PIGl0c2Vs
-ZiBoYXMgd29ya2VkIGV2ZW4gd2l0aG91dCB0aGUgRFNQIChidXQgc29tZSB2b2x1bWUKPiBjb250
-cm9scyBkaWRuJ3QpLCBJSVJDLCBhdCBsZWFzdCBvbiBhIFJlY29uM0QgYm9hcmQgSSd2ZSB0ZXN0
-ZWQgaW4gdGhlCj4gcGFzdC4KPiAKPiBSZWFzc2lnbmluZyB0aGUgcGluIGlzIHRoZSByaWdodCBm
-aXggZm9yIHlvdXIgYm9hcmQuICBUaGUgY29ycmVjdCB3YXkKPiB3b3VsZCBiZSB0byBhZGQgYSBm
-aXh1cCBlbnRyeSBkZXBlbmRpbmcgb24gdGhlIFBDSSBvciBjb2RlYyBTU0lELgo+IAo+IAo+IHRo
-YW5rcywKPiAKPiBUYWthc2hpCj4gCgpJIHdhcyBhYmxlIHRvIGV4dHJhY3QgdGhlIGZpcm13YXJl
-IGZyb20gdGhlIHdpbmRvd3MgZHJpdmVyLCBpdCBpcyBsb2FkZWQKd2l0aG91dCBhbnkgcHJvYmxl
-bSAiY2EwMTMyIERPV05MT0FEIE9LIDotKSBEU1AgSVMgUlVOTklORyIKVW5mb3J0dW5hdGVseSBh
-ZnRlciB0aGF0IG5vIGFuYWxvZyBvdXRwdXQgYXQgYWxsLCBkaWdpdGFsIG91dCBpcyBzdGlsbAp3
-b3JraW5nLgpJIHRyaWVkIHRoZSBpbnB1dHMsIHdoaWxlIGRldmljZSAwLDAgZ2l2ZXMgbWUgZGln
-aXRhbCBzaWxlbmNlLCBkZXZpY2UKMCwyIChtaWMgMikgaXMgb25seSBhbmFsb2cgc2lsZW5jZSAo
-dGhlcmUgaXMgc29tZSB2ZXJ5IHNpbGVudCByYW5kb20KYmFja2dyb3VuZCBub2lzZSksIHNvIHRo
-ZXJlIGlzIGFuIEFEQyB3b3JraW5nICh0cmllZCBib3RoIGlucHV0cy0+IG5vCnN1Y2Nlc3MpLgpU
-aGVyZSBpcyBzdGlsbCBubyBkaWZmZXJlbmNlIGF0IGFsbCBpbiB0aGUgSS9PcyBmb3VuZC4gV2hl
-cmUvaG93IGFyZQp0aGlzIGZpeC11cCBlbnRyaWVzIGRvbmU/IElzIHRoZXJlIGFuIGdvb2QgZXhh
-bXBsZSBmb3IgYSBzaW1pbGFyIGRldmljZT8KClRoYW5rcwpTdGVmYW4KCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Tuesday, January 06, 2015 2:17 AM
+> To: mengdong.lin@intel.com
+> Cc: alsa-devel@alsa-project.org; Bard Liao
+> Subject: Re: [PATCH 1/3] ASoC: rt5670: fix bit definition for ASRC control
+> 
+> On Mon, Jan 05, 2015 at 05:48:15PM +0800, mengdong.lin@intel.com
+> wrote:
+> > From: Bard Liao <bardliao@realtek.com>
+> >
+> > This patch fixes bit definitions for two ASRC control registers 0x84 and
+> 0x85.
+> 
+> This appears to do something more or different to fixing definitions - if it
+> was fixing I'd expect to see equal numbers of lines added and removed in
+> blocks identical apart from some numbers but this appears to be adding
+> some new definitions like these...
+
+Maybe we should call redefine rather than fix. The previous definition of
+registers 0x84 and 0x85 doesn't match the register's description. To make
+the code more readable, we would like to rewrite the definition of registers
+0x84 and 0x85.
+
+> 
+> > +/* ASRC clock source selection (0x84, 0x85) */
+> > +#define RT5670_CLK_SEL_SYS			(0x0)
+> > +#define RT5670_CLK_SEL_I2S1_ASRC		(0x1)
+> > +#define RT5670_CLK_SEL_I2S2_ASRC		(0x2)
+> > +#define RT5670_CLK_SEL_I2S3_ASRC		(0x3)
+> > +#define RT5670_CLK_SEL_SYS2			(0x5)
+> > +#define RT5670_CLK_SEL_SYS3			(0x6)
+> 
+> ...among other things, and this block here:
+
+The description above is the same for all ASRC blocks. To save code size,
+we define it in a separate part.
+If we define it in each ASRC block, it would be something like
++#define RT5670_DA_STO_CLK_SEL_MASK		(0xf << 12)
++#define RT5670_DA_STO_CLK_SEL_SFT		12
++#define RT5670_DA_STO_CLK_SEL_SYS		(0 << 12)
++#define RT5670_DA_STO_CLK_SEL_I2S1_ASRC	(1 << 12)
++#define RT5670_DA_STO_CLK_SEL_I2S2_ASRC	(2 << 12)
++#define RT5670_DA_STO_CLK_SEL_I2S3_ASRC	(3 << 12)
++#define RT5670_DA_STO_CLK_SEL_ SYS2		(5 << 12)
++#define RT5670_DA_STO_CLK_SEL_ SYS3		(6 << 12)
+And same thing for other ASRC blocks.
+
+> 
+> >  /* ASRC Control 2 (0x84) */
+> > -#define RT5670_MDA_L_M_MASK			(0x1 << 15)
+> > -#define RT5670_MDA_L_M_SFT			15
+> > -#define RT5670_MDA_L_M_NOR			(0x0 << 15)
+> > -#define RT5670_MDA_L_M_ASYN			(0x1 << 15)
+> > -#define RT5670_MDA_R_M_MASK			(0x1 << 14)
+> > -#define RT5670_MDA_R_M_SFT			14
+> > -#define RT5670_MDA_R_M_NOR			(0x0 << 14)
+> > -#define RT5670_MDA_R_M_ASYN			(0x1 << 14)
+> > -#define RT5670_MAD_L_M_MASK			(0x1 << 13)
+> > -#define RT5670_MAD_L_M_SFT			13
+> > -#define RT5670_MAD_L_M_NOR			(0x0 << 13)
+> > -#define RT5670_MAD_L_M_ASYN			(0x1 << 13)
+> > -#define RT5670_MAD_R_M_MASK			(0x1 << 12)
+> > -#define RT5670_MAD_R_M_SFT			12
+> > -#define RT5670_MAD_R_M_NOR			(0x0 << 12)
+> > -#define RT5670_MAD_R_M_ASYN			(0x1 << 12)
+> > -#define RT5670_ADC_M_MASK			(0x1 << 11)
+> > -#define RT5670_ADC_M_SFT			11
+> > -#define RT5670_ADC_M_NOR			(0x0 << 11)
+> > -#define RT5670_ADC_M_ASYN			(0x1 << 11)
+> > -#define RT5670_STO_DAC_M_MASK			(0x1 << 5)
+> > -#define RT5670_STO_DAC_M_SFT			5
+> > -#define RT5670_STO_DAC_M_NOR			(0x0 << 5)
+> > -#define RT5670_STO_DAC_M_ASYN			(0x1 << 5)
+> > -#define RT5670_I2S1_R_D_MASK			(0x1 << 4)
+> > -#define RT5670_I2S1_R_D_SFT			4
+> > -#define RT5670_I2S1_R_D_DIS			(0x0 << 4)
+> > -#define RT5670_I2S1_R_D_EN			(0x1 << 4)
+> > -#define RT5670_I2S2_R_D_MASK			(0x1 << 3)
+> > -#define RT5670_I2S2_R_D_SFT			3
+> > -#define RT5670_I2S2_R_D_DIS			(0x0 << 3)
+> > -#define RT5670_I2S2_R_D_EN			(0x1 << 3)
+> > -#define RT5670_PRE_SCLK_MASK			(0x3)
+> > -#define RT5670_PRE_SCLK_SFT			0
+> > -#define RT5670_PRE_SCLK_512			(0x0)
+> > -#define RT5670_PRE_SCLK_1024			(0x1)
+> > -#define RT5670_PRE_SCLK_2048			(0x2)
+> > +#define RT5670_DA_STO_CLK_SEL_MASK		(0xf << 12)
+> > +#define RT5670_DA_STO_CLK_SEL_SFT		12
+> > +#define RT5670_DA_MONOL_CLK_SEL_MASK		(0xf << 8)
+> > +#define RT5670_DA_MONOL_CLK_SEL_SFT		8
+> > +#define RT5670_DA_MONOR_CLK_SEL_MASK		(0xf << 4)
+> > +#define RT5670_DA_MONOR_CLK_SEL_SFT		4
+> > +#define RT5670_AD_STO1_CLK_SEL_MASK		(0xf << 0)
+> > +#define RT5670_AD_STO1_CLK_SEL_SFT		0
+> 
+> removes a lot more things than it adds, with different names too.
+
+The previous definition is totally wrong, so we just remove it and
+write a new definition for it.
+
+> 
+> ------Please consider the environment before printing this e-mail.
