@@ -1,41 +1,41 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH] ASoC: sam9g20_wm8731: drop machine_is_xxx
-Date: Tue, 6 Jan 2015 13:27:51 +0100
-Message-ID: <20150106122751.GO4194@piout.net>
-References: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
- <20150106120049.GX2634@sirena.org.uk>
+From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+Subject: Re: [PATCH, RFC] MIPS: jz4740: use dma filter function
+Date: Tue, 06 Jan 2015 12:47:00 +0000
+Message-ID: <yw1xtx04f54r.fsf@unicorn.mansr.com>
+References: <22569458.nE7JkNNnz3@wuerfel> <54ABBCE6.8060904@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20150106120049.GX2634@sirena.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <54ABBCE6.8060904@metafoo.de> (Lars-Peter Clausen's message of
+	"Tue, 06 Jan 2015 11:45:58 +0100")
+Sender: linux-mmc-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-mmc@vger.kernel.org, linux-mips@linux-mips.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Lars-Peter Clausen <lars@metafoo.de> writes:
 
-On 06/01/2015 at 12:00:49 +0000, Mark Brown wrote :
-> On Tue, Jan 06, 2015 at 12:14:32PM +0100, Alexandre Belloni wrote:
-> > Atmel based boards can now only be used with device tree. Drop non DT
-> > initialization.
-> 
-> This doesn't apply against current code, please check and resend.
+> On 01/05/2015 11:39 PM, Arnd Bergmann wrote:
+>> As discussed on the topic of shmobile DMA today, jz4740 is the only
+>> user of the slave_id field in dma_slave_config besides shmobile. Thi=
+s
+>> use is really incompatible with the way that other drivers use the
+>> dmaengine API, so we should get rid of it.
+>
+> Do you have a link to that discussion?
+>
+>>
+>> This adds a trivial filter function that uses the filter param to
+>> pass the dma type, and uses that in both drivers.
+>
+> In my opinion that's just from bad to worse. Using filter functions
+> isn't that great in the first place. And using them to pass data from
+> the consumer to the DMA provider is just a horrible abuse of the API.
 
-It should apply after "sound: soc: atmel sam9g20_wm8731: remove useless
-include". I was based on 3.19-rc2.
+It seems to me the only sane way to use the dmaengine API is in
+conjunction with DT.
 
--- 
-Alexandre Belloni, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+--=20
+M=E5ns Rullg=E5rd
+mans@mansr.com
