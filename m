@@ -1,171 +1,68 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [alsa-devel][PATCH v2 2/2] ASoC: wm8960: Let wm8960 driver configure its bit clock and frame clock
-Date: Wed, 7 Jan 2015 15:31:45 +0800
-Message-ID: <1420615905-4078-2-git-send-email-zidan.wang@freescale.com>
-References: <1420615905-4078-1-git-send-email-zidan.wang@freescale.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm5102: Use put_unaligned_be16
+Date: Wed, 7 Jan 2015 10:01:03 +0000
+Message-ID: <20150107100103.GR14516@opensource.wolfsonmicro.com>
+References: <20141226044457.GA12777@vaishali-Ideapad-Z570>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1420615905-4078-1-git-send-email-zidan.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <b50113@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4FAD32604B0
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 11:01:04 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20141226044457.GA12777@vaishali-Ideapad-Z570>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vaishali Thakkar <vthakkar1994@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Zidan Wang <b50113@freescale.com>
+On Fri, Dec 26, 2014 at 10:14:57AM +0530, Vaishali Thakkar wrote:
+> This patch introduces the use of function put_unaligned_be16.
+> 
+> This is done using Coccinelle and semantic patch used is as follows:
+> 
+> @a@
+> typedef u16, __be16, uint16_t;
+> {u16,__be16,uint16_t} e16;
+> identifier tmp;
+> expression ptr;
+> expression y,e;
+> type T;
+> @@
+> 
+> - tmp = cpu_to_be16(y);
+> 
+> <+... when != tmp
+> (
+> - memcpy(ptr, (T)&tmp, \(2\|sizeof(u16)\|sizeof(__be16)\|sizeof(uint16_t)\|sizeof(e16)\));
+> + put_unaligned_be16(y,ptr);
+> |
+> - memcpy(ptr, (T)&tmp, ...);
+> + put_unaligned_be16(y,ptr);
+> )
+> ...+>
+> ? tmp = e
+> 
+> @@ type T; identifier a.tmp; @@
+> 
+> - T tmp;
+> ...when != tmp
+> 
+> Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+> ---
 
-wm8960 codec driver missing configure its bit clock and frame clock, so add
-support for it. It will calculate a appropriate frequency dividing ratio
-according to the system clock, bit clock and frame clock, then set the
-corresponding registers.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-Signed-off-by: Zidan Wang <b50113@freescale.com>
----
- sound/soc/codecs/wm8960.c | 97 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 97 insertions(+)
+CCing patches@opensource.wolfsonmicro.com would be handy though.
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index fd25973..aba6bbf 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -127,6 +127,8 @@ struct wm8960_priv {
- 	struct snd_soc_dapm_widget *out3;
- 	bool deemph;
- 	int playback_fs;
-+	int bclk;
-+	int sysclk;
- 	struct wm8960_data pdata;
- };
- 
-@@ -563,6 +565,68 @@ static struct {
- 	{  8000, 5 },
- };
- 
-+/* Multiply 256 for internal 256 div */
-+static const int dac_divs[] = { 256, 384, 512, 768, 1024, 1408, 1536 };
-+
-+/* Multiply 10 to eliminate decimials */
-+static const int bclk_divs[] = {
-+	10, 15, 20, 30, 40, 55, 60, 80, 110,
-+	120, 160, 220, 240, 320, 320, 320
-+};
-+
-+static void wm8960_configure_clocking(struct snd_soc_codec *codec,
-+		int stream, int lrclk)
-+{
-+	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
-+	u16 iface1 = snd_soc_read(codec, WM8960_IFACE1);
-+	u16 iface2 = snd_soc_read(codec, WM8960_IFACE2);
-+	int i, j;
-+
-+	if (!(iface1 & (1<<6))) {
-+		dev_dbg(codec->dev,
-+			"Codec is slave mode, no need to configure clock\n");
-+		return;
-+	}
-+
-+	if (!wm8960->sysclk) {
-+		dev_dbg(codec->dev, "No SYSCLK configured\n");
-+		return;
-+	}
-+
-+	if (!wm8960->bclk || !lrclk) {
-+		dev_dbg(codec->dev, "No audio clocks configured\n");
-+		return;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(dac_divs); ++i) {
-+		if (wm8960->sysclk == lrclk * dac_divs[i]) {
-+			for (j = 0; j < ARRAY_SIZE(bclk_divs); ++j) {
-+				if (wm8960->sysclk ==  wm8960->bclk *
-+						bclk_divs[j] / 10) {
-+					goto config_clock;
-+				}
-+			}
-+		}
-+	}
-+
-+	dev_err(codec->dev, "Unsupported sysclk %d\n", wm8960->sysclk);
-+	return;
-+
-+config_clock:
-+	/* configure frame clock. If ADCLRC configure as GPIO pin, DACLRC
-+	 * pin is used as a frame clock for ADCs and DACs.
-+	 */
-+	if (iface2 & (1<<6))
-+		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 3, i << 3);
-+	else if (SNDRV_PCM_STREAM_PLAYBACK == stream)
-+		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 3, i << 3);
-+	else if (SNDRV_PCM_STREAM_CAPTURE == stream)
-+		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 6, i << 6);
-+
-+	/* configure bit clock */
-+	snd_soc_update_bits(codec, WM8960_CLOCK2, 0xf, j);
-+}
-+
- static int wm8960_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
-@@ -572,6 +636,10 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
- 	u16 iface = snd_soc_read(codec, WM8960_IFACE1) & 0xfff3;
- 	int i;
- 
-+	wm8960->bclk = snd_soc_params_to_bclk(params);
-+	if (params_channels(params) == 1)
-+		wm8960->bclk *= 2;
-+
- 	/* bit size */
- 	switch (params_width(params)) {
- 	case 16:
-@@ -602,6 +670,10 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* set iface */
- 	snd_soc_write(codec, WM8960_IFACE1, iface);
-+
-+	wm8960_configure_clocking(codec, substream->stream,
-+			params_rate(params));
-+
- 	return 0;
- }
- 
-@@ -950,6 +1022,30 @@ static int wm8960_set_bias_level(struct snd_soc_codec *codec,
- 	return wm8960->set_bias_level(codec, level);
- }
- 
-+static int wm8960_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
-+					unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (clk_id) {
-+	case WM8960_SYSCLK_MCLK:
-+		snd_soc_update_bits(codec, WM8960_CLOCK1,
-+					0x1, WM8960_SYSCLK_MCLK);
-+		break;
-+	case WM8960_SYSCLK_PLL:
-+		snd_soc_update_bits(codec, WM8960_CLOCK1,
-+					0x1, WM8960_SYSCLK_PLL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	wm8960->sysclk = freq;
-+
-+	return 0;
-+}
-+
- #define WM8960_RATES SNDRV_PCM_RATE_8000_48000
- 
- #define WM8960_FORMATS \
-@@ -962,6 +1058,7 @@ static const struct snd_soc_dai_ops wm8960_dai_ops = {
- 	.set_fmt = wm8960_set_dai_fmt,
- 	.set_clkdiv = wm8960_set_dai_clkdiv,
- 	.set_pll = wm8960_set_dai_pll,
-+	.set_sysclk = wm8960_set_dai_sysclk,
- };
- 
- static struct snd_soc_dai_driver wm8960_dai = {
--- 
-1.9.1
+Thanks,
+Charles
