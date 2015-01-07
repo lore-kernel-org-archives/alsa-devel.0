@@ -1,106 +1,79 @@
 From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Wed, 7 Jan 2015 10:10:49 +0100
-Message-ID: <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+Subject: [PATCH v9 4/4] drm/i2c: tda998x: set cts_n according to the sample
+ width
+Date: Wed, 7 Jan 2015 12:01:23 +0100
+Message-ID: <3b99496107b6653ef27b86d8cdf516a4815910cf.1420628786.git.moinejf@free.fr>
 References: <cover.1420628786.git.moinejf@free.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1420628786.git.moinejf@free.fr>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Jyri Sarha <jsarha@ti.com>
+Cc: Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBwZXJtaXRzIHRoZSBkZWZpbml0aW9uIG9mIHRoZSBhdWRpbyBwb3J0cyBmcm9t
-IHRoZSBkZXZpY2UgdHJlZS4KClNpZ25lZC1vZmYtYnk6IEplYW4tRnJhbmNvaXMgTW9pbmUgPG1v
-aW5lamZAZnJlZS5mcj4KLS0tCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9kcm0vaTJjL3RkYTk5
-OHgudHh0ICAgICAgICB8IDE4ICsrKysrKysKIGRyaXZlcnMvZ3B1L2RybS9pMmMvdGRhOTk4eF9k
-cnYuYyAgICAgICAgICAgICAgICAgIHwgNjAgKysrKysrKysrKysrKysrKysrLS0tLQogMiBmaWxl
-cyBjaGFuZ2VkLCA2OSBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kcm0vaTJjL3RkYTk5OHgudHh0IGIv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2RybS9pMmMvdGRhOTk4eC50eHQKaW5k
-ZXggZTllNGJjZS4uZTUwZTdjZCAxMDA2NDQKLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL2RybS9pMmMvdGRhOTk4eC50eHQKKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL2RybS9pMmMvdGRhOTk4eC50eHQKQEAgLTE3LDYgKzE3LDIwIEBAIE9wdGlv
-bmFsIHByb3BlcnRpZXM6CiAgIC0gdmlkZW8tcG9ydHM6IDI0IGJpdHMgdmFsdWUgd2hpY2ggZGVm
-aW5lcyBob3cgdGhlIHZpZGVvIGNvbnRyb2xsZXIKIAlvdXRwdXQgaXMgd2lyZWQgdG8gdGhlIFRE
-QTk5OHggaW5wdXQgLSBkZWZhdWx0OiA8MHgyMzAxNDU+CiAKKyAgLSBhdWRpby1wb3J0czogbXVz
-dCBjb250YWluIG9uZSBvciB0d28gdmFsdWVzIHNlbGVjdGluZyB0aGUgc291cmNlCisJaW4gdGhl
-IGF1ZGlvIHBvcnQuCisJVGhlIHNvdXJjZSB0eXBlIGlzIGdpdmVuIGJ5IHRoZSBjb3JyZXNwb25k
-aW5nIGVudHJ5IGluCisJdGhlIGF1ZGlvLXBvcnQtbmFtZXMgcHJvcGVydHkuCisKKyAgLSBhdWRp
-by1wb3J0LW5hbWVzOiBtdXN0IGNvbnRhaW4gZW50cmllcyBtYXRjaGluZyB0aGUgZW50cmllcyBp
-bgorCXRoZSBhdWRpby1wb3J0cyBwcm9wZXJ0eS4KKwlFYWNoIHZhbHVlIG1heSBiZSAiaTJzIiBv
-ciAic3BkaWYiLCBnaXZpbmcgdGhlIHR5cGUgb2YKKwl0aGUgYXVkaW8gc291cmNlLgorCisgIC0g
-I3NvdW5kLWRhaS1jZWxsczogbXVzdCBiZSBzZXQgdG8gPDE+IGZvciB1c2Ugd2l0aCB0aGUgc2lt
-cGxlLWNhcmQuCisJVGhlIFREQTk5OHggYXVkaW8gQ09ERUMgYWx3YXlzIGRlZmluZXMgdHdvIERB
-SXMuCisJVGhlIERBSSAwIGlzIHRoZSBTL1BESUYgaW5wdXQgYW5kIHRoZSBEQUkgMSBpcyB0aGUg
-STJTIGlucHV0LgorCiBFeGFtcGxlOgogCiAJdGRhOTk4eDogaGRtaS1lbmNvZGVyIHsKQEAgLTI2
-LDQgKzQwLDggQEAgRXhhbXBsZToKIAkJaW50ZXJydXB0cyA9IDwyNyAyPjsJCS8qIGZhbGxpbmcg
-ZWRnZSAqLwogCQlwaW5jdHJsLTAgPSA8JnBteF9jYW1lcmE+OwogCQlwaW5jdHJsLW5hbWVzID0g
-ImRlZmF1bHQiOworCisJCWF1ZGlvLXBvcnRzID0gPDB4MDQ+LCA8MHgwMz47CisJCWF1ZGlvLXBv
-cnQtbmFtZXMgPSAic3BkaWYiLCAiaTJzIjsKKwkJI3NvdW5kLWRhaS1jZWxscyA9IDwxPjsKIAl9
-OwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2kyYy90ZGE5OTh4X2Rydi5jIGIvZHJpdmVy
-cy9ncHUvZHJtL2kyYy90ZGE5OTh4X2Rydi5jCmluZGV4IDcwNjU4YWYuLjlkOWIwNzIgMTAwNjQ0
-Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pMmMvdGRhOTk4eF9kcnYuYworKysgYi9kcml2ZXJzL2dw
-dS9kcm0vaTJjL3RkYTk5OHhfZHJ2LmMKQEAgLTIwLDYgKzIwLDcgQEAKICNpbmNsdWRlIDxsaW51
-eC9tb2R1bGUuaD4KICNpbmNsdWRlIDxsaW51eC9pcnEuaD4KICNpbmNsdWRlIDxzb3VuZC9hc291
-bmRlZi5oPgorI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgogCiAjaW5jbHVkZSA8
-ZHJtL2RybVAuaD4KICNpbmNsdWRlIDxkcm0vZHJtX2NydGNfaGVscGVyLmg+CkBAIC00NCw2ICs0
-NSw4IEBAIHN0cnVjdCB0ZGE5OTh4X3ByaXYgewogCXdhaXRfcXVldWVfaGVhZF90IHdxX2VkaWQ7
-CiAJdm9sYXRpbGUgaW50IHdxX2VkaWRfd2FpdDsKIAlzdHJ1Y3QgZHJtX2VuY29kZXIgKmVuY29k
-ZXI7CisKKwl1OCBhdWRpb19wb3J0c1syXTsKIH07CiAKICNkZWZpbmUgdG9fdGRhOTk4eF9wcml2
-KHgpICAoKHN0cnVjdCB0ZGE5OTh4X3ByaXYgKil0b19lbmNvZGVyX3NsYXZlKHgpLT5zbGF2ZV9w
-cml2KQpAQCAtMTI1NCwxMiArMTI1NywxNiBAQCBzdGF0aWMgaW50IHRkYTk5OHhfY3JlYXRlKHN0
-cnVjdCBpMmNfY2xpZW50ICpjbGllbnQsIHN0cnVjdCB0ZGE5OTh4X3ByaXYgKnByaXYpCiB7CiAJ
-c3RydWN0IGRldmljZV9ub2RlICpucCA9IGNsaWVudC0+ZGV2Lm9mX25vZGU7CiAJdTMyIHZpZGVv
-OwotCWludCByZXZfbG8sIHJldl9oaSwgcmV0OworCWludCBpLCByZXZfbG8sIHJldl9oaSwgcmV0
-OworCWNvbnN0IGNoYXIgKnA7CiAKIAlwcml2LT52aXBfY250cmxfMCA9IFZJUF9DTlRSTF8wX1NX
-QVBfQSgyKSB8IFZJUF9DTlRSTF8wX1NXQVBfQigzKTsKIAlwcml2LT52aXBfY250cmxfMSA9IFZJ
-UF9DTlRSTF8xX1NXQVBfQygwKSB8IFZJUF9DTlRSTF8xX1NXQVBfRCgxKTsKIAlwcml2LT52aXBf
-Y250cmxfMiA9IFZJUF9DTlRSTF8yX1NXQVBfRSg0KSB8IFZJUF9DTlRSTF8yX1NXQVBfRig1KTsK
-IAorCXByaXYtPnBhcmFtcy5hdWRpb19mcmFtZVsxXSA9IDE7CQkvKiBjaGFubmVscyAtIDEgKi8K
-Kwlwcml2LT5wYXJhbXMuYXVkaW9fc2FtcGxlX3JhdGUgPSA0ODAwMDsJCS8qIDQ4a0h6ICovCisK
-IAlwcml2LT5jdXJyZW50X3BhZ2UgPSAweGZmOwogCXByaXYtPmhkbWkgPSBjbGllbnQ7CiAJcHJp
-di0+Y2VjID0gaTJjX25ld19kdW1teShjbGllbnQtPmFkYXB0ZXIsIDB4MzQpOwpAQCAtMTM1MSwx
-NSArMTM1OCw1MCBAQCBzdGF0aWMgaW50IHRkYTk5OHhfY3JlYXRlKHN0cnVjdCBpMmNfY2xpZW50
-ICpjbGllbnQsIHN0cnVjdCB0ZGE5OTh4X3ByaXYgKnByaXYpCiAJLyogZW5hYmxlIEVESUQgcmVh
-ZCBpcnE6ICovCiAJcmVnX3NldChwcml2LCBSRUdfSU5UX0ZMQUdTXzIsIElOVF9GTEFHU18yX0VE
-SURfQkxLX1JEKTsKIAotCWlmICghbnApCi0JCXJldHVybiAwOwkJLyogbm9uLURUICovCisJLyog
-Z2V0IHRoZSBkZXZpY2UgdHJlZSBwYXJhbWV0ZXJzICovCisJaWYgKG5wKSB7CisKKwkJLyogb3B0
-aW9uYWwgdmlkZW8gcHJvcGVydGllcyAqLworCQlyZXQgPSBvZl9wcm9wZXJ0eV9yZWFkX3UzMihu
-cCwgInZpZGVvLXBvcnRzIiwgJnZpZGVvKTsKKwkJaWYgKHJldCA9PSAwKSB7CisJCQlwcml2LT52
-aXBfY250cmxfMCA9IHZpZGVvID4+IDE2OworCQkJcHJpdi0+dmlwX2NudHJsXzEgPSB2aWRlbyA+
-PiA4OworCQkJcHJpdi0+dmlwX2NudHJsXzIgPSB2aWRlbzsKKwkJfQorCisJCS8qIG9wdGlvbmFs
-IGF1ZGlvIHByb3BlcnRpZXMgKi8KKwkJZm9yIChpID0gMDsgaSA8IDI7IGkrKykgeworCQkJdTMy
-IHBvcnQ7CiAKLQkvKiBnZXQgdGhlIG9wdGlvbmFsIHZpZGVvIHByb3BlcnRpZXMgKi8KLQlyZXQg
-PSBvZl9wcm9wZXJ0eV9yZWFkX3UzMihucCwgInZpZGVvLXBvcnRzIiwgJnZpZGVvKTsKLQlpZiAo
-cmV0ID09IDApIHsKLQkJcHJpdi0+dmlwX2NudHJsXzAgPSB2aWRlbyA+PiAxNjsKLQkJcHJpdi0+
-dmlwX2NudHJsXzEgPSB2aWRlbyA+PiA4OwotCQlwcml2LT52aXBfY250cmxfMiA9IHZpZGVvOwor
-CQkJcmV0ID0gb2ZfcHJvcGVydHlfcmVhZF91MzJfaW5kZXgobnAsICJhdWRpby1wb3J0cyIsIGks
-ICZwb3J0KTsKKwkJCWlmIChyZXQpCisJCQkJYnJlYWs7CisJCQlyZXQgPSBvZl9wcm9wZXJ0eV9y
-ZWFkX3N0cmluZ19pbmRleChucCwgImF1ZGlvLXBvcnQtbmFtZXMiLAorCQkJCQkJCWksICZwKTsK
-KwkJCWlmIChyZXQpIHsKKwkJCQlkZXZfZXJyKCZjbGllbnQtPmRldiwKKwkJCQkJIm1pc3Npbmcg
-YXVkaW8tcG9ydC1uYW1lc1slZF1cbiIsIGkpOworCQkJCWJyZWFrOworCQkJfQorCQkJaWYgKHN0
-cmNtcChwLCAic3BkaWYiKSA9PSAwKSB7CisJCQkJcHJpdi0+YXVkaW9fcG9ydHNbMF0gPSBwb3J0
-OworCQkJfSBlbHNlIGlmIChzdHJjbXAocCwgImkycyIpID09IDApIHsKKwkJCQlwcml2LT5hdWRp
-b19wb3J0c1sxXSA9IHBvcnQ7CisJCQl9IGVsc2UgeworCQkJCWRldl9lcnIoJmNsaWVudC0+ZGV2
-LAorCQkJCQkiYmFkIGF1ZGlvLXBvcnQtbmFtZXMgJyVzJ1xuIiwgcCk7CisJCQkJYnJlYWs7CisJ
-CQl9CisJCX0KKwkJaWYgKHByaXYtPmF1ZGlvX3BvcnRzWzBdKSB7CisJCQlwcml2LT5wYXJhbXMu
-YXVkaW9fY2ZnID0gcHJpdi0+YXVkaW9fcG9ydHNbMF07CisJCQlwcml2LT5wYXJhbXMuYXVkaW9f
-Zm9ybWF0ID0gQUZNVF9TUERJRjsKKwkJCXByaXYtPnBhcmFtcy5hdWRpb19jbGtfY2ZnID0gMDsK
-KwkJfSBlbHNlIHsKKwkJCXByaXYtPnBhcmFtcy5hdWRpb19jZmcgPSBwcml2LT5hdWRpb19wb3J0
-c1sxXTsKKwkJCXByaXYtPnBhcmFtcy5hdWRpb19mb3JtYXQgPSBBRk1UX0kyUzsKKwkJCXByaXYt
-PnBhcmFtcy5hdWRpb19jbGtfY2ZnID0gMTsKKwkJfQogCX0KIAogCXJldHVybiAwOwotLSAKMi4x
-LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+With I2S input, the CTS_N predivider depends on the sample width.
+
+Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+---
+ drivers/gpu/drm/i2c/tda998x_drv.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
+index a26a516..8af84cd 100644
+--- a/drivers/gpu/drm/i2c/tda998x_drv.c
++++ b/drivers/gpu/drm/i2c/tda998x_drv.c
+@@ -50,6 +50,7 @@ struct tda998x_priv {
+ 	wait_queue_head_t wq_edid;
+ 	volatile int wq_edid_wait;
+ 	struct drm_encoder *encoder;
+ 
++	int audio_sample_format;
+ 	u8 audio_ports[2];
+ #ifdef WITH_CODEC
+@@ -671,7 +672,17 @@ tda998x_configure_audio(struct tda998x_priv *priv,
+ 		reg_write(priv, REG_MUX_AP, MUX_AP_SELECT_I2S);
+ 		clksel_aip = AIP_CLKSEL_AIP_I2S;
+ 		clksel_fs = AIP_CLKSEL_FS_ACLK;
+-		cts_n = CTS_N_M(3) | CTS_N_K(3);
++
++		/* with I2S input, the CTS_N predivider depends on
++		 * the sample width */
++		switch (priv->audio_sample_format) {
++		case SNDRV_PCM_FORMAT_S16_LE:
++			cts_n = CTS_N_M(3) | CTS_N_K(1);
++			break;
++		default:
++			cts_n = CTS_N_M(3) | CTS_N_K(3);
++			break;
++		}
+ 		break;
+ 
+ 	default:
+@@ -778,7 +789,8 @@ static int tda998x_set_audio_input(struct device *dev,
+ 
+ 	/* if same audio parameters, just enable the audio port */
+ 	if (p->audio_cfg == priv->audio_ports[port_index] &&
+-	    p->audio_sample_rate == sample_rate) {
++	    p->audio_sample_rate == sample_rate &&
++	    priv->audio_sample_format == sample_format) {
+ 		reg_write(priv, REG_ENA_AP, p->audio_cfg);
+ 		return 0;
+ 	}
+@@ -787,6 +799,7 @@ static int tda998x_set_audio_input(struct device *dev,
+ 	p->audio_clk_cfg = port_index == PORT_SPDIF ? 0 : 1;
+ 	p->audio_cfg = priv->audio_ports[port_index];
+ 	p->audio_sample_rate = sample_rate;
++	priv->audio_sample_format = sample_format;
+ 	tda998x_configure_audio(priv, &priv->encoder->crtc->hwmode, p);
+ 	return 0;
+ }
+@@ -1388,6 +1401,7 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
+ 
+ 	priv->params.audio_frame[1] = 1;		/* channels - 1 */
+ 	priv->params.audio_sample_rate = 48000;		/* 48kHz */
++	priv->audio_sample_format = SNDRV_PCM_FORMAT_S24_LE;
+ 
+ 	priv->current_page = 0xff;
+ 	priv->hdmi = client;
+-- 
+2.1.4
