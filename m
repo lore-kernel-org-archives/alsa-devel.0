@@ -1,22 +1,18 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH] fm801: move to pcim_* and devm_* functions
-Date: Wed, 7 Jan 2015 14:20:26 +0200
-Message-ID: <CAHp75Ve-KigYCKP0oCz6E6ZmgTKf7+0Y5UtJjPUWyZoK5JBjMQ@mail.gmail.com>
-References: <1420587617-28521-1-git-send-email-andy.shevchenko@gmail.com>
- <s5h8uhfdq0g.wl-tiwai@suse.de>
- <CAHp75Veya0h7E_dDCXEsUvqFp+=LCk_4PDbV_REUMc1_Ro9W=Q@mail.gmail.com>
- <s5hoaqaygnt.wl-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 2/3] ASoC: omap-twl4030: Use
+	snd_soc_runtime_set_dai_fmt()
+Date: Wed, 7 Jan 2015 14:23:52 +0200
+Message-ID: <54AD2558.4030009@ti.com>
+References: <1420553842-17335-1-git-send-email-lars@metafoo.de>
+ <1420553842-17335-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f169.google.com (mail-yk0-f169.google.com
- [209.85.160.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 36B062604B3
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 13:20:28 +0100 (CET)
-Received: by mail-yk0-f169.google.com with SMTP id 79so534563ykr.28
- for <alsa-devel@alsa-project.org>; Wed, 07 Jan 2015 04:20:27 -0800 (PST)
-In-Reply-To: <s5hoaqaygnt.wl-tiwai@suse.de>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 647B42604BB
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 13:23:56 +0100 (CET)
+In-Reply-To: <1420553842-17335-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,91 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKYW4gNywgMjAxNSBhdCAxOjI3IFBNLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
-ZGU+IHdyb3RlOgo+IEF0IFdlZCwgNyBKYW4gMjAxNSAxMjo1NDo0MCArMDIwMCwKPiBBbmR5IFNo
-ZXZjaGVua28gd3JvdGU6Cj4+Cj4+IE9uIFdlZCwgSmFuIDcsIDIwMTUgYXQgOToxMSBBTSwgVGFr
-YXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPj4gPiBBdCBXZWQsICA3IEphbiAyMDE1
-IDAxOjQwOjE3ICswMjAwLAo+PiA+IEFuZHkgU2hldmNoZW5rbyB3cm90ZToKPj4gPj4KPj4gPj4g
-VGhlIG1hbmFnZWQgZnVuY3Rpb25zIGFsbG93IHRvIGdldCAtPnByb2JlKCkgYW5kIC0+cmVtb3Zl
-KCkgc2ltcGxpZXIuCj4+ID4+IFRoaXMgcGF0Y2ggY29udmVydHMgY29kZSB0byB1c2UgbWFuYWdl
-ZCBmdW5jdGlvbnMuCj4+ID4KPj4gPiBUaGlzIGRvZXNuJ3Qgd29yayB3ZWxsIGJlY2F1c2Ugb2Yg
-dGhlIG9yZGVyIG9mIHJlbGVhc2UgY2FsbHMgaW4KPj4gPiBkZXZpY2VfcmVsZWFzZSgpLiAgZGV2
-cmVzX3JlbGVhc2VfYWxsKCkgaXMgY2FsbGVkIGF0IGZpcnN0IGJlZm9yZQo+PiA+IGFueXRoaW5n
-IGVsc2UuICBUaHVzIHRoZSBjYXJkJ3MgZnJlZSBjYWxsYmFjayB3b3VsZCBiZSBjYWxsZWQgYWZ0
-ZXIKPj4gPiBpdCwgYW5kIHNuZF9mbTgwMV9mcmVlKCkgdG91Y2hlcyB0aGUgaGFyZHdhcmUgYmVm
-b3JlIGRpc2FibGluZy4KPj4gPgo+Pgo+PiBIbW3igKYgSSBkaWRuJ3QgZ2V0IHdoYXQgbWFrZSB0
-aG9zZSBjYWxscy4gU291bmQgY29yZT8gVGhlIGRyaXZlciBpcyBhCj4+IG5vcm1hbCBQQ0kgZHJp
-dmVyLCBzbyByZXNvdXJjZXMgd2lsbCBiZSBmcmVlZCAqYWZ0ZXIqIC0+cmVtb3ZlKCkgb2YKPj4g
-ZHJpdmVyIHdhcyBjYWxsZWQuCj4+IFBsZWFzZSwgZWxhYm9yYXRlLgo+Cj4gQWgsIE9LLCB0aGlz
-IHNlZW1zIHdvcmtpbmcsIGFzIHRoaXMgaXMgdGhlIG1hbmFnZWQgKnBjaSogZGV2aWNlIHRoYXQK
-PiBpcyBhIHBhcmVudCBvZiB0aGUgY2FyZCBkZXZpY2UsIHRodXMgaXQgc2hhbGwgYmUgcmVsZWFz
-ZWQgYWZ0ZXIgdGhlCj4gY2hpbGRyZW4uCj4KPiBCdXQgYW55IHJlYXNvbiBub3QgdG8gdXNlIHBj
-aW1faW9tYXBfcmVnaW9uc19yZXF1ZXN0X2FsbCgpPwoKWWVzLiBJIHdhcyBkb3VidCB0byBwdXQg
-YSBjb21tZW50IGFib3V0IHRoaXMuIFNvLCB0aGUgaW5pdGlhbCBpZGVhIGlzCnRvIG1vdmUgdG8g
-TU1JTyBpbnN0ZWFkIG9mIElPIGFjY2Vzcy4gVGhhdCdzIHdoeSB5b3UgbWF5IHNlZSBwcmV2aW91
-cwpwYXRjaCBhYm91dCBmbTgwMV97cmVhZCx3cml0ZX13KCkgbWFjcm9zLgpJIHdvdWxkIGxpa2Ug
-dG8gZG8gdGhhdCBsYXRlci4KCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+Pgo+PiA+Cj4+
-ID4gVGFrYXNoaQo+PiA+Cj4+ID4+IFdoaWxlIGhlcmUgcmVtb3ZlIHRoZSBkZWFkIGNvZGUgYW5k
-IGZpeCB0aGUgdmFsdWUgcHJpbnRlZCBpbiBlcnJvcgo+PiA+PiBtZXNzYWdlLgo+PiA+Pgo+PiA+
-PiBTaWduZWQtb2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHkuc2hldmNoZW5rb0BnbWFpbC5j
-b20+Cj4+ID4+IC0tLQo+PiA+PiAgc291bmQvcGNpL2ZtODAxLmMgfCAyOSArKysrKysrLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQo+PiA+PiAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwg
-MjIgZGVsZXRpb25zKC0pCj4+ID4+Cj4+ID4+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvZm04MDEu
-YyBiL3NvdW5kL3BjaS9mbTgwMS5jCj4+ID4+IGluZGV4IGRjZGEzYzEuLjI3MDg1MDAgMTAwNjQ0
-Cj4+ID4+IC0tLSBhL3NvdW5kL3BjaS9mbTgwMS5jCj4+ID4+ICsrKyBiL3NvdW5kL3BjaS9mbTgw
-MS5jCj4+ID4+IEBAIC0xMTc4LDEyICsxMTc4LDggQEAgc3RhdGljIGludCBzbmRfZm04MDFfZnJl
-ZShzdHJ1Y3QgZm04MDEgKmNoaXApCj4+ID4+ICAgICAgICAgICAgICAgdjRsMl9kZXZpY2VfdW5y
-ZWdpc3RlcigmY2hpcC0+djRsMl9kZXYpOwo+PiA+PiAgICAgICB9Cj4+ID4+ICAjZW5kaWYKPj4g
-Pj4gLSAgICAgaWYgKGNoaXAtPmlycSA+PSAwKQo+PiA+PiAtICAgICAgICAgICAgIGZyZWVfaXJx
-KGNoaXAtPmlycSwgY2hpcCk7Cj4+ID4+ICAgICAgIHBjaV9yZWxlYXNlX3JlZ2lvbnMoY2hpcC0+
-cGNpKTsKPj4gPj4gLSAgICAgcGNpX2Rpc2FibGVfZGV2aWNlKGNoaXAtPnBjaSk7Cj4+ID4+Cj4+
-ID4+IC0gICAgIGtmcmVlKGNoaXApOwo+PiA+PiAgICAgICByZXR1cm4gMDsKPj4gPj4gIH0KPj4g
-Pj4KPj4gPj4gQEAgLTEyMDYsMjggKzEyMDIsMjMgQEAgc3RhdGljIGludCBzbmRfZm04MDFfY3Jl
-YXRlKHN0cnVjdCBzbmRfY2FyZCAqY2FyZCwKPj4gPj4gICAgICAgfTsKPj4gPj4KPj4gPj4gICAg
-ICAgKnJjaGlwID0gTlVMTDsKPj4gPj4gLSAgICAgaWYgKChlcnIgPSBwY2lfZW5hYmxlX2Rldmlj
-ZShwY2kpKSA8IDApCj4+ID4+ICsgICAgIGlmICgoZXJyID0gcGNpbV9lbmFibGVfZGV2aWNlKHBj
-aSkpIDwgMCkKPj4gPj4gICAgICAgICAgICAgICByZXR1cm4gZXJyOwo+PiA+PiAtICAgICBjaGlw
-ID0ga3phbGxvYyhzaXplb2YoKmNoaXApLCBHRlBfS0VSTkVMKTsKPj4gPj4gLSAgICAgaWYgKGNo
-aXAgPT0gTlVMTCkgewo+PiA+PiAtICAgICAgICAgICAgIHBjaV9kaXNhYmxlX2RldmljZShwY2kp
-Owo+PiA+PiArICAgICBjaGlwID0gZGV2bV9remFsbG9jKCZwY2ktPmRldiwgc2l6ZW9mKCpjaGlw
-KSwgR0ZQX0tFUk5FTCk7Cj4+ID4+ICsgICAgIGlmIChjaGlwID09IE5VTEwpCj4+ID4+ICAgICAg
-ICAgICAgICAgcmV0dXJuIC1FTk9NRU07Cj4+ID4+IC0gICAgIH0KPj4gPj4gICAgICAgc3Bpbl9s
-b2NrX2luaXQoJmNoaXAtPnJlZ19sb2NrKTsKPj4gPj4gICAgICAgY2hpcC0+Y2FyZCA9IGNhcmQ7
-Cj4+ID4+ICAgICAgIGNoaXAtPnBjaSA9IHBjaTsKPj4gPj4gICAgICAgY2hpcC0+aXJxID0gLTE7
-Cj4+ID4+ICAgICAgIGNoaXAtPnRlYTU3NXhfdHVuZXIgPSB0ZWE1NzV4X3R1bmVyOwo+PiA+PiAt
-ICAgICBpZiAoKGVyciA9IHBjaV9yZXF1ZXN0X3JlZ2lvbnMocGNpLCAiRk04MDEiKSkgPCAwKSB7
-Cj4+ID4+IC0gICAgICAgICAgICAga2ZyZWUoY2hpcCk7Cj4+ID4+IC0gICAgICAgICAgICAgcGNp
-X2Rpc2FibGVfZGV2aWNlKHBjaSk7Cj4+ID4+ICsgICAgIGlmICgoZXJyID0gcGNpX3JlcXVlc3Rf
-cmVnaW9ucyhwY2ksICJGTTgwMSIpKSA8IDApCj4+ID4+ICAgICAgICAgICAgICAgcmV0dXJuIGVy
-cjsKPj4gPj4gLSAgICAgfQo+PiA+PiAgICAgICBjaGlwLT5wb3J0ID0gcGNpX3Jlc291cmNlX3N0
-YXJ0KHBjaSwgMCk7Cj4+ID4+ICAgICAgIGlmICgodGVhNTc1eF90dW5lciAmIFRVTkVSX09OTFkp
-ID09IDApIHsKPj4gPj4gLSAgICAgICAgICAgICBpZiAocmVxdWVzdF9pcnEocGNpLT5pcnEsIHNu
-ZF9mbTgwMV9pbnRlcnJ1cHQsIElSUUZfU0hBUkVELAo+PiA+PiAtICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBLQlVJTERfTU9ETkFNRSwgY2hpcCkpIHsKPj4gPj4gLSAgICAgICAgICAgICAg
-ICAgICAgIGRldl9lcnIoY2FyZC0+ZGV2LCAidW5hYmxlIHRvIGdyYWIgSVJRICVkXG4iLCBjaGlw
-LT5pcnEpOwo+PiA+PiArICAgICAgICAgICAgIGlmIChkZXZtX3JlcXVlc3RfaXJxKCZwY2ktPmRl
-diwgcGNpLT5pcnEsIHNuZF9mbTgwMV9pbnRlcnJ1cHQsCj4+ID4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIElSUUZfU0hBUkVELCBLQlVJTERfTU9ETkFNRSwgY2hpcCkpIHsKPj4gPj4g
-KyAgICAgICAgICAgICAgICAgICAgIGRldl9lcnIoY2FyZC0+ZGV2LCAidW5hYmxlIHRvIGdyYWIg
-SVJRICVkXG4iLCBwY2ktPmlycSk7Cj4+ID4+ICAgICAgICAgICAgICAgICAgICAgICBzbmRfZm04
-MDFfZnJlZShjaGlwKTsKPj4gPj4gICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRUJVU1k7
-Cj4+ID4+ICAgICAgICAgICAgICAgfQo+PiA+PiBAQCAtMTI0MiwxMiArMTIzMyw2IEBAIHN0YXRp
-YyBpbnQgc25kX2ZtODAxX2NyZWF0ZShzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQsCj4+ID4+ICAgICAg
-IC8qIGluaXQgbWlnaHQgc2V0IHR1bmVyIGFjY2VzcyBtZXRob2QgKi8KPj4gPj4gICAgICAgdGVh
-NTc1eF90dW5lciA9IGNoaXAtPnRlYTU3NXhfdHVuZXI7Cj4+ID4+Cj4+ID4+IC0gICAgIGlmIChj
-aGlwLT5pcnEgPj0gMCAmJiAodGVhNTc1eF90dW5lciAmIFRVTkVSX09OTFkpKSB7Cj4+ID4+IC0g
-ICAgICAgICAgICAgcGNpX2NsZWFyX21hc3RlcihwY2kpOwo+PiA+PiAtICAgICAgICAgICAgIGZy
-ZWVfaXJxKGNoaXAtPmlycSwgY2hpcCk7Cj4+ID4+IC0gICAgICAgICAgICAgY2hpcC0+aXJxID0g
-LTE7Cj4+ID4+IC0gICAgIH0KPj4gPj4gLQo+PiA+PiAgICAgICBpZiAoKGVyciA9IHNuZF9kZXZp
-Y2VfbmV3KGNhcmQsIFNORFJWX0RFVl9MT1dMRVZFTCwgY2hpcCwgJm9wcykpIDwgMCkgewo+PiA+
-PiAgICAgICAgICAgICAgIHNuZF9mbTgwMV9mcmVlKGNoaXApOwo+PiA+PiAgICAgICAgICAgICAg
-IHJldHVybiBlcnI7Cj4+ID4+IC0tCj4+ID4+IDEuOC4zLjEwMS5nNzI3YTQ2Ygo+PiA+Pgo+Pgo+
-Pgo+Pgo+PiAtLQo+PiBXaXRoIEJlc3QgUmVnYXJkcywKPj4gQW5keSBTaGV2Y2hlbmtvCj4+CgoK
-Ci0tIApXaXRoIEJlc3QgUmVnYXJkcywKQW5keSBTaGV2Y2hlbmtvCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 01/06/2015 04:17 PM, Lars-Peter Clausen wrote:
+> Use snd_soc_runtime_set_dai_fmt() to configure the format for the DAI link
+> rather than configuring each DAI individually.
+
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> =
+
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  sound/soc/omap/omap-twl4030.c | 20 +-------------------
+>  1 file changed, 1 insertion(+), 19 deletions(-)
+> =
+
+> diff --git a/sound/soc/omap/omap-twl4030.c b/sound/soc/omap/omap-twl4030.c
+> index 5e551c7..fb1f6bb 100644
+> --- a/sound/soc/omap/omap-twl4030.c
+> +++ b/sound/soc/omap/omap-twl4030.c
+> @@ -53,11 +53,7 @@ static int omap_twl4030_hw_params(struct snd_pcm_subst=
+ream *substream,
+>  	struct snd_pcm_hw_params *params)
+>  {
+>  	struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+> -	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+> -	struct snd_soc_dai *cpu_dai =3D rtd->cpu_dai;
+> -	struct snd_soc_card *card =3D rtd->card;
+>  	unsigned int fmt;
+> -	int ret;
+>  =
+
+>  	switch (params_channels(params)) {
+>  	case 2: /* Stereo I2S mode */
+> @@ -74,21 +70,7 @@ static int omap_twl4030_hw_params(struct snd_pcm_subst=
+ream *substream,
+>  		return -EINVAL;
+>  	}
+>  =
+
+> -	/* Set codec DAI configuration */
+> -	ret =3D snd_soc_dai_set_fmt(codec_dai, fmt);
+> -	if (ret < 0) {
+> -		dev_err(card->dev, "can't set codec DAI configuration\n");
+> -		return ret;
+> -	}
+> -
+> -	/* Set cpu DAI configuration */
+> -	ret =3D snd_soc_dai_set_fmt(cpu_dai, fmt);
+> -	if (ret < 0) {
+> -		dev_err(card->dev, "can't set cpu DAI configuration\n");
+> -		return ret;
+> -	}
+> -
+> -	return 0;
+> +	return snd_soc_runtime_set_dai_fmt(rtd, fmt);
+>  }
+>  =
+
+>  static struct snd_soc_ops omap_twl4030_ops =3D {
+> =
+
+
+
+-- =
+
+P=E9ter
