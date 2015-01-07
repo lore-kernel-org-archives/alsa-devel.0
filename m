@@ -1,19 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm5102: Use put_unaligned_be16
-Date: Wed, 7 Jan 2015 16:47:29 +0000
-Message-ID: <20150107164729.GS14516@opensource.wolfsonmicro.com>
-References: <20141226044457.GA12777@vaishali-Ideapad-Z570>
- <20150107100103.GR14516@opensource.wolfsonmicro.com>
- <CAK-LDbJxb7KBoX1jUXi7_OChJc2NPMT1rRATTK8ci_8gSZvXCA@mail.gmail.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
+	for audio
+Date: Wed, 7 Jan 2015 18:08:25 +0100
+Message-ID: <20150107180825.52334d4f@armhf>
+References: <cover.1420628786.git.moinejf@free.fr>
+ <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+ <54AD4511.30702@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C1D95260534
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 17:47:30 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAK-LDbJxb7KBoX1jUXi7_OChJc2NPMT1rRATTK8ci_8gSZvXCA@mail.gmail.com>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 969B12619D9
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:06:09 +0100 (CET)
+In-Reply-To: <54AD4511.30702@arm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Andrew Jackson <Andrew.Jackson@arm.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 07, 2015 at 08:54:58PM +0530, Vaishali Thakkar wrote:
-> On Wed, Jan 7, 2015 at 3:31 PM, Charles Keepax
-> <ckeepax@opensource.wolfsonmicro.com> wrote:
-> > On Fri, Dec 26, 2014 at 10:14:57AM +0530, Vaishali Thakkar wrote:
-> >> This patch introduces the use of function put_unaligned_be16.
-> >> Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
-> >> ---
-> >
-> > Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> >
-> > CCing patches@opensource.wolfsonmicro.com would be handy though.
-> 
-> Ok. Will keep this in mind while sending patches of audio drivers.
-> 
-> Do I need to send this patch again with CC??
-
-No its fine I have already acked it now.
-
-Thanks,
-Charles
+T24gV2VkLCAwNyBKYW4gMjAxNSAxNDozOToxMyArMDAwMApBbmRyZXcgSmFja3NvbiA8QW5kcmV3
+LkphY2tzb25AYXJtLmNvbT4gd3JvdGU6Cgo+ID4gKyAgLSBhdWRpby1wb3J0czogbXVzdCBjb250
+YWluIG9uZSBvciB0d28gdmFsdWVzIHNlbGVjdGluZyB0aGUgc291cmNlCj4gPiArCWluIHRoZSBh
+dWRpbyBwb3J0Lgo+ID4gKwlUaGUgc291cmNlIHR5cGUgaXMgZ2l2ZW4gYnkgdGhlIGNvcnJlc3Bv
+bmRpbmcgZW50cnkgaW4KPiA+ICsJdGhlIGF1ZGlvLXBvcnQtbmFtZXMgcHJvcGVydHkuICAKPiAK
+PiBJIHRoaW5rIHRoYXQgdGhpcyBlbnRyeSBtaWdodCBiZW5lZml0IGZyb20gYSBsaXR0bGUgbW9y
+ZSBleHBsYW5hdGlvbi4KPiBUaGUgdmFsdWUgc3BlY2lmaWVkIGhlcmUgc2VsZWN0cyB3aGljaCBw
+aW5zIG9uIHRoZSBjaGlwIHByb3ZpZGUgdGhlCj4gYXVkaW8gaW5wdXQgZG9lc24ndCBpdD8gIElu
+IHRoZSBvdXRsaW5lIGRhdGFzaGVldCB0aGF0IEkgaGF2ZSB0aGVzZSBhcmUKPiBsaXN0ZWQgaW4g
+dGFibGUgMTc6Cj4gCj4gQXVkaW8gcG9ydCAJSW5wdXQgY29uZmlndXJhdGlvbgo+IAkJUy9QRElG
+IAkJSTJTLWJ1cwo+IEFQMCAJCS0gCQlXUyAod29yZCBzZWxlY3QpCj4gQVAxIAkJUy9QRElGIGlu
+cHV0IAlJMlMtYnVzIGNoYW5uZWwgMAo+IEFQMiAJCVMvUERJRiBpbnB1dCAJSTJTLWJ1cyBjaGFu
+bmVsIDEKPiBBUDNbMV0gCQkJCUkyUy1idXMgY2hhbm5lbCAyCj4gQVA0WzFdIAkJCQlJMlMtYnVz
+IGNoYW5uZWwgMwo+IEFDTEsgCQktIAkJU0NLIChJMlMtYnVzIGNsb2NrKQo+IAo+IFsxXSBEZXBl
+bmRpbmcgb24gcGFja2FnZS4KCllvdXIgdGFibGUgaXMgY2xvc2UgdG8gdGhlIG9uZSBpbiB0aGUg
+VERBOTk4M0IgZG9jdW1lbnRhdGlvbiBJIGhhdmUsCmJ1dCB0aGUgcGlucyBhcmUgbm90IGV4YWN0
+bHkgdGhlIHNhbWU6CgpBUDAgCQlXUyAod29yZCBzZWxlY3QpCkFQMSAJCUkyUy1idXMgcG9ydCAw
+CkFQMiAJCUkyUy1idXMgcG9ydCAxCkFQMyAJCUkyUy1idXMgcG9ydCAyCkFQNCAJCUkyUy1idXMg
+cG9ydCAzCkFQNQkJTUNMSyAobWFzdGVyIGNsb2NrIGZvciBTL1BESUYpCkFQNgkJUy9QRElGIGlu
+cHV0CkFQNwkJQVVYIChpbnRlcm5hbCB0ZXN0KQpBQ0xLIAkJU0NLIChJMlMtYnVzIGNsb2NrKQoK
+VGhhdCdzIHdoeSBJIGRpZCBub3Qga25vdyBjbGVhcmx5IHdoeSBJIGhhZCB0byBzZXQgQVAyIGZv
+ciBTL1BESUYgaW5wdXQKYW5kIChBUDAgKyBBUDEpIGZvciBJMlMgaW5wdXQgaW4gdGhlIEN1Ym94
+LgoKVGhlbiwgdGhlIG9ubHkgbW9yZSBleHBsYW5hdGlvbiBJIGNvdWxkIGdpdmUgaXMgImhhdmUg
+YSBsb29rIGF0IHRoZQphdWRpbyBpbnB1dCBmb3JtYXQgYW5kIGF0IHRoZSByZWdpc3RlciAweDFl
+IHBhZ2UgMCBpbiB0aGUgZG9jdW1lbnRhdGlvbgpvZiB0aGUgVERBOTk4eCBjaGlwIi4KCkJUVywg
+dGhlIHRkYTk5OHggZHJpdmVyIHN1cHBvcnRzIG9ubHkgdGhlIFREQTk5ODksIFREQTE5OTg4IGFu
+ZApUREExOTk4OSBjaGlwcy4gSWYgdGhlIFREQTk5ODNCIHdvdWxkIGJlIHN1cHBvcnRlZCwgdGhl
+IGF1ZGlvIHBvcnQKZGVmaW5pdGlvbnMgd291bGQgYmUgb2Ygbm8gdXNlLgoKU28sIHdoYXQgd291
+bGQgeW91IHNlZSBhcyBhbiBleHBsYW5hdGlvbj8KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAg
+ICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJl
+ZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
