@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5102: Use put_unaligned_be16
-Date: Wed, 7 Jan 2015 17:45:47 +0000
-Message-ID: <20150107174547.GE2634@sirena.org.uk>
-References: <20141226044457.GA12777@vaishali-Ideapad-Z570>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl_dma: Do not use 'full_name'
+ node reference
+Date: Wed, 7 Jan 2015 15:47:55 -0200
+Message-ID: <CAOMZO5Cuq0ejHGOqE0W=-=qU-P_=qruKqzHxcVGkFpmEhydC8Q@mail.gmail.com>
+References: <1420651312-21671-1-git-send-email-festevam@gmail.com>
+ <1420651312-21671-2-git-send-email-festevam@gmail.com>
+ <54AD6C55.7030600@metafoo.de> <54AD6C92.7060007@tabi.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8029688274516312671=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6312A2605DC
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:45:53 +0100 (CET)
-In-Reply-To: <20141226044457.GA12777@vaishali-Ideapad-Z570>
+Received: from mail-la0-f54.google.com (mail-la0-f54.google.com
+ [209.85.215.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 60CE926053B
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:47:56 +0100 (CET)
+Received: by mail-la0-f54.google.com with SMTP id pv20so4857528lab.13
+ for <alsa-devel@alsa-project.org>; Wed, 07 Jan 2015 09:47:56 -0800 (PST)
+In-Reply-To: <54AD6C92.7060007@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,53 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Timur Tabi <timur@tabi.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jan 7, 2015 at 3:27 PM, Timur Tabi <timur@tabi.org> wrote:
+> Lars-Peter Clausen wrote:
+>>>
+>>>
+>>> -    dma = kzalloc(sizeof(*dma) + strlen(np->full_name), GFP_KERNEL);
+>>> +    dma = kzalloc(sizeof(*dma), GFP_KERNEL);
+>>
+>>
+>> This should probably be part of patch 1.
+>
+>
+> I think you're right.
 
---===============8029688274516312671==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9PByzOP77wFNgJ0y"
-Content-Disposition: inline
+Thanks, so I can do it on a single patch then:
 
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index 93d7e56..72e7979 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -63,7 +63,6 @@ struct dma_object {
+     struct ccsr_dma_channel __iomem *channel;
+     unsigned int irq;
+     bool assigned;
+-    char path[1];
+ };
 
---9PByzOP77wFNgJ0y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ /*
+@@ -897,20 +896,18 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
 
-On Fri, Dec 26, 2014 at 10:14:57AM +0530, Vaishali Thakkar wrote:
-> This patch introduces the use of function put_unaligned_be16.
->=20
-> This is done using Coccinelle and semantic patch used is as follows:
+     ret = of_address_to_resource(ssi_np, 0, &res);
+     if (ret) {
+-        dev_err(&pdev->dev, "could not determine resources for %s\n",
+-            ssi_np->full_name);
++        dev_err(&pdev->dev, "could not determine resources: %d\n", ret);
+         of_node_put(ssi_np);
+         return ret;
+     }
 
-This doesn't apply against current code (-next, or my git tree), please
-check and resend.
+-    dma = kzalloc(sizeof(*dma) + strlen(np->full_name), GFP_KERNEL);
++    dma = kzalloc(sizeof(*dma), GFP_KERNEL);
+     if (!dma) {
+         dev_err(&pdev->dev, "could not allocate dma object\n");
+         of_node_put(ssi_np);
+         return -ENOMEM;
+     }
 
---9PByzOP77wFNgJ0y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUrXDKAAoJECTWi3JdVIfQs/8IAIJM2/BbY8em3WyYAPaLa10b
-l0pFLa2+DirK2DYmhROHgcCfp6si4zYKBgnF+iVNg/f2r7ZfwX+uAGxalZeOXAgn
-6GOJlpANRuert+IIhK5gUv2zPBMH9JZL554N3hkvKkj0ZzSNsMTOiTT55gHott5p
-RDH4xs998tZalaOlJAt0lq66KzBkBXMNINStXF2ICuQzWelFscTlgy6OJOSHan+w
-0NyDQVQGEopxWNObHl96UosaCA9CiysL4bH/T26eUCrXVHnZ4flgvl+VqF8/iJ9O
-fsLuIG/zymWZnsVj+vp9Hf6K3E1zxLTz/TGArCsbylW1p6ZMuXOfattaKembFig=
-=ZbCr
------END PGP SIGNATURE-----
-
---9PByzOP77wFNgJ0y--
-
---===============8029688274516312671==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8029688274516312671==--
+-    strcpy(dma->path, np->full_name);
+     dma->dai.ops = &fsl_dma_ops;
+     dma->dai.pcm_new = fsl_dma_new;
+     dma->dai.pcm_free = fsl_dma_free_dma_buffers;
