@@ -1,58 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Wed, 7 Jan 2015 17:33:51 +0000
-Message-ID: <20150107173351.GB2634@sirena.org.uk>
+Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the
+	HDMI transmitter
+Date: Wed, 7 Jan 2015 17:34:50 +0000
+Message-ID: <20150107173450.GC2634@sirena.org.uk>
 References: <cover.1420628786.git.moinejf@free.fr>
- <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
- <54AD4511.30702@arm.com>
- <20150107180825.52334d4f@armhf>
- <54AD6A5C.60903@arm.com>
+ <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
+ <54AD4C77.5000401@arm.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yTfYsguFsV8cp5cf"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <54AD6A5C.60903@arm.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3087035058244160773=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14A6926508D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:35:04 +0100 (CET)
+In-Reply-To: <54AD4C77.5000401@arm.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Andrew Jackson <Andrew.Jackson@arm.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Dave Airlie <airlied@gmail.com>, Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---yTfYsguFsV8cp5cf
+--===============3087035058244160773==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="E4bwVoblQmO+UfRy"
+Content-Disposition: inline
+
+
+--E4bwVoblQmO+UfRy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 07, 2015 at 05:18:20PM +0000, Andrew Jackson wrote:
+On Wed, Jan 07, 2015 at 03:10:47PM +0000, Andrew Jackson wrote:
+> On 01/07/15 10:51, Jean-Francois Moine wrote:
+> > This patch adds a CODEC to the NXP TDA998x HDMI transmitter.
+> >=20
+> > The CODEC handles both I2S and S/PDIF inputs.
 
-> I understand your difficulty!  I was just wanting something to clarify th=
-e=20
-> meaning of the value without reference to the driver source.
+Please delete unneeded context from your messages, it makes it much
+easier to find any new content you've added.
 
-> You could add something like this to your existing explanation: "The value
-> describes which audio input pins are selected; this varies depending
-> on chip type so consult the section on audio port configuration in the=20
-> relevant datasheet.". =20
-
-This is commonly done by just saying that the value will be written into
-a given bitfield for such and such a purpose and then relying on the
-chip documentation for that; it's a more direct way of saying the above.
-
---yTfYsguFsV8cp5cf
+--E4bwVoblQmO+UfRy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUrW3+AAoJECTWi3JdVIfQlX0H/RX+ohGKBgKyWlTMPcFZFEB6
-tMppOk1zQhdIqxs4qWJPsRDC2ZXWRXgk2WI621PSjkxWrhAO9H2Jju0G9fnmdynq
-5WSZsWe1s1yDjOYMLnbhUIOwWzDqCHYf+bH3CeDzvWPIG+SmujHRnKI6AS/whzPv
-jQrGnS7T2u3IV+3IK2TgJohIU9JMdft2KsTk4D4YpXDPS1BatvcitM6UfX/en/U6
-SawZUl6NGSzT+efmQWOastopkjn6r0bA6odaGI0DjaXnmq+ymCj9BqOb1Qb0EhSf
-0vv5GdPfZYDukvlU2FuLP/iWHNixU7N9h2pcvJsC82/Np85l2Im7VqIBNDWIcQY=
-=7iDb
+iQEcBAEBAgAGBQJUrW45AAoJECTWi3JdVIfQYOYIAIBRRUG56ED979cEIDEh/gIN
+C1/F6sbniZUcLBjliiKVo2rWZ6MZgzMzyNdlwTB5f1VN+0YwuPRn2ac23+cUqdDg
+dqVbiGd6wYPEjnqyVC28cBg2x41CnZCcF3Qn7zbMO7q6lIsxH2QHhfl6/kviK1Co
+y6PksCAD8bFgq+ux0pXVQCphl+1iMlbDKw2ykAM8iDszuz3mdsk02EmA/rmK1egO
+5xbN+Y+nBxB/CWGem6TlseT3xAmXkD31O8ZCn9rauvuwoJKL0nthC6w1WZvo5ASn
+PcPd6fWL2hB86nZdsBKc0LKvNjytepgbFWLjjgnDKYZ+dIEKI33j8ILMYc8UdOA=
+=+QeS
 -----END PGP SIGNATURE-----
 
---yTfYsguFsV8cp5cf--
+--E4bwVoblQmO+UfRy--
+
+--===============3087035058244160773==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3087035058244160773==--
