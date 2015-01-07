@@ -1,38 +1,76 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH 2/2] ASoC: fsl_dma: Do not use 'full_name'
- node reference
-Date: Wed, 07 Jan 2015 11:54:07 -0600
-Message-ID: <54AD72BF.20805@tabi.org>
-References: <1420651312-21671-1-git-send-email-festevam@gmail.com>	<1420651312-21671-2-git-send-email-festevam@gmail.com>	<54AD6C55.7030600@metafoo.de>	<54AD6C92.7060007@tabi.org>
- <CAOMZO5Cuq0ejHGOqE0W=-=qU-P_=qruKqzHxcVGkFpmEhydC8Q@mail.gmail.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the HDMI
+ transmitter
+Date: Wed, 7 Jan 2015 19:02:41 +0100
+Message-ID: <20150107190241.27ebac8b@armhf>
+References: <cover.1420628786.git.moinejf@free.fr>
+	<23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
+	<54AD4C77.5000401@arm.com>
+	<20150107154138.GL12302@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muin.pair.com (muin.pair.com [209.68.1.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 4634026053B
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:54:10 +0100 (CET)
-In-Reply-To: <CAOMZO5Cuq0ejHGOqE0W=-=qU-P_=qruKqzHxcVGkFpmEhydC8Q@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150107154138.GL12302@n2100.arm.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Andrew Jackson <Andrew.Jackson@arm.com>, Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@gmail.com>, Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fabio Estevam wrote:
-> -        dev_err(&pdev->dev, "could not determine resources for %s\n",
-> -            ssi_np->full_name);
-> +        dev_err(&pdev->dev, "could not determine resources: %d\n", ret);
+On Wed, 7 Jan 2015 15:41:38 +0000
+Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
 
-I remember now why I did this, and I might need to NACK this patch. 
-ssi_np->full_name is the name of the SSI node, but here, dev_err will 
-print the name of the DMA node.  So the intent is to help the user 
-determine which SSI node has a broken DMA node pointer.  This probably 
-is useful only on PowerPC, which uses the old ssi->dma linkage.
+> On Wed, Jan 07, 2015 at 03:10:47PM +0000, Andrew Jackson wrote:
+> > On 01/07/15 10:51, Jean-Francois Moine wrote:
+> > > diff --git a/drivers/gpu/drm/i2c/Kconfig b/drivers/gpu/drm/i2c/Kc=
+onfig
+> > > index 22c7ed6..24fc975 100644
+> > > --- a/drivers/gpu/drm/i2c/Kconfig
+> > > +++ b/drivers/gpu/drm/i2c/Kconfig
+> > > @@ -28,6 +28,7 @@ config DRM_I2C_SIL164
+> > >  config DRM_I2C_NXP_TDA998X
+> > >         tristate "NXP Semiconductors TDA998X HDMI encoder"
+> > >         default m if DRM_TILCDC
+> > > +       select SND_SOC_TDA998X
+> >=20
+> > Do you need this since sound/soc/codecs/Kconfig conditionally bring=
+s in the
+> > CODEC driver?
+
+=46or SND_SOC_ALL_CODECS only.
+
+> More importantly, it's broken, because it'll cause Kconfig to complai=
+n
+> if you enable DRM_I2C_NXP_TDA998X, but have ASoC disabled.
+>=20
+> Moreover, if you decide you want the sound and ASoC built as a module=
+,
+> but want to build in DRM and TDA998x support (so you can get video
+> output working on boot before initramfs/rootfs), Kconfig may well
+> complain.
+
+	select SND_SOC_TDA998X if SND_SOC
+
+should work in all cases.
+
+> > > +static int __init tda998x_codec_init(void)
+> > > +{
+> > > +       return 0;
+> > > +}
+> > > +static void __exit tda998x_codec_exit(void)
+> > > +{
+> > > +}
+> > > +module_init(tda998x_codec_init);
+> > > +module_exit(tda998x_codec_exit);
+>=20
+> There's no need for these if they remain as the above.  Modules can h=
+ave
+> both init/exit functions, or neither, and they are still unloadable.
+> Only modules which provide only an init function get locked in on loa=
+d.
+
+Thanks.
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
