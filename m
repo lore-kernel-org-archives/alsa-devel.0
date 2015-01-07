@@ -1,76 +1,72 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the HDMI
- transmitter
-Date: Wed, 7 Jan 2015 19:02:41 +0100
-Message-ID: <20150107190241.27ebac8b@armhf>
-References: <cover.1420628786.git.moinejf@free.fr>
-	<23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
-	<54AD4C77.5000401@arm.com>
-	<20150107154138.GL12302@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: Add helper function for changing
+ the DAI link format
+Date: Wed, 7 Jan 2015 18:04:40 +0000
+Message-ID: <20150107180440.GI2634@sirena.org.uk>
+References: <1420553842-17335-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150107154138.GL12302@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Andrew Jackson <Andrew.Jackson@arm.com>, Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@gmail.com>, Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============5646768659599478033=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9139926053B
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 19:04:56 +0100 (CET)
+In-Reply-To: <1420553842-17335-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 7 Jan 2015 15:41:38 +0000
-Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
 
-> On Wed, Jan 07, 2015 at 03:10:47PM +0000, Andrew Jackson wrote:
-> > On 01/07/15 10:51, Jean-Francois Moine wrote:
-> > > diff --git a/drivers/gpu/drm/i2c/Kconfig b/drivers/gpu/drm/i2c/Kc=
-onfig
-> > > index 22c7ed6..24fc975 100644
-> > > --- a/drivers/gpu/drm/i2c/Kconfig
-> > > +++ b/drivers/gpu/drm/i2c/Kconfig
-> > > @@ -28,6 +28,7 @@ config DRM_I2C_SIL164
-> > >  config DRM_I2C_NXP_TDA998X
-> > >         tristate "NXP Semiconductors TDA998X HDMI encoder"
-> > >         default m if DRM_TILCDC
-> > > +       select SND_SOC_TDA998X
-> >=20
-> > Do you need this since sound/soc/codecs/Kconfig conditionally bring=
-s in the
-> > CODEC driver?
+--===============5646768659599478033==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZPRTZ4IozCHrMUKG"
+Content-Disposition: inline
 
-=46or SND_SOC_ALL_CODECS only.
 
-> More importantly, it's broken, because it'll cause Kconfig to complai=
-n
-> if you enable DRM_I2C_NXP_TDA998X, but have ASoC disabled.
->=20
-> Moreover, if you decide you want the sound and ASoC built as a module=
-,
-> but want to build in DRM and TDA998x support (so you can get video
-> output working on boot before initramfs/rootfs), Kconfig may well
-> complain.
+--ZPRTZ4IozCHrMUKG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-	select SND_SOC_TDA998X if SND_SOC
+On Tue, Jan 06, 2015 at 03:17:20PM +0100, Lars-Peter Clausen wrote:
+> For some setups it is necessary to change the DAI link format at runtime.
+> This patch factors out the code that does the initial static DAI link format
+> configuration into a separate helper function which can be used board
+> drivers as well.
 
-should work in all cases.
+Applied all, thanks.
 
-> > > +static int __init tda998x_codec_init(void)
-> > > +{
-> > > +       return 0;
-> > > +}
-> > > +static void __exit tda998x_codec_exit(void)
-> > > +{
-> > > +}
-> > > +module_init(tda998x_codec_init);
-> > > +module_exit(tda998x_codec_exit);
->=20
-> There's no need for these if they remain as the above.  Modules can h=
-ave
-> both init/exit functions, or neither, and they are still unloadable.
-> Only modules which provide only an init function get locked in on loa=
-d.
+--ZPRTZ4IozCHrMUKG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thanks.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+iQEcBAEBAgAGBQJUrXU3AAoJECTWi3JdVIfQ9ZMH/R8LR+CHfaVsw10RzhNzri2M
+SVH1+5EMJCDrY1+XVDZvd6QzkcAIykqQDFC3yA6AH9srDxx/CnwkRT4GKktyNSrv
+dxLpjdi+uK4d641dem8MTgNjXXlSYtZGh7uvxm/ASYS7SFdW+P5044OrVeB3xjvq
+hSmNE7bFOkkeKTKnFvM/kVSnrBj/FLmPjD7C9gQ1Xty98hs338Y3f0Nvb9TA60Sw
+kHUK/THtEyYP9BPbxEIMEr6997hDMPhXSmeGnu3ZihOWMAztJMQ27MjsZdsi2OIZ
+8d4ysfWmvZ+UF/fs7IVQwAyspJ/i3s646HnGfHj0+uwvT8DkZFmgFsV8zgzj0bA=
+=zEwF
+-----END PGP SIGNATURE-----
+
+--ZPRTZ4IozCHrMUKG--
+
+--===============5646768659599478033==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5646768659599478033==--
