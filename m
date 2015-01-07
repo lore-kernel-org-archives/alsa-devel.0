@@ -1,35 +1,69 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH, RFC] MIPS: jz4740: use dma filter function
-Date: Wed, 07 Jan 2015 15:29:36 +0100
-Message-ID: <54AD42D0.4070402@metafoo.de>
-References: <22569458.nE7JkNNnz3@wuerfel> <54ABBCE6.8060904@metafoo.de> <2633187.PyovTNc8DC@wuerfel>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH] fm801: move to pcim_* and devm_* functions
+Date: Wed, 7 Jan 2015 16:25:22 +0200
+Message-ID: <CAHp75VcPM+Pz0+fTM7BOHJu1xohrMYvaPmrk2jyX8xkovviiRw@mail.gmail.com>
+References: <1420587617-28521-1-git-send-email-andy.shevchenko@gmail.com>
+ <s5h8uhfdq0g.wl-tiwai@suse.de>
+ <CAHp75Veya0h7E_dDCXEsUvqFp+=LCk_4PDbV_REUMc1_Ro9W=Q@mail.gmail.com>
+ <s5hoaqaygnt.wl-tiwai@suse.de>
+ <CAHp75Ve-KigYCKP0oCz6E6ZmgTKf7+0Y5UtJjPUWyZoK5JBjMQ@mail.gmail.com>
+ <s5hlhleybt7.wl-tiwai@suse.de>
+ <CAHp75VdR3nU6K7abpzfUPZrG45R9j0YRYeUV8E4YBAq7Qi3sgA@mail.gmail.com>
+ <s5hh9w2yawo.wl-tiwai@suse.de>
+ <CAHp75Ve6+Gb5Cm+Xz04kaL6_jScQDAbH02QTA5Abb2mOyi5s1w@mail.gmail.com>
+ <s5hd26qyacy.wl-tiwai@suse.de> <s5ha91uy9q8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <2633187.PyovTNc8DC@wuerfel>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-mmc@vger.kernel.org, linux-mips@linux-mips.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yh0-f45.google.com (mail-yh0-f45.google.com
+ [209.85.213.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44EA8260535
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 15:25:26 +0100 (CET)
+Received: by mail-yh0-f45.google.com with SMTP id f10so657908yha.4
+ for <alsa-devel@alsa-project.org>; Wed, 07 Jan 2015 06:25:23 -0800 (PST)
+In-Reply-To: <s5ha91uy9q8.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/06/2015 02:48 PM, Arnd Bergmann wrote:
-> On Tuesday 06 January 2015 11:45:58 Lars-Peter Clausen wrote:
->> On 01/05/2015 11:39 PM, Arnd Bergmann wrote:
->>> As discussed on the topic of shmobile DMA today, jz4740 is the only
->>> user of the slave_id field in dma_slave_config besides shmobile. This
->>> use is really incompatible with the way that other drivers use the
->>> dmaengine API, so we should get rid of it.
+On Wed, Jan 7, 2015 at 3:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 07 Jan 2015 14:43:41 +0100,
+> Takashi Iwai wrote:
 >>
->> Do you have a link to that discussion?
+>> At Wed, 7 Jan 2015 15:40:26 +0200,
+>> Andy Shevchenko wrote:
+>> >
+>> > On Wed, Jan 7, 2015 at 3:31 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > > At Wed, 7 Jan 2015 15:27:35 +0200,
+>> > > Andy Shevchenko wrote:
+>> >
+>> > Regarding to the original patch, is it okay now to apply?
+>>
+>> Yes.  If you prefer, I can apply it first alone.
+
+Why not? :)
+
 >
-> http://www.spinics.net/lists/linux-mmc/msg30069.html
+> OK, I found that the regions are released in pcim_release().  So,
+> there is no leak.
+>
+> Meanwhile it means that pci_release_regions() is superfluous, too,
+> once when you enabled the managed mode via pcim_enable_device().
+> Could you resubmit a v2 patch with that removal?
 
-I'm really not comfortable with this patch, since it is a step back. But I 
-guess the end justify the means. So if it helps to get rid of slave_id I'm 
-ok with it, sooner or later jz4740 will be converted to DT so once that's 
-done the filter function can be removed again. But please put the filter 
-function in a non arch specific header so we can still compile test things. 
-And maybe note in the commit message that this is meant as a temporary hack.
+Within few hours together with the second patch. But if you can do
+this as a fixup it would be nice.
 
-- Lars
+-- 
+With Best Regards,
+Andy Shevchenko
