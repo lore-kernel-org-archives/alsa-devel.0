@@ -1,19 +1,16 @@
-From: Andrew Jackson <Andrew.Jackson@arm.com>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
-	for audio
-Date: Wed, 07 Jan 2015 14:39:13 +0000
-Message-ID: <54AD4511.30702@arm.com>
-References: <cover.1420628786.git.moinejf@free.fr>
- <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH v2] ALSA: hda - Enable mic mute hotkey and LEDs
+	for an HP machine
+Date: Wed,  7 Jan 2015 15:50:13 +0100
+Message-ID: <1420642213-21458-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
- [217.140.96.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D773260544
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 15:39:17 +0100 (CET)
-In-Reply-To: <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id E72E8260535
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 15:50:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,168 +20,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jyri Sarha <jsarha@ti.com>, Dave Airlie <airlied@gmail.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1408295@bugs.launchpad.net, keng-yu.lin@canonical.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/15 09:10, Jean-Francois Moine wrote:
-> This patch permits the definition of the audio ports from the device tree.
-> 
-> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> ---
->  .../devicetree/bindings/drm/i2c/tda998x.txt        | 18 +++++++
->  drivers/gpu/drm/i2c/tda998x_drv.c                  | 60 ++++++++++++++++++----
->  2 files changed, 69 insertions(+), 9 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> index e9e4bce..e50e7cd 100644
-> --- a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> +++ b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> @@ -17,6 +17,20 @@ Optional properties:
->    - video-ports: 24 bits value which defines how the video controller
->  	output is wired to the TDA998x input - default: <0x230145>
->  
-> +  - audio-ports: must contain one or two values selecting the source
-> +	in the audio port.
-> +	The source type is given by the corresponding entry in
-> +	the audio-port-names property.
+On this machine, the mic mute hotkey is connected to GPIO2. We therefore
+create an extra input device for this key.
 
-I think that this entry might benefit from a little more explanation.
-The value specified here selects which pins on the chip provide the
-audio input doesn't it?  In the outline datasheet that I have these are
-listed in table 17:
+Also enable LEDs connected to GPIO3 and GPIO4.
 
-Audio port 	Input configuration
-		S/PDIF 		I2S-bus
-AP0 		- 		WS (word select)
-AP1 		S/PDIF input 	I2S-bus channel 0
-AP2 		S/PDIF input 	I2S-bus channel 1
-AP3[1] 				I2S-bus channel 2
-AP4[1] 				I2S-bus channel 3
-ACLK 		- 		SCK (I2S-bus clock)
+(Note: if this patch is backported to older kernels, where KEY_MIC_MUTE is
+not available, change the KEY_MIC_MUTE to KEY_F20, which was previously used
+for mic mute keys.)
 
-[1] Depending on package.
+BugLink: https://bugs.launchpad.net/bugs/1408295
+Tested-by: Keng-Yu Lin <keng-yu.lin@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
 
-	Andrew
+Changes since v1 (which was by mistake not posted to alsa-devel)
+ - fixes according to Takashi's review comments
 
-> +
-> +  - audio-port-names: must contain entries matching the entries in
-> +	the audio-ports property.
-> +	Each value may be "i2s" or "spdif", giving the type of
-> +	the audio source.
-> +
-> +  - #sound-dai-cells: must be set to <1> for use with the simple-card.
-> +	The TDA998x audio CODEC always defines two DAIs.
-> +	The DAI 0 is the S/PDIF input and the DAI 1 is the I2S input.
-> +
->  Example:
->  
->  	tda998x: hdmi-encoder {
-> @@ -26,4 +40,8 @@ Example:
->  		interrupts = <27 2>;		/* falling edge */
->  		pinctrl-0 = <&pmx_camera>;
->  		pinctrl-names = "default";
-> +
-> +		audio-ports = <0x04>, <0x03>;
-> +		audio-port-names = "spdif", "i2s";
-> +		#sound-dai-cells = <1>;
->  	};
-> diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
-> index 70658af..9d9b072 100644
-> --- a/drivers/gpu/drm/i2c/tda998x_drv.c
-> +++ b/drivers/gpu/drm/i2c/tda998x_drv.c
-> @@ -20,6 +20,7 @@
->  #include <linux/module.h>
->  #include <linux/irq.h>
->  #include <sound/asoundef.h>
-> +#include <linux/platform_device.h>
->  
->  #include <drm/drmP.h>
->  #include <drm/drm_crtc_helper.h>
-> @@ -44,6 +45,8 @@ struct tda998x_priv {
->  	wait_queue_head_t wq_edid;
->  	volatile int wq_edid_wait;
->  	struct drm_encoder *encoder;
-> +
-> +	u8 audio_ports[2];
->  };
->  
->  #define to_tda998x_priv(x)  ((struct tda998x_priv *)to_encoder_slave(x)->slave_priv)
-> @@ -1254,12 +1257,16 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
->  {
->  	struct device_node *np = client->dev.of_node;
->  	u32 video;
-> -	int rev_lo, rev_hi, ret;
-> +	int i, rev_lo, rev_hi, ret;
-> +	const char *p;
->  
->  	priv->vip_cntrl_0 = VIP_CNTRL_0_SWAP_A(2) | VIP_CNTRL_0_SWAP_B(3);
->  	priv->vip_cntrl_1 = VIP_CNTRL_1_SWAP_C(0) | VIP_CNTRL_1_SWAP_D(1);
->  	priv->vip_cntrl_2 = VIP_CNTRL_2_SWAP_E(4) | VIP_CNTRL_2_SWAP_F(5);
->  
-> +	priv->params.audio_frame[1] = 1;		/* channels - 1 */
-> +	priv->params.audio_sample_rate = 48000;		/* 48kHz */
-> +
->  	priv->current_page = 0xff;
->  	priv->hdmi = client;
->  	priv->cec = i2c_new_dummy(client->adapter, 0x34);
-> @@ -1351,15 +1358,50 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
->  	/* enable EDID read irq: */
->  	reg_set(priv, REG_INT_FLAGS_2, INT_FLAGS_2_EDID_BLK_RD);
->  
-> -	if (!np)
-> -		return 0;		/* non-DT */
-> +	/* get the device tree parameters */
-> +	if (np) {
-> +
-> +		/* optional video properties */
-> +		ret = of_property_read_u32(np, "video-ports", &video);
-> +		if (ret == 0) {
-> +			priv->vip_cntrl_0 = video >> 16;
-> +			priv->vip_cntrl_1 = video >> 8;
-> +			priv->vip_cntrl_2 = video;
-> +		}
-> +
-> +		/* optional audio properties */
-> +		for (i = 0; i < 2; i++) {
-> +			u32 port;
->  
-> -	/* get the optional video properties */
-> -	ret = of_property_read_u32(np, "video-ports", &video);
-> -	if (ret == 0) {
-> -		priv->vip_cntrl_0 = video >> 16;
-> -		priv->vip_cntrl_1 = video >> 8;
-> -		priv->vip_cntrl_2 = video;
-> +			ret = of_property_read_u32_index(np, "audio-ports", i, &port);
-> +			if (ret)
-> +				break;
-> +			ret = of_property_read_string_index(np, "audio-port-names",
-> +							i, &p);
-> +			if (ret) {
-> +				dev_err(&client->dev,
-> +					"missing audio-port-names[%d]\n", i);
-> +				break;
-> +			}
-> +			if (strcmp(p, "spdif") == 0) {
-> +				priv->audio_ports[0] = port;
-> +			} else if (strcmp(p, "i2s") == 0) {
-> +				priv->audio_ports[1] = port;
-> +			} else {
-> +				dev_err(&client->dev,
-> +					"bad audio-port-names '%s'\n", p);
-> +				break;
-> +			}
-> +		}
-> +		if (priv->audio_ports[0]) {
-> +			priv->params.audio_cfg = priv->audio_ports[0];
-> +			priv->params.audio_format = AFMT_SPDIF;
-> +			priv->params.audio_clk_cfg = 0;
-> +		} else {
-> +			priv->params.audio_cfg = priv->audio_ports[1];
-> +			priv->params.audio_format = AFMT_I2S;
-> +			priv->params.audio_clk_cfg = 1;
-> +		}
->  	}
->  
->  	return 0;
-> 
+ sound/pci/hda/patch_realtek.c | 88 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 65f1f4e..09d2131 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -29,6 +29,7 @@
+ #include <linux/pci.h>
+ #include <linux/dmi.h>
+ #include <linux/module.h>
++#include <linux/input.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include "hda_codec.h"
+@@ -120,6 +121,9 @@ struct alc_spec {
+ 	hda_nid_t pll_nid;
+ 	unsigned int pll_coef_idx, pll_coef_bit;
+ 	unsigned int coef0;
++#if IS_ENABLED(CONFIG_INPUT)
++	struct input_dev *kb_dev;
++#endif
+ };
+ 
+ /*
+@@ -3472,6 +3476,84 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
+ 	}
+ }
+ 
++#if IS_ENABLED(CONFIG_INPUT)
++static void gpio2_mic_hotkey_event(struct hda_codec *codec,
++				   struct hda_jack_callback *event)
++{
++	struct alc_spec *spec = codec->spec;
++
++	/* GPIO2 just toggles on a keypress/keyrelease cycle. Therefore
++	   send both key on and key off event for every interrupt. */
++	input_report_key(spec->kb_dev, KEY_MICMUTE, 1);
++	input_sync(spec->kb_dev);
++	input_report_key(spec->kb_dev, KEY_MICMUTE, 0);
++	input_sync(spec->kb_dev);
++}
++#endif
++
++static void alc280_fixup_hp_gpio2_mic_hotkey(struct hda_codec *codec,
++					     const struct hda_fixup *fix, int action)
++{
++#if IS_ENABLED(CONFIG_INPUT)
++	/* GPIO1 = set according to SKU external amp
++	   GPIO2 = mic mute hotkey
++	   GPIO3 = mute LED
++	   GPIO4 = mic mute LED */
++	static const struct hda_verb gpio_init[] = {
++		{ 0x01, AC_VERB_SET_GPIO_MASK, 0x1e },
++		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x1a },
++		{ 0x01, AC_VERB_SET_GPIO_DATA, 0x02 },
++		{}
++	};
++
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->kb_dev = input_allocate_device();
++		if (!spec->kb_dev) {
++			codec_err(codec, "Out of memory (input_allocate_device)\n");
++			return;
++		}
++		spec->kb_dev->name = "Microphone Mute Button";
++		spec->kb_dev->evbit[0] = BIT_MASK(EV_KEY);
++		spec->kb_dev->keybit[BIT_WORD(KEY_MICMUTE)] = BIT_MASK(KEY_MICMUTE);
++		if (input_register_device(spec->kb_dev)) {
++			codec_err(codec, "input_register_device failed\n");
++			input_free_device(spec->kb_dev);
++			spec->kb_dev = NULL;
++			return;
++		}
++
++		snd_hda_add_verbs(codec, gpio_init);
++		snd_hda_codec_write_cache(codec, codec->afg, 0,
++					  AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK, 0x04);
++		snd_hda_jack_detect_enable_callback(codec, codec->afg,
++						    gpio2_mic_hotkey_event);
++
++		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
++		spec->gen.cap_sync_hook = alc_fixup_gpio_mic_mute_hook;
++		spec->gpio_led = 0;
++		spec->mute_led_polarity = 0;
++		spec->gpio_mute_led_mask = 0x08;
++		spec->gpio_mic_led_mask = 0x10;
++		return;
++	}
++
++	if (!spec->kb_dev)
++		return;
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PROBE:
++		spec->init_amp = ALC_INIT_DEFAULT;
++		break;
++	case HDA_FIXUP_ACT_FREE:
++		input_unregister_device(spec->kb_dev);
++		input_free_device(spec->kb_dev);
++		spec->kb_dev = NULL;
++	}
++#endif
++}
++
+ static void alc269_fixup_hp_line1_mic1_led(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -4341,6 +4423,7 @@ enum {
+ 	ALC282_FIXUP_ASPIRE_V5_PINS,
+ 	ALC280_FIXUP_HP_GPIO4,
+ 	ALC286_FIXUP_HP_GPIO_LED,
++	ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -4814,6 +4897,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc286_fixup_hp_gpio_led,
+ 	},
++	[ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc280_fixup_hp_gpio2_mic_hotkey,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -4843,6 +4930,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+ 	SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x218b, "HP", ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x225f, "HP", ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY),
+ 	/* ALC282 */
+ 	SND_PCI_QUIRK(0x103c, 0x2210, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2214, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+-- 
+1.9.1
