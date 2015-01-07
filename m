@@ -1,79 +1,66 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v9 4/4] drm/i2c: tda998x: set cts_n according to the sample
- width
-Date: Wed, 7 Jan 2015 12:01:23 +0100
-Message-ID: <3b99496107b6653ef27b86d8cdf516a4815910cf.1420628786.git.moinejf@free.fr>
-References: <cover.1420628786.git.moinejf@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1420628786.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: [PATCH v9 0/4] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Wed, 7 Jan 2015 12:06:26 +0100
+Message-ID: <cover.1420628786.git.moinejf@free.fr>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Cc: Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-With I2S input, the CTS_N predivider depends on the sample width.
+Based on 3.19.0-rc3.
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- drivers/gpu/drm/i2c/tda998x_drv.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+v9:
+	- back to a TDA998x specific CODEC
+	- more comments
+	- change magic values to constants
+v8:
+	- change some comments about the patches
+v7:
+	- remove the change of the K predivider (Jyri Sarha)
+	- add S24_3LE and S32_LE as possible audio formats (Jyri Sarha)
+	- don't move the struct priv2 definition and use the
+	  slave encoder private data as the device private data
+	  (Russell King)
+	- remove the useless request_module (Russell King/Mark Brown)
+	- don't lock the HDMI module (Russell King)
+	- use platform_device_unregister to remove the codec
+	  (Russell King)
+v6:
+	- extend the HDMI CODEC instead of using a specific CODEC
+v5:
+	- use the TDA998x private data instead of a specific area
+	  for the CODEC interface
+	- the CODEC is TDA998x specific (Mark Brown)
+v4:
+	- remove all the TDA998x specific stuff from the CODEC
+	- move the EDID scan from the CODEC to the TDA998x
+	- move the CODEC to sound/soc (Mark Brown)
+	- update the audio_sample_rate from the EDID (Andrew Jackson)
+v3: fix bad rate (Andrew Jackson)
+v2: check double stream start (Mark Brown)
 
-diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
-index a26a516..8af84cd 100644
---- a/drivers/gpu/drm/i2c/tda998x_drv.c
-+++ b/drivers/gpu/drm/i2c/tda998x_drv.c
-@@ -50,6 +50,7 @@ struct tda998x_priv {
- 	wait_queue_head_t wq_edid;
- 	volatile int wq_edid_wait;
- 	struct drm_encoder *encoder;
- 
-+	int audio_sample_format;
- 	u8 audio_ports[2];
- #ifdef WITH_CODEC
-@@ -671,7 +672,17 @@ tda998x_configure_audio(struct tda998x_priv *priv,
- 		reg_write(priv, REG_MUX_AP, MUX_AP_SELECT_I2S);
- 		clksel_aip = AIP_CLKSEL_AIP_I2S;
- 		clksel_fs = AIP_CLKSEL_FS_ACLK;
--		cts_n = CTS_N_M(3) | CTS_N_K(3);
-+
-+		/* with I2S input, the CTS_N predivider depends on
-+		 * the sample width */
-+		switch (priv->audio_sample_format) {
-+		case SNDRV_PCM_FORMAT_S16_LE:
-+			cts_n = CTS_N_M(3) | CTS_N_K(1);
-+			break;
-+		default:
-+			cts_n = CTS_N_M(3) | CTS_N_K(3);
-+			break;
-+		}
- 		break;
- 
- 	default:
-@@ -778,7 +789,8 @@ static int tda998x_set_audio_input(struct device *dev,
- 
- 	/* if same audio parameters, just enable the audio port */
- 	if (p->audio_cfg == priv->audio_ports[port_index] &&
--	    p->audio_sample_rate == sample_rate) {
-+	    p->audio_sample_rate == sample_rate &&
-+	    priv->audio_sample_format == sample_format) {
- 		reg_write(priv, REG_ENA_AP, p->audio_cfg);
- 		return 0;
- 	}
-@@ -787,6 +799,7 @@ static int tda998x_set_audio_input(struct device *dev,
- 	p->audio_clk_cfg = port_index == PORT_SPDIF ? 0 : 1;
- 	p->audio_cfg = priv->audio_ports[port_index];
- 	p->audio_sample_rate = sample_rate;
-+	priv->audio_sample_format = sample_format;
- 	tda998x_configure_audio(priv, &priv->encoder->crtc->hwmode, p);
- 	return 0;
- }
-@@ -1388,6 +1401,7 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
- 
- 	priv->params.audio_frame[1] = 1;		/* channels - 1 */
- 	priv->params.audio_sample_rate = 48000;		/* 48kHz */
-+	priv->audio_sample_format = SNDRV_PCM_FORMAT_S24_LE;
- 
- 	priv->current_page = 0xff;
- 	priv->hdmi = client;
+Jean-Francois Moine (4):
+  drm/i2c: tda998x: Add DT support for audio
+  drm/i2c: tda998x: Change drvdata for audio extension
+  ASoC: tda998x: add a codec to the HDMI transmitter
+  drm/i2c: tda998x: set cts_n according to the sample width
+
+ .../devicetree/bindings/drm/i2c/tda998x.txt        |  18 ++
+ drivers/gpu/drm/i2c/Kconfig                        |   1 +
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 213 +++++++++++++++++++--
+ include/sound/tda998x.h                            |  23 +++
+ sound/soc/codecs/Kconfig                           |   4 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/tda998x.c                         | 175 +++++++++++++++++
+ 7 files changed, 424 insertions(+), 12 deletions(-)
+ create mode 100644 include/sound/tda998x.h
+ create mode 100644 sound/soc/codecs/tda998x.c
+
 -- 
 2.1.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
