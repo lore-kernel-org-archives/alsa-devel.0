@@ -1,21 +1,17 @@
-From: Jens Oliver John <lists@2ion.de>
-Subject: Re: Persisting background noise on HDA Intel PCH
- (ALC3232)
-Date: Wed, 7 Jan 2015 21:44:18 +0100
-Message-ID: <20150107204418.GB10708@camelia.2ion.de>
-References: <20141213221334.GA4350@camelia.2ion.de>
- <20141214141734.GC29554@camelia.2ion.de>
- <s5hfvci5kz9.wl-tiwai@suse.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl_ssi: Fix irq error check
+Date: Wed,  7 Jan 2015 19:45:40 -0200
+Message-ID: <1420667140-32744-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wp254.webpack.hosteurope.de (wp254.webpack.hosteurope.de
- [80.237.133.23])
- by alsa0.perex.cz (Postfix) with ESMTP id B6E392651FC
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 21:44:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hfvci5kz9.wl-tiwai@suse.de>
+Received: from mail-vc0-f174.google.com (mail-vc0-f174.google.com
+ [209.85.220.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4552265253
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 22:46:06 +0100 (CET)
+Received: by mail-vc0-f174.google.com with SMTP id id10so835976vcb.19
+ for <alsa-devel@alsa-project.org>; Wed, 07 Jan 2015 13:46:05 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,18 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 14, 2014 at 04:06:50PM +0100, Takashi Iwai wrote:
-> Did you try 3.18 kernel?  There have been a few fixes regarding
-> Realtek COEF setup, and your issue might be such one.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Today, I tried the 3.18 kernel (I am sorry for the delay). The noise actually
-has gotten a little bit quieter but alas, is still very much hearable.
+Commit 2ffa531078037a0 ("ASoC: fsl_ssi: Fix module unbound") changed the way to 
+retrieve the irq number from irq_of_parse_and_map() to platform_get_irq(), but
+missed to updated the irq error check accordingly.
 
-Here is the updated alsa-info output for this kernel:
-  http://www.alsa-project.org/db/?f=67ddb2d27bb9ef6c4c990975e6400828c36577de
+We should test for negative irq number and propagate it in the case of error.
 
-Thanks & Best regards,
-Jens.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index a65f17d..059496e 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1362,9 +1362,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ssi_private->irq = platform_get_irq(pdev, 0);
+-	if (!ssi_private->irq) {
++	if (ssi_private->irq < 0) {
+ 		dev_err(&pdev->dev, "no irq for node %s\n", np->full_name);
+-		return -ENXIO;
++		return ssi_private->irq;
+ 	}
+ 
+ 	/* Are the RX and the TX clocks locked? */
+-- 
+1.9.1
