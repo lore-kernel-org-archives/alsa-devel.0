@@ -1,71 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Intel: Add NULL checks for the
-	stream pointer
-Date: Wed, 7 Jan 2015 17:32:22 +0000
-Message-ID: <20150107173222.GA2634@sirena.org.uk>
-References: <1420639625-12133-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
+Date: Wed, 7 Jan 2015 17:33:51 +0000
+Message-ID: <20150107173351.GB2634@sirena.org.uk>
+References: <cover.1420628786.git.moinejf@free.fr>
+ <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+ <54AD4511.30702@arm.com>
+ <20150107180825.52334d4f@armhf>
+ <54AD6A5C.60903@arm.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8855711006166459927=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CBF16265175
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:32:27 +0100 (CET)
-In-Reply-To: <1420639625-12133-1-git-send-email-yang.jie@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yTfYsguFsV8cp5cf"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54AD6A5C.60903@arm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Jackson <Andrew.Jackson@arm.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Dave Airlie <airlied@gmail.com>, Jyri Sarha <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8855711006166459927==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="V3GHqwm1rrtpHsCJ"
-Content-Disposition: inline
-
-
---V3GHqwm1rrtpHsCJ
+--yTfYsguFsV8cp5cf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 07, 2015 at 10:07:05PM +0800, Jie Yang wrote:
-> We should not send IPC stream commands to FW when the stream is
-> NULL, dereference the NULL pointer may also occur without precheck.
-> Here add NULL pointer checks for these stream APIs.
+On Wed, Jan 07, 2015 at 05:18:20PM +0000, Andrew Jackson wrote:
 
-Applied, thanks.
+> I understand your difficulty!  I was just wanting something to clarify th=
+e=20
+> meaning of the value without reference to the driver source.
 
---V3GHqwm1rrtpHsCJ
+> You could add something like this to your existing explanation: "The value
+> describes which audio input pins are selected; this varies depending
+> on chip type so consult the section on audio port configuration in the=20
+> relevant datasheet.". =20
+
+This is commonly done by just saying that the value will be written into
+a given bitfield for such and such a purpose and then relying on the
+chip documentation for that; it's a more direct way of saying the above.
+
+--yTfYsguFsV8cp5cf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUrW2lAAoJECTWi3JdVIfQjW8H/0lUi0w9pwVFPXqlAJasvErX
-EgzUOM0hYi649pgQ6ZaJ+0KEUiu6IZLUbBxbGYPese6Km6Y2Vghty4I1RY9T4IZO
-pHPxmi8HxLu+ovW9+Um6Szls37Pweo1rFwhV3x9rKHQclWJyMLvqg7/62gHBQG4y
-DukSCsBtyXP+aFzWLImTCJ1fPwZR3gLkyVCSwFVVXeTmR0+vN7NfW80DkBRgx5i5
-4jMXisLxjOBIdhVqzPYGm8M/Ku8R3SCV81JS4PMHTmLcj4j7K7y3VcXMk7TCXnc/
-pEB8Vw24mvD2h1A4CmgthDyFg21gRn27cvA8/7Jm7AHf9pNVjbZllxUuN5I3v0Q=
-=biuz
+iQEcBAEBAgAGBQJUrW3+AAoJECTWi3JdVIfQlX0H/RX+ohGKBgKyWlTMPcFZFEB6
+tMppOk1zQhdIqxs4qWJPsRDC2ZXWRXgk2WI621PSjkxWrhAO9H2Jju0G9fnmdynq
+5WSZsWe1s1yDjOYMLnbhUIOwWzDqCHYf+bH3CeDzvWPIG+SmujHRnKI6AS/whzPv
+jQrGnS7T2u3IV+3IK2TgJohIU9JMdft2KsTk4D4YpXDPS1BatvcitM6UfX/en/U6
+SawZUl6NGSzT+efmQWOastopkjn6r0bA6odaGI0DjaXnmq+ymCj9BqOb1Qb0EhSf
+0vv5GdPfZYDukvlU2FuLP/iWHNixU7N9h2pcvJsC82/Np85l2Im7VqIBNDWIcQY=
+=7iDb
 -----END PGP SIGNATURE-----
 
---V3GHqwm1rrtpHsCJ--
-
---===============8855711006166459927==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8855711006166459927==--
+--yTfYsguFsV8cp5cf--
