@@ -1,17 +1,21 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH v2 3/3] ASoC: Intel: Select RT5672 ASRC clock
-	source on Cherrytrail and Braswell
-Date: Wed,  7 Jan 2015 10:19:23 +0800
-Message-ID: <1420597163-4186-1-git-send-email-mengdong.lin@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH 1/3] ASoC: rt5670: fix bit definition for
+	ASRC control
+Date: Wed, 7 Jan 2015 02:16:33 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B76385D@SHSMSX101.ccr.corp.intel.com>
 References: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
+ <20150105181714.GA2634@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D70103ABE3@RTITMBSV03.realtek.com.tw>
+ <20150106110325.GU2634@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id CFD052617AB
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 03:11:39 +0100 (CET)
-In-Reply-To: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EAB9261558
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 03:16:56 +0100 (CET)
+In-Reply-To: <20150106110325.GU2634@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, bardliao@realtek.com
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Tuesday, January 06, 2015 7:03 PM
 
-On Cherrytrail and Braswell, the I2S BCLK is 100FS which cannot be supported
-by RT5672 in slave mode and can cause noise. This patch selects codec ASRC
-clock source to track I2S1 clock so that codec ASRC can be enabled to suppress
-the noise.
+> On Tue, Jan 06, 2015 at 02:08:45AM +0000, Bard Liao wrote:
+> 
+> > > > This patch fixes bit definitions for two ASRC control registers
+> > > > 0x84 and
+> > > 0x85.
+> 
+> > > This appears to do something more or different to fixing definitions
+> > > - if it was fixing I'd expect to see equal numbers of lines added
+> > > and removed in blocks identical apart from some numbers but this
+> > > appears to be adding some new definitions like these...
+> 
+> > Maybe we should call redefine rather than fix. The previous definition
+> > of registers 0x84 and 0x85 doesn't match the register's description.
+> > To make the code more readable, we would like to rewrite the
+> > definition of registers
+> > 0x84 and 0x85.
+> 
+> Yes, if it's just redefining the definitions that are currently unused then it
+> should be described as such - a fix is something that should get sent to Linus
+> and possibly also to stable.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Reviewed-by: Bard Liao <bardliao@realtek.com>
+I've changed this patch subject to "redefine" and submitted the v2 patches. 
+Please have a review.
 
-diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
-index 9b8b561..54a8f72 100644
---- a/sound/soc/intel/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/cht_bsw_rt5672.c
-@@ -140,6 +140,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	int ret;
- 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
-+	struct snd_soc_codec *codec = codec_dai->codec;
- 
- 	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
- 	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
-@@ -148,6 +149,19 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
-+	/* Select codec ASRC clock source to track I2S1 clock, because codec
-+	 * is in slave mode and 100fs I2S format (BCLK = 100 * LRCLK) cannot
-+	 * be supported by RT5672. Otherwise, ASRC will be disabled and cause
-+	 * noise.
-+	 */
-+	rt5670_sel_asrc_clk_src(codec,
-+				RT5670_DA_STEREO_FILTER
-+				| RT5670_DA_MONO_L_FILTER
-+				| RT5670_DA_MONO_R_FILTER
-+				| RT5670_AD_STEREO_FILTER
-+				| RT5670_AD_MONO_L_FILTER
-+				| RT5670_AD_MONO_R_FILTER,
-+				RT5670_CLK_SEL_I2S1_ASRC);
- 	return 0;
- }
- 
--- 
-1.9.1
+Thanks
+Mengdong
