@@ -1,28 +1,19 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH] fm801: move to pcim_* and devm_* functions
-Date: Wed, 7 Jan 2015 16:25:22 +0200
-Message-ID: <CAHp75VcPM+Pz0+fTM7BOHJu1xohrMYvaPmrk2jyX8xkovviiRw@mail.gmail.com>
-References: <1420587617-28521-1-git-send-email-andy.shevchenko@gmail.com>
- <s5h8uhfdq0g.wl-tiwai@suse.de>
- <CAHp75Veya0h7E_dDCXEsUvqFp+=LCk_4PDbV_REUMc1_Ro9W=Q@mail.gmail.com>
- <s5hoaqaygnt.wl-tiwai@suse.de>
- <CAHp75Ve-KigYCKP0oCz6E6ZmgTKf7+0Y5UtJjPUWyZoK5JBjMQ@mail.gmail.com>
- <s5hlhleybt7.wl-tiwai@suse.de>
- <CAHp75VdR3nU6K7abpzfUPZrG45R9j0YRYeUV8E4YBAq7Qi3sgA@mail.gmail.com>
- <s5hh9w2yawo.wl-tiwai@suse.de>
- <CAHp75Ve6+Gb5Cm+Xz04kaL6_jScQDAbH02QTA5Abb2mOyi5s1w@mail.gmail.com>
- <s5hd26qyacy.wl-tiwai@suse.de> <s5ha91uy9q8.wl-tiwai@suse.de>
+From: Andrew Jackson <Andrew.Jackson@arm.com>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
+	for audio
+Date: Wed, 07 Jan 2015 14:39:13 +0000
+Message-ID: <54AD4511.30702@arm.com>
+References: <cover.1420628786.git.moinejf@free.fr>
+ <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f45.google.com (mail-yh0-f45.google.com
- [209.85.213.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 44EA8260535
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 15:25:26 +0100 (CET)
-Received: by mail-yh0-f45.google.com with SMTP id f10so657908yha.4
- for <alsa-devel@alsa-project.org>; Wed, 07 Jan 2015 06:25:23 -0800 (PST)
-In-Reply-To: <s5ha91uy9q8.wl-tiwai@suse.de>
+Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
+ [217.140.96.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D773260544
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 15:39:17 +0100 (CET)
+In-Reply-To: <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,38 +23,168 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jyri Sarha <jsarha@ti.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 7, 2015 at 3:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 07 Jan 2015 14:43:41 +0100,
-> Takashi Iwai wrote:
->>
->> At Wed, 7 Jan 2015 15:40:26 +0200,
->> Andy Shevchenko wrote:
->> >
->> > On Wed, Jan 7, 2015 at 3:31 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > > At Wed, 7 Jan 2015 15:27:35 +0200,
->> > > Andy Shevchenko wrote:
->> >
->> > Regarding to the original patch, is it okay now to apply?
->>
->> Yes.  If you prefer, I can apply it first alone.
+On 01/07/15 09:10, Jean-Francois Moine wrote:
+> This patch permits the definition of the audio ports from the device tree.
+> 
+> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+> ---
+>  .../devicetree/bindings/drm/i2c/tda998x.txt        | 18 +++++++
+>  drivers/gpu/drm/i2c/tda998x_drv.c                  | 60 ++++++++++++++++++----
+>  2 files changed, 69 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+> index e9e4bce..e50e7cd 100644
+> --- a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+> +++ b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+> @@ -17,6 +17,20 @@ Optional properties:
+>    - video-ports: 24 bits value which defines how the video controller
+>  	output is wired to the TDA998x input - default: <0x230145>
+>  
+> +  - audio-ports: must contain one or two values selecting the source
+> +	in the audio port.
+> +	The source type is given by the corresponding entry in
+> +	the audio-port-names property.
 
-Why not? :)
+I think that this entry might benefit from a little more explanation.
+The value specified here selects which pins on the chip provide the
+audio input doesn't it?  In the outline datasheet that I have these are
+listed in table 17:
 
->
-> OK, I found that the regions are released in pcim_release().  So,
-> there is no leak.
->
-> Meanwhile it means that pci_release_regions() is superfluous, too,
-> once when you enabled the managed mode via pcim_enable_device().
-> Could you resubmit a v2 patch with that removal?
+Audio port 	Input configuration
+		S/PDIF 		I2S-bus
+AP0 		- 		WS (word select)
+AP1 		S/PDIF input 	I2S-bus channel 0
+AP2 		S/PDIF input 	I2S-bus channel 1
+AP3[1] 				I2S-bus channel 2
+AP4[1] 				I2S-bus channel 3
+ACLK 		- 		SCK (I2S-bus clock)
 
-Within few hours together with the second patch. But if you can do
-this as a fixup it would be nice.
+[1] Depending on package.
 
--- 
-With Best Regards,
-Andy Shevchenko
+	Andrew
+
+> +
+> +  - audio-port-names: must contain entries matching the entries in
+> +	the audio-ports property.
+> +	Each value may be "i2s" or "spdif", giving the type of
+> +	the audio source.
+> +
+> +  - #sound-dai-cells: must be set to <1> for use with the simple-card.
+> +	The TDA998x audio CODEC always defines two DAIs.
+> +	The DAI 0 is the S/PDIF input and the DAI 1 is the I2S input.
+> +
+>  Example:
+>  
+>  	tda998x: hdmi-encoder {
+> @@ -26,4 +40,8 @@ Example:
+>  		interrupts = <27 2>;		/* falling edge */
+>  		pinctrl-0 = <&pmx_camera>;
+>  		pinctrl-names = "default";
+> +
+> +		audio-ports = <0x04>, <0x03>;
+> +		audio-port-names = "spdif", "i2s";
+> +		#sound-dai-cells = <1>;
+>  	};
+> diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
+> index 70658af..9d9b072 100644
+> --- a/drivers/gpu/drm/i2c/tda998x_drv.c
+> +++ b/drivers/gpu/drm/i2c/tda998x_drv.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/module.h>
+>  #include <linux/irq.h>
+>  #include <sound/asoundef.h>
+> +#include <linux/platform_device.h>
+>  
+>  #include <drm/drmP.h>
+>  #include <drm/drm_crtc_helper.h>
+> @@ -44,6 +45,8 @@ struct tda998x_priv {
+>  	wait_queue_head_t wq_edid;
+>  	volatile int wq_edid_wait;
+>  	struct drm_encoder *encoder;
+> +
+> +	u8 audio_ports[2];
+>  };
+>  
+>  #define to_tda998x_priv(x)  ((struct tda998x_priv *)to_encoder_slave(x)->slave_priv)
+> @@ -1254,12 +1257,16 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
+>  {
+>  	struct device_node *np = client->dev.of_node;
+>  	u32 video;
+> -	int rev_lo, rev_hi, ret;
+> +	int i, rev_lo, rev_hi, ret;
+> +	const char *p;
+>  
+>  	priv->vip_cntrl_0 = VIP_CNTRL_0_SWAP_A(2) | VIP_CNTRL_0_SWAP_B(3);
+>  	priv->vip_cntrl_1 = VIP_CNTRL_1_SWAP_C(0) | VIP_CNTRL_1_SWAP_D(1);
+>  	priv->vip_cntrl_2 = VIP_CNTRL_2_SWAP_E(4) | VIP_CNTRL_2_SWAP_F(5);
+>  
+> +	priv->params.audio_frame[1] = 1;		/* channels - 1 */
+> +	priv->params.audio_sample_rate = 48000;		/* 48kHz */
+> +
+>  	priv->current_page = 0xff;
+>  	priv->hdmi = client;
+>  	priv->cec = i2c_new_dummy(client->adapter, 0x34);
+> @@ -1351,15 +1358,50 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
+>  	/* enable EDID read irq: */
+>  	reg_set(priv, REG_INT_FLAGS_2, INT_FLAGS_2_EDID_BLK_RD);
+>  
+> -	if (!np)
+> -		return 0;		/* non-DT */
+> +	/* get the device tree parameters */
+> +	if (np) {
+> +
+> +		/* optional video properties */
+> +		ret = of_property_read_u32(np, "video-ports", &video);
+> +		if (ret == 0) {
+> +			priv->vip_cntrl_0 = video >> 16;
+> +			priv->vip_cntrl_1 = video >> 8;
+> +			priv->vip_cntrl_2 = video;
+> +		}
+> +
+> +		/* optional audio properties */
+> +		for (i = 0; i < 2; i++) {
+> +			u32 port;
+>  
+> -	/* get the optional video properties */
+> -	ret = of_property_read_u32(np, "video-ports", &video);
+> -	if (ret == 0) {
+> -		priv->vip_cntrl_0 = video >> 16;
+> -		priv->vip_cntrl_1 = video >> 8;
+> -		priv->vip_cntrl_2 = video;
+> +			ret = of_property_read_u32_index(np, "audio-ports", i, &port);
+> +			if (ret)
+> +				break;
+> +			ret = of_property_read_string_index(np, "audio-port-names",
+> +							i, &p);
+> +			if (ret) {
+> +				dev_err(&client->dev,
+> +					"missing audio-port-names[%d]\n", i);
+> +				break;
+> +			}
+> +			if (strcmp(p, "spdif") == 0) {
+> +				priv->audio_ports[0] = port;
+> +			} else if (strcmp(p, "i2s") == 0) {
+> +				priv->audio_ports[1] = port;
+> +			} else {
+> +				dev_err(&client->dev,
+> +					"bad audio-port-names '%s'\n", p);
+> +				break;
+> +			}
+> +		}
+> +		if (priv->audio_ports[0]) {
+> +			priv->params.audio_cfg = priv->audio_ports[0];
+> +			priv->params.audio_format = AFMT_SPDIF;
+> +			priv->params.audio_clk_cfg = 0;
+> +		} else {
+> +			priv->params.audio_cfg = priv->audio_ports[1];
+> +			priv->params.audio_format = AFMT_I2S;
+> +			priv->params.audio_clk_cfg = 1;
+> +		}
+>  	}
+>  
+>  	return 0;
+> 
