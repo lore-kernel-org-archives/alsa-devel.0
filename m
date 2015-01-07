@@ -1,19 +1,19 @@
-From: Jean-Francois Moine <moinejf@free.fr>
+From: Andrew Jackson <Andrew.Jackson@arm.com>
 Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
 	for audio
-Date: Wed, 7 Jan 2015 18:08:25 +0100
-Message-ID: <20150107180825.52334d4f@armhf>
-References: <cover.1420628786.git.moinejf@free.fr>
- <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
- <54AD4511.30702@arm.com>
+Date: Wed, 07 Jan 2015 17:18:20 +0000
+Message-ID: <54AD6A5C.60903@arm.com>
+References: <cover.1420628786.git.moinejf@free.fr>	<0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>	<54AD4511.30702@arm.com>
+ <20150107180825.52334d4f@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id 969B12619D9
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:06:09 +0100 (CET)
-In-Reply-To: <54AD4511.30702@arm.com>
+Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
+ [217.140.96.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id C543F26053B
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:18:21 +0100 (CET)
+In-Reply-To: <20150107180825.52334d4f@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrew Jackson <Andrew.Jackson@arm.com>
+To: Jean-Francois Moine <moinejf@free.fr>
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAwNyBKYW4gMjAxNSAxNDozOToxMyArMDAwMApBbmRyZXcgSmFja3NvbiA8QW5kcmV3
-LkphY2tzb25AYXJtLmNvbT4gd3JvdGU6Cgo+ID4gKyAgLSBhdWRpby1wb3J0czogbXVzdCBjb250
-YWluIG9uZSBvciB0d28gdmFsdWVzIHNlbGVjdGluZyB0aGUgc291cmNlCj4gPiArCWluIHRoZSBh
-dWRpbyBwb3J0Lgo+ID4gKwlUaGUgc291cmNlIHR5cGUgaXMgZ2l2ZW4gYnkgdGhlIGNvcnJlc3Bv
-bmRpbmcgZW50cnkgaW4KPiA+ICsJdGhlIGF1ZGlvLXBvcnQtbmFtZXMgcHJvcGVydHkuICAKPiAK
-PiBJIHRoaW5rIHRoYXQgdGhpcyBlbnRyeSBtaWdodCBiZW5lZml0IGZyb20gYSBsaXR0bGUgbW9y
-ZSBleHBsYW5hdGlvbi4KPiBUaGUgdmFsdWUgc3BlY2lmaWVkIGhlcmUgc2VsZWN0cyB3aGljaCBw
-aW5zIG9uIHRoZSBjaGlwIHByb3ZpZGUgdGhlCj4gYXVkaW8gaW5wdXQgZG9lc24ndCBpdD8gIElu
-IHRoZSBvdXRsaW5lIGRhdGFzaGVldCB0aGF0IEkgaGF2ZSB0aGVzZSBhcmUKPiBsaXN0ZWQgaW4g
-dGFibGUgMTc6Cj4gCj4gQXVkaW8gcG9ydCAJSW5wdXQgY29uZmlndXJhdGlvbgo+IAkJUy9QRElG
-IAkJSTJTLWJ1cwo+IEFQMCAJCS0gCQlXUyAod29yZCBzZWxlY3QpCj4gQVAxIAkJUy9QRElGIGlu
-cHV0IAlJMlMtYnVzIGNoYW5uZWwgMAo+IEFQMiAJCVMvUERJRiBpbnB1dCAJSTJTLWJ1cyBjaGFu
-bmVsIDEKPiBBUDNbMV0gCQkJCUkyUy1idXMgY2hhbm5lbCAyCj4gQVA0WzFdIAkJCQlJMlMtYnVz
-IGNoYW5uZWwgMwo+IEFDTEsgCQktIAkJU0NLIChJMlMtYnVzIGNsb2NrKQo+IAo+IFsxXSBEZXBl
-bmRpbmcgb24gcGFja2FnZS4KCllvdXIgdGFibGUgaXMgY2xvc2UgdG8gdGhlIG9uZSBpbiB0aGUg
-VERBOTk4M0IgZG9jdW1lbnRhdGlvbiBJIGhhdmUsCmJ1dCB0aGUgcGlucyBhcmUgbm90IGV4YWN0
-bHkgdGhlIHNhbWU6CgpBUDAgCQlXUyAod29yZCBzZWxlY3QpCkFQMSAJCUkyUy1idXMgcG9ydCAw
-CkFQMiAJCUkyUy1idXMgcG9ydCAxCkFQMyAJCUkyUy1idXMgcG9ydCAyCkFQNCAJCUkyUy1idXMg
-cG9ydCAzCkFQNQkJTUNMSyAobWFzdGVyIGNsb2NrIGZvciBTL1BESUYpCkFQNgkJUy9QRElGIGlu
-cHV0CkFQNwkJQVVYIChpbnRlcm5hbCB0ZXN0KQpBQ0xLIAkJU0NLIChJMlMtYnVzIGNsb2NrKQoK
-VGhhdCdzIHdoeSBJIGRpZCBub3Qga25vdyBjbGVhcmx5IHdoeSBJIGhhZCB0byBzZXQgQVAyIGZv
-ciBTL1BESUYgaW5wdXQKYW5kIChBUDAgKyBBUDEpIGZvciBJMlMgaW5wdXQgaW4gdGhlIEN1Ym94
-LgoKVGhlbiwgdGhlIG9ubHkgbW9yZSBleHBsYW5hdGlvbiBJIGNvdWxkIGdpdmUgaXMgImhhdmUg
-YSBsb29rIGF0IHRoZQphdWRpbyBpbnB1dCBmb3JtYXQgYW5kIGF0IHRoZSByZWdpc3RlciAweDFl
-IHBhZ2UgMCBpbiB0aGUgZG9jdW1lbnRhdGlvbgpvZiB0aGUgVERBOTk4eCBjaGlwIi4KCkJUVywg
-dGhlIHRkYTk5OHggZHJpdmVyIHN1cHBvcnRzIG9ubHkgdGhlIFREQTk5ODksIFREQTE5OTg4IGFu
-ZApUREExOTk4OSBjaGlwcy4gSWYgdGhlIFREQTk5ODNCIHdvdWxkIGJlIHN1cHBvcnRlZCwgdGhl
-IGF1ZGlvIHBvcnQKZGVmaW5pdGlvbnMgd291bGQgYmUgb2Ygbm8gdXNlLgoKU28sIHdoYXQgd291
-bGQgeW91IHNlZSBhcyBhbiBleHBsYW5hdGlvbj8KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAg
-ICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJl
-ZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 01/07/15 17:08, Jean-Francois Moine wrote:
+> On Wed, 07 Jan 2015 14:39:13 +0000
+> Andrew Jackson <Andrew.Jackson@arm.com> wrote:
+> 
+>>> +  - audio-ports: must contain one or two values selecting the source
+>>> +	in the audio port.
+>>> +	The source type is given by the corresponding entry in
+>>> +	the audio-port-names property.  
+>>
+>> I think that this entry might benefit from a little more explanation.
+>> The value specified here selects which pins on the chip provide the
+>> audio input doesn't it?  In the outline datasheet that I have these are
+>> listed in table 17:
+>>
+>> Audio port 	Input configuration
+>> 		S/PDIF 		I2S-bus
+>> AP0 		- 		WS (word select)
+>> AP1 		S/PDIF input 	I2S-bus channel 0
+>> AP2 		S/PDIF input 	I2S-bus channel 1
+>> AP3[1] 				I2S-bus channel 2
+>> AP4[1] 				I2S-bus channel 3
+>> ACLK 		- 		SCK (I2S-bus clock)
+>>
+>> [1] Depending on package.
+> 
+> Your table is close to the one in the TDA9983B documentation I have,
+> but the pins are not exactly the same:
+> 
+> AP0 		WS (word select)
+> AP1 		I2S-bus port 0
+> AP2 		I2S-bus port 1
+> AP3 		I2S-bus port 2
+> AP4 		I2S-bus port 3
+> AP5		MCLK (master clock for S/PDIF)
+> AP6		S/PDIF input
+> AP7		AUX (internal test)
+> ACLK 		SCK (I2S-bus clock)
+> 
+> That's why I did not know clearly why I had to set AP2 for S/PDIF input
+> and (AP0 + AP1) for I2S input in the Cubox.
+> 
+> Then, the only more explanation I could give is "have a look at the
+> audio input format and at the register 0x1e page 0 in the documentation
+> of the TDA998x chip".
+> 
+> BTW, the tda998x driver supports only the TDA9989, TDA19988 and
+> TDA19989 chips. If the TDA9983B would be supported, the audio port
+> definitions would be of no use.
+> 
+> So, what would you see as an explanation?
+> 
+
+I understand your difficulty!  I was just wanting something to clarify the 
+meaning of the value without reference to the driver source.
+
+You could add something like this to your existing explanation: "The value
+describes which audio input pins are selected; this varies depending
+on chip type so consult the section on audio port configuration in the 
+relevant datasheet.".  
+
+	Andrew
