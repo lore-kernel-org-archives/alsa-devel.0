@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: rt5670: redefine ASRC control
- registers 0x84 and 0x85
-Date: Wed, 7 Jan 2015 17:42:44 +0000
-Message-ID: <20150107174244.GD2634@sirena.org.uk>
-References: <1481c597e90b5daacce80a021fa0c513a7a2ec6d.1420451186.git.mengdong.lin@intel.com>
- <1420597146-4101-1-git-send-email-mengdong.lin@intel.com>
+Subject: Re: [PATCH] ASoC: wm5102: Use put_unaligned_be16
+Date: Wed, 7 Jan 2015 17:45:47 +0000
+Message-ID: <20150107174547.GE2634@sirena.org.uk>
+References: <20141226044457.GA12777@vaishali-Ideapad-Z570>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7555336030780867113=="
+Content-Type: multipart/mixed; boundary="===============8029688274516312671=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 341AE26053B
- for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:42:51 +0100 (CET)
-In-Reply-To: <1420597146-4101-1-git-send-email-mengdong.lin@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6312A2605DC
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jan 2015 18:45:53 +0100 (CET)
+In-Reply-To: <20141226044457.GA12777@vaishali-Ideapad-Z570>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org
+To: Vaishali Thakkar <vthakkar1994@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7555336030780867113==
+--===============8029688274516312671==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QrilSTA3tze2H7Dz"
+	protocol="application/pgp-signature"; boundary="9PByzOP77wFNgJ0y"
 Content-Disposition: inline
 
 
---QrilSTA3tze2H7Dz
+--9PByzOP77wFNgJ0y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 07, 2015 at 10:19:06AM +0800, mengdong.lin@intel.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
+On Fri, Dec 26, 2014 at 10:14:57AM +0530, Vaishali Thakkar wrote:
+> This patch introduces the use of function put_unaligned_be16.
 >=20
-> The previous definition of registers 0x84 and 0x85 doesn't match the data=
-sheet.
-> So this patch removes the wrong definition and writes a new one for the t=
-wo
-> registers.
+> This is done using Coccinelle and semantic patch used is as follows:
 
-Applied all, thanks.
+This doesn't apply against current code (-next, or my git tree), please
+check and resend.
 
---QrilSTA3tze2H7Dz
+--9PByzOP77wFNgJ0y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUrXAUAAoJECTWi3JdVIfQ5rQH/iIohxwwNGFEIMDrNbMj+lQm
-ssGyA93ubddlDdODDgt3bWYlMmInVJyqXAYqb+GGp8UhEpoizdz/Xi4/0M5zoKoE
-4XurJtV86dKWoUM7B0kqkEK6gYg9RvF/YBDhwJ2Brloc7wrQ5ZmfGX/ZFOQ/jGnf
-hWVZFd7TAgeDg3G0rSuW7nhPhUkCbMp852Fn9jmQl3E36+ZNkfkLc9+rF7k1pvI5
-ewQsumINAKY53uObC8uJgyEbD2sm7FeSyPJsLMXIVjhz+eu+tNxxh48h3fOnbrLR
-L2u1EpBcqQy5aFlBZsmWHwG0/OEmuP4v3OirTshPgBMPcV9vgBx2MIevDp13Bkc=
-=nvAk
+iQEcBAEBAgAGBQJUrXDKAAoJECTWi3JdVIfQs/8IAIJM2/BbY8em3WyYAPaLa10b
+l0pFLa2+DirK2DYmhROHgcCfp6si4zYKBgnF+iVNg/f2r7ZfwX+uAGxalZeOXAgn
+6GOJlpANRuert+IIhK5gUv2zPBMH9JZL554N3hkvKkj0ZzSNsMTOiTT55gHott5p
+RDH4xs998tZalaOlJAt0lq66KzBkBXMNINStXF2ICuQzWelFscTlgy6OJOSHan+w
+0NyDQVQGEopxWNObHl96UosaCA9CiysL4bH/T26eUCrXVHnZ4flgvl+VqF8/iJ9O
+fsLuIG/zymWZnsVj+vp9Hf6K3E1zxLTz/TGArCsbylW1p6ZMuXOfattaKembFig=
+=ZbCr
 -----END PGP SIGNATURE-----
 
---QrilSTA3tze2H7Dz--
+--9PByzOP77wFNgJ0y--
 
---===============7555336030780867113==
+--===============8029688274516312671==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7555336030780867113==--
+--===============8029688274516312671==--
