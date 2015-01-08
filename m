@@ -1,85 +1,31 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 1/3] ASoC: rt5677: Modify the behavior that
-	updates the PLL parameter.
-Date: Thu, 8 Jan 2015 10:31:05 +0800
-Message-ID: <1420684267-19211-1-git-send-email-oder_chiou@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id CDEE0260707
- for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2015 03:31:24 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, yang.a.fang@intel.com, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
+From: Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH] ASoC: rockchip: i2s:  applys rate symmetry for CPU DAI
+Date: Thu,  8 Jan 2015 10:49:59 +0800
+Message-ID: <1420685399-24142-1-git-send-email-jay.xu@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, heiko@sntech.de, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, sonnyrao@chromium.org
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Jianqun Xu <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch modified the behavior that updates the PLL parameter. It set the
-update bit before the PLL power up.
+This patch applys rate symmetry for rockchip i2s DAI.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
 ---
- sound/soc/codecs/rt5677.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 8900221..d27630a 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -2174,10 +2174,14 @@ static int rt5677_set_pll1_event(struct snd_soc_dapm_widget *w,
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 59aeec4..abd7cdd 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -339,6 +339,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
+ 			    SNDRV_PCM_FMTBIT_S24_LE),
+ 	},
+ 	.ops = &rockchip_i2s_dai_ops,
++	.symmetric_rates = 1,
+ };
  
- 	switch (event) {
--	case SND_SOC_DAPM_POST_PMU:
-+	case SND_SOC_DAPM_PRE_PMU:
- 		regmap_update_bits(rt5677->regmap, RT5677_PLL1_CTRL2, 0x2, 0x2);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMU:
- 		regmap_update_bits(rt5677->regmap, RT5677_PLL1_CTRL2, 0x2, 0x0);
- 		break;
-+
- 	default:
- 		return 0;
- 	}
-@@ -2192,10 +2196,14 @@ static int rt5677_set_pll2_event(struct snd_soc_dapm_widget *w,
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
--	case SND_SOC_DAPM_POST_PMU:
-+	case SND_SOC_DAPM_PRE_PMU:
- 		regmap_update_bits(rt5677->regmap, RT5677_PLL2_CTRL2, 0x2, 0x2);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMU:
- 		regmap_update_bits(rt5677->regmap, RT5677_PLL2_CTRL2, 0x2, 0x0);
- 		break;
-+
- 	default:
- 		return 0;
- 	}
-@@ -2303,9 +2311,11 @@ static int rt5677_vref_event(struct snd_soc_dapm_widget *w,
- 
- static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("PLL1", RT5677_PWR_ANLG2, RT5677_PWR_PLL1_BIT,
--		0, rt5677_set_pll1_event, SND_SOC_DAPM_POST_PMU),
-+		0, rt5677_set_pll1_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMU),
- 	SND_SOC_DAPM_SUPPLY("PLL2", RT5677_PWR_ANLG2, RT5677_PWR_PLL2_BIT,
--		0, rt5677_set_pll2_event, SND_SOC_DAPM_POST_PMU),
-+		0, rt5677_set_pll2_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMU),
- 
- 	/* ASRC */
- 	SND_SOC_DAPM_SUPPLY_S("I2S1 ASRC", 1, RT5677_ASRC_1, 0, 0, NULL, 0),
+ static const struct snd_soc_component_driver rockchip_i2s_component = {
 -- 
-1.8.1.1.439.g50a6b54
+1.9.1
