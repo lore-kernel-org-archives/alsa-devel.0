@@ -1,178 +1,61 @@
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Thu, 8 Jan 2015 16:53:41 +0200
-Message-ID: <54AE99F5.1010404@ti.com>
-References: <cover.1420628786.git.moinejf@free.fr> <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+From: Abhilash Kesavan <kesavan.abhilash@gmail.com>
+Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from ioremap
+Date: Thu, 8 Jan 2015 21:00:57 +0530
+Message-ID: <CAM4voakHnwRzVsYYO2Dd2f9_PxZGqvqT8xveA-Y6N4ReOfhdmw@mail.gmail.com>
+References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
+	<1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
+	<1418292513.3188.4.camel@pengutronix.de>
+	<20141211103919.GA6067@arm.com>
+	<1418298046.3188.10.camel@pengutronix.de>
+	<20141211145849.GH31456@e104818-lin.cambridge.arm.com>
+	<CAM4voakdfiTecW8YH0znnyB-dTnX_fsrRcH2McABwdk3T9drkQ@mail.gmail.com>
+	<20150105181823.GG4081@atomide.com>
+	<CAM4voa=xoM4AuGxwk0TpLnGz9jbZ02awFOrY_KgWCSzROJR6cA@mail.gmail.com>
+	<1420563279.3719.15.camel@pengutronix.de>
+	<CAL_JsqJwdr7WvzLqPmui3N4H-wVgSURN6wYD=dm1HyU2HUmXOg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf-GANU6spQydw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Cc: Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAL_JsqJwdr7WvzLqPmui3N4H-wVgSURN6wYD=dm1HyU2HUmXOg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robherring2@gmail.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, Tony Lindgren <tony@atomide.com>, linux-rockchip@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <Will.Deacon@arm.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, "heiko@sntech.de" <heiko@sntech.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shc_work@mail.ru" <shc_work@mail.ru>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "arnd@arndb.de" <arnd@arndb.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "padma.v@samsung.com" <padma.v@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, bcousson@baylibre.c
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/2015 11:10 AM, Jean-Francois Moine wrote:
-> This patch permits the definition of the audio ports from the device tree.
->
-> Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-> ---
->   .../devicetree/bindings/drm/i2c/tda998x.txt        | 18 +++++++
->   drivers/gpu/drm/i2c/tda998x_drv.c                  | 60 ++++++++++++++++++----
->   2 files changed, 69 insertions(+), 9 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> index e9e4bce..e50e7cd 100644
-> --- a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> +++ b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> @@ -17,6 +17,20 @@ Optional properties:
->     - video-ports: 24 bits value which defines how the video controller
->   	output is wired to the TDA998x input - default: <0x230145>
->
-> +  - audio-ports: must contain one or two values selecting the source
-> +	in the audio port.
-> +	The source type is given by the corresponding entry in
-> +	the audio-port-names property.
-> +
+Hi Rob and Philipp,
 
-This binding does not allow multi channel i2s setups with multiple i2s 
-pins. It would be nice to support that in the DT binding, even if the 
-code is not yet ready for it.
+On Tue, Jan 6, 2015 at 10:57 PM, Rob Herring <robherring2@gmail.com> wrote:
+> On Tue, Jan 6, 2015 at 10:54 AM, Philipp Zabel <p.zabel@pengutronix.de> wrote:
+>> Hi Abhilash,
+>>
+>> Am Dienstag, den 06.01.2015, 19:57 +0530 schrieb Abhilash Kesavan:
+>>> >> From the existing dts files, omap, imx, rockchip and exynos seem to be
+>>> >> the only users of the sram allocator code. I have tested this on
+>>> >> Exynos5420, Exynos5800 and Exynos7; there is no change in behavior
+>>> >> seen on these boards. Tested-by for other SoCs would be appreciated.
+>>> >
+>>> > Sorry for the delay, these seems to boot OK on omap4, so from that
+>>> > point of view:
+>>> >
+>>> > Tested-by: Tony Lindgren <tony@atomide.com>
+>>>
+>>> Thanks a lot for testing this. If someone with imx and rockchip boards
+>>> could help test this out, then we could look to get this in.
+>>
+>> This shouldn't be a problem on i.MX, the coda driver doesn't access SRAM
+>> from the CPU at all.
+>
+> Audio buffers are typically (perhaps not in mainline) in SRAM on i.MX
+> chips which are accessed by CPU and probably mmap'ed to userspace.
+> That could cause a mismatch in mappings although I would not expect
+> both the kernel and user space to touch the buffer. That being said, I
+> don't think this change should cause problems for i.MX (from what I
+> can remember).
 
-How about having these two optional properties instead of audio-ports 
-and audio-port-names:
+Thanks for the confirmation regarding the i.MX chips. That leaves
+rockchip, can someone help with it please ?
 
-audio-port-i2s: Upto 4 values for selecting pins for i2s port
-audio-port-spdif: Value for selecting input pin for spdif port
-
-Presence of one of the properties would be mandatory and both are allowed.
-
-Sorry to notice this only now, but I have not yet looked the drm side 
-changes too closely.
-
-> +  - audio-port-names: must contain entries matching the entries in
-> +	the audio-ports property.
-> +	Each value may be "i2s" or "spdif", giving the type of
-> +	the audio source.
-> +
-> +  - #sound-dai-cells: must be set to <1> for use with the simple-card.
-> +	The TDA998x audio CODEC always defines two DAIs.
-> +	The DAI 0 is the S/PDIF input and the DAI 1 is the I2S input.
-> +
->   Example:
+Regards,
+Abhilash
 >
->   	tda998x: hdmi-encoder {
-> @@ -26,4 +40,8 @@ Example:
->   		interrupts = <27 2>;		/* falling edge */
->   		pinctrl-0 = <&pmx_camera>;
->   		pinctrl-names = "default";
-> +
-> +		audio-ports = <0x04>, <0x03>;
-> +		audio-port-names = "spdif", "i2s";
-> +		#sound-dai-cells = <1>;
->   	};
-> diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
-> index 70658af..9d9b072 100644
-> --- a/drivers/gpu/drm/i2c/tda998x_drv.c
-> +++ b/drivers/gpu/drm/i2c/tda998x_drv.c
-> @@ -20,6 +20,7 @@
->   #include <linux/module.h>
->   #include <linux/irq.h>
->   #include <sound/asoundef.h>
-> +#include <linux/platform_device.h>
->
->   #include <drm/drmP.h>
->   #include <drm/drm_crtc_helper.h>
-> @@ -44,6 +45,8 @@ struct tda998x_priv {
->   	wait_queue_head_t wq_edid;
->   	volatile int wq_edid_wait;
->   	struct drm_encoder *encoder;
-> +
-> +	u8 audio_ports[2];
->   };
->
->   #define to_tda998x_priv(x)  ((struct tda998x_priv *)to_encoder_slave(x)->slave_priv)
-> @@ -1254,12 +1257,16 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
->   {
->   	struct device_node *np = client->dev.of_node;
->   	u32 video;
-> -	int rev_lo, rev_hi, ret;
-> +	int i, rev_lo, rev_hi, ret;
-> +	const char *p;
->
->   	priv->vip_cntrl_0 = VIP_CNTRL_0_SWAP_A(2) | VIP_CNTRL_0_SWAP_B(3);
->   	priv->vip_cntrl_1 = VIP_CNTRL_1_SWAP_C(0) | VIP_CNTRL_1_SWAP_D(1);
->   	priv->vip_cntrl_2 = VIP_CNTRL_2_SWAP_E(4) | VIP_CNTRL_2_SWAP_F(5);
->
-> +	priv->params.audio_frame[1] = 1;		/* channels - 1 */
-> +	priv->params.audio_sample_rate = 48000;		/* 48kHz */
-> +
->   	priv->current_page = 0xff;
->   	priv->hdmi = client;
->   	priv->cec = i2c_new_dummy(client->adapter, 0x34);
-> @@ -1351,15 +1358,50 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
->   	/* enable EDID read irq: */
->   	reg_set(priv, REG_INT_FLAGS_2, INT_FLAGS_2_EDID_BLK_RD);
->
-> -	if (!np)
-> -		return 0;		/* non-DT */
-> +	/* get the device tree parameters */
-> +	if (np) {
-> +
-> +		/* optional video properties */
-> +		ret = of_property_read_u32(np, "video-ports", &video);
-> +		if (ret == 0) {
-> +			priv->vip_cntrl_0 = video >> 16;
-> +			priv->vip_cntrl_1 = video >> 8;
-> +			priv->vip_cntrl_2 = video;
-> +		}
-> +
-> +		/* optional audio properties */
-> +		for (i = 0; i < 2; i++) {
-> +			u32 port;
->
-> -	/* get the optional video properties */
-> -	ret = of_property_read_u32(np, "video-ports", &video);
-> -	if (ret == 0) {
-> -		priv->vip_cntrl_0 = video >> 16;
-> -		priv->vip_cntrl_1 = video >> 8;
-> -		priv->vip_cntrl_2 = video;
-> +			ret = of_property_read_u32_index(np, "audio-ports", i, &port);
-> +			if (ret)
-> +				break;
-> +			ret = of_property_read_string_index(np, "audio-port-names",
-> +							i, &p);
-> +			if (ret) {
-> +				dev_err(&client->dev,
-> +					"missing audio-port-names[%d]\n", i);
-> +				break;
-> +			}
-> +			if (strcmp(p, "spdif") == 0) {
-> +				priv->audio_ports[0] = port;
-> +			} else if (strcmp(p, "i2s") == 0) {
-> +				priv->audio_ports[1] = port;
-> +			} else {
-> +				dev_err(&client->dev,
-> +					"bad audio-port-names '%s'\n", p);
-> +				break;
-> +			}
-> +		}
-> +		if (priv->audio_ports[0]) {
-> +			priv->params.audio_cfg = priv->audio_ports[0];
-> +			priv->params.audio_format = AFMT_SPDIF;
-> +			priv->params.audio_clk_cfg = 0;
-> +		} else {
-> +			priv->params.audio_cfg = priv->audio_ports[1];
-> +			priv->params.audio_format = AFMT_I2S;
-> +			priv->params.audio_clk_cfg = 1;
-> +		}
->   	}
->
->   	return 0;
->
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Rob
