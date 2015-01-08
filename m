@@ -1,61 +1,67 @@
-From: Abhilash Kesavan <kesavan.abhilash@gmail.com>
-Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from ioremap
-Date: Thu, 8 Jan 2015 21:00:57 +0530
-Message-ID: <CAM4voakHnwRzVsYYO2Dd2f9_PxZGqvqT8xveA-Y6N4ReOfhdmw@mail.gmail.com>
-References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com>
-	<1418266726-12004-2-git-send-email-a.kesavan@samsung.com>
-	<1418292513.3188.4.camel@pengutronix.de>
-	<20141211103919.GA6067@arm.com>
-	<1418298046.3188.10.camel@pengutronix.de>
-	<20141211145849.GH31456@e104818-lin.cambridge.arm.com>
-	<CAM4voakdfiTecW8YH0znnyB-dTnX_fsrRcH2McABwdk3T9drkQ@mail.gmail.com>
-	<20150105181823.GG4081@atomide.com>
-	<CAM4voa=xoM4AuGxwk0TpLnGz9jbZ02awFOrY_KgWCSzROJR6cA@mail.gmail.com>
-	<1420563279.3719.15.camel@pengutronix.de>
-	<CAL_JsqJwdr7WvzLqPmui3N4H-wVgSURN6wYD=dm1HyU2HUmXOg@mail.gmail.com>
+From: Imre Deak <imre.deak@intel.com>
+Subject: [PATCH v4 1/6] drm/i915: add dev_to_i915 helper
+Date: Thu,  8 Jan 2015 17:54:13 +0200
+Message-ID: <1420732458-11373-2-git-send-email-imre.deak@intel.com>
+References: <1420732458-11373-1-git-send-email-imre.deak@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAL_JsqJwdr7WvzLqPmui3N4H-wVgSURN6wYD=dm1HyU2HUmXOg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robherring2@gmail.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>, Tony Lindgren <tony@atomide.com>, linux-rockchip@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <Will.Deacon@arm.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, "heiko@sntech.de" <heiko@sntech.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shc_work@mail.ru" <shc_work@mail.ru>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "arnd@arndb.de" <arnd@arndb.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "padma.v@samsung.com" <padma.v@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, bcousson@baylibre.c
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1420732458-11373-1-git-send-email-imre.deak@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: Jani Nikula <jani.nikula@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rob and Philipp,
-
-On Tue, Jan 6, 2015 at 10:57 PM, Rob Herring <robherring2@gmail.com> wrote:
-> On Tue, Jan 6, 2015 at 10:54 AM, Philipp Zabel <p.zabel@pengutronix.de> wrote:
->> Hi Abhilash,
->>
->> Am Dienstag, den 06.01.2015, 19:57 +0530 schrieb Abhilash Kesavan:
->>> >> From the existing dts files, omap, imx, rockchip and exynos seem to be
->>> >> the only users of the sram allocator code. I have tested this on
->>> >> Exynos5420, Exynos5800 and Exynos7; there is no change in behavior
->>> >> seen on these boards. Tested-by for other SoCs would be appreciated.
->>> >
->>> > Sorry for the delay, these seems to boot OK on omap4, so from that
->>> > point of view:
->>> >
->>> > Tested-by: Tony Lindgren <tony@atomide.com>
->>>
->>> Thanks a lot for testing this. If someone with imx and rockchip boards
->>> could help test this out, then we could look to get this in.
->>
->> This shouldn't be a problem on i.MX, the coda driver doesn't access SRAM
->> from the CPU at all.
->
-> Audio buffers are typically (perhaps not in mainline) in SRAM on i.MX
-> chips which are accessed by CPU and probably mmap'ed to userspace.
-> That could cause a mismatch in mappings although I would not expect
-> both the kernel and user space to touch the buffer. That being said, I
-> don't think this change should cause problems for i.MX (from what I
-> can remember).
-
-Thanks for the confirmation regarding the i.MX chips. That leaves
-rockchip, can someone help with it please ?
-
-Regards,
-Abhilash
->
-> Rob
+VGhpcyB3aWxsIGJlIG5lZWRlZCBieSBsYXRlciBwYXRjaGVzLCBzbyBmYWN0b3IgaXQgb3V0LgoK
+Tm8gZnVuY3Rpb25hbCBjaGFuZ2UuCgp2MjoKLSBzL2Rldl90b19pOTE1X3ByaXYvZGV2X3RvX2k5
+MTUvIChKYW5pKQotIGRvbid0IHVzZSB0aGUgaGVscGVyIGluIGk5MTVfcG1fc3VzcGVuZCAoQ2hy
+aXMpCi0gc2ltcGxpZnkgdGhlIGhlbHBlciAoQ2hyaXMpCnYzOgotIHJlbW92ZSByZWR1bmRhbnQg
+dXBjYXN0aW5nIGluIHRoZSBoZWxwZXIgKERhbmllbCkKClNpZ25lZC1vZmYtYnk6IEltcmUgRGVh
+ayA8aW1yZS5kZWFrQGludGVsLmNvbT4KUmV2aWV3ZWQtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlA
+c3VzZS5kZT4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jIHwgOSArKystLS0t
+LS0KIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggfCA1ICsrKysrCiAyIGZpbGVzIGNo
+YW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2
+ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9k
+cnYuYwppbmRleCA1NzQwNTdjLi5jYmJkMjNmIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0v
+aTkxNS9pOTE1X2Rydi5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMKQEAg
+LTk0MCw4ICs5NDAsNyBAQCBzdGF0aWMgaW50IGk5MTVfcG1fc3VzcGVuZChzdHJ1Y3QgZGV2aWNl
+ICpkZXYpCiAKIHN0YXRpYyBpbnQgaTkxNV9wbV9zdXNwZW5kX2xhdGUoc3RydWN0IGRldmljZSAq
+ZGV2KQogewotCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2RldihkZXYpOwotCXN0cnVj
+dCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBkZXYpOworCXN0cnVjdCBk
+cm1fZGV2aWNlICpkcm1fZGV2ID0gZGV2X3RvX2k5MTUoZGV2KS0+ZGV2OwogCiAJLyoKIAkgKiBX
+ZSBoYXZlIGEgc3VzcGVkbiBvcmRlcmluZyBpc3N1ZSB3aXRoIHRoZSBzbmQtaGRhIGRyaXZlciBh
+bHNvCkBAIC05NjAsOCArOTU5LDcgQEAgc3RhdGljIGludCBpOTE1X3BtX3N1c3BlbmRfbGF0ZShz
+dHJ1Y3QgZGV2aWNlICpkZXYpCiAKIHN0YXRpYyBpbnQgaTkxNV9wbV9yZXN1bWVfZWFybHkoc3Ry
+dWN0IGRldmljZSAqZGV2KQogewotCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2Rldihk
+ZXYpOwotCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBkZXYp
+OworCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gZGV2X3RvX2k5MTUoZGV2KS0+ZGV2Owog
+CiAJaWYgKGRybV9kZXYtPnN3aXRjaF9wb3dlcl9zdGF0ZSA9PSBEUk1fU1dJVENIX1BPV0VSX09G
+RikKIAkJcmV0dXJuIDA7CkBAIC05NzEsOCArOTY5LDcgQEAgc3RhdGljIGludCBpOTE1X3BtX3Jl
+c3VtZV9lYXJseShzdHJ1Y3QgZGV2aWNlICpkZXYpCiAKIHN0YXRpYyBpbnQgaTkxNV9wbV9yZXN1
+bWUoc3RydWN0IGRldmljZSAqZGV2KQogewotCXN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNp
+X2RldihkZXYpOwotCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gcGNpX2dldF9kcnZkYXRh
+KHBkZXYpOworCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2ID0gZGV2X3RvX2k5MTUoZGV2KS0+
+ZGV2OwogCiAJaWYgKGRybV9kZXYtPnN3aXRjaF9wb3dlcl9zdGF0ZSA9PSBEUk1fU1dJVENIX1BP
+V0VSX09GRikKIAkJcmV0dXJuIDA7CmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+OTE1X2Rydi5oIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaAppbmRleCA3MGQwZjBm
+Li45OWVkZGFkIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCisr
+KyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKQEAgLTE3ODMsNiArMTc4MywxMSBA
+QCBzdGF0aWMgaW5saW5lIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICp0b19pOTE1KGNvbnN0IHN0
+cnVjdCBkcm1fZGV2aWNlICpkZXYpCiAJcmV0dXJuIGRldi0+ZGV2X3ByaXZhdGU7CiB9CiAKK3N0
+YXRpYyBpbmxpbmUgc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl90b19pOTE1KHN0cnVjdCBk
+ZXZpY2UgKmRldikKK3sKKwlyZXR1cm4gdG9faTkxNShkZXZfZ2V0X2RydmRhdGEoZGV2KSk7Cit9
+CisKIC8qIEl0ZXJhdGUgb3ZlciBpbml0aWFsaXNlZCByaW5ncyAqLwogI2RlZmluZSBmb3JfZWFj
+aF9yaW5nKHJpbmdfXywgZGV2X3ByaXZfXywgaV9fKSBcCiAJZm9yICgoaV9fKSA9IDA7IChpX18p
+IDwgSTkxNV9OVU1fUklOR1M7IChpX18pKyspIFwKLS0gCjIuMS4wCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0Cklu
+dGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
