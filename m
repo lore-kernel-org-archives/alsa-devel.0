@@ -1,75 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: rt5677: Add the specific TDM
- setting for Intel platform.
-Date: Thu, 8 Jan 2015 18:42:11 +0000
-Message-ID: <20150108184211.GA2634@sirena.org.uk>
-References: <1420684267-19211-1-git-send-email-oder_chiou@realtek.com>
- <1420684267-19211-3-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH v3 REPOST] ASoC: add xtensa xtfpga I2S interface and
+ platform
+Date: Thu, 8 Jan 2015 19:52:32 +0000
+Message-ID: <20150108195231.GB2634@sirena.org.uk>
+References: <1419614378-25229-1-git-send-email-jcmvbkbc@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3657757810860738664=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CD33C260498
- for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2015 19:42:15 +0100 (CET)
-In-Reply-To: <1420684267-19211-3-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, yang.a.fang@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Av1MWY1rjlqAnvVo"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1419614378-25229-1-git-send-email-jcmvbkbc@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3657757810860738664==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fy3IkwjgC3G0yg4I"
-Content-Disposition: inline
-
-
---fy3IkwjgC3G0yg4I
+--Av1MWY1rjlqAnvVo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 08, 2015 at 10:31:07AM +0800, Oder Chiou wrote:
-> The patch adds the specific TDM setting for Intel platform in the platform
-> data. It enables the TDM1's capbility that can receive the 100FS data.
+On Fri, Dec 26, 2014 at 08:19:38PM +0300, Max Filippov wrote:
+> XTFPGA boards provides an audio subsystem that consists of TI CDCE706
+> clock synthesizer, I2S transmitter and TLV320AIC23 audio codec.
 
-So, this is total magic number stuff...  can you be more specific as to
-what this 100fs mode is?  We do have an interface for setting up TDM but
-given that this is just flipping one bit I'd expect the hardware isn't
-actually generic enough to use that so I'd like to better understand
-what the configuration actually does.
+Applied, thanks - the revisions to the RCU stuff make it a lot clearer,
+thanks.
 
---fy3IkwjgC3G0yg4I
+--Av1MWY1rjlqAnvVo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUrs+CAAoJECTWi3JdVIfQdocH/3Mgezh8Tso6aatgp+nr6go8
-F6H41JodtSS1h/kZYMOBW7bcj4QbI3lhI6b+KPOdCCHZ6OmbGXJxF//NVpDmTt4V
-neuyiOjOLL0VdiSMlf+QsgGJPlNuTKgLv9z7IU34rtCLNaCPgbeIf7T3sGa9ZvJk
-TOiYOtoYj5Al/kDRPpCfahaesBjHlU/6ALyeeB7EKNGpjQoWVwUdlrZ/DfrXrxpO
-IzR8b9p3GR6YnhKFKyol4ZROdGLva7fKCQwmcuyzjop+pjGvQI+ZLUgrZxc2hL3e
-jtlWEgxw+8J6pKTUp6iIenZpebAbjXIu3bLPdMbKAmc33W8MhbUPiEl4FqSa9iw=
-=530I
+iQEcBAEBAgAGBQJUrt//AAoJECTWi3JdVIfQpEsH/39taBhvaryU1iekn0D0baHs
+Gu1Rx9s5Z2EUqp3nLOaGOaoeyiNfLO3LKdPffzNOg72GSpZV7rtDS9Sibi+LMQW5
+l3HeiTEkGmeYE5s0BBp1rqImid7UScTWw6PR0QY07ECUKZAYc+hG9vh8hlwqly94
+nif2mjW14hj7+nhIIAqZnhwnas9VkRRoW3/td463a3it7vqyIpYofp6TzhgOj05v
+NBKBUTJ7KSmFcU9AQFK9Zv6IG8ZiG1M4pgWvHLBO35VtUiXa9E86D+g9GKLVA8ty
+07obt3Srhk0t5CjSBHWuEnQEj2rfKmlz4Yz29hAuSlQQijR7cFdxjhnUhM7kKGQ=
+=RncA
 -----END PGP SIGNATURE-----
 
---fy3IkwjgC3G0yg4I--
-
---===============3657757810860738664==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3657757810860738664==--
+--Av1MWY1rjlqAnvVo--
