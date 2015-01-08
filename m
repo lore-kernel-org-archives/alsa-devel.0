@@ -1,69 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rockchip: i2s:  applys rate symmetry for CPU DAI
-Date: Thu, 8 Jan 2015 10:23:35 +0000
-Message-ID: <20150108102335.GM2634@sirena.org.uk>
-References: <1420685399-24142-1-git-send-email-jay.xu@rock-chips.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Export snd_soc_runtime_set_dai_fmt()
+Date: Thu,  8 Jan 2015 12:23:05 +0100
+Message-ID: <1420716185-11974-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7802750234878697584=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1420685399-24142-1-git-send-email-jay.xu@rock-chips.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Jianqun Xu <jay.xu@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, perex@perex.cz, linux-rockchip@lists.infradead.org, sonnyrao@chromium.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-080.synserver.de (smtp-out-080.synserver.de
+ [212.40.185.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE644260320
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2015 12:23:10 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+Export snd_soc_runtime_set_dai_fmt() so it can be used in modules.
 
---===============7802750234878697584==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KXWI/Lwc0/Thrskm"
-Content-Disposition: inline
+Fixes: ce64c8b9cf5b ("ASoC: Add helper function for changing the DAI link format")
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
---KXWI/Lwc0/Thrskm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jan 08, 2015 at 10:49:59AM +0800, Jianqun Xu wrote:
-> This patch applys rate symmetry for rockchip i2s DAI.
-
-Applied, thanks.
-
---KXWI/Lwc0/Thrskm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUrlqmAAoJECTWi3JdVIfQ2kMH/RbFEDRevZfHjeP088F/ajN5
-VxWBRnw9FT/IzP7bEMQvrkjCy1uJJbzhlpa1MJfcnq8XMdvUdYm+F5/7tw+eLlB3
-8CYYwRWlsUuUQRG8Tn+sOPp3zP9zcqxZylZhgsFM0RgaCvpMhyIvA+kxJqwgaCUc
-CJaZQsd4EeRrbxLdCkPlEigL0KIEEhpgdbWcB+1BBNGoMOH6qCwv2+Z7tbTE0IhZ
-OyRfY0xIcKMCturm9ImTXgpT1oHWqo1L9j6VhbHCaV76vEsjlFj4Pu9W5AsMlxgu
-UloXfIiI422Dc0oo0WDWE1H8X9qJ1BNJyeusT0YF6hCsFkh5+PhfFzS1tLJdPUE=
-=gIGB
------END PGP SIGNATURE-----
-
---KXWI/Lwc0/Thrskm--
-
-
---===============7802750234878697584==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============7802750234878697584==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 4b8dc5f..2c02e9c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1491,6 +1491,7 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
+ 
+ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ {
+-- 
+1.8.0
