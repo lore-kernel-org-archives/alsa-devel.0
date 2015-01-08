@@ -1,47 +1,32 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v9 0/4] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Thu, 8 Jan 2015 20:05:26 +0000
-Message-ID: <20150108200526.GD2634@sirena.org.uk>
-References: <cover.1420628786.git.moinejf@free.fr>
- <54AE99D0.1050205@ti.com>
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+Subject: Re: [PATCH 2/2] misc: sram: switch to ioremap_wc from ioremap
+Date: Thu, 08 Jan 2015 21:56:04 +0100
+Message-ID: <2101240.CsKVRjX3M8@phil>
+References: <1418266726-12004-1-git-send-email-a.kesavan@samsung.com> <CAL_JsqJwdr7WvzLqPmui3N4H-wVgSURN6wYD=dm1HyU2HUmXOg@mail.gmail.com> <CAM4voakHnwRzVsYYO2Dd2f9_PxZGqvqT8xveA-Y6N4ReOfhdmw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+GUUlqgaeopBXFm2"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <54AE99D0.1050205@ti.com>
+In-Reply-To: <CAM4voakHnwRzVsYYO2Dd2f9_PxZGqvqT8xveA-Y6N4ReOfhdmw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+To: Abhilash Kesavan <kesavan.abhilash@gmail.com>
+Cc: Rob Herring <robherring2@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Tony Lindgren <tony@atomide.com>, linux-rockchip@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <Will.Deacon@arm.com>, Santosh Shilimkar <santosh.shilimkar@ti.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "shc_work@mail.ru" <shc_work@mail.ru>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "arnd@arndb.de" <arnd@arndb.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "grant.likely@linaro.org" <grant.likely@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>, "padma.v@samsung.com" <padma.v@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "shawn.guo@freescale.com" <shawn.guo@freescale.com>, bcousson@baylibre.c
 List-Id: alsa-devel@alsa-project.org
 
+Hi Abhilash,
 
---+GUUlqgaeopBXFm2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Am Donnerstag, 8. Januar 2015, 21:00:57 schrieb Abhilash Kesavan:
+> Thanks for the confirmation regarding the i.MX chips. That leaves
+> rockchip, can someone help with it please ?
 
-On Thu, Jan 08, 2015 at 04:53:04PM +0200, Jyri Sarha wrote:
+sorry for being late to this.
 
-> BTW, the HDMI codec is now completely unused, since my OMAP4+ HDMI audio
-> patches were merged (it uses dummy codec) and my BBB HDMI audio patches were
-> never merged.
+The one current sram use-case on Rockchip boards is the SMP bringup, but that 
+uses a reserved sram area. Nevertheless I tested your 2 patches on a rk3288 
+board and everything still works as expected, including smp bringup,
+so on Rockchip
 
-Might those BBB ones turn up sometime?
+Tested-by: Heiko Stuebner <heiko@sntech.de>
 
---+GUUlqgaeopBXFm2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUruMGAAoJECTWi3JdVIfQjHoH/2oaAt473gReYyBehArdf4+w
-6ZYuguD+XWCOkT7jc89as4OWImBrUEto84a/N176LvONHRzeXKEzgpMma3RZo9w6
-x/dC5iojTUdwtfVM6tFjBu3lkca7H0NqDILjEOtiyQ8mJmqGmALa27s9dkHtjg5W
-R9nNCjLGgO+dhXdsxc5/o6Su5NgwsGTkt76vP+nQegpe5nmvydUo57sPYJFl2Vy8
-Lpz62Nad2O+kvX5WeQBdXbIKVowzBtCoQm2T1P7OtFrhHjRdVfHdc8f4yXCcdohG
-wGFR4t8NW/mLqJsCbGuP+2zlFWepsSUnsdCWy5/5I5QLBR+Bfwm0DvOG+qBUg2E=
-=NzMt
------END PGP SIGNATURE-----
-
---+GUUlqgaeopBXFm2--
+Heiko
