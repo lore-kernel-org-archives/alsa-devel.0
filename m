@@ -1,71 +1,36 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v2] ALSA: usb-audio: Add support for
-	Akai	MPC Element USB MIDI controller
-Date: Thu, 08 Jan 2015 22:56:15 +0100
-Message-ID: <54AEFCFF.3060406@ladisch.de>
-References: <54AE16D8.6080302@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5CB18260568
- for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2015 22:57:02 +0100 (CET)
-In-Reply-To: <54AE16D8.6080302@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Bonser <misterpib@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: [PATCH] ASoC: pcm512x: Fix DSP program selection
+Date: Thu,  8 Jan 2015 22:56:30 +0100
+Message-ID: <1420754190-6309-1-git-send-email-peda@lysator.liu.se>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Bonser wrote:
-> The Akai MPC Element incorrectly reports its bInterfaceClass as 255, but
-> otherwise implements the USB MIDI spec correctly.
->
-> This adds a quirks-table.h entry which allows the device to be
-> recognized as a standard USB MIDI device.
->
-> Signed-off-by: Paul Bonser <misterpib@gmail.com>
-> ---
-> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-> index 8590a32..e869b6c 100644
-> --- a/sound/usb/quirks-table.h
-> +++ b/sound/usb/quirks-table.h
-> @@ -2516,6 +2516,28 @@ YAMAHA_DEVICE(0x7010, "UB99"),
->  	}
->  },
->
-> +{
-> +	/* Akai MPC Element */
-> +	USB_DEVICE(0x09e8, 0x0021),
-> +	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-> +		.ifnum = QUIRK_ANY_INTERFACE,
-> +		.type = QUIRK_COMPOSITE,
-> +		.data = & (const struct snd_usb_audio_quirk[]) {
-> +			{
-> +				.ifnum = 0,
-> +				.type = QUIRK_IGNORE_INTERFACE
-> +			},
-> +			{
-> +				.ifnum = 1,
-> +				.type = QUIRK_MIDI_STANDARD_INTERFACE
-> +			},
-> +			{
-> +				.ifnum = -1
-> +			}
-> +		}
-> +	}
-> +},
+From: Peter Rosin <peda@axentia.se>
 
-Why a composite quirk?  Does a single quirk entry not work?
+The DSP programs are listed out of order.
 
+Signed-off-by: Peter Rosin <peda@axentia.se>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/pcm512x.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 0c8aefab404c..640c99198cda 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -188,8 +188,8 @@ static const DECLARE_TLV_DB_SCALE(boost_tlv, 0, 80, 0);
+ static const char * const pcm512x_dsp_program_texts[] = {
+ 	"FIR interpolation with de-emphasis",
+ 	"Low latency IIR with de-emphasis",
+-	"Fixed process flow",
+ 	"High attenuation with de-emphasis",
++	"Fixed process flow",
+ 	"Ringing-less low latency FIR",
+ };
+ 
+-- 
+1.7.10.4
