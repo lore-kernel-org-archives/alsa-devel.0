@@ -1,64 +1,55 @@
-From: Andrew Jackson <Andrew.Jackson@arm.com>
-Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the
-	HDMI transmitter
-Date: Fri, 09 Jan 2015 17:39:08 +0000
-Message-ID: <54B0123C.9070800@arm.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Fri, 9 Jan 2015 17:54:59 +0000
+Message-ID: <20150109175459.GN2634@sirena.org.uk>
 References: <cover.1420628786.git.moinejf@free.fr>
  <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
+ <54B0123C.9070800@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
- [217.140.96.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C0CF261583
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 18:39:10 +0100 (CET)
-In-Reply-To: <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jyri Sarha <jsarha@ti.com>, Dave Airlie <airlied@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yS2QJoX5Vl2MmcUM"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <54B0123C.9070800-5wv7dgnIgG8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/15 10:51, Jean-Francois Moine wrote:
-> This patch adds a CODEC to the NXP TDA998x HDMI transmitter.
-> 
-> The CODEC handles both I2S and S/PDIF inputs.
-> It maintains the audio format and rate constraints according
-> to the HDMI device parameters (EDID) and sets dynamically the input
-> ports in the TDA998x I2C driver on start/stop audio streaming.
-> 
-> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> ---
 
-[snip]
+--yS2QJoX5Vl2MmcUM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +static int tda998x_codec_startup(struct snd_pcm_substream *substream,
-> +                                struct snd_soc_dai *dai)
-> +{
-> +       struct snd_pcm_runtime *runtime = substream->runtime;
-> +       struct snd_pcm_hw_constraint_list *rate_constraints;
-> +       u8 *sad;                /* Short Audio Descriptor (3 bytes) */
+On Fri, Jan 09, 2015 at 05:39:08PM +0000, Andrew Jackson wrote:
 
-[...]
+> In the light of our discussions elsewhere [1], shouldn't this
+> be constrained by the number of hardware channels that the TDA998x
+> supports too?  That is, the maximum number of channels should
+> be the lesser of sd[SAD_MX_CHAN_I] and number_of_I2S channels=20
+> (or S/PDIF channels if so configured).
 
-> +       snd_pcm_hw_constraint_minmax(runtime,
-> +                               SNDRV_PCM_HW_PARAM_CHANNELS,
-> +                               1, sad[SAD_MX_CHAN_I]);
+Yes, that's a good idea in general - we should do more of this.
 
-In the light of our discussions elsewhere [1], shouldn't this
-be constrained by the number of hardware channels that the TDA998x
-supports too?  That is, the maximum number of channels should
-be the lesser of sd[SAD_MX_CHAN_I] and number_of_I2S channels 
-(or S/PDIF channels if so configured).
+--yS2QJoX5Vl2MmcUM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-	Andrew
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/086090.html
+iQEcBAEBAgAGBQJUsBXyAAoJECTWi3JdVIfQazgH/0plBowsIMWRwsEapQBO3mSJ
++AhpyNiWBoOpCtbEhgQVxJtL+mZ2OT+LqE1RPLOuGdjukQlOCz5q1dx1q/q+PrmB
+OGnCov6TIp1k+5qW9GeHhoJgEsaSXFys45dXT9egpgMI7UuqeQswZVHK4cfD6Mpd
+byU5MxgWgNzG2S6EWOr4MaHVsQNTDr0WFuo/ZjouK3FiEUj80P7A/0mPxeYfzPC6
+/iiIOyvAM48Q50ppXPzDboUhyopbeszQd++M2/5tv/y+DfqA9DO44fdHxrwApB22
++UZyrcwdNeuKCvO/1Q2Le1xj6MinPTxEYC4XVekeAiylOOLTSAimPgqcnrbjiyI=
+=l2kO
+-----END PGP SIGNATURE-----
+
+--yS2QJoX5Vl2MmcUM--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
