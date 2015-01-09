@@ -1,22 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2 1/1] alsa-lib: Add snd_pcm_start_at.
-Date: Fri, 9 Jan 2015 20:03:04 +0800
-Message-ID: <CAN8ccibWaAmc8hMG5Eb2bLcKP4i-nWLrAETgFg2c-tGvd8QDwQ@mail.gmail.com>
-References: <1418837267-10896-1-git-send-email-timcussins@eml.cc>
- <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
- <5492A7F9.8090602@eml.cc> <54ABF459.8000504@linux.intel.com>
- <54ABFB98.3050506@eml.cc>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
+	for audio
+Date: Fri, 9 Jan 2015 13:54:01 +0100
+Message-ID: <20150109135401.5b270d46@armhf>
+References: <cover.1420628786.git.moinejf@free.fr>
+ <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+ <54AE99F5.1010404@ti.com> <20150108174257.557f7ea5@armhf>
+ <54AFA9B0.6040405@ti.com> <20150109123036.4bc4bbf6@armhf>
+ <20150109114529.GH12302@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f170.google.com (mail-qc0-f170.google.com
- [209.85.216.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AB0F2607E9
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 13:03:05 +0100 (CET)
-Received: by mail-qc0-f170.google.com with SMTP id x3so8137216qcv.1
- for <alsa-devel@alsa-project.org>; Fri, 09 Jan 2015 04:03:04 -0800 (PST)
-In-Reply-To: <54ABFB98.3050506@eml.cc>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id B07A32605FA
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 13:51:53 +0100 (CET)
+In-Reply-To: <20150109114529.GH12302@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,59 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Cussins <timcussins@eml.cc>
-Cc: nstoughton@aether.com, tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->>
->>
->>>> Do your implementation need to set specific start threshold to prevent
->>>> the driver automatically start when you fill the buffer ?
->>>
->>>
->>>
->>>> Do the driver allow to start when there is no data ?
->>>>
->>>
->>> It's the responsibility of the client to set the start threshold to a
->>> safe and responsible value.
->>>
->>> It might suit some applications to allow both threshold start _and_
->>> start_at: My implementation doesn't preclude this.
->>
->>
->> Now I am confused... My understanding was that this feature is similar
->> to SSYNC in HDAudio, where everything is ready, buffers filled, DMAs
->> armed, FIFOs filled and the start condition only opens the last gate at
->> a specific time - possibly with multiple streams starting at the same
->> time. If you add a condition on the start_threshold you really don't
->> need any hardware-driven start, do you?
->
->
-> What you've described is exactly what I had in mind, so we're still on
-the same page.
->
-> I wanted to make it clear that my implementation of start_at doesn't
-*prevent* client code starting on a threshold *and* using start_at, even if
-it seems to us like a strange idea.
-
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html
-
-Handshake between application and library
-
-Do alsa lib assume all read/write must only call after calling
-snd_pcm_sw_params() ?
-
-It seem that proposed start_at() can only be call in SND_PCM_STATE_PREPARED
-and should fail when stream is already running
-
-Are there any mean to cancel the scheduled snd_pcm_start_at  ?
-
-Seem there is no check when the application call snd_pcm_start_at()
-multiple times
-
->
-> Preventing the use of both requires us to show why it's never a useful
-idea, decide on policy (what do happens when client code tries to use
-both), and implement that policy. I'd rather just leave it as 'possible'
-:at()
+T24gRnJpLCA5IEphbiAyMDE1IDExOjQ1OjI5ICswMDAwClJ1c3NlbGwgS2luZyAtIEFSTSBMaW51
+eCA8bGludXhAYXJtLmxpbnV4Lm9yZy51az4gd3JvdGU6Cgo+IE9uIEZyaSwgSmFuIDA5LCAyMDE1
+IGF0IDEyOjMwOjM2UE0gKzAxMDAsIEplYW4tRnJhbmNvaXMgTW9pbmUgd3JvdGU6Cj4gPiBJbiBt
+eSBvcmlnaW5hbCB2ZXJzaW9uLCB0aGUgYXVkaW8tcG9ydHMgYXJlIGEgYml0bWFwIG9mIHRoZSBw
+aW5zLCB0aGUKPiA+IGJpdCAwIGJlaW5nIHRoZSBXUyB1c2VkIGZvciBJMlMuIEEgZnVsbHkgd2ly
+ZWQgdGRhOTk4eCB3b3VsZCBoYXZlIGJlZW4KPiA+IGFzOgo+ID4gCj4gPiAJYXVkaW8tcG9ydHMg
+PSA8MHgwMz4sIDwweDA0PiwgPDB4MDk+LCA8MHgxMT47Cj4gPiAJYXVkaW8tcG9ydC1uYW1lcyA9
+ICJpMnMiLCAic3BkaWYiLCAiaTJzIiwgImkycyI7Cj4gPiAKPiA+IFdpdGggdGhlIG5ldyB2ZXJz
+aW9uLCBpdCB3b3VsZCBzaW1wbHkgYmVjb21lOgo+ID4gCj4gPiAJYXVkaW8taW5wdXRzID0gImky
+cyIsICJzcGRpZiIsICJpMnMiLCAiaTJzIjsKPiAKPiBIb3cgZG8geW91IGtub3cgd2hpY2ggaTJz
+IGlucHV0cyB0byBlbmFibGU/Cj4gCj4gRG9lcyBpdCBtYWtlIHNlbnNlIGZvciB0aGUgYXVkaW8g
+aW5wdXRzIHRvIGJlIG1peGVkIGxpa2UgdGhhdD8KPiAKPiBZb3Ugd2lsbCBuZWVkIHRvIGVuYWJs
+ZSBvbmUgaTJzIGZvciBmcm9udCBMK1IsIGFuZCBpbmNyZWFzaW5nbHkgb3RoZXJzCj4gZm9yIHRo
+ZSBhZGRpdGlvbmFsIGNoYW5uZWxzLgo+IAo+IEkgdGhpbmsgd2UgbmVlZCB0byB1bmRlcnN0YW5k
+IGV4YWN0bHkgaG93IHRoZSA5OTh4IG1hcCBJMlMgaW5wdXRzIHRvIHRoZQo+IEhETUkgY2hhbm5l
+bHMgdG8gYXZvaWQgbWFraW5nIGEgbWlzdGFrZSB3aXRoIHRoZSBiaW5kaW5nOyByZW1lbWJlciwg
+dGhlCj4gYmluZGluZyBpc24ndCBzb21ldGhpbmcgdGhhdCBjYW4gYmUgZWFzaWx5ICJidWcgZml4
+ZWQiIGF0IGEgbGF0ZXIgZGF0ZQo+IGFzIGFueXRoaW5nIHdlIGNvbWUgdXAgd2l0aCBub3cgaGFz
+IHRvIGJlIHN1cHBvcnRlZCBsb25nIHRlcm0gYnkgdGhlCj4ga2VybmVsLgoKVGhlIERUIGRlc2Ny
+aWJlcyB0aGUgaGFyZHdhcmUgY29uZmlndXJhdGlvbi4KCkEgZnVsbHkgd2lyZWQgdGRhOTk4eCBj
+b3VsZCBiZSBhIGNoaXAgd2l0aCB0aGUgYXVkaW8gcGlucyBjb25uZWN0ZWQgdG86Ci0gYSBraXJr
+d29vZC1saWtlIGF1ZGlvIGRldmljZSB3aXRoIG9uZSBJMlMgYW5kIG9uZSBTL1BESUYgb3V0cHV0
+LAotIHR3byBvdGhlciBhdWRpbyBkZXZpY2VzIHdpdGggb25lIEkyUyBlYWNoLgoKVGhlIHJlbGF0
+aW9uIGJldHdlZW4gYW4gYXVkaW8gZGV2aWNlIGFuZCB0aGUgYXNzb2NpYXRlZCBwaW4gaXMgZG9u
+ZSBieQp0aGUgZGVmaW5pdGlvbiBvZiB0aGUgc291bmQgY2FyZC4KCldpdGggUy9QRElGLCBvbmx5
+IG9uZSBzdGVyZW8gY2hhbm5lbCBtYXkgYmUgc2VudCwgYnV0IHdpdGggSTJTLCB1cCB0byA0CnN0
+ZXJlbyBjaGFubmVscyBtYXkgYmUgc2VudC4gVGhlc2UgY2hhbm5lbHMgYXJlIGV4dHJhY3RlZCBi
+eSB0aGUKZGV2aWNlcyBjb25uZWN0ZWQgb24gdGhlIEhETUkgYnVzLiBUaGVyZSBpcyBubyBtaXhp
+bmcuCkFuIGV4YW1wbGUgY291bGQgYmUgdGhlIHBsYXlpbmcgb2YgYSBtdWx0aS1sYW5ndWFnZSBt
+b3ZpZTogZWFjaCBhdWRpbwpjaGFubmVsIGNhcnJpZXMgb25lIGxhbmd1YWdlLiBGcm9tIHRoZSBj
+b21wdXRlciB2aWV3LCB0aGUgcGxheWluZwphcHBsaWNhdGlvbiBzZW5kcyBlYWNoIGxhbmd1YWdl
+IHRvIG9uZSBzb3VuZCBjYXJkLgoKU28sIHRoaXMgbWVhbnMgdGhhdCB0aGUgdGRhOTk4eCBkcml2
+ZXIgc2hvdWxkIGNoZWNrIHRoYXQgUy9QRElGIGFuZCBJMlMKYXJlIG5vdCBhY3RpdmUgYXQgdGhl
+IHNhbWUgdGltZSwgYW5kIGl0IHNob3VsZCBhbHNvIGRvIGEgcGluIE9SL0FORCBvbgpJMlMgc3Rh
+cnQvc3RvcC4KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4
+IGF0YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
