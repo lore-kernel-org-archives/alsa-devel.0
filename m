@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 09/33] ALSA: cs4281: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:52:52 +0100
-Message-ID: <1420818796-30852-10-git-send-email-tiwai@suse.de>
+Subject: [PATCH 10/33] ALSA: cs46xx: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:52:53 +0100
+Message-ID: <1420818796-30852-11-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FE4E2606EC
+ by alsa0.perex.cz (Postfix) with ESMTP id 42F2F260714
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E8552AD8B
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id EBC99AD90
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:26 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,25 +38,25 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/cs4281.c | 15 ---------------
+ sound/pci/cs46xx/cs46xx_lib.c | 15 ---------------
  1 file changed, 15 deletions(-)
 
-diff --git a/sound/pci/cs4281.c b/sound/pci/cs4281.c
-index 4c49b5c8a7b3..80bb1d11da12 100644
---- a/sound/pci/cs4281.c
-+++ b/sound/pci/cs4281.c
-@@ -2008,7 +2008,6 @@ static int saved_regs[SUSPEND_REGISTERS] = {
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 32b44f25b5c8..ba97aba8d87e 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -3804,7 +3804,6 @@ static unsigned int saved_regs[] = {
  
- static int cs4281_suspend(struct device *dev)
+ static int snd_cs46xx_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct cs4281 *chip = card->private_data;
- 	u32 ulCLK;
-@@ -2047,30 +2046,16 @@ static int cs4281_suspend(struct device *dev)
- 	ulCLK = snd_cs4281_peekBA0(chip, BA0_CLKCR1);
- 	ulCLK &= ~CLKCR1_CKRA;
- 	snd_cs4281_pokeBA0(chip, BA0_CLKCR1, ulCLK);
+ 	struct snd_cs46xx *chip = card->private_data;
+ 	int i, amp_saved;
+@@ -3829,16 +3828,11 @@ static int snd_cs46xx_suspend(struct device *dev)
+ 	/* disable CLKRUN */
+ 	chip->active_ctrl(chip, -chip->amplifier);
+ 	chip->amplifier = amp_saved; /* restore the status */
 -
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
@@ -64,13 +64,15 @@ index 4c49b5c8a7b3..80bb1d11da12 100644
  	return 0;
  }
  
- static int cs4281_resume(struct device *dev)
+ static int snd_cs46xx_resume(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct cs4281 *chip = card->private_data;
- 	unsigned int i;
- 	u32 ulCLK;
+ 	struct snd_cs46xx *chip = card->private_data;
+ 	int amp_saved;
+@@ -3847,15 +3841,6 @@ static int snd_cs46xx_resume(struct device *dev)
+ #endif
+ 	unsigned int tmp;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
@@ -81,8 +83,8 @@ index 4c49b5c8a7b3..80bb1d11da12 100644
 -	}
 -	pci_set_master(pci);
 -
- 	ulCLK = snd_cs4281_peekBA0(chip, BA0_CLKCR1);
- 	ulCLK |= CLKCR1_CKRA;
- 	snd_cs4281_pokeBA0(chip, BA0_CLKCR1, ulCLK);
+ 	amp_saved = chip->amplifier;
+ 	chip->amplifier = 0;
+ 	chip->active_ctrl(chip, 1); /* force to on */
 -- 
 2.2.1
