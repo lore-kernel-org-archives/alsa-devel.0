@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 23/33] ALSA: maestro3: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:53:06 +0100
-Message-ID: <1420818796-30852-24-git-send-email-tiwai@suse.de>
+Subject: [PATCH 17/33] ALSA: es1968: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:53:00 +0100
+Message-ID: <1420818796-30852-18-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 606C42619D7
+ by alsa0.perex.cz (Postfix) with ESMTP id 5ADC2261583
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 12800ADAD
+ by mx2.suse.de (Postfix) with ESMTP id 05F48ADA3
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,25 +38,25 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/maestro3.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/pci/es1968.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
-index 98823d11d485..18a60be63266 100644
---- a/sound/pci/maestro3.c
-+++ b/sound/pci/maestro3.c
-@@ -2395,7 +2395,6 @@ static int snd_m3_free(struct snd_m3 *chip)
- #ifdef CONFIG_PM_SLEEP
- static int m3_suspend(struct device *dev)
+diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
+index 6039700f8579..631be029f8c0 100644
+--- a/sound/pci/es1968.c
++++ b/sound/pci/es1968.c
+@@ -2383,7 +2383,6 @@ static void snd_es1968_start_irq(struct es1968 *chip)
+  */
+ static int es1968_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_m3 *chip = card->private_data;
- 	int i, dsp_index;
-@@ -2421,16 +2420,11 @@ static int m3_suspend(struct device *dev)
- 	for (i = REV_B_DATA_MEMORY_BEGIN ; i <= REV_B_DATA_MEMORY_END; i++)
- 		chip->suspend_mem[dsp_index++] =
- 			snd_m3_assp_read(chip, MEMTYPE_INTERNAL_DATA, i);
+ 	struct es1968 *chip = card->private_data;
+ 
+@@ -2396,16 +2395,11 @@ static int es1968_suspend(struct device *dev)
+ 	snd_pcm_suspend_all(chip->pcm);
+ 	snd_ac97_suspend(chip->ac97);
+ 	snd_es1968_bob_stop(chip);
 -
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
@@ -64,16 +64,17 @@ index 98823d11d485..18a60be63266 100644
  	return 0;
  }
  
- static int m3_resume(struct device *dev)
+ static int es1968_resume(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_m3 *chip = card->private_data;
- 	int i, dsp_index;
-@@ -2438,15 +2432,6 @@ static int m3_resume(struct device *dev)
- 	if (chip->suspend_mem == NULL)
+ 	struct es1968 *chip = card->private_data;
+ 	struct esschan *es;
+@@ -2413,16 +2407,6 @@ static int es1968_resume(struct device *dev)
+ 	if (! chip->do_pm)
  		return 0;
  
+-	/* restore all our config */
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
 -	if (pci_enable_device(pci) < 0) {
@@ -83,8 +84,8 @@ index 98823d11d485..18a60be63266 100644
 -	}
 -	pci_set_master(pci);
 -
- 	/* first lets just bring everything back. .*/
- 	snd_m3_outw(chip, 0, 0x54);
- 	snd_m3_outw(chip, 0, 0x56);
+ 	snd_es1968_chip_init(chip);
+ 
+ 	/* need to restore the base pointers.. */ 
 -- 
 2.2.1
