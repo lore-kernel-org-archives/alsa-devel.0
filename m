@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 15/33] ALSA: ens137x: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:52:58 +0100
-Message-ID: <1420818796-30852-16-git-send-email-tiwai@suse.de>
+Subject: [PATCH 23/33] ALSA: maestro3: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:53:06 +0100
+Message-ID: <1420818796-30852-24-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 50D9926152C
+ by alsa0.perex.cz (Postfix) with ESMTP id 606C42619D7
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 03D0EAD9F
+ by mx2.suse.de (Postfix) with ESMTP id 12800ADAD
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,25 +38,25 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ens1370.c | 15 ---------------
+ sound/pci/maestro3.c | 15 ---------------
  1 file changed, 15 deletions(-)
 
-diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-index d94cb3ca7a64..1badd91f6283 100644
---- a/sound/pci/ens1370.c
-+++ b/sound/pci/ens1370.c
-@@ -2049,7 +2049,6 @@ static void snd_ensoniq_chip_init(struct ensoniq *ensoniq)
+diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
+index 98823d11d485..18a60be63266 100644
+--- a/sound/pci/maestro3.c
++++ b/sound/pci/maestro3.c
+@@ -2395,7 +2395,6 @@ static int snd_m3_free(struct snd_m3 *chip)
  #ifdef CONFIG_PM_SLEEP
- static int snd_ensoniq_suspend(struct device *dev)
+ static int m3_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct ensoniq *ensoniq = card->private_data;
- 	
-@@ -2070,28 +2069,14 @@ static int snd_ensoniq_suspend(struct device *dev)
- 	udelay(100);
- 	snd_ak4531_suspend(ensoniq->u.es1370.ak4531);
- #endif	
+ 	struct snd_m3 *chip = card->private_data;
+ 	int i, dsp_index;
+@@ -2421,16 +2420,11 @@ static int m3_suspend(struct device *dev)
+ 	for (i = REV_B_DATA_MEMORY_BEGIN ; i <= REV_B_DATA_MEMORY_END; i++)
+ 		chip->suspend_mem[dsp_index++] =
+ 			snd_m3_assp_read(chip, MEMTYPE_INTERNAL_DATA, i);
 -
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
@@ -64,11 +64,15 @@ index d94cb3ca7a64..1badd91f6283 100644
  	return 0;
  }
  
- static int snd_ensoniq_resume(struct device *dev)
+ static int m3_resume(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct ensoniq *ensoniq = card->private_data;
+ 	struct snd_m3 *chip = card->private_data;
+ 	int i, dsp_index;
+@@ -2438,15 +2432,6 @@ static int m3_resume(struct device *dev)
+ 	if (chip->suspend_mem == NULL)
+ 		return 0;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
@@ -79,8 +83,8 @@ index d94cb3ca7a64..1badd91f6283 100644
 -	}
 -	pci_set_master(pci);
 -
- 	snd_ensoniq_chip_init(ensoniq);
- 
- #ifdef CHIP1371	
+ 	/* first lets just bring everything back. .*/
+ 	snd_m3_outw(chip, 0, 0x54);
+ 	snd_m3_outw(chip, 0, 0x56);
 -- 
 2.2.1
