@@ -1,217 +1,78 @@
-From: David Flater <vger@flaterco.com>
-Subject: [PATCH] ALSA: fix emu8000 DRAM sizing for AWE64 Value
-Date: Thu, 08 Jan 2015 19:49:30 -0500
-Message-ID: <54AF259A.3070204@flaterco.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nupi.pair.com (nupi.pair.com [209.68.5.149])
- by alsa0.perex.cz (Postfix) with ESMTP id 38A80260703
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 01:49:39 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa Devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+From: Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH] ASoC: rockchip: i2s: add rockchip_dmaengine_pcm_config
+Date: Fri,  9 Jan 2015 09:52:49 +0800
+Message-ID: <1420768369-6681-1-git-send-email-jay.xu@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, heiko@sntech.de, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, sonnyrao@chromium.org
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Jianqun Xu <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Applicable to any kernel since 2013:
+This patch makes snd_dmaengine_pcm_register with rockchip_dmaengine_pcm_config,
+which configure the parameters of period and buffer match to rockchip DMAC.
 
-The special case added in commit 1338fc97d07a did not handle the possibility
-that the address space on an AWE64 Value would wrap around at 512 KiB.  That
-is what it does, so the memory is still not detected on those cards.
+=======================
+without rockchip_dmaengine_pcm_config, and test with command -
+aplay -D hw:0,0 /tmp/a, there are the error dump:
+[  134.899396] dma-pl330 ffb20000.dma-controller: fill_queue:2251 Bad Desc(7)
+[  134.906270] dma-pl330 ffb20000.dma-controller: fill_queue:2251 Bad Desc(8)
+[  134.913141] dma-pl330 ffb20000.dma-controller: fill_queue:2251 Bad Desc(9)
 
-Fix that with a logic clean-up that eliminates the need for a special case.
-Also log the amount of memory detected at level INFO and add sufficiently
-verbose debugging to diagnose any additional faults of this kind.
+And bellow sound from DMA debugger:
+"I debugged it a little and it looks like what is happening is that requests
+which aren't a multiple of burst size * burst length are coming in.  Right
+now the i2s block is setting a burst size of 4 and burst length of 4, but
+the dmaengine code has no idea about this restriction.  I was able to
+eliminate the messages by changing burst length to 1 in the i2s driver.
+This fix would always work as long as we're sending a multiple of 4 bytes
+(which so far seems to be the case)"
 
-Tested on unexpanded CT4390 (4 MiB), CT4520 (512 KiB), and CT4380 (512 KiB).
-The latter is commonly said to come with 1 MiB of DRAM, but Creative's AWE
-Control app agreed that mine has only 512 KiB.  It has the same memory chip
-as the CT4520.
+This patch can make the length of dma buffer is aligned to a multiple of burst size
+and burst length.
 
-Signed-off-by: David Flater <dave@flaterco.com>
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
 ---
-History:
-2015-01-08  v1 patch sent to LKML, Alsa Devel and maintainers.
+ sound/soc/rockchip/rockchip_i2s.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-The affected function first appeared in alsa-driver-0.3.0 and was merged in
-linux-2.5.5.  Its somewhat different ancestor was in sound/oss/awe_wave.c.
-
-AFAICT, the manufacturer never disclosed the right way to do it.  In the
-AWE32 Developer's Information Pack (1994-1996) the RAM sizing function was
-implemented in object files with a license that prohibited even disassembly.
-
- sound/isa/sb/emu8000.c | 127 +++++++++++++++++++++++++++++--------------------
- 1 file changed, 76 insertions(+), 51 deletions(-)
-
-diff --git a/sound/isa/sb/emu8000.c b/sound/isa/sb/emu8000.c
-index 45fcdff..3aa2250 100644
---- a/sound/isa/sb/emu8000.c
-+++ b/sound/isa/sb/emu8000.c
-@@ -378,13 +378,13 @@ init_arrays(struct snd_emu8000 *emu)
- static void
- size_dram(struct snd_emu8000 *emu)
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index c74ba37..bdd1021 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -408,6 +408,24 @@ static const struct regmap_config rockchip_i2s_regmap_config = {
+ 	.cache_type = REGCACHE_FLAT,
+ };
+ 
++static const struct snd_pcm_hardware rockchip_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID |
++				  SNDRV_PCM_INFO_INTERLEAVED,
++	.period_bytes_min	= 1024,
++	.period_bytes_max	= PAGE_SIZE,
++	.periods_min		= 3,
++	.periods_max		= 8,
++	.buffer_bytes_max	= 8 * PAGE_SIZE,
++	.fifo_size		= 16,
++};
++
++static const struct snd_dmaengine_pcm_config rockchip_dmaengine_pcm_config = {
++	.pcm_hardware = &rockchip_pcm_hardware,
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++	.prealloc_buffer_size = PAGE_SIZE * 8,
++};
++
+ static int rockchip_i2s_probe(struct platform_device *pdev)
  {
--	int i, size, detected_size;
-+	int i, size;
-+	unsigned short rdback;
- 
- 	if (emu->dram_checked)
- 		return;
- 
- 	size = 0;
--	detected_size = 0;
- 
- 	/* write out a magic number */
- 	snd_emu8000_dma_chan(emu, 0, EMU8000_RAM_WRITE);
-@@ -392,55 +392,81 @@ size_dram(struct snd_emu8000 *emu)
- 	EMU8000_SMALW_WRITE(emu, EMU8000_DRAM_OFFSET);
- 	EMU8000_SMLD_WRITE(emu, UNIQUE_ID1);
- 	snd_emu8000_init_fm(emu); /* This must really be here and not 2 lines back even */
--
--	while (size < EMU8000_MAX_DRAM) {
--
--		size += 512 * 1024;  /* increment 512kbytes */
--
--		/* Write a unique data on the test address.
--		 * if the address is out of range, the data is written on
--		 * 0x200000(=EMU8000_DRAM_OFFSET).  Then the id word is
--		 * changed by this data.
--		 */
--		/*snd_emu8000_dma_chan(emu, 0, EMU8000_RAM_WRITE);*/
--		EMU8000_SMALW_WRITE(emu, EMU8000_DRAM_OFFSET + (size>>1));
--		EMU8000_SMLD_WRITE(emu, UNIQUE_ID2);
--		snd_emu8000_write_wait(emu);
--
--		/*
--		 * read the data on the just written DRAM address
--		 * if not the same then we have reached the end of ram.
--		 */
--		/*snd_emu8000_dma_chan(emu, 0, EMU8000_RAM_READ);*/
--		EMU8000_SMALR_WRITE(emu, EMU8000_DRAM_OFFSET + (size>>1));
--		/*snd_emu8000_read_wait(emu);*/
--		EMU8000_SMLD_READ(emu); /* discard stale data  */
--		if (EMU8000_SMLD_READ(emu) != UNIQUE_ID2)
--			break; /* no memory at this address */
-+	snd_emu8000_write_wait(emu);
-+
-+	/* If that didn't work, we have no RAM at all. */
-+	EMU8000_SMALR_WRITE(emu, EMU8000_DRAM_OFFSET);
-+	rdback = EMU8000_SMLD_READ(emu);
-+	snd_printdd("EMU8000 [0x%lx]: initial discard data = %04hx\n",
-+		emu->port1, rdback);
-+	rdback = EMU8000_SMLD_READ(emu);
-+	snd_printdd("EMU8000 [0x%lx]: initial readback = %04hx\n",
-+		emu->port1, rdback);
-+	if (rdback == UNIQUE_ID1) {
- 		snd_emu8000_read_wait(emu);
- 
- 		/*
--		 * If it is the same it could be that the address just
--		 * wraps back to the beginning; so check to see if the
--		 * initial value has been overwritten.
-+		 * If a write succeeds at the beginning of a 512 KiB page we
-+		 * assume that the whole page is there.
- 		 */
--		EMU8000_SMALR_WRITE(emu, EMU8000_DRAM_OFFSET);
--		EMU8000_SMLD_READ(emu); /* discard stale data  */
--		if (EMU8000_SMLD_READ(emu) != UNIQUE_ID1)
--			break; /* we must have wrapped around */
--		snd_emu8000_read_wait(emu);
--
--		/* Otherwise, it's valid memory. */
--		detected_size = size + 512 * 1024;
--	}
--
--	/* Distinguish 512 KiB from 0. */
--	if (detected_size == 0) {
--		snd_emu8000_read_wait(emu);
--		EMU8000_SMALR_WRITE(emu, EMU8000_DRAM_OFFSET);
--		EMU8000_SMLD_READ(emu); /* discard stale data  */
--		if (EMU8000_SMLD_READ(emu) == UNIQUE_ID1)
--			detected_size = 512 * 1024;
-+		size = 512 * 1024;
-+
-+		while (size < EMU8000_MAX_DRAM) {
-+			/*
-+			 * Write a unique data on the test address.  If the
-+			 * address is out of range, the data is written on
-+			 * 0x200000(=EMU8000_DRAM_OFFSET).  Then the id word
-+			 * is changed by this data.
-+			 */
-+			EMU8000_SMALW_WRITE(emu, EMU8000_DRAM_OFFSET +
-+				(size>>1));
-+			EMU8000_SMLD_WRITE(emu, UNIQUE_ID2);
-+			snd_emu8000_write_wait(emu);
-+
-+			/*
-+			 * Read the data on the just written DRAM address.
-+			 * If not the same then we have reached the end of RAM.
-+			 */
-+			EMU8000_SMALR_WRITE(emu, EMU8000_DRAM_OFFSET +
-+				(size>>1));
-+			rdback = EMU8000_SMLD_READ(emu);
-+			snd_printdd("EMU8000 [0x%lx]: ID2 discard data = %04hx\n",
-+				emu->port1, rdback);
-+			rdback = EMU8000_SMLD_READ(emu);
-+			snd_printdd("EMU8000 [0x%lx]: ID2 readback = %04hx\n",
-+				emu->port1, rdback);
-+			if (rdback != UNIQUE_ID2) {
-+				snd_printdd("EMU8000 [0x%lx]: ID2 break\n",
-+					emu->port1);
-+				break; /* no memory at this address */
-+			}
-+			snd_emu8000_read_wait(emu);
-+
-+			/*
-+			 * If it is the same it could be that the address just
-+			 * wraps back to the beginning, so check to see if the
-+			 * initial value has been overwritten.
-+			 */
-+			EMU8000_SMALR_WRITE(emu, EMU8000_DRAM_OFFSET);
-+			rdback = EMU8000_SMLD_READ(emu);
-+			snd_printdd("EMU8000 [0x%lx]: ID1 discard data = %04hx\n",
-+				emu->port1, rdback);
-+			rdback = EMU8000_SMLD_READ(emu);
-+			snd_printdd("EMU8000 [0x%lx]: ID1 readback = %04hx\n",
-+				emu->port1, rdback);
-+			if (rdback != UNIQUE_ID1) {
-+				snd_printdd("EMU8000 [0x%lx]: ID1 break\n",
-+					emu->port1);
-+				break; /* may have wrapped around */
-+			}
-+			snd_emu8000_read_wait(emu);
-+
-+			/* Otherwise, it's valid memory. */
-+			size += 512 * 1024;
-+		}
-+	} else {
-+		snd_printdd("EMU8000 [0x%lx]: initial test failed\n",
-+			emu->port1);
+ 	struct rk_i2s_dev *i2s;
+@@ -478,7 +496,8 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 		goto err_suspend;
  	}
  
- 	/* wait until FULL bit in SMAxW register is false */
-@@ -454,10 +480,9 @@ size_dram(struct snd_emu8000 *emu)
- 	snd_emu8000_dma_chan(emu, 0, EMU8000_RAM_CLOSE);
- 	snd_emu8000_dma_chan(emu, 1, EMU8000_RAM_CLOSE);
- 
--	snd_printdd("EMU8000 [0x%lx]: %d Kb on-board memory detected\n",
--		    emu->port1, detected_size/1024);
--
--	emu->mem_size = detected_size;
-+	snd_printk(KERN_INFO "sbawe [0x%lx]: %d B on-board DRAM detected\n",
-+		emu->port1, size);
-+	emu->mem_size = size;
- 	emu->dram_checked = 1;
- }
- 
+-	ret = snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	ret = snd_dmaengine_pcm_register(&pdev->dev,
++					 &rockchip_dmaengine_pcm_config, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM\n");
+ 		goto err_pcm_register;
 -- 
-1.8.4
+1.9.1
