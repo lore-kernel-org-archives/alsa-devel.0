@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 21/33] ALSA: intel8x0: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:53:04 +0100
-Message-ID: <1420818796-30852-22-git-send-email-tiwai@suse.de>
+Subject: [PATCH 30/33] ALSA: via82xx: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:53:13 +0100
+Message-ID: <1420818796-30852-31-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FEB22617AD
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DC15261A2F
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0E478ADAA
+ by mx2.suse.de (Postfix) with ESMTP id 2743EAC6D
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,36 +38,36 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/intel8x0.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/pci/via82xx.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
-index 4a28252a42b9..67f9e8b77385 100644
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -2654,7 +2654,6 @@ static int snd_intel8x0_free(struct intel8x0 *chip)
+diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
+index e088467fb736..120fccbb2461 100644
+--- a/sound/pci/via82xx.c
++++ b/sound/pci/via82xx.c
+@@ -2271,7 +2271,6 @@ static int snd_via82xx_chip_init(struct via82xx *chip)
   */
- static int intel8x0_suspend(struct device *dev)
+ static int snd_via82xx_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct intel8x0 *chip = card->private_data;
+ 	struct via82xx *chip = card->private_data;
  	int i;
-@@ -2682,12 +2681,6 @@ static int intel8x0_suspend(struct device *dev)
- 		free_irq(chip->irq, chip);
- 		chip->irq = -1;
+@@ -2291,28 +2290,15 @@ static int snd_via82xx_suspend(struct device *dev)
+ 		chip->capture_src_saved[1] = inb(chip->port + VIA_REG_CAPTURE_CHANNEL + 0x10);
  	}
+ 
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
--	/* The call below may disable built-in speaker on some laptops
--	 * after S2RAM.  So, don't touch it.
--	 */
--	/* pci_set_power_state(pci, PCI_D3hot); */
+-	pci_set_power_state(pci, PCI_D3hot);
  	return 0;
  }
  
-@@ -2698,14 +2691,6 @@ static int intel8x0_resume(struct device *dev)
- 	struct intel8x0 *chip = card->private_data;
+ static int snd_via82xx_resume(struct device *dev)
+ {
+-	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct via82xx *chip = card->private_data;
  	int i;
  
 -	pci_set_power_state(pci, PCI_D0);
@@ -78,8 +78,9 @@ index 4a28252a42b9..67f9e8b77385 100644
 -		return -EIO;
 -	}
 -	pci_set_master(pci);
- 	snd_intel8x0_chip_init(chip, 0);
- 	if (request_irq(pci->irq, snd_intel8x0_interrupt,
- 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+-
+ 	snd_via82xx_chip_init(chip);
+ 
+ 	if (chip->chip_type == TYPE_VIA686) {
 -- 
 2.2.1
