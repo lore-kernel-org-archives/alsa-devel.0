@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Split hsw_pcm_data for
-	playback and capture
-Date: Fri, 9 Jan 2015 17:17:01 +0000
-Message-ID: <20150109171701.GJ2634@sirena.org.uk>
-References: <1420785396-15067-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH 1/3] ASoC: rt5677: Modify the behavior that
+ updates the PLL parameter.
+Date: Fri, 9 Jan 2015 17:18:37 +0000
+Message-ID: <20150109171837.GK2634@sirena.org.uk>
+References: <1420684267-19211-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1621614685662219047=="
+Content-Type: multipart/mixed; boundary="===============3189989731643819701=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 58FB5260714
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 18:17:08 +0100 (CET)
-In-Reply-To: <1420785396-15067-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F437260714
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 18:18:42 +0100 (CET)
+In-Reply-To: <1420684267-19211-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, yang.a.fang@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1621614685662219047==
+--===============3189989731643819701==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1G9XMrEf5BQ3xH49"
+	protocol="application/pgp-signature"; boundary="jzfGCzLqwOj4IpJK"
 Content-Disposition: inline
 
 
---1G9XMrEf5BQ3xH49
+--jzfGCzLqwOj4IpJK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jan 09, 2015 at 02:36:36PM +0800, Jie Yang wrote:
-> There may be 2 pcm streams for a same DAI at most, and these 2
-> streams should have different hsw_pcm_data, e.g. they have
-> different persistent data, so here we need split hsw_pcm_data
-> for playback and capture, to make sure they won't be mixed
-> and keep cleaned.
+On Thu, Jan 08, 2015 at 10:31:05AM +0800, Oder Chiou wrote:
+> The patch modified the behavior that updates the PLL parameter. It set the
+> update bit before the PLL power up.
 
 Applied, thanks.
 
---1G9XMrEf5BQ3xH49
+--jzfGCzLqwOj4IpJK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUsA0MAAoJECTWi3JdVIfQkDAH/01eYk1dbSiAY0FMP9/yVnFR
-zl55sW/HcfXBN4kdCfWO8b36dy/M8K/jGWPh8M2O5i1dKUOsJJ7V9OOQOEZl8alp
-Dkcvsj08+bzkPKpV3rEdVqg6B3HJpKAzDdJ0z23EiF6sT1Dr/nAgyiCgGIszdvF8
-ohdCp9HrT/FY3cc4td4ZlRwnuQYebWikd3LHrENP/X7IP8DbsdzwiEU/RPxOWK+x
-PkAPYAwgRKu9EyWk6XWo817FdMh01T8AE4y1j56tjaTDyvnkdSqOFv6qOB1mqIhr
-yr8+eLhQyMN9SYMOzIANbRptbAjJRPXH8lbkB5rXdswgI0ne10+gFRgDig5rG2s=
-=7w7r
+iQEcBAEBAgAGBQJUsA1sAAoJECTWi3JdVIfQRRUH/0hm+1fwDN2h2QzHMFrjF4e6
+yIyvYUPDPFyJjVLQVy+9wUUAWS4cFDuPpCCMfFkNlkVicqocvl3aLYSqIMhy+Eoc
+gTsubfbk059uk2ga6JJ5AR5YLRdIej17xJwbFGzoSu+bPb3H9RDT4biCc2KeDGTb
+Pl9XTVrL3xYf0PwtHXgxPz5elZJBdwG+v+ILO+agg42mU0od7CJCiBsy8vQHlrlU
+mhs1pe049uWION2Yw2TZmTOXW1eajXx87Y7pGI76wQ5cAqcbJ8DUY1tqymSAPl0J
+ur6OR4Q46RD99YLqrdFFkGQrlyimPlsKJsrJuxeaVhG3Hqd93Ifn5ezqSypHj7g=
+=gUxq
 -----END PGP SIGNATURE-----
 
---1G9XMrEf5BQ3xH49--
+--jzfGCzLqwOj4IpJK--
 
---===============1621614685662219047==
+--===============3189989731643819701==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1621614685662219047==--
+--===============3189989731643819701==--
