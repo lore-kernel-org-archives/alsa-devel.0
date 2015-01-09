@@ -1,88 +1,64 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Fri, 9 Jan 2015 18:38:57 +0100
-Message-ID: <20150109183857.53d701a4@armhf>
+From: Andrew Jackson <Andrew.Jackson@arm.com>
+Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the
+	HDMI transmitter
+Date: Fri, 09 Jan 2015 17:39:08 +0000
+Message-ID: <54B0123C.9070800@arm.com>
 References: <cover.1420628786.git.moinejf@free.fr>
- <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
- <54AE99F5.1010404@ti.com> <20150108174257.557f7ea5@armhf>
- <54AFA9B0.6040405@ti.com> <20150109123036.4bc4bbf6@armhf>
- <20150109114529.GH12302@n2100.arm.linux.org.uk>
- <20150109135401.5b270d46@armhf>
- <20150109130725.GN12302@n2100.arm.linux.org.uk>
- <54AFDE8D.3000504@arm.com>
- <20150109145741.GP12302@n2100.arm.linux.org.uk>
+ <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150109145741.GP12302@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
+ [217.140.96.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C0CF261583
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 18:39:10 +0100 (CET)
+In-Reply-To: <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jyri Sarha <jsarha@ti.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCA5IEphbiAyMDE1IDE0OjU3OjQxICswMDAwClJ1c3NlbGwgS2luZyAtIEFSTSBMaW51
-eCA8bGludXhAYXJtLmxpbnV4Lm9yZy51az4gd3JvdGU6Cgo+IFdlbGwsIGlmIHdlIGxvb2sgYXQg
-dGhlIEhETUkgc3BlY3MsIHRoZXJlIGlzIGEgZmllbGQgaW4gdGhlIGF1ZGlvIGluZm8KPiBmcmFt
-ZSAoQ0EgYml0cykgd2hpY2ggaWRlbnRpZmllcyB0aGUgc3BlYWtlciBhbGxvY2F0aW9uIGJldHdl
-ZW4gdGhlCj4gSERNSSBQQ00gY2hhbm5lbHMgYW5kIHRoZSBwaHlzaWNhbCBzcGVha2Vycy4KPiAK
-PiBJdCBkZXNjcmliZXMgYSBsaW1pdGVkIHNldCAtIGVzc2VudGlhbGx5IHRob3VnaCwgY2hhbm5l
-bCAwIGlzIGFsd2F5cwo+IGZyb250IGxlZnQsIGFuZCBjaGFubmVsIDEgaXMgYWx3YXlzIGZyb250
-IHJpZ2h0LiAgQ2hhbm5lbCAyIGlzIGFsd2F5cwo+IExGRSwgYW5kIGNoYW5uZWwgMyBpcyBhbHdh
-eXMgZnJvbnQgY2VudHJlLgo+IAo+IENoYW5uZWwgMCBhbmQgMSBhcmUgYWx3YXlzIGFsbG9jYXRl
-ZCwgYnV0IGl0J3MgcG9zc2libGUgdG8gaGF2ZSBjaGFubmVscwo+IGFib3ZlIDIgdG8gYmUgYWxs
-b2NhdGVkIGluZGVwZW5kZW50bHkgb2YgZWFjaCBvdGhlciAoZWcsIHlvdSBjb3VsZCBoYXZlCj4g
-NywgNiwgMSwgMCBhbGxvY2F0ZWQgdG8gZnJvbnQgcmlnaHQgY2VudHJlLCBmcm9udCBsZWZ0IGNl
-bnRyZSwgcmlnaHQsCj4gbGVmdCBzcGVha2VycyAtIGluIHRoYXQgb3JkZXIuKQo+IAo+IEFzIHlv
-dSBwb2ludCBvdXQsIHdlIGRvbid0IGhhdmUgZG9jdW1lbnRhdGlvbiB3aGljaCB0ZWxscyB1cyBr
-bm93IGhvdwo+IHRoZXNlIFBDTSBjaGFubmVscyBtYXAgdG8gSTJTIGlucHV0cy4KCkkgaGFkIGEg
-bG9vayBhdCB0aGUgVERBMTk5ODggKHNtYWxsKSBkYXRhc2hlZXQgSSBoYXZlIGFuZCBhdCB0aGUg
-SERNSQpzcGVjcywgYW5kLCB5ZXMsIHlvdSBhcmUgcmlnaHQ6IG11bHRpIChzdGVyZW8pIGNoYW5u
-ZWxzIGltcGxpZXMgc3BlYWtlcgptYXBwaW5nLCBhbmQsIHRoZW4sIHRoYXQgdGhlIEkyUyBzdHJl
-YW1zIGNvbWUgZnJvbSBhIHNhbWUgbWVkaWEgc291cmNlLgoKV2hpbGUsIGFzIHNhaWQgaW4gdGhl
-IFREQTE5OTg4IGRhdGFzaGVldCwKIlRoZSBJMlMtYnVzIGlucHV0IGludGVyZmFjZSByZWNlaXZl
-cyBhbiBJMlMtYnVzIHNpZ25hbCBpbmNsdWRpbmcKIHNlcmlhbCBkYXRhLCB3b3JkIHNlbGVjdCBh
-bmQgc2VyaWFsIGNsb2NrIiwKaXQgd291bGQgYmUgc3RyYW5nZSB0aGF0IHRoZXNlIEkyUyBidXNl
-cyBjb21lIGZyb20gZGlmZmVyZW50IGF1ZGlvIGRldmljZXMuCgo+IFdoYXQgd2UgZG8ga25vdyBp
-cyB0aGF0IHRoZXJlIGlzIGEgZml4ZWQgbWFwcGluZyBiZXR3ZWVuIEFQIHBpbnMgYW5kIEkyUwo+
-IGNoYW5uZWxzICh3aGljaCBhcmUgbm90IFBDTSBjaGFubmVscyksIGJ1dCBhcyB5b3UgcG9pbnQg
-b3V0LCB3ZSBkb24ndAo+IGhhdmUgYW55IGRvY3VtZW50YXRpb24gd2hpY2ggZGVzY3JpYmVzIGhv
-dyB0aGUgSTJTIGNoYW5uZWxzIChlYWNoIHdpdGgKPiB0aGVpciBvd24gTCtSIHdvcmRzKSBtYXAg
-dG8gdGhlIFBDTSBjaGFubmVscyAtIGFuZCB3ZSBkb24ndCBrbm93IHdoZXRoZXIKPiB0aGUgQ0Ff
-STJTIGJpdHMgaW4gdGhhdCBzYW1lIHJlZ2lzdGVyIGluIHRoZSBUREE5OTh4IGhhdmUgYW4gZWZm
-ZWN0IG9uCj4gdGhpcy4KCkhETUkgdGFsa3MgYWJvdXQgTFBDTSAoTGluZWFyIFBDTSkgY2hhbm5l
-bHMgYW5kIFREQTE5OTg4IHRhbGtzIGFib3V0CkkyUy1idXMgKHN0ZXJlbykgY2hhbm5lbHMuIEZv
-ciBtZSwgaXQgc2VlbXMgb2J2aW91cyB0aGF0IHRoZXNlIGNoYW5uZWxzCmFyZSBjb3JyZWxhdGVk
-OgotIExQQ00tMCBpcyBJMlMtYnVzLTAtbGVmdCAoRkwpCi0gTFBDTS0xIGlzIEkyUy1idXMtMC1y
-aWdodCAoRlIpCi0gTFBDTS0yIGlzIEkyUy1idXMtMS1sZWZ0IChMRkUpCi0gTFBDTS0zIGlzIEky
-Uy1idXMtMS1yaWdodCAoRkMpCi4uLgoKPiBEb2VzIGFueW9uZSBoYXZlIGEgVERBOTk4eCBzZXR1
-cCB3aGljaCBoYXMgYW4gSTJTIHNvdXJjZSBjb25uZWN0ZWQgdG8KPiB0aGUgVERBOTk4eCBJMlMg
-Y2hhbm5lbCAxLCBhbmQgd2hvIGhhcyBhIEhETUkgc2luayB3aGljaCB3aWxsIGFjY2VwdAo+IHRo
-ZSBMRkUvRkMgY2hhbm5lbHM/ICBJZiBzbywgcHJvZHVjaW5nIGEgZGVzY3JpcHRpb24gb2YgaG93
-IHRoZSBDQV9JMlMKPiBiaXRzIGFuZCBlbmFibGluZyBJMlMgaW5wdXQgcGlucyBpbmZsdWVuY2Vz
-IHRoZSBtYXBwaW5nIHdvdWxkIGJlIGEgZ29vZAo+IGlkZWEuCgpJIGNvdWxkIG5vdCBmaW5kIGEg
-ZGVzY3JpcHRpb24gb2YgdGhlc2UgQ0FfSTJTIGJpdHMuCgo+IElmIHdlIGRvbid0IGhhdmUgdGhh
-dCwgSSdkIHJlY29tbWVuZCBzcGxpdHRpbmcgdGhlIERUIHByb3BlcnR5IGludG8KPiAiYXVkaW8g
-aW5wdXRzIGZvciBJMlMiIGFuZCAiYXVkaW8gaW5wdXQgZm9yIFNQRElGIiAob25seSBvbmUgY2Fu
-IGJlCj4gYWN0aXZlIHdpdGggU1BESUYpLgo+IAo+IElmIHdlIHdhbnQgdG8gc3VwcG9ydCBtb3Jl
-IHRoYW4gb25lIFNQRElGIGlucHV0ICh3aGljaCBtdXN0IGJlIG11dHVhbGx5Cj4gZXhjbHVzaXZl
-KSBJJ2QgcmVjb21tZW5kIHRvIGxvb2sgYXQgdGhlIE9GIGdyYXBoIHN0dWZmIHdlIHVzZSBpbiBE
-Uk0gLQo+IG9uZSBwb3J0IGZvciBlYWNoICJtb2RlIiAtIGVnLCBJMlMsIFNQRElGIGluIG9uIEFQ
-MiwgU1BESUYgaW4gb24gQVAzLgo+IEVhY2ggcG9ydCBub2RlIGNhbiBzcGVjaWZ5IHRoZSBBUCBw
-aW5zIHdoaWNoIHNob3VsZCBiZSBlbmFibGVkLgoKSSBhZ3JlZS4gVGhlcmUgYXJlIG9uZSBTL1BE
-SUYgcG9ydCBhbmQgb25lIEkyUyBwb3J0LgoKU28sIHdoaWNoIHN5bnRheD8KCkkgcHJvcG9zZWQ6
-CgoJYXVkaW8tcG9ydHMgPSA8MHgwND4sIDwweDAzPjsKCWF1ZGlvLXBvcnQtbmFtZXMgPSAic3Bk
-aWYiLCAiaTJzIjsKCkRvIHlvdSBiZXR0ZXIgbGlrZToKCglhdWRpby1zcGRpZi1wb3J0ID0gPDB4
-MDQ+OwoJYXVkaW8taTJzLXBvcnQgPSA8MHgwMz47CgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAg
-ICAgICoqIEJyZWl6aCBoYSBMaW51eCBhdGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZy
-ZWUuZnIvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
-aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On 01/07/15 10:51, Jean-Francois Moine wrote:
+> This patch adds a CODEC to the NXP TDA998x HDMI transmitter.
+> 
+> The CODEC handles both I2S and S/PDIF inputs.
+> It maintains the audio format and rate constraints according
+> to the HDMI device parameters (EDID) and sets dynamically the input
+> ports in the TDA998x I2C driver on start/stop audio streaming.
+> 
+> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+> ---
+
+[snip]
+
+> +static int tda998x_codec_startup(struct snd_pcm_substream *substream,
+> +                                struct snd_soc_dai *dai)
+> +{
+> +       struct snd_pcm_runtime *runtime = substream->runtime;
+> +       struct snd_pcm_hw_constraint_list *rate_constraints;
+> +       u8 *sad;                /* Short Audio Descriptor (3 bytes) */
+
+[...]
+
+> +       snd_pcm_hw_constraint_minmax(runtime,
+> +                               SNDRV_PCM_HW_PARAM_CHANNELS,
+> +                               1, sad[SAD_MX_CHAN_I]);
+
+In the light of our discussions elsewhere [1], shouldn't this
+be constrained by the number of hardware channels that the TDA998x
+supports too?  That is, the maximum number of channels should
+be the lesser of sd[SAD_MX_CHAN_I] and number_of_I2S channels 
+(or S/PDIF channels if so configured).
+
+	Andrew
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/086090.html
