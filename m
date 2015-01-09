@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 26/33] ALSA: riptide: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:53:09 +0100
-Message-ID: <1420818796-30852-27-git-send-email-tiwai@suse.de>
+Subject: [PATCH 33/33] ALSA: ymfpci: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:53:16 +0100
+Message-ID: <1420818796-30852-34-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C020261A76
+ by alsa0.perex.cz (Postfix) with ESMTP id 861B7261AED
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 173D0ADB1
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 3D5B0ADB4
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,48 +38,45 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/riptide/riptide.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ sound/pci/ymfpci/ymfpci_main.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index 6abc2ac8fffb..7e922fa24de5 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -1153,7 +1153,6 @@ static void riptide_handleirq(unsigned long dev_id)
- #ifdef CONFIG_PM_SLEEP
- static int riptide_suspend(struct device *dev)
+diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
+index 81c916a5eb96..2b0b8f559ab3 100644
+--- a/sound/pci/ymfpci/ymfpci_main.c
++++ b/sound/pci/ymfpci/ymfpci_main.c
+@@ -2326,7 +2326,6 @@ static int saved_regs_index[] = {
+ 
+ static int snd_ymfpci_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_riptide *chip = card->private_data;
- 
-@@ -1161,27 +1160,14 @@ static int riptide_suspend(struct device *dev)
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
- 	snd_pcm_suspend_all(chip->pcm);
- 	snd_ac97_suspend(chip->ac97);
+ 	struct snd_ymfpci *chip = card->private_data;
+ 	unsigned int i;
+@@ -2347,9 +2346,6 @@ static int snd_ymfpci_suspend(struct device *dev)
+ 	snd_ymfpci_writel(chip, YDSXGR_NATIVEDACOUTVOL, 0);
+ 	snd_ymfpci_writel(chip, YDSXGR_BUF441OUTVOL, 0);
+ 	snd_ymfpci_disable_dsp(chip);
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
 -	pci_set_power_state(pci, PCI_D3hot);
  	return 0;
  }
  
- static int riptide_resume(struct device *dev)
- {
--	struct pci_dev *pci = to_pci_dev(dev);
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_riptide *chip = card->private_data;
+@@ -2360,14 +2356,6 @@ static int snd_ymfpci_resume(struct device *dev)
+ 	struct snd_ymfpci *chip = card->private_data;
+ 	unsigned int i;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
 -	if (pci_enable_device(pci) < 0) {
--		printk(KERN_ERR "riptide: pci_enable_device failed, "
--		       "disabling device\n");
+-		dev_err(dev, "pci_enable_device failed, disabling device\n");
 -		snd_card_disconnect(card);
 -		return -EIO;
 -	}
 -	pci_set_master(pci);
- 	snd_riptide_initialize(chip);
- 	snd_ac97_resume(chip->ac97);
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+ 	snd_ymfpci_aclink_reset(pci);
+ 	snd_ymfpci_codec_ready(chip, 0);
+ 	snd_ymfpci_download_image(chip);
 -- 
 2.2.1
