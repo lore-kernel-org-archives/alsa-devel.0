@@ -1,60 +1,75 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v4 0/6] sanitize hda/i915 interface using
- the component fw
-Date: Fri, 9 Jan 2015 10:18:45 +0100
-Message-ID: <20150109091845.GI26519@phenom.ffwll.local>
-References: <1420732458-11373-1-git-send-email-imre.deak@intel.com>
+From: Andrew Jackson <Andrew.Jackson@arm.com>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
+	for audio
+Date: Fri, 09 Jan 2015 09:25:40 +0000
+Message-ID: <54AF9E94.7080601@arm.com>
+References: <cover.1420628786.git.moinejf@free.fr>
+ <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+ <54AE99F5.1010404@ti.com> <20150108174257.557f7ea5@armhf>
+ <20150108200421.GC2634@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <1420732458-11373-1-git-send-email-imre.deak@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Imre Deak <imre.deak@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Jani Nikula <jani.nikula@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com
+ [217.140.96.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26ADF26153A
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 10:25:44 +0100 (CET)
+In-Reply-To: <20150108200421.GC2634@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Jean-Francois Moine <moinejf@free.fr>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jyri Sarha <jsarha@ti.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKYW4gMDgsIDIwMTUgYXQgMDU6NTQ6MTJQTSArMDIwMCwgSW1yZSBEZWFrIHdyb3Rl
-Ogo+IFRoaXMgaXMgdjQgb2YgWzFdIGFkZHJlc3NpbmcgdGhlIHJldmlldyBjb21tZW50cyBmcm9t
-IFRha2FzaGkgYW5kIEphbmkuCj4gCj4gWzFdCj4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
-Zy9hcmNoaXZlcy9pbnRlbC1nZngvMjAxNC1EZWNlbWJlci8wNTY5OTIuaHRtbAo+IAo+IEltcmUg
-RGVhayAoNik6Cj4gICBkcm0vaTkxNTogYWRkIGRldl90b19pOTE1IGhlbHBlcgo+ICAgZHJtL2k5
-MTU6IGFkZCBjb21wb25lbnQgc3VwcG9ydAo+ICAgQUxTQTogaGRhOiBleHBvcnQgc3RydWN0IGhk
-YV9pbnRlbAo+ICAgQUxTQTogaGRhOiBwYXNzIGludGVsX2hkYSB0byBhbGwgaTkxNSBpbnRlcmZh
-Y2UgZnVuY3Rpb25zCj4gICBBTFNBOiBoZGE6IGFkZCBjb21wb25lbnQgc3VwcG9ydAo+ICAgZHJt
-L2k5MTU6IHJlbW92ZSB1bnVzZWQgcG93ZXJfd2VsbC9nZXRfY2RjbGtfZnJlcSBhcGkKCkFsbCBt
-ZXJnZWQgdG8gZGlucSwgdGhhbmtzLgotRGFuaWVsCgo+IAo+ICBkcml2ZXJzL2dwdS9kcm0vaTkx
-NS9pOTE1X2RtYS5jICAgICAgICAgfCAgIDQgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1
-X2Rydi5jICAgICAgICAgfCAgIDkgKy0KPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYu
-aCAgICAgICAgIHwgICA4ICsrCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMg
-ICAgICB8IDExMCArKysrKysrKysrKysrKysrKysrKysrKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkx
-NS9pbnRlbF9kcnYuaCAgICAgICAgfCAgIDIgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRl
-bF9ydW50aW1lX3BtLmMgfCAgNTYgLS0tLS0tLS0tLS0tCj4gIGluY2x1ZGUvZHJtL2k5MTVfY29t
-cG9uZW50LmggICAgICAgICAgICB8ICAzOCArKysrKysrKwo+ICBpbmNsdWRlL2RybS9pOTE1X3Bv
-d2Vyd2VsbC5oICAgICAgICAgICAgfCAgMzcgLS0tLS0tLS0KPiAgc291bmQvcGNpL2hkYS9oZGFf
-aTkxNS5jICAgICAgICAgICAgICAgIHwgMTUyICsrKysrKysrKysrKysrKysrKysrKystLS0tLS0t
-LS0tCj4gIHNvdW5kL3BjaS9oZGEvaGRhX2k5MTUuaCAgICAgICAgICAgICAgICB8ICAzNyAtLS0t
-LS0tLQo+ICBzb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jICAgICAgICAgICAgICAgfCAgNjAgKysr
-Ky0tLS0tLS0tLQo+ICBzb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5oICAgICAgICAgICAgICAgfCAg
-NzEgKysrKysrKysrKysrKysrCj4gIDEyIGZpbGVzIGNoYW5nZWQsIDM2MCBpbnNlcnRpb25zKCsp
-LCAyMjQgZGVsZXRpb25zKC0pCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2RybS9pOTE1
-X2NvbXBvbmVudC5oCj4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2RybS9pOTE1X3Bvd2Vy
-d2VsbC5oCj4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBzb3VuZC9wY2kvaGRhL2hkYV9pOTE1LmgKPiAg
-Y3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmgKPiAKPiAtLSAKPiAy
-LjEuMAo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Cj4gSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdAo+IEludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcKPiBodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
-Z2Z4CgotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRp
-b24KKzQxICgwKSA3OSAzNjUgNTcgNDggLSBodHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBs
-aXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On 01/08/15 20:04, Mark Brown wrote:
+> On Thu, Jan 08, 2015 at 05:42:57PM +0100, Jean-Francois Moine wrote:
+> 
+>> Examples:
+> 
+>> - for the Cubox:
+> 
+>> 	audio-inputs = "i2s", "spdif";
+> 
+>> - for some other board with I2S on the pins 3 and 4 only:
+> 
+>> 	audio-inputs = "none", "none", "i2s", "i2s";
+> 
+>> - for a fully wired TDA9983B (no driver yet):
+> 
+>> 	audio-inputs = "i2s", "i2s", "i2s", "i2s", "spdif";
+> 
+> I think that mostly works, though I do wonder if we need a way to
+> specify the ordering of the pins (if you can make pin 3 be the first two
+> I2S channels for example)?  Someone might choose a strange mapping for
+> board routing reasons for example.
+> 
+
+If it helps, I've collated the pin assignments given in the various TDA datasheets that I can find:
+
+Chip>	9983B	9989		19988		19989	
+Mode>	-	S/PDIF	I2S	S/PDIF	I2S	S/PDIF	I2S
+Pin
+AP0	WS	-	WS	-	WS	-	WS
+AP1	I2S#0	S/PDIF	I2S#0	S/PDIF	I2S#0	S/PDIF	I2S#0
+AP2	I2S#1	-	-	S/PDIF	I2S#1	S/PDIF	I2S#1
+AP3	I2S#2	-	-	-	I2S#2*	MCLK	-
+AP4	I2S#3	-	-	-	I2S#3*	-	-
+AP5	MCLK	-	-	-	-	-	-
+AP6	S/PDIF	-	-	-	-	-	-
+AP7	AUX	-	-	-	-	-	-
+
+WS = I2S Word Select
+* Depends on package
+
+The 9983B differs from the other devices in that the I2S and S/PDIF functionality is not multiplexed 
+onto various pins.
+
+	Andrew
