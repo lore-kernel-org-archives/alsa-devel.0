@@ -1,72 +1,90 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v2] ALSA: usb-audio: Add support for
-	Akai	MPC Element USB MIDI controller
-Date: Fri, 09 Jan 2015 09:48:42 +0100
-Message-ID: <54AF95EA.90505@ladisch.de>
-References: <54AE16D8.6080302@gmail.com> <54AEFCFF.3060406@ladisch.de>
- <54AF24D6.6010701@gmail.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH] ASoC: wm8904: fix runtime warning
+Date: Fri, 9 Jan 2015 16:53:40 +0800
+Message-ID: <1420793620-2866-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5C1BA2614C1
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 09:48:44 +0100 (CET)
-In-Reply-To: <54AF24D6.6010701@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Bonser <misterpib@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Paul Bonser wrote:
-> On 01/08/2015 03:56 PM, Clemens Ladisch wrote:
->> Paul Bonser wrote:
->>> The Akai MPC Element incorrectly reports its bInterfaceClass as 255, but
->>> otherwise implements the USB MIDI spec correctly.
->>>
->>> This adds a quirks-table.h entry which allows the device to be
->>> recognized as a standard USB MIDI device.
->>>
->>> +++ b/sound/usb/quirks-table.h
->>> +{
->>> +	/* Akai MPC Element */
->>> +	USB_DEVICE(0x09e8, 0x0021),
->>> +	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
->>> +		.ifnum = QUIRK_ANY_INTERFACE,
->>> +		.type = QUIRK_COMPOSITE,
->>> +		.data = & (const struct snd_usb_audio_quirk[]) {
->>> +			{
->>> +				.ifnum = 0,
->>> +				.type = QUIRK_IGNORE_INTERFACE
->>> +			},
->>> +			{
->>> +				.ifnum = 1,
->>> +				.type = QUIRK_MIDI_STANDARD_INTERFACE
->>> +			},
->>> +			{
->>> +				.ifnum = -1
->>> +			}
->>> +		}
->>> +	}
->>> +},
->>
->> Why a composite quirk?  Does a single quirk entry not work?
->
-> A single quirk entry results in an error message in dmesg:
-> "snd-usb-audio: probe of 3-2:1.0 failed with error -5"
+As the commit 5fe5b76 (ASoC: dapm: Do not pretend to support
+controls for non mixer/mux widgets) remove the fake control.
 
-That message is normal for unhandled interfaces.
+Then, the wm8904 throw out the following warning at runtime.
+--->8---
+wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTL
+wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTL
+wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTL
+wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTL
+wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTL
+wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTL
+wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTR
+wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTR
+wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTR
+wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTR
+wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTR
+wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTR
+wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACL
+wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACL
+wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACL
+wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACL
+wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACL
+wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACL
+wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACR
+wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACR
+wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACR
+wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACR
+wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACR
+wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACR
+---8<---
 
-Does it actually prevent the device from working?
+This patch is used to remove these warning.
 
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+---
 
-Regards,
-Clemens
+ sound/soc/codecs/wm8904.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 4d2d2b1..38582d7 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -1076,10 +1076,10 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
+ 	{ "Right Capture PGA", NULL, "Right Capture Mux" },
+ 	{ "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
+ 
+-	{ "AIFOUTL", "Left",  "ADCL" },
+-	{ "AIFOUTL", "Right", "ADCR" },
+-	{ "AIFOUTR", "Left",  "ADCL" },
+-	{ "AIFOUTR", "Right", "ADCR" },
++	{ "AIFOUTL", NULL, "ADCL" },
++	{ "AIFOUTL", NULL, "ADCR" },
++	{ "AIFOUTR", NULL, "ADCL" },
++	{ "AIFOUTR", NULL, "ADCR" },
+ 
+ 	{ "ADCL", NULL, "CLK_DSP" },
+ 	{ "ADCL", NULL, "Left Capture PGA" },
+@@ -1089,12 +1089,12 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route dac_intercon[] = {
+-	{ "DACL", "Right", "AIFINR" },
+-	{ "DACL", "Left",  "AIFINL" },
++	{ "DACL", NULL, "AIFINR" },
++	{ "DACL", NULL, "AIFINL" },
+ 	{ "DACL", NULL, "CLK_DSP" },
+ 
+-	{ "DACR", "Right", "AIFINR" },
+-	{ "DACR", "Left",  "AIFINL" },
++	{ "DACR", NULL, "AIFINR" },
++	{ "DACR", NULL, "AIFINL" },
+ 	{ "DACR", NULL, "CLK_DSP" },
+ 
+ 	{ "Charge pump", NULL, "SYSCLK" },
+-- 
+2.1.0.24.g4109c28
+
