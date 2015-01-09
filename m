@@ -1,81 +1,64 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Fri, 9 Jan 2015 13:07:25 +0000
-Message-ID: <20150109130725.GN12302@n2100.arm.linux.org.uk>
-References: <cover.1420628786.git.moinejf@free.fr>
- <0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
- <54AE99F5.1010404@ti.com> <20150108174257.557f7ea5@armhf>
- <54AFA9B0.6040405@ti.com> <20150109123036.4bc4bbf6@armhf>
- <20150109114529.GH12302@n2100.arm.linux.org.uk>
- <20150109135401.5b270d46@armhf>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5][resend v4] of: replace Asahi Kasei Corp vendor prefix
+Date: Fri, 9 Jan 2015 07:46:16 -0600
+Message-ID: <CAL_Jsq+GjM+3M63amyh3Rvijkz7Lch_cdUt9vScc9wZeOubOPA@mail.gmail.com>
+References: <878ulzx6hr.wl%kuninori.morimoto.gx@gmail.com> <20140922130026.GK3290@leverpostej>
+ <CAMuHMdX22z97SbGS1HDiYfJ1PXxyEN2S8D7w4sr+4bUwD+mJZw@mail.gmail.com>
+ <20140922132743.GM3290@leverpostej> <87y4rfhmgl.wl%kuninori.morimoto.gx@renesas.com>
+ <1415845309.4269.6.camel@perches.com> <20141113025105.GA16652@verge.net.au>
+ <87vbmjhj00.wl%kuninori.morimoto.gx@renesas.com> <20141113110740.GE3815@sirena.org.uk>
+ <87k32yd0bd.wl%kuninori.morimoto.gx@renesas.com> <20141114093554.GC3810@ulmo>
+ <87y4ra8xac.wl%kuninori.morimoto.gx@renesas.com> <5469CD47.3040409@cogentembedded.com>
+ <877fytxsde.wl%kuninori.morimoto.gx@renesas.com> <87egsob2cl.wl%kuninori.morimoto.gx@renesas.com>
+ <5478603D.1080404@cogentembedded.com> <87d282sl6w.wl%kuninori.morimoto.gx@renesas.com>
+ <87lhm7t37l.wl%kuninori.morimoto.gx@renesas.com> <87egr4vcxu.wl%kuninori.morimoto.gx@renesas.com>
+ <54AF5AB0.2050208@wwwdotorg.org> <871tn4uv0j.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20150109135401.5b270d46@armhf>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <871tn4uv0j.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Stephen Warren <swarren@wwwdotorg.org>, Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Matthias Brugger <matthias.bgg@gmail.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, SH-Linux <linux-sh@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Magnus Damm <magnus.damm@gmail.com>, Simon Horman <horms+renesas@verge.net.au>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Brown <broonie@kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKYW4gMDksIDIwMTUgYXQgMDE6NTQ6MDFQTSArMDEwMCwgSmVhbi1GcmFuY29pcyBN
-b2luZSB3cm90ZToKPiBPbiBGcmksIDkgSmFuIDIwMTUgMTE6NDU6MjkgKzAwMDAKPiBSdXNzZWxs
-IEtpbmcgLSBBUk0gTGludXggPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgo+ID4gSSB0
-aGluayB3ZSBuZWVkIHRvIHVuZGVyc3RhbmQgZXhhY3RseSBob3cgdGhlIDk5OHggbWFwIEkyUyBp
-bnB1dHMgdG8gdGhlCj4gPiBIRE1JIGNoYW5uZWxzIHRvIGF2b2lkIG1ha2luZyBhIG1pc3Rha2Ug
-d2l0aCB0aGUgYmluZGluZzsgcmVtZW1iZXIsIHRoZQo+ID4gYmluZGluZyBpc24ndCBzb21ldGhp
-bmcgdGhhdCBjYW4gYmUgZWFzaWx5ICJidWcgZml4ZWQiIGF0IGEgbGF0ZXIgZGF0ZQo+ID4gYXMg
-YW55dGhpbmcgd2UgY29tZSB1cCB3aXRoIG5vdyBoYXMgdG8gYmUgc3VwcG9ydGVkIGxvbmcgdGVy
-bSBieSB0aGUKPiA+IGtlcm5lbC4KPiAKPiBUaGUgRFQgZGVzY3JpYmVzIHRoZSBoYXJkd2FyZSBj
-b25maWd1cmF0aW9uLgoKWW91J3JlIG1pc3NpbmcgbXkgcG9pbnQuCgpIb3cgZG9lcyB0aGUgZHJp
-dmVyIGtub3cgd2hpY2ggb2YgdGhlIEkyUyBwaW5zIHRvIGVuYWJsZSBpbiBJMlMgbW9kZT8KCj4g
-QSBmdWxseSB3aXJlZCB0ZGE5OTh4IGNvdWxkIGJlIGEgY2hpcCB3aXRoIHRoZSBhdWRpbyBwaW5z
-IGNvbm5lY3RlZCB0bzoKPiAtIGEga2lya3dvb2QtbGlrZSBhdWRpbyBkZXZpY2Ugd2l0aCBvbmUg
-STJTIGFuZCBvbmUgUy9QRElGIG91dHB1dCwKPiAtIHR3byBvdGhlciBhdWRpbyBkZXZpY2VzIHdp
-dGggb25lIEkyUyBlYWNoLgoKSSBkb24ndCB0aGluayBpdCdzIHRoYXQgc2ltcGxlLiAgU2luY2Ug
-dGhlcmUgaXMgb25seSBvbmUgV1MgaW5wdXQgdG8KdGhlIDk5OHgsIHRoZSBmb3VyIEkyUyBzb3Vy
-Y2VzIHdvdWxkIG5lZWQgdG8gc3luY2hyb25pc2Ugc29tZWhvdywgYW5kCnNpbmNlIHRoZSBJMlMg
-c291cmNlIGdlbmVyYXRlcyBXUywgY29ubmVjdGluZyB0aGUgOTk4eCB0byBtdWx0aXBsZQppbmRl
-cGVuZGVudCBJMlMgc291cmNlcywgZWFjaCB3aXRoIHRoZWlyIG93biBXUyBvdXRwdXQsIHByZXNl
-bnRzIGEKaGFyZHdhcmUgcHJvYmxlbS4KCj4gV2l0aCBTL1BESUYsIG9ubHkgb25lIHN0ZXJlbyBj
-aGFubmVsIG1heSBiZSBzZW50LCBidXQgd2l0aCBJMlMsIHVwIHRvIDQKPiBzdGVyZW8gY2hhbm5l
-bHMgbWF5IGJlIHNlbnQuCgpUaGF0IHN0YXRlbWVudCBpcyBub3QgZW50aXJlbHkgYWNjdXJhdGUu
-ICBZZXMsIHdpdGggUy9QRElGLCBvbmx5IG9uZQpQQ00gTCtSIGNoYW5uZWwgY2FuIGJlIHNlbnQu
-ICBIb3dldmVyLCBTL1BESUYgYWxzbyBzdXBwb3J0cyBzZW5kaW5nCm1vcmUgY2hhbm5lbHMgdXNp
-bmcgIm5vbi1hdWRpbyIgc3RyZWFtcywgd2l0aCB0aGUgZGF0YSBlbmNvZGVkIGFzCk1QRUcgb3Ig
-QUFDLiAgVGhpcyB1c2VzIHRoZSBIRE1JIGRhdGEgaXNsYW5kcyB3aGljaCB3b3VsZCd2ZSBiZWVu
-Cm9jY3VwaWVkIGJ5IHRoZSBGcm9udCBMK1IgUENNIGNoYW5uZWwuCgo+IFRoZXNlIGNoYW5uZWxz
-IGFyZSBleHRyYWN0ZWQgYnkgdGhlIGRldmljZXMgY29ubmVjdGVkIG9uIHRoZSBIRE1JIGJ1cy4K
-ClRoYXQncyBpbmNvcnJlY3QuICBQbGVhc2UgcmVhZCB0aGUgSERNSSAxLjMgc3BlY2lmaWNhdGlv
-bjsgY2hhbm5lbHMgYXJlCmFsbG9jYXRlZCBmb3IgRnJvbnQgTCtSLCBDZW50cmUsIFN1YiwgUmVh
-ciBMK1IgYW5kIHRoZXJlJ3Mgbm8KaWRlbnRpZmljYXRpb24gdG8gaW5kaWNhdGUgdGhhdCB0aGVy
-ZSBhcmUgdHdvIEZyb250IEwrUiBjaGFubmVscyB3aGljaAphcmUgZGlmZmVyZW50IGxhbmd1YWdl
-cy4KCklmIHlvdSBmZWVsIGRpZmZlcmVudGx5LCBwbGVhc2UgcHJvdmlkZSBhIHJlZmVyZW5jZSB0
-byB0aGUgSERNSQpzcGVjaWZpY2F0aW9uIHdoaWNoIGRlc2NyaWJlcyB0aGlzIGZlYXR1cmUuCgo+
-IEFuIGV4YW1wbGUgY291bGQgYmUgdGhlIHBsYXlpbmcgb2YgYSBtdWx0aS1sYW5ndWFnZSBtb3Zp
-ZTogZWFjaCBhdWRpbwo+IGNoYW5uZWwgY2FycmllcyBvbmUgbGFuZ3VhZ2UuIEZyb20gdGhlIGNv
-bXB1dGVyIHZpZXcsIHRoZSBwbGF5aW5nCj4gYXBwbGljYXRpb24gc2VuZHMgZWFjaCBsYW5ndWFn
-ZSB0byBvbmUgc291bmQgY2FyZC4KClRoZSBzZWxlY3Rpb24gb2YgdGhlIGxhbmd1YWdlIGlzIGRv
-bmUgYXQgdGhlIHBsYXllciwgbm90IGJ5IHRoZSBkaXNwbGF5CmRldmljZS4KCj4gU28sIHRoaXMg
-bWVhbnMgdGhhdCB0aGUgdGRhOTk4eCBkcml2ZXIgc2hvdWxkIGNoZWNrIHRoYXQgUy9QRElGIGFu
-ZCBJMlMKPiBhcmUgbm90IGFjdGl2ZSBhdCB0aGUgc2FtZSB0aW1lLCBhbmQgaXQgc2hvdWxkIGFs
-c28gZG8gYSBwaW4gT1IvQU5EIG9uCj4gSTJTIHN0YXJ0L3N0b3AuCgpUaGF0J3MgY29ycmVjdDog
-dGhlIFREQTk5OHggY2FuIG9wZXJhdGUgaW4gb25lIG9mIHR3byBtb2RlczogZWl0aGVyClMvUERJ
-RiBfb3JfIEkyUywgYnV0IG5ldmVyIGJvdGguCgpNeSBxdWVzdGlvbiBpczogaG93IGRvIHdlIGtu
-b3cgd2hpY2ggSTJTIGlucHV0cyB0byBlbmFibGUsIG9yIGFyZQp5b3Ugc3VnZ2VzdGluZyB0aGF0
-IGFsbCBJMlMgaW5wdXRzIHNob3VsZCBiZSBlbmFibGVkIGlmIG9wZXJhdGluZyBpbgpJMlMgbW9k
-ZSBpcnJlc3BlY3RpdmUgb2Ygd2hldGhlciB0aGV5IG1heSBiZSBhY3RpdmU/CgotLSAKRlRUQyBi
-cm9hZGJhbmQgZm9yIDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEwLjVNYnBzIGRvd24gNDAw
-a2JwcyB1cAphY2NvcmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2
-ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+On Fri, Jan 9, 2015 at 4:07 AM, Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+>
+> Hi Stephen
+>
+> Thank you for your feedback
+>
+>> > I'm sending this "of: replace Asahi Kasei Corp vendor prefix" during
+>> > half-year (since Jun 2014) , many times. But, no-one care it.
+>> > I don't know who is the best maintainer.
+>> >  - Stephen : because it has Tegra ?
+>> >  - Olof    : because it has Tegra (= ARM) ?
+>> >  - Arnd    : because it has Tegra (= ARM) ?
+>> >  - Matthias: because it has Tegra (= ARM SoC) ?
+>> >  - Rob     : because DT ?
+>> >  - Andrew  : Last chance ?
+>> >
+>> > But, could you please care this patch ?
+>> > I will re-send it again
+>>
+>> It doesn't seem to be ack'd by any of the DT maintainers. Retro-actively
+>> changing a DT vendor name would need that, I think.
+>
+> Rob ?
+> I had sent this patch to him since half-years ago, many times...
+> Or other maintainer ?
+>
+>> Thierry and Alex (both Tegra maintainers) appear to have ack'd it, so it
+>> seems they expect it to go through some tree other than Tegra. Weren't
+>> there a bunch of related patches along with this (e.g. updating relevant
+>> drivers to support both prefixes?) so it was expected this patch would
+>> be applied together with them?
+>
+> I guess they expected it goes to DT branch (?)
+> This is only 1 patch. it doesn't have related patch-set
+
+It is in my queue. If the users of it are fine with breaking things,
+who am I to argue with them.
+
+Rob
