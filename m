@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 13/33] ALSA: echoaudio: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:52:56 +0100
-Message-ID: <1420818796-30852-14-git-send-email-tiwai@suse.de>
+Subject: [PATCH 08/33] ALSA: cmipci: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:52:51 +0100
+Message-ID: <1420818796-30852-9-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 509D5261521
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F5A826066B
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id F1F96AD94
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E41B1AD7E
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:26 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,38 +38,50 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/echoaudio/echoaudio.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/pci/cmipci.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-index 21228adaa70c..58960841ae7c 100644
---- a/sound/pci/echoaudio/echoaudio.c
-+++ b/sound/pci/echoaudio/echoaudio.c
-@@ -2162,7 +2162,6 @@ ctl_error:
+diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
+index 85ed40339db9..63d2c8236ec6 100644
+--- a/sound/pci/cmipci.c
++++ b/sound/pci/cmipci.c
+@@ -3347,7 +3347,6 @@ static unsigned char saved_mixers[] = {
  
- static int snd_echo_suspend(struct device *dev)
+ static int snd_cmipci_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
- 	struct echoaudio *chip = dev_get_drvdata(dev);
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct cmipci *cm = card->private_data;
+ 	int i;
+@@ -3366,29 +3365,15 @@ static int snd_cmipci_suspend(struct device *dev)
  
- 	snd_pcm_suspend_all(chip->analog_pcm);
-@@ -2188,9 +2187,6 @@ static int snd_echo_suspend(struct device *dev)
- 	chip->dsp_code = NULL;
- 	free_irq(chip->irq, chip);
- 	chip->irq = -1;
--	pci_save_state(pci);
--	pci_disable_device(pci);
+ 	/* disable ints */
+ 	snd_cmipci_write(cm, CM_REG_INT_HLDCLR, 0);
 -
+-	pci_disable_device(pci);
+-	pci_save_state(pci);
+-	pci_set_power_state(pci, PCI_D3hot);
  	return 0;
  }
  
-@@ -2204,7 +2200,6 @@ static int snd_echo_resume(struct device *dev)
- 	u32 pipe_alloc_mask;
- 	int err;
+ static int snd_cmipci_resume(struct device *dev)
+ {
+-	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct cmipci *cm = card->private_data;
+ 	int i;
  
+-	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
- 	commpage_bak = kmalloc(sizeof(struct echoaudio), GFP_KERNEL);
- 	if (commpage_bak == NULL)
- 		return -ENOMEM;
+-	if (pci_enable_device(pci) < 0) {
+-		dev_err(dev, "pci_enable_device failed, disabling device\n");
+-		snd_card_disconnect(card);
+-		return -EIO;
+-	}
+-	pci_set_master(pci);
+-
+ 	/* reset / initialize to a sane state */
+ 	snd_cmipci_write(cm, CM_REG_INT_HLDCLR, 0);
+ 	snd_cmipci_ch_reset(cm, CM_CH_PLAY);
 -- 
 2.2.1
