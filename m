@@ -1,63 +1,84 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Fri, 9 Jan 2015 11:48:12 +0000
-Message-ID: <20150109114812.GI12302@n2100.arm.linux.org.uk>
-References: <cover.1420628786.git.moinejf@free.fr>
- <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
- <54AD4C77.5000401@arm.com>
- <20150107154138.GL12302@n2100.arm.linux.org.uk>
- <20150107190241.27ebac8b@armhf>
- <54AFAC4C.7010209@ti.com>
- <20150109111935.GF12302@n2100.arm.linux.org.uk>
- <20150109124531.493bece4@armhf>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2 1/1] alsa-lib: Add snd_pcm_start_at.
+Date: Fri, 9 Jan 2015 20:03:04 +0800
+Message-ID: <CAN8ccibWaAmc8hMG5Eb2bLcKP4i-nWLrAETgFg2c-tGvd8QDwQ@mail.gmail.com>
+References: <1418837267-10896-1-git-send-email-timcussins@eml.cc>
+ <CAN8cciZE+rHGuCHWjXbFi43ofR2k5w=P-hBvy4P69+Xeo5PVxA@mail.gmail.com>
+ <5492A7F9.8090602@eml.cc> <54ABF459.8000504@linux.intel.com>
+ <54ABFB98.3050506@eml.cc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20150109124531.493bece4@armhf>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f170.google.com (mail-qc0-f170.google.com
+ [209.85.216.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AB0F2607E9
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 13:03:05 +0100 (CET)
+Received: by mail-qc0-f170.google.com with SMTP id x3so8137216qcv.1
+ for <alsa-devel@alsa-project.org>; Fri, 09 Jan 2015 04:03:04 -0800 (PST)
+In-Reply-To: <54ABFB98.3050506@eml.cc>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tim Cussins <timcussins@eml.cc>
+Cc: nstoughton@aether.com, tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 09, 2015 at 12:45:31PM +0100, Jean-Francois Moine wrote:
-> On Fri, 9 Jan 2015 11:19:35 +0000
-> Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org> wrote:
-> 
-> > Would it be more sensible to make SND_SOC_TDA998X depend on
-> > DRM_I2C_NXP_TDA998X instead, maybe with a 'default y' - which is a
-> > kinder way to have SND_SOC_TDA998X be enabled.  If SND_SOC_TDA998X
-> > doesn't have a prompt, then it'll automatically enable itself too
-> > this way when all its dependencies are satisfied.
-> 
-> You are right, I will set back the way I had in the version 3:
-> 
-> > diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> > index b33b45d..747e387 100644
-> > --- a/sound/soc/codecs/Kconfig
-> > +++ b/sound/soc/codecs/Kconfig
-> > @@ -352,6 +352,12 @@ config SND_SOC_STAC9766
-> >  config SND_SOC_TAS5086
-> >  	tristate
-> >  
-> > +config SND_SOC_TDA998X
-> > +	tristate
-> > +	default y if DRM_I2C_NXP_TDA998X=y
-> > +	default m if DRM_I2C_NXP_TDA998X=m
-> > +
+>>
+>>
+>>>> Do your implementation need to set specific start threshold to prevent
+>>>> the driver automatically start when you fill the buffer ?
+>>>
+>>>
+>>>
+>>>> Do the driver allow to start when there is no data ?
+>>>>
+>>>
+>>> It's the responsibility of the client to set the start threshold to a
+>>> safe and responsible value.
+>>>
+>>> It might suit some applications to allow both threshold start _and_
+>>> start_at: My implementation doesn't preclude this.
+>>
+>>
+>> Now I am confused... My understanding was that this feature is similar
+>> to SSYNC in HDAudio, where everything is ready, buffers filled, DMAs
+>> armed, FIFOs filled and the start condition only opens the last gate at
+>> a specific time - possibly with multiple streams starting at the same
+>> time. If you add a condition on the start_threshold you really don't
+>> need any hardware-driven start, do you?
+>
+>
+> What you've described is exactly what I had in mind, so we're still on
+the same page.
+>
+> I wanted to make it clear that my implementation of start_at doesn't
+*prevent* client code starting on a threshold *and* using start_at, even if
+it seems to us like a strange idea.
 
-An easier way to write this is:
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm.html
 
-	config SND_SOC_TDA998X
-		def_tristate y
-		depends on DRM_I2C_NXP_TDA998X
+Handshake between application and library
 
-That's because internally, Kconfig knows how to do ternary operations.
+Do alsa lib assume all read/write must only call after calling
+snd_pcm_sw_params() ?
 
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+It seem that proposed start_at() can only be call in SND_PCM_STATE_PREPARED
+and should fail when stream is already running
+
+Are there any mean to cancel the scheduled snd_pcm_start_at  ?
+
+Seem there is no check when the application call snd_pcm_start_at()
+multiple times
+
+>
+> Preventing the use of both requires us to show why it's never a useful
+idea, decide on policy (what do happens when client code tries to use
+both), and implement that policy. I'd rather just leave it as 'possible'
+:at()
