@@ -1,90 +1,60 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH] ASoC: wm8904: fix runtime warning
-Date: Fri, 9 Jan 2015 16:53:40 +0800
-Message-ID: <1420793620-2866-1-git-send-email-voice.shen@atmel.com>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v4 0/6] sanitize hda/i915 interface using
+ the component fw
+Date: Fri, 9 Jan 2015 10:18:45 +0100
+Message-ID: <20150109091845.GI26519@phenom.ffwll.local>
+References: <1420732458-11373-1-git-send-email-imre.deak@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <1420732458-11373-1-git-send-email-imre.deak@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Imre Deak <imre.deak@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Jani Nikula <jani.nikula@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, Daniel Vetter <daniel.vetter@ffwll.ch>
 List-Id: alsa-devel@alsa-project.org
 
-As the commit 5fe5b76 (ASoC: dapm: Do not pretend to support
-controls for non mixer/mux widgets) remove the fake control.
-
-Then, the wm8904 throw out the following warning at runtime.
---->8---
-wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTL
-wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTL
-wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTL
-wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTL
-wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTL
-wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTL
-wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTR
-wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTR
-wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTR
-wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTR
-wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTR
-wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTR
-wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACL
-wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACL
-wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACL
-wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACL
-wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACL
-wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACL
-wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACR
-wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACR
-wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACR
-wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACR
-wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACR
-wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACR
----8<---
-
-This patch is used to remove these warning.
-
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
-
- sound/soc/codecs/wm8904.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 4d2d2b1..38582d7 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -1076,10 +1076,10 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
- 	{ "Right Capture PGA", NULL, "Right Capture Mux" },
- 	{ "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
- 
--	{ "AIFOUTL", "Left",  "ADCL" },
--	{ "AIFOUTL", "Right", "ADCR" },
--	{ "AIFOUTR", "Left",  "ADCL" },
--	{ "AIFOUTR", "Right", "ADCR" },
-+	{ "AIFOUTL", NULL, "ADCL" },
-+	{ "AIFOUTL", NULL, "ADCR" },
-+	{ "AIFOUTR", NULL, "ADCL" },
-+	{ "AIFOUTR", NULL, "ADCR" },
- 
- 	{ "ADCL", NULL, "CLK_DSP" },
- 	{ "ADCL", NULL, "Left Capture PGA" },
-@@ -1089,12 +1089,12 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
- };
- 
- static const struct snd_soc_dapm_route dac_intercon[] = {
--	{ "DACL", "Right", "AIFINR" },
--	{ "DACL", "Left",  "AIFINL" },
-+	{ "DACL", NULL, "AIFINR" },
-+	{ "DACL", NULL, "AIFINL" },
- 	{ "DACL", NULL, "CLK_DSP" },
- 
--	{ "DACR", "Right", "AIFINR" },
--	{ "DACR", "Left",  "AIFINL" },
-+	{ "DACR", NULL, "AIFINR" },
-+	{ "DACR", NULL, "AIFINL" },
- 	{ "DACR", NULL, "CLK_DSP" },
- 
- 	{ "Charge pump", NULL, "SYSCLK" },
--- 
-2.1.0.24.g4109c28
-
+T24gVGh1LCBKYW4gMDgsIDIwMTUgYXQgMDU6NTQ6MTJQTSArMDIwMCwgSW1yZSBEZWFrIHdyb3Rl
+Ogo+IFRoaXMgaXMgdjQgb2YgWzFdIGFkZHJlc3NpbmcgdGhlIHJldmlldyBjb21tZW50cyBmcm9t
+IFRha2FzaGkgYW5kIEphbmkuCj4gCj4gWzFdCj4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
+Zy9hcmNoaXZlcy9pbnRlbC1nZngvMjAxNC1EZWNlbWJlci8wNTY5OTIuaHRtbAo+IAo+IEltcmUg
+RGVhayAoNik6Cj4gICBkcm0vaTkxNTogYWRkIGRldl90b19pOTE1IGhlbHBlcgo+ICAgZHJtL2k5
+MTU6IGFkZCBjb21wb25lbnQgc3VwcG9ydAo+ICAgQUxTQTogaGRhOiBleHBvcnQgc3RydWN0IGhk
+YV9pbnRlbAo+ICAgQUxTQTogaGRhOiBwYXNzIGludGVsX2hkYSB0byBhbGwgaTkxNSBpbnRlcmZh
+Y2UgZnVuY3Rpb25zCj4gICBBTFNBOiBoZGE6IGFkZCBjb21wb25lbnQgc3VwcG9ydAo+ICAgZHJt
+L2k5MTU6IHJlbW92ZSB1bnVzZWQgcG93ZXJfd2VsbC9nZXRfY2RjbGtfZnJlcSBhcGkKCkFsbCBt
+ZXJnZWQgdG8gZGlucSwgdGhhbmtzLgotRGFuaWVsCgo+IAo+ICBkcml2ZXJzL2dwdS9kcm0vaTkx
+NS9pOTE1X2RtYS5jICAgICAgICAgfCAgIDQgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1
+X2Rydi5jICAgICAgICAgfCAgIDkgKy0KPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYu
+aCAgICAgICAgIHwgICA4ICsrCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMg
+ICAgICB8IDExMCArKysrKysrKysrKysrKysrKysrKysrKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkx
+NS9pbnRlbF9kcnYuaCAgICAgICAgfCAgIDIgKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRl
+bF9ydW50aW1lX3BtLmMgfCAgNTYgLS0tLS0tLS0tLS0tCj4gIGluY2x1ZGUvZHJtL2k5MTVfY29t
+cG9uZW50LmggICAgICAgICAgICB8ICAzOCArKysrKysrKwo+ICBpbmNsdWRlL2RybS9pOTE1X3Bv
+d2Vyd2VsbC5oICAgICAgICAgICAgfCAgMzcgLS0tLS0tLS0KPiAgc291bmQvcGNpL2hkYS9oZGFf
+aTkxNS5jICAgICAgICAgICAgICAgIHwgMTUyICsrKysrKysrKysrKysrKysrKysrKystLS0tLS0t
+LS0tCj4gIHNvdW5kL3BjaS9oZGEvaGRhX2k5MTUuaCAgICAgICAgICAgICAgICB8ICAzNyAtLS0t
+LS0tLQo+ICBzb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jICAgICAgICAgICAgICAgfCAgNjAgKysr
+Ky0tLS0tLS0tLQo+ICBzb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5oICAgICAgICAgICAgICAgfCAg
+NzEgKysrKysrKysrKysrKysrCj4gIDEyIGZpbGVzIGNoYW5nZWQsIDM2MCBpbnNlcnRpb25zKCsp
+LCAyMjQgZGVsZXRpb25zKC0pCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2RybS9pOTE1
+X2NvbXBvbmVudC5oCj4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2RybS9pOTE1X3Bvd2Vy
+d2VsbC5oCj4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBzb3VuZC9wY2kvaGRhL2hkYV9pOTE1LmgKPiAg
+Y3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmgKPiAKPiAtLSAKPiAy
+LjEuMAo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4gSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdAo+IEludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
+cmcKPiBodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
+Z2Z4CgotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRp
+b24KKzQxICgwKSA3OSAzNjUgNTcgNDggLSBodHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBs
+aXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
+dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
