@@ -1,65 +1,90 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the
-	HDMI transmitter
-Date: Fri, 9 Jan 2015 11:19:35 +0000
-Message-ID: <20150109111935.GF12302@n2100.arm.linux.org.uk>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
+Date: Fri, 9 Jan 2015 12:30:36 +0100
+Message-ID: <20150109123036.4bc4bbf6@armhf>
 References: <cover.1420628786.git.moinejf@free.fr>
- <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
- <54AD4C77.5000401@arm.com>
- <20150107154138.GL12302@n2100.arm.linux.org.uk>
- <20150107190241.27ebac8b@armhf> <54AFAC4C.7010209@ti.com>
+	<0084acea5a3475a77531d6a77483f36d3469111a.1420628786.git.moinejf@free.fr>
+	<54AE99F5.1010404@ti.com>
+	<20150108174257.557f7ea5@armhf>
+	<54AFA9B0.6040405@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
- by alsa0.perex.cz (Postfix) with ESMTP id 08F712607E9
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 12:19:52 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <54AFAC4C.7010209@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <54AFA9B0.6040405@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Jyri Sarha <jsarha@ti.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 09, 2015 at 12:24:12PM +0200, Jyri Sarha wrote:
-> I think that would still fail if DRM and TDA998x is built in and SND_SOC is
-> built as modules. A request_module() call before tda9998x_codec_register()
-> should help.
+On Fri, 9 Jan 2015 12:13:04 +0200
+Jyri Sarha <jsarha@ti.com> wrote:
 
-That doesn't fix the problem.  If the DRM driver is built in, but the
-codec is not, and the DRM driver has a reference to
-tda9998x_codec_register(), then the vmlinux file will fail to link,
-and you'll never get the opportunity to call request_module().
+> On 01/08/2015 06:42 PM, Jean-Francois Moine wrote:
+> >  From Andrew's datasheet, the TDA998x's which are handled by the td=
+a998x
+> > driver have only 4 input audio pins, the first two ones being eithe=
+r
+> > S/PDIF or I2s, the last ones being I2S only.
+>=20
+> AFAIK, SPDIF is always a single pin connection so only one pin needs =
+to=20
+> be selected. But i2s need for pins for full 8 channel output.
 
-> Or could could write:
-> 
-> select SND_SOC_TDA998X if (SND_SOC=DRM_I2C_NXP_TDA998X || SND_SOC=y)
+There are 2 possible S/PDIF pins in the tda998x, and there may be many
+audio chips with S/PDIF outputs.
 
-I'm not sure that's right either.
+> > So, the DT description could be reduced to a simple list indexed by
+> > the pin number (=3D DAI number) and defining the protocol type.
+> >
+> > Examples:
+> >
+> > - for the Cubox:
+> >
+> > 	audio-inputs =3D "i2s", "spdif";
+> >
+> > - for some other board with I2S on the pins 3 and 4 only:
+> >
+> > 	audio-inputs =3D "none", "none", "i2s", "i2s";
+> >
+> > - for a fully wired TDA9983B (no driver yet):
+> >
+> > 	audio-inputs =3D "i2s", "i2s", "i2s", "i2s", "spdif";
+> >
+>=20
+> If you want to go closer to the original paradigm, then how about=20
+> defining following audio-port-names: i2s0, i2s1, i2s2, i2s3, and spdi=
+f.=20
+> With this approach we could go with your original binding with only=20
+> minor changes. A binding in your stereo i2s or spdif case would look=20
+> like this:
+>=20
+> 	audio-ports =3D <0x04>, <0x03>;
+> 	audio-port-names =3D "spdif", "i2s0";
+>=20
+> A full 8 channel i2s or spdif output would look like this:
+>=20
+> 	audio-ports =3D <0x04>, <0x03>, <0x02>, <0x01>, <0x00>;
+> 	audio-port-names =3D "spdif", "i2s0", "i2s1", "i2s2", "i2s3";
+>=20
+> This would also indicate the channel mapping to the audio pins (i2s0 =
+for=20
+> first two channels, i2s1 for 3-4, etc.)
+>=20
+> The code could for now just look for "i2s0" and the port names for=20
+> channels 3-8 could be ignored until they are needed.
 
-Let's go back and think about this: why should SND_SOC_TDA998X be
-*selected*.  Let me put that a different way: why should this symbol
-be forced on just because we're building the DRM TDA998x driver?
+In my original version, the audio-ports are a bitmap of the pins, the
+bit 0 being the WS used for I2S. A fully wired tda998x would have been
+as:
 
-Would it be more sensible to make SND_SOC_TDA998X depend on
-DRM_I2C_NXP_TDA998X instead, maybe with a 'default y' - which is a
-kinder way to have SND_SOC_TDA998X be enabled.  If SND_SOC_TDA998X
-doesn't have a prompt, then it'll automatically enable itself too
-this way when all its dependencies are satisfied.
+	audio-ports =3D <0x03>, <0x04>, <0x09>, <0x11>;
+	audio-port-names =3D "i2s", "spdif", "i2s", "i2s";
 
-IMHO "select" is a very over-used, and in many cases an evil
-construct because its very hard to avoid breaking dependencies
-with it.
+With the new version, it would simply become:
 
--- 
-FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
-according to speedtest.net.
+	audio-inputs =3D "i2s", "spdif", "i2s", "i2s";
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
