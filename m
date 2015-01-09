@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/33] ALSA: azt3328: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:52:49 +0100
-Message-ID: <1420818796-30852-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 04/33] ALSA: atiixp: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:52:47 +0100
+Message-ID: <1420818796-30852-5-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A5F1260647
+ by alsa0.perex.cz (Postfix) with ESMTP id 16A2C260629
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E1E2FAD27
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E0136AC79
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:26 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,25 +38,25 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/azt3328.c | 15 ---------------
+ sound/pci/atiixp.c | 15 ---------------
  1 file changed, 15 deletions(-)
 
-diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
-index fdbb9c05c77b..bbacc75c902a 100644
---- a/sound/pci/azt3328.c
-+++ b/sound/pci/azt3328.c
-@@ -2694,7 +2694,6 @@ snd_azf3328_resume_ac97(const struct snd_azf3328 *chip)
- static int
- snd_azf3328_suspend(struct device *dev)
+diff --git a/sound/pci/atiixp.c b/sound/pci/atiixp.c
+index 9c1c4452a8ee..f41de00d974c 100644
+--- a/sound/pci/atiixp.c
++++ b/sound/pci/atiixp.c
+@@ -1474,7 +1474,6 @@ static int snd_atiixp_mixer_new(struct atiixp *chip, int clock,
+  */
+ static int snd_atiixp_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_azf3328 *chip = card->private_data;
- 	u16 *saved_regs_ctrl_u16;
-@@ -2720,29 +2719,15 @@ snd_azf3328_suspend(struct device *dev)
- 		ARRAY_SIZE(chip->saved_regs_mpu), chip->saved_regs_mpu);
- 	snd_azf3328_suspend_regs(chip, chip->opl3_io,
- 		ARRAY_SIZE(chip->saved_regs_opl3), chip->saved_regs_opl3);
+ 	struct atiixp *chip = card->private_data;
+ 	int i;
+@@ -1492,29 +1491,15 @@ static int snd_atiixp_suspend(struct device *dev)
+ 		snd_ac97_suspend(chip->ac97[i]);
+ 	snd_atiixp_aclink_down(chip);
+ 	snd_atiixp_chip_stop(chip);
 -
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
@@ -64,12 +64,12 @@ index fdbb9c05c77b..bbacc75c902a 100644
  	return 0;
  }
  
- static int
- snd_azf3328_resume(struct device *dev)
+ static int snd_atiixp_resume(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	const struct snd_azf3328 *chip = card->private_data;
+ 	struct atiixp *chip = card->private_data;
+ 	int i;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
@@ -80,8 +80,8 @@ index fdbb9c05c77b..bbacc75c902a 100644
 -	}
 -	pci_set_master(pci);
 -
- 	snd_azf3328_resume_regs(chip, chip->saved_regs_game, chip->game_io,
- 					ARRAY_SIZE(chip->saved_regs_game));
- 	snd_azf3328_resume_regs(chip, chip->saved_regs_mpu, chip->mpu_io,
+ 	snd_atiixp_aclink_reset(chip);
+ 	snd_atiixp_chip_start(chip);
+ 
 -- 
 2.2.1
