@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/33] ALSA: als300: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:52:45 +0100
-Message-ID: <1420818796-30852-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 11/33] ALSA: cs5535audio: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:52:54 +0100
+Message-ID: <1420818796-30852-12-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E9A926061A
+ by alsa0.perex.cz (Postfix) with ESMTP id 447592612C7
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DD82CAC5C
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id EC0F1AD91
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:26 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,36 +38,43 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/als300.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/pci/cs5535audio/cs5535audio_pm.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-diff --git a/sound/pci/als300.c b/sound/pci/als300.c
-index 7bb6ac565107..bd01113de39a 100644
---- a/sound/pci/als300.c
-+++ b/sound/pci/als300.c
-@@ -728,35 +728,20 @@ static int snd_als300_create(struct snd_card *card,
- #ifdef CONFIG_PM_SLEEP
- static int snd_als300_suspend(struct device *dev)
+diff --git a/sound/pci/cs5535audio/cs5535audio_pm.c b/sound/pci/cs5535audio/cs5535audio_pm.c
+index 34cc60057d0c..06ac5d8da362 100644
+--- a/sound/pci/cs5535audio/cs5535audio_pm.c
++++ b/sound/pci/cs5535audio/cs5535audio_pm.c
+@@ -57,7 +57,6 @@ static void snd_cs5535audio_stop_hardware(struct cs5535audio *cs5535au)
+ 
+ static int snd_cs5535audio_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_als300 *chip = card->private_data;
- 
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
- 	snd_pcm_suspend_all(chip->pcm);
- 	snd_ac97_suspend(chip->ac97);
+ 	struct cs5535audio *cs5535au = card->private_data;
+ 	int i;
+@@ -72,34 +71,17 @@ static int snd_cs5535audio_suspend(struct device *dev)
+ 	}
+ 	/* save important regs, then disable aclink in hw */
+ 	snd_cs5535audio_stop_hardware(cs5535au);
 -
+-	if (pci_save_state(pci)) {
+-		dev_err(dev, "pci_save_state failed!\n");
+-		return -EIO;
+-	}
 -	pci_disable_device(pci);
--	pci_save_state(pci);
 -	pci_set_power_state(pci, PCI_D3hot);
  	return 0;
  }
  
- static int snd_als300_resume(struct device *dev)
+ static int snd_cs5535audio_resume(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_als300 *chip = card->private_data;
+ 	struct cs5535audio *cs5535au = card->private_data;
+ 	u32 tmp;
+ 	int timeout;
+ 	int i;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
@@ -78,8 +85,8 @@ index 7bb6ac565107..bd01113de39a 100644
 -	}
 -	pci_set_master(pci);
 -
- 	snd_als300_init(chip);
- 	snd_ac97_resume(chip->ac97);
+ 	/* set LNK_WRM_RST to reset AC link */
+ 	cs_writel(cs5535au, ACC_CODEC_CNTL, ACC_CODEC_CNTL_LNK_WRM_RST);
  
 -- 
 2.2.1
