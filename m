@@ -1,36 +1,68 @@
-From: Peter Rosin <peda@lysator.liu.se>
-Subject: [PATCH] ASoC: pcm512x: Fix DSP program selection
-Date: Thu,  8 Jan 2015 22:56:30 +0100
-Message-ID: <1420754190-6309-1-git-send-email-peda@lysator.liu.se>
+From: Paul Bonser <misterpib@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v2] ALSA: usb-audio: Add support for Akai
+ MPC Element USB MIDI controller
+Date: Thu, 08 Jan 2015 18:46:14 -0600
+Message-ID: <54AF24D6.6010701@gmail.com>
+References: <54AE16D8.6080302@gmail.com> <54AEFCFF.3060406@ladisch.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <54AEFCFF.3060406@ladisch.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>, stable@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Rosin <peda@axentia.se>
+On 01/08/2015 03:56 PM, Clemens Ladisch wrote:
+> Paul Bonser wrote:
+>> The Akai MPC Element incorrectly reports its bInterfaceClass as 255, but
+>> otherwise implements the USB MIDI spec correctly.
+>>
+>> This adds a quirks-table.h entry which allows the device to be
+>> recognized as a standard USB MIDI device.
+>>
+>> Signed-off-by: Paul Bonser <misterpib@gmail.com>
+>> ---
+>> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+>> index 8590a32..e869b6c 100644
+>> --- a/sound/usb/quirks-table.h
+>> +++ b/sound/usb/quirks-table.h
+>> @@ -2516,6 +2516,28 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+>>  	}
+>>  },
+>>
+>> +{
+>> +	/* Akai MPC Element */
+>> +	USB_DEVICE(0x09e8, 0x0021),
+>> +	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+>> +		.ifnum = QUIRK_ANY_INTERFACE,
+>> +		.type = QUIRK_COMPOSITE,
+>> +		.data = & (const struct snd_usb_audio_quirk[]) {
+>> +			{
+>> +				.ifnum = 0,
+>> +				.type = QUIRK_IGNORE_INTERFACE
+>> +			},
+>> +			{
+>> +				.ifnum = 1,
+>> +				.type = QUIRK_MIDI_STANDARD_INTERFACE
+>> +			},
+>> +			{
+>> +				.ifnum = -1
+>> +			}
+>> +		}
+>> +	}
+>> +},
+> 
+> Why a composite quirk?  Does a single quirk entry not work?
 
-The DSP programs are listed out of order.
+A single quirk entry results in an error message in dmesg:
+"snd-usb-audio: probe of 3-2:1.0 failed with error -5"
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
-Cc: stable@vger.kernel.org
----
- sound/soc/codecs/pcm512x.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Adding the QUIRK_IGNORE_INTERFACE stops that.
 
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 0c8aefab404c..640c99198cda 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -188,8 +188,8 @@ static const DECLARE_TLV_DB_SCALE(boost_tlv, 0, 80, 0);
- static const char * const pcm512x_dsp_program_texts[] = {
- 	"FIR interpolation with de-emphasis",
- 	"Low latency IIR with de-emphasis",
--	"Fixed process flow",
- 	"High attenuation with de-emphasis",
-+	"Fixed process flow",
- 	"Ringing-less low latency FIR",
- };
- 
--- 
-1.7.10.4
+> 
+> 
+> Regards,
+> Clemens
+> 
