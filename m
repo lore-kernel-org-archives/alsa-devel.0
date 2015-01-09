@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 16/33] ALSA: es1938: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:52:59 +0100
-Message-ID: <1420818796-30852-17-git-send-email-tiwai@suse.de>
+Subject: [PATCH 18/33] ALSA: hda: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:53:01 +0100
+Message-ID: <1420818796-30852-19-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5118626154B
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B2732615DC
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 04957ADA0
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 09359ADA4
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,45 +38,46 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/es1938.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ sound/pci/hda/hda_intel.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
-index 0fc46eb4e251..a01454b545a0 100644
---- a/sound/pci/es1938.c
-+++ b/sound/pci/es1938.c
-@@ -1454,7 +1454,6 @@ static unsigned char saved_regs[SAVED_REG_SIZE+1] = {
- 
- static int es1938_suspend(struct device *dev)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index d426a0bd6a5f..99ae4e0d9c07 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -795,7 +795,6 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
+  */
+ static int azx_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct es1938 *chip = card->private_data;
- 	unsigned char *s, *d;
-@@ -1471,9 +1470,6 @@ static int es1938_suspend(struct device *dev)
- 		free_irq(chip->irq, chip);
- 		chip->irq = -1;
- 	}
+ 	struct azx *chip;
+ 	struct hda_intel *hda;
+@@ -824,9 +823,6 @@ static int azx_suspend(struct device *dev)
+ 
+ 	if (chip->msi)
+ 		pci_disable_msi(chip->pci);
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
 -	pci_set_power_state(pci, PCI_D3hot);
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+ 		hda_display_power(false);
  	return 0;
- }
- 
-@@ -1484,14 +1480,6 @@ static int es1938_resume(struct device *dev)
- 	struct es1938 *chip = card->private_data;
- 	unsigned char *s, *d;
- 
+@@ -851,15 +847,6 @@ static int azx_resume(struct device *dev)
+ 		hda_display_power(true);
+ 		haswell_set_bclk(chip);
+ 	}
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
 -	if (pci_enable_device(pci) < 0) {
--		dev_err(dev, "pci_enable_device failed, disabling device\n");
+-		dev_err(chip->card->dev,
+-			"pci_enable_device failed, disabling device\n");
 -		snd_card_disconnect(card);
 -		return -EIO;
 -	}
--
- 	if (request_irq(pci->irq, snd_es1938_interrupt,
- 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
- 		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
+-	pci_set_master(pci);
+ 	if (chip->msi)
+ 		if (pci_enable_msi(pci) < 0)
+ 			chip->msi = 0;
 -- 
 2.2.1
