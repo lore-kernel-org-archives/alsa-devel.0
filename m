@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 33/33] ALSA: ymfpci: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:53:16 +0100
-Message-ID: <1420818796-30852-34-git-send-email-tiwai@suse.de>
+Subject: [PATCH 07/33] ALSA: ca0106: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:52:50 +0100
+Message-ID: <1420818796-30852-8-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 861B7261AED
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 3D5B0ADB4
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id 40D4426060F
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:30 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E4A29AD89
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:26 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -38,45 +38,51 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ymfpci/ymfpci_main.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ sound/pci/ca0106/ca0106_main.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
-index 81c916a5eb96..2b0b8f559ab3 100644
---- a/sound/pci/ymfpci/ymfpci_main.c
-+++ b/sound/pci/ymfpci/ymfpci_main.c
-@@ -2326,7 +2326,6 @@ static int saved_regs_index[] = {
- 
- static int snd_ymfpci_suspend(struct device *dev)
+diff --git a/sound/pci/ca0106/ca0106_main.c b/sound/pci/ca0106/ca0106_main.c
+index 96af33965b51..dd75b7536fa2 100644
+--- a/sound/pci/ca0106/ca0106_main.c
++++ b/sound/pci/ca0106/ca0106_main.c
+@@ -1910,7 +1910,6 @@ static void snd_ca0106_remove(struct pci_dev *pci)
+ #ifdef CONFIG_PM_SLEEP
+ static int snd_ca0106_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_ymfpci *chip = card->private_data;
- 	unsigned int i;
-@@ -2347,9 +2346,6 @@ static int snd_ymfpci_suspend(struct device *dev)
- 	snd_ymfpci_writel(chip, YDSXGR_NATIVEDACOUTVOL, 0);
- 	snd_ymfpci_writel(chip, YDSXGR_BUF441OUTVOL, 0);
- 	snd_ymfpci_disable_dsp(chip);
+ 	struct snd_ca0106 *chip = card->private_data;
+ 	int i;
+@@ -1923,30 +1922,15 @@ static int snd_ca0106_suspend(struct device *dev)
+ 	snd_ca0106_mixer_suspend(chip);
+ 
+ 	ca0106_stop_chip(chip);
+-
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
 -	pci_set_power_state(pci, PCI_D3hot);
  	return 0;
  }
  
-@@ -2360,14 +2356,6 @@ static int snd_ymfpci_resume(struct device *dev)
- 	struct snd_ymfpci *chip = card->private_data;
- 	unsigned int i;
+ static int snd_ca0106_resume(struct device *dev)
+ {
+-	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct snd_ca0106 *chip = card->private_data;
+ 	int i;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
+-
 -	if (pci_enable_device(pci) < 0) {
--		dev_err(dev, "pci_enable_device failed, disabling device\n");
 -		snd_card_disconnect(card);
 -		return -EIO;
 -	}
+-
 -	pci_set_master(pci);
- 	snd_ymfpci_aclink_reset(pci);
- 	snd_ymfpci_codec_ready(chip, 0);
- 	snd_ymfpci_download_image(chip);
+-
+ 	ca0106_init_chip(chip, 1);
+ 
+ 	if (chip->details->ac97)
 -- 
 2.2.1
