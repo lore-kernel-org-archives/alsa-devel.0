@@ -1,48 +1,72 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rockchip: i2s: add rockchip_dmaengine_pcm_config
-Date: Fri, 09 Jan 2015 09:02:20 +0100
-Message-ID: <54AF8B0C.2050301@metafoo.de>
-References: <1420768369-6681-1-git-send-email-jay.xu@rock-chips.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v2] ALSA: usb-audio: Add support for
+	Akai	MPC Element USB MIDI controller
+Date: Fri, 09 Jan 2015 09:48:42 +0100
+Message-ID: <54AF95EA.90505@ladisch.de>
+References: <54AE16D8.6080302@gmail.com> <54AEFCFF.3060406@ladisch.de>
+ <54AF24D6.6010701@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1420768369-6681-1-git-send-email-jay.xu@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jianqun Xu <jay.xu@rock-chips.com>, lgirdwood@gmail.com, heiko@sntech.de, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, sonnyrao@chromium.org
-Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5C1BA2614C1
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 09:48:44 +0100 (CET)
+In-Reply-To: <54AF24D6.6010701@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Paul Bonser <misterpib@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/09/2015 02:52 AM, Jianqun Xu wrote:
-> This patch makes snd_dmaengine_pcm_register with rockchip_dmaengine_pcm_config,
-> which configure the parameters of period and buffer match to rockchip DMAC.
+Paul Bonser wrote:
+> On 01/08/2015 03:56 PM, Clemens Ladisch wrote:
+>> Paul Bonser wrote:
+>>> The Akai MPC Element incorrectly reports its bInterfaceClass as 255, but
+>>> otherwise implements the USB MIDI spec correctly.
+>>>
+>>> This adds a quirks-table.h entry which allows the device to be
+>>> recognized as a standard USB MIDI device.
+>>>
+>>> +++ b/sound/usb/quirks-table.h
+>>> +{
+>>> +	/* Akai MPC Element */
+>>> +	USB_DEVICE(0x09e8, 0x0021),
+>>> +	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+>>> +		.ifnum = QUIRK_ANY_INTERFACE,
+>>> +		.type = QUIRK_COMPOSITE,
+>>> +		.data = & (const struct snd_usb_audio_quirk[]) {
+>>> +			{
+>>> +				.ifnum = 0,
+>>> +				.type = QUIRK_IGNORE_INTERFACE
+>>> +			},
+>>> +			{
+>>> +				.ifnum = 1,
+>>> +				.type = QUIRK_MIDI_STANDARD_INTERFACE
+>>> +			},
+>>> +			{
+>>> +				.ifnum = -1
+>>> +			}
+>>> +		}
+>>> +	}
+>>> +},
+>>
+>> Why a composite quirk?  Does a single quirk entry not work?
 >
-> =======================
-> without rockchip_dmaengine_pcm_config, and test with command -
-> aplay -D hw:0,0 /tmp/a, there are the error dump:
-> [  134.899396] dma-pl330 ffb20000.dma-controller: fill_queue:2251 Bad Desc(7)
-> [  134.906270] dma-pl330 ffb20000.dma-controller: fill_queue:2251 Bad Desc(8)
-> [  134.913141] dma-pl330 ffb20000.dma-controller: fill_queue:2251 Bad Desc(9)
->
-> And bellow sound from DMA debugger:
-> "I debugged it a little and it looks like what is happening is that requests
-> which aren't a multiple of burst size * burst length are coming in.  Right
-> now the i2s block is setting a burst size of 4 and burst length of 4, but
-> the dmaengine code has no idea about this restriction.  I was able to
-> eliminate the messages by changing burst length to 1 in the i2s driver.
-> This fix would always work as long as we're sending a multiple of 4 bytes
-> (which so far seems to be the case)"
->
-> This patch can make the length of dma buffer is aligned to a multiple of burst size
-> and burst length.
+> A single quirk entry results in an error message in dmesg:
+> "snd-usb-audio: probe of 3-2:1.0 failed with error -5"
 
-No, all it does it sets the maximum size to something that is aligned, an 
-application can still choose something else.
+That message is normal for unhandled interfaces.
 
-And this is the wrong approach anyway, we don't want to have new 
-snd_pcm_hardware for drivers using generic dmaengine PCM driver.
+Does it actually prevent the device from working?
 
-The right approach is to modify the dmaengine PCM driver to set a constraint 
-that makes sure that the period size is a multiple of the burst size.
 
-- Lars
+Regards,
+Clemens
