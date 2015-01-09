@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 20/33] ALSA: ice1724: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:53:03 +0100
-Message-ID: <1420818796-30852-21-git-send-email-tiwai@suse.de>
+Subject: [PATCH 29/33] ALSA: trident: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:53:12 +0100
+Message-ID: <1420818796-30852-30-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 73836261A57
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D62A261A2C
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0CB53ADA6
+ by mx2.suse.de (Postfix) with ESMTP id 24614AC5C
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,25 +38,25 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ice1712/ice1724.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ sound/pci/trident/trident_main.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index d73da157ea14..0b22c00642bb 100644
---- a/sound/pci/ice1712/ice1724.c
-+++ b/sound/pci/ice1712/ice1724.c
-@@ -2798,7 +2798,6 @@ static void snd_vt1724_remove(struct pci_dev *pci)
+diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
+index 57cd757acfe7..072824982ff8 100644
+--- a/sound/pci/trident/trident_main.c
++++ b/sound/pci/trident/trident_main.c
+@@ -3926,7 +3926,6 @@ static void snd_trident_clear_voices(struct snd_trident * trident, unsigned shor
  #ifdef CONFIG_PM_SLEEP
- static int snd_vt1724_suspend(struct device *dev)
+ static int snd_trident_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_ice1712 *ice = card->private_data;
+ 	struct snd_trident *trident = card->private_data;
  
-@@ -2821,32 +2820,17 @@ static int snd_vt1724_suspend(struct device *dev)
+@@ -3938,28 +3937,14 @@ static int snd_trident_suspend(struct device *dev)
  
- 	if (ice->pm_suspend)
- 		ice->pm_suspend(ice);
+ 	snd_ac97_suspend(trident->ac97);
+ 	snd_ac97_suspend(trident->ac97_sec);
 -
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
@@ -64,27 +64,23 @@ index d73da157ea14..0b22c00642bb 100644
  	return 0;
  }
  
- static int snd_vt1724_resume(struct device *dev)
+ static int snd_trident_resume(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_ice1712 *ice = card->private_data;
- 
- 	if (!ice->pm_suspend_enabled)
- 		return 0;
+ 	struct snd_trident *trident = card->private_data;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
--
 -	if (pci_enable_device(pci) < 0) {
+-		dev_err(dev, "pci_enable_device failed, disabling device\n");
 -		snd_card_disconnect(card);
 -		return -EIO;
 -	}
--
 -	pci_set_master(pci);
 -
- 	snd_vt1724_chip_reset(ice);
- 
- 	if (snd_vt1724_chip_init(ice) < 0) {
+ 	switch (trident->device) {
+ 	case TRIDENT_DEVICE_ID_DX:
+ 		snd_trident_4d_dx_init(trident);
 -- 
 2.2.1
