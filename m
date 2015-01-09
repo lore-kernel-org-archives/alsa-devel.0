@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 27/33] ALSA: rme96: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:53:10 +0100
-Message-ID: <1420818796-30852-28-git-send-email-tiwai@suse.de>
+Subject: [PATCH 12/33] ALSA: ctxfi: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:52:55 +0100
+Message-ID: <1420818796-30852-13-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 656792619E9
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D200261A01
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2028CADB2
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 2ED8FAC79
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,47 +38,63 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme96.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ sound/pci/ctxfi/cthw20k1.c |  9 ---------
+ sound/pci/ctxfi/cthw20k2.c | 12 ------------
+ 2 files changed, 21 deletions(-)
 
-diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
-index 2f1a85185a16..e33e79eadf83 100644
---- a/sound/pci/rme96.c
-+++ b/sound/pci/rme96.c
-@@ -2358,7 +2358,6 @@ snd_rme96_create_switches(struct snd_card *card,
+diff --git a/sound/pci/ctxfi/cthw20k1.c b/sound/pci/ctxfi/cthw20k1.c
+index b425aa8ee578..f16bec129c0a 100644
+--- a/sound/pci/ctxfi/cthw20k1.c
++++ b/sound/pci/ctxfi/cthw20k1.c
+@@ -2099,20 +2099,11 @@ static int hw_suspend(struct hw *hw)
+ 		pci_write_config_dword(pci, UAA_CFG_SPACE_FLAG, 0x0);
+ 	}
  
- static int rme96_suspend(struct device *dev)
- {
--	struct pci_dev *pci = to_pci_dev(dev);
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct rme96 *rme96 = card->private_data;
- 
-@@ -2381,26 +2380,14 @@ static int rme96_suspend(struct device *dev)
- 	/* disable the DAC  */
- 	rme96->areg &= ~RME96_AR_DAC_EN;
- 	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
--
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
+-	pci_set_power_state(pci, PCI_D3hot);
 -
  	return 0;
  }
  
- static int rme96_resume(struct device *dev)
+ static int hw_resume(struct hw *hw, struct card_conf *info)
  {
--	struct pci_dev *pci = to_pci_dev(dev);
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct rme96 *rme96 = card->private_data;
- 
--	pci_restore_state(pci);
--	if (pci_enable_device(pci) < 0) {
--		dev_err(dev, "pci_enable_device failed, disabling device\n");
--		snd_card_disconnect(card);
--		return -EIO;
--	}
+-	struct pci_dev *pci = hw->pci;
 -
- 	/* reset playback and record buffer pointers */
- 	writel(0, rme96->iobase + RME96_IO_SET_PLAY_POS
- 		  + rme96->playback_pointer);
+-	pci_set_power_state(pci, PCI_D0);
+-	pci_restore_state(pci);
+-
+ 	/* Re-initialize card hardware. */
+ 	return hw_card_init(hw, info);
+ }
+diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
+index 253899d13790..613671d330b1 100644
+--- a/sound/pci/ctxfi/cthw20k2.c
++++ b/sound/pci/ctxfi/cthw20k2.c
+@@ -2209,24 +2209,12 @@ static int hw_card_init(struct hw *hw, struct card_conf *info)
+ #ifdef CONFIG_PM_SLEEP
+ static int hw_suspend(struct hw *hw)
+ {
+-	struct pci_dev *pci = hw->pci;
+-
+ 	hw_card_stop(hw);
+-
+-	pci_disable_device(pci);
+-	pci_save_state(pci);
+-	pci_set_power_state(pci, PCI_D3hot);
+-
+ 	return 0;
+ }
+ 
+ static int hw_resume(struct hw *hw, struct card_conf *info)
+ {
+-	struct pci_dev *pci = hw->pci;
+-
+-	pci_set_power_state(pci, PCI_D0);
+-	pci_restore_state(pci);
+-
+ 	/* Re-initialize card hardware. */
+ 	return hw_card_init(hw, info);
+ }
 -- 
 2.2.1
