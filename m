@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/33] ALSA: cmipci: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:52:51 +0100
-Message-ID: <1420818796-30852-9-git-send-email-tiwai@suse.de>
+Subject: [PATCH 16/33] ALSA: es1938: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:52:59 +0100
+Message-ID: <1420818796-30852-17-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F5A826066B
+ by alsa0.perex.cz (Postfix) with ESMTP id 5118626154B
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E41B1AD7E
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:26 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 04957ADA0
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -38,38 +38,34 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/cmipci.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/pci/es1938.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
-index 85ed40339db9..63d2c8236ec6 100644
---- a/sound/pci/cmipci.c
-+++ b/sound/pci/cmipci.c
-@@ -3347,7 +3347,6 @@ static unsigned char saved_mixers[] = {
+diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
+index 0fc46eb4e251..a01454b545a0 100644
+--- a/sound/pci/es1938.c
++++ b/sound/pci/es1938.c
+@@ -1454,7 +1454,6 @@ static unsigned char saved_regs[SAVED_REG_SIZE+1] = {
  
- static int snd_cmipci_suspend(struct device *dev)
+ static int es1938_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct cmipci *cm = card->private_data;
- 	int i;
-@@ -3366,29 +3365,15 @@ static int snd_cmipci_suspend(struct device *dev)
- 
- 	/* disable ints */
- 	snd_cmipci_write(cm, CM_REG_INT_HLDCLR, 0);
--
+ 	struct es1938 *chip = card->private_data;
+ 	unsigned char *s, *d;
+@@ -1471,9 +1470,6 @@ static int es1938_suspend(struct device *dev)
+ 		free_irq(chip->irq, chip);
+ 		chip->irq = -1;
+ 	}
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
 -	pci_set_power_state(pci, PCI_D3hot);
  	return 0;
  }
  
- static int snd_cmipci_resume(struct device *dev)
- {
--	struct pci_dev *pci = to_pci_dev(dev);
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct cmipci *cm = card->private_data;
- 	int i;
+@@ -1484,14 +1480,6 @@ static int es1938_resume(struct device *dev)
+ 	struct es1938 *chip = card->private_data;
+ 	unsigned char *s, *d;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
@@ -78,10 +74,9 @@ index 85ed40339db9..63d2c8236ec6 100644
 -		snd_card_disconnect(card);
 -		return -EIO;
 -	}
--	pci_set_master(pci);
 -
- 	/* reset / initialize to a sane state */
- 	snd_cmipci_write(cm, CM_REG_INT_HLDCLR, 0);
- 	snd_cmipci_ch_reset(cm, CM_CH_PLAY);
+ 	if (request_irq(pci->irq, snd_es1938_interrupt,
+ 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+ 		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
 -- 
 2.2.1
