@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 17/33] ALSA: es1968: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:53:00 +0100
-Message-ID: <1420818796-30852-18-git-send-email-tiwai@suse.de>
+Subject: [PATCH 22/33] ALSA: intel8x0m: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:53:05 +0100
+Message-ID: <1420818796-30852-23-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ADC2261583
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F88B261740
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 05F48ADA3
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0E749ADAB
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:27 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,43 +38,35 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/es1968.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ sound/pci/intel8x0m.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
-index 6039700f8579..631be029f8c0 100644
---- a/sound/pci/es1968.c
-+++ b/sound/pci/es1968.c
-@@ -2383,7 +2383,6 @@ static void snd_es1968_start_irq(struct es1968 *chip)
+diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
+index 6b40235be13c..748f6f67c982 100644
+--- a/sound/pci/intel8x0m.c
++++ b/sound/pci/intel8x0m.c
+@@ -1023,7 +1023,6 @@ static int snd_intel8x0m_free(struct intel8x0m *chip)
   */
- static int es1968_suspend(struct device *dev)
+ static int intel8x0m_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct es1968 *chip = card->private_data;
- 
-@@ -2396,16 +2395,11 @@ static int es1968_suspend(struct device *dev)
- 	snd_pcm_suspend_all(chip->pcm);
- 	snd_ac97_suspend(chip->ac97);
- 	snd_es1968_bob_stop(chip);
--
+ 	struct intel8x0m *chip = card->private_data;
+ 	int i;
+@@ -1036,9 +1035,6 @@ static int intel8x0m_suspend(struct device *dev)
+ 		free_irq(chip->irq, chip);
+ 		chip->irq = -1;
+ 	}
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
 -	pci_set_power_state(pci, PCI_D3hot);
  	return 0;
  }
  
- static int es1968_resume(struct device *dev)
- {
--	struct pci_dev *pci = to_pci_dev(dev);
+@@ -1048,14 +1044,6 @@ static int intel8x0m_resume(struct device *dev)
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct es1968 *chip = card->private_data;
- 	struct esschan *es;
-@@ -2413,16 +2407,6 @@ static int es1968_resume(struct device *dev)
- 	if (! chip->do_pm)
- 		return 0;
+ 	struct intel8x0m *chip = card->private_data;
  
--	/* restore all our config */
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
 -	if (pci_enable_device(pci) < 0) {
@@ -83,9 +75,8 @@ index 6039700f8579..631be029f8c0 100644
 -		return -EIO;
 -	}
 -	pci_set_master(pci);
--
- 	snd_es1968_chip_init(chip);
- 
- 	/* need to restore the base pointers.. */ 
+ 	if (request_irq(pci->irq, snd_intel8x0m_interrupt,
+ 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+ 		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
 -- 
 2.2.1
