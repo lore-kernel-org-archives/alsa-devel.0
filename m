@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 03/33] ALSA: als4000: Simplify PM callbacks
-Date: Fri,  9 Jan 2015 16:52:46 +0100
-Message-ID: <1420818796-30852-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 02/33] ALSA: als300: Simplify PM callbacks
+Date: Fri,  9 Jan 2015 16:52:45 +0100
+Message-ID: <1420818796-30852-3-git-send-email-tiwai@suse.de>
 References: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 135BD260627
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E9A926061A
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 16:53:27 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DD8B1AC6D
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id DD82CAC5C
  for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 15:53:26 +0000 (UTC)
 In-Reply-To: <1420818796-30852-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,25 +38,24 @@ them as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/als4000.c | 15 ---------------
+ sound/pci/als300.c | 15 ---------------
  1 file changed, 15 deletions(-)
 
-diff --git a/sound/pci/als4000.c b/sound/pci/als4000.c
-index d3e6424ee656..94608524f3cc 100644
---- a/sound/pci/als4000.c
-+++ b/sound/pci/als4000.c
-@@ -988,7 +988,6 @@ static void snd_card_als4000_remove(struct pci_dev *pci)
+diff --git a/sound/pci/als300.c b/sound/pci/als300.c
+index 7bb6ac565107..bd01113de39a 100644
+--- a/sound/pci/als300.c
++++ b/sound/pci/als300.c
+@@ -728,35 +728,20 @@ static int snd_als300_create(struct snd_card *card,
  #ifdef CONFIG_PM_SLEEP
- static int snd_als4000_suspend(struct device *dev)
+ static int snd_als300_suspend(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_card_als4000 *acard = card->private_data;
- 	struct snd_sb *chip = acard->chip;
-@@ -997,29 +996,15 @@ static int snd_als4000_suspend(struct device *dev)
- 	
+ 	struct snd_als300 *chip = card->private_data;
+ 
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
  	snd_pcm_suspend_all(chip->pcm);
- 	snd_sbmixer_suspend(chip);
+ 	snd_ac97_suspend(chip->ac97);
 -
 -	pci_disable_device(pci);
 -	pci_save_state(pci);
@@ -64,12 +63,11 @@ index d3e6424ee656..94608524f3cc 100644
  	return 0;
  }
  
- static int snd_als4000_resume(struct device *dev)
+ static int snd_als300_resume(struct device *dev)
  {
 -	struct pci_dev *pci = to_pci_dev(dev);
  	struct snd_card *card = dev_get_drvdata(dev);
- 	struct snd_card_als4000 *acard = card->private_data;
- 	struct snd_sb *chip = acard->chip;
+ 	struct snd_als300 *chip = card->private_data;
  
 -	pci_set_power_state(pci, PCI_D0);
 -	pci_restore_state(pci);
@@ -80,8 +78,8 @@ index d3e6424ee656..94608524f3cc 100644
 -	}
 -	pci_set_master(pci);
 -
- 	snd_als4000_configure(chip);
- 	snd_sbdsp_reset(chip);
- 	snd_sbmixer_resume(chip);
+ 	snd_als300_init(chip);
+ 	snd_ac97_resume(chip->ac97);
+ 
 -- 
 2.2.1
