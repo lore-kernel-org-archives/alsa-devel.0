@@ -1,70 +1,125 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/8] ASoC: corgi: Automatically disconnect
- non-connected pins
-Date: Fri, 9 Jan 2015 21:06:06 +0000
-Message-ID: <20150109210606.GP2634@sirena.org.uk>
-References: <1420837413-29306-1-git-send-email-lars@metafoo.de>
+From: David Flater <vger@flaterco.com>
+Subject: [PATCHv2 1/2] ALSA: fix emu8000 DRAM sizing for AWE64 Value
+Date: Fri, 09 Jan 2015 19:50:36 -0500
+Message-ID: <54B0775C.1080705@flaterco.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7656954097291417145=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C8703265053
- for <alsa-devel@alsa-project.org>; Fri,  9 Jan 2015 22:06:15 +0100 (CET)
-In-Reply-To: <1420837413-29306-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Alsa Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Applicable to any kernel since 2013:
 
---===============7656954097291417145==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ou9wORBL2D7rb/hj"
-Content-Disposition: inline
+The special case added in commit 1338fc97d07a did not handle the possibility
+that the address space on an AWE64 Value would wrap around at 512 KiB.  That
+is what it does, so the memory is still not detected on those cards.
 
+Fix that with a logic clean-up that eliminates the need for a special case.
 
---ou9wORBL2D7rb/hj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: David Flater <dave@flaterco.com>
+---
+History:
+2015-01-09  v2: In response to feedback from Takashi Iwai,
+               1. Optimize for diff size.
+                 1a. Use goto to avoid indenting and repeating code.
+                 1b. Jettison new debugging printouts.
+               2. Split printk into second patch.
+            Retested on CT4390 (4 MiB) and CT4380 (512 KiB).
+2015-01-08  v1 patch sent to LKML, Alsa Devel and maintainers.  Tested on
+            unexpanded CT4390 (4 MiB), CT4520 (512 KiB), and CT4380 (512
+            KiB).
 
-On Fri, Jan 09, 2015 at 10:03:26PM +0100, Lars-Peter Clausen wrote:
-> All DAPM input and output pins of the wm8994 are either used in the card's
-> DAPM routing table or are marked as not connected.
+CT4380 is commonly said to come with 1 MiB of DRAM, but Creative's AWE
+Control app agreed that mine has only 512 KiB.  It has the same memory chip
+as the CT4520.
 
-Applied all, thanks.
+The affected function first appeared in alsa-driver-0.3.0 and was merged in
+linux-2.5.5.  Its somewhat different ancestor was in sound/oss/awe_wave.c.
 
---ou9wORBL2D7rb/hj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ sound/isa/sb/emu8000.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUsEK9AAoJECTWi3JdVIfQwOQH/jNFeQ9kNW0gxqpVC7cUHVGK
-5hG83hLiAt9QrrwUaud4evc1Cwz3QV9WyIAGUIjmDVRjMLrrj+le4/aQSnNETAYt
-2nyjong9SZCmb6123hQd1cFUZJwsY4LH2xMTE7VrGdtGvPPsWKceSqDRYe4QgDnF
-MRvooHRTN0pGX/3DoB30V2evHtW76OCozwnzwudb9UfUInCM+aQm6rFltirAo9+a
-TaJ5G/2In2dTfHHwDzm9b1rzKHb54Iq/qBdEm+iUXeUnXfzJeLfqJDzDmMySQv5c
-NTZSwgCzsAoVrD5U/8kbfmke2T5bTUzHBTpabymBxpjlKJvfNE5ezVu4KPZe630=
-=GsDH
------END PGP SIGNATURE-----
-
---ou9wORBL2D7rb/hj--
-
---===============7656954097291417145==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7656954097291417145==--
+diff --git a/sound/isa/sb/emu8000.c b/sound/isa/sb/emu8000.c
+index 45fcdff..3dcf80e 100644
+--- a/sound/isa/sb/emu8000.c
++++ b/sound/isa/sb/emu8000.c
+@@ -378,13 +378,12 @@ init_arrays(struct snd_emu8000 *emu)
+ static void
+ size_dram(struct snd_emu8000 *emu)
+ {
+-	int i, size, detected_size;
++	int i, size;
+ 
+ 	if (emu->dram_checked)
+ 		return;
+ 
+ 	size = 0;
+-	detected_size = 0;
+ 
+ 	/* write out a magic number */
+ 	snd_emu8000_dma_chan(emu, 0, EMU8000_RAM_WRITE);
+@@ -392,11 +391,12 @@ size_dram(struct snd_emu8000 *emu)
+ 	EMU8000_SMALW_WRITE(emu, EMU8000_DRAM_OFFSET);
+ 	EMU8000_SMLD_WRITE(emu, UNIQUE_ID1);
+ 	snd_emu8000_init_fm(emu); /* This must really be here and not 2 lines back even */
++	snd_emu8000_write_wait(emu);
++
++	goto size_dram_ID1_check; /* If that fails, we have no RAM. */
+ 
+ 	while (size < EMU8000_MAX_DRAM) {
+ 
+-		size += 512 * 1024;  /* increment 512kbytes */
+-
+ 		/* Write a unique data on the test address.
+ 		 * if the address is out of range, the data is written on
+ 		 * 0x200000(=EMU8000_DRAM_OFFSET).  Then the id word is
+@@ -424,23 +424,20 @@ size_dram(struct snd_emu8000 *emu)
+ 		 * wraps back to the beginning; so check to see if the
+ 		 * initial value has been overwritten.
+ 		 */
++
++	size_dram_ID1_check:
+ 		EMU8000_SMALR_WRITE(emu, EMU8000_DRAM_OFFSET);
+ 		EMU8000_SMLD_READ(emu); /* discard stale data  */
+ 		if (EMU8000_SMLD_READ(emu) != UNIQUE_ID1)
+-			break; /* we must have wrapped around */
++			break;
+ 		snd_emu8000_read_wait(emu);
+ 
+-		/* Otherwise, it's valid memory. */
+-		detected_size = size + 512 * 1024;
+-	}
+-
+-	/* Distinguish 512 KiB from 0. */
+-	if (detected_size == 0) {
+-		snd_emu8000_read_wait(emu);
+-		EMU8000_SMALR_WRITE(emu, EMU8000_DRAM_OFFSET);
+-		EMU8000_SMLD_READ(emu); /* discard stale data  */
+-		if (EMU8000_SMLD_READ(emu) == UNIQUE_ID1)
+-			detected_size = 512 * 1024;
++		/*
++		 * Otherwise, it's valid memory.  If a write succeeds at
++		 * the beginning of a 512 KiB page we assume that the whole
++		 * page is there.
++		 */
++		size += 512 * 1024;  /* increment 512 KiB */
+ 	}
+ 
+ 	/* wait until FULL bit in SMAxW register is false */
+@@ -455,9 +452,9 @@ size_dram(struct snd_emu8000 *emu)
+ 	snd_emu8000_dma_chan(emu, 1, EMU8000_RAM_CLOSE);
+ 
+ 	snd_printdd("EMU8000 [0x%lx]: %d Kb on-board memory detected\n",
+-		    emu->port1, detected_size/1024);
++		    emu->port1, size/1024);
+ 
+-	emu->mem_size = detected_size;
++	emu->mem_size = size;
+ 	emu->dram_checked = 1;
+ }
+ 
+-- 
+1.8.4
