@@ -1,18 +1,22 @@
-From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: [PATCH] sound: firewire: fireworks: fireworks_command:
-	Remove unused function
-Date: Sat, 10 Jan 2015 17:53:00 +0100
-Message-ID: <1420908780-31468-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 2/4] ASoC: fsl: Update set_tdm_slot()
+	semantics
+Date: Sat, 10 Jan 2015 12:00:38 -0800
+Message-ID: <20150110200038.GA3584@Alpha>
+References: <1420887157-18593-1-git-send-email-lars@metafoo.de>
+ <1420887157-18593-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E330260415
- for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 17:49:54 +0100 (CET)
-Received: by mail-wi0-f180.google.com with SMTP id n3so7691830wiv.1
- for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 08:49:54 -0800 (PST)
+Received: from mail-yh0-f49.google.com (mail-yh0-f49.google.com
+ [209.85.213.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id D65EA260444
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 21:00:48 +0100 (CET)
+Received: by mail-yh0-f49.google.com with SMTP id f10so6818608yha.8
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 12:00:47 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <1420887157-18593-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +26,159 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, linux-kernel@vger.kernel.org, Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Li.Xiubo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Remove the function snd_efw_command_set_resp_addr() that is not used anywhere.
+Hi Lars,
 
-This was partially found by using a static code analysis program called cppcheck.
+On Sat, Jan 10, 2015 at 11:52:35AM +0100, Lars-Peter Clausen wrote:
+> The fsl-esai, fsl-ssi and imx-ssi drivers use inverted semantics for the
+> tx_mask and rx_mask parameter of the set_tdm_slot() callback compared to
+> rest of ASoC. This patch updates the driver's semantics to be consistent
+> with the rest of ASoC, i.e. a set bit means a active slot and a cleared bit
+> means a inactive slot.  This will allow us to use the set_tdm_slot() API in
+> a more generic way.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  sound/soc/fsl/eukrea-tlv320.c | 2 +-
+>  sound/soc/fsl/fsl_esai.c      | 3 +++
+>  sound/soc/fsl/fsl_ssi.c       | 4 ++--
+>  sound/soc/fsl/fsl_utils.c     | 6 +++---
+>  sound/soc/fsl/imx-mc13783.c   | 2 +-
+>  sound/soc/fsl/imx-ssi.c       | 4 ++--
+>  sound/soc/fsl/wm1133-ev1.c    | 4 ++--
 
-Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
----
- sound/firewire/fireworks/fireworks.h         |    2 --
- sound/firewire/fireworks/fireworks_command.c |   21 ---------------------
- 2 files changed, 23 deletions(-)
+The SSI part and these machine drivers (all of them using SSI) being
+patched should be okay because the SSI uses the inverted semantics.
 
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 4f0201a..693b76b 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -189,8 +189,6 @@ enum snd_efw_transport_mode {
- 	SND_EFW_TRANSPORT_MODE_WINDOWS	= 0,
- 	SND_EFW_TRANSPORT_MODE_IEC61883	= 1,
- };
--int snd_efw_command_set_resp_addr(struct snd_efw *efw,
--				  u16 addr_high, u32 addr_low);
- int snd_efw_command_set_tx_mode(struct snd_efw *efw,
- 				enum snd_efw_transport_mode mode);
- int snd_efw_command_get_hwinfo(struct snd_efw *efw,
-diff --git a/sound/firewire/fireworks/fireworks_command.c b/sound/firewire/fireworks/fireworks_command.c
-index 166f805..e0cc467 100644
---- a/sound/firewire/fireworks/fireworks_command.c
-+++ b/sound/firewire/fireworks/fireworks_command.c
-@@ -175,27 +175,6 @@ end:
- }
- 
- /*
-- * The address in host system for transaction response is changable when the
-- * device supports. struct hwinfo.flags includes its flag. The default is
-- * MEMORY_SPACE_EFW_RESPONSE.
-- */
--int snd_efw_command_set_resp_addr(struct snd_efw *efw,
--				  u16 addr_high, u32 addr_low)
--{
--	__be32 addr[2];
--
--	addr[0] = cpu_to_be32(addr_high);
--	addr[1] = cpu_to_be32(addr_low);
--
--	if (!efw->resp_addr_changable)
--		return -ENOSYS;
--
--	return efw_transaction(efw, EFC_CAT_HWCTL,
--			       EFC_CMD_HWINFO_SET_RESP_ADDR,
--			       addr, sizeof(addr), NULL, 0);
--}
--
--/*
-  * This is for timestamp processing. In Windows mode, all 32bit fields of second
-  * CIP header in AMDTP transmit packet is used for 'presentation timestamp'. In
-  * 'no data' packet the value of this field is 0x90ffffff.
--- 
-1.7.10.4
+However, the mask for ESAI does follow the common semantics, that is,
+a set bit means a active slot and a cleared bit.
+
+After hardware or software reset, the ESAI_TSMA register is preset to
+0x0000FFFF, which means that all 16 possible slots are enabled for data
+transmission.				-- From i.MX6 Reference Manual
+
+So I think ESAI doesn't need this change at all.
+
+Thank you
+Nicolin
+
+>  7 files changed, 14 insertions(+), 11 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+> index 8c9e900..e1aa3834 100644
+> --- a/sound/soc/fsl/eukrea-tlv320.c
+> +++ b/sound/soc/fsl/eukrea-tlv320.c
+> @@ -50,7 +50,7 @@ static int eukrea_tlv320_hw_params(struct snd_pcm_substream *substream,
+>  		return ret;
+>  	}
+>  
+> -	snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
+> +	snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 0);
+>  
+>  	ret = snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
+>  				SND_SOC_CLOCK_IN);
+> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+> index 5c75971..12ed857 100644
+> --- a/sound/soc/fsl/fsl_esai.c
+> +++ b/sound/soc/fsl/fsl_esai.c
+> @@ -347,6 +347,9 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+>  {
+>  	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+>  
+> +	tx_mask = ~tx_mask;
+> +	rx_mask = ~rx_mask;
+> +
+>  	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
+>  			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
+>  
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 65400be..791cdb3 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -992,8 +992,8 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
+>  	regmap_update_bits(regs, CCSR_SSI_SCR, CCSR_SSI_SCR_SSIEN,
+>  			CCSR_SSI_SCR_SSIEN);
+>  
+> -	regmap_write(regs, CCSR_SSI_STMSK, tx_mask);
+> -	regmap_write(regs, CCSR_SSI_SRMSK, rx_mask);
+> +	regmap_write(regs, CCSR_SSI_STMSK, ~tx_mask);
+> +	regmap_write(regs, CCSR_SSI_SRMSK, ~rx_mask);
+>  
+>  	regmap_update_bits(regs, CCSR_SSI_SCR, CCSR_SSI_SCR_SSIEN, val);
+>  
+> diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
+> index 2ac7755..5fd4463 100644
+> --- a/sound/soc/fsl/fsl_utils.c
+> +++ b/sound/soc/fsl/fsl_utils.c
+> @@ -94,7 +94,7 @@ EXPORT_SYMBOL(fsl_asoc_get_dma_channel);
+>   * @rx_mask: bitmask representing active RX slots.
+>   *
+>   * This function used to generate the TDM slot TX/RX mask. And the TX/RX
+> - * mask will use a 0 bit for an active slot as default, and the default
+> + * mask will use a 1 bit for an active slot as default, and the default
+>   * active bits are at the LSB of the mask value.
+>   */
+>  int fsl_asoc_xlate_tdm_slot_mask(unsigned int slots,
+> @@ -105,9 +105,9 @@ int fsl_asoc_xlate_tdm_slot_mask(unsigned int slots,
+>  		return -EINVAL;
+>  
+>  	if (tx_mask)
+> -		*tx_mask = ~((1 << slots) - 1);
+> +		*tx_mask = ((1 << slots) - 1);
+>  	if (rx_mask)
+> -		*rx_mask = ~((1 << slots) - 1);
+> +		*rx_mask = ((1 << slots) - 1);
+>  
+>  	return 0;
+>  }
+> diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
+> index 9589452..9e6493d 100644
+> --- a/sound/soc/fsl/imx-mc13783.c
+> +++ b/sound/soc/fsl/imx-mc13783.c
+> @@ -45,7 +45,7 @@ static int imx_mc13783_hifi_hw_params(struct snd_pcm_substream *substream,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x0, 0xfffffffc, 2, 16);
+> +	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 16);
+>  	if (ret)
+>  		return ret;
+>  
+> diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+> index fa801e1..6aeaac3 100644
+> --- a/sound/soc/fsl/imx-ssi.c
+> +++ b/sound/soc/fsl/imx-ssi.c
+> @@ -74,8 +74,8 @@ static int imx_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
+>  	sccr |= SSI_STCCR_DC(slots - 1);
+>  	writel(sccr, ssi->base + SSI_SRCCR);
+>  
+> -	writel(tx_mask, ssi->base + SSI_STMSK);
+> -	writel(rx_mask, ssi->base + SSI_SRMSK);
+> +	writel(~tx_mask, ssi->base + SSI_STMSK);
+> +	writel(~rx_mask, ssi->base + SSI_SRMSK);
+>  
+>  	return 0;
+>  }
+> diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
+> index d072bd1..a958937 100644
+> --- a/sound/soc/fsl/wm1133-ev1.c
+> +++ b/sound/soc/fsl/wm1133-ev1.c
+> @@ -106,10 +106,10 @@ static int wm1133_ev1_hw_params(struct snd_pcm_substream *substream,
+>  	/* TODO: The SSI driver should figure this out for us */
+>  	switch (channels) {
+>  	case 2:
+> -		snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
+> +		snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 0);
+>  		break;
+>  	case 1:
+> -		snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffe, 0xffffffe, 1, 0);
+> +		snd_soc_dai_set_tdm_slot(cpu_dai, 0x1, 0x1, 1, 0);
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> -- 
+> 1.8.0
+> 
