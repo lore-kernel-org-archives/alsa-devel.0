@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/5] ASoC: ak4671: Replace w->codec
-	snd_soc_dapm_to_codec(w->dapm)
-Date: Sat, 10 Jan 2015 15:44:05 +0100
-Message-ID: <1420901048-5756-2-git-send-email-lars@metafoo.de>
-References: <1420901048-5756-1-git-send-email-lars@metafoo.de>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH] fm801: remove FSF address
+Date: Sat, 10 Jan 2015 16:57:45 +0200
+Message-ID: <1420901865-8408-1-git-send-email-andy.shevchenko@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-109.synserver.de (smtp-out-109.synserver.de
- [212.40.185.109])
- by alsa0.perex.cz (Postfix) with ESMTP id B6EFA2606CD
- for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 15:44:27 +0100 (CET)
-In-Reply-To: <1420901048-5756-1-git-send-email-lars@metafoo.de>
+Received: from gw02.mail.saunalahti.fi (gw02.mail.saunalahti.fi
+ [195.197.172.116])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE9A2260570
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 15:57:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Support Opensource <support.opensource@diasemi.com>
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The codec field of the snd_soc_widget struct is eventually going to be
-removed, use snd_soc_dapm_to_codec(w->dapm) instead.
+The FSF address is subject to change. So, we remove it from the header.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+While here, remove a line with my old and non-functional email from the
+header. Moreover, nowadays we have a Git VCS that contains a history of
+changes.
+
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- sound/soc/codecs/ak4671.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/fm801.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
-index 686cacb..632e89f 100644
---- a/sound/soc/codecs/ak4671.c
-+++ b/sound/soc/codecs/ak4671.c
-@@ -163,7 +163,7 @@ static const struct snd_kcontrol_new ak4671_snd_controls[] = {
- static int ak4671_out2_event(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+index 52555bda..1fdd92b6 100644
+--- a/sound/pci/fm801.c
++++ b/sound/pci/fm801.c
+@@ -2,8 +2,6 @@
+  *  The driver for the ForteMedia FM801 based soundcards
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
+  *
+- *  Support FM only card by Andy Shevchenko <andy@smile.org.ua>
+- *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+  *   the Free Software Foundation; either version 2 of the License, or
+@@ -14,10 +12,6 @@
+  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  *   GNU General Public License for more details.
+  *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program; if not, write to the Free Software
+- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+- *
+  */
  
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
+ #include <linux/delay.h>
 -- 
-1.8.0
+1.8.3.101.g727a46b
