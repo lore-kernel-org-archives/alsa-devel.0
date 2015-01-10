@@ -1,208 +1,85 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
- for audio
-Date: Sat, 10 Jan 2015 16:47:11 +0100
-Message-ID: <20150110164711.637892fc@armhf>
-References: <54AE99F5.1010404@ti.com>
- <20150108174257.557f7ea5@armhf>
- <54AFA9B0.6040405@ti.com>
- <20150109123036.4bc4bbf6@armhf>
- <20150109114529.GH12302@n2100.arm.linux.org.uk>
- <20150109135401.5b270d46@armhf>
- <20150109130725.GN12302@n2100.arm.linux.org.uk>
- <54AFDE8D.3000504@arm.com>
- <20150109145741.GP12302@n2100.arm.linux.org.uk>
- <20150109183857.53d701a4@armhf>
- <20150109200127.GD12302@n2100.arm.linux.org.uk>
+From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] sound: firewire: fireworks: fireworks_command:
+	Remove unused function
+Date: Sat, 10 Jan 2015 17:53:00 +0100
+Message-ID: <1420908780-31468-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150109200127.GD12302-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E330260415
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 17:49:54 +0100 (CET)
+Received: by mail-wi0-f180.google.com with SMTP id n3so7691830wiv.1
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 08:49:54 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, linux-kernel@vger.kernel.org, Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 9 Jan 2015 20:01:27 +0000
-Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org> wrote:
+Remove the function snd_efw_command_set_resp_addr() that is not used anywhere.
 
-> > I proposed:
-> >=20
-> > 	audio-ports =3D <0x04>, <0x03>;
-> > 	audio-port-names =3D "spdif", "i2s";
-> >=20
-> > Do you better like:
-> >=20
-> > 	audio-spdif-port =3D <0x04>;
-> > 	audio-i2s-port =3D <0x03>; =20
->=20
-> Neither; we know that there are TDA998x devices which allow SPDIF to =
-be
-> input via two separate pins, but only one to be active at any one tim=
-e.
-> Given that the hardware is flexible in that regard, a binding which
-> artificially restricts that flexibility would seem unwise.
->=20
-> If we were to come across a setup which did route two SPDIF streams t=
-o
-> the TDA998x, and we had to make the decision at run time which to rou=
-te
-> to the HDMI sink, we'd have to rework the binding, and we'd have to
-> support the new binding and the old binding in the driver.
->=20
-> Can you please look at Documentation/devicetree/bindings/graph.txt ?
->=20
-> I think we may be able to use something like this:
->=20
-> tda998x: hdmi-encoder {
-> 	compatible =3D "nxp,tda998x";
-> 	reg =3D <0x70>;
-> 	video-ports =3D <0x234501>;
->=20
-> 	port {
-> 		tda998x_video: endpoint {
-> 			remote-endpoint =3D <&lcd0_rgb>;
-> 		};
-> 	};
->=20
-> 	port {
-> 		#address-cells =3D <1>;
-> 		#size-cells =3D <0>;
->=20
-> 		tda998x_spdif0: endpoint@02 {
-> 			reg =3D <0x02>;
-> 			remote-endpoint =3D <&spdif0>;
-> 		};
->=20
-> 		tda998x_spdif1: endpoint@04 {
-> 			reg =3D <0x04>;
-> 			remote-endpoint =3D <&spdif0>;
-> 		};
->=20
-> 		tda998x_i2s: endpoint@03 {
-> 			reg =3D <0x03>;
-> 			remote-endpoint =3D <&i2s>;
-> 		};
-> 	};
-> };
->=20
-> I'm adding Philipp Zabel for comment.  The issue I see with this is t=
-hat
-> we have two ports here which are not mutually exclusive, and it's not
-> obvious how they are dealt with.
+This was partially found by using a static code analysis program called cppcheck.
 
-Very interesting idea!
+Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+---
+ sound/firewire/fireworks/fireworks.h         |    2 --
+ sound/firewire/fireworks/fireworks_command.c |   21 ---------------------
+ 2 files changed, 23 deletions(-)
 
-That's a detail, but I don't fully agree your endpoint description:
-
-- pin description
-	AP1 is the first S/PDIF input - ok
-	AP2 is the second S/PDIF input - ok
-	then, the I2S input may go only to AP3 or AP4.
-
-- source input nodes
-	You declare the same external S/PDIF source on AP1 and AP2.
-	I would have better seen a kirkwood-like audio device as one of
-	the S/PDIF input, say the second one.
-
-To complexify a bit, I also connect the spdif wire of the kirkwood-like
-device to a S/PDIF optical output ;)
-
-spdif_in -------------+
-                      v
-       + i2s -----> tda998x ---> HDMI
-audio1 |              ^
-       + spdif -------+--------> spdif_out
-
-
-Here are the modified ports of
-- the HDMI transmitter (I removed the #xxx_cells):
-
-	port@0 { // AP 1
-		tda998x_spdif0: endpoint@02 {
-			reg =3D <0x02>;
-			remote-endpoint =3D <&spdif_in_port>;
-		};
-	};
-	port@1 { //AP 2
-		tda998x_spdif1: endpoint@04 {
-			reg =3D <0x04>;
-			remote-endpoint =3D <&audio1_spdif0>;
-		};
-	};
-	port@2 { //AP 3
-		tda998x_i2s: endpoint@08 {
-			reg =3D <0x09>;
-			remote-endpoint =3D <&audio1_i2s>;
-		};
-	};
-
-- the (internal) audio device (audio1):
-
-	port@0 {
-		audio1_spdif0: endpoint@0 {
-			reg =3D 0;
-			remote-endpoint =3D <&tda998x_spdif1>;
-		};
-		audio1_spdif1: endpoint@1 {
-			reg =3D 0;
-			remote-endpoint =3D <&spdif_out_port>;
-		};
-	};
-	port@1 {
-		audio1_i2s: endpoint@1 {
-			reg =3D 1;
-			remote-endpoint =3D <&tda998x_i2s>;
-		};
-	};
-
-- and the S/PDIF external input (spdif_in):
-
-	port {
-		spdif_in_port: endpoint@0 {
-			reg =3D 0;
-			remote-endpoint =3D <&tda998x_spdif0>;
-		};
-	};
-
-- and the S/PDIF external output (spdif_out):
-
-	port {
-		spdif_out_port: endpoint@0 {
-			reg =3D 0;
-			remote-endpoint =3D <&audio1_spdif1>;
-		};
-	};
-
-All the hardware is described. There is nothing more to add in the DT.
-
-Especially, there is no 'simple-card' which is pure software and rather
-Linux specific.
-
-And, now, from this DT description, ASoC expects a sound card to be
-built.
-
-It seems that this creation should be done in the same way the video
-cards are built, i.e. from the source devices, i.e. the kirkwood-like
-device, and also from the spdif_in (which could be some other internal
-audio device outputting s/pdif instead of a simple S/PDIF input
-connector)! Is there one or two cards, and if 2 cards, how do they
-share the tda998x?
-
-Well, I will have a look at how to get audio out of my machine with
-these new DT definitions (hopefully, there is only one audio source!).
-
-Mark, you may forget about my other patch adding multi-codecs in the
-simple-card...
-
-Thanks.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 4f0201a..693b76b 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -189,8 +189,6 @@ enum snd_efw_transport_mode {
+ 	SND_EFW_TRANSPORT_MODE_WINDOWS	= 0,
+ 	SND_EFW_TRANSPORT_MODE_IEC61883	= 1,
+ };
+-int snd_efw_command_set_resp_addr(struct snd_efw *efw,
+-				  u16 addr_high, u32 addr_low);
+ int snd_efw_command_set_tx_mode(struct snd_efw *efw,
+ 				enum snd_efw_transport_mode mode);
+ int snd_efw_command_get_hwinfo(struct snd_efw *efw,
+diff --git a/sound/firewire/fireworks/fireworks_command.c b/sound/firewire/fireworks/fireworks_command.c
+index 166f805..e0cc467 100644
+--- a/sound/firewire/fireworks/fireworks_command.c
++++ b/sound/firewire/fireworks/fireworks_command.c
+@@ -175,27 +175,6 @@ end:
+ }
+ 
+ /*
+- * The address in host system for transaction response is changable when the
+- * device supports. struct hwinfo.flags includes its flag. The default is
+- * MEMORY_SPACE_EFW_RESPONSE.
+- */
+-int snd_efw_command_set_resp_addr(struct snd_efw *efw,
+-				  u16 addr_high, u32 addr_low)
+-{
+-	__be32 addr[2];
+-
+-	addr[0] = cpu_to_be32(addr_high);
+-	addr[1] = cpu_to_be32(addr_low);
+-
+-	if (!efw->resp_addr_changable)
+-		return -ENOSYS;
+-
+-	return efw_transaction(efw, EFC_CAT_HWCTL,
+-			       EFC_CMD_HWINFO_SET_RESP_ADDR,
+-			       addr, sizeof(addr), NULL, 0);
+-}
+-
+-/*
+  * This is for timestamp processing. In Windows mode, all 32bit fields of second
+  * CIP header in AMDTP transmit packet is used for 'presentation timestamp'. In
+  * 'no data' packet the value of this field is 0x90ffffff.
+-- 
+1.7.10.4
