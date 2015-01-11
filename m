@@ -1,82 +1,40 @@
-From: Rumko <rumko@rumko.net>
-Subject: Re: [PATCH - alsa-lib 1/1] include/global.h: missing
-	struct on FreeBSD
-Date: Sun, 11 Jan 2015 17:52:02 +0100
-Message-ID: <6317603.ibrtU87yMB@nu-athena>
-References: <54b0f97b.ca51c20a.1b71.ffffc3db@mx.google.com>
- <1974835.OcM2UqamNN@nu-athena> <s5hsifh2tu4.wl-tiwai@suse.de>
+From: David Flater <vger@flaterco.com>
+Subject: Re: [PATCHv2 1/2] ALSA: fix emu8000 DRAM sizing for AWE64 Value
+Date: Sun, 11 Jan 2015 12:10:06 -0500
+Message-ID: <54B2AE6E.3080909@flaterco.com>
+References: <54B0775C.1080705@flaterco.com> <s5h7fwt4mji.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8527203671914444089=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f173.google.com (mail-we0-f173.google.com
- [74.125.82.173])
- by alsa0.perex.cz (Postfix) with ESMTP id F1859260410
- for <alsa-devel@alsa-project.org>; Sun, 11 Jan 2015 17:52:07 +0100 (CET)
-Received: by mail-we0-f173.google.com with SMTP id q58so15461024wes.4
- for <alsa-devel@alsa-project.org>; Sun, 11 Jan 2015 08:52:07 -0800 (PST)
-In-Reply-To: <s5hsifh2tu4.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h7fwt4mji.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Alsa Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 01/11/2015 05:52 AM, Takashi Iwai wrote:
+> At Fri, 09 Jan 2015 19:50:36 -0500,
+> David Flater wrote:
+>> CT4380 is commonly said to come with 1 MiB of DRAM, but Creative's AWE
+>> Control app agreed that mine has only 512 KiB.  It has the same memory chip
+>> as the CT4520.
+> 
+> And you couldn't actually use the 1MB, right?
 
---===============8527203671914444089==
-Content-Type: multipart/signed; boundary="nextPart3125136.7jpGxiyZLO"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Confirmed with indirect evidence.  Since the address space wraps around, the mode of failure (assuming that the load isn't blocked by checking against a correctly detected size) is silent corruption of the loaded sound font.
 
+Testing with a random sound font larger than 512 KiB but smaller than 1 MiB:
+Fender2.sf2, 545994 B
 
---nextPart3125136.7jpGxiyZLO
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="us-ascii"
+On CT4390, the following test gives me a credible guitar in the left channel (and nothing else):
+asfxload -i -M Fender2.sf2
+DRAM memory left = 3565 kB
+aplaymidi -p 17:0 E1M1.mid
 
-On Sunday 11 January 2015 16:57:39 Takashi Iwai wrote:
-<snip>
-> We follow the policy of Linux kernel development for the user-space
-> stuff in principle.  See Documentation/SubmittingPatches of Linux
-> driver tree, "Sign your work" section.  You need to give the real
-> name.
+On CT4380 with DRAM size hard-coded to 1 MiB, asfxload catches no failure but aplaymidi produces a glitchy mixture of guitar and morse code beeping:
+asfxload -i -M Fender2.sf2
+DRAM memory left = 493 kB
+aplaymidi -p 17:0 E1M1.mid
 
-Ah, in that case, sorry to have bothered you. As far as I'm concerned, =
-this=20
-thread can be closed.
-
-Thank you
-
-> thanks,
->=20
-> Takashi
-=2D-=20
-Regards,
-Rumko
---nextPart3125136.7jpGxiyZLO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iEYEABECAAYFAlSyqjUACgkQxV3ce2RZW736iACeJuPV39XWUEnfiSqnbau/ze5D
-S5QAoNyITqQuQtd3ZBGjQz4s+xGQEYcI
-=CUpk
------END PGP SIGNATURE-----
-
---nextPart3125136.7jpGxiyZLO--
-
-
---===============8527203671914444089==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8527203671914444089==--
+DWF
