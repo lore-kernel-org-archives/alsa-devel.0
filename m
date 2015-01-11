@@ -1,22 +1,23 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 2/4] ASoC: fsl: Update set_tdm_slot()
-	semantics
-Date: Sat, 10 Jan 2015 12:00:38 -0800
-Message-ID: <20150110200038.GA3584@Alpha>
-References: <1420887157-18593-1-git-send-email-lars@metafoo.de>
- <1420887157-18593-3-git-send-email-lars@metafoo.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Regression for Lenovo X240 sound in 3.18
+Date: Sun, 11 Jan 2015 13:12:45 +0800
+Message-ID: <CAN8cciZ9=qjScxw_K5dpzX3AM4zWJjfzZwqtPxO5ExMyMwVE7Q@mail.gmail.com>
+References: <alpine.LSU.2.11.1412291303200.30351@nerf08.vanv.qr>
+ <s5h387xi2yp.wl-tiwai@suse.de>
+ <alpine.LSU.2.11.1412301629280.1813@nerf08.vanv.qr>
+ <CAN8cciZ9J+VzNX8b4jNue7T1tMyzcQfjyvkRnC8VptuBG++__g@mail.gmail.com>
+ <alpine.LSU.2.11.1501101314510.22793@nerf60.vanv.qr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f49.google.com (mail-yh0-f49.google.com
- [209.85.213.49])
- by alsa0.perex.cz (Postfix) with ESMTP id D65EA260444
- for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 21:00:48 +0100 (CET)
-Received: by mail-yh0-f49.google.com with SMTP id f10so6818608yha.8
- for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 12:00:47 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1420887157-18593-3-git-send-email-lars@metafoo.de>
+Received: from mail-qa0-f46.google.com (mail-qa0-f46.google.com
+ [209.85.216.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A2F6260488
+ for <alsa-devel@alsa-project.org>; Sun, 11 Jan 2015 06:12:46 +0100 (CET)
+Received: by mail-qa0-f46.google.com with SMTP id j7so4262827qaq.5
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2015 21:12:45 -0800 (PST)
+In-Reply-To: <alpine.LSU.2.11.1501101314510.22793@nerf60.vanv.qr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,159 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Li.Xiubo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Jan Engelhardt <jengelh@inai.de>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, mr.bobukas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
+> >
+> >If Combo audio connector does not support conventional microphone, this
+mean
+> >the driver should not create mic jack control for node 0x1a
+> >
+> >http://support.lenovo.com/us/en/documents/pd029567
+> >
+> >Connect headphones or a headset that has a 3.5-mm (0.14-inch), 4-pole
+plug
+> >to the combo audio connector to listen to the sound from the computer.
+>
+> I do not have any 4-pole (3-rings) equipment to test.
+> A conventional 3-pole (2-ring) microphone certainly does not do its job.
+>
+> Then again, I ditched unpowered microphones (most external ones are).
+> The internal mic next to the internal webcam is powered and provides
+> better gain.
+>
+> The Mic control in alsamixer should stay.
 
-On Sat, Jan 10, 2015 at 11:52:35AM +0100, Lars-Peter Clausen wrote:
-> The fsl-esai, fsl-ssi and imx-ssi drivers use inverted semantics for the
-> tx_mask and rx_mask parameter of the set_tdm_slot() callback compared to
-> rest of ASoC. This patch updates the driver's semantics to be consistent
-> with the rest of ASoC, i.e. a set bit means a active slot and a cleared bit
-> means a inactive slot.  This will allow us to use the set_tdm_slot() API in
-> a more generic way.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
->  sound/soc/fsl/eukrea-tlv320.c | 2 +-
->  sound/soc/fsl/fsl_esai.c      | 3 +++
->  sound/soc/fsl/fsl_ssi.c       | 4 ++--
->  sound/soc/fsl/fsl_utils.c     | 6 +++---
->  sound/soc/fsl/imx-mc13783.c   | 2 +-
->  sound/soc/fsl/imx-ssi.c       | 4 ++--
->  sound/soc/fsl/wm1133-ev1.c    | 4 ++--
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=73bdd597823e2231dc882577dbbaf8df92fe1775
 
-The SSI part and these machine drivers (all of them using SSI) being
-patched should be okay because the SSI uses the inverted semantics.
+The debug version of driver  message indicate whether the codec can
+differentiate headphone , headset (ctia or omtp) or not
 
-However, the mask for ESAI does follow the common semantics, that is,
-a set bit means a active slot and a cleared bit.
+http://voices.canonical.com/david.henningsson/2014/03/07/headset-jacks-on-newer-laptops/
 
-After hardware or software reset, the ESAI_TSMA register is preset to
-0x0000FFFF, which means that all 16 possible slots are enabled for data
-transmission.				-- From i.MX6 Reference Manual
+http://bazaar.launchpad.net/~unity-settings-daemon-team/unity-settings-daemon/trunk/view/head:/plugins/media-keys/what-did-you-plug-in/pa-backend.c
 
-So I think ESAI doesn't need this change at all.
+Headphone Mic Jack - indicates headphone and mic-in mode share the same
+jack,  i e, not two separate jacks. Hardware cannot distinguish between a
+headphone and a mic.
+   Headset Mic Phantom Jack - indicates headset jack where hardware can not
+distinguish between headphones and headsets
+   Headset Mic Jack - indicates headset jack where hardware can distinguish
+between headphones and headsets. There is no use popping up a dialog in
+this case, unless we already need to do this for the mic-in mode.
 
-Thank you
-Nicolin
+control.14 {
+iface CARD
+name 'Mic Jack'
+value false
+comment { access read type BOOLEAN count 1 } }
 
->  7 files changed, 14 insertions(+), 11 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
-> index 8c9e900..e1aa3834 100644
-> --- a/sound/soc/fsl/eukrea-tlv320.c
-> +++ b/sound/soc/fsl/eukrea-tlv320.c
-> @@ -50,7 +50,7 @@ static int eukrea_tlv320_hw_params(struct snd_pcm_substream *substream,
->  		return ret;
->  	}
->  
-> -	snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
-> +	snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 0);
->  
->  	ret = snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
->  				SND_SOC_CLOCK_IN);
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index 5c75971..12ed857 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -347,6 +347,9 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
->  {
->  	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
->  
-> +	tx_mask = ~tx_mask;
-> +	rx_mask = ~rx_mask;
-> +
->  	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
->  			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
->  
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 65400be..791cdb3 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -992,8 +992,8 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
->  	regmap_update_bits(regs, CCSR_SSI_SCR, CCSR_SSI_SCR_SSIEN,
->  			CCSR_SSI_SCR_SSIEN);
->  
-> -	regmap_write(regs, CCSR_SSI_STMSK, tx_mask);
-> -	regmap_write(regs, CCSR_SSI_SRMSK, rx_mask);
-> +	regmap_write(regs, CCSR_SSI_STMSK, ~tx_mask);
-> +	regmap_write(regs, CCSR_SSI_SRMSK, ~rx_mask);
->  
->  	regmap_update_bits(regs, CCSR_SSI_SCR, CCSR_SSI_SCR_SSIEN, val);
->  
-> diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-> index 2ac7755..5fd4463 100644
-> --- a/sound/soc/fsl/fsl_utils.c
-> +++ b/sound/soc/fsl/fsl_utils.c
-> @@ -94,7 +94,7 @@ EXPORT_SYMBOL(fsl_asoc_get_dma_channel);
->   * @rx_mask: bitmask representing active RX slots.
->   *
->   * This function used to generate the TDM slot TX/RX mask. And the TX/RX
-> - * mask will use a 0 bit for an active slot as default, and the default
-> + * mask will use a 1 bit for an active slot as default, and the default
->   * active bits are at the LSB of the mask value.
->   */
->  int fsl_asoc_xlate_tdm_slot_mask(unsigned int slots,
-> @@ -105,9 +105,9 @@ int fsl_asoc_xlate_tdm_slot_mask(unsigned int slots,
->  		return -EINVAL;
->  
->  	if (tx_mask)
-> -		*tx_mask = ~((1 << slots) - 1);
-> +		*tx_mask = ((1 << slots) - 1);
->  	if (rx_mask)
-> -		*rx_mask = ~((1 << slots) - 1);
-> +		*rx_mask = ((1 << slots) - 1);
->  
->  	return 0;
->  }
-> diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
-> index 9589452..9e6493d 100644
-> --- a/sound/soc/fsl/imx-mc13783.c
-> +++ b/sound/soc/fsl/imx-mc13783.c
-> @@ -45,7 +45,7 @@ static int imx_mc13783_hifi_hw_params(struct snd_pcm_substream *substream,
->  	if (ret)
->  		return ret;
->  
-> -	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x0, 0xfffffffc, 2, 16);
-> +	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 16);
->  	if (ret)
->  		return ret;
->  
-> diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-> index fa801e1..6aeaac3 100644
-> --- a/sound/soc/fsl/imx-ssi.c
-> +++ b/sound/soc/fsl/imx-ssi.c
-> @@ -74,8 +74,8 @@ static int imx_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
->  	sccr |= SSI_STCCR_DC(slots - 1);
->  	writel(sccr, ssi->base + SSI_SRCCR);
->  
-> -	writel(tx_mask, ssi->base + SSI_STMSK);
-> -	writel(rx_mask, ssi->base + SSI_SRMSK);
-> +	writel(~tx_mask, ssi->base + SSI_STMSK);
-> +	writel(~rx_mask, ssi->base + SSI_SRMSK);
->  
->  	return 0;
->  }
-> diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
-> index d072bd1..a958937 100644
-> --- a/sound/soc/fsl/wm1133-ev1.c
-> +++ b/sound/soc/fsl/wm1133-ev1.c
-> @@ -106,10 +106,10 @@ static int wm1133_ev1_hw_params(struct snd_pcm_substream *substream,
->  	/* TODO: The SSI driver should figure this out for us */
->  	switch (channels) {
->  	case 2:
-> -		snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffc, 0xffffffc, 2, 0);
-> +		snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 0);
->  		break;
->  	case 1:
-> -		snd_soc_dai_set_tdm_slot(cpu_dai, 0xffffffe, 0xffffffe, 1, 0);
-> +		snd_soc_dai_set_tdm_slot(cpu_dai, 0x1, 0x1, 1, 0);
->  		break;
->  	default:
->  		return -EINVAL;
-> -- 
-> 1.8.0
-> 
+What is the usage of this jack detect control if conventional mic is not
+supported ?
