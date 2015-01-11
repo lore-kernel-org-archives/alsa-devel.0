@@ -1,63 +1,191 @@
 From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: [PATCH] ALSA: ice1712: wm8766: Remove some unused functions
-Date: Sun, 11 Jan 2015 16:31:40 +0100
-Message-ID: <1420990300-19672-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] ALSA: lx6464es: lx_core: Remove some unused functions
+Date: Sun, 11 Jan 2015 16:43:02 +0100
+Message-ID: <1420990982-20187-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Maxime Ripard <maxime.ripard@free-electrons.com>, Josh Triplett <josh@joshtriplett.org>, Rashika Kheria <rashika.kheria@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Removes some functions that are not used anywhere:
-snd_wm8766_set_power() snd_wm8766_set_master_mode()
+lx_buffer_cancel() lx_buffer_free() lx_stream_sample_position()
+lx_stream_state() lx_pipe_sample_count()
 
 This was partially found by using a static code analysis program called cppcheck.
 
 Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 ---
- sound/pci/ice1712/wm8766.c |   16 ----------------
- sound/pci/ice1712/wm8766.h |    2 --
- 2 files changed, 18 deletions(-)
+ sound/pci/lx6464es/lx_core.c |  107 ------------------------------------------
+ sound/pci/lx6464es/lx_core.h |   10 ----
+ 2 files changed, 117 deletions(-)
 
-diff --git a/sound/pci/ice1712/wm8766.c b/sound/pci/ice1712/wm8766.c
-index 21b373b..f7ac8d5 100644
---- a/sound/pci/ice1712/wm8766.c
-+++ b/sound/pci/ice1712/wm8766.c
-@@ -183,22 +183,6 @@ void snd_wm8766_set_if(struct snd_wm8766 *wm, u16 dac)
- 	snd_wm8766_write(wm, WM8766_REG_IFCTRL, val | dac);
+diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
+index f3d6202..5621cd7 100644
+--- a/sound/pci/lx6464es/lx_core.c
++++ b/sound/pci/lx6464es/lx_core.c
+@@ -582,33 +582,6 @@ int lx_pipe_pause(struct lx6464es *chip, u32 pipe, int is_capture)
  }
  
--void snd_wm8766_set_master_mode(struct snd_wm8766 *wm, u16 mode)
--{
--	u16 val = wm->regs[WM8766_REG_DACCTRL3] & ~WM8766_DAC3_MSTR_MASK;
--
--	mode &= WM8766_DAC3_MSTR_MASK;
--	snd_wm8766_write(wm, WM8766_REG_DACCTRL3, val | mode);
--}
--
--void snd_wm8766_set_power(struct snd_wm8766 *wm, u16 power)
--{
--	u16 val = wm->regs[WM8766_REG_DACCTRL3] & ~WM8766_DAC3_POWER_MASK;
--
--	power &= WM8766_DAC3_POWER_MASK;
--	snd_wm8766_write(wm, WM8766_REG_DACCTRL3, val | power);
--}
--
- void snd_wm8766_volume_restore(struct snd_wm8766 *wm)
- {
- 	u16 val = wm->regs[WM8766_REG_DACR1];
-diff --git a/sound/pci/ice1712/wm8766.h b/sound/pci/ice1712/wm8766.h
-index c119f84..18c8d9d 100644
---- a/sound/pci/ice1712/wm8766.h
-+++ b/sound/pci/ice1712/wm8766.h
-@@ -155,8 +155,6 @@ struct snd_wm8766 {
- void snd_wm8766_init(struct snd_wm8766 *wm);
- void snd_wm8766_resume(struct snd_wm8766 *wm);
- void snd_wm8766_set_if(struct snd_wm8766 *wm, u16 dac);
--void snd_wm8766_set_master_mode(struct snd_wm8766 *wm, u16 mode);
--void snd_wm8766_set_power(struct snd_wm8766 *wm, u16 power);
- void snd_wm8766_volume_restore(struct snd_wm8766 *wm);
- int snd_wm8766_build_controls(struct snd_wm8766 *wm);
  
+-int lx_pipe_sample_count(struct lx6464es *chip, u32 pipe, int is_capture,
+-			 u64 *rsample_count)
+-{
+-	int err;
+-	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+-
+-	mutex_lock(&chip->msg_lock);
+-	lx_message_init(&chip->rmh, CMD_0A_GET_PIPE_SPL_COUNT);
+-
+-	chip->rmh.cmd[0] |= pipe_cmd;
+-	chip->rmh.stat_len = 2;	/* need all words here! */
+-
+-	err = lx_message_send_atomic(chip, &chip->rmh); /* don't sleep! */
+-
+-	if (err != 0)
+-		dev_err(chip->card->dev,
+-			"could not query pipe's sample count\n");
+-	else {
+-		*rsample_count = ((u64)(chip->rmh.stat[0] & MASK_SPL_COUNT_HI)
+-				  << 24)     /* hi part */
+-			+ chip->rmh.stat[1]; /* lo part */
+-	}
+-
+-	mutex_unlock(&chip->msg_lock);
+-	return err;
+-}
+-
+ int lx_pipe_state(struct lx6464es *chip, u32 pipe, int is_capture, u16 *rstate)
+ {
+ 	int err;
+@@ -714,46 +687,6 @@ int lx_stream_set_format(struct lx6464es *chip, struct snd_pcm_runtime *runtime,
+ 	return err;
+ }
+ 
+-int lx_stream_state(struct lx6464es *chip, u32 pipe, int is_capture,
+-		    int *rstate)
+-{
+-	int err;
+-	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+-
+-	mutex_lock(&chip->msg_lock);
+-	lx_message_init(&chip->rmh, CMD_0E_GET_STREAM_SPL_COUNT);
+-
+-	chip->rmh.cmd[0] |= pipe_cmd;
+-
+-	err = lx_message_send_atomic(chip, &chip->rmh);
+-
+-	*rstate = (chip->rmh.stat[0] & SF_START) ? START_STATE : PAUSE_STATE;
+-
+-	mutex_unlock(&chip->msg_lock);
+-	return err;
+-}
+-
+-int lx_stream_sample_position(struct lx6464es *chip, u32 pipe, int is_capture,
+-			      u64 *r_bytepos)
+-{
+-	int err;
+-	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+-
+-	mutex_lock(&chip->msg_lock);
+-	lx_message_init(&chip->rmh, CMD_0E_GET_STREAM_SPL_COUNT);
+-
+-	chip->rmh.cmd[0] |= pipe_cmd;
+-
+-	err = lx_message_send_atomic(chip, &chip->rmh);
+-
+-	*r_bytepos = ((u64) (chip->rmh.stat[0] & MASK_SPL_COUNT_HI)
+-		      << 32)	     /* hi part */
+-		+ chip->rmh.stat[1]; /* lo part */
+-
+-	mutex_unlock(&chip->msg_lock);
+-	return err;
+-}
+-
+ /* low-level buffer handling */
+ int lx_buffer_give(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		   u32 buffer_size, u32 buf_address_lo, u32 buf_address_hi,
+@@ -803,46 +736,6 @@ int lx_buffer_give(struct lx6464es *chip, u32 pipe, int is_capture,
+ 	return err;
+ }
+ 
+-int lx_buffer_free(struct lx6464es *chip, u32 pipe, int is_capture,
+-		   u32 *r_buffer_size)
+-{
+-	int err;
+-	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+-
+-	mutex_lock(&chip->msg_lock);
+-	lx_message_init(&chip->rmh, CMD_11_CANCEL_BUFFER);
+-
+-	chip->rmh.cmd[0] |= pipe_cmd;
+-	chip->rmh.cmd[0] |= MASK_BUFFER_ID; /* ask for the current buffer: the
+-					     * microblaze will seek for it */
+-
+-	err = lx_message_send_atomic(chip, &chip->rmh);
+-
+-	if (err == 0)
+-		*r_buffer_size = chip->rmh.stat[0]  & MASK_DATA_SIZE;
+-
+-	mutex_unlock(&chip->msg_lock);
+-	return err;
+-}
+-
+-int lx_buffer_cancel(struct lx6464es *chip, u32 pipe, int is_capture,
+-		     u32 buffer_index)
+-{
+-	int err;
+-	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+-
+-	mutex_lock(&chip->msg_lock);
+-	lx_message_init(&chip->rmh, CMD_11_CANCEL_BUFFER);
+-
+-	chip->rmh.cmd[0] |= pipe_cmd;
+-	chip->rmh.cmd[0] |= buffer_index;
+-
+-	err = lx_message_send_atomic(chip, &chip->rmh);
+-
+-	mutex_unlock(&chip->msg_lock);
+-	return err;
+-}
+-
+ 
+ /* low-level gain/peak handling
+  *
+diff --git a/sound/pci/lx6464es/lx_core.h b/sound/pci/lx6464es/lx_core.h
+index 0cc140c..f95ed1b 100644
+--- a/sound/pci/lx6464es/lx_core.h
++++ b/sound/pci/lx6464es/lx_core.h
+@@ -120,8 +120,6 @@ int lx_dsp_get_mac(struct lx6464es *chip);
+ int lx_pipe_allocate(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		     int channels);
+ int lx_pipe_release(struct lx6464es *chip, u32 pipe, int is_capture);
+-int lx_pipe_sample_count(struct lx6464es *chip, u32 pipe, int is_capture,
+-			 u64 *rsample_count);
+ int lx_pipe_state(struct lx6464es *chip, u32 pipe, int is_capture, u16 *rstate);
+ int lx_pipe_stop(struct lx6464es *chip, u32 pipe, int is_capture);
+ int lx_pipe_start(struct lx6464es *chip, u32 pipe, int is_capture);
+@@ -133,10 +131,6 @@ int lx_pipe_wait_for_idle(struct lx6464es *chip, u32 pipe, int is_capture);
+ /* low-level stream handling */
+ int lx_stream_set_format(struct lx6464es *chip, struct snd_pcm_runtime *runtime,
+ 			 u32 pipe, int is_capture);
+-int lx_stream_state(struct lx6464es *chip, u32 pipe, int is_capture,
+-		    int *rstate);
+-int lx_stream_sample_position(struct lx6464es *chip, u32 pipe, int is_capture,
+-			      u64 *r_bytepos);
+ 
+ int lx_stream_set_state(struct lx6464es *chip, u32 pipe,
+ 			int is_capture, enum stream_state_t state);
+@@ -168,10 +162,6 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, int is_capture,
+ int lx_buffer_give(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		   u32 buffer_size, u32 buf_address_lo, u32 buf_address_hi,
+ 		   u32 *r_buffer_index);
+-int lx_buffer_free(struct lx6464es *chip, u32 pipe, int is_capture,
+-		   u32 *r_buffer_size);
+-int lx_buffer_cancel(struct lx6464es *chip, u32 pipe, int is_capture,
+-		     u32 buffer_index);
+ 
+ /* low-level gain/peak handling */
+ int lx_level_unmute(struct lx6464es *chip, int is_capture, int unmute);
 -- 
 1.7.10.4
