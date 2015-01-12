@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5677: Add the slot_width "25"
- support in the TDM mode
-Date: Mon, 12 Jan 2015 19:13:33 +0000
-Message-ID: <20150112191333.GP4160@sirena.org.uk>
-References: <1421040895-15345-1-git-send-email-oder_chiou@realtek.com>
+From: Thanos Kyritsis <djart@linux.gr>
+Subject: Re: Possible regression in patch_realtek.c
+Date: Mon, 12 Jan 2015 21:17:46 +0200
+Message-ID: <CAKovSWXLd9itNKYba-+81BU0e5WB1C-8w0LOYwyxE0hCFJcu-w@mail.gmail.com>
+References: <CAKovSWXeXsCoCVOwe_srtKYLW6yPJfc_MihTSRGNT4iWS=e1yw@mail.gmail.com>
+ <54B36AAA.3020905@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4194616800922105143=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 000642608AF
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 20:13:40 +0100 (CET)
-In-Reply-To: <1421040895-15345-1-git-send-email-oder_chiou@realtek.com>
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EC48261298
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 20:17:47 +0100 (CET)
+Received: by mail-oi0-f45.google.com with SMTP id x69so21984539oia.4
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 11:17:46 -0800 (PST)
+In-Reply-To: <54B36AAA.3020905@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +24,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, yang.a.fang@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jan 12, 2015 at 8:33 AM, David Henningsson
+<david.henningsson@canonical.com> wrote:
+>
+>
+> On 2015-01-11 22:11, Thanos Kyritsis wrote:
+>>
+>> Hello,
+>>
+>> I hope it's ok to e-mail you directly instead of going through an
+>> official bug tracker, sorry in advance otherwise.
+>
+>
+> Ok. I have added alsa-devel to CC.
+>
+>
+>> I'd like your opinion on a patch of yours that dates a year back:
+>>
+>>
+>> https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/sound/pci/hda/patch_realtek.c?id=b2c53e206967d01fd4fb6dd525f89ae738beb2e6
+>> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1248116
+>>
+>> This patch has a negative impact for my hardware. I've completely lost
+>> the kernel's front panel jack auto-mute functionality.
+>>
+>> In detail: my motherboard is Gigabyte Z68AP-D3, utilizing ALC889
+>> chipset (http://www.gigabyte.com/products/product-page.aspx?pid=3897)
+>> with PCI id: 0x1458, 0xa002.
+>>
+>> Without this patch (that is kernel up to 3.13.x), all is OK, when I
+>> plug headphones via the front panel jack, the kernel auto-mutes the
+>> speaker-phone jack.
+>> With the patch (that is kernel 3.14.x and all later versions),
+>> auto-mute does not work. Plugging headphones results on sound getting
+>> through both jacks simultaneously.
+>> I can, of course, control the volume/mute of these two jacks
+>> independently via CLI alsamixer, but I think this is a regression. Do
+>> you agree ? I'm noticing that the patch's purpose was to fix a
+>> slightly different problem, though.
+>> Is it possible to satisfy both requirements for both motherboards ?
+>>
+>> Can I do something to further help ? If you'd like me to comment on
+>> bug #1248116, that will be no problem of course.
+>>
+>> Thank you in advance for your help and for your contribution towards a
+>> better kernel and distros :-)
+>
+>
+> Okay. So the real question is if there's a way we can tell the working and
+> the faulty ones apart. Until we have found such a way, I'll be hesitant to
+> revert the patch.
+>
+> Here's alsa-info for a faulty one:
+> http://www.alsa-project.org/db/?f=435c404946687b445f6c60da5edc5c3f083bc1da
+>
+> Both Codec SSID and PCI SSID are 1458:a002 on that machine, codec vendor ID
+> is 10ec:0899 - maybe we should only apply this quirk for certain codec
+> vendor IDs, then?
 
---===============4194616800922105143==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i13qRg9tmWEwo36p"
-Content-Disposition: inline
+Thanks for your help,
 
+for the record, my alsa-info is:
+http://www.alsa-project.org/db/?f=f5ae6038b7e27a1c1ab9c137f1ec64a806491145
 
---i13qRg9tmWEwo36p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+SSID: 1458:a002
+vendor ID: 10ec:0889
 
-On Mon, Jan 12, 2015 at 01:34:55PM +0800, Oder Chiou wrote:
-> Add the slot_width "25" support in the TDM mode for the Intel platform.
+> Anyhow, you can bring back jack detection for yourself (as a workaround) by
+> reconfiguring the codec. This is easiest done through hda-jack-retask
+> (available in the alsa-tools repository). In hda-jack-retask click "advanced
+> override", then make sure pin 0x1b has jack detect available.
 
->  	case RT5677_AIF2:
->  		snd_soc_update_bits(codec, RT5677_TDM2_CTRL1, 0x1f00, val);
-> +		if (slot_width == 25)
-> +			snd_soc_update_bits(codec, RT5677_DIG_MISC, 0x80, 0x80);
->  		break;
+Gosh, I hadn't realised it was so easy.
 
-This looks good but I'd expect to see something which clears this bit if
-we're not using a slot width of 25 in case someone comes up with a use
-case that changes formats at runtime (relatively unlikely, but better
-safe than sorry).
+I did recompile my kernel with the quirk reverted, but obviously the
+re-tasking setup is much more convenient and maintainable :-)
 
---i13qRg9tmWEwo36p
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Keep up the good work!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUtBzcAAoJECTWi3JdVIfQM1oH/3TIibYlJi49D5QwXM/Uj/0e
-C1MPddAulocv6VoUTCZfL9/73k9ShcrlMgRLC5Q9HL1xOURaOtMwrVCwWTNvZZ93
-+8Bpg4JUeICGK2/210eqml6NGCpzSeZBqa4EXBxxw6UimDB/4cxkhV/UvXRqVwIA
-ypCP4CwkfwP2S3mat110C2AI2az8mpEAuzCjkvXohsTByIRPVEDZAs4Jiidd8GLr
-Tlh/4tSrbyki/ogH6o8xgxuTAaV/C881JBLPbwLxemurgfWAPMHl9Bkn6YIGJjZ0
-BhJOI+LBub3NEoZCU/oW/h8IO+utsLyhE4OLApSE9snvyu03RkVvtDSIAAmRuks=
-=5toP
------END PGP SIGNATURE-----
-
---i13qRg9tmWEwo36p--
-
---===============4194616800922105143==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4194616800922105143==--
+>
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
+>
