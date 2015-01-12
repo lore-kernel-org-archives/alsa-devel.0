@@ -1,72 +1,90 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Mon, 12 Jan 2015 10:25:28 +0100
-Message-ID: <1421054728.3081.28.camel@pengutronix.de>
-References: <54AE99F5.1010404@ti.com> <20150108174257.557f7ea5@armhf>
- <54AFA9B0.6040405@ti.com> <20150109123036.4bc4bbf6@armhf>
- <20150109114529.GH12302@n2100.arm.linux.org.uk>
- <20150109135401.5b270d46@armhf>
- <20150109130725.GN12302@n2100.arm.linux.org.uk> <54AFDE8D.3000504@arm.com>
- <20150109145741.GP12302@n2100.arm.linux.org.uk>
- <20150109183857.53d701a4@armhf>
- <20150109200127.GD12302@n2100.arm.linux.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/4] ASoC: mc13783: Update set_tdm_slot()
+	semantics
+Date: Mon, 12 Jan 2015 10:27:17 +0100
+Message-ID: <1421054841-19858-2-git-send-email-lars@metafoo.de>
+References: <1421054841-19858-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150109200127.GD12302@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-146.synserver.de (smtp-out-146.synserver.de
+ [212.40.185.146])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7FD926064A
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 10:27:48 +0100 (CET)
+In-Reply-To: <1421054841-19858-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-QW0gRnJlaXRhZywgZGVuIDA5LjAxLjIwMTUsIDIwOjAxICswMDAwIHNjaHJpZWIgUnVzc2VsbCBL
-aW5nIC0gQVJNCkxpbnV4OgpbLi4uXQo+IE5laXRoZXI7IHdlIGtub3cgdGhhdCB0aGVyZSBhcmUg
-VERBOTk4eCBkZXZpY2VzIHdoaWNoIGFsbG93IFNQRElGIHRvIGJlCj4gaW5wdXQgdmlhIHR3byBz
-ZXBhcmF0ZSBwaW5zLCBidXQgb25seSBvbmUgdG8gYmUgYWN0aXZlIGF0IGFueSBvbmUgdGltZS4K
-PiBHaXZlbiB0aGF0IHRoZSBoYXJkd2FyZSBpcyBmbGV4aWJsZSBpbiB0aGF0IHJlZ2FyZCwgYSBi
-aW5kaW5nIHdoaWNoCj4gYXJ0aWZpY2lhbGx5IHJlc3RyaWN0cyB0aGF0IGZsZXhpYmlsaXR5IHdv
-dWxkIHNlZW0gdW53aXNlLgo+IAo+IElmIHdlIHdlcmUgdG8gY29tZSBhY3Jvc3MgYSBzZXR1cCB3
-aGljaCBkaWQgcm91dGUgdHdvIFNQRElGIHN0cmVhbXMgdG8KPiB0aGUgVERBOTk4eCwgYW5kIHdl
-IGhhZCB0byBtYWtlIHRoZSBkZWNpc2lvbiBhdCBydW4gdGltZSB3aGljaCB0byByb3V0ZQo+IHRv
-IHRoZSBIRE1JIHNpbmssIHdlJ2QgaGF2ZSB0byByZXdvcmsgdGhlIGJpbmRpbmcsIGFuZCB3ZSdk
-IGhhdmUgdG8KPiBzdXBwb3J0IHRoZSBuZXcgYmluZGluZyBhbmQgdGhlIG9sZCBiaW5kaW5nIGlu
-IHRoZSBkcml2ZXIuCj4gCj4gQ2FuIHlvdSBwbGVhc2UgbG9vayBhdCBEb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvZ3JhcGgudHh0ID8KPiAKPiBJIHRoaW5rIHdlIG1heSBiZSBhYmxl
-IHRvIHVzZSBzb21ldGhpbmcgbGlrZSB0aGlzOgo+IAo+IHRkYTk5OHg6IGhkbWktZW5jb2RlciB7
-Cj4gCWNvbXBhdGlibGUgPSAibnhwLHRkYTk5OHgiOwo+IAlyZWcgPSA8MHg3MD47Cj4gCXZpZGVv
-LXBvcnRzID0gPDB4MjM0NTAxPjsKPiAKPiAJcG9ydCB7Cj4gCQl0ZGE5OTh4X3ZpZGVvOiBlbmRw
-b2ludCB7Cj4gCQkJcmVtb3RlLWVuZHBvaW50ID0gPCZsY2QwX3JnYj47Cj4gCQl9Owo+IAl9Owo+
-IAo+IAlwb3J0IHsKPiAJCSNhZGRyZXNzLWNlbGxzID0gPDE+Owo+IAkJI3NpemUtY2VsbHMgPSA8
-MD47Cj4gCj4gCQl0ZGE5OTh4X3NwZGlmMDogZW5kcG9pbnRAMDIgewo+IAkJCXJlZyA9IDwweDAy
-PjsKPiAJCQlyZW1vdGUtZW5kcG9pbnQgPSA8JnNwZGlmMD47Cj4gCQl9Owo+IAo+IAkJdGRhOTk4
-eF9zcGRpZjE6IGVuZHBvaW50QDA0IHsKPiAJCQlyZWcgPSA8MHgwND47Cj4gCQkJcmVtb3RlLWVu
-ZHBvaW50ID0gPCZzcGRpZjA+Owo+IAkJfTsKPiAKPiAJCXRkYTk5OHhfaTJzOiBlbmRwb2ludEAw
-MyB7Cj4gCQkJcmVnID0gPDB4MDM+Owo+IAkJCXJlbW90ZS1lbmRwb2ludCA9IDwmaTJzPjsKPiAJ
-CX07Cj4gCX07Cj4gfTsKPiAKPiBJJ20gYWRkaW5nIFBoaWxpcHAgWmFiZWwgZm9yIGNvbW1lbnQu
-ICBUaGUgaXNzdWUgSSBzZWUgd2l0aCB0aGlzIGlzIHRoYXQKPiB3ZSBoYXZlIHR3byBwb3J0cyBo
-ZXJlIHdoaWNoIGFyZSBub3QgbXV0dWFsbHkgZXhjbHVzaXZlLCBhbmQgaXQncyBub3QKPiBvYnZp
-b3VzIGhvdyB0aGV5IGFyZSBkZWFsdCB3aXRoLgoKSmVhbi1GcmFuY29pcycgcmVwbHkgYWxyZWFk
-eSByZWZsZWN0cyB0aGlzLCBidXQgdGhlICdwb3J0JyBub2RlcyBzaG91bGQKY29ycmVzcG9uZCB0
-byBwaHlzaWNhbCBwb3J0cyBvZiB0aGUgZGV2aWNlIGlmIHBvc3NpYmxlLiBJZiB5b3UgY2FuCmNv
-bmZpZ3VyZSB0aGUgZGV2aWNlIHRvIGhhdmUgZGVkaWNhdGVkIGlucHV0IHBpbnMgZm9yIEkyUywg
-U1BESUYwLCBhbmQKU1BESUYxIGF0IHRoZSBzYW1lIHRpbWUsIHRoZXkgc2hvdWxkIGFwcGVhciBp
-biB0aGUgZGV2aWNlIHRyZWUgYXMKc2VwYXJhdGUgcG9ydHM6Cgp0ZGE5OTh4OiBoZG1pLWVuY29k
-ZXIgewoJcG9ydEAwIHsgLyogcGl4ZWwgZGF0YSBhY2NvcmRpbmcgdG8gdmlkZW8tcG9ydHMgKi8K
-CQlyZWcgPSA8MHgwMD47Cgl9OwoJcG9ydEAxIHsgLyogQVAxOiBTUERJRjAgKi8KCQlyZWcgPSA8
-MHgwMT47Cgl9OwoJcG9ydEAyIHsgLyogQVAyOiBTUERJRjEgKi8KCQlyZWcgPSA8MHgwMj47Cgl9
-OwoJcG9ydEAzIHsgLyogQVAzOiBJMlMgKi8KCQlyZWcgPSA8MHgwMz47Cgl9Owp9OwoKVGhlIHRk
-YTk5OHggYmluZGluZyB3b3VsZCBkZWZpbmUgaG93IHRoZSBwb3J0cyBhcmUgbnVtYmVyZWQsIHNv
-bWUKY29ycmVzcG9uZGVuY2UgdG8gdGhlIEFQIHBpbiBudW1iZXJzIHdvdWxkIGJlIGdvb2QuCgpy
-ZWdhcmRzClBoaWxpcHAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRl
-dmVsCg==
+The mc13783 driver uses inverted semantics for the tx_mask and rx_mask
+parameter of the set_tdm_slot() callback compared to rest of ASoC. This
+patch updates the driver's semantics to be consistent with the rest of ASoC,
+i.e. a set bit means a active slot and a cleared bit means a inactive slot.
+This will allow us to use the set_tdm_slot() API in a more generic way.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/mc13783.c  | 10 +++++-----
+ sound/soc/fsl/imx-mc13783.c |  3 +--
+ 2 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
+index c1e441c..2ffb9a0 100644
+--- a/sound/soc/codecs/mc13783.c
++++ b/sound/soc/codecs/mc13783.c
+@@ -328,16 +328,16 @@ static int mc13783_set_tdm_slot_dac(struct snd_soc_dai *dai,
+ 	}
+ 
+ 	switch (rx_mask) {
+-	case 0xfffffffc:
++	case 0x03:
+ 		val |= SSI_NETWORK_DAC_RXSLOT_0_1;
+ 		break;
+-	case 0xfffffff3:
++	case 0x0c:
+ 		val |= SSI_NETWORK_DAC_RXSLOT_2_3;
+ 		break;
+-	case 0xffffffcf:
++	case 0x30:
+ 		val |= SSI_NETWORK_DAC_RXSLOT_4_5;
+ 		break;
+-	case 0xffffff3f:
++	case 0xc0:
+ 		val |= SSI_NETWORK_DAC_RXSLOT_6_7;
+ 		break;
+ 	default:
+@@ -360,7 +360,7 @@ static int mc13783_set_tdm_slot_codec(struct snd_soc_dai *dai,
+ 	if (slots != 4)
+ 		return -EINVAL;
+ 
+-	if (tx_mask != 0xfffffffc)
++	if (tx_mask != 0x3)
+ 		return -EINVAL;
+ 
+ 	val |= (0x00 << 2);	/* primary timeslot RX/TX(?) is 0 */
+diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
+index 6bf5bce..9589452 100644
+--- a/sound/soc/fsl/imx-mc13783.c
++++ b/sound/soc/fsl/imx-mc13783.c
+@@ -37,8 +37,7 @@ static int imx_mc13783_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret;
+ 
+-	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xfffffffc, 0xfffffffc,
+-					4, 16);
++	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 4, 16);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+1.8.0
