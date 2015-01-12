@@ -1,49 +1,59 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Card name size?
-Date: Mon, 12 Jan 2015 22:25:34 +0000
-Message-ID: <201501122225.34229.gineera@aspect135.co.uk>
-References: <201501112052.00328.gineera@aspect135.co.uk>
- <s5hbnm4j5uy.wl-tiwai@suse.de>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PULL] topic/i915-hda-componentized
+Date: Mon, 12 Jan 2015 23:47:42 +0100
+Message-ID: <CAKMK7uHyTGBDk+Am0X8TqMrgHXVpS=y2N=_cvK+wZ90WHPHwLA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 5.array2.smtp.34sp.com (5.array2.smtp.34sp.com [46.183.10.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F6932612D1
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 23:24:42 +0100 (CET)
-Received: from smtpauth1.array1.smtp.34sp.com (lvs3.34sp.com [80.82.124.221])
- by 5.array2.smtp.34sp.com (Postfix) with ESMTP id 3DF4A205BA
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 22:24:36 +0000 (GMT)
-In-Reply-To: <s5hbnm4j5uy.wl-tiwai@suse.de>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Daniel Vetter <daniel.vetter@ffwll.ch>, intel-gfx <intel-gfx@lists.freedesktop.org>, dri-devel <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 12 January 2015 16:55, Takashi Iwai wrote:
-> At Sun, 11 Jan 2015 20:52:00 +0000, Alan Horstmann wrote:
-> > Just a quick question...
-> > is there a (guaranteed) max size to the name string returned by
-> >    snd_ctl_card_info_get_name()
-> > or is it just whatever the driver sets?
->
-> It's max 32 letters (including NUL).
-> longname and mixername are max 80, id and driver are max 16.
-
-Thanks very much; so I am OK to use a fixed 32 char array (with strncpy() just 
-to be safe).
-
-BTW my original post didn't seem to make it to the list. Any idea why?
-
-Regards
-
-Alan
+SGkgVGFrYXNoaSwKClNvIGhlcmUncyB0aGUgc3RhYmxlIHRhZyB3aXRoIEltcmUncyBpOTE1L2hk
+YSBjb21wb25lbnRpemVkIHJlZmFjdG9yaW5nLApiYXNlZCB1cG9uIDMuMTktcmM0LiBJJ2xsIHB1
+bGwgaW4gdGhlIHNhbWUgdGFnIGludG8gZHJtLWludGVsLW5leHQuCgpDaGVlcnMsIERhbmllbAoK
+ClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgZWFhMjdmMzRlOTFhMTRjZGNlZWQy
+NmVkNmM2NzkzZWMxZDE4NjExNToKCiAgbGludXggMy4xOS1yYzQgKDIwMTUtMDEtMTEgMTI6NDQ6
+NTMgLTA4MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBnaXQgcmVwb3NpdG9yeSBhdDoKCiAgZ2l0
+Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLWludGVsCnRhZ3MvdG9waWMvaTkxNS1oZGEt
+Y29tcG9uZW50aXplZC0yMDE1LTAxLTEyCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8g
+ZmNmM2FhYzVmYzMwN2YwY2FlNDI5ZjU4NDRkZGMyNTc2MTY2Mjg1ODoKCiAgZHJtL2k5MTU6IHJl
+bW92ZSB1bnVzZWQgcG93ZXJfd2VsbC9nZXRfY2RjbGtfZnJlcSBhcGkgKDIwMTUtMDEtMTIKMDI6
+NDg6MjQgKzAxMDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tCkltcmUgRGVhayAoNik6CiAgICAgIGRybS9pOTE1OiBhZGQg
+ZGV2X3RvX2k5MTUgaGVscGVyCiAgICAgIGRybS9pOTE1OiBhZGQgY29tcG9uZW50IHN1cHBvcnQK
+ICAgICAgQUxTQTogaGRhOiBleHBvcnQgc3RydWN0IGhkYV9pbnRlbAogICAgICBBTFNBOiBoZGE6
+IHBhc3MgaW50ZWxfaGRhIHRvIGFsbCBpOTE1IGludGVyZmFjZSBmdW5jdGlvbnMKICAgICAgQUxT
+QTogaGRhOiBhZGQgY29tcG9uZW50IHN1cHBvcnQKICAgICAgZHJtL2k5MTU6IHJlbW92ZSB1bnVz
+ZWQgcG93ZXJfd2VsbC9nZXRfY2RjbGtfZnJlcSBhcGkKCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+OTE1X2RtYS5jICAgICAgICAgfCAgIDQgKwogZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYu
+YyAgICAgICAgIHwgICA5ICstCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oICAgICAg
+ICAgfCAgIDggKysKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgICAgICB8IDEx
+MCArKysrKysrKysrKysrKysrKysrKysrKwogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfZHJ2
+LmggICAgICAgIHwgICAyICsKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX3J1bnRpbWVfcG0u
+YyB8ICA1NiAtLS0tLS0tLS0tLS0KIGluY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmggICAgICAg
+ICAgICB8ICAzOCArKysrKysrKwogaW5jbHVkZS9kcm0vaTkxNV9wb3dlcndlbGwuaCAgICAgICAg
+ICAgIHwgIDM3IC0tLS0tLS0tCiBzb3VuZC9wY2kvaGRhL2hkYV9pOTE1LmMgICAgICAgICAgICAg
+ICAgfCAxNTQgKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0KIHNvdW5kL3BjaS9oZGEv
+aGRhX2k5MTUuaCAgICAgICAgICAgICAgICB8ICAzNyAtLS0tLS0tLQogc291bmQvcGNpL2hkYS9o
+ZGFfaW50ZWwuYyAgICAgICAgICAgICAgIHwgIDYwICsrKystLS0tLS0tLS0KIHNvdW5kL3BjaS9o
+ZGEvaGRhX2ludGVsLmggICAgICAgICAgICAgICB8ICA3MSArKysrKysrKysrKysrKysKIDEyIGZp
+bGVzIGNoYW5nZWQsIDM2MSBpbnNlcnRpb25zKCspLCAyMjUgZGVsZXRpb25zKC0pCiBjcmVhdGUg
+bW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAogZGVsZXRlIG1vZGUgMTAw
+NjQ0IGluY2x1ZGUvZHJtL2k5MTVfcG93ZXJ3ZWxsLmgKIGRlbGV0ZSBtb2RlIDEwMDY0NCBzb3Vu
+ZC9wY2kvaGRhL2hkYV9pOTE1LmgKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9wY2kvaGRhL2hk
+YV9pbnRlbC5oCgotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29y
+cG9yYXRpb24KKzQxICgwKSA3OSAzNjUgNTcgNDggLSBodHRwOi8vYmxvZy5mZndsbC5jaApfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFp
+bGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZy
+ZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
