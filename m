@@ -1,54 +1,63 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8904: fix runtime warning
-Date: Mon, 12 Jan 2015 10:30:36 +0100
-Message-ID: <54B3943C.4040103@metafoo.de>
-References: <1420793620-2866-1-git-send-email-voice.shen@atmel.com> <20150109111642.GU14516@opensource.wolfsonmicro.com> <54B34035.60107@atmel.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
+Date: Mon, 12 Jan 2015 12:25:27 +0000
+Message-ID: <20150112122527.GF12302@n2100.arm.linux.org.uk>
+References: <54AFA9B0.6040405@ti.com>
+ <20150109123036.4bc4bbf6@armhf>
+ <20150109114529.GH12302@n2100.arm.linux.org.uk>
+ <20150109135401.5b270d46@armhf>
+ <20150109130725.GN12302@n2100.arm.linux.org.uk>
+ <54AFDE8D.3000504@arm.com>
+ <20150109145741.GP12302@n2100.arm.linux.org.uk>
+ <20150109183857.53d701a4@armhf>
+ <20150109200127.GD12302@n2100.arm.linux.org.uk>
+ <1421054728.3081.28.camel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <54B34035.60107@atmel.com>
+Content-Disposition: inline
+In-Reply-To: <1421054728.3081.28.camel@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/12/2015 04:32 AM, Bo Shen wrote:
-[...]
->>> diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
->>> index 4d2d2b1..38582d7 100644
->>> --- a/sound/soc/codecs/wm8904.c
->>> +++ b/sound/soc/codecs/wm8904.c
->>> @@ -1076,10 +1076,10 @@ static const struct snd_soc_dapm_route
->>> adc_intercon[] = {
->>>       { "Right Capture PGA", NULL, "Right Capture Mux" },
->>>       { "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
->>>
->>> -    { "AIFOUTL", "Left",  "ADCL" },
->>> -    { "AIFOUTL", "Right", "ADCR" },
->>> -    { "AIFOUTR", "Left",  "ADCL" },
->>> -    { "AIFOUTR", "Right", "ADCR" },
->>> +    { "AIFOUTL", NULL, "ADCL" },
->>> +    { "AIFOUTL", NULL, "ADCR" },
->>> +    { "AIFOUTR", NULL, "ADCL" },
->>> +    { "AIFOUTR", NULL, "ADCR" },
->>
->> Is this the right fix here? I am not super familiar with the
->> driver but it appears to contain an "AIFOUTL Mux" control which
->> is not connected to anything. Looks like maybe this is a mistake
->> the mux is indeded to be included in the path? Feels like we
->> should either remove the control as well or hook it into the
->> path.
->
-> Thank for your information.
-> I think here it should correct the path name as
-> --->8---
-> { "AIFOUTL Mux", "Left",  "ADCL" },
-> { "AIFOUTL Mux", "Right", "ADCR" },
-> { "AIFOUTR Mux", "Left",  "ADCL" },
-> { "AIFOUTR Mux", "Right", "ADCR" },
-> ---8<---
->
-> Thanks again. I will send out the new version.
+On Mon, Jan 12, 2015 at 10:25:28AM +0100, Philipp Zabel wrote:
+> Jean-Francois' reply already reflects this, but the 'port' nodes should
+> correspond to physical ports of the device if possible. If you can
+> configure the device to have dedicated input pins for I2S, SPDIF0, and
+> SPDIF1 at the same time, they should appear in the device tree as
+> separate ports:
+> 
+> tda998x: hdmi-encoder {
+> 	port@0 { /* pixel data according to video-ports */
+> 		reg = <0x00>;
+> 	};
+> 	port@1 { /* AP1: SPDIF0 */
+> 		reg = <0x01>;
+> 	};
+> 	port@2 { /* AP2: SPDIF1 */
+> 		reg = <0x02>;
+> 	};
+> 	port@3 { /* AP3: I2S */
+> 		reg = <0x03>;
+> 	};
+> };
+> 
+> The tda998x binding would define how the ports are numbered, some
+> correspondence to the AP pin numbers would be good.
 
-Your probably also need to connect the mux to the output pins.
+It's not quite that simple, because the SPDIF AP pins are multiplexed
+with the I2S pins - and there is variation between chip models and
+packages.
+
+So, it's probably best if port@0 is the video port, and then port@1..n
+can describe the audio inputs, including a property which specifies
+whether they are I2S or SPDIF, and the value to be programmed into
+the AP enable register (which is a bit field of the AP pins which
+should be unmasked.)  I guess we can re-use the reg= property for that
+value, since video will always be zero.
+
+-- 
+FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
+according to speedtest.net.
