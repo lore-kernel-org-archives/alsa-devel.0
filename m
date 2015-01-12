@@ -1,50 +1,78 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Mon, 12 Jan 2015 20:14:37 +0100
-Message-ID: <20150112201437.07254212@armhf>
-References: <20150109130725.GN12302@n2100.arm.linux.org.uk>
- <54AFDE8D.3000504@arm.com>
- <20150109145741.GP12302@n2100.arm.linux.org.uk>
- <20150109183857.53d701a4@armhf>
- <20150109200127.GD12302@n2100.arm.linux.org.uk>
- <1421054728.3081.28.camel@pengutronix.de>
- <20150112122527.GF12302@n2100.arm.linux.org.uk>
- <1421071197.3081.44.camel@pengutronix.de>
- <20150112140456.GI12302@n2100.arm.linux.org.uk>
- <20150112181341.4a53ea24@armhf>
- <20150112175705.GN12302@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5677: Add the slot_width "25"
+ support in the TDM mode
+Date: Mon, 12 Jan 2015 19:13:33 +0000
+Message-ID: <20150112191333.GP4160@sirena.org.uk>
+References: <1421040895-15345-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150112175705.GN12302@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="===============4194616800922105143=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 000642608AF
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 20:13:40 +0100 (CET)
+In-Reply-To: <1421040895-15345-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, yang.a.fang@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAxMiBKYW4gMjAxNSAxNzo1NzowNiArMDAwMApSdXNzZWxsIEtpbmcgLSBBUk0gTGlu
-dXggPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgoKPiBJIGRvbid0IHBhcnRpY3VsYXJs
-eSBsaWtlIHRoYXQgLSB0aGF0IG1ha2VzIHRoZSBhc3N1bXB0aW9uIHRoYXQgQVAwCj4gYWx3YXlz
-IG1lYW5zIEkyUy4gIFdoYXQgaWYgYSBmdXR1cmUgY2hpcCBkZWNpZGVzIHRvIGFsbG93IFNQRElG
-IG9uCj4gQVAwPyAgV2h5IHNob3VsZCB3ZSBuZWVkIHRvIHJlLWludmVudCB0aGUgYmluZGluZz8K
-PiAKPiBJTUhPLCBpdCB3b3VsZCBiZSBtdWNoIGJldHRlciB0byBtYWtlIHRoaXMgZXhwbGljaXQu
-CgpPSy4KCj4gTm90ZSB0aGF0IHRoZSAidmlkZW8tcG9ydHMiIGFuZCAiYXVkaW8tcG9ydHMiIGFy
-ZSBqdXN0IGxhYmVscyBpbiB0aGUKPiBEVCBmaWxlOyB0aGV5IGFyZW4ndCBjYXJyaWVkIHRocm91
-Z2ggdG8gdGhlIHJlc3VsdGluZyBEVCBiaW5hcnkgZmlsZSwKPiBzbyB0aGV5IGRvbid0IGhhdmUg
-YW55IG1lYW5pbmcgdG8gdGhlIGtlcm5lbC4KClJpZ2h0LCBzbywgZWl0aGVyIHRoZSBwb3J0IHR5
-cGUgbXVzdCBiZSBleHBsaWNpdGx5IGRlZmluZWQsIG9yIHRoZSBuYW1lCm9mIHRoZSBwcm9wZXJ0
-eSBnaXZpbmcgdGhlIHBvcnQgdmFsdWUgYWxzbyBnaXZlcyB0aGUgcG9ydCB0eXBlCihueHAsdmlk
-ZW8tcG9ydCAvIG54cCxhdWRpby1wb3J0KS4KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAg
-KiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5m
-ci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
-dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9s
-aXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+--===============4194616800922105143==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="i13qRg9tmWEwo36p"
+Content-Disposition: inline
+
+
+--i13qRg9tmWEwo36p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jan 12, 2015 at 01:34:55PM +0800, Oder Chiou wrote:
+> Add the slot_width "25" support in the TDM mode for the Intel platform.
+
+>  	case RT5677_AIF2:
+>  		snd_soc_update_bits(codec, RT5677_TDM2_CTRL1, 0x1f00, val);
+> +		if (slot_width == 25)
+> +			snd_soc_update_bits(codec, RT5677_DIG_MISC, 0x80, 0x80);
+>  		break;
+
+This looks good but I'd expect to see something which clears this bit if
+we're not using a slot width of 25 in case someone comes up with a use
+case that changes formats at runtime (relatively unlikely, but better
+safe than sorry).
+
+--i13qRg9tmWEwo36p
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUtBzcAAoJECTWi3JdVIfQM1oH/3TIibYlJi49D5QwXM/Uj/0e
+C1MPddAulocv6VoUTCZfL9/73k9ShcrlMgRLC5Q9HL1xOURaOtMwrVCwWTNvZZ93
++8Bpg4JUeICGK2/210eqml6NGCpzSeZBqa4EXBxxw6UimDB/4cxkhV/UvXRqVwIA
+ypCP4CwkfwP2S3mat110C2AI2az8mpEAuzCjkvXohsTByIRPVEDZAs4Jiidd8GLr
+Tlh/4tSrbyki/ogH6o8xgxuTAaV/C881JBLPbwLxemurgfWAPMHl9Bkn6YIGJjZ0
+BhJOI+LBub3NEoZCU/oW/h8IO+utsLyhE4OLApSE9snvyu03RkVvtDSIAAmRuks=
+=5toP
+-----END PGP SIGNATURE-----
+
+--i13qRg9tmWEwo36p--
+
+--===============4194616800922105143==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4194616800922105143==--
