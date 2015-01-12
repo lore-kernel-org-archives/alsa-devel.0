@@ -1,17 +1,15 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 4/5] sound: dmasound_atari: Remove obsolete
-	IRQ_TYPE_SLOW
-Date: Mon, 12 Jan 2015 09:40:20 +0100
-Message-ID: <1421052021-12560-5-git-send-email-geert@linux-m68k.org>
-References: <1421052021-12560-1-git-send-email-geert@linux-m68k.org>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ASoC: Intel: initial stream_hw_id to invalid
+	value
+Date: Mon, 12 Jan 2015 17:17:34 +0800
+Message-ID: <1421054254-25716-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
- by alsa0.perex.cz (Postfix) with ESMTP id 74B2B2605E4
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 09:40:26 +0100 (CET)
-In-Reply-To: <1421052021-12560-1-git-send-email-geert@linux-m68k.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B693C26064A
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 10:16:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,36 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "David S. Miller" <davem@davemloft.net>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-IRQ_TYPE_SLOW is no longer used by the Atari platform interrupt code
-since commit 734085651c9b80aa ("[PATCH] m68k: convert atari irq code")
-in v2.6.18-rc1, so drop it.
+The stream_hw_id for System stream is 0x0, if we use initial stream_hw_id
+value 0, it may return wrong(not committed) stream when calling function
+get_stream_by_id() with stream_id=0. Here initial stream_hw_id to invalid
+value to fix this issue.
 
-Note that its value has been reused for a different purpose
-(IRQ_TYPE_NONE) since commit 6a6de9ef5850d063 ("[PATCH] genirq: core")
-in v2.6.18-rc1.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: alsa-devel@alsa-project.org
+Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- sound/oss/dmasound/dmasound_atari.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/sst-haswell-ipc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/oss/dmasound/dmasound_atari.c b/sound/oss/dmasound/dmasound_atari.c
-index 13c214466d3b9f0e..1c56bf58eff906e0 100644
---- a/sound/oss/dmasound/dmasound_atari.c
-+++ b/sound/oss/dmasound/dmasound_atari.c
-@@ -851,7 +851,7 @@ static int __init AtaIrqInit(void)
- 	st_mfp.tim_dt_a = 1;	/* Cause interrupt after first event. */
- 	st_mfp.tim_ct_a = 8;	/* Turn on event counting. */
- 	/* Register interrupt handler. */
--	if (request_irq(IRQ_MFP_TIMA, AtaInterrupt, IRQ_TYPE_SLOW, "DMA sound",
-+	if (request_irq(IRQ_MFP_TIMA, AtaInterrupt, 0, "DMA sound",
- 			AtaInterrupt))
- 		return 0;
- 	st_mfp.int_en_a |= 0x20;	/* Turn interrupt on. */
+diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
+index 5bf1404..eeef9a5 100644
+--- a/sound/soc/intel/sst-haswell-ipc.c
++++ b/sound/soc/intel/sst-haswell-ipc.c
+@@ -94,6 +94,8 @@
+ /* Mailbox */
+ #define IPC_MAX_MAILBOX_BYTES	256
+ 
++#define INVALID_STREAM_HW_ID	0xffffffff
++
+ /* Global Message - Types and Replies */
+ enum ipc_glb_type {
+ 	IPC_GLB_GET_FW_VERSION = 0,		/* Retrieves firmware version */
+@@ -1208,6 +1210,7 @@ struct sst_hsw_stream *sst_hsw_stream_new(struct sst_hsw *hsw, int id,
+ 		return NULL;
+ 
+ 	spin_lock_irqsave(&sst->spinlock, flags);
++	stream->reply.stream_hw_id = INVALID_STREAM_HW_ID;
+ 	list_add(&stream->node, &hsw->stream_list);
+ 	stream->notify_position = notify_position;
+ 	stream->pdata = data;
 -- 
 1.9.1
