@@ -1,18 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/4] ASoC: fsl: Remove
-	fsl_asoc_xlate_tdm_slot_mask()
-Date: Mon, 12 Jan 2015 10:27:19 +0100
-Message-ID: <1421054841-19858-4-git-send-email-lars@metafoo.de>
-References: <1421054841-19858-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 0/4] ASoC: Make set_tdm_slot() semantics
+	consistent
+Date: Mon, 12 Jan 2015 10:27:16 +0100
+Message-ID: <1421054841-19858-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-146.synserver.de (smtp-out-146.synserver.de
  [212.40.185.146])
- by alsa0.perex.cz (Postfix) with ESMTP id DE01A260654
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 10:27:50 +0100 (CET)
-In-Reply-To: <1421054841-19858-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7976426069D
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 10:27:58 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,78 +24,56 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Now that the fsl DAI drivers uses the same semantics as the rest of a ASoC
-the custom fsl_asoc_xlate_tdm_slot_mask() callback can be removed as it is
-identical to the generic one.
+Changes since v1:
+	* Don't modify the fsl-esai driver as it already uses the non-inverted
+	  semantics
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/fsl/fsl_utils.c | 27 ---------------------------
- sound/soc/fsl/fsl_utils.h |  3 ---
- sound/soc/fsl/imx-ssi.c   |  1 -
- 3 files changed, 31 deletions(-)
+Original cover letter below:
 
-diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-index 5fd4463..b9e42b5 100644
---- a/sound/soc/fsl/fsl_utils.c
-+++ b/sound/soc/fsl/fsl_utils.c
-@@ -86,33 +86,6 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
- }
- EXPORT_SYMBOL(fsl_asoc_get_dma_channel);
- 
--/**
-- * fsl_asoc_xlate_tdm_slot_mask - generate TDM slot TX/RX mask.
-- *
-- * @slots: Number of slots in use.
-- * @tx_mask: bitmask representing active TX slots.
-- * @rx_mask: bitmask representing active RX slots.
-- *
-- * This function used to generate the TDM slot TX/RX mask. And the TX/RX
-- * mask will use a 1 bit for an active slot as default, and the default
-- * active bits are at the LSB of the mask value.
-- */
--int fsl_asoc_xlate_tdm_slot_mask(unsigned int slots,
--				    unsigned int *tx_mask,
--				    unsigned int *rx_mask)
--{
--	if (!slots)
--		return -EINVAL;
--
--	if (tx_mask)
--		*tx_mask = ((1 << slots) - 1);
--	if (rx_mask)
--		*rx_mask = ((1 << slots) - 1);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(fsl_asoc_xlate_tdm_slot_mask);
--
- MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
- MODULE_DESCRIPTION("Freescale ASoC utility code");
- MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/fsl/fsl_utils.h b/sound/soc/fsl/fsl_utils.h
-index df535db..1687b66 100644
---- a/sound/soc/fsl/fsl_utils.h
-+++ b/sound/soc/fsl/fsl_utils.h
-@@ -22,7 +22,4 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np, const char *name,
- 			     struct snd_soc_dai_link *dai,
- 			     unsigned int *dma_channel_id,
- 			     unsigned int *dma_id);
--int fsl_asoc_xlate_tdm_slot_mask(unsigned int slots,
--				    unsigned int *tx_mask,
--				    unsigned int *rx_mask);
- #endif /* _FSL_UTILS_H */
-diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
-index 6aeaac3..461ce27 100644
---- a/sound/soc/fsl/imx-ssi.c
-+++ b/sound/soc/fsl/imx-ssi.c
-@@ -340,7 +340,6 @@ static const struct snd_soc_dai_ops imx_ssi_pcm_dai_ops = {
- 	.set_fmt	= imx_ssi_set_dai_fmt,
- 	.set_clkdiv	= imx_ssi_set_dai_clkdiv,
- 	.set_sysclk	= imx_ssi_set_dai_sysclk,
--	.xlate_tdm_slot_mask = fsl_asoc_xlate_tdm_slot_mask,
- 	.set_tdm_slot	= imx_ssi_set_dai_tdm_slot,
- 	.trigger	= imx_ssi_trigger,
- };
+This is something we shortly discussed during the ALSA mini conference in
+Duesseldorf last year. We want to do more useful stuff with the
+snd_soc_set_tdm_slot() API and build generic infrastructure on top of it.
+But there are currently two different incompatible semantics of how the
+tx_mask and rx_mask parameters of snd_soc_dai_set_tdm_slot() are used. If we
+want to be able to use the API in a generic way we need to fix this
+inconsistency. Both interpretations agree that the slot masks should be
+represented as bitmasks which bit 0 representing the first slot, bit 1 the
+second slot and so on. But where they differ is in the meaning of value of
+the bit. Some implementations assume that if a bit is set the channel is
+enabled and if the bit is cleared the channel is disabled, others have
+inverse semantics, they assume that if a bit is cleared the channel is
+enabled and if the bit is set the channel is disabled.
+
+The former is used by most drivers and later is only used by some the
+Freescale DAI drivers and the MC13783 CODEC driver. This appears to be a
+result of Freescale DAI drivers directly passing the masks through to the
+registers which expect the inverted semantics. And the MC13783 appears to
+have picked up the same meaning since it is used on a board which has a
+Freescale DAI on the CPU side of the DAI link.
+
+This series updates the MC13783 and Freescale DAI drivers to use the same
+semantics as other drivers and also updates the documentation of the
+snd_soc_dai_set_tdm_slot() function to be more specific on the intended
+semantics.
+
+- Lars
+
+Lars-Peter Clausen (4):
+  ASoC: mc13783: Update set_tdm_slot() semantics
+  ASoC: fsl: Update set_tdm_slot() semantics
+  ASoC: fsl: Remove fsl_asoc_xlate_tdm_slot_mask()
+  ASoC: Update snd_soc_dai_set_tdm_slot() documentation
+
+ sound/soc/codecs/mc13783.c    | 10 +++++-----
+ sound/soc/fsl/eukrea-tlv320.c |  2 +-
+ sound/soc/fsl/fsl_ssi.c       |  4 ++--
+ sound/soc/fsl/fsl_utils.c     | 27 ---------------------------
+ sound/soc/fsl/fsl_utils.h     |  3 ---
+ sound/soc/fsl/imx-mc13783.c   |  5 ++---
+ sound/soc/fsl/imx-ssi.c       |  5 ++---
+ sound/soc/fsl/wm1133-ev1.c    |  4 ++--
+ sound/soc/soc-core.c          | 20 ++++++++++++++++----
+ 9 files changed, 30 insertions(+), 50 deletions(-)
+
 -- 
 1.8.0
