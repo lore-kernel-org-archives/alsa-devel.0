@@ -1,18 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/2] alsactl/init: Add "Line Out" to list of
-	outputs to initialize
-Date: Mon, 12 Jan 2015 16:48:38 +0100
-Message-ID: <1421077718-4147-2-git-send-email-david.henningsson@canonical.com>
-References: <1421077718-4147-1-git-send-email-david.henningsson@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: rme*: Use snd_pcm_format_t
+Date: Mon, 12 Jan 2015 16:59:44 +0100
+Message-ID: <1421078384-18202-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id B3932260537
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 16:48:46 +0100 (CET)
-In-Reply-To: <1421077718-4147-1-git-send-email-david.henningsson@canonical.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4A6C260537
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 16:59:53 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id AF32CAB09
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 15:59:49 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,35 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- alsactl/init/default | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Fix sparse warnings below by using snd_pcm_format_t properly:
+   sound/pci/rme32.c:682:60: sparse: incorrect type in argument 2 (different base types)
+  sound/pci/rme96.c:1006:69: sparse: incorrect type in argument 2 (different base types)
+   .....
 
-diff --git a/alsactl/init/default b/alsactl/init/default
-index 64f933f..1c84f3e 100644
---- a/alsactl/init/default
-+++ b/alsactl/init/default
-@@ -43,6 +43,16 @@ CTL{name}="Master Digital Playback Switch",CTL{do_search}=="1", \
-   CTL{values}="on"
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/rme32.c | 2 +-
+ sound/pci/rme96.c | 6 ++----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
+index 6c60dcd2e5a1..1a7affad7164 100644
+--- a/sound/pci/rme32.c
++++ b/sound/pci/rme32.c
+@@ -632,7 +632,7 @@ snd_rme32_setframelog(struct rme32 * rme32, int n_channels, int is_playback)
+ 	}
+ }
  
- CTL{reset}="mixer"
-+CTL{name}="Line Out Playback Volume",PROGRAM!="__ctl_search",GOTO=""
-+# if master volume control is present, turn line out volume to max
-+ENV{has_pmaster_vol}=="true",CTL{write}=="0dB",GOTO=""
-+ENV{has_pmaster_vol}=="true",CTL{write}=="100%",GOTO=""
-+CTL{write}!="$env{pvolume}",CTL{values}="$env{ppercent}"
-+LABEL=""
-+CTL{name}="Line Out Playback Switch",CTL{do_search}=="1", \
-+  CTL{values}="on"
-+
-+CTL{reset}="mixer"
- CTL{name}="Front Playback Volume",PROGRAM!="__ctl_search",GOTO=""
- # if master volume control is present, turn front volume to max
- ENV{has_pmaster_vol}=="true",CTL{write}=="0dB",GOTO=""
+-static int snd_rme32_setformat(struct rme32 * rme32, int format)
++static int snd_rme32_setformat(struct rme32 *rme32, snd_pcm_format_t format)
+ {
+ 	switch (format) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+index e33e79eadf83..236ac1d48184 100644
+--- a/sound/pci/rme96.c
++++ b/sound/pci/rme96.c
+@@ -922,8 +922,7 @@ snd_rme96_setframelog(struct rme96 *rme96,
+ }
+ 
+ static int
+-snd_rme96_playback_setformat(struct rme96 *rme96,
+-			     int format)
++snd_rme96_playback_setformat(struct rme96 *rme96, snd_pcm_format_t format)
+ {
+ 	switch (format) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+@@ -940,8 +939,7 @@ snd_rme96_playback_setformat(struct rme96 *rme96,
+ }
+ 
+ static int
+-snd_rme96_capture_setformat(struct rme96 *rme96,
+-			    int format)
++snd_rme96_capture_setformat(struct rme96 *rme96, snd_pcm_format_t format)
+ {
+ 	switch (format) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
 -- 
-1.9.1
+2.2.1
