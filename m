@@ -1,55 +1,99 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Regression for Lenovo X240 sound in 3.18
-Date: Mon, 12 Jan 2015 10:57:00 +0800
-Message-ID: <CAN8cciYzL2io7Xe+ZOt58mQJY7K8DR3cp142ugjhpFAWZN0BPw@mail.gmail.com>
-References: <alpine.LSU.2.11.1412291303200.30351@nerf08.vanv.qr>
- <s5h387xi2yp.wl-tiwai@suse.de>
- <alpine.LSU.2.11.1412301629280.1813@nerf08.vanv.qr>
- <CAN8cciZ9J+VzNX8b4jNue7T1tMyzcQfjyvkRnC8VptuBG++__g@mail.gmail.com>
- <alpine.LSU.2.11.1501101314510.22793@nerf60.vanv.qr>
- <CAN8cciZ9=qjScxw_K5dpzX3AM4zWJjfzZwqtPxO5ExMyMwVE7Q@mail.gmail.com>
- <alpine.LSU.2.11.1501111047350.308@nerf60.vanv.qr>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: wm8904: fix runtime warning
+Date: Mon, 12 Jan 2015 11:32:05 +0800
+Message-ID: <54B34035.60107@atmel.com>
+References: <1420793620-2866-1-git-send-email-voice.shen@atmel.com> <20150109111642.GU14516@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f48.google.com (mail-qg0-f48.google.com
- [209.85.192.48])
- by alsa0.perex.cz (Postfix) with ESMTP id AF7072605C6
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 03:57:01 +0100 (CET)
-Received: by mail-qg0-f48.google.com with SMTP id j5so16059131qga.7
- for <alsa-devel@alsa-project.org>; Sun, 11 Jan 2015 18:57:00 -0800 (PST)
-In-Reply-To: <alpine.LSU.2.11.1501111047350.308@nerf60.vanv.qr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, mr.bobukas@gmail.com
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20150109111642.GU14516@opensource.wolfsonmicro.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiA+Cj4gPmNvbnRyb2wuMTQgewo+ID5pZmFjZSBDQVJECj4gPm5hbWUgJ01pYyBKYWNrJwo+ID52
-YWx1ZSBmYWxzZQo+ID5jb21tZW50IHsgYWNjZXNzIHJlYWQgdHlwZSBCT09MRUFOIGNvdW50IDEg
-fSB9Cj4gPgo+ID5XaGF0IGlzIHRoZSB1c2FnZSBvZiB0aGlzIGphY2sgZGV0ZWN0IGNvbnRyb2wg
-aWYgY29udmVudGlvbmFsIG1pYyBpcyBub3QKPiA+c3VwcG9ydGVkID8KPgo+ICJqYWNrIGRldGVj
-dCIgcmVhZHMgbGlrZSAiZGV0ZWN0IGlmIHNvbWV0aGluZyBpcyBwcmVzZW50IiwgYW5kIHRoYXQK
-PiBpcyBvdmVybHkgZ2VuZXJhbCwgd2hpY2ggY291bGQgYWxzbyBtZWFuIGl0IGlzIHVzZWQgdG8g
-ZGV0ZWN0Cj4gd2hlbiB0byB0dXJuIG9mZiB0aGUgYnVpbHQtaW4gc3BlYWtlci4KCmh0dHBzOi8v
-Z2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC9jb21t
-aXQvc291bmQvcGNpL2hkYT9pZD03YzIxNTM5YzQ1ZWFjZTQ4ZTlmNmZiZGQ1OTM0N2Q4NDE2OTYw
-YWY1CgpTZWVtIHRob3NlIGRvY2sgc3RhdGlvbnMgYWxzbyBoYXZlIGNvbWJvIGphY2sgYnV0IHRo
-ZSBwYXRjaCBkaWQgbm90IGNyZWF0ZQpkb2NrIGhlYWRzZXQgbWljIGphY2sgLyBkb2NrIGhlYWRz
-ZXQgbWljIHBoYW50b20gamFjawoKVGhpbmtQYWTCriBVbHRyYSBEb2NrKDQwQTIwMDkwWFgpLApU
-aGlua1BhZMKuIFBybyBEb2NrICg0MEExMDA2NVhYKSwKVGhpbmtQYWTCriBEb2NrICg0MEEwMDA2
-NSkKCmh0dHA6Ly9zdXBwb3J0Lmxlbm92by5jb20vZW4vZG9jdW1lbnRzL3BkMDI4MDEwCgpodHRw
-Oi8vc3VwcG9ydC5sZW5vdm8uY29tL2VuL2RvY3VtZW50cy9wZDAyODAxMQoKMXggU3RlcmVvL01p
-YyBDb21ibyBBdWRpbyBQb3J0CgpSZWZlciB0byB0aGUgbWF1bmFsIG9mIHRob3NlIGRvY2sgc3Rh
-dGlvbiwgdGhlIGljb24gbmVhciB0aGUgY29tYm8gamFjayBpcwphbHNvIGEgaGVhZHNldApfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Charles,
+
+On 01/09/2015 07:16 PM, Charles Keepax wrote:
+> On Fri, Jan 09, 2015 at 04:53:40PM +0800, Bo Shen wrote:
+>> As the commit 5fe5b76 (ASoC: dapm: Do not pretend to support
+>> controls for non mixer/mux widgets) remove the fake control.
+>>
+>> Then, the wm8904 throw out the following warning at runtime.
+>> --->8---
+>> wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTL
+>> wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTL
+>> wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTL
+>> wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTL
+>> wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTL
+>> wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTL
+>> wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTR
+>> wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTR
+>> wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTR
+>> wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTR
+>> wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTR
+>> wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTR
+>> wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACL
+>> wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACL
+>> wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACL
+>> wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACL
+>> wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACL
+>> wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACL
+>> wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACR
+>> wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACR
+>> wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACR
+>> wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACR
+>> wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACR
+>> wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACR
+>> ---8<---
+>>
+>> This patch is used to remove these warning.
+>>
+>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+>> ---
+>>
+>>   sound/soc/codecs/wm8904.c | 16 ++++++++--------
+>>   1 file changed, 8 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+>> index 4d2d2b1..38582d7 100644
+>> --- a/sound/soc/codecs/wm8904.c
+>> +++ b/sound/soc/codecs/wm8904.c
+>> @@ -1076,10 +1076,10 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
+>>   	{ "Right Capture PGA", NULL, "Right Capture Mux" },
+>>   	{ "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
+>>
+>> -	{ "AIFOUTL", "Left",  "ADCL" },
+>> -	{ "AIFOUTL", "Right", "ADCR" },
+>> -	{ "AIFOUTR", "Left",  "ADCL" },
+>> -	{ "AIFOUTR", "Right", "ADCR" },
+>> +	{ "AIFOUTL", NULL, "ADCL" },
+>> +	{ "AIFOUTL", NULL, "ADCR" },
+>> +	{ "AIFOUTR", NULL, "ADCL" },
+>> +	{ "AIFOUTR", NULL, "ADCR" },
+>
+> Is this the right fix here? I am not super familiar with the
+> driver but it appears to contain an "AIFOUTL Mux" control which
+> is not connected to anything. Looks like maybe this is a mistake
+> the mux is indeded to be included in the path? Feels like we
+> should either remove the control as well or hook it into the
+> path.
+
+Thank for your information.
+I think here it should correct the path name as
+--->8---
+{ "AIFOUTL Mux", "Left",  "ADCL" },
+{ "AIFOUTL Mux", "Right", "ADCR" },
+{ "AIFOUTR Mux", "Left",  "ADCL" },
+{ "AIFOUTR Mux", "Right", "ADCR" },
+---8<---
+
+Thanks again. I will send out the new version.
+
+> Thanks,
+> Charles
+>
+
+Best Regards,
+Bo Shen
