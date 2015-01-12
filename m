@@ -1,99 +1,55 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8904: fix runtime warning
-Date: Mon, 12 Jan 2015 11:32:05 +0800
-Message-ID: <54B34035.60107@atmel.com>
-References: <1420793620-2866-1-git-send-email-voice.shen@atmel.com> <20150109111642.GU14516@opensource.wolfsonmicro.com>
+From: han.lu@intel.com
+Subject: [PATCH - UCM 1/2] control: add hexadecimal parse
+Date: Mon, 12 Jan 2015 13:21:16 +0800
+Message-ID: <1421040077-3494-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20150109111642.GU14516@opensource.wolfsonmicro.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Charles,
+From: "Lu, Han" <han.lu@intel.com>
 
-On 01/09/2015 07:16 PM, Charles Keepax wrote:
-> On Fri, Jan 09, 2015 at 04:53:40PM +0800, Bo Shen wrote:
->> As the commit 5fe5b76 (ASoC: dapm: Do not pretend to support
->> controls for non mixer/mux widgets) remove the fake control.
->>
->> Then, the wm8904 throw out the following warning at runtime.
->> --->8---
->> wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTL
->> wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTL
->> wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTL
->> wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTL
->> wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTL
->> wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTL
->> wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTR
->> wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTR
->> wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTR
->> wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTR
->> wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTR
->> wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTR
->> wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACL
->> wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACL
->> wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACL
->> wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACL
->> wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACL
->> wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACL
->> wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACR
->> wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACR
->> wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACR
->> wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACR
->> wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACR
->> wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACR
->> ---8<---
->>
->> This patch is used to remove these warning.
->>
->> Signed-off-by: Bo Shen <voice.shen@atmel.com>
->> ---
->>
->>   sound/soc/codecs/wm8904.c | 16 ++++++++--------
->>   1 file changed, 8 insertions(+), 8 deletions(-)
->>
->> diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
->> index 4d2d2b1..38582d7 100644
->> --- a/sound/soc/codecs/wm8904.c
->> +++ b/sound/soc/codecs/wm8904.c
->> @@ -1076,10 +1076,10 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
->>   	{ "Right Capture PGA", NULL, "Right Capture Mux" },
->>   	{ "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
->>
->> -	{ "AIFOUTL", "Left",  "ADCL" },
->> -	{ "AIFOUTL", "Right", "ADCR" },
->> -	{ "AIFOUTR", "Left",  "ADCL" },
->> -	{ "AIFOUTR", "Right", "ADCR" },
->> +	{ "AIFOUTL", NULL, "ADCL" },
->> +	{ "AIFOUTL", NULL, "ADCR" },
->> +	{ "AIFOUTR", NULL, "ADCL" },
->> +	{ "AIFOUTR", NULL, "ADCR" },
->
-> Is this the right fix here? I am not super familiar with the
-> driver but it appears to contain an "AIFOUTL Mux" control which
-> is not connected to anything. Looks like maybe this is a mistake
-> the mux is indeded to be included in the path? Feels like we
-> should either remove the control as well or hook it into the
-> path.
+Signed-off-by: Lu, Han <han.lu@intel.com>
 
-Thank for your information.
-I think here it should correct the path name as
---->8---
-{ "AIFOUTL Mux", "Left",  "ADCL" },
-{ "AIFOUTL Mux", "Right", "ADCR" },
-{ "AIFOUTR Mux", "Left",  "ADCL" },
-{ "AIFOUTR Mux", "Right", "ADCR" },
----8<---
-
-Thanks again. I will send out the new version.
-
-> Thanks,
-> Charles
->
-
-Best Regards,
-Bo Shen
+diff --git a/src/control/ctlparse.c b/src/control/ctlparse.c
+index 978977d..92e2f95 100644
+--- a/src/control/ctlparse.c
++++ b/src/control/ctlparse.c
+@@ -59,7 +59,10 @@ static long get_integer(const char **ptr, long min, long max)
+ 		goto out;
+ 
+ 	s = p;
+-	val = strtol(s, &p, 10);
++	if (*p == '0' && (*(p+1) == 'x' || *(p+1) == 'X'))
++		val = strtol(s, &p, 16);
++	else
++		val = strtol(s, &p, 10);
+ 	if (*p == '.') {
+ 		p++;
+ 		strtol(p, &p, 10);
+@@ -87,7 +90,10 @@ static long long get_integer64(const char **ptr, long long min, long long max)
+ 		goto out;
+ 
+ 	s = p;
+-	val = strtol(s, &p, 10);
++	if (*p == '0' && (*(p+1) == 'x' || *(p+1) == 'X'))
++		val = strtol(s, &p, 16);
++	else
++		val = strtol(s, &p, 10);
+ 	if (*p == '.') {
+ 		p++;
+ 		strtol(p, &p, 10);
+-- 
+1.9.1
