@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/4] ASoC: mc13783: Update set_tdm_slot()
-	semantics
-Date: Mon, 12 Jan 2015 10:27:17 +0100
-Message-ID: <1421054841-19858-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 4/4] ASoC: Update snd_soc_dai_set_tdm_slot()
+	documentation
+Date: Mon, 12 Jan 2015 10:27:20 +0100
+Message-ID: <1421054841-19858-5-git-send-email-lars@metafoo.de>
 References: <1421054841-19858-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-146.synserver.de (smtp-out-146.synserver.de
  [212.40.185.146])
- by alsa0.perex.cz (Postfix) with ESMTP id B7FD926064A
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 10:27:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 84D47260651
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 10:27:49 +0100 (CET)
 In-Reply-To: <1421054841-19858-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,65 +26,51 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The mc13783 driver uses inverted semantics for the tx_mask and rx_mask
-parameter of the set_tdm_slot() callback compared to rest of ASoC. This
-patch updates the driver's semantics to be consistent with the rest of ASoC,
-i.e. a set bit means a active slot and a cleared bit means a inactive slot.
-This will allow us to use the set_tdm_slot() API in a more generic way.
+There have been some conflicting interpretations of how
+snd_soc_dai_set_tdm_slot() is supposed to work. This patch updates the
+documentation to be more specific on the exact semantics to avoid such
+problems in the future.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/mc13783.c  | 10 +++++-----
- sound/soc/fsl/imx-mc13783.c |  3 +--
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/soc-core.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
-index c1e441c..2ffb9a0 100644
---- a/sound/soc/codecs/mc13783.c
-+++ b/sound/soc/codecs/mc13783.c
-@@ -328,16 +328,16 @@ static int mc13783_set_tdm_slot_dac(struct snd_soc_dai *dai,
- 	}
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2c02e9c..ededb97 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2130,15 +2130,27 @@ static int snd_soc_xlate_tdm_slot_mask(unsigned int slots,
+ }
  
- 	switch (rx_mask) {
--	case 0xfffffffc:
-+	case 0x03:
- 		val |= SSI_NETWORK_DAC_RXSLOT_0_1;
- 		break;
--	case 0xfffffff3:
-+	case 0x0c:
- 		val |= SSI_NETWORK_DAC_RXSLOT_2_3;
- 		break;
--	case 0xffffffcf:
-+	case 0x30:
- 		val |= SSI_NETWORK_DAC_RXSLOT_4_5;
- 		break;
--	case 0xffffff3f:
-+	case 0xc0:
- 		val |= SSI_NETWORK_DAC_RXSLOT_6_7;
- 		break;
- 	default:
-@@ -360,7 +360,7 @@ static int mc13783_set_tdm_slot_codec(struct snd_soc_dai *dai,
- 	if (slots != 4)
- 		return -EINVAL;
- 
--	if (tx_mask != 0xfffffffc)
-+	if (tx_mask != 0x3)
- 		return -EINVAL;
- 
- 	val |= (0x00 << 2);	/* primary timeslot RX/TX(?) is 0 */
-diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
-index 6bf5bce..9589452 100644
---- a/sound/soc/fsl/imx-mc13783.c
-+++ b/sound/soc/fsl/imx-mc13783.c
-@@ -37,8 +37,7 @@ static int imx_mc13783_hifi_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret;
- 
--	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xfffffffc, 0xfffffffc,
--					4, 16);
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 4, 16);
- 	if (ret)
- 		return ret;
- 
+ /**
+- * snd_soc_dai_set_tdm_slot - configure DAI TDM.
+- * @dai: DAI
++ * snd_soc_dai_set_tdm_slot() - Configures a DAI for TDM operation
++ * @dai: The DAI to configure
+  * @tx_mask: bitmask representing active TX slots.
+  * @rx_mask: bitmask representing active RX slots.
+  * @slots: Number of slots in use.
+  * @slot_width: Width in bits for each slot.
+  *
+- * Configures a DAI for TDM operation. Both mask and slots are codec and DAI
+- * specific.
++ * This function configures the specified DAI for TDM operation. @slot contains
++ * the total number of slots of the TDM stream and @slot_with the width of each
++ * slot in bit clock cycles. @tx_mask and @rx_mask are bitmasks specifying the
++ * active slots of the TDM stream for the specified DAI, i.e. which slots the
++ * DAI should write to or read from. If a bit is set the corresponding slot is
++ * active, if a bit is cleared the corresponding slot is inactive. Bit 0 maps to
++ * the first slot, bit 1 to the second slot and so on. The first active slot
++ * maps to the first channel of the DAI, the second active slot to the second
++ * channel and so on.
++ *
++ * TDM mode can be disabled by passing 0 for @slots. In this case @tx_mask,
++ * @rx_mask and @slot_width will be ignored.
++ *
++ * Returns 0 on success, a negative error code otherwise.
+  */
+ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
 -- 
 1.8.0
