@@ -1,58 +1,72 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: Intel: initial stream_hw_id to invalid
-	value
-Date: Mon, 12 Jan 2015 17:17:34 +0800
-Message-ID: <1421054254-25716-1-git-send-email-yang.jie@intel.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
+Date: Mon, 12 Jan 2015 10:25:28 +0100
+Message-ID: <1421054728.3081.28.camel@pengutronix.de>
+References: <54AE99F5.1010404@ti.com> <20150108174257.557f7ea5@armhf>
+ <54AFA9B0.6040405@ti.com> <20150109123036.4bc4bbf6@armhf>
+ <20150109114529.GH12302@n2100.arm.linux.org.uk>
+ <20150109135401.5b270d46@armhf>
+ <20150109130725.GN12302@n2100.arm.linux.org.uk> <54AFDE8D.3000504@arm.com>
+ <20150109145741.GP12302@n2100.arm.linux.org.uk>
+ <20150109183857.53d701a4@armhf>
+ <20150109200127.GD12302@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B693C26064A
- for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 10:16:03 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150109200127.GD12302@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-The stream_hw_id for System stream is 0x0, if we use initial stream_hw_id
-value 0, it may return wrong(not committed) stream when calling function
-get_stream_by_id() with stream_id=0. Here initial stream_hw_id to invalid
-value to fix this issue.
-
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/soc/intel/sst-haswell-ipc.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 5bf1404..eeef9a5 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -94,6 +94,8 @@
- /* Mailbox */
- #define IPC_MAX_MAILBOX_BYTES	256
- 
-+#define INVALID_STREAM_HW_ID	0xffffffff
-+
- /* Global Message - Types and Replies */
- enum ipc_glb_type {
- 	IPC_GLB_GET_FW_VERSION = 0,		/* Retrieves firmware version */
-@@ -1208,6 +1210,7 @@ struct sst_hsw_stream *sst_hsw_stream_new(struct sst_hsw *hsw, int id,
- 		return NULL;
- 
- 	spin_lock_irqsave(&sst->spinlock, flags);
-+	stream->reply.stream_hw_id = INVALID_STREAM_HW_ID;
- 	list_add(&stream->node, &hsw->stream_list);
- 	stream->notify_position = notify_position;
- 	stream->pdata = data;
--- 
-1.9.1
+QW0gRnJlaXRhZywgZGVuIDA5LjAxLjIwMTUsIDIwOjAxICswMDAwIHNjaHJpZWIgUnVzc2VsbCBL
+aW5nIC0gQVJNCkxpbnV4OgpbLi4uXQo+IE5laXRoZXI7IHdlIGtub3cgdGhhdCB0aGVyZSBhcmUg
+VERBOTk4eCBkZXZpY2VzIHdoaWNoIGFsbG93IFNQRElGIHRvIGJlCj4gaW5wdXQgdmlhIHR3byBz
+ZXBhcmF0ZSBwaW5zLCBidXQgb25seSBvbmUgdG8gYmUgYWN0aXZlIGF0IGFueSBvbmUgdGltZS4K
+PiBHaXZlbiB0aGF0IHRoZSBoYXJkd2FyZSBpcyBmbGV4aWJsZSBpbiB0aGF0IHJlZ2FyZCwgYSBi
+aW5kaW5nIHdoaWNoCj4gYXJ0aWZpY2lhbGx5IHJlc3RyaWN0cyB0aGF0IGZsZXhpYmlsaXR5IHdv
+dWxkIHNlZW0gdW53aXNlLgo+IAo+IElmIHdlIHdlcmUgdG8gY29tZSBhY3Jvc3MgYSBzZXR1cCB3
+aGljaCBkaWQgcm91dGUgdHdvIFNQRElGIHN0cmVhbXMgdG8KPiB0aGUgVERBOTk4eCwgYW5kIHdl
+IGhhZCB0byBtYWtlIHRoZSBkZWNpc2lvbiBhdCBydW4gdGltZSB3aGljaCB0byByb3V0ZQo+IHRv
+IHRoZSBIRE1JIHNpbmssIHdlJ2QgaGF2ZSB0byByZXdvcmsgdGhlIGJpbmRpbmcsIGFuZCB3ZSdk
+IGhhdmUgdG8KPiBzdXBwb3J0IHRoZSBuZXcgYmluZGluZyBhbmQgdGhlIG9sZCBiaW5kaW5nIGlu
+IHRoZSBkcml2ZXIuCj4gCj4gQ2FuIHlvdSBwbGVhc2UgbG9vayBhdCBEb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvZ3JhcGgudHh0ID8KPiAKPiBJIHRoaW5rIHdlIG1heSBiZSBhYmxl
+IHRvIHVzZSBzb21ldGhpbmcgbGlrZSB0aGlzOgo+IAo+IHRkYTk5OHg6IGhkbWktZW5jb2RlciB7
+Cj4gCWNvbXBhdGlibGUgPSAibnhwLHRkYTk5OHgiOwo+IAlyZWcgPSA8MHg3MD47Cj4gCXZpZGVv
+LXBvcnRzID0gPDB4MjM0NTAxPjsKPiAKPiAJcG9ydCB7Cj4gCQl0ZGE5OTh4X3ZpZGVvOiBlbmRw
+b2ludCB7Cj4gCQkJcmVtb3RlLWVuZHBvaW50ID0gPCZsY2QwX3JnYj47Cj4gCQl9Owo+IAl9Owo+
+IAo+IAlwb3J0IHsKPiAJCSNhZGRyZXNzLWNlbGxzID0gPDE+Owo+IAkJI3NpemUtY2VsbHMgPSA8
+MD47Cj4gCj4gCQl0ZGE5OTh4X3NwZGlmMDogZW5kcG9pbnRAMDIgewo+IAkJCXJlZyA9IDwweDAy
+PjsKPiAJCQlyZW1vdGUtZW5kcG9pbnQgPSA8JnNwZGlmMD47Cj4gCQl9Owo+IAo+IAkJdGRhOTk4
+eF9zcGRpZjE6IGVuZHBvaW50QDA0IHsKPiAJCQlyZWcgPSA8MHgwND47Cj4gCQkJcmVtb3RlLWVu
+ZHBvaW50ID0gPCZzcGRpZjA+Owo+IAkJfTsKPiAKPiAJCXRkYTk5OHhfaTJzOiBlbmRwb2ludEAw
+MyB7Cj4gCQkJcmVnID0gPDB4MDM+Owo+IAkJCXJlbW90ZS1lbmRwb2ludCA9IDwmaTJzPjsKPiAJ
+CX07Cj4gCX07Cj4gfTsKPiAKPiBJJ20gYWRkaW5nIFBoaWxpcHAgWmFiZWwgZm9yIGNvbW1lbnQu
+ICBUaGUgaXNzdWUgSSBzZWUgd2l0aCB0aGlzIGlzIHRoYXQKPiB3ZSBoYXZlIHR3byBwb3J0cyBo
+ZXJlIHdoaWNoIGFyZSBub3QgbXV0dWFsbHkgZXhjbHVzaXZlLCBhbmQgaXQncyBub3QKPiBvYnZp
+b3VzIGhvdyB0aGV5IGFyZSBkZWFsdCB3aXRoLgoKSmVhbi1GcmFuY29pcycgcmVwbHkgYWxyZWFk
+eSByZWZsZWN0cyB0aGlzLCBidXQgdGhlICdwb3J0JyBub2RlcyBzaG91bGQKY29ycmVzcG9uZCB0
+byBwaHlzaWNhbCBwb3J0cyBvZiB0aGUgZGV2aWNlIGlmIHBvc3NpYmxlLiBJZiB5b3UgY2FuCmNv
+bmZpZ3VyZSB0aGUgZGV2aWNlIHRvIGhhdmUgZGVkaWNhdGVkIGlucHV0IHBpbnMgZm9yIEkyUywg
+U1BESUYwLCBhbmQKU1BESUYxIGF0IHRoZSBzYW1lIHRpbWUsIHRoZXkgc2hvdWxkIGFwcGVhciBp
+biB0aGUgZGV2aWNlIHRyZWUgYXMKc2VwYXJhdGUgcG9ydHM6Cgp0ZGE5OTh4OiBoZG1pLWVuY29k
+ZXIgewoJcG9ydEAwIHsgLyogcGl4ZWwgZGF0YSBhY2NvcmRpbmcgdG8gdmlkZW8tcG9ydHMgKi8K
+CQlyZWcgPSA8MHgwMD47Cgl9OwoJcG9ydEAxIHsgLyogQVAxOiBTUERJRjAgKi8KCQlyZWcgPSA8
+MHgwMT47Cgl9OwoJcG9ydEAyIHsgLyogQVAyOiBTUERJRjEgKi8KCQlyZWcgPSA8MHgwMj47Cgl9
+OwoJcG9ydEAzIHsgLyogQVAzOiBJMlMgKi8KCQlyZWcgPSA8MHgwMz47Cgl9Owp9OwoKVGhlIHRk
+YTk5OHggYmluZGluZyB3b3VsZCBkZWZpbmUgaG93IHRoZSBwb3J0cyBhcmUgbnVtYmVyZWQsIHNv
+bWUKY29ycmVzcG9uZGVuY2UgdG8gdGhlIEFQIHBpbiBudW1iZXJzIHdvdWxkIGJlIGdvb2QuCgpy
+ZWdhcmRzClBoaWxpcHAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRl
+dmVsCg==
