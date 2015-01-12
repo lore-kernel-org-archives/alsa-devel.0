@@ -1,63 +1,55 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Mon, 12 Jan 2015 12:25:27 +0000
-Message-ID: <20150112122527.GF12302@n2100.arm.linux.org.uk>
-References: <54AFA9B0.6040405@ti.com>
- <20150109123036.4bc4bbf6@armhf>
- <20150109114529.GH12302@n2100.arm.linux.org.uk>
- <20150109135401.5b270d46@armhf>
- <20150109130725.GN12302@n2100.arm.linux.org.uk>
- <54AFDE8D.3000504@arm.com>
- <20150109145741.GP12302@n2100.arm.linux.org.uk>
- <20150109183857.53d701a4@armhf>
- <20150109200127.GD12302@n2100.arm.linux.org.uk>
- <1421054728.3081.28.camel@pengutronix.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: ad193x: Don't power down DAC in CODEC
+	probe
+Date: Mon, 12 Jan 2015 13:54:13 +0100
+Message-ID: <1421067253-14483-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1421054728.3081.28.camel@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-147.synserver.de (smtp-out-147.synserver.de
+ [212.40.185.147])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA11B26054E
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jan 2015 13:54:28 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 12, 2015 at 10:25:28AM +0100, Philipp Zabel wrote:
-> Jean-Francois' reply already reflects this, but the 'port' nodes should
-> correspond to physical ports of the device if possible. If you can
-> configure the device to have dedicated input pins for I2S, SPDIF0, and
-> SPDIF1 at the same time, they should appear in the device tree as
-> separate ports:
-> 
-> tda998x: hdmi-encoder {
-> 	port@0 { /* pixel data according to video-ports */
-> 		reg = <0x00>;
-> 	};
-> 	port@1 { /* AP1: SPDIF0 */
-> 		reg = <0x01>;
-> 	};
-> 	port@2 { /* AP2: SPDIF1 */
-> 		reg = <0x02>;
-> 	};
-> 	port@3 { /* AP3: I2S */
-> 		reg = <0x03>;
-> 	};
-> };
-> 
-> The tda998x binding would define how the ports are numbered, some
-> correspondence to the AP pin numbers would be good.
+The DAC powerdown bit is managed by DAPM. Manually powering down the DAC in
+the CODEC probe function may cause unnecessary power state transitions which
+can lead to click and pop noises.
 
-It's not quite that simple, because the SPDIF AP pins are multiplexed
-with the I2S pins - and there is variation between chip models and
-packages.
+So leave the DAC powerdown bit in its default poweron-reset state and let
+DAPM do all the management.
 
-So, it's probably best if port@0 is the video port, and then port@1..n
-can describe the audio inputs, including a property which specifies
-whether they are I2S or SPDIF, and the value to be programmed into
-the AP enable register (which is a bit field of the AP pins which
-should be unmasked.)  I guess we can re-use the reg= property for that
-value, since video will always be zero.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ad193x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 387530b..17c9535 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -333,8 +333,8 @@ static int ad193x_codec_probe(struct snd_soc_codec *codec)
+ 	regmap_write(ad193x->regmap, AD193X_DAC_CHNL_MUTE, 0x0);
+ 	/* de-emphasis: 48kHz, powedown dac */
+ 	regmap_write(ad193x->regmap, AD193X_DAC_CTRL2, 0x1A);
+-	/* powerdown dac, dac in tdm mode */
+-	regmap_write(ad193x->regmap, AD193X_DAC_CTRL0, 0x41);
++	/* dac in tdm mode */
++	regmap_write(ad193x->regmap, AD193X_DAC_CTRL0, 0x40);
+ 	/* high-pass filter enable */
+ 	regmap_write(ad193x->regmap, AD193X_ADC_CTRL0, 0x3);
+ 	/* sata delay=1, adc aux mode */
 -- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
+1.8.0
