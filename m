@@ -1,101 +1,60 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v2] ASoC: wm8904: fix runtime warning
-Date: Tue, 13 Jan 2015 17:34:02 +0800
-Message-ID: <1421141643-30105-1-git-send-email-voice.shen@atmel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 12/29] ASoC: wm8904: Replace w->codec
+	snd_soc_dapm_to_codec(w->dapm)
+Date: Tue, 13 Jan 2015 10:27:18 +0100
+Message-ID: <1421141255-21477-12-git-send-email-lars@metafoo.de>
+References: <1421141255-21477-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-205.synserver.de (smtp-out-210.synserver.de
+ [212.40.185.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CB8226172C
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:27:56 +0100 (CET)
+In-Reply-To: <1421141255-21477-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Correct the path name for mux to get rid of the following warning:
+The codec field of the snd_soc_widget struct is eventually going to be
+removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
---->8---
-wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTL
-wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTL
-wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTL
-wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTL
-wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTL
-wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTL
-wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTR
-wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTR
-wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTR
-wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTR
-wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTR
-wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTR
-wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACL
-wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACL
-wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACL
-wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACL
-wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACL
-wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACL
-wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACR
-wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACR
-wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACR
-wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACR
-wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACR
-wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACR
----8<---
-
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-
-Changes in v2:
-- Correct the mux path name.
-- Route the mux to the pins.
-
- sound/soc/codecs/wm8904.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8904.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 4d2d2b1..110d0e6 100644
+index 4d2d2b1..a0f8a62 100644
 --- a/sound/soc/codecs/wm8904.c
 +++ b/sound/soc/codecs/wm8904.c
-@@ -1076,10 +1076,13 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
- 	{ "Right Capture PGA", NULL, "Right Capture Mux" },
- 	{ "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
+@@ -673,7 +673,7 @@ static int cp_event(struct snd_soc_dapm_widget *w,
+ static int sysclk_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
  
--	{ "AIFOUTL", "Left",  "ADCL" },
--	{ "AIFOUTL", "Right", "ADCR" },
--	{ "AIFOUTR", "Left",  "ADCL" },
--	{ "AIFOUTR", "Right", "ADCR" },
-+	{ "AIFOUTL Mux", "Left", "ADCL" },
-+	{ "AIFOUTL Mux", "Right", "ADCR" },
-+	{ "AIFOUTR Mux", "Left", "ADCL" },
-+	{ "AIFOUTR Mux", "Right", "ADCR" },
-+
-+	{ "AIFOUTL", NULL, "AIFOUTL Mux" },
-+	{ "AIFOUTR", NULL, "AIFOUTR Mux" },
- 
- 	{ "ADCL", NULL, "CLK_DSP" },
- 	{ "ADCL", NULL, "Left Capture PGA" },
-@@ -1089,14 +1092,20 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
- };
- 
- static const struct snd_soc_dapm_route dac_intercon[] = {
--	{ "DACL", "Right", "AIFINR" },
--	{ "DACL", "Left",  "AIFINL" },
-+	{ "DACL", NULL, "AIFINL" },
-+	{ "DACL", NULL, "AIFINR" },
- 	{ "DACL", NULL, "CLK_DSP" },
- 
--	{ "DACR", "Right", "AIFINR" },
--	{ "DACR", "Left",  "AIFINL" },
-+	{ "DACR", NULL, "AIFINL" },
-+	{ "DACR", NULL, "AIFINR" },
- 	{ "DACR", NULL, "CLK_DSP" },
- 
-+	{ "DACL Mux", "Left", "DACL" },
-+	{ "DACL Mux", "Right", "DACR" },
-+
-+	{ "DACR Mux", "Left", "DACL" },
-+	{ "DACR Mux", "Right", "DACR" },
-+
- 	{ "Charge pump", NULL, "SYSCLK" },
- 
- 	{ "Headphone Output", NULL, "HPL PGA" },
+ 	switch (event) {
+@@ -711,7 +711,7 @@ static int sysclk_event(struct snd_soc_dapm_widget *w,
+ static int out_pga_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
+ 	int reg, val;
+ 	int dcs_mask;
 -- 
-2.1.0.24.g4109c28
-
+1.8.0
