@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 16/29] ASoC: wm8962: Replace w->codec
+Subject: [PATCH 17/29] ASoC: wm8988: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Tue, 13 Jan 2015 10:27:22 +0100
-Message-ID: <1421141255-21477-16-git-send-email-lars@metafoo.de>
+Date: Tue, 13 Jan 2015 10:27:23 +0100
+Message-ID: <1421141255-21477-17-git-send-email-lars@metafoo.de>
 References: <1421141255-21477-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-205.synserver.de (smtp-out-210.synserver.de
  [212.40.185.210])
- by alsa0.perex.cz (Postfix) with ESMTP id AC67A2619E6
- for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:27:59 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E75326153D
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:28:00 +0100 (CET)
 In-Reply-To: <1421141255-21477-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,39 +31,21 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8962.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm8988.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index d32d554..118b003 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -1866,7 +1866,7 @@ static int cp_event(struct snd_soc_dapm_widget *w,
- static int hp_event(struct snd_soc_dapm_widget *w,
- 		    struct snd_kcontrol *kcontrol, int event)
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index d320c52..24968aa 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -244,7 +244,7 @@ SOC_DOUBLE_R_TLV("Output 2 Playback Volume", WM8988_LOUT2V, WM8988_ROUT2V,
+ static int wm8988_lrc_control(struct snd_soc_dapm_widget *w,
+ 			      struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	int timeout;
- 	int reg;
- 	int expected = (WM8962_DCS_STARTUP_DONE_HP1L |
-@@ -1960,7 +1960,7 @@ static int hp_event(struct snd_soc_dapm_widget *w,
- static int out_pga_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	int reg;
+ 	u16 adctl2 = snd_soc_read(codec, WM8988_ADCTL2);
  
- 	switch (w->shift) {
-@@ -1993,7 +1993,7 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
- static int dsp2_event(struct snd_soc_dapm_widget *w,
- 		      struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
+ 	/* Use the DAC to gate LRC if active, otherwise use ADC */
 -- 
 1.8.0
