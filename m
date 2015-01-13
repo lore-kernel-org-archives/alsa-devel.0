@@ -1,120 +1,111 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH RFC] ASoC: simple-card: Enable and disable DAI clocks as needed
-Date: Tue, 13 Jan 2015 21:16:34 +0200
-Message-ID: <1421176594-2117-1-git-send-email-jsarha@ti.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
+Date: Tue, 13 Jan 2015 19:26:48 +0000
+Message-ID: <20150113192648.GU12302@n2100.arm.linux.org.uk>
+References: <20150112122527.GF12302@n2100.arm.linux.org.uk>
+ <1421071197.3081.44.camel@pengutronix.de>
+ <20150112140456.GI12302@n2100.arm.linux.org.uk>
+ <20150112181341.4a53ea24@armhf>
+ <20150112175705.GN12302@n2100.arm.linux.org.uk>
+ <1421151718.4519.24.camel@pengutronix.de>
+ <20150113122715.GP12302@n2100.arm.linux.org.uk>
+ <20150113165411.5469930d@armhf>
+ <20150113160313.GR12302@n2100.arm.linux.org.uk>
+ <20150113200252.3dbfab14@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: kuninori.morimoto.gx@renesas.com, moinejf@free.fr, Li.Xiubo@freescale.com, broonie@kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20150113200252.3dbfab14@armhf>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Call clk_prepare_enable() and clk_disable_unprepare() for cpu dai
-clock and codec dai clock in dai statup and shutdown callbacks. This
-to make sure the related clock are enabled when the audio device is
-used.
-
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
-This patch is needed for Beaglebone-back HDMI audio. There is no
-direct dependency between this patch and the other (dts and DRM)
-changes needed for the HDMI audio so these changes can be merged
-independently. There are also some other TI EVMs that require this
-functionality if they are to be used with simple-card.
-
- .../devicetree/bindings/sound/simple-card.txt      |    5 +++
- include/sound/simple_card.h                        |    1 +
- sound/soc/generic/simple-card.c                    |   34 ++++++++++++++++++++
- 3 files changed, 40 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index c3cba60..73bf314 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -75,6 +75,11 @@ Optional CPU/CODEC subnodes properties:
- 					  it can be specified via "clocks" if system has
- 					  clock node (= common clock), or "system-clock-frequency"
- 					  (if system doens't support common clock)
-+					  If a clock is specified, it is
-+					  enabled with clk_prepare_enable()
-+					  in dai startup() and disabled with
-+					  clk_disable_unprepare() in dai
-+					  shutdown().
- 
- Example 1 - single DAI link:
- 
-diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
-index 9b0ac77..1255ddb 100644
---- a/include/sound/simple_card.h
-+++ b/include/sound/simple_card.h
-@@ -20,6 +20,7 @@ struct asoc_simple_dai {
- 	unsigned int sysclk;
- 	int slots;
- 	int slot_width;
-+	struct clk *clk;
- };
- 
- struct asoc_simple_card_info {
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index fb9240f..cb3998d 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -39,6 +39,37 @@ struct simple_card_data {
- #define simple_priv_to_link(priv, i) ((priv)->snd_card.dai_link + i)
- #define simple_priv_to_props(priv, i) ((priv)->dai_props + i)
- 
-+static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
-+	struct simple_dai_props *dai_props =
-+		&priv->dai_props[rtd - rtd->card->rtd];
-+	int ret;
-+
-+	ret = clk_prepare_enable(dai_props->cpu_dai.clk);
-+	if (ret)
-+		return ret;
-+	
-+	ret = clk_prepare_enable(dai_props->codec_dai.clk);
-+	if (ret)
-+		clk_disable_unprepare(dai_props->cpu_dai.clk);
-+
-+	return ret;
-+}
-+
-+static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
-+	struct simple_dai_props *dai_props =
-+		&priv->dai_props[rtd - rtd->card->rtd];
-+
-+	clk_disable_unprepare(dai_props->cpu_dai.clk);
-+
-+	clk_disable_unprepare(dai_props->codec_dai.clk);
-+}
-+
- static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
- 				      struct snd_pcm_hw_params *params)
- {
-@@ -58,6 +89,8 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
- }
- 
- static struct snd_soc_ops asoc_simple_card_ops = {
-+	.startup = asoc_simple_card_startup,
-+	.shutdown = asoc_simple_card_shutdown,
- 	.hw_params = asoc_simple_card_hw_params,
- };
- 
-@@ -219,6 +252,7 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 		}
- 
- 		dai->sysclk = clk_get_rate(clk);
-+		dai->clk = clk;
- 	} else if (!of_property_read_u32(np, "system-clock-frequency", &val)) {
- 		dai->sysclk = val;
- 	} else {
--- 
-1.7.9.5
-
+T24gVHVlLCBKYW4gMTMsIDIwMTUgYXQgMDg6MDI6NTJQTSArMDEwMCwgSmVhbi1GcmFuY29pcyBN
+b2luZSB3cm90ZToKPiBPbiBUdWUsIDEzIEphbiAyMDE1IDE2OjAzOjEzICswMDAwCj4gUnVzc2Vs
+bCBLaW5nIC0gQVJNIExpbnV4IDxsaW51eEBhcm0ubGludXgub3JnLnVrPiB3cm90ZToKPiAKPiA+
+IE9uIFR1ZSwgSmFuIDEzLCAyMDE1IGF0IDA0OjU0OjExUE0gKzAxMDAsIEplYW4tRnJhbmNvaXMg
+TW9pbmUgd3JvdGU6Cj4gPiA+IDQgc3RyZWFtcyBvbiA0IGRpZmZlcmVudCBBUHMgKHNvdXJjZXMp
+IHNob3VsZCB3b3JrLCBidXQgNCBzdHJlYW1zIGZyb20KPiA+ID4gYSBzYW1lIHNvdXJjZSBzaG91
+bGQgYmUgZGV0YWlsZWQuCj4gPiAKPiA+IEknZCBsaWtlIHRvIGtub3cgaG93IHlvdSBpbnRlbmQg
+dG8gd2lyZSB1cCBmb3VyIGRpZmZlcmVudCBJMlMgc291cmNlcwo+ID4gdG8gdGhlIFREQTk5OHgu
+Cj4gPiAKPiA+IFJlbWVtYmVyLCBhbiBJMlMgc291cmNlIHByb2R1Y2VzIHRoZSBJMlMgZGF0YSBh
+bmQgdGhlIHdvcmQgY2xvY2sgLSB0aGF0J3MKPiA+IHR3byBvdXRwdXRzLiAgWW91IGNhbid0IGVs
+ZWN0cm9uaWNhbGx5IHdpcmUgdGhlIHdvcmQgY2xvY2tzIHRvZ2V0aGVyLgo+IAo+IEZyb20gdGhl
+IHNwZWMsIHRoZSB0ZGE5OTh4IGdldHMgaW5kZXBlbmRlbnRseSB0aGUgc2VyaWFsIGNsb2NrIGFu
+ZCB0aGUKPiBzZXJpYWwgd29yZCBzZWxlY3QgZnJvbSBlYWNoIEkyUyAoc3RlcmVvKSBpbnB1dCBj
+aGFubmVsICg9IGF1ZGlvIHBpbiksCj4gc28sIHlvdSBtYXkgaGF2ZSA0IGF1ZGlvIGNoaXBzIGdp
+dmluZyA0IGluZGVwZW5kZW50IGF1ZGlvIHN0cmVhbXMuCj4gSSBkb24ndCBrbm93IHdoYXQgY2Fu
+IGJlIHRoZSByZXN1bHQgaW4gSERNSSBpZiB0aGVzZSBzdHJlYW1zIGFyZSBhY3RpdmVkCj4gYXQg
+dGhlIHNhbWUgdGltZSEKPiAKPiBJbiB0aGUgb3RoZXIgY29uZmlndXJhdGlvbiwgYW4gYXVkaW8g
+Y2hpcCBtYXkgaGF2ZSA0IHN5bmNocm9uaXplZCBzdGVyZW8KPiBjaGFubmVscyAoc29mdHdhcmUg
+UENNcykuIFRoZXNlIG9uZXMgbWF5IGJlIGNvbnNpZGVyZWQgYXMgb25lIGxpbmsgKG9uZQo+IHBv
+cnQgb3V0IGZyb20gdGhlIGF1ZGlvIGNoaXAgdG8gb25lIHBvcnQgaW4gdG8gdGhlIHRkYTk5OHgp
+LCB0aGUgQVAKPiBjb25maWd1cmF0aW9uIGJlaW5nIDB4MWYuCgpMZXQgbWUgdHJ5IHRvIGJlIGNs
+ZWFyZXIuICBIZXJlJ3MgZm91ciBpbmRlcGVuZGVudCBJMlMgYmxvY2tzIHdoaWNoCmhhdmUgYmVl
+biBhcnJhbmdlZCB0byBiZSBjbG9ja2VkIGJ5IHRoZSBzYW1lIEkyUyBidXMgY2xvY2suICBFYWNo
+CkkyUyBibG9jayBwcm9kdWNlcyBpdHMgb3duIHdvcmQgY2xvY2sgYW5kIGRhdGEgc3RyZWFtOgoK
+U0NMSwp8ICArLS0tLS0tLSsKKy0+fCBJMlMgICArLS0tLS0tPiBXUzEKfCAgfCBzcmMgMSArLS0t
+LS0tPiBJMlMxCnwgICstLS0tLS0tKwp8CnwgICstLS0tLS0tKworLT58IEkyUyAgICstLS0tLS0+
+IFdTMgp8ICB8IHNyYyAyICstLS0tLS0+IEkyUzIKfCAgKy0tLS0tLS0rCnwKfCAgKy0tLS0tLS0r
+CistPnwgSTJTICAgKy0tLS0tLT4gV1MzCnwgIHwgc3JjIDMgKy0tLS0tLT4gSTJTMwp8ICArLS0t
+LS0tLSsKfAp8ICArLS0tLS0tLSsKKy0+fCBJMlMgICArLS0tLS0tPiBXUzQKfCAgfCBzcmMgNCAr
+LS0tLS0tPiBJMlM0CnwgICstLS0tLS0tKwp8CnwgICAgICAgICstLS0tLS0tLS0rCnwgICAgICAg
+IHwgVERBOTk4eCB8CmAtLS0tLS0tPisgQUNMSyAgICB8CiAgV1MgLS0tPisgQVAwICAgICB8Ckky
+UzEgLS0tPisgQVAxICAgICB8CkkyUzIgLS0tPisgQVAyICAgICB8CkkyUzMgLS0tPisgQVAzICAg
+ICB8CkkyUzQgLS0tPisgQVA0ICAgICB8CiAgICAgICAgICstLS0tLS0tLS0rCgpUaGUgYXJyb3dz
+IHBvaW50IGZyb20gdGhlIG91dHB1dCAoZHJpdmVyIG9mIHRoZSBzaWduYWwpIHRvIHRoZSBpbnB1
+dC4KSXQgaXMgaWxsZWdhbCBpbiBlbGVjdHJvbmljcyB0byB3aXJlIHR3byBvdXRwdXRzICh3aGlj
+aCBhcmUgbm90IGFibGUgdG8KZGlzYWJsZSB0aGVpciBvdXRwdXQgZHJpdmVycykgdG9nZXRoZXIu
+CgpIb3cgZG8geW91IGFycmFuZ2UgZm9yIFdTMS4uV1M0IHRvIGJlIGNvbm5lY3RlZCB0byB0aGUg
+VERBOTk4eCBXUyBpbnB1dD8KCk15IGFuc3dlciBpczogdGhpcyBpcyBhbiBpbXBvc3NpYmxlIHNl
+dHVwLgoKU2luY2UgdGhlc2UgYXJlIGluZGVwZW5kZW50IGJsb2NrcywgdGhlcmUgaXMgbm8gZ3Vh
+cmFudGVlIHRoYXQgdGhlCldTMS4uV1M0IG91dHB1dHMgd2lsbCBiZSBzeW5jaHJvbmlzZWQgdG8g
+ZWFjaCBvdGhlciwgc2luY2UgdGhhdCBkZXBlbmRzCnVwb24gdGhlIFNDTEsgZWRnZSB0aGF0IGVh
+Y2ggdW5pdCBiZWNvbWVzIGVuYWJsZWQuICBUaGF0IGFsc28gZGV0ZXJtaW5lcwp0aGUgYml0IHBv
+c2l0aW9uIHJlbGF0aXZlIHRvIFNDTEsgb2YgdGhlIGZpcnN0IGJpdCBvdXRwdXQuCgpIZW5jZSwg
+eW91IGNvdWxkIHZlcnkgd2VsbCBlbmQgdXAgd2l0aCBzb21ldGhpbmcgbGlrZSB0aGlzIGZvciBh
+IDE2LWJpdApJMlMgb3V0cHV0IGZyb20gZWFjaCBJMlMgYmxvY2s6CgpTQ0xLOiBffl9+X35ffl9+
+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35f
+CiBXUzE6IF9ffn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX34KSTJTMTogbGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi5s
+bG1tLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLmxsbQogV1MyOiBfX19fX19fX19fX19fX19f
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5fX19fX19fX19fX19fX19fX19fCkkyUzI6
+IC4uLi4uLi4uLi4uLi4ubGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi5sbG1tLi4uLi4u
+Li4uLi4uLi4uLi4KIFdTMzogX19fX19fX19+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fl9fX19fX19fX19fX19fX19fX19fX19fX19fXwpJMlMzOiAuLi4uLi5sbG1tLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uLmxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uCiBXUzQ6IF9fX19f
+X35+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+X19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KSTJTNDogLi4uLmxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtbS4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4uLgoKd2hlcmUgJ2wnIGluZGljYXRlcyB0aGUgTFNCIG9mIHRo
+ZSBzYW1wbGUsIGFuZCAnbScgaW5kaWNhdGVzIHRoZSBNU0IuCgpUaGUgcHJvYmxlbSBpcyB0aGF0
+IHRoZSBUREE5OTh4IGV4cGVjdHMgZWFjaCBJMlMgaW5wdXQgdG8gYmUgc3luY2hyb25pc2VkLgpJ
+biBvdGhlciB3b3JkcywgdGhlIFdTIGlucHV0IGlzIHNoYXJlZCBiZXR3ZWVuIGVhY2ggYW5kIGV2
+ZXJ5IHNlcGFyYXRlIEkyUwppbnB1dCwgd2hpY2ggbWVhbnMgdGhlIE1TQiBvZiBlYWNoIEkyUyBp
+bnB1dCBuZWVkcyB0byBiZSBzdXBwbGllZCBhdApleGFjdGx5IHRoZSBzYW1lIFNDTEsgZWRnZS4g
+IEluIG90aGVyIHdvcmRzOgoKU0NMSzogX35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35f
+fl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+XwogIFdTOiBfX35+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19+CkkyUzE6
+IGxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi5sbG0KSTJTMjogbGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi5sbG1tLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLmxsbQpJMlMzOiBsbG1tLi4uLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLmxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtCkkyUzQ6IGxsbW0u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
+Li5sbG0KClNvLCB3aGF0IEknbSBzYXlpbmcgaXMgdGhhdCBpdCBpcyBfaW1wb3NzaWJsZV8gdG8g
+ZHJpdmUgdGhlIFREQTk5OHggdXNpbmcKbXVsdGlwbGUgSTJTIHN0cmVhbXMgd2hpY2ggYXJlIG5v
+dCBwcm9kdWNlZCBieSB0aGUgc2FtZSBJMlMgYmxvY2suCgotLSAKRlRUQyBicm9hZGJhbmQgZm9y
+IDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEwLjVNYnBzIGRvd24gNDAwa2JwcyB1cAphY2Nv
+cmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9kcmktZGV2ZWwK
