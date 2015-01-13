@@ -1,17 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: wm8904: fix runtime warning
-Date: Tue, 13 Jan 2015 17:44:54 +0000
-Message-ID: <20150113174454.GV14516@opensource.wolfsonmicro.com>
-References: <1421143531-6662-1-git-send-email-voice.shen@atmel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH - UCM 1/2] control: enable octal and
+	hexadecimal parse
+Date: Tue, 13 Jan 2015 18:21:32 +0000
+Message-ID: <1421173292.6402.67.camel@loki>
+References: <1421118039-8075-1-git-send-email-han.lu@intel.com>
+ <s5ha91mipvp.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3FCE0260420
- for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 18:44:55 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1421143531-6662-1-git-send-email-voice.shen@atmel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2903C260483
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 19:22:29 +0100 (CET)
+In-Reply-To: <s5ha91mipvp.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: han.lu@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 13, 2015 at 06:05:31PM +0800, Bo Shen wrote:
-> Correct the path name for mux to get rid of the following warning:
+On Tue, 2015-01-13 at 17:53 +0100, Takashi Iwai wrote:
+> At Tue, 13 Jan 2015 11:00:38 +0800,
+> han.lu@intel.com wrote:
+> > 
+> > From: "Lu, Han" <han.lu@intel.com>
+> > 
+> > Signed-off-by: Lu, Han <han.lu@intel.com>
 > 
-> --->8---
-> wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTL
-> wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTL
-> wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTL
-> wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTL
-> wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTL
-> wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTL
-> wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTR
-> wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTR
-> wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTR
-> wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTR
-> wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTR
-> wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTR
-> wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACL
-> wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACL
-> wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACL
-> wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACL
-> wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACL
-> wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACL
-> wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACR
-> wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACR
-> wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACR
-> wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACR
-> wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACR
-> wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACR
-> ---8<---
+> Looks good to me.  Liam, any objection for this extension?
 > 
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Thanks,
-Charles
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > 
+> > diff --git a/src/control/ctlparse.c b/src/control/ctlparse.c
+> > index 978977d..acaf734 100644
+> > --- a/src/control/ctlparse.c
+> > +++ b/src/control/ctlparse.c
+> > @@ -59,10 +59,10 @@ static long get_integer(const char **ptr, long min, long max)
+> >  		goto out;
+> >  
+> >  	s = p;
+> > -	val = strtol(s, &p, 10);
+> > +	val = strtol(s, &p, 0);
+> >  	if (*p == '.') {
+> >  		p++;
+> > -		strtol(p, &p, 10);
+> > +		strtol(p, &p, 0);
+> >  	}
+> >  	if (*p == '%') {
+> >  		val = (long)convert_prange1(strtod(s, NULL), min, max);
+> > @@ -87,10 +87,10 @@ static long long get_integer64(const char **ptr, long long min, long long max)
+> >  		goto out;
+> >  
+> >  	s = p;
+> > -	val = strtol(s, &p, 10);
+> > +	val = strtol(s, &p, 0);
+> >  	if (*p == '.') {
+> >  		p++;
+> > -		strtol(p, &p, 10);
+> > +		strtol(p, &p, 0);
+> >  	}
+> >  	if (*p == '%') {
+> >  		val = (long long)convert_prange1(strtod(s, NULL), min, max);
+> > -- 
+> > 2.1.0
+> > 
