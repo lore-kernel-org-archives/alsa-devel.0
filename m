@@ -1,39 +1,37 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: samsung: Document Trats2 audio
- subsystem bindings
-Date: Tue, 13 Jan 2015 10:27:34 +0900
-Message-ID: <20150113102734.7a3aa77a@songinha-Samsung-DeskTop-System>
-References: <1420457117-11030-1-git-send-email-ideal.song@samsung.com>
- <1420457117-11030-3-git-send-email-ideal.song@samsung.com>
- <20150105152918.GT11764@sirena.org.uk>
+From: "N, Harshapriya" <harshapriya.n@intel.com>
+Subject: Question on HDA Audio - resume issue
+Date: Tue, 13 Jan 2015 01:53:35 +0000
+Message-ID: <6030C7A2BCC49F4EBE16F6749B0C7F1AD424A6@ORSMSX102.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20150105152918.GT11764@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, sbkim73@samsung.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.de, robh+dt@kernel.org, kgene@kernel.org, s.nawrocki@samsung.com, galak@codeaurora.org, grant.likely@linaro.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7DBF260636
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 02:53:53 +0100 (CET)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi,
 
-Thank you for your feedback and sorry for late response.
+On running a suspend/resume stress test, after a few hundred runs, I see that resume takes a longer time (~40 sec) because of HDA audio (00:03 is the audio device in the system) . HDA audio takes around 35 sec to resume in the following case.
 
-I think, I should remove clock settings in machine driver.
-If the clock settings are necessary, I will add "assigned-clocks" nodes
-in trats2 sound DT like odroid board.
+dmesg:
 
-Best Regards,
-Inha Song.
+>>>2015-01-11T05:43:39.993107+08:00 kernel: [46300.269994] call 0000:00:03.0+ returned 0 after 35524554 usecs
 
-> On Mon, Jan 05, 2015 at 08:25:16PM +0900, Inha Song wrote:
-> 
-> > + - clocks : Reference to the codec master clock
-> > + - clock-names : The clock should be named "mclk"
-> 
-> This should be done in the CODEC driver, not in the machine driver - the
-> CODEC always needs the clock, it's not something specific to this
-> machine.  Even if we decide that for Linux the best thing to do is to
-> manage the clock in the machine driver it should be described in the DT
-> as being attached to the CODEC.
+>>>2015-01-11T05:43:39.993109+08:00 kernel: [46300.270033] PM: Wakeup pending, aborting suspend
+
+Can anyone help understand why would HDA audio take so long to resume sporadically?
+
+-Harsha
