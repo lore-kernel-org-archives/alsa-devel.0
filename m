@@ -1,10 +1,8 @@
-From: Jean-Francois Moine <moinejf@free.fr>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Tue, 13 Jan 2015 16:54:11 +0100
-Message-ID: <20150113165411.5469930d@armhf>
-References: <20150109145741.GP12302@n2100.arm.linux.org.uk>
- <20150109183857.53d701a4@armhf>
- <20150109200127.GD12302@n2100.arm.linux.org.uk>
+Date: Tue, 13 Jan 2015 16:03:13 +0000
+Message-ID: <20150113160313.GR12302@n2100.arm.linux.org.uk>
+References: <20150109200127.GD12302@n2100.arm.linux.org.uk>
  <1421054728.3081.28.camel@pengutronix.de>
  <20150112122527.GF12302@n2100.arm.linux.org.uk>
  <1421071197.3081.44.camel@pengutronix.de>
@@ -13,11 +11,13 @@ References: <20150109145741.GP12302@n2100.arm.linux.org.uk>
  <20150112175705.GN12302@n2100.arm.linux.org.uk>
  <1421151718.4519.24.camel@pengutronix.de>
  <20150113122715.GP12302@n2100.arm.linux.org.uk>
+ <20150113165411.5469930d@armhf>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150113122715.GP12302@n2100.arm.linux.org.uk>
+Content-Disposition: inline
+In-Reply-To: <20150113165411.5469930d@armhf>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -27,34 +27,19 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Jean-Francois Moine <moinejf@free.fr>
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAxMyBKYW4gMjAxNSAxMjoyNzoxNSArMDAwMApSdXNzZWxsIEtpbmcgLSBBUk0gTGlu
-dXggPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgoKPiBPbiBUdWUsIEphbiAxMywgMjAx
-NSBhdCAwMToyMTo1OFBNICswMTAwLCBQaGlsaXBwIFphYmVsIHdyb3RlOgo+ID4gSSB3b25kZXIg
-aWYgaXQgd291bGRuJ3QgYmUgbmljZXIgdG8gaGF2ZSB0aGUgQVAjIGFuZCB0eXBlIGluIHRoZSBk
-ZXZpY2UKPiA+IHRyZWUgYW5kIHRoZW4gY2FsY3VsYXRlIHRoZSByZWdpc3RlciB2YWx1ZSBmcm9t
-IHRoYXQgaW4gdGhlIGRyaXZlci4KPiA+IAo+ID4gCXBvcnRAMSB7Cj4gPiAJCXJlZyA9IDwxPjsg
-LyogQVAxICovCj4gPiAJCW54cCxhdWRpby1wb3J0ID0gImkycyI7Cj4gPiAJCXRkYTk5OHhfaTJz
-OiBlbmRwb2ludCB7Cj4gPiAJCQlyZW1vdGUtZW5kcG9pbnQgPSA8JmF1ZGlvMV9pMnM+Owo+ID4g
-CQl9Owo+ID4gCX07Cj4gCj4gV2hhdCBhYm91dCB0aGUgY2FzZSB3aGVyZSB3ZSBoYXZlIDQgSTJT
-IHN0cmVhbXMgYmVpbmcgc3VwcGxpZWQgdG8gdGhlCj4gZGV2aWNlIG9uIGZvdXIgc2VwYXJhdGUg
-QVAgaW5wdXRzPwoKNCBzdHJlYW1zIG9uIDQgZGlmZmVyZW50IEFQcyAoc291cmNlcykgc2hvdWxk
-IHdvcmssIGJ1dCA0IHN0cmVhbXMgZnJvbQphIHNhbWUgc291cmNlIHNob3VsZCBiZSBkZXRhaWxl
-ZC4KCkluIGFuIG90aGVyIHdheSwgdGhlIHVuaXQgYWRkcmVzcyAoPT0gZmlyc3QgcmVnKSBkb2Vz
-IG5vdCBuZWVkIHRvIGJlIGEKc2VxdWVuY2UgbnVtYmVyLiBJdCBpcyB0aGUgSS9PIGJhc2UgaW4g
-bW9zdCBEVHMuClNvLCBpdCBjb3VsZCBiZSB0aGUgcG9ydCB2YWx1ZTogCgoJcG9ydEAyMzAxNDUg
-ewoJCXBvcnQtdHlwZSA9ICJyZ2IiOwoJCXJlZyA9IDwweDIzMDE0NT47CgkJaGRtaV8wOiBlbmRw
-b2ludCB7CgkJCXJlbW90ZS1lbmRwb2ludCA9IDwmbGNkMF8wPjsKCQl9OwoJfTsKCXBvcnRAMyB7
-CQkJLyogQVAxID0gSTJTICovCgkJcG9ydC10eXBlID0gImkycyI7CgkJcmVnID0gPDB4MDM+OwoJ
-CXRkYTk5OHhfaTJzOiBlbmRwb2ludCB7CgkJCXJlbW90ZS1lbmRwb2ludCA9IDwmYXVkaW8xX2ky
-cz47CgkJfTsKCX07Cglwb3J0QDQgewkJCSAvKiBBUDIgPSBTL1BESUYgKi8KCQlwb3J0LXR5cGUg
-PSAic3BkaWYiOwoJCXJlZyA9IDwweDA0PjsKCQl0ZGE5OTh4X3NwZGlmOiBlbmRwb2ludCB7CgkJ
-CXJlbW90ZS1lbmRwb2ludCA9IDwmYXVkaW8xX3NwZGlmMT47CgkJfTsKCX07CgotLSAKS2VuIGFy
-IGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBhdGF2ISAqKgpKZWYJCXwJCWh0
-dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVk
-ZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
-ZHJpLWRldmVsCg==
+T24gVHVlLCBKYW4gMTMsIDIwMTUgYXQgMDQ6NTQ6MTFQTSArMDEwMCwgSmVhbi1GcmFuY29pcyBN
+b2luZSB3cm90ZToKPiA0IHN0cmVhbXMgb24gNCBkaWZmZXJlbnQgQVBzIChzb3VyY2VzKSBzaG91
+bGQgd29yaywgYnV0IDQgc3RyZWFtcyBmcm9tCj4gYSBzYW1lIHNvdXJjZSBzaG91bGQgYmUgZGV0
+YWlsZWQuCgpJJ2QgbGlrZSB0byBrbm93IGhvdyB5b3UgaW50ZW5kIHRvIHdpcmUgdXAgZm91ciBk
+aWZmZXJlbnQgSTJTIHNvdXJjZXMKdG8gdGhlIFREQTk5OHguCgpSZW1lbWJlciwgYW4gSTJTIHNv
+dXJjZSBwcm9kdWNlcyB0aGUgSTJTIGRhdGEgYW5kIHRoZSB3b3JkIGNsb2NrIC0gdGhhdCdzCnR3
+byBvdXRwdXRzLiAgWW91IGNhbid0IGVsZWN0cm9uaWNhbGx5IHdpcmUgdGhlIHdvcmQgY2xvY2tz
+IHRvZ2V0aGVyLgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRs
+eSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQu
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZl
+bCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
