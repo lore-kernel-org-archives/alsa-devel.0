@@ -1,99 +1,61 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5][resend] of: replace Asahi Kasei Corp vendor prefix
-Date: Tue, 13 Jan 2015 14:03:50 -0600
-Message-ID: <CAL_Jsq+=oG5XaR+VKv_eWU+=DtpywUmZbyAfaC18ECaTbhHk5A@mail.gmail.com>
-References: <878ulzx6hr.wl%kuninori.morimoto.gx@gmail.com> <20140922130026.GK3290@leverpostej>
- <CAMuHMdX22z97SbGS1HDiYfJ1PXxyEN2S8D7w4sr+4bUwD+mJZw@mail.gmail.com>
- <20140922132743.GM3290@leverpostej> <87y4rfhmgl.wl%kuninori.morimoto.gx@renesas.com>
- <1415845309.4269.6.camel@perches.com> <20141113025105.GA16652@verge.net.au>
- <87vbmjhj00.wl%kuninori.morimoto.gx@renesas.com> <20141113110740.GE3815@sirena.org.uk>
- <87k32yd0bd.wl%kuninori.morimoto.gx@renesas.com> <20141114093554.GC3810@ulmo>
- <87y4ra8xac.wl%kuninori.morimoto.gx@renesas.com> <5469CD47.3040409@cogentembedded.com>
- <877fytxsde.wl%kuninori.morimoto.gx@renesas.com> <87egsob2cl.wl%kuninori.morimoto.gx@renesas.com>
- <5478603D.1080404@cogentembedded.com> <87d282sl6w.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] unload Audio drivers while playback stream is
+ active case kernel crash
+Date: Tue, 13 Jan 2015 21:54:12 +0000
+Message-ID: <20150113215412.GS4160@sirena.org.uk>
+References: <857E9EDCA6C0904DB3357321AA9123EB0108B66919@NA-MBX-01.mgc.mentorg.com>
+ <s5h1tmyiof7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87d282sl6w.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, Jason Cooper <jason@lakedaemon.net>, Heiko Stuebner <heiko@sntech.de>, Shawn Guo <shawn.guo@freescale.com>, Florian Vaussard <florian.vaussard@epfl.ch>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Thierry Reding <thierry.reding@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Stephen Warren <swarren@wwwdotorg.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Olof Johansson <olof@lixom.net>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Simon Horman <horms@verge.net.au>, Geert Uytterhoeven <geert@linux-m68k.org>, Joe Perches <joe@perches.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, linux-arm-kern
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="h1wVxq8aeHrvhZJz"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h1tmyiof7.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Wang, Jiada (ESD)" <Jiada_Wang@mentor.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 1, 2014 at 10:57 PM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> Current vendor-prefixes.txt already has "ak" prefix for Asahi Kasei Corp
-> by ae8c4209af2c(of: Add vendor prefix for Asahi Kasei Corp.)
->
-> It went through the appropriate review process. But, almost all
-> Asahi Kasei chip drivers are using "asahi-kasei" prefix today.
-> (arch/arm/boot/dts/tegra20-seaboard.dts only is using "ak,ak8975",
->  but there are instances of "asahi-kasei,ak8975" in other dts files.
->  And drivers/iio/magnetometer/ak8975.c doesn't support "ak,ak8975" prefix)
-> So, we made a mistake there.
->
-> In addition, checkpatch.pl reports WARNING if it is using "asahi-kasei"
-> prerfix in DT file.
-> (DT compatible string vendor "asahi-kasei" appears un-documented)
->
-> Marking it deprecated and warning with checkpatch is certainly
-> preferable. So, this patch replace "ak" to "asahi-kasei" in
-> vendor-prefixes.txt. (and fixup tegra20-seaboard)
->
-> OTOH, Asahi Kasei is usually referred to as "AKM", but this patch
-> doesn't care about it. Because no DT is using that today.
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> Acked-by: Alexandre Courbot <acourbot@nvidia.com>
 
-Applied for 3.20. Thanks.
+--h1wVxq8aeHrvhZJz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
-> v4 -> v5
->
->  - venter -> vendor on Subject
->  - fixup Acked-by ordering
->
->  .../devicetree/bindings/vendor-prefixes.txt        |    2 +-
->  arch/arm/boot/dts/tegra20-seaboard.dts             |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
-> index 723999d..ddcb4cd 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
-> @@ -9,7 +9,6 @@ ad      Avionic Design GmbH
->  adapteva       Adapteva, Inc.
->  adi    Analog Devices, Inc.
->  aeroflexgaisler        Aeroflex Gaisler AB
-> -ak     Asahi Kasei Corp.
->  allwinner      Allwinner Technology Co., Ltd.
->  altr   Altera Corp.
->  amcc   Applied Micro Circuits Corporation (APM, formally AMCC)
-> @@ -20,6 +19,7 @@ amstaos       AMS-Taos Inc.
->  apm    Applied Micro Circuits Corporation (APM)
->  arm    ARM Ltd.
->  armadeus       ARMadeus Systems SARL
-> +asahi-kasei    Asahi Kasei Corp.
->  atmel  Atmel Corporation
->  auo    AU Optronics Corporation
->  avago  Avago Technologies
-> diff --git a/arch/arm/boot/dts/tegra20-seaboard.dts b/arch/arm/boot/dts/tegra20-seaboard.dts
-> index a1d4bf9..7f5cf80 100644
-> --- a/arch/arm/boot/dts/tegra20-seaboard.dts
-> +++ b/arch/arm/boot/dts/tegra20-seaboard.dts
-> @@ -405,7 +405,7 @@
->                 clock-frequency = <400000>;
->
->                 magnetometer@c {
-> -                       compatible = "ak,ak8975";
-> +                       compatible = "asahi-kasei,ak8975";
->                         reg = <0xc>;
->                         interrupt-parent = <&gpio>;
->                         interrupts = <TEGRA_GPIO(N, 5) IRQ_TYPE_LEVEL_HIGH>;
-> --
-> 1.7.9.5
->
+On Tue, Jan 13, 2015 at 06:24:44PM +0100, Takashi Iwai wrote:
+> Wang, Jiada (ESD) wrote:
+
+> > I am using i.MX6Q sabreSD board, which have imx_wm892 machine driver, wm8962 codec and SSI CPU DAI,
+
+> > I got Kernel crash when unloading audio drivers (playback stream is active)
+> > modprobe -r snd_soc_imx_wm8962
+> > modprobe -r snd_soc_fsl_ssi
+> > modprobe -r snd_soc_wm8962
+
+> The root problem is that you can unload the module while playing.
+> The corresponding module refcounts should have been increased during
+> used.
+
+> Do we miss [try_]module_get() somewhere in ASoC?
+
+That doesn't help, users can still forcibly unbind the driver at runtime
+without loading the module - and there's always the potential for
+actually hotpluggable hardware.  The teardown paths should be able to
+cope somewhat gracefully.
+
+--h1wVxq8aeHrvhZJz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUtZQDAAoJECTWi3JdVIfQVyEH/jBw/OD99r5/pJZMvDz4EdNF
+TX1y+8BXS79WX1p/wjKiIprDjoTxENquiv6/VmdEkFp6sFLbVfret6RF15s1HtZ2
+5t0NKwSvHmzgKlSkb+1mALN/ZrUyAeCwRwy1JEOof4MBAk17lhxwMJvtbgpJewzS
+0bqmAry3HCKoVtFCKNIcVUQDY9PL9Hp5xwPIM1yaXC8DRcEql0vVsSWLSYPEpUws
+kjV4yRs4+rTOdnh9B6PUC/XIbUPOIQXJNBVHTfc1DmSTmZKkHthtI8xCCfltWDAC
+jRMntMmD7TY9p4LvPqgVHa3w8btKVAGV7v5vK2wYyZmeno5KTZ0O49b7GurSIrc=
+=+jkT
+-----END PGP SIGNATURE-----
+
+--h1wVxq8aeHrvhZJz--
