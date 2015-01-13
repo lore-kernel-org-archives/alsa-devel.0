@@ -1,64 +1,43 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8904: fix runtime warning
-Date: Tue, 13 Jan 2015 09:56:41 +0100
-Message-ID: <54B4DDC9.2000902@metafoo.de>
-References: <1420793620-2866-1-git-send-email-voice.shen@atmel.com> <20150109111642.GU14516@opensource.wolfsonmicro.com> <54B34035.60107@atmel.com> <54B3943C.4040103@metafoo.de> <54B4AED5.1000001@atmel.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Tue, 13 Jan 2015 10:24:55 +0100
+Message-ID: <20150113102455.4f29cff5@armhf>
+References: <cover.1420628786.git.moinejf@free.fr>
+ <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
+ <54B0123C.9070800@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <54B4AED5.1000001@atmel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <54B0123C.9070800@arm.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Andrew Jackson <Andrew.Jackson@arm.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/13/2015 06:36 AM, Bo Shen wrote:
-> Hi Lars-Perter Clausen,
->
-> On 01/12/2015 05:30 PM, Lars-Peter Clausen wrote:
->> On 01/12/2015 04:32 AM, Bo Shen wrote:
->> [...]
->>>>> diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
->>>>> index 4d2d2b1..38582d7 100644
->>>>> --- a/sound/soc/codecs/wm8904.c
->>>>> +++ b/sound/soc/codecs/wm8904.c
->>>>> @@ -1076,10 +1076,10 @@ static const struct snd_soc_dapm_route
->>>>> adc_intercon[] = {
->>>>>       { "Right Capture PGA", NULL, "Right Capture Mux" },
->>>>>       { "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
->>>>>
->>>>> -    { "AIFOUTL", "Left",  "ADCL" },
->>>>> -    { "AIFOUTL", "Right", "ADCR" },
->>>>> -    { "AIFOUTR", "Left",  "ADCL" },
->>>>> -    { "AIFOUTR", "Right", "ADCR" },
->>>>> +    { "AIFOUTL", NULL, "ADCL" },
->>>>> +    { "AIFOUTL", NULL, "ADCR" },
->>>>> +    { "AIFOUTR", NULL, "ADCL" },
->>>>> +    { "AIFOUTR", NULL, "ADCR" },
->>>>
->>>> Is this the right fix here? I am not super familiar with the
->>>> driver but it appears to contain an "AIFOUTL Mux" control which
->>>> is not connected to anything. Looks like maybe this is a mistake
->>>> the mux is indeded to be included in the path? Feels like we
->>>> should either remove the control as well or hook it into the
->>>> path.
->>>
->>> Thank for your information.
->>> I think here it should correct the path name as
->>> --->8---
->>> { "AIFOUTL Mux", "Left",  "ADCL" },
->>> { "AIFOUTL Mux", "Right", "ADCR" },
->>> { "AIFOUTR Mux", "Left",  "ADCL" },
->>> { "AIFOUTR Mux", "Right", "ADCR" },
->>> ---8<---
->>>
->>> Thanks again. I will send out the new version.
->>
->> Your probably also need to connect the mux to the output pins.
->
-> Thanks for you information, after check the datasheet, I still don't know
-> which the mux should connect to which output pins.
-
-AIFOUTL Mux to AIFOUTL
-AIFOUTR Mux to AIFOUTR
+T24gRnJpLCAwOSBKYW4gMjAxNSAxNzozOTowOCArMDAwMApBbmRyZXcgSmFja3NvbiA8QW5kcmV3
+LkphY2tzb25AYXJtLmNvbT4gd3JvdGU6Cgo+ID4gKyAgICAgICBzbmRfcGNtX2h3X2NvbnN0cmFp
+bnRfbWlubWF4KHJ1bnRpbWUsCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNO
+RFJWX1BDTV9IV19QQVJBTV9DSEFOTkVMUywKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgMSwgc2FkW1NBRF9NWF9DSEFOX0ldKTsgIAo+IAo+IEluIHRoZSBsaWdodCBvZiBvdXIg
+ZGlzY3Vzc2lvbnMgZWxzZXdoZXJlIFsxXSwgc2hvdWxkbid0IHRoaXMKPiBiZSBjb25zdHJhaW5l
+ZCBieSB0aGUgbnVtYmVyIG9mIGhhcmR3YXJlIGNoYW5uZWxzIHRoYXQgdGhlIFREQTk5OHgKPiBz
+dXBwb3J0cyB0b28/ICBUaGF0IGlzLCB0aGUgbWF4aW11bSBudW1iZXIgb2YgY2hhbm5lbHMgc2hv
+dWxkCj4gYmUgdGhlIGxlc3NlciBvZiBzZFtTQURfTVhfQ0hBTl9JXSBhbmQgbnVtYmVyX29mX0ky
+UyBjaGFubmVscyAKPiAob3IgUy9QRElGIGNoYW5uZWxzIGlmIHNvIGNvbmZpZ3VyZWQpLgoKc25k
+X3BjbV9od19jb25zdHJhaW50X21pbm1heCgpIGRvZXMgdGhlIGpvYiBmcm9tIHRoZSBtaW4vbWF4
+IG51bWJlcnMgb2YKY2hhbm5lbHMgaW4gdGhlIERBSSBkZWZpbml0aW9uIGFuZCB0aGUgcmVhbCBt
+YXggbnVtYmVyIG9mIGNoYW5uZWxzIHdpbGwKYmUgc2V0IGZyb20gYXVkaW8gcG9ydHMgZGVjbGFy
+ZWQgaW4gdGhlIERULgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEg
+TGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBs
+aXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
+dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
