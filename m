@@ -1,99 +1,83 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v3] ASoC: wm8904: fix runtime warning
-Date: Tue, 13 Jan 2015 18:05:31 +0800
-Message-ID: <1421143531-6662-1-git-send-email-voice.shen@atmel.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [PATCH v2] ALSA: ASoC: soc-compress.c: fix NULL
+	dereference
+Date: Tue, 13 Jan 2015 11:18:53 +0000
+Message-ID: <1421147933-21802-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id A278F260417
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 12:19:27 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@imgtec.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Correct the path name for mux to get rid of the following warning:
+In soc_new_compress() when rtd->dai_link->daynmic is set, we create the pcm
+substreams with this call:
 
---->8---
-wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTL
-wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTL
-wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTL
-wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTL
-wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTL
-wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTL
-wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTR
-wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTR
-wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTR
-wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTR
-wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTR
-wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTR
-wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACL
-wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACL
-wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACL
-wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACL
-wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACL
-wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACL
-wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACR
-wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACR
-wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACR
-wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACR
-wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACR
-wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACR
----8<---
+   ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
+                                   1, 0, &be_pcm);
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
+which passes 0 as capture_count leading to
+
+   be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream
+
+being NULL, hence when trying to set rtd a few lines below we get an oops.
+
+Fix by using rtd->dai_link->dpcm_playback and rtd->dai_link->dpcm_capture as
+playback_count and capture_count to snd_pcm_new_internal().
+
+Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+Cc: Vinod Koul <vinod.koul@intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org
 ---
+v2->v1:
+   - use better way to fix it than just removing the line that caused the oops
 
-Changes in v3:
-  - Correct the DAC related route path
+ sound/soc/soc-compress.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Changes in v2:
-  - Correct the mux path name.
-  - Route the mux to the pins.
-
- sound/soc/codecs/wm8904.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 4d2d2b1..75b87c5 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -1076,10 +1076,13 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
- 	{ "Right Capture PGA", NULL, "Right Capture Mux" },
- 	{ "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 590a82f01d0b..27a668463ad7 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -659,7 +659,8 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 			rtd->dai_link->stream_name);
  
--	{ "AIFOUTL", "Left",  "ADCL" },
--	{ "AIFOUTL", "Right", "ADCR" },
--	{ "AIFOUTR", "Left",  "ADCL" },
--	{ "AIFOUTR", "Right", "ADCR" },
-+	{ "AIFOUTL Mux", "Left", "ADCL" },
-+	{ "AIFOUTL Mux", "Right", "ADCR" },
-+	{ "AIFOUTR Mux", "Left", "ADCL" },
-+	{ "AIFOUTR Mux", "Right", "ADCR" },
-+
-+	{ "AIFOUTL", NULL, "AIFOUTL Mux" },
-+	{ "AIFOUTR", NULL, "AIFOUTR Mux" },
+ 		ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
+-				1, 0, &be_pcm);
++				rtd->dai_link->dpcm_playback,
++				rtd->dai_link->dpcm_capture, &be_pcm);
+ 		if (ret < 0) {
+ 			dev_err(rtd->card->dev, "ASoC: can't create compressed for %s\n",
+ 				rtd->dai_link->name);
+@@ -668,8 +669,10 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
  
- 	{ "ADCL", NULL, "CLK_DSP" },
- 	{ "ADCL", NULL, "Left Capture PGA" },
-@@ -1089,12 +1092,16 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
- };
- 
- static const struct snd_soc_dapm_route dac_intercon[] = {
--	{ "DACL", "Right", "AIFINR" },
--	{ "DACL", "Left",  "AIFINL" },
-+	{ "DACL Mux", "Left", "AIFINL" },
-+	{ "DACL Mux", "Right", "AIFINR" },
-+
-+	{ "DACR Mux", "Left", "AIFINL" },
-+	{ "DACR Mux", "Right", "AIFINR" },
-+
-+	{ "DACL", NULL, "DACL Mux" },
- 	{ "DACL", NULL, "CLK_DSP" },
- 
--	{ "DACR", "Right", "AIFINR" },
--	{ "DACR", "Left",  "AIFINL" },
-+	{ "DACR", NULL, "DACR Mux" },
- 	{ "DACR", NULL, "CLK_DSP" },
- 
- 	{ "Charge pump", NULL, "SYSCLK" },
+ 		rtd->pcm = be_pcm;
+ 		rtd->fe_compr = 1;
+-		be_pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->private_data = rtd;
+-		be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->private_data = rtd;
++		if (rtd->dai_link->dpcm_playback)
++			be_pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->private_data = rtd;
++		if (rtd->dai_link->dpcm_capture)
++			be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->private_data = rtd;
+ 		memcpy(compr->ops, &soc_compr_dyn_ops, sizeof(soc_compr_dyn_ops));
+ 	} else
+ 		memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
 -- 
-2.1.0.24.g4109c28
+2.1.0
