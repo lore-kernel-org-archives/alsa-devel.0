@@ -1,7 +1,8 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Tue, 13 Jan 2015 19:26:48 +0000
-Message-ID: <20150113192648.GU12302@n2100.arm.linux.org.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
+	for audio
+Date: Tue, 13 Jan 2015 21:41:01 +0200
+Message-ID: <54B574CD.9020905@ti.com>
 References: <20150112122527.GF12302@n2100.arm.linux.org.uk>
  <1421071197.3081.44.camel@pengutronix.de>
  <20150112140456.GI12302@n2100.arm.linux.org.uk>
@@ -12,100 +13,47 @@ References: <20150112122527.GF12302@n2100.arm.linux.org.uk>
  <20150113165411.5469930d@armhf>
  <20150113160313.GR12302@n2100.arm.linux.org.uk>
  <20150113200252.3dbfab14@armhf>
+ <20150113192648.GU12302@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20150113200252.3dbfab14@armhf>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3508260483
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 20:41:07 +0100 (CET)
+In-Reply-To: <20150113192648.GU12302@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Jean-Francois Moine <moinejf@free.fr>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKYW4gMTMsIDIwMTUgYXQgMDg6MDI6NTJQTSArMDEwMCwgSmVhbi1GcmFuY29pcyBN
-b2luZSB3cm90ZToKPiBPbiBUdWUsIDEzIEphbiAyMDE1IDE2OjAzOjEzICswMDAwCj4gUnVzc2Vs
-bCBLaW5nIC0gQVJNIExpbnV4IDxsaW51eEBhcm0ubGludXgub3JnLnVrPiB3cm90ZToKPiAKPiA+
-IE9uIFR1ZSwgSmFuIDEzLCAyMDE1IGF0IDA0OjU0OjExUE0gKzAxMDAsIEplYW4tRnJhbmNvaXMg
-TW9pbmUgd3JvdGU6Cj4gPiA+IDQgc3RyZWFtcyBvbiA0IGRpZmZlcmVudCBBUHMgKHNvdXJjZXMp
-IHNob3VsZCB3b3JrLCBidXQgNCBzdHJlYW1zIGZyb20KPiA+ID4gYSBzYW1lIHNvdXJjZSBzaG91
-bGQgYmUgZGV0YWlsZWQuCj4gPiAKPiA+IEknZCBsaWtlIHRvIGtub3cgaG93IHlvdSBpbnRlbmQg
-dG8gd2lyZSB1cCBmb3VyIGRpZmZlcmVudCBJMlMgc291cmNlcwo+ID4gdG8gdGhlIFREQTk5OHgu
-Cj4gPiAKPiA+IFJlbWVtYmVyLCBhbiBJMlMgc291cmNlIHByb2R1Y2VzIHRoZSBJMlMgZGF0YSBh
-bmQgdGhlIHdvcmQgY2xvY2sgLSB0aGF0J3MKPiA+IHR3byBvdXRwdXRzLiAgWW91IGNhbid0IGVs
-ZWN0cm9uaWNhbGx5IHdpcmUgdGhlIHdvcmQgY2xvY2tzIHRvZ2V0aGVyLgo+IAo+IEZyb20gdGhl
-IHNwZWMsIHRoZSB0ZGE5OTh4IGdldHMgaW5kZXBlbmRlbnRseSB0aGUgc2VyaWFsIGNsb2NrIGFu
-ZCB0aGUKPiBzZXJpYWwgd29yZCBzZWxlY3QgZnJvbSBlYWNoIEkyUyAoc3RlcmVvKSBpbnB1dCBj
-aGFubmVsICg9IGF1ZGlvIHBpbiksCj4gc28sIHlvdSBtYXkgaGF2ZSA0IGF1ZGlvIGNoaXBzIGdp
-dmluZyA0IGluZGVwZW5kZW50IGF1ZGlvIHN0cmVhbXMuCj4gSSBkb24ndCBrbm93IHdoYXQgY2Fu
-IGJlIHRoZSByZXN1bHQgaW4gSERNSSBpZiB0aGVzZSBzdHJlYW1zIGFyZSBhY3RpdmVkCj4gYXQg
-dGhlIHNhbWUgdGltZSEKPiAKPiBJbiB0aGUgb3RoZXIgY29uZmlndXJhdGlvbiwgYW4gYXVkaW8g
-Y2hpcCBtYXkgaGF2ZSA0IHN5bmNocm9uaXplZCBzdGVyZW8KPiBjaGFubmVscyAoc29mdHdhcmUg
-UENNcykuIFRoZXNlIG9uZXMgbWF5IGJlIGNvbnNpZGVyZWQgYXMgb25lIGxpbmsgKG9uZQo+IHBv
-cnQgb3V0IGZyb20gdGhlIGF1ZGlvIGNoaXAgdG8gb25lIHBvcnQgaW4gdG8gdGhlIHRkYTk5OHgp
-LCB0aGUgQVAKPiBjb25maWd1cmF0aW9uIGJlaW5nIDB4MWYuCgpMZXQgbWUgdHJ5IHRvIGJlIGNs
-ZWFyZXIuICBIZXJlJ3MgZm91ciBpbmRlcGVuZGVudCBJMlMgYmxvY2tzIHdoaWNoCmhhdmUgYmVl
-biBhcnJhbmdlZCB0byBiZSBjbG9ja2VkIGJ5IHRoZSBzYW1lIEkyUyBidXMgY2xvY2suICBFYWNo
-CkkyUyBibG9jayBwcm9kdWNlcyBpdHMgb3duIHdvcmQgY2xvY2sgYW5kIGRhdGEgc3RyZWFtOgoK
-U0NMSwp8ICArLS0tLS0tLSsKKy0+fCBJMlMgICArLS0tLS0tPiBXUzEKfCAgfCBzcmMgMSArLS0t
-LS0tPiBJMlMxCnwgICstLS0tLS0tKwp8CnwgICstLS0tLS0tKworLT58IEkyUyAgICstLS0tLS0+
-IFdTMgp8ICB8IHNyYyAyICstLS0tLS0+IEkyUzIKfCAgKy0tLS0tLS0rCnwKfCAgKy0tLS0tLS0r
-CistPnwgSTJTICAgKy0tLS0tLT4gV1MzCnwgIHwgc3JjIDMgKy0tLS0tLT4gSTJTMwp8ICArLS0t
-LS0tLSsKfAp8ICArLS0tLS0tLSsKKy0+fCBJMlMgICArLS0tLS0tPiBXUzQKfCAgfCBzcmMgNCAr
-LS0tLS0tPiBJMlM0CnwgICstLS0tLS0tKwp8CnwgICAgICAgICstLS0tLS0tLS0rCnwgICAgICAg
-IHwgVERBOTk4eCB8CmAtLS0tLS0tPisgQUNMSyAgICB8CiAgV1MgLS0tPisgQVAwICAgICB8Ckky
-UzEgLS0tPisgQVAxICAgICB8CkkyUzIgLS0tPisgQVAyICAgICB8CkkyUzMgLS0tPisgQVAzICAg
-ICB8CkkyUzQgLS0tPisgQVA0ICAgICB8CiAgICAgICAgICstLS0tLS0tLS0rCgpUaGUgYXJyb3dz
-IHBvaW50IGZyb20gdGhlIG91dHB1dCAoZHJpdmVyIG9mIHRoZSBzaWduYWwpIHRvIHRoZSBpbnB1
-dC4KSXQgaXMgaWxsZWdhbCBpbiBlbGVjdHJvbmljcyB0byB3aXJlIHR3byBvdXRwdXRzICh3aGlj
-aCBhcmUgbm90IGFibGUgdG8KZGlzYWJsZSB0aGVpciBvdXRwdXQgZHJpdmVycykgdG9nZXRoZXIu
-CgpIb3cgZG8geW91IGFycmFuZ2UgZm9yIFdTMS4uV1M0IHRvIGJlIGNvbm5lY3RlZCB0byB0aGUg
-VERBOTk4eCBXUyBpbnB1dD8KCk15IGFuc3dlciBpczogdGhpcyBpcyBhbiBpbXBvc3NpYmxlIHNl
-dHVwLgoKU2luY2UgdGhlc2UgYXJlIGluZGVwZW5kZW50IGJsb2NrcywgdGhlcmUgaXMgbm8gZ3Vh
-cmFudGVlIHRoYXQgdGhlCldTMS4uV1M0IG91dHB1dHMgd2lsbCBiZSBzeW5jaHJvbmlzZWQgdG8g
-ZWFjaCBvdGhlciwgc2luY2UgdGhhdCBkZXBlbmRzCnVwb24gdGhlIFNDTEsgZWRnZSB0aGF0IGVh
-Y2ggdW5pdCBiZWNvbWVzIGVuYWJsZWQuICBUaGF0IGFsc28gZGV0ZXJtaW5lcwp0aGUgYml0IHBv
-c2l0aW9uIHJlbGF0aXZlIHRvIFNDTEsgb2YgdGhlIGZpcnN0IGJpdCBvdXRwdXQuCgpIZW5jZSwg
-eW91IGNvdWxkIHZlcnkgd2VsbCBlbmQgdXAgd2l0aCBzb21ldGhpbmcgbGlrZSB0aGlzIGZvciBh
-IDE2LWJpdApJMlMgb3V0cHV0IGZyb20gZWFjaCBJMlMgYmxvY2s6CgpTQ0xLOiBffl9+X35ffl9+
-X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35f
-CiBXUzE6IF9ffn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX34KSTJTMTogbGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi5s
-bG1tLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLmxsbQogV1MyOiBfX19fX19fX19fX19fX19f
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5fX19fX19fX19fX19fX19fX19fCkkyUzI6
-IC4uLi4uLi4uLi4uLi4ubGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi5sbG1tLi4uLi4u
-Li4uLi4uLi4uLi4KIFdTMzogX19fX19fX19+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fl9fX19fX19fX19fX19fX19fX19fX19fX19fXwpJMlMzOiAuLi4uLi5sbG1tLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4uLi4uLmxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uCiBXUzQ6IF9fX19f
-X35+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+X19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KSTJTNDogLi4uLmxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtbS4uLi4u
-Li4uLi4uLi4uLi4uLi4uLi4uLi4uLgoKd2hlcmUgJ2wnIGluZGljYXRlcyB0aGUgTFNCIG9mIHRo
-ZSBzYW1wbGUsIGFuZCAnbScgaW5kaWNhdGVzIHRoZSBNU0IuCgpUaGUgcHJvYmxlbSBpcyB0aGF0
-IHRoZSBUREE5OTh4IGV4cGVjdHMgZWFjaCBJMlMgaW5wdXQgdG8gYmUgc3luY2hyb25pc2VkLgpJ
-biBvdGhlciB3b3JkcywgdGhlIFdTIGlucHV0IGlzIHNoYXJlZCBiZXR3ZWVuIGVhY2ggYW5kIGV2
-ZXJ5IHNlcGFyYXRlIEkyUwppbnB1dCwgd2hpY2ggbWVhbnMgdGhlIE1TQiBvZiBlYWNoIEkyUyBp
-bnB1dCBuZWVkcyB0byBiZSBzdXBwbGllZCBhdApleGFjdGx5IHRoZSBzYW1lIFNDTEsgZWRnZS4g
-IEluIG90aGVyIHdvcmRzOgoKU0NMSzogX35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35f
-fl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+XwogIFdTOiBfX35+fn5+fn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19+CkkyUzE6
-IGxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi5sbG0KSTJTMjogbGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi5sbG1tLi4u
-Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLmxsbQpJMlMzOiBsbG1tLi4uLi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLmxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtCkkyUzQ6IGxsbW0u
-Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
-Li5sbG0KClNvLCB3aGF0IEknbSBzYXlpbmcgaXMgdGhhdCBpdCBpcyBfaW1wb3NzaWJsZV8gdG8g
-ZHJpdmUgdGhlIFREQTk5OHggdXNpbmcKbXVsdGlwbGUgSTJTIHN0cmVhbXMgd2hpY2ggYXJlIG5v
-dCBwcm9kdWNlZCBieSB0aGUgc2FtZSBJMlMgYmxvY2suCgotLSAKRlRUQyBicm9hZGJhbmQgZm9y
-IDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEwLjVNYnBzIGRvd24gNDAwa2JwcyB1cAphY2Nv
-cmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9kcmktZGV2ZWwK
+On 01/13/2015 09:26 PM, Russell King - ARM Linux wrote:
+> SCLK: _~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_~_
+>    WS: __~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~________________________________~
+> I2S1: llmm............................llmm............................llm
+> I2S2: llmm............................llmm............................llm
+> I2S3: llmm............................llmm............................llm
+> I2S4: llmm............................llmm............................llm
+>
+> So, what I'm saying is that it is_impossible_  to drive the TDA998x using
+> multiple I2S streams which are not produced by the same I2S block.
+
+This is besides the point, but it is possible that one of the multiple =
+
+I2S blocks is the bit-clock and frame-clock master to the i2s bus and =
+
+the others are slaves to it (banging their bits according to SCLK and WS =
+
+of the I2S master). However, in this situation there really is only one =
+
+i2s bus with multiple data pins.
+
+Just my 0.02=80 to this discussion.
