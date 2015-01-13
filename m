@@ -1,56 +1,120 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Tue, 13 Jan 2015 20:02:52 +0100
-Message-ID: <20150113200252.3dbfab14@armhf>
-References: <20150109200127.GD12302@n2100.arm.linux.org.uk>
- <1421054728.3081.28.camel@pengutronix.de>
- <20150112122527.GF12302@n2100.arm.linux.org.uk>
- <1421071197.3081.44.camel@pengutronix.de>
- <20150112140456.GI12302@n2100.arm.linux.org.uk>
- <20150112181341.4a53ea24@armhf>
- <20150112175705.GN12302@n2100.arm.linux.org.uk>
- <1421151718.4519.24.camel@pengutronix.de>
- <20150113122715.GP12302@n2100.arm.linux.org.uk>
- <20150113165411.5469930d@armhf>
- <20150113160313.GR12302@n2100.arm.linux.org.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH RFC] ASoC: simple-card: Enable and disable DAI clocks as needed
+Date: Tue, 13 Jan 2015 21:16:34 +0200
+Message-ID: <1421176594-2117-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150113160313.GR12302@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: kuninori.morimoto.gx@renesas.com, moinejf@free.fr, Li.Xiubo@freescale.com, broonie@kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAxMyBKYW4gMjAxNSAxNjowMzoxMyArMDAwMApSdXNzZWxsIEtpbmcgLSBBUk0gTGlu
-dXggPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgoKPiBPbiBUdWUsIEphbiAxMywgMjAx
-NSBhdCAwNDo1NDoxMVBNICswMTAwLCBKZWFuLUZyYW5jb2lzIE1vaW5lIHdyb3RlOgo+ID4gNCBz
-dHJlYW1zIG9uIDQgZGlmZmVyZW50IEFQcyAoc291cmNlcykgc2hvdWxkIHdvcmssIGJ1dCA0IHN0
-cmVhbXMgZnJvbQo+ID4gYSBzYW1lIHNvdXJjZSBzaG91bGQgYmUgZGV0YWlsZWQuCj4gCj4gSSdk
-IGxpa2UgdG8ga25vdyBob3cgeW91IGludGVuZCB0byB3aXJlIHVwIGZvdXIgZGlmZmVyZW50IEky
-UyBzb3VyY2VzCj4gdG8gdGhlIFREQTk5OHguCj4gCj4gUmVtZW1iZXIsIGFuIEkyUyBzb3VyY2Ug
-cHJvZHVjZXMgdGhlIEkyUyBkYXRhIGFuZCB0aGUgd29yZCBjbG9jayAtIHRoYXQncwo+IHR3byBv
-dXRwdXRzLiAgWW91IGNhbid0IGVsZWN0cm9uaWNhbGx5IHdpcmUgdGhlIHdvcmQgY2xvY2tzIHRv
-Z2V0aGVyLgoKRnJvbSB0aGUgc3BlYywgdGhlIHRkYTk5OHggZ2V0cyBpbmRlcGVuZGVudGx5IHRo
-ZSBzZXJpYWwgY2xvY2sgYW5kIHRoZQpzZXJpYWwgd29yZCBzZWxlY3QgZnJvbSBlYWNoIEkyUyAo
-c3RlcmVvKSBpbnB1dCBjaGFubmVsICg9IGF1ZGlvIHBpbiksCnNvLCB5b3UgbWF5IGhhdmUgNCBh
-dWRpbyBjaGlwcyBnaXZpbmcgNCBpbmRlcGVuZGVudCBhdWRpbyBzdHJlYW1zLgpJIGRvbid0IGtu
-b3cgd2hhdCBjYW4gYmUgdGhlIHJlc3VsdCBpbiBIRE1JIGlmIHRoZXNlIHN0cmVhbXMgYXJlIGFj
-dGl2ZWQKYXQgdGhlIHNhbWUgdGltZSEKCkluIHRoZSBvdGhlciBjb25maWd1cmF0aW9uLCBhbiBh
-dWRpbyBjaGlwIG1heSBoYXZlIDQgc3luY2hyb25pemVkIHN0ZXJlbwpjaGFubmVscyAoc29mdHdh
-cmUgUENNcykuIFRoZXNlIG9uZXMgbWF5IGJlIGNvbnNpZGVyZWQgYXMgb25lIGxpbmsgKG9uZQpw
-b3J0IG91dCBmcm9tIHRoZSBhdWRpbyBjaGlwIHRvIG9uZSBwb3J0IGluIHRvIHRoZSB0ZGE5OTh4
-KSwgdGhlIEFQCmNvbmZpZ3VyYXRpb24gYmVpbmcgMHgxZi4KCi0tIApLZW4gYXIgYydoZW50YcOx
-CXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5l
-amYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-Cmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+Call clk_prepare_enable() and clk_disable_unprepare() for cpu dai
+clock and codec dai clock in dai statup and shutdown callbacks. This
+to make sure the related clock are enabled when the audio device is
+used.
+
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+This patch is needed for Beaglebone-back HDMI audio. There is no
+direct dependency between this patch and the other (dts and DRM)
+changes needed for the HDMI audio so these changes can be merged
+independently. There are also some other TI EVMs that require this
+functionality if they are to be used with simple-card.
+
+ .../devicetree/bindings/sound/simple-card.txt      |    5 +++
+ include/sound/simple_card.h                        |    1 +
+ sound/soc/generic/simple-card.c                    |   34 ++++++++++++++++++++
+ 3 files changed, 40 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index c3cba60..73bf314 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -75,6 +75,11 @@ Optional CPU/CODEC subnodes properties:
+ 					  it can be specified via "clocks" if system has
+ 					  clock node (= common clock), or "system-clock-frequency"
+ 					  (if system doens't support common clock)
++					  If a clock is specified, it is
++					  enabled with clk_prepare_enable()
++					  in dai startup() and disabled with
++					  clk_disable_unprepare() in dai
++					  shutdown().
+ 
+ Example 1 - single DAI link:
+ 
+diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
+index 9b0ac77..1255ddb 100644
+--- a/include/sound/simple_card.h
++++ b/include/sound/simple_card.h
+@@ -20,6 +20,7 @@ struct asoc_simple_dai {
+ 	unsigned int sysclk;
+ 	int slots;
+ 	int slot_width;
++	struct clk *clk;
+ };
+ 
+ struct asoc_simple_card_info {
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index fb9240f..cb3998d 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -39,6 +39,37 @@ struct simple_card_data {
+ #define simple_priv_to_link(priv, i) ((priv)->snd_card.dai_link + i)
+ #define simple_priv_to_props(priv, i) ((priv)->dai_props + i)
+ 
++static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
++	struct simple_dai_props *dai_props =
++		&priv->dai_props[rtd - rtd->card->rtd];
++	int ret;
++
++	ret = clk_prepare_enable(dai_props->cpu_dai.clk);
++	if (ret)
++		return ret;
++	
++	ret = clk_prepare_enable(dai_props->codec_dai.clk);
++	if (ret)
++		clk_disable_unprepare(dai_props->cpu_dai.clk);
++
++	return ret;
++}
++
++static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
++	struct simple_dai_props *dai_props =
++		&priv->dai_props[rtd - rtd->card->rtd];
++
++	clk_disable_unprepare(dai_props->cpu_dai.clk);
++
++	clk_disable_unprepare(dai_props->codec_dai.clk);
++}
++
+ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ 				      struct snd_pcm_hw_params *params)
+ {
+@@ -58,6 +89,8 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ }
+ 
+ static struct snd_soc_ops asoc_simple_card_ops = {
++	.startup = asoc_simple_card_startup,
++	.shutdown = asoc_simple_card_shutdown,
+ 	.hw_params = asoc_simple_card_hw_params,
+ };
+ 
+@@ -219,6 +252,7 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 		}
+ 
+ 		dai->sysclk = clk_get_rate(clk);
++		dai->clk = clk;
+ 	} else if (!of_property_read_u32(np, "system-clock-frequency", &val)) {
+ 		dai->sysclk = val;
+ 	} else {
+-- 
+1.7.9.5
+
