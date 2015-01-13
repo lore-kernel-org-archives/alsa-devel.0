@@ -1,61 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] unload Audio drivers while playback stream is
- active case kernel crash
-Date: Tue, 13 Jan 2015 21:54:12 +0000
-Message-ID: <20150113215412.GS4160@sirena.org.uk>
-References: <857E9EDCA6C0904DB3357321AA9123EB0108B66919@NA-MBX-01.mgc.mentorg.com>
- <s5h1tmyiof7.wl-tiwai@suse.de>
+From: Peter Rosin <peda@axentia.se>
+Subject: Regression with .set_bias_level in pcm512x?
+Date: Tue, 13 Jan 2015 22:49:07 +0000
+Message-ID: <0bea1026e90a46769a573470a3efc935@EMAIL.axentia.se>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="h1wVxq8aeHrvhZJz"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h1tmyiof7.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Wang, Jiada (ESD)" <Jiada_Wang@mentor.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EMAIL.axentia.se (axentia.se [87.96.186.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8487926054D
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 23:49:05 +0100 (CET)
+Content-Language: sv-SE
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
---h1wVxq8aeHrvhZJz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm working on adding support for DAIFMT_CBM_CFM and DAIFMT_CBM_CFS
+to pcm512x, and it works nicely in the 3.10 kernel + Atmel-patches were I have
+developed the code. Now I'm trying to forward-port it and test it on
+3.18 + other-Atmel-patches in preparation for submission. However, there
+seems to be a regression in that the (pre-existing) pcm512x_set_bias_level
+callback is never called in the 3.18 version.
 
-On Tue, Jan 13, 2015 at 06:24:44PM +0100, Takashi Iwai wrote:
-> Wang, Jiada (ESD) wrote:
+I see that there has been some core work on set_bias_level, and suspect
+it has something to do with dapm and components, but I think someone else
+will find the problem much quicker than I am able to.
 
-> > I am using i.MX6Q sabreSD board, which have imx_wm892 machine driver, wm8962 codec and SSI CPU DAI,
+I have feebly tried to revert 0bd2ac3dae74ee25c5ea171cb572731c7a89c248
+and 68f831c2724ab72c0088471b2ed1dc99e81948ef, but that didn't help. That
+also seems a bit backwards. So, what needs to be done in the pcm512x driver
+to have set_bias_level called?
 
-> > I got Kernel crash when unloading audio drivers (playback stream is active)
-> > modprobe -r snd_soc_imx_wm8962
-> > modprobe -r snd_soc_fsl_ssi
-> > modprobe -r snd_soc_wm8962
+Please help.
 
-> The root problem is that you can unload the module while playing.
-> The corresponding module refcounts should have been increased during
-> used.
-
-> Do we miss [try_]module_get() somewhere in ASoC?
-
-That doesn't help, users can still forcibly unbind the driver at runtime
-without loading the module - and there's always the potential for
-actually hotpluggable hardware.  The teardown paths should be able to
-cope somewhat gracefully.
-
---h1wVxq8aeHrvhZJz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUtZQDAAoJECTWi3JdVIfQVyEH/jBw/OD99r5/pJZMvDz4EdNF
-TX1y+8BXS79WX1p/wjKiIprDjoTxENquiv6/VmdEkFp6sFLbVfret6RF15s1HtZ2
-5t0NKwSvHmzgKlSkb+1mALN/ZrUyAeCwRwy1JEOof4MBAk17lhxwMJvtbgpJewzS
-0bqmAry3HCKoVtFCKNIcVUQDY9PL9Hp5xwPIM1yaXC8DRcEql0vVsSWLSYPEpUws
-kjV4yRs4+rTOdnh9B6PUC/XIbUPOIQXJNBVHTfc1DmSTmZKkHthtI8xCCfltWDAC
-jRMntMmD7TY9p4LvPqgVHa3w8btKVAGV7v5vK2wYyZmeno5KTZ0O49b7GurSIrc=
-=+jkT
------END PGP SIGNATURE-----
-
---h1wVxq8aeHrvhZJz--
+Cheers,
+Peter
