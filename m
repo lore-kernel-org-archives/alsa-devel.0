@@ -1,92 +1,64 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] hdajackretask: Add dock hp/mic/line to simple
-	options
-Date: Tue, 13 Jan 2015 09:12:29 +0100
-Message-ID: <1421136749-5652-1-git-send-email-david.henningsson@canonical.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: wm8904: fix runtime warning
+Date: Tue, 13 Jan 2015 09:56:41 +0100
+Message-ID: <54B4DDC9.2000902@metafoo.de>
+References: <1420793620-2866-1-git-send-email-voice.shen@atmel.com> <20150109111642.GU14516@opensource.wolfsonmicro.com> <54B34035.60107@atmel.com> <54B3943C.4040103@metafoo.de> <54B4AED5.1000001@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 28C5E2614BC
- for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 09:12:31 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <54B4AED5.1000001@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This allows for simpler setting of dock headphone, dock mic,
-dock line out and dock line in.
+On 01/13/2015 06:36 AM, Bo Shen wrote:
+> Hi Lars-Perter Clausen,
+>
+> On 01/12/2015 05:30 PM, Lars-Peter Clausen wrote:
+>> On 01/12/2015 04:32 AM, Bo Shen wrote:
+>> [...]
+>>>>> diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+>>>>> index 4d2d2b1..38582d7 100644
+>>>>> --- a/sound/soc/codecs/wm8904.c
+>>>>> +++ b/sound/soc/codecs/wm8904.c
+>>>>> @@ -1076,10 +1076,10 @@ static const struct snd_soc_dapm_route
+>>>>> adc_intercon[] = {
+>>>>>       { "Right Capture PGA", NULL, "Right Capture Mux" },
+>>>>>       { "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
+>>>>>
+>>>>> -    { "AIFOUTL", "Left",  "ADCL" },
+>>>>> -    { "AIFOUTL", "Right", "ADCR" },
+>>>>> -    { "AIFOUTR", "Left",  "ADCL" },
+>>>>> -    { "AIFOUTR", "Right", "ADCR" },
+>>>>> +    { "AIFOUTL", NULL, "ADCL" },
+>>>>> +    { "AIFOUTL", NULL, "ADCR" },
+>>>>> +    { "AIFOUTR", NULL, "ADCL" },
+>>>>> +    { "AIFOUTR", NULL, "ADCR" },
+>>>>
+>>>> Is this the right fix here? I am not super familiar with the
+>>>> driver but it appears to contain an "AIFOUTL Mux" control which
+>>>> is not connected to anything. Looks like maybe this is a mistake
+>>>> the mux is indeded to be included in the path? Feels like we
+>>>> should either remove the control as well or hook it into the
+>>>> path.
+>>>
+>>> Thank for your information.
+>>> I think here it should correct the path name as
+>>> --->8---
+>>> { "AIFOUTL Mux", "Left",  "ADCL" },
+>>> { "AIFOUTL Mux", "Right", "ADCR" },
+>>> { "AIFOUTR Mux", "Left",  "ADCL" },
+>>> { "AIFOUTR Mux", "Right", "ADCR" },
+>>> ---8<---
+>>>
+>>> Thanks again. I will send out the new version.
+>>
+>> Your probably also need to connect the mux to the output pins.
+>
+> Thanks for you information, after check the datasheet, I still don't know
+> which the mux should connect to which output pins.
 
-Also improve detection a bit so that an existing dock headphone
-shows up as such and not as regular headphone.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- hdajackretask/sysfs-pin-configs.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
-
-diff --git a/hdajackretask/sysfs-pin-configs.c b/hdajackretask/sysfs-pin-configs.c
-index 592ffe2..693842f 100644
---- a/hdajackretask/sysfs-pin-configs.c
-+++ b/hdajackretask/sysfs-pin-configs.c
-@@ -289,6 +289,8 @@ unsigned long actual_pin_config(pin_configs_t* pins)
- #define AC_DEFCFG_DEVICE_SHIFT		20
- #define AC_DEFCFG_LOCATION		(0x3f<<24)
- #define AC_DEFCFG_LOCATION_SHIFT	24
-+#define AC_DEFCFG_GROSSLOC		(0x3<<28)
-+#define AC_DEFCFG_GROSSLOC_SHIFT	28
- #define AC_DEFCFG_PORT_CONN		(0x3<<30)
- #define AC_DEFCFG_PORT_CONN_SHIFT	30
- 
-@@ -594,21 +596,27 @@ static gboolean disabled_caps(unsigned long pin_caps, unsigned long wid_caps)
-     return TRUE;
- }
- 
-+#define DEFAULT_MASK (AC_DEFCFG_PORT_CONN | AC_DEFCFG_GROSSLOC | AC_DEFCFG_DEVICE)
-+
- static typical_pins_t simple_typical_pins[] = {
--    {"Headphone", headphone_caps, 0x0321403f, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE, },
--    {"Microphone", extmic_caps, 0x03a19020, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE,},
--    {"Line out (Front)", lineout_caps, 0x01014410, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE | AC_DEFCFG_SEQUENCE,},
--    {"Line out (Center/LFE)", lineout_caps, 0x01014411, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE | AC_DEFCFG_SEQUENCE,},
--    {"Line out (Back)", lineout_caps, 0x01014412, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE | AC_DEFCFG_SEQUENCE,},
--    {"Line out (Side)", lineout_caps, 0x01014413, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE | AC_DEFCFG_SEQUENCE,},
--    {"Line in", linein_caps, 0x0181344f, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE,},
--    {"Internal speaker", lineout_caps, 0x90170150, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE | AC_DEFCFG_SEQUENCE, },
--    {"Internal speaker (LFE)", lineout_caps, 0x90170151, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE | AC_DEFCFG_SEQUENCE, },
--    {"Internal speaker (Back)", lineout_caps, 0x90170152, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE | AC_DEFCFG_SEQUENCE, },
--    {"Internal mic", intmic_caps, 0x90a60160, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE,},
--    {"HDMI", hdmi_caps, 0x18560070, AC_DEFCFG_PORT_CONN | AC_DEFCFG_LOCATION,},
-+    {"Headphone", headphone_caps, 0x0321403f, DEFAULT_MASK, },
-+    {"Microphone", extmic_caps, 0x03a19020, DEFAULT_MASK,},
-+    {"Line out (Front)", lineout_caps, 0x01014010, DEFAULT_MASK | AC_DEFCFG_SEQUENCE,},
-+    {"Line out (Center/LFE)", lineout_caps, 0x01014011, DEFAULT_MASK | AC_DEFCFG_SEQUENCE,},
-+    {"Line out (Back)", lineout_caps, 0x01014012, DEFAULT_MASK | AC_DEFCFG_SEQUENCE,},
-+    {"Line out (Side)", lineout_caps, 0x01014013, DEFAULT_MASK | AC_DEFCFG_SEQUENCE,},
-+    {"Line in", linein_caps, 0x0181304f, DEFAULT_MASK,},
-+    {"Internal speaker", lineout_caps, 0x90170150, DEFAULT_MASK | AC_DEFCFG_SEQUENCE, },
-+    {"Internal speaker (LFE)", lineout_caps, 0x90170151, DEFAULT_MASK | AC_DEFCFG_SEQUENCE, },
-+    {"Internal speaker (Back)", lineout_caps, 0x90170152, DEFAULT_MASK | AC_DEFCFG_SEQUENCE, },
-+    {"Internal mic", intmic_caps, 0x90a60160, DEFAULT_MASK,},
-+    {"HDMI / DisplayPort", hdmi_caps, 0x18560070, AC_DEFCFG_PORT_CONN | AC_DEFCFG_LOCATION,},
-     {"SPDIF out", spdifout_caps, 0x014b1180, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE,},
-     {"SPDIF in", spdifin_caps, 0x01cb6190, AC_DEFCFG_PORT_CONN | AC_DEFCFG_DEVICE,},
-+    {"Dock Headphone", headphone_caps, 0x222140af, DEFAULT_MASK, },
-+    {"Dock Microphone", extmic_caps, 0x22a190a0, DEFAULT_MASK,},
-+    {"Dock Line out", lineout_caps, 0x220140b0, DEFAULT_MASK | AC_DEFCFG_SEQUENCE,},
-+    {"Dock Line in", linein_caps, 0x228130bf, DEFAULT_MASK,},
-     {"Not connected", disabled_caps, 0x40f000f0, AC_DEFCFG_PORT_CONN,},
-     {}
- };
--- 
-1.9.1
+AIFOUTL Mux to AIFOUTL
+AIFOUTR Mux to AIFOUTR
