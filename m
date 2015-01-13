@@ -1,46 +1,33 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
-Date: Tue, 13 Jan 2015 12:27:15 +0000
-Message-ID: <20150113122715.GP12302@n2100.arm.linux.org.uk>
-References: <20150109145741.GP12302@n2100.arm.linux.org.uk>
- <20150109183857.53d701a4@armhf>
- <20150109200127.GD12302@n2100.arm.linux.org.uk>
- <1421054728.3081.28.camel@pengutronix.de>
- <20150112122527.GF12302@n2100.arm.linux.org.uk>
- <1421071197.3081.44.camel@pengutronix.de>
- <20150112140456.GI12302@n2100.arm.linux.org.uk>
- <20150112181341.4a53ea24@armhf>
- <20150112175705.GN12302@n2100.arm.linux.org.uk>
- <1421151718.4519.24.camel@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <1421151718.4519.24.camel@pengutronix.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: [PATCH] Asoc: sam9x5_wm8731: depend on ARCH_AT91 instead of SOC_AT91SAM9X5
+Date: Tue, 13 Jan 2015 13:27:26 +0100
+Message-ID: <1421152046-20069-1-git-send-email-alexandre.belloni@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Bo Shen <voice.shen@atmel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKYW4gMTMsIDIwMTUgYXQgMDE6MjE6NThQTSArMDEwMCwgUGhpbGlwcCBaYWJlbCB3
-cm90ZToKPiBJIHdvbmRlciBpZiBpdCB3b3VsZG4ndCBiZSBuaWNlciB0byBoYXZlIHRoZSBBUCMg
-YW5kIHR5cGUgaW4gdGhlIGRldmljZQo+IHRyZWUgYW5kIHRoZW4gY2FsY3VsYXRlIHRoZSByZWdp
-c3RlciB2YWx1ZSBmcm9tIHRoYXQgaW4gdGhlIGRyaXZlci4KPiAKPiAJcG9ydEAxIHsKPiAJCXJl
-ZyA9IDwxPjsgLyogQVAxICovCj4gCQlueHAsYXVkaW8tcG9ydCA9ICJpMnMiOwo+IAkJdGRhOTk4
-eF9pMnM6IGVuZHBvaW50IHsKPiAJCQlyZW1vdGUtZW5kcG9pbnQgPSA8JmF1ZGlvMV9pMnM+Owo+
-IAkJfTsKPiAJfTsKCldoYXQgYWJvdXQgdGhlIGNhc2Ugd2hlcmUgd2UgaGF2ZSA0IEkyUyBzdHJl
-YW1zIGJlaW5nIHN1cHBsaWVkIHRvIHRoZQpkZXZpY2Ugb24gZm91ciBzZXBhcmF0ZSBBUCBpbnB1
-dHM/CgotLSAKRlRUQyBicm9hZGJhbmQgZm9yIDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEw
-LjVNYnBzIGRvd24gNDAwa2JwcyB1cAphY2NvcmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxp
-bmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVl
-ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+The SOC_AT91SAM9X5 option is going to be removed, only depend on ARCH_AT91 like
+for the other drivers.
+
+Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+---
+ sound/soc/atmel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index fb3878312bf8..1579e994acf8 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -45,7 +45,7 @@ config SND_ATMEL_SOC_WM8904
+ 
+ config SND_AT91_SOC_SAM9X5_WM8731
+ 	tristate "SoC Audio support for WM8731-based at91sam9x5 board"
+-	depends on ATMEL_SSC && SND_ATMEL_SOC && SOC_AT91SAM9X5
++	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC
+ 	select SND_ATMEL_SOC_SSC
+ 	select SND_ATMEL_SOC_DMA
+ 	select SND_SOC_WM8731
+-- 
+2.1.0
