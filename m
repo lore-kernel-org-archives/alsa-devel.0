@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 28/29] ASoC: wm_adsp: Replace w->codec
+Subject: [PATCH 29/29] ASoC: wm_hubs: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Tue, 13 Jan 2015 10:27:34 +0100
-Message-ID: <1421141255-21477-28-git-send-email-lars@metafoo.de>
+Date: Tue, 13 Jan 2015 10:27:35 +0100
+Message-ID: <1421141255-21477-29-git-send-email-lars@metafoo.de>
 References: <1421141255-21477-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-205.synserver.de (smtp-out-210.synserver.de
  [212.40.185.210])
- by alsa0.perex.cz (Postfix) with ESMTP id 10C92261A7F
- for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:28:16 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 630DF261A80
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:28:17 +0100 (CET)
 In-Reply-To: <1421141255-21477-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,39 +31,57 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm_adsp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm_hubs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 720d6e8..ff67b33 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1373,7 +1373,7 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol,
- 		   int event)
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 374537d..8366e19 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -500,7 +500,7 @@ SOC_SINGLE_TLV("LINEOUT2 Volume", WM8993_LINE_OUTPUTS_VOLUME, 0, 1, 1,
+ static int hp_supply_event(struct snd_soc_dapm_widget *w,
+ 			   struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
- 	struct wm_adsp *dsp = &dsps[w->shift];
- 	struct wm_adsp_alg_region *alg_region;
-@@ -1605,7 +1605,7 @@ err:
- int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
- 	struct wm_adsp *dsp = &dsps[w->shift];
+ 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
  
-@@ -1626,7 +1626,7 @@ EXPORT_SYMBOL_GPL(wm_adsp2_early_event);
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event)
+ 	switch (event) {
+@@ -542,7 +542,7 @@ static int hp_supply_event(struct snd_soc_dapm_widget *w,
+ static int hp_event(struct snd_soc_dapm_widget *w,
+ 		    struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
- 	struct wm_adsp *dsp = &dsps[w->shift];
- 	struct wm_adsp_alg_region *alg_region;
+ 	unsigned int reg = snd_soc_read(codec, WM8993_ANALOGUE_HP_0);
+ 
+ 	switch (event) {
+@@ -594,7 +594,7 @@ static int hp_event(struct snd_soc_dapm_widget *w,
+ static int earpiece_event(struct snd_soc_dapm_widget *w,
+ 			  struct snd_kcontrol *control, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	u16 reg = snd_soc_read(codec, WM8993_ANTIPOP1) & ~WM8993_HPOUT2_IN_ENA;
+ 
+ 	switch (event) {
+@@ -619,7 +619,7 @@ static int earpiece_event(struct snd_soc_dapm_widget *w,
+ static int lineout_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *control, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+ 	bool *flag;
+ 
+@@ -649,7 +649,7 @@ static int lineout_event(struct snd_soc_dapm_widget *w,
+ static int micbias_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+ 
+ 	switch (w->shift) {
 -- 
 1.8.0
