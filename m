@@ -1,51 +1,101 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 11/29] ASoC: wm8903: Replace w->codec
-	snd_soc_dapm_to_codec(w->dapm)
-Date: Tue, 13 Jan 2015 10:27:17 +0100
-Message-ID: <1421141255-21477-11-git-send-email-lars@metafoo.de>
-References: <1421141255-21477-1-git-send-email-lars@metafoo.de>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH v2] ASoC: wm8904: fix runtime warning
+Date: Tue, 13 Jan 2015 17:34:02 +0800
+Message-ID: <1421141643-30105-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-205.synserver.de (smtp-out-210.synserver.de
- [212.40.185.210])
- by alsa0.perex.cz (Postfix) with ESMTP id 28F28261561
- for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:27:55 +0100 (CET)
-In-Reply-To: <1421141255-21477-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The codec field of the snd_soc_widget struct is eventually going to be
-removed, use snd_soc_dapm_to_codec(w->dapm) instead.
+Correct the path name for mux to get rid of the following warning:
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+--->8---
+wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTL
+wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTL
+wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTL
+wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTL
+wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTL
+wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTL
+wm8904 1-001a: Control not supported for path ADCL -> [Left] -> AIFOUTR
+wm8904 1-001a: ASoC: no dapm match for ADCL --> Left --> AIFOUTR
+wm8904 1-001a: ASoC: Failed to add route ADCL -> Left -> AIFOUTR
+wm8904 1-001a: Control not supported for path ADCR -> [Right] -> AIFOUTR
+wm8904 1-001a: ASoC: no dapm match for ADCR --> Right --> AIFOUTR
+wm8904 1-001a: ASoC: Failed to add route ADCR -> Right -> AIFOUTR
+wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACL
+wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACL
+wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACL
+wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACL
+wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACL
+wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACL
+wm8904 1-001a: Control not supported for path AIFINR -> [Right] -> DACR
+wm8904 1-001a: ASoC: no dapm match for AIFINR --> Right --> DACR
+wm8904 1-001a: ASoC: Failed to add route AIFINR -> Right -> DACR
+wm8904 1-001a: Control not supported for path AIFINL -> [Left] -> DACR
+wm8904 1-001a: ASoC: no dapm match for AIFINL --> Left --> DACR
+wm8904 1-001a: ASoC: Failed to add route AIFINL -> Left -> DACR
+---8<---
+
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
 ---
- sound/soc/codecs/wm8903.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index cc6b0ef..dde462c 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -260,7 +260,7 @@ static int wm8903_cp_event(struct snd_soc_dapm_widget *w,
- static int wm8903_dcs_event(struct snd_soc_dapm_widget *w,
- 			    struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
+Changes in v2:
+- Correct the mux path name.
+- Route the mux to the pins.
+
+ sound/soc/codecs/wm8904.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 4d2d2b1..110d0e6 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -1076,10 +1076,13 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
+ 	{ "Right Capture PGA", NULL, "Right Capture Mux" },
+ 	{ "Right Capture PGA", NULL, "Right Capture Inverting Mux" },
  
- 	switch (event) {
+-	{ "AIFOUTL", "Left",  "ADCL" },
+-	{ "AIFOUTL", "Right", "ADCR" },
+-	{ "AIFOUTR", "Left",  "ADCL" },
+-	{ "AIFOUTR", "Right", "ADCR" },
++	{ "AIFOUTL Mux", "Left", "ADCL" },
++	{ "AIFOUTL Mux", "Right", "ADCR" },
++	{ "AIFOUTR Mux", "Left", "ADCL" },
++	{ "AIFOUTR Mux", "Right", "ADCR" },
++
++	{ "AIFOUTL", NULL, "AIFOUTL Mux" },
++	{ "AIFOUTR", NULL, "AIFOUTR Mux" },
+ 
+ 	{ "ADCL", NULL, "CLK_DSP" },
+ 	{ "ADCL", NULL, "Left Capture PGA" },
+@@ -1089,14 +1092,20 @@ static const struct snd_soc_dapm_route adc_intercon[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route dac_intercon[] = {
+-	{ "DACL", "Right", "AIFINR" },
+-	{ "DACL", "Left",  "AIFINL" },
++	{ "DACL", NULL, "AIFINL" },
++	{ "DACL", NULL, "AIFINR" },
+ 	{ "DACL", NULL, "CLK_DSP" },
+ 
+-	{ "DACR", "Right", "AIFINR" },
+-	{ "DACR", "Left",  "AIFINL" },
++	{ "DACR", NULL, "AIFINL" },
++	{ "DACR", NULL, "AIFINR" },
+ 	{ "DACR", NULL, "CLK_DSP" },
+ 
++	{ "DACL Mux", "Left", "DACL" },
++	{ "DACL Mux", "Right", "DACR" },
++
++	{ "DACR Mux", "Left", "DACL" },
++	{ "DACR Mux", "Right", "DACR" },
++
+ 	{ "Charge pump", NULL, "SYSCLK" },
+ 
+ 	{ "Headphone Output", NULL, "HPL PGA" },
 -- 
-1.8.0
+2.1.0.24.g4109c28
+
