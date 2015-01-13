@@ -1,43 +1,51 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v9 3/4] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Tue, 13 Jan 2015 10:24:55 +0100
-Message-ID: <20150113102455.4f29cff5@armhf>
-References: <cover.1420628786.git.moinejf@free.fr>
- <23b36acc1f769418a06f3e929eba288b5911da12.1420628786.git.moinejf@free.fr>
- <54B0123C.9070800@arm.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 02/29] ASoC: wm2000: Replace w->codec
+	snd_soc_dapm_to_codec(w->dapm)
+Date: Tue, 13 Jan 2015 10:27:08 +0100
+Message-ID: <1421141255-21477-2-git-send-email-lars@metafoo.de>
+References: <1421141255-21477-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <54B0123C.9070800@arm.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Andrew Jackson <Andrew.Jackson@arm.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-205.synserver.de (smtp-out-210.synserver.de
+ [212.40.185.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14F05261528
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:27:44 +0100 (CET)
+In-Reply-To: <1421141255-21477-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAwOSBKYW4gMjAxNSAxNzozOTowOCArMDAwMApBbmRyZXcgSmFja3NvbiA8QW5kcmV3
-LkphY2tzb25AYXJtLmNvbT4gd3JvdGU6Cgo+ID4gKyAgICAgICBzbmRfcGNtX2h3X2NvbnN0cmFp
-bnRfbWlubWF4KHJ1bnRpbWUsCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNO
-RFJWX1BDTV9IV19QQVJBTV9DSEFOTkVMUywKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgMSwgc2FkW1NBRF9NWF9DSEFOX0ldKTsgIAo+IAo+IEluIHRoZSBsaWdodCBvZiBvdXIg
-ZGlzY3Vzc2lvbnMgZWxzZXdoZXJlIFsxXSwgc2hvdWxkbid0IHRoaXMKPiBiZSBjb25zdHJhaW5l
-ZCBieSB0aGUgbnVtYmVyIG9mIGhhcmR3YXJlIGNoYW5uZWxzIHRoYXQgdGhlIFREQTk5OHgKPiBz
-dXBwb3J0cyB0b28/ICBUaGF0IGlzLCB0aGUgbWF4aW11bSBudW1iZXIgb2YgY2hhbm5lbHMgc2hv
-dWxkCj4gYmUgdGhlIGxlc3NlciBvZiBzZFtTQURfTVhfQ0hBTl9JXSBhbmQgbnVtYmVyX29mX0ky
-UyBjaGFubmVscyAKPiAob3IgUy9QRElGIGNoYW5uZWxzIGlmIHNvIGNvbmZpZ3VyZWQpLgoKc25k
-X3BjbV9od19jb25zdHJhaW50X21pbm1heCgpIGRvZXMgdGhlIGpvYiBmcm9tIHRoZSBtaW4vbWF4
-IG51bWJlcnMgb2YKY2hhbm5lbHMgaW4gdGhlIERBSSBkZWZpbml0aW9uIGFuZCB0aGUgcmVhbCBt
-YXggbnVtYmVyIG9mIGNoYW5uZWxzIHdpbGwKYmUgc2V0IGZyb20gYXVkaW8gcG9ydHMgZGVjbGFy
-ZWQgaW4gdGhlIERULgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEg
-TGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBs
-aXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+The codec field of the snd_soc_widget struct is eventually going to be
+removed, use snd_soc_dapm_to_codec(w->dapm) instead.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/wm2000.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
+index 34ef65c..8d9de49 100644
+--- a/sound/soc/codecs/wm2000.c
++++ b/sound/soc/codecs/wm2000.c
+@@ -683,7 +683,7 @@ static const struct snd_kcontrol_new wm2000_controls[] = {
+ static int wm2000_anc_power_event(struct snd_soc_dapm_widget *w,
+ 				  struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm2000_priv *wm2000 = dev_get_drvdata(codec->dev);
+ 	int ret;
+ 
+-- 
+1.8.0
