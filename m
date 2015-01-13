@@ -1,55 +1,92 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: Re: [PATCH] ALSA: compress_driver.h: include sound/core.h explicitly
-Date: Tue, 13 Jan 2015 11:42:07 +0000
-Message-ID: <54B5048F.2070709@imgtec.com>
-References: <1418989110-10011-1-git-send-email-qais.yousef@imgtec.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
+Date: Tue, 13 Jan 2015 13:21:58 +0100
+Message-ID: <1421151718.4519.24.camel@pengutronix.de>
+References: <20150109130725.GN12302@n2100.arm.linux.org.uk>
+ <54AFDE8D.3000504@arm.com> <20150109145741.GP12302@n2100.arm.linux.org.uk>
+ <20150109183857.53d701a4@armhf>
+ <20150109200127.GD12302@n2100.arm.linux.org.uk>
+ <1421054728.3081.28.camel@pengutronix.de>
+ <20150112122527.GF12302@n2100.arm.linux.org.uk>
+ <1421071197.3081.44.camel@pengutronix.de>
+ <20150112140456.GI12302@n2100.arm.linux.org.uk>
+ <20150112181341.4a53ea24@armhf>
+ <20150112175705.GN12302@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1418989110-10011-1-git-send-email-qais.yousef@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150112175705.GN12302@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ping
-
-On 12/19/2014 11:38 AM, Qais Yousef wrote:
-> Fixes the following compilation error:
->
->     include/sound/compress_driver.h: In function =E2=80=98snd_compr_d=
-rain_notify=E2=80=99:
->     include/sound/compress_driver.h:177:2: error: implicit declaratio=
-n of function =E2=80=98snd_BUG_ON=E2=80=99 [-Werror=3Dimplicit-function=
--declaration]
->       if (snd_BUG_ON(!stream))
->
-> snd_BUG_ON() is defined in sound/core.h but the file is not included =
-explicitly,
-> so include it.
->
-> Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
-> Cc: Vinod Koul <vinod.koul@intel.com>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: linux-kernel@vger.kernel.org
->
-> ---
->   include/sound/compress_driver.h | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/include/sound/compress_driver.h b/include/sound/compress=
-_driver.h
-> index 396e8f73670a..1e2531058b7e 100644
-> --- a/include/sound/compress_driver.h
-> +++ b/include/sound/compress_driver.h
-> @@ -27,6 +27,7 @@
->  =20
->   #include <linux/types.h>
->   #include <linux/sched.h>
-> +#include <sound/core.h>
->   #include <sound/compress_offload.h>
->   #include <sound/asound.h>
->   #include <sound/pcm.h>
+QW0gTW9udGFnLCBkZW4gMTIuMDEuMjAxNSwgMTc6NTcgKzAwMDAgc2NocmllYiBSdXNzZWxsIEtp
+bmcgLSBBUk0gTGludXg6Cj4gT24gTW9uLCBKYW4gMTIsIDIwMTUgYXQgMDY6MTM6NDFQTSArMDEw
+MCwgSmVhbi1GcmFuY29pcyBNb2luZSB3cm90ZToKPiA+IE9uIE1vbiwgMTIgSmFuIDIwMTUgMTQ6
+MDQ6NTYgKzAwMDAKPiA+IFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCA8bGludXhAYXJtLmxpbnV4
+Lm9yZy51az4gd3JvdGU6Cj4gPiA+IE9uIE1vbiwgSmFuIDEyLCAyMDE1IGF0IDAyOjU5OjU3UE0g
+KzAxMDAsIFBoaWxpcHAgWmFiZWwgd3JvdGU6Cj4gPiA+ID4gTm90ZSB0aGF0IG9mX2dyYXBoX3Bh
+cnNlX2VuZHBvaW50IGludGVycHJldHMgdGhlIHBvcnQgbm9kZSdzIHJlZwo+ID4gPiA+IHByb3Bl
+cnR5IGFzIHBvcnQgaWQuIEFuZCB0aGUgdW5pdCBhZGRyZXNzIHBhcnQgb2YgdGhlIG5vZGUgbmFt
+ZSBzaG91bGQKPiA+ID4gPiBtYXRjaCB0aGUgZmlyc3QgYWRkcmVzcyBpbiB0aGUgcmVnIHByb3Bl
+cnR5Lgo+ID4gCj4gPiBUaGlzIGlzIG5vdCB0aGUgY2FzZSBpbiB2ZXhwcmVzcy12MnAtY2ExNV9h
+Ny5kdHMuCj4gCj4gSG1tLi4uIGFzIHRoZSBEVCBiaW5kaW5nIGRvYyBkb2Vzbid0IHNwZWNpZnkg
+dGhpcyByZXN0cmljdGlvbiwgYW5kIHdlCj4gaGF2ZSBhIERUIGZpbGUgd2hpY2ggdmlvbGF0ZXMg
+d2hhdCBQaGlsaXBwIGhhcyBzYWlkLCBJIHRoaW5rIHdlIG91Z2h0Cj4gdG8gZG9jdW1lbnQgdGhh
+dCByZWcgdnMgdW5pdCBub2RlIG5hbWUgZG9lcyBub3QgbmVlZCB0byBtYXRjaCBlYWNoCj4gb3Ro
+ZXIsIHRoZXJlYnkgbWFraW5nIHRoYXQgb2ZmaWNpYWwuCgpUaGUgKHVuaXQgYWRkcmVzcyBwYXJ0
+ID09IGZpcnN0IHJlZyBwcm9wZXJ0eSB2YWx1ZSkgaXMgZnJvbSB0aGUgZVBBUFIKYW5kIHN0aWxs
+IGRvY3VtZW50ZWQgaW4gaHR0cDovL3d3dy5kZXZpY2V0cmVlLm9yZy9EZXZpY2VfVHJlZV9Vc2Fn
+ZS4gSXQKaXNuJ3QgZXhwbGljaXRseSBzdGF0ZWQgYXMgYSBoYXJkIHJlcXVpcmVtZW50LCBidXQg
+aXQgaXMgd29yZGVkIGluIHN1Y2gKYSB3YXkgdGhhdCBJJ2QgZXhwZWN0IGl0IHRvIGhvbGQgdHJ1
+ZSBtb3N0IG9mIHRoZSB0aW1lIDovCgo+ID4gPiBTbyB0aGF0J3Mgbm90IGdvaW5nIHRvIHdvcmsg
+dmVyeSB3ZWxsLi4uIGJlY2F1c2UgdGhlIEFQIHJlZ2lzdGVyIGlzIGEKPiA+ID4gYml0bWFzay4K
+PiA+ID4gCj4gPiA+IEkgZ3Vlc3Mgd2UgY291bGQgc3BlY2lmeSBhIG5vZGUgdW5pdCBhbmQgcmVn
+LCB3aGljaCB0aGUgY29kZSBvdGhlcndpc2UKPiA+ID4gaWdub3JlcywgYW5kIHNwZWNpZnkgYSBw
+aGlsaXBwcyxhcC1tYXNrID0gcHJvcGVydHkgZm9yIHRoZSBhdWRpbyBwb3J0cwo+ID4gPiBpbnN0
+ZWFkLgo+ID4gCj4gPiBBbHNvLCB0aGUgdmlkZW8gYW5kIGF1ZGlvIHBvcnRzIG11c3QgYmUgZGlz
+dGluZ3Vpc2hlZC4gVGhleSBjb3VsZCBiZQo+ID4gZGVmaW5lZCBpbiBkaWZmZXJlbnQgcG9ydCBn
+cm91cHMuCj4gPiAKPiA+IEV4YW1wbGUgZnJvbSB0aGUgQ3Vib3g6Cj4gPiAKPiA+IAl2aWRlby1w
+b3J0czogcG9ydHNAMCB7Cj4gPiAJCXBvcnQgewo+ID4gCQkJdGRhOTk4eF92aWRlbzogZW5kcG9p
+bnQgewo+ID4gCQkJCXJlbW90ZS1lbmRwb2ludCA9IDwmbGNkMF8wPjsKPiA+IAkJCQlueHAsdmlk
+ZW8tcG9ydCA9IDwweDIzMDE0NT47Cj4gPiAJCQl9Owo+ID4gCQl9Owo+ID4gCX07Cj4gPiAJYXVk
+aW8tcG9ydHM6IHBvcnRzQDEgewo+ID4gCQlwb3J0QDAgewkJCS8qIEFQMSA9IEkyUyAqLwo+ID4g
+CQkJdGRhOTk4eF9pMnM6IGVuZHBvaW50QDAgewo+ID4gCQkJCXJlbW90ZS1lbmRwb2ludCA9IDwm
+YXVkaW8xX2kycz47Cj4gPiAJCQkJbnhwLGF1ZGlvLXBvcnQgPSA8MHgwMz47Cj4gPiAJCQl9Owo+
+ID4gCQl9Owo+ID4gCQlwb3J0QDEgewkJCSAvKiBBUDIgPSBTL1BESUYgKi8KPiA+IAkJCXRkYTk5
+OHhfc3BkaWY6IGVuZHBvaW50QDEgewo+ID4gCQkJCXJlbW90ZS1lbmRwb2ludCA9IDwmYXVkaW8x
+X3NwZGlmMT47Cj4gPiAJCQkJbnhwLGF1ZGlvLXBvcnQgPSA8MHgwND47Cj4gPiAJCQl9Owo+ID4g
+CQl9Owo+ID4gCX07CgpQbGVhc2UgZG9uJ3QgYWRkIHRoZSBjb21wbGV4aXR5IG9mIG11bHRpcGxl
+ICdwb3J0cycgbm9kZXMgdG8gdGhlIE9GCmdyYXBoIGJpbmRpbmdzLiBJJ2QgcmF0aGVyIGhhdmUg
+dGhlIGRyaXZlciBkZXRlcm1pbmUgdGhlIHR5cGUgb2YgdGhlCnBvcnQuIElkZWFsbHkgaXQgY291
+bGQga25vdyB0aGF0IHBvcnQgMCBhbHdheXMgaXMgdmlkZW8gYW5kIGFsbCBvdGhlcgpwb3J0cyBh
+cmUgYXVkaW8sIG90aGVyd2lzZSBjaGVja2luZyB0aGUgZXhpc3RlbmNlIG9mIGEgY3VzdG9tIHBy
+b3BlcnR5CmluIHRoZSAncG9ydCcgbm9kZSBzaG91bGQgd29yaywgZm9yIGV4YW1wbGUgJ254cCxh
+dWRpby1wb3J0JyBvcgonbnhwLHZpZGVvLXBvcnQnLgpXaHkgYXJlIHRob3NlIGxvY2F0ZWQgaW4g
+dGhlICdlbmRwb2ludCcgbm9kZXMgaW4geW91ciBleGFtcGxlPyBBcmUgeW91CmV4cGVjdGluZyB0
+byBkeW5hbWljYWxseSByZWNvbmZpZ3VyZSB0aGUgcG9ydCB0eXBlIG9mIGEgZ2l2ZW4gQVAgZnJv
+bQppMnMgdG8gc3BkaWYgZGVwZW5kaW5nIG9uIHRoZSBhY3RpdmF0ZWQgZW5kcG9pbnQ/Cgo+ID4g
+VGhlIHBvcnQgdHlwZSBpcyBpZGVudGlmaWVkIGJ5IHRoZSBiaXQgQVAwLgo+IAo+IEkgZG9uJ3Qg
+cGFydGljdWxhcmx5IGxpa2UgdGhhdCAtIHRoYXQgbWFrZXMgdGhlIGFzc3VtcHRpb24gdGhhdCBB
+UDAKPiBhbHdheXMgbWVhbnMgSTJTLiAgV2hhdCBpZiBhIGZ1dHVyZSBjaGlwIGRlY2lkZXMgdG8g
+YWxsb3cgU1BESUYgb24KPiBBUDA/ICBXaHkgc2hvdWxkIHdlIG5lZWQgdG8gcmUtaW52ZW50IHRo
+ZSBiaW5kaW5nPwo+Cj4gSU1ITywgaXQgd291bGQgYmUgbXVjaCBiZXR0ZXIgdG8gbWFrZSB0aGlz
+IGV4cGxpY2l0LgoKSSB3b25kZXIgaWYgaXQgd291bGRuJ3QgYmUgbmljZXIgdG8gaGF2ZSB0aGUg
+QVAjIGFuZCB0eXBlIGluIHRoZSBkZXZpY2UKdHJlZSBhbmQgdGhlbiBjYWxjdWxhdGUgdGhlIHJl
+Z2lzdGVyIHZhbHVlIGZyb20gdGhhdCBpbiB0aGUgZHJpdmVyLgoKCXBvcnRAMSB7CgkJcmVnID0g
+PDE+OyAvKiBBUDEgKi8KCQlueHAsYXVkaW8tcG9ydCA9ICJpMnMiOwoJCXRkYTk5OHhfaTJzOiBl
+bmRwb2ludCB7CgkJCXJlbW90ZS1lbmRwb2ludCA9IDwmYXVkaW8xX2kycz47CgkJfTsKCX07Cgpy
+ZWdhcmRzClBoaWxpcHAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRl
+dmVsCg==
