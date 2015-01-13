@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 27/29] ASoC: wm9713: Replace w->codec
+Subject: [PATCH 28/29] ASoC: wm_adsp: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Tue, 13 Jan 2015 10:27:33 +0100
-Message-ID: <1421141255-21477-27-git-send-email-lars@metafoo.de>
+Date: Tue, 13 Jan 2015 10:27:34 +0100
+Message-ID: <1421141255-21477-28-git-send-email-lars@metafoo.de>
 References: <1421141255-21477-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-205.synserver.de (smtp-out-210.synserver.de
  [212.40.185.210])
- by alsa0.perex.cz (Postfix) with ESMTP id E40AB261A40
- for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:28:14 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 10C92261A7F
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jan 2015 10:28:16 +0100 (CET)
 In-Reply-To: <1421141255-21477-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,21 +31,39 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm9713.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 71b9d5b..e5807de 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -217,7 +217,7 @@ SOC_SINGLE("3D Depth", AC97_REC_GAIN_MIC, 0, 15, 1),
- static int wm9713_voice_shutdown(struct snd_soc_dapm_widget *w,
- 				 struct snd_kcontrol *kcontrol, int event)
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 720d6e8..ff67b33 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1373,7 +1373,7 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol,
+ 		   int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	u16 status, rate;
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
+ 	struct wm_adsp_alg_region *alg_region;
+@@ -1605,7 +1605,7 @@ err:
+ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
  
- 	if (WARN_ON(event != SND_SOC_DAPM_PRE_PMD))
+@@ -1626,7 +1626,7 @@ EXPORT_SYMBOL_GPL(wm_adsp2_early_event);
+ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
+ 	struct wm_adsp_alg_region *alg_region;
 -- 
 1.8.0
