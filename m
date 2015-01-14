@@ -1,17 +1,19 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl: imx-wm8962: Set the card owner field
-Date: Wed, 14 Jan 2015 11:56:22 -0200
-Message-ID: <1421243782-26115-1-git-send-email-festevam@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: Correct rx format
+ unit configuration
+Date: Wed, 14 Jan 2015 16:17:42 +0200
+Message-ID: <54B67A86.6080202@ti.com>
+References: <1409817173-29234-1-git-send-email-peter.ujfalusi@ti.com>
+ <54B64EC4.6040600@gmail.com> <54B6621C.7060505@ti.com>
+ <54B66DF8.6000806@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f53.google.com (mail-qg0-f53.google.com
- [209.85.192.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 86BB1265071
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 14:56:38 +0100 (CET)
-Received: by mail-qg0-f53.google.com with SMTP id l89so6934793qgf.12
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 05:56:38 -0800 (PST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 511C1260653
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 15:17:46 +0100 (CET)
+In-Reply-To: <54B66DF8.6000806@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, jiada_wang@mentor.com, nicoleotsuka@gmail.com, tiwai@suse.de
+To: Pascal Huerst <pascal.huerst@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
-
-The following crash happens when trying to unload the snd_soc_imx_wm8962 module
-while playback is active:
-
-[  208.666868] Unable to handle kernel paging request at virtc
-[  208.674110] pgd = 80004000
-[  208.676867] [7f06541c] *pgd=4c334811, *pte=00000000, *ppte=00000000
-[  208.683211] Internal error: Oops: 80000007 [#1] SMP ARM
-[  208.688445] Modules linked in: snd_soc_wm8962 snd_soc_fsl_ssi snd_soc_imx_audmux imx_pcm_fiq evbug]
-...
-
-In order to avoid such problem, fill the card owner field as suggested by
-Lars-Peter Clausen:
-
-"But looking at the source it seems that this is a core feature of ALSA and at 
-least for the card module itself it will do the ref-counting when a stream is 
-started/stopped. And we even support setting the owner of a card in ASoC. 
-It's just that pretty much no ASoC card driver bothers to set the owner field
-in the snd_soc_card struct. So this particular problem can be fixed by updating
-the imx-wm8962 driver to set the owner field."
-
-By doing as suggested, we no longer see the crash when attempting to unload the
-snd_soc_imx_wm8962 module while playback is active:
-
-$ modprobe -r snd_soc_imx_wm8962
-modprobe: can't unload module snd_soc_imx_wm8962: Resource temporarily 
-unavailable
-
-Reported-by: Jiada Wang <jiada_wang@mentor.com>
-Suggested-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/imx-wm8962.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-index 4caacb0..cd146d4 100644
---- a/sound/soc/fsl/imx-wm8962.c
-+++ b/sound/soc/fsl/imx-wm8962.c
-@@ -257,6 +257,7 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto clk_fail;
- 	data->card.num_links = 1;
-+	data->card.owner = THIS_MODULE;
- 	data->card.dai_link = &data->dai;
- 	data->card.dapm_widgets = imx_wm8962_dapm_widgets;
- 	data->card.num_dapm_widgets = ARRAY_SIZE(imx_wm8962_dapm_widgets);
--- 
-1.9.1
+T24gMDEvMTQvMjAxNSAwMzoyNCBQTSwgUGFzY2FsIEh1ZXJzdCB3cm90ZToKPiBZZXMsIGV2ZW4g
+dGhpcyBzaW5nbGUgbGluZS4KPiAKPiAtIHUzMiByeF9yb3RhdGUgPSAwOwo+ICsgdTMyIHJ4X3Jv
+dGF0ZSA9ICgzMiAtIHdvcmRfbGVuZ3RoKSAvIDQ7Cj4gCj4+PiBEbyB5b3UgaGF2ZSBhbnkgSWRl
+YSwgd2hhdCBtaWdodCBjYXVzZSB0aGF0IGJlaGF2aW9yPwo+Pgo+PiBObywgSSBkb24ndC4gSSBx
+dWlja2x5IGNoZWNrZWQgb24gYW0zMzV4LCBhbTQzN3ggYW5kIG9uIEo2IGJvYXJkcyBhbmQgdGhl
+Cj4+IGNvbW1hbmQgeW91IGFyZSB1c2luZyB3b3JrcyB3L28gYW55IGlzc3VlIG9yIGRpc3RvcnRp
+b24gaW4gcmVjb3JkZWQgYXVkaW8uCj4gCj4+IHdoYXQgY29kZWMgb3IgY29kZWNzIGFyZSB5b3Ug
+dXNpbmc/IEkgc2VlIHRoYXQgeW91IHJlY29yZCBmcm9tIGh3OjAsMSBhbmQgcGxheQo+PiBpdCBi
+YWNrIHRvIGh3OjAsMAo+PiBDYW4geW91IGNoZWNrIGlmIHRoZSByZWNvcmRlZCBzYW1wbGUgYWxv
+bmUgaXMgY29ycmVjdD8gSnVzdCByZWNvcmQgaXQgdG8gYQo+PiBmaWxlIGFuZCBsb29rIGF0IGl0
+IG9uIHRoZSBQQy4gSSBkaWQgdGhlIHNhbWUgYW5kIHRoZSByZWNvcmRlZCBzYW1wbGUgbG9va3MK
+Pj4gZmluZSBvbiBteSBQQyBhcyB3ZWxsLgo+IAo+IGlmIEkgcmVjb3JkIGludG8gYSBmaWxlLCBp
+dCBiZWhhdmVzIGp1c3QgdGhlIHNhbWUuIE5vaXNlIGlmCj4gcnhfcm90YXRlID09IDAsIGNvcnJl
+Y3Qgb3RoZXJ3aXNlLiBJIGd1ZXNzIGl0IGlzIGEgcHJvYmxlbSBpbiB0aGUgaW5wdXQKPiBjb2Rl
+YywgdGhlbi4KPiAKPiBpbnB1dCBjb2RlYzogICBBSzUzODYKPiBvdXRwdXQgY29kZWM6ICBUQVM1
+MDg2Cj4gCj4+IExvb2tpbmcgYXQgdGhlIHBhdGNoIGFnYWluLCBJIHN0aWxsIHRoaW5rIGl0IGlz
+IGEgdmFsaWQgZml4Lgo+IAo+IFllcywgSSBhZ3JlZSwgdGhlIHBhdGNoIGxvb2tzIHJpZ2h0Lgo+
+IAo+IEknbGwgaGF2ZSBhIGxvb2sgaW50byB0aGUgYWs1Mzg2IGFuZCBzZWUsIHdoYXQgaW1wYWN0
+IHlvdXIgY2hhbmdlIGNvdWxkCj4gaGF2ZSB0aGVyZS4KCkNhbiB5b3UgdHJ5IFMyNF9MRSBmb3Jt
+YXQgYXMgd2VsbD8gSSB0aGluayBpdCBzaG91bGQgd29yay4KCkkgYXNzdW1lIHlvdSBhcmUgcnVu
+bmluZyB0aGUgQUs1Mzg2IGFzIG1hc3RlciB3aGljaCB3b3VsZCBleHBsYWluIHRoZQpzeW1wdG9t
+cy4gSW4gdGhpcyBtb2RlIHlvdSBoYXZlIDY0YmNsayBwZXIgc2FtcGxlICgzMiBwZXIgY2hhbm5l
+bCkuCgpJIGJlbGlldmUgdGhpcyBzaG91bGQgZml4IHlvdXIgY2FwdHVyZSBpbiBjYXNlIG9mIFMx
+Nl9MRToKa2VlcCB0aGUgKGluIGxpbnV4LW5leHQpOgpmZTBhMjllMTYzYTVkMDQ1YzczZmFhYjY4
+MmE4ZGFjNzFjMmY4MDEyIDogQVNvQzogZGF2aW5jaS1tY2FzcDogQ29ycmVjdCByeApmb3JtYXQg
+dW5pdCBjb25maWd1cmF0aW9uCgptYWtlIHN1cmUgeW91IGhhdmUgKGFzIGluIGxpbnV4LW5leHQp
+OgpkNzQyYjkyNTI0NGNlOTFmMTZkMzgwYmVmZGNhNDczZTQ1MzYzNTliIDogQVNvQzogZGF2aW5j
+aS1tY2FzcDogRml4IHJ4IGZvcm1hdAp3aGVuIG1vcmUgYmNsayBpcyB1c2VkIG9uIHRoZSBidXMK
+CmFkZCB0aGUgZm9sbG93aW5nIHRvIHlvdXIgbWFjaGluZSBkcml2ZXIncyBod19wYXJhbXMgY2Fs
+bGJhY2s6CgouLi4Kc25kX3NvY19kYWlfc2V0X2Nsa2RpdihjcHVfZGFpLCAyLCA2NCk7Ci4uLgoK
+SSB0aGluayB0aGUgaXNzdWUgd2l0aCB5b3VyIHNldHVwIGlzIHRoYXQgTWNBU1AgZXhwZWN0cyB0
+aGUgeW91IGhhdmUgMzJiY2xrCnBlciBzYW1wbGUsIGJ1dCBBSzUzODYgZ2VuZXJhdGVzIDY0IGZv
+ciB5b3UsIHRoaXMgd2lsbCBtZXNzIHVwIHRoZSBkYXRhIHlvdQphcmUgcmVjZWl2aW5nIHNpbmNl
+IGluIHRoaXMgY2FzZSB3ZSBuZWVkIHRvIHNoaWZ0IHRoZSBkYXRhIHdpdGggMTZiaXRzIGJlZm9y
+ZQp3ZSBpbnZlcnQgaXQuCgotLSAKUMOpdGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
