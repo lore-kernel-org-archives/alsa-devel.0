@@ -1,8 +1,10 @@
 From: Peter Rosin <peda@lysator.liu.se>
-Subject: [PATCH 0/7] ASoC: pcm512x: Clock master modes
-Date: Wed, 14 Jan 2015 12:52:43 +0100
-Message-ID: <1421236370-19826-1-git-send-email-peda@lysator.liu.se>
+Subject: [PATCH 2/7] ASoC: pcm512x: Fix spelling of register field names.
+Date: Wed, 14 Jan 2015 12:52:45 +0100
+Message-ID: <1421236370-19826-3-git-send-email-peda@lysator.liu.se>
+References: <1421236370-19826-1-git-send-email-peda@lysator.liu.se>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1421236370-19826-1-git-send-email-peda@lysator.liu.se>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
 Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
@@ -10,39 +12,48 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Peter Rosin <peda@axentia.se>
 
-Hi!
+Signed-off-by: Peter Rosin <peda@axentia.se>
+---
+ sound/soc/codecs/pcm512x.c |    2 +-
+ sound/soc/codecs/pcm512x.h |    6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-This series implements BCLK master modes for the pcm512x driver. It has
-only been tested with the pcm5142 chip, but they are from the same family
-and should be compatible. I have mainly used the spec for the newer
-pcm5242 chip (also from the same family) as it fills in a lot of blanks
-in the pcm512x/pcm514x specs.
-
-The code has also seen most of its testing in a 3.10 environment, so
-there might be some forward-porting warts. But it is able to play sound
-in 3.18 as well, and most of the changes have little to do with anything
-but the clocking in the chip itself.
-
-Cheers,
-Peter
-
-Peter Rosin (7):
-  ALSA: pcm: Add snd_interval_ranges() and
-    snd_pcm_hw_constraint_ranges()
-  ASoC: pcm512x: Fix spelling of register field names.
-  ASoC: pcm512x: Change register default to match actual content after
-    reset
-  ASoC: pcm512x: Support mastering BCLK/LRCLK without using the PLL
-  ASoC: pcm512x: Support mastering BCLK/LRCLK using the PLL
-  ASoC: pcm512x: Avoid the PLL for the DAC clock, if possible
-  ASoC: pcm512x: Support SND_SOC_DAIFMT_CBM_CFS
-
- .../devicetree/bindings/sound/pcm512x.txt          |   25 +-
- include/sound/pcm.h                                |   12 +
- sound/core/pcm_lib.c                               |   85 ++
- sound/soc/codecs/pcm512x.c                         |  955 +++++++++++++++++++-
- sound/soc/codecs/pcm512x.h                         |  109 ++-
- 5 files changed, 1161 insertions(+), 25 deletions(-)
-
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 30c673cdc12e..355a8543c8b1 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -277,7 +277,7 @@ SOC_ENUM("Auto Mute Time Right", pcm512x_autom_r),
+ SOC_SINGLE("Auto Mute Mono Switch", PCM512x_DIGITAL_MUTE_3,
+ 	   PCM512x_ACTL_SHIFT, 1, 0),
+ SOC_DOUBLE("Auto Mute Switch", PCM512x_DIGITAL_MUTE_3, PCM512x_AMLE_SHIFT,
+-	   PCM512x_AMLR_SHIFT, 1, 0),
++	   PCM512x_AMRE_SHIFT, 1, 0),
+ 
+ SOC_ENUM("Volume Ramp Down Rate", pcm512x_vndf),
+ SOC_ENUM("Volume Ramp Down Step", pcm512x_vnds),
+diff --git a/sound/soc/codecs/pcm512x.h b/sound/soc/codecs/pcm512x.h
+index 6ee76aaca09a..28b3dfd302bc 100644
+--- a/sound/soc/codecs/pcm512x.h
++++ b/sound/soc/codecs/pcm512x.h
+@@ -108,8 +108,8 @@
+ #define PCM512x_RQML_SHIFT 4
+ 
+ /* Page 0, Register 4 - PLL */
+-#define PCM512x_PLCE       (1 << 0)
+-#define PCM512x_RLCE_SHIFT 0
++#define PCM512x_PLLE       (1 << 0)
++#define PCM512x_PLLE_SHIFT 0
+ #define PCM512x_PLCK       (1 << 4)
+ #define PCM512x_PLCK_SHIFT 4
+ 
+@@ -152,7 +152,7 @@
+ /* Page 0, Register 65 - Digital mute enables */
+ #define PCM512x_ACTL_SHIFT 2
+ #define PCM512x_AMLE_SHIFT 1
+-#define PCM512x_AMLR_SHIFT 0
++#define PCM512x_AMRE_SHIFT 0
+ 
+ /* Page 1, Register 2 - analog volume control */
+ #define PCM512x_RAGN_SHIFT 0
 -- 
 1.7.10.4
