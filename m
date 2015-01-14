@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/4] ASoC: Make set_tdm_slot() semantics
-	consistent
-Date: Wed, 14 Jan 2015 19:08:28 +0000
-Message-ID: <20150114190828.GD3043@sirena.org.uk>
-References: <1421054841-19858-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH v2 1/2] ASoC: wm8960: Let wm8960 codec
+ driver manage its own MCLK
+Date: Wed, 14 Jan 2015 19:19:11 +0000
+Message-ID: <20150114191911.GG3043@sirena.org.uk>
+References: <1420615905-4078-1-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4271394462546606393=="
+Content-Type: multipart/mixed; boundary="===============8481428500324956147=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 71ED22619D7
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 20:08:45 +0100 (CET)
-In-Reply-To: <1421054841-19858-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C0B92619D7
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 20:19:27 +0100 (CET)
+In-Reply-To: <1420615905-4078-1-git-send-email-zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Zidan Wang <b50113@freescale.com>, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4271394462546606393==
+--===============8481428500324956147==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2iBwrppp/7QCDedR"
+	protocol="application/pgp-signature"; boundary="oOB74oR0WcNeq9Zb"
 Content-Disposition: inline
 
 
---2iBwrppp/7QCDedR
+--oOB74oR0WcNeq9Zb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 12, 2015 at 10:27:16AM +0100, Lars-Peter Clausen wrote:
-> Changes since v1:
-> 	* Don't modify the fsl-esai driver as it already uses the non-inverted
-> 	  semantics
+On Wed, Jan 07, 2015 at 03:31:44PM +0800, Zidan Wang wrote:
+> From: Zidan Wang <b50113@freescale.com>
 >=20
-> Original cover letter below:
->=20
-> This is something we shortly discussed during the ALSA mini conference in
-> Duesseldorf last year. We want to do more useful stuff with the
-> snd_soc_set_tdm_slot() API and build generic infrastructure on top of it.
+> When we want to use wm8960 codec, we should enable its MCLK in machine dr=
+iver.
+> It's reasonable for wm8960 codec driver to manage its own MCLK.
 
-Applied all, thanks.
+Applied, thanks.
 
---2iBwrppp/7QCDedR
+--oOB74oR0WcNeq9Zb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUtr6sAAoJECTWi3JdVIfQIBoH/3qdOne8rEKw1s0ga7/E3icr
-1T/JKWwnVxgMAjaFaIBOUSxvwvvAMswdT8NN+RQR1gQ7F3W6JShgt+46VF27jcSP
-TbmbidKBYkWm8YMTwA2xSUKWTY5McqX1tiXSthKHupg8qTggYqjlClCakllfYyca
-r9i/i7pVgggkzKe1RIas4TrBTcfJ5PxzcrTzjz1xWZtp5zk5c8fa5QI6qYhbgk2b
-6pgvtAgtLGSiPRdoeeP7bydUSml8mKZmV08ZBPDFI7/rvoro30Imolhrw5/ILSel
-xy8MOcvrHn1BQb28uko96a+ME2+YVNGilNolykuhxaQBQ8MwpdixZ42Aco3lGOE=
-=afRc
+iQEcBAEBCAAGBQJUtsEuAAoJECTWi3JdVIfQ/P0H/1+h4uWTLkQ2R4eGJLMzFKA2
+d3R48lCthLcJMSU+zECQwZZNnCA0uafBOqSRBfgJcZXAaoLQ+Mg0oAJaM1UUuaxP
+ZaBua7bS0AnZGhITAwMQIWGyiCMODudVyl7e2TyMC3ijiEVBc7TCNautYYtomX12
+DL20QGvhdYS6bh3SqlMJVQvoNxnWr3+aXp9QHWe31AEMMPV0p3MfxgnkR/qY8V5T
+AN1NgwR5UGg7gN4k+QjvPTCAwB5Q9V4AKm4ghB/piF+o5RTLQaqpBplT5TyF4uBZ
+lsPkiKAYL4gzAR0AAC3Q2rj4Fg85+9HrgmLIUzpp0nVfbiMjx0XKVPt3Q/1Bet8=
+=DLme
 -----END PGP SIGNATURE-----
 
---2iBwrppp/7QCDedR--
+--oOB74oR0WcNeq9Zb--
 
---===============4271394462546606393==
+--===============8481428500324956147==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4271394462546606393==--
+--===============8481428500324956147==--
