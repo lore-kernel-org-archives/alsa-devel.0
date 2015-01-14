@@ -1,17 +1,26 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Change irq type to 'int'
-Date: Wed, 14 Jan 2015 10:48:59 -0200
-Message-ID: <1421239739-7755-1-git-send-email-festevam@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
+	for audio
+Date: Wed, 14 Jan 2015 12:50:56 +0000
+Message-ID: <20150114125056.GU4160@sirena.org.uk>
+References: <20150112175705.GN12302@n2100.arm.linux.org.uk>
+ <1421151718.4519.24.camel@pengutronix.de>
+ <20150113122715.GP12302@n2100.arm.linux.org.uk>
+ <20150113165411.5469930d@armhf>
+ <20150113160313.GR12302@n2100.arm.linux.org.uk>
+ <20150113200252.3dbfab14@armhf>
+ <20150113192648.GU12302@n2100.arm.linux.org.uk>
+ <54B574CD.9020905@ti.com>
+ <20150113195415.GV12302@n2100.arm.linux.org.uk>
+ <1421232418.3155.31.camel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4847048719639612950=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f45.google.com (mail-qg0-f45.google.com
- [209.85.192.45])
- by alsa0.perex.cz (Postfix) with ESMTP id A213C26156A
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 13:49:24 +0100 (CET)
-Received: by mail-qg0-f45.google.com with SMTP id z107so6697099qgd.4
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 04:49:23 -0800 (PST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05C9626156A
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 13:51:28 +0100 (CET)
+In-Reply-To: <1421232418.3155.31.camel@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +30,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Since commit 2ffa531078037a0 ("ASoC: fsl_ssi: Fix module unbound") the irq 
-number is retrieved via platform_get_irq(), which may fail and return a negative
-number, so adapt its type to 'int'.
+--===============4847048719639612950==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9o1Xi4ZMQ45MudWG"
+Content-Disposition: inline
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 65400be..46549de 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -160,7 +160,7 @@ struct fsl_ssi_soc_data {
-  */
- struct fsl_ssi_private {
- 	struct regmap *regs;
--	unsigned int irq;
-+	int irq;
- 	struct snd_soc_dai_driver cpu_dai_drv;
- 
- 	unsigned int dai_fmt;
--- 
-1.9.1
+--9o1Xi4ZMQ45MudWG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jan 14, 2015 at 11:46:58AM +0100, Philipp Zabel wrote:
+
+> So the question is mostly whether four I2S data pins with a single
+> shared WS/SCK input should be called "four I2S ports with shared clocks"
+> or "one I2S port with up to four data lanes". I'd lean towards the
+> latter.
+
+Yes, this is what we're doing for the Samsung CPU side controllers which
+implement this natively and seems to make sense here too - the different
+channels can't really work as separate interfaces in any practical way.
+
+> How audio2_i2s is forced to synchronize its clock output to audio1_i2s
+> is a problem their bindings will have to handle.
+
+Trying to hook up a controller that doesn't natively support this format
+to a device that uses it is definitely tricky, as well as describing the
+physical hookup we also need to worry about how things look to userspace
+- it's ideally going to want a single multi-channel audio stream.
+
+I think from a binding point of view we need a way to say "this endpoint
+on the link is constructed from these DAIs on the device side" and say
+if this is TDM or multi-data, and what's driving the clocks.
+
+--9o1Xi4ZMQ45MudWG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUtmYvAAoJECTWi3JdVIfQt28H/1viMMw+EK2qHbR88BLH5iLi
+9tbosp+jQxC+PTtsTI5YlUR3T/shxxV7+xA9D6wPezG2tyDghYicKvcDinxWGYnK
+7wwtbmDBsRv69WPyeLNeZtZnTb4Oox5TYIYy1EtZluc1bYmpB3w1/MuOe4OU7ZdW
+lkaOaL9pw8Bjx7ycw1rBIPbxszsOhDiQkrDkYKoKD3SlkCeSxtBAtJJG2Fas5AfS
+yu8nGIGEI6f6EzXj4ry+j8/fAgftH+SMXj1/A+rOjFRWgjns9sCd8E9Sp2K7gEsl
+wTgiBH1gecrvcQ3gnO492ZqfBvST+U2J0pzzDrOEKmLfck/2hoqLe884+yKdWgQ=
+=pZEW
+-----END PGP SIGNATURE-----
+
+--9o1Xi4ZMQ45MudWG--
+
+--===============4847048719639612950==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4847048719639612950==--
