@@ -1,31 +1,109 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: Re: [PATCH v2] ALSA: ASoC: soc-compress.c: fix NULL dereference
-Date: Wed, 14 Jan 2015 07:53:00 +0000
-Message-ID: <54B6205C.7060608@imgtec.com>
-References: <1421147933-21802-1-git-send-email-qais.yousef@imgtec.com> <20150113145931.GD3085@intel.com> <54B536BA.3070001@imgtec.com> <20150113162004.GR4160@sirena.org.uk>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
+Date: Wed, 14 Jan 2015 08:55:01 +0100
+Message-ID: <20150114085501.677dc4d2@armhf>
+References: <20150112140456.GI12302@n2100.arm.linux.org.uk>
+ <20150112181341.4a53ea24@armhf>
+ <20150112175705.GN12302@n2100.arm.linux.org.uk>
+ <1421151718.4519.24.camel@pengutronix.de>
+ <20150113122715.GP12302@n2100.arm.linux.org.uk>
+ <20150113165411.5469930d@armhf>
+ <20150113160313.GR12302@n2100.arm.linux.org.uk>
+ <20150113200252.3dbfab14@armhf>
+ <20150113192648.GU12302@n2100.arm.linux.org.uk>
+ <54B574CD.9020905@ti.com>
+ <20150113195415.GV12302@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150113162004.GR4160@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150113195415.GV12302@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/13/2015 04:20 PM, Mark Brown wrote:
-> On Tue, Jan 13, 2015 at 03:16:10PM +0000, Qais Yousef wrote:
->> On 01/13/2015 02:59 PM, Vinod Koul wrote:
->>>> being NULL, hence when trying to set rtd a few lines below we get an oops.
->>> It is a good practice to add the oops here
->> Will this really be helpful? I think it'll be more clutter (the backtrace on
->> metag arch is not great):
-> It's better in general to leave it out unless it's adding something (for
-> example sometimes the particular call path is important) and even there
-> edit it down to relevant details - the splat from the full oops normally
-> overwhelms the commit message.
-
-I think the commit message explains what's going. So unless Vinod 
-insists I'll send v3 with the other 2 requested fixes.
-
-Thanks for the review!
+T24gVHVlLCAxMyBKYW4gMjAxNSAxOTo1NDoxNSArMDAwMApSdXNzZWxsIEtpbmcgLSBBUk0gTGlu
+dXggPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgoKPiBPbiBUdWUsIEphbiAxMywgMjAx
+NSBhdCAwOTo0MTowMVBNICswMjAwLCBKeXJpIFNhcmhhIHdyb3RlOgo+ID4gT24gMDEvMTMvMjAx
+NSAwOToyNiBQTSwgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gPlNDTEs6IF9+
+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35f
+fl9+X35ffl8KPiA+ID4gICBXUzogX19+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19ffgo+ID4gPkkyUzE6IGxsbW0uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4ubGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi5sbG0KPiA+
+ID5JMlMyOiBsbG1tLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLmxsbW0uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4ubGxtCj4gPiA+STJTMzogbGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
+Li4uLi5sbG1tLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLmxsbQo+ID4gPkkyUzQ6IGxsbW0u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtbS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
+Li5sbG0KPiA+ID4KPiA+ID5Tbywgd2hhdCBJJ20gc2F5aW5nIGlzIHRoYXQgaXQgaXNfaW1wb3Nz
+aWJsZV8gIHRvIGRyaXZlIHRoZSBUREE5OTh4IHVzaW5nCj4gPiA+bXVsdGlwbGUgSTJTIHN0cmVh
+bXMgd2hpY2ggYXJlIG5vdCBwcm9kdWNlZCBieSB0aGUgc2FtZSBJMlMgYmxvY2suCj4gPiAKPiA+
+IFRoaXMgaXMgYmVzaWRlcyB0aGUgcG9pbnQsIGJ1dCBpdCBpcyBwb3NzaWJsZSB0aGF0IG9uZSBv
+ZiB0aGUgbXVsdGlwbGUgSTJTCj4gPiBibG9ja3MgaXMgdGhlIGJpdC1jbG9jayBhbmQgZnJhbWUt
+Y2xvY2sgbWFzdGVyIHRvIHRoZSBpMnMgYnVzIGFuZCB0aGUgb3RoZXJzCj4gPiBhcmUgc2xhdmVz
+IHRvIGl0IChiYW5naW5nIHRoZWlyIGJpdHMgYWNjb3JkaW5nIHRvIFNDTEsgYW5kIFdTIG9mIHRo
+ZSBJMlMKPiA+IG1hc3RlcikuIEhvd2V2ZXIsIGluIHRoaXMgc2l0dWF0aW9uIHRoZXJlIHJlYWxs
+eSBpcyBvbmx5IG9uZSBpMnMgYnVzIHdpdGgKPiA+IG11bHRpcGxlIGRhdGEgcGlucy4KPiA+IAo+
+ID4gSnVzdCBteSAwLjAy4oKsIHRvIHRoaXMgZGlzY3Vzc2lvbi4KPiAKPiBSaWdodCwgdGhhdCdz
+IGFib3V0IHRoZSBvbmx5IHdheSBpdCBjb3VsZCB3b3JrLgo+IAo+IFRvIHJlcHJlc2VudCB0aGF0
+IGluIERULCBJIHdvdWxkIGltYWdpbmUgd2UnZCBuZWVkIHNvbWV0aGluZyBsaWtlIHRoaXM6Cj4g
+Cj4gCSNhZGRyZXNzLWNlbGxzID0gPDE+Owo+IAkjc2l6ZS1jZWxscyA9IDwwPjsKPiAJLi4uCj4g
+ICAgICAgICBwb3J0QDEgeyAgICAgICAgICAgICAgICAgICAgICAgIC8qIEFQMSwyID0gSTJTICov
+Cj4gCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsKPiAJCSNzaXplLWNlbGxzID0gPDA+Owo+ICAgICAg
+ICAgICAgICAgICBwb3J0LXR5cGUgPSAiaTJzIjsKPiAgICAgICAgICAgICAgICAgcmVnID0gPDB4
+MDE+OwkJLyogV1MgKi8KPiAgICAgICAgICAgICAgICAgdGRhOTk4eF9pMnMxOiBlbmRwb2ludEAy
+IHsKPiAJCQlyZWcgPSA8MHgwMj47CS8qIEFQMSAqLwo+ICAgICAgICAgICAgICAgICAgICAgICAg
+IHJlbW90ZS1lbmRwb2ludCA9IDwmYXVkaW8xX2kycz47Cj4gICAgICAgICAgICAgICAgIH07Cj4g
+ICAgICAgICAgICAgICAgIHRkYTk5OHhfaTJzMjogZW5kcG9pbnRANCB7Cj4gCQkJcmVnID0gPDB4
+MDQ+OwkvKiBBUDIgKi8KPiAgICAgICAgICAgICAgICAgICAgICAgICByZW1vdGUtZW5kcG9pbnQg
+PSA8JmF1ZGlvMl9pMnM+Owo+ICAgICAgICAgICAgICAgICB9Owo+ICAgICAgICAgfTsKPiAKPiB3
+aGVyZSBhdWRpbzFfaTJzIGlzIG9wZXJhdGluZyBpbiBtYXN0ZXIgbW9kZSwgYW5kIGF1ZGlvMl9p
+MnMgaXMKPiBvcGVyYXRpbmcgaW4gc2xhdmUgbW9kZSBmb3IgYm90aCBXUyBhbmQgU0NMSy4KPiAK
+PiBJZiB3ZSBjYW4gYWdyZWUgb24gdGhhdCwgdGhlbiBJJ20gaGFwcHkgd2l0aCB0aGUgcHJvcG9z
+ZWQgYmluZGluZy4KPiAoUmVtZW1iZXIgdGhhdCAjYWRkcmVzcy1jZWxscyBhbmQgI3NpemUtY2Vs
+bHMgYXJlIHJlcXVpcmVkIGluIHRoZQo+IHBhcmVudCB3aGVyZSB3ZSBoYXZlIHJlZz0gaW4gdGhl
+IGNoaWxkLikKCiNhZGRyZXNzLWNlbGxzIGFuZCAjc2l6ZS1jZWxscyBtYXkgYmUgZGVmaW5lZCBp
+biBhbnkgb2YgdGhlIHVwcGVyCnBhcmVudCwgc28sIGFzIGl0IGlzIGRlZmluZWQgaW4gdGhlIGRl
+dmljZSwgaXQgaXMgbm90IG5lZWRlZCBpbiB0aGUKcG9ydCAoc2VlIG9mX25fYWRkcl9jZWxscyBp
+biBkcml2ZXJzL29mL2Jhc2UuYykuCgpXZWxsLCBJIGFtIGEgYml0IGxvc3QgYmV0d2VlbiAob25s
+eSBvbmUgc291cmNlIC8gbWFueSBjaGFubmVscyAtIEkyUwpidXNzZXMpIGFuZCAobWFueSBzb3Vy
+Y2VzIC8gb25lIEkycyBidXMhKS4KCkFueXdheSwgSSBkb24ndCB1bmRlcnN0YW5kIHlvdXIgZXhh
+bXBsZS4KSSdkIGV4cGVjdCB0aGF0IGEgcG9ydCB3b3VsZCBiZSBhIERBSS4KCklmIHllcywgd2hl
+biBwbGF5aW5nIGlzIGFjdGl2ZSwgYm90aCBlbmRwb2ludHMgcmVjZWl2ZSBhbiBhdWRpbyBzdHJl
+YW0KZnJvbSB0aGUgcmVtb3RlIGF1ZGlvIGRldmljZXMsIGFuZCB0aGUgQVAgcmVnaXN0ZXIgaXMg
+YWx3YXlzIHNldCB0bwoweDA3ICg9IDB4MDEgfCAweDAyIHwgMHgwNCkuClRoZW4sIGl0IHdvdWxk
+IGhhdmUgYmVlbiBzaW1wbGVyIHRvIGhhdmU6CgogCSNhZGRyZXNzLWNlbGxzID0gPDE+OwogCSNz
+aXplLWNlbGxzID0gPDA+OwogCS4uLgogICAgICAgICBwb3J0QDcgeyAgICAgICAgICAgICAgICAg
+ICAgICAgIC8qIEFQMSwyID0gSTJTICovCiAgICAgICAgICAgICAgICAgcG9ydC10eXBlID0gImky
+cyI7CiAgICAgICAgICAgICAgICAgcmVnID0gPDB4MDc+OwkJLyogV1MgKyBBUDEgKyBBUDIgKi8K
+ICAgICAgICAgICAgICAgICB0ZGE5OTh4X2kyczE6IGVuZHBvaW50QDEgewogICAgICAgICAgICAg
+ICAgICAgICAgICAgcmVtb3RlLWVuZHBvaW50ID0gPCZhdWRpbzFfaTJzPjsKICAgICAgICAgICAg
+ICAgICB9OwogICAgICAgICAgICAgICAgIHRkYTk5OHhfaTJzMjogZW5kcG9pbnRAMiB7CiAgICAg
+ICAgICAgICAgICAgICAgICAgICByZW1vdGUtZW5kcG9pbnQgPSA8JmF1ZGlvMl9pMnM+OwogICAg
+ICAgICAgICAgICAgIH07CiAgICAgICAgIH07CgpJZiBubywgdGhlIHR3byBEQUlzIG11c3QgYmUg
+Y3JlYXRlZCBmcm9tIHRoZSBlbmRwb2ludHMsIHBlcm1pdHRpbmcKc3RyZWFtaW5nIG9uIGkyczEg
+YWxvbmUsIGkyczIgYWxvbmUgb3IgYm90aCBpMnMxK2kyczIgYXQgdGhlIHNhbWUgdGltZS4KVGhl
+biwgaXQgd291bGQgaGF2ZSBiZWVuIHNpbXBsZXIgdG8gZGVmaW5lIHRoZSBEQUlzIGZyb20gdGhl
+IHBvcnRzOgoKCSNhZGRyZXNzLWNlbGxzID0gPDE+OwogCSNzaXplLWNlbGxzID0gPDA+OwogCS4u
+LgogICAgICAgICBwb3J0QDMgeyAgICAgICAgICAgICAgICAgICAgICAgIC8qIEFQMSA9IEkyUyAq
+LwogICAgICAgICAgICAgICAgIHBvcnQtdHlwZSA9ICJpMnMiOwogICAgICAgICAgICAgICAgIHJl
+ZyA9IDwweDAzPjsJCS8qIFdTICsgQVAxICovCiAgICAgICAgICAgICAgICAgdGRhOTk4eF9pMnMx
+OiBlbmRwb2ludCB7CiAgICAgICAgICAgICAgICAgICAgICAgICByZW1vdGUtZW5kcG9pbnQgPSA8
+JmF1ZGlvMV9pMnM+OwogICAgICAgICAgICAgICAgIH07CiAgICAgICAgIH07CiAgICAgICAgIHBv
+cnRANSB7ICAgICAgICAgICAgICAgICAgICAgICAgLyogQVAyID0gSTJTICovCiAgICAgICAgICAg
+ICAgICAgcG9ydC10eXBlID0gImkycyI7CiAgICAgICAgICAgICAgICAgcmVnID0gPDB4MDU+OwkJ
+LyogV1MgKyBBUDIgKi8KICAgICAgICAgICAgICAgICB0ZGE5OTh4X2kyczE6IGVuZHBvaW50IHsK
+ICAgICAgICAgICAgICAgICAgICAgICAgIHJlbW90ZS1lbmRwb2ludCA9IDwmYXVkaW8xX2kycz47
+CiAgICAgICAgICAgICAgICAgfTsKCX07CgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoq
+IEJyZWl6aCBoYSBMaW51eCBhdGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIv
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZl
+bCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
