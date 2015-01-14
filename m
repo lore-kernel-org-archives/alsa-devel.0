@@ -1,70 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/29] ASoC: arizona: Replace w->codec
- snd_soc_dapm_to_codec(w->dapm)
-Date: Wed, 14 Jan 2015 19:54:29 +0000
-Message-ID: <20150114195429.GL3043@sirena.org.uk>
-References: <1421141255-21477-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH V3 13/15] ARM: dts: Exynos4 and Odroid X2/U3 sound device
+ nodes update
+Date: Wed, 14 Jan 2015 19:54:52 +0000
+Message-ID: <20150114195452.GM3043@sirena.org.uk>
+References: <1421260962-16892-1-git-send-email-s.nawrocki@samsung.com>
+ <1421260962-16892-14-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0287823413254227723=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 106E226525F
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 20:54:39 +0100 (CET)
-In-Reply-To: <1421141255-21477-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6CiRFyVmOOJ3DkBX"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1421260962-16892-14-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: kgene@kernel.org, padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0287823413254227723==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rVkomL2febZOZtGQ"
-Content-Disposition: inline
-
-
---rVkomL2febZOZtGQ
+--6CiRFyVmOOJ3DkBX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jan 13, 2015 at 10:27:07AM +0100, Lars-Peter Clausen wrote:
-> The codec field of the snd_soc_widget struct is eventually going to be
-> removed, use snd_soc_dapm_to_codec(w->dapm) instead.
+On Wed, Jan 14, 2015 at 07:42:40PM +0100, Sylwester Nawrocki wrote:
+> Clock related properties are added to the Exynos4 I2S device nodes
+> so they can be referred to as clock providers. Missing i2s_opclk1
+> clock is added to the I2S0 node and clock properties are added
+> to the MAX98090 codec node to allow it to control/read frequency
+> of the MCLK clock directly.
 
-Applied all, thanks.
+Sorry, I should've said - I applied the ASoC patches, not these.
 
---rVkomL2febZOZtGQ
+--6CiRFyVmOOJ3DkBX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUtsl0AAoJECTWi3JdVIfQmCgH/0KJBCufjwAOlc7LSPvhLOjl
-QYI/TGpXCkUI5/1RCrfLMtDjnXGd1lAY1aW/0V3/0S93M0IcQuhDu0phHejMe3qV
-0aYiuoRHEI3zdHu3k1fuaTIBhdFROvqt45fGFMjf/NPXseX5oVHhRmjj4aQU68lB
-fbUkrAgIN0Jl6QD3b9fc4ax5NONDky4uJl/jp/qErUwbUGHqAIMlWVCT5QglTKX1
-uOsnBkt/Wt/CnGf1eCpdePkLaXJF9Pl/YJ6GmUwAPjeG5djDnjDAwPXPVPI4QGjN
-GctUQn9B5wEmUJlwUuJxod/Tl1CpZFYK18kT33gcovukF08r4/xNOlUqDALYwoU=
-=DTA6
+iQEcBAEBCAAGBQJUtsmLAAoJECTWi3JdVIfQ+vwH/iiIdWa2sq7XBFXNgeq8T3lw
+oQVX5w3eMhJ9DoqQG5IdURo1BEqRvtpWnAStjLikShE+U5DH6l+16xSY2tFkI+ci
+s3OY3yBXBh4c8/HLwq+AbE/W4juiDFiprXcu+kBGT2Paq3lrbLRB4ipsA6+96Gop
+vkxlhkEw5sAjShJF6WYXb8HqUcflcmTsL8+PAlutt2hbu0RdtN5N1pRV8TLEl3tZ
+8iZe7X/o1ocIiSZPgc75Te/SbKF0vT5/hbrhhIWwnyt8HesuOkvTCogXBsjONk/6
+sUr8pJZ32HV8Y/BQN6blm9U1IpjoQsPzkunRIvlSw1Ta+s/B3csVQD7dYh2RFUs=
+=8bP6
 -----END PGP SIGNATURE-----
 
---rVkomL2febZOZtGQ--
-
---===============0287823413254227723==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0287823413254227723==--
+--6CiRFyVmOOJ3DkBX--
