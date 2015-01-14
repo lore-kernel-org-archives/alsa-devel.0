@@ -1,43 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: wm8904: fix runtime warning
-Date: Wed, 14 Jan 2015 19:02:51 +0000
-Message-ID: <20150114190251.GC3043@sirena.org.uk>
-References: <1421143531-6662-1-git-send-email-voice.shen@atmel.com>
+Subject: Re: [PATCH 0/4] ASoC: Make set_tdm_slot() semantics
+	consistent
+Date: Wed, 14 Jan 2015 19:08:28 +0000
+Message-ID: <20150114190828.GD3043@sirena.org.uk>
+References: <1421054841-19858-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WfZ7S8PLGjBY9Voh"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1421143531-6662-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4271394462546606393=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71ED22619D7
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 20:08:45 +0100 (CET)
+In-Reply-To: <1421054841-19858-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---WfZ7S8PLGjBY9Voh
-Content-Type: text/plain; charset=us-ascii
+--===============4271394462546606393==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2iBwrppp/7QCDedR"
 Content-Disposition: inline
 
-On Tue, Jan 13, 2015 at 06:05:31PM +0800, Bo Shen wrote:
-> Correct the path name for mux to get rid of the following warning:
 
-Applied, thanks.
+--2iBwrppp/7QCDedR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---WfZ7S8PLGjBY9Voh
+On Mon, Jan 12, 2015 at 10:27:16AM +0100, Lars-Peter Clausen wrote:
+> Changes since v1:
+> 	* Don't modify the fsl-esai driver as it already uses the non-inverted
+> 	  semantics
+>=20
+> Original cover letter below:
+>=20
+> This is something we shortly discussed during the ALSA mini conference in
+> Duesseldorf last year. We want to do more useful stuff with the
+> snd_soc_set_tdm_slot() API and build generic infrastructure on top of it.
+
+Applied all, thanks.
+
+--2iBwrppp/7QCDedR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUtr1aAAoJECTWi3JdVIfQJx0H/AtAsVpVtA3+q98tTlX0DWsj
-H/BeQ+0wzox/m66YL2JA5zg55SprZv1Ca8pdFyu6ZDt+jZ9vDtU4VoXpuExULy7T
-yWNBI4XG9z2h/j/XfjW98EOkS06F36JPNxWoFhExuXROvPu03/+T2hWujKhnAquO
-VritK+YgopvpG2uhjazAhoGj2+NK4BEWD9rqqCIwTdbB3481KMa+ftoNvQEWmP+E
-FFKQHrCLUXD4FjVheapX+0GqjhQQcoZnQDRvBQ22QdByNjqX78K5CuIZtDurn3ty
-CN6spTkOujJu6oTRfCGhpfgKYXfqO0FpmSS46sTkk5yLFWePv+uv4PmLVifCVLE=
-=UM3h
+iQEcBAEBCAAGBQJUtr6sAAoJECTWi3JdVIfQIBoH/3qdOne8rEKw1s0ga7/E3icr
+1T/JKWwnVxgMAjaFaIBOUSxvwvvAMswdT8NN+RQR1gQ7F3W6JShgt+46VF27jcSP
+TbmbidKBYkWm8YMTwA2xSUKWTY5McqX1tiXSthKHupg8qTggYqjlClCakllfYyca
+r9i/i7pVgggkzKe1RIas4TrBTcfJ5PxzcrTzjz1xWZtp5zk5c8fa5QI6qYhbgk2b
+6pgvtAgtLGSiPRdoeeP7bydUSml8mKZmV08ZBPDFI7/rvoro30Imolhrw5/ILSel
+xy8MOcvrHn1BQb28uko96a+ME2+YVNGilNolykuhxaQBQ8MwpdixZ42Aco3lGOE=
+=afRc
 -----END PGP SIGNATURE-----
 
---WfZ7S8PLGjBY9Voh--
+--2iBwrppp/7QCDedR--
+
+--===============4271394462546606393==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4271394462546606393==--
