@@ -1,29 +1,35 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH v2 16/16] ARM: dts: Fix I2S1,
- I2S2 compatible for exynos4 SoCs
-Date: Wed, 14 Jan 2015 12:57:51 +0100
-Message-ID: <54B659BF.4000803@samsung.com>
-References: <1418997336-17777-1-git-send-email-s.nawrocki@samsung.com>
- <1418997336-17777-17-git-send-email-s.nawrocki@samsung.com>
- <20150106181517.GQ2634@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20150106181517.GQ2634@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: kgene@kernel.org, alsa-devel@alsa-project.org, padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: snd-usb-usx2y: fix incorrect indentation on if statement
+Date: Wed, 14 Jan 2015 11:57:33 +0000
+Message-ID: <1421236653-4627-1-git-send-email-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/01/15 19:15, Mark Brown wrote:
-> On Fri, Dec 19, 2014 at 02:55:36PM +0100, Sylwester Nawrocki wrote:
->> > I2S1, I2S2 on Exynos4 SoC series have limited functionality compared
->> > to I2S0, "samsung,s3c6410-i2s" compatible should be used for them.
->> > 
->> > Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->> > ---
->
-> This should probably go to stable as a bug fix too.
+From: Colin Ian King <colin.king@canonical.com>
 
-Sounds like a reasonable thing to do, I will Cc stable in next iteration.
+Minor style issue, statement needs an extra tab indentation
+on the if statement.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/usb/usx2y/usbusx2yaudio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
+index 61d5dc2..dd40ca9 100644
+--- a/sound/usb/usx2y/usbusx2yaudio.c
++++ b/sound/usb/usx2y/usbusx2yaudio.c
+@@ -166,7 +166,7 @@ static int usX2Y_urb_play_prepare(struct snd_usX2Y_substream *subs,
+ 			/* set the buffer pointer */
+ 			urb->transfer_buffer = runtime->dma_area + subs->hwptr * usX2Y->stride;
+ 			if ((subs->hwptr += count) >= runtime->buffer_size)
+-			subs->hwptr -= runtime->buffer_size;			
++				subs->hwptr -= runtime->buffer_size;
+ 		}
+ 	else
+ 		urb->transfer_buffer = subs->tmpbuf;
+-- 
+2.1.4
