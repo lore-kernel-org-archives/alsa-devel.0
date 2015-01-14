@@ -1,49 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V3 13/15] ARM: dts: Exynos4 and Odroid X2/U3 sound device
- nodes update
-Date: Wed, 14 Jan 2015 19:54:52 +0000
-Message-ID: <20150114195452.GM3043@sirena.org.uk>
-References: <1421260962-16892-1-git-send-email-s.nawrocki@samsung.com>
- <1421260962-16892-14-git-send-email-s.nawrocki@samsung.com>
+Subject: Re: [PATCH] ASoC: Intel: initial stream_hw_id to
+	invalid value
+Date: Wed, 14 Jan 2015 20:24:13 +0000
+Message-ID: <20150114202413.GO3043@sirena.org.uk>
+References: <1421054254-25716-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6CiRFyVmOOJ3DkBX"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1421260962-16892-14-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: kgene@kernel.org, padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============6518457041900492091=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 683BD26052A
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 21:24:23 +0100 (CET)
+In-Reply-To: <1421054254-25716-1-git-send-email-yang.jie@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---6CiRFyVmOOJ3DkBX
+--===============6518457041900492091==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aTCJOP0qgkSGqHWA"
+Content-Disposition: inline
+
+
+--aTCJOP0qgkSGqHWA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 14, 2015 at 07:42:40PM +0100, Sylwester Nawrocki wrote:
-> Clock related properties are added to the Exynos4 I2S device nodes
-> so they can be referred to as clock providers. Missing i2s_opclk1
-> clock is added to the I2S0 node and clock properties are added
-> to the MAX98090 codec node to allow it to control/read frequency
-> of the MCLK clock directly.
+On Mon, Jan 12, 2015 at 05:17:34PM +0800, Jie Yang wrote:
+> The stream_hw_id for System stream is 0x0, if we use initial stream_hw_id
+> value 0, it may return wrong(not committed) stream when calling function
+> get_stream_by_id() with stream_id=0. Here initial stream_hw_id to invalid
+> value to fix this issue.
 
-Sorry, I should've said - I applied the ASoC patches, not these.
+Applied, thanks.
 
---6CiRFyVmOOJ3DkBX
+--aTCJOP0qgkSGqHWA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUtsmLAAoJECTWi3JdVIfQ+vwH/iiIdWa2sq7XBFXNgeq8T3lw
-oQVX5w3eMhJ9DoqQG5IdURo1BEqRvtpWnAStjLikShE+U5DH6l+16xSY2tFkI+ci
-s3OY3yBXBh4c8/HLwq+AbE/W4juiDFiprXcu+kBGT2Paq3lrbLRB4ipsA6+96Gop
-vkxlhkEw5sAjShJF6WYXb8HqUcflcmTsL8+PAlutt2hbu0RdtN5N1pRV8TLEl3tZ
-8iZe7X/o1ocIiSZPgc75Te/SbKF0vT5/hbrhhIWwnyt8HesuOkvTCogXBsjONk/6
-sUr8pJZ32HV8Y/BQN6blm9U1IpjoQsPzkunRIvlSw1Ta+s/B3csVQD7dYh2RFUs=
-=8bP6
+iQEcBAEBCAAGBQJUttBsAAoJECTWi3JdVIfQPYcH/22OIKtfy8ijlxKcrHT0bjvQ
+u9xQVkCxv0iltG27evrKctsyZ6VQs8vB8nlolzeiCH4hoQZm61JzOvVPb8G9Ksr2
+bTw4RooOtCJdBAcngpDrPvnMtM/m9LXPe1cySoc8UQf1wQIQ6JEnAxc/1LDIgyV0
+6NJszEcowb7GYdQXPbg3oBf/Ws1DfM8Qetuqbc0tzbtlgmGsxOWVSzj1c5eMJIZl
+A3lLjvDZl7CyCTULVWEI9idA0BLM68PjlWyP+zUNquTZxraHf0a/TizhjSQHpLbr
+p2syklrxDxUVEe0sMS6lLiiDh9ulqROfKT4RUnuLAEKMhwDhRoZgkcQ1SAi7X5M=
+=MWl1
 -----END PGP SIGNATURE-----
 
---6CiRFyVmOOJ3DkBX--
+--aTCJOP0qgkSGqHWA--
+
+--===============6518457041900492091==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6518457041900492091==--
