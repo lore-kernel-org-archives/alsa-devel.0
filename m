@@ -1,26 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support
-	for audio
-Date: Wed, 14 Jan 2015 12:50:56 +0000
-Message-ID: <20150114125056.GU4160@sirena.org.uk>
-References: <20150112175705.GN12302@n2100.arm.linux.org.uk>
- <1421151718.4519.24.camel@pengutronix.de>
- <20150113122715.GP12302@n2100.arm.linux.org.uk>
- <20150113165411.5469930d@armhf>
- <20150113160313.GR12302@n2100.arm.linux.org.uk>
- <20150113200252.3dbfab14@armhf>
- <20150113192648.GU12302@n2100.arm.linux.org.uk>
- <54B574CD.9020905@ti.com>
- <20150113195415.GV12302@n2100.arm.linux.org.uk>
- <1421232418.3155.31.camel@pengutronix.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: unload Audio drivers while playback stream is
+ active case kernel crash
+Date: Wed, 14 Jan 2015 13:57:03 +0100
+Message-ID: <54B6679F.1030706@metafoo.de>
+References: <857E9EDCA6C0904DB3357321AA9123EB0108B66919@NA-MBX-01.mgc.mentorg.com>
+ <s5h1tmyiof7.wl-tiwai@suse.de> <20150113215412.GS4160@sirena.org.uk>
+ <s5hr3ux24em.wl-tiwai@suse.de> <54B625A8.8090406@metafoo.de>
+ <s5hoaq121gh.wl-tiwai@suse.de> <54B63E4F.2010506@metafoo.de>
+ <s5hwq4phbzr.wl-tiwai@suse.de> <20150114120228.GT4160@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4847048719639612950=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05C9626156A
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 13:51:28 +0100 (CET)
-In-Reply-To: <1421232418.3155.31.camel@pengutronix.de>
+Received: from smtp-out-243.synserver.de (smtp-out-243.synserver.de
+ [212.40.185.243])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D448264F33
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 13:57:04 +0100 (CET)
+In-Reply-To: <20150114120228.GT4160@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,67 +26,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Jean-Francois Moine <moinejf@free.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Dave Airlie <airlied@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+Cc: "Wang, Jiada (ESD)" <Jiada_Wang@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Frkuska,
+ Joshua" <Joshua_Frkuska@mentor.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4847048719639612950==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="9o1Xi4ZMQ45MudWG"
-Content-Disposition: inline
-
-
---9o1Xi4ZMQ45MudWG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jan 14, 2015 at 11:46:58AM +0100, Philipp Zabel wrote:
-
-> So the question is mostly whether four I2S data pins with a single
-> shared WS/SCK input should be called "four I2S ports with shared clocks"
-> or "one I2S port with up to four data lanes". I'd lean towards the
-> latter.
-
-Yes, this is what we're doing for the Samsung CPU side controllers which
-implement this natively and seems to make sense here too - the different
-channels can't really work as separate interfaces in any practical way.
-
-> How audio2_i2s is forced to synchronize its clock output to audio1_i2s
-> is a problem their bindings will have to handle.
-
-Trying to hook up a controller that doesn't natively support this format
-to a device that uses it is definitely tricky, as well as describing the
-physical hookup we also need to worry about how things look to userspace
-- it's ideally going to want a single multi-channel audio stream.
-
-I think from a binding point of view we need a way to say "this endpoint
-on the link is constructed from these DAIs on the device side" and say
-if this is TDM or multi-data, and what's driving the clocks.
-
---9o1Xi4ZMQ45MudWG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUtmYvAAoJECTWi3JdVIfQt28H/1viMMw+EK2qHbR88BLH5iLi
-9tbosp+jQxC+PTtsTI5YlUR3T/shxxV7+xA9D6wPezG2tyDghYicKvcDinxWGYnK
-7wwtbmDBsRv69WPyeLNeZtZnTb4Oox5TYIYy1EtZluc1bYmpB3w1/MuOe4OU7ZdW
-lkaOaL9pw8Bjx7ycw1rBIPbxszsOhDiQkrDkYKoKD3SlkCeSxtBAtJJG2Fas5AfS
-yu8nGIGEI6f6EzXj4ry+j8/fAgftH+SMXj1/A+rOjFRWgjns9sCd8E9Sp2K7gEsl
-wTgiBH1gecrvcQ3gnO492ZqfBvST+U2J0pzzDrOEKmLfck/2hoqLe884+yKdWgQ=
-=pZEW
------END PGP SIGNATURE-----
-
---9o1Xi4ZMQ45MudWG--
-
---===============4847048719639612950==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On 01/14/2015 01:02 PM, Mark Brown wrote:
+[...]
+>>> I don't think that we need to prevent module unload when a stream is active.
+>>>   From a framework point of view is not different from hot-unplug. I don't
+>>> see a reason why we'd jump through hoops to actively forbid removing the
+>>> module once it works just fine.
+>
+>> Well, the module unload means a more drastic cleanup.  Even if you
+>> unbind, the code and data are still there while module unload may
+>> clean them up all.
+>
+>> Above all, disallowing the module unload while using is the common
+>> behavior of any other drivers.  Why do we have to be a rebel against
+>> all civil manner? :)
+>
+> That's not true for everything and for ASoC I'd tend to assume that the
+> user knows what they're doing and has a good reason for it; it's
+> certainly something that can be helpful in development.
 
 
---===============4847048719639612950==--
+My personal opinion on this is that disallowing module removal while a 
+driver registered by the module when is in use, while there is no technical 
+reason to do so, is a anti-feature. Whether in ALSA or elsewhere.
+
+But looking at the source it seems that this is a core feature of ALSA and 
+at least for the card module itself it will do the ref-counting when a 
+stream is started/stopped. And we even support setting the owner of a card 
+in ASoC. It's just that pretty much no ASoC card driver bothers to set the 
+owner field in the snd_soc_card struct. So this particular problem can be 
+fixed by updating the imx-wm8962 driver to set the owner field.
+
+- Lars
