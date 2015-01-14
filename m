@@ -1,49 +1,75 @@
-From: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: Re: [PATCH] conf/ucm: GoogleNyan: Add configuration
-Date: Wed, 14 Jan 2015 18:15:53 +0100
-Message-ID: <54B6A449.7040007@collabora.com>
-References: <1421254638-14599-1-git-send-email-tomeu.vizoso@collabora.com> <54B6A3E9.8010703@wwwdotorg.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Change irq type to 'int'
+Date: Wed, 14 Jan 2015 17:16:10 +0000
+Message-ID: <20150114171610.GX4160@sirena.org.uk>
+References: <1421239739-7755-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <54B6A3E9.8010703-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============0461002168157658428=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7E3926528D
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 18:16:20 +0100 (CET)
+In-Reply-To: <1421239739-7755-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/14/2015 06:14 PM, Stephen Warren wrote:
-> On 01/14/2015 09:57 AM, Tomeu Vizoso wrote:
->> Taken from the ChromeOS sources, this configuration should apply to all
->> Nyan boards from Google, so far HP Chromebook 14 (nyan-blaze) and Acer
->> Chromebook 13 (nyan-big).
-> 
-> How does user-space correlate the files added here:
-> 
->>   src/conf/ucm/GoogleNyan/GoogleNyan.conf |  5 ++
->>   src/conf/ucm/GoogleNyan/HiFi.conf       | 83 +++++++++++++++++++++++++++++++++
->>   src/conf/ucm/GoogleNyan/Makefile.am     |  4 ++
-> 
-> ... with the (DT-provided) ASoC card name, or DT compatible value:
-> 
->          sound {
->                  compatible = "nvidia,tegra-audio-max98090-nyan-big",
->                               "nvidia,tegra-audio-max98090";
->                  nvidia,model = "Acer Chromebook 13";
-> 
-> I would have expected either the file/directory names in this repo to 
-> match the ASoC card name that the kernel exposes (derived from the model 
-> string above), or that the files here contain some kind of indexable 
-> string that contains the kernel's ASoC card name. Is that not how the 
-> UCM repo usually works?
-> 
-> Otherwise, generic distro UCM init scripts aren't possible; UCM setup 
-> scripts would need a huge table mapping ASoC card name to UCM repo 
-> file/directory name, which doesn't seem scalable.
 
-Yeah, a corresponding patch is coming to the kernel soon.
+--===============0461002168157658428==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Ubca5Sl/zyRO+Ah+"
+Content-Disposition: inline
 
-Regards,
 
-Tomeu
+--Ubca5Sl/zyRO+Ah+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jan 14, 2015 at 10:48:59AM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Since commit 2ffa531078037a0 ("ASoC: fsl_ssi: Fix module unbound") the ir=
+q=20
+> number is retrieved via platform_get_irq(), which may fail and return a n=
+egative
+> number, so adapt its type to 'int'.
+
+Applied, thanks.
+
+--Ubca5Sl/zyRO+Ah+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUtqRaAAoJECTWi3JdVIfQ7VAH/3XEiOyCcFzBKqt9UXlzzm0j
+1tGBqUa0xvdsj9uJP2JFd3cLQdJSJ9zHk2sm1tgmUnkAN7+vp+8HdeNnZWNhzIgv
+muzHXwoDMwlDf3iga4arpjyu8tXukn1UQDKqsliNIpEPJGWQitDZhCy8tuRUDZw7
+9rmXYgww6aMUr7N1GuNHRuzbitpskNA1qLvEpIIk9Npnl5dqml68E7vhpOUFBqa4
+1AlqB5+KeOZUTMcECb+JH69J9eAuF7RDpUY1bTw0ObTpip1BpUnc0a7wGBAgMNat
+YtHHckpIOz65jhCBqNRXIkP9w7IJGohZ7qcD1UvqWrONHloQDYfZR8U7l6bp2J8=
+=QsYd
+-----END PGP SIGNATURE-----
+
+--Ubca5Sl/zyRO+Ah+--
+
+--===============0461002168157658428==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0461002168157658428==--
