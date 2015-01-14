@@ -1,178 +1,53 @@
-From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: Re: [PATCH] conf/ucm: GoogleNyan: Add configuration
-Date: Wed, 14 Jan 2015 09:41:20 -0800
-Message-ID: <CAEUnVG7=8vf+VQh6j5SO-ZUD7R7FoFUcf4Tk4Y1s8VY1sT8SnA@mail.gmail.com>
-References: <1421254638-14599-1-git-send-email-tomeu.vizoso@collabora.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl: imx-spdif: Set the card owner field
+Date: Wed, 14 Jan 2015 16:39:15 -0200
+Message-ID: <1421260755-7445-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1421254638-14599-1-git-send-email-tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f50.google.com (mail-qa0-f50.google.com
+ [209.85.216.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37D17261521
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 19:39:41 +0100 (CET)
+Received: by mail-qa0-f50.google.com with SMTP id k15so7916001qaq.9
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 10:39:40 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 14, 2015 at 8:57 AM, Tomeu Vizoso
-<tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org> wrote:
-> Taken from the ChromeOS sources, this configuration should apply to all
-> Nyan boards from Google, so far HP Chromebook 14 (nyan-blaze) and Acer
-> Chromebook 13 (nyan-big).
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Thanks for posting this Tomeu.
+Set the card owner field to avoid getting a kernel crash when the imx-spdif
+is unloaded while the playback is active.
 
->
-> Signed-off-by: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-> ---
->  configure.ac                            |  1 +
->  src/conf/ucm/GoogleNyan/GoogleNyan.conf |  5 ++
->  src/conf/ucm/GoogleNyan/HiFi.conf       | 83 +++++++++++++++++++++++++++++++++
->  src/conf/ucm/GoogleNyan/Makefile.am     |  4 ++
->  src/conf/ucm/Makefile.am                |  2 +-
->  5 files changed, 94 insertions(+), 1 deletion(-)
->  create mode 100644 src/conf/ucm/GoogleNyan/GoogleNyan.conf
->  create mode 100644 src/conf/ucm/GoogleNyan/HiFi.conf
->  create mode 100644 src/conf/ucm/GoogleNyan/Makefile.am
->
-> diff --git a/configure.ac b/configure.ac
-> index 734163c..916280b 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -654,6 +654,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
->           src/conf/ucm/SDP4430/Makefile \
->           src/conf/ucm/tegraalc5632/Makefile \
->           src/conf/ucm/PAZ00/Makefile \
-> +         src/conf/ucm/GoogleNyan/Makefile \
->           modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
->           alsalisp/Makefile aserver/Makefile \
->           test/Makefile test/lsb/Makefile \
-> diff --git a/src/conf/ucm/GoogleNyan/GoogleNyan.conf b/src/conf/ucm/GoogleNyan/GoogleNyan.conf
-> new file mode 100644
-> index 0000000..ebd0dd9
-> --- /dev/null
-> +++ b/src/conf/ucm/GoogleNyan/GoogleNyan.conf
-> @@ -0,0 +1,5 @@
-> +    Comment "Nyan internal card"
-> +    SectionUseCase."HiFi" {
-> +    File "HiFi.conf"
-> +    Comment "Default"
-> +    }
-> diff --git a/src/conf/ucm/GoogleNyan/HiFi.conf b/src/conf/ucm/GoogleNyan/HiFi.conf
-> new file mode 100644
-> index 0000000..cb624e7
-> --- /dev/null
-> +++ b/src/conf/ucm/GoogleNyan/HiFi.conf
-> @@ -0,0 +1,83 @@
-> +    SectionVerb {
-> +    Value {
-> +    OutputDspName "speaker_eq"
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+Build-tested only.
 
-These values are a Chrome-only  addition.  I'm not sure what the
-normal process for defining a value here is, but we haven't gone
-through it.
-The JackName below is rather useful for matching a device to a Jack,
-but it's not standard outside of ChromeOS
+ sound/soc/fsl/imx-spdif.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> +    }
-> +    EnableSequence [
-> +    cdev "hw:GoogleNyan"
-> +    cset "name='Left Speaker Mixer Left DAC Switch' on"
-> +    cset "name='Right Speaker Mixer Right DAC Switch' on"
-> +    cset "name='Headphone Left Switch' on"
-> +    cset "name='Headphone Right Switch' on"
-> +    cset "name='Digital EQ 3 Band Switch' off"
-> +    cset "name='Digital EQ 5 Band Switch' off"
-> +    cset "name='Digital EQ 7 Band Switch' off"
-> +    cset "name='Biquad Switch' off"
-> +    cset "name='Filter Mode' Music"
-> +    cset "name='ADC Oversampling Rate' 0"
-> +    cset "name='DMIC Mux' DMIC"
-> +    cset "name='MIC2 Mux' IN34"
-> +    cset "name='Right ADC Mixer MIC2 Switch' on"
-> +    cset "name='Left ADC Mixer MIC2 Switch' on"
-> +    cset "name='MIC2 Volume' 10"
-> +    cset "name='MIC2 Boost Volume' 0"
-> +    cset "name='Mic Jack Switch' off"
-> +    cset "name='Int Mic Switch' on"
-> +    cset "name='ADCR Boost Volume' 4"
-> +    cset "name='ADCL Boost Volume' 4"
-> +    cset "name='ADCR Volume' 11"
-> +    cset "name='ADCL Volume' 11"
-> +    cset "name='Left Speaker Mixer Left DAC Switch' on"
-> +    cset "name='Right Speaker Mixer Right DAC Switch' on"
-> +    cset "name='Speaker Left Mixer Volume' 2"
-> +    cset "name='Speaker Right Mixer Volume' 2"
-> +    cset "name='Record Path DC Blocking' on"
-> +    cset "name='Playback Path DC Blocking' on"
-> +    cset "name='Headphone Left Switch' on"
-> +    cset "name='Headphone Right Switch' on"
-> +    cset "name='HP Left Out Switch' off"
-> +    cset "name='HP Right Out Switch' off"
-> +    cset "name='Speaker Left Switch' on"
-> +    cset "name='Speaker Right Switch' on"
-> +    cset "name='Speakers Switch' on"
-> +    ]
-> +    DisableSequence [
-> +    ]
-> +    }
-> +    SectionDevice."Headphone".0 {
-> +    Value {
-> +    JackName "Google Nyan Headphone Jack"
-> +    OutputDspName ""
-> +    }
-> +    EnableSequence [
-> +    cdev "hw:GoogleNyan"
-> +    cset "name='Speakers Switch' off"
-> +    cset "name='HP Left Out Switch' on"
-> +    cset "name='HP Right Out Switch' on"
-> +    ]
-> +    DisableSequence [
-> +    cdev "hw:GoogleNyan"
-> +    cset "name='HP Left Out Switch' off"
-> +    cset "name='HP Right Out Switch' off"
-> +    cset "name='Speakers Switch' on"
-> +    ]
-> +    }
-> +    SectionDevice."Mic".0 {
-> +    Value {
-> +    JackName "Google Nyan Mic Jack"
-> +    CaptureControl "MIC2"
-> +    }
-> +    EnableSequence [
-> +    cdev "hw:GoogleNyan"
-> +    cset "name='Int Mic Switch' off"
-> +    cset "name='DMIC Mux' ADC"
-> +    cset "name='Mic Jack Switch' on"
-> +    cset "name='Record Path DC Blocking' on"
-> +    ]
-> +    DisableSequence [
-> +    cdev "hw:GoogleNyan"
-> +    cset "name='Mic Jack Switch' off"
-> +    cset "name='DMIC Mux' DMIC"
-> +    cset "name='Int Mic Switch' on"
-> +    cset "name='Record Path DC Blocking' off"
-> +    ]
-> +    }
-> diff --git a/src/conf/ucm/GoogleNyan/Makefile.am b/src/conf/ucm/GoogleNyan/Makefile.am
-> new file mode 100644
-> index 0000000..47c7fc9
-> --- /dev/null
-> +++ b/src/conf/ucm/GoogleNyan/Makefile.am
-> @@ -0,0 +1,4 @@
-> +alsaconfigdir = @ALSA_CONFIG_DIR@
-> +ucmdir = $(alsaconfigdir)/ucm/GoogleNyan
-> +ucm_DATA = GoogleNyan.conf HiFi.conf
-> +EXTRA_DIST = $(ucm_DATA)
-> diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-> index bde89df..14fc7ae 100644
-> --- a/src/conf/ucm/Makefile.am
-> +++ b/src/conf/ucm/Makefile.am
-> @@ -1 +1 @@
-> -SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00
-> +SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan
-> --
-> 1.9.3
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+index e94704f..33da26a 100644
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -60,6 +60,7 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ 	data->card.dev = &pdev->dev;
+ 	data->card.dai_link = &data->dai;
+ 	data->card.num_links = 1;
++	data->card.owner = THIS_MODULE;
+ 
+ 	ret = snd_soc_of_parse_card_name(&data->card, "model");
+ 	if (ret)
+-- 
+1.9.1
