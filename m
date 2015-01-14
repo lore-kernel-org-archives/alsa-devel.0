@@ -1,48 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V3 00/15] ASoC: samsung: Add clk provider for I2S
- internal clocks
-Date: Wed, 14 Jan 2015 19:49:24 +0000
-Message-ID: <20150114194924.GJ3043@sirena.org.uk>
-References: <1421260962-16892-1-git-send-email-s.nawrocki@samsung.com>
+Subject: Re: [PATCH 1/5] ASoC: 88pm860x: Replace w->codec
+ snd_soc_dapm_to_codec(w->dapm)
+Date: Wed, 14 Jan 2015 19:51:35 +0000
+Message-ID: <20150114195135.GK3043@sirena.org.uk>
+References: <1420901048-5756-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="va4/JQ6j8/8uipEp"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1421260962-16892-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: kgene@kernel.org, padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============1712488118860440428=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 370BD26525F
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 20:51:53 +0100 (CET)
+In-Reply-To: <1420901048-5756-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---va4/JQ6j8/8uipEp
+--===============1712488118860440428==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fUvfsPTz/SzOZDdw"
+Content-Disposition: inline
+
+
+--fUvfsPTz/SzOZDdw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 14, 2015 at 07:42:27PM +0100, Sylwester Nawrocki wrote:
-> This series is an attempt to resolve the CDCLK clock gating issue on Odroid
-> X2/U3 as reported by Daniel Drake [1], by exposing the CDCLK gate clock
-> (and the two other clocks) through clk API. The upside is we can switch
-> Odroid X2/U3 to the simple-card, once the CDCLK clock is taken care of by
-> the clk core and DT.
+On Sat, Jan 10, 2015 at 03:44:04PM +0100, Lars-Peter Clausen wrote:
+> The codec field of the snd_soc_widget struct is eventually going to be
+> removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Applied all, thanks.
 
---va4/JQ6j8/8uipEp
+--fUvfsPTz/SzOZDdw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUtshDAAoJECTWi3JdVIfQjmUH/AkaYVY7qpEU82AepFRSMQfp
-5zT6rPpijkiriWRw1gK2XyzrYcuyTzxyNJXGRbvM8uvZn2DEZUY6IL7Vx7r3G5tc
-wWdXwOYbjjq4OWdgY/WPxzGgqxpEMomqME8nh7h4SP+HMNDq64H45F2B3Vs+XIa8
-V9sgYiG09bp9RmQ1mT8gPRA6IepQKrz11rShg1gQ9RtoNi11U3jkjnSFaPLwP0L8
-0iilsevDkqjqyheZz9KeZ32H43eK9qYWwo5B6s7I6sKTT2EVWOjMYBK+5a184T66
-i3ccAoXyp9NqthNP6VRRpzCY1BkwvGeQm2LLeZHvBg87WUeKVoRDz1gwV+2tpr0=
-=zCSO
+iQEcBAEBCAAGBQJUtsjGAAoJECTWi3JdVIfQUqwH/jzzycXHBWToYJ6N1uRQvKXo
+MKCqA7naZSuSJeSgmMovfvObpW7crb8Q7Vgk/o7UXdYjU1jKHMHMVKYt0a0KtHsR
+DsWEZD9EUPxzeVIurlpzxIKmmf/0802SpKXFnQZNIxDL/OnLYede4T1iNnIJYJJH
+xz3tyra2zGRjNm7gYN6IG2ywrBtzmKiFuqJGuOxupr4Jh8WhedXstOJHCf6Yy+Y1
+0j9noYiKR4sefeUpXFvRWNBRsPNfywK87i6hZi5q+WzxeN8b3dP3/LryhCLnrqZ6
+39Km+rnCkcdaznozxB7cEP7sqELy+5msJNIzbg3GaxBV7+GqhheAgD6EAAAlf1c=
+=ckGB
 -----END PGP SIGNATURE-----
 
---va4/JQ6j8/8uipEp--
+--fUvfsPTz/SzOZDdw--
+
+--===============1712488118860440428==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1712488118860440428==--
