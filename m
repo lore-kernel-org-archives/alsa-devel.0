@@ -1,157 +1,42 @@
-From: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH] conf/ucm: GoogleNyan: Add configuration
-Date: Wed, 14 Jan 2015 17:57:18 +0100
-Message-ID: <1421254638-14599-1-git-send-email-tomeu.vizoso@collabora.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH] conf/ucm: GoogleNyan: Add configuration
+Date: Wed, 14 Jan 2015 10:14:17 -0700
+Message-ID: <54B6A3E9.8010703@wwwdotorg.org>
+References: <1421254638-14599-1-git-send-email-tomeu.vizoso@collabora.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1421254638-14599-1-git-send-email-tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org, Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+To: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Taken from the ChromeOS sources, this configuration should apply to all
-Nyan boards from Google, so far HP Chromebook 14 (nyan-blaze) and Acer
-Chromebook 13 (nyan-big).
+On 01/14/2015 09:57 AM, Tomeu Vizoso wrote:
+> Taken from the ChromeOS sources, this configuration should apply to all
+> Nyan boards from Google, so far HP Chromebook 14 (nyan-blaze) and Acer
+> Chromebook 13 (nyan-big).
 
-Signed-off-by: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
----
- configure.ac                            |  1 +
- src/conf/ucm/GoogleNyan/GoogleNyan.conf |  5 ++
- src/conf/ucm/GoogleNyan/HiFi.conf       | 83 +++++++++++++++++++++++++++++++++
- src/conf/ucm/GoogleNyan/Makefile.am     |  4 ++
- src/conf/ucm/Makefile.am                |  2 +-
- 5 files changed, 94 insertions(+), 1 deletion(-)
- create mode 100644 src/conf/ucm/GoogleNyan/GoogleNyan.conf
- create mode 100644 src/conf/ucm/GoogleNyan/HiFi.conf
- create mode 100644 src/conf/ucm/GoogleNyan/Makefile.am
+How does user-space correlate the files added here:
 
-diff --git a/configure.ac b/configure.ac
-index 734163c..916280b 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -654,6 +654,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/SDP4430/Makefile \
- 	  src/conf/ucm/tegraalc5632/Makefile \
- 	  src/conf/ucm/PAZ00/Makefile \
-+	  src/conf/ucm/GoogleNyan/Makefile \
- 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
- 	  alsalisp/Makefile aserver/Makefile \
- 	  test/Makefile test/lsb/Makefile \
-diff --git a/src/conf/ucm/GoogleNyan/GoogleNyan.conf b/src/conf/ucm/GoogleNyan/GoogleNyan.conf
-new file mode 100644
-index 0000000..ebd0dd9
---- /dev/null
-+++ b/src/conf/ucm/GoogleNyan/GoogleNyan.conf
-@@ -0,0 +1,5 @@
-+    Comment "Nyan internal card"
-+    SectionUseCase."HiFi" {
-+    File "HiFi.conf"
-+    Comment "Default"
-+    }
-diff --git a/src/conf/ucm/GoogleNyan/HiFi.conf b/src/conf/ucm/GoogleNyan/HiFi.conf
-new file mode 100644
-index 0000000..cb624e7
---- /dev/null
-+++ b/src/conf/ucm/GoogleNyan/HiFi.conf
-@@ -0,0 +1,83 @@
-+    SectionVerb {
-+    Value {
-+    OutputDspName "speaker_eq"
-+    }
-+    EnableSequence [
-+    cdev "hw:GoogleNyan"
-+    cset "name='Left Speaker Mixer Left DAC Switch' on"
-+    cset "name='Right Speaker Mixer Right DAC Switch' on"
-+    cset "name='Headphone Left Switch' on"
-+    cset "name='Headphone Right Switch' on"
-+    cset "name='Digital EQ 3 Band Switch' off"
-+    cset "name='Digital EQ 5 Band Switch' off"
-+    cset "name='Digital EQ 7 Band Switch' off"
-+    cset "name='Biquad Switch' off"
-+    cset "name='Filter Mode' Music"
-+    cset "name='ADC Oversampling Rate' 0"
-+    cset "name='DMIC Mux' DMIC"
-+    cset "name='MIC2 Mux' IN34"
-+    cset "name='Right ADC Mixer MIC2 Switch' on"
-+    cset "name='Left ADC Mixer MIC2 Switch' on"
-+    cset "name='MIC2 Volume' 10"
-+    cset "name='MIC2 Boost Volume' 0"
-+    cset "name='Mic Jack Switch' off"
-+    cset "name='Int Mic Switch' on"
-+    cset "name='ADCR Boost Volume' 4"
-+    cset "name='ADCL Boost Volume' 4"
-+    cset "name='ADCR Volume' 11"
-+    cset "name='ADCL Volume' 11"
-+    cset "name='Left Speaker Mixer Left DAC Switch' on"
-+    cset "name='Right Speaker Mixer Right DAC Switch' on"
-+    cset "name='Speaker Left Mixer Volume' 2"
-+    cset "name='Speaker Right Mixer Volume' 2"
-+    cset "name='Record Path DC Blocking' on"
-+    cset "name='Playback Path DC Blocking' on"
-+    cset "name='Headphone Left Switch' on"
-+    cset "name='Headphone Right Switch' on"
-+    cset "name='HP Left Out Switch' off"
-+    cset "name='HP Right Out Switch' off"
-+    cset "name='Speaker Left Switch' on"
-+    cset "name='Speaker Right Switch' on"
-+    cset "name='Speakers Switch' on"
-+    ]
-+    DisableSequence [
-+    ]
-+    }
-+    SectionDevice."Headphone".0 {
-+    Value {
-+    JackName "Google Nyan Headphone Jack"
-+    OutputDspName ""
-+    }
-+    EnableSequence [
-+    cdev "hw:GoogleNyan"
-+    cset "name='Speakers Switch' off"
-+    cset "name='HP Left Out Switch' on"
-+    cset "name='HP Right Out Switch' on"
-+    ]
-+    DisableSequence [
-+    cdev "hw:GoogleNyan"
-+    cset "name='HP Left Out Switch' off"
-+    cset "name='HP Right Out Switch' off"
-+    cset "name='Speakers Switch' on"
-+    ]
-+    }
-+    SectionDevice."Mic".0 {
-+    Value {
-+    JackName "Google Nyan Mic Jack"
-+    CaptureControl "MIC2"
-+    }
-+    EnableSequence [
-+    cdev "hw:GoogleNyan"
-+    cset "name='Int Mic Switch' off"
-+    cset "name='DMIC Mux' ADC"
-+    cset "name='Mic Jack Switch' on"
-+    cset "name='Record Path DC Blocking' on"
-+    ]
-+    DisableSequence [
-+    cdev "hw:GoogleNyan"
-+    cset "name='Mic Jack Switch' off"
-+    cset "name='DMIC Mux' DMIC"
-+    cset "name='Int Mic Switch' on"
-+    cset "name='Record Path DC Blocking' off"
-+    ]
-+    }
-diff --git a/src/conf/ucm/GoogleNyan/Makefile.am b/src/conf/ucm/GoogleNyan/Makefile.am
-new file mode 100644
-index 0000000..47c7fc9
---- /dev/null
-+++ b/src/conf/ucm/GoogleNyan/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/GoogleNyan
-+ucm_DATA = GoogleNyan.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index bde89df..14fc7ae 100644
---- a/src/conf/ucm/Makefile.am
-+++ b/src/conf/ucm/Makefile.am
-@@ -1 +1 @@
--SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00
-+SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan
--- 
-1.9.3
+>   src/conf/ucm/GoogleNyan/GoogleNyan.conf |  5 ++
+>   src/conf/ucm/GoogleNyan/HiFi.conf       | 83 +++++++++++++++++++++++++++++++++
+>   src/conf/ucm/GoogleNyan/Makefile.am     |  4 ++
+
+... with the (DT-provided) ASoC card name, or DT compatible value:
+
+         sound {
+                 compatible = "nvidia,tegra-audio-max98090-nyan-big",
+                              "nvidia,tegra-audio-max98090";
+                 nvidia,model = "Acer Chromebook 13";
+
+I would have expected either the file/directory names in this repo to 
+match the ASoC card name that the kernel exposes (derived from the model 
+string above), or that the files here contain some kind of indexable 
+string that contains the kernel's ASoC card name. Is that not how the 
+UCM repo usually works?
+
+Otherwise, generic distro UCM init scripts aren't possible; UCM setup 
+scripts would need a huge table mapping ASoC card name to UCM repo 
+file/directory name, which doesn't seem scalable.
