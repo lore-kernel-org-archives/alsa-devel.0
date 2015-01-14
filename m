@@ -1,21 +1,19 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: unload Audio drivers while playback stream is
- active case kernel crash
-Date: Wed, 14 Jan 2015 10:34:32 +0100
-Message-ID: <54B63828.6030408@metafoo.de>
-References: <857E9EDCA6C0904DB3357321AA9123EB0108B66919@NA-MBX-01.mgc.mentorg.com>
- <s5h1tmyiof7.wl-tiwai@suse.de> <20150113215412.GS4160@sirena.org.uk>
- <s5hr3ux24em.wl-tiwai@suse.de> <54B625A8.8090406@metafoo.de>
- <54B627F0.90207@mentor.com>
+Subject: Re: Regression with .set_bias_level in pcm512x?
+Date: Wed, 14 Jan 2015 10:40:11 +0100
+Message-ID: <54B6397B.5040702@metafoo.de>
+References: <0bea1026e90a46769a573470a3efc935@EMAIL.axentia.se>
+ <54B622D8.90008@metafoo.de>
+ <680a9f057a904cef8c06c631f233025e@EMAIL.axentia.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-243.synserver.de (smtp-out-243.synserver.de
  [212.40.185.243])
- by alsa0.perex.cz (Postfix) with ESMTP id 545AE2608EA
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 10:34:33 +0100 (CET)
-In-Reply-To: <54B627F0.90207@mentor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6252C2608EA
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 10:40:11 +0100 (CET)
+In-Reply-To: <680a9f057a904cef8c06c631f233025e@EMAIL.axentia.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,64 +23,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jiwang <jiada_wang@mentor.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Frkuska,
- Joshua" <Joshua_Frkuska@mentor.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+To: Peter Rosin <peda@axentia.se>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/14/2015 09:25 AM, jiwang wrote:
-> Hi
+On 01/14/2015 10:31 AM, Peter Rosin wrote:
+> Hi!
 >
-> On 01/14/2015 05:15 PM, Lars-Peter Clausen wrote:
->> On 01/14/2015 08:43 AM, Takashi Iwai wrote:
->>> At Tue, 13 Jan 2015 21:54:12 +0000,
->>> Mark Brown wrote:
->>>>
->>>> On Tue, Jan 13, 2015 at 06:24:44PM +0100, Takashi Iwai wrote:
->>>>> Wang, Jiada (ESD) wrote:
->>>>
->>>>>> I am using i.MX6Q sabreSD board, which have imx_wm892 machine driver,
->>>>>> wm8962 codec and SSI CPU DAI,
->>>>
->>>>>> I got Kernel crash when unloading audio drivers (playback stream is
->>>>>> active)
->>>>>> modprobe -r snd_soc_imx_wm8962
->>>>>> modprobe -r snd_soc_fsl_ssi
->>>>>> modprobe -r snd_soc_wm8962
->>>>
->>>>> The root problem is that you can unload the module while playing.
->>>>> The corresponding module refcounts should have been increased during
->>>>> used.
->>>>
->>>>> Do we miss [try_]module_get() somewhere in ASoC?
->>>>
->>>> That doesn't help, users can still forcibly unbind the driver at runtime
->>>> without loading the module - and there's always the potential for
->>>> actually hotpluggable hardware.  The teardown paths should be able to
->>>> cope somewhat gracefully.
+> Lars-Peter Clausen wrote:
+>> On 01/13/2015 11:49 PM, Peter Rosin wrote:
+>>> Hi!
 >>>
->>> The module refcount has to be handled while being used for stopping
->>> module unload.  That's irrelevant from the dynamic unbinding support
->>> itself.  Of course, the module refcount doesn't save the world, but
->>> it's the right fix for this particular scenario.
+>>> I'm working on adding support for DAIFMT_CBM_CFM and
+>> DAIFMT_CBM_CFS to
+>>> pcm512x, and it works nicely in the 3.10 kernel + Atmel-patches were I
+>>> have developed the code. Now I'm trying to forward-port it and test it
+>>> on
+>>> 3.18 + other-Atmel-patches in preparation for submission. However,
+>>> there seems to be a regression in that the (pre-existing)
+>>> pcm512x_set_bias_level callback is never called in the 3.18 version.
+>>>
+>>> I see that there has been some core work on set_bias_level, and
+>>> suspect it has something to do with dapm and components, but I think
+>>> someone else will find the problem much quicker than I am able to.
+>>>
+>>> I have feebly tried to revert 0bd2ac3dae74ee25c5ea171cb572731c7a89c248
+>>> and 68f831c2724ab72c0088471b2ed1dc99e81948ef, but that didn't help.
+>>> That also seems a bit backwards. So, what needs to be done in the
+>>> pcm512x driver to have set_bias_level called?
 >>
->> Refcounting won't help in this case. The issue is caused by a delayed work
->> item that gets launched when the PCM stream is stopped. So if you decrease
->> the refcount when the stream is stopped you still have a window where it
->> is possible to remove the module while the work is still being scheduled.
->>
->> And while we do flush the scheduled work when we remove the ASoC card this
->> is done before snd_card_free() is called. So when snd_card_free() is
->> called it gets re-scheduled again. I think the correct fix is to add a
->> snd_card_disconnect() at the very top of soc_cleanup_card_resources().
->>
-> when stream is active, snd_card_disconnect() will trigger pcm_close() be
-> executed by another thread,
-> we can't ensure the pcm_close() is executed before the rest of
-> soc_cleanup_card_resources().
+>> It's unlikely that these commits have anything to do with it.
+>
+> Agreed, I just wanted to show that I at least did try some things...
+>
+>> I think it is more likely that the DAPM state (for whatever reason) never
+>> actually changes. Check the state of the DAPM context and all the widgets in
+>> /sys/kernel/debug/asoc/your_card/... and compare their state when the
+>> system is idle to when it should not be idle.
+>
+> There is indeed something strange going on with dapm. When things should be
+> active, I have this (for the non-working 3.18 variant):
+>
+> $ cat codec\:pcm512x.0-004c/dapm/Playback \
+> 	codec\:pcm512x.0-004c/dapm/DACL \
+> 	codec\:pcm512x.0-004c/dapm/OUTL \
+> 	dapm/DAC1 \
+> 	dapm/MIX1 \
+> 	dapm/MUX1 \
+> 	dapm/OUT1 \
+> 	dapm/AIFINL
+> Playback: Off  in 1 out 0
+>   stream Playback active
+>   out "static" "DACR"
+>   out "static" "DACL"
+> DACL: Off  in 1 out 0
+>   in  "static" "Playback"
+>   out "static" "OUTL"
+> OUTL: Off  in 1 out 0
+>   in  "static" "DACL"
+>   out "static" "DAC1"
+> DAC1: Off  in 1 out 0
+>   in  "static" "OUTL"
+>   out "static" "MIX1"
+> MIX1: Off  in 1 out 0
+>   in  "static" "DAC1"
+>   out "Mixer" "MUX1"
+> MUX1: Off  in 1 out 0
+>   in  "Mixer" "MIX1"
+>   out "static" "OUT1"
+> OUT1: Off  in 1 out 0
+>   in  "static" "MUX1"
+> AIFINL: Off  in 0 out 0
+>   stream Playback inactive
+>
+> When things are inactive, all "in 1" change to "in 0", and the top "stream Playback"
+> change to "inactive".
+>
+> bias_level of both the card and the codec are "Off", regardless.
+>
+> For reference, I have attached my current card driver, which is given this:
+>
+> 	sound {
+> 		compatible = "axentia,asoc-linea-tse850";
+>
+> 		axentia,model = "TSE850 @ Linea";
+> 		axentia,audio-routing =
+> 			"DAC1", "OUTL",
+> 			"DAC2", "OUTR";
+>
+> 		axentia,ssc-controller = <&ssc0>;
+> 		axentia,audio-codec = <&pcm5142>;
+>
+> 		gpios = <&pioA 9 GPIO_ACTIVE_LOW>,
+> 			<&pioA 8 GPIO_ACTIVE_LOW>,
+> 			<&pioA 10 GPIO_ACTIVE_LOW>,
+> 			<&pioA 11 GPIO_ACTIVE_LOW>;
+>
+> 		status = "okay";
+> 	};
+>
+> I suspect that it has something to do with the snd_soc_dapm_add_routes call in
+> linea_pcm512x_init? (I "stole" that piece from omap-abe-twl6040)
 
-Hm right, because that only gets called once the userspace application 
-finally closes the PCM device. Takashi approach with moving things to the 
-card_free callback might work better.
+
+There does not seem to be a audio sink in your DAPM graph. You have a source 
+which is the Playback stream, hence a one the "1" for "in". But a widget 
+will only power up if it is on a active path from a source to a sink. Try to 
+add a speaker, lineout or similar widget to the end of your graph.
 
 - Lars
