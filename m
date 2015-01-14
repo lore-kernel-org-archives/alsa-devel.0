@@ -1,72 +1,157 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] unload Audio drivers while playback stream is
- active case kernel crash
-Date: Wed, 14 Jan 2015 16:34:15 +0000
-Message-ID: <20150114163415.GV4160@sirena.org.uk>
-References: <857E9EDCA6C0904DB3357321AA9123EB0108B66919@NA-MBX-01.mgc.mentorg.com>
- <s5h1tmyiof7.wl-tiwai@suse.de>
- <20150113215412.GS4160@sirena.org.uk>
- <s5hr3ux24em.wl-tiwai@suse.de>
- <54B625A8.8090406@metafoo.de>
- <s5hoaq121gh.wl-tiwai@suse.de>
- <54B63E4F.2010506@metafoo.de>
- <s5hwq4phbzr.wl-tiwai@suse.de>
- <20150114120228.GT4160@sirena.org.uk>
- <s5hiog9h5xu.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OFtM20PmL5gDcvsL"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hiog9h5xu.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang, Jiada (ESD)" <Jiada_Wang@mentor.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>
+From: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Subject: [PATCH] conf/ucm: GoogleNyan: Add configuration
+Date: Wed, 14 Jan 2015 17:57:18 +0100
+Message-ID: <1421254638-14599-1-git-send-email-tomeu.vizoso@collabora.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org, Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Taken from the ChromeOS sources, this configuration should apply to all
+Nyan boards from Google, so far HP Chromebook 14 (nyan-blaze) and Acer
+Chromebook 13 (nyan-big).
 
---OFtM20PmL5gDcvsL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+---
+ configure.ac                            |  1 +
+ src/conf/ucm/GoogleNyan/GoogleNyan.conf |  5 ++
+ src/conf/ucm/GoogleNyan/HiFi.conf       | 83 +++++++++++++++++++++++++++++++++
+ src/conf/ucm/GoogleNyan/Makefile.am     |  4 ++
+ src/conf/ucm/Makefile.am                |  2 +-
+ 5 files changed, 94 insertions(+), 1 deletion(-)
+ create mode 100644 src/conf/ucm/GoogleNyan/GoogleNyan.conf
+ create mode 100644 src/conf/ucm/GoogleNyan/HiFi.conf
+ create mode 100644 src/conf/ucm/GoogleNyan/Makefile.am
 
-On Wed, Jan 14, 2015 at 02:01:33PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > > Above all, disallowing the module unload while using is the common
-> > > behavior of any other drivers.  Why do we have to be a rebel against
-> > > all civil manner? :)
-
-> > That's not true for everything
-
-> Hmm, which driver does behave so intentionally?  I'm interested in the
-> supposed reason behind it.
-
-Relatively few of the subsystems in drivers have references to
-module_get().
-
-> > and for ASoC I'd tend to assume that the
-> > user knows what they're doing and has a good reason for it; it's
-> > certainly something that can be helpful in development.
-
-> The module unload is never considered to be equivalent with hot
-> unplug  It's more than that.
-
-I'm not sure that's the case from a user perspective.
-
---OFtM20PmL5gDcvsL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUtpqHAAoJECTWi3JdVIfQ2wsH/2+T+F7k18ei4Szp3Bv4Vf7h
-Uv2T++/J/429RH+CJCNWrlr/l6NjtmZrICqqESvWI2kk4kwi+5AeAzR9nEIQ27sL
-12LpBKaxsnSr9McgzlfdItIbypvfTMOV+ObUWK/RspBXWJG8mhxbp+wqG5EJ2jpP
-dwejoePFskNGWgVVDw2GtK3vowLVP3musNeYbwsROWbNU9b0osCxRnm7lxrkHvhu
-cPqOtaObE44dN4rZfRE9TUBJsGywlYsjP69RCSGM0jHrrvPo+aiG7ejjbVnZodwL
-sG48T/lVpz6s3sHVALqT166oJzAkHmy5VS7w6te8aIzxWbomBNTPVWuGu1psUjo=
-=bQ7Z
------END PGP SIGNATURE-----
-
---OFtM20PmL5gDcvsL--
+diff --git a/configure.ac b/configure.ac
+index 734163c..916280b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -654,6 +654,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/SDP4430/Makefile \
+ 	  src/conf/ucm/tegraalc5632/Makefile \
+ 	  src/conf/ucm/PAZ00/Makefile \
++	  src/conf/ucm/GoogleNyan/Makefile \
+ 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
+ 	  alsalisp/Makefile aserver/Makefile \
+ 	  test/Makefile test/lsb/Makefile \
+diff --git a/src/conf/ucm/GoogleNyan/GoogleNyan.conf b/src/conf/ucm/GoogleNyan/GoogleNyan.conf
+new file mode 100644
+index 0000000..ebd0dd9
+--- /dev/null
++++ b/src/conf/ucm/GoogleNyan/GoogleNyan.conf
+@@ -0,0 +1,5 @@
++    Comment "Nyan internal card"
++    SectionUseCase."HiFi" {
++    File "HiFi.conf"
++    Comment "Default"
++    }
+diff --git a/src/conf/ucm/GoogleNyan/HiFi.conf b/src/conf/ucm/GoogleNyan/HiFi.conf
+new file mode 100644
+index 0000000..cb624e7
+--- /dev/null
++++ b/src/conf/ucm/GoogleNyan/HiFi.conf
+@@ -0,0 +1,83 @@
++    SectionVerb {
++    Value {
++    OutputDspName "speaker_eq"
++    }
++    EnableSequence [
++    cdev "hw:GoogleNyan"
++    cset "name='Left Speaker Mixer Left DAC Switch' on"
++    cset "name='Right Speaker Mixer Right DAC Switch' on"
++    cset "name='Headphone Left Switch' on"
++    cset "name='Headphone Right Switch' on"
++    cset "name='Digital EQ 3 Band Switch' off"
++    cset "name='Digital EQ 5 Band Switch' off"
++    cset "name='Digital EQ 7 Band Switch' off"
++    cset "name='Biquad Switch' off"
++    cset "name='Filter Mode' Music"
++    cset "name='ADC Oversampling Rate' 0"
++    cset "name='DMIC Mux' DMIC"
++    cset "name='MIC2 Mux' IN34"
++    cset "name='Right ADC Mixer MIC2 Switch' on"
++    cset "name='Left ADC Mixer MIC2 Switch' on"
++    cset "name='MIC2 Volume' 10"
++    cset "name='MIC2 Boost Volume' 0"
++    cset "name='Mic Jack Switch' off"
++    cset "name='Int Mic Switch' on"
++    cset "name='ADCR Boost Volume' 4"
++    cset "name='ADCL Boost Volume' 4"
++    cset "name='ADCR Volume' 11"
++    cset "name='ADCL Volume' 11"
++    cset "name='Left Speaker Mixer Left DAC Switch' on"
++    cset "name='Right Speaker Mixer Right DAC Switch' on"
++    cset "name='Speaker Left Mixer Volume' 2"
++    cset "name='Speaker Right Mixer Volume' 2"
++    cset "name='Record Path DC Blocking' on"
++    cset "name='Playback Path DC Blocking' on"
++    cset "name='Headphone Left Switch' on"
++    cset "name='Headphone Right Switch' on"
++    cset "name='HP Left Out Switch' off"
++    cset "name='HP Right Out Switch' off"
++    cset "name='Speaker Left Switch' on"
++    cset "name='Speaker Right Switch' on"
++    cset "name='Speakers Switch' on"
++    ]
++    DisableSequence [
++    ]
++    }
++    SectionDevice."Headphone".0 {
++    Value {
++    JackName "Google Nyan Headphone Jack"
++    OutputDspName ""
++    }
++    EnableSequence [
++    cdev "hw:GoogleNyan"
++    cset "name='Speakers Switch' off"
++    cset "name='HP Left Out Switch' on"
++    cset "name='HP Right Out Switch' on"
++    ]
++    DisableSequence [
++    cdev "hw:GoogleNyan"
++    cset "name='HP Left Out Switch' off"
++    cset "name='HP Right Out Switch' off"
++    cset "name='Speakers Switch' on"
++    ]
++    }
++    SectionDevice."Mic".0 {
++    Value {
++    JackName "Google Nyan Mic Jack"
++    CaptureControl "MIC2"
++    }
++    EnableSequence [
++    cdev "hw:GoogleNyan"
++    cset "name='Int Mic Switch' off"
++    cset "name='DMIC Mux' ADC"
++    cset "name='Mic Jack Switch' on"
++    cset "name='Record Path DC Blocking' on"
++    ]
++    DisableSequence [
++    cdev "hw:GoogleNyan"
++    cset "name='Mic Jack Switch' off"
++    cset "name='DMIC Mux' DMIC"
++    cset "name='Int Mic Switch' on"
++    cset "name='Record Path DC Blocking' off"
++    ]
++    }
+diff --git a/src/conf/ucm/GoogleNyan/Makefile.am b/src/conf/ucm/GoogleNyan/Makefile.am
+new file mode 100644
+index 0000000..47c7fc9
+--- /dev/null
++++ b/src/conf/ucm/GoogleNyan/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/GoogleNyan
++ucm_DATA = GoogleNyan.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index bde89df..14fc7ae 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00
++SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan
+-- 
+1.9.3
