@@ -1,112 +1,131 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: unload Audio drivers while playback stream is
- active case kernel crash
-Date: Wed, 14 Jan 2015 12:02:28 +0000
-Message-ID: <20150114120228.GT4160@sirena.org.uk>
-References: <857E9EDCA6C0904DB3357321AA9123EB0108B66919@NA-MBX-01.mgc.mentorg.com>
- <s5h1tmyiof7.wl-tiwai@suse.de>
- <20150113215412.GS4160@sirena.org.uk>
- <s5hr3ux24em.wl-tiwai@suse.de> <54B625A8.8090406@metafoo.de>
- <s5hoaq121gh.wl-tiwai@suse.de> <54B63E4F.2010506@metafoo.de>
- <s5hwq4phbzr.wl-tiwai@suse.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v9 1/4] drm/i2c: tda998x: Add DT support for audio
+Date: Wed, 14 Jan 2015 12:12:34 +0000
+Message-ID: <20150114121233.GW12302@n2100.arm.linux.org.uk>
+References: <20150112175705.GN12302@n2100.arm.linux.org.uk>
+ <1421151718.4519.24.camel@pengutronix.de>
+ <20150113122715.GP12302@n2100.arm.linux.org.uk>
+ <20150113165411.5469930d@armhf>
+ <20150113160313.GR12302@n2100.arm.linux.org.uk>
+ <20150113200252.3dbfab14@armhf>
+ <20150113192648.GU12302@n2100.arm.linux.org.uk>
+ <54B574CD.9020905@ti.com>
+ <20150113195415.GV12302@n2100.arm.linux.org.uk>
+ <20150114085501.677dc4d2@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1199816965547796021=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F1053261555
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 13:02:44 +0100 (CET)
-In-Reply-To: <s5hwq4phbzr.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "Wang,
- Jiada (ESD)" <Jiada_Wang@mentor.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Frkuska,
- Joshua" <Joshua_Frkuska@mentor.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20150114085501.677dc4d2@armhf>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrew Jackson <Andrew.Jackson@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1199816965547796021==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="REOXmE5zpOGz6VLu"
-Content-Disposition: inline
-
-
---REOXmE5zpOGz6VLu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jan 14, 2015 at 11:50:48AM +0100, Takashi Iwai wrote:
-> Lars-Peter Clausen wrote:
-
-> > > OK, so it's not about active stream.  From the reporter's description,
-> > > I supposed that the module gets unloaded while playing a stream, which
-> > > shouldn't be allowed.
-
-> > Well one of the ways to trigger this is to remove the module while the=
-=20
-> > stream is active. But it is not exclusively a problem module unload pro=
-blem.=20
-> > E.g. the same happens if you hot-unplug the ASoC card.
-
-> Yes, unbinding can trigger a similar problem, ends up the same bad
-> code path.
-
-Right, which was my point - we need to be able to cope with the driver
-being removed while in use, unbind is just one path where this could
-happen and the issue isn't specific to unbind.
-
-> > I don't think that we need to prevent module unload when a stream is ac=
-tive.=20
-> >  From a framework point of view is not different from hot-unplug. I don=
-'t=20
-> > see a reason why we'd jump through hoops to actively forbid removing th=
-e=20
-> > module once it works just fine.
-
-> Well, the module unload means a more drastic cleanup.  Even if you
-> unbind, the code and data are still there while module unload may
-> clean them up all.
-
-> Above all, disallowing the module unload while using is the common
-> behavior of any other drivers.  Why do we have to be a rebel against
-> all civil manner? :)
-
-That's not true for everything and for ASoC I'd tend to assume that the
-user knows what they're doing and has a good reason for it; it's
-certainly something that can be helpful in development.
-
---REOXmE5zpOGz6VLu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUtlrUAAoJECTWi3JdVIfQ5rwH/3nUusP2FRdhMCavIle/Fr/N
-TjrE2/6TmIyQuRT7EvNKIyyxZ2sMdNngmJhzRH9HHvDbxjKR/8wmZG2jxgwDRiOf
-MnmmFHBuh+O8D8mDJG7QHSjqhrVxF2BYuRyR+B9M2ZkryT5Lj7EaKzhya7fqlY0U
-mk0+rrlnNEoKX9S/jP+yGsV3fvENdVBmII5YsVV6EV3FCXXS1Zudd/9DudSjjdIt
-K2Xpr1vU4Qn2uafZhJypzU4mY05s5JqQjlEp5BXKCDk7EhKX0W97z4L0+zY1SA9w
-58bGm9kD006UBdOuM52IoOBffVDZdSclg3mTpmCxxSUxBuQRNmjcU1wxoG0cElI=
-=dfRY
------END PGP SIGNATURE-----
-
---REOXmE5zpOGz6VLu--
-
---===============1199816965547796021==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1199816965547796021==--
+T24gV2VkLCBKYW4gMTQsIDIwMTUgYXQgMDg6NTU6MDFBTSArMDEwMCwgSmVhbi1GcmFuY29pcyBN
+b2luZSB3cm90ZToKPiBPbiBUdWUsIDEzIEphbiAyMDE1IDE5OjU0OjE1ICswMDAwCj4gUnVzc2Vs
+bCBLaW5nIC0gQVJNIExpbnV4IDxsaW51eEBhcm0ubGludXgub3JnLnVrPiB3cm90ZToKPiAKPiA+
+IE9uIFR1ZSwgSmFuIDEzLCAyMDE1IGF0IDA5OjQxOjAxUE0gKzAyMDAsIEp5cmkgU2FyaGEgd3Jv
+dGU6Cj4gPiA+IE9uIDAxLzEzLzIwMTUgMDk6MjYgUE0sIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51
+eCB3cm90ZToKPiA+ID4gPlNDTEs6IF9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35f
+fl9+X35ffl9+X35ffl9+X35ffl9+X35ffl9+X35ffl8KPiA+ID4gPiAgIFdTOiBfX35+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19+
+Cj4gPiA+ID5JMlMxOiBsbG1tLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLmxsbW0uLi4uLi4u
+Li4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtCj4gPiA+ID5JMlMyOiBsbG1tLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4uLmxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtCj4gPiA+ID5J
+MlMzOiBsbG1tLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLmxsbW0uLi4uLi4uLi4uLi4uLi4u
+Li4uLi4uLi4uLi4ubGxtCj4gPiA+ID5JMlM0OiBsbG1tLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
+Li4uLmxsbW0uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4ubGxtCj4gPiA+ID4KPiA+ID4gPlNv
+LCB3aGF0IEknbSBzYXlpbmcgaXMgdGhhdCBpdCBpc19pbXBvc3NpYmxlXyAgdG8gZHJpdmUgdGhl
+IFREQTk5OHggdXNpbmcKPiA+ID4gPm11bHRpcGxlIEkyUyBzdHJlYW1zIHdoaWNoIGFyZSBub3Qg
+cHJvZHVjZWQgYnkgdGhlIHNhbWUgSTJTIGJsb2NrLgo+ID4gPiAKPiA+ID4gVGhpcyBpcyBiZXNp
+ZGVzIHRoZSBwb2ludCwgYnV0IGl0IGlzIHBvc3NpYmxlIHRoYXQgb25lIG9mIHRoZSBtdWx0aXBs
+ZSBJMlMKPiA+ID4gYmxvY2tzIGlzIHRoZSBiaXQtY2xvY2sgYW5kIGZyYW1lLWNsb2NrIG1hc3Rl
+ciB0byB0aGUgaTJzIGJ1cyBhbmQgdGhlIG90aGVycwo+ID4gPiBhcmUgc2xhdmVzIHRvIGl0IChi
+YW5naW5nIHRoZWlyIGJpdHMgYWNjb3JkaW5nIHRvIFNDTEsgYW5kIFdTIG9mIHRoZSBJMlMKPiA+
+ID4gbWFzdGVyKS4gSG93ZXZlciwgaW4gdGhpcyBzaXR1YXRpb24gdGhlcmUgcmVhbGx5IGlzIG9u
+bHkgb25lIGkycyBidXMgd2l0aAo+ID4gPiBtdWx0aXBsZSBkYXRhIHBpbnMuCj4gPiA+IAo+ID4g
+PiBKdXN0IG15IDAuMDLigqwgdG8gdGhpcyBkaXNjdXNzaW9uLgo+ID4gCj4gPiBSaWdodCwgdGhh
+dCdzIGFib3V0IHRoZSBvbmx5IHdheSBpdCBjb3VsZCB3b3JrLgo+ID4gCj4gPiBUbyByZXByZXNl
+bnQgdGhhdCBpbiBEVCwgSSB3b3VsZCBpbWFnaW5lIHdlJ2QgbmVlZCBzb21ldGhpbmcgbGlrZSB0
+aGlzOgo+ID4gCj4gPiAJI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gPiAJI3NpemUtY2VsbHMgPSA8
+MD47Cj4gPiAJLi4uCj4gPiAgICAgICAgIHBvcnRAMSB7ICAgICAgICAgICAgICAgICAgICAgICAg
+LyogQVAxLDIgPSBJMlMgKi8KPiA+IAkJI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gPiAJCSNzaXpl
+LWNlbGxzID0gPDA+Owo+ID4gICAgICAgICAgICAgICAgIHBvcnQtdHlwZSA9ICJpMnMiOwo+ID4g
+ICAgICAgICAgICAgICAgIHJlZyA9IDwweDAxPjsJCS8qIFdTICovCj4gPiAgICAgICAgICAgICAg
+ICAgdGRhOTk4eF9pMnMxOiBlbmRwb2ludEAyIHsKPiA+IAkJCXJlZyA9IDwweDAyPjsJLyogQVAx
+ICovCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICByZW1vdGUtZW5kcG9pbnQgPSA8JmF1ZGlv
+MV9pMnM+Owo+ID4gICAgICAgICAgICAgICAgIH07Cj4gPiAgICAgICAgICAgICAgICAgdGRhOTk4
+eF9pMnMyOiBlbmRwb2ludEA0IHsKPiA+IAkJCXJlZyA9IDwweDA0PjsJLyogQVAyICovCj4gPiAg
+ICAgICAgICAgICAgICAgICAgICAgICByZW1vdGUtZW5kcG9pbnQgPSA8JmF1ZGlvMl9pMnM+Owo+
+ID4gICAgICAgICAgICAgICAgIH07Cj4gPiAgICAgICAgIH07Cj4gPiAKPiA+IHdoZXJlIGF1ZGlv
+MV9pMnMgaXMgb3BlcmF0aW5nIGluIG1hc3RlciBtb2RlLCBhbmQgYXVkaW8yX2kycyBpcwo+ID4g
+b3BlcmF0aW5nIGluIHNsYXZlIG1vZGUgZm9yIGJvdGggV1MgYW5kIFNDTEsuCj4gPiAKPiA+IElm
+IHdlIGNhbiBhZ3JlZSBvbiB0aGF0LCB0aGVuIEknbSBoYXBweSB3aXRoIHRoZSBwcm9wb3NlZCBi
+aW5kaW5nLgo+ID4gKFJlbWVtYmVyIHRoYXQgI2FkZHJlc3MtY2VsbHMgYW5kICNzaXplLWNlbGxz
+IGFyZSByZXF1aXJlZCBpbiB0aGUKPiA+IHBhcmVudCB3aGVyZSB3ZSBoYXZlIHJlZz0gaW4gdGhl
+IGNoaWxkLikKPiAKPiAjYWRkcmVzcy1jZWxscyBhbmQgI3NpemUtY2VsbHMgbWF5IGJlIGRlZmlu
+ZWQgaW4gYW55IG9mIHRoZSB1cHBlcgo+IHBhcmVudCwgc28sIGFzIGl0IGlzIGRlZmluZWQgaW4g
+dGhlIGRldmljZSwgaXQgaXMgbm90IG5lZWRlZCBpbiB0aGUKPiBwb3J0IChzZWUgb2Zfbl9hZGRy
+X2NlbGxzIGluIGRyaXZlcnMvb2YvYmFzZS5jKS4KClRoYXQgbWF5IGJlLCBidXQgdGhlIGRvY3Vt
+ZW50YXRpb24gc3BlY2lmaWVzIHRoYXQgaXQgc2hvdWxkIGJlIGdpdmVuLgpTZWUgRG9jdW1lbnRh
+dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2dyYXBoLnR4dCAtIG1heWJlIHRoZSBkb2NzIG5lZWQK
+Zml4aW5nPwoKPiBXZWxsLCBJIGFtIGEgYml0IGxvc3QgYmV0d2VlbiAob25seSBvbmUgc291cmNl
+IC8gbWFueSBjaGFubmVscyAtIEkyUwo+IGJ1c3NlcykgYW5kIChtYW55IHNvdXJjZXMgLyBvbmUg
+STJzIGJ1cyEpLgoKSSB0aGluayB0aGF0J3MgYSBtYXR0ZXIgb2YgaG93IHRoZSBwcm9ibGVtIGlz
+IHZpZXdlZC4gOikKCj4gQW55d2F5LCBJIGRvbid0IHVuZGVyc3RhbmQgeW91ciBleGFtcGxlLgo+
+IEknZCBleHBlY3QgdGhhdCBhIHBvcnQgd291bGQgYmUgYSBEQUkuCgpJIHZpZXcgYSBEQUkgYXMg
+YSBMaW51eCBhYnN0cmFjdGlvbiwgd2hpY2ggZG9lc24ndCByZWFsbHkgaGF2ZSBhbnkgcGxhY2UK
+aW4gRFQuICBJJ20gbG9va2luZyBhdCB0aGlzIHByb2JsZW0gZnJvbSB0aGUgZWxlY3Ryb25pY3Mg
+cG9pbnQgb2Ygdmlldy4KCj4gSWYgeWVzLCB3aGVuIHBsYXlpbmcgaXMgYWN0aXZlLCBib3RoIGVu
+ZHBvaW50cyByZWNlaXZlIGFuIGF1ZGlvIHN0cmVhbQo+IGZyb20gdGhlIHJlbW90ZSBhdWRpbyBk
+ZXZpY2VzLCBhbmQgdGhlIEFQIHJlZ2lzdGVyIGlzIGFsd2F5cyBzZXQgdG8KPiAweDA3ICg9IDB4
+MDEgfCAweDAyIHwgMHgwNCkuCj4gVGhlbiwgaXQgd291bGQgaGF2ZSBiZWVuIHNpbXBsZXIgdG8g
+aGF2ZToKPiAKPiAgCSNhZGRyZXNzLWNlbGxzID0gPDE+Owo+ICAJI3NpemUtY2VsbHMgPSA8MD47
+Cj4gIAkuLi4KPiAgICAgICAgICBwb3J0QDcgeyAgICAgICAgICAgICAgICAgICAgICAgIC8qIEFQ
+MSwyID0gSTJTICovCj4gICAgICAgICAgICAgICAgICBwb3J0LXR5cGUgPSAiaTJzIjsKPiAgICAg
+ICAgICAgICAgICAgIHJlZyA9IDwweDA3PjsJCS8qIFdTICsgQVAxICsgQVAyICovCj4gICAgICAg
+ICAgICAgICAgICB0ZGE5OTh4X2kyczE6IGVuZHBvaW50QDEgewo+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICByZW1vdGUtZW5kcG9pbnQgPSA8JmF1ZGlvMV9pMnM+Owo+ICAgICAgICAgICAgICAg
+ICAgfTsKPiAgICAgICAgICAgICAgICAgIHRkYTk5OHhfaTJzMjogZW5kcG9pbnRAMiB7Cj4gICAg
+ICAgICAgICAgICAgICAgICAgICAgIHJlbW90ZS1lbmRwb2ludCA9IDwmYXVkaW8yX2kycz47Cj4g
+ICAgICAgICAgICAgICAgICB9Owo+ICAgICAgICAgIH07Cj4gCj4gSWYgbm8sIHRoZSB0d28gREFJ
+cyBtdXN0IGJlIGNyZWF0ZWQgZnJvbSB0aGUgZW5kcG9pbnRzLCBwZXJtaXR0aW5nCj4gc3RyZWFt
+aW5nIG9uIGkyczEgYWxvbmUsIGkyczIgYWxvbmUgb3IgYm90aCBpMnMxK2kyczIgYXQgdGhlIHNh
+bWUgdGltZS4KCkhvdyBkb2VzIHRoYXQgd29yayAtIEkgbWVhbiwgaWYgd2UgaGF2ZSBpMnMxIGFz
+IHRoZSBTQ0xLIGFuZCBXUyBtYXN0ZXIsCmhvdyBjYW4gaTJzMiBydW4gd2l0aG91dCBpMnMxPwoK
+SSBzdXBwb3NlIEkyUzIgY291bGQgYmUgcmVwcm9ncmFtbWVkIHRvIGJlIHRoZSBtYXN0ZXIgZm9y
+IGJvdGggc2lnbmFscywKcHJvdmlkZWQgdGhhdCBJMlMxIGlzIHByb2dyYW1tZWQgdG8gYmUgYSBz
+bGF2ZSBiZWZvcmUgaGFuZCwgYnV0IHRoYXQKc2VlbXMgdG8gYmUgbWFraW5nIHRoaW5ncyBleGNl
+c3NpdmVseSBjb21wbGV4ICh3ZSdkIG5lZWQgc29tZSB3YXkgZm9yCkkyUzEgYW5kIEkyUzIgdG8g
+Y29tdW5pY2F0ZSB0aGF0IHN0YXRlIGJldHdlZW4gdGhlbXNlbHZlcyBhbmQgbmVnb3RpYXRlCndo
+aWNoIHRvIGJlIHRoZSBtYXN0ZXIuKQoKSG93ZXZlciwgSSdkIHN1Z2dlc3QgdGhhdCBpZiBhdWRp
+bzFfaTJzIGFsd2F5cyBtYXBzIHRvIEhETUkgZnJvbnQKbGVmdC9yaWdodCwgYXVkaW8xX2kycyBt
+dXN0IGFsd2F5cyBiZSBlbmFibGVkIHdoZW4gYXVkaW8gcGxheWJhY2sgaXMKcmVxdWlyZWQ7IHRo
+ZXJlIGlzIG5vIENBIGJpdCBjb21iaW5hdGlvbiBwcm92aWRlZCBpbiBIRE1JIHdoZXJlIHRoZQpm
+cm9udCBML1IgY2hhbm5lbHMgYXJlIG9wdGlvbmFsLiAgSGVuY2UsIEknZCBzdWdnZXN0IHRoYXQg
+YXVkaW8xX2kycwptdXN0IGFsd2F5cyBiZSB0aGUgbWFzdGVyLgoKQXMgd2UgZG9uJ3Qga25vdywg
+SSdkIHN1Z2dlc3QgdGhhdCB3ZSBwZXJtaXQgZmxleGliaWxpdHkgaGVyZS4gIFdlCmNhbiB1c2Ug
+dGhlIHJlZyBwcm9wZXJ0eSBhcyB5b3UgaGF2ZSBiZWxvdywgYW5kIHdlIGp1c3QgYml0d2lzZS1v
+cgp0aGUgb2ZfZW5kcG9pbnQgcG9ydC9pZCB0b2dldGhlciwgYWxvbmcgd2l0aCB0aGF0IHJlc3Vs
+dCBmcm9tIG90aGVyCmFjdGl2ZSBhdWRpbyBlbmRwb2ludHMuICBUaGUgYWR2YW50YWdlIG9mIHRo
+YXQgaXMgd2UgY2FuIHVzZSBhbnkgb2YKdGhlc2UgcmVwcmVzZW50YXRpb25zLCBhbmQgaXQgc2hv
+dWxkIHJlc3VsdCBpbiBhIHdvcmtpbmcgc2V0dXAgLSBhbmQKd2hlbiB3ZSBkbyBoYXZlIHRoZSBu
+ZWNlc3NhcnkgaW5mb3JtYXRpb24gdG8gbWFrZSBhIHByb3Blcmx5IGluZm9ybWVkCmRlY2lzaW9u
+LCB3ZSBjYW4gdXBkYXRlIHRoZSBEVCBhbmQgYmluZGluZyBkb2MgYWNjb3JkaW5nbHkgYW5kIHdl
+Cndvbid0IGhhdmUgdG8gdXBkYXRlIHRoZSBkcml2ZXIgKG5vciB3aWxsIHdlIGJyZWFrIGJhY2t3
+YXJkcyBjb21wYXQuKQoKU291bmQgc2FuZT8KCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWls
+ZSBsaW5lOiBjdXJyZW50bHkgYXQgMTAuNU1icHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGluZyB0
+byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
+cC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
+ZXZlbAo=
