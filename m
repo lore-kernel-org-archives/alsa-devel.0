@@ -1,44 +1,77 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] unload Audio drivers while playback stream is active
- case kernel crash
-Date: Wed, 14 Jan 2015 11:43:54 -0200
-Message-ID: <CAOMZO5AQEyb9in0hRn+7zcpE5r8zwVUFjCqAqNOmLMCGYka3Pg@mail.gmail.com>
-References: <857E9EDCA6C0904DB3357321AA9123EB0108B66919@NA-MBX-01.mgc.mentorg.com>
-	<s5h1tmyiof7.wl-tiwai@suse.de>
-	<20150113215412.GS4160@sirena.org.uk>
-	<s5hr3ux24em.wl-tiwai@suse.de>
-	<54B625A8.8090406@metafoo.de>
-	<s5hoaq121gh.wl-tiwai@suse.de>
-	<54B63E4F.2010506@metafoo.de>
-	<s5hwq4phbzr.wl-tiwai@suse.de>
-	<20150114120228.GT4160@sirena.org.uk>
-	<54B6679F.1030706@metafoo.de>
+Subject: [PATCH] ASoC: fsl: imx-wm8962: Set the card owner field
+Date: Wed, 14 Jan 2015 11:56:22 -0200
+Message-ID: <1421243782-26115-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <54B6679F.1030706@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, "Wang, Jiada (ESD)" <Jiada_Wang@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qg0-f53.google.com (mail-qg0-f53.google.com
+ [209.85.192.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86BB1265071
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 14:56:38 +0100 (CET)
+Received: by mail-qg0-f53.google.com with SMTP id l89so6934793qgf.12
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 05:56:38 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, jiada_wang@mentor.com, nicoleotsuka@gmail.com, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 14, 2015 at 10:57 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-> My personal opinion on this is that disallowing module removal while a
-> driver registered by the module when is in use, while there is no technical
-> reason to do so, is a anti-feature. Whether in ALSA or elsewhere.
->
-> But looking at the source it seems that this is a core feature of ALSA and
-> at least for the card module itself it will do the ref-counting when a
-> stream is started/stopped. And we even support setting the owner of a card
-> in ASoC. It's just that pretty much no ASoC card driver bothers to set the
-> owner field in the snd_soc_card struct. So this particular problem can be
-> fixed by updating the imx-wm8962 driver to set the owner field.
+The following crash happens when trying to unload the snd_soc_imx_wm8962 module
+while playback is active:
 
-Thanks, Lars_Peter. This fixes the issue:
+[  208.666868] Unable to handle kernel paging request at virtc
+[  208.674110] pgd = 80004000
+[  208.676867] [7f06541c] *pgd=4c334811, *pte=00000000, *ppte=00000000
+[  208.683211] Internal error: Oops: 80000007 [#1] SMP ARM
+[  208.688445] Modules linked in: snd_soc_wm8962 snd_soc_fsl_ssi snd_soc_imx_audmux imx_pcm_fiq evbug]
+...
 
-root@freescale /$ modprobe -r snd_soc_imx_wm8962
-modprobe: can't unload module snd_soc_imx_wm8962: Resource temporarily
+In order to avoid such problem, fill the card owner field as suggested by
+Lars-Peter Clausen:
+
+"But looking at the source it seems that this is a core feature of ALSA and at 
+least for the card module itself it will do the ref-counting when a stream is 
+started/stopped. And we even support setting the owner of a card in ASoC. 
+It's just that pretty much no ASoC card driver bothers to set the owner field
+in the snd_soc_card struct. So this particular problem can be fixed by updating
+the imx-wm8962 driver to set the owner field."
+
+By doing as suggested, we no longer see the crash when attempting to unload the
+snd_soc_imx_wm8962 module while playback is active:
+
+$ modprobe -r snd_soc_imx_wm8962
+modprobe: can't unload module snd_soc_imx_wm8962: Resource temporarily 
 unavailable
 
-Will send a patch with your suggestion soon.
+Reported-by: Jiada Wang <jiada_wang@mentor.com>
+Suggested-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/imx-wm8962.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
+index 4caacb0..cd146d4 100644
+--- a/sound/soc/fsl/imx-wm8962.c
++++ b/sound/soc/fsl/imx-wm8962.c
+@@ -257,6 +257,7 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto clk_fail;
+ 	data->card.num_links = 1;
++	data->card.owner = THIS_MODULE;
+ 	data->card.dai_link = &data->dai;
+ 	data->card.dapm_widgets = imx_wm8962_dapm_widgets;
+ 	data->card.num_dapm_widgets = ARRAY_SIZE(imx_wm8962_dapm_widgets);
+-- 
+1.9.1
