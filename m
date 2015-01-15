@@ -1,17 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 16/17] ASoC: rt5677: Replace w->codec
-	snd_soc_dapm_to_codec(w->dapm)
-Date: Thu, 15 Jan 2015 12:52:16 +0100
-Message-ID: <1421322737-19077-17-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/17] ASoC: Remove codec field from
+	snd_soc_dapm_widget
+Date: Thu, 15 Jan 2015 11:57:50 +0000
+Message-ID: <20150115115750.GY3043@sirena.org.uk>
 References: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0945423145694471022=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-247.synserver.de (smtp-out-247.synserver.de
- [212.40.185.247])
- by alsa0.perex.cz (Postfix) with ESMTP id B63B3260661
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:29 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F4FC265857
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:58:00 +0100 (CET)
 In-Reply-To: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,121 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The codec field of the snd_soc_widget struct is eventually going to be
-removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/rt5677.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+--===============0945423145694471022==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lPJ5i9rX1WvdYcWF"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index a683e69..26fc538 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -896,7 +896,7 @@ static const struct snd_kcontrol_new rt5677_snd_controls[] = {
- static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 	int idx = rl6231_calc_dmic_clk(rt5677->sysclk);
- 
-@@ -911,7 +911,8 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
- 			 struct snd_soc_dapm_widget *sink)
- {
--	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(source->codec);
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int val;
- 
- 	regmap_read(rt5677->regmap, RT5677_GLB_CLK1, &val);
-@@ -925,7 +926,7 @@ static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
- static int is_using_asrc(struct snd_soc_dapm_widget *source,
- 			 struct snd_soc_dapm_widget *sink)
- {
--	struct snd_soc_codec *codec = source->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int reg, shift, val;
- 
-@@ -2126,7 +2127,7 @@ static const struct snd_kcontrol_new rt5677_if2_dac7_tdm_sel_mux =
- static int rt5677_bst1_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
-@@ -2150,7 +2151,7 @@ static int rt5677_bst1_event(struct snd_soc_dapm_widget *w,
- static int rt5677_bst2_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
-@@ -2174,7 +2175,7 @@ static int rt5677_bst2_event(struct snd_soc_dapm_widget *w,
- static int rt5677_set_pll1_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
-@@ -2196,7 +2197,7 @@ static int rt5677_set_pll1_event(struct snd_soc_dapm_widget *w,
- static int rt5677_set_pll2_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
-@@ -2218,7 +2219,7 @@ static int rt5677_set_pll2_event(struct snd_soc_dapm_widget *w,
- static int rt5677_set_micbias1_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
-@@ -2245,7 +2246,7 @@ static int rt5677_set_micbias1_event(struct snd_soc_dapm_widget *w,
- static int rt5677_if1_adc_tdm_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int value;
- 
-@@ -2268,7 +2269,7 @@ static int rt5677_if1_adc_tdm_event(struct snd_soc_dapm_widget *w,
- static int rt5677_if2_adc_tdm_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int value;
- 
-@@ -2291,7 +2292,7 @@ static int rt5677_if2_adc_tdm_event(struct snd_soc_dapm_widget *w,
- static int rt5677_vref_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
--- 
-1.8.0
+
+--lPJ5i9rX1WvdYcWF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 15, 2015 at 12:52:00PM +0100, Lars-Peter Clausen wrote:
+> This series is the last part of the codec field removal from the
+> snd_soc_dapm_widget. One small fix for an issue that slipped through
+> earlier and the conversion of the TI and Realtek CODEC drivers and then
+
+Applied all, thanks.
+
+--lPJ5i9rX1WvdYcWF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUt6s9AAoJECTWi3JdVIfQ0eYH/iX0RZ/5/QYN4rrkmKq8HmLP
+15bVNiEqcpYoVOdnEQmbV/sHKjfPOz0+XxKcfwIkOibwWXYUoK4KMB9MYDszNqDj
+wYfSNl6tXmmNG80Zz0l6yn88/zYc3BoS2naD7ivUALcWEIG/loH+iB4JCDgUnqQD
+65N6K87Y7Vg1ZgGvNuOaTso0Ti6q/9/cVfBTsanUk9lOvdaMdMVg6ouXR+zKE7pO
+ZNlptUHkhdqDxbGAik+h2bYySxsOGJB4vqwti12C18Bm4+RrBe19OOwsTtaveiZ3
+b+5qOghWB2ivfy/kkXFrHZt2/7CBHJVTUbU9iWzfuDzyR/tdwmWsQGg4zT467r4=
+=CxcG
+-----END PGP SIGNATURE-----
+
+--lPJ5i9rX1WvdYcWF--
+
+--===============0945423145694471022==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0945423145694471022==--
