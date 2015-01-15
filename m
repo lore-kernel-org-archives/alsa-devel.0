@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 12/17] ASoC: rt5640: Replace w->codec
+Subject: [PATCH 11/17] ASoC: rt5631: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Thu, 15 Jan 2015 12:52:12 +0100
-Message-ID: <1421322737-19077-13-git-send-email-lars@metafoo.de>
+Date: Thu, 15 Jan 2015 12:52:11 +0100
+Message-ID: <1421322737-19077-12-git-send-email-lars@metafoo.de>
 References: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-247.synserver.de (smtp-out-247.synserver.de
  [212.40.185.247])
- by alsa0.perex.cz (Postfix) with ESMTP id 6593426064C
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:27 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A783E26063F
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:26 +0100 (CET)
 In-Reply-To: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,60 +31,117 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/rt5640.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/codecs/rt5631.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index c3f2dec..b386958 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -458,7 +458,7 @@ static const struct snd_kcontrol_new rt5640_specific_snd_controls[] = {
- static int set_dmic_clk(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
+index 6d7b7ca..c618527 100644
+--- a/sound/soc/codecs/rt5631.c
++++ b/sound/soc/codecs/rt5631.c
+@@ -287,70 +287,78 @@ static const struct snd_kcontrol_new rt5631_snd_controls[] = {
+ static int check_sysclk1_source(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	unsigned int reg;
+ 
+-	reg = snd_soc_read(source->codec, RT5631_GLOBAL_CLK_CTRL);
++	reg = snd_soc_read(codec, RT5631_GLOBAL_CLK_CTRL);
+ 	return reg & RT5631_SYSCLK_SOUR_SEL_PLL;
+ }
+ 
+ static int check_dmic_used(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+-	struct rt5631_priv *rt5631 = snd_soc_codec_get_drvdata(source->codec);
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
++	struct rt5631_priv *rt5631 = snd_soc_codec_get_drvdata(codec);
+ 	return rt5631->dmic_used_flag;
+ }
+ 
+ static int check_dacl_to_outmixl(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	unsigned int reg;
+ 
+-	reg = snd_soc_read(source->codec, RT5631_OUTMIXER_L_CTRL);
++	reg = snd_soc_read(codec, RT5631_OUTMIXER_L_CTRL);
+ 	return !(reg & RT5631_M_DAC_L_TO_OUTMIXER_L);
+ }
+ 
+ static int check_dacr_to_outmixr(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	unsigned int reg;
+ 
+-	reg = snd_soc_read(source->codec, RT5631_OUTMIXER_R_CTRL);
++	reg = snd_soc_read(codec, RT5631_OUTMIXER_R_CTRL);
+ 	return !(reg & RT5631_M_DAC_R_TO_OUTMIXER_R);
+ }
+ 
+ static int check_dacl_to_spkmixl(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	unsigned int reg;
+ 
+-	reg = snd_soc_read(source->codec, RT5631_SPK_MIXER_CTRL);
++	reg = snd_soc_read(codec, RT5631_SPK_MIXER_CTRL);
+ 	return !(reg & RT5631_M_DAC_L_TO_SPKMIXER_L);
+ }
+ 
+ static int check_dacr_to_spkmixr(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	unsigned int reg;
+ 
+-	reg = snd_soc_read(source->codec, RT5631_SPK_MIXER_CTRL);
++	reg = snd_soc_read(codec, RT5631_SPK_MIXER_CTRL);
+ 	return !(reg & RT5631_M_DAC_R_TO_SPKMIXER_R);
+ }
+ 
+ static int check_adcl_select(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	unsigned int reg;
+ 
+-	reg = snd_soc_read(source->codec, RT5631_ADC_REC_MIXER);
++	reg = snd_soc_read(codec, RT5631_ADC_REC_MIXER);
+ 	return !(reg & RT5631_M_MIC1_TO_RECMIXER_L);
+ }
+ 
+ static int check_adcr_select(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+ 	unsigned int reg;
+ 
+-	reg = snd_soc_read(source->codec, RT5631_ADC_REC_MIXER);
++	reg = snd_soc_read(codec, RT5631_ADC_REC_MIXER);
+ 	return !(reg & RT5631_M_MIC2_TO_RECMIXER_R);
+ }
+ 
+@@ -556,7 +564,7 @@ static void depop_seq_mute_stage(struct snd_soc_codec *codec, int enable)
+ static int hp_event(struct snd_soc_dapm_widget *w,
  	struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
- 	int idx = -EINVAL;
+ 	struct rt5631_priv *rt5631 = snd_soc_codec_get_drvdata(codec);
  
-@@ -475,9 +475,10 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
- 			 struct snd_soc_dapm_widget *sink)
- {
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
- 	unsigned int val;
- 
--	val = snd_soc_read(source->codec, RT5640_GLB_CLK);
-+	val = snd_soc_read(codec, RT5640_GLB_CLK);
- 	val &= RT5640_SCLK_SRC_MASK;
- 	if (val == RT5640_SCLK_SRC_PLL1)
- 		return 1;
-@@ -963,7 +964,7 @@ static void rt5640_pmu_depop(struct snd_soc_codec *codec)
- static int rt5640_hp_event(struct snd_soc_dapm_widget *w,
- 			   struct snd_kcontrol *kcontrol, int event)
+ 	switch (event) {
+@@ -590,7 +598,7 @@ static int hp_event(struct snd_soc_dapm_widget *w,
+ static int set_dmic_params(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
+ 	struct rt5631_priv *rt5631 = snd_soc_codec_get_drvdata(codec);
  
- 	switch (event) {
-@@ -987,7 +988,7 @@ static int rt5640_hp_event(struct snd_soc_dapm_widget *w,
- static int rt5640_hp_power_event(struct snd_soc_dapm_widget *w,
- 			   struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
-@@ -1003,7 +1004,7 @@ static int rt5640_hp_power_event(struct snd_soc_dapm_widget *w,
- static int rt5640_hp_post_event(struct snd_soc_dapm_widget *w,
- 			   struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
+ 	switch (rt5631->rx_rate) {
 -- 
 1.8.0
