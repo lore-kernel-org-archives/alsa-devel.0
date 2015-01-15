@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 09/17] ASoC: alc5632: Replace w->codec
+Subject: [PATCH 05/17] ASoC: tlv320dac33: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Thu, 15 Jan 2015 12:52:09 +0100
-Message-ID: <1421322737-19077-10-git-send-email-lars@metafoo.de>
+Date: Thu, 15 Jan 2015 12:52:05 +0100
+Message-ID: <1421322737-19077-6-git-send-email-lars@metafoo.de>
 References: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-247.synserver.de (smtp-out-247.synserver.de
  [212.40.185.247])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C23A260600
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:25 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 960382605C6
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:24 +0100 (CET)
 In-Reply-To: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,36 +31,35 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/alc5632.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/codecs/tlv320dac33.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index 0763026..db3283a 100644
---- a/sound/soc/codecs/alc5632.c
-+++ b/sound/soc/codecs/alc5632.c
-@@ -116,18 +116,20 @@ static inline int alc5632_reset(struct regmap *map)
- static int amp_mixer_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 0fe2ced..4e3e607 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -423,17 +423,18 @@ exit:
+ static int dac33_playback_event(struct snd_soc_dapm_widget *w,
+ 		struct snd_kcontrol *kcontrol, int event)
  {
+-	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(w->codec);
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
- 	/* to power-on/off class-d amp generators/speaker */
- 	/* need to write to 'index-46h' register :        */
- 	/* so write index num (here 0x46) to reg 0x6a     */
- 	/* and then 0xffff/0 to reg 0x6c                  */
--	snd_soc_write(w->codec, ALC5632_HID_CTRL_INDEX, 0x46);
-+	snd_soc_write(codec, ALC5632_HID_CTRL_INDEX, 0x46);
++	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
  
  	switch (event) {
  	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_write(w->codec, ALC5632_HID_CTRL_DATA, 0xFFFF);
-+		snd_soc_write(codec, ALC5632_HID_CTRL_DATA, 0xFFFF);
+ 		if (likely(dac33->substream)) {
+-			dac33_calculate_times(dac33->substream, w->codec);
+-			dac33_prepare_chip(dac33->substream, w->codec);
++			dac33_calculate_times(dac33->substream, codec);
++			dac33_prepare_chip(dac33->substream, codec);
+ 		}
  		break;
  	case SND_SOC_DAPM_POST_PMD:
--		snd_soc_write(w->codec, ALC5632_HID_CTRL_DATA, 0);
-+		snd_soc_write(codec, ALC5632_HID_CTRL_DATA, 0);
+-		dac33_disable_digital(w->codec);
++		dac33_disable_digital(codec);
  		break;
  	}
- 
+ 	return 0;
 -- 
 1.8.0
