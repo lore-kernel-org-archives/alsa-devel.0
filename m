@@ -1,119 +1,52 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: ESI Juli@ crash with external clock switch - patch
-Date: Thu, 15 Jan 2015 22:15:46 +0100
-Message-ID: <54B82E02.3080008@ivitera.com>
-References: <54B28174.7060008@ivitera.com>	<s5hwq4t2u33.wl-tiwai@suse.de>	<54B2B992.7000909@ivitera.com>	<s5hegr12gxn.wl-tiwai@suse.de>	<54B2E48B.7020000@ivitera.com>	<s5hvbkc1kaa.wl-tiwai@suse.de>	<54B3872C.2010501@ivitera.com>
- <s5hwq4sm2bs.wl-tiwai@suse.de>
+From: =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
+Subject: [PATCH] ASoC: OMAP: mcbsp: ensure that CLKX and CLKR are not used as ouput pins when they are used as input clock for the SRG.
+Date: Thu, 15 Jan 2015 23:28:21 +0100
+Message-ID: <1421360901-20671-1-git-send-email-niederp@physik.uni-kl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
- [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 7386126045C
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 22:15:59 +0100 (CET)
-In-Reply-To: <s5hwq4sm2bs.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 12.1.2015 v 16:43 Takashi Iwai napsal(a):
-> At Mon, 12 Jan 2015 09:34:52 +0100,
-> Pavel Hofman wrote:
->>
->>
->> I wish I could help but unfortunately my practical knowledge of kernel
->> workqueues is close to zero :-( Of course I will test the patches and
->> will extend them for quartet with testing too.
->
-> How about the patch below?  This is a quick fix for 3.19 (and
-> stable).  More better fixes will follow later once after it's
-> confirmed to work.
+This patch fixes faulty behaviour in a setup where the input clock for
+the SRG is fed through the CLKR pin but the McBSP is configured to be
+master (SND_SOC_DAIFMT_CBS_CFS). In that case of course CLKR must not b=
+e
+configured as output pin. Otherwise the input clock is messed up
+horribly. The same reasoning applies if CLKX is configured as input for
+the SRG.
 
-Hi,
+Signed-off-by: Thomas Niederpr=C3=BCm <niederp@physik.uni-kl.de>
+---
+ sound/soc/omap/omap-mcbsp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks a lot, the patch seems to run fine. Only ak4114_init_regs has to 
-be called every samplerate change, otherwise the receiver does not 
-re-run the samplerate detection and its register with detected 
-samplerate does not update its value.
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index bd3ef2a..c89f562 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -530,8 +530,12 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct sn=
+d_soc_dai *cpu_dai,
+=20
+ 	case OMAP_MCBSP_SYSCLK_CLKX_EXT:
+ 		regs->srgr2	|=3D CLKSM;
++		regs->pcr0	|=3D SCLKME;
++		regs->pcr0	&=3D ~CLKXM;
++		break;
+ 	case OMAP_MCBSP_SYSCLK_CLKR_EXT:
+ 		regs->pcr0	|=3D SCLKME;
++		regs->pcr0	&=3D ~CLKRM;
+ 		break;
+ 	default:
+ 		err =3D -ENODEV;
+--=20
+2.1.1
 
-The following patch seems to run ok:
-
-diff --git a/include/sound/ak4114.h b/include/sound/ak4114.h
-index 52f02a6..796834b 100644
---- a/include/sound/ak4114.h
-+++ b/include/sound/ak4114.h
-@@ -169,6 +169,7 @@ struct ak4114 {
-         ak4114_read_t * read;
-         void * private_data;
-         unsigned int init: 1;
-+       bool in_workq;
-         spinlock_t lock;
-         unsigned char regmap[6];
-         unsigned char txcsb[5];
-diff --git a/sound/i2c/other/ak4114.c b/sound/i2c/other/ak4114.c
-index c7f5633..6d643b7 100644
---- a/sound/i2c/other/ak4114.c
-+++ b/sound/i2c/other/ak4114.c
-@@ -152,10 +152,12 @@ static void ak4114_init_regs(struct ak4114 *chip)
-
-  void snd_ak4114_reinit(struct ak4114 *chip)
-  {
-+       ak4114_init_regs(chip);
-+       if (chip->in_workq)
-+               return;
-         chip->init = 1;
-         mb();
--       flush_delayed_work(&chip->work);
--       ak4114_init_regs(chip);
-+       cancel_delayed_work_sync(&chip->work);
-         /* bring up statistics / event queing */
-         chip->init = 0;
-         if (chip->kctls[0])
-@@ -612,10 +614,12 @@ static void ak4114_stats(struct work_struct *work)
-  {
-         struct ak4114 *chip = container_of(work, struct ak4114, work.work);
-
--       if (!chip->init)
-+       chip->in_workq = true;
-+       if (!chip->init) {
-                 snd_ak4114_check_rate_and_errors(chip, chip->check_flags);
--
--       schedule_delayed_work(&chip->work, HZ / 10);
-+               schedule_delayed_work(&chip->work, HZ / 10);
-+       }
-+       chip->in_workq = false;
-  }
-
-  EXPORT_SYMBOL(snd_ak4114_create);
-
-
->
->>> The HZ/10 isn't that bad, but the problem is that it's unconditionally
->>> running even if user doesn't need/want.
->>
->> It is useful only for the external clock mode. In fact the detection of
->> incoming SPDIF rate is not reliable for internal clock in Juli (while it
->> works just fine in Quartet, its FPGA pins configure the SPDIF receiver
->> differently). IMO the thread could be running only when clock is
->> switched to external.
->
-> Yeah, we can do some smart task change in addition to manual on/off.
-> Maybe it's good to have an enum control for that.
-
-I am not sure users would want/need to disable a feature which detects 
-incoming samplerate. IMO if the work thread is running only in the 
-external clock mode, nothing more is needed.
-
-Thanks a lot and regards,
-
-Pavel.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
