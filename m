@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: set the same format for dac
-	and adc
-Date: Thu, 15 Jan 2015 11:16:24 +0000
-Message-ID: <20150115111624.GR3043@sirena.org.uk>
-References: <1421290165-20724-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH 0/16] ASoC: rsnd: cleanup patches
+Date: Thu, 15 Jan 2015 11:38:09 +0000
+Message-ID: <20150115113809.GU3043@sirena.org.uk>
+References: <87bnm0v5d0.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1267326599141322223=="
+Content-Type: multipart/mixed; boundary="===============1035403934540270329=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AF7326046B
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:16:32 +0100 (CET)
-In-Reply-To: <1421290165-20724-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A251926046F
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:38:18 +0100 (CET)
+In-Reply-To: <87bnm0v5d0.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com, omair.m.abdullah@intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1267326599141322223==
+--===============1035403934540270329==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y2MHPAl/EzyWgzIZ"
+	protocol="application/pgp-signature"; boundary="i483Pv/KqyjCUwB1"
 Content-Disposition: inline
 
 
---y2MHPAl/EzyWgzIZ
+--i483Pv/KqyjCUwB1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 15, 2015 at 10:49:25AM +0800, Bard Liao wrote:
-> There is only one I2S I/F, AD/DA path must operate to the same
-> format.
+On Thu, Jan 15, 2015 at 08:01:53AM +0000, Kuninori Morimoto wrote:
+>=20
+> Hi Mark
+>=20
+> These are cleanup patches for Renesas R-Car sound driver.
+> I noticed current rsnd driver has un-used function,
+> no-meaning parameter, dirty code, etc...
+> These are cleanup patches for it.
 
-Applied, thanks.
+Applied all, thanks.
 
---y2MHPAl/EzyWgzIZ
+--i483Pv/KqyjCUwB1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUt6GIAAoJECTWi3JdVIfQGz4H/A0zxKfJ3FoYbdFsFpFVIj/h
-9MWz+k7w8zPgDARhm2OHZgPZK7Md26x5ZoDt2VN86L5cS4TxY6j7tWkdeUVr9777
-+hjjmlCpTV0W8E1U9zAKRDj/OxtfIkVpzNrFEtitYAxt3tnsyym3IdfKla+C8yRW
-2pWLkcu7Ks6L6sFHlRXS1HcP8gCun5jkLfdTFwJi80HGu4hb3w/WMBJwxqKV1qJl
-YV3pFMkfckaRjB5vqjzKWREz+82cZG9euO6DpSeLimQCa9r6rzqPkRiyeQcrzFcE
-tfBt74uIy/l0TDS/Xv6QjFNJtlhpTTLSJvcfqZwbHSRAR877sYpWV+mhsPTFwRE=
-=KzS7
+iQEcBAEBCAAGBQJUt6agAAoJECTWi3JdVIfQLk8H/26pLHA2OGk9gbZhLd0IQgog
+qa4MOm8ilhh14iEuBxG3WePjH/ypJm9DC+Mk62NkUHjm6Nd5RLHYkz7DVvXqVbfv
+IHf36okptzicTc/Pay+O8NpZfuRFTF03Sl9aiD7ADITklEV4cCRYfO9QWw5PilFk
+0to4N09UjH+hC21XW4QHsm8ICxaMV7xckcjyZQUvKzaPUAfGiyYzb4kM24YtQO2c
+0lcXkBCtnVu7xMtlHS1A9kNEKpwOzO4z85soURs3/wi2JY8DwCRxS7SmPPNK9h5b
+1r3GNyrlHotflHD16eNxA+aFRdLl0RhyVjFmmPSmVVMwcKJwS49raHsSLMg2v2Y=
+=VI+i
 -----END PGP SIGNATURE-----
 
---y2MHPAl/EzyWgzIZ--
+--i483Pv/KqyjCUwB1--
 
---===============1267326599141322223==
+--===============1035403934540270329==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1267326599141322223==--
+--===============1035403934540270329==--
