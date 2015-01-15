@@ -1,58 +1,119 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 10/11] ASoC: tegra: Add a control for the headphone
- switch
-Date: Thu, 15 Jan 2015 17:09:57 +0000
-Message-ID: <20150115170957.GD3043@sirena.org.uk>
-References: <1421338359-27467-1-git-send-email-tomeu.vizoso@collabora.com>
- <1421338359-27467-11-git-send-email-tomeu.vizoso@collabora.com>
- <20150115162057.GC3043@sirena.org.uk>
- <CAAObsKBKZsvLo9OjzcHiPEPq1iUeog0Bm-jzvxLrkt2X=N5djw@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: ESI Juli@ crash with external clock switch - patch
+Date: Thu, 15 Jan 2015 22:15:46 +0100
+Message-ID: <54B82E02.3080008@ivitera.com>
+References: <54B28174.7060008@ivitera.com>	<s5hwq4t2u33.wl-tiwai@suse.de>	<54B2B992.7000909@ivitera.com>	<s5hegr12gxn.wl-tiwai@suse.de>	<54B2E48B.7020000@ivitera.com>	<s5hvbkc1kaa.wl-tiwai@suse.de>	<54B3872C.2010501@ivitera.com>
+ <s5hwq4sm2bs.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+Xnt6BZa+I2KmHWw"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAAObsKBKZsvLo9OjzcHiPEPq1iUeog0Bm-jzvxLrkt2X=N5djw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Cc: "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Simon Glass <sjg-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+ [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7386126045C
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 22:15:59 +0100 (CET)
+In-Reply-To: <s5hwq4sm2bs.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Dne 12.1.2015 v 16:43 Takashi Iwai napsal(a):
+> At Mon, 12 Jan 2015 09:34:52 +0100,
+> Pavel Hofman wrote:
+>>
+>>
+>> I wish I could help but unfortunately my practical knowledge of kernel
+>> workqueues is close to zero :-( Of course I will test the patches and
+>> will extend them for quartet with testing too.
+>
+> How about the patch below?  This is a quick fix for 3.19 (and
+> stable).  More better fixes will follow later once after it's
+> confirmed to work.
 
---+Xnt6BZa+I2KmHWw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi,
 
-On Thu, Jan 15, 2015 at 06:02:51PM +0100, Tomeu Vizoso wrote:
-> On 15 January 2015 at 17:20, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> > On Thu, Jan 15, 2015 at 05:12:22PM +0100, Tomeu Vizoso wrote:
-> >> To be used by userspace when the headphones jack is plugged in.
+Thanks a lot, the patch seems to run fine. Only ak4114_init_regs has to 
+be called every samplerate change, otherwise the receiver does not 
+re-run the samplerate detection and its register with detected 
+samplerate does not update its value.
 
-> > I'm missing patches 1-9 of this series, what's going on there?
+The following patch seems to run ok:
 
-> Sorry, no idea. They have reached lkml though:
+diff --git a/include/sound/ak4114.h b/include/sound/ak4114.h
+index 52f02a6..796834b 100644
+--- a/include/sound/ak4114.h
++++ b/include/sound/ak4114.h
+@@ -169,6 +169,7 @@ struct ak4114 {
+         ak4114_read_t * read;
+         void * private_data;
+         unsigned int init: 1;
++       bool in_workq;
+         spinlock_t lock;
+         unsigned char regmap[6];
+         unsigned char txcsb[5];
+diff --git a/sound/i2c/other/ak4114.c b/sound/i2c/other/ak4114.c
+index c7f5633..6d643b7 100644
+--- a/sound/i2c/other/ak4114.c
++++ b/sound/i2c/other/ak4114.c
+@@ -152,10 +152,12 @@ static void ak4114_init_regs(struct ak4114 *chip)
 
-> https://lkml.org/lkml/2015/1/15/473
+  void snd_ak4114_reinit(struct ak4114 *chip)
+  {
++       ak4114_init_regs(chip);
++       if (chip->in_workq)
++               return;
+         chip->init = 1;
+         mb();
+-       flush_delayed_work(&chip->work);
+-       ak4114_init_regs(chip);
++       cancel_delayed_work_sync(&chip->work);
+         /* bring up statistics / event queing */
+         chip->init = 0;
+         if (chip->kctls[0])
+@@ -612,10 +614,12 @@ static void ak4114_stats(struct work_struct *work)
+  {
+         struct ak4114 *chip = container_of(work, struct ak4114, work.work);
 
-What's going wrong there is that you didn't CC me on either them or the
-cover letter - you should always make sure that everyone is at least
-getting the cover letter so they know what's going on.  Never assume
-anyone is going to see anything on the list.
+-       if (!chip->init)
++       chip->in_workq = true;
++       if (!chip->init) {
+                 snd_ak4114_check_rate_and_errors(chip, chip->check_flags);
+-
+-       schedule_delayed_work(&chip->work, HZ / 10);
++               schedule_delayed_work(&chip->work, HZ / 10);
++       }
++       chip->in_workq = false;
+  }
 
---+Xnt6BZa+I2KmHWw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+  EXPORT_SYMBOL(snd_ak4114_create);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUt/RkAAoJECTWi3JdVIfQA+gH/1KOociYTanGd0y/0grS2qKZ
-tROqSwXDCqvvENcy0pL+/XTGGucMNr0KRE3KHHtY5yXsouUq54heZsnM/moaiDf/
-fJVuleDfo6xWqTuzQj3ScwQF9aNr1FkN/V/Osqc4vTzi83BLOXCr031SUou0tW01
-EGI0691qY+AtOW7o9NVZqd/OLGbQHuQ0dqIFeXhjzYymd+aWUv33sf7Z97BR/GJX
-SFEfSa7FaS3eEsgxgsbFroV3nbXrk6rhE07PiYdGvu23VwsvqIPZ1s1wz1IjEhdP
-g7JyIzIqfdjDAnC0NMr3Y3xtzbs5Qv2Xe1euDrglbe4ovrOPpA663GGxClCnwKQ=
-=f8dJ
------END PGP SIGNATURE-----
+>
+>>> The HZ/10 isn't that bad, but the problem is that it's unconditionally
+>>> running even if user doesn't need/want.
+>>
+>> It is useful only for the external clock mode. In fact the detection of
+>> incoming SPDIF rate is not reliable for internal clock in Juli (while it
+>> works just fine in Quartet, its FPGA pins configure the SPDIF receiver
+>> differently). IMO the thread could be running only when clock is
+>> switched to external.
+>
+> Yeah, we can do some smart task change in addition to manual on/off.
+> Maybe it's good to have an enum control for that.
 
---+Xnt6BZa+I2KmHWw--
+I am not sure users would want/need to disable a feature which detects 
+incoming samplerate. IMO if the work thread is running only in the 
+external clock mode, nothing more is needed.
+
+Thanks a lot and regards,
+
+Pavel.
