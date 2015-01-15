@@ -1,53 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: codecs: wm8904: add dt ids table
-Date: Thu, 15 Jan 2015 11:54:25 +0000
-Message-ID: <20150115115425.GX3043@sirena.org.uk>
-References: <1418614273-2303-1-git-send-email-voice.shen@atmel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 01/17] ASoC: mioa701_wm9713: Fix speaker event
+Date: Thu, 15 Jan 2015 12:52:01 +0100
+Message-ID: <1421322737-19077-2-git-send-email-lars@metafoo.de>
+References: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6yuPXOSZRpyw7iEV"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1418614273-2303-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Alexander Morozov <linux@meltdown.ru>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-247.synserver.de (smtp-out-247.synserver.de
+ [212.40.185.247])
+ by alsa0.perex.cz (Postfix) with ESMTP id 622F326055F
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:23 +0100 (CET)
+In-Reply-To: <1421322737-19077-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Commit f6b2a04590bb ("ASoC: pxa: mioa701_wm9713: Convert to table based DAPM
+setup") converted the driver to register the board level DAPM elements with
+the card's DAPM context rather than the CODEC's DAPM context. The change
+overlooked that the speaker widget event callback accesses the widget's
+codec field which is only valid if the widget has been registered in a CODEC
+DAPM context. This patch modifies the callback to take an alternative route
+to get the CODEC.
 
---6yuPXOSZRpyw7iEV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: f6b2a04590bb ("ASoC: pxa: mioa701_wm9713: Convert to table based DAPM
+setup")
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/pxa/mioa701_wm9713.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Mon, Dec 15, 2014 at 11:31:11AM +0800, Bo Shen wrote:
-
-> +#ifdef CONFIG_OF
-> +static enum wm8904_type wm8904_data = WM8904;
-> +static enum wm8904_type wm8912_data = WM8912;
-> +
-> +static const struct of_device_id wm8904_of_match[] = {
-> +	{
-> +		.compatible = "wlf,wm8904",
-> +		.data = &wm8904_data,
-
-Does this end up in the i2c_driver_id driver data or do we need some
-extra code when devtype is assigned to check for an of_node and look at
-the DT data instead?  That certainly used to be the case...
-
---6yuPXOSZRpyw7iEV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUt6pwAAoJECTWi3JdVIfQh+8H/ib4WL9KSjhvO9zXpnMqeY/X
-TAJjHOQqTKvXArE068aE33rnHqpCTG1whnbFmVcT7XQE3weP9njbBRSCThLg+w7w
-Yk+EqB7v3p8CA2moY7+AFLi+427awZLVwxw7i3f0PqwPMLCFB0dcqehZNB+ryYL4
-ra+0lBmFsDnUGHuAHRbIcWQ8IDgz2bBNVZzGyKiy4vL4KThAb/HzXiJd1WqFdz26
-BcXoGDjKsej3j/2FAK1FYrck5CIxHIfqwS9ujMuoNUphXqiV6F+FoMI2mylvkE+x
-64barcbq5zlR8SajQ8accrPLzTQ07/aAYgPCBkBfjOpbe7Li+4J/G+zuAfnsIx8=
-=T1j7
------END PGP SIGNATURE-----
-
---6yuPXOSZRpyw7iEV--
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 396dbd5..a9615a57 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -81,7 +81,7 @@ static int rear_amp_power(struct snd_soc_codec *codec, int power)
+ static int rear_amp_event(struct snd_soc_dapm_widget *widget,
+ 			  struct snd_kcontrol *kctl, int event)
+ {
+-	struct snd_soc_codec *codec = widget->codec;
++	struct snd_soc_codec *codec = widget->dapm->card->rtd[0].codec;
+ 
+ 	return rear_amp_power(codec, SND_SOC_DAPM_EVENT_ON(event));
+ }
+-- 
+1.8.0
