@@ -1,52 +1,49 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt286: set the same format for dac and
-	adc
-Date: Thu, 15 Jan 2015 10:49:25 +0800
-Message-ID: <1421290165-20724-1-git-send-email-bardliao@realtek.com>
+From: jiwang <jiada_wang@mentor.com>
+Subject: Re: [alsa-devel] unload Audio drivers while playback stream is active
+ case kernel crash
+Date: Thu, 15 Jan 2015 13:40:49 +0900
+Message-ID: <54B744D1.3040809@mentor.com>
+References: <857E9EDCA6C0904DB3357321AA9123EB0108B66919@NA-MBX-01.mgc.mentorg.com>	<s5h1tmyiof7.wl-tiwai@suse.de>	<20150113215412.GS4160@sirena.org.uk>	<s5hr3ux24em.wl-tiwai@suse.de>	<54B625A8.8090406@metafoo.de>	<s5hoaq121gh.wl-tiwai@suse.de>	<54B63E4F.2010506@metafoo.de>	<s5hwq4phbzr.wl-tiwai@suse.de>	<20150114120228.GT4160@sirena.org.uk>	<54B6679F.1030706@metafoo.de> <CAOMZO5AQEyb9in0hRn+7zcpE5r8zwVUFjCqAqNOmLMCGYka3Pg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (60-248-182-7.hinet-ip.hinet.net
- [60.248.182.7]) by alsa0.perex.cz (Postfix) with ESMTP id 57A1B2605D3
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 03:51:47 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, flove@realtek.com, omair.m.abdullah@intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOMZO5AQEyb9in0hRn+7zcpE5r8zwVUFjCqAqNOmLMCGYka3Pg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is only one I2S I/F, AD/DA path must operate to the same
-format.
+Hi
+On 01/14/2015 10:43 PM, Fabio Estevam wrote:
+> On Wed, Jan 14, 2015 at 10:57 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>
+>> My personal opinion on this is that disallowing module removal while a
+>> driver registered by the module when is in use, while there is no technical
+>> reason to do so, is a anti-feature. Whether in ALSA or elsewhere.
+>>
+>> But looking at the source it seems that this is a core feature of ALSA and
+>> at least for the card module itself it will do the ref-counting when a
+>> stream is started/stopped. And we even support setting the owner of a card
+>> in ASoC. It's just that pretty much no ASoC card driver bothers to set the
+>> owner field in the snd_soc_card struct. So this particular problem can be
+>> fixed by updating the imx-wm8962 driver to set the owner field.
+> Thanks, Lars_Peter. This fixes the issue:
+>
+> root@freescale /$ modprobe -r snd_soc_imx_wm8962
+> modprobe: can't unload module snd_soc_imx_wm8962: Resource temporarily
+> unavailable
+>
+> Will send a patch with your suggestion soon.
+I think by set owner field in imx_wm8962 machine driver can fix the 
+crash I saw on sabreSD board,
+but as this is a generic issue which I suppose should exist on other 
+boards with different
+machine drivers.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt286.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Can we have a more generic fix to this issue?
+Or shall we set owner field for all machine drivers?
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 2cd4fe4..1d1c7f8 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -861,10 +861,8 @@ static int rt286_hw_params(struct snd_pcm_substream *substream,
- 		RT286_I2S_CTRL1, 0x0018, d_len_code << 3);
- 	dev_dbg(codec->dev, "format val = 0x%x\n", val);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		snd_soc_update_bits(codec, RT286_DAC_FORMAT, 0x407f, val);
--	else
--		snd_soc_update_bits(codec, RT286_ADC_FORMAT, 0x407f, val);
-+	snd_soc_update_bits(codec, RT286_DAC_FORMAT, 0x407f, val);
-+	snd_soc_update_bits(codec, RT286_ADC_FORMAT, 0x407f, val);
- 
- 	return 0;
- }
--- 
-1.8.1.1.439.g50a6b54
+
+Thanks,
+Jiada
