@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 05/17] ASoC: tlv320dac33: Replace w->codec
+Subject: [PATCH 10/17] ASoC: rt286: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Thu, 15 Jan 2015 12:52:05 +0100
-Message-ID: <1421322737-19077-6-git-send-email-lars@metafoo.de>
+Date: Thu, 15 Jan 2015 12:52:10 +0100
+Message-ID: <1421322737-19077-11-git-send-email-lars@metafoo.de>
 References: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-247.synserver.de (smtp-out-247.synserver.de
  [212.40.185.247])
- by alsa0.perex.cz (Postfix) with ESMTP id 960382605C6
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id CF4ED260605
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:25 +0100 (CET)
 In-Reply-To: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,35 +31,76 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/tlv320dac33.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt286.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 0fe2ced..4e3e607 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -423,17 +423,18 @@ exit:
- static int dac33_playback_event(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *kcontrol, int event)
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 2cd4fe4..99dcfec 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -403,7 +403,8 @@ EXPORT_SYMBOL_GPL(rt286_mic_detect);
+ static int is_mclk_mode(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
  {
--	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(w->codec);
+-	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(source->codec);
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (rt286->clk_id == RT286_SCLK_S_MCLK)
+ 		return 1;
+@@ -500,7 +501,7 @@ SOC_DAPM_ENUM("SPO source", rt286_spo_enum);
+ static int rt286_spk_event(struct snd_soc_dapm_widget *w,
+ 			    struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -522,7 +523,7 @@ static int rt286_spk_event(struct snd_soc_dapm_widget *w,
+ static int rt286_set_dmic1_event(struct snd_soc_dapm_widget *w,
+ 				  struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -541,7 +542,7 @@ static int rt286_set_dmic1_event(struct snd_soc_dapm_widget *w,
+ static int rt286_adc_event(struct snd_soc_dapm_widget *w,
+ 			     struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	unsigned int nid;
+ 
+ 	nid = (w->reg >> 20) & 0xff;
+@@ -567,7 +568,7 @@ static int rt286_adc_event(struct snd_soc_dapm_widget *w,
+ static int rt286_vref_event(struct snd_soc_dapm_widget *w,
+ 			     struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
  
  	switch (event) {
  	case SND_SOC_DAPM_PRE_PMU:
- 		if (likely(dac33->substream)) {
--			dac33_calculate_times(dac33->substream, w->codec);
--			dac33_prepare_chip(dac33->substream, w->codec);
-+			dac33_calculate_times(dac33->substream, codec);
-+			dac33_prepare_chip(dac33->substream, codec);
- 		}
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		dac33_disable_digital(w->codec);
-+		dac33_disable_digital(codec);
- 		break;
- 	}
- 	return 0;
+@@ -585,7 +586,7 @@ static int rt286_vref_event(struct snd_soc_dapm_widget *w,
+ static int rt286_ldo2_event(struct snd_soc_dapm_widget *w,
+ 			     struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -604,7 +605,7 @@ static int rt286_ldo2_event(struct snd_soc_dapm_widget *w,
+ static int rt286_mic1_event(struct snd_soc_dapm_widget *w,
+ 			     struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
 -- 
 1.8.0
