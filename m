@@ -1,17 +1,11 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: initial stream_hw_id to
-	invalid value
-Date: Wed, 14 Jan 2015 20:24:13 +0000
-Message-ID: <20150114202413.GO3043@sirena.org.uk>
-References: <1421054254-25716-1-git-send-email-yang.jie@intel.com>
+From: han.lu@intel.com
+Subject: [PATCH - UCM 1/1] ucm: add binary configure file parse
+Date: Thu, 15 Jan 2015 09:26:28 +0800
+Message-ID: <1421285188-19608-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6518457041900492091=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 683BD26052A
- for <alsa-devel@alsa-project.org>; Wed, 14 Jan 2015 21:24:23 +0100 (CET)
-In-Reply-To: <1421054254-25716-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +15,147 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: patch@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: "Lu, Han" <han.lu@intel.com>
 
---===============6518457041900492091==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aTCJOP0qgkSGqHWA"
-Content-Disposition: inline
+with cset command, UCM set kcontrol parameters directly:
+    cset "name='<KCONTROL_NAME>' 1<,2,3,...>"
+This patch enables UCM to set kcontrol with parameters from
+configure file:
+    cset-bin-file "name='<KCONTROL_NAME>' <path/to/file>"
+where "cset-bin-file" is a newly added keyword alongside of "cset",
+to indicate cset with binary data in file.
+The binary data is parameter only for audio DSPs, and it's just
+passed by UCM/ALSA as raw data. The data type of the parameter
+element must be byte, and the maxim number of parameter elements is
+512 (the maxim value that struct snd_ctl_elem_value can hold).
 
+Signed-off-by: Lu, Han <han.lu@intel.com>
 
---aTCJOP0qgkSGqHWA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 12, 2015 at 05:17:34PM +0800, Jie Yang wrote:
-> The stream_hw_id for System stream is 0x0, if we use initial stream_hw_id
-> value 0, it may return wrong(not committed) stream when calling function
-> get_stream_by_id() with stream_id=0. Here initial stream_hw_id to invalid
-> value to fix this issue.
-
-Applied, thanks.
-
---aTCJOP0qgkSGqHWA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUttBsAAoJECTWi3JdVIfQPYcH/22OIKtfy8ijlxKcrHT0bjvQ
-u9xQVkCxv0iltG27evrKctsyZ6VQs8vB8nlolzeiCH4hoQZm61JzOvVPb8G9Ksr2
-bTw4RooOtCJdBAcngpDrPvnMtM/m9LXPe1cySoc8UQf1wQIQ6JEnAxc/1LDIgyV0
-6NJszEcowb7GYdQXPbg3oBf/Ws1DfM8Qetuqbc0tzbtlgmGsxOWVSzj1c5eMJIZl
-A3lLjvDZl7CyCTULVWEI9idA0BLM68PjlWyP+zUNquTZxraHf0a/TizhjSQHpLbr
-p2syklrxDxUVEe0sMS6lLiiDh9ulqROfKT4RUnuLAEKMhwDhRoZgkcQ1SAi7X5M=
-=MWl1
------END PGP SIGNATURE-----
-
---aTCJOP0qgkSGqHWA--
-
---===============6518457041900492091==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6518457041900492091==--
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 37ae4c8..d2b1e15 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -160,11 +160,45 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
+ 	return 0;
+ }
+ 
++static int binary_file_parse(snd_ctl_elem_value_t *dst,
++			      const char *filepath)
++{
++	int err = 0;
++	FILE *in;
++	long len;
++	char *res;
++	unsigned int idx;
++
++	in = fopen(filepath, "r");
++	if (!in) {
++		err = -errno;
++		goto __fail;
++	}
++	fseek(in, 0L, SEEK_END);
++	len = ftell(in);
++	rewind(in);
++	if (len > 512)
++		len = 512;
++	res = calloc(1, (size_t)len);
++	if (res == NULL) {
++		err = -ENOMEM;
++		goto __fail_nomem;
++	}
++	fread(res, (size_t)len, 1, in);
++	for (idx = 0; idx < len; idx++)
++		snd_ctl_elem_value_set_byte(dst, idx, *(res + idx));
++	free(res);
++      __fail_nomem:
++	fclose(in);
++      __fail:
++	return err;
++}
++
+ extern int __snd_ctl_ascii_elem_id_parse(snd_ctl_elem_id_t *dst,
+ 					 const char *str,
+ 					 const char **ret_ptr);
+ 
+-static int execute_cset(snd_ctl_t *ctl, const char *cset)
++static int execute_cset(snd_ctl_t *ctl, const char *cset, int isbin)
+ {
+ 	const char *pos;
+ 	int err;
+@@ -194,7 +228,10 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset)
+ 	err = snd_ctl_elem_info(ctl, info);
+ 	if (err < 0)
+ 		goto __fail;
+-	err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
++	if (isbin)
++		err = binary_file_parse(value, pos);
++	else
++		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
+ 	if (err < 0)
+ 		goto __fail;
+ 	err = snd_ctl_elem_write(ctl, value);
+@@ -239,6 +276,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 				goto __fail_nomem;
+ 			break;
+ 		case SEQUENCE_ELEMENT_TYPE_CSET:
++		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
+ 			if (cdev == NULL) {
+ 				const char *cdev1 = NULL, *cdev2 = NULL;
+ 				err = get_value3(&cdev1, "PlaybackCTL",
+@@ -274,7 +312,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 					goto __fail;
+ 				}
+ 			}
+-			err = execute_cset(ctl, s->data.cset);
++			err = execute_cset(ctl, s->data.cset, s->isbin);
+ 			if (err < 0) {
+ 				uc_error("unable to execute cset '%s'\n", s->data.cset);
+ 				goto __fail;
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index d7517f6..fb5a033 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -306,6 +306,17 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
+ 			continue;
+ 		}
+ 
++		if (strcmp(cmd, "cset-bin-file") == 0) {
++			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE;
++			curr->isbin = 1;
++			err = parse_string(n, &curr->data.cset);
++			if (err < 0) {
++				uc_error("error: cset-bin-file requires a string!");
++				return err;
++			}
++			continue;
++		}
++
+ 		if (strcmp(cmd, "usleep") == 0) {
+ 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
+ 			err = snd_config_get_integer(n, &curr->data.sleep);
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 87f14a2..d0a609b 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -47,6 +47,7 @@
+ #define SEQUENCE_ELEMENT_TYPE_CSET	2
+ #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
+ #define SEQUENCE_ELEMENT_TYPE_EXEC	4
++#define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
+ 
+ struct ucm_value {
+         struct list_head list;
+@@ -63,6 +64,7 @@ struct sequence_element {
+ 		char *cset;
+ 		char *exec;
+ 	} data;
++	int isbin;          /* Indicate cset to handle binary or ascii array */
+ };
+ 
+ /*
+-- 
+1.9.1
