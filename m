@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/17] ASoC: Remove codec field from
-	snd_soc_dapm_widget
-Date: Thu, 15 Jan 2015 11:57:50 +0000
-Message-ID: <20150115115750.GY3043@sirena.org.uk>
-References: <1421322737-19077-1-git-send-email-lars@metafoo.de>
+From: Zidan Wang <b50113@freescale.com>
+Subject: Re: [PATCH v2 2/2] ASoC: wm8960: Let wm8960 driver
+ configure its bit clock and frame clock
+Date: Thu, 15 Jan 2015 21:34:40 +0800
+Message-ID: <20150115133439.GA29323@b50113>
+References: <1420615905-4078-1-git-send-email-zidan.wang@freescale.com>
+ <1420615905-4078-2-git-send-email-zidan.wang@freescale.com>
+ <20150114192703.GH3043@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0945423145694471022=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F4FC265857
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:58:00 +0100 (CET)
-In-Reply-To: <1421322737-19077-1-git-send-email-lars@metafoo.de>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1on0118.outbound.protection.outlook.com [157.56.110.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF19B26059D
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 14:33:46 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20150114192703.GH3043@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +25,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Zidan Wang <zidan.wang@freescale.com>, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jan 14, 2015 at 07:27:03PM +0000, Mark Brown wrote:
+> On Wed, Jan 07, 2015 at 03:31:45PM +0800, Zidan Wang wrote:
+> 
+> > +	for (i = 0; i < ARRAY_SIZE(dac_divs); ++i) {
+> > +		if (wm8960->sysclk == lrclk * dac_divs[i]) {
+> > +			for (j = 0; j < ARRAY_SIZE(bclk_divs); ++j) {
+> > +				if (wm8960->sysclk ==  wm8960->bclk *
+> > +						bclk_divs[j] / 10) {
+> > +					goto config_clock;
+> > +				}
+> > +			}
+> > +		}
+> > +	}
+> > +
+> > +	dev_err(codec->dev, "Unsupported sysclk %d\n", wm8960->sysclk);
+> > +	return;
+> 
+> It's a bit awkward using the goto like this.  A more common way of
+> writing this is to change the above block to be
+> 
+> 	if (i == ARRAY_SIZE(dac_divs))
+> 		/* return error */
+> 
+> rather than skipping over the error.  Otherwise this looks good.
 
---===============0945423145694471022==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lPJ5i9rX1WvdYcWF"
-Content-Disposition: inline
+Hi Mark,
 
+I found it can't generate bclk for S20_3LE data format.
 
---lPJ5i9rX1WvdYcWF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For 2 channel S20_3LE data format:
 
-On Thu, Jan 15, 2015 at 12:52:00PM +0100, Lars-Peter Clausen wrote:
-> This series is the last part of the codec field removal from the
-> snd_soc_dapm_widget. One small fix for an issue that slipped through
-> earlier and the conversion of the TI and Realtek CODEC drivers and then
+bclk = fs * 20 * 2
+Sysclk = BCLKDIV * bclk = BCLKDIV * fs * 40
+Sysclk = DACDIV * fs * 256
 
-Applied all, thanks.
+BCLKDIV/DACDIV = 256/40 = 32/5
 
---lPJ5i9rX1WvdYcWF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+But BCLKDIV/DACDIV can't be 32/5. So I want to support tdm slot.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+bclk = fs * slot_width * slots * channal.
 
-iQEcBAEBCAAGBQJUt6s9AAoJECTWi3JdVIfQ0eYH/iX0RZ/5/QYN4rrkmKq8HmLP
-15bVNiEqcpYoVOdnEQmbV/sHKjfPOz0+XxKcfwIkOibwWXYUoK4KMB9MYDszNqDj
-wYfSNl6tXmmNG80Zz0l6yn88/zYc3BoS2naD7ivUALcWEIG/loH+iB4JCDgUnqQD
-65N6K87Y7Vg1ZgGvNuOaTso0Ti6q/9/cVfBTsanUk9lOvdaMdMVg6ouXR+zKE7pO
-ZNlptUHkhdqDxbGAik+h2bYySxsOGJB4vqwti12C18Bm4+RrBe19OOwsTtaveiZ3
-b+5qOghWB2ivfy/kkXFrHZt2/7CBHJVTUbU9iWzfuDzyR/tdwmWsQGg4zT467r4=
-=CxcG
------END PGP SIGNATURE-----
+Do you think it make sense, or any other ideas?
 
---lPJ5i9rX1WvdYcWF--
-
---===============0945423145694471022==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0945423145694471022==--
+Best Regards,
+Zidan
