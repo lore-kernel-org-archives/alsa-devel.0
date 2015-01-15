@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/17] ASoC: rt286: Replace w->codec
+Subject: [PATCH 12/17] ASoC: rt5640: Replace w->codec
 	snd_soc_dapm_to_codec(w->dapm)
-Date: Thu, 15 Jan 2015 12:52:10 +0100
-Message-ID: <1421322737-19077-11-git-send-email-lars@metafoo.de>
+Date: Thu, 15 Jan 2015 12:52:12 +0100
+Message-ID: <1421322737-19077-13-git-send-email-lars@metafoo.de>
 References: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-247.synserver.de (smtp-out-247.synserver.de
  [212.40.185.247])
- by alsa0.perex.cz (Postfix) with ESMTP id CF4ED260605
- for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:25 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6593426064C
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jan 2015 12:52:27 +0100 (CET)
 In-Reply-To: <1421322737-19077-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,76 +31,60 @@ removed, use snd_soc_dapm_to_codec(w->dapm) instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/rt286.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/rt5640.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 2cd4fe4..99dcfec 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -403,7 +403,8 @@ EXPORT_SYMBOL_GPL(rt286_mic_detect);
- static int is_mclk_mode(struct snd_soc_dapm_widget *source,
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index c3f2dec..b386958 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -458,7 +458,7 @@ static const struct snd_kcontrol_new rt5640_specific_snd_controls[] = {
+ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
+ 	int idx = -EINVAL;
+ 
+@@ -475,9 +475,10 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
+ static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
  			 struct snd_soc_dapm_widget *sink)
  {
--	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(source->codec);
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
-+	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int val;
  
- 	if (rt286->clk_id == RT286_SCLK_S_MCLK)
+-	val = snd_soc_read(source->codec, RT5640_GLB_CLK);
++	val = snd_soc_read(codec, RT5640_GLB_CLK);
+ 	val &= RT5640_SCLK_SRC_MASK;
+ 	if (val == RT5640_SCLK_SRC_PLL1)
  		return 1;
-@@ -500,7 +501,7 @@ SOC_DAPM_ENUM("SPO source", rt286_spo_enum);
- static int rt286_spk_event(struct snd_soc_dapm_widget *w,
- 			    struct snd_kcontrol *kcontrol, int event)
+@@ -963,7 +964,7 @@ static void rt5640_pmu_depop(struct snd_soc_codec *codec)
+ static int rt5640_hp_event(struct snd_soc_dapm_widget *w,
+ 			   struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	switch (event) {
+@@ -987,7 +988,7 @@ static int rt5640_hp_event(struct snd_soc_dapm_widget *w,
+ static int rt5640_hp_power_event(struct snd_soc_dapm_widget *w,
+ 			   struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
  
  	switch (event) {
  	case SND_SOC_DAPM_POST_PMU:
-@@ -522,7 +523,7 @@ static int rt286_spk_event(struct snd_soc_dapm_widget *w,
- static int rt286_set_dmic1_event(struct snd_soc_dapm_widget *w,
- 				  struct snd_kcontrol *kcontrol, int event)
+@@ -1003,7 +1004,7 @@ static int rt5640_hp_power_event(struct snd_soc_dapm_widget *w,
+ static int rt5640_hp_post_event(struct snd_soc_dapm_widget *w,
+ 			   struct snd_kcontrol *kcontrol, int event)
  {
 -	struct snd_soc_codec *codec = w->codec;
 +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
  
  	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
-@@ -541,7 +542,7 @@ static int rt286_set_dmic1_event(struct snd_soc_dapm_widget *w,
- static int rt286_adc_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	unsigned int nid;
- 
- 	nid = (w->reg >> 20) & 0xff;
-@@ -567,7 +568,7 @@ static int rt286_adc_event(struct snd_soc_dapm_widget *w,
- static int rt286_vref_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-@@ -585,7 +586,7 @@ static int rt286_vref_event(struct snd_soc_dapm_widget *w,
- static int rt286_ldo2_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
-@@ -604,7 +605,7 @@ static int rt286_ldo2_event(struct snd_soc_dapm_widget *w,
- static int rt286_mic1_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_codec *codec = w->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
 -- 
 1.8.0
