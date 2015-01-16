@@ -1,17 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: alsa-lib support for compress offload
-Date: Fri, 16 Jan 2015 10:50:07 -0600
-Message-ID: <54B9413F.805@linux.intel.com>
-References: <54B8DF7A.6000700@imgtec.com> <s5hbnlzt3o2.wl-tiwai@suse.de>
- <54B8F485.7090603@imgtec.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: jive: Automatically disconnect
+ non-connected pins
+Date: Fri, 16 Jan 2015 16:59:19 +0000
+Message-ID: <20150116165919.GF3856@sirena.org.uk>
+References: <1421415293-29589-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3701471259192659746=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A116260414
- for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 17:50:53 +0100 (CET)
-In-Reply-To: <54B8F485.7090603@imgtec.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FBF3260414
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 17:59:30 +0100 (CET)
+In-Reply-To: <1421415293-29589-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qais Yousef <qais.yousef@imgtec.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
->> It's a normal IEC958 passthrough, nothing to do with the compress
->> offload.  And, no, we have no support for compress API in alsa-lib
->> yet.  Just because no one submitted the patches.
->
-> Thanks. I haven't used alsa-lib before but I might be able to send the
-> patches if I get guidance of what needs doing. Is the expected API
-> similar/same to what provided by tinycompress[1]?
->
-> [1]
-> http://git.alsa-project.org/?p=tinycompress.git;a=blob;f=include/tinycompress/tinycompress.h;h=03c396fccea5f2a176d24fd580ee6a447da657ec;hb=HEAD
+--===============3701471259192659746==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="IvGM3kKqwtniy32b"
+Content-Disposition: inline
 
-Since there is no allowed processing/reformatting/reshuffling of 
-compressed data, all the plugin system needs to be bypassed and you'd be 
-looking at an alsa-lib API that interfaces directly with the ioctls, 
-essentially replicating what tinycompress does. I agree it's not great 
-to have independent packages, the decision to maintain tinycompress 
-separately was driven by licensing concerns, not technical ones.
--Pierre
+
+--IvGM3kKqwtniy32b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jan 16, 2015 at 02:34:52PM +0100, Lars-Peter Clausen wrote:
+> All DAPM input and output pins of the wm8750 are either used in the card's
+> DAPM routing table or are marked as not connected.
+
+Applied, thanks.
+
+--IvGM3kKqwtniy32b
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUuUNmAAoJECTWi3JdVIfQ8koH/1bJlEwfKpnf0yj08Fe7e6r2
+teGIV4mGwmssdUgMMc8L5kJbMYw8M3dIBMOxjBelg0ndPDifGF4B+8KNilK3HZfv
+B3PSVd7aAvFNq0iNyPjWzMyKHX79IV+oviK0MWiG1rrauT8Q9ftJYrzwhipZXP5d
+OlGTZOi8eSutyMqebBxtbEMhNOyW9dbABeIYCpFRVPK+UNpxScg9QkdR36FvylLT
+T+kHzaJNPuJqv3zrErFcapVqOgtzUvgOAESIr1SuGGBwo5PGhjfF8ZSFtAZZoMrl
+FS221Q8XkXZDNXcCeKBjer7CaN5dHXPa7R3pBxy53JKiOnxgvMbEqSLTKTQXKM8=
+=ccMF
+-----END PGP SIGNATURE-----
+
+--IvGM3kKqwtniy32b--
+
+--===============3701471259192659746==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3701471259192659746==--
