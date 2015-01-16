@@ -1,20 +1,22 @@
-From: anish <yesanishhere@gmail.com>
-Subject: Re: [PATCH] [ALSA] ASoC: Add max98925 codec driver
-Date: Fri, 16 Jan 2015 12:53:19 -0800
-Message-ID: <CABCoZhAevdENi1Dhb2=feHzjs=z98TJdSsS_bPEBk0qBsuCsnw@mail.gmail.com>
-References: <1421356633-30617-1-git-send-email-yesanishhere@gmail.com>
- <CAC5m3By5wgfoH7B6Mz=syTohu2iWAh0yNnyqZ=PKRQjgdC=UXw@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: ESI Juli@ crash with external clock switch - patch
+Date: Fri, 16 Jan 2015 21:53:37 +0100
+Message-ID: <54B97A51.60009@ivitera.com>
+References: <54B28174.7060008@ivitera.com> <s5hwq4t2u33.wl-tiwai@suse.de>
+ <54B2B992.7000909@ivitera.com> <s5hegr12gxn.wl-tiwai@suse.de>
+ <54B2E48B.7020000@ivitera.com> <s5hvbkc1kaa.wl-tiwai@suse.de>
+ <54B3872C.2010501@ivitera.com> <s5hwq4sm2bs.wl-tiwai@suse.de>
+ <54B82E02.3080008@ivitera.com> <s5ha91isl7e.wl-tiwai@suse.de>
+ <54B9763A.8030405@ivitera.com> <s5ha91izchf.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
- [209.85.215.41])
- by alsa0.perex.cz (Postfix) with ESMTP id A932C26043C
- for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 21:53:19 +0100 (CET)
-Received: by mail-la0-f41.google.com with SMTP id hv19so20910742lab.0
- for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 12:53:19 -0800 (PST)
-In-Reply-To: <CAC5m3By5wgfoH7B6Mz=syTohu2iWAh0yNnyqZ=PKRQjgdC=UXw@mail.gmail.com>
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+ [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2698260427
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 21:53:42 +0100 (CET)
+In-Reply-To: <s5ha91izchf.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,170 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tushar Behera <trblinux@gmail.com>
-Cc: Anish Kumar <anish.kumar@maximintegrated.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Nitin Mittal <nitin.mittal@maximintegrated.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 16, 2015 at 6:30 AM, Tushar Behera <trblinux@gmail.com> wrote:
-> On Fri, Jan 16, 2015 at 6:17 AM, Anish Kumar <yesanishhere@gmail.com> wrote:
->> From: Anish Kumar <anish.kumar@maximintegrated.com>
->>
->> This patch adds the max98925 codec driver.
->>
->> Signed-off-by: Anish Kumar <anish.kumar@maximintegrated.com>
->> ---
->>  sound/soc/codecs/max98925.c | 954 ++++++++++++++++++++++++++++++++++++++++++++
->>  sound/soc/codecs/max98925.h | 842 ++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 1796 insertions(+)
->>  create mode 100644 sound/soc/codecs/max98925.c
->>  create mode 100644 sound/soc/codecs/max98925.h
->>
->> diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
+Dne 16.1.2015 v 21:39 Takashi Iwai napsal(a):
+> At Fri, 16 Jan 2015 21:36:10 +0100,
 >
-> [ snip ]
+> There should be no change regarding quartet, also about PM.
+> The patches doesn't add the PM support to quartet, but rather
+> robustify only the PM of Juli@ (and ak4113/4114 codec side support).
 >
->> +static const struct snd_kcontrol_new max98925_snd_controls[] = {
->> +
->> +       SOC_SINGLE_EXT_TLV("Speaker Gain", MAX98925_R02D_GAIN,
->> +               M98925_SPK_GAIN_SHIFT, (1<<M98925_SPK_GAIN_WIDTH)-1, 0,
->> +               max98925_spk_gain_get, max98925_spk_gain_put, max98925_spk_tlv),
->> +
->
-> You can use BIT(XXX_SHIFT) macro for 1<<XXX_SHIFT operations, makes
-> the code a little cleaner to look at.
+> In anyway, I'm going to merge them once when you confirm them
+> working.
 
-will do it.
->
->> +
->> +static int max98925_add_widgets(struct snd_soc_codec *codec)
->> +{
->> +       int ret;
->> +
->> +       ret = snd_soc_add_codec_controls(codec, max98925_snd_controls,
->> +               ARRAY_SIZE(max98925_snd_controls));
->
-> Instead, you may only update controls and num_controls member of
-> snd_soc_codec_driver structure.
+OK, I will do so.
 
-will do it.
->
->> +static int max98925_dai_set_fmt(struct snd_soc_dai *codec_dai,
->> +                                unsigned int fmt)
->> +{
->> +       struct snd_soc_codec *codec = codec_dai->codec;
->> +       struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
->> +       struct max98925_cdata *cdata;
->> +       unsigned int invert = 0;
->> +
->> +       pr_debug("%s: fmt 0x%08X\n", __func__, fmt);
->
-> better to use dev_dbg.
->
->> +static int max98925_dai_set_sysclk(struct snd_soc_dai *dai,
->> +                                  int clk_id, unsigned int freq, int dir)
->> +{
->> +       struct snd_soc_codec *codec = dai->codec;
->> +       struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
->> +
->> +       pr_debug("%s: clk_id %d, freq %d, dir %d\n",
->> +                               __func__, clk_id, freq, dir);
->
-> Please use dev_dbg whenever possible.
+Thanks,
 
-will do it.
->
->> +       if (max98925->regmapR != NULL) {
->> +               reg = 0;
->> +               ret = regmap_read(max98925->regmapR,
->> +                               MAX98925_R0FF_VERSION, &reg);
->> +               if ((ret < 0) || ((reg != MAX98925_VERSION)
->> +                               && (reg != MAX98925_VERSION1))) {
->> +                       dev_err(codec->dev,
->> +                               "R device initialization error (%d 0x%02X)\n",
->> +                               ret, reg);
->> +                       goto err_access;
->> +               }
->> +               dev_info(codec->dev, "R device version 0x%02X\n", reg);
->> +       }
->> +       regmap_write(max98925->regmapL, MAX98925_R038_GLOBAL_ENABLE, 0x00);
->> +       regmap_write(max98925->regmapR, MAX98925_R038_GLOBAL_ENABLE, 0x00);
->> +
->
-> Since most of the places the writes to regmapL and regmapR are
-> duplicated, it might be a good idea to move the calls to a function
-> and call that function with appropriate parameters instead.
->
-> Something like:
-> max98925_regmap_write_stereo(max98925, MAX98925_R038_GLOBAL_ENABLE, 0x00);
->
-> same applies for regmap_update_bits() call too.
-
-nice suggestion.
->
->> +static int max98925_i2c_probe(struct i2c_client *i2c_l,
->> +                            const struct i2c_device_id *id)
->> +{
->> +       struct max98925_priv *max98925;
->> +       struct i2c_client *i2c_r;
->> +       int ret;
->> +
->> +       pr_info("%s: enter, device '%s'\n", __func__, id->name);
->> +       if (strcmp(id->name, "max98925R") == 0)
->> +               return 0;
->> +
->> +       max98925 = kzalloc(sizeof(struct max98925_priv), GFP_KERNEL);
->
-> devm_kzalloc ? no need to call kfree() in the exit path.
->
->> +       if (max98925 == NULL)
->> +               return -ENOMEM;
->> +
->> +       max98925->devtype = id->driver_data;
->> +       i2c_set_clientdata(i2c_l, max98925);
->> +       max98925->control_data = i2c_l;
->> +       max98925->pdata = i2c_l->dev.platform_data;
->> +
->> +       max98925->regmapL = regmap_init_i2c(i2c_l, &max98925_regmap);
->
-> devm_regmap_init_i2c? You won't have call regmap_exit() explicitly.
-
-ok.
->
->> diff --git a/sound/soc/codecs/max98925.h b/sound/soc/codecs/max98925.h
->> new file mode 100644
->> index 0000000..9d89d34
->> --- /dev/null
->> +++ b/sound/soc/codecs/max98925.h
->
-> [ snip ]
->
->> +
->> +/* MAX98925 Register Bit Fields */
->> +
->> +/* MAX98925_R002_LIVE_STATUS0 */
->> +#define M98925_THERMWARN_STATUS_MASK           (1<<3)
->> +#define M98925_THERMWARN_STATUS_SHIFT          3
->> +#define M98925_THERMWARN_STATUS_WIDTH          1
->
-> Please consider using a macro to create the mask value from shift and
-> width, that is less error-prone. Something like this:
->
-> #define M98925_MASK(SHIFT, WIDTH) ((BIT(WIDTH)-1) << SHIFT)
-> #define M98925_THERMWARN_STATUS_MASK \
-> M98925_MASK(M98925_THERMWARN_STATUS_SHIFT, M98925_THERMWARN_STATUS_WIDTH)
->
-> Also, for single bit definitions, you can get rid of the WIDTH
-> definitions unless you are using them in the code, just use
-> BIT(xxx_SHIFT) macro to define the mask.
->
-> Also, many of the defines are not used at all. Nothing against keeping
-> them (for better representation of the hardware), but you may also
-> consider removing them now and adding them as and when they are used
-> in the code.
-
-I would rather keep the defines which are not used as it is script
-generated file
-and i would rather not touch it.
->
-> --
-> Tushar Behera
+Pavel.
