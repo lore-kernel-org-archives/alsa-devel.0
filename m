@@ -1,18 +1,14 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Correct CBM_CFS dai
- format configuration
-Date: Fri, 16 Jan 2015 11:37:40 +0200
-Message-ID: <20150116093740.GA9102@bitmer.com>
-References: <1421400025-6374-1-git-send-email-peter.ujfalusi@ti.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: alsa-lib support for compress offload
+Date: Fri, 16 Jan 2015 09:52:58 +0000
+Message-ID: <54B8DF7A.6000700@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 60319261B02
- for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 10:37:47 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1421400025-6374-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93878264F45
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 10:52:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,21 +18,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 16, 2015 at 11:20:25AM +0200, Peter Ujfalusi wrote:
-> We should select FSR also to be driven by McBSP, not only FSX.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
-> Clearly the CBM_CFS is not widely used with McBSP, this is why it has not been
-> noticed I believe.
-> 
-> Peter
-> 
->  sound/soc/omap/omap-mcbsp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com> 
+Hi,
+
+As far as I understand I need to use something similar to tinycompress 
+to use alsa devices that supports compress offload. When I asked on 
+gstreamer list [1] about alsasink support for compress offload they said 
+yes. But I can see that gstalsasink.c [2] only uses the standard 
+alsa-lib api which AFAICT doesn't support compress offload.
+
+Did I misread the code and alsa-lib actually works with compress 
+offload? Gstreamer refers to the feature "passthrough" and associate it 
+with SPDIF[3], are they taking advantage of some other alsa feature that 
+looks like compress offload?
+
+Thanks,
+Qais
+
+[1] 
+http://gstreamer-devel.966125.n4.nabble.com/ALSA-Compress-Offload-support-td4670153.html
+[2] 
+http://cgit.freedesktop.org/gstreamer/gst-plugins-base/tree/ext/alsa/gstalsasink.c#n836
+[3] 
+http://cgit.freedesktop.org/gstreamer/gst-plugins-base/tree/ext/alsa/gstalsa.c#n437
