@@ -1,18 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: OMAP: mcbsp: ensure that CLKX and
- CLKR are not used as ouput pins when they are used as input clock for the
- SRG.
-Date: Fri, 16 Jan 2015 11:15:55 +0200
-Message-ID: <54B8D6CB.6020801@ti.com>
-References: <1421360901-20671-1-git-send-email-niederp@physik.uni-kl.de>
+Subject: [PATCH] ASoC: omap-mcbsp: Correct CBM_CFS dai format
+	configuration
+Date: Fri, 16 Jan 2015 11:20:25 +0200
+Message-ID: <1421400025-6374-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 134E1261740
- for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 10:16:01 +0100 (CET)
-In-Reply-To: <1421360901-20671-1-git-send-email-niederp@physik.uni-kl.de>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id C83BE261740
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 10:20:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?windows-1252?Q?Thomas_Niederpr=FCm?= <niederp@physik.uni-kl.de>, jarkko.nikula@bitmer.com
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/16/2015 12:28 AM, Thomas Niederpr=FCm wrote:
-> This patch fixes faulty behaviour in a setup where the input clock for
-> the SRG is fed through the CLKR pin but the McBSP is configured to be
-> master (SND_SOC_DAIFMT_CBS_CFS). In that case of course CLKR must not be
-> configured as output pin. Otherwise the input clock is messed up
-> horribly. The same reasoning applies if CLKX is configured as input for
-> the SRG.
+We should select FSR also to be driven by McBSP, not only FSX.
 
-If CLKX/CLKR is used as input clock for McBSP then the CBS_CFS is not valid.
-In this case you need to use CBM_CFS.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Clearly the CBM_CFS is not widely used with McBSP, this is why it has not been
+noticed I believe.
 
-> =
+Peter
 
-> Signed-off-by: Thomas Niederpr=FCm <niederp@physik.uni-kl.de>
-> ---
->  sound/soc/omap/omap-mcbsp.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> =
+ sound/soc/omap/omap-mcbsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index bd3ef2a..c89f562 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-> @@ -530,8 +530,12 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_=
-soc_dai *cpu_dai,
->  =
-
->  	case OMAP_MCBSP_SYSCLK_CLKX_EXT:
->  		regs->srgr2	|=3D CLKSM;
-> +		regs->pcr0	|=3D SCLKME;
-> +		regs->pcr0	&=3D ~CLKXM;
-> +		break;
->  	case OMAP_MCBSP_SYSCLK_CLKR_EXT:
->  		regs->pcr0	|=3D SCLKME;
-> +		regs->pcr0	&=3D ~CLKRM;
->  		break;
->  	default:
->  		err =3D -ENODEV;
-> =
-
-
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 8b79cafab1e2..c7eb9dd67f60 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -434,7 +434,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	case SND_SOC_DAIFMT_CBM_CFS:
+ 		/* McBSP slave. FS clock as output */
+ 		regs->srgr2	|= FSGM;
+-		regs->pcr0	|= FSXM;
++		regs->pcr0	|= FSXM | FSRM;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		/* McBSP slave */
+-- 
+2.2.1
