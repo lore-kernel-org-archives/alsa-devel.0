@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: Replace depends on
- REGMAP_I2C with depends on I2C
-Date: Fri, 16 Jan 2015 19:06:01 +0000
-Message-ID: <20150116190601.GJ3856@sirena.org.uk>
-References: <1421435056-29413-1-git-send-email-lars@metafoo.de>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: ESI Juli@ crash with external clock switch - patch
+Date: Fri, 16 Jan 2015 21:36:10 +0100
+Message-ID: <54B9763A.8030405@ivitera.com>
+References: <54B28174.7060008@ivitera.com>	<s5hwq4t2u33.wl-tiwai@suse.de>	<54B2B992.7000909@ivitera.com>	<s5hegr12gxn.wl-tiwai@suse.de>	<54B2E48B.7020000@ivitera.com>	<s5hvbkc1kaa.wl-tiwai@suse.de>	<54B3872C.2010501@ivitera.com>	<s5hwq4sm2bs.wl-tiwai@suse.de>	<54B82E02.3080008@ivitera.com>
+ <s5ha91isl7e.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3195412272723203618=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E58AE260427
- for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 20:06:17 +0100 (CET)
-In-Reply-To: <1421435056-29413-1-git-send-email-lars@metafoo.de>
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+ [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F578260427
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 21:36:28 +0100 (CET)
+In-Reply-To: <s5ha91isl7e.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Dne 16.1.2015 v 18:13 Takashi Iwai napsal(a):
+> OK, I'm going to send a fix series including the relevant correction.
+> Give it a try later.
 
---===============3195412272723203618==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PEkEgRdBLZYkpbX2"
-Content-Disposition: inline
+Thanks a lot for the patches, the external rate switching on Juli now 
+works perfectly (not tested on Quartet yet). One can tell you are 
+seasoned in kernel development, I would get lost in the synchronization 
+and workqueue facilities.
 
+>> I am not sure users would want/need to disable a feature which detects
+>> incoming samplerate. IMO if the work thread is running only in the
+>> external clock mode, nothing more is needed.
+>
+> Hm, but you can still see the other attributes of SPDIF input frames,
+> right?  Or all these useless when the clock is set to internal?
+> If so, it'd be easy to add the dynamic turn on/off per the clock
+> mode.
 
---PEkEgRdBLZYkpbX2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You are right, that would disable update of other controls informing 
+about incoming SPDIF details. These are useful in internal clock mode 
+too - if the soundcard is master for the spdif chain. A new control 
+would make sense then.
 
-On Fri, Jan 16, 2015 at 08:04:16PM +0100, Lars-Peter Clausen wrote:
-> regmap is a library function that gets selected by drivers that need it. No
-> driver modules should depend on it, since this can create dependency loops.
+I am leaving for a week, then I will test quartet and the PM features.
 
-Applied, thanks.
-
---PEkEgRdBLZYkpbX2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUuWEYAAoJECTWi3JdVIfQyKwH/32YtlnqUyLSvMsn3vhvMLXc
-uKouSvSHjBV7y1eUMdIaWjWzRraZHrIWT15/9lOmF+aybptTjlR8xKrKEbNm1o2+
-PGhKvVhZ1d8bWuMWoZ3wDeRl0g0HzcwR3K5vTSzD5seyqGvZtL0xoefjsQU6C5pz
-K/8hFShYYhBcr5vupnzG8iErP7ats/tKCyxqv7FjZIRM9Y/Y6ZcZkie02o/Q+03E
-xZfl3oygUu17QwSn4ZkIk6qqT8OmfgLfxMc+NjU5LCiTa82UFrgWoE6cBCshlbpP
-xq99ipcWvxZSfiF8Wk4sTxFIPBMEZC3I0r5V4c1hKNxmGb7Kil24u0uUXgNeSgU=
-=sAV9
------END PGP SIGNATURE-----
-
---PEkEgRdBLZYkpbX2--
-
---===============3195412272723203618==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Again, thanks a lot for the patches.
 
 
---===============3195412272723203618==--
+Pavel.
