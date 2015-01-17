@@ -1,47 +1,40 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [RESEND PATCH 0/6] Add support for the WM8280 and WM8281 codecs
-Date: Sat, 17 Jan 2015 15:21:21 +0000
-Message-ID: <1421508087-22311-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Sender: linux-gpio-owner@vger.kernel.org
-To: lee.jones@linaro.org
-Cc: broonie@kernel.org, cw00.choi@samsung.com, linus.walleij@linaro.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, rf@opensource.wolfsonmicro.com
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: [RESEND PATCH 3/6] regulator: arizona-micsupp: Add support for WM8280/WM8281
+Date: Sat, 17 Jan 2015 15:21:24 +0000
+Message-ID: <1421508087-22311-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1421508087-22311-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1421508087-22311-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This set of patches adds support for the WM8280 and WM8281
-codecs to the Wolfson Arizona drivers.
+From: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 
-I made one small correction to the first patch to removed a
-potentially uninitialised variable, but otherwise just a
-resend of Richard's work. I would suggest we put the whole
-series through the MFD tree I believe we have all the required
-Acks and I don't believe there arn't any other patches making
-their way through at the moment that this should conflict with.
+Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Reviewed-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+---
+ drivers/regulator/arizona-micsupp.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Thanks,
-Charles
-
-Richard Fitzgerald (6):
-  mfd: arizona: Add support for WM8280/WM8281
-  Documentation: devicetree: arizona: Add bindings for WM8280
-  regulator: arizona-micsupp: Add support for WM8280/WM8281
-  gpio: arizona: Add support for WM8280/WM8281
-  extcon: arizona: Add support for WM8280/WM8281
-  ASoC: arizona: Add support for WM8280/WM8281
-
- Documentation/devicetree/bindings/mfd/arizona.txt |   15 +++++++++++----
- drivers/extcon/extcon-arizona.c                   |    1 +
- drivers/gpio/gpio-arizona.c                       |    1 +
- drivers/mfd/Kconfig                               |    5 +++--
- drivers/mfd/arizona-core.c                        |   15 +++++++++++++--
- drivers/mfd/arizona-i2c.c                         |    2 ++
- drivers/mfd/arizona-irq.c                         |    1 +
- drivers/mfd/arizona-spi.c                         |    2 ++
- drivers/regulator/arizona-micsupp.c               |    1 +
- include/linux/mfd/arizona/core.h                  |    1 +
- sound/soc/codecs/arizona.c                        |    2 ++
- 11 files changed, 38 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/regulator/arizona-micsupp.c b/drivers/regulator/arizona-micsupp.c
+index ce9aca5..4ff55e1 100644
+--- a/drivers/regulator/arizona-micsupp.c
++++ b/drivers/regulator/arizona-micsupp.c
+@@ -245,6 +245,7 @@ static int arizona_micsupp_probe(struct platform_device *pdev)
+ 	 */
+ 	switch (arizona->type) {
+ 	case WM5110:
++	case WM8280:
+ 		desc = &arizona_micsupp_ext;
+ 		micsupp->init_data = arizona_micsupp_ext_default;
+ 		break;
 -- 
 1.7.2.5
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
