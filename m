@@ -1,41 +1,31 @@
-From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: [PATCH] ALSA: asihpi: asihpi: Remove unused function
-Date: Sat, 17 Jan 2015 17:35:28 +0100
-Message-ID: <1421512528-14864-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Jason Lee Cragg <jcragg@gmail.com>
+Subject: [PATCH] Add Logitech Webcam C210 to list of Logitech webcams that require mic volume fix
+Date: Sat, 17 Jan 2015 12:28:29 -0500
+Message-ID: <1421515709-9923-1-git-send-email-jcragg@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>, Dan Carpenter <dan.carpenter@oracle.com>, Benoit Taine <benoit.taine@lip6.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jason Lee Cragg <jcragg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Remove the function hpi_stream_group_get_map() that is not used anywhere.
+From: Jason Lee Cragg <jcragg@gmail.com>
 
-This was partially found by using a static code analysis program called cppcheck.
-
-Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Signed-off-by: Jason Lee Cragg <jcragg@gmail.com>
 ---
- sound/pci/asihpi/asihpi.c |    9 ---------
- 1 file changed, 9 deletions(-)
+ sound/usb/mixer.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index e9273fb..920b15e 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -271,15 +271,6 @@ static inline u16 hpi_stream_group_reset(u32 h_stream)
- 		return hpi_instream_group_reset(h_stream);
- }
- 
--static inline u16 hpi_stream_group_get_map(
--				u32 h_stream, u32 *mo, u32 *mi)
--{
--	if (hpi_handle_object(h_stream) ==  HPI_OBJ_OSTREAM)
--		return hpi_outstream_group_get_map(h_stream, mo, mi);
--	else
--		return hpi_instream_group_get_map(h_stream, mo, mi);
--}
--
- static u16 handle_error(u16 err, int line, char *filename)
- {
- 	if (err)
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 41650d5..3e2ef61 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -913,6 +913,7 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 	case USB_ID(0x046d, 0x0807): /* Logitech Webcam C500 */
+ 	case USB_ID(0x046d, 0x0808):
+ 	case USB_ID(0x046d, 0x0809):
++	case USB_ID(0x046d, 0x0819): /* Logitech Webcam C210 */
+ 	case USB_ID(0x046d, 0x081b): /* HD Webcam c310 */
+ 	case USB_ID(0x046d, 0x081d): /* HD Webcam c510 */
+ 	case USB_ID(0x046d, 0x0825): /* HD Webcam c270 */
 -- 
-1.7.10.4
+1.9.1
