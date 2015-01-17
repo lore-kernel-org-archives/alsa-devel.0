@@ -1,37 +1,47 @@
-From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
-Subject: ags-0_4_2-34
-Date: Sat, 17 Jan 2015 16:12:03 +0100
-Message-ID: <1421507523.6553.11.camel@minos-one>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f42.google.com (mail-wg0-f42.google.com [74.125.82.42])
- by alsa0.perex.cz (Postfix) with ESMTP id B634026062A
- for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2015 16:13:32 +0100 (CET)
-Received: by mail-wg0-f42.google.com with SMTP id k14so25066209wgh.1
- for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2015 07:13:32 -0800 (PST)
-Received: from [192.168.1.39] (29-44.195-178.cust.bluewin.ch. [178.195.44.29])
- by mx.google.com with ESMTPSA id
- e4sm10060557wjw.48.2015.01.17.07.13.31
- for <alsa-devel@alsa-project.org>
- (version=SSLv3 cipher=RC4-SHA bits=128/128);
- Sat, 17 Jan 2015 07:13:31 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [RESEND PATCH 0/6] Add support for the WM8280 and WM8281 codecs
+Date: Sat, 17 Jan 2015 15:21:21 +0000
+Message-ID: <1421508087-22311-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Sender: linux-gpio-owner@vger.kernel.org
+To: lee.jones@linaro.org
+Cc: broonie@kernel.org, cw00.choi@samsung.com, linus.walleij@linaro.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, rf@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsCgpEZWZpbml0aXZlbHkgYSBzdWNjZXNzIHN0b3J5IGJ5IGl0c2VsdmVzCgpodHRwOi8v
-YWdzLnNmLm5ldAoKVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgeW91ciBoZWxwLgoKYmVzdCByZWdh
-cmRzCkpvw6tsCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+This set of patches adds support for the WM8280 and WM8281
+codecs to the Wolfson Arizona drivers.
+
+I made one small correction to the first patch to removed a
+potentially uninitialised variable, but otherwise just a
+resend of Richard's work. I would suggest we put the whole
+series through the MFD tree I believe we have all the required
+Acks and I don't believe there arn't any other patches making
+their way through at the moment that this should conflict with.
+
+Thanks,
+Charles
+
+Richard Fitzgerald (6):
+  mfd: arizona: Add support for WM8280/WM8281
+  Documentation: devicetree: arizona: Add bindings for WM8280
+  regulator: arizona-micsupp: Add support for WM8280/WM8281
+  gpio: arizona: Add support for WM8280/WM8281
+  extcon: arizona: Add support for WM8280/WM8281
+  ASoC: arizona: Add support for WM8280/WM8281
+
+ Documentation/devicetree/bindings/mfd/arizona.txt |   15 +++++++++++----
+ drivers/extcon/extcon-arizona.c                   |    1 +
+ drivers/gpio/gpio-arizona.c                       |    1 +
+ drivers/mfd/Kconfig                               |    5 +++--
+ drivers/mfd/arizona-core.c                        |   15 +++++++++++++--
+ drivers/mfd/arizona-i2c.c                         |    2 ++
+ drivers/mfd/arizona-irq.c                         |    1 +
+ drivers/mfd/arizona-spi.c                         |    2 ++
+ drivers/regulator/arizona-micsupp.c               |    1 +
+ include/linux/mfd/arizona/core.h                  |    1 +
+ sound/soc/codecs/arizona.c                        |    2 ++
+ 11 files changed, 38 insertions(+), 8 deletions(-)
+
+-- 
+1.7.2.5
+
