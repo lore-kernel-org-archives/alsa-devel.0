@@ -1,50 +1,41 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [RESEND PATCH 4/6] gpio: arizona: Add support for
-	WM8280/WM8281
-Date: Sat, 17 Jan 2015 15:21:25 +0000
-Message-ID: <1421508087-22311-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1421508087-22311-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F397B260638
- for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2015 16:26:08 +0100 (CET)
-In-Reply-To: <1421508087-22311-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lee.jones@linaro.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, broonie@kernel.org, rf@opensource.wolfsonmicro.com
+From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Subject: [PATCH] ALSA: asihpi: asihpi: Remove unused function
+Date: Sat, 17 Jan 2015 17:35:28 +0100
+Message-ID: <1421512528-14864-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>, Dan Carpenter <dan.carpenter@oracle.com>, Benoit Taine <benoit.taine@lip6.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Remove the function hpi_stream_group_get_map() that is not used anywhere.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+This was partially found by using a static code analysis program called cppcheck.
+
+Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
 ---
- drivers/gpio/gpio-arizona.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ sound/pci/asihpi/asihpi.c |    9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
-index fe369f5..9665d0a 100644
---- a/drivers/gpio/gpio-arizona.c
-+++ b/drivers/gpio/gpio-arizona.c
-@@ -116,6 +116,7 @@ static int arizona_gpio_probe(struct platform_device *pdev)
- 	switch (arizona->type) {
- 	case WM5102:
- 	case WM5110:
-+	case WM8280:
- 	case WM8997:
- 		arizona_gpio->gpio_chip.ngpio = 5;
- 		break;
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index e9273fb..920b15e 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -271,15 +271,6 @@ static inline u16 hpi_stream_group_reset(u32 h_stream)
+ 		return hpi_instream_group_reset(h_stream);
+ }
+ 
+-static inline u16 hpi_stream_group_get_map(
+-				u32 h_stream, u32 *mo, u32 *mi)
+-{
+-	if (hpi_handle_object(h_stream) ==  HPI_OBJ_OSTREAM)
+-		return hpi_outstream_group_get_map(h_stream, mo, mi);
+-	else
+-		return hpi_instream_group_get_map(h_stream, mo, mi);
+-}
+-
+ static u16 handle_error(u16 err, int line, char *filename)
+ {
+ 	if (err)
 -- 
-1.7.2.5
+1.7.10.4
