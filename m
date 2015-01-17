@@ -1,22 +1,23 @@
-From: anish <yesanishhere@gmail.com>
+From: Amish Kumar <yesanishhere@gmail.com>
 Subject: Re: [PATCH] [ALSA] ASoC: Add max98925 codec driver
-Date: Fri, 16 Jan 2015 15:42:01 -0800
-Message-ID: <CABCoZhBWm0-F9h43GAs06w-fqWLqFSHHp1KeDN6qVWFKu1vyhQ@mail.gmail.com>
+Date: Fri, 16 Jan 2015 16:37:59 -0800
+Message-ID: <E7B58FA7-CDE0-43C1-A943-3892EF561486@gmail.com>
 References: <1421356633-30617-1-git-send-email-yesanishhere@gmail.com>
  <54B9465F.2060603@metafoo.de>
  <CABCoZhChrPckmnwZpfwyrirqZHWsMpUfU-HtMi744JCtPbuAQg@mail.gmail.com>
  <54B97EA1.10804@metafoo.de>
-Mime-Version: 1.0
+ <CABCoZhBWm0-F9h43GAs06w-fqWLqFSHHp1KeDN6qVWFKu1vyhQ@mail.gmail.com>
+Mime-Version: 1.0 (1.0)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f174.google.com (mail-lb0-f174.google.com
- [209.85.217.174])
- by alsa0.perex.cz (Postfix) with ESMTP id B6431260474
- for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2015 00:42:02 +0100 (CET)
-Received: by mail-lb0-f174.google.com with SMTP id 10so20904253lbg.5
- for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 15:42:02 -0800 (PST)
-In-Reply-To: <54B97EA1.10804@metafoo.de>
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8150260427
+ for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2015 01:38:04 +0100 (CET)
+Received: by mail-pd0-f182.google.com with SMTP id y10so14273248pdj.13
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jan 2015 16:38:03 -0800 (PST)
+In-Reply-To: <CABCoZhBWm0-F9h43GAs06w-fqWLqFSHHp1KeDN6qVWFKu1vyhQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,127 +28,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Anish Kumar <anish.kumar@maximintegrated.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Nitin Mittal <nitin.mittal@maximintegrated.com>
+Cc: Anish Kumar <anish.kumar@maximintegrated.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Nitin Mittal <nitin.mittal@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 16, 2015 at 1:12 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> On 01/16/2015 10:00 PM, anish wrote:
->>
->> On Fri, Jan 16, 2015 at 9:11 AM, Lars-Peter Clausen <lars@metafoo.de>
->> wrote:
->>>
->>> On 01/15/2015 10:17 PM, Anish Kumar wrote:
->>>>
->>>>
->>>> From: Anish Kumar <anish.kumar@maximintegrated.com>
->>>>
->>>> This patch adds the max98925 codec driver.
->>>>
->>>> Signed-off-by: Anish Kumar <anish.kumar@maximintegrated.com>
->>>
->>>
->>>
->>> Please make sure to submit drivers against the latest development version
->>> of
->>> the ASoC tree
->>>
->>> (http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/log/?h=for-next).
->>> This has a couple of outdated things and won't even compile.
->>
->>
->> When i checked on IRC i was told that linux-next is good. Anyway will
->> rebase
->> it against this one.
->
->
-> Yes, that was me who said that. But this driver will neither compile against
-> linux-next nor asoc/for-next.
->
-> Which raises another issue, the driver doesn't add any Makefile or Kconfig
-> entries, so even if it would compile you still can compile it.
->
->
->>>> +static struct snd_soc_codec_driver soc_codec_dev_max98925 = {
->>>
->>>
->>>
->>> const
->>>
->>>> +       .probe            = max98925_probe,
->>>> +       .set_bias_level   = max98925_set_bias_level,
->>>
->>>
->>>
->>> You'll need at least some kind of DAPM, otherwise you CODEC won't do
->>> anything.
+Ccing mark and Liam
 
-As already mentioned over IRC this is just a basic power amplifier connected
-through i2s interface. Currently we do all the mixer settings by using
-the mixer control
-and ALSA callbacks such as prepare, hw_params are doing the other jobs.
 
-I can create dapm path to represent the internals of amplifier but i
-was wondering
-can i tie it to the codec dai?
-If yes i can represent codec dai as AIF_IN and DAC as output. So that whenever
-codec dai is started it will trigger PA as well. Is that ok?
-
->>
->>
->> Yes this is most important comment. I wrongly mentioned this as codec
->> but rather it is just mono Class DG audio amplifier  so it doesn't need
->> any dapm connections. Mixer commands is good enough for this and i will
->> change this in commit text as well.
->
->
-> Even a amplifier will have a output input and a audio output. Those should
-> be properly modeled in DAPM.
->
->
->>>
->>>> +};
->>>> +
->>>
->>>
->>> [...]
->>>>
->>>>
->>>> +/* There should be a second MAX98925 on the board */
->>>> +static struct i2c_board_info max98925_i2c_second[] = {
->>>> +       {
->>>> +               I2C_BOARD_INFO("max98925R", 0x32),
->>>> +       }
->>>> +};
->>>> +
->>>> +struct i2c_client *add_second_device(int busnum)
->>>> +{
->>>> +       struct i2c_client *i2c = NULL;
->>>> +       struct i2c_adapter *adapter;
->>>> +
->>>> +       adapter = i2c_get_adapter(busnum);
->>>> +       if (adapter != NULL)
->>>> +               i2c = i2c_new_device(adapter, max98925_i2c_second);
->>>> +
->>>> +       return i2c;
->>>> +}
->>>
->>>
->>> [...]
->>>>
->>>>
->>>> +       /* Check for second MAX98925 */
->>>> +       i2c_r = add_second_device(2);
->>>
->>>
->>>
->>> If there are two devices instantiate them properly and create two CODEC
->>> devices, not some kind of hackery like this.
->>
->>
->> Ok but this is just audio amplifier do we  still need that?
->
->
-> Yes! There is no conceptual difference between a CODEC or an amplifier
-> driver at that level.
->
-> - Lars
+>> On Jan 16, 2015, at 3:42 PM, anish <yesanishhere@gmail.com> wrote:
+>> 
+>>> On Fri, Jan 16, 2015 at 1:12 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>>> On 01/16/2015 10:00 PM, anish wrote:
+>>> 
+>>> On Fri, Jan 16, 2015 at 9:11 AM, Lars-Peter Clausen <lars@metafoo.de>
+>>> wrote:
+>>>> 
+>>>>> On 01/15/2015 10:17 PM, Anish Kumar wrote:
+>>>>> 
+>>>>> 
+>>>>> From: Anish Kumar <anish.kumar@maximintegrated.com>
+>>>>> 
+>>>>> This patch adds the max98925 codec driver.
+>>>>> 
+>>>>> Signed-off-by: Anish Kumar <anish.kumar@maximintegrated.com>
+>>>> 
+>>>> 
+>>>> 
+>>>> Please make sure to submit drivers against the latest development version
+>>>> of
+>>>> the ASoC tree
+>>>> 
+>>>> (http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/log/?h=for-next).
+>>>> This has a couple of outdated things and won't even compile.
+>>> 
+>>> 
+>>> When i checked on IRC i was told that linux-next is good. Anyway will
+>>> rebase
+>>> it against this one.
+>> 
+>> 
+>> Yes, that was me who said that. But this driver will neither compile against
+>> linux-next nor asoc/for-next.
+>> 
+>> Which raises another issue, the driver doesn't add any Makefile or Kconfig
+>> entries, so even if it would compile you still can compile it.
+>> 
+>> 
+>>>>> +static struct snd_soc_codec_driver soc_codec_dev_max98925 = {
+>>>> 
+>>>> 
+>>>> 
+>>>> const
+>>>> 
+>>>>> +       .probe            = max98925_probe,
+>>>>> +       .set_bias_level   = max98925_set_bias_level,
+>>>> 
+>>>> 
+>>>> 
+>>>> You'll need at least some kind of DAPM, otherwise you CODEC won't do
+>>>> anything.
+> 
+> As already mentioned over IRC this is just a basic power amplifier connected
+> through i2s interface. Currently we do all the mixer settings by using
+> the mixer control
+> and ALSA callbacks such as prepare, hw_params are doing the other jobs.
+> 
+> I can create dapm path to represent the internals of amplifier but i
+> was wondering
+> can i tie it to the codec dai?
+> If yes i can represent codec dai as AIF_IN and DAC as output. So that whenever
+> codec dai is started it will trigger PA as well. Is that ok?
+> 
+>>> 
+>>> 
+>>> Yes this is most important comment. I wrongly mentioned this as codec
+>>> but rather it is just mono Class DG audio amplifier  so it doesn't need
+>>> any dapm connections. Mixer commands is good enough for this and i will
+>>> change this in commit text as well.
+>> 
+>> 
+>> Even a amplifier will have a output input and a audio output. Those should
+>> be properly modeled in DAPM.
+>> 
+>> 
+>>>> 
+>>>>> +};
+>>>>> +
+>>>> 
+>>>> 
+>>>> [...]
+>>>>> 
+>>>>> 
+>>>>> +/* There should be a second MAX98925 on the board */
+>>>>> +static struct i2c_board_info max98925_i2c_second[] = {
+>>>>> +       {
+>>>>> +               I2C_BOARD_INFO("max98925R", 0x32),
+>>>>> +       }
+>>>>> +};
+>>>>> +
+>>>>> +struct i2c_client *add_second_device(int busnum)
+>>>>> +{
+>>>>> +       struct i2c_client *i2c = NULL;
+>>>>> +       struct i2c_adapter *adapter;
+>>>>> +
+>>>>> +       adapter = i2c_get_adapter(busnum);
+>>>>> +       if (adapter != NULL)
+>>>>> +               i2c = i2c_new_device(adapter, max98925_i2c_second);
+>>>>> +
+>>>>> +       return i2c;
+>>>>> +}
+>>>> 
+>>>> 
+>>>> [...]
+>>>>> 
+>>>>> 
+>>>>> +       /* Check for second MAX98925 */
+>>>>> +       i2c_r = add_second_device(2);
+>>>> 
+>>>> 
+>>>> 
+>>>> If there are two devices instantiate them properly and create two CODEC
+>>>> devices, not some kind of hackery like this.
+>>> 
+>>> 
+>>> Ok but this is just audio amplifier do we  still need that?
+>> 
+>> 
+>> Yes! There is no conceptual difference between a CODEC or an amplifier
+>> driver at that level.
+>> 
+>> - Lars
