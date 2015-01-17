@@ -1,324 +1,84 @@
-From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: [PATCH v2] soc: intel: sst-haswell-ipc: Remove unused functions
-Date: Sun, 18 Jan 2015 00:38:46 +0100
-Message-ID: <1421537927-16567-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jie Yang <yang.jie@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Dan Carpenter <dan.carpenter@oracle.com>, Christian Engelmayer <cengelma@gmx.at>, =?UTF-8?q?Pawe=C5=82=20Piskorski?= <pawel.piskorski@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Oliver Freyermuth <o.freyermuth@googlemail.com>
+Subject: Re: Digital Input on ALC3661 (from laptop HDMI IN) not
+ working under Linux
+Date: Sat, 17 Jan 2015 17:04:17 +0100
+Message-ID: <54BA8801.6080508@googlemail.com>
+References: <CAN8ccia2tYdtR1-ECkC74UoiROAvf3faWSZ_Da09p2C24_9YnQ@mail.gmail.com>	<CAN8ccibptPwFidyNM9TAHjqQg_-xiXEcw3oaaqZDetn-GPVZrg@mail.gmail.com>	<CAN8cciZWU6-CfKKK21L39nkOqMJtNJL3k06iHWpF_J7oq=DzCg@mail.gmail.com>
+ <CAN8cciZV2Z=6yck7RHpgLUK-o7rXY+i51usMgss+xH4wkZHDDA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f181.google.com (mail-we0-f181.google.com
+ [74.125.82.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9120626062E
+ for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2015 17:04:19 +0100 (CET)
+Received: by mail-we0-f181.google.com with SMTP id q58so24865481wes.12
+ for <alsa-devel@alsa-project.org>; Sat, 17 Jan 2015 08:04:19 -0800 (PST)
+In-Reply-To: <CAN8cciZV2Z=6yck7RHpgLUK-o7rXY+i51usMgss+xH4wkZHDDA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Removes some functions that are not used anywhere:
-sst_hsw_stream_unmute() sst_hsw_stream_mute() msg_set_stage_type()
-sst_hsw_dx_get_state() sst_hsw_stream_set_write_position()
-sst_hsw_stream_get_vol_reg() sst_hsw_stream_get_peak_reg()
-sst_hsw_stream_get_pointer_reg() sst_hsw_stream_get_read_reg()
-sst_hsw_stream_get_mixer_id() sst_hsw_stream_get_hw_id()
-sst_hsw_mixer_set_volume_curve() sst_hsw_mixer_unmute()
-sst_hsw_mixer_mute() sst_hsw_stream_set_volume_curve()
-
-This was partially found by using a static code analysis program called cppcheck.
-
-Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
----
- sound/soc/intel/sst-haswell-ipc.c |  168 -------------------------------------
- sound/soc/intel/sst-haswell-ipc.h |   31 -------
- 2 files changed, 199 deletions(-)
-
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 3f8c482..d693d4a 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -337,12 +337,6 @@ static inline u32 msg_get_stage_type(u32 msg)
- 	return (msg & IPC_STG_TYPE_MASK) >>  IPC_STG_TYPE_SHIFT;
- }
- 
--static inline u32 msg_set_stage_type(u32 msg, u32 type)
--{
--	return (msg & ~IPC_STG_TYPE_MASK) +
--		(type << IPC_STG_TYPE_SHIFT);
--}
--
- static inline u32 msg_get_stream_id(u32 msg)
- {
- 	return (msg & IPC_STR_ID_MASK) >>  IPC_STR_ID_SHIFT;
-@@ -969,45 +963,6 @@ int sst_hsw_fw_get_version(struct sst_hsw *hsw,
- }
- 
- /* Mixer Controls */
--int sst_hsw_stream_mute(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
--	u32 stage_id, u32 channel)
--{
--	int ret;
--
--	ret = sst_hsw_stream_get_volume(hsw, stream, stage_id, channel,
--		&stream->mute_volume[channel]);
--	if (ret < 0)
--		return ret;
--
--	ret = sst_hsw_stream_set_volume(hsw, stream, stage_id, channel, 0);
--	if (ret < 0) {
--		dev_err(hsw->dev, "error: can't unmute stream %d channel %d\n",
--			stream->reply.stream_hw_id, channel);
--		return ret;
--	}
--
--	stream->mute[channel] = 1;
--	return 0;
--}
--
--int sst_hsw_stream_unmute(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
--	u32 stage_id, u32 channel)
--
--{
--	int ret;
--
--	stream->mute[channel] = 0;
--	ret = sst_hsw_stream_set_volume(hsw, stream, stage_id, channel,
--		stream->mute_volume[channel]);
--	if (ret < 0) {
--		dev_err(hsw->dev, "error: can't unmute stream %d channel %d\n",
--			stream->reply.stream_hw_id, channel);
--		return ret;
--	}
--
--	return 0;
--}
--
- int sst_hsw_stream_get_volume(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- 	u32 stage_id, u32 channel, u32 *volume)
- {
-@@ -1021,17 +976,6 @@ int sst_hsw_stream_get_volume(struct sst_hsw *hsw, struct sst_hsw_stream *stream
- 	return 0;
- }
- 
--int sst_hsw_stream_set_volume_curve(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u64 curve_duration,
--	enum sst_hsw_volume_curve curve)
--{
--	/* curve duration in steps of 100ns */
--	stream->vol_req.curve_duration = curve_duration;
--	stream->vol_req.curve_type = curve;
--
--	return 0;
--}
--
- /* stream volume */
- int sst_hsw_stream_set_volume(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream, u32 stage_id, u32 channel, u32 volume)
-@@ -1083,42 +1027,6 @@ int sst_hsw_stream_set_volume(struct sst_hsw *hsw,
- 	return 0;
- }
- 
--int sst_hsw_mixer_mute(struct sst_hsw *hsw, u32 stage_id, u32 channel)
--{
--	int ret;
--
--	ret = sst_hsw_mixer_get_volume(hsw, stage_id, channel,
--		&hsw->mute_volume[channel]);
--	if (ret < 0)
--		return ret;
--
--	ret = sst_hsw_mixer_set_volume(hsw, stage_id, channel, 0);
--	if (ret < 0) {
--		dev_err(hsw->dev, "error: failed to unmute mixer channel %d\n",
--			channel);
--		return ret;
--	}
--
--	hsw->mute[channel] = 1;
--	return 0;
--}
--
--int sst_hsw_mixer_unmute(struct sst_hsw *hsw, u32 stage_id, u32 channel)
--{
--	int ret;
--
--	ret = sst_hsw_mixer_set_volume(hsw, stage_id, channel,
--		hsw->mixer_info.volume_register_address[channel]);
--	if (ret < 0) {
--		dev_err(hsw->dev, "error: failed to unmute mixer channel %d\n",
--			channel);
--		return ret;
--	}
--
--	hsw->mute[channel] = 0;
--	return 0;
--}
--
- int sst_hsw_mixer_get_volume(struct sst_hsw *hsw, u32 stage_id, u32 channel,
- 	u32 *volume)
- {
-@@ -1132,16 +1040,6 @@ int sst_hsw_mixer_get_volume(struct sst_hsw *hsw, u32 stage_id, u32 channel,
- 	return 0;
- }
- 
--int sst_hsw_mixer_set_volume_curve(struct sst_hsw *hsw,
--	 u64 curve_duration, enum sst_hsw_volume_curve curve)
--{
--	/* curve duration in steps of 100ns */
--	hsw->curve_duration = curve_duration;
--	hsw->curve_type = curve;
--
--	return 0;
--}
--
- /* global mixer volume */
- int sst_hsw_mixer_set_volume(struct sst_hsw *hsw, u32 stage_id, u32 channel,
- 	u32 volume)
-@@ -1434,48 +1332,6 @@ int sst_hsw_stream_commit(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 
- /* Stream Information - these calls could be inline but we want the IPC
-  ABI to be opaque to client PCM drivers to cope with any future ABI changes */
--int sst_hsw_stream_get_hw_id(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream)
--{
--	return stream->reply.stream_hw_id;
--}
--
--int sst_hsw_stream_get_mixer_id(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream)
--{
--	return stream->reply.mixer_hw_id;
--}
--
--u32 sst_hsw_stream_get_read_reg(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream)
--{
--	return stream->reply.read_position_register_address;
--}
--
--u32 sst_hsw_stream_get_pointer_reg(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream)
--{
--	return stream->reply.presentation_position_register_address;
--}
--
--u32 sst_hsw_stream_get_peak_reg(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u32 channel)
--{
--	if (channel >= 2)
--		return 0;
--
--	return stream->reply.peak_meter_register_address[channel];
--}
--
--u32 sst_hsw_stream_get_vol_reg(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u32 channel)
--{
--	if (channel >= 2)
--		return 0;
--
--	return stream->reply.volume_register_address[channel];
--}
--
- int sst_hsw_mixer_get_info(struct sst_hsw *hsw)
- {
- 	struct sst_hsw_ipc_stream_info_reply *reply;
-@@ -1598,30 +1454,6 @@ u64 sst_hsw_get_dsp_presentation_position(struct sst_hsw *hsw,
- 	return ppos;
- }
- 
--int sst_hsw_stream_set_write_position(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u32 stage_id, u32 position)
--{
--	u32 header;
--	int ret;
--
--	trace_stream_write_position(stream->reply.stream_hw_id, position);
--
--	header = IPC_GLB_TYPE(IPC_GLB_STREAM_MESSAGE) |
--		IPC_STR_TYPE(IPC_STR_STAGE_MESSAGE);
--	header |= (stream->reply.stream_hw_id << IPC_STR_ID_SHIFT);
--	header |= (IPC_STG_SET_WRITE_POSITION << IPC_STG_TYPE_SHIFT);
--	header |= (stage_id << IPC_STG_ID_SHIFT);
--	stream->wpos.position = position;
--
--	ret = ipc_tx_message_nowait(hsw, header, &stream->wpos,
--		sizeof(stream->wpos));
--	if (ret < 0)
--		dev_err(hsw->dev, "error: stream %d set position %d failed\n",
--			stream->reply.stream_hw_id, position);
--
--	return ret;
--}
--
- /* physical BE config */
- int sst_hsw_device_set_config(struct sst_hsw *hsw,
- 	enum sst_hsw_device_id dev, enum sst_hsw_device_mclk mclk,
-diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
-index 138e894..c1ad901 100644
---- a/sound/soc/intel/sst-haswell-ipc.h
-+++ b/sound/soc/intel/sst-haswell-ipc.h
-@@ -376,32 +376,17 @@ int sst_hsw_fw_get_version(struct sst_hsw *hsw,
- u32 create_channel_map(enum sst_hsw_channel_config config);
- 
- /* Stream Mixer Controls - */
--int sst_hsw_stream_mute(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
--	u32 stage_id, u32 channel);
--int sst_hsw_stream_unmute(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
--	u32 stage_id, u32 channel);
--
- int sst_hsw_stream_set_volume(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream, u32 stage_id, u32 channel, u32 volume);
- int sst_hsw_stream_get_volume(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream, u32 stage_id, u32 channel, u32 *volume);
- 
--int sst_hsw_stream_set_volume_curve(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u64 curve_duration,
--	enum sst_hsw_volume_curve curve);
--
- /* Global Mixer Controls - */
--int sst_hsw_mixer_mute(struct sst_hsw *hsw, u32 stage_id, u32 channel);
--int sst_hsw_mixer_unmute(struct sst_hsw *hsw, u32 stage_id, u32 channel);
--
- int sst_hsw_mixer_set_volume(struct sst_hsw *hsw, u32 stage_id, u32 channel,
- 	u32 volume);
- int sst_hsw_mixer_get_volume(struct sst_hsw *hsw, u32 stage_id, u32 channel,
- 	u32 *volume);
- 
--int sst_hsw_mixer_set_volume_curve(struct sst_hsw *hsw,
--	u64 curve_duration, enum sst_hsw_volume_curve curve);
--
- /* Stream API */
- struct sst_hsw_stream *sst_hsw_stream_new(struct sst_hsw *hsw, int id,
- 	u32 (*get_write_position)(struct sst_hsw_stream *stream, void *data),
-@@ -440,18 +425,6 @@ int sst_hsw_stream_set_pmemory_info(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream, u32 offset, u32 size);
- int sst_hsw_stream_set_smemory_info(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream, u32 offset, u32 size);
--int sst_hsw_stream_get_hw_id(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream);
--int sst_hsw_stream_get_mixer_id(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream);
--u32 sst_hsw_stream_get_read_reg(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream);
--u32 sst_hsw_stream_get_pointer_reg(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream);
--u32 sst_hsw_stream_get_peak_reg(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u32 channel);
--u32 sst_hsw_stream_get_vol_reg(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u32 channel);
- int sst_hsw_mixer_get_info(struct sst_hsw *hsw);
- 
- /* Stream ALSA trigger operations */
-@@ -466,8 +439,6 @@ int sst_hsw_stream_get_read_pos(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream, u32 *position);
- int sst_hsw_stream_get_write_pos(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream, u32 *position);
--int sst_hsw_stream_set_write_position(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u32 stage_id, u32 position);
- u32 sst_hsw_get_dsp_position(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream);
- u64 sst_hsw_get_dsp_presentation_position(struct sst_hsw *hsw,
-@@ -481,8 +452,6 @@ int sst_hsw_device_set_config(struct sst_hsw *hsw,
- /* DX Config */
- int sst_hsw_dx_set_state(struct sst_hsw *hsw,
- 	enum sst_hsw_dx_state state, struct sst_hsw_ipc_dx_reply *dx);
--int sst_hsw_dx_get_state(struct sst_hsw *hsw, u32 item,
--	u32 *offset, u32 *size, u32 *source);
- 
- /* init */
- int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata);
--- 
-1.7.10.4
+Pj4gSSBoYXZlIGFuIEFsaWVud2FyZSAxNyBsYXB0b3AgKHNvbWV0aW1lcyBjYWxsZWQgTTE3Ulg1
+KSB3aGljaCBoYXMgYQo+IFJlYWx0ZWsgQUxDMzY2MS4KPj5UaGUgcHJvYmxlbSBJIGRlc2NyaWJl
+IGhlcmUgc2hvdWxkIGFsc28gYmUgdmFsaWQgZm9yIHRoZSBBbGllbndhcmUgMTgKPiAoYWxsIHRo
+ZSBsYXRlIDIwMTMgbW9kZWxzLCB3aGljaCBhcmUgc3RpbGwgdGhlIG1vc3QgY3VycmVudCkuIEF0
+IGxlYXN0Cj4gc29tZSBzY2F0dGVyZWQgZm9ydW0gcmVwb3J0cyBzdWdnZXN0IHNvLgo+IAo+PlRo
+ZSBjYXJkIHdvcmtzIGFsbW9zdCBwZXJmZWN0IGluIExpbnV4LCBidXQgb25lIGZ1bmN0aW9uYWxp
+dHkgaXMKPiBtaXNzaW5nOiBUaGUgbGFwdG9wIGZlYXR1cmVzIGFuIEhETUkgaW5wdXQsIGFuZCB0
+aGUgUmVhbHRlayBjYXJkIGlzCj4gc3VwcG9zZWQgdG8gdGFrZSBjYXJlIG9mIHRoZSBpbmNvbWlu
+ZyBkaWdpdGFsIGF1ZGlvLgo+IFRoaXMgd29ya3MgZmluZSBpbiBXaW5kb3dzLCBidXQgaW4gTGlu
+dXgsIEkgb25seSBnZXQgdGhlIHZpZGVvIGFuZCB0aGUKPiBhdWRpbyBzdGF5cyBtaXNzaW5nLgo+
+IAo+PiBIZXJlIHlvdSBjYW4gZmluZCBteSBhbHNhLWluZm86Cj4gaHR0cDovL3d3dy5hbHNhLXBy
+b2plY3Qub3JnL2RiLz9mPTBhMDUwMmU0OTIxMmEwNDM2YTMwZmRlOWQ0ZWU1NjE2M2JiYzJlYmMK
+PiAKPiBUaGUgb25seSBkaWdpYWwgaW5wdXQgaXMgbm9kZSAweDBhCj4gCj4gVHJ5IGhkYS1qYWNr
+LXJldGFzayB0byBjaGFuZ2Ugbm9kZSAweDFmICB3aXRoIHBpbiBkZWZhdWx0IFtKYWNrXSBkaWdp
+dGFsIEluCgpUaGFua3MgYSBsb3QgZm9yIHlvdXIgc3VnZ2VzdGlvbiEKSSB0cmllZCwgMHgwYSBz
+dGF5cyBhcyAibm90IHByZXNlbnQiIGJ1dCBJIGNhbiBzZWxlY3QgaXQgaW4gYWxzYS1taXhlcgph
+cyBleHBlY3RlZC4gU2FkbHksIEkgY2FuIG9ubHkgcmVjb3JkIHNpbGVuY2UuCkFsc28gc2V0dGlu
+ZyBKYWNrIERldGVjdGlvbiB0byAiUHJlc2VudCIgaW4gdGhlIGFkdmFuY2VkIG92ZXJyaWRlcyBv
+ZgpoZGFqYWNrcmV0YXNrIGRpZCBub3QgaGVscC4KCkRvIHlvdSBoYXZlIGZ1cnRoZXIgaWRlYXMg
+LyBpcyB0aGVyZSBtb3JlIGluZm9ybWF0aW9uIEkgY2FuIHByb3ZpZGUgLwpjb2xsZWN0PwoKQ2hl
+ZXJzLApPbGl2ZXIKCj4gCj4gTm9kZSAweDBhIFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA3OTE6
+IFN0ZXJlbyBEaWdpdGFsCj4gICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKPiAgIFNE
+SS1TZWxlY3Q6IDAKPiAgIERpZ2l0YWw6Cj4gICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKPiAgIElF
+QyBDb2RpbmcgVHlwZTogMHgwCj4gICBQQ006Cj4gICAgIHJhdGVzIFsweDU3MF06IDMyMDAwIDQ0
+MTAwIDQ4MDAwIDk2MDAwIDE5MjAwMAo+ICAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAo+ICAgICBm
+b3JtYXRzIFsweDFdOiBQQ00KPiAgIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAo+ICAg
+UG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwo+ICAgUG93ZXI6IHNldHRpbmc9RDAsIGFj
+dHVhbD1EMAo+ICAgQ29ubmVjdGlvbjogMQo+ICAgICAgMHgxZgo+IAo+IE5vZGUgMHgxZiBbUGlu
+IENvbXBsZXhdIHdjYXBzIDB4NDAwNjgxOiBTdGVyZW8gRGlnaXRhbAo+ICAgUGluY2FwIDB4MDAw
+MDAwMjA6IElOCj4gICBQaW4gRGVmYXVsdCAweDQxMTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4
+dCBSZWFyCj4gICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmxhY2sKPiAgICAgRGVmQXNzb2NpYXRp
+b24gPSAweGYsIFNlcXVlbmNlID0gMHgwCj4gICAgIE1pc2MgPSBOT19QUkVTRU5DRQo+ICAgUGlu
+LWN0bHM6IDB4MjA6IElOCj4gICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKPiAgIFBv
+d2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKPiAKPj5JbiBXaW5kb3dzLCBJIG9ic2VydmUg
+dGhlIEhETUktSU4gYXVkaW8gcm91dGluZyB0byB0aGUgc3BlYWtlcnMgaXMgb25seQo+IGRvbmUg
+aWYgdGhlIFJlYWx0ZWsgQXVkaW8gU2VydmljZSBpcyBydW5uaW5nLiBJbiBMaW51eCwgSSBvYnNl
+cnZlCj4ga2V5cHJlc3MtZXZlbnRzIHdoZW4gSSBlaXRoZXIgc3dpdGNoIG1hbnVhbGx5IHRvIHRo
+ZSBIRE1JLWluIHNpZ25hbCBhbmQgYWxzbwo+IGlmIGEgbmV3IHNpZ25hbCBpcyBkZXRlY3RlZCAo
+c29tZXRoaW5nICh0aGUgVUVGST8pIGluamVjdHMgYSBrZXlwcmVzcwo+IHRoZW4pLgo+IEkgYXNz
+dW1lIHRoZSBzZXJ2aWNlIGluIFdpbmRvd3MgY2F0Y2hlcyB0aGVzZSBldmVudHMgYW5kIGNoYW5n
+ZXMKPiAic29tZXRoaW5nIiBpbiB0aGUgUmVhbHRlayBBdWRpbyBTZXR0aW5ncy4gSSBzZWUgbm8g
+c3BlY2lhbCByZWNvcmRpbmcKPiBkZXZpY2UgaW4gV2luZG93cywgbm9yIGFueSBleHBsaWNpdCBI
+RE1JLWlucHV0IHNldHRpbmcsIG5vciBhbnkgcmVsYXRlZAo+IHNldHRpbmcgaW4gdGhlIGRyaXZl
+ci4gRGVsbCBsaW5rcyBhIHN0YW5kYXJkIFJlYWx0ZWsgZHJpdmVyIGluIHRoZWlyCj4gc3VwcG9y
+dCBzZWN0aW9uLgo+IAo+Pk5vdGUgdGhlIGxhcHRvcCBoYXMgYSBzaW5nbGUgSERNSSBjb25uZWN0
+b3Igd2hpY2ggY2FuIGJlIHVzZWQgYm90aCBmb3IKPiBpbnB1dCBhbmQgb3V0cHV0IChzbyB0aGUg
+bnZpZGlhLWNhcmQKPiBhbHNvIHNob3dzIG9uZSBIRE1JLW91dCkuIFRoZSBzZWNvbmQgTlZJRElB
+IGF1ZGlvIG91dCBpcyB2ZXJ5IGxpa2VseQo+IGZyb20gdGhlIG1pbmktZGlzcGxheS1wb3J0IG9m
+IHRoZQo+IGxhcHRvcC4KPiAKCgotLSAKT2xpdmVyIEZyZXllcm11dGgKUGh5c2lrYWxpc2NoZXMg
+SW5zdGl0dXQgZGVyIFVuaXZlcnNpdMOkdCBCb25uCk51w59hbGxlZSAxMgo1MzExNSBCb25uCi0t
+ClJhdW0gVyAwLjAxOCAoVzE1MiksIFRlbC46IDAyMjggNzMgMzY5NwotLQpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
