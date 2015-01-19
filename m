@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 04/18] ALSA: mtpav: Use setup_timer() and
+Subject: [PATCH 02/18] ALSA: aloop: Use setup_timer() and
 	mod_timer()
-Date: Mon, 19 Jan 2015 12:11:17 +0100
-Message-ID: <1421665891-14475-5-git-send-email-tiwai@suse.de>
+Date: Mon, 19 Jan 2015 12:11:15 +0100
+Message-ID: <1421665891-14475-3-git-send-email-tiwai@suse.de>
 References: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F02D2606B6
+ by alsa0.perex.cz (Postfix) with ESMTP id 8239B2606BF
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 12:11:36 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D7AC7AC79
+ by mx2.suse.de (Postfix) with ESMTP id DBF80AD75
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 11:11:35 +0000 (UTC)
 In-Reply-To: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,50 +31,22 @@ No functional change, refactoring with the standard helpers.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/mtpav.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/drivers/aloop.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
-index 15769447688f..30e8a1d5bc87 100644
---- a/sound/drivers/mtpav.c
-+++ b/sound/drivers/mtpav.c
-@@ -414,8 +414,7 @@ static void snd_mtpav_output_timer(unsigned long data)
- 
- 	spin_lock_irqsave(&chip->spinlock, flags);
- 	/* reprogram timer */
--	chip->timer.expires = 1 + jiffies;
--	add_timer(&chip->timer);
-+	mod_timer(&chip->timer, 1 + jiffies);
- 	/* process each port */
- 	for (p = 0; p <= chip->num_ports * 2 + MTPAV_PIDX_BROADCAST; p++) {
- 		struct mtpav_port *portp = &chip->ports[p];
-@@ -428,8 +427,7 @@ static void snd_mtpav_output_timer(unsigned long data)
- /* spinlock held! */
- static void snd_mtpav_add_output_timer(struct mtpav *chip)
- {
--	chip->timer.expires = 1 + jiffies;
--	add_timer(&chip->timer);
-+	mod_timer(&chip->timer, 1 + jiffies);
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index 7ea53399404d..7f9126efc1e5 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -181,8 +181,7 @@ static void loopback_timer_start(struct loopback_pcm *dpcm)
+ 	}
+ 	tick = dpcm->period_size_frac - dpcm->irq_pos;
+ 	tick = (tick + dpcm->pcm_bps - 1) / dpcm->pcm_bps;
+-	dpcm->timer.expires = jiffies + tick;
+-	add_timer(&dpcm->timer);
++	mod_timer(&dpcm->timer, jiffies + tick);
  }
  
- /* spinlock held! */
-@@ -704,15 +702,13 @@ static int snd_mtpav_probe(struct platform_device *dev)
- 
- 	mtp_card = card->private_data;
- 	spin_lock_init(&mtp_card->spinlock);
--	init_timer(&mtp_card->timer);
- 	mtp_card->card = card;
- 	mtp_card->irq = -1;
- 	mtp_card->share_irq = 0;
- 	mtp_card->inmidistate = 0;
- 	mtp_card->outmidihwport = 0xffffffff;
--	init_timer(&mtp_card->timer);
--	mtp_card->timer.function = snd_mtpav_output_timer;
--	mtp_card->timer.data = (unsigned long) mtp_card;
-+	setup_timer(&mtp_card->timer, snd_mtpav_output_timer,
-+		    (unsigned long) mtp_card);
- 
- 	card->private_free = snd_mtpav_free;
- 
+ /* call in cable->lock */
 -- 
 2.2.1
