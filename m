@@ -1,7 +1,7 @@
 From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 2/3] sound: dummy, use del_timer_sync
-Date: Mon, 19 Jan 2015 10:42:55 +0100
-Message-ID: <1421660576-8435-2-git-send-email-jslaby@suse.cz>
+Subject: [PATCH 3/3] sound: dummy, avoid races with timer
+Date: Mon, 19 Jan 2015 10:42:56 +0100
+Message-ID: <1421660576-8435-3-git-send-email-jslaby@suse.cz>
 References: <1421660576-8435-1-git-send-email-jslaby@suse.cz>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1421660576-8435-1-git-send-email-jslaby@suse.cz>
@@ -10,35 +10,54 @@ To: tiwai@suse.de
 Cc: linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Wait for the timer to really quit, not only by ensuring it is not in
-the critical section.
-
-BTW the spin_lock in here does not disable BH, so that it could
-deadlock.
+There is a race between timer and process contexts. Process context
+does not disable irqs, so when a timer ticks inside process' critical
+section, the system can deadlock. Fix this by a traditional _irqsave
+variant of spin_lock.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 ---
- sound/drivers/dummy.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/drivers/dummy.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index d11baaf0f0b4..6d6bf4093583 100644
+index 6d6bf4093583..18a7cfc99078 100644
 --- a/sound/drivers/dummy.c
 +++ b/sound/drivers/dummy.c
-@@ -281,9 +281,9 @@ static int dummy_systimer_start(struct snd_pcm_substream *substream)
- static int dummy_systimer_stop(struct snd_pcm_substream *substream)
+@@ -271,10 +271,13 @@ static void dummy_systimer_update(struct dummy_systimer_pcm *dpcm)
+ static int dummy_systimer_start(struct snd_pcm_substream *substream)
  {
  	struct dummy_systimer_pcm *dpcm = substream->runtime->private_data;
 -	spin_lock(&dpcm->lock);
--	del_timer(&dpcm->timer);
--	spin_unlock(&dpcm->lock);
++	unsigned long flags;
 +
-+	del_timer_sync(&dpcm->timer);
++	spin_lock_irqsave(&dpcm->lock, flags);
+ 	dpcm->base_time = jiffies;
+ 	dummy_systimer_rearm(dpcm);
+-	spin_unlock(&dpcm->lock);
++	spin_unlock_irqrestore(&dpcm->lock, flags);
 +
  	return 0;
+ }
+ 
+@@ -322,12 +325,14 @@ static snd_pcm_uframes_t
+ dummy_systimer_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct dummy_systimer_pcm *dpcm = substream->runtime->private_data;
++	unsigned long flags;
+ 	snd_pcm_uframes_t pos;
+ 
+-	spin_lock(&dpcm->lock);
++	spin_lock_irqsave(&dpcm->lock, flags);
+ 	dummy_systimer_update(dpcm);
+ 	pos = dpcm->frac_pos / HZ;
+-	spin_unlock(&dpcm->lock);
++	spin_unlock_irqrestore(&dpcm->lock, flags);
++
+ 	return pos;
  }
  
 -- 
