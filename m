@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 07/18] ALSA: ak4117: Use setup_timer() and
+Subject: [PATCH 16/18] ALSA: emux: Use setup_timer() and
 	mod_timer()
-Date: Mon, 19 Jan 2015 12:11:20 +0100
-Message-ID: <1421665891-14475-8-git-send-email-tiwai@suse.de>
+Date: Mon, 19 Jan 2015 12:11:29 +0100
+Message-ID: <1421665891-14475-17-git-send-email-tiwai@suse.de>
 References: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 40E2F2606E0
+ by alsa0.perex.cz (Postfix) with ESMTP id 42C272606E9
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 12:11:37 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DA9ACAD4C
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id F3D34AD8D
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 11:11:35 +0000 (UTC)
 In-Reply-To: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,43 +31,48 @@ No functional change, refactoring with the standard helpers.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/i2c/other/ak4117.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/synth/emux/emux.c       | 4 +---
+ sound/synth/emux/emux_synth.c | 6 ++----
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/sound/i2c/other/ak4117.c b/sound/i2c/other/ak4117.c
-index 88452e899bd9..48848909a5a9 100644
---- a/sound/i2c/other/ak4117.c
-+++ b/sound/i2c/other/ak4117.c
-@@ -91,9 +91,7 @@ int snd_ak4117_create(struct snd_card *card, ak4117_read_t *read, ak4117_write_t
- 	chip->read = read;
- 	chip->write = write;
- 	chip->private_data = private_data;
--	init_timer(&chip->timer);
--	chip->timer.data = (unsigned long)chip;
--	chip->timer.function = snd_ak4117_timer;
-+	setup_timer(&chip->timer, snd_ak4117_timer, (unsigned long)chip);
+diff --git a/sound/synth/emux/emux.c b/sound/synth/emux/emux.c
+index f27a1c85f81b..49195325fdf6 100644
+--- a/sound/synth/emux/emux.c
++++ b/sound/synth/emux/emux.c
+@@ -53,9 +53,7 @@ int snd_emux_new(struct snd_emux **remu)
+ 	emu->max_voices = 0;
+ 	emu->use_time = 0;
  
- 	for (reg = 0; reg < 5; reg++)
- 		chip->regmap[reg] = pgm[reg];
-@@ -139,8 +137,7 @@ void snd_ak4117_reinit(struct ak4117 *chip)
- 	/* release powerdown, everything is initialized now */
- 	reg_write(chip, AK4117_REG_PWRDN, old | AK4117_RST | AK4117_PWN);
- 	chip->init = 0;
--	chip->timer.expires = 1 + jiffies;
--	add_timer(&chip->timer);
-+	mod_timer(&chip->timer, 1 + jiffies);
- }
+-	init_timer(&emu->tlist);
+-	emu->tlist.function = snd_emux_timer_callback;
+-	emu->tlist.data = (unsigned long)emu;
++	setup_timer(&emu->tlist, snd_emux_timer_callback, (unsigned long)emu);
+ 	emu->timer_active = 0;
  
- static unsigned int external_rate(unsigned char rcs1)
-@@ -540,8 +537,7 @@ static void snd_ak4117_timer(unsigned long data)
- 	if (chip->init)
- 		return;
- 	snd_ak4117_check_rate_and_errors(chip, 0);
--	chip->timer.expires = 1 + jiffies;
--	add_timer(&chip->timer);
-+	mod_timer(&chip->timer, 1 + jiffies);
- }
- 
- EXPORT_SYMBOL(snd_ak4117_create);
+ 	*remu = emu;
+diff --git a/sound/synth/emux/emux_synth.c b/sound/synth/emux/emux_synth.c
+index 9a38de459acb..599551b5af44 100644
+--- a/sound/synth/emux/emux_synth.c
++++ b/sound/synth/emux/emux_synth.c
+@@ -186,8 +186,7 @@ snd_emux_note_off(void *p, int note, int vel, struct snd_midi_channel *chan)
+ 				 */
+ 				vp->state = SNDRV_EMUX_ST_PENDING;
+ 				if (! emu->timer_active) {
+-					emu->tlist.expires = jiffies + 1;
+-					add_timer(&emu->tlist);
++					mod_timer(&emu->tlist, jiffies + 1);
+ 					emu->timer_active = 1;
+ 				}
+ 			} else
+@@ -223,8 +222,7 @@ void snd_emux_timer_callback(unsigned long data)
+ 		}
+ 	}
+ 	if (do_again) {
+-		emu->tlist.expires = jiffies + 1;
+-		add_timer(&emu->tlist);
++		mod_timer(&emu->tlist, jiffies + 1);
+ 		emu->timer_active = 1;
+ 	} else
+ 		emu->timer_active = 0;
 -- 
 2.2.1
