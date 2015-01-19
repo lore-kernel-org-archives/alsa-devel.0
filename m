@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 11/17] ALSA: line6: Remove driver version string
-Date: Mon, 19 Jan 2015 16:54:45 +0100
-Message-ID: <1421682891-11594-12-git-send-email-tiwai@suse.de>
+Subject: [PATCH 12/17] ALSA: line6: Drop MISSING_CASE macro
+Date: Mon, 19 Jan 2015 16:54:46 +0100
+Message-ID: <1421682891-11594-13-git-send-email-tiwai@suse.de>
 References: <1421682891-11594-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A95B261497
+ by alsa0.perex.cz (Postfix) with ESMTP id 69646261492
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 16:55:03 +0100 (CET)
 In-Reply-To: <1421682891-11594-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,30 +24,42 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is rather useless for a driver that has been already merged into
-the official tree.
+Such a debug is needed in the core code, not in each lowlevel driver.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/driver.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/usb/line6/driver.h | 4 ----
+ sound/usb/line6/pcm.c    | 3 ---
+ 2 files changed, 7 deletions(-)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 8b6a658a8a58..6a3ec07d869f 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -27,7 +27,6 @@
+diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
+index 31cd318369e9..8e4d946a130c 100644
+--- a/sound/usb/line6/driver.h
++++ b/sound/usb/line6/driver.h
+@@ -48,10 +48,6 @@
  
- #define DRIVER_AUTHOR  "Markus Grabner <grabner@icg.tugraz.at>"
- #define DRIVER_DESC    "Line6 USB Driver"
--#define DRIVER_VERSION "0.9.1beta" DRIVER_REVISION
+ #define LINE6_CHANNEL_MASK 0x0f
  
- /*
- 	This is Line6's MIDI manufacturer ID.
-@@ -729,4 +728,3 @@ EXPORT_SYMBOL_GPL(line6_resume);
- MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
--MODULE_VERSION(DRIVER_VERSION);
+-#define MISSING_CASE	\
+-	pr_err("line6usb driver bug: missing case in %s:%d\n", \
+-		__FILE__, __LINE__)
+-
+ #define CHECK_RETURN(x)		\
+ do {				\
+ 	err = x;		\
+diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
+index 1e77d0d9da17..39034c7681da 100644
+--- a/sound/usb/line6/pcm.c
++++ b/sound/usb/line6/pcm.c
+@@ -488,9 +488,6 @@ int snd_line6_prepare(struct snd_pcm_substream *substream)
+ 			line6_unlink_wait_clear_audio_in_urbs(line6pcm);
+ 
+ 		break;
+-
+-	default:
+-		MISSING_CASE;
+ 	}
+ 
+ 	if (!test_and_set_bit(LINE6_INDEX_PREPARED, &line6pcm->flags)) {
 -- 
 2.2.1
