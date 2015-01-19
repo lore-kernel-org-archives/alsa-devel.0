@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/17] ALSA: line6: Drop invalid
-	SNDRV_PCM_INFO_RESUME flag
-Date: Mon, 19 Jan 2015 16:54:39 +0100
-Message-ID: <1421682891-11594-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH 07/17] ALSA: line6: Remove superfluous
+	out-of-memory error messages
+Date: Mon, 19 Jan 2015 16:54:41 +0100
+Message-ID: <1421682891-11594-8-git-send-email-tiwai@suse.de>
 References: <1421682891-11594-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4672A2610C5
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D8BD26145E
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 16:55:03 +0100 (CET)
 In-Reply-To: <1421682891-11594-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,141 +25,118 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-The line6 drivers don't support the full resume although they set
-SNDRV_PCM_INFO_RESUME.  These flags have to be dropped to inform
-properly to the user-space.
-
-Also, drop the CONFIG_PM in trigger callbacks, too, which are rather
-superfluous.
+Kernel already shows the error in the common path.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/capture.c  | 4 ----
- sound/usb/line6/playback.c | 4 ----
- sound/usb/line6/pod.c      | 6 ------
- sound/usb/line6/podhd.c    | 6 ------
- sound/usb/line6/toneport.c | 6 ------
- 5 files changed, 26 deletions(-)
+ sound/usb/line6/capture.c  | 4 +---
+ sound/usb/line6/driver.c   | 6 +-----
+ sound/usb/line6/midi.c     | 5 +----
+ sound/usb/line6/playback.c | 4 +---
+ sound/usb/line6/variax.c   | 4 +---
+ 5 files changed, 5 insertions(+), 18 deletions(-)
 
 diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
-index 4cf6fa0541f1..1970ab57cb6f 100644
+index 1970ab57cb6f..727b31876d48 100644
 --- a/sound/usb/line6/capture.c
 +++ b/sound/usb/line6/capture.c
-@@ -342,9 +342,7 @@ int snd_line6_capture_trigger(struct snd_line6_pcm *line6pcm, int cmd)
+@@ -402,10 +402,8 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+ 		urb = line6pcm->urb_audio_in[i] =
+ 		    usb_alloc_urb(LINE6_ISO_PACKETS, GFP_KERNEL);
  
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--#ifdef CONFIG_PM
- 	case SNDRV_PCM_TRIGGER_RESUME:
--#endif
- 		err = line6_pcm_acquire(line6pcm,
- 					LINE6_BIT_PCM_ALSA_CAPTURE_STREAM);
+-		if (urb == NULL) {
+-			dev_err(line6->ifcdev, "Out of memory\n");
++		if (urb == NULL)
+ 			return -ENOMEM;
+-		}
  
-@@ -354,9 +352,7 @@ int snd_line6_capture_trigger(struct snd_line6_pcm *line6pcm, int cmd)
- 		break;
+ 		urb->dev = line6->usbdev;
+ 		urb->pipe =
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index 23d504f4b6bc..b8f5134dcec2 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -190,7 +190,6 @@ int line6_send_raw_message_async(struct usb_line6 *line6, const char *buffer,
  
- 	case SNDRV_PCM_TRIGGER_STOP:
--#ifdef CONFIG_PM
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--#endif
- 		err = line6_pcm_release(line6pcm,
- 					LINE6_BIT_PCM_ALSA_CAPTURE_STREAM);
+ 	if (urb == NULL) {
+ 		kfree(msg);
+-		dev_err(line6->ifcdev, "Out of memory\n");
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -215,10 +214,8 @@ int line6_version_request_async(struct usb_line6 *line6)
+ 
+ 	buffer = kmemdup(line6_request_version,
+ 			sizeof(line6_request_version), GFP_ATOMIC);
+-	if (buffer == NULL) {
+-		dev_err(line6->ifcdev, "Out of memory");
++	if (buffer == NULL)
+ 		return -ENOMEM;
+-	}
+ 
+ 	retval = line6_send_raw_message_async(line6, buffer,
+ 					      sizeof(line6_request_version));
+@@ -593,7 +590,6 @@ int line6_probe(struct usb_interface *interface,
+ 		line6->urb_listen = usb_alloc_urb(0, GFP_KERNEL);
+ 
+ 		if (line6->urb_listen == NULL) {
+-			dev_err(&interface->dev, "Out of memory\n");
+ 			ret = -ENOMEM;
+ 			goto err_destruct;
+ 		}
+diff --git a/sound/usb/line6/midi.c b/sound/usb/line6/midi.c
+index ebca5ebcfecc..f333cef5d2d7 100644
+--- a/sound/usb/line6/midi.c
++++ b/sound/usb/line6/midi.c
+@@ -121,16 +121,13 @@ static int send_midi_async(struct usb_line6 *line6, unsigned char *data,
+ 
+ 	urb = usb_alloc_urb(0, GFP_ATOMIC);
+ 
+-	if (urb == NULL) {
+-		dev_err(line6->ifcdev, "Out of memory\n");
++	if (urb == NULL)
+ 		return -ENOMEM;
+-	}
+ 
+ 	transfer_buffer = kmemdup(data, length, GFP_ATOMIC);
+ 
+ 	if (transfer_buffer == NULL) {
+ 		usb_free_urb(urb);
+-		dev_err(line6->ifcdev, "Out of memory\n");
+ 		return -ENOMEM;
+ 	}
  
 diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
-index 258147eadf37..8fc2dedbeb52 100644
+index 8fc2dedbeb52..5a7fe409a3b9 100644
 --- a/sound/usb/line6/playback.c
 +++ b/sound/usb/line6/playback.c
-@@ -490,9 +490,7 @@ int snd_line6_playback_trigger(struct snd_line6_pcm *line6pcm, int cmd)
+@@ -558,10 +558,8 @@ int line6_create_audio_out_urbs(struct snd_line6_pcm *line6pcm)
+ 		urb = line6pcm->urb_audio_out[i] =
+ 		    usb_alloc_urb(LINE6_ISO_PACKETS, GFP_KERNEL);
  
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--#ifdef CONFIG_PM
- 	case SNDRV_PCM_TRIGGER_RESUME:
--#endif
- 		err = line6_pcm_acquire(line6pcm,
- 					LINE6_BIT_PCM_ALSA_PLAYBACK_STREAM);
+-		if (urb == NULL) {
+-			dev_err(line6->ifcdev, "Out of memory\n");
++		if (urb == NULL)
+ 			return -ENOMEM;
+-		}
  
-@@ -502,9 +500,7 @@ int snd_line6_playback_trigger(struct snd_line6_pcm *line6pcm, int cmd)
- 		break;
+ 		urb->dev = line6->usbdev;
+ 		urb->pipe =
+diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
+index 0c852bb1e76c..9a9c7e48e24f 100644
+--- a/sound/usb/line6/variax.c
++++ b/sound/usb/line6/variax.c
+@@ -260,10 +260,8 @@ static int variax_try_init(struct usb_interface *interface,
+ 	variax->buffer_activate = kmemdup(variax_activate,
+ 					  sizeof(variax_activate), GFP_KERNEL);
  
- 	case SNDRV_PCM_TRIGGER_STOP:
--#ifdef CONFIG_PM
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--#endif
- 		err = line6_pcm_release(line6pcm,
- 					LINE6_BIT_PCM_ALSA_PLAYBACK_STREAM);
+-	if (variax->buffer_activate == NULL) {
+-		dev_err(&interface->dev, "Out of memory\n");
++	if (variax->buffer_activate == NULL)
+ 		return -ENOMEM;
+-	}
  
-diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index dde9c2b8ad0f..d6bc5a1ab7f4 100644
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -153,9 +153,6 @@ static struct line6_pcm_properties pod_pcm_properties = {
- 					   SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 					   SNDRV_PCM_INFO_MMAP_VALID |
- 					   SNDRV_PCM_INFO_PAUSE |
--#ifdef CONFIG_PM
--					   SNDRV_PCM_INFO_RESUME |
--#endif
- 					   SNDRV_PCM_INFO_SYNC_START),
- 				  .formats = SNDRV_PCM_FMTBIT_S24_3LE,
- 				  .rates = SNDRV_PCM_RATE_KNOT,
-@@ -173,9 +170,6 @@ static struct line6_pcm_properties pod_pcm_properties = {
- 					  SNDRV_PCM_INFO_INTERLEAVED |
- 					  SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 					  SNDRV_PCM_INFO_MMAP_VALID |
--#ifdef CONFIG_PM
--					  SNDRV_PCM_INFO_RESUME |
--#endif
- 					  SNDRV_PCM_INFO_SYNC_START),
- 				 .formats = SNDRV_PCM_FMTBIT_S24_3LE,
- 				 .rates = SNDRV_PCM_RATE_KNOT,
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 84096326694c..8f4ca1d20b62 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -50,9 +50,6 @@ static struct line6_pcm_properties podhd_pcm_properties = {
- 					   SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 					   SNDRV_PCM_INFO_MMAP_VALID |
- 					   SNDRV_PCM_INFO_PAUSE |
--#ifdef CONFIG_PM
--					   SNDRV_PCM_INFO_RESUME |
--#endif
- 					   SNDRV_PCM_INFO_SYNC_START),
- 				  .formats = SNDRV_PCM_FMTBIT_S24_3LE,
- 				  .rates = SNDRV_PCM_RATE_48000,
-@@ -70,9 +67,6 @@ static struct line6_pcm_properties podhd_pcm_properties = {
- 					  SNDRV_PCM_INFO_INTERLEAVED |
- 					  SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 					  SNDRV_PCM_INFO_MMAP_VALID |
--#ifdef CONFIG_PM
--					  SNDRV_PCM_INFO_RESUME |
--#endif
- 					  SNDRV_PCM_INFO_SYNC_START),
- 				 .formats = SNDRV_PCM_FMTBIT_S24_3LE,
- 				 .rates = SNDRV_PCM_RATE_48000,
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index 4f07643e47f2..6ec3268a6153 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -83,9 +83,6 @@ static struct line6_pcm_properties toneport_pcm_properties = {
- 					   SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 					   SNDRV_PCM_INFO_MMAP_VALID |
- 					   SNDRV_PCM_INFO_PAUSE |
--#ifdef CONFIG_PM
--					   SNDRV_PCM_INFO_RESUME |
--#endif
- 					   SNDRV_PCM_INFO_SYNC_START),
- 				  .formats = SNDRV_PCM_FMTBIT_S16_LE,
- 				  .rates = SNDRV_PCM_RATE_KNOT,
-@@ -103,9 +100,6 @@ static struct line6_pcm_properties toneport_pcm_properties = {
- 					  SNDRV_PCM_INFO_INTERLEAVED |
- 					  SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 					  SNDRV_PCM_INFO_MMAP_VALID |
--#ifdef CONFIG_PM
--					  SNDRV_PCM_INFO_RESUME |
--#endif
- 					  SNDRV_PCM_INFO_SYNC_START),
- 				 .formats = SNDRV_PCM_FMTBIT_S16_LE,
- 				 .rates = SNDRV_PCM_RATE_KNOT,
+ 	/* initialize audio system: */
+ 	err = line6_init_audio(&variax->line6);
 -- 
 2.2.1
