@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 03/17] ALSA: line6: Drop superfluous snd_device
-	for PCM
-Date: Mon, 19 Jan 2015 16:54:37 +0100
-Message-ID: <1421682891-11594-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 17/17] ALSA: line6: Drop line6_send_program()
+	and line6_transmit_parameter()
+Date: Mon, 19 Jan 2015 16:54:51 +0100
+Message-ID: <1421682891-11594-18-git-send-email-tiwai@suse.de>
 References: <1421682891-11594-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 46B9526129B
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A61C261484
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 16:55:03 +0100 (CET)
 In-Reply-To: <1421682891-11594-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,124 +25,104 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-Instead of handling the card-specific resource in snd_device, attach
-it into pcm->private_data and release it directly in private_free.
-This simplifies the code and structure.
+Both functions are used nowhere.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/pcm.c | 53 ++++++++++++++++++---------------------------------
- 1 file changed, 19 insertions(+), 34 deletions(-)
+ sound/usb/line6/driver.c | 59 ------------------------------------------------
+ sound/usb/line6/driver.h |  3 ---
+ 2 files changed, 62 deletions(-)
 
-diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
-index 626b6c158023..520cf540e83c 100644
---- a/sound/usb/line6/pcm.c
-+++ b/sound/usb/line6/pcm.c
-@@ -351,24 +351,21 @@ static void line6_cleanup_pcm(struct snd_pcm *pcm)
- 			usb_free_urb(line6pcm->urb_audio_in[i]);
- 		}
- 	}
-+	kfree(line6pcm);
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index a2f72cc2bf96..a3da18b876d1 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -299,65 +299,6 @@ static void line6_data_received(struct urb *urb)
  }
  
- /* create a PCM device */
--static int snd_line6_new_pcm(struct snd_line6_pcm *line6pcm)
-+static int snd_line6_new_pcm(struct usb_line6 *line6, struct snd_pcm **pcm_ret)
- {
- 	struct snd_pcm *pcm;
- 	int err;
- 
--	err = snd_pcm_new(line6pcm->line6->card,
--			  (char *)line6pcm->line6->properties->name,
--			  0, 1, 1, &pcm);
-+	err = snd_pcm_new(line6->card, (char *)line6->properties->name,
-+			  0, 1, 1, pcm_ret);
- 	if (err < 0)
- 		return err;
+ /*
+-	Send channel number (i.e., switch to a different sound).
+-*/
+-int line6_send_program(struct usb_line6 *line6, u8 value)
+-{
+-	int retval;
+-	unsigned char *buffer;
+-	int partial;
 -
--	pcm->private_data = line6pcm;
--	pcm->private_free = line6_cleanup_pcm;
--	line6pcm->pcm = pcm;
--	strcpy(pcm->name, line6pcm->line6->properties->name);
-+	pcm = *pcm_ret;
-+	strcpy(pcm->name, line6->properties->name);
- 
- 	/* set operators */
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-@@ -380,13 +377,6 @@ static int snd_line6_new_pcm(struct snd_line6_pcm *line6pcm)
- 					      snd_dma_continuous_data
- 					      (GFP_KERNEL), 64 * 1024,
- 					      128 * 1024);
+-	buffer = kmalloc(2, GFP_KERNEL);
+-	if (!buffer)
+-		return -ENOMEM;
 -
--	return 0;
+-	buffer[0] = LINE6_PROGRAM_CHANGE | LINE6_CHANNEL_HOST;
+-	buffer[1] = value;
+-
+-	retval = usb_interrupt_msg(line6->usbdev,
+-				   usb_sndintpipe(line6->usbdev,
+-						  line6->properties->ep_ctrl_w),
+-				   buffer, 2, &partial, LINE6_TIMEOUT * HZ);
+-
+-	if (retval)
+-		dev_err(line6->ifcdev, "usb_interrupt_msg failed (%d)\n",
+-			retval);
+-
+-	kfree(buffer);
+-	return retval;
 -}
 -
--/* PCM device destructor */
--static int snd_line6_pcm_free(struct snd_device *device)
+-/*
+-	Transmit Line6 control parameter.
+-*/
+-int line6_transmit_parameter(struct usb_line6 *line6, int param, u8 value)
 -{
- 	return 0;
- }
- 
-@@ -423,23 +413,25 @@ EXPORT_SYMBOL_GPL(line6_pcm_disconnect);
- int line6_init_pcm(struct usb_line6 *line6,
- 		   struct line6_pcm_properties *properties)
- {
--	static struct snd_device_ops pcm_ops = {
--		.dev_free = snd_line6_pcm_free,
--	};
+-	int retval;
+-	unsigned char *buffer;
+-	int partial;
 -
- 	int i, err;
- 	unsigned ep_read = line6->properties->ep_audio_r;
- 	unsigned ep_write = line6->properties->ep_audio_w;
-+	struct snd_pcm *pcm;
- 	struct snd_line6_pcm *line6pcm;
- 
- 	if (!(line6->properties->capabilities & LINE6_CAP_PCM))
- 		return 0;	/* skip PCM initialization and report success */
- 
--	line6pcm = kzalloc(sizeof(*line6pcm), GFP_KERNEL);
-+	err = snd_line6_new_pcm(line6, &pcm);
-+	if (err < 0)
-+		return err;
- 
--	if (line6pcm == NULL)
-+	line6pcm = kzalloc(sizeof(*line6pcm), GFP_KERNEL);
-+	if (!line6pcm)
- 		return -ENOMEM;
- 
-+	line6pcm->pcm = pcm;
-+	line6pcm->properties = properties;
- 	line6pcm->volume_playback[0] = line6pcm->volume_playback[1] = 255;
- 	line6pcm->volume_monitor = 255;
- 	line6pcm->line6 = line6;
-@@ -451,23 +443,16 @@ int line6_init_pcm(struct usb_line6 *line6,
- 			usb_maxpacket(line6->usbdev,
- 				usb_sndisocpipe(line6->usbdev, ep_write), 1));
- 
--	line6pcm->properties = properties;
--	line6->line6pcm = line6pcm;
+-	buffer = kmalloc(3, GFP_KERNEL);
+-	if (!buffer)
+-		return -ENOMEM;
 -
--	/* PCM device: */
--	err = snd_device_new(line6->card, SNDRV_DEV_PCM, line6, &pcm_ops);
--	if (err < 0)
--		return err;
+-	buffer[0] = LINE6_PARAM_CHANGE | LINE6_CHANNEL_HOST;
+-	buffer[1] = param;
+-	buffer[2] = value;
 -
--	err = snd_line6_new_pcm(line6pcm);
--	if (err < 0)
--		return err;
+-	retval = usb_interrupt_msg(line6->usbdev,
+-				   usb_sndintpipe(line6->usbdev,
+-						  line6->properties->ep_ctrl_w),
+-				   buffer, 3, &partial, LINE6_TIMEOUT * HZ);
 -
- 	spin_lock_init(&line6pcm->lock_audio_out);
- 	spin_lock_init(&line6pcm->lock_audio_in);
- 	spin_lock_init(&line6pcm->lock_trigger);
- 	line6pcm->impulse_period = LINE6_IMPULSE_DEFAULT_PERIOD;
- 
-+	line6->line6pcm = line6pcm;
-+
-+	pcm->private_data = line6pcm;
-+	pcm->private_free = line6_cleanup_pcm;
-+
- 	err = line6_create_audio_out_urbs(line6pcm);
- 	if (err < 0)
- 		return err;
+-	if (retval)
+-		dev_err(line6->ifcdev, "usb_interrupt_msg failed (%d)\n",
+-			retval);
+-
+-	kfree(buffer);
+-	return retval;
+-}
+-
+-/*
+ 	Read data from device.
+ */
+ int line6_read_data(struct usb_line6 *line6, int address, void *data,
+diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
+index 8fd65f2e1f06..d539c11d333d 100644
+--- a/sound/usb/line6/driver.h
++++ b/sound/usb/line6/driver.h
+@@ -168,7 +168,6 @@ extern int line6_read_data(struct usb_line6 *line6, int address, void *data,
+ 			   size_t datalen);
+ extern int line6_read_serial_number(struct usb_line6 *line6,
+ 				    int *serial_number);
+-extern int line6_send_program(struct usb_line6 *line6, u8 value);
+ extern int line6_send_raw_message_async(struct usb_line6 *line6,
+ 					const char *buffer, int size);
+ extern int line6_send_sysex_message(struct usb_line6 *line6,
+@@ -178,8 +177,6 @@ extern ssize_t line6_set_raw(struct device *dev, struct device_attribute *attr,
+ extern void line6_start_timer(struct timer_list *timer, unsigned int msecs,
+ 			      void (*function)(unsigned long),
+ 			      unsigned long data);
+-extern int line6_transmit_parameter(struct usb_line6 *line6, int param,
+-				    u8 value);
+ extern int line6_version_request_async(struct usb_line6 *line6);
+ extern int line6_write_data(struct usb_line6 *line6, int address, void *data,
+ 			    size_t datalen);
 -- 
 2.2.1
