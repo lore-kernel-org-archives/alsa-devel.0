@@ -1,74 +1,48 @@
-From: =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
-Subject: [PATCH v2] ASoC: OMAP: mcbsp: ensure that CLKX and CLKR are not used as ouput pins when they are used as input clock for the SRG.
-Date: Mon, 19 Jan 2015 22:24:28 +0100
-Message-ID: <1421702668-21135-1-git-send-email-niederp@physik.uni-kl.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: alsa-lib support for compress offload
+Date: Mon, 19 Jan 2015 16:07:50 -0600
+Message-ID: <54BD8036.5070405@linux.intel.com>
+References: <54B8DF7A.6000700@imgtec.com> <s5hbnlzt3o2.wl-tiwai@suse.de>
+ <54B8F485.7090603@imgtec.com> <54B9413F.805@linux.intel.com>
+ <54BD3D7F.6020105@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB80B261533
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 23:08:53 +0100 (CET)
+In-Reply-To: <54BD3D7F.6020105@imgtec.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Qais Yousef <qais.yousef@imgtec.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes faulty behaviour in a setup where the input clock for =
-the
-SRG is fed through the CLKR/CLKX pin but the McBSP is configured to be
-master (SND_SOC_DAIFMT_CBS_CFS). In that case of course CLKR/CLKX must
-not be configured as output pin. Otherwise the input clock is messed up
-horribly.
+On 1/19/15 11:23 AM, Qais Yousef wrote:
+> On 01/16/2015 04:50 PM, Pierre-Louis Bossart wrote:
+>>
+>> Since there is no allowed processing/reformatting/reshuffling of
+>> compressed data, all the plugin system needs to be bypassed and you'd
+>> be looking at an alsa-lib API that interfaces directly with the
+>> ioctls, essentially replicating what tinycompress does. I agree it's
+>> not great to have independent packages, the decision to maintain
+>> tinycompress separately was driven by licensing concerns, not
+>> technical ones.
+>> -Pierre
+>>
+>
+> I'm not sure how dual licensing work. Is it ok to base alsa-lib support
+> for compress API on tinycompress then?
 
-This patch makes it possible to use the CLKR/CLKX pin rather than CLKS =
-to
-inject a reference clock in setups where McBSP is master and not both
-rx and tx are used. However for this to work it has to be ensured that
-set_dai_sysclk() is called after set_dai_fmt().
-
-This was tested on a beagleboard-xm using McBSP1 to drive a i2s DAC thr=
-ough
-the tx lines (CLKX,FSX,DX). Using this patch the CLKR pin is used to in=
-ject
-an external reference clock.
-
-changes since v1:
-- added comments explaining the bit masking to disable output on CLKR/C=
-LKX
-
-Signed-off-by: Thomas Niederpr=C3=BCm <niederp@physik.uni-kl.de>
----
- sound/soc/omap/omap-mcbsp.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index bd3ef2a..c37f606 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -530,8 +530,19 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct sn=
-d_soc_dai *cpu_dai,
-=20
- 	case OMAP_MCBSP_SYSCLK_CLKX_EXT:
- 		regs->srgr2	|=3D CLKSM;
-+		regs->pcr0	|=3D SCLKME;
-+		/*
-+		 * If McBSP is master but yet the CLKX/CLKR pin drives the SRG,
-+		 * disable output on those pins. This enables to inject the=20
-+		 * reference clock through CLKX/CLKR. For this to work=20
-+		 * set_dai_sysclk() _needs_ to be called after set_dai_fmt().
-+		 */
-+		regs->pcr0	&=3D ~CLKXM;
-+		break;
- 	case OMAP_MCBSP_SYSCLK_CLKR_EXT:
- 		regs->pcr0	|=3D SCLKME;
-+		/* Disable ouput on CLKR pin in master mode */
-+		regs->pcr0	&=3D ~CLKRM;
- 		break;
- 	default:
- 		err =3D -ENODEV;
---=20
-2.1.1
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+no idea, and what is the objective really? it's not clear what you are 
+trying to achieve and what would be the merits of enhancing alsa-lib 
+with compressed audio support?
+-Pierre
