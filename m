@@ -1,39 +1,42 @@
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: Re: [PATCH 3/3] sound: dummy, avoid races with timer
-Date: Mon, 19 Jan 2015 10:53:55 +0100
-Message-ID: <54BCD433.3070407@suse.cz>
-References: <1421660576-8435-1-git-send-email-jslaby@suse.cz>	<1421660576-8435-3-git-send-email-jslaby@suse.cz> <s5hwq4jqewi.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hwq4jqewi.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/3] ARM: shmobile: armadillo800eva: Properly specify HDMI audio link format
+Date: Mon, 19 Jan 2015 10:54:55 +0100
+Message-ID: <1421661297-19654-1-git-send-email-lars@metafoo.de>
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/19/2015, 10:49 AM, Takashi Iwai wrote:
->> @@ -322,12 +325,14 @@ static snd_pcm_uframes_t
->>  dummy_systimer_pointer(struct snd_pcm_substream *substream)
->>  {
->>  	struct dummy_systimer_pcm *dpcm = substream->runtime->private_data;
->> +	unsigned long flags;
->>  	snd_pcm_uframes_t pos;
->>  
->> -	spin_lock(&dpcm->lock);
->> +	spin_lock_irqsave(&dpcm->lock, flags);
->>  	dummy_systimer_update(dpcm);
->>  	pos = dpcm->frac_pos / HZ;
->> -	spin_unlock(&dpcm->lock);
->> +	spin_unlock_irqrestore(&dpcm->lock, flags);
->> +
-> 
-> This chunk is superfluous.  The pointer callback is guaranteed to be
-> called in the irq-disabled context.
+The DAI link format should be specified for the whole link rather than just
+one component on the link. So move the format specification for the HDMI
+audio link from the CPU component to the link itself.
 
-Oh, my bad, I was looking at snd_compr_ops->pointer which is not the case.
+Since the sh-mobile-hdmi DAI driver doesn't implement the set_fmt() callback
+in this case there is no functional difference between only specifying the
+the format for the CPU side or for the whole link, but the later it will
+allow us to remove support for just specifying the format for one component.
 
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ arch/arm/mach-shmobile/board-armadillo800eva.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/mach-shmobile/board-armadillo800eva.c b/arch/arm/mach-shmobile/board-armadillo800eva.c
+index 6d949f1..75de26c 100644
+--- a/arch/arm/mach-shmobile/board-armadillo800eva.c
++++ b/arch/arm/mach-shmobile/board-armadillo800eva.c
+@@ -1040,9 +1040,9 @@ static struct asoc_simple_card_info fsi2_hdmi_info = {
+ 	.card		= "FSI2B-HDMI",
+ 	.codec		= "sh-mobile-hdmi",
+ 	.platform	= "sh_fsi2",
++	.daifmt		= SND_SOC_DAIFMT_CBS_CFS,
+ 	.cpu_dai = {
+ 		.name	= "fsib-dai",
+-		.fmt	= SND_SOC_DAIFMT_CBS_CFS,
+ 	},
+ 	.codec_dai = {
+ 		.name = "sh_mobile_hdmi-hifi",
 -- 
-js
-suse labs
+1.8.0
+
