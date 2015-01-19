@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 17/18] ALSA: usb-audio: Use setup_timer() and
+Subject: [PATCH 15/18] ALSA: aica: Use setup_timer() and
 	mod_timer()
-Date: Mon, 19 Jan 2015 12:11:30 +0100
-Message-ID: <1421665891-14475-18-git-send-email-tiwai@suse.de>
+Date: Mon, 19 Jan 2015 12:11:28 +0100
+Message-ID: <1421665891-14475-16-git-send-email-tiwai@suse.de>
 References: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DA312606FB
+ by alsa0.perex.cz (Postfix) with ESMTP id 44C412606ED
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 12:11:37 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 3DFC3ADB5
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 04A16ADA0
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 11:11:36 +0000 (UTC)
 In-Reply-To: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,29 +31,27 @@ No functional change, refactoring with the standard helpers.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/midi.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/sh/aica.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 5bfb695547f8..417ebb11cf48 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -2292,14 +2292,13 @@ int snd_usbmidi_create(struct snd_card *card,
- 	umidi->iface = iface;
- 	umidi->quirk = quirk;
- 	umidi->usb_protocol_ops = &snd_usbmidi_standard_ops;
--	init_timer(&umidi->error_timer);
- 	spin_lock_init(&umidi->disc_lock);
- 	init_rwsem(&umidi->disc_rwsem);
- 	mutex_init(&umidi->mutex);
- 	umidi->usb_id = USB_ID(le16_to_cpu(umidi->dev->descriptor.idVendor),
- 			       le16_to_cpu(umidi->dev->descriptor.idProduct));
--	umidi->error_timer.function = snd_usbmidi_error_timer;
--	umidi->error_timer.data = (unsigned long)umidi;
-+	setup_timer(&umidi->error_timer, snd_usbmidi_error_timer,
-+		    (unsigned long)umidi);
+diff --git a/sound/sh/aica.c b/sound/sh/aica.c
+index f44dda610ed2..8212300088fc 100644
+--- a/sound/sh/aica.c
++++ b/sound/sh/aica.c
+@@ -343,11 +343,9 @@ static void spu_begin_dma(struct snd_pcm_substream *substream)
+ 		mod_timer(&dreamcastcard->timer, jiffies + 4);
+ 		return;
+ 	}
+-	init_timer(&(dreamcastcard->timer));
+-	dreamcastcard->timer.data = (unsigned long) substream;
+-	dreamcastcard->timer.function = aica_period_elapsed;
+-	dreamcastcard->timer.expires = jiffies + 4;
+-	add_timer(&(dreamcastcard->timer));
++	setup_timer(&dreamcastcard->timer, aica_period_elapsed,
++		    (unsigned long) substream);
++	mod_timer(&dreamcastcard->timer, jiffies + 4);
+ }
  
- 	/* detect the endpoint(s) to use */
- 	memset(endpoints, 0, sizeof(endpoints));
+ static int snd_aicapcm_pcm_open(struct snd_pcm_substream
 -- 
 2.2.1
