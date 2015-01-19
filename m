@@ -1,101 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/20] ASoC: rsnd: add Synchronous SRC and
- U/O error salvage support
-Date: Mon, 19 Jan 2015 20:49:21 +0000
-Message-ID: <20150119204921.GJ2809@sirena.org.uk>
-References: <877fyh9ilx.wl%kuninori.morimoto.gx@renesas.com>
- <87h9wl7qlb.wl%kuninori.morimoto.gx@renesas.com>
- <20141230171032.GQ17800@sirena.org.uk>
- <874ms6rraj.wl%kuninori.morimoto.gx@renesas.com>
- <20150106183319.GS2634@sirena.org.uk>
- <87a91vp6s8.wl%kuninori.morimoto.gx@renesas.com>
- <54AEC20C.90706@linux.intel.com>
- <20150110113216.GC4160@sirena.org.uk>
- <87vbkap3n2.wl%kuninori.morimoto.gx@renesas.com>
+From: =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
+Subject: [PATCH v2] ASoC: OMAP: mcbsp: ensure that CLKX and CLKR are not used as ouput pins when they are used as input clock for the SRG.
+Date: Mon, 19 Jan 2015 22:24:28 +0100
+Message-ID: <1421702668-21135-1-git-send-email-niederp@physik.uni-kl.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8428010059055460257=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A13C261528
- for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 21:49:30 +0100 (CET)
-In-Reply-To: <87vbkap3n2.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Tim Cussins <timcussins@eml.cc>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
 List-Id: alsa-devel@alsa-project.org
 
+This patch fixes faulty behaviour in a setup where the input clock for =
+the
+SRG is fed through the CLKR/CLKX pin but the McBSP is configured to be
+master (SND_SOC_DAIFMT_CBS_CFS). In that case of course CLKR/CLKX must
+not be configured as output pin. Otherwise the input clock is messed up
+horribly.
 
---===============8428010059055460257==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2fjX3cMESU3XgGmZ"
-Content-Disposition: inline
+This patch makes it possible to use the CLKR/CLKX pin rather than CLKS =
+to
+inject a reference clock in setups where McBSP is master and not both
+rx and tx are used. However for this to work it has to be ensured that
+set_dai_sysclk() is called after set_dai_fmt().
 
+This was tested on a beagleboard-xm using McBSP1 to drive a i2s DAC thr=
+ough
+the tx lines (CLKX,FSX,DX). Using this patch the CLKR pin is used to in=
+ject
+an external reference clock.
 
---2fjX3cMESU3XgGmZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+changes since v1:
+- added comments explaining the bit masking to disable output on CLKR/C=
+LKX
 
-On Wed, Jan 14, 2015 at 01:11:11AM +0000, Kuninori Morimoto wrote:
+Signed-off-by: Thomas Niederpr=C3=BCm <niederp@physik.uni-kl.de>
+---
+ sound/soc/omap/omap-mcbsp.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-> I asked our use case to customer Team.
-> According to them, they are using this rate converter in Digital TV.
-> Digital TV is including its sampling rate, and exchanges it sometimes.
-> Our SoC can exchange sampling rate in SRC, but other SoC needs
-> external circuit (?)
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index bd3ef2a..c37f606 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -530,8 +530,19 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct sn=
+d_soc_dai *cpu_dai,
+=20
+ 	case OMAP_MCBSP_SYSCLK_CLKX_EXT:
+ 		regs->srgr2	|=3D CLKSM;
++		regs->pcr0	|=3D SCLKME;
++		/*
++		 * If McBSP is master but yet the CLKX/CLKR pin drives the SRG,
++		 * disable output on those pins. This enables to inject the=20
++		 * reference clock through CLKX/CLKR. For this to work=20
++		 * set_dai_sysclk() _needs_ to be called after set_dai_fmt().
++		 */
++		regs->pcr0	&=3D ~CLKXM;
++		break;
+ 	case OMAP_MCBSP_SYSCLK_CLKR_EXT:
+ 		regs->pcr0	|=3D SCLKME;
++		/* Disable ouput on CLKR pin in master mode */
++		regs->pcr0	&=3D ~CLKRM;
+ 		break;
+ 	default:
+ 		err =3D -ENODEV;
+--=20
+2.1.1
 
-> This means my 1st explain (= 48kHz can be 48001 or 47999) seems wrong.
-> They doesn't care about real audio clock.
-
-> And, this system (= Digital TV software) is implemented as middleware.
-> So, this is Renesas specific feature, can't be big task (?)
-
-OK, that's more what I thought this was originally.  It sounds like a
-fairly standard ASRC deployment where the goal is to match the rate the
-system wants to play audio at to the rate that the target hardware
-needs.  That's not too different to the telephony cases where the system
-is in one clock domain (possibly at a very different sample rate) and
-the baseband another and definitely the sort of thing that DPCM is
-intended to support.
-
-This really would be better done with DPCM with the userspace control
-being provided by the driver for the tuner or the machine driver and
-passed through to set the rate of the back end.  Do you think that's
-achieveable (even if it's just a mostly dummy DAI here)?  That way if
-this is used in a system with a CODEC with a real driver on the end of
-the link things should just work.
-
---2fjX3cMESU3XgGmZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUvW3QAAoJECTWi3JdVIfQ+SgIAIDgfkTEO5PjevFJrT2MthkE
-pqYjUfiSDEaTPcAaIDBxyjqpRG4o1MzP4GYv8bzOhMGp99dEpwBIZVNucv22qYvz
-ST5DPj5BLcjfE/jcOo/jB5roq/eWr+FCvA/BvKN+SUIv7HzVAQ7NmqSGeyma4c1V
-Ouqj/9Ogr4OraN/nGbD7LJ+Qbe3HILZoKeEvrY6KMZUMjGKb1kFYFuy7RMGoll/Y
-LiinglLCAS59ufVfSDkZ5KKUOWf9RVk+CTE5xAHTEMN4CkR8RlZXYSXPJPDh0LSe
-d1ur2uMmtiJPqYSdKo68nOj1WBcAGOvdxViErLSKF74lBZ1MFgYW8BHJOGmz2NM=
-=B6yq
------END PGP SIGNATURE-----
-
---2fjX3cMESU3XgGmZ--
-
---===============8428010059055460257==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8428010059055460257==--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
