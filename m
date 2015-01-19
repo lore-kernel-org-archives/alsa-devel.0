@@ -1,17 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 14/17] ALSA: line6: Remove superfluous
-	disconnect call in suspend handler
-Date: Mon, 19 Jan 2015 16:54:48 +0100
-Message-ID: <1421682891-11594-15-git-send-email-tiwai@suse.de>
-References: <1421682891-11594-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: arizona: Add delay for output disable
+Date: Mon, 19 Jan 2015 16:24:32 +0000
+Message-ID: <20150119162432.GF2809@sirena.org.uk>
+References: <1421682586-6303-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6975468615773854489=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 63DAF261490
- for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 16:55:03 +0100 (CET)
-In-Reply-To: <1421682891-11594-1-git-send-email-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D4B9260A56
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 17:24:45 +0100 (CET)
+In-Reply-To: <1421682586-6303-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +20,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Calling line6_pcm_disconnect() at suspend callback is superfluous and
-rather confusing.  Let's get rid of it.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/line6/driver.c | 1 -
- 1 file changed, 1 deletion(-)
+--===============6975468615773854489==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vKFfOv5t3oGVpiF+"
+Content-Disposition: inline
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 6a3ec07d869f..f222d9ffeca5 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -700,7 +700,6 @@ int line6_suspend(struct usb_interface *interface, pm_message_t message)
- 
- 	if (line6pcm != NULL) {
- 		snd_pcm_suspend_all(line6pcm->pcm);
--		line6_pcm_disconnect(line6pcm);
- 		line6pcm->flags = 0;
- 	}
- 
--- 
-2.2.1
+
+--vKFfOv5t3oGVpiF+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jan 19, 2015 at 03:49:46PM +0000, Charles Keepax wrote:
+
+> +	case SND_SOC_DAPM_POST_PMD:
+> +		switch (w->shift) {
+> +		case ARIZONA_OUT1L_ENA_SHIFT:
+> +		case ARIZONA_OUT1R_ENA_SHIFT:
+> +		case ARIZONA_OUT2L_ENA_SHIFT:
+> +		case ARIZONA_OUT2R_ENA_SHIFT:
+> +		case ARIZONA_OUT3L_ENA_SHIFT:
+> +		case ARIZONA_OUT3R_ENA_SHIFT:
+> +			udelay(750);
+> +			break;
+
+That's a really quite long udelay() especially given that as the code is
+written it's going to be cumalative over all the outputs being torn down
+so typically will be 1.5ms for headphones (not sure if that's the
+intention or not).  msleep() would be more friendly than udelay() and
+it'd also be good to arrange to coalesce the delays.  Perhaps set a flag
+in _PRE_PMD and check if a delay is needed in the clock teardown?  Or
+better yet record a timestamp and then figure out if a delay is needed
+when tearing down the clock though that is probably overengineering.
+
+--vKFfOv5t3oGVpiF+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUvS+/AAoJECTWi3JdVIfQMzgH/1zN/485Bx+h9Bvbj+b7smIN
+AKNWLh1yMU6FDJVY2FAty1Aw+J+jdoJvSF3AWJLpiKDZQBBDRb812bzxmgZ1sFGt
+YCB1M6qpKCikUkx4V7N0vtsTwMv/y/nLegAyi50t7oCvF9ukTgY3HGKJxEjaunP6
+0XS9v/52wsYUYvICjzOZELNdNJ9es4JXbBXZsvB9R09k47nm9c5nlVN5f25id82v
+y11e36dH+tQ9AL3LxHAvwhklQw++u/lOzaGEEnxgvn1+Ws66Xi9COx7h8fYatkXa
+A6DX6CF/cFFriFAc74njsYuh+24jN0Rx1zKRQOYCDZGGYeXwb2S7dPUokdzdt3c=
+=IhVS
+-----END PGP SIGNATURE-----
+
+--vKFfOv5t3oGVpiF+--
+
+--===============6975468615773854489==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6975468615773854489==--
