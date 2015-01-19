@@ -1,11 +1,22 @@
-From: han.lu@intel.com
-Subject: [PATCH - UCM 1/1] ucm: add binary configure file parse
-Date: Mon, 19 Jan 2015 15:31:10 +0800
-Message-ID: <1421652670-4989-1-git-send-email-han.lu@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: OMAP: mcbsp: ensure that CLKX and
+ CLKR are not used as ouput pins when they are used as input clock for the
+ SRG.
+Date: Mon, 19 Jan 2015 09:44:51 +0200
+Message-ID: <54BCB5F3.6000704@ti.com>
+References: <1421360901-20671-1-git-send-email-niederp@physik.uni-kl.de>		
+ <54B8D6CB.6020801@ti.com>	
+ <1421403335.2546.14.camel@ag-ott-thomas.physik.uni-kl.de>	
+ <54B9074B.5020903@ti.com>
+ <1421420798.2546.22.camel@ag-ott-thomas.physik.uni-kl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9C3026053B
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 08:44:57 +0100 (CET)
+In-Reply-To: <1421420798.2546.22.camel@ag-ott-thomas.physik.uni-kl.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -15,150 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org
+To: niederp@physik.uni-kl.de
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
-
-with cset command, UCM set kcontrol parameters directly:
-    cset "name='<KCONTROL_NAME>' 1<,2,3,...>"
-This patch enables UCM to set kcontrol with parameters from
-configure file:
-    cset-bin-file "name='<KCONTROL_NAME>' <path/to/file>"
-where "cset-bin-file" is a newly added keyword alongside of "cset",
-to indicate cset with binary data in file.
-The binary data in file is parameter for audio DSPs, and it's just
-passed by UCM/ALSA as raw data. The data type of the parameter
-element must be byte, and the count is limited by the size of
-struct snd_ctl_elem_value and driver definition.
-
-Signed-off-by: Lu, Han <han.lu@intel.com>
-
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 37ae4c8..a1b1fb6 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -160,11 +160,57 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
- 	return 0;
- }
- 
-+static int binary_file_parse(snd_ctl_elem_value_t *dst,
-+			      snd_ctl_elem_info_t *info,
-+			      const char *filepath)
-+{
-+	int err, fd;
-+	struct stat st;
-+	size_t sz;
-+	char *res;
-+	snd_ctl_elem_type_t type;
-+	unsigned int idx, count;
-+
-+	type = snd_ctl_elem_info_get_type(info);
-+	if (type != SND_CTL_ELEM_TYPE_BYTES) {
-+		uc_error("only support byte type!");
-+		err = -EINVAL;
-+		return err;
-+	}
-+	fd = open(filepath, O_RDONLY);
-+	if (fd < 0) {
-+		err = -errno;
-+		return err;
-+	}
-+	if (stat(filepath, &st) == -1) {
-+		err = -errno;
-+		goto __fail;
-+	}
-+	sz = st.st_size;
-+	if (sz > sizeof(dst->value.bytes))
-+		sz = sizeof(dst->value.bytes);
-+	count = snd_ctl_elem_info_get_count(info);
-+	if (sz > count)
-+		sz = count;
-+	res = calloc(sz, 1);
-+	if (res == NULL) {
-+		err = -ENOMEM;
-+		goto __fail;
-+	}
-+	read(fd, res, sz);
-+	for (idx = 0; idx < sz; idx++)
-+		snd_ctl_elem_value_set_byte(dst, idx, *(res + idx));
-+	free(res);
-+      __fail:
-+	close(fd);
-+	return err;
-+}
-+
- extern int __snd_ctl_ascii_elem_id_parse(snd_ctl_elem_id_t *dst,
- 					 const char *str,
- 					 const char **ret_ptr);
- 
--static int execute_cset(snd_ctl_t *ctl, const char *cset)
-+static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- {
- 	const char *pos;
- 	int err;
-@@ -194,7 +240,10 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset)
- 	err = snd_ctl_elem_info(ctl, info);
- 	if (err < 0)
- 		goto __fail;
--	err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
-+	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
-+		err = binary_file_parse(value, info, pos);
-+	else
-+		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
- 	if (err < 0)
- 		goto __fail;
- 	err = snd_ctl_elem_write(ctl, value);
-@@ -239,6 +288,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 				goto __fail_nomem;
- 			break;
- 		case SEQUENCE_ELEMENT_TYPE_CSET:
-+		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
- 			if (cdev == NULL) {
- 				const char *cdev1 = NULL, *cdev2 = NULL;
- 				err = get_value3(&cdev1, "PlaybackCTL",
-@@ -274,7 +324,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 					goto __fail;
- 				}
- 			}
--			err = execute_cset(ctl, s->data.cset);
-+			err = execute_cset(ctl, s->data.cset, s->type);
- 			if (err < 0) {
- 				uc_error("unable to execute cset '%s'\n", s->data.cset);
- 				goto __fail;
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index d7517f6..9e1cb41 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -306,6 +306,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 			continue;
- 		}
- 
-+		if (strcmp(cmd, "cset-bin-file") == 0) {
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE;
-+			err = parse_string(n, &curr->data.cset);
-+			if (err < 0) {
-+				uc_error("error: cset-bin-file requires a string!");
-+				return err;
-+			}
-+			continue;
-+		}
-+
- 		if (strcmp(cmd, "usleep") == 0) {
- 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
- 			err = snd_config_get_integer(n, &curr->data.sleep);
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index 87f14a2..c1655c7 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -47,6 +47,7 @@
- #define SEQUENCE_ELEMENT_TYPE_CSET	2
- #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
- #define SEQUENCE_ELEMENT_TYPE_EXEC	4
-+#define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
- 
- struct ucm_value {
-         struct list_head list;
--- 
-2.1.0
+T24gMDEvMTYvMjAxNSAwNTowNiBQTSwgVGhvbWFzIE5pZWRlcnByw7xtIHdyb3RlOgo+PiBVbmZv
+cnR1bmF0ZWx5IHRoZSBvbWFwLW1jYnNwIGRyaXZlciBvbmx5IHN1cHBvcnRzIHN5bmNocm9ub3Vz
+IGNvbmZpZ3VyYXRpb24KPj4gZm9yIHR4L3J4IChzaW5jZSBhbG1vc3QgYWxsIE1jQlNQIGluc3Rh
+bmNlIGNhbiBvbmx5IGJlIHVzZWQgdGhpcyB3YXkpLiBUaGUKPj4gZmlyc3Qgc3RyZWFtIHdpbGwg
+Y29uZmlndXJlIGJvdGggdHggYW5kIHJ4IHRvIGhhdmUgdGhlIHNhbWUgcHJvcGVydGllcy4gRXZl
+bgo+PiBpZiB5b3UgYXJlIHVzaW5nIE1jQlNQMSB3aGljaCBoYXMgc2VwYXJhdGUgRlNYIGFuZCBG
+U1IgbGluZXMsIHRoZSBkcml2ZXIgZG9lcwo+PiBub3QgaGF2ZSBzdXBwb3J0IGZvciB0aGlzLgo+
+PiBGcm9tIEhXIHBvaW50IG9mIHZpZXcgdGhpcyBjb25maWd1cmF0aW9uIGlzIHZhbGlkIChub3Qg
+c29tZXRoaW5nIEkgd291bGQKPj4gZXhwZWN0IGluIGFueSBwcm9kdWN0KS4gSSBkb24ndCB0aGlu
+ayB0aGVyZSBhcmUgb3Igd2lsbCBiZSBvdGhlciBkZXNpZ25zIHRoYW4KPj4geW91ciB1c2luZyB0
+aGlzIG1vZGUuLi4gQnV0LCBpZiB5b3UgYWRkIHNvbWUgY29tbWVudCBhcm91bmQgdGhlIG1hc2tp
+bmcgb2YKPj4gQ0xLWE0gYW5kIENMS1JNIGJpdHMgdGhhdCB3b3VsZCBiZSBncmVhdC4KPiAKPiBE
+byB5b3UgbWVhbiBhZGRpbmcgaXQgdG8gdGhlIGNvbW1pdCBtZXNzYWdlIG9yIHRvIHRoZSBjb2Rl
+PyBvciBib3RoPwoKU2luY2UgdGhpcyBpcyBzb21ldGhpbmcgdGhhdCB0aGUgZHJpdmVyIGhhcyBu
+b3QgbWVhbnQgdG8gc3VwcG9ydCBvZmZpY2lhbGx5LCBJCnByZWZlciBib3RoLiBJIGp1c3QgaG9w
+ZSB0aGF0IEhXIGRlc2lnbmVycyB3aWxsIG5vdCBnZXQgaWRlYXMgYmFzZWQgb24gdGhpcyA7KQoK
+LS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
