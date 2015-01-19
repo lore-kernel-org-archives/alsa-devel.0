@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/18] ALSA: aloop: Use setup_timer() and
+Subject: [PATCH 01/18] ALSA: timer: Use setup_timer() and
 	mod_timer()
-Date: Mon, 19 Jan 2015 12:11:15 +0100
-Message-ID: <1421665891-14475-3-git-send-email-tiwai@suse.de>
+Date: Mon, 19 Jan 2015 12:11:14 +0100
+Message-ID: <1421665891-14475-2-git-send-email-tiwai@suse.de>
 References: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8239B2606BF
- for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 12:11:36 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DBF80AD75
+ by alsa0.perex.cz (Postfix) with ESMTP id 375DD2606D8
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 12:11:37 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id D367FABFC
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 11:11:35 +0000 (UTC)
 In-Reply-To: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,22 +31,23 @@ No functional change, refactoring with the standard helpers.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/aloop.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/core/timer.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 7ea53399404d..7f9126efc1e5 100644
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -181,8 +181,7 @@ static void loopback_timer_start(struct loopback_pcm *dpcm)
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 777a45e08e53..a44235555896 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -1030,9 +1030,7 @@ static int snd_timer_register_system(void)
+ 		snd_timer_free(timer);
+ 		return -ENOMEM;
  	}
- 	tick = dpcm->period_size_frac - dpcm->irq_pos;
- 	tick = (tick + dpcm->pcm_bps - 1) / dpcm->pcm_bps;
--	dpcm->timer.expires = jiffies + tick;
--	add_timer(&dpcm->timer);
-+	mod_timer(&dpcm->timer, jiffies + tick);
- }
- 
- /* call in cable->lock */
+-	init_timer(&priv->tlist);
+-	priv->tlist.function = snd_timer_s_function;
+-	priv->tlist.data = (unsigned long) timer;
++	setup_timer(&priv->tlist, snd_timer_s_function, (unsigned long) timer);
+ 	timer->private_data = priv;
+ 	timer->private_free = snd_timer_free_system;
+ 	return snd_timer_global_register(timer);
 -- 
 2.2.1
