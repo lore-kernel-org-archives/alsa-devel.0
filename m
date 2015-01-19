@@ -1,20 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: arizona: Add delay for output disable
-Date: Mon, 19 Jan 2015 17:13:30 +0000
-Message-ID: <20150119171330.GZ14516@opensource.wolfsonmicro.com>
-References: <1421682586-6303-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20150119162432.GF2809@sirena.org.uk>
- <20150119165850.GY14516@opensource.wolfsonmicro.com>
- <20150119170706.GG2809@sirena.org.uk>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: alsa-lib support for compress offload
+Date: Mon, 19 Jan 2015 17:23:11 +0000
+Message-ID: <54BD3D7F.6020105@imgtec.com>
+References: <54B8DF7A.6000700@imgtec.com> <s5hbnlzt3o2.wl-tiwai@suse.de>
+ <54B8F485.7090603@imgtec.com> <54B9413F.805@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7AE1B2612D1
- for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 18:13:30 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20150119170706.GG2809@sirena.org.uk>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C2012612D1
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 18:23:13 +0100 (CET)
+In-Reply-To: <54B9413F.805@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 19, 2015 at 05:07:06PM +0000, Mark Brown wrote:
-> On Mon, Jan 19, 2015 at 04:58:50PM +0000, Charles Keepax wrote:
-> 
-> > Similar to the power up the delay needs to be cumulative as the
-> > write sequences will queue themselves up if the last one is still
-> > running when the next one is started. It is fairly long for a
-> > udelay I will replace with an msleep(1) instead.
-> 
-> Given that you are needing to delay per output it's probably going to be
-> better to do the coalescing of the delays - record how much delay is
-> going to be needed when stopping the clock then do that at once when
-> doing that.  It's going to be more friendly for the rest of the system
-> to see a single delay than to delay, schedule the thread again and then
-> almost immediately enter another delay.
+On 01/16/2015 04:50 PM, Pierre-Louis Bossart wrote:
+>
+> Since there is no allowed processing/reformatting/reshuffling of 
+> compressed data, all the plugin system needs to be bypassed and you'd 
+> be looking at an alsa-lib API that interfaces directly with the 
+> ioctls, essentially replicating what tinycompress does. I agree it's 
+> not great to have independent packages, the decision to maintain 
+> tinycompress separately was driven by licensing concerns, not 
+> technical ones.
+> -Pierre
+>
 
-That makes sense I will look at adding that.
+I'm not sure how dual licensing work. Is it ok to base alsa-lib support 
+for compress API on tinycompress then?
 
 Thanks,
-Charles
+Qais
