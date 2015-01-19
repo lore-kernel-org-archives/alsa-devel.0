@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 18/18] ALSA: line6: Use setup_timer() and
+Subject: [PATCH 10/18] ALSA: asihpi: Use setup_timer() and
 	mod_timer()
-Date: Mon, 19 Jan 2015 12:11:31 +0100
-Message-ID: <1421665891-14475-19-git-send-email-tiwai@suse.de>
+Date: Mon, 19 Jan 2015 12:11:23 +0100
+Message-ID: <1421665891-14475-11-git-send-email-tiwai@suse.de>
 References: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C9962606F4
+ by alsa0.perex.cz (Postfix) with ESMTP id 724152606FE
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 12:11:37 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0A285ADA3
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 3BCCAADB2
  for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 11:11:36 +0000 (UTC)
 In-Reply-To: <1421665891-14475-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,42 +31,47 @@ No functional change, refactoring with the standard helpers.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/driver.c   | 3 +--
- sound/usb/line6/toneport.c | 8 +++-----
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ sound/pci/asihpi/asihpi.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index fc852f6ab8bc..19904d677114 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -415,8 +415,7 @@ void line6_start_timer(struct timer_list *timer, unsigned int msecs,
- 		       void (*function)(unsigned long), unsigned long data)
- {
- 	setup_timer(timer, function, data);
--	timer->expires = jiffies + msecs * HZ / 1000;
--	add_timer(timer);
-+	mod_timer(timer, jiffies + msecs * HZ / 1000);
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index 7a55fefed5c4..e5cd7be85355 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -540,9 +540,8 @@ static void snd_card_asihpi_pcm_timer_start(struct snd_pcm_substream *
+ 	expiry = HZ / 200;
+ 
+ 	expiry = max(expiry, 1); /* don't let it be zero! */
+-	dpcm->timer.expires = jiffies + expiry;
++	mod_timer(&dpcm->timer, jiffies + expiry);
+ 	dpcm->respawn_timer = 1;
+-	add_timer(&dpcm->timer);
  }
  
- /*
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index aae78d8a82d9..7f97f4a812a7 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -433,11 +433,9 @@ static int toneport_try_init(struct usb_interface *interface,
+ static void snd_card_asihpi_pcm_timer_stop(struct snd_pcm_substream *substream)
+@@ -1064,9 +1063,8 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
+ 	    If internal and other stream playing, can't switch
+ 	*/
  
- 	toneport_setup(toneport);
+-	init_timer(&dpcm->timer);
+-	dpcm->timer.data = (unsigned long) dpcm;
+-	dpcm->timer.function = snd_card_asihpi_timer_function;
++	setup_timer(&dpcm->timer, snd_card_asihpi_timer_function,
++		    (unsigned long) dpcm);
+ 	dpcm->substream = substream;
+ 	runtime->private_data = dpcm;
+ 	runtime->private_free = snd_card_asihpi_runtime_free;
+@@ -1246,9 +1244,8 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
+ 	if (err)
+ 		return -EIO;
  
--	init_timer(&toneport->timer);
--	toneport->timer.expires = jiffies + TONEPORT_PCM_DELAY * HZ;
--	toneport->timer.function = toneport_start_pcm;
--	toneport->timer.data = (unsigned long)toneport;
--	add_timer(&toneport->timer);
-+	setup_timer(&toneport->timer, toneport_start_pcm,
-+		    (unsigned long)toneport);
-+	mod_timer(&toneport->timer, jiffies + TONEPORT_PCM_DELAY * HZ);
- 
- 	return 0;
- }
+-	init_timer(&dpcm->timer);
+-	dpcm->timer.data = (unsigned long) dpcm;
+-	dpcm->timer.function = snd_card_asihpi_timer_function;
++	setup_timer(&dpcm->timer, snd_card_asihpi_timer_function,
++		    (unsigned long) dpcm);
+ 	dpcm->substream = substream;
+ 	runtime->private_data = dpcm;
+ 	runtime->private_free = snd_card_asihpi_runtime_free;
 -- 
 2.2.1
