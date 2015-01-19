@@ -1,82 +1,46 @@
-From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH V3 09/15] ASoC: samsung: i2s: Protect more registers with a
- spinlock
-Date: Mon, 19 Jan 2015 13:28:50 +0100
-Message-ID: <54BCF882.10005@samsung.com>
-References: <1421260962-16892-1-git-send-email-s.nawrocki@samsung.com>
- <1421260962-16892-10-git-send-email-s.nawrocki@samsung.com>
- <CAC5m3BxTkS3KtwUC6itMRF=545PoWJw1gYV6av3p7QjtVMFXTQ@mail.gmail.com>
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: Re: [PATCH 2/2] ASoC: atmel_ssc_dai: remove clock pin comments
+Date: Mon, 19 Jan 2015 14:54:45 +0100
+Message-ID: <54BD0CA5.4070207@lysator.liu.se>
+References: <1421392784-32298-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <CAC5m3BxTkS3KtwUC6itMRF=545PoWJw1gYV6av3p7QjtVMFXTQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kukjin Kim <kgene-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, padma.v-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, drake-6IF/jdPJHihWk0Htik3J/w@public.gmane.org, Kim Sangbeom <sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, ML Devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-samsung-soc <linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ML Arch-Arm <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1421392784-32298-2-git-send-email-voice.shen@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Mark Brown <broonie@kernel.org>, nicolas.ferre@atmel.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tuashar,
-
-On 17/01/15 06:21, Tushar Behera wrote:
-> On Thu, Jan 15, 2015 at 3:42 AM, Sylwester Nawrocki
-> <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
->> Ensure the I2SMOD, I2SPSR registers, which are also exposed through
->> clk API are only accessed with the i2s->spinlock spinlock held.
->>
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
->> ---
->>  sound/soc/samsung/i2s.c |   81 +++++++++++++++++++++++++++++------------------
->>  1 file changed, 51 insertions(+), 30 deletions(-)
->>
->> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
->> index 20cc51f..05fc2f0 100644
->> --- a/sound/soc/samsung/i2s.c
->> +++ b/sound/soc/samsung/i2s.c
->> @@ -472,17 +472,22 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
->>  {
->>         struct i2s_dai *i2s = to_info(dai);
->>         struct i2s_dai *other = get_other_dai(i2s);
->> -       u32 mod = readl(i2s->addr + I2SMOD);
->>         const struct samsung_i2s_variant_regs *i2s_regs = i2s->variant_regs;
->>         unsigned int cdcon_mask = 1 << i2s_regs->cdclkcon_off;
->>         unsigned int rsrc_mask = 1 << i2s_regs->rclksrc_off;
->> +       u32 mod, mask, val = 0;
->> +
->> +       spin_lock(i2s->lock);
->> +       mod = readl(i2s->addr + I2SMOD);
->> +       spin_unlock(i2s->lock);
->>
+> As the clock can be get from TK/RK pin, so remove the comments.
 > 
-> 'mod' is now updated only at the bottom of this function. The above
-> readl can be omitted.
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> ---
+>  sound/soc/atmel/atmel_ssc_dai.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+> index e691aab..198661b 100644
+> --- a/sound/soc/atmel/atmel_ssc_dai.c
+> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> @@ -452,10 +452,6 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+>  	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM:
+>  		/*
+>  		 * I2S format, CODEC supplies BCLK and LRC clocks.
+> -		 *
+> -		 * The SSC transmit clock is obtained from the BCLK signal on
+> -		 * on the TK line, and the SSC receive clock is
+> -		 * generated from the transmit clock.
+>  		 */
+>  		rcmr =	  SSC_BF(RCMR_PERIOD, 0)
+>  			| SSC_BF(RCMR_STTDLY, START_DELAY)
+> -- 
+> 2.3.0.rc0
 
-mod is used in some of the 'if' statements below, so we must read it
-here beforehand.
+Hi!
 
->>         switch (clk_id) {
->>         case SAMSUNG_I2S_OPCLK:
->> -               mod &= ~MOD_OPCLK_MASK;
->> -               mod |= dir;
->> +               mask = MOD_OPCLK_MASK;
->> +               val = dir;
->>                 break;
->>         case SAMSUNG_I2S_CDCLK:
->> +               mask = 1 << i2s_regs->cdclkcon_off;
-> 
-> Use BIT() macro instead?
+You should probably remove that comment from the case with
+SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBM_CFM as well...
 
-Yes, it would be a good code cleanup, might be worth to include it in
-some future patch series. I'll keep it in mind, since this patch is merged
-already.
-And the logical bit operations is one of things people make mistakes most
-often, so any changes like these would need to be well tested and/or
-carefully reviewed.
-
---
-Thanks,
-Sylwester
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Cheers,
+Peter
