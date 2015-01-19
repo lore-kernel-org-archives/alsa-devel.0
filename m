@@ -1,19 +1,18 @@
-From: Clemens Lang <clemens.lang@bmw-carit.de>
-Subject: Re: Possible GPL-licensed header included in alsa-lib
-Date: Mon, 19 Jan 2015 15:31:00 +0100
-Message-ID: <20150119143100.GH4920@ulm-bmuc496424.bmw-carit.de>
-References: <20141209174917.GC22300@ulm-bmuc496424.bmw-carit.de>
- <54874207.5030609@perex.cz>
- <20141211085543.GI22300@ulm-bmuc496424.bmw-carit.de>
+From: Manuel Lauss <manuel.lauss@gmail.com>
+Subject: wm97xx touch does not work after ac97 delayed dev reg
+	removal
+Date: Mon, 19 Jan 2015 16:46:00 +0100
+Message-ID: <CAOLZvyE3tEec4QpdeYrJwNJEjcf18zodjF1XtQjzaeRdHA32wg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bmw-carit.de (mail.bmw-carit.de [62.245.222.98])
- by alsa0.perex.cz (Postfix) with ESMTP id 282DF26087E
- for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 15:31:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20141211085543.GI22300@ulm-bmuc496424.bmw-carit.de>
+Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
+ [209.85.212.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 027CA260A56
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 16:46:45 +0100 (CET)
+Received: by mail-wi0-f169.google.com with SMTP id bs8so17555624wib.0
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 07:46:41 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBUaHUsIERlYyAxMSwgMjAxNCBhdCAwOTo1NTo0M0FNICswMTAwLCBDbGVtZW5zIExh
-bmcgd3JvdGU6Cj4gPiA+ICAyLiBJZiB0aGUgaGVhZGVyIGlzIGluZGVlZCBjb3ZlcmVkIGJ5IEdQ
-TC0yLjAsIHdvdWxkIHlvdSBhY2NlcHQgcGF0Y2hlcwo+ID4gPiAgICAgdG8gcmVwbGFjZSBpdCB3
-aXRoIGEgZGlmZmVyZW50IGltcGxlbWVudGF0aW9uLCBlLmcuIFJ1c3R5IFJ1c3NlbGwncwo+ID4g
-PiAJTUlULWxpY2Vuc2VkIGxpc3QgZnJvbSBjY2FuWzJdPwo+ID4gCj4gPiBJdCBjb3VsZCBiZSBz
-b2x1dGlvbiwgYnV0IHRoZSBjdXJyZW50IGNvZGUgc2VlbXMgYSBiaXQgbGVzcyBjb21wbGljYXRl
-ZC4KPiAKPiBJJ20gc3VyZSBJIGNvdWxkIHNpbXBsaWZ5IHRoZSBpbXBsZW1lbnRhdGlvbiBhbmQg
-cmVtb3ZlIHRoZSBmZWF0dXJlcwo+IG5vdCBuZWVkZWQgYnkgYWxzYS4KPiAKPiAKPiA+IENvdWxk
-IHlvdSB0cnkgdG8gb2J0YWluIGxpc3Qgb2Ygb3JpZ2luYWwgYXV0aG9ycyBmcm9tIGxpbnV4IDIu
-NCA/IEkKPiA+IHRoaW5rIEkgY2FuIGFzayBhYm91dCB0aGUgbGljZW5jZSBjaGFuZ2UuCj4gCj4g
-SSdtIHdvcmtpbmcgb24gaXQgYW5kIHdpbGwgZ2V0IGJhY2sgdG8geW91IG9uY2UgSSBoYXZlIHNv
-bWUgcmVzdWx0cwo+IChvciBnaXZlbiB1cCkuCgphcyBhIGZvbGxvdy11cCwgSSBoYXZlIHNlYXJj
-aGVkIHRoZSBsa21sIGFyY2hpdmVzIGFzIHB1Ymxpc2hlZCBvbgpsa21sLm9yZyBmb3IgMTk5NiBh
-bmQgMTk5NyAod2hlcmUgbGlzdC5oIGFwcGVhcmVkKSwgYnV0IGRpZCBub3QgZmluZCBhCnBhdGNo
-IHRoYXQgY29udHJpYnV0ZWQgYSBsaXN0LmggZmlsZSBvciBhbnkgb2YgdGhlIGZ1bmN0aW9ucyBp
-biB0aGUKZmlsZS4gU28gZWl0aGVyIHRoZSBtYWlsIGFyY2hpdmUgcHVibGlzaGVkIGF0IGxta2wu
-b3JnIGlzIGluY29tcGxldGUsIG9yCnRoZSBmaWxlIHdhcyBuZXZlciBzZW50IHRvIGxta2wgKHdy
-aXR0ZW4gYnkgTGludXM/KS4KCgpDbGVtZW5zCi0tIApCTVcgQ2FyIElUIEdtYkgKQ2xlbWVucyBM
-YW5nClNwZXppYWxpc3QgRW50d2lja2x1bmcKTGlzZS1NZWl0bmVyLVN0cmHDn2UgMTQKODkwODEg
-VWxtCgpNYWlsOiBjbGVtZW5zLmxhbmdAYm13LWNhcml0LmRlCldlYjogaHR0cDovL3d3dy5ibXct
-Y2FyaXQuZGUKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KQk1XIENhciBJVCBHbWJICkdlc2Now6RmdHNmw7xocmVyOiBN
-aWNoYWVsIFfDvHJ0ZW5iZXJnZXIgdW5kIFJlaW5oYXJkIFN0b2xsZQpTaXR6IHVuZCBSZWdpc3Rl
-cmdlcmljaHQ6IE3DvG5jaGVuIEhSQiAxMzQ4MTAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Lars,
+
+Since commit 6794f709b7124ff1e574c4f4c9494418ab56c4b4
+(ASoC: ac97: Drop delayed device registration) the wm9712 ts on
+my MIPS DB1300 board doesn't work any more:
+
+wm97xx-ts 0-0:wm9712-codec.1: Device with vendor 0000 is not a wm97xx
+db1200-ac97 db1300-ac97.0: wm9712-hifi <-> au1xpsc_ac97.1 mapping ok
+wm9712-codec wm9712-codec.1: ASoC: mux Differential Source has no paths
+wm9712-codec wm9712-codec.1: ASoC: mux Capture Phone Mux has no paths
+db1200-ac97 db1300-i2s.0: wm8731-hifi <-> au1xpsc_i2s.2 mapping ok
+
+whereas before this patch:
+[    1.820000] db1200-ac97 db1300-ac97.0: wm9712-hifi <->
+au1xpsc_ac97.1 mapping ok
+[    1.820000] wm9712-codec wm9712-codec.1: ASoC: mux Differential
+Source has no paths
+[    1.830000] wm9712-codec wm9712-codec.1: ASoC: mux Capture Phone
+Mux has no paths
+[    1.840000] wm97xx-ts 0-0:wm9712-codec.1: detected a wm9712 codec
+[    1.850000] input: wm97xx touchscreen as
+/devices/platform/db1300-ac97.0/0-0:wm9712-codec.1/input/input0
+[    1.860000] db1200-ac97 db1300-i2s.0: wm8731-hifi <-> au1xpsc_i2s.2
+mapping ok
+
+
+Do you have any ideas how to solve this?
+
+Thanks!
+     Manuel
