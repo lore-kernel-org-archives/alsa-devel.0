@@ -1,46 +1,57 @@
-From: Peter Rosin <peda@lysator.liu.se>
-Subject: Re: [PATCH 2/2] ASoC: atmel_ssc_dai: remove clock pin comments
-Date: Mon, 19 Jan 2015 14:54:45 +0100
-Message-ID: <54BD0CA5.4070207@lysator.liu.se>
-References: <1421392784-32298-2-git-send-email-voice.shen@atmel.com>
+From: Clemens Lang <clemens.lang@bmw-carit.de>
+Subject: Re: Possible GPL-licensed header included in alsa-lib
+Date: Mon, 19 Jan 2015 15:31:00 +0100
+Message-ID: <20150119143100.GH4920@ulm-bmuc496424.bmw-carit.de>
+References: <20141209174917.GC22300@ulm-bmuc496424.bmw-carit.de>
+ <54874207.5030609@perex.cz>
+ <20141211085543.GI22300@ulm-bmuc496424.bmw-carit.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1421392784-32298-2-git-send-email-voice.shen@atmel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Mark Brown <broonie@kernel.org>, nicolas.ferre@atmel.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.bmw-carit.de (mail.bmw-carit.de [62.245.222.98])
+ by alsa0.perex.cz (Postfix) with ESMTP id 282DF26087E
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 15:31:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20141211085543.GI22300@ulm-bmuc496424.bmw-carit.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> As the clock can be get from TK/RK pin, so remove the comments.
-> 
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
-> ---
->  sound/soc/atmel/atmel_ssc_dai.c | 4 ----
->  1 file changed, 4 deletions(-)
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index e691aab..198661b 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -452,10 +452,6 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM:
->  		/*
->  		 * I2S format, CODEC supplies BCLK and LRC clocks.
-> -		 *
-> -		 * The SSC transmit clock is obtained from the BCLK signal on
-> -		 * on the TK line, and the SSC receive clock is
-> -		 * generated from the transmit clock.
->  		 */
->  		rcmr =	  SSC_BF(RCMR_PERIOD, 0)
->  			| SSC_BF(RCMR_STTDLY, START_DELAY)
-> -- 
-> 2.3.0.rc0
-
-Hi!
-
-You should probably remove that comment from the case with
-SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBM_CFM as well...
-
-Cheers,
-Peter
+SGksCgpPbiBUaHUsIERlYyAxMSwgMjAxNCBhdCAwOTo1NTo0M0FNICswMTAwLCBDbGVtZW5zIExh
+bmcgd3JvdGU6Cj4gPiA+ICAyLiBJZiB0aGUgaGVhZGVyIGlzIGluZGVlZCBjb3ZlcmVkIGJ5IEdQ
+TC0yLjAsIHdvdWxkIHlvdSBhY2NlcHQgcGF0Y2hlcwo+ID4gPiAgICAgdG8gcmVwbGFjZSBpdCB3
+aXRoIGEgZGlmZmVyZW50IGltcGxlbWVudGF0aW9uLCBlLmcuIFJ1c3R5IFJ1c3NlbGwncwo+ID4g
+PiAJTUlULWxpY2Vuc2VkIGxpc3QgZnJvbSBjY2FuWzJdPwo+ID4gCj4gPiBJdCBjb3VsZCBiZSBz
+b2x1dGlvbiwgYnV0IHRoZSBjdXJyZW50IGNvZGUgc2VlbXMgYSBiaXQgbGVzcyBjb21wbGljYXRl
+ZC4KPiAKPiBJJ20gc3VyZSBJIGNvdWxkIHNpbXBsaWZ5IHRoZSBpbXBsZW1lbnRhdGlvbiBhbmQg
+cmVtb3ZlIHRoZSBmZWF0dXJlcwo+IG5vdCBuZWVkZWQgYnkgYWxzYS4KPiAKPiAKPiA+IENvdWxk
+IHlvdSB0cnkgdG8gb2J0YWluIGxpc3Qgb2Ygb3JpZ2luYWwgYXV0aG9ycyBmcm9tIGxpbnV4IDIu
+NCA/IEkKPiA+IHRoaW5rIEkgY2FuIGFzayBhYm91dCB0aGUgbGljZW5jZSBjaGFuZ2UuCj4gCj4g
+SSdtIHdvcmtpbmcgb24gaXQgYW5kIHdpbGwgZ2V0IGJhY2sgdG8geW91IG9uY2UgSSBoYXZlIHNv
+bWUgcmVzdWx0cwo+IChvciBnaXZlbiB1cCkuCgphcyBhIGZvbGxvdy11cCwgSSBoYXZlIHNlYXJj
+aGVkIHRoZSBsa21sIGFyY2hpdmVzIGFzIHB1Ymxpc2hlZCBvbgpsa21sLm9yZyBmb3IgMTk5NiBh
+bmQgMTk5NyAod2hlcmUgbGlzdC5oIGFwcGVhcmVkKSwgYnV0IGRpZCBub3QgZmluZCBhCnBhdGNo
+IHRoYXQgY29udHJpYnV0ZWQgYSBsaXN0LmggZmlsZSBvciBhbnkgb2YgdGhlIGZ1bmN0aW9ucyBp
+biB0aGUKZmlsZS4gU28gZWl0aGVyIHRoZSBtYWlsIGFyY2hpdmUgcHVibGlzaGVkIGF0IGxta2wu
+b3JnIGlzIGluY29tcGxldGUsIG9yCnRoZSBmaWxlIHdhcyBuZXZlciBzZW50IHRvIGxta2wgKHdy
+aXR0ZW4gYnkgTGludXM/KS4KCgpDbGVtZW5zCi0tIApCTVcgQ2FyIElUIEdtYkgKQ2xlbWVucyBM
+YW5nClNwZXppYWxpc3QgRW50d2lja2x1bmcKTGlzZS1NZWl0bmVyLVN0cmHDn2UgMTQKODkwODEg
+VWxtCgpNYWlsOiBjbGVtZW5zLmxhbmdAYm13LWNhcml0LmRlCldlYjogaHR0cDovL3d3dy5ibXct
+Y2FyaXQuZGUKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KQk1XIENhciBJVCBHbWJICkdlc2Now6RmdHNmw7xocmVyOiBN
+aWNoYWVsIFfDvHJ0ZW5iZXJnZXIgdW5kIFJlaW5oYXJkIFN0b2xsZQpTaXR6IHVuZCBSZWdpc3Rl
+cmdlcmljaHQ6IE3DvG5jaGVuIEhSQiAxMzQ4MTAKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
