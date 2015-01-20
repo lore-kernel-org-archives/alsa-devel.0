@@ -1,20 +1,11 @@
-From: Chris Rorvick <chris@rorvick.com>
-Subject: [PATCH 3/3] ALSA: line6: Remove driver version from
-	header comment
-Date: Tue, 20 Jan 2015 02:20:50 -0600
-Message-ID: <1421742050-13299-4-git-send-email-chris@rorvick.com>
-References: <1421742050-13299-1-git-send-email-chris@rorvick.com>
+From: han.lu@intel.com
+Subject: [PATCH - UCM 1/1] ucm: add binary configure file parse
+Date: Tue, 20 Jan 2015 16:33:09 +0800
+Message-ID: <1421742789-3772-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f176.google.com (mail-ig0-f176.google.com
- [209.85.213.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C81926054D
- for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 09:21:07 +0100 (CET)
-Received: by mail-ig0-f176.google.com with SMTP id hl2so14431344igb.3
- for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 00:21:06 -0800 (PST)
-In-Reply-To: <1421742050-13299-1-git-send-email-chris@rorvick.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,208 +15,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org, Chris Rorvick <chris@rorvick.com>
+To: patch@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The driver version string was removed in an ealier commit for being
-useless.  These are equally useless.
+From: "Lu, Han" <han.lu@intel.com>
 
-Signed-off-by: Chris Rorvick <chris@rorvick.com>
----
- sound/usb/line6/capture.c  | 2 +-
- sound/usb/line6/capture.h  | 2 +-
- sound/usb/line6/driver.c   | 2 +-
- sound/usb/line6/driver.h   | 2 +-
- sound/usb/line6/midi.c     | 2 +-
- sound/usb/line6/midi.h     | 2 +-
- sound/usb/line6/midibuf.c  | 2 +-
- sound/usb/line6/midibuf.h  | 2 +-
- sound/usb/line6/pcm.c      | 2 +-
- sound/usb/line6/pcm.h      | 2 +-
- sound/usb/line6/playback.c | 2 +-
- sound/usb/line6/playback.h | 2 +-
- sound/usb/line6/pod.c      | 2 +-
- sound/usb/line6/toneport.c | 2 +-
- sound/usb/line6/usbdefs.h  | 2 +-
- sound/usb/line6/variax.c   | 2 +-
- 16 files changed, 16 insertions(+), 16 deletions(-)
+with cset command, UCM set kcontrol parameters directly:
+    cset "name='<KCONTROL_NAME>' 1<,2,3,...>"
+This patch enables UCM to set kcontrol with parameters from
+configure file:
+    cset-bin-file "name='<KCONTROL_NAME>' <path/to/file>"
+where "cset-bin-file" is a newly added keyword alongside of "cset",
+to indicate cset with binary data in file.
+The binary data in file is parameter for audio DSPs, and it's just
+passed by UCM/ALSA as raw data. The data type of the parameter
+element must be byte, and the count is limited by the size of
+struct snd_ctl_elem_value and driver definition.
 
-diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
-index 9da3117..5a010ba 100644
---- a/sound/usb/line6/capture.c
-+++ b/sound/usb/line6/capture.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/capture.h b/sound/usb/line6/capture.h
-index ff172fb..0939f40 100644
---- a/sound/usb/line6/capture.h
-+++ b/sound/usb/line6/capture.h
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index c668e07..93cd4da 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index ff52169..efd58ac 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/midi.c b/sound/usb/line6/midi.c
-index 64e242b..b5a58a7 100644
---- a/sound/usb/line6/midi.c
-+++ b/sound/usb/line6/midi.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/midi.h b/sound/usb/line6/midi.h
-index 68e7d3a..ba6bf38 100644
---- a/sound/usb/line6/midi.h
-+++ b/sound/usb/line6/midi.h
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/midibuf.c b/sound/usb/line6/midibuf.c
-index 55df0da..b5c4d79 100644
---- a/sound/usb/line6/midibuf.c
-+++ b/sound/usb/line6/midibuf.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/midibuf.h b/sound/usb/line6/midibuf.h
-index 18eed75..05dbf11 100644
---- a/sound/usb/line6/midibuf.h
-+++ b/sound/usb/line6/midibuf.h
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
-index a31a86b..8a6059a 100644
---- a/sound/usb/line6/pcm.c
-+++ b/sound/usb/line6/pcm.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/pcm.h b/sound/usb/line6/pcm.h
-index 715e84b3..c742b33 100644
---- a/sound/usb/line6/pcm.h
-+++ b/sound/usb/line6/pcm.h
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
-index 660094b..1c9f95a 100644
---- a/sound/usb/line6/playback.c
-+++ b/sound/usb/line6/playback.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/playback.h b/sound/usb/line6/playback.h
-index 0dfca5e..78a8851132 100644
---- a/sound/usb/line6/playback.h
-+++ b/sound/usb/line6/playback.h
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index 7766f53..bf027fc 100644
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index 77ad98c..c1f61cd 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *                         Emil Myhrman (emil.myhrman@gmail.com)
-diff --git a/sound/usb/line6/usbdefs.h b/sound/usb/line6/usbdefs.h
-index 3aab2e7..5ef7bcd 100644
---- a/sound/usb/line6/usbdefs.h
-+++ b/sound/usb/line6/usbdefs.h
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2005-2008 Markus Grabner (grabner@icg.tugraz.at)
-  *
-diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
-index 5e4da466..99a58cb 100644
---- a/sound/usb/line6/variax.c
-+++ b/sound/usb/line6/variax.c
-@@ -1,5 +1,5 @@
- /*
-- * Line 6 Linux USB driver - 0.9.1beta
-+ * Line 6 Linux USB driver
-  *
-  * Copyright (C) 2004-2010 Markus Grabner (grabner@icg.tugraz.at)
-  *
+Signed-off-by: Lu, Han <han.lu@intel.com>
+
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 37ae4c8..818465a 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -160,11 +160,62 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
+ 	return 0;
+ }
+ 
++static int binary_file_parse(snd_ctl_elem_value_t *dst,
++			      snd_ctl_elem_info_t *info,
++			      const char *filepath)
++{
++	int err, fd;
++	struct stat st;
++	size_t sz;
++	char *res;
++	snd_ctl_elem_type_t type;
++	unsigned int idx, count;
++
++	type = snd_ctl_elem_info_get_type(info);
++	if (type != SND_CTL_ELEM_TYPE_BYTES) {
++		uc_error("only support byte type!");
++		err = -EINVAL;
++		return err;
++	}
++	fd = open(filepath, O_RDONLY);
++	if (fd < 0) {
++		err = -errno;
++		return err;
++	}
++	if (stat(filepath, &st) == -1) {
++		err = -errno;
++		goto __fail;
++	}
++	sz = st.st_size;
++	count = snd_ctl_elem_info_get_count(info);
++	if (sz == 0 || sz > count || sz > sizeof(dst->value.bytes)) {
++		uc_error("invalid parameter size!");
++		err = -EINVAL;
++		goto __fail;
++	}
++	res = calloc(sz, 1);
++	if (res == NULL) {
++		err = -ENOMEM;
++		goto __fail;
++	}
++	if (read(fd, res, sz) != sz) {
++		err = -errno;
++		goto __fail_read;
++	}
++	for (idx = 0; idx < sz; idx++)
++		snd_ctl_elem_value_set_byte(dst, idx, *(res + idx));
++      __fail_read:
++	free(res);
++      __fail:
++	close(fd);
++	return err;
++}
++
+ extern int __snd_ctl_ascii_elem_id_parse(snd_ctl_elem_id_t *dst,
+ 					 const char *str,
+ 					 const char **ret_ptr);
+ 
+-static int execute_cset(snd_ctl_t *ctl, const char *cset)
++static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+ {
+ 	const char *pos;
+ 	int err;
+@@ -194,7 +245,10 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset)
+ 	err = snd_ctl_elem_info(ctl, info);
+ 	if (err < 0)
+ 		goto __fail;
+-	err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
++	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
++		err = binary_file_parse(value, info, pos);
++	else
++		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
+ 	if (err < 0)
+ 		goto __fail;
+ 	err = snd_ctl_elem_write(ctl, value);
+@@ -239,6 +293,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 				goto __fail_nomem;
+ 			break;
+ 		case SEQUENCE_ELEMENT_TYPE_CSET:
++		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
+ 			if (cdev == NULL) {
+ 				const char *cdev1 = NULL, *cdev2 = NULL;
+ 				err = get_value3(&cdev1, "PlaybackCTL",
+@@ -274,7 +329,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 					goto __fail;
+ 				}
+ 			}
+-			err = execute_cset(ctl, s->data.cset);
++			err = execute_cset(ctl, s->data.cset, s->type);
+ 			if (err < 0) {
+ 				uc_error("unable to execute cset '%s'\n", s->data.cset);
+ 				goto __fail;
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index d7517f6..9e1cb41 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -306,6 +306,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
+ 			continue;
+ 		}
+ 
++		if (strcmp(cmd, "cset-bin-file") == 0) {
++			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE;
++			err = parse_string(n, &curr->data.cset);
++			if (err < 0) {
++				uc_error("error: cset-bin-file requires a string!");
++				return err;
++			}
++			continue;
++		}
++
+ 		if (strcmp(cmd, "usleep") == 0) {
+ 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
+ 			err = snd_config_get_integer(n, &curr->data.sleep);
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 87f14a2..c1655c7 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -47,6 +47,7 @@
+ #define SEQUENCE_ELEMENT_TYPE_CSET	2
+ #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
+ #define SEQUENCE_ELEMENT_TYPE_EXEC	4
++#define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
+ 
+ struct ucm_value {
+         struct list_head list;
 -- 
 2.1.0
