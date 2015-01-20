@@ -1,21 +1,20 @@
 From: Chris Rorvick <chris@rorvick.com>
-Subject: Re: [PATCH 10/17] ALSA: line6: Reorganize card
-	resource handling
-Date: Tue, 20 Jan 2015 00:14:08 -0600
-Message-ID: <CAEUsAPbOey1LzxLxSQHJmDau9d3FkSWid3DehtE+qOgce772nA@mail.gmail.com>
+Subject: Re: [PATCH 00/17] More line6 driver code reorg and
+	cleanups
+Date: Tue, 20 Jan 2015 00:24:24 -0600
+Message-ID: <CAEUsAPZPBTjpnGBPdC-enxM9G17mkmEdHinb1a4CoGQZ7qvW-w@mail.gmail.com>
 References: <1421682891-11594-1-git-send-email-tiwai@suse.de>
- <1421682891-11594-11-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f173.google.com (mail-qc0-f173.google.com
- [209.85.216.173])
- by alsa0.perex.cz (Postfix) with ESMTP id ED757260635
- for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 07:14:08 +0100 (CET)
-Received: by mail-qc0-f173.google.com with SMTP id m20so18459391qcx.4
- for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 22:14:08 -0800 (PST)
-In-Reply-To: <1421682891-11594-11-git-send-email-tiwai@suse.de>
+Received: from mail-qa0-f52.google.com (mail-qa0-f52.google.com
+ [209.85.216.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 072672606A6
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 07:24:26 +0100 (CET)
+Received: by mail-qa0-f52.google.com with SMTP id x12so26809931qac.11
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 22:24:25 -0800 (PST)
+In-Reply-To: <1421682891-11594-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,32 +29,23 @@ Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 On Mon, Jan 19, 2015 at 9:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> This is a fairly big rewrite regarding the card resource management in
-> line6 drivers:
->
-> - The card creation is moved into line6_probe().  This adds the global
->   destructor to private_free, so that each driver doesn't have to call
->   it any longer.
->
-> - The USB disconnect callback handles the card release, thus each
->   driver needs to concentrate on only its own resources.  No need to
->   snd_card_*() call in the destructor.
->
-> - Fix the potential stall in disconnection by removing
->   snd_card_free().   It's replaced with snd_card_free_when_closed()
->   for asynchronous release.
->
-> - The only remaining operation for the card in each driver is the call
->   of snd_card_register().  All the rest are dealt in the common module
->   by itself.
->
-> - These ended up with removal of audio.[ch] as a result of a reduction
->   of one layer.  Each driver just needs to call line6_probe().
+> The current merged code is found in topic/line6 branch of sound.git
+> tree while this development code is found in test/line6 branch.
+> The devel branch hasn't been merged to linux-next yet, I'm waiting
+> for any good/bad test results.  So, give me any feedback.  Thanks!
 
-Nice looking diff --stat.  :-)
+Looks good to me.  I tried it out briefly with a TonePort UX2 without
+issue.
 
-Seems like this could be nicely split up into a few patches to make it
-a bit easier to review.  I'd be happy to take a stab at that if you
-thought it was worth it.  Otherwise, looks good to me.
+Tested-by: Chris Rorvick <chris@rorvick.com>
+
+> (BTW, the next step would be to straighten the init code in pod.c,
+>  etc instead of (ab)using the system timer.  Instead, it should be
+>  a flat function with wait_event() of such.)
+
+Are you planning on doing this?  Otherwise I can probably poke at it
+this week.
+
+Thanks!
 
 Chris
