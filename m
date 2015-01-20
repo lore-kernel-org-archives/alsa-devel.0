@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/7] ALSA: line6: Abort if inconsistent usbdev
-	is found at disconnect
-Date: Tue, 20 Jan 2015 10:04:17 +0100
-Message-ID: <1421744662-6497-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/7] ALSA: line6: Yet more cleanup of
+	superfluous NULL checks
+Date: Tue, 20 Jan 2015 10:04:16 +0100
+Message-ID: <1421744662-6497-2-git-send-email-tiwai@suse.de>
 References: <1421744662-6497-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id BE5E02604B9
+ by alsa0.perex.cz (Postfix) with ESMTP id C312A2604BB
  for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 10:04:36 +0100 (CET)
 In-Reply-To: <1421744662-6497-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,34 +25,37 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-It's utterly unsafe to proceed further the disconnect procedure if the
-assigned usbdev is inconsistent with the expected object.  Better to
-put a WARN_ON() for more cautions and abort immediately.
+... in line6_disconnect() as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/driver.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/usb/line6/driver.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
 diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index e8d51381ffdb..625272fe227a 100644
+index 93cd4daa56bc..e8d51381ffdb 100644
 --- a/sound/usb/line6/driver.c
 +++ b/sound/usb/line6/driver.c
-@@ -585,12 +585,12 @@ void line6_disconnect(struct usb_interface *interface)
+@@ -579,18 +579,9 @@ EXPORT_SYMBOL_GPL(line6_probe);
+ */
+ void line6_disconnect(struct usb_interface *interface)
+ {
+-	struct usb_line6 *line6;
+-	struct usb_device *usbdev;
+-	int interface_number;
+-
+-	if (interface == NULL)
+-		return;
+-	usbdev = interface_to_usbdev(interface);
+-	if (usbdev == NULL)
+-		return;
++	struct usb_line6 *line6 = usb_get_intfdata(interface);
++	struct usb_device *usbdev = interface_to_usbdev(interface);
+ 
+-	interface_number = interface->cur_altsetting->desc.bInterfaceNumber;
+-	line6 = usb_get_intfdata(interface);
  	if (!line6)
  		return;
  
-+	if (WARN_ON(usbdev != line6->usbdev))
-+		return;
-+
- 	if (line6->urb_listen != NULL)
- 		line6_stop_listen(line6);
- 
--	if (usbdev != line6->usbdev)
--		dev_err(line6->ifcdev, "driver bug: inconsistent usb device\n");
--
- 	snd_card_disconnect(line6->card);
- 	if (line6->line6pcm)
- 		line6_pcm_disconnect(line6->line6pcm);
 -- 
 2.2.1
