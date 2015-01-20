@@ -1,17 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: arecord: strange --duration behaviour with some
- sample rates
-Date: Tue, 20 Jan 2015 21:51:00 +0100
-Message-ID: <54BEBFB4.1050901@perex.cz>
-References: <CAD8Lp47AoypMz_AYicOh7XvCThc-xKwxa2NYMRD_3h-aOophbA@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: fireworks/bebob: fix refering to
+	released resources at unplugging
+Date: Wed, 21 Jan 2015 08:07:30 +0900
+Message-ID: <1421795250-7528-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id D3AAB2606CA
- for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 21:51:01 +0100 (CET)
-In-Reply-To: <CAD8Lp47AoypMz_AYicOh7XvCThc-xKwxa2NYMRD_3h-aOophbA@mail.gmail.com>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7B21260705
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2015 00:07:37 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Drake <drake@endlessm.com>, alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 20.1.2015 v 21:38 Daniel Drake napsal(a):
-> Hi,
-> 
-> With alsa-utils-1.0.28, we're seeing some strange behaviour when running:
->  arecord -t wav -r 44100 -d 1 out.wav
-> 
-> After recording 1 second of data to out.wav, a load of extra files are
-> created like out-01.wav, out-02.wav, out-03.wav, etc. These extra
-> files are 44 bytes in length. arecord seems to continue  like this
-> forever rather than exiting after the 1 second recording.
-> 
-> The problem is somehow linked to the sample-rate. At 48000 or 8000,
-> things work fine, just 44100 is bad.
-> 
-> Tracing some values in the source:
-> count is 44100, and rest is initialized to the same.
-> 
-> In each iteration of the /* capture */ loop, f has value 5512, i.e.
-> 5512 bytes are read.
-> So rest decreases through values 38588, 33076, 27564, 22052, 16540, 11028, 5516.
-> 
-> Now we read another 5512 bytes, rest is decreased to 4.
-> So we now call pcm_read(audiobuf, f) where f has value 4.
-> pcm_read adjusts that to 5512 and returns 5512.
-> 
-> Now we hit:
->     if (pcm_read(audiobuf, f) != f)
->         break;
-> 
-> We break out of that inner loop, count still has value 4 so we reach
-> the end of the outer loop, and loop again, which causes a new file to
-> be opened, etc.
-> 
-> Sorry that I'm not quite up-to-scratch with pcm basics to suggest a
-> quick fix, but hopefully this diagnosis is useful at least.
+Unplugging devices can cause disorder by releasing streaming resources
+before stopping playbacking/capturing substreams. This commit forces
+the state of ALSA character devices into disconnect before releasing
+the resources.
 
-Hi,
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob.c         | 3 ++-
+ sound/firewire/fireworks/fireworks.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-the fix is here:
-
-http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=8f361d83cfcb39887f5fc591633e68d9448e3425
-
-					Jaroslav
-
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index fc19c99..41eb1ce 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -306,10 +306,11 @@ static void bebob_remove(struct fw_unit *unit)
+ 	if (bebob == NULL)
+ 		return;
+ 
++	snd_card_disconnect(bebob->card);
++
+ 	kfree(bebob->maudio_special_quirk);
+ 
+ 	snd_bebob_stream_destroy_duplex(bebob);
+-	snd_card_disconnect(bebob->card);
+ 	snd_card_free_when_closed(bebob->card);
+ }
+ 
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index 3e2ed8e..21fb50f 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -289,10 +289,11 @@ static void efw_remove(struct fw_unit *unit)
+ {
+ 	struct snd_efw *efw = dev_get_drvdata(&unit->device);
+ 
++	snd_card_disconnect(efw->card);
++
+ 	snd_efw_stream_destroy_duplex(efw);
+ 	snd_efw_transaction_remove_instance(efw);
+ 
+-	snd_card_disconnect(efw->card);
+ 	snd_card_free_when_closed(efw->card);
+ }
+ 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+2.1.0
