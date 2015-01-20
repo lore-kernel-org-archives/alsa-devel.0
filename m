@@ -1,16 +1,18 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH 0/3] Add master mode,
-	tmd and right-j mode support
-Date: Tue, 20 Jan 2015 20:21:17 +0800
-Message-ID: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
+Subject: [PATCH 2/3] ASoC: fsl_sai: Add support for tdm slots
+	operation
+Date: Tue, 20 Jan 2015 20:21:19 +0800
+Message-ID: <1421756480-7055-3-git-send-email-zidan.wang@freescale.com>
+References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2on0110.outbound.protection.outlook.com [207.46.100.110])
- by alsa0.perex.cz (Postfix) with ESMTP id A87E226044D
- for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 13:20:39 +0100 (CET)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bon0148.outbound.protection.outlook.com [157.56.111.148])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4313C2604C6
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 13:20:48 +0100 (CET)
+In-Reply-To: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,18 +26,131 @@ To: timur@tabi.org
 Cc: alsa-devel@alsa-project.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, nicoleotsuka@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Add sai master mode support.
-Add tdm slots support.
-Add Right-J mode support.
+slots and slot width is set from set_dai_tdm_slot in machine driver.
+We should calculate the actual slots per channel using slots/channels.
 
-Zidan Wang (3):
-  SoC: fsl_sai: add sai master mode support
-  ASoC: fsl_sai: Add support for tdm slots operation
-  ASoC: fsl_sai: Add support for Right-J mode
+When using tdm slots, we should generate bclk depends channels, slots
+and slot width. And there may be unused BCLK cycles before each LRCLK
+transition.
 
- sound/soc/fsl/fsl_sai.c | 164 ++++++++++++++++++++++++++++++++++++++++++++----
- sound/soc/fsl/fsl_sai.h |  13 +++-
- 2 files changed, 164 insertions(+), 13 deletions(-)
+Set TCR2 WNW bit to slot width and TCR4 FRSZ bit to slots * channels to
+configure frame Length. And it is no need to set TCR4 SYWD to set frame
+sync length for sai slave mode, so just do it when it is sai master mode.
 
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+---
+ sound/soc/fsl/fsl_sai.c | 46 +++++++++++++++++++++++++++++++++++++---------
+ sound/soc/fsl/fsl_sai.h |  3 +++
+ 2 files changed, 40 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 499cbd9..4c5040d 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -115,6 +115,17 @@ out:
+ 		return IRQ_HANDLED;
+ }
+ 
++static int fsl_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
++				u32 rx_mask, int slots, int slot_width)
++{
++	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
++
++	sai->slots = slots;
++	sai->slot_width = slot_width;
++
++	return 0;
++}
++
+ static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
+ 		int clk_id, unsigned int freq, int fsl_dir)
+ {
+@@ -369,10 +380,25 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	u32 word_width = snd_pcm_format_width(params_format(params));
+ 	u32 val_cr4 = 0, val_cr5 = 0;
+ 	int ret;
++	u32 bclk;
++
++	if (channels == 1)
++		channels = 2;
++
++	if (!sai->slots || sai->slots % channels)
++		sai->slots = channels;
++
++	sai->slots = sai->slots / channels;
++
++	if (sai->slot_width < word_width || sai->is_dsp_mode)
++		sai->slot_width = word_width;
+ 
+ 	if (!sai->is_slave_mode) {
+-		ret = fsl_sai_set_bclk(cpu_dai, tx,
+-			2 * word_width * params_rate(params));
++		bclk = snd_soc_calc_bclk(params_rate(params), sai->slot_width,
++				channels, sai->slots);
++
++		ret = fsl_sai_set_bclk(cpu_dai, tx, bclk);
++
+ 		if (ret)
+ 			return ret;
+ 
+@@ -385,20 +411,19 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 			sai->mclk_streams |= BIT(substream->stream);
+ 		}
+ 
++		if (!sai->is_dsp_mode)
++			val_cr4 |= FSL_SAI_CR4_SYWD(sai->slot_width);
+ 	}
+ 
+-	if (!sai->is_dsp_mode)
+-		val_cr4 |= FSL_SAI_CR4_SYWD(word_width);
+-
+-	val_cr5 |= FSL_SAI_CR5_WNW(word_width);
+-	val_cr5 |= FSL_SAI_CR5_W0W(word_width);
++	val_cr5 |= FSL_SAI_CR5_WNW(sai->slot_width);
++	val_cr5 |= FSL_SAI_CR5_W0W(sai->slot_width);
+ 
+ 	if (sai->is_lsb_first)
+ 		val_cr5 |= FSL_SAI_CR5_FBT(0);
+ 	else
+ 		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
+ 
+-	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
++	val_cr4 |= FSL_SAI_CR4_FRSZ(sai->slots * channels);
+ 
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
+ 			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
+@@ -406,7 +431,9 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR5(tx),
+ 			   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
+ 			   FSL_SAI_CR5_FBT_MASK, val_cr5);
+-	regmap_write(sai->regmap, FSL_SAI_xMR(tx), ~0UL - ((1 << channels) - 1));
++
++	regmap_write(sai->regmap, FSL_SAI_xMR(tx),
++		     ~0UL - ((1 << params_channels(params) * sai->slots) - 1));
+ 
+ 	return 0;
+ }
+@@ -531,6 +558,7 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+ 	.set_sysclk	= fsl_sai_set_dai_sysclk,
+ 	.set_fmt	= fsl_sai_set_dai_fmt,
++	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
+ 	.hw_params	= fsl_sai_hw_params,
+ 	.hw_free	= fsl_sai_hw_free,
+ 	.trigger	= fsl_sai_trigger,
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 2d8c830..111dfce 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -140,6 +140,9 @@ struct fsl_sai {
+ 	bool sai_on_imx;
+ 	bool synchronous[2];
+ 
++	unsigned int slots;
++	unsigned int slot_width;
++
+ 	unsigned int mclk_id;
+ 	unsigned int mclk_streams;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
 -- 
 1.9.1
