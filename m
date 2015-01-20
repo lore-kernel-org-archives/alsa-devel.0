@@ -1,20 +1,21 @@
-From: Chris Rorvick <chris@rorvick.com>
-Subject: Re: [PATCH 00/17] More line6 driver code reorg and
-	cleanups
-Date: Tue, 20 Jan 2015 00:24:24 -0600
-Message-ID: <CAEUsAPZPBTjpnGBPdC-enxM9G17mkmEdHinb1a4CoGQZ7qvW-w@mail.gmail.com>
-References: <1421682891-11594-1-git-send-email-tiwai@suse.de>
+From: Arun Raghavan <arun@accosted.net>
+Subject: Re: alsa-lib support for compress offload
+Date: Tue, 20 Jan 2015 12:51:16 +0530
+Message-ID: <CACuU-+jJL4kbw=j-_sgev+bihf-PSwqjDaPqj-eAwgMfAdTz7g@mail.gmail.com>
+References: <54B8DF7A.6000700@imgtec.com> <s5hbnlzt3o2.wl-tiwai@suse.de>
+ <54B8F485.7090603@imgtec.com> <54B9413F.805@linux.intel.com>
+ <54BD3D7F.6020105@imgtec.com> <54BD8036.5070405@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-qa0-f52.google.com (mail-qa0-f52.google.com
  [209.85.216.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 072672606A6
- for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 07:24:26 +0100 (CET)
-Received: by mail-qa0-f52.google.com with SMTP id x12so26809931qac.11
- for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 22:24:25 -0800 (PST)
-In-Reply-To: <1421682891-11594-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9999D261A1A
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 08:21:37 +0100 (CET)
+Received: by mail-qa0-f52.google.com with SMTP id x12so26924634qac.11
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2015 23:21:37 -0800 (PST)
+In-Reply-To: <54BD8036.5070405@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Qais Yousef <qais.yousef@imgtec.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 19, 2015 at 9:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> The current merged code is found in topic/line6 branch of sound.git
-> tree while this development code is found in test/line6 branch.
-> The devel branch hasn't been merged to linux-next yet, I'm waiting
-> for any good/bad test results.  So, give me any feedback.  Thanks!
+On 20 January 2015 at 03:37, Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> On 1/19/15 11:23 AM, Qais Yousef wrote:
+>>
+>> On 01/16/2015 04:50 PM, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>> Since there is no allowed processing/reformatting/reshuffling of
+>>> compressed data, all the plugin system needs to be bypassed and you'd
+>>> be looking at an alsa-lib API that interfaces directly with the
+>>> ioctls, essentially replicating what tinycompress does. I agree it's
+>>> not great to have independent packages, the decision to maintain
+>>> tinycompress separately was driven by licensing concerns, not
+>>> technical ones.
+>>> -Pierre
+>>>
+>>
+>> I'm not sure how dual licensing work. Is it ok to base alsa-lib support
+>> for compress API on tinycompress then?
+>
+>
+> no idea, and what is the objective really? it's not clear what you are
+> trying to achieve and what would be the merits of enhancing alsa-lib with
+> compressed audio support?
 
-Looks good to me.  I tried it out briefly with a TonePort UX2 without
-issue.
+If the same API can be reused/extended, it'd mean allowing code reuse
+and not having to write entirely separate support for compressed
+devices in projects that use alsa-lib already. I don't know if that's
+actually feasible with the way the ALSA API works, though.
 
-Tested-by: Chris Rorvick <chris@rorvick.com>
-
-> (BTW, the next step would be to straighten the init code in pod.c,
->  etc instead of (ab)using the system timer.  Instead, it should be
->  a flat function with wait_event() of such.)
-
-Are you planning on doing this?  Otherwise I can probably poke at it
-this week.
-
-Thanks!
-
-Chris
+-- Arun
