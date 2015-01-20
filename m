@@ -1,62 +1,68 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: Re: alsa-lib support for compress offload
-Date: Tue, 20 Jan 2015 09:53:59 +0000
-Message-ID: <54BE25B7.1040606@imgtec.com>
-References: <54B8DF7A.6000700@imgtec.com> <s5hbnlzt3o2.wl-tiwai@suse.de>
- <54B8F485.7090603@imgtec.com> <54B9413F.805@linux.intel.com>
- <54BD3D7F.6020105@imgtec.com> <54BD8036.5070405@linux.intel.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [alsa-devel] [RESEND PATCH] mfd: wm8994: set mfd id-base for
+ regulator devs creation to avoid conflicts
+Date: Tue, 20 Jan 2015 11:30:00 +0000
+Message-ID: <20150120113000.GH13701@x1>
+References: <1420679073-3316-1-git-send-email-ideal.song@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id F171D260434
- for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2015 10:54:01 +0100 (CET)
-In-Reply-To: <54BD8036.5070405@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1420679073-3316-1-git-send-email-ideal.song@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Inha Song <ideal.song@samsung.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/19/2015 10:07 PM, Pierre-Louis Bossart wrote:
-> On 1/19/15 11:23 AM, Qais Yousef wrote:
->> On 01/16/2015 04:50 PM, Pierre-Louis Bossart wrote:
->>>
->>> Since there is no allowed processing/reformatting/reshuffling of
->>> compressed data, all the plugin system needs to be bypassed and you'd
->>> be looking at an alsa-lib API that interfaces directly with the
->>> ioctls, essentially replicating what tinycompress does. I agree it's
->>> not great to have independent packages, the decision to maintain
->>> tinycompress separately was driven by licensing concerns, not
->>> technical ones.
->>> -Pierre
->>>
->>
->> I'm not sure how dual licensing work. Is it ok to base alsa-lib support
->> for compress API on tinycompress then?
->
-> no idea, and what is the objective really? it's not clear what you are 
-> trying to achieve and what would be the merits of enhancing alsa-lib 
-> with compressed audio support?
-> -Pierre
->
+On Thu, 08 Jan 2015, Inha Song wrote:
 
-Long story short, I am writing a new ALSA driver that supports compress 
-offload. The only user land support I could find is in tinycompress. I 
-was looking at adding gstreamer support to facilitate my testing and 
-hopefully make the driver more useful.
+> After commit: 6e3f62f0793e ("mfd: core: Fix platform-device id genera=
+tion")
+> We must set the id base when register a duplicate name of mfd_cell.
+> If not, duplicate filename error was reported.
+>=20
+> - sysfs: cannot create duplicate filename '/devices/.../wm8994-ldo'
+>=20
+> Signed-off-by: Inha Song <ideal.song@samsung.com>
+> ---
+>  drivers/mfd/wm8994-core.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-I am happy to use tinycompress if that's the official way alsa wants to 
-support userland applications. When Takashi suggested that he didn't get 
-patches for compress API support in alsa-lib I thought it was a hint 
-it's a better idea to have it there. I think it makes sense to merge 
-tinycompress into alsa-lib as this will make the functionality more 
-readily available - if license is not an issue.
+Applied, thanks.
+
+> diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
+> index e6fab94..47cd3cc 100644
+> --- a/drivers/mfd/wm8994-core.c
+> +++ b/drivers/mfd/wm8994-core.c
+> @@ -36,12 +36,12 @@
+>  static const struct mfd_cell wm8994_regulator_devs[] =3D {
+>  	{
+>  		.name =3D "wm8994-ldo",
+> -		.id =3D 1,
+> +		.id =3D 0,
+>  		.pm_runtime_no_callbacks =3D true,
+>  	},
+>  	{
+>  		.name =3D "wm8994-ldo",
+> -		.id =3D 2,
+> +		.id =3D 1,
+>  		.pm_runtime_no_callbacks =3D true,
+>  	},
+>  };
+> @@ -344,7 +344,7 @@ static int wm8994_device_init(struct wm8994 *wm89=
+94, int irq)
+>  	dev_set_drvdata(wm8994->dev, wm8994);
+> =20
+>  	/* Add the on-chip regulators first for bootstrapping */
+> -	ret =3D mfd_add_devices(wm8994->dev, -1,
+> +	ret =3D mfd_add_devices(wm8994->dev, 0,
+>  			      wm8994_regulator_devs,
+>  			      ARRAY_SIZE(wm8994_regulator_devs),
+>  			      NULL, 0, NULL);
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
