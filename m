@@ -1,18 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: fireworks/bebob: fix refering to
- released resources at unplugging
-Date: Wed, 21 Jan 2015 18:01:47 +0900
-Message-ID: <54BF6AFB.2070806@sakamocchi.jp>
-References: <1421795250-7528-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5h7fwgwqwb.wl-tiwai@suse.de>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: alsa-lib support for compress offload
+Date: Wed, 21 Jan 2015 09:22:41 +0000
+Message-ID: <54BF6FE1.3000203@imgtec.com>
+References: <54B8DF7A.6000700@imgtec.com> <s5hbnlzt3o2.wl-tiwai@suse.de>
+ <54B8F485.7090603@imgtec.com> <54B9413F.805@linux.intel.com>
+ <54BD3D7F.6020105@imgtec.com> <54BD8036.5070405@linux.intel.com>
+ <54BE25B7.1040606@imgtec.com> <20150121071053.GC28763@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 45EC626059D
- for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2015 10:01:49 +0100 (CET)
-In-Reply-To: <s5h7fwgwqwb.wl-tiwai@suse.de>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8598F261A2F
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2015 10:22:43 +0100 (CET)
+In-Reply-To: <20150121071053.GC28763@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,94 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.jf.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 21 2015 16:10, Takashi Iwai wrote:
-> At Wed, 21 Jan 2015 08:07:30 +0900,
-> Takashi Sakamoto wrote:
->>
->> Unplugging devices can cause disorder by releasing streaming resources
->> before stopping playbacking/capturing substreams. This commit forces
->> the state of ALSA character devices into disconnect before releasing
->> the resources.
+On 01/21/2015 07:10 AM, Vinod Koul wrote:
+> Sorry for delayed reply, I am travelling.
+
+Thanks for taking the time to answer.
+
 >
-> This isn't enough, unfortunately.  snd_card_disconnect() itself
-> doesn't sync, merely disconnects and stops the streams, etc, thus the
-> file handles may be still opened.
+> tinycompress comes with dual license LGPL and BSD. Currently the main user of
+> this is Android which picks up the BSD license.
+>
+> Though I am not a lawyer, but I don't see a reason if alsa-lib uses LGPL
+> license to take this lib and include compress support in alsa-lib. This
+> way we have code reuse and take advantage of alsa-lib to support compress
+> formats too. Takashi is that fine with you?
+>
+> I would hate if we had to rewrite the simple wrappers over IOCTLs to support
+> compress in alsa-lib!
+>
+> Thanks
+>
 
-Oh, exactly. As you said, the drivers can't force applications to call 
-snd_pcm_close() even if calling snd_card_disconnect(). As a result, any 
-AMDTP streams are still running.
+Unless Takashi comes up with an objection, I'll work just on that.
 
-> In general, releasing the resources should be done in either in card's
-> private_free or snd_device's free callback where all files have been
-> already released.  For example, bebob_remove() should just call
-> snd_card_free_when_closed() (that invokes snd_card_disconnect()
-> internally) and call the reset (kfree() and *_destroy()) in a card's
-> free callback.
-
-Thanks for your indication. I should move these releasing code to 
-.private_free callback.
-
-Currently I'm bothered by these drivers about kernel oops at unplugging 
-during playbacking/capturing (not always). I guess:
-  1. unplugging.
-  2. isochronous communications stops, then the drivers detect packet 
-discontinuity and set XRUN state to PCM substream immediately.
-  3. PCM applications call .prepare to recover XRUN state.
-  4. these drivers try transactions in .prepare
-  5. (Asynchronously) xxx_remove() is called by bus driver and release 
-stream/transaction resources
-  6. the trial of transaction causes oops.
-
-This patch is not a better solution to this, too. Please abandon it...
-
-
-Thanks
-
-Takashi Sakamoto
-
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->> ---
->>   sound/firewire/bebob/bebob.c         | 3 ++-
->>   sound/firewire/fireworks/fireworks.c | 3 ++-
->>   2 files changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
->> index fc19c99..41eb1ce 100644
->> --- a/sound/firewire/bebob/bebob.c
->> +++ b/sound/firewire/bebob/bebob.c
->> @@ -306,10 +306,11 @@ static void bebob_remove(struct fw_unit *unit)
->>   	if (bebob == NULL)
->>   		return;
->>
->> +	snd_card_disconnect(bebob->card);
->> +
->>   	kfree(bebob->maudio_special_quirk);
->>
->>   	snd_bebob_stream_destroy_duplex(bebob);
->> -	snd_card_disconnect(bebob->card);
->>   	snd_card_free_when_closed(bebob->card);
->>   }
->>
->> diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
->> index 3e2ed8e..21fb50f 100644
->> --- a/sound/firewire/fireworks/fireworks.c
->> +++ b/sound/firewire/fireworks/fireworks.c
->> @@ -289,10 +289,11 @@ static void efw_remove(struct fw_unit *unit)
->>   {
->>   	struct snd_efw *efw = dev_get_drvdata(&unit->device);
->>
->> +	snd_card_disconnect(efw->card);
->> +
->>   	snd_efw_stream_destroy_duplex(efw);
->>   	snd_efw_transaction_remove_instance(efw);
->>
->> -	snd_card_disconnect(efw->card);
->>   	snd_card_free_when_closed(efw->card);
->>   }
->>
->> --
->> 2.1.0
+Thanks,
+Qais
