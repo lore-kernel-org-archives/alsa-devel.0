@@ -1,76 +1,44 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 2/3] ASoC: sh: fsi: Fix clock inversion
-Date: Wed, 21 Jan 2015 14:38:11 +0100
-Message-ID: <1421847492-8857-2-git-send-email-lars@metafoo.de>
-References: <1421847492-8857-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 1/3] ARM: shmobile: armadillo800eva: Properly specify HDMI audio link format
+Date: Wed, 21 Jan 2015 14:38:10 +0100
+Message-ID: <1421847492-8857-1-git-send-email-lars@metafoo.de>
 Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <1421847492-8857-1-git-send-email-lars@metafoo.de>
 Sender: linux-sh-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-According to the sh7724 hardware user manual (Rev.2.00 Jan 2013) page 1851
-to 1856 the FSI bit-clock is inverted to the bit-clock as specified by the
-I2S standard. This means the bit clock inversion bit should be set for a
-normal I2S clock and should not be set for an inverted I2S clock.
+The DAI link format should be specified for the whole link rather than just
+one component on the link. So move the format specification for the HDMI
+audio link from the CPU component to the link itself.
 
-Similarly when operating in left-justfied mode both the frame-clock and the
-bit-clock need to be inverted to be standards compliant.
-
-This means also that the exta clock inversion setting in the armadillo800eva
-machine driver for CPU component should now be removed.
+Since the sh-mobile-hdmi DAI driver doesn't implement the set_fmt() callback
+in this case there is no functional difference between only specifying the
+the format for the CPU side or for the whole link, but the later it will
+allow us to remove support for just specifying the format for one component.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-I don't have the hardware but I'd like to get rid of the extra
-SND_SOC_DAIFMT_IB_NF in simple-card platform data, so we can remove the fmt
-field. Kuninori can you check if this works?
-
-Changes since v1:
-	* Fix whitespace
+No changes since v1.
 ---
- arch/arm/mach-shmobile/board-armadillo800eva.c | 1 -
- sound/soc/sh/fsi.c                             | 7 +++++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ arch/arm/mach-shmobile/board-armadillo800eva.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/mach-shmobile/board-armadillo800eva.c b/arch/arm/mach-shmobile/board-armadillo800eva.c
-index 75de26c..36aaeb1 100644
+index 6d949f1..75de26c 100644
 --- a/arch/arm/mach-shmobile/board-armadillo800eva.c
 +++ b/arch/arm/mach-shmobile/board-armadillo800eva.c
-@@ -1015,7 +1015,6 @@ static struct asoc_simple_card_info fsi_wm8978_info = {
+@@ -1040,9 +1040,9 @@ static struct asoc_simple_card_info fsi2_hdmi_info = {
+ 	.card		= "FSI2B-HDMI",
+ 	.codec		= "sh-mobile-hdmi",
  	.platform	= "sh_fsi2",
- 	.daifmt		= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM,
++	.daifmt		= SND_SOC_DAIFMT_CBS_CFS,
  	.cpu_dai = {
--		.fmt	= SND_SOC_DAIFMT_IB_NF,
- 		.name	= "fsia-dai",
+ 		.name	= "fsib-dai",
+-		.fmt	= SND_SOC_DAIFMT_CBS_CFS,
  	},
  	.codec_dai = {
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index b87b22e..6783d3f 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1594,6 +1594,12 @@ static int fsi_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- static int fsi_set_fmt_dai(struct fsi_priv *fsi, unsigned int fmt)
- {
-+	/*
-+	 * FSI bit clock is inverted to the I2S specification, so we invert it
-+	 * when a non-inverted I2S clock was requested and vice versa.
-+	 */
-+	fsi->bit_clk_inv = !fsi->bit_clk_inv;
-+
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		fsi->fmt = CR_I2S;
-@@ -1602,6 +1608,7 @@ static int fsi_set_fmt_dai(struct fsi_priv *fsi, unsigned int fmt)
- 	case SND_SOC_DAIFMT_LEFT_J:
- 		fsi->fmt = CR_PCM;
- 		fsi->chan_num = 2;
-+		fsi->lr_clk_inv = !fsi->lr_clk_inv;
- 		break;
- 	default:
- 		return -EINVAL;
+ 		.name = "sh_mobile_hdmi-hifi",
 -- 
 1.8.0
 
