@@ -1,21 +1,26 @@
-From: Zidan Wang <b50113@freescale.com>
-Subject: Re: [PATCH 1/3] SoC: fsl_sai: add sai master mode
-	support
-Date: Wed, 21 Jan 2015 17:25:32 +0800
-Message-ID: <20150121092529.GA27441@b50113>
-References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
- <1421756480-7055-2-git-send-email-zidan.wang@freescale.com>
- <20150121060702.GB3275@Alpha>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Question about codec which is supporting TDM /
+	5.1ch
+Date: Wed, 21 Jan 2015 11:33:35 +0000
+Message-ID: <20150121113335.GE21293@sirena.org.uk>
+References: <HKXPR06MB34170B809052DD484A1B62DA9460@HKXPR06MB341.apcprd06.prod.outlook.com>
+ <SIXPR06MB0463BD85668E6D68EEC9A5E3C1460@SIXPR06MB0463.apcprd06.prod.outlook.com>
+ <SIXPR06MB333851D089CC87404B679C1B5460@SIXPR06MB333.apcprd06.prod.outlook.com>
+ <54ACD3BF.9060107@renesas.com>
+ <HKXPR06MB0615ABF482506554FD9A7191D7460@HKXPR06MB0615.apcprd06.prod.outlook.com>
+ <54BE1BC0.6090408@renesas.com>
+ <HKXPR06MB0615D0AA32CC1219B1E5E95DD74B0@HKXPR06MB0615.apcprd06.prod.outlook.com>
+ <HKXPR06MB341C8969D2788FE21F887E2A94B0@HKXPR06MB341.apcprd06.prod.outlook.com>
+ <87ppa8mvqh.wl%kuninori.morimoto.gx@renesas.com>
+ <87oapsmvav.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0313823143913275777=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0144.outbound.protection.outlook.com [157.56.110.144])
- by alsa0.perex.cz (Postfix) with ESMTP id CA196261A2F
- for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2015 10:24:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20150121060702.GB3275@Alpha>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id ACBD62605CE
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2015 12:33:43 +0100 (CET)
+In-Reply-To: <87oapsmvav.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,83 +30,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: TOMOHARU FUKAWA <tomoharu.fukawa.eb@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, shiiba <naoya.shiiba.nx@renesas.com>, YOSHIFUMI HOSOYA <yoshifumi.hosoya.wj@renesas.com>, shimoda <yoshihiro.shimoda.uh@renesas.com>, Magnus <magnus.damm@gmail.com>, komatsu <toshiaki.komatsu.ud@renesas.com>, tanaka <hiroo.tanaka.sx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 20, 2015 at 10:07:03PM -0800, Nicolin Chen wrote:
-> On Tue, Jan 20, 2015 at 08:21:18PM +0800, Zidan Wang wrote:
-> > +static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
-> 
-> > +	if ((tx && sai->synchronous[TX]) || (!tx && !sai->synchronous[RX])) {
-> > +		regmap_update_bits(sai->regmap, FSL_SAI_RCR2,
-> > +			FSL_SAI_CR2_MSEL_MASK, FSL_SAI_CR2_MSEL(sai->mclk_id));
-> > +		regmap_update_bits(sai->regmap, FSL_SAI_RCR2,
-> > +			FSL_SAI_CR2_DIV_MASK, savediv - 1);
-> 
-> Hmm...the case should be a bit more complicated here IMO.
-> 
-> "tx && sai->synchronous[TX]" means the playback in synchronous
-> mode (TX following RX). What if the recording has been already
-> activated with an MSEL setting at this point? Then the playback
-> stream, as a secondary stream, will overwrite MSEL of the first
-> stream -- Record. Same would happen to the DIV configuration.
-> 
-When TX following RX(or RX following TX), TX and RX works on same bit
-clock and frame clock. They will use same MCLK source, and just need set
-the bclk DIV for RX(or TX). The secondary stream will overwrite MSEL and
-bclk DIV of the first stream, but it doesn't matter.
 
-For RX(or TX) sync:
-fsl_sai_dai.symmetric_rates = 1;
-fsl_sai_dai.symmetric_channels = 1;
-fsl_sai_dai.symmetric_samplebits = 1;
+--===============0313823143913275777==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/QKKmeG/X/bPShih"
+Content-Disposition: inline
 
-When TX and RX both works on async mode, TX and RX may works on
-different bit clock and frame clock. We need set MCLK source and bclk
-DIV for TX and RX. mclk_id just save a MCLK source id, so i need to define
-mclk_id[2] for differnet stream.
 
-For TX and RX async:
-fsl_sai_dai.symmetric_rates = 0;
-fsl_sai_dai.symmetric_channels = 0;
-fsl_sai_dai.symmetric_samplebits = 0;
+--/QKKmeG/X/bPShih
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > @@ -297,6 +368,24 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
-> >  	unsigned int channels = params_channels(params);
-> >  	u32 word_width = snd_pcm_format_width(params_format(params));
-> >  	u32 val_cr4 = 0, val_cr5 = 0;
-> > +	int ret;
-> > +
-> > +	if (!sai->is_slave_mode) {
-> > +		ret = fsl_sai_set_bclk(cpu_dai, tx,
-> > +			2 * word_width * params_rate(params));
-> > +		if (ret)
-> > +			return ret;
-> > +
-> > +		/* Do not enable the clock if it is already enabled */
-> 
-> It actually doesn't matter to enable the clock again since it
-> purely increaes its count. But we do need a protection for MSEL
-> overwritten issue resulted from the fsl_sai_set_bclk() call.
-> 
-> > @@ -133,10 +135,13 @@ struct fsl_sai {
-> >  	struct clk *mclk_clk[FSL_SAI_MCLK_MAX];
-> >  
-> >  	bool is_lsb_first;
-> > +	bool is_slave_mode;
-> >  	bool is_dsp_mode;
-> >  	bool sai_on_imx;
-> >  	bool synchronous[2];
-> >  
-> > +	unsigned int mclk_id;
-> > +	unsigned int mclk_streams;
-> 
-> Besides, I doubt that only one property of mclk_id can content
-> Asynchronous Mode -- TX and RX can fetch their clocks from
-> different MCLK sources.
-> 
-When hw_params failed before mclk enable, hw_free will also decrease 
-the clk usecount. So add mclk_streams, when clk successful enabled, 
-set corresponding bit of mclk_stream. And clear such bit after clk disabled.
-> Nicolin
+On Wed, Jan 21, 2015 at 07:44:17AM +0000, Kuninori Morimoto wrote:
+
+> Now, we want to create new board, and then, we want to use below codec if=
+ exist.
+> Can you show it to us if it was exist ?
+> (I researched it on upstream Linux source tree, but couldn't find....)
+
+>  - upstream Linux supports its driver
+>  - it supports TDM format
+>  - it supports 5.1ch sound
+>  - it supports DT bindings (if possible)=20
+
+Some of the Wolfson/Cirrus mobile CODECs can do that with some fiddling
+and mixing of output types but they're not really a good fit.  Most of
+the things doing 5.1 are like the WM8580 - they use separate data lines
+rather than TDM, as far as I can tell a lot of 5.1 systems out there do
+this by hooking up multiple stereo CODECs in parallel as slaves rather
+than by using a single 5.1 CODEC.
+
+--/QKKmeG/X/bPShih
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUv46OAAoJECTWi3JdVIfQL5kH/3Lro2Nlc7Mll2+Fr2TX1lLj
+DRBueBhvDHQEuzRs9KBhCXkmUsKhHDCOTRrbz+Eh/bXYtcXEygpAalXWmDfkMW+5
+RZ20y5VSVuW2dK4ZVEOa6DnJUeURkZQenQuMFt6ENmWgfF9kgJDMbNbv/75b/UX/
+iiTDxCS+G23p5BvGnIrsqby3Ke/DwBU2W/6eZMtX2d1MfdKP4tZOJgj7u7+tFWc+
+BOrtpKgYqohpSCD9lHb6k3KN719rcPoLkcv8EqpcaZWs91tC0g7AffSeR0xnePkE
+UtEWGiecz3XdCzHi7/lvTU5Ef7A04lw3r0OiLpN9mCRUqi/ZbQDqdPYkzXe5dUI=
+=p/Tt
+-----END PGP SIGNATURE-----
+
+--/QKKmeG/X/bPShih--
+
+--===============0313823143913275777==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0313823143913275777==--
