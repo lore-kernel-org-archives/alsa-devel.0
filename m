@@ -1,46 +1,58 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ARM: dts: Add sound nodes for
- exynos4412-trats2
-Date: Wed, 21 Jan 2015 17:23:21 +0100
-Message-ID: <54BFD279.7080604@samsung.com>
-References: <1421660902-29679-1-git-send-email-ideal.song@samsung.com>
- <1421660902-29679-4-git-send-email-ideal.song@samsung.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [alsa-devel][PATCH 1/3] SoC: fsl_sai: add sai master mode support
+Date: Wed, 21 Jan 2015 09:36:21 -0800
+Message-ID: <20150121173619.GA1184@Asurada>
+References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
+ <1421756480-7055-2-git-send-email-zidan.wang@freescale.com>
+ <20150121060702.GB3275@Alpha>
+ <20150121092529.GA27441@b50113>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1421660902-29679-4-git-send-email-ideal.song@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: alsa-devel@alsa-project.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, kgene@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150121092529.GA27441@b50113>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <b50113@freescale.com>
+Cc: Zidan Wang <zidan.wang@freescale.com>, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, Jan 21, 2015 at 05:25:32PM +0800, Zidan Wang wrote:
+> On Tue, Jan 20, 2015 at 10:07:03PM -0800, Nicolin Chen wrote:
+> > On Tue, Jan 20, 2015 at 08:21:18PM +0800, Zidan Wang wrote:
 
-On 19/01/15 10:48, Inha Song wrote:
-> --- a/arch/arm/boot/dts/exynos4412-trats2.dts
-> +++ b/arch/arm/boot/dts/exynos4412-trats2.dts
+> > > +	if ((tx && sai->synchronous[TX]) || (!tx && !sai->synchronous[RX])) {
+> > > +		regmap_update_bits(sai->regmap, FSL_SAI_RCR2,
+> > > +			FSL_SAI_CR2_MSEL_MASK, FSL_SAI_CR2_MSEL(sai->mclk_id));
 
-> +	sound {
-> +		compatible = "samsung,trats2-audio";
+> > "tx && sai->synchronous[TX]" means the playback in synchronous
+> > mode (TX following RX). What if the recording has been already
+> > activated with an MSEL setting at this point? Then the playback
+> > stream, as a secondary stream, will overwrite MSEL of the first
+> > stream -- Record. Same would happen to the DIV configuration.
+> > 
+> When TX following RX(or RX following TX), TX and RX works on same bit
+> clock and frame clock. They will use same MCLK source, and just need set
+> the bclk DIV for RX(or TX). The secondary stream will overwrite MSEL and
+> bclk DIV of the first stream, but it doesn't matter.
+> 
+> For RX(or TX) sync:
+> fsl_sai_dai.symmetric_rates = 1;
+> fsl_sai_dai.symmetric_channels = 1;
+> fsl_sai_dai.symmetric_samplebits = 1;
 
-> +		assigned-clocks = <&pmu_system_controller 0>;
-> +		assigned-clock-parents =  <&clock CLK_XUSBXTI>;
+Ah, I forgot we have protection here. It's fine then.
 
-How about putting these properties in the pmu_system_controller
-node?  After all the mux clock being configured here belongs to
-the PMU subsystem. Wouldn't it work that way ?
+> When TX and RX both works on async mode, TX and RX may works on
+> different bit clock and frame clock. We need set MCLK source and bclk
+> DIV for TX and RX. mclk_id just save a MCLK source id, so i need to define
+> mclk_id[2] for differnet stream.
 
-> +		samsung,i2s-controller = <&i2s0>;
-> +		samsung,model = "Trats2";
-> +		samsung,audio-codec = <&wm1811>;
-> +		samsung,audio-routing =
-> +			"SPK", "SPKOUTLN",
-> +			"SPK", "SPKOUTLP",
-> +			"SPK", "SPKOUTRN",
-> +			"SPK", "SPKOUTRP";
-> +	};
+Yes, you need to change this part as you just realized.
 
--- 
-Regards,
-Sylwester
+And one more thing for your coding style for multi-line comment:
+/*
+ * Typically use this format.
+ */
+
+Thanks
+Nicolin
