@@ -1,24 +1,19 @@
-From: =?UTF-8?B?UmljaGFyZCBLw7ZyYmVy?= <alsa@ml.shredzone.de>
-Subject: [PATCH] USB-audio: Sound Blaster HD iec958 is on
-	device 1
-Date: Wed, 21 Jan 2015 01:02:34 +0100
-Message-ID: <54BEEC9A.8070805@ml.shredzone.de>
-References: <5341C8DF.9020604@ml.shredzone.de> <s5hk3b1ms1f.wl%tiwai@suse.de>
+From: "Lu, Han" <han.lu@intel.com>
+Subject: Re: [PATCH - UCM 1/1] ucm: add binary configure file
+	parse
+Date: Wed, 21 Jan 2015 01:12:27 +0000
+Message-ID: <B51200AC81AB024499A3C2C9A1BB90A8343B1C@SHSMSX101.ccr.corp.intel.com>
+References: <1421742789-3772-1-git-send-email-han.lu@intel.com>
+ <s5hk30hx11w.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arrietty.shredzone.net (arrietty.shredzone.net
- [213.133.102.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 59999260710
- for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2015 01:02:35 +0100 (CET)
-Received: from xdsl-78-35-152-201.netcologne.de ([78.35.152.201]
- helo=ronja.home)
- by arrietty.shredzone.net with esmtpsa (UNKNOWN:AES128-SHA:128)
- (Exim 4.72) (envelope-from <alsa@ml.shredzone.de>)
- id 1YDikk-0001TA-No
- for alsa-devel@alsa-project.org; Wed, 21 Jan 2015 01:02:34 +0100
-In-Reply-To: <s5hk3b1ms1f.wl%tiwai@suse.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FB632607FF
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2015 02:12:35 +0100 (CET)
+In-Reply-To: <s5hk30hx11w.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,25 +23,200 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Creative Sound Blaster X-Fi HD uses device 1 for iec958 output.
----
- src/conf/cards/USB-Audio.conf | 1 +
- 1 file changed, 1 insertion(+)
+Hi Takashi,
 
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index 05e5d09..bae7669 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -36,6 +36,7 @@ USB-Audio.pcm.surround40_type {
- # number for the iec958 device can be changed here.
- USB-Audio.pcm.iec958_device {
-        # "NoiseBlaster 3000" 42
-+        "USB Sound Blaster HD" 1
- 
-        # The below don't have digital in/out, so prevent them from being opened.
-        "Andrea PureAudio USB-SA Headset" 999
--- 
-2.1.0
+BR,
+Han Lu
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, January 20, 2015 5:19 PM
+> To: Lu, Han
+> Cc: Girdwood, Liam R; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH - UCM 1/1] ucm: add binary configure file parse
+> 
+> At Tue, 20 Jan 2015 16:33:09 +0800,
+> han.lu@intel.com wrote:
+> >
+> > From: "Lu, Han" <han.lu@intel.com>
+> >
+> > with cset command, UCM set kcontrol parameters directly:
+> >     cset "name='<KCONTROL_NAME>' 1<,2,3,...>"
+> > This patch enables UCM to set kcontrol with parameters from configure
+> > file:
+> >     cset-bin-file "name='<KCONTROL_NAME>' <path/to/file>"
+> > where "cset-bin-file" is a newly added keyword alongside of "cset", to
+> > indicate cset with binary data in file.
+> > The binary data in file is parameter for audio DSPs, and it's just
+> > passed by UCM/ALSA as raw data. The data type of the parameter element
+> > must be byte, and the count is limited by the size of struct
+> > snd_ctl_elem_value and driver definition.
+> >
+> > Signed-off-by: Lu, Han <han.lu@intel.com>
+> >
+> > diff --git a/src/ucm/main.c b/src/ucm/main.c index 37ae4c8..818465a
+> > 100644
+> > --- a/src/ucm/main.c
+> > +++ b/src/ucm/main.c
+> > @@ -160,11 +160,62 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
+> >  	return 0;
+> >  }
+> >
+> > +static int binary_file_parse(snd_ctl_elem_value_t *dst,
+> > +			      snd_ctl_elem_info_t *info,
+> > +			      const char *filepath)
+> > +{
+> > +	int err, fd;
+> > +	struct stat st;
+> > +	size_t sz;
+> > +	char *res;
+> > +	snd_ctl_elem_type_t type;
+> > +	unsigned int idx, count;
+> > +
+> > +	type = snd_ctl_elem_info_get_type(info);
+> > +	if (type != SND_CTL_ELEM_TYPE_BYTES) {
+> > +		uc_error("only support byte type!");
+> > +		err = -EINVAL;
+> > +		return err;
+> > +	}
+> > +	fd = open(filepath, O_RDONLY);
+> > +	if (fd < 0) {
+> > +		err = -errno;
+> > +		return err;
+> > +	}
+> > +	if (stat(filepath, &st) == -1) {
+> > +		err = -errno;
+> > +		goto __fail;
+> > +	}
+> > +	sz = st.st_size;
+> > +	count = snd_ctl_elem_info_get_count(info);
+> > +	if (sz == 0 || sz > count || sz > sizeof(dst->value.bytes)) {
+> > +		uc_error("invalid parameter size!");
+> 
+> A question here is what if the file size is smaller than the expected data size.
+> Should we allow this explicitly?  I thought it'd be safer to bail out, but I'd like
+> to know more about the scenarios behind this patch.
+> 
+
+The scenario here is to load multiple (~160) binary configure files, but their length may be variable from about 10 to 512 bytes. (most of them is about 10 to 100 bytes) 
+In this case, the count defined in driver have to be 512. If I return when size != 512, all configure files must be extended to 512 bytes, it will take about 80 Kbytes. So I used 512 as a range. But Liam and I agreed that it will be safer to bail out in this case. I will change the patch. Thanks.
+
+> > +		err = -EINVAL;
+> > +		goto __fail;
+> > +	}
+> > +	res = calloc(sz, 1);
+> 
+> This can be malloc() as we'll overwrite the whole data in anyway.
+> 
+
+OK, will change it. Thanks.
+
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > +	if (res == NULL) {
+> > +		err = -ENOMEM;
+> > +		goto __fail;
+> > +	}
+> > +	if (read(fd, res, sz) != sz) {
+> > +		err = -errno;
+> > +		goto __fail_read;
+> > +	}
+> > +	for (idx = 0; idx < sz; idx++)
+> > +		snd_ctl_elem_value_set_byte(dst, idx, *(res + idx));
+> > +      __fail_read:
+> > +	free(res);
+> > +      __fail:
+> > +	close(fd);
+> > +	return err;
+> > +}
+> > +
+> >  extern int __snd_ctl_ascii_elem_id_parse(snd_ctl_elem_id_t *dst,
+> >  					 const char *str,
+> >  					 const char **ret_ptr);
+> >
+> > -static int execute_cset(snd_ctl_t *ctl, const char *cset)
+> > +static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned
+> > +int type)
+> >  {
+> >  	const char *pos;
+> >  	int err;
+> > @@ -194,7 +245,10 @@ static int execute_cset(snd_ctl_t *ctl, const char
+> *cset)
+> >  	err = snd_ctl_elem_info(ctl, info);
+> >  	if (err < 0)
+> >  		goto __fail;
+> > -	err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
+> > +	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
+> > +		err = binary_file_parse(value, info, pos);
+> > +	else
+> > +		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
+> >  	if (err < 0)
+> >  		goto __fail;
+> >  	err = snd_ctl_elem_write(ctl, value); @@ -239,6 +293,7 @@ static int
+> > execute_sequence(snd_use_case_mgr_t *uc_mgr,
+> >  				goto __fail_nomem;
+> >  			break;
+> >  		case SEQUENCE_ELEMENT_TYPE_CSET:
+> > +		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
+> >  			if (cdev == NULL) {
+> >  				const char *cdev1 = NULL, *cdev2 = NULL;
+> >  				err = get_value3(&cdev1, "PlaybackCTL", @@
+> -274,7 +329,7 @@
+> > static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+> >  					goto __fail;
+> >  				}
+> >  			}
+> > -			err = execute_cset(ctl, s->data.cset);
+> > +			err = execute_cset(ctl, s->data.cset, s->type);
+> >  			if (err < 0) {
+> >  				uc_error("unable to execute cset '%s'\n", s-
+> >data.cset);
+> >  				goto __fail;
+> > diff --git a/src/ucm/parser.c b/src/ucm/parser.c index
+> > d7517f6..9e1cb41 100644
+> > --- a/src/ucm/parser.c
+> > +++ b/src/ucm/parser.c
+> > @@ -306,6 +306,16 @@ static int parse_sequence(snd_use_case_mgr_t
+> *uc_mgr ATTRIBUTE_UNUSED,
+> >  			continue;
+> >  		}
+> >
+> > +		if (strcmp(cmd, "cset-bin-file") == 0) {
+> > +			curr->type =
+> SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE;
+> > +			err = parse_string(n, &curr->data.cset);
+> > +			if (err < 0) {
+> > +				uc_error("error: cset-bin-file requires a
+> string!");
+> > +				return err;
+> > +			}
+> > +			continue;
+> > +		}
+> > +
+> >  		if (strcmp(cmd, "usleep") == 0) {
+> >  			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
+> >  			err = snd_config_get_integer(n, &curr->data.sleep);
+> diff --git
+> > a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h index 87f14a2..c1655c7
+> > 100644
+> > --- a/src/ucm/ucm_local.h
+> > +++ b/src/ucm/ucm_local.h
+> > @@ -47,6 +47,7 @@
+> >  #define SEQUENCE_ELEMENT_TYPE_CSET	2
+> >  #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
+> >  #define SEQUENCE_ELEMENT_TYPE_EXEC	4
+> > +#define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
+> >
+> >  struct ucm_value {
+> >          struct list_head list;
+> > --
+> > 2.1.0
+> >
