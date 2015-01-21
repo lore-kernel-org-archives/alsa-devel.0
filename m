@@ -1,36 +1,168 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 0/3] Add master mode, tmd and right-j mode support
-Date: Tue, 20 Jan 2015 23:15:54 -0200
-Message-ID: <CAOMZO5DcpSsRi4UE8gCjT+w=OueB1pWtQPYphgeEsMNZ_EvK5w@mail.gmail.com>
-References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
+From: han.lu@intel.com
+Subject: [PATCH - UCM 1/1] ucm: add binary configure file parse
+Date: Wed, 21 Jan 2015 09:55:16 +0800
+Message-ID: <1421805316-3070-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: Timur Tabi <timur@tabi.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo.Lee@gmail.com, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Zidan,
+From: "Lu, Han" <han.lu@intel.com>
 
-On Tue, Jan 20, 2015 at 10:21 AM, Zidan Wang <zidan.wang@freescale.com> wrote:
-> Add sai master mode support.
-> Add tdm slots support.
-> Add Right-J mode support.
->
-> Zidan Wang (3):
->   SoC: fsl_sai: add sai master mode support
->   ASoC: fsl_sai: Add support for tdm slots operation
->   ASoC: fsl_sai: Add support for Right-J mode
->
->  sound/soc/fsl/fsl_sai.c | 164 ++++++++++++++++++++++++++++++++++++++++++++----
->  sound/soc/fsl/fsl_sai.h |  13 +++-
->  2 files changed, 164 insertions(+), 13 deletions(-)
+with cset command, UCM set kcontrol parameters directly:
+    cset "name='<KCONTROL_NAME>' 1<,2,3,...>"
+This patch enables UCM to set kcontrol with parameters from
+configure file:
+    cset-bin-file "name='<KCONTROL_NAME>' <path/to/file>"
+where "cset-bin-file" is a newly added keyword alongside of "cset",
+to indicate cset with binary data in file.
+The binary data in file is parameter for audio DSPs, and it's just
+passed by UCM/ALSA as raw data. The data type of parameter elements
+must be byte, and the count must matches driver definition.
 
-Not related to your series, but do you have a patch for imx6sx-sdb.dts
-that adds sai support?
+Signed-off-by: Lu, Han <han.lu@intel.com>
 
-In the FSL version they use 'fsl,sdma-event-remap' property to specify
-the SAI sdma channels, but this is not present in mainline? How are
-you dealing with it?
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 37ae4c8..4c1e4b2 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -160,11 +160,62 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
+ 	return 0;
+ }
+ 
++static int binary_file_parse(snd_ctl_elem_value_t *dst,
++			      snd_ctl_elem_info_t *info,
++			      const char *filepath)
++{
++	int err, fd;
++	struct stat st;
++	size_t sz;
++	char *res;
++	snd_ctl_elem_type_t type;
++	unsigned int idx, count;
++
++	type = snd_ctl_elem_info_get_type(info);
++	if (type != SND_CTL_ELEM_TYPE_BYTES) {
++		uc_error("only support byte type!");
++		err = -EINVAL;
++		return err;
++	}
++	fd = open(filepath, O_RDONLY);
++	if (fd < 0) {
++		err = -errno;
++		return err;
++	}
++	if (stat(filepath, &st) == -1) {
++		err = -errno;
++		goto __fail;
++	}
++	sz = st.st_size;
++	count = snd_ctl_elem_info_get_count(info);
++	if (sz != count || sz > sizeof(dst->value.bytes)) {
++		uc_error("invalid parameter size %d!", sz);
++		err = -EINVAL;
++		goto __fail;
++	}
++	res = malloc(sz);
++	if (res == NULL) {
++		err = -ENOMEM;
++		goto __fail;
++	}
++	if (read(fd, res, sz) != sz) {
++		err = -errno;
++		goto __fail_read;
++	}
++	for (idx = 0; idx < sz; idx++)
++		snd_ctl_elem_value_set_byte(dst, idx, *(res + idx));
++      __fail_read:
++	free(res);
++      __fail:
++	close(fd);
++	return err;
++}
++
+ extern int __snd_ctl_ascii_elem_id_parse(snd_ctl_elem_id_t *dst,
+ 					 const char *str,
+ 					 const char **ret_ptr);
+ 
+-static int execute_cset(snd_ctl_t *ctl, const char *cset)
++static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+ {
+ 	const char *pos;
+ 	int err;
+@@ -194,7 +245,10 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset)
+ 	err = snd_ctl_elem_info(ctl, info);
+ 	if (err < 0)
+ 		goto __fail;
+-	err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
++	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
++		err = binary_file_parse(value, info, pos);
++	else
++		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
+ 	if (err < 0)
+ 		goto __fail;
+ 	err = snd_ctl_elem_write(ctl, value);
+@@ -239,6 +293,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 				goto __fail_nomem;
+ 			break;
+ 		case SEQUENCE_ELEMENT_TYPE_CSET:
++		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
+ 			if (cdev == NULL) {
+ 				const char *cdev1 = NULL, *cdev2 = NULL;
+ 				err = get_value3(&cdev1, "PlaybackCTL",
+@@ -274,7 +329,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 					goto __fail;
+ 				}
+ 			}
+-			err = execute_cset(ctl, s->data.cset);
++			err = execute_cset(ctl, s->data.cset, s->type);
+ 			if (err < 0) {
+ 				uc_error("unable to execute cset '%s'\n", s->data.cset);
+ 				goto __fail;
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index d7517f6..9e1cb41 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -306,6 +306,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
+ 			continue;
+ 		}
+ 
++		if (strcmp(cmd, "cset-bin-file") == 0) {
++			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE;
++			err = parse_string(n, &curr->data.cset);
++			if (err < 0) {
++				uc_error("error: cset-bin-file requires a string!");
++				return err;
++			}
++			continue;
++		}
++
+ 		if (strcmp(cmd, "usleep") == 0) {
+ 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
+ 			err = snd_config_get_integer(n, &curr->data.sleep);
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 87f14a2..c1655c7 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -47,6 +47,7 @@
+ #define SEQUENCE_ELEMENT_TYPE_CSET	2
+ #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
+ #define SEQUENCE_ELEMENT_TYPE_EXEC	4
++#define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
+ 
+ struct ucm_value {
+         struct list_head list;
+-- 
+2.1.0
