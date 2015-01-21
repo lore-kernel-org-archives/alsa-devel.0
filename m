@@ -1,69 +1,99 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v10 9/9] ASoC: add generic dt-card support
-Date: Wed, 21 Jan 2015 13:50:53 +0000
-Message-ID: <20150121135053.GI21293@sirena.org.uk>
-References: <cover.1421782532.git.moinejf@free.fr>
- <ddd1b299eca187ab2fa9b119da2ec8297ead1a66.1421782533.git.moinejf@free.fr>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: alsa-lib support for compress offload
+Date: Wed, 21 Jan 2015 14:16:10 +0000
+Message-ID: <54BFB4AA.90500@imgtec.com>
+References: <54B8DF7A.6000700@imgtec.com>	<s5hbnlzt3o2.wl-tiwai@suse.de>	<54B8F485.7090603@imgtec.com>	<54B9413F.805@linux.intel.com>	<54BD3D7F.6020105@imgtec.com>	<54BD8036.5070405@linux.intel.com>	<54BE25B7.1040606@imgtec.com>	<20150121071053.GC28763@intel.com>
+ <s5h1tmoz6mi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GlnCQLZWzqLRJED8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <ddd1b299eca187ab2fa9b119da2ec8297ead1a66.1421782533.git.moinejf-GANU6spQydw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B39C260646
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2015 15:16:12 +0100 (CET)
+In-Reply-To: <s5h1tmoz6mi.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.jf.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 01/21/2015 11:59 AM, Takashi Iwai wrote:
+> At Tue, 20 Jan 2015 23:10:53 -0800,
+> Vinod Koul wrote:
+>> On Tue, Jan 20, 2015 at 09:53:59AM +0000, Qais Yousef wrote:
+>>> On 01/19/2015 10:07 PM, Pierre-Louis Bossart wrote:
+>>>> On 1/19/15 11:23 AM, Qais Yousef wrote:
+>>>>> On 01/16/2015 04:50 PM, Pierre-Louis Bossart wrote:
+>>>>>> Since there is no allowed processing/reformatting/reshuffling of
+>>>>>> compressed data, all the plugin system needs to be bypassed and you'd
+>>>>>> be looking at an alsa-lib API that interfaces directly with the
+>>>>>> ioctls, essentially replicating what tinycompress does. I agree it's
+>>>>>> not great to have independent packages, the decision to maintain
+>>>>>> tinycompress separately was driven by licensing concerns, not
+>>>>>> technical ones.
+>>>>>> -Pierre
+>>>>>>
+>>>>> I'm not sure how dual licensing work. Is it ok to base alsa-lib support
+>>>>> for compress API on tinycompress then?
+>>>> no idea, and what is the objective really? it's not clear what you
+>>>> are trying to achieve and what would be the merits of enhancing
+>>>> alsa-lib with compressed audio support?
+>>>> -Pierre
+>>>>
+>>> Long story short, I am writing a new ALSA driver that supports
+>>> compress offload. The only user land support I could find is in
+>>> tinycompress. I was looking at adding gstreamer support to
+>>> facilitate my testing and hopefully make the driver more useful.
+>>>
+>>> I am happy to use tinycompress if that's the official way alsa wants
+>>> to support userland applications. When Takashi suggested that he
+>>> didn't get patches for compress API support in alsa-lib I thought it
+>>> was a hint it's a better idea to have it there. I think it makes
+>>> sense to merge tinycompress into alsa-lib as this will make the
+>>> functionality more readily available - if license is not an issue.
+>> Sorry for delayed reply, I am travelling.
+>>
+>> tinycompress comes with dual license LGPL and BSD. Currently the main user of
+>> this is Android which picks up the BSD license.
+>>
+>> Though I am not a lawyer, but I don't see a reason if alsa-lib uses LGPL
+>> license to take this lib and include compress support in alsa-lib. This
+>> way we have code reuse and take advantage of alsa-lib to support compress
+>> formats too. Takashi is that fine with you?
+> Well, I see no big merit to merge into alsa-lib if API isn't
+> compatible with others.  At least the open function doesn't align with
+> other functions taking the device name string.
 
---GlnCQLZWzqLRJED8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+IMHO for a newcomer to alsa like me I expect to find all alsa features 
+supported by the kernel supported in alsa-lib too. It's confusing when I 
+need to use different libraries for different alsa features. Especially 
+in this case I don't see the necessity for a different package - except 
+you need non LGPL license. I *think* having the API in alsa-lib will 
+ensure the documentation is consistent and can be found in one place.
 
-On Tue, Jan 20, 2015 at 08:16:25PM +0100, Jean-Francois Moine wrote:
-> To create simple cards, the syntax of the simple-card does not follow
-> the common binding of the device graphs
-> (Documentation/devicetree/bindings/graph.txt).
-
-Please be more specific, I really can't tell what this is supposed to be
-doing from the above - in what way is the binding not common and why
-would anyone care?  Please also address why this is done as a completely
-separate implementation rather than a new revision of simple-card and CC
-Morimoto-san so he can review (given that he did simple-card initially).
-
->  sound/soc/generic/Kconfig   |   2 +
->  sound/soc/generic/Makefile  |   2 +
->  sound/soc/generic/dt-card.c | 275 ++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 279 insertions(+)
->  create mode 100644 sound/soc/generic/dt-card.c
-
-As you know all device tree bindings require binding documents; you must
-supply a binding document.  I'm not going to look at any DT patches that
-don't include binding documentation.
-
-In general please pay attention to changelogs and documentation when
-submitting patches, the harder it is to understand what a patch is
-supposed to do or why the harder it is to review.  I keep saying this,
-it's really important.
-
---GlnCQLZWzqLRJED8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUv668AAoJECTWi3JdVIfQTCQH/3LeWH0MvFi6Qqax4tZWuAvl
-uPsAYOvWkxKu9b28WmnFC+xco356sr9wcslrN/zmlh7LwuGPQUvnEbCrXOQIosjj
-zb2UuJUJdjlKZDRvoFti8OiEKqcz1L7uO2EDrc8LBMlE40U6rdu+ajrZ+hwtSqhS
-U9i7/ELtVZBCsI6PHSSP7Ajv8XgpWUqqrC7oSrnsW5I3ol9APZIlX0c2MO5fQQrT
-ZZzP99L7kopiJ5LtwkK1/0VxxOoPBAGLWd/JFtByDyESq6APEEuX2EcxqniKvA/W
-Ynv6SoCdm8GjFt9lg0dWc6vmsa1Yf1thdQrGAJ/mYqvorlLN/TO827KNVY+VYTg=
-=0ztJ
------END PGP SIGNATURE-----
-
---GlnCQLZWzqLRJED8--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>> I would hate if we had to rewrite the simple wrappers over IOCTLs to support
+>> compress in alsa-lib!
+> True.
+>
+> The compress-offload support in alsa-lib is a "nice to have" one.
+> But I guess the more interesting question right now is whether
+> applications can use tinycompress as an "official" component.
+> My (personal) answer is "yes".  It doesn't conflict even if start
+> implementing in alsa-lib, at least.
+>
+> (BTW, from the packaging POV, tinycompress lacks a few proper things
+>   in Makefile...)
+>
+>
+> thanks,
+>
+> Takashi
