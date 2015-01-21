@@ -1,31 +1,40 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [alsa-devel][PATCH 3/3] ASoC: fsl_sai: Add support for Right-J
- mode
-Date: Wed, 21 Jan 2015 10:53:20 -0800
-Message-ID: <20150121185319.GA4238@Alpha>
-References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
- <1421756480-7055-4-git-send-email-zidan.wang@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1421756480-7055-4-git-send-email-zidan.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: [PATCH v2 0/3] ASoC: add audio card creation from graph of ports in DT
+Date: Wed, 21 Jan 2015 20:27:06 +0100
+Message-ID: <cover.1421868426.git.moinejf@free.fr>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 20, 2015 at 08:21:20PM +0800, Zidan Wang wrote:
-> Add Right-J mode and set TCR5 FBT bit to let data right justify.
-> 
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+This patchset adds a way to build audio cards from the description
+of a graph of ports in a devicetree.
 
-> -	if (sai->is_lsb_first)
-> +	if (sai->is_lsb_first && sai->is_right_j_mode)
->  		val_cr5 |= FSL_SAI_CR5_FBT(0);
+v2:
+	- move the soc-core and dt-card from the patchset
+		"ASoC: tda998x: add a codec to the HDMI transmitter"
+	- add DT documentation (Mark Brown)
 
-Are you sure that FBT(0) is correct for right justified mode?
-Because the original code is using FBT(0) for the lsb_first
-situation and it shouldn't be right justified mode as default.
+Jean-Francois Moine (3):
+  ASoC: core: export snd_soc_get_dai_name
+  Documentation: of: Document audio graph bindings
+  ASoC: add generic dt-card support
 
-Nicolin
+ .../devicetree/bindings/sound/audio-interfaces.txt | 101 ++++++++
+ include/sound/soc.h                                |   2 +
+ sound/soc/generic/Kconfig                          |   2 +
+ sound/soc/generic/Makefile                         |   2 +
+ sound/soc/generic/dt-card.c                        | 275 +++++++++++++++++++++
+ sound/soc/soc-core.c                               |   5 +-
+ 6 files changed, 385 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/audio-interfaces.txt
+ create mode 100644 sound/soc/generic/dt-card.c
+
+-- 
+2.1.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
