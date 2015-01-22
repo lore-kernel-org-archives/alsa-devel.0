@@ -1,90 +1,63 @@
-From: "Lu, Han" <han.lu@intel.com>
-Subject: Re: [PATCH - UCM 1/1] ucm: add binary configure file
- parse
-Date: Thu, 22 Jan 2015 01:54:47 +0000
-Message-ID: <B51200AC81AB024499A3C2C9A1BB90A8343DAD@SHSMSX101.ccr.corp.intel.com>
-References: <1421805316-3070-1-git-send-email-han.lu@intel.com>
- <s5hoaprvr7j.wl-tiwai@suse.de>
+From: Zidan Wang <b50113@freescale.com>
+Subject: Re: [alsa-devel][PATCH 2/3] ASoC: fsl_sai: Add support for tdm slots
+ operation
+Date: Thu, 22 Jan 2015 12:55:35 +0800
+Message-ID: <20150122045515.GA3467@b50113>
+References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
+ <1421756480-7055-3-git-send-email-zidan.wang@freescale.com>
+ <20150121180801.GA3361@Alpha>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 980A3260586
- for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2015 02:54:52 +0100 (CET)
-In-Reply-To: <s5hoaprvr7j.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150121180801.GA3361@Alpha>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Zidan Wang <zidan.wang@freescale.com>, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Wed, Jan 21, 2015 at 10:08:03AM -0800, Nicolin Chen wrote:
+> On Tue, Jan 20, 2015 at 08:21:19PM +0800, Zidan Wang wrote:
+> > @@ -369,10 +380,25 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+> >  	u32 word_width = snd_pcm_format_width(params_format(params));
+> >  	u32 val_cr4 = 0, val_cr5 = 0;
+> >  	int ret;
+> > +	u32 bclk;
+> > +
+> > +	if (channels == 1)
+> > +		channels = 2;
+> > +
+> > +	if (!sai->slots || sai->slots % channels)
+> > +		sai->slots = channels;
+> > +
+> > +	sai->slots = sai->slots / channels;
+> > +
+> > +	if (sai->slot_width < word_width || sai->is_dsp_mode)
+> > +		sai->slot_width = word_width;
+> 
+> Could you pls explain a bit what's this overriding for?
+> Or it might be better to put into a comment.
+>
+In machine driver, we should use snd_soc_dai_set_tdm_slot to set slots
+and slot width. In my opinion, slots in machine driver means the slot
+number of all channels. But in sai driver, the slots means the slot number
+of one channel. So snd_soc_calc_bclk use fs*sample_size*channels*tdm_slots
+to caculate bclk.
 
-BR,
-Han Lu
+So i use "sai->slots = sai->slots / channels" to calculate slots per channel. 
+If we missing set slots, use channel number to set slots and get one slot per 
+channel. If we missing set slot width, set default slot width to word width. 
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, January 22, 2015 4:01 AM
-> To: Lu, Han
-> Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [alsa-devel] [PATCH - UCM 1/1] ucm: add binary configure file
-> parse
-> 
-> At Wed, 21 Jan 2015 09:55:16 +0800,
-> han.lu@intel.com wrote:
-> >
-> > From: "Lu, Han" <han.lu@intel.com>
-> >
-> > with cset command, UCM set kcontrol parameters directly:
-> >     cset "name='<KCONTROL_NAME>' 1<,2,3,...>"
-> > This patch enables UCM to set kcontrol with parameters from configure
-> > file:
-> >     cset-bin-file "name='<KCONTROL_NAME>' <path/to/file>"
-> > where "cset-bin-file" is a newly added keyword alongside of "cset", to
-> > indicate cset with binary data in file.
-> > The binary data in file is parameter for audio DSPs, and it's just
-> > passed by UCM/ALSA as raw data. The data type of parameter elements
-> > must be byte, and the count must matches driver definition.
-> >
-> > Signed-off-by: Lu, Han <han.lu@intel.com>
-> 
-> The contents are almost good, but I got a few compile warnings.
-> 
-> ================
-> main.c: In function 'binary_file_parse':
-> main.c:185:2: warning: implicit declaration of function 'stat' [-Wimplicit-
-> function-declaration]
->   if (stat(filepath, &st) == -1) {
->   ^
-> main.c:201:24: warning: comparison between signed and unsigned integer
-> expressions [-Wsign-compare]
->   if (read(fd, res, sz) != sz) {
->                         ^
-> main.c: In function 'execute_sequence':
-> main.c:252:5: warning: 'err' may be used uninitialized in this function [-
-> Wmaybe-uninitialized]
->   if (err < 0)
->      ^
-> main.c:285:6: note: 'err' was declared here
->   int err = 0;
->       ^
-> ================
-> 
+If slot width is 32 and wrod width is 16, for 2 channels and one slot
+per channel, it will be 64 bit clock for one frame.
 
-Sorry, I didn't find the warnings. I have sent the modified patch.
-BTW, with -Wall/-Wimplicit-function-declaration, I can find warning 1; and with -Wsign-compare I can find warning 2; but with -Wmaybe-uninitialized I cannot find warning 3. (although I did ignore initialization in binary_file_parse(), not execute_sequence())
-My platform is Ubuntu 12.10 with gcc-4.9.1, and for alsa-lib.git I used default compile settings. Could you please share your compile setting if convenient? Thanks.
+val_cr5 |= FSL_SAI_CR5_WNW(sai->slot_width).
+val_cr5 |= FSL_SAI_CR5_W0W(sai->slot_width);
 
-> 
-> Takashi
+So sai word length is 32, it will trans 32 bit data per channel. But dma only
+trans 16 bit data to fifo, the continues 16 bit will be 0. So for 16 bit data 
+formate, it will just one channel has data. When it is dsp mode, let slot
+width equal to word width can fix the issue.
+
+
+> Nicolin
