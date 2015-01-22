@@ -1,48 +1,43 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: add generic dt-card support
-Date: Thu, 22 Jan 2015 09:07:23 +0100
-Message-ID: <20150122090723.50ac0156@armhf>
-References: <cover.1421868426.git.moinejf@free.fr>
-	<d0c66c2e2f200119f9990fa52a503b1a4af6238f.1421868426.git.moinejf@free.fr>
-	<54C0088F.9070609@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <54C0088F.9070609-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+From: Inha Song <ideal.song@samsung.com>
+Subject: [alsa-devel] [PATCH v3 0/4] Sound support for Exynos4412 Trats2 board
+Date: Thu, 22 Jan 2015 20:17:58 +0900
+Message-ID: <1421925482-15861-1-git-send-email-ideal.song@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, s.nawrocki@samsung.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, kgene@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, ideal.song@samsung.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 Jan 2015 21:14:07 +0100
-Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org> wrote:
+This patch-set adds basic sound support for the Trats2 boards.
+It just support primary I2s and external speaker playback.
 
-> [...]
-> > +	card->dai_link->dai_fmt =3D
-> > +		snd_soc_of_parse_daifmt(of_cpu, "dt-audio-card,",
-> > +					NULL, NULL) &
-> > +			~SND_SOC_DAIFMT_MASTER_MASK;
->=20
->=20
-> This one does not seem to be in the bindings documentation.
+Changes in v3:
+  - Set clock out parent to XUSBXTI in pmu_system_controller DT node.
 
-Sorry, I forgot to remove it from the patch.
+Changes in v2:
+  - Remove unnecessary lines in Trats2 machine driver
+  - move clock enable/disable to .startup / .shutdown
+  - Fix code style issues
+  - Remove mclk DT property in Trats2 sound and add MCLK1 property in WM1811 node.
+    (MCLK1 is optional property in WM8994 node - refer: Document/devicetree/bindings/sound/wm8994.txt)
+  - Use mclk that defined in WM1811 DT node.
+  - Add "samsung,audio-codec" property to required properties.
 
-BTW, the graph of port should also contain pieces of the audio specific
-hardware information as the ones found in the simple-card (clock,
-GPIO, ...). This information could be written as generic device node
-properties. i.e without any prefix.
+Inha Song (4):
+  ASoC: samsung: Add machine driver for Trats2
+  ASoC: samsung: Document Trats2 audio subsystem bindings
+  ARM: dts: set clock out parent to XUSBXTI
+  ARM: dts: Add sound nodes for exynos4412-trats2
 
-I was also wondering about some of these properties, as widgets and
-routing. They seem to be software information and Linux specific.
-Must these properties appear in the DTs?
+ .../bindings/sound/samsung,trats2-wm1811.txt       |  25 +++
+ arch/arm/boot/dts/exynos4.dtsi                     |   2 +
+ arch/arm/boot/dts/exynos4412-trats2.dts            |  37 ++++
+ sound/soc/samsung/Kconfig                          |   8 +
+ sound/soc/samsung/Makefile                         |   2 +
+ sound/soc/samsung/trats2_wm1811.c                  | 218 +++++++++++++++++++++
+ 6 files changed, 292 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,trats2-wm1811.txt
+ create mode 100644 sound/soc/samsung/trats2_wm1811.c
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+2.0.0.390.gcb682f8
