@@ -1,179 +1,115 @@
-From: han.lu@intel.com
-Subject: [PATCH - UCM 1/1] ucm: add binary configure file parse
-Date: Thu, 22 Jan 2015 09:32:47 +0800
-Message-ID: <1421890367-7751-1-git-send-email-han.lu@intel.com>
+From: Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH 3/3] ARM: edma: Split up header file to platform_data and
+ API file
+Date: Wed, 21 Jan 2015 17:40:43 -0800
+Message-ID: <CAOesGMgdLB9WkOwCt__iRMnTYZ-tMNS==FL+b6s3CzHK4b0MYQ@mail.gmail.com>
+References: <1417084891-17990-1-git-send-email-peter.ujfalusi@ti.com>
+	<1417084891-17990-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1417084891-17990-4-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Sekhar Nori <nsekhar@ti.com>, Arnd Bergmann <arnd@arndb.de>, "Koul, Vinod" <vinod.koul@intel.com>, Kevin Hilman <khilman@deeprootsystems.com>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Chris Ball <chris@printf.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, linux-spi@vger.kernel.org, linux-omap <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
+Hi,
 
-with cset command, UCM set kcontrol parameters directly:
-    cset "name='<KCONTROL_NAME>' 1<,2,3,...>"
-This patch enables UCM to set kcontrol with parameters from
-configure file:
-    cset-bin-file "name='<KCONTROL_NAME>' <path/to/file>"
-where "cset-bin-file" is a newly added keyword alongside of "cset",
-to indicate cset with binary data in file.
-The binary data in file is parameter for audio DSPs, and it's just
-passed by UCM/ALSA as raw data. The data type of parameter elements
-must be byte, and the count must matches driver definition.
+On Thu, Nov 27, 2014 at 2:41 AM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
+> include/linux/platform_data/ is not a correct place to keep the API
+> definitions for edma, it is meant to be only for the pdata for the device.
+> Clean up this by moving the API to include/linux/edma.h
 
-Signed-off-by: Lu, Han <han.lu@intel.com>
+It's a nice net improvement, but it moves some things that should be
+in _neither_ location to a new place where it doesn't belong either --
+and the new location is even more global. See below.
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 37ae4c8..182f174 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -34,6 +34,7 @@
- #include <ctype.h>
- #include <stdarg.h>
- #include <pthread.h>
-+#include <sys/stat.h>
- 
- /*
-  * misc
-@@ -160,11 +161,65 @@ static int open_ctl(snd_use_case_mgr_t *uc_mgr,
- 	return 0;
- }
- 
-+static int binary_file_parse(snd_ctl_elem_value_t *dst,
-+			      snd_ctl_elem_info_t *info,
-+			      const char *filepath)
-+{
-+	int err = 0;
-+	int fd;
-+	struct stat st;
-+	size_t sz;
-+	ssize_t sz_read;
-+	char *res;
-+	snd_ctl_elem_type_t type;
-+	unsigned int idx, count;
-+
-+	type = snd_ctl_elem_info_get_type(info);
-+	if (type != SND_CTL_ELEM_TYPE_BYTES) {
-+		uc_error("only support byte type!");
-+		err = -EINVAL;
-+		return err;
-+	}
-+	fd = open(filepath, O_RDONLY);
-+	if (fd < 0) {
-+		err = -errno;
-+		return err;
-+	}
-+	if (stat(filepath, &st) == -1) {
-+		err = -errno;
-+		goto __fail;
-+	}
-+	sz = st.st_size;
-+	count = snd_ctl_elem_info_get_count(info);
-+	if (sz != count || sz > sizeof(dst->value.bytes)) {
-+		uc_error("invalid parameter size %d!", sz);
-+		err = -EINVAL;
-+		goto __fail;
-+	}
-+	res = malloc(sz);
-+	if (res == NULL) {
-+		err = -ENOMEM;
-+		goto __fail;
-+	}
-+	sz_read = read(fd, res, sz);
-+	if (sz_read < 0 || (size_t)sz_read != sz) {
-+		err = -errno;
-+		goto __fail_read;
-+	}
-+	for (idx = 0; idx < sz; idx++)
-+		snd_ctl_elem_value_set_byte(dst, idx, *(res + idx));
-+      __fail_read:
-+	free(res);
-+      __fail:
-+	close(fd);
-+	return err;
-+}
-+
- extern int __snd_ctl_ascii_elem_id_parse(snd_ctl_elem_id_t *dst,
- 					 const char *str,
- 					 const char **ret_ptr);
- 
--static int execute_cset(snd_ctl_t *ctl, const char *cset)
-+static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
- {
- 	const char *pos;
- 	int err;
-@@ -194,7 +249,10 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset)
- 	err = snd_ctl_elem_info(ctl, info);
- 	if (err < 0)
- 		goto __fail;
--	err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
-+	if (type == SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE)
-+		err = binary_file_parse(value, info, pos);
-+	else
-+		err = snd_ctl_ascii_value_parse(ctl, value, info, pos);
- 	if (err < 0)
- 		goto __fail;
- 	err = snd_ctl_elem_write(ctl, value);
-@@ -239,6 +297,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 				goto __fail_nomem;
- 			break;
- 		case SEQUENCE_ELEMENT_TYPE_CSET:
-+		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
- 			if (cdev == NULL) {
- 				const char *cdev1 = NULL, *cdev2 = NULL;
- 				err = get_value3(&cdev1, "PlaybackCTL",
-@@ -274,7 +333,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 					goto __fail;
- 				}
- 			}
--			err = execute_cset(ctl, s->data.cset);
-+			err = execute_cset(ctl, s->data.cset, s->type);
- 			if (err < 0) {
- 				uc_error("unable to execute cset '%s'\n", s->data.cset);
- 				goto __fail;
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index d7517f6..9e1cb41 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -306,6 +306,16 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 			continue;
- 		}
- 
-+		if (strcmp(cmd, "cset-bin-file") == 0) {
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE;
-+			err = parse_string(n, &curr->data.cset);
-+			if (err < 0) {
-+				uc_error("error: cset-bin-file requires a string!");
-+				return err;
-+			}
-+			continue;
-+		}
-+
- 		if (strcmp(cmd, "usleep") == 0) {
- 			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
- 			err = snd_config_get_integer(n, &curr->data.sleep);
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index 87f14a2..c1655c7 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -47,6 +47,7 @@
- #define SEQUENCE_ELEMENT_TYPE_CSET	2
- #define SEQUENCE_ELEMENT_TYPE_SLEEP	3
- #define SEQUENCE_ELEMENT_TYPE_EXEC	4
-+#define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
- 
- struct ucm_value {
-         struct list_head list;
--- 
-2.1.0
+...
+
+> diff --git a/include/linux/edma.h b/include/linux/edma.h
+> new file mode 100644
+> index 000000000000..9df92198c117
+> --- /dev/null
+> +++ b/include/linux/edma.h
+> @@ -0,0 +1,153 @@
+> +/*
+> + * TI EDMA definitions
+> + *
+> + * Copyright (C) 2006-2013 Texas Instruments.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation version 2.
+> + *
+> + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+> + * kind, whether express or implied; without even the implied warranty
+> + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
+> +
+> +/*
+> + * This EDMA3 programming framework exposes two basic kinds of resource:
+> + *
+> + *  Channel    Triggers transfers, usually from a hardware event but
+> + *             also manually or by "chaining" from DMA completions.
+> + *             Each channel is coupled to a Parameter RAM (PaRAM) slot.
+> + *
+> + *  Slot       Each PaRAM slot holds a DMA transfer descriptor (PaRAM
+> + *             "set"), source and destination addresses, a link to a
+> + *             next PaRAM slot (if any), options for the transfer, and
+> + *             instructions for updating those addresses.  There are
+> + *             more than twice as many slots as event channels.
+> + *
+> + * Each PaRAM set describes a sequence of transfers, either for one large
+> + * buffer or for several discontiguous smaller buffers.  An EDMA transfer
+> + * is driven only from a channel, which performs the transfers specified
+> + * in its PaRAM slot until there are no more transfers.  When that last
+> + * transfer completes, the "link" field may be used to reload the channel's
+> + * PaRAM slot with a new transfer descriptor.
+> + *
+> + * The EDMA Channel Controller (CC) maps requests from channels into physical
+> + * Transfer Controller (TC) requests when the channel triggers (by hardware
+> + * or software events, or by chaining).  The two physical DMA channels provided
+> + * by the TCs are thus shared by many logical channels.
+> + *
+> + * DaVinci hardware also has a "QDMA" mechanism which is not currently
+> + * supported through this interface.  (DSP firmware uses it though.)
+> + */
+> +
+> +#ifndef __LINUX_EDMA_H_
+> +#define __LINUX_EDMA_H_
+> +
+> +#include <linux/platform_data/edma.h>
+> +
+> +/* PaRAM slots are laid out like this */
+> +struct edmacc_param {
+> +       u32 opt;
+> +       u32 src;
+> +       u32 a_b_cnt;
+> +       u32 dst;
+> +       u32 src_dst_bidx;
+> +       u32 link_bcntrld;
+> +       u32 src_dst_cidx;
+> +       u32 ccnt;
+> +} __packed;
+> +
+> +/* fields in edmacc_param.opt */
+> +#define SAM            BIT(0)
+> +#define DAM            BIT(1)
+> +#define SYNCDIM                BIT(2)
+> +#define STATIC         BIT(3)
+> +#define EDMA_FWID      (0x07 << 8)
+> +#define TCCMODE                BIT(11)
+> +#define EDMA_TCC(t)    ((t) << 12)
+> +#define TCINTEN                BIT(20)
+> +#define ITCINTEN       BIT(21)
+> +#define TCCHEN         BIT(22)
+> +#define ITCCHEN                BIT(23)
+
+This seems like the kind of thing that should go with the edma driver
+instead of being globally exported to the kernel through a
+include/linux header file.
+
+
+-Olof
