@@ -1,106 +1,83 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH] ASoC: ts3a227e: Add dts property that allows
-	to specify micbias voltage
-Date: Thu, 22 Jan 2015 15:47:24 -0800
-Message-ID: <1421970444-15939-1-git-send-email-anatol.pomozov@gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [alsa-devel][PATCH 2/3] ASoC: fsl_sai: Add support for tdm slots
+ operation
+Date: Thu, 22 Jan 2015 15:50:20 -0800
+Message-ID: <20150122235019.GA3204@Asurada-GSX>
+References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
+ <1421756480-7055-3-git-send-email-zidan.wang@freescale.com>
+ <20150121180801.GA3361@Alpha>
+ <20150122045515.GA3467@b50113>
+ <20150122054409.GA7748@Asurada>
+ <20150122062004.GA7046@b50113>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f74.google.com (mail-qa0-f74.google.com
- [209.85.216.74])
- by alsa0.perex.cz (Postfix) with ESMTP id 464B026530D
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 00:47:35 +0100 (CET)
-Received: by mail-qa0-f74.google.com with SMTP id x12so321768qac.1
- for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2015 15:47:34 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, dgreid@chromium.org
-Cc: Anatol Pomozov <anatol.pomozov@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150122062004.GA7046@b50113>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <b50113@freescale.com>
+Cc: Zidan Wang <zidan.wang@freescale.com>, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The voltage controls key press threshold.
+On Thu, Jan 22, 2015 at 02:20:06PM +0800, Zidan Wang wrote:
+> > > > > @@ -369,10 +380,25 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+> > > > >  	u32 word_width = snd_pcm_format_width(params_format(params));
+> > > > >  	u32 val_cr4 = 0, val_cr5 = 0;
+> > > > >  	int ret;
+> > > > > +	u32 bclk;
+> > > > > +
+> > > > > +	if (channels == 1)
+> > > > > +		channels = 2;
+> > > > > +
+> > > > > +	if (!sai->slots || sai->slots % channels)
+> > > > > +		sai->slots = channels;
+> > > > > +
+> > > > > +	sai->slots = sai->slots / channels;
+> > > > > +
+> > > > > +	if (sai->slot_width < word_width || sai->is_dsp_mode)
+> > > > > +		sai->slot_width = word_width;
+> > > > 
+> > > > Could you pls explain a bit what's this overriding for?
+> > > > Or it might be better to put into a comment.
+> > > >
+> > > In machine driver, we should use snd_soc_dai_set_tdm_slot to set slots
+> > > and slot width. In my opinion, slots in machine driver means the slot
+> > > number of all channels. But in sai driver, the slots means the slot number
+> > > of one channel. So snd_soc_calc_bclk use fs*sample_size*channels*tdm_slots
+> > > to caculate bclk.
+> > 
+> > Could you pls use the standard way as you described for slot number
+> > in machine driver instead of defining some other meanings? That one
+> > is really confusing, not to mention a code without any comment.
+> > 
+> > You can add some extra local variables with extinguished names and
+> > calculate the slot number and channels you want without changing
+> > the original sai->slots and channels in the hw_params(). As you said,
+> > you only need that new slot number and channels for snd_soc_calc_bclk
+> > call. So you may also put this code right before the call -- a normal
+> > routine doesn't need to recalculate the special slots and channels,
+> > right?
 
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
----
- .../devicetree/bindings/sound/ts3a227e.txt         |  5 ++++
- sound/soc/codecs/ts3a227e.c                        | 27 ++++++++++++++++++++++
- 2 files changed, 32 insertions(+)
+> Actually i don't kown which meaning is the standard way. Because i found
+> in wm8993 and wm8904 codec driver, they also use slots/channels to set 
+> tdm_slots in set_tdm_slot function.
 
-diff --git a/Documentation/devicetree/bindings/sound/ts3a227e.txt b/Documentation/devicetree/bindings/sound/ts3a227e.txt
-index e8bf23e..a836881 100644
---- a/Documentation/devicetree/bindings/sound/ts3a227e.txt
-+++ b/Documentation/devicetree/bindings/sound/ts3a227e.txt
-@@ -13,6 +13,11 @@ Required properties:
-  - interrupt-parent:	The parent interrupt controller
-  - interrupts:		Interrupt number for /INT pin from the 227e
- 
-+Optional properies:
-+ - ti,micbias:   Intended MICBIAS voltage (datasheet section 9.6.7).
-+      Select 0/1/2/3/4/5/6/7 to specify MACBIAS voltage
-+      2.1V/2.2V/2.3V/2.4V/2.5V/2.6V/2.7V/2.8V
-+      Default value is "1" (2.2V).
- 
- Examples:
- 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index 54d431c..5ecfa31 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -79,6 +79,10 @@ static const int ts3a227e_buttons[] = {
- /* TS3A227E_REG_SETTING_2 0x05 */
- #define KP_ENABLE 0x04
- 
-+/* TS3A227E_REG_SETTING_3 0x06 */
-+#define MICBIAS_SETTING_SFT (3)
-+#define MICBIAS_SETTING_MASK (0x7 << MICBIAS_SETTING_SFT)
-+
- /* TS3A227E_REG_ACCESSORY_STATUS  0x0b */
- #define TYPE_3_POLE 0x01
- #define TYPE_4_POLE_OMTP 0x02
-@@ -248,6 +252,21 @@ static const struct regmap_config ts3a227e_regmap_config = {
- 	.num_reg_defaults = ARRAY_SIZE(ts3a227e_reg_defaults),
- };
- 
-+static int ts3a227e_parse_dt(struct ts3a227e *ts3a227e, struct device_node *np)
-+{
-+	u32 micbias;
-+	int err;
-+
-+	err = of_property_read_u32(np, "ti,micbias", &micbias);
-+	if (!err) {
-+		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_3,
-+			MICBIAS_SETTING_MASK,
-+			(micbias & 0x07) << MICBIAS_SETTING_SFT);
-+	}
-+
-+	return 0;
-+}
-+
- static int ts3a227e_i2c_probe(struct i2c_client *i2c,
- 			      const struct i2c_device_id *id)
- {
-@@ -266,6 +285,14 @@ static int ts3a227e_i2c_probe(struct i2c_client *i2c,
- 	if (IS_ERR(ts3a227e->regmap))
- 		return PTR_ERR(ts3a227e->regmap);
- 
-+	if (dev->of_node) {
-+		ret = ts3a227e_parse_dt(ts3a227e, dev->of_node);
-+		if (ret) {
-+			dev_err(dev, "Failed to parse device tree: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
- 	ret = devm_request_threaded_irq(dev, i2c->irq, NULL, ts3a227e_interrupt,
- 					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
- 					"TS3A227E", ts3a227e);
--- 
-2.2.0.rc0.207.ga3a616c
+The slots via machine driver should be total slot number per frame.
+For I2S, we're passing 2 for slots parameter in our machine drivers.
+
+So why not just following that pattern. You code for calculating slot
+per channel is used to calculate bclk. But keeping slot per frame will
+also allow you to do that, meanwhile you can drop some code to do the
+extra calculation so as to keep it neat.
+
+I suggest you to take a look at fsl_esai.c and to follow that way:
+Override slots and slot_width if specified from machine driver.
+
+And another problem of your patch is the configurations for FRSZ and
+xMR fields. For monaural case, the channels == 1, the current code
+passes it directly to set them while your code overrides it to 2.
+
+I'm not sure if you've tested the monaural case and confirmed it works.
+But, apparently, the configurations look pretty different.
+
+Nicolin
