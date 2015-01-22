@@ -1,83 +1,83 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [alsa-devel][PATCH 2/3] ASoC: fsl_sai: Add support for tdm slots
- operation
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH] ASoC: ts3a227e: Remap keys to match
+	Android headset specification
 Date: Thu, 22 Jan 2015 15:50:20 -0800
-Message-ID: <20150122235019.GA3204@Asurada-GSX>
-References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
- <1421756480-7055-3-git-send-email-zidan.wang@freescale.com>
- <20150121180801.GA3361@Alpha>
- <20150122045515.GA3467@b50113>
- <20150122054409.GA7748@Asurada>
- <20150122062004.GA7046@b50113>
+Message-ID: <CAEUnVG7TKJg6Xy7nWL25jpGf43=N5qBKmWQpB0LniQQnu1fJEA@mail.gmail.com>
+References: <1421970436-15862-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150122062004.GA7046@b50113>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <b50113@freescale.com>
-Cc: Zidan Wang <zidan.wang@freescale.com>, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f169.google.com (mail-vc0-f169.google.com
+ [209.85.220.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C6DB265328
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 00:50:42 +0100 (CET)
+Received: by mail-vc0-f169.google.com with SMTP id hq12so1597198vcb.0
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2015 15:50:41 -0800 (PST)
+In-Reply-To: <1421970436-15862-1-git-send-email-anatol.pomozov@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 22, 2015 at 02:20:06PM +0800, Zidan Wang wrote:
-> > > > > @@ -369,10 +380,25 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
-> > > > >  	u32 word_width = snd_pcm_format_width(params_format(params));
-> > > > >  	u32 val_cr4 = 0, val_cr5 = 0;
-> > > > >  	int ret;
-> > > > > +	u32 bclk;
-> > > > > +
-> > > > > +	if (channels == 1)
-> > > > > +		channels = 2;
-> > > > > +
-> > > > > +	if (!sai->slots || sai->slots % channels)
-> > > > > +		sai->slots = channels;
-> > > > > +
-> > > > > +	sai->slots = sai->slots / channels;
-> > > > > +
-> > > > > +	if (sai->slot_width < word_width || sai->is_dsp_mode)
-> > > > > +		sai->slot_width = word_width;
-> > > > 
-> > > > Could you pls explain a bit what's this overriding for?
-> > > > Or it might be better to put into a comment.
-> > > >
-> > > In machine driver, we should use snd_soc_dai_set_tdm_slot to set slots
-> > > and slot width. In my opinion, slots in machine driver means the slot
-> > > number of all channels. But in sai driver, the slots means the slot number
-> > > of one channel. So snd_soc_calc_bclk use fs*sample_size*channels*tdm_slots
-> > > to caculate bclk.
-> > 
-> > Could you pls use the standard way as you described for slot number
-> > in machine driver instead of defining some other meanings? That one
-> > is really confusing, not to mention a code without any comment.
-> > 
-> > You can add some extra local variables with extinguished names and
-> > calculate the slot number and channels you want without changing
-> > the original sai->slots and channels in the hw_params(). As you said,
-> > you only need that new slot number and channels for snd_soc_calc_bclk
-> > call. So you may also put this code right before the call -- a normal
-> > routine doesn't need to recalculate the special slots and channels,
-> > right?
+On Thu, Jan 22, 2015 at 3:47 PM, Anatol Pomozov
+<anatol.pomozov@gmail.com> wrote:
+> ts3a227e datasheet says typical key resistance is
+>   key1 50 Om
+>   key2 135 Om
+>   key3 240 Om
+>   key4 470 Om
+>
+> The android headset specification expect buttons impedance:
+>   A (MEDIA) 0-70 Om
+>   D (VOICECOMMAND) 110-180 Om
+>   B (VOLUMEUP) 210-290 Om
+>   C (VOLUMEDOWN) 360-680 Om
+>
+> Thus key mapping should be
+>   key1 - MEDIA
+>   key2 - VOICECOMMAND
+>   key3 - VOLUMEUP
+>   key3 - VOLUMEDOWN
+>
+> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 
-> Actually i don't kown which meaning is the standard way. Because i found
-> in wm8993 and wm8904 codec driver, they also use slots/channels to set 
-> tdm_slots in set_tdm_slot function.
+Acked-by: Dylan Reid <dgreid@chromium.org>
 
-The slots via machine driver should be total slot number per frame.
-For I2S, we're passing 2 for slots parameter in our machine drivers.
+> ---
+>  sound/soc/codecs/ts3a227e.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+> index 9f2dced..54d431c 100644
+> --- a/sound/soc/codecs/ts3a227e.c
+> +++ b/sound/soc/codecs/ts3a227e.c
+> @@ -221,9 +221,9 @@ int ts3a227e_enable_jack_detect(struct snd_soc_component *component,
+>         struct ts3a227e *ts3a227e = snd_soc_component_get_drvdata(component);
+>
+>         snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
+> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
 
-So why not just following that pattern. You code for calculating slot
-per channel is used to calculate bclk. But keeping slot per frame will
-also allow you to do that, meanwhile you can drop some code to do the
-extra calculation so as to keep it neat.
+These are correct.  The initial mapping was based on a mislabeled,
+pre-production eval board.  The new mapping was tested with the
+reference headsets.
 
-I suggest you to take a look at fsl_esai.c and to follow that way:
-Override slots and slot_width if specified from machine driver.
-
-And another problem of your patch is the configurations for FRSZ and
-xMR fields. For monaural case, the channels == 1, the current code
-passes it directly to set them while your code overrides it to 2.
-
-I'm not sure if you've tested the monaural case and confirmed it works.
-But, apparently, the configurations look pretty different.
-
-Nicolin
+>
+>         ts3a227e->jack = jack;
+>         ts3a227e_jack_report(ts3a227e);
+> --
+> 2.2.0.rc0.207.ga3a616c
+>
