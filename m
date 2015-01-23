@@ -1,100 +1,108 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt286: Fix capture volume setting issue
-Date: Fri, 23 Jan 2015 14:51:09 +0800
-Message-ID: <1421995869-30435-1-git-send-email-bardliao@realtek.com>
+From: Inha Song <ideal.song@samsung.com>
+Subject: Re: [alsa-devel] [PATCH v4 3/3] ARM: dts: Add sound nodes for
+ exynos4412-trats2
+Date: Fri, 23 Jan 2015 15:56:49 +0900
+Message-ID: <20150123155649.14fe36a7@songinha-Samsung-DeskTop-System>
+References: <1421989410-12490-1-git-send-email-ideal.song@samsung.com>
+ <1421989410-12490-4-git-send-email-ideal.song@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id A4191265452
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 07:51:27 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1421989410-12490-4-git-send-email-ideal.song@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+Cc: Inha Song <ideal.song@samsung.com>, alsa-devel@alsa-project.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, sbkim73@samsung.com, linux-kernel@vger.kernel.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de, robh+dt@kernel.org, kgene@kernel.org, s.nawrocki@samsung.com, galak@codeaurora.org, grant.likely@linaro.org, linux-arm-kernel@lists.infradead.org, =?UTF-8?B?7LWc7LCs7Jqw?= <cw00.choi@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The purpose of rt286_adc_event is to mute/numnte the ADC mixer.
-However, it will also set the capture volume to default value.
-As a result, "ADC0 Capture Volume" is not working if it is set
-before capture start. This patch remove rt286_adc_event and add
-"ADC0 Capture Switch" to mute/unmute ADC mixer.
+Hi Kukjin,
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt286.c | 38 ++++++--------------------------------
- 1 file changed, 6 insertions(+), 32 deletions(-)
+Sorry, I missed to adding in Cc.
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 1d1c7f8..847cc4b 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -417,6 +417,8 @@ static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
- static const struct snd_kcontrol_new rt286_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("DAC0 Playback Volume", RT286_DACL_GAIN,
- 			    RT286_DACR_GAIN, 0, 0x7f, 0, out_vol_tlv),
-+	SOC_DOUBLE_R("ADC0 Capture Switch", RT286_ADCL_GAIN,
-+			    RT286_ADCR_GAIN, 7, 1, 1),
- 	SOC_DOUBLE_R_TLV("ADC0 Capture Volume", RT286_ADCL_GAIN,
- 			    RT286_ADCR_GAIN, 0, 0x7f, 0, out_vol_tlv),
- 	SOC_SINGLE_TLV("AMIC Volume", RT286_MIC_GAIN,
-@@ -538,32 +540,6 @@ static int rt286_set_dmic1_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--static int rt286_adc_event(struct snd_soc_dapm_widget *w,
--			     struct snd_kcontrol *kcontrol, int event)
--{
--	struct snd_soc_codec *codec = w->codec;
--	unsigned int nid;
--
--	nid = (w->reg >> 20) & 0xff;
--
--	switch (event) {
--	case SND_SOC_DAPM_POST_PMU:
--		snd_soc_update_bits(codec,
--			VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, nid, 0),
--			0x7080, 0x7000);
--		break;
--	case SND_SOC_DAPM_PRE_PMD:
--		snd_soc_update_bits(codec,
--			VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, nid, 0),
--			0x7080, 0x7080);
--		break;
--	default:
--		return 0;
--	}
--
--	return 0;
--}
--
- static int rt286_vref_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol, int event)
- {
-@@ -667,12 +643,10 @@ static const struct snd_soc_dapm_widget rt286_dapm_widgets[] = {
- 	SND_SOC_DAPM_ADC("ADC 1", NULL, SND_SOC_NOPM, 0, 0),
- 
- 	/* ADC Mux */
--	SND_SOC_DAPM_MUX_E("ADC 0 Mux", RT286_SET_POWER(RT286_ADC_IN1), 0, 1,
--		&rt286_adc0_mux, rt286_adc_event, SND_SOC_DAPM_PRE_PMD |
--		SND_SOC_DAPM_POST_PMU),
--	SND_SOC_DAPM_MUX_E("ADC 1 Mux", RT286_SET_POWER(RT286_ADC_IN2), 0, 1,
--		&rt286_adc1_mux, rt286_adc_event, SND_SOC_DAPM_PRE_PMD |
--		SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_MUX("ADC 0 Mux", RT286_SET_POWER(RT286_ADC_IN1), 0, 1,
-+		&rt286_adc0_mux),
-+	SND_SOC_DAPM_MUX("ADC 1 Mux", RT286_SET_POWER(RT286_ADC_IN2), 0, 1,
-+		&rt286_adc1_mux),
- 
- 	/* Audio Interface */
- 	SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
--- 
-1.8.1.1.439.g50a6b54
+Best Regards,
+Inha Song.
+
+On Fri, 23 Jan 2015 14:03:30 +0900
+Inha Song <ideal.song@samsung.com> wrote:
+
+> This patch add WM1811 audio codec, I2S interface and the sound
+> machine nodes to enable audio on exynos4412-trats2 board.
+> 
+> Signed-off-by: Inha Song <ideal.song@samsung.com>
+> ---
+>  arch/arm/boot/dts/exynos4412-trats2.dts | 42 +++++++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/exynos4412-trats2.dts b/arch/arm/boot/dts/exynos4412-trats2.dts
+> index 29231b4..6205b98 100644
+> --- a/arch/arm/boot/dts/exynos4412-trats2.dts
+> +++ b/arch/arm/boot/dts/exynos4412-trats2.dts
+> @@ -203,6 +203,25 @@
+>  		};
+>  	};
+>  
+> +	i2c@138A0000 {
+> +		samsung,i2c-sda-delay = <100>;
+> +		samsung,i2c-slave-addr = <0x10>;
+> +		samsung,i2c-max-bus-freq = <100000>;
+> +		pinctrl-0 = <&i2c4_bus>;
+> +		pinctrl-names = "default";
+> +		status = "okay";
+> +
+> +		wm1811: wm1811@1a {
+> +			compatible = "wlf,wm1811";
+> +			reg = <0x1a>;
+> +			clocks = <&pmu_system_controller 0>;
+> +			clock-names = "MCLK1";
+> +			DCVDD-supply = <&ldo3_reg>;
+> +			DBVDD1-supply = <&ldo3_reg>;
+> +			wlf,ldo1ena = <&gpj0 4 0>;
+> +		};
+> +	};
+> +
+>  	i2c@138D0000 {
+>  		samsung,i2c-sda-delay = <100>;
+>  		samsung,i2c-slave-addr = <0x10>;
+> @@ -838,6 +857,24 @@
+>  		};
+>  	};
+>  
+> +	i2s0: i2s@03830000 {
+> +		pinctrl-0 = <&i2s0_bus>;
+> +		pinctrl-names = "default";
+> +		status = "okay";
+> +	};
+> +
+> +	sound {
+> +		compatible = "samsung,trats2-audio";
+> +		samsung,i2s-controller = <&i2s0>;
+> +		samsung,model = "Trats2";
+> +		samsung,audio-codec = <&wm1811>;
+> +		samsung,audio-routing =
+> +			"SPK", "SPKOUTLN",
+> +			"SPK", "SPKOUTLP",
+> +			"SPK", "SPKOUTRN",
+> +			"SPK", "SPKOUTRP";
+> +	};
+> +
+>  	exynos-usbphy@125B0000 {
+>  		status = "okay";
+>  	};
+> @@ -865,6 +902,11 @@
+>  	};
+>  };
+>  
+> +&pmu_system_controller {
+> +	assigned-clocks = <&pmu_system_controller 0>;
+> +	assigned-clock-parents =  <&clock CLK_XUSBXTI>;
+> +};
+> +
+>  &pinctrl_0 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&sleep0>;
+> -- 
+> 2.0.0.390.gcb682f8
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
