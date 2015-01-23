@@ -1,108 +1,66 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: Re: [alsa-devel] [PATCH v4 3/3] ARM: dts: Add sound nodes for
- exynos4412-trats2
-Date: Fri, 23 Jan 2015 15:56:49 +0900
-Message-ID: <20150123155649.14fe36a7@songinha-Samsung-DeskTop-System>
-References: <1421989410-12490-1-git-send-email-ideal.song@samsung.com>
- <1421989410-12490-4-git-send-email-ideal.song@samsung.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [alsa-devel][PATCH 2/3] ASoC: fsl_sai: Add support for tdm slots
+ operation
+Date: Fri, 23 Jan 2015 00:27:09 -0800
+Message-ID: <20150123082708.GA3408@Alpha>
+References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
+ <1421756480-7055-3-git-send-email-zidan.wang@freescale.com>
+ <20150121180801.GA3361@Alpha>
+ <20150122045515.GA3467@b50113>
+ <20150122054409.GA7748@Asurada>
+ <20150122062004.GA7046@b50113>
+ <20150122235019.GA3204@Asurada-GSX>
+ <20150123025507.GA2382@b50113>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1421989410-12490-4-git-send-email-ideal.song@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-Cc: Inha Song <ideal.song@samsung.com>, alsa-devel@alsa-project.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, sbkim73@samsung.com, linux-kernel@vger.kernel.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de, robh+dt@kernel.org, kgene@kernel.org, s.nawrocki@samsung.com, galak@codeaurora.org, grant.likely@linaro.org, linux-arm-kernel@lists.infradead.org, =?UTF-8?B?7LWc7LCs7Jqw?= <cw00.choi@samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150123025507.GA2382@b50113>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <b50113@freescale.com>
+Cc: Zidan Wang <zidan.wang@freescale.com>, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kukjin,
-
-Sorry, I missed to adding in Cc.
-
-Best Regards,
-Inha Song.
-
-On Fri, 23 Jan 2015 14:03:30 +0900
-Inha Song <ideal.song@samsung.com> wrote:
-
-> This patch add WM1811 audio codec, I2S interface and the sound
-> machine nodes to enable audio on exynos4412-trats2 board.
+On Fri, Jan 23, 2015 at 10:55:09AM +0800, Zidan Wang wrote:
+> I have another question.
 > 
-> Signed-off-by: Inha Song <ideal.song@samsung.com>
-> ---
->  arch/arm/boot/dts/exynos4412-trats2.dts | 42 +++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/exynos4412-trats2.dts b/arch/arm/boot/dts/exynos4412-trats2.dts
-> index 29231b4..6205b98 100644
-> --- a/arch/arm/boot/dts/exynos4412-trats2.dts
-> +++ b/arch/arm/boot/dts/exynos4412-trats2.dts
-> @@ -203,6 +203,25 @@
->  		};
->  	};
->  
-> +	i2c@138A0000 {
-> +		samsung,i2c-sda-delay = <100>;
-> +		samsung,i2c-slave-addr = <0x10>;
-> +		samsung,i2c-max-bus-freq = <100000>;
-> +		pinctrl-0 = <&i2c4_bus>;
-> +		pinctrl-names = "default";
-> +		status = "okay";
-> +
-> +		wm1811: wm1811@1a {
-> +			compatible = "wlf,wm1811";
-> +			reg = <0x1a>;
-> +			clocks = <&pmu_system_controller 0>;
-> +			clock-names = "MCLK1";
-> +			DCVDD-supply = <&ldo3_reg>;
-> +			DBVDD1-supply = <&ldo3_reg>;
-> +			wlf,ldo1ena = <&gpj0 4 0>;
-> +		};
-> +	};
-> +
->  	i2c@138D0000 {
->  		samsung,i2c-sda-delay = <100>;
->  		samsung,i2c-slave-addr = <0x10>;
-> @@ -838,6 +857,24 @@
->  		};
->  	};
->  
-> +	i2s0: i2s@03830000 {
-> +		pinctrl-0 = <&i2s0_bus>;
-> +		pinctrl-names = "default";
-> +		status = "okay";
-> +	};
-> +
-> +	sound {
-> +		compatible = "samsung,trats2-audio";
-> +		samsung,i2s-controller = <&i2s0>;
-> +		samsung,model = "Trats2";
-> +		samsung,audio-codec = <&wm1811>;
-> +		samsung,audio-routing =
-> +			"SPK", "SPKOUTLN",
-> +			"SPK", "SPKOUTLP",
-> +			"SPK", "SPKOUTRN",
-> +			"SPK", "SPKOUTRP";
-> +	};
-> +
->  	exynos-usbphy@125B0000 {
->  		status = "okay";
->  	};
-> @@ -865,6 +902,11 @@
->  	};
->  };
->  
-> +&pmu_system_controller {
-> +	assigned-clocks = <&pmu_system_controller 0>;
-> +	assigned-clock-parents =  <&clock CLK_XUSBXTI>;
-> +};
-> +
->  &pinctrl_0 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&sleep0>;
-> -- 
-> 2.0.0.390.gcb682f8
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Can a channel have several slots? Or channel just means slot.
+
+Strictly speaking, a channel surely may have several slots IMO.
+The idea for TDM, even for I2S, left channel can bear multiple
+slots -- each may be masked and then received by a different
+peripheral.
+
+The reason I've said that much against your code is not fully
+objection against your idea of using Slot Per Channel but for
+the implementation -- you divided them and then multiplied them
+again while your true motivation was just to calculate the bclk.
+And I could not understand it without seeing your later explain.
+Code and things would be much easier if you make it straight
+forward.
+
+But actually I don't mind if you feel comfortable to make a
+detour like that, but as I commented at the first place. Code
+like that should be companied with comments to tell its meaning.
+And I still don't fully understand why you override the channels
+for monaural cases.
+
+> > And another problem of your patch is the configurations for FRSZ and
+> > xMR fields. For monaural case, the channels == 1, the current code
+> > passes it directly to set them while your code overrides it to 2.
+> > 
+> > I'm not sure if you've tested the monaural case and confirmed it works.
+> > But, apparently, the configurations look pretty different.
+
+> I have tested the mono case, it works well.
+
+I just ran a simple test with speaker-test -Dhw:0 -c1, it works
+but the FRSZ value is changed to 0x1 for a monaural case (0x0
+originally). Setting FRSZ to 0x0 makes more sense to me since
+it looks like the configuration for active slot number. But
+that depends on the internal logic design of SAI so it may be
+better for you to double check with IC owner and run more tests.
+If you confirm that, I for sure will be willing to ignore the
+change here.
+
+Nicolin
