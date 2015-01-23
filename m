@@ -1,57 +1,96 @@
-From: Manuel Lauss <manuel.lauss@gmail.com>
-Subject: Re: [PATCH 0/2] ASoC: Fix wm97xx touchscreen driver
-Date: Fri, 23 Jan 2015 20:09:30 +0100
-Message-ID: <CAOLZvyHdhOusK1GNrEmThqetzqC=qV4XpLP7BT7CE3641fKEnQ@mail.gmail.com>
-References: <1422026497-23180-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: add generic dt-card support
+Date: Fri, 23 Jan 2015 19:13:43 +0000
+Message-ID: <20150123191343.GW21293@sirena.org.uk>
+References: <cover.1421868426.git.moinejf@free.fr>
+ <d0c66c2e2f200119f9990fa52a503b1a4af6238f.1421868426.git.moinejf@free.fr>
+ <54C0088F.9070609@metafoo.de>
+ <20150122090723.50ac0156@armhf>
+ <54C14EB3.8080305@metafoo.de>
+ <20150123131554.623003f9@armhf>
+ <54C252F4.9000504@metafoo.de>
+ <20150123193456.276ea512@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
- [209.85.212.170])
- by alsa0.perex.cz (Postfix) with ESMTP id F05602654E5
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 20:10:10 +0100 (CET)
-Received: by mail-wi0-f170.google.com with SMTP id em10so4876001wid.1
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 11:10:10 -0800 (PST)
-In-Reply-To: <1422026497-23180-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="8a48p4KKsB+A/3VY"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150123193456.276ea512@armhf>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 23, 2015 at 4:21 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> The wm97xx touchscreen driver will bind itself to the snd_ac97 device
-> registered by CODEC drivers and expects that the device has already been
-> reset by the CODEC driver. Previous to commit 6794f709b712 ("ASoC: ac97:
-> Drop delayed device registration") the snd_ac97 device was only registered
-> after the CODEC driver probe function had finished running, but starting
-> with the commit it is registered within snd_soc_new_ac97_codec(). This
-> breaks the touchscreen driver as the reset is no longer performed before the
-> touchscreen driver probe function runs. This patch series introduces a new
-> function snd_soc_alloc_ac97_codec() which allocates the snd_ac97 device, but
-> does not yet register it yet. This allows the CODEC drivers to perform the
-> reset before the device is registered.
->
-> The series is meant to perform a minimum amount of changes while fixing the
-> issue to prevent introducing other regressions. I have a few more patches
-> that consolidate the reset handling in the drivers and puts it into the core
-> in snd_soc_new_ac97_codec() which makes the split in the drivers
-> unnecessary, but that's something for next and not for stable.
->
-> Manuel can you give this another round of testing?
 
-Works very well.
+--8a48p4KKsB+A/3VY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Manuel Lauss <manuel.lauss@gmail.com>
+On Fri, Jan 23, 2015 at 07:34:56PM +0100, Jean-Francois Moine wrote:
 
+> A card builder is a device which
+> - scans the graph of ports,
+> - fills the struct snd_soc_card according to the links between the
+>   ports and their properties,
+> - and, eventually, calls snd_soc_register_card().
 
-Thanks Lars!
-      Manuel
+> The simple card builder, 'dt-card' (maybe a better name would have been
+> 'graph-card'), acts just like the simple-card except that it does not
+> appear in the DT. Its creation is done by an audio controller.
+
+Which audio controller?  There may be several CPU side audio interfaces
+in the same card.  For example people often want to have both low
+latency and high latency audio paths from the CPU into the hardware (low
+latency tends to increase power burn).  SoC centric system designs do
+sometimes also have PDM I/O, expecting to be directly connected to DMICs
+and so on, which results in a relatively large number of CPU interfaces.
+
+> > > With a DT graph, each CPU/CODEC would know exactly the widgets and
+> > > routes it has to define.
+
+> > Which widgets/routes do you mean?
+
+> Well, forget about this. I never clearly understood why some widgets
+> and routes had to be defined at card level.
+
+Please do try to understand the idea of representing simple components
+on the board and analogue interconects between devices - it's really
+important and not something that can be neglected.
+
+> > I'd agree if this was some kind of kernel internal stuff, but this is=
+=20
+> > creating ABI and we have to maintain it forever. Rushing this in withou=
+t=20
+> > proper discussion and consideration of the more complex use-cases is in=
+ my=20
+> > opinion not a good idea.
+
+> Using a graph of port to describe the audio subsystem has been pushed
+> forwards by many people for a long time, as shown by the creation of
+> the document Documentation/devicetree/bindings/graph.txt.
+
+That DT binding was done entirely in the context of video applications
+IIRC, this is the first time it's been discussed in this context.
+
+--8a48p4KKsB+A/3VY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUwp1mAAoJECTWi3JdVIfQLMYH/1nsWWiyQztPjj7Q0emFBs7q
+hmYaFi57DOH9VZBQ48aE+crsD0y1ycblJUTGIEbhae9GNzIg+U3D9FRWP7n2Sosi
+l7EVK4oO4l/otol0o/1uR6abnvOFz7lMaLDeVXRjMJg3LJb+YP9ndwL77FDwrfgt
+k4n4ljKpK0hHP0xOpow/ITQouPelz2Tu/p2FYMJWAkR7EedRnTmMn3bUWNrTjeZS
+CEY2ldrl6WtLOBIqOIZbdIqLeHg4+tUqV6pjBZuAqmj1hkdS1EU95NcaW/yCebZV
+jkBpTh0Nz0fITv+955L9q84Ehu5UfnelGmcYzd48ONFV8tDPFZVI7tmzKrBhsn0=
+=SQoT
+-----END PGP SIGNATURE-----
+
+--8a48p4KKsB+A/3VY--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
