@@ -1,16 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/16] ALSA: line6: Drop superfluous spinlock
-	for trigger
-Date: Fri, 23 Jan 2015 18:13:15 +0100
-Message-ID: <1422033203-23254-9-git-send-email-tiwai@suse.de>
+Subject: [PATCH 01/16] ALSA: line6: Minor refactoring
+Date: Fri, 23 Jan 2015 18:13:08 +0100
+Message-ID: <1422033203-23254-2-git-send-email-tiwai@suse.de>
 References: <1422033203-23254-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A1A3A265522
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:13:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 92EF52654F1
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:13:41 +0100 (CET)
 In-Reply-To: <1422033203-23254-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,91 +24,132 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-The trigger callback is already spinlocked, so we need no more lock
-here (even for the linked substreams).  Let's drop it.
+Split some codes in the lengthy line6_probe().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/pcm.c | 23 ++++++-----------------
- sound/usb/line6/pcm.h |  5 -----
- 2 files changed, 6 insertions(+), 22 deletions(-)
+ sound/usb/line6/driver.c | 94 +++++++++++++++++++++++++-----------------------
+ 1 file changed, 49 insertions(+), 45 deletions(-)
 
-diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
-index 9a2a15f4c4e4..adbcac46b785 100644
---- a/sound/usb/line6/pcm.c
-+++ b/sound/usb/line6/pcm.c
-@@ -226,9 +226,8 @@ int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_line6_pcm *line6pcm = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_substream *s;
--	int err;
-+	int err = 0;
- 
--	spin_lock(&line6pcm->lock_trigger);
- 	clear_bit(LINE6_INDEX_PREPARED, &line6pcm->flags);
- 
- 	snd_pcm_group_for_each_entry(s, substream) {
-@@ -237,32 +236,23 @@ int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd)
- 		switch (s->stream) {
- 		case SNDRV_PCM_STREAM_PLAYBACK:
- 			err = snd_line6_playback_trigger(line6pcm, cmd);
--
--			if (err < 0) {
--				spin_unlock(&line6pcm->lock_trigger);
--				return err;
--			}
--
- 			break;
- 
- 		case SNDRV_PCM_STREAM_CAPTURE:
- 			err = snd_line6_capture_trigger(line6pcm, cmd);
--
--			if (err < 0) {
--				spin_unlock(&line6pcm->lock_trigger);
--				return err;
--			}
--
- 			break;
- 
- 		default:
- 			dev_err(line6pcm->line6->ifcdev,
- 				"Unknown stream direction %d\n", s->stream);
-+			err = -EINVAL;
-+			break;
- 		}
-+		if (err < 0)
-+			break;
- 	}
- 
--	spin_unlock(&line6pcm->lock_trigger);
--	return 0;
-+	return err;
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index e7f9a99e1949..b783c0788e45 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -448,6 +448,52 @@ static void line6_destruct(struct snd_card *card)
+ 	usb_put_dev(usbdev);
  }
  
- /* control info callback */
-@@ -427,7 +417,6 @@ int line6_init_pcm(struct usb_line6 *line6,
++/* get data from endpoint descriptor (see usb_maxpacket): */
++static void line6_get_interval(struct usb_line6 *line6)
++{
++	struct usb_device *usbdev = line6->usbdev;
++	struct usb_host_endpoint *ep;
++	unsigned pipe = usb_rcvintpipe(usbdev, line6->properties->ep_ctrl_r);
++	unsigned epnum = usb_pipeendpoint(pipe);
++
++	ep = usbdev->ep_in[epnum];
++	if (ep) {
++		line6->interval = ep->desc.bInterval;
++		line6->max_packet_size = le16_to_cpu(ep->desc.wMaxPacketSize);
++	} else {
++		dev_err(line6->ifcdev,
++			"endpoint not available, using fallback values");
++		line6->interval = LINE6_FALLBACK_INTERVAL;
++		line6->max_packet_size = LINE6_FALLBACK_MAXPACKETSIZE;
++	}
++}
++
++static int line6_init_cap_control(struct usb_line6 *line6)
++{
++	int ret;
++
++	/* initialize USB buffers: */
++	line6->buffer_listen = kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
++	if (!line6->buffer_listen)
++		return -ENOMEM;
++
++	line6->buffer_message = kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
++	if (!line6->buffer_message)
++		return -ENOMEM;
++
++	line6->urb_listen = usb_alloc_urb(0, GFP_KERNEL);
++	if (!line6->urb_listen)
++		return -ENOMEM;
++
++	ret = line6_start_listen(line6);
++	if (ret < 0) {
++		dev_err(line6->ifcdev, "cannot start listening: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ /*
+ 	Probe USB device.
+ */
+@@ -485,24 +531,7 @@ int line6_probe(struct usb_interface *interface,
+ 	line6->usbdev = usbdev;
+ 	line6->ifcdev = &interface->dev;
  
- 	spin_lock_init(&line6pcm->lock_audio_out);
- 	spin_lock_init(&line6pcm->lock_audio_in);
--	spin_lock_init(&line6pcm->lock_trigger);
- 	line6pcm->impulse_period = LINE6_IMPULSE_DEFAULT_PERIOD;
- 
- 	line6->line6pcm = line6pcm;
-diff --git a/sound/usb/line6/pcm.h b/sound/usb/line6/pcm.h
-index c742b33666eb..a84753ee0fa2 100644
---- a/sound/usb/line6/pcm.h
-+++ b/sound/usb/line6/pcm.h
-@@ -308,11 +308,6 @@ struct snd_line6_pcm {
- 	spinlock_t lock_audio_in;
- 
- 	/**
--		 Spin lock to protect trigger.
--	*/
--	spinlock_t lock_trigger;
+-	/* get data from endpoint descriptor (see usb_maxpacket): */
+-	{
+-		struct usb_host_endpoint *ep;
+-		unsigned pipe = usb_rcvintpipe(usbdev, properties->ep_ctrl_r);
+-		unsigned epnum = usb_pipeendpoint(pipe);
+-		ep = usbdev->ep_in[epnum];
 -
--	/**
- 		 PCM playback volume (left and right).
- 	*/
- 	int volume_playback[2];
+-		if (ep != NULL) {
+-			line6->interval = ep->desc.bInterval;
+-			line6->max_packet_size =
+-			    le16_to_cpu(ep->desc.wMaxPacketSize);
+-		} else {
+-			line6->interval = LINE6_FALLBACK_INTERVAL;
+-			line6->max_packet_size = LINE6_FALLBACK_MAXPACKETSIZE;
+-			dev_err(line6->ifcdev,
+-				"endpoint not available, using fallback values");
+-		}
+-	}
++	line6_get_interval(line6);
+ 
+ 	ret = snd_card_new(line6->ifcdev,
+ 			   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+@@ -525,34 +554,9 @@ int line6_probe(struct usb_interface *interface,
+ 	usb_get_dev(usbdev);
+ 
+ 	if (properties->capabilities & LINE6_CAP_CONTROL) {
+-		/* initialize USB buffers: */
+-		line6->buffer_listen =
+-		    kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
+-		if (line6->buffer_listen == NULL) {
+-			ret = -ENOMEM;
+-			goto err_destruct;
+-		}
+-
+-		line6->buffer_message =
+-		    kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
+-		if (line6->buffer_message == NULL) {
+-			ret = -ENOMEM;
++		ret = line6_init_cap_control(line6);
++		if (ret < 0)
+ 			goto err_destruct;
+-		}
+-
+-		line6->urb_listen = usb_alloc_urb(0, GFP_KERNEL);
+-
+-		if (line6->urb_listen == NULL) {
+-			ret = -ENOMEM;
+-			goto err_destruct;
+-		}
+-
+-		ret = line6_start_listen(line6);
+-		if (ret < 0) {
+-			dev_err(&interface->dev, "%s: usb_submit_urb failed\n",
+-				__func__);
+-			goto err_destruct;
+-		}
+ 	}
+ 
+ 	/* initialize device data based on device: */
 -- 
 2.2.2
