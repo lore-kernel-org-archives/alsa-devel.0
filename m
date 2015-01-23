@@ -1,49 +1,34 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [PATCH 4/4] sound: jz4740: Enable codec clock during dai_probe
-Date: Mon, 26 Jan 2015 11:40:00 +0100
-Message-ID: <54C61980.9030205@metafoo.de>
-References: <1422267511-6649-1-git-send-email-Zubair.Kakakhel@imgtec.com> <1422267511-6649-5-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Vlastimil Wagner <bukowski12@gmail.com>
+Subject: add Steinberg UR44 USB Audio Interface support to
+	quirks-table
+Date: Fri, 23 Jan 2015 12:42:51 +0100
+Message-ID: <CAH7VmLJQojMB5mH_mcq3-Q5HVcfs8QZf4m8D3MK0p7qBWkctGw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1422267511-6649-5-git-send-email-Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>, tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f173.google.com (mail-we0-f173.google.com
+ [74.125.82.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 217482606C5
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 12:42:52 +0100 (CET)
+Received: by mail-we0-f173.google.com with SMTP id w62so7091746wes.4
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 03:42:51 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/26/2015 11:18 AM, Zubair Lutfullah Kakakhel wrote:
-> As we are moving away from platform to DT, we cant rely on the board
-> file to do this now. So enable it here.
+hi
 
-I don't understand this changelog. The board file never did this. The driver 
-enables the clock in the startup() callback.
+In what state is the driver for Steinberg UR44
 
->
-> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-> ---
->   sound/soc/jz4740/jz4740-i2s.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-> index 3c309fc..a7e4a7b 100644
-> --- a/sound/soc/jz4740/jz4740-i2s.c
-> +++ b/sound/soc/jz4740/jz4740-i2s.c
-> @@ -376,6 +376,10 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
->   		JZ_AIC_CONF_I2S |
->   		JZ_AIC_CONF_INTERNAL_CODEC;
->
-> +	/* enable codec sysclk */
-> +	clk_set_rate(i2s->clk_i2s, 12000000);
-> +	clk_prepare_enable(i2s->clk_i2s);
-> +
->   	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, JZ_AIC_CONF_RESET);
->   	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
->
->
+thanks
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Bukowski
