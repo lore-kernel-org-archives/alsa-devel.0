@@ -1,135 +1,105 @@
-From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v3 1/4] ASoC: samsung: Add machine driver for
- Trats2
-Date: Fri, 23 Jan 2015 09:56:55 +0900
-Message-ID: <20150123095655.15779875@songinha-Samsung-DeskTop-System>
-References: <1421925482-15861-1-git-send-email-ideal.song@samsung.com>
- <1421925482-15861-2-git-send-email-ideal.song@samsung.com>
- <54C0EA03.703@samsung.com>
+From: Zidan Wang <b50113@freescale.com>
+Subject: Re: [PATCH 2/3] ASoC: fsl_sai: Add support for tdm
+ slots operation
+Date: Fri, 23 Jan 2015 10:55:09 +0800
+Message-ID: <20150123025507.GA2382@b50113>
+References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
+ <1421756480-7055-3-git-send-email-zidan.wang@freescale.com>
+ <20150121180801.GA3361@Alpha> <20150122045515.GA3467@b50113>
+ <20150122054409.GA7748@Asurada> <20150122062004.GA7046@b50113>
+ <20150122235019.GA3204@Asurada-GSX>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <54C0EA03.703-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, kgene-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1on0136.outbound.protection.outlook.com [157.56.110.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id E871D26066E
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 03:54:10 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20150122235019.GA3204@Asurada-GSX>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-Thanks for your review.
+On Thu, Jan 22, 2015 at 03:50:20PM -0800, Nicolin Chen wrote:
+> On Thu, Jan 22, 2015 at 02:20:06PM +0800, Zidan Wang wrote:
+> > > > > > @@ -369,10 +380,25 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+> > > > > >  	u32 word_width = snd_pcm_format_width(params_format(params));
+> > > > > >  	u32 val_cr4 = 0, val_cr5 = 0;
+> > > > > >  	int ret;
+> > > > > > +	u32 bclk;
+> > > > > > +
+> > > > > > +	if (channels == 1)
+> > > > > > +		channels = 2;
+> > > > > > +
+> > > > > > +	if (!sai->slots || sai->slots % channels)
+> > > > > > +		sai->slots = channels;
+> > > > > > +
+> > > > > > +	sai->slots = sai->slots / channels;
+> > > > > > +
+> > > > > > +	if (sai->slot_width < word_width || sai->is_dsp_mode)
+> > > > > > +		sai->slot_width = word_width;
+> > > > > 
+> > > > > Could you pls explain a bit what's this overriding for?
+> > > > > Or it might be better to put into a comment.
+> > > > >
+> > > > In machine driver, we should use snd_soc_dai_set_tdm_slot to set slots
+> > > > and slot width. In my opinion, slots in machine driver means the slot
+> > > > number of all channels. But in sai driver, the slots means the slot number
+> > > > of one channel. So snd_soc_calc_bclk use fs*sample_size*channels*tdm_slots
+> > > > to caculate bclk.
+> > > 
+> > > Could you pls use the standard way as you described for slot number
+> > > in machine driver instead of defining some other meanings? That one
+> > > is really confusing, not to mention a code without any comment.
+> > > 
+> > > You can add some extra local variables with extinguished names and
+> > > calculate the slot number and channels you want without changing
+> > > the original sai->slots and channels in the hw_params(). As you said,
+> > > you only need that new slot number and channels for snd_soc_calc_bclk
+> > > call. So you may also put this code right before the call -- a normal
+> > > routine doesn't need to recalculate the special slots and channels,
+> > > right?
+> 
+> > Actually i don't kown which meaning is the standard way. Because i found
+> > in wm8993 and wm8904 codec driver, they also use slots/channels to set 
+> > tdm_slots in set_tdm_slot function.
+> 
+> The slots via machine driver should be total slot number per frame.
+> For I2S, we're passing 2 for slots parameter in our machine drivers.
+> 
+> So why not just following that pattern. You code for calculating slot
+> per channel is used to calculate bclk. But keeping slot per frame will
+> also allow you to do that, meanwhile you can drop some code to do the
+> extra calculation so as to keep it neat.
+> 
+> I suggest you to take a look at fsl_esai.c and to follow that way:
+> Override slots and slot_width if specified from machine driver.
+> 
+I will follow slot per frame pattern like fsl_esai.c, thanks very mush.
 
-On Thu, 22 Jan 2015 13:16:03 +0100
-Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
+I have another question.
 
-> On 22/01/15 12:17, Inha Song wrote:
-> > diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-> > index fc67f97..8031423 100644
-> > --- a/sound/soc/samsung/Kconfig
-> > +++ b/sound/soc/samsung/Kconfig
-> > @@ -245,3 +245,11 @@ config SND_SOC_ARNDALE_RT5631_ALC5631
-> >          depends on SND_SOC_SAMSUNG
-> >          select SND_SAMSUNG_I2S
-> >          select SND_SOC_RT5631
-> > +
-> > +config SND_SOC_SAMSUNG_TRATS2_WM1811
-> > +	tristate "SoC I2S Audio support for WM1811 on Tizen Trats2 board"
-> > +	depends on SND_SOC_SAMSUNG
-> > +	select SND_SOC_WM8994
-> > +	select SND_SAMSUNG_I2S
-> 
-> Shouldn't you also select the MFD part of WM8994 here ?
-Maybe, I will add also "select MFD_WM8994"
+Can a channel have several slots? Or channel just means slot.
 
+> And another problem of your patch is the configurations for FRSZ and
+> xMR fields. For monaural case, the channels == 1, the current code
+> passes it directly to set them while your code overrides it to 2.
 > 
-> > +++ b/sound/soc/samsung/trats2_wm1811.c
-> > @@ -0,0 +1,218 @@
-> 
-> > +static struct snd_soc_dai_link trats2_dai[] = {
-> > +	{
-> > +		.name		= "WM1811 AIF1",
-> > +		.stream_name	= "Pri_Dai",
-> 
-> Could we have a less cryptic name here, e.g. "HiFi Primary" ?
-
-Looks like "HiFi Primary", I will fix.
-
-> 
-> > +		.codec_dai_name = "wm8994-aif1",
-> > +		.codec_name	= "wm8994-codec",
-> > +		.ops		= &trats2_aif1_ops,
-> > +		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> > +				  SND_SOC_DAIFMT_CBM_CFM,
-> > +	},
-> > +};
-> 
-> > +static int trats2_audio_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device_node *np = pdev->dev.of_node;
-> > +	struct snd_soc_card *card = &trats2_card;
-> > +	struct device_node *codec_node;
-> > +	struct snd_soc_dai_link *dai_link = card->dai_link;
-> > +	struct trats2_machine_priv *priv = snd_soc_card_get_drvdata(card);
-> > +	int ret;
-> > +
-> > +	if (!np) {
-> > +		dev_err(&pdev->dev, "of node is missing.\n");
-> > +		return -ENODEV;
-> 
-> I'd say this whole np test could be dropped, we will fail right below
-> at the snd_soc_of_parse_card_name() function call if np is NULL.
-> Such a situation seems highly unlikely anyway.
-I will remove :)
-
-> 
-> > +	}
-> > +
-> > +	card->dev = &pdev->dev;
-> > +
-> > +	ret = snd_soc_of_parse_card_name(card, "samsung,model");
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev,
-> > +			"Card name is not provided\n");
-> 
-> I guess it would fit in a single line.
-Oh, Thanks.
-
-> 
-> > +		return ret;
-> > +	}
-> > +
-> 
-> > +static struct platform_driver trats2_audio_driver = {
-> > +	.driver = {
-> > +		.name		= "trats2-audio",
-> > +		.owner		= THIS_MODULE,
-> 
-> You can drop this .owner field assignment, it's also done in
-> module_platform_driver() macro.
-> 
-Yes, I will fix based on your comments :)
-Thanks,
+> I'm not sure if you've tested the monaural case and confirmed it works.
+> But, apparently, the configurations look pretty different.
+>
+I have tested the mono case, it works well.
 
 Best Regards,
-Inha Song.
-
-> > +		.pm		= &snd_soc_pm_ops,
-> > +		.of_match_table	= trats2_audio_of_match,
-> > +	},
-> > +	.probe	= trats2_audio_probe,
-> > +	.remove	= trats2_audio_remove,
-> > +};
-> > +
-> > +module_platform_driver(trats2_audio_driver);
-> 
-> --
-> Regards,
-> Sylwester
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Zidan
