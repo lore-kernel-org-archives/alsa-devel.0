@@ -1,90 +1,68 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: Re: [PATCH] ASoC: ts3a227e: Remap keys to match
-	Android headset specification
-Date: Fri, 23 Jan 2015 07:36:46 -0800
-Message-ID: <CAOMFOmUg4BkAt67JKK_Q-i+XCkpzXhTdvURm+pkvWPNGzkWZhA@mail.gmail.com>
-References: <1421970436-15862-1-git-send-email-anatol.pomozov@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: add generic dt-card support
+Date: Fri, 23 Jan 2015 17:40:13 +0000
+Message-ID: <20150123174013.GV21293@sirena.org.uk>
+References: <cover.1421868426.git.moinejf@free.fr>
+ <d0c66c2e2f200119f9990fa52a503b1a4af6238f.1421868426.git.moinejf@free.fr>
+ <54C0088F.9070609@metafoo.de>
+ <20150122090723.50ac0156@armhf>
+ <54C14EB3.8080305@metafoo.de>
+ <20150123131554.623003f9@armhf>
+ <54C252F4.9000504@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f175.google.com (mail-ig0-f175.google.com
- [209.85.213.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 7901526574E
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:27:40 +0100 (CET)
-Received: by mail-ig0-f175.google.com with SMTP id hn18so3064850igb.2
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 09:27:39 -0800 (PST)
-In-Reply-To: <1421970436-15862-1-git-send-email-anatol.pomozov@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Anatol Pomozov <anatol.pomozov@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="R9dSeJxMIUBTi9Do"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54C252F4.9000504@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-On Thu, Jan 22, 2015 at 3:47 PM, Anatol Pomozov <anatol.pomozov@gmail.com>
-wrote:
+--R9dSeJxMIUBTi9Do
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ts3a227e datasheet says typical key resistance is
->   key1 50 Om
->
+On Fri, Jan 23, 2015 at 02:56:04PM +0100, Lars-Peter Clausen wrote:
+> On 01/23/2015 01:15 PM, Jean-Francois Moine wrote:
 
-It is a misspelling in the commit message. "Om" should be replaced with
-"Ohm" here and below.
+> >>Your example is a relative simple one where you do not have any additio=
+nal
+> >>audio fabric on the board itself.
 
-Mark are you ok to fix it in your repo or do you want me to resend the
-updated patch?
+> >Right, and that's why I'd be glad to have quickly something in the
+> >kernel. More properties could be added later as there would be requests.
 
+> I'd agree if this was some kind of kernel internal stuff, but this is
+> creating ABI and we have to maintain it forever. Rushing this in without
+> proper discussion and consideration of the more complex use-cases is in my
+> opinion not a good idea.
 
->   key2 135 Om
->   key3 240 Om
->   key4 470 Om
->
-> The android headset specification expect buttons impedance:
->   A (MEDIA) 0-70 Om
->   D (VOICECOMMAND) 110-180 Om
->   B (VOLUMEUP) 210-290 Om
->   C (VOLUMEDOWN) 360-680 Om
->
-> Thus key mapping should be
->   key1 - MEDIA
->   key2 - VOICECOMMAND
->   key3 - VOLUMEUP
->   key3 - VOLUMEDOWN
->
-> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
-> ---
->  sound/soc/codecs/ts3a227e.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-> index 9f2dced..54d431c 100644
-> --- a/sound/soc/codecs/ts3a227e.c
-> +++ b/sound/soc/codecs/ts3a227e.c
-> @@ -221,9 +221,9 @@ int ts3a227e_enable_jack_detect(struct
-> snd_soc_component *component,
->         struct ts3a227e *ts3a227e =
-> snd_soc_component_get_drvdata(component);
->
->         snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
->
->         ts3a227e->jack = jack;
->         ts3a227e_jack_report(ts3a227e);
-> --
-> 2.2.0.rc0.207.ga3a616c
->
->
+Just to repeat myself again: *please* try to provide more explanation
+for your commits, the concerns Lars is raising above are among the
+things that I'd have expected to be covered in a high quality changelog. =
+=20
+There is no explanation at all in the changelog regarding the goal here,
+just statements that this is a graph based card without an actual card
+node.
+
+--R9dSeJxMIUBTi9Do
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUwod8AAoJECTWi3JdVIfQ1MMH+gMkwDNLlNqCI+AGUfu7VHU4
+grl3CdjfAwThmj7dLL5ciTzfspxh/fB8+xxSexmeC522wF1QmNtSrnr5h+tSETYY
+bTIuu39riAuuwmN7jdowIipaQdo3gp21xnbBxPLO1PnZUxj5CKt0gj46xNkTAkFH
+sjOtF8JBJN1hdIQh6LYHqz7nnweWZDMR667TTw/45VmozrILzOPENrWLQo7/0B+y
+SvvlNLsCJMUcnYeJP9+psXZnYul8bn5bWtSDhlo12BffsLVu43lztQxfkiokfSHs
+PW76D+XNw+FMC+XPObMY532DaBNvFISQL53bKQghHgA1JMpbuh5MozX7RSkWNL4=
+=8/iP
+-----END PGP SIGNATURE-----
+
+--R9dSeJxMIUBTi9Do--
