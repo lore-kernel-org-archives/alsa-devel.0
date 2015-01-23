@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/2] ASoC: wm97xx: Reset AC'97 device before
-	registering it
-Date: Fri, 23 Jan 2015 16:21:37 +0100
-Message-ID: <1422026497-23180-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: Add support for allocating AC'97
+	device before registering it
+Date: Fri, 23 Jan 2015 16:21:36 +0100
+Message-ID: <1422026497-23180-2-git-send-email-lars@metafoo.de>
 References: <1422026497-23180-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-205.synserver.de (smtp-out-206.synserver.de
  [212.40.185.206])
- by alsa0.perex.cz (Postfix) with ESMTP id F00552654F1
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:59:13 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E8ED265675
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:59:14 +0100 (CET)
 In-Reply-To: <1422026497-23180-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,136 +26,92 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The wm97xx touchscreen driver binds itself to the snd_ac97 device that gets
-registered by the CODEC driver and expects that the device has already been
-reset. Before commit 6794f709b712 ("ASoC: ac97: Drop delayed device
-registration") the device was only registered after the probe function of
-the CODEC driver had finished running, but starting with the mentioned
-commit the device is registered as soon as snd_soc_new_ac97_codec() is
-called. This causes the touchscreen driver to no longer work. Modify the
-CODEC drivers to use snd_soc_alloc_ac97_codec() instead of
-snd_soc_new_ac97_codec() and make sure that the AC'97 device is reset before
-the snd_ac97 device gets registered.
+In some cases it is necessary to before additional operations after the
+device has been initialized and before the device is registered. This can
+for example be resetting the device.
+
+This patch introduces a new function snd_soc_alloc_ac97_codec() which is
+similar to snd_soc_new_ac97_codec() except that it does not register the
+device. Any users of snd_soc_alloc_ac97_codec() are responsible for calling
+device_add() manually.
 
 Fixes: 6794f709b712 ("ASoC: ac97: Drop delayed device registration")
 Reported-by: Manuel Lauss <manuel.lauss@gmail.com>
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm9705.c | 16 ++++++++++------
- sound/soc/codecs/wm9712.c | 12 ++++++++----
- sound/soc/codecs/wm9713.c | 12 ++++++++----
- 3 files changed, 26 insertions(+), 14 deletions(-)
+ include/sound/soc.h  |  1 +
+ sound/soc/soc-ac97.c | 36 ++++++++++++++++++++++++++++++------
+ 2 files changed, 31 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index 3eddb18..5cc457e 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -344,23 +344,27 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index edd4a0a..0d1ade1 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -501,6 +501,7 @@ int snd_soc_test_bits(struct snd_soc_codec *codec, unsigned int reg,
+ 				unsigned int mask, unsigned int value);
+ 
+ #ifdef CONFIG_SND_SOC_AC97_BUS
++struct snd_ac97 *snd_soc_alloc_ac97_codec(struct snd_soc_codec *codec);
+ struct snd_ac97 *snd_soc_new_ac97_codec(struct snd_soc_codec *codec);
+ void snd_soc_free_ac97_codec(struct snd_ac97 *ac97);
+ 
+diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
+index 2e10e9a..a3611e1 100644
+--- a/sound/soc/soc-ac97.c
++++ b/sound/soc/soc-ac97.c
+@@ -48,15 +48,18 @@ static void soc_ac97_device_release(struct device *dev)
+ }
+ 
+ /**
+- * snd_soc_new_ac97_codec - initailise AC97 device
+- * @codec: audio codec
++ * snd_soc_alloc_ac97_codec() - Allocate new a AC'97 device
++ * @codec: The CODEC for which to create the AC'97 device
+  *
+- * Initialises AC97 codec resources for use by ad-hoc devices only.
++ * Allocated a new snd_ac97 device and intializes it, but does not yet register
++ * it. The caller is responsible to either call device_add(&ac97->dev) to
++ * register the device, or to call put_device(&ac97->dev) to free the device.
++ *
++ * Returns: A snd_ac97 device or a PTR_ERR in case of an error.
+  */
+-struct snd_ac97 *snd_soc_new_ac97_codec(struct snd_soc_codec *codec)
++struct snd_ac97 *snd_soc_alloc_ac97_codec(struct snd_soc_codec *codec)
+ {
  	struct snd_ac97 *ac97;
- 	int ret = 0;
+-	int ret;
  
--	ac97 = snd_soc_new_ac97_codec(codec);
+ 	ac97 = kzalloc(sizeof(struct snd_ac97), GFP_KERNEL);
+ 	if (ac97 == NULL)
+@@ -73,7 +76,28 @@ struct snd_ac97 *snd_soc_new_ac97_codec(struct snd_soc_codec *codec)
+ 		     codec->component.card->snd_card->number, 0,
+ 		     codec->component.name);
+ 
+-	ret = device_register(&ac97->dev);
++	device_initialize(&ac97->dev);
++
++	return ac97;
++}
++EXPORT_SYMBOL(snd_soc_alloc_ac97_codec);
++
++/**
++ * snd_soc_new_ac97_codec - initailise AC97 device
++ * @codec: audio codec
++ *
++ * Initialises AC97 codec resources for use by ad-hoc devices only.
++ */
++struct snd_ac97 *snd_soc_new_ac97_codec(struct snd_soc_codec *codec)
++{
++	struct snd_ac97 *ac97;
++	int ret;
++
 +	ac97 = snd_soc_alloc_ac97_codec(codec);
- 	if (IS_ERR(ac97)) {
- 		ret = PTR_ERR(ac97);
- 		dev_err(codec->dev, "Failed to register AC97 codec\n");
- 		return ret;
- 	}
- 
--	snd_soc_codec_set_drvdata(codec, ac97);
--
- 	ret = wm9705_reset(codec);
- 	if (ret)
--		goto reset_err;
-+		goto err_put_device;
++	if (IS_ERR(ac97))
++		return ac97;
 +
 +	ret = device_add(&ac97->dev);
-+	if (ret)
-+		goto err_put_device;
-+
-+	snd_soc_codec_set_drvdata(codec, ac97);
- 
- 	return 0;
- 
--reset_err:
--	snd_soc_free_ac97_codec(ac97);
-+err_put_device:
-+	put_device(&ac97->dev);
- 	return ret;
- }
- 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index e04643d..9517571 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -666,7 +666,7 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- 	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
- 
--	wm9712->ac97 = snd_soc_new_ac97_codec(codec);
-+	wm9712->ac97 = snd_soc_alloc_ac97_codec(codec);
- 	if (IS_ERR(wm9712->ac97)) {
- 		ret = PTR_ERR(wm9712->ac97);
- 		dev_err(codec->dev, "Failed to register AC97 codec: %d\n", ret);
-@@ -675,15 +675,19 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- 
- 	ret = wm9712_reset(codec, 0);
- 	if (ret < 0)
--		goto reset_err;
-+		goto err_put_device;
-+
-+	ret = device_add(&wm9712->ac97->dev);
-+	if (ret)
-+		goto err_put_device;
- 
- 	/* set alc mux to none */
- 	ac97_write(codec, AC97_VIDEO, ac97_read(codec, AC97_VIDEO) | 0x3000);
- 
- 	return 0;
- 
--reset_err:
--	snd_soc_free_ac97_codec(wm9712->ac97);
-+err_put_device:
-+	put_device(&wm9712->ac97->dev);
- 	return ret;
- }
- 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index e5807de..6822291 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1225,7 +1225,7 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
- 	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0, reg;
- 
--	wm9713->ac97 = snd_soc_new_ac97_codec(codec);
-+	wm9713->ac97 = snd_soc_alloc_ac97_codec(codec);
- 	if (IS_ERR(wm9713->ac97))
- 		return PTR_ERR(wm9713->ac97);
- 
-@@ -1234,7 +1234,11 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
- 	wm9713_reset(codec, 0);
- 	ret = wm9713_reset(codec, 1);
- 	if (ret < 0)
--		goto reset_err;
-+		goto err_put_device;
-+
-+	ret = device_add(&wm9713->ac97->dev);
-+	if (ret)
-+		goto err_put_device;
- 
- 	/* unmute the adc - move to kcontrol */
- 	reg = ac97_read(codec, AC97_CD) & 0x7fff;
-@@ -1242,8 +1246,8 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
- 
- 	return 0;
- 
--reset_err:
--	snd_soc_free_ac97_codec(wm9713->ac97);
-+err_put_device:
-+	put_device(&wm9713->ac97->dev);
- 	return ret;
- }
- 
+ 	if (ret) {
+ 		put_device(&ac97->dev);
+ 		return ERR_PTR(ret);
 -- 
 1.8.0
