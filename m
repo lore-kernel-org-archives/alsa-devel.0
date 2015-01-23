@@ -1,105 +1,95 @@
-From: Zidan Wang <b50113@freescale.com>
-Subject: Re: [PATCH 2/3] ASoC: fsl_sai: Add support for tdm
- slots operation
-Date: Fri, 23 Jan 2015 10:55:09 +0800
-Message-ID: <20150123025507.GA2382@b50113>
-References: <1421756480-7055-1-git-send-email-zidan.wang@freescale.com>
- <1421756480-7055-3-git-send-email-zidan.wang@freescale.com>
- <20150121180801.GA3361@Alpha> <20150122045515.GA3467@b50113>
- <20150122054409.GA7748@Asurada> <20150122062004.GA7046@b50113>
- <20150122235019.GA3204@Asurada-GSX>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0136.outbound.protection.outlook.com [157.56.110.136])
- by alsa0.perex.cz (Postfix) with ESMTP id E871D26066E
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 03:54:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20150122235019.GA3204@Asurada-GSX>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
+From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: [alsa-devel] [PATCH v4 3/3] ARM: dts: Add sound nodes for
+ exynos4412-trats2
+Date: Fri, 23 Jan 2015 14:03:30 +0900
+Message-ID: <1421989410-12490-4-git-send-email-ideal.song@samsung.com>
+References: <1421989410-12490-1-git-send-email-ideal.song@samsung.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-reply-to: <1421989410-12490-1-git-send-email-ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, kgene-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 22, 2015 at 03:50:20PM -0800, Nicolin Chen wrote:
-> On Thu, Jan 22, 2015 at 02:20:06PM +0800, Zidan Wang wrote:
-> > > > > > @@ -369,10 +380,25 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
-> > > > > >  	u32 word_width = snd_pcm_format_width(params_format(params));
-> > > > > >  	u32 val_cr4 = 0, val_cr5 = 0;
-> > > > > >  	int ret;
-> > > > > > +	u32 bclk;
-> > > > > > +
-> > > > > > +	if (channels == 1)
-> > > > > > +		channels = 2;
-> > > > > > +
-> > > > > > +	if (!sai->slots || sai->slots % channels)
-> > > > > > +		sai->slots = channels;
-> > > > > > +
-> > > > > > +	sai->slots = sai->slots / channels;
-> > > > > > +
-> > > > > > +	if (sai->slot_width < word_width || sai->is_dsp_mode)
-> > > > > > +		sai->slot_width = word_width;
-> > > > > 
-> > > > > Could you pls explain a bit what's this overriding for?
-> > > > > Or it might be better to put into a comment.
-> > > > >
-> > > > In machine driver, we should use snd_soc_dai_set_tdm_slot to set slots
-> > > > and slot width. In my opinion, slots in machine driver means the slot
-> > > > number of all channels. But in sai driver, the slots means the slot number
-> > > > of one channel. So snd_soc_calc_bclk use fs*sample_size*channels*tdm_slots
-> > > > to caculate bclk.
-> > > 
-> > > Could you pls use the standard way as you described for slot number
-> > > in machine driver instead of defining some other meanings? That one
-> > > is really confusing, not to mention a code without any comment.
-> > > 
-> > > You can add some extra local variables with extinguished names and
-> > > calculate the slot number and channels you want without changing
-> > > the original sai->slots and channels in the hw_params(). As you said,
-> > > you only need that new slot number and channels for snd_soc_calc_bclk
-> > > call. So you may also put this code right before the call -- a normal
-> > > routine doesn't need to recalculate the special slots and channels,
-> > > right?
-> 
-> > Actually i don't kown which meaning is the standard way. Because i found
-> > in wm8993 and wm8904 codec driver, they also use slots/channels to set 
-> > tdm_slots in set_tdm_slot function.
-> 
-> The slots via machine driver should be total slot number per frame.
-> For I2S, we're passing 2 for slots parameter in our machine drivers.
-> 
-> So why not just following that pattern. You code for calculating slot
-> per channel is used to calculate bclk. But keeping slot per frame will
-> also allow you to do that, meanwhile you can drop some code to do the
-> extra calculation so as to keep it neat.
-> 
-> I suggest you to take a look at fsl_esai.c and to follow that way:
-> Override slots and slot_width if specified from machine driver.
-> 
-I will follow slot per frame pattern like fsl_esai.c, thanks very mush.
+This patch add WM1811 audio codec, I2S interface and the sound
+machine nodes to enable audio on exynos4412-trats2 board.
 
-I have another question.
+Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+---
+ arch/arm/boot/dts/exynos4412-trats2.dts | 42 +++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-Can a channel have several slots? Or channel just means slot.
+diff --git a/arch/arm/boot/dts/exynos4412-trats2.dts b/arch/arm/boot/dts/exynos4412-trats2.dts
+index 29231b4..6205b98 100644
+--- a/arch/arm/boot/dts/exynos4412-trats2.dts
++++ b/arch/arm/boot/dts/exynos4412-trats2.dts
+@@ -203,6 +203,25 @@
+ 		};
+ 	};
+ 
++	i2c@138A0000 {
++		samsung,i2c-sda-delay = <100>;
++		samsung,i2c-slave-addr = <0x10>;
++		samsung,i2c-max-bus-freq = <100000>;
++		pinctrl-0 = <&i2c4_bus>;
++		pinctrl-names = "default";
++		status = "okay";
++
++		wm1811: wm1811@1a {
++			compatible = "wlf,wm1811";
++			reg = <0x1a>;
++			clocks = <&pmu_system_controller 0>;
++			clock-names = "MCLK1";
++			DCVDD-supply = <&ldo3_reg>;
++			DBVDD1-supply = <&ldo3_reg>;
++			wlf,ldo1ena = <&gpj0 4 0>;
++		};
++	};
++
+ 	i2c@138D0000 {
+ 		samsung,i2c-sda-delay = <100>;
+ 		samsung,i2c-slave-addr = <0x10>;
+@@ -838,6 +857,24 @@
+ 		};
+ 	};
+ 
++	i2s0: i2s@03830000 {
++		pinctrl-0 = <&i2s0_bus>;
++		pinctrl-names = "default";
++		status = "okay";
++	};
++
++	sound {
++		compatible = "samsung,trats2-audio";
++		samsung,i2s-controller = <&i2s0>;
++		samsung,model = "Trats2";
++		samsung,audio-codec = <&wm1811>;
++		samsung,audio-routing =
++			"SPK", "SPKOUTLN",
++			"SPK", "SPKOUTLP",
++			"SPK", "SPKOUTRN",
++			"SPK", "SPKOUTRP";
++	};
++
+ 	exynos-usbphy@125B0000 {
+ 		status = "okay";
+ 	};
+@@ -865,6 +902,11 @@
+ 	};
+ };
+ 
++&pmu_system_controller {
++	assigned-clocks = <&pmu_system_controller 0>;
++	assigned-clock-parents =  <&clock CLK_XUSBXTI>;
++};
++
+ &pinctrl_0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&sleep0>;
+-- 
+2.0.0.390.gcb682f8
 
-> And another problem of your patch is the configurations for FRSZ and
-> xMR fields. For monaural case, the channels == 1, the current code
-> passes it directly to set them while your code overrides it to 2.
-> 
-> I'm not sure if you've tested the monaural case and confirmed it works.
-> But, apparently, the configurations look pretty different.
->
-I have tested the mono case, it works well.
-
-Best Regards,
-Zidan
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
