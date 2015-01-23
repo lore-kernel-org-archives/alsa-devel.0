@@ -1,16 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/16] ALSA: line6: Minor refactoring
-Date: Fri, 23 Jan 2015 18:13:08 +0100
-Message-ID: <1422033203-23254-2-git-send-email-tiwai@suse.de>
-References: <1422033203-23254-1-git-send-email-tiwai@suse.de>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] ASoC: ts3a227e: Remap keys to match
+	Android headset specification
+Date: Fri, 23 Jan 2015 07:36:46 -0800
+Message-ID: <CAOMFOmUg4BkAt67JKK_Q-i+XCkpzXhTdvURm+pkvWPNGzkWZhA@mail.gmail.com>
+References: <1421970436-15862-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 92EF52654F1
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:13:41 +0100 (CET)
-In-Reply-To: <1422033203-23254-1-git-send-email-tiwai@suse.de>
+Received: from mail-ig0-f175.google.com (mail-ig0-f175.google.com
+ [209.85.213.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7901526574E
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:27:40 +0100 (CET)
+Received: by mail-ig0-f175.google.com with SMTP id hn18so3064850igb.2
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 09:27:39 -0800 (PST)
+In-Reply-To: <1421970436-15862-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,136 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Split some codes in the lengthy line6_probe().
+Hi
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/line6/driver.c | 94 +++++++++++++++++++++++++-----------------------
- 1 file changed, 49 insertions(+), 45 deletions(-)
+On Thu, Jan 22, 2015 at 3:47 PM, Anatol Pomozov <anatol.pomozov@gmail.com>
+wrote:
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index e7f9a99e1949..b783c0788e45 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -448,6 +448,52 @@ static void line6_destruct(struct snd_card *card)
- 	usb_put_dev(usbdev);
- }
- 
-+/* get data from endpoint descriptor (see usb_maxpacket): */
-+static void line6_get_interval(struct usb_line6 *line6)
-+{
-+	struct usb_device *usbdev = line6->usbdev;
-+	struct usb_host_endpoint *ep;
-+	unsigned pipe = usb_rcvintpipe(usbdev, line6->properties->ep_ctrl_r);
-+	unsigned epnum = usb_pipeendpoint(pipe);
-+
-+	ep = usbdev->ep_in[epnum];
-+	if (ep) {
-+		line6->interval = ep->desc.bInterval;
-+		line6->max_packet_size = le16_to_cpu(ep->desc.wMaxPacketSize);
-+	} else {
-+		dev_err(line6->ifcdev,
-+			"endpoint not available, using fallback values");
-+		line6->interval = LINE6_FALLBACK_INTERVAL;
-+		line6->max_packet_size = LINE6_FALLBACK_MAXPACKETSIZE;
-+	}
-+}
-+
-+static int line6_init_cap_control(struct usb_line6 *line6)
-+{
-+	int ret;
-+
-+	/* initialize USB buffers: */
-+	line6->buffer_listen = kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
-+	if (!line6->buffer_listen)
-+		return -ENOMEM;
-+
-+	line6->buffer_message = kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
-+	if (!line6->buffer_message)
-+		return -ENOMEM;
-+
-+	line6->urb_listen = usb_alloc_urb(0, GFP_KERNEL);
-+	if (!line6->urb_listen)
-+		return -ENOMEM;
-+
-+	ret = line6_start_listen(line6);
-+	if (ret < 0) {
-+		dev_err(line6->ifcdev, "cannot start listening: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /*
- 	Probe USB device.
- */
-@@ -485,24 +531,7 @@ int line6_probe(struct usb_interface *interface,
- 	line6->usbdev = usbdev;
- 	line6->ifcdev = &interface->dev;
- 
--	/* get data from endpoint descriptor (see usb_maxpacket): */
--	{
--		struct usb_host_endpoint *ep;
--		unsigned pipe = usb_rcvintpipe(usbdev, properties->ep_ctrl_r);
--		unsigned epnum = usb_pipeendpoint(pipe);
--		ep = usbdev->ep_in[epnum];
--
--		if (ep != NULL) {
--			line6->interval = ep->desc.bInterval;
--			line6->max_packet_size =
--			    le16_to_cpu(ep->desc.wMaxPacketSize);
--		} else {
--			line6->interval = LINE6_FALLBACK_INTERVAL;
--			line6->max_packet_size = LINE6_FALLBACK_MAXPACKETSIZE;
--			dev_err(line6->ifcdev,
--				"endpoint not available, using fallback values");
--		}
--	}
-+	line6_get_interval(line6);
- 
- 	ret = snd_card_new(line6->ifcdev,
- 			   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
-@@ -525,34 +554,9 @@ int line6_probe(struct usb_interface *interface,
- 	usb_get_dev(usbdev);
- 
- 	if (properties->capabilities & LINE6_CAP_CONTROL) {
--		/* initialize USB buffers: */
--		line6->buffer_listen =
--		    kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
--		if (line6->buffer_listen == NULL) {
--			ret = -ENOMEM;
--			goto err_destruct;
--		}
--
--		line6->buffer_message =
--		    kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
--		if (line6->buffer_message == NULL) {
--			ret = -ENOMEM;
-+		ret = line6_init_cap_control(line6);
-+		if (ret < 0)
- 			goto err_destruct;
--		}
--
--		line6->urb_listen = usb_alloc_urb(0, GFP_KERNEL);
--
--		if (line6->urb_listen == NULL) {
--			ret = -ENOMEM;
--			goto err_destruct;
--		}
--
--		ret = line6_start_listen(line6);
--		if (ret < 0) {
--			dev_err(&interface->dev, "%s: usb_submit_urb failed\n",
--				__func__);
--			goto err_destruct;
--		}
- 	}
- 
- 	/* initialize device data based on device: */
--- 
-2.2.2
+> ts3a227e datasheet says typical key resistance is
+>   key1 50 Om
+>
+
+It is a misspelling in the commit message. "Om" should be replaced with
+"Ohm" here and below.
+
+Mark are you ok to fix it in your repo or do you want me to resend the
+updated patch?
+
+
+>   key2 135 Om
+>   key3 240 Om
+>   key4 470 Om
+>
+> The android headset specification expect buttons impedance:
+>   A (MEDIA) 0-70 Om
+>   D (VOICECOMMAND) 110-180 Om
+>   B (VOLUMEUP) 210-290 Om
+>   C (VOLUMEDOWN) 360-680 Om
+>
+> Thus key mapping should be
+>   key1 - MEDIA
+>   key2 - VOICECOMMAND
+>   key3 - VOLUMEUP
+>   key3 - VOLUMEDOWN
+>
+> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+> ---
+>  sound/soc/codecs/ts3a227e.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+> index 9f2dced..54d431c 100644
+> --- a/sound/soc/codecs/ts3a227e.c
+> +++ b/sound/soc/codecs/ts3a227e.c
+> @@ -221,9 +221,9 @@ int ts3a227e_enable_jack_detect(struct
+> snd_soc_component *component,
+>         struct ts3a227e *ts3a227e =
+> snd_soc_component_get_drvdata(component);
+>
+>         snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
+> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+> -       snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+> +       snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+>
+>         ts3a227e->jack = jack;
+>         ts3a227e_jack_report(ts3a227e);
+> --
+> 2.2.0.rc0.207.ga3a616c
+>
+>
