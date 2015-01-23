@@ -1,16 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 10/16] ALSA: line6: Drop voodoo workarounds
-Date: Fri, 23 Jan 2015 18:13:17 +0100
-Message-ID: <1422033203-23254-11-git-send-email-tiwai@suse.de>
-References: <1422033203-23254-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 00/16] Yet more cleanups of line6 drivers
+Date: Fri, 23 Jan 2015 18:13:07 +0100
+Message-ID: <1422033203-23254-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 329542654E0
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D82B2654C6
  for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:13:40 +0100 (CET)
-In-Reply-To: <1422033203-23254-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +22,45 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-If the problem still really remains, we should fix it instead of
-papering over it like this...
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/line6/capture.c  | 12 ------------
- sound/usb/line6/playback.c | 12 ------------
- 2 files changed, 24 deletions(-)
+here is a series of cleanup patches for line6 stuff.  They are applied
+on top of my previous patches.  The latest patchset is found in
+test/line6 branch of sound.git tree.
 
-diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
-index 97283e631e45..bad1b5b02786 100644
---- a/sound/usb/line6/capture.c
-+++ b/sound/usb/line6/capture.c
-@@ -297,18 +297,6 @@ static int snd_line6_capture_hw_params(struct snd_pcm_substream *substream,
- 	int ret;
- 	struct snd_line6_pcm *line6pcm = snd_pcm_substream_chip(substream);
- 
--	/* -- Florian Demski [FD] */
--	/* don't ask me why, but this fixes the bug on my machine */
--	if (line6pcm == NULL) {
--		if (substream->pcm == NULL)
--			return -ENOMEM;
--		if (substream->pcm->private_data == NULL)
--			return -ENOMEM;
--		substream->private_data = substream->pcm->private_data;
--		line6pcm = snd_pcm_substream_chip(substream);
--	}
--	/* -- [FD] end */
--
- 	ret = line6_pcm_acquire(line6pcm, LINE6_BIT_PCM_ALSA_CAPTURE_BUFFER);
- 
- 	if (ret < 0)
-diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
-index ab9a83f0f864..7e031b1761aa 100644
---- a/sound/usb/line6/playback.c
-+++ b/sound/usb/line6/playback.c
-@@ -445,18 +445,6 @@ static int snd_line6_playback_hw_params(struct snd_pcm_substream *substream,
- 	int ret;
- 	struct snd_line6_pcm *line6pcm = snd_pcm_substream_chip(substream);
- 
--	/* -- Florian Demski [FD] */
--	/* don't ask me why, but this fixes the bug on my machine */
--	if (line6pcm == NULL) {
--		if (substream->pcm == NULL)
--			return -ENOMEM;
--		if (substream->pcm->private_data == NULL)
--			return -ENOMEM;
--		substream->private_data = substream->pcm->private_data;
--		line6pcm = snd_pcm_substream_chip(substream);
--	}
--	/* -- [FD] end */
--
- 	ret = line6_pcm_acquire(line6pcm, LINE6_BIT_PCM_ALSA_PLAYBACK_BUFFER);
- 
- 	if (ret < 0)
+
+Takashi
+
+
+Takashi Iwai (16):
+  ALSA: line6: Minor refactoring
+  ALSA: line6: Fix memory leak at probe error path
+  ALSA: line6: Remove unused line6_nop_read()
+  ALSA: line6: Reduce superfluous spinlock in midi.c
+  ALSA: line6: Fix missing error handling in line6_pcm_acquire()
+  ALSA: line6: Use logical OR
+  ALSA: line6: Fix the error recovery in line6_pcm_acquire()
+  ALSA: line6: Drop superfluous spinlock for trigger
+  ALSA: line6: Use incremental loop
+  ALSA: line6: Drop voodoo workarounds
+  ALSA: line6: Rearrange PCM structure
+  ALSA: line6: Consolidate URB unlink and sync helpers
+  ALSA: line6: Use dev_err()
+  ALSA: line6: Consolidate PCM stream buffer allocation and free
+  ALSA: line6: Do clipping in volume / monitor manipulations
+  ALSA: line6: Skip volume manipulation during silence copying
+
+ sound/usb/line6/capture.c  | 122 ++++++--------------------
+ sound/usb/line6/capture.h  |   5 --
+ sound/usb/line6/driver.c   | 157 ++++++++++++++++-----------------
+ sound/usb/line6/driver.h   |   2 -
+ sound/usb/line6/midi.c     |  18 ++--
+ sound/usb/line6/midi.h     |   7 +-
+ sound/usb/line6/pcm.c      | 210 +++++++++++++++++++++++++++------------------
+ sound/usb/line6/pcm.h      | 163 ++++++++++-------------------------
+ sound/usb/line6/playback.c | 159 ++++++++++------------------------
+ sound/usb/line6/playback.h |   5 --
+ 10 files changed, 329 insertions(+), 519 deletions(-)
+
 -- 
 2.2.2
