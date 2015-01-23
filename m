@@ -1,16 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/16] ALSA: line6: Fix memory leak at probe
-	error path
-Date: Fri, 23 Jan 2015 18:13:09 +0100
-Message-ID: <1422033203-23254-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 09/16] ALSA: line6: Use incremental loop
+Date: Fri, 23 Jan 2015 18:13:16 +0100
+Message-ID: <1422033203-23254-10-git-send-email-tiwai@suse.de>
 References: <1422033203-23254-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 92B042654EB
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:13:41 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A2076265529
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:13:42 +0100 (CET)
 In-Reply-To: <1422033203-23254-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,113 +24,117 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix memory leak at probe error path by rearranging the call order in
-line6_destruct() so that the common destructor is always called.
-Also this simplifies the error path to a single goto label.
+Using a decremental loop without particular reasons worsens the
+readability a lot.  Use incremental loops instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/driver.c | 53 ++++++++++++++++++++++++------------------------
- 1 file changed, 27 insertions(+), 26 deletions(-)
+ sound/usb/line6/capture.c  |  4 ++--
+ sound/usb/line6/pcm.c      |  6 +++---
+ sound/usb/line6/playback.c | 12 ++++++------
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index b783c0788e45..2eed6fbd99c4 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -507,10 +507,32 @@ int line6_probe(struct usb_interface *interface,
- 	int interface_number;
- 	int ret;
+diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
+index 5a010ba163fa..97283e631e45 100644
+--- a/sound/usb/line6/capture.c
++++ b/sound/usb/line6/capture.c
+@@ -91,7 +91,7 @@ void line6_unlink_audio_in_urbs(struct snd_line6_pcm *line6pcm)
+ {
+ 	unsigned int i;
  
-+	ret = snd_card_new(line6->ifcdev,
-+			   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
-+			   THIS_MODULE, 0, &card);
-+	if (ret < 0) {
-+		kfree(line6);
-+		return ret;
-+	}
-+
-+	line6->card = card;
-+	strcpy(card->id, line6->properties->id);
-+	strcpy(card->driver, DRIVER_NAME);
-+	strcpy(card->shortname, line6->properties->name);
-+	sprintf(card->longname, "Line 6 %s at USB %s", line6->properties->name,
-+		dev_name(line6->ifcdev));
-+	card->private_data = line6;
-+	card->private_free = line6_destruct;
-+
-+	usb_set_intfdata(interface, line6);
-+
-+	/* increment reference counters: */
-+	usb_get_dev(usbdev);
-+
- 	/* we don't handle multiple configurations */
- 	if (usbdev->descriptor.bNumConfigurations != 1) {
- 		ret = -ENODEV;
--		goto err_put;
-+		goto error;
- 	}
+-	for (i = LINE6_ISO_BUFFERS; i--;) {
++	for (i = 0; i < LINE6_ISO_BUFFERS; i++) {
+ 		if (test_bit(i, &line6pcm->active_urb_in)) {
+ 			if (!test_and_set_bit(i, &line6pcm->unlink_urb_in)) {
+ 				struct urb *u = line6pcm->urb_audio_in[i];
+@@ -114,7 +114,7 @@ void line6_wait_clear_audio_in_urbs(struct snd_line6_pcm *line6pcm)
  
- 	/* initialize device info: */
-@@ -523,7 +545,7 @@ int line6_probe(struct usb_interface *interface,
- 			properties->altsetting);
- 	if (ret < 0) {
- 		dev_err(&interface->dev, "set_interface failed\n");
--		goto err_put;
-+		goto error;
- 	}
+ 	do {
+ 		alive = 0;
+-		for (i = LINE6_ISO_BUFFERS; i--;) {
++		for (i = 0; i < LINE6_ISO_BUFFERS; i++) {
+ 			if (test_bit(i, &line6pcm->active_urb_in))
+ 				alive++;
+ 		}
+diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
+index adbcac46b785..43474c4ebb6b 100644
+--- a/sound/usb/line6/pcm.c
++++ b/sound/usb/line6/pcm.c
+@@ -273,7 +273,7 @@ static int snd_line6_control_playback_get(struct snd_kcontrol *kcontrol,
+ 	int i;
+ 	struct snd_line6_pcm *line6pcm = snd_kcontrol_chip(kcontrol);
  
- 	/* store basic data: */
-@@ -533,36 +555,16 @@ int line6_probe(struct usb_interface *interface,
- 
- 	line6_get_interval(line6);
- 
--	ret = snd_card_new(line6->ifcdev,
--			   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
--			   THIS_MODULE, 0, &card);
--	if (ret < 0)
--		goto err_put;
--
--	line6->card = card;
--	strcpy(card->id, line6->properties->id);
--	strcpy(card->driver, DRIVER_NAME);
--	strcpy(card->shortname, line6->properties->name);
--	sprintf(card->longname, "Line 6 %s at USB %s", line6->properties->name,
--		dev_name(line6->ifcdev));
--	card->private_data = line6;
--	card->private_free = line6_destruct;
--
--	usb_set_intfdata(interface, line6);
--
--	/* increment reference counters: */
--	usb_get_dev(usbdev);
--
- 	if (properties->capabilities & LINE6_CAP_CONTROL) {
- 		ret = line6_init_cap_control(line6);
- 		if (ret < 0)
--			goto err_destruct;
-+			goto error;
- 	}
- 
- 	/* initialize device data based on device: */
- 	ret = private_init(interface, line6);
- 	if (ret < 0)
--		goto err_destruct;
-+		goto error;
- 
- 	/* creation of additional special files should go here */
- 
-@@ -571,11 +573,10 @@ int line6_probe(struct usb_interface *interface,
+-	for (i = 2; i--;)
++	for (i = 0; i < 2; i++)
+ 		ucontrol->value.integer.value[i] = line6pcm->volume_playback[i];
  
  	return 0;
+@@ -286,7 +286,7 @@ static int snd_line6_control_playback_put(struct snd_kcontrol *kcontrol,
+ 	int i, changed = 0;
+ 	struct snd_line6_pcm *line6pcm = snd_kcontrol_chip(kcontrol);
  
-- err_destruct:
-+ error:
- 	if (line6->disconnect)
- 		line6->disconnect(interface);
- 	snd_card_free(card);
-- err_put:
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(line6_probe);
+-	for (i = 2; i--;)
++	for (i = 0; i < 2; i++)
+ 		if (line6pcm->volume_playback[i] !=
+ 		    ucontrol->value.integer.value[i]) {
+ 			line6pcm->volume_playback[i] =
+@@ -330,7 +330,7 @@ static void line6_cleanup_pcm(struct snd_pcm *pcm)
+ 	int i;
+ 	struct snd_line6_pcm *line6pcm = snd_pcm_chip(pcm);
+ 
+-	for (i = LINE6_ISO_BUFFERS; i--;) {
++	for (i = 0; i < LINE6_ISO_BUFFERS; i++) {
+ 		if (line6pcm->urb_audio_out[i]) {
+ 			usb_kill_urb(line6pcm->urb_audio_out[i]);
+ 			usb_free_urb(line6pcm->urb_audio_out[i]);
+diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
+index 1c9f95a370ff..ab9a83f0f864 100644
+--- a/sound/usb/line6/playback.c
++++ b/sound/usb/line6/playback.c
+@@ -297,7 +297,7 @@ void line6_unlink_audio_out_urbs(struct snd_line6_pcm *line6pcm)
+ {
+ 	unsigned int i;
+ 
+-	for (i = LINE6_ISO_BUFFERS; i--;) {
++	for (i = 0; i < LINE6_ISO_BUFFERS; i++) {
+ 		if (test_bit(i, &line6pcm->active_urb_out)) {
+ 			if (!test_and_set_bit(i, &line6pcm->unlink_urb_out)) {
+ 				struct urb *u = line6pcm->urb_audio_out[i];
+@@ -320,7 +320,7 @@ void line6_wait_clear_audio_out_urbs(struct snd_line6_pcm *line6pcm)
+ 
+ 	do {
+ 		alive = 0;
+-		for (i = LINE6_ISO_BUFFERS; i--;) {
++		for (i = 0; i < LINE6_ISO_BUFFERS; i++) {
+ 			if (test_bit(i, &line6pcm->active_urb_out))
+ 				alive++;
+ 		}
+@@ -366,14 +366,14 @@ static void audio_out_callback(struct urb *urb)
+ 	line6pcm->last_frame_out = urb->start_frame;
+ 
+ 	/* find index of URB */
+-	for (index = LINE6_ISO_BUFFERS; index--;)
++	for (index = 0; index < LINE6_ISO_BUFFERS; index++)
+ 		if (urb == line6pcm->urb_audio_out[index])
+ 			break;
+ 
+-	if (index < 0)
++	if (index >= LINE6_ISO_BUFFERS)
+ 		return;		/* URB has been unlinked asynchronously */
+ 
+-	for (i = LINE6_ISO_PACKETS; i--;)
++	for (i = 0; i < LINE6_ISO_PACKETS; i++)
+ 		length += urb->iso_frame_desc[i].length;
+ 
+ 	spin_lock_irqsave(&line6pcm->lock_audio_out, flags);
+@@ -390,7 +390,7 @@ static void audio_out_callback(struct urb *urb)
+ 
+ 	clear_bit(index, &line6pcm->active_urb_out);
+ 
+-	for (i = LINE6_ISO_PACKETS; i--;)
++	for (i = 0; i < LINE6_ISO_PACKETS; i++)
+ 		if (urb->iso_frame_desc[i].status == -EXDEV) {
+ 			shutdown = 1;
+ 			break;
 -- 
 2.2.2
