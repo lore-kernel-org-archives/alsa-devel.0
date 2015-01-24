@@ -1,99 +1,101 @@
-From: Tobias Jakobi <liquid.acid@gmx.net>
-Subject: Re: [PATCH v2 00/16] ASoC: samsung: Add clk provider for I2S
- internal clocks
-Date: Sat, 24 Jan 2015 02:53:41 +0100
-Message-ID: <54C2FB25.4030501@gmx.net>
-References: <1418997336-17777-1-git-send-email-s.nawrocki@samsung.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: add generic dt-card support
+Date: Sat, 24 Jan 2015 08:30:27 +0100
+Message-ID: <20150124083027.3b3a018f@armhf>
+References: <cover.1421868426.git.moinejf@free.fr>
+	<d0c66c2e2f200119f9990fa52a503b1a4af6238f.1421868426.git.moinejf@free.fr>
+	<54C0088F.9070609@metafoo.de>
+	<20150122090723.50ac0156@armhf>
+	<54C14EB3.8080305@metafoo.de>
+	<20150123131554.623003f9@armhf>
+	<54C252F4.9000504@metafoo.de>
+	<20150123193456.276ea512@armhf>
+	<20150123191343.GW21293@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1418997336-17777-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>, broonie@kernel.org, kgene@kernel.org, alsa-devel@alsa-project.org
-Cc: padma.v@samsung.com, drake@endlessm.com, sbkim73@samsung.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150123191343.GW21293@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Fri, 23 Jan 2015 19:13:43 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
-I've tested the series on my X2 and so far I haven't encountered any
-obvious issues with it.
+> On Fri, Jan 23, 2015 at 07:34:56PM +0100, Jean-Francois Moine wrote:
+>=20
+> > A card builder is a device which
+> > - scans the graph of ports,
+> > - fills the struct snd_soc_card according to the links between the
+> >   ports and their properties,
+> > - and, eventually, calls snd_soc_register_card().
+>=20
+> > The simple card builder, 'dt-card' (maybe a better name would have =
+been
+> > 'graph-card'), acts just like the simple-card except that it does n=
+ot
+> > appear in the DT. Its creation is done by an audio controller.
+>=20
+> Which audio controller?  There may be several CPU side audio interfac=
+es
+> in the same card.  For example people often want to have both low
+> latency and high latency audio paths from the CPU into the hardware (=
+low
+> latency tends to increase power burn).  SoC centric system designs do
+> sometimes also have PDM I/O, expecting to be directly connected to DM=
+ICs
+> and so on, which results in a relatively large number of CPU interfac=
+es.
 
-I have a small question though. With the move to simple-audio-card the
-old driver (selected by SND_SOC_ODROIDX2) is probably going away after
-some time.
-Currently SND_SOC_ODROIDX2 also selects SND_SOC_MAX98090 and
-SND_SAMSUNG_I2S, which I believe (correct me if I'm wrong) are necessary
-to use the sound subsystem even with simple-audio-card (since the
-max98090 codec has to be built at least). I've found no way of selecting
-these two manually, so at the moment I need both CONFIG_SND_SIMPLE_CARD
-and SND_SOC_ODROIDX2 enabled to use sound. Is this intended behaviour?
+The audio controller which creates the card depends on the complexity
+of the card. When there are many controllers, it is up to the designer
+to define either a master audio controller or to instantiate a 'card'
+device via the DT for doing the job.
 
+> > > > With a DT graph, each CPU/CODEC would know exactly the widgets =
+and
+> > > > routes it has to define.
+>=20
+> > > Which widgets/routes do you mean?
+>=20
+> > Well, forget about this. I never clearly understood why some widget=
+s
+> > and routes had to be defined at card level.
+>=20
+> Please do try to understand the idea of representing simple component=
+s
+> on the board and analogue interconects between devices - it's really
+> important and not something that can be neglected.
 
-And while I'm at it. I'm booting the board with an upstream u-boot
-version which sets the MPLL to 800MHz, which AFAIK is the clocking rate
-that makes less 'trouble' (but at the expense of performance).
-I was wondering if anyone can comment on whether the recent rework has
-any influence on the behaviour when booting with the vendor u-boot
-(which sets the MPLL to 880MHz). IIRC then clock rounding issues arose
-there.
+The problem is that this understanding would stay abstract: I have no
+such a hardware. Anyway, if the representation can be done with the
+simple-card, it may also be done with a graph of ports.
 
-It would be interesting to know if this series gets us closer to drive
-the MPLL with the recommended (?) higher clocking rate.
+> > > I'd agree if this was some kind of kernel internal stuff, but thi=
+s is=20
+> > > creating ABI and we have to maintain it forever. Rushing this in =
+without=20
+> > > proper discussion and consideration of the more complex use-cases=
+ is in my=20
+> > > opinion not a good idea.
+>=20
+> > Using a graph of port to describe the audio subsystem has been push=
+ed
+> > forwards by many people for a long time, as shown by the creation o=
+f
+> > the document Documentation/devicetree/bindings/graph.txt.
+>=20
+> That DT binding was done entirely in the context of video application=
+s
+> IIRC, this is the first time it's been discussed in this context.
 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/07062=
+2.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/08627=
+3.html
 
-With best wishes,
-Tobias
-
-
-
-Sylwester Nawrocki wrote:
-> This series is an attempt to resolve the CDCLK clock gating issue on Odroid
-> X2/U3 as reported by Daniel Drake [1], by exposing the CDCLK gate clock 
-> (and the two other clocks) through clk API. 
-> 
-> Changes since previous version:
->  - removed check for the i2s_opclk1 mux input clock while creating the mux
->    and div clocks,
->  - the DT binding documentation changes reworked (addressing review comments),
->  - added include/dt-bindings/sound/samsung-i2s.h header file defining
->    the clk indices, it's been put into a separate patch together with the I2S 
->    DT binding documentation updates to make merging of the ASoC and the dts
->    patches separately easier,
->  - a patch fixing compatible strings of I2S1, I2S2 in exynos4.dtsi is included
->    in this series.
-> 
-> This whole series may need more testing on other SoCs, so far I only tested 
-> it on Odroid Exynos4412 X2, with the I2S working in slave mode.
-> 
-> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2014-September/081753.html
-> 
-> Sylwester Nawrocki (16):
->   ASoC: samsung: i2s: Remove unused gpios field from struct i2s
->   ASoC: samsung: i2s: samsung_i2s_get_driver_data() cleanup
->   ASoC: samsung: i2s: Add return value checks in probe()
->   ASoC: samsung: i2s: Request memory region in driver probe()
->   ASoC: samsung: i2s: Move clk_get() to platform driver probe()
->   ASoC: samsung: i2s: Move clk enable to the platform driver probe()
->   ASoC: samsung: i2s: Add get_other_dai helper function
->   ASoC: samsung: i2s: Remove an unneeded goto usage
->   ASoC: samsung: i2s: Add spinlock in place of local_irq_* calls
->   ASoC: samsung: i2s: Protect more registers with a spinlock
->   ASoC: samsung: odroidx2: Handle I2S CDCLK clock conditionally
->   ASoC: samsung: i2s: Add clk provider DT binding documentation
->   ASoC: samsung: i2s: Add clock provider for the I2S internal clocks
->   ARM: dts: Exynos4 and Odroid X2/U3 sound device nodes update
->   ARM: dts: Switch Odroid X2/U2 to simple-audio-card
->   ARM: dts: Fix I2S1, I2S2 compatible for exynos4 SoCs
-> 
->  .../devicetree/bindings/sound/samsung-i2s.txt      |   22 ++
->  arch/arm/boot/dts/exynos4.dtsi                     |   13 +-
->  arch/arm/boot/dts/exynos4412-odroid-common.dtsi    |   27 +-
->  arch/arm/boot/dts/exynos4412-odroidu3.dts          |    8 +-
->  arch/arm/boot/dts/exynos4412-odroidx2.dts          |    8 +-
->  include/dt-bindings/sound/samsung-i2s.h            |    8 +
->  sound/soc/samsung/i2s.c                            |  362 ++++++++++++--------
->  sound/soc/samsung/odroidx2_max98090.c              |    6 +-
->  8 files changed, 295 insertions(+), 159 deletions(-)
->  create mode 100644 include/dt-bindings/sound/samsung-i2s.h
-> 
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
