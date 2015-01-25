@@ -1,47 +1,56 @@
-From: Guido Aulisi <guido.aulisi@gmail.com>
-Subject: Regression in kernel 3.19-rc5 for usb2 scarlett 18i20
-Date: Sun, 25 Jan 2015 12:42:22 +0100
-Message-ID: <1422186142.4719.8.camel@yoda.heavyware>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 13/13] libhinawa: add sample scripts
+Date: Sun, 25 Jan 2015 17:14:59 +0500
+Message-ID: <54C4DE43.1050105@gmail.com>
+References: <1422185674-16431-1-git-send-email-o-takashi@sakamocchi.jp>
+	<1422185674-16431-14-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id A072426046F
- for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2015 12:42:26 +0100 (CET)
-Received: by mail-wi0-f172.google.com with SMTP id h11so4963138wiw.5
- for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2015 03:42:26 -0800 (PST)
-Received: from [192.168.0.2]
- (host47-199-dynamic.52-79-r.retail.telecomitalia.it. [79.52.199.47])
- by mx.google.com with ESMTPSA id gm10sm9433404wib.19.2015.01.25.03.42.24
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128/128);
- Sun, 25 Jan 2015 03:42:25 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1422185674-16431-14-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I noticed a regression in 3.19-rc5 kernel (as shipped by fedora rawhide)
-with usb2 focusrite scarlett 18i20.
-I get a lot of xruns with jack, even at 1024 frame buffer and 2 periods.
-In 3.17.8 it works quite well without xruns at the same settings.
+25.01.2015 16:34, Takashi Sakamoto wrote:
+> +from array import array
+> +
+> +# helper function
+> +def get_array():
+> +    # The width with 'L' parameter is depending on environment.
+> +    arr = array('L')
+> +    if arr.itemsize is not 4:
+> +        arr = array('I')
+> +    return arr
 
-I use a fedora 20 (64bit) laptop with 8GB ram,  I only installed the
-rawhide kernel to try the new included scarlett mixer, no other software
-components changed.
 
-I can try to do some other test, but compiling the kernel on this laptop
-is time consuming.
+If you insist on using arrays, then please add an assertion that you 
+have actually got an array with itemsize 4 at the end. But, if I were 
+you, I'd go with the "ctypes" module instead, if it works. Here is how 
+you get a fixed-size (in the example, 10 elements) array with signed 
+4-byte elements:
 
-Thanks
-Guido
+from ctypes import *
+TenInts = c_int32 * 10
+ii = TenInts()
+
+The result supports buffer protocol.
+
+-- 
+Alexander E. Patrakov
+
+------------------------------------------------------------------------------
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
