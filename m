@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 2/6] ALSA: seq: correctly report maximum number
-	of ports
-Date: Sun, 25 Jan 2015 14:34:57 +0100
-Message-ID: <54C4F101.9010204@ladisch.de>
+Subject: [PATCH 3/6] ALSA: seq: fix off-by-one error in port
+	limit check
+Date: Sun, 25 Jan 2015 14:35:24 +0100
+Message-ID: <54C4F11C.1090903@ladisch.de>
 References: <54C4F0A1.2000907@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id CC7F7260437
- for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2015 14:34:59 +0100 (CET)
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C654B260444
+ for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2015 14:35:23 +0100 (CET)
 In-Reply-To: <54C4F0A1.2000907@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,24 +25,21 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Due to SNDRV_SEQ_ADDRESS_BROADCAST, not all 256 port number values can
-be used.
-
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/core/seq/seq_clientmgr.c |    2 +-
+ sound/core/seq/seq_ports.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 225c7315..808918a 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -1133,7 +1133,7 @@ static int snd_seq_ioctl_system_info(struct snd_seq_client *client, void __user
- 	/* fill the info fields */
- 	info.queues = SNDRV_SEQ_MAX_QUEUES;
- 	info.clients = SNDRV_SEQ_MAX_CLIENTS;
--	info.ports = 256;	/* fixed limit */
-+	info.ports = SNDRV_SEQ_MAX_PORTS;
- 	info.channels = 256;	/* fixed limit */
- 	info.cur_clients = client_usage.cur;
- 	info.cur_queues = snd_seq_queue_get_cur_queues();
+diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
+index 794a341..52b279b 100644
+--- a/sound/core/seq/seq_ports.c
++++ b/sound/core/seq/seq_ports.c
+@@ -134,7 +134,7 @@ struct snd_seq_client_port *snd_seq_create_port(struct snd_seq_client *client,
+ 	if (snd_BUG_ON(!client))
+ 		return NULL;
+
+-	if (client->num_ports >= SNDRV_SEQ_MAX_PORTS - 1) {
++	if (client->num_ports >= SNDRV_SEQ_MAX_PORTS) {
+ 		pr_warn("ALSA: seq: too many ports for client %d\n", client->number);
+ 		return NULL;
+ 	}
