@@ -1,16 +1,15 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 3/6] ALSA: seq: fix off-by-one error in port
-	limit check
-Date: Sun, 25 Jan 2015 14:35:24 +0100
-Message-ID: <54C4F11C.1090903@ladisch.de>
+Subject: [PATCH 4/6] ALSA: seq: remove unused symbols
+Date: Sun, 25 Jan 2015 14:35:58 +0100
+Message-ID: <54C4F13E.5030609@ladisch.de>
 References: <54C4F0A1.2000907@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C654B260444
- for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2015 14:35:23 +0100 (CET)
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 24A182604BE
+ for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2015 14:36:00 +0100 (CET)
 In-Reply-To: <54C4F0A1.2000907@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,19 +26,29 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 ---
- sound/core/seq/seq_ports.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/seq_kernel.h |    6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
-index 794a341..52b279b 100644
---- a/sound/core/seq/seq_ports.c
-+++ b/sound/core/seq/seq_ports.c
-@@ -134,7 +134,7 @@ struct snd_seq_client_port *snd_seq_create_port(struct snd_seq_client *client,
- 	if (snd_BUG_ON(!client))
- 		return NULL;
+diff --git a/include/sound/seq_kernel.h b/include/sound/seq_kernel.h
+index eea5400..ab8ddd9 100644
+--- a/include/sound/seq_kernel.h
++++ b/include/sound/seq_kernel.h
+@@ -27,9 +27,6 @@
+ typedef struct snd_seq_real_time snd_seq_real_time_t;
+ typedef union snd_seq_timestamp snd_seq_timestamp_t;
 
--	if (client->num_ports >= SNDRV_SEQ_MAX_PORTS - 1) {
-+	if (client->num_ports >= SNDRV_SEQ_MAX_PORTS) {
- 		pr_warn("ALSA: seq: too many ports for client %d\n", client->number);
- 		return NULL;
- 	}
+-/* maximum number of events dequeued per schedule interval */
+-#define SNDRV_SEQ_MAX_DEQUEUE		50
+-
+ /* maximum number of queues */
+ #define SNDRV_SEQ_MAX_QUEUES		8
+
+@@ -42,9 +39,6 @@ typedef union snd_seq_timestamp snd_seq_timestamp_t;
+ /* max number of events in memory pool */
+ #define SNDRV_SEQ_MAX_EVENTS		2000
+
+-/* default number of events in memory chunk */
+-#define SNDRV_SEQ_DEFAULT_CHUNK_EVENTS	64
+-
+ /* default number of events in memory pool */
+ #define SNDRV_SEQ_DEFAULT_EVENTS	500
