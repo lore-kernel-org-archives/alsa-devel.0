@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/13] libhinawa: add 'fw_req' object as requester for
-	FireWire transaction
-Date: Sun, 25 Jan 2015 20:34:28 +0900
-Message-ID: <1422185674-16431-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/13] libhinawa: add 'snd_dice' object as a helper for Dice
+	notification
+Date: Sun, 25 Jan 2015 20:34:31 +0900
+Message-ID: <1422185674-16431-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1422185674-16431-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,74 +21,105 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Each applications are allows to transfer requests to units on IEEE 1394
-bus to control the units. The request transaction is defined in IEEE 1212.
-There are three types of the transaction; read, write and lock.
+Dice is 'Digital Interface Communications Engine' which TC Applied
+Technologies produced. Several chipset are produced under a name
+of Dice. For Dice chipset, well-known FCP or AV/C commands are not
+used to control devices. It's performed by read/write transactions
+into specific addresses.
 
-Linux FireWire subsystem gives a way to perform this. Applications can
-start the three types of transaction by ioctl(2), then receive the result
-by read(2).
+Dice has a specific mechanism called as 'notification'. When device
+status is changed, Dice devices tells the event by sending transaction.
+This notification is sent to an address to which ALSA Dice driver
+listens. Then the driver allows applications to read it via ALSA
+hwdep interface.
 
-This commit adds HINAWA_TYPE_FW_REQ object for this purpose. When
-constructing the instance, applications can transact by read()/write()/lock()
-method. These methods are programmed with threading. When the instance
-cannot read the result within timeout, these methods sets ETIMEDOUT to
-GError and returns. Currently, the timeout is 10 milli-seconds.
+This commit adds HINAWA_TYPE_SND_DICE object to handle the notification.
+When applications calls listen() method, the instance generates
+'notified' signal when the Dice unit transfer notification. This object
+also have transact() method. An application can change unit status and
+wait the notification with given bit flag.
+
+This object is an inheritance of HINAWA_TYPE_SND_UNIT, thus any
+signals and properties, methods are also available.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
  libhinawa/doc/reference/hinawa-docs.sgml |   1 +
  libhinawa/src/Makefile.am                |   7 +-
- libhinawa/src/fw_req.c                   | 265 +++++++++++++++++++++++++++++++
- libhinawa/src/fw_req.h                   |  56 +++++++
- libhinawa/src/fw_unit.c                  |   4 +
  libhinawa/src/internal.h                 |   3 +
- 6 files changed, 334 insertions(+), 2 deletions(-)
- create mode 100644 libhinawa/src/fw_req.c
- create mode 100644 libhinawa/src/fw_req.h
+ libhinawa/src/snd_dice.c                 | 195 +++++++++++++++++++++++++++++++
+ libhinawa/src/snd_dice.h                 |  53 +++++++++
+ libhinawa/src/snd_unit.c                 |   5 +
+ 6 files changed, 262 insertions(+), 2 deletions(-)
+ create mode 100644 libhinawa/src/snd_dice.c
+ create mode 100644 libhinawa/src/snd_dice.h
 
 diff --git a/libhinawa/doc/reference/hinawa-docs.sgml b/libhinawa/doc/reference/hinawa-docs.sgml
-index 419e431..ff00ecc 100644
+index 8d4483e..58c862a 100644
 --- a/libhinawa/doc/reference/hinawa-docs.sgml
 +++ b/libhinawa/doc/reference/hinawa-docs.sgml
-@@ -32,6 +32,7 @@
-             </para>
-             <xi:include href="xml/fw_unit.xml"/>
-             <xi:include href="xml/fw_resp.xml"/>
-+            <xi:include href="xml/fw_req.xml"/>
+@@ -35,6 +35,7 @@
+             <xi:include href="xml/fw_req.xml"/>
+             <xi:include href="xml/fw_fcp.xml"/>
+             <xi:include href="xml/snd_unit.xml"/>
++            <xi:include href="xml/snd_dice.xml"/>
          </chapter>
      </part>
  
 diff --git a/libhinawa/src/Makefile.am b/libhinawa/src/Makefile.am
-index 7c09088..91726b8 100644
+index b717e4e..696e567 100644
 --- a/libhinawa/src/Makefile.am
 +++ b/libhinawa/src/Makefile.am
-@@ -27,12 +27,15 @@ libhinawa_la_SOURCES =				\
- 	fw_unit.h				\
- 	fw_unit.c				\
- 	fw_resp.h				\
--	fw_resp.c
-+	fw_resp.c				\
-+	fw_req.h				\
-+	fw_req.c
+@@ -34,7 +34,9 @@ libhinawa_la_SOURCES =				\
+ 	fw_fcp.h				\
+ 	fw_fcp.c				\
+ 	snd_unit.h				\
+-	snd_unit.c
++	snd_unit.c				\
++	snd_dice.h				\
++	snd_dice.c
  
  pkginclude_HEADERS =				\
  	hinawa_sigs_marshal.h			\
- 	fw_unit.h				\
--	fw_resp.h
-+	fw_resp.h				\
-+	fw_req.h
+@@ -42,7 +44,8 @@ pkginclude_HEADERS =				\
+ 	fw_resp.h				\
+ 	fw_req.h				\
+ 	fw_fcp.h				\
+-	snd_unit.h
++	snd_unit.h				\
++	snd_dice.h
  
  hinawa_sigs_marshal.list:
  	$(AM_V_GEN)( find | grep \.c$$ | xargs cat | 			\
-diff --git a/libhinawa/src/fw_req.c b/libhinawa/src/fw_req.c
+diff --git a/libhinawa/src/internal.h b/libhinawa/src/internal.h
+index 717cda3..ddbb298 100644
+--- a/libhinawa/src/internal.h
++++ b/libhinawa/src/internal.h
+@@ -12,6 +12,7 @@
+ #include "fw_resp.h"
+ #include "fw_req.h"
+ #include "snd_unit.h"
++#include "snd_dice.h"
+ 
+ void hinawa_fw_unit_ioctl(HinawaFwUnit *self, int req, void *args, int *err);
+ void hinawa_fw_resp_handle_request(HinawaFwResp *self,
+@@ -22,4 +23,6 @@ void hinawa_fw_req_handle_response(HinawaFwReq *self,
+ void hinawa_snd_unit_write(HinawaSndUnit *unit,
+ 			   const void *buf, unsigned int length,
+ 			   GError **exception);
++void hinawa_snd_dice_handle_notification(HinawaSndDice *self,
++					 const void *buf, unsigned int len);
+ #endif
+diff --git a/libhinawa/src/snd_dice.c b/libhinawa/src/snd_dice.c
 new file mode 100644
-index 0000000..49f78cc
+index 0000000..a3b839e
 --- /dev/null
-+++ b/libhinawa/src/fw_req.c
-@@ -0,0 +1,265 @@
-+#include <sys/ioctl.h>
-+#include "fw_req.h"
++++ b/libhinawa/src/snd_dice.c
+@@ -0,0 +1,195 @@
++#include <linux/types.h>
++#include <sound/firewire.h>
++#include <alsa/asoundlib.h>
++#include "snd_dice.h"
 +#include "internal.h"
 +
 +#ifdef HAVE_CONFIG_H
@@ -96,355 +127,272 @@ index 0000000..49f78cc
 +#endif
 +
 +/**
-+ * SECTION:fw_req
-+ * @Title: HinawaFwReq
-+ * @Short_description: A transaction executor to a FireWire unit
++ * SECTION:snd_dice
++ * @Title: HinawaSndDice
++ * @Short_description: A notification listener for Dice models
 + *
-+ * A HinawaFwReq supports three types of transactions in IEEE 1212:
-+ *  - read
-+ *  - write
-+ *  - lock
-+ *
-+ * Any of transaction frames should be aligned to 32bit (quadlet).
-+ * This class is an application of Linux FireWire subsystem. All of operations
-+ * utilize ioctl(2) with subsystem specific request commands.
++ * A #HinawaSndDice listen to Dice notification and generates signal when
++ * received. This inherits #HinawaSndUnit.
 + */
 +
-+enum fw_req_type {
-+	FW_REQ_TYPE_WRITE = 0,
-+	FW_REQ_TYPE_READ,
-+	FW_REQ_TYPE_COMPARE_SWAP,
-+};
-+
-+/* NOTE: This object has no properties and no signals. */
-+struct _HinawaFwReqPrivate {
-+	GArray *frame;
-+
++struct notification_waiter {
++	guint32 bit_flag;
 +	GCond cond;
 +};
-+G_DEFINE_TYPE_WITH_PRIVATE(HinawaFwReq, hinawa_fw_req, G_TYPE_OBJECT)
-+#define FW_REQ_GET_PRIVATE(obj)						\
++
++struct _HinawaSndDicePrivate {
++	GList *waiters;
++	GMutex lock;
++};
++G_DEFINE_TYPE_WITH_PRIVATE(HinawaSndDice, hinawa_snd_dice, HINAWA_TYPE_SND_UNIT)
++#define SND_DICE_GET_PRIVATE(obj)					\
 +	(G_TYPE_INSTANCE_GET_PRIVATE((obj),				\
-+				     HINAWA_TYPE_FW_REQ, HinawaFwReqPrivate))
++				     HINAWA_TYPE_SND_DICE,		\
++				     HinawaSndDicePrivate))
 +
-+static void fw_req_dispose(GObject *gobject)
++/* This object has one signal. */
++enum dice_sig_type {
++	DICE_SIG_TYPE_NOTIFIED,
++	DICE_SIG_TYPE_COUNT,
++};
++static guint dice_sigs[DICE_SIG_TYPE_COUNT] = { 0 };
++
++static void snd_dice_dispose(GObject *obj)
 +{
-+	G_OBJECT_CLASS(hinawa_fw_req_parent_class)->dispose(gobject);
++	G_OBJECT_CLASS(hinawa_snd_dice_parent_class)->dispose(obj);
 +}
 +
-+static void fw_req_finalize(GObject *gobject)
++static void snd_dice_finalize(GObject *gobject)
 +{
-+	G_OBJECT_CLASS(hinawa_fw_req_parent_class)->finalize(gobject);
++	G_OBJECT_CLASS(hinawa_snd_dice_parent_class)->finalize(gobject);
 +}
 +
-+static void hinawa_fw_req_class_init(HinawaFwReqClass *klass)
++static void hinawa_snd_dice_class_init(HinawaSndDiceClass *klass)
 +{
 +	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 +
-+	gobject_class->get_property = NULL;
-+	gobject_class->set_property = NULL;
-+	gobject_class->dispose = fw_req_dispose;
-+	gobject_class->finalize = fw_req_finalize;
++	gobject_class->dispose = snd_dice_dispose;
++	gobject_class->finalize = snd_dice_finalize;
++
++	/**
++	 * HinawaSndDice::notified:
++	 * @self: A #HinawaSndDice
++	 * @message: A notification message
++	 *
++	 * When Dice models transfer notification, the ::notified signal is
++	 * generated.
++	 */
++	dice_sigs[DICE_SIG_TYPE_NOTIFIED] =
++		g_signal_new("notified",
++			     G_OBJECT_CLASS_TYPE(klass),
++			     G_SIGNAL_RUN_LAST,
++			     0,
++			     NULL, NULL,
++			     g_cclosure_marshal_VOID__ULONG,
++			     G_TYPE_NONE, 1, G_TYPE_ULONG);
 +}
 +
-+static void hinawa_fw_req_init(HinawaFwReq *self)
++static void hinawa_snd_dice_init(HinawaSndDice *self)
 +{
-+	self->priv = hinawa_fw_req_get_instance_private(self);
++	self->priv = hinawa_snd_dice_get_instance_private(self);
 +}
 +
-+static void fw_req_transact(HinawaFwReq *self, HinawaFwUnit *unit,
-+			    enum fw_req_type type, guint64 addr, GArray *frame,
-+			    gint *err)
++/**
++ * hinawa_snd_dice_new:
++ * @path: A path to ALSA hwdep device for Dice models (i.e. hw:0)
++ * @exception: A #GError
++ *
++ * Returns: An instance of #HinawaSndDice
++ */
++void hinawa_snd_dice_open(HinawaSndDice *self, gchar *path, GError **exception)
 +{
-+	struct fw_cdev_send_request req = {0};
-+	HinawaFwReqPrivate *priv = FW_REQ_GET_PRIVATE(self);
-+	int tcode;
++	HinawaSndDicePrivate *priv;
++	int type;
 +
-+	guint64 generation;
++	g_return_if_fail(HINAWA_IS_SND_DICE(self));
 +
-+	guint64 expiration;
-+	GMutex lock;
-+
-+	guint32 *buf;
-+	int i;
-+
-+	/* From host order to be32. */
-+	if (frame != NULL) {
-+		buf = (guint32 *)frame->data;
-+		for (i = 0; i < frame->len; i++)
-+			buf[i] = htobe32(buf[i]);
-+	}
-+
-+	/* Setup a private structure. */
-+	if (type == FW_REQ_TYPE_READ) {
-+		priv->frame = frame;
-+		req.data = (guint64)NULL;
-+		if (frame->len == 1)
-+			tcode = TCODE_READ_QUADLET_REQUEST;
-+		else
-+			tcode = TCODE_READ_BLOCK_REQUEST;
-+	} else if (type == FW_REQ_TYPE_WRITE) {
-+		priv->frame = NULL;
-+		req.data = (guint64)frame->data;
-+		if (frame->len == 1)
-+			tcode = TCODE_WRITE_QUADLET_REQUEST;
-+		else
-+			tcode = TCODE_WRITE_BLOCK_REQUEST;
-+	} else if ((type == FW_REQ_TYPE_COMPARE_SWAP) &&
-+		   ((frame->len == 2) || (frame->len == 4))) {
-+			priv->frame = NULL;
-+			req.data = (guint64)frame->data;
-+			tcode = TCODE_LOCK_COMPARE_SWAP;
-+	} else {
-+		*err = EINVAL;
++	hinawa_snd_unit_open(&self->parent_instance, path, exception);
++	if (*exception != NULL) {
++		g_clear_object(&self);
 +		return;
 +	}
 +
-+	/* Get unit properties. */
-+	g_object_get(G_OBJECT(unit), "generation", &generation, NULL);
-+
-+	/* Setup a transaction structure. */
-+	req.tcode = tcode;
-+	req.length = frame->len * sizeof(guint32);
-+	req.offset = addr;
-+	req.closure = (guint64)self;
-+	req.generation = generation;
-+
-+	/* NOTE: Timeout is 10 milli-seconds. */
-+	expiration = g_get_monotonic_time() + 10 * G_TIME_SPAN_MILLISECOND;
-+	g_cond_init(&priv->cond);
-+	g_mutex_init(&lock);
-+
-+	/* Send this transaction. */
-+	hinawa_fw_unit_ioctl(unit, FW_CDEV_IOC_SEND_REQUEST, &req, err);
-+	/* Wait for a response with timeout, waken by a response handler. */
-+	if (*err == 0) {
-+		g_mutex_lock(&lock);
-+		if (!g_cond_wait_until(&priv->cond, &lock, expiration))
-+			*err = ETIMEDOUT;
-+		else
-+			*err = 0;
-+		g_mutex_unlock(&lock);
++	g_object_get(G_OBJECT(self), "type", &type, NULL);
++	if (type != SNDRV_FIREWIRE_TYPE_DICE) {
++		g_set_error(exception, g_quark_from_static_string(__func__),
++			    EINVAL, "%s", strerror(EINVAL));
++		g_clear_object(&self);
 +	}
++	priv = SND_DICE_GET_PRIVATE(self);
 +
-+	/* From be32 to host order. */
-+	if (frame != NULL) {
-+		buf = (guint32 *)frame->data;
-+		for (i = 0; i < frame->len; i++)
-+			buf[i] = be32toh(buf[i]);
-+	}
-+
-+	g_mutex_clear(&lock);
-+	g_cond_clear(&priv->cond);
++	priv->waiters = NULL;
++	g_mutex_init(&priv->lock);
 +}
 +
 +/**
-+ * hinawa_fw_req_write:
-+ * @self: A #HinawaFwReq
-+ * @unit: A #HinawaFwUnit
++ * hinawa_snd_dice_transact:
++ * @self: A #HinawaSndDice
 + * @addr: A destination address of target device
 + * @frame: (element-type guint32) (array) (in): a 32bit array
++ * @bit_flag: bit flag to wait
 + * @exception: A #GError
 + *
-+ * Execute write transactions to the given unit.
++ * Execute write transactions to the given address, then wait and check
++ * notification.
 + */
-+void hinawa_fw_req_write(HinawaFwReq *self, HinawaFwUnit *unit, guint64 addr,
-+			 GArray *frame, GError **exception)
++void hinawa_snd_dice_transact(HinawaSndDice *self, guint64 addr,
++			      GArray *frame, guint32 bit_flag,
++			      GError **exception)
 +{
-+	int err;
++	HinawaSndDicePrivate *priv;
++	struct notification_waiter waiter = {0};
++	gint64 expiration;
 +
-+	g_return_if_fail(HINAWA_IS_FW_REQ(self));
++	g_return_if_fail(HINAWA_IS_SND_DICE(self));
++	priv = SND_DICE_GET_PRIVATE(self);
 +
-+	if (frame == NULL || g_array_get_element_size(frame) != 4) {
-+		err = EINVAL;
-+	} else {
-+		g_object_ref(unit);
-+		fw_req_transact(self, unit,
-+				FW_REQ_TYPE_WRITE, addr, frame, &err);
-+		g_object_unref(unit);
-+	}
++	/* Insert this entry to list and enter critical section. */
++	g_mutex_lock(&priv->lock);
++	priv->waiters = g_list_append(priv->waiters, &waiter);
 +
-+	if (err != 0)
++	/* NOTE: Timeout is 200 milli-seconds. */
++	expiration = g_get_monotonic_time() + 200 * G_TIME_SPAN_MILLISECOND;
++	g_cond_init(&waiter.cond);
++
++	waiter.bit_flag = bit_flag;
++	hinawa_snd_unit_write_transact(&self->parent_instance, addr, frame,
++				       exception);
++	if (*exception != NULL)
++		goto end;
++
++	/*
++	 * Wait notification till timeout and temporarily leave the critical
++	 * section.
++	 */
++	if (!g_cond_wait_until(&waiter.cond, &priv->lock, expiration))
 +		g_set_error(exception, g_quark_from_static_string(__func__),
-+			    err, "%s", strerror(err));
++			    ETIMEDOUT, "%s", strerror(ETIMEDOUT));
++end:
++	priv->waiters = g_list_remove(priv->waiters, (gpointer *)&waiter);
++
++	g_mutex_unlock(&priv->lock);
 +}
 +
-+/**
-+ * hinawa_fw_req_read:
-+ * @self: A #HinawaFwReq
-+ * @unit: A #HinawaFwUnit
-+ * @addr: A destination address of target device
-+ * @frame: (element-type guint32) (array) (out caller-allocates): a 32bit array
-+ * @len: the bytes to read
-+ * @exception: A #GError
-+ *
-+ * Execute read transaction to the given unit.
-+ */
-+void hinawa_fw_req_read(HinawaFwReq *self, HinawaFwUnit *unit, guint64 addr,
-+			GArray *frame, guint len, GError **exception)
++void hinawa_snd_dice_handle_notification(HinawaSndDice *self,
++					 const void *buf, unsigned int len)
 +{
-+	int err;
++	HinawaSndDicePrivate *priv;
 +
-+	g_return_if_fail(HINAWA_IS_FW_REQ(self));
++	GList *entry;
++	struct notification_waiter *waiter;
 +
-+	if (frame == NULL || g_array_get_element_size(frame) != 4) {
-+		err = EINVAL;
-+	} else {
-+		g_object_ref(unit);
-+		g_array_set_size(frame, len);
-+		fw_req_transact(self, unit,
-+				FW_REQ_TYPE_READ, addr, frame, &err);
-+		g_object_unref(unit);
++	struct snd_firewire_event_dice_notification *event =
++			(struct snd_firewire_event_dice_notification *)buf;
++
++	g_return_if_fail(HINAWA_IS_SND_DICE(self));
++	priv = SND_DICE_GET_PRIVATE(self);
++
++	g_signal_emit(self, dice_sigs[DICE_SIG_TYPE_NOTIFIED],
++		      0, event->notification);
++
++	g_mutex_lock(&priv->lock);
++
++	for (entry = priv->waiters; entry != NULL; entry = entry->next) {
++		waiter = (struct notification_waiter *)entry->data;
++
++		if (waiter->bit_flag & event->notification)
++			break;
 +	}
 +
-+	if (err != 0)
-+		g_set_error(exception, g_quark_from_static_string(__func__),
-+			    err, "%s", strerror(err));
++	g_mutex_unlock(&priv->lock);
++
++	if (entry == NULL)
++		return;
++
++	g_cond_signal(&waiter->cond);
 +}
-+
-+/**
-+ * hinawa_fw_req_lock:
-+ * @self: A #HinawaFwReq
-+ * @unit: A #HinawaFwUnit
-+ * @addr: A destination address of target device
-+ * @frame: (element-type guint32) (array) (inout): a 32bit array
-+ * @exception: A #GError
-+ *
-+ * Execute lock transaction to the given unit.
-+ */
-+void hinawa_fw_req_lock(HinawaFwReq *self, HinawaFwUnit *unit,
-+			guint64 addr, GArray *frame,  GError **exception)
-+{
-+	int err;
-+
-+	g_return_if_fail(HINAWA_IS_FW_REQ(self));
-+
-+	if (frame == NULL || g_array_get_element_size(frame) != 4) {
-+		err = EINVAL;
-+	} else {
-+		g_object_ref(unit);
-+		fw_req_transact(self, unit,
-+				FW_REQ_TYPE_COMPARE_SWAP, addr, frame, &err);
-+		g_object_unref(unit);
-+	}
-+
-+	if (err != 0)
-+		g_set_error(exception, g_quark_from_static_string(__func__),
-+			    err, "%s", strerror(err));
-+}
-+
-+/* NOTE: For HinawaFwUnit, internal. */
-+void hinawa_fw_req_handle_response(HinawaFwReq *self,
-+				   struct fw_cdev_event_response *event)
-+{
-+	HinawaFwReqPrivate *priv;
-+
-+	g_return_if_fail(HINAWA_IS_FW_REQ(self));
-+	priv = FW_REQ_GET_PRIVATE(self);
-+
-+	/* Copy transaction frame. */
-+	if (priv->frame != NULL) {
-+		priv->frame->len = 0;
-+		g_array_append_vals(priv->frame, event->data,
-+			event->length / g_array_get_element_size(priv->frame));
-+	}
-+
-+	/* Waken a thread of an user application. */
-+	g_cond_signal(&priv->cond);
-+}
-diff --git a/libhinawa/src/fw_req.h b/libhinawa/src/fw_req.h
+diff --git a/libhinawa/src/snd_dice.h b/libhinawa/src/snd_dice.h
 new file mode 100644
-index 0000000..057a3d5
+index 0000000..f33835a
 --- /dev/null
-+++ b/libhinawa/src/fw_req.h
-@@ -0,0 +1,56 @@
-+#ifndef __ALSA_TOOLS_HINAWA_FW_REQ_H__
-+#define __ALSA_TOOLS_HINAWA_FW_REQ_H__
++++ b/libhinawa/src/snd_dice.h
+@@ -0,0 +1,53 @@
++#ifndef __ALSA_TOOLS_HINAWA_SND_DICE_H__
++#define __ALSA_TOOLS_HINAWA_SND_DICE_H__
 +
 +#include <glib.h>
 +#include <glib-object.h>
-+#include "fw_unit.h"
++#include "snd_unit.h"
 +
 +G_BEGIN_DECLS
 +
-+#define HINAWA_TYPE_FW_REQ	(hinawa_fw_req_get_type())
++#define HINAWA_TYPE_SND_DICE	(hinawa_snd_dice_get_type())
 +
-+#define HINAWA_FW_REQ(obj)					\
++#define HINAWA_SND_DICE(obj)					\
 +	(G_TYPE_CHECK_INSTANCE_CAST((obj),			\
-+				    HINAWA_TYPE_FW_REQ,		\
-+				    HinawaFwReq))
-+#define HINAWA_IS_FW_REQ(obj)					\
++				    HINAWA_TYPE_SND_DICE,	\
++				    HinawaSndDice))
++#define HINAWA_IS_SND_DICE(obj)					\
 +	(G_TYPE_CHECK_INSTANCE_TYPE((obj),			\
-+				    HINAWA_TYPE_FW_REQ))
++				    HINAWA_TYPE_SND_DICE))
 +
-+#define HINAWA_FW_REQ_CLASS(klass)				\
++#define HINAWA_SND_DICE_CLASS(klass)				\
 +	(G_TYPE_CHECK_CLASS_CAST((klass),			\
-+				 HINAWA_TYPE_FW_REQ,		\
-+				 HinawaFwReq))
-+#define HINAWA_IS_FW_REQ_CLASS(klass)				\
++				 HINAWA_TYPE_SND_DICE,		\
++				 HinawaSndDiceClass))
++#define HINAWA_IS_SND_DICE_CLASS(klass)				\
 +	(G_TYPE_CHECK_CLASS_TYPE((klass),			\
-+				 HINAWA_TYPE_Seq))
-+#define HINAWA_FW_REQ_GET_CLASS(obj)				\
++				 HINAWA_TYPE_SND_DICE))
++#define HINAWA_SND_DICE_GET_CLASS(obj)				\
 +	(G_TYPE_INSTANCE_GET_CLASS((obj),			\
-+				   HINAWA_TYPE_FW_REQ,		\
-+				   HinawaFwReq))
++				   HINAWA_TYPE_SND_DICE,	\
++				   HinawaSndDiceClass))
 +
-+typedef struct _HinawaFwReq		HinawaFwReq;
-+typedef struct _HinawaFwReqClass	HinawaFwReqClass;
-+typedef struct _HinawaFwReqPrivate	HinawaFwReqPrivate;
++typedef struct _HinawaSndDice		HinawaSndDice;
++typedef struct _HinawaSndDiceClass	HinawaSndDiceClass;
++typedef struct _HinawaSndDicePrivate	HinawaSndDicePrivate;
 +
-+struct _HinawaFwReq {
-+	GObject parent_instance;
++struct _HinawaSndDice {
++	HinawaSndUnit parent_instance;
 +
-+	HinawaFwReqPrivate *priv;
++	HinawaSndDicePrivate *priv;
 +};
 +
-+struct _HinawaFwReqClass {
-+	GObjectClass parent_class;
++struct _HinawaSndDiceClass {
++	HinawaSndUnitClass parent_class;
 +};
 +
-+GType hinawa_fw_req_get_type(void) G_GNUC_CONST;
++GType hinawa_snd_dice_get_type(void) G_GNUC_CONST;
 +
-+void hinawa_fw_req_write(HinawaFwReq *self, HinawaFwUnit *unit, guint64 addr,
-+			 GArray *frame, GError **exception);
++void hinawa_snd_dice_open(HinawaSndDice *self, gchar *path, GError **exception);
 +
-+void hinawa_fw_req_read(HinawaFwReq *self, HinawaFwUnit *unit, guint64 addr,
-+			GArray *frame, guint len, GError **exception);
-+
-+void hinawa_fw_req_lock(HinawaFwReq *self, HinawaFwUnit *unit,
-+			guint64 addr, GArray *frame, GError **exception);
++void hinawa_snd_dice_transact(HinawaSndDice *self, guint64 addr,
++			      GArray *frame, guint32 bit_flag,
++			      GError **exception);
 +#endif
-diff --git a/libhinawa/src/fw_unit.c b/libhinawa/src/fw_unit.c
-index 019105d..65f37cd 100644
---- a/libhinawa/src/fw_unit.c
-+++ b/libhinawa/src/fw_unit.c
-@@ -239,6 +239,10 @@ static gboolean check_src(GSource *gsrc)
- 		 common->type == FW_CDEV_EVENT_REQUEST2)
- 		hinawa_fw_resp_handle_request(HINAWA_FW_RESP(common->closure),
- 				(struct fw_cdev_event_request2 *)common);
-+	else if (HINAWA_IS_FW_REQ(common->closure) &&
-+		 common->type == FW_CDEV_EVENT_RESPONSE)
-+		hinawa_fw_req_handle_response(HINAWA_FW_REQ(common->closure),
-+				(struct fw_cdev_event_response *)common);
+diff --git a/libhinawa/src/snd_unit.c b/libhinawa/src/snd_unit.c
+index 859cab2..b7537a3 100644
+--- a/libhinawa/src/snd_unit.c
++++ b/libhinawa/src/snd_unit.c
+@@ -6,6 +6,7 @@
+ #include "snd_unit.h"
+ #include "fw_req.h"
+ #include "fw_fcp.h"
++#include "snd_dice.h"
+ #include "internal.h"
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -407,6 +408,10 @@ static gboolean check_src(GSource *gsrc)
+ 
+ 	if (common->type == SNDRV_FIREWIRE_EVENT_LOCK_STATUS)
+ 		handle_lock_event(unit, priv->buf, len);
++	else if (HINAWA_IS_SND_DICE(unit) &&
++		 common->type == SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION)
++		hinawa_snd_dice_handle_notification(HINAWA_SND_DICE(unit),
++						    priv->buf, len);
  end:
  	/* Don't go to dispatch, then continue to process this source. */
  	return FALSE;
-diff --git a/libhinawa/src/internal.h b/libhinawa/src/internal.h
-index 1ee88ec..7ac672c 100644
---- a/libhinawa/src/internal.h
-+++ b/libhinawa/src/internal.h
-@@ -9,8 +9,11 @@
- 
- #include "fw_unit.h"
- #include "fw_resp.h"
-+#include "fw_req.h"
- 
- void hinawa_fw_unit_ioctl(HinawaFwUnit *self, int req, void *args, int *err);
- void hinawa_fw_resp_handle_request(HinawaFwResp *self,
- 				   struct fw_cdev_event_request2 *event);
-+void hinawa_fw_req_handle_response(HinawaFwReq *self,
-+				   struct fw_cdev_event_response *event);
- #endif
 -- 
 2.1.0
 
