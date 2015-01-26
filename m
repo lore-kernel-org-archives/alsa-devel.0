@@ -1,72 +1,65 @@
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH_V2 1/4] sound: soc: jz4740: Add dynamic sampling rate support to jz4740-i2s
-Date: Mon, 26 Jan 2015 13:15:35 +0000
-Message-ID: <1422278138-51097-2-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH_V2 2/4] dt: sound: jz4740: Add binding documentation for jz4740-i2s
+Date: Mon, 26 Jan 2015 13:15:36 +0000
+Message-ID: <1422278138-51097-3-git-send-email-Zubair.Kakakhel@imgtec.com>
 References: <1422278138-51097-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1422278138-51097-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Zubair.Kakakhel@imgtec.com, lars@metafoo.de
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1422278138-51097-1-git-send-email-Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The div clock register is not modified during jz4740_i2s_hw_params.
-Hence, default sampling rates are actually used regardless of
-sampling rates input from userspace.
+This patch adds binding for the jz4740-i2s driver.
 
-This patch adds support to calculate the value of the divider from
-the parameters passed from userspace and update the relevant div
-registers
-
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
 
 ---
-V2 changes: Removed a redundant #define
----
- sound/soc/jz4740/jz4740-i2s.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+The jz4740 is platform only at the moment.
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index d3d45c6..b7a7e82 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -83,6 +83,8 @@
- #define JZ_AIC_I2S_STATUS_BUSY BIT(2)
- 
- #define JZ_AIC_CLK_DIV_MASK 0xf
-+#define I2SDIV_DV_SHIFT 8
-+#define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
- 
- struct jz4740_i2s {
- 	struct resource *mem;
-@@ -237,10 +239,14 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	unsigned int sample_size;
--	uint32_t ctrl;
-+	uint32_t ctrl, div_reg;
-+	int div;
- 
- 	ctrl = jz4740_i2s_read(i2s, JZ_REG_AIC_CTRL);
- 
-+	div_reg = jz4740_i2s_read(i2s, JZ_REG_AIC_CLK_DIV);
-+	div = clk_get_rate(i2s->clk_i2s) / (64 * params_rate(params));
+But DT support is being added
+
+See http://patchwork.linux-mips.org/bundle/paulburton/ci20-v3.20/
+
+V2 changes: Added DMA bindings for later on
+---
+ .../bindings/sound/ingenic,jz4740-i2s.txt           | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt b/Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
+new file mode 100644
+index 0000000..75206cd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
+@@ -0,0 +1,21 @@
++Ingenic JZ4740 I2S controller
 +
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S8:
- 		sample_size = 0;
-@@ -264,7 +270,10 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
- 		ctrl |= sample_size << JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET;
- 	}
- 
-+	div_reg &= ~I2SDIV_DV_MASK;
-+	div_reg |= (div - 1) << I2SDIV_DV_SHIFT;
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
-+	jz4740_i2s_write(i2s, JZ_REG_AIC_CLK_DIV, div_reg);
- 
- 	return 0;
- }
++Required properties:
++- compatible : "ingenic,jz4740-i2s"
++- reg : I2S registers location and length
++- clocks : AIC and I2S PLL clock specifiers.
++- clock-names: "aic" and "i2s"
++
++Example:
++
++i2s: i2s@10020000 {
++	compatible = "ingenic,jz4740-i2s";
++	reg = <0x10020000 0x94>;
++
++	clocks = <&cgu JZ4740_CLK_AIC>, <&cgu JZ4740_CLK_I2SPLL>;
++	clock-names = "aic", "i2s";
++
++	dmas = <&dma 2>, <&dma 3>;
++	dma-names = "tx", "rx";
++
++};
 -- 
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
