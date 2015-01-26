@@ -1,91 +1,70 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: add generic dt-card support
-Date: Mon, 26 Jan 2015 19:22:44 +0100
-Message-ID: <20150126192244.12a79eff@armhf>
-References: <cover.1421868426.git.moinejf@free.fr>
-	<d0c66c2e2f200119f9990fa52a503b1a4af6238f.1421868426.git.moinejf@free.fr>
-	<54C0088F.9070609@metafoo.de>
-	<20150122090723.50ac0156@armhf>
-	<54C14EB3.8080305@metafoo.de>
-	<20150123131554.623003f9@armhf>
-	<54C252F4.9000504@metafoo.de>
-	<20150123193456.276ea512@armhf>
-	<54C381A7.3020209@metafoo.de>
-	<20150124141820.3793bd47@armhf>
-	<54C62AD1.2090207@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/2] ASoC: Fix wm97xx touchscreen driver
+Date: Mon, 26 Jan 2015 19:15:39 +0000
+Message-ID: <20150126191539.GE21293@sirena.org.uk>
+References: <1422026497-23180-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <54C62AD1.2090207@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7001365627807441479=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD88A26042F
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 20:15:49 +0100 (CET)
+In-Reply-To: <1422026497-23180-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 26 Jan 2015 12:53:53 +0100
-Lars-Peter Clausen <lars@metafoo.de> wrote:
-> > - a generic sound node in the case of multi controllers or multi co=
-dec
-> >    levels (after dt-card extension):
-> >
-> > 	sound {
-> > 		compatible =3D "linux,dt-card";
-> > 		audio-root =3D <&audio1>;	/* starting point of the graph */
-> > 		... card properties ...
-> > 	};
-> >
-> > For the last case, the creation of the simple dt-card builder could=
- be
-> > done by a node in the controller, avoiding the DT to have a knowled=
-ge
-> > of this piece of software:
-> >
-> > 	&audio1 {
-> > 		...
-> > 		audio-card {
-> > 			... card properties ...
-> > 		}
-> > 		port@0 {
-> > 			...
-> > 		};
-> > 		...
-> > 	}; =20
->=20
-> Is there any advantage to putting the card node inside the controller=
- node=20
-> rather than having it as a separate node?
 
-There is no advantage, but it seems to me that the sound device is a
-software entity which should not appear in the devicetree.
+--===============7001365627807441479==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Ag0ALTx5bNxCf4La"
+Content-Disposition: inline
 
-> >> I think this is something that needs to be done in the ASoC/ALSA c=
-ore
-> >> itself. Create the graph, wait until all endpoints of the graph ha=
-ve been
-> >> registered and then create the card. Or something similar. =20
-> >
-> > To go further, such a function could fully replace
-> > snd_soc_register_card()! =20
->=20
-> Yes, if the graph is strongly connected (which it should be) the fram=
-ework=20
-> will be able to identify when all components that belong to the graph=
- have=20
-> been registered and is then able to create a card for it.
 
-Russell's "Componentized device handling" would permit to synchronize
-all components avoiding the PROBE_DEFERs, but there is a problem with
-the tda998x: this one is a component of both the audio and video
-subsystems, and the bind() callback does not indicate by which master
-compoment it is called...
+--Ag0ALTx5bNxCf4La
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Are you by chance at FOSDEM? If you are maybe we can sit down for a m=
-oment=20
-> and discuss things.
+On Fri, Jan 23, 2015 at 04:21:35PM +0100, Lars-Peter Clausen wrote:
+> The wm97xx touchscreen driver will bind itself to the snd_ac97 device
+> registered by CODEC drivers and expects that the device has already been
+> reset by the CODEC driver. Previous to commit 6794f709b712 ("ASoC: ac97:
 
-Sorry, I will not be at FOSDEM.
+Applied both, thanks.
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+--Ag0ALTx5bNxCf4La
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUxpJaAAoJECTWi3JdVIfQd/wH/jmLjf7s7CliMkErYI8NfzaW
+DwK0MQOX9E149Q5VbVgL5goWpcqYv1cHgawucBsx0J0F/4wZwh5EzHlBPJFNkJx/
+CUX/o/LgUTHIevIt5E2CSmeERIbkbEL9LJG9kS7K/qjMICkC9DY8jMqOmDH1DVaY
+VecJevOJbxrfh5Xly68sr3Yuvo5j4CDcaMHtDFuMDdpyqxEXbsAeKTWirYP0222+
+9QeWbl/lyyQvoHw93dz/iOrh5KXZw5Vvh+3//ndSo5txCFzKH+mrRm5r91WwGC3n
+WLcUESnxcW+Kd8RzcrJd/t//iLda+gZJFGYww3d/QlHiqVvVSJPDpuKppGW74yU=
+=wbR6
+-----END PGP SIGNATURE-----
+
+--Ag0ALTx5bNxCf4La--
+
+--===============7001365627807441479==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7001365627807441479==--
