@@ -1,52 +1,53 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: wm97xx: Reset AC'97
-	device	before registering it
-Date: Mon, 26 Jan 2015 13:14:35 +0000
-Message-ID: <20150126131435.GG14516@opensource.wolfsonmicro.com>
-References: <1422026497-23180-1-git-send-email-lars@metafoo.de>
- <1422026497-23180-3-git-send-email-lars@metafoo.de>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH_V2 0/4] sound:soc: jz4740: DT, dynamic sampling, enable clocks
+Date: Mon, 26 Jan 2015 13:15:34 +0000
+Message-ID: <1422278138-51097-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E17C26057D
- for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 14:14:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1422026497-23180-3-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 23, 2015 at 04:21:37PM +0100, Lars-Peter Clausen wrote:
-> The wm97xx touchscreen driver binds itself to the snd_ac97 device that gets
-> registered by the CODEC driver and expects that the device has already been
-> reset. Before commit 6794f709b712 ("ASoC: ac97: Drop delayed device
-> registration") the device was only registered after the probe function of
-> the CODEC driver had finished running, but starting with the mentioned
-> commit the device is registered as soon as snd_soc_new_ac97_codec() is
-> called. This causes the touchscreen driver to no longer work. Modify the
-> CODEC drivers to use snd_soc_alloc_ac97_codec() instead of
-> snd_soc_new_ac97_codec() and make sure that the AC'97 device is reset before
-> the snd_ac97 device gets registered.
-> 
-> Fixes: 6794f709b712 ("ASoC: ac97: Drop delayed device registration")
-> Reported-by: Manuel Lauss <manuel.lauss@gmail.com>
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
+Hi,
 
-Looks fine to me.
+Here are a few simple patches for the jz4740.
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+First adds dynamic sampling support to jz4740-i2s.
+Then two to add a simple binding and DT support.
+Then a patch to set the clock rate for i2s.
 
-Thanks,
-Charles
+These are in preparation for jz4780 and ci20 later on.
+
+Patches are based on 3.19-rc6. Quite disjoint and stay within jz4740 
+so should apply easily on other trees.
+
+If you would like to have them rebased to a different tree, please tell.
+
+Thank-you
+
+V2 changes: 
+Removed a redundant #define
+Added #ifdef CONFIG_OF
+Added dma in binding document
+Removed a redundant call to clk_prepare_enable
+
+Zubair Lutfullah Kakakhel (4):
+  sound: soc: jz4740: Add dynamic sampling rate support to jz4740-i2s
+  dt: sound: jz4740: Add binding documentation for jz4740-i2s
+  sound: soc: jz4740: Add DT support to jz4740-i2s driver
+  sound: jz4740: set i2s clk rate to 12MHz
+
+ .../bindings/sound/ingenic,jz4740-i2s.txt          | 21 +++++++++++++++++++++
+ sound/soc/jz4740/jz4740-i2s.c                      | 22 +++++++++++++++++++++-
+ 2 files changed, 42 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
+
+-- 
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
