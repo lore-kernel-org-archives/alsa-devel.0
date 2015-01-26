@@ -1,54 +1,55 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/4] dt: sound: jz4740: Add binding documentation for jz4740-i2s
-Date: Mon, 26 Jan 2015 12:56:23 +0100
-Message-ID: <2047908.1EOGyb8YHD@wuerfel>
-References: <1422267511-6649-1-git-send-email-Zubair.Kakakhel@imgtec.com> <1422267511-6649-3-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa] Crackling after 6.45 hours
+Date: Mon, 26 Jan 2015 13:09:06 +0100
+Message-ID: <54C62E62.3060904@metafoo.de>
+References: <3427562.sVz54J9OhN@linux-le0l.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1422267511-6649-3-git-send-email-Zubair.Kakakhel@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: tiwai@suse.de, perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-156.synserver.de (smtp-out-156.synserver.de
+ [212.40.185.156])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32BC5260504
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 13:09:07 +0100 (CET)
+In-Reply-To: <3427562.sVz54J9OhN@linux-le0l.site>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "a.renault@kaptalia.com" <a.renault@kaptalia.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 26 January 2015 10:18:29 Zubair Lutfullah Kakakhel wrote:
-> index 0000000..0e40517
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
-> @@ -0,0 +1,18 @@
-> +Ingenic JZ4740 I2S controller
-> +
-> +Required properties:
-> +- compatible : "ingenic,jz4740-i2s"
-> +- reg : I2S registers location and length
-> +- clocks : AIC and I2S PLL clock specifiers.
-> +- clock-names: "aic" and "i2s"
-> +
-> +Example:
-> +
-> +i2s: i2s@10020000 {
-> +       compatible = "ingenic,jz4740-i2s";
-> +       reg = <0x10020000 0x94>;
-> +
-> +       clocks = <&cgu JZ4740_CLK_AIC>, <&cgu JZ4740_CLK_I2SPLL>;
-> +       clock-names = "aic", "i2s";
-> +
-> +};
-> 
+On 01/23/2015 03:34 PM, a.renault@kaptalia.com wrote:
+> Hi everyone,
+>
+> I currently facing the following issue :
+>
+> My sound crackling after 6.45 hours of music without reinitialization.
+>
+> I am using sdl-mixer, sdl and alsa.
+>
+> I deployed a bug on libsdl at the address :
+> https://bugzilla.libsdl.org/show_bug.cgi?id=2794
+> And after some works we discover that the snd_pcm_writei answer "-1073741824".
+>
+> The error code "-1073741824" is not one of -EINTR, -EPIPE, -ESTRPIPE, -EAGAIN.
+> So "snd_pcm_recover" does not handle anything.
+>
+> If you are brave enought please take a look at the link,
+>
+> Any idea would be greatly appreciated.
 
-I would argue that the binding should mandate "dmas" property already.
-The code currently does not use it, but it will need to get changed
-in order to allow the dmaengine driver for this platform to be
-converted. You should require only one argument for the channel ID,
-so something like
+Hi,
 
-	dmas = <&dma 24>, <&dma 25>;
-	dma-names = "tx", "rx";
+What's your hardware. Can you run the alsa-info.sh[1] script and send the 
+output to the mailing list?
 
-would be enough for the binding. Unfortunately that also requires
-having a device node for the dma engine, but you can cheat there
-and not call of_dma_controller_register() in the first step.
+Thanks,
+- Lars
 
-	Arnd
+[1] http://www.alsa-project.org/main/index.php/Help_To_Debug
