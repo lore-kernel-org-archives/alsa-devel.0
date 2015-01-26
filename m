@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: Add RT5642 ACPI ID for Intel
-	Baytrail
-Date: Mon, 26 Jan 2015 19:17:13 +0000
-Message-ID: <20150126191713.GG21293@sirena.org.uk>
-References: <1422015330-10483-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: sqweek <sqweek@gmail.com>
+Subject: No stream timing info with alsa pulse plugin?
+Date: Mon, 26 Jan 2015 23:10:18 +0800
+Message-ID: <CAM104AVeYoNhWB8A24rwy1XnkkG+nyRYNiMV3AmJCHze4TbjjQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3459898754763916850=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 32F862606C5
- for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 20:17:18 +0100 (CET)
-In-Reply-To: <1422015330-10483-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from mail-we0-f175.google.com (mail-we0-f175.google.com
+ [74.125.82.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1279F2605F2
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 16:10:19 +0100 (CET)
+Received: by mail-we0-f175.google.com with SMTP id p10so9602636wes.6
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 07:10:18 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi guys,
 
---===============3459898754763916850==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="AAnJd2yLvu+tR7U7"
-Content-Disposition: inline
+I discovered on my machine that alsa_snd_pcm_status_get_tstamp (and
+also get_htstamp) stop working when my asoundrc invokes the pulse
+plugin.
 
+That is, normally they work fine but once the sound is going via pulse
+the returned time stamp is always zero. I'm trying to understand why
+that is.
 
---AAnJd2yLvu+tR7U7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I couldn't really find any discussion of the pulse plugin on the
+archives so I'm not entirely sure I've found the right list; I was
+directed here via the pulseaudio bugzilla[1].
 
-On Fri, Jan 23, 2015 at 02:15:30PM +0200, Jarkko Nikula wrote:
-> Asus T100TAF uses ACPI ID "10EC5642" for its audio codec. I suppose it is
-> updated ACPI ID for the RT5642 codec since some earlier platforms are using
-> "10EC5640" with the RT5642 too.
+[1] https://bugs.freedesktop.org/show_bug.cgi?id=88503
 
-Applied, thanks.
-
---AAnJd2yLvu+tR7U7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUxpK4AAoJECTWi3JdVIfQ3acH/RHvoaUv0Vfhur1I995YFVci
-Vgw6OXEv0h86wGSb3PMbE+888smaNUj/O6NKpHljGGyE9JKvbyd6KyBhT/xQ0CjW
-ILCvS1T9MhNRnrVZvSUQcWRBPcMj4MNaVUjweODwoCot/+R51MTteQAnvCIGxyH/
-20itKPu+qZ0rN/IVpFmpo2A+iq5wi8pO0x+Mo89Q0vS/pR0dkeq9dCXhnLGHxnlQ
-A2uVX3E8zaZBW0+GMiXWj/ktqSuj2Ow+/SRjuG2UL/IDbObH5t2C8S3LGa4F2v8w
-FVoex03qhjUcvWAOYILGg0gJUYDwM0b75ALsjG+eSfHCeGpJzAIdnBlNmkf7lGs=
-=8nuI
------END PGP SIGNATURE-----
-
---AAnJd2yLvu+tR7U7--
-
---===============3459898754763916850==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3459898754763916850==--
+Thanks for any assistance!
+-sqweek
