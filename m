@@ -1,48 +1,66 @@
-From: "a.renault@kaptalia.com" <a.renault@kaptalia.com>
-Subject: [alsa] Crackling after 6.45 hours
-Date: Fri, 23 Jan 2015 15:34:52 +0100
-Message-ID: <3427562.sVz54J9OhN@linux-le0l.site>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Subject: Re: [PATCH 4/4] sound: jz4740: Enable codec clock during dai_probe
+Date: Mon, 26 Jan 2015 11:30:56 +0000
+Message-ID: <54C62570.5050600@imgtec.com>
+References: <1422267511-6649-1-git-send-email-Zubair.Kakakhel@imgtec.com> <1422267511-6649-5-git-send-email-Zubair.Kakakhel@imgtec.com> <54C61980.9030205@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 3430F2654E5
- for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 18:24:10 +0100 (CET)
-Received: from linux-le0l.site ([46.18.96.158]) by mrelayeu.kundenserver.de
- (mreue103) with ESMTPA (Nemesis) id 0MBr6d-1YOK6b3FSx-00Aj2F for
- <alsa-devel@alsa-project.org>; Fri, 23 Jan 2015 15:34:54 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <54C61980.9030205@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, tiwai@suse.de, perex@perex.cz
+Cc: broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone, 
- 
-I currently facing the following issue : 
- 
-My sound crackling after 6.45 hours of music without reinitialization.
- 
-I am using sdl-mixer, sdl and alsa.
- 
-I deployed a bug on libsdl at the address : 
-https://bugzilla.libsdl.org/show_bug.cgi?id=2794
-And after some works we discover that the snd_pcm_writei answer "-1073741824".
- 
-The error code "-1073741824" is not one of -EINTR, -EPIPE, -ESTRPIPE, -EAGAIN.
-So "snd_pcm_recover" does not handle anything.
- 
-If you are brave enought please take a look at the link,
- 
-Any idea would be greatly appreciated.
- 
-Best regards,
--- 
-Adrien
+
+On 26/01/15 10:40, Lars-Peter Clausen wrote:
+> On 01/26/2015 11:18 AM, Zubair Lutfullah Kakakhel wrote:
+>> As we are moving away from platform to DT, we cant rely on the board
+>> file to do this now. So enable it here.
+>=20
+> I don't understand this changelog. The board file never did this. The=
+ driver enables the clock in the startup() callback.
+
+My bad.
+
+I couldn't get the ci20 audio to work without this change.
+
+I double checked. The clock is indeed enabled.
+
+But the rate needs to be set for the ci20.
+
+clk_set_rate(i2s->clk_i2s, 12000000);
+
+Where should I put it? I couldn=92t trace how the rate is set for the j=
+z4740..
+
+ZubairLK
+
+>=20
+>>
+>> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com=
+>
+>> ---
+>>   sound/soc/jz4740/jz4740-i2s.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740=
+-i2s.c
+>> index 3c309fc..a7e4a7b 100644
+>> --- a/sound/soc/jz4740/jz4740-i2s.c
+>> +++ b/sound/soc/jz4740/jz4740-i2s.c
+>> @@ -376,6 +376,10 @@ static int jz4740_i2s_dai_probe(struct snd_soc_=
+dai *dai)
+>>           JZ_AIC_CONF_I2S |
+>>           JZ_AIC_CONF_INTERNAL_CODEC;
+>>
+>> +    /* enable codec sysclk */
+>> +    clk_set_rate(i2s->clk_i2s, 12000000);
+>> +    clk_prepare_enable(i2s->clk_i2s);
+>> +
+>>       jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, JZ_AIC_CONF_RESET);
+>>       jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
+>>
+>>
+>=20
