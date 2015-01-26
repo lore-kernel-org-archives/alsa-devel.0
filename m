@@ -1,72 +1,64 @@
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH_V3 1/4] sound: soc: jz4740: Add dynamic sampling rate support to jz4740-i2s
-Date: Mon, 26 Jan 2015 14:53:10 +0000
-Message-ID: <1422283993-53642-2-git-send-email-Zubair.Kakakhel@imgtec.com>
-References: <1422283993-53642-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: "a.renault@kaptalia.com" <a.renault@kaptalia.com>
+Subject: Re: [alsa] Crackling after 6.45 hours
+Date: Mon, 26 Jan 2015 16:06:38 +0100
+Message-ID: <3689386.1altZZdO2m@linux-le0l.site>
+References: <3427562.sVz54J9OhN@linux-le0l.site>
+ <CAOMZO5CZjwdunjw=3uMGki782iAga5877_3huK41Axxi-cwqAg@mail.gmail.com>
+ <54C654C0.9010307@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1422283993-53642-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Zubair.Kakakhel@imgtec.com, lars@metafoo.de
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63CDF2605D7
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 16:06:49 +0100 (CET)
+In-Reply-To: <54C654C0.9010307@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The div clock register is not modified during jz4740_i2s_hw_params.
-Hence, default sampling rates are actually used regardless of
-sampling rates input from userspace.
+Le lundi 26 janvier 2015 15:52:48 Lars-Peter Clausen a =E9crit :
+> On 01/26/2015 03:44 PM, Fabio Estevam wrote:
+> > On Mon, Jan 26, 2015 at 12:41 PM, a.renault@kaptalia.com
+> > =
 
-This patch adds support to calculate the value of the divider from
-the parameters passed from userspace and update the relevant div
-registers
+> > <a.renault@kaptalia.com> wrote:
+> >> First of all, I had to comment the lspci part of the script because I =
+am
+> >> using busybox on my imx6. (Did not found a way to add it :S)
+> >> =
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+> >> Then I have got this card :
+> >> http://www.msc-technologies.eu/products/boards/qseven/msc-q7-imx6.html
+> >> with a Wolfson WM9711.
+> > =
 
----
-V2 changes: Removed a redundant #define
----
- sound/soc/jz4740/jz4740-i2s.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+> > Which kernel version are you using? Can you try 3.19-rc6 or at least
+> > 3.18.3?
+> This seems to be a vendor kernel based on 3.0 with custom audio drivers. =
+As
+> Clemens said this is most likely a driver bug. So I guess there is not th=
+at
+> much we can do.
+> =
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index d3d45c6..b7a7e82 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -83,6 +83,8 @@
- #define JZ_AIC_I2S_STATUS_BUSY BIT(2)
- 
- #define JZ_AIC_CLK_DIV_MASK 0xf
-+#define I2SDIV_DV_SHIFT 8
-+#define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
- 
- struct jz4740_i2s {
- 	struct resource *mem;
-@@ -237,10 +239,14 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	unsigned int sample_size;
--	uint32_t ctrl;
-+	uint32_t ctrl, div_reg;
-+	int div;
- 
- 	ctrl = jz4740_i2s_read(i2s, JZ_REG_AIC_CTRL);
- 
-+	div_reg = jz4740_i2s_read(i2s, JZ_REG_AIC_CLK_DIV);
-+	div = clk_get_rate(i2s->clk_i2s) / (64 * params_rate(params));
-+
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S8:
- 		sample_size = 0;
-@@ -264,7 +270,10 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
- 		ctrl |= sample_size << JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET;
- 	}
- 
-+	div_reg &= ~I2SDIV_DV_MASK;
-+	div_reg |= (div - 1) << I2SDIV_DV_SHIFT;
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
-+	jz4740_i2s_write(i2s, JZ_REG_AIC_CLK_DIV, div_reg);
- 
- 	return 0;
- }
--- 
-1.9.1
+> - Lars
+Ok thanks you all, =
+
+
+I will try to take a look by myself then contacting the vendor, =
+
+
+I will let you know.
+-- =
+
+Adrien
