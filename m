@@ -1,62 +1,145 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: codecs: wm8904: add dt ids
- table
-Date: Mon, 26 Jan 2015 17:49:11 +0100
-Message-ID: <54C67007.6000708@metafoo.de>
-References: <1418614273-2303-1-git-send-email-voice.shen@atmel.com> <20150115115425.GX3043@sirena.org.uk> <54B866B9.8000900@atmel.com> <54C65C36.9050106@atmel.com> <20150126164229.GB21293@sirena.org.uk>
+From: Tom Li <biergaizi2009@gmail.com>
+Subject: broadwell-audio is unable to initialize on certain
+	laptops
+Date: Tue, 27 Jan 2015 00:52:33 +0800
+Message-ID: <CAB6YEzXecp3nDsyN=Ppb1d1Rkejvkvp9G-zzVmdBAkcQ-z0U0Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150126164229.GB21293-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alexander Morozov <linux-lCH5ugpmZSMox3rIn2DAYQ@public.gmane.org>, Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
+ [209.85.214.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1611C26064A
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 17:52:55 +0100 (CET)
+Received: by mail-ob0-f169.google.com with SMTP id va8so8716670obc.0
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 08:52:53 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/26/2015 05:42 PM, Mark Brown wrote:
-> On Mon, Jan 26, 2015 at 04:24:38PM +0100, Nicolas Ferre wrote:
->> Le 16/01/2015 02:17, Bo Shen a =E9crit :
->
->>>> Does this end up in the i2c_driver_id driver data or do we need so=
-me
->>>> extra code when devtype is assigned to check for an of_node and lo=
-ok at
->>>> the DT data instead?  That certainly used to be the case...
->
->>> At the beginning I think as the same as you, and also add the code =
-to
->>> get the data as I do in <drivers/misc/atmel-ssc.c>. However, as I
->>> remember, I2C seems only use the compatible string after the comma,=
- that
->>> means only for "wlf,wm8904", it uses "wm8904" to match. So, I remov=
-e all
->>> the code I added, and just keep these, and it can get the device ty=
-pe
->>> correctly.
->
->>> So, when I submit the patch and keep the code as simple as possible=
-=2E
->
->> I don't understand what's keeping this patch from being applied. Voi=
-ce,
->> do you mind re-sending?
->
-> I need to convince myself that the above actually works and is doing =
-the
-> right thing; the above explanation sounds like if it works it might b=
-e
-> relying on a bug.
+Hello everyone.
 
-I'd call it a undocumented feature. But I wouldn't rely on it being aro=
-und=20
-for ever. In my opinion to be future proof the driver should explicitly=
-=20
-handle the OF case in the probe function.
+I'm here for reporting an issue.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I bought a new ThinkPad Helix 2, but I found that the built-in sound
+output device is not recognize, only external HDMI sound output is
+possible.
+
+# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: HDMI [HDA Intel HDMI], device 3: HDMI 0 [HDMI 0]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 0: HDMI [HDA Intel HDMI], device 7: HDMI 1 [HDMI 1]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: HDMI [HDA Intel HDMI], device 8: HDMI 2 [HDMI 2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+When I check dmesg output, I found some error message that indicated
+that broadwell-audio is unable to initialize.
+
+# dmesg | egrep "sound|audio"
+[    1.827797] input: HDA Intel HDMI HDMI/DP,pcm=3 as
+/devices/pci0000:00/0000:00:03.0/sound/card0/input8
+[    1.827935] input: HDA Intel HDMI HDMI/DP,pcm=7 as
+/devices/pci0000:00/0000:00:03.0/sound/card0/input9
+[    1.828071] input: HDA Intel HDMI HDMI/DP,pcm=8 as
+/devices/pci0000:00/0000:00:03.0/sound/card0/input10
+[    1.952913] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    1.952924] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    2.062812] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    2.062837] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    2.350951] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    2.350987] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    2.375744] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    2.375759] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    2.386019] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    2.386037] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    2.706751] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    2.706777] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.042190] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.042202] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.048200] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.048212] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.048382] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.048391] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.199788] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.199812] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.208241] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.208259] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.216577] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.216600] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.270629] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.270659] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.324400] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.324419] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.604723] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.604755] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.604800] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.604817] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.673159] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.673190] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.727312] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.727352] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+[    3.727387] broadwell-audio broadwell-audio: ASoC: CPU DAI System
+Pin not registered
+[    3.727401] platform broadwell-audio: Driver broadwell-audio
+requests probe deferral
+
+
+I tried both 3.18.3 and 3.19.0-rc6, the results were same. It seems
+that we need to add some quirks for this hardware. I also found a
+similar bug on Launchpad [0].
+
+I filed a kernel bug [1] and I hope someone could fix it.
+
+[0]: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1413446
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=92061
+
+Thanks.
