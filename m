@@ -1,40 +1,68 @@
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH_V2 4/4] sound: jz4740: set i2s clk rate to 12MHz
-Date: Mon, 26 Jan 2015 13:15:38 +0000
-Message-ID: <1422278138-51097-5-git-send-email-Zubair.Kakakhel@imgtec.com>
-References: <1422278138-51097-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Guido Aulisi <guido.aulisi@gmail.com>
+Subject: Re: Regression in kernel 3.19-rc5 for usb2 scarlett
+	18i20
+Date: Mon, 26 Jan 2015 14:28:14 +0100
+Message-ID: <CAEw7SVG58Pbc==U5abDTYvUA0ukHnpSU4eQ5FNL77fr6Q47gGQ@mail.gmail.com>
+References: <1422186142.4719.8.camel@yoda.heavyware>
+ <s5hh9vd1ymg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1422278138-51097-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Zubair.Kakakhel@imgtec.com, lars@metafoo.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f173.google.com (mail-ie0-f173.google.com
+ [209.85.223.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id A26D4260599
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 14:28:15 +0100 (CET)
+Received: by mail-ie0-f173.google.com with SMTP id tr6so8506310ieb.4
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 05:28:15 -0800 (PST)
+In-Reply-To: <s5hh9vd1ymg.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Chris J Arges <chris.j.arges@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-i2s clock rate is not set to 12MHz currently. Set it before enabling
-the clock.
+I will ASAP, now I'm not at home.
+IMHO I think this is something about usb than the mixer,
+because I didn't use it, I only noticed the xruns even without playing audio.
+I didn't try 3.18, because it isn't shipped with fedora yet.
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Ciao
 
----
-V2 changes: Removed clk_prepare_enable call as clock was already being
-enabled elsewhere. Just set rate to 12MHz.
----
- sound/soc/jz4740/jz4740-i2s.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 07f7781..c2e5852 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -125,6 +125,7 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
- 	ctrl |= JZ_AIC_CTRL_FLUSH;
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
- 
-+	clk_set_rate(i2s->clk_i2s, 12000000);
- 	clk_prepare_enable(i2s->clk_i2s);
- 
- 	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
--- 
-1.9.1
+2015-01-26 14:04 GMT+01:00 Takashi Iwai <tiwai@suse.de>:
+> At Sun, 25 Jan 2015 12:42:22 +0100,
+> Guido Aulisi wrote:
+>>
+>> Hi,
+>> I noticed a regression in 3.19-rc5 kernel (as shipped by fedora rawhide)
+>> with usb2 focusrite scarlett 18i20.
+>> I get a lot of xruns with jack, even at 1024 frame buffer and 2 periods.
+>> In 3.17.8 it works quite well without xruns at the same settings.
+>>
+>> I use a fedora 20 (64bit) laptop with 8GB ram,  I only installed the
+>> rawhide kernel to try the new included scarlett mixer, no other software
+>> components changed.
+>>
+>> I can try to do some other test, but compiling the kernel on this laptop
+>> is time consuming.
+>>
+>> Thanks
+>> Guido
+>
+> Looks like a regression in the recent rework for Scarlett devices.
+> Chris, do you have any clue?
+>
+> In anyway, Guido, could you give lsusb -v output (for the relevant
+> part)?
+>
+>
+> thanks,
+>
+> Takashi
