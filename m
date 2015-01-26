@@ -1,41 +1,44 @@
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH 0/4] sound:soc: jz4740: DT, dynamic sampling, enable clocks
-Date: Mon, 26 Jan 2015 10:18:27 +0000
-Message-ID: <1422267511-6649-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH 4/4] sound: jz4740: Enable codec clock during dai_probe
+Date: Mon, 26 Jan 2015 10:18:31 +0000
+Message-ID: <1422267511-6649-5-git-send-email-Zubair.Kakakhel@imgtec.com>
+References: <1422267511-6649-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Zubair.Kakakhel@imgtec.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1422267511-6649-1-git-send-email-Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+As we are moving away from platform to DT, we cant rely on the board
+file to do this now. So enable it here.
 
-Here are a few simple patches for the jz4740.
+Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+---
+ sound/soc/jz4740/jz4740-i2s.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-First adds dynamic sampling support to jz4740-i2s.
-Then two to add a simple binding and DT support.
-Then a patch to enable the codec clock.
-
-These are in preparation for jz4780 and ci20 later on.
-
-These are based on 3.19-rc6. 
-
-If you would like to have them rebased to a different tree, please tell.
-
-Thank-you
-
-Zubair Lutfullah Kakakhel (4):
-  sound: soc: jz4740: Add dynamic sampling rate support to jz4740-i2s
-  dt: sound: jz4740: Add binding documentation for jz4740-i2s
-  sound: soc: jz4740: Add DT support to jz4740-i2s driver
-  sound: jz4740: Enable codec clock during dai_probe
-
- .../bindings/sound/ingenic,jz4740-i2s.txt          | 18 ++++++++++++++++
- sound/soc/jz4740/jz4740-i2s.c                      | 24 +++++++++++++++++++++-
- 2 files changed, 41 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
-
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index 3c309fc..a7e4a7b 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -376,6 +376,10 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
+ 		JZ_AIC_CONF_I2S |
+ 		JZ_AIC_CONF_INTERNAL_CODEC;
+ 
++	/* enable codec sysclk */
++	clk_set_rate(i2s->clk_i2s, 12000000);
++	clk_prepare_enable(i2s->clk_i2s);
++
+ 	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, JZ_AIC_CONF_RESET);
+ 	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
+ 
 -- 
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
