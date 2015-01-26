@@ -1,66 +1,73 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Subject: Re: [PATCH v2 1/3] ASoC: codecs: wm8904: add dt ids table
-Date: Mon, 26 Jan 2015 16:24:38 +0100
-Message-ID: <54C65C36.9050106@atmel.com>
-References: <1418614273-2303-1-git-send-email-voice.shen@atmel.com> <20150115115425.GX3043@sirena.org.uk> <54B866B9.8000900@atmel.com>
+Date: Mon, 26 Jan 2015 16:42:29 +0000
+Message-ID: <20150126164229.GB21293@sirena.org.uk>
+References: <1418614273-2303-1-git-send-email-voice.shen@atmel.com>
+ <20150115115425.GX3043@sirena.org.uk>
+ <54B866B9.8000900@atmel.com>
+ <54C65C36.9050106@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <54B866B9.8000900@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>, Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Alexander Morozov <linux@meltdown.ru>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ViWwB84N1zFtNiVD"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <54C65C36.9050106-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Cc: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alexander Morozov <linux-lCH5ugpmZSMox3rIn2DAYQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Le 16/01/2015 02:17, Bo Shen a =E9crit :
-> Hi Mark,
->=20
-> On 01/15/2015 07:54 PM, Mark Brown wrote:
->> On Mon, Dec 15, 2014 at 11:31:11AM +0800, Bo Shen wrote:
->>
->>> +#ifdef CONFIG_OF
->>> +static enum wm8904_type wm8904_data =3D WM8904;
->>> +static enum wm8904_type wm8912_data =3D WM8912;
->>> +
->>> +static const struct of_device_id wm8904_of_match[] =3D {
->>> +	{
->>> +		.compatible =3D "wlf,wm8904",
->>> +		.data =3D &wm8904_data,
->>
->> Does this end up in the i2c_driver_id driver data or do we need some
->> extra code when devtype is assigned to check for an of_node and look=
- at
->> the DT data instead?  That certainly used to be the case...
->=20
-> At the beginning I think as the same as you, and also add the code to=
+
+--ViWwB84N1zFtNiVD
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jan 26, 2015 at 04:24:38PM +0100, Nicolas Ferre wrote:
+> Le 16/01/2015 02:17, Bo Shen a =E9crit :
+
+> >> Does this end up in the i2c_driver_id driver data or do we need some
+> >> extra code when devtype is assigned to check for an of_node and look at
+> >> the DT data instead?  That certainly used to be the case...
+
+> > At the beginning I think as the same as you, and also add the code to=
 =20
-> get the data as I do in <drivers/misc/atmel-ssc.c>. However, as I=20
-> remember, I2C seems only use the compatible string after the comma, t=
-hat=20
-> means only for "wlf,wm8904", it uses "wm8904" to match. So, I remove =
-all=20
-> the code I added, and just keep these, and it can get the device type=
+> > get the data as I do in <drivers/misc/atmel-ssc.c>. However, as I=20
+> > remember, I2C seems only use the compatible string after the comma, tha=
+t=20
+> > means only for "wlf,wm8904", it uses "wm8904" to match. So, I remove al=
+l=20
+> > the code I added, and just keep these, and it can get the device type=
 =20
-> correctly.
->=20
-> So, when I submit the patch and keep the code as simple as possible.
->=20
-> Thanks.
->=20
-> Best Regards,
-> Bo Shen
+> > correctly.
 
-I don't understand what's keeping this patch from being applied. Voice,
-do you mind re-sending?
+> > So, when I submit the patch and keep the code as simple as possible.
 
-On my side, I take the two patches that apply on AT91 DT (2/3 and 3/3).
+> I don't understand what's keeping this patch from being applied. Voice,
+> do you mind re-sending?
 
-Bye,
---=20
-Nicolas Ferre
+I need to convince myself that the above actually works and is doing the
+right thing; the above explanation sounds like if it works it might be
+relying on a bug.
+
+--ViWwB84N1zFtNiVD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUxm50AAoJECTWi3JdVIfQRJkH/26//wf/lSxYQGI3s2tcHMY3
+xLGkekFc+GuSLkudf84JTvMwmGuRsh7wGW5OfV40Oq1OB4Fxoj2H9N5ySWv8K/1+
+HYlc1gd2AqYKGM/o60VpBIOIQadPaxIVFYVmf0XcBxfjktuAi2lGO/c66D3QskA8
+EmHHT4ZbReTWV3TfMB3inIey6mSFgEkszfcOzvU05vwpy5VH7xrpi7JG5gSTXNxG
+9Aet8v38l5At0M2Tflb/SqrAKAZtSpxwqTz7IATe4l9W4r3KjOAUH1bRfj7ngFQh
+unMs+/PJx9sjGXHYw9/Ma8FJyXbJPkQada3aB1WdgRGsXbtxNeZX1PuZ/7M2Jpg=
+=qC8j
+-----END PGP SIGNATURE-----
+
+--ViWwB84N1zFtNiVD--
 --
-To unsubscribe from this list: send the line "unsubscribe linux-sound" =
-in
-the body of a message to majordomo@vger.kernel.org
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
