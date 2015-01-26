@@ -1,109 +1,41 @@
-From: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>
-Subject: [PATCH] ASoC: rx51: do not fail if could not get jack detection gpio
-Date: Mon, 26 Jan 2015 21:51:47 +0100
-Message-ID: <1422305507-10533-1-git-send-email-pali.rohar@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/7] ALSA: pcm: Add snd_interval_ranges()
+ and snd_pcm_hw_constraint_ranges()
+Date: Mon, 26 Jan 2015 23:10:43 +0100
+Message-ID: <54C6BB63.60809@metafoo.de>
+References: <1421236370-19826-1-git-send-email-peda@lysator.liu.se>
+ <1421236370-19826-2-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>, Sebastian Reichel <sre@debian.org>, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-161.synserver.de (smtp-out-161.synserver.de
+ [212.40.185.161])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FBE02604A1
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2015 23:10:45 +0100 (CET)
+In-Reply-To: <1421236370-19826-2-git-send-email-peda@lysator.liu.se>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Rosin <peda@lysator.liu.se>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-qemu does not emulate it
+On 01/14/2015 12:52 PM, Peter Rosin wrote:
+> From: Peter Rosin <peda@axentia.se>
+>
+> Add helper functions to allow drivers to specify several disjoint
+> ranges for a variable. In particular, there is a codec (PCM512x) that
+> has a hole in its supported range of rates, due to PLL and divider
+> restrictions.
 
-Signed-off-by: Pali Roh=C3=A1r <pali.rohar@gmail.com>
----
- sound/soc/omap/rx51.c |   45 +++++++++++++++++++++++++----------------=
-----
- 1 file changed, 25 insertions(+), 20 deletions(-)
+Might be worth mentioning that this is the extension of 
+snd_pcm_hw_constraint_list() from points to ranges. Otherwise looks good.
 
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index 04896d6..a689021 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -310,25 +310,27 @@ static int rx51_aic34_init(struct snd_soc_pcm_run=
-time *rtd)
- 		return err;
- 	}
-=20
--	/* AV jack detection */
--	err =3D snd_soc_jack_new(codec, "AV Jack",
--			       SND_JACK_HEADSET | SND_JACK_VIDEOOUT,
--			       &rx51_av_jack);
--	if (err) {
--		dev_err(card->dev, "Failed to add AV Jack\n");
--		return err;
--	}
-+	if (!IS_ERR(pdata->jack_detection_gpio)) {
-+		/* AV jack detection */
-+		err =3D snd_soc_jack_new(codec, "AV Jack",
-+				       SND_JACK_HEADSET | SND_JACK_VIDEOOUT,
-+				       &rx51_av_jack);
-+		if (err) {
-+			dev_err(card->dev, "Failed to add AV Jack\n");
-+			return err;
-+		}
-=20
--	/* prepare gpio for snd_soc_jack_add_gpios */
--	rx51_av_jack_gpios[0].gpio =3D desc_to_gpio(pdata->jack_detection_gpi=
-o);
--	devm_gpiod_put(card->dev, pdata->jack_detection_gpio);
-+		/* prepare gpio for snd_soc_jack_add_gpios */
-+		rx51_av_jack_gpios[0].gpio =3D desc_to_gpio(pdata->jack_detection_gp=
-io);
-+		devm_gpiod_put(card->dev, pdata->jack_detection_gpio);
-=20
--	err =3D snd_soc_jack_add_gpios(&rx51_av_jack,
--				     ARRAY_SIZE(rx51_av_jack_gpios),
--				     rx51_av_jack_gpios);
--	if (err) {
--		dev_err(card->dev, "Failed to add GPIOs\n");
--		return err;
-+		err =3D snd_soc_jack_add_gpios(&rx51_av_jack,
-+					     ARRAY_SIZE(rx51_av_jack_gpios),
-+					     rx51_av_jack_gpios);
-+		if (err) {
-+			dev_err(card->dev, "Failed to add GPIOs\n");
-+			return err;
-+		}
- 	}
-=20
- 	return err;
-@@ -336,8 +338,11 @@ static int rx51_aic34_init(struct snd_soc_pcm_runt=
-ime *rtd)
-=20
- static int rx51_card_remove(struct snd_soc_card *card)
- {
--	snd_soc_jack_free_gpios(&rx51_av_jack, ARRAY_SIZE(rx51_av_jack_gpios)=
-,
--				rx51_av_jack_gpios);
-+	struct rx51_audio_pdata *pdata =3D snd_soc_card_get_drvdata(card);
-+
-+	if (!IS_ERR(pdata->jack_detection_gpio))
-+		snd_soc_jack_free_gpios(&rx51_av_jack, ARRAY_SIZE(rx51_av_jack_gpios=
-),
-+					rx51_av_jack_gpios);
-=20
- 	return 0;
- }
-@@ -470,8 +475,8 @@ static int rx51_soc_probe(struct platform_device *p=
-dev)
- 	pdata->jack_detection_gpio =3D devm_gpiod_get(card->dev,
- 						    "jack-detection");
- 	if (IS_ERR(pdata->jack_detection_gpio)) {
-+		/* Do not fail, qemu does not emulate jack detection gpio */
- 		dev_err(card->dev, "could not get jack detection gpio\n");
--		return PTR_ERR(pdata->jack_detection_gpio);
- 	}
-=20
- 	pdata->eci_sw_gpio =3D devm_gpiod_get(card->dev, "eci-switch");
---=20
-1.7.9.5
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
