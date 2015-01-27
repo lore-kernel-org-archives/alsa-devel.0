@@ -1,17 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/5] ALSA: line6: Handle error from
-	line6_pcm_acquire()
-Date: Tue, 27 Jan 2015 17:13:17 +0100
-Message-ID: <1422375197-17293-6-git-send-email-tiwai@suse.de>
-References: <1422375197-17293-1-git-send-email-tiwai@suse.de>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: simple-audio-card vs. platform question
+Date: Tue, 27 Jan 2015 17:31:58 +0100
+Message-ID: <alpine.DEB.2.02.1501271730110.11532@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1501271301400.11532@lnxricardw1.se.axis.com>
+ <54C7848F.6070903@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C2B9260A5B
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 17:13:19 +0100 (CET)
-In-Reply-To: <1422375197-17293-1-git-send-email-tiwai@suse.de>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E3A12608BC
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 17:32:00 +0100 (CET)
+In-Reply-To: <54C7848F.6070903@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/line6/pcm.c      | 13 ++++++++++---
- sound/usb/line6/toneport.c | 13 ++++++++++---
- 2 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
-index 73c87467d2e0..8461d6bf992f 100644
---- a/sound/usb/line6/pcm.c
-+++ b/sound/usb/line6/pcm.c
-@@ -45,15 +45,22 @@ static int snd_line6_impulse_volume_put(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_line6_pcm *line6pcm = snd_kcontrol_chip(kcontrol);
- 	int value = ucontrol->value.integer.value[0];
-+	int err;
- 
- 	if (line6pcm->impulse_volume == value)
- 		return 0;
- 
- 	line6pcm->impulse_volume = value;
--	if (value > 0)
--		line6_pcm_acquire(line6pcm, LINE6_STREAM_IMPULSE);
--	else
-+	if (value > 0) {
-+		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_IMPULSE);
-+		if (err < 0) {
-+			line6pcm->impulse_volume = 0;
-+			line6_pcm_release(line6pcm, LINE6_STREAM_IMPULSE);
-+			return err;
-+		}
-+	} else {
- 		line6_pcm_release(line6pcm, LINE6_STREAM_IMPULSE);
-+	}
- 	return 1;
- }
- 
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index 61fa6256d7b0..819e06b3f3db 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -182,16 +182,23 @@ static int snd_toneport_monitor_put(struct snd_kcontrol *kcontrol,
- 				    struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_line6_pcm *line6pcm = snd_kcontrol_chip(kcontrol);
-+	int err;
- 
- 	if (ucontrol->value.integer.value[0] == line6pcm->volume_monitor)
- 		return 0;
- 
- 	line6pcm->volume_monitor = ucontrol->value.integer.value[0];
- 
--	if (line6pcm->volume_monitor > 0)
--		line6_pcm_acquire(line6pcm, LINE6_STREAM_MONITOR);
--	else
-+	if (line6pcm->volume_monitor > 0) {
-+		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_MONITOR);
-+		if (err < 0) {
-+			line6pcm->volume_monitor = 0;
-+			line6_pcm_release(line6pcm, LINE6_STREAM_MONITOR);
-+			return err;
-+		}
-+	} else {
- 		line6_pcm_release(line6pcm, LINE6_STREAM_MONITOR);
-+	}
- 
- 	return 1;
- }
--- 
-2.2.2
+On Tue, 27 Jan 2015, Lars-Peter Clausen wrote:
+
+> On 01/27/2015 01:01 PM, Ricard Wanderlof wrote:
+> >
+> > I'm trying to set up a simple device tree framework so I can do some
+> > development on an I2S driver. I'm trying to use simple-audio-card, but I
+> > keep running into the problem that once soc_bind_dai_link() gets called,
+> > dai_link->platform is set to NULL (because it is not initialized by
+> > simple-card.c when there is a DT node), while dai_link->platform_of_node
+> > has been set to dai_link->cpu_of_node in asoc_simple_card_parse_of().
+> >
+> [...]
+> >
+> > I can't figure out either how to set up a platform (=3DDMA) driver in t=
+his
+> > environment. Perhaps the case of having a CPU DAI, DMA driver and codec
+> > DAI is not supported by simple-audio-card?
+> [...]
+> =
+
+> Usually in such a setup the CPU DAI driver also register the platform =
+
+> component. Which then as the same of_node as the CPU DAI and so the match=
+ing =
+
+> works. There are plenty of examples e.g. check the drivers using =
+
+> devm_snd_dmaengine_pcm_register().
+
+Thanks for the hint, that helps me back on track!
+
+Curious though, wouldn't it be more natural to bind it all together in the =
+
+simple-audio-card DT entry, having a "simple-audio-card,platform" =
+
+specification? Or is the idea that normally the CPU DAI driver is fairly =
+
+tightly coupled to the PCM driver so it makes more sense to make that =
+
+connection in the code?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
