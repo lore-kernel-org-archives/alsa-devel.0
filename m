@@ -1,48 +1,46 @@
-From: Cyrus Harmon <cyrus@bobobeach.com>
-Subject: Re: add Steinberg UR44 USB Audio Interface support to
- quirks-table
-Date: Tue, 27 Jan 2015 09:21:55 -0800
-Message-ID: <54C7C933.8080002@bobobeach.com>
-References: <CAH7VmLJQojMB5mH_mcq3-Q5HVcfs8QZf4m8D3MK0p7qBWkctGw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/2] ASoC: atmel_ssc_dai: fix start event for I2S mode
+Date: Tue, 27 Jan 2015 17:34:19 +0000
+Message-ID: <20150127173419.GB21293@sirena.org.uk>
+References: <1421739797-25988-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aspen.bobobeach.com (unknown [208.79.93.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 751AB2608EC
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 18:22:13 +0100 (CET)
-Received: from aspen.bobobeach.com (localhost [127.0.0.1])
- by aspen.bobobeach.com (Postfix) with ESMTP id BB3B010154
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 09:24:27 -0800 (PST)
-Received: from [192.168.1.224] (unknown [107.200.11.235])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (Client did not present a certificate)
- by aspen.bobobeach.com (Postfix) with ESMTPSA id 8DD1E1014A
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 09:24:27 -0800 (PST)
-in-reply-to: <CAH7VmLJQojMB5mH_mcq3-Q5HVcfs8QZf4m8D3MK0p7qBWkctGw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ORQ7wZOtrZMMlBRp"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1421739797-25988-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, Songjun.Wu@atmel.com, peda@lysator.liu.se, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On 01/23/2015 03:42 AM, Vlastimil Wagner wrote:
-> hi In what state is the driver for Steinberg UR44
+--ORQ7wZOtrZMMlBRp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I sent a patch to to quirks-table.h a few months back that makes things 
-work with the UR44. Clemens commented that, in theory, kernel 3.11 and 
-later should support the UR44 out of the box, without needing the patch 
-to the quirks table. He also sent along some patches with some debugging 
-information to try to track down why things were failing, but I never 
-got around to investigating the fully the source of the error, nor did I 
-push for inclusion of the quirks-table.h patch, so it's still sitting 
-out there. Check the list archives for details.
+On Tue, Jan 20, 2015 at 03:43:16PM +0800, Bo Shen wrote:
+> According to the I2S specification information as following:
+>   - WS = 0, channel 1 (left)
+>   - WS = 1, channel 2 (right)
+> So, the start event should be TF/RF falling edge.
 
-Cyrus
+applied, thanks.
+
+--ORQ7wZOtrZMMlBRp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUx8waAAoJECTWi3JdVIfQkR4H/A9P2fsnUCnAEbiDDJk1U/N/
+kPzDiSJ5qfXs9iy5Mm4UzkZ7wuzQiNQ3ei6BSpyRjfq8H3uWcnteYoT2C69WsT86
+vZWp5mhS0eNgRn+kPE2MvSOJWB2yRZLce0Zpde/89iSKPVIZClkz/om0Qi9fOHsp
+OClR2u32J9urS991BZofVaNpEQKxs4M7jccWZnNii3GQWkLaMUszagLsP9KC71ZM
+e9KzOU55/h7OE7YOiGkNKL2uvIvyP91Ge8BQFAOJswuGvDrTbT4OfWJmoAPzR4h3
+DwYuytWl3j2/Kd7QYqT6BM1sNoxv+gBNFM61oQM4nYDdChaanW6g41nIqwkoJt0=
+=iV6x
+-----END PGP SIGNATURE-----
+
+--ORQ7wZOtrZMMlBRp--
