@@ -1,19 +1,12 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: simple-audio-card vs. platform question
-Date: Tue, 27 Jan 2015 19:11:36 +0100
-Message-ID: <54C7D4D8.9020301@metafoo.de>
-References: <alpine.DEB.2.02.1501271301400.11532@lnxricardw1.se.axis.com>
- <54C7848F.6070903@metafoo.de>
- <alpine.DEB.2.02.1501271730110.11532@lnxricardw1.se.axis.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8731: init mutex in i2c init path
+Date: Tue, 27 Jan 2015 18:21:58 +0000
+Message-ID: <20150127182158.GE21293@sirena.org.uk>
+References: <1421652223-721475-1-git-send-email-manuel.lauss@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7243964180009147312=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-190.synserver.de (smtp-out-195.synserver.de
- [212.40.185.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 64F542610B9
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 19:11:37 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.02.1501271730110.11532@lnxricardw1.se.axis.com>
+In-Reply-To: <1421652223-721475-1-git-send-email-manuel.lauss@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +16,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/27/2015 05:31 PM, Ricard Wanderlof wrote:
->
-> On Tue, 27 Jan 2015, Lars-Peter Clausen wrote:
->
->> On 01/27/2015 01:01 PM, Ricard Wanderlof wrote:
->>>
->>> I'm trying to set up a simple device tree framework so I can do some
->>> development on an I2S driver. I'm trying to use simple-audio-card, but I
->>> keep running into the problem that once soc_bind_dai_link() gets called,
->>> dai_link->platform is set to NULL (because it is not initialized by
->>> simple-card.c when there is a DT node), while dai_link->platform_of_node
->>> has been set to dai_link->cpu_of_node in asoc_simple_card_parse_of().
->>>
->> [...]
->>>
->>> I can't figure out either how to set up a platform (=DMA) driver in this
->>> environment. Perhaps the case of having a CPU DAI, DMA driver and codec
->>> DAI is not supported by simple-audio-card?
->> [...]
->>
->> Usually in such a setup the CPU DAI driver also register the platform
->> component. Which then as the same of_node as the CPU DAI and so the matching
->> works. There are plenty of examples e.g. check the drivers using
->> devm_snd_dmaengine_pcm_register().
->
-> Thanks for the hint, that helps me back on track!
->
-> Curious though, wouldn't it be more natural to bind it all together in the
-> simple-audio-card DT entry, having a "simple-audio-card,platform"
-> specification? Or is the idea that normally the CPU DAI driver is fairly
-> tightly coupled to the PCM driver so it makes more sense to make that
-> connection in the code?
 
-Usually there is no representation of the platform object in the devicetree. 
-E.g. typically this is a external shared DMA controller which is referenced 
-by the dmas property in the CPU DAI node.
+--===============7243964180009147312==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wG6oWOmweUVxAUPD"
+Content-Disposition: inline
 
-- Lars
+
+--wG6oWOmweUVxAUPD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jan 19, 2015 at 08:23:43AM +0100, Manuel Lauss wrote:
+> The I2C init path forgot to init the mutex, leading to an oops when
+> controls are accessed.
+
+Applied, thanks.  Please remember to CC maintainers on patches,
+including driver maintainers as well as subsystem maintainers.
+
+--wG6oWOmweUVxAUPD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUx9dFAAoJECTWi3JdVIfQ818H/1UoP3FZvq8rK+Wzg5DpYC7u
+LgRFa+QfYao09MhcPQ3Knjg902Ao3LNrPtw7JF8fl66c1mdPmhJLRmUVmHwIabWM
+pKpEztE8qUDJuQxXzMfiKO/j2E3qsAaP4iSiKbib8hyn87UEx5JDUvlP+kaMrFlL
+OBtwQA14qbE/526r2qDkMaDZjzVJWnIzIsvWeCl0BSAw9ZdfpH53WALxd5AtF93x
+IgWhcky9uArsf/xyFMfP3eDDFrY0GlmsPFdCqJmEUV0mXPDYkXid83KFzqzKKuD1
+VGKaMrWJ2sALFkyIhXeS5/34OGKe49/2KdZoeQJ/t3unn5fXhZCiLyb5cj4FsvE=
+=h0sn
+-----END PGP SIGNATURE-----
+
+--wG6oWOmweUVxAUPD--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+--===============7243964180009147312==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7243964180009147312==--
