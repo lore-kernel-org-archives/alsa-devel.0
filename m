@@ -1,61 +1,71 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH v2 1/3] ARM: shmobile: armadillo800eva: Properly specify
- HDMI audio link format
-Date: Tue, 27 Jan 2015 09:58:09 +0900
-Message-ID: <20150127005808.GB29710@verge.net.au>
-References: <1421847492-8857-1-git-send-email-lars@metafoo.de>
+From: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: codecs: wm8904: add dt ids
+ table
+Date: Tue, 27 Jan 2015 09:35:13 +0800
+Message-ID: <54C6EB51.80005@atmel.com>
+References: <1418614273-2303-1-git-send-email-voice.shen@atmel.com> <20150115115425.GX3043@sirena.org.uk> <54B866B9.8000900@atmel.com> <54C65C36.9050106@atmel.com> <20150126164229.GB21293@sirena.org.uk> <54C67007.6000708@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1421847492-8857-1-git-send-email-lars@metafoo.de>
-Sender: linux-sh-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <54C67007.6000708-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alexander Morozov <linux-lCH5ugpmZSMox3rIn2DAYQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 21, 2015 at 02:38:10PM +0100, Lars-Peter Clausen wrote:
-> The DAI link format should be specified for the whole link rather than just
-> one component on the link. So move the format specification for the HDMI
-> audio link from the CPU component to the link itself.
-> 
-> Since the sh-mobile-hdmi DAI driver doesn't implement the set_fmt() callback
-> in this case there is no functional difference between only specifying the
-> the format for the CPU side or for the whole link, but the later it will
-> allow us to remove support for just specifying the format for one component.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
-> No changes since v1.
+Hi Mark, Lars-Perter,
 
-Morimoto-san,
+On 01/27/2015 12:49 AM, Lars-Peter Clausen wrote:
+> On 01/26/2015 05:42 PM, Mark Brown wrote:
+>> On Mon, Jan 26, 2015 at 04:24:38PM +0100, Nicolas Ferre wrote:
+>>> Le 16/01/2015 02:17, Bo Shen a =E9crit :
+>>
+>>>>> Does this end up in the i2c_driver_id driver data or do we need s=
+ome
+>>>>> extra code when devtype is assigned to check for an of_node and
+>>>>> look at
+>>>>> the DT data instead?  That certainly used to be the case...
+>>
+>>>> At the beginning I think as the same as you, and also add the code=
+ to
+>>>> get the data as I do in <drivers/misc/atmel-ssc.c>. However, as I
+>>>> remember, I2C seems only use the compatible string after the comma=
+,
+>>>> that
+>>>> means only for "wlf,wm8904", it uses "wm8904" to match. So, I remo=
+ve
+>>>> all
+>>>> the code I added, and just keep these, and it can get the device t=
+ype
+>>>> correctly.
+>>
+>>>> So, when I submit the patch and keep the code as simple as possibl=
+e.
+>>
+>>> I don't understand what's keeping this patch from being applied. Vo=
+ice,
+>>> do you mind re-sending?
+>>
+>> I need to convince myself that the above actually works and is doing=
+ the
+>> right thing; the above explanation sounds like if it works it might =
+be
+>> relying on a bug.
+>
+> I'd call it a undocumented feature. But I wouldn't rely on it being
+> around for ever. In my opinion to be future proof the driver should
+> explicitly handle the OF case in the probe function.
+>
 
-could you provide a review of this patch?
+I will add this into probe function in next version.
+Thanks.
 
-> ---
->  arch/arm/mach-shmobile/board-armadillo800eva.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-shmobile/board-armadillo800eva.c b/arch/arm/mach-shmobile/board-armadillo800eva.c
-> index 6d949f1..75de26c 100644
-> --- a/arch/arm/mach-shmobile/board-armadillo800eva.c
-> +++ b/arch/arm/mach-shmobile/board-armadillo800eva.c
-> @@ -1040,9 +1040,9 @@ static struct asoc_simple_card_info fsi2_hdmi_info = {
->  	.card		= "FSI2B-HDMI",
->  	.codec		= "sh-mobile-hdmi",
->  	.platform	= "sh_fsi2",
-> +	.daifmt		= SND_SOC_DAIFMT_CBS_CFS,
->  	.cpu_dai = {
->  		.name	= "fsib-dai",
-> -		.fmt	= SND_SOC_DAIFMT_CBS_CFS,
->  	},
->  	.codec_dai = {
->  		.name = "sh_mobile_hdmi-hifi",
-> -- 
-> 1.8.0
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-sh" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Best Regards,
+Bo Shen
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
