@@ -1,44 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: atmel_ssc_dai: remove clock pin comments
-Date: Tue, 27 Jan 2015 17:36:04 +0000
-Message-ID: <20150127173604.GC21293@sirena.org.uk>
-References: <1421739797-25988-1-git-send-email-voice.shen@atmel.com>
- <1421739797-25988-2-git-send-email-voice.shen@atmel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: simple-audio-card vs. platform question
+Date: Tue, 27 Jan 2015 19:11:36 +0100
+Message-ID: <54C7D4D8.9020301@metafoo.de>
+References: <alpine.DEB.2.02.1501271301400.11532@lnxricardw1.se.axis.com>
+ <54C7848F.6070903@metafoo.de>
+ <alpine.DEB.2.02.1501271730110.11532@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="71vIRUdx5Wzj+PCo"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1421739797-25988-2-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: nicolas.ferre@atmel.com, Songjun.Wu@atmel.com, peda@lysator.liu.se, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-190.synserver.de (smtp-out-195.synserver.de
+ [212.40.185.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64F542610B9
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 19:11:37 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.02.1501271730110.11532@lnxricardw1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 01/27/2015 05:31 PM, Ricard Wanderlof wrote:
+>
+> On Tue, 27 Jan 2015, Lars-Peter Clausen wrote:
+>
+>> On 01/27/2015 01:01 PM, Ricard Wanderlof wrote:
+>>>
+>>> I'm trying to set up a simple device tree framework so I can do some
+>>> development on an I2S driver. I'm trying to use simple-audio-card, but I
+>>> keep running into the problem that once soc_bind_dai_link() gets called,
+>>> dai_link->platform is set to NULL (because it is not initialized by
+>>> simple-card.c when there is a DT node), while dai_link->platform_of_node
+>>> has been set to dai_link->cpu_of_node in asoc_simple_card_parse_of().
+>>>
+>> [...]
+>>>
+>>> I can't figure out either how to set up a platform (=DMA) driver in this
+>>> environment. Perhaps the case of having a CPU DAI, DMA driver and codec
+>>> DAI is not supported by simple-audio-card?
+>> [...]
+>>
+>> Usually in such a setup the CPU DAI driver also register the platform
+>> component. Which then as the same of_node as the CPU DAI and so the matching
+>> works. There are plenty of examples e.g. check the drivers using
+>> devm_snd_dmaengine_pcm_register().
+>
+> Thanks for the hint, that helps me back on track!
+>
+> Curious though, wouldn't it be more natural to bind it all together in the
+> simple-audio-card DT entry, having a "simple-audio-card,platform"
+> specification? Or is the idea that normally the CPU DAI driver is fairly
+> tightly coupled to the PCM driver so it makes more sense to make that
+> connection in the code?
 
---71vIRUdx5Wzj+PCo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Usually there is no representation of the platform object in the devicetree. 
+E.g. typically this is a external shared DMA controller which is referenced 
+by the dmas property in the CPU DAI node.
 
-On Tue, Jan 20, 2015 at 03:43:17PM +0800, Bo Shen wrote:
-> As the clock can be get from TK/RK pin, so remove the comments.
-
-Applied, thanks.
-
---71vIRUdx5Wzj+PCo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUx8yDAAoJECTWi3JdVIfQYvEH/RLXh9GDW1VdqdTM5Bet9mML
-sQZZhcrEDxW4eZKa/Rx893P/KN4AEUEyJjwRv5WCp5uPm+0T/JZctuGD1K+LLkNv
-2gGTeCB5MP7WgYICq5bhEu62lINgWBG9PTIo9IUA3MShX/kzqbAMid62RhmqOOFq
-meLsourfQ2gc0GbDkVwaWIARm1NIp+dAjwTptQOhrV8NR95icMhVyvrRXCqikQPv
-tUAbWI9XhNdSKBVyAuZTeLOqfn35AwYVbTRsqGZKaL2RnnWNgHPBdKTb5qT1EWiM
-5dEMGg8v6DvmS/P0WZhLrjkx1MIpdVMSgyOysSn+NwqlH4ZOWAaFbs1K9BoqhjE=
-=1CSa
------END PGP SIGNATURE-----
-
---71vIRUdx5Wzj+PCo--
+- Lars
