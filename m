@@ -1,60 +1,53 @@
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH_V3 4/4] sound: jz4740: set i2s clk rate to 12MHz
-Date: Tue, 27 Jan 2015 12:35:48 +0000
-Message-ID: <54C78624.5000702@imgtec.com>
-References: <1422283993-53642-1-git-send-email-Zubair.Kakakhel@imgtec.com> <1422283993-53642-5-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Chris Rorvick <chris@rorvick.com>
+Subject: Re: [PATCH 08/16] ALSA: line6: Drop superfluous
+	spinlock for trigger
+Date: Tue, 27 Jan 2015 06:48:22 -0600
+Message-ID: <CAEUsAPaN+127mvZvYiFcKcVLSVoLaPWO_tCVDUX_7-ce7YadXw@mail.gmail.com>
+References: <1422033203-23254-1-git-send-email-tiwai@suse.de>
+ <1422033203-23254-9-git-send-email-tiwai@suse.de>
+ <CAEUsAPYJcxq5eGhpZiy58USGwwxaohwjF+j0B0Qi=WRoectJeA@mail.gmail.com>
+ <s5hh9vcikmi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1422283993-53642-5-git-send-email-Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
+ [209.85.216.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2BD6260715
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:48:23 +0100 (CET)
+Received: by mail-qa0-f43.google.com with SMTP id v10so11147299qac.2
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 04:48:23 -0800 (PST)
+In-Reply-To: <s5hh9vcikmi.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jan 27, 2015 at 4:27 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 27 Jan 2015 00:22:48 -0600, Chris Rorvick wrote:
+>> All of this looks racy to me.  Am I missing something?
+>
+> Yes, the code *is* already racy :)
 
+OK, good to know I'm not seeing ghosts.  :-)
 
-On 26/01/15 14:53, Zubair Lutfullah Kakakhel wrote:
-> i2s clock rate is not set to 12MHz currently. Set it before enabling
-> the clock.
-> 
-> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-> 
-> ---
-> V2 changes: Removed clk_prepare_enable call as clock was already being
-> enabled elsewhere. Just set rate to 12MHz.
-> ---
->  sound/soc/jz4740/jz4740-i2s.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-> index 07f7781..c2e5852 100644
-> --- a/sound/soc/jz4740/jz4740-i2s.c
-> +++ b/sound/soc/jz4740/jz4740-i2s.c
-> @@ -125,6 +125,7 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
->  	ctrl |= JZ_AIC_CTRL_FLUSH;
->  	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
->  
-> +	clk_set_rate(i2s->clk_i2s, 12000000);
+>> Sorry, this is way beyond the scope of this patch.  But I've been
+>> spending some time trying to sort this out and haven't answered the
+>> above questions.  If I'm missing anything, a pointer to the relevant
+>> source would be greatly appreciated!
+>
+> HTH,
 
-Lars recommended using dt and assigned-clock-rates for this. (irc)
-I've checked and it can be done.
+Yes, very much.  Thanks!
 
-This patch is not needed.
+Regards,
 
-Patch 1-3 in this series are OK. This last one can be skipped.
-
-Do you want me to repost the series without it? Or is this fine?
-
-Thanks,
-ZubairLK
-
->  	clk_prepare_enable(i2s->clk_i2s);
->  
->  	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Chris
