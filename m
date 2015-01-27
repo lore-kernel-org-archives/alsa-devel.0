@@ -1,15 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/5] ALSA: line6: Clear prev_fbuf and
-	prev_fsize properly
-Date: Tue, 27 Jan 2015 17:13:14 +0100
-Message-ID: <1422375197-17293-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/5] ALSA: line6: Fix racy loopback handling
+Date: Tue, 27 Jan 2015 17:13:13 +0100
+Message-ID: <1422375197-17293-2-git-send-email-tiwai@suse.de>
 References: <1422375197-17293-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 393D92608BC
+ by alsa0.perex.cz (Postfix) with ESMTP id 456582608ED
  for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 17:13:19 +0100 (CET)
 In-Reply-To: <1422375197-17293-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,75 +24,211 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-Clearing prev_fsize in line6_pcm_acquire() is pretty racy.
-This can be called at any time while the stream is being played.
-Rather better to clear prev_fbuf and prev_fsize at the proper place
-like the stream stop for capture, and just after copying the monitor /
-impulse data inside the spinlock.
+The impulse and monitor handling in submit_audio_out_urb() isn't
+protected thus this can be racy with the capture stream handling.
+This patch extends the range to protect via each stream's spinlock
+(now the whole submit_audio_*_urb() are covered), and take the capture
+stream lock additionally for the impulse and monitor handling part.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/pcm.c      | 8 ++++----
- sound/usb/line6/playback.c | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/usb/line6/capture.c  | 20 +++++++++++---------
+ sound/usb/line6/playback.c | 24 +++++++++++++-----------
+ 2 files changed, 24 insertions(+), 20 deletions(-)
 
-diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
-index f75825995e24..dedbe24cbf60 100644
---- a/sound/usb/line6/pcm.c
-+++ b/sound/usb/line6/pcm.c
-@@ -171,8 +171,6 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
+diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
+index 47cfcc2ab387..21342a9dddd7 100644
+--- a/sound/usb/line6/capture.c
++++ b/sound/usb/line6/capture.c
+@@ -20,21 +20,19 @@
  
- 	flags_final = 0;
+ /*
+ 	Find a free URB and submit it.
++	must be called in line6pcm->in.lock context
+ */
+ static int submit_audio_in_urb(struct snd_line6_pcm *line6pcm)
+ {
+ 	int index;
+-	unsigned long flags;
+ 	int i, urb_size;
+ 	int ret;
+ 	struct urb *urb_in;
  
--	line6pcm->prev_fbuf = NULL;
+-	spin_lock_irqsave(&line6pcm->in.lock, flags);
+ 	index =
+ 	    find_first_zero_bit(&line6pcm->in.active_urbs, LINE6_ISO_BUFFERS);
+ 
+ 	if (index < 0 || index >= LINE6_ISO_BUFFERS) {
+-		spin_unlock_irqrestore(&line6pcm->in.lock, flags);
+ 		dev_err(line6pcm->line6->ifcdev, "no free URB found\n");
+ 		return -EINVAL;
+ 	}
+@@ -64,7 +62,6 @@ static int submit_audio_in_urb(struct snd_line6_pcm *line6pcm)
+ 		dev_err(line6pcm->line6->ifcdev,
+ 			"URB in #%d submission failed (%d)\n", index, ret);
+ 
+-	spin_unlock_irqrestore(&line6pcm->in.lock, flags);
+ 	return 0;
+ }
+ 
+@@ -73,15 +70,18 @@ static int submit_audio_in_urb(struct snd_line6_pcm *line6pcm)
+ */
+ int line6_submit_audio_in_all_urbs(struct snd_line6_pcm *line6pcm)
+ {
+-	int ret, i;
++	unsigned long flags;
++	int ret = 0, i;
+ 
++	spin_lock_irqsave(&line6pcm->in.lock, flags);
+ 	for (i = 0; i < LINE6_ISO_BUFFERS; ++i) {
+ 		ret = submit_audio_in_urb(line6pcm);
+ 		if (ret < 0)
+-			return ret;
++			break;
+ 	}
+ 
+-	return 0;
++	spin_unlock_irqrestore(&line6pcm->in.lock, flags);
++	return ret;
+ }
+ 
+ /*
+@@ -137,7 +137,9 @@ void line6_capture_check_period(struct snd_line6_pcm *line6pcm, int length)
+ 	line6pcm->in.bytes += length;
+ 	if (line6pcm->in.bytes >= line6pcm->in.period) {
+ 		line6pcm->in.bytes %= line6pcm->in.period;
++		spin_unlock(&line6pcm->in.lock);
+ 		snd_pcm_period_elapsed(substream);
++		spin_lock(&line6pcm->in.lock);
+ 	}
+ }
+ 
+@@ -196,8 +198,6 @@ static void audio_in_callback(struct urb *urb)
+ 	if (test_and_clear_bit(index, &line6pcm->in.unlink_urbs))
+ 		shutdown = 1;
+ 
+-	spin_unlock_irqrestore(&line6pcm->in.lock, flags);
 -
- 	if (test_flags(flags_old, flags_new, LINE6_BITS_CAPTURE_BUFFER)) {
- 		err = line6_alloc_stream_buffer(line6pcm, &line6pcm->in);
- 		if (err < 0)
-@@ -193,7 +191,6 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
- 		}
+ 	if (!shutdown) {
+ 		submit_audio_in_urb(line6pcm);
  
- 		line6pcm->in.count = 0;
--		line6pcm->prev_fsize = 0;
- 		err = line6_submit_audio_in_all_urbs(line6pcm);
+@@ -206,6 +206,8 @@ static void audio_in_callback(struct urb *urb)
+ 				     &line6pcm->flags))
+ 				line6_capture_check_period(line6pcm, length);
+ 	}
++
++	spin_unlock_irqrestore(&line6pcm->in.lock, flags);
+ }
  
- 		if (err < 0)
-@@ -248,8 +245,11 @@ int line6_pcm_release(struct snd_line6_pcm *line6pcm, int channels)
- 		flags_new = flags_old & ~channels;
- 	} while (cmpxchg(&line6pcm->flags, flags_old, flags_new) != flags_old);
- 
--	if (test_flags(flags_new, flags_old, LINE6_BITS_CAPTURE_STREAM))
-+	if (test_flags(flags_new, flags_old, LINE6_BITS_CAPTURE_STREAM)) {
- 		line6_unlink_audio_urbs(line6pcm, &line6pcm->in);
-+		line6pcm->prev_fbuf = NULL;
-+		line6pcm->prev_fsize = 0;
-+	}
- 
- 	if (test_flags(flags_new, flags_old, LINE6_BITS_CAPTURE_BUFFER)) {
- 		line6_wait_clear_audio_urbs(line6pcm, &line6pcm->in);
+ /* open capture callback */
 diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
-index b1d376501616..c1063f1847c3 100644
+index 3762a98026aa..b1d376501616 100644
 --- a/sound/usb/line6/playback.c
 +++ b/sound/usb/line6/playback.c
-@@ -166,9 +166,7 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
- 		struct usb_iso_packet_descriptor *fout =
- 		    &urb_out->iso_frame_desc[i];
+@@ -134,11 +134,11 @@ static void add_monitor_signal(struct urb *urb_out, unsigned char *signal,
  
--		if (line6pcm->flags & LINE6_BITS_CAPTURE_STREAM)
--			fsize = line6pcm->prev_fsize;
--
-+		fsize = line6pcm->prev_fsize;
- 		if (fsize == 0) {
- 			int n;
+ /*
+ 	Find a free URB, prepare audio data, and submit URB.
++	must be called in line6pcm->out.lock context
+ */
+ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
+ {
+ 	int index;
+-	unsigned long flags;
+ 	int i, urb_size, urb_frames;
+ 	int ret;
+ 	const int bytes_per_frame = line6pcm->properties->bytes_per_frame;
+@@ -149,12 +149,10 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
+ 	    (USB_INTERVALS_PER_SECOND / LINE6_ISO_INTERVAL);
+ 	struct urb *urb_out;
  
-@@ -263,6 +261,8 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
- 						   line6pcm->volume_monitor,
+-	spin_lock_irqsave(&line6pcm->out.lock, flags);
+ 	index =
+ 	    find_first_zero_bit(&line6pcm->out.active_urbs, LINE6_ISO_BUFFERS);
+ 
+ 	if (index < 0 || index >= LINE6_ISO_BUFFERS) {
+-		spin_unlock_irqrestore(&line6pcm->out.lock, flags);
+ 		dev_err(line6pcm->line6->ifcdev, "no free URB found\n");
+ 		return -EINVAL;
+ 	}
+@@ -187,7 +185,6 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
+ 
+ 	if (urb_size == 0) {
+ 		/* can't determine URB size */
+-		spin_unlock_irqrestore(&line6pcm->out.lock, flags);
+ 		dev_err(line6pcm->line6->ifcdev, "driver bug: urb_size = 0\n");
+ 		return -EINVAL;
+ 	}
+@@ -242,7 +239,8 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
+ 		       urb_out->transfer_buffer_length);
+ 	}
+ 
+-	if (line6pcm->prev_fbuf != NULL) {
++	spin_lock_nested(&line6pcm->in.lock, SINGLE_DEPTH_NESTING);
++	if (line6pcm->prev_fbuf) {
+ 		if (line6pcm->flags & LINE6_BITS_PCM_IMPULSE) {
+ 			create_impulse_test_signal(line6pcm, urb_out,
+ 						   bytes_per_frame);
+@@ -266,6 +264,7 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
  						   bytes_per_frame);
  		}
-+		line6pcm->prev_fbuf = NULL;
-+		line6pcm->prev_fsize = 0;
  	}
- 	spin_unlock(&line6pcm->in.lock);
++	spin_unlock(&line6pcm->in.lock);
  
+ 	ret = usb_submit_urb(urb_out, GFP_ATOMIC);
+ 
+@@ -275,7 +274,6 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
+ 		dev_err(line6pcm->line6->ifcdev,
+ 			"URB out #%d submission failed (%d)\n", index, ret);
+ 
+-	spin_unlock_irqrestore(&line6pcm->out.lock, flags);
+ 	return 0;
+ }
+ 
+@@ -284,15 +282,18 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
+ */
+ int line6_submit_audio_out_all_urbs(struct snd_line6_pcm *line6pcm)
+ {
+-	int ret, i;
++	unsigned long flags;
++	int ret = 0, i;
+ 
++	spin_lock_irqsave(&line6pcm->out.lock, flags);
+ 	for (i = 0; i < LINE6_ISO_BUFFERS; ++i) {
+ 		ret = submit_audio_out_urb(line6pcm);
+ 		if (ret < 0)
+-			return ret;
++			break;
+ 	}
+ 
+-	return 0;
++	spin_unlock_irqrestore(&line6pcm->in.lock, flags);
++	return ret;
+ }
+ 
+ /*
+@@ -346,8 +347,6 @@ static void audio_out_callback(struct urb *urb)
+ 	if (test_and_clear_bit(index, &line6pcm->out.unlink_urbs))
+ 		shutdown = 1;
+ 
+-	spin_unlock_irqrestore(&line6pcm->out.lock, flags);
+-
+ 	if (!shutdown) {
+ 		submit_audio_out_urb(line6pcm);
+ 
+@@ -356,10 +355,13 @@ static void audio_out_callback(struct urb *urb)
+ 			line6pcm->out.bytes += length;
+ 			if (line6pcm->out.bytes >= line6pcm->out.period) {
+ 				line6pcm->out.bytes %= line6pcm->out.period;
++				spin_unlock(&line6pcm->out.lock);
+ 				snd_pcm_period_elapsed(substream);
++				spin_lock(&line6pcm->out.lock);
+ 			}
+ 		}
+ 	}
++	spin_unlock_irqrestore(&line6pcm->out.lock, flags);
+ }
+ 
+ /* open playback callback */
 -- 
 2.2.2
