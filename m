@@ -1,88 +1,146 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: rx51: do not fail if could not get
- jack detection gpio
-Date: Tue, 27 Jan 2015 15:27:58 +0200
-Message-ID: <54C7925E.3020303@ti.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH] ASoC: rx51: do not fail if could not get jack detection
+ gpio
+Date: Tue, 27 Jan 2015 14:32:27 +0100
+Message-ID: <20150127133227.GA25306@amd>
 References: <1422305507-10533-1-git-send-email-pali.rohar@gmail.com>
+ <54C7925E.3020303@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id B2C75260715
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 14:28:05 +0100 (CET)
-In-Reply-To: <1422305507-10533-1-git-send-email-pali.rohar@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?UGFsaSBSb2jDoXI=?= <pali.rohar@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Sebastian Reichel <sre@debian.org>, linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54C7925E.3020303@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sebastian Reichel <sre@debian.org>, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAwMS8yNi8yMDE1IDEwOjUxIFBNLCBQYWxpIFJvaMOhciB3cm90ZToKPiBxZW11IGRv
-ZXMgbm90IGVtdWxhdGUgaXQKCk5vdCBzdXJlIGFib3V0IHRoaXMuLi4gSG93IGRvZXMgcWVtdSBl
-bXVsYXRlIHRsdjMyMGFpYzMxMDYsIHRwYTYxMzBhMmEsIE1jQlNQLApzRE1BIGZvciBhdWRpbyB0
-byB3b3JrPyBXaGF0IGFib3V0IHRoZSBvdGhlciB0aHJlZSBHUElPcyBpbiB0aGlzIG1hY2hpbmUg
-ZHJpdmVyPwoKVGhlICJub2tpYSxuOTAwLWF1ZGlvIiBjb21wYXRpYmxlIG1hbmRhdGVzIHRoYXQg
-dGhlIGphY2stZGV0ZWN0aW9uIEdQSU8gbXVzdApiZSBwcm92aWRlZCAoRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL25va2lhLHJ4NTEudHh0KSBzaW5jZSBpdAptZWFucyB0
-aGF0IHRoZSBkcml2ZXIgaXMgcnVubmluZyBvbiB0aGUgTm9raWEgbjkwMCBIVy4KCgo+IFNpZ25l
-ZC1vZmYtYnk6IFBhbGkgUm9ow6FyIDxwYWxpLnJvaGFyQGdtYWlsLmNvbT4KPiAtLS0KPiAgc291
-bmQvc29jL29tYXAvcng1MS5jIHwgICA0NSArKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDI1IGluc2VydGlvbnMoKyksIDIwIGRl
-bGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvb21hcC9yeDUxLmMgYi9zb3Vu
-ZC9zb2Mvb21hcC9yeDUxLmMKPiBpbmRleCAwNDg5NmQ2Li5hNjg5MDIxIDEwMDY0NAo+IC0tLSBh
-L3NvdW5kL3NvYy9vbWFwL3J4NTEuYwo+ICsrKyBiL3NvdW5kL3NvYy9vbWFwL3J4NTEuYwo+IEBA
-IC0zMTAsMjUgKzMxMCwyNyBAQCBzdGF0aWMgaW50IHJ4NTFfYWljMzRfaW5pdChzdHJ1Y3Qgc25k
-X3NvY19wY21fcnVudGltZSAqcnRkKQo+ICAJCXJldHVybiBlcnI7Cj4gIAl9Cj4gIAo+IC0JLyog
-QVYgamFjayBkZXRlY3Rpb24gKi8KPiAtCWVyciA9IHNuZF9zb2NfamFja19uZXcoY29kZWMsICJB
-ViBKYWNrIiwKPiAtCQkJICAgICAgIFNORF9KQUNLX0hFQURTRVQgfCBTTkRfSkFDS19WSURFT09V
-VCwKPiAtCQkJICAgICAgICZyeDUxX2F2X2phY2spOwo+IC0JaWYgKGVycikgewo+IC0JCWRldl9l
-cnIoY2FyZC0+ZGV2LCAiRmFpbGVkIHRvIGFkZCBBViBKYWNrXG4iKTsKPiAtCQlyZXR1cm4gZXJy
-Owo+IC0JfQo+ICsJaWYgKCFJU19FUlIocGRhdGEtPmphY2tfZGV0ZWN0aW9uX2dwaW8pKSB7Cj4g
-KwkJLyogQVYgamFjayBkZXRlY3Rpb24gKi8KPiArCQllcnIgPSBzbmRfc29jX2phY2tfbmV3KGNv
-ZGVjLCAiQVYgSmFjayIsCj4gKwkJCQkgICAgICAgU05EX0pBQ0tfSEVBRFNFVCB8IFNORF9KQUNL
-X1ZJREVPT1VULAo+ICsJCQkJICAgICAgICZyeDUxX2F2X2phY2spOwo+ICsJCWlmIChlcnIpIHsK
-PiArCQkJZGV2X2VycihjYXJkLT5kZXYsICJGYWlsZWQgdG8gYWRkIEFWIEphY2tcbiIpOwo+ICsJ
-CQlyZXR1cm4gZXJyOwo+ICsJCX0KPiAgCj4gLQkvKiBwcmVwYXJlIGdwaW8gZm9yIHNuZF9zb2Nf
-amFja19hZGRfZ3Bpb3MgKi8KPiAtCXJ4NTFfYXZfamFja19ncGlvc1swXS5ncGlvID0gZGVzY190
-b19ncGlvKHBkYXRhLT5qYWNrX2RldGVjdGlvbl9ncGlvKTsKPiAtCWRldm1fZ3Bpb2RfcHV0KGNh
-cmQtPmRldiwgcGRhdGEtPmphY2tfZGV0ZWN0aW9uX2dwaW8pOwo+ICsJCS8qIHByZXBhcmUgZ3Bp
-byBmb3Igc25kX3NvY19qYWNrX2FkZF9ncGlvcyAqLwo+ICsJCXJ4NTFfYXZfamFja19ncGlvc1sw
-XS5ncGlvID0gZGVzY190b19ncGlvKHBkYXRhLT5qYWNrX2RldGVjdGlvbl9ncGlvKTsKPiArCQlk
-ZXZtX2dwaW9kX3B1dChjYXJkLT5kZXYsIHBkYXRhLT5qYWNrX2RldGVjdGlvbl9ncGlvKTsKPiAg
-Cj4gLQllcnIgPSBzbmRfc29jX2phY2tfYWRkX2dwaW9zKCZyeDUxX2F2X2phY2ssCj4gLQkJCQkg
-ICAgIEFSUkFZX1NJWkUocng1MV9hdl9qYWNrX2dwaW9zKSwKPiAtCQkJCSAgICAgcng1MV9hdl9q
-YWNrX2dwaW9zKTsKPiAtCWlmIChlcnIpIHsKPiAtCQlkZXZfZXJyKGNhcmQtPmRldiwgIkZhaWxl
-ZCB0byBhZGQgR1BJT3NcbiIpOwo+IC0JCXJldHVybiBlcnI7Cj4gKwkJZXJyID0gc25kX3NvY19q
-YWNrX2FkZF9ncGlvcygmcng1MV9hdl9qYWNrLAo+ICsJCQkJCSAgICAgQVJSQVlfU0laRShyeDUx
-X2F2X2phY2tfZ3Bpb3MpLAo+ICsJCQkJCSAgICAgcng1MV9hdl9qYWNrX2dwaW9zKTsKPiArCQlp
-ZiAoZXJyKSB7Cj4gKwkJCWRldl9lcnIoY2FyZC0+ZGV2LCAiRmFpbGVkIHRvIGFkZCBHUElPc1xu
-Iik7Cj4gKwkJCXJldHVybiBlcnI7Cj4gKwkJfQo+ICAJfQo+ICAKPiAgCXJldHVybiBlcnI7Cj4g
-QEAgLTMzNiw4ICszMzgsMTEgQEAgc3RhdGljIGludCByeDUxX2FpYzM0X2luaXQoc3RydWN0IHNu
-ZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCkKPiAgCj4gIHN0YXRpYyBpbnQgcng1MV9jYXJkX3JlbW92
-ZShzdHJ1Y3Qgc25kX3NvY19jYXJkICpjYXJkKQo+ICB7Cj4gLQlzbmRfc29jX2phY2tfZnJlZV9n
-cGlvcygmcng1MV9hdl9qYWNrLCBBUlJBWV9TSVpFKHJ4NTFfYXZfamFja19ncGlvcyksCj4gLQkJ
-CQlyeDUxX2F2X2phY2tfZ3Bpb3MpOwo+ICsJc3RydWN0IHJ4NTFfYXVkaW9fcGRhdGEgKnBkYXRh
-ID0gc25kX3NvY19jYXJkX2dldF9kcnZkYXRhKGNhcmQpOwo+ICsKPiArCWlmICghSVNfRVJSKHBk
-YXRhLT5qYWNrX2RldGVjdGlvbl9ncGlvKSkKPiArCQlzbmRfc29jX2phY2tfZnJlZV9ncGlvcygm
-cng1MV9hdl9qYWNrLCBBUlJBWV9TSVpFKHJ4NTFfYXZfamFja19ncGlvcyksCj4gKwkJCQkJcng1
-MV9hdl9qYWNrX2dwaW9zKTsKPiAgCj4gIAlyZXR1cm4gMDsKPiAgfQo+IEBAIC00NzAsOCArNDc1
-LDggQEAgc3RhdGljIGludCByeDUxX3NvY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpw
-ZGV2KQo+ICAJcGRhdGEtPmphY2tfZGV0ZWN0aW9uX2dwaW8gPSBkZXZtX2dwaW9kX2dldChjYXJk
-LT5kZXYsCj4gIAkJCQkJCSAgICAiamFjay1kZXRlY3Rpb24iKTsKPiAgCWlmIChJU19FUlIocGRh
-dGEtPmphY2tfZGV0ZWN0aW9uX2dwaW8pKSB7Cj4gKwkJLyogRG8gbm90IGZhaWwsIHFlbXUgZG9l
-cyBub3QgZW11bGF0ZSBqYWNrIGRldGVjdGlvbiBncGlvICovCj4gIAkJZGV2X2VycihjYXJkLT5k
-ZXYsICJjb3VsZCBub3QgZ2V0IGphY2sgZGV0ZWN0aW9uIGdwaW9cbiIpOwo+IC0JCXJldHVybiBQ
-VFJfRVJSKHBkYXRhLT5qYWNrX2RldGVjdGlvbl9ncGlvKTsKPiAgCX0KPiAgCj4gIAlwZGF0YS0+
-ZWNpX3N3X2dwaW8gPSBkZXZtX2dwaW9kX2dldChjYXJkLT5kZXYsICJlY2ktc3dpdGNoIik7Cj4g
-CgoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On Tue 2015-01-27 15:27:58, Peter Ujfalusi wrote:
+> Hi,
+>=20
+> On 01/26/2015 10:51 PM, Pali Roh=E1r wrote:
+> > qemu does not emulate it
+>=20
+> Not sure about this... How does qemu emulate tlv320aic3106, tpa6130a2=
+a, McBSP,
+> sDMA for audio to work? What about the other three GPIOs in this mach=
+ine driver?
+>=20
+> The "nokia,n900-audio" compatible mandates that the jack-detection GP=
+IO must
+> be provided (Documentation/devicetree/bindings/sound/nokia,rx51.txt) =
+since it
+> means that the driver is running on the Nokia n900 HW.
+
+=46ix the documentation, then :-). [Actually, GPIO is provided, it just
+can't be requested, AFAICT.]
+
+It is quite important to keep qemu working, really. Debugging early
+boot on hardware is very hard, for example.
+
+And yes, some day we may need different dts for n900-qemu
+(vs. n900-hw), but lets not do it just yet.
+							Pavel
+
+>=20
+> > Signed-off-by: Pali Roh=E1r <pali.rohar@gmail.com>
+> > ---
+> >  sound/soc/omap/rx51.c |   45 +++++++++++++++++++++++++------------=
+--------
+> >  1 file changed, 25 insertions(+), 20 deletions(-)
+> >=20
+> > diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+> > index 04896d6..a689021 100644
+> > --- a/sound/soc/omap/rx51.c
+> > +++ b/sound/soc/omap/rx51.c
+> > @@ -310,25 +310,27 @@ static int rx51_aic34_init(struct snd_soc_pcm=
+_runtime *rtd)
+> >  		return err;
+> >  	}
+> > =20
+> > -	/* AV jack detection */
+> > -	err =3D snd_soc_jack_new(codec, "AV Jack",
+> > -			       SND_JACK_HEADSET | SND_JACK_VIDEOOUT,
+> > -			       &rx51_av_jack);
+> > -	if (err) {
+> > -		dev_err(card->dev, "Failed to add AV Jack\n");
+> > -		return err;
+> > -	}
+> > +	if (!IS_ERR(pdata->jack_detection_gpio)) {
+> > +		/* AV jack detection */
+> > +		err =3D snd_soc_jack_new(codec, "AV Jack",
+> > +				       SND_JACK_HEADSET | SND_JACK_VIDEOOUT,
+> > +				       &rx51_av_jack);
+> > +		if (err) {
+> > +			dev_err(card->dev, "Failed to add AV Jack\n");
+> > +			return err;
+> > +		}
+> > =20
+> > -	/* prepare gpio for snd_soc_jack_add_gpios */
+> > -	rx51_av_jack_gpios[0].gpio =3D desc_to_gpio(pdata->jack_detection=
+_gpio);
+> > -	devm_gpiod_put(card->dev, pdata->jack_detection_gpio);
+> > +		/* prepare gpio for snd_soc_jack_add_gpios */
+> > +		rx51_av_jack_gpios[0].gpio =3D desc_to_gpio(pdata->jack_detectio=
+n_gpio);
+> > +		devm_gpiod_put(card->dev, pdata->jack_detection_gpio);
+> > =20
+> > -	err =3D snd_soc_jack_add_gpios(&rx51_av_jack,
+> > -				     ARRAY_SIZE(rx51_av_jack_gpios),
+> > -				     rx51_av_jack_gpios);
+> > -	if (err) {
+> > -		dev_err(card->dev, "Failed to add GPIOs\n");
+> > -		return err;
+> > +		err =3D snd_soc_jack_add_gpios(&rx51_av_jack,
+> > +					     ARRAY_SIZE(rx51_av_jack_gpios),
+> > +					     rx51_av_jack_gpios);
+> > +		if (err) {
+> > +			dev_err(card->dev, "Failed to add GPIOs\n");
+> > +			return err;
+> > +		}
+> >  	}
+> > =20
+> >  	return err;
+> > @@ -336,8 +338,11 @@ static int rx51_aic34_init(struct snd_soc_pcm_=
+runtime *rtd)
+> > =20
+> >  static int rx51_card_remove(struct snd_soc_card *card)
+> >  {
+> > -	snd_soc_jack_free_gpios(&rx51_av_jack, ARRAY_SIZE(rx51_av_jack_gp=
+ios),
+> > -				rx51_av_jack_gpios);
+> > +	struct rx51_audio_pdata *pdata =3D snd_soc_card_get_drvdata(card)=
+;
+> > +
+> > +	if (!IS_ERR(pdata->jack_detection_gpio))
+> > +		snd_soc_jack_free_gpios(&rx51_av_jack, ARRAY_SIZE(rx51_av_jack_g=
+pios),
+> > +					rx51_av_jack_gpios);
+> > =20
+> >  	return 0;
+> >  }
+> > @@ -470,8 +475,8 @@ static int rx51_soc_probe(struct platform_devic=
+e *pdev)
+> >  	pdata->jack_detection_gpio =3D devm_gpiod_get(card->dev,
+> >  						    "jack-detection");
+> >  	if (IS_ERR(pdata->jack_detection_gpio)) {
+> > +		/* Do not fail, qemu does not emulate jack detection gpio */
+> >  		dev_err(card->dev, "could not get jack detection gpio\n");
+> > -		return PTR_ERR(pdata->jack_detection_gpio);
+> >  	}
+> > =20
+> >  	pdata->eci_sw_gpio =3D devm_gpiod_get(card->dev, "eci-switch");
+> >=20
+>=20
+>=20
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses=
+/blog.html
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
