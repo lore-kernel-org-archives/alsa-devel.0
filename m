@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Used lock version to update
-	shim registers
-Date: Tue, 27 Jan 2015 18:36:55 +0000
-Message-ID: <20150127183655.GI21293@sirena.org.uk>
-References: <1421796023-29262-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: rt5645: Add rt5650 codec support
+Date: Tue, 27 Jan 2015 18:37:39 +0000
+Message-ID: <20150127183739.GJ21293@sirena.org.uk>
+References: <1421844615-2503-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5665281173326448750=="
+Content-Type: multipart/mixed; boundary="===============0086399931244440506=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 402E12612D2
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 19:37:01 +0100 (CET)
-In-Reply-To: <1421796023-29262-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DB8892612D3
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 19:37:45 +0100 (CET)
+In-Reply-To: <1421844615-2503-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5665281173326448750==
+--===============0086399931244440506==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jmRPoIC9n3oXxCzZ"
+	protocol="application/pgp-signature"; boundary="rn1pXSBs7Ef1wPoZ"
 Content-Disposition: inline
 
 
---jmRPoIC9n3oXxCzZ
+--rn1pXSBs7Ef1wPoZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 21, 2015 at 07:20:23AM +0800, Jie Yang wrote:
-> We need hold lock each time updating shirm registers, otherwise,
-> we may set unexpected values to them when they are set in
-> different thread at different time sequence.
+On Wed, Jan 21, 2015 at 08:50:15PM +0800, Bard Liao wrote:
+> This patch adds support for rt5650 codec.
+>=20
 
 Applied, thanks.
 
---jmRPoIC9n3oXxCzZ
+--rn1pXSBs7Ef1wPoZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUx9rGAAoJECTWi3JdVIfQa80H/jvc/ygZwsrjq3Nm9kDIxuQK
-vPvTpH9eoWca5I92MUKq6VDYU69TVYWdKU4glsZwGz00/sf6rCC86y5pSYrL86JI
-rv2vQZvyZMRgxnRkRbIn3WbxBR5U+eTPh44Cf5/7H2doXp4bQjjQeMEWuF42c/gr
-iNRd30I0WDWZhlqDtJSS0vvFQU4LKZvvpwJSE/fXbgG5Wa0gV5jz6ZtVGIxJoUjf
-+3JuvAFoeT42U/K364bG7Ok6V7pn5vF7HNkPkNRcihx8RgEU1i+kLO4ALHxgR5O9
-ty3NvVY6h++7a0YNRzP+7BAhq0K8AA47oJasV8KNVTDiLV7ebsQL6JpW/3HD/t4=
-=WoJi
+iQEcBAEBCAAGBQJUx9rzAAoJECTWi3JdVIfQvjAIAIar6VKpfq4VWuOLYrF4gsje
+O5siCivWmRu4StRz5p/7s1EDaUWj6z/nop4kyOKI3G3H7mDeFlemA/CMl5iDXN9E
+wN0dTce+Wkf7uMauZ1ccohHg79A7IWD+Q9s9CQnlLa2tqNIJiG0FlROYc5pQnIGi
+Havw2shhT7s6o+RX4bs1zSOV/KH68E1NJZU0XzIyAjBIj06nVx3EqpCZRN4zsvWz
+XEDgzvXJVr2hJS7VURW2Qo1sTdmsmJKM8Ti8EH5YjFMN+YnwrvCP+wanPVus4b1k
+u5b1p+UT5d9Lgzoe1x+Rbx153lAM/PyTprJNbTeFV1MVUp4ZTT1iooDNUF6B0qQ=
+=Zkql
 -----END PGP SIGNATURE-----
 
---jmRPoIC9n3oXxCzZ--
+--rn1pXSBs7Ef1wPoZ--
 
---===============5665281173326448750==
+--===============0086399931244440506==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5665281173326448750==--
+--===============0086399931244440506==--
