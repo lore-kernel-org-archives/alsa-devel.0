@@ -1,71 +1,100 @@
-From: Bo Shen <voice.shen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: codecs: wm8904: add dt ids
- table
-Date: Tue, 27 Jan 2015 09:35:13 +0800
-Message-ID: <54C6EB51.80005@atmel.com>
-References: <1418614273-2303-1-git-send-email-voice.shen@atmel.com> <20150115115425.GX3043@sirena.org.uk> <54B866B9.8000900@atmel.com> <54C65C36.9050106@atmel.com> <20150126164229.GB21293@sirena.org.uk> <54C67007.6000708@metafoo.de>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH v3 1/2] ASoC: codecs: wm8904: add dt ids table
+Date: Tue, 27 Jan 2015 11:36:39 +0800
+Message-ID: <1422329800-28481-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <54C67007.6000708-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sound-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alexander Morozov <linux-lCH5ugpmZSMox3rIn2DAYQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from DVREDG01.corp.atmel.com (nasmtp01.atmel.com [192.199.1.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4699260557
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 04:36:58 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, nicolas.ferre@atmel.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, Alexander Morozov <linux@meltdown.ru>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Lars-Perter,
+From: Alexander Morozov <linux@meltdown.ru>
 
-On 01/27/2015 12:49 AM, Lars-Peter Clausen wrote:
-> On 01/26/2015 05:42 PM, Mark Brown wrote:
->> On Mon, Jan 26, 2015 at 04:24:38PM +0100, Nicolas Ferre wrote:
->>> Le 16/01/2015 02:17, Bo Shen a =E9crit :
->>
->>>>> Does this end up in the i2c_driver_id driver data or do we need s=
-ome
->>>>> extra code when devtype is assigned to check for an of_node and
->>>>> look at
->>>>> the DT data instead?  That certainly used to be the case...
->>
->>>> At the beginning I think as the same as you, and also add the code=
- to
->>>> get the data as I do in <drivers/misc/atmel-ssc.c>. However, as I
->>>> remember, I2C seems only use the compatible string after the comma=
-,
->>>> that
->>>> means only for "wlf,wm8904", it uses "wm8904" to match. So, I remo=
-ve
->>>> all
->>>> the code I added, and just keep these, and it can get the device t=
-ype
->>>> correctly.
->>
->>>> So, when I submit the patch and keep the code as simple as possibl=
-e.
->>
->>> I don't understand what's keeping this patch from being applied. Vo=
-ice,
->>> do you mind re-sending?
->>
->> I need to convince myself that the above actually works and is doing=
- the
->> right thing; the above explanation sounds like if it works it might =
-be
->> relying on a bug.
->
-> I'd call it a undocumented feature. But I wouldn't rely on it being
-> around for ever. In my opinion to be future proof the driver should
-> explicitly handle the OF case in the probe function.
->
+The WM8904 and WM8918 has the same data type, while the WM8912
+has different data type. So, use the data in dt ids table to
+distinguish them.
 
-I will add this into probe function in next version.
-Thanks.
+Signed-off-by: Alexander Morozov <linux@meltdown.ru>
+[voice.shen@atmel.com: add code to distinguish device type]
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+---
+Changes in v3:
+  - Get the device type from match data in probe function.
+Changes in v2:
+  - Add driver data for distinguish the device capability.
 
-Best Regards,
-Bo Shen
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ sound/soc/codecs/wm8904.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 4d2d2b1..a80bc52 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -2098,6 +2098,24 @@ static const struct regmap_config wm8904_regmap = {
+ 	.num_reg_defaults = ARRAY_SIZE(wm8904_reg_defaults),
+ };
+ 
++#ifdef CONFIG_OF
++static enum wm8904_type wm8904_data = WM8904;
++static enum wm8904_type wm8912_data = WM8912;
++
++static const struct of_device_id wm8904_of_match[] = {
++	{
++		.compatible = "wlf,wm8904",
++		.data = &wm8904_data,
++	}, {
++		.compatible = "wlf,wm8912",
++		.data = &wm8912_data,
++	}, {
++		/* sentinel */
++	}
++};
++MODULE_DEVICE_TABLE(of, wm8904_of_match);
++#endif
++
+ static int wm8904_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+@@ -2125,7 +2143,17 @@ static int wm8904_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
+-	wm8904->devtype = id->driver_data;
++	if (i2c->dev.of_node) {
++		const struct of_device_id *match;
++
++		match = of_match_node(wm8904_of_match, i2c->dev.of_node);
++		if (match == NULL)
++			return -EINVAL;
++		wm8904->devtype = *((enum wm8904_type *)match->data);
++	} else {
++		wm8904->devtype = id->driver_data;
++	}
++
+ 	i2c_set_clientdata(i2c, wm8904);
+ 	wm8904->pdata = i2c->dev.platform_data;
+ 
+@@ -2259,6 +2287,7 @@ static struct i2c_driver wm8904_i2c_driver = {
+ 	.driver = {
+ 		.name = "wm8904",
+ 		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(wm8904_of_match),
+ 	},
+ 	.probe =    wm8904_i2c_probe,
+ 	.remove =   wm8904_i2c_remove,
+-- 
+2.3.0.rc0
