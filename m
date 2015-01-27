@@ -1,80 +1,112 @@
-From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v2 00/16] ASoC: samsung: Add clk provider for I2S internal
- clocks
-Date: Tue, 27 Jan 2015 11:59:41 +0100
-Message-ID: <54C76F9D.7040805@samsung.com>
-References: <1418997336-17777-1-git-send-email-s.nawrocki@samsung.com>
- <54C2FB25.4030501@gmx.net>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: simple-audio-card vs. platform question
+Date: Tue, 27 Jan 2015 13:01:58 +0100
+Message-ID: <alpine.DEB.2.02.1501271301400.11532@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <54C2FB25.4030501-hi6Y0CQ0nG0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tobias Jakobi <liquid.acid-hi6Y0CQ0nG0@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, kgene-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, padma.v-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, drake-6IF/jdPJHihWk0Htik3J/w@public.gmane.org, sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A804260710
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:02:00 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id BC1A22E346
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:01:59 +0100 (CET)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id S6ZUx1tZSTZq for <alsa-devel@alsa-project.org>;
+ Tue, 27 Jan 2015 13:01:59 +0100 (CET)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bes.se.axis.com (Postfix) with ESMTP id 2AA0F2E0D8
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:01:59 +0100 (CET)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id ED1DB120C
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:01:58 +0100 (CET)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+ by boulder.se.axis.com (Postfix) with ESMTP id DE1C295B
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:01:58 +0100 (CET)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by seth.se.axis.com (Postfix) with ESMTP id DB2A43E23E
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:01:58 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Tobias,
 
-On 24/01/15 02:53, Tobias Jakobi wrote:
-> Hello,
-> 
-> I've tested the series on my X2 and so far I haven't encountered any
-> obvious issues with it.
-> 
-> I have a small question though. With the move to simple-audio-card the
-> old driver (selected by SND_SOC_ODROIDX2) is probably going away after
-> some time.
-> Currently SND_SOC_ODROIDX2 also selects SND_SOC_MAX98090 and
-> SND_SAMSUNG_I2S, which I believe (correct me if I'm wrong) are necessary
-> to use the sound subsystem even with simple-audio-card (since the
-> max98090 codec has to be built at least). I've found no way of selecting
-> these two manually, so at the moment I need both CONFIG_SND_SIMPLE_CARD
-> and SND_SOC_ODROIDX2 enabled to use sound. Is this intended behaviour?
+I'm trying to set up a simple device tree framework so I can do some =
 
-Thanks for the feedback.  It seems I finally forgot to update Kconfig,
-presumably we should make SND_SOC_ODROIDX2 selecting SND_SIMPLE_CARD,
-i.e.
+development on an I2S driver. I'm trying to use simple-audio-card, but I =
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 58c797a..7fb728c 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -247,6 +247,7 @@ config SND_SOC_ODROIDX2
-        depends on SND_SOC_SAMSUNG
-        select SND_SOC_MAX98090
-        select SND_SAMSUNG_I2S
-+       select SND_SIMPLE_CARD
-        help
-          Say Y here to enable audio support for the Odroidx2.
+keep running into the problem that once soc_bind_dai_link() gets called,
+dai_link->platform is set to NULL (because it is not initialized by =
 
-Making SND_SOC_SAMSUNG selecting SND_SIMPLE_CARD is probably not a good
-idea and still we would be missing the codec part.
-I'm going to post a patch as above.
+simple-card.c when there is a DT node), while dai_link->platform_of_node =
 
-> And while I'm at it. I'm booting the board with an upstream u-boot
-> version which sets the MPLL to 800MHz, which AFAIK is the clocking rate
-> that makes less 'trouble' (but at the expense of performance).
-> I was wondering if anyone can comment on whether the recent rework has
-> any influence on the behaviour when booting with the vendor u-boot
-> (which sets the MPLL to 880MHz). IIRC then clock rounding issues arose
-> there.
-> 
-> It would be interesting to know if this series gets us closer to drive
-> the MPLL with the recommended (?) higher clocking rate.
+has been set to dai_link->cpu_of_node in asoc_simple_card_parse_of().
 
-No, (unfortunately) this series has nothing to do with MPLL.  The whole
-clock tree for sound is configured by the kernel, including the EPLL, which
-provides reference clock for the audio subsystem.  MPLL and EPLL are normally
-used in different clock domains.  So there should be no any clock rounding
-issues related to bootloader as far as audio is concerned.  Please let me
-know if you find any related problems.
+This results in the following code in soc-core:soc_bind_dai_link() to set =
 
--- 
-Regards,
-Sylwester
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+platform to NULL, =
+
+
+        /* if there's no platform we match on the empty platform */
+        platform_name =3D dai_link->platform_name;
+        if (!platform_name && !dai_link->platform_of_node)
+                platform_name =3D "snd-soc-dummy";
+
+        /* find one from the set of registered platforms */
+        list_for_each_entry(platform, &platform_list, list) {
+                if (dai_link->platform_of_node) {
+                        if (platform->dev->of_node !=3D
+                            dai_link->platform_of_node)
+                                continue;
+                } else {
+                        if (strcmp(platform->component.name, platform_name))
+                                continue;
+                }
+
+                rtd->platform =3D platform;
+        }
+        if (!rtd->platform) {
+                dev_err(card->dev, "ASoC: platform %s not registered\n",
+                        dai_link->platform_name);
+                return -EPROBE_DEFER;
+        }
+
+with -EPROBE_DEFER as a result.
+
+I can't figure out either how to set up a platform (=3DDMA) driver in this =
+
+environment. Perhaps the case of having a CPU DAI, DMA driver and codec =
+
+DAI is not supported by simple-audio-card?
+
+On other hand, the way it looks there is no way the resulting setup can =
+
+get through soc_bind_dai_link() unless there is a platform and associated =
+
+driver.
+
+This indicates to me that I'm doing something seriously wrong in my setup, =
+
+but having looked at various DT configurations in arch/arm/boot/dts in =
+
+this case, as well as the documentation in =
+
+Documentation/devicetree/bindings/sound/simple-card.txt I can't figure how
+to set it up any other way.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
