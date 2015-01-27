@@ -1,80 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 04/10] ASoC: sta32x: add status register.
-Date: Tue, 27 Jan 2015 17:03:45 +0000
-Message-ID: <20150127170345.GX21293@sirena.org.uk>
-References: <1421881322-27806-1-git-send-email-niederp@physik.uni-kl.de>
- <1421881322-27806-5-git-send-email-niederp@physik.uni-kl.de>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [PATCH v4 1/3] ASoC: samsung: Add machine driver for
+ Trats2
+Date: Tue, 27 Jan 2015 18:09:39 +0100
+Message-ID: <54C7C653.6080904@samsung.com>
+References: <1421989410-12490-1-git-send-email-ideal.song@samsung.com>
+ <1421989410-12490-2-git-send-email-ideal.song@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8925444312180833004=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 317822608EC
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 18:04:04 +0100 (CET)
-In-Reply-To: <1421881322-27806-5-git-send-email-niederp@physik.uni-kl.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas =?iso-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, brandau@gmx.de, zonque@gmail.com
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1421989410-12490-2-git-send-email-ideal.song@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Inha Song <ideal.song@samsung.com>
+Cc: alsa-devel@alsa-project.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, kgene@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 23/01/15 06:03, Inha Song wrote:
+> +static int trats2_aif1_startup(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct trats2_machine_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(priv->clk_mclk);
+> +	if (ret) {
+> +		dev_err(rtd->card->dev, "Failed to enable mclk: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void trats2_aif1_shutdown(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct trats2_machine_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+> +
+> +	clk_disable_unprepare(priv->clk_mclk);
+> +}
+> +
+> +static const struct snd_soc_ops trats2_aif1_ops = {
+> +	.startup = trats2_aif1_startup,
+> +	.shutdown = trats2_aif1_shutdown,
+> +	.hw_params = trats2_aif1_hw_params,
+> +};
 
---===============8925444312180833004==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CmyYfwfsVa1xvDOW"
-Content-Disposition: inline
+> +static int trats2_audio_probe(struct platform_device *pdev)
+> +{
 
+> +	priv->clk_mclk =  of_clk_get_by_name(codec_node, "MCLK1");
+> +	if (IS_ERR(priv->clk_mclk)) {
+> +		dev_err(&pdev->dev, "Failed to get mclk clock\n");
+> +		of_node_put(codec_node);
+> +		return PTR_ERR(priv->clk_mclk);
+> +	}
 
---CmyYfwfsVa1xvDOW
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Wouldn't it also work if we added clock handling into the wm8994 codec
+driver instead? Not sure if it is correct to retrieve the codec's clock
+in the machine driver like this. Or perhaps the MCLK1 (SoC CLKOUT) clock
+should be added to the sound DT node and handled only by the machine
+driver, together with the other (MCLK2) clock?
 
-On Thu, Jan 22, 2015 at 12:01:56AM +0100, Thomas Niederpr=FCm wrote:
+> +	of_node_put(codec_node);
 
-> The sta32x defines a read-only status register at address 0x2d.
-
-> +++ b/sound/soc/codecs/sta32x.c
-> @@ -101,6 +101,7 @@ static const struct reg_default sta32x_regs[] =3D {
->  	{ 0x28, 0xc0 },
->  	{ 0x2b, 0x00 },
->  	{ 0x2c, 0x0c },
-> +	{ 0x2d, 0x0f },
->  };
-
-If it's a status register I'd expect it to be volatile and not have a
-default, otherwise it's not terribly useful.
-
---CmyYfwfsVa1xvDOW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUx8TxAAoJECTWi3JdVIfQMCgH/RlQMjILldWs/AS68zN9d49F
-PuCQdtHsV9nSiE83coGUpqzw56lEOYjTZjqdIVDy3qiKXysSVvhc/GUKyHhfZpz8
-Nyg2T8W48xriiBMAZ+1uoZzGlI2B8XMZNSrXdMn3gWxjcrohp485zogrTw8s2giB
-w0HGZLR+ilx3vnLrPw2KhtoW5GuOxkmeWrOrmswSGFUiCwfx+4Q8IbSWbMAbU2q4
-AFNjNLPdQ2PbzPh24nufFTld8FNWQNRysUwMoXwD7pv0LiWzUtlGHg18STLeBwsA
-dFvwRPdaRJr8bnLxvQ2gppPFGZLbAKbOsP+mtPp0aY4BmYCXup2qVhDxtl1iGYg=
-=OIYv
------END PGP SIGNATURE-----
-
---CmyYfwfsVa1xvDOW--
-
---===============8925444312180833004==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8925444312180833004==--
+--
+Regards,
+Sylwester
