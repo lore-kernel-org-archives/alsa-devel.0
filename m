@@ -1,59 +1,39 @@
-From: Peter Rosin <peda@lysator.liu.se>
-Subject: [PATCH 2/7 RESEND] ASoC: pcm512x: Fix spelling of register field names.
-Date: Tue, 27 Jan 2015 20:50:43 +0100
-Message-ID: <1422388248-25722-3-git-send-email-peda@lysator.liu.se>
+From: Peter Rosin <peda-SamgB31n2u5IcsJQ0EH25Q@public.gmane.org>
+Subject: [PATCH 3/7 RESEND] ASoC: pcm512x: Change register default to match actual content after reset
+Date: Tue, 27 Jan 2015 20:50:44 +0100
+Message-ID: <1422388248-25722-4-git-send-email-peda@lysator.liu.se>
 References: <1422388248-25722-1-git-send-email-peda@lysator.liu.se>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1422388248-25722-1-git-send-email-peda@lysator.liu.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Rosin <peda@axentia.se>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Clemens Ladisch <clemens@ladisch.de>, Lars-Peter Clausen <lars@metafoo.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1422388248-25722-1-git-send-email-peda-SamgB31n2u5IcsJQ0EH25Q@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Rosin <peda@axentia.se>
+From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
 ---
  sound/soc/codecs/pcm512x.c |    2 +-
- sound/soc/codecs/pcm512x.h |    6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index e5f2fb884bf3..874723c36d65 100644
+index 874723c36d65..4c65eb9ab59b 100644
 --- a/sound/soc/codecs/pcm512x.c
 +++ b/sound/soc/codecs/pcm512x.c
-@@ -277,7 +277,7 @@ SOC_ENUM("Auto Mute Time Right", pcm512x_autom_r),
- SOC_SINGLE("Auto Mute Mono Switch", PCM512x_DIGITAL_MUTE_3,
- 	   PCM512x_ACTL_SHIFT, 1, 0),
- SOC_DOUBLE("Auto Mute Switch", PCM512x_DIGITAL_MUTE_3, PCM512x_AMLE_SHIFT,
--	   PCM512x_AMLR_SHIFT, 1, 0),
-+	   PCM512x_AMRE_SHIFT, 1, 0),
- 
- SOC_ENUM("Volume Ramp Down Rate", pcm512x_vndf),
- SOC_ENUM("Volume Ramp Down Step", pcm512x_vnds),
-diff --git a/sound/soc/codecs/pcm512x.h b/sound/soc/codecs/pcm512x.h
-index 6ee76aaca09a..28b3dfd302bc 100644
---- a/sound/soc/codecs/pcm512x.h
-+++ b/sound/soc/codecs/pcm512x.h
-@@ -108,8 +108,8 @@
- #define PCM512x_RQML_SHIFT 4
- 
- /* Page 0, Register 4 - PLL */
--#define PCM512x_PLCE       (1 << 0)
--#define PCM512x_RLCE_SHIFT 0
-+#define PCM512x_PLLE       (1 << 0)
-+#define PCM512x_PLLE_SHIFT 0
- #define PCM512x_PLCK       (1 << 4)
- #define PCM512x_PLCK_SHIFT 4
- 
-@@ -152,7 +152,7 @@
- /* Page 0, Register 65 - Digital mute enables */
- #define PCM512x_ACTL_SHIFT 2
- #define PCM512x_AMLE_SHIFT 1
--#define PCM512x_AMLR_SHIFT 0
-+#define PCM512x_AMRE_SHIFT 0
- 
- /* Page 1, Register 2 - analog volume control */
- #define PCM512x_RAGN_SHIFT 0
+@@ -78,7 +78,7 @@ static const struct reg_default pcm512x_reg_defaults[] = {
+ 	{ PCM512x_DIGITAL_VOLUME_2,  0x30 },
+ 	{ PCM512x_DIGITAL_VOLUME_3,  0x30 },
+ 	{ PCM512x_DIGITAL_MUTE_1,    0x22 },
+-	{ PCM512x_DIGITAL_MUTE_2,    0x00 },
++	{ PCM512x_DIGITAL_MUTE_2,    0x02 },
+ 	{ PCM512x_DIGITAL_MUTE_3,    0x07 },
+ 	{ PCM512x_OUTPUT_AMPLITUDE,  0x00 },
+ 	{ PCM512x_ANALOG_GAIN_CTRL,  0x00 },
 -- 
 1.7.10.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
