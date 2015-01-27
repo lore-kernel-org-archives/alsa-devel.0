@@ -1,92 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/3] ASoC: samsung: Add machine driver
- for Trats2
-Date: Tue, 27 Jan 2015 18:59:42 +0000
-Message-ID: <20150127185942.GM21293@sirena.org.uk>
-References: <1421989410-12490-1-git-send-email-ideal.song@samsung.com>
- <1421989410-12490-2-git-send-email-ideal.song@samsung.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2257206771853245631=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 254632612D2
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 20:00:06 +0100 (CET)
-In-Reply-To: <1421989410-12490-2-git-send-email-ideal.song@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, sbkim73@samsung.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.de, robh+dt@kernel.org, kgene@kernel.org, s.nawrocki@samsung.com, galak@codeaurora.org, grant.likely@linaro.org, linux-arm-kernel@lists.infradead.org
+From: Peter Rosin <peda-SamgB31n2u5IcsJQ0EH25Q@public.gmane.org>
+Subject: [PATCH 0/7 RESEND] ASoC: pcm512x: Clock master modes
+Date: Tue, 27 Jan 2015 20:50:41 +0100
+Message-ID: <1422388248-25722-1-git-send-email-peda@lysator.liu.se>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
 
---===============2257206771853245631==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7ftbJ8egIWVmlOqJ"
-Content-Disposition: inline
+Hi!
 
+[ Note that the dt change is in patch 5/7, for those only interested
+  in that particular bit. ]
 
---7ftbJ8egIWVmlOqJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series implements BCLK master modes for the pcm512x driver. It has
+only been tested with the pcm5142 chip, but they are from the same family
+and should be compatible. I have mainly used the spec for the newer
+pcm5242 chip (also from the same family) as it fills in a lot of blanks
+in the pcm512x/pcm514x specs.
 
-On Fri, Jan 23, 2015 at 02:03:28PM +0900, Inha Song wrote:
-> This patch add the sound machine driver for Trats2 board.
-> The codec operate in master mode.
+The code has also seen most of its testing in a 3.10 environment, so
+there might be some forward-porting warts. But it is able to play sound
+in 3.18 as well, and most of the changes have little to do with anything
+but the clocking in the chip itself.
 
-This looks like (and mostly should be) a DTified copy of the littlemill
-driver.  The major differences are the fact that this lacks jack
-detection, the management of the clock and the fact that instead of
-picking a fixed clock frequency this tries to adjust based on
-hw_params().  Ideally we'd be able to merge these drivers so we're
-keeping up with best practice.
+This is technically not a clean resend, since I'm now sending the whole
+series to all parties, hopefully using the correct email addesses this
+time. I have also augmented the commit message of patch 1/7 according
+to the review comments by Lars-Peter Clausen.
 
-The reason we pick a fixed frequency for littlemill is that the device
-supports analogue bypass paths which would be broken otherwise which
-will apply here also I imagine.
+Cheers,
+Peter
 
-> +config SND_SOC_SAMSUNG_TRATS2_WM1811
-> +	tristate "SoC I2S Audio support for WM1811 on Tizen Trats2 board"
-> +	depends on SND_SOC_SAMSUNG
-> +	select SND_SAMSUNG_I2S
-> +	select MFD_WM8994
+Peter Rosin (7):
+  ALSA: pcm: Add snd_interval_ranges() and
+    snd_pcm_hw_constraint_ranges()
+  ASoC: pcm512x: Fix spelling of register field names.
+  ASoC: pcm512x: Change register default to match actual content after
+    reset
+  ASoC: pcm512x: Support mastering BCLK/LRCLK without using the PLL
+  ASoC: pcm512x: Support mastering BCLK/LRCLK using the PLL
+  ASoC: pcm512x: Avoid the PLL for the DAC clock, if possible
+  ASoC: pcm512x: Support SND_SOC_DAIFMT_CBM_CFS
 
-For things outside the audio subsystem it's more common to use a depends
-instead of a select - the selects are there because the drivers only
-work with a machine driver and if we go outside the subsystem then since
-selects aren't recursive we end up breaking elsewhere.  For example here
-we'll end up not selecting MFD_CORE.
+ .../devicetree/bindings/sound/pcm512x.txt          |   25 +-
+ include/sound/pcm.h                                |   12 +
+ sound/core/pcm_lib.c                               |   85 ++
+ sound/soc/codecs/pcm512x.c                         |  955 +++++++++++++++++++-
+ sound/soc/codecs/pcm512x.h                         |  109 ++-
+ 5 files changed, 1161 insertions(+), 25 deletions(-)
 
---7ftbJ8egIWVmlOqJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+-- 
+1.7.10.4
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUx+AdAAoJECTWi3JdVIfQfdUH/RvJzdlHUSRh1yWQqBGUcj6U
-dUIAPq2NY7MEyC+gp1Xj5YsjnZ1da9w41wExLHLNX34+lUCDtKfb96WIxHNyrxg5
-q2ZRWpKa+sN8E1kwDrqYTWSXstbtNdy86RtUva47Y+2TN0GsFpyV75rDn39E8olb
-vanFXg85ZBMzQepVW2GQFCh2XyrPDfVLbpK9i4cYKPlNl5NDmDTA+7Ym7QbBqp40
-Yhaycl2WlHFyd3NH8vRbCjN1+20LwF6fjos2n4u7iWdtCdMBbjvAUWGYlQORjlch
-Zl3lZ5CaIRdDPar4+bEELb86n6d9wTqZd/vNGV8tcJB6iYsHoaSmo/N4KgrTXI4=
-=RXj1
------END PGP SIGNATURE-----
-
---7ftbJ8egIWVmlOqJ--
-
---===============2257206771853245631==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2257206771853245631==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
