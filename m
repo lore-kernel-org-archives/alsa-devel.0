@@ -1,23 +1,18 @@
-From: Chris Rorvick <chris@rorvick.com>
-Subject: Re: [PATCH 08/16] ALSA: line6: Drop superfluous
-	spinlock for trigger
-Date: Tue, 27 Jan 2015 06:48:22 -0600
-Message-ID: <CAEUsAPaN+127mvZvYiFcKcVLSVoLaPWO_tCVDUX_7-ce7YadXw@mail.gmail.com>
-References: <1422033203-23254-1-git-send-email-tiwai@suse.de>
- <1422033203-23254-9-git-send-email-tiwai@suse.de>
- <CAEUsAPYJcxq5eGhpZiy58USGwwxaohwjF+j0B0Qi=WRoectJeA@mail.gmail.com>
- <s5hh9vcikmi.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH_V3 0/4] sound:soc: jz4740: DT,
+ dynamic sampling, enable clocks
+Date: Tue, 27 Jan 2015 13:51:11 +0100
+Message-ID: <54C789BF.5030607@metafoo.de>
+References: <1422283993-53642-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
- [209.85.216.43])
- by alsa0.perex.cz (Postfix) with ESMTP id D2BD6260715
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:48:23 +0100 (CET)
-Received: by mail-qa0-f43.google.com with SMTP id v10so11147299qac.2
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 04:48:23 -0800 (PST)
-In-Reply-To: <s5hh9vcikmi.wl-tiwai@suse.de>
+Received: from smtp-out-180.synserver.de (smtp-out-180.synserver.de
+ [212.40.185.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FDC5260715
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 13:51:14 +0100 (CET)
+In-Reply-To: <1422283993-53642-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,27 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org
+To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, tiwai@suse.de, perex@perex.cz
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 27, 2015 at 4:27 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 27 Jan 2015 00:22:48 -0600, Chris Rorvick wrote:
->> All of this looks racy to me.  Am I missing something?
+On 01/26/2015 03:53 PM, Zubair Lutfullah Kakakhel wrote:
+> Hi,
 >
-> Yes, the code *is* already racy :)
+> Here are a few simple patches for the jz4740.
 
-OK, good to know I'm not seeing ghosts.  :-)
+For 1-3:
 
->> Sorry, this is way beyond the scope of this patch.  But I've been
->> spending some time trying to sort this out and haven't answered the
->> above questions.  If I'm missing anything, a pointer to the relevant
->> source would be greatly appreciated!
->
-> HTH,
-
-Yes, very much.  Thanks!
-
-Regards,
-
-Chris
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
