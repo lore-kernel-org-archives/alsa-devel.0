@@ -1,16 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/10] ASoC: sta32x: Add device tree binding
-Date: Tue, 27 Jan 2015 17:16:14 +0000
-Message-ID: <20150127171614.GZ21293@sirena.org.uk>
-References: <1421881322-27806-1-git-send-email-niederp@physik.uni-kl.de>
+From: Cyrus Harmon <cyrus@bobobeach.com>
+Subject: Re: add Steinberg UR44 USB Audio Interface support to
+ quirks-table
+Date: Tue, 27 Jan 2015 09:21:55 -0800
+Message-ID: <54C7C933.8080002@bobobeach.com>
+References: <CAH7VmLJQojMB5mH_mcq3-Q5HVcfs8QZf4m8D3MK0p7qBWkctGw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8518305916987993337=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E24B2608EC
- for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 18:16:38 +0100 (CET)
-In-Reply-To: <1421881322-27806-1-git-send-email-niederp@physik.uni-kl.de>
+Received: from aspen.bobobeach.com (unknown [208.79.93.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 751AB2608EC
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 18:22:13 +0100 (CET)
+Received: from aspen.bobobeach.com (localhost [127.0.0.1])
+ by aspen.bobobeach.com (Postfix) with ESMTP id BB3B010154
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 09:24:27 -0800 (PST)
+Received: from [192.168.1.224] (unknown [107.200.11.235])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (Client did not present a certificate)
+ by aspen.bobobeach.com (Postfix) with ESMTPSA id 8DD1E1014A
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2015 09:24:27 -0800 (PST)
+in-reply-to: <CAH7VmLJQojMB5mH_mcq3-Q5HVcfs8QZf4m8D3MK0p7qBWkctGw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,54 +29,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas =?iso-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, brandau@gmx.de, zonque@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8518305916987993337==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="w5NuKm87q7qyH/qV"
-Content-Disposition: inline
+On 01/23/2015 03:42 AM, Vlastimil Wagner wrote:
+> hi In what state is the driver for Steinberg UR44
 
+I sent a patch to to quirks-table.h a few months back that makes things 
+work with the UR44. Clemens commented that, in theory, kernel 3.11 and 
+later should support the UR44 out of the box, without needing the patch 
+to the quirks table. He also sent along some patches with some debugging 
+information to try to track down why things were failing, but I never 
+got around to investigating the fully the source of the error, nor did I 
+push for inclusion of the quirks-table.h patch, so it's still sitting 
+out there. Check the list archives for details.
 
---w5NuKm87q7qyH/qV
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jan 22, 2015 at 12:01:52AM +0100, Thomas Niederpr=FCm wrote:
-> This patchset is the result of comparing the sta32x driver with the sta350
-> driver with the goal to make the sta32x driver device tree capable. In the
-> merging process the coding style of the sta350 driver was adopted since it
-> seemed more up to date. I did my best to break up the changes in logical
-> chunks. Additionally some small fixes were added.
-
-Applied all except for the patch adding the status register, thanks.
-
---w5NuKm87q7qyH/qV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUx8feAAoJECTWi3JdVIfQYJ0H/jh+iPJ9WXoFQwhzKB7bT/O2
-LOkI6sy3UUZHAQolj2Jb9DTp7LiuzQFl4E8Zd7bo4ggpsNhhyik3XPXRyzTPX1r5
-X/Ism7ifKaTCrEn1HfeuNeqwdX50DKpWSP01W2RLoxELR77w27f3chNZBJRreLN0
-wDPgv5sBDOEC9iUzF+FEOxQJC2BhXAfl/eX899VKs0atNyHyg5pn4rM0YjvCCVga
-IH2L2cMV2NYyylykeOF5HV5V4bvYCGC+anmxnp+B6ssZzbHfGqrWqLOIcAoIRGwn
-s6uKK5R2Fa9csIvhQU+KcCWoEfitXMlKua3ddM1b5cVQJP5d5Nb3qLB6duX1WvE=
-=I0Gy
------END PGP SIGNATURE-----
-
---w5NuKm87q7qyH/qV--
-
---===============8518305916987993337==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8518305916987993337==--
+Cyrus
