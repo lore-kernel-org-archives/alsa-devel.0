@@ -1,23 +1,14 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: ESI Juli@ crash with external clock switch - patch
-Date: Wed, 28 Jan 2015 22:24:16 +0100
-Message-ID: <54C95380.40209@ivitera.com>
-References: <54B28174.7060008@ivitera.com> <s5hwq4t2u33.wl-tiwai@suse.de>
- <54B2B992.7000909@ivitera.com> <s5hegr12gxn.wl-tiwai@suse.de>
- <54B2E48B.7020000@ivitera.com> <s5hvbkc1kaa.wl-tiwai@suse.de>
- <54B3872C.2010501@ivitera.com> <s5hwq4sm2bs.wl-tiwai@suse.de>
- <54B82E02.3080008@ivitera.com> <s5ha91isl7e.wl-tiwai@suse.de>
- <54B9763A.8030405@ivitera.com> <s5ha91izchf.wl-tiwai@suse.de>
- <54C94BC2.9000002@ivitera.com> <s5hoapifvok.wl-tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: Samsung: add missing I2C/SPI dependencies
+Date: Wed, 28 Jan 2015 22:28:55 +0100
+Message-ID: <1815674.ObkQWLfgIW@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
- [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FB8F2614D3
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 22:24:22 +0100 (CET)
-In-Reply-To: <s5hoapifvok.wl-tiwai@suse.de>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39B212614D3
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 22:29:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,22 +18,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, Kukjin Kim <kgene@kernel.org>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 28.1.2015 v 22:21 Takashi Iwai napsal(a):
->>
->>
->> I confirm the patches are working both for Juli and Quartet. Juli tested
->> also for pm-suspend, working fine after resume.
->
-> OK, I'm going to merge the patches.
->
-> Thanks for testing.
+The SND_SOC_ARNDALE_RT5631_ALC5631 selects the rt5631 codec
+that requires I2C to work, so we get a build error if I2C
+is disabled:
 
-I do thank a lot for the patches.
+codecs/rt5631.c:1737:1: warning: data definition has no type or storage class
+31_i2c_driver);
 
-Regards,
+codecs/rt5631.c:1737:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
+codecs/rt5631.c:1737:1: warning: parameter names (without types) in function declaration
+codecs/rt5631.c:1726:26: warning: 'rt5631_i2c_driver' defined but not used [-Wunused-variable]
 
-Pavel.
+The same thing can happen on odroid-x2, littlemill, bells
+and speyside, so this patch adds all the dependencies.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index e817a2f43ea8..dd781d9a1c66 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -185,7 +185,7 @@ config SND_SOC_SMDK_WM8994_PCM
+ 
+ config SND_SOC_SPEYSIDE
+ 	tristate "Audio support for Wolfson Speyside"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && SPI_MASTER
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8996
+ 	select SND_SOC_WM9081
+@@ -200,7 +200,7 @@ config SND_SOC_TOBERMORY
+ 
+ config SND_SOC_BELLS
+ 	tristate "Audio support for Wolfson Bells"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && MFD_ARIZONA
++	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && MFD_ARIZONA && I2C && SPI_MASTER
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5102
+ 	select SND_SOC_WM5110
+@@ -217,7 +217,7 @@ config SND_SOC_LOWLAND
+ 
+ config SND_SOC_LITTLEMILL
+ 	tristate "Audio support for Wolfson Littlemill"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && I2C
+ 	select SND_SAMSUNG_I2S
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
+@@ -234,7 +234,7 @@ config SND_SOC_SNOW
+ 
+ config SND_SOC_ODROIDX2
+ 	tristate "Audio support for Odroid-X2 and Odroid-U3"
+-	depends on SND_SOC_SAMSUNG
++	depends on SND_SOC_SAMSUNG && I2C
+ 	select SND_SOC_MAX98090
+ 	select SND_SAMSUNG_I2S
+ 	help
+@@ -242,6 +242,6 @@ config SND_SOC_ODROIDX2
+ 
+ config SND_SOC_ARNDALE_RT5631_ALC5631
+         tristate "Audio support for RT5631(ALC5631) on Arndale Board"
+-        depends on SND_SOC_SAMSUNG
++        depends on SND_SOC_SAMSUNG && I2C
+         select SND_SAMSUNG_I2S
+         select SND_SOC_RT5631
