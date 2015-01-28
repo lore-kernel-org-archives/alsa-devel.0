@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 06/10] ASoC: tegra: Add a control for
- the headphone switch
-Date: Wed, 28 Jan 2015 18:24:02 +0000
-Message-ID: <20150128182402.GD21293@sirena.org.uk>
-References: <1422442278-10405-1-git-send-email-tomeu.vizoso@collabora.com>
- <1422442278-10405-7-git-send-email-tomeu.vizoso@collabora.com>
- <20150128110230.GQ21293@sirena.org.uk>
- <CAEUnVG6tKmdTt455w8g9C2_+XXpKz5=TR7=V8Lo3uJ3DKrOvag@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] ASoC: pcm512x: Change register
+ default to match actual content after reset
+Date: Wed, 28 Jan 2015 19:12:17 +0000
+Message-ID: <20150128191217.GF21293@sirena.org.uk>
+References: <1422454572-7847-1-git-send-email-peda@lysator.liu.se>
+ <1422454572-7847-4-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2870836410614839622=="
+Content-Type: multipart/mixed; boundary="===============6223819811956975951=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC1512606E2
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 19:24:34 +0100 (CET)
-In-Reply-To: <CAEUnVG6tKmdTt455w8g9C2_+XXpKz5=TR7=V8Lo3uJ3DKrOvag@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2ACD626262D
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 20:12:42 +0100 (CET)
+In-Reply-To: <1422454572-7847-4-git-send-email-peda@lysator.liu.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: Alexandre Courbot <gnurou@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Tomeu Vizoso <tomeu.vizoso@collabora.com>, Stephen Warren <swarren@wwwdotorg.org>, Andrew Bresticker <abrestic@chromium.org>, Simon Glass <sjg@chromium.org>, Wolfram Sang <wsa@the-dreams.de>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Thierry Reding <thierry.reding@gmail.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>
+To: Peter Rosin <peda@lysator.liu.se>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2870836410614839622==
+--===============6223819811956975951==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CAghj3nbcHapFenH"
+	protocol="application/pgp-signature"; boundary="D0SLKVBHTY2PnTRz"
 Content-Disposition: inline
 
 
---CAghj3nbcHapFenH
+--D0SLKVBHTY2PnTRz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jan 28, 2015 at 09:46:27AM -0800, Dylan Reid wrote:
-> On Wed, Jan 28, 2015 at 3:02 AM, Mark Brown <broonie@kernel.org> wrote:
+On Wed, Jan 28, 2015 at 03:16:08PM +0100, Peter Rosin wrote:
 
-> > Why is userspace doing this?  If this is supposed to be associated with
-> > the jack detection I'd expect us to be doing this in kernel.
+> @@ -78,7 +78,7 @@ static const struct reg_default pcm512x_reg_defaults[] = {
+>  	{ PCM512x_DIGITAL_VOLUME_2,  0x30 },
+>  	{ PCM512x_DIGITAL_VOLUME_3,  0x30 },
+>  	{ PCM512x_DIGITAL_MUTE_1,    0x22 },
+> -	{ PCM512x_DIGITAL_MUTE_2,    0x00 },
+> +	{ PCM512x_DIGITAL_MUTE_2,    0x02 },
 
-> This is only related to jack detection in that seeing a jack insert or
-> removal can cause userspace to set or unset it depending on the
-> current policy.
+The datasheet claims these have undefined values as reserved bits - what
+would be a more robust change here would be to remove the register
+default entirely so that we take the value the hardware has, giving
+robustness against any hardware revisions.  Of course the device has
+rather a lot of such reserved bits which is unfortunate.
 
-OK, better changelog please then.  Also, to repeat the advice I think I
-gave last time: please don't post large sets of unrelated changes as a
-single series, send logically separate bits separately.
-
---CAghj3nbcHapFenH
+--D0SLKVBHTY2PnTRz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUySlBAAoJECTWi3JdVIfQve8H/jKFLa4LlHC8P8Wi5zAQHGGN
-YgSJwZeknu9+gDqghkvHfMrY6xt3dOWFFjKQsanqqgYGGRqzxDINurbzSd5Sk/IW
-/j2YRfK75rwErqfR/RlgY+2p/TaSzOlvm9/ddNJYwAW5AjE85rHOiYOU8mDPwUyF
-+Xz5hCpdifOE7WRxZ3IOuStQWi0cPZa46OlIV22ZN549FKltsYinBZDYe9J6U0O8
-IKUMXB2znDihV6U1jKj12ZoazT+O/pol3ot55Nk7X67AdiwGRBR1/az9mjAO8h42
-8HSqs/pOnZAA363lSusGm4zmQLUKaIe1xsPxGFhslGdJykZS+Y6l5viJyI08/5A=
-=4Mn4
+iQEcBAEBCAAGBQJUyTSQAAoJECTWi3JdVIfQHbEH/2KTA7lklj4WLNDJ706ddWpj
+RTieI5BM4hah+P+2UZrhufBXqTyQsg8ihJKMmNk8GWEgZ4WOYUkWr62qut7P9tXD
+PLFcx8fIstV4CcHUPAn4WAd40emxED0TPZ6FEPPtr3FCpdv5Bdb4VGKU0I4uBvlB
+rmClU8/c9b0krrSFv6CV+zobQCf5KjxMoCx7p+QESxm1JryeG9W2iN//kiJDT0rY
+ynSL/OaCvARWY6H7qveTD0HSwSc1/YE29jJtcEzKg7W1512Kr7M7XvayBXTN0dbT
+yrqAWfWbritrjjpb/izneUZoDPYBqwtQt1cgQnKNNLTZqmTP3lmeMeg5Eqbp7gQ=
+=rL61
 -----END PGP SIGNATURE-----
 
---CAghj3nbcHapFenH--
+--D0SLKVBHTY2PnTRz--
 
---===============2870836410614839622==
+--===============6223819811956975951==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2870836410614839622==--
+--===============6223819811956975951==--
