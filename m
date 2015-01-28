@@ -1,21 +1,17 @@
-From: "Vitaly V. Ch" <vitaly.v.ch@gmail.com>
-Subject: Re: [RFC] XEN support in aserver
-Date: Wed, 28 Jan 2015 19:20:33 +0200
-Message-ID: <CAJKxXouJeN6kBwrOECTDULJvJm1SofmeWXKjUpsQg6tjAsB3hg@mail.gmail.com>
-References: <CAJKxXovW8LWVWSUoYRZt6RR9-=UdVCNCYDzr+hS6Gmx7jH=WMA@mail.gmail.com>
- <54C9087A.1020303@gmail.com> <s5ha912yjd6.wl-tiwai@suse.de>
-Reply-To: vitaly.v.ch@gmail.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH PING] ASoC: dwc: Remove unnecessary
+ conditional compilation
+Date: Wed, 28 Jan 2015 17:39:54 +0000
+Message-ID: <20150128173954.GC21293@sirena.org.uk>
+References: <1422391108-9011-1-git-send-email-andrew.jackson@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7354280484392997416=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 55472261B35
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 18:20:34 +0100 (CET)
-Received: by mail-pa0-f48.google.com with SMTP id ey11so27639828pad.7
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 09:20:33 -0800 (PST)
-In-Reply-To: <s5ha912yjd6.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3282126262D
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 18:40:07 +0100 (CET)
+In-Reply-To: <1422391108-9011-1-git-send-email-andrew.jackson@arm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, "Alexander E. Patrakov" <patrakov@gmail.com>
+To: Andrew Jackson <andrew.jackson@arm.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hm. Ok. So I choose to see in pulse direction.
 
-With best regards,
+--===============7354280484392997416==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HxY/eTLWEtH+OqMc"
+Content-Disposition: inline
 
-Vitaly
 
-On Wed, Jan 28, 2015 at 6:12 PM, Takashi Iwai <tiwai@suse.de> wrote:
+--HxY/eTLWEtH+OqMc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> At Wed, 28 Jan 2015 21:04:10 +0500,
-> Alexander E. Patrakov wrote:
-> >
-> > 28.01.2015 20:52, Vitaly V. Ch wrote:
-> > > Hi all!
-> > >
-> > > What do you think about introducing XEN support into aserver? It will
-> allow
-> > > to share sound between domains with few little changes.
-> >
-> > It seems that you are the only person who cares about aserver.
-> > Seriously, try to valgrind it and the related "share" and "shm" plugins,
-> > and you'll understand why I propose to remove it instead of fixing.
->
-> Yes, it'd make really little sense.
->
-> BTW, just right now I started clean up of aserver and shm plugin codes
-> (with a hope that no one is actually using it :)
->
->
-> Takashi
->
+On Tue, Jan 27, 2015 at 08:38:28PM +0000, Andrew Jackson wrote:
+> From: Andrew Jackson <Andrew.Jackson@arm.com>
+>=20
+> of_match_ptr is already conditionally compiled based on
+
+Applied, thanks.
+
+--HxY/eTLWEtH+OqMc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUyR7pAAoJECTWi3JdVIfQMvsH/1ug1zYiuWFcNDLdhDyYuwu0
+1sCdCBvkQHtMvzxAWf99dGOecmIDMvbLXy5b9/mPBGyj1hROJDWjH5QbQuA3DXWI
+HiLbCRE4iDZbSHla86QwzmJ11dNvyRFrMjExPr+5jXKXreuonukrrqCkhcQGi9Nw
+D2w1tNxnoUS2+NLPoEnWzabv8vgJyVZRIS8SpgiQW0r3MqX2CQog4/HISGWQAO0T
+cXkpohqR1CeLs0qXmLMF+Zv21aAXqu/BF2alTYKxPGEe4i9SlDsFZaYqGCyY12J0
+sOc40Uq4UYI/RZUBYImkEjVsy7gCQeXj/4zj2Pj28eBqGrcSZw8+2sic/hEduGs=
+=U0xS
+-----END PGP SIGNATURE-----
+
+--HxY/eTLWEtH+OqMc--
+
+--===============7354280484392997416==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7354280484392997416==--
