@@ -1,20 +1,14 @@
-From: Pali =?utf-8?q?Roh=C3=A1r?= <pali.rohar@gmail.com>
-Subject: Re: [PATCH] ASoC: rx51: do not fail if could not get
-	jack detection gpio
-Date: Wed, 28 Jan 2015 15:09:17 +0100
-Message-ID: <201501281509.17333@pali>
-References: <1422305507-10533-1-git-send-email-pali.rohar@gmail.com>
- <54C79597.40105@ti.com> <201501271511.08933@pali>
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: [PATCH v2 0/7] ASoC: pcm512x: Clock master modes
+Date: Wed, 28 Jan 2015 15:16:05 +0100
+Message-ID: <1422454572-7847-1-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8527058531110048406=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 69C5E261A32
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 15:09:19 +0100 (CET)
-Received: by mail-wi0-f181.google.com with SMTP id fb4so12141964wid.2
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 06:09:19 -0800 (PST)
-In-Reply-To: <201501271511.08933@pali>
+Received: from mail.lysator.liu.se (mail.lysator.liu.se [130.236.254.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DE46261A66
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 15:16:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,89 +18,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>, Sebastian Reichel <sre@debian.org>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Clemens Ladisch <clemens@ladisch.de>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
---===============8527058531110048406==
-Content-Type: multipart/signed;
-  boundary="nextPart1989159.qfoVUJsl4f";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+From: Peter Rosin <peda@axentia.se>
 
---nextPart1989159.qfoVUJsl4f
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Hi!
 
-> > > It is quite important to keep qemu working, really.
-> > > Debugging early boot on hardware is very hard, for
-> > > example.
-> >=20
-> > I understand, but looking at the history of the driver, if
-> > it fails now with the jack-detection GPIO, it should have
-> > been failing in the past as well. What triggered this
-> > sudden qemu does not like jack-detection GPIO? Before the
-> > devm_gpiod_get() conversion the driver should have failed in
-> > snd_soc_jack_add_gpios() phase.
->=20
-> With 3.12 kernel rx51-audio driver loads without any problem.
-> So there is some regression. Here is dmesg log from 3.12
-> kernel:
->=20
-> [    1.123779] rx51-audio rx51-audio:  tlv320aic3x-hifi <->
-> omap- mcbsp.2 mapping ok
-> [    1.130737] tlv320aic3x-codec 2-0019: ASoC: mux b Right
-> Line1L Mux has no paths
-> [    1.131347] tlv320aic3x-codec 2-0019: ASoC: mux b Left
-> Line1R Mux has no paths
-> [    1.133697] tlv320aic3x-codec 2-0018: ASoC: mux Right
-> Line1L Mux has no paths
-> [    1.134307] tlv320aic3x-codec 2-0018: ASoC: mux Left Line1R
-> Mux has no paths
-> [    1.137451] input: RX-51 AV Jack as /devices/platform/rx51-
-> audio/sound/card0/input2
->=20
-> I will try to investigate where is problem...
->=20
+[ Note that the dt change is in patch 5/7, for those only interested
+  in that particular bit. ]
 
-Ok, problem found and solved. Please drop my patch and sorry for=20
-a noise.
+This series implements BCLK master modes for the pcm512x driver. It has
+only been tested with the pcm5142 chip, but they are from the same family
+and should be compatible. I have mainly used the spec for the newer
+pcm5242 chip (also from the same family) as it fills in a lot of blanks
+in the pcm512x/pcm514x specs.
 
-As is visible in above lines AV Jack is working fine on non DT=20
-kernel (3.12) and fails on DT kernel.
+The code has also seen most of its testing in a 3.10 environment, so
+there might be some forward-porting warts. But it is able to play sound
+in 3.18 as well, and most of the changes have little to do with anything
+but the clocking in the chip itself.
 
-Reason is because I have another non-mainline driver which is=20
-using GPIOs and in non DT kernel is initialized *after* audio.=20
-And in DT kernel is initialized *before* audio.
+Changes since v1:
+- Use snd_soc_params_to_frame_size and snd_soc_params_to_bclk instead of
+  implementing home-grown versions based on the physical width. The
+  I2S-communication will no longer have padding bits for S24_LE.
 
-Once I changed my non-mainline driver to not request av jack=20
-gpio, rx51-audio driver loads fine in qemu.
+Cheers,
+Peter
 
-=2D-=20
-Pali Roh=C3=A1r
-pali.rohar@gmail.com
+Peter Rosin (7):
+  ALSA: pcm: Add snd_interval_ranges() and
+    snd_pcm_hw_constraint_ranges()
+  ASoC: pcm512x: Fix spelling of register field names.
+  ASoC: pcm512x: Change register default to match actual content after
+    reset
+  ASoC: pcm512x: Support mastering BCLK/LRCLK without using the PLL
+  ASoC: pcm512x: Support mastering BCLK/LRCLK using the PLL
+  ASoC: pcm512x: Avoid the PLL for the DAC clock, if possible
+  ASoC: pcm512x: Support SND_SOC_DAIFMT_CBM_CFS
 
---nextPart1989159.qfoVUJsl4f
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+ .../devicetree/bindings/sound/pcm512x.txt          |   25 +-
+ include/sound/pcm.h                                |   12 +
+ sound/core/pcm_lib.c                               |   85 ++
+ sound/soc/codecs/pcm512x.c                         |  933 +++++++++++++++++++-
+ sound/soc/codecs/pcm512x.h                         |  109 ++-
+ 5 files changed, 1139 insertions(+), 25 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAlTI7Y0ACgkQi/DJPQPkQ1K5WACfcXmeUks3GiUTeE/3+sb31nrQ
-3nEAn3P9MzMyEo/b82MHnM5kGlrMjn0W
-=kDoz
------END PGP SIGNATURE-----
-
---nextPart1989159.qfoVUJsl4f--
-
---===============8527058531110048406==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8527058531110048406==--
+-- 
+1.7.10.4
