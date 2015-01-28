@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 5/7] ASoC: pcm512x: Support mastering
- BCLK/LRCLK using the PLL
-Date: Wed, 28 Jan 2015 19:14:30 +0000
-Message-ID: <20150128191430.GG21293@sirena.org.uk>
+Subject: Re: [PATCH v2 0/7] ASoC: pcm512x: Clock master modes
+Date: Wed, 28 Jan 2015 19:29:07 +0000
+Message-ID: <20150128192907.GH21293@sirena.org.uk>
 References: <1422454572-7847-1-git-send-email-peda@lysator.liu.se>
- <1422454572-7847-6-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5373060454841119214=="
+Content-Type: multipart/mixed; boundary="===============2013275459038901597=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73DEB262631
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 20:14:35 +0100 (CET)
-In-Reply-To: <1422454572-7847-6-git-send-email-peda@lysator.liu.se>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C575264F39
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 20:29:32 +0100 (CET)
+In-Reply-To: <1422454572-7847-1-git-send-email-peda@lysator.liu.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,48 +25,50 @@ Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5373060454841119214==
+--===============2013275459038901597==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2BwlnJGNAaT6vtF0"
+	protocol="application/pgp-signature"; boundary="zsrtqxSV3n+NPNGz"
 Content-Disposition: inline
 
 
---2BwlnJGNAaT6vtF0
+--zsrtqxSV3n+NPNGz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 28, 2015 at 03:16:10PM +0100, Peter Rosin wrote:
+On Wed, Jan 28, 2015 at 03:16:05PM +0100, Peter Rosin wrote:
+> From: Peter Rosin <peda@axentia.se>
+>=20
+> Hi!
+>=20
+> [ Note that the dt change is in patch 5/7, for those only interested
+>   in that particular bit. ]
 
-> community pages (1). The clocking functionality is also much better
-> described in the datasheet for the chip PCM5242, which seems to be
-> register compatible with PCM512x and PCM514x (which both have severely
-> lacking datasheets).
+Applied all except the register default change, thanks.
 
-If it's register compatible we should add the device ID...
-
---2BwlnJGNAaT6vtF0
+--zsrtqxSV3n+NPNGz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUyTUVAAoJECTWi3JdVIfQJA8H/1JMOC9ysco6niND7VNkQtzc
-gRnWml3LLWeyB96tE2XvzfIzrvZ57EiGlOVMYVzM8orVrKgd9/DjCOzCzk9z89Pl
-+fAuHe46XNa+Kmuycv2s9SXbnArAfXe1dtpyoN7V4dqUEH9497RQv6pcq2lZ6IjL
-kSzBdiMzWvYF5sDKzi0bdcnQ9nFdnBkp+gR0ZZNxrzZ/BXPSC0bbk1WAy+YBTtji
-pcCo4EKMRU5531uxHFtHPIGf0WUPDBwZaZO7r9P9nB+7MO7IjCHCKdJZDA9YCcZ2
-FJ11EEyr0YvYEIf4yORKgNpFZKnz6MI89nyFsMV89i2mACtej0z8Ja+XLRhKHB0=
-=473B
+iQEcBAEBCAAGBQJUyTiCAAoJECTWi3JdVIfQbJoH/iTTNvZhgl3mcybxLYN0wVp6
+bd6k3XwxivuGduqy9A5XTUFjf9//B1cUaJ3ACux6zgUEBU78a+HFPG4N6/3eXnKa
+nAfug1+nyhePl3iTow3NaO+GbG7+7mhGpeZImTFAztnas2SS7wa55YkwAyjuJoNw
+xoSepBHqM3zSRMHPQqaVKIT2sf6pg84bc7+5SZyT9FwWy+na+MQS/SbH/as52Vaf
+wN2RIu5AzcBQBaibuaaADaDkiPR56RaElCsByNSDKnfXo78K7ORJSGfS1uyDJa7b
+DucCVTLzAROZOF1qB/T+sKdfcwkM+F9lBjfhzesmJc0DlBm8h4ZiM2fnmDq3qLI=
+=nx76
 -----END PGP SIGNATURE-----
 
---2BwlnJGNAaT6vtF0--
+--zsrtqxSV3n+NPNGz--
 
---===============5373060454841119214==
+--===============2013275459038901597==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5373060454841119214==--
+--===============2013275459038901597==--
