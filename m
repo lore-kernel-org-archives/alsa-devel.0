@@ -1,14 +1,14 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: davinci: fix DM365_EVM codec selection
-Date: Wed, 28 Jan 2015 22:30:01 +0100
-Message-ID: <12284641.mhX5PHEsR2@wuerfel>
+Subject: [RFC] ASoC: rt5677: fix SPI dependency
+Date: Wed, 28 Jan 2015 22:31:30 +0100
+Message-ID: <19778554.1IDiTWklUc@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B882264F50
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 22:30:10 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0D762614D3
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 22:32:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,45 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org
-Cc: Kevin Hilman <khilman@deeprootsystems.com>, alsa-devel@alsa-project.org, Sekhar Nori <nsekhar@ti.com>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-An earlier bug fix of mine made the SND_DM365_VOICE_CODEC symbol
-tristate to avoid creating an undefined reference from the
-davinci-vcif.c driver to the davinci_soc_platform_register
-function that may be in a module.
+The rt5677 codec has gained code that requires SPI to work correctly,
+but there is no provision in Kconfig to prevent the driver from
+being used when SPI is disabled or a loadable module, resulting
+in this build error:
 
-However, this may now lead to a different error on randconfig
-kernels:
+sound/built-in.o: In function `rt5677_spi_write':
+:(.text+0xa7ba0): undefined reference to `spi_sync'
+sound/built-in.o: In function `rt5677_spi_driver_init':
+:(.init.text+0x253c): undefined reference to `spi_register_driver'
 
-"warning: SND_DM365_VOICE_CODEC creates inconsistent choice state"
+ERROR: "spi_sync" [sound/soc/codecs/snd-soc-rt5677-spi.ko] undefined!
+ERROR: "spi_register_driver" [sound/soc/codecs/snd-soc-rt5677-spi.ko] undefined!
 
-This happens because we now have a choice statement with
-one bool and one tristate option, and the latter might not
-support being set to 'y' because of dependencies.
-
-This new change turns the other option into 'tristate' as well,
-which avoids the problem.
+This makes the SPI portion of the driver depend on the SPI subsystem,
+and disables the function that uses SPI for firmware download if SPI
+is disabled. The latter may not be the correct solution, but I could
+not come up with a better one.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 19926c6de0c3 ("ASoC: davinci: vcif must be a module if SND_DAVINCI_SOC is")
+Fixes: af48f1d08a54741 ("ASoC: rt5677: Support DSP function for VAD application")
 
-diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-index 8e948c63f3d9..2b81ca418d2a 100644
---- a/sound/soc/davinci/Kconfig
-+++ b/sound/soc/davinci/Kconfig
-@@ -58,13 +58,12 @@ choice
- 	depends on MACH_DAVINCI_DM365_EVM
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 8349f982a586..ef2c70e77d91 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -525,7 +525,7 @@ config SND_SOC_RT5677
  
- config SND_DM365_AIC3X_CODEC
--	bool "Audio Codec - AIC3101"
-+	tristate "Audio Codec - AIC3101"
- 	help
- 	  Say Y if you want to add support for AIC3101 audio codec
+ config SND_SOC_RT5677_SPI
+ 	tristate
+-	default SND_SOC_RT5677
++	default SND_SOC_RT5677 && SPI
  
- config SND_DM365_VOICE_CODEC
- 	tristate "Voice Codec - CQ93VC"
--	depends on SND_DAVINCI_SOC
- 	select MFD_DAVINCI_VOICECODEC
- 	select SND_DAVINCI_SOC_VCIF
- 	select SND_SOC_CQ0093VC
+ #Freescale sgtl5000 codec
+ config SND_SOC_SGTL5000
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 26fc538f03b1..5d0bb8748dd1 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -702,6 +702,9 @@ static int rt5677_set_dsp_vad(struct snd_soc_codec *codec, bool on)
+ 	static bool activity;
+ 	int ret;
+ 
++	if (!IS_ENABLED(CONFIG_SND_SOC_RT5677_SPI))
++		return -ENXIO;
++
+ 	if (on && !activity) {
+ 		activity = true;
+ 
