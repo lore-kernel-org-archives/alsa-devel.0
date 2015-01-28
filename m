@@ -1,18 +1,27 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: sigmadsp: adau1701: Version mismatch while loading
- firmware in 3.18.3
-Date: Wed, 28 Jan 2015 15:00:26 +0100
-Message-ID: <54C8EB7A.7010901@metafoo.de>
-References: <54C8E881.60106@gmail.com>
+From: Chris Rorvick <chris@rorvick.com>
+Subject: Re: [PATCH 08/16] ALSA: line6: Drop superfluous
+	spinlock for trigger
+Date: Wed, 28 Jan 2015 08:02:59 -0600
+Message-ID: <CAEUsAPY33h99aRqs0gQZYSfk1kX0W+C4YoyCbAbRyEMq+d0eog@mail.gmail.com>
+References: <1422033203-23254-1-git-send-email-tiwai@suse.de>
+ <1422033203-23254-9-git-send-email-tiwai@suse.de>
+ <CAEUsAPYJcxq5eGhpZiy58USGwwxaohwjF+j0B0Qi=WRoectJeA@mail.gmail.com>
+ <s5hh9vcikmi.wl-tiwai@suse.de>
+ <CAEUsAPaN+127mvZvYiFcKcVLSVoLaPWO_tCVDUX_7-ce7YadXw@mail.gmail.com>
+ <s5hiofsyzko.wl-tiwai@suse.de>
+ <CAEUsAPYpmkoF3YtqJGcp7gQ3HnBRQ8tKPzFuLSHEYiy=PJjLEw@mail.gmail.com>
+ <s5hfvavh13l.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-012.synserver.de (smtp-out-012.synserver.de
- [212.40.185.12])
- by alsa0.perex.cz (Postfix) with ESMTP id A4C8C261A60
- for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 15:00:25 +0100 (CET)
-In-Reply-To: <54C8E881.60106@gmail.com>
+Received: from mail-qg0-f44.google.com (mail-qg0-f44.google.com
+ [209.85.192.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B1F9261A32
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 15:03:00 +0100 (CET)
+Received: by mail-qg0-f44.google.com with SMTP id l89so16734831qgf.3
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 06:02:59 -0800 (PST)
+In-Reply-To: <s5hfvavh13l.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +31,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pascal Huerst <pascal.huerst@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/28/2015 02:47 PM, Pascal Huerst wrote:
-> Hello Lars-Peter,
+On Wed, Jan 28, 2015 at 12:26 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 28 Jan 2015 00:03:17 -0600,
+> Chris Rorvick wrote:
+>>
+>> On Tue, Jan 27, 2015 at 10:10 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > Could you give tested-by tag if the latest test/line6 branch works --
+>> > at least, no serious regression is seen?
+>>
+>> The "Fix racy loopback handling" is broken due to the typo, but that
+>> drops out later and does not affect the final tree.  So, very briefly
+>> ...
+>>
+>> Tested-by: Chris Rorvick <chris@rorvick.com>
 >
-> i followed the instructions on:
->
-> http://wiki.analog.com/resources/tools-software/linux-software/sigmadsp_genfirmware
->
-> and built the firmware from my xml-file. But when the driver loads, I
-> always get:
->
-> adau1701 2-0034: Failed to load firmware: Invalid version 2. Supported
-> firmware versions: 1
-> adau1701 2-0034: Failed to load firmware
-> adau1701 2-0034: ASoC: can't set adau1701 hw params: -22
->
-> I have been using that .xml/.bin file in 3.14.13 for some time, but now
-> in 3.18.3 I always get the version mismatch from above.
+> Thanks!  I updated the branch and now merged to for-next.
 
-Hi,
+You're welcome, looks good!  Nice to see the playback/capture
+buffer/stream flags stuff cleaned up.
 
-Are you sure that the you were previously using a v2 firmware file? v2 was 
-not supported until recently and loading it with the v1 loader would just 
-result in garbage being written to the device.
-
-The patch[1] that adds support for v2 is pretty standalone and you should be 
-able to backport it to v3.18.
-
-- Lars
-
-[1] 
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/sound/soc/codecs/sigmadsp.c?id=a35daac77a0397d4f23b642d3dc0684682e56cc5
+Chris
