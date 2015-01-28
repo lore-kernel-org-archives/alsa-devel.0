@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/7] ALSA: line6: Tidy up and typo fixes in
-	comments
-Date: Wed, 28 Jan 2015 17:41:24 +0100
-Message-ID: <1422463289-19135-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 4/7] ALSA: line6: Move the contents of
+	usbdefs.h into driver.h
+Date: Wed, 28 Jan 2015 17:41:26 +0100
+Message-ID: <1422463289-19135-5-git-send-email-tiwai@suse.de>
 References: <1422463289-19135-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 14AF726262D
+ by alsa0.perex.cz (Postfix) with ESMTP id 17437264EE5
  for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2015 17:41:37 +0100 (CET)
 In-Reply-To: <1422463289-19135-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,471 +25,173 @@ To: alsa-devel@alsa-project.org
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, Chris Rorvick <chris@rorvick.com>
 List-Id: alsa-devel@alsa-project.org
 
-Just reformatting the comments and typos fixed, no functional
-changes.  Particularly,
-- avoid the kerneldoc marker "/**",
-- reduce multiple comment lines into single lines,
-- corrected wrongly referred function names
+Most of them are rather relevant with the definitions in driver.h,
+and there are only a few lines, so just rip it off.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/line6/driver.c   |  2 +-
- sound/usb/line6/driver.h   | 73 ++++++++++++++--------------------------------
- sound/usb/line6/midi.h     | 32 +++++---------------
- sound/usb/line6/pcm.h      | 52 +++++++++------------------------
- sound/usb/line6/pod.c      | 32 +++++---------------
- sound/usb/line6/podhd.c    |  4 +--
- sound/usb/line6/toneport.c | 24 ++++-----------
- sound/usb/line6/variax.c   | 20 ++++---------
- 8 files changed, 65 insertions(+), 174 deletions(-)
+ sound/usb/line6/driver.c   |  1 -
+ sound/usb/line6/driver.h   | 16 ++++++++++++++++
+ sound/usb/line6/midi.c     |  1 -
+ sound/usb/line6/pcm.h      |  1 -
+ sound/usb/line6/pod.c      |  1 -
+ sound/usb/line6/podhd.c    |  1 -
+ sound/usb/line6/toneport.c |  1 -
+ sound/usb/line6/usbdefs.h  | 27 ---------------------------
+ sound/usb/line6/variax.c   |  1 -
+ 9 files changed, 16 insertions(+), 34 deletions(-)
+ delete mode 100644 sound/usb/line6/usbdefs.h
 
 diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index a0436993a167..f46da99c44b3 100644
+index 786b38159ad6..2328ec9a1ca8 100644
 --- a/sound/usb/line6/driver.c
 +++ b/sound/usb/line6/driver.c
-@@ -44,7 +44,7 @@ static const char line6_request_version[] = {
- 	0xf0, 0x7e, 0x7f, 0x06, 0x01, 0xf7
- };
+@@ -22,7 +22,6 @@
+ #include "driver.h"
+ #include "midi.h"
+ #include "playback.h"
+-#include "usbdefs.h"
  
--/**
-+/*
- 	 Class for asynchronous messages.
- */
- struct message {
+ #define DRIVER_AUTHOR  "Markus Grabner <grabner@icg.tugraz.at>"
+ #define DRIVER_DESC    "Line 6 USB Driver"
 diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index fce10f12f0d3..80d42a0fd889 100644
+index 80d42a0fd889..fa877a345860 100644
 --- a/sound/usb/line6/driver.h
 +++ b/sound/usb/line6/driver.h
-@@ -60,26 +60,20 @@ extern const unsigned char line6_midi_id[3];
- static const int SYSEX_DATA_OFS = sizeof(line6_midi_id) + 3;
- static const int SYSEX_EXTRA_SIZE = sizeof(line6_midi_id) + 4;
+@@ -20,6 +20,12 @@
  
--/**
-+/*
- 	 Common properties of Line 6 devices.
- */
- struct line6_properties {
--	/**
--		 Card id string (maximum 16 characters).
--		 This can be used to address the device in ALSA programs as
--		 "default:CARD=<id>"
--	*/
-+	/* Card id string (maximum 16 characters).
-+	 * This can be used to address the device in ALSA programs as
-+	 * "default:CARD=<id>"
-+	 */
- 	const char *id;
+ #define DRIVER_NAME "line6usb"
  
--	/**
--		 Card short name (maximum 32 characters).
--	*/
-+	/* Card short name (maximum 32 characters) */
- 	const char *name;
- 
--	/**
--		 Bit vector defining this device's capabilities in the
--		 line6usb driver.
--	*/
-+	/* Bit vector defining this device's capabilities in line6usb driver */
- 	int capabilities;
- 
- 	int altsetting;
-@@ -90,70 +84,47 @@ struct line6_properties {
++#define USB_INTERVALS_PER_SECOND 1000
++
++/* Fallback USB interval and max packet size values */
++#define LINE6_FALLBACK_INTERVAL 10
++#define LINE6_FALLBACK_MAXPACKETSIZE 16
++
+ #define LINE6_TIMEOUT 1
+ #define LINE6_BUFSIZE_LISTEN 32
+ #define LINE6_MESSAGE_MAXLEN 256
+@@ -84,6 +90,16 @@ struct line6_properties {
  	unsigned ep_audio_w;
  };
  
--/**
-+/*
++/* Capability bits */
++enum {
++	/* device supports settings parameter via USB */
++	LINE6_CAP_CONTROL =	1 << 0,
++	/* device supports PCM input/output via USB */
++	LINE6_CAP_PCM =		1 << 1,
++	/* device support hardware monitoring */
++	LINE6_CAP_HWMON =	1 << 2,
++};
++
+ /*
  	 Common data shared by all Line 6 devices.
  	 Corresponds to a pair of USB endpoints.
- */
- struct usb_line6 {
--	/**
--		 USB device.
--	*/
-+	/* USB device */
- 	struct usb_device *usbdev;
+diff --git a/sound/usb/line6/midi.c b/sound/usb/line6/midi.c
+index beeedf9a2cbe..cebea9b7f769 100644
+--- a/sound/usb/line6/midi.c
++++ b/sound/usb/line6/midi.c
+@@ -17,7 +17,6 @@
  
--	/**
--		 Properties.
--	*/
-+	/* Properties */
- 	const struct line6_properties *properties;
+ #include "driver.h"
+ #include "midi.h"
+-#include "usbdefs.h"
  
--	/**
--		 Interval (ms).
--	*/
-+	/* Interval (ms) */
- 	int interval;
- 
--	/**
--		 Maximum size of USB packet.
--	*/
-+	/* Maximum size of USB packet */
- 	int max_packet_size;
- 
--	/**
--		 Device representing the USB interface.
--	*/
-+	/* Device representing the USB interface */
- 	struct device *ifcdev;
- 
--	/**
--		 Line 6 sound card data structure.
--		 Each device has at least MIDI or PCM.
--	*/
-+	/* Line 6 sound card data structure.
-+	 * Each device has at least MIDI or PCM.
-+	 */
- 	struct snd_card *card;
- 
--	/**
--		 Line 6 PCM device data structure.
--	*/
-+	/* Line 6 PCM device data structure */
- 	struct snd_line6_pcm *line6pcm;
- 
--	/**
--		 Line 6 MIDI device data structure.
--	*/
-+	/* Line 6 MIDI device data structure */
- 	struct snd_line6_midi *line6midi;
- 
--	/**
--		 URB for listening to PODxt Pro control endpoint.
--	*/
-+	/* URB for listening to PODxt Pro control endpoint */
- 	struct urb *urb_listen;
- 
--	/**
--		 Buffer for listening to PODxt Pro control endpoint.
--	*/
-+	/* Buffer for listening to PODxt Pro control endpoint */
- 	unsigned char *buffer_listen;
- 
--	/**
--		 Buffer for message to be processed.
--	*/
-+	/* Buffer for message to be processed */
- 	unsigned char *buffer_message;
- 
--	/**
--		 Length of message to be processed.
--	*/
-+	/* Length of message to be processed */
- 	int message_length;
- 
- 	void (*process_message)(struct usb_line6 *);
-diff --git a/sound/usb/line6/midi.h b/sound/usb/line6/midi.h
-index 9d9467b2613c..cf82d69e2747 100644
---- a/sound/usb/line6/midi.h
-+++ b/sound/usb/line6/midi.h
-@@ -19,44 +19,28 @@
- #define MIDI_BUFFER_SIZE 1024
- 
- struct snd_line6_midi {
--	/**
--		 Pointer back to the Line 6 driver data structure.
--	*/
-+	/* Pointer back to the Line 6 driver data structure */
- 	struct usb_line6 *line6;
- 
--	/**
--		 MIDI substream for receiving (or NULL if not active).
--	*/
-+	/* MIDI substream for receiving (or NULL if not active) */
- 	struct snd_rawmidi_substream *substream_receive;
- 
--	/**
--		 MIDI substream for transmitting (or NULL if not active).
--	*/
-+	/* MIDI substream for transmitting (or NULL if not active) */
- 	struct snd_rawmidi_substream *substream_transmit;
- 
--	/**
--		 Number of currently active MIDI send URBs.
--	*/
-+	/* Number of currently active MIDI send URBs */
- 	int num_active_send_urbs;
- 
--	/**
--		 Spin lock to protect MIDI buffer handling.
--	*/
-+	/* Spin lock to protect MIDI buffer handling */
- 	spinlock_t lock;
- 
--	/**
--		 Wait queue for MIDI transmission.
--	*/
-+	/* Wait queue for MIDI transmission */
- 	wait_queue_head_t send_wait;
- 
--	/**
--		 Buffer for incoming MIDI stream.
--	*/
-+	/* Buffer for incoming MIDI stream */
- 	struct midi_buffer midibuf_in;
- 
--	/**
--		 Buffer for outgoing MIDI stream.
--	*/
-+	/* Buffer for outgoing MIDI stream */
- 	struct midi_buffer midibuf_out;
- };
- 
+ #define line6_rawmidi_substream_midi(substream) \
+ 	((struct snd_line6_midi *)((substream)->rmidi->private_data))
 diff --git a/sound/usb/line6/pcm.h b/sound/usb/line6/pcm.h
-index 42d3e6fc2c61..19c12f0a9008 100644
+index 19c12f0a9008..3a3cfba40ec7 100644
 --- a/sound/usb/line6/pcm.h
 +++ b/sound/usb/line6/pcm.h
-@@ -66,8 +66,8 @@
- 	the running flag indicates whether the stream is running.
+@@ -19,7 +19,6 @@
+ #include <sound/pcm.h>
  
- 	For monitor or impulse operations, the driver needs to call
--	snd_line6_duplex_acquire() or snd_line6_duplex_release() with the
--	appropriate LINE6_STREAM_* flag.
-+	line6_pcm_acquire() or line6_pcm_release() with the appropriate
-+	LINE6_STREAM_* flag.
- */
+ #include "driver.h"
+-#include "usbdefs.h"
  
- /* stream types */
-@@ -139,19 +139,13 @@ struct line6_pcm_stream {
- };
- 
- struct snd_line6_pcm {
--	/**
--		 Pointer back to the Line 6 driver data structure.
--	*/
-+	/* Pointer back to the Line 6 driver data structure */
- 	struct usb_line6 *line6;
- 
--	/**
--		 Properties.
--	*/
-+	/* Properties. */
- 	struct line6_pcm_properties *properties;
- 
--	/**
--		 ALSA pcm stream
--	*/
-+	/* ALSA pcm stream */
- 	struct snd_pcm *pcm;
- 
- 	/* protection to state changes of in/out streams */
-@@ -161,49 +155,31 @@ struct snd_line6_pcm {
- 	struct line6_pcm_stream in;
- 	struct line6_pcm_stream out;
- 
--	/**
--		 Previously captured frame (for software monitoring).
--	*/
-+	/* Previously captured frame (for software monitoring) */
- 	unsigned char *prev_fbuf;
- 
--	/**
--		 Size of previously captured frame (for software monitoring).
--	*/
-+	/* Size of previously captured frame (for software monitoring) */
- 	int prev_fsize;
- 
--	/**
--		 Maximum size of USB packet.
--	*/
-+	/* Maximum size of USB packet */
- 	int max_packet_size;
- 
--	/**
--		 PCM playback volume (left and right).
--	*/
-+	/* PCM playback volume (left and right) */
- 	int volume_playback[2];
- 
--	/**
--		 PCM monitor volume.
--	*/
-+	/* PCM monitor volume */
- 	int volume_monitor;
- 
--	/**
--		 Volume of impulse response test signal (if zero, test is disabled).
--	*/
-+	/* Volume of impulse response test signal (if zero, test is disabled) */
- 	int impulse_volume;
- 
--	/**
--		 Period of impulse response test signal.
--	*/
-+	/* Period of impulse response test signal */
- 	int impulse_period;
- 
--	/**
--		 Counter for impulse response test signal.
--	*/
-+	/* Counter for impulse response test signal */
- 	int impulse_count;
- 
--	/**
--		 Several status bits (see LINE6_FLAG_*).
--	*/
-+	/* Several status bits (see LINE6_FLAG_*) */
- 	unsigned long flags;
- };
- 
+ /* number of URBs */
+ #define LINE6_ISO_BUFFERS	2
 diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index 6f7cd585f2d8..bc20cf141719 100644
+index bc20cf141719..3f7ff661b3dd 100644
 --- a/sound/usb/line6/pod.c
 +++ b/sound/usb/line6/pod.c
-@@ -58,44 +58,28 @@ enum {
- };
+@@ -21,7 +21,6 @@
+ #include "capture.h"
+ #include "driver.h"
+ #include "playback.h"
+-#include "usbdefs.h"
  
- struct usb_line6_pod {
--	/**
--		Generic Line 6 USB data.
--	*/
-+	/* Generic Line 6 USB data */
- 	struct usb_line6 line6;
- 
--	/**
--		Instrument monitor level.
--	*/
-+	/* Instrument monitor level */
- 	int monitor_level;
- 
--	/**
--		Timer for device initializaton.
--	*/
-+	/* Timer for device initialization */
- 	struct timer_list startup_timer;
- 
--	/**
--		Work handler for device initializaton.
--	*/
-+	/* Work handler for device initialization */
- 	struct work_struct startup_work;
- 
--	/**
--		Current progress in startup procedure.
--	*/
-+	/* Current progress in startup procedure */
- 	int startup_progress;
- 
--	/**
--		Serial number of device.
--	*/
-+	/* Serial number of device */
- 	int serial_number;
- 
--	/**
--		Firmware version (x 100).
--	*/
-+	/* Firmware version (x 100) */
- 	int firmware_version;
- 
--	/**
--		Device ID.
--	*/
-+	/* Device ID */
- 	int device_id;
- };
- 
+ /*
+ 	Locate name in binary program dump
 diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 43c39886597e..c4e83ab33a21 100644
+index c4e83ab33a21..5e4e02c1f4b5 100644
 --- a/sound/usb/line6/podhd.c
 +++ b/sound/usb/line6/podhd.c
-@@ -27,9 +27,7 @@ enum {
- };
+@@ -17,7 +17,6 @@
  
- struct usb_line6_podhd {
--	/**
--		Generic Line 6 USB data.
--	*/
-+	/* Generic Line 6 USB data */
- 	struct usb_line6 line6;
- };
+ #include "driver.h"
+ #include "pcm.h"
+-#include "usbdefs.h"
  
+ enum {
+ 	LINE6_PODHD300,
 diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index 819e06b3f3db..9024acb2b850 100644
+index 9024acb2b850..cffcd7f83bfd 100644
 --- a/sound/usb/line6/toneport.c
 +++ b/sound/usb/line6/toneport.c
-@@ -43,34 +43,22 @@ struct toneport_led {
- };
+@@ -21,7 +21,6 @@
+ #include "capture.h"
+ #include "driver.h"
+ #include "playback.h"
+-#include "usbdefs.h"
  
- struct usb_line6_toneport {
--	/**
--		Generic Line 6 USB data.
--	*/
-+	/* Generic Line 6 USB data */
- 	struct usb_line6 line6;
- 
--	/**
--		Source selector.
--	*/
-+	/* Source selector */
- 	int source;
- 
--	/**
--		Serial number of device.
--	*/
-+	/* Serial number of device */
- 	int serial_number;
- 
--	/**
--		Firmware version (x 100).
--	*/
-+	/* Firmware version (x 100) */
- 	int firmware_version;
- 
--	/**
--		 Timer for delayed PCM startup.
--	*/
-+	/* Timer for delayed PCM startup */
- 	struct timer_list timer;
- 
--	/**
--		 Device type.
--	*/
-+	/* Device type */
- 	enum line6_device_type type;
- 
- 	/* LED instances */
+ enum line6_device_type {
+ 	LINE6_GUITARPORT,
+diff --git a/sound/usb/line6/usbdefs.h b/sound/usb/line6/usbdefs.h
+deleted file mode 100644
+index 5ef7bcd24e18..000000000000
+--- a/sound/usb/line6/usbdefs.h
++++ /dev/null
+@@ -1,27 +0,0 @@
+-/*
+- * Line 6 Linux USB driver
+- *
+- * Copyright (C) 2005-2008 Markus Grabner (grabner@icg.tugraz.at)
+- *
+- *	This program is free software; you can redistribute it and/or
+- *	modify it under the terms of the GNU General Public License as
+- *	published by the Free Software Foundation, version 2.
+- *
+- */
+-
+-#ifndef USBDEFS_H
+-#define USBDEFS_H
+-
+-#define USB_INTERVALS_PER_SECOND 1000
+-
+-/* device supports settings parameter via USB */
+-#define LINE6_CAP_CONTROL (1 << 0)
+-/* device supports PCM input/output via USB */
+-#define LINE6_CAP_PCM (1 << 1)
+-/* device support hardware monitoring */
+-#define LINE6_CAP_HWMON (1 << 2)
+-
+-#define LINE6_FALLBACK_INTERVAL 10
+-#define LINE6_FALLBACK_MAXPACKETSIZE 16
+-
+-#endif
 diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
-index 9701ffa61365..44042cbdef01 100644
+index 44042cbdef01..9dfbe7916d99 100644
 --- a/sound/usb/line6/variax.c
 +++ b/sound/usb/line6/variax.c
-@@ -42,30 +42,20 @@ enum {
- };
+@@ -17,7 +17,6 @@
+ #include <sound/core.h>
  
- struct usb_line6_variax {
--	/**
--		Generic Line 6 USB data.
--	*/
-+	/* Generic Line 6 USB data */
- 	struct usb_line6 line6;
+ #include "driver.h"
+-#include "usbdefs.h"
  
--	/**
--		Buffer for activation code.
--	*/
-+	/* Buffer for activation code */
- 	unsigned char *buffer_activate;
- 
--	/**
--		Handler for device initializaton.
--	*/
-+	/* Handler for device initialization */
- 	struct work_struct startup_work;
- 
--	/**
--		Timers for device initializaton.
--	*/
-+	/* Timers for device initialization */
- 	struct timer_list startup_timer1;
- 	struct timer_list startup_timer2;
- 
--	/**
--		Current progress in startup procedure.
--	*/
-+	/* Current progress in startup procedure */
- 	int startup_progress;
- };
- 
+ #define VARIAX_STARTUP_DELAY1 1000
+ #define VARIAX_STARTUP_DELAY3 100
 -- 
 2.2.2
