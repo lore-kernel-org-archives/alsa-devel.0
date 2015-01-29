@@ -1,94 +1,56 @@
-From: Peter Rosin <peda@lysator.liu.se>
-Subject: [PATCH 2/2] ASoC: pcm512x: Use the correct range constraints for S24_LE
-Date: Thu, 29 Jan 2015 12:21:56 +0100
-Message-ID: <1422530516-21779-3-git-send-email-peda@lysator.liu.se>
-References: <1422530516-21779-1-git-send-email-peda@lysator.liu.se>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1422530516-21779-1-git-send-email-peda@lysator.liu.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Samsung: add missing I2C/SPI dependencies
+Date: Thu, 29 Jan 2015 11:41:34 +0000
+Message-ID: <20150129114134.GC21293@sirena.org.uk>
+References: <1815674.ObkQWLfgIW@wuerfel>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3vWfdACk3p9Kkm6R"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1815674.ObkQWLfgIW@wuerfel>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Rosin <peda@axentia.se>
 
-This was overlooked in the late change to remove the I2S padding bits
-from S24_LE mode. The patch also limits S32_LE mode to 384kHz, the
-maximum according to the datasheets.
+--3vWfdACk3p9Kkm6R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
----
- sound/soc/codecs/pcm512x.c |   39 ++++++++++++++++++++-------------------
- 1 file changed, 20 insertions(+), 19 deletions(-)
+On Wed, Jan 28, 2015 at 10:28:55PM +0100, Arnd Bergmann wrote:
+> The SND_SOC_ARNDALE_RT5631_ALC5631 selects the rt5631 codec
+> that requires I2C to work, so we get a build error if I2C
+> is disabled:
 
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 067d11743c31..884784fb1566 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -356,36 +356,37 @@ static const struct snd_pcm_hw_constraint_list constraints_slave = {
- 	.list  = pcm512x_dai_rates,
- };
- 
--static const struct snd_interval pcm512x_dai_ranges_64bpf[] = {
--	{
--		.min = 8000,
--		.max = 195312,
--	}, {
--		.min = 250000,
--		.max = 390625,
--	},
--};
--
--static struct snd_pcm_hw_constraint_ranges constraints_64bpf = {
--	.count  = ARRAY_SIZE(pcm512x_dai_ranges_64bpf),
--	.ranges = pcm512x_dai_ranges_64bpf,
--};
--
- static int pcm512x_hw_rule_rate(struct snd_pcm_hw_params *params,
- 				struct snd_pcm_hw_rule *rule)
- {
--	struct snd_pcm_hw_constraint_ranges *r = rule->private;
-+	struct snd_interval ranges[2];
- 	int frame_size;
- 
- 	frame_size = snd_soc_params_to_frame_size(params);
- 	if (frame_size < 0)
- 		return frame_size;
- 
--	if (frame_size != 64)
-+	switch (frame_size) {
-+	case 32:
-+		/* No hole when the frame size is 32. */
- 		return 0;
-+	case 48:
-+	case 64:
-+		/* There is only one hole in the range of supported
-+		 * rates, but it moves with the frame size.
-+		 */
-+		memset(ranges, 0, sizeof(ranges));
-+		ranges[0].min = 8000;
-+		ranges[0].max = 25000000 / frame_size / 2;
-+		ranges[1].min = DIV_ROUND_UP(16000000, frame_size);
-+		ranges[1].max = 384000;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
- 
- 	return snd_interval_ranges(hw_param_interval(params, rule->var),
--				   r->count, r->ranges, r->mask);
-+				   ARRAY_SIZE(ranges), ranges, 0);
- }
- 
- static int pcm512x_dai_startup_master(struct snd_pcm_substream *substream,
-@@ -407,7 +408,7 @@ static int pcm512x_dai_startup_master(struct snd_pcm_substream *substream,
- 		return snd_pcm_hw_rule_add(substream->runtime, 0,
- 					   SNDRV_PCM_HW_PARAM_RATE,
- 					   pcm512x_hw_rule_rate,
--					   (void *)&constraints_64bpf,
-+					   NULL,
- 					   SNDRV_PCM_HW_PARAM_FRAME_BITS,
- 					   SNDRV_PCM_HW_PARAM_CHANNELS, -1);
- 
--- 
-1.7.10.4
+You rather buried the lead about there being other drivers in this
+changelog, makes the code a bit surprising when you find it.
+
+>  config SND_SOC_SPEYSIDE
+>  	tristate "Audio support for Wolfson Speyside"
+> -	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
+> +	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && SPI_MASTER
+>  	select SND_SAMSUNG_I2S
+>  	select SND_SOC_WM8996
+>  	select SND_SOC_WM9081
+
+Why only add a dependency on SPI here?
+
+--3vWfdACk3p9Kkm6R
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUyhxuAAoJECTWi3JdVIfQ5fAH/1u7oE5swGgdUUZ6m0zwjoyj
++hZo1FKWwQJH6FVgCABdoo6ZUrMUUXfD5WZdJR/hEfygrzqpZS2ZI2cIC9G0udLC
+/qMdVV9vwScaPDa6Ft9Sm08F+NvcX2gv/yHgrnJ9CLnVZQjdC3O4GRuD76/DH5IU
+xW5DYeyBJB62B0skm6ra8WdOrl9FLqMREnVfllEtiBnrw7GpsKdls/jCV44DNs6J
+xwdJbjUT37hTSbSBn5hchVKdv6faGDvelu4Z5gUSxG1ZJ3fvAOrf3OgJwUkuvCsh
+VJb9zyKaQc0nUrtXpVjBoXx6zP//kTPvtLA0OZmEIO1oMBxyJKE7ppFwaLPUS1M=
+=0FRX
+-----END PGP SIGNATURE-----
+
+--3vWfdACk3p9Kkm6R--
