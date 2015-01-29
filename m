@@ -1,50 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: pcm512x: Fixups for the Clock master modes
- series
-Date: Thu, 29 Jan 2015 12:02:51 +0000
-Message-ID: <20150129120251.GF21293@sirena.org.uk>
-References: <1422530516-21779-1-git-send-email-peda@lysator.liu.se>
+From: Petr Cvek <petr.cvek@tul.cz>
+Subject: Re: [RESEND PATCH v4] Sound: PXA: Fix settings of PXAxxx DMA
+Date: Thu, 29 Jan 2015 13:45:50 +0100
+Message-ID: <54CA2B7E.5010003@tul.cz>
+References: <54CA125D.7010908@tul.cz>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="B2MJsc1fKeYMtnH+"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1422530516-21779-1-git-send-email-peda@lysator.liu.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@lysator.liu.se>
-Cc: alsa-devel@alsa-project.org, Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <54CA125D.7010908@tul.cz>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, daniel@zonque.org, robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Fix PXA DMA autoincrementation, so capture will not use playback settings
+(incrementation in register space instead in target buffer).
 
---B2MJsc1fKeYMtnH+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Regression from:
+  'commit d65a14587a9be853a887a1407db133df1fb68e29 ("ASoC: pxa: use snd_dmaengine_dai_dma_data")'
 
-On Thu, Jan 29, 2015 at 12:21:54PM +0100, Peter Rosin wrote:
-> From: Peter Rosin <peda@axentia.se>
->=20
-> These fixups can either be squashed in with 5/7 from the Clock master mode
-> series, or they can be added on top of the current topic/pcm512x. Sorry f=
-or
-> the trouble.
+Signed-off-by: Petr Cvek <petr.cvek@tul.cz>
+Acked-by: Daniel Mack <daniel@zonque.org>
+---
+ sound/arm/pxa2xx-pcm-lib.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-applied, thanks.
-
---B2MJsc1fKeYMtnH+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJUyiFqAAoJECTWi3JdVIfQBbEH/AhX0nQvkDlc1MAlfAKNdkzC
-luvkMyzmyTjrCb2iIJlIdZatJPDEEkOyaHK6CvJeOISH/UMRT4hpee4E2eIN2hXq
-aSISws/77gLEO8w6Hi1FdXEcdiMMMqd+lHtN2nqroOtPx8HOqQAqMDszG3KYIRgK
-cVY+1gOJpq25dxThei1aALXzJxkNr7ieh70ja26msV/G2E684FkYiErb5opuwFTH
-YhpzLn24JgVHCEXbcXxSZiVr0gtx20cQCQGnaf46/LEUy/hTbWIacWQIEg7WHPwY
-oHBojQYc/zBRX36PdldBTR22nzHqI0xySy43okGPWt+qbX/DhRrgK1Vj+dqPrHk=
-=BNLG
------END PGP SIGNATURE-----
-
---B2MJsc1fKeYMtnH+--
+diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
+index 01f8fdc..f8ca3ca 100644
+--- a/sound/arm/pxa2xx-pcm-lib.c
++++ b/sound/arm/pxa2xx-pcm-lib.c
+@@ -45,7 +45,12 @@ int __pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	size_t period = params_period_bytes(params);
+ 	pxa_dma_desc *dma_desc;
+ 	dma_addr_t dma_buff_phys, next_desc_phys;
+-	u32 dcmd = DCMD_INCSRCADDR | DCMD_FLOWTRG;
++	u32 dcmd = 0;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dcmd = DCMD_INCSRCADDR | DCMD_FLOWTRG;
++	else
++		dcmd = DCMD_INCTRGADDR | DCMD_FLOWSRC;
+ 
+ 	/* temporary transition hack */
+ 	switch (rtd->params->addr_width) {
+-- 
+1.7.12.1
