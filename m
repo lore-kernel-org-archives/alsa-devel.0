@@ -1,78 +1,49 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH] ASoC: rt286: set idle_bias_off to false
-Date: Thu, 29 Jan 2015 09:07:08 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BA81DE@SHSMSX101.ccr.corp.intel.com>
-References: <1422435597-19330-1-git-send-email-bardliao@realtek.com>
- <20150128113537.GU21293@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70104CDC3@RTITMBSV03.realtek.com.tw>
- <20150128200951.GS21293@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 1/2][RFC] dmaengine: rcar-audmapp: calculate chcr via src/dst addr
+Date: Thu, 29 Jan 2015 10:15:20 +0100
+Message-ID: <16757441.qC3ryuq0R5@wuerfel>
+References: <8761ekokpf.wl%kuninori.morimoto.gx@renesas.com> <877fw6tm4v.wl%kuninori.morimoto.gx@renesas.com> <8761bqtm34.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A6522261AE4
- for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2015 10:07:16 +0100 (CET)
-In-Reply-To: <20150128200951.GS21293@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <8761bqtm34.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@linaro.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>, Rob Herring <robh+dt@kernel.org>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thursday 29 January 2015 01:24:06 Kuninori Morimoto wrote:
+> Current rcar-audmapp is assuming that CHCR value are specified
+> from platform data or DTS bindings. but, it is possible to
+> calculate CHCR settings from src/dst address.
+> DTS bindings node can be reduced by this patch.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
+The intention definitely looks good, but I'm worried that the
+table you add here might be too SoC specific.
 
-~Keyon
+> +struct id_addr_table {
+> +	u8  id;
+> +	u16 addr;
+> +};
+> +
+> +static u32 audmapp_addr_to_id(struct device *dev, u32 addr)
+> +{
+> +	struct id_addr_table ssi_id_table[] = {
+> +		{0x00, 0x0000}, /* SSI00 */
+> +		{0x01, 0x0400}, /* SSI01 */
+> +		{0x02, 0x0800}, /* SSI02 */
+> +		{0x03, 0x0C00}, /* SSI03 */
+> +		{0x04, 0x1000}, /* SSI10 */
+> +		{0x05, 0x1400}, /* SSI11 */
+> +		{0x06, 0x1800}, /* SSI12 */
+> +		{0x07, 0x1C00}, /* SSI13 */
+> +		{0x08, 0x2000}, /* SSI20 */
 
+Isn't the address part here the physical address of the FIFO,
+which can be different for each implementation that contains
+an audmapp device?
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Thursday, January 29, 2015 4:10 AM
-> To: Bard Liao
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Oder Chiou; Jie,
-> Yang
-> Subject: Re: [PATCH] ASoC: rt286: set idle_bias_off to false
-> 
-> On Wed, Jan 28, 2015 at 12:45:13PM +0000, Bard Liao wrote:
-> 
-> > > > -	.idle_bias_off = true,
-> > > > +	.idle_bias_off = false,
-> 
-> > > There is no need to set false explicitly, it's the default.  It also
-> > > seems better to keep the flag if it's true, even if we don't
-> > > actively do anything at the minute we may in future (either in the
-> > > framework or in the driver) so the information seems useful.
-> 
-> > Actually, we meet an issue. We use force enable in rt286_jack_detect.
-> > If
-> 
-> So, this is one of the reasons why people ask for good, clear changelogs...
-> 
-> > a headset is inserted, the bias_level will not be OFF due to some
-> > widgets are ON. If idle_bias_off is true, rt286_suspend will not be
-> > invoked in suspend. And I "guess" rt286's power will be cut off in
-> > suspend. That's what we handle in rt286_suspend/resume functions. If
-> > rt286 's power is cut off and don't re-sync the cache, it will cause some
-> unexpected issues.
-> 
-> > Is there any good way to fix such issues?
-> 
-> If jack detection should be disabled over suspend the machine driver should do
-> that (eg, by setting a NULL jack).  It's actually common for systems to leave
-> jack detection up over suspend as in systems like phones the jack can be a wake
-[Keyon] as my understanding, setting idle_bias_off to false won't disable jack detection
-over suspend, only the action that poweroff the codec will disable it, Bard, is it correct?
-
-setting idle_bias_off to false is the easiest solution for us, it is also reasonable here,
-because rt286 don't need soc core to set BIAS OFF specially when in idle status, (BIAS_OFF 
-and BIAS_STANDBY are same for it), and seems no side effect here.
-
-> source, the hook switch is commonly expected to always be operational.
+	Arnd
