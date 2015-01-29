@@ -1,43 +1,51 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: Samsung: add missing I2C/SPI dependencies
-Date: Thu, 29 Jan 2015 15:23:33 +0100
-Message-ID: <3641576.5ROmxlmVfH@wuerfel>
-References: <1815674.ObkQWLfgIW@wuerfel> <20150129114134.GC21293@sirena.org.uk>
+Subject: [PATCH] ASoC: pxa: make TTC DKB tristate
+Date: Thu, 29 Jan 2015 17:13:46 +0100
+Message-ID: <3973400.2YsPkej10R@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20150129114134.GC21293@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 512E12604BD
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2015 17:13:51 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 29 January 2015 11:41:34 Mark Brown wrote:
-> On Wed, Jan 28, 2015 at 10:28:55PM +0100, Arnd Bergmann wrote:
-> > The SND_SOC_ARNDALE_RT5631_ALC5631 selects the rt5631 codec
-> > that requires I2C to work, so we get a build error if I2C
-> > is disabled:
-> 
-> You rather buried the lead about there being other drivers in this
-> changelog, makes the code a bit surprising when you find it.
-> 
-> >  config SND_SOC_SPEYSIDE
-> >  	tristate "Audio support for Wolfson Speyside"
-> > -	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
-> > +	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && SPI_MASTER
-> >  	select SND_SAMSUNG_I2S
-> >  	select SND_SOC_WM8996
-> >  	select SND_SOC_WM9081
-> 
-> Why only add a dependency on SPI here?
+In a rare combination of Kconfig settings, the 88pm860x-codec
+module may be selected as a loadable module, while it's also being
+used by the ttb-dkb code that is built-in, resulting in a link
+error:
 
-I don't know, definitely my mistake. I had squashed three older patches
-together here, which resulted in the slightly strange changelog (I
-picked the one that explained it best and then tried to modify it
-to cover all changes) as well as the missing I2C dependency.
+sound/built-in.o: In function `ttc_pm860x_init':
+:(.text+0x3e888): undefined reference to `pm860x_hs_jack_detect'
+:(.text+0x3e898): undefined reference to `pm860x_mic_jack_detect'
 
-I'll re-check all other drivers in this directory too and then send
-a new patch.
+Changing ttb-tkb to a tristate option tells Kconfig that 88pm86x
+actually needs to be built-in if ttc-dkb is also built-in.
 
-	Arnd
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 2434b6d61675..39cea80846c3 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -140,7 +140,7 @@ config SND_PXA910_SOC
+ 	  Marvell PXA910 reference platform.
+ 
+ config SND_SOC_TTC_DKB
+-	bool "SoC Audio support for TTC DKB"
++	tristate "SoC Audio support for TTC DKB"
+ 	depends on SND_PXA910_SOC && MACH_TTC_DKB && I2C=y
+ 	select PXA_SSP
+ 	select SND_PXA_SOC_SSP
