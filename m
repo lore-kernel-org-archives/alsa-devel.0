@@ -1,47 +1,78 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2][RFC] dmaengine: rcar-audmapp: calculate chcr via
- src/dst addr
-Date: Thu, 29 Jan 2015 10:50:28 +0100
-Message-ID: <CAMuHMdXHOYfuA0kV31ExirgvLtL6BqWMKHbPbxTzVNp25HzHDw@mail.gmail.com>
-References: <8761ekokpf.wl%kuninori.morimoto.gx@renesas.com>
-	<877fw6tm4v.wl%kuninori.morimoto.gx@renesas.com>
-	<8761bqtm34.wl%kuninori.morimoto.gx@renesas.com>
-	<16757441.qC3ryuq0R5@wuerfel>
-	<CAMuHMdX5SEwEARo7dFTZrtuDXbrv2MeZrOZFWsahNhccWPNn_A@mail.gmail.com>
-	<87vbjpsyvb.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87vbjpsyvb.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Magnus Damm <magnus.damm@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@linaro.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>, Rob Herring <robh+dt@kernel.org>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, dmaengine@vger.kernel.org
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: [PATCH] ASoC: atmel_ssc_dai: Support SND_SOC_DAIFMT_CBM_CFS on I2S
+Date: Thu, 29 Jan 2015 11:16:29 +0100
+Message-ID: <1422526589-9451-1-git-send-email-peda@lysator.liu.se>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Peter Rosin <peda@axentia.se>, Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
+From: Peter Rosin <peda@axentia.se>
 
-On Thu, Jan 29, 2015 at 10:45 AM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->> Morimoto-san: Are the base addresses configured in DT?
->> I did a quick search for 0xec300000, 0xec320000, 0xec40000,
->> 0xec420000, and 0xec000000,  and couldn't find them in DT, only in
->> source code (comments). They must come from somewhere?
->> Note that I didn't follow the sound binding discussions that closely.
->
-> This base addresses are specified from sound driver.
->  - sound driver specifies src/dst address by DMAEngine API
+Signed-off-by: Peter Rosin <peda@axentia.se>
+---
+ sound/soc/atmel/atmel_ssc_dai.c |   48 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
->From the rcar_sound node? That one has 0xec500000 as the base address.
-
->  - audmapp find necessary ID from src/dst address
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 3cd70597d109..f55f3aab8bdd 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -485,6 +485,54 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 			| SSC_BF(TFMR_DATLEN, (bits - 1));
+ 		break;
+ 
++	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFS:
++		/* I2S format, CODEC supplies BCLK, SSC supplies LRCLK. */
++		if (bits > 16 && !ssc->pdata->has_fslen_ext) {
++			dev_err(dai->dev,
++				"sample size %d is too large for SSC device\n",
++				bits);
++			return -EINVAL;
++		}
++
++		fslen_ext = (bits - 1) / 16;
++		fslen = (bits - 1) % 16;
++
++		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
++			| SSC_BF(RCMR_STTDLY, START_DELAY)
++			| SSC_BF(RCMR_START, SSC_START_FALLING_RF)
++			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
++			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
++			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
++					   SSC_CKS_PIN : SSC_CKS_CLOCK);
++
++		rfmr =    SSC_BF(RFMR_FSLEN_EXT, fslen_ext)
++			| SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++			| SSC_BF(RFMR_FSOS, SSC_FSOS_NEGATIVE)
++			| SSC_BF(RFMR_FSLEN, fslen)
++			| SSC_BF(RFMR_DATNB, (channels - 1))
++			| SSC_BIT(RFMR_MSBF)
++			| SSC_BF(RFMR_LOOP, 0)
++			| SSC_BF(RFMR_DATLEN, (bits - 1));
++
++		tcmr =	  SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period)
++			| SSC_BF(TCMR_STTDLY, START_DELAY)
++			| SSC_BF(TCMR_START, SSC_START_FALLING_RF)
++			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
++			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
++			| SSC_BF(TCMR_CKS, ssc->clk_from_rk_pin ?
++					   SSC_CKS_CLOCK : SSC_CKS_PIN);
++
++		tfmr =    SSC_BF(TFMR_FSLEN_EXT, fslen_ext)
++			| SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_NEGATIVE)
++			| SSC_BF(TFMR_FSDEN, 0)
++			| SSC_BF(TFMR_FSOS, SSC_FSOS_NEGATIVE)
++			| SSC_BF(TFMR_FSLEN, fslen)
++			| SSC_BF(TFMR_DATNB, (channels - 1))
++			| SSC_BIT(TFMR_MSBF)
++			| SSC_BF(TFMR_DATDEF, 0)
++			| SSC_BF(TFMR_DATLEN, (bits - 1));
++		break;
++
+ 	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBS_CFS:
+ 		/*
+ 		 * DSP/PCM Mode A format, SSC provides BCLK and LRC clocks.
+-- 
+1.7.10.4
