@@ -1,24 +1,14 @@
-From: Eric Nelson <eric.nelson@boundarydevices.com>
-Subject: Re: [PATCH V2] ASoC: sgtl5000: add delay before first
- I2C access
-Date: Fri, 30 Jan 2015 15:34:28 -0700
-Message-ID: <54CC06F4.6020203@boundarydevices.com>
-References: <1422651131-13261-1-git-send-email-eric.nelson@boundarydevices.com>
- <1422652075-13604-1-git-send-email-eric.nelson@boundarydevices.com>
- <CAOMZO5BwM1CEAtFnqxS9xwSy2OamHCuEw=YBT8vf5FNa_4GA7A@mail.gmail.com>
- <54CBFC9C.5060906@mail.bg> <54CBFF5A.4050008@boundarydevices.com>
- <54CC0497.2030505@mail.bg>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 00/10] audio timestamping evolutions
+Date: Fri, 30 Jan 2015 17:55:53 -0600
+Message-ID: <1422662163-7391-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
- [209.85.220.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F448260687
- for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2015 23:34:33 +0100 (CET)
-Received: by mail-pa0-f41.google.com with SMTP id kq14so57552865pab.0
- for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2015 14:34:32 -0800 (PST)
-In-Reply-To: <54CC0497.2030505@mail.bg>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48DC926070A
+ for <alsa-devel@alsa-project.org>; Sat, 31 Jan 2015 00:56:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,79 +18,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nikolay Dimitrov <picmaster@mail.bg>
-Cc: Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Nikolay,
+This series of patches was inspired by recent threads on the alsa
+mailing list, as well issues detected with existing and upcoming
+hardware:
 
-On 01/30/2015 03:24 PM, Nikolay Dimitrov wrote:
-> Hi Eric,
-> 
-> On 01/31/2015 12:02 AM, Eric Nelson wrote:
->> Hi Nikolay,
->>
->> On 01/30/2015 02:50 PM, Nikolay Dimitrov wrote:
->>> Hi Eric,
->>>
->>> On 01/30/2015 11:31 PM, Fabio Estevam wrote:
->>>> Hi Eric,
->>>>
->>>> On Fri, Jan 30, 2015 at 7:07 PM, Eric Nelson
->>>> <eric.nelson@boundarydevices.com> wrote:
->>>>> To quote from section 1.3.1 of the data sheet:
->>>>>           The SGTL5000 has an internal reset that is deasserted
->>>>>           8 SYS_MCLK cycles after all power rails have been brought
->>>>>           up. After this time, communication can start
->>>>>
->>>>>           ...
->>>>>           1.0uS represents 8 SYS_MCLK cycles at the minimum 8.0 MHz
->>>>> SYS_MCLK.
->>>>
->>>> Small detail: Should be us instead of uS.
->>>
->>> FYI - If you're observing issues with communicating with SGTL5000 I2C,
->>> please make sure also that the chip has a valid clock signal on
->>> SYS_MCLK, otherwise it won't respond on I2C transactions (I2C will work
->>> with any SYS_MCLK in the range 8-27MHz).
->>>
->>
->> Thanks for that, but the issue we're seeing and that made me spot this
->> was a very intermittent problem (1 in many 1000's of boots) reported by
->> a customer on our 3.10.17 code base.
->>
->> We haven't been able to repeat the issue, but the failure is in the
->> initial read of the CHIP_ID register (i.e. the first I2C access) and
->> the docs clearly state that a 1us delay is needed.
->>
->> I haven't found the commit that removed it, but earlier versions
->> of sgtl5000.c had a udelay(10) before the first I2C access.
-> 
-> I see. Had similar issue with 3.10.17 (fsl), when sometimes on
-> hot-reset the (imx6) I2C controller was somehow locked-up on boot and
-> prevented the driver from reading CHIP_ID, and thus no sound at all.
-> But on 3.17x/3.18x mainline kernels + riotboard, this initial SGTL5000
-> configuration is much much better, haven't seen cases when it doesn't
-> detect the codec.
-> 
-> If you can reproduce the defect, you can try to exercise the I2C
-> channel and see whether it still works at all.
-> 
+1. there was a request from the PulseAudio community to get more
+information from drivers to make rewinds safer. While the conclusion
+was that it's nearly impossible for a driver developer to provide this
+information, there are however ways to assess the granularity of the
+hw_ptr updates using timestamping capabilities, and indirectly
+understand how safe rewinds might be.
 
-Have you been reading my e-mails with the customer ;) ?
+2. There was also a request to add a start_at capability based either
+on system hr timers or a wall clock, which requires a means to expose
+both types of information to applications. Rather than adding new sets
+of timestamps, it is suggested the new start_at functionality relies
+on the new definition provides by these patches
 
-We're doing a bunch of testing, trying to force I2C accesses to
-it and the other I2C device on that channel of Nitrogen6X
-(the ISL1208 RTC).
+3. For new hardware, there is a neeed to let low-level drivers
+handle timestamping instead of having the ALSA core do
+it. Similarly there is a need to let the low-level driver update
+the initial estimate for the trigger timestamp if there are
+delays to start a stream (eg. with USB)
 
-> I'm mentioning this because it's a different root-cause that has quite
-> similar observable effect. Otherwise I truly agree that reset timings
-> as per datasheet are very good to be followed.
-> 
+These patches try to provide an answer to these multiple needs by
+building on the work done two years ago to expose wall clock
+information to applications. The evolution is to let application
+select which audio timestamp they are interested in, track the delay
+and drifts between recurring measurements and get, when possible, an
+idea of the accuracy of the underlying hardware. A backwards compatible mode
+is provided in case userspace doesn't provide any timestamp selection (results
+based on HDAudio wallclock for playback, hw_ptr in all other cases). 
 
-Yep. and so the patch...
+The first 4 patches are corrections for misses in the way the system
+and trigger timestamps are handled, and the last 6 provide the
+additional audio timestamping selection. A second batch is planned to
+enable hardware capabilities in a low-level drivers.
 
-Regards,
+A corresponding set of patches is available for alsa-lib.
+
+V2 changes:
+
+trigger_tstamp:
+trigger_tstamp_latched, pending redefined as bool
+trigger_tstamp_latched reset in snd_pcm_pre_start()
+
+audio_ts_config, report:
+keep separate structure but use different bitfields for in and out.
+use u32 instead of __u32, add comments that these structures are internal
+COMPAT backwards compatible mode, uses WALL_CLOCK/LINK for HDAudio
+playback and DEFAULT (hw_ptr) everywhere else
+
+INFO bits:
+reclaimed 32-bits from hw_params, renamed as info_ext
+moved all timestamp info to info_ext
+
+snd_pcm_status:
+read only 32-bit audio_tstamp_data, ignore all other fields
+
+V3/4:
+Addressed feedback from Jaroslav:
+no change to STATUS ioctl, new functionality introduced in STATUS_EXT
+ioctl with r/w params.
+bumped PCM protocol for detection on STATUS_EXT in userspace
+used 32-bit word for accuracy report, no mantissa/exponent packing
+rolled back info_ext changes, all INFO fields remain in same word
+
+Merged comments from Liam (code simplifications)
+fixed packing
+
+Added driver_tstamp field in case there is a delay in passing the 
+tstamp and audio_tstamp over IPC.
 
 
-Eric
+
+Pierre-Louis Bossart (10):
+  ALSA: core: don't override timestamp unconditionally
+  ALSA: core: allow for trigger_tstamp snapshot in .trigger
+  ALSA: hda: read trigger_timestamp immediately after starting DMA
+  ALSA: usb: update trigger timestamp on first non-zero URB submitted
+  ALSA: core: selection of audio_tstamp type and accuracy reports
+  ALSA: core: pass audio tstamp config from userspace
+  ALSA: core: pass audio tstamp config from userspace in compat mode
+  ALSA: core: replace .wall_clock by .get_time_info
+  ALSA: hda: replace .wallclock by .get_time_info
+  ALSA: bump PCM protocol to 2.0.13
+
+ Documentation/sound/alsa/timestamping.txt | 200 ++++++++++++++++++++++++++++++
+ include/sound/pcm.h                       |  67 +++++++++-
+ include/uapi/sound/asound.h               |  36 +++++-
+ sound/core/pcm_compat.c                   |  36 +++++-
+ sound/core/pcm_lib.c                      |  88 ++++++++-----
+ sound/core/pcm_native.c                   |  58 ++++++++-
+ sound/pci/hda/hda_controller.c            |  43 +++++--
+ sound/usb/pcm.c                           |   9 ++
+ 8 files changed, 478 insertions(+), 59 deletions(-)
+ create mode 100644 Documentation/sound/alsa/timestamping.txt
+
+-- 
+1.9.1
