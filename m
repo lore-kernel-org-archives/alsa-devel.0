@@ -1,86 +1,69 @@
-From: Yakir Yang <ykk@rock-chips.com>
-Subject: [PATCH v2 10/12] ASoC: dw-hdmi-audio: add codec driver for dw hdmi audio
-Date: Fri, 30 Jan 2015 06:41:11 -0500
-Message-ID: <1422618071-27178-1-git-send-email-ykk@rock-chips.com>
+From: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v2 11/12] ASoC: rockchip-hdmi-audio: add sound driver for hdmi audio
+Date: Fri, 30 Jan 2015 06:43:21 -0500
+Message-ID: <1422618201-27238-1-git-send-email-ykk@rock-chips.com>
 References: <1422617031-25098-1-git-send-email-ykk@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1422617031-25098-1-git-send-email-ykk@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Max Filippov <jcmvbkbc@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, Arnd Bergmann <arnd@arndb.de>, Sean Cross <xobs@kosagi.com>, Jyri Sarha <jsarha@ti.com>, Ben Zhang <benzh@chromium.org>, Yakir Yang <ykk@rock-chips.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, djkurtz@chromium.org, dbehr@chromoum.org, mmind00@googlemail.com, dianders@chromium.org, marcheu@chromium.org, mark.yao@rock-chips.com, rockchip-discuss@chromium.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1422617031-25098-1-git-send-email-ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Ben Zhang <benzh-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, dbehr-ph2c+iIn4itg9hUCZPvPmw@public.gmane.org, mmind00-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, marcheu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, mark.yao-TNX95d0MmH7DzftRWevZcw@public.gmane.org, rockchip-discuss-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-codec driver creat an standard alsa device, than config audio
-and report jack status through some callback interfaces that
-dw_hdmi driver support.
+Add a sound driver that combines rockchip-i2s cpu_dai and dw-hdmi-codec
+as codec_dai to provide hdmi audio output on rk3288 platforms.
 
-Signed-off-by: Yakir Yang <ykk@rock-chips.com>
+Signed-off-by: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 ---
 Changes in v2:
-- Update dw_hdmi audio control interfaces, and adjust jack report process
+- give "codec-name" & "codec-dai-name" an const name
 
- sound/soc/codecs/Kconfig         |   4 +
- sound/soc/codecs/Makefile        |   2 +
- sound/soc/codecs/dw-hdmi-audio.c | 314 +++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/dw-hdmi-audio.h |  17 +++
- 4 files changed, 337 insertions(+)
- create mode 100644 sound/soc/codecs/dw-hdmi-audio.c
- create mode 100644 sound/soc/codecs/dw-hdmi-audio.h
+ sound/soc/rockchip/Kconfig               |   9 ++
+ sound/soc/rockchip/Makefile              |   2 +
+ sound/soc/rockchip/rockchip_hdmi_audio.c | 196 +++++++++++++++++++++++++++++++
+ 3 files changed, 207 insertions(+)
+ create mode 100644 sound/soc/rockchip/rockchip_hdmi_audio.c
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 8349f98..b34dd12 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -75,6 +75,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MC13783 if MFD_MC13XXX
- 	select SND_SOC_ML26124 if I2C
- 	select SND_SOC_HDMI_CODEC
-+	select SND_SOC_DW_HDMI_AUDIO
- 	select SND_SOC_PCM1681 if I2C
- 	select SND_SOC_PCM1792A if SPI_MASTER
- 	select SND_SOC_PCM3008
-@@ -459,6 +460,9 @@ config SND_SOC_MAX98095
- config SND_SOC_MAX9850
- 	tristate
- 
-+config SND_SOC_DW_HDMI_AUDIO
-+       tristate
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index e181826..ed2b7f0 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -14,3 +14,12 @@ config SND_SOC_ROCKCHIP_I2S
+ 	  Say Y or M if you want to add support for I2S driver for
+ 	  Rockchip I2S device. The device supports upto maximum of
+ 	  8 channels each for play and record.
 +
- config SND_SOC_PCM1681
- 	tristate "Texas Instruments PCM1681 CODEC"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index bbdfd1e..0ebb664 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -68,6 +68,7 @@ snd-soc-max9850-objs := max9850.o
- snd-soc-mc13783-objs := mc13783.o
- snd-soc-ml26124-objs := ml26124.o
- snd-soc-hdmi-codec-objs := hdmi.o
-+snd-soc-dw-hdmi-audio-objs := dw-hdmi-audio.o
- snd-soc-pcm1681-objs := pcm1681.o
- snd-soc-pcm1792a-codec-objs := pcm1792a.o
- snd-soc-pcm3008-objs := pcm3008.o
-@@ -249,6 +250,7 @@ obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
- obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
- obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
- obj-$(CONFIG_SND_SOC_HDMI_CODEC) += snd-soc-hdmi-codec.o
-+obj-$(CONFIG_SND_SOC_DW_HDMI_AUDIO) += snd-soc-dw-hdmi-audio.o
- obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
- obj-$(CONFIG_SND_SOC_PCM1792A)	+= snd-soc-pcm1792a-codec.o
- obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
-diff --git a/sound/soc/codecs/dw-hdmi-audio.c b/sound/soc/codecs/dw-hdmi-audio.c
++config SND_SOC_ROCKCHIP_HDMI_AUDIO
++	tristate "ASoC support for Rockchip HDMI audio"
++	depends on SND_SOC_ROCKCHIP
++	select SND_SOC_ROCKCHIP_I2S
++	select SND_SOC_DW_HDMI_AUDIO
++	help
++	  Say Y or M here if you want to add support for SoC audio on Rockchip
++	  HDMI, such as rk3288 hdmi.
+diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+index b921909..b9185b3 100644
+--- a/sound/soc/rockchip/Makefile
++++ b/sound/soc/rockchip/Makefile
+@@ -1,4 +1,6 @@
+ # ROCKCHIP Platform Support
+ snd-soc-i2s-objs := rockchip_i2s.o
++snd-soc-rockchip-hdmi-audio-objs := rockchip_hdmi_audio.o
+ 
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-i2s.o
++obj-$(CONFIG_SND_SOC_ROCKCHIP_HDMI_AUDIO) += snd-soc-rockchip-hdmi-audio.o
+diff --git a/sound/soc/rockchip/rockchip_hdmi_audio.c b/sound/soc/rockchip/rockchip_hdmi_audio.c
 new file mode 100644
-index 0000000..ed046ce
+index 0000000..0c9f497
 --- /dev/null
-+++ b/sound/soc/codecs/dw-hdmi-audio.c
-@@ -0,0 +1,314 @@
++++ b/sound/soc/rockchip/rockchip_hdmi_audio.c
+@@ -0,0 +1,196 @@
 +/*
-+ * dw-hdmi-codec.c
++ * rockchip-hdmi-card.c
 + *
-+ * DesignerWare ALSA SoC DAI driver for DW HDMI audio.
-+ * Copyright (c) 2014,  CORPORATION. All rights reserved.
-+ * Authors: Yakir Yang <ykk@rock-chips.com>
++ * ROCKCHIP ALSA SoC DAI driver for HDMI audio on rockchip processors.
++ * Copyright (c) 2014, ROCKCHIP CORPORATION. All rights reserved.
++ * Authors: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms and conditions of the GNU General Public License,
@@ -95,322 +78,187 @@ index 0000000..ed046ce
 + * along with this program.  If not, see <http://www.gnu.org/licenses/>.*
 + *
 + */
-+#include <linux/init.h>
-+#include <linux/kernel.h>
 +#include <linux/module.h>
 +#include <linux/device.h>
-+#include <linux/moduleparam.h>
++#include <linux/platform_device.h>
 +
-+#include <sound/pcm.h>
 +#include <sound/soc.h>
-+#include <sound/core.h>
++#include <sound/pcm.h>
 +#include <sound/jack.h>
-+#include <sound/initval.h>
++#include <sound/core.h>
 +#include <sound/pcm_params.h>
 +
-+#include <drm/bridge/dw_hdmi.h>
-+#include "dw-hdmi-audio.h"
++#include "rockchip_i2s.h"
++#include "../codecs/dw-hdmi-audio.h"
 +
-+struct snd_dw_hdmi {
-+	struct device *dev;
-+	struct dw_hdmi_audio_data data;
++#define DRV_NAME "rockchip-hdmi-audio"
 +
-+	u8 jack_status;
-+	struct snd_soc_jack *jack;
-+	struct delayed_work jack_work;
++struct hdmi_audio_private {
++	struct snd_soc_jack hdmi_jack;
 +};
 +
-+/**
-+ * dw_hdmi_jack_detect - Enable hdmi detection via the HDMI IRQ
-+ *
-+ * @codec:  HDMI codec
-+ * @jack:   jack to report detection events on
-+ *
-+ * Enable HDMI detection via IRQ on the HDMI.
-+ *
-+ * If no jack is supplied detection will be disabled.
-+ */
-+int dw_hdmi_jack_detect(struct snd_soc_codec *codec_dai,
-+			struct snd_soc_jack *jack)
++static int rockchip_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
++					struct snd_pcm_hw_params *params)
 +{
-+	struct snd_dw_hdmi *hdmi = snd_soc_codec_get_drvdata(codec_dai);
-+
-+	hdmi->jack = jack;
-+	hdmi->jack_status = 0;
-+
-+	snd_soc_jack_report(hdmi->jack, 0, SND_JACK_LINEOUT);
-+
-+	queue_delayed_work(system_power_efficient_wq, &hdmi->jack_work,
-+			   msecs_to_jiffies(50));
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(dw_hdmi_jack_detect);
-+
-+static void dw_hdmi_jack_work(struct work_struct *work)
-+{
-+	struct snd_dw_hdmi *hdmi = container_of(work, struct snd_dw_hdmi,
-+						jack_work.work);
-+	u8 jack_status, status;
-+
-+	status = hdmi->data.get_connect_status(hdmi->data.dw);
-+	jack_status = status ? SND_JACK_LINEOUT : 0;
-+	if (jack_status != hdmi->jack_status) {
-+		snd_soc_jack_report(hdmi->jack, jack_status,
-+				    SND_JACK_LINEOUT);
-+		hdmi->jack_status = jack_status;
-+
-+		dev_dbg(hdmi->dev, "jack report [%d]\n", hdmi->jack_status);
-+	}
-+}
-+
-+static irqreturn_t snd_dw_hdmi_irq(int irq, void *dev_id)
-+{
-+	struct snd_dw_hdmi *hdmi = dev_id;
-+
-+	queue_delayed_work(system_power_efficient_wq, &hdmi->jack_work,
-+			   msecs_to_jiffies(50));
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int dw_hdmi_dai_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_dw_hdmi *hdmi = snd_soc_dai_get_drvdata(codec_dai);
 +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct hdmi_audio_fmt hdmi_fmt;
-+	unsigned int fmt, rate, chan, width;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	unsigned int dai_fmt = rtd->dai_link->dai_fmt;
++	int mclk, ret;
 +
-+	fmt = rtd->dai_link->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK;
-+	switch (fmt) {
-+	case SND_SOC_DAIFMT_I2S:
-+		hdmi_fmt.dai_fmt = AUDIO_DAIFMT_IIS;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		hdmi_fmt.dai_fmt = AUDIO_DAIFMT_LEFT_J;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		hdmi_fmt.dai_fmt = AUDIO_DAIFMT_RIGHT_J;
-+		break;
-+	default:
-+		dev_err(codec_dai->dev, "DAI format unsupported");
-+		return -EINVAL;
-+	}
-+	dev_dbg(codec_dai->dev, "[codec_dai]: dai_fmt = %d.\n", fmt);
-+
-+	width = params_width(params);
-+	switch (width) {
-+	case 16:
-+	case 24:
-+		hdmi_fmt.word_length = width;
-+		break;
-+	default:
-+		dev_err(codec_dai->dev, "width[%d] not support!\n", width);
-+		return -EINVAL;
-+	}
-+	dev_dbg(codec_dai->dev, "[codec_dai]: word_length = %d.\n", width);
-+
-+	chan = params_channels(params);
-+	switch (chan) {
-+	case 2:
-+		hdmi_fmt.chan_num = AUDIO_CHANNELNUM_2;
-+		break;
-+	case 4:
-+		hdmi_fmt.chan_num = AUDIO_CHANNELNUM_4;
-+		break;
-+	case 6:
-+		hdmi_fmt.chan_num = AUDIO_CHANNELNUM_6;
-+		break;
-+	case 8:
-+		hdmi_fmt.chan_num = AUDIO_CHANNELNUM_8;
-+		break;
-+	default:
-+		dev_err(codec_dai->dev, "channel[%d] not support!\n", chan);
-+		return -EINVAL;
-+	}
-+	dev_dbg(codec_dai->dev, "[codec_dai]: chan_num = %d.\n", chan);
-+
-+	rate = params_rate(params);
-+	switch (rate) {
++	switch (params_rate(params)) {
++	case 8000:
++	case 16000:
++	case 24000:
 +	case 32000:
-+	case 44100:
 +	case 48000:
-+	case 88200:
++	case 64000:
 +	case 96000:
-+	case 176400:
-+	case 192000:
-+		hdmi_fmt.sample_rate = rate;
++		mclk = 12288000;
 +		break;
-+	default:
-+		dev_err(codec_dai->dev, "rate[%d] not support!\n", rate);
-+		return -EINVAL;
-+	}
-+	dev_dbg(codec_dai->dev, "[codec_dai]: sample_rate = %d.\n", rate);
-+
-+	hdmi->data.config_audio(hdmi->data.dw, &hdmi_fmt);
-+
-+	return 0;
-+}
-+
-+static int dw_hdmi_dai_trigger(struct snd_pcm_substream *substream,
-+			       int cmd, struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_dw_hdmi *hdmi = snd_soc_dai_get_drvdata(codec_dai);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		hdmi->data.enable_clk(hdmi->data.dw);
-+		dev_dbg(codec_dai->dev, "[codec_dai]: trigger enable.\n");
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		hdmi->data.disable_clk(hdmi->data.dw);
-+		dev_dbg(codec_dai->dev, "[codec_dai]: trigger disable.\n");
++	case 11025:
++	case 22050:
++	case 44100:
++	case 88200:
++		mclk = 11289600;
 +		break;
 +	default:
 +		return -EINVAL;
 +	}
 +
++	ret = snd_soc_dai_set_fmt(cpu_dai, dai_fmt);
++	if (ret < 0) {
++		dev_err(cpu_dai->dev, "failed to set cpu_dai fmt.\n");
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk, SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		dev_err(cpu_dai->dev, "failed to set cpu_dai sysclk.\n");
++		return ret;
++	}
++
 +	return 0;
 +}
 +
-+static const struct snd_soc_dapm_widget dw_hdmi_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("TX"),
-+};
-+
-+static const struct snd_soc_dapm_route dw_hdmi_routes[] = {
-+	{ "TX", NULL, "Playback" },
-+};
-+
-+static const struct snd_soc_dai_ops dw_hdmi_dai_ops = {
-+	.hw_params = dw_hdmi_dai_hw_params,
-+	.trigger = dw_hdmi_dai_trigger,
-+};
-+
-+static struct snd_soc_dai_driver dw_hdmi_audio_dai = {
-+	.name = "dw-hdmi-hifi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			 SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-+			 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+	.ops = &dw_hdmi_dai_ops,
-+};
-+
-+static const struct snd_soc_codec_driver dw_hdmi_audio = {
-+	.dapm_widgets = dw_hdmi_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(dw_hdmi_widgets),
-+	.dapm_routes = dw_hdmi_routes,
-+	.num_dapm_routes = ARRAY_SIZE(dw_hdmi_routes),
-+};
-+
-+static int dw_hdmi_audio_probe(struct platform_device *pdev)
++static int hdmi_audio_dai_init(struct snd_soc_pcm_runtime *runtime)
 +{
-+	struct dw_hdmi_audio_data *data = pdev->dev.platform_data;
-+	struct snd_dw_hdmi *hdmi;
++	struct snd_soc_codec *codec = runtime->codec;
++	struct snd_soc_card *card = runtime->card;
++	struct hdmi_audio_private *drv = snd_soc_card_get_drvdata(card);
++
++	/* Enable headphone jack detection */
++	snd_soc_jack_new(codec, "HDMI Jack", SND_JACK_LINEOUT,
++			 &drv->hdmi_jack);
++
++	return dw_hdmi_jack_detect(codec, &drv->hdmi_jack);
++}
++
++static struct snd_soc_ops hdmi_audio_dai_ops = {
++	.hw_params = rockchip_hdmi_audio_hw_params,
++};
++
++static struct snd_soc_dai_link hdmi_audio_dai = {
++	.name = "RockchipHDMI",
++	.stream_name = "RockchipHDMI",
++	.codec_name = "dw-hdmi-audio",
++	.codec_dai_name = "dw-hdmi-hifi",
++	.init = hdmi_audio_dai_init,
++	.ops = &hdmi_audio_dai_ops,
++	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++		   SND_SOC_DAIFMT_CBS_CFS,
++};
++
++static struct snd_soc_card rockchip_hdmi_audio_card = {
++	.name = "RockchipHDMI",
++	.owner = THIS_MODULE,
++	.dai_link = &hdmi_audio_dai,
++	.num_links = 1,
++};
++
++static int rockchip_hdmi_audio_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &rockchip_hdmi_audio_card;
++	struct device_node *np = pdev->dev.of_node;
++	struct hdmi_audio_private *drv;
 +	int ret;
 +
-+	hdmi = devm_kzalloc(&pdev->dev, sizeof(*hdmi), GFP_KERNEL);
-+	if (!hdmi)
++	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
++	if (!drv)
 +		return -ENOMEM;
 +
-+	hdmi->data = *data;
-+	hdmi->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, hdmi);
++	card->dev = &pdev->dev;
++	platform_set_drvdata(pdev, card);
++	snd_soc_card_set_drvdata(card, drv);
 +
-+	INIT_DELAYED_WORK(&hdmi->jack_work, dw_hdmi_jack_work);
-+
-+	ret = devm_request_irq(&pdev->dev, hdmi->data.irq, snd_dw_hdmi_irq,
-+			       IRQF_SHARED, "dw-hdmi-audio", hdmi);
-+	if (ret) {
-+		dev_err(&pdev->dev, "request irq failed (%d)\n", ret);
-+		goto free_hdmi_data;
++	hdmi_audio_dai.cpu_of_node = of_parse_phandle(np, "i2s-controller", 0);
++	if (!hdmi_audio_dai.cpu_of_node) {
++		dev_err(&pdev->dev, "Property 'i2s-controller' missing !\n");
++		goto free_priv_data;
 +	}
 +
-+	ret = snd_soc_register_codec(&pdev->dev, &dw_hdmi_audio,
-+				     &dw_hdmi_audio_dai, 1);
++	hdmi_audio_dai.platform_of_node = hdmi_audio_dai.cpu_of_node;
++
++	ret = snd_soc_register_card(card);
 +	if (ret) {
-+		dev_err(&pdev->dev, "register codec failed (%d)\n", ret);
-+		goto free_irq;
++		dev_err(&pdev->dev, "register card failed (%d)\n", ret);
++		card->dev = NULL;
++		goto free_cpu_of_node;
 +	}
 +
 +	dev_info(&pdev->dev, "hdmi audio init success.\n");
 +
 +	return 0;
 +
-+free_irq:
-+	devm_free_irq(&pdev->dev, hdmi->data.irq, hdmi);
-+free_hdmi_data:
-+	devm_kfree(&pdev->dev, hdmi);
++free_cpu_of_node:
++	hdmi_audio_dai.cpu_of_node = NULL;
++	hdmi_audio_dai.platform_of_node = NULL;
++free_priv_data:
++	snd_soc_card_set_drvdata(card, NULL);
++	platform_set_drvdata(pdev, NULL);
++	devm_kfree(&pdev->dev, drv);
++	card->dev = NULL;
 +
 +	return ret;
 +}
 +
-+static int dw_hdmi_audio_remove(struct platform_device *pdev)
++static int rockchip_hdmi_audio_remove(struct platform_device *pdev)
 +{
-+	struct snd_dw_hdmi *hdmi = platform_get_drvdata(pdev);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
-+	snd_soc_unregister_codec(&pdev->dev);
-+	devm_free_irq(&pdev->dev, hdmi->data.irq, hdmi);
-+	devm_kfree(&pdev->dev, hdmi);
++	snd_soc_unregister_card(card);
++	snd_soc_card_set_drvdata(card, NULL);
++	platform_set_drvdata(pdev, NULL);
++	card->dev = NULL;
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id dw_hdmi_audio_ids[] = {
-+	{ .compatible = "dw-hdmi-audio", },
-+	{ }
++static const struct of_device_id rockchip_hdmi_audio_of_match[] = {
++	{ .compatible = "rockchip,rk3288-hdmi-audio", },
++	{},
 +};
 +
-+static struct platform_driver dw_hdmi_audio_driver = {
++static struct platform_driver rockchip_hdmi_audio_driver = {
 +	.driver = {
-+		.name = "dw-hdmi-audio",
++		.name = DRV_NAME,
 +		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(dw_hdmi_audio_ids),
++		.of_match_table = rockchip_hdmi_audio_of_match,
 +	},
-+	.probe = dw_hdmi_audio_probe,
-+	.remove = dw_hdmi_audio_remove,
++	.probe = rockchip_hdmi_audio_probe,
++	.remove = rockchip_hdmi_audio_remove,
 +};
-+module_platform_driver(dw_hdmi_audio_driver);
++module_platform_driver(rockchip_hdmi_audio_driver);
 +
-+MODULE_AUTHOR("Yakir Yang <ykk@rock-chips.com>");
-+MODULE_DESCRIPTION("DW HDMI Audio ASoC Interface");
++MODULE_AUTHOR("Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>");
++MODULE_DESCRIPTION("Rockchip HDMI Audio ASoC Interface");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" "dw-hdmi-audio");
-+MODULE_DEVICE_TABLE(of, dw_hdmi_audio_ids);
-diff --git a/sound/soc/codecs/dw-hdmi-audio.h b/sound/soc/codecs/dw-hdmi-audio.h
-new file mode 100644
-index 0000000..2a7b5b4
---- /dev/null
-+++ b/sound/soc/codecs/dw-hdmi-audio.h
-@@ -0,0 +1,17 @@
-+/*
-+ * dw-hdmi-audio.h -- DW HDMI ALSA SoC Audio driver
-+ *
-+ * Copyright 2011-2012 DesignerWare Products
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _DW_HDMI_AUDIO_H
-+#define _DW_HDMI_AUDIO_H
-+
-+int dw_hdmi_jack_detect(struct snd_soc_codec *codec_dai,
-+			struct snd_soc_jack *jack);
-+
-+#endif
++MODULE_ALIAS("platform:" DRV_NAME);
++MODULE_DEVICE_TABLE(of, rockchip_hdmi_audio_of_match);
 -- 
 2.1.2
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
