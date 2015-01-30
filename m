@@ -1,60 +1,28 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: rx51: Correct DAPM route for capture
-Date: Fri, 30 Jan 2015 09:32:43 +0200
-Message-ID: <1422603163-13346-1-git-send-email-peter.ujfalusi@ti.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH 0/3] ASoC: atmel_ssc_dai: fix and refactor
+Date: Fri, 30 Jan 2015 17:38:41 +0800
+Message-ID: <1422610724-7222-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BEE8260677
- for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2015 08:32:49 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, pavel@ucw.cz
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: nicolas.ferre@atmel.com, Songjun.Wu@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-"Mic Bias" is DAPM_SUPPLY so it has to be connected in the route
-accordingly.
-Fixes audio capture on the board.
+This patch set do following things:
+  - Fix the DSP mode A setting.
+  - Refactor the startup and shutdown function.
+  - Only clean PDC when use PDC.
 
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Tested-by: Pavel Machek <pavel@ucw.cz>
----
- sound/soc/omap/rx51.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index 04896d6252a2..7f299357c2d2 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -250,14 +250,14 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"FM Transmitter", NULL, "LLOUT"},
- 	{"FM Transmitter", NULL, "RLOUT"},
- 
--	{"DMic Rate 64", NULL, "Mic Bias"},
--	{"Mic Bias", NULL, "DMic"},
-+	{"DMic Rate 64", NULL, "DMic"},
-+	{"DMic", NULL, "Mic Bias"},
- 
- 	{"b LINE2R", NULL, "MONO_LOUT"},
- 	{"Earphone", NULL, "b HPLOUT"},
- 
--	{"LINE1L", NULL, "b Mic Bias"},
--	{"b Mic Bias", NULL, "HS Mic"}
-+	{"LINE1L", NULL, "HS Mic"},
-+	{"HS Mic", NULL, "b Mic Bias"},
- };
- 
- static const char * const spk_function[] = {"Off", "On"};
+Bo Shen (3):
+  ASoC: atmel_ssc_dai: fix the setting for DSP mode
+  ASoC: atmel_ssc_dai: refactor the startup and shutdown
+  ASoC: atmel_ssc_dai: only clean PDC when using PDC
+
+ sound/soc/atmel/atmel_ssc_dai.c | 54 +++++++++++++++++++----------------------
+ 1 file changed, 25 insertions(+), 29 deletions(-)
+
 -- 
-2.2.2
+2.3.0.rc0
