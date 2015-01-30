@@ -1,14 +1,14 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt286: Add rt288 codec support
-Date: Fri, 30 Jan 2015 14:21:33 +0800
-Message-ID: <1422598893-28393-1-git-send-email-bardliao@realtek.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: rx51: Correct DAPM route for capture
+Date: Fri, 30 Jan 2015 09:32:43 +0200
+Message-ID: <1422603163-13346-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 75F5A260676
- for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2015 07:21:57 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BEE8260677
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jan 2015 08:32:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,37 +18,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, flove@realtek.com, liam.r.girdwood@intel.com
+To: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, pavel@ucw.cz
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for rt288 codec.
+"Mic Bias" is DAPM_SUPPLY so it has to be connected in the route
+accordingly.
+Fixes audio capture on the board.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Reported-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Tested-by: Pavel Machek <pavel@ucw.cz>
 ---
- sound/soc/codecs/rt286.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/omap/rx51.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 81bdd276..2eafbcf 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -34,6 +34,7 @@
- #include "rt286.h"
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 04896d6252a2..7f299357c2d2 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -250,14 +250,14 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"FM Transmitter", NULL, "LLOUT"},
+ 	{"FM Transmitter", NULL, "RLOUT"},
  
- #define RT286_VENDOR_ID 0x10ec0286
-+#define RT288_VENDOR_ID 0x10ec0288
+-	{"DMic Rate 64", NULL, "Mic Bias"},
+-	{"Mic Bias", NULL, "DMic"},
++	{"DMic Rate 64", NULL, "DMic"},
++	{"DMic", NULL, "Mic Bias"},
  
- struct rt286_priv {
- 	struct regmap *regmap;
-@@ -1210,7 +1211,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	{"b LINE2R", NULL, "MONO_LOUT"},
+ 	{"Earphone", NULL, "b HPLOUT"},
  
- 	regmap_read(rt286->regmap,
- 		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &ret);
--	if (ret != RT286_VENDOR_ID) {
-+	if (ret != RT286_VENDOR_ID && ret != RT288_VENDOR_ID) {
- 		dev_err(&i2c->dev,
- 			"Device with ID register %x is not rt286\n", ret);
- 		return -ENODEV;
+-	{"LINE1L", NULL, "b Mic Bias"},
+-	{"b Mic Bias", NULL, "HS Mic"}
++	{"LINE1L", NULL, "HS Mic"},
++	{"HS Mic", NULL, "b Mic Bias"},
+ };
+ 
+ static const char * const spk_function[] = {"Off", "On"};
 -- 
-1.8.1.1.439.g50a6b54
+2.2.2
