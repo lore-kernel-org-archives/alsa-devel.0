@@ -1,7 +1,7 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 2/3] ASoC: atmel_ssc_dai: refactor the startup and shutdown
-Date: Fri, 30 Jan 2015 17:38:43 +0800
-Message-ID: <1422610724-7222-3-git-send-email-voice.shen@atmel.com>
+Subject: [PATCH 3/3] ASoC: atmel_ssc_dai: only clean PDC when using PDC
+Date: Fri, 30 Jan 2015 17:38:44 +0800
+Message-ID: <1422610724-7222-4-git-send-email-voice.shen@atmel.com>
 References: <1422610724-7222-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,82 +12,44 @@ To: Mark Brown <broonie@kernel.org>
 Cc: nicolas.ferre@atmel.com, Songjun.Wu@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In startup function, enable ssc clock and in shutdown function,
-disable clock. And also remove disable ssc in shutdown function,
-as ssc is disabled in prepare function.
+Only using PDC, it needs to clean PDC registers.
 
 Signed-off-by: Bo Shen <voice.shen@atmel.com>
 ---
 
- sound/soc/atmel/atmel_ssc_dai.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
+ sound/soc/atmel/atmel_ssc_dai.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index c1d93b8..0ed5ac3 100644
+index 0ed5ac3..80eb1f1 100644
 --- a/sound/soc/atmel/atmel_ssc_dai.c
 +++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -204,6 +204,13 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
- 	pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
- 		ssc_readl(ssc_p->ssc->regs, SR));
- 
-+	/* Enable PMC peripheral clock for this SSC */
-+	pr_debug("atmel_ssc_dai: Starting clock\n");
-+	clk_enable(ssc_p->ssc->clk);
-+
-+	/* Reset the SSC to keep it at a clean status */
-+	ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
-+
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		dir = 0;
- 		dir_mask = SSC_DIR_MASK_PLAYBACK;
-@@ -250,11 +257,6 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- 	dma_params = ssc_p->dma_params[dir];
- 
- 	if (dma_params != NULL) {
--		ssc_writel(ssc_p->ssc->regs, CR, dma_params->mask->ssc_disable);
--		pr_debug("atmel_ssc_shutdown: %s disabled SSC_SR=0x%08x\n",
--			(dir ? "receive" : "transmit"),
--			ssc_readl(ssc_p->ssc->regs, SR));
--
- 		dma_params->ssc = NULL;
- 		dma_params->substream = NULL;
- 		ssc_p->dma_params[dir] = NULL;
-@@ -266,10 +268,6 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- 	ssc_p->dir_mask &= ~dir_mask;
- 	if (!ssc_p->dir_mask) {
- 		if (ssc_p->initialized) {
--			/* Shutdown the SSC clock. */
--			pr_debug("atmel_ssc_dai: Stopping clock\n");
--			clk_disable(ssc_p->ssc->clk);
--
- 			free_irq(ssc_p->ssc->irq, ssc_p);
- 			ssc_p->initialized = 0;
- 		}
-@@ -280,6 +278,10 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- 		ssc_p->cmr_div = ssc_p->tcmr_period = ssc_p->rcmr_period = 0;
- 	}
- 	spin_unlock_irq(&ssc_p->lock);
-+
-+	/* Shutdown the SSC clock. */
-+	pr_debug("atmel_ssc_dai: Stopping clock\n");
-+	clk_disable(ssc_p->ssc->clk);
- }
- 
- 
-@@ -597,14 +599,6 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+@@ -599,15 +599,17 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
  			rcmr, rfmr, tcmr, tfmr);
  
  	if (!ssc_p->initialized) {
+-		ssc_writel(ssc_p->ssc->regs, PDC_RPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_RCR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_RNPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_RNCR, 0);
 -
--		/* Enable PMC peripheral clock for this SSC */
--		pr_debug("atmel_ssc_dai: Starting clock\n");
--		clk_enable(ssc_p->ssc->clk);
--
--		/* Reset the SSC and its PDC registers */
--		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
--
- 		ssc_writel(ssc_p->ssc->regs, PDC_RPR, 0);
- 		ssc_writel(ssc_p->ssc->regs, PDC_RCR, 0);
- 		ssc_writel(ssc_p->ssc->regs, PDC_RNPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_TPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_TCR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_TNPR, 0);
+-		ssc_writel(ssc_p->ssc->regs, PDC_TNCR, 0);
++		if (!ssc_p->ssc->pdata->use_dma) {
++			ssc_writel(ssc_p->ssc->regs, PDC_RPR, 0);
++			ssc_writel(ssc_p->ssc->regs, PDC_RCR, 0);
++			ssc_writel(ssc_p->ssc->regs, PDC_RNPR, 0);
++			ssc_writel(ssc_p->ssc->regs, PDC_RNCR, 0);
++
++			ssc_writel(ssc_p->ssc->regs, PDC_TPR, 0);
++			ssc_writel(ssc_p->ssc->regs, PDC_TCR, 0);
++			ssc_writel(ssc_p->ssc->regs, PDC_TNPR, 0);
++			ssc_writel(ssc_p->ssc->regs, PDC_TNCR, 0);
++		}
+ 
+ 		ret = request_irq(ssc_p->ssc->irq, atmel_ssc_interrupt, 0,
+ 				ssc_p->name, ssc_p);
 -- 
 2.3.0.rc0
