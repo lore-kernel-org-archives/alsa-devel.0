@@ -1,105 +1,89 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: add generic dt-card support
-Date: Sat, 7 Feb 2015 16:33:55 +0800
-Message-ID: <20150207083355.GA8054@finisterre.sirena.org.uk>
-References: <54C0088F.9070609@metafoo.de>
- <20150122090723.50ac0156@armhf>
- <54C14EB3.8080305@metafoo.de>
- <20150123131554.623003f9@armhf>
- <54C252F4.9000504@metafoo.de>
- <20150123193456.276ea512@armhf>
- <20150123191343.GW21293@sirena.org.uk>
- <20150124083027.3b3a018f@armhf>
- <20150203164748.GR21293@sirena.org.uk>
- <20150203203130.5d1cfc42@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt286: set idle_bias_off to false
+Date: Fri, 30 Jan 2015 13:33:44 +0100
+Message-ID: <20150130123344.GE26617@finisterre.sirena.org.uk>
+References: <1422435597-19330-1-git-send-email-bardliao@realtek.com>
+ <20150128113537.GU21293@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D70104CDC3@RTITMBSV03.realtek.com.tw>
+ <20150128200951.GS21293@sirena.org.uk>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BA81DE@SHSMSX101.ccr.corp.intel.com>
+ <20150129105143.GT21293@sirena.org.uk>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BA82B2@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20150203203130.5d1cfc42@armhf>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============5179803822211482728=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0DAB2656F0
+ for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2015 09:28:37 +0100 (CET)
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BA82B2@SHSMSX101.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Jie, Yang" <yang.jie@intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---AqsLC8rIMeq19msA
+--===============5179803822211482728==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pQhZXvAqiZgbeUkD"
+Content-Disposition: inline
+
+
+--pQhZXvAqiZgbeUkD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 03, 2015 at 08:31:30PM +0100, Jean-Francois Moine wrote:
-> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+On Thu, Jan 29, 2015 at 01:18:18PM +0000, Jie, Yang wrote:
 
-> > So how does the simple controller interact with a more complex one given
-> > that it's somehow picking some controller node to start from?
+> > > setting idle_bias_off to false is the easiest solution for us, it is
+> > > also reasonable here, because rt286 don't need soc core to set BIAS
+> > > OFF specially when in idle status, (BIAS_OFF and BIAS_STANDBY are same for
+> > it), and seems no side effect here.
 
-> A way to solve this problem could be to create only one card builder.
-> This creation could be explicit (created by the first active audio
-> controller) or implicit by the audio subsystem on the first controller or
-> CODEC creation.
+> > Currently.  And to be honest I would have expected that the behaviour would
+> > be the same with widgets on regardless of the bias level so we probably want
+> > to fix that which would cause the same problem resurface even if it were
+> > bodged around for now.
 
-> Then, the card builder could scan all the DT looking for the audio
-> ports and create one or more cards according to the graph
-> connectivity.
+> [Keyon] OK, then I will try disable jack detection in the machine driver before calling snd_soc_suspend(), can you share example about how to set a NULL jack?
 
-How is this going to work with dynamically instantiated hardware like DT
-overlays?
+Several of the Wolfson drivers support setting a NULL jack to disable
+detection, I can't think of any boards that currently use it due to the
+need to use detection in suspend on platforms.
 
-> > If you have a device with any sort of speaker or microphone, or any sort
-> > of external connector for interfacing with an external device like a
-> > headphone jack, then you have something that could be a widget.
+Looks like word wrapping is still not working in your mailer BTW.
 
-> I know what are the widgets and routes, I was just wondering why they
-> (especially the widgets) need to appear at the card level instead of
-> just being declared in the DAIs (from the platform or the DT).
-
-As previously and repeatedly discussed DAIs have no special place in
-a general audio system and we can't base the entire system off them.
-Which DAI should have the headphone jack connected to the analogue only
-headphone driver in my system (there may not even be a way to route
-digital audio to it)?  How does this work for off-SoC audio hubs where
-there is a device with multiple DAIs connected to both one or more other
-digital devices and the analogue?
-
-Please go and research this if you're intending to work on generic
-bindings, it gets extremely repetitive to have to go over this again and
-again.  We already have simple-card to provide a binding for trivial
-systems and don't want to end up with a never ending series of slightly
-more complicated bindings which each cover slightly different sets of
-systems in ways that users struggle to differentiate between.
-
-> And the same question may also be raised about the audio formats, clocks,
-> tdm's...
-
-Similar things here - which of the two or more devices on a digital
-audio link (yes, they're buses not point to point links) has the
-configuration and how do we stitch them together?  How do we figure out
-when and how to do runtime reconfiguration of the clock tree (which is
-needed by some systems)?
-
-Again, please do some research on this.  If you are trying to define
-generic device tree bindings it is really important that you understand
-what you are trying to model with those bindings.
-
---AqsLC8rIMeq19msA
+--pQhZXvAqiZgbeUkD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1c3yAAoJECTWi3JdVIfQXqgH/1ywVBEroswu6tqEUJ30frry
-lHFCs0pB971s168y4uZXH5U/3tFt7f7EcCOLM4/ySA4meG5hLi7lVru5N3+/tChK
-DgbnYnAjLdKpGDBpMrJR3sQ0KtiYG1jbci7evGE73xoysifSUibEz70SZI4hs/++
-h7nCWPjUY8jSzqpShacXzjWRUyR9sG7PI7HnrZchfSzYDPhs486a9o/HW59a47/Q
-94xXdTr4Rm6vHl1rXvOKXGEbZwbuqF2q6A6CcFoxqpkhGatad7vFmyO/p582c9W/
-SydNSBkmAkXjNyLHJLjg0TelmgfpObf6Pj7UYozFNKIgBIGoNQCkjnKbzrkYKBk=
-=DGKe
+iQEcBAEBCAAGBQJUy3onAAoJECTWi3JdVIfQ/4UH/3PMcIGZq+Lnn3yI/RmNMjLr
+cLV0ZlM57Vf5ZapxAp3L8kMwLfu/6GU2T33mYIuMIFEAvxLbAkev6fgp9TqXHhp/
+qksj1pL7zuzoICQ59SZNhwlxFf20UBeBYcDoNzVwSxckykP7DNtbGRpBFvp6HvEB
+ozjRWHufoAWGeyU76jd3jhs10AXSY/kjjHbeM4DOrh0f8a7dpSBs2KbYeEPQgwH2
+uqaF/uXQsvEbptci+cZj7ygByvtzztKJpo5Ib54Wvciw2LY+7RVmAu9fgbGAXz/1
+r4ELIThQW88Bx1wNN+66rD704r1JDKZWBqrcgKCshuAg0qAak0oYegfj50lomg8=
+=phLD
 -----END PGP SIGNATURE-----
 
---AqsLC8rIMeq19msA--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--pQhZXvAqiZgbeUkD--
+
+--===============5179803822211482728==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5179803822211482728==--
