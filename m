@@ -1,45 +1,93 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH v2 1/3] ARM: shmobile: armadillo800eva: Properly specify
- HDMI audio link format
-Date: Fri, 30 Jan 2015 10:25:47 +0900
-Message-ID: <20150130012544.GA32147@verge.net.au>
-References: <1421847492-8857-1-git-send-email-lars@metafoo.de>
- <8761bsacx5.wl%kuninori.morimoto.gx@renesas.com>
- <54C74A2D.6000606@metafoo.de>
- <87fvavlr0b.wl%kuninori.morimoto.gx@renesas.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: Support SND_SOC_DAIFMT_CBM_CFS on
+ I2S
+Date: Fri, 30 Jan 2015 11:49:21 +0800
+Message-ID: <54CAFF41.2060908@atmel.com>
+References: <1422526589-9451-1-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87fvavlr0b.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1422526589-9451-1-git-send-email-peda@lysator.liu.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@lysator.liu.se>, alsa-devel@alsa-project.org
+Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 27, 2015 at 11:52:47PM +0000, Kuninori Morimoto wrote:
-> 
-> Hi Lars
-> 
-> > > I guess if you want to use common .daifmt, it should be same as "codec" side.
-> > > (cpu side "S" means, codec / daifmt side "M")
-> > > So, this mean above should be
-> > >
-> > > @@ -1040,9 +1040,9 @@ static struct asoc_simple_card_info fsi2_hdmi_info = {
-> > >   	.card		= "FSI2B-HDMI",
-> > >   	.codec		= "sh-mobile-hdmi",
-> > >   	.platform	= "sh_fsi2",
-> > > +	.daifmt		= SND_SOC_DAIFMT_CBM_CFM,   <=
-> > >   	.cpu_dai = {
-> > > 		.name	= "fsib-dai",
-> > > -		.fmt	= SND_SOC_DAIFMT_CBS_CFS,
-> > >   	},
-> > 
-> > Right now the CPU is configured as master, with your proposed change it 
-> > would be configured as slave. These flags are always from the CODEC's 
-> > perspective.
-> 
-> I see, your patch was correct for CPU = Master
+Hi Peter,
+   Thanks for you patch.
 
-Morimoto-san, could you clarify if you would like me to pick up
-this patch or not? (I am a bit confused.)
+On 01/29/2015 06:16 PM, Peter Rosin wrote:
+> From: Peter Rosin <peda@axentia.se>
+>
+> Signed-off-by: Peter Rosin <peda@axentia.se>
+
+Acked-by: Bo Shen <voice.shen@atmel.com>
+
+> ---
+>   sound/soc/atmel/atmel_ssc_dai.c |   48 +++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 48 insertions(+)
+>
+> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+> index 3cd70597d109..f55f3aab8bdd 100644
+> --- a/sound/soc/atmel/atmel_ssc_dai.c
+> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> @@ -485,6 +485,54 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+>   			| SSC_BF(TFMR_DATLEN, (bits - 1));
+>   		break;
+>
+> +	case SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFS:
+> +		/* I2S format, CODEC supplies BCLK, SSC supplies LRCLK. */
+> +		if (bits > 16 && !ssc->pdata->has_fslen_ext) {
+> +			dev_err(dai->dev,
+> +				"sample size %d is too large for SSC device\n",
+> +				bits);
+> +			return -EINVAL;
+> +		}
+> +
+> +		fslen_ext = (bits - 1) / 16;
+> +		fslen = (bits - 1) % 16;
+> +
+> +		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
+> +			| SSC_BF(RCMR_STTDLY, START_DELAY)
+> +			| SSC_BF(RCMR_START, SSC_START_FALLING_RF)
+> +			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
+> +			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
+> +			| SSC_BF(RCMR_CKS, ssc->clk_from_rk_pin ?
+> +					   SSC_CKS_PIN : SSC_CKS_CLOCK);
+> +
+> +		rfmr =    SSC_BF(RFMR_FSLEN_EXT, fslen_ext)
+> +			| SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+> +			| SSC_BF(RFMR_FSOS, SSC_FSOS_NEGATIVE)
+> +			| SSC_BF(RFMR_FSLEN, fslen)
+> +			| SSC_BF(RFMR_DATNB, (channels - 1))
+> +			| SSC_BIT(RFMR_MSBF)
+> +			| SSC_BF(RFMR_LOOP, 0)
+> +			| SSC_BF(RFMR_DATLEN, (bits - 1));
+> +
+> +		tcmr =	  SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period)
+> +			| SSC_BF(TCMR_STTDLY, START_DELAY)
+> +			| SSC_BF(TCMR_START, SSC_START_FALLING_RF)
+> +			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
+> +			| SSC_BF(TCMR_CKO, SSC_CKO_NONE)
+> +			| SSC_BF(TCMR_CKS, ssc->clk_from_rk_pin ?
+> +					   SSC_CKS_CLOCK : SSC_CKS_PIN);
+> +
+> +		tfmr =    SSC_BF(TFMR_FSLEN_EXT, fslen_ext)
+> +			| SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_NEGATIVE)
+> +			| SSC_BF(TFMR_FSDEN, 0)
+> +			| SSC_BF(TFMR_FSOS, SSC_FSOS_NEGATIVE)
+> +			| SSC_BF(TFMR_FSLEN, fslen)
+> +			| SSC_BF(TFMR_DATNB, (channels - 1))
+> +			| SSC_BIT(TFMR_MSBF)
+> +			| SSC_BF(TFMR_DATDEF, 0)
+> +			| SSC_BF(TFMR_DATLEN, (bits - 1));
+> +		break;
+> +
+>   	case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBS_CFS:
+>   		/*
+>   		 * DSP/PCM Mode A format, SSC provides BCLK and LRC clocks.
+>
+
+Best Regards,
+Bo Shen
