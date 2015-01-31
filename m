@@ -1,17 +1,19 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH alsa-lib] conf: add support for USB AudioSport
-	Quattro (tm)
-Date: Sat, 31 Jan 2015 23:26:07 +0500
-Message-ID: <1422728767-5292-1-git-send-email-patrakov@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 05/10] ALSA: core: selection of
+ audio_tstamp type and accuracy reports
+Date: Sat, 31 Jan 2015 14:01:37 -0600
+Message-ID: <54CD34A1.8080303@linux.intel.com>
+References: <1422662163-7391-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1422662163-7391-6-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <54CC8656.5080506@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 2786E260500
- for <alsa-devel@alsa-project.org>; Sat, 31 Jan 2015 19:26:25 +0100 (CET)
-Received: by mail-wg0-f51.google.com with SMTP id k14so32001864wgh.10
- for <alsa-devel@alsa-project.org>; Sat, 31 Jan 2015 10:26:24 -0800 (PST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47A23260488
+ for <alsa-devel@alsa-project.org>; Sat, 31 Jan 2015 21:01:21 +0100 (CET)
+In-Reply-To: <54CC8656.5080506@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, "Alexander E. Patrakov" <patrakov@gmail.com>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch resulted from discussion with redlion_ on #alsa IRC channel
-on Freenode. 4-channel playback now works. 4-channel capture works too,
-but not simultaneously with playback (hardware limitation).
+On 1/31/15 1:37 AM, Alexander E. Patrakov wrote:
+> 31.01.2015 04:55, Pierre-Louis Bossart wrote:
+>> Audio timestamps can be extracted from sample counters, wall clocks,
+>> PHC clocks (Ethernet AVB), on-demand synchronized snapshots. This
+>> patch provides the ability to report timestamping capabilities, select
+>> timestamp types and retrieve timestamp accuracy, if supported.
+>> Details can be found in Documentations/sound/alsa/timestamping.txt
+>
+> I think that it is a good idea to add some example ./audio_time output
+> on a card that is neither HDAudio nor USB audio (i.e. a card not
+> specifically touched by your patches), so that the fallback behavior is
+> known.
 
-Alsa-info before the fix:
-http://www.alsa-project.org/db/?f=a3673622074b88a1abf4ccc6e7f37d0b5b72f34a
-
-Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
----
- src/conf/cards/USB-Audio.conf | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index 05e5d09..4cbf85e 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -30,6 +30,7 @@ USB-Audio.pcm.surround40_type {
- 	"OmniStudio" two_stereo_devices
- 	"Quattro" two_stereo_devices
- 	"SB Audigy 2 NX" six_channels
-+	"USB AudioSport Quattro (tm)" two_stereo_devices
- }
- 
- # If a device does not use the first PCM device for digital data, the device
--- 
-2.2.1
+I didn't change the USB behavior, only fixed the way the trigger_tstamp 
+is found, and yes it shows what the fallback is. And the documentation 
+is already quite long, I wonder how many people will read it to the end 
+without falling into a deep coma ;-)
