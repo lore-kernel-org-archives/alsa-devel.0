@@ -1,14 +1,15 @@
 From: Mario Kicherer <dev@kicherer.org>
-Subject: [PATCH 1/3] snd-bcd2000: move MIDI part into own files
-Date: Sat, 31 Jan 2015 22:34:23 +0100
-Message-ID: <1422740065-20196-2-git-send-email-dev@kicherer.org>
+Subject: [PATCH 2/3] snd-bcd2000: add playback and capture
+	support
+Date: Sat, 31 Jan 2015 22:34:24 +0100
+Message-ID: <1422740065-20196-3-git-send-email-dev@kicherer.org>
 References: <1422740065-20196-1-git-send-email-dev@kicherer.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zeus06.de (www.zeus06.de [194.117.254.36])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F4D3260523
+ by alsa0.perex.cz (Postfix) with ESMTP id 648B4260529
  for <alsa-devel@alsa-project.org>; Sat, 31 Jan 2015 22:34:31 +0100 (CET)
 In-Reply-To: <1422740065-20196-1-git-send-email-dev@kicherer.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,484 +28,30 @@ List-Id: alsa-devel@alsa-project.org
 Signed-off-by: Mario Kicherer <dev@kicherer.org>
 ---
  sound/usb/bcd2000/Makefile  |   2 +-
- sound/usb/bcd2000/bcd2000.c | 353 +++-----------------------------------------
- sound/usb/bcd2000/bcd2000.h |  25 ++++
- sound/usb/bcd2000/midi.c    | 324 ++++++++++++++++++++++++++++++++++++++++
- sound/usb/bcd2000/midi.h    |  31 ++++
- 5 files changed, 404 insertions(+), 331 deletions(-)
- create mode 100644 sound/usb/bcd2000/bcd2000.h
- create mode 100644 sound/usb/bcd2000/midi.c
- create mode 100644 sound/usb/bcd2000/midi.h
+ sound/usb/bcd2000/audio.c   | 632 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/bcd2000/audio.h   |  58 ++++
+ sound/usb/bcd2000/bcd2000.c |   6 +
+ sound/usb/bcd2000/bcd2000.h |   2 +
+ 5 files changed, 699 insertions(+), 1 deletion(-)
+ create mode 100644 sound/usb/bcd2000/audio.c
+ create mode 100644 sound/usb/bcd2000/audio.h
 
 diff --git a/sound/usb/bcd2000/Makefile b/sound/usb/bcd2000/Makefile
-index f09ccc0..bc64a21 100644
+index bc64a21..d424dff 100644
 --- a/sound/usb/bcd2000/Makefile
 +++ b/sound/usb/bcd2000/Makefile
 @@ -1,3 +1,3 @@
--snd-bcd2000-y := bcd2000.o
-+snd-bcd2000-y := bcd2000.o midi.o
+-snd-bcd2000-y := bcd2000.o midi.o
++snd-bcd2000-y := bcd2000.o audio.o midi.o
  
  obj-$(CONFIG_SND_BCD2000) += snd-bcd2000.o
 \ No newline at end of file
-diff --git a/sound/usb/bcd2000/bcd2000.c b/sound/usb/bcd2000/bcd2000.c
-index 820d6ca..0f22bd9 100644
---- a/sound/usb/bcd2000/bcd2000.c
-+++ b/sound/usb/bcd2000/bcd2000.c
-@@ -20,52 +20,15 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/bitmap.h>
--#include <linux/usb.h>
--#include <linux/usb/audio.h>
--#include <sound/core.h>
--#include <sound/initval.h>
--#include <sound/rawmidi.h>
- 
--#define PREFIX "snd-bcd2000: "
--#define BUFSIZE 64
-+#include "bcd2000.h"
-+#include "midi.h"
- 
- static struct usb_device_id id_table[] = {
- 	{ USB_DEVICE(0x1397, 0x00bd) },
- 	{ },
- };
- 
--static unsigned char device_cmd_prefix[] = {0x03, 0x00};
--
--static unsigned char bcd2000_init_sequence[] = {
--	0x07, 0x00, 0x00, 0x00, 0x78, 0x48, 0x1c, 0x81,
--	0xc4, 0x00, 0x00, 0x00, 0x5e, 0x53, 0x4a, 0xf7,
--	0x18, 0xfa, 0x11, 0xff, 0x6c, 0xf3, 0x90, 0xff,
--	0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
--	0x18, 0xfa, 0x11, 0xff, 0x14, 0x00, 0x00, 0x00,
--	0x00, 0x00, 0x00, 0x00, 0xf2, 0x34, 0x4a, 0xf7,
--	0x18, 0xfa, 0x11, 0xff
--};
--
--struct bcd2000 {
--	struct usb_device *dev;
--	struct snd_card *card;
--	struct usb_interface *intf;
--	int card_index;
--
--	int midi_out_active;
--	struct snd_rawmidi *rmidi;
--	struct snd_rawmidi_substream *midi_receive_substream;
--	struct snd_rawmidi_substream *midi_out_substream;
--
--	unsigned char midi_in_buf[BUFSIZE];
--	unsigned char midi_out_buf[BUFSIZE];
--
--	struct urb *midi_out_urb;
--	struct urb *midi_in_urb;
--
--	struct usb_anchor anchor;
--};
--
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
- 
-@@ -74,291 +37,40 @@ DECLARE_BITMAP(devices_used, SNDRV_CARDS);
- static struct usb_driver bcd2000_driver;
- 
- #ifdef CONFIG_SND_DEBUG
--static void bcd2000_dump_buffer(const char *prefix, const char *buf, int len)
-+void bcd2000_dump_buffer(const char *prefix, const char *buf, int len)
- {
- 	print_hex_dump(KERN_DEBUG, prefix,
- 			DUMP_PREFIX_NONE, 16, 1,
- 			buf, len, false);
- }
- #else
--static void bcd2000_dump_buffer(const char *prefix, const char *buf, int len) {}
-+void bcd2000_dump_buffer(const char *prefix, const char *buf, int len) {}
- #endif
- 
--static int bcd2000_midi_input_open(struct snd_rawmidi_substream *substream)
--{
--	return 0;
--}
--
--static int bcd2000_midi_input_close(struct snd_rawmidi_substream *substream)
--{
--	return 0;
--}
--
--/* (de)register midi substream from client */
--static void bcd2000_midi_input_trigger(struct snd_rawmidi_substream *substream,
--						int up)
--{
--	struct bcd2000 *bcd2k = substream->rmidi->private_data;
--	bcd2k->midi_receive_substream = up ? substream : NULL;
--}
--
--static void bcd2000_midi_handle_input(struct bcd2000 *bcd2k,
--				const unsigned char *buf, unsigned int buf_len)
--{
--	unsigned int payload_length, tocopy;
--	struct snd_rawmidi_substream *midi_receive_substream;
--
--	midi_receive_substream = ACCESS_ONCE(bcd2k->midi_receive_substream);
--	if (!midi_receive_substream)
--		return;
--
--	bcd2000_dump_buffer(PREFIX "received from device: ", buf, buf_len);
--
--	if (buf_len < 2)
--		return;
--
--	payload_length = buf[0];
--
--	/* ignore packets without payload */
--	if (payload_length == 0)
--		return;
--
--	tocopy = min(payload_length, buf_len-1);
--
--	bcd2000_dump_buffer(PREFIX "sending to userspace: ",
--					&buf[1], tocopy);
--
--	snd_rawmidi_receive(midi_receive_substream,
--					&buf[1], tocopy);
--}
--
--static void bcd2000_midi_send(struct bcd2000 *bcd2k)
--{
--	int len, ret;
--	struct snd_rawmidi_substream *midi_out_substream;
--
--	BUILD_BUG_ON(sizeof(device_cmd_prefix) >= BUFSIZE);
--
--	midi_out_substream = ACCESS_ONCE(bcd2k->midi_out_substream);
--	if (!midi_out_substream)
--		return;
--
--	/* copy command prefix bytes */
--	memcpy(bcd2k->midi_out_buf, device_cmd_prefix,
--		sizeof(device_cmd_prefix));
--
--	/*
--	 * get MIDI packet and leave space for command prefix
--	 * and payload length
--	 */
--	len = snd_rawmidi_transmit(midi_out_substream,
--				bcd2k->midi_out_buf + 3, BUFSIZE - 3);
--
--	if (len < 0)
--		dev_err(&bcd2k->dev->dev, "%s: snd_rawmidi_transmit error %d\n",
--				__func__, len);
--
--	if (len <= 0)
--		return;
--
--	/* set payload length */
--	bcd2k->midi_out_buf[2] = len;
--	bcd2k->midi_out_urb->transfer_buffer_length = BUFSIZE;
--
--	bcd2000_dump_buffer(PREFIX "sending to device: ",
--			bcd2k->midi_out_buf, len+3);
--
--	/* send packet to the BCD2000 */
--	ret = usb_submit_urb(bcd2k->midi_out_urb, GFP_ATOMIC);
--	if (ret < 0)
--		dev_err(&bcd2k->dev->dev, PREFIX
--			"%s (%p): usb_submit_urb() failed, ret=%d, len=%d\n",
--			__func__, midi_out_substream, ret, len);
--	else
--		bcd2k->midi_out_active = 1;
--}
--
--static int bcd2000_midi_output_open(struct snd_rawmidi_substream *substream)
--{
--	return 0;
--}
--
--static int bcd2000_midi_output_close(struct snd_rawmidi_substream *substream)
--{
--	struct bcd2000 *bcd2k = substream->rmidi->private_data;
--
--	if (bcd2k->midi_out_active) {
--		usb_kill_urb(bcd2k->midi_out_urb);
--		bcd2k->midi_out_active = 0;
--	}
--
--	return 0;
--}
--
--/* (de)register midi substream from client */
--static void bcd2000_midi_output_trigger(struct snd_rawmidi_substream *substream,
--						int up)
--{
--	struct bcd2000 *bcd2k = substream->rmidi->private_data;
--
--	if (up) {
--		bcd2k->midi_out_substream = substream;
--		/* check if there is data userspace wants to send */
--		if (!bcd2k->midi_out_active)
--			bcd2000_midi_send(bcd2k);
--	} else {
--		bcd2k->midi_out_substream = NULL;
--	}
--}
--
--static void bcd2000_output_complete(struct urb *urb)
--{
--	struct bcd2000 *bcd2k = urb->context;
--
--	bcd2k->midi_out_active = 0;
--
--	if (urb->status)
--		dev_warn(&urb->dev->dev,
--			PREFIX "output urb->status: %d\n", urb->status);
--
--	if (urb->status == -ESHUTDOWN)
--		return;
--
--	/* check if there is more data userspace wants to send */
--	bcd2000_midi_send(bcd2k);
--}
--
--static void bcd2000_input_complete(struct urb *urb)
-+static void bcd2000_disconnect(struct usb_interface *interface)
- {
--	int ret;
--	struct bcd2000 *bcd2k = urb->context;
--
--	if (urb->status)
--		dev_warn(&urb->dev->dev,
--			PREFIX "input urb->status: %i\n", urb->status);
-+	struct bcd2000 *bcd2k = usb_get_intfdata(interface);
- 
--	if (!bcd2k || urb->status == -ESHUTDOWN)
-+	if (!bcd2k)
- 		return;
- 
--	if (urb->actual_length > 0)
--		bcd2000_midi_handle_input(bcd2k, urb->transfer_buffer,
--					urb->actual_length);
--
--	/* return URB to device */
--	ret = usb_submit_urb(bcd2k->midi_in_urb, GFP_ATOMIC);
--	if (ret < 0)
--		dev_err(&bcd2k->dev->dev, PREFIX
--			"%s: usb_submit_urb() failed, ret=%d\n",
--			__func__, ret);
--}
--
--static struct snd_rawmidi_ops bcd2000_midi_output = {
--	.open =    bcd2000_midi_output_open,
--	.close =   bcd2000_midi_output_close,
--	.trigger = bcd2000_midi_output_trigger,
--};
--
--static struct snd_rawmidi_ops bcd2000_midi_input = {
--	.open =    bcd2000_midi_input_open,
--	.close =   bcd2000_midi_input_close,
--	.trigger = bcd2000_midi_input_trigger,
--};
--
--static void bcd2000_init_device(struct bcd2000 *bcd2k)
--{
--	int ret;
--
--	init_usb_anchor(&bcd2k->anchor);
--	usb_anchor_urb(bcd2k->midi_out_urb, &bcd2k->anchor);
--	usb_anchor_urb(bcd2k->midi_in_urb, &bcd2k->anchor);
--
--	/* copy init sequence into buffer */
--	memcpy(bcd2k->midi_out_buf, bcd2000_init_sequence, 52);
--	bcd2k->midi_out_urb->transfer_buffer_length = 52;
--
--	/* submit sequence */
--	ret = usb_submit_urb(bcd2k->midi_out_urb, GFP_KERNEL);
--	if (ret < 0)
--		dev_err(&bcd2k->dev->dev, PREFIX
--			"%s: usb_submit_urb() out failed, ret=%d: ",
--			__func__, ret);
--	else
--		bcd2k->midi_out_active = 1;
--
--	/* pass URB to device to enable button and controller events */
--	ret = usb_submit_urb(bcd2k->midi_in_urb, GFP_KERNEL);
--	if (ret < 0)
--		dev_err(&bcd2k->dev->dev, PREFIX
--			"%s: usb_submit_urb() in failed, ret=%d: ",
--			__func__, ret);
--
--	/* ensure initialization is finished */
--	usb_wait_anchor_empty_timeout(&bcd2k->anchor, 1000);
--}
--
--static int bcd2000_init_midi(struct bcd2000 *bcd2k)
--{
--	int ret;
--	struct snd_rawmidi *rmidi;
--
--	ret = snd_rawmidi_new(bcd2k->card, bcd2k->card->shortname, 0,
--					1, /* output */
--					1, /* input */
--					&rmidi);
--
--	if (ret < 0)
--		return ret;
--
--	strlcpy(rmidi->name, bcd2k->card->shortname, sizeof(rmidi->name));
--
--	rmidi->info_flags = SNDRV_RAWMIDI_INFO_DUPLEX;
--	rmidi->private_data = bcd2k;
--
--	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
--	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
--					&bcd2000_midi_output);
--
--	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
--	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
--					&bcd2000_midi_input);
--
--	bcd2k->rmidi = rmidi;
--
--	bcd2k->midi_in_urb = usb_alloc_urb(0, GFP_KERNEL);
--	bcd2k->midi_out_urb = usb_alloc_urb(0, GFP_KERNEL);
--
--	if (!bcd2k->midi_in_urb || !bcd2k->midi_out_urb) {
--		dev_err(&bcd2k->dev->dev, PREFIX "usb_alloc_urb failed\n");
--		return -ENOMEM;
--	}
--
--	usb_fill_int_urb(bcd2k->midi_in_urb, bcd2k->dev,
--				usb_rcvintpipe(bcd2k->dev, 0x81),
--				bcd2k->midi_in_buf, BUFSIZE,
--				bcd2000_input_complete, bcd2k, 1);
--
--	usb_fill_int_urb(bcd2k->midi_out_urb, bcd2k->dev,
--				usb_sndintpipe(bcd2k->dev, 0x1),
--				bcd2k->midi_out_buf, BUFSIZE,
--				bcd2000_output_complete, bcd2k, 1);
--
--	bcd2000_init_device(bcd2k);
--
--	return 0;
--}
-+	mutex_lock(&devices_mutex);
- 
--static void bcd2000_free_usb_related_resources(struct bcd2000 *bcd2k,
--						struct usb_interface *interface)
--{
--	/* usb_kill_urb not necessary, urb is aborted automatically */
-+	/* make sure that userspace cannot create new requests */
-+	snd_card_disconnect(bcd2k->card);
- 
--	usb_free_urb(bcd2k->midi_out_urb);
--	usb_free_urb(bcd2k->midi_in_urb);
-+	bcd2000_free_midi(bcd2k);
- 
- 	if (bcd2k->intf) {
- 		usb_set_intfdata(bcd2k->intf, NULL);
- 		bcd2k->intf = NULL;
- 	}
-+
-+	clear_bit(bcd2k->card_index, devices_used);
-+
-+	snd_card_free_when_closed(bcd2k->card);
-+
-+	mutex_unlock(&devices_mutex);
- }
- 
- static int bcd2000_probe(struct usb_interface *interface,
-@@ -383,6 +95,7 @@ static int bcd2000_probe(struct usb_interface *interface,
- 
- 	err = snd_card_new(&interface->dev, index[card_index], id[card_index],
- 			THIS_MODULE, sizeof(*bcd2k), &card);
-+
- 	if (err < 0) {
- 		mutex_unlock(&devices_mutex);
- 		return err;
-@@ -397,10 +110,10 @@ static int bcd2000_probe(struct usb_interface *interface,
- 	snd_card_set_dev(card, &interface->dev);
- 
- 	strncpy(card->driver, "snd-bcd2000", sizeof(card->driver));
--	strncpy(card->shortname, "BCD2000", sizeof(card->shortname));
-+	strncpy(card->shortname, DEVICENAME, sizeof(card->shortname));
- 	usb_make_path(bcd2k->dev, usb_path, sizeof(usb_path));
- 	snprintf(bcd2k->card->longname, sizeof(bcd2k->card->longname),
--		    "Behringer BCD2000 at %s",
-+			"Behringer " DEVICENAME " at %s",
- 			usb_path);
- 
- 	err = bcd2000_init_midi(bcd2k);
-@@ -419,31 +132,11 @@ static int bcd2000_probe(struct usb_interface *interface,
- 
- probe_error:
- 	dev_info(&bcd2k->dev->dev, PREFIX "error during probing");
--	bcd2000_free_usb_related_resources(bcd2k, interface);
--	snd_card_free(card);
--	mutex_unlock(&devices_mutex);
--	return err;
--}
--
--static void bcd2000_disconnect(struct usb_interface *interface)
--{
--	struct bcd2000 *bcd2k = usb_get_intfdata(interface);
--
--	if (!bcd2k)
--		return;
--
--	mutex_lock(&devices_mutex);
--
--	/* make sure that userspace cannot create new requests */
--	snd_card_disconnect(bcd2k->card);
--
--	bcd2000_free_usb_related_resources(bcd2k, interface);
--
--	clear_bit(bcd2k->card_index, devices_used);
--
--	snd_card_free_when_closed(bcd2k->card);
- 
-+	bcd2000_disconnect(interface);
- 	mutex_unlock(&devices_mutex);
-+
-+	return err;
- }
- 
- static struct usb_driver bcd2000_driver = {
-diff --git a/sound/usb/bcd2000/bcd2000.h b/sound/usb/bcd2000/bcd2000.h
+diff --git a/sound/usb/bcd2000/audio.c b/sound/usb/bcd2000/audio.c
 new file mode 100644
-index 0000000..a0e27c9
+index 0000000..26f958a
 --- /dev/null
-+++ b/sound/usb/bcd2000/bcd2000.h
-@@ -0,0 +1,25 @@
-+#ifndef BCD2000_H
-+#define BCD2000_H
-+
-+#include <linux/usb.h>
-+#include <linux/usb/audio.h>
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+
-+#define DEVICENAME "BCD2000"
-+#define PREFIX "snd-bcd2000: "
-+
-+#include "midi.h"
-+
-+struct bcd2000 {
-+	struct usb_device *dev;
-+	struct snd_card *card;
-+	struct usb_interface *intf;
-+	int card_index;
-+
-+	struct bcd2000_midi midi;
-+};
-+
-+void bcd2000_dump_buffer(const char *prefix, const char *buf, int len);
-+
-+#endif
-diff --git a/sound/usb/bcd2000/midi.c b/sound/usb/bcd2000/midi.c
-new file mode 100644
-index 0000000..3f34e95
---- /dev/null
-+++ b/sound/usb/bcd2000/midi.c
-@@ -0,0 +1,324 @@
++++ b/sound/usb/bcd2000/audio.c
+@@ -0,0 +1,632 @@
 +/*
 + * Behringer BCD2000 driver
 + *
@@ -521,350 +68,729 @@ index 0000000..3f34e95
 + *   GNU General Public License for more details.
 + */
 +
++#include <linux/slab.h>
++#include <linux/usb.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++
++#include "audio.h"
 +#include "bcd2000.h"
-+#include "midi.h"
 +
-+/*
-+ * For details regarding the usable MIDI commands, please see the official
-+ * manual: http://www.behringer.com/EN/Products/BCD2000.aspx#softwareContent
-+ */
-+
-+/*
-+ * Some bytes of the init sequence are always the same, some only vary by a
-+ * small amount and some values look random.
-+ *
-+ * After sending the init sequence, the device also returns data via the
-+ * INTERRUPT IN endpoint which we simply ignore currently as its purpose is
-+ * unknown.
-+ */
-+static unsigned char bcd2000_init_sequence[] = {
-+	0x07, 0x00, 0x00, 0x00, /* always the same */
-+	0x78, 0x48, 0x1c, 0x81, /* random, last byte is either 0x81 or 0xff */
-+	0xc4, 0x00, 0x00, 0x00, /* always the same */
-+
-+	/* group A: */
-+	0x5e,			/* always the same */
-+	0x53,			/* observed 0x23, 0x43, 0x53, 0x83, 0xd3 */
-+	0x4a,			/* looks random */
-+	0xf7,			/* varies within a value of +- 4 */
-+
-+	0x18, 0xfa, 0x11, 0xff, /* Group B (repeats two times) */
-+	0x6c, 0xf3, 0x90, 0xff, /* repeating values, last byte is always 0xff */
-+	0x00, 0x00, 0x00, 0x00, /* always the same */
-+	0x01, 0x00, 0x00, 0x00, /* always the same */
-+
-+	0x18, 0xfa, 0x11, 0xff, /* Group B again */
-+	0x14, 0x00, 0x00, 0x00, /* always the same */
-+	0x00, 0x00, 0x00, 0x00, /* always the same */
-+	0xf2, 0x34, 0x4a, 0xf7, /* similar to group A */
-+
-+	0x18, 0xfa, 0x11, 0xff  /* Group B again */
++static struct snd_pcm_hardware bcd2000_pcm_hardware = {
++	.info = SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_INTERLEAVED |
++		SNDRV_PCM_INFO_BATCH |
++		SNDRV_PCM_INFO_BLOCK_TRANSFER,
++	.formats	= SNDRV_PCM_FMTBIT_S16_LE,
++	.rates		= SNDRV_PCM_RATE_44100,
++	.rate_min	= 44100,
++	.rate_max	= 44100,
++	.channels_min	= 4,
++	.channels_max	= 4,
++	.buffer_bytes_max = ALSA_BUFFER_SIZE,
++	.period_bytes_min = BYTES_PER_PERIOD,
++	.period_bytes_max = ALSA_BUFFER_SIZE,
++	.periods_min	= 1,
++	.periods_max	= PERIODS_MAX,
 +};
 +
-+static unsigned char device_cmd_prefix[] = MIDI_CMD_PREFIX_INIT;
++enum {
++	STREAM_DISABLED, /* no pcm streaming */
++	STREAM_STARTING, /* pcm streaming requested, waiting to become ready */
++	STREAM_RUNNING,  /* pcm streaming running */
++	STREAM_STOPPING
++};
 +
-+static int bcd2000_midi_input_open(struct snd_rawmidi_substream *substream)
++/* copy the audio frames from the URB packets into the ALSA buffer */
++static void bcd2000_pcm_capture(struct bcd2000_substream *sub,
++				struct bcd2000_urb *urb)
 +{
-+	return 0;
++	int i, frame, frame_count, bytes_per_frame;
++	void *src, *dest, *dest_end;
++	struct bcd2000_pcm *rt;
++	struct snd_pcm_runtime *alsa_rt;
++
++	rt = snd_pcm_substream_chip(sub->instance);
++	alsa_rt = sub->instance->runtime;
++
++	dest = (alsa_rt->dma_area + sub->dma_off);
++	dest_end = alsa_rt->dma_area +
++				frames_to_bytes(alsa_rt, alsa_rt->buffer_size);
++
++	bytes_per_frame = alsa_rt->frame_bits / 8;
++	src = urb->buffer;
++
++	for (i = 0; i < USB_N_PACKETS_PER_URB; i++) {
++		frame_count = urb->packets[i].actual_length / bytes_per_frame;
++
++		for (frame = 0; frame < frame_count; frame++) {
++			memcpy(dest, src, bytes_per_frame);
++
++			dest += bytes_per_frame;
++			src += bytes_per_frame;
++			sub->dma_off += bytes_per_frame;
++			sub->period_off += bytes_per_frame;
++
++			if (dest >= dest_end) {
++				sub->dma_off = 0;
++				dest = alsa_rt->dma_area;
++			}
++		}
++
++		/*
++		 * if packet was not full, make src point to the
++		 * data of the next packet
++		 */
++		src += urb->packets[i].length - urb->packets[i].actual_length;
++	}
 +}
 +
-+static int bcd2000_midi_input_close(struct snd_rawmidi_substream *substream)
++/* handle incoming URB with captured data */
++static void bcd2000_pcm_in_urb_handler(struct urb *usb_urb)
 +{
-+	return 0;
-+}
++	struct bcd2000_urb *bcd2k_urb = usb_urb->context;
++	struct bcd2000_pcm *pcm = &bcd2k_urb->bcd2k->pcm;
++	struct bcd2000_substream *stream = bcd2k_urb->stream;
++	unsigned long flags;
++	int ret, k, period_bytes;
++	struct usb_iso_packet_descriptor *packet;
 +
-+/* (de)register midi substream from client */
-+static void bcd2000_midi_input_trigger(struct snd_rawmidi_substream *substream,
-+						int up)
-+{
-+	struct bcd2000 *bcd2k = substream->rmidi->private_data;
-+
-+	bcd2k->midi.receive_substream = up ? substream : NULL;
-+}
-+
-+static void bcd2000_midi_handle_input(struct bcd2000 *bcd2k,
-+				const unsigned char *buf, unsigned int buf_len)
-+{
-+	unsigned int payload_length, tocopy;
-+	struct snd_rawmidi_substream *receive_substream;
-+
-+	receive_substream = ACCESS_ONCE(bcd2k->midi.receive_substream);
-+	if (!receive_substream)
++	if (pcm->panic || stream->state == STREAM_STOPPING)
 +		return;
 +
-+	bcd2000_dump_buffer(PREFIX "received from device: ", buf, buf_len);
-+
-+	if (buf_len < 2)
-+		return;
-+
-+	payload_length = buf[0];
-+
-+	/* ignore packets without payload */
-+	if (payload_length == 0)
-+		return;
-+
-+	tocopy = min(payload_length, buf_len-1);
-+
-+	bcd2000_dump_buffer(PREFIX "sending to userspace: ",
-+					&buf[1], tocopy);
-+
-+	snd_rawmidi_receive(receive_substream,
-+					&buf[1], tocopy);
-+}
-+
-+static void bcd2000_midi_send(struct bcd2000 *bcd2k)
-+{
-+	int len, ret;
-+	struct snd_rawmidi_substream *send_substream;
-+
-+	BUILD_BUG_ON(sizeof(device_cmd_prefix) >= MIDI_URB_BUFSIZE);
-+
-+	send_substream = ACCESS_ONCE(bcd2k->midi.send_substream);
-+	if (!send_substream)
-+		return;
-+
-+	/* copy command prefix bytes */
-+	memcpy(bcd2k->midi.out_buffer, device_cmd_prefix,
-+			sizeof(device_cmd_prefix));
-+
-+	/*
-+	 * get MIDI packet and leave space for command prefix
-+	 * and payload length
-+	 */
-+	len = snd_rawmidi_transmit(send_substream,
-+				   bcd2k->midi.out_buffer + 3,
-+				   MIDI_URB_BUFSIZE - 3);
-+
-+	if (len < 0)
-+		dev_err(&bcd2k->dev->dev, "%s: snd_rawmidi_transmit error %d\n",
-+				__func__, len);
-+
-+	if (len <= 0)
-+		return;
-+
-+	/* set payload length */
-+	bcd2k->midi.out_buffer[2] = len;
-+	bcd2k->midi.out_urb->transfer_buffer_length = MIDI_URB_BUFSIZE;
-+
-+	bcd2000_dump_buffer(PREFIX "sending to device: ",
-+						bcd2k->midi.out_buffer, len+3);
-+
-+	/* send packet to the BCD2000 */
-+	ret = usb_submit_urb(bcd2k->midi.out_urb, GFP_ATOMIC);
-+	if (ret < 0)
-+		dev_err(&bcd2k->dev->dev, PREFIX
-+			"%s (%p): usb_submit_urb() failed, ret=%d, len=%d\n",
-+			__func__, send_substream, ret, len);
-+	else
-+		bcd2k->midi.out_active = 1;
-+}
-+
-+static int bcd2000_midi_output_open(struct snd_rawmidi_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int bcd2000_midi_output_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct bcd2000 *bcd2k = substream->rmidi->private_data;
-+
-+	if (bcd2k->midi.out_active) {
-+		usb_kill_urb(bcd2k->midi.out_urb);
-+		bcd2k->midi.out_active = 0;
++	if (unlikely(usb_urb->status == -ENOENT ||	/* unlinked */
++		usb_urb->status == -ENODEV ||		/* device removed */
++		usb_urb->status == -ECONNRESET ||	/* unlinked */
++		usb_urb->status == -ESHUTDOWN))		/* device disabled */
++	{
++		goto out_fail;
 +	}
 +
-+	return 0;
-+}
++	if (stream->state == STREAM_STARTING) {
++		stream->wait_cond = true;
++		wake_up(&stream->wait_queue);
++	}
 +
-+/* (de)register midi substream from client */
-+static void bcd2000_midi_output_trigger(struct snd_rawmidi_substream *substream,
-+						int up)
-+{
-+	struct bcd2000 *bcd2k = substream->rmidi->private_data;
++	if (stream->active) {
++		spin_lock_irqsave(&stream->lock, flags);
 +
-+	if (up) {
-+		bcd2k->midi.send_substream = substream;
-+		/* check if there is data userspace wants to send */
-+		if (!bcd2k->midi.out_active)
-+			bcd2000_midi_send(bcd2k);
++		/* copy captured data into ALSA buffer */
++		bcd2000_pcm_capture(stream, bcd2k_urb);
++
++		period_bytes = snd_pcm_lib_period_bytes(stream->instance);
++
++		/* do we have enough data for one period? */
++		if (stream->period_off > period_bytes) {
++			stream->period_off %= period_bytes;
++
++			spin_unlock_irqrestore(&stream->lock, flags);
++
++			/*
++			 * call this only once even if multiple periods
++			 * are ready
++			 */
++			snd_pcm_period_elapsed(stream->instance);
++
++			memset(bcd2k_urb->buffer, 0, USB_BUFFER_SIZE);
++		} else {
++			spin_unlock_irqrestore(&stream->lock, flags);
++			memset(bcd2k_urb->buffer, 0, USB_BUFFER_SIZE);
++		}
 +	} else {
-+		bcd2k->midi.send_substream = NULL;
++		memset(bcd2k_urb->buffer, 0, USB_BUFFER_SIZE);
++	}
++
++	/* reset URB data */
++	for (k = 0; k < USB_N_PACKETS_PER_URB; k++) {
++		packet = &bcd2k_urb->packets[k];
++		packet->offset = k * USB_PACKET_SIZE;
++		packet->length = USB_PACKET_SIZE;
++		packet->actual_length = 0;
++		packet->status = 0;
++	}
++	bcd2k_urb->instance.number_of_packets = USB_N_PACKETS_PER_URB;
++
++	/* send the URB back to the BCD2000 */
++	ret = usb_submit_urb(&bcd2k_urb->instance, GFP_ATOMIC);
++	if (ret < 0)
++		goto out_fail;
++
++	return;
++
++out_fail:
++	dev_info(&bcd2k_urb->bcd2k->dev->dev, PREFIX "error in in_urb handler");
++	pcm->panic = true;
++}
++
++/* copy audio frame from ALSA buffer into the URB packet */
++static void bcd2000_pcm_playback(struct bcd2000_substream *sub,
++				 struct bcd2000_urb *urb)
++{
++	int i, frame, frame_count, bytes_per_frame;
++	void *src, *src_end, *dest;
++	struct bcd2000_pcm *rt;
++	struct snd_pcm_runtime *alsa_rt;
++
++	rt = snd_pcm_substream_chip(sub->instance);
++	alsa_rt = sub->instance->runtime;
++
++	src = (alsa_rt->dma_area + sub->dma_off);
++	src_end = alsa_rt->dma_area +
++				frames_to_bytes(alsa_rt, alsa_rt->buffer_size);
++
++	bytes_per_frame = alsa_rt->frame_bits / 8;
++	dest = urb->buffer;
++
++	for (i = 0; i < USB_N_PACKETS_PER_URB; i++) {
++		frame_count = urb->packets[i].length / bytes_per_frame;
++
++		for (frame = 0; frame < frame_count; frame++) {
++			memcpy(dest, src, bytes_per_frame);
++
++			src += bytes_per_frame;
++			dest += bytes_per_frame;
++			sub->dma_off += bytes_per_frame;
++			sub->period_off += bytes_per_frame;
++
++			if (src >= src_end) {
++				sub->dma_off = 0;
++				src = alsa_rt->dma_area;
++			}
++		}
 +	}
 +}
 +
-+static void bcd2000_output_complete(struct urb *urb)
++/* refill empty URB that comes back from the BCD2000 */
++static void bcd2000_pcm_out_urb_handler(struct urb *usb_urb)
 +{
-+	struct bcd2000 *bcd2k = urb->context;
++	struct bcd2000_urb *bcd2k_urb = usb_urb->context;
++	struct bcd2000_pcm *pcm = &bcd2k_urb->bcd2k->pcm;
++	struct bcd2000_substream *stream = bcd2k_urb->stream;
++	unsigned long flags;
++	int ret, k, period_bytes;
++	struct usb_iso_packet_descriptor *packet;
 +
-+	bcd2k->midi.out_active = 0;
 +
-+	if (urb->status)
-+		dev_warn(&urb->dev->dev,
-+			PREFIX "output urb->status: %d\n", urb->status);
-+
-+	if (urb->status == -ESHUTDOWN)
++	if (pcm->panic || stream->state == STREAM_STOPPING)
 +		return;
 +
-+	/* check if there is more data userspace wants to send */
-+	bcd2000_midi_send(bcd2k);
-+}
-+
-+static void bcd2000_input_complete(struct urb *urb)
-+{
-+	int ret;
-+	struct bcd2000 *bcd2k = urb->context;
-+
-+	if (urb->status)
-+		dev_warn(&urb->dev->dev,
-+			PREFIX "input urb->status: %i\n", urb->status);
-+
-+	if (!bcd2k || urb->status == -ESHUTDOWN)
-+		return;
-+
-+	if (urb->actual_length > 0)
-+		bcd2000_midi_handle_input(bcd2k, urb->transfer_buffer,
-+					urb->actual_length);
-+
-+	/* return URB to device */
-+	ret = usb_submit_urb(bcd2k->midi.in_urb, GFP_ATOMIC);
-+	if (ret < 0)
-+		dev_err(&bcd2k->dev->dev, PREFIX
-+			"%s: usb_submit_urb() failed, ret=%d\n",
-+			__func__, ret);
-+}
-+
-+static struct snd_rawmidi_ops bcd2000_midi_output = {
-+	.open =    bcd2000_midi_output_open,
-+	.close =   bcd2000_midi_output_close,
-+	.trigger = bcd2000_midi_output_trigger,
-+};
-+
-+static struct snd_rawmidi_ops bcd2000_midi_input = {
-+	.open =    bcd2000_midi_input_open,
-+	.close =   bcd2000_midi_input_close,
-+	.trigger = bcd2000_midi_input_trigger,
-+};
-+
-+int bcd2000_init_midi(struct bcd2000 *bcd2k)
-+{
-+	int ret;
-+	struct snd_rawmidi *rmidi;
-+	struct bcd2000_midi *midi;
-+
-+	ret = snd_rawmidi_new(bcd2k->card, bcd2k->card->shortname, 0,
-+					1, /* output */
-+					1, /* input */
-+					&rmidi);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	strlcpy(rmidi->name, bcd2k->card->shortname, sizeof(rmidi->name));
-+
-+	rmidi->info_flags = SNDRV_RAWMIDI_INFO_DUPLEX;
-+	rmidi->private_data = bcd2k;
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+					&bcd2000_midi_output);
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+					&bcd2000_midi_input);
-+
-+	midi = &bcd2k->midi;
-+	midi->rmidi = rmidi;
-+
-+	midi->in_urb = usb_alloc_urb(0, GFP_KERNEL);
-+	midi->out_urb = usb_alloc_urb(0, GFP_KERNEL);
-+
-+	if (!midi->in_urb || !midi->out_urb) {
-+		dev_err(&bcd2k->dev->dev, PREFIX "usb_alloc_urb failed\n");
-+		return -ENOMEM;
++	if (unlikely(usb_urb->status == -ENOENT ||	/* unlinked */
++		usb_urb->status == -ENODEV ||		/* device removed */
++		usb_urb->status == -ECONNRESET ||	/* unlinked */
++		usb_urb->status == -ESHUTDOWN))		/* device disabled */
++	{
++		goto out_fail;
 +	}
 +
-+	usb_fill_int_urb(midi->in_urb, bcd2k->dev,
-+				usb_rcvintpipe(bcd2k->dev, 0x81),
-+				midi->in_buffer, MIDI_URB_BUFSIZE,
-+				bcd2000_input_complete, bcd2k, 1);
++	if (stream->state == STREAM_STARTING) {
++		stream->wait_cond = true;
++		wake_up(&stream->wait_queue);
++	}
 +
-+	usb_fill_int_urb(midi->out_urb, bcd2k->dev,
-+				usb_sndintpipe(bcd2k->dev, 0x1),
-+				midi->out_buffer, MIDI_URB_BUFSIZE,
-+				bcd2000_output_complete, bcd2k, 1);
++	if (stream->active) {
++		spin_lock_irqsave(&stream->lock, flags);
 +
-+	init_usb_anchor(&midi->anchor);
-+	usb_anchor_urb(midi->out_urb, &midi->anchor);
-+	usb_anchor_urb(midi->in_urb, &midi->anchor);
++		memset(bcd2k_urb->buffer, 0, USB_BUFFER_SIZE);
 +
-+	/* copy init sequence into buffer */
-+	memcpy(midi->out_buffer, bcd2000_init_sequence, 52);
-+	midi->out_urb->transfer_buffer_length = 52;
++		/* fill URB with data from ALSA */
++		bcd2000_pcm_playback(stream, bcd2k_urb);
 +
-+	/* submit sequence */
-+	ret = usb_submit_urb(midi->out_urb, GFP_KERNEL);
-+	if (ret < 0)
-+		dev_err(&bcd2k->dev->dev, PREFIX
-+			"%s: usb_submit_urb() out failed, ret=%d: ",
-+			__func__, ret);
-+	else
-+		midi->out_active = 1;
++		period_bytes = snd_pcm_lib_period_bytes(stream->instance);
 +
-+	/* pass URB to device to enable button and controller events */
-+	ret = usb_submit_urb(midi->in_urb, GFP_KERNEL);
-+	if (ret < 0)
-+		dev_err(&bcd2k->dev->dev, PREFIX
-+			"%s: usb_submit_urb() in failed, ret=%d: ",
-+			__func__, ret);
++		/* check if a complete period was written into the URB */
++		if (stream->period_off > period_bytes) {
++			stream->period_off %= period_bytes;
 +
-+	/* ensure initialization is finished */
-+	usb_wait_anchor_empty_timeout(&midi->anchor, 1000);
++			spin_unlock_irqrestore(&stream->lock, flags);
++
++			snd_pcm_period_elapsed(stream->instance);
++		} else {
++			spin_unlock_irqrestore(&stream->lock, flags);
++		}
++
++		for (k = 0; k < USB_N_PACKETS_PER_URB; k++) {
++			packet = &bcd2k_urb->packets[k];
++			packet->offset = k * USB_PACKET_SIZE;
++			packet->length = USB_PACKET_SIZE;
++			packet->actual_length = 0;
++			packet->status = 0;
++		}
++		bcd2k_urb->instance.number_of_packets = USB_N_PACKETS_PER_URB;
++
++		ret = usb_submit_urb(&bcd2k_urb->instance, GFP_ATOMIC);
++		if (ret < 0)
++			goto out_fail;
++	}
++
++	return;
++
++out_fail:
++	dev_info(&bcd2k_urb->bcd2k->dev->dev, PREFIX
++		"error in out_urb handler");
++	pcm->panic = true;
++}
++
++static void bcd2000_pcm_stream_stop(struct bcd2000_pcm *pcm,
++				    struct bcd2000_substream *stream)
++{
++	int i;
++
++	if (stream->state != STREAM_DISABLED) {
++		stream->state = STREAM_STOPPING;
++
++		for (i = 0; i < USB_N_URBS; i++)
++			usb_kill_urb(&stream->urbs[i].instance);
++
++		stream->state = STREAM_DISABLED;
++	}
++}
++
++static int bcd2000_substream_open(struct snd_pcm_substream *substream)
++{
++	struct bcd2000_substream *stream = NULL;
++	struct bcd2000_pcm *pcm = snd_pcm_substream_chip(substream);
++
++	substream->runtime->hw = pcm->pcm_info;
++
++	if (pcm->panic)
++		return -EPIPE;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		stream = &pcm->playback;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		stream = &pcm->capture;
++
++	if (!stream) {
++		dev_err(&pcm->bcd2k->dev->dev, PREFIX "invalid stream type\n");
++		return -EINVAL;
++	}
++
++	mutex_lock(&stream->mutex);
++	stream->instance = substream;
++	stream->active = false;
++	mutex_unlock(&stream->mutex);
 +
 +	return 0;
 +}
 +
-+void bcd2000_free_midi(struct bcd2000 *bcd2k)
++static int bcd2000_substream_close(struct snd_pcm_substream *substream)
 +{
-+	/* usb_kill_urb not necessary, urb is aborted automatically */
-+	usb_free_urb(bcd2k->midi.out_urb);
-+	usb_free_urb(bcd2k->midi.in_urb);
++	unsigned long flags;
++	struct bcd2000_pcm *pcm = snd_pcm_substream_chip(substream);
++	struct bcd2000_substream *stream = NULL;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		stream = &pcm->playback;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		stream = &pcm->capture;
++
++	if (pcm->panic)
++		return 0;
++
++	mutex_lock(&stream->mutex);
++	if (stream) {
++		bcd2000_pcm_stream_stop(pcm, stream);
++
++		spin_lock_irqsave(&stream->lock, flags);
++		stream->instance = NULL;
++		stream->active = false;
++		spin_unlock_irqrestore(&stream->lock, flags);
++	}
++	mutex_unlock(&stream->mutex);
++
++	return 0;
 +}
-diff --git a/sound/usb/bcd2000/midi.h b/sound/usb/bcd2000/midi.h
++
++static int bcd2000_pcm_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *hw_params)
++{
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					params_buffer_bytes(hw_params));
++}
++
++static int bcd2000_pcm_hw_free(struct snd_pcm_substream *substream)
++{
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int bcd2000_pcm_stream_start(struct bcd2000_pcm *pcm,
++				    struct bcd2000_substream *stream)
++{
++	int ret;
++	int i, k;
++	struct usb_iso_packet_descriptor *packet;
++
++	if (stream->state == STREAM_DISABLED) {
++		/* reset panic state when starting a new stream */
++		pcm->panic = false;
++
++		stream->state = STREAM_STARTING;
++
++		/* initialize data of each URB */
++		for (i = 0; i < USB_N_URBS; i++) {
++			for (k = 0; k < USB_N_PACKETS_PER_URB; k++) {
++				packet = &stream->urbs[i].packets[k];
++				packet->offset = k * USB_PACKET_SIZE;
++				packet->length = USB_PACKET_SIZE;
++				packet->actual_length = 0;
++				packet->status = 0;
++			}
++
++			/* immediately send data with the first audio out URB */
++			if (stream->instance == SNDRV_PCM_STREAM_PLAYBACK)
++				bcd2000_pcm_playback(stream, &stream->urbs[i]);
++
++			ret = usb_submit_urb(&stream->urbs[i].instance,
++					     GFP_ATOMIC);
++			if (ret) {
++				bcd2000_pcm_stream_stop(pcm, stream);
++				return ret;
++			}
++		}
++
++		/* wait for first out urb to return (sent in in urb handler) */
++		wait_event_timeout(stream->wait_queue,
++						   stream->wait_cond, HZ);
++		if (stream->wait_cond) {
++			dev_dbg(&pcm->bcd2k->dev->dev, PREFIX
++				"%s: stream is running wakeup event\n",
++				__func__);
++			stream->state = STREAM_RUNNING;
++		} else {
++			bcd2000_pcm_stream_stop(pcm, stream);
++			return -EIO;
++		}
++	}
++	return 0;
++}
++
++static int bcd2000_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct bcd2000_pcm *pcm = snd_pcm_substream_chip(substream);
++	int ret;
++	struct bcd2000_substream *stream = NULL;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		stream = &pcm->playback;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		stream = &pcm->capture;
++
++	if (pcm->panic)
++		return -EPIPE;
++
++	if (!stream)
++		return -ENODEV;
++
++	mutex_lock(&stream->mutex);
++	stream->dma_off = 0;
++	stream->period_off = 0;
++
++	if (stream->state == STREAM_DISABLED) {
++		ret = bcd2000_pcm_stream_start(pcm, stream);
++		if (ret) {
++			mutex_unlock(&stream->mutex);
++			dev_err(&pcm->bcd2k->dev->dev, PREFIX
++					"could not start pcm stream\n");
++			return ret;
++		}
++	}
++	mutex_unlock(&stream->mutex);
++	return 0;
++}
++
++static int bcd2000_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct bcd2000_pcm *pcm = snd_pcm_substream_chip(substream);
++	struct bcd2000_substream *stream = NULL;
++	unsigned long flags;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		stream = &pcm->playback;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		stream = &pcm->capture;
++
++	if (pcm->panic)
++		return -EPIPE;
++
++	if (!stream)
++		return -ENODEV;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		spin_lock_irqsave(&stream->lock, flags);
++		stream->active = true;
++		spin_unlock_irqrestore(&stream->lock, flags);
++
++		return 0;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		spin_lock_irqsave(&stream->lock, flags);
++		stream->active = false;
++		spin_unlock_irqrestore(&stream->lock, flags);
++
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
++static snd_pcm_uframes_t
++bcd2000_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct bcd2000_pcm *pcm = snd_pcm_substream_chip(substream);
++	unsigned long flags;
++	snd_pcm_uframes_t ret;
++	struct bcd2000_substream *stream = NULL;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		stream = &pcm->playback;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		stream = &pcm->capture;
++
++	if (pcm->panic || !stream)
++		return SNDRV_PCM_POS_XRUN;
++
++	spin_lock_irqsave(&stream->lock, flags);
++	/*
++	 * return the number of the last written period in the
++	 * ALSA ring buffer
++	 */
++	ret = bytes_to_frames(stream->instance->runtime, stream->dma_off);
++	spin_unlock_irqrestore(&stream->lock, flags);
++
++	return ret;
++}
++
++static struct snd_pcm_ops bcd2000_ops = {
++	.open = bcd2000_substream_open,
++	.close = bcd2000_substream_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = bcd2000_pcm_hw_params,
++	.hw_free = bcd2000_pcm_hw_free,
++	.prepare = bcd2000_pcm_prepare,
++	.trigger = bcd2000_pcm_trigger,
++	.pointer = bcd2000_pcm_pointer,
++	.page = snd_pcm_lib_get_vmalloc_page,
++	.mmap = snd_pcm_lib_mmap_vmalloc,
++};
++
++static int bcd2000_pcm_init_urb(struct bcd2000_urb *urb,
++				struct bcd2000 *bcd2k,
++				char in, unsigned int ep,
++				void (*handler)(struct urb *))
++{
++	urb->bcd2k = bcd2k;
++	usb_init_urb(&urb->instance);
++
++	urb->buffer = kzalloc(USB_BUFFER_SIZE, GFP_KERNEL);
++	if (!urb->buffer)
++		return -ENOMEM;
++
++	urb->instance.transfer_buffer = urb->buffer;
++	urb->instance.transfer_buffer_length = USB_BUFFER_SIZE;
++	urb->instance.dev = bcd2k->dev;
++	urb->instance.pipe = in ? usb_rcvisocpipe(bcd2k->dev, ep)
++				: usb_sndisocpipe(bcd2k->dev, ep);
++	urb->instance.interval = 1;
++	urb->instance.complete = handler;
++	urb->instance.context = urb;
++	urb->instance.number_of_packets = USB_N_PACKETS_PER_URB;
++
++	return 0;
++}
++
++static void bcd2000_pcm_destroy(struct bcd2000 *bcd2k)
++{
++	int i;
++
++	for (i = 0; i < USB_N_URBS; i++) {
++		kfree(bcd2k->pcm.playback.urbs[i].buffer);
++		kfree(bcd2k->pcm.capture.urbs[i].buffer);
++	}
++}
++
++static void bcd2000_pcm_free(struct snd_pcm *pcm)
++{
++	struct bcd2000_pcm *bcd2k_pcm = pcm->private_data;
++
++	if (bcd2k_pcm)
++		bcd2000_pcm_destroy(bcd2k_pcm->bcd2k);
++}
++
++int bcd2000_init_stream(struct bcd2000 *bcd2k,
++			struct bcd2000_substream *stream, bool in)
++{
++	int i, ret;
++
++	stream->state = STREAM_DISABLED;
++
++	init_waitqueue_head(&stream->wait_queue);
++	mutex_init(&stream->mutex);
++
++	for (i = 0; i < USB_N_URBS; i++) {
++		ret = bcd2000_pcm_init_urb(&stream->urbs[i], bcd2k, in,
++					in ? 0x83 : 0x2,
++					in ? bcd2000_pcm_in_urb_handler
++					  : bcd2000_pcm_out_urb_handler);
++		if (ret) {
++			dev_err(&bcd2k->dev->dev, PREFIX
++					"%s: urb init failed, ret=%d: ",
++					__func__, ret);
++			return ret;
++		}
++		stream->urbs[i].stream = stream;
++	}
++
++	return 0;
++}
++
++int bcd2000_init_audio(struct bcd2000 *bcd2k)
++{
++	int ret;
++	struct bcd2000_pcm *pcm;
++
++	pcm = &bcd2k->pcm;
++	pcm->bcd2k = bcd2k;
++
++	spin_lock_init(&pcm->playback.lock);
++	spin_lock_init(&pcm->capture.lock);
++
++	bcd2000_init_stream(bcd2k, &pcm->playback, 0);
++	bcd2000_init_stream(bcd2k, &pcm->capture, 1);
++
++	ret = snd_pcm_new(bcd2k->card, DEVICENAME, 0, 1, 1, &pcm->instance);
++	if (ret < 0) {
++		dev_err(&bcd2k->dev->dev, PREFIX
++			"%s: snd_pcm_new() failed, ret=%d: ",
++			__func__, ret);
++		return ret;
++	}
++	pcm->instance->private_data = pcm;
++	pcm->instance->private_free = bcd2000_pcm_free;
++
++	strlcpy(pcm->instance->name, DEVICENAME, sizeof(pcm->instance->name));
++
++	memcpy(&pcm->pcm_info, &bcd2000_pcm_hardware,
++		sizeof(bcd2000_pcm_hardware));
++
++	snd_pcm_set_ops(pcm->instance, SNDRV_PCM_STREAM_PLAYBACK, &bcd2000_ops);
++	snd_pcm_set_ops(pcm->instance, SNDRV_PCM_STREAM_CAPTURE, &bcd2000_ops);
++
++	return 0;
++}
++
++void bcd2000_free_audio(struct bcd2000 *bcd2k)
++{
++}
+diff --git a/sound/usb/bcd2000/audio.h b/sound/usb/bcd2000/audio.h
 new file mode 100644
-index 0000000..a4d9fd8
+index 0000000..912e8df
 --- /dev/null
-+++ b/sound/usb/bcd2000/midi.h
-@@ -0,0 +1,31 @@
-+#ifndef MIDI_H
-+#define MIDI_H
++++ b/sound/usb/bcd2000/audio.h
+@@ -0,0 +1,58 @@
++#ifndef AUDIO_H
++#define AUDIO_H
 +
-+#include <sound/rawmidi.h>
++#include <sound/pcm.h>
 +
-+#define MIDI_URB_BUFSIZE 64
-+#define MIDI_CMD_PREFIX_INIT {0x03, 0x00}
++#define USB_N_URBS 4
++#define USB_N_PACKETS_PER_URB 16
++#define USB_PACKET_SIZE 360
++#define USB_BUFFER_SIZE (USB_PACKET_SIZE * USB_N_PACKETS_PER_URB)
++
++#define BYTES_PER_PERIOD 3528
++#define PERIODS_MAX 128
++#define ALSA_BUFFER_SIZE (BYTES_PER_PERIOD * PERIODS_MAX)
 +
 +struct bcd2000;
 +
-+struct bcd2000_midi {
++struct bcd2000_urb {
 +	struct bcd2000 *bcd2k;
++	struct bcd2000_substream *stream;
 +
-+	int out_active;
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_substream *receive_substream;
-+	struct snd_rawmidi_substream *send_substream;
-+
-+	unsigned char in_buffer[MIDI_URB_BUFSIZE];
-+	unsigned char out_buffer[MIDI_URB_BUFSIZE];
-+
-+	struct urb *out_urb;
-+	struct urb *in_urb;
-+
-+	struct usb_anchor anchor;
++	/* BEGIN DO NOT SEPARATE */
++	struct urb instance;
++	struct usb_iso_packet_descriptor packets[USB_N_PACKETS_PER_URB];
++	/* END DO NOT SEPARATE */
++	u8 *buffer;
 +};
 +
-+int bcd2000_init_midi(struct bcd2000 *bcd2k);
-+void bcd2000_free_midi(struct bcd2000 *bcd2k);
++struct bcd2000_substream {
++	struct snd_pcm_substream *instance;
++
++	u8 state;
++	bool active;
++	snd_pcm_uframes_t dma_off; /* current position in alsa dma_area */
++	snd_pcm_uframes_t period_off; /* current position in current period */
++
++	struct bcd2000_urb urbs[USB_N_URBS];
++
++	spinlock_t lock;
++	struct mutex mutex;
++	wait_queue_head_t wait_queue;
++	bool wait_cond;
++};
++
++struct bcd2000_pcm {
++	struct bcd2000 *bcd2k;
++
++	struct snd_pcm *instance;
++	struct snd_pcm_hardware pcm_info;
++
++	struct bcd2000_substream playback;
++	struct bcd2000_substream capture;
++	bool panic; /* if set driver won't do anymore pcm on device */
++};
++
++int bcd2000_init_audio(struct bcd2000 *bcd2k);
++void bcd2000_free_audio(struct bcd2000 *bcd2k);
 +
 +#endif
+diff --git a/sound/usb/bcd2000/bcd2000.c b/sound/usb/bcd2000/bcd2000.c
+index 0f22bd9..f7ba9ad 100644
+--- a/sound/usb/bcd2000/bcd2000.c
++++ b/sound/usb/bcd2000/bcd2000.c
+@@ -59,6 +59,8 @@ static void bcd2000_disconnect(struct usb_interface *interface)
+ 	/* make sure that userspace cannot create new requests */
+ 	snd_card_disconnect(bcd2k->card);
+ 
++	bcd2000_free_audio(bcd2k);
++
+ 	bcd2000_free_midi(bcd2k);
+ 
+ 	if (bcd2k->intf) {
+@@ -120,6 +122,10 @@ static int bcd2000_probe(struct usb_interface *interface,
+ 	if (err < 0)
+ 		goto probe_error;
+ 
++	err = bcd2000_init_audio(bcd2k);
++	if (err < 0)
++		goto probe_error;
++
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto probe_error;
+diff --git a/sound/usb/bcd2000/bcd2000.h b/sound/usb/bcd2000/bcd2000.h
+index a0e27c9..802685b 100644
+--- a/sound/usb/bcd2000/bcd2000.h
++++ b/sound/usb/bcd2000/bcd2000.h
+@@ -9,6 +9,7 @@
+ #define DEVICENAME "BCD2000"
+ #define PREFIX "snd-bcd2000: "
+ 
++#include "audio.h"
+ #include "midi.h"
+ 
+ struct bcd2000 {
+@@ -18,6 +19,7 @@ struct bcd2000 {
+ 	int card_index;
+ 
+ 	struct bcd2000_midi midi;
++	struct bcd2000_pcm pcm;
+ };
+ 
+ void bcd2000_dump_buffer(const char *prefix, const char *buf, int len);
 -- 
 2.0.5
