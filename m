@@ -1,17 +1,17 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH 2/2] ASoC: Intel:Add support rt5645 in sst
-	driver
-Date: Sat, 31 Jan 2015 15:22:40 -0800
-Message-ID: <1422746560-91398-2-git-send-email-yang.a.fang@intel.com>
-References: <1422746560-91398-1-git-send-email-yang.a.fang@intel.com>
+From: Chris Rorvick <chris@rorvick.com>
+Subject: [PATCH 0/2] Remove unused functions
+Date: Sun,  1 Feb 2015 01:01:07 -0600
+Message-ID: <1422774069-17328-1-git-send-email-chris@rorvick.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 50873260531
- for <alsa-devel@alsa-project.org>; Sun,  1 Feb 2015 00:23:03 +0100 (CET)
-In-Reply-To: <1422746560-91398-1-git-send-email-yang.a.fang@intel.com>
+Received: from mail-ie0-f178.google.com (mail-ie0-f178.google.com
+ [209.85.223.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C2BB2604E3
+ for <alsa-devel@alsa-project.org>; Sun,  1 Feb 2015 08:01:23 +0100 (CET)
+Received: by mail-ie0-f178.google.com with SMTP id rd18so2494723iec.9
+ for <alsa-devel@alsa-project.org>; Sat, 31 Jan 2015 23:01:21 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, kevin.strasser@intel.com, vinod.koul@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, mengdong.lin@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org, Chris Rorvick <chris@rorvick.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+Found a couple more things to rip out.
 
-Added entry in sst driver to support rt5645 codec
-for intel Braswell platform.
+Regards,
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/intel/sst/sst_acpi.c |    2 ++
- 1 file changed, 2 insertions(+)
+Chris
 
-diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
-index df2b5cc..21b22e6 100644
---- a/sound/soc/intel/sst/sst_acpi.c
-+++ b/sound/soc/intel/sst/sst_acpi.c
-@@ -352,6 +352,8 @@ static struct sst_machines sst_acpi_bytcr[] = {
- static struct sst_machines sst_acpi_chv[] = {
- 	{"10EC5670", "cht-bsw", "cht-bsw-rt5672", NULL, "fw_sst_22a8.bin",
- 						&chv_platform_data },
-+	{"10EC5645", "cht-bsw", "cht-bsw-rt5645", NULL, "fw_sst_22a8.bin",
-+						&chv_platform_data },
- 	{},
- };
- 
+Chris Rorvick (2):
+  ALSA: line6: Remove unused line6_midibuf_status()
+  ALSA: line6: Remove unused line6_midibuf_skip_message()
+
+ sound/usb/line6/midibuf.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
+
 -- 
-1.7.9.5
+2.1.0
