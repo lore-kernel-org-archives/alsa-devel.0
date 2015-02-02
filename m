@@ -1,38 +1,46 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] ALSA: riptide: off by one in
-	snd_riptide_joystick_probe()
-Date: Mon, 2 Feb 2015 15:14:50 +0300
-Message-ID: <20150202121450.GB7024@mwanda>
-References: <20150201204902.GA29129@mwanda>
- <s5hy4ogfvc2.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: atmel-pcm-dma: won't check direction when
+ configure dma
+Date: Mon, 2 Feb 2015 12:19:28 +0000
+Message-ID: <20150202121928.GR21293@sirena.org.uk>
+References: <1422859486-11051-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FF93260537
- for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 13:15:34 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jcUJ+eOYMBLzsnct"
+Return-path: <linux-sound-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hy4ogfvc2.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Hans Wennborg <hans@hanshq.net>, kernel-janitors@vger.kernel.org, Benoit Taine <benoit.taine@lip6.fr>, Bjorn Helgaas <bhelgaas@google.com>
+In-Reply-To: <1422859486-11051-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, Ludovic.Desroches@atmel.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 02, 2015 at 11:42:37AM +0100, Takashi Iwai wrote:
-> 
-> So, could you rewrite the patch as a normal off-by-one fix?
-> 
 
-Sure, I'll do that later this week.
+--jcUJ+eOYMBLzsnct
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-regards,
-dan carpenter
+On Mon, Feb 02, 2015 at 02:44:46PM +0800, Bo Shen wrote:
+> As DMA framework request DMA using direction only in prep_slave
+> function, (The At91 xdma driver has adapted to this request).
+> So won't check direction when do DMA configuration.
+
+Applied, thanks.
+
+--jcUJ+eOYMBLzsnct
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJUz2tPAAoJECTWi3JdVIfQulkH/2pFw8PdKwAyUIDYnaNDJUjH
+k5L5lKLEttPv3r0FYougRzaAdx+G4FhqM0AYUURT5JJUUtqVzzbZlK+kUMCziSgh
+Q69BnLmMWYyltQioZI1AnKlaqKhxNnzxyDcIiEImcr4kxLOkq/XfhW+ez6dDBb/G
+ieMlDD6VW/DubfpzKoe/PC0z+78b2rHB843Qd9az2nMGFHLFeuxZXB9m4eNfIPkT
+KDTjtsPoYlK1e/qCv2fl9J7HFUJdXEj/a9QkI8ccAsfV+uf13tgMMiO4AaArwkhZ
+GlBrf5qnCnbU1RKGhV6e/o8Yu/L3HVJ4Bqx1q8L20j6LnIeLR3JRAafBkM39e1I=
+=Zx3b
+-----END PGP SIGNATURE-----
+
+--jcUJ+eOYMBLzsnct--
