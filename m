@@ -1,15 +1,18 @@
-From: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Subject: [PATCH v9] ASoC: dapm: add code to configure dai link
-	parameters
-Date: Mon,  2 Feb 2015 17:06:44 +0000
-Message-ID: <1422896805-18135-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: rx51: Correct DAPM route for capture
+Date: Mon, 02 Feb 2015 18:13:01 +0100
+Message-ID: <54CFB01D.7080908@metafoo.de>
+References: <1422603163-13346-1-git-send-email-peter.ujfalusi@ti.com>
+ <54CBCE44.6040907@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 69CC2260575
- for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 18:06:52 +0100 (CET)
+Received: from smtp-out-238.synserver.de (smtp-out-238.synserver.de
+ [212.40.185.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0649F260575
+ for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 18:13:00 +0100 (CET)
+In-Reply-To: <54CBCE44.6040907@bitmer.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,311 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, pavel@ucw.cz
 List-Id: alsa-devel@alsa-project.org
 
-dai-link params for codec-codec links were fixed. The fixed
-link between codec and another chip which may be another codec,
-baseband, bluetooth codec etc may require run time configuaration
-changes. This change provides an optional alsa control to select
-one of the params from a list of params.
+On 01/30/2015 07:32 PM, Jarkko Nikula wrote:
+[...]
+> Here's additional data. Without this patch there are these errors below
+> when registering the card:
+>
+> [    8.804626] rx51-audio n900-audio: Connecting non-supply widget to
+> supply widget is not supported (DMic -> Mic Bias)
+> [    8.815795] rx51-audio n900-audio: ASoC: no dapm match for DMic -->
+> (null) --> Mic Bias
+> [    8.824249] rx51-audio n900-audio: ASoC: Failed to add route DMic ->
+> direct -> Mic Bias
+> [    8.832763] rx51-audio n900-audio: Connecting non-supply widget to
+> supply widget is not supported (HS Mic -> b Mic Bias)
+> [    8.844238] rx51-audio n900-audio: ASoC: no dapm match for HS Mic -->
+> (null) --> b Mic Bias
+> [    8.853057] rx51-audio n900-audio: ASoC: Failed to add route HS Mic
+> -> direct -> b Mic Bias
+>
+> This don't happen on v3.18 so in that sense Peter's patch is kind of
+> half-regression fix for v3.19.
 
-Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
----
- include/sound/soc-dapm.h |    3 +
- include/sound/soc.h      |    1 +
- sound/soc/soc-core.c     |    6 +-
- sound/soc/soc-dapm.c     |  164 ++++++++++++++++++++++++++++++++++++++++++++--
- 4 files changed, 166 insertions(+), 8 deletions(-)
+What's new in v3.19 is that the kernel will shout if it encounters such a 
+invalid route, previously it was just silently ignored. But either way it 
+never actually worked, so it's not really a v3.19 regression.
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 5c0a798..a2098e4 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -378,6 +378,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
- void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
- int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 			 const struct snd_soc_pcm_stream *params,
-+			 unsigned int num_params,
- 			 struct snd_soc_dapm_widget *source,
- 			 struct snd_soc_dapm_widget *sink);
- 
-@@ -531,6 +532,8 @@ struct snd_soc_dapm_widget {
- 	void *priv;				/* widget specific data */
- 	struct regulator *regulator;		/* attached regulator */
- 	const struct snd_soc_pcm_stream *params; /* params for dai links */
-+	unsigned int num_params; /* number of params for dai links */
-+	unsigned int params_select; /* currently selected param for dai link */
- 
- 	/* dapm control */
- 	int reg;				/* negative reg = no direct dapm */
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0d1ade1..4636a05 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -941,6 +941,7 @@ struct snd_soc_dai_link {
- 	int be_id;	/* optional ID for machine driver BE identification */
- 
- 	const struct snd_soc_pcm_stream *params;
-+	unsigned int num_params;
- 
- 	unsigned int dai_fmt;           /* format to set on init */
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ededb97..893a6e5 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1230,7 +1230,8 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
- 	capture_w = cpu_dai->capture_widget;
- 	if (play_w && capture_w) {
- 		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
--					   capture_w, play_w);
-+					   dai_link->num_params, capture_w,
-+					   play_w);
- 		if (ret != 0) {
- 			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
- 				play_w->name, capture_w->name, ret);
-@@ -1242,7 +1243,8 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
- 	capture_w = codec_dai->capture_widget;
- 	if (play_w && capture_w) {
- 		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
--					   capture_w, play_w);
-+					   dai_link->num_params, capture_w,
-+					   play_w);
- 		if (ret != 0) {
- 			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
- 				play_w->name, capture_w->name, ret);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index bc2d7a0..b0c5951 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -853,6 +853,36 @@ static int dapm_new_pga(struct snd_soc_dapm_widget *w)
- 	return 0;
- }
- 
-+/* create new dapm dai link control */
-+static int dapm_new_dai_link(struct snd_soc_dapm_widget *w)
-+{
-+	int i, ret;
-+	struct snd_kcontrol *kcontrol;
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_card *card = dapm->card->snd_card;
-+
-+	/* create control for links with > 1 config */
-+	if (w->num_params <= 1)
-+		return 0;
-+
-+	/* add kcontrol */
-+	for (i = 0; i < w->num_kcontrols; i++) {
-+		kcontrol = snd_soc_cnew(&w->kcontrol_news[i], w,
-+					w->name, NULL);
-+		ret = snd_ctl_add(card, kcontrol);
-+		if (ret < 0) {
-+			dev_err(dapm->dev,
-+				"ASoC: failed to add widget %s dapm kcontrol %s: %d\n",
-+				w->name, w->kcontrol_news[i].name, ret);
-+			return ret;
-+		}
-+		kcontrol->private_data = w;
-+		w->kcontrols[i] = kcontrol;
-+	}
-+
-+	return 0;
-+}
-+
- /* We implement power down on suspend by checking the power state of
-  * the ALSA card - when we are suspending the ALSA state for the card
-  * is set to D3.
-@@ -2724,6 +2754,9 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
- 		case snd_soc_dapm_out_drv:
- 			dapm_new_pga(w);
- 			break;
-+		case snd_soc_dapm_dai_link:
-+			dapm_new_dai_link(w);
-+			break;
- 		default:
- 			break;
- 		}
-@@ -3198,7 +3231,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_dapm_path *source_p, *sink_p;
- 	struct snd_soc_dai *source, *sink;
--	const struct snd_soc_pcm_stream *config = w->params;
-+	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
- 	struct snd_pcm_substream substream;
- 	struct snd_pcm_hw_params *params = NULL;
- 	u64 fmt;
-@@ -3290,8 +3323,39 @@ out:
- 	return ret;
- }
- 
-+static int snd_soc_dapm_dai_link_get(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = w->params_select;
-+
-+	return 0;
-+}
-+
-+static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
-+
-+	/* Can't change the config when widget is already powered */
-+	if (w->power)
-+		return -EBUSY;
-+
-+	if (ucontrol->value.integer.value[0] == w->params_select)
-+		return 0;
-+
-+	if (ucontrol->value.integer.value[0] >= w->num_params)
-+		return -EINVAL;
-+
-+	w->params_select = ucontrol->value.integer.value[0];
-+
-+	return 0;
-+}
-+
- int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 			 const struct snd_soc_pcm_stream *params,
-+			 unsigned int num_params,
- 			 struct snd_soc_dapm_widget *source,
- 			 struct snd_soc_dapm_widget *sink)
- {
-@@ -3299,14 +3363,61 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 	struct snd_soc_dapm_widget *w;
- 	size_t len;
- 	char *link_name;
--	int ret;
-+	int ret, count;
-+	unsigned long private_value;
-+	const char **w_param_text;
-+	struct soc_enum w_param_enum[] = {
-+		SOC_ENUM_SINGLE(0, 0, 0, NULL),
-+	};
-+	struct snd_kcontrol_new kcontrol_dai_link[] = {
-+		SOC_ENUM_EXT(NULL, w_param_enum[0],
-+			     snd_soc_dapm_dai_link_get,
-+			     snd_soc_dapm_dai_link_put),
-+	};
-+	const struct snd_soc_pcm_stream *config = params;
-+
-+	w_param_text = devm_kcalloc(card->dev, num_params,
-+					sizeof(char *), GFP_KERNEL);
-+	if (!w_param_text)
-+		return -ENOMEM;
- 
- 	len = strlen(source->name) + strlen(sink->name) + 2;
- 	link_name = devm_kzalloc(card->dev, len, GFP_KERNEL);
--	if (!link_name)
--		return -ENOMEM;
-+	if (!link_name) {
-+		ret = -ENOMEM;
-+		goto outfree_w_param;
-+	}
- 	snprintf(link_name, len, "%s-%s", source->name, sink->name);
- 
-+	for (count = 0 ; count < num_params; count++) {
-+		if (!config->stream_name) {
-+			dev_warn(card->dapm.dev,
-+				"ASoC: anonymous config %d for dai link %s\n",
-+				count, link_name);
-+			len = strlen("Anonymous Configuration ") + 3;
-+			w_param_text[count] =
-+				devm_kzalloc(card->dev, len, GFP_KERNEL);
-+			if (!w_param_text[count]) {
-+				ret = -ENOMEM;
-+				goto outfree_link_name;
-+			}
-+			snprintf(w_param_text[count], len,
-+				"Anonymous Configuration %d", count);
-+		} else {
-+			w_param_text[count] = devm_kmemdup(card->dev,
-+						config->stream_name,
-+						strlen(config->stream_name) + 1,
-+						GFP_KERNEL);
-+			if (!w_param_text[count]) {
-+				ret = -ENOMEM;
-+				goto outfree_link_name;
-+			}
-+		}
-+		config++;
-+	}
-+	w_param_enum[0].items = num_params;
-+	w_param_enum[0].texts = w_param_text;
-+
- 	memset(&template, 0, sizeof(template));
- 	template.reg = SND_SOC_NOPM;
- 	template.id = snd_soc_dapm_dai_link;
-@@ -3314,6 +3425,30 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 	template.event = snd_soc_dai_link_event;
- 	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
- 		SND_SOC_DAPM_PRE_PMD;
-+	template.num_kcontrols = 1;
-+	/* duplicate w_param_enum on heap so that memory persists */
-+	private_value =
-+		(unsigned long) devm_kmemdup(card->dev,
-+			(void *)(kcontrol_dai_link[0].private_value),
-+			sizeof(struct soc_enum), GFP_KERNEL);
-+	if (!private_value) {
-+		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
-+			link_name);
-+		ret = -ENOMEM;
-+		goto outfree_link_name;
-+	}
-+	kcontrol_dai_link[0].private_value = private_value;
-+	/* duplicate kcontrol_dai_link on heap so that memory persists */
-+	template.kcontrol_news =
-+				devm_kmemdup(card->dev, &kcontrol_dai_link[0],
-+					sizeof(struct snd_kcontrol_new),
-+					GFP_KERNEL);
-+	if (!template.kcontrol_news) {
-+		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
-+			link_name);
-+		ret = -ENOMEM;
-+		goto outfree_private_value;
-+	}
- 
- 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
- 
-@@ -3321,15 +3456,32 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 	if (!w) {
- 		dev_err(card->dev, "ASoC: Failed to create %s widget\n",
- 			link_name);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto outfree_kcontrol_news;
- 	}
- 
- 	w->params = params;
-+	w->num_params = num_params;
- 
- 	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
- 	if (ret)
--		return ret;
-+		goto outfree_w;
- 	return snd_soc_dapm_add_path(&card->dapm, w, sink, NULL, NULL);
-+
-+outfree_w:
-+	devm_kfree(card->dev, w);
-+outfree_kcontrol_news:
-+	devm_kfree(card->dev, (void *)template.kcontrol_news);
-+outfree_private_value:
-+	devm_kfree(card->dev, (void *)private_value);
-+outfree_link_name:
-+	devm_kfree(card->dev, link_name);
-+outfree_w_param:
-+	for (count = 0 ; count < num_params; count++)
-+		devm_kfree(card->dev, (void *)w_param_text[count]);
-+	devm_kfree(card->dev, w_param_text);
-+
-+	return ret;
- }
- 
- int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
--- 
-1.7.9.5
+- Lars
