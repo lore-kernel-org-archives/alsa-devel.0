@@ -1,15 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2] ASoC: tlv320aic3x: Fix data delay
-	configuration
-Date: Mon, 2 Feb 2015 10:20:23 +0200
-Message-ID: <1422865223-11785-1-git-send-email-peter.ujfalusi@ti.com>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] MAINTAINERS: ASoC: add maintainer for Intel
+	BDW/HSW ASoC driver
+Date: Mon,  2 Feb 2015 16:55:27 +0800
+Message-ID: <1422867327-9443-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id F3C872604A0
- for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 09:20:34 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A10B2604BB
+ for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 09:53:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,42 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, tiwai@suse.de
-Cc: pavel@ucw.cz, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The CTRLC register were not receiving the correct delay configuration,
-which will corrupt DSP_A audio mode.
+Adding myself as the Intel BDW/HSW ASoC driver maintainer.
 
-Fixes: 368494093354 ("ASoC: tlv320aic3x: Add TDM support")
-
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Tested-by: Pavel Machek <pavel@ucw.cz>
-Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+Acked-by: Liam Girdwood <lgirdwood@gmail.com>
 ---
+ MAINTAINERS | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Changes since v1:
-Fixes tag and Tested-by from Pavel and Jarkko added to commit message.
-
-Regards,
-Peter
-
- sound/soc/codecs/tlv320aic3x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index a78ad361f494..07603d142923 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1046,7 +1046,7 @@ static int aic3x_prepare(struct snd_pcm_substream *substream,
- 		delay += aic3x->tdm_delay;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index dc1e9a8..78a0913 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4943,6 +4943,16 @@ F:	Documentation/input/multi-touch-protocol.txt
+ F:	drivers/input/input-mt.c
+ K:	\b(ABS|SYN)_MT_
  
- 	/* Configure data delay */
--	snd_soc_write(codec, AIC3X_ASD_INTF_CTRLC, aic3x->tdm_delay);
-+	snd_soc_write(codec, AIC3X_ASD_INTF_CTRLC, delay);
- 
- 	return 0;
- }
++INTEL ASoC BDW/HSW DRIVERS
++M:	Jie Yang <yang.jie@linux.intel.com>
++L:	alsa-devel@alsa-project.org
++S:	Supported
++F:	sound/soc/intel/sst-haswell*
++F:	sound/soc/intel/sst-dsp*
++F:	sound/soc/intel/sst-firmware.c
++F:	sound/soc/intel/broadwell.c
++F:	sound/soc/intel/haswell.c
++
+ INTEL C600 SERIES SAS CONTROLLER DRIVER
+ M:	Intel SCU Linux support <intel-linux-scu@intel.com>
+ M:	Artur Paszkiewicz <artur.paszkiewicz@intel.com>
 -- 
-2.2.2
+1.9.1
