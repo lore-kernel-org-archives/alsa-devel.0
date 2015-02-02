@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: Intel:Add Cherrytrail & Braswell
- machine driver cht_bsw_rt5645
-Date: Mon, 2 Feb 2015 19:05:21 +0000
-Message-ID: <20150202190521.GZ21293@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: Intel:Add support rt5645 in sst
+	driver
+Date: Mon, 2 Feb 2015 19:05:59 +0000
+Message-ID: <20150202190559.GA21293@sirena.org.uk>
 References: <1422746560-91398-1-git-send-email-yang.a.fang@intel.com>
+ <1422746560-91398-2-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1706723011821225798=="
+Content-Type: multipart/mixed; boundary="===============2982814041185341462=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 778BD260575
- for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 20:05:29 +0100 (CET)
-In-Reply-To: <1422746560-91398-1-git-send-email-yang.a.fang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3644C2606F1
+ for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 20:06:04 +0100 (CET)
+In-Reply-To: <1422746560-91398-2-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +27,48 @@ Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.co
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1706723011821225798==
+--===============2982814041185341462==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NXoVGAkaRY1DAl/n"
+	protocol="application/pgp-signature"; boundary="BDSulkDpM4o7vov0"
 Content-Disposition: inline
 
 
---NXoVGAkaRY1DAl/n
+--BDSulkDpM4o7vov0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 31, 2015 at 03:22:39PM -0800, yang.a.fang@intel.com wrote:
+On Sat, Jan 31, 2015 at 03:22:40PM -0800, yang.a.fang@intel.com wrote:
+> From: "Fang, Yang A" <yang.a.fang@intel.com>
+>=20
+> Added entry in sst driver to support rt5645 codec
+> for intel Braswell platform.
 
-> +	/* Select clk_i2s1_asrc as ASRC clock source */
-> +	snd_soc_write(codec, RT5645_ASRC_2, 0x1111);
+Applied, thanks.
 
-We should have an interface for doing this from the CODEC driver rather
-than just randomly writing directly to registers - that way we don't
-have something else working behind the back of the CODEC driver and
-potentially interfering with it.
-
---NXoVGAkaRY1DAl/n
+--BDSulkDpM4o7vov0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUz8pwAAoJECTWi3JdVIfQAvMH+waxXdT9RG1lqW2frHuZY0LC
-8PEa40bILYMHupoRgMoMlvOt3OCQS0xH5ifD+CjUWiX0gRA4jmNDkw56sXHGM0Hs
-fyhXa58v3/tb/F85MAKp5mUfA051rztI8DdIgbBp7foLva2/OVpAdo/F0mQFa8N/
-qTE+VfziMUGrTwyZzLXF6TD5jG1YVg1WvmJ3nHNLnEKDga41l++IGYMFVWHipLFX
-rjP1NQytw3pgJ8uUnwos3Hb/Ze2zhDueNYShVBJMomN7+cp+Dxo1QSqewmo8LvGW
-KsJwCvikZgsvY84ZIE9G8JfJj7jdyQVCoCP64F85kznhUK0YwA4Z9kg0j5Lnt4M=
-=K/F5
+iQEcBAEBCAAGBQJUz8qWAAoJECTWi3JdVIfQX70H/i9PmtfqDCxDEPlMoX3vW8UE
+B+ZtS9IfGwGPGStQDBLlkY4H9cBiHbvrh+/0V6UdaQnBfNn/90yRk5sKpPI16FF+
+gsyPyKb6Ft9ylc4H9qAqsXoxDf92JfLeCH0z/1XWoiAlesMdj8AQ42PoSv7rYu9g
+NNRv5uVw2AaOva2lzXWIl/GoizpbQQqYz5Gaz9OOuwQ/YlRj7W6Pif091s8fyC4U
+6M7bNgxqRGvP2tpllTnPtxZYJyKQ3ZD2LkHqm/ZJMO5klkcyoDTl070JIzN7E5X2
+Mi7qxi8/i9ArOnd5RCalikBMvo+696Aki7gQICEzEz1VaOsu0z3w2ITmNyMuSQc=
+=24UZ
 -----END PGP SIGNATURE-----
 
---NXoVGAkaRY1DAl/n--
+--BDSulkDpM4o7vov0--
 
---===============1706723011821225798==
+--===============2982814041185341462==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1706723011821225798==--
+--===============2982814041185341462==--
