@@ -1,17 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/2] ASoC: davinci-evm: Do not include
-	davinci-pcm.h and davinci-i2s.h
-Date: Mon, 2 Feb 2015 14:49:42 +0200
-Message-ID: <1422881382-26405-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1422881382-26405-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2] ASoC: tlv320aic3x: Fix data delay
+	configuration
+Date: Mon, 2 Feb 2015 14:50:33 +0200
+Message-ID: <54CF7299.6050608@ti.com>
+References: <1422865223-11785-1-git-send-email-peter.ujfalusi@ti.com>
+ <20150202115811.GL21293@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id D2FFB2605F1
- for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 13:49:52 +0100 (CET)
-In-Reply-To: <1422881382-26405-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B5D726066B
+ for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 13:50:37 +0100 (CET)
+In-Reply-To: <20150202115811.GL21293@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: olof@lixom.net, alsa-devel@alsa-project.org, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, arnd@arndb.de
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, pavel@ucw.cz, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is no need for them to be included.
+On 02/02/2015 01:58 PM, Mark Brown wrote:
+> On Mon, Feb 02, 2015 at 10:20:23AM +0200, Peter Ujfalusi wrote:
+> =
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/davinci/davinci-evm.c | 3 ---
- 1 file changed, 3 deletions(-)
+>> Changes since v1:
+>> Fixes tag and Tested-by from Pavel and Jarkko added to commit message.
+> =
 
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index d1a8b6e3ac3b..b6bb5947a8a8 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -24,9 +24,6 @@
- #include <asm/dma.h>
- #include <asm/mach-types.h>
- 
--#include "davinci-pcm.h"
--#include "davinci-i2s.h"
--
- struct snd_soc_card_drvdata_davinci {
- 	struct clk *mclk;
- 	unsigned sysclk;
--- 
-2.2.2
+> If there are any code changes from the version I've already applied
+> please send them as an incremental patch.
+
+No change to the code, just commit message.
+
+Thanks,
+P=E9ter
