@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rsnd: call missing
- snd_soc_unregiter_component/platform()
-Date: Mon, 2 Feb 2015 18:38:29 +0000
-Message-ID: <20150202183829.GY21293@sirena.org.uk>
-References: <87h9v4gbhg.wl%kuninori.morimoto.gx@renesas.com>
- <87d25sgbf7.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel:Add Cherrytrail & Braswell
+ machine driver cht_bsw_rt5645
+Date: Mon, 2 Feb 2015 19:05:21 +0000
+Message-ID: <20150202190521.GZ21293@sirena.org.uk>
+References: <1422746560-91398-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5160089975484968730=="
+Content-Type: multipart/mixed; boundary="===============1706723011821225798=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 53DE826066D
- for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 19:38:34 +0100 (CET)
-In-Reply-To: <87d25sgbf7.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 778BD260575
+ for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 20:05:29 +0100 (CET)
+In-Reply-To: <1422746560-91398-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, kevin.strasser@intel.com, vinod.koul@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5160089975484968730==
+--===============1706723011821225798==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ozzXYiujz/5xFLN+"
+	protocol="application/pgp-signature"; boundary="NXoVGAkaRY1DAl/n"
 Content-Disposition: inline
 
 
---ozzXYiujz/5xFLN+
+--NXoVGAkaRY1DAl/n
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 02, 2015 at 04:54:07AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current Renesas R-Car sound driver doesn't call
-> snd_soc_unregiter_component/platform() in .remove.
-> This patch call these functions.
+On Sat, Jan 31, 2015 at 03:22:39PM -0800, yang.a.fang@intel.com wrote:
 
-Applied, thanks.
+> +	/* Select clk_i2s1_asrc as ASRC clock source */
+> +	snd_soc_write(codec, RT5645_ASRC_2, 0x1111);
 
---ozzXYiujz/5xFLN+
+We should have an interface for doing this from the CODEC driver rather
+than just randomly writing directly to registers - that way we don't
+have something else working behind the back of the CODEC driver and
+potentially interfering with it.
+
+--NXoVGAkaRY1DAl/n
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUz8QlAAoJECTWi3JdVIfQLbAH/AllFDud+dSWeRkzecH/k8dg
-owmZYNueNlBtO7ayymDVOPGcktAx70y2CHwARe8YSCm8cweBa0Rjv6hO8pocs3F7
-xOPHZQW2Zl6qOjNC39Hix95okZ5MSfjs6ApmlZSucc8Q4OxU1CYyD+ZhtPysWcpH
-5Jahnv77t59E19rL5hj0terXbzvBT4v9mgyGLQNkTIDdhjxcBQT+vbkSSb5RzvfC
-GeAP24Hb0W9FmfY8rJK58DmlSClIygna/fZ4yXvhSdAEpFDFHkNjMZGIYt3Vbudk
-EICDCX5+8GCUcEeb76gLx4NVkNW3KL3OY19GPw0o8k2FwBm3Yi4BOyuQV6vdXwE=
-=EIiM
+iQEcBAEBCAAGBQJUz8pwAAoJECTWi3JdVIfQAvMH+waxXdT9RG1lqW2frHuZY0LC
+8PEa40bILYMHupoRgMoMlvOt3OCQS0xH5ifD+CjUWiX0gRA4jmNDkw56sXHGM0Hs
+fyhXa58v3/tb/F85MAKp5mUfA051rztI8DdIgbBp7foLva2/OVpAdo/F0mQFa8N/
+qTE+VfziMUGrTwyZzLXF6TD5jG1YVg1WvmJ3nHNLnEKDga41l++IGYMFVWHipLFX
+rjP1NQytw3pgJ8uUnwos3Hb/Ze2zhDueNYShVBJMomN7+cp+Dxo1QSqewmo8LvGW
+KsJwCvikZgsvY84ZIE9G8JfJj7jdyQVCoCP64F85kznhUK0YwA4Z9kg0j5Lnt4M=
+=K/F5
 -----END PGP SIGNATURE-----
 
---ozzXYiujz/5xFLN+--
+--NXoVGAkaRY1DAl/n--
 
---===============5160089975484968730==
+--===============1706723011821225798==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5160089975484968730==--
+--===============1706723011821225798==--
