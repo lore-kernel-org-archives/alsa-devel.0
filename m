@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: davinci-evm: Do not include edma
-	headers
-Date: Mon, 2 Feb 2015 18:26:26 +0000
-Message-ID: <20150202182625.GT21293@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: davinci-evm: Do not include
+ davinci-pcm.h and davinci-i2s.h
+Date: Mon, 2 Feb 2015 18:26:33 +0000
+Message-ID: <20150202182633.GU21293@sirena.org.uk>
 References: <1422881382-26405-1-git-send-email-peter.ujfalusi@ti.com>
- <1422881382-26405-2-git-send-email-peter.ujfalusi@ti.com>
+ <1422881382-26405-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2654884136576939569=="
+Content-Type: multipart/mixed; boundary="===============1982176782634110333=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EA0F126057F
+ by alsa0.perex.cz (Postfix) with ESMTP id E889A260575
  for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 19:30:47 +0100 (CET)
-In-Reply-To: <1422881382-26405-2-git-send-email-peter.ujfalusi@ti.com>
+In-Reply-To: <1422881382-26405-3-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,44 +27,44 @@ Cc: olof@lixom.net, alsa-devel@alsa-project.org, nsekhar@ti.com, Liam Girdwood <
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2654884136576939569==
+--===============1982176782634110333==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rZy99w3HPQ33rC5w"
+	protocol="application/pgp-signature"; boundary="H585NLYNIdzQoecb"
 Content-Disposition: inline
 
 
---rZy99w3HPQ33rC5w
+--H585NLYNIdzQoecb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 02, 2015 at 02:49:41PM +0200, Peter Ujfalusi wrote:
-> The machine driver has no business with the underlying dma.
+On Mon, Feb 02, 2015 at 02:49:42PM +0200, Peter Ujfalusi wrote:
+> There is no need for them to be included.
 
 Applied, thanks.
 
---rZy99w3HPQ33rC5w
+--H585NLYNIdzQoecb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUz8FRAAoJECTWi3JdVIfQ7SEH/RA1VcsfJGBNGA6nHdOPyNqG
-oTqUHsrfbImZMdhfy9CciUBH3ocBSyKnF0M0ekbUwuvLNfC0W0Sce2iy2OwoX+yn
-JNflhnAfd79JKQLd2nBtVdYM40ynyF7eFsakvS0HBSil69Lp4nzI3GZD4/jGgjVq
-VLw8DouKAuAw9ylnmBAMU9Gp+RwY2S10f35tV3rcUb7nRcFRyX4Wo003vYtPzt11
-cEUaIQmR/I5DQfQ8Xz7M8NB/HMyQBAmj/eIeONcCwzDzmsWp8EgEbNDf+ZOiaagk
-nxRX2oeMIe1iEJNvrkW4V0LzoEc3/xPRZ/NyR3v82sFY8cQaJocUaItgBkQoGd4=
-=OU2t
+iQEcBAEBCAAGBQJUz8FYAAoJECTWi3JdVIfQA0MH/3C//NudhAHQdUVYMS0BDoXe
+pb5n3qq/4ONcu97vLs1F4800H9RmXemxLSzNo3QHue8JNCaq3R4K93Eox7qLg9BX
+H7r2k1/qO6Qyf2/MCqTc5r5IjlbNTN9HzN4lhH0q0toPqjWrbB+36jAc1dokXhqw
+Ls3Hokb6Z3a6onXfavFbHXNV64hgEmoSJafErt+AS5BdBgVtcKr7F3PyPyUV2VDz
+ArLA8V8UMsrchhUOnKNZIYGtp/5k4dXblOQZlPN1ubfVSDa6xKYqYTYSQqFAFN4U
+WI4xQVuugFi8m2jHPNX5kfogeefe50zyr7EW/2VKHVrkFUcSSchoniMku21akxw=
+=Alo5
 -----END PGP SIGNATURE-----
 
---rZy99w3HPQ33rC5w--
+--H585NLYNIdzQoecb--
 
---===============2654884136576939569==
+--===============1982176782634110333==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2654884136576939569==--
+--===============1982176782634110333==--
