@@ -1,46 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: atmel-pcm-dma: won't check direction when
- configure dma
-Date: Mon, 2 Feb 2015 12:19:28 +0000
-Message-ID: <20150202121928.GR21293@sirena.org.uk>
-References: <1422859486-11051-1-git-send-email-voice.shen@atmel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/2] ASoC: davinci-mcasp: Fixes for 3.20
+Date: Mon, 2 Feb 2015 14:38:31 +0200
+Message-ID: <1422880713-25414-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jcUJ+eOYMBLzsnct"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1422859486-11051-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: nicolas.ferre@atmel.com, Ludovic.Desroches@atmel.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 427D42605AA
+ for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2015 13:38:40 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, daniel@zonque.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---jcUJ+eOYMBLzsnct
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+While doing the conversion of davinci DAI drivers to use edma-pcm I have noticed
+couple of issues with the driver regarding to old daVinci device support which
+resulted in the following two patch.
 
-On Mon, Feb 02, 2015 at 02:44:46PM +0800, Bo Shen wrote:
-> As DMA framework request DMA using direction only in prep_slave
-> function, (The At91 xdma driver has adapted to this request).
-> So won't check direction when do DMA configuration.
+Some SoC uses shared IRQ line for all McASP instances
+There are SoCs where a given McASP instance only supports DIT mode. Currently
+the arch code feeds dummy resource in place of RX (which is not available). With
+the second patch this is not going to be needed anymore.
 
-Applied, thanks.
+If it is not too late for 3.20..
 
---jcUJ+eOYMBLzsnct
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+regards,
+Peter
+---
+Peter Ujfalusi (2):
+  ASoC: davicni-mcasp: Mark the common irq line as shared
+  ASoC: davinci-mcasp: Fix DIT only McASP instance support
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+ sound/soc/davinci/davinci-mcasp.c | 75 +++++++++++++++++++++------------------
+ 1 file changed, 41 insertions(+), 34 deletions(-)
 
-iQEcBAEBCAAGBQJUz2tPAAoJECTWi3JdVIfQulkH/2pFw8PdKwAyUIDYnaNDJUjH
-k5L5lKLEttPv3r0FYougRzaAdx+G4FhqM0AYUURT5JJUUtqVzzbZlK+kUMCziSgh
-Q69BnLmMWYyltQioZI1AnKlaqKhxNnzxyDcIiEImcr4kxLOkq/XfhW+ez6dDBb/G
-ieMlDD6VW/DubfpzKoe/PC0z+78b2rHB843Qd9az2nMGFHLFeuxZXB9m4eNfIPkT
-KDTjtsPoYlK1e/qCv2fl9J7HFUJdXEj/a9QkI8ccAsfV+uf13tgMMiO4AaArwkhZ
-GlBrf5qnCnbU1RKGhV6e/o8Yu/L3HVJ4Bqx1q8L20j6LnIeLR3JRAafBkM39e1I=
-=Zx3b
------END PGP SIGNATURE-----
-
---jcUJ+eOYMBLzsnct--
+-- 
+2.2.2
