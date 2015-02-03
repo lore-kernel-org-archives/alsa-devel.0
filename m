@@ -1,69 +1,131 @@
-From: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: [PATCH v3 09/15] drm: bridge/dw_hdmi: enable audio support for No-CEA display resolutions
-Date: Tue,  3 Feb 2015 10:15:14 -0500
-Message-ID: <1422976514-30306-1-git-send-email-ykk@rock-chips.com>
+From: Yakir Yang <ykk@rock-chips.com>
+Subject: [PATCH v3 10/15] drm: bridge/dw_hdmi: add audio sample channel status setting
+Date: Tue,  3 Feb 2015 10:16:03 -0500
+Message-ID: <1422976563-30353-1-git-send-email-ykk@rock-chips.com>
 References: <1422975418-13302-1-git-send-email-ykk@rock-chips.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1422975418-13302-1-git-send-email-ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Yao <mark.yao-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Ben Zhang <benzh-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, mmind00-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, marcheu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1422975418-13302-1-git-send-email-ykk@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: David Airlie <airlied@linux.ie>, Russell King <rmk+kernel@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, Rob Clark <robdclark@gmail.com>, Mark Yao <mark.yao@rock-chips.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Sean Cross <xobs@kosagi.com>, Jyri Sarha <jsarha@ti.com>, Ben Zhang <benzh@chromium.org>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, djkurtz@chromium.org, mmind00@googlemail.com, dianders@chromium.org, marcheu@chromium.org, linux-rockchip@lists.infradead.org, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-If the monitor support audio, so we should support audio for it, even if
-the display resolution is No-CEA mode.
+When transmitting IEC60985 linear PCM audio, we configure the
+Aduio Sample Channel Status information of all the channel
+status bits in the IEC60958 frame.
+(am from https://patchwork.kernel.org/patch/5749101/)
 
-Signed-off-by: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Signed-off-by: Yakir Yang <ykk@rock-chips.com>
 ---
-Changes in v3: None
-Changes in v2:
-- enable audio support for No-CEA display mode
+Changes in v3:
+- Determine whether sample channel should set by desig_id.
 
- drivers/gpu/drm/bridge/dw_hdmi.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Changes in v2:
+- Add audio sample channel status setting
+
+ drivers/gpu/drm/bridge/dw_hdmi.c | 44 ++++++++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/bridge/dw_hdmi.h | 20 ++++++++++++++++++
+ 2 files changed, 64 insertions(+)
 
 diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
-index 1c0515f..0bee5ea 100644
+index 0bee5ea..44e95f3 100644
 --- a/drivers/gpu/drm/bridge/dw_hdmi.c
 +++ b/drivers/gpu/drm/bridge/dw_hdmi.c
-@@ -1264,13 +1264,10 @@ static int dw_hdmi_setup(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
+@@ -196,6 +196,47 @@ static void hdmi_mask_writeb(struct dw_hdmi *hdmi, u8 data, unsigned int reg,
+ 	hdmi_modb(hdmi, data << shift, mask, reg);
+ }
  
- 	hdmi->vic = drm_match_cea_mode(mode);
- 
--	if (!hdmi->vic) {
-+	if (hdmi->hdmi_data.video_mode.mdvi)
- 		dev_dbg(hdmi->dev, "Non-CEA mode used in HDMI\n");
--		hdmi->hdmi_data.video_mode.mdvi = true;
--	} else {
-+	else
- 		dev_dbg(hdmi->dev, "CEA mode used vic=%d\n", hdmi->vic);
--		hdmi->hdmi_data.video_mode.mdvi = false;
--	}
- 
- 	if ((hdmi->vic == 6) || (hdmi->vic == 7) ||
- 	    (hdmi->vic == 21) || (hdmi->vic == 22) ||
-@@ -1538,6 +1535,7 @@ static int dw_hdmi_connector_get_modes(struct drm_connector *connector)
- {
- 	struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi,
- 					     connector);
-+	struct hdmi_vmode *vmode = &hdmi->hdmi_data.video_mode;
- 	struct edid *edid;
- 	int ret;
- 
-@@ -1549,6 +1547,8 @@ static int dw_hdmi_connector_get_modes(struct drm_connector *connector)
- 		dev_dbg(hdmi->dev, "got edid: width[%d] x height[%d]\n",
- 			edid->width_cm, edid->height_cm);
- 
-+		vmode->mdvi = !drm_detect_hdmi_monitor(edid);
++static void hdmi_set_schnl(struct dw_hdmi *hdmi)
++{
++	u8 aud_schnl_samplerate;
 +
- 		drm_mode_connector_update_edid_property(connector, edid);
- 		ret = drm_add_edid_modes(connector, edid);
- 		kfree(edid);
++	switch (hdmi->sample_rate) {
++	case 32000:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_32K;
++		break;
++	case 44100:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_44K1;
++		break;
++	case 48000:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_48K;
++		break;
++	case 88200:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_88K2;
++		break;
++	case 96000:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_96K;
++		break;
++	case 176400:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_176K4;
++		break;
++	case 192000:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_192K;
++		break;
++	case 768000:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_768K;
++		break;
++	default:
++		aud_schnl_samplerate = HDMI_FC_AUDSCHNLS7_SMPRATE_44K1;
++		break;
++	}
++
++	/* set channel status register */
++	hdmi_modb(hdmi, aud_schnl_samplerate,
++		  HDMI_FC_AUDSCHNLS7_SMPRATE_MASK, HDMI_FC_AUDSCHNLS7);
++	hdmi_writeb(hdmi, ((~aud_schnl_samplerate) << 4) | 0x2,
++		    HDMI_FC_AUDSCHNLS8);
++}
++
+ static void hdmi_set_clock_regenerator(struct dw_hdmi *hdmi,
+ 				       unsigned int n, unsigned int cts)
+ {
+@@ -439,6 +480,9 @@ static void hdmi_set_clk_regenerator(struct dw_hdmi *hdmi,
+ 		pixel_clk, clk_n, clk_cts);
+ 
+ 	hdmi_set_clock_regenerator(hdmi, clk_n, clk_cts);
++
++	if (hdmi->id.design == 0x20)
++		hdmi_set_schnl(hdmi);
+ }
+ 
+ static void hdmi_init_clk_regenerator(struct dw_hdmi *hdmi)
+diff --git a/drivers/gpu/drm/bridge/dw_hdmi.h b/drivers/gpu/drm/bridge/dw_hdmi.h
+index 29e4bee..c2d210f 100644
+--- a/drivers/gpu/drm/bridge/dw_hdmi.h
++++ b/drivers/gpu/drm/bridge/dw_hdmi.h
+@@ -162,6 +162,17 @@
+ #define HDMI_FC_SPDDEVICEINF                    0x1062
+ #define HDMI_FC_AUDSCONF                        0x1063
+ #define HDMI_FC_AUDSSTAT                        0x1064
++#define HDMI_FC_AUDSV                           0x1065
++#define HDMI_FC_AUDSU                           0x1066
++#define HDMI_FC_AUDSCHNLS0                      0x1067
++#define HDMI_FC_AUDSCHNLS1                      0x1068
++#define HDMI_FC_AUDSCHNLS2                      0x1069
++#define HDMI_FC_AUDSCHNLS3                      0x106a
++#define HDMI_FC_AUDSCHNLS4                      0x106b
++#define HDMI_FC_AUDSCHNLS5                      0x106c
++#define HDMI_FC_AUDSCHNLS6                      0x106d
++#define HDMI_FC_AUDSCHNLS7                      0x106e
++#define HDMI_FC_AUDSCHNLS8                      0x106f
+ #define HDMI_FC_DATACH0FILL                     0x1070
+ #define HDMI_FC_DATACH1FILL                     0x1071
+ #define HDMI_FC_DATACH2FILL                     0x1072
+@@ -754,6 +765,15 @@ enum {
+ /* HDMI_FC_AUDSCHNLS7 field values */
+ 	HDMI_FC_AUDSCHNLS7_ACCURACY_OFFSET = 4,
+ 	HDMI_FC_AUDSCHNLS7_ACCURACY_MASK = 0x30,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_MASK = 0x0f,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_192K = 0xe,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_176K4 = 0xc,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_96K = 0xa,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_768K = 0x9,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_88K2 = 0x8,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_32K = 0x3,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_48K = 0x2,
++	HDMI_FC_AUDSCHNLS7_SMPRATE_44K1 = 0x0,
+ 
+ /* HDMI_FC_AUDSCHNLS8 field values */
+ 	HDMI_FC_AUDSCHNLS8_ORIGSAMPFREQ_MASK = 0xf0,
 -- 
 2.1.2
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
