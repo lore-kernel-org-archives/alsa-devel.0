@@ -1,46 +1,48 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [RESEND PATCH V3 15/15] ARM: dts: Fix I2S1,
- I2S2 compatible for exynos4 SoCs
-Date: Tue, 03 Feb 2015 15:06:22 +0100
-Message-ID: <1422972382-18520-3-git-send-email-s.nawrocki@samsung.com>
-References: <1422972382-18520-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-reply-to: <1422972382-18520-1-git-send-email-s.nawrocki@samsung.com>
-Sender: stable-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: kgene@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, stable@vger.kernel.org
+From: Manuel Lauss <manuel.lauss@gmail.com>
+Subject: Re: [RFC PATCH] ASoC: wm8731: let codec to manage
+	clock by itself
+Date: Tue, 3 Feb 2015 15:40:45 +0100
+Message-ID: <CAOLZvyEVQmqg9Jn5Kt_2m5K0-taJcGf6mweK4T=fwKOwn-Ovxg@mail.gmail.com>
+References: <1422934415-24957-1-git-send-email-voice.shen@atmel.com>
+ <CAOLZvyE6W8-X2_M+-KQNry2VPwLzwbBLuxr5Z5EdBQo7Skv2RQ@mail.gmail.com>
+ <20150203124441.GK21293@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80395260439
+ for <alsa-devel@alsa-project.org>; Tue,  3 Feb 2015 15:41:26 +0100 (CET)
+Received: by mail-wg0-f50.google.com with SMTP id b13so44824928wgh.9
+ for <alsa-devel@alsa-project.org>; Tue, 03 Feb 2015 06:41:26 -0800 (PST)
+In-Reply-To: <20150203124441.GK21293@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Richard Purdie <richard@openedhand.com>, patches@opensource.wolfsonmicro.com, LKML <linux-kernel@vger.kernel.org>, linux-sound@vger.kernel.org, Manuel Lauss <manuel.lauss@googlemail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-I2S1, I2S2 on Exynos4 SoC series have limited functionality compared
-to I2S0, "samsung,s3c6410-i2s" compatible should be used for them.
+On Tue, Feb 3, 2015 at 1:44 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Feb 03, 2015 at 08:54:57AM +0100, Manuel Lauss wrote:
+>
+>> +    wm8731->mclk = devm_clk_get(&spi->dev, "mclk");
+>> +    if (IS_ERR(wm8731->mclk)) {
+>> +        wm8731->mclk = NULL;
+>> +        dev_warn(&spi->dev, "assuming static MCLK\n");
+>> +    }
+>
+> This is broken for both deferred probe and in the case where the clock
+> API genuinely returns a NULL clock.  Other than that it's the kind of
+> thing that we've done for some other drivers, though it's not good to
+> have to do this.  Check them for correct behaviour.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- arch/arm/boot/dts/exynos4.dtsi |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hm, so the only option is to create the simples possible 12MHz clk object?
 
-diff --git a/arch/arm/boot/dts/exynos4.dtsi b/arch/arm/boot/dts/exynos4.dtsi
-index 0cffe39..cb60010 100644
---- a/arch/arm/boot/dts/exynos4.dtsi
-+++ b/arch/arm/boot/dts/exynos4.dtsi
-@@ -371,7 +371,7 @@
- 	};
-
- 	i2s1: i2s@13960000 {
--		compatible = "samsung,s5pv210-i2s";
-+		compatible = "samsung,s3c6410-i2s";
- 		reg = <0x13960000 0x100>;
- 		clocks = <&clock CLK_I2S1>;
- 		clock-names = "iis";
-@@ -384,7 +384,7 @@
- 	};
-
- 	i2s2: i2s@13970000 {
--		compatible = "samsung,s5pv210-i2s";
-+		compatible = "samsung,s3c6410-i2s";
- 		reg = <0x13970000 0x100>;
- 		clocks = <&clock CLK_I2S2>;
- 		clock-names = "iis";
---
-1.7.9.5
+Manuel
