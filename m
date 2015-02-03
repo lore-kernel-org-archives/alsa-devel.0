@@ -1,138 +1,69 @@
-From: Yakir Yang <ykk@rock-chips.com>
-Subject: [PATCH v3 08/15] drm: bridge/dw_hdmi: add audio support for more display resolutions
-Date: Tue,  3 Feb 2015 10:14:28 -0500
-Message-ID: <1422976468-30259-1-git-send-email-ykk@rock-chips.com>
+From: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v3 09/15] drm: bridge/dw_hdmi: enable audio support for No-CEA display resolutions
+Date: Tue,  3 Feb 2015 10:15:14 -0500
+Message-ID: <1422976514-30306-1-git-send-email-ykk@rock-chips.com>
 References: <1422975418-13302-1-git-send-email-ykk@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1422975418-13302-1-git-send-email-ykk@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: David Airlie <airlied@linux.ie>, Russell King <rmk+kernel@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, Rob Clark <robdclark@gmail.com>, Mark Yao <mark.yao@rock-chips.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Sean Cross <xobs@kosagi.com>, Jyri Sarha <jsarha@ti.com>, Ben Zhang <benzh@chromium.org>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, djkurtz@chromium.org, mmind00@googlemail.com, dianders@chromium.org, marcheu@chromium.org, linux-rockchip@lists.infradead.org, Yakir Yang <ykk@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1422975418-13302-1-git-send-email-ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Yao <mark.yao-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Ben Zhang <benzh-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, mmind00-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, marcheu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add more n/cts values, in that case we can support audio for more
-display resolutions (128 * SampleRate = PixelClock * N / CTS).
+If the monitor support audio, so we should support audio for it, even if
+the display resolution is No-CEA mode.
 
-Signed-off-by: Yakir Yang <ykk@rock-chips.com>
+Signed-off-by: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 ---
 Changes in v3: None
 Changes in v2:
-- add more n/cts combinations for more display resolutions
+- enable audio support for No-CEA display mode
 
- drivers/gpu/drm/bridge/dw_hdmi.c | 58 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+ drivers/gpu/drm/bridge/dw_hdmi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
-index b0b2605..1c0515f 100644
+index 1c0515f..0bee5ea 100644
 --- a/drivers/gpu/drm/bridge/dw_hdmi.c
 +++ b/drivers/gpu/drm/bridge/dw_hdmi.c
-@@ -244,8 +244,24 @@ static unsigned int hdmi_compute_n(unsigned int freq, unsigned long pixel_clk,
- 	case 44100:
- 		if (pixel_clk == 25170000)
- 			n = 7007;
-+		else if (pixel_clk == 25175000)
-+			n = 28224;
-+		else if (pixel_clk == 40000000)
-+			n = 7056;
-+		else if (pixel_clk == 54000000)
-+			n = 6272;
-+		else if (pixel_clk == 65000000)
-+			n = 7056;
- 		else if (pixel_clk == 74170000)
- 			n = 17836;
-+		else if (pixel_clk == 74250000)
-+			n = 6272;
-+		else if (pixel_clk == 83500000)
-+			n = 7056;
-+		else if (pixel_clk == 106500000)
-+			n = 4074;
-+		else if (pixel_clk == 108000000)
-+			n = 4018;
- 		else if (pixel_clk == 148350000)
- 			n = (ratio == 150) ? 17836 : 8918;
- 		else
-@@ -255,10 +271,26 @@ static unsigned int hdmi_compute_n(unsigned int freq, unsigned long pixel_clk,
- 	case 48000:
- 		if (pixel_clk == 25170000)
- 			n = (ratio == 150) ? 9152 : 6864;
-+		else if (pixel_clk == 25175000)
-+			n = 12288;
- 		else if (pixel_clk == 27020000)
- 			n = (ratio == 150) ? 8192 : 6144;
-+		else if (pixel_clk == 40000000)
-+			n = 6144;
-+		else if (pixel_clk == 54000000)
-+			n = 6144;
-+		else if (pixel_clk == 65000000)
-+			n = 6144;
- 		else if (pixel_clk == 74170000)
- 			n = 11648;
-+		else if (pixel_clk == 74250000)
-+			n = 6144;
-+		else if (pixel_clk == 83500000)
-+			n = 6144;
-+		else if (pixel_clk == 106500000)
-+			n = 6144;
-+		else if (pixel_clk == 108000000)
-+			n = 6144;
- 		else if (pixel_clk == 148350000)
- 			n = (ratio == 150) ? 11648 : 5824;
- 		else
-@@ -306,10 +338,18 @@ static unsigned int hdmi_compute_cts(unsigned int freq, unsigned long pixel_clk,
- 	case 96000:
- 	case 192000:
- 		switch (pixel_clk) {
-+		case 25175000:
-+			cts = 50350;
-+			break;
- 		case 25200000:
- 		case 27000000:
-+		case 40000000:
- 		case 54000000:
-+		case 65000000:
- 		case 74250000:
-+		case 83500000:
-+		case 106500000:
-+		case 108000000:
- 		case 148500000:
- 			cts = pixel_clk / 1000;
- 			break;
-@@ -330,18 +370,36 @@ static unsigned int hdmi_compute_cts(unsigned int freq, unsigned long pixel_clk,
- 	case 88200:
- 	case 176400:
- 		switch (pixel_clk) {
-+		case 25175000:
-+			cts = 125875;
-+			break;
- 		case 25200000:
- 			cts = 28000;
- 			break;
- 		case 27000000:
- 			cts = 30000;
- 			break;
-+		case 40000000:
-+			cts = 50000;
-+			break;
- 		case 54000000:
- 			cts = 60000;
- 			break;
-+		case 65000000:
-+			cts = 81250;
-+			break;
- 		case 74250000:
- 			cts = 82500;
- 			break;
-+		case 83500000:
-+			cts = 104375;
-+			break;
-+		case 106500000:
-+			cts = 88750;
-+			break;
-+		case 108000000:
-+			cts = 76875;
-+			break;
- 		case 148500000:
- 			cts = 165000;
- 			break;
+@@ -1264,13 +1264,10 @@ static int dw_hdmi_setup(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
+ 
+ 	hdmi->vic = drm_match_cea_mode(mode);
+ 
+-	if (!hdmi->vic) {
++	if (hdmi->hdmi_data.video_mode.mdvi)
+ 		dev_dbg(hdmi->dev, "Non-CEA mode used in HDMI\n");
+-		hdmi->hdmi_data.video_mode.mdvi = true;
+-	} else {
++	else
+ 		dev_dbg(hdmi->dev, "CEA mode used vic=%d\n", hdmi->vic);
+-		hdmi->hdmi_data.video_mode.mdvi = false;
+-	}
+ 
+ 	if ((hdmi->vic == 6) || (hdmi->vic == 7) ||
+ 	    (hdmi->vic == 21) || (hdmi->vic == 22) ||
+@@ -1538,6 +1535,7 @@ static int dw_hdmi_connector_get_modes(struct drm_connector *connector)
+ {
+ 	struct dw_hdmi *hdmi = container_of(connector, struct dw_hdmi,
+ 					     connector);
++	struct hdmi_vmode *vmode = &hdmi->hdmi_data.video_mode;
+ 	struct edid *edid;
+ 	int ret;
+ 
+@@ -1549,6 +1547,8 @@ static int dw_hdmi_connector_get_modes(struct drm_connector *connector)
+ 		dev_dbg(hdmi->dev, "got edid: width[%d] x height[%d]\n",
+ 			edid->width_cm, edid->height_cm);
+ 
++		vmode->mdvi = !drm_detect_hdmi_monitor(edid);
++
+ 		drm_mode_connector_update_edid_property(connector, edid);
+ 		ret = drm_add_edid_modes(connector, edid);
+ 		kfree(edid);
 -- 
 2.1.2
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
