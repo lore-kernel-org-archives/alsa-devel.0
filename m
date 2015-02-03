@@ -1,89 +1,94 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ASoC: wm8731: let codec to manage
-	clock by itself
-Date: Tue, 3 Feb 2015 16:21:28 +0000
-Message-ID: <20150203162128.GP21293@sirena.org.uk>
-References: <1422934415-24957-1-git-send-email-voice.shen@atmel.com>
- <CAOLZvyE6W8-X2_M+-KQNry2VPwLzwbBLuxr5Z5EdBQo7Skv2RQ@mail.gmail.com>
- <20150203124441.GK21293@sirena.org.uk>
- <CAOLZvyEVQmqg9Jn5Kt_2m5K0-taJcGf6mweK4T=fwKOwn-Ovxg@mail.gmail.com>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: add generic dt-card support
+Date: Tue, 3 Feb 2015 16:47:48 +0000
+Message-ID: <20150203164748.GR21293@sirena.org.uk>
+References: <cover.1421868426.git.moinejf@free.fr>
+ <d0c66c2e2f200119f9990fa52a503b1a4af6238f.1421868426.git.moinejf@free.fr>
+ <54C0088F.9070609@metafoo.de>
+ <20150122090723.50ac0156@armhf>
+ <54C14EB3.8080305@metafoo.de>
+ <20150123131554.623003f9@armhf>
+ <54C252F4.9000504@metafoo.de>
+ <20150123193456.276ea512@armhf>
+ <20150123191343.GW21293@sirena.org.uk>
+ <20150124083027.3b3a018f@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0386436221782372345=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73B0626047C
- for <alsa-devel@alsa-project.org>; Tue,  3 Feb 2015 17:22:24 +0100 (CET)
-In-Reply-To: <CAOLZvyEVQmqg9Jn5Kt_2m5K0-taJcGf6mweK4T=fwKOwn-Ovxg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Richard Purdie <richard@openedhand.com>, patches@opensource.wolfsonmicro.com, LKML <linux-kernel@vger.kernel.org>, linux-sound@vger.kernel.org, Manuel Lauss <manuel.lauss@googlemail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gCTdBMF3eqGffSYF"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150124083027.3b3a018f@armhf>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0386436221782372345==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6N0KlctTh4dwosRA"
-Content-Disposition: inline
-
-
---6N0KlctTh4dwosRA
+--gCTdBMF3eqGffSYF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 03, 2015 at 03:40:45PM +0100, Manuel Lauss wrote:
-> On Tue, Feb 3, 2015 at 1:44 PM, Mark Brown <broonie@kernel.org> wrote:
+On Sat, Jan 24, 2015 at 08:30:27AM +0100, Jean-Francois Moine wrote:
+> Mark Brown <broonie@kernel.org> wrote:
+> > On Fri, Jan 23, 2015 at 07:34:56PM +0100, Jean-Francois Moine wrote:
 
-> >> +    wm8731->mclk = devm_clk_get(&spi->dev, "mclk");
-> >> +    if (IS_ERR(wm8731->mclk)) {
-> >> +        wm8731->mclk = NULL;
-> >> +        dev_warn(&spi->dev, "assuming static MCLK\n");
-> >> +    }
+> > > The simple card builder, 'dt-card' (maybe a better name would have been
+> > > 'graph-card'), acts just like the simple-card except that it does not
+> > > appear in the DT. Its creation is done by an audio controller.
 
-> > This is broken for both deferred probe and in the case where the clock
-> > API genuinely returns a NULL clock.  Other than that it's the kind of
-> > thing that we've done for some other drivers, though it's not good to
-> > have to do this.  Check them for correct behaviour.
+> > Which audio controller?  There may be several CPU side audio interfaces
+> > in the same card.  For example people often want to have both low
+> > latency and high latency audio paths from the CPU into the hardware (low
+> > latency tends to increase power burn).  SoC centric system designs do
+> > sometimes also have PDM I/O, expecting to be directly connected to DMICs
+> > and so on, which results in a relatively large number of CPU interfaces.
 
-> Hm, so the only option is to create the simples possible 12MHz clk object?
+> The audio controller which creates the card depends on the complexity
+> of the card. When there are many controllers, it is up to the designer
+> to define either a master audio controller or to instantiate a 'card'
+> device via the DT for doing the job.
 
-Well, that's the best option in general.  You can get away with just
-making sure that -EPROBE_DEFER is handled and that IS_ERR() is used to
-check for an invalid clock but if you can define a clock that's even
-better (and should be pretty painless), we're going to want to do that
-transition at some point.
+So how does the simple controller interact with a more complex one given
+that it's somehow picking some controller node to start from?
 
---6N0KlctTh4dwosRA
+> > > Well, forget about this. I never clearly understood why some widgets
+> > > and routes had to be defined at card level.
+
+> > Please do try to understand the idea of representing simple components
+> > on the board and analogue interconects between devices - it's really
+> > important and not something that can be neglected.
+
+> The problem is that this understanding would stay abstract: I have no
+> such a hardware. Anyway, if the representation can be done with the
+> simple-card, it may also be done with a graph of ports.
+
+If you have a device with any sort of speaker or microphone, or any sort
+of external connector for interfacing with an external device like a
+headphone jack, then you have something that could be a widget.
+
+> > That DT binding was done entirely in the context of video applications
+> > IIRC, this is the first time it's been discussed in this context.
+
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/070622.html
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/086273.html
+
+So there's been some in passing mentions, not really serious discussion
+though...
+
+--gCTdBMF3eqGffSYF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU0PWHAAoJECTWi3JdVIfQ04QH/jbACrSSpMvI16Nvv/qkyZn7
-0YKsObUq85akkoO3SMdRnHIr4HOqgtywq2Z8J+wl4tBbintub02S5whqTBRnDbJv
-sxxvNajT2ZtgOBQHBKLu8f/vUqKj3O6BceFWgYS9RCKroUMMQYjguKprcd+mzzWl
-YAYwhFbq3HdpWY1xj8O2MqsDxav4IT4mJ6NAkL7Qk/b6dra9Uil5JgLRrTy+jmR/
-qj8NLCsNcRvpp39Hf/ISHbJ/1GZN3UplD8jaoVWgcwU//iVv1SLEWuqIh7Tgvg29
-jfJFf9kMYGWQr1v1GLL6A48Mt7ufx3vbKIH9CFtKEqNTeg8AdiQim8JjPZLBIE0=
-=q63h
+iQEcBAEBCAAGBQJU0Pu0AAoJECTWi3JdVIfQTfIH/Rv2hjtstaMCJH4TB9LUcFwy
+Stdb9sHB4vVufCeF6OHN5AGdFmIpTlT6vqq07F77ehEJCu7FTOyw6cc6FV9nW62B
+8H2xAO+4JYTRK22PbQbv8/7JNpM4vOzLkVoh7cttBuyuHzs54V/0e0ivfNEV18sk
+qglip0DQqHjbs/8xkzB1mrPCqkIlv/BnPrW80J7TpVFYgrywaU8ADhHm8WZAp1e8
+ILT8p/z4Ql6B6ja+g0ii0jufpjjnCIIoKJiz/hsFwJm33W0I/VmroCyU+mv+Gywq
+g/rVbn55Rqt6zpY4TagOF077WotLptu+k0djn4v1gZzkZUDchnF13J69jIPnPms=
+=8c84
 -----END PGP SIGNATURE-----
 
---6N0KlctTh4dwosRA--
-
---===============0386436221782372345==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0386436221782372345==--
+--gCTdBMF3eqGffSYF--
