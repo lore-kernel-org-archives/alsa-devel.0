@@ -1,43 +1,49 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH V3 13/15] ARM: dts: Exynos4 and Odroid X2/U3 sound device
- nodes update
-Date: Tue, 03 Feb 2015 12:04:16 +0100
-Message-ID: <54D0AB30.2010504@samsung.com>
-References: <1421260962-16892-1-git-send-email-s.nawrocki@samsung.com>
- <1421260962-16892-14-git-send-email-s.nawrocki@samsung.com>
- <20150114195452.GM3043@sirena.org.uk>
- <07a501d03f69$aba222b0$02e66810$@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: tlv320aic3x: Add support for tlv320aic3104
+Date: Tue, 3 Feb 2015 12:16:20 +0000
+Message-ID: <20150203121620.GI21293@sirena.org.uk>
+References: <54CF2CDA.3060607@ti.com>
+ <1422888485-13626-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <07a501d03f69$aba222b0$02e66810$@kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Kukjin Kim <kgene@kernel.org>
-Cc: 'Mark Brown' <broonie@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, padma.v@samsung.com, sbkim73@samsung.com, drake@endlessm.com, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/g+HdBW4tzDpdEIu"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1422888485-13626-1-git-send-email-jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, benoit.thebaudeau.dev@gmail.com, wlear@appliedlogix.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/15 05:27, Kukjin Kim wrote:
-> Mark Brown wrote:
->> On Wed, Jan 14, 2015 at 07:42:40PM +0100, Sylwester Nawrocki wrote:
->>> Clock related properties are added to the Exynos4 I2S device nodes
->>> so they can be referred to as clock providers. Missing i2s_opclk1
->>> clock is added to the I2S0 node and clock properties are added
->>> to the MAX98090 codec node to allow it to control/read frequency
->>> of the MCLK clock directly.
->>
->> Sorry, I should've said - I applied the ASoC patches, not these.
-> 
-> Shall I take 13 to 15 DT patches in Samsung tree?
 
-Patches 13, 14 use macro definitions which are added in patch which is
-already in Mark's sound tree ("ASoC: samsung: i2s: Add clk provider DT
-binding documentation") [1]. We would need to consider that to avoid
-build breaks.
+--/g+HdBW4tzDpdEIu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---
-Thanks,
-Sylwester
+On Mon, Feb 02, 2015 at 04:48:05PM +0200, Jyri Sarha wrote:
 
-[1]
-https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=0d40c61279510b8ce2368e1c6adcc2c4dc1af279
+> Changes since the first version of the patch
+>  - Added "ti,tlv320aic3104" to tlv320aic3x_of_match table
+>  What surprises me is how come the code worked even before this change?
+
+Applied, thanks.  I2C has the interesting feature that it falls back to
+using regular I2C IDs if it can't match based on the DT ID table which
+masks lots of errors like this.
+
+--/g+HdBW4tzDpdEIu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU0LwTAAoJECTWi3JdVIfQZ+0H/1wHWa6aJwQSSBYLfK22u9da
+npBM4e38gg0X86kn8BRYdcoadHOwbqseXrwfhu5Qt3bNegRK/arNfTPFcFCPQm9j
+BeRIzoe60ncthDSCN6hQivxlhrljYv4ZiYeZyJ1XlfbTmLdIRiWeJ4s+Xk4TAPKg
+g4e3L5Ltr2WNY91zv14pag82tMG1EpeLGTtenH8mOUQ6Y+uOiLnJn+iQdDHKPXdV
+eeqbTdVsUH+in+T6jTVvkqY0KpZLq3FlBiGVNWgWVUGul+L5M8n/Oi926qU++Pi3
+6D68b9ybpebJgrc7X9TG6Xa5ufz7HjFzJnRZ7OoaAljKlIs9s+3PhlSVX4Lnu9E=
+=MU6b
+-----END PGP SIGNATURE-----
+
+--/g+HdBW4tzDpdEIu--
