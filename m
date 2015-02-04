@@ -1,41 +1,46 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 2/2] ASoC: Intel:Add Cherrytrail &
- Braswell machine driver cht_bsw_rt5645
-Date: Tue, 3 Feb 2015 17:29:43 -0800
-Message-ID: <20150204012943.GC4489@intel.com>
-References: <1422991551-28544-2-git-send-email-yang.a.fang@intel.com>
- <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
- <1422993828-29292-2-git-send-email-yang.a.fang@intel.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [RFC PATCH] ASoC: wm8731: let codec to manage clock by itself
+Date: Wed, 4 Feb 2015 11:45:29 +0800
+Message-ID: <54D195D9.4090101@atmel.com>
+References: <1422934415-24957-1-git-send-email-voice.shen@atmel.com> <CAOLZvyE6W8-X2_M+-KQNry2VPwLzwbBLuxr5Z5EdBQo7Skv2RQ@mail.gmail.com> <20150203124441.GK21293@sirena.org.uk> <CAOLZvyEVQmqg9Jn5Kt_2m5K0-taJcGf6mweK4T=fwKOwn-Ovxg@mail.gmail.com> <20150203162128.GP21293@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C4DB2604C7
- for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2015 02:33:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1422993828-29292-2-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, harshapriya.n@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, kevin.strasser@intel.com, denny.iriawan@intel.com, broonie@kernel.org, mengdong.lin@intel.com, bardliao@realtek.com
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20150203162128.GP21293@sirena.org.uk>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Manuel Lauss <manuel.lauss@gmail.com>
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Richard Purdie <richard@openedhand.com>, patches@opensource.wolfsonmicro.com, linux-sound@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 03, 2015 at 12:03:48PM -0800, yang.a.fang@intel.com wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
-> 
-> Add machine driver for two Intel Cherryview-based platforms, Cherrytrail
-> and Braswell, with RT5645 codec
-> 
-> Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Hi Mark,
 
--- 
-~Vinod
+On 02/04/2015 12:21 AM, Mark Brown wrote:
+> On Tue, Feb 03, 2015 at 03:40:45PM +0100, Manuel Lauss wrote:
+>> On Tue, Feb 3, 2015 at 1:44 PM, Mark Brown <broonie@kernel.org> wrote:
+>
+>>>> +    wm8731->mclk = devm_clk_get(&spi->dev, "mclk");
+>>>> +    if (IS_ERR(wm8731->mclk)) {
+>>>> +        wm8731->mclk = NULL;
+>>>> +        dev_warn(&spi->dev, "assuming static MCLK\n");
+>>>> +    }
+>
+>>> This is broken for both deferred probe and in the case where the clock
+>>> API genuinely returns a NULL clock.  Other than that it's the kind of
+>>> thing that we've done for some other drivers, though it's not good to
+>>> have to do this.  Check them for correct behaviour.
+>
+>> Hm, so the only option is to create the simples possible 12MHz clk object?
+>
+> Well, that's the best option in general.  You can get away with just
+> making sure that -EPROBE_DEFER is handled and that IS_ERR() is used to
+> check for an invalid clock but if you can define a clock that's even
+> better (and should be pretty painless), we're going to want to do that
+> transition at some point.
+
+Do you mean I send my RFC patch as the formal patch, and let other 
+boards which use the wm8731 to add clk object, am I right?
+
+Best Regards,
+Bo Shen
+
