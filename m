@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] sound: soc: codecs/ts3a227e: fix sparse
-	warning
-Date: Wed, 4 Feb 2015 20:09:21 +0000
-Message-ID: <20150204200921.GC21293@sirena.org.uk>
-References: <1423070970-24164-1-git-send-email-prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: add a status for runtime
+	suspend/resume
+Date: Wed, 4 Feb 2015 20:17:31 +0000
+Message-ID: <20150204201731.GE21293@sirena.org.uk>
+References: <1423057334-26654-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5159039347212411029=="
+Content-Type: multipart/mixed; boundary="===============6399054486006075365=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 853CC2604D3
- for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2015 21:09:34 +0100 (CET)
-In-Reply-To: <1423070970-24164-1-git-send-email-prabhakar.csengg@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 00C4A2604D5
+ for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2015 21:17:39 +0100 (CET)
+In-Reply-To: <1423057334-26654-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lad Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5159039347212411029==
+--===============6399054486006075365==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RGlnA7XMncgG2RXR"
+	protocol="application/pgp-signature"; boundary="bpxC8ASQF/HCS2bl"
 Content-Disposition: inline
 
 
---RGlnA7XMncgG2RXR
+--bpxC8ASQF/HCS2bl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 04, 2015 at 05:29:30PM +0000, Lad Prabhakar wrote:
-> From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
->=20
-> this patch fixes following sparse warning:
-> ts3a227e.c:222:5: warning: symbol 'ts3a227e_enable_jack_detect' was not d=
-eclared. Should it be static?
+On Wed, Feb 04, 2015 at 09:42:14PM +0800, Jie Yang wrote:
 
-Applied, thanks.  Please use subject lines matching the style for the
-subsystem.
+> +	else if (pdata->pm_state == HSW_PM_STATE_RTD3)
+> +		goto suspend;
+> +
 
---RGlnA7XMncgG2RXR
+>  	sst_hsw_dsp_runtime_sleep(hsw);
+> +
+> +suspend:
+> +	snd_soc_suspend(pdata->soc_card->dev);
+> +	snd_soc_poweroff(pdata->soc_card->dev);
+> +
+>  	pdata->pm_state = HSW_PM_STATE_D3;
+
+This is a pretty big jump for goto and it's not the usual goto as error
+handling idiom either; it seems better to refactor the code so that this
+isn't required.  For example have a runtime PM function which is also
+called by the system suspend path.
+
+--bpxC8ASQF/HCS2bl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU0nxwAAoJECTWi3JdVIfQTxgH/1gtbI7Wg9S3S31HwXu4wRJW
-2MuZQGCxI98NGjcOWeimDPeCYHbXgNwovXBJknU8uvQsXq5eE+58pS/RPCPJwCyu
-k/uPWcITGYQ7fgKpULsCAtO4PHOyEjoUs4FyPbUtG/h30cn0XvPB7QIpDPZ3w197
-ovEgU6qcr604HIKhq4fFOvxfHEsxmNZdgmG29wLZrcHxDk/FcmF2Eocb+esWoq0N
-sPyLjiOf6uRAaJFgjVUGD+IDrbeQCcdBv8ylzdmuXqMspnvH3Hs92M2m++nYWTsM
-oTAsgV2/K4FMEaXNA0Ul/rBRoT4NNhuadJpzpFPpt+r30inj61wKk7vgljheaLU=
-=4SXd
+iQEbBAEBCAAGBQJU0n5bAAoJECTWi3JdVIfQRbAH90Gy7jIwsPXWOghv+CuQJ5Lv
+vecT0xm3POij5gECqHWLX4tpH4O27wcexyttBxv0wMgp8GXXmg+3WqcDGpxQtDyC
+KTXyrtCsgSbtBHWyAMmRkNMN+CL7CTL1yyB6nbOUqzBcbo6ow4Doqjmf7yCCnGEG
+lp5jMi/5dI+4GQzIKuHa+UKsFMNK4p8JcaZhjmB8WieMtqv7wjZk0vR9PKgy/30E
+suvg4OE2aui9Xmzop3UsRJKNS/ro0Vbqn94gw+H84WbGfbA2wZJst/XCKV6Zw2dU
+ipFySmq8HS6N/Fe0m4Z9GSaI0MvtCA+4AdXBmc/zP+ds3xpYqA21oLcFqVdqwA==
+=7gU6
 -----END PGP SIGNATURE-----
 
---RGlnA7XMncgG2RXR--
+--bpxC8ASQF/HCS2bl--
 
---===============5159039347212411029==
+--===============6399054486006075365==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5159039347212411029==--
+--===============6399054486006075365==--
