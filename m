@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt286: add jack detection
- enable/disable APIs and export
-Date: Wed, 4 Feb 2015 20:26:04 +0000
-Message-ID: <20150204202604.GF21293@sirena.org.uk>
-References: <1423056843-26490-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH v3 1/2] ASoC: rt5645: add API to select
+	ASRC clock source
+Date: Wed, 4 Feb 2015 20:31:43 +0000
+Message-ID: <20150204203143.GH21293@sirena.org.uk>
+References: <1422991551-28544-2-git-send-email-yang.a.fang@intel.com>
+ <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1157355698300177764=="
+Content-Type: multipart/mixed; boundary="===============6416811489149225675=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ABF12604D5
- for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2015 21:26:12 +0100 (CET)
-In-Reply-To: <1423056843-26490-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3871B26053D
+ for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2015 21:31:49 +0100 (CET)
+In-Reply-To: <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, kevin.strasser@intel.com, vinod.koul@intel.com, mengdong.lin@intel.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1157355698300177764==
+--===============6416811489149225675==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xFaRvbw97Zfv6UcM"
+	protocol="application/pgp-signature"; boundary="BKkPHfnwJkbQWWrn"
 Content-Disposition: inline
 
 
---xFaRvbw97Zfv6UcM
+--BKkPHfnwJkbQWWrn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 04, 2015 at 09:34:03PM +0800, Jie Yang wrote:
+On Tue, Feb 03, 2015 at 12:03:47PM -0800, yang.a.fang@intel.com wrote:
+> From: "Fang, Yang A" <yang.a.fang@intel.com>
+>=20
+> This patch defines an API to select the clock source for specified filter=
+s.
 
-> +int rt286_disable_jack_detection(struct snd_soc_codec *codec)
-> +{
-> +	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	disable_irq(rt286->i2c->irq);
-> +
-> +	snd_soc_dapm_disable_pin(&rt286->codec->dapm, "LDO1");
-> +	snd_soc_dapm_sync(&rt286->codec->dapm);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(rt286_disable_jack_detection);
+This doesn't apply against current code, looks like a conflict with the
+rt5650 support patch.  Please check and resend.
 
-So, now I look at this again I'm wondering why this isn't writing to any
-registers - looking at the code we run on probe there's a register write
-if we're passed an interrupt which looks awfully like we're enabling
-jack detect.  Probably we wouldn't need to do the rather odd disabling
-of the IRQ if we did that, but perhaps it's required.
+> +	if ((clk_src !=3D RT5645_CLK_SEL_SYS) &&
+> +	    (clk_src !=3D RT5645_CLK_SEL_I2S1_ASRC) &&
+> +	    (clk_src !=3D RT5645_CLK_SEL_I2S2_ASRC) &&
+> +	    (clk_src !=3D RT5645_CLK_SEL_SYS2))
+> +			return -EINVAL;
 
-I think there's actually problems with the existing jack detection code
-in the driver, I'd expect that the initial enabling of jack detect would
-be done when the machine driver says it wants jack detect by passing in
-the jack to report for.
+That return statement is indented a bit far (it should just be a tab,
+it's not really anything to do with the constants so shouldn't be lined
+up with them).  The whole thing would be better written as a switch
+statement (return -EINVAL in the default case and break on a known
+source).
 
---xFaRvbw97Zfv6UcM
+--BKkPHfnwJkbQWWrn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU0oBbAAoJECTWi3JdVIfQX08H/255W39TFzRc2yZgEaIJ219n
-11ZMnPsAyfLACLCXHKjZfE+47D+e7RvfAVZbYY2IE2RyJWLIoHWvMUI5Axin419Y
-5K5DxC7+ZeCXK83ZrvJuiUqFjf70mN4Id3bMLNVoaZmWI73ORHoJJS08TzK7mKAo
-wgifP5rrkFHrf4COlrHShnxhp3XzERzlUSc9McHQkkM8YVU2PNYPjQeXLd2Hp6qJ
-ItxTxhbPmExD4P0EskkMyogy2zOpSh3ieOm/0E/u7Sc+TCCOv29u5mR6XHvOXQGA
-2kh+4fka85k0y53Xi64AA7GAn0CV+KNHhiQq/9o7A7YuJT7aNk9+MsHfpPBJ2/w=
-=a6Sb
+iQEcBAEBCAAGBQJU0oGvAAoJECTWi3JdVIfQOL0H/3Lv6VH8y4mkAbCmnNXv9sX3
+vaQD7GsFirqVh1H5kcqUE3rOX06gNrk0OuskMwslVoGWkv6uCSMHR+tS3B4XOCBu
+/flg4dB6oPi9HatB8z2aBTuxdQXglaminb128G0diBDXPLqv4u892LV5wuGzPRYy
+6zz1I5UBN8ccVEqlWHju2B/x6/FfLWeQKIdaKCQqF9d6+Mye5Rszdaak3dtGW52E
+pDNLQSoLSeM9D940aIn1TTerMVVD/mVrLtH9pvqF5VEDiy4Txh3Ucch0KMwBPu9U
+qKYHFzJHXHArb2g7yIK9OAunPQPd4PWSYoBt4aFY5A1ao6kpFDbKdpT9yhtcfwc=
+=AJ18
 -----END PGP SIGNATURE-----
 
---xFaRvbw97Zfv6UcM--
+--BKkPHfnwJkbQWWrn--
 
---===============1157355698300177764==
+--===============6416811489149225675==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1157355698300177764==--
+--===============6416811489149225675==--
