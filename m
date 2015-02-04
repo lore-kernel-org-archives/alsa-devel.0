@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/2] ASoC: rt5645: add API to select
-	ASRC clock source
-Date: Wed, 4 Feb 2015 20:31:43 +0000
-Message-ID: <20150204203143.GH21293@sirena.org.uk>
-References: <1422991551-28544-2-git-send-email-yang.a.fang@intel.com>
- <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
+Subject: Re: [PATCH 0/2] ASoC: rsnd: tidyup .remove method
+Date: Wed, 4 Feb 2015 20:55:03 +0000
+Message-ID: <20150204205503.GM21293@sirena.org.uk>
+References: <87h9v4gbhg.wl%kuninori.morimoto.gx@renesas.com>
+ <87iofj7qhc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6416811489149225675=="
+Content-Type: multipart/mixed; boundary="===============2931211159701877194=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3871B26053D
- for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2015 21:31:49 +0100 (CET)
-In-Reply-To: <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 632E8260591
+ for <alsa-devel@alsa-project.org>; Wed,  4 Feb 2015 21:55:10 +0100 (CET)
+In-Reply-To: <87iofj7qhc.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, kevin.strasser@intel.com, vinod.koul@intel.com, mengdong.lin@intel.com, bardliao@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6416811489149225675==
+--===============2931211159701877194==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BKkPHfnwJkbQWWrn"
+	protocol="application/pgp-signature"; boundary="WoJAn93zv47S/Oyu"
 Content-Disposition: inline
 
 
---BKkPHfnwJkbQWWrn
+--WoJAn93zv47S/Oyu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 03, 2015 at 12:03:47PM -0800, yang.a.fang@intel.com wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
->=20
-> This patch defines an API to select the clock source for specified filter=
-s.
+On Tue, Feb 03, 2015 at 01:05:52AM +0000, Kuninori Morimoto wrote:
+> > BTW, we found ALSA SoC bind/unbind issue on latest upstream kernel.
+> > ALSA SoC is using like this.
 
-This doesn't apply against current code, looks like a conflict with the
-rt5650 support patch.  Please check and resend.
+> > 	[CPU] - [CARD] - [CODEC]
 
-> +	if ((clk_src !=3D RT5645_CLK_SEL_SYS) &&
-> +	    (clk_src !=3D RT5645_CLK_SEL_I2S1_ASRC) &&
-> +	    (clk_src !=3D RT5645_CLK_SEL_I2S2_ASRC) &&
-> +	    (clk_src !=3D RT5645_CLK_SEL_SYS2))
-> +			return -EINVAL;
+> > If we unbind CPU here, it still has CARD infomation.
+> > And, kernel doesn't call initialize function when re-bind,
+> > and it will panic when playback
 
-That return statement is indented a bit far (it should just be a tab,
-it's not really anything to do with the constants so shouldn't be lined
-up with them).  The whole thing would be better written as a switch
-statement (return -EINVAL in the default case and break on a known
-source).
+> Is this open bug ?
+> Or, Renesas sound only ?
+> fsi/rsnd both have this issue.
 
---BKkPHfnwJkbQWWrn
+I'm not aware of anything here - when we rebuild the card we should be
+reinitializing everything.  It's possible this is just broken for
+everyone though, most people don't unload devices and where they do they
+tend to remove the card first.
+
+--WoJAn93zv47S/Oyu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU0oGvAAoJECTWi3JdVIfQOL0H/3Lv6VH8y4mkAbCmnNXv9sX3
-vaQD7GsFirqVh1H5kcqUE3rOX06gNrk0OuskMwslVoGWkv6uCSMHR+tS3B4XOCBu
-/flg4dB6oPi9HatB8z2aBTuxdQXglaminb128G0diBDXPLqv4u892LV5wuGzPRYy
-6zz1I5UBN8ccVEqlWHju2B/x6/FfLWeQKIdaKCQqF9d6+Mye5Rszdaak3dtGW52E
-pDNLQSoLSeM9D940aIn1TTerMVVD/mVrLtH9pvqF5VEDiy4Txh3Ucch0KMwBPu9U
-qKYHFzJHXHArb2g7yIK9OAunPQPd4PWSYoBt4aFY5A1ao6kpFDbKdpT9yhtcfwc=
-=AJ18
+iQEcBAEBCAAGBQJU0ocmAAoJECTWi3JdVIfQRVIH/1uaPpNPzieb2YAnLsYGTE0R
+GsseJEPLTpGAkZ1K2P3xolcQ1oIdLwOezuW3VUJrxs3OBhztzqVZxDaZ0polS1Ts
+L3vdWCVpe1hbAZOGlymaMMB81rwNXRtXs72AI8fzxEtmyqjbNzYC+NVPEx8vaAly
+8uaiCVMDU1DnOkkGknpx3JPnUYWBx+LMVUl0vUi1BNFqZcbUG597iEbQurMFXiy2
+ptwqyA/BaxJV0KlfAxeDN4xKyvzzjzp+D0PP46BHfs/1gYGG3ZlIb7tf5k8eHitE
+qUqCE2ix42TaIPyJEOaMfqPjihk0e/2jPpkT1Dn3C+t8uujp6sRa7iSbo2QFzn4=
+=l8hC
 -----END PGP SIGNATURE-----
 
---BKkPHfnwJkbQWWrn--
+--WoJAn93zv47S/Oyu--
 
---===============6416811489149225675==
+--===============2931211159701877194==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6416811489149225675==--
+--===============2931211159701877194==--
