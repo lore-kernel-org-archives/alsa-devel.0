@@ -1,55 +1,83 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH_V4 0/3] sound:soc: jz4740: Add DT, dynamic sampling
-Date: Wed, 4 Feb 2015 21:13:22 +0000
-Message-ID: <20150204211322.GP21293@sirena.org.uk>
-References: <1422960959-40403-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Some questions about userspace control elements
+Date: Thu, 05 Feb 2015 08:51:17 +0900
+Message-ID: <54D2B075.4050005@sakamocchi.jp>
+References: <54CE10D2.7090903@sakamocchi.jp> <54CE675A.80004@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cveWy1lHDZPvR+aK"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1422960959-40403-1-git-send-email-Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Cc: tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 940772605F5
+ for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 00:51:24 +0100 (CET)
+In-Reply-To: <54CE675A.80004@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Clemens,
 
---cveWy1lHDZPvR+aK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I find a curious issue about the userspace element. Could I ask you to
+give some comments about
 
-On Tue, Feb 03, 2015 at 10:55:56AM +0000, Zubair Lutfullah Kakakhel wrote:
-> Hi,
->=20
-> Here are a few simple patches for the jz4740.
->=20
-> First adds dynamic sampling support to jz4740-i2s.
-> Then two to add a simple binding and DT support.
-> Then a patch to set the clock rate for i2s.
+The code is this one line.
 
-Applied all, but as I think has been mentioned before please use subject
-lines matching the usual style for the subsystem.
+sound/core/control.c:1188
+{{{
+kctl.count = info->owner ? info->owner : 1;
+}}}
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/core/control.c?id=6ccd93bdb989507717edb375d40534f1177822c5#n1188
 
---cveWy1lHDZPvR+aK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+In this code, the value in struct snd_ctl_elem_info.owner is assigned to
+struct snd_kcontrol.count. The meaning of these two member is completely
+different but assigned.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+include/sound/control.h:67
+{{{
+struct snd_kcontrol {
+...
+unsigned int count;
+...
+};
+}}}
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/sound/control.h?id=6ccd93bdb989507717edb375d40534f1177822c5#n67
 
-iQEcBAEBCAAGBQJU0otxAAoJECTWi3JdVIfQHikH/Rc7W7B8TZPTHKdZhjq0uC/q
-KjXJhZ6LiW1vz0cXkMN4m7yKvveoJe9qGuMzaCky0JSE4Ha0BLhVRiwB2+hSyK8f
-JjZAuqEJ3No+sUMjrtWLPIQPyUTwsuk8DJSVBXp8EyqbzLIcjQUG/j0H0HVHfRJP
-m5Z33OUox8lpndZ5O1+tBTcjmBXu5j2hHTP4FvjB1yxKWpw8i+wl+LtynkfIslee
-MMOkhqH9xmVOxLHfOMj6yekHxEK8m+IdF0gLw1WxYYnvzi66RBNJKvgcg8pAmxsW
-rvjw0VygVpLPFn2M4cg5C8aHZIMj0s9l3ft6+s1oTrhSNv9K3dcC9YDxksaPVx8=
-=Y2CI
------END PGP SIGNATURE-----
+include/uapi/sound/asound.h:851
+{{{
+struct snd_ctl_elem_info {
+...
+__kernel_pid_t owner;		/* owner's PID of this control */
+...
+};
+};
+}}}
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/asound.h?id=6ccd93bdb989507717edb375d40534f1177822c5#n851
+(I wonder why the value with _kernel_pid type is exported to userspace...)
 
---cveWy1lHDZPvR+aK--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I guess that the reason is to limit the number of event generated when
+the control element set is operated. Actually, my sample code reports
+one event every time when operating the control element with 10 entries.
+But I believe this is the different behaviour as the kernel control
+elements do.
+
+sound/core/control.c:257
+{{{
+kctl.count = ncontrol->count ? ncontrol->count : 1;
+}}}
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/core/control.c?id=6ccd93bdb989507717edb375d40534f1177822c5#n257
+
+For me, the behaviour of userspace control element is a bit strange. The
+behaviour is legal as a control element?
+
+
+Regards
+
+Takashi Sakamoto
