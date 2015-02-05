@@ -1,17 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Some questions about userspace control elements
-Date: Thu, 05 Feb 2015 09:44:49 +0900
-Message-ID: <54D2BD01.6020904@sakamocchi.jp>
-References: <54CE10D2.7090903@sakamocchi.jp> <54CE675A.80004@ladisch.de>
- <54D2B075.4050005@sakamocchi.jp>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v2] ASoC: rt286: add jack detection
+ enable/disable APIs and export
+Date: Thu, 5 Feb 2015 02:07:35 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BA9CB6@SHSMSX101.ccr.corp.intel.com>
+References: <1423056843-26490-1-git-send-email-yang.jie@intel.com>
+ <20150204202604.GF21293@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id B1A32260687
- for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 01:44:53 +0100 (CET)
-In-Reply-To: <54D2B075.4050005@sakamocchi.jp>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id D03322606A7
+ for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 03:07:48 +0100 (CET)
+In-Reply-To: <20150204202604.GF21293@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "bardliao@realtek.com" <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I want to add some supplement to my previous message.
-(sorry to include some logic jump...)
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Thursday, February 05, 2015 4:26 AM
+> To: Jie, Yang
+> Cc: alsa-devel@alsa-project.org; bardliao@realtek.com; Girdwood, Liam R
+> Subject: Re: [PATCH v2] ASoC: rt286: add jack detection enable/disable APIs and
+> export
+> 
+> On Wed, Feb 04, 2015 at 09:34:03PM +0800, Jie Yang wrote:
+> 
+> > +int rt286_disable_jack_detection(struct snd_soc_codec *codec) {
+> > +	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+> > +
+> > +	disable_irq(rt286->i2c->irq);
+> > +
+> > +	snd_soc_dapm_disable_pin(&rt286->codec->dapm, "LDO1");
+> > +	snd_soc_dapm_sync(&rt286->codec->dapm);
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rt286_disable_jack_detection);
+> 
+> So, now I look at this again I'm wondering why this isn't writing to any registers
+> - looking at the code we run on probe there's a register write if we're passed an
+> interrupt which looks awfully like we're enabling jack detect.  Probably we
+> wouldn't need to do the rather odd disabling of the IRQ if we did that, but
+> perhaps it's required.
+[Keyon] yes, it's required to disable jack detection, otherwise, pin LDO1 will be force enabled again. So here I just disable the IRQ to make the code change smallest.
 
-On Feb 5 2015 08:51, Takashi Sakamoto wrote:
-> The code is this one line.
->
-> sound/core/control.c:1188
-> {{{
-> kctl.count = info->owner ? info->owner : 1;
-> }}}
-> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/core/control.c?id=6ccd93bdb989507717edb375d40534f1177822c5#n1188
->
-> In this code, the value in struct snd_ctl_elem_info.owner is assigned to
-> struct snd_kcontrol.count. The meaning of these two member is completely
-> different but assigned.
-
-When any userspace control element are added, the value of struct 
-snd_ctl_elem_info.owner is zero because there's no API to set this 
-member in userspace and snd_ctl_elem_info_alloca() or 
-snd_ctl_elem_info_malloc() initialize allocated memory with zero.
-
-Then, 1 is always assigned to the kctl.count.
-
-> I guess that the reason is to limit the number of event generated when
-> the control element set is operated. Actually, my sample code reports
-> one event every time when operating the control element with 10 entries.
-> But I believe this is the different behaviour as the kernel control
-> elements do.
-
-For example, 'add' event is generated in sound/core/contro.c:378. This 
-event is generated several times as the number of count:
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/core/control.c?id=6ccd93bdb989507717edb375d40534f1177822c5#n376
-
-Due to kctl.count is assigned to 1, the number of generated event for 
-userspace control elements is one time.
-
-> sound/core/control.c:257
-> {{{
-> kctl.count = ncontrol->count ? ncontrol->count : 1;
-> }}}
-> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/core/control.c?id=6ccd93bdb989507717edb375d40534f1177822c5#n257
->
-> For me, the behaviour of userspace control element is a bit strange. The
-> behaviour is legal as a control element?
-
-On the other hand, in kernel control element, kctl.count is assigned to 
-the value which each driver gives. Therefore, the number of generated 
-events is the same as the number of element count.
-
-In these reasons, the number of generated events is different between 
-kernel/userspace control element.
-
-Actually, there's a few kernel control elements in which the number of 
-count is bigger than 1. So in most case, users cannot realize the 
-differences to use ALSA control application such as alsamixer. The 
-behaviour of userspace control elements looks like kernel control 
-elements which major sound drivers give.
-
-Please inform to me if my understanding is wrong.
-
-
-Regards
-
-Takashi Sakamoto
+> 
+> I think there's actually problems with the existing jack detection code in the
+> driver, I'd expect that the initial enabling of jack detect would be done when the
+> machine driver says it wants jack detect by passing in the jack to report for.
+[Keyon] I agree that it may be more reasonable if we can pass jack(similar to rt286_mic_detect(), can use jack=NULL for disable) from this machine driver, then add checking this jack in handler rt286_irq(), don't call rt286_jack_detect() and snd_soc_jack_report() when the jack is NULL.
+What do you think about this solution?
