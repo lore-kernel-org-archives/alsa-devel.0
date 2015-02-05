@@ -1,214 +1,147 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V4 04/10] ASoC: codec: Add MAX98357A codec driver
-Date: Thu,  5 Feb 2015 12:53:40 -0800
-Message-ID: <1423169626-22166-5-git-send-email-kwestfie@codeaurora.org>
-References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
-Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
+From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Subject: [Patch V4 00/10] ASoC: QCOM: Add support for ipq806x SOC
+Date: Thu,  5 Feb 2015 12:53:36 -0800
+Message-ID: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kenneth Westfield <kwestfie@codeaurora.org>
+From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 
-Add codec driver for the Maxim MAX98357A DAC.
+This patch series adds support for I2S audio playback on the Qualcomm
+Technologies ipq806x SOC.
 
-Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
-Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
----
- sound/soc/codecs/Kconfig     |   4 ++
- sound/soc/codecs/Makefile    |   2 +
- sound/soc/codecs/max98357a.c | 138 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 144 insertions(+)
+The ipq806x SOC has audio-related hardware blocks in its low-power audio
+subsystem (or LPASS).  One of the relevant blocks in the LPASS is its low-power
+audio interface (or LPAIF).  This contains an MI2S port, which is what these
+drivers are configured to use.  The LPAIF also contains a DMA engine that is
+dedicated to moving audio samples into the transmit FIFO of the MI2S port.  In
+addition, there is also low-power memory (LPM) within the audio subsystem, which
+is used for buffering the audio samples.
+
+The development board being used for testing contains the ipq806x SOC and a
+Maxim max98357a DAC/amp.  One bus from the MI2S port of the SOC is connected to
+the DAC/amp for stereo playback.  This bus is configured so that the SOC is bus
+master and consists of DATA, LRCLK, and BCLK.  The DAC/amp does not need MCLK to
+operate.  In addition, a single GPIO pin from the SOC is connected to the same
+DAC/amp, which gives enable/disable control over the DAC/amp.
+
+The specific drivers added are:
+  * a codec DAI driver for controlling the DAC/amp
+  * a CPU DAI driver for controlling the MI2S port
+  * a platform driver for controlling the LPAIF DMA engine
+
+These drivers, together, are tied into simple-audio-card to complete the audio
+implementation.  Corresponding additions to the device tree for the ipq806x SOC
+and its documentation has also been added.  Also, as this is a new directory,
+the MAINTAINERS file has been updated as well.
+
+The LPASS also contains clocks that need to be controlled.  Those drivers have
+been submitted as a separate patch series:  
+  [PATCH v3 0/8] qcom audio clock control drivers
+  http://lkml.org/lkml/2015/1/19/656
+
+= Changes since V3
+  [Patch V3 00/10] ASoC: QCOM: Add support for ipq806x SOC
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085694.html
+
+  * Placed the content of the inline functions into the callbacks.
+  * Replaced use of readl/writel register access functions with regmap access
+    functions.  Notable exception is the ISR, which uses ioread32/iowrite32.
+  * Rearranged the sequencing of the hardware block enables to fit within the
+    ASoC framework callbacks, while remaining functional.
+    REQ 1: The hardware requires the enable sequence to be:
+              LPAIF-DMA[enable],then LPAIF-MI2S[enable], then DAC-GPIO[enable]
+    REQ 2: The hardware requires the disable sequence to be:
+              DAC-GPIO[disable], then LPAIF-MI2S[disable]
+  * Corrected the implementation of the pointer callback.
+  * Utilize the LPM to buffer audio samples, rather than memory external to
+    LPASS.
+  * Corrected the interrupt clearing in the ISR.
+  * Implemented a default system clock (defined by the simple-card DT node), and
+    optional LPASS DT node modifiers that can alter the system clock in order to
+    expand the range of available bit clock frequencies.
+  * Addressed all of the remaining issues raised by Mark Brown.
+  * General code cleanup.
+
+= Changes since V2
+  [Patch v2 00/11] ASoC: QCOM: Add support for ipq806x SOC
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085186.html
+
+  * Removed the PCM platform driver from the DTS platform and tied it to the CPU
+    DAI driver.
+  * Changed I2S pinctrl to use generic naming convention and moved control to
+    CPU DAI driver.  It should be controlled now by soc-core's pinctrl_pm_*
+    functionality.
+  * Added stub DAPM support in codec driver.  As the DAC GPIO needs to be
+    enabled last when starting playback, and disabled first when stopping
+    playback, it seems as though the trigger function may be the place for this.
+    Suggestions are welcome for a better place to put this.
+  * Removed machine driver and tied DAI drivers to simple-audio-card.
+  * Packaged the build files and Maxim codec files together in one change.
+  * Removed QCOM as vendor from Maxim code and documentation.
+  * Separated the SOC and board definitions into the correct DTS files.
+  * Update device tree documentation to reflect changes.
+  * General code cleanup.
+
+= Changes since V1
+  [PATCH 0/9] ASoC: QCOM: Add support for ipq806x SOC
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2014-November/084322.html
+
+  * Remove the native LPAIF driver, and move its functionality to the CPU DAI
+    driver.
+  * Add a codec driver to manage the pins going to the external DAC (previously
+    managed by the machine driver).
+  * Use devm_* and dev_* where possible.
+  * ISR only handles relevant DMA channel now.
+  * Update device tree documentation to reflect changes.
+  * General code cleanup.
+
+Kenneth Westfield (10):
+  MAINTAINERS: Add QCOM audio ASoC maintainer
+  ASoC: max98357a: Document MAX98357A bindings
+  ASoC: qcom: Document LPASS CPU bindings
+  ASoC: codec: Add MAX98357A codec driver
+  ASoC: ipq806x: add LPASS header files
+  ASoC: ipq806x: Add LPASS CPU DAI driver
+  ASoC: ipq806x: Add LPASS platform driver
+  ASoC: qcom: Add ability to build QCOM drivers
+  ASoC: Allow for building QCOM drivers
+  ARM: dts: Model IPQ LPASS audio hardware
+
+ .../devicetree/bindings/sound/max98357a.txt        |  14 +
+ .../devicetree/bindings/sound/qcom,lpass-cpu.txt   |  66 +++
+ MAINTAINERS                                        |   7 +
+ arch/arm/boot/dts/qcom-ipq8064.dtsi                |  23 +
+ sound/soc/Kconfig                                  |   1 +
+ sound/soc/Makefile                                 |   1 +
+ sound/soc/codecs/Kconfig                           |   4 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/max98357a.c                       | 138 +++++
+ sound/soc/qcom/Kconfig                             |  27 +
+ sound/soc/qcom/Makefile                            |   6 +
+ sound/soc/qcom/lpass-cpu.c                         | 557 +++++++++++++++++++++
+ sound/soc/qcom/lpass-lpaif-ipq806x.h               | 170 +++++++
+ sound/soc/qcom/lpass-platform.c                    | 514 +++++++++++++++++++
+ sound/soc/qcom/lpass.h                             |  64 +++
+ 15 files changed, 1594 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/max98357a.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
  create mode 100644 sound/soc/codecs/max98357a.c
+ create mode 100644 sound/soc/qcom/Kconfig
+ create mode 100644 sound/soc/qcom/Makefile
+ create mode 100644 sound/soc/qcom/lpass-cpu.c
+ create mode 100644 sound/soc/qcom/lpass-lpaif-ipq806x.h
+ create mode 100644 sound/soc/qcom/lpass-platform.c
+ create mode 100644 sound/soc/qcom/lpass.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 3190eed43c38d8145536d1804f7686b108f97641..064e6c18e10923fd75609b750405dbc33f9db6af 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -69,6 +69,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MAX98088 if I2C
- 	select SND_SOC_MAX98090 if I2C
- 	select SND_SOC_MAX98095 if I2C
-+	select SND_SOC_MAX98357A
- 	select SND_SOC_MAX9850 if I2C
- 	select SND_SOC_MAX9768 if I2C
- 	select SND_SOC_MAX9877 if I2C
-@@ -456,6 +457,9 @@ config SND_SOC_MAX98090
- config SND_SOC_MAX98095
-        tristate
- 
-+config SND_SOC_MAX98357A
-+       tristate
-+
- config SND_SOC_MAX9850
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index bbdfd1e1c182f9ee102f532f391f522e77a8922b..69b8666d187a0e8d1e2a532e68e2509acc95da7e 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -64,6 +64,7 @@ snd-soc-max9768-objs := max9768.o
- snd-soc-max98088-objs := max98088.o
- snd-soc-max98090-objs := max98090.o
- snd-soc-max98095-objs := max98095.o
-+snd-soc-max98357a-objs := max98357a.o
- snd-soc-max9850-objs := max9850.o
- snd-soc-mc13783-objs := mc13783.o
- snd-soc-ml26124-objs := ml26124.o
-@@ -245,6 +246,7 @@ obj-$(CONFIG_SND_SOC_MAX9768)	+= snd-soc-max9768.o
- obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
- obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
-+obj-$(CONFIG_SND_SOC_MAX98357A)	+= snd-soc-max98357a.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
- obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
- obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..98b915314d7a00390060411fb1b910aec6f46e9d
---- /dev/null
-+++ b/sound/soc/codecs/max98357a.c
-@@ -0,0 +1,138 @@
-+/* Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * max98357a.c -- MAX98357A ALSA SoC Codec driver
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/gpio.h>
-+#include <sound/soc.h>
-+
-+#define DRV_NAME "max98357a"
-+
-+static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
-+{
-+	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		gpiod_set_value(sdmode, 1);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		gpiod_set_value(sdmode, 0);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget max98357a_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("SDMode", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_OUTPUT("Speaker"),
-+};
-+
-+static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
-+	{"Speaker", NULL, "SDMode"},
-+};
-+
-+static int max98357a_codec_probe(struct snd_soc_codec *codec)
-+{
-+	struct gpio_desc *sdmode;
-+
-+	sdmode = devm_gpiod_get(codec->dev, "sdmode");
-+	if (IS_ERR(sdmode)) {
-+		dev_err(codec->dev, "%s() unable to get sdmode GPIO: %ld\n",
-+				__func__, PTR_ERR(sdmode));
-+		return PTR_ERR(sdmode);
-+	}
-+	gpiod_direction_output(sdmode, 0);
-+	snd_soc_codec_set_drvdata(codec, sdmode);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_codec_driver max98357a_codec_driver = {
-+	.probe			= max98357a_codec_probe,
-+	.dapm_widgets		= max98357a_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(max98357a_dapm_widgets),
-+	.dapm_routes		= max98357a_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(max98357a_dapm_routes),
-+};
-+
-+static struct snd_soc_dai_ops max98357a_dai_ops = {
-+	.trigger	= max98357a_daiops_trigger,
-+};
-+
-+static struct snd_soc_dai_driver max98357a_dai_driver = {
-+	.name = DRV_NAME,
-+	.playback = {
-+		.stream_name	= DRV_NAME "-playback",
-+		.formats	= SNDRV_PCM_FMTBIT_S16 |
-+					SNDRV_PCM_FMTBIT_S24 |
-+					SNDRV_PCM_FMTBIT_S32,
-+		.rates		= SNDRV_PCM_RATE_8000 |
-+					SNDRV_PCM_RATE_16000 |
-+					SNDRV_PCM_RATE_48000 |
-+					SNDRV_PCM_RATE_96000,
-+		.rate_min	= 8000,
-+		.rate_max	= 96000,
-+		.channels_min	= 1,
-+		.channels_max	= 2,
-+	},
-+	.ops    = &max98357a_dai_ops,
-+};
-+
-+static int max98357a_platform_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	ret = snd_soc_register_codec(&pdev->dev, &max98357a_codec_driver,
-+			&max98357a_dai_driver, 1);
-+	if (ret)
-+		dev_err(&pdev->dev, "%s() error registering codec driver: %d\n",
-+				__func__, ret);
-+
-+	return ret;
-+}
-+
-+static int max98357a_platform_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_codec(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id max98357a_device_id[] = {
-+	{ .compatible = "maxim," DRV_NAME, },
-+	{}
-+};
-+#endif
-+
-+static struct platform_driver max98357a_platform_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.of_match_table = of_match_ptr(max98357a_device_id),
-+	},
-+	.probe	= max98357a_platform_probe,
-+	.remove = max98357a_platform_remove,
-+};
-+module_platform_driver(max98357a_platform_driver);
-+
-+MODULE_DESCRIPTION("Maxim MAX98357A Codec Driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_DEVICE_TABLE(of, max98357a_device_id);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
