@@ -1,19 +1,17 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v2] ASoC: rt286: add jack detection
- enable/disable APIs and export
-Date: Thu, 5 Feb 2015 02:07:35 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BA9CB6@SHSMSX101.ccr.corp.intel.com>
-References: <1423056843-26490-1-git-send-email-yang.jie@intel.com>
- <20150204202604.GF21293@sirena.org.uk>
+From: yang.a.fang@intel.com
+Subject: [PATCH v4 1/2] ASoC: rt5645: add API to select ASRC
+	clock source
+Date: Wed,  4 Feb 2015 18:19:31 -0800
+Message-ID: <1423102772-11426-1-git-send-email-yang.a.fang@intel.com>
+References: <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id D03322606A7
- for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 03:07:48 +0100 (CET)
-In-Reply-To: <20150204202604.GF21293@sirena.org.uk>
-Content-Language: en-US
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFA152606E1
+ for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 03:19:53 +0100 (CET)
+In-Reply-To: <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +21,205 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "bardliao@realtek.com" <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, kevin.strasser@intel.com, vinod.koul@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, kevin.strasser@linux.intel.com, mengdong.lin@intel.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Thursday, February 05, 2015 4:26 AM
-> To: Jie, Yang
-> Cc: alsa-devel@alsa-project.org; bardliao@realtek.com; Girdwood, Liam R
-> Subject: Re: [PATCH v2] ASoC: rt286: add jack detection enable/disable APIs and
-> export
-> 
-> On Wed, Feb 04, 2015 at 09:34:03PM +0800, Jie Yang wrote:
-> 
-> > +int rt286_disable_jack_detection(struct snd_soc_codec *codec) {
-> > +	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
-> > +
-> > +	disable_irq(rt286->i2c->irq);
-> > +
-> > +	snd_soc_dapm_disable_pin(&rt286->codec->dapm, "LDO1");
-> > +	snd_soc_dapm_sync(&rt286->codec->dapm);
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(rt286_disable_jack_detection);
-> 
-> So, now I look at this again I'm wondering why this isn't writing to any registers
-> - looking at the code we run on probe there's a register write if we're passed an
-> interrupt which looks awfully like we're enabling jack detect.  Probably we
-> wouldn't need to do the rather odd disabling of the IRQ if we did that, but
-> perhaps it's required.
-[Keyon] yes, it's required to disable jack detection, otherwise, pin LDO1 will be force enabled again. So here I just disable the IRQ to make the code change smallest.
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-> 
-> I think there's actually problems with the existing jack detection code in the
-> driver, I'd expect that the initial enabling of jack detect would be done when the
-> machine driver says it wants jack detect by passing in the jack to report for.
-[Keyon] I agree that it may be more reasonable if we can pass jack(similar to rt286_mic_detect(), can use jack=NULL for disable) from this machine driver, then add checking this jack in handler rt286_irq(), don't call rt286_jack_detect() and snd_soc_jack_report() when the jack is NULL.
-What do you think about this solution?
+This patch defines an API to select the clock source for specified filters.
+
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+Acked-by: Kevin Strasser <kevin.strasser@linux.intel.com>
+---
+ sound/soc/codecs/rt5645.c |   81 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt5645.h |   72 +++++++++++++++++-----------------------
+ 2 files changed, 112 insertions(+), 41 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 21b2d72..debf16c 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -613,6 +613,87 @@ static int is_using_asrc(struct snd_soc_dapm_widget *source,
+ 
+ }
+ 
++/**
++ * rt5645_sel_asrc_clk_src - select ASRC clock source for a set of filters
++ * @codec: SoC audio codec device.
++ * @filter_mask: mask of filters.
++ * @clk_src: clock source
++ *
++ * The ASRC function is for asynchronous MCLK and LRCK. Also, since RT5645 can
++ * only support standard 32fs or 64fs i2s format, ASRC should be enabled to
++ * support special i2s clock format such as Intel's 100fs(100 * sampling rate).
++ * ASRC function will track i2s clock and generate a corresponding system clock
++ * for codec. This function provides an API to select the clock source for a
++ * set of filters specified by the mask. And the codec driver will turn on ASRC
++ * for these filters if ASRC is selected as their clock source.
++ */
++int rt5645_sel_asrc_clk_src(struct snd_soc_codec *codec,
++		unsigned int filter_mask, unsigned int clk_src)
++{
++	unsigned int asrc2_mask = 0;
++	unsigned int asrc2_value = 0;
++	unsigned int asrc3_mask = 0;
++	unsigned int asrc3_value = 0;
++
++	switch (clk_src) {
++	case RT5645_CLK_SEL_SYS:
++	case RT5645_CLK_SEL_I2S1_ASRC:
++	case RT5645_CLK_SEL_I2S2_ASRC:
++	case RT5645_CLK_SEL_SYS2:
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	if (filter_mask & RT5645_DA_STEREO_FILTER) {
++		asrc2_mask |= RT5645_DA_STO_CLK_SEL_MASK;
++		asrc2_value = (asrc2_value & ~RT5645_DA_STO_CLK_SEL_MASK)
++			| (clk_src << RT5645_DA_STO_CLK_SEL_SFT);
++	}
++
++	if (filter_mask & RT5645_DA_MONO_L_FILTER) {
++		asrc2_mask |= RT5645_DA_MONOL_CLK_SEL_MASK;
++		asrc2_value = (asrc2_value & ~RT5645_DA_MONOL_CLK_SEL_MASK)
++			| (clk_src << RT5645_DA_MONOL_CLK_SEL_SFT);
++	}
++
++	if (filter_mask & RT5645_DA_MONO_R_FILTER) {
++		asrc2_mask |= RT5645_DA_MONOR_CLK_SEL_MASK;
++		asrc2_value = (asrc2_value & ~RT5645_DA_MONOR_CLK_SEL_MASK)
++			| (clk_src << RT5645_DA_MONOR_CLK_SEL_SFT);
++	}
++
++	if (filter_mask & RT5645_AD_STEREO_FILTER) {
++		asrc2_mask |= RT5645_AD_STO1_CLK_SEL_MASK;
++		asrc2_value = (asrc2_value & ~RT5645_AD_STO1_CLK_SEL_MASK)
++			| (clk_src << RT5645_AD_STO1_CLK_SEL_SFT);
++	}
++
++	if (filter_mask & RT5645_AD_MONO_L_FILTER) {
++		asrc3_mask |= RT5645_AD_MONOL_CLK_SEL_MASK;
++		asrc3_value = (asrc3_value & ~RT5645_AD_MONOL_CLK_SEL_MASK)
++			| (clk_src << RT5645_AD_MONOL_CLK_SEL_SFT);
++	}
++
++	if (filter_mask & RT5645_AD_MONO_R_FILTER)  {
++		asrc3_mask |= RT5645_AD_MONOR_CLK_SEL_MASK;
++		asrc3_value = (asrc3_value & ~RT5645_AD_MONOR_CLK_SEL_MASK)
++			| (clk_src << RT5645_AD_MONOR_CLK_SEL_SFT);
++	}
++
++	if (asrc2_mask)
++		snd_soc_update_bits(codec, RT5645_ASRC_2,
++			asrc2_mask, asrc2_value);
++
++	if (asrc3_mask)
++		snd_soc_update_bits(codec, RT5645_ASRC_3,
++			asrc3_mask, asrc3_value);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rt5645_sel_asrc_clk_src);
++
+ /* Digital Mixer */
+ static const struct snd_kcontrol_new rt5645_sto1_adc_l_mix[] = {
+ 	SOC_DAPM_SINGLE("ADC1 Switch", RT5645_STO1_ADC_MIXER,
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index 7454231..dbfd98c 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -1120,50 +1120,27 @@
+ #define RT5645_DMIC_2_M_NOR			(0x0 << 8)
+ #define RT5645_DMIC_2_M_ASYN			(0x1 << 8)
+ 
++/* ASRC clock source selection (0x84, 0x85) */
++#define RT5645_CLK_SEL_SYS			(0x0)
++#define RT5645_CLK_SEL_I2S1_ASRC		(0x1)
++#define RT5645_CLK_SEL_I2S2_ASRC		(0x2)
++#define RT5645_CLK_SEL_SYS2			(0x5)
++
+ /* ASRC Control 2 (0x84) */
+-#define RT5645_MDA_L_M_MASK			(0x1 << 15)
+-#define RT5645_MDA_L_M_SFT			15
+-#define RT5645_MDA_L_M_NOR			(0x0 << 15)
+-#define RT5645_MDA_L_M_ASYN			(0x1 << 15)
+-#define RT5645_MDA_R_M_MASK			(0x1 << 14)
+-#define RT5645_MDA_R_M_SFT			14
+-#define RT5645_MDA_R_M_NOR			(0x0 << 14)
+-#define RT5645_MDA_R_M_ASYN			(0x1 << 14)
+-#define RT5645_MAD_L_M_MASK			(0x1 << 13)
+-#define RT5645_MAD_L_M_SFT			13
+-#define RT5645_MAD_L_M_NOR			(0x0 << 13)
+-#define RT5645_MAD_L_M_ASYN			(0x1 << 13)
+-#define RT5645_MAD_R_M_MASK			(0x1 << 12)
+-#define RT5645_MAD_R_M_SFT			12
+-#define RT5645_MAD_R_M_NOR			(0x0 << 12)
+-#define RT5645_MAD_R_M_ASYN			(0x1 << 12)
+-#define RT5645_ADC_M_MASK			(0x1 << 11)
+-#define RT5645_ADC_M_SFT			11
+-#define RT5645_ADC_M_NOR			(0x0 << 11)
+-#define RT5645_ADC_M_ASYN			(0x1 << 11)
+-#define RT5645_STO_DAC_M_MASK			(0x1 << 5)
+-#define RT5645_STO_DAC_M_SFT			5
+-#define RT5645_STO_DAC_M_NOR			(0x0 << 5)
+-#define RT5645_STO_DAC_M_ASYN			(0x1 << 5)
+-#define RT5645_I2S1_R_D_MASK			(0x1 << 4)
+-#define RT5645_I2S1_R_D_SFT			4
+-#define RT5645_I2S1_R_D_DIS			(0x0 << 4)
+-#define RT5645_I2S1_R_D_EN			(0x1 << 4)
+-#define RT5645_I2S2_R_D_MASK			(0x1 << 3)
+-#define RT5645_I2S2_R_D_SFT			3
+-#define RT5645_I2S2_R_D_DIS			(0x0 << 3)
+-#define RT5645_I2S2_R_D_EN			(0x1 << 3)
+-#define RT5645_PRE_SCLK_MASK			(0x3)
+-#define RT5645_PRE_SCLK_SFT			0
+-#define RT5645_PRE_SCLK_512			(0x0)
+-#define RT5645_PRE_SCLK_1024			(0x1)
+-#define RT5645_PRE_SCLK_2048			(0x2)
++#define RT5645_DA_STO_CLK_SEL_MASK		(0xf << 12)
++#define RT5645_DA_STO_CLK_SEL_SFT		12
++#define RT5645_DA_MONOL_CLK_SEL_MASK		(0xf << 8)
++#define RT5645_DA_MONOL_CLK_SEL_SFT		8
++#define RT5645_DA_MONOR_CLK_SEL_MASK		(0xf << 4)
++#define RT5645_DA_MONOR_CLK_SEL_SFT		4
++#define RT5645_AD_STO1_CLK_SEL_MASK		(0xf << 0)
++#define RT5645_AD_STO1_CLK_SEL_SFT		0
+ 
+ /* ASRC Control 3 (0x85) */
+-#define RT5645_I2S1_RATE_MASK			(0xf << 12)
+-#define RT5645_I2S1_RATE_SFT			12
+-#define RT5645_I2S2_RATE_MASK			(0xf << 8)
+-#define RT5645_I2S2_RATE_SFT			8
++#define RT5645_AD_MONOL_CLK_SEL_MASK		(0xf << 4)
++#define RT5645_AD_MONOL_CLK_SEL_SFT		4
++#define RT5645_AD_MONOR_CLK_SEL_MASK		(0xf << 0)
++#define RT5645_AD_MONOR_CLK_SEL_SFT		0
+ 
+ /* ASRC Control 4 (0x89) */
+ #define RT5645_I2S1_PD_MASK			(0x7 << 12)
+@@ -2189,6 +2166,19 @@ enum {
+ 	CODEC_TYPE_RT5650,
+ };
+ 
++/* filter mask */
++enum {
++	RT5645_DA_STEREO_FILTER = 0x1,
++	RT5645_DA_MONO_L_FILTER = (0x1 << 1),
++	RT5645_DA_MONO_R_FILTER = (0x1 << 2),
++	RT5645_AD_STEREO_FILTER = (0x1 << 3),
++	RT5645_AD_MONO_L_FILTER = (0x1 << 4),
++	RT5645_AD_MONO_R_FILTER = (0x1 << 5),
++};
++
++int rt5645_sel_asrc_clk_src(struct snd_soc_codec *codec,
++		unsigned int filter_mask, unsigned int clk_src);
++
+ struct rt5645_priv {
+ 	struct snd_soc_codec *codec;
+ 	struct rt5645_platform_data pdata;
+-- 
+1.7.9.5
