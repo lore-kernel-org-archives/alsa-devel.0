@@ -1,51 +1,51 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [alsa-devel] Can we remove un-used Sound driver ?
-Date: Thu, 5 Feb 2015 20:35:51 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1502052034360.16351@axis700.grange>
-References: <87egq7774l.wl%kuninori.morimoto.gx@renesas.com>
- <87a90sj0hy.wl%kuninori.morimoto.gx@renesas.com> <20150205180343.GB21293@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND PATCH V3 15/15] ARM: dts: Fix I2S1, I2S2 compatible for
+ exynos4 SoCs
+Date: Thu, 5 Feb 2015 19:41:05 +0000
+Message-ID: <20150205194105.GM21293@sirena.org.uk>
+References: <1422972382-18520-1-git-send-email-s.nawrocki@samsung.com>
+ <1422972382-18520-3-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20150205180343.GB21293@sirena.org.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Manuel Lauss <manuel.lauss@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="04k0J7wEch5uF2Pi"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1422972382-18520-3-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: kgene@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-Thanks for asking.
+--04k0J7wEch5uF2Pi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, 5 Feb 2015, Mark Brown wrote:
+On Tue, Feb 03, 2015 at 03:06:22PM +0100, Sylwester Nawrocki wrote:
+> I2S1, I2S2 on Exynos4 SoC series have limited functionality compared
+> to I2S0, "samsung,s3c6410-i2s" compatible should be used for them.
 
-> On Thu, Feb 05, 2015 at 07:10:49AM +0000, Kuninori Morimoto wrote:
-> 
-> > These patches remove Renesas SuperH base un-used sound drivers.
-> > Maybe, these had been used from out-of-tree (?). But ...
-> >  - these are for very old SoC / platform
-> >  - these are not used/enabled from upstreamed platform
-> >  - maintenance cost is not zero
-> >  - we can't test/check these drivers since we don't have these board.
-> > 
-> > I'm very sad, but...
-> > Good bye migor
-> > Good bye sh7760
-> > Good bye ssi
-> > Good bye siu
-> > Good bye hac
-> 
-> Hrm.  At least migor was active relatively recently, Guennadi was
-> working on it in 2012 which isn't *that* long ago and there may well be
-> systems still in the field.  There's also still board code for migor in
-> arch/sh so it's an upstream platform.  Some of the others like SSI and
-> HAC are definitely not showing any signs of anyone being interested
-> though and I'd not be surprised if they'd been broken at some point.
-> 
-> Manuel, Guennadi - what do you think about this?
+I've applied this even though I really shouldn't in order to get it in.
+Since it's a bug fix for stable it should've been near the head of any
+series it's part of not the very last patch in the series, and since
+it's not really related to the rest of the series except in that it
+relates to the same driver it should probably have been sent by itself
+rather than mixed in with everything else.
 
-If Morimoto-san (i.e. Renesas) doesn't need that driver, I don't need it 
-either :)
+--04k0J7wEch5uF2Pi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thanks
-Guennadi
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU08dQAAoJECTWi3JdVIfQfMoH/R3L/JJXYLb4GnUi2BBCSu3L
+b6l7+WqH/FIvRgmhhI6QUgCnC/8R9tQyLtbw+qaTx6WkAbTug8pO1PAZGnni+pey
+Wmzl5IlRtX1iXN6DQcINaZNATKmyAXQkSX9pBjihIu7FFWYR0iMrTT/Ka6AWMjuL
+f/oJF+ohZdQ55w8UyGlb2lCo3Ogc2UVF5dtWZgRpOnE46fOCUiHV2MtJB+zUSmWm
+rykrbfMRvk2RQ8xJOkWSHkWMvmDrikS/BbzrRYWQQdXBibPCb3xKUcUpwHpF2Rqg
+aZhSuS8sj8U7BImkG1qLJQDPWtMU/LvvYiinOg59lG7GmbcFZ9L6e3HUeWjBKi4=
+=E7Ma
+-----END PGP SIGNATURE-----
+
+--04k0J7wEch5uF2Pi--
