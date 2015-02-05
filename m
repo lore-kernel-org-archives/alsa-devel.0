@@ -1,47 +1,65 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH baohua] ASoC: sirf: atlas7: atlas7_iacc_dai_ops can be
- static
-Date: Thu, 5 Feb 2015 17:11:59 +0000
-Message-ID: <20150205171159.GY21293@sirena.org.uk>
-References: <201502060130.hszyNa1F%fengguang.wu@intel.com>
- <20150205170352.GA49811@snb>
+Subject: Re: [alsa-devel] Can we remove un-used Sound driver ?
+Date: Thu, 5 Feb 2015 18:03:43 +0000
+Message-ID: <20150205180343.GB21293@sirena.org.uk>
+References: <87egq7774l.wl%kuninori.morimoto.gx@renesas.com>
+ <87a90sj0hy.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BbXz1MMUIxJdX0pG"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="dwEMFekL2ACHCuYf"
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150205170352.GA49811@snb>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Rongjun Ying <rongjun.ying@csr.com>, kbuild-all@01.org, Barry Song <Barry.Song@csr.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <87a90sj0hy.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Manuel Lauss <manuel.lauss@gmail.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---BbXz1MMUIxJdX0pG
+--dwEMFekL2ACHCuYf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 06, 2015 at 01:03:52AM +0800, kbuild test robot wrote:
-> sound/soc/sirf/atlas7-iacc.c:168:24: sparse: symbol 'atlas7_iacc_dai_ops' was not declared. Should it be static?
+On Thu, Feb 05, 2015 at 07:10:49AM +0000, Kuninori Morimoto wrote:
 
-This file isn't in an upstream tree, should this patch have been sent
-upstream (I suspect non-upstream trees may need a bit of filtering in
-the scripts)?
+> These patches remove Renesas SuperH base un-used sound drivers.
+> Maybe, these had been used from out-of-tree (?). But ...
+>  - these are for very old SoC / platform
+>  - these are not used/enabled from upstreamed platform
+>  - maintenance cost is not zero
+>  - we can't test/check these drivers since we don't have these board.
+>=20
+> I'm very sad, but...
+> Good bye migor
+> Good bye sh7760
+> Good bye ssi
+> Good bye siu
+> Good bye hac
 
---BbXz1MMUIxJdX0pG
+Hrm.  At least migor was active relatively recently, Guennadi was
+working on it in 2012 which isn't *that* long ago and there may well be
+systems still in the field.  There's also still board code for migor in
+arch/sh so it's an upstream platform.  Some of the others like SSI and
+HAC are definitely not showing any signs of anyone being interested
+though and I'd not be surprised if they'd been broken at some point.
+
+Manuel, Guennadi - what do you think about this?
+
+--dwEMFekL2ACHCuYf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU06ReAAoJECTWi3JdVIfQf1AH/0NlAARKvrLncypO0f7fwOZu
-+7Yjn3J5rc+FV+EP3rtfVuTm0a6mElsHsBS9+0IKDkxXuwT30j4qmn5KvBFGAr71
-+1Ykzf6CBlR+S+mR/FOAw1060cvDdfHn8vuV8rSZQ3zwbZf76sTvbz0NP4i/0TxR
-9TMdH8UjcL0uj8pQTvyDy2zDmb0Jg4XbmM2xxdOCMj0QLWjrKf30BYMovuhw8fQJ
-AxslMruIm+afpoWIkox4wXFKL14tWM5aWo9to1eDjbkU9Qik26zJfhBjHeuPTbBO
-h/llvlCDNRW9QAy7pqUk9mZSi9faQEFJFwUE8bKkkGW2KQ7+HxtDEGsFYpHN58E=
-=+PeG
+iQEcBAEBCAAGBQJU07B+AAoJECTWi3JdVIfQ6hIH/0xWWDiwgfEbJkE2MGceSmID
+ItCz0xLkx9sgX6ZVlpAArm8DApoD8Io1BDVONwN+o4keGrw593G/zEs7L0+Cdjnh
+2rNaM+mAVp5k69Y9lTSsL1RKVPspDfa/CVoEAh8J03Lfqgz6a2cFIMWfRkIercl4
+mwsrEkxaBiZ4JUG1fYitpSUnUmL0BvDv+NQXF4PfXmKGu9+c77rhC9eO9sT1V0nb
+Mex1cUNRE0EDPRbFuR3ftTtc9DmzPdq3/2eWVMxTu2n6wdo+AdZpUHlIPLGLNSE9
+6Ch2sDuDtMDh3Gyr+XhV/hJB6qLNa1Y1NiHfZKG6kIP0mmrvJXTRrPhC5bfsw2M=
+=gG8t
 -----END PGP SIGNATURE-----
 
---BbXz1MMUIxJdX0pG--
+--dwEMFekL2ACHCuYf--
