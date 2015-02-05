@@ -1,52 +1,162 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: fix sst firmware path
-Date: Thu, 5 Feb 2015 14:37:43 +0000
-Message-ID: <20150205143743.GW21293@sirena.org.uk>
-References: <1423078507-30032-1-git-send-email-kevin.strasser@linux.intel.com>
- <20150205115606.7ad3336f@lxorguk.ukuu.org.uk>
- <s5h386kr0az.wl-tiwai@suse.de>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH v2] ASoC: Intel: add a status for runtime
+	suspend/resume
+Date: Thu,  5 Feb 2015 22:42:31 +0800
+Message-ID: <1423147351-1976-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="IYp4hyeyZ0O2hggr"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h386kr0az.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, Kevin Strasser <kevin.strasser@linux.intel.com>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Yang Fang <yang.a.fang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1476264EFA
+ for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 15:40:52 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+For runtime suspend/resume, it is some different with suspend/resume,
+e.g. codec power supply won't be switch off, codec jack detection
+still working(to wake up system from Jack event), won't call call
+snd_soc_suspend/resume, etc.
 
---IYp4hyeyZ0O2hggr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So here, we add a platform PM status, HSW_PM_STATE_RTD3, to make
+the status more clear, when in idle, it will enter this status, to
+transfer from HSW_PM_STATE_RTD3 to HSW_PM_STATE_D3, we will do those
+extra jobs, and vice versa for resuming.
 
-On Thu, Feb 05, 2015 at 01:48:52PM +0100, Takashi Iwai wrote:
-> At Thu, 5 Feb 2015 11:56:06 +0000,
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+---
+ sound/soc/intel/sst-haswell-pcm.c | 70 ++++++++++++++++++++-------------------
+ 1 file changed, 36 insertions(+), 34 deletions(-)
 
-> > You just broken existing systems. I agree entirely with your change - but
-> > you need to search both paths for now and maybe in a few years time remove
-> > the old path.
-
-> IMO, it's fine in this case, as this stuff is new, merged first in
-> 3.19.
-
-Yup, so long as we get this into v3.19.
-
---IYp4hyeyZ0O2hggr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU04A2AAoJECTWi3JdVIfQ0E4H/AjMEyIdRSMzi76O0Ze6umPa
-hTeP9VJvnrw26RI6BnZhCIBN7JJfekrJqoC6ZlI2Dt1g3lQY2TR7DMng4y+nP/Y4
-zcQWSey9y5umqgV/P+iwpU0ZdDruY6Ri4W1UKNTN4fwW8BFGsuBZ1wg2CpSInd75
-RHe2tulS4yrJIZEKZSEy9N8xZdnjg21vehH0QCkxBvId4uIphaqMKc/TtAZJ2AWi
-b4XQgVHpIJ7Waa/frIgY++ddEvozYNQqHM0yk/fzNZQl37Hqv27KPlvCiCHcLEjk
-Z1LuZZ9BgWAPqO2XSSjsujoD8aAogq8YgFOfHuvbL/YQzJytj0h+1iUvvdyWR5U=
-=4R9W
------END PGP SIGNATURE-----
-
---IYp4hyeyZ0O2hggr--
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index ad7f4a5..edf8eaf 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -119,8 +119,9 @@ struct hsw_pcm_data {
+ };
+ 
+ enum hsw_pm_state {
+-	HSW_PM_STATE_D3 = 0,
+-	HSW_PM_STATE_D0 = 1,
++	HSW_PM_STATE_D0 = 0,
++	HSW_PM_STATE_RTD3 = 1,
++	HSW_PM_STATE_D3 = 2,
+ };
+ 
+ /* private data for the driver */
+@@ -1035,12 +1036,12 @@ static int hsw_pcm_runtime_suspend(struct device *dev)
+ 	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 
+-	if (pdata->pm_state == HSW_PM_STATE_D3)
++	if (pdata->pm_state >= HSW_PM_STATE_RTD3)
+ 		return 0;
+ 
+ 	sst_hsw_dsp_runtime_suspend(hsw);
+ 	sst_hsw_dsp_runtime_sleep(hsw);
+-	pdata->pm_state = HSW_PM_STATE_D3;
++	pdata->pm_state = HSW_PM_STATE_RTD3;
+ 
+ 	return 0;
+ }
+@@ -1051,7 +1052,7 @@ static int hsw_pcm_runtime_resume(struct device *dev)
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	int ret;
+ 
+-	if (pdata->pm_state == HSW_PM_STATE_D0)
++	if (pdata->pm_state != HSW_PM_STATE_RTD3)
+ 		return 0;
+ 
+ 	ret = sst_hsw_dsp_load(hsw);
+@@ -1091,7 +1092,7 @@ static void hsw_pcm_complete(struct device *dev)
+ 	struct hsw_pcm_data *pcm_data;
+ 	int i, err;
+ 
+-	if (pdata->pm_state == HSW_PM_STATE_D0)
++	if (pdata->pm_state != HSW_PM_STATE_D3)
+ 		return;
+ 
+ 	err = sst_hsw_dsp_load(hsw);
+@@ -1139,41 +1140,42 @@ static int hsw_pcm_prepare(struct device *dev)
+ 
+ 	if (pdata->pm_state == HSW_PM_STATE_D3)
+ 		return 0;
+-	/* suspend all active streams */
+-	for (i = 0; i < ARRAY_SIZE(mod_map); i++) {
+-		pcm_data = &pdata->pcm[mod_map[i].dai_id][mod_map[i].stream];
++	else if (pdata->pm_state == HSW_PM_STATE_D0){
++		/* suspend all active streams */
++		for (i = 0; i < ARRAY_SIZE(mod_map); i++) {
++			pcm_data = &pdata->pcm[mod_map[i].dai_id][mod_map[i].stream];
++
++			if (!pcm_data->substream)
++				continue;
++			dev_dbg(dev, "suspending pcm %d\n", i);
++			snd_pcm_suspend_all(pcm_data->hsw_pcm);
++
++			/* We need to wait until the DSP FW stops the streams */
++			msleep(2);
++		}
+ 
+-		if (!pcm_data->substream)
+-			continue;
+-		dev_dbg(dev, "suspending pcm %d\n", i);
+-		snd_pcm_suspend_all(pcm_data->hsw_pcm);
++		/* preserve persistent memory */
++		for (i = 0; i < ARRAY_SIZE(mod_map); i++) {
++			pcm_data = &pdata->pcm[mod_map[i].dai_id][mod_map[i].stream];
++
++			if (!pcm_data->substream)
++				continue;
+ 
+-		/* We need to wait until the DSP FW stops the streams */
+-		msleep(2);
++			dev_dbg(dev, "saving context pcm %d\n", i);
++			err = sst_module_runtime_save(pcm_data->runtime,
++				&pcm_data->context);
++			if (err < 0)
++				dev_err(dev, "failed to save context for PCM %d\n", i);
++		}
++		/* enter D3 state and stall */
++		sst_hsw_dsp_runtime_suspend(hsw);
++		/* put the DSP to sleep */
++		sst_hsw_dsp_runtime_sleep(hsw);
+ 	}
+ 
+ 	snd_soc_suspend(pdata->soc_card->dev);
+ 	snd_soc_poweroff(pdata->soc_card->dev);
+ 
+-	/* enter D3 state and stall */
+-	sst_hsw_dsp_runtime_suspend(hsw);
+-
+-	/* preserve persistent memory */
+-	for (i = 0; i < ARRAY_SIZE(mod_map); i++) {
+-		pcm_data = &pdata->pcm[mod_map[i].dai_id][mod_map[i].stream];
+-
+-		if (!pcm_data->substream)
+-			continue;
+-
+-		dev_dbg(dev, "saving context pcm %d\n", i);
+-		err = sst_module_runtime_save(pcm_data->runtime,
+-			&pcm_data->context);
+-		if (err < 0)
+-			dev_err(dev, "failed to save context for PCM %d\n", i);
+-	}
+-
+-	/* put the DSP to sleep */
+-	sst_hsw_dsp_runtime_sleep(hsw);
+ 	pdata->pm_state = HSW_PM_STATE_D3;
+ 
+ 	return 0;
+-- 
+1.9.1
