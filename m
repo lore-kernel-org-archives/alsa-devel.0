@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V4 01/10] MAINTAINERS: Add QCOM audio ASoC maintainer
-Date: Thu,  5 Feb 2015 12:53:37 -0800
-Message-ID: <1423169626-22166-2-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V4 09/10] ASoC: Allow for building QCOM drivers
+Date: Thu,  5 Feb 2015 12:53:45 -0800
+Message-ID: <1423169626-22166-10-git-send-email-kwestfie@codeaurora.org>
 References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,33 +12,40 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add maintainers for the Qualcomm Technologies
-sound drivers.
+Allow for the Qualcomm Technologies ASoC drivers
+to build.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/Kconfig  | 1 +
+ sound/soc/Makefile | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f1763c50f071a19df82ef6980c2c6e7f18cbc280..4cb829d0bd0ef452e23a687d9b9ec726e6dd0633 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5183,6 +5183,13 @@ F:	drivers/char/ipmi/
- F:	include/linux/ipmi*
- F:	include/uapi/linux/ipmi*
- 
-+QCOM AUDIO (ASoC) DRIVERS
-+M:	Patrick Lai <plai@codeaurora.org>
-+M:	Banajit Goswami <bgoswami@codeaurora.org>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Supported
-+F:	sound/soc/qcom/
-+
- IPS SCSI RAID DRIVER
- M:	Adaptec OEM Raid Solutions <aacraid@adaptec.com>
- L:	linux-scsi@vger.kernel.org
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index dcc79aa0236b548bfe5408fe56689241fc597e97..3ba52da18bc69a9bb41c84627cfc7d08f47e3bf0 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -47,6 +47,7 @@ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/intel/Kconfig"
+ source "sound/soc/mxs/Kconfig"
+ source "sound/soc/pxa/Kconfig"
++source "sound/soc/qcom/Kconfig"
+ source "sound/soc/rockchip/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/sh/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 5b3c8f67c8db7a29ff7199a6103d445428978125..974ba708b4826a03077a58251434a311542d5e3c 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -28,6 +28,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= kirkwood/
+ obj-$(CONFIG_SND_SOC)	+= pxa/
++obj-$(CONFIG_SND_SOC)	+= qcom/
+ obj-$(CONFIG_SND_SOC)	+= rockchip/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= sh/
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
