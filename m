@@ -1,19 +1,15 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: add a status for runtime
-	suspend/resume
-Date: Thu, 5 Feb 2015 08:28:57 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BA9E55@SHSMSX101.ccr.corp.intel.com>
-References: <1423057334-26654-1-git-send-email-yang.jie@intel.com>
- <20150204201731.GE21293@sirena.org.uk>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt286: Fix potencial crash in jd
+	function
+Date: Thu, 5 Feb 2015 16:40:33 +0800
+Message-ID: <1423125634-8367-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C0BBF2604FA
- for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 09:29:03 +0100 (CET)
-In-Reply-To: <20150204201731.GE21293@sirena.org.uk>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB6F026050B
+ for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 09:40:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Thursday, February 05, 2015 4:18 AM
-> To: Jie, Yang
-> Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [PATCH] ASoC: Intel: add a status for runtime suspend/resume
-> 
-> On Wed, Feb 04, 2015 at 09:42:14PM +0800, Jie Yang wrote:
-> 
-> > +	else if (pdata->pm_state == HSW_PM_STATE_RTD3)
-> > +		goto suspend;
-> > +
-> 
-> >  	sst_hsw_dsp_runtime_sleep(hsw);
-> > +
-> > +suspend:
-> > +	snd_soc_suspend(pdata->soc_card->dev);
-> > +	snd_soc_poweroff(pdata->soc_card->dev);
-> > +
-> >  	pdata->pm_state = HSW_PM_STATE_D3;
-> 
-> This is a pretty big jump for goto and it's not the usual goto as error handling
-> idiom either; it seems better to refactor the code so that this isn't required.
-> For example have a runtime PM function which is also called by the system
-> suspend path.
-[Keyon] OK, thanks, let me refactor it and remove the goto. I don't wan't call runtime PM function in system suspend directly because of the suspend/resume(specially the resume) sequence have slight difference, also for not mixing the RTD3 and D3 status.
-Will send updated v2 patch soon.
+We assign rt286->codec in rt286_probe. If rt286_jack_detect is
+invoked before rt286_probe, rt286->codec will be NULL and cause
+a kernel panic.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 2eafbcf..3d69cb4 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -306,6 +306,8 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
+ 	*hp = false;
+ 	*mic = false;
+ 
++	if (!rt286->codec)
++		return -EINVAL;
+ 	if (rt286->pdata.cbj_en) {
+ 		regmap_read(rt286->regmap, RT286_GET_HP_SENSE, &buf);
+ 		*hp = buf & 0x80000000;
+-- 
+1.8.1.1.439.g50a6b54
