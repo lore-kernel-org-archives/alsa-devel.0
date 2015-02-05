@@ -1,41 +1,49 @@
-From: Kevin Strasser <kevin.strasser@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: fix sst firmware path
-Date: Thu, 5 Feb 2015 10:48:22 -0800
-Message-ID: <20150205184822.GE13647@H87M>
-References: <1423078507-30032-1-git-send-email-kevin.strasser@linux.intel.com>
- <20150205181458.GG21293@sirena.org.uk>
+From: Manuel Lauss <manuel.lauss@gmail.com>
+Subject: Re: [alsa-devel] Can we remove un-used Sound driver ?
+Date: Thu, 5 Feb 2015 19:54:21 +0100
+Message-ID: <CAOLZvyGemO=O8Eqafj0KUXg7cELtREcARU5KFDieAr3Y9DdVnw@mail.gmail.com>
+References: <87egq7774l.wl%kuninori.morimoto.gx@renesas.com>
+ <87a90sj0hy.wl%kuninori.morimoto.gx@renesas.com> <20150205180343.GB21293@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 3115E260524
- for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 19:48:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20150205181458.GG21293@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20150205180343.GB21293@sirena.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Yang Fang <yang.a.fang@intel.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 05, 2015 at 06:14:58PM +0000, Mark Brown wrote:
-> On Wed, Feb 04, 2015 at 11:35:07AM -0800, Kevin Strasser wrote:
-> > All sst firmware is provided under the intel directory of the linux-firmware
-> > tree. By default this directory structure is kept when installing on a
-> > target system. Change the path to expect a default linux-firmware
-> > installation.
-> 
-> Applied, thanks.  It doesn't apply as a fix but that seems to be OK as the
-> only request_firmware() I spotted there appears to use intel/ prefixed
-> directories already.
+Hi,
 
-I'm a little confused. Do you want me to submit a version that can be applied as
-a fix? It seems to me that we want this patch in 3.19.
+On Thu, Feb 5, 2015 at 7:03 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Feb 05, 2015 at 07:10:49AM +0000, Kuninori Morimoto wrote:
+>
+>> These patches remove Renesas SuperH base un-used sound drivers.
+>> Maybe, these had been used from out-of-tree (?). But ...
+>>  - these are for very old SoC / platform
+>>  - these are not used/enabled from upstreamed platform
+>>  - maintenance cost is not zero
+>>  - we can't test/check these drivers since we don't have these board.
+>>
+>> I'm very sad, but...
+>> Good bye sh7760
+>> Good bye ssi
+>> Good bye hac
+
+I still have working hardware for those 3 files, I just need to dust
+it off.  But the last time I checked (~3 years ago) I had no issues
+with sound.
+
+
+> Hrm.  At least migor was active relatively recently, Guennadi was
+> working on it in 2012 which isn't *that* long ago and there may well be
+> systems still in the field.  There's also still board code for migor in
+> arch/sh so it's an upstream platform.  Some of the others like SSI and
+> HAC are definitely not showing any signs of anyone being interested
+> though and I'd not be surprised if they'd been broken at some point.
+
+I still have the full board support code for the SH7760 hardware I originally
+wrote the above sound drivers for.  If there's interest I can whip
+it in shape for submission.
+
+Manuel
