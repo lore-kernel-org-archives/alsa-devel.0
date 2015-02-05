@@ -1,74 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/2] ASoC: rt5645: add API to select
-	ASRC clock source
-Date: Thu, 5 Feb 2015 18:10:58 +0000
-Message-ID: <20150205181058.GF21293@sirena.org.uk>
-References: <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
- <1423102772-11426-1-git-send-email-yang.a.fang@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: fix sst firmware path
+Date: Thu, 5 Feb 2015 18:14:58 +0000
+Message-ID: <20150205181458.GG21293@sirena.org.uk>
+References: <1423078507-30032-1-git-send-email-kevin.strasser@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8710046750524810833=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DAC7C26052C
- for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 19:11:03 +0100 (CET)
-In-Reply-To: <1423102772-11426-1-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, kevin.strasser@intel.com, vinod.koul@intel.com, kevin.strasser@linux.intel.com, mengdong.lin@intel.com, bardliao@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="LrHETvO+Jkdo+Zl+"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1423078507-30032-1-git-send-email-kevin.strasser@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kevin Strasser <kevin.strasser@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, linux-kernel@vger.kernel.org, Yang Fang <yang.a.fang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8710046750524810833==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="s72DY7+r+2L7HVD3"
-Content-Disposition: inline
-
-
---s72DY7+r+2L7HVD3
+--LrHETvO+Jkdo+Zl+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 04, 2015 at 06:19:31PM -0800, yang.a.fang@intel.com wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
->=20
-> This patch defines an API to select the clock source for specified filter=
-s.
+On Wed, Feb 04, 2015 at 11:35:07AM -0800, Kevin Strasser wrote:
+> All sst firmware is provided under the intel directory of the linux-firmware
+> tree. By default this directory structure is kept when installing on a target
+> system. Change the path to expect a default linux-firmware installation.
 
-Applied both, thanks.
+Applied, thanks.  It doesn't apply as a fix but that seems to be OK as
+the only request_firmware() I spotted there appears to use intel/
+prefixed directories already.
 
---s72DY7+r+2L7HVD3
+--LrHETvO+Jkdo+Zl+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU07IxAAoJECTWi3JdVIfQBegH/2z0SNp/Idys/+hKS2z98O3g
-2lXaXXi+Wf+WH2xOGZiEqbbLL7VjEive6AQAMWvlmZx77XlZxyr6x4meWtEq8Hep
-6Cd+RYkJI5WIy4ZYPKVeJyHJqcSC680T+7lNi/2JtFzjSOVnDd4qd2IbCa4hgvQ8
-vUZWVXdHuDPiLvoUes9nbfQSKrv9vg//jFfD/vZIZ/rZHnc4IPoFY1r5HZGOZcjR
-2hvOrMr4WRvefiGfYE2eQpDEPT7WxNMMgjVM6s+U6aIPyE82HB0YyDVGnbVk8fuN
-MfGzuKaWNJFjCtgyxVq8Tv3hcAr+xN8gY1siKwjbtIDAyhZzZJeu7wcsbuF/4hY=
-=sE9F
+iQEcBAEBCAAGBQJU07MhAAoJECTWi3JdVIfQqRsH/3R4wIAoBzIYRHi+Fs5R8yQb
+6yKERF8E2xmp7zniQVp5UklDNE9Qhi7ANnIlztHQTiGz60CduxhfqT9bItMs0fsA
+PI7198fDHXMFIBjIda78FPzIWFkN/4YOvF/iBrdpUdatXaiH25jLB83ungQdmAHr
+1ZhjLvE3007LcB5DA2OIgG4YqI7H+z2A3ODQJdywzgaPFl94NMl74f489saTJRMb
+b6aMvIM6oVGQfZb5gS2akI1Mrjn7it3wmWv5HklddHV0M06Z0BhkvuKQ+UCk5nb6
+6xsgHVgBAn3ciSXY3rtkFcGhNhCvbUYuLn49ASFgaXTrWu2dpEu8kXFK0BmQleA=
+=fNbX
 -----END PGP SIGNATURE-----
 
---s72DY7+r+2L7HVD3--
-
---===============8710046750524810833==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8710046750524810833==--
+--LrHETvO+Jkdo+Zl+--
