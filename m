@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V4 10/10] ARM: dts: Model IPQ LPASS audio hardware
-Date: Thu,  5 Feb 2015 12:53:46 -0800
-Message-ID: <1423169626-22166-11-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V4 08/10] ASoC: qcom: Add ability to build QCOM drivers
+Date: Thu,  5 Feb 2015 12:53:44 -0800
+Message-ID: <1423169626-22166-9-git-send-email-kwestfie@codeaurora.org>
 References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,62 +12,64 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Model the Qualcomm Technologies LPASS hardware for
-the ipq806x SOC.
+Define the LPASS platform driver and the LPASS
+CPU DAI driver configuration, and how to build
+them.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- arch/arm/boot/dts/qcom-ipq8064.dtsi | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ sound/soc/qcom/Kconfig  | 27 +++++++++++++++++++++++++++
+ sound/soc/qcom/Makefile |  6 ++++++
+ 2 files changed, 33 insertions(+)
+ create mode 100644 sound/soc/qcom/Kconfig
+ create mode 100644 sound/soc/qcom/Makefile
 
-diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-index 63b2146f563b541e4994697af5ee1bbb41a4abd1..c608575e3d184a5d84d550d47af8c597e022ba4a 100644
---- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-@@ -2,6 +2,7 @@
- 
- #include "skeleton.dtsi"
- #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-+#include <dt-bindings/clock/qcom,lcc-ipq806x.h>
- #include <dt-bindings/soc/qcom,gsbi.h>
- 
- / {
-@@ -118,6 +119,21 @@
- 			regulator;
- 		};
- 
-+		lpass-cpu@28100000 {
-+			compatible = "qcom,lpass-cpu";
-+			status = "disabled";
-+			clocks = <&lcc AHBIX_CLK>,
-+					<&lcc MI2S_OSR_CLK>,
-+					<&lcc MI2S_BIT_CLK>;
-+			clock-names = "ahbix-clk",
-+					"mi2s-osr-clk",
-+					"mi2s-bit-clk";
-+			interrupts = <0 85 1>;
-+			interrupt-names = "lpass-irq-lpaif";
-+			reg = <0x28100000 0x10000>, <0x28400000 0x4000>;
-+			reg-names = "lpass-lpaif", "lpass-lpm";
-+		};
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+new file mode 100644
+index 0000000000000000000000000000000000000000..d33fc5db86a34dc2e3f8146a1aea28c0e2ae8839
+--- /dev/null
++++ b/sound/soc/qcom/Kconfig
+@@ -0,0 +1,27 @@
++config SND_SOC_QCOM
++	tristate "SoC Audio support for QCOM platforms"
++	help
++          Support for audio in Qualcomm Technologies SOC-based systems.
++          Say Y if you want to use audio devices such as I2S, PCM,
++          S/PDIF, etc.
 +
- 		gsbi2: gsbi@12480000 {
- 			compatible = "qcom,gsbi-v1.0.0";
- 			reg = <0x12480000 0x100>;
-@@ -279,5 +295,12 @@
- 			#clock-cells = <1>;
- 			#reset-cells = <1>;
- 		};
++config SND_SOC_LPASS_CPU
++	tristate
++	depends on SND_SOC_QCOM
 +
-+		lcc: clock-controller@28000000 {
-+			compatible = "qcom,lcc-ipq8064";
-+			reg = <0x28000000 0x1000>;
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+		};
- 	};
- };
++config SND_SOC_IPQ806X
++	tristate "SoC Audio support for IPQ806x based platforms"
++	depends on SND_SOC_QCOM || ARCH_QCOM || COMPILE_TEST
++        select SND_SIMPLE_CARD
++	select SND_SOC_LPASS_CPU
++	select SND_SOC_LPASS_PLATFORM
++        select SND_SOC_MAX98357A
++	help
++          Support for Qualcomm Technologies LPASS audio block in
++          IPQ806X SOC-based systems.
++          Say Y if you want to use audio devices such as I2S, PCM,
++          S/PDIF, etc.
++
++config SND_SOC_LPASS_PLATFORM
++	tristate
++	depends on SND_SOC_QCOM
+diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+new file mode 100644
+index 0000000000000000000000000000000000000000..2b8b0230eeb53acf36bb333c78abf7e95147ac2a
+--- /dev/null
++++ b/sound/soc/qcom/Makefile
+@@ -0,0 +1,6 @@
++# Platform
++snd-soc-lpass-cpu-objs := lpass-cpu.o
++snd-soc-lpass-platform-objs := lpass-platform.o
++
++obj-$(CONFIG_SND_SOC_LPASS_CPU) += snd-soc-lpass-cpu.o
++obj-$(CONFIG_SND_SOC_LPASS_PLATFORM) += snd-soc-lpass-platform.o
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
