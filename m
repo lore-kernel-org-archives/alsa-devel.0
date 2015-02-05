@@ -1,104 +1,57 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH] ASoC: wm8731: let codec to manage clock by itself
-Date: Thu, 5 Feb 2015 15:35:13 +0800
-Message-ID: <1423121713-19434-1-git-send-email-voice.shen@atmel.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: add a status for runtime
+	suspend/resume
+Date: Thu, 5 Feb 2015 08:28:57 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BA9E55@SHSMSX101.ccr.corp.intel.com>
+References: <1423057334-26654-1-git-send-email-yang.jie@intel.com>
+ <20150204201731.GE21293@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Richard Purdie <richard@openedhand.com>, patches@opensource.wolfsonmicro.com
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0BBF2604FA
+ for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 09:29:03 +0100 (CET)
+In-Reply-To: <20150204201731.GE21293@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Let the wm8731 codec to manage clock by itself.
-
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
-
- sound/soc/codecs/wm8731.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index b115ed8..ecd8424 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -13,6 +13,7 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
-@@ -45,6 +46,7 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
- /* codec private data */
- struct wm8731_priv {
- 	struct regmap *regmap;
-+	struct clk *mclk;
- 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
- 	const struct snd_pcm_hw_constraint_list *constraints;
- 	unsigned int sysclk;
-@@ -389,6 +391,9 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	switch (clk_id) {
- 	case WM8731_SYSCLK_XTAL:
- 	case WM8731_SYSCLK_MCLK:
-+		if (IS_ENABLED(CONFIG_COMMON_CLK))
-+			if (clk_set_rate(wm8731->mclk, freq))
-+				return -EINVAL;
- 		wm8731->sysclk_type = clk_id;
- 		break;
- 	default:
-@@ -490,6 +495,9 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-+		if (IS_ENABLED(CONFIG_COMMON_CLK))
-+			if (clk_prepare_enable(wm8731->mclk))
-+				return -EINVAL;
- 		break;
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
-@@ -508,6 +516,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
- 		snd_soc_write(codec, WM8731_PWR, reg | 0x0040);
- 		break;
- 	case SND_SOC_BIAS_OFF:
-+		if (IS_ENABLED(CONFIG_COMMON_CLK))
-+			clk_disable_unprepare(wm8731->mclk);
- 		snd_soc_write(codec, WM8731_PWR, 0xffff);
- 		regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies),
- 				       wm8731->supplies);
-@@ -666,6 +676,15 @@ static int wm8731_spi_probe(struct spi_device *spi)
- 	if (wm8731 == NULL)
- 		return -ENOMEM;
- 
-+	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
-+		wm8731->mclk = devm_clk_get(&spi->dev, "mclk");
-+		if (IS_ERR(wm8731->mclk)) {
-+			ret = PTR_ERR(wm8731->mclk);
-+			dev_err(&spi->dev, "Failed to get MCLK\n");
-+			return ret;
-+		}
-+	}
-+
- 	mutex_init(&wm8731->lock);
- 
- 	wm8731->regmap = devm_regmap_init_spi(spi, &wm8731_regmap);
-@@ -717,6 +736,15 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
- 	if (wm8731 == NULL)
- 		return -ENOMEM;
- 
-+	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
-+		wm8731->mclk = devm_clk_get(&i2c->dev, "mclk");
-+		if (IS_ERR(wm8731->mclk)) {
-+			ret = PTR_ERR(wm8731->mclk);
-+			dev_err(&i2c->dev, "Failed to get MCLK\n");
-+			return ret;
-+		}
-+	}
-+
- 	mutex_init(&wm8731->lock);
- 
- 	wm8731->regmap = devm_regmap_init_i2c(i2c, &wm8731_regmap);
--- 
-2.3.0.rc0
-
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Thursday, February 05, 2015 4:18 AM
+> To: Jie, Yang
+> Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
+> Subject: Re: [PATCH] ASoC: Intel: add a status for runtime suspend/resume
+> 
+> On Wed, Feb 04, 2015 at 09:42:14PM +0800, Jie Yang wrote:
+> 
+> > +	else if (pdata->pm_state == HSW_PM_STATE_RTD3)
+> > +		goto suspend;
+> > +
+> 
+> >  	sst_hsw_dsp_runtime_sleep(hsw);
+> > +
+> > +suspend:
+> > +	snd_soc_suspend(pdata->soc_card->dev);
+> > +	snd_soc_poweroff(pdata->soc_card->dev);
+> > +
+> >  	pdata->pm_state = HSW_PM_STATE_D3;
+> 
+> This is a pretty big jump for goto and it's not the usual goto as error handling
+> idiom either; it seems better to refactor the code so that this isn't required.
+> For example have a runtime PM function which is also called by the system
+> suspend path.
+[Keyon] OK, thanks, let me refactor it and remove the goto. I don't wan't call runtime PM function in system suspend directly because of the suspend/resume(specially the resume) sequence have slight difference, also for not mixing the RTD3 and D3 status.
+Will send updated v2 patch soon.
