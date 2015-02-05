@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: Intel: add a status for runtime
-	suspend/resume
-Date: Thu, 5 Feb 2015 18:05:36 +0000
-Message-ID: <20150205180536.GE21293@sirena.org.uk>
-References: <1423148208-2767-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH v4 1/2] ASoC: rt5645: add API to select
+	ASRC clock source
+Date: Thu, 5 Feb 2015 18:10:58 +0000
+Message-ID: <20150205181058.GF21293@sirena.org.uk>
+References: <1422993828-29292-1-git-send-email-yang.a.fang@intel.com>
+ <1423102772-11426-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1043866285379236232=="
+Content-Type: multipart/mixed; boundary="===============8710046750524810833=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F082260530
- for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 19:05:41 +0100 (CET)
-In-Reply-To: <1423148208-2767-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DAC7C26052C
+ for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 19:11:03 +0100 (CET)
+In-Reply-To: <1423102772-11426-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, kevin.strasser@intel.com, vinod.koul@intel.com, kevin.strasser@linux.intel.com, mengdong.lin@intel.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1043866285379236232==
+--===============8710046750524810833==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="14bM4CotJTQANPRw"
+	protocol="application/pgp-signature"; boundary="s72DY7+r+2L7HVD3"
 Content-Disposition: inline
 
 
---14bM4CotJTQANPRw
+--s72DY7+r+2L7HVD3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 05, 2015 at 10:56:48PM +0800, Jie Yang wrote:
-> For runtime suspend/resume, it is some different with suspend/resume,
-> e.g. codec power supply won't be switch off, codec jack detection
-> still working(to wake up system from Jack event), won't call call
-> snd_soc_suspend/resume, etc.
+On Wed, Feb 04, 2015 at 06:19:31PM -0800, yang.a.fang@intel.com wrote:
+> From: "Fang, Yang A" <yang.a.fang@intel.com>
+>=20
+> This patch defines an API to select the clock source for specified filter=
+s.
 
-Applied, thanks.
+Applied both, thanks.
 
---14bM4CotJTQANPRw
+--s72DY7+r+2L7HVD3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU07DvAAoJECTWi3JdVIfQvugH+QGNSouAfhE4fDwtQ2aORFcO
-VQtvSVqjm3mzQbndV1mCZFksJBOL2iYL2zV+EC7NTUaGA2HySYDm0V+2r6wdJsN7
-qR/kWYwKX00VZ97neRyDwRyX04WEhtaHY15J59ZAzl+PYiIVVD+rUx99wdbQD+2v
-jFAXsGNDOV6nIF+0quYYHlFprb0ekyJgKgSeVczoR5NrVSE6JYR6QaZ9clpJq/sp
-rArwN1ozyBI3wj0/prStHEknb7CSpP0gsOr587X1XLTwCgnGHsVsMIdW2ELJuSPq
-8bTGYx2tzgkJR0JBj0ecCukpZLpDDltNlIJ7i4IdCtgCr9eYlDcSs9ApouG4HyY=
-=CAGc
+iQEcBAEBCAAGBQJU07IxAAoJECTWi3JdVIfQBegH/2z0SNp/Idys/+hKS2z98O3g
+2lXaXXi+Wf+WH2xOGZiEqbbLL7VjEive6AQAMWvlmZx77XlZxyr6x4meWtEq8Hep
+6Cd+RYkJI5WIy4ZYPKVeJyHJqcSC680T+7lNi/2JtFzjSOVnDd4qd2IbCa4hgvQ8
+vUZWVXdHuDPiLvoUes9nbfQSKrv9vg//jFfD/vZIZ/rZHnc4IPoFY1r5HZGOZcjR
+2hvOrMr4WRvefiGfYE2eQpDEPT7WxNMMgjVM6s+U6aIPyE82HB0YyDVGnbVk8fuN
+MfGzuKaWNJFjCtgyxVq8Tv3hcAr+xN8gY1siKwjbtIDAyhZzZJeu7wcsbuF/4hY=
+=sE9F
 -----END PGP SIGNATURE-----
 
---14bM4CotJTQANPRw--
+--s72DY7+r+2L7HVD3--
 
---===============1043866285379236232==
+--===============8710046750524810833==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1043866285379236232==--
+--===============8710046750524810833==--
