@@ -1,83 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/4] ASoC: samsung: clean up references to outdated
- Kconfig symbols
-Date: Sat, 7 Feb 2015 07:50:44 +0800
-Message-ID: <20150206235044.GO31311@finisterre.sirena.org.uk>
-References: <1421664067.9655.51.camel@x220>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [Patch V4 05/10] ASoC: ipq806x: add LPASS header files
+Date: Sat, 7 Feb 2015 06:58:43 +0800
+Message-ID: <20150206225843.GJ31311@finisterre.sirena.org.uk>
+References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
+ <1423169626-22166-6-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1872107940140704945=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1421664067.9655.51.camel@x220>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org, Valentin Rothberg <valentinrothberg@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sdJFN6SSISdF2ksn"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1423169626-22166-6-git-send-email-kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1872107940140704945==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="31zvzas5NXT9fief"
-Content-Disposition: inline
-Content-Length: 1335
-
-
---31zvzas5NXT9fief
+--sdJFN6SSISdF2ksn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 19, 2015 at 11:41:07AM +0100, Paul Bolle wrote:
-> A few series of ARM cleanups regarding S5PC100 and S5PV210 were included
-> in v3.17. These series removed these five Kconfig symbols:
->     MACH_AQUILA
->     MACH_GONI
->     MACH_SMDKC100
->     MACH_SMDKC110
->     MACH_SMDKV210
->=20
-> This series, done on top of next-20150119, removes the remaining
+On Thu, Feb 05, 2015 at 12:53:41PM -0800, Kenneth Westfield wrote:
 
-If you are posting a patch series please ensure that all the patches in
-the series are threaded in reply to the cover letter (or first patch if
-there isn't one) so that mail clients can see to display them as a
-series.
+> +#define __LPASS_H__
+> +
+> +#define LPASS_AHBIX_CLOCK_FREQUENCY		131072
+> +
+> +/* Both the CPU DAI driver and platform driver will access this data */
+> +struct lpass_data {
+> +
+> +	/* clocks inside the low-power audio subsystem (LPASS) domain */
+> +	struct clk *ahbix_clk;
 
---31zvzas5NXT9fief
+This uses struct clk so it needs at least a forward declaration of it if
+not just a straight inclusion of linux/clk.h.  There's several other
+types and annotations that are referenced without an include to ensure
+the compiler knows about them, the general idea is to avoid implicit
+dependencies and thee surprising build breaks they cause.
+
+--sdJFN6SSISdF2ksn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1VNTAAoJECTWi3JdVIfQAtoH/joPAnxlEA4teq3gF2BizF80
-LecNeHYR6fwtEy1r6RGDPJJV4QWwZLhkEhaIwfuTg1p7iP5NZ2ivLy3oxHNKBAZM
-1JjtCBHMMz/ncNllJrOj/hktbAe1NVwj7K+0xBReVNqhjRFxrxzuL+gryuoJCuYS
-ESsG7vVtAEYLOzlnPnZTqyKc7v8vriDfh3R3nHxoepKMmFxtQSD9o8edWiudE5+B
-qA6d1/O5xRl8WsQGsJQTb5GucGVciitoglC/jSBrUI/QlRqZkEHFWzjmsetbKTF3
-1C6JnHwLR8VYrlUOT7+HL1TXfZ3Huq40vS6JQ0nlZO3jUA/vycfJ/jgx2Y+qBXA=
-=Tuji
+iQEcBAEBCAAGBQJU1UciAAoJECTWi3JdVIfQHNwH/0XOJY37GdxRR3qDgatMhQiS
+ZSHvM439Fade6vgGtJ9Q/jsr3lFa98sOGihrVG0Z46+lzK7Kg9ttWgLp8Io99E2v
+WxGDC4M8gJBS3zUAVSLaJpWNcEucvvxO7gB4lrbEdylScqMG6ZKlymdii/2MrMD/
+n7OfsuW50mGAkZMQo5ETHlEBmBOl+LNxJiz2hdWrWwx7BnRCun26FjqgHa6+gPjF
+U8sT6lZjDBq1ZIZqqbSq3F06HCM0RAe8LSPezKf/fpsaeQD9C3CkC4VBU3oRNZXQ
+HzfiIrLJT1g2SKMwHP9LzpPJVQzKfupoggJEmm0OmIqsoP6wQEsE5P/zLWXiTDY=
+=sE3h
 -----END PGP SIGNATURE-----
 
---31zvzas5NXT9fief--
-
-
---===============1872107940140704945==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============1872107940140704945==--
+--sdJFN6SSISdF2ksn--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
