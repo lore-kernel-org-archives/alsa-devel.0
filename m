@@ -1,49 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch V4 02/10] ASoC: max98357a: Document MAX98357A bindings
-Date: Sat, 7 Feb 2015 06:12:52 +0800
-Message-ID: <20150206221252.GD31311@finisterre.sirena.org.uk>
-References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
- <1423169626-22166-3-git-send-email-kwestfie@codeaurora.org>
+Subject: Re: [PATCH 4/4] ASoC: samsung: remove outdated Kconfig references
+Date: Sat, 7 Feb 2015 07:54:57 +0800
+Message-ID: <20150206235457.GR31311@finisterre.sirena.org.uk>
+References: <1421664182.9655.55.camel@x220>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ylS2wUBXLOxYXZFQ"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="v4cNTr+tRGSs1txX"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1423169626-22166-3-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
+In-Reply-To: <1421664182.9655.55.camel@x220>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Kukjin Kim <kgene@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Valentin Rothberg <valentinrothberg@gmail.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ylS2wUBXLOxYXZFQ
+--v4cNTr+tRGSs1txX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 05, 2015 at 12:53:38PM -0800, Kenneth Westfield wrote:
-> From: Kenneth Westfield <kwestfie@codeaurora.org>
->=20
-> Add documentation to the sound directory of the
-> device-tree bindings for the Maxim MAX98357A audio
-> DAC.
+On Mon, Jan 19, 2015 at 11:43:02AM +0100, Paul Bolle wrote:
+> The Kconfig symbols MACH_SMDKC110 and MACH_SMDKV210 were removed in
+> v3.17. But the Kconfig entries for SND_SOC_SAMSUNG_SMDK_WM8580 and
+> SND_SOC_SAMSUNG_SMDK_WM9713 still reference them.
 
-Applied, thanks.
+This doesn't apply against current code.
 
---ylS2wUBXLOxYXZFQ
+--v4cNTr+tRGSs1txX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1TxjAAoJECTWi3JdVIfQCgwH+wchvUnQ6cCzBch09fCFJ2XL
-5ubUU6ehMUFaouxBcetN9xisp1TX2Imgy6sRX7BLL+Q4vC/mHs1pgi9E84wNYYIO
-e8ncp9AlXU1M9SWwJZN5fW1GQHHtcQ8FkKO81BlM2Zq+mI069iV5vopVL+vuQCxg
-VjYO0JjpFk17TV9TFNUyFeH5osEY+bkws8KqmL4bfxsOk++/iXa/cuwInpSZh16C
-BjCy1qGOj1cUAZe/aZW8KfvZ3ZhzN3UUHXJq/4ddt9PqA+aNyEcxOuREKS7R1yT2
-6GT86lYCHqTWBOYXjNGYdlAa4Q8DbjUS2HKett7UdSoMk3z8EIX2B+dtD7v+v0E=
-=64lC
+iQEcBAEBCAAGBQJU1VRQAAoJECTWi3JdVIfQxM4H/R/JennBrWOnK2Qv3SF77VD8
+ZNv1yxt7z0gE4WUdnKVAD0VbMkfeQq/G9Ed+V09+V265X1Vai22+G3hlq/h62x1Q
+g+unPxgGdwrTaArvH8hcnsaxlyIn5wHKq9nQBLKQh+b+XJhduVNHA96U9SgwuPgA
+mYiio63vTo6h27GjmH8/XkJNODWv9KY3LjKxyS43ezc3r2+csHUj9hFt0Yip5Ytq
+mwJXfZx8+wkUdJ5+KPgwhONpZ2mhsoUmjyE3p6ywzm8P9G23J3XsYP0HI0CApwCi
+AG5L+rG+y+KMQP/u+O8tsBGhT+nwli7kc2+0nmF+1ugaxZnnrDW8oTg1lqJnFPw=
+=5Twn
 -----END PGP SIGNATURE-----
 
---ylS2wUBXLOxYXZFQ--
+--v4cNTr+tRGSs1txX--
