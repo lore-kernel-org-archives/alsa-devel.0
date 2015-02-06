@@ -1,48 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: atmel_ssc_dai: refactor the startup and
- shutdown
-Date: Fri, 30 Jan 2015 14:20:47 +0100
-Message-ID: <20150130132047.GO26617@finisterre.sirena.org.uk>
-References: <1422610724-7222-1-git-send-email-voice.shen@atmel.com>
- <1422610724-7222-3-git-send-email-voice.shen@atmel.com>
+Subject: Re: [Patch V4 04/10] ASoC: codec: Add MAX98357A codec driver
+Date: Sat, 7 Feb 2015 06:13:01 +0800
+Message-ID: <20150206221301.GE31311@finisterre.sirena.org.uk>
+References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
+ <1423169626-22166-5-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GOzekVbrLdOLv44p"
-Return-path: <linux-sound-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="BQPnanjtCNWHyqYD"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1422610724-7222-3-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: nicolas.ferre@atmel.com, Songjun.Wu@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1423169626-22166-5-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---GOzekVbrLdOLv44p
+--BQPnanjtCNWHyqYD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 30, 2015 at 05:38:43PM +0800, Bo Shen wrote:
-> In startup function, enable ssc clock and in shutdown function,
-> disable clock. And also remove disable ssc in shutdown function,
-> as ssc is disabled in prepare function.
+On Thu, Feb 05, 2015 at 12:53:40PM -0800, Kenneth Westfield wrote:
+> From: Kenneth Westfield <kwestfie@codeaurora.org>
+>=20
+> Add codec driver for the Maxim MAX98357A DAC.
 
-Applied, thanks.  You probably want to convert to clk_prepare_enable()
-too but that's a separate thing.
+Applied, thanks.
 
---GOzekVbrLdOLv44p
+--BQPnanjtCNWHyqYD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJUy4UuAAoJECTWi3JdVIfQC/8H/3QoN/rcdKYpeN2R+lh9iar4
-pjEqzuDABh5V4FR1ei0fvqaw6GaCwSbdvPsbRuHw1m9iJS/UoTdUGBw/ARY71duw
-wRYvgV1VcK7oVJXBtO2vZJhiYSixz+ufv/UmpJQfoTDG1pcSicb5MVkomiiIG3CX
-S1pdLuHIb8MH019C2ItNRVYR5frTYfLFpwRm00Yp4tIKpaIF/jpT6DPoAUZjXT6J
-t0U2hdhjlBJ0pPmN9NRafCkdZMDjx/EP/h8Q2oueGVEJ9n0YigaDU+CYmxkaP0Ne
-ECbinGDcHlxIBdHgTjjZo3DpQKhqDO/kOI8yeTpL3L16lSc6ejAfJS1AyamNiJ8=
-=bq/T
+iQEcBAEBCAAGBQJU1TxsAAoJECTWi3JdVIfQAy8H/2YExWG1TbDi3rv2410k5L1O
+JS7WELQT/rm6sPanYd96hjv03dLWk4WoT8EV8j6h7kshS/s+hOKbE3z7TRwUB8Y+
+J551lpeHxL7Jcoiqp6k8HhFAh5ZqbwfIBhc+25I3d8dRW8xnEoNx/nIkIeMo5Rp2
+vvs1E0PSNt9bADewMurNgkt6zWFuYPYx4ZJ9IxKXkUxDuY1NV7LwAcUaRYNnwxti
+cK10qUohSy5bQ3igGLLwcxjvPTHONELc7kq7asbPYyWuNsydszBeRLnuAmyut0/Z
+W+/Y4VLqVPrmcAlTuiF376P+7IrefKyW1fdzst8oJoRm8uCnm+mXkt9t0W5nKl8=
+=W6F8
 -----END PGP SIGNATURE-----
 
---GOzekVbrLdOLv44p--
+--BQPnanjtCNWHyqYD--
