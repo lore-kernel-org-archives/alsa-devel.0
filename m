@@ -1,84 +1,67 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch V4 07/10] ASoC: ipq806x: Add LPASS platform driver
-Date: Sat, 7 Feb 2015 06:55:19 +0800
-Message-ID: <20150206225519.GI31311@finisterre.sirena.org.uk>
-References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
- <1423169626-22166-8-git-send-email-kwestfie@codeaurora.org>
+Subject: Re: [PATCH v2] ASoC: atmel_ssc_dai: Allow more rates
+Date: Sat, 7 Feb 2015 07:09:51 +0800
+Message-ID: <20150206230951.GL31311@finisterre.sirena.org.uk>
+References: <1423050745-6372-1-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xGGVyNQdqA79rdfn"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="oY1uq2ONqt5kuovO"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1423169626-22166-8-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
+In-Reply-To: <1423050745-6372-1-git-send-email-peda@lysator.liu.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@lysator.liu.se>
+Cc: alsa-devel@alsa-project.org, Peter Rosin <peda@axentia.se>, Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---xGGVyNQdqA79rdfn
+--oY1uq2ONqt5kuovO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 05, 2015 at 12:53:43PM -0800, Kenneth Westfield wrote:
+On Wed, Feb 04, 2015 at 12:52:25PM +0100, Peter Rosin wrote:
 
-> +	irqreturn_t ret = IRQ_NONE;
-> +
-> +	interrupts = ioread32(drvdata->lpaif + status_offset) & chan_bitmask;
+> One thing remains a bit unclear, and that is the 500ppm deduction. Is
+> that really warranted? The number was just pulled out of my hat...
 
-Elsewhere we're using regmap...  why not here and how does this play
-with regmap?
+I don't really get what this is supposed to be protecting against.
 
-> +	if (likely(interrupts & period_bitmask)) {
+> +	case SND_SOC_DAIFMT_CBM_CFS:
+> +	case SND_SOC_DAIFMT_CBM_CFM:
+> +		t.min = 8000;
+> +		t.max = ssc_p->mck_rate / mck_div / frame_size;
+> +		/* Take away 500ppm, just to be on the safe side. */
+> +		t.max -= t.max / 2000;
+> +		t.openmin = t.openmax = 0;
+> +		t.integer = 0;
+> +		ret = snd_interval_refine(i, &t);
 
-In general it's better not to use likely() and unlikely() annotations
-unless you've got some evidence that they actually improve things (which
-should be explained somewhere).  They make the code that bit noisier and
-there's some potential for them to cause the compiler to do unhelpful
-things.
+As I understand it this is a straight divider rather than something
+that's doing dithering or anything else more fancy.  Given that it seems
+as well just to trust the clock rate we've got - we don't do any error
+tracking with the clock API (perhaps we should) and for many
+applications some degree of divergence from the nominal rate is not
+*too* bad for audio systems (for application specific values of "some"
+and "too" of course).  If it is just dividers I'm not sure the situation
+is really improved materially by knocking off the top frequency.
 
-> +static int lpass_platform_alloc_buffer(struct snd_pcm_substream *substream,
-> +		struct snd_soc_pcm_runtime *soc_runtime)
-> +{
-> +	struct snd_dma_buffer *buf = &substream->dma_buffer;
-> +	struct lpass_data *drvdata =
-> +		snd_soc_platform_get_drvdata(soc_runtime->platform);
-> +
-> +	if (atomic_cmpxchg(&drvdata->lpm_lock, 0, 1)) {
+If we are doing something more fancy than divididing my analysis is off
+base of course.
 
-cmpxchg() and atomics are both among the more error prone
-synchronization primitives the kernel has.  In cases where it is
-appropriate to use them it is very important that the code be entirely
-clear about what is going on so that not only are we clear that the
-concurrency handling is safe but we can also modify the code safely in
-the future.
-
-This driver has no documentation at all for this variable so we've at
-least got a problem with the clarity side here.  Looking at the code
-it's not entirely clear to me wat exactly is being protected or why
-we're not using a simpler mechanism like variable protected by a mutex.
-
-> +	return devm_snd_soc_register_platform(&pdev->dev,
-> +			&lpass_platform_driver);
-> +}
-> +EXPORT_SYMBOL(asoc_qcom_lpass_platform_register);
-
-ASoC APIs are all exported EXPORT_SYMBOL_GPL, their users should be too.
-
---xGGVyNQdqA79rdfn
+--oY1uq2ONqt5kuovO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1UZWAAoJECTWi3JdVIfQrgEIAIZkyBwhMfEkVqj+Rg2CuiJl
-Qye/aQW5+D8UQC+jGP7o8sv3OV7pWnDu0qooW3FKCL5HNcUoOGnJWn2j6ILK0alk
-UsHZOYcMySQ3tCtBXhWunXZT4OCGLB0klA01+ZeLJN7meU82qibA7gq6lst+anXK
-1KNTwGjt150OkBzUfeSfI4O+fN8rH2o3unGykHwOUmze+S4kFiV7QucbLOphVzw4
-3Q2c+72f7MjpYtqfepF1R2OQJyStXjtKnl5M1e8TtUSSm4yXP6qikbtGlQSnCI2t
-DIZnhl7mauqErgQ9nx6Sc7UuebiPn577WM6HxRf4zIcp7qat4+PMG6S0Tv/45fo=
-=m3gC
+iQEcBAEBCAAGBQJU1Um+AAoJECTWi3JdVIfQLU0H/33cg4ihNGi1mNycZGR2xc2c
+z3XXAg6iYOIyAFXHeUR9TZ+2pD+odzBKAZiFFhmcj2Vt+omIq3wrHDLT9/FDAX+H
+kfT4AjwrST1rvWn/pNORxtV4PC7ieLi/RLa4UrTKV8MHd/bmknBTaX4YxTH1gGIV
++IXLXOaVfleReivPUX7l69KF50Q/mAXl2TN+UvnU9sWVuHyNJRJDBBWtmkAHAYEt
+4cAMxvcc540vAjrRzC9jmxhI9FOMwHHtaD1bvXORc6KSVsIrNiTAAdm8AK0rgGv8
+W7b5h/8ZBGSndBSOAKL/o2a2FDFW1sclyX7cye1RG59LXaaQ7cJq3DpA3Xqdzxw=
+=tvq8
 -----END PGP SIGNATURE-----
 
---xGGVyNQdqA79rdfn--
+--oY1uq2ONqt5kuovO--
