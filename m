@@ -1,60 +1,88 @@
-From: Abhilash Kesavan <a.kesavan@samsung.com>
-Subject: [PATCH v2 3/3] misc: sram: switch to ioremap_wc from ioremap
-Date: Fri,  6 Feb 2015 19:15:28 +0530
-Message-ID: <1423230328-6721-4-git-send-email-a.kesavan@samsung.com>
-References: <1423230328-6721-1-git-send-email-a.kesavan@samsung.com>
+From: Chris Rorvick <chris@rorvick.com>
+Subject: [PATCH 1/4] ALSA: line6: Add toneport_has_source_select()
+Date: Fri,  6 Feb 2015 08:51:09 -0600
+Message-ID: <1423234272-7348-2-git-send-email-chris@rorvick.com>
+References: <1423234272-7348-1-git-send-email-chris@rorvick.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1423230328-6721-1-git-send-email-a.kesavan@samsung.com>
+In-Reply-To: <1423234272-7348-1-git-send-email-chris@rorvick.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, hirokazu.takata.wj@renesas.com
-Cc: catalin.marinas@arm.com, Will.Deacon@arm.com, heiko@sntech.de, shc_work@mail.ru, p.zabel@pengutronix.de, nicoleotsuka@gmail.com, padma.v@samsung.com, arnd@arndb.de, alsa-devel@alsa-project.org, shawn.guo@linaro.org, bcousson@baylibre.com, tony@atomide.com, kernel@pengutronix.de, kgene@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Chris Rorvick <chris@rorvick.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stefan Hajnoczi <stefanha@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently, the SRAM allocator returns device memory via ioremap.
-This causes issues on ARM64 when the internal SoC SRAM allocated by
-the generic sram driver is used for audio playback. The destination
-buffer address (which is ioremapped SRAM) is not 64-bit aligned for
-certain streams (e.g. 44.1k sampling rate). In such cases we get
-unhandled alignment faults. Use ioremap_wc in place of ioremap which
-gives us normal non-cacheable memory instead of device memory.
+Add a predicate for testing if the device supports source selection to
+make the conditional logic around this a bit cleaner.
 
-Signed-off-by: Abhilash Kesavan <a.kesavan@samsung.com>
-Tested-by: Tony Lindgren <tony@atomide.com>
-Tested-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Chris Rorvick <chris@rorvick.com>
 ---
- drivers/misc/sram.c |   17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ sound/usb/line6/toneport.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/misc/sram.c b/drivers/misc/sram.c
-index 21181fa..15b4d4e 100644
---- a/drivers/misc/sram.c
-+++ b/drivers/misc/sram.c
-@@ -69,12 +69,23 @@ static int sram_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&reserve_list);
+diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
+index b107cf4..de56180a 100644
+--- a/sound/usb/line6/toneport.c
++++ b/sound/usb/line6/toneport.c
+@@ -343,6 +343,20 @@ static void toneport_remove_leds(struct usb_line6_toneport *toneport)
+ 	}
+ }
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	virt_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(virt_base))
--		return PTR_ERR(virt_base);
-+	if (!res) {
-+		dev_err(&pdev->dev, "found no memory resource\n");
-+		return -EINVAL;
-+	}
- 
- 	size = resource_size(res);
- 
-+	if (!devm_request_mem_region(&pdev->dev,
-+			res->start, size, pdev->name)) {
-+		dev_err(&pdev->dev, "could not request region for resource\n");
-+		return -EBUSY;
-+	}
++static bool toneport_has_source_select(struct usb_line6_toneport *toneport)
++{
++	switch (toneport->type) {
++	case LINE6_TONEPORT_UX1:
++	case LINE6_TONEPORT_UX2:
++	case LINE6_PODSTUDIO_UX1:
++	case LINE6_PODSTUDIO_UX2:
++		return 1;
 +
-+	virt_base = devm_ioremap_wc(&pdev->dev, res->start, size);
-+	if (IS_ERR(virt_base))
-+		return PTR_ERR(virt_base);
++	default:
++		return 0;
++	}
++}
 +
- 	sram = devm_kzalloc(&pdev->dev, sizeof(*sram), GFP_KERNEL);
- 	if (!sram)
- 		return -ENOMEM;
+ /*
+ 	Setup Toneport device.
+ */
+@@ -360,17 +374,10 @@ static void toneport_setup(struct usb_line6_toneport *toneport)
+ 	toneport_send_cmd(usbdev, 0x0301, 0x0000);
+ 
+ 	/* initialize source select: */
+-	switch (toneport->type) {
+-	case LINE6_TONEPORT_UX1:
+-	case LINE6_TONEPORT_UX2:
+-	case LINE6_PODSTUDIO_UX1:
+-	case LINE6_PODSTUDIO_UX2:
++	if (toneport_has_source_select(toneport))
+ 		toneport_send_cmd(usbdev,
+ 				  toneport_source_info[toneport->source].code,
+ 				  0x0000);
+-	default:
+-		break;
+-	}
+ 
+ 	if (toneport_has_led(toneport->type))
+ 		toneport_update_led(toneport);
+@@ -421,20 +428,13 @@ static int toneport_init(struct usb_line6 *line6,
+ 		return err;
+ 
+ 	/* register source select control: */
+-	switch (toneport->type) {
+-	case LINE6_TONEPORT_UX1:
+-	case LINE6_TONEPORT_UX2:
+-	case LINE6_PODSTUDIO_UX1:
+-	case LINE6_PODSTUDIO_UX2:
++	if (toneport_has_source_select(toneport)) {
+ 		err =
+ 		    snd_ctl_add(line6->card,
+ 				snd_ctl_new1(&toneport_control_source,
+ 					     line6->line6pcm));
+ 		if (err < 0)
+ 			return err;
+-
+-	default:
+-		break;
+ 	}
+ 
+ 	line6_read_serial_number(line6, &toneport->serial_number);
 -- 
-1.7.9.5
+2.1.0
