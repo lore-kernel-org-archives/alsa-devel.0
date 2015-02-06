@@ -1,51 +1,39 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH V3 15/15] ARM: dts: Fix I2S1, I2S2 compatible for
- exynos4 SoCs
-Date: Fri, 6 Feb 2015 11:51:18 +0000
-Message-ID: <20150206115118.GU21293@sirena.org.uk>
-References: <1422972382-18520-1-git-send-email-s.nawrocki@samsung.com>
- <1422972382-18520-3-git-send-email-s.nawrocki@samsung.com>
- <20150205194105.GM21293@sirena.org.uk>
- <54D4A5E5.4010706@samsung.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="FZExVc34RhJBHWdA"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <54D4A5E5.4010706@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: kgene@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, stable@vger.kernel.org
+From: Abhilash Kesavan <a.kesavan@samsung.com>
+Subject: [PATCH v2 0/3] Switch to ioremap_wc in the SRAM allocator code
+Date: Fri,  6 Feb 2015 19:15:25 +0530
+Message-ID: <1423230328-6721-1-git-send-email-a.kesavan@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, hirokazu.takata.wj@renesas.com
+Cc: catalin.marinas@arm.com, Will.Deacon@arm.com, heiko@sntech.de, shc_work@mail.ru, p.zabel@pengutronix.de, nicoleotsuka@gmail.com, padma.v@samsung.com, arnd@arndb.de, alsa-devel@alsa-project.org, shawn.guo@linaro.org, bcousson@baylibre.com, tony@atomide.com, kernel@pengutronix.de, kgene@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Fix alignment faults seen during play-back of files with specific
+sampling rates such as 44.1K. This is based on the discussion here:
+http://www.spinics.net/lists/arm-kernel/msg384647.html
 
---FZExVc34RhJBHWdA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Patch 1 is needed as m32r arch does not define ioremap_wc. Patch 2 adds a
+resource managed helper function for ioremap_wc which is used in patch 3.
 
-On Fri, Feb 06, 2015 at 12:30:45PM +0100, Sylwester Nawrocki wrote:
+Changes since v1:
+	- Fix the compilation error with m32r due to missing ioremap_wc
+	definition.
+	- Fixed minor indentation issues.
 
-> Thank you for merging it.  I hope you picked up the previous 2 as well,
-> I couldn't see them in your tree.
+Note: Other architectures either have ioremap_wc defined or are including
+generic "io.h"/"iomap.h". c6x arch is the only one I am not sure of.
 
-I probably will if I don't hear anything but since they don't need to go
-as a bug fix I can leave Kukjin a bit longer to say if he's OK with
-that.
+Abhilash Kesavan (3):
+  m32r: add definition of ioremap_wc to io.h
+  lib: devres: add a helper function for ioremap_wc
+  misc: sram: switch to ioremap_wc from ioremap
 
---FZExVc34RhJBHWdA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ Documentation/driver-model/devres.txt |    1 +
+ arch/m32r/include/asm/io.h            |    1 +
+ drivers/misc/sram.c                   |   17 ++++++++++++++---
+ include/linux/io.h                    |    2 ++
+ lib/devres.c                          |   28 ++++++++++++++++++++++++++++
+ 5 files changed, 46 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU1Kq1AAoJECTWi3JdVIfQW9gH/2LWQZwWC+sEnJ1rhPYbUto5
-wZ+Hc6t5bOiZ6KN8qwrhGhH2xfazuz2ru2knmALDwyjZYlpK3m3b+0UMsg18oy6D
-LdK0Af8GpPUT3WRFK8vo0iwt+Md6l+4r4yLhHpJkeYpr1LPeKN8ND5pCGr3VUu3R
-4ZGwc5evqS6bv+sNPcI43DPHfuYY42Z1A9Hyy16clIFNCse43ORld6D1TuFX75mm
-Fhc5/c9QOuwEMmIKWDux5uDwCZcVvKEM1OajHpvgmKeUsK78Yx+FouJyT2Yg6dZx
-tiv91guWtrMuw3P/9yMIWgRy/Cya13RTotLEF/MhsD1wdi+r5g06xG3LD5Sux2o=
-=bKxB
------END PGP SIGNATURE-----
-
---FZExVc34RhJBHWdA--
+-- 
+1.7.9.5
