@@ -1,71 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch V4 03/10] ASoC: qcom: Document LPASS CPU bindings
-Date: Sat, 7 Feb 2015 06:18:23 +0800
-Message-ID: <20150206221823.GF31311@finisterre.sirena.org.uk>
-References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
- <1423169626-22166-4-git-send-email-kwestfie@codeaurora.org>
+Subject: Re: [PATCH 2/4] ASoC: samsung: Remove PCM support for WM8580 on SMDK
+Date: Sat, 7 Feb 2015 07:53:50 +0800
+Message-ID: <20150206235350.GP31311@finisterre.sirena.org.uk>
+References: <1421664127.9655.53.camel@x220>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lIrNkN/7tmsD/ALM"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1423169626-22166-4-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============2952655251902433716=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1421664127.9655.53.camel@x220>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org, Valentin Rothberg <valentinrothberg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---lIrNkN/7tmsD/ALM
+--===============2952655251902433716==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Vhqu5qQ3bjg0ZI9i"
+Content-Disposition: inline
+
+
+--Vhqu5qQ3bjg0ZI9i
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 05, 2015 at 12:53:39PM -0800, Kenneth Westfield wrote:
+On Mon, Jan 19, 2015 at 11:42:07AM +0100, Paul Bolle wrote:
+> Commit 28c8331d386a ("ARM: S5PV210: Remove support for board files")
+> removed the Kconfig symbols MACH_SMDKC110 and MACH_SMDKV210. As a result
+> the dependencies of SND_SOC_SMDK_WM8580_PCM can never be met. So remove
+> the unbuildable "SoC PCM Audio support for WM8580 on SMDK".
 
-> +- qcom,system-clock-shift		: Add this bool property if the default
-> +					  frequency of the system clock needs to
-> +					  be reduced.
-> +- qcom,system-clock-shift-compare	: A numerical value used to right-shift
-> +					  the default system clock frequency for
-> +					  comparison with the target bit clock
-> +					  frequency.
-> +- qcom,system-clock-shift-amount	: A numerical value used to right-shift
-> +					  the default system clock frequency.
-> +- qcom,alternate-sysclk			: Add this bool property if the default
-> +					  frequency of the system clock cannot
-> +					  divide down to the target bit clock
-> +					  frequency.
-> +- qcom,alternate-sysclk-bitwidth	: A numerical value representing the
-> +					  sample bitwidth which requires use of
-> +					  the alternate system clock frequency.
-> +- qcom,alternate-sysclk-frequency	: A numerical value representing the new
-> +					  system clock frequency to use.
+This doesn't apply against current code.
 
-None of these seem like they are appropriate for device tree properties,
-they appear to be choosing a specific clocking configuration which is
-something that would normally be done as part of the system integration
-in the machine driver rather than in the DAI driver.  This binding won't
-work in cases where the clocks are being changed at runtime and would
-limit systems where that becomes possible in future.
-
-Further, the interface seems too low level - it's specifying individual
-dividers and so on which would normally be things that can trivially be
-calculated or inferred given the input and target clock rates.
-
---lIrNkN/7tmsD/ALM
+--Vhqu5qQ3bjg0ZI9i
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1T2vAAoJECTWi3JdVIfQDYEH/0bFK5D7l5T902ASpsFINTPt
-G4CByMDNqKzDcqKMiAmzC9mffbc6uYDpvP54eaoehzYx2kiOjPp9ps49ac5l6zS5
-ETmIqAnhChpKGmfO8A4gNtW12uSLHY83HigZd9LoOwk7227tQxh5za8kHAijxkes
-mXqhfHS7krbniUOb657hatC6Z5vT6uD8EfjYvOW8VZA9u+vtks8lkPKVIVNKvi1A
-W1N1QCLo2O+u+ZNNVI2Tf0Hg0QtrjJCkDj/a8ByKZA2sKZpC5ugbZ+iIrcPSwARf
-pKbhIroWnGgQBVYJVBpcfgSv/YlK+v4Rpf3nAiXcBkfVwygdPjoJYuyFiMvEJMQ=
-=i3mm
+iQEcBAEBCAAGBQJU1VQNAAoJECTWi3JdVIfQVzoH/jUgo8Rb7HITGhhUgBE3BBO0
+QUX/zPnkScHhzQPV46045jIMWXEehgOmIyGOojBVze21YLnNf/wXUGHzOJ8FSGFA
+QoZXxIRhRy1mYwKRO2lxhmyXMk15DD3VaTtGzx2gjE3sYZV2ucs8ib7L2DAAjGk+
+PEnow/dzxobTvicL9FlB0OzM9VHVDZBBkn8/qWgwL8id0apg7czdCpwazAwN3Ccf
+M5S88GLRoh67RIZ8QiQkroTGJ2De7cuRp8cDAms4uTSiQaeTfO91WOtJ78NT1ZfJ
+y3hboGYKeSVpuJjHWDPjq5m2e7G/Lc8MqJyAfbdKSEg/LMdng4ej/CMFEEsByeA=
+=XWeZ
 -----END PGP SIGNATURE-----
 
---lIrNkN/7tmsD/ALM--
+--Vhqu5qQ3bjg0ZI9i--
+
+
+--===============2952655251902433716==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============2952655251902433716==--
