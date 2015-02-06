@@ -1,18 +1,14 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Set up GPIO for Toshiba Satellite
-	S50D
-Date: Thu,  5 Feb 2015 22:11:35 +0100
-Message-ID: <1423170695-22045-1-git-send-email-tiwai@suse.de>
+From: yang.a.fang@intel.com
+Subject: [PATCH] ASoC: Intel: fix machine driver warnings
+Date: Thu,  5 Feb 2015 16:19:16 -0800
+Message-ID: <1423181956-108810-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B1211260536
- for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 22:11:45 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 72136AAF3
- for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2015 21:11:45 +0000 (UTC)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDC7D26053E
+ for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 01:19:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +18,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, kevin.strasser@intel.com, vinod.koul@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Toshiba Satellite S50D laptop with an IDT codec uses the GPIO4 (0x10)
-as the master EAPD.
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=915858
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+this patch will fix below sparse warnings
+
+warning: incorrect type in argument 2 (different base types)
+expected unsigned int [unsigned] val
+got restricted snd_pcm_format_t [usertype] <noident>
+
+sound/soc/intel/haswell.c:61:37
+sound/soc/intel/broadwell.c:115:37:
+sound/soc/intel/bytcr_dpcm_rt5640.c:118:37:
+sound/soc/intel/cht_bsw_rt5672.c:183:37:
+sound/soc/intel/cht_bsw_rt5645.c:208:37:
+
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
 ---
- sound/pci/hda/patch_sigmatel.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ sound/soc/intel/broadwell.c         |    2 +-
+ sound/soc/intel/bytcr_dpcm_rt5640.c |    2 +-
+ sound/soc/intel/cht_bsw_rt5645.c    |    2 +-
+ sound/soc/intel/cht_bsw_rt5672.c    |    2 +-
+ sound/soc/intel/haswell.c           |    2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 605d14003d25..6d36c5b78805 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -99,6 +99,7 @@ enum {
- 	STAC_HP_ENVY_BASS,
- 	STAC_HP_BNB13_EQ,
- 	STAC_HP_ENVY_TS_BASS,
-+	STAC_92HD83XXX_GPIO10_EAPD,
- 	STAC_92HD83XXX_MODELS
- };
- 
-@@ -2141,6 +2142,19 @@ static void stac92hd83xxx_fixup_headset_jack(struct hda_codec *codec,
- 		spec->headset_jack = 1;
+diff --git a/sound/soc/intel/broadwell.c b/sound/soc/intel/broadwell.c
+index 9cf7d01..0ca4015 100644
+--- a/sound/soc/intel/broadwell.c
++++ b/sound/soc/intel/broadwell.c
+@@ -112,7 +112,7 @@ static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	/* set SSP0 to 16 bit */
+ 	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+ 				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
+-				    SNDRV_PCM_FORMAT_S16_LE);
++				    (__force int)SNDRV_PCM_FORMAT_S16_LE);
+ 	return 0;
  }
  
-+static void stac92hd83xxx_fixup_gpio10_eapd(struct hda_codec *codec,
-+					    const struct hda_fixup *fix,
-+					    int action)
-+{
-+	struct sigmatel_spec *spec = codec->spec;
-+
-+	if (action != HDA_FIXUP_ACT_PRE_PROBE)
-+		return;
-+	spec->eapd_mask = spec->gpio_mask = spec->gpio_dir =
-+		spec->gpio_data = 0x10;
-+	spec->eapd_switch = 0;
-+}
-+
- static const struct hda_verb hp_bnb13_eq_verbs[] = {
- 	/* 44.1KHz base */
- 	{ 0x22, 0x7A6, 0x3E },
-@@ -2656,6 +2670,10 @@ static const struct hda_fixup stac92hd83xxx_fixups[] = {
- 			{}
- 		},
- 	},
-+	[STAC_92HD83XXX_GPIO10_EAPD] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = stac92hd83xxx_fixup_gpio10_eapd,
-+	},
- };
+diff --git a/sound/soc/intel/bytcr_dpcm_rt5640.c b/sound/soc/intel/bytcr_dpcm_rt5640.c
+index 5930862..b171443 100644
+--- a/sound/soc/intel/bytcr_dpcm_rt5640.c
++++ b/sound/soc/intel/bytcr_dpcm_rt5640.c
+@@ -115,7 +115,7 @@ static int byt_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	/* set SSP2 to 24-bit */
+ 	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+ 				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
+-				    SNDRV_PCM_FORMAT_S24_LE);
++				    (__force int)SNDRV_PCM_FORMAT_S24_LE);
+ 	return 0;
+ }
  
- static const struct hda_model_fixup stac92hd83xxx_models[] = {
-@@ -2861,6 +2879,8 @@ static const struct snd_pci_quirk stac92hd83xxx_fixup_tbl[] = {
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x148a,
- 		      "HP Mini", STAC_92HD83XXX_HP_LED),
- 	SND_PCI_QUIRK_VENDOR(PCI_VENDOR_ID_HP, "HP", STAC_92HD83XXX_HP),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_TOSHIBA, 0xfa91,
-+		      "Toshiba Satellite S50D", STAC_92HD83XXX_GPIO10_EAPD),
- 	{} /* terminator */
- };
+diff --git a/sound/soc/intel/cht_bsw_rt5645.c b/sound/soc/intel/cht_bsw_rt5645.c
+index b6f8377..7781fbe 100644
+--- a/sound/soc/intel/cht_bsw_rt5645.c
++++ b/sound/soc/intel/cht_bsw_rt5645.c
+@@ -205,7 +205,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	/* set SSP2 to 24-bit */
+ 	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+ 				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
+-				    SNDRV_PCM_FORMAT_S24_LE);
++				    (__force int)SNDRV_PCM_FORMAT_S24_LE);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
+index ff01662..b1842fa 100644
+--- a/sound/soc/intel/cht_bsw_rt5672.c
++++ b/sound/soc/intel/cht_bsw_rt5672.c
+@@ -180,7 +180,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	/* set SSP2 to 24-bit */
+ 	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+ 				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
+-				    SNDRV_PCM_FORMAT_S24_LE);
++				    (__force int)SNDRV_PCM_FORMAT_S24_LE);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/intel/haswell.c b/sound/soc/intel/haswell.c
+index 35edf51..b19f1ce 100644
+--- a/sound/soc/intel/haswell.c
++++ b/sound/soc/intel/haswell.c
+@@ -58,7 +58,7 @@ static int haswell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	/* set SSP0 to 16 bit */
+ 	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+ 				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
+-				    SNDRV_PCM_FORMAT_S16_LE);
++				    (__force int)SNDRV_PCM_FORMAT_S16_LE);
+ 	return 0;
+ }
  
 -- 
-2.2.2
+1.7.9.5
