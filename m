@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v5 09/10] ALSA: hda: replace .wallclock by
-	.get_time_info
-Date: Fri,  6 Feb 2015 15:55:58 -0600
-Message-ID: <1423259759-4100-10-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v5 07/10] ALSA: core: pass audio tstamp config
+	from userspace in compat mode
+Date: Fri,  6 Feb 2015 15:55:56 -0600
+Message-ID: <1423259759-4100-8-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1423259759-4100-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 161D126545B
- for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 22:56:26 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2033D265453
+ for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 22:56:24 +0100 (CET)
 In-Reply-To: <1423259759-4100-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,91 +25,91 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-No real functional change, only take wall clock and system time
-in same routine and add accuracy report.
+Let userspace select audio timestamp config, ignore and zero all
+other fields
+Use audio_tstamp_data to retrieve config and pass report back to
+user space
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/hda/hda_controller.c | 40 +++++++++++++++++++++++++++++-----------
- 1 file changed, 29 insertions(+), 11 deletions(-)
+ sound/core/pcm_compat.c | 36 ++++++++++++++++++++++++++++++------
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 234208a..370b082 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -732,17 +732,32 @@ static snd_pcm_uframes_t azx_pcm_pointer(struct snd_pcm_substream *substream)
- 			       azx_get_position(chip, azx_dev));
- }
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index 2d957ba..188b991 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -194,18 +194,36 @@ struct snd_pcm_status32 {
+ 	u32 avail_max;
+ 	u32 overrange;
+ 	s32 suspended_state;
+-	u32 reserved_alignment;
++	u32 audio_tstamp_data;
+ 	struct compat_timespec audio_tstamp;
+-	unsigned char reserved[56-sizeof(struct compat_timespec)];
++	struct compat_timespec driver_tstamp;
++	u32 audio_tstamp_accuracy;
++	unsigned char reserved[52-2*sizeof(struct compat_timespec)];
+ } __attribute__((packed));
  
--static int azx_get_wallclock_tstamp(struct snd_pcm_substream *substream,
--				struct timespec *ts)
-+static int azx_get_time_info(struct snd_pcm_substream *substream,
-+			struct timespec *system_ts, struct timespec *audio_ts,
-+			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
-+			struct snd_pcm_audio_tstamp_report *audio_tstamp_report)
+ 
+ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
+-				      struct snd_pcm_status32 __user *src)
++				      struct snd_pcm_status32 __user *src,
++				      bool ext)
  {
- 	struct azx_dev *azx_dev = get_azx_dev(substream);
- 	u64 nsec;
- 
--	nsec = timecounter_read(&azx_dev->azx_tc);
--	nsec = div_u64(nsec, 3); /* can be optimized */
--	nsec = azx_adjust_codec_delay(substream, nsec);
-+	if ((substream->runtime->hw.info & SNDRV_PCM_INFO_HAS_LINK_ATIME) &&
-+		(audio_tstamp_config->type_requested == SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK)) {
- 
--	*ts = ns_to_timespec(nsec);
-+		snd_pcm_gettime(substream->runtime, system_ts);
+ 	struct snd_pcm_status status;
+ 	int err;
+-
++	u32  audio_tstamp_data;
++	u32  __user *_audio_tstamp_data;
 +
-+		nsec = timecounter_read(&azx_dev->azx_tc);
-+		nsec = div_u64(nsec, 3); /* can be optimized */
-+		if (audio_tstamp_config->report_delay)
-+			nsec = azx_adjust_codec_delay(substream, nsec);
-+
-+		*audio_ts = ns_to_timespec(nsec);
-+
-+		audio_tstamp_report->actual_type = SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK;
-+		audio_tstamp_report->accuracy_report = 1; /* rest of structure is valid */
-+		audio_tstamp_report->accuracy = 42; /* 24 MHz WallClock == 42ns resolution */
-+
-+	} else
-+		audio_tstamp_report->actual_type = SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT;
- 
- 	return 0;
- }
-@@ -756,7 +771,8 @@ static struct snd_pcm_hardware azx_pcm_hw = {
- 				 /* SNDRV_PCM_INFO_RESUME |*/
- 				 SNDRV_PCM_INFO_PAUSE |
- 				 SNDRV_PCM_INFO_SYNC_START |
--				 SNDRV_PCM_INFO_HAS_WALL_CLOCK |
-+				 SNDRV_PCM_INFO_HAS_WALL_CLOCK | /* legacy */
-+				 SNDRV_PCM_INFO_HAS_LINK_ATIME |
- 				 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP),
- 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
- 	.rates =		SNDRV_PCM_RATE_48000,
-@@ -842,10 +858,12 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
- 		return -EINVAL;
- 	}
- 
--	/* disable WALLCLOCK timestamps for capture streams
-+	/* disable LINK_ATIME timestamps for capture streams
- 	   until we figure out how to handle digital inputs */
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_WALL_CLOCK;
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_WALL_CLOCK; /* legacy */
-+		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_LINK_ATIME;
++	if (ext == false) {
++		memset(&status, 0, sizeof(status));
++	}  else {
++		/*
++		 * parameters are read/write, get audio_tstamp_data from user,
++		 * ignore rest of status structure
++		 */
++		_audio_tstamp_data = (u32 __user *)(&src->audio_tstamp_data);
++		if (get_user(audio_tstamp_data, _audio_tstamp_data))
++			return -EFAULT;
++		memset(&status, 0, sizeof(status));
++		status.audio_tstamp_data = audio_tstamp_data;
 +	}
+ 	err = snd_pcm_status(substream, &status);
+ 	if (err < 0)
+ 		return err;
+@@ -222,7 +240,10 @@ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
+ 	    put_user(status.avail_max, &src->avail_max) ||
+ 	    put_user(status.overrange, &src->overrange) ||
+ 	    put_user(status.suspended_state, &src->suspended_state) ||
+-	    compat_put_timespec(&status.audio_tstamp, &src->audio_tstamp))
++	    put_user(status.audio_tstamp_data, &src->audio_tstamp_data) ||
++	    compat_put_timespec(&status.audio_tstamp, &src->audio_tstamp) ||
++	    compat_put_timespec(&status.driver_tstamp, &src->driver_tstamp) ||
++	    put_user(status.audio_tstamp_accuracy, &src->audio_tstamp_accuracy))
+ 		return -EFAULT;
  
- 	spin_lock_irqsave(&chip->reg_lock, flags);
- 	azx_dev->substream = substream;
-@@ -877,7 +895,7 @@ static struct snd_pcm_ops azx_pcm_ops = {
- 	.prepare = azx_pcm_prepare,
- 	.trigger = azx_pcm_trigger,
- 	.pointer = azx_pcm_pointer,
--	.wall_clock =  azx_get_wallclock_tstamp,
-+	.get_time_info =  azx_get_time_info,
- 	.mmap = azx_pcm_mmap,
- 	.page = snd_pcm_sgbuf_ops_page,
- };
+ 	return err;
+@@ -457,6 +478,7 @@ enum {
+ 	SNDRV_PCM_IOCTL_HW_PARAMS32 = _IOWR('A', 0x11, struct snd_pcm_hw_params32),
+ 	SNDRV_PCM_IOCTL_SW_PARAMS32 = _IOWR('A', 0x13, struct snd_pcm_sw_params32),
+ 	SNDRV_PCM_IOCTL_STATUS32 = _IOR('A', 0x20, struct snd_pcm_status32),
++	SNDRV_PCM_IOCTL_STATUS_EXT32 = _IOWR('A', 0x24, struct snd_pcm_status32),
+ 	SNDRV_PCM_IOCTL_DELAY32 = _IOR('A', 0x21, s32),
+ 	SNDRV_PCM_IOCTL_CHANNEL_INFO32 = _IOR('A', 0x32, struct snd_pcm_channel_info32),
+ 	SNDRV_PCM_IOCTL_REWIND32 = _IOW('A', 0x46, u32),
+@@ -517,7 +539,9 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+ 	case SNDRV_PCM_IOCTL_SW_PARAMS32:
+ 		return snd_pcm_ioctl_sw_params_compat(substream, argp);
+ 	case SNDRV_PCM_IOCTL_STATUS32:
+-		return snd_pcm_status_user_compat(substream, argp);
++		return snd_pcm_status_user_compat(substream, argp, false);
++	case SNDRV_PCM_IOCTL_STATUS_EXT32:
++		return snd_pcm_status_user_compat(substream, argp, true);
+ 	case SNDRV_PCM_IOCTL_SYNC_PTR32:
+ 		return snd_pcm_ioctl_sync_ptr_compat(substream, argp);
+ 	case SNDRV_PCM_IOCTL_CHANNEL_INFO32:
 -- 
 1.9.1
