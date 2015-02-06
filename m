@@ -1,72 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: samsung: Remove goni or aquila with the WM8994
-Date: Sat, 7 Feb 2015 07:55:13 +0800
-Message-ID: <20150206235512.GS31311@finisterre.sirena.org.uk>
-References: <1421664101.9655.52.camel@x220>
+Subject: Re: [Patch V4 02/10] ASoC: max98357a: Document MAX98357A bindings
+Date: Sat, 7 Feb 2015 06:12:52 +0800
+Message-ID: <20150206221252.GD31311@finisterre.sirena.org.uk>
+References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
+ <1423169626-22166-3-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2373502731445690491=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1421664101.9655.52.camel@x220>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org, Valentin Rothberg <valentinrothberg@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ylS2wUBXLOxYXZFQ"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1423169626-22166-3-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2373502731445690491==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XMM+kVNHGkMezEqK"
-Content-Disposition: inline
-
-
---XMM+kVNHGkMezEqK
+--ylS2wUBXLOxYXZFQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 19, 2015 at 11:41:41AM +0100, Paul Bolle wrote:
-> Commit 28c8331d386a ("ARM: S5PV210: Remove support for board files")
-> removed the Kconfig symbols MACH_GONI and MACH_AQUILA. As a result the
-> dependencies of SND_SOC_GONI_AQUILA_WM8994 can never be met. So remove
-> the unbuildable "SoC I2S Audio support for AQUILA/GONI - WM8994".
+On Thu, Feb 05, 2015 at 12:53:38PM -0800, Kenneth Westfield wrote:
+> From: Kenneth Westfield <kwestfie@codeaurora.org>
+>=20
+> Add documentation to the sound directory of the
+> device-tree bindings for the Maxim MAX98357A audio
+> DAC.
 
 Applied, thanks.
 
---XMM+kVNHGkMezEqK
+--ylS2wUBXLOxYXZFQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1VRgAAoJECTWi3JdVIfQ1+EIAIDl13cwehCh8CgH5twoBO7F
-ty2O6w7GLzccDutmMnLbOKOkGWdoS0WIJDhUBSjrKuFxNb4kabziqXByFA0r5cdD
-bdPZ8KMepGm489NOtUWnsgOv/Nlu8tg30IqYOy80zziyYwgjf0l+i2fKOcFdEnDi
-6n3PHwNtZm9nOHwbGoVZiLKqrxz50pom0tJ8j4eGoe6u3kVxhzOOliiRfjhLaFMW
-CC9nbZcvT2owMg8mmSKfJLD77rulzeGFTlrN8gFClR6MAJoMwXYssvZ9V5HP5ur/
-z15ZTk75BBC9hApD/SxCaQZgsJDI82XDswoZCnhszlmF5BIebQd9Xdfu1rvXpqA=
-=2Y8d
+iQEcBAEBCAAGBQJU1TxjAAoJECTWi3JdVIfQCgwH+wchvUnQ6cCzBch09fCFJ2XL
+5ubUU6ehMUFaouxBcetN9xisp1TX2Imgy6sRX7BLL+Q4vC/mHs1pgi9E84wNYYIO
+e8ncp9AlXU1M9SWwJZN5fW1GQHHtcQ8FkKO81BlM2Zq+mI069iV5vopVL+vuQCxg
+VjYO0JjpFk17TV9TFNUyFeH5osEY+bkws8KqmL4bfxsOk++/iXa/cuwInpSZh16C
+BjCy1qGOj1cUAZe/aZW8KfvZ3ZhzN3UUHXJq/4ddt9PqA+aNyEcxOuREKS7R1yT2
+6GT86lYCHqTWBOYXjNGYdlAa4Q8DbjUS2HKett7UdSoMk3z8EIX2B+dtD7v+v0E=
+=64lC
 -----END PGP SIGNATURE-----
 
---XMM+kVNHGkMezEqK--
-
-
---===============2373502731445690491==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============2373502731445690491==--
+--ylS2wUBXLOxYXZFQ--
