@@ -1,50 +1,83 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] soc: intel: sst-haswell-ipc: Remove unused functions
-Date: Sat, 7 Feb 2015 07:11:11 +0800
-Message-ID: <20150206231111.GM31311@finisterre.sirena.org.uk>
-References: <1421537927-16567-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Subject: Re: [PATCH 0/4] ASoC: samsung: clean up references to outdated
+ Kconfig symbols
+Date: Sat, 7 Feb 2015 07:50:44 +0800
+Message-ID: <20150206235044.GO31311@finisterre.sirena.org.uk>
+References: <1421664067.9655.51.camel@x220>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XlS4q8O07AKt4+K1"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1421537927-16567-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jie Yang <yang.jie@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Dan Carpenter <dan.carpenter@oracle.com>, Christian Engelmayer <cengelma@gmx.at>, =?utf-8?B?UGF3ZcWC?= Piskorski <pawel.piskorski@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============1872107940140704945=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1421664067.9655.51.camel@x220>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org, Valentin Rothberg <valentinrothberg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---XlS4q8O07AKt4+K1
+--===============1872107940140704945==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="31zvzas5NXT9fief"
+Content-Disposition: inline
+Content-Length: 1335
+
+
+--31zvzas5NXT9fief
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 18, 2015 at 12:38:46AM +0100, Rickard Strandqvist wrote:
-> Removes some functions that are not used anywhere:
-> sst_hsw_stream_unmute() sst_hsw_stream_mute() msg_set_stage_type()
-> sst_hsw_dx_get_state() sst_hsw_stream_set_write_position()
-> sst_hsw_stream_get_vol_reg() sst_hsw_stream_get_peak_reg()
-> sst_hsw_stream_get_pointer_reg() sst_hsw_stream_get_read_reg()
-> sst_hsw_stream_get_mixer_id() sst_hsw_stream_get_hw_id()
-> sst_hsw_mixer_set_volume_curve() sst_hsw_mixer_unmute()
-> sst_hsw_mixer_mute() sst_hsw_stream_set_volume_curve()
+On Mon, Jan 19, 2015 at 11:41:07AM +0100, Paul Bolle wrote:
+> A few series of ARM cleanups regarding S5PC100 and S5PV210 were included
+> in v3.17. These series removed these five Kconfig symbols:
+>     MACH_AQUILA
+>     MACH_GONI
+>     MACH_SMDKC100
+>     MACH_SMDKC110
+>     MACH_SMDKV210
+>=20
+> This series, done on top of next-20150119, removes the remaining
 
-Applied, thanks.
+If you are posting a patch series please ensure that all the patches in
+the series are threaded in reply to the cover letter (or first patch if
+there isn't one) so that mail clients can see to display them as a
+series.
 
---XlS4q8O07AKt4+K1
+--31zvzas5NXT9fief
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1UoOAAoJECTWi3JdVIfQyNsH/jpzLi/VXVrF2Cymj0VjQijN
-hE7rMAPNlkjG/zzU7oiiLuFS67WuirF+sK+Xp5eXGLlReF+ye4RqqZcikxSH6YRn
-5NLRyuBFOGa6oTBEkjt2U808Y1AEkpybpV77iTeM6vZvkwA4pMSUQWiKEmtvTB5k
-NEBz3wbv1DeShzqMTdwzWXKeDK/XSjr/fxoNf3jgD1arM0iuqDfeT/V4hgNYa/pB
-BRTPX21D1LICluoxdNExS/gY2Y972UO+kNakMEP3nGd0zT+ty1nxJaP0BDtiEjBB
-m9JIZByN+wghWY4HoecvV8ZuF2HjnjFPM+4NVWT7sF+yE8BnVmgZpITfQAPxSn4=
-=WRle
+iQEcBAEBCAAGBQJU1VNTAAoJECTWi3JdVIfQAtoH/joPAnxlEA4teq3gF2BizF80
+LecNeHYR6fwtEy1r6RGDPJJV4QWwZLhkEhaIwfuTg1p7iP5NZ2ivLy3oxHNKBAZM
+1JjtCBHMMz/ncNllJrOj/hktbAe1NVwj7K+0xBReVNqhjRFxrxzuL+gryuoJCuYS
+ESsG7vVtAEYLOzlnPnZTqyKc7v8vriDfh3R3nHxoepKMmFxtQSD9o8edWiudE5+B
+qA6d1/O5xRl8WsQGsJQTb5GucGVciitoglC/jSBrUI/QlRqZkEHFWzjmsetbKTF3
+1C6JnHwLR8VYrlUOT7+HL1TXfZ3Huq40vS6JQ0nlZO3jUA/vycfJ/jgx2Y+qBXA=
+=Tuji
 -----END PGP SIGNATURE-----
 
---XlS4q8O07AKt4+K1--
+--31zvzas5NXT9fief--
+
+
+--===============1872107940140704945==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============1872107940140704945==--
