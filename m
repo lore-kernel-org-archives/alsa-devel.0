@@ -1,60 +1,35 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v3] ASoC: rt286: add jack detection
- enable/disable APIs and export
-Date: Fri, 6 Feb 2015 10:34:49 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BB4C66@SHSMSX101.ccr.corp.intel.com>
-References: <1423204800-6448-1-git-send-email-yang.jie@intel.com>
- <CAHXqBFJWaMc5742_=e5QXAmJWsaZDrG0tJMrhED1rN-QK3y3UA@mail.gmail.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [RESEND PATCH V3 15/15] ARM: dts: Fix I2S1,
+ I2S2 compatible for exynos4 SoCs
+Date: Fri, 06 Feb 2015 12:30:45 +0100
+Message-ID: <54D4A5E5.4010706@samsung.com>
+References: <1422972382-18520-1-git-send-email-s.nawrocki@samsung.com>
+ <1422972382-18520-3-git-send-email-s.nawrocki@samsung.com>
+ <20150205194105.GM21293@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id F2A56260530
- for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 11:35:15 +0100 (CET)
-In-Reply-To: <CAHXqBFJWaMc5742_=e5QXAmJWsaZDrG0tJMrhED1rN-QK3y3UA@mail.gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "mirqus@gmail.com" <mirqus@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-reply-to: <20150205194105.GM21293@sirena.org.uk>
+Sender: stable-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: kgene@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Micha=B3 Miros=B3aw [mailto:mirqus@gmail.com]
-> Sent: Friday, February 06, 2015 6:21 PM
-> To: Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [alsa-devel] [PATCH v3] ASoC: rt286: add jack detection
-> enable/disable APIs and export
-> =
+On 05/02/15 20:41, Mark Brown wrote:
+> On Tue, Feb 03, 2015 at 03:06:22PM +0100, Sylwester Nawrocki wrote:
+>> I2S1, I2S2 on Exynos4 SoC series have limited functionality compared
+>> to I2S0, "samsung,s3c6410-i2s" compatible should be used for them.
+> 
+> I've applied this even though I really shouldn't in order to get it in.
+> Since it's a bug fix for stable it should've been near the head of any
+> series it's part of not the very last patch in the series, and since
+> it's not really related to the rest of the series except in that it
+> relates to the same driver it should probably have been sent by itself
+> rather than mixed in with everything else.
 
-> 2015-02-06 7:40 GMT+01:00 Jie Yang <yang.jie@intel.com>:
-> [...]
-> > @@ -1012,6 +1039,8 @@ static irqreturn_t rt286_irq(int irq, void *data)
-> >         bool mic =3D false;
-> >         int status =3D 0;
-> >
-> > +       if (!rt286->jack)
-> > +               return IRQ_HANDLED;
-> >         rt286_jack_detect(rt286, &hp, &mic);
-> >
-> >         /* Clear IRQ */
-> =
-
-> This seems wrong. Are you sure you want to return IRQ_HANDLED when you
-> did nothing to handle the interrupt?
-[Keyon] thanks, yes, I also noticed this. The interrupt will keep coming en=
-dlessly with returning IRQ_HANDLED here. :(
-> =
-
-> Best Regards,
-> Micha=B3 Miros=B3aw
+Indeed I could sent this one separately to Kukjin, the issue it fixes
+was just found in the course of creating remaining part of the series
+and I wanted to keep somewhat related changes together.
+Thank you for merging it.  I hope you picked up the previous 2 as well,
+I couldn't see them in your tree.
