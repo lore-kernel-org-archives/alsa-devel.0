@@ -1,17 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Some questions about userspace control elements
-Date: Fri, 06 Feb 2015 10:38:48 +0100
-Message-ID: <54D48BA8.6060104@ladisch.de>
-References: <54CE10D2.7090903@sakamocchi.jp> <54CE675A.80004@ladisch.de>
- <54D2B075.4050005@sakamocchi.jp> <54D2BD01.6020904@sakamocchi.jp>
+From: =?ISO-8859-2?Q?Micha=B3_Miros=B3aw?= <mirqus@gmail.com>
+Subject: Re: [PATCH v3] ASoC: rt286: add jack detection
+ enable/disable APIs and export
+Date: Fri, 6 Feb 2015 11:21:18 +0100
+Message-ID: <CAHXqBFJWaMc5742_=e5QXAmJWsaZDrG0tJMrhED1rN-QK3y3UA@mail.gmail.com>
+References: <1423204800-6448-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id BA34B2604FA
- for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 10:38:49 +0100 (CET)
-In-Reply-To: <54D2BD01.6020904@sakamocchi.jp>
+Received: from mail-ob0-f176.google.com (mail-ob0-f176.google.com
+ [209.85.214.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D8B7260530
+ for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 11:21:39 +0100 (CET)
+Received: by mail-ob0-f176.google.com with SMTP id wo20so12394383obc.7
+ for <alsa-devel@alsa-project.org>; Fri, 06 Feb 2015 02:21:38 -0800 (PST)
+In-Reply-To: <1423204800-6448-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,41 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> On Feb 5 2015 08:51, Takashi Sakamoto wrote:
->> sound/core/control.c:1188
->> {{{
->> kctl.count = info->owner ? info->owner : 1;
->> }}}
->>
->> In this code, the value in struct snd_ctl_elem_info.owner is assigned to
->> struct snd_kcontrol.count. The meaning of these two member is completely
->> different but assigned.
+2015-02-06 7:40 GMT+01:00 Jie Yang <yang.jie@intel.com>:
+[...]
+> @@ -1012,6 +1039,8 @@ static irqreturn_t rt286_irq(int irq, void *data)
+>         bool mic =3D false;
+>         int status =3D 0;
+>
+> +       if (!rt286->jack)
+> +               return IRQ_HANDLED;
+>         rt286_jack_detect(rt286, &hp, &mic);
+>
+>         /* Clear IRQ */
 
-There is hardware that has many identical controls.  To save memory,
-ALSA treats controls with .count > 1 as if there were multiple controls.
+This seems wrong. Are you sure you want to return IRQ_HANDLED when you
+did nothing to handle the interrupt?
 
-This optimization is not visible in the userspace API.
-
-The owner field is used because there is no other field to set the
-count.
-
-> When any userspace control element are added, the value of struct
-> snd_ctl_elem_info.owner is zero because there's no API to set this
-> member in userspace
-
-So far, setting this field has not been needed.  An API could be added.
-
->> I guess that the reason is to limit the number of event generated when
->> the control element set is operated.
-
-If a driver needs twenty identical controls, it could create one control
-with count=20, or twenty controls with count=1.  In both cases, twenty
-events are sent.
-
-
-Regards,
-Clemens
+Best Regards,
+Micha=B3 Miros=B3aw
