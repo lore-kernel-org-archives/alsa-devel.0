@@ -1,59 +1,71 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [Patch V4 08/10] ASoC: qcom: Add ability to build QCOM drivers
-Date: Sat, 7 Feb 2015 07:00:58 +0800
-Message-ID: <20150206230058.GK31311@finisterre.sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [Patch V4 03/10] ASoC: qcom: Document LPASS CPU bindings
+Date: Sat, 7 Feb 2015 06:18:23 +0800
+Message-ID: <20150206221823.GF31311@finisterre.sirena.org.uk>
 References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
- <1423169626-22166-9-git-send-email-kwestfie@codeaurora.org>
+ <1423169626-22166-4-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="73fGQZLCrFzENemP"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="lIrNkN/7tmsD/ALM"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1423169626-22166-9-git-send-email-kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1423169626-22166-4-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---73fGQZLCrFzENemP
+--lIrNkN/7tmsD/ALM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 05, 2015 at 12:53:44PM -0800, Kenneth Westfield wrote:
+On Thu, Feb 05, 2015 at 12:53:39PM -0800, Kenneth Westfield wrote:
 
-> +config SND_SOC_IPQ806X
-> +	tristate "SoC Audio support for IPQ806x based platforms"
-> +	depends on SND_SOC_QCOM || ARCH_QCOM || COMPILE_TEST
-> +        select SND_SIMPLE_CARD
-> +	select SND_SOC_LPASS_CPU
-> +	select SND_SOC_LPASS_PLATFORM
-> +        select SND_SOC_MAX98357A
+> +- qcom,system-clock-shift		: Add this bool property if the default
+> +					  frequency of the system clock needs to
+> +					  be reduced.
+> +- qcom,system-clock-shift-compare	: A numerical value used to right-shift
+> +					  the default system clock frequency for
+> +					  comparison with the target bit clock
+> +					  frequency.
+> +- qcom,system-clock-shift-amount	: A numerical value used to right-shift
+> +					  the default system clock frequency.
+> +- qcom,alternate-sysclk			: Add this bool property if the default
+> +					  frequency of the system clock cannot
+> +					  divide down to the target bit clock
+> +					  frequency.
+> +- qcom,alternate-sysclk-bitwidth	: A numerical value representing the
+> +					  sample bitwidth which requires use of
+> +					  the alternate system clock frequency.
+> +- qcom,alternate-sysclk-frequency	: A numerical value representing the new
+> +					  system clock frequency to use.
 
-No, we don't have blocks like this selecting simple-card for any other
-platforms using simple-card so we shouldn't do that here either.  Just
-let all the drivers be individually selectable.
+None of these seem like they are appropriate for device tree properties,
+they appear to be choosing a specific clocking configuration which is
+something that would normally be done as part of the system integration
+in the machine driver rather than in the DAI driver.  This binding won't
+work in cases where the clocks are being changed at runtime and would
+limit systems where that becomes possible in future.
 
-You've also got a mix of tabs and spaces going on.
+Further, the interface seems too low level - it's specifying individual
+dividers and so on which would normally be things that can trivially be
+calculated or inferred given the input and target clock rates.
 
---73fGQZLCrFzENemP
+--lIrNkN/7tmsD/ALM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1UepAAoJECTWi3JdVIfQCBEH/AlWqqZODP6WfMuA4Z48FQuj
-e0VFGTc5vcVcc9O9/Q9unC3QQP4nFoVjaABv7vIIH0PdcITrfMsavIeIkzfIi9hW
-SWCpR5KfCllxXQokuZAQpjczfEDJnGio+T6ch8mB3x4FtWEHFM/13a9QtILnCIAK
-apzZ928e9IdcnZcH/Q5Ch2XlEmAT/WQR5eqSCx+ARKP+Zs5iHaZDYmeKECTBR/YS
-vsg03WS8P28d4gFss+iyG458wkttQ8GjfVPX3gVZTAfPNR5dF2pQ0c+mfuVG+3yB
-F9qtJoBVplUVu/d67AallhGFhILY7K0DXSbjQ08G2JOoZdPDboNN26R1gIUKH3w=
-=fdIH
+iQEcBAEBCAAGBQJU1T2vAAoJECTWi3JdVIfQDYEH/0bFK5D7l5T902ASpsFINTPt
+G4CByMDNqKzDcqKMiAmzC9mffbc6uYDpvP54eaoehzYx2kiOjPp9ps49ac5l6zS5
+ETmIqAnhChpKGmfO8A4gNtW12uSLHY83HigZd9LoOwk7227tQxh5za8kHAijxkes
+mXqhfHS7krbniUOb657hatC6Z5vT6uD8EfjYvOW8VZA9u+vtks8lkPKVIVNKvi1A
+W1N1QCLo2O+u+ZNNVI2Tf0Hg0QtrjJCkDj/a8ByKZA2sKZpC5ugbZ+iIrcPSwARf
+pKbhIroWnGgQBVYJVBpcfgSv/YlK+v4Rpf3nAiXcBkfVwygdPjoJYuyFiMvEJMQ=
+=i3mm
 -----END PGP SIGNATURE-----
 
---73fGQZLCrFzENemP--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--lIrNkN/7tmsD/ALM--
