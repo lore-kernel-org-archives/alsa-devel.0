@@ -1,67 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: atmel_ssc_dai: Allow more rates
-Date: Sat, 7 Feb 2015 07:09:51 +0800
-Message-ID: <20150206230951.GL31311@finisterre.sirena.org.uk>
-References: <1423050745-6372-1-git-send-email-peda@lysator.liu.se>
+Subject: Re: [PATCH v2] soc: intel: sst-haswell-ipc: Remove unused functions
+Date: Sat, 7 Feb 2015 07:11:11 +0800
+Message-ID: <20150206231111.GM31311@finisterre.sirena.org.uk>
+References: <1421537927-16567-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oY1uq2ONqt5kuovO"
+	protocol="application/pgp-signature"; boundary="XlS4q8O07AKt4+K1"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1423050745-6372-1-git-send-email-peda@lysator.liu.se>
+In-Reply-To: <1421537927-16567-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@lysator.liu.se>
-Cc: alsa-devel@alsa-project.org, Peter Rosin <peda@axentia.se>, Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jie Yang <yang.jie@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Dan Carpenter <dan.carpenter@oracle.com>, Christian Engelmayer <cengelma@gmx.at>, =?utf-8?B?UGF3ZcWC?= Piskorski <pawel.piskorski@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---oY1uq2ONqt5kuovO
+--XlS4q8O07AKt4+K1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 04, 2015 at 12:52:25PM +0100, Peter Rosin wrote:
+On Sun, Jan 18, 2015 at 12:38:46AM +0100, Rickard Strandqvist wrote:
+> Removes some functions that are not used anywhere:
+> sst_hsw_stream_unmute() sst_hsw_stream_mute() msg_set_stage_type()
+> sst_hsw_dx_get_state() sst_hsw_stream_set_write_position()
+> sst_hsw_stream_get_vol_reg() sst_hsw_stream_get_peak_reg()
+> sst_hsw_stream_get_pointer_reg() sst_hsw_stream_get_read_reg()
+> sst_hsw_stream_get_mixer_id() sst_hsw_stream_get_hw_id()
+> sst_hsw_mixer_set_volume_curve() sst_hsw_mixer_unmute()
+> sst_hsw_mixer_mute() sst_hsw_stream_set_volume_curve()
 
-> One thing remains a bit unclear, and that is the 500ppm deduction. Is
-> that really warranted? The number was just pulled out of my hat...
+Applied, thanks.
 
-I don't really get what this is supposed to be protecting against.
-
-> +	case SND_SOC_DAIFMT_CBM_CFS:
-> +	case SND_SOC_DAIFMT_CBM_CFM:
-> +		t.min = 8000;
-> +		t.max = ssc_p->mck_rate / mck_div / frame_size;
-> +		/* Take away 500ppm, just to be on the safe side. */
-> +		t.max -= t.max / 2000;
-> +		t.openmin = t.openmax = 0;
-> +		t.integer = 0;
-> +		ret = snd_interval_refine(i, &t);
-
-As I understand it this is a straight divider rather than something
-that's doing dithering or anything else more fancy.  Given that it seems
-as well just to trust the clock rate we've got - we don't do any error
-tracking with the clock API (perhaps we should) and for many
-applications some degree of divergence from the nominal rate is not
-*too* bad for audio systems (for application specific values of "some"
-and "too" of course).  If it is just dividers I'm not sure the situation
-is really improved materially by knocking off the top frequency.
-
-If we are doing something more fancy than divididing my analysis is off
-base of course.
-
---oY1uq2ONqt5kuovO
+--XlS4q8O07AKt4+K1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1Um+AAoJECTWi3JdVIfQLU0H/33cg4ihNGi1mNycZGR2xc2c
-z3XXAg6iYOIyAFXHeUR9TZ+2pD+odzBKAZiFFhmcj2Vt+omIq3wrHDLT9/FDAX+H
-kfT4AjwrST1rvWn/pNORxtV4PC7ieLi/RLa4UrTKV8MHd/bmknBTaX4YxTH1gGIV
-+IXLXOaVfleReivPUX7l69KF50Q/mAXl2TN+UvnU9sWVuHyNJRJDBBWtmkAHAYEt
-4cAMxvcc540vAjrRzC9jmxhI9FOMwHHtaD1bvXORc6KSVsIrNiTAAdm8AK0rgGv8
-W7b5h/8ZBGSndBSOAKL/o2a2FDFW1sclyX7cye1RG59LXaaQ7cJq3DpA3Xqdzxw=
-=tvq8
+iQEcBAEBCAAGBQJU1UoOAAoJECTWi3JdVIfQyNsH/jpzLi/VXVrF2Cymj0VjQijN
+hE7rMAPNlkjG/zzU7oiiLuFS67WuirF+sK+Xp5eXGLlReF+ye4RqqZcikxSH6YRn
+5NLRyuBFOGa6oTBEkjt2U808Y1AEkpybpV77iTeM6vZvkwA4pMSUQWiKEmtvTB5k
+NEBz3wbv1DeShzqMTdwzWXKeDK/XSjr/fxoNf3jgD1arM0iuqDfeT/V4hgNYa/pB
+BRTPX21D1LICluoxdNExS/gY2Y972UO+kNakMEP3nGd0zT+ty1nxJaP0BDtiEjBB
+m9JIZByN+wghWY4HoecvV8ZuF2HjnjFPM+4NVWT7sF+yE8BnVmgZpITfQAPxSn4=
+=WRle
 -----END PGP SIGNATURE-----
 
---oY1uq2ONqt5kuovO--
+--XlS4q8O07AKt4+K1--
