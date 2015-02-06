@@ -1,45 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC: samsung: MACH_SMDKC100 isn't supported anymore
-Date: Sat, 7 Feb 2015 07:54:25 +0800
-Message-ID: <20150206235425.GQ31311@finisterre.sirena.org.uk>
-References: <1421664165.9655.54.camel@x220>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [Patch V4 08/10] ASoC: qcom: Add ability to build QCOM drivers
+Date: Sat, 7 Feb 2015 07:00:58 +0800
+Message-ID: <20150206230058.GK31311@finisterre.sirena.org.uk>
+References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
+ <1423169626-22166-9-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QLVwfW7TUsi22t4P"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="73fGQZLCrFzENemP"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1421664165.9655.54.camel@x220>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Kukjin Kim <kgene@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Valentin Rothberg <valentinrothberg@gmail.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1423169626-22166-9-git-send-email-kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---QLVwfW7TUsi22t4P
+--73fGQZLCrFzENemP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jan 19, 2015 at 11:42:45AM +0100, Paul Bolle wrote:
-> Commit b8529ec1c1b0 ("ARM: S5PC100: no more support S5PC100 SoC")
-> removed Kconfig symbol MACH_SMDKC100. But there are still two references
-> to that symbol left. These are now pointless. Remove them too.
+On Thu, Feb 05, 2015 at 12:53:44PM -0800, Kenneth Westfield wrote:
 
-This doesn't apply against current code.
+> +config SND_SOC_IPQ806X
+> +	tristate "SoC Audio support for IPQ806x based platforms"
+> +	depends on SND_SOC_QCOM || ARCH_QCOM || COMPILE_TEST
+> +        select SND_SIMPLE_CARD
+> +	select SND_SOC_LPASS_CPU
+> +	select SND_SOC_LPASS_PLATFORM
+> +        select SND_SOC_MAX98357A
 
---QLVwfW7TUsi22t4P
+No, we don't have blocks like this selecting simple-card for any other
+platforms using simple-card so we shouldn't do that here either.  Just
+let all the drivers be individually selectable.
+
+You've also got a mix of tabs and spaces going on.
+
+--73fGQZLCrFzENemP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1VQwAAoJECTWi3JdVIfQ/sQH/3V6jOq4LR2GQclP4RwmnEvd
-ZOPAbl8x5J2pRkRFeSiiCe2DTHJD+aD7H+kS1QJJ/cBXJtEPFWoOUzFghWxicBWA
-qCIrslr6f28ltn8gF4AQ5JEEflbRmnCGGH3kJrtjK1Ggj90nl4ZZ0b2acJ+1jQqA
-FZKZeJXDu2BTY5l9Xh/EROU84sunIyDz0uK5rhuzPlxsH8hjPenjjy8VlTckKph+
-lAZUXRp0imUO8ywOwIF4la9858gpy1rRg//5i2LQ3+QoCkA18mWXVzhyHwyhpn7o
-uEqEVC05grpCgT/VBMnbVybaCpHZYvMj0NspXBlFVHbkSlvTGBJPhBgPXmjlysk=
-=rWzJ
+iQEcBAEBCAAGBQJU1UepAAoJECTWi3JdVIfQCBEH/AlWqqZODP6WfMuA4Z48FQuj
+e0VFGTc5vcVcc9O9/Q9unC3QQP4nFoVjaABv7vIIH0PdcITrfMsavIeIkzfIi9hW
+SWCpR5KfCllxXQokuZAQpjczfEDJnGio+T6ch8mB3x4FtWEHFM/13a9QtILnCIAK
+apzZ928e9IdcnZcH/Q5Ch2XlEmAT/WQR5eqSCx+ARKP+Zs5iHaZDYmeKECTBR/YS
+vsg03WS8P28d4gFss+iyG458wkttQ8GjfVPX3gVZTAfPNR5dF2pQ0c+mfuVG+3yB
+F9qtJoBVplUVu/d67AallhGFhILY7K0DXSbjQ08G2JOoZdPDboNN26R1gIUKH3w=
+=fdIH
 -----END PGP SIGNATURE-----
 
---QLVwfW7TUsi22t4P--
+--73fGQZLCrFzENemP--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
