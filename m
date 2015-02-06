@@ -1,17 +1,19 @@
 From: Tim Cussins <timcussins@eml.cc>
-Subject: [PATCH v3 alsa-lib 1/3] snd_pcm_start_at and friends.
-Date: Fri,  6 Feb 2015 16:15:59 +0000
-Message-ID: <1423239361-17655-1-git-send-email-timcussins@eml.cc>
+Subject: [PATCH v3 alsa-lib 2/3] START_AT ioctl and operations.
+Date: Fri,  6 Feb 2015 16:16:00 +0000
+Message-ID: <1423239361-17655-2-git-send-email-timcussins@eml.cc>
+References: <1423239361-17655-1-git-send-email-timcussins@eml.cc>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 741212605E8
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D1C5A2651A4
  for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 17:16:13 +0100 (CET)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 01B8620AD6
- for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 11:16:12 -0500 (EST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id 6E7BF20B50
+ for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 11:16:13 -0500 (EST)
+In-Reply-To: <1423239361-17655-1-git-send-email-timcussins@eml.cc>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,174 +27,174 @@ To: alsa-devel@alsa-project.org
 Cc: Tim Cussins <timcussins@eml.cc>
 List-Id: alsa-devel@alsa-project.org
 
-Upcoming audio hardware has the ability to begin playback when the value
-of a high-precision free-running counter matches some programmable value.
+We introduce a new ioctl, START_AT, and 3 new snd_pcm_fast_ops_t members.
 
-This patch exposes such capability in a general way, allowing for several
-clock sources, including both system clocks and audio hardware clocks.
+The ioctl takes a struct snd_start_at, which holds the required operation,
+and corresponding arguments (which can be input and output).
 
-We define 3 new methods that operate on a snd_pcm_t, and 1 that
-operates on a snd_pcm_status_t.
+The START_AT ioctol supports SET, CANCEL, and STATUS operations. STATUS
+returns the current time.
 
-- snd_pcm_start_at()
-allows client code to delegate the starting of the stream to the kernel.
-
-- snd_pcm_start_at_abort()
-allows client code to cancel a previous call to snd_pcm_start_at().
-
-- snd_pcm_start_at_gettime()
-allows client code to query the current time for a given clock.
-
-- snd_pcm_status_get_startat_state()
-allows client code to extract information about any pending start_at timer
-from a snd_pcm_status_t object.
-
-We define a new enum: snd_pcm_startat_clock_type_t, which reinforces a clean
-boundary between the capabilities of the timestamping system and the start_at
-system. The clock and audio hw sources are grouped together because the
-difference is irrelevant to the use of snd_pcm_start_at().
+struct snd_start_at packing, ioctl invocation, and unpacking is implemented
+in pcm_hw.c.
 
 Signed-off-by: Tim Cussins <timcussins@eml.cc>
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 0655e7f..4f4834b 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -330,6 +330,17 @@ typedef enum _snd_pcm_tstamp_type {
- 	SND_PCM_TSTAMP_TYPE_LAST = SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW,
- } snd_pcm_tstamp_type_t;
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 1f23cd6..ab7c05b 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -420,7 +420,10 @@ struct snd_pcm_status {
+ 	snd_pcm_state_t suspended_state; /* suspended stream state */
+ 	__u32 reserved_alignment;	/* must be filled with zero */
+ 	struct timespec audio_tstamp;	/* from sample counter or wall clock */
+-	unsigned char reserved[56-sizeof(struct timespec)]; /* must be filled with zero */
++	int start_at_pending;
++	int start_at_clock_type;
++	struct timespec start_at_start_time;
++	unsigned char reserved[48-2*(sizeof(struct timespec))]; /* must be filled with zero */
+ };
  
-+/** PCM start_at clock types */
-+typedef enum _snd_pcm_startat_clock_type {
-+	/** POSIX CLOCK_REALTIME equivalent */
-+	SND_PCM_STARTAT_CLOCK_TYPE_GETTIMEOFDAY = 0,
-+	/** POSIX CLOCK_MONOTONIC equivalent */
-+	SND_PCM_STARTAT_CLOCK_TYPE_MONOTONIC,
-+	/** Default link clock */
-+	SND_PCM_STARTAT_CLOCK_TYPE_LINK,
-+	SND_PCM_STARTAT_CLOCK_TYPE_LAST = SND_PCM_STARTAT_CLOCK_TYPE_LINK,
-+} snd_pcm_startat_clock_type_t;
+ struct snd_pcm_mmap_status {
+@@ -472,6 +475,34 @@ enum {
+ 	SNDRV_PCM_TSTAMP_TYPE_LAST = SNDRV_PCM_TSTAMP_TYPE_MONOTONIC_RAW,
+ };
+ 
++enum {
++        SNDRV_PCM_STARTAT_OP_SET = 0,
++        SNDRV_PCM_STARTAT_OP_CANCEL,
++        SNDRV_PCM_STARTAT_OP_STATUS,
++        SNDRV_PCM_STARTAT_OP_LAST = SNDRV_PCM_STARTAT_OP_STATUS,
++};
 +
- /** Unsigned frames quantity */
- typedef unsigned long snd_pcm_uframes_t;
- /** Signed frames quantity */
-@@ -478,6 +489,9 @@ int snd_pcm_prepare(snd_pcm_t *pcm);
- int snd_pcm_reset(snd_pcm_t *pcm);
- int snd_pcm_status(snd_pcm_t *pcm, snd_pcm_status_t *status);
- int snd_pcm_start(snd_pcm_t *pcm);
-+int snd_pcm_start_at(snd_pcm_t *pcm, snd_pcm_startat_clock_type_t clock_type, const snd_htimestamp_t* start_time);
-+int snd_pcm_start_at_abort(snd_pcm_t *pcm);
-+int snd_pcm_start_at_gettime(snd_pcm_t *pcm, snd_pcm_startat_clock_type_t clock_type, snd_htimestamp_t* current_time);
- int snd_pcm_drop(snd_pcm_t *pcm);
- int snd_pcm_drain(snd_pcm_t *pcm);
- int snd_pcm_pause(snd_pcm_t *pcm, int enable);
-@@ -984,6 +998,7 @@ snd_pcm_sframes_t snd_pcm_status_get_delay(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_avail(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_avail_max(const snd_pcm_status_t *obj);
- snd_pcm_uframes_t snd_pcm_status_get_overrange(const snd_pcm_status_t *obj);
-+void snd_pcm_status_get_startat_state(const snd_pcm_status_t *obj, int *pending, snd_pcm_startat_clock_type_t *clock_type, snd_htimestamp_t *start_time);
++enum {
++        SNDRV_PCM_STARTAT_CLOCK_TYPE_GETTIMEOFDAY = 0,
++        SNDRV_PCM_STARTAT_CLOCK_TYPE_MONOTONIC,
++        SNDRV_PCM_STARTAT_CLOCK_TYPE_LINK,
++        SNDRV_PCM_STARTAT_CLOCK_TYPE_LAST = SNDRV_PCM_STARTAT_CLOCK_TYPE_LINK,
++};
++
++struct snd_start_at {
++        int op;                         /* startat operation to be performed */
++        union {                         /* fields for setting a startat timer */
++                struct {
++                        int clock_type;                 /* clock type e.g. SNDRV_PCM_STARTAT_CLOCK_TYPE_GETTIMEOFDAY */
++                        struct timespec start_time;     /* start time */
++                } set;
++                struct {
++                        int clock_type;                 /* clock type e.g. SNDRV_PCM_STARTAT_CLOCK_TYPE_GETTIMEOFDAY */
++                        struct timespec current_time;
++                } status;
++        } args;
++};
++
+ /* channel positions */
+ enum {
+ 	SNDRV_CHMAP_UNKNOWN = 0,
+@@ -550,6 +581,8 @@ enum {
+ #define SNDRV_PCM_IOCTL_READN_FRAMES	_IOR('A', 0x53, struct snd_xfern)
+ #define SNDRV_PCM_IOCTL_LINK		_IOW('A', 0x60, int)
+ #define SNDRV_PCM_IOCTL_UNLINK		_IO('A', 0x61)
++#define SNDRV_PCM_IOCTL_START_AT	_IOW('A', 0x62, struct snd_start_at)
++
  
- /** \} */
- 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index e74e02f..f2cbd8e 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -1085,6 +1085,74 @@ int snd_pcm_start(snd_pcm_t *pcm)
+ /*****************************************************************************
+  *                                                                           *
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index c34b766..07c3a2e 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -620,6 +620,67 @@ static int snd_pcm_hw_start(snd_pcm_t *pcm)
+ 	return 0;
  }
  
- /**
-+ * \brief Start a PCM at a specified point in the future
-+ * \param pcm PCM handle
-+ * \param clock_type Specifies the start_at clock with which to interpret \p start_time
-+ * \param start_time Absolute time at which to start the stream
-+ * \return 0 on success otherwise a negative error code
-+ * \retval -ENOSYS operation not supported for the current timestamp type
-+ * \retval -EINVAL timespec, tstamp_class or tstamp_type is invalid
-+ * \retval -ETIME requested start_time cannot be satisfied
-+ *
-+ * This method is non-blocking: It establishes an appropriate timer in the kernel
-+ * that will start the stream on expiry.
-+ *
-+ * Any pending timer is unconditionally cancelled.
-+ */
-+int snd_pcm_start_at(snd_pcm_t *pcm, snd_pcm_startat_clock_type_t clock_type, const snd_htimestamp_t *start_time)
++static int snd_pcm_hw_start_at(snd_pcm_t *pcm, snd_pcm_startat_clock_type_t clock_type, const snd_htimestamp_t *start_time)
 +{
-+	assert(pcm);
-+	assert(start_time);
-+	if (CHECK_SANITY(! pcm->setup)) {
-+		SNDMSG("PCM not set up");
-+		return -EIO;
++	snd_pcm_hw_t *hw = pcm->private_data;
++	int err;
++
++	struct snd_start_at start_at = {
++		.op = SNDRV_PCM_STARTAT_OP_SET,
++		.args.set = {
++			.clock_type = clock_type,
++			.start_time = *start_time,
++		}
++	};
++
++	if (ioctl(hw->fd, SNDRV_PCM_IOCTL_START_AT, &start_at) < 0) {
++		err = -errno;
++		SYSMSG("SNDRV_PCM_IOCTL_START_AT failed (%i)", err);
++		return err;
 +	}
-+	if (pcm->fast_ops->start_at) {
-+		return pcm->fast_ops->start_at(pcm->fast_op_arg, clock_type, start_time);
-+	}
-+	return -EINVAL;
++	return 0;
 +}
 +
-+/**
-+ * \brief Abort the pending PCM start_at timer
-+ * \param pcm PCM handle
-+ * \return 0 on success otherwise a negative error code
-+ *
-+ * If a start_at timer is pending, it is cancelled.
-+ */
-+int snd_pcm_start_at_abort(snd_pcm_t *pcm)
++static int snd_pcm_hw_start_at_abort(snd_pcm_t *pcm)
 +{
-+	assert(pcm);
-+	if (CHECK_SANITY(! pcm->setup)) {
-+		SNDMSG("PCM not set up");
-+		return -EIO;
++	snd_pcm_hw_t *hw = pcm->private_data;
++	int err;
++
++	struct snd_start_at start_at = {
++		.op = SNDRV_PCM_STARTAT_OP_CANCEL,
++	};
++
++	if (ioctl(hw->fd, SNDRV_PCM_IOCTL_START_AT, &start_at) < 0) {
++		err = -errno;
++		SYSMSG("SNDRV_PCM_IOCTL_START_AT failed (%i)", err);
++		return err;
 +	}
-+	if (pcm->fast_ops->start_at_abort) {
-+		return pcm->fast_ops->start_at_abort(pcm->fast_op_arg);
-+	}
-+	return -EINVAL;
++	return 0;
 +}
 +
-+/**
-+ * \brief Get current time for a given start_at clock
-+ * \param pcm PCM handle
-+ * \param clock_type Start_at clock type e.g. SND_PCM_STARTAT_CLOCK_TYPE_GETTIMEOFDAY
-+ * \return 0 on success otherwise a negative error code
-+ */
-+int snd_pcm_start_at_gettime(snd_pcm_t *pcm, snd_pcm_startat_clock_type_t clock_type, snd_htimestamp_t *current_time)
++static int snd_pcm_hw_start_at_gettime(snd_pcm_t *pcm, snd_pcm_startat_clock_type_t clock_type, snd_htimestamp_t *current_time)
 +{
-+	assert(pcm);
-+	if (CHECK_SANITY(! pcm->setup)) {
-+		SNDMSG("PCM not set up");
-+		return -EIO;
++	snd_pcm_hw_t *hw = pcm->private_data;
++	int err;
++
++	struct snd_start_at start_at = {
++		.op = SNDRV_PCM_STARTAT_OP_STATUS,
++		.args.status = {
++			.clock_type = clock_type,
++		}
++	};
++
++	if (ioctl(hw->fd, SNDRV_PCM_IOCTL_START_AT, &start_at) < 0) {
++		err = -errno;
++		SYSMSG("SNDRV_PCM_IOCTL_START_AT failed (%i)", err);
++		return err;
 +	}
-+	if (pcm->fast_ops->start_at_gettime) {
-+		return pcm->fast_ops->start_at_gettime(pcm->fast_op_arg, clock_type, current_time);
-+	}
-+	return -EINVAL;
++
++	*current_time = start_at.args.status.current_time;
++
++	return 0;
 +}
 +
-+/**
-  * \brief Stop a PCM dropping pending frames
-  * \param pcm PCM handle
-  * \return 0 on success otherwise a negative error code
-@@ -6380,6 +6448,20 @@ snd_pcm_uframes_t snd_pcm_status_get_overrange(const snd_pcm_status_t *obj)
- }
- 
- /**
-+ * \brief Get status of a pending start_at timer, if any.
-+ * \param pending output param: 1 if start_at timer pending, 0 otherwise
-+ * \param clock_type output param: if pending == 1, is updated with current start_at timer clock_type
-+ * \param start_time output param: if pending == 1, is updated with current start_at timer start_time
-+ */
-+void snd_pcm_status_get_startat_state(const snd_pcm_status_t *obj, int *pending, snd_pcm_startat_clock_type_t *clock_type, snd_htimestamp_t *start_time)
-+{
-+	assert(obj);
-+	*pending = obj->start_at_pending;
-+	*clock_type = obj->start_at_clock_type;
-+	*start_time = obj->start_at_start_time;
-+}
-+
-+/**
-  * \brief get size of #snd_pcm_info_t
-  * \return size in bytes
-  */
+ static int snd_pcm_hw_drop(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
+@@ -1336,6 +1397,9 @@ static const snd_pcm_fast_ops_t snd_pcm_hw_fast_ops = {
+ 	.prepare = snd_pcm_hw_prepare,
+ 	.reset = snd_pcm_hw_reset,
+ 	.start = snd_pcm_hw_start,
++	.start_at = snd_pcm_hw_start_at,
++	.start_at_abort = snd_pcm_hw_start_at_abort,
++	.start_at_gettime = snd_pcm_hw_start_at_gettime,
+ 	.drop = snd_pcm_hw_drop,
+ 	.drain = snd_pcm_hw_drain,
+ 	.pause = snd_pcm_hw_pause,
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index 394505f..0ea6b61 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -154,6 +154,9 @@ typedef struct {
+ 	int (*prepare)(snd_pcm_t *pcm);
+ 	int (*reset)(snd_pcm_t *pcm);
+ 	int (*start)(snd_pcm_t *pcm);
++	int (*start_at)(snd_pcm_t *pcm, snd_pcm_startat_clock_type_t clock_type, const snd_htimestamp_t *start_time);
++	int (*start_at_abort)(snd_pcm_t *pcm);
++	int (*start_at_gettime)(snd_pcm_t *pcm, snd_pcm_startat_clock_type_t clock_type, snd_htimestamp_t *current_time);
+ 	int (*drop)(snd_pcm_t *pcm);
+ 	int (*drain)(snd_pcm_t *pcm);
+ 	int (*pause)(snd_pcm_t *pcm, int enable);
 -- 
 1.9.1
