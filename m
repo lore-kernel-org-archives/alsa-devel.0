@@ -1,38 +1,51 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: davinci-mcasp: extension to use AHCLKX pin as
- external clock source
-Date: Fri, 6 Feb 2015 13:50:21 +0200
-Message-ID: <54D4AA7D.6050108@ti.com>
-References: <54D487BE.2060209@bytesatwork.ch>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND PATCH V3 15/15] ARM: dts: Fix I2S1, I2S2 compatible for
+ exynos4 SoCs
+Date: Fri, 6 Feb 2015 11:51:18 +0000
+Message-ID: <20150206115118.GU21293@sirena.org.uk>
+References: <1422972382-18520-1-git-send-email-s.nawrocki@samsung.com>
+ <1422972382-18520-3-git-send-email-s.nawrocki@samsung.com>
+ <20150205194105.GM21293@sirena.org.uk>
+ <54D4A5E5.4010706@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id DCD90260595
- for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 12:50:26 +0100 (CET)
-In-Reply-To: <54D487BE.2060209@bytesatwork.ch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?VXJzIEbDpHNzbGVy?= <urs.fassler@bytesatwork.ch>, perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, jsarha@ti.com, linux-kernel@vger.kernel.org, broonie@kernel.org, misael.lopez@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="FZExVc34RhJBHWdA"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54D4A5E5.4010706@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: kgene@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDIvMDYvMjAxNSAxMToyMiBBTSwgVXJzIEbDpHNzbGVyIHdyb3RlOgo+IFRoZSBBSENMS1gg
-cGluIHNlZW1zIG5vdCB0byBiZSBzdXBwb3J0ZWQgYXMgZXh0ZXJuYWwgc291cmNlLiBUaGUgZmly
-c3QKPiBwYXRjaCBpcyBhIGdlbmVyYWwgZml4IHRvIGFsbG93IGV4dGVybmFsIGNsb2NrLiBUaGUg
-c2Vjb25kIGFsbG93cyB5b3UgdG8KPiBzZWxlY3QgdGhlIEFIQ0xLWCBwaW4gYXMgY2xvY2sgc291
-cmNlLgo+IAo+IFBhdGNoIGJ1aWx0IGFnYWluc3QgdjMuMTktcmM3Cj4gCgpJIGRvbid0IHRoaW5r
-IHRoaXMgc2VyaWVzIGlzIGNvcnJlY3QuIFlvdSBjYW4ganVzdCBpc3N1ZToKc25kX3NvY19kYWlf
-c2V0X3N5c2NsayhjcHVfZGFpLCAwLCBzeXNjbGssIFNORF9TT0NfQ0xPQ0tfSU4pOwoKZnJvbSB0
-aGUgbWFjaGluZSBkcml2ZXIgdG8gc2VsZWN0IEFIQ0xLWCBhcyBpbnB1dC4KCi0tIApQw6l0ZXIK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--FZExVc34RhJBHWdA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Feb 06, 2015 at 12:30:45PM +0100, Sylwester Nawrocki wrote:
+
+> Thank you for merging it.  I hope you picked up the previous 2 as well,
+> I couldn't see them in your tree.
+
+I probably will if I don't hear anything but since they don't need to go
+as a bug fix I can leave Kukjin a bit longer to say if he's OK with
+that.
+
+--FZExVc34RhJBHWdA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU1Kq1AAoJECTWi3JdVIfQW9gH/2LWQZwWC+sEnJ1rhPYbUto5
+wZ+Hc6t5bOiZ6KN8qwrhGhH2xfazuz2ru2knmALDwyjZYlpK3m3b+0UMsg18oy6D
+LdK0Af8GpPUT3WRFK8vo0iwt+Md6l+4r4yLhHpJkeYpr1LPeKN8ND5pCGr3VUu3R
+4ZGwc5evqS6bv+sNPcI43DPHfuYY42Z1A9Hyy16clIFNCse43ORld6D1TuFX75mm
+Fhc5/c9QOuwEMmIKWDux5uDwCZcVvKEM1OajHpvgmKeUsK78Yx+FouJyT2Yg6dZx
+tiv91guWtrMuw3P/9yMIWgRy/Cya13RTotLEF/MhsD1wdi+r5g06xG3LD5Sux2o=
+=bKxB
+-----END PGP SIGNATURE-----
+
+--FZExVc34RhJBHWdA--
