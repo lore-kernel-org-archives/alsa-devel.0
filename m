@@ -1,35 +1,101 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [alsa-devel] [PATCH baohua] ASoC: sirf: atlas7:
- atlas7_iacc_dai_ops can be static
-Date: Fri, 6 Feb 2015 10:35:55 +0800
-Message-ID: <CAGsJ_4wWfRse_Ba5Xx7y07v7RvbQZ9++W9z2w0VDeLjbenoqsQ@mail.gmail.com>
-References: <201502060130.hszyNa1F%fengguang.wu@intel.com> <20150205170352.GA49811@snb>
- <20150205171159.GY21293@sirena.org.uk>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH v3] ASoC: rt286: add jack detection
+	enable/disable APIs and export
+Date: Fri,  6 Feb 2015 14:40:00 +0800
+Message-ID: <1423204800-6448-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150205171159.GY21293@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: kbuild test robot <fengguang.wu@intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rongjun Ying <rongjun.ying@csr.com>, kbuild-all@01.org, Barry Song <Barry.Song@csr.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC237260592
+ for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2015 07:38:02 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-2015-02-06 1:11 GMT+08:00 Mark Brown <broonie@kernel.org>:
-> On Fri, Feb 06, 2015 at 01:03:52AM +0800, kbuild test robot wrote:
->> sound/soc/sirf/atlas7-iacc.c:168:24: sparse: symbol 'atlas7_iacc_dai_ops' was not declared. Should it be static?
->
-> This file isn't in an upstream tree, should this patch have been sent
-> upstream (I suspect non-upstream trees may need a bit of filtering in
-> the scripts)?
+Some platforms, e.g. WSB, don't need jack detection when
+system is in Suspend, for power save reason.
 
-the file is new and under developing. so no patch for it yet. is it
-possible to modify kbuild script?
+Here add jack detection enable/disable APIs and export them, when
+disabled, it will ignore interrupt, and disable LDO1, which is
+used for jack detection when headphone is plugged in.
 
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+Reviewed-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 29 +++++++++++++++++++++++++++++
+ sound/soc/codecs/rt286.h |  2 ++
+ 2 files changed, 31 insertions(+)
 
--barry
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index d5cc1bc..1a0c250f 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -402,6 +402,33 @@ int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ }
+ EXPORT_SYMBOL_GPL(rt286_mic_detect);
+ 
++int rt286_enable_jack_detection(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++
++	if (!jack)
++		return -EINVAL;
++	rt286->jack = jack;
++	if (jack->status | SND_JACK_HEADPHONE)
++		snd_soc_dapm_force_enable_pin(&rt286->codec->dapm, "LDO1");
++	snd_soc_dapm_sync(&rt286->codec->dapm);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rt286_enable_jack_detection);
++
++int rt286_disable_jack_detection(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++
++	if (!jack)
++		return -EINVAL;
++	rt286->jack = NULL;
++	snd_soc_dapm_disable_pin(&rt286->codec->dapm, "LDO1");
++	snd_soc_dapm_sync(&rt286->codec->dapm);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rt286_disable_jack_detection);
++
+ static int is_mclk_mode(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+@@ -1012,6 +1039,8 @@ static irqreturn_t rt286_irq(int irq, void *data)
+ 	bool mic = false;
+ 	int status = 0;
+ 
++	if (!rt286->jack)
++		return IRQ_HANDLED;
+ 	rt286_jack_detect(rt286, &hp, &mic);
+ 
+ 	/* Clear IRQ */
+diff --git a/sound/soc/codecs/rt286.h b/sound/soc/codecs/rt286.h
+index 7130edb..d793185 100644
+--- a/sound/soc/codecs/rt286.h
++++ b/sound/soc/codecs/rt286.h
+@@ -200,6 +200,8 @@ enum {
+ };
+ 
+ int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack);
++int rt286_enable_jack_detection(struct snd_soc_codec *codec, struct snd_soc_jack *jack);
++int rt286_disable_jack_detection(struct snd_soc_codec *codec, struct snd_soc_jack *jack);
+ 
+ #endif /* __RT286_H__ */
+ 
+-- 
+1.9.1
