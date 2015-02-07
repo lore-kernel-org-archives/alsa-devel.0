@@ -1,84 +1,86 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Some questions about userspace control elements
-Date: Sat, 07 Feb 2015 10:58:19 +0900
-Message-ID: <54D5713B.2000406@sakamocchi.jp>
-References: <54CE10D2.7090903@sakamocchi.jp>
- <54CE675A.80004@ladisch.de>	<54D2B075.4050005@sakamocchi.jp>
- <54D2BD01.6020904@sakamocchi.jp> <54D48BA8.6060104@ladisch.de>
+From: yakir <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: Re: [PATCH v3 05/15] drm: bridge/dw_hdmi: combine hdmi_set_clock_regenerator_n()
+ and hdmi_regenerate_cts()
+Date: Sat, 07 Feb 2015 11:33:17 +0800
+Message-ID: <54D5877D.1070500@rock-chips.com>
+References: <1422975418-13302-1-git-send-email-ykk@rock-chips.com> <1422976340-30118-1-git-send-email-ykk@rock-chips.com> <CAGS+omC_vWBdoWvzy96A5kFOKEeqaKRcPzNhNc20--+MoAPHyA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 54DB42652E1
- for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2015 02:58:24 +0100 (CET)
-In-Reply-To: <54D48BA8.6060104@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAGS+omC_vWBdoWvzy96A5kFOKEeqaKRcPzNhNc20--+MoAPHyA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Cc: David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Yao <mark.yao-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Ben Zhang <benzh-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, open list:OPEN FIRMW
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
 
-On Feb 6 2015 18:38, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> On Feb 5 2015 08:51, Takashi Sakamoto wrote:
->>> sound/core/control.c:1188
->>> {{{
->>> kctl.count = info->owner ? info->owner : 1;
->>> }}}
->>>
->>> In this code, the value in struct snd_ctl_elem_info.owner is assigned to
->>> struct snd_kcontrol.count. The meaning of these two member is completely
->>> different but assigned.
-> 
-> There is hardware that has many identhtical controls.  To save memory,
-> ALSA treats controls with .count > 1 as if there were multiple controls.
+On 02/05/2015 11:54 PM, Daniel Kurtz wrote:
+> On Tue, Feb 3, 2015 at 11:12 PM, Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org> wrote:
+>> Signed-off-by: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+> Reviewed-by: Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+
+Okay, add in next verson4.
+
+Thanks.  : )
 >
-> This optimization is not visible in the userspace API.
+>> ---
+>> Changes in v3:
+>> - Combine hdmi_set_clock_regenerator_n() and hdmi_regenerate_cts()
+>>
+>> Changes in v2: None
+>>
+>>   drivers/gpu/drm/bridge/dw_hdmi.c | 16 ++++++----------
+>>   1 file changed, 6 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
+>> index 7b5b664..262163f 100644
+>> --- a/drivers/gpu/drm/bridge/dw_hdmi.c
+>> +++ b/drivers/gpu/drm/bridge/dw_hdmi.c
+>> @@ -196,19 +196,16 @@ static void hdmi_mask_writeb(struct dw_hdmi *hdmi, u8 data, unsigned int reg,
+>>          hdmi_modb(hdmi, data << shift, mask, reg);
+>>   }
+>>
+>> -static void hdmi_set_clock_regenerator_n(struct dw_hdmi *hdmi,
+>> -                                        unsigned int value)
+>> +static void hdmi_set_clock_regenerator(struct dw_hdmi *hdmi,
+>> +                                      unsigned int n, unsigned int cts)
+>>   {
+>> -       hdmi_writeb(hdmi, value & 0xff, HDMI_AUD_N1);
+>> -       hdmi_writeb(hdmi, (value >> 8) & 0xff, HDMI_AUD_N2);
+>> -       hdmi_writeb(hdmi, (value >> 16) & 0x0f, HDMI_AUD_N3);
+>> +       hdmi_writeb(hdmi, n & 0xff, HDMI_AUD_N1);
+>> +       hdmi_writeb(hdmi, (n >> 8) & 0xff, HDMI_AUD_N2);
+>> +       hdmi_writeb(hdmi, (n >> 16) & 0x0f, HDMI_AUD_N3);
+>>
+>>          /* nshift factor = 0 */
+>>          hdmi_modb(hdmi, 0, HDMI_AUD_CTS3_N_SHIFT_MASK, HDMI_AUD_CTS3);
+>> -}
+>>
+>> -static void hdmi_regenerate_cts(struct dw_hdmi *hdmi, unsigned int cts)
+>> -{
+>>          /* Must be set/cleared first */
+>>          hdmi_modb(hdmi, 0, HDMI_AUD_CTS3_CTS_MANUAL, HDMI_AUD_CTS3);
+>>
+>> @@ -374,8 +371,7 @@ static void hdmi_set_clk_regenerator(struct dw_hdmi *hdmi,
+>>                  __func__, hdmi->sample_rate, hdmi->ratio,
+>>                  pixel_clk, clk_n, clk_cts);
+>>
+>> -       hdmi_set_clock_regenerator_n(hdmi, clk_n);
+>> -       hdmi_regenerate_cts(hdmi, clk_cts);
+>> +       hdmi_set_clock_regenerator(hdmi, clk_n, clk_cts);
+>>   }
+>>
+>>   static void hdmi_init_clk_regenerator(struct dw_hdmi *hdmi)
+>> --
+>> 2.1.2
+>>
+>>
+>
+>
 
-In my understanding, it's due to the granularity of operation. If we
-assume a PCI device has one register to express several control elements
-as bitfield. One read or write operation can handle these controls. Such
-control elements can be expressed in one ALSA control substance.
 
-> The owner field is used because there is no other field to set the
-> count.
-
-No. In SNDRV_CTL_IOCTL_ELEM_ADD ioctl, struct snd_ctl_elem_info.count
-has the number of elements in this control, there it's an abuse of
-member unrelated to the count.
-
->> When any userspace control element are added, the value of struct
->> snd_ctl_elem_info.owner is zero because there's no API to set this
->> member in userspace
-> 
-> So far, setting this field has not been needed.  An API could be added.
-
-I cannot find the advantage to add such API in userspace. The value of
-owner field SHOULD be set just by lock/unlock API.
-
->>> I guess that the reason is to limit the number of event generated when
->>> the control element set is operated.
-> 
-> If a driver needs twenty identical controls, it could create one control
-> with count=20, or twenty controls with count=1.  In both cases, twenty
-> events are sent.
-
-But this is not applied to userspace controls because a control with 20
-elements can generate one events instead of 20.
-
-This is ugly because it demands userspace applications to distinguish
-kernel/userspace application in event handling.
-
-
-Thanks
-
-Takashi Sakamoto
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
