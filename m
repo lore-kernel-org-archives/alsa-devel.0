@@ -1,47 +1,60 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Some questions about userspace control elements
-Date: Sat, 07 Feb 2015 16:45:30 +0100
-Message-ID: <54D6331A.5070200@ladisch.de>
-References: <54CE10D2.7090903@sakamocchi.jp>
- <54CE675A.80004@ladisch.de>	<54D2B075.4050005@sakamocchi.jp>
- <54D2BD01.6020904@sakamocchi.jp> <54D48BA8.6060104@ladisch.de>
- <54D5713B.2000406@sakamocchi.jp>
+From: Chris Rorvick <chris@rorvick.com>
+Subject: Re: [PATCH 3/4] ALSA: line6: Pass driver name to line6_probe()
+Date: Sat, 7 Feb 2015 10:18:28 -0600
+Message-ID: <CAEUsAPbfznW-bb8qj6S=TFsUATF5YOisgR_KrHXqSfUrB_0hkQ@mail.gmail.com>
+References: <1423234272-7348-1-git-send-email-chris@rorvick.com>
+	<1423234272-7348-4-git-send-email-chris@rorvick.com>
+	<s5hfvajw06t.wl-tiwai@suse.de>
+	<s5hy4obuf6t.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id D631F26050C
- for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2015 16:45:41 +0100 (CET)
-In-Reply-To: <54D5713B.2000406@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hy4obuf6t.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stefan Hajnoczi <stefanha@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> On Feb 6 2015 18:38, Clemens Ladisch wrote:
->> The owner field is used because there is no other field to set the
->> count.
+On Fri, Feb 6, 2015 at 11:23 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Fri, 06 Feb 2015 16:04:42 +0100, Takashi Iwai wrote:
+>>
+>> At Fri,  6 Feb 2015 08:51:11 -0600, Chris Rorvick wrote:
+>> >
+>> > Provide a descriptive name for each driver instead of calling all of
+>> > them "line6usb".
+>>
+>> This needs to be done carefully.  This string is referred in alsa-lib
+>> to pick up the the configuration file.  So, this change shall break
+>> the compatibility.
+>>
+>> If we ever want to pick up a different alsa-lib configuration
+>> depending on each line6 driver type, then yes, we should give the
+>> individual driver name.  If we want to keep rather the common
+>> configuration file (so far there is none, but if any in furture), then
+>> we should keep the common driver name.
+>>
+>> And, the decision must be done now.  From now on, basically we are not
+>> allowed to break the user-space compatibility.  That is, this is the
+>> very last chance to do it.
+>>
+>> If your patch is supposed to do it with these consideration, I'm
+>> willing to take.  But, I guess it's not, because you chose the string
+>> like "Line 6 POD".  This is usually not ideal as a driver name; think
+>> of $DRIVER.conf file that is used for alsa-lib configuration.
+>>
+>> So, from that POV, "line6usb" is no bad name string.  If we want
+>> differentiate per driver, a name like "Line6-Pod" or just "Pod" would
+>> be more appropriate.
 >
-> No. In SNDRV_CTL_IOCTL_ELEM_ADD ioctl, struct snd_ctl_elem_info.count
-> has the number of elements in this control, there it's an abuse of
-> member unrelated to the count.
+> Just to make sure: I'm not against giving own driver name for each
+> line6 driver.  I myself think it'd be rather better than the single
+> common name for long term.  But, the name string should be more usable
+> as a file name, i.e. without space and just two words or so.
 
-That is a different count.
-
-struct snd_ctl_elem_info.count allows a control to have multiple values.
-For example, a stereo volume control has two values.
-
-kctl.count creates multiple controls.
-
+OK, thanks for clarifying.  I did not realize this was used to look
+for a config file name.  I will resubmit using the /Line6-\w+/
+convention.
 
 Regards,
-Clemens
+
+Chris
