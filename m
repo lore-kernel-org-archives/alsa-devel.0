@@ -1,62 +1,52 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: RE: [PATCH v2] ASoC: atmel_ssc_dai: Allow more rates
-Date: Sat, 7 Feb 2015 10:51:15 +0000
-Message-ID: <9f35349d2e6d47ae977e3e119c5175c6@EMAIL.axentia.se>
-References: <1423050745-6372-1-git-send-email-peda@lysator.liu.se>
- <20150206230951.GL31311@finisterre.sirena.org.uk>
+From: Harry van Haaren <harryhaaren@gmail.com>
+Subject: Re: [Intel HDA][ALC3226] Too much white noise from
+	microphone
+Date: Sat, 7 Feb 2015 11:12:40 +0000
+Message-ID: <CAKudYbPK9VH_qmX8Ov1ohPKzOPr=uEJCxTdmtEdA1mwQ_TEH7Q@mail.gmail.com>
+References: <8841801.KiuVFG1hDJ@segfault>
+	<54D4A9F9.6090709@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150206230951.GL31311@finisterre.sirena.org.uk>
-Content-Language: sv-SE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Peter Rosin <peda@lysator.liu.se>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f181.google.com (mail-ie0-f181.google.com
+ [209.85.223.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C9ED2604C2
+ for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2015 12:12:41 +0100 (CET)
+Received: by iecrl12 with SMTP id rl12so7073203iec.0
+ for <alsa-devel@alsa-project.org>; Sat, 07 Feb 2015 03:12:40 -0800 (PST)
+In-Reply-To: <54D4A9F9.6090709@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Wed, Feb 04, 2015 at 12:52:25PM +0100, Peter Rosin wrote:
-> 
-> > One thing remains a bit unclear, and that is the 500ppm deduction. Is
-> > that really warranted? The number was just pulled out of my hat...
-> 
-> I don't really get what this is supposed to be protecting against.
-> 
-> > +	case SND_SOC_DAIFMT_CBM_CFS:
-> > +	case SND_SOC_DAIFMT_CBM_CFM:
-> > +		t.min = 8000;
-> > +		t.max = ssc_p->mck_rate / mck_div / frame_size;
-> > +		/* Take away 500ppm, just to be on the safe side. */
-> > +		t.max -= t.max / 2000;
-> > +		t.openmin = t.openmax = 0;
-> > +		t.integer = 0;
-> > +		ret = snd_interval_refine(i, &t);
-> 
-> As I understand it this is a straight divider rather than something that's doing
-> dithering or anything else more fancy.  Given that it seems as well just to
-> trust the clock rate we've got - we don't do any error tracking with the clock
-> API (perhaps we should) and for many applications some degree of
-> divergence from the nominal rate is not
-> *too* bad for audio systems (for application specific values of "some"
-> and "too" of course).  If it is just dividers I'm not sure the situation is really
-> improved materially by knocking off the top frequency.
-> 
-> If we are doing something more fancy than divididing my analysis is off base
-> of course.
+On Fri, Feb 6, 2015 at 11:48 AM, Alexander E. Patrakov
+<patrakov@gmail.com> wrote:
+> http://www.alsa-project.org/main/index.php/HDA_Analyzer
+Ah, i wasn't aware of this tool and I have a HDA in my laptop...
 
-I'm thinking that the SSC samples the selected BCK pin using the (possibly
-divided) peripheral clock. Getting too near the theoretical rate limit would
-be bad, if these two independent clocks drift the wrong way. At least that
-is my take on it, but I don't know the internal workings of the SSC, so...
+> If this doesn't help, just click around randomly. Maybe you'll find the
+> magic checkbox that makes the noise go away and the voice stay :)
+No luck yet, played with the internal mic, which is very noise and SNR
+is much too high to be usable. Setting vref to 50 gives the best SNR,
+still not usable though.
 
-I was hoping that someone from Atmel could chime in? Maybe I'm totally
-off base, and the SSC is doing this completely differently?
+Changing the "digital" capture level in alsamixer changes the level of
+the internal mic signal - is this expected? I looked for the "digital"
+capture level control in HDAAnalyzer, but couldn't find it - vendor
+defined?
 
-In our application, we're not near the limit. Therefore, it really doesn't
-matter much to us.
+Cheers, -Harry
 
-Should I resend w/o the 500ppm deduction?
+-- 
 
-Cheers,
-Peter
+http://www.openavproductions.com
