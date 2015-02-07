@@ -1,122 +1,80 @@
-From: Chris Rorvick <chris@rorvick.com>
-Subject: [PATCH v2 3/3] ALSA: line6: Pass driver name to line6_probe()
-Date: Sat,  7 Feb 2015 10:43:19 -0600
-Message-ID: <1423327399-12619-4-git-send-email-chris@rorvick.com>
-References: <1423327399-12619-1-git-send-email-chris@rorvick.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1423327399-12619-1-git-send-email-chris@rorvick.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Chris Rorvick <chris@rorvick.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stefan Hajnoczi <stefanha@gmail.com>
+From: Christian Engelmayer <cengelma@gmx.at>
+Subject: [PATCH] ASoC: Intel: sst: Fix firmware name size
+	handling
+Date: Sat,  7 Feb 2015 23:40:52 +0100
+Message-ID: <1423348852-29466-1-git-send-email-cengelma@gmx.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F0D4260606
+ for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2015 23:41:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, vinod.koul@intel.com, subhransu.s.prusty@intel.com
+Cc: alsa-devel@alsa-project.org, Christian Engelmayer <cengelma@gmx.at>, wsa@the-dreams.de, tiwai@suse.de, mengdong.lin@intel.com, lgirdwood@gmail.com, yang.a.fang@intel.com, yongjun_wei@trendmicro.com.cn, jarkko.nikula@linux.intel.com, kevin.strasser@linux.intel.com, fengguang.wu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Provide a unique name for each driver instead of using "line6usb" for
-all of them.  This will allow for different configurations based on the
-driver type.
+Function sst_acpi_probe() uses plain strcpy for setting member firmware_name
+of a struct intel_sst_drv from member firmware of a struct sst_machines.
+Thereby the destination array has got a length of 20 byte while the source may
+hold 32 byte. Since eg. commit 64b9c90b8600 ("ASoC: Intel: Fix BYTCR firmware
+name") increased strings from "fw_sst_0f28.bin" to "intel/fw_sst_0f28.bin"
+there is an actual possibility that the 20 byte array at the end of struct
+intel_sst_drv is overrun.
 
-Signed-off-by: Chris Rorvick <chris@rorvick.com>
+Thus increase the size of the destination and use the same define for both
+structs. Detected by Coverity CID 1260087.
+
+Signed-off-by: Christian Engelmayer <cengelma@gmx.at>
 ---
- sound/usb/line6/driver.c   | 3 ++-
- sound/usb/line6/driver.h   | 3 +--
- sound/usb/line6/pod.c      | 2 +-
- sound/usb/line6/podhd.c    | 2 +-
- sound/usb/line6/toneport.c | 2 +-
- sound/usb/line6/variax.c   | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+Compile tested only. Applies against linux-next.
+---
+ sound/soc/intel/sst/sst.h      | 3 ++-
+ sound/soc/intel/sst/sst_acpi.c | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 2328ec9..1e58e92 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -480,6 +480,7 @@ static int line6_init_cap_control(struct usb_line6 *line6)
- */
- int line6_probe(struct usb_interface *interface,
- 		const struct usb_device_id *id,
-+		const char *driver_name,
- 		const struct line6_properties *properties,
- 		int (*private_init)(struct usb_line6 *, const struct usb_device_id *id),
- 		size_t data_size)
-@@ -511,7 +512,7 @@ int line6_probe(struct usb_interface *interface,
- 	line6->ifcdev = &interface->dev;
+diff --git a/sound/soc/intel/sst/sst.h b/sound/soc/intel/sst/sst.h
+index 7f4bbfc..562bc48 100644
+--- a/sound/soc/intel/sst/sst.h
++++ b/sound/soc/intel/sst/sst.h
+@@ -58,6 +58,7 @@ enum sst_algo_ops {
+ #define SST_BLOCK_TIMEOUT	1000
  
- 	strcpy(card->id, properties->id);
--	strcpy(card->driver, DRIVER_NAME);
-+	strcpy(card->driver, driver_name);
- 	strcpy(card->shortname, properties->name);
- 	sprintf(card->longname, "Line 6 %s at USB %s", properties->name,
- 		dev_name(line6->ifcdev));
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index fa877a3..8247a6b 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -18,8 +18,6 @@
+ #define FW_SIGNATURE_SIZE	4
++#define FW_NAME_SIZE		32
  
- #include "midi.h"
+ /* stream states */
+ enum sst_stream_states {
+@@ -426,7 +427,7 @@ struct intel_sst_drv {
+ 	 * Holder for firmware name. Due to async call it needs to be
+ 	 * persistent till worker thread gets called
+ 	 */
+-	char firmware_name[20];
++	char firmware_name[FW_NAME_SIZE];
+ };
  
--#define DRIVER_NAME "line6usb"
--
- #define USB_INTERVALS_PER_SECOND 1000
+ /* misc definitions */
+diff --git a/sound/soc/intel/sst/sst_acpi.c b/sound/soc/intel/sst/sst_acpi.c
+index 43bc1c4..0542442 100644
+--- a/sound/soc/intel/sst/sst_acpi.c
++++ b/sound/soc/intel/sst/sst_acpi.c
+@@ -47,7 +47,7 @@ struct sst_machines {
+ 	char board[32];
+ 	char machine[32];
+ 	void (*machine_quirk)(void);
+-	char firmware[32];
++	char firmware[FW_NAME_SIZE];
+ 	struct sst_platform_info *pdata;
  
- /* Fallback USB interval and max packet size values */
-@@ -168,6 +166,7 @@ extern int line6_write_data(struct usb_line6 *line6, int address, void *data,
- 
- int line6_probe(struct usb_interface *interface,
- 		const struct usb_device_id *id,
-+		const char *driver_name,
- 		const struct line6_properties *properties,
- 		int (*private_init)(struct usb_line6 *, const struct usb_device_id *id),
- 		size_t data_size);
-diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index 61aadd7..c4246ad 100644
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -574,7 +574,7 @@ static const struct line6_properties pod_properties_table[] = {
- static int pod_probe(struct usb_interface *interface,
- 		     const struct usb_device_id *id)
- {
--	return line6_probe(interface, id,
-+	return line6_probe(interface, id, "Line6-POD",
- 			   &pod_properties_table[id->driver_info],
- 			   pod_init, sizeof(struct usb_line6_pod));
- }
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 9c3c744..63dcaef 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -169,7 +169,7 @@ static const struct line6_properties podhd_properties_table[] = {
- static int podhd_probe(struct usb_interface *interface,
- 		       const struct usb_device_id *id)
- {
--	return line6_probe(interface, id,
-+	return line6_probe(interface, id, "Line6-PODHD",
- 			   &podhd_properties_table[id->driver_info],
- 			   podhd_init, sizeof(struct usb_line6));
- }
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index 2420d2f..1a0a485 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -557,7 +557,7 @@ static const struct line6_properties toneport_properties_table[] = {
- static int toneport_probe(struct usb_interface *interface,
- 			  const struct usb_device_id *id)
- {
--	return line6_probe(interface, id,
-+	return line6_probe(interface, id, "Line6-TonePort",
- 			   &toneport_properties_table[id->driver_info],
- 			   toneport_init, sizeof(struct usb_line6_toneport));
- }
-diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
-index b1c1de6..ddc23dd 100644
---- a/sound/usb/line6/variax.c
-+++ b/sound/usb/line6/variax.c
-@@ -283,7 +283,7 @@ static const struct line6_properties variax_properties_table[] = {
- static int variax_probe(struct usb_interface *interface,
- 			const struct usb_device_id *id)
- {
--	return line6_probe(interface, id,
-+	return line6_probe(interface, id, "Line6-Variax",
- 			   &variax_properties_table[id->driver_info],
- 			   variax_init, sizeof(struct usb_line6_variax));
- }
+ };
 -- 
-2.1.0
+1.9.1
