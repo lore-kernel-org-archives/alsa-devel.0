@@ -1,105 +1,105 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: core: call
- snd_soc_unregister_card() when component cleanup
-Date: Sat, 7 Feb 2015 05:46:59 +0800
-Message-ID: <20150206214659.GA31311@finisterre.sirena.org.uk>
-References: <87h9v4gbhg.wl%kuninori.morimoto.gx@renesas.com>
- <87iofj7qhc.wl%kuninori.morimoto.gx@renesas.com>
- <20150204205503.GM21293@sirena.org.uk>
- <87lhkcj55p.wl%kuninori.morimoto.gx@renesas.com>
- <87k2zwj4zf.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: add generic dt-card support
+Date: Sat, 7 Feb 2015 16:33:55 +0800
+Message-ID: <20150207083355.GA8054@finisterre.sirena.org.uk>
+References: <54C0088F.9070609@metafoo.de>
+ <20150122090723.50ac0156@armhf>
+ <54C14EB3.8080305@metafoo.de>
+ <20150123131554.623003f9@armhf>
+ <54C252F4.9000504@metafoo.de>
+ <20150123193456.276ea512@armhf>
+ <20150123191343.GW21293@sirena.org.uk>
+ <20150124083027.3b3a018f@armhf>
+ <20150203164748.GR21293@sirena.org.uk>
+ <20150203203130.5d1cfc42@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0113401007433762521=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AA7592604E6
- for <alsa-devel@alsa-project.org>; Sat,  7 Feb 2015 09:28:20 +0100 (CET)
-In-Reply-To: <87k2zwj4zf.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150203203130.5d1cfc42@armhf>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0113401007433762521==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
-Content-Disposition: inline
-
-
---liOOAslEiF7prFVr
+--AqsLC8rIMeq19msA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 05, 2015 at 05:33:55AM +0000, Kuninori Morimoto wrote:
+On Tue, Feb 03, 2015 at 08:31:30PM +0100, Jean-Francois Moine wrote:
+> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
 
-> ASoC devices are organized as [CPU]-[CARD]-[CODEC]. Then, [CPU]/[CODEC]
-> are based on [component] structure. Now, each [CARD] device knows that
-> it has organized from which [component]. But current [component] doesn't
-> inform to [CARD] that it was removed when user called rmmod or unbind it.
-> Thus, [CARD] which lost some [components] still exist in system.
-> And then, ALSA sound card will have some problem if user used this [CARD]
-> in such timing. This patch unregister [CARD] when [component] was removed.
-> If you want to use this [CARD] again,=20
-> you need to re-insmod or re-bind removed [component] and [CARD] again.=20
+> > So how does the simple controller interact with a more complex one given
+> > that it's somehow picking some controller node to start from?
 
-So, there's a problem here but...
+> A way to solve this problem could be to create only one card builder.
+> This creation could be explicit (created by the first active audio
+> controller) or implicit by the audio subsystem on the first controller or
+> CODEC creation.
 
-> @@ -2695,6 +2695,7 @@ static void snd_soc_component_add(struct snd_soc_co=
-mponent *component)
->  static void snd_soc_component_cleanup(struct snd_soc_component *componen=
-t)
->  {
->  	snd_soc_unregister_dais(component);
-> +	snd_soc_unregister_card(component->card);
->  	kfree(component->name);
->  }
+> Then, the card builder could scan all the DT looking for the audio
+> ports and create one or more cards according to the graph
+> connectivity.
 
-=2E..this doesn't look like the right fix.  If we just plain unregister
-the card then if the component that was removed is loaded again then the
-card won't be reinstantiated since the core has forgotten about the
-card.  Further, if the card driver is removed then we'll get a duplicate
-attempt to unregister it which doesn't seem clever.
+How is this going to work with dynamically instantiated hardware like DT
+overlays?
 
-What we need to do here is undo all the work that was done to
-instantiate the card but not actually unregister it, returning
-everything to the state it was in before the card was instantiated.
-That's obviously a much more substantial change than this but it's
-what's needed (and is the main reason this is broken at the minute).
+> > If you have a device with any sort of speaker or microphone, or any sort
+> > of external connector for interfacing with an external device like a
+> > headphone jack, then you have something that could be a widget.
 
---liOOAslEiF7prFVr
+> I know what are the widgets and routes, I was just wondering why they
+> (especially the widgets) need to appear at the card level instead of
+> just being declared in the DAIs (from the platform or the DT).
+
+As previously and repeatedly discussed DAIs have no special place in
+a general audio system and we can't base the entire system off them.
+Which DAI should have the headphone jack connected to the analogue only
+headphone driver in my system (there may not even be a way to route
+digital audio to it)?  How does this work for off-SoC audio hubs where
+there is a device with multiple DAIs connected to both one or more other
+digital devices and the analogue?
+
+Please go and research this if you're intending to work on generic
+bindings, it gets extremely repetitive to have to go over this again and
+again.  We already have simple-card to provide a binding for trivial
+systems and don't want to end up with a never ending series of slightly
+more complicated bindings which each cover slightly different sets of
+systems in ways that users struggle to differentiate between.
+
+> And the same question may also be raised about the audio formats, clocks,
+> tdm's...
+
+Similar things here - which of the two or more devices on a digital
+audio link (yes, they're buses not point to point links) has the
+configuration and how do we stitch them together?  How do we figure out
+when and how to do runtime reconfiguration of the clock tree (which is
+needed by some systems)?
+
+Again, please do some research on this.  If you are trying to define
+generic device tree bindings it is really important that you understand
+what you are trying to model with those bindings.
+
+--AqsLC8rIMeq19msA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU1TZPAAoJECTWi3JdVIfQnpoH/RqgSPafSzHX5JRMG0s30JkU
-vP87TrYdT6zJZQK0d8Cqud3xVRolb/D7hy/HKNZZKmIo5nEbYMHvVWjyIAIbN7ld
-q8s9AN6jpOkFB/qnso9iUF22TrWnlO6Oli8a4S2PlqDk4Eitdjt7phHNlYLU3Y9D
-RuuseVDjDurtWu8tdMf8VWxvilMBxIfq+NyGEfUrQZzSB/FAO3UTMhXgJiWDXbZW
-FtKj0XFdFi4Cqszw5kuDu1FaRWafJ1l2SfYSBb4I0n3lT2DccThnAU2Utzkic/z+
-bG2OyKIEy0tN2GDsnMRc4QogzZ1yj5VpUVoz1ue1PS2qO9yvqMDY2TfhGmHcd7Q=
-=MbYC
+iQEcBAEBCAAGBQJU1c3yAAoJECTWi3JdVIfQXqgH/1ywVBEroswu6tqEUJ30frry
+lHFCs0pB971s168y4uZXH5U/3tFt7f7EcCOLM4/ySA4meG5hLi7lVru5N3+/tChK
+DgbnYnAjLdKpGDBpMrJR3sQ0KtiYG1jbci7evGE73xoysifSUibEz70SZI4hs/++
+h7nCWPjUY8jSzqpShacXzjWRUyR9sG7PI7HnrZchfSzYDPhs486a9o/HW59a47/Q
+94xXdTr4Rm6vHl1rXvOKXGEbZwbuqF2q6A6CcFoxqpkhGatad7vFmyO/p582c9W/
+SydNSBkmAkXjNyLHJLjg0TelmgfpObf6Pj7UYozFNKIgBIGoNQCkjnKbzrkYKBk=
+=DGKe
 -----END PGP SIGNATURE-----
 
---liOOAslEiF7prFVr--
-
---===============0113401007433762521==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0113401007433762521==--
+--AqsLC8rIMeq19msA--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
