@@ -1,86 +1,181 @@
-From: yakir <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: Re: [PATCH v3 05/15] drm: bridge/dw_hdmi: combine hdmi_set_clock_regenerator_n()
- and hdmi_regenerate_cts()
-Date: Sat, 07 Feb 2015 11:33:17 +0800
-Message-ID: <54D5877D.1070500@rock-chips.com>
-References: <1422975418-13302-1-git-send-email-ykk@rock-chips.com> <1422976340-30118-1-git-send-email-ykk@rock-chips.com> <CAGS+omC_vWBdoWvzy96A5kFOKEeqaKRcPzNhNc20--+MoAPHyA@mail.gmail.com>
+From: yakir <ykk@rock-chips.com>
+Subject: Re: [PATCH v3 04/15] drm: bridge/dw_hdmi: add indentification registers
+ parse and record
+Date: Sat, 07 Feb 2015 11:33:27 +0800
+Message-ID: <54D58787.8040400@rock-chips.com>
+References: <1422975418-13302-1-git-send-email-ykk@rock-chips.com> <1422976283-30071-1-git-send-email-ykk@rock-chips.com> <CAGS+omCiGh0-4BbPjPS+KqMW9-OpJ8Je7o37Web06w1CR7RPgw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAGS+omC_vWBdoWvzy96A5kFOKEeqaKRcPzNhNc20--+MoAPHyA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Russell King <rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Yao <mark.yao-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Ben Zhang <benzh-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, open list:OPEN FIRMW
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAGS+omCiGh0-4BbPjPS+KqMW9-OpJ8Je7o37Web06w1CR7RPgw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Kurtz <djkurtz@chromium.org>
+Cc: David Airlie <airlied@linux.ie>, Russell King <rmk+kernel@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, Fabio Estevam <fabio.estevam@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, Rob Clark <robdclark@gmail.com>, Mark Yao <mark.yao@rock-chips.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Sean Cross <xobs@kosagi.com>, Jyri Sarha <jsarha@ti.com>, Ben Zhang <benzh@chromium.org>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, open list:OPEN FIRMW
 List-Id: alsa-devel@alsa-project.org
 
 
-On 02/05/2015 11:54 PM, Daniel Kurtz wrote:
-> On Tue, Feb 3, 2015 at 11:12 PM, Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org> wrote:
->> Signed-off-by: Yakir Yang <ykk-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-> Reviewed-by: Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-
-Okay, add in next verson4.
-
-Thanks.  : )
->
+On 02/05/2015 11:46 PM, Daniel Kurtz wrote:
+> On Tue, Feb 3, 2015 at 11:11 PM, Yakir Yang <ykk@rock-chips.com> wrote:
+>> By parsing the indentification registers we can know what functions
+>> are present on the hdmi ip.
+>>
+>> Signed-off-by: Yakir Yang <ykk@rock-chips.com>
 >> ---
 >> Changes in v3:
->> - Combine hdmi_set_clock_regenerator_n() and hdmi_regenerate_cts()
+>> - Add ID registers parse and record
 >>
 >> Changes in v2: None
 >>
->>   drivers/gpu/drm/bridge/dw_hdmi.c | 16 ++++++----------
->>   1 file changed, 6 insertions(+), 10 deletions(-)
+>>   drivers/gpu/drm/bridge/dw_hdmi.c | 59 ++++++++++++++++++++++++++++++++++++++++
+>>   drivers/gpu/drm/bridge/dw_hdmi.h | 23 ++++++++++++++++
+>>   2 files changed, 82 insertions(+)
 >>
 >> diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
->> index 7b5b664..262163f 100644
+>> index 08f10da..7b5b664 100644
 >> --- a/drivers/gpu/drm/bridge/dw_hdmi.c
 >> +++ b/drivers/gpu/drm/bridge/dw_hdmi.c
->> @@ -196,19 +196,16 @@ static void hdmi_mask_writeb(struct dw_hdmi *hdmi, u8 data, unsigned int reg,
->>          hdmi_modb(hdmi, data << shift, mask, reg);
+>> @@ -79,6 +79,23 @@ static const u16 csc_coeff_rgb_in_eitu709[3][4] = {
+>>          { 0x6756, 0x78ab, 0x2000, 0x0200 }
+>>   };
+>>
+>> +struct hdmi_id {
+>> +       u8 design;
+>> +       u8 revision;
+>> +
+>> +       bool prepen;
+>> +       bool audspdif;
+>> +       bool audi2s;
+>> +       bool hdmi14;
+>> +       bool csc;
+>> +       bool hdcp;
+>> +       bool hdmi20;
+>> +       bool confapb;
+>> +       bool ahbauddma;
+>> +       bool gpaud;
+>> +       u8 phy_type;
+>> +};
+>> +
+>>   struct hdmi_vmode {
+>>          bool mdvi;
+>>          bool mhsyncpolarity;
+>> @@ -111,6 +128,8 @@ struct dw_hdmi {
+>>          struct clk *isfr_clk;
+>>          struct clk *iahb_clk;
+>>
+>> +       struct hdmi_id id;
+>> +
+>>          struct hdmi_data_info hdmi_data;
+>>          const struct dw_hdmi_plat_data *plat_data;
+>>
+>> @@ -1259,6 +1278,36 @@ static int dw_hdmi_setup(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
+>>          return 0;
 >>   }
 >>
->> -static void hdmi_set_clock_regenerator_n(struct dw_hdmi *hdmi,
->> -                                        unsigned int value)
->> +static void hdmi_set_clock_regenerator(struct dw_hdmi *hdmi,
->> +                                      unsigned int n, unsigned int cts)
+>> +static void hdmi_parse_id(struct dw_hdmi *hdmi)
+>> +{
+>> +       u8 config0_id, config1_id, config2_id, config3_id;
+>> +
+>> +       config0_id = hdmi_readb(hdmi, HDMI_CONFIG0_ID);
+>> +       config1_id = hdmi_readb(hdmi, HDMI_CONFIG1_ID);
+>> +       config2_id = hdmi_readb(hdmi, HDMI_CONFIG2_ID);
+>> +       config3_id = hdmi_readb(hdmi, HDMI_CONFIG3_ID);
+>> +
+>> +       hdmi->id.prepen = config0_id & HDMI_CONFIG0_ID_PREPEN ? true : false;
+> These could all be "!!(A & B)", but perhaps that is just a matter of
+> personal preference.
+Okay, "!!(A & B)" looks good, I will modify it.
+
+Thanks.  : )
+>> +       hdmi->id.audi2s = config0_id & HDMI_CONFIG0_ID_AUDI2S ? true : false;
+>> +       hdmi->id.hdmi14 = config0_id & HDMI_CONFIG0_ID_HDMI14 ? true : false;
+>> +       hdmi->id.hdcp = config0_id & HDMI_CONFIG0_ID_HDCP ? true : false;
+>> +       hdmi->id.csc = config0_id & HDMI_CONFIG0_ID_CSC ? true : false;
+>> +       hdmi->id.audspdif = config0_id & HDMI_CONFIG0_ID_AUDSPDIF ?
+>> +                           true : false;
+>> +
+>> +       hdmi->id.confapb = config1_id & HDMI_CONFIG1_ID_CONFAPB ? true : false;
+>> +       hdmi->id.hdmi20 = config1_id & HDMI_CONFIG1_ID_HDMI20 ? true : false;
+>> +
+>> +       hdmi->id.phy_type = config2_id & HDMI_CONFIG2_ID;
+> HDMI_CONFIG2_ID is a register offset, not a mask.
+
+Thanks, I will correct it.
+
+>> +
+>> +       hdmi->id.gpaud = config3_id & HDMI_CONFIG3_ID_GPAUD ? true : false;
+>> +       hdmi->id.ahbauddma = config3_id & HDMI_CONFIG3_ID_AHBAUDDMA ?
+>> +                            true : false;
+>> +
+>> +       hdmi->id.design = hdmi_readb(hdmi, HDMI_DESIGN_ID);
+>> +       hdmi->id.revision = hdmi_readb(hdmi, HDMI_REVISION_ID);
+>> +}
+>> +
+>>   /* Wait until we are registered to enable interrupts */
+>>   static int dw_hdmi_fb_registered(struct dw_hdmi *hdmi)
 >>   {
->> -       hdmi_writeb(hdmi, value & 0xff, HDMI_AUD_N1);
->> -       hdmi_writeb(hdmi, (value >> 8) & 0xff, HDMI_AUD_N2);
->> -       hdmi_writeb(hdmi, (value >> 16) & 0x0f, HDMI_AUD_N3);
->> +       hdmi_writeb(hdmi, n & 0xff, HDMI_AUD_N1);
->> +       hdmi_writeb(hdmi, (n >> 8) & 0xff, HDMI_AUD_N2);
->> +       hdmi_writeb(hdmi, (n >> 16) & 0x0f, HDMI_AUD_N3);
+>> @@ -1670,6 +1719,16 @@ int dw_hdmi_bind(struct device *dev, struct device *master,
+>>                   hdmi_readb(hdmi, HDMI_PRODUCT_ID0),
+>>                   hdmi_readb(hdmi, HDMI_PRODUCT_ID1));
 >>
->>          /* nshift factor = 0 */
->>          hdmi_modb(hdmi, 0, HDMI_AUD_CTS3_N_SHIFT_MASK, HDMI_AUD_CTS3);
->> -}
+>> +       /* Config IDs */
+>> +       dev_info(dev,
+>> +                "Detected HDMI config_id 0x%x:0x%x:0x%x:0x%x\n",
+>> +                hdmi_readb(hdmi, HDMI_CONFIG0_ID),
+>> +                hdmi_readb(hdmi, HDMI_CONFIG1_ID),
+>> +                hdmi_readb(hdmi, HDMI_CONFIG2_ID),
+>> +                hdmi_readb(hdmi, HDMI_CONFIG3_ID));
+>> +
+>> +       hdmi_parse_id(hdmi);
+> It seems a bit silly to read the regs once to print them, and then
+> again in hdmi_parse_id().
+> Perhaps move the dev_info() inside hdmi_parse_id().
+> It would also be nice to print a full summary of all of the parsed fields.
+Okay, I will warp them into hdmi_parse_id().
+
+Thanks.  : )
+
+>> +
+>>          initialize_hdmi_ih_mutes(hdmi);
 >>
->> -static void hdmi_regenerate_cts(struct dw_hdmi *hdmi, unsigned int cts)
->> -{
->>          /* Must be set/cleared first */
->>          hdmi_modb(hdmi, 0, HDMI_AUD_CTS3_CTS_MANUAL, HDMI_AUD_CTS3);
+>>          ret = devm_request_threaded_irq(dev, irq, dw_hdmi_hardirq,
+>> diff --git a/drivers/gpu/drm/bridge/dw_hdmi.h b/drivers/gpu/drm/bridge/dw_hdmi.h
+>> index 175dbc8..e4ba634 100644
+>> --- a/drivers/gpu/drm/bridge/dw_hdmi.h
+>> +++ b/drivers/gpu/drm/bridge/dw_hdmi.h
+>> @@ -545,6 +545,29 @@
+>>   #define HDMI_I2CM_FS_SCL_LCNT_0_ADDR            0x7E12
 >>
->> @@ -374,8 +371,7 @@ static void hdmi_set_clk_regenerator(struct dw_hdmi *hdmi,
->>                  __func__, hdmi->sample_rate, hdmi->ratio,
->>                  pixel_clk, clk_n, clk_cts);
->>
->> -       hdmi_set_clock_regenerator_n(hdmi, clk_n);
->> -       hdmi_regenerate_cts(hdmi, clk_cts);
->> +       hdmi_set_clock_regenerator(hdmi, clk_n, clk_cts);
->>   }
->>
->>   static void hdmi_init_clk_regenerator(struct dw_hdmi *hdmi)
+>>   enum {
+>> +/* HDMI_CONFIG0_ID */
+>> +       HDMI_CONFIG0_ID_PREPEN = 0x80,
+>> +       HDMI_CONFIG0_ID_AUDSPDIF = 0x20,
+>> +       HDMI_CONFIG0_ID_AUDI2S = 0x10,
+>> +       HDMI_CONFIG0_ID_HDMI14 = 0x08,
+>> +       HDMI_CONFIG0_ID_CSC = 0x04,
+>> +       HDMI_CONFIG0_ID_HDCP = 0x01,
+>> +
+>> +/* HDMI_CONFIG1_ID */
+>> +       HDMI_CONFIG1_ID_HDMI20 = 0x20,
+>> +       HDMI_CONFIG1_ID_CONFAPB = 0x02,
+>> +
+>> +/* HDMI_CONFIG2_ID */
+>> +       HDMI_CONFIG2_ID_PHY_GEN2 = 0xf2,
+>> +       HDMI_CONFIG2_ID_PHY_GEN2_HECA = 0xe2,
+>> +       HDMI_CONFIG2_ID_PHY_HDMI_MHL = 0xc2,
+>> +       HDMI_CONFIG2_ID_PHY_HDMI_MHL_HECA = 0xb2,
+>> +       HDMI_CONFIG2_ID_LEGACY_PHY = 0x00,
+>> +
+>> +/* HDMI_CONFIG3_ID */
+>> +       HDMI_CONFIG3_ID_AHBAUDDMA = 0x02,
+>> +       HDMI_CONFIG3_ID_GPAUD = 0x01,
+>> +
+>>   /* IH_FC_INT2 field values */
+>>          HDMI_IH_FC_INT2_OVERFLOW_MASK = 0x03,
+>>          HDMI_IH_FC_INT2_LOW_PRIORITY_OVERFLOW = 0x02,
 >> --
 >> 2.1.2
 >>
 >>
 >
 >
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
