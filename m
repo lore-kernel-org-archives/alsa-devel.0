@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: control: fix failure to return numerical
-	ID in event data
-Date: Sun,  8 Feb 2015 19:28:56 +0900
-Message-ID: <1423391336-2167-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: control: obsolete 'already present'
+	messaging because it's caller's fault
+Date: Sun,  8 Feb 2015 19:29:08 +0900
+Message-ID: <1423391348-2219-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C1C626063A
- for <alsa-devel@alsa-project.org>; Sun,  8 Feb 2015 11:29:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id EC3AD260651
+ for <alsa-devel@alsa-project.org>; Sun,  8 Feb 2015 11:29:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +23,47 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently an instance of control has zero as its member for numerical
-ID even if any IDs are assigned to. According to this bug, any userspace
-applications cannot identify controls by the ID when handling any events.
-On the other hand, the other members such as name are still valid,
-therefore applications can identify controls without fixing this.
+When drivers or userspace applications add a duplicated control, snd
+module outputs error message and return -EBUSY.
 
-This is not preferable because the ID has an advantage to allow userspace
-applications to distinguish each controls by itself, without any
-combinations.
+This state is a bug in driver or application, therefore the messaging
+should be done by them, not by snd module.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ sound/core/control.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 60caba1..d482997 100644
+index d482997..8906b66 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -352,6 +352,9 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 	if (id.index > UINT_MAX - kcontrol->count)
- 		goto error;
+@@ -357,18 +357,10 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
  
-+	/* Any ID numbers are not assigned to this control yet. */
-+	id.numid = 0;
-+
  	down_write(&card->controls_rwsem);
  	if (snd_ctl_find_id(card, &id)) {
- 		up_write(&card->controls_rwsem);
-@@ -369,12 +372,17 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+-		up_write(&card->controls_rwsem);
+-		dev_err(card->dev, "control %i:%i:%i:%s:%i is already present\n",
+-					id.iface,
+-					id.device,
+-					id.subdevice,
+-					id.name,
+-					id.index);
+ 		err = -EBUSY;
+ 		goto error;
+ 	}
+ 	if (snd_ctl_find_hole(card, kcontrol->count) < 0) {
+-		up_write(&card->controls_rwsem);
  		err = -ENOMEM;
  		goto error;
  	}
--	list_add_tail(&kcontrol->list, &card->controls);
--	card->controls_count += kcontrol->count;
-+
-+	/* Now this control is allowed to have ID number. */
- 	kcontrol->id.numid = card->last_numid + 1;
- 	card->last_numid += kcontrol->count;
--	count = kcontrol->count;
-+	card->controls_count += kcontrol->count;
-+	list_add_tail(&kcontrol->list, &card->controls);
-+
- 	up_write(&card->controls_rwsem);
-+
-+	id = kcontrol->id;
-+	count = kcontrol->count;
- 	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
- 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
+@@ -388,6 +380,7 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
  	return 0;
+ 
+  error:
++	up_write(&card->controls_rwsem);
+ 	snd_ctl_free_one(kcontrol);
+ 	return err;
+ }
 -- 
 2.1.0
