@@ -1,41 +1,94 @@
-From: Manuel Lauss <manuel.lauss@gmail.com>
-Subject: Re: [alsa-devel] Can we remove un-used Sound driver ?
-Date: Mon, 9 Feb 2015 10:04:04 +0100
-Message-ID: <CAOLZvyHYaEEPnmkjZDX=Ej+9UcfXZz8tK+Yv9T96_u69K9ky-A@mail.gmail.com>
-References: <87egq7774l.wl%kuninori.morimoto.gx@renesas.com>
- <87a90sj0hy.wl%kuninori.morimoto.gx@renesas.com> <20150205180343.GB21293@sirena.org.uk>
- <CAOLZvyGemO=O8Eqafj0KUXg7cELtREcARU5KFDieAr3Y9DdVnw@mail.gmail.com> <87k2zrx51v.wl%kuninori.morimoto.gx@renesas.com>
+From: Peter Rosin <peda@axentia.se>
+Subject: Re: [PATCH v2] ASoC: atmel_ssc_dai: Allow more rates
+Date: Mon, 9 Feb 2015 09:07:19 +0000
+Message-ID: <5c8e49d8b0b3491b856eae50f4594f4f@EMAIL.axentia.se>
+References: <1423050745-6372-1-git-send-email-peda@lysator.liu.se>
+ <54D824F8.9030804@atmel.com>
+ <896ef5e9484a494e9e50cbed38919c5f@EMAIL.axentia.se>
+ <54D871E7.40902@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87k2zrx51v.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EMAIL.axentia.se (axentia.se [87.96.186.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2CAF2606A0
+ for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2015 10:07:11 +0100 (CET)
+In-Reply-To: <54D871E7.40902@atmel.com>
+Content-Language: sv-SE
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bo Shen <voice.shen@atmel.com>, Peter Rosin <peda@lysator.liu.se>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 9, 2015 at 2:10 AM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->
-> Hi Manuel, Mark
->
->> >> I'm very sad, but...
->> >> Good bye sh7760
->> >> Good bye ssi
->> >> Good bye hac
->>
->> I still have working hardware for those 3 files, I just need to dust
->> it off.  But the last time I checked (~3 years ago) I had no issues
->> with sound.
->
-> I didn't know that there is user of these drivers...
-> On which board ?
+Bo Shen wrote:
+> Hi Peter,
+> 
+> On 02/09/2015 04:09 PM, Peter Rosin wrote:
+> 
+> [Snip]
+> 
+> >>>
+> >>>    /*-------------------------------------------------------------------------*\
+> >>>     * DAI functions
+> >>> @@ -200,6 +290,7 @@ static int atmel_ssc_startup(struct
+> snd_pcm_substream *substream,
+> >>>    	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
+> >>>    	struct atmel_pcm_dma_params *dma_params;
+> >>>    	int dir, dir_mask;
+> >>> +	int ret;
+> >>>
+> >>>    	pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
+> >>>    		ssc_readl(ssc_p->ssc->regs, SR)); @@ -207,6 +298,7 @@
+> static
+> >>> int atmel_ssc_startup(struct snd_pcm_substream *substream,
+> >>>    	/* Enable PMC peripheral clock for this SSC */
+> >>>    	pr_debug("atmel_ssc_dai: Starting clock\n");
+> >>>    	clk_enable(ssc_p->ssc->clk);
+> >>> +	ssc_p->mck_rate = clk_get_rate(ssc_p->ssc->clk) * 2;
+> >>
+> >> Why the mck_rate is calculated in this form?
+> >
+> > What did you have in mind? Add another clock to the ssc node in the
+> > device tree?
+> >
+> > IIUC, the device tree (at least normally) has the ssc clk as the
+> > peripheral clock divided by 2, but the ssc specifies (when capturing
+> > in the CBM/CFS
+> > case) the rate limit as the peripheral clock divided by 3 (i.e. ssc clk / 1.5).
+> > Since the SSC spec expresses the rate limit in terms of the peripheral
+> > clock, this was what I came up with. I didn't want to require dt changes...
+> 
+> You make a misunderstand for the mck for ssc peripheral. The mck here is
+> not the system mck, it only related with the ssc, it is the PMC output.
+> For example, in device tree, the ssc clock divided by 2, then the pmc output
+> for ssc is "system mck / 2", so the ssc mck is "system mck / 2".
+> If divided by 4, then the ssc mck is "system / 4"
 
-It's a custom SH7760-based module system. Probably only 1000 or so exist :)
-I have no problem caring for these sound drivers outside the main kernel, I've
-been forward porting the kernel patch for this board system since 2005.
+I think the reason for my misunderstanding might be that in the
+3.10-at91 tree, the ssc clk is twice the rate compared to what it is
+in the 3.18-at91 tree. This made me assume that the ssc clk had
+been changed to mean the rate after the fixed divider by two that
+is activated as soon as the ssc clock divider (given by SSC_CMR) is
+activated, and that it was a simple matter of multiplying by two to
+get to the MCK rate. I further assumed that "Master Clock" in the
+"Serial Clock Ratio Considerations" section was this MCK. Maybe
+the mistake was to involve the peripheral clock at all?
 
-Delete them if you wish, there probably won't be any in-tree users for them
-ever.
+Ok, so I may have misunderstood, but in that case what does that
+mean in terms of finding the "Master Clock" rate that is mentioned
+in the "Serial Clock Ratio Considerations" section? Is it perhaps the
+rate of the parent clock of the given ssc clk? Or, given the above
+explanation, is it correct to simply multiply by two as I have done?
 
-Manuel
+[snip]
+
+Cheers,
+Peter
