@@ -1,17 +1,23 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH v3 2/2] ASoC: Intel: fix machine driver warnings
-Date: Mon,  9 Feb 2015 00:18:12 -0800
-Message-ID: <1423469892-48667-2-git-send-email-yang.a.fang@intel.com>
-References: <1423440097-95191-1-git-send-email-yang.a.fang@intel.com>
- <1423469892-48667-1-git-send-email-yang.a.fang@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: core: call
+ snd_soc_unregister_card() when component cleanup
+Date: Mon, 9 Feb 2015 16:20:16 +0800
+Message-ID: <20150209082016.GD2593@finisterre.sirena.org.uk>
+References: <87h9v4gbhg.wl%kuninori.morimoto.gx@renesas.com>
+ <87iofj7qhc.wl%kuninori.morimoto.gx@renesas.com>
+ <20150204205503.GM21293@sirena.org.uk>
+ <87lhkcj55p.wl%kuninori.morimoto.gx@renesas.com>
+ <87k2zwj4zf.wl%kuninori.morimoto.gx@renesas.com>
+ <20150206214659.GA31311@finisterre.sirena.org.uk>
+ <87lhk7x58a.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3392078712887584364=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C8B22605CD
- for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2015 09:18:34 +0100 (CET)
-In-Reply-To: <1423469892-48667-1-git-send-email-yang.a.fang@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12026260606
+ for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2015 09:20:49 +0100 (CET)
+In-Reply-To: <87lhk7x58a.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,107 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, kevin.strasser@intel.com, vinod.koul@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, tiwai@suse.de, mengdong.lin@intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-this patch will fix below sparse warnings
+--===============3392078712887584364==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xB0nW4MQa6jZONgY"
+Content-Disposition: inline
 
-warning: incorrect type in argument 2 (different base types) expected
-unsigned int [unsigned] val got restricted snd_pcm_format_t [usertype]
-<noident>
 
-sound/soc/intel/haswell.c:61:37
-sound/soc/intel/broadwell.c:115:37:
-sound/soc/intel/bytcr_dpcm_rt5640.c:118:37:
-sound/soc/intel/cht_bsw_rt5672.c:183:37:
-sound/soc/intel/cht_bsw_rt5645.c:208:37:
+--xB0nW4MQa6jZONgY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/intel/broadwell.c         |    4 +---
- sound/soc/intel/bytcr_dpcm_rt5640.c |    4 +---
- sound/soc/intel/cht_bsw_rt5645.c    |    4 +---
- sound/soc/intel/cht_bsw_rt5672.c    |    4 +---
- sound/soc/intel/haswell.c           |    4 +---
- 5 files changed, 5 insertions(+), 15 deletions(-)
+On Mon, Feb 09, 2015 at 01:06:13AM +0000, Kuninori Morimoto wrote:
 
-diff --git a/sound/soc/intel/broadwell.c b/sound/soc/intel/broadwell.c
-index 9cf7d01..fba2ef5 100644
---- a/sound/soc/intel/broadwell.c
-+++ b/sound/soc/intel/broadwell.c
-@@ -110,9 +110,7 @@ static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP0 to 16 bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S16_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
- 	return 0;
- }
- 
-diff --git a/sound/soc/intel/bytcr_dpcm_rt5640.c b/sound/soc/intel/bytcr_dpcm_rt5640.c
-index 5930862..3b262d0 100644
---- a/sound/soc/intel/bytcr_dpcm_rt5640.c
-+++ b/sound/soc/intel/bytcr_dpcm_rt5640.c
-@@ -113,9 +113,7 @@ static int byt_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP2 to 24-bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S24_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
- 	return 0;
- }
- 
-diff --git a/sound/soc/intel/cht_bsw_rt5645.c b/sound/soc/intel/cht_bsw_rt5645.c
-index b6f8377..0fc5db7 100644
---- a/sound/soc/intel/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/cht_bsw_rt5645.c
-@@ -203,9 +203,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP2 to 24-bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S24_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
- 	return 0;
- }
- 
-diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
-index ff01662..c56f9df 100644
---- a/sound/soc/intel/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/cht_bsw_rt5672.c
-@@ -178,9 +178,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP2 to 24-bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S24_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
- 	return 0;
- }
- 
-diff --git a/sound/soc/intel/haswell.c b/sound/soc/intel/haswell.c
-index 35edf51..00fddd3 100644
---- a/sound/soc/intel/haswell.c
-+++ b/sound/soc/intel/haswell.c
-@@ -56,9 +56,7 @@ static int haswell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP0 to 16 bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S16_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
- 	return 0;
- }
- 
--- 
-1.7.9.5
+> It needs more and more change if we solve this issue without above hack,
+> then, it is very difficult to check all consistency for all features, all situation.
+> I'm afraid that it can be next bug.
+
+Yes, pretty much - that's half of the reason why this is the way it is.
+Not many people want to do this and it's hard to get working.
+
+> So, how about this ? if un-loaded component unregister card, and if re-loaded component
+> re-register un-loaded card automatically, it is easy, and safety ?
+
+I'm not 100% sure what that would look like - presumably something would
+need to remember the card?
+
+--xB0nW4MQa6jZONgY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU2G2/AAoJECTWi3JdVIfQaJgH/R9PRRZptlVFYOSWfe9lYz+t
+8rSbK9QzjjAMxvLNPyE+cY8EQJGkD2lPBMKYpySNHrj98QsIJZh4a4bqU4cOzZun
+7Uhk4gKhmTc4C95Hl2isTWALkLKMxE4T8ULjLxSjFn7So5N4oVg/TjXrkH43qVyr
+YmkCIfyxqe8bukM32XWqRmG+gcRYPVR3oJwczM9pHdFKA+eXvB79KUf+EyzU1Wp5
+5lGmgDefJcxus+NVAkzH2qrHRZNVYhgndA124UmTd4fp3rYKw20KLyhaTONl3c/j
+UvRfYBi2jlkqgVk4QbKZAKb/CIATESDTfvfNV41K624cS0kOwvtZjbxdr2nel2s=
+=DTKg
+-----END PGP SIGNATURE-----
+
+--xB0nW4MQa6jZONgY--
+
+--===============3392078712887584364==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3392078712887584364==--
