@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: control: fix failure to return new
-	numerical ID in 'replace' event data
-Date: Tue, 10 Feb 2015 00:01:45 +0900
-Message-ID: <1423494105-24001-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: control: confirm to return all identical
+	information in 'activate' event data
+Date: Tue, 10 Feb 2015 00:02:06 +0900
+Message-ID: <1423494126-24054-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,9 +20,12 @@ To: o-takashi@sakamocchi.jp, tiwai@alsa-project.org, clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In 'replace' event data, numerical ID of control is always invalid. This
-commit fix this bug so as the event data has renewed numerical ID for
-control.
+When event originator doesn't set numerical ID in identical information,
+the event data includes no numerical ID, thus userspace applications
+cannot identify the control just by unique ID in event data.
+
+This commit fix this bug so as the event data includes all of identical
+information.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
@@ -30,16 +33,16 @@ Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 884fddd..ab74b7e 100644
+index 6a72b3e..884fddd 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -440,6 +440,7 @@ add:
- 	card->controls_count += kcontrol->count;
- 	kcontrol->id.numid = card->last_numid + 1;
- 	card->last_numid += kcontrol->count;
-+	id = kcontrol->id;
- 	count = kcontrol->count;
+@@ -587,6 +587,7 @@ int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
+ 	}
+ 	ret = 1;
+  unlock:
++	*id = kctl->id;
  	up_write(&card->controls_rwsem);
- 	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
+ 	if (ret > 0)
+ 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_INFO, id);
 -- 
 2.1.0
