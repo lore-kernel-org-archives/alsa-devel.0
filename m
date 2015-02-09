@@ -1,127 +1,32 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH v2 2/2] ASoC: Intel: fix machine driver warnings
-Date: Sun,  8 Feb 2015 16:01:37 -0800
-Message-ID: <1423440097-95191-2-git-send-email-yang.a.fang@intel.com>
-References: <1423181956-108810-1-git-send-email-yang.a.fang@intel.com>
- <1423440097-95191-1-git-send-email-yang.a.fang@intel.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH 2/3] ASoC: atmel_ssc_dai: refactor the startup and shutdown
+Date: Mon, 9 Feb 2015 08:52:52 +0800
+Message-ID: <54D804E4.1000202@atmel.com>
+References: <1422610724-7222-1-git-send-email-voice.shen@atmel.com> <1422610724-7222-3-git-send-email-voice.shen@atmel.com> <20150130132047.GO26617@finisterre.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A3A32604AE
- for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2015 01:02:41 +0100 (CET)
-In-Reply-To: <1423440097-95191-1-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, kevin.strasser@intel.com, vinod.koul@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, tiwai@suse.de, mengdong.lin@intel.com
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <20150130132047.GO26617@finisterre.sirena.org.uk>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: nicolas.ferre@atmel.com, Songjun.Wu@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+Hi Mark,
 
-this patch will fix below sparse warnings
+On 01/30/2015 09:20 PM, Mark Brown wrote:
+> On Fri, Jan 30, 2015 at 05:38:43PM +0800, Bo Shen wrote:
+>> In startup function, enable ssc clock and in shutdown function,
+>> disable clock. And also remove disable ssc in shutdown function,
+>> as ssc is disabled in prepare function.
+>
+> Applied, thanks.  You probably want to convert to clk_prepare_enable()
+> too but that's a separate thing.
 
-warning: incorrect type in argument 2 (different base types) expected
-unsigned int [unsigned] val got restricted snd_pcm_format_t [usertype]
-<noident>
+OK, thanks, I will check that. As now, we prepare clock in ssc driver, 
+then enable it in dai driver.
 
-sound/soc/intel/haswell.c:61:37
-sound/soc/intel/broadwell.c:115:37:
-sound/soc/intel/bytcr_dpcm_rt5640.c:118:37:
-sound/soc/intel/cht_bsw_rt5672.c:183:37:
-sound/soc/intel/cht_bsw_rt5645.c:208:37:
+Best Regards,
+Bo Shen
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/intel/broadwell.c         |    4 +---
- sound/soc/intel/bytcr_dpcm_rt5640.c |    4 +---
- sound/soc/intel/cht_bsw_rt5645.c    |    4 +---
- sound/soc/intel/cht_bsw_rt5672.c    |    4 +---
- sound/soc/intel/haswell.c           |    4 +---
- 5 files changed, 5 insertions(+), 15 deletions(-)
-
-diff --git a/sound/soc/intel/broadwell.c b/sound/soc/intel/broadwell.c
-index 9cf7d01..fba2ef5 100644
---- a/sound/soc/intel/broadwell.c
-+++ b/sound/soc/intel/broadwell.c
-@@ -110,9 +110,7 @@ static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP0 to 16 bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S16_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
- 	return 0;
- }
- 
-diff --git a/sound/soc/intel/bytcr_dpcm_rt5640.c b/sound/soc/intel/bytcr_dpcm_rt5640.c
-index 5930862..3b262d0 100644
---- a/sound/soc/intel/bytcr_dpcm_rt5640.c
-+++ b/sound/soc/intel/bytcr_dpcm_rt5640.c
-@@ -113,9 +113,7 @@ static int byt_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP2 to 24-bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S24_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
- 	return 0;
- }
- 
-diff --git a/sound/soc/intel/cht_bsw_rt5645.c b/sound/soc/intel/cht_bsw_rt5645.c
-index b6f8377..0fc5db7 100644
---- a/sound/soc/intel/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/cht_bsw_rt5645.c
-@@ -203,9 +203,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP2 to 24-bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S24_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
- 	return 0;
- }
- 
-diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
-index ff01662..c56f9df 100644
---- a/sound/soc/intel/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/cht_bsw_rt5672.c
-@@ -178,9 +178,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP2 to 24-bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S24_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
- 	return 0;
- }
- 
-diff --git a/sound/soc/intel/haswell.c b/sound/soc/intel/haswell.c
-index 35edf51..00fddd3 100644
---- a/sound/soc/intel/haswell.c
-+++ b/sound/soc/intel/haswell.c
-@@ -56,9 +56,7 @@ static int haswell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
- 	channels->min = channels->max = 2;
- 
- 	/* set SSP0 to 16 bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S16_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
- 	return 0;
- }
- 
--- 
-1.7.9.5
