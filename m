@@ -1,24 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: core: call
- snd_soc_unregister_card() when component cleanup
-Date: Mon, 9 Feb 2015 16:22:17 +0800
-Message-ID: <20150209082217.GE2593@finisterre.sirena.org.uk>
+Subject: Re: [PATCH 1/6] ASoC: rsnd: set device data before
+ snd_soc_register_platform/component
+Date: Mon, 9 Feb 2015 16:24:39 +0800
+Message-ID: <20150209082439.GF2593@finisterre.sirena.org.uk>
 References: <87h9v4gbhg.wl%kuninori.morimoto.gx@renesas.com>
  <87iofj7qhc.wl%kuninori.morimoto.gx@renesas.com>
  <20150204205503.GM21293@sirena.org.uk>
- <87lhkcj55p.wl%kuninori.morimoto.gx@renesas.com>
- <87k2zwj4zf.wl%kuninori.morimoto.gx@renesas.com>
- <20150206214659.GA31311@finisterre.sirena.org.uk>
- <87lhk7x58a.wl%kuninori.morimoto.gx@renesas.com>
- <87egpzx0id.wl%kuninori.morimoto.gx@renesas.com>
+ <87a90nwlur.wl%kuninori.morimoto.gx@renesas.com>
+ <878ug7wltn.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3682586804024733819=="
+Content-Type: multipart/mixed; boundary="===============3029093455773302936=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F39F260525
- for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2015 09:22:47 +0100 (CET)
-In-Reply-To: <87egpzx0id.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 62D53260438
+ for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2015 09:25:10 +0100 (CET)
+In-Reply-To: <878ug7wltn.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,51 +30,49 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam G
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3682586804024733819==
+--===============3029093455773302936==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gMR3gsNFwZpnI/Ts"
+	protocol="application/pgp-signature"; boundary="jkO+KyKz7TfD21mV"
 Content-Disposition: inline
 
 
---gMR3gsNFwZpnI/Ts
+--jkO+KyKz7TfD21mV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 09, 2015 at 02:48:09AM +0000, Kuninori Morimoto wrote:
+On Mon, Feb 09, 2015 at 08:05:22AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Set device data before snd_soc_register_platform/component.
+> Otherwise, it will use NULL pointer if user calls unbind -> bind or
+> rmmod -> insmod
 
-> In normal ASoC card, it will re-try .probe if necessary cpu/codec was not probed
-> (= -EPROBE_DEFER in soc_bind_dai_link()).
-> This is the before state of card was instantiated.
-> Returning everything to the before state = unregister card is very natural I think...
-> If possible, we want to add this card driver to deferred_probe_pending_list
-> in drivers/base/dd.c, but it is over kill ?
+Applied, thanks.
 
-That's something we need to do, we're relying on deferred probe to
-instantiate the cards when their components are registered.
-
---gMR3gsNFwZpnI/Ts
+--jkO+KyKz7TfD21mV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU2G44AAoJECTWi3JdVIfQqQ0H+waboe3Wk3+uG37OOaMzXpat
-hTRJZUp2EpguZbHBNX6Jd0HyxbLnlH8aSBiyYkEAecY1zJWM3YmKANx4Iao/IXz2
-ZBgh21HJmy67dO/k2LC2IzO83gLaaE4d+D5xg9hLEIR7pST4mFhOLvScUgKSyz55
-Fo1ZxoiaQYkar5eWKQi7Wa62Li7SLfUVyvyLKApX/fCplRpTCqSi62RmgCHstCB4
-dXlYt5rjEYb27/rh2PaVvKDOw49cTFEXRSrRUhx/Cf7lWDE5qfhd9fedSQULZrH7
-SyhWeaAMQAcDjqijsDQYKZ3tKGkjLg6F0Q/SX5dWgNsMWmFswQhtFFJ0jgAUMvw=
-=8wCr
+iQEcBAEBCAAGBQJU2G7GAAoJECTWi3JdVIfQyLEH/2Zw6VrMmq/hvd2Rh30RUZAV
+Bip8OF2st/Udk0rB5gN1yOlUVituKAS2gBiggq2RuCps0bvigx5nSZG7nJVBsPD1
++vJp2ey6hjfC8VQtDc01r29p6T1nHASQbpjsO0lsAxGdDBY3hLV8354YQB3HmwLO
+MyolsAvs+2YQDByQ2a9ELz9feOhs8y6fqEJVN0Q/ZORVeL6CdoQ1fIPKcb8rUz7U
+EyXttX52Mc2uxfG1kfIaj9Py+3Fn7UDkwofc1M0wq2nzdTOG7EZWAgnx1vASl/B8
+zkXAbifbbRwd6zMGbjjHo1HkWw9ne1l9JywQiS7r/eiP4tXyW962pNANkHRl7gk=
+=+vor
 -----END PGP SIGNATURE-----
 
---gMR3gsNFwZpnI/Ts--
+--jkO+KyKz7TfD21mV--
 
---===============3682586804024733819==
+--===============3029093455773302936==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3682586804024733819==--
+--===============3029093455773302936==--
