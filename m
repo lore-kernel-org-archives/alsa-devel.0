@@ -1,61 +1,83 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [Patch V4 00/10] ASoC: QCOM: Add support for ipq806x SOC
-Date: Sun, 8 Feb 2015 22:45:11 -0800
-Message-ID: <20150209064511.GB19870@kwestfie-linux.qualcomm.com>
-References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
- <20150206223229.GG31311@finisterre.sirena.org.uk>
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Subject: Re: [PATCH v2 1/2] ALSA: Add params_set_format helper
+Date: Mon, 9 Feb 2015 06:58:39 +0000
+Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718BF71BE@ORSMSX113.amr.corp.intel.com>
+References: <1423181956-108810-1-git-send-email-yang.a.fang@intel.com>
+ <1423440097-95191-1-git-send-email-yang.a.fang@intel.com>
+ <s5htwyvpoyi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150206223229.GG31311@finisterre.sirena.org.uk>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 276392604E9
+ for <alsa-devel@alsa-project.org>; Mon,  9 Feb 2015 07:58:42 +0100 (CET)
+In-Reply-To: <s5htwyvpoyi.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Iriawan,
+ Denny" <denny.iriawan@intel.com>, "N, Harshapriya" <harshapriya.n@intel.com>, "Jain, Praveen K" <praveen.k.jain@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Strasser,
+ Kevin" <kevin.strasser@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 07, 2015 at 06:32:29AM +0800, Mark Brown wrote:
-> On Thu, Feb 05, 2015 at 12:53:36PM -0800, Kenneth Westfield wrote:
-> 
-> > This patch series adds support for I2S audio playback on the Qualcomm
-> > Technologies ipq806x SOC.
-> 
-> > The ipq806x SOC has audio-related hardware blocks in its low-power audio
-> > subsystem (or LPASS).  One of the relevant blocks in the LPASS is its low-power
-> > audio interface (or LPAIF).  This contains an MI2S port, which is what these
-> > drivers are configured to use.  The LPAIF also contains a DMA engine that is
-> > dedicated to moving audio samples into the transmit FIFO of the MI2S port.  In
-> > addition, there is also low-power memory (LPM) within the audio subsystem, which
-> > is used for buffering the audio samples.
-> 
-> This is implementing an AP centric audio system design where the AP
-> directly programs all the audio hardware.  Given that pretty much all
-> public Qualcomm systems use a DSP centric model where the AP interacts
-> only with a DSP which deals with DMA and the physical interfaces it
-> seems reasonable to suppose that this system also has a DSP which at
-> some future point people are likely to want to use.
-> 
-> I'd really like to see some discussion as to how this is all supposed to
-> be handled - how will these direct hardware access drivers and device
-> trees work when someone does want to use the DSP (without causing
-> problems), and how will we transition from one to the other.  This is
-> particularly pressing if there are use cases where people will want to
-> switch between the two modes at runtime.
-> 
-> What I'm trying to avoid here is being in a situation where we have
-> existing stable DT bindings which we have to support but which conflict
-> with the way that people want to use the systems.
-
-The ipq806x SOC has no LPASS DSP.  On SOCs with a DSP, these drivers
-would not be enabled.
-
-These drivers are prefixed with "lpass" to differentiate themselves from
-other drivers that would interact with a DSP, rather than the LPASS
-hardware directly.
 
 
--- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Sunday, February 08, 2015 10:41 PM
+> To: Fang, Yang A
+> Cc: broonie@kernel.org; lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+> N, Harshapriya; Koul, Vinod; Jain, Praveen K; Iriawan, Denny; Strasser, Kevin;
+> Lin, Mengdong
+> Subject: Re: [PATCH v2 1/2] ALSA: Add params_set_format helper
+> 
+> At Sun,  8 Feb 2015 16:01:36 -0800,
+> yang.a.fang@intel.com wrote:
+> >
+> > From: "Fang, Yang A" <yang.a.fang@intel.com>
+> >
+> > Add a helper to set pcm format directly from params
+> >
+> > Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+> > ---
+> >  include/sound/pcm_params.h |    7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
+> > index 6b1c78f..e6fe584 100644
+> > --- a/include/sound/pcm_params.h
+> > +++ b/include/sound/pcm_params.h
+> > @@ -366,4 +366,11 @@ params_physical_width(const struct
+> snd_pcm_hw_params *p)
+> >  	return snd_pcm_format_physical_width(params_format(p));
+> >  }
+> >
+> > +static inline void
+> > +params_set_format(struct snd_pcm_hw_params *p, snd_pcm_format_t
+> fmt)
+> > +{
+> > +	snd_mask_set(&p->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+> > +		SNDRV_PCM_HW_PARAM_FIRST_MASK], (__force int)fmt);
+> 
+> Use hw_params_mask().
+> 
+> 
+> Takashi
+
+Did not find hw_params_mask .
+Do you mean change params_set_format (struct snd_pcm_hw_params *p, snd_pcm_format_t fmt)
+To 
+hw_params_mask(struct snd_pcm_hw_params *p, snd_pcm_format_t fmt) ?
+
+Thanks,
+Yang
