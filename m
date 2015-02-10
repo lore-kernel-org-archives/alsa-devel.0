@@ -1,16 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Add docking station support for
-	another HP machine
-Date: Tue, 10 Feb 2015 09:09:41 +0100
-Message-ID: <1423555781-4505-1-git-send-email-david.henningsson@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/2] ALSA: Add params_set_format helper
+Date: Tue, 10 Feb 2015 16:11:54 +0800
+Message-ID: <20150210081154.GK2593@finisterre.sirena.org.uk>
+References: <1423440097-95191-1-git-send-email-yang.a.fang@intel.com>
+ <1423469892-48667-1-git-send-email-yang.a.fang@intel.com>
+ <s5hwq3rtl3g.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1755895934145427638=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 7AFC82606BA
- for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 09:09:45 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C8B52606BA
+ for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 09:12:38 +0100 (CET)
+In-Reply-To: <s5hwq3rtl3g.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1412800@bugs.launchpad.net, tienfu.chen@canonical.com, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, yang.a.fang@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, kevin.strasser@intel.com, harshapriya.n@intel.com, mengdong.lin@intel.com, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: TienFu Chen <tienfu.chen@canonical.com>
 
-BugLink: https://bugs.launchpad.net/bugs/1412800
-Signed-off-by: TienFu Chen <tienfu.chen@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+--===============1755895934145427638==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aziWXe2aaRGlkyg3"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 0403061..ddb9308 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4950,6 +4950,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x226e, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x2271, "HP", ALC286_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x2272, "HP", ALC280_FIXUP_HP_DOCK_PINS),
-+	SND_PCI_QUIRK(0x103c, 0x2273, "HP", ALC280_FIXUP_HP_DOCK_PINS),
- 	SND_PCI_QUIRK(0x103c, 0x229e, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x22b2, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x22b7, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
--- 
-1.9.1
+
+--aziWXe2aaRGlkyg3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 09, 2015 at 11:50:27AM +0100, Takashi Iwai wrote:
+
+> Mark, feel free to take my ack when you apply these patches.
+>   Reviewed-by: Takashi Iwai <tiwai@suse.de>
+
+OK, it'll be after the merge window now.
+
+--aziWXe2aaRGlkyg3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU2b1CAAoJECTWi3JdVIfQS1IH/1HCfrybkB0aqFPpq77Tn+Bg
+5fbSBecdIa8cRVPYrXbnAw2Trymv73coQ753wiA3YJysRBhW/pwWsdwgFPK35+p3
+tK2pTvQ5jt8n0hMXYADuNzU5UKW5ESi4wvetoDmZ8qWHHB/VC49U1sDfptWHGmVu
+gRe7rmxpDS1cg+Bolq7HkrxX9RK0+spawb2GYc2tsaxKzdTsu2IIq7IBC0GRmvhQ
+a9nBYzP4nwK9pFNQ/dKAU4+8OQ0ouUH2ZGmETsNk4iA6KqRWi1+YoCtSdeys5G9w
+1CO1/VYsWK2Zt4UIvxDPBcA5MbGwCnM7pz9w5HEsnvCzqfI6MSnKXfqNwJKUU3c=
+=DgbB
+-----END PGP SIGNATURE-----
+
+--aziWXe2aaRGlkyg3--
+
+--===============1755895934145427638==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1755895934145427638==--
