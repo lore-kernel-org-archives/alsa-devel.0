@@ -1,35 +1,179 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [RESEND PATCH 5/6] extcon: arizona: Add support for WM8280/WM8281
-Date: Tue, 10 Feb 2015 11:18:29 +0000
-Message-ID: <1423567110-4414-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [RESEND PATCH 1/6] mfd: arizona: Add support for
+	WM8280/WM8281
+Date: Tue, 10 Feb 2015 11:18:25 +0000
+Message-ID: <1423567110-4414-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1423567110-4414-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6273A26145B
+ for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 12:21:19 +0100 (CET)
 In-Reply-To: <1423567110-4414-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: lee.jones@linaro.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org, linux.walleij@linaro.org, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, broonie@kernel.org, rf@opensource.wolfsonmicro.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux.walleij@linaro.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, broonie@kernel.org, rf@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 
+This adds support for the Wolfson Microelectronics WM8280 and WM8281
+codecs.
+
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Acked-by: Lee Jones <lee.jones@linaro.org>
+[ Minor fixup to remove potentially uninitialised variable. ]
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- drivers/extcon/extcon-arizona.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ drivers/mfd/Kconfig              |    5 +++--
+ drivers/mfd/arizona-core.c       |   15 +++++++++++++--
+ drivers/mfd/arizona-i2c.c        |    2 ++
+ drivers/mfd/arizona-irq.c        |    1 +
+ drivers/mfd/arizona-spi.c        |    2 ++
+ include/linux/mfd/arizona/core.h |    1 +
+ 6 files changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index 63f01c4..6b5e795 100644
---- a/drivers/extcon/extcon-arizona.c
-+++ b/drivers/extcon/extcon-arizona.c
-@@ -1149,6 +1149,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 38356e3..9b5e605 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -1289,10 +1289,11 @@ config MFD_WM5102
+ 	  Support for Wolfson Microelectronics WM5102 low power audio SoC
+ 
+ config MFD_WM5110
+-	bool "Wolfson Microelectronics WM5110"
++	bool "Wolfson Microelectronics WM5110 and WM8280/WM8281"
+ 	depends on MFD_ARIZONA
+ 	help
+-	  Support for Wolfson Microelectronics WM5110 low power audio SoC
++	  Support for Wolfson Microelectronics WM5110 and WM8280/WM8281
++	  low power audio SoC
+ 
+ config MFD_WM8997
+ 	bool "Wolfson Microelectronics WM8997"
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 09ba8f1..9f81998 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -567,6 +567,7 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ const struct of_device_id arizona_of_match[] = {
+ 	{ .compatible = "wlf,wm5102", .data = (void *)WM5102 },
+ 	{ .compatible = "wlf,wm5110", .data = (void *)WM5110 },
++	{ .compatible = "wlf,wm8280", .data = (void *)WM8280 },
+ 	{ .compatible = "wlf,wm8997", .data = (void *)WM8997 },
+ 	{},
+ };
+@@ -671,6 +672,7 @@ int arizona_dev_init(struct arizona *arizona)
+ 	switch (arizona->type) {
+ 	case WM5102:
+ 	case WM5110:
++	case WM8280:
+ 	case WM8997:
+ 		for (i = 0; i < ARRAY_SIZE(wm5102_core_supplies); i++)
+ 			arizona->core_supplies[i].supply
+@@ -834,11 +836,19 @@ int arizona_dev_init(struct arizona *arizona)
+ #endif
+ #ifdef CONFIG_MFD_WM5110
+ 	case 0x5110:
+-		type_name = "WM5110";
+-		if (arizona->type != WM5110) {
++		switch (arizona->type) {
++		case WM5110:
++			type_name = "WM5110";
++			break;
++		case WM8280:
++			type_name = "WM8280";
++			break;
++		default:
++			type_name = "WM5110";
+ 			dev_err(arizona->dev, "WM5110 registered as %d\n",
+ 				arizona->type);
+ 			arizona->type = WM5110;
++			break;
  		}
+ 		apply_patch = wm5110_patch;
+ 		break;
+@@ -1010,6 +1020,7 @@ int arizona_dev_init(struct arizona *arizona)
+ 				      ARRAY_SIZE(wm5102_devs), NULL, 0, NULL);
  		break;
  	case WM5110:
 +	case WM8280:
+ 		ret = mfd_add_devices(arizona->dev, -1, wm5110_devs,
+ 				      ARRAY_SIZE(wm5110_devs), NULL, 0, NULL);
+ 		break;
+diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
+index 9d4156f..ff782a5d 100644
+--- a/drivers/mfd/arizona-i2c.c
++++ b/drivers/mfd/arizona-i2c.c
+@@ -44,6 +44,7 @@ static int arizona_i2c_probe(struct i2c_client *i2c,
+ #endif
+ #ifdef CONFIG_MFD_WM5110
+ 	case WM5110:
++	case WM8280:
+ 		regmap_config = &wm5110_i2c_regmap;
+ 		break;
+ #endif
+@@ -87,6 +88,7 @@ static int arizona_i2c_remove(struct i2c_client *i2c)
+ static const struct i2c_device_id arizona_i2c_id[] = {
+ 	{ "wm5102", WM5102 },
+ 	{ "wm5110", WM5110 },
++	{ "wm8280", WM8280 },
+ 	{ "wm8997", WM8997 },
+ 	{ }
+ };
+diff --git a/drivers/mfd/arizona-irq.c b/drivers/mfd/arizona-irq.c
+index 3a3fe7c..d063b94 100644
+--- a/drivers/mfd/arizona-irq.c
++++ b/drivers/mfd/arizona-irq.c
+@@ -211,6 +211,7 @@ int arizona_irq_init(struct arizona *arizona)
+ #endif
+ #ifdef CONFIG_MFD_WM5110
+ 	case WM5110:
++	case WM8280:
+ 		aod = &wm5110_aod;
+ 
  		switch (arizona->rev) {
- 		case 0 ... 2:
- 			break;
+diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+index 8ef58bc..1e845f6 100644
+--- a/drivers/mfd/arizona-spi.c
++++ b/drivers/mfd/arizona-spi.c
+@@ -44,6 +44,7 @@ static int arizona_spi_probe(struct spi_device *spi)
+ #endif
+ #ifdef CONFIG_MFD_WM5110
+ 	case WM5110:
++	case WM8280:
+ 		regmap_config = &wm5110_spi_regmap;
+ 		break;
+ #endif
+@@ -84,6 +85,7 @@ static int arizona_spi_remove(struct spi_device *spi)
+ static const struct spi_device_id arizona_spi_ids[] = {
+ 	{ "wm5102", WM5102 },
+ 	{ "wm5110", WM5110 },
++	{ "wm8280", WM8280 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(spi, arizona_spi_ids);
+diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/arizona/core.h
+index 910e3aa..f970105 100644
+--- a/include/linux/mfd/arizona/core.h
++++ b/include/linux/mfd/arizona/core.h
+@@ -24,6 +24,7 @@ enum arizona_type {
+ 	WM5102 = 1,
+ 	WM5110 = 2,
+ 	WM8997 = 3,
++	WM8280 = 4,
+ };
+ 
+ #define ARIZONA_IRQ_GP1                    0
 -- 
 1.7.2.5
