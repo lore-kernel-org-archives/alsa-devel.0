@@ -1,49 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: atmel_ssc_dai: Allow more rates
-Date: Tue, 10 Feb 2015 15:12:51 +0800
-Message-ID: <20150210071251.GJ2593@finisterre.sirena.org.uk>
-References: <1423494505-3368-1-git-send-email-peda@lysator.liu.se>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Add docking station support for
+	another HP machine
+Date: Tue, 10 Feb 2015 09:09:41 +0100
+Message-ID: <1423555781-4505-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="q5r20fdKX+PFtYHw"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1423494505-3368-1-git-send-email-peda@lysator.liu.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@lysator.liu.se>
-Cc: alsa-devel@alsa-project.org, Peter Rosin <peda@axentia.se>, Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AFC82606BA
+ for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 09:09:45 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 1412800@bugs.launchpad.net, tienfu.chen@canonical.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: TienFu Chen <tienfu.chen@canonical.com>
 
---q5r20fdKX+PFtYHw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+BugLink: https://bugs.launchpad.net/bugs/1412800
+Signed-off-by: TienFu Chen <tienfu.chen@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Mon, Feb 09, 2015 at 04:08:25PM +0100, Peter Rosin wrote:
-> From: Peter Rosin <peda@axentia.se>
->=20
-> When the SSC acts as BCK master, use a ratnum rule to limit
-> the rate instead of only doing the standard rates. When the SSC
-> acts as BCK slave, allow any BCK frequency up to the SSC master
-> clock, divided by either of 2, 3 or 6.
-
-Applied, thanks.
-
---q5r20fdKX+PFtYHw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU2a9vAAoJECTWi3JdVIfQcQgH/2AVc77z7f6hlgzEPJdRPJDE
-0Wkw5srsWrwsLdNZKBOb0AdMmElw5wp21acavoFG0G5RBzs8sEZsVZ4Qo+pFgDZT
-KkUuEiDB9jWH0h9EbKMvILehiJZQZFVcxvXBMtiXUYn1GA9dF9LxJ8m3IxKVkl8V
-lngokfC+3ppvMoDZU2xIFZvP8mKlnWPsyP4w3JguMAknGue5wvT8DXc1JSycBB1Q
-gMHhiaYshQVEHWrBoWJLmOB4934oAvyykl9I0iCCApbHP8pi/gfsUfUBmbMmMOx6
-5Ss8/g9+miAxKMO6LYrEJypOxK68uyIvo1IjgucaLcgG5Pc/0ruzfDUcyZATH7w=
-=9m5c
------END PGP SIGNATURE-----
-
---q5r20fdKX+PFtYHw--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 0403061..ddb9308 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4950,6 +4950,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x226e, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2271, "HP", ALC286_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2272, "HP", ALC280_FIXUP_HP_DOCK_PINS),
++	SND_PCI_QUIRK(0x103c, 0x2273, "HP", ALC280_FIXUP_HP_DOCK_PINS),
+ 	SND_PCI_QUIRK(0x103c, 0x229e, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x22b2, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x22b7, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+-- 
+1.9.1
