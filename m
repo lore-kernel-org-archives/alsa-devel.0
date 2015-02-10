@@ -1,28 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Regression for Lenovo X240 sound in 3.18
-Date: Tue, 10 Feb 2015 09:49:08 +0800
-Message-ID: <CAN8cciY-Epxy3XYLbV5hYc15ctJQC7Ze_bbfHq_En6aq1ytX6g@mail.gmail.com>
-References: <alpine.LSU.2.11.1412291303200.30351@nerf08.vanv.qr>
- <s5h387xi2yp.wl-tiwai@suse.de>
- <alpine.LSU.2.11.1412301629280.1813@nerf08.vanv.qr>
- <s5h1tnhi1jx.wl-tiwai@suse.de> <s5hr3vhgldi.wl-tiwai@suse.de>
- <alpine.LSU.2.11.1412301907120.5263@nerf08.vanv.qr>
- <s5hmw64gq1f.wl-tiwai@suse.de>
- <alpine.LSU.2.11.1501101213460.22151@nerf60.vanv.qr>
- <s5h4mqvv0m5.wl-tiwai@suse.de>
- <alpine.LSU.2.11.1502091233110.6143@nerf60.vanv.qr>
- <s5hr3tztfaz.wl-tiwai@suse.de>
+From: libin.yang@intel.com
+Subject: [PATCH] ASoC: Intel: Clean data after SST fw fetch
+Date: Tue, 10 Feb 2015 10:02:47 +0800
+Message-ID: <1423533767-52698-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f44.google.com (mail-qg0-f44.google.com
- [209.85.192.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 4636D260615
- for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 02:49:09 +0100 (CET)
-Received: by mail-qg0-f44.google.com with SMTP id j5so9320761qga.3
- for <alsa-devel@alsa-project.org>; Mon, 09 Feb 2015 17:49:08 -0800 (PST)
-In-Reply-To: <s5hr3tztfaz.wl-tiwai@suse.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E782260615
+ for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 03:08:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,35 +18,218 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jan Engelhardt <jengelh@inai.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, mr.bobukas@gmail.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@sirena.org.uk
+Cc: libin.yang@intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> > >>
-> > >> On 3.19-rc3+ [eb74926920cfa756087a82e0b081df837177cb95] I confirm
-> > >> all the volume bars/switches that went missing for me are back again.
-> > >>
-> > >> As said, all is fine here.
-> > >
-> > >Sorry, I've forgotten this pending issue.
-> > >Could you confirm that the patch below works for you?  Then I'll queue
-> > >up for 3.20-rc1 and backport appropriately.
-> >
-> > I have no problems with 3.19-rc6.
-> > Your patch does not appear to break anything, but it does not appear
-> > to fix something, either. It does change the controls again though.
-> > I suggest not to apply it.
-> >
-> > http://picpaste.de/3_19_rc6-NgtzogKW.png
-> > http://picpaste.de/3_19_rc6_YOURPATCH-y6IcoXpE.png
->
-> OK, if 3.19 works as is, then there is no reason to change there.
->
-> I don't understand why T440P fixup node 0x16 as Dock Headphone Jack but
-the driver create Line Out Playback Switch at node 0x16
+From: Libin Yang <libin.yang@intel.com>
 
-Do the driver change the type to line out when there are three different
-location (int, ext sep and ext left) ?
+The BDW audio firmware DSP manages the DMA and the DMA cannot be
+stopped exactly at the end of the playback stream. This means
+stale samples may be played at PCM stop unless the driver copies
+silence to the subsequent periods.
 
-using hda-emu , when Dock headphone jack is plugged , the pin ctl is OUT
-instead of OUT HP
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Reviewed-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/intel/sst-haswell-ipc.c | 28 +++++++++++++++++
+ sound/soc/intel/sst-haswell-ipc.h |  9 ++++++
+ sound/soc/intel/sst-haswell-pcm.c | 65 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 102 insertions(+)
+
+diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
+index 0ab1309..394af56 100644
+--- a/sound/soc/intel/sst-haswell-ipc.c
++++ b/sound/soc/intel/sst-haswell-ipc.c
+@@ -31,6 +31,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/debugfs.h>
+ #include <linux/pm_runtime.h>
++#include <sound/asound.h>
+ 
+ #include "sst-haswell-ipc.h"
+ #include "sst-dsp.h"
+@@ -242,6 +243,9 @@ struct sst_hsw_stream {
+ 	u32 (*notify_position)(struct sst_hsw_stream *stream, void *data);
+ 	void *pdata;
+ 
++	/* record the fw read position when playback */
++	snd_pcm_uframes_t old_position;
++	bool play_silence;
+ 	struct list_head node;
+ };
+ 
+@@ -1347,6 +1351,30 @@ int sst_hsw_stream_commit(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
+ 	return 0;
+ }
+ 
++snd_pcm_uframes_t sst_hsw_stream_get_old_position(struct sst_hsw *hsw,
++	struct sst_hsw_stream *stream)
++{
++	return stream->old_position;
++}
++
++void sst_hsw_stream_set_old_position(struct sst_hsw *hsw,
++	struct sst_hsw_stream *stream, snd_pcm_uframes_t val)
++{
++	stream->old_position = val;
++}
++
++bool sst_hsw_stream_get_silence_start(struct sst_hsw *hsw,
++	struct sst_hsw_stream *stream)
++{
++	return stream->play_silence;
++}
++
++void sst_hsw_stream_set_silence_start(struct sst_hsw *hsw,
++	struct sst_hsw_stream *stream, bool val)
++{
++	stream->play_silence = val;
++}
++
+ /* Stream Information - these calls could be inline but we want the IPC
+  ABI to be opaque to client PCM drivers to cope with any future ABI changes */
+ int sst_hsw_mixer_get_info(struct sst_hsw *hsw)
+diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
+index c1ad901..8580960 100644
+--- a/sound/soc/intel/sst-haswell-ipc.h
++++ b/sound/soc/intel/sst-haswell-ipc.h
+@@ -20,6 +20,7 @@
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/platform_device.h>
++#include <sound/asound.h>
+ 
+ #define SST_HSW_NO_CHANNELS		4
+ #define SST_HSW_MAX_DX_REGIONS		14
+@@ -425,6 +426,14 @@ int sst_hsw_stream_set_pmemory_info(struct sst_hsw *hsw,
+ 	struct sst_hsw_stream *stream, u32 offset, u32 size);
+ int sst_hsw_stream_set_smemory_info(struct sst_hsw *hsw,
+ 	struct sst_hsw_stream *stream, u32 offset, u32 size);
++snd_pcm_uframes_t sst_hsw_stream_get_old_position(struct sst_hsw *hsw,
++	struct sst_hsw_stream *stream);
++void sst_hsw_stream_set_old_position(struct sst_hsw *hsw,
++	struct sst_hsw_stream *stream, snd_pcm_uframes_t val);
++bool sst_hsw_stream_get_silence_start(struct sst_hsw *hsw,
++	struct sst_hsw_stream *stream);
++void sst_hsw_stream_set_silence_start(struct sst_hsw *hsw,
++	struct sst_hsw_stream *stream, bool val);
+ int sst_hsw_mixer_get_info(struct sst_hsw *hsw);
+ 
+ /* Stream ALSA trigger operations */
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index 78fa01b..d6fa9d5 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -36,6 +36,11 @@
+ #define HSW_PCM_COUNT		6
+ #define HSW_VOLUME_MAX		0x7FFFFFFF	/* 0dB */
+ 
++#define SST_OLD_POSITION(d, r, o) ((d) +		\
++			frames_to_bytes(r, o))
++#define SST_SAMPLES(r, x) (bytes_to_samples(r,	\
++			frames_to_bytes(r, (x))))
++
+ /* simple volume table */
+ static const u32 volume_map[] = {
+ 	HSW_VOLUME_MAX >> 30,
+@@ -577,23 +582,34 @@ static int hsw_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	struct hsw_priv_data *pdata =
+ 		snd_soc_platform_get_drvdata(rtd->platform);
+ 	struct hsw_pcm_data *pcm_data;
++	struct sst_hsw_stream *sst_stream;
+ 	struct sst_hsw *hsw = pdata->hsw;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	snd_pcm_uframes_t pos;
+ 	int dai;
+ 
+ 	dai = mod_map[rtd->cpu_dai->id].dai_id;
+ 	pcm_data = &pdata->pcm[dai][substream->stream];
++	sst_stream = pcm_data->stream;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		sst_hsw_stream_set_silence_start(hsw, sst_stream, false);
+ 		sst_hsw_stream_resume(hsw, pcm_data->stream, 0);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		sst_hsw_stream_set_silence_start(hsw, sst_stream, false);
+ 		sst_hsw_stream_pause(hsw, pcm_data->stream, 0);
+ 		break;
++	case SNDRV_PCM_TRIGGER_DRAIN:
++		pos = runtime->control->appl_ptr % runtime->buffer_size;
++		sst_hsw_stream_set_old_position(hsw, pcm_data->stream, pos);
++		sst_hsw_stream_set_silence_start(hsw, sst_stream, true);
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -607,13 +623,62 @@ static u32 hsw_notify_pointer(struct sst_hsw_stream *stream, void *data)
+ 	struct snd_pcm_substream *substream = pcm_data->substream;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct hsw_priv_data *pdata =
++		snd_soc_platform_get_drvdata(rtd->platform);
++	struct sst_hsw *hsw = pdata->hsw;
+ 	u32 pos;
++	snd_pcm_uframes_t position = bytes_to_frames(runtime,
++		 sst_hsw_get_dsp_position(hsw, pcm_data->stream));
++	unsigned char *dma_area = runtime->dma_area;
++	snd_pcm_uframes_t dma_frames =
++		bytes_to_frames(runtime, runtime->dma_bytes);
++	snd_pcm_uframes_t old_position;
++	ssize_t samples;
+ 
+ 	pos = frames_to_bytes(runtime,
+ 		(runtime->control->appl_ptr % runtime->buffer_size));
+ 
+ 	dev_vdbg(rtd->dev, "PCM: App pointer %d bytes\n", pos);
+ 
++	/* SST fw don't know where to stop dma
++	 * So, SST driver need to clean the data which has been consumed
++	 */
++	if (dma_area == NULL || dma_frames <= 0
++		|| (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		|| !sst_hsw_stream_get_silence_start(hsw, stream)) {
++		snd_pcm_period_elapsed(substream);
++		return pos;
++	}
++
++	old_position = sst_hsw_stream_get_old_position(hsw, stream);
++	if (position > old_position) {
++		if (position < dma_frames) {
++			samples = SST_SAMPLES(runtime, position - old_position);
++			snd_pcm_format_set_silence(runtime->format,
++				SST_OLD_POSITION(dma_area,
++					runtime, old_position),
++				samples);
++		} else
++			dev_err(rtd->dev, "PCM: position is wrong\n");
++	} else {
++		if (old_position < dma_frames) {
++			samples = SST_SAMPLES(runtime,
++				dma_frames - old_position);
++			snd_pcm_format_set_silence(runtime->format,
++				SST_OLD_POSITION(dma_area,
++					runtime, old_position),
++				samples);
++		} else
++			dev_err(rtd->dev, "PCM: dma_bytes is wrong\n");
++		if (position < dma_frames) {
++			samples = SST_SAMPLES(runtime, position);
++			snd_pcm_format_set_silence(runtime->format,
++				dma_area, samples);
++		} else
++			dev_err(rtd->dev, "PCM: position is wrong\n");
++	}
++	sst_hsw_stream_set_old_position(hsw, stream, position);
++
+ 	/* let alsa know we have play a period */
+ 	snd_pcm_period_elapsed(substream);
+ 	return pos;
+-- 
+1.9.1
