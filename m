@@ -1,72 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: omap: Kconfig: Support for
-	omap5-uevm analog audio
-Date: Tue, 10 Feb 2015 15:11:03 +0800
-Message-ID: <20150210071103.GI2593@finisterre.sirena.org.uk>
-References: <1423481161-12589-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3] ASoC: atmel_ssc_dai: Allow more rates
+Date: Tue, 10 Feb 2015 15:12:51 +0800
+Message-ID: <20150210071251.GJ2593@finisterre.sirena.org.uk>
+References: <1423494505-3368-1-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6803295608263432022=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 82390260687
- for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 08:50:30 +0100 (CET)
-In-Reply-To: <1423481161-12589-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="q5r20fdKX+PFtYHw"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1423494505-3368-1-git-send-email-peda@lysator.liu.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@lysator.liu.se>
+Cc: alsa-devel@alsa-project.org, Peter Rosin <peda@axentia.se>, Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6803295608263432022==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QDIl5R72YNOeCxaP"
-Content-Disposition: inline
-
-
---QDIl5R72YNOeCxaP
+--q5r20fdKX+PFtYHw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 09, 2015 at 01:26:01PM +0200, Peter Ujfalusi wrote:
-> The analog audio is supported via omap-abe-twl6040 machine driver on
-> omap5-uevm.
-> Update the Kconfig file to reflect this and select the Palmas clock driver
-> which is providing the 32K clock for audio on omap5-uevm.
+On Mon, Feb 09, 2015 at 04:08:25PM +0100, Peter Rosin wrote:
+> From: Peter Rosin <peda@axentia.se>
+>=20
+> When the SSC acts as BCK master, use a ratnum rule to limit
+> the rate instead of only doing the standard rates. When the SSC
+> acts as BCK slave, allow any BCK frequency up to the SSC master
+> clock, divided by either of 2, 3 or 6.
 
 Applied, thanks.
 
---QDIl5R72YNOeCxaP
+--q5r20fdKX+PFtYHw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU2a8DAAoJECTWi3JdVIfQ1CgH/AuhNVHh52WqHPfK968PCIV7
-v8DPak0TsSvH0Uj4tBdLfr0M5ZYQ/8QBwBDD/XhqUCieCnTpZDA/DY9ib1oeVZqq
-mVQ7CYxbX0CjO7oCYroTw5yD+pwLC5qoDO+MjLoFdDpmr58eLhmE4C5kaWmRf5Ij
-S4jrhXNCtVn7ZcG2jVqzjoZPl/LgXfHcFimC1p8vzff5voIkh/7PQFGtQl3qTznP
-6HxyBKlutC45KERqmHkHYhAn5NLxWbUfMoZrYouq3peo9pFXgMTFJlvHzUNx/3Am
-1acH9WPDga1nTmA9i+B2YZjl9HG3XcfJEXdciQIQ4Fy3OxEME8YdjOXwUpbzIxg=
-=FX6Y
+iQEcBAEBCAAGBQJU2a9vAAoJECTWi3JdVIfQcQgH/2AVc77z7f6hlgzEPJdRPJDE
+0Wkw5srsWrwsLdNZKBOb0AdMmElw5wp21acavoFG0G5RBzs8sEZsVZ4Qo+pFgDZT
+KkUuEiDB9jWH0h9EbKMvILehiJZQZFVcxvXBMtiXUYn1GA9dF9LxJ8m3IxKVkl8V
+lngokfC+3ppvMoDZU2xIFZvP8mKlnWPsyP4w3JguMAknGue5wvT8DXc1JSycBB1Q
+gMHhiaYshQVEHWrBoWJLmOB4934oAvyykl9I0iCCApbHP8pi/gfsUfUBmbMmMOx6
+5Ss8/g9+miAxKMO6LYrEJypOxK68uyIvo1IjgucaLcgG5Pc/0ruzfDUcyZATH7w=
+=9m5c
 -----END PGP SIGNATURE-----
 
---QDIl5R72YNOeCxaP--
-
---===============6803295608263432022==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6803295608263432022==--
+--q5r20fdKX+PFtYHw--
