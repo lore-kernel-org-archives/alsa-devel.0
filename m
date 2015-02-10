@@ -1,17 +1,17 @@
-From: Bhaskara rao Budiredla <bhaskarbudiredla@gmail.com>
-Subject: Memory and Cycles overhead in <snd_soc_init>
-Date: Tue, 10 Feb 2015 17:28:02 +0530
-Message-ID: <CAJWVF-wkq5xdH0WqOj+rWk4UEO4aZCcuv5JthvtDkEh8spDiaA@mail.gmail.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Clean data after SST fw fetch
+Date: Tue, 10 Feb 2015 14:07:23 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D195F3B47@SHSMSX103.ccr.corp.intel.com>
+References: <1423533767-52698-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f181.google.com (mail-ie0-f181.google.com
- [209.85.223.181])
- by alsa0.perex.cz (Postfix) with ESMTP id EEA3B26145B
- for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 12:58:03 +0100 (CET)
-Received: by ierx19 with SMTP id x19so17561886ier.3
- for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 03:58:02 -0800 (PST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D14BE26145B
+ for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 15:07:32 +0100 (CET)
+In-Reply-To: <1423533767-52698-1-git-send-email-libin.yang@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +21,261 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@sirena.org.uk" <broonie@sirena.org.uk>
+Cc: "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi - May I know the purpose of the call to snd_soc_init( ) from kernel_init
-thread? snd_soc_init( ) is trying to register a dummy platform device
-"snd-soc-dummy" containing (dummy_codec/dummy_platform) and a sound card
-device. Neither of those devices are added to platform bus before they are
-making a call to platform_driver_register( ). Due to that platform_match(
-) will fail and they will not be added to platform bus . Thus,
-snd_soc_init( ) is not doing any useful task during kernel boot time.
+Hi Takashi & Mark,
 
-Could someone help me if my understanding is correct? If I am correct,
-shall we remove the call to snd_soc_init( ) in kernel_init thread to save
-boot time and memory? Otherwise please suggest me where those dummy devices
-and sound card gets added to platform bus and the purpose of creating them?
+The patch is aimed to be merged into Takashi's tree because Mark's tree
+lacks of another patch, which will cause compiling fail.
 
-Thanks,
-Bhaskara
+Regards,
+Libin
+
+> -----Original Message-----
+> From: Yang, Libin
+> Sent: Tuesday, February 10, 2015 10:03 AM
+> To: alsa-devel@alsa-project.org; tiwai@suse.de;
+> broonie@sirena.org.uk
+> Cc: Girdwood, Liam R; Yang, Libin; Jie, Yang
+> Subject: [PATCH] ASoC: Intel: Clean data after SST fw fetch
+> 
+> From: Libin Yang <libin.yang@intel.com>
+> 
+> The BDW audio firmware DSP manages the DMA and the DMA cannot
+> be
+> stopped exactly at the end of the playback stream. This means
+> stale samples may be played at PCM stop unless the driver copies
+> silence to the subsequent periods.
+> 
+> Signed-off-by: Libin Yang <libin.yang@intel.com>
+> Reviewed-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> ---
+>  sound/soc/intel/sst-haswell-ipc.c | 28 +++++++++++++++++
+>  sound/soc/intel/sst-haswell-ipc.h |  9 ++++++
+>  sound/soc/intel/sst-haswell-pcm.c | 65
+> +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 102 insertions(+)
+> 
+> diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-
+> haswell-ipc.c
+> index 0ab1309..394af56 100644
+> --- a/sound/soc/intel/sst-haswell-ipc.c
+> +++ b/sound/soc/intel/sst-haswell-ipc.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/dma-mapping.h>
+>  #include <linux/debugfs.h>
+>  #include <linux/pm_runtime.h>
+> +#include <sound/asound.h>
+> 
+>  #include "sst-haswell-ipc.h"
+>  #include "sst-dsp.h"
+> @@ -242,6 +243,9 @@ struct sst_hsw_stream {
+>  	u32 (*notify_position)(struct sst_hsw_stream *stream, void
+> *data);
+>  	void *pdata;
+> 
+> +	/* record the fw read position when playback */
+> +	snd_pcm_uframes_t old_position;
+> +	bool play_silence;
+>  	struct list_head node;
+>  };
+> 
+> @@ -1347,6 +1351,30 @@ int sst_hsw_stream_commit(struct sst_hsw
+> *hsw, struct sst_hsw_stream *stream)
+>  	return 0;
+>  }
+> 
+> +snd_pcm_uframes_t sst_hsw_stream_get_old_position(struct
+> sst_hsw *hsw,
+> +	struct sst_hsw_stream *stream)
+> +{
+> +	return stream->old_position;
+> +}
+> +
+> +void sst_hsw_stream_set_old_position(struct sst_hsw *hsw,
+> +	struct sst_hsw_stream *stream, snd_pcm_uframes_t val)
+> +{
+> +	stream->old_position = val;
+> +}
+> +
+> +bool sst_hsw_stream_get_silence_start(struct sst_hsw *hsw,
+> +	struct sst_hsw_stream *stream)
+> +{
+> +	return stream->play_silence;
+> +}
+> +
+> +void sst_hsw_stream_set_silence_start(struct sst_hsw *hsw,
+> +	struct sst_hsw_stream *stream, bool val)
+> +{
+> +	stream->play_silence = val;
+> +}
+> +
+>  /* Stream Information - these calls could be inline but we want the IPC
+>   ABI to be opaque to client PCM drivers to cope with any future ABI
+> changes */
+>  int sst_hsw_mixer_get_info(struct sst_hsw *hsw)
+> diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-
+> haswell-ipc.h
+> index c1ad901..8580960 100644
+> --- a/sound/soc/intel/sst-haswell-ipc.h
+> +++ b/sound/soc/intel/sst-haswell-ipc.h
+> @@ -20,6 +20,7 @@
+>  #include <linux/types.h>
+>  #include <linux/kernel.h>
+>  #include <linux/platform_device.h>
+> +#include <sound/asound.h>
+> 
+>  #define SST_HSW_NO_CHANNELS		4
+>  #define SST_HSW_MAX_DX_REGIONS		14
+> @@ -425,6 +426,14 @@ int
+> sst_hsw_stream_set_pmemory_info(struct sst_hsw *hsw,
+>  	struct sst_hsw_stream *stream, u32 offset, u32 size);
+>  int sst_hsw_stream_set_smemory_info(struct sst_hsw *hsw,
+>  	struct sst_hsw_stream *stream, u32 offset, u32 size);
+> +snd_pcm_uframes_t sst_hsw_stream_get_old_position(struct
+> sst_hsw *hsw,
+> +	struct sst_hsw_stream *stream);
+> +void sst_hsw_stream_set_old_position(struct sst_hsw *hsw,
+> +	struct sst_hsw_stream *stream, snd_pcm_uframes_t val);
+> +bool sst_hsw_stream_get_silence_start(struct sst_hsw *hsw,
+> +	struct sst_hsw_stream *stream);
+> +void sst_hsw_stream_set_silence_start(struct sst_hsw *hsw,
+> +	struct sst_hsw_stream *stream, bool val);
+>  int sst_hsw_mixer_get_info(struct sst_hsw *hsw);
+> 
+>  /* Stream ALSA trigger operations */
+> diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-
+> haswell-pcm.c
+> index 78fa01b..d6fa9d5 100644
+> --- a/sound/soc/intel/sst-haswell-pcm.c
+> +++ b/sound/soc/intel/sst-haswell-pcm.c
+> @@ -36,6 +36,11 @@
+>  #define HSW_PCM_COUNT		6
+>  #define HSW_VOLUME_MAX		0x7FFFFFFF	/* 0dB */
+> 
+> +#define SST_OLD_POSITION(d, r, o) ((d) +		\
+> +			frames_to_bytes(r, o))
+> +#define SST_SAMPLES(r, x) (bytes_to_samples(r,	\
+> +			frames_to_bytes(r, (x))))
+> +
+>  /* simple volume table */
+>  static const u32 volume_map[] = {
+>  	HSW_VOLUME_MAX >> 30,
+> @@ -577,23 +582,34 @@ static int hsw_pcm_trigger(struct
+> snd_pcm_substream *substream, int cmd)
+>  	struct hsw_priv_data *pdata =
+>  		snd_soc_platform_get_drvdata(rtd->platform);
+>  	struct hsw_pcm_data *pcm_data;
+> +	struct sst_hsw_stream *sst_stream;
+>  	struct sst_hsw *hsw = pdata->hsw;
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	snd_pcm_uframes_t pos;
+>  	int dai;
+> 
+>  	dai = mod_map[rtd->cpu_dai->id].dai_id;
+>  	pcm_data = &pdata->pcm[dai][substream->stream];
+> +	sst_stream = pcm_data->stream;
+> 
+>  	switch (cmd) {
+>  	case SNDRV_PCM_TRIGGER_START:
+>  	case SNDRV_PCM_TRIGGER_RESUME:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		sst_hsw_stream_set_silence_start(hsw, sst_stream,
+> false);
+>  		sst_hsw_stream_resume(hsw, pcm_data->stream, 0);
+>  		break;
+>  	case SNDRV_PCM_TRIGGER_STOP:
+>  	case SNDRV_PCM_TRIGGER_SUSPEND:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +		sst_hsw_stream_set_silence_start(hsw, sst_stream,
+> false);
+>  		sst_hsw_stream_pause(hsw, pcm_data->stream, 0);
+>  		break;
+> +	case SNDRV_PCM_TRIGGER_DRAIN:
+> +		pos = runtime->control->appl_ptr % runtime-
+> >buffer_size;
+> +		sst_hsw_stream_set_old_position(hsw, pcm_data-
+> >stream, pos);
+> +		sst_hsw_stream_set_silence_start(hsw, sst_stream,
+> true);
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> @@ -607,13 +623,62 @@ static u32 hsw_notify_pointer(struct
+> sst_hsw_stream *stream, void *data)
+>  	struct snd_pcm_substream *substream = pcm_data-
+> >substream;
+>  	struct snd_pcm_runtime *runtime = substream->runtime;
+>  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct hsw_priv_data *pdata =
+> +		snd_soc_platform_get_drvdata(rtd->platform);
+> +	struct sst_hsw *hsw = pdata->hsw;
+>  	u32 pos;
+> +	snd_pcm_uframes_t position = bytes_to_frames(runtime,
+> +		 sst_hsw_get_dsp_position(hsw, pcm_data->stream));
+> +	unsigned char *dma_area = runtime->dma_area;
+> +	snd_pcm_uframes_t dma_frames =
+> +		bytes_to_frames(runtime, runtime->dma_bytes);
+> +	snd_pcm_uframes_t old_position;
+> +	ssize_t samples;
+> 
+>  	pos = frames_to_bytes(runtime,
+>  		(runtime->control->appl_ptr % runtime->buffer_size));
+> 
+>  	dev_vdbg(rtd->dev, "PCM: App pointer %d bytes\n", pos);
+> 
+> +	/* SST fw don't know where to stop dma
+> +	 * So, SST driver need to clean the data which has been
+> consumed
+> +	 */
+> +	if (dma_area == NULL || dma_frames <= 0
+> +		|| (substream->stream ==
+> SNDRV_PCM_STREAM_CAPTURE)
+> +		|| !sst_hsw_stream_get_silence_start(hsw, stream)) {
+> +		snd_pcm_period_elapsed(substream);
+> +		return pos;
+> +	}
+> +
+> +	old_position = sst_hsw_stream_get_old_position(hsw,
+> stream);
+> +	if (position > old_position) {
+> +		if (position < dma_frames) {
+> +			samples = SST_SAMPLES(runtime, position -
+> old_position);
+> +			snd_pcm_format_set_silence(runtime-
+> >format,
+> +				SST_OLD_POSITION(dma_area,
+> +					runtime, old_position),
+> +				samples);
+> +		} else
+> +			dev_err(rtd->dev, "PCM: position is wrong\n");
+> +	} else {
+> +		if (old_position < dma_frames) {
+> +			samples = SST_SAMPLES(runtime,
+> +				dma_frames - old_position);
+> +			snd_pcm_format_set_silence(runtime-
+> >format,
+> +				SST_OLD_POSITION(dma_area,
+> +					runtime, old_position),
+> +				samples);
+> +		} else
+> +			dev_err(rtd->dev, "PCM: dma_bytes is
+> wrong\n");
+> +		if (position < dma_frames) {
+> +			samples = SST_SAMPLES(runtime, position);
+> +			snd_pcm_format_set_silence(runtime-
+> >format,
+> +				dma_area, samples);
+> +		} else
+> +			dev_err(rtd->dev, "PCM: position is wrong\n");
+> +	}
+> +	sst_hsw_stream_set_old_position(hsw, stream, position);
+> +
+>  	/* let alsa know we have play a period */
+>  	snd_pcm_period_elapsed(substream);
+>  	return pos;
+> --
+> 1.9.1
