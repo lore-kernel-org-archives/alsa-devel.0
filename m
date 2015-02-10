@@ -1,35 +1,74 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [RESEND PATCH 4/6] gpio: arizona: Add support for WM8280/WM8281
-Date: Tue, 10 Feb 2015 11:18:28 +0000
-Message-ID: <1423567110-4414-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1423567110-4414-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1423567110-4414-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lee.jones@linaro.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org, linux.walleij@linaro.org, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, broonie@kernel.org, rf@opensource.wolfsonmicro.com
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 4/4] ASoC: soc-core: call
+ snd_soc_remove_card() when component del
+Date: Tue, 10 Feb 2015 13:28:18 +0100
+Message-ID: <54D9F962.60405@metafoo.de>
+References: <87siefv54e.wl%kuninori.morimoto.gx@renesas.com>	<87mw4nv524.wl%kuninori.morimoto.gx@renesas.com>	<s5hzj8ntl5z.wl-tiwai@suse.de>	<54D8994A.5090906@metafoo.de>
+ <87r3tya921.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-115.synserver.de (smtp-out-115.synserver.de
+ [212.40.185.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E47AD261481
+ for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 13:28:20 +0100 (CET)
+In-Reply-To: <87r3tya921.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+On 02/10/2015 01:44 AM, Kuninori Morimoto wrote:
+>
+> Hi Lars
+>
+>>>> ASoC devices are organized as CPU-CARD-CODEC. Then, CPU/CODEC
+>>>> are based on component structure. Now, each CARD device knows
+>>>> connected component. But CARD doesn't notice if connected component
+>>>> was removed when user called rmmod or unbind in current implementation.
+>>>> Thus, CARD which lost some components still exist in system.
+>>>> And then, ALSA sound card will have some problem if user used this CARD
+>>>> in such timing. This patch temporarily removes CARD from system
+>>>> if connected component was removed, and re-add it if some component
+>>>> was added.
+>>>>
+>>>> Reported-by: Nguyen Viet Dung <nv-dung@jinso.co.jp>
+>>>> Reported-by: Bui Duc Phuc <bd-phuc@jinso.co.jp>
+>>>> Reported-by: Cao Minh Hiep <cm-hiep@jinso.co.jp>
+>>>> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>>> ---
+> (snip)
+>> The other issue is that it introduces subtly issues with the suspend and
+>> resume order. Suspend and resume are called in the order in which the probe
+>> functions of devices are called (and succeed). By returning -EPROBE_DEFER in
+>> the card driver we make sure that the card's probe function is always called
+>> after the probe functions of all the components of the card have run. This
+>> again causes the card's suspend function to be called before any suspend
+>> function of any of it's components. Now with this patch it is possible again
+>> for a component's probe function to be called after the card's probe
+>> function which changes the suspend and resume order and might break things.
+>>
+>> This patch essentially is a partial revert of commit b19e6e7b763 ("ASoC:
+>> core: Use driver core probe deferral") where the card list was replaced with
+>> the -EPROBE_DEFER mechanism.
+>>
+>> So while this patch fixes the nasty crash it introduces some other subtle
+>> issue. Maybe we should also add a big WARN() when a component of a card is
+>> removed while still in use until the other issues are also fixed.
+>
+> OK. I can send such patch.
+> Oops ? does this mean my patch-set + WARN() ? or just WARN() ?
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- drivers/gpio/gpio-arizona.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Both. Or an alternative would be not to allow re-binding the card and force 
+the user to unbind/bind the card before it starts working again.
 
-diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
-index fe369f5..9665d0a 100644
---- a/drivers/gpio/gpio-arizona.c
-+++ b/drivers/gpio/gpio-arizona.c
-@@ -116,6 +116,7 @@ static int arizona_gpio_probe(struct platform_device *pdev)
- 	switch (arizona->type) {
- 	case WM5102:
- 	case WM5110:
-+	case WM8280:
- 	case WM8997:
- 		arizona_gpio->gpio_chip.ngpio = 5;
- 		break;
--- 
-1.7.2.5
+- Lars
