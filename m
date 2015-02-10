@@ -1,7 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [RESEND PATCH 6/6] ASoC: arizona: Add support for WM8280/WM8281
-Date: Tue, 10 Feb 2015 11:18:30 +0000
-Message-ID: <1423567110-4414-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [RESEND PATCH 2/6] Documentation: devicetree: arizona: Add bindings for WM8280
+Date: Tue, 10 Feb 2015 11:18:26 +0000
+Message-ID: <1423567110-4414-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1423567110-4414-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1423567110-4414-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
@@ -13,31 +13,43 @@ List-Id: alsa-devel@alsa-project.org
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/arizona.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ Documentation/devicetree/bindings/mfd/arizona.txt |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 9550d74..55b5e22 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -281,6 +281,7 @@ int arizona_init_gpio(struct snd_soc_codec *codec)
+diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+index 7bd1273..87c878b 100644
+--- a/Documentation/devicetree/bindings/mfd/arizona.txt
++++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+@@ -8,6 +8,7 @@ Required properties:
+   - compatible : One of the following chip-specific strings:
+         "wlf,wm5102"
+         "wlf,wm5110"
++        "wlf,wm8280"
+         "wlf,wm8997"
+   - reg : I2C slave address when connected using I2C, chip select number when
+     using SPI.
+@@ -26,10 +27,16 @@ Required properties:
+   - #gpio-cells : Must be 2. The first cell is the pin number and the
+     second cell is used to specify optional parameters (currently unused).
  
- 	switch (arizona->type) {
- 	case WM5110:
-+	case WM8280:
- 		snd_soc_dapm_disable_pin(&codec->dapm, "DRC2 Signal Activity");
- 		break;
- 	default:
-@@ -1669,6 +1670,7 @@ static int arizona_calc_fratio(struct arizona_fll *fll,
+-  - AVDD-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply (wm5102, wm5110),
+-    CPVDD-supply, SPKVDDL-supply (wm5102, wm5110), SPKVDDR-supply (wm5102,
+-    wm5110), SPKVDD-supply (wm8997) : Power supplies for the device, as covered
+-    in Documentation/devicetree/bindings/regulator/regulator.txt
++  - AVDD-supply, DBVDD1-supply, CPVDD-supply : Power supplies for the device,
++    as covered in Documentation/devicetree/bindings/regulator/regulator.txt
++
++  - DBVDD2-supply, DBVDD3-supply : Additional databus power supplies (wm5102,
++    wm5110, wm8280)
++
++  - SPKVDDL-supply, SPKVDDR-supply : Speaker driver power supplies (wm5102,
++    wm5110, wm8280)
++
++  - SPKVDD-supply : Speaker driver power supply (wm8997)
  
- 	switch (fll->arizona->type) {
- 	case WM5110:
-+	case WM8280:
- 		if (fll->arizona->rev < 3 || sync)
- 			return init_ratio;
- 		break;
+ Optional properties:
+ 
 -- 
 1.7.2.5
