@@ -1,19 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [GIT PULL]: Add sst audio firmware for Braswell
-	platforms
-Date: Wed, 11 Feb 2015 07:01:56 +0530
-Message-ID: <20150211013156.GI21387@intel.com>
-References: <20150203054058.GA4489@intel.com>
- <20150206084820.GD30928@merlin.infradead.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Clean data after SST fw fetch
+Date: Wed, 11 Feb 2015 10:13:26 +0800
+Message-ID: <20150211021326.GM2593@finisterre.sirena.org.uk>
+References: <1423533767-52698-1-git-send-email-libin.yang@intel.com>
+ <96A12704CE18D347B625EE2D4A099D195F3B47@SHSMSX103.ccr.corp.intel.com>
+ <s5h61b9rgzf.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7035809821014783674=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D565826057A
- for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 02:34:17 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20150206084820.GD30928@merlin.infradead.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 041FF26057C
+ for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 03:14:24 +0100 (CET)
+In-Reply-To: <s5h61b9rgzf.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kyle McMartin <kyle@infradead.org>
-Cc: alsa-devel@alsa-project.org, linux-firmware@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 06, 2015 at 03:48:20AM -0500, Kyle McMartin wrote:
-> On Mon, Feb 02, 2015 at 09:40:58PM -0800, Vinod Koul wrote:
-> > Hello Linux firmware maintainers,
-> > 
-> > Please PULL to receive the Intel audio firmware for audio DSP in Braswell
-> > platforms. This firmware is using the same license as the Baytrail firmware
-> > already available in linux-firmware git.
-> > 
-> > The following changes since commit b794c5039dcf0b7ebfeb58929d035f7a1d4c80dd:
-> > 
-> >   Merge branch 'marvell-mwifiex' (2015-01-27 10:42:47 -0500)
-> > 
-> 
-> Thanks, I've applied this to the tree.
-> 
-> One note for the future... is there a version number for this firmware
-> we could add to WHENCE, or is it not expected to be upgraded in the
-> future?
-Thanks for pointing out. I will update the version numbers too. They will
-help :)
 
--- 
-~Vinod
+--===============7035809821014783674==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1hVIwB4NpNcOOTEe"
+Content-Disposition: inline
 
-> 
-> regards, Kyle
-> 
-> > are available in the git repository at:
-> > 
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git BSW
-> > 
-> > for you to fetch changes up to f692aba54c8c80cb27a3eb5388594a55a30504ea:
-> > 
-> >   linux-firmware: add sst audio firmware for braswell platforms (2015-02-02 21:12:22 -0800)
-> > 
-> > ----------------------------------------------------------------
-> > Vinod Koul (1):
-> >       linux-firmware: add sst audio firmware for braswell platforms
-> > 
-> >  WHENCE                |    8 ++++++++
-> >  intel/fw_sst_22a8.bin |  Bin 0 -> 647390 bytes
-> >  2 files changed, 8 insertions(+)
-> >  create mode 100644 intel/fw_sst_22a8.bin
-> > 
-> > Thanks
-> > -- 
-> > ~Vinod
-> 
-> 
 
--- 
+--1hVIwB4NpNcOOTEe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 10, 2015 at 03:14:28PM +0100, Takashi Iwai wrote:
+> At Tue, 10 Feb 2015 14:07:23 +0000,
+> Yang, Libin wrote:
+
+> > The patch is aimed to be merged into Takashi's tree because Mark's tree
+> > lacks of another patch, which will cause compiling fail.
+
+> I can merge this directly to my tree, or Mark can merge at first my
+> for-next branch then merge this one.  I don't mind either way.
+
+> Mark, let me know your preference.
+
+At this point given that I've sent everything for -next already it's
+probably easier if you apply it then I'll pick it up when I merge -rc1.
+
+--1hVIwB4NpNcOOTEe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU2rrGAAoJECTWi3JdVIfQzl0H/0i+by7nsQSwUMPJRG7vbYsU
+mTOPmOjMaOeyKo7IusDe3L62U1qqwnma8skqYi2jSZfBzHeTs+EglwfEgdZO5Nmx
+MgXx3L07PWl08SeueiCavPCXojjv7i810YNpsuMhfyLCA/tNMs7tpHtTYRhaWrZ/
+0xhgwuTeBOXguY8yOWN6f8kHPnZ04dDxpxgnOfpREYjOOBXXxAYeKhZjYthe7+In
+wUlUb+OcDBnWykB/SlxY0zAH9Vo5bDWhFwVzuq/K3YVN0duGACCskWsi946Ww6Lp
+ahmeCu1TYzBKXokyYHvhAzL+W8Nn3ffdeWIsa9ZWKBpImLY2oLlEeZBks/rdtCQ=
+=Um+a
+-----END PGP SIGNATURE-----
+
+--1hVIwB4NpNcOOTEe--
+
+--===============7035809821014783674==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7035809821014783674==--
