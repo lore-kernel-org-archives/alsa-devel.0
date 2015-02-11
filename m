@@ -1,55 +1,84 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Fix the incorrect limitation of the bit clock rate
-Date: Tue, 10 Feb 2015 21:31:43 -0800
-Message-ID: <1423632703-3683-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, timur@tabi.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, scerveau@voxtok.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5677: Add the chip type to
+ distinguish the setting of the clock source
+Date: Wed, 11 Feb 2015 13:41:19 +0800
+Message-ID: <20150211054119.GQ2593@finisterre.sirena.org.uk>
+References: <1423563274-20812-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6476935566367734164=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F7A726056D
+ for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 06:41:53 +0100 (CET)
+In-Reply-To: <1423563274-20812-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com, john.lin@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-According to i.MX Reference Manual, the bit-clock frequency generated
-by SSI must be never greater than 1/5 of the peripheral clock frequency.
 
-This peripheral clock, however, is not baudclk but the IPG clock (i.e.
-ssi_private->clk in the fsl_ssi driver).
+--===============6476935566367734164==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vIXBmblrD40XNCy4"
+Content-Disposition: inline
 
-So this patch just simply fixes the incorrect limitation applied to
-the bit clock (baudclk) rate.
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_ssi.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+--vIXBmblrD40XNCy4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 059496e..d7365c5 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -603,10 +603,6 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	factor = (div2 + 1) * (7 * psr + 1) * 2;
- 
- 	for (i = 0; i < 255; i++) {
--		/* The bclk rate must be smaller than 1/5 sysclk rate */
--		if (factor * (i + 1) < 5)
--			continue;
--
- 		tmprate = freq * factor * (i + 2);
- 
- 		if (baudclk_is_used)
-@@ -614,6 +610,13 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 		else
- 			clkrate = clk_round_rate(ssi_private->baudclk, tmprate);
- 
-+		/*
-+		 * Hardware limitation: The bclk rate must be
-+		 * never greater than 1/5 IPG clock rate
-+		 */
-+		if (clkrate * 5 > clk_get_rate(ssi_private->clk))
-+			continue;
-+
- 		clkrate /= factor;
- 		afreq = clkrate / (i + 1);
- 
--- 
-1.9.1
+On Tue, Feb 10, 2015 at 06:14:34PM +0800, Oder Chiou wrote:
+
+> +		if (rt5677->type == RT5677) {
+> +			regmap_update_bits(rt5677->regmap, RT5677_GLB_CLK1,
+> +				RT5677_MCLK_SRC_MASK, RT5677_MCLK2_SRC);
+> +			regmap_update_bits(rt5677->regmap, RT5677_GLB_CLK2,
+> +				RT5677_PLL2_PR_SRC_MASK |
+> +				RT5677_DSP_CLK_SRC_MASK,
+> +				RT5677_PLL2_PR_SRC_MCLK2 |
+> +				RT5677_DSP_CLK_SRC_BYPASS);
+> +		} else {
+> +			regmap_update_bits(rt5677->regmap, RT5677_GLB_CLK2,
+> +				RT5677_DSP_CLK_SRC_MASK,
+> +				RT5677_DSP_CLK_SRC_BYPASS);
+> +		}
+
+This change looks good except for the above which is better written as a
+switch statement - it's best to write choices between chip types like
+that so that if a new variant comes up then it's easy to slot in.
+
+--vIXBmblrD40XNCy4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU2ut+AAoJECTWi3JdVIfQCIcH/1eLKI/uYvRDeYwBCgEjlz68
+0/vrydNwIjETeYr5qM0hKiMgi6VP6n1FSvkNSXxkDvauBghylvDBzZwigd1rl5xr
+kYbRlBdw1U2X38aUSPbQSzoqrutdB4KI5CHZTffW31XKLE1kNOhBVCMMfAnxUxIH
+c60521X7Z6g7h+oAuVkC8kyO6T4nzf3qdgA2e8EIbdTrr+Sem8c6TnZXCk+J1KtF
+EWlngOQ5zF5569UFboV4KDSWEEwAx1q5vihCrZzPkV9b4kgN54NFoQD7IGnH/JAP
+OSsFqXho91luCZBT8TAicL2J6PQH0R23r+pcMMbmOs3U4ImH7PIeSvRM9+TES2s=
+=ymLs
+-----END PGP SIGNATURE-----
+
+--vIXBmblrD40XNCy4--
+
+--===============6476935566367734164==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6476935566367734164==--
