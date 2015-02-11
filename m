@@ -1,21 +1,20 @@
-From: Chris Rorvick <chris@rorvick.com>
-Subject: Re: [PATCH v2] ALSA: line6: Improve
-	line6_read/write_data() interfaces
-Date: Wed, 11 Feb 2015 07:28:18 -0600
-Message-ID: <CAEUsAPbfqD7WqRQF6T5sC9sTarS7AOqMRDmVZS6EbJk8w63UWA@mail.gmail.com>
-References: <1423656211-31349-1-git-send-email-chris@rorvick.com>
- <s5hy4o4oawg.wl-tiwai@suse.de>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: Re: [PATCH 2/3] ucm: add a FIXME comment
+Date: Wed, 11 Feb 2015 15:34:06 +0200
+Message-ID: <1423661646.2747.5.camel@tkkaskin-mobl3.ger.corp.intel.com>
+References: <1423600954-8751-1-git-send-email-tanu.kaskinen@linux.intel.com>
+ <1423600954-8751-3-git-send-email-tanu.kaskinen@linux.intel.com>
+ <s5hbnl0ptin.wl-tiwai@suse.de>
+ <1423655080.2747.3.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5h1tlwppoo.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f48.google.com (mail-qa0-f48.google.com
- [209.85.216.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 950AC2605DF
- for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 14:28:19 +0100 (CET)
-Received: by mail-qa0-f48.google.com with SMTP id v8so2483813qal.7
- for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 05:28:18 -0800 (PST)
-In-Reply-To: <s5hy4o4oawg.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 384B02605B4
+ for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 14:34:10 +0100 (CET)
+In-Reply-To: <s5h1tlwppoo.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,119 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 11, 2015 7:06 AM, "Takashi Iwai" <tiwai@suse.de> wrote:
->
-> At Wed, 11 Feb 2015 06:03:31 -0600,
-> Chris Rorvick wrote:
-> >
-> > The address cannot be negative so make it unsigned.  Also, an unsigned
-> > int is always sufficient for the length, so no need to overdo it with a
-> > size_t.  Finally, add in range checks to see if the values passed in
-> > actually fit where they are used.
-> >
-> > Signed-off-by: Chris Rorvick <chris@rorvick.com>
-> > ---
-> > This was dropped from an earlier series ("Cleanup reads/writes to Line 6
-> > device memory".)  This version leaves the arguements wide (within
-reason)
-> > and does range checking.
-> >
-> > Regards,
-> >
-> > Chris
-> >
-> >  sound/usb/line6/driver.c | 14 ++++++++++----
-> >  sound/usb/line6/driver.h |  8 ++++----
-> >  2 files changed, 14 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-> > index 99b63a7..4f82b57 100644
-> > --- a/sound/usb/line6/driver.c
-> > +++ b/sound/usb/line6/driver.c
-> > @@ -302,14 +302,17 @@ static void line6_data_received(struct urb *urb)
-> >  /*
-> >       Read data from device.
-> >  */
-> > -int line6_read_data(struct usb_line6 *line6, int address, void *data,
-> > -                 size_t datalen)
-> > +int line6_read_data(struct usb_line6 *line6, unsigned address, void
-*data,
-> > +                 unsigned datalen)
-> >  {
-> >       struct usb_device *usbdev = line6->usbdev;
-> >       int ret;
-> >       unsigned char len;
-> >       unsigned count;
-> >
-> > +     if (address > 0xffff || datalen > 0xff)
-> > +             return EINVAL;
->
-> -EINVAL.
+On Wed, 2015-02-11 at 14:01 +0100, Takashi Iwai wrote:
+> At Wed, 11 Feb 2015 13:44:40 +0200,
+> Tanu Kaskinen wrote:
+> > 
+> > On Wed, 2015-02-11 at 12:38 +0100, Takashi Iwai wrote:
+> > > At Tue, 10 Feb 2015 22:42:33 +0200,
+> > > Tanu Kaskinen wrote:
+> > > > 
+> > > > I'm pretty sure the current code will crash with some inputs, but I
+> > > > don't know what the original author intended this code to do, so I
+> > > > don't know how to fix it.
+> > > > ---
+> > > >  src/ucm/main.c | 8 ++++++++
+> > > >  1 file changed, 8 insertions(+)
+> > > > 
+> > > > diff --git a/src/ucm/main.c b/src/ucm/main.c
+> > > > index 3924aee..62bc374 100644
+> > > > --- a/src/ucm/main.c
+> > > > +++ b/src/ucm/main.c
+> > > > @@ -317,6 +317,14 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+> > > >  					uc_error("cdev is not defined!");
+> > > >  					return err;
+> > > >  				}
+> > > > +                                /* FIXME: If cdev1 is NULL and cdev2 is not,
+> > > > +                                 * then set cdev to cdev1... makes no sense!
+> > > > +                                 * Also, what if both cdev1 and cdev2 are NULL?
+> > > > +                                 * What should happen? Later in this function we
+> > > > +                                 * call open_ctl(), which assumes non-NULL cdev,
+> > > > +                                 * so leaving cdev to NULL here is not an
+> > > > +                                 * option (or at least cdev has to be checked
+> > > > +                                 * before calling open_ctl()). */
+> > > >  				if (cdev1 == NULL || cdev2 == NULL ||
+> > > >                                      strcmp(cdev1, cdev2) == 0) {
+> > > >  					cdev = (char *)cdev1;
+> > > 
+> > > Ouch, the code is really buggy there.  We must fix it instead of
+> > > leaving FIXME.
+> > > 
+> > > I see there are multiple bugs (in addition to your patch#1):
+> > > 
+> > > - the error check is wrong, it should be compared with -ENOENT
+> > > 	if (err < 0 && err != ENOENT)
+> > > 
+> > >   This leaves cdev1 or cdev2 NULL as non-error.
+> > > 
+> > > - The intention of the code should be (as far as I understand):
+> > >   - if only one of cdev1 and cdev2 is defined, take it as cdev
+> > >   - if cdev1 and cdev2 are defined and have the same string, keep
+> > >     cdev1 and free cdev2
+> > >   - in the rest cases, free both cdev1 and cdev2 without changing cdev
+> > 
+> > Regarding that last case, just leaving cdev unchanged is not a good
+> > idea. cdev will always be NULL if we don't set it here, and when we call
+> > open_ctl(), it must be non-NULL.
+> 
+> Right.  I *guess* if cdev1 != cdev2, it should bail out as an error.
 
-Stupid, sorry.  This isn't very important, I can just let this die.  :-)
+Ok, I'll make a patch that will implement the described behaviour.
 
->
-> Takashi
->
-> >       /* query the serial number: */
-> >       ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
-> >                             USB_TYPE_VENDOR | USB_RECIP_DEVICE |
-USB_DIR_OUT,
-> > @@ -370,14 +373,17 @@ EXPORT_SYMBOL_GPL(line6_read_data);
-> >  /*
-> >       Write data to device.
-> >  */
-> > -int line6_write_data(struct usb_line6 *line6, int address, void *data,
-> > -                  size_t datalen)
-> > +int line6_write_data(struct usb_line6 *line6, unsigned address, void
-*data,
-> > +                  unsigned datalen)
-> >  {
-> >       struct usb_device *usbdev = line6->usbdev;
-> >       int ret;
-> >       unsigned char status;
-> >       int count;
-> >
-> > +     if (address > 0xffff || datalen > 0xffff)
-> > +             return EINVAL;
-> > +
-> >       ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
-> >                             USB_TYPE_VENDOR | USB_RECIP_DEVICE |
-USB_DIR_OUT,
-> >                             0x0022, address, data, datalen,
-> > diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-> > index 5d20294..7da643e 100644
-> > --- a/sound/usb/line6/driver.h
-> > +++ b/sound/usb/line6/driver.h
-> > @@ -147,8 +147,8 @@ struct usb_line6 {
-> >
-> >  extern char *line6_alloc_sysex_buffer(struct usb_line6 *line6, int
-code1,
-> >                                     int code2, int size);
-> > -extern int line6_read_data(struct usb_line6 *line6, int address, void
-*data,
-> > -                        size_t datalen);
-> > +extern int line6_read_data(struct usb_line6 *line6, unsigned address,
-> > +                        void *data, unsigned datalen);
-> >  extern int line6_read_serial_number(struct usb_line6 *line6,
-> >                                   u32 *serial_number);
-> >  extern int line6_send_raw_message_async(struct usb_line6 *line6,
-> > @@ -161,8 +161,8 @@ extern void line6_start_timer(struct timer_list
-*timer, unsigned long msecs,
-> >                             void (*function)(unsigned long),
-> >                             unsigned long data);
-> >  extern int line6_version_request_async(struct usb_line6 *line6);
-> > -extern int line6_write_data(struct usb_line6 *line6, int address, void
-*data,
-> > -                         size_t datalen);
-> > +extern int line6_write_data(struct usb_line6 *line6, unsigned address,
-> > +                         void *data, unsigned datalen);
-> >
-> >  int line6_probe(struct usb_interface *interface,
-> >               const struct usb_device_id *id,
-> > --
-> > 2.1.0
-> >
+-- 
+Tanu
