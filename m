@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/8] ALSA: control: rename loop index to i
-Date: Wed, 11 Feb 2015 19:37:29 +0900
-Message-ID: <1423651052-19593-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 8/8] ALSA: control: arrange snd_ctl_new() as a
+	local function
+Date: Wed, 11 Feb 2015 19:37:32 +0900
+Message-ID: <1423651052-19593-9-git-send-email-o-takashi@sakamocchi.jp>
 References: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id EC4D32605D7
- for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 11:37:40 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FAA52605DD
+ for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 11:37:41 +0100 (CET)
 In-Reply-To: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,171 +25,83 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a fashion and subtle issue, but can reduce characters in a file.
+The snd_ctl_new1() was added in 2001. I guess that snd_ctl_new() becames
+a local function in this timing.
+
+This commit arranges the function as a local helper function, remove
+'snd_' prefix and comments, change comments to refer to the function.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 44 ++++++++++++++++++++++----------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ sound/core/control.c | 28 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 20 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 19f9f4e..15af804 100644
+index 04534f3..af95783 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -119,7 +119,7 @@ static int snd_ctl_release(struct inode *inode, struct file *file)
- 	struct snd_card *card;
- 	struct snd_ctl_file *ctl;
- 	struct snd_kcontrol *control;
--	unsigned int idx;
-+	unsigned int i;
- 
- 	ctl = file->private_data;
- 	file->private_data = NULL;
-@@ -129,9 +129,9 @@ static int snd_ctl_release(struct inode *inode, struct file *file)
- 	write_unlock_irqrestore(&card->ctl_files_rwlock, flags);
- 	down_write(&card->controls_rwsem);
- 	list_for_each_entry(control, &card->controls, list)
--		for (idx = 0; idx < control->count; idx++)
--			if (control->vd[idx].owner == ctl)
--				control->vd[idx].owner = NULL;
-+		for (i = 0; i < control->count; i++)
-+			if (control->vd[i].owner == ctl)
-+				control->vd[i].owner = NULL;
- 	up_write(&card->controls_rwsem);
- 	snd_ctl_empty_read_queue(ctl);
- 	put_pid(ctl->pid);
-@@ -205,7 +205,7 @@ static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
- 					unsigned int access)
- {
- 	struct snd_kcontrol *kctl;
--	unsigned int idx;
-+	unsigned int i;
- 	
- 	if (snd_BUG_ON(!control || !control->count))
- 		return NULL;
-@@ -219,8 +219,8 @@ static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
- 		return NULL;
- 	}
- 	*kctl = *control;
--	for (idx = 0; idx < kctl->count; idx++)
--		kctl->vd[idx].access = access;
-+	for (i = 0; i < kctl->count; i++)
-+		kctl->vd[i].access = access;
- 	return kctl;
+@@ -193,18 +193,8 @@ void snd_ctl_notify(struct snd_card *card, unsigned int mask,
  }
+ EXPORT_SYMBOL(snd_ctl_notify);
  
-@@ -340,7 +340,7 @@ static int snd_ctl_find_hole(struct snd_card *card, unsigned int count)
- int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+-/**
+- * snd_ctl_new - create a control instance from the template
+- * @control: the control template
+- * @access: the default control access
+- *
+- * Allocates a new struct snd_kcontrol instance and copies the given template 
+- * to the new instance. It does not copy volatile data (access).
+- *
+- * Return: The pointer of the new instance, or %NULL on failure.
+- */
+-static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
+-					unsigned int access)
++static struct snd_kcontrol *ctl_new(struct snd_kcontrol *control,
++				    unsigned int access)
  {
- 	struct snd_ctl_elem_id id;
--	unsigned int idx;
-+	unsigned int i;
- 	unsigned int count;
- 	int err = -EINVAL;
- 
-@@ -376,7 +376,7 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 	id = kcontrol->id;
- 	count = kcontrol->count;
- 	up_write(&card->controls_rwsem);
--	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
-+	for (i = 0; i < count; i++, id.index++, id.numid++)
- 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
- 	return 0;
- 
-@@ -405,7 +405,7 @@ int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol,
- {
- 	struct snd_ctl_elem_id id;
- 	unsigned int count;
--	unsigned int idx;
-+	unsigned int i;
- 	struct snd_kcontrol *old;
- 	int ret;
- 
-@@ -443,7 +443,7 @@ add:
- 	id = kcontrol->id;
- 	count = kcontrol->count;
- 	up_write(&card->controls_rwsem);
--	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
-+	for (i = 0; i < count; i++, id.index++, id.numid++)
- 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
- 	return 0;
- 
-@@ -467,14 +467,14 @@ EXPORT_SYMBOL(snd_ctl_replace);
- int snd_ctl_remove(struct snd_card *card, struct snd_kcontrol *kcontrol)
- {
- 	struct snd_ctl_elem_id id;
--	unsigned int idx;
-+	unsigned int i;
- 
- 	if (snd_BUG_ON(!card || !kcontrol))
- 		return -EINVAL;
- 	list_del(&kcontrol->list);
- 	card->controls_count -= kcontrol->count;
- 	id = kcontrol->id;
--	for (idx = 0; idx < kcontrol->count; idx++, id.index++, id.numid++)
-+	for (i = 0; i < kcontrol->count; i++, id.index++, id.numid++)
- 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_REMOVE, &id);
- 	snd_ctl_free_one(kcontrol);
- 	return 0;
-@@ -523,7 +523,7 @@ static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
- {
- 	struct snd_card *card = file->card;
  	struct snd_kcontrol *kctl;
--	int idx, ret;
-+	int i, ret;
+ 	unsigned int size;
+@@ -273,7 +263,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
+ 	kctl.tlv.p = ncontrol->tlv.p;
+ 	kctl.private_value = ncontrol->private_value;
+ 	kctl.private_data = private_data;
+-	return snd_ctl_new(&kctl, access);
++	return ctl_new(&kctl, access);
+ }
+ EXPORT_SYMBOL(snd_ctl_new1);
  
- 	down_write(&card->controls_rwsem);
- 	kctl = snd_ctl_find_id(card, id);
-@@ -535,8 +535,8 @@ static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
- 		ret = -EINVAL;
- 		goto error;
- 	}
--	for (idx = 0; idx < kctl->count; idx++)
--		if (kctl->vd[idx].owner != NULL && kctl->vd[idx].owner != file) {
-+	for (i = 0; i < kctl->count; i++)
-+		if (kctl->vd[i].owner != NULL && kctl->vd[i].owner != file) {
- 			ret = -EBUSY;
- 			goto error;
+@@ -281,9 +271,8 @@ EXPORT_SYMBOL(snd_ctl_new1);
+  * snd_ctl_free_one - release the control instance
+  * @kcontrol: the control instance
+  *
+- * Releases the control instance created via snd_ctl_new()
+- * or snd_ctl_new1().
+- * Don't call this after the control was added to the card.
++ * Releases the control instance created via ctl_new() or snd_ctl_new1(). Don't
++ * call this after the control was added to the card.
+  */
+ void snd_ctl_free_one(struct snd_kcontrol *kcontrol)
+ {
+@@ -334,9 +323,8 @@ static int snd_ctl_find_hole(struct snd_card *card, unsigned int count)
+  * @card: the card instance
+  * @kcontrol: the control instance to add
+  *
+- * Adds the control instance created via snd_ctl_new() or
+- * snd_ctl_new1() to the given card. Assigns also an unique
+- * numid used for fast search.
++ * Adds the control instance created via ctl_new() or snd_ctl_new1() to the
++ * given card. Assigns also an unique numid used for fast search.
+  *
+  * It frees automatically the control which cannot be added.
+  *
+@@ -1254,7 +1242,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
  		}
-@@ -725,7 +725,7 @@ static int snd_ctl_elem_list(struct snd_card *card,
- 	struct snd_ctl_elem_list list;
- 	struct snd_kcontrol *kctl;
- 	struct snd_ctl_elem_id *dst, *id;
--	unsigned int offset, space, jidx;
-+	unsigned int offset, space, i;
- 	
- 	if (copy_from_user(&list, _list, sizeof(list)))
- 		return -EFAULT;
-@@ -755,8 +755,8 @@ static int snd_ctl_elem_list(struct snd_card *card,
- 		id = dst;
- 		while (space > 0 && plist != &card->controls) {
- 			kctl = snd_kcontrol(plist);
--			for (jidx = offset; space > 0 && jidx < kctl->count; jidx++) {
--				snd_ctl_build_ioff(id, kctl, jidx);
-+			for (i = offset; space > 0 && i < kctl->count; i++) {
-+				snd_ctl_build_ioff(id, kctl, i);
- 				id++;
- 				space--;
- 				list.used++;
-@@ -1183,7 +1183,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	unsigned int access;
- 	unsigned int elem_data_size;
- 	struct user_element *ue;
--	int idx, err;
-+	int i, err;
- 
- 	if (info->count < 1)
- 		return -EINVAL;
-@@ -1257,8 +1257,8 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	_kctl->private_data = ue;
- 
- 	/* Lock values in this user controls. */
--	for (idx = 0; idx < _kctl->count; idx++)
--		_kctl->vd[idx].owner = file;
-+	for (i = 0; i < _kctl->count; i++)
-+		_kctl->vd[i].owner = file;
- 
- 	err = snd_ctl_add(card, _kctl);
- 	if (err < 0)
+ 	}
+ 	kctl.private_free = snd_ctl_elem_user_free;
+-	_kctl = snd_ctl_new(&kctl, access);
++	_kctl = ctl_new(&kctl, access);
+ 	if (_kctl == NULL) {
+ 		kfree(ue->priv_data);
+ 		kfree(ue);
 -- 
 2.1.0
