@@ -1,142 +1,70 @@
-From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
-Subject: [PATCH 3/3] ucm: fix inappropriate use of const
-Date: Tue, 10 Feb 2015 22:42:34 +0200
-Message-ID: <1423600954-8751-4-git-send-email-tanu.kaskinen@linux.intel.com>
-References: <1423600954-8751-1-git-send-email-tanu.kaskinen@linux.intel.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH v2 1/3] ARM: shmobile: armadillo800eva: Properly specify
+ HDMI audio link format
+Date: Wed, 11 Feb 2015 09:28:05 +0900
+Message-ID: <20150211002802.GC7826@verge.net.au>
+References: <1421847492-8857-1-git-send-email-lars@metafoo.de>
+ <87d25wg804.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id DC8EE26057A
- for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2015 21:42:45 +0100 (CET)
-In-Reply-To: <1423600954-8751-1-git-send-email-tanu.kaskinen@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87d25wg804.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The caller is expected to free the string returned by
-snd_use_case_get(), but for some reason the string is marked as const,
-so the caller is forced to do type casting to get rid of compiler
-warnings. I don't see any reason for using const in snd_use_case_get(),
-so let's remove that.
+On Fri, Jan 30, 2015 at 05:18:56AM +0000, Kuninori Morimoto wrote:
+> 
+> Hi Lars, Simon
+> 
+> > The DAI link format should be specified for the whole link rather than just
+> > one component on the link. So move the format specification for the HDMI
+> > audio link from the CPU component to the link itself.
+> > 
+> > Since the sh-mobile-hdmi DAI driver doesn't implement the set_fmt() callback
+> > in this case there is no functional difference between only specifying the
+> > the format for the CPU side or for the whole link, but the later it will
+> > allow us to remove support for just specifying the format for one component.
+> > 
+> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > ---
+> 
+> I tested these 3 patches on armadillo800eva
+> 
+> 	[PATCH v2 1/3] ARM: shmobile: armadillo800eva: Properly specify HDMI audio link format
+> 	[PATCH v2 2/3] ASoC: sh: fsi: Fix clock inversion
+> 	[PATCH v2 3/3] ASoC: simple-card: Remove support for setting differing DAI formats
+> 
+> Tested-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> 2/3 patch changed behavior for clock inversion on FSI driver.
+> FSI + wm8978 on armadillo800eva worked without any issues,
+> but, I don't know how much effect it has for other board.
+> We used this inversion flags on each board for historical reasons (copy-paste),
+> but, almost all these were not needed (except some picky board) on FSI.
+> Maybe Lars's 2/3 patch is correct, but, it is difficult to check/confirm for all boards.
+> And unfortunately, Renesas don't use FSI anymore.
+> So, I think keeping current FSI driver as-is is more safety for old boards.
+> armadillo800eva works well with below patch (as 2/3 patch)
 
-This will cause warnings in application code, if applications
-currently pass const variables to the function, which they very likely
-do. I don't know if that's acceptable. If not, then it's too late to
-fix this bug...
----
- include/use-case.h |  2 +-
- src/ucm/main.c     | 24 ++++++++++++------------
- 2 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/include/use-case.h b/include/use-case.h
-index f30168f..28d786f 100644
---- a/include/use-case.h
-+++ b/include/use-case.h
-@@ -286,7 +286,7 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
-  */
- int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
-                      const char *identifier,
--                     const char **value);
-+                     char **value);
- 
- /**
-  * \brief Get current - integer
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 62bc374..8fbf94f 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -40,9 +40,9 @@
-  * misc
-  */
- 
--static int get_value1(const char **value, struct list_head *value_list,
-+static int get_value1(char **value, struct list_head *value_list,
-                       const char *identifier);
--static int get_value3(const char **value,
-+static int get_value3(char **value,
- 		      const char *identifier,
- 		      struct list_head *value_list1,
- 		      struct list_head *value_list2,
-@@ -299,7 +299,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 		case SEQUENCE_ELEMENT_TYPE_CSET:
- 		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
- 			if (cdev == NULL) {
--				const char *cdev1 = NULL, *cdev2 = NULL;
-+				char *cdev1 = NULL, *cdev2 = NULL;
- 				err = get_value3(&cdev1, "PlaybackCTL",
- 						 value_list1,
- 						 value_list2,
-@@ -313,7 +313,7 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 						 value_list2,
- 						 value_list3);
- 				if (err < 0 && err != ENOENT) {
--					free((char *)cdev1);
-+					free(cdev1);
- 					uc_error("cdev is not defined!");
- 					return err;
- 				}
-@@ -327,11 +327,11 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
-                                  * before calling open_ctl()). */
- 				if (cdev1 == NULL || cdev2 == NULL ||
-                                     strcmp(cdev1, cdev2) == 0) {
--					cdev = (char *)cdev1;
--					free((char *)cdev2);
-+					cdev = cdev1;
-+					free(cdev2);
- 				} else {
--					free((char *)cdev1);
--					free((char *)cdev2);
-+					free(cdev1);
-+					free(cdev2);
- 				}
- 			}
- 			if (ctl == NULL) {
-@@ -1233,7 +1233,7 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
- 	return err;
- }
- 
--static int get_value1(const char **value, struct list_head *value_list,
-+static int get_value1(char **value, struct list_head *value_list,
-                       const char *identifier)
- {
-         struct ucm_value *val;
-@@ -1254,7 +1254,7 @@ static int get_value1(const char **value, struct list_head *value_list,
-         return -ENOENT;
- }
- 
--static int get_value3(const char **value,
-+static int get_value3(char **value,
- 		      const char *identifier,
- 		      struct list_head *value_list1,
- 		      struct list_head *value_list2,
-@@ -1284,7 +1284,7 @@ static int get_value3(const char **value,
-  */
- static int get_value(snd_use_case_mgr_t *uc_mgr,
- 			const char *identifier,
--			const char **value,
-+			char **value,
- 			const char *mod_dev_name,
- 			const char *verb_name,
- 			int exact)
-@@ -1354,7 +1354,7 @@ static int get_value(snd_use_case_mgr_t *uc_mgr,
-  */      
- int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
- 		     const char *identifier,
--		     const char **value)
-+		     char **value)
- {
- 	const char *slash1, *slash2, *mod_dev_after;
- 	const char *ident, *mod_dev, *verb;
--- 
-1.9.3
+Thanks, I am inclined to agree that it is best to leave things unchanged.
+
+> 
+> --------------
+> diff --git a/arch/arm/mach-shmobile/board-armadillo800eva.c b/arch/arm/mach-shmobile/board-armadillo800eva.c
+> index 75de26c..36aaeb1 100644
+> --- a/arch/arm/mach-shmobile/board-armadillo800eva.c
+> +++ b/arch/arm/mach-shmobile/board-armadillo800eva.c
+> @@ -1015,7 +1015,6 @@ static struct asoc_simple_card_info fsi_wm8978_info = {
+>         .platform       = "sh_fsi2",
+>         .daifmt         = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM,
+>         .cpu_dai = {
+> -               .fmt    = SND_SOC_DAIFMT_IB_NF,
+>                 .name   = "fsia-dai",
+>         },
+>         .codec_dai = {
+> --------------
+> 
