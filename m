@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/8] ALSA: control: obsolete switch statement
-	with const value table
-Date: Wed, 11 Feb 2015 19:37:26 +0900
-Message-ID: <1423651052-19593-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/8] ALSA: control: rename loop index to i
+Date: Wed, 11 Feb 2015 19:37:29 +0900
+Message-ID: <1423651052-19593-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F26A2605C7
- for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 11:37:39 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id EC4D32605D7
+ for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 11:37:40 +0100 (CET)
 In-Reply-To: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,101 +24,171 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-To check parameters from userspace, snd_ctl_elem_add() has switch
-statement. This statement checks the number of values in a control and
-the size of each value. These two parameters are limited by
-struct snd_ctl_elem_value.value and can be replaced with two sets of two
-dimension array with constant values, without any calculation.
-
-This commit obsolete the switch statement with the array.
+This is a fashion and subtle issue, but can reduce characters in a file.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 57 +++++++++++++++++++++++++---------------------------
- 1 file changed, 27 insertions(+), 30 deletions(-)
+ sound/core/control.c | 44 ++++++++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index ea49abc..f248bde 100644
+index 19f9f4e..15af804 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1161,6 +1161,23 @@ static void snd_ctl_elem_user_free(struct snd_kcontrol *kcontrol)
- static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 			    struct snd_ctl_elem_info *info, int replace)
+@@ -119,7 +119,7 @@ static int snd_ctl_release(struct inode *inode, struct file *file)
+ 	struct snd_card *card;
+ 	struct snd_ctl_file *ctl;
+ 	struct snd_kcontrol *control;
+-	unsigned int idx;
++	unsigned int i;
+ 
+ 	ctl = file->private_data;
+ 	file->private_data = NULL;
+@@ -129,9 +129,9 @@ static int snd_ctl_release(struct inode *inode, struct file *file)
+ 	write_unlock_irqrestore(&card->ctl_files_rwlock, flags);
+ 	down_write(&card->controls_rwsem);
+ 	list_for_each_entry(control, &card->controls, list)
+-		for (idx = 0; idx < control->count; idx++)
+-			if (control->vd[idx].owner == ctl)
+-				control->vd[idx].owner = NULL;
++		for (i = 0; i < control->count; i++)
++			if (control->vd[i].owner == ctl)
++				control->vd[i].owner = NULL;
+ 	up_write(&card->controls_rwsem);
+ 	snd_ctl_empty_read_queue(ctl);
+ 	put_pid(ctl->pid);
+@@ -205,7 +205,7 @@ static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
+ 					unsigned int access)
  {
-+	/* The capacity of struct snd_ctl_elem_value.value.*/
-+	const unsigned int value_sizes[] = {
-+		[SNDRV_CTL_ELEM_TYPE_BOOLEAN]	= sizeof(long),
-+		[SNDRV_CTL_ELEM_TYPE_INTEGER]	= sizeof(long),
-+		[SNDRV_CTL_ELEM_TYPE_ENUMERATED] = sizeof(unsigned int),
-+		[SNDRV_CTL_ELEM_TYPE_BYTES]	= sizeof(unsigned char),
-+		[SNDRV_CTL_ELEM_TYPE_IEC958]	= sizeof(struct snd_aes_iec958),
-+		[SNDRV_CTL_ELEM_TYPE_INTEGER64] = sizeof(long long),
-+	};
-+	const unsigned int max_value_counts[] = {
-+		[SNDRV_CTL_ELEM_TYPE_BOOLEAN]	= 128,
-+		[SNDRV_CTL_ELEM_TYPE_INTEGER]	= 128,
-+		[SNDRV_CTL_ELEM_TYPE_ENUMERATED] = 128,
-+		[SNDRV_CTL_ELEM_TYPE_BYTES]	= 512,
-+		[SNDRV_CTL_ELEM_TYPE_IEC958]	= 1,
-+		[SNDRV_CTL_ELEM_TYPE_INTEGER64] = 64,
-+	};
+ 	struct snd_kcontrol *kctl;
+-	unsigned int idx;
++	unsigned int i;
+ 	
+ 	if (snd_BUG_ON(!control || !control->count))
+ 		return NULL;
+@@ -219,8 +219,8 @@ static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
+ 		return NULL;
+ 	}
+ 	*kctl = *control;
+-	for (idx = 0; idx < kctl->count; idx++)
+-		kctl->vd[idx].access = access;
++	for (i = 0; i < kctl->count; i++)
++		kctl->vd[i].access = access;
+ 	return kctl;
+ }
+ 
+@@ -340,7 +340,7 @@ static int snd_ctl_find_hole(struct snd_card *card, unsigned int count)
+ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ {
+ 	struct snd_ctl_elem_id id;
+-	unsigned int idx;
++	unsigned int i;
+ 	unsigned int count;
+ 	int err = -EINVAL;
+ 
+@@ -376,7 +376,7 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ 	id = kcontrol->id;
+ 	count = kcontrol->count;
+ 	up_write(&card->controls_rwsem);
+-	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
++	for (i = 0; i < count; i++, id.index++, id.numid++)
+ 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
+ 	return 0;
+ 
+@@ -405,7 +405,7 @@ int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_ctl_elem_id id;
+ 	unsigned int count;
+-	unsigned int idx;
++	unsigned int i;
+ 	struct snd_kcontrol *old;
+ 	int ret;
+ 
+@@ -443,7 +443,7 @@ add:
+ 	id = kcontrol->id;
+ 	count = kcontrol->count;
+ 	up_write(&card->controls_rwsem);
+-	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
++	for (i = 0; i < count; i++, id.index++, id.numid++)
+ 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
+ 	return 0;
+ 
+@@ -467,14 +467,14 @@ EXPORT_SYMBOL(snd_ctl_replace);
+ int snd_ctl_remove(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ {
+ 	struct snd_ctl_elem_id id;
+-	unsigned int idx;
++	unsigned int i;
+ 
+ 	if (snd_BUG_ON(!card || !kcontrol))
+ 		return -EINVAL;
+ 	list_del(&kcontrol->list);
+ 	card->controls_count -= kcontrol->count;
+ 	id = kcontrol->id;
+-	for (idx = 0; idx < kcontrol->count; idx++, id.index++, id.numid++)
++	for (i = 0; i < kcontrol->count; i++, id.index++, id.numid++)
+ 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_REMOVE, &id);
+ 	snd_ctl_free_one(kcontrol);
+ 	return 0;
+@@ -523,7 +523,7 @@ static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
+ {
  	struct snd_card *card = file->card;
- 	struct snd_kcontrol kctl, *_kctl;
+ 	struct snd_kcontrol *kctl;
+-	int idx, ret;
++	int i, ret;
+ 
+ 	down_write(&card->controls_rwsem);
+ 	kctl = snd_ctl_find_id(card, id);
+@@ -535,8 +535,8 @@ static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
+-	for (idx = 0; idx < kctl->count; idx++)
+-		if (kctl->vd[idx].owner != NULL && kctl->vd[idx].owner != file) {
++	for (i = 0; i < kctl->count; i++)
++		if (kctl->vd[i].owner != NULL && kctl->vd[i].owner != file) {
+ 			ret = -EBUSY;
+ 			goto error;
+ 		}
+@@ -725,7 +725,7 @@ static int snd_ctl_elem_list(struct snd_card *card,
+ 	struct snd_ctl_elem_list list;
+ 	struct snd_kcontrol *kctl;
+ 	struct snd_ctl_elem_id *dst, *id;
+-	unsigned int offset, space, jidx;
++	unsigned int offset, space, i;
+ 	
+ 	if (copy_from_user(&list, _list, sizeof(list)))
+ 		return -EFAULT;
+@@ -755,8 +755,8 @@ static int snd_ctl_elem_list(struct snd_card *card,
+ 		id = dst;
+ 		while (space > 0 && plist != &card->controls) {
+ 			kctl = snd_kcontrol(plist);
+-			for (jidx = offset; space > 0 && jidx < kctl->count; jidx++) {
+-				snd_ctl_build_ioff(id, kctl, jidx);
++			for (i = offset; space > 0 && i < kctl->count; i++) {
++				snd_ctl_build_ioff(id, kctl, i);
+ 				id++;
+ 				space--;
+ 				list.used++;
+@@ -1183,7 +1183,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
  	unsigned int access;
-@@ -1170,6 +1187,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	unsigned int elem_data_size;
+ 	struct user_element *ue;
+-	int idx, err;
++	int i, err;
  
  	if (info->count < 1)
  		return -EINVAL;
-+
- 	access = info->access == 0 ? SNDRV_CTL_ELEM_ACCESS_READWRITE :
- 		(info->access & (SNDRV_CTL_ELEM_ACCESS_READWRITE|
- 				 SNDRV_CTL_ELEM_ACCESS_INACTIVE|
-@@ -1201,37 +1219,16 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 		kctl.tlv.c = snd_ctl_elem_user_tlv;
- 		access |= SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK;
- 	}
--	switch (info->type) {
--	case SNDRV_CTL_ELEM_TYPE_BOOLEAN:
--	case SNDRV_CTL_ELEM_TYPE_INTEGER:
--		elem_data_size = sizeof(long);
--		if (info->count > 128)
--			return -EINVAL;
--		break;
--	case SNDRV_CTL_ELEM_TYPE_INTEGER64:
--		elem_data_size = sizeof(long long);
--		if (info->count > 64)
--			return -EINVAL;
--		break;
--	case SNDRV_CTL_ELEM_TYPE_ENUMERATED:
--		elem_data_size = sizeof(unsigned int);
--		if (info->count > 128 || info->value.enumerated.items == 0)
--			return -EINVAL;
--		break;
--	case SNDRV_CTL_ELEM_TYPE_BYTES:
--		elem_data_size = sizeof(unsigned char);
--		if (info->count > 512)
--			return -EINVAL;
--		break;
--	case SNDRV_CTL_ELEM_TYPE_IEC958:
--		elem_data_size = sizeof(struct snd_aes_iec958);
--		if (info->count != 1)
--			return -EINVAL;
--		break;
--	default:
-+
-+	if (info->type < SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
-+	    info->type > SNDRV_CTL_ELEM_TYPE_INTEGER64)
- 		return -EINVAL;
--	}
--	elem_data_size *= info->count;
-+	if (info->count > max_value_counts[info->type])
-+		return -EINVAL;
-+	if (info->type == SNDRV_CTL_ELEM_TYPE_ENUMERATED &&
-+	    info->value.enumerated.items == 0)
-+		return -EINVAL;
-+	elem_data_size = value_sizes[info->type] * info->count;
- 	ue = kzalloc(sizeof(struct user_element) + elem_data_size, GFP_KERNEL);
- 	if (ue == NULL)
- 		return -ENOMEM;
+@@ -1257,8 +1257,8 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	_kctl->private_data = ue;
+ 
+ 	/* Lock values in this user controls. */
+-	for (idx = 0; idx < _kctl->count; idx++)
+-		_kctl->vd[idx].owner = file;
++	for (i = 0; i < _kctl->count; i++)
++		_kctl->vd[i].owner = file;
+ 
+ 	err = snd_ctl_add(card, _kctl);
+ 	if (err < 0)
 -- 
 2.1.0
