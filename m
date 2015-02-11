@@ -1,7 +1,7 @@
 From: Chris Rorvick <chris@rorvick.com>
-Subject: [PATCH 3/6] ALSA: line6: Return error if device not responding
-Date: Tue, 10 Feb 2015 23:03:14 -0600
-Message-ID: <1423630997-25464-4-git-send-email-chris@rorvick.com>
+Subject: [PATCH 5/6] ALSA: line6: Use explicit type for serial number
+Date: Tue, 10 Feb 2015 23:03:16 -0600
+Message-ID: <1423630997-25464-6-git-send-email-chris@rorvick.com>
 References: <1423630997-25464-1-git-send-email-chris@rorvick.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1423630997-25464-1-git-send-email-chris@rorvick.com>
@@ -10,98 +10,76 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Chris Rorvick <chris@rorvick.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stefan Hajnoczi <stefanha@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Put an upper bound on how long we will wait for the device to respond to
-a read/write request (i.e., 100 milliseconds) and return an error if
-this is reached.
+The serial number (aka ESN) is a 32-bit value.
 
 Signed-off-by: Chris Rorvick <chris@rorvick.com>
 ---
- sound/usb/line6/driver.c | 29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
+ sound/usb/line6/driver.c   | 2 +-
+ sound/usb/line6/driver.h   | 2 +-
+ sound/usb/line6/pod.c      | 4 ++--
+ sound/usb/line6/toneport.c | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 222c14f..2a33f3e 100644
+index f8e2eb0..d31ceb8 100644
 --- a/sound/usb/line6/driver.c
 +++ b/sound/usb/line6/driver.c
-@@ -297,6 +297,7 @@ static void line6_data_received(struct urb *urb)
+@@ -426,7 +426,7 @@ EXPORT_SYMBOL_GPL(line6_write_data);
+ 	Read Line 6 device serial number.
+ 	(POD, TonePort, GuitarPort)
+ */
+-int line6_read_serial_number(struct usb_line6 *line6, int *serial_number)
++int line6_read_serial_number(struct usb_line6 *line6, u32 *serial_number)
+ {
+ 	return line6_read_data(line6, 0x80d0, serial_number,
+ 			       sizeof(*serial_number));
+diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
+index 603bdc4..b281bff 100644
+--- a/sound/usb/line6/driver.h
++++ b/sound/usb/line6/driver.h
+@@ -150,7 +150,7 @@ extern char *line6_alloc_sysex_buffer(struct usb_line6 *line6, int code1,
+ extern int line6_read_data(struct usb_line6 *line6, u16 address, void *data,
+ 			   u8 datalen);
+ extern int line6_read_serial_number(struct usb_line6 *line6,
+-				    int *serial_number);
++				    u32 *serial_number);
+ extern int line6_send_raw_message_async(struct usb_line6 *line6,
+ 					const char *buffer, int size);
+ extern int line6_send_sysex_message(struct usb_line6 *line6,
+diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+index c4246ad..425d22d 100644
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -73,7 +73,7 @@ struct usb_line6_pod {
+ 	int startup_progress;
+ 
+ 	/* Serial number of device */
+-	int serial_number;
++	u32 serial_number;
+ 
+ 	/* Firmware version (x 100) */
+ 	int firmware_version;
+@@ -247,7 +247,7 @@ static ssize_t serial_number_show(struct device *dev,
+ 	struct usb_interface *interface = to_usb_interface(dev);
+ 	struct usb_line6_pod *pod = usb_get_intfdata(interface);
+ 
+-	return sprintf(buf, "%d\n", pod->serial_number);
++	return sprintf(buf, "%u\n", pod->serial_number);
  }
  
- #define LINE6_READ_WRITE_STATUS_DELAY 2  /* milliseconds */
-+#define LINE6_READ_WRITE_MAX_RETRIES 50
- 
  /*
- 	Read data from device.
-@@ -307,6 +308,7 @@ int line6_read_data(struct usb_line6 *line6, u16 address, void *data,
- 	struct usb_device *usbdev = line6->usbdev;
- 	int ret;
- 	unsigned char len;
-+	unsigned count;
+diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
+index 1a0a485..ddf7368 100644
+--- a/sound/usb/line6/toneport.c
++++ b/sound/usb/line6/toneport.c
+@@ -49,7 +49,7 @@ struct usb_line6_toneport {
+ 	int source;
  
- 	/* query the serial number: */
- 	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
-@@ -320,7 +322,7 @@ int line6_read_data(struct usb_line6 *line6, u16 address, void *data,
- 	}
+ 	/* Serial number of device */
+-	int serial_number;
++	u32 serial_number;
  
- 	/* Wait for data length. We'll get 0xff until length arrives. */
--	do {
-+	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
- 		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
- 
- 		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
-@@ -333,9 +335,16 @@ int line6_read_data(struct usb_line6 *line6, u16 address, void *data,
- 				"receive length failed (error %d)\n", ret);
- 			return ret;
- 		}
--	} while (len == 0xff);
- 
--	if (len != datalen) {
-+		if (len != 0xff)
-+			break;
-+	}
-+
-+	if (len == 0xff) {
-+		dev_err(line6->ifcdev, "read failed after %d retries\n",
-+			count);
-+		return -EIO;
-+	} else if (len != datalen) {
- 		/* should be equal or something went wrong */
- 		dev_err(line6->ifcdev,
- 			"length mismatch (expected %d, got %d)\n",
-@@ -367,6 +376,7 @@ int line6_write_data(struct usb_line6 *line6, u16 address, void *data,
- 	struct usb_device *usbdev = line6->usbdev;
- 	int ret;
- 	unsigned char status;
-+	int count;
- 
- 	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
- 			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
-@@ -379,7 +389,7 @@ int line6_write_data(struct usb_line6 *line6, u16 address, void *data,
- 		return ret;
- 	}
- 
--	do {
-+	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
- 		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
- 
- 		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0),
-@@ -394,9 +404,16 @@ int line6_write_data(struct usb_line6 *line6, u16 address, void *data,
- 				"receiving status failed (error %d)\n", ret);
- 			return ret;
- 		}
--	} while (status == 0xff);
- 
--	if (status != 0) {
-+		if (status != 0xff)
-+			break;
-+	}
-+
-+	if (status == 0xff) {
-+		dev_err(line6->ifcdev, "write failed after %d retries\n",
-+			count);
-+		return -EIO;
-+	} else if (status != 0) {
- 		dev_err(line6->ifcdev, "write failed (error %d)\n", ret);
- 		return -EINVAL;
- 	}
+ 	/* Firmware version (x 100) */
+ 	int firmware_version;
 -- 
 2.1.0
