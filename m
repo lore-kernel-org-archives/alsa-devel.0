@@ -1,19 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/8] ALSA: control: obsolete switch
- statement with const value table
-Date: Wed, 11 Feb 2015 11:51:49 +0100
-Message-ID: <54DB3445.1050100@metafoo.de>
-References: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
- <1423651052-19593-3-git-send-email-o-takashi@sakamocchi.jp>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH v2] ASoC: rt5677: Add the chip type to
+	distinguish the setting of the clock source
+Date: Wed, 11 Feb 2015 19:18:51 +0800
+Message-ID: <1423653531-978-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-161.synserver.de (smtp-out-161.synserver.de
- [212.40.185.161])
- by alsa0.perex.cz (Postfix) with ESMTP id 86E4E26058D
- for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 11:51:49 +0100 (CET)
-In-Reply-To: <1423651052-19593-3-git-send-email-o-takashi@sakamocchi.jp>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5732260570
+ for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 12:19:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,48 +19,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, john.lin@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 02/11/2015 11:37 AM, Takashi Sakamoto wrote:
-> To check parameters from userspace, snd_ctl_elem_add() has switch
-> statement. This statement checks the number of values in a control and
-> the size of each value. These two parameters are limited by
-> struct snd_ctl_elem_value.value and can be replaced with two sets of two
-> dimension array with constant values, without any calculation.
->
-> This commit obsolete the switch statement with the array.
->
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
->   sound/core/control.c | 57 +++++++++++++++++++++++++---------------------------
->   1 file changed, 27 insertions(+), 30 deletions(-)
->
-> diff --git a/sound/core/control.c b/sound/core/control.c
-> index ea49abc..f248bde 100644
-> --- a/sound/core/control.c
-> +++ b/sound/core/control.c
-> @@ -1161,6 +1161,23 @@ static void snd_ctl_elem_user_free(struct snd_kcontrol *kcontrol)
->   static int snd_ctl_elem_add(struct snd_ctl_file *file,
->   			    struct snd_ctl_elem_info *info, int replace)
->   {
-> +	/* The capacity of struct snd_ctl_elem_value.value.*/
-> +	const unsigned int value_sizes[] = {
-> +		[SNDRV_CTL_ELEM_TYPE_BOOLEAN]	= sizeof(long),
-> +		[SNDRV_CTL_ELEM_TYPE_INTEGER]	= sizeof(long),
-> +		[SNDRV_CTL_ELEM_TYPE_ENUMERATED] = sizeof(unsigned int),
-> +		[SNDRV_CTL_ELEM_TYPE_BYTES]	= sizeof(unsigned char),
-> +		[SNDRV_CTL_ELEM_TYPE_IEC958]	= sizeof(struct snd_aes_iec958),
-> +		[SNDRV_CTL_ELEM_TYPE_INTEGER64] = sizeof(long long),
-> +	};
-> +	const unsigned int max_value_counts[] = {
-> +		[SNDRV_CTL_ELEM_TYPE_BOOLEAN]	= 128,
-> +		[SNDRV_CTL_ELEM_TYPE_INTEGER]	= 128,
-> +		[SNDRV_CTL_ELEM_TYPE_ENUMERATED] = 128,
-> +		[SNDRV_CTL_ELEM_TYPE_BYTES]	= 512,
-> +		[SNDRV_CTL_ELEM_TYPE_IEC958]	= 1,
-> +		[SNDRV_CTL_ELEM_TYPE_INTEGER64] = 64,
-> +	};
+There is only one clock source in the rt5676, so the chip type is added to
+distinguish the setting of the clock source in the VAD function.
 
-The tables should probably be static, no need to put them on the stack.
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5677.c | 28 ++++++++++++++++++++++------
+ sound/soc/codecs/rt5677.h |  6 ++++++
+ 2 files changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 5d0bb87..ab62777 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -718,11 +718,24 @@ static int rt5677_set_dsp_vad(struct snd_soc_codec *codec, bool on)
+ 			RT5677_LDO1_SEL_MASK, 0x0);
+ 		regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG2,
+ 			RT5677_PWR_LDO1, RT5677_PWR_LDO1);
+-		regmap_update_bits(rt5677->regmap, RT5677_GLB_CLK1,
+-			RT5677_MCLK_SRC_MASK, RT5677_MCLK2_SRC);
+-		regmap_update_bits(rt5677->regmap, RT5677_GLB_CLK2,
+-			RT5677_PLL2_PR_SRC_MASK | RT5677_DSP_CLK_SRC_MASK,
+-			RT5677_PLL2_PR_SRC_MCLK2 | RT5677_DSP_CLK_SRC_BYPASS);
++		switch (rt5677->type) {
++		case RT5677:
++			regmap_update_bits(rt5677->regmap, RT5677_GLB_CLK1,
++				RT5677_MCLK_SRC_MASK, RT5677_MCLK2_SRC);
++			regmap_update_bits(rt5677->regmap, RT5677_GLB_CLK2,
++				RT5677_PLL2_PR_SRC_MASK |
++				RT5677_DSP_CLK_SRC_MASK,
++				RT5677_PLL2_PR_SRC_MCLK2 |
++				RT5677_DSP_CLK_SRC_BYPASS);
++			break;
++		case RT5676:
++			regmap_update_bits(rt5677->regmap, RT5677_GLB_CLK2,
++				RT5677_DSP_CLK_SRC_MASK,
++				RT5677_DSP_CLK_SRC_BYPASS);
++			break;
++		default:
++			break;
++		}
+ 		regmap_write(rt5677->regmap, RT5677_PWR_DSP2, 0x07ff);
+ 		regmap_write(rt5677->regmap, RT5677_PWR_DSP1, 0x07fd);
+ 		rt5677_set_dsp_mode(codec, true);
+@@ -4733,7 +4746,8 @@ static const struct regmap_config rt5677_regmap = {
+ };
+ 
+ static const struct i2c_device_id rt5677_i2c_id[] = {
+-	{ "rt5677", 0 },
++	{ "rt5677", RT5677 },
++	{ "rt5676", RT5676 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+@@ -4850,6 +4864,8 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, rt5677);
+ 
++	rt5677->type = id->driver_data;
++
+ 	if (pdata)
+ 		rt5677->pdata = *pdata;
+ 
+diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
+index c0a625f..07df96b 100644
+--- a/sound/soc/codecs/rt5677.h
++++ b/sound/soc/codecs/rt5677.h
+@@ -1665,6 +1665,11 @@ enum {
+ 	RT5677_IRQ_JD3,
+ };
+ 
++enum rt5677_type {
++	RT5677,
++	RT5676,
++};
++
+ struct rt5677_priv {
+ 	struct snd_soc_codec *codec;
+ 	struct rt5677_platform_data pdata;
+@@ -1681,6 +1686,7 @@ struct rt5677_priv {
+ 	int pll_in;
+ 	int pll_out;
+ 	int pow_ldo2; /* POW_LDO2 pin */
++	enum rt5677_type type;
+ #ifdef CONFIG_GPIOLIB
+ 	struct gpio_chip gpio_chip;
+ #endif
+-- 
+1.8.1.1.439.g50a6b54
