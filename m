@@ -1,70 +1,81 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH v2 1/3] ARM: shmobile: armadillo800eva: Properly specify
- HDMI audio link format
-Date: Wed, 11 Feb 2015 09:28:05 +0900
-Message-ID: <20150211002802.GC7826@verge.net.au>
-References: <1421847492-8857-1-git-send-email-lars@metafoo.de>
- <87d25wg804.wl%kuninori.morimoto.gx@renesas.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [GIT PULL]: Add sst audio firmware for Braswell
+	platforms
+Date: Wed, 11 Feb 2015 07:01:56 +0530
+Message-ID: <20150211013156.GI21387@intel.com>
+References: <20150203054058.GA4489@intel.com>
+ <20150206084820.GD30928@merlin.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D565826057A
+ for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 02:34:17 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <87d25wg804.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+In-Reply-To: <20150206084820.GD30928@merlin.infradead.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kyle McMartin <kyle@infradead.org>
+Cc: alsa-devel@alsa-project.org, linux-firmware@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 30, 2015 at 05:18:56AM +0000, Kuninori Morimoto wrote:
-> 
-> Hi Lars, Simon
-> 
-> > The DAI link format should be specified for the whole link rather than just
-> > one component on the link. So move the format specification for the HDMI
-> > audio link from the CPU component to the link itself.
+On Fri, Feb 06, 2015 at 03:48:20AM -0500, Kyle McMartin wrote:
+> On Mon, Feb 02, 2015 at 09:40:58PM -0800, Vinod Koul wrote:
+> > Hello Linux firmware maintainers,
 > > 
-> > Since the sh-mobile-hdmi DAI driver doesn't implement the set_fmt() callback
-> > in this case there is no functional difference between only specifying the
-> > the format for the CPU side or for the whole link, but the later it will
-> > allow us to remove support for just specifying the format for one component.
+> > Please PULL to receive the Intel audio firmware for audio DSP in Braswell
+> > platforms. This firmware is using the same license as the Baytrail firmware
+> > already available in linux-firmware git.
 > > 
-> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > ---
+> > The following changes since commit b794c5039dcf0b7ebfeb58929d035f7a1d4c80dd:
+> > 
+> >   Merge branch 'marvell-mwifiex' (2015-01-27 10:42:47 -0500)
+> > 
 > 
-> I tested these 3 patches on armadillo800eva
+> Thanks, I've applied this to the tree.
 > 
-> 	[PATCH v2 1/3] ARM: shmobile: armadillo800eva: Properly specify HDMI audio link format
-> 	[PATCH v2 2/3] ASoC: sh: fsi: Fix clock inversion
-> 	[PATCH v2 3/3] ASoC: simple-card: Remove support for setting differing DAI formats
-> 
-> Tested-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> 2/3 patch changed behavior for clock inversion on FSI driver.
-> FSI + wm8978 on armadillo800eva worked without any issues,
-> but, I don't know how much effect it has for other board.
-> We used this inversion flags on each board for historical reasons (copy-paste),
-> but, almost all these were not needed (except some picky board) on FSI.
-> Maybe Lars's 2/3 patch is correct, but, it is difficult to check/confirm for all boards.
-> And unfortunately, Renesas don't use FSI anymore.
-> So, I think keeping current FSI driver as-is is more safety for old boards.
-> armadillo800eva works well with below patch (as 2/3 patch)
+> One note for the future... is there a version number for this firmware
+> we could add to WHENCE, or is it not expected to be upgraded in the
+> future?
+Thanks for pointing out. I will update the version numbers too. They will
+help :)
 
-
-Thanks, I am inclined to agree that it is best to leave things unchanged.
+-- 
+~Vinod
 
 > 
-> --------------
-> diff --git a/arch/arm/mach-shmobile/board-armadillo800eva.c b/arch/arm/mach-shmobile/board-armadillo800eva.c
-> index 75de26c..36aaeb1 100644
-> --- a/arch/arm/mach-shmobile/board-armadillo800eva.c
-> +++ b/arch/arm/mach-shmobile/board-armadillo800eva.c
-> @@ -1015,7 +1015,6 @@ static struct asoc_simple_card_info fsi_wm8978_info = {
->         .platform       = "sh_fsi2",
->         .daifmt         = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM,
->         .cpu_dai = {
-> -               .fmt    = SND_SOC_DAIFMT_IB_NF,
->                 .name   = "fsia-dai",
->         },
->         .codec_dai = {
-> --------------
+> regards, Kyle
 > 
+> > are available in the git repository at:
+> > 
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git BSW
+> > 
+> > for you to fetch changes up to f692aba54c8c80cb27a3eb5388594a55a30504ea:
+> > 
+> >   linux-firmware: add sst audio firmware for braswell platforms (2015-02-02 21:12:22 -0800)
+> > 
+> > ----------------------------------------------------------------
+> > Vinod Koul (1):
+> >       linux-firmware: add sst audio firmware for braswell platforms
+> > 
+> >  WHENCE                |    8 ++++++++
+> >  intel/fw_sst_22a8.bin |  Bin 0 -> 647390 bytes
+> >  2 files changed, 8 insertions(+)
+> >  create mode 100644 intel/fw_sst_22a8.bin
+> > 
+> > Thanks
+> > -- 
+> > ~Vinod
+> 
+> 
+
+-- 
