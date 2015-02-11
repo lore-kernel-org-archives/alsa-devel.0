@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] ALSA: control: drop a sub-effect for
-	caller's data
-Date: Wed, 11 Feb 2015 19:40:09 +0900
-Message-ID: <1423651213-19829-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] ALSA: control: use dev_dbg() for warning
+	to add duplicated controls
+Date: Wed, 11 Feb 2015 19:40:10 +0900
+Message-ID: <1423651213-19829-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1423651213-19829-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 87CFA264FE3
+ by alsa0.perex.cz (Postfix) with ESMTP id 8684B26262D
  for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 11:40:21 +0100 (CET)
 In-Reply-To: <1423651213-19829-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,42 +25,31 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In snd_ctl_elem_add(), the given information data is changed when
-calling snd_ctl_elem_add(). The numid field is set as zero.
+When duplicated controls are added, snd module generates message and
+the callers receive -EBUSY. The messaging is redundant, especially for
+userspace applications because it's caller's fault and callers get
+the status code.
 
-This commit drops this sub-effect for a better API design.
+This commit change its messaging level to suppress messages in normal
+usage.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/core/control.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index af95783..d98b990 100644
+index d98b990..1edd6c5 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1192,11 +1192,12 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 		access |= SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK;
- 	access |= SNDRV_CTL_ELEM_ACCESS_USER;
- 
--	info->id.numid = 0;
- 	memset(&kctl, 0, sizeof(kctl));
-+	kctl.id = info->id;
-+	kctl.id.numid = 0;
- 
- 	if (replace) {
--		err = snd_ctl_remove_user_ctl(file, &info->id);
-+		err = snd_ctl_remove_user_ctl(file, &kctl.id);
- 		if (err)
- 			return err;
- 	}
-@@ -1204,7 +1205,6 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	if (card->user_ctl_count >= MAX_USER_CONTROLS)
- 		return -ENOMEM;
- 
--	memcpy(&kctl.id, &info->id, sizeof(info->id));
- 	kctl.count = info->owner ? info->owner : 1;
- 	if (info->type == SNDRV_CTL_ELEM_TYPE_ENUMERATED)
- 		kctl.info = snd_ctl_elem_user_enum_info;
+@@ -349,7 +349,7 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ 	down_write(&card->controls_rwsem);
+ 	if (snd_ctl_find_id(card, &id)) {
+ 		up_write(&card->controls_rwsem);
+-		dev_err(card->dev,
++		dev_dbg(card->dev,
+ 			"control %i:%i:%i:%s:%i is already present\n",
+ 			id.iface, id.device, id.subdevice, id.name, id.index);
+ 		err = -EBUSY;
 -- 
 2.1.0
