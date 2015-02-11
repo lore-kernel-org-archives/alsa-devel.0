@@ -1,14 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/8] ALSA: control: refactoring core codes
-Date: Wed, 11 Feb 2015 19:37:24 +0900
-Message-ID: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/8] ALSA: control: change type from long due
+	to the definition of sizeof operator
+Date: Wed, 11 Feb 2015 19:37:25 +0900
+Message-ID: <1423651052-19593-2-git-send-email-o-takashi@sakamocchi.jp>
+References: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A8A42605A9
+ by alsa0.perex.cz (Postfix) with ESMTP id AC6742605CE
  for <alsa-devel@alsa-project.org>; Wed, 11 Feb 2015 11:37:39 +0100 (CET)
+In-Reply-To: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +25,89 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patchset is for refactoring core control codes. This is also a
-preparation for my further work for ALSA control functionality.
+The sizeof() operator returns 'unsigned' value, while it's assigned to 'long'.
+And in this case, the value is not so large.
 
-Takashi Sakamoto (8):
-  ALSA: control: change type from long due to the definition of sizeof
-    operator
-  ALSA: control: obsolete switch statement with const value table
-  ALSA: control: gathering evaluations to access
-  ALSA: control: add a comment about locking values after creating
-  ALSA: control: rename loop index to i
-  ALSA: control: fix over 80 characters lines
-  ALSA: control: rename to appropriate macro name
-  ALSA: control: arrange snd_ctl_new() as a local function
+This commit change the type of assigned value to 'unsigned int'. Additonally,
+rename local variable assigned to the value.
 
- sound/core/control.c | 223 ++++++++++++++++++++++++++-------------------------
- 1 file changed, 113 insertions(+), 110 deletions(-)
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/control.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 35324a8..ea49abc 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1007,7 +1007,7 @@ struct user_element {
+ 	struct snd_ctl_elem_info info;
+ 	struct snd_card *card;
+ 	void *elem_data;		/* element data */
+-	unsigned long elem_data_size;	/* size of element data in bytes */
++	unsigned int elem_data_size;	/* size of element data in bytes */
+ 	void *tlv_data;			/* TLV data */
+ 	unsigned long tlv_data_size;	/* TLV data size */
+ 	void *priv_data;		/* private data (like strings for enumerated type) */
+@@ -1164,7 +1164,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	struct snd_card *card = file->card;
+ 	struct snd_kcontrol kctl, *_kctl;
+ 	unsigned int access;
+-	long private_size;
++	unsigned int elem_data_size;
+ 	struct user_element *ue;
+ 	int idx, err;
+ 
+@@ -1204,42 +1204,42 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	switch (info->type) {
+ 	case SNDRV_CTL_ELEM_TYPE_BOOLEAN:
+ 	case SNDRV_CTL_ELEM_TYPE_INTEGER:
+-		private_size = sizeof(long);
++		elem_data_size = sizeof(long);
+ 		if (info->count > 128)
+ 			return -EINVAL;
+ 		break;
+ 	case SNDRV_CTL_ELEM_TYPE_INTEGER64:
+-		private_size = sizeof(long long);
++		elem_data_size = sizeof(long long);
+ 		if (info->count > 64)
+ 			return -EINVAL;
+ 		break;
+ 	case SNDRV_CTL_ELEM_TYPE_ENUMERATED:
+-		private_size = sizeof(unsigned int);
++		elem_data_size = sizeof(unsigned int);
+ 		if (info->count > 128 || info->value.enumerated.items == 0)
+ 			return -EINVAL;
+ 		break;
+ 	case SNDRV_CTL_ELEM_TYPE_BYTES:
+-		private_size = sizeof(unsigned char);
++		elem_data_size = sizeof(unsigned char);
+ 		if (info->count > 512)
+ 			return -EINVAL;
+ 		break;
+ 	case SNDRV_CTL_ELEM_TYPE_IEC958:
+-		private_size = sizeof(struct snd_aes_iec958);
++		elem_data_size = sizeof(struct snd_aes_iec958);
+ 		if (info->count != 1)
+ 			return -EINVAL;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	private_size *= info->count;
+-	ue = kzalloc(sizeof(struct user_element) + private_size, GFP_KERNEL);
++	elem_data_size *= info->count;
++	ue = kzalloc(sizeof(struct user_element) + elem_data_size, GFP_KERNEL);
+ 	if (ue == NULL)
+ 		return -ENOMEM;
+ 	ue->card = card;
+ 	ue->info = *info;
+ 	ue->info.access = 0;
+ 	ue->elem_data = (char *)ue + sizeof(*ue);
+-	ue->elem_data_size = private_size;
++	ue->elem_data_size = elem_data_size;
+ 	if (ue->info.type == SNDRV_CTL_ELEM_TYPE_ENUMERATED) {
+ 		err = snd_ctl_elem_init_enum_names(ue);
+ 		if (err < 0) {
 -- 
 2.1.0
