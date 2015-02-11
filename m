@@ -1,7 +1,7 @@
 From: Chris Rorvick <chris@rorvick.com>
-Subject: [PATCH 5/6] ALSA: line6: Use explicit type for serial number
-Date: Tue, 10 Feb 2015 23:03:16 -0600
-Message-ID: <1423630997-25464-6-git-send-email-chris@rorvick.com>
+Subject: [PATCH 4/6] ALSA: line6: Return EIO if read/write not successful
+Date: Tue, 10 Feb 2015 23:03:15 -0600
+Message-ID: <1423630997-25464-5-git-send-email-chris@rorvick.com>
 References: <1423630997-25464-1-git-send-email-chris@rorvick.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1423630997-25464-1-git-send-email-chris@rorvick.com>
@@ -10,76 +10,32 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Chris Rorvick <chris@rorvick.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stefan Hajnoczi <stefanha@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The serial number (aka ESN) is a 32-bit value.
-
 Signed-off-by: Chris Rorvick <chris@rorvick.com>
 ---
- sound/usb/line6/driver.c   | 2 +-
- sound/usb/line6/driver.h   | 2 +-
- sound/usb/line6/pod.c      | 4 ++--
- sound/usb/line6/toneport.c | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ sound/usb/line6/driver.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index f8e2eb0..d31ceb8 100644
+index 2a33f3e..f8e2eb0 100644
 --- a/sound/usb/line6/driver.c
 +++ b/sound/usb/line6/driver.c
-@@ -426,7 +426,7 @@ EXPORT_SYMBOL_GPL(line6_write_data);
- 	Read Line 6 device serial number.
- 	(POD, TonePort, GuitarPort)
- */
--int line6_read_serial_number(struct usb_line6 *line6, int *serial_number)
-+int line6_read_serial_number(struct usb_line6 *line6, u32 *serial_number)
- {
- 	return line6_read_data(line6, 0x80d0, serial_number,
- 			       sizeof(*serial_number));
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 603bdc4..b281bff 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -150,7 +150,7 @@ extern char *line6_alloc_sysex_buffer(struct usb_line6 *line6, int code1,
- extern int line6_read_data(struct usb_line6 *line6, u16 address, void *data,
- 			   u8 datalen);
- extern int line6_read_serial_number(struct usb_line6 *line6,
--				    int *serial_number);
-+				    u32 *serial_number);
- extern int line6_send_raw_message_async(struct usb_line6 *line6,
- 					const char *buffer, int size);
- extern int line6_send_sysex_message(struct usb_line6 *line6,
-diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index c4246ad..425d22d 100644
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -73,7 +73,7 @@ struct usb_line6_pod {
- 	int startup_progress;
+@@ -349,7 +349,7 @@ int line6_read_data(struct usb_line6 *line6, u16 address, void *data,
+ 		dev_err(line6->ifcdev,
+ 			"length mismatch (expected %d, got %d)\n",
+ 			(int)datalen, (int)len);
+-		return -EINVAL;
++		return -EIO;
+ 	}
  
- 	/* Serial number of device */
--	int serial_number;
-+	u32 serial_number;
+ 	/* receive the result: */
+@@ -415,7 +415,7 @@ int line6_write_data(struct usb_line6 *line6, u16 address, void *data,
+ 		return -EIO;
+ 	} else if (status != 0) {
+ 		dev_err(line6->ifcdev, "write failed (error %d)\n", ret);
+-		return -EINVAL;
++		return -EIO;
+ 	}
  
- 	/* Firmware version (x 100) */
- 	int firmware_version;
-@@ -247,7 +247,7 @@ static ssize_t serial_number_show(struct device *dev,
- 	struct usb_interface *interface = to_usb_interface(dev);
- 	struct usb_line6_pod *pod = usb_get_intfdata(interface);
- 
--	return sprintf(buf, "%d\n", pod->serial_number);
-+	return sprintf(buf, "%u\n", pod->serial_number);
- }
- 
- /*
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index 1a0a485..ddf7368 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -49,7 +49,7 @@ struct usb_line6_toneport {
- 	int source;
- 
- 	/* Serial number of device */
--	int serial_number;
-+	u32 serial_number;
- 
- 	/* Firmware version (x 100) */
- 	int firmware_version;
+ 	return 0;
 -- 
 2.1.0
