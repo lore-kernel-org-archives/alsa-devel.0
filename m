@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Subject: [Patch V5 01/12] MAINTAINERS: Add QCOM audio ASoC maintainer
-Date: Wed, 11 Feb 2015 18:10:04 -0800
-Message-ID: <1423707015-14527-2-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V5 04/12] ASoC: qcom: Document IPQ806X-MAX89357A bindings
+Date: Wed, 11 Feb 2015 18:10:07 -0800
+Message-ID: <1423707015-14527-5-git-send-email-kwestfie@codeaurora.org>
 References: <1423707015-14527-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1423707015-14527-1-git-send-email-kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
@@ -12,33 +12,47 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 
-Add maintainers for the Qualcomm Technologies
-sound drivers.
+Add documentation to the sound directory of the
+device-tree bindings for the IPQ806x-MAX98357A
+soundcard.
 
 Signed-off-by: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 Acked-by: Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../bindings/sound/qcom,ipq806x-max98357a.txt      | 24 ++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,ipq806x-max98357a.txt
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d66a97dd3a12548e0f79c59154260724da11f282..9beda051e158156e2f7742485059ca299ed6a3d5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5183,6 +5183,13 @@ F:	drivers/char/ipmi/
- F:	include/linux/ipmi*
- F:	include/uapi/linux/ipmi*
- 
-+QCOM AUDIO (ASoC) DRIVERS
-+M:	Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-+M:	Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-+L:	alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org (moderated for non-subscribers)
-+S:	Supported
-+F:	sound/soc/qcom/
+diff --git a/Documentation/devicetree/bindings/sound/qcom,ipq806x-max98357a.txt b/Documentation/devicetree/bindings/sound/qcom,ipq806x-max98357a.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..54c6211ce34ab8eb5c764df516c875694eeab3cb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,ipq806x-max98357a.txt
+@@ -0,0 +1,24 @@
++* Qualcomm Technologies IPQ806x-MAX98357A SoundCard
 +
- IPS SCSI RAID DRIVER
- M:	Adaptec OEM Raid Solutions <aacraid-ugMvIWC9OiRBDgjK7y7TUQ@public.gmane.org>
- L:	linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
++This node models a soundcard for boards with the Qualcomm Technologies IPQ806x
++SOC connected to a MAX98357A DAC via I2S.
++
++Required properties:
++
++- compatible	: "qcom,ipq806x-max98357a"
++- qcom,model	: The user-visible name of this sound card.
++- cpu		: Phandle of the CPU DAI
++- codec		: Phandle of the codec DAI
++- codec-dai	: Name of the codec DAI which must be selected from one of the
++		  following entries:
++			* max98357a
++
++Example:
++
++sound {
++	compatible = "qcom,ipq806x-max98357a";
++	model = "ipq806x-max98357a";
++	cpu = <&lpass_cpu>;
++	codec = <&max98357a>;
++	codec-dai = "max98357a";
++};
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
