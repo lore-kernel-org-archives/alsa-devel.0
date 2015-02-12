@@ -1,74 +1,113 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: davinci-mcasp: extension to use AHCLKX pin as
- external clock source
-Date: Thu, 12 Feb 2015 10:09:49 +0200
-Message-ID: <54DC5FCD.1070501@ti.com>
-References: <54D487BE.2060209@bytesatwork.ch> <54D4AA7D.6050108@ti.com>
- <54DA12FA.4090402@bytesatwork.ch>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH] ASoC: wm8731: let codec to manage clock by itself
+Date: Thu, 12 Feb 2015 16:23:06 +0800
+Message-ID: <54DC62EA.5030503@atmel.com>
+References: <1423121713-19434-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 173D82605C8
- for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 09:09:57 +0100 (CET)
-In-Reply-To: <54DA12FA.4090402@bytesatwork.ch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?VXJzIEbDpHNzbGVy?= <urs.fassler@bytesatwork.ch>, perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, jsarha@ti.com, linux-kernel@vger.kernel.org, broonie@kernel.org, misael.lopez@ti.com
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1423121713-19434-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Richard Purdie <richard@openedhand.com>, patches@opensource.wolfsonmicro.com
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDIvMTAvMjAxNSAwNDoxNyBQTSwgVXJzIEbDpHNzbGVyIHdyb3RlOgo+IE9uIDA2LjAyLjIw
-MTUgMTI6NTAsIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+PiBPbiAwMi8wNi8yMDE1IDExOjIyIEFN
-LCBVcnMgRsOkc3NsZXIgd3JvdGU6Cj4+PiBUaGUgQUhDTEtYIHBpbiBzZWVtcyBub3QgdG8gYmUg
-c3VwcG9ydGVkIGFzIGV4dGVybmFsIHNvdXJjZS4gVGhlIGZpcnN0Cj4+PiBwYXRjaCBpcyBhIGdl
-bmVyYWwgZml4IHRvIGFsbG93IGV4dGVybmFsIGNsb2NrLiBUaGUgc2Vjb25kIGFsbG93cyB5b3Ug
-dG8KPj4+IHNlbGVjdCB0aGUgQUhDTEtYIHBpbiBhcyBjbG9jayBzb3VyY2UuCj4+Pgo+Pj4gUGF0
-Y2ggYnVpbHQgYWdhaW5zdCB2My4xOS1yYzcKPj4+Cj4+Cj4+IEkgZG9uJ3QgdGhpbmsgdGhpcyBz
-ZXJpZXMgaXMgY29ycmVjdC4gWW91IGNhbiBqdXN0IGlzc3VlOgo+PiBzbmRfc29jX2RhaV9zZXRf
-c3lzY2xrKGNwdV9kYWksIDAsIHN5c2NsaywgU05EX1NPQ19DTE9DS19JTik7Cj4+Cj4+IGZyb20g
-dGhlIG1hY2hpbmUgZHJpdmVyIHRvIHNlbGVjdCBBSENMS1ggYXMgaW5wdXQuCj4+Cj4gSSBjaGVj
-a2VkIGV2ZXJ5dGhpbmcgYW5kIHRoZSBzb3VyY2Ugb2YgdGhlIHByb2JsZW0gaXMsIHRoYXQgb24g
-b3VyCj4gaGFyZHdhcmUgdGhlIGJpdCBjbG9jayBvZiB0aGUgY29kZWMgaXMgY29ubmVjdGVkIHRv
-IEFIQ0xLWC4KCldoeSB3b3VsZCBhbnkgSFcgZGVzaWduZXIgZG8gdGhpcz8/PwoKSnVzdCB0byBj
-bGFyaWZ5IHRoaXM6IHRoZSBiaXRjbG9jayBmcm9tIGNvZGVjIGlzIG9ubHkgY29ubmVjdGVkIHRv
-IEFIQ0xLWCBwaW4sCm9yIGlzIGl0IGFsc28gY29ubmVjdGVkIHRvIHRoZSBBQ0xLWCBwaW4/ClRo
-ZSB1c2Ugb2YgQUhDTEtYL1IgcGluIGlzIF9vcHRpb25hbF8gaW4gTWNBU1AgYW5kIGl0IHNlcnZl
-cyB0aGUgcHVycG9zZSBvZgpwcm92aWRpbmcgYSB3YXkgdG8gaGF2ZSBzeW5jaHJvbml6ZWQgbWFz
-dGVyIGNsb2NrIGZvciB0aGUgY29kZWMgYW5kIE1jQVNQLgpBQ0xLWCwgQUZTWCBhbmQgZGF0YSBw
-aW5zIGFyZSBtYW5kYXRvcnkgdG8gYmUgY29ubmVjdGVkLgoKPiBBY2NvcmRpbmcgdG8gdGhlIGRh
-dGFzaGVldCwgQUhDTEtYIGlzIGZvciB0aGUgbWFzdGVyIGNsb2NrIG9ubHkuCgpZZXMsIGl0IGlz
-IGZvciB0aGUgbWFzdGVyIGNsb2NrIHRvIGJlIHVzZWQgYnkgYm90aCBjb2RlYyBhbmQgTWNBU1Ag
-dG8gYXZvaWQKY2xvY2sgZHJpZnRpbmcuCgo+IE9uIHRoZSBvdGhlciBoYW5kLCBpdCBpcyBwb3Nz
-aWJsZSB0byByb3V0ZSBhIGJpdGNsb2NrIGZyb20gQUhDTEtYIHRvCiA+dGhlIHN1YnN5c3RlbSAo
-d2hhdCBJIGRpZCB3aXRoIG15IHBhdGNoZXMpLgoKWWVzLCBpdCBpcyBwb3NzaWJsZSwgd2hlbiBN
-Y0FTUCBpcyBtYXN0ZXIgaXQgY2FuIHVzZSB0aGUgc2lnbmFsIG9uIEFIQ0xLWCBwaW4KdG8gZ2Vu
-ZXJhdGUgdGhlIEJDTEsvRlMuCgo+IE5vdyBteSBxdWVzdGlvbiBpcywgaWYgaXQgaXMgZXZlbiB3
-b3J0aCB0cnlpbmcgdG8gYnJpbmcgc3VjaCBhbiBvcHRpb24KPiBmb3IgdGhlIGRyaXZlciAodXNl
-IEFIQ0xLWCBhcyBiaXQgY2xvY2sgaW4pIHVwc3RyZWFtPwoKSSBkb24ndCB3YW50IEhXIGRlc2ln
-bmVycyB0byBnZXQgaWRlYXMgZnJvbSBjb2RlIC0gYnV0IGlmIHRoZXkgZGlkIHdoYXQgSQp0aGlu
-ayB0aGV5IGRpZCB3aXRoIHlvdXIgSFcgdGhleSBjZXJ0YWlubHkgbm90IGdvaW5nIHRvIGJvdGhl
-ciBjaGVja2luZyBUUk0gb3IKY29kZS4uLgoKQnV0IEkgdGhpbmsgeW91IGNhbiBzdGlsbCBnZXQg
-dGhlIHNldHVwIHdvcmtpbmcsIGlmIGl0IGlzIHJlYWxseSBsaWtlIHRoaXM6CgpNY0FTUApBSENM
-S1ggPC0tIGJpdGNsb2NrIDwtLSBjb2RlYwpBQ0xLWCAgKG5vdCBjb25uZWN0ZWQgd2hpbGUgaXQg
-c2hvdWxkIGhhdmUgYmVlbikKRlNYICAgIDwtLSBmcmFtc3luYyA8LS0gY29kZWMKCkluIHRoaXMg
-Y2FzZSB5b3Ugd2FudCB0byBjb25maWd1cmUgdGhlIGNvZGVjIHRvIGJlIENCTV9DRk0gYW5kIE1j
-QVNQIGFzCkNCU19DRk0gKHdlIGRvbid0IGhhdmUgdGhpcyBzdXBwb3J0ZWQgaW4gdGhlIGRyaXZl
-ciwgYnV0IG5vdCBhIGJpZyBkZWFsIHRvIGFkZCkuCgpBbmQgeW91IGNhbGw6CnNuZF9zb2NfZGFp
-X3NldF9zeXNjbGsoY3B1X2RhaSwgMCwgc3lzY2xrLCBTTkRfU09DX0NMT0NLX0lOKTsKc25kX3Nv
-Y19kYWlfc2V0X2Nsa2RpdihjcHVfZGFpLCAxLCAxKTsKCllvdSB3aWxsIGhhdmUgdGhlIGNvZGVj
-IHByb3ZpZGluZyB0aGUgRlMgYW5kIGRyaXZpbmcgdGhlIGJpdGNsb2NrIChjb25uZWN0ZWQKdG8g
-d3JvbmcgTWNBU1AgcGluKS4gTWNBU1Agd2lsbCBkcml2ZSB0aGUgYml0Y2xvY2sgdXNpbmcgdGhl
-IEFIQ0xLWCBhcyBzb3VyY2UKdXNpbmcgZGl2aWRlIGJ5IDEuIE1jQVNQIHdpbGwgbm90IHRyeSB0
-byBkcml2ZSBGUy4KCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+Hi All,
+
+On 02/05/2015 03:35 PM, Bo Shen wrote:
+> Let the wm8731 codec to manage clock by itself.
+>
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> ---
+>
+>   sound/soc/codecs/wm8731.c | 28 ++++++++++++++++++++++++++++
+>   1 file changed, 28 insertions(+)
+
+Any comments for this patch (aka ping?)
+
+> diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+> index b115ed8..ecd8424 100644
+> --- a/sound/soc/codecs/wm8731.c
+> +++ b/sound/soc/codecs/wm8731.c
+> @@ -13,6 +13,7 @@
+>    * published by the Free Software Foundation.
+>    */
+>
+> +#include <linux/clk.h>
+>   #include <linux/module.h>
+>   #include <linux/moduleparam.h>
+>   #include <linux/init.h>
+> @@ -45,6 +46,7 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
+>   /* codec private data */
+>   struct wm8731_priv {
+>   	struct regmap *regmap;
+> +	struct clk *mclk;
+>   	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
+>   	const struct snd_pcm_hw_constraint_list *constraints;
+>   	unsigned int sysclk;
+> @@ -389,6 +391,9 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+>   	switch (clk_id) {
+>   	case WM8731_SYSCLK_XTAL:
+>   	case WM8731_SYSCLK_MCLK:
+> +		if (IS_ENABLED(CONFIG_COMMON_CLK))
+> +			if (clk_set_rate(wm8731->mclk, freq))
+> +				return -EINVAL;
+>   		wm8731->sysclk_type = clk_id;
+>   		break;
+>   	default:
+> @@ -490,6 +495,9 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+>
+>   	switch (level) {
+>   	case SND_SOC_BIAS_ON:
+> +		if (IS_ENABLED(CONFIG_COMMON_CLK))
+> +			if (clk_prepare_enable(wm8731->mclk))
+> +				return -EINVAL;
+>   		break;
+>   	case SND_SOC_BIAS_PREPARE:
+>   		break;
+> @@ -508,6 +516,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+>   		snd_soc_write(codec, WM8731_PWR, reg | 0x0040);
+>   		break;
+>   	case SND_SOC_BIAS_OFF:
+> +		if (IS_ENABLED(CONFIG_COMMON_CLK))
+> +			clk_disable_unprepare(wm8731->mclk);
+>   		snd_soc_write(codec, WM8731_PWR, 0xffff);
+>   		regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies),
+>   				       wm8731->supplies);
+> @@ -666,6 +676,15 @@ static int wm8731_spi_probe(struct spi_device *spi)
+>   	if (wm8731 == NULL)
+>   		return -ENOMEM;
+>
+> +	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
+> +		wm8731->mclk = devm_clk_get(&spi->dev, "mclk");
+> +		if (IS_ERR(wm8731->mclk)) {
+> +			ret = PTR_ERR(wm8731->mclk);
+> +			dev_err(&spi->dev, "Failed to get MCLK\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+>   	mutex_init(&wm8731->lock);
+>
+>   	wm8731->regmap = devm_regmap_init_spi(spi, &wm8731_regmap);
+> @@ -717,6 +736,15 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+>   	if (wm8731 == NULL)
+>   		return -ENOMEM;
+>
+> +	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
+> +		wm8731->mclk = devm_clk_get(&i2c->dev, "mclk");
+> +		if (IS_ERR(wm8731->mclk)) {
+> +			ret = PTR_ERR(wm8731->mclk);
+> +			dev_err(&i2c->dev, "Failed to get MCLK\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+>   	mutex_init(&wm8731->lock);
+>
+>   	wm8731->regmap = devm_regmap_init_i2c(i2c, &wm8731_regmap);
+>
+
+Best Regards,
+Bo Shen
