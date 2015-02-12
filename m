@@ -1,34 +1,34 @@
-From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Subject: [PATCH v2 3/3] ASoC: tegra: Add control for the Mic Jack pin
-Date: Thu, 12 Feb 2015 09:41:57 +0100
-Message-ID: <1423730523-26266-4-git-send-email-tomeu.vizoso@collabora.com>
-References: <1423730523-26266-1-git-send-email-tomeu.vizoso@collabora.com>
+From: Kiran Padwal <kiran.padwal@smartplayin.com>
+Subject: [PATCH] ASoC: omap-hdmi-audio: Add missing error check for devm_kzalloc
+Date: Thu, 12 Feb 2015 14:38:02 +0530
+Message-ID: <1423732082-23815-1-git-send-email-kiran.padwal@smartplayin.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1423730523-26266-1-git-send-email-tomeu.vizoso@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Tomeu Vizoso <tomeu.vizoso@collabora.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Stephen Warren <swarren@wwwdotorg.org>, Thierry Reding <thierry.reding@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, Dylan Reid <dgreid@chromium.org>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kiran Padwal <kiran.padwal21@gmail.com>, Kiran Padwal <kiran.padwal@smartplayin.com>
 List-Id: alsa-devel@alsa-project.org
 
-So userspace can enable and disable the external microphone.
+This patch add a missing check on the return value of devm_kzalloc,
+which would cause a NULL pointer dereference in a OOM situation.
 
-Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Acked-by: Stephen Warren <swarren@nvidia.com>
+Signed-off-by: Kiran Padwal <kiran.padwal@smartplayin.com>
 ---
- sound/soc/tegra/tegra_max98090.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/omap/omap-hdmi-audio.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra_max98090.c b/sound/soc/tegra/tegra_max98090.c
-index 29ea87c..1f20c2c 100644
---- a/sound/soc/tegra/tegra_max98090.c
-+++ b/sound/soc/tegra/tegra_max98090.c
-@@ -139,6 +139,7 @@ static const struct snd_soc_dapm_widget tegra_max98090_dapm_widgets[] = {
- static const struct snd_kcontrol_new tegra_max98090_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphones"),
- 	SOC_DAPM_PIN_SWITCH("Speakers"),
-+	SOC_DAPM_PIN_SWITCH("Mic Jack"),
- 	SOC_DAPM_PIN_SWITCH("Int Mic"),
- };
+diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
+index ccfb41c..f7eb42a 100644
+--- a/sound/soc/omap/omap-hdmi-audio.c
++++ b/sound/soc/omap/omap-hdmi-audio.c
+@@ -352,6 +352,9 @@ static int omap_hdmi_audio_probe(struct platform_device *pdev)
+ 		return ret;
  
+ 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
++
+ 	card->name = devm_kasprintf(dev, GFP_KERNEL,
+ 				    "HDMI %s", dev_name(ad->dssdev));
+ 	card->owner = THIS_MODULE;
 -- 
-1.9.3
+1.7.9.5
