@@ -1,58 +1,74 @@
-From: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Subject: Re: [alsa-devel] [Patch V4 00/10] ASoC: QCOM: Add support for ipq806x
- SOC
-Date: Wed, 11 Feb 2015 23:20:33 -0800
-Message-ID: <54DC5441.1070004@codeaurora.org>
-References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org> <20150206223229.GG31311@finisterre.sirena.org.uk> <20150209064511.GB19870@kwestfie-linux.qualcomm.com> <20150211022634.GO2593@finisterre.sirena.org.uk> <20150212010551.GA7330@kwestfie-linux.qualcomm.com> <20150212025341.GT2593@finisterre.sirena.org.uk>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: davinci-mcasp: extension to use AHCLKX pin as
+ external clock source
+Date: Thu, 12 Feb 2015 10:09:49 +0200
+Message-ID: <54DC5FCD.1070501@ti.com>
+References: <54D487BE.2060209@bytesatwork.ch> <54D4AA7D.6050108@ti.com>
+ <54DA12FA.4090402@bytesatwork.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150212025341.GT2593-bheZrs9scGb3/WHNxyQH9YN0K6Il/+VY@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 173D82605C8
+ for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 09:09:57 +0100 (CET)
+In-Reply-To: <54DA12FA.4090402@bytesatwork.ch>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?VXJzIEbDpHNzbGVy?= <urs.fassler@bytesatwork.ch>, perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, jsarha@ti.com, linux-kernel@vger.kernel.org, broonie@kernel.org, misael.lopez@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2/11/2015 6:53 PM, Mark Brown wrote:
-> On Wed, Feb 11, 2015 at 05:05:52PM -0800, Kenneth Westfield wrote:
->
->> Replacing DSP-based drivers with LPASS-based drivers would be something that
->> should be handled by Kconfig selections.  For the DT, the DSP-related
->
-> No, it shouldn't be.  We should have the ability to build a single
-> kernel image which will run on many systems, including both your
-> system with a DSP and other systems without.
->
-Is there expectation that DTB flashed onto the system would define nodes to
-bind with both LPASS-based driver and DSP-based driver? I hope not as we want
-to keep LPASS-based driver & DSP-based driver mutually exclusive.
-
->> nodes and the LPASS-related nodes shouldn't overlap.  There should be a
->> DSP-based DT binding and a separate LPASS-based DT binding.  Tying one
->> or the other to the sound node (but not both), should work.
->
-> The selection of DSP use sounds like something which isn't part of the
-> description of the hardware but rather a runtime policy decision (at
-> least in so far as non-DSP is ever an option).
->
-Put aside IPQ8064, I would say it is actually more of build time policy
-decision for QC SoCs with DSP. XPU is programmed by trust zone to allow certain
-LPASS registers to be accessed by the chosen processor. If ADSP and app
-processor would have to have access to audio interfaces and DMA, resources
-partition(i.e # of DMAs go to ADSP while rest of DMA go to app processor is
-decided after analyzing expected concurrency use case. For case of 8016, MDSP
-would simply expect it has access to all audio subsystem except digital core of
-CODEC.
-
-Thanks
-Patrick
-
--- 
-Patrick Lai
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,a 
-Linux Foundation Collaborative Project
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gMDIvMTAvMjAxNSAwNDoxNyBQTSwgVXJzIEbDpHNzbGVyIHdyb3RlOgo+IE9uIDA2LjAyLjIw
+MTUgMTI6NTAsIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+PiBPbiAwMi8wNi8yMDE1IDExOjIyIEFN
+LCBVcnMgRsOkc3NsZXIgd3JvdGU6Cj4+PiBUaGUgQUhDTEtYIHBpbiBzZWVtcyBub3QgdG8gYmUg
+c3VwcG9ydGVkIGFzIGV4dGVybmFsIHNvdXJjZS4gVGhlIGZpcnN0Cj4+PiBwYXRjaCBpcyBhIGdl
+bmVyYWwgZml4IHRvIGFsbG93IGV4dGVybmFsIGNsb2NrLiBUaGUgc2Vjb25kIGFsbG93cyB5b3Ug
+dG8KPj4+IHNlbGVjdCB0aGUgQUhDTEtYIHBpbiBhcyBjbG9jayBzb3VyY2UuCj4+Pgo+Pj4gUGF0
+Y2ggYnVpbHQgYWdhaW5zdCB2My4xOS1yYzcKPj4+Cj4+Cj4+IEkgZG9uJ3QgdGhpbmsgdGhpcyBz
+ZXJpZXMgaXMgY29ycmVjdC4gWW91IGNhbiBqdXN0IGlzc3VlOgo+PiBzbmRfc29jX2RhaV9zZXRf
+c3lzY2xrKGNwdV9kYWksIDAsIHN5c2NsaywgU05EX1NPQ19DTE9DS19JTik7Cj4+Cj4+IGZyb20g
+dGhlIG1hY2hpbmUgZHJpdmVyIHRvIHNlbGVjdCBBSENMS1ggYXMgaW5wdXQuCj4+Cj4gSSBjaGVj
+a2VkIGV2ZXJ5dGhpbmcgYW5kIHRoZSBzb3VyY2Ugb2YgdGhlIHByb2JsZW0gaXMsIHRoYXQgb24g
+b3VyCj4gaGFyZHdhcmUgdGhlIGJpdCBjbG9jayBvZiB0aGUgY29kZWMgaXMgY29ubmVjdGVkIHRv
+IEFIQ0xLWC4KCldoeSB3b3VsZCBhbnkgSFcgZGVzaWduZXIgZG8gdGhpcz8/PwoKSnVzdCB0byBj
+bGFyaWZ5IHRoaXM6IHRoZSBiaXRjbG9jayBmcm9tIGNvZGVjIGlzIG9ubHkgY29ubmVjdGVkIHRv
+IEFIQ0xLWCBwaW4sCm9yIGlzIGl0IGFsc28gY29ubmVjdGVkIHRvIHRoZSBBQ0xLWCBwaW4/ClRo
+ZSB1c2Ugb2YgQUhDTEtYL1IgcGluIGlzIF9vcHRpb25hbF8gaW4gTWNBU1AgYW5kIGl0IHNlcnZl
+cyB0aGUgcHVycG9zZSBvZgpwcm92aWRpbmcgYSB3YXkgdG8gaGF2ZSBzeW5jaHJvbml6ZWQgbWFz
+dGVyIGNsb2NrIGZvciB0aGUgY29kZWMgYW5kIE1jQVNQLgpBQ0xLWCwgQUZTWCBhbmQgZGF0YSBw
+aW5zIGFyZSBtYW5kYXRvcnkgdG8gYmUgY29ubmVjdGVkLgoKPiBBY2NvcmRpbmcgdG8gdGhlIGRh
+dGFzaGVldCwgQUhDTEtYIGlzIGZvciB0aGUgbWFzdGVyIGNsb2NrIG9ubHkuCgpZZXMsIGl0IGlz
+IGZvciB0aGUgbWFzdGVyIGNsb2NrIHRvIGJlIHVzZWQgYnkgYm90aCBjb2RlYyBhbmQgTWNBU1Ag
+dG8gYXZvaWQKY2xvY2sgZHJpZnRpbmcuCgo+IE9uIHRoZSBvdGhlciBoYW5kLCBpdCBpcyBwb3Nz
+aWJsZSB0byByb3V0ZSBhIGJpdGNsb2NrIGZyb20gQUhDTEtYIHRvCiA+dGhlIHN1YnN5c3RlbSAo
+d2hhdCBJIGRpZCB3aXRoIG15IHBhdGNoZXMpLgoKWWVzLCBpdCBpcyBwb3NzaWJsZSwgd2hlbiBN
+Y0FTUCBpcyBtYXN0ZXIgaXQgY2FuIHVzZSB0aGUgc2lnbmFsIG9uIEFIQ0xLWCBwaW4KdG8gZ2Vu
+ZXJhdGUgdGhlIEJDTEsvRlMuCgo+IE5vdyBteSBxdWVzdGlvbiBpcywgaWYgaXQgaXMgZXZlbiB3
+b3J0aCB0cnlpbmcgdG8gYnJpbmcgc3VjaCBhbiBvcHRpb24KPiBmb3IgdGhlIGRyaXZlciAodXNl
+IEFIQ0xLWCBhcyBiaXQgY2xvY2sgaW4pIHVwc3RyZWFtPwoKSSBkb24ndCB3YW50IEhXIGRlc2ln
+bmVycyB0byBnZXQgaWRlYXMgZnJvbSBjb2RlIC0gYnV0IGlmIHRoZXkgZGlkIHdoYXQgSQp0aGlu
+ayB0aGV5IGRpZCB3aXRoIHlvdXIgSFcgdGhleSBjZXJ0YWlubHkgbm90IGdvaW5nIHRvIGJvdGhl
+ciBjaGVja2luZyBUUk0gb3IKY29kZS4uLgoKQnV0IEkgdGhpbmsgeW91IGNhbiBzdGlsbCBnZXQg
+dGhlIHNldHVwIHdvcmtpbmcsIGlmIGl0IGlzIHJlYWxseSBsaWtlIHRoaXM6CgpNY0FTUApBSENM
+S1ggPC0tIGJpdGNsb2NrIDwtLSBjb2RlYwpBQ0xLWCAgKG5vdCBjb25uZWN0ZWQgd2hpbGUgaXQg
+c2hvdWxkIGhhdmUgYmVlbikKRlNYICAgIDwtLSBmcmFtc3luYyA8LS0gY29kZWMKCkluIHRoaXMg
+Y2FzZSB5b3Ugd2FudCB0byBjb25maWd1cmUgdGhlIGNvZGVjIHRvIGJlIENCTV9DRk0gYW5kIE1j
+QVNQIGFzCkNCU19DRk0gKHdlIGRvbid0IGhhdmUgdGhpcyBzdXBwb3J0ZWQgaW4gdGhlIGRyaXZl
+ciwgYnV0IG5vdCBhIGJpZyBkZWFsIHRvIGFkZCkuCgpBbmQgeW91IGNhbGw6CnNuZF9zb2NfZGFp
+X3NldF9zeXNjbGsoY3B1X2RhaSwgMCwgc3lzY2xrLCBTTkRfU09DX0NMT0NLX0lOKTsKc25kX3Nv
+Y19kYWlfc2V0X2Nsa2RpdihjcHVfZGFpLCAxLCAxKTsKCllvdSB3aWxsIGhhdmUgdGhlIGNvZGVj
+IHByb3ZpZGluZyB0aGUgRlMgYW5kIGRyaXZpbmcgdGhlIGJpdGNsb2NrIChjb25uZWN0ZWQKdG8g
+d3JvbmcgTWNBU1AgcGluKS4gTWNBU1Agd2lsbCBkcml2ZSB0aGUgYml0Y2xvY2sgdXNpbmcgdGhl
+IEFIQ0xLWCBhcyBzb3VyY2UKdXNpbmcgZGl2aWRlIGJ5IDEuIE1jQVNQIHdpbGwgbm90IHRyeSB0
+byBkcml2ZSBGUy4KCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
