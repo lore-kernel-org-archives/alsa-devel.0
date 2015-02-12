@@ -1,135 +1,133 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Status of ALSA FireWire stack as of Linux 3.19
-Date: Thu, 12 Feb 2015 23:20:03 +0900
-Message-ID: <54DCB693.7010608@sakamocchi.jp>
+From: =?UTF-8?B?VXJzIEbDpHNzbGVy?= <urs.fassler@bytesatwork.ch>
+Subject: Re: davinci-mcasp: extension to use AHCLKX pin as external clock
+ source
+Date: Thu, 12 Feb 2015 15:24:05 +0100
+Message-ID: <54DCB785.8020802@bytesatwork.ch>
+References: <54D487BE.2060209@bytesatwork.ch> <54D4AA7D.6050108@ti.com> <54DA12FA.4090402@bytesatwork.ch> <54DC5FCD.1070501@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 055DC2652AD
- for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 15:20:07 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ffado-devel@lists.sf.net" <ffado-devel@lists.sf.net>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="DpjqtUp9XDJfDRGOFtCr6dVnpIBxRpDqP"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <54DC5FCD.1070501@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, perex@perex.cz, tiwai@suse.de
+Cc: lgirdwood@gmail.com, broonie@kernel.org, jsarha@ti.com, misael.lopez@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear all,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--DpjqtUp9XDJfDRGOFtCr6dVnpIBxRpDqP
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I'm just a developer, not a maintainer of this stack, but often receive
-personal messages from users. I think it helpful to explain about its
-status and known issues here, as of Linux 3.19.
+On 12.02.2015 09:09, Peter Ujfalusi wrote:
+> On 02/10/2015 04:17 PM, Urs F=C3=A4ssler wrote:
+>> On 06.02.2015 12:50, Peter Ujfalusi wrote:
+>>> On 02/06/2015 11:22 AM, Urs F=C3=A4ssler wrote:
+>>>> The AHCLKX pin seems not to be supported as external source. The fir=
+st
+>>>> patch is a general fix to allow external clock. The second allows yo=
+u to
+>>>> select the AHCLKX pin as clock source.
+>>>>
+>>>> Patch built against v3.19-rc7
+>>>>
+>>>
+>>> I don't think this series is correct. You can just issue:
+>>> snd_soc_dai_set_sysclk(cpu_dai, 0, sysclk, SND_SOC_CLOCK_IN);
+>>>
+>>> from the machine driver to select AHCLKX as input.
+>>>
+>> I checked everything and the source of the problem is, that on our
+>> hardware the bit clock of the codec is connected to AHCLKX.
+>=20
+> Why would any HW designer do this???
 
-== Impovements in 3.19 release
- * ALSA FireWire stack gain a thlottle for MIDI data rate. No devices
-   can disorder due to MIDI buffer overflow.
+It was not intended that way.
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-November/084652.html
- * ALSA Dice driver becomes to handle more models with 176.4/192.0 kHz
-   support and both of playback/capture for PCM/MIDI substreams.
- * ALSA firewire-speakers driver was obsoleted by ALSA OXFW driver to
-   handles more models based on OXFW 970/971.
- * As a result, ALSA supports approximately 140 FireWire models in
-   comparison to Linux 3.15.
+> Just to clarify this: the bitclock from codec is only connected to AHCL=
+KX pin,
+> or is it also connected to the ACLKX pin?
+> The use of AHCLKX/R pin is _optional_ in McASP and it serves the purpos=
+e of
+> providing a way to have synchronized master clock for the codec and McA=
+SP.
+> ACLKX, AFSX and data pins are mandatory to be connected.
+>
+>> According to the datasheet, AHCLKX is for the master clock only.
+>=20
+> Yes, it is for the master clock to be used by both codec and McASP to a=
+void
+> clock drifting.
+>=20
+>> On the other hand, it is possible to route a bitclock from AHCLKX to
+>  >the subsystem (what I did with my patches).
+>=20
+> Yes, it is possible, when McASP is master it can use the signal on AHCL=
+KX pin
+> to generate the BCLK/FS.
+>=20
+>> Now my question is, if it is even worth trying to bring such an option=
 
+>> for the driver (use AHCLKX as bit clock in) upstream?
+>=20
+> I don't want HW designers to get ideas from code - but if they did what=
+ I
+> think they did with your HW they certainly not going to bother checking=
+ TRM or
+> code...
+>=20
+> But I think you can still get the setup working, if it is really like t=
+his:
+>=20
+> McASP
+> AHCLKX <-- bitclock <-- codec
+> ACLKX  (not connected while it should have been)
+> FSX    <-- framsync <-- codec
+>=20
+> In this case you want to configure the codec to be CBM_CFM and McASP as=
 
-== Model dependent issues
-There're some reports about model dependent issues.
+> CBS_CFM (we don't have this supported in the driver, but not a big deal=
+ to add).
+>=20
+> And you call:
+> snd_soc_dai_set_sysclk(cpu_dai, 0, sysclk, SND_SOC_CLOCK_IN);
+> snd_soc_dai_set_clkdiv(cpu_dai, 1, 1);
+>=20
+> You will have the codec providing the FS and driving the bitclock (conn=
+ected
+> to wrong McASP pin). McASP will drive the bitclock using the AHCLKX as =
+source
+> using divide by 1. McASP will not try to drive FS.
 
- * PreSonus FP10 (former known as FirePod)
-   * When ALSA BeBoB driver re-establishes connections, this model
-     causes hung-up, then reset automatically. The cause is unknown.
+Thanks, that looks better than my patches. We will fix the hardware and
+use your solution for the already produced boards.
 
- * Terratek PHASE 88 Rack FW
-   * https://github.com/takaswie/snd-firewire-improve/issues/8
-   * According to a reporter, when ALSA BeBoB driver establishes
-     connections according to CMP, this model transfers no packets. The
-     cause is unknown.
-
- * Behringer XENIX UFX 1604
-   * http://sourceforge.net/p/ffado/mailman/message/32846563/
-   * When ALSA BeBoB driver communicates, this model sometimes misses to
-     transfer responses. The cause is unknown but I guess that this
-     model expects vendor-specific command.
-
- * Echo AudioFire 2
-   *
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-August/080379.html
-   * At least, firmware version 5.7.3 for this model has a quirk about
-     AMDTP processing. It's not compliant to this protocol. Even if
-     ALSA Fireworks driver communicates successfully, ALSA FireWire
-     stack detects protocol error.
-
- * Weiss engineering DAC 202
-   * According to a reporter, when ALSA Dice driver probes this model
-     it's trials are ETIMEDOUT at setting sampling rate. The cause is
-     unknown.
-
-
-== Stack and driver issues
-There're still some issues about ALSA FireWire stack and drivers. Most
-of them are written in my report:
-  https://github.com/takaswie/alsa-firewire-report
-  * 9.2 A lack of arrangement for severe latency
-  * 9.3 A lack of delay for timestamp processing
-  * 9.4 A lack of PCM configuration for virtual surround nodes
-  * 9.6 A lack of control elements for ALSA control interface
-  * 9.7 A lack of packet sorting
-  * 9.9 Various results at bus reset
-  * 9.10 A lack of synchronizing several devices on the same bus
-
-  * Sometimes kernel oops at disconnecting devices during streaming.
-   * I guess three contexts have somewhat race condition:
-     * Application process with snd_pcm_prepare()
-     * Isochronous context
-     * .remove callback by OHCI 1394 host controller driver
-
-
-== The other issues
- * PulseAudio 6,0 (not released yet) gain multichannel profiles.
-     http://www.freedesktop.org/wiki/Software/PulseAudio/Notes/6.0/
-   ALSA FireWire sound devices can be available, while in most case the
-   display name is the name of OHCI 3194 host controller.
-     https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1381475
-   I've posted RFC patch to pulseaudio-discuss but I think it better to
-   touch hardware database which systemd produces.
-
-http://lists.freedesktop.org/archives/pulseaudio-discuss/2015-January/022945.html
-
-
-== My plan for 3.21 release
- * Some userspace library is under development for developers of mixer
-   application.
-   * libhinawa
-
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/086969.html
-   * alsa-gir
-     https://github.com/takaswie/alsa-gir
-
- * An offload of control functionality from ALSA OXFW driver to
-   userspace
-   * Currently ALSA OXFW driver includes control functionality in
-     kernel side, while this can be implemented in userspace. This
-     functionaliy utilizes certailn commands which the other drivers
-     can use for the same purpose.
-   * Need to discuss about it, later.
-
- * ALSA BeBoB driver improvement
-   * ALSA BeBoB driver's bootup command for M-Audio models depends on
-     little-endiannness machine. I need more time to prepare for
-     big-endianness machine to test my patch for this issue.
-   * Some models expect BridgeCo.-specific command to change sampling
-     rate. Currently ALSA BeBoB driver uses commands in AV/C general
-     specification. Let's start to replace these comands.
+Urs
 
 
-Regards
 
-Takashi Sakamoto
+--DpjqtUp9XDJfDRGOFtCr6dVnpIBxRpDqP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJU3LeFAAoJEKKADLnESIBjE2AP/iFonf3gKibonX62dT5n96c1
+qvkDbhXnhU+Gn4T2rYDI6KD6G5l/U7Tx1rlJXZHNxiDHR1NASWHP1u2hhaKO5FHq
+jwlPAD6lPeCAP2t6KGMftHwn8xUHeB/EszkFVdvbtcV5NAFIR5zKIOlVbiLw+9wO
+zAEA8P7jouOGNDGc3LusSxYTijKxY3TfkWCy3Jb/XREAxKZkrqp8X4gxIwtwtKQR
+cM3ae2Z6+jdtcDuj0bL1G+ABRNtOgM3YWj5c6hSkPzsenMrXpaVSgu041sHFtloX
+a+nYEgFvz4rm0kUD2W6kPi/8cd5bw3yTwmq3Nfz9T4Zl+qtHsouIGiJwYlzyyu8q
+FzHrphHwcy+Mr89UulkYqstqRZlBKsWHn0dutn+oANi4Xyi1ynaNsQgUI9OmJ/C0
+PdmEXDQHmTnkKOH5cJ6Z2hHBw8g2Fi+fmxUwp4uDRyeucSzrtCdLRBtyHifkLo9i
+A/RskbIXY/+LNgF9Z1cf/btzBuYKAHS+leC8YtSU5GW+K0lfa/ga7c3i+cTVyxJO
+d+D9BHrXlgXDlN1Gf0iGHFI0EU64hGDH9Q7sRn0NaGY75y3CDtpxg3tXbBmCEpBO
+Lya3GcjTBqSZP1CAJglVFbz+wgZjqHQ1nbZj/OSZw/MhBZkbe0irzQKaxbWUsfef
+pAEQTSyP26634u2LJfe1
+=6nm1
+-----END PGP SIGNATURE-----
+
+--DpjqtUp9XDJfDRGOFtCr6dVnpIBxRpDqP--
