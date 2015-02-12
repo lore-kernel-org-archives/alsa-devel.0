@@ -1,77 +1,35 @@
-From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Subject: [Patch V5 05/12] ASoC: codec: Add MAX98357A codec driver
-Date: Wed, 11 Feb 2015 18:10:08 -0800
-Message-ID: <1423707015-14527-6-git-send-email-kwestfie@codeaurora.org>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: [Patch V5 07/12] ASoC: ipq806x: Add LPASS CPU DAI driver
+Date: Wed, 11 Feb 2015 18:10:10 -0800
+Message-ID: <1423707015-14527-8-git-send-email-kwestfie@codeaurora.org>
 References: <1423707015-14527-1-git-send-email-kwestfie@codeaurora.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1423707015-14527-1-git-send-email-kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Cc: ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <1423707015-14527-1-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
+Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add codec driver for the Maxim MAX98357A DAC.
+Add the CPU DAI driver for the Qualcomm
+Technologies low-power audio subsystem (LPASS).
 
-Signed-off-by: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Acked-by: Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
+Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/codecs/Kconfig     |   4 ++
- sound/soc/codecs/Makefile    |   2 +
- sound/soc/codecs/max98357a.c | 145 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 151 insertions(+)
- create mode 100644 sound/soc/codecs/max98357a.c
+ sound/soc/qcom/lpass-cpu.c | 481 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 481 insertions(+)
+ create mode 100644 sound/soc/qcom/lpass-cpu.c
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 8349f982a586841a3ac9e7b0526af05699c7deaf..0500b3ed5fa5ac4d45663ad659da9db3003bc5a3 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -69,6 +69,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MAX98088 if I2C
- 	select SND_SOC_MAX98090 if I2C
- 	select SND_SOC_MAX98095 if I2C
-+	select SND_SOC_MAX98357A if GPIOLIB
- 	select SND_SOC_MAX9850 if I2C
- 	select SND_SOC_MAX9768 if I2C
- 	select SND_SOC_MAX9877 if I2C
-@@ -456,6 +457,9 @@ config SND_SOC_MAX98090
- config SND_SOC_MAX98095
-        tristate
- 
-+config SND_SOC_MAX98357A
-+       tristate
-+
- config SND_SOC_MAX9850
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index bbdfd1e1c182f9ee102f532f391f522e77a8922b..69b8666d187a0e8d1e2a532e68e2509acc95da7e 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -64,6 +64,7 @@ snd-soc-max9768-objs := max9768.o
- snd-soc-max98088-objs := max98088.o
- snd-soc-max98090-objs := max98090.o
- snd-soc-max98095-objs := max98095.o
-+snd-soc-max98357a-objs := max98357a.o
- snd-soc-max9850-objs := max9850.o
- snd-soc-mc13783-objs := mc13783.o
- snd-soc-ml26124-objs := ml26124.o
-@@ -245,6 +246,7 @@ obj-$(CONFIG_SND_SOC_MAX9768)	+= snd-soc-max9768.o
- obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
- obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
-+obj-$(CONFIG_SND_SOC_MAX98357A)	+= snd-soc-max98357a.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
- obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
- obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..4ee23fbc4e1237268ae104319a9cfe4fc369934e
+index 0000000000000000000000000000000000000000..c178142989abce9c46565fccbaf3b140cb289b19
 --- /dev/null
-+++ b/sound/soc/codecs/max98357a.c
-@@ -0,0 +1,145 @@
-+/* Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -0,0 +1,481 @@
++/*
++ * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 and
@@ -82,145 +40,475 @@ index 0000000000000000000000000000000000000000..4ee23fbc4e1237268ae104319a9cfe4f
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 + * GNU General Public License for more details.
 + *
-+ * max98357a.c -- MAX98357A ALSA SoC Codec driver
++ * lpass-cpu.c -- ALSA SoC CPU DAI driver for QTi LPASS
 + */
 +
++#include <linux/clk.h>
++#include <linux/compiler.h>
 +#include <linux/device.h>
 +#include <linux/err.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
++#include <linux/ioport.h>
 +#include <linux/kernel.h>
 +#include <linux/mod_devicetable.h>
 +#include <linux/module.h>
 +#include <linux/of.h>
 +#include <linux/platform_device.h>
 +#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <linux/regmap.h>
 +#include <sound/soc.h>
 +#include <sound/soc-dai.h>
-+#include <sound/soc-dapm.h>
++#include "lpass-lpaif-ipq806x.h"
++#include "lpass.h"
 +
-+static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
++static int lpass_cpu_daiops_set_sysclk(struct snd_soc_dai *dai, int clk_id,
++		unsigned int freq, int dir)
 +{
-+	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		gpiod_set_value(sdmode, 1);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		gpiod_set_value(sdmode, 0);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget max98357a_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("SDMode", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_OUTPUT("Speaker"),
-+};
-+
-+static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
-+	{"Speaker", NULL, "SDMode"},
-+};
-+
-+static int max98357a_codec_probe(struct snd_soc_codec *codec)
-+{
-+	struct gpio_desc *sdmode;
-+
-+	sdmode = devm_gpiod_get(codec->dev, "sdmode");
-+	if (IS_ERR(sdmode)) {
-+		dev_err(codec->dev, "%s() unable to get sdmode GPIO: %ld\n",
-+				__func__, PTR_ERR(sdmode));
-+		return PTR_ERR(sdmode);
-+	}
-+	gpiod_direction_output(sdmode, 0);
-+	snd_soc_codec_set_drvdata(codec, sdmode);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_codec_driver max98357a_codec_driver = {
-+	.probe			= max98357a_codec_probe,
-+	.dapm_widgets		= max98357a_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(max98357a_dapm_widgets),
-+	.dapm_routes		= max98357a_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(max98357a_dapm_routes),
-+};
-+
-+static struct snd_soc_dai_ops max98357a_dai_ops = {
-+	.trigger	= max98357a_daiops_trigger,
-+};
-+
-+static struct snd_soc_dai_driver max98357a_dai_driver = {
-+	.name = "max98357a",
-+	.playback = {
-+		.stream_name	= "max98357a-playback",
-+		.formats	= SNDRV_PCM_FMTBIT_S16 |
-+					SNDRV_PCM_FMTBIT_S24 |
-+					SNDRV_PCM_FMTBIT_S32,
-+		.rates		= SNDRV_PCM_RATE_8000 |
-+					SNDRV_PCM_RATE_16000 |
-+					SNDRV_PCM_RATE_48000 |
-+					SNDRV_PCM_RATE_96000,
-+		.rate_min	= 8000,
-+		.rate_max	= 96000,
-+		.channels_min	= 1,
-+		.channels_max	= 2,
-+	},
-+	.ops    = &max98357a_dai_ops,
-+};
-+
-+static int max98357a_platform_probe(struct platform_device *pdev)
-+{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
 +	int ret;
 +
-+	ret = snd_soc_register_codec(&pdev->dev, &max98357a_codec_driver,
-+			&max98357a_dai_driver, 1);
++	ret = clk_set_rate(drvdata->mi2s_osr_clk, freq);
 +	if (ret)
-+		dev_err(&pdev->dev, "%s() error registering codec driver: %d\n",
++		dev_err(dai->dev, "%s() error setting mi2s osrclk to %u: %d\n",
++				__func__, freq, ret);
++
++	return ret;
++}
++
++static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = clk_prepare_enable(drvdata->mi2s_osr_clk);
++	if (ret) {
++		dev_err(dai->dev, "%s() error in enabling mi2s osr clk: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = clk_prepare_enable(drvdata->mi2s_bit_clk);
++	if (ret) {
++		dev_err(dai->dev, "%s() error in enabling mi2s bit clk: %d\n",
++				__func__, ret);
++		clk_disable_unprepare(drvdata->mi2s_osr_clk);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++
++	clk_disable_unprepare(drvdata->mi2s_bit_clk);
++	clk_disable_unprepare(drvdata->mi2s_osr_clk);
++}
++
++static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	snd_pcm_format_t format = params_format(params);
++	unsigned int channels = params_channels(params);
++	unsigned int rate = params_rate(params);
++	unsigned int regval;
++	int bitwidth, ret;
++
++	bitwidth = snd_pcm_format_width(format);
++	if (bitwidth < 0) {
++		dev_err(dai->dev, "%s() invalid bit width given: %d\n",
++				__func__, bitwidth);
++		return bitwidth;
++	}
++
++	regval = LPAIF_I2SCTL_LOOPBACK_DISABLE |
++			LPAIF_I2SCTL_WSSRC_INTERNAL;
++
++	switch (bitwidth) {
++	case 16:
++		regval |= LPAIF_I2SCTL_BITWIDTH_16;
++		break;
++	case 24:
++		regval |= LPAIF_I2SCTL_BITWIDTH_24;
++		break;
++	case 32:
++		regval |= LPAIF_I2SCTL_BITWIDTH_32;
++		break;
++	default:
++		dev_err(dai->dev, "%s() invalid bitwidth given: %d\n",
++				__func__, bitwidth);
++		return -EINVAL;
++	}
++
++	switch (channels) {
++	case 1:
++		regval |= LPAIF_I2SCTL_SPKMODE_SD0;
++		regval |= LPAIF_I2SCTL_SPKMONO_MONO;
++		break;
++	case 2:
++		regval |= LPAIF_I2SCTL_SPKMODE_SD0;
++		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
++		break;
++	case 4:
++		regval |= LPAIF_I2SCTL_SPKMODE_QUAD01;
++		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
++		break;
++	case 6:
++		regval |= LPAIF_I2SCTL_SPKMODE_6CH;
++		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
++		break;
++	case 8:
++		regval |= LPAIF_I2SCTL_SPKMODE_8CH;
++		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
++		break;
++	default:
++		dev_err(dai->dev, "%s() invalid channels given: %u\n",
++				__func__, channels);
++		return -EINVAL;
++	}
++
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), regval);
++	if (ret) {
++		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = clk_set_rate(drvdata->mi2s_bit_clk, rate * bitwidth * 2);
++	if (ret) {
++		dev_err(dai->dev, "%s() error setting mi2s bitclk to %u: %d\n",
++				__func__, rate * bitwidth * 2, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), 0);
++	if (ret)
++		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
 +				__func__, ret);
 +
 +	return ret;
 +}
 +
-+static int max98357a_platform_remove(struct platform_device *pdev)
++static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
 +{
-+	snd_soc_unregister_codec(&pdev->dev);
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = regmap_update_bits(drvdata->lpaif_map,
++			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
++			LPAIF_I2SCTL_SPKEN_MASK, LPAIF_I2SCTL_SPKEN_ENABLE);
++	if (ret)
++		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++				__func__, ret);
++
++	return ret;
++}
++
++static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
++		int cmd, struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ret = regmap_update_bits(drvdata->lpaif_map,
++				LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
++				LPAIF_I2SCTL_SPKEN_MASK,
++				LPAIF_I2SCTL_SPKEN_ENABLE);
++		if (ret)
++			dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++					__func__, ret);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ret = regmap_update_bits(drvdata->lpaif_map,
++				LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
++				LPAIF_I2SCTL_SPKEN_MASK,
++				LPAIF_I2SCTL_SPKEN_DISABLE);
++		if (ret)
++			dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++					__func__, ret);
++		break;
++	}
++
++	return ret;
++}
++
++static struct snd_soc_dai_ops lpass_cpu_dai_ops = {
++	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
++	.startup	= lpass_cpu_daiops_startup,
++	.shutdown	= lpass_cpu_daiops_shutdown,
++	.hw_params	= lpass_cpu_daiops_hw_params,
++	.hw_free	= lpass_cpu_daiops_hw_free,
++	.prepare	= lpass_cpu_daiops_prepare,
++	.trigger	= lpass_cpu_daiops_trigger,
++};
++
++static int lpass_cpu_dai_probe(struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	/* ensure audio hardware is disabled */
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), 0);
++	if (ret)
++		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++				__func__, ret);
++
++	return ret;
++}
++
++static struct snd_soc_dai_driver lpass_cpu_dai_driver = {
++	.playback = {
++		.stream_name	= "lpass-cpu-playback",
++		.formats	= SNDRV_PCM_FMTBIT_S16 |
++					SNDRV_PCM_FMTBIT_S24 |
++					SNDRV_PCM_FMTBIT_S32,
++		.rates		= SNDRV_PCM_RATE_8000 |
++					SNDRV_PCM_RATE_16000 |
++					SNDRV_PCM_RATE_32000 |
++					SNDRV_PCM_RATE_48000 |
++					SNDRV_PCM_RATE_96000,
++		.rate_min	= 8000,
++		.rate_max	= 96000,
++		.channels_min	= 1,
++		.channels_max	= 8,
++	},
++	.probe	= &lpass_cpu_dai_probe,
++	.ops    = &lpass_cpu_dai_ops,
++};
++
++static const struct snd_soc_component_driver lpass_cpu_comp_driver = {
++	.name = "lpass-cpu",
++};
++
++static bool lpass_cpu_regmap_writeable(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < LPAIF_I2S_PORT_NUM; ++i)
++		if (reg == LPAIF_I2SCTL_REG(i))
++			return true;
++
++	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i) {
++		if (reg == LPAIF_IRQEN_REG(i))
++			return true;
++		if (reg == LPAIF_IRQCLEAR_REG(i))
++			return true;
++	}
++
++	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i) {
++		if (reg == LPAIF_RDMACTL_REG(i))
++			return true;
++		if (reg == LPAIF_RDMABASE_REG(i))
++			return true;
++		if (reg == LPAIF_RDMABUFF_REG(i))
++			return true;
++		if (reg == LPAIF_RDMAPER_REG(i))
++			return true;
++	}
++
++	return false;
++}
++
++static bool lpass_cpu_regmap_readable(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < LPAIF_I2S_PORT_NUM; ++i)
++		if (reg == LPAIF_I2SCTL_REG(i))
++			return true;
++
++	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i) {
++		if (reg == LPAIF_IRQEN_REG(i))
++			return true;
++		if (reg == LPAIF_IRQSTAT_REG(i))
++			return true;
++	}
++
++	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i) {
++		if (reg == LPAIF_RDMACTL_REG(i))
++			return true;
++		if (reg == LPAIF_RDMABASE_REG(i))
++			return true;
++		if (reg == LPAIF_RDMABUFF_REG(i))
++			return true;
++		if (reg == LPAIF_RDMACURR_REG(i))
++			return true;
++		if (reg == LPAIF_RDMAPER_REG(i))
++			return true;
++	}
++
++	return false;
++}
++
++static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i)
++		if (reg == LPAIF_IRQSTAT_REG(i))
++			return true;
++
++	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i)
++		if (reg == LPAIF_RDMACURR_REG(i))
++			return true;
++
++	return false;
++}
++
++static const struct regmap_config lpass_cpu_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = LPAIF_RDMAPER_REG(LPAIF_RDMA_CHAN_MAX),
++	.writeable_reg = lpass_cpu_regmap_writeable,
++	.readable_reg = lpass_cpu_regmap_readable,
++	.volatile_reg = lpass_cpu_regmap_volatile,
++	.cache_type = REGCACHE_FLAT,
++};
++
++static int lpass_cpu_platform_probe(struct platform_device *pdev)
++{
++	struct lpass_data *drvdata;
++	struct resource *res;
++	int ret;
++
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct lpass_data),
++			GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, drvdata);
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "lpass-lpaif");
++	if (!res) {
++		dev_err(&pdev->dev, "%s() error getting resource\n", __func__);
++		return -ENODEV;
++	}
++
++	drvdata->lpaif = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR((void const __force *)drvdata->lpaif)) {
++		dev_err(&pdev->dev, "%s() error mapping reg resource: %ld\n",
++				__func__,
++				PTR_ERR((void const __force *)drvdata->lpaif));
++		return PTR_ERR((void const __force *)drvdata->lpaif);
++	}
++
++	drvdata->lpaif_map = devm_regmap_init_mmio(&pdev->dev, drvdata->lpaif,
++			&lpass_cpu_regmap_config);
++	if (IS_ERR(drvdata->lpaif_map)) {
++		dev_err(&pdev->dev, "%s() error initializing regmap: %ld\n",
++				__func__, PTR_ERR(drvdata->lpaif_map));
++		return PTR_ERR(drvdata->lpaif_map);
++	}
++
++	drvdata->mi2s_osr_clk = devm_clk_get(&pdev->dev, "mi2s-osr-clk");
++	if (IS_ERR(drvdata->mi2s_osr_clk)) {
++		dev_err(&pdev->dev, "%s() error getting mi2s-osr-clk: %ld\n",
++				__func__, PTR_ERR(drvdata->mi2s_osr_clk));
++		return PTR_ERR(drvdata->mi2s_osr_clk);
++	}
++
++	drvdata->mi2s_bit_clk = devm_clk_get(&pdev->dev, "mi2s-bit-clk");
++	if (IS_ERR(drvdata->mi2s_bit_clk)) {
++		dev_err(&pdev->dev, "%s() error getting mi2s-bit-clk: %ld\n",
++				__func__, PTR_ERR(drvdata->mi2s_bit_clk));
++		return PTR_ERR(drvdata->mi2s_bit_clk);
++	}
++
++	drvdata->ahbix_clk = devm_clk_get(&pdev->dev, "ahbix-clk");
++	if (IS_ERR(drvdata->ahbix_clk)) {
++		dev_err(&pdev->dev, "%s() error getting ahbix-clk: %ld\n",
++				__func__, PTR_ERR(drvdata->ahbix_clk));
++		return PTR_ERR(drvdata->ahbix_clk);
++	}
++
++	ret = clk_set_rate(drvdata->ahbix_clk, LPASS_AHBIX_CLOCK_FREQUENCY);
++	if (ret) {
++		dev_err(&pdev->dev, "%s() error setting rate on ahbix_clk: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = clk_prepare_enable(drvdata->ahbix_clk);
++	if (ret) {
++		dev_err(&pdev->dev, "%s() Error enabling ahbix_clk: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = devm_snd_soc_register_component(&pdev->dev,
++			&lpass_cpu_comp_driver, &lpass_cpu_dai_driver, 1);
++	if (ret) {
++		dev_err(&pdev->dev, "%s() error registering cpu driver: %d\n",
++				__func__, ret);
++		goto err_clk;
++	}
++
++	ret = asoc_qcom_lpass_platform_register(pdev);
++	if (ret) {
++		dev_err(&pdev->dev, "%s() error registering platform driver: %d\n",
++				__func__, ret);
++		goto err_clk;
++	}
++
++	return 0;
++
++err_clk:
++	clk_disable_unprepare(drvdata->ahbix_clk);
++	return ret;
++}
++
++static int lpass_cpu_platform_remove(struct platform_device *pdev)
++{
++	struct lpass_data *drvdata = platform_get_drvdata(pdev);
++
++	clk_disable_unprepare(drvdata->ahbix_clk);
 +
 +	return 0;
 +}
 +
 +#ifdef CONFIG_OF
-+static const struct of_device_id max98357a_device_id[] = {
-+	{ .compatible = "maxim,max98357a" },
++static const struct of_device_id lpass_cpu_device_id[] = {
++	{ .compatible = "qcom,lpass-cpu" },
 +	{}
 +};
-+MODULE_DEVICE_TABLE(of, max98357a_device_id);
++MODULE_DEVICE_TABLE(of, lpass_cpu_device_id);
 +#endif
 +
-+static struct platform_driver max98357a_platform_driver = {
-+	.driver = {
-+		.name = "max98357a",
-+		.of_match_table = of_match_ptr(max98357a_device_id),
++static struct platform_driver lpass_cpu_platform_driver = {
++	.driver	= {
++		.name		= "lpass-cpu",
++		.of_match_table	= of_match_ptr(lpass_cpu_device_id),
 +	},
-+	.probe	= max98357a_platform_probe,
-+	.remove = max98357a_platform_remove,
++	.probe	= lpass_cpu_platform_probe,
++	.remove	= lpass_cpu_platform_remove,
 +};
-+module_platform_driver(max98357a_platform_driver);
++module_platform_driver(lpass_cpu_platform_driver);
 +
-+MODULE_DESCRIPTION("Maxim MAX98357A Codec Driver");
++MODULE_DESCRIPTION("QTi LPASS CPU Driver");
 +MODULE_LICENSE("GPL v2");
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
