@@ -1,15 +1,17 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V2] ASoC: max98357a: Add missing deps and
-	headers
-Date: Thu, 12 Feb 2015 03:01:36 -0800
-Message-ID: <1423738896-30342-1-git-send-email-kwestfie@codeaurora.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/8] ALSA: control: refactoring core codes
+Date: Thu, 12 Feb 2015 21:38:35 +0900
+Message-ID: <54DC9ECB.8030903@sakamocchi.jp>
+References: <1423651052-19593-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hvbj8oaan.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id A0F852604D9
- for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 12:01:40 +0100 (CET)
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4A542604ED
+ for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 13:38:41 +0100 (CET)
+In-Reply-To: <s5hvbj8oaan.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,103 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
-Cc: Device Tree Mailing List <devicetree@vger.kernel.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Kenneth Westfield <kwestfie@codeaurora.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Kenneth Westfield <kwestfie@codeaurora.org>
+On Feb 11 2015 22:19, Takashi Iwai wrote:
+> At Wed, 11 Feb 2015 19:37:24 +0900,
+> Takashi Sakamoto wrote:
+>>
+>> This patchset is for refactoring core control codes. This is also a
+>> preparation for my further work for ALSA control functionality.
+> 
+> As now is already after the 3.20 merge window open, basically I'd take
+> only fix patches now and postpone the rest for 3.21.
 
-Add missing build dependancy to GPIOLIB in Kconfig.
-Add header files to avoid implicit declarations
-and indirect inclusions.  Remove use of DRV_NAME
-constant.
+I'm posting them for 3.21, not for current 3.20. I should add some
+comments about this, sorry to trouble you.
 
-Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
----
-for topic/max98357a branch
+> So, please pick up (and revise) the fix patches that are really worth
+> for 3.20 and resubmit them.  Submit the rest as another patchset to be 
+> distinguished from the former.
 
-changes from v1:
- - matched subject line to subsystem style
+Nothing for 3.20. I'll wait for closing the merge window, then post the
+revised patches, but hope to continue discussion.
 
- sound/soc/codecs/Kconfig     |  2 +-
- sound/soc/codecs/max98357a.c | 23 +++++++++++++++--------
- 2 files changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 6ecac1e4428eafc491d6cfc25110f6b3dbf699ed..0500b3ed5fa5ac4d45663ad659da9db3003bc5a3 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -69,7 +69,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MAX98088 if I2C
- 	select SND_SOC_MAX98090 if I2C
- 	select SND_SOC_MAX98095 if I2C
--	select SND_SOC_MAX98357A
-+	select SND_SOC_MAX98357A if GPIOLIB
- 	select SND_SOC_MAX9850 if I2C
- 	select SND_SOC_MAX9768 if I2C
- 	select SND_SOC_MAX9877 if I2C
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index 1806333ea29e5a6b49e2a0adb8c58257d34b7508..4ee23fbc4e1237268ae104319a9cfe4fc369934e 100644
---- a/sound/soc/codecs/max98357a.c
-+++ b/sound/soc/codecs/max98357a.c
-@@ -12,11 +12,19 @@
-  * max98357a.c -- MAX98357A ALSA SoC Codec driver
-  */
- 
--#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
- #include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <sound/pcm.h>
- #include <sound/soc.h>
--
--#define DRV_NAME "max98357a"
-+#include <sound/soc-dai.h>
-+#include <sound/soc-dapm.h>
- 
- static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
- 		int cmd, struct snd_soc_dai *dai)
-@@ -77,9 +85,9 @@ static struct snd_soc_dai_ops max98357a_dai_ops = {
- };
- 
- static struct snd_soc_dai_driver max98357a_dai_driver = {
--	.name = DRV_NAME,
-+	.name = "max98357a",
- 	.playback = {
--		.stream_name	= DRV_NAME "-playback",
-+		.stream_name	= "max98357a-playback",
- 		.formats	= SNDRV_PCM_FMTBIT_S16 |
- 					SNDRV_PCM_FMTBIT_S24 |
- 					SNDRV_PCM_FMTBIT_S32,
-@@ -117,7 +125,7 @@ static int max98357a_platform_remove(struct platform_device *pdev)
- 
- #ifdef CONFIG_OF
- static const struct of_device_id max98357a_device_id[] = {
--	{ .compatible = "maxim," DRV_NAME, },
-+	{ .compatible = "maxim,max98357a" },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, max98357a_device_id);
-@@ -125,7 +133,7 @@ MODULE_DEVICE_TABLE(of, max98357a_device_id);
- 
- static struct platform_driver max98357a_platform_driver = {
- 	.driver = {
--		.name = DRV_NAME,
-+		.name = "max98357a",
- 		.of_match_table = of_match_ptr(max98357a_device_id),
- 	},
- 	.probe	= max98357a_platform_probe,
-@@ -135,4 +143,3 @@ module_platform_driver(max98357a_platform_driver);
- 
- MODULE_DESCRIPTION("Maxim MAX98357A Codec Driver");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:" DRV_NAME);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Regards
+
+Takashi Sakamoto
+
+>> Takashi Sakamoto (8):
+>>   ALSA: control: change type from long due to the definition of sizeof
+>>     operator
+>>   ALSA: control: obsolete switch statement with const value table
+>>   ALSA: control: gathering evaluations to access
+>>   ALSA: control: add a comment about locking values after creating
+>>   ALSA: control: rename loop index to i
+>>   ALSA: control: fix over 80 characters lines
+>>   ALSA: control: rename to appropriate macro name
+>>   ALSA: control: arrange snd_ctl_new() as a local function
+>>
+>>  sound/core/control.c | 223 ++++++++++++++++++++++++++-------------------------
+>>  1 file changed, 113 insertions(+), 110 deletions(-)
+>>
+>> -- 
+>> 2.1.0
