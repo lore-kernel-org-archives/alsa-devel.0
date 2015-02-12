@@ -1,59 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [Patch V4 00/10] ASoC: QCOM: Add support for
- ipq806x SOC
-Date: Thu, 12 Feb 2015 10:53:41 +0800
-Message-ID: <20150212025341.GT2593@finisterre.sirena.org.uk>
-References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
- <20150206223229.GG31311@finisterre.sirena.org.uk>
- <20150209064511.GB19870@kwestfie-linux.qualcomm.com>
- <20150211022634.GO2593@finisterre.sirena.org.uk>
- <20150212010551.GA7330@kwestfie-linux.qualcomm.com>
+Subject: Re: [PATCH] SoC: Fix MAX98357A codec driver dependencies
+Date: Thu, 12 Feb 2015 10:55:15 +0800
+Message-ID: <20150212025515.GU2593@finisterre.sirena.org.uk>
+References: <1423689198-24034-1-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OowMmFE4aK71mEhh"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="dXvu6+ixFx2ZffE8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150212010551.GA7330@kwestfie-linux.qualcomm.com>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, srinivas.kandagatla@linaro.org
+In-Reply-To: <1423689198-24034-1-git-send-email-linux@roeck-us.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Kenneth Westfield <kwestfie@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---OowMmFE4aK71mEhh
+--dXvu6+ixFx2ZffE8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 11, 2015 at 05:05:52PM -0800, Kenneth Westfield wrote:
+On Wed, Feb 11, 2015 at 01:13:18PM -0800, Guenter Roeck wrote:
+> The max98357a driver depends on GPIOLIB. This may cause the following
+> build failure.
 
-> Replacing DSP-based drivers with LPASS-based drivers would be something that
-> should be handled by Kconfig selections.  For the DT, the DSP-related
+Applied, thanks.  Please use subject lines matching the style for the
+subsystem.
 
-No, it shouldn't be.  We should have the ability to build a single
-kernel image which will run on many systems, including both your
-system with a DSP and other systems without.
-
-> nodes and the LPASS-related nodes shouldn't overlap.  There should be a
-> DSP-based DT binding and a separate LPASS-based DT binding.  Tying one
-> or the other to the sound node (but not both), should work.
-
-The selection of DSP use sounds like something which isn't part of the
-description of the hardware but rather a runtime policy decision (at
-least in so far as non-DSP is ever an option).
-
---OowMmFE4aK71mEhh
+--dXvu6+ixFx2ZffE8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU3BW0AAoJECTWi3JdVIfQHskH/jrSXZ+RgMhL/KtEwenuYO3D
-ZJ4Ts5kKJRjgid3y6wFQDbLzDJrVaboFq4TGpK/y0q+ExHOcUDA/jGMDhiv9+p9k
-VUd7xG5N63CVNatbNMOyPCGFz6iqGTi/X60ThmeJiWzJHv4bfzOetNom3COhnwHd
-1T5/QXxLnT95c6m+zmBQsfEPmeqd/SonHtuompCLLCWKyE6SmYI71jMXyApMXudB
-yM9A+VkDQF8qcJLZ+9hFlQt1Hnezy7N2+vGxdH3d2ZFDrjeuzrysMF2LMw9pkkLd
-uxgnlCZBeJcYjPIXoGzs0E/kBGvvQqLj2OHw7Gv8g8WSnnVMG/nSIRb1DATsjSY=
-=3GOw
+iQEcBAEBCAAGBQJU3BYSAAoJECTWi3JdVIfQjlUH/1krxDjUNfyW9dCdEktAIoYA
+LpMvSc8h60bnZWY+9FYoiHbdxeFZ11xO265hvQc/l9ndtj9MScXwlpv5Q/gQv4Kg
+pED5gwFf6qHYddbEV733XkGjDSIPhCVXTXZnP60gHD/pz4+Gp1MDozHqP8JdVls4
+7RhyZFpgKYZIYdutGf4r+sPWyu30K5jms00nufgHWUnE4iYhHqNZWuS0hu5EXJ4w
+jKJgZ/w6WmqiEsDJvAHSeTe+4HAeerEgG/fvrrG24kq2K55OPUhIBVRH5NcNQ0WX
+kr+SD/H6QzwfnsNAkc4hLL6dfMMX6SNZE1I+zt8dGPxPkhc2qqJV2ICrW5kM0BU=
+=ZVmw
 -----END PGP SIGNATURE-----
 
---OowMmFE4aK71mEhh--
+--dXvu6+ixFx2ZffE8--
