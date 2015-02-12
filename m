@@ -1,49 +1,58 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 13/13] ASoC: Intel: Remove soc pm handling to
-	allow platform driver handle it
-Date: Thu, 12 Feb 2015 10:00:05 +0530
-Message-ID: <1423715405-4562-14-git-send-email-vinod.koul@intel.com>
-References: <1423715405-4562-1-git-send-email-vinod.koul@intel.com>
+From: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Subject: Re: [alsa-devel] [Patch V4 00/10] ASoC: QCOM: Add support for ipq806x
+ SOC
+Date: Wed, 11 Feb 2015 23:20:33 -0800
+Message-ID: <54DC5441.1070004@codeaurora.org>
+References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org> <20150206223229.GG31311@finisterre.sirena.org.uk> <20150209064511.GB19870@kwestfie-linux.qualcomm.com> <20150211022634.GO2593@finisterre.sirena.org.uk> <20150212010551.GA7330@kwestfie-linux.qualcomm.com> <20150212025341.GT2593@finisterre.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EEFA026514B
- for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 05:33:04 +0100 (CET)
-In-Reply-To: <1423715405-4562-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150212025341.GT2593-bheZrs9scGb3/WHNxyQH9YN0K6Il/+VY@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+On 2/11/2015 6:53 PM, Mark Brown wrote:
+> On Wed, Feb 11, 2015 at 05:05:52PM -0800, Kenneth Westfield wrote:
+>
+>> Replacing DSP-based drivers with LPASS-based drivers would be something that
+>> should be handled by Kconfig selections.  For the DT, the DSP-related
+>
+> No, it shouldn't be.  We should have the ability to build a single
+> kernel image which will run on many systems, including both your
+> system with a DSP and other systems without.
+>
+Is there expectation that DTB flashed onto the system would define nodes to
+bind with both LPASS-based driver and DSP-based driver? I hope not as we want
+to keep LPASS-based driver & DSP-based driver mutually exclusive.
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/cht_bsw_rt5672.c |    1 -
- 1 file changed, 1 deletion(-)
+>> nodes and the LPASS-related nodes shouldn't overlap.  There should be a
+>> DSP-based DT binding and a separate LPASS-based DT binding.  Tying one
+>> or the other to the sound node (but not both), should work.
+>
+> The selection of DSP use sounds like something which isn't part of the
+> description of the hardware but rather a runtime policy decision (at
+> least in so far as non-DSP is ever an option).
+>
+Put aside IPQ8064, I would say it is actually more of build time policy
+decision for QC SoCs with DSP. XPU is programmed by trust zone to allow certain
+LPASS registers to be accessed by the chosen processor. If ADSP and app
+processor would have to have access to audio interfaces and DMA, resources
+partition(i.e # of DMAs go to ADSP while rest of DMA go to app processor is
+decided after analyzing expected concurrency use case. For case of 8016, MDSP
+would simply expect it has access to all audio subsystem except digital core of
+CODEC.
 
-diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
-index 46e7e50f7d74..d782dcc9f9a7 100644
---- a/sound/soc/intel/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/cht_bsw_rt5672.c
-@@ -285,7 +285,6 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- static struct platform_driver snd_cht_mc_driver = {
- 	.driver = {
- 		.name = "cht-bsw-rt5672",
--		.pm = &snd_soc_pm_ops,
- 	},
- 	.probe = snd_cht_mc_probe,
- };
+Thanks
+Patrick
+
 -- 
-1.7.9.5
+Patrick Lai
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,a 
+Linux Foundation Collaborative Project
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
