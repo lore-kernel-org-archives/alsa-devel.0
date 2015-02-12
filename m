@@ -1,15 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 05/13] ASoC: Intel: add support for pcm stream
-	suspend/resume
-Date: Thu, 12 Feb 2015 09:59:57 +0530
-Message-ID: <1423715405-4562-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 09/13] ASoC: Intel: Add memcpy32_fromio as well
+Date: Thu, 12 Feb 2015 10:00:01 +0530
+Message-ID: <1423715405-4562-10-git-send-email-vinod.koul@intel.com>
 References: <1423715405-4562-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 47F8726513B
+ by alsa0.perex.cz (Postfix) with ESMTP id 6104E265146
  for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 05:32:58 +0100 (CET)
 In-Reply-To: <1423715405-4562-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,34 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The driver didn't implement support for pcm stream suspend and resume, so
-add it
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
+Export 32-bit version of memcpy for use in suspend/resume.
+
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst-mfld-platform-pcm.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/sst/sst.h        |    3 +++
+ sound/soc/intel/sst/sst_loader.c |   10 +++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index 7523cbef8780..ea0fa4b90bb0 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -594,11 +594,13 @@ static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 		ret_val = stream->ops->stream_drop(sst->dev, str_id);
- 		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
- 		dev_dbg(rtd->dev, "sst: in pause\n");
- 		status = SST_PLATFORM_PAUSED;
- 		ret_val = stream->ops->stream_pause(sst->dev, str_id);
- 		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME:
- 		dev_dbg(rtd->dev, "sst: in pause release\n");
- 		status = SST_PLATFORM_RUNNING;
- 		ret_val = stream->ops->stream_pause_release(sst->dev, str_id);
+diff --git a/sound/soc/intel/sst/sst.h b/sound/soc/intel/sst/sst.h
+index 7f4bbfcbc6f5..9fea01401e65 100644
+--- a/sound/soc/intel/sst/sst.h
++++ b/sound/soc/intel/sst/sst.h
+@@ -543,4 +543,7 @@ int sst_alloc_drv_context(struct intel_sst_drv **ctx,
+ int sst_context_init(struct intel_sst_drv *ctx);
+ void sst_context_cleanup(struct intel_sst_drv *ctx);
+ void sst_configure_runtime_pm(struct intel_sst_drv *ctx);
++void memcpy32_toio(void __iomem *dst, const void *src, int count);
++void memcpy32_fromio(void *dst, const void __iomem *src, int count);
++
+ #endif
+diff --git a/sound/soc/intel/sst/sst_loader.c b/sound/soc/intel/sst/sst_loader.c
+index 7888cd707853..e88907ae8b15 100644
+--- a/sound/soc/intel/sst/sst_loader.c
++++ b/sound/soc/intel/sst/sst_loader.c
+@@ -39,7 +39,15 @@
+ #include "sst.h"
+ #include "../sst-dsp.h"
+ 
+-static inline void memcpy32_toio(void __iomem *dst, const void *src, int count)
++void memcpy32_toio(void __iomem *dst, const void *src, int count)
++{
++	/* __iowrite32_copy uses 32-bit count values so divide by 4 for
++	 * right count in words
++	 */
++	__iowrite32_copy(dst, src, count/4);
++}
++
++void memcpy32_fromio(void *dst, const void __iomem *src, int count)
+ {
+ 	/* __iowrite32_copy uses 32-bit count values so divide by 4 for
+ 	 * right count in words
 -- 
 1.7.9.5
