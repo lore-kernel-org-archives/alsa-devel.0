@@ -1,57 +1,57 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: davinci-mcasp: Add support for CBS_CFM
-	mode
-Date: Thu, 12 Feb 2015 16:41:26 +0200
-Message-ID: <1423752086-30163-1-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D2C22652AD
- for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 15:41:33 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, urs.fassler@bytesatwork.ch
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: fsl-asoc-card: Add snd_soc_of_parse_audio_routing()
+Date: Thu, 12 Feb 2015 13:30:02 -0800
+Message-ID: <1423776602-28585-1-git-send-email-nicoleotsuka@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Support for setups where codec is bitclock slave and frame master.
+This patch adds snd_soc_of_parse_audio_routing() to get dapm routes
+via Device Tree. Because snd_soc_of_parse_audio_routing() overrides
+dpam_routes, we use snd_soc_dapm_add_routes() to append the original
+build-in DPCM routes instead of linking them to dpam_routes directly.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/fsl/fsl-asoc-card.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 750124030576..c0e485cba9eb 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -441,6 +441,18 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AFSX | AFSR);
- 		mcasp->bclk_master = 1;
- 		break;
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+		/* codec is clock slave and frame master */
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG, ACLKXE);
-+		mcasp_clr_bits(mcasp, DAVINCI_MCASP_TXFMCTL_REG, AFSXE);
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 3f6959c..bdc9671 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -388,6 +388,8 @@ static int fsl_asoc_card_late_probe(struct snd_soc_card *card)
+ 	struct device *dev = card->dev;
+ 	int ret;
+ 
++	snd_soc_dapm_add_routes(&card->dapm, audio_map, ARRAY_SIZE(audio_map));
 +
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
-+		mcasp_clr_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
+ 				     codec_priv->mclk_freq, SND_SOC_CLOCK_IN);
+ 	if (ret) {
+@@ -503,15 +505,19 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	priv->card.dev = &pdev->dev;
+ 	priv->card.name = priv->name;
+ 	priv->card.dai_link = priv->dai_link;
+-	priv->card.dapm_routes = audio_map;
+ 	priv->card.late_probe = fsl_asoc_card_late_probe;
+-	priv->card.num_dapm_routes = ARRAY_SIZE(audio_map);
+ 	priv->card.dapm_widgets = fsl_asoc_card_dapm_widgets;
+ 	priv->card.num_dapm_widgets = ARRAY_SIZE(fsl_asoc_card_dapm_widgets);
+ 
+ 	memcpy(priv->dai_link, fsl_asoc_card_dai,
+ 	       sizeof(struct snd_soc_dai_link) * ARRAY_SIZE(priv->dai_link));
+ 
++	ret = snd_soc_of_parse_audio_routing(&priv->card, "audio-routing");
++	if (ret) {
++		dev_err(&pdev->dev, "failed to parse audio-routing: %d\n", ret);
++		goto asrc_fail;
++	}
 +
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, ACLKX | ACLKR);
-+		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AFSX | AFSR);
-+		mcasp->bclk_master = 1;
-+		break;
- 	case SND_SOC_DAIFMT_CBM_CFS:
- 		/* codec is clock master and frame slave */
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_ACLKXCTL_REG, ACLKXE);
+ 	/* Normal DAI Link */
+ 	priv->dai_link[0].cpu_of_node = cpu_np;
+ 	priv->dai_link[0].codec_of_node = codec_np;
 -- 
-2.3.0
+1.9.1
