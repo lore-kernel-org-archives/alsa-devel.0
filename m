@@ -1,64 +1,72 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [alsa-devel] [Patch V4 00/10] ASoC: QCOM: Add support for
-	ipq806x SOC
-Date: Wed, 11 Feb 2015 17:05:52 -0800
-Message-ID: <20150212010551.GA7330@kwestfie-linux.qualcomm.com>
-References: <1423169626-22166-1-git-send-email-kwestfie@codeaurora.org>
- <20150206223229.GG31311@finisterre.sirena.org.uk>
- <20150209064511.GB19870@kwestfie-linux.qualcomm.com>
- <20150211022634.GO2593@finisterre.sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: [Patch V5 03/12] ASoC: qcom: Document LPASS CPU bindings
+Date: Wed, 11 Feb 2015 18:10:06 -0800
+Message-ID: <1423707015-14527-4-git-send-email-kwestfie@codeaurora.org>
+References: <1423707015-14527-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150211022634.GO2593@finisterre.sirena.org.uk>
+In-Reply-To: <1423707015-14527-1-git-send-email-kwestfie@codeaurora.org>
 Sender: linux-arm-msm-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, srinivas.kandagatla@linaro.org, Kenneth Westfield <kwestfie@codeaurora.org>
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
+Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 10, 2015 at 06:26:34PM -0800, Mark Brown wrote:
-> On Sun, Feb 08, 2015 at 10:45:11PM -0800, Kenneth Westfield wrote:
-> > On Sat, Feb 07, 2015 at 06:32:29AM +0800, Mark Brown wrote:
-> 
-> > > I'd really like to see some discussion as to how this is all supposed
-> to
-> > > be handled - how will these direct hardware access drivers and device
-> > > trees work when someone does want to use the DSP (without causing
-> > > problems), and how will we transition from one to the other.  This is
-> > > particularly pressing if there are use cases where people will want to
-> > > switch between the two modes at runtime.
-> 
-> > > What I'm trying to avoid here is being in a situation where we have
-> > > existing stable DT bindings which we have to support but which
-> conflict
-> > > with the way that people want to use the systems.
-> 
-> > The ipq806x SOC has no LPASS DSP.  On SOCs with a DSP, these drivers
-> > would not be enabled.
-> 
-> OK, but I'm guessing that they're using the same IP that is in other
-> SoCs which do have the DSP so even if you don't care for this device it
-> might still be an issue.
-> 
-> > These drivers are prefixed with "lpass" to differentiate themselves from
-> > other drivers that would interact with a DSP, rather than the LPASS
-> > hardware directly.
-> 
-> Right, it may be that all that's needed here is some indication as to
-> how to describe a system which *does* have a DSP.  Perhaps require that
-> the devices be children of the DSP, that way if people want to access
-> the hardware directly they can load a dummy driver for the DSP that just
-> passes things through if they don't want to use the DSP?
+From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Replacing DSP-based drivers with LPASS-based drivers would be something that
-should be handled by Kconfig selections.  For the DT, the DSP-related
-nodes and the LPASS-related nodes shouldn't overlap.  There should be a
-DSP-based DT binding and a separate LPASS-based DT binding.  Tying one
-or the other to the sound node (but not both), should work.
+Add documentation to the sound directory of the
+device-tree bindings for the IPQ806x LPASS CPU DAI
+device.
 
+Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
+Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
+---
+ .../devicetree/bindings/sound/qcom,lpass-cpu.txt   | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..621773d1c64af8f4f9eaceb2f7d2d7ec17c66aeb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+@@ -0,0 +1,38 @@
++* Qualcomm Technologies LPASS CPU DAI
++
++This node models the Qualcomm Technologies Low-Power Audio SubSystem.
++
++Required properties:
++
++- compatible		: "qcom,lpass-cpu"
++- clocks		: Must contain an entry for each entry in clock-names.
++- clock-names		: A list which must include the following entries:
++				* "ahbix-clk"
++				* "mi2s-osr-clk"
++				* "mi2s-bit-clk"
++- interrupts		: Must contain an entry for each entry in
++			  interrupt-names.
++- interrupt-names	: A list which must include the following entries:
++				* "lpass-irq-lpaif"
++- pinctrl-N		: One property must exist for each entry in
++			  pinctrl-names.  See ../pinctrl/pinctrl-bindings.txt
++			  for details of the property values.
++- pinctrl-names		: Must contain a "default" entry.
++- reg			: Must contain an address for each entry in reg-names.
++- reg-names		: A list which must include the following entries:
++				* "lpass-lpaif"
++
++Example:
++
++lpass@28100000 {
++	compatible = "qcom,lpass-cpu";
++	clocks = <&lcc AHBIX_CLK>, <&lcc MI2S_OSR_CLK>, <&lcc MI2S_BIT_CLK>;
++	clock-names = "ahbix-clk", "mi2s-osr-clk", "mi2s-bit-clk";
++	interrupts = <0 85 1>;
++	interrupt-names = "lpass-irq-lpaif";
++	pinctrl-names = "default", "idle";
++	pinctrl-0 = <&mi2s_default>;
++	pinctrl-1 = <&mi2s_idle>;
++	reg = <0x28100000 0x10000>;
++	reg-names = "lpass-lpaif";
++};
 -- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
