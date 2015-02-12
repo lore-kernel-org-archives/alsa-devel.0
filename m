@@ -1,34 +1,66 @@
-From: Kiran Padwal <kiran.padwal@smartplayin.com>
-Subject: [PATCH] ASoC: omap-hdmi-audio: Add missing error check for devm_kzalloc
-Date: Thu, 12 Feb 2015 14:38:02 +0530
-Message-ID: <1423732082-23815-1-git-send-email-kiran.padwal@smartplayin.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kiran Padwal <kiran.padwal21@gmail.com>, Kiran Padwal <kiran.padwal@smartplayin.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-hdmi-audio: Add missing error
+	check for devm_kzalloc
+Date: Thu, 12 Feb 2015 11:22:41 +0200
+Message-ID: <54DC70E1.50300@ti.com>
+References: <1423732082-23815-1-git-send-email-kiran.padwal@smartplayin.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65FD52604D9
+ for <alsa-devel@alsa-project.org>; Thu, 12 Feb 2015 10:22:48 +0100 (CET)
+In-Reply-To: <1423732082-23815-1-git-send-email-kiran.padwal@smartplayin.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kiran Padwal <kiran.padwal@smartplayin.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, "Sarha,
+ Jyri" <jsarha@ti.com>, Kiran Padwal <kiran.padwal21@gmail.com>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add a missing check on the return value of devm_kzalloc,
-which would cause a NULL pointer dereference in a OOM situation.
+On 02/12/2015 11:08 AM, Kiran Padwal wrote:
+> This patch add a missing check on the return value of devm_kzalloc,
+> which would cause a NULL pointer dereference in a OOM situation.
 
-Signed-off-by: Kiran Padwal <kiran.padwal@smartplayin.com>
----
- sound/soc/omap/omap-hdmi-audio.c |    3 +++
- 1 file changed, 3 insertions(+)
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
-index ccfb41c..f7eb42a 100644
---- a/sound/soc/omap/omap-hdmi-audio.c
-+++ b/sound/soc/omap/omap-hdmi-audio.c
-@@ -352,6 +352,9 @@ static int omap_hdmi_audio_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+
- 	card->name = devm_kasprintf(dev, GFP_KERNEL,
- 				    "HDMI %s", dev_name(ad->dssdev));
- 	card->owner = THIS_MODULE;
--- 
-1.7.9.5
+> =
+
+> Signed-off-by: Kiran Padwal <kiran.padwal@smartplayin.com>
+> ---
+>  sound/soc/omap/omap-hdmi-audio.c |    3 +++
+>  1 file changed, 3 insertions(+)
+> =
+
+> diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-=
+audio.c
+> index ccfb41c..f7eb42a 100644
+> --- a/sound/soc/omap/omap-hdmi-audio.c
+> +++ b/sound/soc/omap/omap-hdmi-audio.c
+> @@ -352,6 +352,9 @@ static int omap_hdmi_audio_probe(struct platform_devi=
+ce *pdev)
+>  		return ret;
+>  =
+
+>  	card =3D devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+> +	if (!card)
+> +		return -ENOMEM;
+> +
+>  	card->name =3D devm_kasprintf(dev, GFP_KERNEL,
+>  				    "HDMI %s", dev_name(ad->dssdev));
+>  	card->owner =3D THIS_MODULE;
+> =
+
+
+
+-- =
+
+P=E9ter
