@@ -1,33 +1,37 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V5 07/12] ASoC: ipq806x: Add LPASS CPU DAI driver
-Date: Wed, 11 Feb 2015 18:10:10 -0800
-Message-ID: <1423707015-14527-8-git-send-email-kwestfie@codeaurora.org>
+From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Subject: [Patch V5 06/12] ASoC: ipq806x: add LPASS header files
+Date: Wed, 11 Feb 2015 18:10:09 -0800
+Message-ID: <1423707015-14527-7-git-send-email-kwestfie@codeaurora.org>
 References: <1423707015-14527-1-git-send-email-kwestfie@codeaurora.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1423707015-14527-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
-Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1423707015-14527-1-git-send-email-kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kenneth Westfield <kwestfie@codeaurora.org>
+From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 
-Add the CPU DAI driver for the Qualcomm
-Technologies low-power audio subsystem (LPASS).
+Add the LPASS header files for ipq806x SOC.  This
+includes the register definitions for the ipq806x
+LPAIF, and the structure definition for the driver
+data.
 
-Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
-Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
+Signed-off-by: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Acked-by: Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 ---
- sound/soc/qcom/lpass-cpu.c | 481 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 481 insertions(+)
- create mode 100644 sound/soc/qcom/lpass-cpu.c
+ sound/soc/qcom/lpass-lpaif-ipq806x.h | 172 +++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/lpass.h               |  51 +++++++++++
+ 2 files changed, 223 insertions(+)
+ create mode 100644 sound/soc/qcom/lpass-lpaif-ipq806x.h
+ create mode 100644 sound/soc/qcom/lpass.h
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+diff --git a/sound/soc/qcom/lpass-lpaif-ipq806x.h b/sound/soc/qcom/lpass-lpaif-ipq806x.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..c178142989abce9c46565fccbaf3b140cb289b19
+index 0000000000000000000000000000000000000000..dc423b8888425e60ebb11cd0ce78da2574ed27c2
 --- /dev/null
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -0,0 +1,481 @@
++++ b/sound/soc/qcom/lpass-lpaif-ipq806x.h
+@@ -0,0 +1,172 @@
 +/*
 + * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
 + *
@@ -40,475 +44,228 @@ index 0000000000000000000000000000000000000000..c178142989abce9c46565fccbaf3b140
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 + * GNU General Public License for more details.
 + *
-+ * lpass-cpu.c -- ALSA SoC CPU DAI driver for QTi LPASS
++ * lpass-lpaif-ipq806x.h -- Definitions for the QTi LPAIF in the ipq806x LPASS
 + */
++
++#ifndef __LPASS_LPAIF_H__
++#define __LPASS_LPAIF_H__
++
++#define LPAIF_BANK_OFFSET		0x1000
++
++/* LPAIF I2S */
++
++#define LPAIF_I2SCTL_REG_BASE		0x0010
++#define LPAIF_I2SCTL_REG_STRIDE		0x4
++#define LPAIF_I2SCTL_REG_ADDR(addr, port) \
++	(LPAIF_I2SCTL_REG_BASE + (addr) + (LPAIF_I2SCTL_REG_STRIDE * (port)))
++
++enum lpaif_i2s_ports {
++	LPAIF_I2S_PORT_MIN		= 0,
++
++	LPAIF_I2S_PORT_CODEC_SPK	= 0,
++	LPAIF_I2S_PORT_CODEC_MIC	= 1,
++	LPAIF_I2S_PORT_SEC_SPK		= 2,
++	LPAIF_I2S_PORT_SEC_MIC		= 3,
++	LPAIF_I2S_PORT_MI2S		= 4,
++
++	LPAIF_I2S_PORT_MAX		= 4,
++	LPAIF_I2S_PORT_NUM		= 5,
++};
++
++#define LPAIF_I2SCTL_REG(port)		LPAIF_I2SCTL_REG_ADDR(0x0, (port))
++
++#define LPAIF_I2SCTL_LOOPBACK_MASK	0x8000
++#define LPAIF_I2SCTL_LOOPBACK_SHIFT	15
++#define LPAIF_I2SCTL_LOOPBACK_DISABLE	(0 << LPAIF_I2SCTL_LOOPBACK_SHIFT)
++#define LPAIF_I2SCTL_LOOPBACK_ENABLE	(1 << LPAIF_I2SCTL_LOOPBACK_SHIFT)
++
++#define LPAIF_I2SCTL_SPKEN_MASK		0x4000
++#define LPAIF_I2SCTL_SPKEN_SHIFT	14
++#define LPAIF_I2SCTL_SPKEN_DISABLE	(0 << LPAIF_I2SCTL_SPKEN_SHIFT)
++#define LPAIF_I2SCTL_SPKEN_ENABLE	(1 << LPAIF_I2SCTL_SPKEN_SHIFT)
++
++#define LPAIF_I2SCTL_SPKMODE_MASK	0x3C00
++#define LPAIF_I2SCTL_SPKMODE_SHIFT	10
++#define LPAIF_I2SCTL_SPKMODE_NONE	(0 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++#define LPAIF_I2SCTL_SPKMODE_SD0	(1 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++#define LPAIF_I2SCTL_SPKMODE_SD1	(2 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++#define LPAIF_I2SCTL_SPKMODE_SD2	(3 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++#define LPAIF_I2SCTL_SPKMODE_SD3	(4 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++#define LPAIF_I2SCTL_SPKMODE_QUAD01	(5 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++#define LPAIF_I2SCTL_SPKMODE_QUAD23	(6 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++#define LPAIF_I2SCTL_SPKMODE_6CH	(7 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++#define LPAIF_I2SCTL_SPKMODE_8CH	(8 << LPAIF_I2SCTL_SPKMODE_SHIFT)
++
++#define LPAIF_I2SCTL_SPKMONO_MASK	0x0200
++#define LPAIF_I2SCTL_SPKMONO_SHIFT	9
++#define LPAIF_I2SCTL_SPKMONO_STEREO	(0 << LPAIF_I2SCTL_SPKMONO_SHIFT)
++#define LPAIF_I2SCTL_SPKMONO_MONO	(1 << LPAIF_I2SCTL_SPKMONO_SHIFT)
++
++#define LPAIF_I2SCTL_WSSRC_MASK		0x0004
++#define LPAIF_I2SCTL_WSSRC_SHIFT	2
++#define LPAIF_I2SCTL_WSSRC_INTERNAL	(0 << LPAIF_I2SCTL_WSSRC_SHIFT)
++#define LPAIF_I2SCTL_WSSRC_EXTERNAL	(1 << LPAIF_I2SCTL_WSSRC_SHIFT)
++
++#define LPAIF_I2SCTL_BITWIDTH_MASK	0x0003
++#define LPAIF_I2SCTL_BITWIDTH_SHIFT	0
++#define LPAIF_I2SCTL_BITWIDTH_16	(0 << LPAIF_I2SCTL_BITWIDTH_SHIFT)
++#define LPAIF_I2SCTL_BITWIDTH_24	(1 << LPAIF_I2SCTL_BITWIDTH_SHIFT)
++#define LPAIF_I2SCTL_BITWIDTH_32	(2 << LPAIF_I2SCTL_BITWIDTH_SHIFT)
++
++/* LPAIF IRQ */
++
++#define LPAIF_IRQ_REG_BASE		0x3000
++#define LPAIF_IRQ_REG_STRIDE		0x1000
++#define LPAIF_IRQ_REG_ADDR(addr, port) \
++	(LPAIF_IRQ_REG_BASE + (addr) + (LPAIF_IRQ_REG_STRIDE * (port)))
++
++enum lpaif_irq_ports {
++	LPAIF_IRQ_PORT_MIN		= 0,
++
++	LPAIF_IRQ_PORT_HOST		= 0,
++	LPAIF_IRQ_PORT_ADSP		= 1,
++
++	LPAIF_IRQ_PORT_MAX		= 2,
++	LPAIF_IRQ_PORT_NUM		= 3,
++};
++
++#define LPAIF_IRQEN_REG(port)		LPAIF_IRQ_REG_ADDR(0x0, (port))
++#define LPAIF_IRQSTAT_REG(port)		LPAIF_IRQ_REG_ADDR(0x4, (port))
++#define LPAIF_IRQCLEAR_REG(port)	LPAIF_IRQ_REG_ADDR(0xC, (port))
++
++#define LPAIF_IRQ_BITSTRIDE		3
++#define LPAIF_IRQ_PER(chan)		(1 << (LPAIF_IRQ_BITSTRIDE * (chan)))
++#define LPAIF_IRQ_XRUN(chan)		(2 << (LPAIF_IRQ_BITSTRIDE * (chan)))
++#define LPAIF_IRQ_ERR(chan)		(4 << (LPAIF_IRQ_BITSTRIDE * (chan)))
++#define LPAIF_IRQ_ALL(chan)		(7 << (LPAIF_IRQ_BITSTRIDE * (chan)))
++
++/* LPAIF DMA */
++
++#define LPAIF_RDMA_REG_BASE		0x6000
++#define LPAIF_RDMA_REG_STRIDE		0x1000
++#define LPAIF_RDMA_REG_ADDR(addr, chan) \
++	(LPAIF_RDMA_REG_BASE + (addr) + (LPAIF_RDMA_REG_STRIDE * (chan)))
++
++enum lpaif_dma_channels {
++	LPAIF_RDMA_CHAN_MIN		= 0,
++
++	LPAIF_RDMA_CHAN_MI2S		= 0,
++	LPAIF_RDMA_CHAN_PCM0		= 1,
++	LPAIF_RDMA_CHAN_PCM1		= 2,
++
++	LPAIF_RDMA_CHAN_MAX		= 4,
++	LPAIF_RDMA_CHAN_NUM		= 5,
++};
++
++#define LPAIF_RDMACTL_REG(chan)		LPAIF_RDMA_REG_ADDR(0x00, (chan))
++#define LPAIF_RDMABASE_REG(chan)	LPAIF_RDMA_REG_ADDR(0x04, (chan))
++#define	LPAIF_RDMABUFF_REG(chan)	LPAIF_RDMA_REG_ADDR(0x08, (chan))
++#define LPAIF_RDMACURR_REG(chan)	LPAIF_RDMA_REG_ADDR(0x0C, (chan))
++#define	LPAIF_RDMAPER_REG(chan)		LPAIF_RDMA_REG_ADDR(0x10, (chan))
++
++#define LPAIF_RDMACTL_BURSTEN_MASK	0x800
++#define LPAIF_RDMACTL_BURSTEN_SHIFT	11
++#define LPAIF_RDMACTL_BURSTEN_SINGLE	(0 << LPAIF_RDMACTL_BURSTEN_SHIFT)
++#define LPAIF_RDMACTL_BURSTEN_INCR4	(1 << LPAIF_RDMACTL_BURSTEN_SHIFT)
++
++#define LPAIF_RDMACTL_WPSCNT_MASK	0x700
++#define LPAIF_RDMACTL_WPSCNT_SHIFT	8
++#define LPAIF_RDMACTL_WPSCNT_ONE	(0 << LPAIF_RDMACTL_WPSCNT_SHIFT)
++#define LPAIF_RDMACTL_WPSCNT_TWO	(1 << LPAIF_RDMACTL_WPSCNT_SHIFT)
++#define LPAIF_RDMACTL_WPSCNT_THREE	(2 << LPAIF_RDMACTL_WPSCNT_SHIFT)
++#define LPAIF_RDMACTL_WPSCNT_FOUR	(3 << LPAIF_RDMACTL_WPSCNT_SHIFT)
++#define LPAIF_RDMACTL_WPSCNT_SIX	(5 << LPAIF_RDMACTL_WPSCNT_SHIFT)
++#define LPAIF_RDMACTL_WPSCNT_EIGHT	(7 << LPAIF_RDMACTL_WPSCNT_SHIFT)
++
++#define LPAIF_RDMACTL_AUDINTF_MASK	0x0F0
++#define LPAIF_RDMACTL_AUDINTF_SHIFT	4
++#define LPAIF_RDMACTL_AUDINTF_NONE	(0 << LPAIF_RDMACTL_AUDINTF_SHIFT)
++#define LPAIF_RDMACTL_AUDINTF_CODEC	(1 << LPAIF_RDMACTL_AUDINTF_SHIFT)
++#define LPAIF_RDMACTL_AUDINTF_PCM	(2 << LPAIF_RDMACTL_AUDINTF_SHIFT)
++#define LPAIF_RDMACTL_AUDINTF_SEC_I2S	(3 << LPAIF_RDMACTL_AUDINTF_SHIFT)
++#define LPAIF_RDMACTL_AUDINTF_MI2S	(4 << LPAIF_RDMACTL_AUDINTF_SHIFT)
++#define LPAIF_RDMACTL_AUDINTF_HDMI	(5 << LPAIF_RDMACTL_AUDINTF_SHIFT)
++#define LPAIF_RDMACTL_AUDINTF_SEC_PCM	(7 << LPAIF_RDMACTL_AUDINTF_SHIFT)
++
++#define LPAIF_RDMACTL_FIFOWM_MASK	0x00E
++#define LPAIF_RDMACTL_FIFOWM_SHIFT	1
++#define LPAIF_RDMACTL_FIFOWM_1		(0 << LPAIF_RDMACTL_FIFOWM_SHIFT)
++#define LPAIF_RDMACTL_FIFOWM_2		(1 << LPAIF_RDMACTL_FIFOWM_SHIFT)
++#define LPAIF_RDMACTL_FIFOWM_3		(2 << LPAIF_RDMACTL_FIFOWM_SHIFT)
++#define LPAIF_RDMACTL_FIFOWM_4		(3 << LPAIF_RDMACTL_FIFOWM_SHIFT)
++#define LPAIF_RDMACTL_FIFOWM_5		(4 << LPAIF_RDMACTL_FIFOWM_SHIFT)
++#define LPAIF_RDMACTL_FIFOWM_6		(5 << LPAIF_RDMACTL_FIFOWM_SHIFT)
++#define LPAIF_RDMACTL_FIFOWM_7		(6 << LPAIF_RDMACTL_FIFOWM_SHIFT)
++#define LPAIF_RDMACTL_FIFOWM_8		(7 << LPAIF_RDMACTL_FIFOWM_SHIFT)
++
++#define LPAIF_RDMACTL_ENABLE_MASK	0x1
++#define LPAIF_RDMACTL_ENABLE_SHIFT	0
++#define LPAIF_RDMACTL_ENABLE_OFF	(0 << LPAIF_RDMACTL_ENABLE_SHIFT)
++#define LPAIF_RDMACTL_ENABLE_ON		(1 << LPAIF_RDMACTL_ENABLE_SHIFT)
++
++#endif /* __LPASS_LPAIF_H__ */
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..315b981ef89dbe5ab060a58b2cce79c7704c32ed
+--- /dev/null
++++ b/sound/soc/qcom/lpass.h
+@@ -0,0 +1,51 @@
++/*
++ * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * lpass.h - Definitions for the QTi LPASS
++ */
++
++#ifndef __LPASS_H__
++#define __LPASS_H__
 +
 +#include <linux/clk.h>
 +#include <linux/compiler.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/ioport.h>
-+#include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
 +#include <linux/platform_device.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
 +#include <linux/regmap.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+#include "lpass-lpaif-ipq806x.h"
-+#include "lpass.h"
 +
-+static int lpass_cpu_daiops_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-+		unsigned int freq, int dir)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	int ret;
++#define LPASS_AHBIX_CLOCK_FREQUENCY		131072
 +
-+	ret = clk_set_rate(drvdata->mi2s_osr_clk, freq);
-+	if (ret)
-+		dev_err(dai->dev, "%s() error setting mi2s osrclk to %u: %d\n",
-+				__func__, freq, ret);
++/* Both the CPU DAI and platform drivers will access this data */
++struct lpass_data {
 +
-+	return ret;
-+}
++	/* AHB-I/X bus clocks inside the low-power audio subsystem (LPASS) */
++	struct clk *ahbix_clk;
 +
-+static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	int ret;
++	/* MI2S system clock */
++	struct clk *mi2s_osr_clk;
 +
-+	ret = clk_prepare_enable(drvdata->mi2s_osr_clk);
-+	if (ret) {
-+		dev_err(dai->dev, "%s() error in enabling mi2s osr clk: %d\n",
-+				__func__, ret);
-+		return ret;
-+	}
++	/* MI2S bit clock (derived from system clock by a divider */
++	struct clk *mi2s_bit_clk;
 +
-+	ret = clk_prepare_enable(drvdata->mi2s_bit_clk);
-+	if (ret) {
-+		dev_err(dai->dev, "%s() error in enabling mi2s bit clk: %d\n",
-+				__func__, ret);
-+		clk_disable_unprepare(drvdata->mi2s_osr_clk);
-+		return ret;
-+	}
++	/* low-power audio interface (LPAIF) registers */
++	void __iomem *lpaif;
 +
-+	return 0;
-+}
++	/* regmap backed by the low-power audio interface (LPAIF) registers */
++	struct regmap *lpaif_map;
 +
-+static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+
-+	clk_disable_unprepare(drvdata->mi2s_bit_clk);
-+	clk_disable_unprepare(drvdata->mi2s_osr_clk);
-+}
-+
-+static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	snd_pcm_format_t format = params_format(params);
-+	unsigned int channels = params_channels(params);
-+	unsigned int rate = params_rate(params);
-+	unsigned int regval;
-+	int bitwidth, ret;
-+
-+	bitwidth = snd_pcm_format_width(format);
-+	if (bitwidth < 0) {
-+		dev_err(dai->dev, "%s() invalid bit width given: %d\n",
-+				__func__, bitwidth);
-+		return bitwidth;
-+	}
-+
-+	regval = LPAIF_I2SCTL_LOOPBACK_DISABLE |
-+			LPAIF_I2SCTL_WSSRC_INTERNAL;
-+
-+	switch (bitwidth) {
-+	case 16:
-+		regval |= LPAIF_I2SCTL_BITWIDTH_16;
-+		break;
-+	case 24:
-+		regval |= LPAIF_I2SCTL_BITWIDTH_24;
-+		break;
-+	case 32:
-+		regval |= LPAIF_I2SCTL_BITWIDTH_32;
-+		break;
-+	default:
-+		dev_err(dai->dev, "%s() invalid bitwidth given: %d\n",
-+				__func__, bitwidth);
-+		return -EINVAL;
-+	}
-+
-+	switch (channels) {
-+	case 1:
-+		regval |= LPAIF_I2SCTL_SPKMODE_SD0;
-+		regval |= LPAIF_I2SCTL_SPKMONO_MONO;
-+		break;
-+	case 2:
-+		regval |= LPAIF_I2SCTL_SPKMODE_SD0;
-+		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
-+		break;
-+	case 4:
-+		regval |= LPAIF_I2SCTL_SPKMODE_QUAD01;
-+		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
-+		break;
-+	case 6:
-+		regval |= LPAIF_I2SCTL_SPKMODE_6CH;
-+		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
-+		break;
-+	case 8:
-+		regval |= LPAIF_I2SCTL_SPKMODE_8CH;
-+		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
-+		break;
-+	default:
-+		dev_err(dai->dev, "%s() invalid channels given: %u\n",
-+				__func__, channels);
-+		return -EINVAL;
-+	}
-+
-+	ret = regmap_write(drvdata->lpaif_map,
-+			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), regval);
-+	if (ret) {
-+		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-+				__func__, ret);
-+		return ret;
-+	}
-+
-+	ret = clk_set_rate(drvdata->mi2s_bit_clk, rate * bitwidth * 2);
-+	if (ret) {
-+		dev_err(dai->dev, "%s() error setting mi2s bitclk to %u: %d\n",
-+				__func__, rate * bitwidth * 2, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	int ret;
-+
-+	ret = regmap_write(drvdata->lpaif_map,
-+			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), 0);
-+	if (ret)
-+		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-+				__func__, ret);
-+
-+	return ret;
-+}
-+
-+static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	int ret;
-+
-+	ret = regmap_update_bits(drvdata->lpaif_map,
-+			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
-+			LPAIF_I2SCTL_SPKEN_MASK, LPAIF_I2SCTL_SPKEN_ENABLE);
-+	if (ret)
-+		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-+				__func__, ret);
-+
-+	return ret;
-+}
-+
-+static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	int ret;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		ret = regmap_update_bits(drvdata->lpaif_map,
-+				LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
-+				LPAIF_I2SCTL_SPKEN_MASK,
-+				LPAIF_I2SCTL_SPKEN_ENABLE);
-+		if (ret)
-+			dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-+					__func__, ret);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		ret = regmap_update_bits(drvdata->lpaif_map,
-+				LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
-+				LPAIF_I2SCTL_SPKEN_MASK,
-+				LPAIF_I2SCTL_SPKEN_DISABLE);
-+		if (ret)
-+			dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-+					__func__, ret);
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_dai_ops lpass_cpu_dai_ops = {
-+	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
-+	.startup	= lpass_cpu_daiops_startup,
-+	.shutdown	= lpass_cpu_daiops_shutdown,
-+	.hw_params	= lpass_cpu_daiops_hw_params,
-+	.hw_free	= lpass_cpu_daiops_hw_free,
-+	.prepare	= lpass_cpu_daiops_prepare,
-+	.trigger	= lpass_cpu_daiops_trigger,
++	/* interrupts from the low-power audio interface (LPAIF) */
++	int lpaif_irq;
 +};
 +
-+static int lpass_cpu_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	int ret;
++/* register the platform driver from the CPU DAI driver */
++int asoc_qcom_lpass_platform_register(struct platform_device *);
 +
-+	/* ensure audio hardware is disabled */
-+	ret = regmap_write(drvdata->lpaif_map,
-+			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), 0);
-+	if (ret)
-+		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-+				__func__, ret);
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_dai_driver lpass_cpu_dai_driver = {
-+	.playback = {
-+		.stream_name	= "lpass-cpu-playback",
-+		.formats	= SNDRV_PCM_FMTBIT_S16 |
-+					SNDRV_PCM_FMTBIT_S24 |
-+					SNDRV_PCM_FMTBIT_S32,
-+		.rates		= SNDRV_PCM_RATE_8000 |
-+					SNDRV_PCM_RATE_16000 |
-+					SNDRV_PCM_RATE_32000 |
-+					SNDRV_PCM_RATE_48000 |
-+					SNDRV_PCM_RATE_96000,
-+		.rate_min	= 8000,
-+		.rate_max	= 96000,
-+		.channels_min	= 1,
-+		.channels_max	= 8,
-+	},
-+	.probe	= &lpass_cpu_dai_probe,
-+	.ops    = &lpass_cpu_dai_ops,
-+};
-+
-+static const struct snd_soc_component_driver lpass_cpu_comp_driver = {
-+	.name = "lpass-cpu",
-+};
-+
-+static bool lpass_cpu_regmap_writeable(struct device *dev, unsigned int reg)
-+{
-+	int i;
-+
-+	for (i = 0; i < LPAIF_I2S_PORT_NUM; ++i)
-+		if (reg == LPAIF_I2SCTL_REG(i))
-+			return true;
-+
-+	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i) {
-+		if (reg == LPAIF_IRQEN_REG(i))
-+			return true;
-+		if (reg == LPAIF_IRQCLEAR_REG(i))
-+			return true;
-+	}
-+
-+	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i) {
-+		if (reg == LPAIF_RDMACTL_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMABASE_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMABUFF_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMAPER_REG(i))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static bool lpass_cpu_regmap_readable(struct device *dev, unsigned int reg)
-+{
-+	int i;
-+
-+	for (i = 0; i < LPAIF_I2S_PORT_NUM; ++i)
-+		if (reg == LPAIF_I2SCTL_REG(i))
-+			return true;
-+
-+	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i) {
-+		if (reg == LPAIF_IRQEN_REG(i))
-+			return true;
-+		if (reg == LPAIF_IRQSTAT_REG(i))
-+			return true;
-+	}
-+
-+	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i) {
-+		if (reg == LPAIF_RDMACTL_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMABASE_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMABUFF_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMACURR_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMAPER_REG(i))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
-+{
-+	int i;
-+
-+	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i)
-+		if (reg == LPAIF_IRQSTAT_REG(i))
-+			return true;
-+
-+	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i)
-+		if (reg == LPAIF_RDMACURR_REG(i))
-+			return true;
-+
-+	return false;
-+}
-+
-+static const struct regmap_config lpass_cpu_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = LPAIF_RDMAPER_REG(LPAIF_RDMA_CHAN_MAX),
-+	.writeable_reg = lpass_cpu_regmap_writeable,
-+	.readable_reg = lpass_cpu_regmap_readable,
-+	.volatile_reg = lpass_cpu_regmap_volatile,
-+	.cache_type = REGCACHE_FLAT,
-+};
-+
-+static int lpass_cpu_platform_probe(struct platform_device *pdev)
-+{
-+	struct lpass_data *drvdata;
-+	struct resource *res;
-+	int ret;
-+
-+	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct lpass_data),
-+			GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, drvdata);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "lpass-lpaif");
-+	if (!res) {
-+		dev_err(&pdev->dev, "%s() error getting resource\n", __func__);
-+		return -ENODEV;
-+	}
-+
-+	drvdata->lpaif = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR((void const __force *)drvdata->lpaif)) {
-+		dev_err(&pdev->dev, "%s() error mapping reg resource: %ld\n",
-+				__func__,
-+				PTR_ERR((void const __force *)drvdata->lpaif));
-+		return PTR_ERR((void const __force *)drvdata->lpaif);
-+	}
-+
-+	drvdata->lpaif_map = devm_regmap_init_mmio(&pdev->dev, drvdata->lpaif,
-+			&lpass_cpu_regmap_config);
-+	if (IS_ERR(drvdata->lpaif_map)) {
-+		dev_err(&pdev->dev, "%s() error initializing regmap: %ld\n",
-+				__func__, PTR_ERR(drvdata->lpaif_map));
-+		return PTR_ERR(drvdata->lpaif_map);
-+	}
-+
-+	drvdata->mi2s_osr_clk = devm_clk_get(&pdev->dev, "mi2s-osr-clk");
-+	if (IS_ERR(drvdata->mi2s_osr_clk)) {
-+		dev_err(&pdev->dev, "%s() error getting mi2s-osr-clk: %ld\n",
-+				__func__, PTR_ERR(drvdata->mi2s_osr_clk));
-+		return PTR_ERR(drvdata->mi2s_osr_clk);
-+	}
-+
-+	drvdata->mi2s_bit_clk = devm_clk_get(&pdev->dev, "mi2s-bit-clk");
-+	if (IS_ERR(drvdata->mi2s_bit_clk)) {
-+		dev_err(&pdev->dev, "%s() error getting mi2s-bit-clk: %ld\n",
-+				__func__, PTR_ERR(drvdata->mi2s_bit_clk));
-+		return PTR_ERR(drvdata->mi2s_bit_clk);
-+	}
-+
-+	drvdata->ahbix_clk = devm_clk_get(&pdev->dev, "ahbix-clk");
-+	if (IS_ERR(drvdata->ahbix_clk)) {
-+		dev_err(&pdev->dev, "%s() error getting ahbix-clk: %ld\n",
-+				__func__, PTR_ERR(drvdata->ahbix_clk));
-+		return PTR_ERR(drvdata->ahbix_clk);
-+	}
-+
-+	ret = clk_set_rate(drvdata->ahbix_clk, LPASS_AHBIX_CLOCK_FREQUENCY);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s() error setting rate on ahbix_clk: %d\n",
-+				__func__, ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(drvdata->ahbix_clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s() Error enabling ahbix_clk: %d\n",
-+				__func__, ret);
-+		return ret;
-+	}
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+			&lpass_cpu_comp_driver, &lpass_cpu_dai_driver, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s() error registering cpu driver: %d\n",
-+				__func__, ret);
-+		goto err_clk;
-+	}
-+
-+	ret = asoc_qcom_lpass_platform_register(pdev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s() error registering platform driver: %d\n",
-+				__func__, ret);
-+		goto err_clk;
-+	}
-+
-+	return 0;
-+
-+err_clk:
-+	clk_disable_unprepare(drvdata->ahbix_clk);
-+	return ret;
-+}
-+
-+static int lpass_cpu_platform_remove(struct platform_device *pdev)
-+{
-+	struct lpass_data *drvdata = platform_get_drvdata(pdev);
-+
-+	clk_disable_unprepare(drvdata->ahbix_clk);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id lpass_cpu_device_id[] = {
-+	{ .compatible = "qcom,lpass-cpu" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, lpass_cpu_device_id);
-+#endif
-+
-+static struct platform_driver lpass_cpu_platform_driver = {
-+	.driver	= {
-+		.name		= "lpass-cpu",
-+		.of_match_table	= of_match_ptr(lpass_cpu_device_id),
-+	},
-+	.probe	= lpass_cpu_platform_probe,
-+	.remove	= lpass_cpu_platform_remove,
-+};
-+module_platform_driver(lpass_cpu_platform_driver);
-+
-+MODULE_DESCRIPTION("QTi LPASS CPU Driver");
-+MODULE_LICENSE("GPL v2");
++#endif /* __LPASS_H__ */
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
