@@ -1,15 +1,14 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v6 3/7] ALSA: core: pass audio tstamp config
-	from userspace in compat mode
-Date: Fri, 13 Feb 2015 15:14:05 -0600
-Message-ID: <1423862049-4073-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v6 4/7] ALSA: core: add .get_time_info
+Date: Fri, 13 Feb 2015 15:14:06 -0600
+Message-ID: <1423862049-4073-5-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1423862049-4073-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 91393260662
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E86A260665
  for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2015 22:14:24 +0100 (CET)
 In-Reply-To: <1423862049-4073-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,84 +24,199 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Let userspace select audio timestamp config, ignore and zero all
-other fields
-Use audio_tstamp_data to retrieve config and pass report back to
-user space
+Introduce more generic .get_time_info to retrieve
+system timestamp and audio timestamp in single routine.
+Backwards compatibility is preserved with same functionality
+as with .wall_clock method (to be removed in following commits
+to avoid breaking git bisect)
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/core/pcm_compat.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+ include/sound/pcm.h     |  4 +++
+ sound/core/pcm_lib.c    | 88 +++++++++++++++++++++++++++++++++----------------
+ sound/core/pcm_native.c | 24 ++++++++++++++
+ 3 files changed, 87 insertions(+), 29 deletions(-)
 
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index 2d957ba..b48b434 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -194,18 +194,30 @@ struct snd_pcm_status32 {
- 	u32 avail_max;
- 	u32 overrange;
- 	s32 suspended_state;
--	u32 reserved_alignment;
-+	u32 audio_tstamp_data;
- 	struct compat_timespec audio_tstamp;
--	unsigned char reserved[56-sizeof(struct compat_timespec)];
-+	struct compat_timespec driver_tstamp;
-+	u32 audio_tstamp_accuracy;
-+	unsigned char reserved[52-2*sizeof(struct compat_timespec)];
- } __attribute__((packed));
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 60f0e48..04f2d49 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -76,6 +76,10 @@ struct snd_pcm_ops {
+ 	snd_pcm_uframes_t (*pointer)(struct snd_pcm_substream *substream);
+ 	int (*wall_clock)(struct snd_pcm_substream *substream,
+ 			  struct timespec *audio_ts);
++	int (*get_time_info)(struct snd_pcm_substream *substream,
++			struct timespec *system_ts, struct timespec *audio_ts,
++			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
++			struct snd_pcm_audio_tstamp_report *audio_tstamp_report);
+ 	int (*copy)(struct snd_pcm_substream *substream, int channel,
+ 		    snd_pcm_uframes_t pos,
+ 		    void __user *buf, snd_pcm_uframes_t count);
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index ffd6560..ac6b33f 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -232,6 +232,49 @@ int snd_pcm_update_state(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
  
- 
- static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
--				      struct snd_pcm_status32 __user *src)
-+				      struct snd_pcm_status32 __user *src,
-+				      bool ext)
- {
- 	struct snd_pcm_status status;
- 	int err;
- 
-+	memset(&status, 0, sizeof(status));
++static void update_audio_tstamp(struct snd_pcm_substream *substream,
++				struct timespec *curr_tstamp,
++				struct timespec *audio_tstamp)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	u64 audio_frames, audio_nsecs;
++	struct timespec driver_tstamp;
++
++	if (runtime->tstamp_mode != SNDRV_PCM_TSTAMP_ENABLE)
++		return;
++
++	if (!(substream->ops->get_time_info) ||
++		(runtime->audio_tstamp_report.actual_type ==
++			SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT)) {
++
++		/*
++		 * provide audio timestamp derived from pointer position
++		 * add delay only if requested
++		 */
++
++		audio_frames = runtime->hw_ptr_wrap + runtime->status->hw_ptr;
++
++		if (runtime->audio_tstamp_config.report_delay) {
++			if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++				audio_frames -=  runtime->delay;
++			else
++				audio_frames +=  runtime->delay;
++		}
++		audio_nsecs = div_u64(audio_frames * 1000000000LL,
++				runtime->rate);
++		*audio_tstamp = ns_to_timespec(audio_nsecs);
++	}
++	runtime->status->audio_tstamp = *audio_tstamp;
++	runtime->status->tstamp = *curr_tstamp;
++
 +	/*
-+	 * with extension, parameters are read/write,
-+	 * get audio_tstamp_data from user,
-+	 * ignore rest of status structure
++	 * re-take a driver timestamp to let apps detect if the reference tstamp
++	 * read by low-level hardware was provided with a delay
 +	 */
-+	if (ext && get_user(status.audio_tstamp_data,
-+				(u32 __user *)(&src->audio_tstamp_data)))
-+		return -EFAULT;
- 	err = snd_pcm_status(substream, &status);
- 	if (err < 0)
- 		return err;
-@@ -222,7 +234,10 @@ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
- 	    put_user(status.avail_max, &src->avail_max) ||
- 	    put_user(status.overrange, &src->overrange) ||
- 	    put_user(status.suspended_state, &src->suspended_state) ||
--	    compat_put_timespec(&status.audio_tstamp, &src->audio_tstamp))
-+	    put_user(status.audio_tstamp_data, &src->audio_tstamp_data) ||
-+	    compat_put_timespec(&status.audio_tstamp, &src->audio_tstamp) ||
-+	    compat_put_timespec(&status.driver_tstamp, &src->driver_tstamp) ||
-+	    put_user(status.audio_tstamp_accuracy, &src->audio_tstamp_accuracy))
- 		return -EFAULT;
++	snd_pcm_gettime(substream->runtime, (struct timespec *)&driver_tstamp);
++	runtime->driver_tstamp = driver_tstamp;
++}
++
+ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 				  unsigned int in_interrupt)
+ {
+@@ -256,11 +299,18 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 	pos = substream->ops->pointer(substream);
+ 	curr_jiffies = jiffies;
+ 	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
+-		snd_pcm_gettime(runtime, (struct timespec *)&curr_tstamp);
+-
+-		if ((runtime->hw.info & SNDRV_PCM_INFO_HAS_WALL_CLOCK) &&
+-			(substream->ops->wall_clock))
+-			substream->ops->wall_clock(substream, &audio_tstamp);
++		if ((substream->ops->get_time_info) &&
++			(runtime->audio_tstamp_config.type_requested != SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT)) {
++			substream->ops->get_time_info(substream, &curr_tstamp,
++						&audio_tstamp,
++						&runtime->audio_tstamp_config,
++						&runtime->audio_tstamp_report);
++
++			/* re-test in case tstamp type is not supported in hardware and was demoted to DEFAULT */
++			if (runtime->audio_tstamp_report.actual_type == SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT)
++				snd_pcm_gettime(runtime, (struct timespec *)&curr_tstamp);
++		} else
++			snd_pcm_gettime(runtime, (struct timespec *)&curr_tstamp);
+ 	}
  
- 	return err;
-@@ -457,6 +472,7 @@ enum {
- 	SNDRV_PCM_IOCTL_HW_PARAMS32 = _IOWR('A', 0x11, struct snd_pcm_hw_params32),
- 	SNDRV_PCM_IOCTL_SW_PARAMS32 = _IOWR('A', 0x13, struct snd_pcm_sw_params32),
- 	SNDRV_PCM_IOCTL_STATUS32 = _IOR('A', 0x20, struct snd_pcm_status32),
-+	SNDRV_PCM_IOCTL_STATUS_EXT32 = _IOWR('A', 0x24, struct snd_pcm_status32),
- 	SNDRV_PCM_IOCTL_DELAY32 = _IOR('A', 0x21, s32),
- 	SNDRV_PCM_IOCTL_CHANNEL_INFO32 = _IOR('A', 0x32, struct snd_pcm_channel_info32),
- 	SNDRV_PCM_IOCTL_REWIND32 = _IOW('A', 0x46, u32),
-@@ -517,7 +533,9 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
- 	case SNDRV_PCM_IOCTL_SW_PARAMS32:
- 		return snd_pcm_ioctl_sw_params_compat(substream, argp);
- 	case SNDRV_PCM_IOCTL_STATUS32:
--		return snd_pcm_status_user_compat(substream, argp);
-+		return snd_pcm_status_user_compat(substream, argp, false);
-+	case SNDRV_PCM_IOCTL_STATUS_EXT32:
-+		return snd_pcm_status_user_compat(substream, argp, true);
- 	case SNDRV_PCM_IOCTL_SYNC_PTR32:
- 		return snd_pcm_ioctl_sync_ptr_compat(substream, argp);
- 	case SNDRV_PCM_IOCTL_CHANNEL_INFO32:
+ 	if (pos == SNDRV_PCM_POS_XRUN) {
+@@ -403,8 +453,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 	}
+ 
+  no_delta_check:
+-	if (runtime->status->hw_ptr == new_hw_ptr)
++	if (runtime->status->hw_ptr == new_hw_ptr) {
++		update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
+ 		return 0;
++	}
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+ 	    runtime->silence_size > 0)
+@@ -426,30 +478,8 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 		snd_BUG_ON(crossed_boundary != 1);
+ 		runtime->hw_ptr_wrap += runtime->boundary;
+ 	}
+-	if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
+-		runtime->status->tstamp = curr_tstamp;
+ 
+-		if (!(runtime->hw.info & SNDRV_PCM_INFO_HAS_WALL_CLOCK)) {
+-			/*
+-			 * no wall clock available, provide audio timestamp
+-			 * derived from pointer position+delay
+-			 */
+-			u64 audio_frames, audio_nsecs;
+-
+-			if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-				audio_frames = runtime->hw_ptr_wrap
+-					+ runtime->status->hw_ptr
+-					- runtime->delay;
+-			else
+-				audio_frames = runtime->hw_ptr_wrap
+-					+ runtime->status->hw_ptr
+-					+ runtime->delay;
+-			audio_nsecs = div_u64(audio_frames * 1000000000LL,
+-					runtime->rate);
+-			audio_tstamp = ns_to_timespec(audio_nsecs);
+-		}
+-		runtime->status->audio_tstamp = audio_tstamp;
+-	}
++	update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
+ 
+ 	return snd_pcm_update_state(substream, runtime);
+ }
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 72323a8..9c2c6f8 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -707,6 +707,23 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
+ 	snd_pcm_stream_lock_irq(substream);
++
++	snd_pcm_unpack_audio_tstamp_config(status->audio_tstamp_data,
++					&runtime->audio_tstamp_config);
++
++	/* backwards compatible behavior */
++	if (runtime->audio_tstamp_config.type_requested ==
++		SNDRV_PCM_AUDIO_TSTAMP_TYPE_COMPAT) {
++		if (runtime->hw.info & SNDRV_PCM_INFO_HAS_WALL_CLOCK)
++			runtime->audio_tstamp_config.type_requested =
++				SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK;
++		else
++			runtime->audio_tstamp_config.type_requested =
++				SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT;
++		runtime->audio_tstamp_report.valid = 0;
++	} else
++		runtime->audio_tstamp_report.valid = 1;
++
+ 	status->state = runtime->status->state;
+ 	status->suspended_state = runtime->status->suspended_state;
+ 	if (status->state == SNDRV_PCM_STATE_OPEN)
+@@ -716,8 +733,15 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
+ 		snd_pcm_update_hw_ptr(substream);
+ 		if (runtime->tstamp_mode == SNDRV_PCM_TSTAMP_ENABLE) {
+ 			status->tstamp = runtime->status->tstamp;
++			status->driver_tstamp = runtime->driver_tstamp;
+ 			status->audio_tstamp =
+ 				runtime->status->audio_tstamp;
++			if (runtime->audio_tstamp_report.valid == 1)
++				/* backwards compatibility, no report provided in COMPAT mode */
++				snd_pcm_pack_audio_tstamp_report(&status->audio_tstamp_data,
++								&status->audio_tstamp_accuracy,
++								&runtime->audio_tstamp_report);
++
+ 			goto _tstamp_end;
+ 		}
+ 	} else {
 -- 
 1.9.1
