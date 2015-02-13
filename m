@@ -1,34 +1,54 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - enable mute led quirk for one more hp machine.
-Date: Fri, 13 Feb 2015 11:14:41 +0800
-Message-ID: <1423797281-18666-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: taihsiang.ho@canonical.com, stable@vger.kernel.org, hui.wang@canonical.com
+From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Subject: sound/pci/hda/hda_tegra.c
+Date: Fri, 13 Feb 2015 17:11:49 +1300
+Message-ID: <54DD7985.2040009@blennerhassett.gen.nz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A1FA2652F1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2015 05:12:02 +0100 (CET)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1YM7bl-0003Th-62
+ for alsa-devel@alsa-project.org; Fri, 13 Feb 2015 05:12:01 +0100
+Received: from 121-72-250-62.cable.telstraclear.net ([121.72.250.62])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2015 05:12:01 +0100
+Received: from eliot by 121-72-250-62.cable.telstraclear.net with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2015 05:12:01 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise, the mute led can't work at all.
+Browsing code I came across this...
 
-Tested-by: Taihsiang Ho <taihsiang.ho@canonical.com>
-Cc: <stable@vger.kernel.org>
-BugLink: https://bugs.launchpad.net/bugs/1410704
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+sound/pci/hda/hda_tegra.c
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ddb9308..b2b24a8 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4937,6 +4937,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x218b, "HP", ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x225f, "HP", ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY),
- 	/* ALC282 */
-+	SND_PCI_QUIRK(0x103c, 0x21f9, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x2210, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x2214, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x2236, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
--- 
-1.9.1
+static int hda_tegra_init_chip(struct azx *chip, struct platform_device
+*pdev)
+...
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	hda->regs = devm_ioremap_resource(dev, res);
+
+Checking chip->remap_addr before assignment looks wierd to me, am I
+missing something?  Should it be 'hda->regs' here?
+
+	if (IS_ERR(chip->remap_addr))
+		return PTR_ERR(chip->remap_addr);
+
+	chip->remap_addr = hda->regs + HDA_BAR0;
+	chip->addr = res->start + HDA_BAR0;
+	
