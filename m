@@ -1,16 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v6 7/7] ALSA: bump PCM protocol to 2.0.13
-Date: Fri, 13 Feb 2015 15:14:09 -0600
-Message-ID: <1423862049-4073-8-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1423862049-4073-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: eliot@blennerhassett.gen.nz
+Subject: [PATCH] ALSA: hda/tegra check correct return value
+ from ioremap_resource
+Date: Sat, 14 Feb 2015 15:32:24 +1300
+Message-ID: <1423881144-5957-1-git-send-email-eliot@blennerhassett.gen.nz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EFD4C260682
- for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2015 22:14:25 +0100 (CET)
-In-Reply-To: <1423862049-4073-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id 018B52604AE
+ for <alsa-devel@alsa-project.org>; Sat, 14 Feb 2015 03:32:29 +0100 (CET)
+Received: from mxin3-orange.clear.net.nz
+ (lb2-srcnat.clear.net.nz [203.97.32.237])
+ by smtp4.clear.net.nz (CLEAR Net Mail)
+ with ESMTP id <0NJQ007FDPQ2V130@smtp4.clear.net.nz> for
+ alsa-devel@alsa-project.org; Sat, 14 Feb 2015 15:32:27 +1300 (NZDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-Bump PCM protocol to enable use of STATUS_EXT ioctls, older
-apps will still use STATUS and audio timestamp configuration
-is not supported (backwards compatible behavior).
+From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 ---
- include/uapi/sound/asound.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/hda_tegra.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index acef4e4..3d46e9a 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -140,7 +140,7 @@ struct snd_hwdep_dsp_image {
-  *                                                                           *
-  *****************************************************************************/
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 227990b..375e94f 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -329,8 +329,8 @@ static int hda_tegra_init_chip(struct azx *chip, struct platform_device *pdev)
  
--#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 12)
-+#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 13)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	hda->regs = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(chip->remap_addr))
+-		return PTR_ERR(chip->remap_addr);
++	if (IS_ERR(hda->regs))
++		return PTR_ERR(hda->regs);
  
- typedef unsigned long snd_pcm_uframes_t;
- typedef signed long snd_pcm_sframes_t;
+ 	chip->remap_addr = hda->regs + HDA_BAR0;
+ 	chip->addr = res->start + HDA_BAR0;
 -- 
 1.9.1
