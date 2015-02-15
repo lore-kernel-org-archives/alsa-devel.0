@@ -1,55 +1,52 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Don't try to round-up for PM divisor calculation
-Date: Sun, 15 Feb 2015 01:37:11 -0800
-Message-ID: <1423993031-29474-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, perex@perex.cz, linux-kernel@vger.kernel.org, timur@tabi.org, mpa@pengutronix.de, shengjiu.wang@freescale.com, zidan.wang@freescale.com, scerveau@voxtok.com
+From: =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
+Subject: [PATCH] ASoC: sta32x: fix register range in regmap.
+Date: Sun, 15 Feb 2015 16:53:36 +0100
+Message-ID: <1424015616-31309-1-git-send-email-niederp@physik.uni-kl.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 729362605B1
+ for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2015 16:51:19 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, zonque@gmail.com, brandau@gmx.de, lars@metafoo.de
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
 List-Id: alsa-devel@alsa-project.org
 
-According to i.MX6 Series Reference Manual, the formula to calculate
-the sys clock is
-
-sysclk rate = bclk rate * (div2 + 1) * (7 * psr + 1) * (pm + 1) * 2
-
-Commit aafa85e71a75 ("ASoC: fsl_ssi: Add DAI master mode support for
-SSI on i.MX series") added the divisor calculation which relies on
-the clk_round_rate(). However, at that time, clk_round_rate() didn't
-provide closest clock rates for some cases because it might not use
-a correct rounding policy. So using the original formula (pm + 1) for
-PM divisor was not able to give us a desired clock rate. And then we
-used (pm + 2) to do the trick.
-
-However, the clk-divider driver has been refined a lot since commit
-b11d282dbea2 ("clk: divider: fix rate calculation for fractional rates")
-Now using (pm + 2) trick would result an incorrect clock rate.
-
-So this patch fixes the problem by removing the useless trick.
-
-Reported-by: Stephane Cerveau <scerveau@voxtok.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
-
-[ I also checked that only 3.18 stable tree has the refinements for
- clk-divider driver, so I guess it might not be able to apply to
- previous long-term trees if being treated as bug fix. -- Nicolin ]
-
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index d7365c5..3e7c644 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -603,7 +603,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	factor = (div2 + 1) * (7 * psr + 1) * 2;
- 
- 	for (i = 0; i < 255; i++) {
--		tmprate = freq * factor * (i + 2);
-+		tmprate = freq * factor * (i + 1);
- 
- 		if (baudclk_is_used)
- 			clkrate = clk_get_rate(ssi_private->baudclk);
--- 
-1.9.1
+VGhlIFNUQTMyWF9BVVRPMyBpcyBhIHdyaXRhYmxlIHJlZ2lzdGVyIHRoYXQgY3VycmVudGx5IGRv
+ZXMgbm90IGFwcGVhcgppbiB0aGUgcmVnbWFwIHJhbmdlcyhuZWl0aGVyIHJlYWQgbm9yIHdyaXRl
+KS4gQnkgYWRkaW5nIHRoaXMgcmVnaXN0ZXIKdG8gdGhlIHJlZ2lzdGVyIHJhbmdlcyB0aGVyZSBp
+cyBubyBnYXAgYW55bW9yZSBhbmQgdGhlIGV4aXN0aW5nCnJlZ2lzdGVyIHJhbmdlcyBjYW4gYmUg
+am9pbmVkLiBUaGlzIGZpeGVzIGEgcmVncmVzc2lvbiB0aGF0IG1hZGUgaXQKaW1wb3NzaWJsZSB0
+byBjaG9vc2UgdGhlIHByZXNldCBFUSBtb2RlIHNldCB0aHJvdWdoIHRoZSBTVEEzMlhfQVVUTzMK
+cmVnaXN0ZXIuCgpTaWduZWQtb2ZmLWJ5OiBUaG9tYXMgTmllZGVycHLDvG0gPG5pZWRlcnBAcGh5
+c2lrLnVuaS1rbC5kZT4KLS0tCkkgcmVhbGl6ZWQgdGhhdCBJIG1pc3NlZCBvbmUgcmVnaXN0ZXIg
+aW4gdGhlIERUIGVuYWJsaW5nIHBhdGNoc2V0LApzbyBoZXJlIEkgc2VuZCBhIHBhdGNoIHRvIGNs
+ZWFuIHVwIG15IG1lc3MgOikKClRob21hcwoKIHNvdW5kL3NvYy9jb2RlY3Mvc3RhMzJ4LmMgfCA2
+ICsrLS0tLQogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkK
+CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3N0YTMyeC5jIGIvc291bmQvc29jL2NvZGVj
+cy9zdGEzMnguYwppbmRleCBiYzZlZGIxLi5kMzIwMjI3IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mv
+Y29kZWNzL3N0YTMyeC5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvc3RhMzJ4LmMKQEAgLTEwNywx
+MyArMTA3LDExIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcmVnX2RlZmF1bHQgc3RhMzJ4X3JlZ3Nb
+XSA9IHsKIH07CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcmVnbWFwX3JhbmdlIHN0YTMyeF93cml0
+ZV9yZWdzX3JhbmdlW10gPSB7Ci0JcmVnbWFwX3JlZ19yYW5nZShTVEEzMlhfQ09ORkEsICBTVEEz
+MlhfQVVUTzIpLAotCXJlZ21hcF9yZWdfcmFuZ2UoU1RBMzJYX0MxQ0ZHLCAgU1RBMzJYX0ZEUkMy
+KSwKKwlyZWdtYXBfcmVnX3JhbmdlKFNUQTMyWF9DT05GQSwgIFNUQTMyWF9GRFJDMiksCiB9Owog
+CiBzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9yYW5nZSBzdGEzMnhfcmVhZF9yZWdzX3Jhbmdl
+W10gPSB7Ci0JcmVnbWFwX3JlZ19yYW5nZShTVEEzMlhfQ09ORkEsICBTVEEzMlhfQVVUTzIpLAot
+CXJlZ21hcF9yZWdfcmFuZ2UoU1RBMzJYX0MxQ0ZHLCAgU1RBMzJYX1NUQVRVUyksCisJcmVnbWFw
+X3JlZ19yYW5nZShTVEEzMlhfQ09ORkEsICBTVEEzMlhfU1RBVFVTKSwKIH07CiAKIHN0YXRpYyBj
+b25zdCBzdHJ1Y3QgcmVnbWFwX3JhbmdlIHN0YTMyeF92b2xhdGlsZV9yZWdzX3JhbmdlW10gPSB7
+Ci0tIAoyLjEuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
