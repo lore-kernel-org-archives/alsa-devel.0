@@ -1,63 +1,31 @@
-From: Alnie <alnieb@yahoo.com>
-Subject: Issues w/ Creative Labs [SB X-Fi Xtreme Audio]
-	CA0110-IBG
-Date: Sun, 15 Feb 2015 13:33:55 -0800
-Message-ID: <54E110C3.70509@yahoo.com>
-References: <54E10F0C.7070802@yahoo.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: [ASoC]fsl_ssi: fix of_property_read_u32_array return value check
+Date: Sun, 15 Feb 2015 23:11:43 +0100
+Message-ID: <54E1199F.3000107@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm24-vm5.bullet.mail.ne1.yahoo.com
- (nm24-vm5.bullet.mail.ne1.yahoo.com [98.138.91.246])
- by alsa0.perex.cz (Postfix) with ESMTP id E413A2605D1
- for <alsa-devel@alsa-project.org>; Sun, 15 Feb 2015 22:33:58 +0100 (CET)
-In-Reply-To: <54E10F0C.7070802@yahoo.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I am having a problem getting this card working in Mint 17.1 (64bit). I
-have found reports from others around the net claiming to have this card
-working (around 2010/2011 mostly). I also tried xubuntu with the same
-results. On a fresh distro when I install the card, it is recognized but
-isn't associated with any driver, if I install the 3.16 kernel or the
-alsa-daily repo it becomes associated with a driver but I get the
-following errors from dmesg...
+of_property_read_u32_array returns 0 on success, so the return value shouldn't be inverted twice,
+first on assignment then in condition expression.
 
-[    3.713183] snd_hda_intel 0000:06:00.0: Probing card using HDA DKMS, version 0.201502151246~ubuntu14.04.1
-[    3.720010] snd_hda_intel 0000:06:00.0: CORB reset timeout#1, CORBRP = 0
-[    4.744035] snd_hda_intel 0000:06:00.0: Codec #1 probe error; disabling it...
-[    4.748009] snd_hda_intel 0000:06:00.0: CORB reset timeout#1, CORBRP = 0
-[    9.772075] snd_hda_intel 0000:06:00.0: no AFG or MFG node found
-[    9.772100] snd_hda_intel 0000:06:00.0: no codecs initialized
+Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
 
-and here is my lspci output...
-
-05:00.0 PCI bridge: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG PCI to PCIe Bridge (prog-if 00 [Normal decode])
-     Physical Slot: 3
-     Flags: bus master, fast devsel, latency 0
-     Bus: primary=05, secondary=06, subordinate=0c, sec-latency=36
-     Memory behind bridge: f4300000-f43fffff
-     Capabilities: [50] Power Management version 3
-     Capabilities: [60] MSI: Enable- Count=1/16 Maskable- 64bit+
-     Capabilities: [80] Subsystem: Creative Labs Device 0040
-     Capabilities: [90] Express PCI-Express to PCI/PCI-X Bridge, MSI 00
-     Capabilities: [100] Advanced Error Reporting
-
-06:00.0 Audio device: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG
-     Subsystem: Creative Labs SB1040
-     Flags: bus master, fast Back2Back, medium devsel, latency 32, IRQ 19
-     Memory at f4300000 (32-bit, non-prefetchable) [size=16K]
-     Capabilities: [dc] Power Management version 3
-     Kernel driver in use: snd_hda_intel
-
-thank you for any advice & feedback on this.
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index d7365c5..134388f 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1227,7 +1227,7 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+     ssi_private->dma_params_tx.addr = ssi_private->ssi_phys + CCSR_SSI_STX0;
+     ssi_private->dma_params_rx.addr = ssi_private->ssi_phys + CCSR_SSI_SRX0;
+ 
+-    ret = !of_property_read_u32_array(np, "dmas", dmas, 4);
++    ret = of_property_read_u32_array(np, "dmas", dmas, 4);
+     if (ssi_private->use_dma && !ret && dmas[2] == IMX_DMATYPE_SSI_DUAL) {
+         ssi_private->use_dual_fifo = true;
+         /* When using dual fifo mode, we need to keep watermark
