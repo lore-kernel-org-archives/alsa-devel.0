@@ -1,39 +1,41 @@
-From: Mikko Rapeli <mikko.rapeli-X3B1VOXEql0@public.gmane.org>
-Subject: [PATCH 39/45] include/uapi/sound/asequencer.h: include sound/asound.h
-Date: Tue, 17 Feb 2015 00:05:42 +0100
-Message-ID: <1424127948-22484-40-git-send-email-mikko.rapeli@iki.fi>
+From: Mikko Rapeli <mikko.rapeli@iki.fi>
+Subject: [PATCH 40/45] include/uapi/sound/emu10k1.h: include sound/asound.h
+Date: Tue, 17 Feb 2015 00:05:43 +0100
+Message-ID: <1424127948-22484-41-git-send-email-mikko.rapeli@iki.fi>
 References: <1424127948-22484-1-git-send-email-mikko.rapeli@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1424127948-22484-1-git-send-email-mikko.rapeli-X3B1VOXEql0@public.gmane.org>
-Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Mikko Rapeli <mikko.rapeli-X3B1VOXEql0@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1424127948-22484-1-git-send-email-mikko.rapeli@iki.fi>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mikko Rapeli <mikko.rapeli@iki.fi>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-api@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-=46ixes userspace compilation error:
-error: unknown type name =E2=80=98snd_seq_client_type_t=E2=80=99
-snd_seq_client_type_t type; /* client type */
+=46ixes userspace compilation errors like:
+error: field =E2=80=98id=E2=80=99 has incomplete type
+struct snd_ctl_elem_id id;  /* full control ID definition */
 
-Signed-off-by: Mikko Rapeli <mikko.rapeli-X3B1VOXEql0@public.gmane.org>
+Signed-off-by: Mikko Rapeli <mikko.rapeli@iki.fi>
 ---
- include/uapi/sound/asequencer.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/uapi/sound/emu10k1.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequ=
-encer.h
-index 09c8a00..5a5fa49 100644
---- a/include/uapi/sound/asequencer.h
-+++ b/include/uapi/sound/asequencer.h
-@@ -22,6 +22,7 @@
- #ifndef _UAPI__SOUND_ASEQUENCER_H
- #define _UAPI__SOUND_ASEQUENCER_H
+diff --git a/include/uapi/sound/emu10k1.h b/include/uapi/sound/emu10k1.=
+h
+index d1bbaf7..ec1535b 100644
+--- a/include/uapi/sound/emu10k1.h
++++ b/include/uapi/sound/emu10k1.h
+@@ -23,8 +23,7 @@
+ #define _UAPI__SOUND_EMU10K1_H
 =20
+ #include <linux/types.h>
+-
+-
 +#include <sound/asound.h>
 =20
- /** version of the sequencer */
- #define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
+ /*
+  * ---- FX8010 ----
 --=20
 2.1.4
