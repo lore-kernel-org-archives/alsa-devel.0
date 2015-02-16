@@ -1,99 +1,56 @@
-From: Manuel Lauss <manuel.lauss@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8731: let codec to manage clock by itself
-Date: Mon, 16 Feb 2015 13:58:18 +0100
-Message-ID: <CAOLZvyFS2fCry_cyeoZ_iXzVy8Yw5nnqvqT+Qth0m_CuDBzSMQ@mail.gmail.com>
-References: <1423121713-19434-1-git-send-email-voice.shen@atmel.com>
- <54DC62EA.5030503@atmel.com> <20150216103122.GA1091@opensource.wolfsonmicro.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: wm_adsp: Ensure DSP controls are
+	always persistent
+Date: Mon, 16 Feb 2015 15:25:48 +0000
+Message-ID: <1424100349-10520-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20150216103122.GA1091@opensource.wolfsonmicro.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Bo Shen <voice.shen@atmel.com>, Mark Brown <broonie@kernel.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Richard Purdie <richard@openedhand.com>, patches@opensource.wolfsonmicro.com, alsa-devel <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EB33826069A
+ for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2015 16:28:08 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: nikesh.oswal@wolfsonmicro.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 16, 2015 at 11:31 AM, Charles Keepax
-<ckeepax@opensource.wolfsonmicro.com> wrote:
-> On Thu, Feb 12, 2015 at 04:23:06PM +0800, Bo Shen wrote:
->> Hi All,
->>
->> On 02/05/2015 03:35 PM, Bo Shen wrote:
->>> Let the wm8731 codec to manage clock by itself.
->>>
->>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
->>> ---
->>>
->>>   sound/soc/codecs/wm8731.c | 28 ++++++++++++++++++++++++++++
->>>   1 file changed, 28 insertions(+)
->>
->> Any comments for this patch (aka ping?)
->
-> I preferred the idea of having the clock as optional and from the
-> discussion on the last patch it didn't look too tricky to
+From: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 
-me too
+Currently DSP controls are persistent (across DSP On/Off) only
+if they were set whilst the DSP is off. This change makes the
+controls persistent irrespective of when they are set.
 
-> achieve. OTOH I think the Atmel system is the only one that uses
-> both this CODEC and common clock so it doesn't look like this
-> would cause any problems, but might be nice for this not to be
-> one more thing for someone to fix up when moving a system to
-> common clock.
+Signed-off-by: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_adsp.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
-Not quite, there's one MIPS platform I maintain which needs a patch
-like the one below (tested):
-
-diff --git a/arch/mips/alchemy/devboards/db1200.c
-b/arch/mips/alchemy/devboards/db1200.c
-index 8c13675..aa01ab2 100644
---- a/arch/mips/alchemy/devboards/db1200.c
-+++ b/arch/mips/alchemy/devboards/db1200.c
-@@ -19,6 +19,8 @@
-  */
-
- #include <linux/clk.h>
-+#include <linux/clkdev.h>
-+#include <linux/clk-provider.h>
- #include <linux/dma-mapping.h>
- #include <linux/gpio.h>
- #include <linux/i2c.h>
-@@ -862,6 +864,12 @@ int __init db1200_dev_setup(void)
-     irq_set_status_flags(DB1200_PC1_INSERT_INT, IRQ_NOAUTOEN);
-     irq_set_status_flags(DB1200_PC1_EJECT_INT, IRQ_NOAUTOEN);
-
-+    /* register the 12MHz crystal for the WM8731 I2S codec */
-+    c = clk_register_fixed_rate(NULL, "wm8731xtal", NULL,
-+                    CLK_IS_ROOT, 12000000);
-+    if (!IS_ERR(c))
-+        clk_register_clkdev(c, "mclk", "0-001b");
-+
-     i2c_register_board_info(0, db1200_i2c_devs,
-                 ARRAY_SIZE(db1200_i2c_devs));
-     spi_register_board_info(db1200_spi_devs,
-diff --git a/arch/mips/alchemy/devboards/db1300.c
-b/arch/mips/alchemy/devboards/db1300.c
-index 1c64fdb..1aa01c8 100644
---- a/arch/mips/alchemy/devboards/db1300.c
-+++ b/arch/mips/alchemy/devboards/db1300.c
-@@ -5,6 +5,8 @@
-  */
-
- #include <linux/clk.h>
-+#include <linux/clkdev.h>
-+#include <linux/clk-provider.h>
- #include <linux/dma-mapping.h>
- #include <linux/gpio.h>
- #include <linux/gpio_keys.h>
-@@ -799,6 +801,12 @@ int __init db1300_dev_setup(void)
-     if (platform_driver_register(&db1300_wm97xx_driver))
-         pr_warn("DB1300: failed to init touch pen irq support!\n");
-
-+    /* register the 12MHz crystal for the WM8731 I2S codec */
-+    c = clk_register_fixed_rate(NULL, "wm8731xtal", NULL,
-+                    CLK_IS_ROOT, 12000000);
-+    if (!IS_ERR(c))
-+        clk_register_clkdev(c, "mclk", "0-001b");
-+
-     /* Audio PSC clock is supplied by codecs (PSC1, 2) */
-     __raw_writel(PSC_SEL_CLK_SERCLK,
-         (void __iomem *)KSEG1ADDR(AU1300_PSC1_PHYS_ADDR) + PSC_SEL_OFFSET);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index ff67b33..185ee85 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -420,10 +420,9 @@ static int wm_coeff_put(struct snd_kcontrol *kcontrol,
+ 
+ 	memcpy(ctl->cache, p, ctl->len);
+ 
+-	if (!ctl->enabled) {
+-		ctl->set = 1;
++	ctl->set = 1;
++	if (!ctl->enabled)
+ 		return 0;
+-	}
+ 
+ 	return wm_coeff_write_control(kcontrol, p, ctl->len);
+ }
+-- 
+1.7.2.5
