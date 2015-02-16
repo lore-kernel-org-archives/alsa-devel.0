@@ -1,19 +1,14 @@
-From: Alnie <alnieb@yahoo.com>
-Subject: Re: Issues w/ Creative Labs [SB X-Fi Xtreme
-	Audio]	CA0110-IBG
-Date: Mon, 16 Feb 2015 11:03:50 -0800
-Message-ID: <54E23F16.5090205@yahoo.com>
-References: <54E10F0C.7070802@yahoo.com>	<54E110C3.70509@yahoo.com>
- <s5h1tlp96zn.wl-tiwai@suse.de>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: [PATCH] .gitignore: add test-driver
+Date: Mon, 16 Feb 2015 21:47:58 +0200
+Message-ID: <1424116078-26772-1-git-send-email-tanu.kaskinen@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm27-vm5.bullet.mail.ne1.yahoo.com
- (nm27-vm5.bullet.mail.ne1.yahoo.com [98.138.91.249])
- by alsa0.perex.cz (Postfix) with ESMTP id B2CE7260692
- for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2015 20:03:53 +0100 (CET)
-In-Reply-To: <s5h1tlp96zn.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5089260692
+ for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2015 20:48:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,66 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-By default the version of Mint I'm using has 3.13.0-37 loaded. I just 
-tried some previous versions of the kernel (3.13.0-27, 3.13.0-32 & 
-3.13.0-36) and the same issues came up, although with -36, there was no 
-output in dmesg in regards to probing DKMS, and no driver was 
-associated. I also tried each kernel with the daily drivers removed as 
-well, and the card was recognized but non functional (no driver 
-associated). Also, in case hardware malfunction is considered, this card 
-seems to work fine in windows for me. Thank you.
+Signed-off-by: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+---
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 02/16/2015 08:05 AM, Takashi Iwai wrote:
-> At Sun, 15 Feb 2015 13:33:55 -0800,
-> Alnie wrote:
->> I am having a problem getting this card working in Mint 17.1 (64bit). I
->> have found reports from others around the net claiming to have this card
->> working (around 2010/2011 mostly). I also tried xubuntu with the same
->> results. On a fresh distro when I install the card, it is recognized but
->> isn't associated with any driver, if I install the 3.16 kernel or the
->> alsa-daily repo it becomes associated with a driver but I get the
->> following errors from dmesg...
->>
->> [    3.713183] snd_hda_intel 0000:06:00.0: Probing card using HDA DKMS, version 0.201502151246~ubuntu14.04.1
->> [    3.720010] snd_hda_intel 0000:06:00.0: CORB reset timeout#1, CORBRP = 0
->> [    4.744035] snd_hda_intel 0000:06:00.0: Codec #1 probe error; disabling it...
->> [    4.748009] snd_hda_intel 0000:06:00.0: CORB reset timeout#1, CORBRP = 0
->> [    9.772075] snd_hda_intel 0000:06:00.0: no AFG or MFG node found
->> [    9.772100] snd_hda_intel 0000:06:00.0: no codecs initialized
->>
->> and here is my lspci output...
->>
->> 05:00.0 PCI bridge: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG PCI to PCIe Bridge (prog-if 00 [Normal decode])
->>       Physical Slot: 3
->>       Flags: bus master, fast devsel, latency 0
->>       Bus: primary=05, secondary=06, subordinate=0c, sec-latency=36
->>       Memory behind bridge: f4300000-f43fffff
->>       Capabilities: [50] Power Management version 3
->>       Capabilities: [60] MSI: Enable- Count=1/16 Maskable- 64bit+
->>       Capabilities: [80] Subsystem: Creative Labs Device 0040
->>       Capabilities: [90] Express PCI-Express to PCI/PCI-X Bridge, MSI 00
->>       Capabilities: [100] Advanced Error Reporting
->>
->> 06:00.0 Audio device: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG
->>       Subsystem: Creative Labs SB1040
->>       Flags: bus master, fast Back2Back, medium devsel, latency 32, IRQ 19
->>       Memory at f4300000 (32-bit, non-prefetchable) [size=16K]
->>       Capabilities: [dc] Power Management version 3
->>       Kernel driver in use: snd_hda_intel
->>
->> thank you for any advice & feedback on this.
-> Could you try 3.13 kernel or older once?  I have also another bug
-> report indicating a similar problem (no codec found, but with a
-> totally different system), and the reporter mentioned that the
-> regression happened between 3.13 and 3.14.
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/.gitignore b/.gitignore
+index 05a2459..e1cc163 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -11,6 +11,7 @@ Makefile
+ libtool
+ depcomp
+ ltmain.sh
++test-driver
+ version
+ Makefile.in
+ aclocal.m4
+-- 
+1.9.3
