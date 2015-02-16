@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/6] ALSA: seq: Move EXPORT_SYMBOL() after each
-	function
-Date: Mon, 16 Feb 2015 17:55:39 +0100
-Message-ID: <1424105744-2187-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 4/6] ALSA: seq: Clean up device and driver
+	structs
+Date: Mon, 16 Feb 2015 17:55:42 +0100
+Message-ID: <1424105744-2187-5-git-send-email-tiwai@suse.de>
 References: <1424105744-2187-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id ED3862606A3
+ by alsa0.perex.cz (Postfix) with ESMTP id ECD67260692
  for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2015 17:55:45 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B943AAC97
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B9578ACEA
  for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2015 16:55:45 +0000 (UTC)
 In-Reply-To: <1424105744-2187-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,89 +27,153 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-... to follow the standard coding style.
+Use const string pointer instead of copying the id string to each
+object.  Also drop the status and list fields of snd_seq_device struct
+that are no longer used.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/seq_device.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ include/sound/seq_device.h  | 18 ++++++------------
+ sound/core/seq/seq_device.c | 31 ++++++++++---------------------
+ 2 files changed, 16 insertions(+), 33 deletions(-)
 
+diff --git a/include/sound/seq_device.h b/include/sound/seq_device.h
+index ea256b825146..b13cd2930d32 100644
+--- a/include/sound/seq_device.h
++++ b/include/sound/seq_device.h
+@@ -25,24 +25,16 @@
+  * registered device information
+  */
+ 
+-#define ID_LEN	32
+-
+-/* status flag */
+-#define SNDRV_SEQ_DEVICE_FREE		0
+-#define SNDRV_SEQ_DEVICE_REGISTERED	1
+-
+ struct snd_seq_device {
+ 	/* device info */
+ 	struct snd_card *card;	/* sound card */
+ 	int device;		/* device number */
+-	char id[ID_LEN];	/* driver id */
++	const char *id;		/* driver id */
+ 	char name[80];		/* device name */
+ 	int argsize;		/* size of the argument */
+ 	void *driver_data;	/* private data for driver */
+-	int status;		/* flag - read only */
+ 	void *private_data;	/* private data for the caller */
+ 	void (*private_free)(struct snd_seq_device *device);
+-	struct list_head list;	/* link to next device */
+ 	struct device dev;
+ };
+ 
+@@ -75,9 +67,11 @@ void snd_seq_device_load_drivers(void);
+ #else
+ #define snd_seq_device_load_drivers()
+ #endif
+-int snd_seq_device_new(struct snd_card *card, int device, char *id, int argsize, struct snd_seq_device **result);
+-int snd_seq_device_register_driver(char *id, struct snd_seq_dev_ops *entry, int argsize);
+-int snd_seq_device_unregister_driver(char *id);
++int snd_seq_device_new(struct snd_card *card, int device, const char *id,
++		       int argsize, struct snd_seq_device **result);
++int snd_seq_device_register_driver(const char *id,
++				   struct snd_seq_dev_ops *entry, int argsize);
++int snd_seq_device_unregister_driver(const char *id);
+ 
+ #define SNDRV_SEQ_DEVICE_ARGPTR(dev) (void *)((char *)(dev) + sizeof(struct snd_seq_device))
+ 
 diff --git a/sound/core/seq/seq_device.c b/sound/core/seq/seq_device.c
-index 0631bdadd12b..a752a79a8d3a 100644
+index d3320ffe43c2..49daf6e3a387 100644
 --- a/sound/core/seq/seq_device.c
 +++ b/sound/core/seq/seq_device.c
-@@ -133,11 +133,13 @@ void snd_seq_autoload_lock(void)
- {
- 	atomic_inc(&snd_seq_in_init);
- }
-+EXPORT_SYMBOL(snd_seq_autoload_lock);
+@@ -54,7 +54,7 @@ MODULE_LICENSE("GPL");
  
- void snd_seq_autoload_unlock(void)
+ struct snd_seq_driver {
+ 	struct device_driver driver;
+-	char id[ID_LEN];
++	const char *id;
+ 	int argsize;
+ 	struct snd_seq_dev_ops ops;
+ };
+@@ -215,8 +215,8 @@ static void snd_seq_dev_release(struct device *dev)
+  * id = id of driver
+  * result = return pointer (NULL allowed if unnecessary)
+  */
+-int snd_seq_device_new(struct snd_card *card, int device, char *id, int argsize,
+-		       struct snd_seq_device **result)
++int snd_seq_device_new(struct snd_card *card, int device, const char *id,
++		       int argsize, struct snd_seq_device **result)
  {
- 	atomic_dec(&snd_seq_in_init);
- }
-+EXPORT_SYMBOL(snd_seq_autoload_unlock);
+ 	struct snd_seq_device *dev;
+ 	int err;
+@@ -239,9 +239,8 @@ int snd_seq_device_new(struct snd_card *card, int device, char *id, int argsize,
+ 	/* set up device info */
+ 	dev->card = card;
+ 	dev->device = device;
+-	strlcpy(dev->id, id, sizeof(dev->id));
++	dev->id = id;
+ 	dev->argsize = argsize;
+-	dev->status = SNDRV_SEQ_DEVICE_FREE;
  
- static void autoload_drivers(void)
+ 	device_initialize(&dev->dev);
+ 	dev->dev.parent = &card->card_dev;
+@@ -270,26 +269,16 @@ static int snd_seq_drv_probe(struct device *dev)
  {
-@@ -195,10 +197,12 @@ void snd_seq_autoload_init(void)
- 	queue_autoload_drivers();
- #endif
- }
-+EXPORT_SYMBOL(snd_seq_autoload_init);
- #else
- #define try_autoload(ops) /* NOP */
- #endif
+ 	struct snd_seq_driver *sdrv = to_seq_drv(dev->driver);
+ 	struct snd_seq_device *sdev = to_seq_dev(dev);
+-	int err;
  
-+
- void snd_seq_device_load_drivers(void)
- {
- #ifdef CONFIG_MODULES
-@@ -206,6 +210,7 @@ void snd_seq_device_load_drivers(void)
- 	flush_work(&autoload_work);
- #endif
+-	err = sdrv->ops.init_device(sdev);
+-	if (err < 0)
+-		return err;
+-	sdev->status = SNDRV_SEQ_DEVICE_REGISTERED;
+-	return 0;
++	return sdrv->ops.init_device(sdev);
  }
-+EXPORT_SYMBOL(snd_seq_device_load_drivers);
+ 
+ static int snd_seq_drv_remove(struct device *dev)
+ {
+ 	struct snd_seq_driver *sdrv = to_seq_drv(dev->driver);
+ 	struct snd_seq_device *sdev = to_seq_dev(dev);
+-	int err;
+ 
+-	err = sdrv->ops.free_device(sdev);
+-	if (err < 0)
+-		return err;
+-	sdev->status = SNDRV_SEQ_DEVICE_FREE;
+-	return 0;
++	return sdrv->ops.free_device(sdev);
+ }
  
  /*
-  * register a sequencer device
-@@ -268,6 +273,7 @@ int snd_seq_device_new(struct snd_card *card, int device, char *id, int argsize,
+@@ -297,8 +286,8 @@ static int snd_seq_drv_remove(struct device *dev)
+  * id = driver id
+  * entry = driver operators - duplicated to each instance
+  */
+-int snd_seq_device_register_driver(char *id, struct snd_seq_dev_ops *entry,
+-				   int argsize)
++int snd_seq_device_register_driver(const char *id,
++				   struct snd_seq_dev_ops *entry, int argsize)
+ {
+ 	struct snd_seq_driver *sdrv;
+ 	int err;
+@@ -315,7 +304,7 @@ int snd_seq_device_register_driver(char *id, struct snd_seq_dev_ops *entry,
+ 	sdrv->driver.bus = &snd_seq_bus_type;
+ 	sdrv->driver.probe = snd_seq_drv_probe;
+ 	sdrv->driver.remove = snd_seq_drv_remove;
+-	strlcpy(sdrv->id, id, sizeof(sdrv->id));
++	sdrv->id = id;
+ 	sdrv->argsize = argsize;
+ 	sdrv->ops = *entry;
  
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_seq_device_new);
- 
+@@ -343,7 +332,7 @@ static int find_drv(struct device_driver *drv, void *data)
  /*
-  * free the existing device
-@@ -326,6 +332,7 @@ static int snd_seq_device_dev_register(struct snd_device *device)
- 	unlock_driver(ops);
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_seq_device_register_driver);
+  * unregister the specified driver
+  */
+-int snd_seq_device_unregister_driver(char *id)
++int snd_seq_device_unregister_driver(const char *id)
+ {
+ 	struct snd_seq_driver *sdrv = (struct snd_seq_driver *)id;
  
- /*
-  * disconnect the device
-@@ -344,6 +351,7 @@ static int snd_seq_device_dev_disconnect(struct snd_device *device)
- 	unlock_driver(ops);
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_seq_device_unregister_driver);
- 
- /*
-  * register device driver
-@@ -604,13 +612,3 @@ static void __exit alsa_seq_device_exit(void)
- 
- module_init(alsa_seq_device_init)
- module_exit(alsa_seq_device_exit)
--
--EXPORT_SYMBOL(snd_seq_device_load_drivers);
--EXPORT_SYMBOL(snd_seq_device_new);
--EXPORT_SYMBOL(snd_seq_device_register_driver);
--EXPORT_SYMBOL(snd_seq_device_unregister_driver);
--#ifdef CONFIG_MODULES
--EXPORT_SYMBOL(snd_seq_autoload_init);
--EXPORT_SYMBOL(snd_seq_autoload_lock);
--EXPORT_SYMBOL(snd_seq_autoload_unlock);
--#endif
 -- 
 2.3.0
