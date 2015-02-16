@@ -1,41 +1,39 @@
-From: Peter Rosin <peda@lysator.liu.se>
-Subject: [PATCH 0/2] ASoC: pcm512x: Add knobs to allow and control overclocking
-Date: Mon, 16 Feb 2015 22:02:46 +0100
-Message-ID: <1424120568-24648-2-git-send-email-peda@lysator.liu.se>
-References: <1424120568-24648-1-git-send-email-peda@lysator.liu.se>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1424120568-24648-1-git-send-email-peda@lysator.liu.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 0/3] ALSA: hdspm - Remove various code
+	duplication
+Date: Tue, 17 Feb 2015 00:05:03 +0100
+Message-ID: <1424127906-7530-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: adi@drcomp.erfurt.thur.de, alsa-devel@alsa-project.org, Adrian Knoth <aknoth@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Rosin <peda@axentia.se>
+From: Adrian Knoth <aknoth@google.com>
 
 Hi!
 
-I wasn't sure if I should add Documentation/* for these sysfs knobs
-or not? A lot of knobs do not have docs... And I'm not sure how I
-should name the doc-file since the pcm512x driver handles devices
-connected with both i2c and spi. So, this isn't perfect, suggestions
-welcome.
+As promised last week, here's a series that removes code duplication in
+hdspm.c.
 
-The first patch is a preparatory patch that makes 2/2 slightly simpler.
-I can fold them together if that's desired. Or I could split 2/2 up in
-three logical pieces, one for each of the independent PLL/DSP/DAC
-knob. Whatever...
+Adrian Knoth (3):
+  ALSA: hdspm - DRY cleanup in .open callbacks
+  ALSA: hdspm - DRY cleanup in .release callback
+  ALSA: hdspm - DRY cleanup of snd_pcm_ops
 
-Cheers,
-Peter
-
-Peter Rosin (2):
-  ASoC: pcm512x: Rearrange to not repeat dacsrc_rate / dac_div
-  ASoC: pcm512x: Allow independently overclocking PLL, DAC and DSP
-
- Documentation/ABI/testing/sysfs-i2c-pcm512x |   35 +++++
- sound/soc/codecs/pcm512x.c                  |  189 ++++++++++++++++++++++++---
- 2 files changed, 205 insertions(+), 19 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-i2c-pcm512x
+ sound/pci/rme9652/hdspm.c | 141 ++++++++++++----------------------------------
+ 1 file changed, 35 insertions(+), 106 deletions(-)
 
 -- 
-1.7.10.4
+2.1.0
