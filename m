@@ -1,70 +1,44 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 3/3] ALSA: hdspm - DRY cleanup of snd_pcm_ops
-Date: Tue, 17 Feb 2015 00:05:06 +0100
-Message-ID: <1424127906-7530-4-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1424127906-7530-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Mikko Rapeli <mikko.rapeli@iki.fi>
+Subject: [PATCH 24/45] hdspm.h: include stdint.h in userspace
+Date: Tue, 17 Feb 2015 00:05:27 +0100
+Message-ID: <1424127948-22484-25-git-send-email-mikko.rapeli@iki.fi>
+References: <1424127948-22484-1-git-send-email-mikko.rapeli@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1424127906-7530-1-git-send-email-adi@drcomp.erfurt.thur.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: adi@drcomp.erfurt.thur.de, alsa-devel@alsa-project.org, Adrian Knoth <aknoth@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1424127948-22484-1-git-send-email-mikko.rapeli@iki.fi>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mikko Rapeli <mikko.rapeli@iki.fi>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-api@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Adrian Knoth <aknoth@google.com>
+=46ixes compilation error:
 
-This commit removes code duplication between
-snd_hdspm_{capture,playback}_ops. No semantic changes intended, this is
-purely cosmetic.
+sound/hdspm.h:43:2: error: unknown type name =E2=80=98uint32_t=E2=80=99
 
-Signed-off-by: Adrian Knoth <aknoth@google.com>
+Signed-off-by: Mikko Rapeli <mikko.rapeli@iki.fi>
+---
+ include/uapi/sound/hdspm.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 4e1cfb9..cb666c7 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6354,19 +6354,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 	return 0;
- }
- 
--static struct snd_pcm_ops snd_hdspm_playback_ops = {
--	.open = snd_hdspm_open,
--	.close = snd_hdspm_release,
--	.ioctl = snd_hdspm_ioctl,
--	.hw_params = snd_hdspm_hw_params,
--	.hw_free = snd_hdspm_hw_free,
--	.prepare = snd_hdspm_prepare,
--	.trigger = snd_hdspm_trigger,
--	.pointer = snd_hdspm_hw_pointer,
--	.page = snd_pcm_sgbuf_ops_page,
--};
--
--static struct snd_pcm_ops snd_hdspm_capture_ops = {
-+static struct snd_pcm_ops snd_hdspm_ops = {
- 	.open = snd_hdspm_open,
- 	.close = snd_hdspm_release,
- 	.ioctl = snd_hdspm_ioctl,
-@@ -6462,9 +6450,9 @@ static int snd_hdspm_create_pcm(struct snd_card *card,
- 	strcpy(pcm->name, hdspm->card_name);
- 
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
--			&snd_hdspm_playback_ops);
-+			&snd_hdspm_ops);
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
--			&snd_hdspm_capture_ops);
-+			&snd_hdspm_ops);
- 
- 	pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
- 
--- 
-2.1.0
+diff --git a/include/uapi/sound/hdspm.h b/include/uapi/sound/hdspm.h
+index d956c35..f799828 100644
+--- a/include/uapi/sound/hdspm.h
++++ b/include/uapi/sound/hdspm.h
+@@ -20,6 +20,12 @@
+  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  */
+=20
++#ifdef __KERNEL__
++#include <linux/types.h>
++#else
++#include <stdint.h>
++#endif
++
+ /* Maximum channels is 64 even on 56Mode you have 64playbacks to matri=
+x */
+ #define HDSPM_MAX_CHANNELS      64
+=20
+--=20
+2.1.4
