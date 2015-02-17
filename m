@@ -1,41 +1,37 @@
-From: Mikko Rapeli <mikko.rapeli@iki.fi>
-Subject: [PATCH 40/45] include/uapi/sound/emu10k1.h: include sound/asound.h
-Date: Tue, 17 Feb 2015 00:05:43 +0100
-Message-ID: <1424127948-22484-41-git-send-email-mikko.rapeli@iki.fi>
-References: <1424127948-22484-1-git-send-email-mikko.rapeli@iki.fi>
+From: Xuebing Wang <xbing6@gmail.com>
+Subject: iMX6 SSI driver: fsl_ssi vs imx-ssi
+Date: Tue, 17 Feb 2015 08:09:42 +0800
+Message-ID: <54E286C6.8030705@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1424127948-22484-1-git-send-email-mikko.rapeli@iki.fi>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mikko Rapeli <mikko.rapeli@iki.fi>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-api@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
+ [209.85.216.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5585D2606D6
+ for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2015 01:09:48 +0100 (CET)
+Received: by mail-qc0-f175.google.com with SMTP id b13so20690031qcw.6
+ for <alsa-devel@alsa-project.org>; Mon, 16 Feb 2015 16:09:47 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-=46ixes userspace compilation errors like:
-error: field =E2=80=98id=E2=80=99 has incomplete type
-struct snd_ctl_elem_id id;  /* full control ID definition */
+Hi community,
 
-Signed-off-by: Mikko Rapeli <mikko.rapeli@iki.fi>
----
- include/uapi/sound/emu10k1.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I am developing an ASOC codec driver based on iMX6SL platform. I noticed 
+there are fsl_ssi.c and imx-ssi.c in folder sound/soc/fsl.
 
-diff --git a/include/uapi/sound/emu10k1.h b/include/uapi/sound/emu10k1.=
-h
-index d1bbaf7..ec1535b 100644
---- a/include/uapi/sound/emu10k1.h
-+++ b/include/uapi/sound/emu10k1.h
-@@ -23,8 +23,7 @@
- #define _UAPI__SOUND_EMU10K1_H
-=20
- #include <linux/types.h>
--
--
-+#include <sound/asound.h>
-=20
- /*
-  * ---- FX8010 ----
---=20
-2.1.4
+Would you please tell me what are the differences between these 2, and 
+which one should I use? Thanks.
+
+-- 
+Xuebing
