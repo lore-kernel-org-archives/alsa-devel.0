@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/6] ASoC: samsung: Extend Snow driver to
-	support max98089
-Date: Thu, 19 Feb 2015 18:44:25 +0900
-Message-ID: <20150219094425.GB3198@finisterre.sirena.org.uk>
-References: <1424283959-16289-1-git-send-email-afaerber@suse.de>
- <1424283959-16289-6-git-send-email-afaerber@suse.de>
+Subject: Re: simplify simple-card
+Date: Wed, 18 Feb 2015 01:14:08 +0900
+Message-ID: <20150217161408.GX9110@finisterre.sirena.org.uk>
+References: <87fva68ckb.wl%kuninori.morimoto.gx@renesas.com>
+ <20150217043205.GS9110@finisterre.sirena.org.uk>
+ <87oaotrtxz.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6861968169231599671=="
+Content-Type: multipart/mixed; boundary="===============8955710677864266555=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C1A97260515
- for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2015 10:45:19 +0100 (CET)
-In-Reply-To: <1424283959-16289-6-git-send-email-afaerber@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 94741260525
+ for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2015 11:03:30 +0100 (CET)
+In-Reply-To: <87oaotrtxz.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
-Cc: Doug Anderson <dianders@chromium.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Vincent Palatin <vpalatin@chromium.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Kukjin Kim <kgene@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, linux-arm-kernel@lists.infradead.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6861968169231599671==
+--===============8955710677864266555==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3uo+9/B/ebqu+fSQ"
+	protocol="application/pgp-signature"; boundary="9I0HVnGRacHebCDW"
 Content-Disposition: inline
 
 
---3uo+9/B/ebqu+fSQ
-Content-Type: text/plain; charset=iso-8859-1
+--9I0HVnGRacHebCDW
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 18, 2015 at 07:25:58PM +0100, Andreas F=E4rber wrote:
+On Tue, Feb 17, 2015 at 05:23:40AM +0000, Kuninori Morimoto wrote:
 
->  static const struct of_device_id snow_of_match[] =3D {
-> +	{ .compatible =3D "google,snow-audio-max98089", },
->  	{ .compatible =3D "google,snow-audio-max98090", },
->  	{ .compatible =3D "google,snow-audio-max98091", },
->  	{ .compatible =3D "google,snow-audio-max98095", },
+> Sorry, but I guess you are misunderstanding about my idea.
+> My idea is that we create above sound cards, and use it by
 
-Since we completely ignore the CODEC in the property might it not be
-better to just add a plain old snow-audio compatible and bind to that,
-that way we don't need these driver updates?  Just the "snow" bit should
-be enough to know it's one of this class of machines.
+> 	sound {
+> -		compatible = "simple-audio-card";
+> +		compatible = "single-audio-card", "simple-audio-card";
+> 	...
 
---3uo+9/B/ebqu+fSQ
+> If we can create simplified simple-audio-card (= here "single" audio card).
+> we can use it, if not, we can use current simple-audio-card.
+
+> If it is difficult to keep compatibility between current "simple" and simplified card,
+> can we create above new sound cards series ?
+> Some of these functions are already created as common code (but no one is using it ?)
+> new sound cards series can reuse it.
+
+I'm still seeing complexity here from the fact that we have to work out
+what combinations of features to support - if we're splitting things out
+then at some point we are going to have to have split code paths.  It's
+possible I'm just not seeing the advantages here and that the code will
+make it clear what the benefits are but it doesn't feel like it's the
+way forwards right now.
+
+--9I0HVnGRacHebCDW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU5bB5AAoJECTWi3JdVIfQrvMH/jQFZat83HOXGQ6uN6UfGyOp
-EL/5IynL/XJOM9WRGk/9LCH2BITnrIECC4k2zIOflnzaCe0aLspAY9cdC2XjZroM
-iiRrOAC0a8OM9GmshJt1uatdoIdAJF+Xs2zaxqXzEgqaIdDtUJSG0rjlo/xA0+gU
-ITpKI9u5fOTO6GpEskBCbs28EL9zW1lAXciMm2aiEbRdPlhHBywmroBQzjuI3RlE
-hkehhi2xSWrMqbN9gbEks3kRB/2AUvCjeCFDwlp4Fuid3DsP7QEKAYR2rLvCU8IN
-ZpJ+7cqgzvK3l/lSlkJ9RAeKHIYxsux9U/OZWFm2873BJ/MhFs1jigTko67W36s=
-=o+MI
+iQEcBAEBCAAGBQJU42jPAAoJECTWi3JdVIfQqNEH/jRd+W1zX/NKL3uCX4fgh0AR
+Dl7QtJuhrKKa11P4uNZmGnkVxPtf3mL0nVnY99bAEyAUdOkRStNfNmRZRZY85N44
+qW2pEAUvzy61aNh7cgNs/1zPUADfwQnJ34/OT1zAX6udb4LXc/PIdzZZa8WufPFn
+oXOX9606ZxM+gdE1xA0oGepUeGqwfTp4VemupaBk4PsLF/Iez4M4snX5N3pUSlaZ
+AlXRlOHtghTXpDR0CUUox24ygHFAZsmd0umUb/Tq49bi2BAISYcz0MgebagXAiUv
+//GjeJyT/dK5CJPTWwRTT+QNFCkrFnyXVjTbO7kSfQN9ELEyPWC+p5nc/Vnf6eE=
+=P2XJ
 -----END PGP SIGNATURE-----
 
---3uo+9/B/ebqu+fSQ--
+--9I0HVnGRacHebCDW--
 
---===============6861968169231599671==
+--===============8955710677864266555==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6861968169231599671==--
+--===============8955710677864266555==--
