@@ -1,108 +1,81 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: add
-	SNDRV_PCM_INFO_DRAIN_TRIGGER flag
-Date: Tue, 17 Feb 2015 06:52:14 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D195F9589@SHSMSX103.ccr.corp.intel.com>
-References: <1424147303-92196-1-git-send-email-libin.yang@intel.com>
- <96A12704CE18D347B625EE2D4A099D195F9526@SHSMSX103.ccr.corp.intel.com>
- <s5hr3tpowtk.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 075462612D7
- for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2015 07:52:20 +0100 (CET)
-In-Reply-To: <s5hr3tpowtk.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@sirena.org.uk" <broonie@sirena.org.uk>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: [Patch V3 2/2] ASoC: max98357a: Remove use of DRV_NAME
+Date: Tue, 17 Feb 2015 00:53:12 -0800
+Message-ID: <1424163192-665-2-git-send-email-kwestfie@codeaurora.org>
+References: <1424163192-665-1-git-send-email-kwestfie@codeaurora.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <1424163192-665-1-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
+Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, February 17, 2015 2:51 PM
-> To: Yang, Libin
-> Cc: alsa-devel@alsa-project.org; broonie@sirena.org.uk; Girdwood,
-> Liam R; Jie, Yang
-> Subject: Re: [PATCH] ASoC: Intel: add
-> SNDRV_PCM_INFO_DRAIN_TRIGGER flag
-> 
-> At Tue, 17 Feb 2015 04:53:45 +0000,
-> Yang, Libin wrote:
-> >
-> > Hi Takashi & Mark,
-> >
-> > This patch is for Takashi's tree.
-> 
-> OK, I took it to for-linus (or for-next, equivalently) branch now.
+Remove use of DRV_NAME define.
 
-Got it. Thanks.
+Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
+---
+for fix/max98357a branch
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> >
-> > Regards,
-> > Libin
-> >
-> >
-> > > -----Original Message-----
-> > > From: Yang, Libin
-> > > Sent: Tuesday, February 17, 2015 12:28 PM
-> > > To: alsa-devel@alsa-project.org; tiwai@suse.de;
-> > > broonie@sirena.org.uk
-> > > Cc: Girdwood, Liam R; Yang, Libin; Jie, Yang
-> > > Subject: [PATCH] ASoC: Intel: add
-> > > SNDRV_PCM_INFO_DRAIN_TRIGGER flag
-> > >
-> > > From: Libin Yang <libin.yang@intel.com>
-> > >
-> > > Add SNDRV_PCM_INFO_DRAIN_TRIGGER in
-> snd_pcm_hardware.info
-> > > to
-> > > call sst_hsw_stream_set_silence_start() when PCM draining.
-> > >
-> > > Signed-off-by: Libin Yang <libin.yang@intel.com>
-> > > ---
-> > >  sound/soc/intel/sst-haswell-pcm.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/sound/soc/intel/sst-haswell-pcm.c
-> b/sound/soc/intel/sst-
-> > > haswell-pcm.c
-> > > index d6fa9d5..7e21e8f 100644
-> > > --- a/sound/soc/intel/sst-haswell-pcm.c
-> > > +++ b/sound/soc/intel/sst-haswell-pcm.c
-> > > @@ -91,7 +91,8 @@ static const struct snd_pcm_hardware
-> > > hsw_pcm_hardware = {
-> > >  				  SNDRV_PCM_INFO_INTERLEAVED |
-> > >  				  SNDRV_PCM_INFO_PAUSE |
-> > >  				  SNDRV_PCM_INFO_RESUME |
-> > > -
-> > > SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
-> > > +
-> > > SNDRV_PCM_INFO_NO_PERIOD_WAKEUP |
-> > > +				  SNDRV_PCM_INFO_DRAIN_TRIGGER,
-> > >  	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-> > > SNDRV_PCM_FMTBIT_S24_LE |
-> > >  				  SNDRV_PCM_FMTBIT_S32_LE,
-> > >  	.period_bytes_min	= PAGE_SIZE,
-> > > --
-> > > 1.9.1
-> >
+changes from v2:
+ - split patch into logical changes
+ - rebased to new branch
+
+changes from v1:
+ - matched subject line to subsystem style
+
+ sound/soc/codecs/max98357a.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+index e9e6efbc21dd527299fb459ec01903fa8c24dae2..4ee23fbc4e1237268ae104319a9cfe4fc369934e 100644
+--- a/sound/soc/codecs/max98357a.c
++++ b/sound/soc/codecs/max98357a.c
+@@ -26,8 +26,6 @@
+ #include <sound/soc-dai.h>
+ #include <sound/soc-dapm.h>
+ 
+-#define DRV_NAME "max98357a"
+-
+ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
+ 		int cmd, struct snd_soc_dai *dai)
+ {
+@@ -87,9 +85,9 @@ static struct snd_soc_dai_ops max98357a_dai_ops = {
+ };
+ 
+ static struct snd_soc_dai_driver max98357a_dai_driver = {
+-	.name = DRV_NAME,
++	.name = "max98357a",
+ 	.playback = {
+-		.stream_name	= DRV_NAME "-playback",
++		.stream_name	= "max98357a-playback",
+ 		.formats	= SNDRV_PCM_FMTBIT_S16 |
+ 					SNDRV_PCM_FMTBIT_S24 |
+ 					SNDRV_PCM_FMTBIT_S32,
+@@ -127,7 +125,7 @@ static int max98357a_platform_remove(struct platform_device *pdev)
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id max98357a_device_id[] = {
+-	{ .compatible = "maxim," DRV_NAME, },
++	{ .compatible = "maxim,max98357a" },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, max98357a_device_id);
+@@ -135,7 +133,7 @@ MODULE_DEVICE_TABLE(of, max98357a_device_id);
+ 
+ static struct platform_driver max98357a_platform_driver = {
+ 	.driver = {
+-		.name = DRV_NAME,
++		.name = "max98357a",
+ 		.of_match_table = of_match_ptr(max98357a_device_id),
+ 	},
+ 	.probe	= max98357a_platform_probe,
+@@ -145,4 +143,3 @@ module_platform_driver(max98357a_platform_driver);
+ 
+ MODULE_DESCRIPTION("Maxim MAX98357A Codec Driver");
+ MODULE_LICENSE("GPL v2");
+-MODULE_ALIAS("platform:" DRV_NAME);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
