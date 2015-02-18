@@ -1,17 +1,14 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: baytrail-pcm-audio: audio broken on Lenovo
- Thinkpad Tablet 10
-Date: Wed, 18 Feb 2015 16:51:05 +0200
-Message-ID: <54E4A6D9.30005@linux.intel.com>
-References: <54E2DE80.1060308@m-labs.hk>
+From: =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
+Subject: [PATCH 0/6] ASoC: samsung: Spring sound support
+Date: Wed, 18 Feb 2015 19:25:53 +0100
+Message-ID: <1424283959-16289-1-git-send-email-afaerber@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 79F8526007E
- for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2015 15:51:22 +0100 (CET)
-In-Reply-To: <54E2DE80.1060308@m-labs.hk>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9DF4260417
+ for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2015 19:26:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Bourdeauducq <sb@m-labs.hk>, alsa-devel@alsa-project.org
-Cc: "oder_chiou@realtek.com >> Oder Chiou" <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>
+To: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Cc: devicetree@vger.kernel.org, Doug Anderson <dianders@chromium.org>, Vincent Palatin <vpalatin@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>, Tomasz Figa <tomasz.figa@gmail.com>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
-On 02/17/2015 08:24 AM, Sebastien Bourdeauducq wrote:
-> Hi,
->
-> the Thinkpad Tablet 10 has an impressive amount of problems under Linux,
-> among which the audio is completely broken.
->
-> The kernel log is:
-> [    7.532413] rt5640 i2c-10EC5640:00: Device with ID register 6271 is
-> not rt5640/39
-
-Bard, Oder: Is this codec even from RT564x family? To me it looks RT567x 
-based on RT5670_DEVICE_ID 0x6271 in sound/soc/codecs/rt5670.c.
-
-At least sound/soc/codecs/rt5640.c: rt5640_i2c_probe() appears to find 
-above same value 0x6271 from the register RT5640_VENDOR_ID2.
-
-If that's the case then one might want to ask Lenovo why they are using 
-completely wrong ACPI ID for the codec.
-
--- 
-Jarkko
+SGVsbG8sCgpUaGlzIHNlcmllcyBwcmVwYXJlcyBzb3VuZCBzdXBwb3J0IGZvciB0aGUgSFAgQ2hy
+b21lYm9vayAxMS4KClJlZ2FyZHMsCkFuZHJlYXMKCgpBbmRyZWFzIEbDpHJiZXIgKDYpOgogIEFT
+b0M6IG1heDk4MDg4OiBEb2N1bWVudCBEVCBiaW5kaW5ncwogIEFTb0M6IG1heDk4MDg4OiBBZGQg
+RFQgYmluZGluZ3MKICBBUk06IGR0czogQWRkIG1heDk4MDg5IHRvIGV4eW5vczUyNTAtc3ByaW5n
+CiAgQVNvQzogc2Ftc3VuZzogRG9jdW1lbnQgYmluZGluZyBmb3IgbWF4OTgwODkgYmFzZWQgU25v
+dyBkcml2ZXIKICBBU29DOiBzYW1zdW5nOiBFeHRlbmQgU25vdyBkcml2ZXIgdG8gc3VwcG9ydCBt
+YXg5ODA4OQogIEFSTTogZHRzOiBBZGQgc291bmQgc3VwcG9ydCB0byBleHlub3M1MjUwLXNwcmlu
+ZwoKIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL21heDk4MDg4LnR4dCAgICAgICAgIHwg
+MTYgKysrKysrKysrKysrCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
+c25vdy50eHQgICB8ICAxICsKIGFyY2gvYXJtL2Jvb3QvZHRzL2V4eW5vczUyNTAtc3ByaW5nLmR0
+cyAgICAgICAgICAgIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKwogc291bmQvc29jL2NvZGVj
+cy9tYXg5ODA4OC5jICAgICAgICAgICAgICAgICAgICAgICAgfCAgOCArKysrKysKIHNvdW5kL3Nv
+Yy9zYW1zdW5nL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEgKwogc291bmQv
+c29jL3NhbXN1bmcvc25vdy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSArCiA2IGZp
+bGVzIGNoYW5nZWQsIDU3IGluc2VydGlvbnMoKykKIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvbWF4OTgwODgudHh0CgotLSAKMi4xLjQK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
