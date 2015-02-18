@@ -1,78 +1,50 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2] ASoC: Samsung: add missing I2C/SPI dependencies
-Date: Wed, 18 Feb 2015 21:35:08 +0100
-Message-ID: <8075847.dUio9f5hRh@wuerfel>
+Subject: [PATCH] ASoC: cirrus: tlv320aic23 needs I2C
+Date: Wed, 18 Feb 2015 21:43:13 +0100
+Message-ID: <5891241.bLtA2KsrYg@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Kukjin Kim <kgene@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98432260431
+ for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2015 21:43:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <rmallon@gmail.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-A few sound drivers for the samsung platforms are missing dependencies
-on I2C or SPI, which can lead to build errors like
+The tlv320aic23 codec is selected by the ep93xx snapper platform,
+which are missing a dependency on I2C, and that can result in this
+build error, as found during randconfig builds:
 
-codecs/rt5631.c:1737:1: warning: data definition has no type or storage class
-31_i2c_driver);
+.../codecs/tlv320aic23-i2c.c: In function 'tlv320aic23_i2c_probe':
+.../codecs/tlv320aic23-i2c.c:27:2: error: implicit declaration of function 'i2c_check_functionality' [-Werror=implicit-function-declaration]
+  if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
+  ^
 
-codecs/rt5631.c:1737:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-codecs/rt5631.c:1737:1: warning: parameter names (without types) in function declaration
-codecs/rt5631.c:1726:26: warning: 'rt5631_i2c_driver' defined but not used [-Wunused-variable]
-
-I have gone through all the ones that did not already have
-an I2C dependency and added the ones that I found missing,
-namely arndale, odroid-x2, littlemill, bells and speyside
-and this patch adds all the dependencies.
+This adds the missing dependency.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 3cebf6ca03df..0632a36852c8 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -174,7 +174,7 @@ config SND_SOC_SMDK_WM8994_PCM
+diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
+index 7b7fbcd49e5e..c7cd60f009e9 100644
+--- a/sound/soc/cirrus/Kconfig
++++ b/sound/soc/cirrus/Kconfig
+@@ -16,7 +16,7 @@ config SND_EP93XX_SOC_AC97
  
- config SND_SOC_SPEYSIDE
- 	tristate "Audio support for Wolfson Speyside"
--	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
-+	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && I2C && SPI_MASTER
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8996
- 	select SND_SOC_WM9081
-@@ -189,7 +189,7 @@ config SND_SOC_TOBERMORY
- 
- config SND_SOC_BELLS
- 	tristate "Audio support for Wolfson Bells"
--	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && MFD_ARIZONA
-+	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && MFD_ARIZONA && I2C && SPI_MASTER
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM5102
- 	select SND_SOC_WM5110
-@@ -206,7 +206,7 @@ config SND_SOC_LOWLAND
- 
- config SND_SOC_LITTLEMILL
- 	tristate "Audio support for Wolfson Littlemill"
--	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
-+	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && I2C
- 	select SND_SAMSUNG_I2S
- 	select MFD_WM8994
- 	select SND_SOC_WM8994
-@@ -223,7 +223,7 @@ config SND_SOC_SNOW
- 
- config SND_SOC_ODROIDX2
- 	tristate "Audio support for Odroid-X2 and Odroid-U3"
--	depends on SND_SOC_SAMSUNG
-+	depends on SND_SOC_SAMSUNG && I2C
- 	select SND_SOC_MAX98090
- 	select SND_SAMSUNG_I2S
- 	help
-@@ -231,6 +231,6 @@ config SND_SOC_ODROIDX2
- 
- config SND_SOC_ARNDALE_RT5631_ALC5631
-         tristate "Audio support for RT5631(ALC5631) on Arndale Board"
--        depends on SND_SOC_SAMSUNG
-+        depends on SND_SOC_SAMSUNG && I2C
-         select SND_SAMSUNG_I2S
-         select SND_SOC_RT5631
+ config SND_EP93XX_SOC_SNAPPERCL15
+         tristate "SoC Audio support for Bluewater Systems Snapper CL15 module"
+-        depends on SND_EP93XX_SOC && MACH_SNAPPER_CL15
++        depends on SND_EP93XX_SOC && MACH_SNAPPER_CL15 && I2C
+         select SND_EP93XX_SOC_I2S
+         select SND_SOC_TLV320AIC23_I2C
+         help
