@@ -1,17 +1,21 @@
-From: Anish Kumar <yesanishhere@gmail.com>
-Subject: [PATCH] ASoC: Add max98925 codec driver
-Date: Wed, 18 Feb 2015 20:09:46 -0800
-Message-ID: <1424318986-18895-1-git-send-email-yesanishhere@gmail.com>
+From: =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Internal speakers not working on HP ProBook 455 G2
+Date: Thu, 19 Feb 2015 15:24:15 +0900
+Message-ID: <54E5818F.9020105@daenzer.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------060202080601090104060205"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F4ED2604A0
- for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2015 05:10:02 +0100 (CET)
-Received: by pablf10 with SMTP id lf10so6344830pab.12
- for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2015 20:10:01 -0800 (PST)
+Received: from mail.gna.ch (darkcity.gna.ch [195.226.6.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E36B2604BC
+ for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2015 07:24:22 +0100 (CET)
+Received: from thor (125-14-38-183.rev.home.ne.jp [125.14.38.183])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by darkcity.gna.ch (Postfix) with ESMTPSA id 44AFDC011D
+ for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2015 07:23:48 +0100 (CET)
+Received: from localhost ([::1]) by thor with esmtp (Exim 4.84)
+ (envelope-from <michel@daenzer.net>) id 1YOKX1-0000Fn-D9
+ for alsa-devel@alsa-project.org; Thu, 19 Feb 2015 15:24:15 +0900
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,1766 +25,738 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, Maxwell.McKinnon@maximintegrated.com, liam.r.girdwood@linux.intel.com, lars@metafoo.de
-Cc: alsa-devel@alsa-project.org, nitin.mittal@maximintegrated.com, Anish Kumar <yesanishhere@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Anish Kumar <yesanishhere@gmail.com>
----
- sound/soc/codecs/Kconfig    |   9 +
- sound/soc/codecs/Makefile   |   2 +
- sound/soc/codecs/max98925.c | 843 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/max98925.h | 845 ++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 1699 insertions(+)
- create mode 100644 sound/soc/codecs/max98925.c
- create mode 100644 sound/soc/codecs/max98925.h
+This is a multi-part message in MIME format.
+--------------060202080601090104060205
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 45b7256..7d9002c 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -47,6 +47,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MAX98088 if I2C
- 	select SND_SOC_MAX98090 if I2C
- 	select SND_SOC_MAX98095 if I2C
-+	select SND_SOC_MAX98925 if I2C
- 	select SND_SOC_MAX9850 if I2C
- 	select SND_SOC_MAX9768 if I2C
- 	select SND_SOC_MAX9877 if I2C
-@@ -285,6 +286,14 @@ config SND_SOC_MAX9850
- config SND_SOC_OMAP_HDMI_CODEC
-        tristate
- 
-+config SND_SOC_MAX98925
-+       tristate "Support MAX98925 audio codec"
-+       depends on I2C
-+       help
-+       MAX98925 is a high-efficiency mono
-+       Class DG audio amplifier. Use this
-+       option to enable the codec.
-+
- config SND_SOC_PCM3008
-        tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 6a3b3c3..d439d47 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -38,6 +38,7 @@ snd-soc-max98088-objs := max98088.o
- snd-soc-max98090-objs := max98090.o
- snd-soc-max98095-objs := max98095.o
- snd-soc-max9850-objs := max9850.o
-+snd-soc-max98925-objs := max98925.o
- snd-soc-mc13783-objs := mc13783.o
- snd-soc-ml26124-objs := ml26124.o
- snd-soc-omap-hdmi-codec-objs := omap-hdmi.o
-@@ -233,6 +234,7 @@ obj-$(CONFIG_SND_SOC_WM8994)	+= snd-soc-wm8994.o
- obj-$(CONFIG_SND_SOC_WM8995)	+= snd-soc-wm8995.o
- obj-$(CONFIG_SND_SOC_WM9081)	+= snd-soc-wm9081.o
- obj-$(CONFIG_SND_SOC_WM9090)	+= snd-soc-wm9090.o
-+obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
- obj-$(CONFIG_SND_SOC_WM9705)	+= snd-soc-wm9705.o
- obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
- obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
-diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
-new file mode 100644
-index 0000000..35af23b
---- /dev/null
-+++ b/sound/soc/codecs/max98925.c
-@@ -0,0 +1,843 @@
-+/*
-+ * max98925.c -- ALSA SoC Stereo MAX98925 driver
-+ * Copyright 2013-15 Maxim Integrated Products
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+#include <linux/delay.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/cdev.h>
-+#include <linux/regulator/consumer.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include "max98925.h"
-+
-+static const char *const dai_text[] = {
-+	"left", "right", "leftright", "leftrightdiv2",
-+};
-+
-+static const char *const hpf_text[] = {
-+	"disable", "dc_block", "100Hz",	"200Hz", "400Hz", "800Hz",
-+};
-+
-+static struct reg_default max98925_reg[] = {
-+	{ 0x00, 0x00 }, /* Battery Voltage Data */
-+	{ 0x01, 0x00 }, /* Boost Voltage Data */
-+	{ 0x02, 0x00 }, /* Live Status0 */
-+	{ 0x03, 0x00 }, /* Live Status1 */
-+	{ 0x04, 0x00 }, /* Live Status2 */
-+	{ 0x05, 0x00 }, /* State0 */
-+	{ 0x06, 0x00 }, /* State1 */
-+	{ 0x07, 0x00 }, /* State2 */
-+	{ 0x08, 0x00 }, /* Flag0 */
-+	{ 0x09, 0x00 }, /* Flag1 */
-+	{ 0x0A, 0x00 }, /* Flag2 */
-+	{ 0x0B, 0x00 }, /* IRQ Enable0 */
-+	{ 0x0C, 0x00 }, /* IRQ Enable1 */
-+	{ 0x0D, 0x00 }, /* IRQ Enable2 */
-+	{ 0x0E, 0x00 }, /* IRQ Clear0 */
-+	{ 0x0F, 0x00 }, /* IRQ Clear1 */
-+	{ 0x10, 0x00 }, /* IRQ Clear2 */
-+	{ 0x11, 0xC0 }, /* Map0 */
-+	{ 0x12, 0x00 }, /* Map1 */
-+	{ 0x13, 0x00 }, /* Map2 */
-+	{ 0x14, 0xF0 }, /* Map3 */
-+	{ 0x15, 0x00 }, /* Map4 */
-+	{ 0x16, 0xAB }, /* Map5 */
-+	{ 0x17, 0x89 }, /* Map6 */
-+	{ 0x18, 0x00 }, /* Map7 */
-+	{ 0x19, 0x00 }, /* Map8 */
-+	{ 0x1A, 0x06 }, /* DAI Clock Mode 1 */
-+	{ 0x1B, 0xC0 }, /* DAI Clock Mode 2 */
-+	{ 0x1C, 0x00 }, /* DAI Clock Divider Denominator MSBs */
-+	{ 0x1D, 0x00 }, /* DAI Clock Divider Denominator LSBs */
-+	{ 0x1E, 0xF0 }, /* DAI Clock Divider Numerator MSBs */
-+	{ 0x1F, 0x00 }, /* DAI Clock Divider Numerator LSBs */
-+	{ 0x20, 0x50 }, /* Format */
-+	{ 0x21, 0x00 }, /* TDM Slot Select */
-+	{ 0x22, 0x00 }, /* DOUT Configuration VMON */
-+	{ 0x23, 0x00 }, /* DOUT Configuration IMON */
-+	{ 0x24, 0x00 }, /* DOUT Configuration VBAT */
-+	{ 0x25, 0x00 }, /* DOUT Configuration VBST */
-+	{ 0x26, 0x00 }, /* DOUT Configuration FLAG */
-+	{ 0x27, 0xFF }, /* DOUT HiZ Configuration 1 */
-+	{ 0x28, 0xFF }, /* DOUT HiZ Configuration 2 */
-+	{ 0x29, 0xFF }, /* DOUT HiZ Configuration 3 */
-+	{ 0x2A, 0xFF }, /* DOUT HiZ Configuration 4 */
-+	{ 0x2B, 0x02 }, /* DOUT Drive Strength */
-+	{ 0x2C, 0x90 }, /* Filters */
-+	{ 0x2D, 0x00 }, /* Gain */
-+	{ 0x2E, 0x02 }, /* Gain Ramping */
-+	{ 0x2F, 0x00 }, /* Speaker Amplifier */
-+	{ 0x30, 0x0A }, /* Threshold */
-+	{ 0x31, 0x00 }, /* ALC Attack */
-+	{ 0x32, 0x80 }, /* ALC Atten and Release */
-+	{ 0x33, 0x00 }, /* ALC Infinite Hold Release */
-+	{ 0x34, 0x92 }, /* ALC Configuration */
-+	{ 0x35, 0x01 }, /* Boost Converter */
-+	{ 0x36, 0x00 }, /* Block Enable */
-+	{ 0x37, 0x00 }, /* Configuration */
-+	{ 0x38, 0x00 }, /* Global Enable */
-+	{ 0x3A, 0x00 }, /* Boost Limiter */
-+	{ 0xFF, 0x50 }, /* Revision ID */
-+};
-+
-+static int max98925_reg_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol, unsigned int reg,
-+		unsigned int mask, unsigned int shift)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int sel = ucontrol->value.integer.value[0];
-+
-+	regmap_update_bits(max98925->regmap, reg, mask, sel<<shift);
-+	dev_dbg(codec->dev, "%s: register 0x%02X, value 0x%02X\n",
-+				__func__, reg, sel);
-+	return 0;
-+}
-+
-+static const struct soc_enum max98925_enum[] = {
-+	SOC_ENUM_SINGLE(MAX98925_R02D_GAIN, 5, 4, dai_text),
-+	SOC_ENUM_SINGLE(MAX98925_R02C_FILTERS, 0, 6, hpf_text),
-+};
-+
-+static const struct snd_kcontrol_new max98925_dai_sel =
-+	SOC_DAPM_ENUM("Route", max98925_enum[0]);
-+
-+static const struct snd_kcontrol_new max98925_hpf_sel =
-+	SOC_DAPM_ENUM("Route", max98925_enum[1]);
-+
-+static int max98925_dac_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+
-+	regmap_update_bits(max98925->regmap,
-+		MAX98925_R036_BLOCK_ENABLE,
-+		M98925_BST_EN_MASK |
-+		M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK,
-+		M98925_BST_EN_MASK |
-+		M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK);
-+	regmap_write(max98925->regmap,
-+	MAX98925_R038_GLOBAL_ENABLE, M98925_EN_MASK);
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget max98925_dapm_widgets[] = {
-+	SND_SOC_DAPM_AIF_IN("DAI_OUT", "HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_MUX("DAI_IN_MUX MUX", SND_SOC_NOPM, 0, 0,
-+				&max98925_dai_sel),
-+	SND_SOC_DAPM_MUX("R02C_FILTER MUX", SND_SOC_NOPM, 0, 0,
-+				&max98925_hpf_sel),
-+	SND_SOC_DAPM_DAC_E("amp_enable", NULL,
-+			MAX98925_R036_BLOCK_ENABLE,
-+			M98925_SPK_EN_SHIFT, 0,
-+			max98925_dac_event, SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_OUTPUT("BE_OUT"),
-+};
-+
-+static const struct snd_soc_dapm_route max98925_audio_map[] = {
-+	{"DAI_IN_MUX MUX", "left", "DAI_OUT"},
-+	{"DAI_IN_MUX MUX", "right", "DAI_OUT"},
-+	{"DAI_IN_MUX MUX", "leftright", "DAI_OUT"},
-+	{"DAI_IN_MUX MUX", "leftrightdiv2", "DAI_OUT"},
-+	{"R02C_FILTER MUX", "disable", "DAI_IN_MUX MUX"},
-+	{"R02C_FILTER MUX", "dc_block", "DAI_IN_MUX MUX"},
-+	{"R02C_FILTER MUX", "100Hz", "DAI_IN_MUX MUX"},
-+	{"R02C_FILTER MUX", "200Hz", "DAI_IN_MUX MUX"},
-+	{"R02C_FILTER MUX", "400Hz", "DAI_IN_MUX MUX"},
-+	{"R02C_FILTER MUX", "800Hz", "DAI_IN_MUX MUX"},
-+	{"amp_enable", NULL, "R02C_FILTER MUX"},
-+	{"BE_OUT", NULL, "amp_enable"},
-+};
-+
-+static bool max98925_volatile_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98925_R000_VBAT_DATA:
-+	case MAX98925_R001_VBST_DATA:
-+	case MAX98925_R002_LIVE_STATUS0:
-+	case MAX98925_R003_LIVE_STATUS1:
-+	case MAX98925_R004_LIVE_STATUS2:
-+	case MAX98925_R005_STATE0:
-+	case MAX98925_R006_STATE1:
-+	case MAX98925_R007_STATE2:
-+	case MAX98925_R008_FLAG0:
-+	case MAX98925_R009_FLAG1:
-+	case MAX98925_R00A_FLAG2:
-+	case MAX98925_R0FF_VERSION:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool max98925_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98925_R00E_IRQ_CLEAR0:
-+	case MAX98925_R00F_IRQ_CLEAR1:
-+	case MAX98925_R010_IRQ_CLEAR2:
-+	case MAX98925_R033_ALC_HOLD_RLS:
-+		return false;
-+	default:
-+		return true;
-+	}
-+}
-+
-+DECLARE_TLV_DB_SCALE(max98925_spk_tlv, -600, 100, 0);
-+
-+static int max98925_spk_gain_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.integer.value[0] = max98925->spk_gain;
-+	dev_dbg(codec->dev, "%s: spk_gain setting returned %d\n", __func__,
-+				(int) ucontrol->value.integer.value[0]);
-+	return 0;
-+}
-+
-+static int max98925_spk_gain_put(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int sel = ucontrol->value.integer.value[0];
-+
-+	if (sel < ((1 << M98925_SPK_GAIN_WIDTH) - 1)) {
-+		regmap_update_bits(max98925->regmap, MAX98925_R02D_GAIN,
-+			M98925_SPK_GAIN_MASK, sel << M98925_SPK_GAIN_SHIFT);
-+		max98925->spk_gain = sel;
-+
-+		dev_dbg(codec->dev, "%s: spk_gain set to %d\n", __func__, sel);
-+	} else {
-+		dev_dbg(codec->dev, "%s: valid speaker gain settings: %d to %d\n",
-+			__func__, 0,
-+			((1 << M98925_SPK_GAIN_WIDTH) - 1));
-+	}
-+	return 0;
-+}
-+
-+static int max98925_reg_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol, unsigned int reg,
-+		unsigned int mask, unsigned int shift)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+	int data;
-+
-+	regmap_read(max98925->regmap, reg, &data);
-+	ucontrol->value.integer.value[0] =
-+		(data & mask) >> shift;
-+	return 0;
-+}
-+
-+static int max98925_spk_ramp_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_get(kcontrol, ucontrol, MAX98925_R02E_GAIN_RAMPING,
-+			M98925_SPK_RMP_EN_MASK, M98925_SPK_RMP_EN_SHIFT);
-+}
-+
-+static int max98925_spk_ramp_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_put(kcontrol, ucontrol, MAX98925_R02E_GAIN_RAMPING,
-+			M98925_SPK_RMP_EN_MASK, M98925_SPK_RMP_EN_SHIFT);
-+}
-+
-+static int max98925_spk_zcd_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_get(kcontrol, ucontrol, MAX98925_R02E_GAIN_RAMPING,
-+			M98925_SPK_ZCD_EN_MASK, M98925_SPK_ZCD_EN_SHIFT);
-+}
-+
-+static int max98925_spk_zcd_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_put(kcontrol, ucontrol, MAX98925_R02E_GAIN_RAMPING,
-+			M98925_SPK_ZCD_EN_MASK, M98925_SPK_ZCD_EN_SHIFT);
-+}
-+
-+static int max98925_alc_en_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_get(kcontrol, ucontrol, MAX98925_R030_THRESHOLD,
-+			M98925_ALC_EN_MASK, M98925_ALC_EN_SHIFT);
-+}
-+
-+static int max98925_alc_en_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_put(kcontrol, ucontrol, MAX98925_R030_THRESHOLD,
-+			M98925_ALC_EN_MASK, M98925_ALC_EN_SHIFT);
-+}
-+
-+static int max98925_alc_threshold_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_get(kcontrol, ucontrol, MAX98925_R030_THRESHOLD,
-+			M98925_ALC_TH_MASK, M98925_ALC_TH_SHIFT);
-+}
-+
-+static int max98925_alc_threshold_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_put(kcontrol, ucontrol, MAX98925_R030_THRESHOLD,
-+			M98925_ALC_TH_MASK, M98925_ALC_TH_SHIFT);
-+}
-+
-+static const char * const max98925_boost_voltage_text[] = {
-+	"8.5V", "8.25V", "8.0V", "7.75V", "7.5V", "7.25V", "7.0V", "6.75V",
-+	"6.5V", "6.5V", "6.5V", "6.5V", "6.5V", "6.5V",	"6.5V", "6.5V"
-+};
-+
-+static const struct soc_enum max98925_boost_voltage_enum =
-+	SOC_ENUM_SINGLE(MAX98925_R037_CONFIGURATION, M98925_BST_VOUT_SHIFT, 15,
-+			max98925_boost_voltage_text);
-+
-+static int max98925_boost_voltage_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_get(kcontrol, ucontrol, MAX98925_R037_CONFIGURATION,
-+			M98925_BST_VOUT_MASK, M98925_BST_VOUT_SHIFT);
-+}
-+
-+static int max98925_boost_voltage_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return max98925_reg_put(kcontrol, ucontrol, MAX98925_R037_CONFIGURATION,
-+			M98925_BST_VOUT_MASK, M98925_BST_VOUT_SHIFT);
-+}
-+
-+static const struct snd_kcontrol_new max98925_snd_controls[] = {
-+
-+	SOC_SINGLE_EXT_TLV("Speaker Gain", MAX98925_R02D_GAIN,
-+		M98925_SPK_GAIN_SHIFT, (1<<M98925_SPK_GAIN_WIDTH)-1, 0,
-+		max98925_spk_gain_get, max98925_spk_gain_put, max98925_spk_tlv),
-+
-+	SOC_SINGLE_EXT("Speaker Ramp", 0, 0, 1, 0,
-+		max98925_spk_ramp_get, max98925_spk_ramp_put),
-+
-+	SOC_SINGLE_EXT("Speaker ZCD", 0, 0, 1, 0,
-+		max98925_spk_zcd_get, max98925_spk_zcd_put),
-+
-+	SOC_SINGLE_EXT("ALC Enable", 0, 0, 1, 0,
-+		max98925_alc_en_get, max98925_alc_en_put),
-+
-+	SOC_SINGLE_EXT("ALC Threshold", 0, 0, (1<<M98925_ALC_TH_WIDTH)-1, 0,
-+		max98925_alc_threshold_get, max98925_alc_threshold_put),
-+
-+	SOC_ENUM_EXT("Boost Output Voltage", max98925_boost_voltage_enum,
-+		max98925_boost_voltage_get, max98925_boost_voltage_put),
-+};
-+
-+/* codec sample rate and n/m dividers parameter table */
-+static const struct {
-+	int rate;
-+	int  sr;
-+	int divisors[3][2];
-+} rate_table[] = {
-+	{
-+		.rate = 8000,
-+		.sr = 0,
-+		.divisors = { {1, 375}, {5, 1764}, {1, 384} }
-+	},
-+	{
-+		.rate = 11025,
-+		.sr = 1,
-+		.divisors = { {147, 40000}, {1, 256}, {147, 40960} }
-+	},
-+	{
-+		.rate = 12000,
-+		.sr = 2,
-+		.divisors = { {1, 250}, {5, 1176}, {1, 256} }
-+	},
-+	{
-+		.rate = 16000,
-+		.sr = 3,
-+		.divisors = { {2, 375}, {5, 882}, {1, 192} }
-+	},
-+	{
-+		.rate = 22050,
-+		.sr = 4,
-+		.divisors = { {147, 20000}, {1, 128}, {147, 20480} }
-+	},
-+	{
-+		.rate = 24000,
-+		.sr = 5,
-+		.divisors = { {1, 125}, {5, 588}, {1, 128} }
-+	},
-+	{
-+		.rate = 32000,
-+		.sr = 6,
-+		.divisors = { {4, 375}, {5, 441}, {1, 96} }
-+	},
-+	{
-+		.rate = 44100,
-+		.sr = 7,
-+		.divisors = { {147, 10000}, {1, 64}, {147, 10240} }
-+	},
-+	{
-+		.rate = 48000,
-+		.sr = 8,
-+		.divisors = { {2, 125}, {5, 294}, {1, 64} }
-+	},
-+};
-+
-+static inline int max98925_rate_value(int rate,
-+		int clock, int *value, int *n, int *m)
-+{
-+	int ret = -EINVAL;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(rate_table); i++) {
-+		if (rate_table[i].rate >= rate) {
-+			*value = rate_table[i].sr;
-+			*n = rate_table[i].divisors[clock][0];
-+			*m = rate_table[i].divisors[clock][1];
-+			ret = 0;
-+			break;
-+		}
-+	}
-+	pr_debug("%s: sample rate is %d, returning %d\n",
-+				__func__, rate_table[i].rate, *value);
-+	return ret;
-+}
-+
-+static void max98925_set_sense_data(struct max98925_priv *max98925)
-+{
-+	/*
-+	 * 1. set VMON slots
-+	 */
-+	regmap_update_bits(max98925->regmap,
-+		MAX98925_R022_DOUT_CFG_VMON,
-+		M98925_DAI_VMON_EN_MASK, M98925_DAI_VMON_EN_MASK);
-+	regmap_update_bits(max98925->regmap,
-+		MAX98925_R022_DOUT_CFG_VMON,
-+		M98925_DAI_VMON_SLOT_MASK, max98925->v_slot);
-+	/*
-+	 * 2. set IMON slots
-+	 */
-+	regmap_update_bits(max98925->regmap,
-+		MAX98925_R023_DOUT_CFG_IMON,
-+		M98925_DAI_IMON_EN_MASK, M98925_DAI_IMON_EN_MASK);
-+	regmap_update_bits(max98925->regmap,
-+		MAX98925_R023_DOUT_CFG_IMON,
-+		M98925_DAI_IMON_SLOT_MASK, max98925->i_slot);
-+}
-+
-+static void max98925_set_slave(struct max98925_priv *max98925)
-+{
-+	/*
-+	 * 1. set DAI to slave mode
-+	 */
-+	regmap_update_bits(max98925->regmap,
-+			MAX98925_R01B_DAI_CLK_MODE2,
-+			M98925_DAI_MAS_MASK, 0);
-+	max98925_set_sense_data(max98925);
-+}
-+
-+static void max98925_set_master(struct max98925_priv *max98925)
-+{
-+	/*
-+	 * set left channel DAI to master mode, right channel always slave
-+	 */
-+	regmap_update_bits(max98925->regmap,
-+			MAX98925_R01B_DAI_CLK_MODE2,
-+			M98925_DAI_MAS_MASK, M98925_DAI_MAS_MASK);
-+}
-+
-+static int max98925_dai_set_fmt(struct snd_soc_dai *codec_dai,
-+				 unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int invert = 0;
-+
-+	dev_dbg(codec->dev, "%s: fmt 0x%08X\n", __func__, fmt);
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		max98925_set_slave(max98925);
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		max98925_set_master(max98925);
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+	default:
-+		dev_err(codec->dev, "DAI clock mode unsupported");
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		invert = M98925_DAI_WCI_MASK;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		invert = M98925_DAI_BCI_MASK;
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		invert = M98925_DAI_BCI_MASK | M98925_DAI_WCI_MASK;
-+		break;
-+	default:
-+		dev_err(codec->dev, "DAI invert mode unsupported");
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98925->regmap, MAX98925_R020_FORMAT,
-+			M98925_DAI_BCI_MASK | M98925_DAI_BCI_MASK, invert);
-+	return 0;
-+}
-+
-+static int max98925_set_clock(struct max98925_priv *max98925,
-+		struct snd_pcm_hw_params *params)
-+{
-+	unsigned int dai_sr = 0;
-+	unsigned int clock;
-+	unsigned int mdll;
-+	unsigned int n;
-+	unsigned int m;
-+	int rate = params_rate(params);
-+
-+	/* BCLK/LRCLK ratio calculation */
-+	int blr_clk_ratio = params_channels(params) * max98925->ch_size;
-+	switch (blr_clk_ratio) {
-+	case 32:
-+		regmap_update_bits(max98925->regmap,
-+			MAX98925_R01B_DAI_CLK_MODE2,
-+			M98925_DAI_BSEL_MASK, M98925_DAI_BSEL_32);
-+		break;
-+	case 48:
-+		regmap_update_bits(max98925->regmap,
-+			MAX98925_R01B_DAI_CLK_MODE2,
-+			M98925_DAI_BSEL_MASK, M98925_DAI_BSEL_48);
-+		break;
-+	case 64:
-+		regmap_update_bits(max98925->regmap,
-+			MAX98925_R01B_DAI_CLK_MODE2,
-+			M98925_DAI_BSEL_MASK, M98925_DAI_BSEL_64);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (max98925->sysclk) {
-+	case 6000000:
-+		clock = 0;
-+		mdll  = M98925_MDLL_MULT_MCLKx16;
-+		break;
-+	case 11289600:
-+		clock = 1;
-+		mdll  = M98925_MDLL_MULT_MCLKx8;
-+		break;
-+	case 12000000:
-+		clock = 0;
-+		mdll  = M98925_MDLL_MULT_MCLKx8;
-+		break;
-+	case 12288000:
-+		clock = 2;
-+		mdll  = M98925_MDLL_MULT_MCLKx8;
-+		break;
-+	default:
-+		dev_info(max98925->codec->dev, "unsupported sysclk %d\n",
-+					max98925->sysclk);
-+		return -EINVAL;
-+	}
-+
-+	if (max98925_rate_value(rate, clock, &dai_sr, &n, &m))
-+		return -EINVAL;
-+
-+	/*
-+	 * 1. set DAI_SR to correct LRCLK frequency
-+	 */
-+	regmap_update_bits(max98925->regmap,
-+			MAX98925_R01B_DAI_CLK_MODE2,
-+			M98925_DAI_SR_MASK, dai_sr << M98925_DAI_SR_SHIFT);
-+	/*
-+	 * 2. set DAI m divider
-+	 */
-+	regmap_write(max98925->regmap,
-+		MAX98925_R01C_DAI_CLK_DIV_M_MSBS, m >> 8);
-+	regmap_write(max98925->regmap,
-+		MAX98925_R01D_DAI_CLK_DIV_M_LSBS, m & 0xFF);
-+	/*
-+	 * 3. set DAI n divider
-+	 */
-+	regmap_write(max98925->regmap,
-+		MAX98925_R01E_DAI_CLK_DIV_N_MSBS, n >> 8);
-+	regmap_write(max98925->regmap,
-+		MAX98925_R01F_DAI_CLK_DIV_N_LSBS, n & 0xFF);
-+	/*
-+	 * 4. set MDLL
-+	 */
-+	regmap_update_bits(max98925->regmap,
-+			MAX98925_R01A_DAI_CLK_MODE1,
-+			M98925_MDLL_MULT_MASK, mdll << M98925_MDLL_MULT_SHIFT);
-+	return 0;
-+}
-+
-+static int max98925_dai_hw_params(struct snd_pcm_substream *substream,
-+				   struct snd_pcm_hw_params *params,
-+				   struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		regmap_update_bits(max98925->regmap,
-+				MAX98925_R020_FORMAT,
-+				M98925_DAI_CHANSZ_MASK, M98925_DAI_CHANSZ_16);
-+		max98925->ch_size = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		regmap_update_bits(max98925->regmap,
-+				MAX98925_R020_FORMAT,
-+				M98925_DAI_CHANSZ_MASK, M98925_DAI_CHANSZ_32);
-+		max98925->ch_size = 32;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		regmap_update_bits(max98925->regmap,
-+				MAX98925_R020_FORMAT,
-+				M98925_DAI_CHANSZ_MASK, M98925_DAI_CHANSZ_32);
-+		max98925->ch_size = 32;
-+		break;
-+	default:
-+		pr_err("%s: format unsupported %d",
-+				__func__, params_format(params));
-+		return -EINVAL;
-+	}
-+	dev_dbg(codec->dev, "%s: format supported %d",
-+				__func__, params_format(params));
-+	return max98925_set_clock(max98925, params);
-+}
-+
-+static int max98925_dai_set_sysclk(struct snd_soc_dai *dai,
-+				   int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (clk_id) {
-+	case 0:
-+		/*
-+		 * 1. use MCLK for Left channel, right channel always BCLK
-+		 */
-+		regmap_update_bits(max98925->regmap,
-+				MAX98925_R01A_DAI_CLK_MODE1,
-+				M98925_DAI_CLK_SOURCE_MASK, 0);
-+		break;
-+	case 1:
-+		/*
-+		 * configure dai clock source to BCLK instead of MCLK(default)
-+		 */
-+		regmap_update_bits(max98925->regmap,
-+				MAX98925_R01A_DAI_CLK_MODE1,
-+				M98925_DAI_CLK_SOURCE_MASK,
-+				M98925_DAI_CLK_SOURCE_MASK);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	max98925->sysclk = freq;
-+	return 0;
-+}
-+
-+static int max98925_dai_digital_mute(struct snd_soc_dai *codec_dai, int mute)
-+{
-+	struct max98925_priv *max98925 =
-+				snd_soc_codec_get_drvdata(codec_dai->codec);
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+
-+	dev_dbg(codec->dev, "%s: mute %d\n", __func__, mute);
-+	if (mute) {
-+		regmap_update_bits(max98925->regmap, MAX98925_R02D_GAIN,
-+			M98925_SPK_GAIN_MASK, 0x00);
-+
-+		regmap_update_bits(max98925->regmap,
-+			MAX98925_R038_GLOBAL_ENABLE,
-+			M98925_EN_MASK, 0x0);
-+	}
-+	return 0;
-+}
-+
-+#define MAX98925_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_ops max98925_dai_ops = {
-+	.set_sysclk = max98925_dai_set_sysclk,
-+	.set_fmt = max98925_dai_set_fmt,
-+	.hw_params = max98925_dai_hw_params,
-+	.digital_mute = max98925_dai_digital_mute,
-+};
-+
-+static struct snd_soc_dai_driver max98925_dai[] = {
-+	{
-+		.name = "max98925-aif1",
-+		.playback = {
-+			.stream_name = "HiFi Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000_48000,
-+			.formats = MAX98925_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "HiFi Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000_48000,
-+			.formats = MAX98925_FORMATS,
-+		},
-+		.ops = &max98925_dai_ops,
-+	}
-+};
-+
-+static int max98925_probe(struct snd_soc_codec *codec)
-+{
-+	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-+	int ret = 0;
-+	int reg = 0;
-+
-+	dev_info(codec->dev, "build number %s\n", MAX98925_REVISION);
-+
-+	max98925->codec = codec;
-+	codec->control_data = max98925->regmap;
-+	ret = regmap_read(max98925->regmap,
-+			MAX98925_R0FF_VERSION, &reg);
-+	if ((ret < 0) ||
-+		((reg != MAX98925_VERSION) &&
-+		(reg != MAX98925_VERSION1))) {
-+		dev_err(codec->dev,
-+			"device initialization error (%d 0x%02X)\n",
-+			ret, reg);
-+		goto err_access;
-+	}
-+	regmap_write(max98925->regmap, MAX98925_R038_GLOBAL_ENABLE, 0x00);
-+	/* It's not the default but we need to set DAI_DLY */
-+	regmap_write(max98925->regmap,
-+			MAX98925_R020_FORMAT, M98925_DAI_DLY_MASK);
-+	regmap_write(max98925->regmap, MAX98925_R021_TDM_SLOT_SELECT, 0xC8);
-+	regmap_write(max98925->regmap, MAX98925_R027_DOUT_HIZ_CFG1, 0xFF);
-+	regmap_write(max98925->regmap, MAX98925_R028_DOUT_HIZ_CFG2, 0xFF);
-+	regmap_write(max98925->regmap, MAX98925_R029_DOUT_HIZ_CFG3, 0xFF);
-+	regmap_write(max98925->regmap, MAX98925_R02A_DOUT_HIZ_CFG4, 0xF0);
-+	regmap_write(max98925->regmap, MAX98925_R02C_FILTERS, 0xD8);
-+	regmap_write(max98925->regmap, MAX98925_R034_ALC_CONFIGURATION, 0xF8);
-+	regmap_write(max98925->regmap, MAX98925_R037_CONFIGURATION, 0xF0);
-+
-+	/* Disable ALC muting */
-+	regmap_write(max98925->regmap, MAX98925_R03A_BOOST_LIMITER, 0xF8);
-+	dev_info(codec->dev, "device version 0x%02X\n", reg);
-+err_access:
-+	return ret;
-+}
-+
-+static struct snd_soc_codec_driver soc_codec_dev_max98925 = {
-+	.probe            = max98925_probe,
-+	.controls = max98925_snd_controls,
-+	.num_controls = ARRAY_SIZE(max98925_snd_controls),
-+	.dapm_routes = max98925_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(max98925_audio_map),
-+	.dapm_widgets = max98925_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(max98925_dapm_widgets),
-+};
-+
-+static struct regmap_config max98925_regmap = {
-+	.reg_bits         = 8,
-+	.val_bits         = 8,
-+	.max_register     = MAX98925_R0FF_VERSION,
-+	.reg_defaults     = max98925_reg,
-+	.num_reg_defaults = ARRAY_SIZE(max98925_reg),
-+	.volatile_reg     = max98925_volatile_register,
-+	.readable_reg     = max98925_readable_register,
-+	.cache_type       = REGCACHE_RBTREE,
-+};
-+
-+static int max98925_i2c_probe(struct i2c_client *i2c,
-+			     const struct i2c_device_id *id)
-+{
-+	int ret = 0;
-+	u32 value;
-+	struct max98925_priv *max98925;
-+
-+	dev_info(&i2c->dev, "%s: enter, device '%s'\n", __func__, id->name);
-+	max98925 = devm_kzalloc(&i2c->dev,
-+			sizeof(*max98925), GFP_KERNEL);
-+	if (!max98925)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(i2c, max98925);
-+	max98925->regmap = devm_regmap_init_i2c(i2c, &max98925_regmap);
-+	if (IS_ERR(max98925->regmap)) {
-+		ret = PTR_ERR(max98925->regmap);
-+		dev_err(&i2c->dev,
-+				"Failed to allocate regmap: %d\n", ret);
-+		goto err_out;
-+	}
-+
-+	if (!of_property_read_u32(i2c->dev.of_node, "vmon-slot-no", &value)) {
-+		if (value > M98925_DAI_VMON_SLOT_1E_1F) {
-+			dev_err(&i2c->dev, "vmon slot number is wrong:\n");
-+			return -EINVAL;
-+		}
-+		max98925->v_slot = value;
-+	}
-+	if (!of_property_read_u32(i2c->dev.of_node, "imon-slot-no", &value)) {
-+		if (value > M98925_DAI_IMON_SLOT_1E_1F) {
-+			dev_err(&i2c->dev, "imon slot number is wrong:\n");
-+			return -EINVAL;
-+		}
-+		max98925->i_slot = value;
-+	}
-+
-+	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_max98925,
-+			max98925_dai, ARRAY_SIZE(max98925_dai));
-+	if (ret < 0)
-+		dev_err(&i2c->dev,
-+				"Failed to register codec: %d\n", ret);
-+err_out:
-+	return ret;
-+}
-+
-+static int max98925_i2c_remove(struct i2c_client *client)
-+{
-+	snd_soc_unregister_codec(&client->dev);
-+	kfree(i2c_get_clientdata(client));
-+	return 0;
-+}
-+
-+static const struct i2c_device_id max98925_i2c_id[] = {
-+	{ "max98925", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, max98925_i2c_id);
-+
-+static struct i2c_driver max98925_i2c_driver = {
-+	.driver = {
-+		.name = "max98925",
-+		.owner = THIS_MODULE,
-+		.pm = NULL,
-+	},
-+	.probe  = max98925_i2c_probe,
-+	.remove = max98925_i2c_remove,
-+	.id_table = max98925_i2c_id,
-+};
-+
-+module_i2c_driver(max98925_i2c_driver);
-+
-+MODULE_DESCRIPTION("ALSA SoC MAX98925 driver");
-+MODULE_AUTHOR("Ralph Birt <rdbirt@gmail.com>, Anish kumar <anish.kumar@maximintegrated.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/max98925.h b/sound/soc/codecs/max98925.h
-new file mode 100644
-index 0000000..1842c15
---- /dev/null
-+++ b/sound/soc/codecs/max98925.h
-@@ -0,0 +1,845 @@
-+/*
-+ * max98925.h -- MAX98925 ALSA SoC Audio driver
-+ *
-+ * Copyright 2013-2015 Maxim Integrated Products
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _MAX98925_H
-+#define _MAX98925_H
-+
-+/* Maximum number of MAX98925 devices in the system this driver can support */
-+#define MAX_NUM_MAX98925	2
-+#define	MAX98925_VERSION	0x51
-+#define	MAX98925_VERSION1	0x80
-+
-+#define MAX98925_REVISION	"0.00.0333"
-+
-+/*
-+ * MAX98925 Register Definitions
-+ */
-+#define MAX98925_R000_VBAT_DATA			0x00
-+#define MAX98925_R001_VBST_DATA			0x01
-+#define MAX98925_R002_LIVE_STATUS0		0x02
-+#define MAX98925_R003_LIVE_STATUS1		0x03
-+#define MAX98925_R004_LIVE_STATUS2		0x04
-+#define MAX98925_R005_STATE0			0x05
-+#define MAX98925_R006_STATE1			0x06
-+#define MAX98925_R007_STATE2			0x07
-+#define MAX98925_R008_FLAG0			0x08
-+#define MAX98925_R009_FLAG1			0x09
-+#define MAX98925_R00A_FLAG2			0x0A
-+#define MAX98925_R00B_IRQ_ENABLE0		0x0B
-+#define MAX98925_R00C_IRQ_ENABLE1		0x0C
-+#define MAX98925_R00D_IRQ_ENABLE2		0x0D
-+#define MAX98925_R00E_IRQ_CLEAR0		0x0E
-+#define MAX98925_R00F_IRQ_CLEAR1		0x0F
-+#define MAX98925_R010_IRQ_CLEAR2		0x10
-+#define MAX98925_R011_MAP0			0x11
-+#define MAX98925_R012_MAP1			0x12
-+#define MAX98925_R013_MAP2			0x13
-+#define MAX98925_R014_MAP3			0x14
-+#define MAX98925_R015_MAP4			0x15
-+#define MAX98925_R016_MAP5			0x16
-+#define MAX98925_R017_MAP6			0x17
-+#define MAX98925_R018_MAP7			0x18
-+#define MAX98925_R019_MAP8			0x19
-+#define MAX98925_R01A_DAI_CLK_MODE1		0x1A
-+#define MAX98925_R01B_DAI_CLK_MODE2		0x1B
-+#define MAX98925_R01C_DAI_CLK_DIV_M_MSBS	0x1C
-+#define MAX98925_R01D_DAI_CLK_DIV_M_LSBS	0x1D
-+#define MAX98925_R01E_DAI_CLK_DIV_N_MSBS	0x1E
-+#define MAX98925_R01F_DAI_CLK_DIV_N_LSBS	0x1F
-+#define MAX98925_R020_FORMAT			0x20
-+#define MAX98925_R021_TDM_SLOT_SELECT		0x21
-+#define MAX98925_R022_DOUT_CFG_VMON		0x22
-+#define MAX98925_R023_DOUT_CFG_IMON		0x23
-+#define MAX98925_R024_DOUT_CFG_VBAT		0x24
-+#define MAX98925_R025_DOUT_CFG_VBST		0x25
-+#define MAX98925_R026_DOUT_CFG_FLAG		0x26
-+#define MAX98925_R027_DOUT_HIZ_CFG1		0x27
-+#define MAX98925_R028_DOUT_HIZ_CFG2		0x28
-+#define MAX98925_R029_DOUT_HIZ_CFG3		0x29
-+#define MAX98925_R02A_DOUT_HIZ_CFG4		0x2A
-+#define MAX98925_R02B_DOUT_DRV_STRENGTH		0x2B
-+#define MAX98925_R02C_FILTERS			0x2C
-+#define MAX98925_R02D_GAIN			0x2D
-+#define MAX98925_R02E_GAIN_RAMPING		0x2E
-+#define MAX98925_R02F_SPK_AMP			0x2F
-+#define MAX98925_R030_THRESHOLD			0x30
-+#define MAX98925_R031_ALC_ATTACK		0x31
-+#define MAX98925_R032_ALC_ATTEN_RLS		0x32
-+#define MAX98925_R033_ALC_HOLD_RLS		0x33
-+#define MAX98925_R034_ALC_CONFIGURATION		0x34
-+#define MAX98925_R035_BOOST_CONVERTER		0x35
-+#define MAX98925_R036_BLOCK_ENABLE		0x36
-+#define MAX98925_R037_CONFIGURATION		0x37
-+#define MAX98925_R038_GLOBAL_ENABLE		0x38
-+#define MAX98925_R03A_BOOST_LIMITER		0x3A
-+#define MAX98925_R0FF_VERSION			0xFF
-+
-+#define MAX98925_REG_CNT               (MAX98925_R03A_BOOST_LIMITER+1)
-+
-+/* MAX98925 Register Bit Fields */
-+
-+/* MAX98925_R002_LIVE_STATUS0 */
-+#define M98925_THERMWARN_STATUS_MASK			(1<<3)
-+#define M98925_THERMWARN_STATUS_SHIFT			3
-+#define M98925_THERMWARN_STATUS_WIDTH			1
-+#define M98925_THERMSHDN_STATUS_MASK			(1<<1)
-+#define M98925_THERMSHDN_STATUS_SHIFT			1
-+#define M98925_THERMSHDN_STATUS_WIDTH			1
-+
-+/* MAX98925_R003_LIVE_STATUS1 */
-+#define M98925_SPKCURNT_STATUS_MASK				(1<<5)
-+#define M98925_SPKCURNT_STATUS_SHIFT			5
-+#define M98925_SPKCURNT_STATUS_WIDTH			1
-+#define M98925_WATCHFAIL_STATUS_MASK			(1<<4)
-+#define M98925_WATCHFAIL_STATUS_SHIFT			4
-+#define M98925_WATCHFAIL_STATUS_WIDTH			1
-+#define M98925_ALCINFH_STATUS_MASK				(1<<3)
-+#define M98925_ALCINFH_STATUS_SHIFT				3
-+#define M98925_ALCINFH_STATUS_WIDTH				1
-+#define M98925_ALCACT_STATUS_MASK				(1<<2)
-+#define M98925_ALCACT_STATUS_SHIFT				2
-+#define M98925_ALCACT_STATUS_WIDTH				1
-+#define M98925_ALCMUT_STATUS_MASK				(1<<1)
-+#define M98925_ALCMUT_STATUS_SHIFT				1
-+#define M98925_ALCMUT_STATUS_WIDTH				1
-+#define M98925_ACLP_STATUS_MASK					(1<<0)
-+#define M98925_ACLP_STATUS_SHIFT				0
-+#define M98925_ACLP_STATUS_WIDTH				1
-+
-+/* MAX98925_R004_LIVE_STATUS2 */
-+#define M98925_SLOTOVRN_STATUS_MASK				(1<<6)
-+#define M98925_SLOTOVRN_STATUS_SHIFT			6
-+#define M98925_SLOTOVRN_STATUS_WIDTH			1
-+#define M98925_INVALSLOT_STATUS_MASK			(1<<5)
-+#define M98925_INVALSLOT_STATUS_SHIFT			5
-+#define M98925_INVALSLOT_STATUS_WIDTH			1
-+#define M98925_SLOTCNFLT_STATUS_MASK			(1<<4)
-+#define M98925_SLOTCNFLT_STATUS_SHIFT			4
-+#define M98925_SLOTCNFLT_STATUS_WIDTH			1
-+#define M98925_VBSTOVFL_STATUS_MASK				(1<<3)
-+#define M98925_VBSTOVFL_STATUS_SHIFT			3
-+#define M98925_VBSTOVFL_STATUS_WIDTH			1
-+#define M98925_VBATOVFL_STATUS_MASK				(1<<2)
-+#define M98925_VBATOVFL_STATUS_SHIFT			2
-+#define M98925_VBATOVFL_STATUS_WIDTH			1
-+#define M98925_IMONOVFL_STATUS_MASK				(1<<1)
-+#define M98925_IMONOVFL_STATUS_SHIFT			1
-+#define M98925_IMONOVFL_STATUS_WIDTH			1
-+#define M98925_VMONOVFL_STATUS_MASK				(1<<0)
-+#define M98925_VMONOVFL_STATUS_SHIFT			0
-+#define M98925_VMONOVFL_STATUS_WIDTH			1
-+
-+/* MAX98925_R005_STATE0 */
-+#define M98925_THERMWARN_END_STATE_MASK			(1<<3)
-+#define M98925_THERMWARN_END_STATE_SHIFT		3
-+#define M98925_THERMWARN_END_STATE_WIDTH		1
-+#define M98925_THERMWARN_BGN_STATE_MASK			(1<<2)
-+#define M98925_THERMWARN_BGN_STATE_SHIFT		1
-+#define M98925_THERMWARN_BGN_STATE_WIDTH		1
-+#define M98925_THERMSHDN_END_STATE_MASK			(1<<1)
-+#define M98925_THERMSHDN_END_STATE_SHIFT		1
-+#define M98925_THERMSHDN_END_STATE_WIDTH		1
-+#define M98925_THERMSHDN_BGN_STATE_MASK			(1<<0)
-+#define M98925_THERMSHDN_BGN_STATE_SHIFT		0
-+#define M98925_THERMSHDN_BGN_STATE_WIDTH		1
-+
-+/* MAX98925_R006_STATE1 */
-+#define M98925_SPRCURNT_STATE_MASK				(1<<5)
-+#define M98925_SPRCURNT_STATE_SHIFT				5
-+#define M98925_SPRCURNT_STATE_WIDTH				1
-+#define M98925_WATCHFAIL_STATE_MASK				(1<<4)
-+#define M98925_WATCHFAIL_STATE_SHIFT			4
-+#define M98925_WATCHFAIL_STATE_WIDTH			1
-+#define M98925_ALCINFH_STATE_MASK				(1<<3)
-+#define M98925_ALCINFH_STATE_SHIFT				3
-+#define M98925_ALCINFH_STATE_WIDTH				1
-+#define M98925_ALCACT_STATE_MASK				(1<<2)
-+#define M98925_ALCACT_STATE_SHIFT				2
-+#define M98925_ALCACT_STATE_WIDTH				1
-+#define M98925_ALCMUT_STATE_MASK				(1<<1)
-+#define M98925_ALCMUT_STATE_SHIFT				1
-+#define M98925_ALCMUT_STATE_WIDTH				1
-+#define M98925_ALCP_STATE_MASK					(1<<0)
-+#define M98925_ALCP_STATE_SHIFT					0
-+#define M98925_ALCP_STATE_WIDTH					1
-+
-+/* MAX98925_R007_STATE2 */
-+#define M98925_SLOTOVRN_STATE_MASK				(1<<6)
-+#define M98925_SLOTOVRN_STATE_SHIFT				6
-+#define M98925_SLOTOVRN_STATE_WIDTH				1
-+#define M98925_INVALSLOT_STATE_MASK				(1<<5)
-+#define M98925_INVALSLOT_STATE_SHIFT			5
-+#define M98925_INVALSLOT_STATE_WIDTH			1
-+#define M98925_SLOTCNFLT_STATE_MASK				(1<<4)
-+#define M98925_SLOTCNFLT_STATE_SHIFT			4
-+#define M98925_SLOTCNFLT_STATE_WIDTH			1
-+#define M98925_VBSTOVFL_STATE_MASK				(1<<3)
-+#define M98925_VBSTOVFL_STATE_SHIFT				3
-+#define M98925_VBSTOVFL_STATE_WIDTH				1
-+#define M98925_VBATOVFL_STATE_MASK				(1<<2)
-+#define M98925_VBATOVFL_STATE_SHIFT				2
-+#define M98925_VBATOVFL_STATE_WIDTH				1
-+#define M98925_IMONOVFL_STATE_MASK				(1<<1)
-+#define M98925_IMONOVFL_STATE_SHIFT				1
-+#define M98925_IMONOVFL_STATE_WIDTH				1
-+#define M98925_VMONOVFL_STATE_MASK				(1<<0)
-+#define M98925_VMONOVFL_STATE_SHIFT				0
-+#define M98925_VMONOVFL_STATE_WIDTH				1
-+
-+/* MAX98925_R008_FLAG0 */
-+#define M98925_THERMWARN_END_FLAG_MASK			(1<<3)
-+#define M98925_THERMWARN_END_FLAG_SHIFT			3
-+#define M98925_THERMWARN_END_FLAG_WIDTH			1
-+#define M98925_THERMWARN_BGN_FLAG_MASK			(1<<2)
-+#define M98925_THERMWARN_BGN_FLAG_SHIFT			2
-+#define M98925_THERMWARN_BGN_FLAG_WIDTH			1
-+#define M98925_THERMSHDN_END_FLAG_MASK			(1<<1)
-+#define M98925_THERMSHDN_END_FLAG_SHIFT			1
-+#define M98925_THERMSHDN_END_FLAG_WIDTH			1
-+#define M98925_THERMSHDN_BGN_FLAG_MASK			(1<<0)
-+#define M98925_THERMSHDN_BGN_FLAG_SHIFT			0
-+#define M98925_THERMSHDN_BGN_FLAG_WIDTH			1
-+
-+/* MAX98925_R009_FLAG1 */
-+#define M98925_SPKCURNT_FLAG_MASK				(1<<5)
-+#define M98925_SPKCURNT_FLAG_SHIFT				5
-+#define M98925_SPKCURNT_FLAG_WIDTH				1
-+#define M98925_WATCHFAIL_FLAG_MASK				(1<<4)
-+#define M98925_WATCHFAIL_FLAG_SHIFT				4
-+#define M98925_WATCHFAIL_FLAG_WIDTH				1
-+#define M98925_ALCINFH_FLAG_MASK				(1<<3)
-+#define M98925_ALCINFH_FLAG_SHIFT				3
-+#define M98925_ALCINFH_FLAG_WIDTH				1
-+#define M98925_ALCACT_FLAG_MASK					(1<<2)
-+#define M98925_ALCACT_FLAG_SHIFT				2
-+#define M98925_ALCACT_FLAG_WIDTH				1
-+#define M98925_ALCMUT_FLAG_MASK					(1<<1)
-+#define M98925_ALCMUT_FLAG_SHIFT				1
-+#define M98925_ALCMUT_FLAG_WIDTH				1
-+#define M98925_ALCP_FLAG_MASK					(1<<0)
-+#define M98925_ALCP_FLAG_SHIFT					0
-+#define M98925_ALCP_FLAG_WIDTH					1
-+
-+/* MAX98925_R00A_FLAG2 */
-+#define M98925_SLOTOVRN_FLAG_MASK				(1<<6)
-+#define M98925_SLOTOVRN_FLAG_SHIFT				6
-+#define M98925_SLOTOVRN_FLAG_WIDTH				1
-+#define M98925_INVALSLOT_FLAG_MASK				(1<<5)
-+#define M98925_INVALSLOT_FLAG_SHIFT				5
-+#define M98925_INVALSLOT_FLAG_WIDTH				1
-+#define M98925_SLOTCNFLT_FLAG_MASK				(1<<4)
-+#define M98925_SLOTCNFLT_FLAG_SHIFT				4
-+#define M98925_SLOTCNFLT_FLAG_WIDTH				1
-+#define M98925_VBSTOVFL_FLAG_MASK				(1<<3)
-+#define M98925_VBSTOVFL_FLAG_SHIFT				3
-+#define M98925_VBSTOVFL_FLAG_WIDTH				1
-+#define M98925_VBATOVFL_FLAG_MASK				(1<<2)
-+#define M98925_VBATOVFL_FLAG_SHIFT				2
-+#define M98925_VBATOVFL_FLAG_WIDTH				1
-+#define M98925_IMONOVFL_FLAG_MASK				(1<<1)
-+#define M98925_IMONOVFL_FLAG_SHIFT				1
-+#define M98925_IMONOVFL_FLAG_WIDTH				1
-+#define M98925_VMONOVFL_FLAG_MASK				(1<<0)
-+#define M98925_VMONOVFL_FLAG_SHIFT				0
-+#define M98925_VMONOVFL_FLAG_WIDTH				1
-+
-+/* MAX98925_R00B_IRQ_ENABLE0 */
-+#define M98925_THERMWARN_END_EN_MASK			(1<<3)
-+#define M98925_THERMWARN_END_EN_SHIFT			3
-+#define M98925_THERMWARN_END_EN_WIDTH			1
-+#define M98925_THERMWARN_BGN_EN_MASK			(1<<2)
-+#define M98925_THERMWARN_BGN_EN_SHIFT			2
-+#define M98925_THERMWARN_BGN_EN_WIDTH			1
-+#define M98925_THERMSHDN_END_EN_MASK			(1<<1)
-+#define M98925_THERMSHDN_END_EN_SHIFT			1
-+#define M98925_THERMSHDN_END_EN_WIDTH			1
-+#define M98925_THERMSHDN_BGN_EN_MASK			(1<<0)
-+#define M98925_THERMSHDN_BGN_EN_SHIFT			0
-+#define M98925_THERMSHDN_BGN_EN_WIDTH			1
-+
-+/* MAX98925_R00C_IRQ_ENABLE1 */
-+#define M98925_SPKCURNT_EN_MASK					(1<<5)
-+#define M98925_SPKCURNT_EN_SHIFT				5
-+#define M98925_SPKCURNT_EN_WIDTH				1
-+#define M98925_WATCHFAIL_EN_MASK				(1<<4)
-+#define M98925_WATCHFAIL_EN_SHIFT				4
-+#define M98925_WATCHFAIL_EN_WIDTH				1
-+#define M98925_ALCINFH_EN_MASK					(1<<3)
-+#define M98925_ALCINFH_EN_SHIFT					3
-+#define M98925_ALCINFH_EN_WIDTH					1
-+#define M98925_ALCACT_EN_MASK					(1<<2)
-+#define M98925_ALCACT_EN_SHIFT					2
-+#define M98925_ALCACT_EN_WIDTH					1
-+#define M98925_ALCMUT_EN_MASK					(1<<1)
-+#define M98925_ALCMUT_EN_SHIFT					1
-+#define M98925_ALCMUT_EN_WIDTH					1
-+#define M98925_ALCP_EN_MASK						(1<<0)
-+#define M98925_ALCP_EN_SHIFT					0
-+#define M98925_ALCP_EN_WIDTH					1
-+
-+/* MAX98925_R00D_IRQ_ENABLE2 */
-+#define M98925_SLOTOVRN_EN_MASK					(1<<6)
-+#define M98925_SLOTOVRN_EN_SHIFT				6
-+#define M98925_SLOTOVRN_EN_WIDTH				1
-+#define M98925_INVALSLOT_EN_MASK				(1<<5)
-+#define M98925_INVALSLOT_EN_SHIFT				5
-+#define M98925_INVALSLOT_EN_WIDTH				1
-+#define M98925_SLOTCNFLT_EN_MASK				(1<<4)
-+#define M98925_SLOTCNFLT_EN_SHIFT				4
-+#define M98925_SLOTCNFLT_EN_WIDTH				1
-+#define M98925_VBSTOVFL_EN_MASK					(1<<3)
-+#define M98925_VBSTOVFL_EN_SHIFT				3
-+#define M98925_VBSTOVFL_EN_WIDTH				1
-+#define M98925_VBATOVFL_EN_MASK					(1<<2)
-+#define M98925_VBATOVFL_EN_SHIFT				2
-+#define M98925_VBATOVFL_EN_WIDTH				1
-+#define M98925_IMONOVFL_EN_MASK					(1<<1)
-+#define M98925_IMONOVFL_EN_SHIFT				1
-+#define M98925_IMONOVFL_EN_WIDTH				1
-+#define M98925_VMONOVFL_EN_MASK					(1<<0)
-+#define M98925_VMONOVFL_EN_SHIFT				0
-+#define M98925_VMONOVFL_EN_WIDTH				1
-+
-+/* MAX98925_R00E_IRQ_CLEAR0 */
-+#define M98925_THERMWARN_END_CLR_MASK			(1<<3)
-+#define M98925_THERMWARN_END_CLR_SHIFT			3
-+#define M98925_THERMWARN_END_CLR_WIDTH			1
-+#define M98925_THERMWARN_BGN_CLR_MASK			(1<<2)
-+#define M98925_THERMWARN_BGN_CLR_SHIFT			2
-+#define M98925_THERMWARN_BGN_CLR_WIDTH			1
-+#define M98925_THERMSHDN_END_CLR_MASK			(1<<1)
-+#define M98925_THERMSHDN_END_CLR_SHIFT			1
-+#define M98925_THERMSHDN_END_CLR_WIDTH			1
-+#define M98925_THERMSHDN_BGN_CLR_MASK			(1<<0)
-+#define M98925_THERMSHDN_BGN_CLR_SHIFT			0
-+#define M98925_THERMSHDN_BGN_CLR_WIDTH			1
-+
-+/* MAX98925_R00F_IRQ_CLEAR1 */
-+#define M98925_SPKCURNT_CLR_MASK				(1<<5)
-+#define M98925_SPKCURNT_CLR_SHIFT				5
-+#define M98925_SPKCURNT_CLR_WIDTH				1
-+#define M98925_WATCHFAIL_CLR_MASK				(1<<4)
-+#define M98925_WATCHFAIL_CLR_SHIFT				4
-+#define M98925_WATCHFAIL_CLR_WIDTH				1
-+#define M98925_ALCINFH_CLR_MASK					(1<<3)
-+#define M98925_ALCINFH_CLR_SHIFT				3
-+#define M98925_ALCINFH_CLR_WIDTH				1
-+#define M98925_ALCACT_CLR_MASK					(1<<2)
-+#define M98925_ALCACT_CLR_SHIFT					2
-+#define M98925_ALCACT_CLR_WIDTH					1
-+#define M98925_ALCMUT_CLR_MASK					(1<<1)
-+#define M98925_ALCMUT_CLR_SHIFT					1
-+#define M98925_ALCMUT_CLR_WIDTH					1
-+#define M98925_ALCP_CLR_MASK					(1<<0)
-+#define M98925_ALCP_CLR_SHIFT					0
-+#define M98925_ALCP_CLR_WIDTH					1
-+
-+/* MAX98925_R010_IRQ_CLEAR2 */
-+#define M98925_SLOTOVRN_CLR_MASK				(1<<6)
-+#define M98925_SLOTOVRN_CLR_SHIFT				6
-+#define M98925_SLOTOVRN_CLR_WIDTH				1
-+#define M98925_INVALSLOT_CLR_MASK				(1<<5)
-+#define M98925_INVALSLOT_CLR_SHIFT				5
-+#define M98925_INVALSLOT_CLR_WIDTH				1
-+#define M98925_SLOTCNFLT_CLR_MASK				(1<<4)
-+#define M98925_SLOTCNFLT_CLR_SHIFT				4
-+#define M98925_SLOTCNFLT_CLR_WIDTH				1
-+#define M98925_VBSTOVFL_CLR_MASK				(1<<3)
-+#define M98925_VBSTOVFL_CLR_SHIFT				3
-+#define M98925_VBSTOVFL_CLR_WIDTH				1
-+#define M98925_VBATOVFL_CLR_MASK				(1<<2)
-+#define M98925_VBATOVFL_CLR_SHIFT				2
-+#define M98925_VBATOVFL_CLR_WIDTH				1
-+#define M98925_IMONOVFL_CLR_MASK				(1<<1)
-+#define M98925_IMONOVFL_CLR_SHIFT				1
-+#define M98925_IMONOVFL_CLR_WIDTH				1
-+#define M98925_VMONOVFL_CLR_MASK				(1<<0)
-+#define M98925_VMONOVFL_CLR_SHIFT				0
-+#define M98925_VMONOVFL_CLR_WIDTH				1
-+
-+/* MAX98925_R011_MAP0 */
-+#define M98925_ER_THERMWARN_EN_MASK				(1<<7)
-+#define M98925_ER_THERMWARN_EN_SHIFT			7
-+#define M98925_ER_THERMWARN_EN_WIDTH			1
-+#define M98925_ER_THERMWARN_MAP_MASK			(0x07<<4)
-+#define M98925_ER_THERMWARN_MAP_SHIFT			4
-+#define M98925_ER_THERMWARN_MAP_WIDTH			3
-+
-+/* MAX98925_R012_MAP1 */
-+#define M98925_ER_ALCMUT_EN_MASK				(1<<7)
-+#define M98925_ER_ALCMUT_EN_SHIFT				7
-+#define M98925_ER_ALCMUT_EN_WIDTH				1
-+#define M98925_ER_ALCMUT_MAP_MASK				(0x07<<4)
-+#define M98925_ER_ALCMUT_MAP_SHIFT				4
-+#define M98925_ER_ALCMUT_MAP_WIDTH				3
-+#define M98925_ER_ALCP_EN_MASK					(1<<3)
-+#define M98925_ER_ALCP_EN_SHIFT					3
-+#define M98925_ER_ALCP_EN_WIDTH					1
-+#define M98925_ER_ALCP_MAP_MASK					(0x07<<0)
-+#define M98925_ER_ALCP_MAP_SHIFT				0
-+#define M98925_ER_ALCP_MAP_WIDTH				3
-+
-+/* MAX98925_R013_MAP2 */
-+#define M98925_ER_ALCINFH_EN_MASK				(1<<7)
-+#define M98925_ER_ALCINFH_EN_SHIFT				7
-+#define M98925_ER_ALCINFH_EN_WIDTH				1
-+#define M98925_ER_ALCINFH_MAP_MASK				(0x07<<4)
-+#define M98925_ER_ALCINFH_MAP_SHIFT				4
-+#define M98925_ER_ALCINFH_MAP_WIDTH				3
-+#define M98925_ER_ALCACT_EN_MASK				(1<<3)
-+#define M98925_ER_ALCACT_EN_SHIFT				3
-+#define M98925_ER_ALCACT_EN_WIDTH				1
-+#define M98925_ER_ALCACT_MAP_MASK				(0x07<<0)
-+#define M98925_ER_ALCACT_MAP_SHIFT				0
-+#define M98925_ER_ALCACT_MAP_WIDTH				3
-+
-+/* MAX98925_R014_MAP3 */
-+#define M98925_ER_SPKCURNT_EN_MASK				(1<<7)
-+#define M98925_ER_SPKCURNT_EN_SHIFT				7
-+#define M98925_ER_SPKCURNT_EN_WIDTH				1
-+#define M98925_ER_SPKCURNT_MAP_MASK				(0x07<<4)
-+#define M98925_ER_SPKCURNT_MAP_SHIFT			4
-+#define M98925_ER_SPKCURNT_MAP_WIDTH			3
-+
-+/* MAX98925_R015_MAP4 */
-+/* RESERVED */
-+
-+/* MAX98925_R016_MAP5 */
-+#define M98925_ER_IMONOVFL_EN_MASK				(1<<7)
-+#define M98925_ER_IMONOVFL_EN_SHIFT				7
-+#define M98925_ER_IMONOVFL_EN_WIDTH				1
-+#define M98925_ER_IMONOVFL_MAP_MASK				(0x07<<4)
-+#define M98925_ER_IMONOVFL_MAP_SHIFT			4
-+#define M98925_ER_IMONOVFL_MAP_WIDTH			3
-+#define M98925_ER_VMONOVFL_EN_MASK				(1<<3)
-+#define M98925_ER_VMONOVFL_EN_SHIFT				3
-+#define M98925_ER_VMONOVFL_EN_WIDTH				1
-+#define M98925_ER_VMONOVFL_MAP_MASK				(0x07<<0)
-+#define M98925_ER_VMONOVFL_MAP_SHIFT			0
-+#define M98925_ER_VMONOVFL_MAP_WIDTH			3
-+
-+/* MAX98925_R017_MAP6 */
-+#define M98925_ER_VBSTOVFL_EN_MASK				(1<<7)
-+#define M98925_ER_VBSTOVFL_EN_SHIFT				7
-+#define M98925_ER_VBSTOVFL_EN_WIDTH				1
-+#define M98925_ER_VBSTOVFL_MAP_MASK				(0x07<<4)
-+#define M98925_ER_VBSTOVFL_MAP_SHIFT			4
-+#define M98925_ER_VBSTOVFL_MAP_WIDTH			3
-+#define M98925_ER_VBATOVFL_EN_MASK				(1<<3)
-+#define M98925_ER_VBATOVFL_EN_SHIFT				3
-+#define M98925_ER_VBATOVFL_EN_WIDTH				1
-+#define M98925_ER_VBATOVFL_MAP_MASK				(0x07<<0)
-+#define M98925_ER_VBATOVFL_MAP_SHIFT			0
-+#define M98925_ER_VBATOVFL_MAP_WIDTH			3
-+
-+/* MAX98925_R018_MAP7 */
-+#define M98925_ER_INVALSLOT_EN_MASK				(1<<7)
-+#define M98925_ER_INVALSLOT_EN_SHIFT			7
-+#define M98925_ER_INVALSLOT_EN_WIDTH			1
-+#define M98925_ER_INVALSLOT_MAP_MASK			(0x07<<4)
-+#define M98925_ER_INVALSLOT_MAP_SHIFT			4
-+#define M98925_ER_INVALSLOT_MAP_WIDTH			3
-+#define M98925_ER_SLOTCNFLT_EN_MASK				(1<<3)
-+#define M98925_ER_SLOTCNFLT_EN_SHIFT			3
-+#define M98925_ER_SLOTCNFLT_EN_WIDTH			1
-+#define M98925_ER_SLOTCNFLT_MAP_MASK			(0x07<<0)
-+#define M98925_ER_SLOTCNFLT_MAP_SHIFT			0
-+#define M98925_ER_SLOTCNFLT_MAP_WIDTH			3
-+
-+/* MAX98925_R019_MAP8 */
-+#define M98925_ER_SLOTOVRN_EN_MASK	(1<<3)
-+#define M98925_ER_SLOTOVRN_EN_SHIFT	3
-+#define M98925_ER_SLOTOVRN_EN_WIDTH	1
-+#define M98925_ER_SLOTOVRN_MAP_MASK	(0x07<<0)
-+#define M98925_ER_SLOTOVRN_MAP_SHIFT	0
-+#define M98925_ER_SLOTOVRN_MAP_WIDTH	3
-+
-+/* MAX98925_R01A_DAI_CLK_MODE1 */
-+#define M98925_DAI_CLK_SOURCE_MASK	(1<<6)
-+#define M98925_DAI_CLK_SOURCE_SHIFT	6
-+#define M98925_DAI_CLK_SOURCE_WIDTH	1
-+#define M98925_MDLL_MULT_MASK		(0x0F<<0)
-+#define M98925_MDLL_MULT_SHIFT		0
-+#define M98925_MDLL_MULT_WIDTH		4
-+
-+#define M98925_MDLL_MULT_MCLKx8		6
-+#define M98925_MDLL_MULT_MCLKx16	8
-+
-+/* MAX98925_R01B_DAI_CLK_MODE2 */
-+#define M98925_DAI_SR_MASK			(0x0F<<4)
-+#define M98925_DAI_SR_SHIFT			4
-+#define M98925_DAI_SR_WIDTH			4
-+#define M98925_DAI_MAS_MASK			(1<<3)
-+#define M98925_DAI_MAS_SHIFT			3
-+#define M98925_DAI_MAS_WIDTH			1
-+#define M98925_DAI_BSEL_MASK			(0x07<<0)
-+#define M98925_DAI_BSEL_SHIFT			0
-+#define M98925_DAI_BSEL_WIDTH			3
-+
-+#define M98925_DAI_BSEL_32 (0 << M98925_DAI_BSEL_SHIFT)
-+#define M98925_DAI_BSEL_48 (1 << M98925_DAI_BSEL_SHIFT)
-+#define M98925_DAI_BSEL_64 (2 << M98925_DAI_BSEL_SHIFT)
-+#define M98925_DAI_BSEL_256 (6 << M98925_DAI_BSEL_SHIFT)
-+
-+/* MAX98925_R01C_DAI_CLK_DIV_M_MSBS */
-+#define M98925_DAI_M_MSBS_MASK					(0xFF<<0)
-+#define M98925_DAI_M_MSBS_SHIFT					0
-+#define M98925_DAI_M_MSBS_WIDTH					8
-+
-+/* MAX98925_R01D_DAI_CLK_DIV_M_LSBS */
-+#define M98925_DAI_M_LSBS_MASK					(0xFF<<0)
-+#define M98925_DAI_M_LSBS_SHIFT					0
-+#define M98925_DAI_M_LSBS_WIDTH					8
-+
-+/* MAX98925_R01E_DAI_CLK_DIV_N_MSBS */
-+#define M98925_DAI_N_MSBS_MASK					(0x7F<<0)
-+#define M98925_DAI_N_MSBS_SHIFT					0
-+#define M98925_DAI_N_MSBS_WIDTH					7
-+
-+/* MAX98925_R01F_DAI_CLK_DIV_N_LSBS */
-+#define M98925_DAI_N_LSBS_MASK					(0xFF<<0)
-+#define M98925_DAI_N_LSBS_SHIFT					0
-+#define M98925_DAI_N_LSBS_WIDTH					8
-+
-+/* MAX98925_R020_FORMAT */
-+#define M98925_DAI_CHANSZ_MASK					(0x03<<6)
-+#define M98925_DAI_CHANSZ_SHIFT					6
-+#define M98925_DAI_CHANSZ_WIDTH					2
-+#define M98925_DAI_EXTBCLK_HIZ_MASK				(1<<4)
-+#define M98925_DAI_EXTBCLK_HIZ_SHIFT			4
-+#define M98925_DAI_EXTBCLK_HIZ_WIDTH			1
-+#define M98925_DAI_WCI_MASK						(1<<3)
-+#define M98925_DAI_WCI_SHIFT					3
-+#define M98925_DAI_WCI_WIDTH					1
-+#define M98925_DAI_BCI_MASK						(1<<2)
-+#define M98925_DAI_BCI_SHIFT					2
-+#define M98925_DAI_BCI_WIDTH					1
-+#define M98925_DAI_DLY_MASK						(1<<1)
-+#define M98925_DAI_DLY_SHIFT					1
-+#define M98925_DAI_DLY_WIDTH					1
-+#define M98925_DAI_TDM_MASK						(1<<0)
-+#define M98925_DAI_TDM_SHIFT					0
-+#define M98925_DAI_TDM_WIDTH					1
-+
-+#define M98925_DAI_CHANSZ_16 (1 << M98925_DAI_CHANSZ_SHIFT)
-+#define M98925_DAI_CHANSZ_24 (2 << M98925_DAI_CHANSZ_SHIFT)
-+#define M98925_DAI_CHANSZ_32 (3 << M98925_DAI_CHANSZ_SHIFT)
-+
-+/* MAX98925_R021_TDM_SLOT_SELECT */
-+#define M98925_DAI_DO_EN_MASK					(1<<7)
-+#define M98925_DAI_DO_EN_SHIFT					7
-+#define M98925_DAI_DO_EN_WIDTH					1
-+#define M98925_DAI_DIN_EN_MASK					(1<<6)
-+#define M98925_DAI_DIN_EN_SHIFT					6
-+#define M98925_DAI_DIN_EN_WIDTH					1
-+#define M98925_DAI_INR_SOURCE_MASK				(0x07<<3)
-+#define M98925_DAI_INR_SOURCE_SHIFT				3
-+#define M98925_DAI_INR_SOURCE_WIDTH				3
-+#define M98925_DAI_INL_SOURCE_MASK				(0x07<<0)
-+#define M98925_DAI_INL_SOURCE_SHIFT				0
-+#define M98925_DAI_INL_SOURCE_WIDTH				3
-+
-+/* MAX98925_R022_DOUT_CFG_VMON */
-+#define M98925_DAI_VMON_EN_MASK					(1<<5)
-+#define M98925_DAI_VMON_EN_SHIFT				5
-+#define M98925_DAI_VMON_EN_WIDTH				1
-+#define M98925_DAI_VMON_SLOT_MASK				(0x1F<<0)
-+#define M98925_DAI_VMON_SLOT_SHIFT				0
-+#define M98925_DAI_VMON_SLOT_WIDTH				5
-+
-+#define M98925_DAI_VMON_SLOT_00_01 (0 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_01_02 (1 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_02_03 (2 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_03_04 (3 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_04_05 (4 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_05_06 (5 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_06_07 (6 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_07_08 (7 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_08_09 (8 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_09_0A (9 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_0A_0B (10 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_0B_0C (11 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_0C_0D (12 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_0D_0E (13 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_0E_0F (14 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_0F_10 (15 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_10_11 (16 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_11_12 (17 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_12_13 (18 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_13_14 (19 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_14_15 (20 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_15_16 (21 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_16_17 (22 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_17_18 (23 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_18_19 (24 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_19_1A (25 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_1A_1B (26 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_1B_1C (27 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_1C_1D (28 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_1D_1E (29 << M98925_DAI_VMON_SLOT_SHIFT)
-+#define M98925_DAI_VMON_SLOT_1E_1F (30 << M98925_DAI_VMON_SLOT_SHIFT)
-+
-+/* MAX98925_R023_DOUT_CFG_IMON */
-+#define M98925_DAI_IMON_EN_MASK					(1<<5)
-+#define M98925_DAI_IMON_EN_SHIFT				5
-+#define M98925_DAI_IMON_EN_WIDTH				1
-+#define M98925_DAI_IMON_SLOT_MASK				(0x1F<<0)
-+#define M98925_DAI_IMON_SLOT_SHIFT				0
-+#define M98925_DAI_IMON_SLOT_WIDTH				5
-+
-+#define M98925_DAI_IMON_SLOT_00_01 (0 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_01_02 (1 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_02_03 (2 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_03_04 (3 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_04_05 (4 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_05_06 (5 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_06_07 (6 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_07_08 (7 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_08_09 (8 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_09_0A (9 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_0A_0B (10 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_0B_0C (11 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_0C_0D (12 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_0D_0E (13 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_0E_0F (14 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_0F_10 (15 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_10_11 (16 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_11_12 (17 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_12_13 (18 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_13_14 (19 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_14_15 (20 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_15_16 (21 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_16_17 (22 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_17_18 (23 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_18_19 (24 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_19_1A (25 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_1A_1B (26 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_1B_1C (27 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_1C_1D (28 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_1D_1E (29 << M98925_DAI_IMON_SLOT_SHIFT)
-+#define M98925_DAI_IMON_SLOT_1E_1F (30 << M98925_DAI_IMON_SLOT_SHIFT)
-+
-+/* MAX98925_R024_DOUT_CFG_VBAT */
-+#define M98925_DAI_VBAT_EN_MASK					(1<<5)
-+#define M98925_DAI_VBAT_EN_SHIFT				5
-+#define M98925_DAI_VBAT_EN_WIDTH				1
-+#define M98925_DAI_VBAT_SLOT_MASK				(0x1F<<0)
-+#define M98925_DAI_VBAT_SLOT_SHIFT				0
-+#define M98925_DAI_VBAT_SLOT_WIDTH				5
-+
-+/* MAX98925_R025_DOUT_CFG_VBST */
-+#define M98925_DAI_VBST_EN_MASK					(1<<5)
-+#define M98925_DAI_VBST_EN_SHIFT				5
-+#define M98925_DAI_VBST_EN_WIDTH				1
-+#define M98925_DAI_VBST_SLOT_MASK				(0x1F<<0)
-+#define M98925_DAI_VBST_SLOT_SHIFT				0
-+#define M98925_DAI_VBST_SLOT_WIDTH				5
-+
-+/* MAX98925_R026_DOUT_CFG_FLAG */
-+#define M98925_DAI_FLAG_EN_MASK					(1<<5)
-+#define M98925_DAI_FLAG_EN_SHIFT				5
-+#define M98925_DAI_FLAG_EN_WIDTH				1
-+#define M98925_DAI_FLAG_SLOT_MASK				(0x1F<<0)
-+#define M98925_DAI_FLAG_SLOT_SHIFT				0
-+#define M98925_DAI_FLAG_SLOT_WIDTH				5
-+
-+/* MAX98925_R027_DOUT_HIZ_CFG1 */
-+#define M98925_DAI_SLOT_HIZ_CFG1_MASK			(0xFF<<0)
-+#define M98925_DAI_SLOT_HIZ_CFG1_SHIFT			0
-+#define M98925_DAI_SLOT_HIZ_CFG1_WIDTH			8
-+
-+/* MAX98925_R028_DOUT_HIZ_CFG2 */
-+#define M98925_DAI_SLOT_HIZ_CFG2_MASK			(0xFF<<0)
-+#define M98925_DAI_SLOT_HIZ_CFG2_SHIFT			0
-+#define M98925_DAI_SLOT_HIZ_CFG2_WIDTH			8
-+
-+/* MAX98925_R029_DOUT_HIZ_CFG3 */
-+#define M98925_DAI_SLOT_HIZ_CFG3_MASK			(0xFF<<0)
-+#define M98925_DAI_SLOT_HIZ_CFG3_SHIFT			0
-+#define M98925_DAI_SLOT_HIZ_CFG3_WIDTH			8
-+
-+/* MAX98925_R02A_DOUT_HIZ_CFG4 */
-+#define M98925_DAI_SLOT_HIZ_CFG4_MASK			(0xFF<<0)
-+#define M98925_DAI_SLOT_HIZ_CFG4_SHIFT			0
-+#define M98925_DAI_SLOT_HIZ_CFG4_WIDTH			8
-+
-+/* MAX98925_R02B_DOUT_DRV_STRENGTH */
-+#define M98925_DAI_OUT_DRIVE_MASK				(0x03<<0)
-+#define M98925_DAI_OUT_DRIVE_SHIFT				0
-+#define M98925_DAI_OUT_DRIVE_WIDTH				2
-+
-+/* MAX98925_R02C_FILTERS */
-+#define M98925_ADC_DITHER_EN_MASK				(1<<7)
-+#define M98925_ADC_DITHER_EN_SHIFT				7
-+#define M98925_ADC_DITHER_EN_WIDTH				1
-+#define M98925_IV_DCB_EN_MASK					(1<<6)
-+#define M98925_IV_DCB_EN_SHIFT					6
-+#define M98925_IV_DCB_EN_WIDTH					1
-+#define M98925_DAC_DITHER_EN_MASK				(1<<4)
-+#define M98925_DAC_DITHER_EN_SHIFT				4
-+#define M98925_DAC_DITHER_EN_WIDTH				1
-+#define M98925_DAC_FILTER_MODE_MASK				(1<<3)
-+#define M98925_DAC_FILTER_MODE_SHIFT			3
-+#define M98925_DAC_FILTER_MODE_WIDTH			1
-+#define M98925_DAC_HPF_MASK				(0x07<<0)
-+#define M98925_DAC_HPF_SHIFT					0
-+#define M98925_DAC_HPF_WIDTH					3
-+#define M98925_DAC_HPF_DISABLE		(0 << M98925_DAC_HPF_SHIFT)
-+#define M98925_DAC_HPF_DC_BLOCK		(1 << M98925_DAC_HPF_SHIFT)
-+#define M98925_DAC_HPF_EN_100		(2 << M98925_DAC_HPF_SHIFT)
-+#define M98925_DAC_HPF_EN_200		(3 << M98925_DAC_HPF_SHIFT)
-+#define M98925_DAC_HPF_EN_400		(4 << M98925_DAC_HPF_SHIFT)
-+#define M98925_DAC_HPF_EN_800		(5 << M98925_DAC_HPF_SHIFT)
-+
-+/* MAX98925_R02D_GAIN */
-+#define M98925_DAC_IN_SEL_MASK					(0x03<<5)
-+#define M98925_DAC_IN_SEL_SHIFT					5
-+#define M98925_DAC_IN_SEL_WIDTH					2
-+#define M98925_SPK_GAIN_MASK					(0x1F<<0)
-+#define M98925_SPK_GAIN_SHIFT					0
-+#define M98925_SPK_GAIN_WIDTH					5
-+
-+#define M98925_DAC_IN_SEL_LEFT_DAI (0 << M98925_DAC_IN_SEL_SHIFT)
-+#define M98925_DAC_IN_SEL_RIGHT_DAI (1 << M98925_DAC_IN_SEL_SHIFT)
-+#define M98925_DAC_IN_SEL_SUMMED_DAI (2 << M98925_DAC_IN_SEL_SHIFT)
-+#define M98925_DAC_IN_SEL_DIV2_SUMMED_DAI (3 << M98925_DAC_IN_SEL_SHIFT)
-+
-+/* MAX98925_R02E_GAIN_RAMPING */
-+#define M98925_SPK_RMP_EN_MASK		(1<<1)
-+#define M98925_SPK_RMP_EN_SHIFT		1
-+#define M98925_SPK_RMP_EN_WIDTH		1
-+#define M98925_SPK_ZCD_EN_MASK		(1<<0)
-+#define M98925_SPK_ZCD_EN_SHIFT		0
-+#define M98925_SPK_ZCD_EN_WIDTH		1
-+
-+/* MAX98925_R02F_SPK_AMP */
-+#define M98925_SPK_MODE_MASK		(1<<0)
-+#define M98925_SPK_MODE_SHIFT		0
-+#define M98925_SPK_MODE_WIDTH		1
-+
-+/* MAX98925_R030_THRESHOLD */
-+#define M98925_ALC_EN_MASK			(1<<5)
-+#define M98925_ALC_EN_SHIFT			5
-+#define M98925_ALC_EN_WIDTH			1
-+#define M98925_ALC_TH_MASK			(0x1F<<0)
-+#define M98925_ALC_TH_SHIFT			0
-+#define M98925_ALC_TH_WIDTH			5
-+
-+/* MAX98925_R031_ALC_ATTACK */
-+#define M98925_ALC_ATK_STEP_MASK	(0x0F<<4)
-+#define M98925_ALC_ATK_STEP_SHIFT	4
-+#define M98925_ALC_ATK_STEP_WIDTH	4
-+#define M98925_ALC_ATK_RATE_MASK	(0x7<<0)
-+#define M98925_ALC_ATK_RATE_SHIFT	0
-+#define M98925_ALC_ATK_RATE_WIDTH	3
-+
-+/* MAX98925_R032_ALC_ATTEN_RLS */
-+#define M98925_ALC_MAX_ATTEN_MASK	(0x0F<<4)
-+#define M98925_ALC_MAX_ATTEN_SHIFT	4
-+#define M98925_ALC_MAX_ATTEN_WIDTH	4
-+#define M98925_ALC_RLS_RATE_MASK	(0x7<<0)
-+#define M98925_ALC_RLS_RATE_SHIFT	0
-+#define M98925_ALC_RLS_RATE_WIDTH	3
-+
-+/* MAX98925_R033_ALC_HOLD_RLS */
-+#define M98925_ALC_RLS_TGR_MASK		(1<<0)
-+#define M98925_ALC_RLS_TGR_SHIFT	0
-+#define M98925_ALC_RLS_TGR_WIDTH	1
-+
-+/* MAX98925_R034_ALC_CONFIGURATION */
-+#define M98925_ALC_MUTE_EN_MASK		(1<<7)
-+#define M98925_ALC_MUTE_EN_SHIFT	7
-+#define M98925_ALC_MUTE_EN_WIDTH	1
-+#define M98925_ALC_MUTE_DLY_MASK	(0x07<<4)
-+#define M98925_ALC_MUTE_DLY_SHIFT	4
-+#define M98925_ALC_MUTE_DLY_WIDTH	3
-+#define M98925_ALC_RLS_DBT_MASK		(0x07<<0)
-+#define M98925_ALC_RLS_DBT_SHIFT	0
-+#define M98925_ALC_RLS_DBT_WIDTH	3
-+
-+/* MAX98925_R035_BOOST_CONVERTER */
-+#define M98925_BST_SYNC_MASK		(1<<7)
-+#define M98925_BST_SYNC_SHIFT		7
-+#define M98925_BST_SYNC_WIDTH		1
-+#define M98925_BST_PHASE_MASK		(0x03<<4)
-+#define M98925_BST_PHASE_SHIFT		4
-+#define M98925_BST_PHASE_WIDTH		2
-+#define M98925_BST_SKIP_MODE_MASK	(0x03<<0)
-+#define M98925_BST_SKIP_MODE_SHIFT	0
-+#define M98925_BST_SKIP_MODE_WIDTH	2
-+
-+/* MAX98925_R036_BLOCK_ENABLE */
-+#define M98925_BST_EN_MASK			(1<<7)
-+#define M98925_BST_EN_SHIFT			7
-+#define M98925_BST_EN_WIDTH			1
-+#define M98925_WATCH_EN_MASK		(1<<6)
-+#define M98925_WATCH_EN_SHIFT		6
-+#define M98925_WATCH_EN_WIDTH		1
-+#define M98925_CLKMON_EN_MASK		(1<<5)
-+#define M98925_CLKMON_EN_SHIFT		5
-+#define M98925_CLKMON_EN_WIDTH		1
-+#define M98925_SPK_EN_MASK			(1<<4)
-+#define M98925_SPK_EN_SHIFT			4
-+#define M98925_SPK_EN_WIDTH			1
-+#define M98925_ADC_VBST_EN_MASK		(1<<3)
-+#define M98925_ADC_VBST_EN_SHIFT	3
-+#define M98925_ADC_VBST_EN_WIDTH	1
-+#define M98925_ADC_VBAT_EN_MASK		(1<<2)
-+#define M98925_ADC_VBAT_EN_SHIFT	2
-+#define M98925_ADC_VBAT_EN_WIDTH	1
-+#define M98925_ADC_IMON_EN_MASK		(1<<1)
-+#define M98925_ADC_IMON_EN_SHIFT	1
-+#define M98925_ADC_IMON_EN_WIDTH	1
-+#define M98925_ADC_VMON_EN_MASK		(1<<0)
-+#define M98925_ADC_VMON_EN_SHIFT	0
-+#define M98925_ADC_VMON_EN_WIDTH	1
-+
-+/* MAX98925_R037_CONFIGURATION */
-+#define M98925_BST_VOUT_MASK		(0x0F<<4)
-+#define M98925_BST_VOUT_SHIFT		4
-+#define M98925_BST_VOUT_WIDTH		4
-+#define M98925_THERMWARN_LEVEL_MASK	(0x03<<2)
-+#define M98925_THERMWARN_LEVEL_SHIFT			2
-+#define M98925_THERMWARN_LEVEL_WIDTH			2
-+#define M98925_WATCH_TIME_MASK			(0x03<<0)
-+#define M98925_WATCH_TIME_SHIFT			0
-+#define M98925_WATCH_TIME_WIDTH			2
-+
-+/* MAX98925_R038_GLOBAL_ENABLE */
-+#define M98925_EN_MASK			(1<<7)
-+#define M98925_EN_SHIFT			7
-+#define M98925_EN_WIDTH			1
-+
-+/* MAX98925_R03A_BOOST_LIMITER */
-+#define M98925_BST_ILIM_MASK	(0x1F<<3)
-+#define M98925_BST_ILIM_SHIFT	3
-+#define M98925_BST_ILIM_WIDTH	5
-+
-+/* MAX98925_R0FF_VERSION */
-+#define M98925_REV_ID_MASK	(0xFF<<0)
-+#define M98925_REV_ID_SHIFT	0
-+#define M98925_REV_ID_WIDTH	8
-+
-+struct max98925_cdata {
-+	unsigned int rate;
-+	unsigned int fmt;
-+};
-+
-+struct max98925_priv {
-+	struct regmap *regmap;
-+	struct snd_soc_codec *codec;
-+	struct max98925_pdata *pdata;
-+	unsigned int sysclk;
-+	unsigned int v_slot;
-+	unsigned int i_slot;
-+	unsigned int spk_gain;
-+	unsigned int ch_size;
-+};
-+#endif
--- 
-1.9.3
+
+Hi,
+
+
+the built-in speakers of my HP ProBook 455 G2 are not working by
+default. I'm attaching the output of alsa-info.sh.
+
+In pavucontrol, the speakers appear as "Speakers (unavailable)", and in
+the GNOME sound settings they don't appear at all.
+
+
+After some playing around with HDAAnalyzer, I discovered that enabling
+the 'OUT' widget control of pin 0x14 makes the speakers emit sound, see
+the diff below.
+
+
+Let me know if you need any more information, and I'll happily test any
+patches to fix this problem.
+
+
+Diff for codec 1/0 (0x10ec0282):
+---
++++
+@@ -120,39 +120,40 @@
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=3DD0, actual=3DD0
+   Connection: 1
+      0x12
+ Node 0x12 [Pin Complex] wcaps 0x40040b: Stereo Amp-In
+   Control: name=3D"Internal Mic Boost Volume", index=3D0, device=3D0
+     ControlAmp: chs=3D3, dir=3D1, idx=3D0, ofs=3D0
+-  Control: name=3D"Internal Mic Phantom Jack", index=3D0, device=3D0
++  Control: iface=3D"card", name=3D"Internal Mic Phantom Jack", index=3D0=
+,
+device=3D0
+   Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x2f, mute=3D0
+   Amp-In vals: [0x00 0x00]
+   Pincap 0x00000020: IN
+   Pin Default 0x90a60140: [Fixed] Mic at Int N/A
+     Conn =3D Digital, Color =3D Unknown
+     DefAssociation =3D 0x4, Sequence =3D 0x0
+     Misc =3D NO_PRESENCE
+   Pin-ctls: 0x20: IN
+   Power: setting=3DD0, actual=3DD0
+ Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+ Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Control: name=3D"Speaker Playback Switch", index=3D0, device=3D0
+     ControlAmp: chs=3D3, dir=3D1, idx=3D0, ofs=3D0
+-  Control: name=3D"Speaker Phantom Jack", index=3D0, device=3D0
++  Control: iface=3D"card", name=3D"Speaker Phantom Jack", index=3D0, dev=
+ice=3D0
+   Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+   Amp-Out vals: [0x00 0x00]
+   Pincap 0x00010014: OUT EAPD Detect
+   EAPD 0x2: EAPD
+   Pin Default 0x90170110: [Fixed] Speaker at Int N/A
+     Conn =3D Analog, Color =3D Unknown
+     DefAssociation =3D 0x1, Sequence =3D 0x0
+     Misc =3D NO_PRESENCE
++  Pin-ctls: 0x40: OUT
+   Unsolicited: tag=3D0x00, enabled=3D0
+   Power: setting=3DD0, actual=3DD0
+   Connection: 1
+      0x0c
+ Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
+ Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
+ Node 0x17 [Pin Complex] wcaps 0x40050c: Mono Amp-Out
+   Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D
+
+
+--=20
+Earthling Michel D=C3=A4nzer               |               http://www.amd=
+.com
+Libre software enthusiast             |             Mesa and X developer
+
+
+--------------060202080601090104060205
+Content-Type: text/plain; charset=UTF-8;
+ name="alsa-info.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="alsa-info.txt"
+
+dXBsb2FkPXRydWUmc2NyaXB0PXRydWUmY2FyZGluZm89CiEhIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMKISFBTFNBIEluZm9ybWF0aW9uIFNjcmlwdCB2IDAuNC42NAohISMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgohIVNjcmlwdCByYW4gb246IFdlZCBG
+ZWIgMTggMDc6NDI6NTggVVRDIDIwMTUKCgohIUxpbnV4IERpc3RyaWJ1dGlvbgohIS0tLS0t
+LS0tLS0tLS0tLS0tLQoKRGViaWFuIEdOVS9MaW51eCA4IFxuIFxsIFBSRVRUWV9OQU1FPSJE
+ZWJpYW4gR05VL0xpbnV4IDggKGplc3NpZSkiIE5BTUU9IkRlYmlhbiBHTlUvTGludXgiIElE
+PWRlYmlhbiBIT01FX1VSTD0iaHR0cDovL3d3dy5kZWJpYW4ub3JnLyIgU1VQUE9SVF9VUkw9
+Imh0dHA6Ly93d3cuZGViaWFuLm9yZy9zdXBwb3J0LyIgQlVHX1JFUE9SVF9VUkw9Imh0dHBz
+Oi8vYnVncy5kZWJpYW4ub3JnLyIKCgohIURNSSBJbmZvcm1hdGlvbgohIS0tLS0tLS0tLS0t
+LS0tLQoKTWFudWZhY3R1cmVyOiAgICAgIEhld2xldHQtUGFja2FyZApQcm9kdWN0IE5hbWU6
+ICAgICAgSFAgUHJvQm9vayA0NTUgRzIKUHJvZHVjdCBWZXJzaW9uOiAgIEEzMDA4REQxMEIw
+MwpGaXJtd2FyZSBWZXJzaW9uOiAgTTc1IFZlci4gMDEuMDkKCgohIUtlcm5lbCBJbmZvcm1h
+dGlvbgohIS0tLS0tLS0tLS0tLS0tLS0tLQoKS2VybmVsIHJlbGVhc2U6ICAgIDMuMTkuMCsK
+T3BlcmF0aW5nIFN5c3RlbTogIEdOVS9MaW51eApBcmNoaXRlY3R1cmU6ICAgICAgeDg2XzY0
+ClByb2Nlc3NvcjogICAgICAgICB1bmtub3duClNNUCBFbmFibGVkOiAgICAgICBZZXMKCgoh
+IUFMU0EgVmVyc2lvbgohIS0tLS0tLS0tLS0tLQoKRHJpdmVyIHZlcnNpb246ICAgICBrMy4x
+OS4wKwpMaWJyYXJ5IHZlcnNpb246ICAgIDEuMC4yOApVdGlsaXRpZXMgdmVyc2lvbjogIDEu
+MC4yOAoKCiEhTG9hZGVkIEFMU0EgbW9kdWxlcwohIS0tLS0tLS0tLS0tLS0tLS0tLS0KCnNu
+ZF9oZGFfaW50ZWwKc25kX2hkYV9pbnRlbAoKCiEhU291bmQgU2VydmVycyBvbiB0aGlzIHN5
+c3RlbQohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KClB1bHNlYXVkaW86CiAgICAg
+IEluc3RhbGxlZCAtIFllcyAoL3Vzci9iaW4vcHVsc2VhdWRpbykKICAgICAgUnVubmluZyAt
+IFllcwoKSmFjazoKICAgICAgSW5zdGFsbGVkIC0gWWVzICgvdXNyL2Jpbi9qYWNrZCkKICAg
+ICAgUnVubmluZyAtIE5vCgoKISFTb3VuZGNhcmRzIHJlY29nbmlzZWQgYnkgQUxTQQohIS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgogMCBbR2VuZXJpYyAgICAgICAgXTogSERB
+LUludGVsIC0gSEQtQXVkaW8gR2VuZXJpYwogICAgICAgICAgICAgICAgICAgICAgSEQtQXVk
+aW8gR2VuZXJpYyBhdCAweGQ2ODQwMDAwIGlycSA0OQogMSBbR2VuZXJpY18xICAgICAgXTog
+SERBLUludGVsIC0gSEQtQXVkaW8gR2VuZXJpYwogICAgICAgICAgICAgICAgICAgICAgSEQt
+QXVkaW8gR2VuZXJpYyBhdCAweGQ2ODQ0MDAwIGlycSAxNgoKCiEhUENJIFNvdW5kY2FyZHMg
+aW5zdGFsbGVkIGluIHRoZSBzeXN0ZW0KISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQoKMDA6MDEuMSBBdWRpbyBkZXZpY2U6IEFkdmFuY2VkIE1pY3JvIERldmlj
+ZXMsIEluYy4gW0FNRC9BVEldIEthdmVyaSBIRE1JL0RQIEF1ZGlvIENvbnRyb2xsZXIKMDA6
+MTQuMiBBdWRpbyBkZXZpY2U6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gW0FNRF0g
+RkNIIEF6YWxpYSBDb250cm9sbGVyIChyZXYgMDEpCgoKISFBZHZhbmNlZCBpbmZvcm1hdGlv
+biAtIFBDSSBWZW5kb3IvRGV2aWNlL1N1YnN5c3RlbSBJRCdzCiEhLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKMDA6MDEuMSAwNDAz
+OiAxMDAyOjEzMDgKCVN1YnN5c3RlbTogMTAzYzoyMjM1Ci0tCjAwOjE0LjIgMDQwMzogMTAy
+Mjo3ODBkIChyZXYgMDEpCglTdWJzeXN0ZW06IDEwM2M6MjIzNQoKCiEhTW9kcHJvYmUgb3B0
+aW9ucyAoU291bmQgcmVsYXRlZCkKISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQoKc25kX3Bjc3A6IGluZGV4PS0yCnNuZF91c2JfYXVkaW86IGluZGV4PS0yCnNuZF9hdGlp
+eHBfbW9kZW06IGluZGV4PS0yCnNuZF9pbnRlbDh4MG06IGluZGV4PS0yCnNuZF92aWE4Mnh4
+X21vZGVtOiBpbmRleD0tMgoKCiEhTG9hZGVkIHNvdW5kIG1vZHVsZSBvcHRpb25zCiEhLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgohIU1vZHVsZTogc25kX2hkYV9pbnRlbAoJYWxp
+Z25fYnVmZmVyX3NpemUgOiAtMQoJYmRsX3Bvc19hZGogOiAzMiwzMiwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMQoJYmVlcF9tb2RlIDogWSxZLFksWSxZLFksWSxZLFks
+WSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZCgllbmFibGUg
+OiBZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFks
+WSxZLFksWSxZLFkKCWVuYWJsZV9tc2kgOiAtMQoJaWQgOiAobnVsbCksKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpCglpbmRleCA6IC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCglqYWNrcG9sbF9tcyA6
+IDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCww
+LDAsMCwwLDAsMAoJbW9kZWwgOiAobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpCglwYXRjaCA6IChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCkKCXBvc2l0aW9u
+X2ZpeCA6IC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCglwb3dl
+cl9zYXZlIDogMAoJcG93ZXJfc2F2ZV9jb250cm9sbGVyIDogWQoJcHJvYmVfbWFzayA6IC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCglwcm9iZV9vbmx5IDog
+MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAs
+MCwwLDAsMCwwCglzaW5nbGVfY21kIDogTgoJc25vb3AgOiAtMQoKISFNb2R1bGU6IHNuZF9o
+ZGFfaW50ZWwKCWFsaWduX2J1ZmZlcl9zaXplIDogLTEKCWJkbF9wb3NfYWRqIDogMzIsMzIs
+LTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEs
+LTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEKCWJlZXBfbW9kZSA6IFksWSxZ
+LFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZ
+LFksWQoJZW5hYmxlIDogWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZ
+LFksWSxZLFksWSxZLFksWSxZLFksWSxZCgllbmFibGVfbXNpIDogLTEKCWlkIDogKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
+KQoJaW5kZXggOiAtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMQoJ
+amFja3BvbGxfbXMgOiAwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAs
+MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAKCW1vZGVsIDogKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKQoJcGF0Y2ggOiAobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpCglwb3NpdGlvbl9maXggOiAtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMQoJcG93ZXJfc2F2ZSA6IDAKCXBvd2VyX3NhdmVfY29udHJvbGxlciA6IFkKCXBy
+b2JlX21hc2sgOiAtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMQoJ
+cHJvYmVfb25seSA6IDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCww
+LDAsMCwwLDAsMCwwLDAsMCwwLDAsMAoJc2luZ2xlX2NtZCA6IE4KCXNub29wIDogLTEKCgoh
+IUhEQS1JbnRlbCBDb2RlYyBpbmZvcm1hdGlvbgohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQotLXN0YXJ0Y29sbGFwc2UtLQoKQ29kZWM6IEFUSSBSNnh4IEhETUkKQWRkcmVzczog
+MApBRkcgRnVuY3Rpb24gSWQ6IDB4MSAodW5zb2wgMCkKVmVuZG9yIElkOiAweDEwMDJhYTAx
+ClN1YnN5c3RlbSBJZDogMHgwMGFhMDEwMApSZXZpc2lvbiBJZDogMHgxMDA1MDAKTm8gTW9k
+ZW0gRnVuY3Rpb24gR3JvdXAgZm91bmQKRGVmYXVsdCBQQ006CiAgICByYXRlcyBbMHg3MF06
+IDMyMDAwIDQ0MTAwIDQ4MDAwCiAgICBiaXRzIFsweDJdOiAxNgogICAgZm9ybWF0cyBbMHgx
+XTogUENNCkRlZmF1bHQgQW1wLUluIGNhcHM6IE4vQQpEZWZhdWx0IEFtcC1PdXQgY2Fwczog
+Ti9BClN0YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAgUG93ZXIgc3RhdGVzOiAgRDAgRDMgQ0xL
+U1RPUCBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMCwgQ2xvY2stc3RvcC1P
+SwpHUElPOiBpbz0wLCBvPTAsIGk9MCwgdW5zb2xpY2l0ZWQ9MCwgd2FrZT0wCk5vZGUgMHgw
+MiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDIyMTogU3RlcmVvIERpZ2l0YWwgU3RyaXBlCiAg
+Q29udmVydGVyOiBzdHJlYW09MSwgY2hhbm5lbD0wCiAgRGlnaXRhbDogRW5hYmxlZAogIERp
+Z2l0YWwgY2F0ZWdvcnk6IDB4MAogIElFQyBDb2RpbmcgVHlwZTogMHgwCk5vZGUgMHgwMyBb
+UGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMzgxOiBTdGVyZW8gRGlnaXRhbAogIENvbnRyb2w6
+IG5hbWU9IkhETUkvRFAscGNtPTMgSmFjayIsIGluZGV4PTAsIGRldmljZT0wCiAgQ29udHJv
+bDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIENvbiBNYXNrIiwgaW5kZXg9MCwgZGV2aWNlPTAK
+ICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgUHJvIE1hc2siLCBpbmRleD0wLCBk
+ZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBEZWZhdWx0IiwgaW5k
+ZXg9MCwgZGV2aWNlPTAKICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgU3dpdGNo
+IiwgaW5kZXg9MCwgZGV2aWNlPTAKICBDb250cm9sOiBuYW1lPSJFTEQiLCBpbmRleD0wLCBk
+ZXZpY2U9MwogIFBpbmNhcCAweDAwMDAwMDk0OiBPVVQgRGV0ZWN0IEhETUkKICBQaW4gRGVm
+YXVsdCAweDE4NTYwMGYwOiBbSmFja10gRGlnaXRhbCBPdXQgYXQgSW50IEhETUkKICAgIENv
+bm4gPSBEaWdpdGFsLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhm
+LCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBVbnNvbGljaXRlZDog
+dGFnPTAxLCBlbmFibGVkPTEKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwMgpOb2RlIDB4MDQg
+W0F1ZGlvIE91dHB1dF0gd2NhcHMgMHgyMjE6IFN0ZXJlbyBEaWdpdGFsIFN0cmlwZQogIENv
+bnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIERpZ2l0YWw6CiAgRGlnaXRhbCBjYXRl
+Z29yeTogMHgwCiAgSUVDIENvZGluZyBUeXBlOiAweDAKTm9kZSAweDA1IFtQaW4gQ29tcGxl
+eF0gd2NhcHMgMHg0MDAzODE6IFN0ZXJlbyBEaWdpdGFsCiAgUGluY2FwIDB4MDAwMDAwOTQ6
+IE9VVCBEZXRlY3QgSERNSQogIFBpbiBEZWZhdWx0IDB4NTg1NjAwZjA6IFtOL0FdIERpZ2l0
+YWwgT3V0IGF0IEludCBIRE1JCiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtub3du
+CiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3Rsczog
+MHg0MDogT1VUCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCiAgQ29ubmVjdGlv
+bjogMQogICAgIDB4MDQKTm9kZSAweDA2IFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4MjIxOiBT
+dGVyZW8gRGlnaXRhbCBTdHJpcGUKICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAK
+ICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIElFQyBDb2RpbmcgVHlwZTog
+MHgwCk5vZGUgMHgwNyBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMzgxOiBTdGVyZW8gRGln
+aXRhbAogIFBpbmNhcCAweDAwMDAwMDk0OiBPVVQgRGV0ZWN0IEhETUkKICBQaW4gRGVmYXVs
+dCAweDU4NTYwMGYwOiBbTi9BXSBEaWdpdGFsIE91dCBhdCBJbnQgSERNSQogICAgQ29ubiA9
+IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNl
+cXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFVuc29saWNpdGVkOiB0YWc9
+MDAsIGVuYWJsZWQ9MAogIENvbm5lY3Rpb246IDEKICAgICAweDA2Ck5vZGUgMHgwOCBbQXVk
+aW8gT3V0cHV0XSB3Y2FwcyAweDIyMTogU3RlcmVvIERpZ2l0YWwgU3RyaXBlCiAgQ29udmVy
+dGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRhbDoKICBEaWdpdGFsIGNhdGVnb3J5
+OiAweDAKICBJRUMgQ29kaW5nIFR5cGU6IDB4MApOb2RlIDB4MDkgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDM4MTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDA5NDogT1VU
+IERldGVjdCBIRE1JCiAgUGluIERlZmF1bHQgMHg1ODU2MDBmMDogW04vQV0gRGlnaXRhbCBP
+dXQgYXQgSW50IEhETUkKICAgIENvbm4gPSBEaWdpdGFsLCBDb2xvciA9IFVua25vd24KICAg
+IERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDQw
+OiBPVVQKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBDb25uZWN0aW9uOiAx
+CiAgICAgMHgwOApOb2RlIDB4MGEgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHgyMjE6IFN0ZXJl
+byBEaWdpdGFsIFN0cmlwZQogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIERp
+Z2l0YWw6CiAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCiAgSUVDIENvZGluZyBUeXBlOiAweDAK
+Tm9kZSAweDBiIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAzODE6IFN0ZXJlbyBEaWdpdGFs
+CiAgUGluY2FwIDB4MDAwMDAwOTQ6IE9VVCBEZXRlY3QgSERNSQogIFBpbiBEZWZhdWx0IDB4
+NTg1NjAwZjA6IFtOL0FdIERpZ2l0YWwgT3V0IGF0IEludCBIRE1JCiAgICBDb25uID0gRGln
+aXRhbCwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVu
+Y2UgPSAweDAKICBQaW4tY3RsczogMHg0MDogT1VUCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwg
+ZW5hYmxlZD0wCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MGEKTm9kZSAweDBjIFtBdWRpbyBP
+dXRwdXRdIHdjYXBzIDB4MjIxOiBTdGVyZW8gRGlnaXRhbCBTdHJpcGUKICBDb252ZXJ0ZXI6
+IHN0cmVhbT0wLCBjaGFubmVsPTAKICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4
+MAogIElFQyBDb2RpbmcgVHlwZTogMHgwCk5vZGUgMHgwZCBbUGluIENvbXBsZXhdIHdjYXBz
+IDB4NDAwMzgxOiBTdGVyZW8gRGlnaXRhbAogIFBpbmNhcCAweDAwMDAwMDk0OiBPVVQgRGV0
+ZWN0IEhETUkKICBQaW4gRGVmYXVsdCAweDU4NTYwMGYwOiBbTi9BXSBEaWdpdGFsIE91dCBh
+dCBJbnQgSERNSQogICAgQ29ubiA9IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgogICAgRGVm
+QXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4NDA6IE9V
+VAogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIENvbm5lY3Rpb246IDEKICAg
+ICAweDBjCk5vZGUgMHgwZSBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDIyMTogU3RlcmVvIERp
+Z2l0YWwgU3RyaXBlCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRh
+bDoKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKICBJRUMgQ29kaW5nIFR5cGU6IDB4MApOb2Rl
+IDB4MGYgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDM4MTogU3RlcmVvIERpZ2l0YWwKICBQ
+aW5jYXAgMHgwMDAwMDA5NDogT1VUIERldGVjdCBIRE1JCiAgUGluIERlZmF1bHQgMHg1ODU2
+MDBmMDogW04vQV0gRGlnaXRhbCBPdXQgYXQgSW50IEhETUkKICAgIENvbm4gPSBEaWdpdGFs
+LCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9
+IDB4MAogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFi
+bGVkPTAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwZQpDb2RlYzogUmVhbHRlayBBTEMzMjI3
+CkFkZHJlc3M6IDAKQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29sIDEpClZlbmRvciBJZDog
+MHgxMGVjMDI4MgpTdWJzeXN0ZW0gSWQ6IDB4MTAzYzIyMzUKUmV2aXNpb24gSWQ6IDB4MTAw
+MDAzCk5vIE1vZGVtIEZ1bmN0aW9uIEdyb3VwIGZvdW5kCkRlZmF1bHQgUENNOgogICAgcmF0
+ZXMgWzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAx
+NiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCkRlZmF1bHQgQW1wLUluIGNhcHM6IE4v
+QQpEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BClN0YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAg
+UG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgQ0xLU1RPUCBFUFNTCiAgUG93ZXI6IHNldHRp
+bmc9RDAsIGFjdHVhbD1EMApHUElPOiBpbz0zLCBvPTAsIGk9MCwgdW5zb2xpY2l0ZWQ9MSwg
+d2FrZT0wCiAgSU9bMF06IGVuYWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBzdGlja3k9MCwgZGF0
+YT0wLCB1bnNvbD0wCiAgSU9bMV06IGVuYWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBzdGlja3k9
+MCwgZGF0YT0wLCB1bnNvbD0wCiAgSU9bMl06IGVuYWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBz
+dGlja3k9MCwgZGF0YT0wLCB1bnNvbD0wCk5vZGUgMHgwMiBbQXVkaW8gT3V0cHV0XSB3Y2Fw
+cyAweDQxZDogU3RlcmVvIEFtcC1PdXQKICBDb250cm9sOiBuYW1lPSJTcGVha2VyIFBsYXli
+YWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9Mywg
+ZGlyPU91dCwgaWR4PTAsIG9mcz0wCiAgQW1wLU91dCBjYXBzOiBvZnM9MHg1NywgbnN0ZXBz
+PTB4NTcsIHN0ZXBzaXplPTB4MDIsIG11dGU9MAogIEFtcC1PdXQgdmFsczogIFsweDRhIDB4
+NGFdCiAgQ29udmVydGVyOiBzdHJlYW09NSwgY2hhbm5lbD0wCiAgUENNOgogICAgcmF0ZXMg
+WzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAy
+MCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIg
+RDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDAzIFtBdWRp
+byBPdXRwdXRdIHdjYXBzIDB4NDFkOiBTdGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9
+IkhlYWRwaG9uZSBQbGF5YmFjayBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29u
+dHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAogIERldmljZTogbmFtZT0i
+QUxDMzIyNyBBbmFsb2ciLCB0eXBlPSJBdWRpbyIsIGRldmljZT0wCiAgQW1wLU91dCBjYXBz
+OiBvZnM9MHg1NywgbnN0ZXBzPTB4NTcsIHN0ZXBzaXplPTB4MDIsIG11dGU9MAogIEFtcC1P
+dXQgdmFsczogIFsweDAwIDB4MDBdCiAgQ29udmVydGVyOiBzdHJlYW09NSwgY2hhbm5lbD0w
+CiAgUENNOgogICAgcmF0ZXMgWzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCiAg
+ICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIg
+c3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9
+RDAKTm9kZSAweDA0IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBN
+b25vCk5vZGUgMHgwNSBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDog
+TW9ubwpOb2RlIDB4MDYgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg2MTE6IFN0ZXJlbyBEaWdp
+dGFsCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRhbDoKICBEaWdp
+dGFsIGNhdGVnb3J5OiAweDAKICBJRUMgQ29kaW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJh
+dGVzIFsweDVlMF06IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBb
+MHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQogIFBvd2VyIHN0YXRlczog
+IEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUg
+MHgwNyBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2Rl
+IDB4MDggW0F1ZGlvIElucHV0XSB3Y2FwcyAweDEwMDUxYjogU3RlcmVvIEFtcC1JbgogIENv
+bnRyb2w6IG5hbWU9IkNhcHR1cmUgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENv
+bnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9
+IkNhcHR1cmUgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNo
+cz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAogIERldmljZTogbmFtZT0iQUxDMzIyNyBBbmFs
+b2ciLCB0eXBlPSJBdWRpbyIsIGRldmljZT0wCiAgQW1wLUluIGNhcHM6IG9mcz0weDE3LCBu
+c3RlcHM9MHgzZiwgc3RlcHNpemU9MHgwMiwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHhi
+ZiAweGJmXQogIENvbnZlcnRlcjogc3RyZWFtPTEsIGNoYW5uZWw9MAogIFNESS1TZWxlY3Q6
+IDAKICBQQ006CiAgICByYXRlcyBbMHg1NjBdOiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIwMDAK
+ICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dl
+ciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
+bD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDIzCk5vZGUgMHgwOSBbQXVkaW8gSW5wdXRd
+IHdjYXBzIDB4MTAwNTFiOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9mcz0weDE3
+LCBuc3RlcHM9MHgzZiwgc3RlcHNpemU9MHgwMiwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBb
+MHg5NyAweDk3XQogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFNESS1TZWxl
+Y3Q6IDAKICBQQ006CiAgICByYXRlcyBbMHg1NjBdOiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIw
+MDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQ
+b3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFj
+dHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDIyCk5vZGUgMHgwYSBbVmVuZG9yIERl
+ZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MGIgW0F1ZGlvIE1p
+eGVyXSB3Y2FwcyAweDIwMDEwYjogU3RlcmVvIEFtcC1JbgogIENvbnRyb2w6IG5hbWU9Ik1p
+YyBQbGF5YmFjayBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDog
+Y2hzPTMsIGRpcj1JbiwgaWR4PTEsIG9mcz0wCiAgQ29udHJvbDogbmFtZT0iTWljIFBsYXli
+YWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9Mywg
+ZGlyPUluLCBpZHg9MSwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJCZWVwIFBsYXliYWNrIFZv
+bHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUlu
+LCBpZHg9NCwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJCZWVwIFBsYXliYWNrIFN3aXRjaCIs
+IGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9
+NCwgb2ZzPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4MTcsIG5zdGVwcz0weDFmLCBzdGVwc2l6
+ZT0weDA1LCBtdXRlPTEKICBBbXAtSW4gdmFsczogIFsweDgwIDB4ODBdIFsweDgwIDB4ODBd
+IFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogNQog
+ICAgIDB4MTggMHgxOSAweDFhIDB4MWIgMHgxZApOb2RlIDB4MGMgW0F1ZGlvIE1peGVyXSB3
+Y2FwcyAweDIwMDEwYjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwg
+bnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4
+MDAgMHgwMF0gWzB4MDAgMHgwMF0KICBDb25uZWN0aW9uOiAyCiAgICAgMHgwMiAweDBiCk5v
+ZGUgMHgwZCBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4MjAwMTBiOiBTdGVyZW8gQW1wLUluCiAg
+QW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0
+ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXSBbMHgwMCAweDAwXQogIENvbm5lY3Rp
+b246IDIKICAgICAweDAzIDB4MGIKTm9kZSAweDBlIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRd
+IHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgwZiBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4
+MjAwMTBhOiBNb25vIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4
+MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4MDBdCiAgQ29u
+bmVjdGlvbjogMQogICAgIDB4MGQKTm9kZSAweDEwIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRd
+IHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxMSBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4
+MTAwNTFiOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9
+MHgzZiwgc3RlcHNpemU9MHgwMiwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHhiZiAweGJm
+XQogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFNESS1TZWxlY3Q6IDAKICBQ
+Q006CiAgICByYXRlcyBbMHg1NjBdOiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIwMDAKICAgIGJp
+dHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0
+ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAog
+IENvbm5lY3Rpb246IDEKICAgICAweDEyCk5vZGUgMHgxMiBbUGluIENvbXBsZXhdIHdjYXBz
+IDB4NDAwNDBiOiBTdGVyZW8gQW1wLUluCiAgQ29udHJvbDogbmFtZT0iSW50ZXJuYWwgTWlj
+IEJvb3N0IFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9
+MywgZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJJbnRlcm5hbCBNaWMg
+UGhhbnRvbSBKYWNrIiwgaW5kZXg9MCwgZGV2aWNlPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4
+MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDJmLCBtdXRlPTAKICBBbXAtSW4gdmFsczog
+IFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMDAwMjA6IElOCiAgUGluIERlZmF1bHQgMHg5
+MGE2MDE0MDogW0ZpeGVkXSBNaWMgYXQgSW50IE4vQQogICAgQ29ubiA9IERpZ2l0YWwsIENv
+bG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweDQsIFNlcXVlbmNlID0gMHgw
+CiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgyMDogSU4KICBQb3dlciBz
+dGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1E
+MApOb2RlIDB4MTMgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1v
+bm8KTm9kZSAweDE0IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1OGQ6IFN0ZXJlbyBBbXAt
+T3V0CiAgQ29udHJvbDogbmFtZT0iU3BlYWtlciBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0w
+LCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9
+MAogIENvbnRyb2w6IG5hbWU9IlNwZWFrZXIgUGhhbnRvbSBKYWNrIiwgaW5kZXg9MCwgZGV2
+aWNlPTAKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9
+MHgwMCwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KICBQaW5jYXAgMHgw
+MDAxMDAxNDogT1VUIEVBUEQgRGV0ZWN0CiAgRUFQRCAweDI6IEVBUEQKICBQaW4gRGVmYXVs
+dCAweDkwMTcwMTEwOiBbRml4ZWRdIFNwZWFrZXIgYXQgSW50IE4vQQogICAgQ29ubiA9IEFu
+YWxvZywgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MSwgU2VxdWVu
+Y2UgPSAweDAKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDAwOgogIFVu
+c29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQy
+IEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjog
+MQogICAgIDB4MGMKTm9kZSAweDE1IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4
+ZjAwMDAwOiBNb25vCk5vZGUgMHgxNiBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAw
+eGYwMDAwMDogTW9ubwpOb2RlIDB4MTcgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDUwYzog
+TW9ubyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0
+ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwXQogIFBpbmNhcCAw
+eDAwMDAwMDEwOiBPVVQKICBQaW4gRGVmYXVsdCAweDQwMDAwMDAwOiBbTi9BXSBMaW5lIE91
+dCBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgICBE
+ZWZBc3NvY2lhdGlvbiA9IDB4MCwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDoK
+ICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAs
+IGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDBmCk5vZGUgMHgxOCBbUGluIENv
+bXBsZXhdIHdjYXBzIDB4NDAwNDhiOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9m
+cz0weDAwLCBuc3RlcHM9MHgwMywgc3RlcHNpemU9MHgyZiwgbXV0ZT0wCiAgQW1wLUluIHZh
+bHM6ICBbMHgwMCAweDAwXQogIFBpbmNhcCAweDAwMDAzNzI0OiBJTiBEZXRlY3QKICAgIFZy
+ZWYgY2FwczogSElaIDUwIEdSRCA4MCAxMDAKICBQaW4gRGVmYXVsdCAweDQxMTExMWYwOiBb
+Ti9BXSBTcGVha2VyIGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNr
+CiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICAgIE1pc2MgPSBO
+T19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDA0OiBWUkVGXzgwCiAgVW5zb2xpY2l0ZWQ6IHRh
+Zz0wMCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBv
+d2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDE5IFtQaW4gQ29tcGxleF0gd2Nh
+cHMgMHg0MDA0OGI6IFN0ZXJlbyBBbXAtSW4KICBDb250cm9sOiBuYW1lPSJNaWMgQm9vc3Qg
+Vm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9
+SW4sIGlkeD0wLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9Ik1pYyBKYWNrIiwgaW5kZXg9MCwg
+ZGV2aWNlPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6
+ZT0weDJmLCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAzIDB4MDNdCiAgUGluY2FwIDB4
+MDAwMDM3MjQ6IElOIERldGVjdAogICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgwIDEwMAog
+IFBpbiBEZWZhdWx0IDB4MDRhMTEwMzA6IFtKYWNrXSBNaWMgYXQgRXh0IFJpZ2h0CiAgICBD
+b25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MywgU2Vx
+dWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgyNDogSU4gVlJFRl84MAogIFVuc29saWNpdGVk
+OiB0YWc9MDIsIGVuYWJsZWQ9MQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MK
+ICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgxYSBbUGluIENvbXBsZXhd
+IHdjYXBzIDB4NDAwNDhiOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9mcz0weDAw
+LCBuc3RlcHM9MHgwMywgc3RlcHNpemU9MHgyZiwgbXV0ZT0wCiAgQW1wLUluIHZhbHM6ICBb
+MHgwMCAweDAwXQogIFBpbmNhcCAweDAwMDAzNzI0OiBJTiBEZXRlY3QKICAgIFZyZWYgY2Fw
+czogSElaIDUwIEdSRCA4MCAxMDAKICBQaW4gRGVmYXVsdCAweDQxMTExMWYwOiBbTi9BXSBT
+cGVha2VyIGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBE
+ZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICAgIE1pc2MgPSBOT19QUkVT
+RU5DRQogIFBpbi1jdGxzOiAweDAwOiBWUkVGX0hJWgogIFVuc29saWNpdGVkOiB0YWc9MDAs
+IGVuYWJsZWQ9MAogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjog
+c2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgxYiBbUGluIENvbXBsZXhdIHdjYXBzIDB4
+NDAwNThmOiBTdGVyZW8gQW1wLUluIEFtcC1PdXQKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAs
+IG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDJmLCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsw
+eDAwIDB4MDBdCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBz
+aXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCiAgUGluY2Fw
+IDB4MDAwMDM3M2M6IElOIE9VVCBIUCBEZXRlY3QKICAgIFZyZWYgY2FwczogSElaIDUwIEdS
+RCA4MCAxMDAKICBQaW4gRGVmYXVsdCAweDQxMTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4
+dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlv
+biA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1j
+dGxzOiAweDIwOiBJTiBWUkVGX0hJWgogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9
+MAogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1E
+MCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMgogICAgIDB4MGMqIDB4MGQKTm9kZSAweDFj
+IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgx
+ZCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNDAwOiBNb25vCiAgUGluY2FwIDB4MDAwMDAw
+MjA6IElOCiAgUGluIERlZmF1bHQgMHg0MGYwMDAwMTogW04vQV0gT3RoZXIgYXQgRXh0IE4v
+QQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRp
+b24gPSAweDAsIFNlcXVlbmNlID0gMHgxCiAgUGluLWN0bHM6IDB4MjA6IElOCiAgUG93ZXIg
+c3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9
+RDAKTm9kZSAweDFlIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA3ODE6IFN0ZXJlbyBEaWdp
+dGFsCiAgUGluY2FwIDB4MDAwMDAwMTQ6IE9VVCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDQx
+MTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xv
+ciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICAg
+IE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBVbnNvbGljaXRl
+ZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNT
+CiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAw
+eDA2Ck5vZGUgMHgxZiBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDog
+TW9ubwpOb2RlIDB4MjAgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwNDA6
+IE1vbm8KICBQcm9jZXNzaW5nIGNhcHM6IGJlbmlnbj0wLCBuY29lZmY9MTE3Ck5vZGUgMHgy
+MSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThkOiBTdGVyZW8gQW1wLU91dAogIENvbnRy
+b2w6IG5hbWU9IkhlYWRwaG9uZSBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9
+MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAogIENvbnRy
+b2w6IG5hbWU9IkhlYWRwaG9uZSBKYWNrIiwgaW5kZXg9MCwgZGV2aWNlPTAKICBBbXAtT3V0
+IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAg
+QW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBQaW5jYXAgMHgwMDAwMDAxYzogT1VUIEhQ
+IERldGVjdAogIFBpbiBEZWZhdWx0IDB4MDQyMTEwMjA6IFtKYWNrXSBIUCBPdXQgYXQgRXh0
+IFJpZ2h0CiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlv
+biA9IDB4MiwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3RsczogMHhjMDogT1VUIEhQCiAgVW5z
+b2xpY2l0ZWQ6IHRhZz0wMSwgZW5hYmxlZD0xCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIg
+RDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAy
+CiAgICAgMHgwYyAweDBkKgpOb2RlIDB4MjIgW0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDEw
+YjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAs
+IHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4ODAgMHg4MF0gWzB4
+ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4
+MF0KICBDb25uZWN0aW9uOiA2CiAgICAgMHgxOCAweDE5IDB4MWEgMHgxYiAweDFkIDB4MGIK
+Tm9kZSAweDIzIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGI6IFN0ZXJlbyBBbXAtSW4K
+ICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBt
+dXRlPTEKICBBbXAtSW4gdmFsczogIFsweDgwIDB4ODBdIFsweDAwIDB4MDBdIFsweDgwIDB4
+ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjog
+NgogICAgIDB4MTggMHgxOSAweDFhIDB4MWIgMHgxZCAweDBiCi0tZW5kY29sbGFwc2UtLQoK
+CiEhQUxTQSBEZXZpY2Ugbm9kZXMKISEtLS0tLS0tLS0tLS0tLS0tLQoKY3J3LXJ3LS0tLSsg
+MSByb290IGF1ZGlvIDExNiwgIDIgRmViIDE4IDAxOjA3IC9kZXYvc25kL2NvbnRyb2xDMApj
+cnctcnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2LCAgNSBGZWIgMTggMDE6MDcgL2Rldi9zbmQv
+Y29udHJvbEMxCmNydy1ydy0tLS0rIDEgcm9vdCBhdWRpbyAxMTYsICA0IEZlYiAxOCAwMTow
+NyAvZGV2L3NuZC9od0MwRDAKY3J3LXJ3LS0tLSsgMSByb290IGF1ZGlvIDExNiwgIDggRmVi
+IDE4IDAxOjA3IC9kZXYvc25kL2h3QzFEMApjcnctcnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2
+LCAgMyBGZWIgMTggMTE6NDEgL2Rldi9zbmQvcGNtQzBEM3AKY3J3LXJ3LS0tLSsgMSByb290
+IGF1ZGlvIDExNiwgIDcgRmViIDE4IDExOjIwIC9kZXYvc25kL3BjbUMxRDBjCmNydy1ydy0t
+LS0rIDEgcm9vdCBhdWRpbyAxMTYsICA2IEZlYiAxOCAxNjozNSAvZGV2L3NuZC9wY21DMUQw
+cApjcnctcnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2LCAgMSBGZWIgMTggMDE6MDcgL2Rldi9z
+bmQvc2VxCmNydy1ydy0tLS0rIDEgcm9vdCBhdWRpbyAxMTYsIDMzIEZlYiAxOCAwMTowNyAv
+ZGV2L3NuZC90aW1lcgoKL2Rldi9zbmQvYnktcGF0aDoKdG90YWwgMApkcnd4ci14ci14IDIg
+cm9vdCByb290ICA4MCBGZWIgMTggMDE6MDcgLgpkcnd4ci14ci14IDMgcm9vdCByb290IDI0
+MCBGZWIgMTggMDE6MDcgLi4KbHJ3eHJ3eHJ3eCAxIHJvb3Qgcm9vdCAgMTIgRmViIDE4IDAx
+OjA3IHBjaS0wMDAwOjAwOjAxLjEgLT4gLi4vY29udHJvbEMwCmxyd3hyd3hyd3ggMSByb290
+IHJvb3QgIDEyIEZlYiAxOCAwMTowNyBwY2ktMDAwMDowMDoxNC4yIC0+IC4uL2NvbnRyb2xD
+MQoKCiEhQXBsYXkvQXJlY29yZCBvdXRwdXQKISEtLS0tLS0tLS0tLS0tLS0tLS0tLQoKQVBM
+QVkKCioqKiogTGlzdCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBEZXZpY2VzICoqKioKY2FyZCAw
+OiBHZW5lcmljIFtIRC1BdWRpbyBHZW5lcmljXSwgZGV2aWNlIDM6IEhETUkgMCBbSERNSSAw
+XQogIFN1YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQg
+MTogR2VuZXJpY18xIFtIRC1BdWRpbyBHZW5lcmljXSwgZGV2aWNlIDA6IEFMQzMyMjcgQW5h
+bG9nIFtBTEMzMjI3IEFuYWxvZ10KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6
+IHN1YmRldmljZSAjMAoKQVJFQ09SRAoKKioqKiBMaXN0IG9mIENBUFRVUkUgSGFyZHdhcmUg
+RGV2aWNlcyAqKioqCmNhcmQgMTogR2VuZXJpY18xIFtIRC1BdWRpbyBHZW5lcmljXSwgZGV2
+aWNlIDA6IEFMQzMyMjcgQW5hbG9nIFtBTEMzMjI3IEFuYWxvZ10KICBTdWJkZXZpY2VzOiAx
+LzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAoKISFBbWl4ZXIgb3V0cHV0CiEhLS0t
+LS0tLS0tLS0tLQoKISEtLS0tLS0tTWl4ZXIgY29udHJvbHMgZm9yIGNhcmQgMCBbR2VuZXJp
+Y10KCkNhcmQgaHc6MCAnR2VuZXJpYycvJ0hELUF1ZGlvIEdlbmVyaWMgYXQgMHhkNjg0MDAw
+MCBpcnEgNDknCiAgTWl4ZXIgbmFtZQk6ICdBVEkgUjZ4eCBIRE1JJwogIENvbXBvbmVudHMJ
+OiAnSERBOjEwMDJhYTAxLDAwYWEwMTAwLDAwMTAwNTAwJwogIENvbnRyb2xzICAgICAgOiA3
+CiAgU2ltcGxlIGN0cmxzICA6IDEKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsMAog
+IENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5u
+ZWxzOiBNb25vCiAgTW9ubzogUGxheWJhY2sgW29uXQoKISEtLS0tLS0tTWl4ZXIgY29udHJv
+bHMgZm9yIGNhcmQgMSBbR2VuZXJpY18xXQoKQ2FyZCBodzoxICdHZW5lcmljXzEnLydIRC1B
+dWRpbyBHZW5lcmljIGF0IDB4ZDY4NDQwMDAgaXJxIDE2JwogIE1peGVyIG5hbWUJOiAnUmVh
+bHRlayBBTEMzMjI3JwogIENvbXBvbmVudHMJOiAnSERBOjEwZWMwMjgyLDEwM2MyMjM1LDAw
+MTAwMDAzJwogIENvbnRyb2xzICAgICAgOiAyMwogIFNpbXBsZSBjdHJscyAgOiAxMQpTaW1w
+bGUgbWl4ZXIgY29udHJvbCAnTWFzdGVyJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHB2
+b2x1bWUtam9pbmVkIHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQKICBQbGF5YmFjayBjaGFubmVs
+czogTW9ubwogIExpbWl0czogUGxheWJhY2sgMCAtIDg3CiAgTW9ubzogUGxheWJhY2sgNzQg
+Wzg1JV0gWy05Ljc1ZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRwaG9uZScs
+MAogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoCiAgUGxheWJhY2sgY2hhbm5lbHM6
+IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0czogUGxheWJhY2sgMCAtIDg3CiAg
+TW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAwIFswJV0gWy02NS4yNWRCXSBbb2ZmXQog
+IEZyb250IFJpZ2h0OiBQbGF5YmFjayAwIFswJV0gWy02NS4yNWRCXSBbb2ZmXQpTaW1wbGUg
+bWl4ZXIgY29udHJvbCAnU3BlYWtlcicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dp
+dGNoCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExp
+bWl0czogUGxheWJhY2sgMCAtIDg3CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayA4
+NyBbMTAwJV0gWzAuMDBkQl0gW29uXQogIEZyb250IFJpZ2h0OiBQbGF5YmFjayA4NyBbMTAw
+JV0gWzAuMDBkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnUENNJywwCiAgQ2FwYWJp
+bGl0aWVzOiBwdm9sdW1lCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9u
+dCBSaWdodAogIExpbWl0czogUGxheWJhY2sgMCAtIDI1NQogIE1vbm86CiAgRnJvbnQgTGVm
+dDogUGxheWJhY2sgMjU1IFsxMDAlXSBbMC4wMGRCXQogIEZyb250IFJpZ2h0OiBQbGF5YmFj
+ayAyNTUgWzEwMCVdIFswLjAwZEJdClNpbXBsZSBtaXhlciBjb250cm9sICdNaWMnLDAKICBD
+YXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9u
+dCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSAzMQogIE1vbm86
+CiAgRnJvbnQgTGVmdDogUGxheWJhY2sgMCBbMCVdIFstMzQuNTBkQl0gW29mZl0KICBGcm9u
+dCBSaWdodDogUGxheWJhY2sgMCBbMCVdIFstMzQuNTBkQl0gW29mZl0KU2ltcGxlIG1peGVy
+IGNvbnRyb2wgJ01pYyBCb29zdCcsMAogIENhcGFiaWxpdGllczogdm9sdW1lCiAgUGxheWJh
+Y2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIENhcHR1cmUgY2hhbm5l
+bHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0czogMCAtIDMKICBGcm9udCBM
+ZWZ0OiAzIFsxMDAlXSBbMzYuMDBkQl0KICBGcm9udCBSaWdodDogMyBbMTAwJV0gWzM2LjAw
+ZEJdClNpbXBsZSBtaXhlciBjb250cm9sICdCZWVwJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9s
+dW1lIHBzd2l0Y2gKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJp
+Z2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gMzEKICBNb25vOgogIEZyb250IExlZnQ6IFBs
+YXliYWNrIDAgWzAlXSBbLTM0LjUwZEJdIFtvZmZdCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNr
+IDAgWzAlXSBbLTM0LjUwZEJdIFtvZmZdClNpbXBsZSBtaXhlciBjb250cm9sICdDYXB0dXJl
+JywwCiAgQ2FwYWJpbGl0aWVzOiBjdm9sdW1lIGNzd2l0Y2gKICBDYXB0dXJlIGNoYW5uZWxz
+OiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDYzCiAg
+RnJvbnQgTGVmdDogQ2FwdHVyZSA2MyBbMTAwJV0gWzMwLjAwZEJdIFtvZmZdCiAgRnJvbnQg
+UmlnaHQ6IENhcHR1cmUgNjMgWzEwMCVdIFszMC4wMGRCXSBbb2ZmXQpTaW1wbGUgbWl4ZXIg
+Y29udHJvbCAnQXV0by1NdXRlIE1vZGUnLDAKICBDYXBhYmlsaXRpZXM6IGVudW0KICBJdGVt
+czogJ0Rpc2FibGVkJyAnRW5hYmxlZCcKICBJdGVtMDogJ0VuYWJsZWQnClNpbXBsZSBtaXhl
+ciBjb250cm9sICdJbnRlcm5hbCBNaWMgQm9vc3QnLDAKICBDYXBhYmlsaXRpZXM6IHZvbHVt
+ZQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBDYXB0
+dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IDAgLSAz
+CiAgRnJvbnQgTGVmdDogMCBbMCVdIFswLjAwZEJdCiAgRnJvbnQgUmlnaHQ6IDAgWzAlXSBb
+MC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnTXV0ZS1MRUQgTW9kZScsMAogIENhcGFi
+aWxpdGllczogZW51bQogIEl0ZW1zOiAnT24nICdPZmYnICdGb2xsb3cgTWFzdGVyJwogIEl0
+ZW0wOiAnRm9sbG93IE1hc3RlcicKCgohIUFsc2FjdGwgb3V0cHV0CiEhLS0tLS0tLS0tLS0t
+LS0KCi0tc3RhcnRjb2xsYXBzZS0tCnN0YXRlLkdlbmVyaWMgewoJY29udHJvbC4xIHsKCQlp
+ZmFjZSBDQVJECgkJbmFtZSAnSERNSS9EUCxwY209MyBKYWNrJwoJCXZhbHVlIGZhbHNlCgkJ
+Y29tbWVudCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAxCgkJ
+fQoJfQoJY29udHJvbC4yIHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFj
+ayBDb24gTWFzaycKCQl2YWx1ZSAnMGZmZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcKCQlj
+b21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJRUM5NTgKCQkJY291bnQgMQoJCX0K
+CX0KCWNvbnRyb2wuMyB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sg
+UHJvIE1hc2snCgkJdmFsdWUgJzBmMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgkJY29t
+bWVudCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgSUVDOTU4CgkJCWNvdW50IDEKCQl9Cgl9
+Cgljb250cm9sLjQgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIERl
+ZmF1bHQnCgkJdmFsdWUgJzA0MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgkJY29tbWVu
+dCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBJRUM5NTgKCQkJY291bnQgMQoJ
+CX0KCX0KCWNvbnRyb2wuNSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJh
+Y2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdy
+aXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuNiB7CgkJ
+aWZhY2UgUENNCgkJZGV2aWNlIDMKCQluYW1lIEVMRAoJCXZhbHVlICcnCgkJY29tbWVudCB7
+CgkJCWFjY2VzcyAncmVhZCB2b2xhdGlsZScKCQkJdHlwZSBCWVRFUwoJCQljb3VudCAwCgkJ
+fQoJfQoJY29udHJvbC43IHsKCQlpZmFjZSBQQ00KCQlkZXZpY2UgMwoJCW5hbWUgJ1BsYXli
+YWNrIENoYW5uZWwgTWFwJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCXZhbHVlLjIgMAoJ
+CXZhbHVlLjMgMAoJCXZhbHVlLjQgMAoJCXZhbHVlLjUgMAoJCXZhbHVlLjYgMAoJCXZhbHVl
+LjcgMAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdF
+UgoJCQljb3VudCA4CgkJCXJhbmdlICcwIC0gMzYnCgkJfQoJfQp9CnN0YXRlLkdlbmVyaWNf
+MSB7Cgljb250cm9sLjEgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXli
+YWNrIFZvbHVtZScKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNj
+ZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAn
+MCAtIDg3JwoJCQlkYm1pbiAtNjUyNQoJCQlkYm1heCAwCgkJCWRidmFsdWUuMCAtNjUyNQoJ
+CQlkYnZhbHVlLjEgLTY1MjUKCQl9Cgl9Cgljb250cm9sLjIgewoJCWlmYWNlIE1JWEVSCgkJ
+bmFtZSAnSGVhZHBob25lIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZS4wIGZhbHNlCgkJdmFs
+dWUuMSBmYWxzZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUg
+Qk9PTEVBTgoJCQljb3VudCAyCgkJfQoJfQoJY29udHJvbC4zIHsKCQlpZmFjZSBNSVhFUgoJ
+CW5hbWUgJ1NwZWFrZXIgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlLjAgODcKCQl2YWx1ZS4x
+IDg3CgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBJTlRFR0VS
+CgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAgLSA4NycKCQkJZGJtaW4gLTY1MjUKCQkJZGJtYXgg
+MAoJCQlkYnZhbHVlLjAgMAoJCQlkYnZhbHVlLjEgMAoJCX0KCX0KCWNvbnRyb2wuNCB7CgkJ
+aWZhY2UgTUlYRVIKCQluYW1lICdTcGVha2VyIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZS4w
+IHRydWUKCQl2YWx1ZS4xIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRl
+JwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMgoJCX0KCX0KCWNvbnRyb2wuNSB7CgkJaWZh
+Y2UgTUlYRVIKCQluYW1lICdNaWMgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZh
+bHVlLjEgMAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5U
+RUdFUgoJCQljb3VudCAyCgkJCXJhbmdlICcwIC0gMzEnCgkJCWRibWluIC0zNDUwCgkJCWRi
+bWF4IDEyMDAKCQkJZGJ2YWx1ZS4wIC0zNDUwCgkJCWRidmFsdWUuMSAtMzQ1MAoJCX0KCX0K
+CWNvbnRyb2wuNiB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdNaWMgUGxheWJhY2sgU3dpdGNo
+JwoJCXZhbHVlLjAgZmFsc2UKCQl2YWx1ZS4xIGZhbHNlCgkJY29tbWVudCB7CgkJCWFjY2Vz
+cyAncmVhZCB3cml0ZScKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDIKCQl9Cgl9Cgljb250
+cm9sLjcgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQXV0by1NdXRlIE1vZGUnCgkJdmFsdWUg
+RW5hYmxlZAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgRU5V
+TUVSQVRFRAoJCQljb3VudCAxCgkJCWl0ZW0uMCBEaXNhYmxlZAoJCQlpdGVtLjEgRW5hYmxl
+ZAoJCX0KCX0KCWNvbnRyb2wuOCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFZv
+bHVtZScKCQl2YWx1ZS4wIDYzCgkJdmFsdWUuMSA2MwoJCWNvbW1lbnQgewoJCQlhY2Nlc3Mg
+J3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJCXJhbmdlICcwIC0g
+NjMnCgkJCWRibWluIC0xNzI1CgkJCWRibWF4IDMwMDAKCQkJZGJ2YWx1ZS4wIDMwMDAKCQkJ
+ZGJ2YWx1ZS4xIDMwMDAKCQl9Cgl9Cgljb250cm9sLjkgewoJCWlmYWNlIE1JWEVSCgkJbmFt
+ZSAnQ2FwdHVyZSBTd2l0Y2gnCgkJdmFsdWUuMCBmYWxzZQoJCXZhbHVlLjEgZmFsc2UKCQlj
+b21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291
+bnQgMgoJCX0KCX0KCWNvbnRyb2wuMTAgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWljIEJv
+b3N0IFZvbHVtZScKCQl2YWx1ZS4wIDMKCQl2YWx1ZS4xIDMKCQljb21tZW50IHsKCQkJYWNj
+ZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAn
+MCAtIDMnCgkJCWRibWluIDAKCQkJZGJtYXggMzYwMAoJCQlkYnZhbHVlLjAgMzYwMAoJCQlk
+YnZhbHVlLjEgMzYwMAoJCX0KCX0KCWNvbnRyb2wuMTEgewoJCWlmYWNlIE1JWEVSCgkJbmFt
+ZSAnSW50ZXJuYWwgTWljIEJvb3N0IFZvbHVtZScKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAK
+CQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJ
+Y291bnQgMgoJCQlyYW5nZSAnMCAtIDMnCgkJCWRibWluIDAKCQkJZGJtYXggMzYwMAoJCQlk
+YnZhbHVlLjAgMAoJCQlkYnZhbHVlLjEgMAoJCX0KCX0KCWNvbnRyb2wuMTIgewoJCWlmYWNl
+IE1JWEVSCgkJbmFtZSAnTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZSA3NAoJCWNv
+bW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3Vu
+dCAxCgkJCXJhbmdlICcwIC0gODcnCgkJCWRibWluIC02NTI1CgkJCWRibWF4IDAKCQkJZGJ2
+YWx1ZS4wIC05NzUKCQl9Cgl9Cgljb250cm9sLjEzIHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUg
+J01hc3RlciBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJCWNvbW1lbnQgewoJCQlh
+Y2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAxCgkJfQoJfQoJ
+Y29udHJvbC4xNCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdNdXRlLUxFRCBNb2RlJwoJCXZh
+bHVlICdGb2xsb3cgTWFzdGVyJwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUn
+CgkJCXR5cGUgRU5VTUVSQVRFRAoJCQljb3VudCAxCgkJCWl0ZW0uMCBPbgoJCQlpdGVtLjEg
+T2ZmCgkJCWl0ZW0uMiAnRm9sbG93IE1hc3RlcicKCQl9Cgl9Cgljb250cm9sLjE1IHsKCQlp
+ZmFjZSBDQVJECgkJbmFtZSAnTWljIEphY2snCgkJdmFsdWUgdHJ1ZQoJCWNvbW1lbnQgewoJ
+CQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRy
+b2wuMTYgewoJCWlmYWNlIENBUkQKCQluYW1lICdJbnRlcm5hbCBNaWMgUGhhbnRvbSBKYWNr
+JwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBCT09M
+RUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjE3IHsKCQlpZmFjZSBDQVJECgkJbmFt
+ZSAnSGVhZHBob25lIEphY2snCgkJdmFsdWUgdHJ1ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3Mg
+cmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTggewoJ
+CWlmYWNlIENBUkQKCQluYW1lICdTcGVha2VyIFBoYW50b20gSmFjaycKCQl2YWx1ZSB0cnVl
+CgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAx
+CgkJfQoJfQoJY29udHJvbC4xOSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdCZWVwIFBsYXli
+YWNrIFZvbHVtZScKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNj
+ZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAn
+MCAtIDMxJwoJCQlkYm1pbiAtMzQ1MAoJCQlkYm1heCAxMjAwCgkJCWRidmFsdWUuMCAtMzQ1
+MAoJCQlkYnZhbHVlLjEgLTM0NTAKCQl9Cgl9Cgljb250cm9sLjIwIHsKCQlpZmFjZSBNSVhF
+UgoJCW5hbWUgJ0JlZXAgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgZmFsc2UKCQl2YWx1
+ZS4xIGZhbHNlCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBC
+T09MRUFOCgkJCWNvdW50IDIKCQl9Cgl9Cgljb250cm9sLjIxIHsKCQlpZmFjZSBQQ00KCQlu
+YW1lICdQbGF5YmFjayBDaGFubmVsIE1hcCcKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQlj
+b21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJ
+cmFuZ2UgJzAgLSAzNicKCQl9Cgl9Cgljb250cm9sLjIyIHsKCQlpZmFjZSBQQ00KCQluYW1l
+ICdDYXB0dXJlIENoYW5uZWwgTWFwJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNvbW1l
+bnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5n
+ZSAnMCAtIDM2JwoJCX0KCX0KCWNvbnRyb2wuMjMgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
+UENNIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDI1NQoJCXZhbHVlLjEgMjU1CgkJY29t
+bWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZSB1c2VyJwoJCQl0eXBlIElOVEVHRVIKCQkJ
+Y291bnQgMgoJCQlyYW5nZSAnMCAtIDI1NScKCQkJdGx2ICcwMDAwMDAwMTAwMDAwMDA4ZmZm
+ZmVjMTQwMDAwMDAxNCcKCQkJZGJtaW4gLTUxMDAKCQkJZGJtYXggMAoJCQlkYnZhbHVlLjAg
+MAoJCQlkYnZhbHVlLjEgMAoJCX0KCX0KfQotLWVuZGNvbGxhcHNlLS0KCgohIUFsbCBMb2Fk
+ZWQgTW9kdWxlcwohIS0tLS0tLS0tLS0tLS0tLS0tLQoKTW9kdWxlCmJ0dXNiCm5mbmV0bGlu
+a19xdWV1ZQpuZm5ldGxpbmtfbG9nCm5mbmV0bGluawp6cmFtCmJpbmZtdF9taXNjCmJuZXAK
+Y2ZnODAyMTEKY3B1ZnJlcV9jb25zZXJ2YXRpdmUKY3B1ZnJlcV91c2Vyc3BhY2UKY3B1ZnJl
+cV9wb3dlcnNhdmUKY3B1ZnJlcV9zdGF0cwpoaWRfZ2VuZXJpYwpubHNfdXRmOApubHNfY3A0
+MzcKdmZhdApmYXQKZWNiCnV2Y3ZpZGVvCnZpZGVvYnVmMl92bWFsbG9jCmJsdWV0b290aAp2
+aWRlb2J1ZjJfbWVtb3BzCnZpZGVvYnVmMl9jb3JlCmt2bV9hbWQKdjRsMl9jb21tb24Ka3Zt
+CnZpZGVvZGV2Cm1lZGlhCmNyY3QxMGRpZl9wY2xtdWwKam95ZGV2CnJ0c3hfcGNpX3NkbW1j
+Cm1tY19jb3JlCmNyYzMyX3BjbG11bApydHN4X3BjaV9tcwptZW1zdGljawpjcmMzMmNfaW50
+ZWwKZWRhY19tY2VfYW1kCnNuZF9oZGFfY29kZWNfcmVhbHRlawpzbmRfaGRhX2NvZGVjX2dl
+bmVyaWMKc25kX2hkYV9jb2RlY19oZG1pCmhwX3dtaQpzcGFyc2Vfa2V5bWFwCnJma2lsbApn
+aGFzaF9jbG11bG5pX2ludGVsCmVkYWNfY29yZQplZml2YXJzCmsxMHRlbXAKcGNzcGtyCnNu
+ZF9oZGFfaW50ZWwKcHNtb3VzZQpmYW0xNWhfcG93ZXIKc2VyaW9fcmF3CnNuZF9oZGFfY29u
+dHJvbGxlcgpyODE2OQpydHN4X3BjaQptaWkKYmNtYQptZmRfY29yZQpzbmRfaGRhX2NvZGVj
+CmhwX2FjY2VsCm9oY2lfcGNpCnNyX21vZAp0cG1faW5maW5lb24KY2Ryb20KaTJjX3BpaXg0
+CnhoY2lfcGNpCmVoY2lfcGNpCnNuZF9od2RlcApzbmRfcGNtCnNuZF90aW1lcgpzbmQKc291
+bmRjb3JlCnNnCm9oY2lfaGNkCnhoY2lfaGNkCmhwX3dpcmVsZXNzCmVoY2lfaGNkCmJhdHRl
+cnkKc2hwY2hwCmFjCmxpczNsdjAyZAppbnB1dF9wb2xsZGV2CnRwbV90aXMKZXZkZXYKdHBt
+CmFjcGlfY3B1ZnJlcQpwcm9jZXNzb3IKc2NoX2ZxX2NvZGVsCmN1c2UKZnVzZQpwYXJwb3J0
+X3BjCnBwZGV2CmxwCnBhcnBvcnQKYXV0b2ZzNApleHQ0CmNyYzE2Cm1iY2FjaGUKamJkMgpk
+bV9jcnlwdApkbV9tb2QKdXNiaGlkCnVzYmNvcmUKdXNiX2NvbW1vbgpoaWRfYXBwbGUKaGlk
+CnNkX21vZAphbWRrZmQKYWVzbmlfaW50ZWwKYWVzX3g4Nl82NApnbHVlX2hlbHBlcgpscncK
+Z2YxMjhtdWwKYWJsa19oZWxwZXIKY3J5cHRkCnJhZGVvbgphaGNpCmkyY19hbGdvX2JpdAps
+aWJhaGNpCnR0bQpkcm1fa21zX2hlbHBlcgpsaWJhdGEKc2NzaV9tb2QKZHJtCmkyY19jb3Jl
+CnRoZXJtYWwKd21pCnZpZGVvCnRoZXJtYWxfc3lzCmJ1dHRvbgoKCiEhU3lzZnMgRmlsZXMK
+ISEtLS0tLS0tLS0tLQoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvaW5pdF9waW5fY29uZmln
+czoKMHgwMyAweDE4NTYwMGYwCjB4MDUgMHg1ODU2MDBmMAoweDA3IDB4NTg1NjAwZjAKMHgw
+OSAweDU4NTYwMGYwCjB4MGIgMHg1ODU2MDBmMAoweDBkIDB4NTg1NjAwZjAKMHgwZiAweDU4
+NTYwMGYwCgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMC9kcml2ZXJfcGluX2NvbmZpZ3M6Cgov
+c3lzL2NsYXNzL3NvdW5kL2h3QzBEMC91c2VyX3Bpbl9jb25maWdzOgoKL3N5cy9jbGFzcy9z
+b3VuZC9od0MwRDAvaW5pdF92ZXJiczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQwL2hpbnRz
+OgoKL3N5cy9jbGFzcy9zb3VuZC9od0MxRDAvaW5pdF9waW5fY29uZmlnczoKMHgxMiAweDkw
+YTYwMTQwCjB4MTQgMHg5MDE3MDExMAoweDE3IDB4NDAwMDAwMDAKMHgxOCAweDQxMTExMWYw
+CjB4MTkgMHgwNGExMTAzMAoweDFhIDB4NDExMTExZjAKMHgxYiAweDQxMTExMWYwCjB4MWQg
+MHg0MGYwMDAwMQoweDFlIDB4NDExMTExZjAKMHgyMSAweDA0MjExMDIwCgovc3lzL2NsYXNz
+L3NvdW5kL2h3QzFEMC9kcml2ZXJfcGluX2NvbmZpZ3M6Cgovc3lzL2NsYXNzL3NvdW5kL2h3
+QzFEMC91c2VyX3Bpbl9jb25maWdzOgoKL3N5cy9jbGFzcy9zb3VuZC9od0MxRDAvaW5pdF92
+ZXJiczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMUQwL2hpbnRzOgoKCiEhQUxTQS9IREEgZG1l
+c2cKISEtLS0tLS0tLS0tLS0tLQoKWyAgICA1LjQxOTcxMF0gW2RybV0gQ29ubmVjdG9yIDE6
+ClsgICAgNS40MTk3MTFdIFtkcm1dICAgSERNSS1BLTEKWyAgICA1LjQxOTcxM10gW2RybV0g
+ICBIUEQzCi0tClsgICA2Ny4xMTg0MDRdIHVzYiAzLTI6IG5ldyBoaWdoLXNwZWVkIFVTQiBk
+ZXZpY2UgbnVtYmVyIDIgdXNpbmcgeGhjaV9oY2QKWyAgIDY3LjE0NDgwOF0gaW5wdXQ6IEhE
+LUF1ZGlvIEdlbmVyaWMgSERNSS9EUCxwY209MyBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAw
+MDA6MDA6MDEuMS9zb3VuZC9jYXJkMC9pbnB1dDE1ClsgICA2Ny4yMjE1MTZdIHNvdW5kIGhk
+YXVkaW9DMUQwOiBhdXRvY29uZmlnOiBsaW5lX291dHM9MSAoMHgxNC8weDAvMHgwLzB4MC8w
+eDApIHR5cGU6c3BlYWtlcgpbICAgNjcuMjIxNTIzXSBzb3VuZCBoZGF1ZGlvQzFEMDogICAg
+c3BlYWtlcl9vdXRzPTAgKDB4MC8weDAvMHgwLzB4MC8weDApClsgICA2Ny4yMjE1MjddIHNv
+dW5kIGhkYXVkaW9DMUQwOiAgICBocF9vdXRzPTEgKDB4MjEvMHgwLzB4MC8weDAvMHgwKQpb
+ICAgNjcuMjIxNTMwXSBzb3VuZCBoZGF1ZGlvQzFEMDogICAgbW9ubzogbW9ub19vdXQ9MHgw
+ClsgICA2Ny4yMjE1MzNdIHNvdW5kIGhkYXVkaW9DMUQwOiAgICBpbnB1dHM6ClsgICA2Ny4y
+MjE1MzZdIHNvdW5kIGhkYXVkaW9DMUQwOiAgICAgIE1pYz0weDE5ClsgICA2Ny4yMjE1NDBd
+IHNvdW5kIGhkYXVkaW9DMUQwOiAgICAgIEludGVybmFsIE1pYz0weDEyClsgICA2Ny4yNDUy
+ODldIGlucHV0OiBIUCBXTUkgaG90a2V5cyBhcyAvZGV2aWNlcy92aXJ0dWFsL2lucHV0L2lu
+cHV0MTQKLS0KWyAgIDY3LjQyMjY1M10gdXNiIDEtNTogbmV3IGhpZ2gtc3BlZWQgVVNCIGRl
+dmljZSBudW1iZXIgNCB1c2luZyBlaGNpLXBjaQpbICAgNjcuNDYyODUyXSBpbnB1dDogSERB
+IERpZ2l0YWwgUENCZWVwIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxNC4yL3Nv
+dW5kL2NhcmQxL2hkYXVkaW9DMUQwL2lucHV0MTYKWyAgIDY3LjQ2MzI2OF0gaW5wdXQ6IEhE
+LUF1ZGlvIEdlbmVyaWMgTWljIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxNC4y
+L3NvdW5kL2NhcmQxL2lucHV0MTcKWyAgIDY3LjQ2MzQyM10gaW5wdXQ6IEhELUF1ZGlvIEdl
+bmVyaWMgSGVhZHBob25lIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxNC4yL3Nv
+dW5kL2NhcmQxL2lucHV0MTgKWyAgIDY3LjUwOTI0NV0gYWxnOiBObyB0ZXN0IGZvciBjcmMz
+MiAoY3JjMzItcGNsbXVsKQoKCg==
+--------------060202080601090104060205
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------060202080601090104060205--
