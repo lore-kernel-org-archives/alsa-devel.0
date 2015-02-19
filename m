@@ -1,48 +1,48 @@
-From: Misan Thropos <misanthropos@gmx.de>
-Subject: Correct 5.1 settings for Asus mobo AT4NM10-I with IDT
-	92HD73C1X5
-Date: Wed, 18 Feb 2015 23:19:58 +0100
-Message-ID: <20150218231958.0fd68009@gmx.de>
+From: Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 4/6] ASoC: samsung: Document binding for
+ max98089 based Snow driver
+Date: Thu, 19 Feb 2015 09:19:05 +0530
+Message-ID: <54E55D31.7020807@gmail.com>
+References: <1424283959-16289-1-git-send-email-afaerber@suse.de> <1424283959-16289-5-git-send-email-afaerber@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BA0C260470
- for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2015 23:20:01 +0100 (CET)
-Received: from atomix.home.lan ([84.59.134.106]) by mail.gmx.com (mrgmx103)
- with ESMTPSA (Nemesis) id 0Lh7M3-1XjwsZ2jP5-00oVHy for
- <alsa-devel@alsa-project.org>; Wed, 18 Feb 2015 23:20:00 +0100
-Received: from bugger.home.lan ([172.20.1.11] helo=localhost)
- by atomix.home.lan with esmtp (Exim 4.84)
- (envelope-from <misanthropos@gmx.de>) id 1YOCyL-0001Yb-C4
- for alsa-devel@alsa-project.org; Wed, 18 Feb 2015 23:19:57 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1424283959-16289-5-git-send-email-afaerber-l3A5Bk7waGM@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: =?UTF-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber-l3A5Bk7waGM@public.gmane.org>, Sangbeom Kim <sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Vincent Palatin <vpalatin-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-I got it to work with the help of "debianuser" on #alsa@freenode and
-hdajackretask which can be found in alsa-tools-gui (if you use Debian).
+On 02/18/2015 11:55 PM, Andreas F=C3=A4rber wrote:
+> Signed-off-by: Andreas F=C3=A4rber <afaerber-l3A5Bk7waGM@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/sound/snow.txt | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/snow.txt b/Docum=
+entation/devicetree/bindings/sound/snow.txt
+> index 6df74f15687f..1430a6bdb2ae 100644
+> --- a/Documentation/devicetree/bindings/sound/snow.txt
+> +++ b/Documentation/devicetree/bindings/sound/snow.txt
+> @@ -2,6 +2,7 @@ Audio Binding for Snow boards
+> =20
+>  Required properties:
+>  - compatible : Can be one of the following,
+> +			"google,snow-audio-max98089" or
+>  			"google,snow-audio-max98090" or
+>  			"google,snow-audio-max98091" or
+>  			"google,snow-audio-max98095"
+>=20
 
-Had to change some pin settings from default configuration to make it
-work. You can get the working configuration from:
+Looks good.
 
-http://www.alsa-project.org/db/?f=71b06cd49f390e0ff4061d069a2efcb93b3148d2
+Acked-by: Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-It enables the S/PDIF digital output too.
-
-
-Maybe you like to take that information for a model for IDT
-92HD73C1X5.
-
-
-cheers,
-Misan
+--=20
+Tushar Behera
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
