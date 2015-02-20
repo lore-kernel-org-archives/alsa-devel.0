@@ -1,17 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/4] ALSA: pcm: Don't add internal PCMs to PCM
-	device list
-Date: Fri, 20 Feb 2015 17:23:26 +0100
-Message-ID: <1424449408-22376-3-git-send-email-tiwai@suse.de>
-References: <1424449408-22376-1-git-send-email-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: audio mcbsp1 broken for beagleboard-xm -OMAP
+Date: Fri, 20 Feb 2015 18:24:43 +0200
+Message-ID: <54E75FCB.8040906@ti.com>
+References: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id ECFE726058B
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 17:23:31 +0100 (CET)
-In-Reply-To: <1424449408-22376-1-git-send-email-tiwai@suse.de>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00F71261507
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 17:24:49 +0100 (CET)
+In-Reply-To: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,120 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
+To: noman pouigt <variksla@gmail.com>, "jarkko.nikula@bitmer.com" <jarkko.nikula@bitmer.com>, "broonie@kernel.org" <broonie@kernel.org>, "jslaby@suse.cz" <jslaby@suse.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-An internal PCM object shouldn't be added to the PCM device list, as
-it's never accessed directly from the user-space, and it has no proc
-or any similar accesses.  Currently, it's excluded in snd_pcm_get()
-and snd_pcm_next(), but it's easier not to add such an object to the
-list.
-
-Actually, the whole snd_pcm_dev_register() can be skipped for an
-internal PCM.  So this patch changes the code there, but also
-addresses the uninitialized list_head access.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
-
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 89206e9c3578..92bbb5143b83 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -49,8 +49,6 @@ static struct snd_pcm *snd_pcm_get(struct snd_card *card, int device)
- 	struct snd_pcm *pcm;
- 
- 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
--		if (pcm->internal)
--			continue;
- 		if (pcm->card == card && pcm->device == device)
- 			return pcm;
- 	}
-@@ -62,8 +60,6 @@ static int snd_pcm_next(struct snd_card *card, int device)
- 	struct snd_pcm *pcm;
- 
- 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
--		if (pcm->internal)
--			continue;
- 		if (pcm->card == card && pcm->device > device)
- 			return pcm->device;
- 		else if (pcm->card->number > card->number)
-@@ -76,6 +72,9 @@ static int snd_pcm_add(struct snd_pcm *newpcm)
- {
- 	struct snd_pcm *pcm;
- 
-+	if (newpcm->internal)
-+		return 0;
-+
- 	list_for_each_entry(pcm, &snd_pcm_devices, list) {
- 		if (pcm->card == newpcm->card && pcm->device == newpcm->device)
- 			return -EBUSY;
-@@ -782,6 +781,9 @@ static int _snd_pcm_new(struct snd_card *card, const char *id, int device,
- 	pcm->card = card;
- 	pcm->device = device;
- 	pcm->internal = internal;
-+	mutex_init(&pcm->open_mutex);
-+	init_waitqueue_head(&pcm->open_wait);
-+	INIT_LIST_HEAD(&pcm->list);
- 	if (id)
- 		strlcpy(pcm->id, id, sizeof(pcm->id));
- 	if ((err = snd_pcm_new_stream(pcm, SNDRV_PCM_STREAM_PLAYBACK, playback_count)) < 0) {
-@@ -792,8 +794,6 @@ static int _snd_pcm_new(struct snd_card *card, const char *id, int device,
- 		snd_pcm_free(pcm);
- 		return err;
- 	}
--	mutex_init(&pcm->open_mutex);
--	init_waitqueue_head(&pcm->open_wait);
- 	if ((err = snd_device_new(card, SNDRV_DEV_PCM, pcm, &ops)) < 0) {
- 		snd_pcm_free(pcm);
- 		return err;
-@@ -1075,15 +1075,16 @@ static int snd_pcm_dev_register(struct snd_device *device)
- 	if (snd_BUG_ON(!device || !device->device_data))
- 		return -ENXIO;
- 	pcm = device->device_data;
-+	if (pcm->internal)
-+		return 0;
-+
- 	mutex_lock(&register_mutex);
- 	err = snd_pcm_add(pcm);
--	if (err) {
--		mutex_unlock(&register_mutex);
--		return err;
--	}
-+	if (err)
-+		goto unlock;
- 	for (cidx = 0; cidx < 2; cidx++) {
- 		int devtype = -1;
--		if (pcm->streams[cidx].substream == NULL || pcm->internal)
-+		if (pcm->streams[cidx].substream == NULL)
- 			continue;
- 		switch (cidx) {
- 		case SNDRV_PCM_STREAM_PLAYBACK:
-@@ -1098,9 +1099,8 @@ static int snd_pcm_dev_register(struct snd_device *device)
- 					  &snd_pcm_f_ops[cidx], pcm,
- 					  &pcm->streams[cidx].dev);
- 		if (err < 0) {
--			list_del(&pcm->list);
--			mutex_unlock(&register_mutex);
--			return err;
-+			list_del_init(&pcm->list);
-+			goto unlock;
- 		}
- 
- 		for (substream = pcm->streams[cidx].substream; substream; substream = substream->next)
-@@ -1110,8 +1110,9 @@ static int snd_pcm_dev_register(struct snd_device *device)
- 	list_for_each_entry(notify, &snd_pcm_notify_list, list)
- 		notify->n_register(pcm);
- 
-+ unlock:
- 	mutex_unlock(&register_mutex);
--	return 0;
-+	return err;
- }
- 
- static int snd_pcm_dev_disconnect(struct snd_device *device)
--- 
-2.3.0
+SGksCgpPbiAwMi8yMC8yMDE1IDA4OjQ1IEFNLCBub21hbiBwb3VpZ3Qgd3JvdGU6Cj4gSGVsbG8s
+Cj4gCj4gSSBhbSB0cnlpbmcgdG8gaW50ZWdyYXRlIG1heDk4MDkwIGNvZGVjIHdpdGggJHN1Ympl
+Y3QgYm9hcmQuICBJIGFtCj4gcnVubmluZyB0aGUgbWNCU1AgaW4gc2xhdmUgbW9kZSBhcyBpIGhh
+dmUgbm90IGNoYW5nZWQgdGhlIGh3X3Bhcm1zIGZvcgo+IG9tYXAtdHdsNDAzMC5jIGZpbGUuIFdp
+dGggYmVsb3cgY2hhbmdlcyBpIHNlZSB3YWl0X2Zvcl9hdmFpbCBpcwo+IGdldHRpbmcgc3R1Y2sg
+aS5lLiBtY2JzcCBpcyBub3QgZ2V0dGluZyBhbnkgaW50ZXJydXB0IGFuZCBub3RoaW5nIGlzCj4g
+cGxheWluZy4KCkkgaGF2ZSB0ZXN0ZWQgdGhlIFhNIHdpdGggdHdsNDAzMCBvbiBsaW51eC1uZXh0
+IGFuZCBNY0JTUCBpcyB3b3JraW5nIGZpbmUgYXMKc2xhdmUgYW5kIG1hc3RlciAoSSBoYXZlIGEg
+cGF0Y2ggdG8gYWRkIHRoZSBNY0JTUCBtYXN0ZXIgc3VwcG9ydCBmb3IgdGVzdGluZykKYWxzby4K
+Cj4gCj4gS2VybmVsIHZlcnNpb246Cj4gVkVSU0lPTiA9IDMKPiBQQVRDSExFVkVMID0gMTkKPiBT
+VUJMRVZFTCA9IDAKPiBFWFRSQVZFUlNJT04gPQo+IE5BTUUgPSBEaXNlYXNlZCBOZXd0Cj4gCj4g
+U2V0dXAgaW5mb3JtYXRpb246Cj4gVXNpbmcgYmVhZ2xlIGJvYXJkIC14bSBhbmQgY29ubmVjdGVk
+IG1heDk4MDkwIGNvZGVjIHRvIG1jYnNwMSBwaW5zLgo+IENvbm5lY3RlZCBvbmx5IDQgcGlucy4K
+PiAKPiBDaGFuZ2VkIHRoZSBvbWFwLXR3bDQwMzAuYyBtYWNoaW5lIGZpbGUgYXMgYmVsb3cgdG8g
+ZGlzYWJsZSB0aGUgdHdsNDAzMDoKPiBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgb21h
+cF90d2w0MDMwX2RhaV9saW5rc1tdID0gewo+ICAgICAgICB7Cj4gKyAgICAgICAgICAgICAgIC5u
+YW1lID0gIm1heDk4MDkwIiwKPiArICAgICAgICAgICAgICAgLnN0cmVhbV9uYW1lID0gIm1heDk4
+MDkwIiwKPiAgICAgICAgICAgICAgICAuY3B1X2RhaV9uYW1lID0gIm9tYXAtbWNic3AuMSIsCgpI
+cm0sIG1jYnNwLjEgaXMgbm90IGluIHVzZSBieSBkZWZhdWx0IG9uIHRoZSBib2FyZCwgMiBhbmQg
+MyBhcmUgdGhlIG9uZSB3aGljaAppcyB1c2VkIGJ5IHRoZSBvbWFwLXR3bDQwMzAgZHJpdmVyLgoK
+PiArICAgICAgICAgICAgICAgLmNvZGVjX2RhaV9uYW1lID0gIkhpRmkiLAo+ICAgICAgICAgICAg
+ICAgIC5wbGF0Zm9ybV9uYW1lID0gIm9tYXAtbWNic3AuMSIsCj4gKyAgICAgICAgICAgICAgIC5j
+b2RlY19uYW1lID0gIm1heDk4MDkwLjEtMDAxMCIsCj4gICAgICAgICAgICAgICAgLm9wcyA9ICZv
+bWFwX3R3bDQwMzBfb3BzLAo+ICAgICAgICB9LAo+IAo+IERUU0kgZmlsZSBjaGFuZ2U6YXJjaC9h
+cm0vYm9vdC9kdHMvb21hcDMtYmVhZ2xlLXhtLmR0cwo+IAo+ICZpMmMyIHsKPiAgICAgICAgY2xv
+Y2stZnJlcXVlbmN5ID0gPDQwMDAwMD47Cj4gKwo+ICsgICAgICAgbWF4OTgwOTA6IG1heDk4MDkw
+QDEwIHsKPiArICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtYXhpbSxtYXg5ODA5MCI7Cj4g
+KyAgICAgICAgICAgICAgIHJlZyA9IDwweDEwPjsKPiArICAgICAgIH07Cj4gfTsKPiAKPiBvbWFw
+L29tYXAtdHdsNDAzMC5jCj4gYWRkZWQgaW4gaHdfcGFyYW1zIGJlbG93IGZ1bmN0aW9uIHRvIHNl
+dCBpbnRlcm5hbCBvc2NpbGxhdG9yIGZvciA5ODA5MAo+IGZvciBnZW5lcmF0aW5nIFBMTCBmb3Ig
+bWFzdGVyIGNsb2NrLgo+IHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY29kZWNfZGFpLCAyNjAwMDAw
+MCwgMCwgU05EX1NPQ19DTE9DS19JTik7Cj4gCj4gSSBhbSBhYmxlIHRvIHNlZSB0aGF0IHRoZSBj
+cHVfZGFpIGlzIG1hcHBlZCB3aXRoIGNvZGVjX2RhaSBhbmQKPiBjb25maWd1cmF0aW9uIGlzIG9r
+LiBrZXJuZWwgbG9ncyBhdCBodHRwczovL2lkZW9uZS5jb20vb2V6TlNqCj4gCj4gSSB0aGluayBp
+IGRvbid0IG5lZWQgdG8gY29uZmlndXJlIHRoZSBtY2JzcDEgcGlucyByaWdodCBhcyBpdCB1c2Vz
+IGRlZmF1bHQuCgpJIHRoaW5rIHlvdSBzaG91bGQgY2hlY2sgdGhlIHBpbiBtdXggZm9yIHRoZSBN
+Y0JTUDEgcGlucy4gVGhleSBtaWdodCBub3Qgc2V0CnRvIGNvcnJlY3QgbW9kZS4KCj4gCj4gUGxl
+YXNlIGd1aWRlIG1lLkkgaGF2ZSB0cmllZCBJUkMgY2hhbm5lbCBhbHNvIGJ1dCBub3QgZ2V0dGlu
+ZyB0aGUgcmlnaHQgZm9sa3MuCj4gCj4gaHR0cHM6Ly9naXRodWIuY29tL0NpcmN1aXRDby9CZWFn
+bGVCb2FyZC14TS1SZXZDL2Jsb2IvbWFzdGVyL0JlYWdsZUJvYXJkLXhNX3JldkNfU0NILnBkZj9y
+YXc9dHJ1ZQo+IAo+IFRoYW5rcywKPiAKCgotLSAKUMOpdGVyCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
