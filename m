@@ -1,15 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: audio mcbsp1 broken for beagleboard-xm -OMAP
-Date: Fri, 20 Feb 2015 18:24:43 +0200
-Message-ID: <54E75FCB.8040906@ti.com>
+Date: Fri, 20 Feb 2015 18:27:08 +0200
+Message-ID: <54E7605C.5000709@ti.com>
 References: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 00F71261507
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 17:24:49 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id ED6B2260591
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 17:27:12 +0100 (CET)
 In-Reply-To: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,47 +24,87 @@ To: noman pouigt <variksla@gmail.com>, "jarkko.nikula@bitmer.com" <jarkko.nikula
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAwMi8yMC8yMDE1IDA4OjQ1IEFNLCBub21hbiBwb3VpZ3Qgd3JvdGU6Cj4gSGVsbG8s
-Cj4gCj4gSSBhbSB0cnlpbmcgdG8gaW50ZWdyYXRlIG1heDk4MDkwIGNvZGVjIHdpdGggJHN1Ympl
-Y3QgYm9hcmQuICBJIGFtCj4gcnVubmluZyB0aGUgbWNCU1AgaW4gc2xhdmUgbW9kZSBhcyBpIGhh
-dmUgbm90IGNoYW5nZWQgdGhlIGh3X3Bhcm1zIGZvcgo+IG9tYXAtdHdsNDAzMC5jIGZpbGUuIFdp
-dGggYmVsb3cgY2hhbmdlcyBpIHNlZSB3YWl0X2Zvcl9hdmFpbCBpcwo+IGdldHRpbmcgc3R1Y2sg
-aS5lLiBtY2JzcCBpcyBub3QgZ2V0dGluZyBhbnkgaW50ZXJydXB0IGFuZCBub3RoaW5nIGlzCj4g
-cGxheWluZy4KCkkgaGF2ZSB0ZXN0ZWQgdGhlIFhNIHdpdGggdHdsNDAzMCBvbiBsaW51eC1uZXh0
-IGFuZCBNY0JTUCBpcyB3b3JraW5nIGZpbmUgYXMKc2xhdmUgYW5kIG1hc3RlciAoSSBoYXZlIGEg
-cGF0Y2ggdG8gYWRkIHRoZSBNY0JTUCBtYXN0ZXIgc3VwcG9ydCBmb3IgdGVzdGluZykKYWxzby4K
-Cj4gCj4gS2VybmVsIHZlcnNpb246Cj4gVkVSU0lPTiA9IDMKPiBQQVRDSExFVkVMID0gMTkKPiBT
-VUJMRVZFTCA9IDAKPiBFWFRSQVZFUlNJT04gPQo+IE5BTUUgPSBEaXNlYXNlZCBOZXd0Cj4gCj4g
-U2V0dXAgaW5mb3JtYXRpb246Cj4gVXNpbmcgYmVhZ2xlIGJvYXJkIC14bSBhbmQgY29ubmVjdGVk
-IG1heDk4MDkwIGNvZGVjIHRvIG1jYnNwMSBwaW5zLgo+IENvbm5lY3RlZCBvbmx5IDQgcGlucy4K
-PiAKPiBDaGFuZ2VkIHRoZSBvbWFwLXR3bDQwMzAuYyBtYWNoaW5lIGZpbGUgYXMgYmVsb3cgdG8g
-ZGlzYWJsZSB0aGUgdHdsNDAzMDoKPiBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgb21h
-cF90d2w0MDMwX2RhaV9saW5rc1tdID0gewo+ICAgICAgICB7Cj4gKyAgICAgICAgICAgICAgIC5u
-YW1lID0gIm1heDk4MDkwIiwKPiArICAgICAgICAgICAgICAgLnN0cmVhbV9uYW1lID0gIm1heDk4
-MDkwIiwKPiAgICAgICAgICAgICAgICAuY3B1X2RhaV9uYW1lID0gIm9tYXAtbWNic3AuMSIsCgpI
-cm0sIG1jYnNwLjEgaXMgbm90IGluIHVzZSBieSBkZWZhdWx0IG9uIHRoZSBib2FyZCwgMiBhbmQg
-MyBhcmUgdGhlIG9uZSB3aGljaAppcyB1c2VkIGJ5IHRoZSBvbWFwLXR3bDQwMzAgZHJpdmVyLgoK
-PiArICAgICAgICAgICAgICAgLmNvZGVjX2RhaV9uYW1lID0gIkhpRmkiLAo+ICAgICAgICAgICAg
-ICAgIC5wbGF0Zm9ybV9uYW1lID0gIm9tYXAtbWNic3AuMSIsCj4gKyAgICAgICAgICAgICAgIC5j
-b2RlY19uYW1lID0gIm1heDk4MDkwLjEtMDAxMCIsCj4gICAgICAgICAgICAgICAgLm9wcyA9ICZv
-bWFwX3R3bDQwMzBfb3BzLAo+ICAgICAgICB9LAo+IAo+IERUU0kgZmlsZSBjaGFuZ2U6YXJjaC9h
-cm0vYm9vdC9kdHMvb21hcDMtYmVhZ2xlLXhtLmR0cwo+IAo+ICZpMmMyIHsKPiAgICAgICAgY2xv
-Y2stZnJlcXVlbmN5ID0gPDQwMDAwMD47Cj4gKwo+ICsgICAgICAgbWF4OTgwOTA6IG1heDk4MDkw
-QDEwIHsKPiArICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtYXhpbSxtYXg5ODA5MCI7Cj4g
-KyAgICAgICAgICAgICAgIHJlZyA9IDwweDEwPjsKPiArICAgICAgIH07Cj4gfTsKPiAKPiBvbWFw
-L29tYXAtdHdsNDAzMC5jCj4gYWRkZWQgaW4gaHdfcGFyYW1zIGJlbG93IGZ1bmN0aW9uIHRvIHNl
-dCBpbnRlcm5hbCBvc2NpbGxhdG9yIGZvciA5ODA5MAo+IGZvciBnZW5lcmF0aW5nIFBMTCBmb3Ig
-bWFzdGVyIGNsb2NrLgo+IHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY29kZWNfZGFpLCAyNjAwMDAw
-MCwgMCwgU05EX1NPQ19DTE9DS19JTik7Cj4gCj4gSSBhbSBhYmxlIHRvIHNlZSB0aGF0IHRoZSBj
-cHVfZGFpIGlzIG1hcHBlZCB3aXRoIGNvZGVjX2RhaSBhbmQKPiBjb25maWd1cmF0aW9uIGlzIG9r
-LiBrZXJuZWwgbG9ncyBhdCBodHRwczovL2lkZW9uZS5jb20vb2V6TlNqCj4gCj4gSSB0aGluayBp
-IGRvbid0IG5lZWQgdG8gY29uZmlndXJlIHRoZSBtY2JzcDEgcGlucyByaWdodCBhcyBpdCB1c2Vz
-IGRlZmF1bHQuCgpJIHRoaW5rIHlvdSBzaG91bGQgY2hlY2sgdGhlIHBpbiBtdXggZm9yIHRoZSBN
-Y0JTUDEgcGlucy4gVGhleSBtaWdodCBub3Qgc2V0CnRvIGNvcnJlY3QgbW9kZS4KCj4gCj4gUGxl
-YXNlIGd1aWRlIG1lLkkgaGF2ZSB0cmllZCBJUkMgY2hhbm5lbCBhbHNvIGJ1dCBub3QgZ2V0dGlu
-ZyB0aGUgcmlnaHQgZm9sa3MuCj4gCj4gaHR0cHM6Ly9naXRodWIuY29tL0NpcmN1aXRDby9CZWFn
-bGVCb2FyZC14TS1SZXZDL2Jsb2IvbWFzdGVyL0JlYWdsZUJvYXJkLXhNX3JldkNfU0NILnBkZj9y
-YXc9dHJ1ZQo+IAo+IFRoYW5rcywKPiAKCgotLSAKUMOpdGVyCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 02/20/2015 08:45 AM, noman pouigt wrote:
+> Hello,
+> =
+
+> I am trying to integrate max98090 codec with $subject board.  I am
+> running the mcBSP in slave mode as i have not changed the hw_parms for
+> omap-twl4030.c file. With below changes i see wait_for_avail is
+> getting stuck i.e. mcbsp is not getting any interrupt and nothing is
+> playing.
+> =
+
+> Kernel version:
+> VERSION =3D 3
+> PATCHLEVEL =3D 19
+> SUBLEVEL =3D 0
+> EXTRAVERSION =3D
+> NAME =3D Diseased Newt
+> =
+
+> Setup information:
+> Using beagle board -xm and connected max98090 codec to mcbsp1 pins.
+> Connected only 4 pins.
+> =
+
+> Changed the omap-twl4030.c machine file as below to disable the twl4030:
+> static struct snd_soc_dai_link omap_twl4030_dai_links[] =3D {
+>        {
+> +               .name =3D "max98090",
+> +               .stream_name =3D "max98090",
+>                .cpu_dai_name =3D "omap-mcbsp.1",
+> +               .codec_dai_name =3D "HiFi",
+>                .platform_name =3D "omap-mcbsp.1",
+> +               .codec_name =3D "max98090.1-0010",
+>                .ops =3D &omap_twl4030_ops,
+>        },
+> =
+
+> DTSI file change:arch/arm/boot/dts/omap3-beagle-xm.dts
+> =
+
+> &i2c2 {
+>        clock-frequency =3D <400000>;
+> +
+> +       max98090: max98090@10 {
+> +               compatible =3D "maxim,max98090";
+> +               reg =3D <0x10>;
+> +       };
+> };
+
+You also need to change the dts file's sound node, enable mcbsp1, set the
+pinctrl entries, etc if you boot with DT.
+
+> =
+
+> omap/omap-twl4030.c
+> added in hw_params below function to set internal oscillator for 98090
+> for generating PLL for master clock.
+> snd_soc_dai_set_sysclk(codec_dai, 26000000, 0, SND_SOC_CLOCK_IN);
+> =
+
+> I am able to see that the cpu_dai is mapped with codec_dai and
+> configuration is ok. kernel logs at https://ideone.com/oezNSj
+> =
+
+> I think i don't need to configure the mcbsp1 pins right as it uses defaul=
+t.
+> =
+
+> Please guide me.I have tried IRC channel also but not getting the right f=
+olks.
+> =
+
+> https://github.com/CircuitCo/BeagleBoard-xM-RevC/blob/master/BeagleBoard-=
+xM_revC_SCH.pdf?raw=3Dtrue
+> =
+
+> Thanks,
+> =
+
+
+
+-- =
+
+P=E9ter
