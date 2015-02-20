@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/6] ALSA: hda - Drop hda_bus_template for
-	snd_hda_bus_new()
-Date: Fri, 20 Feb 2015 08:08:22 +0100
-Message-ID: <1424416107-32470-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/6] ALSA: hda - Introduce azx_has_pm_runtime()
+	macro
+Date: Fri, 20 Feb 2015 08:08:24 +0100
+Message-ID: <1424416107-32470-4-git-send-email-tiwai@suse.de>
 References: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1310D2605D2
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:30 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ACEC260603
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:31 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5CFB1ACAA
+ by mx2.suse.de (Postfix) with ESMTP id 5990AAABA
  for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 07:08:30 +0000 (UTC)
 In-Reply-To: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,188 +27,101 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Instead of copying from the given template, let the caller fills the
-fields after creation.  This simplifies the code after all.
+For making the debugging of runtime PM easier, introduce
+azx_has_pm_runtime() and use it in all places checking the runtime pm
+driver capability.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c      | 15 +-----------
- sound/pci/hda/hda_codec.h      | 13 +---------
- sound/pci/hda/hda_controller.c | 54 +++++++++++++++++++++++-------------------
- 3 files changed, 32 insertions(+), 50 deletions(-)
+ sound/pci/hda/hda_controller.c |  4 ++--
+ sound/pci/hda/hda_intel.c      | 12 +++++-------
+ sound/pci/hda/hda_priv.h       |  3 +++
+ 3 files changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 2fe86d2e1b09..215bf048c668 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -861,14 +861,12 @@ static int snd_hda_bus_dev_disconnect(struct snd_device *device)
- /**
-  * snd_hda_bus_new - create a HDA bus
-  * @card: the card entry
-- * @temp: the template for hda_bus information
-  * @busp: the pointer to store the created bus instance
-  *
-  * Returns 0 if successful, or a negative error code.
-  */
- int snd_hda_bus_new(struct snd_card *card,
--			      const struct hda_bus_template *temp,
--			      struct hda_bus **busp)
-+		    struct hda_bus **busp)
- {
- 	struct hda_bus *bus;
- 	int err;
-@@ -877,11 +875,6 @@ int snd_hda_bus_new(struct snd_card *card,
- 		.dev_free = snd_hda_bus_dev_free,
- 	};
- 
--	if (snd_BUG_ON(!temp))
--		return -EINVAL;
--	if (snd_BUG_ON(!temp->ops.command || !temp->ops.get_response))
--		return -EINVAL;
--
- 	if (busp)
- 		*busp = NULL;
- 
-@@ -892,12 +885,6 @@ int snd_hda_bus_new(struct snd_card *card,
- 	}
- 
- 	bus->card = card;
--	bus->private_data = temp->private_data;
--	bus->pci = temp->pci;
--	bus->modelname = temp->modelname;
--	bus->power_save = temp->power_save;
--	bus->ops = temp->ops;
--
- 	mutex_init(&bus->cmd_mutex);
- 	mutex_init(&bus->prepare_mutex);
- 	INIT_LIST_HEAD(&bus->codec_list);
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 9c8820f21f94..5a6594884069 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -101,15 +101,6 @@ struct hda_bus_ops {
- #endif
- };
- 
--/* template to pass to the bus constructor */
--struct hda_bus_template {
--	void *private_data;
--	struct pci_dev *pci;
--	const char *modelname;
--	int *power_save;
--	struct hda_bus_ops ops;
--};
--
- /*
-  * codec bus
-  *
-@@ -119,7 +110,6 @@ struct hda_bus_template {
- struct hda_bus {
- 	struct snd_card *card;
- 
--	/* copied from template */
- 	void *private_data;
- 	struct pci_dev *pci;
- 	const char *modelname;
-@@ -420,8 +410,7 @@ enum {
- /*
-  * constructors
-  */
--int snd_hda_bus_new(struct snd_card *card, const struct hda_bus_template *temp,
--		    struct hda_bus **busp);
-+int snd_hda_bus_new(struct snd_card *card, struct hda_bus **busp);
- int snd_hda_codec_new(struct hda_bus *bus, unsigned int codec_addr,
- 		      struct hda_codec **codecp);
- int snd_hda_codec_configure(struct hda_codec *codec);
 diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index dfcb5e929f9f..31ff8b55f386 100644
+index 31ff8b55f386..3589fc2165b0 100644
 --- a/sound/pci/hda/hda_controller.c
 +++ b/sound/pci/hda/hda_controller.c
-@@ -1815,39 +1815,45 @@ static int get_jackpoll_interval(struct azx *chip)
- 	return j;
- }
+@@ -1681,7 +1681,7 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
+ 	int i;
  
-+static struct hda_bus_ops bus_ops = {
-+	.command = azx_send_cmd,
-+	.get_response = azx_get_response,
-+	.attach_pcm = azx_attach_pcm_stream,
-+	.bus_reset = azx_bus_reset,
-+#ifdef CONFIG_PM
-+	.pm_notify = azx_power_notify,
-+#endif
-+#ifdef CONFIG_SND_HDA_DSP_LOADER
-+	.load_dsp_prepare = azx_load_dsp_prepare,
-+	.load_dsp_trigger = azx_load_dsp_trigger,
-+	.load_dsp_cleanup = azx_load_dsp_cleanup,
-+#endif
-+};
-+
- /* Codec initialization */
- int azx_codec_create(struct azx *chip, const char *model,
- 		     unsigned int max_slots,
- 		     int *power_save_to)
+ #ifdef CONFIG_PM
+-	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
++	if (azx_has_pm_runtime(chip))
+ 		if (!pm_runtime_active(chip->card->dev))
+ 			return IRQ_NONE;
+ #endif
+@@ -1784,7 +1784,7 @@ static void azx_power_notify(struct hda_bus *bus, bool power_up)
  {
--	struct hda_bus_template bus_temp;
-+	struct hda_bus *bus;
- 	int c, codecs, err;
+ 	struct azx *chip = bus->private_data;
  
--	memset(&bus_temp, 0, sizeof(bus_temp));
--	bus_temp.private_data = chip;
--	bus_temp.modelname = model;
--	bus_temp.pci = chip->pci;
--	bus_temp.ops.command = azx_send_cmd;
--	bus_temp.ops.get_response = azx_get_response;
--	bus_temp.ops.attach_pcm = azx_attach_pcm_stream;
--	bus_temp.ops.bus_reset = azx_bus_reset;
--#ifdef CONFIG_PM
--	bus_temp.power_save = power_save_to;
--	bus_temp.ops.pm_notify = azx_power_notify;
--#endif
--#ifdef CONFIG_SND_HDA_DSP_LOADER
--	bus_temp.ops.load_dsp_prepare = azx_load_dsp_prepare;
--	bus_temp.ops.load_dsp_trigger = azx_load_dsp_trigger;
--	bus_temp.ops.load_dsp_cleanup = azx_load_dsp_cleanup;
--#endif
--
--	err = snd_hda_bus_new(chip->card, &bus_temp, &chip->bus);
-+	err = snd_hda_bus_new(chip->card, &bus);
- 	if (err < 0)
- 		return err;
+-	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
++	if (!azx_has_pm_runtime(chip))
+ 		return;
  
-+	chip->bus = bus;
-+	bus->private_data = chip;
-+	bus->pci = chip->pci;
-+	bus->modelname = model;
-+	bus->ops = bus_ops;
-+#ifdef CONFIG_PM
-+	bus->power_save = power_save_to;
-+#endif
+ 	if (power_up)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 36d2f20db7a4..589883291f4e 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -852,7 +852,7 @@ static int azx_runtime_suspend(struct device *dev)
+ 	if (chip->disabled || hda->init_failed)
+ 		return 0;
+ 
+-	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
++	if (!azx_has_pm_runtime(chip))
+ 		return 0;
+ 
+ 	/* enable controller wake up event */
+@@ -885,7 +885,7 @@ static int azx_runtime_resume(struct device *dev)
+ 	if (chip->disabled || hda->init_failed)
+ 		return 0;
+ 
+-	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
++	if (!azx_has_pm_runtime(chip))
+ 		return 0;
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+@@ -928,8 +928,7 @@ static int azx_runtime_idle(struct device *dev)
+ 	if (chip->disabled || hda->init_failed)
+ 		return 0;
+ 
+-	if (!power_save_controller ||
+-	    !(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
++	if (!power_save_controller || !azx_has_pm_runtime(chip))
+ 		return -EBUSY;
+ 
+ 	return 0;
+@@ -1071,8 +1070,7 @@ static int azx_free(struct azx *chip)
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	int i;
+ 
+-	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
+-			&& chip->running)
++	if (azx_has_pm_runtime(chip) && chip->running)
+ 		pm_runtime_get_noresume(&pci->dev);
+ 
+ 	azx_del_card_list(chip);
+@@ -1938,7 +1936,7 @@ static int azx_probe_continue(struct azx *chip)
+ 	power_down_all_codecs(chip);
+ 	azx_notifier_register(chip);
+ 	azx_add_card_list(chip);
+-	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME) || hda->use_vga_switcheroo)
++	if (azx_has_pm_runtime(chip) || hda->use_vga_switcheroo)
+ 		pm_runtime_put_noidle(&pci->dev);
+ 
+ out_free:
+diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
+index daf458299753..a7b4a25c571c 100644
+--- a/sound/pci/hda/hda_priv.h
++++ b/sound/pci/hda/hda_priv.h
+@@ -403,4 +403,7 @@ struct azx {
+ #define azx_sd_readb(chip, dev, reg) \
+ 	((chip)->ops->reg_readb((dev)->sd_addr + AZX_REG_##reg))
+ 
++#define azx_has_pm_runtime(chip) \
++	(!AZX_DCAPS_PM_RUNTIME || ((chip)->driver_caps & AZX_DCAPS_PM_RUNTIME))
 +
- 	if (chip->driver_caps & AZX_DCAPS_RIRB_DELAY) {
- 		dev_dbg(chip->card->dev, "Enable delay in RIRB handling\n");
--		chip->bus->needs_damn_long_delay = 1;
-+		bus->needs_damn_long_delay = 1;
- 	}
- 
- 	codecs = 0;
-@@ -1883,15 +1889,15 @@ int azx_codec_create(struct azx *chip, const char *model,
- 	 */
- 	if (chip->driver_caps & AZX_DCAPS_SYNC_WRITE) {
- 		dev_dbg(chip->card->dev, "Enable sync_write for stable communication\n");
--		chip->bus->sync_write = 1;
--		chip->bus->allow_bus_reset = 1;
-+		bus->sync_write = 1;
-+		bus->allow_bus_reset = 1;
- 	}
- 
- 	/* Then create codec instances */
- 	for (c = 0; c < max_slots; c++) {
- 		if ((chip->codec_mask & (1 << c)) & chip->codec_probe_mask) {
- 			struct hda_codec *codec;
--			err = snd_hda_codec_new(chip->bus, c, &codec);
-+			err = snd_hda_codec_new(bus, c, &codec);
- 			if (err < 0)
- 				continue;
- 			codec->jackpoll_interval = get_jackpoll_interval(chip);
+ #endif /* __SOUND_HDA_PRIV_H */
 -- 
 2.3.0
