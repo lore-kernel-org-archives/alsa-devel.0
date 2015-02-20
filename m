@@ -1,50 +1,104 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 1/6] ASoC: max98088: Document DT bindings
-Date: Fri, 20 Feb 2015 13:12:15 +0100
-Message-ID: <54E7249F.2020900@samsung.com>
-References: <1424283959-16289-1-git-send-email-afaerber@suse.de>
- <1424283959-16289-2-git-send-email-afaerber@suse.de>
- <54E5EB36.9020007@collabora.co.uk> <54E5EF73.2090302@suse.de>
- <CAD=FV=VoFnbEsKi4mDDkaTrTXboJmm0UNV5iCk1CvV5ndEZtsA@mail.gmail.com>
- <54E62E1C.4030105@suse.de> <54E6314E.5060509@suse.de>
- <54E64C09.5000505@collabora.co.uk> <54E681A8.6040702@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/4] ALSA: pcm: Minor refactoring in
+	snd_pcm_attach_substream()
+Date: Fri, 20 Feb 2015 17:23:25 +0100
+Message-ID: <1424449408-22376-2-git-send-email-tiwai@suse.de>
+References: <1424449408-22376-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <54E681A8.6040702@suse.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: =?UTF-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber@suse.de>
-Cc: Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Doug Anderson <dianders@chromium.org>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Vincent Palatin <vpalatin@chromium.org>, Tomasz Figa <tomasz.figa@gmail.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2C42260594
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 17:23:31 +0100 (CET)
+In-Reply-To: <1424449408-22376-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/02/15 01:36, Andreas F=C3=A4rber wrote:
->>> >> So it seems the mclk is not always set up properly by the kernel=
-,
->>> >> relying on firmware. Who's in charge of setting that clock up?
->> >=20
->> > Right, it seems audio is only working due the firmware doing some =
-previous
->> > setup. Probably it works on every boot if you have "sound init" as=
- a part of
->> > the u-boot boot commands?
->
-> Indeed it does, 24 MHz without the reparenting patch, and sound worki=
-ng.
+No functional changes at all.
 
-You can have parent of the CLKOUT clock set by the clk core if it is
-specified in device tree in the PMU (the clkout clock supplier) device
-node.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm.c | 41 +++++++++++++++--------------------------
+ 1 file changed, 15 insertions(+), 26 deletions(-)
 
-Similarly as we did for the Odroix U3:
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/ar=
-ch/arm/boot/dts/exynos4412-odroid-common.dtsi#n39
-
-Relying on the clk_set_rate() to set the parent clock is not optimal
-IMO. Presumably you need to set select stable parent clock for clkout
-like XXTI. But I'm not very familiar with exyno5250 and that might be
-something different.
-
---=20
-Regards,
-Sylwester
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 0345e53a340c..89206e9c3578 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -919,6 +919,9 @@ int snd_pcm_attach_substream(struct snd_pcm *pcm, int stream,
+ 
+ 	if (snd_BUG_ON(!pcm || !rsubstream))
+ 		return -ENXIO;
++	if (snd_BUG_ON(stream != SNDRV_PCM_STREAM_PLAYBACK ||
++		       stream != SNDRV_PCM_STREAM_CAPTURE))
++		return -EINVAL;
+ 	*rsubstream = NULL;
+ 	pstr = &pcm->streams[stream];
+ 	if (pstr->substream == NULL || pstr->substream_count == 0)
+@@ -927,25 +930,14 @@ int snd_pcm_attach_substream(struct snd_pcm *pcm, int stream,
+ 	card = pcm->card;
+ 	prefer_subdevice = snd_ctl_get_preferred_subdevice(card, SND_CTL_SUBDEV_PCM);
+ 
+-	switch (stream) {
+-	case SNDRV_PCM_STREAM_PLAYBACK:
+-		if (pcm->info_flags & SNDRV_PCM_INFO_HALF_DUPLEX) {
+-			for (substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream; substream; substream = substream->next) {
+-				if (SUBSTREAM_BUSY(substream))
+-					return -EAGAIN;
+-			}
+-		}
+-		break;
+-	case SNDRV_PCM_STREAM_CAPTURE:
+-		if (pcm->info_flags & SNDRV_PCM_INFO_HALF_DUPLEX) {
+-			for (substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; substream; substream = substream->next) {
+-				if (SUBSTREAM_BUSY(substream))
+-					return -EAGAIN;
+-			}
++	if (pcm->info_flags & SNDRV_PCM_INFO_HALF_DUPLEX) {
++		int opposite = !stream;
++
++		for (substream = pcm->streams[opposite].substream; substream;
++		     substream = substream->next) {
++			if (SUBSTREAM_BUSY(substream))
++				return -EAGAIN;
+ 		}
+-		break;
+-	default:
+-		return -EINVAL;
+ 	}
+ 
+ 	if (file->f_flags & O_APPEND) {
+@@ -968,15 +960,12 @@ int snd_pcm_attach_substream(struct snd_pcm *pcm, int stream,
+ 		return 0;
+ 	}
+ 
+-	if (prefer_subdevice >= 0) {
+-		for (substream = pstr->substream; substream; substream = substream->next)
+-			if (!SUBSTREAM_BUSY(substream) && substream->number == prefer_subdevice)
+-				goto __ok;
+-	}
+-	for (substream = pstr->substream; substream; substream = substream->next)
+-		if (!SUBSTREAM_BUSY(substream))
++	for (substream = pstr->substream; substream; substream = substream->next) {
++		if (!SUBSTREAM_BUSY(substream) &&
++		    (prefer_subdevice == -1 ||
++		     substream->number == prefer_subdevice))
+ 			break;
+-      __ok:
++	}
+ 	if (substream == NULL)
+ 		return -EAGAIN;
+ 
+-- 
+2.3.0
