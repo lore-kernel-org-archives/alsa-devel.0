@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/6] ALSA: hda - Embed struct
-	hda_bus_unsolicited into struct hda_bus
-Date: Fri, 20 Feb 2015 08:08:23 +0100
-Message-ID: <1424416107-32470-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 6/6] ALSA: hda - Split azx_codec_create() to
+	two phases
+Date: Fri, 20 Feb 2015 08:08:27 +0100
+Message-ID: <1424416107-32470-7-git-send-email-tiwai@suse.de>
 References: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 190262605FB
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:30 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A885260600
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:31 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5FBD1ACD6
+ by mx2.suse.de (Postfix) with ESMTP id 6BC1BACEB
  for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 07:08:30 +0000 (UTC)
 In-Reply-To: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,167 +27,146 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There is no big merit to handle hda_bus_unsolicited object
-individually, as it's tightly coupled with the hda_bus object itself.
-Embedding it makes the code simpler in the end.
+azx_create_codec() function does actually two things: create a bus and
+probe codecs.  For the future work, split this to two logical
+functions, azx_bus_create() and azx_probe_codecs().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 39 ++++-----------------------------------
- sound/pci/hda/hda_codec.h | 13 +++++++++++--
- sound/pci/hda/hda_local.h | 17 -----------------
- 3 files changed, 15 insertions(+), 54 deletions(-)
+ sound/pci/hda/hda_controller.c | 40 ++++++++++++++++++++++++----------------
+ sound/pci/hda/hda_controller.h |  5 ++---
+ sound/pci/hda/hda_intel.c      |  8 +++++---
+ sound/pci/hda/hda_tegra.c      |  6 +++++-
+ 4 files changed, 36 insertions(+), 23 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 215bf048c668..0734cb35887d 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -762,10 +762,7 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex)
- 		return 0;
- 
- 	trace_hda_unsol_event(bus, res, res_ex);
--	unsol = bus->unsol;
--	if (!unsol)
--		return 0;
--
-+	unsol = &bus->unsol;
- 	wp = (unsol->wp + 1) % HDA_UNSOL_QUEUE_SIZE;
- 	unsol->wp = wp;
- 
-@@ -784,9 +781,8 @@ EXPORT_SYMBOL_GPL(snd_hda_queue_unsol_event);
-  */
- static void process_unsol_events(struct work_struct *work)
- {
--	struct hda_bus_unsolicited *unsol =
--		container_of(work, struct hda_bus_unsolicited, work);
--	struct hda_bus *bus = unsol->bus;
-+	struct hda_bus *bus = container_of(work, struct hda_bus, unsol.work);
-+	struct hda_bus_unsolicited *unsol = &bus->unsol;
- 	struct hda_codec *codec;
- 	unsigned int rp, caddr, res;
- 
-@@ -805,27 +801,6 @@ static void process_unsol_events(struct work_struct *work)
- }
- 
- /*
-- * initialize unsolicited queue
-- */
--static int init_unsol_queue(struct hda_bus *bus)
--{
--	struct hda_bus_unsolicited *unsol;
--
--	if (bus->unsol) /* already initialized */
--		return 0;
--
--	unsol = kzalloc(sizeof(*unsol), GFP_KERNEL);
--	if (!unsol) {
--		dev_err(bus->card->dev, "can't allocate unsolicited queue\n");
--		return -ENOMEM;
--	}
--	INIT_WORK(&unsol->work, process_unsol_events);
--	unsol->bus = bus;
--	bus->unsol = unsol;
--	return 0;
--}
--
--/*
-  * destructor
-  */
- static void snd_hda_bus_free(struct hda_bus *bus)
-@@ -836,7 +811,6 @@ static void snd_hda_bus_free(struct hda_bus *bus)
- 	WARN_ON(!list_empty(&bus->codec_list));
- 	if (bus->workq)
- 		flush_workqueue(bus->workq);
--	kfree(bus->unsol);
- 	if (bus->ops.private_free)
- 		bus->ops.private_free(bus);
- 	if (bus->workq)
-@@ -888,6 +862,7 @@ int snd_hda_bus_new(struct snd_card *card,
- 	mutex_init(&bus->cmd_mutex);
- 	mutex_init(&bus->prepare_mutex);
- 	INIT_LIST_HEAD(&bus->codec_list);
-+	INIT_WORK(&bus->unsol.work, process_unsol_events);
- 
- 	snprintf(bus->workq_name, sizeof(bus->workq_name),
- 		 "hd-audio%d", card->number);
-@@ -1689,12 +1664,6 @@ int snd_hda_codec_configure(struct hda_codec *codec)
- 		return err;
- 	}
- 
--	if (codec->patch_ops.unsol_event) {
--		err = init_unsol_queue(codec->bus);
--		if (err < 0)
--			return err;
--	}
--
- 	/* audio codec should override the mixer name */
- 	if (codec->afg || !*codec->bus->card->mixername)
- 		snprintf(codec->bus->card->mixername,
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 5a6594884069..96421a3b32cd 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -66,7 +66,6 @@ struct hda_beep;
- struct hda_codec;
- struct hda_pcm;
- struct hda_pcm_stream;
--struct hda_bus_unsolicited;
- 
- /* NID type */
- typedef u16 hda_nid_t;
-@@ -101,6 +100,16 @@ struct hda_bus_ops {
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 6fab39133051..2a674525e56f 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1829,13 +1829,11 @@ static struct hda_bus_ops bus_ops = {
  #endif
  };
  
-+/* unsolicited event handler */
-+#define HDA_UNSOL_QUEUE_SIZE	64
-+struct hda_bus_unsolicited {
-+	/* ring buffer */
-+	u32 queue[HDA_UNSOL_QUEUE_SIZE * 2];
-+	unsigned int rp, wp;
-+	/* workqueue */
-+	struct work_struct work;
-+};
+-/* Codec initialization */
+-int azx_codec_create(struct azx *chip, const char *model,
+-		     unsigned int max_slots,
+-		     int *power_save_to)
++/* HD-audio bus initialization */
++int azx_bus_create(struct azx *chip, const char *model, int *power_save_to)
+ {
+ 	struct hda_bus *bus;
+-	int c, codecs, err;
++	int err;
+ 
+ 	err = snd_hda_bus_new(chip->card, &bus);
+ 	if (err < 0)
+@@ -1855,6 +1853,26 @@ int azx_codec_create(struct azx *chip, const char *model,
+ 		bus->needs_damn_long_delay = 1;
+ 	}
+ 
++	/* AMD chipsets often cause the communication stalls upon certain
++	 * sequence like the pin-detection.  It seems that forcing the synced
++	 * access works around the stall.  Grrr...
++	 */
++	if (chip->driver_caps & AZX_DCAPS_SYNC_WRITE) {
++		dev_dbg(chip->card->dev, "Enable sync_write for stable communication\n");
++		bus->sync_write = 1;
++		bus->allow_bus_reset = 1;
++	}
 +
- /*
-  * codec bus
-  *
-@@ -126,7 +135,7 @@ struct hda_bus {
- 	struct mutex prepare_mutex;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(azx_bus_create);
++
++/* Probe codecs */
++int azx_probe_codecs(struct azx *chip, unsigned int max_slots)
++{
++	struct hda_bus *bus = chip->bus;
++	int c, codecs, err;
++
+ 	codecs = 0;
+ 	if (!max_slots)
+ 		max_slots = AZX_DEFAULT_CODECS;
+@@ -1882,16 +1900,6 @@ int azx_codec_create(struct azx *chip, const char *model,
+ 		}
+ 	}
  
- 	/* unsolicited event queue */
--	struct hda_bus_unsolicited *unsol;
-+	struct hda_bus_unsolicited unsol;
- 	char workq_name[16];
- 	struct workqueue_struct *workq;	/* common workqueue for codecs */
+-	/* AMD chipsets often cause the communication stalls upon certain
+-	 * sequence like the pin-detection.  It seems that forcing the synced
+-	 * access works around the stall.  Grrr...
+-	 */
+-	if (chip->driver_caps & AZX_DCAPS_SYNC_WRITE) {
+-		dev_dbg(chip->card->dev, "Enable sync_write for stable communication\n");
+-		bus->sync_write = 1;
+-		bus->allow_bus_reset = 1;
+-	}
+-
+ 	/* Then create codec instances */
+ 	for (c = 0; c < max_slots; c++) {
+ 		if ((chip->codec_mask & (1 << c)) & chip->codec_probe_mask) {
+@@ -1910,7 +1918,7 @@ int azx_codec_create(struct azx *chip, const char *model,
+ 	}
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(azx_codec_create);
++EXPORT_SYMBOL_GPL(azx_probe_codecs);
  
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index 62658f2f8c9f..49c08a7278c4 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -466,23 +466,6 @@ void snd_hda_pick_pin_fixup(struct hda_codec *codec,
- 			    const struct snd_hda_pin_quirk *pin_quirk,
- 			    const struct hda_fixup *fixlist);
+ /* configure each codec instance */
+ int azx_codec_configure(struct azx *chip)
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index 79808e1a79ac..0d09aa6b49ac 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -432,9 +432,8 @@ void azx_enter_link_reset(struct azx *chip);
+ irqreturn_t azx_interrupt(int irq, void *dev_id);
  
--
--/*
-- * unsolicited event handler
-- */
--
--#define HDA_UNSOL_QUEUE_SIZE	64
--
--struct hda_bus_unsolicited {
--	/* ring buffer */
--	u32 queue[HDA_UNSOL_QUEUE_SIZE * 2];
--	unsigned int rp, wp;
--
--	/* workqueue */
--	struct work_struct work;
--	struct hda_bus *bus;
--};
--
- /* helper macros to retrieve pin default-config values */
- #define get_defcfg_connect(cfg) \
- 	((cfg & AC_DEFCFG_PORT_CONN) >> AC_DEFCFG_PORT_CONN_SHIFT)
+ /* Codec interface */
+-int azx_codec_create(struct azx *chip, const char *model,
+-		     unsigned int max_slots,
+-		     int *power_save_to);
++int azx_bus_create(struct azx *chip, const char *model, int *power_save_to);
++int azx_probe_codecs(struct azx *chip, unsigned int max_slots);
+ int azx_codec_configure(struct azx *chip);
+ int azx_init_stream(struct azx *chip);
+ 
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index b0a05691abe7..5e00cc4a722f 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1893,12 +1893,14 @@ static int azx_probe_continue(struct azx *chip)
+ #endif
+ 
+ 	/* create codec instances */
+-	err = azx_codec_create(chip, model[dev],
+-			       azx_max_codecs[chip->driver_type],
+-			       power_save_addr);
++	err = azx_bus_create(chip, model[dev], power_save_addr);
++	if (err < 0)
++		goto out_free;
+ 
++	err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+ 	if (err < 0)
+ 		goto out_free;
++
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ 	if (chip->fw) {
+ 		err = snd_hda_load_patch(chip->bus, chip->fw->size,
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index f305c2a99206..1bd7a9e04046 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -502,7 +502,11 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		goto out_free;
+ 
+ 	/* create codec instances */
+-	err = azx_codec_create(chip, NULL, 0, &power_save);
++	err = azx_bus_create(chip, NULL, &power_save);
++	if (err < 0)
++		goto out_free;
++
++	err = azx_probe_codecs(chip, 0);
+ 	if (err < 0)
+ 		goto out_free;
+ 
 -- 
 2.3.0
