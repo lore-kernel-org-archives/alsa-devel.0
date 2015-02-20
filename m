@@ -1,17 +1,17 @@
-From: noman pouigt <variksla@gmail.com>
-Subject: audio mcbsp1 broken for beagleboard-xm -OMAP
-Date: Thu, 19 Feb 2015 22:45:00 -0800
-Message-ID: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/6] Minor HD-audio cleanups
+Date: Fri, 20 Feb 2015 08:08:21 +0100
+Message-ID: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f180.google.com (mail-ob0-f180.google.com
- [209.85.214.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A9C52605D2
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 07:45:02 +0100 (CET)
-Received: by mail-ob0-f180.google.com with SMTP id vb8so22323584obc.11
- for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2015 22:45:01 -0800 (PST)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 132512605DD
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:30 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 599B1AC47
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 07:08:30 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "jarkko.nikula@bitmer.com" <jarkko.nikula@bitmer.com>, "broonie@kernel.org" <broonie@kernel.org>, "jslaby@suse.cz" <jslaby@suse.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, zonque@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-I am trying to integrate max98090 codec with $subject board.  I am
-running the mcBSP in slave mode as i have not changed the hw_parms for
-omap-twl4030.c file. With below changes i see wait_for_avail is
-getting stuck i.e. mcbsp is not getting any interrupt and nothing is
-playing.
+this is a series of minor cleanups for HD-audio codes.  No functional
+changes but just code refactoring for the further works.
 
-Kernel version:
-VERSION = 3
-PATCHLEVEL = 19
-SUBLEVEL = 0
-EXTRAVERSION =
-NAME = Diseased Newt
+The patches are found in topic/hda-cleanup branch of sound git tree,
+too.
 
-Setup information:
-Using beagle board -xm and connected max98090 codec to mcbsp1 pins.
-Connected only 4 pins.
 
-Changed the omap-twl4030.c machine file as below to disable the twl4030:
-static struct snd_soc_dai_link omap_twl4030_dai_links[] = {
-       {
-+               .name = "max98090",
-+               .stream_name = "max98090",
-               .cpu_dai_name = "omap-mcbsp.1",
-+               .codec_dai_name = "HiFi",
-               .platform_name = "omap-mcbsp.1",
-+               .codec_name = "max98090.1-0010",
-               .ops = &omap_twl4030_ops,
-       },
+Takashi
 
-DTSI file change:arch/arm/boot/dts/omap3-beagle-xm.dts
+===
 
-&i2c2 {
-       clock-frequency = <400000>;
-+
-+       max98090: max98090@10 {
-+               compatible = "maxim,max98090";
-+               reg = <0x10>;
-+       };
-};
+Takashi Iwai (6):
+  ALSA: hda - Drop hda_bus_template for snd_hda_bus_new()
+  ALSA: hda - Embed struct hda_bus_unsolicited into struct hda_bus
+  ALSA: hda - Introduce azx_has_pm_runtime() macro
+  ALSA: hda - Fold hda_priv.h into hda_controller.h
+  ALSA: hda - Drop azx_mixer_create()
+  ALSA: hda - Split azx_codec_create() to two phases
 
-omap/omap-twl4030.c
-added in hw_params below function to set internal oscillator for 98090
-for generating PLL for master clock.
-snd_soc_dai_set_sysclk(codec_dai, 26000000, 0, SND_SOC_CLOCK_IN);
+ sound/pci/hda/hda_codec.c      |  54 +-----
+ sound/pci/hda/hda_codec.h      |  22 +--
+ sound/pci/hda/hda_controller.c |  96 +++++-----
+ sound/pci/hda/hda_controller.h | 397 +++++++++++++++++++++++++++++++++++++++-
+ sound/pci/hda/hda_i915.c       |   2 +-
+ sound/pci/hda/hda_intel.c      |  23 ++-
+ sound/pci/hda/hda_intel.h      |   2 +-
+ sound/pci/hda/hda_local.h      |  17 --
+ sound/pci/hda/hda_priv.h       | 406 -----------------------------------------
+ sound/pci/hda/hda_tegra.c      |   9 +-
+ 10 files changed, 477 insertions(+), 551 deletions(-)
+ delete mode 100644 sound/pci/hda/hda_priv.h
 
-I am able to see that the cpu_dai is mapped with codec_dai and
-configuration is ok. kernel logs at https://ideone.com/oezNSj
-
-I think i don't need to configure the mcbsp1 pins right as it uses default.
-
-Please guide me.I have tried IRC channel also but not getting the right folks.
-
-https://github.com/CircuitCo/BeagleBoard-xM-RevC/blob/master/BeagleBoard-xM_revC_SCH.pdf?raw=true
-
-Thanks,
+-- 
+2.3.0
