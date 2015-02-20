@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 6/6] ALSA: hda - Split azx_codec_create() to
-	two phases
-Date: Fri, 20 Feb 2015 08:08:27 +0100
-Message-ID: <1424416107-32470-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 4/6] ALSA: hda - Fold hda_priv.h into
+	hda_controller.h
+Date: Fri, 20 Feb 2015 08:08:25 +0100
+Message-ID: <1424416107-32470-5-git-send-email-tiwai@suse.de>
 References: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A885260600
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:31 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 175CC2605F9
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:30 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6BC1BACEB
+ by mx2.suse.de (Postfix) with ESMTP id 5E565ACAB
  for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 07:08:30 +0000 (UTC)
 In-Reply-To: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,146 +27,901 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-azx_create_codec() function does actually two things: create a bus and
-probe codecs.  For the future work, split this to two logical
-functions, azx_bus_create() and azx_probe_codecs().
+There is no big reason to keep them separately.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_controller.c | 40 ++++++++++++++++++++++++----------------
- sound/pci/hda/hda_controller.h |  5 ++---
- sound/pci/hda/hda_intel.c      |  8 +++++---
- sound/pci/hda/hda_tegra.c      |  6 +++++-
- 4 files changed, 36 insertions(+), 23 deletions(-)
+ sound/pci/hda/hda_controller.c |   1 -
+ sound/pci/hda/hda_controller.h | 391 ++++++++++++++++++++++++++++++++++++++-
+ sound/pci/hda/hda_i915.c       |   2 +-
+ sound/pci/hda/hda_intel.c      |   1 -
+ sound/pci/hda/hda_intel.h      |   2 +-
+ sound/pci/hda/hda_priv.h       | 409 -----------------------------------------
+ sound/pci/hda/hda_tegra.c      |   1 -
+ 7 files changed, 392 insertions(+), 415 deletions(-)
+ delete mode 100644 sound/pci/hda/hda_priv.h
 
 diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 6fab39133051..2a674525e56f 100644
+index 3589fc2165b0..6b3254d479e1 100644
 --- a/sound/pci/hda/hda_controller.c
 +++ b/sound/pci/hda/hda_controller.c
-@@ -1829,13 +1829,11 @@ static struct hda_bus_ops bus_ops = {
- #endif
- };
+@@ -30,7 +30,6 @@
+ #include <linux/reboot.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
+-#include "hda_priv.h"
+ #include "hda_controller.h"
  
--/* Codec initialization */
--int azx_codec_create(struct azx *chip, const char *model,
--		     unsigned int max_slots,
--		     int *power_save_to)
-+/* HD-audio bus initialization */
-+int azx_bus_create(struct azx *chip, const char *model, int *power_save_to)
- {
- 	struct hda_bus *bus;
--	int c, codecs, err;
-+	int err;
- 
- 	err = snd_hda_bus_new(chip->card, &bus);
- 	if (err < 0)
-@@ -1855,6 +1853,26 @@ int azx_codec_create(struct azx *chip, const char *model,
- 		bus->needs_damn_long_delay = 1;
- 	}
- 
-+	/* AMD chipsets often cause the communication stalls upon certain
-+	 * sequence like the pin-detection.  It seems that forcing the synced
-+	 * access works around the stall.  Grrr...
-+	 */
-+	if (chip->driver_caps & AZX_DCAPS_SYNC_WRITE) {
-+		dev_dbg(chip->card->dev, "Enable sync_write for stable communication\n");
-+		bus->sync_write = 1;
-+		bus->allow_bus_reset = 1;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(azx_bus_create);
-+
-+/* Probe codecs */
-+int azx_probe_codecs(struct azx *chip, unsigned int max_slots)
-+{
-+	struct hda_bus *bus = chip->bus;
-+	int c, codecs, err;
-+
- 	codecs = 0;
- 	if (!max_slots)
- 		max_slots = AZX_DEFAULT_CODECS;
-@@ -1882,16 +1900,6 @@ int azx_codec_create(struct azx *chip, const char *model,
- 		}
- 	}
- 
--	/* AMD chipsets often cause the communication stalls upon certain
--	 * sequence like the pin-detection.  It seems that forcing the synced
--	 * access works around the stall.  Grrr...
--	 */
--	if (chip->driver_caps & AZX_DCAPS_SYNC_WRITE) {
--		dev_dbg(chip->card->dev, "Enable sync_write for stable communication\n");
--		bus->sync_write = 1;
--		bus->allow_bus_reset = 1;
--	}
--
- 	/* Then create codec instances */
- 	for (c = 0; c < max_slots; c++) {
- 		if ((chip->codec_mask & (1 << c)) & chip->codec_probe_mask) {
-@@ -1910,7 +1918,7 @@ int azx_codec_create(struct azx *chip, const char *model,
- 	}
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(azx_codec_create);
-+EXPORT_SYMBOL_GPL(azx_probe_codecs);
- 
- /* configure each codec instance */
- int azx_codec_configure(struct azx *chip)
+ #define CREATE_TRACE_POINTS
 diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index 79808e1a79ac..0d09aa6b49ac 100644
+index c90d10fd4d8f..bd50b49cdd0d 100644
 --- a/sound/pci/hda/hda_controller.h
 +++ b/sound/pci/hda/hda_controller.h
-@@ -432,9 +432,8 @@ void azx_enter_link_reset(struct azx *chip);
- irqreturn_t azx_interrupt(int irq, void *dev_id);
+@@ -15,10 +15,399 @@
+ #ifndef __SOUND_HDA_CONTROLLER_H
+ #define __SOUND_HDA_CONTROLLER_H
  
- /* Codec interface */
--int azx_codec_create(struct azx *chip, const char *model,
--		     unsigned int max_slots,
--		     int *power_save_to);
-+int azx_bus_create(struct azx *chip, const char *model, int *power_save_to);
-+int azx_probe_codecs(struct azx *chip, unsigned int max_slots);
- int azx_codec_configure(struct azx *chip);
- int azx_init_stream(struct azx *chip);
++#include <linux/timecounter.h>
++#include <linux/interrupt.h>
+ #include <sound/core.h>
++#include <sound/pcm.h>
+ #include <sound/initval.h>
+ #include "hda_codec.h"
+-#include "hda_priv.h"
++
++/*
++ * registers
++ */
++#define AZX_REG_GCAP			0x00
++#define   AZX_GCAP_64OK		(1 << 0)   /* 64bit address support */
++#define   AZX_GCAP_NSDO		(3 << 1)   /* # of serial data out signals */
++#define   AZX_GCAP_BSS		(31 << 3)  /* # of bidirectional streams */
++#define   AZX_GCAP_ISS		(15 << 8)  /* # of input streams */
++#define   AZX_GCAP_OSS		(15 << 12) /* # of output streams */
++#define AZX_REG_VMIN			0x02
++#define AZX_REG_VMAJ			0x03
++#define AZX_REG_OUTPAY			0x04
++#define AZX_REG_INPAY			0x06
++#define AZX_REG_GCTL			0x08
++#define   AZX_GCTL_RESET	(1 << 0)   /* controller reset */
++#define   AZX_GCTL_FCNTRL	(1 << 1)   /* flush control */
++#define   AZX_GCTL_UNSOL	(1 << 8)   /* accept unsol. response enable */
++#define AZX_REG_WAKEEN			0x0c
++#define AZX_REG_STATESTS		0x0e
++#define AZX_REG_GSTS			0x10
++#define   AZX_GSTS_FSTS		(1 << 1)   /* flush status */
++#define AZX_REG_INTCTL			0x20
++#define AZX_REG_INTSTS			0x24
++#define AZX_REG_WALLCLK			0x30	/* 24Mhz source */
++#define AZX_REG_OLD_SSYNC		0x34	/* SSYNC for old ICH */
++#define AZX_REG_SSYNC			0x38
++#define AZX_REG_CORBLBASE		0x40
++#define AZX_REG_CORBUBASE		0x44
++#define AZX_REG_CORBWP			0x48
++#define AZX_REG_CORBRP			0x4a
++#define   AZX_CORBRP_RST	(1 << 15)  /* read pointer reset */
++#define AZX_REG_CORBCTL			0x4c
++#define   AZX_CORBCTL_RUN	(1 << 1)   /* enable DMA */
++#define   AZX_CORBCTL_CMEIE	(1 << 0)   /* enable memory error irq */
++#define AZX_REG_CORBSTS			0x4d
++#define   AZX_CORBSTS_CMEI	(1 << 0)   /* memory error indication */
++#define AZX_REG_CORBSIZE		0x4e
++
++#define AZX_REG_RIRBLBASE		0x50
++#define AZX_REG_RIRBUBASE		0x54
++#define AZX_REG_RIRBWP			0x58
++#define   AZX_RIRBWP_RST	(1 << 15)  /* write pointer reset */
++#define AZX_REG_RINTCNT			0x5a
++#define AZX_REG_RIRBCTL			0x5c
++#define   AZX_RBCTL_IRQ_EN	(1 << 0)   /* enable IRQ */
++#define   AZX_RBCTL_DMA_EN	(1 << 1)   /* enable DMA */
++#define   AZX_RBCTL_OVERRUN_EN	(1 << 2)   /* enable overrun irq */
++#define AZX_REG_RIRBSTS			0x5d
++#define   AZX_RBSTS_IRQ		(1 << 0)   /* response irq */
++#define   AZX_RBSTS_OVERRUN	(1 << 2)   /* overrun irq */
++#define AZX_REG_RIRBSIZE		0x5e
++
++#define AZX_REG_IC			0x60
++#define AZX_REG_IR			0x64
++#define AZX_REG_IRS			0x68
++#define   AZX_IRS_VALID		(1<<1)
++#define   AZX_IRS_BUSY		(1<<0)
++
++#define AZX_REG_DPLBASE			0x70
++#define AZX_REG_DPUBASE			0x74
++#define   AZX_DPLBASE_ENABLE	0x1	/* Enable position buffer */
++
++/* SD offset: SDI0=0x80, SDI1=0xa0, ... SDO3=0x160 */
++enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
++
++/* stream register offsets from stream base */
++#define AZX_REG_SD_CTL			0x00
++#define AZX_REG_SD_STS			0x03
++#define AZX_REG_SD_LPIB			0x04
++#define AZX_REG_SD_CBL			0x08
++#define AZX_REG_SD_LVI			0x0c
++#define AZX_REG_SD_FIFOW		0x0e
++#define AZX_REG_SD_FIFOSIZE		0x10
++#define AZX_REG_SD_FORMAT		0x12
++#define AZX_REG_SD_BDLPL		0x18
++#define AZX_REG_SD_BDLPU		0x1c
++
++/* PCI space */
++#define AZX_PCIREG_TCSEL		0x44
++
++/*
++ * other constants
++ */
++
++/* max number of fragments - we may use more if allocating more pages for BDL */
++#define BDL_SIZE		4096
++#define AZX_MAX_BDL_ENTRIES	(BDL_SIZE / 16)
++#define AZX_MAX_FRAG		32
++/* max buffer size - no h/w limit, you can increase as you like */
++#define AZX_MAX_BUF_SIZE	(1024*1024*1024)
++
++/* RIRB int mask: overrun[2], response[0] */
++#define RIRB_INT_RESPONSE	0x01
++#define RIRB_INT_OVERRUN	0x04
++#define RIRB_INT_MASK		0x05
++
++/* STATESTS int mask: S3,SD2,SD1,SD0 */
++#define AZX_MAX_CODECS		8
++#define AZX_DEFAULT_CODECS	4
++#define STATESTS_INT_MASK	((1 << AZX_MAX_CODECS) - 1)
++
++/* SD_CTL bits */
++#define SD_CTL_STREAM_RESET	0x01	/* stream reset bit */
++#define SD_CTL_DMA_START	0x02	/* stream DMA start bit */
++#define SD_CTL_STRIPE		(3 << 16)	/* stripe control */
++#define SD_CTL_TRAFFIC_PRIO	(1 << 18)	/* traffic priority */
++#define SD_CTL_DIR		(1 << 19)	/* bi-directional stream */
++#define SD_CTL_STREAM_TAG_MASK	(0xf << 20)
++#define SD_CTL_STREAM_TAG_SHIFT	20
++
++/* SD_CTL and SD_STS */
++#define SD_INT_DESC_ERR		0x10	/* descriptor error interrupt */
++#define SD_INT_FIFO_ERR		0x08	/* FIFO error interrupt */
++#define SD_INT_COMPLETE		0x04	/* completion interrupt */
++#define SD_INT_MASK		(SD_INT_DESC_ERR|SD_INT_FIFO_ERR|\
++				 SD_INT_COMPLETE)
++
++/* SD_STS */
++#define SD_STS_FIFO_READY	0x20	/* FIFO ready */
++
++/* INTCTL and INTSTS */
++#define AZX_INT_ALL_STREAM	0xff	   /* all stream interrupts */
++#define AZX_INT_CTRL_EN	0x40000000 /* controller interrupt enable bit */
++#define AZX_INT_GLOBAL_EN	0x80000000 /* global interrupt enable bit */
++
++/* below are so far hardcoded - should read registers in future */
++#define AZX_MAX_CORB_ENTRIES	256
++#define AZX_MAX_RIRB_ENTRIES	256
++
++/* driver quirks (capabilities) */
++/* bits 0-7 are used for indicating driver type */
++#define AZX_DCAPS_NO_TCSEL	(1 << 8)	/* No Intel TCSEL bit */
++#define AZX_DCAPS_NO_MSI	(1 << 9)	/* No MSI support */
++#define AZX_DCAPS_SNOOP_MASK	(3 << 10)	/* snoop type mask */
++#define AZX_DCAPS_SNOOP_OFF	(1 << 12)	/* snoop default off */
++#define AZX_DCAPS_RIRB_DELAY	(1 << 13)	/* Long delay in read loop */
++#define AZX_DCAPS_RIRB_PRE_DELAY (1 << 14)	/* Put a delay before read */
++#define AZX_DCAPS_CTX_WORKAROUND (1 << 15)	/* X-Fi workaround */
++#define AZX_DCAPS_POSFIX_LPIB	(1 << 16)	/* Use LPIB as default */
++#define AZX_DCAPS_POSFIX_VIA	(1 << 17)	/* Use VIACOMBO as default */
++#define AZX_DCAPS_NO_64BIT	(1 << 18)	/* No 64bit address */
++#define AZX_DCAPS_SYNC_WRITE	(1 << 19)	/* sync each cmd write */
++#define AZX_DCAPS_OLD_SSYNC	(1 << 20)	/* Old SSYNC reg for ICH */
++#define AZX_DCAPS_NO_ALIGN_BUFSIZE (1 << 21)	/* no buffer size alignment */
++/* 22 unused */
++#define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)	/* BDLE in 4k boundary */
++#define AZX_DCAPS_REVERSE_ASSIGN (1 << 24)	/* Assign devices in reverse order */
++#define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
++#define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
++#define AZX_DCAPS_I915_POWERWELL (1 << 27)	/* HSW i915 powerwell support */
++#define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears itself after reset */
++#define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
++#define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and playback use separate stream tag */
++
++enum {
++	AZX_SNOOP_TYPE_NONE,
++	AZX_SNOOP_TYPE_SCH,
++	AZX_SNOOP_TYPE_ATI,
++	AZX_SNOOP_TYPE_NVIDIA,
++};
++
++/* HD Audio class code */
++#define PCI_CLASS_MULTIMEDIA_HD_AUDIO	0x0403
++
++struct azx_dev {
++	struct snd_dma_buffer bdl; /* BDL buffer */
++	u32 *posbuf;		/* position buffer pointer */
++
++	unsigned int bufsize;	/* size of the play buffer in bytes */
++	unsigned int period_bytes; /* size of the period in bytes */
++	unsigned int frags;	/* number for period in the play buffer */
++	unsigned int fifo_size;	/* FIFO size */
++	unsigned long start_wallclk;	/* start + minimum wallclk */
++	unsigned long period_wallclk;	/* wallclk for period */
++
++	void __iomem *sd_addr;	/* stream descriptor pointer */
++
++	u32 sd_int_sta_mask;	/* stream int status mask */
++
++	/* pcm support */
++	struct snd_pcm_substream *substream;	/* assigned substream,
++						 * set in PCM open
++						 */
++	unsigned int format_val;	/* format value to be set in the
++					 * controller and the codec
++					 */
++	unsigned char stream_tag;	/* assigned stream */
++	unsigned char index;		/* stream index */
++	int assigned_key;		/* last device# key assigned to */
++
++	unsigned int opened:1;
++	unsigned int running:1;
++	unsigned int irq_pending:1;
++	unsigned int prepared:1;
++	unsigned int locked:1;
++	/*
++	 * For VIA:
++	 *  A flag to ensure DMA position is 0
++	 *  when link position is not greater than FIFO size
++	 */
++	unsigned int insufficient:1;
++	unsigned int wc_marked:1;
++	unsigned int no_period_wakeup:1;
++
++	struct timecounter  azx_tc;
++	struct cyclecounter azx_cc;
++
++	int delay_negative_threshold;
++
++#ifdef CONFIG_SND_HDA_DSP_LOADER
++	/* Allows dsp load to have sole access to the playback stream. */
++	struct mutex dsp_mutex;
++#endif
++};
++
++/* CORB/RIRB */
++struct azx_rb {
++	u32 *buf;		/* CORB/RIRB buffer
++				 * Each CORB entry is 4byte, RIRB is 8byte
++				 */
++	dma_addr_t addr;	/* physical address of CORB/RIRB buffer */
++	/* for RIRB */
++	unsigned short rp, wp;	/* read/write pointers */
++	int cmds[AZX_MAX_CODECS];	/* number of pending requests */
++	u32 res[AZX_MAX_CODECS];	/* last read value */
++};
++
++struct azx;
++
++/* Functions to read/write to hda registers. */
++struct hda_controller_ops {
++	/* Register Access */
++	void (*reg_writel)(u32 value, u32 __iomem *addr);
++	u32 (*reg_readl)(u32 __iomem *addr);
++	void (*reg_writew)(u16 value, u16 __iomem *addr);
++	u16 (*reg_readw)(u16 __iomem *addr);
++	void (*reg_writeb)(u8 value, u8 __iomem *addr);
++	u8 (*reg_readb)(u8 __iomem *addr);
++	/* Disable msi if supported, PCI only */
++	int (*disable_msi_reset_irq)(struct azx *);
++	/* Allocation ops */
++	int (*dma_alloc_pages)(struct azx *chip,
++			       int type,
++			       size_t size,
++			       struct snd_dma_buffer *buf);
++	void (*dma_free_pages)(struct azx *chip, struct snd_dma_buffer *buf);
++	int (*substream_alloc_pages)(struct azx *chip,
++				     struct snd_pcm_substream *substream,
++				     size_t size);
++	int (*substream_free_pages)(struct azx *chip,
++				    struct snd_pcm_substream *substream);
++	void (*pcm_mmap_prepare)(struct snd_pcm_substream *substream,
++				 struct vm_area_struct *area);
++	/* Check if current position is acceptable */
++	int (*position_check)(struct azx *chip, struct azx_dev *azx_dev);
++};
++
++struct azx_pcm {
++	struct azx *chip;
++	struct snd_pcm *pcm;
++	struct hda_codec *codec;
++	struct hda_pcm_stream *hinfo[2];
++	struct list_head list;
++};
++
++typedef unsigned int (*azx_get_pos_callback_t)(struct azx *, struct azx_dev *);
++typedef int (*azx_get_delay_callback_t)(struct azx *, struct azx_dev *, unsigned int pos);
++
++struct azx {
++	struct snd_card *card;
++	struct pci_dev *pci;
++	int dev_index;
++
++	/* chip type specific */
++	int driver_type;
++	unsigned int driver_caps;
++	int playback_streams;
++	int playback_index_offset;
++	int capture_streams;
++	int capture_index_offset;
++	int num_streams;
++	const int *jackpoll_ms; /* per-card jack poll interval */
++
++	/* Register interaction. */
++	const struct hda_controller_ops *ops;
++
++	/* position adjustment callbacks */
++	azx_get_pos_callback_t get_position[2];
++	azx_get_delay_callback_t get_delay[2];
++
++	/* pci resources */
++	unsigned long addr;
++	void __iomem *remap_addr;
++	int irq;
++
++	/* locks */
++	spinlock_t reg_lock;
++	struct mutex open_mutex; /* Prevents concurrent open/close operations */
++
++	/* streams (x num_streams) */
++	struct azx_dev *azx_dev;
++
++	/* PCM */
++	struct list_head pcm_list; /* azx_pcm list */
++
++	/* HD codec */
++	unsigned short codec_mask;
++	int  codec_probe_mask; /* copied from probe_mask option */
++	struct hda_bus *bus;
++	unsigned int beep_mode;
++
++	/* CORB/RIRB */
++	struct azx_rb corb;
++	struct azx_rb rirb;
++
++	/* CORB/RIRB and position buffers */
++	struct snd_dma_buffer rb;
++	struct snd_dma_buffer posbuf;
++
++#ifdef CONFIG_SND_HDA_PATCH_LOADER
++	const struct firmware *fw;
++#endif
++
++	/* flags */
++	const int *bdl_pos_adj;
++	int poll_count;
++	unsigned int running:1;
++	unsigned int initialized:1;
++	unsigned int single_cmd:1;
++	unsigned int polling_mode:1;
++	unsigned int msi:1;
++	unsigned int probing:1; /* codec probing phase */
++	unsigned int snoop:1;
++	unsigned int align_buffer_size:1;
++	unsigned int region_requested:1;
++	unsigned int disabled:1; /* disabled by VGA-switcher */
++
++	/* for debugging */
++	unsigned int last_cmd[AZX_MAX_CODECS];
++
++	/* reboot notifier (for mysterious hangup problem at power-down) */
++	struct notifier_block reboot_notifier;
++
++#ifdef CONFIG_SND_HDA_DSP_LOADER
++	struct azx_dev saved_azx_dev;
++#endif
++};
++
++#ifdef CONFIG_X86
++#define azx_snoop(chip)		((chip)->snoop)
++#else
++#define azx_snoop(chip)		true
++#endif
++
++/*
++ * macros for easy use
++ */
++
++#define azx_writel(chip, reg, value) \
++	((chip)->ops->reg_writel(value, (chip)->remap_addr + AZX_REG_##reg))
++#define azx_readl(chip, reg) \
++	((chip)->ops->reg_readl((chip)->remap_addr + AZX_REG_##reg))
++#define azx_writew(chip, reg, value) \
++	((chip)->ops->reg_writew(value, (chip)->remap_addr + AZX_REG_##reg))
++#define azx_readw(chip, reg) \
++	((chip)->ops->reg_readw((chip)->remap_addr + AZX_REG_##reg))
++#define azx_writeb(chip, reg, value) \
++	((chip)->ops->reg_writeb(value, (chip)->remap_addr + AZX_REG_##reg))
++#define azx_readb(chip, reg) \
++	((chip)->ops->reg_readb((chip)->remap_addr + AZX_REG_##reg))
++
++#define azx_sd_writel(chip, dev, reg, value) \
++	((chip)->ops->reg_writel(value, (dev)->sd_addr + AZX_REG_##reg))
++#define azx_sd_readl(chip, dev, reg) \
++	((chip)->ops->reg_readl((dev)->sd_addr + AZX_REG_##reg))
++#define azx_sd_writew(chip, dev, reg, value) \
++	((chip)->ops->reg_writew(value, (dev)->sd_addr + AZX_REG_##reg))
++#define azx_sd_readw(chip, dev, reg) \
++	((chip)->ops->reg_readw((dev)->sd_addr + AZX_REG_##reg))
++#define azx_sd_writeb(chip, dev, reg, value) \
++	((chip)->ops->reg_writeb(value, (dev)->sd_addr + AZX_REG_##reg))
++#define azx_sd_readb(chip, dev, reg) \
++	((chip)->ops->reg_readb((dev)->sd_addr + AZX_REG_##reg))
++
++#define azx_has_pm_runtime(chip) \
++	(!AZX_DCAPS_PM_RUNTIME || ((chip)->driver_caps & AZX_DCAPS_PM_RUNTIME))
  
+ /* PCM setup */
+ static inline struct azx_dev *get_azx_dev(struct snd_pcm_substream *substream)
+diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
+index 714894527e06..52a85d87c23c 100644
+--- a/sound/pci/hda/hda_i915.c
++++ b/sound/pci/hda/hda_i915.c
+@@ -22,7 +22,7 @@
+ #include <linux/component.h>
+ #include <drm/i915_component.h>
+ #include <sound/core.h>
+-#include "hda_priv.h"
++#include "hda_controller.h"
+ #include "hda_intel.h"
+ 
+ /* Intel HSW/BDW display HDA controller Extended Mode registers.
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index b0a05691abe7..5e00cc4a722f 100644
+index 589883291f4e..ced44a75f8ea 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -1893,12 +1893,14 @@ static int azx_probe_continue(struct azx *chip)
- #endif
+@@ -62,7 +62,6 @@
+ #include <linux/firmware.h>
+ #include "hda_codec.h"
+ #include "hda_controller.h"
+-#include "hda_priv.h"
+ #include "hda_intel.h"
  
- 	/* create codec instances */
--	err = azx_codec_create(chip, model[dev],
--			       azx_max_codecs[chip->driver_type],
--			       power_save_addr);
-+	err = azx_bus_create(chip, model[dev], power_save_addr);
-+	if (err < 0)
-+		goto out_free;
+ /* position fix mode */
+diff --git a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h
+index 348611835476..d5231f7216a7 100644
+--- a/sound/pci/hda/hda_intel.h
++++ b/sound/pci/hda/hda_intel.h
+@@ -17,7 +17,7 @@
+ #define __SOUND_HDA_INTEL_H
  
-+	err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
- 	if (err < 0)
- 		goto out_free;
-+
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
- 	if (chip->fw) {
- 		err = snd_hda_load_patch(chip->bus, chip->fw->size,
+ #include <drm/i915_component.h>
+-#include "hda_priv.h"
++#include "hda_controller.h"
+ 
+ struct hda_intel {
+ 	struct azx chip;
+diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
+deleted file mode 100644
+index a7b4a25c571c..000000000000
+--- a/sound/pci/hda/hda_priv.h
++++ /dev/null
+@@ -1,409 +0,0 @@
+-/*
+- *  Common defines for the alsa driver code base for HD Audio.
+- *
+- *  This program is free software; you can redistribute it and/or modify it
+- *  under the terms of the GNU General Public License as published by the Free
+- *  Software Foundation; either version 2 of the License, or (at your option)
+- *  any later version.
+- *
+- *  This program is distributed in the hope that it will be useful, but WITHOUT
+- *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- *  more details.
+- */
+-
+-#ifndef __SOUND_HDA_PRIV_H
+-#define __SOUND_HDA_PRIV_H
+-
+-#include <linux/timecounter.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-
+-/*
+- * registers
+- */
+-#define AZX_REG_GCAP			0x00
+-#define   AZX_GCAP_64OK		(1 << 0)   /* 64bit address support */
+-#define   AZX_GCAP_NSDO		(3 << 1)   /* # of serial data out signals */
+-#define   AZX_GCAP_BSS		(31 << 3)  /* # of bidirectional streams */
+-#define   AZX_GCAP_ISS		(15 << 8)  /* # of input streams */
+-#define   AZX_GCAP_OSS		(15 << 12) /* # of output streams */
+-#define AZX_REG_VMIN			0x02
+-#define AZX_REG_VMAJ			0x03
+-#define AZX_REG_OUTPAY			0x04
+-#define AZX_REG_INPAY			0x06
+-#define AZX_REG_GCTL			0x08
+-#define   AZX_GCTL_RESET	(1 << 0)   /* controller reset */
+-#define   AZX_GCTL_FCNTRL	(1 << 1)   /* flush control */
+-#define   AZX_GCTL_UNSOL	(1 << 8)   /* accept unsol. response enable */
+-#define AZX_REG_WAKEEN			0x0c
+-#define AZX_REG_STATESTS		0x0e
+-#define AZX_REG_GSTS			0x10
+-#define   AZX_GSTS_FSTS		(1 << 1)   /* flush status */
+-#define AZX_REG_INTCTL			0x20
+-#define AZX_REG_INTSTS			0x24
+-#define AZX_REG_WALLCLK			0x30	/* 24Mhz source */
+-#define AZX_REG_OLD_SSYNC		0x34	/* SSYNC for old ICH */
+-#define AZX_REG_SSYNC			0x38
+-#define AZX_REG_CORBLBASE		0x40
+-#define AZX_REG_CORBUBASE		0x44
+-#define AZX_REG_CORBWP			0x48
+-#define AZX_REG_CORBRP			0x4a
+-#define   AZX_CORBRP_RST	(1 << 15)  /* read pointer reset */
+-#define AZX_REG_CORBCTL			0x4c
+-#define   AZX_CORBCTL_RUN	(1 << 1)   /* enable DMA */
+-#define   AZX_CORBCTL_CMEIE	(1 << 0)   /* enable memory error irq */
+-#define AZX_REG_CORBSTS			0x4d
+-#define   AZX_CORBSTS_CMEI	(1 << 0)   /* memory error indication */
+-#define AZX_REG_CORBSIZE		0x4e
+-
+-#define AZX_REG_RIRBLBASE		0x50
+-#define AZX_REG_RIRBUBASE		0x54
+-#define AZX_REG_RIRBWP			0x58
+-#define   AZX_RIRBWP_RST	(1 << 15)  /* write pointer reset */
+-#define AZX_REG_RINTCNT			0x5a
+-#define AZX_REG_RIRBCTL			0x5c
+-#define   AZX_RBCTL_IRQ_EN	(1 << 0)   /* enable IRQ */
+-#define   AZX_RBCTL_DMA_EN	(1 << 1)   /* enable DMA */
+-#define   AZX_RBCTL_OVERRUN_EN	(1 << 2)   /* enable overrun irq */
+-#define AZX_REG_RIRBSTS			0x5d
+-#define   AZX_RBSTS_IRQ		(1 << 0)   /* response irq */
+-#define   AZX_RBSTS_OVERRUN	(1 << 2)   /* overrun irq */
+-#define AZX_REG_RIRBSIZE		0x5e
+-
+-#define AZX_REG_IC			0x60
+-#define AZX_REG_IR			0x64
+-#define AZX_REG_IRS			0x68
+-#define   AZX_IRS_VALID		(1<<1)
+-#define   AZX_IRS_BUSY		(1<<0)
+-
+-#define AZX_REG_DPLBASE			0x70
+-#define AZX_REG_DPUBASE			0x74
+-#define   AZX_DPLBASE_ENABLE	0x1	/* Enable position buffer */
+-
+-/* SD offset: SDI0=0x80, SDI1=0xa0, ... SDO3=0x160 */
+-enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+-
+-/* stream register offsets from stream base */
+-#define AZX_REG_SD_CTL			0x00
+-#define AZX_REG_SD_STS			0x03
+-#define AZX_REG_SD_LPIB			0x04
+-#define AZX_REG_SD_CBL			0x08
+-#define AZX_REG_SD_LVI			0x0c
+-#define AZX_REG_SD_FIFOW		0x0e
+-#define AZX_REG_SD_FIFOSIZE		0x10
+-#define AZX_REG_SD_FORMAT		0x12
+-#define AZX_REG_SD_BDLPL		0x18
+-#define AZX_REG_SD_BDLPU		0x1c
+-
+-/* PCI space */
+-#define AZX_PCIREG_TCSEL		0x44
+-
+-/*
+- * other constants
+- */
+-
+-/* max number of fragments - we may use more if allocating more pages for BDL */
+-#define BDL_SIZE		4096
+-#define AZX_MAX_BDL_ENTRIES	(BDL_SIZE / 16)
+-#define AZX_MAX_FRAG		32
+-/* max buffer size - no h/w limit, you can increase as you like */
+-#define AZX_MAX_BUF_SIZE	(1024*1024*1024)
+-
+-/* RIRB int mask: overrun[2], response[0] */
+-#define RIRB_INT_RESPONSE	0x01
+-#define RIRB_INT_OVERRUN	0x04
+-#define RIRB_INT_MASK		0x05
+-
+-/* STATESTS int mask: S3,SD2,SD1,SD0 */
+-#define AZX_MAX_CODECS		8
+-#define AZX_DEFAULT_CODECS	4
+-#define STATESTS_INT_MASK	((1 << AZX_MAX_CODECS) - 1)
+-
+-/* SD_CTL bits */
+-#define SD_CTL_STREAM_RESET	0x01	/* stream reset bit */
+-#define SD_CTL_DMA_START	0x02	/* stream DMA start bit */
+-#define SD_CTL_STRIPE		(3 << 16)	/* stripe control */
+-#define SD_CTL_TRAFFIC_PRIO	(1 << 18)	/* traffic priority */
+-#define SD_CTL_DIR		(1 << 19)	/* bi-directional stream */
+-#define SD_CTL_STREAM_TAG_MASK	(0xf << 20)
+-#define SD_CTL_STREAM_TAG_SHIFT	20
+-
+-/* SD_CTL and SD_STS */
+-#define SD_INT_DESC_ERR		0x10	/* descriptor error interrupt */
+-#define SD_INT_FIFO_ERR		0x08	/* FIFO error interrupt */
+-#define SD_INT_COMPLETE		0x04	/* completion interrupt */
+-#define SD_INT_MASK		(SD_INT_DESC_ERR|SD_INT_FIFO_ERR|\
+-				 SD_INT_COMPLETE)
+-
+-/* SD_STS */
+-#define SD_STS_FIFO_READY	0x20	/* FIFO ready */
+-
+-/* INTCTL and INTSTS */
+-#define AZX_INT_ALL_STREAM	0xff	   /* all stream interrupts */
+-#define AZX_INT_CTRL_EN	0x40000000 /* controller interrupt enable bit */
+-#define AZX_INT_GLOBAL_EN	0x80000000 /* global interrupt enable bit */
+-
+-/* below are so far hardcoded - should read registers in future */
+-#define AZX_MAX_CORB_ENTRIES	256
+-#define AZX_MAX_RIRB_ENTRIES	256
+-
+-/* driver quirks (capabilities) */
+-/* bits 0-7 are used for indicating driver type */
+-#define AZX_DCAPS_NO_TCSEL	(1 << 8)	/* No Intel TCSEL bit */
+-#define AZX_DCAPS_NO_MSI	(1 << 9)	/* No MSI support */
+-#define AZX_DCAPS_SNOOP_MASK	(3 << 10)	/* snoop type mask */
+-#define AZX_DCAPS_SNOOP_OFF	(1 << 12)	/* snoop default off */
+-#define AZX_DCAPS_RIRB_DELAY	(1 << 13)	/* Long delay in read loop */
+-#define AZX_DCAPS_RIRB_PRE_DELAY (1 << 14)	/* Put a delay before read */
+-#define AZX_DCAPS_CTX_WORKAROUND (1 << 15)	/* X-Fi workaround */
+-#define AZX_DCAPS_POSFIX_LPIB	(1 << 16)	/* Use LPIB as default */
+-#define AZX_DCAPS_POSFIX_VIA	(1 << 17)	/* Use VIACOMBO as default */
+-#define AZX_DCAPS_NO_64BIT	(1 << 18)	/* No 64bit address */
+-#define AZX_DCAPS_SYNC_WRITE	(1 << 19)	/* sync each cmd write */
+-#define AZX_DCAPS_OLD_SSYNC	(1 << 20)	/* Old SSYNC reg for ICH */
+-#define AZX_DCAPS_NO_ALIGN_BUFSIZE (1 << 21)	/* no buffer size alignment */
+-/* 22 unused */
+-#define AZX_DCAPS_4K_BDLE_BOUNDARY (1 << 23)	/* BDLE in 4k boundary */
+-#define AZX_DCAPS_REVERSE_ASSIGN (1 << 24)	/* Assign devices in reverse order */
+-#define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
+-#define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
+-#define AZX_DCAPS_I915_POWERWELL (1 << 27)	/* HSW i915 powerwell support */
+-#define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears itself after reset */
+-#define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
+-#define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and playback use separate stream tag */
+-
+-enum {
+-	AZX_SNOOP_TYPE_NONE ,
+-	AZX_SNOOP_TYPE_SCH,
+-	AZX_SNOOP_TYPE_ATI,
+-	AZX_SNOOP_TYPE_NVIDIA,
+-};
+-
+-/* HD Audio class code */
+-#define PCI_CLASS_MULTIMEDIA_HD_AUDIO	0x0403
+-
+-struct azx_dev {
+-	struct snd_dma_buffer bdl; /* BDL buffer */
+-	u32 *posbuf;		/* position buffer pointer */
+-
+-	unsigned int bufsize;	/* size of the play buffer in bytes */
+-	unsigned int period_bytes; /* size of the period in bytes */
+-	unsigned int frags;	/* number for period in the play buffer */
+-	unsigned int fifo_size;	/* FIFO size */
+-	unsigned long start_wallclk;	/* start + minimum wallclk */
+-	unsigned long period_wallclk;	/* wallclk for period */
+-
+-	void __iomem *sd_addr;	/* stream descriptor pointer */
+-
+-	u32 sd_int_sta_mask;	/* stream int status mask */
+-
+-	/* pcm support */
+-	struct snd_pcm_substream *substream;	/* assigned substream,
+-						 * set in PCM open
+-						 */
+-	unsigned int format_val;	/* format value to be set in the
+-					 * controller and the codec
+-					 */
+-	unsigned char stream_tag;	/* assigned stream */
+-	unsigned char index;		/* stream index */
+-	int assigned_key;		/* last device# key assigned to */
+-
+-	unsigned int opened:1;
+-	unsigned int running:1;
+-	unsigned int irq_pending:1;
+-	unsigned int prepared:1;
+-	unsigned int locked:1;
+-	/*
+-	 * For VIA:
+-	 *  A flag to ensure DMA position is 0
+-	 *  when link position is not greater than FIFO size
+-	 */
+-	unsigned int insufficient:1;
+-	unsigned int wc_marked:1;
+-	unsigned int no_period_wakeup:1;
+-
+-	struct timecounter  azx_tc;
+-	struct cyclecounter azx_cc;
+-
+-	int delay_negative_threshold;
+-
+-#ifdef CONFIG_SND_HDA_DSP_LOADER
+-	/* Allows dsp load to have sole access to the playback stream. */
+-	struct mutex dsp_mutex;
+-#endif
+-};
+-
+-/* CORB/RIRB */
+-struct azx_rb {
+-	u32 *buf;		/* CORB/RIRB buffer
+-				 * Each CORB entry is 4byte, RIRB is 8byte
+-				 */
+-	dma_addr_t addr;	/* physical address of CORB/RIRB buffer */
+-	/* for RIRB */
+-	unsigned short rp, wp;	/* read/write pointers */
+-	int cmds[AZX_MAX_CODECS];	/* number of pending requests */
+-	u32 res[AZX_MAX_CODECS];	/* last read value */
+-};
+-
+-struct azx;
+-
+-/* Functions to read/write to hda registers. */
+-struct hda_controller_ops {
+-	/* Register Access */
+-	void (*reg_writel)(u32 value, u32 __iomem *addr);
+-	u32 (*reg_readl)(u32 __iomem *addr);
+-	void (*reg_writew)(u16 value, u16 __iomem *addr);
+-	u16 (*reg_readw)(u16 __iomem *addr);
+-	void (*reg_writeb)(u8 value, u8 __iomem *addr);
+-	u8 (*reg_readb)(u8 __iomem *addr);
+-	/* Disable msi if supported, PCI only */
+-	int (*disable_msi_reset_irq)(struct azx *);
+-	/* Allocation ops */
+-	int (*dma_alloc_pages)(struct azx *chip,
+-			       int type,
+-			       size_t size,
+-			       struct snd_dma_buffer *buf);
+-	void (*dma_free_pages)(struct azx *chip, struct snd_dma_buffer *buf);
+-	int (*substream_alloc_pages)(struct azx *chip,
+-				     struct snd_pcm_substream *substream,
+-				     size_t size);
+-	int (*substream_free_pages)(struct azx *chip,
+-				    struct snd_pcm_substream *substream);
+-	void (*pcm_mmap_prepare)(struct snd_pcm_substream *substream,
+-				 struct vm_area_struct *area);
+-	/* Check if current position is acceptable */
+-	int (*position_check)(struct azx *chip, struct azx_dev *azx_dev);
+-};
+-
+-struct azx_pcm {
+-	struct azx *chip;
+-	struct snd_pcm *pcm;
+-	struct hda_codec *codec;
+-	struct hda_pcm_stream *hinfo[2];
+-	struct list_head list;
+-};
+-
+-typedef unsigned int (*azx_get_pos_callback_t)(struct azx *, struct azx_dev *);
+-typedef int (*azx_get_delay_callback_t)(struct azx *, struct azx_dev *, unsigned int pos);
+-
+-struct azx {
+-	struct snd_card *card;
+-	struct pci_dev *pci;
+-	int dev_index;
+-
+-	/* chip type specific */
+-	int driver_type;
+-	unsigned int driver_caps;
+-	int playback_streams;
+-	int playback_index_offset;
+-	int capture_streams;
+-	int capture_index_offset;
+-	int num_streams;
+-	const int *jackpoll_ms; /* per-card jack poll interval */
+-
+-	/* Register interaction. */
+-	const struct hda_controller_ops *ops;
+-
+-	/* position adjustment callbacks */
+-	azx_get_pos_callback_t get_position[2];
+-	azx_get_delay_callback_t get_delay[2];
+-
+-	/* pci resources */
+-	unsigned long addr;
+-	void __iomem *remap_addr;
+-	int irq;
+-
+-	/* locks */
+-	spinlock_t reg_lock;
+-	struct mutex open_mutex; /* Prevents concurrent open/close operations */
+-
+-	/* streams (x num_streams) */
+-	struct azx_dev *azx_dev;
+-
+-	/* PCM */
+-	struct list_head pcm_list; /* azx_pcm list */
+-
+-	/* HD codec */
+-	unsigned short codec_mask;
+-	int  codec_probe_mask; /* copied from probe_mask option */
+-	struct hda_bus *bus;
+-	unsigned int beep_mode;
+-
+-	/* CORB/RIRB */
+-	struct azx_rb corb;
+-	struct azx_rb rirb;
+-
+-	/* CORB/RIRB and position buffers */
+-	struct snd_dma_buffer rb;
+-	struct snd_dma_buffer posbuf;
+-
+-#ifdef CONFIG_SND_HDA_PATCH_LOADER
+-	const struct firmware *fw;
+-#endif
+-
+-	/* flags */
+-	const int *bdl_pos_adj;
+-	int poll_count;
+-	unsigned int running:1;
+-	unsigned int initialized:1;
+-	unsigned int single_cmd:1;
+-	unsigned int polling_mode:1;
+-	unsigned int msi:1;
+-	unsigned int probing:1; /* codec probing phase */
+-	unsigned int snoop:1;
+-	unsigned int align_buffer_size:1;
+-	unsigned int region_requested:1;
+-	unsigned int disabled:1; /* disabled by VGA-switcher */
+-
+-	/* for debugging */
+-	unsigned int last_cmd[AZX_MAX_CODECS];
+-
+-	/* reboot notifier (for mysterious hangup problem at power-down) */
+-	struct notifier_block reboot_notifier;
+-
+-#ifdef CONFIG_SND_HDA_DSP_LOADER
+-	struct azx_dev saved_azx_dev;
+-#endif
+-};
+-
+-#ifdef CONFIG_X86
+-#define azx_snoop(chip)		((chip)->snoop)
+-#else
+-#define azx_snoop(chip)		true
+-#endif
+-
+-/*
+- * macros for easy use
+- */
+-
+-#define azx_writel(chip, reg, value) \
+-	((chip)->ops->reg_writel(value, (chip)->remap_addr + AZX_REG_##reg))
+-#define azx_readl(chip, reg) \
+-	((chip)->ops->reg_readl((chip)->remap_addr + AZX_REG_##reg))
+-#define azx_writew(chip, reg, value) \
+-	((chip)->ops->reg_writew(value, (chip)->remap_addr + AZX_REG_##reg))
+-#define azx_readw(chip, reg) \
+-	((chip)->ops->reg_readw((chip)->remap_addr + AZX_REG_##reg))
+-#define azx_writeb(chip, reg, value) \
+-	((chip)->ops->reg_writeb(value, (chip)->remap_addr + AZX_REG_##reg))
+-#define azx_readb(chip, reg) \
+-	((chip)->ops->reg_readb((chip)->remap_addr + AZX_REG_##reg))
+-
+-#define azx_sd_writel(chip, dev, reg, value) \
+-	((chip)->ops->reg_writel(value, (dev)->sd_addr + AZX_REG_##reg))
+-#define azx_sd_readl(chip, dev, reg) \
+-	((chip)->ops->reg_readl((dev)->sd_addr + AZX_REG_##reg))
+-#define azx_sd_writew(chip, dev, reg, value) \
+-	((chip)->ops->reg_writew(value, (dev)->sd_addr + AZX_REG_##reg))
+-#define azx_sd_readw(chip, dev, reg) \
+-	((chip)->ops->reg_readw((dev)->sd_addr + AZX_REG_##reg))
+-#define azx_sd_writeb(chip, dev, reg, value) \
+-	((chip)->ops->reg_writeb(value, (dev)->sd_addr + AZX_REG_##reg))
+-#define azx_sd_readb(chip, dev, reg) \
+-	((chip)->ops->reg_readb((dev)->sd_addr + AZX_REG_##reg))
+-
+-#define azx_has_pm_runtime(chip) \
+-	(!AZX_DCAPS_PM_RUNTIME || ((chip)->driver_caps & AZX_DCAPS_PM_RUNTIME))
+-
+-#endif /* __SOUND_HDA_PRIV_H */
 diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index f305c2a99206..1bd7a9e04046 100644
+index 375e94f4cf52..7d0d04480f48 100644
 --- a/sound/pci/hda/hda_tegra.c
 +++ b/sound/pci/hda/hda_tegra.c
-@@ -502,7 +502,11 @@ static int hda_tegra_probe(struct platform_device *pdev)
- 		goto out_free;
+@@ -37,7 +37,6 @@
  
- 	/* create codec instances */
--	err = azx_codec_create(chip, NULL, 0, &power_save);
-+	err = azx_bus_create(chip, NULL, &power_save);
-+	if (err < 0)
-+		goto out_free;
-+
-+	err = azx_probe_codecs(chip, 0);
- 	if (err < 0)
- 		goto out_free;
+ #include "hda_codec.h"
+ #include "hda_controller.h"
+-#include "hda_priv.h"
  
+ /* Defines for Nvidia Tegra HDA support */
+ #define HDA_BAR0           0x8000
 -- 
 2.3.0
