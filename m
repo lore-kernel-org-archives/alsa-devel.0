@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/6] ALSA: hda - Introduce azx_has_pm_runtime()
-	macro
-Date: Fri, 20 Feb 2015 08:08:24 +0100
-Message-ID: <1424416107-32470-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 2/6] ALSA: hda - Embed struct
+	hda_bus_unsolicited into struct hda_bus
+Date: Fri, 20 Feb 2015 08:08:23 +0100
+Message-ID: <1424416107-32470-3-git-send-email-tiwai@suse.de>
 References: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4ACEC260603
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:31 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5990AAABA
+ by alsa0.perex.cz (Postfix) with ESMTP id 190262605FB
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 08:08:30 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5FBD1ACD6
  for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 07:08:30 +0000 (UTC)
 In-Reply-To: <1424416107-32470-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,101 +27,167 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For making the debugging of runtime PM easier, introduce
-azx_has_pm_runtime() and use it in all places checking the runtime pm
-driver capability.
+There is no big merit to handle hda_bus_unsolicited object
+individually, as it's tightly coupled with the hda_bus object itself.
+Embedding it makes the code simpler in the end.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_controller.c |  4 ++--
- sound/pci/hda/hda_intel.c      | 12 +++++-------
- sound/pci/hda/hda_priv.h       |  3 +++
- 3 files changed, 10 insertions(+), 9 deletions(-)
+ sound/pci/hda/hda_codec.c | 39 ++++-----------------------------------
+ sound/pci/hda/hda_codec.h | 13 +++++++++++--
+ sound/pci/hda/hda_local.h | 17 -----------------
+ 3 files changed, 15 insertions(+), 54 deletions(-)
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 31ff8b55f386..3589fc2165b0 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -1681,7 +1681,7 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
- 	int i;
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 215bf048c668..0734cb35887d 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -762,10 +762,7 @@ int snd_hda_queue_unsol_event(struct hda_bus *bus, u32 res, u32 res_ex)
+ 		return 0;
  
- #ifdef CONFIG_PM
--	if (chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
-+	if (azx_has_pm_runtime(chip))
- 		if (!pm_runtime_active(chip->card->dev))
- 			return IRQ_NONE;
- #endif
-@@ -1784,7 +1784,7 @@ static void azx_power_notify(struct hda_bus *bus, bool power_up)
+ 	trace_hda_unsol_event(bus, res, res_ex);
+-	unsol = bus->unsol;
+-	if (!unsol)
+-		return 0;
+-
++	unsol = &bus->unsol;
+ 	wp = (unsol->wp + 1) % HDA_UNSOL_QUEUE_SIZE;
+ 	unsol->wp = wp;
+ 
+@@ -784,9 +781,8 @@ EXPORT_SYMBOL_GPL(snd_hda_queue_unsol_event);
+  */
+ static void process_unsol_events(struct work_struct *work)
  {
- 	struct azx *chip = bus->private_data;
+-	struct hda_bus_unsolicited *unsol =
+-		container_of(work, struct hda_bus_unsolicited, work);
+-	struct hda_bus *bus = unsol->bus;
++	struct hda_bus *bus = container_of(work, struct hda_bus, unsol.work);
++	struct hda_bus_unsolicited *unsol = &bus->unsol;
+ 	struct hda_codec *codec;
+ 	unsigned int rp, caddr, res;
  
--	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
-+	if (!azx_has_pm_runtime(chip))
- 		return;
+@@ -805,27 +801,6 @@ static void process_unsol_events(struct work_struct *work)
+ }
  
- 	if (power_up)
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 36d2f20db7a4..589883291f4e 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -852,7 +852,7 @@ static int azx_runtime_suspend(struct device *dev)
- 	if (chip->disabled || hda->init_failed)
- 		return 0;
+ /*
+- * initialize unsolicited queue
+- */
+-static int init_unsol_queue(struct hda_bus *bus)
+-{
+-	struct hda_bus_unsolicited *unsol;
+-
+-	if (bus->unsol) /* already initialized */
+-		return 0;
+-
+-	unsol = kzalloc(sizeof(*unsol), GFP_KERNEL);
+-	if (!unsol) {
+-		dev_err(bus->card->dev, "can't allocate unsolicited queue\n");
+-		return -ENOMEM;
+-	}
+-	INIT_WORK(&unsol->work, process_unsol_events);
+-	unsol->bus = bus;
+-	bus->unsol = unsol;
+-	return 0;
+-}
+-
+-/*
+  * destructor
+  */
+ static void snd_hda_bus_free(struct hda_bus *bus)
+@@ -836,7 +811,6 @@ static void snd_hda_bus_free(struct hda_bus *bus)
+ 	WARN_ON(!list_empty(&bus->codec_list));
+ 	if (bus->workq)
+ 		flush_workqueue(bus->workq);
+-	kfree(bus->unsol);
+ 	if (bus->ops.private_free)
+ 		bus->ops.private_free(bus);
+ 	if (bus->workq)
+@@ -888,6 +862,7 @@ int snd_hda_bus_new(struct snd_card *card,
+ 	mutex_init(&bus->cmd_mutex);
+ 	mutex_init(&bus->prepare_mutex);
+ 	INIT_LIST_HEAD(&bus->codec_list);
++	INIT_WORK(&bus->unsol.work, process_unsol_events);
  
--	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
-+	if (!azx_has_pm_runtime(chip))
- 		return 0;
+ 	snprintf(bus->workq_name, sizeof(bus->workq_name),
+ 		 "hd-audio%d", card->number);
+@@ -1689,12 +1664,6 @@ int snd_hda_codec_configure(struct hda_codec *codec)
+ 		return err;
+ 	}
  
- 	/* enable controller wake up event */
-@@ -885,7 +885,7 @@ static int azx_runtime_resume(struct device *dev)
- 	if (chip->disabled || hda->init_failed)
- 		return 0;
+-	if (codec->patch_ops.unsol_event) {
+-		err = init_unsol_queue(codec->bus);
+-		if (err < 0)
+-			return err;
+-	}
+-
+ 	/* audio codec should override the mixer name */
+ 	if (codec->afg || !*codec->bus->card->mixername)
+ 		snprintf(codec->bus->card->mixername,
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 5a6594884069..96421a3b32cd 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -66,7 +66,6 @@ struct hda_beep;
+ struct hda_codec;
+ struct hda_pcm;
+ struct hda_pcm_stream;
+-struct hda_bus_unsolicited;
  
--	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
-+	if (!azx_has_pm_runtime(chip))
- 		return 0;
+ /* NID type */
+ typedef u16 hda_nid_t;
+@@ -101,6 +100,16 @@ struct hda_bus_ops {
+ #endif
+ };
  
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
-@@ -928,8 +928,7 @@ static int azx_runtime_idle(struct device *dev)
- 	if (chip->disabled || hda->init_failed)
- 		return 0;
- 
--	if (!power_save_controller ||
--	    !(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
-+	if (!power_save_controller || !azx_has_pm_runtime(chip))
- 		return -EBUSY;
- 
- 	return 0;
-@@ -1071,8 +1070,7 @@ static int azx_free(struct azx *chip)
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
- 	int i;
- 
--	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
--			&& chip->running)
-+	if (azx_has_pm_runtime(chip) && chip->running)
- 		pm_runtime_get_noresume(&pci->dev);
- 
- 	azx_del_card_list(chip);
-@@ -1938,7 +1936,7 @@ static int azx_probe_continue(struct azx *chip)
- 	power_down_all_codecs(chip);
- 	azx_notifier_register(chip);
- 	azx_add_card_list(chip);
--	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME) || hda->use_vga_switcheroo)
-+	if (azx_has_pm_runtime(chip) || hda->use_vga_switcheroo)
- 		pm_runtime_put_noidle(&pci->dev);
- 
- out_free:
-diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
-index daf458299753..a7b4a25c571c 100644
---- a/sound/pci/hda/hda_priv.h
-+++ b/sound/pci/hda/hda_priv.h
-@@ -403,4 +403,7 @@ struct azx {
- #define azx_sd_readb(chip, dev, reg) \
- 	((chip)->ops->reg_readb((dev)->sd_addr + AZX_REG_##reg))
- 
-+#define azx_has_pm_runtime(chip) \
-+	(!AZX_DCAPS_PM_RUNTIME || ((chip)->driver_caps & AZX_DCAPS_PM_RUNTIME))
++/* unsolicited event handler */
++#define HDA_UNSOL_QUEUE_SIZE	64
++struct hda_bus_unsolicited {
++	/* ring buffer */
++	u32 queue[HDA_UNSOL_QUEUE_SIZE * 2];
++	unsigned int rp, wp;
++	/* workqueue */
++	struct work_struct work;
++};
 +
- #endif /* __SOUND_HDA_PRIV_H */
+ /*
+  * codec bus
+  *
+@@ -126,7 +135,7 @@ struct hda_bus {
+ 	struct mutex prepare_mutex;
+ 
+ 	/* unsolicited event queue */
+-	struct hda_bus_unsolicited *unsol;
++	struct hda_bus_unsolicited unsol;
+ 	char workq_name[16];
+ 	struct workqueue_struct *workq;	/* common workqueue for codecs */
+ 
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index 62658f2f8c9f..49c08a7278c4 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -466,23 +466,6 @@ void snd_hda_pick_pin_fixup(struct hda_codec *codec,
+ 			    const struct snd_hda_pin_quirk *pin_quirk,
+ 			    const struct hda_fixup *fixlist);
+ 
+-
+-/*
+- * unsolicited event handler
+- */
+-
+-#define HDA_UNSOL_QUEUE_SIZE	64
+-
+-struct hda_bus_unsolicited {
+-	/* ring buffer */
+-	u32 queue[HDA_UNSOL_QUEUE_SIZE * 2];
+-	unsigned int rp, wp;
+-
+-	/* workqueue */
+-	struct work_struct work;
+-	struct hda_bus *bus;
+-};
+-
+ /* helper macros to retrieve pin default-config values */
+ #define get_defcfg_connect(cfg) \
+ 	((cfg & AC_DEFCFG_PORT_CONN) >> AC_DEFCFG_PORT_CONN_SHIFT)
 -- 
 2.3.0
