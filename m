@@ -1,20 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: About iMX6SL AUDMUX (port 7) and SSI3
-Date: Thu, 19 Feb 2015 21:01:28 -0800
-Message-ID: <20150220050127.GA2861@Asurada-CZ80>
-References: <54E5C1A3.8020301@gmail.com>
+From: noman pouigt <variksla@gmail.com>
+Subject: audio mcbsp1 broken for beagleboard-xm -OMAP
+Date: Thu, 19 Feb 2015 22:45:00 -0800
+Message-ID: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f173.google.com (mail-pd0-f173.google.com
- [209.85.192.173])
- by alsa0.perex.cz (Postfix) with ESMTP id D47B62605B6
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 06:01:35 +0100 (CET)
-Received: by pdbfl12 with SMTP id fl12so5047604pdb.4
- for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2015 21:01:34 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <54E5C1A3.8020301@gmail.com>
+Received: from mail-ob0-f180.google.com (mail-ob0-f180.google.com
+ [209.85.214.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A9C52605D2
+ for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 07:45:02 +0100 (CET)
+Received: by mail-ob0-f180.google.com with SMTP id vb8so22323584obc.11
+ for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2015 22:45:01 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xuebing Wang <xbing6@gmail.com>
-Cc: alsa-devel@alsa-project.org, niranjan Patil <Niranjan.Patil@infocus.com>, timur Tabi <timur@tabi.org>, richard Jiang <Richard.Jiang@infocus.com>, xiubo Li <Xiubo.Lee@gmail.com>
+To: "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "jarkko.nikula@bitmer.com" <jarkko.nikula@bitmer.com>, "broonie@kernel.org" <broonie@kernel.org>, "jslaby@suse.cz" <jslaby@suse.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 19, 2015 at 06:57:39PM +0800, Xuebing Wang wrote:
+Hello,
 
-> I am working on ASoC based sound driver for our iMX6SL based board.
-> There are 3 I2S peripherals on the board:
-> - iMX6SL pads AUD3 (as in AUD3_TXC), connect to peripheral Codec3
-> - iMX6SL pads AUD5 connect to Codec5
-> - iMX6SL pads Aud6, connect to Codec6
-> 
-> Q1) Is internal SSI3 controller (ssi@02030000) actually *hard-wired*
-> to AUDMUX port 7?
+I am trying to integrate max98090 codec with $subject board.  I am
+running the mcBSP in slave mode as i have not changed the hw_parms for
+omap-twl4030.c file. With below changes i see wait_for_avail is
+getting stuck i.e. mcbsp is not getting any interrupt and nothing is
+playing.
 
-Yes. The first version of AUDMUX was only designed for two SSIs.
-Later version of i.MX SoC added an extra SSI so it had to connect
-to AUD7 which looks a bit weird.
+Kernel version:
+VERSION = 3
+PATCHLEVEL = 19
+SUBLEVEL = 0
+EXTRAVERSION =
+NAME = Diseased Newt
 
-> Q2) Can I configure audmux as below?
-> - External AUD3 -> internal SSI3 (which is actually audmux port 7?)
-> - External AUD5 -> internal SSI2 (ssi@0202c000)
-> - External AUD6 -> internal SSI1 (ssi@02028000)
+Setup information:
+Using beagle board -xm and connected max98090 codec to mcbsp1 pins.
+Connected only 4 pins.
 
-I think you can.
+Changed the omap-twl4030.c machine file as below to disable the twl4030:
+static struct snd_soc_dai_link omap_twl4030_dai_links[] = {
+       {
++               .name = "max98090",
++               .stream_name = "max98090",
+               .cpu_dai_name = "omap-mcbsp.1",
++               .codec_dai_name = "HiFi",
+               .platform_name = "omap-mcbsp.1",
++               .codec_name = "max98090.1-0010",
+               .ops = &omap_twl4030_ops,
+       },
 
-Nicolin
+DTSI file change:arch/arm/boot/dts/omap3-beagle-xm.dts
+
+&i2c2 {
+       clock-frequency = <400000>;
++
++       max98090: max98090@10 {
++               compatible = "maxim,max98090";
++               reg = <0x10>;
++       };
+};
+
+omap/omap-twl4030.c
+added in hw_params below function to set internal oscillator for 98090
+for generating PLL for master clock.
+snd_soc_dai_set_sysclk(codec_dai, 26000000, 0, SND_SOC_CLOCK_IN);
+
+I am able to see that the cpu_dai is mapped with codec_dai and
+configuration is ok. kernel logs at https://ideone.com/oezNSj
+
+I think i don't need to configure the mcbsp1 pins right as it uses default.
+
+Please guide me.I have tried IRC channel also but not getting the right folks.
+
+https://github.com/CircuitCo/BeagleBoard-xM-RevC/blob/master/BeagleBoard-xM_revC_SCH.pdf?raw=true
+
+Thanks,
