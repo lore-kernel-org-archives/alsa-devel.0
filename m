@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/4] ALSA: fireworks/bebob/dice/oxfw: allow stream destructor
-	after releasing runtime
-Date: Sat, 21 Feb 2015 23:54:59 +0900
-Message-ID: <1424530500-9116-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ALSA: fireworks/bebob/dice/oxfw: make it possible to
+	shutdown safely
+Date: Sat, 21 Feb 2015 23:55:00 +0900
+Message-ID: <1424530500-9116-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1424530500-9116-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,166 +21,176 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently stream destructor in each driver has a problem to be called in
-a context in which sound card object is released, because the destructors
-call amdtp_stream_pcm_abort() and touch PCM runtime data.
+A part of these drivers, especially BeBoB driver, are programmed to wait
+some events. Thus the drivers should not destroy any data in .remove()
+context.
 
-The PCM runtime data is destroyed in application's context with
-snd_pcm_close(), on the other hand PCM substream data is destroyed after
-sound card object is released, in most case after all of ALSA character
-devices are released. When PCM runtime is destroyed and PCM substream is
-remained, amdtp_stream_pcm_abort() touches PCM runtime data and causes
-Null-pointer-dereference.
-
-This commit changes stream destructors and allows each driver to call
-it after releasing runtime.
+This commit moves some destructors from 'struct fw_driver.remove()' to
+'struct snd_card.private_free()' to shutdown safely.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob_stream.c         | 12 ++++--------
- sound/firewire/dice/dice-stream.c           | 18 ++++++++++++------
- sound/firewire/fireworks/fireworks_stream.c | 15 ++++++++++-----
- sound/firewire/oxfw/oxfw-stream.c           |  6 ++++--
- 4 files changed, 30 insertions(+), 21 deletions(-)
+ sound/firewire/bebob/bebob.c                | 10 ++++++----
+ sound/firewire/bebob/bebob_stream.c         |  4 ----
+ sound/firewire/dice/dice.c                  |  5 +----
+ sound/firewire/fireworks/fireworks.c        | 10 ++++------
+ sound/firewire/fireworks/fireworks_stream.c |  4 ----
+ sound/firewire/oxfw/oxfw.c                  | 10 ++++------
+ 6 files changed, 15 insertions(+), 28 deletions(-)
 
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index b612599..611b7da 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -127,8 +127,11 @@ bebob_card_free(struct snd_card *card)
+ {
+ 	struct snd_bebob *bebob = card->private_data;
+ 
++	snd_bebob_stream_destroy_duplex(bebob);
+ 	fw_unit_put(bebob->unit);
+ 
++	kfree(bebob->maudio_special_quirk);
++
+ 	if (bebob->card_index >= 0) {
+ 		mutex_lock(&devices_mutex);
+ 		clear_bit(bebob->card_index, devices_used);
+@@ -314,10 +317,9 @@ static void bebob_remove(struct fw_unit *unit)
+ 	if (bebob == NULL)
+ 		return;
+ 
+-	kfree(bebob->maudio_special_quirk);
+-
+-	snd_bebob_stream_destroy_duplex(bebob);
+-	snd_card_disconnect(bebob->card);
++	/* Awake bus-reset waiters. */
++	if (!completion_done(&bebob->bus_reset))
++		complete_all(&bebob->bus_reset);
+ 
+ 	/* No need to wait for releasing card object in this context. */
+ 	snd_card_free_when_closed(bebob->card);
 diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index 0ebcabf..fcca3ee 100644
+index fcca3ee..98e4fc8 100644
 --- a/sound/firewire/bebob/bebob_stream.c
 +++ b/sound/firewire/bebob/bebob_stream.c
-@@ -410,8 +410,6 @@ break_both_connections(struct snd_bebob *bebob)
- static void
- destroy_both_connections(struct snd_bebob *bebob)
- {
--	break_both_connections(bebob);
--
- 	cmp_connection_destroy(&bebob->in_conn);
- 	cmp_connection_destroy(&bebob->out_conn);
- }
-@@ -712,16 +710,14 @@ void snd_bebob_stream_update_duplex(struct snd_bebob *bebob)
- 	mutex_unlock(&bebob->mutex);
- }
- 
-+/*
-+ * This function should be called before starting streams or after stopping
-+ * streams.
-+ */
+@@ -716,14 +716,10 @@ void snd_bebob_stream_update_duplex(struct snd_bebob *bebob)
+  */
  void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob)
  {
- 	mutex_lock(&bebob->mutex);
- 
--	amdtp_stream_pcm_abort(&bebob->rx_stream);
--	amdtp_stream_pcm_abort(&bebob->tx_stream);
--
--	amdtp_stream_stop(&bebob->rx_stream);
--	amdtp_stream_stop(&bebob->tx_stream);
+-	mutex_lock(&bebob->mutex);
 -
  	amdtp_stream_destroy(&bebob->rx_stream);
  	amdtp_stream_destroy(&bebob->tx_stream);
  
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index fa9cf76..07dbd01 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -311,14 +311,21 @@ end:
- 	return err;
- }
- 
-+/*
-+ * This function should be called before starting streams or after stopping
-+ * streams.
-+ */
- static void destroy_stream(struct snd_dice *dice, struct amdtp_stream *stream)
- {
--	amdtp_stream_destroy(stream);
-+	struct fw_iso_resources *resources;
- 
- 	if (stream == &dice->tx_stream)
--		fw_iso_resources_destroy(&dice->tx_resources);
-+		resources = &dice->tx_resources;
- 	else
--		fw_iso_resources_destroy(&dice->rx_resources);
-+		resources = &dice->rx_resources;
-+
-+	amdtp_stream_destroy(stream);
-+	fw_iso_resources_destroy(resources);
- }
- 
- int snd_dice_stream_init_duplex(struct snd_dice *dice)
-@@ -332,6 +339,8 @@ int snd_dice_stream_init_duplex(struct snd_dice *dice)
- 		goto end;
- 
- 	err = init_stream(dice, &dice->rx_stream);
-+	if (err < 0)
-+		destroy_stream(dice, &dice->tx_stream);
- end:
- 	return err;
- }
-@@ -340,10 +349,7 @@ void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
- {
- 	snd_dice_transaction_clear_enable(dice);
- 
--	stop_stream(dice, &dice->tx_stream);
- 	destroy_stream(dice, &dice->tx_stream);
+ 	destroy_both_connections(bebob);
 -
--	stop_stream(dice, &dice->rx_stream);
- 	destroy_stream(dice, &dice->rx_stream);
- 
- 	dice->substreams_counter = 0;
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index 4f440e1..f817b7a 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -100,17 +100,22 @@ end:
- 	return err;
+-	mutex_unlock(&bebob->mutex);
  }
  
-+/*
-+ * This function should be called before starting the stream or after stopping
-+ * the streams.
-+ */
- static void
- destroy_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ /*
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 797f072..70a111d 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -236,6 +236,7 @@ static void dice_card_free(struct snd_card *card)
  {
--	stop_stream(efw, stream);
--
--	amdtp_stream_destroy(stream);
-+	struct cmp_connection *conn;
+ 	struct snd_dice *dice = card->private_data;
  
- 	if (stream == &efw->tx_stream)
--		cmp_connection_destroy(&efw->out_conn);
-+		conn = &efw->out_conn;
- 	else
--		cmp_connection_destroy(&efw->in_conn);
-+		conn = &efw->in_conn;
++	snd_dice_stream_destroy_duplex(dice);
+ 	snd_dice_transaction_destroy(dice);
+ 	fw_unit_put(dice->unit);
+ 
+@@ -313,10 +314,6 @@ static void dice_remove(struct fw_unit *unit)
+ {
+ 	struct snd_dice *dice = dev_get_drvdata(&unit->device);
+ 
+-	snd_card_disconnect(dice->card);
+-
+-	snd_dice_stream_destroy_duplex(dice);
+-
+ 	/* No need to wait for releasing card object in this context. */
+ 	snd_card_free_when_closed(dice->card);
+ }
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index 1e33394..2682e7e 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -184,8 +184,12 @@ efw_card_free(struct snd_card *card)
+ {
+ 	struct snd_efw *efw = card->private_data;
+ 
++	snd_efw_stream_destroy_duplex(efw);
++	snd_efw_transaction_remove_instance(efw);
+ 	fw_unit_put(efw->unit);
+ 
++	kfree(efw->resp_buf);
 +
-+	amdtp_stream_destroy(stream);
-+	cmp_connection_destroy(&efw->out_conn);
+ 	if (efw->card_index >= 0) {
+ 		mutex_lock(&devices_mutex);
+ 		clear_bit(efw->card_index, devices_used);
+@@ -193,7 +197,6 @@ efw_card_free(struct snd_card *card)
+ 	}
+ 
+ 	mutex_destroy(&efw->mutex);
+-	kfree(efw->resp_buf);
  }
  
  static int
-diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index bda845a..29ccb36 100644
---- a/sound/firewire/oxfw/oxfw-stream.c
-+++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -337,6 +337,10 @@ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw,
- 	stop_stream(oxfw, stream);
+@@ -297,11 +300,6 @@ static void efw_remove(struct fw_unit *unit)
+ {
+ 	struct snd_efw *efw = dev_get_drvdata(&unit->device);
+ 
+-	snd_efw_stream_destroy_duplex(efw);
+-	snd_efw_transaction_remove_instance(efw);
+-
+-	snd_card_disconnect(efw->card);
+-
+ 	/* No need to wait for releasing card object in this context. */
+ 	snd_card_free_when_closed(efw->card);
+ }
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index f817b7a..c55db1b 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -324,12 +324,8 @@ void snd_efw_stream_update_duplex(struct snd_efw *efw)
+ 
+ void snd_efw_stream_destroy_duplex(struct snd_efw *efw)
+ {
+-	mutex_lock(&efw->mutex);
+-
+ 	destroy_stream(efw, &efw->rx_stream);
+ 	destroy_stream(efw, &efw->tx_stream);
+-
+-	mutex_unlock(&efw->mutex);
  }
  
-+/*
-+ * This function should be called before starting the stream or after stopping
-+ * the streams.
-+ */
- void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
- 				     struct amdtp_stream *stream)
- {
-@@ -347,8 +351,6 @@ void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
- 	else
- 		conn = &oxfw->in_conn;
+ void snd_efw_stream_lock_changed(struct snd_efw *efw)
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 1607b26..8c6ce01 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -115,6 +115,10 @@ static void oxfw_card_free(struct snd_card *card)
+ 	struct snd_oxfw *oxfw = card->private_data;
+ 	unsigned int i;
  
--	stop_stream(oxfw, stream);
++	snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->rx_stream);
++	if (oxfw->has_output)
++		snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->tx_stream);
++
+ 	fw_unit_put(oxfw->unit);
+ 
+ 	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
+@@ -220,12 +224,6 @@ static void oxfw_remove(struct fw_unit *unit)
+ {
+ 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
+ 
+-	snd_card_disconnect(oxfw->card);
 -
- 	amdtp_stream_destroy(stream);
- 	cmp_connection_destroy(conn);
+-	snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->rx_stream);
+-	if (oxfw->has_output)
+-		snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->tx_stream);
+-
+ 	/* No need to wait for releasing card object in this context. */
+ 	snd_card_free_when_closed(oxfw->card);
  }
 -- 
 2.1.0
