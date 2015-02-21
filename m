@@ -1,17 +1,14 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v6 0/7] audio timestamping evolutions
-Date: Fri, 20 Feb 2015 18:18:02 -0600
-Message-ID: <54E7CEBA.9070607@linux.intel.com>
-References: <1423862049-4073-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <s5hlhjs1qs5.wl-tiwai@suse.de>
+Subject: [PATCH v3 0/5] alsa-lib: audio timestamping evolutions
+Date: Fri, 20 Feb 2015 18:28:09 -0600
+Message-ID: <1424478494-5135-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 846FE26147D
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 01:18:06 +0100 (CET)
-In-Reply-To: <s5hlhjs1qs5.wl-tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id B167D26147D
+ for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 01:28:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,21 +18,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+alsa-lib side of kernel patches already merged on topic/timestamp.
 
-> Thanks for the revised patches.  I now took them locally to
-> topic/timestamp branch of sound git tree, but it's not merged yet to
-> master or for-next.  Unless any objection comes up, I'm going to merge
-> after 3.20-rc1 is released (as it's targeted for 3.21).
->
->> A corresponding set of patches is available for alsa-lib.
->
-> Could you repost the alsa-lib patches?  I'm going to queue and push
-> out when the patches are really merged in the kernel side.
+Pierre-Louis Bossart (5):
+  sync asound.h with kernel version
+  add support for get/set_audio_htstamp_config
+  pcm: add helper functions to query timestamping capabilities
+  pcm: add support for new STATUS_EXT ioctl
+  test: fix audio_time with new get/set audio_tstamp_config
 
-Thank you Takashi. the alsa-lib patches probably need some love, I am 
-not quite sure the type definitions are done the right way. I'll re-post 
-them in a bit.
+ include/pcm.h          |  47 ++++-
+ include/sound/asound.h |  37 +++-
+ src/pcm/pcm.c          |  73 +++++++-
+ src/pcm/pcm_hw.c       |  16 +-
+ test/audio_time.c      | 491 +++++++++++++++++++++++++++++++------------------
+ 5 files changed, 475 insertions(+), 189 deletions(-)
+
+-- 
+1.9.1
