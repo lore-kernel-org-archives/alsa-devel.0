@@ -1,78 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] Expose more controls from
-	tegra-max98090
-Date: Sat, 21 Feb 2015 23:50:32 +0900
-Message-ID: <20150221145031.GX6236@finisterre.sirena.org.uk>
-References: <1423666200-32365-1-git-send-email-tomeu.vizoso@collabora.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/4] ALSA: firewire-lib: remove reference counting
+Date: Sat, 21 Feb 2015 23:54:58 +0900
+Message-ID: <1424530500-9116-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1424530500-9116-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6848528231171760507=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E7C23264EFA
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 15:51:44 +0100 (CET)
-In-Reply-To: <1423666200-32365-1-git-send-email-tomeu.vizoso@collabora.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Pawel Moll <pawel.moll@arm.com>, devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, Kumar Gala <galak@codeaurora.org>, linux-tegra@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1424530500-9116-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+AMDTP helper functions increment/decrement reference counter for an
+instance of FireWire unit, while it's complicated for each driver to
+process error state.
 
---===============6848528231171760507==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0btr6/5+bhBdui6J"
-Content-Disposition: inline
+In previous commit, each driver has the role of reference counting. This
+commit removes this role from the helper function.
 
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---0btr6/5+bhBdui6J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Feb 11, 2015 at 03:49:51PM +0100, Tomeu Vizoso wrote:
-> Hello,
->=20
-> we need some more controls in userspace so policy can be applied at events
-> such as microphone and headphone jacks being plugged in, to be used by
-> Tegra-based Chromebooks.
-
-I see that your "v2" which only added an ack was sent less than a day
-after this initial posting.  Don't do that, it just adds to the mail
-volume.  Only resend if it's been a while and there's been no review or
-if you've got an actual change to make otherwise the mail isn't really
-adding anything.
-
---0btr6/5+bhBdui6J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU6Js3AAoJECTWi3JdVIfQoFgH/3O/YE4FolWux6/rkCGubSQe
-oesUD9BM/leyQ/Qf6Su2re2bRWCGVav4Fw+khRGtYBaV0QnG0pKal9WdM8MZrZGt
-1rj+wmaaSI/GGCRjE7dTaW+sVpMDrMULrLBOQ3cAYYISbvSHl98Kq99Uh6mEPhp9
-KXqF6N71CIr0yt6IzxjDbI69imo2+wKTQWxqz3Rs+HKGi2DOeynsztwwbYzAbjC/
-pYaGIYAGLqRGNgXRSe+nOQegoKlfNOaymHMc5iHqTfKYWcauHttbCD/RYcNlf2Oh
-olc9yvGTZqBKzBhW57q/PQ3/8OzGLPWdd3YluZjljkYy2E2QYHtS8Whe3+otCaM=
-=ctjX
------END PGP SIGNATURE-----
-
---0btr6/5+bhBdui6J--
-
---===============6848528231171760507==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 0d58018..911341b 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -78,7 +78,7 @@ static void pcm_period_tasklet(unsigned long data);
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 		      enum amdtp_stream_direction dir, enum cip_flags flags)
+ {
+-	s->unit = fw_unit_get(unit);
++	s->unit = unit;
+ 	s->direction = dir;
+ 	s->flags = flags;
+ 	s->context = ERR_PTR(-1);
+@@ -102,7 +102,6 @@ void amdtp_stream_destroy(struct amdtp_stream *s)
+ {
+ 	WARN_ON(amdtp_stream_running(s));
+ 	mutex_destroy(&s->mutex);
+-	fw_unit_put(s->unit);
+ }
+ EXPORT_SYMBOL(amdtp_stream_destroy);
+ 
+-- 
+2.1.0
 
 
---===============6848528231171760507==--
+------------------------------------------------------------------------------
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
