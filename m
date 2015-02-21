@@ -1,12 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/4] ALSA: fireworks/bebob/dice/oxfw: fix kernel oops at
-	unplugging during streaming
-Date: Sat, 21 Feb 2015 23:54:56 +0900
-Message-ID: <1424530500-9116-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/4] ALSA: fireworks/bebob/dice/oxfw: allow stream destructor
+	after releasing runtime
+Date: Sat, 21 Feb 2015 23:54:59 +0900
+Message-ID: <1424530500-9116-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1424530500-9116-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1424530500-9116-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
 	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
@@ -19,51 +21,167 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Each FireWire sound driver causes kernel oops at unplugging during
-streaming. This bug affects:
- - snd-bebob (in 3.16 or later)
- - snd-fireworks (in 3.16 or later)
- - snd-dice (in 3.19 or later)
- - snd-oxfw (in 3.19 or later)
+Currently stream destructor in each driver has a problem to be called in
+a context in which sound card object is released, because the destructors
+call amdtp_stream_pcm_abort() and touch PCM runtime data.
 
-When streaming, any ALSA character devices are opened and sound card
-object is referred. Then 'struct snd_card.private_free()' is not executed
-in a context of 'struct fw_driver.remove()'. It's executed in a context of
-an application process in which the last ALSA character device is closed.
-In this case, any operation to instances of FireWire unit is invalid
-because it's already released, and causes kernel oops. I confirm GPF or
+The PCM runtime data is destroyed in application's context with
+snd_pcm_close(), on the other hand PCM substream data is destroyed after
+sound card object is released, in most case after all of ALSA character
+devices are released. When PCM runtime is destroyed and PCM substream is
+remained, amdtp_stream_pcm_abort() touches PCM runtime data and causes
 Null-pointer-dereference.
 
-To fix this problem, this patchset do:
-1.delegate reference counting of an instance of FireWire unit from AMDTP
-  helper functions to each driver, then do it in
-  'struct snd_card.private_free()'.
-2.move stream or transaction destructor from 'struct fw_driver.remove()'
-  to 'struct snd_card.private_free()'.
+This commit changes stream destructors and allows each driver to call
+it after releasing runtime.
 
-With this patchset, each driver keeps a reference to FireWire unit till
-all of ALSA applications close its character devices. This may be against
-IEEE 1394 bus driver developers' expectation to high-level drivers.
-
-Takashi Sakamoto (4):
-  ALSA: fireworks/bebob/dice/oxfw: add reference-counting for FireWire
-    unit
-  ALSA: firewire-lib: remove reference counting
-  ALSA: fireworks/bebob/dice/oxfw: allow stream destructor after
-    releasing runtime
-  ALSA: fireworks/bebob/dice/oxfw: make it possible to shutdown safely
-
- sound/firewire/amdtp.c                      |  3 +--
- sound/firewire/bebob/bebob.c                | 20 ++++++++++++++++----
- sound/firewire/bebob/bebob_stream.c         | 16 ++++------------
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob_stream.c         | 12 ++++--------
  sound/firewire/dice/dice-stream.c           | 18 ++++++++++++------
- sound/firewire/dice/dice.c                  | 16 +++++++++++-----
- sound/firewire/fireworks/fireworks.c        | 20 ++++++++++++++------
- sound/firewire/fireworks/fireworks_stream.c | 19 ++++++++++---------
+ sound/firewire/fireworks/fireworks_stream.c | 15 ++++++++++-----
  sound/firewire/oxfw/oxfw-stream.c           |  6 ++++--
- sound/firewire/oxfw/oxfw.c                  | 21 ++++++++++++++-------
- 9 files changed, 86 insertions(+), 53 deletions(-)
+ 4 files changed, 30 insertions(+), 21 deletions(-)
 
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 0ebcabf..fcca3ee 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -410,8 +410,6 @@ break_both_connections(struct snd_bebob *bebob)
+ static void
+ destroy_both_connections(struct snd_bebob *bebob)
+ {
+-	break_both_connections(bebob);
+-
+ 	cmp_connection_destroy(&bebob->in_conn);
+ 	cmp_connection_destroy(&bebob->out_conn);
+ }
+@@ -712,16 +710,14 @@ void snd_bebob_stream_update_duplex(struct snd_bebob *bebob)
+ 	mutex_unlock(&bebob->mutex);
+ }
+ 
++/*
++ * This function should be called before starting streams or after stopping
++ * streams.
++ */
+ void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob)
+ {
+ 	mutex_lock(&bebob->mutex);
+ 
+-	amdtp_stream_pcm_abort(&bebob->rx_stream);
+-	amdtp_stream_pcm_abort(&bebob->tx_stream);
+-
+-	amdtp_stream_stop(&bebob->rx_stream);
+-	amdtp_stream_stop(&bebob->tx_stream);
+-
+ 	amdtp_stream_destroy(&bebob->rx_stream);
+ 	amdtp_stream_destroy(&bebob->tx_stream);
+ 
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index fa9cf76..07dbd01 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -311,14 +311,21 @@ end:
+ 	return err;
+ }
+ 
++/*
++ * This function should be called before starting streams or after stopping
++ * streams.
++ */
+ static void destroy_stream(struct snd_dice *dice, struct amdtp_stream *stream)
+ {
+-	amdtp_stream_destroy(stream);
++	struct fw_iso_resources *resources;
+ 
+ 	if (stream == &dice->tx_stream)
+-		fw_iso_resources_destroy(&dice->tx_resources);
++		resources = &dice->tx_resources;
+ 	else
+-		fw_iso_resources_destroy(&dice->rx_resources);
++		resources = &dice->rx_resources;
++
++	amdtp_stream_destroy(stream);
++	fw_iso_resources_destroy(resources);
+ }
+ 
+ int snd_dice_stream_init_duplex(struct snd_dice *dice)
+@@ -332,6 +339,8 @@ int snd_dice_stream_init_duplex(struct snd_dice *dice)
+ 		goto end;
+ 
+ 	err = init_stream(dice, &dice->rx_stream);
++	if (err < 0)
++		destroy_stream(dice, &dice->tx_stream);
+ end:
+ 	return err;
+ }
+@@ -340,10 +349,7 @@ void snd_dice_stream_destroy_duplex(struct snd_dice *dice)
+ {
+ 	snd_dice_transaction_clear_enable(dice);
+ 
+-	stop_stream(dice, &dice->tx_stream);
+ 	destroy_stream(dice, &dice->tx_stream);
+-
+-	stop_stream(dice, &dice->rx_stream);
+ 	destroy_stream(dice, &dice->rx_stream);
+ 
+ 	dice->substreams_counter = 0;
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index 4f440e1..f817b7a 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -100,17 +100,22 @@ end:
+ 	return err;
+ }
+ 
++/*
++ * This function should be called before starting the stream or after stopping
++ * the streams.
++ */
+ static void
+ destroy_stream(struct snd_efw *efw, struct amdtp_stream *stream)
+ {
+-	stop_stream(efw, stream);
+-
+-	amdtp_stream_destroy(stream);
++	struct cmp_connection *conn;
+ 
+ 	if (stream == &efw->tx_stream)
+-		cmp_connection_destroy(&efw->out_conn);
++		conn = &efw->out_conn;
+ 	else
+-		cmp_connection_destroy(&efw->in_conn);
++		conn = &efw->in_conn;
++
++	amdtp_stream_destroy(stream);
++	cmp_connection_destroy(&efw->out_conn);
+ }
+ 
+ static int
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index bda845a..29ccb36 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -337,6 +337,10 @@ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw,
+ 	stop_stream(oxfw, stream);
+ }
+ 
++/*
++ * This function should be called before starting the stream or after stopping
++ * the streams.
++ */
+ void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
+ 				     struct amdtp_stream *stream)
+ {
+@@ -347,8 +351,6 @@ void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
+ 	else
+ 		conn = &oxfw->in_conn;
+ 
+-	stop_stream(oxfw, stream);
+-
+ 	amdtp_stream_destroy(stream);
+ 	cmp_connection_destroy(conn);
+ }
 -- 
 2.1.0
 
