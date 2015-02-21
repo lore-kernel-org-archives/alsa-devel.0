@@ -1,76 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sta32x: fix register range in regmap.
-Date: Sat, 21 Feb 2015 18:51:50 +0900
-Message-ID: <20150221095150.GO6236@finisterre.sirena.org.uk>
-References: <1424015616-31309-1-git-send-email-niederp@physik.uni-kl.de>
+Subject: Re: [PATCH v2 0/3] Expose more controls from tegra-max98090
+Date: Sat, 21 Feb 2015 23:36:06 +0900
+Message-ID: <20150221143606.GV6236@finisterre.sirena.org.uk>
+References: <1423730523-26266-1-git-send-email-tomeu.vizoso@collabora.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3718788477315334517=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B70CF260638
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 10:52:56 +0100 (CET)
-In-Reply-To: <1424015616-31309-1-git-send-email-niederp@physik.uni-kl.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas =?iso-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, brandau@gmx.de, zonque@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pkBzO0lo80FoaZii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1423730523-26266-1-git-send-email-tomeu.vizoso@collabora.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Cc: linux-kernel@vger.kernel.org, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Jaroslav Kysela <perex@perex.cz>, Kumar Gala <galak@codeaurora.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Stephen Warren <swarren@wwwdotorg.org>, Takashi Iwai <tiwai@suse.de>, Thierry Reding <thierry.reding@gmail.com>, Wolfram Sang <wsa@the-dreams.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3718788477315334517==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1bhFRg6vL9BT9osV"
-Content-Disposition: inline
-
-
---1bhFRg6vL9BT9osV
-Content-Type: text/plain; charset=iso-8859-1
+--pkBzO0lo80FoaZii
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 15, 2015 at 04:53:36PM +0100, Thomas Niederpr=FCm wrote:
-> The STA32X_AUTO3 is a writable register that currently does not appear
-> in the regmap ranges(neither read nor write). By adding this register
-> to the register ranges there is no gap anymore and the existing
-> register ranges can be joined. This fixes a regression that made it
-> impossible to choose the preset EQ mode set through the STA32X_AUTO3
-> register.
+On Thu, Feb 12, 2015 at 09:41:54AM +0100, Tomeu Vizoso wrote:
+> v2:	* Added ack tags from Stephen
+>=20
+> Hello,
+>=20
+> we need some more controls in userspace so policy can be applied at events
+> such as microphone and headphone jacks being plugged in, to be used by
+> Tegra-based Chromebooks.
 
-This doesn't seem to apply to current code, can you please check and
-resend?  It would also be good to say why the regression that's being
-fixed happens.
+Applied all, thanks.
 
---1bhFRg6vL9BT9osV
+--pkBzO0lo80FoaZii
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU6FU1AAoJECTWi3JdVIfQm/4H/Ra9Y9Mpom4OfVcUngTbUTeb
-OMfoa2X338lnWU19tRvj3wrXmiX96Oo3rD8V/Syv8Ia4VBoC5WZ6aJ1mBTH7zRft
-eMp9d2yySVa3Hw4n+sHLNXq91+DF0twXtzn354OZmwIWRnX3Q8oy301I3q6e8WoB
-9TxzivvqYInRmR13xewtgC5iSaqIc4zOPOXI4/7gng8/WbHIQU8sH9QGonfnl7/T
-Al0pULSMSMuH58JypwPOSe4oCOJXM0f0qJwIuq5gyNfBw38oTmoxWd9vKHTCjEEe
-/qrr8n7T0x2KXUKGl2Lc/yMza8qkzh9LB1EFcGhpQSdr2kykIDm7SDPBUMZ+7YM=
-=FWhu
+iQEcBAEBCAAGBQJU6JfVAAoJECTWi3JdVIfQ+PkIAIQwobF9UhQ9ohkbq3SK9MUK
+hESaoeLlHKoiT54Spb6VYzDZhCa6Tx/teos4adYVIiO1vNIKqr8jr04/vaDIr62w
+gxGIu4LbVJ/2S32nQFpihQunraK25sP01WIKVwQYN5cclcFkB14N9G7t6iTeRcMS
+FZ8aJyS9LEJb6nuUrhs/xCEbVbRp66ijXT5OL5K2Cwrps95kdOWZcXr7oO8vT6Ht
+jotkm0PSLiqhvzTJ8Hy+IHdXD3Zs3kRG/3SjU+7HbVPnOwq1q1sgWlfCTJkXEa2D
+E/KscAewhay5rsmlOpyvaY7N68JNQqxoWi3VKUuIiaguvTqS0YsTWXX0Lpdy9cc=
+=IegT
 -----END PGP SIGNATURE-----
 
---1bhFRg6vL9BT9osV--
-
---===============3718788477315334517==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3718788477315334517==--
+--pkBzO0lo80FoaZii--
