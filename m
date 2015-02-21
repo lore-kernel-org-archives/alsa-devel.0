@@ -1,95 +1,53 @@
-From: noman pouigt <variksla@gmail.com>
-Subject: Re: audio mcbsp1 broken for beagleboard-xm -OMAP
-Date: Fri, 20 Feb 2015 18:36:01 -0800
-Message-ID: <CAES_P+8_h2mygchQ-0qvJCK0Fpk_TdOdwcLKpNgYjapzRZRzMA@mail.gmail.com>
-References: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>
- <54E7605C.5000709@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/6] ASoC: samsung: Extend Snow driver to support max98089
+Date: Sat, 21 Feb 2015 11:40:25 +0900
+Message-ID: <20150221024025.GB6236@finisterre.sirena.org.uk>
+References: <1424283959-16289-1-git-send-email-afaerber@suse.de>
+ <1424283959-16289-6-git-send-email-afaerber@suse.de>
+ <20150219094425.GB3198@finisterre.sirena.org.uk>
+ <CAD=FV=WkieDSSB_-a6DtH1hmq6SyZk4NAR-eXQ11hxUDMTvRfg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f52.google.com (mail-oi0-f52.google.com
- [209.85.218.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BBC72606F8
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 03:36:02 +0100 (CET)
-Received: by mail-oi0-f52.google.com with SMTP id u20so5705437oif.11
- for <alsa-devel@alsa-project.org>; Fri, 20 Feb 2015 18:36:01 -0800 (PST)
-In-Reply-To: <54E7605C.5000709@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "jslaby@suse.cz" <jslaby@suse.cz>, "jarkko.nikula@bitmer.com" <jarkko.nikula@bitmer.com>, Daniel Mack <zonque@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=WkieDSSB_-a6DtH1hmq6SyZk4NAR-eXQ11hxUDMTvRfg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Doug Anderson <dianders@chromium.org>
+Cc: Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Vincent Palatin <vpalatin@chromium.org>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Olof Johansson <olof@lixom.net>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBGZWIgMjAsIDIwMTUgYXQgODoyNyBBTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
-ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDIvMjAvMjAxNSAwODo0NSBBTSwgbm9tYW4gcG91
-aWd0IHdyb3RlOgo+PiBIZWxsbywKPj4KPj4gSSBhbSB0cnlpbmcgdG8gaW50ZWdyYXRlIG1heDk4
-MDkwIGNvZGVjIHdpdGggJHN1YmplY3QgYm9hcmQuICBJIGFtCj4+IHJ1bm5pbmcgdGhlIG1jQlNQ
-IGluIHNsYXZlIG1vZGUgYXMgaSBoYXZlIG5vdCBjaGFuZ2VkIHRoZSBod19wYXJtcyBmb3IKPj4g
-b21hcC10d2w0MDMwLmMgZmlsZS4gV2l0aCBiZWxvdyBjaGFuZ2VzIGkgc2VlIHdhaXRfZm9yX2F2
-YWlsIGlzCj4+IGdldHRpbmcgc3R1Y2sgaS5lLiBtY2JzcCBpcyBub3QgZ2V0dGluZyBhbnkgaW50
-ZXJydXB0IGFuZCBub3RoaW5nIGlzCj4+IHBsYXlpbmcuCj4+Cj4+IEtlcm5lbCB2ZXJzaW9uOgo+
-PiBWRVJTSU9OID0gMwo+PiBQQVRDSExFVkVMID0gMTkKPj4gU1VCTEVWRUwgPSAwCj4+IEVYVFJB
-VkVSU0lPTiA9Cj4+IE5BTUUgPSBEaXNlYXNlZCBOZXd0Cj4+Cj4+IFNldHVwIGluZm9ybWF0aW9u
-Ogo+PiBVc2luZyBiZWFnbGUgYm9hcmQgLXhtIGFuZCBjb25uZWN0ZWQgbWF4OTgwOTAgY29kZWMg
-dG8gbWNic3AxIHBpbnMuCj4+IENvbm5lY3RlZCBvbmx5IDQgcGlucy4KPj4KPj4gQ2hhbmdlZCB0
-aGUgb21hcC10d2w0MDMwLmMgbWFjaGluZSBmaWxlIGFzIGJlbG93IHRvIGRpc2FibGUgdGhlIHR3
-bDQwMzA6Cj4+IHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBvbWFwX3R3bDQwMzBfZGFp
-X2xpbmtzW10gPSB7Cj4+ICAgICAgICB7Cj4+ICsgICAgICAgICAgICAgICAubmFtZSA9ICJtYXg5
-ODA5MCIsCj4+ICsgICAgICAgICAgICAgICAuc3RyZWFtX25hbWUgPSAibWF4OTgwOTAiLAo+PiAg
-ICAgICAgICAgICAgICAuY3B1X2RhaV9uYW1lID0gIm9tYXAtbWNic3AuMSIsCj4+ICsgICAgICAg
-ICAgICAgICAuY29kZWNfZGFpX25hbWUgPSAiSGlGaSIsCj4+ICAgICAgICAgICAgICAgIC5wbGF0
-Zm9ybV9uYW1lID0gIm9tYXAtbWNic3AuMSIsCj4+ICsgICAgICAgICAgICAgICAuY29kZWNfbmFt
-ZSA9ICJtYXg5ODA5MC4xLTAwMTAiLAo+PiAgICAgICAgICAgICAgICAub3BzID0gJm9tYXBfdHds
-NDAzMF9vcHMsCj4+ICAgICAgICB9LAo+Pgo+PiBEVFNJIGZpbGUgY2hhbmdlOmFyY2gvYXJtL2Jv
-b3QvZHRzL29tYXAzLWJlYWdsZS14bS5kdHMKPj4KPj4gJmkyYzIgewo+PiAgICAgICAgY2xvY2st
-ZnJlcXVlbmN5ID0gPDQwMDAwMD47Cj4+ICsKPj4gKyAgICAgICBtYXg5ODA5MDogbWF4OTgwOTBA
-MTAgewo+PiArICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtYXhpbSxtYXg5ODA5MCI7Cj4+
-ICsgICAgICAgICAgICAgICByZWcgPSA8MHgxMD47Cj4+ICsgICAgICAgfTsKPj4gfTsKPgo+IFlv
-dSBhbHNvIG5lZWQgdG8gY2hhbmdlIHRoZSBkdHMgZmlsZSdzIHNvdW5kIG5vZGUsIGVuYWJsZSBt
-Y2JzcDEsIHNldCB0aGUKPiBwaW5jdHJsIGVudHJpZXMsIGV0YyBpZiB5b3UgYm9vdCB3aXRoIERU
-LgpZZXMgYW5kIGl0IGlzIGRvbmUgYXMgYmVsb3c6Cgomb21hcDNfcG14X2NvcmUgewogICAgICAg
-IG1jYnNwMV9waW5zOiBwaW5tdXhfbWNic3AxX3BpbnMgewogICAgICAgICAgICAgICAgcGluY3Ry
-bC1zaW5nbGUscGlucyA9IDwKICAgICAgICAgICAgICAgICAgICAgICAgT01BUDNfQ09SRTFfSU9Q
-QUQoMHgyMTk4LCBQSU5fSU5QVVQgfCBNVVhfTU9ERTApCiAgICAgICAgICAgICAgICAgICAgICAg
-IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5NCwgUElOX0lOUFVUIHwgTVVYX01PREUwKQogICAgICAg
-ICAgICAgICAgICAgICAgICBPTUFQM19DT1JFMV9JT1BBRCgweDIxOTAsIFBJTl9JTlBVVCB8IE1V
-WF9NT0RFMCkKICAgICAgICAgICAgICAgICAgICAgICAgT01BUDNfQ09SRTFfSU9QQUQoMHgyMTkw
-LCBQSU5fT1VUUFVUIHwgTVVYX01PREUwKQogICAgICAgICAgICAgICAgPjsKICAgICAgICB9Owp9
-CgogICAgICAgIHNvdW5kIHsKLSAgICAgICAgICAgICAgIHRpLG1jYnNwID0gPCZtY2JzcDI+Owot
-ICAgICAgICAgICAgICAgdGksY29kZWMgPSA8JnR3bF9hdWRpbz47CisgICAgICAgICAgICAgICB0
-aSxtY2JzcCA9IDwmbWNic3AxPjsKKyAgICAgICAgICAgICAgIHRpLGNvZGVjID0gPCZtYXg5ODA5
-MD47CiAgICAgICAgfQoKJm1jYnNwMSB7CiAgICAgICAgcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0
-IjsKICAgICAgICBwaW5jdHJsLTAgPSA8Jm1jYnNwMV9waW5zPjsKCiAgICAgICAgc3RhdHVzID0g
-Im9rYXkiOwp9OwoKJmkyYzIgewogICAgICBjbG9jay1mcmVxdWVuY3kgPSA8NDAwMDAwPjsKCiAg
-ICAgICBtYXg5ODA5MDogbWF4OTgwOTBAMTAgewogICAgICAgICAgICAgICBjb21wYXRpYmxlID0g
-Im1heGltLG1heDk4MDkwIjsKICAgICAgICAgICAgICAgcmVnID0gPDB4MTA+OwogICAgICAgfTsK
-IH07CgphbGwgb3RoZXIgY2hhbmdlcyByZW1haW4gdGhlIHNhbWUuIEhhdmUgaSBkb25lIG11eGlu
-ZyB3cm9uZz8gSSBhbQpzdGlsbCBzdHVjayB3aXRoIG1jYnNwIG5vdCBnZXR0aW5nIGludGVycnVw
-dC4KcGxlYXNlIGZpbmQgdGhlIGR0cyBmaWxlIGhlcmUgaHR0cDovL2lkZW9uZS5jb20vVFBGa0J2
-CgpJIGNvbm5lY3RlZCBkaWdpdGFsIG91dHB1dCBvZiA5ODA5MCB0byBtY2JzcDFfZHIgYW5kIGRp
-Z2l0YWwgcmVjZWl2ZQp0byBtY2JzcDFfZHguIEkgY2FuIHNlZSB0aGUgYml0IGNsb2NrIGFuZCBs
-cmNsayBpcyBjb21pbmcgZmluZSBmcm9tCjk4MDkwLiBBcyBhbHJlYWR5IG1lbnRpb25lZCBpIGhh
-dmUgY29ubmVjdGVkIGxyY2xrLCBiaXQgY2xvY2ssIERSCmFuZCBEWCBvbmx5LgoKS2VybmVsIGxv
-Z3MgaGVyZTogaHR0cDovL2lkZW9uZS5jb20vaERIcTJsCgo+Cj4+Cj4+IG9tYXAvb21hcC10d2w0
-MDMwLmMKPj4gYWRkZWQgaW4gaHdfcGFyYW1zIGJlbG93IGZ1bmN0aW9uIHRvIHNldCBpbnRlcm5h
-bCBvc2NpbGxhdG9yIGZvciA5ODA5MAo+PiBmb3IgZ2VuZXJhdGluZyBQTEwgZm9yIG1hc3RlciBj
-bG9jay4KPj4gc25kX3NvY19kYWlfc2V0X3N5c2Nsayhjb2RlY19kYWksIDI2MDAwMDAwLCAwLCBT
-TkRfU09DX0NMT0NLX0lOKTsKPj4KPj4gSSBhbSBhYmxlIHRvIHNlZSB0aGF0IHRoZSBjcHVfZGFp
-IGlzIG1hcHBlZCB3aXRoIGNvZGVjX2RhaSBhbmQKPj4gY29uZmlndXJhdGlvbiBpcyBvay4ga2Vy
-bmVsIGxvZ3MgYXQgaHR0cHM6Ly9pZGVvbmUuY29tL29lek5Tago+Pgo+PiBJIHRoaW5rIGkgZG9u
-J3QgbmVlZCB0byBjb25maWd1cmUgdGhlIG1jYnNwMSBwaW5zIHJpZ2h0IGFzIGl0IHVzZXMgZGVm
-YXVsdC4KPj4KPj4gUGxlYXNlIGd1aWRlIG1lLkkgaGF2ZSB0cmllZCBJUkMgY2hhbm5lbCBhbHNv
-IGJ1dCBub3QgZ2V0dGluZyB0aGUgcmlnaHQgZm9sa3MuCj4+Cj4+IGh0dHBzOi8vZ2l0aHViLmNv
-bS9DaXJjdWl0Q28vQmVhZ2xlQm9hcmQteE0tUmV2Qy9ibG9iL21hc3Rlci9CZWFnbGVCb2FyZC14
-TV9yZXZDX1NDSC5wZGY/cmF3PXRydWUKPj4KPj4gVGhhbmtzLAo+Pgo+Cj4KPiAtLQo+IFDDqXRl
-cgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--ZoaI/ZTpAVc4A5k6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 19, 2015 at 09:44:08AM -0800, Doug Anderson wrote:
+> On Thu, Feb 19, 2015 at 1:44 AM, Mark Brown <broonie@kernel.org> wrote:
+
+> I think what you're suggesting is that here we should add a new
+> compatible string "google,snow-audio" instead of adding
+> "google,snow-audio-max98089" here.  Then the sound node in the spring
+> DTS would look like:
+
+>   compatible = "google,snow-audio-max98089", "google,snow-audio";
+
+Yes.
+
+--ZoaI/ZTpAVc4A5k6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU5/AYAAoJECTWi3JdVIfQ2uEH/ji13tl3wMeBeylmEMkTfB0w
+PX75Whi9IvG0iu4deHgZY8n1AVWjGff2jRgtL9ESwvudME8WOPC2NJvXeH4XGVdo
+zyMvLgyY46T/9fvJjQcYd8ducE6ofsLf+B/AqEw1iCBKkBVbzYnBLetZFGUI+S2m
+B2Ib6tjSllapIRmPyO0v0ocYigP0ef/EI3LgYqyvkmDbmuWx0wf684W2Y8lvXimk
+8WiTfJ5DABTZYj2LFnXnccfgEKsbomhiTogU7Kvdk4cX47wzJGR2LBjYvWOP+0Dw
+POBpON1VZD9uSXjjYOM4ecpyMFMWD/K/bFcea2j9Zccx4YILYlhkSOHIFLwGmjU=
+=C0V4
+-----END PGP SIGNATURE-----
+
+--ZoaI/ZTpAVc4A5k6--
