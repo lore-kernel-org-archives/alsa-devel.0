@@ -1,15 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 1/5] sync asound.h with kernel version
-Date: Fri, 20 Feb 2015 18:28:10 -0600
-Message-ID: <1424478494-5135-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 2/5] add support for
+	get/set_audio_htstamp_config
+Date: Fri, 20 Feb 2015 18:28:11 -0600
+Message-ID: <1424478494-5135-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1424478494-5135-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D140026147D
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 01:28:34 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 14F13261507
+ for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 01:28:35 +0100 (CET)
 In-Reply-To: <1424478494-5135-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,88 +25,125 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Enable kernel-side functionality by letting user select what sort of
+timestamp it desires
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/asound.h | 37 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 32 insertions(+), 5 deletions(-)
+ include/pcm.h | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 82 insertions(+)
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 1f23cd6..3d46e9a 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -140,7 +140,7 @@ struct snd_hwdep_dsp_image {
-  *                                                                           *
-  *****************************************************************************/
+diff --git a/include/pcm.h b/include/pcm.h
+index 0655e7f..b5bbd2d 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -330,6 +330,26 @@ typedef enum _snd_pcm_tstamp_type {
+ 	SND_PCM_TSTAMP_TYPE_LAST = SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW,
+ } snd_pcm_tstamp_type_t;
  
--#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 12)
-+#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 13)
- 
++typedef struct _snd_pcm_audio_tstamp_config {
++	/* 5 of max 16 bits used */
++	unsigned int type_requested:4;
++	unsigned int report_delay:1; /* add total delay to A/D or D/A */
++} snd_pcm_audio_tstamp_config_t;
++
++typedef struct _snd_pcm_audio_tstamp_report {
++	/* 6 of max 16 bits used for bit-fields */
++
++	/* for backwards compatibility */
++	unsigned int valid:1;
++
++	/* actual type if hardware could not support requested timestamp */
++	unsigned int actual_type:4;
++
++	/* accuracy represented in ns units */
++	unsigned int accuracy_report:1; /* 0 if accuracy unknown, 1 if accuracy field is valid */
++	unsigned int accuracy; /* up to 4.29s, will be packed in separate field  */
++} snd_pcm_audio_tstamp_report_t;
++
+ /** Unsigned frames quantity */
  typedef unsigned long snd_pcm_uframes_t;
- typedef signed long snd_pcm_sframes_t;
-@@ -267,9 +267,17 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define SNDRV_PCM_INFO_JOINT_DUPLEX	0x00200000	/* playback and capture stream are somewhat correlated */
- #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm support some kind of sync go */
- #define SNDRV_PCM_INFO_NO_PERIOD_WAKEUP	0x00800000	/* period wakeup can be disabled */
--#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* has audio wall clock for audio/system time sync */
-+#define SNDRV_PCM_INFO_HAS_WALL_CLOCK   0x01000000      /* (Deprecated)has audio wall clock for audio/system time sync */
-+#define SNDRV_PCM_INFO_HAS_LINK_ATIME              0x01000000  /* report hardware link audio time, reset on startup */
-+#define SNDRV_PCM_INFO_HAS_LINK_ABSOLUTE_ATIME     0x02000000  /* report absolute hardware link audio time, not reset on startup */
-+#define SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME    0x04000000  /* report estimated link audio time */
-+#define SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME 0x08000000  /* report synchronized audio/system time */
+ /** Signed frames quantity */
+@@ -980,6 +1000,30 @@ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimest
+ void snd_pcm_status_get_tstamp(const snd_pcm_status_t *obj, snd_timestamp_t *ptr);
+ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
+ void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
++void snd_pcm_status_get_driver_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
++void snd_pcm_status_get_audio_htstamp_report(const snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_report_t *audio_tstamp_report);
++void snd_pcm_status_set_audio_htstamp_config(snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_config_t *audio_tstamp_config);
 +
-+#define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000		/* internal kernel flag - trigger in drain */
- #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
++static inline void snd_pcm_pack_audio_tstamp_config(unsigned int *data,
++						snd_pcm_audio_tstamp_config_t *config)
++{
++	*data = config->report_delay;
++	*data <<= 4;
++	*data |= config->type_requested;
++}
++
++static inline void snd_pcm_unpack_audio_tstamp_report(unsigned int data, unsigned int accuracy,
++						snd_pcm_audio_tstamp_report_t *report)
++{
++	data >>= 16;
++	report->valid = data & 1;
++	report->actual_type = (data >> 1) & 0xF;
++	report->accuracy_report = (data >> 5) & 1;
++	report->accuracy = accuracy;
++}
++
+ snd_pcm_sframes_t snd_pcm_status_get_delay(const snd_pcm_status_t *obj);
+ snd_pcm_uframes_t snd_pcm_status_get_avail(const snd_pcm_status_t *obj);
+ snd_pcm_uframes_t snd_pcm_status_get_avail_max(const snd_pcm_status_t *obj);
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index e74e02f..441b3db 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -6334,6 +6334,44 @@ void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestam
+ }
  
+ /**
++ * \brief Get "now" hi-res driver timestamp from a PCM status container. Defines when the status
++ * was generated by driver, may differ from normal timestamp.
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to returned timestamp
++ */
++void snd_pcm_status_get_driver_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr)
++{
++	assert(obj && ptr);
++	*ptr = obj->driver_tstamp;
++}
 +
++/**
++ * \brief Get audio_tstamp_report from a PCM status container
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to returned report (valid fields are accuracy and type)
++ */
++void snd_pcm_status_get_audio_htstamp_report(const snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_report_t *audio_tstamp_report)
++{
++	assert(obj && audio_tstamp_report);
++	snd_pcm_unpack_audio_tstamp_report(obj->audio_tstamp_data,
++					obj->audio_tstamp_accuracy,
++					audio_tstamp_report);
++}
 +
- typedef int __bitwise snd_pcm_state_t;
- #define	SNDRV_PCM_STATE_OPEN		((__force snd_pcm_state_t) 0) /* stream is open */
- #define	SNDRV_PCM_STATE_SETUP		((__force snd_pcm_state_t) 1) /* stream has a setup */
-@@ -407,6 +415,22 @@ struct snd_pcm_channel_info {
- 	unsigned int step;		/* samples distance in bits */
- };
- 
-+enum {
-+	/*
-+	 *  first definition for backwards compatibility only,
-+	 *  maps to wallclock/link time for HDAudio playback and DEFAULT/DMA time for everything else
-+	 */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_COMPAT = 0,
++/**
++ * \brief set audio_tstamp_config from a PCM status container
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to config (valid fields are type and report_analog_delay)
++ */
++void snd_pcm_status_set_audio_htstamp_config(snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_config_t *audio_tstamp_config)
++{
++	assert(obj && audio_tstamp_config);
++	snd_pcm_pack_audio_tstamp_config(&obj->audio_tstamp_data, audio_tstamp_config);
++}
 +
-+	/* timestamp definitions */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT = 1,           /* DMA time, reported as per hw_ptr */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK = 2,	           /* link time reported by sample or wallclock counter, reset on startup */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_ABSOLUTE = 3,	   /* link time reported by sample or wallclock counter, not reset on startup */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_ESTIMATED = 4,    /* link time estimated indirectly */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED = 5, /* link time synchronized with system time */
-+	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LAST = SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED
-+};
-+
- struct snd_pcm_status {
- 	snd_pcm_state_t state;		/* stream state */
- 	struct timespec trigger_tstamp;	/* time when stream was started/stopped/paused */
-@@ -418,9 +442,11 @@ struct snd_pcm_status {
- 	snd_pcm_uframes_t avail_max;	/* max frames available on hw since last status */
- 	snd_pcm_uframes_t overrange;	/* count of ADC (capture) overrange detections from last status */
- 	snd_pcm_state_t suspended_state; /* suspended stream state */
--	__u32 reserved_alignment;	/* must be filled with zero */
--	struct timespec audio_tstamp;	/* from sample counter or wall clock */
--	unsigned char reserved[56-sizeof(struct timespec)]; /* must be filled with zero */
-+	__u32 audio_tstamp_data;	 /* needed for 64-bit alignment, used for configs/report to/from userspace */
-+	struct timespec audio_tstamp;	/* sample counter, wall clock, PHC or on-demand sync'ed */
-+	struct timespec driver_tstamp;	/* useful in case reference system tstamp is reported with delay */
-+	__u32 audio_tstamp_accuracy;	/* in ns units, only valid if indicated in audio_tstamp_data */
-+	unsigned char reserved[52-2*sizeof(struct timespec)]; /* must be filled with zero */
- };
- 
- struct snd_pcm_mmap_status {
-@@ -533,6 +559,7 @@ enum {
- #define SNDRV_PCM_IOCTL_DELAY		_IOR('A', 0x21, snd_pcm_sframes_t)
- #define SNDRV_PCM_IOCTL_HWSYNC		_IO('A', 0x22)
- #define SNDRV_PCM_IOCTL_SYNC_PTR	_IOWR('A', 0x23, struct snd_pcm_sync_ptr)
-+#define SNDRV_PCM_IOCTL_STATUS_EXT	_IOWR('A', 0x24, struct snd_pcm_status)
- #define SNDRV_PCM_IOCTL_CHANNEL_INFO	_IOR('A', 0x32, struct snd_pcm_channel_info)
- #define SNDRV_PCM_IOCTL_PREPARE		_IO('A', 0x40)
- #define SNDRV_PCM_IOCTL_RESET		_IO('A', 0x41)
++/**
+  * \brief Get delay from a PCM status container (see #snd_pcm_delay)
+  * \return Delay in frames
+  *
 -- 
 1.9.1
