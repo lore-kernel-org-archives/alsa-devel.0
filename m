@@ -1,53 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/6] ASoC: samsung: Extend Snow driver to support max98089
-Date: Sat, 21 Feb 2015 11:40:25 +0900
-Message-ID: <20150221024025.GB6236@finisterre.sirena.org.uk>
-References: <1424283959-16289-1-git-send-email-afaerber@suse.de>
- <1424283959-16289-6-git-send-email-afaerber@suse.de>
- <20150219094425.GB3198@finisterre.sirena.org.uk>
- <CAD=FV=WkieDSSB_-a6DtH1hmq6SyZk4NAR-eXQ11hxUDMTvRfg@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: firewire-lib: fix an unexpected byte
+	sequence for micro sign
+Date: Sat, 21 Feb 2015 11:50:17 +0900
+Message-ID: <1424487017-24434-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=WkieDSSB_-a6DtH1hmq6SyZk4NAR-eXQ11hxUDMTvRfg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Doug Anderson <dianders@chromium.org>
-Cc: Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Vincent Palatin <vpalatin@chromium.org>, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Olof Johansson <olof@lixom.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CC9C261504
+ for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 03:50:27 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---ZoaI/ZTpAVc4A5k6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 19, 2015 at 09:44:08AM -0800, Doug Anderson wrote:
-> On Thu, Feb 19, 2015 at 1:44 AM, Mark Brown <broonie@kernel.org> wrote:
-
-> I think what you're suggesting is that here we should add a new
-> compatible string "google,snow-audio" instead of adding
-> "google,snow-audio-max98089" here.  Then the sound node in the spring
-> DTS would look like:
-
->   compatible = "google,snow-audio-max98089", "google,snow-audio";
-
-Yes.
-
---ZoaI/ZTpAVc4A5k6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU5/AYAAoJECTWi3JdVIfQ2uEH/ji13tl3wMeBeylmEMkTfB0w
-PX75Whi9IvG0iu4deHgZY8n1AVWjGff2jRgtL9ESwvudME8WOPC2NJvXeH4XGVdo
-zyMvLgyY46T/9fvJjQcYd8ducE6ofsLf+B/AqEw1iCBKkBVbzYnBLetZFGUI+S2m
-B2Ib6tjSllapIRmPyO0v0ocYigP0ef/EI3LgYqyvkmDbmuWx0wf684W2Y8lvXimk
-8WiTfJ5DABTZYj2LFnXnccfgEKsbomhiTogU7Kvdk4cX47wzJGR2LBjYvWOP+0Dw
-POBpON1VZD9uSXjjYOM4ecpyMFMWD/K/bFcea2j9Zccx4YILYlhkSOHIFLwGmjU=
-=C0V4
------END PGP SIGNATURE-----
-
---ZoaI/ZTpAVc4A5k6--
+VGhlIHNpZ24gZm9yIG1pY3Jvc2Vjb25kIChVKzAwODUsIE1JQ1JPIFNJR04pIHdhcyBlbmNvZGVk
+IHRvICcweCBjMiBiNScKYnkgVVRGLTggY2hhcmFjdGVyIGVuY29kaW5nIHNjaGVtZS4gQnV0IHRo
+ZSBieXRlIHNlcXVlbmNlIHdhcyBjb252ZXJ0ZWQKdG8gJzB4IGMzIDgyIGMyIGI1JyBpbiBhIHBy
+ZXZpb3VzIGNvbW1pdC4gQXMgYSByZXN1bHQsIHRoZSBieXRlCnNlcXVlbmNlIGNhbm5vdCByZXBy
+ZXNlbnQgbWljcm9zZWNvbmQgc2lnbiBpbiBVVEYtOCBvciBBU0NJSS4gVGhpcwptYXkgY29uZnVz
+ZSBkZXZlbG9wZXJzLgoKVGhpcyBjb21taXQgcmVwbGFjZXMgdGhlIHNpZ24gdG8gc3RyaW5nIGV4
+cHJlc3Npb24gd2l0aCAnbWljcm9zZWNvbmRzJwp0byBwdXJnZSBzdXBlcmZsdW91cyB0cm91Ymxl
+cy4KCkZpeGVzOiA1YzY5N2U1YjQ2ZWYoIkFMU0E6IGZpcmV3aXJlLWxpYjogcmVtb3ZlIHJ4X2Js
+b2Nrc19mb3JfbWlkaSBxdWlyayIpClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8t
+dGFrYXNoaUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJlL2FtZHRwLmMgfCAyICst
+CiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1n
+aXQgYS9zb3VuZC9maXJld2lyZS9hbWR0cC5jIGIvc291bmQvZmlyZXdpcmUvYW1kdHAuYwppbmRl
+eCAwZDU4MDE4Li43YjdiMTgzIDEwMDY0NAotLS0gYS9zb3VuZC9maXJld2lyZS9hbWR0cC5jCisr
+KyBiL3NvdW5kL2ZpcmV3aXJlL2FtZHRwLmMKQEAgLTMzLDcgKzMzLDcgQEAKICAqLwogI2RlZmlu
+ZSBNQVhfTUlESV9SWF9CTE9DS1MJOAogCi0jZGVmaW5lIFRSQU5TRkVSX0RFTEFZX1RJQ0tTCTB4
+MmUwMCAvKiA0NzkuMTcgw4LCtXMgKi8KKyNkZWZpbmUgVFJBTlNGRVJfREVMQVlfVElDS1MJMHgy
+ZTAwIC8qIDQ3OS4xNyBtaWNyb3NlY29uZHMgKi8KIAogLyogaXNvY2hyb25vdXMgaGVhZGVyIHBh
+cmFtZXRlcnMgKi8KICNkZWZpbmUgSVNPX0RBVEFfTEVOR1RIX1NISUZUCTE2Ci0tIAoyLjEuMAoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
