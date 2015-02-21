@@ -1,72 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5670: Add disabled item in
-	dmic pin enum
-Date: Sat, 21 Feb 2015 18:31:02 +0900
-Message-ID: <20150221093102.GE6236@finisterre.sirena.org.uk>
-References: <1424152767-29226-1-git-send-email-bardliao@realtek.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: pcm512x: Allow independently overclocking PLL,
+ DAC and DSP
+Date: Sat, 21 Feb 2015 18:33:28 +0900
+Message-ID: <20150221093328.GF6236@finisterre.sirena.org.uk>
+References: <1424120568-24648-1-git-send-email-peda@lysator.liu.se>
+ <1424120568-24648-4-git-send-email-peda@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6240191861624784462=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04CFC260638
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 10:32:05 +0100 (CET)
-In-Reply-To: <1424152767-29226-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, mengdong.lin@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, yao.jin@intel.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="juZjCTNxrMaZdGZC"
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1424120568-24648-4-git-send-email-peda-SamgB31n2u5IcsJQ0EH25Q@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Rosin <peda-SamgB31n2u5IcsJQ0EH25Q@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6240191861624784462==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/2994txjAzEdQwm5"
-Content-Disposition: inline
-
-
---/2994txjAzEdQwm5
+--juZjCTNxrMaZdGZC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 17, 2015 at 01:59:26PM +0800, Bard Liao wrote:
-> Currently, we will configure dmic related pin definition if pdata.dmic_en
-> is true. However, there is no disable option in the enum. So, any dmic is
-> used, all 3 dmic related pins will be configured. It may cause unexpected
+On Mon, Feb 16, 2015 at 10:02:48PM +0100, Peter Rosin wrote:
+> From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+>=20
+> When using non-standard rates, a relatively small amount of overclocking
+> can make a big difference to a number of cases.
 
-Applied both, thanks.  I really appreciate the much better changelogs
-I'm seeing in your recent patches!
+This is all basically fine but I'm wondering why this is being
+configured via sysfs and not via ALSA controls?  It's going to be more
+fiddly for people to have to work with both control methods when they
+need to configure these things.
 
---/2994txjAzEdQwm5
+--juZjCTNxrMaZdGZC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU6FBWAAoJECTWi3JdVIfQUAkH/3O5l64G+C1e+f/GIpgQkVgk
-Q9+OU4I12CyYT17saQv9mmgnKQ/9BvqO8m6yf3DHCAA7CKYPvgU3ymjoMZi6Z1yg
-qPLpFsP18Fl6vD8peGrXQuYAC+vC3I5absloDjkvQxeYKJI+ahpIicJ+rytdfHO2
-1J7HIrKK4i1GhA7Nitd7DSRwbDV06elf+LimL+A/OLi7UP22cZ/ZdxIphPhNb0uP
-pN9oICPBwYbw8oNxwRlb2cQfONyW44d8w9iP/lQo05sFVzjFklP7K0uFN6ItfE7/
-SggUniIhQe79sqTE/qHVEzu7NvHJkYrtVblbqMWoOGdXzesQvXoQarNa/MlWpyk=
-=gjQK
+iQEcBAEBCAAGBQJU6FDnAAoJECTWi3JdVIfQ1F8H/3deIFZ0axaEoe1fasvuBSr8
+cWrp3RCJXgczy9dNXOWJ0XfP2NMDGuBxLg08waDvomqjUVH+xgWWWNk6aFSt7FTU
+etPmOYJHi20Cl2px0jduYF02Hv+tX0WUzCpc+QPK+bAMYumHokyeNXPtsu9JdMSI
+vzyKir7jgnmoV06/eZJErCX/de0sQe+2YCLJ+2aoWgtRBDAxG2nml5aco5GNKw2J
+R7qXtw+1vKSCsGRD0YCtKDPQeJL2aji99f7jNbrz4QhEUAoVjt3Vy2nO0d0TClVx
+iLyusHJgetN2dHrpfVwo4YaL5s/bEq9ibDfynzjhVfP0DI13/NyuhqRUQGNexnE=
+=CC6A
 -----END PGP SIGNATURE-----
 
---/2994txjAzEdQwm5--
-
---===============6240191861624784462==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6240191861624784462==--
+--juZjCTNxrMaZdGZC--
