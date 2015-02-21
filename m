@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: wm_adsp: Ensure DSP controls are
- always persistent
-Date: Sat, 21 Feb 2015 18:35:31 +0900
-Message-ID: <20150221093531.GI6236@finisterre.sirena.org.uk>
-References: <1424100349-10520-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: cirrus: tlv320aic23 needs I2C
+Date: Sat, 21 Feb 2015 18:36:34 +0900
+Message-ID: <20150221093634.GK6236@finisterre.sirena.org.uk>
+References: <5891241.bLtA2KsrYg@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4427245171703220535=="
+Content-Type: multipart/mixed; boundary="===============6585383607230979735=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CEBE260638
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 10:36:31 +0100 (CET)
-In-Reply-To: <1424100349-10520-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C596260638
+ for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 10:37:26 +0100 (CET)
+In-Reply-To: <5891241.bLtA2KsrYg@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: nikesh.oswal@wolfsonmicro.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <rmallon@gmail.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4427245171703220535==
+--===============6585383607230979735==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vs0rQTeTompTJjtd"
+	protocol="application/pgp-signature"; boundary="5dNcufZ4prhark0F"
 Content-Disposition: inline
 
 
---vs0rQTeTompTJjtd
+--5dNcufZ4prhark0F
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 16, 2015 at 03:25:48PM +0000, Charles Keepax wrote:
-> From: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
->=20
-> Currently DSP controls are persistent (across DSP On/Off) only
-> if they were set whilst the DSP is off. This change makes the
-> controls persistent irrespective of when they are set.
+On Wed, Feb 18, 2015 at 09:43:13PM +0100, Arnd Bergmann wrote:
+> The tlv320aic23 codec is selected by the ep93xx snapper platform,
+> which are missing a dependency on I2C, and that can result in this
+> build error, as found during randconfig builds:
 
-Applied both, thanks.
+Applied, thanks.
 
---vs0rQTeTompTJjtd
+--5dNcufZ4prhark0F
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU6FFjAAoJECTWi3JdVIfQ95oH/2UdFSbqYfIiNVXeaEs0GVlY
-BzSwq+zmSMeub6HWA7nao/cYPRJ6NVyvQ0BbsCHYm/G9we0dGlEZqOBTLuiIaOJI
-XfDmLICIjg3Ywc9GCStw/DaHeRF0ZJO3cvuRYzl5or4YVzD47GoYO5lAUjrmGS7W
-Al2eU203QbOOmDbqg4BWnkPE3OwGRdDaJfYAF9s99U871SAWhG5vVCWAgUwOJF9n
-fvWwN3iPf7gp4hIbdNB7Sb+iHwXBqNX7I7R1drWBZyn0MGESmBWSEsG9wQcoar4B
-Vl/aKlo/Rk6IAr/MSSPacDOcpE7b1aq5SPJZwEa5szc77PaLwwjSDFHxxHZ8EMw=
-=djW1
+iQEcBAEBCAAGBQJU6FGhAAoJECTWi3JdVIfQ2jwH/j0JH5yI3Ui+6Yb3ID2dIHf4
+xpSO0q5eDi/lGS3bNpdYKA2T7xlPF7Jqtf36YImUGhSqiOnEQVzy7J/zB8AgAkZA
+zPRo4AGSXBopPI0SY4ymWglAUhxFRkulJP/Or+JyoHUrrErmiLRzY2Iqx5pCGQ+w
+B2z86ABLvbXhhzMtd2wStTGGNCB3hWood2OD5AmcY+qMPkLJe/EnLsJfiU1d//xo
+8wXFSiRY/hVlqiazuS0mHtJrMYI9XYm1QHDM+LadEOCFS9cNJ8Wmwds2VegjQ74F
+tHOyElws2tpRDZP1AoXgJz71UB2Doz+BuXilc+lw3r6FMVs4YCVW+HB9D9YSwlU=
+=rlOK
 -----END PGP SIGNATURE-----
 
---vs0rQTeTompTJjtd--
+--5dNcufZ4prhark0F--
 
---===============4427245171703220535==
+--===============6585383607230979735==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4427245171703220535==--
+--===============6585383607230979735==--
