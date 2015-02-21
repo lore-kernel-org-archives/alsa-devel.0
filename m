@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cirrus: tlv320aic23 needs I2C
-Date: Sat, 21 Feb 2015 18:36:34 +0900
-Message-ID: <20150221093634.GK6236@finisterre.sirena.org.uk>
-References: <5891241.bLtA2KsrYg@wuerfel>
+Subject: Re: [PATCH] ASoC: Add max98925 codec driver
+Date: Sat, 21 Feb 2015 18:42:35 +0900
+Message-ID: <20150221094235.GL6236@finisterre.sirena.org.uk>
+References: <1424318986-18895-1-git-send-email-yesanishhere@gmail.com>
+ <54E5876E.2090703@gmail.com>
+ <CABCoZhB_6eAKnoRJRA-d86XJv-vn+d4P_QQQbHtyfeaxMbwaEQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6585383607230979735=="
+Content-Type: multipart/mixed; boundary="===============5988948303526599079=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C596260638
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 10:37:26 +0100 (CET)
-In-Reply-To: <5891241.bLtA2KsrYg@wuerfel>
+ by alsa0.perex.cz (Postfix) with ESMTP id AB00F260638
+ for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 10:43:34 +0100 (CET)
+In-Reply-To: <CABCoZhB_6eAKnoRJRA-d86XJv-vn+d4P_QQQbHtyfeaxMbwaEQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,51 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Ryan Mallon <rmallon@gmail.com>, lgirdwood@gmail.com
+To: anish <yesanishhere@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Tushar Behera <trblinux@gmail.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Maxwell McKinnon <Maxwell.McKinnon@maximintegrated.com>, Lars-Peter Clausen <lars@metafoo.de>, Nitin Mittal <nitin.mittal@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6585383607230979735==
+--===============5988948303526599079==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5dNcufZ4prhark0F"
+	protocol="application/pgp-signature"; boundary="m+jEI8cDoTn6Mu9E"
 Content-Disposition: inline
 
 
---5dNcufZ4prhark0F
+--m+jEI8cDoTn6Mu9E
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 18, 2015 at 09:43:13PM +0100, Arnd Bergmann wrote:
-> The tlv320aic23 codec is selected by the ep93xx snapper platform,
-> which are missing a dependency on I2C, and that can result in this
-> build error, as found during randconfig builds:
+On Thu, Feb 19, 2015 at 11:47:09PM -0800, anish wrote:
 
-Applied, thanks.
+> will sure do it for the next revision. Can i get some comments
+> for this?
 
---5dNcufZ4prhark0F
+Please allow a reasonable time for review - at least a week as a bare
+minimum, normally longer and obviously larger changes like entire new
+drivers can slow things down a bit.  If it's only been a week or two
+then unless it's an urgent bugfix a mail chasing is just adding to the
+amount of e-mail that needs to be read.
+
+--m+jEI8cDoTn6Mu9E
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU6FGhAAoJECTWi3JdVIfQ2jwH/j0JH5yI3Ui+6Yb3ID2dIHf4
-xpSO0q5eDi/lGS3bNpdYKA2T7xlPF7Jqtf36YImUGhSqiOnEQVzy7J/zB8AgAkZA
-zPRo4AGSXBopPI0SY4ymWglAUhxFRkulJP/Or+JyoHUrrErmiLRzY2Iqx5pCGQ+w
-B2z86ABLvbXhhzMtd2wStTGGNCB3hWood2OD5AmcY+qMPkLJe/EnLsJfiU1d//xo
-8wXFSiRY/hVlqiazuS0mHtJrMYI9XYm1QHDM+LadEOCFS9cNJ8Wmwds2VegjQ74F
-tHOyElws2tpRDZP1AoXgJz71UB2Doz+BuXilc+lw3r6FMVs4YCVW+HB9D9YSwlU=
-=rlOK
+iQEcBAEBCAAGBQJU6FMKAAoJECTWi3JdVIfQqPsH/3AvfX8E30rsTt7q19PXswlJ
+KIIZzV44eBXGSGmkHL5oqRMTs6suLIQuo0OE3DEFrYnIdE0UkuQYasSQIF5oG98y
+W/dLSaRuG5hBqhGqWWKu2PRN9p8fnGCKC+Md81DGDDu0rRayQPY8zVPJ5+ACB2kq
+HJso1KPiCxCh30cVY7TKebONT1JwJpjHmEVLkG8cH/7HLHNjoAaV6sHIs9/O86QZ
+QZBcBLJ8LCT9Iz31VJVjVFND/BUwMc21s7FMONwkrBEl8ETkWhv68mgY428bVlhc
+GZhsK0ZWoJJExVaV4x55wBAZeIzdLaLgdg/Y4w/+ucXTmpZK61MEH76d+c3mLfE=
+=qquY
 -----END PGP SIGNATURE-----
 
---5dNcufZ4prhark0F--
+--m+jEI8cDoTn6Mu9E--
 
---===============6585383607230979735==
+--===============5988948303526599079==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6585383607230979735==--
+--===============5988948303526599079==--
