@@ -1,218 +1,136 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/4] ALSA: fireworks/bebob/dice/oxfw: add reference-counting
-	for FireWire unit
-Date: Sat, 21 Feb 2015 23:54:57 +0900
-Message-ID: <1424530500-9116-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1424530500-9116-1-git-send-email-o-takashi@sakamocchi.jp>
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH] ASoC: improve usage of gpiod API
+Date: Sat, 21 Feb 2015 16:33:24 +0100
+Message-ID: <1424532804-23789-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1424530500-9116-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6EB1F264F2D
+ for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 16:33:38 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Alexandre Courbot <acourbot@nvidia.com>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fireworks and Dice drivers try to touch instances of FireWire unit after
-sound card object is released, while references to the unit is decremented
-in .remove(). When unplugging during streaming, sound card object is
-released after .remove(), thus Fireworks and Dice drivers causes GPF or
-Null-pointer-dereferencing to application processes because an instance of
-FireWire unit was already released.
-
-This commit adds reference-counting for FireWire unit in drivers to allow
-them to touch an instance of FireWire unit after .remove(). In most case,
-any operations after .remove() may be failed safely.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.c         | 12 +++++++++++-
- sound/firewire/dice/dice.c           | 11 ++++++++++-
- sound/firewire/fireworks/fireworks.c | 12 +++++++++++-
- sound/firewire/oxfw/oxfw.c           | 11 ++++++++++-
- 4 files changed, 42 insertions(+), 4 deletions(-)
-
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index fc19c99..b612599 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -116,11 +116,19 @@ end:
- 	return err;
- }
- 
-+/*
-+ * This module releases the FireWire unit data after all ALSA character devices
-+ * are released by applications. This is for releasing stream data or finishing
-+ * transactions safely. Thus at returning from .remove(), this module still keep
-+ * references for the unit.
-+ */
- static void
- bebob_card_free(struct snd_card *card)
- {
- 	struct snd_bebob *bebob = card->private_data;
- 
-+	fw_unit_put(bebob->unit);
-+
- 	if (bebob->card_index >= 0) {
- 		mutex_lock(&devices_mutex);
- 		clear_bit(bebob->card_index, devices_used);
-@@ -205,7 +213,7 @@ bebob_probe(struct fw_unit *unit,
- 	card->private_free = bebob_card_free;
- 
- 	bebob->card = card;
--	bebob->unit = unit;
-+	bebob->unit = fw_unit_get(unit);
- 	bebob->spec = spec;
- 	mutex_init(&bebob->mutex);
- 	spin_lock_init(&bebob->lock);
-@@ -310,6 +318,8 @@ static void bebob_remove(struct fw_unit *unit)
- 
- 	snd_bebob_stream_destroy_duplex(bebob);
- 	snd_card_disconnect(bebob->card);
-+
-+	/* No need to wait for releasing card object in this context. */
- 	snd_card_free_when_closed(bebob->card);
- }
- 
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 90d8f40..797f072 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -226,11 +226,19 @@ static void dice_card_strings(struct snd_dice *dice)
- 	strcpy(card->mixername, "DICE");
- }
- 
-+/*
-+ * This module releases the FireWire unit data after all ALSA character devices
-+ * are released by applications. This is for releasing stream data or finishing
-+ * transactions safely. Thus at returning from .remove(), this module still keep
-+ * references for the unit.
-+ */
- static void dice_card_free(struct snd_card *card)
- {
- 	struct snd_dice *dice = card->private_data;
- 
- 	snd_dice_transaction_destroy(dice);
-+	fw_unit_put(dice->unit);
-+
- 	mutex_destroy(&dice->mutex);
- }
- 
-@@ -251,7 +259,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 
- 	dice = card->private_data;
- 	dice->card = card;
--	dice->unit = unit;
-+	dice->unit = fw_unit_get(unit);
- 	card->private_free = dice_card_free;
- 
- 	spin_lock_init(&dice->lock);
-@@ -309,6 +317,7 @@ static void dice_remove(struct fw_unit *unit)
- 
- 	snd_dice_stream_destroy_duplex(dice);
- 
-+	/* No need to wait for releasing card object in this context. */
- 	snd_card_free_when_closed(dice->card);
- }
- 
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 3e2ed8e..1e33394 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -173,11 +173,19 @@ end:
- 	return err;
- }
- 
-+/*
-+ * This module releases the FireWire unit data after all ALSA character devices
-+ * are released by applications. This is for releasing stream data or finishing
-+ * transactions safely. Thus at returning from .remove(), this module still keep
-+ * references for the unit.
-+ */
- static void
- efw_card_free(struct snd_card *card)
- {
- 	struct snd_efw *efw = card->private_data;
- 
-+	fw_unit_put(efw->unit);
-+
- 	if (efw->card_index >= 0) {
- 		mutex_lock(&devices_mutex);
- 		clear_bit(efw->card_index, devices_used);
-@@ -218,7 +226,7 @@ efw_probe(struct fw_unit *unit,
- 	card->private_free = efw_card_free;
- 
- 	efw->card = card;
--	efw->unit = unit;
-+	efw->unit = fw_unit_get(unit);
- 	mutex_init(&efw->mutex);
- 	spin_lock_init(&efw->lock);
- 	init_waitqueue_head(&efw->hwdep_wait);
-@@ -293,6 +301,8 @@ static void efw_remove(struct fw_unit *unit)
- 	snd_efw_transaction_remove_instance(efw);
- 
- 	snd_card_disconnect(efw->card);
-+
-+	/* No need to wait for releasing card object in this context. */
- 	snd_card_free_when_closed(efw->card);
- }
- 
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 60e5cad..1607b26 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -104,11 +104,19 @@ end:
- 	return err;
- }
- 
-+/*
-+ * This module releases the FireWire unit data after all ALSA character devices
-+ * are released by applications. This is for releasing stream data or finishing
-+ * transactions safely. Thus at returning from .remove(), this module still keep
-+ * references for the unit.
-+ */
- static void oxfw_card_free(struct snd_card *card)
- {
- 	struct snd_oxfw *oxfw = card->private_data;
- 	unsigned int i;
- 
-+	fw_unit_put(oxfw->unit);
-+
- 	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
- 		kfree(oxfw->tx_stream_formats[i]);
- 		kfree(oxfw->rx_stream_formats[i]);
-@@ -136,7 +144,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 	oxfw = card->private_data;
- 	oxfw->card = card;
- 	mutex_init(&oxfw->mutex);
--	oxfw->unit = unit;
-+	oxfw->unit = fw_unit_get(unit);
- 	oxfw->device_info = (const struct device_info *)id->driver_data;
- 	spin_lock_init(&oxfw->lock);
- 	init_waitqueue_head(&oxfw->hwdep_wait);
-@@ -218,6 +226,7 @@ static void oxfw_remove(struct fw_unit *unit)
- 	if (oxfw->has_output)
- 		snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->tx_stream);
- 
-+	/* No need to wait for releasing card object in this context. */
- 	snd_card_free_when_closed(oxfw->card);
- }
- 
--- 
-2.1.0
-
-
-------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
+U2luY2UgMzliMmJiZTNkNzE1IChncGlvOiBhZGQgZmxhZ3MgYXJndW1lbnQgdG8gZ3Bpb2RfZ2V0
+KigpIGZ1bmN0aW9ucykKd2hpY2ggYXBwZWFyZWQgaW4gdjMuMTctcmMxLCB0aGUgZ3Bpb2RfZ2V0
+KiBmdW5jdGlvbnMgdGFrZSBhbiBhZGRpdGlvbmFsCnBhcmFtZXRlciB0aGF0IGFsbG93cyB0byBz
+cGVjaWZ5IGRpcmVjdGlvbiBhbmQgaW5pdGlhbCB2YWx1ZSBmb3IKb3V0cHV0LiBTaW1wbGlmeSBk
+cml2ZXJzIGFjY29yZGluZ2x5LgoKQWxzbyB0aGVyZSBpcyBhbiAqX29wdGlvbmFsIHZhcmlhbnQg
+dGhhdCBzZXJ2ZXMgd2VsbCBoZXJlLiBUaGUgc2VtYXRpY3MKaXMgc2xpZ2h0bHkgY2hhbmdlZCBo
+ZXJlIGJ5IHVzaW5nIGl0IGFzIGVycm9yIGNoZWNraW5nIGlzIG1vcmUgc3RyaWN0Cm5vdzogSWYg
+R1BJT0xJQiBpcyBub3QgZW5hYmxlZCBhbiBlcnJvciBpcyByZXR1cm5lZCBpbnN0ZWFkIG9mIGp1
+c3QKaWdub3JpbmcgdGhlIGdwaW8uIE9uIG9uZSBoYW5kIHRoaXMgaXMgYmFkIGZvciBkZXZpY2Vz
+IHRoYXQgZG9uJ3QgImhhdmUiCnRoZSByZXNwZWN0aXZlIGdwaW8gYXMgdGhlIGRyaXZlciBpcyBm
+YWlsaW5nIG5vdy4gT24gdGhlIG90aGVyIGhhbmQKdGhlcmUgaXMgbm8gbWVhbnMgdG8gYXNzZXJ0
+IHRoYXQgdGhpcyBncGlvIGlzIHJlYWxseSBub3QgbmVlZGVkIG9yIGlmCm9ubHkgdGhlIGRyaXZl
+ciB0byBjb250cm9sIGl0IGlzIG5vdCBhdmFpbGFibGUuIFRoZSBsYXR0ZXIgaXMgYSByZWFsCnJl
+YXNvbiB0byBmYWlsIGFuZCBzbyBpdCdzIGRlZmVuc2l2ZSB0byBmYWlsIGhlcmUsIHRvby4KClNp
+Z25lZC1vZmYtYnk6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9u
+aXguZGU+Ci0tLQogc291bmQvc29jL2NvZGVjcy9hZGF1MTk3Ny5jIHwgMTcgKysrKystLS0tLS0t
+LS0tLS0KIHNvdW5kL3NvYy9jb2RlY3MvY3MzNWwzMi5jICB8IDE5ICsrKysrKy0tLS0tLS0tLS0t
+LS0KIHNvdW5kL3NvYy9jb2RlY3MvY3M0MjY1LmMgICB8IDE5ICsrKysrKy0tLS0tLS0tLS0tLS0K
+IHNvdW5kL3NvYy9jb2RlY3Mvc3RhMzUwLmMgICB8IDMwICsrKysrKysrKy0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQogc291bmQvc29jL2NvZGVjcy90YXMyNTUyLmMgIHwgMTMgKysrLS0tLS0tLS0tLQog
+NSBmaWxlcyBjaGFuZ2VkLCAyOSBpbnNlcnRpb25zKCspLCA2OSBkZWxldGlvbnMoLSkKCmRpZmYg
+LS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2FkYXUxOTc3LmMgYi9zb3VuZC9zb2MvY29kZWNzL2Fk
+YXUxOTc3LmMKaW5kZXggNzBhYjM1NzQ0YWJhLi43YWQ4ZTE1NmUyZGYgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL3NvYy9jb2RlY3MvYWRhdTE5NzcuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL2FkYXUxOTc3
+LmMKQEAgLTkzOCwyMiArOTM4LDE1IEBAIGludCBhZGF1MTk3N19wcm9iZShzdHJ1Y3QgZGV2aWNl
+ICpkZXYsIHN0cnVjdCByZWdtYXAgKnJlZ21hcCwKIAkJYWRhdTE5NzctPmR2ZGRfcmVnID0gTlVM
+TDsKIAl9CiAKLQlhZGF1MTk3Ny0+cmVzZXRfZ3BpbyA9IGRldm1fZ3Bpb2RfZ2V0KGRldiwgInJl
+c2V0Iik7Ci0JaWYgKElTX0VSUihhZGF1MTk3Ny0+cmVzZXRfZ3BpbykpIHsKLQkJcmV0ID0gUFRS
+X0VSUihhZGF1MTk3Ny0+cmVzZXRfZ3Bpbyk7Ci0JCWlmIChyZXQgIT0gLUVOT0VOVCAmJiByZXQg
+IT0gLUVOT1NZUykKLQkJCXJldHVybiBQVFJfRVJSKGFkYXUxOTc3LT5yZXNldF9ncGlvKTsKLQkJ
+YWRhdTE5NzctPnJlc2V0X2dwaW8gPSBOVUxMOwotCX0KKwlhZGF1MTk3Ny0+cmVzZXRfZ3BpbyA9
+IGRldm1fZ3Bpb2RfZ2V0X29wdGlvbmFsKGRldiwgInJlc2V0IiwKKwkJCQkJCSAgICAgICBHUElP
+RF9PVVRfTE9XKTsKKwlpZiAoSVNfRVJSKGFkYXUxOTc3LT5yZXNldF9ncGlvKSkKKwkJcmV0dXJu
+IFBUUl9FUlIoYWRhdTE5NzctPnJlc2V0X2dwaW8pOwogCiAJZGV2X3NldF9kcnZkYXRhKGRldiwg
+YWRhdTE5NzcpOwogCi0JaWYgKGFkYXUxOTc3LT5yZXNldF9ncGlvKSB7Ci0JCXJldCA9IGdwaW9k
+X2RpcmVjdGlvbl9vdXRwdXQoYWRhdTE5NzctPnJlc2V0X2dwaW8sIDApOwotCQlpZiAocmV0KQot
+CQkJcmV0dXJuIHJldDsKKwlpZiAoYWRhdTE5NzctPnJlc2V0X2dwaW8pCiAJCW5kZWxheSgxMDAp
+OwotCX0KIAogCXJldCA9IGFkYXUxOTc3X3Bvd2VyX2VuYWJsZShhZGF1MTk3Nyk7CiAJaWYgKHJl
+dCkKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvY3MzNWwzMi5jIGIvc291bmQvc29jL2Nv
+ZGVjcy9jczM1bDMyLmMKaW5kZXggZjJiOGFhZDIxMjc0Li42MDU5OGIyMzAzNDEgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL3NvYy9jb2RlY3MvY3MzNWwzMi5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvY3Mz
+NWwzMi5jCkBAIC00MzcsMjAgKzQzNywxMyBAQCBzdGF0aWMgaW50IGNzMzVsMzJfaTJjX3Byb2Jl
+KHN0cnVjdCBpMmNfY2xpZW50ICppMmNfY2xpZW50LAogCX0KIAogCS8qIFJlc2V0IHRoZSBEZXZp
+Y2UgKi8KLQljczM1bDMyLT5yZXNldF9ncGlvID0gZGV2bV9ncGlvZF9nZXQoJmkyY19jbGllbnQt
+PmRldiwKLQkJInJlc2V0LWdwaW9zIik7Ci0JaWYgKElTX0VSUihjczM1bDMyLT5yZXNldF9ncGlv
+KSkgewotCQlyZXQgPSBQVFJfRVJSKGNzMzVsMzItPnJlc2V0X2dwaW8pOwotCQlpZiAocmV0ICE9
+IC1FTk9FTlQgJiYgcmV0ICE9IC1FTk9TWVMpCi0JCQlyZXR1cm4gcmV0OwotCi0JCWNzMzVsMzIt
+PnJlc2V0X2dwaW8gPSBOVUxMOwotCX0gZWxzZSB7Ci0JCXJldCA9IGdwaW9kX2RpcmVjdGlvbl9v
+dXRwdXQoY3MzNWwzMi0+cmVzZXRfZ3BpbywgMCk7Ci0JCWlmIChyZXQpCi0JCQlyZXR1cm4gcmV0
+OworCWNzMzVsMzItPnJlc2V0X2dwaW8gPSBkZXZtX2dwaW9kX2dldF9vcHRpb25hbCgmaTJjX2Ns
+aWVudC0+ZGV2LAorCQkicmVzZXQiLCBHUElPRF9PVVRfTE9XKTsKKwlpZiAoSVNfRVJSKGNzMzVs
+MzItPnJlc2V0X2dwaW8pKQorCQlyZXR1cm4gUFRSX0VSUihjczM1bDMyLT5yZXNldF9ncGlvKTsK
+KworCWlmIChjczM1bDMyLT5yZXNldF9ncGlvKQogCQlncGlvZF9zZXRfdmFsdWVfY2Fuc2xlZXAo
+Y3MzNWwzMi0+cmVzZXRfZ3BpbywgMSk7Ci0JfQogCiAJLyogaW5pdGlhbGl6ZSBjb2RlYyAqLwog
+CXJldCA9IHJlZ21hcF9yZWFkKGNzMzVsMzItPnJlZ21hcCwgQ1MzNUwzMl9ERVZJRF9BQiwgJnJl
+Zyk7CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2NzNDI2NS5jIGIvc291bmQvc29jL2Nv
+ZGVjcy9jczQyNjUuYwppbmRleCBjZTYwODY4MzVlYmQuLmNhYzQ4ZGRmM2JhNiAxMDA2NDQKLS0t
+IGEvc291bmQvc29jL2NvZGVjcy9jczQyNjUuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL2NzNDI2
+NS5jCkBAIC02MDUsMjEgKzYwNSwxNCBAQCBzdGF0aWMgaW50IGNzNDI2NV9pMmNfcHJvYmUoc3Ry
+dWN0IGkyY19jbGllbnQgKmkyY19jbGllbnQsCiAJCXJldHVybiByZXQ7CiAJfQogCi0JY3M0MjY1
+LT5yZXNldF9ncGlvID0gZGV2bV9ncGlvZF9nZXQoJmkyY19jbGllbnQtPmRldiwKLQkJInJlc2V0
+LWdwaW9zIik7Ci0JaWYgKElTX0VSUihjczQyNjUtPnJlc2V0X2dwaW8pKSB7Ci0JCXJldCA9IFBU
+Ul9FUlIoY3M0MjY1LT5yZXNldF9ncGlvKTsKLQkJaWYgKHJldCAhPSAtRU5PRU5UICYmIHJldCAh
+PSAtRU5PU1lTKQotCQkJcmV0dXJuIHJldDsKLQotCQljczQyNjUtPnJlc2V0X2dwaW8gPSBOVUxM
+OwotCX0gZWxzZSB7Ci0JCXJldCA9IGdwaW9kX2RpcmVjdGlvbl9vdXRwdXQoY3M0MjY1LT5yZXNl
+dF9ncGlvLCAwKTsKLQkJaWYgKHJldCkKLQkJCXJldHVybiByZXQ7CisJY3M0MjY1LT5yZXNldF9n
+cGlvID0gZGV2bV9ncGlvZF9nZXRfb3B0aW9uYWwoJmkyY19jbGllbnQtPmRldiwKKwkJInJlc2V0
+IiwgR1BJT0RfT1VUX0xPVyk7CisJaWYgKElTX0VSUihjczQyNjUtPnJlc2V0X2dwaW8pKQorCQly
+ZXR1cm4gUFRSX0VSUihjczQyNjUtPnJlc2V0X2dwaW8pOworCisJaWYgKGNzNDI2NS0+cmVzZXRf
+Z3BpbykgewogCQltZGVsYXkoMSk7CiAJCWdwaW9kX3NldF92YWx1ZV9jYW5zbGVlcChjczQyNjUt
+PnJlc2V0X2dwaW8sIDEpOwotCiAJfQogCiAJaTJjX3NldF9jbGllbnRkYXRhKGkyY19jbGllbnQs
+IGNzNDI2NSk7CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3N0YTM1MC5jIGIvc291bmQv
+c29jL2NvZGVjcy9zdGEzNTAuYwppbmRleCBiZGEyZWUxODc2OWUuLjY2OWUzMjI4MjQxZSAxMDA2
+NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9zdGEzNTAuYworKysgYi9zb3VuZC9zb2MvY29kZWNz
+L3N0YTM1MC5jCkBAIC0xMjEzLDI3ICsxMjEzLDE1IEBAIHN0YXRpYyBpbnQgc3RhMzUwX2kyY19w
+cm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJjLAogI2VuZGlmCiAKIAkvKiBHUElPcyAqLwotCXN0
+YTM1MC0+Z3Bpb2RfbnJlc2V0ID0gZGV2bV9ncGlvZF9nZXQoZGV2LCAicmVzZXQiKTsKLQlpZiAo
+SVNfRVJSKHN0YTM1MC0+Z3Bpb2RfbnJlc2V0KSkgewotCQlyZXQgPSBQVFJfRVJSKHN0YTM1MC0+
+Z3Bpb2RfbnJlc2V0KTsKLQkJaWYgKHJldCAhPSAtRU5PRU5UICYmIHJldCAhPSAtRU5PU1lTKQot
+CQkJcmV0dXJuIHJldDsKLQotCQlzdGEzNTAtPmdwaW9kX25yZXNldCA9IE5VTEw7Ci0JfSBlbHNl
+IHsKLQkJZ3Bpb2RfZGlyZWN0aW9uX291dHB1dChzdGEzNTAtPmdwaW9kX25yZXNldCwgMCk7Ci0J
+fQotCi0Jc3RhMzUwLT5ncGlvZF9wb3dlcl9kb3duID0gZGV2bV9ncGlvZF9nZXQoZGV2LCAicG93
+ZXItZG93biIpOwotCWlmIChJU19FUlIoc3RhMzUwLT5ncGlvZF9wb3dlcl9kb3duKSkgewotCQly
+ZXQgPSBQVFJfRVJSKHN0YTM1MC0+Z3Bpb2RfcG93ZXJfZG93bik7Ci0JCWlmIChyZXQgIT0gLUVO
+T0VOVCAmJiByZXQgIT0gLUVOT1NZUykKLQkJCXJldHVybiByZXQ7Ci0KLQkJc3RhMzUwLT5ncGlv
+ZF9wb3dlcl9kb3duID0gTlVMTDsKLQl9IGVsc2UgewotCQlncGlvZF9kaXJlY3Rpb25fb3V0cHV0
+KHN0YTM1MC0+Z3Bpb2RfcG93ZXJfZG93biwgMCk7Ci0JfQorCXN0YTM1MC0+Z3Bpb2RfbnJlc2V0
+ID0gZGV2bV9ncGlvZF9nZXRfb3B0aW9uYWwoZGV2LCAicmVzZXQiLAorCQkJCQkJICAgICAgIEdQ
+SU9EX09VVF9MT1cpOworCWlmIChJU19FUlIoc3RhMzUwLT5ncGlvZF9ucmVzZXQpKQorCQlyZXR1
+cm4gUFRSX0VSUihzdGEzNTAtPmdwaW9kX25yZXNldCk7CisKKwlzdGEzNTAtPmdwaW9kX3Bvd2Vy
+X2Rvd24gPSBkZXZtX2dwaW9kX2dldChkZXYsICJwb3dlci1kb3duIiwKKwkJCQkJCSAgR1BJT0Rf
+T1VUX0xPVyk7CisJaWYgKElTX0VSUihzdGEzNTAtPmdwaW9kX3Bvd2VyX2Rvd24pKQorCQlyZXR1
+cm4gUFRSX0VSUihzdGEzNTAtPmdwaW9kX3Bvd2VyX2Rvd24pOwogCiAJLyogcmVndWxhdG9ycyAq
+LwogCWZvciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKHN0YTM1MC0+c3VwcGxpZXMpOyBpKyspCmRp
+ZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RhczI1NTIuYyBiL3NvdW5kL3NvYy9jb2RlY3Mv
+dGFzMjU1Mi5jCmluZGV4IGFlMjNhY2RkMjcwOC4uZGZiNGZmNWNjOWVhIDEwMDY0NAotLS0gYS9z
+b3VuZC9zb2MvY29kZWNzL3RhczI1NTIuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3RhczI1NTIu
+YwpAQCAtNDg1LDE2ICs0ODUsOSBAQCBzdGF0aWMgaW50IHRhczI1NTJfcHJvYmUoc3RydWN0IGky
+Y19jbGllbnQgKmNsaWVudCwKIAlpZiAoZGF0YSA9PSBOVUxMKQogCQlyZXR1cm4gLUVOT01FTTsK
+IAotCWRhdGEtPmVuYWJsZV9ncGlvID0gZGV2bV9ncGlvZF9nZXQoZGV2LCAiZW5hYmxlIik7Ci0J
+aWYgKElTX0VSUihkYXRhLT5lbmFibGVfZ3BpbykpIHsKLQkJcmV0ID0gUFRSX0VSUihkYXRhLT5l
+bmFibGVfZ3Bpbyk7Ci0JCWlmIChyZXQgIT0gLUVOT0VOVCAmJiByZXQgIT0gLUVOT1NZUykKLQkJ
+CXJldHVybiByZXQ7Ci0KLQkJZGF0YS0+ZW5hYmxlX2dwaW8gPSBOVUxMOwotCX0gZWxzZSB7Ci0J
+CWdwaW9kX2RpcmVjdGlvbl9vdXRwdXQoZGF0YS0+ZW5hYmxlX2dwaW8sIDApOwotCX0KKwlkYXRh
+LT5lbmFibGVfZ3BpbyA9IGRldm1fZ3Bpb2RfZ2V0KGRldiwgImVuYWJsZSIsIEdQSU9EX09VVF9M
+T1cpOworCWlmIChJU19FUlIoZGF0YS0+ZW5hYmxlX2dwaW8pKQorCQlyZXR1cm4gUFRSX0VSUihk
+YXRhLT5lbmFibGVfZ3Bpbyk7CiAKIAlkYXRhLT50YXMyNTUyX2NsaWVudCA9IGNsaWVudDsKIAlk
+YXRhLT5yZWdtYXAgPSBkZXZtX3JlZ21hcF9pbml0X2kyYyhjbGllbnQsICZ0YXMyNTUyX3JlZ21h
+cF9jb25maWcpOwotLSAKMi4xLjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
