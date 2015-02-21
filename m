@@ -1,20 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Intel HDA / ALC662 analog surround problem
-Date: Sat, 21 Feb 2015 23:56:30 +0800
-Message-ID: <CAN8ccibQh643hZ+owuNVj86ic2H55NOz5huwWhQVJu7fa1h=MQ@mail.gmail.com>
-References: <CAN8cciZPhv1wCQosYjj9MEhi+Ybz+6mho0H7fDC48QB9=GdCKQ@mail.gmail.com>
- <CAN8cciZwTRY8HSpK9iXmfy7VGiPw1wGO1wwdfyHYkzEv2dRMAQ@mail.gmail.com>
+From: =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
+Subject: [PATCH v2] ASoC: sta32x: fix register range in regmap.
+Date: Sat, 21 Feb 2015 17:22:38 +0100
+Message-ID: <1424535758-5140-1-git-send-email-niederp@physik.uni-kl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
- [209.85.218.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C6B72606AB
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 16:56:31 +0100 (CET)
-Received: by mail-oi0-f41.google.com with SMTP id z81so7294565oif.0
- for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 07:56:30 -0800 (PST)
-In-Reply-To: <CAN8cciZwTRY8HSpK9iXmfy7VGiPw1wGO1wwdfyHYkzEv2dRMAQ@mail.gmail.com>
+Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id E41D12606B4
+ for <alsa-devel@alsa-project.org>; Sat, 21 Feb 2015 17:19:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,40 +18,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, ib@wupperonline.de
+To: broonie@kernel.org, zonque@gmail.com, brandau@gmx.de, lars@metafoo.de
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Thomas=20Niederpr=C3=BCm?= <niederp@physik.uni-kl.de>
 List-Id: alsa-devel@alsa-project.org
 
-> I'm using alsa 1.0.28 (lib and utils). Everything works fine so far, i.e.
-stereo output through speakers and headphone as well as S/PDIF and all
-possible capturing.
-
-> According to my mainboard manual, the codec supports 5.1 (analog)
-surround by using the rear "line out" jack (for rear surround) and "mic"
-jack (for center and sub) - which doesn't work. (I don't have even a clue
-what to do to activate.)
-
-> My questions:
-
-> 1) Does 5.1 analog surround work for the ALC662? If yes, how?
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/HD-Audio-Controls.txt
-
-Channel Mode
-  This is an enum control to change the surround-channel setup,
-  appears only when the surround channels are available.
-  It gives the number of channels to be used, "2ch", "4ch", "6ch",
-  and "8ch".  According to the configuration, this also controls the
-  jack-retasking of multi-I/O jacks.
-
->2) If not, is it a limitation of the kernel oder alsa?
-
->HDA-Intel.conf says:
-
-> HDA-Intel.pcm.surround51.0 cards.HDA-Intel.pcm.front.0
-
-> Does this mean that 5.1 surround is restricted to stereo in any case?
-
-This mean softvol plugin is also used by 5.1 and stereo
-
-Do "pcm playback volume" affect the volume after you change channel mode
-from 2ch to 6 ch so that mic and line in jacks are retasked as output ?
+VGhlIFNUQTMyWF9BVVRPMyBpcyBhIHdyaXRhYmxlIHJlZ2lzdGVyIHRoYXQgY3VycmVudGx5IGRv
+ZXMgbm90IGFwcGVhcgppbiB0aGUgcmVnbWFwIHJhbmdlcyhuZWl0aGVyIHJlYWQgbm9yIHdyaXRl
+KS4gQnkgYWRkaW5nIHRoaXMgcmVnaXN0ZXIKdG8gdGhlIHJlZ2lzdGVyIHJhbmdlcyB0aGVyZSBp
+cyBubyBnYXAgYW55bW9yZSBhbmQgdGhlIGV4aXN0aW5nCnJlZ2lzdGVyIHJhbmdlcyBjYW4gYmUg
+am9pbmVkLiBUaGlzIGZpeGVzIGEgcmVncmVzc2lvbiBpbnRyb2R1Y2VkIGluCmNvbW1pdCBhMWJl
+NGNlYWQ5Yjk1MDRhYTZmYzkzYjYyNDk3NTYwMWNlYzhjMTg4IHdoZXJlIHRoZSBkcml2ZXIgd2Fz
+Cm1vdmVkIHRvIGRpcmVjdCByZWdtYXAgdXNhZ2UgYW5kIHRoZSBTVEEzMlhfQVVUTzMgcmVnaXN0
+ZXIgd2FzIG1pc3NlZC4KVGhhdCBtYWRlIGl0IGltcG9zc2libGUgdG8gY2hvb3NlIHRoZSBwcmVz
+ZXQgRVEgbW9kZSBzZXQgdGhyb3VnaCB0aGUKU1RBMzJYX0FVVE8zIHJlZ2lzdGVyLgoKU2lnbmVk
+LW9mZi1ieTogVGhvbWFzIE5pZWRlcnByw7xtIDxuaWVkZXJwQHBoeXNpay51bmkta2wuZGU+Ci0t
+LQoKY2hhbmdlcyBzaW5jZSB2MToKCS0gdXBkYXRlZCB0byBhcHBseSB0byBsaW51eC1uZXh0LgoJ
+LSBhZGRlZCBjb21taXQgaWQgdGhhdCBpbnRyb2R1Y2VkIHRoZSByZWdyZXNzaW9uIGluIHRoZQoJ
+ICBjb21taXQgbWVzc2FnZS4KCiBzb3VuZC9zb2MvY29kZWNzL3N0YTMyeC5jIHwgNiArKy0tLS0K
+IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2NvZGVjcy9zdGEzMnguYyBiL3NvdW5kL3NvYy9jb2RlY3Mvc3RhMzJ4
+LmMKaW5kZXggZTI4YzE4NS4uZmM2ODZjYSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9z
+dGEzMnguYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3N0YTMyeC5jCkBAIC0xMDYsMTMgKzEwNiwx
+MSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ19kZWZhdWx0IHN0YTMyeF9yZWdzW10gPSB7CiB9
+OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9yYW5nZSBzdGEzMnhfd3JpdGVfcmVnc19y
+YW5nZVtdID0gewotCXJlZ21hcF9yZWdfcmFuZ2UoU1RBMzJYX0NPTkZBLCAgU1RBMzJYX0FVVE8y
+KSwKLQlyZWdtYXBfcmVnX3JhbmdlKFNUQTMyWF9DMUNGRywgIFNUQTMyWF9GRFJDMiksCisJcmVn
+bWFwX3JlZ19yYW5nZShTVEEzMlhfQ09ORkEsICBTVEEzMlhfRkRSQzIpLAogfTsKIAogc3RhdGlj
+IGNvbnN0IHN0cnVjdCByZWdtYXBfcmFuZ2Ugc3RhMzJ4X3JlYWRfcmVnc19yYW5nZVtdID0gewot
+CXJlZ21hcF9yZWdfcmFuZ2UoU1RBMzJYX0NPTkZBLCAgU1RBMzJYX0FVVE8yKSwKLQlyZWdtYXBf
+cmVnX3JhbmdlKFNUQTMyWF9DMUNGRywgIFNUQTMyWF9GRFJDMiksCisJcmVnbWFwX3JlZ19yYW5n
+ZShTVEEzMlhfQ09ORkEsICBTVEEzMlhfRkRSQzIpLAogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVj
+dCByZWdtYXBfcmFuZ2Ugc3RhMzJ4X3ZvbGF0aWxlX3JlZ3NfcmFuZ2VbXSA9IHsKLS0gCjIuMS4x
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
