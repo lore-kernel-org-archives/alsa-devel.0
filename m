@@ -1,56 +1,269 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: RE: [PATCH 2/2] ASoC: pcm512x: Allow independently overclocking
- PLL, DAC and DSP
-Date: Sun, 22 Feb 2015 00:24:12 +0000
-Message-ID: <88616b158f38499fa5a466f31d25aa80@EMAIL.axentia.se>
-References: <1424120568-24648-1-git-send-email-peda@lysator.liu.se>
- <1424120568-24648-4-git-send-email-peda@lysator.liu.se>
- <20150221093328.GF6236@finisterre.sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: wm8804: Merge CODEC probe and bus
+	probe
+Date: Sun, 22 Feb 2015 16:43:22 +0000
+Message-ID: <1424623402-473-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1424623402-473-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150221093328.GF6236@finisterre.sirena.org.uk>
-Content-Language: sv-SE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Peter Rosin <peda@lysator.liu.se>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0FC5626078A
+ for <alsa-devel@alsa-project.org>; Sun, 22 Feb 2015 17:45:14 +0100 (CET)
+In-Reply-To: <1424623402-473-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Mon, Feb 16, 2015 at 10:02:48PM +0100, Peter Rosin wrote:
-> > From: Peter Rosin <peda@axentia.se>
-> >
-> > When using non-standard rates, a relatively small amount of
-> > overclocking can make a big difference to a number of cases.
-> 
-> This is all basically fine but I'm wondering why this is being configured via
-> sysfs and not via ALSA controls?  It's going to be more fiddly for people to
-> have to work with both control methods when they need to configure these
-> things.
+From: Charles Keepax <ckeepax@gmail.com>
 
-Originally, I had the limits in .config. Then Lars-Peter suggested
-sysfs (on irc) and perhaps some way to disable overclocking. ALSA
-controls were never on the table, but now that you mention it, it sounds
-about right. So, I'm fine with having it as ALSA-controls...
+All of the things in the CODEC probe, such as getting the regulators and
+verifying the chip ID, are better done in bus probe. It is better to
+fail during bus probe if this is the wrong chip and all resource
+allocation should be done in the bus probe anyway. This patch merges
+the CODEC probe into bus probe.
 
-*time passes*
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8804.c |  180 ++++++++++++++++++++------------------------
+ 1 files changed, 82 insertions(+), 98 deletions(-)
 
-...but I'm not sure everybody agrees that overclocking games should
-be allowed by any and all users?
-
-If you still want me to convert to ALSA controls, what control do you
-suggest? SOC_SINGLE_EXT? Or should I use an enumeration, because
-mixers tend to present volume controls as a percentage of max, which
-will be confusing: You are now at "volume" 75% (of max 40), when the
-value is 30. Eeek. But enumerations from 0% to 40% sounds tedious.
-
-And how would you suggest that I name the controls?
-"Max Overclock DAC", "Max Overclock DSP" and "Max Overclock PLL"?
-
-BTW, the only troubles I've had with overclocking "too much" is that it
-has stopped working. I have not managed to fry any chip. But that is no
-guarantee, of course.
-
-Cheers,
-Peter
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index b5a04fc..1bd4ace 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -182,9 +182,9 @@ static bool wm8804_volatile(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-static int wm8804_reset(struct snd_soc_codec *codec)
++static int wm8804_reset(struct wm8804_priv *wm8804)
+ {
+-	return snd_soc_write(codec, WM8804_RST_DEVID1, 0x0);
++	return regmap_write(wm8804->regmap, WM8804_RST_DEVID1, 0x0);
+ }
+ 
+ static int wm8804_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+@@ -515,100 +515,6 @@ static int wm8804_set_bias_level(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
+-static int wm8804_codec_remove(struct snd_soc_codec *codec)
+-{
+-	struct wm8804_priv *wm8804;
+-	int i;
+-
+-	wm8804 = snd_soc_codec_get_drvdata(codec);
+-
+-	for (i = 0; i < ARRAY_SIZE(wm8804->supplies); ++i)
+-		regulator_unregister_notifier(wm8804->supplies[i].consumer,
+-					      &wm8804->disable_nb[i]);
+-	return 0;
+-}
+-
+-static int wm8804_codec_probe(struct snd_soc_codec *codec)
+-{
+-	struct wm8804_priv *wm8804;
+-	int i, id1, id2, ret;
+-
+-	wm8804 = snd_soc_codec_get_drvdata(codec);
+-
+-	for (i = 0; i < ARRAY_SIZE(wm8804->supplies); i++)
+-		wm8804->supplies[i].supply = wm8804_supply_names[i];
+-
+-	ret = devm_regulator_bulk_get(codec->dev, ARRAY_SIZE(wm8804->supplies),
+-				 wm8804->supplies);
+-	if (ret) {
+-		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
+-		return ret;
+-	}
+-
+-	wm8804->disable_nb[0].notifier_call = wm8804_regulator_event_0;
+-	wm8804->disable_nb[1].notifier_call = wm8804_regulator_event_1;
+-
+-	/* This should really be moved into the regulator core */
+-	for (i = 0; i < ARRAY_SIZE(wm8804->supplies); i++) {
+-		ret = regulator_register_notifier(wm8804->supplies[i].consumer,
+-						  &wm8804->disable_nb[i]);
+-		if (ret != 0) {
+-			dev_err(codec->dev,
+-				"Failed to register regulator notifier: %d\n",
+-				ret);
+-		}
+-	}
+-
+-	ret = regulator_bulk_enable(ARRAY_SIZE(wm8804->supplies),
+-				    wm8804->supplies);
+-	if (ret) {
+-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
+-		return ret;
+-	}
+-
+-	id1 = snd_soc_read(codec, WM8804_RST_DEVID1);
+-	if (id1 < 0) {
+-		dev_err(codec->dev, "Failed to read device ID: %d\n", id1);
+-		ret = id1;
+-		goto err_reg_enable;
+-	}
+-
+-	id2 = snd_soc_read(codec, WM8804_DEVID2);
+-	if (id2 < 0) {
+-		dev_err(codec->dev, "Failed to read device ID: %d\n", id2);
+-		ret = id2;
+-		goto err_reg_enable;
+-	}
+-
+-	id2 = (id2 << 8) | id1;
+-
+-	if (id2 != 0x8805) {
+-		dev_err(codec->dev, "Invalid device ID: %#x\n", id2);
+-		ret = -EINVAL;
+-		goto err_reg_enable;
+-	}
+-
+-	ret = snd_soc_read(codec, WM8804_DEVREV);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to read device revision: %d\n",
+-			ret);
+-		goto err_reg_enable;
+-	}
+-	dev_info(codec->dev, "revision %c\n", ret + 'A');
+-
+-	ret = wm8804_reset(codec);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
+-		goto err_reg_enable;
+-	}
+-
+-	return 0;
+-
+-err_reg_enable:
+-	regulator_bulk_disable(ARRAY_SIZE(wm8804->supplies), wm8804->supplies);
+-	return ret;
+-}
+-
+ static const struct snd_soc_dai_ops wm8804_dai_ops = {
+ 	.hw_params = wm8804_hw_params,
+ 	.set_fmt = wm8804_set_fmt,
+@@ -646,8 +552,6 @@ static struct snd_soc_dai_driver wm8804_dai = {
+ };
+ 
+ static const struct snd_soc_codec_driver soc_codec_dev_wm8804 = {
+-	.probe = wm8804_codec_probe,
+-	.remove = wm8804_codec_remove,
+ 	.set_bias_level = wm8804_set_bias_level,
+ 	.idle_bias_off = true,
+ 
+@@ -671,6 +575,8 @@ EXPORT_SYMBOL_GPL(wm8804_regmap_config);
+ int wm8804_probe(struct device *dev, struct regmap *regmap)
+ {
+ 	struct wm8804_priv *wm8804;
++	unsigned int id1, id2;
++	int i, ret;
+ 
+ 	wm8804 = devm_kzalloc(dev, sizeof(*wm8804), GFP_KERNEL);
+ 	if (!wm8804)
+@@ -680,13 +586,91 @@ int wm8804_probe(struct device *dev, struct regmap *regmap)
+ 
+ 	wm8804->regmap = regmap;
+ 
++	for (i = 0; i < ARRAY_SIZE(wm8804->supplies); i++)
++		wm8804->supplies[i].supply = wm8804_supply_names[i];
++
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(wm8804->supplies),
++				      wm8804->supplies);
++	if (ret) {
++		dev_err(dev, "Failed to request supplies: %d\n", ret);
++		return ret;
++	}
++
++	wm8804->disable_nb[0].notifier_call = wm8804_regulator_event_0;
++	wm8804->disable_nb[1].notifier_call = wm8804_regulator_event_1;
++
++	/* This should really be moved into the regulator core */
++	for (i = 0; i < ARRAY_SIZE(wm8804->supplies); i++) {
++		ret = regulator_register_notifier(wm8804->supplies[i].consumer,
++						  &wm8804->disable_nb[i]);
++		if (ret != 0) {
++			dev_err(dev,
++				"Failed to register regulator notifier: %d\n",
++				ret);
++		}
++	}
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(wm8804->supplies),
++				    wm8804->supplies);
++	if (ret) {
++		dev_err(dev, "Failed to enable supplies: %d\n", ret);
++		goto err_reg_enable;
++	}
++
++	ret = regmap_read(regmap, WM8804_RST_DEVID1, &id1);
++	if (ret < 0) {
++		dev_err(dev, "Failed to read device ID: %d\n", ret);
++		goto err_reg_enable;
++	}
++
++	ret = regmap_read(regmap, WM8804_DEVID2, &id2);
++	if (ret < 0) {
++		dev_err(dev, "Failed to read device ID: %d\n", ret);
++		goto err_reg_enable;
++	}
++
++	id2 = (id2 << 8) | id1;
++
++	if (id2 != 0x8805) {
++		dev_err(dev, "Invalid device ID: %#x\n", id2);
++		ret = -EINVAL;
++		goto err_reg_enable;
++	}
++
++	ret = regmap_read(regmap, WM8804_DEVREV, &id1);
++	if (ret < 0) {
++		dev_err(dev, "Failed to read device revision: %d\n",
++			ret);
++		goto err_reg_enable;
++	}
++	dev_info(dev, "revision %c\n", id1 + 'A');
++
++	ret = wm8804_reset(wm8804);
++	if (ret < 0) {
++		dev_err(dev, "Failed to issue reset: %d\n", ret);
++		goto err_reg_enable;
++	}
++
+ 	return snd_soc_register_codec(dev, &soc_codec_dev_wm8804,
+ 				      &wm8804_dai, 1);
++
++err_reg_enable:
++	regulator_bulk_disable(ARRAY_SIZE(wm8804->supplies), wm8804->supplies);
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(wm8804_probe);
+ 
+ void wm8804_remove(struct device *dev)
+ {
++	struct wm8804_priv *wm8804;
++	int i;
++
++	wm8804 = dev_get_drvdata(dev);
++
++	for (i = 0; i < ARRAY_SIZE(wm8804->supplies); ++i)
++		regulator_unregister_notifier(wm8804->supplies[i].consumer,
++					      &wm8804->disable_nb[i]);
++
+ 	snd_soc_unregister_codec(dev);
+ }
+ EXPORT_SYMBOL_GPL(wm8804_remove);
+-- 
+1.7.2.5
