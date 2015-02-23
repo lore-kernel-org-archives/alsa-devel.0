@@ -1,49 +1,57 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: Build regressions/improvements in v4.0-rc1
-Date: Mon, 23 Feb 2015 12:24:38 +0100
-Message-ID: <6141970.YzWJy8akUr@wuerfel>
-References: <1424680402-3477-1-git-send-email-geert@linux-m68k.org> <5721217.aGU5oqfDWo@wuerfel> <CAMuHMdUTCvQw1q-dJcx9dAnFEXtfJYs+rbVS4KdZgi-3cbSC7g@mail.gmail.com>
+From: =?UTF-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber-l3A5Bk7waGM@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: max98088: Add master clock handling
+Date: Mon, 23 Feb 2015 13:23:21 +0100
+Message-ID: <54EB1BB9.4030205@suse.de>
+References: <1424283959-16289-3-git-send-email-afaerber@suse.de> <1424373526-4135-1-git-send-email-afaerber@suse.de> <54E6A9AB.4070401@gmail.com> <54EAE4DF.3040607@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUTCvQw1q-dJcx9dAnFEXtfJYs+rbVS4KdZgi-3cbSC7g@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Matthew Wilcox <willy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <54EAE4DF.3040607-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sangbeom Kim <sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Vincent Palatin <vpalatin-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Tushar Behera <tushar.behera-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 23 February 2015 11:28:12 Geert Uytterhoeven wrote:
-> On Mon, Feb 23, 2015 at 11:24 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Monday 23 February 2015 10:14:55 Geert Uytterhoeven wrote:
-> >> On Mon, Feb 23, 2015 at 10:03 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> >> >> >   + /home/kisskb/slave/src/fs/dax.c: error: implicit declaration of function 'copy_user_page' [-Werror=implicit-function-declaration]:  => 266:2
-> 
-> > I checked the other architectures, and found that the same is missing on
-> > ARC, so we should add both:
-> >
-> > diff --git a/fs/Kconfig b/fs/Kconfig
-> > index ec35851e5b71..a24d496787d6 100644
-> > --- a/fs/Kconfig
-> > +++ b/fs/Kconfig
-> > @@ -36,7 +36,7 @@ source "fs/nilfs2/Kconfig"
-> >  config FS_DAX
-> >         bool "Direct Access (DAX) support"
-> >         depends on MMU
-> > -       depends on !(ARM || MIPS || SPARC)
-> > +       depends on !(ARC || ARM || MIPS || SH || SPARC)
-> >         help
-> >           Direct Access (DAX) can be used on memory-backed block devices.
-> >           If the block device supports DAX and the filesystem supports DAX,
-> >
-> >
-> > It's also not implemented on c6x and blackfin, but both of them have
-> > MMU=n, so they are already excluded.
-> 
-> Exactly.
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi,
 
-Thanks, let me submit that as a proper patch with a changelog then.
+Am 23.02.2015 um 09:29 schrieb Javier Martinez Canillas:
+> On 02/20/2015 04:27 AM, Tushar Behera wrote:
+>> On 02/20/2015 12:48 AM, Andreas F=C3=A4rber wrote:
+>>> If master clock is provided through device tree, then update
+>>> the master clock frequency during set_sysclk.
+>>>
+>>> Cc: Tushar Behera <tushar.behera-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+>>> Signed-off-by: Andreas F=C3=A4rber <afaerber-l3A5Bk7waGM@public.gmane.org>
+>>> ---
+>>>  sound/soc/codecs/max98088.c | 24 ++++++++++++++++++++++++
+>>>  1 file changed, 24 insertions(+)
+>>>
+>>
+>> Looks good.
+>>
+>> Acked-by: Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>>
+>=20
+> Looks good to me as well.
+>=20
+> Reviewed-by: Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8oXa1LcwEujcA@public.gmane.org=
+k>
 
-	Arnd
+Thanks guys. One self-doubt: Is there any downside to returning
+-EPROBE_DEFER after regcache_mark_dirty(max98088->regmap)? I.e., should
+I move the last hunk some lines up to be the very first thing executed?
+
+Cheers,
+Andreas
+
+--=20
+SUSE Linux GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+GF: Felix Imend=C3=B6rffer, Jane Smithard, Jennifer Guild, Dilip Upmany=
+u,
+Graham Norton; HRB 21284 (AG N=C3=BCrnberg)
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
