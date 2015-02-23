@@ -1,76 +1,91 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: Build regressions/improvements in v4.0-rc1
-Date: Mon, 23 Feb 2015 09:45:43 +0100
-Message-ID: <CAMuHMdXnVLtiSxqwz7ah5faPUx_8piN5eOdNKQtKNwOgT73FqA@mail.gmail.com>
+Date: Mon, 23 Feb 2015 10:03:10 +0100
+Message-ID: <5900255.NhXvduRnha@wuerfel>
 References: <1424680402-3477-1-git-send-email-geert@linux-m68k.org>
+ <CAMuHMdXnVLtiSxqwz7ah5faPUx_8piN5eOdNKQtKNwOgT73FqA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1424680402-3477-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id C01A9260439
+ for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 10:03:21 +0100 (CET)
+In-Reply-To: <CAMuHMdXnVLtiSxqwz7ah5faPUx_8piN5eOdNKQtKNwOgT73FqA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 23, 2015 at 9:33 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v4.0-rc1[1] compared to v3.19[2].
->
-> Summarized:
->   - build errors: +11/-10
+On Monday 23 February 2015 09:45:43 Geert Uytterhoeven wrote:
+> On Mon, Feb 23, 2015 at 9:33 AM, Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > Below is the list of build error/warning regressions/improvements in
+> > v4.0-rc1[1] compared to v3.19[2].
+> >
+> > Summarized:
+> >   - build errors: +11/-10
+> 
+> > [1] http://kisskb.ellerman.id.au/kisskb/head/8494/ (256 out of 257 configs)
+> > [2] http://kisskb.ellerman.id.au/kisskb/head/8427/ (255 out of 257 configs)
+> >
+> >
+> > *** ERRORS ***
+> >
+> > 11 regressions:
+> >   + /home/kisskb/slave/src/arch/arm/include/asm/atomic.h: error: #error SMP not supported on pre-ARMv6 CPUs:  => 137:2
+> >   + /home/kisskb/slave/src/arch/arm/include/asm/cmpxchg.h: error: #error "SMP is not supported on this platform":  => 114:2
+> 
+> arm-randconfig
+> 
+> SMP does depend on CPU_V6K || CPU_V7 and on HAVE_SMP... strange...
 
-> [1] http://kisskb.ellerman.id.au/kisskb/head/8494/ (256 out of 257 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/head/8427/ (255 out of 257 configs)
->
->
-> *** ERRORS ***
->
-> 11 regressions:
->   + /home/kisskb/slave/src/arch/arm/include/asm/atomic.h: error: #error SMP not supported on pre-ARMv6 CPUs:  => 137:2
->   + /home/kisskb/slave/src/arch/arm/include/asm/cmpxchg.h: error: #error "SMP is not supported on this platform":  => 114:2
+V6/V7 and  the earlier V4/V5 are normally mutually exclusive, but we sometimes
+screw up the dependencies for some platform, in which case you can end up
+with a config that includes both and gives the above error. I'll have a look.
 
-arm-randconfig
+I thought I'd fixed all the bugs we introduced in the merge window in yesterday's
+fixes branch.
 
-SMP does depend on CPU_V6K || CPU_V7 and on HAVE_SMP... strange...
+There is one known problem for mach-realview in this area, for which
+I have a fix.
 
->   + /home/kisskb/slave/src/fs/dax.c: error: implicit declaration of function 'copy_user_page' [-Werror=implicit-function-declaration]:  => 266:2
+> >   + /home/kisskb/slave/src/fs/dax.c: error: implicit declaration of function 'copy_user_page' [-Werror=implicit-function-declaration]:  => 266:2
 
-sh-randconfig
+DAX support was merged with 'depends on !(ARM || MIPS || SPARC)', so I don't
+see how this could happen.
 
->   + /home/kisskb/slave/src/sound/soc/codecs/max98357a.c: error: implicit declaration of function 'devm_gpiod_get' [-Werror=implicit-function-declaration]:  => 55:2
->   + /home/kisskb/slave/src/sound/soc/codecs/max98357a.c: error: implicit declaration of function 'gpiod_direction_output' [-Werror=implicit-function-declaration]:  => 61:2
->   + /home/kisskb/slave/src/sound/soc/codecs/max98357a.c: error: implicit declaration of function 'gpiod_set_value' [-Werror=implicit-function-declaration]:  => 30:3
+> sh-randconfig
+> 
+> >   + /home/kisskb/slave/src/sound/soc/codecs/max98357a.c: error: implicit declaration of function 'devm_gpiod_get' [-Werror=implicit-function-declaration]:  => 55:2
+> >   + /home/kisskb/slave/src/sound/soc/codecs/max98357a.c: error: implicit declaration of function 'gpiod_direction_output' [-Werror=implicit-function-declaration]:  => 61:2
+> >   + /home/kisskb/slave/src/sound/soc/codecs/max98357a.c: error: implicit declaration of function 'gpiod_set_value' [-Werror=implicit-function-declaration]:  => 30:3
 
-s390-allyesconfig
-s390-allmodconfig
-parisc-allmodconfig
-sh-allmodconfig
-sh-allyesconfig
-cris-allyesconfig
-cris-allmodconfig
-mips-allmodconfig
+Something wrong in arch/sh/include/asm/gpio.h? the codec is only
+selectable when gpiolib is enabled, but the consumer.h header
+apparently does not get included here.
 
->   + error: asm9260_timer.c: undefined reference to `of_io_request_and_map':  => .init.text+0x4014), .init.text+0x5c84)
+> s390-allyesconfig
+> s390-allmodconfig
+> parisc-allmodconfig
+> sh-allmodconfig
+> sh-allyesconfig
+> cris-allyesconfig
+> cris-allmodconfig
+> mips-allmodconfig
+> 
+> >   + error: asm9260_timer.c: undefined reference to `of_io_request_and_map':  => .init.text+0x4014), .init.text+0x5c84)
 
-sparc64-allmodconfig
-sparc-allmodconfig
+asm9260 is arm-specific, we probably need to refine the dependencies here
+to ensure that OF_ADDRESS is set. Need to think about what the best set of
+dependencies is.
 
->   + error: book3s_64_vio_hv.c: undefined reference to `power7_wakeup_loss':  => .text+0x408)
-
-pseries_defconfig
-
->   + error: smp.c: undefined reference to `.__flush_disable_L1':  => .text+0xb24)
-
-powerpc-randconfig
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	Arnd
