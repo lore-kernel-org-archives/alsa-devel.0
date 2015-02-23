@@ -1,57 +1,72 @@
-From: =?UTF-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber-l3A5Bk7waGM@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: max98088: Add master clock handling
-Date: Mon, 23 Feb 2015 13:23:21 +0100
-Message-ID: <54EB1BB9.4030205@suse.de>
-References: <1424283959-16289-3-git-send-email-afaerber@suse.de> <1424373526-4135-1-git-send-email-afaerber@suse.de> <54E6A9AB.4070401@gmail.com> <54EAE4DF.3040607@collabora.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/2] ALSA: Add params_set_format helper
+Date: Mon, 23 Feb 2015 23:20:48 +0900
+Message-ID: <20150223142048.GB6236@finisterre.sirena.org.uk>
+References: <1423440097-95191-1-git-send-email-yang.a.fang@intel.com>
+ <1423469892-48667-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <54EAE4DF.3040607-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Sangbeom Kim <sbkim73-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Vincent Palatin <vpalatin-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tomasz Figa <tomasz.figa-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Tushar Behera <tushar.behera-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============8480594309780660456=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95D6F26056B
+ for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 15:21:44 +0100 (CET)
+In-Reply-To: <1423469892-48667-1-git-send-email-yang.a.fang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, denny.iriawan@intel.com, harshapriya.n@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, kevin.strasser@intel.com, vinod.koul@intel.com, tiwai@suse.de, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Am 23.02.2015 um 09:29 schrieb Javier Martinez Canillas:
-> On 02/20/2015 04:27 AM, Tushar Behera wrote:
->> On 02/20/2015 12:48 AM, Andreas F=C3=A4rber wrote:
->>> If master clock is provided through device tree, then update
->>> the master clock frequency during set_sysclk.
->>>
->>> Cc: Tushar Behera <tushar.behera-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
->>> Signed-off-by: Andreas F=C3=A4rber <afaerber-l3A5Bk7waGM@public.gmane.org>
->>> ---
->>>  sound/soc/codecs/max98088.c | 24 ++++++++++++++++++++++++
->>>  1 file changed, 24 insertions(+)
->>>
->>
->> Looks good.
->>
->> Acked-by: Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->>
+--===============8480594309780660456==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="olLTNZSltDMg5Vbm"
+Content-Disposition: inline
+
+
+--olLTNZSltDMg5Vbm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Feb 09, 2015 at 12:18:11AM -0800, yang.a.fang@intel.com wrote:
+> From: "Fang, Yang A" <yang.a.fang@intel.com>
 >=20
-> Looks good to me as well.
->=20
-> Reviewed-by: Javier Martinez Canillas <javier.martinez-ZGY8ohtN/8oXa1LcwEujcA@public.gmane.org=
-k>
+> Add a helper to set pcm format directly from params
 
-Thanks guys. One self-doubt: Is there any downside to returning
--EPROBE_DEFER after regcache_mark_dirty(max98088->regmap)? I.e., should
-I move the last hunk some lines up to be the very first thing executed?
+Applied both, thanks.
 
-Cheers,
-Andreas
+--olLTNZSltDMg5Vbm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
---=20
-SUSE Linux GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-GF: Felix Imend=C3=B6rffer, Jane Smithard, Jennifer Guild, Dilip Upmany=
-u,
-Graham Norton; HRB 21284 (AG N=C3=BCrnberg)
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU6zc/AAoJECTWi3JdVIfQ9tQH/277krOX18sP8+OjHzMVlloE
+ARWfrdk7MV4QRtcdDHHMdB+lvZgVluVmoXIvLpGQ9ocS99wTE4uXkI3fFYMuksLK
+F+tILXRzcz5xbByofWgcTsgE7hFL5chE1WDcEwtshKMoACdgS//JafYVxaW4rBwS
+Y//NwbH20oWb6HvWdvDSmVmZM+rITqif+KrONuKZGmlvHVPTdRilyGlJ/KnacoII
+HlJzCLdyS0zX/3ccIoFWbiDptMNzdURAvYnscTqDbXmK3OAQF+klZ754LBCnPHZT
+RUdpHKIaeHYfTFylSqVatJQjdtP/wkMxqk49d0hyuVN7AzL5lfWryXxhEg/7jZ0=
+=mct3
+-----END PGP SIGNATURE-----
+
+--olLTNZSltDMg5Vbm--
+
+--===============8480594309780660456==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8480594309780660456==--
