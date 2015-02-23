@@ -1,73 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 10/13] ASoC: Intel: add pm support in sst
-	ipc driver
-Date: Tue, 24 Feb 2015 00:45:16 +0900
-Message-ID: <20150223154516.GG6236@finisterre.sirena.org.uk>
-References: <1423715405-4562-1-git-send-email-vinod.koul@intel.com>
- <1423715405-4562-11-git-send-email-vinod.koul@intel.com>
+From: Javier Martinez Canillas <javier.martinez@collabora.co.uk>
+Subject: Re: [PATCH 1/6] ASoC: max98088: Document DT bindings
+Date: Mon, 23 Feb 2015 17:46:17 +0100
+Message-ID: <54EB5959.90606@collabora.co.uk>
+References: <1424283959-16289-1-git-send-email-afaerber@suse.de> <1424283959-16289-2-git-send-email-afaerber@suse.de> <54E5EB36.9020007@collabora.co.uk> <54E5EF73.2090302@suse.de> <CAD=FV=VoFnbEsKi4mDDkaTrTXboJmm0UNV5iCk1CvV5ndEZtsA@mail.gmail.com> <54E62E1C.4030105@suse.de> <54E6314E.5060509@suse.de> <54E64C09.5000505@collabora.co.uk> <54E681A8.6040702@suse.de> <54E7249F.2020900@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3490416644522208509=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A749226066E
- for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 16:46:08 +0100 (CET)
-In-Reply-To: <1423715405-4562-11-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <54E7249F.2020900@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>, =?UTF-8?B?QW5kcmVhcyBGw6Q=?= =?UTF-8?B?cmJlcg==?= <afaerber@suse.de>
+Cc: Doug Anderson <dianders@chromium.org>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Vincent Palatin <vpalatin@chromium.org>, Tomasz Figa <tomasz.figa@gmail.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello Sylwester,
 
---===============3490416644522208509==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Edk6HoYKP7RsK9ib"
-Content-Disposition: inline
+On 02/20/2015 01:12 PM, Sylwester Nawrocki wrote:
+> On 20/02/15 01:36, Andreas F=C3=A4rber wrote:
+>>>> >> So it seems the mclk is not always set up properly by the kerne=
+l,
+>>>> >> relying on firmware. Who's in charge of setting that clock up?
+>>> >=20
+>>> > Right, it seems audio is only working due the firmware doing some=
+ previous
+>>> > setup. Probably it works on every boot if you have "sound init" a=
+s a part of
+>>> > the u-boot boot commands?
+>>
+>> Indeed it does, 24 MHz without the reparenting patch, and sound work=
+ing.
+>=20
+> You can have parent of the CLKOUT clock set by the clk core if it is
+> specified in device tree in the PMU (the clkout clock supplier) devic=
+e
+> node.
+>=20
+> Similarly as we did for the Odroix U3:
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/=
+arch/arm/boot/dts/exynos4412-odroid-common.dtsi#n39
+>=20
+> Relying on the clk_set_rate() to set the parent clock is not optimal
+> IMO. Presumably you need to set select stable parent clock for clkout
+> like XXTI. But I'm not very familiar with exyno5250 and that might be
+> something different.
+>=20
 
+Thanks a lot for your suggestion. I'll drop Tushar's patch to allow
+clkout to be reparent during set_rate then and change his DTS patch
+to set a default parent for CLKOUT using "assigned-clock-parents".
 
---Edk6HoYKP7RsK9ib
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 12, 2015 at 10:00:02AM +0530, Vinod Koul wrote:
-> This adds support for system pm support. We need to save the dsp memory
-> which gets lost on suspend and restore that on resume
-
-This doesn't seem to apply against current code, not entirely sure
-what's going on there, can you take a look please?  I've applied
-everything up to here, thanks!
-
---Edk6HoYKP7RsK9ib
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU60sMAAoJECTWi3JdVIfQQBkH/i7JHhy6AFOLplr/KxYYBa8j
-QlfoNu0/35FKu6Ce/VBxiYgwRKZ4GHxS5fxNYEEwhbT9wlNAGh0fRdgJ1tg+Wrfs
-/Z8GuPAmG2x2KjynyxnpIDAqw6F5MPjMQsG8VrMMWZtTpAPAckMMSOEqPD7pADZ5
-aewR9w0FwhEsDnA2kBq4p4I7YK/pIUAegZ7oPXkCoVoIgvNUXpvacppCi/9892zK
-ljXSD2HVg7aXeY4WmFaCAwZDPk7Bx5c+yovgvR7sq636kf6My+h2mYCZ5HgCngS+
-Vch62MdD3CY5DBchv2+kb8x5xUCnoYhU0jgliDuQ2XUoXE4tp93ThlDDh2QnRyY=
-=+y2f
------END PGP SIGNATURE-----
-
---Edk6HoYKP7RsK9ib--
-
---===============3490416644522208509==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3490416644522208509==--
+Best regards,
+Javier
