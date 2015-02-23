@@ -1,48 +1,41 @@
-From: =?ISO-8859-1?Q?Ingo=20Br=FCckl?= <ib@wupperonline.de>
-Subject: Re: Intel HDA / ALC662 analog surround problem
-Date: Mon, 23 Feb 2015 20:27:52 +0100
-Message-ID: <54eb7f49.4a51f1ff.bm000@wupperonline.de>
-References: <CAN8ccibQh643hZ+owuNVj86ic2H55NOz5huwWhQVJu7fa1h=MQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout4.wup.tal.de (mout4.wup.tal.de [195.8.224.254])
- by alsa0.perex.cz (Postfix) with ESMTP id 4760B260436
- for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 20:28:56 +0100 (CET)
-In-Reply-To: <CAN8ccibQh643hZ+owuNVj86ic2H55NOz5huwWhQVJu7fa1h=MQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+From: Peter Rosin <peda@lysator.liu.se>
+Subject: Re: [PATCH 2/2] ASoC: pcm512x: Allow independently overclocking PLL, DAC and DSP
+Date: Mon, 23 Feb 2015 21:03:32 +0100
+Message-ID: <1424721813-6137-1-git-send-email-peda@lysator.liu.se>
+References: <20150223143132.GD6236@finisterre.sirena.org.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150223143132.GD6236@finisterre.sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Peter Rosin <peda@axentia.se>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Peter Rosin <peda@lysator.liu.se>
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote on Sat, 21 Feb 2015 23:56:30 +0800:
+From: Peter Rosin <peda@axentia.se>
 
->> 1) Does 5.1 analog surround work for the ALC662? If yes, how?
+On 2015-02-23 15:31, Mark Brown wrote:
+> On Sun, Feb 22, 2015 at 12:24:12AM +0000, Peter Rosin wrote:
+> 
+>> ...but I'm not sure everybody agrees that overclocking games should
+>> be allowed by any and all users?
+> 
+> I don't see why not, ASoC controls are already way beyond end user a lot
+> of the time.
 
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/HD-Audio-Controls.txt
-> Channel Mode
->   [...]
+*snip*
 
-I know this document and while I do have the auto-mute control a channel
-control is missing.
+Ok, so going to ALSA-control route, changes since v1:
 
-So, is the ALC662 supposed to have a channel control? (Maybe I'm missing a
-kernel configuration for it, or what else could affect it?)
+- Uses ALSA-controls instead of sysfs knobs.
+- Returns -EBUSY if trying to change the values while active.
 
-> Do "pcm playback volume" affect the volume after you change channel mode
-> from 2ch to 6 ch so that mic and line in jacks are retasked as output ?
+Cheers,
+Peter
 
-I can't answer, because of the lack of channel mode.
+Peter Rosin (1):
+  ASoC: pcm512x: Allow independently overclocking PLL, DAC and DSP
 
-Any further help is appreciated.
+ sound/soc/codecs/pcm512x.c |  161 +++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 150 insertions(+), 11 deletions(-)
 
-Ingo
+-- 
+1.7.10.4
