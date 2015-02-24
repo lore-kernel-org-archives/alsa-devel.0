@@ -1,19 +1,21 @@
-From: Alnie <alnieb@yahoo.com>
-Subject: Re: Issues w/ Creative Labs [SB
-	X-Fi	Xtreme	Audio]	CA0110-IBG
-Date: Tue, 24 Feb 2015 21:30:27 +0000 (UTC)
-Message-ID: <1471037060.5415741.1424813427312.JavaMail.yahoo@mail.yahoo.com>
-References: <s5h4mqb6o2x.wl-tiwai@suse.de>
-Reply-To: Alnie <alnieb@yahoo.com>
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: Ask for help. ARM:mvebu (CM-A510),
+ add sound support using TLV320AIC23 audio-codec
+Date: Tue, 24 Feb 2015 22:54:31 +0100
+Message-ID: <54ECF317.10603@gmail.com>
+References: <54EB8D34.7040003@gmail.com> <54EC3956.4070505@gmail.com>
+ <54ECEA1D.6090306@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm13-vm4.bullet.mail.ne1.yahoo.com
- (nm13-vm4.bullet.mail.ne1.yahoo.com [98.138.91.173])
- by alsa0.perex.cz (Postfix) with ESMTP id EDC3E260481
- for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 22:30:55 +0100 (CET)
-In-Reply-To: <s5h4mqb6o2x.wl-tiwai@suse.de>
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67F092604A0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 22:54:36 +0100 (CET)
+Received: by mail-wi0-f180.google.com with SMTP id h11so708146wiw.1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 13:54:36 -0800 (PST)
+In-Reply-To: <54ECEA1D.6090306@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,78 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Gabriel Dobato <dobatog@gmail.com>, Marcin Wojtas <mw@semihalf.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-According to this (http://www.alsa-project.org/main/index.php/Matrix:Vendor-Creative_Labs) it specifically states "X-Fi Xtreme Audio (PCIe) CA0110 [PCIE] does not work". Is this list up to date?
+On 24.02.2015 22:16, Gabriel Dobato wrote:
+>> Looking at sound/soc/codecs/tlv320aic23.c:
+>>
+>> static const struct snd_soc_dapm_route tlv320aic23_intercon[] = {
+>>     /* Output Mixer */
+>>     {"Output Mixer", "Line Bypass Switch", "Line Input"},
+>>     {"Output Mixer", "Playback Switch", "DAC"},
+>>     {"Output Mixer", "Mic Sidetone Switch", "Mic Input"},
+>>
+>>     /* Outputs */
+>>     {"RHPOUT", NULL, "Output Mixer"},
+>>     {"LHPOUT", NULL, "Output Mixer"},
+>>     {"LOUT", NULL, "Output Mixer"},
+>>     {"ROUT", NULL, "Output Mixer"},
+>>
+>>     /* Inputs */
+>>     {"Line Input", "NULL", "LLINEIN"},
+>>     {"Line Input", "NULL", "RLINEIN"},
+>>
+>>     {"Mic Input", "NULL", "MICIN"},
+>>
+>>     /* input mux */
+>>     {"Capture Source", "Line", "Line Input"},
+>>     {"Capture Source", "Mic", "Mic Input"},
+>>     {"ADC", NULL, "Capture Source"},
+>>
+>> };
+>>
+>> The lines with the failing routes really look suspicious, i.e.
+>> there is strings "NULL" where I'd expect plain NULL.
+>>
+> You were right, as always :) , I have changed them and now errors are
+> not reported. Now, in the boot trace I find:
 
+Mind to send a proper patch fixing the above? Make sure you run
+./scripts/checkpatch.pl and ./scripts/get_maintainer.pl on the
+patch. It should give you an idea of proper code style and what
+people/lists to send it to. I am sure, google will help you with
+how to prepare proper kernel patches, too.
 
+> but after rootfs is up, this msg appears in dmesg:
+>
+> platform sound: Driver asoc-simple-card requests probe deferral
 
------ Original Message -----
-From: Takashi Iwai <tiwai@suse.de>
-To: Alnie <alnieb@yahoo.com>
-Cc: alsa-devel@alsa-project.org
-Sent: Tuesday, February 24, 2015 12:39 PM
-Subject: Re: [alsa-devel] Issues w/ Creative Labs [SB X-Fi	Xtreme	Audio]	CA0110-IBG
+This is, as always, a missing dependency of simple-card node.
 
-At Tue, 24 Feb 2015 20:10:00 +0000 (UTC),
-Alnie wrote:
-> 
-> Yes, it has been working for me in Windows 7.
+Either you are missing drivers for Dove audio (kirkwood-i2s) or
+one of the drivers involved in your simple-card fails.
 
-Then I have no idea what's wrong.  You'd need to try contact with
-Creative Labs people...
+Look for errors in your dmesg output - also please name the
+kernel version you are working with. There have been some changes
+in clk handling that break a bunch of drivers in 4.0-rc1.
 
-
-Takashi
-
-> 
-> 
-> ----- Original Message -----
-> From: Takashi Iwai <tiwai@suse.de>
-> To: Alnie <alnieb@yahoo.com>
-> Cc: alsa-devel@alsa-project.org
-> Sent: Tuesday, February 24, 2015 11:52 AM
-> Subject: Re: [alsa-devel] Issues w/ Creative Labs [SB X-Fi Xtreme    Audio]    CA0110-IBG
-> 
-> At Tue, 24 Feb 2015 18:14:44 +0000 (UTC),
-> Alnie wrote:
-> > 
-> > 
-> > 
-> > I've included the following to alsa-base.conf
-> > 
-> > options snd-hda-intel single_cmd=1
-> > options snd-hda-intel enable_msi=0
-> > 
-> > rebooted and get the following messages back...
-> > 
-> > [    4.015887] hda-intel 0000:06:00.0: Using LPIB position fix
-> > [    4.022650] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
-> > [    4.022655] hda-intel 0000:06:00.0: Codec #1 probe error; disabling it...
-> > [    4.029465] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
-> > [    4.029649] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
-> > [    4.029829] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
-> > [    4.030009] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
-> > [    4.030188] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
-> > [    4.030192] hda-intel 0000:06:00.0: no codecs initialized
-> 
-> If the single command mode doesn't work, it's probably a deeper
-> problem than the sound driver.
-> 
-> Does the device work with other OS at all?
-> 
-> 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-> 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Sebastian
