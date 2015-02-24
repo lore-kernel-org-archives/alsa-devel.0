@@ -1,20 +1,22 @@
 From: anish <yesanishhere@gmail.com>
 Subject: Re: [PATCH] ASoC: Add max98925 codec driver
-Date: Tue, 24 Feb 2015 09:56:02 -0800
-Message-ID: <CABCoZhDzC+7Pt7HtFd8PRZKth85mG9WJUSRkjQLA=BOv-zuPFw@mail.gmail.com>
-References: <1424318986-18895-1-git-send-email-yesanishhere@gmail.com>
- <20150224090348.GD6236@finisterre.sirena.org.uk>
+Date: Tue, 24 Feb 2015 09:57:03 -0800
+Message-ID: <CABCoZhDOEmG608gHMaJK67i7sOMqfk4Be1n_F2C+QXCDE=v37A@mail.gmail.com>
+References: <1423884301-13292-1-git-send-email-yesanishhere@gmail.com>
+ <20150214051407.GH9110@finisterre.sirena.org.uk>
+ <CABCoZhCHXd3ybD4_wY3CnSxTTQBBRELRtjG+2os8_Q9A24CT3A@mail.gmail.com>
+ <20150224145012.GO6236@finisterre.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f49.google.com (mail-la0-f49.google.com
- [209.85.215.49])
- by alsa0.perex.cz (Postfix) with ESMTP id EC4B22604B1
- for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 18:56:02 +0100 (CET)
-Received: by labhs14 with SMTP id hs14so4797121lab.4
- for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 09:56:02 -0800 (PST)
-In-Reply-To: <20150224090348.GD6236@finisterre.sirena.org.uk>
+Received: from mail-lb0-f170.google.com (mail-lb0-f170.google.com
+ [209.85.217.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 177B92604BC
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 18:57:04 +0100 (CET)
+Received: by lbvp9 with SMTP id p9so26792210lbv.0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 09:57:03 -0800 (PST)
+In-Reply-To: <20150224145012.GO6236@finisterre.sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,112 +30,63 @@ To: Mark Brown <broonie@kernel.org>
 Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Maxwell McKinnon <Maxwell.McKinnon@maximintegrated.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Nitin Mittal <nitin.mittal@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 24, 2015 at 1:03 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Feb 18, 2015 at 08:09:46PM -0800, Anish Kumar wrote:
+On Tue, Feb 24, 2015 at 6:50 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Feb 13, 2015 at 10:35:42PM -0800, anish wrote:
+>> On Fri, Feb 13, 2015 at 9:14 PM, Mark Brown <broonie@kernel.org> wrote:
 >
->> +config SND_SOC_MAX98925
->> +       tristate "Support MAX98925 audio codec"
->> +       depends on I2C
->> +       help
->> +       MAX98925 is a high-efficiency mono
->> +       Class DG audio amplifier. Use this
->> +       option to enable the codec.
->> +
+>> >> +     switch (reg) {
+>> >> +     case MAX98925_R000_VBAT_DATA:
 >
-> As I said in reply to an earlier version of this patch please format
-> this using the normal style for Kconfig entries.
-Sorry but i don't understand. I thought i copied the style.
-Can you be specific as to the meaning?
+>> > Putting the register numbers in the define for the register name seems
+>> > to defeat some of the point of the defines...
+>
+>> Looked at the other driver and everyone is using the same way.
+>> Sorry but didn't get your point.
+>
+> Nobody else has the register numbers as part of the names defined for
+> the registers which was what my point was.
 
+Point well received.
 >
->> +static const char *const dai_text[] = {
->> +     "left", "right", "leftright", "leftrightdiv2",
->> +};
->> +
->> +static const char *const hpf_text[] = {
->> +     "disable", "dc_block", "100Hz", "200Hz", "400Hz", "800Hz",
->> +};
+>> >> +     max98925_regmap_update_bits_stereo(max98925,
+>> >> +                     MAX98925_R01B_DAI_CLK_MODE2,
+>> >> +                     M98925_DAI_BSEL_MASK, M98925_DAI_BSEL_64);
 >
-> As I also said in reply to an earlier version please follow the normal
-> style for enumeration entries with capitalization, use of spaces and so
-> on.
+>> > This looks to be a mix of setting slave mode and setting some clocking
+>> > configuration that ought to be configurable - for example I'd expect
+>> > clock sources to be configured via set_sysclk().
+>
+>> Slave mode also should be configured in set_sysclk? I will move
+>> bclk and lrclk setting to set_sysclk.
+>
+> Not slave mode but the other bits.
 
-I think the problem is only with "disable" and "dc_block". I will change
-it as you said.
+I did that.
 >
->> +static struct reg_default max98925_reg[] = {
->> +     { 0x00, 0x00 }, /* Battery Voltage Data */
->> +     { 0x01, 0x00 }, /* Boost Voltage Data */
->> +     { 0x02, 0x00 }, /* Live Status0 */
->> +     { 0x03, 0x00 }, /* Live Status1 */
->> +     { 0x04, 0x00 }, /* Live Status2 */
+>> >> +             max98925_regmap_update_bits_stereo(max98925,
+>> >> +                     MAX98925_R036_BLOCK_ENABLE,
+>> >> +                     M98925_BST_EN_MASK |
+>> >> +                     M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK,
+>> >> +                     M98925_BST_EN_MASK |
+>> >> +                     M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK);
+>> >> +
+>> >> +             max98925_regmap_write_stereo(max98925,
+>> >> +                     MAX98925_R038_GLOBAL_ENABLE, M98925_EN_MASK);
+>> >> +     }
+>> >
+>> > This doesn't look like it's muting, it looks like it's doing a whole
+>> > bunch of other things.  The mute operation should mute and only mute
+>> > (and then only if the device usefully supports it).
 >
-> As I said in reply to a previous version of this patch these seem like
-> volatile registers so why do they have defaults defined?
+>> Coming to think of it, you are right. I am wondering if this(turning on voltage)
+>> and current along with global audio enable bit) should
+>> be dapm widget as it should always be turned on whenever
+>> playback starts. I think i will make it a callback of
+>> SND_SOC_DAPM_DAC_E
+>
+> If it's really a global enable used in all cases set_bias_level() is
+> probably the place to do it - it's for chip wide stuff.  If there are
+> some cases where it's not needed then DAPM widgets (normally a supply
+> widget) are the best place.
 
-overlooked this.Will remove it.
->
-> I'm going to glance through the rest of this but not too closely given
-> that a number of issues from the original review appear to remain
-> unaddressed and (perhaps more importantly) I'm about to run out of
-> batter).
->
->> +static int max98925_reg_put(struct snd_kcontrol *kcontrol,
->> +             struct snd_ctl_elem_value *ucontrol, unsigned int reg,
->> +             unsigned int mask, unsigned int shift)
->> +{
->> +     struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
->> +     struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
->> +     unsigned int sel = ucontrol->value.integer.value[0];
->> +
->> +     regmap_update_bits(max98925->regmap, reg, mask, sel<<shift);
->> +     dev_dbg(codec->dev, "%s: register 0x%02X, value 0x%02X\n",
->> +                             __func__, reg, sel);
->> +     return 0;
->> +}
->
-> This looks like a standard control, why is this open coded?  I'd also
-> expect some bounds checking on the write.
-
-We wanted mechanism to read/write any register so we used this control.
-Is this functionality already available?
->
->> +static int max98925_dac_event(struct snd_soc_dapm_widget *w,
->> +             struct snd_kcontrol *kcontrol, int event)
->> +{
->> +     struct snd_soc_codec *codec = w->codec;
->> +     struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
->> +
->> +     regmap_update_bits(max98925->regmap,
->> +             MAX98925_R036_BLOCK_ENABLE,
->> +             M98925_BST_EN_MASK |
->> +             M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK,
->> +             M98925_BST_EN_MASK |
->> +             M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK);
->> +     regmap_write(max98925->regmap,
->> +     MAX98925_R038_GLOBAL_ENABLE, M98925_EN_MASK);
->> +     return 0;
->> +}
->
-> It's a bit surprising not to see any of these enables getting turned off
-> when we power down - won't that waste power?  Looking at the names I'm
-> wondering if these might make more sense as supply widgets.
-
-will change it as supply widgets.
->
->> +static int max98925_spk_gain_put(struct snd_kcontrol *kcontrol,
->> +                             struct snd_ctl_elem_value *ucontrol)
->> +{
->> +     struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
->> +     struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
->> +     unsigned int sel = ucontrol->value.integer.value[0];
->> +
->> +     if (sel < ((1 << M98925_SPK_GAIN_WIDTH) - 1)) {
->> +             regmap_update_bits(max98925->regmap, MAX98925_R02D_GAIN,
->> +                     M98925_SPK_GAIN_MASK, sel << M98925_SPK_GAIN_SHIFT);
->> +             max98925->spk_gain = sel;
->
-> Why is this not just a normal control?  I can't see any reference to
-> spk_gain elsewhere...  similar things apply to a lot of these controls.
-
-it is used in corresponding get function.
+As commented i will change this to supply widget.
