@@ -1,166 +1,100 @@
-From: Gabriel Dobato <dobatog@gmail.com>
-Subject: Re: Ask for help. ARM:mvebu (CM-A510),
- add sound support using TLV320AIC23 audio-codec
-Date: Tue, 24 Feb 2015 22:16:13 +0100
-Message-ID: <54ECEA1D.6090306@gmail.com>
-References: <54EB8D34.7040003@gmail.com> <54EC3956.4070505@gmail.com>
+From: Alnie <alnieb@yahoo.com>
+Subject: Re: Issues w/ Creative Labs [SB
+	X-Fi	Xtreme	Audio]	CA0110-IBG
+Date: Tue, 24 Feb 2015 21:30:27 +0000 (UTC)
+Message-ID: <1471037060.5415741.1424813427312.JavaMail.yahoo@mail.yahoo.com>
+References: <s5h4mqb6o2x.wl-tiwai@suse.de>
+Reply-To: Alnie <alnieb@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <54EC3956.4070505@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Marcin Wojtas <mw@semihalf.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm13-vm4.bullet.mail.ne1.yahoo.com
+ (nm13-vm4.bullet.mail.ne1.yahoo.com [98.138.91.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDC3E260481
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 22:30:55 +0100 (CET)
+In-Reply-To: <s5h4mqb6o2x.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> I think that the lack of space in all three input routings can make a
-> difference. Please let know if adding it helps.
->
-> Best regards,
-> Marcin
-
-Marcin,
-
-Thank you for your answer!. It seems that space does not matter (I have 
-checked it), but yes, it is necessary to be careful with this kind of 
-things..
-
-
-On 24/02/15 09:41, Sebastian Hesselbarth wrote:
-> The full node looks like:
-> opt_audio: audio@1a {
->      compatible = "ti,tlv320aic23";
->      reg = <0x1a>;
->      #sound-dai-cells= <0>;
->      status = "okay";
-> };
-
-Yes, sorry. And regarding to audio0, the full node looks like:
-
-                         audio0: audio-controller@b0000 {
-                                 compatible = "marvell,dove-audio";
-                                 reg = <0xb0000 0x2210>;
-                                 interrupts = <19>, <20>;
-                                 clocks = <&gate_clk 12>;
-                                 clock-names = "internal";
-                                 #sound-dai-cells= <1>;
-                                 status = "okay";
-                         };
-
-> Looking at sound/soc/codecs/tlv320aic23.c:
->
-> static const struct snd_soc_dapm_route tlv320aic23_intercon[] = {
->     /* Output Mixer */
->     {"Output Mixer", "Line Bypass Switch", "Line Input"},
->     {"Output Mixer", "Playback Switch", "DAC"},
->     {"Output Mixer", "Mic Sidetone Switch", "Mic Input"},
->
->     /* Outputs */
->     {"RHPOUT", NULL, "Output Mixer"},
->     {"LHPOUT", NULL, "Output Mixer"},
->     {"LOUT", NULL, "Output Mixer"},
->     {"ROUT", NULL, "Output Mixer"},
->
->     /* Inputs */
->     {"Line Input", "NULL", "LLINEIN"},
->     {"Line Input", "NULL", "RLINEIN"},
->
->     {"Mic Input", "NULL", "MICIN"},
->
->     /* input mux */
->     {"Capture Source", "Line", "Line Input"},
->     {"Capture Source", "Mic", "Mic Input"},
->     {"ADC", NULL, "Capture Source"},
->
-> };
->
-> The lines with the failing routes really look suspicious, i.e.
-> there is strings "NULL" where I'd expect plain NULL.
->
-> What happens if you amend the three lines and replace the "NULL"
-> with NULL?
->
-> Sebastian
-
-Sebastian,
-
-You were right, as always :) , I have changed them and now errors are 
-not reported. Now, in the boot trace I find:
-
-...
-asoc-simple-card sound: tlv320aic23-hifi <-> i2s mapping ok
-...
-
-...
-ALSA device list:
-   #0: OnboardTLV320AIC23B
-...
-
-but after rootfs is up, this msg appears in dmesg:
-
-platform sound: Driver asoc-simple-card requests probe deferral
+According to this (http://www.alsa-project.org/main/index.php/Matrix:Vendor-Creative_Labs) it specifically states "X-Fi Xtreme Audio (PCIe) CA0110 [PCIE] does not work". Is this list up to date?
 
 
 
-In reference to the card, I get the following info:
+----- Original Message -----
+From: Takashi Iwai <tiwai@suse.de>
+To: Alnie <alnieb@yahoo.com>
+Cc: alsa-devel@alsa-project.org
+Sent: Tuesday, February 24, 2015 12:39 PM
+Subject: Re: [alsa-devel] Issues w/ Creative Labs [SB X-Fi	Xtreme	Audio]	CA0110-IBG
 
-root@192:~#cat /proc/asound/cards
-  0 [OnboardTLV320AI]: OnboardTLV320AI - OnboardTLV320AIC23B
-                       OnboardTLV320AIC23B
+At Tue, 24 Feb 2015 20:10:00 +0000 (UTC),
+Alnie wrote:
+> 
+> Yes, it has been working for me in Windows 7.
 
-root@192:~# tree /proc/asound/card0/
-/proc/asound/card0/
-|-- id
-|-- pcm0c
-|   |-- info
-|   `-- sub0
-|       |-- hw_params
-|       |-- info
-|       |-- status
-|       `-- sw_params
-`-- pcm0p
-     |-- info
-     `-- sub0
-         |-- hw_params
-         |-- info
-         |-- status
-         `-- sw_params
-
-4 directories, 11 files
+Then I have no idea what's wrong.  You'd need to try contact with
+Creative Labs people...
 
 
+Takashi
 
-And if I try to reproduce some noise:
+> 
+> 
+> ----- Original Message -----
+> From: Takashi Iwai <tiwai@suse.de>
+> To: Alnie <alnieb@yahoo.com>
+> Cc: alsa-devel@alsa-project.org
+> Sent: Tuesday, February 24, 2015 11:52 AM
+> Subject: Re: [alsa-devel] Issues w/ Creative Labs [SB X-Fi Xtreme    Audio]    CA0110-IBG
+> 
+> At Tue, 24 Feb 2015 18:14:44 +0000 (UTC),
+> Alnie wrote:
+> > 
+> > 
+> > 
+> > I've included the following to alsa-base.conf
+> > 
+> > options snd-hda-intel single_cmd=1
+> > options snd-hda-intel enable_msi=0
+> > 
+> > rebooted and get the following messages back...
+> > 
+> > [    4.015887] hda-intel 0000:06:00.0: Using LPIB position fix
+> > [    4.022650] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
+> > [    4.022655] hda-intel 0000:06:00.0: Codec #1 probe error; disabling it...
+> > [    4.029465] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
+> > [    4.029649] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
+> > [    4.029829] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
+> > [    4.030009] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
+> > [    4.030188] hda-intel 0000:06:00.0: get_response timeout: IRS=0x0
+> > [    4.030192] hda-intel 0000:06:00.0: no codecs initialized
+> 
+> If the single command mode doesn't work, it's probably a deeper
+> problem than the sound driver.
+> 
+> Does the device work with other OS at all?
+> 
+> 
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-root@192:~#  cat /dev/urandom | aplay
-Playing raw data 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-set_sample_rate_control:Invalid rate 48000,48000 requested
-tlv320aic23-codec 1-001a: ASoC: can't set tlv320aic23-hifi hw params: -22
-aplay: set_params:1145: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  U8
-SUBFORMAT:  STD
-SAMPLE_BITS: 8
-FRAME_BITS: 8
-CHANNELS: 1
-RATE: 8000
-PERIOD_TIME: (125333 125334)
-PERIOD_SIZE: (1002 1003)
-PERIOD_BYTES: (1002 1003)
-PERIODS: (3 4)
-BUFFER_TIME: 500000
-BUFFER_SIZE: 4000
-BUFFER_BYTES: 4000
-TICK_TIME: 0
-
-
-Gabriel
+> 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
