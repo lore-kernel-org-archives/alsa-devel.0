@@ -1,25 +1,20 @@
-From: Dang Sananikone <dang.sananikone@gmail.com>
-Subject: No sound and systemd journal filling when inserting
-	headphones when power-saving is enabled
-Date: Mon, 23 Feb 2015 20:00:35 +0000 (UTC)
-Message-ID: <loom.20150223T205312-191@post.gmane.org>
+From: noman pouigt <variksla@gmail.com>
+Subject: Re: audio mcbsp1 broken for beagleboard-xm -OMAP
+Date: Mon, 23 Feb 2015 16:03:15 -0800
+Message-ID: <CAES_P+8KwFXfdPLH-YVwEWw45nDcJGuVWmjKbxN45=acY-6Mqw@mail.gmail.com>
+References: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>
+ <54E75FCB.8040906@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id D0752260687
- for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 21:05:07 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1YPzFY-0006SZ-6k
- for alsa-devel@alsa-project.org; Mon, 23 Feb 2015 21:05:04 +0100
-Received: from bcdc3846.skybroadband.com ([188.220.56.70])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 21:05:04 +0100
-Received: from dang.sananikone by bcdc3846.skybroadband.com with local (Gmexim
- 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 21:05:04 +0100
+Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
+ [209.85.214.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EE65260452
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 01:03:17 +0100 (CET)
+Received: by mail-ob0-f177.google.com with SMTP id wp18so38448236obc.8
+ for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 16:03:16 -0800 (PST)
+In-Reply-To: <54E75FCB.8040906@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,27 +24,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "jslaby@suse.cz" <jslaby@suse.cz>, "jarkko.nikula@bitmer.com" <jarkko.nikula@bitmer.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I previously posted in alsa user mailing list about a problem I was facing 
-with having no sound and the systemd journal filling when using headphones:
-
-    http://article.gmane.org/gmane.linux.alsa.user/38948
-
-I subsequently realised that I had enabled power-saving a few weeks ago and 
-it was this power-saving that was causing the problem. My response to myself 
-is here:
-
-    http://article.gmane.org/gmane.linux.alsa.user/38953
-
-I am now satisfied that disabling power-saving has resolved my issue, but 
-there has been a suggestion that I report this issue, so here it is. 
-Apologies if this is the wrong place (this is my first time on the alsa 
-mailing list).
-
-Let me know if you want me to create a bug ticket and where it 
-should be created (the bug tracker URL link in the alsa project page is not 
-working).
+T24gRnJpLCBGZWIgMjAsIDIwMTUgYXQgODoyNCBBTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
+ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gSGksCj4KPiBPbiAwMi8yMC8yMDE1IDA4OjQ1IEFNLCBu
+b21hbiBwb3VpZ3Qgd3JvdGU6Cj4+IEhlbGxvLAo+Pgo+PiBJIGFtIHRyeWluZyB0byBpbnRlZ3Jh
+dGUgbWF4OTgwOTAgY29kZWMgd2l0aCAkc3ViamVjdCBib2FyZC4gIEkgYW0KPj4gcnVubmluZyB0
+aGUgbWNCU1AgaW4gc2xhdmUgbW9kZSBhcyBpIGhhdmUgbm90IGNoYW5nZWQgdGhlIGh3X3Bhcm1z
+IGZvcgo+PiBvbWFwLXR3bDQwMzAuYyBmaWxlLiBXaXRoIGJlbG93IGNoYW5nZXMgaSBzZWUgd2Fp
+dF9mb3JfYXZhaWwgaXMKPj4gZ2V0dGluZyBzdHVjayBpLmUuIG1jYnNwIGlzIG5vdCBnZXR0aW5n
+IGFueSBpbnRlcnJ1cHQgYW5kIG5vdGhpbmcgaXMKPj4gcGxheWluZy4KPgo+IEkgaGF2ZSB0ZXN0
+ZWQgdGhlIFhNIHdpdGggdHdsNDAzMCBvbiBsaW51eC1uZXh0IGFuZCBNY0JTUCBpcyB3b3JraW5n
+IGZpbmUgYXMKPiBzbGF2ZSBhbmQgbWFzdGVyIChJIGhhdmUgYSBwYXRjaCB0byBhZGQgdGhlIE1j
+QlNQIG1hc3RlciBzdXBwb3J0IGZvciB0ZXN0aW5nKQo+IGFsc28uCj4KPj4KPj4gS2VybmVsIHZl
+cnNpb246Cj4+IFZFUlNJT04gPSAzCj4+IFBBVENITEVWRUwgPSAxOQo+PiBTVUJMRVZFTCA9IDAK
+Pj4gRVhUUkFWRVJTSU9OID0KPj4gTkFNRSA9IERpc2Vhc2VkIE5ld3QKPj4KPj4gU2V0dXAgaW5m
+b3JtYXRpb246Cj4+IFVzaW5nIGJlYWdsZSBib2FyZCAteG0gYW5kIGNvbm5lY3RlZCBtYXg5ODA5
+MCBjb2RlYyB0byBtY2JzcDEgcGlucy4KPj4gQ29ubmVjdGVkIG9ubHkgNCBwaW5zLgo+Pgo+PiBD
+aGFuZ2VkIHRoZSBvbWFwLXR3bDQwMzAuYyBtYWNoaW5lIGZpbGUgYXMgYmVsb3cgdG8gZGlzYWJs
+ZSB0aGUgdHdsNDAzMDoKPj4gc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIG9tYXBfdHds
+NDAzMF9kYWlfbGlua3NbXSA9IHsKPj4gICAgICAgIHsKPj4gKyAgICAgICAgICAgICAgIC5uYW1l
+ID0gIm1heDk4MDkwIiwKPj4gKyAgICAgICAgICAgICAgIC5zdHJlYW1fbmFtZSA9ICJtYXg5ODA5
+MCIsCj4+ICAgICAgICAgICAgICAgIC5jcHVfZGFpX25hbWUgPSAib21hcC1tY2JzcC4xIiwKPgo+
+IEhybSwgbWNic3AuMSBpcyBub3QgaW4gdXNlIGJ5IGRlZmF1bHQgb24gdGhlIGJvYXJkLCAyIGFu
+ZCAzIGFyZSB0aGUgb25lIHdoaWNoCj4gaXMgdXNlZCBieSB0aGUgb21hcC10d2w0MDMwIGRyaXZl
+ci4KCkkgaGF2ZSB1c2VkIHRoZSBtY2JzcDMgYWxzbyBhcyBiZWxvdyB3aGVyZSBpIGFtIHJ1bm5p
+bmcgY29kZWMgaW4gbWFzdGVyIGFuZAptY2JzcDMgaW4gc2xhdmUgbW9kZS4gQ29uZmlndXJhdGlv
+biBmb3IgdGhhdCBpcyBiZWxvdzoKCiAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gInRpLG9t
+YXAtdHdsNDAzMCI7CiAgICAgICAgICAgICAgICB0aSxtb2RlbCA9ICJvbWFwM2JlYWdsZSI7CiAt
+ICAgICAgICAgICAgICAgdGksbWNic3AgPSA8Jm1jYnNwMj47Ci0gICAgICAgICAgICAgICB0aSxj
+b2RlYyA9IDwmdHdsX2F1ZGlvPjsKKyAgICAgICAgICAgICAgIHRpLG1jYnNwID0gPCZtY2JzcDM+
+OworICAgICAgICAgICAgICAgdGksY29kZWMgPSA8Jm1heDk4MDkwPjsKCgomb21hcDNfcG14X2Nv
+cmUgewoKKyAgICAgICBtY2JzcDNfcGluczogcGlubXV4X21jYnNwM19waW5zIHsKKyAgICAgICAg
+ICAgICAgIHBpbmN0cmwtc2luZ2xlLHBpbnMgPSA8CisgICAgICAgICAgICAgICAgICAgICAgIE9N
+QVAzX0NPUkUxX0lPUEFEKDB4MjE2YywgUElOX09VVFBVVCB8Ck1VWF9NT0RFMSkgICAgICAgLyog
+bWNic3AzX2R4LnVhcnQyX2N0cyAqLworICAgICAgICAgICAgICAgICAgICAgICBPTUFQM19DT1JF
+MV9JT1BBRCgweDIxNmUsIFBJTl9JTlBVVCB8Ck1VWF9NT0RFMSkgICAgICAgIC8qIG1jYnNwM19k
+ci51YXJ0Ml9ydHMgKi8KKyAgICAgICAgICAgICAgICAgICAgICAgT01BUDNfQ09SRTFfSU9QQUQo
+MHgyMTcwLCBQSU5fSU5QVVQgfApNVVhfTU9ERTEpICAgICAgICAvKiBtY2JzcDNfY2xrLnVhcnQy
+X3R4ICovCisgICAgICAgICAgICAgICAgICAgICAgIE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE3Miwg
+UElOX0lOUFVUIHwKTVVYX01PREUwKSAgICAgICAgLyogbWNic3AzX2ZzeC51YXJ0Ml9yeCAqLwor
+ICAgICAgICAgICAgICAgPjsKKyAgICAgICB9Owp9CgombWNic3AzIHsKICAgICAgICBwaW5jdHJs
+LW5hbWVzID0gImRlZmF1bHQiOwogICAgICAgIHBpbmN0cmwtMCA9IDwmbWNic3AzX3BpbnM+OwoK
+ICAgICAgICBzdGF0dXMgPSAib2theSI7Cn07CgpIb3dldmVyIHN0aWxsIHRoZSBpbnRlcnJ1cHRz
+IGRvZXNuJ3QgZ2V0IGdlbmVyYXRlZC4gQ2FuIHlvdSBwbGVhc2UKZ3VpZGUgaW4gcmlnaHQKZGly
+ZWN0aW9uPyBJIGhhdmUgY2hlY2tlZCB0aGUgbWNic3AxX2ZzeCBhbmQgbWNic3AxX2Nsa3ggYW5k
+CmJvdGggdGhlIGNsb2NrcyBnZW5lcmF0ZWQgYXJlIHJpZ2h0IGkuZS4gb25lIGlzIDhrIGFuZCBv
+dGhlciBpcwptdWx0aXBsZSBvZiBpdC4KCk9uIHRoZSBkYXRhIGxpbmUgaSBjYW4gc2VlIG9ubHkg
+emVyb2VzLiBQcm9iYWJseSBkc3AgaXMgZmlsbGluZyBpdCB3aXRoCnplcm9lcyBhcyBnZW5lcmFs
+bHkgZG9uZSBieSBRdWFsY29tbSBkc3AuCgo+Cj4+ICsgICAgICAgICAgICAgICAuY29kZWNfZGFp
+X25hbWUgPSAiSGlGaSIsCj4+ICAgICAgICAgICAgICAgIC5wbGF0Zm9ybV9uYW1lID0gIm9tYXAt
+bWNic3AuMSIsCj4+ICsgICAgICAgICAgICAgICAuY29kZWNfbmFtZSA9ICJtYXg5ODA5MC4xLTAw
+MTAiLAo+PiAgICAgICAgICAgICAgICAub3BzID0gJm9tYXBfdHdsNDAzMF9vcHMsCj4+ICAgICAg
+ICB9LAo+Pgo+PiBEVFNJIGZpbGUgY2hhbmdlOmFyY2gvYXJtL2Jvb3QvZHRzL29tYXAzLWJlYWds
+ZS14bS5kdHMKPj4KPj4gJmkyYzIgewo+PiAgICAgICAgY2xvY2stZnJlcXVlbmN5ID0gPDQwMDAw
+MD47Cj4+ICsKPj4gKyAgICAgICBtYXg5ODA5MDogbWF4OTgwOTBAMTAgewo+PiArICAgICAgICAg
+ICAgICAgY29tcGF0aWJsZSA9ICJtYXhpbSxtYXg5ODA5MCI7Cj4+ICsgICAgICAgICAgICAgICBy
+ZWcgPSA8MHgxMD47Cj4+ICsgICAgICAgfTsKPj4gfTsKPj4KPj4gb21hcC9vbWFwLXR3bDQwMzAu
+Ywo+PiBhZGRlZCBpbiBod19wYXJhbXMgYmVsb3cgZnVuY3Rpb24gdG8gc2V0IGludGVybmFsIG9z
+Y2lsbGF0b3IgZm9yIDk4MDkwCj4+IGZvciBnZW5lcmF0aW5nIFBMTCBmb3IgbWFzdGVyIGNsb2Nr
+Lgo+PiBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKGNvZGVjX2RhaSwgMjYwMDAwMDAsIDAsIFNORF9T
+T0NfQ0xPQ0tfSU4pOwo+Pgo+PiBJIGFtIGFibGUgdG8gc2VlIHRoYXQgdGhlIGNwdV9kYWkgaXMg
+bWFwcGVkIHdpdGggY29kZWNfZGFpIGFuZAo+PiBjb25maWd1cmF0aW9uIGlzIG9rLiBrZXJuZWwg
+bG9ncyBhdCBodHRwczovL2lkZW9uZS5jb20vb2V6TlNqCj4+Cj4+IEkgdGhpbmsgaSBkb24ndCBu
+ZWVkIHRvIGNvbmZpZ3VyZSB0aGUgbWNic3AxIHBpbnMgcmlnaHQgYXMgaXQgdXNlcyBkZWZhdWx0
+Lgo+Cj4gSSB0aGluayB5b3Ugc2hvdWxkIGNoZWNrIHRoZSBwaW4gbXV4IGZvciB0aGUgTWNCU1Ax
+IHBpbnMuIFRoZXkgbWlnaHQgbm90IHNldAo+IHRvIGNvcnJlY3QgbW9kZS4KPgo+Pgo+PiBQbGVh
+c2UgZ3VpZGUgbWUuSSBoYXZlIHRyaWVkIElSQyBjaGFubmVsIGFsc28gYnV0IG5vdCBnZXR0aW5n
+IHRoZSByaWdodCBmb2xrcy4KPj4KPj4gaHR0cHM6Ly9naXRodWIuY29tL0NpcmN1aXRDby9CZWFn
+bGVCb2FyZC14TS1SZXZDL2Jsb2IvbWFzdGVyL0JlYWdsZUJvYXJkLXhNX3JldkNfU0NILnBkZj9y
+YXc9dHJ1ZQo+Pgo+PiBUaGFua3MsCj4+Cj4KPgo+IC0tCj4gUMOpdGVyCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
