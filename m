@@ -1,15 +1,15 @@
-From: John Frankish <john.frankish@outlook.com>
-Subject: No sound from speakers with Realtek ALC3226
-Date: Tue, 24 Feb 2015 13:14:38 +0400
-Message-ID: <COL403-EAS144CB85A708197E0DF2965FF3160@phx.gbl>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH] ALSA: hda: controller code - do not export
+	static functions
+Date: Tue, 24 Feb 2015 12:04:57 +0100
+Message-ID: <1424775897-9627-1-git-send-email-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from COL004-OMC3S14.hotmail.com (col004-omc3s14.hotmail.com
- [65.55.34.152]) by alsa0.perex.cz (Postfix) with ESMTP id 977AE260511
- for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 10:14:49 +0100 (CET)
-Content-Language: en-us
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50586260417
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 12:05:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,70 +19,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-I posted this on the alsa-user list, but did not get a reply.
+It is a bad idea to export static functions. GCC for some platforms
+shows errors like:
 
-Although it occasionally works, I am usually unable to get any sound out of
-the speakers on a dell latitude e7240 using alsa-1.0.28 and linux-3.16.6 -
-see details at the end of the post.
+  error: __ksymtab_azx_get_response causes a section type conflict
 
-1. HDMI is the default sound device - why, the analogue device would make
-more sense?
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+---
+ sound/pci/hda/hda_controller.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-2. On the analogue sound device, the headphones are the default instead of
-the speakers. On the few occasions I get sound out of the speakers, the
-headphones need to be muted first - even though no headphones are connected.
-
-3. Shutting windows 7 64bit down with "shutdown.exe -s" seems to help with
-getting sound from the speakers with linux on the same machine.
-
-Most of the time, I see the error:
-
-snd_hda_intel 0000:00:1b.0: IRQ timing workaround is activated for card #1.
-Suggest a bigger bdl_pos_adj.
-
-I've tried various module options:
-
-options snd_hda_intel probe_only=0,1
-options snd-hda-intel enable_msi=1 bdl_pos_adj=1,32 [and 48 and 64] options
-snd-hda-intel id=PCH index=1
-
-..all to no avail.
-
-Any additional troubleshooting suggestions (or a patch) would be much
-appreciated.
-
-John
-
-----------
-$ lspci | grep -i audio
-00:03.0 Audio device: Intel Corporation Haswell-ULT HD Audio Controller
-(rev0b)
-00:1b.0 Audio device: Intel Corporation 8 Series HD Audio Controller (rev04)
-
-$ cat /proc/asound/cards
- 0 [HDMI           ]: HDA-Intel - HDA Intel HDMI
-                      HDA Intel HDMI at 0xf7e34000 irq 65
- 1 [PCH            ]: HDA-Intel - HDA Intel PCH
-                      HDA Intel PCH at 0xf7e30000 irq 64
-
-$ aplay -l
-**** List of PLAYBACK Hardware Devices **** card 0: HDMI [HDA Intel HDMI],
-device 3: HDMI 0 [HDMI 0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: HDMI [HDA Intel HDMI], device 7: HDMI 1 [HDMI 1]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: HDMI [HDA Intel HDMI], device 8: HDMI 2 [HDMI 2]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: PCH [HDA Intel PCH], device 0: ALC3226 Analog [ALC3226 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-$ cat /proc/asound/card*/codec* | grep Codec
-Codec: Intel Haswell HDMI
-Codec: Realtek ALC3226
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index ebb7a64..f63d2cb5 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -978,7 +978,6 @@ static int azx_alloc_cmd_io(struct azx *chip)
+ 		dev_err(chip->card->dev, "cannot allocate CORB/RIRB\n");
+ 	return err;
+ }
+-EXPORT_SYMBOL_GPL(azx_alloc_cmd_io);
+ 
+ static void azx_init_cmd_io(struct azx *chip)
+ {
+@@ -1043,7 +1042,6 @@ static void azx_init_cmd_io(struct azx *chip)
+ 	azx_writeb(chip, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
+ 	spin_unlock_irq(&chip->reg_lock);
+ }
+-EXPORT_SYMBOL_GPL(azx_init_cmd_io);
+ 
+ static void azx_free_cmd_io(struct azx *chip)
+ {
+@@ -1053,7 +1051,6 @@ static void azx_free_cmd_io(struct azx *chip)
+ 	azx_writeb(chip, CORBCTL, 0);
+ 	spin_unlock_irq(&chip->reg_lock);
+ }
+-EXPORT_SYMBOL_GPL(azx_free_cmd_io);
+ 
+ static unsigned int azx_command_addr(u32 cmd)
+ {
+@@ -1333,7 +1330,6 @@ static int azx_send_cmd(struct hda_bus *bus, unsigned int val)
+ 	else
+ 		return azx_corb_send_cmd(bus, val);
+ }
+-EXPORT_SYMBOL_GPL(azx_send_cmd);
+ 
+ /* get a response */
+ static unsigned int azx_get_response(struct hda_bus *bus,
+@@ -1347,7 +1343,6 @@ static unsigned int azx_get_response(struct hda_bus *bus,
+ 	else
+ 		return azx_rirb_get_response(bus, addr);
+ }
+-EXPORT_SYMBOL_GPL(azx_get_response);
+ 
+ #ifdef CONFIG_SND_HDA_DSP_LOADER
+ /*
+-- 
+1.9.3
