@@ -1,70 +1,37 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 01/28 v3] dmaengine: export symbol of
- of_dma_request_slave_channel()
-Date: Tue, 24 Feb 2015 21:56:19 +0530
-Message-ID: <20150224162619.GH5208@intel.com>
-References: <87fva0opax.wl%kuninori.morimoto.gx@renesas.com>
- <87egpkop98.wl%kuninori.morimoto.gx@renesas.com>
- <87bnkk162d.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [TINYCOMPRESS][PATCH] crec: support streaming
+	output to stdout
+Date: Tue, 24 Feb 2015 22:06:26 +0530
+Message-ID: <20150224163626.GJ5208@intel.com>
+References: <1424357740-6561-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52E43260527
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 17:39:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <87bnkk162d.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Simon <horms@verge.net.au>, Mark Brown <broonie@kernel.org>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Arnd Bergmann <arnd@arndb.de>, dmaengine@vger.kernel.org
+In-Reply-To: <1424357740-6561-1-git-send-email-rf@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 24, 2015 at 12:54:16AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Thu, Feb 19, 2015 at 02:55:40PM +0000, Richard Fitzgerald wrote:
+> From: Ammar Zahid Ali Syed <aali@opensource.wolfsonmicro.com>
 > 
-> Current DMAEngine implementation of DT bindings can't support
-> DT subnode. This patch export symbols of of_dma_request_slave_channel()
-> for subnode DMA DT bingings.
-> 
-> ex)
-> 
-> rcar_sound: rcar_sound@ec500000 {
->         ...
->         rcar_sound,dvc {
->                 dvc0: dvc@0 {
->                         dmas = <&audma0 0xbc>;
->                         dma-names = "tx";
->                 };
->                 dvc1: dvc@1 {
->                         dmas = <&audma0 0xbe>;
->                         dma-names = "tx";
->                 };
->         };
->         ...
-> };
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> v2 -> v3
-> 
->  - don't remove export from of_dma.h
-> 
->  drivers/dma/of-dma.c |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
-> index ca31f1b..cbd4a8a 100644
-> --- a/drivers/dma/of-dma.c
-> +++ b/drivers/dma/of-dma.c
-> @@ -194,6 +194,7 @@ struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
->  
->  	return ERR_PTR(ret_no_channel);
->  }
-> +EXPORT_SYMBOL_GPL(of_dma_request_slave_channel);
->  
->  /**
->   * of_dma_simple_xlate - Simple DMA engine translation function
-Typically you should post whole series. Anyway, i am okay with this patch,
-how do you want to merge this, should i pick it up or everything goes thru
-ASoC tree or something else?
+> It's useful for testing to be able to stream the captured
+> audio to stdout instead of having to go via a file.
+This looks okay to me. But it fails to apply, what was it generataed against?
 
 -- 
 ~Vinod
-
