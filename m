@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: improve usage of gpiod API
-Date: Tue, 24 Feb 2015 17:43:16 +0900
-Message-ID: <20150224084316.GA6236@finisterre.sirena.org.uk>
-References: <1424532804-23789-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2] ASoC: sta32x: fix register range in
+	regmap.
+Date: Tue, 24 Feb 2015 17:46:14 +0900
+Message-ID: <20150224084614.GB6236@finisterre.sirena.org.uk>
+References: <1424535758-5140-1-git-send-email-niederp@physik.uni-kl.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4666061287209447580=="
+Content-Type: multipart/mixed; boundary="===============1217957122305174812=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 417E72604F0
- for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 09:44:24 +0100 (CET)
-In-Reply-To: <1424532804-23789-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E3663260509
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 09:47:26 +0100 (CET)
+In-Reply-To: <1424535758-5140-1-git-send-email-niederp@physik.uni-kl.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,64 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexandre Courbot <acourbot@nvidia.com>, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+To: Thomas =?iso-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, brandau@gmx.de, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4666061287209447580==
+--===============1217957122305174812==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WbkWELb8d/6oR4nB"
+	protocol="application/pgp-signature"; boundary="UXdImcDs+Jp8Skh3"
 Content-Disposition: inline
 
 
---WbkWELb8d/6oR4nB
+--UXdImcDs+Jp8Skh3
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 21, 2015 at 04:33:24PM +0100, Uwe Kleine-K=F6nig wrote:
-> Since 39b2bbe3d715 (gpio: add flags argument to gpiod_get*() functions)
-> which appeared in v3.17-rc1, the gpiod_get* functions take an additional
-> parameter that allows to specify direction and initial value for
-> output. Simplify drivers accordingly.
+On Sat, Feb 21, 2015 at 05:22:38PM +0100, Thomas Niederpr=FCm wrote:
 
-Applied, thanks.  However...
+> register ranges can be joined. This fixes a regression introduced in
+> commit a1be4cead9b9504aa6fc93b624975601cec8c188 where the driver was
 
->  sound/soc/codecs/adau1977.c | 17 +++++------------
->  sound/soc/codecs/cs35l32.c  | 19 ++++++-------------
->  sound/soc/codecs/cs4265.c   | 19 ++++++-------------
->  sound/soc/codecs/sta350.c   | 30 +++++++++---------------------
->  sound/soc/codecs/tas2552.c  | 13 +++----------
->  5 files changed, 29 insertions(+), 69 deletions(-)
+> changes since v1:
+> 	- updated to apply to linux-next.
+> 	- added commit id that introduced the regression in the
+> 	  commit message.
 
-=2E..as this touches a bunch of drivers it would have been nicer to send
-it as a series of changes - that minimizes the risk of collisions with
-other changes as a problem with one driver won't affect the others.
+Applied, but when referencing commits please remember to always include
+a human readable description of the commit so people can understand the
+commit message and if it's a fix use the Fixes: tag.  It's also better
+to abbreviate the commit ID to twelve characters, it's much more
+manageable.
 
---WbkWELb8d/6oR4nB
+--UXdImcDs+Jp8Skh3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU7DmkAAoJECTWi3JdVIfQ/wsH/RaHjcEJ3l4vQQIu5oG9pYGX
-2J+zEc4qGGu/tCiFZzOlT3mGHqEuR9K125hH0JWdLOUkeiwGVk+ErKOu6o/IENVL
-wJlEHvbG1sYr2Iu/GgAoOnf2HUFTtZCIM8OOfKP93G3zF3uuqfcYDusqrA+G/786
-l+cizo7OncqGFcOJ3c08SQcZ5inrCl8Z/sV+wUKJKr3R1WPCCc1dQDAiH+gmkUB7
-uSATCMahPfIf6+kgF6rocOdYb/aLB+0567Qf+nGaVIvp6v9o/dlbxJIKc1n/kRAf
-oo2sjSeoa9suYuCLlRqzbuOaggCTdr5UFBroyifXBtvK30xvAmpx0dfAMKvWzlg=
-=0No3
+iQEcBAEBCAAGBQJU7DpVAAoJECTWi3JdVIfQqqAH/RwO3CdfR6e7WL5cGQscRmZt
+T/JZ6RdPur1wWK+VaNfRo4gBzZ64nywoU+oCbOOAKIdrNzV4j1+IPBSHDtQY6TLq
+/mYVhiPSguXRY6xvJBKuILEf9FqSAit4e7EdNKF9ewGAwUO1txtIKLY0paqp2XTF
+cYVTAHhBkaYNgPXEbCH3CWQ756YwWUCvMh3W1W5fg/BfhTxfcMYEutsuFNOyxavx
+8oiZiOcVXHZ/HTSbtM4YW3Gl3svnQuC1TH/fy+9r6qA56avcu1gd2TJPn/ajfBSi
+7PtMte4zjjoxnSreSSyuDuXAUgCN9+QE0TM5Z4OjFMFE10/LOOom9vGNSZC1zBI=
+=l8+O
 -----END PGP SIGNATURE-----
 
---WbkWELb8d/6oR4nB--
+--UXdImcDs+Jp8Skh3--
 
---===============4666061287209447580==
+--===============1217957122305174812==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4666061287209447580==--
+--===============1217957122305174812==--
