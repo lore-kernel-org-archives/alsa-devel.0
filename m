@@ -1,20 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Intel HDA / ALC662 analog surround problem
-Date: Tue, 24 Feb 2015 12:46:34 +0800
-Message-ID: <CAN8cciafikMAomrDsPaPqKnPtdgOm3xwbzUAmes9-N=jV9Jdiw@mail.gmail.com>
-References: <CAN8ccibQh643hZ+owuNVj86ic2H55NOz5huwWhQVJu7fa1h=MQ@mail.gmail.com>
- <54eb7f49.4a51f1ff.bm000@wupperonline.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v2 0/4] ASoC: Intel: BSW driver updates
+Date: Tue, 24 Feb 2015 11:39:43 +0530
+Message-ID: <1424758188-15569-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
- [209.85.218.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 341A52604A7
- for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 05:46:36 +0100 (CET)
-Received: by mail-oi0-f54.google.com with SMTP id v63so17395412oia.13
- for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2015 20:46:35 -0800 (PST)
-In-Reply-To: <54eb7f49.4a51f1ff.bm000@wupperonline.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09F532604D4
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 07:12:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,43 +18,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> >> 1) Does 5.1 analog surround work for the ALC662? If yes, how?
->
-> >
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/HD-Audio-Controls.txt
-> > Channel Mode
-> >   [...]
->
-> I know this document and while I do have the auto-mute control a channel
-> control is missing.
->
-> So, is the ALC662 supposed to have a channel control? (Maybe I'm missing a
-> kernel configuration for it, or what else could affect it?)
+This series adds rest of the remaining 4 patches posted in v1.
+This is generated on top of Mark's topic/intel
 
-You have to post the output of alsa-info.sh
+Subhransu S. Prusty (2):
+  ASoC: Intel: Remove ignore suspend support
+  ASoC: Intel: Remove soc pm handling to allow platform driver handle
+    it
 
-The channel mode should be automatically added for those desktop with three
-audio jacks (green line out, blue line in and pink mic) at rear panel
+Vinod Koul (2):
+  ASoC: Intel: add pm support in sst ipc driver
+  ASoC: Intel: Move the fw download to power_control
 
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/HD-Audio.txt
+ sound/soc/intel/cht_bsw_rt5672.c        |    3 -
+ sound/soc/intel/sst/sst.c               |  128 +++++++++++++++++++++++++++++--
+ sound/soc/intel/sst/sst.h               |    9 +++
+ sound/soc/intel/sst/sst_drv_interface.c |   27 ++++++-
+ 4 files changed, 152 insertions(+), 15 deletions(-)
 
-either your computer BIOS does not set the correct pin default or it can be
-disabled by hint
-
-- multi_io (bool): try probing multi-I/O config (e.g. shared
-  line-in/surround, mic/clfe jacks)
-
->
-> > Do "pcm playback volume" affect the volume after you change channel mode
-> > from 2ch to 6 ch so that mic and line in jacks are retasked as output ?
->
-> I can't answer, because of the lack of channel mode.
->
-> Any further help is appreciated.
->
->
+-- 
+1.7.9.5
