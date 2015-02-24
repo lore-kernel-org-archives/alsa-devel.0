@@ -1,16 +1,16 @@
-From: =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-Subject: Re: Internal speakers not working on HP ProBook 455 G2
-Date: Tue, 24 Feb 2015 17:43:10 +0900
-Message-ID: <54EC399E.5050406@daenzer.net>
-References: <54E5818F.9020105@daenzer.net> <s5h3862yvvp.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: improve usage of gpiod API
+Date: Tue, 24 Feb 2015 17:43:16 +0900
+Message-ID: <20150224084316.GA6236@finisterre.sirena.org.uk>
+References: <1424532804-23789-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4666061287209447580=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gna.ch (darkcity.gna.ch [195.226.6.51])
- by alsa0.perex.cz (Postfix) with ESMTP id D59BB2604F0
- for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 09:43:34 +0100 (CET)
-In-Reply-To: <s5h3862yvvp.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 417E72604F0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2015 09:44:24 +0100 (CET)
+In-Reply-To: <1424532804-23789-1-git-send-email-u.kleine-koenig@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,37 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexandre Courbot <acourbot@nvidia.com>, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-ClRha2FzaGktc2FuLAoKCk9uIDE5LjAyLjIwMTUgMjA6MzgsIFRha2FzaGkgSXdhaSB3cm90ZToK
-PiBBdCBUaHUsIDE5IEZlYiAyMDE1IDE1OjI0OjE1ICswOTAwLAo+IE1pY2hlbCBENG56ZXIgd3Jv
-dGU6Cj4+Cj4+IHRoZSBidWlsdC1pbiBzcGVha2VycyBvZiBteSBIUCBQcm9Cb29rIDQ1NSBHMiBh
-cmUgbm90IHdvcmtpbmcgYnkKPj4gZGVmYXVsdC4gSSdtIGF0dGFjaGluZyB0aGUgb3V0cHV0IG9m
-IGFsc2EtaW5mby5zaC4KPiAKPiBJcyB0aGlzIGEgcmVncmVzc2lvbiBmcm9tIGVhcmxpZXIga2Vy
-bmVscz8KCk5vLCBpdCdzIHRoZSBzYW1lIHdpdGggRGViaWFuJ3MgZGVmYXVsdCAzLjE2IGtlcm5l
-bC4KCgo+PiBJbiBwYXZ1Y29udHJvbCwgdGhlIHNwZWFrZXJzIGFwcGVhciBhcyAiU3BlYWtlcnMg
-KHVuYXZhaWxhYmxlKSIsIGFuZCBpbgo+PiB0aGUgR05PTUUgc291bmQgc2V0dGluZ3MgdGhleSBk
-b24ndCBhcHBlYXIgYXQgYWxsLgoKSW4gdGhlIG1lYW50aW1lLCBJJ3ZlIG5vdGljZWQgdGhhdCB0
-aG9zZSBzeW1wdG9tcyBhcmUgZHVlIHRvIHRoZQpoZWFkcGhvbmUgamFjayBiZWluZyBpbmNvcnJl
-Y3RseSBkZXRlY3RlZCBhcyBjb25uZWN0ZWQuIEFuZCBpbmRlZWQsIG9uIGEKZGlmZmVyZW50IGxh
-cHRvcCBJIGdldCBhbGwgdGhlIHNhbWUgc3ltcHRvbXMgd2hpbGUgaGVhZHBob25lcyBhcmUKcGx1
-Z2dlZCBpbi4KClNvLCBpdCBvY2N1cnJlZCB0byBtZSB0byB0cnkgJ3RoZSBvdGhlciBPUycgb24g
-dGhpcyBsYXB0b3AsIGFuZCB0aGUKYmVoYXZpb3VyIHRoZXJlIGlzIHdlaXJkIGFzIHdlbGw6IE5v
-IHNvdW5kIGZyb20gdGhlIHNwZWFrZXJzIGV2ZW4gd2hpbGUKbm90aGluZydzIHBsdWdnZWQgaW50
-byB0aGUgaGVhZHBob25lIGphY2suIFdoZW4gSSBwbHVnIGluIGhlYWRwaG9uZXMsCnRoZXJlJ3Mg
-YSBub3RpZmljYXRpb246ICJTb21ldGhpbmcgd2FzIGp1c3QgdW5wbHVnZ2VkIGZyb20geW91cgpo
-ZWFkcGhvbmUgamFjayIgKCEpLCB0aGVuIHNvdW5kIHdvcmtzIGFzIGV4cGVjdGVkIHRocm91Z2gg
-dGhlCmhlYWRwaG9uZXMuIFdoZW4gSSB1bnBsdWcgdGhlbSBhZ2FpbiwgdGhlcmUncyBhIG5vdGlm
-aWNhdGlvbjogIlNvbWV0aGluZwp3YXMganVzdCBwbHVnZ2VkIGludG8geW91ciBoZWFkcGhvbmUg
-amFjayIuCgpJbiBMaW51eCwgSSBoYXZlbid0IHNlZW4gYW55IHZpc2libGUgY2hhbmdlIHdoZW4g
-cGx1Z2dpbmcgaW4gb3Igb3V0IHRoZQpoZWFkcGhvbmVzLgoKCkRvIHlvdSB0aGluayB0aGUgaGFy
-ZHdhcmUgaXMgZGVmZWN0aXZlPyBBbnkgcG9zc2libGUgd29ya2Fyb3VuZHMgZm9yIHRoZQppbmNv
-cnJlY3QgaGVhZHBob25lIGphY2sgZGV0ZWN0aW9uPwoKCi0tIApFYXJ0aGxpbmcgTWljaGVsIETD
-pG56ZXIgICAgICAgICAgICAgICB8ICAgICAgICAgICAgICAgaHR0cDovL3d3dy5hbWQuY29tCkxp
-YnJlIHNvZnR3YXJlIGVudGh1c2lhc3QgICAgICAgICAgICAgfCAgICAgICAgICAgICBNZXNhIGFu
-ZCBYIGRldmVsb3BlcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+
+--===============4666061287209447580==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="WbkWELb8d/6oR4nB"
+Content-Disposition: inline
+
+
+--WbkWELb8d/6oR4nB
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Feb 21, 2015 at 04:33:24PM +0100, Uwe Kleine-K=F6nig wrote:
+> Since 39b2bbe3d715 (gpio: add flags argument to gpiod_get*() functions)
+> which appeared in v3.17-rc1, the gpiod_get* functions take an additional
+> parameter that allows to specify direction and initial value for
+> output. Simplify drivers accordingly.
+
+Applied, thanks.  However...
+
+>  sound/soc/codecs/adau1977.c | 17 +++++------------
+>  sound/soc/codecs/cs35l32.c  | 19 ++++++-------------
+>  sound/soc/codecs/cs4265.c   | 19 ++++++-------------
+>  sound/soc/codecs/sta350.c   | 30 +++++++++---------------------
+>  sound/soc/codecs/tas2552.c  | 13 +++----------
+>  5 files changed, 29 insertions(+), 69 deletions(-)
+
+=2E..as this touches a bunch of drivers it would have been nicer to send
+it as a series of changes - that minimizes the risk of collisions with
+other changes as a problem with one driver won't affect the others.
+
+--WbkWELb8d/6oR4nB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU7DmkAAoJECTWi3JdVIfQ/wsH/RaHjcEJ3l4vQQIu5oG9pYGX
+2J+zEc4qGGu/tCiFZzOlT3mGHqEuR9K125hH0JWdLOUkeiwGVk+ErKOu6o/IENVL
+wJlEHvbG1sYr2Iu/GgAoOnf2HUFTtZCIM8OOfKP93G3zF3uuqfcYDusqrA+G/786
+l+cizo7OncqGFcOJ3c08SQcZ5inrCl8Z/sV+wUKJKr3R1WPCCc1dQDAiH+gmkUB7
+uSATCMahPfIf6+kgF6rocOdYb/aLB+0567Qf+nGaVIvp6v9o/dlbxJIKc1n/kRAf
+oo2sjSeoa9suYuCLlRqzbuOaggCTdr5UFBroyifXBtvK30xvAmpx0dfAMKvWzlg=
+=0No3
+-----END PGP SIGNATURE-----
+
+--WbkWELb8d/6oR4nB--
+
+--===============4666061287209447580==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4666061287209447580==--
