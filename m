@@ -1,47 +1,83 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: About iMX6SL AUDMUX (port 7) and SSI3
-Date: Wed, 25 Feb 2015 00:38:37 -0800
-Message-ID: <20150225083837.GA6436@Asurada>
-References: <54E5C1A3.8020301@gmail.com> <20150220050127.GA2861@Asurada-CZ80>
- <54ED87C4.4020105@gmail.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [Patch V6 08/10] ASoC: qcom: Add ability to build QCOM drivers
+Date: Wed, 25 Feb 2015 08:40:50 +0000
+Message-ID: <54ED8A92.2030702@linaro.org>
+References: <1424846385-23700-1-git-send-email-kwestfie@codeaurora.org> <1424846385-23700-9-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f176.google.com (mail-pd0-f176.google.com
- [209.85.192.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 10FAC2605EE
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 09:38:51 +0100 (CET)
-Received: by pdjz10 with SMTP id z10so3438314pdj.0
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 00:38:46 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <54ED87C4.4020105@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Xuebing Wang <xbing6@gmail.com>
-Cc: alsa-devel@alsa-project.org, niranjan Patil <Niranjan.Patil@infocus.com>, timur Tabi <timur@tabi.org>, richard Jiang <Richard.Jiang@infocus.com>, xiubo Li <Xiubo.Lee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1424846385-23700-9-git-send-email-kwestfie@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>
+Cc: ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 25, 2015 at 04:28:52PM +0800, Xuebing Wang wrote:
-> Thanks. As the mainline kernel supports I2S master mode, would you please
-> tell me which ASoC machine driver actually uses I2S master mode?
 
-fsl-asoc-card.c
 
-> The reason I am asking is that I am using I2S master mode, I'd like to
-> reference that machine driver to configure audmux by function
-> imx_audmux_v2_configure_port().
+On 25/02/15 06:39, Kenneth Westfield wrote:
+> From: Kenneth Westfield <kwestfie@codeaurora.org>
+>
+> Define the LPASS platform driver, the LPASS
+> CPU DAI driver and the Storm machine driver
+> configurations, and how to build them.
+>
+> Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
+> Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
+> ---
+>   sound/soc/qcom/Kconfig  | 23 +++++++++++++++++++++++
+>   sound/soc/qcom/Makefile | 11 +++++++++++
+>   2 files changed, 34 insertions(+)
+>   create mode 100644 sound/soc/qcom/Kconfig
+>   create mode 100644 sound/soc/qcom/Makefile
+>
+> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..90e686be613a5ef7689582a9d085835d2fe12678
+> --- /dev/null
+> +++ b/sound/soc/qcom/Kconfig
+> @@ -0,0 +1,23 @@
+> +config SND_SOC_QCOM
+> +	tristate "ASoC support for QCOM platforms"
+> +	help
+> +          Say Y or M if you want to add support to use audio devices
+> +          in Qualcomm Technologies SOC-based platforms.
+> +
+> +config SND_SOC_LPASS_CPU
+> +	tristate
+> +	depends on SND_SOC_QCOM
+> +
+> +config SND_SOC_LPASS_PLATFORM
+> +	tristate
+> +	depends on SND_SOC_QCOM
 
-That driver is a general purpose driver for several CODECs supports.
-If you plan to get your machine driver upstream, you can try that
-one directly; Otherwise, you can extract the audmux configuration
-part for your own use.
+I think both of the above configs should select REGMAP_MMIO.
 
-Nicolin
+> +
+> +config SND_SOC_STORM
+> +	tristate "ASoC I2S support for Storm boards"
+> +	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
+> +	select SND_SOC_LPASS_CPU
+> +	select SND_SOC_LPASS_PLATFORM
+> +	select SND_SOC_MAX98357A
+> +	help
+> +          Say Y or M if you want add support for SoC audio on the
+> +          Qualcomm Technologies IPQ806X-based Storm board.
+> diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..c5ce96c761c47b3a1b98e27d863fe0b5b9bc019e
+> --- /dev/null
+> +++ b/sound/soc/qcom/Makefile
+> @@ -0,0 +1,11 @@
+> +# Platform
+> +snd-soc-lpass-cpu-objs := lpass-cpu.o
+> +snd-soc-lpass-platform-objs := lpass-platform.o
+> +
+> +obj-$(CONFIG_SND_SOC_LPASS_CPU) += snd-soc-lpass-cpu.o
+> +obj-$(CONFIG_SND_SOC_LPASS_PLATFORM) += snd-soc-lpass-platform.o
+> +
+> +# Machine
+> +snd-soc-storm-objs := storm.o
+> +
+> +obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+>
