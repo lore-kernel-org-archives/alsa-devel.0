@@ -1,82 +1,75 @@
-From: Mike Turquette <mturquette@linaro.org>
-Subject: Re: [PATCH 0/8] Fix struct clk pointer comparing
-Date: Wed, 25 Feb 2015 09:55:33 -0800
-Message-ID: <20150225175533.421.41831@quantum>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
- <20150225150349.GB8656@n2100.arm.linux.org.uk>
+From: Yomi Ogunwumi <abyomi0@gmail.com>
+Subject: Re: Issues and/or possible bugs in alsa
+Date: Wed, 25 Feb 2015 13:15:19 -0500
+Message-ID: <CACui-2kmRSFb5exbPCaNTsVFUF2_rZ27jxDzfLEbU8h2ZB+YHw@mail.gmail.com>
+References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
+ <s5hioeq5snn.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-pwm-owner@vger.kernel.org>
-In-Reply-To: <20150225150349.GB8656@n2100.arm.linux.org.uk>
-Sender: linux-pwm-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Shawn Guo <shawn.guo@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Stephen Boyd <sboyd@codeaurora.org>, Thierry Reding <thierry.reding@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-serial@vger.kernel.org
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f178.google.com (mail-ig0-f178.google.com
+ [209.85.213.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DAC22605A9
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 19:15:21 +0100 (CET)
+Received: by mail-ig0-f178.google.com with SMTP id hl2so8033188igb.5
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 10:15:20 -0800 (PST)
+In-Reply-To: <s5hioeq5snn.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Russell King - ARM Linux (2015-02-25 07:03:49)
-> On Wed, Feb 25, 2015 at 10:53:30PM +0800, Shawn Guo wrote:
-> > On the first day back from Chinese new year holiday, I got a regression
-> > report from rmk, saying Ethernet stops working on HimmingBoard with
-> > v4.0-rc1.
-> > 
-> > I read through the thread [1] and found a couple of i.MX audio drivers
-> > are also affected per Stephen's Coccinelle report.  That's why I came up
-> > with this series based on Quentin's structclk.cocci, Stephen's result
-> > and Mike's input (thanks all).
-> 
-> Not all places need to be fixed in this way.
-> 
-> There are two broad cases:
-> 
-> 1. Where we are trying to determine if two clocks obtained from clk_get()
->    are the same clock.  IOW:
-> 
->         probe()
->         {
->                 clk1 = clk_get(dev, ...);
->                 clk2 = clk_get(dev, ...);
-> 
->                 if (clk1 == clk2)
->                         do_something();
->         }
-> 
-> 2. Where we are trying to determine if a clock selected from a set of
->    previously obtained clk_get()'d clocks is the same as a one of those
->    clocks.  IOW:
-> 
->         probe()
->         {
->                 clk1 = clk_get(dev, ...);
->                 clk2 = clk_get(dev, ...);
->         }
-> ...
->         some_fn()
->         {
->                 clk = select_best_clock(clk1, clk2);
->                 if (clk == previously_selected_clk) {
->                         previously_selected_clk = clk;
->                         do_something();
->                 }
->         }
-> 
-> Case 1 applies in places like the Kirkwood I2S driver, and the iMX6
-> ethernet code, and it's these cases which need to be fixed.
-> 
-> Case 2 applies in the Armada DRM driver, and these cases need not be
-> "fixed".
-> 
-> To put it a different way: case 1 is when you're testing to see whether
-> two clocks refer to the same clock.  case 2 is when you're testing
-> whether the cached clk cookie is the same.
-
-It looks like patches 2, 7 and 8 are correct in this series. I'll apply
-them towards -rc2 if nobody objects.
-
-Regards,
-Mike
-
-> 
-> -- 
-> FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-> according to speedtest.net.
+U29ycnksIEkgdGhpbmsgdGhpcyA6CipodHRwczovL2dpc3QuZ2l0aHViLmNvbS9Zb21pMC85YmZj
+M2U3MjU4OGNmOGEzNTgxMSNmaWxlLWFsc2EtaW5mby13aXRob3V0LWhlYWRwaG9uZXMKPGh0dHBz
+Oi8vZ2lzdC5naXRodWIuY29tL1lvbWkwLzliZmMzZTcyNTg4Y2Y4YTM1ODExI2ZpbGUtYWxzYS1p
+bmZvLXdpdGhvdXQtaGVhZHBob25lcz4KKmlzCndoYXQgeW91IHdhbnRlZC4KSGVhZHBob25lcyBh
+cmUgcGx1Z2dlZCBpbi4KCk9uIFdlZCwgRmViIDI1LCAyMDE1IGF0IDI6NTggQU0sIFRha2FzaGkg
+SXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cgo+IEF0IFR1ZSwgMjQgRmViIDIwMTUgMTc6NDY6
+MDkgLTA1MDAsCj4gWW9taSBPZ3Vud3VtaSB3cm90ZToKPiA+Cj4gPiBIZWxsby4KPiA+Cj4gPiBJ
+IHNlZW0gdG8gaGF2ZSBydW4gaW50byBhIGZldyBpc3N1ZXMgd2l0aCBhbHNhLgo+ID4KPiA+IEZp
+cnN0LCB3aGVuIEkgcGx1ZyBteSBoZWFkcGhvbmVzIGludG8gbXkgbGFwdG9wLCBzb3VuZCBjb250
+aW51ZXMgdG8gcGxheQo+ID4gb3V0IG9mIHRoZSBzcGVha2VycyBhbmQgZG9lc24ndCBzd2l0Y2gg
+b3ZlciB0byAob3IgdW5tdXRlKSB0aGUKPiBoZWFkcGhvbmVzLgo+ID4gQXV0by1NdXRlIE1vZGUg
+aXMgZW5hYmxlZCBpbiBhbHNhbWl4ZXIuIFRoZSBzYW1lIHRoaW5nIGhhcHBlbnMgd2hlbiBJCj4g
+PiB1bnBsdWcgdGhlIGhlYWRwaG9uZXMsIGl0IGRvZXNuJ3Qgc3dpdGNoIG92ZXIgdG8gdGhlIHNw
+ZWFrZXJzLiBJIGhhdmUgdG8KPiBkbwo+ID4gdGhlIHNhbWUgdGhpbmcgSSBkZXNjcmliZWQgYWJv
+dmUsIChubyB1bm11dGluZywgSSBqdXN0IGhhdmUgdG8gdHVybiB1cAo+IHRoZQo+ID4gdm9sdW1l
+IGZvciB0aGUgc3BlYWtlcnMgaW4gYWxzYW1peGVyLikKPiA+Cj4gPiBTZWNvbmQuIFdoZW4gSSBw
+bHVnIGluIHRoZXNlIGhlYWRwaG9uZXMsIEkgY2FuJ3QgdXNlIHRoZSBpbnRlcm5hbAo+ID4gbWlj
+cm9waG9uZSBvbiB0aGlzIGxhcHRvcCwgaXQgbXV0ZXMuIChBRkFJQ1QpCj4gPiBUaGVzZSBoZWFk
+cGhvbmVzIGRvIG5vdCBoYXZlIGEgbWljcm9waG9uZSBidWlsdCBpbiwgdGhleSdyZSBqdXN0IGFu
+Cj4gPiBvcmRpbmFyeSBwYWlyIG9mIGhlYWRwaG9uZXMuIEhvd2V2ZXIsIEkgd2FzIGdpdmVuIGEg
+d29ya2Fyb3VuZCBpbiAjYWxzYQo+IG9uCj4gPiBmcmVlbm9kZS4gSW4gb3JkZXIgdG8gdXNlIHRo
+ZSBsYXB0b3AncyBpbnRlcm5hbCBtaWNyb3Bob25lIHdpdGggbXkKPiA+IGhlYWRwaG9uZXMgcGx1
+Z2dlZCBpbiwgSSBoYXZlIHRvIGRvIDogc3VkbyBoZGEtdmVyYiAvZGV2L3NuZC9od0MxRDAgMHgy
+Mgo+ID4gU0VUX0NPTk5FQ1RfU0VMIDYg4oCUIGl0IHdvcmtzLCBidXQgaXQgaXNuJ3QgcmVhbGx5
+IGlkZWFsLgo+ID4KPiA+IGFsc2EtaW5mbyBpcyBoZXJlIDogaHR0cHM6Ly9naXN0LmdpdGh1Yi5j
+b20vWW9taTAvOWJmYzNlNzI1ODhjZjhhMzU4MTEKPiA+Cj4gPiBUaGUgZmlyc3QgZmlsZSBpbiB0
+aGF0IGdpc3QgaXMgYWxzYS1pbmZvIHdpdGggaGVhZHBob25lcyBhbmQgdGhlIHNlY29uZAo+IGlz
+Cj4gPiB3aXRob3V0IGhlYWRwaG9uZXMuCj4gPgo+ID4gVGhpcmQuIFRoaXMgaXMganVzdCBhIHF1
+ZXN0aW9uLiBJcyB0aGlzIDoKPiA+IGh0dHBzOi8vYnVncy5mcmVlZGVza3RvcC5vcmcvc2hvd19i
+dWcuY2dpP2lkPTg2Njc2IGFjdHVhbGx5IGEgcHVsc2VhdWRpbwo+ID4gYnVnLCBvciBpcyBpdCBh
+biBpc3N1ZSB3aXRoIGFsc2E/Cj4gPiBJJ20gb25seSBhc2tpbmcgc2luY2UgUmF5bW9uZCBsaW5r
+ZWQgc29tZXRoaW5nIHRoYXQgc2VlbWVkIHRvIGJlbG9uZyB0bwo+IHRoZQo+ID4gYWxzYSBwcm9q
+ZWN0Lgo+Cj4gVGhlIGFsc2EtaW5mby5zaCBvdXRwdXQgYWJvdmUgc2hvd3MgdGhlIHJlYWRzIGZy
+b20gdGhlIGNvZGVjIGZhaWxlZC4KPiBDb3VsZCB5b3UgdHJ5IG9uY2UgdG8gZGlzYWJsZSBwb3dl
+ci1zYXZpbmc/ICBTZXQgcG93ZXJfc2F2ZT0wIG9wdGlvbgo+IHRvIHNuZC1oZGEtaW50ZWwgbW9k
+dWxlLgo+Cj4gTm90ZSB0aGF0IHBvd2VyX3NhdmUgb3B0aW9uIG1pZ2h0IGJlIGNoYW5nZWQgZHlu
+YW1pY2FsbHkgYnkgdGhlIHN5c3RlbQo+IChhY2Nlc3NpYmxlIHZpYSAvc3lzL21vZHVsZS9zbmRf
+aGRhX2ludGVsL3BhcmFtZXRlcnMvcG93ZXJfc2F2ZSkuICBJZgo+IHRoZSBwcm9ibGVtIGlzIHN0
+aWxsIHNlZW4sIGNoZWNrIHRoZSB2YWx1ZSB0aGVyZSB3aGV0aGVyIHlvdSBzdGlsbAo+IHJlYWxs
+eSBoYXZlIDAgb3IgaXQgd2FzIGNoYW5nZWQgYnkgdGhlIHN5c3RlbS4KPgo+IFJlc3RyaWN0aW5n
+IHRoZSBwb3dlci1zYXZlIGlzbid0IGEgc29sdXRpb24gYnV0IGhlbHBzIHVuZGVyc3RhbmRpbmcK
+PiB0aGUgY2F1c2UsIGF0IGxlYXN0Lgo+Cj4KPiBUYWthc2hpCj4KCgoKLS0gCipZb21pKgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
