@@ -1,53 +1,91 @@
-From: Marcin Wojtas <mw@semihalf.com>
-Subject: [PATCH 4/4] ARM: mvebu: fix routing for analog audio input of Armada
- 370 DB platform
-Date: Wed, 25 Feb 2015 22:58:02 +0100
-Message-ID: <1424901482-3809-5-git-send-email-mw@semihalf.com>
-References: <y>
- <1424901482-3809-1-git-send-email-mw@semihalf.com>
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH 2/4] ARM: mvebu: add audio I2S controller
+ to Armada 38x Device Tree
+Date: Wed, 25 Feb 2015 23:21:10 +0100
+Message-ID: <54EE4AD6.6090101@gmail.com>
+References: <y> <1424901482-3809-1-git-send-email-mw@semihalf.com>
+ <1424901482-3809-3-git-send-email-mw@semihalf.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1424901482-3809-1-git-send-email-mw@semihalf.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: lgirdwood@gmail.com, broonie@kernel.org, jason@lakedaemon.net, andrew@lunn.ch, gregory.clement@free-electrons.com, sebastian.hesselbarth@gmail.com
-Cc: thomas.petazzoni@free-electrons.com, alior@marvell.com, alsa-devel@alsa-project.org, tawfik@marvell.com, jaz@semihalf.com, ezequiel.garcia@free-electrons.com, mw@semihalf.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
+ [209.85.212.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AFB32612D7
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 23:21:14 +0100 (CET)
+Received: by mail-wi0-f178.google.com with SMTP id em10so8440926wid.5
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 14:21:14 -0800 (PST)
+In-Reply-To: <1424901482-3809-3-git-send-email-mw@semihalf.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Marcin Wojtas <mw@semihalf.com>, lgirdwood@gmail.com, broonie@kernel.org, jason@lakedaemon.net, andrew@lunn.ch, gregory.clement@free-electrons.com
+Cc: thomas.petazzoni@free-electrons.com, alior@marvell.com, alsa-devel@alsa-project.org, tawfik@marvell.com, jaz@semihalf.com, ezequiel.garcia@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Armada 370 DB sound complex comprise routing for audio card with a
-description for analog input line with two left channels instead of a pair
-left-right. This commit introduces routing for the right channel.
+On 25.02.2015 22:58, Marcin Wojtas wrote:
+> This commit adds the description of the I2S controller to the Marvell
+> Armada 38x SoC's Device Tree, as well as its pin configuration.
+>
+> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> ---
+>   arch/arm/boot/dts/armada-38x.dtsi | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
+> index 1dff30a..fa21cb5 100644
+> --- a/arch/arm/boot/dts/armada-38x.dtsi
+> +++ b/arch/arm/boot/dts/armada-38x.dtsi
+[...]
+> @@ -555,6 +561,17 @@
+>   				status = "disabled";
+>   			};
+>
+> +			audio_controller: audio-controller@e8000 {
+> +				#sound-dai-cells = <1>;
+> +				compatible = "marvell,armada-380-audio";
+> +				reg = <0xe8000 0x4000>, <0x18410 0xc>, <0x18204 0x4>;
+> +				reg-names = "i2s_regs", "pll_regs", "soc_ctrl";
 
-Fixes: a6b334514be2 ("use simple-card DT binding for audio on Armada 370 DB")
+Marcin,
 
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-Cc: <stable@vger.kernel.org> # v3.19+
-Reviewed-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
----
- arch/arm/boot/dts/armada-370-db.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+sorry but NACK. The PLL and SoC ctrl are not even close to the audio
+controller registers.
 
-diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
-index e993c46..d6e72a4 100644
---- a/arch/arm/boot/dts/armada-370-db.dts
-+++ b/arch/arm/boot/dts/armada-370-db.dts
-@@ -190,7 +190,7 @@
- 			"Out Jack", "HPL",
- 			"Out Jack", "HPR",
- 			"AIN1L", "In Jack",
--			"AIN1L", "In Jack";
-+			"AIN1R", "In Jack";
- 		status = "okay";
- 
- 		simple-audio-card,dai-link@0 {
--- 
-1.8.3.1
+> +				interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&gateclk 0>;
+> +				clock-names = "internal";
+
+How about providing access to audio PLL by a clock driver and amend the
+binding to allow for a second more precise PLL clock, e.g.
+
+	clocks = <&gateclk CLK_AUDIO>, <&pll PLL_AUDIO>;
+	clock-names = "internal", "pll";
+
+we already check for an "extclk" on Dove for the same reason but the
+name might be misleading here.
+
+Also, i2c/spdif muxing option could be handled by 38x's pinctrl driver,
+we have the same for Dove's internal i2c mux.
+
+If you want to use i2s you just add the option to the default pinctrl
+hog:
+
+	pinctrl-0 = <&i2s_pins &audio_mux_i2s>;
+	pinctrl-names = "default";
+
+Sebastian
+
+> +				status = "disabled";
+> +			};
+> +
+>   			usb3@f0000 {
+>   				compatible = "marvell,armada-380-xhci";
+>   				reg = <0xf0000 0x4000>,<0xf4000 0x4000>;
+>
