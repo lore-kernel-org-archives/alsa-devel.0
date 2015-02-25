@@ -1,20 +1,15 @@
-From: John Frankish <john.frankish@outlook.com>
-Subject: Re: No sound from speakers with Realtek ALC3226
-Date: Wed, 25 Feb 2015 13:25:35 +0400
-Message-ID: <COL403-EAS2576E554CAD96126742849BF3170@phx.gbl>
-References: <COL403-EAS144CB85A708197E0DF2965FF3160@phx.gbl>
- <s5h61are4m2.wl-tiwai@suse.de>
- <COL403-EAS2907AF9B8908D92F837F8E5F3170@phx.gbl>
- <s5h4mqa5p3c.wl-tiwai@suse.de>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt5677: Correct the routing paths of
+	that after IF1/2 DACx Mux
+Date: Wed, 25 Feb 2015 17:36:13 +0800
+Message-ID: <1424856974-18763-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from COL004-OMC3S6.hotmail.com (col004-omc3s6.hotmail.com
- [65.55.34.144]) by alsa0.perex.cz (Postfix) with ESMTP id 8AD602605D1
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 10:25:43 +0100 (CET)
-In-Reply-To: <s5h4mqa5p3c.wl-tiwai@suse.de>
-Content-Language: en-us
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 093E52605D1
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 10:36:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,39 +19,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: 'Takashi Iwai' <tiwai@suse.de>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, john.lin@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-> > > > 
-> > > > I posted this on the alsa-user list, but did not get a reply.
-> > > > 
-> > > > Although it occasionally works, I am usually unable to get any 
-> > > > sound out of the speakers on a dell latitude e7240 using 
-> > > > alsa-1.0.28 and
-> > > > linux-3.16.6 - see details at the end of the post.
-> > >
-> > > If so, Windows or BIOS is the problem.  It doesn't set up the pin
-configuration properly Linux driver relies on.
-> > >
-> > I just updated the bios to the latest version, but no change :(
-> > >
-> > > If you get the status where the speaker works (e.g. after Windows
-clean
-> > reboot), try to take alsa-info.sh snapshot.  Run alsa-> info.sh with 
-> > --no-upload option, and save the generated output.  Then, take another 
-> > alsa-info.sh snapshot while the speaker > doesn't work.  Compare these 
-> > two outputs.  (At best, attach both (compressed) files.)
-> > >
-> > Alsa_info_works and alsa_info_no_works attached - diff didn't show an 
-> > obvious difference between getting sound from the speakers and not 
-> > getting sound from the speakers.
->
-> OK, then this is not about the pin configuration, but likely the EAPD
-setup BIOS does.
->
-> Did you try the newer kernels?  There has been a fix for EAPD control, and
-this might already fix your problem.
+The patch corrects the routing paths of that after IF1/2 DACx Mux
 
-I'd rather patch my current kernel if possible - do you know where the EPAD
-control patch is by any chance?
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5677.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index ab62777..f87c929 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -3297,8 +3297,8 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 	{ "IB45 Bypass Mux", "Bypass", "IB45 Mux" },
+ 	{ "IB45 Bypass Mux", "Pass SRC", "IB45 Mux" },
+ 
+-	{ "IB6 Mux", "IF1 DAC 6", "IF1 DAC6" },
+-	{ "IB6 Mux", "IF2 DAC 6", "IF2 DAC6" },
++	{ "IB6 Mux", "IF1 DAC 6", "IF1 DAC6 Mux" },
++	{ "IB6 Mux", "IF2 DAC 6", "IF2 DAC6 Mux" },
+ 	{ "IB6 Mux", "SLB DAC 6", "SLB DAC6" },
+ 	{ "IB6 Mux", "STO4 ADC MIX L", "Stereo4 ADC MIXL" },
+ 	{ "IB6 Mux", "IF4 DAC L", "IF4 DAC L" },
+@@ -3306,8 +3306,8 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 	{ "IB6 Mux", "STO2 ADC MIX L", "Stereo2 ADC MIXL" },
+ 	{ "IB6 Mux", "STO3 ADC MIX L", "Stereo3 ADC MIXL" },
+ 
+-	{ "IB7 Mux", "IF1 DAC 7", "IF1 DAC7" },
+-	{ "IB7 Mux", "IF2 DAC 7", "IF2 DAC7" },
++	{ "IB7 Mux", "IF1 DAC 7", "IF1 DAC7 Mux" },
++	{ "IB7 Mux", "IF2 DAC 7", "IF2 DAC7 Mux" },
+ 	{ "IB7 Mux", "SLB DAC 7", "SLB DAC7" },
+ 	{ "IB7 Mux", "STO4 ADC MIX R", "Stereo4 ADC MIXR" },
+ 	{ "IB7 Mux", "IF4 DAC R", "IF4 DAC R" },
+@@ -3648,15 +3648,15 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 	{ "DAC1 FS", NULL, "DAC1 MIXL" },
+ 	{ "DAC1 FS", NULL, "DAC1 MIXR" },
+ 
+-	{ "DAC2 L Mux", "IF1 DAC 2", "IF1 DAC2" },
+-	{ "DAC2 L Mux", "IF2 DAC 2", "IF2 DAC2" },
++	{ "DAC2 L Mux", "IF1 DAC 2", "IF1 DAC2 Mux" },
++	{ "DAC2 L Mux", "IF2 DAC 2", "IF2 DAC2 Mux" },
+ 	{ "DAC2 L Mux", "IF3 DAC L", "IF3 DAC L" },
+ 	{ "DAC2 L Mux", "IF4 DAC L", "IF4 DAC L" },
+ 	{ "DAC2 L Mux", "SLB DAC 2", "SLB DAC2" },
+ 	{ "DAC2 L Mux", "OB 2", "OutBound2" },
+ 
+-	{ "DAC2 R Mux", "IF1 DAC 3", "IF1 DAC3" },
+-	{ "DAC2 R Mux", "IF2 DAC 3", "IF2 DAC3" },
++	{ "DAC2 R Mux", "IF1 DAC 3", "IF1 DAC3 Mux" },
++	{ "DAC2 R Mux", "IF2 DAC 3", "IF2 DAC3 Mux" },
+ 	{ "DAC2 R Mux", "IF3 DAC R", "IF3 DAC R" },
+ 	{ "DAC2 R Mux", "IF4 DAC R", "IF4 DAC R" },
+ 	{ "DAC2 R Mux", "SLB DAC 3", "SLB DAC3" },
+@@ -3664,29 +3664,29 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
+ 	{ "DAC2 R Mux", "Haptic Generator", "Haptic Generator" },
+ 	{ "DAC2 R Mux", "VAD ADC", "VAD ADC Mux" },
+ 
+-	{ "DAC3 L Mux", "IF1 DAC 4", "IF1 DAC4" },
+-	{ "DAC3 L Mux", "IF2 DAC 4", "IF2 DAC4" },
++	{ "DAC3 L Mux", "IF1 DAC 4", "IF1 DAC4 Mux" },
++	{ "DAC3 L Mux", "IF2 DAC 4", "IF2 DAC4 Mux" },
+ 	{ "DAC3 L Mux", "IF3 DAC L", "IF3 DAC L" },
+ 	{ "DAC3 L Mux", "IF4 DAC L", "IF4 DAC L" },
+ 	{ "DAC3 L Mux", "SLB DAC 4", "SLB DAC4" },
+ 	{ "DAC3 L Mux", "OB 4", "OutBound4" },
+ 
+-	{ "DAC3 R Mux", "IF1 DAC 5", "IF1 DAC4" },
+-	{ "DAC3 R Mux", "IF2 DAC 5", "IF2 DAC4" },
++	{ "DAC3 R Mux", "IF1 DAC 5", "IF1 DAC5 Mux" },
++	{ "DAC3 R Mux", "IF2 DAC 5", "IF2 DAC5 Mux" },
+ 	{ "DAC3 R Mux", "IF3 DAC R", "IF3 DAC R" },
+ 	{ "DAC3 R Mux", "IF4 DAC R", "IF4 DAC R" },
+ 	{ "DAC3 R Mux", "SLB DAC 5", "SLB DAC5" },
+ 	{ "DAC3 R Mux", "OB 5", "OutBound5" },
+ 
+-	{ "DAC4 L Mux", "IF1 DAC 6", "IF1 DAC6" },
+-	{ "DAC4 L Mux", "IF2 DAC 6", "IF2 DAC6" },
++	{ "DAC4 L Mux", "IF1 DAC 6", "IF1 DAC6 Mux" },
++	{ "DAC4 L Mux", "IF2 DAC 6", "IF2 DAC6 Mux" },
+ 	{ "DAC4 L Mux", "IF3 DAC L", "IF3 DAC L" },
+ 	{ "DAC4 L Mux", "IF4 DAC L", "IF4 DAC L" },
+ 	{ "DAC4 L Mux", "SLB DAC 6", "SLB DAC6" },
+ 	{ "DAC4 L Mux", "OB 6", "OutBound6" },
+ 
+-	{ "DAC4 R Mux", "IF1 DAC 7", "IF1 DAC7" },
+-	{ "DAC4 R Mux", "IF2 DAC 7", "IF2 DAC7" },
++	{ "DAC4 R Mux", "IF1 DAC 7", "IF1 DAC7 Mux" },
++	{ "DAC4 R Mux", "IF2 DAC 7", "IF2 DAC7 Mux" },
+ 	{ "DAC4 R Mux", "IF3 DAC R", "IF3 DAC R" },
+ 	{ "DAC4 R Mux", "IF4 DAC R", "IF4 DAC R" },
+ 	{ "DAC4 R Mux", "SLB DAC 7", "SLB DAC7" },
+-- 
+1.8.1.1.439.g50a6b54
