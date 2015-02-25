@@ -1,20 +1,21 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: Issues and/or possible bugs in alsa
-Date: Wed, 25 Feb 2015 13:36:18 +0500
-Message-ID: <54ED8982.3050802@gmail.com>
-References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
- <54ED8466.7020102@gmail.com> <54ED881F.7070102@perex.cz>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: About iMX6SL AUDMUX (port 7) and SSI3
+Date: Wed, 25 Feb 2015 00:38:37 -0800
+Message-ID: <20150225083837.GA6436@Asurada>
+References: <54E5C1A3.8020301@gmail.com> <20150220050127.GA2861@Asurada-CZ80>
+ <54ED87C4.4020105@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f173.google.com (mail-lb0-f173.google.com
- [209.85.217.173])
- by alsa0.perex.cz (Postfix) with ESMTP id A80912605D1
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 09:36:21 +0100 (CET)
-Received: by lbvn10 with SMTP id n10so2285212lbv.6
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 00:36:21 -0800 (PST)
-In-Reply-To: <54ED881F.7070102@perex.cz>
+Received: from mail-pd0-f176.google.com (mail-pd0-f176.google.com
+ [209.85.192.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10FAC2605EE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 09:38:51 +0100 (CET)
+Received: by pdjz10 with SMTP id z10so3438314pdj.0
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 00:38:46 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <54ED87C4.4020105@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,52 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Yomi Ogunwumi <abyomi0@gmail.com>, alsa-devel@alsa-project.org
+To: Xuebing Wang <xbing6@gmail.com>
+Cc: alsa-devel@alsa-project.org, niranjan Patil <Niranjan.Patil@infocus.com>, timur Tabi <timur@tabi.org>, richard Jiang <Richard.Jiang@infocus.com>, xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-25.02.2015 13:30, Jaroslav Kysela wrote:
-> Dne 25.2.2015 v 09:14 Alexander E. Patrakov napsal(a):
->> 25.02.2015 03:46, Yomi Ogunwumi wrote:
->>> Third. This is just a question. Is this :
->>> https://bugs.freedesktop.org/show_bug.cgi?id=86676 actually a pulseaudio
->>> bug, or is it an issue with alsa?
->>> I'm only asking since Raymond linked something that seemed to belong to the
->>> alsa project.
->>>
->> This is a bug both in ALSA and in PulseAudio.
->>
->> The ALSA part (from the user viewpoint) is that the softvol plugin does
->> not reprocess the already-submitted but buffered samples when the volume
->> changes. But it can't, because that would require an additional thread
->> for monitoring the software volume changes, and such thread does not exist.
->>
->> The PulseAudio part of the bug is that it does not deactivate softvols,
->> even though it can apply volume in software itself. In October 2014, in
->> Dusseldorf, a general agreement has been reached on the following arguments:
->>
->>    * ALSA has no API to definitely distinguish softvols from other controls.
->>    * ALSA has the snd_ctl_elem_info_is_user() API function that tells
->> whether this is a userspace control.
->>    * All softvols are userspace controls.
->>    * There are other kinds of userspace controls, but they are rare.
->>    * If a control is named PCM Playback Volume and is a userspace
->> control, then it's likely a softvol. Not bulletproof, but a good-enough
->> heuristic.
->>    * On finding a softvol, PulseAudio should set it to 100% (so that it
->> doesn't eat CPU) and don't touch from that point on.
->>
->> But nobody has implemented this so far.
-> PulseAudio should open PCM with the SND_PCM_NO_SOFTVOL mode. In this
-> case, the PCM device does not add the softvol plugin to the internal
-> plugin chain. These mode flags was introduced a long time ago (discussed
-> with Lennart) and I thought that PA uses it.
->
-> 					Jaroslav
->
+On Wed, Feb 25, 2015 at 04:28:52PM +0800, Xuebing Wang wrote:
+> Thanks. As the mainline kernel supports I2S master mode, would you please
+> tell me which ASoC machine driver actually uses I2S master mode?
 
-Well, that can be done, but the "don't attempt to control the softvol" 
-part of the bug needs to be solved first. SND_PCM_NO_SOFTVOL by itself 
-is not sufficient.
+fsl-asoc-card.c
 
--- 
-Alexander E. Patrakov
+> The reason I am asking is that I am using I2S master mode, I'd like to
+> reference that machine driver to configure audmux by function
+> imx_audmux_v2_configure_port().
+
+That driver is a general purpose driver for several CODECs supports.
+If you plan to get your machine driver upstream, you can try that
+one directly; Otherwise, you can extract the audmux configuration
+part for your own use.
+
+Nicolin
