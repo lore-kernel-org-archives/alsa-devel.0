@@ -1,57 +1,76 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V6 03/10] ASoC: qcom: Document Storm bindings
-Date: Tue, 24 Feb 2015 22:39:38 -0800
-Message-ID: <1424846385-23700-4-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V6 08/10] ASoC: qcom: Add ability to build QCOM drivers
+Date: Tue, 24 Feb 2015 22:39:43 -0800
+Message-ID: <1424846385-23700-9-git-send-email-kwestfie@codeaurora.org>
 References: <1424846385-23700-1-git-send-email-kwestfie@codeaurora.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <1424846385-23700-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-arm-msm-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>
 Cc: Kenneth Westfield <kwestfie@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add documentation to the sound directory of the
-device-tree bindings for the soundcard of the
-Storm board.
+Define the LPASS platform driver, the LPASS
+CPU DAI driver and the Storm machine driver
+configurations, and how to build them.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- Documentation/devicetree/bindings/sound/storm.txt | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/storm.txt
+ sound/soc/qcom/Kconfig  | 23 +++++++++++++++++++++++
+ sound/soc/qcom/Makefile | 11 +++++++++++
+ 2 files changed, 34 insertions(+)
+ create mode 100644 sound/soc/qcom/Kconfig
+ create mode 100644 sound/soc/qcom/Makefile
 
-diff --git a/Documentation/devicetree/bindings/sound/storm.txt b/Documentation/devicetree/bindings/sound/storm.txt
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
 new file mode 100644
-index 0000000000000000000000000000000000000000..2a308e9c4cd3f9550c0b7078200a14a787f02858
+index 0000000000000000000000000000000000000000..90e686be613a5ef7689582a9d085835d2fe12678
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/storm.txt
++++ b/sound/soc/qcom/Kconfig
 @@ -0,0 +1,23 @@
-+* Sound complex for Storm boards
++config SND_SOC_QCOM
++	tristate "ASoC support for QCOM platforms"
++	help
++          Say Y or M if you want to add support to use audio devices
++          in Qualcomm Technologies SOC-based platforms.
 +
-+Models a soundcard for Storm boards with the Qualcomm Technologies IPQ806x SOC
-+connected to a MAX98357A DAC via I2S.
++config SND_SOC_LPASS_CPU
++	tristate
++	depends on SND_SOC_QCOM
 +
-+Required properties:
++config SND_SOC_LPASS_PLATFORM
++	tristate
++	depends on SND_SOC_QCOM
 +
-+- compatible	: "google,storm"
-+- cpu		: Phandle of the CPU DAI
-+- codec		: Phandle of the codec DAI
++config SND_SOC_STORM
++	tristate "ASoC I2S support for Storm boards"
++	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
++	select SND_SOC_LPASS_CPU
++	select SND_SOC_LPASS_PLATFORM
++	select SND_SOC_MAX98357A
++	help
++          Say Y or M if you want add support for SoC audio on the
++          Qualcomm Technologies IPQ806X-based Storm board.
+diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+new file mode 100644
+index 0000000000000000000000000000000000000000..c5ce96c761c47b3a1b98e27d863fe0b5b9bc019e
+--- /dev/null
++++ b/sound/soc/qcom/Makefile
+@@ -0,0 +1,11 @@
++# Platform
++snd-soc-lpass-cpu-objs := lpass-cpu.o
++snd-soc-lpass-platform-objs := lpass-platform.o
 +
-+Optional properties:
++obj-$(CONFIG_SND_SOC_LPASS_CPU) += snd-soc-lpass-cpu.o
++obj-$(CONFIG_SND_SOC_LPASS_PLATFORM) += snd-soc-lpass-platform.o
 +
-+- qcom,model	: The user-visible name of this sound card.
++# Machine
++snd-soc-storm-objs := storm.o
 +
-+Example:
-+
-+sound {
-+	compatible = "google,storm";
-+	qcom,model = "ipq806x-storm";
-+	cpu = <&lpass_cpu>;
-+	codec = <&max98357a>;
-+};
++obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
