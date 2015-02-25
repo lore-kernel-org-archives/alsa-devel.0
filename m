@@ -1,19 +1,19 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: Issues and/or possible bugs in alsa
-Date: Wed, 25 Feb 2015 13:14:30 +0500
-Message-ID: <54ED8466.7020102@gmail.com>
-References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
+From: Alnie <alnieb@yahoo.com>
+Subject: Re: Issues w/ Creative Labs [SB
+	X-Fi	Xtreme	Audio]	CA0110-IBG
+Date: Wed, 25 Feb 2015 00:21:15 -0800
+Message-ID: <54ED85FB.9060601@yahoo.com>
+References: <s5h4mqb6o2x.wl-tiwai@suse.de>	<1471037060.5415741.1424813427312.JavaMail.yahoo@mail.yahoo.com>	<1656518652.5693835.1424839038708.JavaMail.yahoo@mail.yahoo.com>	<s5hvbiq5wtr.wl-tiwai@suse.de>	<54ED70FD.5010909@yahoo.com>	<s5hr3te5v33.wl-tiwai@suse.de>	<54ED7AA5.1080806@yahoo.com>	<s5hk2z65t3x.wl-tiwai@suse.de>	<54ED7FED.9080600@yahoo.com>
+ <s5hh9ua5sbb.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
- [209.85.217.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C35B26046B
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 09:14:34 +0100 (CET)
-Received: by lbvn10 with SMTP id n10so2182910lbv.6
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 00:14:34 -0800 (PST)
-In-Reply-To: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
+Received: from nm3-vm6.bullet.mail.ne1.yahoo.com
+ (nm3-vm6.bullet.mail.ne1.yahoo.com [98.138.91.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70E7D2604ED
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 09:21:20 +0100 (CET)
+In-Reply-To: <s5hh9ua5sbb.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yomi Ogunwumi <abyomi0@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-25.02.2015 03:46, Yomi Ogunwumi wrote:
-> Third. This is just a question. Is this :
-> https://bugs.freedesktop.org/show_bug.cgi?id=86676 actually a pulseaudio
-> bug, or is it an issue with alsa?
-> I'm only asking since Raymond linked something that seemed to belong to the
-> alsa project.
+
+
+On 02/25/2015 12:06 AM, Takashi Iwai wrote:
+> At Tue, 24 Feb 2015 23:55:25 -0800,
+> Alnie wrote:
+>>
+>> [ 2619.199658] pciehp 0000:00:1c.3:pcie04: Card not present on Slot(3)
+>> [ 2619.199666] pciehp 0000:00:1c.3:pcie04: slot(3): Link Down event
+>> [ 2619.199674] pciehp 0000:00:1c.3:pcie04: Link Down event ignored on
+>> slot(3): already powering off
+>> [ 2619.199911] pci_bus 0000:06: busn_res: [bus 06-0c] is released
+>> [ 2620.757928] pciehp 0000:00:1c.3:pcie04: Card present on Slot(3)
+>> [ 2620.767950] pciehp 0000:00:1c.3:pcie04: slot(3): Link Up event
+>> [ 2620.767985] pciehp 0000:00:1c.3:pcie04: Link Up event ignored on
+>> slot(3): already powering on
+>
+> pciehp reacted power off and on here, and...
+>
+>> [ 2620.876160] pci 0000:05:00.0: [1102:7006] type 01 class 0x060400
+>> [ 2620.876426] pci 0000:05:00.0: supports D1 D2
+>> [ 2620.876719] pci 0000:05:00.0: bridge configuration invalid ([bus
+>> 00-00]), reconfiguring
+>> [ 2620.876928] pci_bus 0000:06: busn_res: can not insert [bus 06-ff]
+>> under [bus 05-0c] (conflicts with (null) [bus 05-0c])
+>
+> .... and something failed here for the PCI bridge device.
+>
+>> [ 2620.876967] pci 0000:06:00.0: [1102:0009] type 00 class 0x040300
+>> [ 2620.877013] pci 0000:06:00.0: reg 0x10: [mem 0x00000000-0x00003fff]
+>> [ 2620.877203] pci 0000:06:00.0: supports D1 D2
+>> [ 2620.877443] pci 0000:05:00.0: PCI bridge to [bus 06-ff]
+>> [ 2620.877462] pci 0000:05:00.0:   bridge window [io  0x0000-0x0fff]
+>> [ 2620.877474] pci 0000:05:00.0:   bridge window [mem 0x00000000-0x000fffff]
+>> [ 2620.877492] pci 0000:05:00.0:   bridge window [mem
+>> 0x00000000-0x000fffff 64bit pref]
+>> [ 2620.877500] pci_bus 0000:06: busn_res: [bus 06-ff] end is updated to 06
+>> [ 2620.877559] pci 0000:05:00.0: BAR 14: assigned [mem
+>> 0xf4300000-0xf43fffff]
+>> [ 2620.877568] pci 0000:05:00.0: BAR 15: assigned [mem
+>> 0xf4000000-0xf40fffff 64bit pref]
+>> [ 2620.877574] pci 0000:05:00.0: BAR 13: assigned [io  0x2000-0x2fff]
+>> [ 2620.877582] pci 0000:06:00.0: BAR 0: assigned [mem 0xf4300000-0xf4303fff]
+>> [ 2620.877595] pci 0000:05:00.0: PCI bridge to [bus 06]
+>> [ 2620.877603] pci 0000:05:00.0:   bridge window [io  0x2000-0x2fff]
+>> [ 2620.877618] pci 0000:05:00.0:   bridge window [mem 0xf4300000-0xf43fffff]
+>> [ 2620.877630] pci 0000:05:00.0:   bridge window [mem
+>> 0xf4000000-0xf40fffff 64bit pref]
+>> [ 2620.877647] pcieport 0000:00:1c.3: PCI bridge to [bus 05-0c]
+>> [ 2620.877655] pcieport 0000:00:1c.3:   bridge window [io  0x2000-0x2fff]
+>> [ 2620.877667] pcieport 0000:00:1c.3:   bridge window [mem
+>> 0xf4300000-0xf7efffff]
+>> [ 2620.877677] pcieport 0000:00:1c.3:   bridge window [mem
+>> 0xf4000000-0xf40fffff 64bit pref]
+>> [ 2620.877990] pci 0000:05:00.0: enabling device (0000 -> 0003)
+>> [ 2620.878013] snd_hda_intel 0000:06:00.0: enabling device (0000 -> 0002)
+>> [ 2620.882747] azx_single_wait_for_response: 108 callbacks suppressed
+>> [ 2620.882753] snd_hda_intel 0000:06:00.0: Codec #1 probe error;
+>> disabling it...
+>> [ 2620.887052] snd_hda_intel 0000:06:00.0: no AFG or MFG node found
+>> [ 2620.887058] snd_hda_intel 0000:06:00.0: no codecs initialized
+>
+> What if you once unload snd-hda-intel module and reload again while
+> keeping the card plugged?  I guess it still doesn't work, but just to
+> be sure...
+>
+> Overall, this look more like a problem of PCI core stuff.  Better to
+> toss the issue to PCI people.
+>
+>
+> Takashi
 >
 
-This is a bug both in ALSA and in PulseAudio.
-
-The ALSA part (from the user viewpoint) is that the softvol plugin does 
-not reprocess the already-submitted but buffered samples when the volume 
-changes. But it can't, because that would require an additional thread 
-for monitoring the software volume changes, and such thread does not exist.
-
-The PulseAudio part of the bug is that it does not deactivate softvols, 
-even though it can apply volume in software itself. In October 2014, in 
-Dusseldorf, a general agreement has been reached on the following arguments:
-
-  * ALSA has no API to definitely distinguish softvols from other controls.
-  * ALSA has the snd_ctl_elem_info_is_user() API function that tells 
-whether this is a userspace control.
-  * All softvols are userspace controls.
-  * There are other kinds of userspace controls, but they are rare.
-  * If a control is named PCM Playback Volume and is a userspace 
-control, then it's likely a softvol. Not bulletproof, but a good-enough 
-heuristic.
-  * On finding a softvol, PulseAudio should set it to 100% (so that it 
-doesn't eat CPU) and don't touch from that point on.
-
-But nobody has implemented this so far.
-
-The relevant code can be placed in the src/modules/alsa/alsa-mixer.c 
-file in PulseAudio source tree. I guess that element_probe() is a good 
-place. If you know C programming, a contribution would be welcome.||
-
--- 
-Alexander E. Patrakov
+I did alsa force-reload and the same error comes up. Do you know of a 
+good starting point for presenting PCI issues?
