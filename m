@@ -1,7 +1,8 @@
 From: Marcin Wojtas <mw@semihalf.com>
-Subject: [PATCH 3/4] ARM: mvebu: add audio support to Armada 385 DB
-Date: Wed, 25 Feb 2015 22:58:01 +0100
-Message-ID: <1424901482-3809-4-git-send-email-mw@semihalf.com>
+Subject: [PATCH 4/4] ARM: mvebu: fix routing for analog audio input of Armada
+ 370 DB platform
+Date: Wed, 25 Feb 2015 22:58:02 +0100
+Message-ID: <1424901482-3809-5-git-send-email-mw@semihalf.com>
 References: <y>
  <1424901482-3809-1-git-send-email-mw@semihalf.com>
 Mime-Version: 1.0
@@ -22,111 +23,31 @@ To: lgirdwood@gmail.com, broonie@kernel.org, jason@lakedaemon.net, andrew@lunn.c
 Cc: thomas.petazzoni@free-electrons.com, alior@marvell.com, alsa-devel@alsa-project.org, tawfik@marvell.com, jaz@semihalf.com, ezequiel.garcia@free-electrons.com, mw@semihalf.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds the necessary Device Tree information to enable
-audio support on the Armada 385 DB platform. In details it:
+Armada 370 DB sound complex comprise routing for audio card with a
+description for analog input line with two left channels instead of a pair
+left-right. This commit introduces routing for the right channel.
 
- * Instantiates the CS42L51 audio codec on the I2C0 bus
-
- * Adds simple-card DT binding for audio on Armada 385 DB
-
- * Adds description for both analog I2S and S/PDIF I/O
+Fixes: a6b334514be2 ("use simple-card DT binding for audio on Armada 370 DB")
 
 Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+Cc: <stable@vger.kernel.org> # v3.19+
+Reviewed-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 ---
- arch/arm/boot/dts/armada-388-db.dts | 69 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+ arch/arm/boot/dts/armada-370-db.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/armada-388-db.dts b/arch/arm/boot/dts/armada-388-db.dts
-index 16512ef..bf5d9a7 100644
---- a/arch/arm/boot/dts/armada-388-db.dts
-+++ b/arch/arm/boot/dts/armada-388-db.dts
-@@ -82,6 +82,11 @@
- 			i2c@11000 {
- 				status = "okay";
- 				clock-frequency = <100000>;
-+				audio_codec: audio-codec@4a {
-+					#sound-dai-cells = <0>;
-+					compatible = "cirrus,cs42l51";
-+					reg = <0x4a>;
-+				};
- 			};
- 
- 			i2c@11100 {
-@@ -158,6 +163,12 @@
- 				no-1-8-v;
- 			};
- 
-+			audio-controller@e8000 {
-+				pinctrl-0 = <&i2s_pins>;
-+				pinctrl-names = "default";
-+				status = "okay";
-+			};
-+
- 			usb3@f0000 {
- 				status = "okay";
- 			};
-@@ -183,4 +194,62 @@
- 			};
- 		};
- 	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "Armada 385 DB Audio";
-+		simple-audio-card,mclk-fs = <256>;
-+		simple-audio-card,widgets =
-+			"Headphone", "Out Jack",
-+			"Line", "In Jack";
-+		simple-audio-card,routing =
-+			"Out Jack", "HPL",
-+			"Out Jack", "HPR",
-+			"AIN1L", "In Jack",
+diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
+index e993c46..d6e72a4 100644
+--- a/arch/arm/boot/dts/armada-370-db.dts
++++ b/arch/arm/boot/dts/armada-370-db.dts
+@@ -190,7 +190,7 @@
+ 			"Out Jack", "HPL",
+ 			"Out Jack", "HPR",
+ 			"AIN1L", "In Jack",
+-			"AIN1L", "In Jack";
 +			"AIN1R", "In Jack";
-+		status = "okay";
-+
-+		simple-audio-card,dai-link@0 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&audio_codec>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@1 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&spdif_out>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@2 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&spdif_in>;
-+			};
-+		};
-+	};
-+
-+	spdif_out: spdif-out {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dit";
-+	};
-+
-+	spdif_in: spdif-in {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dir";
-+	};
- };
+ 		status = "okay";
+ 
+ 		simple-audio-card,dai-link@0 {
 -- 
 1.8.3.1
