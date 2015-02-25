@@ -1,17 +1,17 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 2/2] ASoC: rt5677: Keep the ldo2 power while
-	"Voice Wake Up" used in the suspend mode
-Date: Wed, 25 Feb 2015 17:36:14 +0800
-Message-ID: <1424856974-18763-2-git-send-email-oder_chiou@realtek.com>
-References: <1424856974-18763-1-git-send-email-oder_chiou@realtek.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: audio mcbsp1 broken for beagleboard-xm -OMAP
+Date: Wed, 25 Feb 2015 11:40:28 +0200
+Message-ID: <54ED988C.3030005@ti.com>
+References: <CAES_P+_LNczMuQsUW=ghJ-SQjLn_+AokDHfY4k+zmoFBb8cF0w@mail.gmail.com>	<54E7605C.5000709@ti.com>
+ <CAES_P+8_h2mygchQ-0qvJCK0Fpk_TdOdwcLKpNgYjapzRZRzMA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 13C522605EE
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 10:36:26 +0100 (CET)
-In-Reply-To: <1424856974-18763-1-git-send-email-oder_chiou@realtek.com>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6E282605D1
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 10:40:32 +0100 (CET)
+In-Reply-To: <CAES_P+8_h2mygchQ-0qvJCK0Fpk_TdOdwcLKpNgYjapzRZRzMA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +21,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, john.lin@realtek.com, flove@realtek.com
+To: noman pouigt <variksla@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "jslaby@suse.cz" <jslaby@suse.cz>, "jarkko.nikula@bitmer.com" <jarkko.nikula@bitmer.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch keeps the ldo2 power while the DSP function of "Voice Wake Up" used
-in the suspend mode.
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5677.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index f87c929..c2a6e40 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4513,10 +4513,10 @@ static int rt5677_suspend(struct snd_soc_codec *codec)
- 	if (!rt5677->dsp_vad_en) {
- 		regcache_cache_only(rt5677->regmap, true);
- 		regcache_mark_dirty(rt5677->regmap);
--	}
- 
--	if (gpio_is_valid(rt5677->pow_ldo2))
--		gpio_set_value_cansleep(rt5677->pow_ldo2, 0);
-+		if (gpio_is_valid(rt5677->pow_ldo2))
-+			gpio_set_value_cansleep(rt5677->pow_ldo2, 0);
-+	}
- 
- 	return 0;
- }
-@@ -4525,12 +4525,12 @@ static int rt5677_resume(struct snd_soc_codec *codec)
- {
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
--	if (gpio_is_valid(rt5677->pow_ldo2)) {
--		gpio_set_value_cansleep(rt5677->pow_ldo2, 1);
--		msleep(10);
--	}
--
- 	if (!rt5677->dsp_vad_en) {
-+		if (gpio_is_valid(rt5677->pow_ldo2)) {
-+			gpio_set_value_cansleep(rt5677->pow_ldo2, 1);
-+			msleep(10);
-+		}
-+
- 		regcache_cache_only(rt5677->regmap, false);
- 		regcache_sync(rt5677->regmap);
- 	}
--- 
-1.8.1.1.439.g50a6b54
+T24gMDIvMjEvMjAxNSAwNDozNiBBTSwgbm9tYW4gcG91aWd0IHdyb3RlOgo+IE9uIEZyaSwgRmVi
+IDIwLCAyMDE1IGF0IDg6MjcgQU0sIFBldGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5j
+b20+IHdyb3RlOgo+PiBPbiAwMi8yMC8yMDE1IDA4OjQ1IEFNLCBub21hbiBwb3VpZ3Qgd3JvdGU6
+Cj4+PiBIZWxsbywKPj4+Cj4+PiBJIGFtIHRyeWluZyB0byBpbnRlZ3JhdGUgbWF4OTgwOTAgY29k
+ZWMgd2l0aCAkc3ViamVjdCBib2FyZC4gIEkgYW0KPj4+IHJ1bm5pbmcgdGhlIG1jQlNQIGluIHNs
+YXZlIG1vZGUgYXMgaSBoYXZlIG5vdCBjaGFuZ2VkIHRoZSBod19wYXJtcyBmb3IKPj4+IG9tYXAt
+dHdsNDAzMC5jIGZpbGUuIFdpdGggYmVsb3cgY2hhbmdlcyBpIHNlZSB3YWl0X2Zvcl9hdmFpbCBp
+cwo+Pj4gZ2V0dGluZyBzdHVjayBpLmUuIG1jYnNwIGlzIG5vdCBnZXR0aW5nIGFueSBpbnRlcnJ1
+cHQgYW5kIG5vdGhpbmcgaXMKPj4+IHBsYXlpbmcuCj4+Pgo+Pj4gS2VybmVsIHZlcnNpb246Cj4+
+PiBWRVJTSU9OID0gMwo+Pj4gUEFUQ0hMRVZFTCA9IDE5Cj4+PiBTVUJMRVZFTCA9IDAKPj4+IEVY
+VFJBVkVSU0lPTiA9Cj4+PiBOQU1FID0gRGlzZWFzZWQgTmV3dAo+Pj4KPj4+IFNldHVwIGluZm9y
+bWF0aW9uOgo+Pj4gVXNpbmcgYmVhZ2xlIGJvYXJkIC14bSBhbmQgY29ubmVjdGVkIG1heDk4MDkw
+IGNvZGVjIHRvIG1jYnNwMSBwaW5zLgo+Pj4gQ29ubmVjdGVkIG9ubHkgNCBwaW5zLgo+Pj4KPj4+
+IENoYW5nZWQgdGhlIG9tYXAtdHdsNDAzMC5jIG1hY2hpbmUgZmlsZSBhcyBiZWxvdyB0byBkaXNh
+YmxlIHRoZSB0d2w0MDMwOgo+Pj4gc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIG9tYXBf
+dHdsNDAzMF9kYWlfbGlua3NbXSA9IHsKPj4+ICAgICAgICB7Cj4+PiArICAgICAgICAgICAgICAg
+Lm5hbWUgPSAibWF4OTgwOTAiLAo+Pj4gKyAgICAgICAgICAgICAgIC5zdHJlYW1fbmFtZSA9ICJt
+YXg5ODA5MCIsCj4+PiAgICAgICAgICAgICAgICAuY3B1X2RhaV9uYW1lID0gIm9tYXAtbWNic3Au
+MSIsCj4+PiArICAgICAgICAgICAgICAgLmNvZGVjX2RhaV9uYW1lID0gIkhpRmkiLAo+Pj4gICAg
+ICAgICAgICAgICAgLnBsYXRmb3JtX25hbWUgPSAib21hcC1tY2JzcC4xIiwKPj4+ICsgICAgICAg
+ICAgICAgICAuY29kZWNfbmFtZSA9ICJtYXg5ODA5MC4xLTAwMTAiLAo+Pj4gICAgICAgICAgICAg
+ICAgLm9wcyA9ICZvbWFwX3R3bDQwMzBfb3BzLAo+Pj4gICAgICAgIH0sCj4+Pgo+Pj4gRFRTSSBm
+aWxlIGNoYW5nZTphcmNoL2FybS9ib290L2R0cy9vbWFwMy1iZWFnbGUteG0uZHRzCj4+Pgo+Pj4g
+JmkyYzIgewo+Pj4gICAgICAgIGNsb2NrLWZyZXF1ZW5jeSA9IDw0MDAwMDA+Owo+Pj4gKwo+Pj4g
+KyAgICAgICBtYXg5ODA5MDogbWF4OTgwOTBAMTAgewo+Pj4gKyAgICAgICAgICAgICAgIGNvbXBh
+dGlibGUgPSAibWF4aW0sbWF4OTgwOTAiOwo+Pj4gKyAgICAgICAgICAgICAgIHJlZyA9IDwweDEw
+PjsKPj4+ICsgICAgICAgfTsKPj4+IH07Cj4+Cj4+IFlvdSBhbHNvIG5lZWQgdG8gY2hhbmdlIHRo
+ZSBkdHMgZmlsZSdzIHNvdW5kIG5vZGUsIGVuYWJsZSBtY2JzcDEsIHNldCB0aGUKPj4gcGluY3Ry
+bCBlbnRyaWVzLCBldGMgaWYgeW91IGJvb3Qgd2l0aCBEVC4KPiBZZXMgYW5kIGl0IGlzIGRvbmUg
+YXMgYmVsb3c6Cj4gCj4gJm9tYXAzX3BteF9jb3JlIHsKPiAgICAgICAgIG1jYnNwMV9waW5zOiBw
+aW5tdXhfbWNic3AxX3BpbnMgewo+ICAgICAgICAgICAgICAgICBwaW5jdHJsLXNpbmdsZSxwaW5z
+ID0gPAo+ICAgICAgICAgICAgICAgICAgICAgICAgIE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5OCwg
+UElOX0lOUFVUIHwgTVVYX01PREUwKQo+ICAgICAgICAgICAgICAgICAgICAgICAgIE9NQVAzX0NP
+UkUxX0lPUEFEKDB4MjE5NCwgUElOX0lOUFVUIHwgTVVYX01PREUwKQo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgIE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5MCwgUElOX0lOUFVUIHwgTVVYX01PREUw
+KQo+ICAgICAgICAgICAgICAgICAgICAgICAgIE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5MCwgUElO
+X09VVFBVVCB8IE1VWF9NT0RFMCkKClNob3VsZCBiZToKCU9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5
+OCwgUElOX0lOUFVUIHwgTVVYX01PREUwKQkvKiBDTEtYICovCiAgICAgICAgT01BUDNfQ09SRTFf
+SU9QQUQoMHgyMTk2LCBQSU5fSU5QVVQgfCBNVVhfTU9ERTApCS8qIEZTWCAqLwogICAgICAgIE9N
+QVAzX0NPUkUxX0lPUEFEKDB4MjE5MiwgUElOX0lOUFVUIHwgTVVYX01PREUwKQkvKiBEUiAqLwog
+ICAgICAgIE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5MCwgUElOX09VVFBVVCB8IE1VWF9NT0RFMCkJ
+LyogRFggKi8KCgpBbmQgbWFrZSBzdXJlIHRvIGNvbm5lY3QgbHJjbGsvYmNsayB0byBGU1gvQ0xL
+WCAobm90IHRvIEZTUi9DTEtSKSBvZiBNY0JTUDEuCgpJIGhhdmUgdGVzdGVkIG9uIG9uIG15IHhN
+IHRoYXQgTWNCU1AxIGluIG1hc3RlciBtb2RlIHdvcmtzLCBETUEgaXMgcnVubmluZyAoSQpkbyBu
+b3QgaGF2ZSBhbnl0aGluZyBjb25uZWN0ZWQgdG8gcGlucykuCgo+ICAgICAgICAgICAgICAgICA+
+Owo+ICAgICAgICAgfTsKPiB9Cj4gCj4gICAgICAgICBzb3VuZCB7Cj4gLSAgICAgICAgICAgICAg
+IHRpLG1jYnNwID0gPCZtY2JzcDI+Owo+IC0gICAgICAgICAgICAgICB0aSxjb2RlYyA9IDwmdHds
+X2F1ZGlvPjsKPiArICAgICAgICAgICAgICAgdGksbWNic3AgPSA8Jm1jYnNwMT47Cj4gKyAgICAg
+ICAgICAgICAgIHRpLGNvZGVjID0gPCZtYXg5ODA5MD47Cj4gICAgICAgICB9Cj4gCj4gJm1jYnNw
+MSB7Cj4gICAgICAgICBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOwo+ICAgICAgICAgcGluY3Ry
+bC0wID0gPCZtY2JzcDFfcGlucz47Cj4gCj4gICAgICAgICBzdGF0dXMgPSAib2theSI7Cj4gfTsK
+PiAKPiAmaTJjMiB7Cj4gICAgICAgY2xvY2stZnJlcXVlbmN5ID0gPDQwMDAwMD47Cj4gCj4gICAg
+ICAgIG1heDk4MDkwOiBtYXg5ODA5MEAxMCB7Cj4gICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9
+ICJtYXhpbSxtYXg5ODA5MCI7Cj4gICAgICAgICAgICAgICAgcmVnID0gPDB4MTA+Owo+ICAgICAg
+ICB9Owo+ICB9Owo+IAo+IGFsbCBvdGhlciBjaGFuZ2VzIHJlbWFpbiB0aGUgc2FtZS4gSGF2ZSBp
+IGRvbmUgbXV4aW5nIHdyb25nPyBJIGFtCj4gc3RpbGwgc3R1Y2sgd2l0aCBtY2JzcCBub3QgZ2V0
+dGluZyBpbnRlcnJ1cHQuCj4gcGxlYXNlIGZpbmQgdGhlIGR0cyBmaWxlIGhlcmUgaHR0cDovL2lk
+ZW9uZS5jb20vVFBGa0J2Cj4gCj4gSSBjb25uZWN0ZWQgZGlnaXRhbCBvdXRwdXQgb2YgOTgwOTAg
+dG8gbWNic3AxX2RyIGFuZCBkaWdpdGFsIHJlY2VpdmUKPiB0byBtY2JzcDFfZHguIEkgY2FuIHNl
+ZSB0aGUgYml0IGNsb2NrIGFuZCBscmNsayBpcyBjb21pbmcgZmluZSBmcm9tCj4gOTgwOTAuIEFz
+IGFscmVhZHkgbWVudGlvbmVkIGkgaGF2ZSBjb25uZWN0ZWQgbHJjbGssIGJpdCBjbG9jaywgRFIK
+PiBhbmQgRFggb25seS4KPiAKPiBLZXJuZWwgbG9ncyBoZXJlOiBodHRwOi8vaWRlb25lLmNvbS9o
+REhxMmwKPiAKPj4KPj4+Cj4+PiBvbWFwL29tYXAtdHdsNDAzMC5jCj4+PiBhZGRlZCBpbiBod19w
+YXJhbXMgYmVsb3cgZnVuY3Rpb24gdG8gc2V0IGludGVybmFsIG9zY2lsbGF0b3IgZm9yIDk4MDkw
+Cj4+PiBmb3IgZ2VuZXJhdGluZyBQTEwgZm9yIG1hc3RlciBjbG9jay4KPj4+IHNuZF9zb2NfZGFp
+X3NldF9zeXNjbGsoY29kZWNfZGFpLCAyNjAwMDAwMCwgMCwgU05EX1NPQ19DTE9DS19JTik7Cj4+
+Pgo+Pj4gSSBhbSBhYmxlIHRvIHNlZSB0aGF0IHRoZSBjcHVfZGFpIGlzIG1hcHBlZCB3aXRoIGNv
+ZGVjX2RhaSBhbmQKPj4+IGNvbmZpZ3VyYXRpb24gaXMgb2suIGtlcm5lbCBsb2dzIGF0IGh0dHBz
+Oi8vaWRlb25lLmNvbS9vZXpOU2oKPj4+Cj4+PiBJIHRoaW5rIGkgZG9uJ3QgbmVlZCB0byBjb25m
+aWd1cmUgdGhlIG1jYnNwMSBwaW5zIHJpZ2h0IGFzIGl0IHVzZXMgZGVmYXVsdC4KPj4+Cj4+PiBQ
+bGVhc2UgZ3VpZGUgbWUuSSBoYXZlIHRyaWVkIElSQyBjaGFubmVsIGFsc28gYnV0IG5vdCBnZXR0
+aW5nIHRoZSByaWdodCBmb2xrcy4KPj4+Cj4+PiBodHRwczovL2dpdGh1Yi5jb20vQ2lyY3VpdENv
+L0JlYWdsZUJvYXJkLXhNLVJldkMvYmxvYi9tYXN0ZXIvQmVhZ2xlQm9hcmQteE1fcmV2Q19TQ0gu
+cGRmP3Jhdz10cnVlCj4+Pgo+Pj4gVGhhbmtzLAo+Pj4KPj4KPj4KPj4gLS0KPj4gUMOpdGVyCgoK
+LS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
