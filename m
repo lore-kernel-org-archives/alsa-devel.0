@@ -1,39 +1,55 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] sound/oss/opl3: remove some stray whitespace
-Date: Wed, 25 Feb 2015 16:30:36 +0300
-Message-ID: <20150225133036.GO19745@mwanda>
+Subject: [patch] sound/sb_ess: white space cleanups
+Date: Wed, 25 Feb 2015 16:31:43 +0300
+Message-ID: <20150225133143.GP19745@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
 Sender: kernel-janitors-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Himangi Saraogi <himangi774@gmail.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Removed an extra tab and a extra space character.
+These weren't aligned on the same lines as the surrounding code and the
+printk was quite messy.
 
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/sound/oss/opl3.c b/sound/oss/opl3.c
-index 607cee4..b6d19ad 100644
---- a/sound/oss/opl3.c
-+++ b/sound/oss/opl3.c
-@@ -666,7 +666,7 @@ static int opl3_start_note (int dev, int voice, int note, int volume)
- 	opl3_command(map->ioaddr, FNUM_LOW + map->voice_num, data);
+diff --git a/sound/oss/sb_ess.c b/sound/oss/sb_ess.c
+index b47a690..57f7d25 100644
+--- a/sound/oss/sb_ess.c
++++ b/sound/oss/sb_ess.c
+@@ -604,7 +604,7 @@ static void ess_audio_output_block_audio2
+ 	ess_chgmixer (devc, 0x78, 0x03, 0x03);   /* Go */
  
- 	data = 0x20 | ((block & 0x7) << 2) | ((fnum >> 8) & 0x3);
--		 devc->voc[voice].keyon_byte = data;
-+	devc->voc[voice].keyon_byte = data;
- 	opl3_command(map->ioaddr, KEYON_BLOCK + map->voice_num, data);
- 	if (voice_mode == 4)
- 		opl3_command(map->ioaddr, KEYON_BLOCK + map->voice_num + 3, data);
-@@ -717,7 +717,7 @@ static void freq_to_fnum    (int freq, int *block, int *fnum)
+ 	devc->irq_mode_16 = IMODE_OUTPUT;
+-		devc->intr_active_16 = 1;
++	devc->intr_active_16 = 1;
+ }
  
- static void opl3_command    (int io_addr, unsigned int addr, unsigned int val)
- {
--	 int i;
-+	int i;
+ static void ess_audio_output_block
+@@ -1183,17 +1183,12 @@ FKS_test (devc);
+ 			chip = "ES1688";
+ 		}
  
- 	/*
- 	 * The original 2-OP synth requires a quite long delay after writing to a
+-	    printk ( KERN_INFO "ESS chip %s %s%s\n"
+-               , chip
+-               , ( devc->sbmo.esstype == ESSTYPE_DETECT || devc->sbmo.esstype == ESSTYPE_LIKE20
+-                 ? "detected"
+-                 : "specified"
+-                 )
+-               , ( devc->sbmo.esstype == ESSTYPE_LIKE20
+-                 ? " (kernel 2.0 compatible)"
+-                 : ""
+-                 )
+-               );
++		printk(KERN_INFO "ESS chip %s %s%s\n", chip,
++		       (devc->sbmo.esstype == ESSTYPE_DETECT ||
++			devc->sbmo.esstype == ESSTYPE_LIKE20) ?
++				"detected" : "specified",
++			devc->sbmo.esstype == ESSTYPE_LIKE20 ?
++				" (kernel 2.0 compatible)" : "");
+ 
+ 		sprintf(name,"ESS %s AudioDrive (rev %d)", chip, ess_minor & 0x0f);
+ 	} else {
