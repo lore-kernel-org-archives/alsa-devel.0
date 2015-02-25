@@ -1,51 +1,195 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V6 09/10] ASoC: Allow for building QCOM drivers
-Date: Tue, 24 Feb 2015 22:39:44 -0800
-Message-ID: <1424846385-23700-10-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V6 07/10] ASoC: qcom: Add Storm machine driver
+Date: Tue, 24 Feb 2015 22:39:42 -0800
+Message-ID: <1424846385-23700-8-git-send-email-kwestfie@codeaurora.org>
 References: <1424846385-23700-1-git-send-email-kwestfie@codeaurora.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1424846385-23700-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>
 Cc: Kenneth Westfield <kwestfie@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Allow for the Qualcomm Technologies ASoC drivers
-to build.
+Add machine driver for the Storm board with the
+IPQ806X SOC connected to the MAX98357A DAC.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/Kconfig  | 1 +
- sound/soc/Makefile | 1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/qcom/storm.c | 162 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 162 insertions(+)
+ create mode 100644 sound/soc/qcom/storm.c
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index dcc79aa0236b548bfe5408fe56689241fc597e97..3ba52da18bc69a9bb41c84627cfc7d08f47e3bf0 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -47,6 +47,7 @@ source "sound/soc/kirkwood/Kconfig"
- source "sound/soc/intel/Kconfig"
- source "sound/soc/mxs/Kconfig"
- source "sound/soc/pxa/Kconfig"
-+source "sound/soc/qcom/Kconfig"
- source "sound/soc/rockchip/Kconfig"
- source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 5b3c8f67c8db7a29ff7199a6103d445428978125..974ba708b4826a03077a58251434a311542d5e3c 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -28,6 +28,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
- obj-$(CONFIG_SND_SOC)	+= omap/
- obj-$(CONFIG_SND_SOC)	+= kirkwood/
- obj-$(CONFIG_SND_SOC)	+= pxa/
-+obj-$(CONFIG_SND_SOC)	+= qcom/
- obj-$(CONFIG_SND_SOC)	+= rockchip/
- obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
+diff --git a/sound/soc/qcom/storm.c b/sound/soc/qcom/storm.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..5b981af4aa38a6a3bba926b3dd877239eefe8cb0
+--- /dev/null
++++ b/sound/soc/qcom/storm.c
+@@ -0,0 +1,162 @@
++/*
++ * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * storm.c -- ALSA SoC machine driver for QTi ipq806x-based Storm board
++ */
++
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#define STORM_SYSCLK_MULT			4
++
++static int storm_ops_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
++	struct snd_soc_card *card = soc_runtime->card;
++	snd_pcm_format_t format = params_format(params);
++	unsigned int rate = params_rate(params);
++	unsigned int sysclk_freq;
++	int bitwidth, ret;
++
++	bitwidth = snd_pcm_format_width(format);
++	if (bitwidth < 0) {
++		dev_err(card->dev, "%s() invalid bit width given: %d\n",
++				__func__, bitwidth);
++		return bitwidth;
++	}
++
++	/*
++	 * as the CPU DAI is the I2S bus master and no system clock is needed by
++	 * the MAX98357a DAC, simply set the system clock to be a constant
++	 * multiple of the bit clock for the clock divider
++	 */
++	sysclk_freq = rate * bitwidth * 2 * STORM_SYSCLK_MULT;
++
++	ret = snd_soc_dai_set_sysclk(soc_runtime->cpu_dai, 0, sysclk_freq, 0);
++	if (ret) {
++		dev_err(card->dev, "%s() error setting sysclk to %u: %d\n",
++				__func__, sysclk_freq, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct snd_soc_ops storm_soc_ops = {
++	.hw_params	= storm_ops_hw_params,
++};
++
++static struct snd_soc_dai_link storm_dai_link = {
++	.name		= "Primary",
++	.stream_name	= "Primary",
++	.codec_dai_name	= "HiFi",
++	.ops		= &storm_soc_ops,
++};
++
++static struct snd_soc_card storm_soc_card = {
++	.name	= "ipq806x-storm",
++	.dev	= NULL,
++};
++
++static int storm_parse_of(struct snd_soc_card *card)
++{
++	struct snd_soc_dai_link *dai_link = card->dai_link;
++	struct device_node *np = card->dev->of_node;
++
++	dai_link->cpu_of_node = of_parse_phandle(np, "cpu", 0);
++	if (!dai_link->cpu_of_node) {
++		dev_err(card->dev, "%s() error getting cpu phandle\n",
++				__func__);
++		return -EINVAL;
++	}
++	dai_link->platform_of_node = dai_link->cpu_of_node;
++
++	dai_link->codec_of_node = of_parse_phandle(np, "codec", 0);
++	if (!dai_link->codec_of_node) {
++		dev_err(card->dev, "%s() error getting codec phandle\n",
++				__func__);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int storm_platform_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &storm_soc_card;
++	int ret;
++
++	if (card->dev) {
++		dev_err(&pdev->dev, "%s() error, existing soundcard\n",
++				__func__);
++		return -ENODEV;
++	}
++	card->dev = &pdev->dev;
++	platform_set_drvdata(pdev, card);
++
++	ret = snd_soc_of_parse_card_name(card, "qcom,model");
++	if (ret) {
++		dev_err(&pdev->dev, "%s() error parsing card name: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	card->dai_link	= &storm_dai_link;
++	card->num_links	= 1;
++
++	ret = storm_parse_of(card);
++	if (ret) {
++		dev_err(&pdev->dev, "%s() error resolving dai links: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret == -EPROBE_DEFER) {
++		card->dev = NULL;
++		return ret;
++	} else if (ret) {
++		dev_err(&pdev->dev, "%s() error registering soundcard: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++#ifdef CONFIG_OF
++static const struct of_device_id storm_device_id[]  = {
++	{ .compatible = "google,storm" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, storm_device_id);
++#endif
++
++static struct platform_driver storm_platform_driver = {
++	.driver = {
++		.name = "storm-audio",
++		.of_match_table =
++			of_match_ptr(storm_device_id),
++	},
++	.probe = storm_platform_probe,
++};
++module_platform_driver(storm_platform_driver);
++
++MODULE_DESCRIPTION("QTi IPQ806x-based Storm Machine Driver");
++MODULE_LICENSE("GPL v2");
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
