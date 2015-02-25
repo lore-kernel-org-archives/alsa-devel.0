@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V6 10/10] ARM: dts: Model IPQ LPASS audio hardware
-Date: Tue, 24 Feb 2015 22:39:45 -0800
-Message-ID: <1424846385-23700-11-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V6 03/10] ASoC: qcom: Document Storm bindings
+Date: Tue, 24 Feb 2015 22:39:38 -0800
+Message-ID: <1424846385-23700-4-git-send-email-kwestfie@codeaurora.org>
 References: <1424846385-23700-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1424846385-23700-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,66 +12,46 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Model the Qualcomm Technologies LPASS hardware for
-the ipq806x SOC.
+Add documentation to the sound directory of the
+device-tree bindings for the soundcard of the
+Storm board.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- arch/arm/boot/dts/qcom-ipq8064.dtsi | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ Documentation/devicetree/bindings/sound/storm.txt | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/storm.txt
 
-diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-index cb225dafe97cd83c9ae4cc19482ed55d4a71b8b3..dd5cbb33cc2d89be57494e05b7477352358affa5 100644
---- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-@@ -2,6 +2,7 @@
- 
- #include "skeleton.dtsi"
- #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-+#include <dt-bindings/clock/qcom,lcc-ipq806x.h>
- #include <dt-bindings/soc/qcom,gsbi.h>
- 
- / {
-@@ -96,6 +97,24 @@
- 			cpu-offset = <0x80000>;
- 		};
- 
-+		lpass@28100000 {
-+			compatible = "qcom,lpass-cpu";
-+			status = "disabled";
-+			clocks = <&lcc AHBIX_CLK>,
-+					<&lcc MI2S_OSR_CLK>,
-+					<&lcc MI2S_BIT_CLK>;
-+			clock-names = "ahbix-clk",
-+					"mi2s-osr-clk",
-+					"mi2s-bit-clk";
-+			interrupts = <0 85 1>;
-+			interrupt-names = "lpass-irq-lpaif";
-+			reg = <0x28100000 0x10000>;
-+			reg-names = "lpass-lpaif";
-+			qcom,adsp {
-+				status = "disabled";
-+			};
-+		};
+diff --git a/Documentation/devicetree/bindings/sound/storm.txt b/Documentation/devicetree/bindings/sound/storm.txt
+new file mode 100644
+index 0000000000000000000000000000000000000000..2a308e9c4cd3f9550c0b7078200a14a787f02858
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/storm.txt
+@@ -0,0 +1,23 @@
++* Sound complex for Storm boards
 +
- 		acc0: clock-controller@2088000 {
- 			compatible = "qcom,kpss-acc-v1";
- 			reg = <0x02088000 0x1000>, <0x02008000 0x1000>;
-@@ -273,6 +292,13 @@
- 			qcom,controller-type = "pmic-arbiter";
- 		};
- 
-+		lcc: clock-controller@28000000 {
-+			compatible = "qcom,lcc-ipq8064";
-+			reg = <0x28000000 0x1000>;
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+		};
++Models a soundcard for Storm boards with the Qualcomm Technologies IPQ806x SOC
++connected to a MAX98357A DAC via I2S.
 +
- 		gcc: clock-controller@900000 {
- 			compatible = "qcom,gcc-ipq8064";
- 			reg = <0x00900000 0x4000>;
++Required properties:
++
++- compatible	: "google,storm"
++- cpu		: Phandle of the CPU DAI
++- codec		: Phandle of the codec DAI
++
++Optional properties:
++
++- qcom,model	: The user-visible name of this sound card.
++
++Example:
++
++sound {
++	compatible = "google,storm";
++	qcom,model = "ipq806x-storm";
++	cpu = <&lpass_cpu>;
++	codec = <&max98357a>;
++};
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
