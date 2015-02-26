@@ -1,54 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 RESEND] ASoC: OMAP: mcbsp: ensure that CLKX and CLKR
- are not used as ouput pins when they are used as input clock for the SRG.
-Date: Thu, 26 Feb 2015 11:52:19 +0900
-Message-ID: <20150226025219.GL6236@finisterre.sirena.org.uk>
-References: <1424538689-6330-1-git-send-email-niederp@physik.uni-kl.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: About iMX6SL AUDMUX (port 7) and SSI3
+Date: Wed, 25 Feb 2015 22:28:25 -0800
+Message-ID: <20150226062824.GA2112@Asurada>
+References: <54E5C1A3.8020301@gmail.com> <20150220050127.GA2861@Asurada-CZ80>
+ <54ED87C4.4020105@gmail.com> <20150225083837.GA6436@Asurada>
+ <54EDBCDD.7040108@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qqPjTi0+PkGx+WSu"
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f44.google.com (mail-pa0-f44.google.com
+ [209.85.220.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id C52E6261785
+ for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 07:28:35 +0100 (CET)
+Received: by padfa1 with SMTP id fa1so11552319pad.2
+ for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 22:28:34 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <1424538689-6330-1-git-send-email-niederp@physik.uni-kl.de>
-Sender: linux-omap-owner@vger.kernel.org
-To: Thomas =?iso-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
-Cc: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+In-Reply-To: <54EDBCDD.7040108@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Xuebing Wang <xbing6@gmail.com>
+Cc: alsa-devel@alsa-project.org, niranjan Patil <Niranjan.Patil@infocus.com>, timur Tabi <timur@tabi.org>, richard Jiang <Richard.Jiang@infocus.com>, xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Feb 25, 2015 at 08:15:25PM +0800, Xuebing Wang wrote:
 
---qqPjTi0+PkGx+WSu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Thanks. I am trying routing aud3 to internal ssi2. Thus in my case: int_port
+> = 2, ext_port = 3, right? Of course, there are int_port-- and ext_port --.
 
-On Sat, Feb 21, 2015 at 06:11:29PM +0100, Thomas Niederpr=FCm wrote:
-> This patch fixes faulty behaviour in a setup where the input clock for the
-> SRG is fed through the CLKR/CLKX pin but the McBSP is configured to be
-> master (SND_SOC_DAIFMT_CBS_CFS). In that case of course CLKR/CLKX must
-> not be configured as output pin. Otherwise the input clock is messed up
-> horribly.
+As the port numbers come from Device Tree which is hardware description
+so it must match the index from hardware Reference Manual. You don't
+need to worry about unless there's a bug.
 
-Applied, but please as covered in SubmittingPatches word wrap your
-changelog entries to less than 80 columns - this is especially important
-for the subject line.  Please also remember to CC maintainers on
-patches, the reason you've had to resend this patch is that you didn't
-originally send it to me (which means the RESEND tag both makes the
-subject line even longer and makes me a bit grumpy).
+> As I am using I2S master mode (ssi2 generates both bit clock and frame sync,
+> thus (dai_fmt & MASK) == SND_SOC_DAIFMT_CBM_CFM. According to iMX6SL
 
---qqPjTi0+PkGx+WSu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+CBM_CFM stands for CODEC Bit Clock Master and CODEC Frame Sync Clock Master.
+So what you need is the opposite -- SND_SOC_DAIFMT_CBS_CFS.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU7opjAAoJECTWi3JdVIfQWw8H/jNL8F+zXrCUQJic4qVZ67Sg
-5jNiTYE33eFzlVhL7/eR3Inah4hvxD8q8R+md9GUwXRRYImlVSdakUeCXqG4EMks
-2Rre6KEvaw+MLcIqlzN00yx4B6ITLB4yAbaYe4j9JH7+QN34NUxWDOSxv3YFQx+i
-Um+BQhO+Xl6/AjeAOLg7v1Y1MR5gvcZGy7NBtllkIq9RbmbjEs+1JPNRj031Vwsf
-WnL7iykWkazJMB754yy2/B57txINZ+cBNzRkHtaiB6/BiVY7RyNn1iZcN9L13pnn
-SJT0rFsIm3zvmw9alxoC+J4AIxoGmoN6sh+JXHqGIdEbQIqS1XvQU6Qa83ymCXI=
-=9tcw
------END PGP SIGNATURE-----
-
---qqPjTi0+PkGx+WSu--
+Nicolin
