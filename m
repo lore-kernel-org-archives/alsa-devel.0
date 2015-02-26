@@ -1,53 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: omap: fix up SND_OMAP_SOC_OMAP_ABE_TWL6040
- dependency
-Date: Thu, 26 Feb 2015 11:02:48 +0900
-Message-ID: <20150226020248.GV6236@finisterre.sirena.org.uk>
-References: <22890811.0MuvZ4MxOU@wuerfel>
- <54EDEAE3.6080605@ti.com>
- <2482424.WOd0SW5Oav@wuerfel>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Correct the routing
+ paths of that after IF1/2 DACx Mux
+Date: Thu, 26 Feb 2015 11:07:01 +0900
+Message-ID: <20150226020701.GW6236@finisterre.sirena.org.uk>
+References: <1424856974-18763-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="JrKXExVCTktVujz6"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2482424.WOd0SW5Oav@wuerfel>
-Sender: linux-omap-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, lgirdwood@gmail.com
+Content-Type: multipart/mixed; boundary="===============5568748967367259346=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66E80261527
+ for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 03:08:00 +0100 (CET)
+In-Reply-To: <1424856974-18763-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com, john.lin@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---JrKXExVCTktVujz6
+--===============5568748967367259346==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bVncxp9+I3apAFr+"
+Content-Disposition: inline
+
+
+--bVncxp9+I3apAFr+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 25, 2015 at 04:44:15PM +0100, Arnd Bergmann wrote:
+On Wed, Feb 25, 2015 at 05:36:13PM +0800, Oder Chiou wrote:
+> The patch corrects the routing paths of that after IF1/2 DACx Mux
 
-> Unfortunately, I've sent the changed v2 patch without fixing up the commit
-> message. Instead of sending another v3 right away, I'll wait for Mark
-> to comment.
+Applied, thanks.
 
-Well, I wasn't going to look until Peter reviewed it...
-
-Please don't send new patches in reply to existing threads, it makes it
-easy for those new patches to get dropped and it can get very hard to
-follow what's the current version.
-
---JrKXExVCTktVujz6
+--bVncxp9+I3apAFr+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU7n7HAAoJECTWi3JdVIfQ4awH/3rM8I756wSZVv+ah9URFe3q
-xJcEQur6SfTp5Qu4zEHkh8awT3Gg3OlBemLsBDeZKPH6yjwxWcE2j4sYvWfZEl3H
-a64u7cAN5TBOyjf/+gLDjzmwNdXO2IsE3C0SAUy+pxc5Aq6r1i3Ho+bL0Hw7QEg0
-zTPMkWo8Jfwv0uf33sTTR9p5r7eELykgQZQXPwT+UkBAoDNS3u1hGIsBfAtiSJ6o
-yGU6E/DxYWoIAOO/rBkQg8r0wA8x6lcwj85QDbcXjV41BqbVKJ4pJbIJmZ4dIEBG
-tBncMaewpqYag3JUNh0WYp7cxd2rBRkqgpDRv8A+KWQLrm1oK6MqkS++eZ1oUOk=
-=AbLB
+iQEcBAEBCAAGBQJU7n/EAAoJECTWi3JdVIfQDrMH/iSep5BP1IvHl/foyM387+NB
+QLDz395VAihKHafHNw377Y12Cp6ThsB73f2VOu9BIl8lex73ataFEmOIhEoWdjeg
+wDd4Z/g5/UPPIyy3LNTuPIk14CGTm1yGpaGBdIFbxBbmTr6tudxjkn3qO29vm3I3
+KUV/Qbf7HNRPx8XnVGROyat1IQZ5cwFLzyGaxhgk6W8K8rO0vkm/V6YlqlT1+unw
+yHcTCw4/+JcgLHmGl8FwojAWiqL1OiwoiwXG8GirQeEoEWTB9Z+yZufX6Rk58x5j
+k9E0kB+0xRUcrFy2Y6l9WRbU/kX4oaKR0Wy+kSbczIdbgmtxJE8M+5fZ5dIEGQY=
+=NSRw
 -----END PGP SIGNATURE-----
 
---JrKXExVCTktVujz6--
+--bVncxp9+I3apAFr+--
+
+--===============5568748967367259346==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5568748967367259346==--
