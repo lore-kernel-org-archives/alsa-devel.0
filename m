@@ -1,92 +1,71 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 4/8] pwm: atmel-hlcdc: fix struct clk pointer comparing
-Date: Thu, 26 Feb 2015 10:31:28 +0100
-Message-ID: <20150226103128.0b120742@bbrezillon>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
-	<1424876018-17852-5-git-send-email-shawn.guo@linaro.org>
-	<54EEE5EA.6000902@atmel.com>
+From: =?ISO-8859-1?Q?Ingo=20Br=FCckl?= <ib@wupperonline.de>
+Subject: Re: Intel HDA / ALC662 analog surround problem
+Date: Thu, 26 Feb 2015 10:27:56 +0100
+Message-ID: <54eee8cd.401a56f7.bm000@wupperonline.de>
+References: <CAN8ccibytwovDrBNMtNX6aXW5pOW+5TgPGc4kb6m3ZdbwydHCw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-pwm-owner@vger.kernel.org>
-In-Reply-To: <54EEE5EA.6000902@atmel.com>
-Sender: linux-pwm-owner@vger.kernel.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: Shawn Guo <shawn.guo@linaro.org>, Mike Turquette <mturquette@linaro.org>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Thierry Reding <thierry.reding@gmail.com>, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout8.wup.tal.de (mout8.wup.tal.de [195.8.233.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id B796626147E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 10:35:13 +0100 (CET)
+In-Reply-To: <CAN8ccibytwovDrBNMtNX6aXW5pOW+5TgPGc4kb6m3ZdbwydHCw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Nicolas, Shawn,
+Raymond,
 
-On Thu, 26 Feb 2015 10:22:50 +0100
-Nicolas Ferre <nicolas.ferre@atmel.com> wrote:
+>> > You have to post the output of alsa-info.sh
+>>
+>> Please see the attached file.
 
-> Le 25/02/2015 15:53, Shawn Guo a =C3=A9crit :
-> > Since commit 035a61c314eb ("clk: Make clk API return per-user struc=
-t clk
-> > instances"), clk API users can no longer check if two struct clk
-> > pointers are pointing to the same hardware clock, i.e. struct clk_h=
-w, by
-> > simply comparing two pointers.  That's because with the per-user cl=
-k
-> > change, a brand new struct clk is created whenever clients try to l=
-ook
-> > up the clock by calling clk_get() or sister functions like clk_get_=
-sys()
-> > and of_clk_get().  This changes the original behavior where the str=
-uct
-> > clk is only created for once when clock driver registers the clock =
-to
-> > CCF in the first place.  The net change here is before commit
-> > 035a61c314eb the struct clk pointer is unique for given hardware
-> > clock, while after the commit the pointers returned by clk lookup c=
-alls
-> > become different for the same hardware clock.
-> >=20
-> > That said, the struct clk pointer comparing in the code doesn't wor=
-k any
-> > more.  Call helper function clk_is_match() instead to fix the probl=
-em.
-> >=20
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
->=20
-> I agree with the fix whichever name is chosen for the function in an
-> future version of this series. So you can add my:
-> Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
->=20
-> Maybe Boris can double check...
+> [    0.655493] sound hdaudioC1D0: autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:line
+> [    0.655494] sound hdaudioC1D0:    speaker_outs=1 (0x15/0x0/0x0/0x0/0x0)
+> [    0.655495] sound hdaudioC1D0:    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
+> [    0.655496] sound hdaudioC1D0:    mono: mono_out=0x0
+> [    0.655496] sound hdaudioC1D0:    dig-out=0x1e/0x0
+> [    0.655497] sound hdaudioC1D0:    inputs:
+> [    0.655498] sound hdaudioC1D0:      Front Mic=0x19
+> [    0.655499] sound hdaudioC1D0:      Rear Mic=0x18
+> [    0.655499] sound hdaudioC1D0:      Line=0x1a
 
-Looks good to me.
-Thanks for fixing that.
+> This is a known bug of hda_generic.c for those desktop with internal
+> speaker and three audio jacks at rear panel (e.g. those lenovo thinkcenter
+> with alc66x codec)
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> The driver prefer to assign volume control/dac to headphone, line out and
+> internal speaker instead of line out and the other two multi io jacks
 
->=20
-> > ---
-> >  drivers/pwm/pwm-atmel-hlcdc.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/pwm/pwm-atmel-hlcdc.c b/drivers/pwm/pwm-atmel-=
-hlcdc.c
-> > index 522f7075bb1a..36475949b829 100644
-> > --- a/drivers/pwm/pwm-atmel-hlcdc.c
-> > +++ b/drivers/pwm/pwm-atmel-hlcdc.c
-> > @@ -97,7 +97,7 @@ static int atmel_hlcdc_pwm_config(struct pwm_chip=
- *c,
-> > =20
-> >  	pwmcfg =3D ATMEL_HLCDC_PWMPS(pres);
-> > =20
-> > -	if (new_clk !=3D chip->cur_clk) {
-> > +	if (!clk_is_match(new_clk, chip->cur_clk)) {
-> >  		u32 gencfg =3D 0;
-> >  		int ret;
-> > =20
-> >=20
->=20
->=20
+> The workaround is to change the internal speaker as not connected node
+> 0x15
 
+Could you please advise how to do this? Is it possible from userland or do I
+have to patch something?
 
+Would a new fixup mode definition for the kernel help and if yes, how should
+it look like, i.e. which pins should be listed? (I'm capable of submitting a
+kernel patch.)
 
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> or
+
+> You need to increase badness of multi io so that driver select multi io as
+> the best config
+
+I've found your patch from 2013 while googling for the topic. The current
+kernel already sets BAD_MULTI_IO = 0x120.
+
+Do you mean to further increase it? If so, to what value, or is increasing
+possible from userland?
+
+Ingo
