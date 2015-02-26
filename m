@@ -1,113 +1,72 @@
-From: Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH 2/4] ARM: mvebu: add audio I2S controller
- to Armada 38x Device Tree
-Date: Thu, 26 Feb 2015 10:05:08 +0100
-Message-ID: <CAPv3WKezrx4jkZNo3PYSOGZtiSJH09+94BaknYNN4xPkB1AxKw@mail.gmail.com>
-References: <1424901482-3809-1-git-send-email-mw@semihalf.com>
- <1424901482-3809-3-git-send-email-mw@semihalf.com>
- <54EE4AD6.6090101@gmail.com>
- <CAPv3WKf8b+fuB-4qVwKC57iKaNHTLZAf9VFpfDbow1Sb3YAsNw@mail.gmail.com>
- <54EE6942.9080800@gmail.com>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH 4/8] pwm: atmel-hlcdc: fix struct clk pointer comparing
+Date: Thu, 26 Feb 2015 10:22:50 +0100
+Message-ID: <54EEE5EA.6000902@atmel.com>
+References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org> <1424876018-17852-5-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f47.google.com (mail-oi0-f47.google.com
- [209.85.218.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 2643D2606A9
- for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 10:05:09 +0100 (CET)
-Received: by mail-oi0-f47.google.com with SMTP id i138so8132616oig.6
- for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 01:05:08 -0800 (PST)
-In-Reply-To: <54EE6942.9080800@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>, Grzegorz Jaszczyk <jaz@semihalf.com>, Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, =?UTF-8?Q?Gregory_Cl=C3=A9ment?= <gregory.clement@free-electrons.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-pwm-owner@vger.kernel.org>
+In-Reply-To: <1424876018-17852-5-git-send-email-shawn.guo@linaro.org>
+Sender: linux-pwm-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>, Mike Turquette <mturquette@linaro.org>, Boris BREZILLON <boris.brezillon@free-electrons.com>
+Cc: linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Thierry Reding <thierry.reding@gmail.com>, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2015-02-26 1:30 GMT+01:00 Sebastian Hesselbarth
-<sebastian.hesselbarth@gmail.com>:
-> On 26.02.2015 01:11, Marcin Wojtas wrote:
->>
->> 2015-02-25 23:21 GMT+01:00 Sebastian Hesselbarth
->> <sebastian.hesselbarth@gmail.com>:
->>>
->>> On 25.02.2015 22:58, Marcin Wojtas wrote:
->
-> [...]
->>>
->>> sorry but NACK. The PLL and SoC ctrl are not even close to the audio
->>> controller registers.
->>>
->>>> +                               interrupts = <GIC_SPI 75
->>>> IRQ_TYPE_LEVEL_HIGH>;
->>>> +                               clocks = <&gateclk 0>;
->>>> +                               clock-names = "internal";
->>>
->>>
->>>
->>> How about providing access to audio PLL by a clock driver and amend the
->>> binding to allow for a second more precise PLL clock, e.g.
->>>
->>>          clocks = <&gateclk CLK_AUDIO>, <&pll PLL_AUDIO>;
->>>          clock-names = "internal", "pll";
->>>
->>
->> Good idea. Would you suggest some name for the new driver? How about
->> clk-audio.c under drivers/clk/mvebu?
->
->
-> Depends on how much you know about the surrounding registers.
->
-> If there is more clock related stuff than the audio pll, I'd
-> suggest to have a single driver for everything that isn't core clk
-> or clk gates which are already dealt with in the existing driver.
->
-> Given that this PLL layout is most likely 38x specific, I'd just put it
-> into drivers/clk/mvebu/armada-38x.c.
->
+Le 25/02/2015 15:53, Shawn Guo a =E9crit :
+> Since commit 035a61c314eb ("clk: Make clk API return per-user struct =
+clk
+> instances"), clk API users can no longer check if two struct clk
+> pointers are pointing to the same hardware clock, i.e. struct clk_hw,=
+ by
+> simply comparing two pointers.  That's because with the per-user clk
+> change, a brand new struct clk is created whenever clients try to loo=
+k
+> up the clock by calling clk_get() or sister functions like clk_get_sy=
+s()
+> and of_clk_get().  This changes the original behavior where the struc=
+t
+> clk is only created for once when clock driver registers the clock to
+> CCF in the first place.  The net change here is before commit
+> 035a61c314eb the struct clk pointer is unique for given hardware
+> clock, while after the commit the pointers returned by clk lookup cal=
+ls
+> become different for the same hardware clock.
+>=20
+> That said, the struct clk pointer comparing in the code doesn't work =
+any
+> more.  Call helper function clk_is_match() instead to fix the problem=
+=2E
+>=20
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 
-Audio PLL setting consist of 3 independent registers. Adjacent to them
-there are same regs for setting TDM PLL, however I doubt  telephony is
-going to be supported in foreseeable future (if ever). I also have
-strong suspicion that it looks the same in a39x - Thomas, can you take
-a look into spec and confirm?
+I agree with the fix whichever name is chosen for the function in an
+future version of this series. So you can add my:
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
->>> we already check for an "extclk" on Dove for the same reason but the
->>> name might be misleading here.
->>>
->>> Also, i2c/spdif muxing option could be handled by 38x's pinctrl driver,
->>> we have the same for Dove's internal i2c mux.
->>>
->>> If you want to use i2s you just add the option to the default pinctrl
->>> hog:
->>>
->>>          pinctrl-0 = <&i2s_pins &audio_mux_i2s>;
->>>          pinctrl-names = "default";
->>>
->>
->> Ok, I'll try to extend pinctrl-armada-38x then.
->
->
-> IMHO, adding a "syscon" compatible to the system-controller node should
-> do the trick. You can reference the regmap from 38x's pinctrl driver and
-> have a specific callback for the i2s/spdif muxing. The reg property
-> range of the system-controller should be extended but that definitely
-> depends on what the you or the Free Electron guys know about the
-> register set.
->
+Maybe Boris can double check...
 
-For muxing i2s/spdif (exactly the same pins, they have to be either
-way set to "audio" by pinctrl driver) changing single bit in "system
-control 1" register is needed. However currently unused, it is already
-a part of system-controller@18200 regmap. Anyway the will of using
-either i2s or spdif has to be explicitly represented in DT.
+> ---
+>  drivers/pwm/pwm-atmel-hlcdc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/pwm-atmel-hlcdc.c b/drivers/pwm/pwm-atmel-hl=
+cdc.c
+> index 522f7075bb1a..36475949b829 100644
+> --- a/drivers/pwm/pwm-atmel-hlcdc.c
+> +++ b/drivers/pwm/pwm-atmel-hlcdc.c
+> @@ -97,7 +97,7 @@ static int atmel_hlcdc_pwm_config(struct pwm_chip *=
+c,
+> =20
+>  	pwmcfg =3D ATMEL_HLCDC_PWMPS(pres);
+> =20
+> -	if (new_clk !=3D chip->cur_clk) {
+> +	if (!clk_is_match(new_clk, chip->cur_clk)) {
+>  		u32 gencfg =3D 0;
+>  		int ret;
+> =20
+>=20
 
-Marcin
+
+--=20
+Nicolas Ferre
