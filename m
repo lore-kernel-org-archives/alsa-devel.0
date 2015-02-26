@@ -1,53 +1,52 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [ALSA] ca0106: power down SPI DAC channels when
-	not in use
-Date: Thu, 26 Feb 2015 14:06:56 +0300
-Message-ID: <20150226110656.GA17980@mwanda>
+From: Ben Dooks <ben@trinity.fluff.org>
+Subject: Re: [alsa-devel] [PATCH 1/8] clk: add helper function
+ clk_is_match()
+Date: Thu, 26 Feb 2015 11:25:09 +0000
+Message-ID: <20150226112509.GR30445@trinity.fluff.org>
+References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
+ <1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
+ <20150225172757.421.43718@quantum>
+ <20150226090256.GQ30445@trinity.fluff.org>
+ <1424944618.3073.6.camel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id A03C8261A90
- for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 12:07:21 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-pwm-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: xyzzy@speakeasy.org, Andy Owen <andy-alsa@ultra-premium.com>, James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <1424944618.3073.6.camel@pengutronix.de>
+Sender: linux-pwm-owner@vger.kernel.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Ben Dooks <ben-linux@fluff.org>, Mike Turquette <mturquette@linaro.org>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, kernel@pengutronix.de, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, linux-serial@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Trent Piepho,
+On Thu, Feb 26, 2015 at 10:56:58AM +0100, Philipp Zabel wrote:
+> Am Donnerstag, den 26.02.2015, 09:02 +0000 schrieb Ben Dooks:
+> > On Wed, Feb 25, 2015 at 09:27:57AM -0800, Mike Turquette wrote:
+> [...]
+> > > From: Michael Turquette <mturquette@linaro.org>
+> > > Date: Wed, 25 Feb 2015 09:11:01 -0800
+> > > Subject: [PATCH] clk: introduce clk_is_match
+> > > 
+> > > Some drivers compare struct clk pointers as a means of knowing
+> > > if the two pointers reference the same clock hardware. This behavior is
+> > > dubious (drivers must not dereference struct clk), but did not cause any
+> > > regressions until the per-user struct clk patch was merged. Now the test
+> > > for matching clk's will always fail with per-user struct clk's.
+> > > 
+> > > clk_is_match is introduced to fix the regression and prevent drivers
+> > > from comparing the pointers manually.
+> > 
+> > small observaton, clk_is_same() is linguistically nicer.
+> 
+> How about clk_equal() ?
 
-The patch 485100706b4b: "[ALSA] ca0106: power down SPI DAC channels
-when not in use" from Jul 25, 2007, leads to the following static
-checker warning:
+That's good, the only issue that's not clear in any of these names is
+that does this mean "the same clock", a "clock of the same rate" or a
+"clock that is equivalent to in the rate and phase but not subject to
+the same gate".
 
-	sound/pci/ca0106/ca0106_main.c:601 snd_ca0106_pcm_open_playback_channel()
-	warn: bool is not less than zero.
 
-sound/pci/ca0106/ca0106_main.c
-   597  
-   598          /* Front channel dac should already be on */
-   599          if (channel_id != PCM_FRONT_CHANNEL) {
-   600                  err = snd_ca0106_pcm_power_dac(chip, channel_id, 1);
+-- 
+Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
 
-Because of snd_ca0106_spi_write() then this function appears to return
-zero on success and 1 on failure.  That's very strange.  None of the
-callers expect a 1 return.  If they care about the return code then they
-expect negative error codes.
+Large Hadron Colada: A large Pina Colada that makes the universe disappear.
 
-   601                  if (err < 0)
-   602                          return err;
-   603          }
-   604  
-
-regards,
-dan carpenter
