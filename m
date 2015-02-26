@@ -1,48 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch] ASoC: max98357a: Use standard DAI names
-Date: Thu, 26 Feb 2015 11:26:38 +0900
-Message-ID: <20150226022638.GC6236@finisterre.sirena.org.uk>
-References: <1424846344-23665-1-git-send-email-kwestfie@codeaurora.org>
+Subject: Re: [PATCH 7/8] ASoC: fsl_spdif: fix struct clk pointer comparing
+Date: Thu, 26 Feb 2015 11:29:44 +0900
+Message-ID: <20150226022944.GD6236@finisterre.sirena.org.uk>
+References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
+ <1424876018-17852-8-git-send-email-shawn.guo@linaro.org>
+ <20150226021250.GA6236@finisterre.sirena.org.uk>
+ <20150226021958.GD20028@dragon>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ftjCgYj7ABv2ooUJ"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="gKRDem1CvcWhBwrN"
+Return-path: <linux-pwm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1424846344-23665-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <20150226021958.GD20028@dragon>
+Sender: linux-pwm-owner@vger.kernel.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: Mike Turquette <mturquette@linaro.org>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Russell King <linux@arm.linux.org.uk>, Stephen Boyd <sboyd@codeaurora.org>, Thierry Reding <thierry.reding@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-serial@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ftjCgYj7ABv2ooUJ
+--gKRDem1CvcWhBwrN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 24, 2015 at 10:39:04PM -0800, Kenneth Westfield wrote:
-> From: Kenneth Westfield <kwestfie@codeaurora.org>
->=20
-> Use the standard naming convention for the codec DAI.
+On Thu, Feb 26, 2015 at 10:20:00AM +0800, Shawn Guo wrote:
 
-Applied, thanks.  Please pay attention to who you're CCing and try to
-only include relevant people/lists - mail volumes are often very high
-and sending people irrelevant stuff adds to the problem.
+> Sorry that I did not make it clear in the cover-letter.  But the first
+> patch introduces a helper function clk_is_match(), on which all the
+> other patches in the series depend.  That said, the patch series should
+> probably be handled by Mike as a whole.
 
---ftjCgYj7ABv2ooUJ
+Ugh, right.  I've dropped those patches then.
+
+--gKRDem1CvcWhBwrN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU7oRdAAoJECTWi3JdVIfQa14H/2YuFP5It3lMmITeExg8UZru
-0OCWYM6jQSAdzqmKM+J3q/6ey4Tgz2AewFNw3YvE4PKjhuHAobH60JGnTlmTU+6c
-qSsIYVuzQBdbeub7LP5xqvXoSLSAyvE7vHv+gCl/uUCJA6UpOHY8uomI102IUnZV
-zjeFGWvBPIIyFGNBQOOwo36WcVvhUwRRSyizDyZHsvRHCOoCaizfhGUX6UftAXXc
-2TOyjKGo+O87DxZK67pIBpVOpUZCMdCrvGMeQd5Qc4i9atyrAMsQuYj0rnIebGY3
-4oNroQJ8LvGd+h9WpKECmMRGWejvZx+iowt7aUv2zfKzNsY7ZwqayUOF2+8algw=
-=E28j
+iQEcBAEBCAAGBQJU7oUXAAoJECTWi3JdVIfQ8iwH/jpV5BUwlyJEwV6ZVU/waIrm
+SVM7B0KjsIKdaryFcz2eas1JRaODos4UJMdiietMtkR6bTd5hpoiBZKWFgVotAv0
+us1g6nqrHbCS4xCbjfDVofEfv5jET9vA5ByHGgCHhyoKI/WvFRKAuTMJjTKzvBgb
+HvFVOJ1a38vFj3pJLurFAhdKC8IJVPCo1DvxCcyJ/9jksG7Pgbxg23azAshSLvQR
+bZc6i8woHggjbVfmIT9+gGFfP/Bgfx/k+pFw0tDE691cyxpHGPa0um8LrMVEDvms
+axXwgJr0dMgHuOQHizu8Z/CGPHkr2SltwgsUt2UDK3AwghjCqSMyv3ix7B61odE=
+=bwM8
 -----END PGP SIGNATURE-----
 
---ftjCgYj7ABv2ooUJ--
+--gKRDem1CvcWhBwrN--
