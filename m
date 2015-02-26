@@ -1,46 +1,54 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/8] ASoC: fsl_esai: fix struct clk pointer comparing
-Date: Thu, 26 Feb 2015 11:36:41 +0900
-Message-ID: <20150226023641.GI6236@finisterre.sirena.org.uk>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
- <1424876018-17852-7-git-send-email-shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 RESEND] ASoC: OMAP: mcbsp: ensure that CLKX and CLKR
+ are not used as ouput pins when they are used as input clock for the SRG.
+Date: Thu, 26 Feb 2015 11:52:19 +0900
+Message-ID: <20150226025219.GL6236@finisterre.sirena.org.uk>
+References: <1424538689-6330-1-git-send-email-niederp@physik.uni-kl.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5/gejftf0Hzkayd1"
-Return-path: <linux-pwm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="qqPjTi0+PkGx+WSu"
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1424876018-17852-7-git-send-email-shawn.guo@linaro.org>
-Sender: linux-pwm-owner@vger.kernel.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: Mike Turquette <mturquette@linaro.org>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Russell King <linux@arm.linux.org.uk>, Stephen Boyd <sboyd@codeaurora.org>, Thierry Reding <thierry.reding@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-serial@vger.kernel.org
+In-Reply-To: <1424538689-6330-1-git-send-email-niederp@physik.uni-kl.de>
+Sender: linux-omap-owner@vger.kernel.org
+To: Thomas =?iso-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
+Cc: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---5/gejftf0Hzkayd1
-Content-Type: text/plain; charset=us-ascii
+--qqPjTi0+PkGx+WSu
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 25, 2015 at 10:53:36PM +0800, Shawn Guo wrote:
-> Since commit 035a61c314eb ("clk: Make clk API return per-user struct clk
-> instances"), clk API users can no longer check if two struct clk
-> pointers are pointing to the same hardware clock, i.e. struct clk_hw, by
+On Sat, Feb 21, 2015 at 06:11:29PM +0100, Thomas Niederpr=FCm wrote:
+> This patch fixes faulty behaviour in a setup where the input clock for the
+> SRG is fed through the CLKR/CLKX pin but the McBSP is configured to be
+> master (SND_SOC_DAIFMT_CBS_CFS). In that case of course CLKR/CLKX must
+> not be configured as output pin. Otherwise the input clock is messed up
+> horribly.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Applied, but please as covered in SubmittingPatches word wrap your
+changelog entries to less than 80 columns - this is especially important
+for the subject line.  Please also remember to CC maintainers on
+patches, the reason you've had to resend this patch is that you didn't
+originally send it to me (which means the RESEND tag both makes the
+subject line even longer and makes me a bit grumpy).
 
---5/gejftf0Hzkayd1
+--qqPjTi0+PkGx+WSu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU7oa4AAoJECTWi3JdVIfQLVMH/jt28RRduIQD9/S7ZS2bBxQb
-iv7Sz3k6f4fZFhsOYif5BkvptIhQnZWmjLjUGTio9LbC/aOpDzD30wOLR+6KrwLG
-fwxi3fvPhEcRN0YyAR/+QlnsPqqrmpYKq+4+JoSz2dQxi8duGLzBIrx81/6gwi+e
-TzYaYgUuSnZisoKLusAeIN31Ql9L0LrT+jtprY0Hdm0XQwOZ+okcvwjoaQLLhobv
-Ho1yEFFkqjH6L223445QNQ6Nm7r8FO0lJYJmNSEhtf0HNpHWZzSHrxOGwnrVsaHI
-BwMaC44DnhCtLm+jVjcbc8q4ydg2xUbnO7SoPJnF3G85iTMCUbAIw7oxn758J+k=
-=GPOW
+iQEcBAEBCAAGBQJU7opjAAoJECTWi3JdVIfQWw8H/jNL8F+zXrCUQJic4qVZ67Sg
+5jNiTYE33eFzlVhL7/eR3Inah4hvxD8q8R+md9GUwXRRYImlVSdakUeCXqG4EMks
+2Rre6KEvaw+MLcIqlzN00yx4B6ITLB4yAbaYe4j9JH7+QN34NUxWDOSxv3YFQx+i
+Um+BQhO+Xl6/AjeAOLg7v1Y1MR5gvcZGy7NBtllkIq9RbmbjEs+1JPNRj031Vwsf
+WnL7iykWkazJMB754yy2/B57txINZ+cBNzRkHtaiB6/BiVY7RyNn1iZcN9L13pnn
+SJT0rFsIm3zvmw9alxoC+J4AIxoGmoN6sh+JXHqGIdEbQIqS1XvQU6Qa83ymCXI=
+=9tcw
 -----END PGP SIGNATURE-----
 
---5/gejftf0Hzkayd1--
+--qqPjTi0+PkGx+WSu--
