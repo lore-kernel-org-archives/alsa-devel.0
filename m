@@ -1,36 +1,81 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [alsa-devel] [PATCH 1/8] clk: add helper function
- clk_is_match()
-Date: Thu, 26 Feb 2015 12:59:31 +0100
-Message-ID: <alpine.DEB.2.02.1502261259060.17631@lnxricardw1.se.axis.com>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org> <1424876018-17852-2-git-send-email-shawn.guo@linaro.org> <20150225172757.421.43718@quantum> <20150226090256.GQ30445@trinity.fluff.org> <1424944618.3073.6.camel@pengutronix.de>
- <20150226112509.GR30445@trinity.fluff.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2] ASoC: omap: fix up
+	SND_OMAP_SOC_OMAP_ABE_TWL6040 dependency
+Date: Thu, 26 Feb 2015 17:08:11 +0200
+Message-ID: <54EF36DB.5040206@ti.com>
+References: <22890811.0MuvZ4MxOU@wuerfel> <54EDEAE3.6080605@ti.com>
+ <2707228.SKhEXovzW4@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-pwm-owner@vger.kernel.org>
-In-Reply-To: <20150226112509.GR30445@trinity.fluff.org>
-Sender: linux-pwm-owner@vger.kernel.org
-To: Ben Dooks <ben@trinity.fluff.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>, "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mike Turquette <mturquette@linaro.org>, Ben Dooks <ben-linux@fluff.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@codeaurora.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Russell King <linux@arm.linux.org.uk>, Shawn Guo <shawn.guo@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBEA926074D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 16:08:16 +0100 (CET)
+In-Reply-To: <2707228.SKhEXovzW4@wuerfel>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>, broonie@kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 02/25/2015 05:42 PM, Arnd Bergmann wrote:
+> The change to enable OMAP5 support on this platform was a little too
+> eager in adding a 'select' for a particular clock driver that might
+> not be enabled in all configurations, which in turn leads to a build
+> error:
+> =
 
-On Thu, 26 Feb 2015, Ben Dooks wrote:
+> warning: (SND_OMAP_SOC_OMAP_ABE_TWL6040) selects COMMON_CLK_PALMAS which =
+has unmet direct dependencies (COMMON_CLK && MFD_PALMAS)
+> drivers/built-in.o: In function `palmas_clks_probe':
+> drivers/clk/clk-palmas.c:228: undefined reference to `palmas_ext_control_=
+req_config'
+> =
 
-> > > small observaton, clk_is_same() is linguistically nicer.
-> >=20
-> > How about clk_equal() ?
->=20
-> That's good, the only issue that's not clear in any of these names is
-> that does this mean "the same clock", a "clock of the same rate" or a
-> "clock that is equivalent to in the rate and phase but not subject to
-> the same gate".
+> I do not see a strong dependency here, so it's probably better to
+> drop this select and to avoid adding more complexity here.
+> =
 
-clk_identical() ?
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: 5163c1eede8e9 ("ASoC: omap: Kconfig: Support for omap5-uevm analog=
+ audio")
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> ---
+> v2: change the dependency as suggested by Peter
+> =
+
+> diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+> index e7c78b0406b5..6768e4f7d7d0 100644
+> --- a/sound/soc/omap/Kconfig
+> +++ b/sound/soc/omap/Kconfig
+> @@ -105,7 +105,7 @@ config SND_OMAP_SOC_OMAP_ABE_TWL6040
+>  	select SND_OMAP_SOC_MCPDM
+>  	select SND_SOC_TWL6040
+>  	select SND_SOC_DMIC
+> -	select COMMON_CLK_PALMAS if SOC_OMAP5
+> +	select COMMON_CLK_PALMAS if MFD_PALMAS
+>  	help
+>  	  Say Y if you want to add support for SoC audio on OMAP boards using
+>  	  ABE and twl6040 codec. This driver currently supports:
+> =
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> =
+
+
+
+-- =
+
+P=E9ter
