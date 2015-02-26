@@ -1,82 +1,112 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Intel HDA / ALC662 analog surround problem
-Date: Thu, 26 Feb 2015 08:58:49 +0800
-Message-ID: <CAN8ccibytwovDrBNMtNX6aXW5pOW+5TgPGc4kb6m3ZdbwydHCw@mail.gmail.com>
-References: <CAN8cciafikMAomrDsPaPqKnPtdgOm3xwbzUAmes9-N=jV9Jdiw@mail.gmail.com>
- <54ee1d13.2602f650.bm000@wupperonline.de>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 7/8] ASoC: fsl_spdif: fix struct clk pointer comparing
+Date: Thu, 26 Feb 2015 09:17:52 +0800
+Message-ID: <20150226011750.GB20028@dragon>
+References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
+ <1424876018-17852-8-git-send-email-shawn.guo@linaro.org>
+ <54EE38E9.3060405@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f182.google.com (mail-ob0-f182.google.com
- [209.85.214.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 53D6D2614D1
- for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 01:58:51 +0100 (CET)
-Received: by mail-ob0-f182.google.com with SMTP id nt9so7669458obb.13
- for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2015 16:58:50 -0800 (PST)
-In-Reply-To: <54ee1d13.2602f650.bm000@wupperonline.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, tiwai@suse.de
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-pwm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54EE38E9.3060405@codeaurora.org>
+Sender: linux-pwm-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: Mike Turquette <mturquette@linaro.org>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Russell King <linux@arm.linux.org.uk>, Thierry Reding <thierry.reding@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-serial@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
->
-> > You have to post the output of alsa-info.sh
->
-> Please see the attached file.
+On Wed, Feb 25, 2015 at 01:04:41PM -0800, Stephen Boyd wrote:
+> > diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> > index 75870c0ea2c9..91eb3aef7f02 100644
+> > --- a/sound/soc/fsl/fsl_spdif.c
+> > +++ b/sound/soc/fsl/fsl_spdif.c
+> > @@ -1049,7 +1049,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+> >  				enum spdif_txrate index, bool round)
+> >  {
+> >  	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
+> > -	bool is_sysclk = clk == spdif_priv->sysclk;
+> > +	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
+> >  	u64 rate_ideal, rate_actual, sub;
+> >  	u32 sysclk_dfmin, sysclk_dfmax;
+> >  	u32 txclk_df, sysclk_df, arate;
+> > @@ -1143,7 +1143,7 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
+> >  			spdif_priv->txclk_src[index], rate[index]);
+> >  	dev_dbg(&pdev->dev, "use txclk df %d for %dHz sample rate\n",
+> >  			spdif_priv->txclk_df[index], rate[index]);
+> > -	if (spdif_priv->txclk[index] == spdif_priv->sysclk)
+> > +	if (clk_is_match(spdif_priv->txclk[index], spdif_priv->sysclk))
+> >  		dev_dbg(&pdev->dev, "use sysclk df %d for %dHz sample rate\n",
+> >  				spdif_priv->sysclk_df[index], rate[index]);
+> >  	dev_dbg(&pdev->dev, "the best rate for %dHz sample rate is %dHz\n",
+> 
+> Couldn't this be fixed like this?
 
-   0.655493] sound hdaudioC1D0: autoconfig: line_outs=1
-(0x14/0x0/0x0/0x0/0x0) type:line
-[    0.655494] sound hdaudioC1D0:    speaker_outs=1 (0x15/0x0/0x0/0x0/0x0)
-[    0.655495] sound hdaudioC1D0:    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
-[    0.655496] sound hdaudioC1D0:    mono: mono_out=0x0
-[    0.655496] sound hdaudioC1D0:    dig-out=0x1e/0x0
-[    0.655497] sound hdaudioC1D0:    inputs:
-[    0.655498] sound hdaudioC1D0:      Front Mic=0x19
-[    0.655499] sound hdaudioC1D0:      Rear Mic=0x18
-[    0.655499] sound hdaudioC1D0:      Line=0x1a
+It could.  But this fix is less-intuitive and makes the code change
+unnecessarily complex, considering we are introducing helper
+clk_is_match() anyway.
 
-This is a known bug of hda_generic.c for those desktop with internal
-speaker and three audio jacks at rear panel (e.g. those lenovo thinkcenter
-with alc66x codec)
+Shawn
 
-The driver prefer to assign volume control/dac to headphone, line out and
-internal speaker instead of line out and the other two multi io jacks
-
-The workaround is to change the internal speaker as not connected node 0x15
-
-or
-
-You need to increase badness of multi io so that driver select multi io as
-the  best config
-
->
-> > The channel mode should be automatically added for those desktop with
-three
-> > audio jacks (green line out, blue line in and pink mic) at rear panel
->
-> Although I do have these jacks, there unfortunately isn't a channel mode.
->
-> > either your computer BIOS does not set the correct pin default or it
-can be
-> > disabled by hint
->
-> Do you really mean "disabled" or do you mean to enable them by hint?
->
-> As you can see I don't have a hwC1D0/hints (and no reconfig), so I cannot
-try
-> setting multi_io to make the driver re-configuring itself. Would an early
-> patching make sense (or maybe I missing a kernel config option for the
-> hints)?
->
-> If I only knew more about these "pins" (there seem to be 11, from 0x12 to
-> 0x1e) I could try to add a model for the ALC66x since the existing ones
-> (mario, asus-mode?, etc) don't make any differences.
->
+> 
+> ----8<----
+> 
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index af0429421fc8..1878dd62a247 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/regmap.h>
+> +#include <linux/stringify.h>
+>  
+>  #include <sound/asoundef.h>
+>  #include <sound/dmaengine_pcm.h>
+> @@ -46,6 +47,8 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
+>  
+>  #define DEFAULT_RXCLK_SRC	1
+>  
+> +#define SYSCLK_NUM		5
+> +
+>  /*
+>   * SPDIF control structure
+>   * Defines channel status, subcode and Q sub
+> @@ -1051,10 +1054,10 @@ static const struct regmap_config fsl_spdif_regmap_config = {
+>  
+>  static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+>  				struct clk *clk, u64 savesub,
+> -				enum spdif_txrate index, bool round)
+> +				enum spdif_txrate index, bool round,
+> +				bool is_sysclk)
+>  {
+>  	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
+> -	bool is_sysclk = clk == spdif_priv->sysclk;
+>  	u64 rate_ideal, rate_actual, sub;
+>  	u32 sysclk_dfmin, sysclk_dfmax;
+>  	u32 txclk_df, sysclk_df, arate;
+> @@ -1131,7 +1134,8 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
+>  			continue;
+>  
+>  		ret = fsl_spdif_txclk_caldiv(spdif_priv, clk, savesub, index,
+> -					     i == STC_TXCLK_SPDIF_ROOT);
+> +					     i == STC_TXCLK_SPDIF_ROOT,
+> +					     i == SYSCLK_NUM);
+>  		if (savesub == ret)
+>  			continue;
+>  
+> @@ -1210,7 +1214,8 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	/* Get system clock for rx clock rate calculation */
+> -	spdif_priv->sysclk = devm_clk_get(&pdev->dev, "rxtx5");
+> +	spdif_priv->sysclk = devm_clk_get(&pdev->dev,
+> +					  "rxtx" __stringify(SYSCLK_NUM));
+>  	if (IS_ERR(spdif_priv->sysclk)) {
+>  		dev_err(&pdev->dev, "no sys clock (rxtx5) in devicetree\n");
+>  		return PTR_ERR(spdif_priv->sysclk);
+> 
+> 
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
