@@ -1,33 +1,33 @@
-From: humbert.olivier.1@free.fr
-Subject: Re: ALSA 1.0.29 release
-Date: Thu, 26 Feb 2015 19:13:45 +0100 (CET)
-Message-ID: <470298579.770968159.1424974425978.JavaMail.root@zimbra61-e11.priv.proxad.net>
-References: <1945723651.770964030.1424974375776.JavaMail.root@zimbra61-e11.priv.proxad.net>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: oxfw: fix a condition in start_stream()
+Date: Thu, 26 Feb 2015 23:32:02 +0300
+Message-ID: <20150226203202.GC6820@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 57F002606AB
- for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 19:13:46 +0100 (CET)
-Received: from zimbra61-e11.priv.proxad.net (unknown [172.20.243.211])
- by smtp5-g21.free.fr (Postfix) with ESMTP id 0DEC7D4804B
- for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 19:13:27 +0100 (CET)
-In-Reply-To: <1945723651.770964030.1424974375776.JavaMail.root@zimbra61-e11.priv.proxad.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Static checkers complain that this function doesn't return negative
+error codes.  The comments for amdtp_stream_wait_callback() say that we
+should stop the stream if it returns false.
 
-Congratulations to everyone who was involved in this.
+Fixes: f3699e2c7745 ('ALSA: oxfw: Change the way to start stream')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Merci,
-Olivier
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index 29ccb36..ee67581 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -172,7 +172,7 @@ static int start_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream,
+ 
+ 	/* Wait first packet */
+ 	err = amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT);
+-	if (err < 0)
++	if (err == 0)
+ 		stop_stream(oxfw, stream);
+ end:
+ 	return err;
