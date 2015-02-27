@@ -1,18 +1,21 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: ASoC: rt286: add jack detection disable with NULL
-	jack passed
-Date: Fri, 27 Feb 2015 02:40:42 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BBD3C2@SHSMSX101.ccr.corp.intel.com>
-References: <20150226081454.GA28947@mwanda>
+From: Yomi Ogunwumi <abyomi0@gmail.com>
+Subject: Re: Issues and/or possible bugs in alsa
+Date: Thu, 26 Feb 2015 23:16:00 -0500
+Message-ID: <CACui-2m7Kd9VagfQQ3kQ4j+vSiVO9FpTOR3gbna8NXZSbiiBew@mail.gmail.com>
+References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
+ <s5hioeq5snn.wl-tiwai@suse.de>
+ <CACui-2kmRSFb5exbPCaNTsVFUF2_rZ27jxDzfLEbU8h2ZB+YHw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 243802606D7
- for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 03:40:54 +0100 (CET)
-In-Reply-To: <20150226081454.GA28947@mwanda>
-Content-Language: en-US
+Received: from mail-ie0-f173.google.com (mail-ie0-f173.google.com
+ [209.85.223.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F6A72606E6
+ for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 05:16:01 +0100 (CET)
+Received: by iecar1 with SMTP id ar1so25599967iec.0
+ for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 20:16:00 -0800 (PST)
+In-Reply-To: <CACui-2kmRSFb5exbPCaNTsVFUF2_rZ27jxDzfLEbU8h2ZB+YHw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi Dan Carpenter,
-
-Thanks for reminding, you are right, it should be AND here, will send out patch to fix it soon.
-
-~Keyon
-
-> -----Original Message-----
-> From: Dan Carpenter [mailto:dan.carpenter@oracle.com]
-> Sent: Thursday, February 26, 2015 4:15 PM
-> To: Jie, Yang
-> Cc: alsa-devel@alsa-project.org
-> Subject: re: ASoC: rt286: add jack detection disable with NULL jack passed
-> 
-> Hello Jie Yang,
-> 
-> The patch e2cef68d5903: "ASoC: rt286: add jack detection disable with NULL
-> jack passed" from Feb 10, 2015, leads to the following static checker warning:
-> 
-> 	sound/soc/codecs/rt286.c:400 rt286_mic_detect()
-> 	warn: suspicious bitop condition
-> 
-> sound/soc/codecs/rt286.c
->    392  int rt286_mic_detect(struct snd_soc_codec *codec, struct
-> snd_soc_jack *jack)
->    393  {
->    394          struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
->    395
->    396          rt286->jack = jack;
->    397
->    398          if (jack) {
->    399                  /* enable IRQ */
->    400                  if (rt286->jack->status | SND_JACK_HEADPHONE)
->                                                 ^^^^^^^^^^^^^^^^^^^^ You probably intended
-> bitwise AND here?  Bitwise OR is always true.
-> 
->    401                          snd_soc_dapm_force_enable_pin(&codec->dapm,
-> "LDO1");
->    402                  regmap_update_bits(rt286->regmap, RT286_IRQ_CTRL, 0x2,
-> 0x2);
->    403                  /* Send an initial empty report */
->    404                  snd_soc_jack_report(rt286->jack, rt286->jack->status,
->    405                          SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
->    406          } else {
->    407                  /* disable IRQ */
->    408                  regmap_update_bits(rt286->regmap, RT286_IRQ_CTRL, 0x2,
-> 0x0);
->    409                  snd_soc_dapm_disable_pin(&codec->dapm, "LDO1");
->    410          }
->    411          snd_soc_dapm_sync(&codec->dapm);
->    412
->    413          return 0;
->    414  }
-> 
-> regards,
-> dan carpenter
+VGhpcyBpcyB3aGF0IGhhcHBlbnMgd2hlbiBJIGRvbid0IGRvdWJsZSBjaGVjayBsaW5rcyBhbmQg
+cmVyZWFkIG1haWwgYmVmb3JlCmhpdCBzZW5kLiBUaGF0IGxpbmsgaW4gdGhlIGxhc3QgbWVzc2Fn
+ZSBkb2VzIG5vdCBjb250YWluIHRoZSBpbmZvcm1hdGlvbgp5b3UgYXJlIGxvb2tpbmcgZm9yLgoK
+VGhpcyBkb2VzIDoKaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vWW9taTAvOWJmYzNlNzI1ODhjZjhh
+MzU4MTEjZmlsZS1hbHNhaW5mby1oZWFkcGhvbmVzLWluCgrigKIgWW9taQpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
