@@ -1,22 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Intel HDA / ALC662 analog surround problem
-Date: Fri, 27 Feb 2015 10:11:20 +0800
-Message-ID: <CAN8cciZ4=UXVLFgykv2V67e9+K5OwnYo3tq-cDUDJd2xgqszBw@mail.gmail.com>
-References: <CAN8ccibytwovDrBNMtNX6aXW5pOW+5TgPGc4kb6m3ZdbwydHCw@mail.gmail.com>
- <54eee8cd.401a56f7.bm000@wupperonline.de>
- <CAN8ccibh4p-bV4qTRUo6R9sZzAAh7kOKq6MfMqDLOfE3f9qGLA@mail.gmail.com>
- <CAN8cciaxzzASke5EBXOtAmoUD2JJ1kZvbaWWiqeZjpKShXofZw@mail.gmail.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: ASoC: rt286: add jack detection disable with NULL
+	jack passed
+Date: Fri, 27 Feb 2015 02:40:42 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BBD3C2@SHSMSX101.ccr.corp.intel.com>
+References: <20150226081454.GA28947@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
- [209.85.218.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 3172A2606D7
- for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 03:11:22 +0100 (CET)
-Received: by mail-oi0-f43.google.com with SMTP id z81so13312960oif.2
- for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2015 18:11:21 -0800 (PST)
-In-Reply-To: <CAN8cciaxzzASke5EBXOtAmoUD2JJ1kZvbaWWiqeZjpKShXofZw@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 243802606D7
+ for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 03:40:54 +0100 (CET)
+In-Reply-To: <20150226081454.GA28947@mwanda>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,68 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
-Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->
-> >> > You have to post the output of alsa-info.sh
-> >>
-> >> Please see the attached file.
->
-> > [    0.655493] sound hdaudioC1D0: autoconfig: line_outs=1
-(0x14/0x0/0x0/0x0/0x0) type:line
-> > [    0.655494] sound hdaudioC1D0:    speaker_outs=1
-(0x15/0x0/0x0/0x0/0x0)
-> > [    0.655495] sound hdaudioC1D0:    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
-> > [    0.655496] sound hdaudioC1D0:    mono: mono_out=0x0
-> > [    0.655496] sound hdaudioC1D0:    dig-out=0x1e/0x0
-> > [    0.655497] sound hdaudioC1D0:    inputs:
-> > [    0.655498] sound hdaudioC1D0:      Front Mic=0x19
-> > [    0.655499] sound hdaudioC1D0:      Rear Mic=0x18
-> > [    0.655499] sound hdaudioC1D0:      Line=0x1a
->
-> > This is a known bug of hda_generic.c for those desktop with internal
-> > speaker and three audio jacks at rear panel (e.g. those lenovo
-thinkcenter
-> > with alc66x codec)
->
-> > The driver prefer to assign volume control/dac to headphone, line out
-and
-> > internal speaker instead of line out and the other two multi io jacks
->
-> > The workaround is to change the internal speaker as not connected node
-> > 0x15
->
-> Could you please advise how to do this? Is it possible from userland or
-do I
-> have to patch something?
->
-> Would a new fixup mode definition for the kernel help and if yes, how
-should
-> it look like, i.e. which pins should be listed? (I'm capable of
-submitting a
-> kernel patch.)
 
-Try early patching/hdajackretask to change node 0x15 Speaker as not
-connected
+Hi Dan Carpenter,
 
->
-> > or
->
-> > You need to increase badness of multi io so that driver select multi io
-as
-> > the best config
->
-> I've found your patch from 2013 while googling for the topic. The current
-> kernel already sets BAD_MULTI_IO = 0x120.
->
-> Do you mean to further increase it? If so, to what value, or is increasing
-> possible from userland?
->
+Thanks for reminding, you are right, it should be AND here, will send out patch to fix it soon.
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/hda_generic.c?id=03ad6a8c93b6df2d65c305b5b5f9474068b45bfb
+~Keyon
 
-This patch has side effect on your configuration with three DAC as it
-create "Master playback volume" at node 0x02 and "Speaker+LO Playback
-switch at node 0x14 line out jack
+> -----Original Message-----
+> From: Dan Carpenter [mailto:dan.carpenter@oracle.com]
+> Sent: Thursday, February 26, 2015 4:15 PM
+> To: Jie, Yang
+> Cc: alsa-devel@alsa-project.org
+> Subject: re: ASoC: rt286: add jack detection disable with NULL jack passed
+> 
+> Hello Jie Yang,
+> 
+> The patch e2cef68d5903: "ASoC: rt286: add jack detection disable with NULL
+> jack passed" from Feb 10, 2015, leads to the following static checker warning:
+> 
+> 	sound/soc/codecs/rt286.c:400 rt286_mic_detect()
+> 	warn: suspicious bitop condition
+> 
+> sound/soc/codecs/rt286.c
+>    392  int rt286_mic_detect(struct snd_soc_codec *codec, struct
+> snd_soc_jack *jack)
+>    393  {
+>    394          struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+>    395
+>    396          rt286->jack = jack;
+>    397
+>    398          if (jack) {
+>    399                  /* enable IRQ */
+>    400                  if (rt286->jack->status | SND_JACK_HEADPHONE)
+>                                                 ^^^^^^^^^^^^^^^^^^^^ You probably intended
+> bitwise AND here?  Bitwise OR is always true.
+> 
+>    401                          snd_soc_dapm_force_enable_pin(&codec->dapm,
+> "LDO1");
+>    402                  regmap_update_bits(rt286->regmap, RT286_IRQ_CTRL, 0x2,
+> 0x2);
+>    403                  /* Send an initial empty report */
+>    404                  snd_soc_jack_report(rt286->jack, rt286->jack->status,
+>    405                          SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
+>    406          } else {
+>    407                  /* disable IRQ */
+>    408                  regmap_update_bits(rt286->regmap, RT286_IRQ_CTRL, 0x2,
+> 0x0);
+>    409                  snd_soc_dapm_disable_pin(&codec->dapm, "LDO1");
+>    410          }
+>    411          snd_soc_dapm_sync(&codec->dapm);
+>    412
+>    413          return 0;
+>    414  }
+> 
+> regards,
+> dan carpenter
