@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/7] ALSA: hda - Use regmap for codec parameter
-	reads
-Date: Fri, 27 Feb 2015 22:28:17 +0100
-Message-ID: <1425072502-3204-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 7/7] ALSA: hda - Reduce verbs during generic
+	parser initialization
+Date: Fri, 27 Feb 2015 22:28:22 +0100
+Message-ID: <1425072502-3204-8-git-send-email-tiwai@suse.de>
 References: <1425072502-3204-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C08926519B
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C4FA2651A3
  for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 22:28:28 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5CF26ABF8
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 71790AC9B
  for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 21:28:27 +0000 (UTC)
 In-Reply-To: <1425072502-3204-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,65 +27,62 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Let's start converting the access functions to regmap.
-The first one is the simplest, just converting the codec parameter
-read helper function snd_hda_param_read().
+For reducing the number of verbs performed during the initialization
+and the resume of the generic parser, this patch (re-)introduces the
+mechanism to cache everything in init and sync later.
+
+However, it became a bit tricky in the end: we can't use regcache's
+cache_only flag straightforwardly here because we do want the actual
+hardware access for reads if needed, but forbids only the writes.
+So, instead, the regmap reg_write callback checks the own flag
+(reusing the existing codec->cached_write) and skips the actual
+access.  This works by assumption of regmap dumping the whole
+registers via regcache_sync() at a later point.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 18 ++++++++++++++++++
- sound/pci/hda/hda_codec.h |  3 +--
- 2 files changed, 19 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_generic.c | 4 ++++
+ sound/pci/hda/hda_regmap.c  | 6 ++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 0fd71131193a..3a209e8b6130 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -34,6 +34,7 @@
- #include <sound/tlv.h>
- #include <sound/initval.h>
- #include <sound/jack.h>
-+#include "hda_regmap.h"
- #include "hda_local.h"
- #include "hda_beep.h"
- #include "hda_jack.h"
-@@ -255,6 +256,23 @@ void snd_hda_sequence_write(struct hda_codec *codec, const struct hda_verb *seq)
- EXPORT_SYMBOL_GPL(snd_hda_sequence_write);
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 33de31c83d6e..bcaed93f8795 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -5411,6 +5411,8 @@ int snd_hda_gen_init(struct hda_codec *codec)
  
- /**
-+ * snd_hda_param_read - read a parameter
-+ * @codec: the HDA codec
-+ * @nid: NID to read
-+ * @parm: parameter value
-+ */
-+int snd_hda_param_read(struct hda_codec *codec, hda_nid_t nid, int parm)
-+{
-+	unsigned int verb = (AC_VERB_PARAMETERS << 8) | (nid << 20) | parm;
-+	unsigned int val;
+ 	snd_hda_apply_verbs(codec);
+ 
++	codec->cached_write = 1;
 +
-+	if (snd_hda_reg_raw_read(codec, verb, &val) < 0)
-+		return -1;
-+	return val;
-+}
-+EXPORT_SYMBOL_GPL(snd_hda_param_read);
+ 	init_multi_out(codec);
+ 	init_extra_out(codec);
+ 	init_multi_io(codec);
+@@ -5424,6 +5426,8 @@ int snd_hda_gen_init(struct hda_codec *codec)
+ 	/* call init functions of standard auto-mute helpers */
+ 	update_automute_all(codec);
+ 
++	codec->cached_write = 0;
 +
-+/**
-  * snd_hda_get_sub_nodes - get the range of sub nodes
-  * @codec: the HDA codec
-  * @nid: NID to parse
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 3be4e1040036..db310e9c53ff 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -439,8 +439,7 @@ unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
- 				unsigned int verb, unsigned int parm);
- int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
- 			unsigned int verb, unsigned int parm);
--#define snd_hda_param_read(codec, nid, param) \
--	snd_hda_codec_read(codec, nid, 0, AC_VERB_PARAMETERS, param)
-+int snd_hda_param_read(struct hda_codec *codec, hda_nid_t nid, int parm);
- int snd_hda_get_sub_nodes(struct hda_codec *codec, hda_nid_t nid,
- 			  hda_nid_t *start_id);
- int snd_hda_get_connections(struct hda_codec *codec, hda_nid_t nid,
+ 	regcache_sync(codec->regmap);
+ 
+ 	if (spec->vmaster_mute.sw_kctl && spec->vmaster_mute.hook)
+diff --git a/sound/pci/hda/hda_regmap.c b/sound/pci/hda/hda_regmap.c
+index 38934c06a813..79da06da286d 100644
+--- a/sound/pci/hda/hda_regmap.c
++++ b/sound/pci/hda/hda_regmap.c
+@@ -116,6 +116,12 @@ static int hda_reg_write(void *context, unsigned int reg, unsigned int val)
+ 	unsigned int verb;
+ 	int i, bytes;
+ 
++	/* skip h/w write when cached_write flag is set, assuming that
++	 * regcache_sync() will dump the all registers at a later point
++	 */
++	if (codec->cached_write)
++		return 0;
++
+ 	if (!codec_is_running(codec))
+ 		return 0; /* skip the h/w write, it'll be synced later */
+ 
 -- 
 2.3.0
