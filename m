@@ -1,20 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/7] ALSA: hda - Allow driver to add
-	vendor-specific verbs for regmap
-Date: Fri, 27 Feb 2015 22:28:20 +0100
-Message-ID: <1425072502-3204-6-git-send-email-tiwai@suse.de>
-References: <1425072502-3204-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 0/7] HD-audio regmap support
+Date: Fri, 27 Feb 2015 22:28:15 +0100
+Message-ID: <1425072502-3204-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C713A26128B
+ by alsa0.perex.cz (Postfix) with ESMTP id C46652610A6
  for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 22:28:27 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6BCA7AC70
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 58C82ABED
  for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 21:28:27 +0000 (UTC)
-In-Reply-To: <1425072502-3204-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,92 +24,52 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Codecs may have own vendor-specific verbs, and we need to allow each
-driver to give such verbs for cached accesses.  Here a verb can be put
-into a single array and looked through it at readable and writeable
-callbacks.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.h  |  1 +
- sound/pci/hda/hda_regmap.c | 20 ++++++++++++++++++++
- sound/pci/hda/hda_regmap.h |  2 ++
- 3 files changed, 23 insertions(+)
+this patch adds the regmap support to HD-audio and convert the
+house-made amp/verb caches to regmap.  Because of the asymmetrical
+nature of HD-audio verbs, the adaption of regmap isn't straightforward
+at all, and has many limitations.  But this still reduces the
+complexity in struct hda_codec a bit.
 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 953625c85ee4..8cf7b2870dd1 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -398,6 +398,7 @@ struct hda_codec {
- 
- 	/* regmap */
- 	struct regmap *regmap;
-+	struct snd_array vendor_verbs;
- 	bool caps_overwriting; /* caps overwrite being in process */
- };
- 
-diff --git a/sound/pci/hda/hda_regmap.c b/sound/pci/hda/hda_regmap.c
-index 8f12c23f3489..38934c06a813 100644
---- a/sound/pci/hda/hda_regmap.c
-+++ b/sound/pci/hda/hda_regmap.c
-@@ -35,10 +35,17 @@ static bool hda_writeable_reg(struct device *dev, unsigned int reg)
- {
- 	struct hda_codec *codec = dev_to_hda_codec(dev);
- 	unsigned int verb = get_verb(reg);
-+	int i;
- 
- 	if (codec->caps_overwriting)
- 		return true;
- 
-+	for (i = 0; i < codec->vendor_verbs.used; i++) {
-+		unsigned int *v = snd_array_elem(&codec->vendor_verbs, i);
-+		if (verb == *v)
-+			return true;
-+	}
-+
- 	switch (verb & 0xf00) {
- 	case AC_VERB_GET_STREAM_FORMAT:
- 	case AC_VERB_GET_AMP_GAIN_MUTE:
-@@ -178,6 +185,7 @@ int snd_hda_regmap_init(struct hda_codec *codec)
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 	codec->regmap = regmap;
-+	snd_array_init(&codec->vendor_verbs, sizeof(unsigned int), 8);
- 	return 0;
- }
- 
-@@ -187,7 +195,19 @@ void snd_hda_regmap_exit(struct hda_codec *codec)
- 		regmap_exit(codec->regmap);
- 		codec->regmap = NULL;
- 	}
-+	snd_array_free(&codec->vendor_verbs);
-+}
-+
-+int snd_hda_regmap_add_vendor_verb(struct hda_codec *codec, unsigned int verb)
-+{
-+	unsigned int *p = snd_array_new(&codec->vendor_verbs);
-+
-+	if (!p)
-+		return -ENOMEM;
-+	*p = verb;
-+	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_hda_regmap_add_vendor_verb);
- 
- /*
-  * helper functions
-diff --git a/sound/pci/hda/hda_regmap.h b/sound/pci/hda/hda_regmap.h
-index 7d4b8be58975..562c58c4cbc1 100644
---- a/sound/pci/hda/hda_regmap.h
-+++ b/sound/pci/hda/hda_regmap.h
-@@ -13,6 +13,8 @@
- int snd_hda_regmap_init(struct hda_codec *codec);
- void snd_hda_regmap_exit(struct hda_codec *codec);
- 
-+int snd_hda_regmap_add_vendor_verb(struct hda_codec *codec, unsigned int verb);
-+
- int snd_hda_regmap_write(struct hda_codec *codec, hda_nid_t nid,
- 			 unsigned int verb, unsigned int val);
- int snd_hda_regmap_update_bits(struct hda_codec *codec, hda_nid_t nid,
+The patches are applied on top of the previous patch series (found in
+topic/hda-bus branch of sound git tree).  This patchset is also found
+in sound git tree topic/hda-regmap branch.
+
+
+Takashi
+
+===
+
+Takashi Iwai (7):
+  ALSA: hda - Add regmap support
+  ALSA: hda - Use regmap for codec parameter reads
+  ALSA: hda - Use regmap for amp accesses
+  ALSA: hda - Use regmap for parameter caches, too
+  ALSA: hda - Allow driver to add vendor-specific verbs for regmap
+  ALSA: hda - Use regmap for command verb caches, too
+  ALSA: hda - Reduce verbs during generic parser initialization
+
+ sound/pci/hda/Kconfig          |   1 +
+ sound/pci/hda/Makefile         |   3 +-
+ sound/pci/hda/hda_beep.c       |   3 +-
+ sound/pci/hda/hda_bind.c       |   6 +
+ sound/pci/hda/hda_codec.c      | 645 +++++++----------------------------------
+ sound/pci/hda/hda_codec.h      |  45 +--
+ sound/pci/hda/hda_generic.c    |  32 +-
+ sound/pci/hda/hda_jack.c       |   6 +-
+ sound/pci/hda/hda_local.h      |  31 +-
+ sound/pci/hda/hda_regmap.c     | 409 ++++++++++++++++++++++++++
+ sound/pci/hda/hda_regmap.h     |  38 +++
+ sound/pci/hda/patch_analog.c   |  30 +-
+ sound/pci/hda/patch_conexant.c |  12 +-
+ sound/pci/hda/patch_hdmi.c     |  24 +-
+ sound/pci/hda/patch_realtek.c  |  11 +-
+ sound/pci/hda/patch_si3054.c   |   5 +-
+ sound/pci/hda/patch_sigmatel.c |  38 ++-
+ 17 files changed, 660 insertions(+), 679 deletions(-)
+ create mode 100644 sound/pci/hda/hda_regmap.c
+ create mode 100644 sound/pci/hda/hda_regmap.h
+
 -- 
 2.3.0
