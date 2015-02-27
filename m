@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 7/9] ALSA: hda - Implement unbind more safely
-Date: Fri, 27 Feb 2015 23:55:42 +0100
-Message-ID: <1425077744-4553-8-git-send-email-tiwai@suse.de>
+Subject: [PATCH 6/9] ALSA: core: Re-add snd_device_disconnect()
+Date: Fri, 27 Feb 2015 23:55:41 +0100
+Message-ID: <1425077744-4553-7-git-send-email-tiwai@suse.de>
 References: <1425077744-4553-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E93A52651A3
+ by alsa0.perex.cz (Postfix) with ESMTP id EC9E52651AF
  for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 23:55:46 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 67093ABF6
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 78C6DAC70
  for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 22:55:46 +0000 (UTC)
 In-Reply-To: <1425077744-4553-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,189 +26,131 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Now we have all pieces ready, and put them into places:
-- add the hda_pcm refcount to azx_pcm_open() and azx_pcm_close(),
-- call the most of cleanup code in hda_codec_reset() from the codec
-  driver remove,
-- call the same code also from the hda_codec object free.
-
-Then the codec driver can be unbound more safely now.
+Revive snd_device_disconnect() again so that it can be called from the
+individual driver.  This time, HD-audio will need it.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_bind.c       |  3 +--
- sound/pci/hda/hda_codec.c      | 61 ++++++++++++++++++++++--------------------
- sound/pci/hda/hda_codec.h      |  1 +
- sound/pci/hda/hda_controller.c |  3 +++
- sound/pci/hda/hda_local.h      |  1 +
- 5 files changed, 38 insertions(+), 31 deletions(-)
+ include/sound/core.h |  3 ++-
+ sound/core/device.c  | 43 +++++++++++++++++++++++++++++++++----------
+ sound/core/init.c    |  5 +----
+ 3 files changed, 36 insertions(+), 15 deletions(-)
 
-diff --git a/sound/pci/hda/hda_bind.c b/sound/pci/hda/hda_bind.c
-index d0d5aead3746..114320864cea 100644
---- a/sound/pci/hda/hda_bind.c
-+++ b/sound/pci/hda/hda_bind.c
-@@ -130,8 +130,7 @@ static int hda_codec_driver_remove(struct device *dev)
+diff --git a/include/sound/core.h b/include/sound/core.h
+index da5748289968..b12931f513f4 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -278,7 +278,8 @@ int snd_device_new(struct snd_card *card, enum snd_device_type type,
+ 		   void *device_data, struct snd_device_ops *ops);
+ int snd_device_register(struct snd_card *card, void *device_data);
+ int snd_device_register_all(struct snd_card *card);
+-int snd_device_disconnect_all(struct snd_card *card);
++void snd_device_disconnect(struct snd_card *card, void *device_data);
++void snd_device_disconnect_all(struct snd_card *card);
+ void snd_device_free(struct snd_card *card, void *device_data);
+ void snd_device_free_all(struct snd_card *card);
  
- 	if (codec->patch_ops.free)
- 		codec->patch_ops.free(codec);
--	codec->preset = NULL;
--	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
-+	snd_hda_codec_cleanup_for_unbind(codec);
- 	snd_hda_regmap_exit(codec);
- 	module_put(dev->driver->owner);
- 	return 0;
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index a8082677373e..a87b247a172a 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1174,36 +1174,57 @@ struct hda_pcm *snd_hda_codec_pcm_new(struct hda_codec *codec,
+diff --git a/sound/core/device.c b/sound/core/device.c
+index 41bec3075ae5..446dc452654e 100644
+--- a/sound/core/device.c
++++ b/sound/core/device.c
+@@ -73,7 +73,7 @@ int snd_device_new(struct snd_card *card, enum snd_device_type type,
  }
- EXPORT_SYMBOL_GPL(snd_hda_codec_pcm_new);
+ EXPORT_SYMBOL(snd_device_new);
  
-+/*
-+ * codec destructor
-+ */
- static void codec_release_pcms(struct hda_codec *codec)
+-static int __snd_device_disconnect(struct snd_device *dev)
++static void __snd_device_disconnect(struct snd_device *dev)
  {
- 	struct hda_pcm *pcm, *n;
- 
- 	list_for_each_entry_safe(pcm, n, &codec->pcm_list_head, list) {
- 		list_del_init(&pcm->list);
-+		if (pcm->pcm)
-+			snd_device_disconnect(codec->card, pcm->pcm);
- 		snd_hda_codec_pcm_put(pcm);
+ 	if (dev->state == SNDRV_DEV_REGISTERED) {
+ 		if (dev->ops->dev_disconnect &&
+@@ -81,7 +81,6 @@ static int __snd_device_disconnect(struct snd_device *dev)
+ 			dev_err(dev->card->dev, "device disconnect failure\n");
+ 		dev->state = SNDRV_DEV_DISCONNECTED;
  	}
+-	return 0;
  }
  
--/*
-- * codec destructor
-- */
-+void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec)
+ static void __snd_device_free(struct snd_device *dev)
+@@ -109,6 +108,34 @@ static struct snd_device *look_for_dev(struct snd_card *card, void *device_data)
+ }
+ 
+ /**
++ * snd_device_disconnect - disconnect the device
++ * @card: the card instance
++ * @device_data: the data pointer to disconnect
++ *
++ * Turns the device into the disconnection state, invoking
++ * dev_disconnect callback, if the device was already registered.
++ *
++ * Usually called from snd_card_disconnect().
++ *
++ * Return: Zero if successful, or a negative error code on failure or if the
++ * device not found.
++ */
++void snd_device_disconnect(struct snd_card *card, void *device_data)
 +{
-+	cancel_delayed_work_sync(&codec->jackpoll_work);
-+	flush_workqueue(codec->bus->workq);
-+	if (!codec->in_freeing)
-+		snd_hda_ctls_clear(codec);
-+	codec_release_pcms(codec);
-+	snd_hda_detach_beep_device(codec);
-+	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
-+	snd_hda_jack_tbl_clear(codec);
-+	codec->proc_widget_hook = NULL;
-+	codec->spec = NULL;
++	struct snd_device *dev;
 +
-+	/* free only driver_pins so that init_pins + user_pins are restored */
-+	snd_array_free(&codec->driver_pins);
-+	snd_array_free(&codec->cvt_setups);
-+	snd_array_free(&codec->spdif_out);
-+	snd_array_free(&codec->verbs);
-+	codec->preset = NULL;
-+	codec->slave_dig_outs = NULL;
-+	codec->spdif_status_reset = 0;
-+	snd_array_free(&codec->mixers);
-+	snd_array_free(&codec->nids);
-+	remove_conn_list(codec);
++	if (snd_BUG_ON(!card || !device_data))
++		return;
++	dev = look_for_dev(card, device_data);
++	if (dev)
++		__snd_device_disconnect(dev);
++	else
++		dev_dbg(card->dev, "device disconnect %p (from %pF), not found\n",
++			device_data, __builtin_return_address(0));
 +}
++EXPORT_SYMBOL_GPL(snd_device_disconnect);
 +
- static void snd_hda_codec_free(struct hda_codec *codec)
++/**
+  * snd_device_free - release the device from the card
+  * @card: the card instance
+  * @device_data: the data pointer to release
+@@ -195,18 +222,14 @@ int snd_device_register_all(struct snd_card *card)
+  * disconnect all the devices on the card.
+  * called from init.c
+  */
+-int snd_device_disconnect_all(struct snd_card *card)
++void snd_device_disconnect_all(struct snd_card *card)
  {
- 	if (!codec)
- 		return;
--	cancel_delayed_work_sync(&codec->jackpoll_work);
--	codec_release_pcms(codec);
-+	codec->in_freeing = 1;
- 	if (device_is_registered(hda_codec_dev(codec)))
- 		device_del(hda_codec_dev(codec));
--	snd_hda_jack_tbl_clear(codec);
- 	free_init_pincfgs(codec);
- 	flush_workqueue(codec->bus->workq);
- 	list_del(&codec->list);
--	snd_array_free(&codec->mixers);
--	snd_array_free(&codec->nids);
--	snd_array_free(&codec->cvt_setups);
--	snd_array_free(&codec->spdif_out);
--	remove_conn_list(codec);
- 	codec->bus->caddr_tbl[codec->addr] = NULL;
- 	clear_bit(codec->addr, &codec->bus->codec_powered);
- 	snd_hda_sysfs_clear(codec);
-@@ -2198,27 +2219,9 @@ int snd_hda_codec_reset(struct hda_codec *codec)
- 		return -EBUSY;
+ 	struct snd_device *dev;
+-	int err = 0;
  
- 	/* OK, let it free */
--	cancel_delayed_work_sync(&codec->jackpoll_work);
--	flush_workqueue(bus->workq);
--	snd_hda_ctls_clear(codec);
--	codec_release_pcms(codec);
--	snd_hda_detach_beep_device(codec);
- 	if (device_is_registered(hda_codec_dev(codec)))
- 		device_del(hda_codec_dev(codec));
+ 	if (snd_BUG_ON(!card))
+-		return -ENXIO;
+-	list_for_each_entry_reverse(dev, &card->devices, list) {
+-		if (__snd_device_disconnect(dev) < 0)
+-			err = -ENXIO;
+-	}
+-	return err;
++		return;
++	list_for_each_entry_reverse(dev, &card->devices, list)
++		__snd_device_disconnect(dev);
+ }
  
--	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
--	snd_hda_jack_tbl_clear(codec);
--	codec->proc_widget_hook = NULL;
--	codec->spec = NULL;
--	/* free only driver_pins so that init_pins + user_pins are restored */
--	snd_array_free(&codec->driver_pins);
--	snd_array_free(&codec->cvt_setups);
--	snd_array_free(&codec->spdif_out);
--	snd_array_free(&codec->verbs);
--	codec->preset = NULL;
--	codec->slave_dig_outs = NULL;
--	codec->spdif_status_reset = 0;
--
- 	/* allow device access again */
- 	snd_hda_unlock_devices(bus);
- 	return 0;
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 5a9b04873655..07001797cece 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -328,6 +328,7 @@ struct hda_codec {
+ /*
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 35419054821c..04734e047bfe 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -400,7 +400,6 @@ static const struct file_operations snd_shutdown_f_ops =
+ int snd_card_disconnect(struct snd_card *card)
+ {
+ 	struct snd_monitor_file *mfile;
+-	int err;
+ 
+ 	if (!card)
+ 		return -EINVAL;
+@@ -445,9 +444,7 @@ int snd_card_disconnect(struct snd_card *card)
  #endif
  
- 	/* misc flags */
-+	unsigned int in_freeing:1; /* being released */
- 	unsigned int spdif_status_reset :1; /* needs to toggle SPDIF for each
- 					     * status change
- 					     * (e.g. Realtek codecs)
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index ad85f9bfaf57..cae50d5ffb81 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -420,6 +420,7 @@ static int azx_pcm_close(struct snd_pcm_substream *substream)
- 		hinfo->ops.close(hinfo, apcm->codec, substream);
- 	snd_hda_power_down(apcm->codec);
- 	mutex_unlock(&chip->open_mutex);
-+	snd_hda_codec_pcm_put(apcm->info);
- 	return 0;
- }
+ 	/* notify all devices that we are disconnected */
+-	err = snd_device_disconnect_all(card);
+-	if (err < 0)
+-		dev_err(card->dev, "not all devices for card %i can be disconnected\n", card->number);
++	snd_device_disconnect_all(card);
  
-@@ -806,6 +807,7 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
- 	int err;
- 	int buff_step;
- 
-+	snd_hda_codec_pcm_get(apcm->info);
- 	mutex_lock(&chip->open_mutex);
- 	azx_dev = azx_assign_device(chip, substream);
- 	if (azx_dev == NULL) {
-@@ -887,6 +889,7 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
- 	snd_hda_power_down(apcm->codec);
-  unlock:
- 	mutex_unlock(&chip->open_mutex);
-+	snd_hda_codec_pcm_put(apcm->info);
- 	return err;
- }
- 
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index 0da5796b4690..4aefed9684c2 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -150,6 +150,7 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
- #define snd_hda_add_vmaster(codec, name, tlv, slaves, suffix) \
- 	__snd_hda_add_vmaster(codec, name, tlv, slaves, suffix, true, NULL)
- int snd_hda_codec_reset(struct hda_codec *codec);
-+void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec);
- 
- enum {
- 	HDA_VMUTE_OFF,
+ 	snd_info_card_disconnect(card);
+ 	if (card->registered) {
 -- 
 2.3.0
