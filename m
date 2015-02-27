@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/7] ALSA: hda - Use regmap for amp accesses
-Date: Fri, 27 Feb 2015 22:28:18 +0100
-Message-ID: <1425072502-3204-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/7] ALSA: hda - Add regmap support
+Date: Fri, 27 Feb 2015 22:28:16 +0100
+Message-ID: <1425072502-3204-2-git-send-email-tiwai@suse.de>
 References: <1425072502-3204-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C9FA226516E
+ by alsa0.perex.cz (Postfix) with ESMTP id CB712265176
  for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 22:28:27 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 55E8BAB09
+ by mx2.suse.de (Postfix) with ESMTP id 56184ABE8
  for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 21:28:27 +0000 (UTC)
 In-Reply-To: <1425072502-3204-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,371 +26,590 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch converts the amp access functions to the regmap helpers.
-The amp values were formerly cached in the own hash table.  Now it's
-dropped by the regmap's cache.
+This patch adds an infrastructure to support regmap-based verb
+accesses.  Because o the asymmetric nature of HD-audio verbs,
+especially the amp verbs, we need to translate the verbs as a sort of
+pseudo registers to be mapped uniquely in regmap.
 
-The only tricky conversion is snd_hda_codec_amp_init().  This function
-shouldn't do anything if the amp was already initialized.  For
-achieving this behavior, a value is read once at first temporarily in
-the cache-only mode.  Only if it returns an error,  i.e. the item
-still doesn't exist in the cache, it proceeds to the update.
+In this patch, a pseudo register is built from the NID, the
+AC_VERB_GET_* and 8bit parameters, i.e. almost in the form to be sent
+to HD-audio bus but without codec address field.  OTOH, for writing,
+the same pseudo register is translated to AC_VERB_SET_* automatically.
+The AC_VERB_SET_AMP_* verb is re-encoded from the corresponding
+AC_VERB_GET_AMP_* verb and parameter at writing.
+
+Some verbs has a single command for read but multiple for writes.  A
+write for such a verb is split automatically to multiple verbs.
+
+The patch provides also a few handy helper functions.  They are
+designed to be accessible even without regmap.  When no regmap is set
+up (e.g. before the codec device instantiation), the direct hardware
+access is used.  Also, it tries to avoid the unnecessary power-up.
+The power up/down sequence is performed only on demand.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c     | 214 +++++-------------------------------------
- sound/pci/hda/hda_local.h     |  12 +--
- sound/pci/hda/patch_hdmi.c    |   2 +-
- sound/pci/hda/patch_realtek.c |   4 +-
- 4 files changed, 33 insertions(+), 199 deletions(-)
+ sound/pci/hda/Kconfig      |   1 +
+ sound/pci/hda/Makefile     |   3 +-
+ sound/pci/hda/hda_bind.c   |   6 +
+ sound/pci/hda/hda_codec.c  |   8 +-
+ sound/pci/hda/hda_codec.h  |   6 +
+ sound/pci/hda/hda_regmap.c | 375 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_regmap.h |  36 +++++
+ 7 files changed, 430 insertions(+), 5 deletions(-)
+ create mode 100644 sound/pci/hda/hda_regmap.c
+ create mode 100644 sound/pci/hda/hda_regmap.h
 
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 7f0f2c5a4e97..eda62d9fb2ea 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -5,6 +5,7 @@ config SND_HDA
+ 	select SND_PCM
+ 	select SND_VMASTER
+ 	select SND_KCTL_JACK
++	select REGMAP
+ 
+ config SND_HDA_INTEL
+ 	tristate "HD Audio PCI"
+diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
+index 96caaebfc19d..1f2c626c4ae6 100644
+--- a/sound/pci/hda/Makefile
++++ b/sound/pci/hda/Makefile
+@@ -4,7 +4,8 @@ snd-hda-tegra-objs := hda_tegra.o
+ # for haswell power well
+ snd-hda-intel-$(CONFIG_SND_HDA_I915) +=	hda_i915.o
+ 
+-snd-hda-codec-y := hda_bind.o hda_codec.o hda_jack.o hda_auto_parser.o hda_sysfs.o
++snd-hda-codec-y := hda_bind.o hda_codec.o hda_jack.o hda_auto_parser.o hda_sysfs.o \
++	hda_regmap.o
+ snd-hda-codec-$(CONFIG_PROC_FS) += hda_proc.o
+ snd-hda-codec-$(CONFIG_SND_HDA_HWDEP) += hda_hwdep.o
+ snd-hda-codec-$(CONFIG_SND_HDA_INPUT_BEEP) += hda_beep.o
+diff --git a/sound/pci/hda/hda_bind.c b/sound/pci/hda/hda_bind.c
+index ce2dd7b0dc07..8be97ffe10b2 100644
+--- a/sound/pci/hda/hda_bind.c
++++ b/sound/pci/hda/hda_bind.c
+@@ -11,6 +11,7 @@
+ #include <linux/pm.h>
+ #include <sound/core.h>
+ #include "hda_codec.h"
++#include "hda_regmap.h"
+ #include "hda_local.h"
+ 
+ /* codec vendor labels */
+@@ -105,6 +106,9 @@ static int hda_codec_driver_probe(struct device *dev)
+ 		goto error;
+ 	}
+ 
++	err = snd_hda_regmap_init(codec);
++	if (err < 0)
++		goto error;
+ 	err = codec->preset->patch(codec);
+ 	if (err < 0) {
+ 		module_put(owner);
+@@ -116,6 +120,7 @@ static int hda_codec_driver_probe(struct device *dev)
+  error:
+ 	codec->preset = NULL;
+ 	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
++	snd_hda_regmap_exit(codec);
+ 	return err;
+ }
+ 
+@@ -127,6 +132,7 @@ static int hda_codec_driver_remove(struct device *dev)
+ 		codec->patch_ops.free(codec);
+ 	codec->preset = NULL;
+ 	memset(&codec->patch_ops, 0, sizeof(codec->patch_ops));
++	snd_hda_regmap_exit(codec);
+ 	module_put(dev->driver->owner);
+ 	return 0;
+ }
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 3a209e8b6130..3e6976b52231 100644
+index db86b446743c..0fd71131193a 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -1793,139 +1793,6 @@ int snd_hda_override_pin_caps(struct hda_codec *codec, hda_nid_t nid,
- }
- EXPORT_SYMBOL_GPL(snd_hda_override_pin_caps);
- 
--/* read or sync the hash value with the current value;
-- * call within hash_mutex
-- */
--static struct hda_amp_info *
--update_amp_hash(struct hda_codec *codec, hda_nid_t nid, int ch,
--		int direction, int index, bool init_only)
--{
--	struct hda_amp_info *info;
--	unsigned int parm, val = 0;
--	bool val_read = false;
--
-- retry:
--	info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, index));
--	if (!info)
--		return NULL;
--	if (!(info->head.val & INFO_AMP_VOL(ch))) {
--		if (!val_read) {
--			mutex_unlock(&codec->hash_mutex);
--			parm = ch ? AC_AMP_GET_RIGHT : AC_AMP_GET_LEFT;
--			parm |= direction == HDA_OUTPUT ?
--				AC_AMP_GET_OUTPUT : AC_AMP_GET_INPUT;
--			parm |= index;
--			val = snd_hda_codec_read(codec, nid, 0,
--				 AC_VERB_GET_AMP_GAIN_MUTE, parm);
--			val &= 0xff;
--			val_read = true;
--			mutex_lock(&codec->hash_mutex);
--			goto retry;
--		}
--		info->vol[ch] = val;
--		info->head.val |= INFO_AMP_VOL(ch);
--	} else if (init_only)
--		return NULL;
--	return info;
--}
--
--/*
-- * write the current volume in info to the h/w
-- */
--static void put_vol_mute(struct hda_codec *codec, unsigned int amp_caps,
--			 hda_nid_t nid, int ch, int direction, int index,
--			 int val)
--{
--	u32 parm;
--
--	parm = ch ? AC_AMP_SET_RIGHT : AC_AMP_SET_LEFT;
--	parm |= direction == HDA_OUTPUT ? AC_AMP_SET_OUTPUT : AC_AMP_SET_INPUT;
--	parm |= index << AC_AMP_SET_INDEX_SHIFT;
--	if ((val & HDA_AMP_MUTE) && !(amp_caps & AC_AMPCAP_MUTE) &&
--	    (amp_caps & AC_AMPCAP_MIN_MUTE))
--		; /* set the zero value as a fake mute */
--	else
--		parm |= val;
--	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_AMP_GAIN_MUTE, parm);
--}
--
--/**
-- * snd_hda_codec_amp_read - Read AMP value
-- * @codec: HD-audio codec
-- * @nid: NID to read the AMP value
-- * @ch: channel (left=0 or right=1)
-- * @direction: #HDA_INPUT or #HDA_OUTPUT
-- * @index: the index value (only for input direction)
-- *
-- * Read AMP value.  The volume is between 0 to 0x7f, 0x80 = mute bit.
-- */
--int snd_hda_codec_amp_read(struct hda_codec *codec, hda_nid_t nid, int ch,
--			   int direction, int index)
--{
--	struct hda_amp_info *info;
--	unsigned int val = 0;
--
--	mutex_lock(&codec->hash_mutex);
--	info = update_amp_hash(codec, nid, ch, direction, index, false);
--	if (info)
--		val = info->vol[ch];
--	mutex_unlock(&codec->hash_mutex);
--	return val;
--}
--EXPORT_SYMBOL_GPL(snd_hda_codec_amp_read);
--
--static int codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
--			    int direction, int idx, int mask, int val,
--			    bool init_only, bool cache_only)
--{
--	struct hda_amp_info *info;
--	unsigned int caps;
--
--	if (snd_BUG_ON(mask & ~0xff))
--		mask &= 0xff;
--	val &= mask;
--
--	mutex_lock(&codec->hash_mutex);
--	info = update_amp_hash(codec, nid, ch, direction, idx, init_only);
--	if (!info) {
--		mutex_unlock(&codec->hash_mutex);
--		return 0;
--	}
--	val |= info->vol[ch] & ~mask;
--	if (info->vol[ch] == val) {
--		mutex_unlock(&codec->hash_mutex);
--		return 0;
--	}
--	info->vol[ch] = val;
--	info->head.dirty |= cache_only;
--	caps = info->amp_caps;
--	mutex_unlock(&codec->hash_mutex);
--	if (!cache_only)
--		put_vol_mute(codec, caps, nid, ch, direction, idx, val);
--	return 1;
--}
--
--/**
-- * snd_hda_codec_amp_update - update the AMP value
-- * @codec: HD-audio codec
-- * @nid: NID to read the AMP value
-- * @ch: channel (left=0 or right=1)
-- * @direction: #HDA_INPUT or #HDA_OUTPUT
-- * @idx: the index value (only for input direction)
-- * @mask: bit mask to set
-- * @val: the bits value to set
-- *
-- * Update the AMP value with a bit mask.
-- * Returns 0 if the value is unchanged, 1 if changed.
-- */
--int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
--			     int direction, int idx, int mask, int val)
--{
--	return codec_amp_update(codec, nid, ch, direction, idx, mask, val,
--				false, codec->cached_write);
--}
--EXPORT_SYMBOL_GPL(snd_hda_codec_amp_update);
--
- /**
-  * snd_hda_codec_amp_stereo - update the AMP stereo values
-  * @codec: HD-audio codec
-@@ -1969,8 +1836,16 @@ EXPORT_SYMBOL_GPL(snd_hda_codec_amp_stereo);
- int snd_hda_codec_amp_init(struct hda_codec *codec, hda_nid_t nid, int ch,
- 			   int dir, int idx, int mask, int val)
- {
--	return codec_amp_update(codec, nid, ch, dir, idx, mask, val, true,
--				codec->cached_write);
-+	int orig;
-+
-+	if (!codec->regmap)
-+		return -EINVAL;
-+	regcache_cache_only(codec->regmap, true);
-+	orig = snd_hda_regmap_amp_get(codec, nid, ch, dir, idx);
-+	regcache_cache_only(codec->regmap, false);
-+	if (orig >= 0)
-+		return 0;
-+	return snd_hda_regmap_amp_update(codec, nid, ch, dir, idx, mask, val);
- }
- EXPORT_SYMBOL_GPL(snd_hda_codec_amp_init);
- 
-@@ -1999,49 +1874,6 @@ int snd_hda_codec_amp_init_stereo(struct hda_codec *codec, hda_nid_t nid,
- }
- EXPORT_SYMBOL_GPL(snd_hda_codec_amp_init_stereo);
- 
--/**
-- * snd_hda_codec_resume_amp - Resume all AMP commands from the cache
-- * @codec: HD-audio codec
-- *
-- * Resume the all amp commands from the cache.
-- */
--void snd_hda_codec_resume_amp(struct hda_codec *codec)
--{
--	int i;
--
--	mutex_lock(&codec->hash_mutex);
--	codec->cached_write = 0;
--	for (i = 0; i < codec->amp_cache.buf.used; i++) {
--		struct hda_amp_info *buffer;
--		u32 key;
--		hda_nid_t nid;
--		unsigned int idx, dir, ch;
--		struct hda_amp_info info;
--
--		buffer = snd_array_elem(&codec->amp_cache.buf, i);
--		if (!buffer->head.dirty)
--			continue;
--		buffer->head.dirty = 0;
--		info = *buffer;
--		key = info.head.key;
--		if (!key)
--			continue;
--		nid = key & 0xff;
--		idx = (key >> 16) & 0xff;
--		dir = (key >> 24) & 0xff;
--		for (ch = 0; ch < 2; ch++) {
--			if (!(info.head.val & INFO_AMP_VOL(ch)))
--				continue;
--			mutex_unlock(&codec->hash_mutex);
--			put_vol_mute(codec, info.amp_caps, nid, ch, dir, idx,
--				     info.vol[ch]);
--			mutex_lock(&codec->hash_mutex);
--		}
--	}
--	mutex_unlock(&codec->hash_mutex);
--}
--EXPORT_SYMBOL_GPL(snd_hda_codec_resume_amp);
--
- static u32 get_amp_max_value(struct hda_codec *codec, hda_nid_t nid, int dir,
- 			     unsigned int ofs)
- {
-@@ -2112,8 +1944,8 @@ update_amp_value(struct hda_codec *codec, hda_nid_t nid,
- 	maxval = get_amp_max_value(codec, nid, dir, 0);
- 	if (val > maxval)
- 		val = maxval;
--	return codec_amp_update(codec, nid, ch, dir, idx, HDA_AMP_VOLMASK, val,
--				false, !hda_codec_is_power_on(codec));
-+	return snd_hda_regmap_amp_update(codec, nid, ch, dir, idx,
-+					 HDA_AMP_VOLMASK, val);
- }
- 
- /**
-@@ -2832,17 +2664,15 @@ int snd_hda_mixer_amp_switch_put(struct snd_kcontrol *kcontrol,
- 	int change = 0;
- 
- 	if (chs & 1) {
--		change = codec_amp_update(codec, nid, 0, dir, idx,
--					  HDA_AMP_MUTE,
--					  *valp ? 0 : HDA_AMP_MUTE, false,
--					  !hda_codec_is_power_on(codec));
-+		change = snd_hda_regmap_amp_update(codec, nid, 0, dir, idx,
-+						   HDA_AMP_MUTE,
-+						   *valp ? 0 : HDA_AMP_MUTE);
- 		valp++;
- 	}
- 	if (chs & 2)
--		change |= codec_amp_update(codec, nid, 1, dir, idx,
--					   HDA_AMP_MUTE,
--					   *valp ? 0 : HDA_AMP_MUTE, false,
--					   !hda_codec_is_power_on(codec));
-+		change |= snd_hda_regmap_amp_update(codec, nid, 1, dir, idx,
-+						    HDA_AMP_MUTE,
-+						    *valp ? 0 : HDA_AMP_MUTE);
- 	hda_call_check_power_status(codec, nid);
- 	return change;
- }
-@@ -3703,7 +3533,8 @@ EXPORT_SYMBOL_GPL(snd_hda_sequence_write_cache);
+@@ -147,8 +147,8 @@ make_codec_cmd(struct hda_codec *codec, hda_nid_t nid, int flags,
+ /*
+  * Send and receive a verb
   */
- void snd_hda_codec_flush_cache(struct hda_codec *codec)
+-static int codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
+-			   int flags, unsigned int *res)
++int snd_hda_codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
++			    int flags, unsigned int *res)
  {
--	snd_hda_codec_resume_amp(codec);
-+	if (codec->regmap)
-+		regcache_sync(codec->regmap);
- 	snd_hda_codec_resume_cache(codec);
+ 	struct hda_bus *bus = codec->bus;
+ 	int err;
+@@ -211,7 +211,7 @@ unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
+ {
+ 	unsigned cmd = make_codec_cmd(codec, nid, flags, verb, parm);
+ 	unsigned int res;
+-	if (codec_exec_verb(codec, cmd, flags, &res))
++	if (snd_hda_codec_exec_verb(codec, cmd, flags, &res))
+ 		return -1;
+ 	return res;
  }
- EXPORT_SYMBOL_GPL(snd_hda_codec_flush_cache);
-@@ -3951,6 +3782,8 @@ static void hda_call_codec_resume(struct hda_codec *codec)
- 	atomic_inc(&codec->in_pm);
+@@ -234,7 +234,7 @@ int snd_hda_codec_write(struct hda_codec *codec, hda_nid_t nid, int flags,
+ {
+ 	unsigned int cmd = make_codec_cmd(codec, nid, flags, verb, parm);
+ 	unsigned int res;
+-	return codec_exec_verb(codec, cmd, flags,
++	return snd_hda_codec_exec_verb(codec, cmd, flags,
+ 			       codec->bus->sync_write ? &res : NULL);
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_codec_write);
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 457fc589eb46..3be4e1040036 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -21,6 +21,7 @@
+ #ifndef __SOUND_HDA_CODEC_H
+ #define __SOUND_HDA_CODEC_H
  
- 	trace_hda_power_up(codec);
-+	if (codec->regmap)
-+		regcache_mark_dirty(codec->regmap);
- 	hda_mark_cmd_cache_dirty(codec);
++#include <linux/regmap.h>
+ #include <sound/info.h>
+ #include <sound/control.h>
+ #include <sound/pcm.h>
+@@ -401,6 +402,9 @@ struct hda_codec {
  
- 	codec->power_jiffies = jiffies;
-@@ -3964,7 +3797,8 @@ static void hda_call_codec_resume(struct hda_codec *codec)
- 	else {
- 		if (codec->patch_ops.init)
- 			codec->patch_ops.init(codec);
--		snd_hda_codec_resume_amp(codec);
-+		if (codec->regmap)
-+			regcache_sync(codec->regmap);
- 		snd_hda_codec_resume_cache(codec);
- 	}
+ 	/* additional init verbs */
+ 	struct snd_array verbs;
++
++	/* regmap */
++	struct regmap *regmap;
+ };
  
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index 8588813163e3..be0654173d45 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -23,6 +23,8 @@
- #ifndef __SOUND_HDA_LOCAL_H
- #define __SOUND_HDA_LOCAL_H
- 
+ #define dev_to_hda_codec(_dev)	container_of(_dev, struct hda_codec, dev)
+@@ -428,6 +432,8 @@ int snd_hda_codec_update_widgets(struct hda_codec *codec);
+ /*
+  * low level functions
+  */
++int snd_hda_codec_exec_verb(struct hda_codec *codec, unsigned int cmd,
++			    int flags, unsigned int *res);
+ unsigned int snd_hda_codec_read(struct hda_codec *codec, hda_nid_t nid,
+ 				int flags,
+ 				unsigned int verb, unsigned int parm);
+diff --git a/sound/pci/hda/hda_regmap.c b/sound/pci/hda/hda_regmap.c
+new file mode 100644
+index 000000000000..715d770901b5
+--- /dev/null
++++ b/sound/pci/hda/hda_regmap.c
+@@ -0,0 +1,375 @@
++/*
++ * Regmap support for HD-audio verbs
++ *
++ * A virtual register is translated to one or more hda verbs for write,
++ * vice versa for read.
++ *
++ * A few limitations:
++ * - Provided for not all verbs but only subset standard non-volatile verbs.
++ * - For reading, only AC_VERB_GET_* variants can be used.
++ * - For writing, mapped to the *corresponding* AC_VERB_SET_* variants,
++ *   so can't handle asymmetric verbs for read and write
++ */
++
++#include <linux/slab.h>
++#include <linux/device.h>
++#include <linux/regmap.h>
++#include <linux/export.h>
++#include <linux/pm.h>
++#include <linux/pm_runtime.h>
++#include <sound/core.h>
++#include "hda_codec.h"
 +#include "hda_regmap.h"
 +
- /* We abuse kcontrol_new.subdev field to pass the NID corresponding to
-  * the given new control.  If id.subdev has a bit flag HDA_SUBDEV_NID_FLAG,
-  * snd_hda_ctl_add() takes the lower-bit subdev value as a valid NID.
-@@ -127,18 +129,16 @@ int snd_hda_mixer_amp_switch_put_beep(struct snd_kcontrol *kcontrol,
- 				      struct snd_ctl_elem_value *ucontrol);
- #endif
- /* lowlevel accessor with caching; use carefully */
--int snd_hda_codec_amp_read(struct hda_codec *codec, hda_nid_t nid, int ch,
--			   int direction, int index);
--int snd_hda_codec_amp_update(struct hda_codec *codec, hda_nid_t nid, int ch,
--			     int direction, int idx, int mask, int val);
-+#define snd_hda_codec_amp_read(codec, nid, ch, dir, idx) \
-+	snd_hda_regmap_amp_get(codec, nid, ch, dir, idx)
-+#define snd_hda_codec_amp_update(codec, nid, ch, dir, idx, mask, val) \
-+	snd_hda_regmap_amp_update(codec, nid, ch, dir, idx, mask, val)
- int snd_hda_codec_amp_stereo(struct hda_codec *codec, hda_nid_t nid,
- 			     int dir, int idx, int mask, int val);
- int snd_hda_codec_amp_init(struct hda_codec *codec, hda_nid_t nid, int ch,
- 			   int direction, int idx, int mask, int val);
- int snd_hda_codec_amp_init_stereo(struct hda_codec *codec, hda_nid_t nid,
- 				  int dir, int idx, int mask, int val);
--void snd_hda_codec_resume_amp(struct hda_codec *codec);
--
- void snd_hda_set_vmaster_tlv(struct hda_codec *codec, hda_nid_t nid, int dir,
- 			     unsigned int *tlv);
- struct snd_kcontrol *snd_hda_find_mixer_ctl(struct hda_codec *codec,
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index f1812aabd63e..a930408d2bb8 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2220,7 +2220,7 @@ static int generic_hdmi_resume(struct hda_codec *codec)
- 	int pin_idx;
- 
- 	codec->patch_ops.init(codec);
--	snd_hda_codec_resume_amp(codec);
-+	regcache_sync(codec->regmap);
- 	snd_hda_codec_resume_cache(codec);
- 
- 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 70808f92276a..3b495ec41e33 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -799,7 +799,7 @@ static int alc_resume(struct hda_codec *codec)
- 	if (!spec->no_depop_delay)
- 		msleep(150); /* to avoid pop noise */
- 	codec->patch_ops.init(codec);
--	snd_hda_codec_resume_amp(codec);
-+	regcache_sync(codec->regmap);
- 	snd_hda_codec_resume_cache(codec);
- 	hda_call_check_power_status(codec, 0x01);
- 	return 0;
-@@ -3099,7 +3099,7 @@ static int alc269_resume(struct hda_codec *codec)
- 		msleep(200);
- 	}
- 
--	snd_hda_codec_resume_amp(codec);
-+	regcache_sync(codec->regmap);
- 	snd_hda_codec_resume_cache(codec);
- 	hda_call_check_power_status(codec, 0x01);
- 
++#ifdef CONFIG_PM
++#define codec_is_running(codec)				\
++	(atomic_read(&(codec)->in_pm) ||		\
++	 !pm_runtime_suspended(hda_codec_dev(codec)))
++#else
++#define codec_is_running(codec)		true
++#endif
++
++#define get_verb(reg)	(((reg) >> 8) & 0xfff)
++
++static bool hda_writeable_reg(struct device *dev, unsigned int reg)
++{
++	unsigned int verb = get_verb(reg);
++
++	switch (verb & 0xf00) {
++	case AC_VERB_GET_STREAM_FORMAT:
++	case AC_VERB_GET_AMP_GAIN_MUTE:
++		return true;
++	case 0xf00:
++		break;
++	default:
++		return false;
++	}
++
++	switch (verb) {
++	case AC_VERB_GET_CONNECT_SEL:
++	case AC_VERB_GET_SDI_SELECT:
++	case AC_VERB_GET_CONV:
++	case AC_VERB_GET_PIN_WIDGET_CONTROL:
++	case AC_VERB_GET_UNSOLICITED_RESPONSE: /* only as SET_UNSOLICITED_ENABLE */
++	case AC_VERB_GET_BEEP_CONTROL:
++	case AC_VERB_GET_EAPD_BTLENABLE:
++	case AC_VERB_GET_DIGI_CONVERT_1:
++	case AC_VERB_GET_DIGI_CONVERT_2: /* only for beep control */
++	case AC_VERB_GET_VOLUME_KNOB_CONTROL:
++	case AC_VERB_GET_CONFIG_DEFAULT:
++	case AC_VERB_GET_GPIO_MASK:
++	case AC_VERB_GET_GPIO_DIRECTION:
++	case AC_VERB_GET_GPIO_DATA: /* not for volatile read */
++	case AC_VERB_GET_GPIO_UNSOLICITED_RSP_MASK:
++	case AC_VERB_GET_CVT_CHAN_COUNT:
++		return true;
++	}
++
++	return false;
++}
++
++static bool hda_readable_reg(struct device *dev, unsigned int reg)
++{
++	unsigned int verb = get_verb(reg);
++
++	switch (verb) {
++	case AC_VERB_PARAMETERS:
++	case AC_VERB_GET_CONNECT_LIST:
++	case AC_VERB_GET_SUBSYSTEM_ID:
++		return true;
++	}
++
++	return hda_writeable_reg(dev, reg);
++}
++
++static int hda_reg_read(void *context, unsigned int reg, unsigned int *val)
++{
++	struct hda_codec *codec = context;
++
++	if (!codec_is_running(codec))
++		return -EAGAIN;
++
++	reg |= (codec->addr << 28);
++	if (snd_hda_codec_exec_verb(codec, reg, 0, val) < 0)
++		return -EIO;
++	return 0;
++}
++
++static int hda_reg_write(void *context, unsigned int reg, unsigned int val)
++{
++	struct hda_codec *codec = context;
++	unsigned int verb;
++	int i, bytes;
++
++	if (!codec_is_running(codec))
++		return 0; /* skip the h/w write, it'll be synced later */
++
++	reg &= ~0x00080000U; /* drop GET bit */
++	reg |= (codec->addr << 28);
++	verb = get_verb(reg);
++
++	switch (verb & 0xf00) {
++	case AC_VERB_SET_AMP_GAIN_MUTE:
++		verb = AC_VERB_SET_AMP_GAIN_MUTE;
++		if (reg & AC_AMP_GET_LEFT)
++			verb |= AC_AMP_SET_LEFT >> 8;
++		else
++			verb |= AC_AMP_SET_RIGHT >> 8;
++		if (reg & AC_AMP_GET_OUTPUT) {
++			verb |= AC_AMP_SET_OUTPUT >> 8;
++		} else {
++			verb |= AC_AMP_SET_INPUT >> 8;
++			verb |= reg & 0xf;
++		}
++		break;
++	}
++
++	switch (verb) {
++	case AC_VERB_SET_DIGI_CONVERT_1:
++		bytes = 2;
++		break;
++	case AC_VERB_SET_CONFIG_DEFAULT_BYTES_0:
++		bytes = 4;
++		break;
++	default:
++		bytes = 1;
++		break;
++	}
++
++	for (i = 0; i < bytes; i++) {
++		reg &= ~0xfffff;
++		reg |= (verb + i) << 8 | ((val >> (8 * i)) & 0xff);
++		if (snd_hda_codec_exec_verb(codec, reg, 0, NULL) < 0)
++			return -EIO;
++	}
++
++	return 0;
++}
++
++static const struct regmap_config hda_regmap_cfg = {
++	.name = "hdaudio",
++	.reg_bits = 32,
++	.val_bits = 32,
++	.max_register = 0xfffffff,
++	.writeable_reg = hda_writeable_reg,
++	.readable_reg = hda_readable_reg,
++	.cache_type = REGCACHE_RBTREE,
++};
++
++static const struct regmap_bus hda_regmap_bus = {
++	.reg_read = hda_reg_read,
++	.reg_write = hda_reg_write,
++};
++
++int snd_hda_regmap_init(struct hda_codec *codec)
++{
++	struct regmap *regmap;
++
++	regmap = regmap_init(hda_codec_dev(codec), &hda_regmap_bus,
++			     codec, &hda_regmap_cfg);
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
++	codec->regmap = regmap;
++	return 0;
++}
++
++void snd_hda_regmap_exit(struct hda_codec *codec)
++{
++	if (codec->regmap) {
++		regmap_exit(codec->regmap);
++		codec->regmap = NULL;
++	}
++}
++
++/*
++ * helper functions
++ */
++
++/* write a pseudo-register value (w/o power sequence) */
++int snd_hda_reg_raw_write(struct hda_codec *codec, unsigned int reg,
++			  unsigned int val)
++{
++	if (!codec->regmap)
++		return hda_reg_write(codec, reg, val);
++	else
++		return regmap_write(codec->regmap, reg, val);
++}
++
++static int reg_raw_read(struct hda_codec *codec, unsigned int reg,
++			     unsigned int *val)
++{
++	if (!codec->regmap)
++		return hda_reg_read(codec, reg, val);
++	else
++		return regmap_read(codec->regmap, reg, val);
++}
++
++/* read a pseudo-register value;
++ * this function powers up the codec if necessary
++ */
++int snd_hda_reg_raw_read(struct hda_codec *codec, unsigned int reg,
++			 unsigned int *val)
++{
++	int err;
++
++	err = reg_raw_read(codec, reg, val);
++	if (err == -EAGAIN) {
++		snd_hda_power_up(codec);
++		err = reg_raw_read(codec, reg, val);
++		snd_hda_power_down(codec);
++	}
++	return err;
++}
++
++/* update a pseudo-register value;
++ * this function powers up the codec if necessary
++ */
++int snd_hda_reg_raw_update(struct hda_codec *codec, unsigned int reg,
++			   unsigned int mask, unsigned int val)
++{
++	unsigned int orig;
++	int err;
++
++	err = snd_hda_reg_raw_read(codec, reg, &orig);
++	if (err < 0)
++		return err;
++	if ((orig & mask) == val)
++		return 0;
++	orig &= ~mask;
++	orig |= val;
++	err = snd_hda_reg_raw_write(codec, reg, val);
++	if (err < 0)
++		return err;
++	return 1;
++}
++
++static inline unsigned int encode_reg(hda_nid_t nid, unsigned int verb)
++{
++	verb |= 0x800;
++	if (snd_BUG_ON((verb & 0xf00) == AC_VERB_GET_AMP_GAIN_MUTE))
++		verb = 0;
++	verb = (verb << 8) | (nid << 20);
++	return verb;
++}
++
++/**
++ * snd_hda_regmap_write - Write a verb with caching
++ * @nid: codec NID
++ * @reg: verb to write
++ * @val: value to write
++ *
++ * This function doesn't power up the codec but only updates cache
++ * if the device is suspended.  Wrap with snd_hda_power_up() and
++ * snd_hda_power_down() accordingly in the caller side if necessary.
++ *
++ * For writing an amp value, use snd_hda_regmap_amp_update().
++ */
++int snd_hda_regmap_write(struct hda_codec *codec, hda_nid_t nid,
++			 unsigned int verb, unsigned int val)
++{
++	return snd_hda_reg_raw_write(codec, encode_reg(nid, verb), val);
++}
++EXPORT_SYMBOL_GPL(snd_hda_regmap_write);
++
++/**
++ * snd_hda_regmap_update_bits - Update a verb value with caching
++ * @nid: codec NID
++ * @verb: verb to update
++ * @mask: bit mask to update
++ * @val: value to update
++ *
++ * This function doesn't always power up the codec but only updates cache
++ * if the device is suspended.  Wrap with snd_hda_power_up() and
++ * snd_hda_power_down() accordingly in the caller side if necessary.
++ *
++ * For updating an amp value, use snd_hda_regmap_amp_update().
++ */
++int snd_hda_regmap_update_bits(struct hda_codec *codec, hda_nid_t nid,
++			       unsigned int verb, unsigned int mask,
++			       unsigned int val)
++{
++	return snd_hda_reg_raw_update(codec, encode_reg(nid, verb), mask, val);
++}
++EXPORT_SYMBOL_GPL(snd_hda_regmap_update_bits);
++
++/**
++ * snd_hda_regmap_read - Read a verb with caching
++ * @nid: codec NID
++ * @verb: verb to read
++ * @val: pointer to store the value
++ *
++ * For reading an amp value, use snd_hda_regmap_get_amp().
++ */
++int snd_hda_regmap_read(struct hda_codec *codec, hda_nid_t nid,
++			unsigned int verb, unsigned int *val)
++{
++	return snd_hda_reg_raw_read(codec, encode_reg(nid, verb), val);
++}
++EXPORT_SYMBOL_GPL(snd_hda_regmap_read);
++
++/* encode to a pseudo-register from amp attributes */
++static inline unsigned int encode_amp(hda_nid_t nid, int ch, int dir, int idx)
++{
++	unsigned int val;
++
++	val = (nid << 20) | (AC_VERB_GET_AMP_GAIN_MUTE << 8);
++	if (ch)
++		val |= AC_AMP_GET_RIGHT;
++	else
++		val |= AC_AMP_GET_LEFT;
++	if (dir == HDA_OUTPUT)
++		val |= AC_AMP_GET_OUTPUT;
++	else
++		val |= AC_AMP_GET_INPUT;
++	val |= idx;
++	return val;
++}
++
++/**
++ * snd_hda_regmap_get_amp - Read AMP value
++ * @codec: HD-audio codec
++ * @nid: NID to read the AMP value
++ * @ch: channel (left=0 or right=1)
++ * @direction: #HDA_INPUT or #HDA_OUTPUT
++ * @index: the index value (only for input direction)
++ * @val: the pointer to store the value
++ *
++ * Read AMP value.  The volume is between 0 to 0x7f, 0x80 = mute bit.
++ * Returns the value or a negative error.
++ */
++int snd_hda_regmap_amp_get(struct hda_codec *codec, hda_nid_t nid,
++			   int ch, int dir, int idx)
++{
++	int err, val;
++
++	err = snd_hda_reg_raw_read(codec,
++				   encode_amp(nid, ch, dir, idx), &val);
++	return err < 0 ? err : val;
++}
++EXPORT_SYMBOL_GPL(snd_hda_regmap_amp_get);
++
++/**
++ * snd_hda_regmap_amp_update - update the AMP value
++ * @codec: HD-audio codec
++ * @nid: NID to read the AMP value
++ * @ch: channel (left=0 or right=1)
++ * @direction: #HDA_INPUT or #HDA_OUTPUT
++ * @idx: the index value (only for input direction)
++ * @mask: bit mask to set
++ * @val: the bits value to set
++ *
++ * Update the AMP value with a bit mask.
++ * Returns 0 if the value is unchanged, 1 if changed, or a negative error.
++ *
++ * This function doesn't always power up the codec but only updates cache
++ * if the device is suspended.  Wrap with snd_hda_power_up() and
++ * snd_hda_power_down() accordingly in the caller side if necessary.
++ */
++int snd_hda_regmap_amp_update(struct hda_codec *codec, hda_nid_t nid,
++			      int ch, int dir, int idx, int mask, int val)
++{
++	return snd_hda_reg_raw_update(codec,
++				      encode_amp(nid, ch, dir, idx),
++				      mask, val);
++}
++EXPORT_SYMBOL_GPL(snd_hda_regmap_amp_update);
+diff --git a/sound/pci/hda/hda_regmap.h b/sound/pci/hda/hda_regmap.h
+new file mode 100644
+index 000000000000..7d4b8be58975
+--- /dev/null
++++ b/sound/pci/hda/hda_regmap.h
+@@ -0,0 +1,36 @@
++/*
++ * HD-audio regmap helpers
++ */
++
++#ifndef __HDA_REGMAP_H
++#define __HDA_REGMAP_H
++
++#include <linux/regmap.h>
++#include <sound/core.h>
++#include <sound/hda_verbs.h>
++#include "hda_codec.h"
++
++int snd_hda_regmap_init(struct hda_codec *codec);
++void snd_hda_regmap_exit(struct hda_codec *codec);
++
++int snd_hda_regmap_write(struct hda_codec *codec, hda_nid_t nid,
++			 unsigned int verb, unsigned int val);
++int snd_hda_regmap_update_bits(struct hda_codec *codec, hda_nid_t nid,
++			       unsigned int verb, unsigned int mask,
++			       unsigned int val);
++int snd_hda_regmap_read(struct hda_codec *codec, hda_nid_t nid,
++			unsigned int verb, unsigned int *val);
++
++int snd_hda_regmap_amp_get(struct hda_codec *codec, hda_nid_t nid,
++			   int ch, int dir, int idx);
++int snd_hda_regmap_amp_update(struct hda_codec *codec, hda_nid_t nid,
++			      int ch, int dir, int idx, int mask, int val);
++
++int snd_hda_reg_raw_read(struct hda_codec *codec, unsigned int reg,
++			 unsigned int *val);
++int snd_hda_reg_raw_write(struct hda_codec *codec, unsigned int reg,
++			  unsigned int val);
++int snd_hda_reg_raw_update(struct hda_codec *codec, unsigned int reg,
++			   unsigned int mask, unsigned int val);
++
++#endif /* __HDA_REGMAP_H */
 -- 
 2.3.0
