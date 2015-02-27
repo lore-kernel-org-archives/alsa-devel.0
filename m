@@ -1,14 +1,15 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: rt286: correct the OR to AND
-Date: Fri, 27 Feb 2015 12:52:26 +0800
-Message-ID: <1425012746-11355-1-git-send-email-yang.jie@intel.com>
+Subject: [PATCH] ASoC: Intel: Add suspend_pre and resume_post
+	for Broadwell snd_soc_card
+Date: Fri, 27 Feb 2015 12:54:29 +0800
+Message-ID: <1425012869-11429-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id AEA732606DE
- for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 05:50:03 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85CC32606DE
+ for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 05:52:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +23,60 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Here it should be AND(&) to check the status.
+For broadwell machine, we need do some machine related setting before
+suspend and after resume, e.g. disable/enable jack detection, here
+adding snd_soc_card suspend_pre and resume_post for this task.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- sound/soc/codecs/rt286.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/broadwell.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 16723b1..49c44a7 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -397,7 +397,7 @@ int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+diff --git a/sound/soc/intel/broadwell.c b/sound/soc/intel/broadwell.c
+index fba2ef5..af5d730 100644
+--- a/sound/soc/intel/broadwell.c
++++ b/sound/soc/intel/broadwell.c
+@@ -225,6 +225,32 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+ 	},
+ };
  
- 	if (jack) {
- 		/* enable IRQ */
--		if (rt286->jack->status | SND_JACK_HEADPHONE)
-+		if (rt286->jack->status & SND_JACK_HEADPHONE)
- 			snd_soc_dapm_force_enable_pin(&codec->dapm, "LDO1");
- 		regmap_update_bits(rt286->regmap, RT286_IRQ_CTRL, 0x2, 0x2);
- 		/* Send an initial empty report */
++static int broadwell_suspend(struct snd_soc_card *card){
++	struct snd_soc_codec *codec;
++
++	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
++		if (!strcmp(codec->component.name, "i2c-INT343A:00")) {
++			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
++			rt286_mic_detect(codec, NULL);
++			break;
++		}
++	}
++	return 0;
++}
++
++static int broadwell_resume(struct snd_soc_card *card){
++	struct snd_soc_codec *codec;
++
++	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
++		if (!strcmp(codec->component.name, "i2c-INT343A:00")) {
++			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
++			rt286_mic_detect(codec, &broadwell_headset);
++			break;
++		}
++	}
++	return 0;
++}
++
+ /* broadwell audio machine driver for WPT + RT286S */
+ static struct snd_soc_card broadwell_rt286 = {
+ 	.name = "broadwell-rt286",
+@@ -238,6 +264,8 @@ static struct snd_soc_card broadwell_rt286 = {
+ 	.dapm_routes = broadwell_rt286_map,
+ 	.num_dapm_routes = ARRAY_SIZE(broadwell_rt286_map),
+ 	.fully_routed = true,
++	.suspend_pre = broadwell_suspend,
++	.resume_post = broadwell_resume,
+ };
+ 
+ static int broadwell_audio_probe(struct platform_device *pdev)
 -- 
 1.9.1
