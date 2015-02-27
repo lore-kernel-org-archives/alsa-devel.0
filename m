@@ -1,23 +1,20 @@
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH 2/4] ARM: mvebu: add audio I2S controller
- to Armada 38x Device Tree
-Date: Fri, 27 Feb 2015 15:03:03 +0100
-Message-ID: <20150227150303.2c4ea0e7@free-electrons.com>
-References: <1424901482-3809-1-git-send-email-mw@semihalf.com>
- <1424901482-3809-3-git-send-email-mw@semihalf.com>
- <54EE4AD6.6090101@gmail.com>
- <CAPv3WKf8b+fuB-4qVwKC57iKaNHTLZAf9VFpfDbow1Sb3YAsNw@mail.gmail.com>
- <54EE6942.9080800@gmail.com>
- <CAPv3WKezrx4jkZNo3PYSOGZtiSJH09+94BaknYNN4xPkB1AxKw@mail.gmail.com>
+From: Eric Nelson <eric.nelson@boundarydevices.com>
+Subject: [PATCH V2] ASoC: sgtl5000: remove useless register
+	write clearing CHRGPUMP_POWERUP
+Date: Fri, 27 Feb 2015 08:06:45 -0700
+Message-ID: <1425049605-5473-1-git-send-email-eric.nelson@boundarydevices.com>
+References: <1424991540-10206-1-git-send-email-eric.nelson@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (down.free-electrons.com
- [37.187.137.238])
- by alsa0.perex.cz (Postfix) with ESMTP id 663A82650B4
- for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 15:03:22 +0100 (CET)
-In-Reply-To: <CAPv3WKezrx4jkZNo3PYSOGZtiSJH09+94BaknYNN4xPkB1AxKw@mail.gmail.com>
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 123D1265134
+ for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 16:06:56 +0100 (CET)
+Received: by padbj1 with SMTP id bj1so23311152pad.5
+ for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2015 07:06:51 -0800 (PST)
+In-Reply-To: <1424991540-10206-1-git-send-email-eric.nelson@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,36 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcin Wojtas <mw@semihalf.com>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>, Grzegorz Jaszczyk <jaz@semihalf.com>, Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory =?UTF-8?B?Q2zDqW1lbnQ=?= <gregory.clement@free-electrons.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: fabio.estevam@freescale.com, lars@metafoo.de, tiwai@suse.de, Eric Nelson <eric.nelson@boundarydevices.com>, lgirdwood@gmail.com, broonie@kernel.org, rmk+kernel@arm.linux.org.uk, jean-michel.hautbois@vodalys.com, troy.kisky@boundarydevices.com
 List-Id: alsa-devel@alsa-project.org
 
-Dear Marcin Wojtas,
+The SGTL5000_CHIP_ANA_POWER register is cached. Update the cached
+value instead of writing it directly.
 
-On Thu, 26 Feb 2015 10:05:08 +0100, Marcin Wojtas wrote:
+Patch inspired by Russell King's more colorful remarks in this
+patch:
+	https://github.com/SolidRun/linux-imx6-3.14/commit/dd4bf6a
 
-> > Given that this PLL layout is most likely 38x specific, I'd just put it
-> > into drivers/clk/mvebu/armada-38x.c.
-> 
-> Audio PLL setting consist of 3 independent registers. Adjacent to them
-> there are same regs for setting TDM PLL, however I doubt  telephony is
-> going to be supported in foreseeable future (if ever).
+Signed-off-by: Eric Nelson <eric.nelson@boundarydevices.com>
+---
+V2 updates the cached variable ana_pwr to make things more explicit,
+   removing the need for explanation
 
-We might be supporting TDM in the future. However, I see that the TDM
-PLL registers are nicely grouped together, and so are the audio PLL
-registers. So maybe we can simply have a driver to handle the audio PLL
-registers for now, and if needed in the future, add another driver for
-the TDM PLL.
+ sound/soc/codecs/sgtl5000.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-> I also have strong suspicion that it looks the same in a39x - Thomas,
-> can you take a look into spec and confirm?
-
-As far as I can see there is no audio support and no TDM support in
-Armada 39x, and there those TDM PLL and audio PLL registers do not
-exist.
-
-Thomas
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index d4d793f..1536ba7 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -952,13 +952,7 @@ static int sgtl5000_set_power_regs(struct snd_soc_codec *codec)
+ 		/* Enable VDDC charge pump */
+ 		ana_pwr |= SGTL5000_VDDC_CHRGPMP_POWERUP;
+ 	} else if (vddio >= 3100 && vdda >= 3100) {
+-		/*
+-		 * if vddio and vddd > 3.1v,
+-		 * charge pump should be clean before set ana_pwr
+-		 */
+-		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+-				SGTL5000_VDDC_CHRGPMP_POWERUP, 0);
+-
++		ana_pwr &= ~SGTL5000_VDDC_CHRGPMP_POWERUP;
+ 		/* VDDC use VDDIO rail */
+ 		lreg_ctrl |= SGTL5000_VDDC_ASSN_OVRD;
+ 		lreg_ctrl |= SGTL5000_VDDC_MAN_ASSN_VDDIO <<
 -- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+1.9.1
