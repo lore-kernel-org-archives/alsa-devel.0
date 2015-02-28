@@ -1,17 +1,22 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Issue with snd-aloop and alsaloop in my embedded linux
-	custom board
-Date: Sat, 28 Feb 2015 15:57:48 +0000
-Message-ID: <1425139107380.25188@tataelxsi.co.in>
+From: Mihail Zenkov <mihail.zenkov@gmail.com>
+Subject: [patch] emu1010: avoid pop noises
+Date: Sat, 28 Feb 2015 19:41:10 +0000
+Message-ID: <20150228194110.325716b92ca0d7195887f234@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APAC01-SG1-obe.outbound.protection.outlook.com
- (mail-sg1on0119.outbound.protection.outlook.com [134.170.132.119])
- by alsa0.perex.cz (Postfix) with ESMTP id 703982604A7
- for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2015 16:57:53 +0100 (CET)
-Content-Language: en-US
+Received: from mail-la0-f52.google.com (mail-la0-f52.google.com
+ [209.85.215.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23B8B260541
+ for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2015 17:41:17 +0100 (CET)
+Received: by labgm9 with SMTP id gm9so23014542lab.2
+ for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2015 08:41:16 -0800 (PST)
+Received: from egoOne ([77.67.186.109])
+ by mx.google.com with ESMTPSA id p7sm1537118lap.18.2015.02.28.08.41.13
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sat, 28 Feb 2015 08:41:15 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,66 +26,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Lars,
+Fix pop noises on startup and on poweroff.
 
+Signed-off-by: Mihail Zenkov <mihail.zenkov@gmail.com>
 
-I hope you were providing solutions for alsa issues, I am running out of the below issue, hope could you please help me in resolving this issue or could you please redirect to the respective links where my queries can be posted & get the solutions for the problem
-
-
-The below is the virtual cards created after configuring snd-aloop in the linux kernel
-
-snd-aloop provided 2 pass-through devices as shown in the below
-
-
-card 0, device 0
-
-card 0, device 1
-
-
-But am unable to perform the loop back ie., what ever am playing am unable to record in the virtual device
-
-As per the logs below, am using the below commands to perform loopback, could you please let me know why am unable to perform the loopback with the below commands or please let me know am I missing any configurations
-
-
-aplay -D hw:0,0,0 play.wav
-
-arecord -D hw:0,1,0 record.wav
-
-
-root@am335x-evm:/# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Loopback [Loopback], device 0: Loopback PCM [Loopback PCM]
-  Subdevices: 8/8
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
-  Subdevice #3: subdevice #3
-  Subdevice #4: subdevice #4
-  Subdevice #5: subdevice #5
-  Subdevice #6: subdevice #6
-  Subdevice #7: subdevice #7
-card 0: Loopback [Loopback], device 1: Loopback PCM [Loopback PCM]
-  Subdevices: 8/8
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
-  Subdevice #3: subdevice #3
-  Subdevice #4: subdevice #4
-  Subdevice #5: subdevice #5
-  Subdevice #6: subdevice #6
-  Subdevice #7: subdevice #7
-card 1: UDA1345TS [TI UDA1345TS], device 0: UDA134x uda134x-hifi-0 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-root@am335x-evm:/#
-
-
-
-Kindly do the needful as early as possible,
-
-
-Many Thanks in advance
+--- linux-3.19/include/sound/emu10k1.h
++++ linux-3.19-1/include/sound/emu10k1.h
+@@ -1809,6 +1809,8 @@
+ 		       uint subsystem,
+ 		       struct snd_emu10k1 ** remu);
+ 
++void snd_emu10k1_shutdown(struct pci_dev *pci);
++
+ int snd_emu10k1_pcm(struct snd_emu10k1 * emu, int device, struct snd_pcm ** rpcm);
+ int snd_emu10k1_pcm_mic(struct snd_emu10k1 * emu, int device, struct snd_pcm ** rpcm);
+ int snd_emu10k1_pcm_efx(struct snd_emu10k1 * emu, int device, struct snd_pcm ** rpcm);
+--- linux-3.19/sound/pci/emu10k1/emu10k1.c
++++ linux-3.19-1/sound/pci/emu10k1/emu10k1.c
+@@ -282,6 +282,7 @@
+ 	.driver = {
+ 		.pm = SND_EMU10K1_PM_OPS,
+ 	},
++	.shutdown = snd_emu10k1_shutdown,
+ };
+ 
+ module_pci_driver(emu10k1_driver);
+--- linux-3.19/sound/pci/emu10k1/emu10k1_main.c
++++ linux-3.19-1/sound/pci/emu10k1/emu10k1_main.c
+@@ -361,6 +361,9 @@
+ 	/* Enable analog/digital outs on audigy */
+ 	if (emu->card_capabilities->emu_model) {
+ 		;  /* Disable all access to A_IOCFG for the emu1010 */
++		/* Wait before unmute to avoid pop noise */
++		msleep_interruptible(500);
++		snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE); /* Unmute all */
+ 	} else if (emu->card_capabilities->i2c_adc) {
+ 		;  /* Disable A_IOCFG for Audigy 2 ZS Notebook */
+ 	} else if (emu->audigy) {
+@@ -1097,7 +1100,6 @@
+ 		EMU_DST_ALICE_I2S2_LEFT, EMU_SRC_DOCK_ADC3_LEFT1);
+ 	snd_emu1010_fpga_link_dst_src_write(emu,
+ 		EMU_DST_ALICE_I2S2_RIGHT, EMU_SRC_DOCK_ADC3_RIGHT1);
+-	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x01); /* Unmute all */
+ 
+ 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &tmp);
+ 
+@@ -1253,17 +1255,12 @@
+ 	/* snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, 0x0); */ /* Output spdif */
+ 
+ 	/* TEMP: Select 48kHz SPDIF out */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x0); /* Mute all */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 0x0); /* Default fallback clock 48kHz */
+ 	/* Word Clock source, Internal 48kHz x1 */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K);
+ 	/* snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_4X); */
+ 	emu->emu1010.internal_clock = 1; /* 48000 */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12); /* Set LEDs on Audio Dock */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x1); /* Unmute all */
+-	/* snd_emu1010_fpga_write(emu, 0x7, 0x0); */ /* Mute all */
+-	/* snd_emu1010_fpga_write(emu, 0x7, 0x1); */ /* Unmute all */
+-	/* snd_emu1010_fpga_write(emu, 0xe, 0x12); */ /* Set LEDs on Audio Dock */
+ 
+ 	return 0;
+ }
+@@ -2142,3 +2139,16 @@
+ 	}
+ }
+ #endif
++
++void snd_emu10k1_shutdown(struct pci_dev *pci)
++{
++	struct snd_card *card = pci_get_drvdata(pci);
++	struct snd_emu10k1 *emu = card->private_data;
++
++	if (emu->card_capabilities->emu_model) {
++		snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE); /* Mute all */
++		/* Clean FPGA to avoid pop noise on shutdown */
++		snd_emu1010_fpga_write(emu, EMU_HANA_FPGA_CONFIG, 0x02);
++	}
++}
++EXPORT_SYMBOL(snd_emu10k1_shutdown);
