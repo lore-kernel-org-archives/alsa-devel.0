@@ -1,19 +1,19 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 02/10] ALSA: hda - Bind codecs via standard
- bus
-Date: Sat, 28 Feb 2015 11:24:55 +0100
-Message-ID: <54F19777.4050305@metafoo.de>
-References: <1424970025-8082-1-git-send-email-tiwai@suse.de>	<1424970025-8082-3-git-send-email-tiwai@suse.de>	<54F19094.6000003@metafoo.de>
- <s5hvbimgxja.wl-tiwai@suse.de>
+Subject: Re: [PATCH 7/7] ALSA: hda - Reduce verbs during
+ generic parser initialization
+Date: Sat, 28 Feb 2015 11:27:42 +0100
+Message-ID: <54F1981E.7070103@metafoo.de>
+References: <1425072502-3204-1-git-send-email-tiwai@suse.de>	<1425072502-3204-8-git-send-email-tiwai@suse.de>	<54F18FA1.40002@metafoo.de>
+ <s5hwq32gxrf.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-061.synserver.de (smtp-out-062.synserver.de
+Received: from smtp-out-062.synserver.de (smtp-out-062.synserver.de
  [212.40.185.62])
- by alsa0.perex.cz (Postfix) with ESMTP id C4D2D260412
- for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2015 11:24:55 +0100 (CET)
-In-Reply-To: <s5hvbimgxja.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 90254260429
+ for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2015 11:27:42 +0100 (CET)
+In-Reply-To: <s5hwq32gxrf.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,55 +27,50 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/28/2015 11:06 AM, Takashi Iwai wrote:
-> At Sat, 28 Feb 2015 10:55:32 +0100,
+On 02/28/2015 11:01 AM, Takashi Iwai wrote:
+> At Sat, 28 Feb 2015 10:51:29 +0100,
 > Lars-Peter Clausen wrote:
 >>
->> On 02/26/2015 06:00 PM, Takashi Iwai wrote:
->>> Now we create the standard HD-audio bus (/sys/bus/hdaudio), and bind
->>> the codec driver with the codec device over there.  This is the first
->>> step of the whole transition so that the changes to each codec driver
->>> are kept as minimal as possible.
+>> On 02/27/2015 10:28 PM, Takashi Iwai wrote:
+>>> For reducing the number of verbs performed during the initialization
+>>> and the resume of the generic parser, this patch (re-)introduces the
+>>> mechanism to cache everything in init and sync later.
 >>>
->>> Each codec driver needs to register hda_codec_driver struct containing
->>> the currently existing preset via the new helper macro
->>> module_hda_codec_driver().  The old hda_codec_preset_list is replaced
->>> with this infrastructure.  The generic parsers (for HDMI and other)
->>> are also included in the preset with the special IDs to bind
->>> uniquely.
+>>> However, it became a bit tricky in the end: we can't use regcache's
+>>> cache_only flag straightforwardly here because we do want the actual
+>>> hardware access for reads if needed, but forbids only the writes.
+>>> So, instead, the regmap reg_write callback checks the own flag
+>>> (reusing the existing codec->cached_write) and skips the actual
+>>> access.  This works by assumption of regmap dumping the whole
+>>> registers via regcache_sync() at a later point.
 >>>
->>> In HD-audio core side, the device binding code is split to
->>> hda_bind.c.  It provides the snd_hda_bus_type implementation to match
->>> the codec driver with the given codec vendor ID.  It also manages the
->>> module auto-loading by itself like before: when the matching isn't
->>> found, it tries to probe the corresponding codec modules, and finally
->>> falls back to the generic drivers.  (The special ID mentioned above is
->>> set at this stage.)
+>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>> ---
+>>>    sound/pci/hda/hda_generic.c | 4 ++++
+>>>    sound/pci/hda/hda_regmap.c  | 6 ++++++
+>>>    2 files changed, 10 insertions(+)
 >>>
->>> The only visible change to outside is that the hdaudio sysfs entry now
->>> appears in /sys/bus/devices, not as a sound class device.
+>>> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+>>> index 33de31c83d6e..bcaed93f8795 100644
+>>> --- a/sound/pci/hda/hda_generic.c
+>>> +++ b/sound/pci/hda/hda_generic.c
+>>> @@ -5411,6 +5411,8 @@ int snd_hda_gen_init(struct hda_codec *codec)
 >>>
->>> More works to move the suspend/resume and remove ops will be
->>> (hopefully) done in later patches.
+>>>    	snd_hda_apply_verbs(codec);
+>>>
+>>> +	codec->cached_write = 1;
+>>> +
 >>
->> Great stuff. AC'97 is next? ;)
+>> How about using regcache_cache_only(), this handles this internally in
+>> regmap and will also make sure that the cache gets marked as dirty so that a
+>> regcache_sync() will properly write out the dirty registers.
 >
-> Feel free to join to the club 97! :)
->
->> [...]
->>> +	drv->driver.probe = hda_codec_driver_probe;
->>> +	drv->driver.remove = hda_codec_driver_remove;
->>
->> Small nitpick, in my opinion it would be cleaner to use the snd_hda_bus_type
->> probe/remove callbacks for this.
->
-> Correct.  However, this would need more changes.  In this series, I'm
-> trying a gradual transition without a big surprise.  The merit of this
-> patch is that you need minimum changes in the codec driver side.
+> I tried this as a first option, too, but it doesn't work because we
+> still want reading the value from hardware if not read beforehand.
+> regcache_cache_only() prevents also from reading a h/w value.  It's
+> the point I mentioned this being tricky.
 
-What I meant was instead of dynamically assigning the probe/remove callbacks 
-of each driver struct, just statistically setup the probe/remove callbacks 
-for the bus_type with the same callbacks. From a functional point of view 
-there should not be any difference.
+Hm, right, I skipped right past that. But I think it will still be better to 
+implement this write-only caching in the regmap layer.
 
 - Lars
