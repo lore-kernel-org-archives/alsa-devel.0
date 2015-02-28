@@ -1,19 +1,25 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 02/10] ALSA: hda - Bind codecs via standard
- bus
-Date: Sat, 28 Feb 2015 10:55:32 +0100
-Message-ID: <54F19094.6000003@metafoo.de>
-References: <1424970025-8082-1-git-send-email-tiwai@suse.de>
- <1424970025-8082-3-git-send-email-tiwai@suse.de>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH 2/4] ARM: mvebu: add audio I2S controller
+ to Armada 38x Device Tree
+Date: Sat, 28 Feb 2015 10:58:44 +0100
+Message-ID: <20150228105844.3749a825@free-electrons.com>
+References: <1424901482-3809-1-git-send-email-mw@semihalf.com>
+ <1424901482-3809-3-git-send-email-mw@semihalf.com>
+ <54EE4AD6.6090101@gmail.com>
+ <CAPv3WKf8b+fuB-4qVwKC57iKaNHTLZAf9VFpfDbow1Sb3YAsNw@mail.gmail.com>
+ <54EE6942.9080800@gmail.com>
+ <CAPv3WKezrx4jkZNo3PYSOGZtiSJH09+94BaknYNN4xPkB1AxKw@mail.gmail.com>
+ <20150227150303.2c4ea0e7@free-electrons.com>
+ <CAPv3WKeLfFsxcC5gvZeP9DZqysZ0XtashByppeuDzRfvjxjujg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-061.synserver.de (smtp-out-061.synserver.de
- [212.40.185.61])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A5E92602AD
- for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2015 10:55:32 +0100 (CET)
-In-Reply-To: <1424970025-8082-3-git-send-email-tiwai@suse.de>
+Received: from mail.free-electrons.com (down.free-electrons.com
+ [37.187.137.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE60A2602AD
+ for <alsa-devel@alsa-project.org>; Sat, 28 Feb 2015 10:58:48 +0100 (CET)
+In-Reply-To: <CAPv3WKeLfFsxcC5gvZeP9DZqysZ0XtashByppeuDzRfvjxjujg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +29,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Marcin Wojtas <mw@semihalf.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>, Grzegorz Jaszczyk <jaz@semihalf.com>, Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory =?UTF-8?B?Q2zDqW1lbnQ=?= <gregory.clement@free-electrons.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/26/2015 06:00 PM, Takashi Iwai wrote:
-> Now we create the standard HD-audio bus (/sys/bus/hdaudio), and bind
-> the codec driver with the codec device over there.  This is the first
-> step of the whole transition so that the changes to each codec driver
-> are kept as minimal as possible.
->
-> Each codec driver needs to register hda_codec_driver struct containing
-> the currently existing preset via the new helper macro
-> module_hda_codec_driver().  The old hda_codec_preset_list is replaced
-> with this infrastructure.  The generic parsers (for HDMI and other)
-> are also included in the preset with the special IDs to bind
-> uniquely.
->
-> In HD-audio core side, the device binding code is split to
-> hda_bind.c.  It provides the snd_hda_bus_type implementation to match
-> the codec driver with the given codec vendor ID.  It also manages the
-> module auto-loading by itself like before: when the matching isn't
-> found, it tries to probe the corresponding codec modules, and finally
-> falls back to the generic drivers.  (The special ID mentioned above is
-> set at this stage.)
->
-> The only visible change to outside is that the hdaudio sysfs entry now
-> appears in /sys/bus/devices, not as a sound class device.
->
-> More works to move the suspend/resume and remove ops will be
-> (hopefully) done in later patches.
+Dear Marcin Wojtas,
 
-Great stuff. AC'97 is next? ;)
+On Fri, 27 Feb 2015 21:22:30 +0100, Marcin Wojtas wrote:
 
-[...]
-> +	drv->driver.probe = hda_codec_driver_probe;
-> +	drv->driver.remove = hda_codec_driver_remove;
+> Given all the facts, do you think that drivers/clk/mvebu/armada-38x.c
+> is a right place for adding this PLL setting support?
 
-Small nitpick, in my opinion it would be cleaner to use the snd_hda_bus_type 
-probe/remove callbacks for this.
+Yes, sounds right to me. I was thinking that maybe it should be in a
+separate file armada-38x-pll.c, but that's probably a bit too much for
+something that is causing to be a simple driver.
 
-> +	/* TODO: PM and others */
+Have you sorted out how to handle the pin-muxing part of the problem?
+
+Best regards,
+
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
