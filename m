@@ -1,238 +1,106 @@
-From: Yakir Yang <ykk@rock-chips.com>
-Subject: [PATCH v4 14/15] ASoC: rockchip/rockchip-hdmi-audio: add sound driver for hdmi audio
-Date: Sat, 28 Feb 2015 22:04:30 -0500
-Message-ID: <1425179070-2736-1-git-send-email-ykk@rock-chips.com>
-References: <1425175834-24661-1-git-send-email-ykk@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1425175834-24661-1-git-send-email-ykk@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, dianders@chromium.org, linux-rockchip@lists.infradead.org
-Cc: David Airlie <airlied@linux.ie>, Philipp Zabel <p.zabel@pengutronix.de>, Russell King <rmk+kernel@arm.linux.org.uk>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Fabio Estevam <fabio.estevam@freescale.com>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Max Filippov <jcmvbkbc@gmail.com>, Axel Lin <axel.lin@ingics.com>, Arnd Bergmann <arnd@arndb.de>, Jyri Sarha <jsarha@ti.com>, Sean Cross <xobs@kosagi.com>, Ben Zhang <benzh@chromium.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, mmind00@googlemail.com, marcheu@chromium.org, mark.yao@rock-chips.com
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: dice: fix wrong offsets for Dice
+	interface
+Date: Sun,  1 Mar 2015 18:12:16 +0900
+Message-ID: <1425201136-24461-1-git-send-email-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86E6E2604F4
+ for <alsa-devel@alsa-project.org>; Sun,  1 Mar 2015 10:12:21 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Add a sound driver that combines rockchip-i2s cpu_dai and dw-hdmi-codec
-as codec_dai to provide hdmi audio output on rk3288 platforms.
+For received packet stream, the offset of 'RX_SEQ_START' locates after
+the offset of 'RX_NUMBER_MIDI', although current macro and proc output
+includes wrong offsets.
 
-Signed-off-by: Yakir Yang <ykk@rock-chips.com>
+Fortunately, this bug doesn't affect streaming functionality because
+these macro is not used.
+
+This commit fixes these wrong macro and outputs.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
-Changes in v4:
-- Add ".pm = &snd_soc_pm_ops,"
+ sound/firewire/dice/dice-interface.h | 18 +++++++++---------
+ sound/firewire/dice/dice-proc.c      |  4 ++--
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-Changes in v3:
-- Delete the operation of jack in rockchip-hdmi-audio driver,
-  get ready to switch to simple-audio-card driver.
-
-Changes in v2:
-- give "codec-name" & "codec-dai-name" an const name
-
- sound/soc/rockchip/Kconfig               |   9 ++
- sound/soc/rockchip/Makefile              |   2 +
- sound/soc/rockchip/rockchip_hdmi_audio.c | 169 +++++++++++++++++++++++++++++++
- 3 files changed, 180 insertions(+)
- create mode 100644 sound/soc/rockchip/rockchip_hdmi_audio.c
-
-diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index e181826..ed2b7f0 100644
---- a/sound/soc/rockchip/Kconfig
-+++ b/sound/soc/rockchip/Kconfig
-@@ -14,3 +14,12 @@ config SND_SOC_ROCKCHIP_I2S
- 	  Say Y or M if you want to add support for I2S driver for
- 	  Rockchip I2S device. The device supports upto maximum of
- 	  8 channels each for play and record.
-+
-+config SND_SOC_ROCKCHIP_HDMI_AUDIO
-+	tristate "ASoC support for Rockchip HDMI audio"
-+	depends on SND_SOC_ROCKCHIP
-+	select SND_SOC_ROCKCHIP_I2S
-+	select SND_SOC_DW_HDMI_AUDIO
-+	help
-+	  Say Y or M here if you want to add support for SoC audio on Rockchip
-+	  HDMI, such as rk3288 hdmi.
-diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
-index b921909..b9185b3 100644
---- a/sound/soc/rockchip/Makefile
-+++ b/sound/soc/rockchip/Makefile
-@@ -1,4 +1,6 @@
- # ROCKCHIP Platform Support
- snd-soc-i2s-objs := rockchip_i2s.o
-+snd-soc-rockchip-hdmi-audio-objs := rockchip_hdmi_audio.o
+diff --git a/sound/firewire/dice/dice-interface.h b/sound/firewire/dice/dice-interface.h
+index 27b044f..de7602b 100644
+--- a/sound/firewire/dice/dice-interface.h
++++ b/sound/firewire/dice/dice-interface.h
+@@ -299,23 +299,23 @@
+ #define RX_ISOCHRONOUS			0x008
  
- obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-i2s.o
-+obj-$(CONFIG_SND_SOC_ROCKCHIP_HDMI_AUDIO) += snd-soc-rockchip-hdmi-audio.o
-diff --git a/sound/soc/rockchip/rockchip_hdmi_audio.c b/sound/soc/rockchip/rockchip_hdmi_audio.c
-new file mode 100644
-index 0000000..cf95037
---- /dev/null
-+++ b/sound/soc/rockchip/rockchip_hdmi_audio.c
-@@ -0,0 +1,169 @@
+ /*
+- * Index of first quadlet to be interpreted; read/write.  If > 0, that many
+- * quadlets at the beginning of each data block will be ignored, and all the
+- * audio and MIDI quadlets will follow.
+- */
+-#define RX_SEQ_START			0x00c
+-
+-/*
+  * The number of audio channels; read-only.  There will be one quadlet per
+  * channel.
+  */
+-#define RX_NUMBER_AUDIO			0x010
++#define RX_NUMBER_AUDIO			0x00c
+ 
+ /*
+  * The number of MIDI ports, 0-8; read-only.  If > 0, there will be one
+  * additional quadlet in each data block, following the audio quadlets.
+  */
+-#define RX_NUMBER_MIDI			0x014
++#define RX_NUMBER_MIDI			0x010
++
 +/*
-+ * rockchip-hdmi-card.c
-+ *
-+ * ROCKCHIP ALSA SoC DAI driver for HDMI audio on rockchip processors.
-+ * Copyright (c) 2014, ROCKCHIP CORPORATION. All rights reserved.
-+ * Authors: Yakir Yang <ykk@rock-chips.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.*
-+ *
++ * Index of first quadlet to be interpreted; read/write.  If > 0, that many
++ * quadlets at the beginning of each data block will be ignored, and all the
++ * audio and MIDI quadlets will follow.
 + */
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+
-+#include <sound/soc.h>
-+#include <sound/pcm.h>
-+#include <sound/core.h>
-+#include <sound/pcm_params.h>
-+
-+#include "rockchip_i2s.h"
-+
-+#define DRV_NAME "rockchip-hdmi-audio"
-+
-+static int rockchip_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	unsigned int dai_fmt = rtd->dai_link->dai_fmt;
-+	int mclk, ret;
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+	case 24000:
-+	case 32000:
-+	case 48000:
-+	case 64000:
-+	case 96000:
-+		mclk = 12288000;
-+		break;
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+	case 88200:
-+		mclk = 11289600;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ret = snd_soc_dai_set_fmt(cpu_dai, dai_fmt);
-+	if (ret < 0) {
-+		dev_err(cpu_dai->dev, "failed to set cpu_dai fmt.\n");
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk, SND_SOC_CLOCK_OUT);
-+	if (ret < 0) {
-+		dev_err(cpu_dai->dev, "failed to set cpu_dai sysclk.\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops hdmi_audio_dai_ops = {
-+	.hw_params = rockchip_hdmi_audio_hw_params,
-+};
-+
-+static struct snd_soc_dai_link hdmi_audio_dai = {
-+	.name = "RockchipHDMI",
-+	.stream_name = "RockchipHDMI",
-+	.codec_name = "dw-hdmi-audio",
-+	.codec_dai_name = "dw-hdmi-hifi",
-+	.ops = &hdmi_audio_dai_ops,
-+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+		   SND_SOC_DAIFMT_CBS_CFS,
-+};
-+
-+static struct snd_soc_card rockchip_hdmi_audio_card = {
-+	.name = "RockchipHDMI",
-+	.owner = THIS_MODULE,
-+	.dai_link = &hdmi_audio_dai,
-+	.num_links = 1,
-+};
-+
-+static int rockchip_hdmi_audio_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &rockchip_hdmi_audio_card;
-+	struct device_node *np = pdev->dev.of_node;
-+	int ret;
-+
-+	card->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, card);
-+
-+	hdmi_audio_dai.cpu_of_node = of_parse_phandle(np, "i2s-controller", 0);
-+	if (!hdmi_audio_dai.cpu_of_node) {
-+		dev_err(&pdev->dev, "Property 'i2s-controller' missing !\n");
-+		goto free_priv_data;
-+	}
-+
-+	hdmi_audio_dai.platform_of_node = hdmi_audio_dai.cpu_of_node;
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register card failed (%d)\n", ret);
-+		card->dev = NULL;
-+		goto free_cpu_of_node;
-+	}
-+
-+	dev_info(&pdev->dev, "hdmi audio init success.\n");
-+
-+	return 0;
-+
-+free_cpu_of_node:
-+	hdmi_audio_dai.cpu_of_node = NULL;
-+	hdmi_audio_dai.platform_of_node = NULL;
-+free_priv_data:
-+	snd_soc_card_set_drvdata(card, NULL);
-+	platform_set_drvdata(pdev, NULL);
-+	card->dev = NULL;
-+
-+	return ret;
-+}
-+
-+static int rockchip_hdmi_audio_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
-+	snd_soc_card_set_drvdata(card, NULL);
-+	platform_set_drvdata(pdev, NULL);
-+	card->dev = NULL;
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id rockchip_hdmi_audio_of_match[] = {
-+	{ .compatible = "rockchip,rk3288-hdmi-audio", },
-+	{},
-+};
-+
-+static struct platform_driver rockchip_hdmi_audio_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
-+		.of_match_table = rockchip_hdmi_audio_of_match,
-+	},
-+	.probe = rockchip_hdmi_audio_probe,
-+	.remove = rockchip_hdmi_audio_remove,
-+};
-+module_platform_driver(rockchip_hdmi_audio_driver);
-+
-+MODULE_AUTHOR("Yakir Yang <ykk@rock-chips.com>");
-+MODULE_DESCRIPTION("Rockchip HDMI Audio ASoC Interface");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_DEVICE_TABLE(of, rockchip_hdmi_audio_of_match);
++#define RX_SEQ_START			0x014
+ 
+ /*
+  * Names of all audio channels; read-only.  Quadlets are byte-swapped.  Names
+diff --git a/sound/firewire/dice/dice-proc.c b/sound/firewire/dice/dice-proc.c
+index f5c1d1b..ecfe20f 100644
+--- a/sound/firewire/dice/dice-proc.c
++++ b/sound/firewire/dice/dice-proc.c
+@@ -99,9 +99,9 @@ static void dice_proc_read(struct snd_info_entry *entry,
+ 		} tx;
+ 		struct {
+ 			u32 iso;
+-			u32 seq_start;
+ 			u32 number_audio;
+ 			u32 number_midi;
++			u32 seq_start;
+ 			char names[RX_NAMES_SIZE];
+ 			u32 ac3_caps;
+ 			u32 ac3_enable;
+@@ -204,10 +204,10 @@ static void dice_proc_read(struct snd_info_entry *entry,
+ 			break;
+ 		snd_iprintf(buffer, "rx %u:\n", stream);
+ 		snd_iprintf(buffer, "  iso channel: %d\n", (int)buf.rx.iso);
+-		snd_iprintf(buffer, "  sequence start: %u\n", buf.rx.seq_start);
+ 		snd_iprintf(buffer, "  audio channels: %u\n",
+ 			    buf.rx.number_audio);
+ 		snd_iprintf(buffer, "  midi ports: %u\n", buf.rx.number_midi);
++		snd_iprintf(buffer, "  sequence start: %u\n", buf.rx.seq_start);
+ 		if (quadlets >= 68) {
+ 			dice_proc_fixup_string(buf.rx.names, RX_NAMES_SIZE);
+ 			snd_iprintf(buffer, "  names: %s\n", buf.rx.names);
 -- 
-2.1.2
+2.1.0
