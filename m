@@ -1,72 +1,70 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] Sound: PXA: Fix settings of PXAxxx DMA
-Date: Mon, 2 Mar 2015 18:18:03 +0000
-Message-ID: <20150302181803.GC21293@sirena.org.uk>
-References: <54CA125D.7010908@tul.cz> <54CA2B7E.5010003@tul.cz>
- <54F05FD6.6080702@tul.cz>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH 05/10] clkdev: add clkdev_create() helper
+Date: Mon, 02 Mar 2015 11:07:58 -0800
+Message-ID: <54F4B50E.4070104@codeaurora.org>
+References: <20150302170538.GQ8656@n2100.arm.linux.org.uk> <E1YSTnW-0001Jk-Tm@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1280278984062398356=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0673D2605D7
- for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2015 19:18:19 +0100 (CET)
-In-Reply-To: <54F05FD6.6080702@tul.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Cvek <petr.cvek@tul.cz>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, daniel@zonque.org, robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <E1YSTnW-0001Jk-Tm@rmk-PC.arm.linux.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 03/02/15 09:06, Russell King wrote:
+> Add a helper to allocate and add a clk_lookup structure.  This can not
+> only be used in several places in clkdev.c to simplify the code, but
+> more importantly, can be used by callers of the clkdev code to simplify
+> their clkdev creation and registration.
+>
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> ---
+>  drivers/clk/clkdev.c   | 52 ++++++++++++++++++++++++++++++++++++++------------
+>  include/linux/clkdev.h |  3 +++
+>  2 files changed, 43 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
+> index 043fd3633373..611b9acbad78 100644
+> --- a/drivers/clk/clkdev.c
+> +++ b/drivers/clk/clkdev.c
+> @@ -294,6 +294,19 @@ vclkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt,
+>  	return &cla->cl;
+>  }
+>  
+> +static struct clk_lookup *
+> +vclkdev_create((struct clk *clk, const char *con_id, const char *dev_fmt,
+> +	va_list ap)
+> +{
+> +	struct clk_lookup *cl;
+> +
+> +	cl = vclkdev_alloc(clk, con_id, dev_fmt, ap);
+> +	if (cl)
+> +		clkdev_add(cl);
+> +
+> +	return cl;
+> +}
+> +
+>  struct clk_lookup * __init_refok
+>  clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
+>  {
+> @@ -308,6 +321,28 @@ clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
+>  }
+>  EXPORT_SYMBOL(clkdev_alloc);
+>  
+> +/**
+> + * clkdev_create - allocate and add a clkdev lookup structure
+> + * @clk: struct clk to associate with all clk_lookups
+> + * @con_id: connection ID string on device
+> + * @dev_fmt: format string describing device name
+> + *
+> + * Returns a clk_lookup structure, which can be later unregistered and
+> + * freed.
 
---===============1280278984062398356==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pa6Cbl8IpR/4Tv4K"
-Content-Disposition: inline
+And returns NULL on failure? Any reason why we don't return an error
+pointer on failure?
 
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
---pa6Cbl8IpR/4Tv4K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Feb 27, 2015 at 01:15:18PM +0100, Petr Cvek wrote:
-> bump
->=20
-> On 29.1.2015 13:45, Petr Cvek wrote:
-
-Don't send contentless, top-posted nags.
-
---pa6Cbl8IpR/4Tv4K
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU9KlaAAoJECTWi3JdVIfQ3T4H/3Ixj/cknd7cwgsSPpsHT7+j
-728sEDplVBP8B7vzYy0hWiHGFjt3qVnabFo/veM5zexOT4AWkqBW33BYc8lRl0YA
-EFZcM21x39It5/9egXlJuY22IaWhVx5XojEZMh320aV3aZnEPD/a5Wpaha+nHKAo
-sKWVViR2YlN13xCk6UY7lJjOif/QCgviSKbzwwEPDjKbGd+w42lb67TVtIE213tB
-PiOhfkWYoEAUiDe7n130Ru+8LRl1JeWqp+aE+PDfdKAjj6M0M2u8v1giSHHG0b/w
-et3OhBdMAdYtfyhsjmz3q4YF0XTqLOPR8uSquBBcM60g+HDre5427CEwWBNgly4=
-=kqw7
------END PGP SIGNATURE-----
-
---pa6Cbl8IpR/4Tv4K--
-
---===============1280278984062398356==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1280278984062398356==--
