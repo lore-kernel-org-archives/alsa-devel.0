@@ -1,70 +1,40 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH 05/10] clkdev: add clkdev_create() helper
-Date: Mon, 02 Mar 2015 11:07:58 -0800
-Message-ID: <54F4B50E.4070104@codeaurora.org>
-References: <20150302170538.GQ8656@n2100.arm.linux.org.uk> <E1YSTnW-0001Jk-Tm@rmk-PC.arm.linux.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: simple-card: Add support for samplerate
+ and samplewidth constraints
+Date: Mon, 02 Mar 2015 13:35:04 -0600
+Message-ID: <54F4BB68.4030501@linux.intel.com>
+References: <cover.1425303942.git.jsarha@ti.com> <9d01aa0d0bf48d8b41d5086a7e6c9ec08c2b9c48.1425303942.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <E1YSTnW-0001Jk-Tm@rmk-PC.arm.linux.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <9d01aa0d0bf48d8b41d5086a7e6c9ec08c2b9c48.1425303942.git.jsarha-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/15 09:06, Russell King wrote:
-> Add a helper to allocate and add a clk_lookup structure.  This can not
-> only be used in several places in clkdev.c to simplify the code, but
-> more importantly, can be used by callers of the clkdev code to simplify
-> their clkdev creation and registration.
+Hi Jyri,
+
+On 3/2/15 8:14 AM, Jyri Sarha wrote:
 >
-> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
-> ---
->  drivers/clk/clkdev.c   | 52 ++++++++++++++++++++++++++++++++++++++------------
->  include/linux/clkdev.h |  3 +++
->  2 files changed, 43 insertions(+), 12 deletions(-)
+>   Optional dai-link subnode properties:
 >
-> diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-> index 043fd3633373..611b9acbad78 100644
-> --- a/drivers/clk/clkdev.c
-> +++ b/drivers/clk/clkdev.c
-> @@ -294,6 +294,19 @@ vclkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt,
->  	return &cla->cl;
->  }
->  
-> +static struct clk_lookup *
-> +vclkdev_create((struct clk *clk, const char *con_id, const char *dev_fmt,
-> +	va_list ap)
-> +{
-> +	struct clk_lookup *cl;
-> +
-> +	cl = vclkdev_alloc(clk, con_id, dev_fmt, ap);
-> +	if (cl)
-> +		clkdev_add(cl);
-> +
-> +	return cl;
-> +}
-> +
->  struct clk_lookup * __init_refok
->  clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
->  {
-> @@ -308,6 +321,28 @@ clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
->  }
->  EXPORT_SYMBOL(clkdev_alloc);
->  
-> +/**
-> + * clkdev_create - allocate and add a clkdev lookup structure
-> + * @clk: struct clk to associate with all clk_lookups
-> + * @con_id: connection ID string on device
-> + * @dev_fmt: format string describing device name
-> + *
-> + * Returns a clk_lookup structure, which can be later unregistered and
-> + * freed.
+> +- samplewidth-constraints		: List of integers describing supported
+> +					  sample widths in number of bits.
 
-And returns NULL on failure? Any reason why we don't return an error
-pointer on failure?
+There are quite a few platforms where the number of bits for valid audio 
+bits differs from the number of bits per slot, e.g. 24 bits with 25 bit 
+slots, or 24 bits in 32 bit slots. How would this be represented? This 
+concept is present for the TDM case but not the simple one.
+-Pierre
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> +- rate-constraints			: List of integers describing supported
+> +					  sample samplerates in Hz.
+>   - format				: CPU/CODEC common audio format.
+>   					  "i2s", "right_j", "left_j" , "dsp_a"
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
