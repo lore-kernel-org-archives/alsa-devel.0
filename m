@@ -1,76 +1,48 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: wm8804: Add DAPM widgets for
-	SPDIF/AIF
-Date: Mon, 2 Mar 2015 21:35:16 +0000
-Message-ID: <20150302213516.GA8553@opensource.wolfsonmicro.com>
-References: <1425319075-10400-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1425319075-10400-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20150302181613.GB21293@sirena.org.uk>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH 00/10] initial clkdev cleanups
+Date: Mon, 02 Mar 2015 13:50:44 -0800
+Message-ID: <54F4DB34.9000507@codeaurora.org>
+References: <20150302170538.GQ8656@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8856A260542
- for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2015 22:41:28 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20150302181613.GB21293@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, info@crazy-audio.com, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20150302170538.GQ8656@n2100.arm.linux.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Roland Stigge <stigge@antcom.de>, Andrew Lunn <andrew@lunn.ch>, Mike Turquette <mturquette@linaro.org>, Jason Cooper <jason@lakedaemon.net>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 02, 2015 at 06:16:13PM +0000, Mark Brown wrote:
-> On Mon, Mar 02, 2015 at 05:57:55PM +0000, Charles Keepax wrote:
-> 
-> > Firstly, 'Input Source' changes names to 'Tx Source' this is a
-> > lot clearer, but perhaps we shouldn't change this, as it doesn't
-> > have to change?
-> 
-> Yes, leave it be.  If you were renaming this should be in the changelog
-> with an explanation as to why.
+On 03/02/15 09:05, Russell King - ARM Linux wrote:
+> Here's some initial clkdev cleanups.  These are targetted for the next
+> merge window, and while the initial patches can be merged independently,
+> I'd prefer to keep the series together as further work on solving the
+> problems which unique struct clk's has introduced is needed.
+>
+> The initial cleanups are more about using the correct clkdev function
+> than anything else: there's no point interating over a array of
+> clk_lookup structs, adding each one in turn when we have had a function
+> which does this since forever.
 
-Cool can do.
+The clkdev_add_table() conversions look good.
 
-> 
-> > Secondly, the patch removes the controls 'TX Playback Switch' and
-> > 'AIF Playback Switch' as these bits are controlled by DAPM now. I
-> > wasn't sure if it would be preferrable to leave dummy controls that
-> > do nothing?
-> 
-> This sounds like you need a more detailed changelog entry explaining why
-> it's a good idea to do this in the first place, never mind the proxy
-> control - what is the purpose of this change and what benefit will it
-> bring?  Given that this is a S/PDIF bridge it's not at all obvious that
-> the chip will be used in applications where the sort of power savings
-> you're likely to see from powering down one of the links (as opposed to
-> cutting the power to the chip) are likely to register.  Why move those
-> bits to DAPM control at all?
+>
+> I'm also killing a chunk of seemingly unused code in the omap3isp driver.
+>
+> Lastly, I'm introducing a clkdev_create() helper, which combines the
+> clkdev_alloc() + clkdev_add() pattern which keeps cropping up.
+>
 
-Hmm... I hadn't really thought about it like that, mostly I had
-viewed this somewhat as a nice modernization of the driver. I am
-pretty sure there are some benefits around the clocking from
-disabling the RX path (which is never disabled currently) as this
-exercises some automatic control over the PLL whilst active,
-which can be difficult to handle. But I guess that could also
-just be handled by adding a control to disable it. Let us try
-redrafting the commit message and we can see where that takes us
-I guess.
+We already have a solution to that problem with clk_register_clkdev().
+Andy has done some work to make clk_register_clkdev() return a struct
+clk_lookup pointer[1]. Maybe we can do that instead of introducing a new
+clkdev_create() function. There is some benefit to having a new function
+though so that we can avoid a flag day, although it looks like the flag
+day is small in this case so it might not actually matter.
 
-> 
-> I also note that this patch is apparently written by but not CCed to
-> Sapthagiri Baratam.
+[1] https://www.marc.info/?l=linux-kernel&m=142469226512289
 
-He is on the patches alias, but yes that was rather remiss of me
-not to directly CC him.
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Thanks,
-Charles
