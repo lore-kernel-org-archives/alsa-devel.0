@@ -1,45 +1,53 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: sam9g20_wm8731: drop machine_is_xxx
-Date: Mon, 2 Mar 2015 15:19:40 +0100
-Message-ID: <20150302141940.GR4094@piout.net>
-References: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
- <20150106174521.GM2634@sirena.org.uk>
- <20150302134253.GQ4094@piout.net>
- <20150302140638.GW21293@sirena.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [PATCH 00/10] initial clkdev cleanups
+Date: Mon, 2 Mar 2015 17:05:38 +0000
+Message-ID: <20150302170538.GQ8656@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150302140638.GW21293@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org
+Cc: Andrew Lunn <andrew@lunn.ch>, Jaroslav Kysela <perex@perex.cz>, Jason Cooper <jason@lakedaemon.net>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Mike Turquette <mturquette@linaro.org>, Roland Stigge <stigge@antcom.de>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Stephen Boyd <sboyd@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, Tony Lindgren <tony@atomide.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/03/2015 at 14:06:38 +0000, Mark Brown wrote :
-> On Mon, Mar 02, 2015 at 02:42:53PM +0100, Alexandre Belloni wrote:
-> > On 06/01/2015 at 17:45:21 +0000, Mark Brown wrote :
-> > > On Tue, Jan 06, 2015 at 12:14:32PM +0100, Alexandre Belloni wrote:
-> 
-> > > > Atmel based boards can now only be used with device tree. Drop non DT
-> > > > initialization.
-> 
-> > > Applied, thanks.
-> 
-> > I don't see that patch in 4.0-rc1. This will lead to a compilation error
-> > as all the machine_is_at91xxx have been removed.
-> 
-> *sigh*  If something is a bug fix then please flag it as such; nothing
-> in your message gives any hint that this is a fix rather than just a
-> random cleanup.
+Here's some initial clkdev cleanups.  These are targetted for the next
+merge window, and while the initial patches can be merged independently,
+I'd prefer to keep the series together as further work on solving the
+problems which unique struct clk's has introduced is needed.
 
-Well, I though this would be applied along with
-"ASoC: atmel: sam9g20_wm8731: remove useless include" which made it to
-4.0-rc1 and was also a simple cleanup.
+The initial cleanups are more about using the correct clkdev function
+than anything else: there's no point interating over a array of
+clk_lookup structs, adding each one in turn when we have had a function
+which does this since forever.
 
-It was a simple cleanup until all the machine_is_at91xxx got dropped :)
+I'm also killing a chunk of seemingly unused code in the omap3isp driver.
+
+Lastly, I'm introducing a clkdev_create() helper, which combines the
+clkdev_alloc() + clkdev_add() pattern which keeps cropping up.
+
+Individual patches copied to appropriate people, but they will all appear
+on the mailing lists.
+
+ arch/arm/mach-lpc32xx/clock.c                |  5 +--
+ arch/arm/mach-omap2/clkt2xxx_virt_prcm_set.c | 12 ++-----
+ arch/arm/mach-omap2/omap_device.c            | 24 +++++--------
+ arch/arm/plat-orion/common.c                 |  6 +---
+ arch/sh/kernel/cpu/sh4a/clock-sh7734.c       |  3 +-
+ arch/sh/kernel/cpu/sh4a/clock-sh7757.c       |  4 +--
+ arch/sh/kernel/cpu/sh4a/clock-sh7785.c       |  4 +--
+ arch/sh/kernel/cpu/sh4a/clock-sh7786.c       |  4 +--
+ arch/sh/kernel/cpu/sh4a/clock-shx3.c         |  4 +--
+ drivers/clk/clk-s2mps11.c                    |  4 +--
+ drivers/clk/clkdev.c                         | 52 +++++++++++++++++++++-------
+ drivers/clk/versatile/clk-impd1.c            |  4 +--
+ drivers/media/platform/omap3isp/isp.c        | 18 ----------
+ drivers/media/platform/omap3isp/isp.h        |  1 -
+ include/linux/clkdev.h                       |  3 ++
+ include/media/omap3isp.h                     |  6 ----
+ sound/soc/sh/migor.c                         |  3 +-
+ 17 files changed, 68 insertions(+), 89 deletions(-)
 
 -- 
-Alexandre Belloni, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
+according to speedtest.net.
