@@ -1,26 +1,52 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: simple-card: Add support for samplerate
- and samplewidth constraints
-Date: Mon, 02 Mar 2015 20:58:42 +0100
-Message-ID: <54F4C0F2.8000201@metafoo.de>
-References: <cover.1425303942.git.jsarha@ti.com> <9d01aa0d0bf48d8b41d5086a7e6c9ec08c2b9c48.1425303942.git.jsarha@ti.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 05/10] clkdev: add clkdev_create() helper
+Date: Mon, 2 Mar 2015 21:36:29 +0100
+Message-ID: <CAMuHMdX-20DnSmgMbCEikysCNFH5rSHhBF_vcq39QdPjfhyejA@mail.gmail.com>
+References: <20150302170538.GQ8656@n2100.arm.linux.org.uk>
+	<E1YSTnW-0001Jk-Tm@rmk-PC.arm.linux.org.uk>
+	<CAMuHMdWHAu+zDKce0+ianDb=RHYR59eeMoiYBDK4PC=YMY0JXg@mail.gmail.com>
+	<20150302174619.GD29584@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <9d01aa0d0bf48d8b41d5086a7e6c9ec08c2b9c48.1425303942.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20150302174619.GD29584@n2100.arm.linux.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/2015 03:14 PM, Jyri Sarha wrote:
-> Add DT properties to dailink for setting samplerate and samplewidth
-> constraints. The DT binding document has been updated.
+On Mon, Mar 2, 2015 at 6:46 PM, Russell King - ARM Linux
+<linux@arm.linux.org.uk> wrote:
+> On Mon, Mar 02, 2015 at 06:22:31PM +0100, Geert Uytterhoeven wrote:
+>> On Mon, Mar 2, 2015 at 6:06 PM, Russell King
+>> <rmk+kernel@arm.linux.org.uk> wrote:
+>> > --- a/include/linux/clkdev.h
+>> > +++ b/include/linux/clkdev.h
+>> > @@ -37,6 +37,9 @@ struct clk_lookup *clkdev_alloc(struct clk *clk, const char *con_id,
+>> >  void clkdev_add(struct clk_lookup *cl);
+>> >  void clkdev_drop(struct clk_lookup *cl);
+>> >
+>> > +struct clk_lookup *clkdev_create(struct clk *clk, const char *con_id,
+>> > +       const char *dev_fmt, ...);
+>>
+>> __printf(3, 4)
+>>
+>> While you're at it, can you please also add the __printf attribute to
+>> clkdev_alloc() and clk_register_clkdev()?
+>
+> What's the behaviour of __printf() with a NULL format string?  The
+> clkdev interfaces permit that, normal printf() doesn't.
 
-Can you include a description why this is needed and how and when it is 
-supposed to be used?
+As expected: no warning.
+Verified with gcc 4.1.2 and 4.8.2.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
