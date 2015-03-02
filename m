@@ -1,20 +1,19 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH] ASoC: wm8731: let codec to manage clock by
- itself
-Date: Mon, 2 Mar 2015 10:00:19 +0800
-Message-ID: <54F3C433.3000400@atmel.com>
-References: <1423121713-19434-1-git-send-email-voice.shen@atmel.com>
- <54DC62EA.5030503@atmel.com>
- <20150216103122.GA1091@opensource.wolfsonmicro.com>
- <CAOLZvyFS2fCry_cyeoZ_iXzVy8Yw5nnqvqT+Qth0m_CuDBzSMQ@mail.gmail.com>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Fw: Issue with snd-aloop and alsaloop in my embedded
+ linux custom board
+Date: Mon, 2 Mar 2015 03:57:07 +0000
+Message-ID: <1425268669066.24567@tataelxsi.co.in>
+References: <1425139107380.25188@tataelxsi.co.in>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SJOEDG01.corp.atmel.com (nasmtp02.atmel.com [204.2.163.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 1985A2604F3
- for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2015 03:00:55 +0100 (CET)
-In-Reply-To: <CAOLZvyFS2fCry_cyeoZ_iXzVy8Yw5nnqvqT+Qth0m_CuDBzSMQ@mail.gmail.com>
+Received: from APAC01-HK1-obe.outbound.protection.outlook.com
+ (mail-hk1on0135.outbound.protection.outlook.com [134.170.140.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id A524A260526
+ for <alsa-devel@alsa-project.org>; Mon,  2 Mar 2015 04:57:12 +0100 (CET)
+In-Reply-To: <1425139107380.25188@tataelxsi.co.in>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,100 +23,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Richard Purdie <richard@openedhand.com>, patches@opensource.wolfsonmicro.com, LKML <linux-kernel@vger.kernel.org>, linux-sound@vger.kernel.org, Manuel Lauss <manuel.lauss@googlemail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>, "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/16/2015 08:58 PM, Manuel Lauss wrote:
-> On Mon, Feb 16, 2015 at 11:31 AM, Charles Keepax
-> <ckeepax@opensource.wolfsonmicro.com> wrote:
->> On Thu, Feb 12, 2015 at 04:23:06PM +0800, Bo Shen wrote:
->>> Hi All,
->>>
->>> On 02/05/2015 03:35 PM, Bo Shen wrote:
->>>> Let the wm8731 codec to manage clock by itself.
->>>>
->>>> Signed-off-by: Bo Shen <voice.shen@atmel.com>
->>>> ---
->>>>
->>>>    sound/soc/codecs/wm8731.c | 28 ++++++++++++++++++++++++++++
->>>>    1 file changed, 28 insertions(+)
->>>
->>> Any comments for this patch (aka ping?)
->>
->> I preferred the idea of having the clock as optional and from the
->> discussion on the last patch it didn't look too tricky to
->
-> me too
+Dear All,
 
-OK, I will keep the clock as optional.
 
->> achieve. OTOH I think the Atmel system is the only one that uses
->> both this CODEC and common clock so it doesn't look like this
->> would cause any problems, but might be nice for this not to be
->> one more thing for someone to fix up when moving a system to
->> common clock.
->
-> Not quite, there's one MIPS platform I maintain which needs a patch
-> like the one below (tested):
+I am running out of the below issue, hope could you please help me in resolving this issue or could you please redirect to the respective links where my queries can be posted & get the solutions for the problem
 
-Do I need to seed the following patch together or you send it?
 
-> diff --git a/arch/mips/alchemy/devboards/db1200.c
-> b/arch/mips/alchemy/devboards/db1200.c
-> index 8c13675..aa01ab2 100644
-> --- a/arch/mips/alchemy/devboards/db1200.c
-> +++ b/arch/mips/alchemy/devboards/db1200.c
-> @@ -19,6 +19,8 @@
->    */
->
->   #include <linux/clk.h>
-> +#include <linux/clkdev.h>
-> +#include <linux/clk-provider.h>
->   #include <linux/dma-mapping.h>
->   #include <linux/gpio.h>
->   #include <linux/i2c.h>
-> @@ -862,6 +864,12 @@ int __init db1200_dev_setup(void)
->       irq_set_status_flags(DB1200_PC1_INSERT_INT, IRQ_NOAUTOEN);
->       irq_set_status_flags(DB1200_PC1_EJECT_INT, IRQ_NOAUTOEN);
->
-> +    /* register the 12MHz crystal for the WM8731 I2S codec */
-> +    c = clk_register_fixed_rate(NULL, "wm8731xtal", NULL,
-> +                    CLK_IS_ROOT, 12000000);
-> +    if (!IS_ERR(c))
-> +        clk_register_clkdev(c, "mclk", "0-001b");
-> +
->       i2c_register_board_info(0, db1200_i2c_devs,
->                   ARRAY_SIZE(db1200_i2c_devs));
->       spi_register_board_info(db1200_spi_devs,
-> diff --git a/arch/mips/alchemy/devboards/db1300.c
-> b/arch/mips/alchemy/devboards/db1300.c
-> index 1c64fdb..1aa01c8 100644
-> --- a/arch/mips/alchemy/devboards/db1300.c
-> +++ b/arch/mips/alchemy/devboards/db1300.c
-> @@ -5,6 +5,8 @@
->    */
->
->   #include <linux/clk.h>
-> +#include <linux/clkdev.h>
-> +#include <linux/clk-provider.h>
->   #include <linux/dma-mapping.h>
->   #include <linux/gpio.h>
->   #include <linux/gpio_keys.h>
-> @@ -799,6 +801,12 @@ int __init db1300_dev_setup(void)
->       if (platform_driver_register(&db1300_wm97xx_driver))
->           pr_warn("DB1300: failed to init touch pen irq support!\n");
->
-> +    /* register the 12MHz crystal for the WM8731 I2S codec */
-> +    c = clk_register_fixed_rate(NULL, "wm8731xtal", NULL,
-> +                    CLK_IS_ROOT, 12000000);
-> +    if (!IS_ERR(c))
-> +        clk_register_clkdev(c, "mclk", "0-001b");
-> +
->       /* Audio PSC clock is supplied by codecs (PSC1, 2) */
->       __raw_writel(PSC_SEL_CLK_SERCLK,
->           (void __iomem *)KSEG1ADDR(AU1300_PSC1_PHYS_ADDR) + PSC_SEL_OFFSET);
->
+The below is the virtual cards created after configuring snd-aloop in the linux kernel
 
-Best Regards,
-Bo Shen
+snd-aloop provided 2 pass-through devices as shown in the below
+
+
+card 0, device 0
+
+card 0, device 1
+
+
+But am unable to perform the loop back ie., what ever am playing am unable to record in the virtual device
+
+As per the logs below, am using the below commands to perform loopback, could you please let me know why am unable to perform the loopback with the below commands or please let me know am I missing any configurations
+
+
+aplay -D hw:0,0,0 play.wav
+
+arecord -D hw:0,1,0 record.wav
+
+
+root@am335x-evm:/# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Loopback [Loopback], device 0: Loopback PCM [Loopback PCM]
+  Subdevices: 8/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+card 0: Loopback [Loopback], device 1: Loopback PCM [Loopback PCM]
+  Subdevices: 8/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+card 1: UDA1345TS [TI UDA1345TS], device 0: UDA134x uda134x-hifi-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+root@am335x-evm:/#
+
+
+
+Kindly do the needful as early as possible,
+
+
+Many Thanks in advance
+
+
+
+
+
+
+________________________________
+From: Srinivasan S
+Sent: Saturday, February 28, 2015 9:27 PM
+To: Lars-Peter Clausen
+Cc: alsa-devel@alsa-project.org
+Subject: Issue with snd-aloop and alsaloop in my embedded linux custom board
+
+
+Dear Lars,
+
+
+I hope you were providing solutions for alsa issues, I am running out of the below issue, hope could you please help me in resolving this issue or could you please redirect to the respective links where my queries can be posted & get the solutions for the problem
+
+
+The below is the virtual cards created after configuring snd-aloop in the linux kernel
+
+snd-aloop provided 2 pass-through devices as shown in the below
+
+
+card 0, device 0
+
+card 0, device 1
+
+
+But am unable to perform the loop back ie., what ever am playing am unable to record in the virtual device
+
+As per the logs below, am using the below commands to perform loopback, could you please let me know why am unable to perform the loopback with the below commands or please let me know am I missing any configurations
+
+
+aplay -D hw:0,0,0 play.wav
+
+arecord -D hw:0,1,0 record.wav
+
+
+root@am335x-evm:/# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Loopback [Loopback], device 0: Loopback PCM [Loopback PCM]
+  Subdevices: 8/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+card 0: Loopback [Loopback], device 1: Loopback PCM [Loopback PCM]
+  Subdevices: 8/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+card 1: UDA1345TS [TI UDA1345TS], device 0: UDA134x uda134x-hifi-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+root@am335x-evm:/#
+
+
+
+Kindly do the needful as early as possible,
+
+
+Many Thanks in advance
