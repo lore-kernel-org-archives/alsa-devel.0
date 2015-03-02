@@ -1,40 +1,59 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 05/10] clkdev: add clkdev_create() helper
-Date: Mon, 2 Mar 2015 17:46:20 +0000
-Message-ID: <20150302174619.GD29584@n2100.arm.linux.org.uk>
-References: <20150302170538.GQ8656@n2100.arm.linux.org.uk>
- <E1YSTnW-0001Jk-Tm@rmk-PC.arm.linux.org.uk>
- <CAMuHMdWHAu+zDKce0+ianDb=RHYR59eeMoiYBDK4PC=YMY0JXg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: sam9g20_wm8731: drop machine_is_xxx
+Date: Mon, 2 Mar 2015 17:53:25 +0000
+Message-ID: <20150302175325.GZ21293@sirena.org.uk>
+References: <1420542872-10015-1-git-send-email-alexandre.belloni@free-electrons.com>
+ <20150106174521.GM2634@sirena.org.uk>
+ <20150302134253.GQ4094@piout.net>
+ <20150302140638.GW21293@sirena.org.uk>
+ <20150302141940.GR4094@piout.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="DkvK86hs9Oj0yltN"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWHAu+zDKce0+ianDb=RHYR59eeMoiYBDK4PC=YMY0JXg@mail.gmail.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>
+In-Reply-To: <20150302141940.GR4094@piout.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 02, 2015 at 06:22:31PM +0100, Geert Uytterhoeven wrote:
-> On Mon, Mar 2, 2015 at 6:06 PM, Russell King
-> <rmk+kernel@arm.linux.org.uk> wrote:
-> > --- a/include/linux/clkdev.h
-> > +++ b/include/linux/clkdev.h
-> > @@ -37,6 +37,9 @@ struct clk_lookup *clkdev_alloc(struct clk *clk, const char *con_id,
-> >  void clkdev_add(struct clk_lookup *cl);
-> >  void clkdev_drop(struct clk_lookup *cl);
-> >
-> > +struct clk_lookup *clkdev_create(struct clk *clk, const char *con_id,
-> > +       const char *dev_fmt, ...);
-> 
-> __printf(3, 4)
-> 
-> While you're at it, can you please also add the __printf attribute to
-> clkdev_alloc() and clk_register_clkdev()?
 
-What's the behaviour of __printf() with a NULL format string?  The
-clkdev interfaces permit that, normal printf() doesn't.
+--DkvK86hs9Oj0yltN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
+On Mon, Mar 02, 2015 at 03:19:40PM +0100, Alexandre Belloni wrote:
+> On 02/03/2015 at 14:06:38 +0000, Mark Brown wrote :
+
+> > *sigh*  If something is a bug fix then please flag it as such; nothing
+> > in your message gives any hint that this is a fix rather than just a
+> > random cleanup.
+
+> Well, I though this would be applied along with
+> "ASoC: atmel: sam9g20_wm8731: remove useless include" which made it to
+> 4.0-rc1 and was also a simple cleanup.
+
+That's one line as opposed to an at least mechanically large change.
+
+> It was a simple cleanup until all the machine_is_at91xxx got dropped :)
+
+Which shouldn't have happened while there were still users.  :/
+
+--DkvK86hs9Oj0yltN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU9KOUAAoJECTWi3JdVIfQ5J0H/1TeC87tdJK5tL+QKNf9q1qZ
+/SnY0724yh0nJ9Vk2iypQhjDBZU8d5FGSbsxRsZljUp8r3OVms3bHvmO2GEPzVYM
+BvXGnVUcRmgdbqqXtAUEorDXtEwPjj01k886ChnALER+zcRTyN4Vynqkv9DJH9PP
+t5rn6MBvRZHSv6Rv8CZmishq6FJ6S7SDEiFzDcW37GtpLsDfKvsIeLj7ZcYsMVPO
+AM2bmHmV8HihePS93nZHPiBNF5VNjQ8rBEIyNuvMWeW5TQJfhTUZoxb3d7WyYM8Z
+Dx6yMahClpjGZXsMFV2Udnn0pWE9BziBtOkIA6IuN59bbdNi+RZaINgcsz5TzpE=
+=O8/o
+-----END PGP SIGNATURE-----
+
+--DkvK86hs9Oj0yltN--
