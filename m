@@ -1,19 +1,19 @@
 From: Jyri Sarha <jsarha@ti.com>
 Subject: Re: [PATCH 2/2] ASoC: simple-card: Add support for
  samplerate and samplewidth constraints
-Date: Tue, 3 Mar 2015 12:01:20 +0200
-Message-ID: <54F58670.4070500@ti.com>
+Date: Tue, 3 Mar 2015 12:09:14 +0200
+Message-ID: <54F5884A.1090702@ti.com>
 References: <cover.1425303942.git.jsarha@ti.com>
  <9d01aa0d0bf48d8b41d5086a7e6c9ec08c2b9c48.1425303942.git.jsarha@ti.com>
- <54F4BB68.4030501@linux.intel.com>
+ <54F4C0F2.8000201@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 1375C2606CB
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 11:01:26 +0100 (CET)
-In-Reply-To: <54F4BB68.4030501@linux.intel.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E7212606CB
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 11:09:21 +0100 (CET)
+In-Reply-To: <54F4C0F2.8000201@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 Cc: moinejf@free.fr, kuninori.morimoto.gx@renesas.com, Li.Xiubo@freescale.com, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, bcousson@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/2015 09:35 PM, Pierre-Louis Bossart wrote:
-> Hi Jyri,
+On 03/02/2015 09:58 PM, Lars-Peter Clausen wrote:
+> On 03/02/2015 03:14 PM, Jyri Sarha wrote:
+>> Add DT properties to dailink for setting samplerate and samplewidth
+>> constraints. The DT binding document has been updated.
 >
-> On 3/2/15 8:14 AM, Jyri Sarha wrote:
->>
->>   Optional dai-link subnode properties:
->>
->> +- samplewidth-constraints        : List of integers describing supported
->> +                      sample widths in number of bits.
->
-> There are quite a few platforms where the number of bits for valid audio
-> bits differs from the number of bits per slot, e.g. 24 bits with 25 bit
-> slots, or 24 bits in 32 bit slots. How would this be represented? This
-> concept is present for the TDM case but not the simple one.
-> -Pierre
+> Can you include a description why this is needed and how and when it is
+> supposed to be used?
 
-As these are dai-link level properties the idea is to set constraints to 
-sample-width on the digital audio link, usually i2s. That is why the 
-constraint is set based on sample-width and not physical width.
+Would this addition do:
+------------------------------------------------------------
+These constraints help to disable the sample-format and sample-rate
+combinations that do not properly work on a specific HW.
+------------------------------------------------------------
 
-The number if significant bits in the sample-word should in a normal 
-case be a property of the codec, if such a property is needed. On the 
-other hand the limits for the physical layout in the system memory are 
-usually set by the platform driver (= DMA HW), so such a property should 
-- in a normal case - go to cpu-dai node. Since these cases can usually 
-be associated to either end of the link, there should be no need for 
-such properties in the machine driver.
+The reason why we need these is coming from limitations in McASP clock 
+generation. With a simple divider one can only produce certain 
+bit-clocks. With those bit-clocks we can only play/capture some 
+sample-rate and sample-width combinations accurately.
 
-I am not sure what you have in mind with the TDM case. In some cases a 
-similar constraint property for number of channels could help.
+The McASP driver could try to set the constraints automatically. 
+However, since the constraint code can not select sample-width and 
+sample-rate combinations there is a compromise to be made between them. 
+Making such compromises automatically does not usually work that well.
+
+In our case these properties could of course be added to McASP driver, 
+but then again I would expect that there is a wider need for this kind 
+of functionality. And it may not always be clear if either end of the 
+link alone is responsible for less than perfect operation.
 
 Best regards,
 Jyri
-
->
->> +- rate-constraints            : List of integers describing supported
->> +                      sample samplerates in Hz.
->>   - format                : CPU/CODEC common audio format.
->>                         "i2s", "right_j", "left_j" , "dsp_a"
->
