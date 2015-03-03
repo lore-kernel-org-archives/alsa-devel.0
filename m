@@ -1,17 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Fix wrong detection of
- "Headphone+LO" or "Speaker+LO"
-Date: Tue, 03 Mar 2015 17:02:19 +0100
-Message-ID: <54F5DB0B.8020507@canonical.com>
-References: <54f5ce0b.08a2b775.bm000@wupperonline.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Intel HDA / ALC662 analog surround problem
+Date: Wed, 4 Mar 2015 00:17:12 +0800
+Message-ID: <CAN8cciYA_XRRFtCx8BZHYO=bfdObRr9P84Yfj99mwLq_cW1N=A@mail.gmail.com>
+References: <CAN8ccib6-oLgZAhYpKTnh_Bjm6G1axN2NCv8mQBPczRy4=qmqg@mail.gmail.com>
+ <54f5d2c8.52ffed47.bm000@wupperonline.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000804020101000107050907"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B32326154F
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 17:02:20 +0100 (CET)
-In-Reply-To: <54f5ce0b.08a2b775.bm000@wupperonline.de>
+Received: from mail-ob0-f174.google.com (mail-ob0-f174.google.com
+ [209.85.214.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id D01552616B9
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 17:17:15 +0100 (CET)
+Received: by obbnt9 with SMTP id nt9so702915obb.13
+ for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2015 08:17:13 -0800 (PST)
+In-Reply-To: <54f5d2c8.52ffed47.bm000@wupperonline.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,106 +24,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?windows-1252?Q?Ingo_Br=FCckl?= <ib@wupperonline.de>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, superquad.vortex2@gmail.com
+To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000804020101000107050907
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2015-03-03 16:04, Ingo Br=FCckl wrote:
-> David Henningsson wrote on Tue, 03 Mar 2015 14:24:28 +0100:
 >
->> If I understand correctly, you have three DACs, one internal speaker,
->> one headphone jack, and three jacks that are both used for 5.1 surroun=
-d
->> and line out/mic/line in. Is this correct?
+> >> Now I'm getting the favored config:
+> >>
+> >> ==> Best config: lo_type=0, wired=0, mio=1
+> >> multi_outs = 14/0/0/0 : 2/3/4/0 (type LO)
+> >> multi_ios(2) = 1a/18 : 3/4
+> >> hp_outs = 1b/0/0/0 : 2/0/0/0
+> >> spk_outs = 15/0/0/0 : 0/0/0/0
 >
-> This is correct. In addition I have a front mic jack.
-
-Could you upload/pastebin your alsa-info somewhere? Then we could run it=20
-through the emulator and reproduce the problem.
-
->> How do the DACs get assigned in this case? One would assume that you'd
->> get 02 -> Front LO, HP, Speaker, 03 -> Rear LO, 04 -> CLFE LO.
+> > How do the driver know the volume control at node 0x02 is shared by hp,
+> > line out and speaker when your spk_outs path not contain node 0x02
 >
-> With my private patch to enforce multi-io I seem to lose the internal s=
-peaker
-> which isn't bad because it isn't connected (and probably never won't be=
-).
+> It probably doesn't know. I suppose I'm losing the speaker (which isn't
+> connected nor used by me anyway).
 
-Since you're using private patches you're somewhat out on "unsupported"=20
-ground, but anyhow...
+> >> multi_outs = 14/0/0/0 : 2/3/4/0 (type LO)
+> >> multi_ios(2) = 1a/18 : 3/4
+> >> hp_outs = 1b/0/0/0 : 2/0/0/0
+
+path_has_mixer() does not imply shared volume
+
+get_amp_nid_( path->ctls[NID_PATH_VOL_CTL] )  of two paths are same
+
+if you just want Front+Headphone playback volume
 
 >
-> You are right concerning the remaining assignments:
+> On the other hand I'm getting a real Master as well as a Headphone switch,
+> Front, Surround, Center and LFE controls, and the channel mode.
+Everything's
+> working just great!
 >
-> multi_outs =3D 14/0/0/0 : 2/3/4/0 (type LO)
->    out path: depth=3D3 '02:0c:14'
-> multi_ios(2) =3D 1a/18 : 3/4
->    mio path: depth=3D3 '03:0d:1a'
->    mio path: depth=3D3 '04:0e:18'
-> hp_outs =3D 1b/0/0/0 : 2/0/0/0
->    hp  path: depth=3D3 '02:0c:1b'
-> spk_outs =3D 15/0/0/0 : 0/0/0/0
+> > BTW do the driver need to disable independent headphone after your
+> > change ?
 >
->> And then the volume/mute control for DAC node 02 would be called "PCM"
->> (since both hp_lo_shared and spk_lo_shared are true), but in fact it w=
-ould
->> be more appropriate to call it "Front".
->
-> I've got a Master that would only affect the Front (PCM) and a PCM that
-> affected Surround/CLFE which was very unpleasant.
->
-> With the patch I'm getting a real Master (for all Front/Surround/CLFE) =
-and a
-> separate Front Volume Control in addition to Surround, Center and LFE w=
-hich
-> is exactly how it should be.
+> I have only a headphone mute switch, no headphone volume control, if
+that's
+> what you mean. But since the master affects headphone volume, that's OK.
 
-Hmm. What do you think of the attached patch - would it work as well? It=20
-removes the part that returns early for all three, letting it fall=20
-through to the part that returns "Front" etc.
+As the original config only support stereo, pcm playback volume control
+line out volume , headphone and speaker using different DAC 0x02 and 0x03
 
---=20
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Try specify
 
---------------000804020101000107050907
-Content-Type: text/x-patch;
- name="pfx.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="pfx.patch"
+spec->gen.indep_hp = 1;
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index b680b4e..9f0be7c 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -1100,11 +1100,9 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
- 		if (!ch && cfg->speaker_outs && cfg->hp_outs) {
- 			bool hp_lo_shared = !path_has_mixer(codec, spec->hp_paths[0], ctl_type);
- 			bool spk_lo_shared = !path_has_mixer(codec, spec->speaker_paths[0], ctl_type);
--			if (hp_lo_shared && spk_lo_shared)
--				return spec->vmaster_mute.hook ? "PCM" : "Master";
--			if (hp_lo_shared)
-+			if (hp_lo_shared && !spk_lo_shared)
- 				return "Headphone+LO";
--			if (spk_lo_shared)
-+			if (spk_lo_shared && !hp_lo_shared)
- 				return "Speaker+LO";
- 		}
- 	}
+before callin the auto parser in patch_alc662
 
---------------000804020101000107050907
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Device: name="ALC662 rev3 Alt Analog", type="Audio", device=2
 
+should appear in node 0x03 which has headphone playback volume
 
---------------000804020101000107050907--
+Codec: Realtek ALC662 rev3
+Address: 0
+AFG Function Id: 0x1 (unsol 1)
+Vendor Id: 0x10ec0662
+Subsystem Id: 0x8086204c
+Revision Id: 0x100300
+No Modem Function Group found
+Default PCM:
+    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+State of AFG node 0x01:
+  Power states:  D0 D1 D2 D3 CLKSTOP EPSS
+  Power: setting=D0, actual=D0
+GPIO: io=2, o=0, i=0, unsolicited=1, wake=0
+  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+Node 0x02 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Control: name="PCM Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Device: name="ALC662 rev3 Analog", type="Audio", device=0
+  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
+  Amp-Out vals:  [0x57 0x57]
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Control: name="Speaker Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
+  Amp-Out vals:  [0x57 0x57]
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x04 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Control: name="Headphone Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
+  Amp-Out vals:  [0x57 0x57]
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
