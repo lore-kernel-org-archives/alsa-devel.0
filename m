@@ -1,60 +1,169 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH 2/2] ASoC: simple-card: Add support for
- samplerate and samplewidth constraints
-Date: Tue, 3 Mar 2015 12:09:14 +0200
-Message-ID: <54F5884A.1090702@ti.com>
-References: <cover.1425303942.git.jsarha@ti.com>
- <9d01aa0d0bf48d8b41d5086a7e6c9ec08c2b9c48.1425303942.git.jsarha@ti.com>
- <54F4C0F2.8000201@metafoo.de>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH 08/10] ARM: orion: use clkdev_create()
+Date: Tue, 3 Mar 2015 11:25:19 +0100
+Message-ID: <20150303112519.557f43ad@free-electrons.com>
+References: <20150302170538.GQ8656@n2100.arm.linux.org.uk>
+	<E1YSTnm-0001Jx-AM@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E7212606CB
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 11:09:21 +0100 (CET)
-In-Reply-To: <54F4C0F2.8000201@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: moinejf@free.fr, kuninori.morimoto.gx@renesas.com, Li.Xiubo@freescale.com, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, bcousson@baylibre.com
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <E1YSTnm-0001Jx-AM@rmk-PC.arm.linux.org.uk>
+Sender: linux-media-owner@vger.kernel.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/2015 09:58 PM, Lars-Peter Clausen wrote:
-> On 03/02/2015 03:14 PM, Jyri Sarha wrote:
->> Add DT properties to dailink for setting samplerate and samplewidth
->> constraints. The DT binding document has been updated.
->
-> Can you include a description why this is needed and how and when it is
-> supposed to be used?
+Dear Russell King,
 
-Would this addition do:
-------------------------------------------------------------
-These constraints help to disable the sample-format and sample-rate
-combinations that do not properly work on a specific HW.
-------------------------------------------------------------
+On Mon, 02 Mar 2015 17:06:42 +0000, Russell King wrote:
+> clkdev_create() is a shorter way to write clkdev_alloc() followed by
+> clkdev_add().  Use this instead.
+> 
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> ---
+>  arch/arm/plat-orion/common.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm/plat-orion/common.c b/arch/arm/plat-orion/common.c
+> index f5b00f41c4f6..2235081a04ee 100644
+> --- a/arch/arm/plat-orion/common.c
+> +++ b/arch/arm/plat-orion/common.c
+> @@ -28,11 +28,7 @@
+>  void __init orion_clkdev_add(const char *con_id, const char *dev_id,
+>  			     struct clk *clk)
+>  {
+> -	struct clk_lookup *cl;
+> -
+> -	cl = clkdev_alloc(clk, con_id, dev_id);
+> -	if (cl)
+> -		clkdev_add(cl);
+> +	clkdev_create(clk, con_id, "%s", dev_id);
+>  }
+>  
+>  /* Create clkdev entries for all orion platforms except kirkwood.
 
-The reason why we need these is coming from limitations in McASP clock 
-generation. With a simple divider one can only produce certain 
-bit-clocks. With those bit-clocks we can only play/capture some 
-sample-rate and sample-width combinations accurately.
+Looks good, but instead of having orion_clkdev_add() being just an
+alias for clkdev_create(), what about going ahead and simply reoving
+orion_clkdev_add() entirely? Something like the below patch (not even
+compile tested) :
 
-The McASP driver could try to set the constraints automatically. 
-However, since the constraint code can not select sample-width and 
-sample-rate combinations there is a compromise to be made between them. 
-Making such compromises automatically does not usually work that well.
+diff --git a/arch/arm/mach-dove/common.c b/arch/arm/mach-dove/common.c
+index 0d1a892..ec00183 100644
+--- a/arch/arm/mach-dove/common.c
++++ b/arch/arm/mach-dove/common.c
+@@ -109,28 +109,28 @@ static void __init dove_clk_init(void)
+ 	gephy = dove_register_gate("gephy", "tclk", CLOCK_GATING_BIT_GIGA_PHY);
+ 	ge = dove_register_gate("ge", "gephy", CLOCK_GATING_BIT_GBE);
+ 
+-	orion_clkdev_add(NULL, "orion_spi.0", tclk);
+-	orion_clkdev_add(NULL, "orion_spi.1", tclk);
+-	orion_clkdev_add(NULL, "orion_wdt", tclk);
+-	orion_clkdev_add(NULL, "mv64xxx_i2c.0", tclk);
+-
+-	orion_clkdev_add(NULL, "orion-ehci.0", usb0);
+-	orion_clkdev_add(NULL, "orion-ehci.1", usb1);
+-	orion_clkdev_add(NULL, "mv643xx_eth_port.0", ge);
+-	orion_clkdev_add(NULL, "sata_mv.0", sata);
+-	orion_clkdev_add("0", "pcie", pex0);
+-	orion_clkdev_add("1", "pcie", pex1);
+-	orion_clkdev_add(NULL, "sdhci-dove.0", sdio0);
+-	orion_clkdev_add(NULL, "sdhci-dove.1", sdio1);
+-	orion_clkdev_add(NULL, "orion_nand", nand);
+-	orion_clkdev_add(NULL, "cafe1000-ccic.0", camera);
+-	orion_clkdev_add(NULL, "mvebu-audio.0", i2s0);
+-	orion_clkdev_add(NULL, "mvebu-audio.1", i2s1);
+-	orion_clkdev_add(NULL, "mv_crypto", crypto);
+-	orion_clkdev_add(NULL, "dove-ac97", ac97);
+-	orion_clkdev_add(NULL, "dove-pdma", pdma);
+-	orion_clkdev_add(NULL, MV_XOR_NAME ".0", xor0);
+-	orion_clkdev_add(NULL, MV_XOR_NAME ".1", xor1);
++	clkdev_create(tclk, NULL, "%s", "orion_spi.0");
++	clkdev_create(tclk, NULL, "%s", "orion_spi.1");
++	clkdev_create(tclk, NULL, "%s", "orion_wdt");
++	clkdev_create(tclk, NULL, "%s", "mv64xxx_i2c.0");
++
++	clkdev_create(usb0, NULL, "%s", "orion-ehci.0");
++	clkdev_create(usb1, NULL, "%s", "orion-ehci.1");
++	clkdev_create(ge, NULL, "%s", "mv643xx_eth_port.0");
++	clkdev_create(sata, NULL, "%s", "sata_mv.0");
++	clkdev_create(pex0, "0", "%s", "pcie");
++	clkdev_create(pex1, "1", "%s", "pcie");
++	clkdev_create(sdio0, NULL, "%s", "sdhci-dove.0");
++	clkdev_create(sdio1, NULL, "%s", "sdhci-dove.1");
++	clkdev_create(nand, NULL, "%s", "orion_nand");
++	clkdev_create(camera, NULL, "%s", "cafe1000-ccic.0");
++	clkdev_create(i2s0, NULL, "%s", "mvebu-audio.0");
++	clkdev_create(i2s1, NULL, "%s", "mvebu-audio.1");
++	clkdev_create(crypto, NULL, "%s", "mv_crypto");
++	clkdev_create(ac97, NULL, "%s", "dove-ac97");
++	clkdev_create(pdma, NULL, "%s", "dove-pdma");
++	clkdev_create(xor0, NULL, "%s", MV_XOR_NAME ".0");
++	clkdev_create(xor1, NULL, "%s", MV_XOR_NAME ".1");
+ }
+ 
+ /*****************************************************************************
+diff --git a/arch/arm/plat-orion/common.c b/arch/arm/plat-orion/common.c
+index f5b00f4..6ac3549 100644
+--- a/arch/arm/plat-orion/common.c
++++ b/arch/arm/plat-orion/common.c
+@@ -24,31 +24,20 @@
+ #include <mach/bridge-regs.h>
+ #include <plat/common.h>
+ 
+-/* Create a clkdev entry for a given device/clk */
+-void __init orion_clkdev_add(const char *con_id, const char *dev_id,
+-			     struct clk *clk)
+-{
+-	struct clk_lookup *cl;
+-
+-	cl = clkdev_alloc(clk, con_id, dev_id);
+-	if (cl)
+-		clkdev_add(cl);
+-}
+-
+ /* Create clkdev entries for all orion platforms except kirkwood.
+    Kirkwood has gated clocks for some of its peripherals, so creates
+    its own clkdev entries. For all the other orion devices, create
+    clkdev entries to the tclk. */
+ void __init orion_clkdev_init(struct clk *tclk)
+ {
+-	orion_clkdev_add(NULL, "orion_spi.0", tclk);
+-	orion_clkdev_add(NULL, "orion_spi.1", tclk);
+-	orion_clkdev_add(NULL, MV643XX_ETH_NAME ".0", tclk);
+-	orion_clkdev_add(NULL, MV643XX_ETH_NAME ".1", tclk);
+-	orion_clkdev_add(NULL, MV643XX_ETH_NAME ".2", tclk);
+-	orion_clkdev_add(NULL, MV643XX_ETH_NAME ".3", tclk);
+-	orion_clkdev_add(NULL, "orion_wdt", tclk);
+-	orion_clkdev_add(NULL, MV64XXX_I2C_CTLR_NAME ".0", tclk);
++	clkdev_create(tclk, NULL, "%s", "orion_spi.0");
++	clkdev_create(tclk, NULL, "%s", "orion_spi.1");
++	clkdev_create(tclk, NULL, "%s", MV643XX_ETH_NAME ".0");
++	clkdev_create(tclk, NULL, "%s", MV643XX_ETH_NAME ".1");
++	clkdev_create(tclk, NULL, "%s", MV643XX_ETH_NAME ".2");
++	clkdev_create(tclk, NULL, "%s", MV643XX_ETH_NAME ".3");
++	clkdev_create(tclk, NULL, "%s", "orion_wdt");
++	clkdev_create(tclk, NULL, "%s", MV64XXX_I2C_CTLR_NAME ".0");
+ }
+ 
+ /* Fill in the resources structure and link it into the platform
+diff --git a/arch/arm/plat-orion/include/plat/common.h b/arch/arm/plat-orion/include/plat/common.h
+index d9a24f6..7a06b6b 100644
+--- a/arch/arm/plat-orion/include/plat/common.h
++++ b/arch/arm/plat-orion/include/plat/common.h
+@@ -106,8 +106,5 @@ void __init orion_crypto_init(unsigned long mapbase,
+ 			      unsigned long sram_size,
+ 			      unsigned long irq);
+ 
+-void __init orion_clkdev_add(const char *con_id, const char *dev_id,
+-			     struct clk *clk);
+-
+ void __init orion_clkdev_init(struct clk *tclk);
+ #endif
 
-In our case these properties could of course be added to McASP driver, 
-but then again I would expect that there is a wider need for this kind 
-of functionality. And it may not always be clear if either end of the 
-link alone is responsible for less than perfect operation.
 
-Best regards,
-Jyri
+
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
