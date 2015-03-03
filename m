@@ -1,88 +1,51 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH] ASoC: omap-pcm: Allow only formats with 1, 2, and 4 byte
- physical size
-Date: Tue, 3 Mar 2015 14:51:07 +0200
-Message-ID: <54F5AE3B.9060900@ti.com>
-References: <1425382133-17120-1-git-send-email-jsarha@ti.com> <54F59DE1.2010406@ti.com> <20150303122208.GA28158@bitmer.com>
+From: Vishal Thanki <vishalthanki@gmail.com>
+Subject: [PATCH] ASoC: simple-card: Add a NULL pointer check in
+	asoc_simple_card_dai_link_of
+Date: Tue, 3 Mar 2015 18:44:30 +0530
+Message-ID: <CAC3a_SBrJxS6x+qCwi0p5DcbEbVFX3AOP=-NxWbugY6bEvirLg@mail.gmail.com>
+Reply-To: vishal.thanki@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20150303122208.GA28158@bitmer.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f177.google.com (mail-ig0-f177.google.com
+ [209.85.213.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EBC726149D
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 14:14:51 +0100 (CET)
+Received: by igbhl2 with SMTP id hl2so27120195igb.3
+ for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2015 05:14:50 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/03/2015 02:22 PM, Jarkko Nikula wrote:
-> On Tue, Mar 03, 2015 at 01:41:21PM +0200, Peter Ujfalusi wrote:
->> On 03/03/2015 01:28 PM, Jyri Sarha wrote:
->>> sDMA support only transfer elements with 1, 2, and 4 byte physical
->>> size. Initialize the pcm driver accordingly.
->>
->> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->>
->>>
->>> Signed-off-by: Jyri Sarha <jsarha@ti.com>
->>> ---
->>>   sound/soc/omap/omap-pcm.c | 21 ++++++++++++++++++++-
->>>   1 file changed, 20 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
->>> index f4b05bc..e49ee23 100644
->>> --- a/sound/soc/omap/omap-pcm.c
->>> +++ b/sound/soc/omap/omap-pcm.c
->>> @@ -39,7 +39,7 @@
->>>   #define pcm_omap1510()	0
->>>   #endif
->>>
->>> -static const struct snd_pcm_hardware omap_pcm_hardware = {
->>> +static struct snd_pcm_hardware omap_pcm_hardware = {
->>>   	.info			= SNDRV_PCM_INFO_MMAP |
->>>   				  SNDRV_PCM_INFO_MMAP_VALID |
->>>   				  SNDRV_PCM_INFO_INTERLEAVED |
->>> @@ -53,6 +53,24 @@ static const struct snd_pcm_hardware omap_pcm_hardware = {
->>>   	.buffer_bytes_max	= 128 * 1024,
->>>   };
->>>
->>> +/* sDMA supports only 1, 2, and 4 byte transfer elements. */
->>> +static void omap_pcm_limit_supported_formats(void)
->>> +{
->>> +	int i;
->>> +
->>> +	for (i = 0; i < SNDRV_PCM_FORMAT_LAST; i++) {
->>> +		switch (snd_pcm_format_physical_width(i)) {
->>> +		case 8:
->>> +		case 16:
->>> +		case 32:
->>> +			omap_pcm_hardware.formats |= (1LL << i);
->>> +			break;
->>> +		default:
->>> +			break;
->>> +		}
->>> +	}
->>> +}
->>> +
->
-> I wonder why these are set in a loop instead of setting formats statically
-> and why this is needed after commit 60e21d287344 ("ASoC: omap: Don't set
-> unused struct snd_pcm_hardware fields")?
->
+Make sure devm_kzalloc() succeeds.
 
+Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
 
-Hmmm, interesting. The the problem I was trying to solve was "read 
-error: Cannot allocate memory" when trying to play S24_3LE format. With 
-this patch the error is more informative:
-
-aplay: set_params:1233: Sample format non available
-Available formats:
-- S16_LE
-- S24_LE
-- S32_LE
-
-So the comment of commit 60e21d287344 is not entirely true, as far as I 
-understand.
-
-Best regards,
-Jyri
-
+diff --git a/sound/soc/generic/simple-card.c
+b/sound/soc/generic/simple-card.c
+index f7c6734..fb550b5 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -372,6 +372,11 @@ static int asoc_simple_card_dai_link_of(struct
+device_node *node,
+     strlen(dai_link->cpu_dai_name)   +
+     strlen(dai_link->codec_dai_name) + 2,
+     GFP_KERNEL);
++ if (!name) {
++ ret = -ENOMEM;
++ goto dai_link_of_err;
++ }
++
+  sprintf(name, "%s-%s", dai_link->cpu_dai_name,
+  dai_link->codec_dai_name);
+  dai_link->name = dai_link->stream_name = name;
+--
