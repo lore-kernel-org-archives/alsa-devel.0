@@ -1,19 +1,19 @@
-From: Alnie <memobook80@comcast.net>
-Subject: Re: Issues w/ Creative Labs [SB X-Fi Xtreme Audio]
-	CA0110-IBG
-Date: Tue, 03 Mar 2015 01:21:11 -0800
-Message-ID: <54F57D07.9020900@comcast.net>
-References: <54F52C68.6010504@comcast.net>	<s5hzj7u7grx.wl-tiwai@suse.de>	<54F5614C.9010402@comcast.net>
- <s5hwq2y7c8g.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: rt5670: Add disabled item in
+	dmic pin enum
+Date: Tue, 3 Mar 2015 09:38:26 +0000
+Message-ID: <20150303093826.GH21293@sirena.org.uk>
+References: <1424152767-29226-1-git-send-email-bardliao@realtek.com>
+ <20150221093102.GE6236@finisterre.sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D701057B6F@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6258327606417866205=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from resqmta-po-08v.sys.comcast.net (resqmta-po-08v.sys.comcast.net
- [96.114.154.167])
- by alsa0.perex.cz (Postfix) with ESMTP id 858C62606E3
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 10:21:13 +0100 (CET)
-In-Reply-To: <s5hwq2y7c8g.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23789260845
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 10:38:36 +0100 (CET)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701057B6F@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,156 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@intel.com" <mengdong.lin@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "yao.jin@intel.com" <yao.jin@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/02/2015 11:48 PM, Takashi Iwai wrote:
-> At Mon, 02 Mar 2015 23:22:52 -0800,
-> Alnie wrote:
->>
->> On 03/02/2015 10:10 PM, Takashi Iwai wrote:
->>> At Mon, 02 Mar 2015 19:37:12 -0800,
->>> Alnie wrote:
->>>>
->>>> At Wed, 25 Feb 2015 00:21:15 -0800,
->>>> Alnie wrote:
->>>>    >
->>>>    >
->>>>    >
->>>>    > On 02/25/2015 12:06 AM, Takashi Iwai wrote:
->>>>    > > At Tue, 24 Feb 2015 23:55:25 -0800,
->>>>    > > Alnie wrote:
->>>>    > >>
->>>>    > >> [ 2619.199658] pciehp 0000:00:1c.3:pcie04: Card not present on Slot(3)
->>>>    > >> [ 2619.199666] pciehp 0000:00:1c.3:pcie04: slot(3): Link Down event
->>>>    > >> [ 2619.199674] pciehp 0000:00:1c.3:pcie04: Link Down event ignored on
->>>>    > >> slot(3): already powering off
->>>>    > >> [ 2619.199911] pci_bus 0000:06: busn_res: [bus 06-0c] is released
->>>>    > >> [ 2620.757928] pciehp 0000:00:1c.3:pcie04: Card present on Slot(3)
->>>>    > >> [ 2620.767950] pciehp 0000:00:1c.3:pcie04: slot(3): Link Up event
->>>>    > >> [ 2620.767985] pciehp 0000:00:1c.3:pcie04: Link Up event ignored on
->>>>    > >> slot(3): already powering on
->>>>    > >
->>>>    > > pciehp reacted power off and on here, and...
->>>>    > >
->>>>    > >> [ 2620.876160] pci 0000:05:00.0: [1102:7006] type 01 class 0x060400
->>>>    > >> [ 2620.876426] pci 0000:05:00.0: supports D1 D2
->>>>    > >> [ 2620.876719] pci 0000:05:00.0: bridge configuration invalid ([bus
->>>>    > >> 00-00]), reconfiguring
->>>>    > >> [ 2620.876928] pci_bus 0000:06: busn_res: can not insert [bus 06-ff]
->>>>    > >> under [bus 05-0c] (conflicts with (null) [bus 05-0c])
->>>>    > >
->>>>    > > .... and something failed here for the PCI bridge device.
->>>>    > >
->>>>    > >> [ 2620.876967] pci 0000:06:00.0: [1102:0009] type 00 class 0x040300
->>>>    > >> [ 2620.877013] pci 0000:06:00.0: reg 0x10: [mem 0x00000000-0x00003fff]
->>>>    > >> [ 2620.877203] pci 0000:06:00.0: supports D1 D2
->>>>    > >> [ 2620.877443] pci 0000:05:00.0: PCI bridge to [bus 06-ff]
->>>>    > >> [ 2620.877462] pci 0000:05:00.0:   bridge window [io  0x0000-0x0fff]
->>>>    > >> [ 2620.877474] pci 0000:05:00.0:   bridge window [mem
->>>> 0x00000000-0x000fffff]
->>>>    > >> [ 2620.877492] pci 0000:05:00.0:   bridge window [mem
->>>>    > >> 0x00000000-0x000fffff 64bit pref]
->>>>    > >> [ 2620.877500] pci_bus 0000:06: busn_res: [bus 06-ff] end is
->>>> updated to 06
->>>>    > >> [ 2620.877559] pci 0000:05:00.0: BAR 14: assigned [mem
->>>>    > >> 0xf4300000-0xf43fffff]
->>>>    > >> [ 2620.877568] pci 0000:05:00.0: BAR 15: assigned [mem
->>>>    > >> 0xf4000000-0xf40fffff 64bit pref]
->>>>    > >> [ 2620.877574] pci 0000:05:00.0: BAR 13: assigned [io  0x2000-0x2fff]
->>>>    > >> [ 2620.877582] pci 0000:06:00.0: BAR 0: assigned [mem
->>>> 0xf4300000-0xf4303fff]
->>>>    > >> [ 2620.877595] pci 0000:05:00.0: PCI bridge to [bus 06]
->>>>    > >> [ 2620.877603] pci 0000:05:00.0:   bridge window [io  0x2000-0x2fff]
->>>>    > >> [ 2620.877618] pci 0000:05:00.0:   bridge window [mem
->>>> 0xf4300000-0xf43fffff]
->>>>    > >> [ 2620.877630] pci 0000:05:00.0:   bridge window [mem
->>>>    > >> 0xf4000000-0xf40fffff 64bit pref]
->>>>    > >> [ 2620.877647] pcieport 0000:00:1c.3: PCI bridge to [bus 05-0c]
->>>>    > >> [ 2620.877655] pcieport 0000:00:1c.3:   bridge window [io
->>>> 0x2000-0x2fff]
->>>>    > >> [ 2620.877667] pcieport 0000:00:1c.3:   bridge window [mem
->>>>    > >> 0xf4300000-0xf7efffff]
->>>>    > >> [ 2620.877677] pcieport 0000:00:1c.3:   bridge window [mem
->>>>    > >> 0xf4000000-0xf40fffff 64bit pref]
->>>>    > >> [ 2620.877990] pci 0000:05:00.0: enabling device (0000 -> 0003)
->>>>    > >> [ 2620.878013] snd_hda_intel 0000:06:00.0: enabling device (0000
->>>> -> 0002)
->>>>    > >> [ 2620.882747] azx_single_wait_for_response: 108 callbacks suppressed
->>>>    > >> [ 2620.882753] snd_hda_intel 0000:06:00.0: Codec #1 probe error;
->>>>    > >> disabling it...
->>>>    > >> [ 2620.887052] snd_hda_intel 0000:06:00.0: no AFG or MFG node found
->>>>    > >> [ 2620.887058] snd_hda_intel 0000:06:00.0: no codecs initialized
->>>>    > >
->>>>    > > What if you once unload snd-hda-intel module and reload again while
->>>>    > > keeping the card plugged?  I guess it still doesn't work, but just to
->>>>    > > be sure...
->>>>    > >
->>>>    > > Overall, this look more like a problem of PCI core stuff.  Better to
->>>>    > > toss the issue to PCI people.
->>>>    > >
->>>>    > >
->>>>    > > Takashi
->>>>    > >
->>>>    >
->>>>    > I did alsa force-reload and the same error comes up. Do you know of a
->>>>    > good starting point for presenting PCI issues?
->>>>    >
->>>>    >Ask on linux-pci at vger.kernel.org ?
->>>>    >
->>>>    >
->>>>    >Takashi
->>>>
->>>>
->>>> Bjorn has suggested it is not a PCI issue...
->>>> http://article.gmane.org/gmane.linux.kernel.pci/39492
->>>> Any other ideas in regards to this?
->>>
->>> After re-inserting the card, try to reload the driver module again.
->>>
->>>
->>> Takashi
->>>
->>
->> Okay, booted with card not inserted and with hda-intel driver
->> blacklisted. Inserted card & loaded driver and same complaint came up...
->> here is dmesg output http://pastebin.com/myBT23G1
->
-> I meant reloading the module again without reinserting the device.
-> Though, I don't expect this would work, but just to be sure.
->
 
-is alsa force-reload sufficient?
-
-> Other than that, I have no much clue.  You might put some delay in
-> each probe procedure and debug prints.  Check the values of
-> azx_read*() and azx_write*().  Especially if azx_read*() reads 0xff,
-> it means that the mapped PCI registers are wrong, which usually
-> indicates still some PCI errors (e.g. the device isn't powered up
-> properly).
->
->
-> Takashi
->
-
-Bjorn asked this question I'm not sure if you ever saw it...
-
-On Thu, Feb 26, 2015 at 09:20:59AM +0100, Takashi Iwai wrote:
-
- >> FYI, during the previous debug sessions, we found that the sound
- >> driver gets only 0xff for mapped register accesses, so I suggested to
- >> report to PCI devs.  IIRC, the non-hotplug board with this chip worked
- >> in the past.
-
- >I skimmed the previous emails but I missed this part.  Did you add
- >instrumentation to the driver, or is it just obvious from the way the
- >driver behaves that we're getting 0xff?
-
- >Bjorn
+--===============6258327606417866205==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1LVyZ/HwEe7MXT81"
+Content-Disposition: inline
 
 
-Also, in regards to debug prints and azx read write values. How do I do 
-this? I have searched around I can't find anything.
+--1LVyZ/HwEe7MXT81
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--Alnie
+On Tue, Mar 03, 2015 at 08:34:09AM +0000, Bard Liao wrote:
+
+> Does "[PATCH 2/2] ASoC: rt5670: Fix the speaker mono output issue" patch
+> also be applied? I see " [PATCH 1/2] ASoC: rt5670: Add disabled item in dmic
+> pin enum" in topic/rt5670 branch, but don't see "[PATCH 2/2] ASoC: rt5670:
+> Fix the speaker mono output issue".
+
+If there's a patch you don't see please resend it.
+
+--1LVyZ/HwEe7MXT81
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU9YERAAoJECTWi3JdVIfQPwkH/207ToPoNi68v5LBj9xNpk+t
+D6teBQ5fJ7n3NAoKrI8CxCE+wxS2aef8YsOcg2we8b6inqfHMLokfyVHegqqQaIc
+maZMRtL1rNzQS5A2Q4dyjjufmdK2bEnUeD+HNUyZDQApn6+P0ZjevthrUswVtmDt
+1ghrHmOKBbGoo50i8CBIIoBiO+GHiNMtucBx6W00acrboHNTU3dpVWhZ6vubqzum
+4w8bePd6whrA3/l+hXxB0FDW33aOVtqErdxNxz+eFJfPwLeXbubFfyjfK8lyv3Z6
+gEZRJ7GMpVR/RPDYPAVSc80I74mGjO6dFAFcws6BE8iLzRbsr+wXymva16ZtJOA=
+=ds8F
+-----END PGP SIGNATURE-----
+
+--1LVyZ/HwEe7MXT81--
+
+--===============6258327606417866205==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6258327606417866205==--
