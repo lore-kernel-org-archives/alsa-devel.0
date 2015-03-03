@@ -1,69 +1,84 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH] ASoC: omap-pcm: Allow only formats with 1, 2, and 4 byte physical size
-Date: Tue, 3 Mar 2015 13:28:53 +0200
-Message-ID: <1425382133-17120-1-git-send-email-jsarha@ti.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: simple-card: Add support for
+ samplerate and samplewidth constraints
+Date: Tue, 3 Mar 2015 11:30:41 +0000
+Message-ID: <20150303113041.GM21293@sirena.org.uk>
+References: <cover.1425303942.git.jsarha@ti.com>
+ <9d01aa0d0bf48d8b41d5086a7e6c9ec08c2b9c48.1425303942.git.jsarha@ti.com>
+ <54F4C0F2.8000201@metafoo.de>
+ <54F5884A.1090702@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, jarkko.nikula@bitmer.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pwpVSMFClTuBGjlc"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <54F5884A.1090702-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-sDMA support only transfer elements with 1, 2, and 4 byte physical
-size. Initialize the pcm driver accordingly.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- sound/soc/omap/omap-pcm.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+--pwpVSMFClTuBGjlc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index f4b05bc..e49ee23 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -39,7 +39,7 @@
- #define pcm_omap1510()	0
- #endif
- 
--static const struct snd_pcm_hardware omap_pcm_hardware = {
-+static struct snd_pcm_hardware omap_pcm_hardware = {
- 	.info			= SNDRV_PCM_INFO_MMAP |
- 				  SNDRV_PCM_INFO_MMAP_VALID |
- 				  SNDRV_PCM_INFO_INTERLEAVED |
-@@ -53,6 +53,24 @@ static const struct snd_pcm_hardware omap_pcm_hardware = {
- 	.buffer_bytes_max	= 128 * 1024,
- };
- 
-+/* sDMA supports only 1, 2, and 4 byte transfer elements. */
-+static void omap_pcm_limit_supported_formats(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < SNDRV_PCM_FORMAT_LAST; i++) {
-+		switch (snd_pcm_format_physical_width(i)) {
-+		case 8:
-+		case 16:
-+		case 32:
-+			omap_pcm_hardware.formats |= (1LL << i);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
- /* this may get called several times by oss emulation */
- static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params)
-@@ -235,6 +253,7 @@ static struct snd_soc_platform_driver omap_soc_platform = {
- 
- int omap_pcm_platform_register(struct device *dev)
- {
-+	omap_pcm_limit_supported_formats();
- 	return devm_snd_soc_register_platform(dev, &omap_soc_platform);
- }
- EXPORT_SYMBOL_GPL(omap_pcm_platform_register);
--- 
-1.9.1
+On Tue, Mar 03, 2015 at 12:09:14PM +0200, Jyri Sarha wrote:
+> On 03/02/2015 09:58 PM, Lars-Peter Clausen wrote:
 
+> >Can you include a description why this is needed and how and when it is
+> >supposed to be used?
+
+> Would this addition do:
+> ------------------------------------------------------------
+> These constraints help to disable the sample-format and sample-rate
+> combinations that do not properly work on a specific HW.
+> ------------------------------------------------------------
+
+Not entirely...
+
+> The reason why we need these is coming from limitations in McASP clock
+> generation. With a simple divider one can only produce certain bit-clocks.
+> With those bit-clocks we can only play/capture some sample-rate and
+> sample-width combinations accurately.
+
+> The McASP driver could try to set the constraints automatically. However,
+> since the constraint code can not select sample-width and sample-rate
+> combinations there is a compromise to be made between them. Making such
+> compromises automatically does not usually work that well.
+
+...this is more the point.  Perhaps the constraints language needs
+improvement here?
+
+> In our case these properties could of course be added to McASP driver, but
+> then again I would expect that there is a wider need for this kind of
+> functionality. And it may not always be clear if either end of the link
+> alone is responsible for less than perfect operation.
+
+The trouble with this sort of interface is that it's a quick and dirty
+way for people to bodge around things rather than actually fixing them
+properly.  Of course sometimes fixing things properly is really hard and
+that means we want a temporary bodge but having to put them in DT is
+really unfortunate.
+
+--pwpVSMFClTuBGjlc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU9ZtgAAoJECTWi3JdVIfQoEUH/2AVbPp8RCELJW15wbgacOmi
+/q2ouJN+pofTyb8x7W1Tp1HRdoEU5QalbCBCW/BAmM34E60iB4CPJjUHJ09oqKfe
+iphGjpcTvck9NQrzoa9WcF8u/gQByBx+enrxmOcxRjwdoLuuJdN6q2A41oYaOHAT
+hN8w+ZaPN7hQGo4acPoKJpjDGm6cdf0wrwxg3i062246GoZct38eut66gxIQalwa
+M4KuEBkoslwDWnucIdO2QU2gdZPO2NT2AHKpgu7/eAZeT0mHVKs3KBrmoBPq9LBm
+xBVarSRKHKq40HRLHDfif6f/mY0AqVoZ7JqJcBLPu/PvTTUU08Mkv3CZUKzPFfE=
+=38b5
+-----END PGP SIGNATURE-----
+
+--pwpVSMFClTuBGjlc--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
