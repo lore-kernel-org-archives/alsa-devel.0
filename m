@@ -1,39 +1,218 @@
-From: Vishal Thanki <vishalthanki@gmail.com>
-Subject: [PATCH] ASoC: simple-card: Add a NULL pointer check in
- asoc_simple_card_dai_link_of
-Date: Tue, 3 Mar 2015 18:59:00 +0530
-Message-ID: <20150303132900.GA22246@vishal>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Intel HDA / ALC662 analog surround problem
+Date: Tue, 3 Mar 2015 21:41:16 +0800
+Message-ID: <CAN8ccib6-oLgZAhYpKTnh_Bjm6G1axN2NCv8mQBPczRy4=qmqg@mail.gmail.com>
+References: <CAN8cciaUw6RWgE859mNvvoDmeZ-ovPnu-21L6=YXJu+kxExeTg@mail.gmail.com>
+ <54f58df6.3dd80617.bm000@wupperonline.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yh0-f51.google.com (mail-yh0-f51.google.com
+ [209.85.213.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C6232614A9
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 14:41:18 +0100 (CET)
+Received: by yhot59 with SMTP id t59so1402644yho.5
+ for <alsa-devel@alsa-project.org>; Tue, 03 Mar 2015 05:41:17 -0800 (PST)
+In-Reply-To: <54f58df6.3dd80617.bm000@wupperonline.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Make sure devm_kzalloc() succeeds.
+>
+> I'm not familiar with hardware, so I had some difficulties to understand
+> what's going on here, but then I got really curious. So I grabbed an
+ALC662
+> datasheet and studied the block diagram. Now I think that I'm beginning to
+> understand.
+>
+> >> >> > [    0.655493] sound hdaudioC1D0: autoconfig: line_outs=1
+(0x14/0x0/0x0/0x0/0x0) type:line
+> >> >> > [    0.655494] sound hdaudioC1D0:    speaker_outs=1
+(0x15/0x0/0x0/0x0/0x0)
+> >> >> > [    0.655495] sound hdaudioC1D0:    hp_outs=1
+(0x1b/0x0/0x0/0x0/0x0)
+> >> >> > [    0.655496] sound hdaudioC1D0:    mono: mono_out=0x0
+> >> >> > [    0.655496] sound hdaudioC1D0:    dig-out=0x1e/0x0
+> >> >> > [    0.655497] sound hdaudioC1D0:    inputs:
+> >> >> > [    0.655498] sound hdaudioC1D0:      Front Mic=0x19
+> >> >> > [    0.655499] sound hdaudioC1D0:      Rear Mic=0x18
+> >> >> > [    0.655499] sound hdaudioC1D0:      Line=0x1a
+> >> >>
+> >> >> > This is a known bug of hda_generic.c for those desktop with
+internal
+> >> >> > speaker and three audio jacks at rear panel (e.g. those lenovo
+> >> >> > thinkcenter with alc66x codec)
+> >> >>
+> >> >> > The driver prefer to assign volume control/dac to headphone, line
+out and
+> >> >> > internal speaker instead of line out and the other two multi io
+jacks
+> >>
+> >> > or You need to increase BAD_MULTI_IO from 0x120 to 0x4120 since
+> >> > BAD_NO_DAC 0x4000 for the driver to select config with mio=1
+> >>
+>
+> >==> lo_type=0, wired=1, mio=1, badness=0x352
+> > multi_outs = 14/0/0/0 : 2/0/0/0 (type LO)
+> >   out path: depth=3 '02:0c:14'
+> > hp_outs = 1b/0/0/0 : 2/0/0/0
+> >   hp  path: depth=3 '02:0c:1b'
+> > spk_outs = 15/0/0/0 : 3/0/0/0
+> >   spk path: depth=3 '03:0d:15'
+> >==> lo_type=0, wired=1, mio=0, badness=0x120
+> > multi_outs = 14/0/0/0 : 2/0/0/0 (type LO)
+> >   out path: depth=3 '02:0c:14'
+> > hp_outs = 1b/0/0/0 : 4/0/0/0
+> >   hp  path: depth=3 '04:0e:1b'
+> > spk_outs = 15/0/0/0 : 3/0/0/0
+> >   spk path: depth=3 '03:0d:15'
+> > send: NID=0x18, VERB=0xf00(get_parameters), PARM=0x12(amp_out_cap)
+> > receive: 0x80000000
+> >==> lo_type=0, wired=0, mio=1, badness=0x4112
+> > multi_outs = 14/0/0/0 : 2/3/4/0 (type LO)
+> >   out path: depth=3 '02:0c:14'
+> > multi_ios(2) = 1a/18 : 3/4
+> >   mio path: depth=3 '03:0d:1a'
+> >   mio path: depth=3 '04:0e:18'
+> > hp_outs = 1b/0/0/0 : 2/0/0/0
+> >   hp  path: depth=3 '02:0c:1b'
+> > spk_outs = 15/0/0/0 : 0/0/0/0
+> >==> lo_type=0, wired=0, mio=0, badness=0x4120
+> > multi_outs = 14/0/0/0 : 2/0/0/0 (type LO)
+> >   out path: depth=3 '02:0c:14'
+> > hp_outs = 1b/0/0/0 : 3/0/0/0
+> >   hp  path: depth=3 '03:0d:1b'
+> > spk_outs = 15/0/0/0 : 0/0/0/0
+> >==> restoring best_cfg
+> >==> Best config: lo_type=0, wired=1, mio=0
+> > multi_outs = 14/0/0/0 : 2/0/0/0 (type LO)
+> >   out path: depth=3 '02:0c:14'
+> > hp_outs = 1b/0/0/0 : 4/0/0/0
+> >   hp  path: depth=3 '04:0e:1b'
+> > spk_outs = 15/0/0/0 : 3/0/0/0
+> >   spk path: depth=3 '03:0d:15'
+>
+> > The current driver select config with smallest badness
+> > You need an ad hoc check of increasing the badness due to multi io
+cannot
+> > be assigned  for those realtek alc66x codecs with 3stack and internal
+> > speaker
+>
+> I think I've figured out how to safely perform a private kernel patch for
+it.
+>
+> diff -Nur a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+> --- a/sound/pci/hda/hda_generic.c       2015-02-11 08:01:12.000000000
++0100
+> +++ b/sound/pci/hda/hda_generic.c       2015-03-02 22:57:34.799192329
++0100
+> @@ -1233,7 +1233,8 @@
+>                                 dac = spec->private_dac_nids[0];
+>                                 badness += bad->shared_surr_main;
+>                         } else if (!i)
+> -                               badness += bad->no_primary_dac;
+> +                               /* no additional badness for 0x15
+(speaker) without DAC (during multi-io check) */
+> +                               badness += pin == 0x15 ? 0 :
+bad->no_primary_dac;
+>                         else
+>                                 badness += bad->no_dac;
+>                 }
 
-Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
----
- sound/soc/generic/simple-card.c |    5 +++++
- 1 file changed, 5 insertions(+)
+You cannot hardcode 0x15
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index f7c6734..fb550b5 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -372,6 +372,11 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 			    strlen(dai_link->cpu_dai_name)   +
- 			    strlen(dai_link->codec_dai_name) + 2,
- 			    GFP_KERNEL);
-+	if (!name) {
-+		ret = -ENOMEM;
-+		goto dai_link_of_err;
-+	}
-+
- 	sprintf(name, "%s-%s", dai_link->cpu_dai_name,
- 				dai_link->codec_dai_name);
- 	dai_link->name = dai_link->stream_name = name;
--- 
-1.7.9.5
+if (cfg->line_out_type != AUTO_PIN_SPEAKER_OUT) {
+err = try_assign_dacs(codec, cfg->speaker_outs,
+      cfg->speaker_pins,
+      spec->multiout.extra_out_nid,
+      spec->speaker_paths,
+      spec->extra_out_badness);
+if (err < 0)
+return err;
+badness += err;
 
+Don't add err to badness when (err = 0x4000 && nid_has_volume(codec,
+spec->multiout.dac_nid[0],HDA_OUTPUT) && cfg->lineout_type ==
+AUTO_PIN_LINE_OUT && cfg->line_outs == 1 && cfg->hp_outs == 1 &&
+cfg->speaker_outs == 1 && count_multiio_pins(codec, cfg->line_out_pins[0])
+== 2 && number of analog dacs == 3)
+
+>
+> Now I'm getting the favored config:
+>
+> ==> lo_type=0, wired=1, mio=1, badness=0x352
+> multi_outs = 14/0/0/0 : 2/0/0/0 (type LO)
+> hp_outs = 1b/0/0/0 : 2/0/0/0
+> spk_outs = 15/0/0/0 : 3/0/0/0
+> ==> lo_type=0, wired=1, mio=0, badness=0x120
+> multi_outs = 14/0/0/0 : 2/0/0/0 (type LO)
+> hp_outs = 1b/0/0/0 : 4/0/0/0
+> spk_outs = 15/0/0/0 : 3/0/0/0
+> ==> lo_type=0, wired=0, mio=1, badness=0x112
+> multi_outs = 14/0/0/0 : 2/3/4/0 (type LO)
+> multi_ios(2) = 1a/18 : 3/4
+> hp_outs = 1b/0/0/0 : 2/0/0/0
+> spk_outs = 15/0/0/0 : 0/0/0/0
+> ==> lo_type=0, wired=0, mio=0, badness=0x120
+> multi_outs = 14/0/0/0 : 2/0/0/0 (type LO)
+> hp_outs = 1b/0/0/0 : 3/0/0/0
+> spk_outs = 15/0/0/0 : 0/0/0/0
+> ==> restoring best_cfg
+> ==> Best config: lo_type=0, wired=0, mio=1
+> multi_outs = 14/0/0/0 : 2/3/4/0 (type LO)
+> multi_ios(2) = 1a/18 : 3/4
+> hp_outs = 1b/0/0/0 : 2/0/0/0
+> spk_outs = 15/0/0/0 : 0/0/0/0
+
+How do the driver know the volume control at node 0x02 is shared by hp,
+line out and speaker when your spk_outs path not contain node 0x02
+
+Since those Dell Inspirion 660 also is a 3stack desktop without speaker
+with alc662  which need "Front+Headphone Playback Volume"
+
+BTW do the driver need to disable independent headphone after your change ?
+Independent headphone need line out and headphone use different DACs
+
+Do alc662 support 4+2 or NOT ?
+
+>
+> > > The master volume control affects the line out volume (which is named
+PCM,
+> > > btw), but no other output. Muting the master, however, affects all
+outputs.
+> > >
+> > > After changing to 4ch or 6ch, the PCM (line out) volume control acts
+as a
+> > > "master" for surround and center/lfe.
+>
+> > Seem "master playback volume" is not the correct name when using
+surround
+> > 5.1 and your config lost the virtual master playback volume
+>
+> It seems that this is fixable. Patch will follow.
+>
+> By the way, there is one thing I still don't understand. After booting
+there
+> is no "PCM Playback Volume" control in alsamixer. As soon as I've played
+some
+> wav file, it appears. Where does it come from, i.e. is it created by
+kernel
+> or alsa-lib/utils and why?
+>
+
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob_plain;f=src/conf/cards/HDA-Intel.conf;hb=HEAD
+
+It is a softvol plugin in HDA-Intel.conf which is needed for those alc660
+codecs which have no hardware volume control
+
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/codecs
