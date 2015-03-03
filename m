@@ -1,19 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 3/3] ASoC: sn95031: Fix control-less DAPM
-	routes
-Date: Tue, 3 Mar 2015 21:55:12 +0530
-Message-ID: <20150303162512.GK2613@intel.com>
-References: <1425042784-727-1-git-send-email-lars@metafoo.de>
- <1425042784-727-3-git-send-email-lars@metafoo.de>
+From: Peter Meerwald <pmeerw@pmeerw.net>
+Subject: [PATCH] amixer: Don't set only the first item in
+	sset_enum()
+Date: Tue,  3 Mar 2015 18:39:52 +0100
+Message-ID: <1425404392-22598-1-git-send-email-pmeerw@pmeerw.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 759422616B9
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 17:29:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1425042784-727-3-git-send-email-lars@metafoo.de>
+Received: from pmeerw.net (ns.pmeerw.net [84.19.176.92])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38ECE261735
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 18:40:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,21 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Support Opensource <support.opensource@diasemi.com>
+To: alsa-devel@alsa-project.org
+Cc: Peter Meerwald <pmeerw@pmeerw.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 27, 2015 at 02:13:04PM +0100, Lars-Peter Clausen wrote:
-> Routes without a control must use NULL for the control name. The sn95031
-> driver uses "NULL" instead in a few places. Previous to commit 5fe5b767dc6f
-> ("ASoC: dapm: Do not pretend to support controls for non mixer/mux widgets")
-> the DAPM core silently ignored non-NULL controls on non-mixer and non-mux
-> routes. But starting with that commit it will complain and not add the
-> route breaking the sn95031 driver in the process.
-> 
-> This patch replaces the incorrect "NULL" control name with NULL to fix the
-> issue.
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+From: Peter Meerwald <p.meerwald@bct-electronic.com>
 
+Signed-off-by: Peter Meerwald <pmeerw@pmeerw.net>
+---
+ amixer/amixer.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/amixer/amixer.c b/amixer/amixer.c
+index ed60e7c..36c92eb 100644
+--- a/amixer/amixer.c
++++ b/amixer/amixer.c
+@@ -1278,7 +1278,7 @@ static int get_enum_item_index(snd_mixer_elem_t *elem, char **ptrp)
+ 
+ static int sset_enum(snd_mixer_elem_t *elem, unsigned int argc, char **argv)
+ {
+-	unsigned int idx, chn = 0;
++	unsigned int idx, item = 0;
+ 	int check_flag = ignore_error ? 0 : -1;
+ 
+ 	for (idx = 1; idx < argc; idx++) {
+@@ -1287,7 +1287,7 @@ static int sset_enum(snd_mixer_elem_t *elem, unsigned int argc, char **argv)
+ 			int ival = get_enum_item_index(elem, &ptr);
+ 			if (ival < 0)
+ 				return check_flag;
+-			if (snd_mixer_selem_set_enum_item(elem, chn, ival) >= 0)
++			if (snd_mixer_selem_set_enum_item(elem, item++, ival) >= 0)
+ 				check_flag = 1;
+ 			/* skip separators */
+ 			while (*ptr == ',' || isspace(*ptr))
 -- 
-~Vinod
+1.7.9.5
