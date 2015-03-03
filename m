@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: Add a NULL pointer
- check in asoc_simple_card_dai_link_of
-Date: Tue, 3 Mar 2015 14:25:24 +0000
-Message-ID: <20150303142524.GV21293@sirena.org.uk>
-References: <20150303132900.GA22246@vishal>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
+	davinci-pcm
+Date: Tue, 3 Mar 2015 16:45:16 +0200
+Message-ID: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4523137036881647893=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 56962261543
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:45:22 +0100 (CET)
-In-Reply-To: <20150303132900.GA22246@vishal>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84E3926153F
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:45:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +19,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vishal Thanki <vishalthanki@gmail.com>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, khilman@deeprootsystems.com, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============4523137036881647893==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pqrHuw837mIruWQK"
-Content-Disposition: inline
+This series will deprecate and removes the davinci-pcm platform driver and
+converts the daVinci DAI drivers to use the edma-pcm.
 
+The main feature of davinci-pcm has been the so called ping-pong mode, which
+can help in situations when the McASP/McBSP/ASP/VCIF experiences underrun or
+overrun in playback or capture. This was due to the fact the davinci-pcm w/o
+ping-pong needed to reprogram the paRAM slot after each period, this could
+cause delay in DMA operation, which leads to starvation.
+The edm-pcm does not need reprogramming and it seams to be working as good as
+the davinci-pcm with ping-pong.
 
---pqrHuw837mIruWQK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I have tested this series on OMAP-L138 EVM with McASP and McBSP. VCIF has been
+only compile tested since I do not have access to the HW. The edma-pcm is
+already used by AM335x and AM437x and it has been tested on those platforms
+extensively.
 
-On Tue, Mar 03, 2015 at 06:59:00PM +0530, Vishal Thanki wrote:
-> Make sure devm_kzalloc() succeeds.
+After this series we no longer have legacy eDMA users which clears the path for
+the eDMA driver stack cleanup.
 
-Applied, thanks.
+Regards,
+Peter
+---
+Peter Ujfalusi (5):
+  ASoC: davinci: Select SND_EDMA_SOC when SND_DAVINCI_SOC is enabled
+  ASoC: davinci-i2s: Convert to use edma-pcm
+  ASoC: davinci-vcif: Convert to use edma-pcm
+  ASoC: davinci-mcasp: Deprecate the use of davinci-pcm in favor of
+    edma-pcm
+  ASoC: davinci: Remove unused davinci-pcm platform driver
 
---pqrHuw837mIruWQK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ sound/soc/davinci/Kconfig         |  18 +-
+ sound/soc/davinci/Makefile        |   2 -
+ sound/soc/davinci/davinci-i2s.c   |  67 ++-
+ sound/soc/davinci/davinci-mcasp.c |  87 +---
+ sound/soc/davinci/davinci-pcm.c   | 861 --------------------------------------
+ sound/soc/davinci/davinci-pcm.h   |  41 --
+ sound/soc/davinci/davinci-vcif.c  |  55 ++-
+ 7 files changed, 79 insertions(+), 1052 deletions(-)
+ delete mode 100644 sound/soc/davinci/davinci-pcm.c
+ delete mode 100644 sound/soc/davinci/davinci-pcm.h
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU9cRUAAoJECTWi3JdVIfQ8DgIAINIxTvlScvsXoh4fBTq+T0K
-M1exlFgBuaGfTyCiFsMjPuZMQHRnh5qcQuDZmjPVJHKF5T3Va8xz2NbAsN2utvWN
-PuizRrSs3zp/P7BuZruQhgWpcqbnEOd2xG2v8XonXCLKM7/TbsCb+wFQZuvVNMIr
-CJV12zT1plQMyzOWDqRGze+ma8LDqbCd0iR6sRszIwpd7k5o+j1XQqdZbx2yTTXX
-OJKKEKa8w4SAFMDPEHXMPeXxhAyLcO/Jhr5ZUmWYPx6YhhI5qR9GqVGDGvz0ajOK
-cRRL3xec+kIPrhQ3cnUsBrXwW6ePt1cVtq0wliGq5oQEp6Pf41Gl5QTcJmEO1js=
-=mIHY
------END PGP SIGNATURE-----
-
---pqrHuw837mIruWQK--
-
---===============4523137036881647893==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4523137036881647893==--
+-- 
+2.3.0
