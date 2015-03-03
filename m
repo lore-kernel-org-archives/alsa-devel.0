@@ -1,16 +1,15 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: Intel SST on a Bay Trail tablet
-Date: Tue, 3 Mar 2015 15:16:21 +0100
-Message-ID: <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
-References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: davinci-mcasp: Allow complete shutdown
+	of McASP when not in use
+Date: Tue, 3 Mar 2015 16:26:32 +0200
+Message-ID: <1425392792-12659-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
- by alsa0.perex.cz (Postfix) with ESMTP id A5FBC2614C1
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:16:23 +0100 (CET)
-In-Reply-To: <20150223183913.fb262011d6300425da7f34be@ao2.it>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id B342A261515
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:26:43 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +19,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23 Feb 2015 18:39:13 +0100
-Antonio Ospite <ao2@ao2.it> wrote:
+Rearrange the pm_runtime_get/put_sync calls so the IP will be turned off
+when it is not in use.
 
-> Hi,
-> 
-> I am trying to get the Intel SST driver working on a Teclast X98 Air 3G
-> [1], it's a Bay Trail tablet. The tests below have been made with
-> 4.0.0-rc1 and the firmware files from
-> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/intel
-> 
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/davinci/davinci-mcasp.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-Hi, has anyone had a chance to take a look at my previous message?
-
-[...]
-> Last question, what is the difference between having the device detected
-> by sound/soc/intel/sst-acpi.c (like in my case) opposed to
-> sound/soc/intel/sst/sst_acpi.c? I can see the 80860F28 id in both the
-> files but they seem to load different firmwares.
->
-
-Another thing I noticed is that the Android driver for the rt5640 codec
-defines some controls which are not in the mainline driver:
-
-  OUT MIXR BST3 Switch
-  OUT MIXL BST3 Switch
-  RECMIXR BST3 Switch
-  RECMIXL BST3 Switch
-  IN1 Mode Control
-  IN2 Mode Control
-
-I tried to add these copying from some Android kernel found on-line[1]
-and set the value to the ones used on Android but they don't seem to
-make a difference.
-
-> Any idea of what is missing?
-> It's the DSDT which still needs adjusting, or are some changes needed
-> (also) in the kernel driver?
-> 
-
-Thanks,
-   Antonio
-
-[1] https://github.com/ZenfoneArea/android_kernel_asus_zenfone5
-
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 031c1fb44ae7..a51197ac0b92 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -528,6 +528,7 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ {
+ 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
+ 
++	pm_runtime_get_sync(mcasp->dev);
+ 	switch (div_id) {
+ 	case 0:		/* MCLK divider */
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
+@@ -553,6 +554,7 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
+ 		return -EINVAL;
+ 	}
+ 
++	pm_runtime_put_sync(mcasp->dev);
+ 	return 0;
+ }
+ 
+@@ -567,6 +569,7 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ {
+ 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
+ 
++	pm_runtime_get_sync(mcasp->dev);
+ 	if (dir == SND_SOC_CLOCK_OUT) {
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
+@@ -579,6 +582,7 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 
+ 	mcasp->sysclk_freq = freq;
+ 
++	pm_runtime_put_sync(mcasp->dev);
+ 	return 0;
+ }
+ 
+@@ -1078,6 +1082,9 @@ static int davinci_mcasp_suspend(struct snd_soc_dai *dai)
+ 	u32 reg;
+ 	int i;
+ 
++	if (!dai->active)
++		pm_runtime_get_sync(mcasp->dev);
++
+ 	for (i = 0; i < ARRAY_SIZE(context_regs); i++)
+ 		context->config_regs[i] = mcasp_get_reg(mcasp, context_regs[i]);
+ 
+@@ -1094,6 +1101,8 @@ static int davinci_mcasp_suspend(struct snd_soc_dai *dai)
+ 		context->xrsr_regs[i] = mcasp_get_reg(mcasp,
+ 						DAVINCI_MCASP_XRSRCTL_REG(i));
+ 
++	pm_runtime_put_sync(mcasp->dev);
++
+ 	return 0;
+ }
+ 
+@@ -1104,6 +1113,8 @@ static int davinci_mcasp_resume(struct snd_soc_dai *dai)
+ 	u32 reg;
+ 	int i;
+ 
++	pm_runtime_get_sync(mcasp->dev);
++
+ 	for (i = 0; i < ARRAY_SIZE(context_regs); i++)
+ 		mcasp_set_reg(mcasp, context_regs[i], context->config_regs[i]);
+ 
+@@ -1120,6 +1131,9 @@ static int davinci_mcasp_resume(struct snd_soc_dai *dai)
+ 		mcasp_set_reg(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
+ 			      context->xrsr_regs[i]);
+ 
++	if (!dai->active)
++		pm_runtime_put_sync(mcasp->dev);
++
+ 	return 0;
+ }
+ #else
+@@ -1427,13 +1441,6 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 
+-	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (IS_ERR_VALUE(ret)) {
+-		dev_err(&pdev->dev, "pm_runtime_get_sync() failed\n");
+-		pm_runtime_disable(&pdev->dev);
+-		return ret;
+-	}
+-
+ 	mcasp->base = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
+ 	if (!mcasp->base) {
+ 		dev_err(&pdev->dev, "ioremap failed\n");
+@@ -1633,14 +1640,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err:
+-	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	return ret;
+ }
+ 
+ static int davinci_mcasp_remove(struct platform_device *pdev)
+ {
+-	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+ 	return 0;
 -- 
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+2.3.0
