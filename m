@@ -1,39 +1,86 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [alsa-devel] [patch] ALSA: seq_midi_emul: small array underflow
-Date: Tue, 3 Mar 2015 14:38:48 +0300
-Message-ID: <20150303113848.GD5437@mwanda>
-References: <20150303093829.GA7685@mwanda>
- <54F5993E.7000109@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-pcm: Allow only formats with 1, 2, and 4 byte
+ physical size
+Date: Tue, 3 Mar 2015 13:41:21 +0200
+Message-ID: <54F59DE1.2010406@ti.com>
+References: <1425382133-17120-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <54F5993E.7000109@ladisch.de>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1425382133-17120-1-git-send-email-jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: broonie@kernel.org, liam.r.girdwood@linux.intel.com, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 03, 2015 at 12:21:34PM +0100, Clemens Ladisch wrote:
-> Dan Carpenter wrote:
-> > In snd_opl3_calc_pitch() then the limit is:
-> >
-> > 	if (pitchbend > 0x1FFF)
-> > 		pitchbend = 0x1FFF;
-> >
-> > But it can underflow meaning that segment can be as low as
-> > SHORT_MIN / 0x1000 and we can read 6 elements before the start of the
-> > opl3_note_table[] array.
-> 
-> > -	short midi_pitchbend;		/* Pitch bend amount */
-> > +	unsigned short midi_pitchbend;	/* Pitch bend amount */
-> 
-> Pitch bend is a signed 14-bit value.  What is wrong is the missing
-> check for the lower bound.
-> 
+On 03/03/2015 01:28 PM, Jyri Sarha wrote:
+> sDMA support only transfer elements with 1, 2, and 4 byte physical
+> size. Initialize the pcm driver accordingly.
 
-Thanks for the review.  I will resend.
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-regards,
-dan carpenter
+>=20
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  sound/soc/omap/omap-pcm.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+> index f4b05bc..e49ee23 100644
+> --- a/sound/soc/omap/omap-pcm.c
+> +++ b/sound/soc/omap/omap-pcm.c
+> @@ -39,7 +39,7 @@
+>  #define pcm_omap1510()	0
+>  #endif
+> =20
+> -static const struct snd_pcm_hardware omap_pcm_hardware =3D {
+> +static struct snd_pcm_hardware omap_pcm_hardware =3D {
+>  	.info			=3D SNDRV_PCM_INFO_MMAP |
+>  				  SNDRV_PCM_INFO_MMAP_VALID |
+>  				  SNDRV_PCM_INFO_INTERLEAVED |
+> @@ -53,6 +53,24 @@ static const struct snd_pcm_hardware omap_pcm_hard=
+ware =3D {
+>  	.buffer_bytes_max	=3D 128 * 1024,
+>  };
+> =20
+> +/* sDMA supports only 1, 2, and 4 byte transfer elements. */
+> +static void omap_pcm_limit_supported_formats(void)
+> +{
+> +	int i;
+> +
+> +	for (i =3D 0; i < SNDRV_PCM_FORMAT_LAST; i++) {
+> +		switch (snd_pcm_format_physical_width(i)) {
+> +		case 8:
+> +		case 16:
+> +		case 32:
+> +			omap_pcm_hardware.formats |=3D (1LL << i);
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +	}
+> +}
+> +
+>  /* this may get called several times by oss emulation */
+>  static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
+>  			      struct snd_pcm_hw_params *params)
+> @@ -235,6 +253,7 @@ static struct snd_soc_platform_driver omap_soc_pl=
+atform =3D {
+> =20
+>  int omap_pcm_platform_register(struct device *dev)
+>  {
+> +	omap_pcm_limit_supported_formats();
+>  	return devm_snd_soc_register_platform(dev, &omap_soc_platform);
+>  }
+>  EXPORT_SYMBOL_GPL(omap_pcm_platform_register);
+>=20
 
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
