@@ -1,17 +1,17 @@
-From: =?ISO-8859-1?Q?Ingo=20Br=FCckl?= <ib@wupperonline.de>
-Subject: Re: [PATCH] ALSA: hda - Fix wrong detection of
-	"Headphone+LO" or "Speaker+LO"
-Date: Tue, 03 Mar 2015 16:04:32 +0100
-Message-ID: <54f5ce0b.08a2b775.bm000@wupperonline.de>
-References: <54F5B60C.1050808@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: Allow complete
+ shutdown of McASP when not in use
+Date: Tue, 3 Mar 2015 15:07:42 +0000
+Message-ID: <20150303150742.GZ21293@sirena.org.uk>
+References: <1425392792-12659-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5496800270102031316=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutD.wup.tal.de (moutd.wup.tal.de [213.240.144.30])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F19526154F
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 16:06:57 +0100 (CET)
-In-Reply-To: <54F5B60C.1050808@canonical.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D1FD2615C0
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 16:07:51 +0100 (CET)
+In-Reply-To: <1425392792-12659-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +21,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, superquad.vortex2@gmail.com, david.henningsson@canonical.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote on Tue, 03 Mar 2015 14:24:28 +0100:
 
-> If I understand correctly, you have three DACs, one internal speaker,
-> one headphone jack, and three jacks that are both used for 5.1 surround
-> and line out/mic/line in. Is this correct?
+--===============5496800270102031316==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="t7OYZ5hxufpohHNJ"
+Content-Disposition: inline
 
-This is correct. In addition I have a front mic jack.
 
-> How do the DACs get assigned in this case? One would assume that you'd
-> get 02 -> Front LO, HP, Speaker, 03 -> Rear LO, 04 -> CLFE LO.
+--t7OYZ5hxufpohHNJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-With my private patch to enforce multi-io I seem to lose the internal speaker
-which isn't bad because it isn't connected (and probably never won't be).
+On Tue, Mar 03, 2015 at 04:26:32PM +0200, Peter Ujfalusi wrote:
 
-You are right concerning the remaining assignments:
+> @@ -553,6 +554,7 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_=
+dai *dai, int div_id,
+>  		return -EINVAL;
+>  	}
+> =20
+> +	pm_runtime_put_sync(mcasp->dev);
 
-multi_outs = 14/0/0/0 : 2/3/4/0 (type LO)
-  out path: depth=3 '02:0c:14'
-multi_ios(2) = 1a/18 : 3/4
-  mio path: depth=3 '03:0d:1a'
-  mio path: depth=3 '04:0e:18'
-hp_outs = 1b/0/0/0 : 2/0/0/0
-  hp  path: depth=3 '02:0c:1b'
-spk_outs = 15/0/0/0 : 0/0/0/0
+Why the _put_sync()s?  I know it's more symmetrical but I don't see a
+need to wait and it means we may be able to avoid some unneeded power
+cycles.
 
-> And then the volume/mute control for DAC node 02 would be called "PCM"
-> (since both hp_lo_shared and spk_lo_shared are true), but in fact it would
-> be more appropriate to call it "Front".
+> @@ -1078,6 +1082,9 @@ static int davinci_mcasp_suspend(struct snd_soc_dai=
+ *dai)
+>  	u32 reg;
+>  	int i;
+> =20
+> +	if (!dai->active)
+> +		pm_runtime_get_sync(mcasp->dev);
+> +
+>  	for (i =3D 0; i < ARRAY_SIZE(context_regs); i++)
+>  		context->config_regs[i] =3D mcasp_get_reg(mcasp, context_regs[i]);
+> =20
+> @@ -1094,6 +1101,8 @@ static int davinci_mcasp_suspend(struct snd_soc_dai=
+ *dai)
+>  		context->xrsr_regs[i] =3D mcasp_get_reg(mcasp,
+>  						DAVINCI_MCASP_XRSRCTL_REG(i));
+> =20
+> +	pm_runtime_put_sync(mcasp->dev);
+> +
 
-I've got a Master that would only affect the Front (PCM) and a PCM that
-affected Surround/CLFE which was very unpleasant.
+On first glance this looks unbalanced without the active check in the
+put case.  I'd also need to check if runtime resume works OK in suspend
+context, I guess it must but there were issues in the past (the more
+common idiom is to not suspend if we're already runtime powered down but
+obviously here we're actually doing extra work).
 
-With the patch I'm getting a real Master (for all Front/Surround/CLFE) and a
-separate Front Volume Control in addition to Surround, Center and LFE which
-is exactly how it should be.
+I see there's actually a balanced put in the resume path...  I see
+what's going on here but I'm thinking that perhaps something more
+explicit that calls the ops directly and checks pm_runtime_is_enabled()
+might be clearer?  Unconditionally do the power down/up at the end with
+a direct call outside of runtime PM and then make the checks at the
+top/bottom be "if it's runtime suspended then...".  That's also more
+direct about what's actually being checked and hence less risk that some
+future changes would go wrong.
 
-> Anyhow, I'd say that the typical case where we want the "Headphone+LO"
-> names is where we have only one LO, and then multiout.num_dacs would be
-> 1, not 2. (I think, it was a while since I looked into that part of the
-> driver...)
+--t7OYZ5hxufpohHNJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-I'm fine with everything below 3. :-) Just tell me.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Ingo
+iQEcBAEBCAAGBQJU9c4+AAoJECTWi3JdVIfQVagH/1HbR6lZz+3euyZN252Jwvjj
+403Pma7OHBa+EeEJ/VxRVr+mXpGOPIX+uzMOCgkaKXpQjbh8UEvnPzSG6aU+1XnF
+XkqSreB5WZgqLeFu0vAu56lnkU9pcmQ9Pf/3ur5uCgOBsESM3PK+GVI0qCYDEr7o
+DIU8CvY72MPPK0zth0XIzy/KpjtFO5TX2n5/HsevNhpWBz0zUC2QvjVVT8JnpUqv
+MdmctePXrj31OCpsWzUBEtf2nrFb40e5by2E7AvZXeQdaaEBrKekmUZ+m0tDNGSy
+zw2A8Cy6wvE1IB76ZRoqlJ90l1ZipAWHB6n9wI8FZrf7rGuO5qcp6NvLNvv8coo=
+=+HpQ
+-----END PGP SIGNATURE-----
+
+--t7OYZ5hxufpohHNJ--
+
+--===============5496800270102031316==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5496800270102031316==--
