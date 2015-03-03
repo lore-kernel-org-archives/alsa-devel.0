@@ -1,48 +1,120 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 01/10] media: omap3isp: remove unused clkdev
-Date: Tue, 03 Mar 2015 02:39:14 +0200
-Message-ID: <8241179.DTounjB2Ur@avalon>
-References: <20150302170538.GQ8656@n2100.arm.linux.org.uk> <20150302225336.GV6539@valkosipuli.retiisi.org.uk> <20150302235435.GF29584@n2100.arm.linux.org.uk>
+From: Alnie <memobook80@comcast.net>
+Subject: Issues w/ Creative Labs [SB X-Fi Xtreme Audio]
+	CA0110-IBG
+Date: Mon, 02 Mar 2015 19:37:12 -0800
+Message-ID: <54F52C68.6010504@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20150302235435.GF29584@n2100.arm.linux.org.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Sakari Ailus <sakari.ailus@iki.fi>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org, Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from resqmta-po-12v.sys.comcast.net (resqmta-po-12v.sys.comcast.net
+ [96.114.154.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81BA92605A2
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 04:37:15 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Russell,
+At Wed, 25 Feb 2015 00:21:15 -0800,
+Alnie wrote:
+ >
+ >
+ >
+ > On 02/25/2015 12:06 AM, Takashi Iwai wrote:
+ > > At Tue, 24 Feb 2015 23:55:25 -0800,
+ > > Alnie wrote:
+ > >>
+ > >> [ 2619.199658] pciehp 0000:00:1c.3:pcie04: Card not present on Slot(3)
+ > >> [ 2619.199666] pciehp 0000:00:1c.3:pcie04: slot(3): Link Down event
+ > >> [ 2619.199674] pciehp 0000:00:1c.3:pcie04: Link Down event ignored on
+ > >> slot(3): already powering off
+ > >> [ 2619.199911] pci_bus 0000:06: busn_res: [bus 06-0c] is released
+ > >> [ 2620.757928] pciehp 0000:00:1c.3:pcie04: Card present on Slot(3)
+ > >> [ 2620.767950] pciehp 0000:00:1c.3:pcie04: slot(3): Link Up event
+ > >> [ 2620.767985] pciehp 0000:00:1c.3:pcie04: Link Up event ignored on
+ > >> slot(3): already powering on
+ > >
+ > > pciehp reacted power off and on here, and...
+ > >
+ > >> [ 2620.876160] pci 0000:05:00.0: [1102:7006] type 01 class 0x060400
+ > >> [ 2620.876426] pci 0000:05:00.0: supports D1 D2
+ > >> [ 2620.876719] pci 0000:05:00.0: bridge configuration invalid ([bus
+ > >> 00-00]), reconfiguring
+ > >> [ 2620.876928] pci_bus 0000:06: busn_res: can not insert [bus 06-ff]
+ > >> under [bus 05-0c] (conflicts with (null) [bus 05-0c])
+ > >
+ > > .... and something failed here for the PCI bridge device.
+ > >
+ > >> [ 2620.876967] pci 0000:06:00.0: [1102:0009] type 00 class 0x040300
+ > >> [ 2620.877013] pci 0000:06:00.0: reg 0x10: [mem 0x00000000-0x00003fff]
+ > >> [ 2620.877203] pci 0000:06:00.0: supports D1 D2
+ > >> [ 2620.877443] pci 0000:05:00.0: PCI bridge to [bus 06-ff]
+ > >> [ 2620.877462] pci 0000:05:00.0:   bridge window [io  0x0000-0x0fff]
+ > >> [ 2620.877474] pci 0000:05:00.0:   bridge window [mem 
+0x00000000-0x000fffff]
+ > >> [ 2620.877492] pci 0000:05:00.0:   bridge window [mem
+ > >> 0x00000000-0x000fffff 64bit pref]
+ > >> [ 2620.877500] pci_bus 0000:06: busn_res: [bus 06-ff] end is 
+updated to 06
+ > >> [ 2620.877559] pci 0000:05:00.0: BAR 14: assigned [mem
+ > >> 0xf4300000-0xf43fffff]
+ > >> [ 2620.877568] pci 0000:05:00.0: BAR 15: assigned [mem
+ > >> 0xf4000000-0xf40fffff 64bit pref]
+ > >> [ 2620.877574] pci 0000:05:00.0: BAR 13: assigned [io  0x2000-0x2fff]
+ > >> [ 2620.877582] pci 0000:06:00.0: BAR 0: assigned [mem 
+0xf4300000-0xf4303fff]
+ > >> [ 2620.877595] pci 0000:05:00.0: PCI bridge to [bus 06]
+ > >> [ 2620.877603] pci 0000:05:00.0:   bridge window [io  0x2000-0x2fff]
+ > >> [ 2620.877618] pci 0000:05:00.0:   bridge window [mem 
+0xf4300000-0xf43fffff]
+ > >> [ 2620.877630] pci 0000:05:00.0:   bridge window [mem
+ > >> 0xf4000000-0xf40fffff 64bit pref]
+ > >> [ 2620.877647] pcieport 0000:00:1c.3: PCI bridge to [bus 05-0c]
+ > >> [ 2620.877655] pcieport 0000:00:1c.3:   bridge window [io 
+0x2000-0x2fff]
+ > >> [ 2620.877667] pcieport 0000:00:1c.3:   bridge window [mem
+ > >> 0xf4300000-0xf7efffff]
+ > >> [ 2620.877677] pcieport 0000:00:1c.3:   bridge window [mem
+ > >> 0xf4000000-0xf40fffff 64bit pref]
+ > >> [ 2620.877990] pci 0000:05:00.0: enabling device (0000 -> 0003)
+ > >> [ 2620.878013] snd_hda_intel 0000:06:00.0: enabling device (0000 
+-> 0002)
+ > >> [ 2620.882747] azx_single_wait_for_response: 108 callbacks suppressed
+ > >> [ 2620.882753] snd_hda_intel 0000:06:00.0: Codec #1 probe error;
+ > >> disabling it...
+ > >> [ 2620.887052] snd_hda_intel 0000:06:00.0: no AFG or MFG node found
+ > >> [ 2620.887058] snd_hda_intel 0000:06:00.0: no codecs initialized
+ > >
+ > > What if you once unload snd-hda-intel module and reload again while
+ > > keeping the card plugged?  I guess it still doesn't work, but just to
+ > > be sure...
+ > >
+ > > Overall, this look more like a problem of PCI core stuff.  Better to
+ > > toss the issue to PCI people.
+ > >
+ > >
+ > > Takashi
+ > >
+ >
+ > I did alsa force-reload and the same error comes up. Do you know of a
+ > good starting point for presenting PCI issues?
+ >
+ >Ask on linux-pci at vger.kernel.org ?
+ >
+ >
+ >Takashi
 
-On Monday 02 March 2015 23:54:35 Russell King - ARM Linux wrote:
-> (Combining replies...)
-> 
-> On Tue, Mar 03, 2015 at 12:53:37AM +0200, Sakari Ailus wrote:
-> > Hi Laurent and Russell,
-> > 
-> > On Tue, Mar 03, 2015 at 12:33:44AM +0200, Laurent Pinchart wrote:
-> > > Sakari, does it conflict with the omap3isp DT support ? If so, how would
-> > > you prefer to resolve the conflict ? Russell, would it be fine to merge
-> > > this through Mauro's tree ?
-> 
-> As other changes will depend on this, I'd prefer not to.  The whole
-> "make clk_get() return a unique struct clk" wasn't well tested, and
-> several places broke - and currently clk_add_alias() is broken as a
-> result of that.
-> 
-> I'm trying to get to the longer term solution, where clkdev internally
-> uses a struct clk_hw pointer rather than a struct clk pointer, and I
-> want to clean stuff up first.
-> 
-> If omap3isp needs to keep this code, then so be it - I'll come up with
-> a different patch improving its use of clkdev instead.
 
-I'm totally fine with removing clkdev from the omap3isp driver if that's 
-easier for you, I'm just concerned about the merge conflict that will result.
+Bjorn has suggested it is not a PCI issue... 
+http://article.gmane.org/gmane.linux.kernel.pci/39492
+Any other ideas in regards to this?
 
--- 
-Regards,
-
-Laurent Pinchart
-
+-Alnie
