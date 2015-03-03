@@ -1,48 +1,48 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: simple-card: Remove trailing whitespace
-Date: Tue, 3 Mar 2015 15:34:58 +0000
-Message-ID: <20150303153458.GB21293@sirena.org.uk>
-References: <cover.1425303942.git.jsarha@ti.com>
- <c7817be105a96bcbf71202c5497982f59a45a8eb.1425303942.git.jsarha@ti.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 00/10] initial clkdev cleanups
+Date: Tue, 03 Mar 2015 17:56:47 +0200
+Message-ID: <1425398207.14897.152.camel@linux.intel.com>
+References: <20150302170538.GQ8656@n2100.arm.linux.org.uk>
+	 <54F4DB34.9000507@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Wpb0FYlDpXbLlpco"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <c7817be105a96bcbf71202c5497982f59a45a8eb.1425303942.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <54F4DB34.9000507@codeaurora.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org, Roland Stigge <stigge@antcom.de>, Andrew Lunn <andrew@lunn.ch>, Mike Turquette <mturquette@linaro.org>, Jason Cooper <jason@lakedaemon.net>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2015-03-02 at 13:50 -0800, Stephen Boyd wrote:
+> On 03/02/15 09:05, Russell King - ARM Linux wrote:
+> > Here's some initial clkdev cleanups.  These are targetted for the next
+> > merge window, and while the initial patches can be merged independently,
+> > I'd prefer to keep the series together as further work on solving the
+> > problems which unique struct clk's has introduced is needed.
 
---Wpb0FYlDpXbLlpco
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Mar 02, 2015 at 04:14:32PM +0200, Jyri Sarha wrote:
-> Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+> > I'm also killing a chunk of seemingly unused code in the omap3isp driver.
+> >
+> > Lastly, I'm introducing a clkdev_create() helper, which combines the
+> > clkdev_alloc() + clkdev_add() pattern which keeps cropping up.
+> >
+> 
+> We already have a solution to that problem with clk_register_clkdev().
+> Andy has done some work to make clk_register_clkdev() return a struct
+> clk_lookup pointer[1]. Maybe we can do that instead of introducing a new
+> clkdev_create() function. There is some benefit to having a new function
+> though so that we can avoid a flag day, although it looks like the flag
+> day is small in this case so it might not actually matter.
 
-Applied, thanks.
+> [1] https://www.marc.info/?l=linux-kernel&m=142469226512289
 
---Wpb0FYlDpXbLlpco
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Agree with Stephen, why should we have the second function doing the
+same? Just name changing?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+I think you may just incorporate that patch into your series.
 
-iQEcBAEBCAAGBQJU9dShAAoJECTWi3JdVIfQH64IAIVOwstGezwpJjW8MXKMrWM9
-ZxNOlJi5bmnZaNpIuGmQ6zVesthtDllrQCXiSQea/cBkgsa3b9oAqu+VsLOHL4Mj
-mc7IoFWZBTzLBdP6h+3SrnU6Fkv9PcZrivTNFy8Nlq5o8XNzhtGpZ4E0qtvQkyXm
-dharLkTXG6ipOtgJRqXIm7VG7VbuHQVheqfU2VByRxYs3Jomv456iPwyU0yk8dn+
-6j537hpVI/LmMdXw5RSiqLzF5oQJGDN11ipxFavB6Ti1oByZni7JOABvApSMXYLY
-yXJ06M2uZxY2BhjKyoNSougLqJnUIn/pxZ/SROrG+3UHzLU1yqSRzCcSyKekYRM=
-=eBDa
------END PGP SIGNATURE-----
+-- 
+Andy Shevchenko <andriy.shevchenko@intel.com>
+Intel Finland Oy
 
---Wpb0FYlDpXbLlpco--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
