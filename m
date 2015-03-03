@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: omap-pcm: Correct dma mask
-Date: Tue, 3 Mar 2015 14:08:48 +0000
-Message-ID: <20150303140848.GP21293@sirena.org.uk>
-References: <1425382694-30424-1-git-send-email-peter.ujfalusi@ti.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Tue, 3 Mar 2015 15:16:21 +0100
+Message-ID: <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
+References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7910128962035633192=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BFB42614C1
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:09:01 +0100 (CET)
-In-Reply-To: <1425382694-30424-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5FBC2614C1
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:16:23 +0100 (CET)
+In-Reply-To: <20150223183913.fb262011d6300425da7f34be@ao2.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 23 Feb 2015 18:39:13 +0100
+Antonio Ospite <ao2@ao2.it> wrote:
 
---===============7910128962035633192==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Z0yPRMMxO/ZomZ5q"
-Content-Disposition: inline
+> Hi,
+> 
+> I am trying to get the Intel SST driver working on a Teclast X98 Air 3G
+> [1], it's a Bay Trail tablet. The tests below have been made with
+> 4.0.0-rc1 and the firmware files from
+> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/intel
+> 
 
+Hi, has anyone had a chance to take a look at my previous message?
 
---Z0yPRMMxO/ZomZ5q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+[...]
+> Last question, what is the difference between having the device detected
+> by sound/soc/intel/sst-acpi.c (like in my case) opposed to
+> sound/soc/intel/sst/sst_acpi.c? I can see the 80860F28 id in both the
+> files but they seem to load different firmwares.
+>
 
-On Tue, Mar 03, 2015 at 01:38:14PM +0200, Peter Ujfalusi wrote:
-> DMA_BIT_MASK of 64 is not valid dma address mask for OMAPs, it should be
-> set to 32.
-> The 64 was introduced by commit (in 2009):
-> a152ff24b978 ASoC: OMAP: Make DMA 64 aligned
+Another thing I noticed is that the Android driver for the rt5640 codec
+defines some controls which are not in the mainline driver:
 
-Applied, thanks.
+  OUT MIXR BST3 Switch
+  OUT MIXL BST3 Switch
+  RECMIXR BST3 Switch
+  RECMIXL BST3 Switch
+  IN1 Mode Control
+  IN2 Mode Control
 
---Z0yPRMMxO/ZomZ5q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I tried to add these copying from some Android kernel found on-line[1]
+and set the value to the ones used on Android but they don't seem to
+make a difference.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+> Any idea of what is missing?
+> It's the DSDT which still needs adjusting, or are some changes needed
+> (also) in the kernel driver?
+> 
 
-iQEcBAEBCAAGBQJU9cBvAAoJECTWi3JdVIfQbJ0H/3yv54DTY6k8ki+FfMMHC98J
-rhVIUpgvsadPHRpcOblmffDHBZTw0m1HbSYwGQiC1mHN/6JpHY9b8fiFbPAE6Ao+
-La6xoP3mxSvvpjW0cvTmB23TCJUbGyEv6l2EMrsDBbJHD+4l6TDk87GcySaSu//2
-fHgRyp0cu1XsjryB1raZCFpaQJ8Xf5ahY5MD25de5LqwQ8hCtC07SIn8gmufbxP4
-ovgbYLWT8312w+XnkKW1t16Yq4rRT9yuXLduU8e2/edeJdYq11KKBASi5KR8dmFe
-qIS16A1IkbQotsvDuf6hGZGT5uOZcs6vDWY7UdQu4U1hpKG/KlVMl1ZoEjgBExM=
-=SZq9
------END PGP SIGNATURE-----
+Thanks,
+   Antonio
 
---Z0yPRMMxO/ZomZ5q--
+[1] https://github.com/ZenfoneArea/android_kernel_asus_zenfone5
 
---===============7910128962035633192==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Antonio Ospite
+http://ao2.it
 
-
---===============7910128962035633192==--
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
