@@ -1,17 +1,17 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: Intel SST on a Bay Trail tablet
-Date: Tue, 03 Mar 2015 16:54:53 +0200
-Message-ID: <54F5CB3D.7020100@linux.intel.com>
-References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
- <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
+From: =?ISO-8859-1?Q?Ingo=20Br=FCckl?= <ib@wupperonline.de>
+Subject: Re: [PATCH] ALSA: hda - Fix wrong detection of
+	"Headphone+LO" or "Speaker+LO"
+Date: Tue, 03 Mar 2015 16:04:32 +0100
+Message-ID: <54f5ce0b.08a2b775.bm000@wupperonline.de>
+References: <54F5B60C.1050808@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 13F9D261534
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:54:55 +0100 (CET)
-In-Reply-To: <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
+Received: from moutD.wup.tal.de (moutd.wup.tal.de [213.240.144.30])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F19526154F
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 16:06:57 +0100 (CET)
+In-Reply-To: <54F5B60C.1050808@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Antonio Ospite <ao2@ao2.it>, alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Harsha Priya <priya.harsha@intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, superquad.vortex2@gmail.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+David Henningsson wrote on Tue, 03 Mar 2015 14:24:28 +0100:
 
-On 03/03/2015 04:16 PM, Antonio Ospite wrote:
-> On Mon, 23 Feb 2015 18:39:13 +0100
-> Antonio Ospite <ao2@ao2.it> wrote:
->
->> Hi,
->>
->> I am trying to get the Intel SST driver working on a Teclast X98 Air 3G
->> [1], it's a Bay Trail tablet. The tests below have been made with
->> 4.0.0-rc1 and the firmware files from
->> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/intel
->>
->
-> Hi, has anyone had a chance to take a look at my previous message?
->
-I forgot to answer... Some earlier notes including Teclast X98 Air 3G 
-and patch attempts are collected here:
+> If I understand correctly, you have three DACs, one internal speaker,
+> one headphone jack, and three jacks that are both used for 5.1 surround
+> and line out/mic/line in. Is this correct?
 
-https://bugzilla.kernel.org/show_bug.cgi?id=86581
+This is correct. In addition I have a front mic jack.
 
-Unfortunately bug is not solved since it looks these newer Baytrail 
-Windows 8.1 based machines use different SSP port than previous ones and 
-Linux DSP firmware is hardcoded for SSP2.
+> How do the DACs get assigned in this case? One would assume that you'd
+> get 02 -> Front LO, HP, Speaker, 03 -> Rear LO, 04 -> CLFE LO.
 
-What's interesting does that Android FW use other than SSP2 or does 
-Teclast have some extra amplifier.
+With my private patch to enforce multi-io I seem to lose the internal speaker
+which isn't bad because it isn't connected (and probably never won't be).
 
-> [...]
->> Last question, what is the difference between having the device detected
->> by sound/soc/intel/sst-acpi.c (like in my case) opposed to
->> sound/soc/intel/sst/sst_acpi.c? I can see the 80860F28 id in both the
->> files but they seem to load different firmwares.
->>
+You are right concerning the remaining assignments:
 
-Different firmware, driver stack and machine driver despite the same LPE 
-ACPI ID and codec ACPI ID. (We really should have some additional DMI 
-quirks that does the selection because of the same ACPI IDs).
+multi_outs = 14/0/0/0 : 2/3/4/0 (type LO)
+  out path: depth=3 '02:0c:14'
+multi_ios(2) = 1a/18 : 3/4
+  mio path: depth=3 '03:0d:1a'
+  mio path: depth=3 '04:0e:18'
+hp_outs = 1b/0/0/0 : 2/0/0/0
+  hp  path: depth=3 '02:0c:1b'
+spk_outs = 15/0/0/0 : 0/0/0/0
 
->
-> Another thing I noticed is that the Android driver for the rt5640 codec
-> defines some controls which are not in the mainline driver:
->
->    OUT MIXR BST3 Switch
->    OUT MIXL BST3 Switch
->    RECMIXR BST3 Switch
->    RECMIXL BST3 Switch
->    IN1 Mode Control
->    IN2 Mode Control
->
-I'm not sure but these might be FW implemented DSP controls? Vinod, do 
-you know?
+> And then the volume/mute control for DAC node 02 would be called "PCM"
+> (since both hp_lo_shared and spk_lo_shared are true), but in fact it would
+> be more appropriate to call it "Front".
 
--- 
-Jarkko
+I've got a Master that would only affect the Front (PCM) and a PCM that
+affected Surround/CLFE which was very unpleasant.
+
+With the patch I'm getting a real Master (for all Front/Surround/CLFE) and a
+separate Front Volume Control in addition to Surround, Center and LFE which
+is exactly how it should be.
+
+> Anyhow, I'd say that the typical case where we want the "Headphone+LO"
+> names is where we have only one LO, and then multiout.num_dacs would be
+> 1, not 2. (I think, it was a while since I looked into that part of the
+> driver...)
+
+I'm fine with everything below 3. :-) Just tell me.
+
+Ingo
