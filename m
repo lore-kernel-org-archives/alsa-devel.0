@@ -1,17 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-pcm: Correct dma mask
-Date: Tue, 3 Mar 2015 16:36:34 +0200
-Message-ID: <54F5C6F2.60309@ti.com>
-References: <1425382694-30424-1-git-send-email-peter.ujfalusi@ti.com>
- <20150303140848.GP21293@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card: Add a NULL pointer
+ check in asoc_simple_card_dai_link_of
+Date: Tue, 3 Mar 2015 14:25:24 +0000
+Message-ID: <20150303142524.GV21293@sirena.org.uk>
+References: <20150303132900.GA22246@vishal>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4523137036881647893=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 12A0426153F
- for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:36:40 +0100 (CET)
-In-Reply-To: <20150303140848.GP21293@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56962261543
+ for <alsa-devel@alsa-project.org>; Tue,  3 Mar 2015 15:45:22 +0100 (CET)
+In-Reply-To: <20150303132900.GA22246@vishal>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Vishal Thanki <vishalthanki@gmail.com>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
 
-On 03/03/2015 04:08 PM, Mark Brown wrote:
-> On Tue, Mar 03, 2015 at 01:38:14PM +0200, Peter Ujfalusi wrote:
->> DMA_BIT_MASK of 64 is not valid dma address mask for OMAPs, it should be
->> set to 32.
->> The 64 was introduced by commit (in 2009):
->> a152ff24b978 ASoC: OMAP: Make DMA 64 aligned
-> =
+--===============4523137036881647893==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pqrHuw837mIruWQK"
+Content-Disposition: inline
 
-> Applied, thanks.
 
-Would it be possible to add this tags to the patch, I forgot it:
+--pqrHuw837mIruWQK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reported-by: Grygorii Strashko <Grygorii.Strashko@linaro.org>
+On Tue, Mar 03, 2015 at 06:59:00PM +0530, Vishal Thanki wrote:
+> Make sure devm_kzalloc() succeeds.
 
-Thanks,
-P=E9ter
+Applied, thanks.
+
+--pqrHuw837mIruWQK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU9cRUAAoJECTWi3JdVIfQ8DgIAINIxTvlScvsXoh4fBTq+T0K
+M1exlFgBuaGfTyCiFsMjPuZMQHRnh5qcQuDZmjPVJHKF5T3Va8xz2NbAsN2utvWN
+PuizRrSs3zp/P7BuZruQhgWpcqbnEOd2xG2v8XonXCLKM7/TbsCb+wFQZuvVNMIr
+CJV12zT1plQMyzOWDqRGze+ma8LDqbCd0iR6sRszIwpd7k5o+j1XQqdZbx2yTTXX
+OJKKEKa8w4SAFMDPEHXMPeXxhAyLcO/Jhr5ZUmWYPx6YhhI5qR9GqVGDGvz0ajOK
+cRRL3xec+kIPrhQ3cnUsBrXwW6ePt1cVtq0wliGq5oQEp6Pf41Gl5QTcJmEO1js=
+=mIHY
+-----END PGP SIGNATURE-----
+
+--pqrHuw837mIruWQK--
+
+--===============4523137036881647893==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4523137036881647893==--
