@@ -1,98 +1,109 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
- davinci-pcm
-Date: Wed, 4 Mar 2015 10:49:59 +0200
-Message-ID: <54F6C737.309@ti.com>
-References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
- <54F6A3E5.1090201@topic.nl>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/8] clk: add helper function clk_is_match()
+Date: Wed, 4 Mar 2015 09:55:37 +0100
+Message-ID: <CAMuHMdX_co60Aez4_8iA4+41CMSD=Ky7af8mVJruQL-2v9m=0g@mail.gmail.com>
+References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
+	<1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
+	<20150225172757.421.43718@quantum>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 29559264EFF
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 09:50:03 +0100 (CET)
-In-Reply-To: <54F6A3E5.1090201@topic.nl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Looijmans <mike.looijmans@topic.nl>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-pwm-owner@vger.kernel.org>
+In-Reply-To: <20150225172757.421.43718@quantum>
+Sender: linux-pwm-owner@vger.kernel.org
+To: Mike Turquette <mturquette@linaro.org>
+Cc: Shawn Guo <shawn.guo@linaro.org>, linux-pwm@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Russell King <linux@arm.linux.org.uk>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, DRI Development <dri-devel@lists.freedesktop.org>, Thierry Reding <thierry.reding@gmail.com>, Sascha Hauer <kernel@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDMvMDQvMjAxNSAwODoxOSBBTSwgTWlrZSBMb29pam1hbnMgd3JvdGU6Cj4gT24gMDMtMDMt
-MTUgMTU6NDUsIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+PiBIaSwKPj4KPj4gVGhpcyBzZXJpZXMg
-d2lsbCBkZXByZWNhdGUgYW5kIHJlbW92ZXMgdGhlIGRhdmluY2ktcGNtIHBsYXRmb3JtIGRyaXZl
-ciBhbmQKPj4gY29udmVydHMgdGhlIGRhVmluY2kgREFJIGRyaXZlcnMgdG8gdXNlIHRoZSBlZG1h
-LXBjbS4KPj4KPj4gVGhlIG1haW4gZmVhdHVyZSBvZiBkYXZpbmNpLXBjbSBoYXMgYmVlbiB0aGUg
-c28gY2FsbGVkIHBpbmctcG9uZyBtb2RlLCB3aGljaAo+PiBjYW4gaGVscCBpbiBzaXR1YXRpb25z
-IHdoZW4gdGhlIE1jQVNQL01jQlNQL0FTUC9WQ0lGIGV4cGVyaWVuY2VzIHVuZGVycnVuIG9yCj4+
-IG92ZXJydW4gaW4gcGxheWJhY2sgb3IgY2FwdHVyZS4gVGhpcyB3YXMgZHVlIHRvIHRoZSBmYWN0
-IHRoZSBkYXZpbmNpLXBjbSB3L28KPj4gcGluZy1wb25nIG5lZWRlZCB0byByZXByb2dyYW0gdGhl
-IHBhUkFNIHNsb3QgYWZ0ZXIgZWFjaCBwZXJpb2QsIHRoaXMgY291bGQKPj4gY2F1c2UgZGVsYXkg
-aW4gRE1BIG9wZXJhdGlvbiwgd2hpY2ggbGVhZHMgdG8gc3RhcnZhdGlvbi4KPj4gVGhlIGVkbS1w
-Y20gZG9lcyBub3QgbmVlZCByZXByb2dyYW1taW5nIGFuZCBpdCBzZWFtcyB0byBiZSB3b3JraW5n
-IGFzIGdvb2QgYXMKPj4gdGhlIGRhdmluY2ktcGNtIHdpdGggcGluZy1wb25nLgo+Pgo+PiBJIGhh
-dmUgdGVzdGVkIHRoaXMgc2VyaWVzIG9uIE9NQVAtTDEzOCBFVk0gd2l0aCBNY0FTUCBhbmQgTWNC
-U1AuIFZDSUYgaGFzIGJlZW4KPj4gb25seSBjb21waWxlIHRlc3RlZCBzaW5jZSBJIGRvIG5vdCBo
-YXZlIGFjY2VzcyB0byB0aGUgSFcuIFRoZSBlZG1hLXBjbSBpcwo+PiBhbHJlYWR5IHVzZWQgYnkg
-QU0zMzV4IGFuZCBBTTQzN3ggYW5kIGl0IGhhcyBiZWVuIHRlc3RlZCBvbiB0aG9zZSBwbGF0Zm9y
-bXMKPj4gZXh0ZW5zaXZlbHkuCj4gCj4gT24gdGhlIE9NQVAtTDEzOCwgdGhlICJwaW5nIHBvbmci
-IG9ubHkgaGFkIGEgbmVnYXRpdmUgZWZmZWN0LCBpdCBldmVuCj4gaW5jcmVhc2VkIHRoZSBjaGFu
-Y2VzIG9mIG92ZXJydW4gYnkgcmVkdWNpbmcgdGhlIGludGVycnVwdCBsYXRlbmN5IHRvbGVyYW5j
-ZQo+IGFuZCBieSBkb3VibGluZyB0aGUgYW1vdW50IG9mIHRyYWZmaWMgb24gdGhlIGJ1cy4gVGhl
-IEwxMzggaGFzIGEgRklGTyBpbiB0aGUKPiBNY0FTUCB3aGljaCBjb21wZW5zYXRlcyBmb3IgRERS
-IGFjY2VzcyBsYXRlbmNpZXMgYW5kIGFsbG93cyBmb3IgbGFyZ2VyCj4gdHJhbnNmZXIgYmxvY2tz
-LiBNYW55IG90aGVyIE9NQVAgY2hpcHMgZG8gbm90IGhhdmUgdGhpcyBGSUZPIGFuZCB0aGF0IGlz
-IHdoeQo+IHRoZSBwaW5nLXBvbmcgd2FzIGFjdHVhbGx5IGludHJvZHVjZWQuIEl0IGNvbXBlbnNh
-dGVzIGZvciBERFIgYWNjZXNzIHRpbWVzLAo+IG5vdCBmb3IgaW50ZXJydXB0IGxhdGVuY2llcy4K
-CkkgZGlkIHRlc3RlZCB0aGUgT01BUC1MMTM4IHdpdGggQUZJRk8gZGlzYWJsZWQgYXMgd2VsbC4g
-VGhlIGVkbWEtcGNtIHdhcwpiZWhhdmVkIGluIGEgc2ltaWxhciBtYW5uZXIgdG8gdGhlIHBpbmct
-cG9uZyBtb2RlIG9mIGRhdmluY2ktcGNtLgpXaGlsZSB3ZSBhcmUgaGVyZSBhdCB0aGUgcGluZy1w
-b25nOiB0aGUgaW1wbGVtZW50YXRpb24gaW4gdGhlIGRhdmluY2ktcGNtIGlzCm5vdCB0aGUgcGlu
-Zy1wb25nIHdoaWNoIGlzIGRlc2NyaWJlZCBpbiB0aGUgVFJNcywgaXQgaXMgbW9yZSBsaWtlIGRv
-dWJsZQpidWZmZXJpbmcuIFRoZSBjaGFubmVsIHdoaWNoIHNlcnZpY2VzIHRoZSBNY0FTUCBpcyBv
-cGVyYXRpbmcgdG8vZnJvbSBTUkFNIGFuZAp3ZSBoYXZlIHRoZSBvdGhlciBjaGFubmVsIHRvIGNv
-cHkgY2h1bmtzIG9mIGRhdGEgZnJvbS90byBERFIgdG8vZnJvbSBTUkFNLgpJbiB0aGUgY2FzZSBv
-ZiBwaW5nLXBvbmcgdGhlIHBhUkFNIGVudHJpZXMgbmVlZHMgbm8gdXBkYXRlIHJ1bnRpbWUsIHRo
-ZXkgYXJlCmNoYWluZWQvbGlua2VkLgpJbiB0aGUgZGlzdGFudCBwYXN0IHdlIGhhZCBzaW1pbGFy
-IHN3IHNldHVwIGZvciBPTUFQMTUxMC8xNzEwIE1jQlNQLCB0aGUgRE1BCndhcyByZXByb2dyYW1t
-ZWQgYWZ0ZXIgZWFjaCBwZXJpb2QgYW5kIHRoaXMgaW50cm9kdWNlZCByYW5kb20gY2hhbm5lbApz
-d2FwL3NoaWZ0IGR1cmluZyBhdWRpbyBvcGVyYXRpb24uIEFmdGVyIHdlIGludHJvZHVjZWQgdGhl
-IHdheSB0byBsaW5rIHRoZSBETUEKY2hhbm5lbHMgdGhpcyBpc3N1ZSB3ZXJlIGZpeGVkLgoKQnV0
-LCB5ZXMuIE1jQVNQIEZJRk8gaXMgbm90IHVzZWQsIHRoZSBETUEgbmVlZCB0byBmZXRjaCB3b3Jk
-LWJ5LXdvcmQgZnJvbSBERFIKaW4gY2FzZSBvZiB0aGUgZWRtYS1wY20uIEluIHRoZSBwaW5nLXBv
-bmcgY2FzZSB3ZSBoYWQgYnVyc3QgYWNjZXNzIHRvIEREUiBhbmQKd29yZC1ieS13b3JkIGFjY2Vz
-cyB0byBTUkFNLgoKPiBJZiB5b3UgaW50ZW5kIHRvIHRlc3QgdGhlIERNQSB0cmFuc2ZlcnMsIHRo
-ZSBMMTM4IGlzIGRlZmluaXRlbHkgTk9UIHRoZQo+IHBsYXRmb3JtIHRvIHRlc3QgdGhpcyBvbiwg
-YXMgaXQgd2lsbCBhY3R1YWxseSBwZXJmb3JtIGJldHRlciB3aXRob3V0IHBpbmctcG9uZwo+IHRo
-cm91Z2ggb24tY2hpcCBSQU0uCgpXL28gdGhlIEFGSUZPIGVuYWJsZWQgT01BUC1MMTM4IHNob3Vs
-ZCBiZSBjbG9zZSBlbm91Z2ggZm9yIHRoZSBwbGF0Zm9ybXMgd2hpY2gKZG9lcyBub3QgaGF2ZSBG
-SUZPLiBCdXQgSSBjYW4gdGVzdCB3L28gRklGTyBhbmQgdy8gRklGTyBvbiB0aGlzIHBsYXRmb3Jt
-LgoKPiAKPiAKPj4KPj4gQWZ0ZXIgdGhpcyBzZXJpZXMgd2Ugbm8gbG9uZ2VyIGhhdmUgbGVnYWN5
-IGVETUEgdXNlcnMgd2hpY2ggY2xlYXJzIHRoZSBwYXRoIGZvcgo+PiB0aGUgZURNQSBkcml2ZXIg
-c3RhY2sgY2xlYW51cC4KPj4KPj4gUmVnYXJkcywKPj4gUGV0ZXIKPj4gLS0tCj4+IFBldGVyIFVq
-ZmFsdXNpICg1KToKPj4gICAgQVNvQzogZGF2aW5jaTogU2VsZWN0IFNORF9FRE1BX1NPQyB3aGVu
-IFNORF9EQVZJTkNJX1NPQyBpcyBlbmFibGVkCj4+ICAgIEFTb0M6IGRhdmluY2ktaTJzOiBDb252
-ZXJ0IHRvIHVzZSBlZG1hLXBjbQo+PiAgICBBU29DOiBkYXZpbmNpLXZjaWY6IENvbnZlcnQgdG8g
-dXNlIGVkbWEtcGNtCj4+ICAgIEFTb0M6IGRhdmluY2ktbWNhc3A6IERlcHJlY2F0ZSB0aGUgdXNl
-IG9mIGRhdmluY2ktcGNtIGluIGZhdm9yIG9mCj4+ICAgICAgZWRtYS1wY20KPj4gICAgQVNvQzog
-ZGF2aW5jaTogUmVtb3ZlIHVudXNlZCBkYXZpbmNpLXBjbSBwbGF0Zm9ybSBkcml2ZXIKPj4KPj4g
-ICBzb3VuZC9zb2MvZGF2aW5jaS9LY29uZmlnICAgICAgICAgfCAgMTggKy0KPj4gICBzb3VuZC9z
-b2MvZGF2aW5jaS9NYWtlZmlsZSAgICAgICAgfCAgIDIgLQo+PiAgIHNvdW5kL3NvYy9kYXZpbmNp
-L2RhdmluY2ktaTJzLmMgICB8ICA2NyArKy0KPj4gICBzb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNp
-LW1jYXNwLmMgfCAgODcgKy0tLQo+PiAgIHNvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktcGNtLmMg
-ICB8IDg2MQo+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+PiAgIHNv
-dW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktcGNtLmggICB8ICA0MSAtLQo+PiAgIHNvdW5kL3NvYy9k
-YXZpbmNpL2RhdmluY2ktdmNpZi5jICB8ICA1NSArKy0KPj4gICA3IGZpbGVzIGNoYW5nZWQsIDc5
-IGluc2VydGlvbnMoKyksIDEwNTIgZGVsZXRpb25zKC0pCj4+ICAgZGVsZXRlIG1vZGUgMTAwNjQ0
-IHNvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktcGNtLmMKPj4gICBkZWxldGUgbW9kZSAxMDA2NDQg
-c291bmQvc29jL2RhdmluY2kvZGF2aW5jaS1wY20uaAo+PgoKS2luZCByZWdhcmRzLApQw6l0ZXIK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Feb 25, 2015 at 6:27 PM, Mike Turquette <mturquette@linaro.org> wrote:
+> From: Michael Turquette <mturquette@linaro.org>
+> Date: Wed, 25 Feb 2015 09:11:01 -0800
+> Subject: [PATCH] clk: introduce clk_is_match
+>
+> Some drivers compare struct clk pointers as a means of knowing
+> if the two pointers reference the same clock hardware. This behavior is
+> dubious (drivers must not dereference struct clk), but did not cause any
+> regressions until the per-user struct clk patch was merged. Now the test
+> for matching clk's will always fail with per-user struct clk's.
+>
+> clk_is_match is introduced to fix the regression and prevent drivers
+> from comparing the pointers manually.
+>
+> Fixes: 035a61c314eb ("clk: Make clk API return per-user struct clk instances")
+> Cc: Russell King <linux@arm.linux.org.uk>
+> Cc: Stephen Boyd <sboyd@codeaurora.org>
+> Cc: Shawn Guo <shawn.guo@linaro.org>
+> Cc: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> Signed-off-by: Michael Turquette <mturquette@linaro.org>
+> ---
+>  drivers/clk/clk.c   | 26 ++++++++++++++++++++++++++
+>  include/linux/clk.h | 18 ++++++++++++++++++
+>  2 files changed, 44 insertions(+)
+>
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index eb01529..09670de 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -2171,6 +2171,32 @@ int clk_get_phase(struct clk *clk)
+>  }
+>
+>  /**
+> + * clk_is_match - check if two clk's point to the same hardware clock
+> + * @p: clk compared against q
+> + * @q: clk compared against p
+> + *
+> + * Returns true if the two struct clk pointers both point to the same hardware
+> + * clock node. Put differently, returns true if struct clk *p and struct clk *q
+> + * share the same struct clk_core object.
+> + *
+> + * Returns false otherwise. Note that two NULL clks are treated as matching.
+> + */
+> +bool clk_is_match(struct clk *p, struct clk *q)
+
+const struct clk *p, const struct clk *q
+
+> --- a/include/linux/clk.h
+> +++ b/include/linux/clk.h
+> @@ -376,6 +376,19 @@ struct clk *clk_get_parent(struct clk *clk);
+>   */
+>  struct clk *clk_get_sys(const char *dev_id, const char *con_id);
+>
+> +/**
+> + * clk_is_match - check if two clk's point to the same hardware clock
+> + * @p: clk compared against q
+> + * @q: clk compared against p
+> + *
+> + * Returns true if the two struct clk pointers both point to the same hardware
+> + * clock node. Put differently, returns true if struct clk *p and struct clk *q
+> + * share the same struct clk_core object.
+> + *
+> + * Returns false otherwise. Note that two NULL clks are treated as matching.
+> + */
+> +bool clk_is_match(struct clk *p, struct clk *q);
+
+const struct clk *p, const struct clk *q
+
+> +
+>  #else /* !CONFIG_HAVE_CLK */
+>
+>  static inline struct clk *clk_get(struct device *dev, const char *id)
+> @@ -429,6 +442,11 @@ static inline struct clk *clk_get_parent(struct clk *clk)
+>         return NULL;
+>  }
+>
+> +static inline bool clk_is_match(struct clk *p, struct clk *q)
+
+const struct clk *p, const struct clk *q
+
+> +{
+> +       return p == q ? true : false;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
