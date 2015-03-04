@@ -1,11 +1,31 @@
-From: han.lu@intel.com
-Subject: [PATCH 1/2] ucm: document some standard values
-Date: Wed,  4 Mar 2015 10:35:48 +0800
-Message-ID: <1425436549-8188-1-git-send-email-han.lu@intel.com>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
+ davinci-pcm
+Date: Wed, 4 Mar 2015 07:19:17 +0100
+Message-ID: <54F6A3E5.1090201@topic.nl>
+References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
+ [217.149.192.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44EEE261ACD
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 07:19:19 +0100 (CET)
+Received: from amavisd-new (mailscanner06.wrt-nm.internl.net [217.149.192.58])
+ by smtp103.mer-nm.internl.net (Postfix) with ESMTP id B40FB3F654
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 07:19:18 +0100 (CET)
+Received: from smtp103.mer-nm.internl.net ([217.149.192.139])
+ by amavisd-new (mailscanner06.wrt-nm.internl.net [217.149.192.160])
+ (amavisd-new, port 10024)
+ with ESMTP for <alsa-devel@alsa-project.org>;
+ Wed,  4 Mar 2015 07:19:18 +0100 (CET)
+Received: from TOP-EX01.TOPIC.LOCAL (mail.topic.nl [82.204.13.182])
+ (using TLSv1 with cipher AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by smtp103.mer-nm.internl.net (Postfix) with ESMTPS
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 07:19:17 +0100 (CET)
+In-Reply-To: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -15,32 +35,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
-
-add standard value JackDev, JackControl and JackHWMute for speaker
-mute control on jack insertion. These values will be applied on
-pulseaudio.
-
-Signed-off-by: Lu, Han <han.lu@intel.com>
-
-diff --git a/include/use-case.h b/include/use-case.h
-index 697377a..3728906 100644
---- a/include/use-case.h
-+++ b/include/use-case.h
-@@ -284,6 +284,10 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
-  *   PlaybackMixerID	- mixer playback ID
-  *   CaptureMixer	- name of capture mixer
-  *   CaptureMixerID	- mixer capture ID
-+ *   JackDev		- jack device name
-+ *   JackControl	- jack control name
-+ *   JackHWMute		- indicate if the HW mutes a device on jack insertion
-+ *			  or not.
-  */
- int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
-                      const char *identifier,
--- 
-2.1.0
+77u/T24gMDMtMDMtMTUgMTU6NDUsIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+IEhpLAo+Cj4gVGhp
+cyBzZXJpZXMgd2lsbCBkZXByZWNhdGUgYW5kIHJlbW92ZXMgdGhlIGRhdmluY2ktcGNtIHBsYXRm
+b3JtIGRyaXZlciBhbmQKPiBjb252ZXJ0cyB0aGUgZGFWaW5jaSBEQUkgZHJpdmVycyB0byB1c2Ug
+dGhlIGVkbWEtcGNtLgo+Cj4gVGhlIG1haW4gZmVhdHVyZSBvZiBkYXZpbmNpLXBjbSBoYXMgYmVl
+biB0aGUgc28gY2FsbGVkIHBpbmctcG9uZyBtb2RlLCB3aGljaAo+IGNhbiBoZWxwIGluIHNpdHVh
+dGlvbnMgd2hlbiB0aGUgTWNBU1AvTWNCU1AvQVNQL1ZDSUYgZXhwZXJpZW5jZXMgdW5kZXJydW4g
+b3IKPiBvdmVycnVuIGluIHBsYXliYWNrIG9yIGNhcHR1cmUuIFRoaXMgd2FzIGR1ZSB0byB0aGUg
+ZmFjdCB0aGUgZGF2aW5jaS1wY20gdy9vCj4gcGluZy1wb25nIG5lZWRlZCB0byByZXByb2dyYW0g
+dGhlIHBhUkFNIHNsb3QgYWZ0ZXIgZWFjaCBwZXJpb2QsIHRoaXMgY291bGQKPiBjYXVzZSBkZWxh
+eSBpbiBETUEgb3BlcmF0aW9uLCB3aGljaCBsZWFkcyB0byBzdGFydmF0aW9uLgo+IFRoZSBlZG0t
+cGNtIGRvZXMgbm90IG5lZWQgcmVwcm9ncmFtbWluZyBhbmQgaXQgc2VhbXMgdG8gYmUgd29ya2lu
+ZyBhcyBnb29kIGFzCj4gdGhlIGRhdmluY2ktcGNtIHdpdGggcGluZy1wb25nLgo+Cj4gSSBoYXZl
+IHRlc3RlZCB0aGlzIHNlcmllcyBvbiBPTUFQLUwxMzggRVZNIHdpdGggTWNBU1AgYW5kIE1jQlNQ
+LiBWQ0lGIGhhcyBiZWVuCj4gb25seSBjb21waWxlIHRlc3RlZCBzaW5jZSBJIGRvIG5vdCBoYXZl
+IGFjY2VzcyB0byB0aGUgSFcuIFRoZSBlZG1hLXBjbSBpcwo+IGFscmVhZHkgdXNlZCBieSBBTTMz
+NXggYW5kIEFNNDM3eCBhbmQgaXQgaGFzIGJlZW4gdGVzdGVkIG9uIHRob3NlIHBsYXRmb3Jtcwo+
+IGV4dGVuc2l2ZWx5LgoKT24gdGhlIE9NQVAtTDEzOCwgdGhlICJwaW5nIHBvbmciIG9ubHkgaGFk
+IGEgbmVnYXRpdmUgZWZmZWN0LCBpdCBldmVuIAppbmNyZWFzZWQgdGhlIGNoYW5jZXMgb2Ygb3Zl
+cnJ1biBieSByZWR1Y2luZyB0aGUgaW50ZXJydXB0IGxhdGVuY3kgdG9sZXJhbmNlIAphbmQgYnkg
+ZG91YmxpbmcgdGhlIGFtb3VudCBvZiB0cmFmZmljIG9uIHRoZSBidXMuIFRoZSBMMTM4IGhhcyBh
+IEZJRk8gaW4gdGhlIApNY0FTUCB3aGljaCBjb21wZW5zYXRlcyBmb3IgRERSIGFjY2VzcyBsYXRl
+bmNpZXMgYW5kIGFsbG93cyBmb3IgbGFyZ2VyIAp0cmFuc2ZlciBibG9ja3MuIE1hbnkgb3RoZXIg
+T01BUCBjaGlwcyBkbyBub3QgaGF2ZSB0aGlzIEZJRk8gYW5kIHRoYXQgaXMgd2h5IAp0aGUgcGlu
+Zy1wb25nIHdhcyBhY3R1YWxseSBpbnRyb2R1Y2VkLiBJdCBjb21wZW5zYXRlcyBmb3IgRERSIGFj
+Y2VzcyB0aW1lcywgCm5vdCBmb3IgaW50ZXJydXB0IGxhdGVuY2llcy4KCklmIHlvdSBpbnRlbmQg
+dG8gdGVzdCB0aGUgRE1BIHRyYW5zZmVycywgdGhlIEwxMzggaXMgZGVmaW5pdGVseSBOT1QgdGhl
+IApwbGF0Zm9ybSB0byB0ZXN0IHRoaXMgb24sIGFzIGl0IHdpbGwgYWN0dWFsbHkgcGVyZm9ybSBi
+ZXR0ZXIgd2l0aG91dCBwaW5nLXBvbmcgCnRocm91Z2ggb24tY2hpcCBSQU0uCgoKPgo+IEFmdGVy
+IHRoaXMgc2VyaWVzIHdlIG5vIGxvbmdlciBoYXZlIGxlZ2FjeSBlRE1BIHVzZXJzIHdoaWNoIGNs
+ZWFycyB0aGUgcGF0aCBmb3IKPiB0aGUgZURNQSBkcml2ZXIgc3RhY2sgY2xlYW51cC4KPgo+IFJl
+Z2FyZHMsCj4gUGV0ZXIKPiAtLS0KPiBQZXRlciBVamZhbHVzaSAoNSk6Cj4gICAgQVNvQzogZGF2
+aW5jaTogU2VsZWN0IFNORF9FRE1BX1NPQyB3aGVuIFNORF9EQVZJTkNJX1NPQyBpcyBlbmFibGVk
+Cj4gICAgQVNvQzogZGF2aW5jaS1pMnM6IENvbnZlcnQgdG8gdXNlIGVkbWEtcGNtCj4gICAgQVNv
+QzogZGF2aW5jaS12Y2lmOiBDb252ZXJ0IHRvIHVzZSBlZG1hLXBjbQo+ICAgIEFTb0M6IGRhdmlu
+Y2ktbWNhc3A6IERlcHJlY2F0ZSB0aGUgdXNlIG9mIGRhdmluY2ktcGNtIGluIGZhdm9yIG9mCj4g
+ICAgICBlZG1hLXBjbQo+ICAgIEFTb0M6IGRhdmluY2k6IFJlbW92ZSB1bnVzZWQgZGF2aW5jaS1w
+Y20gcGxhdGZvcm0gZHJpdmVyCj4KPiAgIHNvdW5kL3NvYy9kYXZpbmNpL0tjb25maWcgICAgICAg
+ICB8ICAxOCArLQo+ICAgc291bmQvc29jL2RhdmluY2kvTWFrZWZpbGUgICAgICAgIHwgICAyIC0K
+PiAgIHNvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktaTJzLmMgICB8ICA2NyArKy0KPiAgIHNvdW5k
+L3NvYy9kYXZpbmNpL2RhdmluY2ktbWNhc3AuYyB8ICA4NyArLS0tCj4gICBzb3VuZC9zb2MvZGF2
+aW5jaS9kYXZpbmNpLXBjbS5jICAgfCA4NjEgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KPiAgIHNvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktcGNtLmggICB8ICA0MSAtLQo+
+ICAgc291bmQvc29jL2RhdmluY2kvZGF2aW5jaS12Y2lmLmMgIHwgIDU1ICsrLQo+ICAgNyBmaWxl
+cyBjaGFuZ2VkLCA3OSBpbnNlcnRpb25zKCspLCAxMDUyIGRlbGV0aW9ucygtKQo+ICAgZGVsZXRl
+IG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktcGNtLmMKPiAgIGRlbGV0ZSBt
+b2RlIDEwMDY0NCBzb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLXBjbS5oCj4KCgoKTWV0IHZyaWVu
+ZGVsaWprZSBncm9ldCAvIGtpbmQgcmVnYXJkcywKCk1pa2UgTG9vaWptYW5zClN5c3RlbSBFeHBl
+cnQKCgpUT1BJQyBFbWJlZGRlZCBTeXN0ZW1zCkVpbmRob3ZlbnNld2VnIDMyLUMsIE5MLTU2ODMg
+S0ggQmVzdApQb3N0YnVzIDQ0MCwgTkwtNTY4MCBBSyBCZXN0ClRlbGVmb29uOiAoKzMxKSAoMCkg
+NDk5IDMzIDY5IDc5ClRlbGVmYXg6ICAoKzMxKSAoMCkgNDk5IDMzIDY5IDcwCkUtbWFpbDogbWlr
+ZS5sb29pam1hbnNAdG9waWMubmwKV2Vic2l0ZTogd3d3LnRvcGljLm5sCgpQbGVhc2UgY29uc2lk
+ZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbAoKVG9waWMgem9l
+a3QgZ2VkcmV2ZW4gKGVtYmVkZGVkKSBzb2Z0d2FyZSBzcGVjaWFsaXN0ZW4hCmh0dHA6Ly90b3Bp
+Yy5ubC92YWNhdHVyZXMvdG9waWMtem9la3Qtc29mdHdhcmUtZW5naW5lZXJzLwoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
