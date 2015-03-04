@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 16/30] ASoC: ttc-dkb: Register jacks at the
-	card level
-Date: Wed,  4 Mar 2015 10:33:31 +0100
-Message-ID: <1425461626-21103-17-git-send-email-lars@metafoo.de>
+Subject: [PATCH 17/30] ASoC: z2: Register jacks at the card
+	level
+Date: Wed,  4 Mar 2015 10:33:32 +0100
+Message-ID: <1425461626-21103-18-git-send-email-lars@metafoo.de>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-196.synserver.de (smtp-out-198.synserver.de
  [212.40.185.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B4C57264F30
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:34:02 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 71E72265019
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:34:03 +0100 (CET)
 In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,34 +31,29 @@ snd_soc_jack_new() to register them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/pxa/ttc-dkb.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ sound/soc/pxa/z2.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/pxa/ttc-dkb.c b/sound/soc/pxa/ttc-dkb.c
-index 5001dbb..1753c7d 100644
---- a/sound/soc/pxa/ttc-dkb.c
-+++ b/sound/soc/pxa/ttc-dkb.c
-@@ -78,15 +78,12 @@ static int ttc_pm860x_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_codec *codec = rtd->codec;
+diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
+index 76ccb17..bcbfbe8 100644
+--- a/sound/soc/pxa/z2.c
++++ b/sound/soc/pxa/z2.c
+@@ -143,13 +143,9 @@ static int z2_wm8750_init(struct snd_soc_pcm_runtime *rtd)
+ 	snd_soc_dapm_disable_pin(dapm, "MONO1");
  
- 	/* Headset jack detection */
--	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE
--			| SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2,
--			&hs_jack);
--	snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
--			      hs_jack_pins);
--	snd_soc_jack_new(codec, "Microphone Jack", SND_JACK_MICROPHONE,
--			 &mic_jack);
--	snd_soc_jack_add_pins(&mic_jack, ARRAY_SIZE(mic_jack_pins),
--			      mic_jack_pins);
-+	snd_soc_card_jack_new(rtd->card, "Headphone Jack", SND_JACK_HEADPHONE |
-+			      SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2,
-+			      &hs_jack, hs_jack_pins, ARRAY_SIZE(hs_jack_pins));
-+	snd_soc_card_jack_new(rtd->card, "Microphone Jack", SND_JACK_MICROPHONE,
-+			      &mic_jack, mic_jack_pins,
-+			      ARRAY_SIZE(mic_jack_pins));
+ 	/* Jack detection API stuff */
+-	ret = snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
+-				&hs_jack);
+-	if (ret)
+-		goto err;
+-
+-	ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
+-				hs_jack_pins);
++	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack", SND_JACK_HEADSET,
++				    &hs_jack, hs_jack_pins,
++				    ARRAY_SIZE(hs_jack_pins));
+ 	if (ret)
+ 		goto err;
  
- 	/* headphone, microphone detection & headset short detection */
- 	pm860x_hs_jack_detect(codec, &hs_jack, SND_JACK_HEADPHONE,
 -- 
 1.8.0
