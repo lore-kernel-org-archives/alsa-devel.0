@@ -1,18 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 11/30] ASoC: omap-abe-twl6040: Register
- jacks at the card level
-Date: Wed, 4 Mar 2015 11:47:47 +0200
-Message-ID: <54F6D4C3.6060603@ti.com>
+Subject: Re: [PATCH 12/30] ASoC: omap-twl4030: Register jacks
+ at the card level
+Date: Wed, 4 Mar 2015 11:47:57 +0200
+Message-ID: <54F6D4CD.2080200@ti.com>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
- <1425461626-21103-12-git-send-email-lars@metafoo.de>
+ <1425461626-21103-13-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 393F72651EB
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:47:54 +0100 (CET)
-In-Reply-To: <1425461626-21103-12-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CF1626547A
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:48:03 +0100 (CET)
+In-Reply-To: <1425461626-21103-13-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,47 +33,38 @@ of
 
 Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-> =
-
 > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 > ---
->  sound/soc/omap/omap-abe-twl6040.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>  sound/soc/omap/omap-twl4030.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 > =
 
-> diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-=
-twl6040.c
-> index b9c65f1..0843a68 100644
-> --- a/sound/soc/omap/omap-abe-twl6040.c
-> +++ b/sound/soc/omap/omap-abe-twl6040.c
-> @@ -182,17 +182,17 @@ static int omap_abe_twl6040_init(struct snd_soc_pcm=
-_runtime *rtd)
+> diff --git a/sound/soc/omap/omap-twl4030.c b/sound/soc/omap/omap-twl4030.c
+> index fb1f6bb..3673ada 100644
+> --- a/sound/soc/omap/omap-twl4030.c
+> +++ b/sound/soc/omap/omap-twl4030.c
+> @@ -170,14 +170,10 @@ static int omap_twl4030_init(struct snd_soc_pcm_run=
+time *rtd)
+>  	if (priv->jack_detect > 0) {
+>  		hs_jack_gpios[0].gpio =3D priv->jack_detect;
 >  =
 
->  	/* Headset jack detection only if it is supported */
->  	if (priv->jack_detection) {
-> -		ret =3D snd_soc_jack_new(codec, "Headset Jack",
-> -					SND_JACK_HEADSET, &hs_jack);
+> -		ret =3D snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
+> -				       &priv->hs_jack);
+> -		if (ret)
+> -			return ret;
+> -
+> -		ret =3D snd_soc_jack_add_pins(&priv->hs_jack,
+> -					    ARRAY_SIZE(hs_jack_pins),
+> -					    hs_jack_pins);
 > +		ret =3D snd_soc_card_jack_new(rtd->card, "Headset Jack",
-> +					    SND_JACK_HEADSET, &hs_jack,
+> +					    SND_JACK_HEADSET, &priv->hs_jack,
 > +					    hs_jack_pins,
 > +					    ARRAY_SIZE(hs_jack_pins));
 >  		if (ret)
 >  			return ret;
 >  =
 
-> -		ret =3D snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
-> -					hs_jack_pins);
->  		twl6040_hs_jack_detect(codec, &hs_jack, SND_JACK_HEADSET);
->  	}
->  =
-
-> -	return ret;
-> +	return 0;
->  }
->  =
-
->  static const struct snd_soc_dapm_route dmic_audio_map[] =3D {
 > =
 
 
