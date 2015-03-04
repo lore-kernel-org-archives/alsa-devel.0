@@ -1,19 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] ALSA: hda - Make path_has_mixer() tristate
-Date: Wed, 4 Mar 2015 22:08:56 +0800
-Message-ID: <CAN8cciYS4LhL-wA0PF32DHqvm8s5hgj+8JVv_znyZkhr7zJ-mA@mail.gmail.com>
-References: <54f5995b.6dd0d757.bm000@wupperonline.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
+ davinci-pcm
+Date: Wed, 4 Mar 2015 16:10:17 +0200
+Message-ID: <54F71249.2090703@ti.com>
+References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
+ <54F6A3E5.1090201@topic.nl> <54F6C737.309@ti.com> <54F6FA66.8000803@topic.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
- [209.85.214.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 508B12650BE
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 15:08:57 +0100 (CET)
-Received: by obcuz6 with SMTP id uz6so6957193obc.9
- for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2015 06:08:56 -0800 (PST)
-In-Reply-To: <54f5995b.6dd0d757.bm000@wupperonline.de>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55F942650DB
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 15:10:22 +0100 (CET)
+In-Reply-To: <54F6FA66.8000803@topic.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,46 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
-Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, david.henningsson@canonical.com
+To: Mike Looijmans <mike.looijmans@topic.nl>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAxNS0wMy0wMyAxOToyMCBHTVQrMDg6MDAgSW5nbyBCcsO8Y2tsIDxpYkB3dXBwZXJvbmxpbmUu
-ZGU+OgoKPiAuLi4gaW4gb3JkZXIgdG8gZGlzdGluZ3Vpc2ggd2hldGhlciB0aGVyZSBpcyBubyBj
-dGwgb3Igbm8gcGF0aCBhdCBhbGwuCj4KPiBJdCBpcyB1c2VkIGFzICFwYXRoX2hhc19taXhlcigp
-IHdoaWNoIG1lYW5zIHRoYXQgaXQgaXMgdHJ1ZSBldmVuIGlmCj4gdGhlcmUgaXMgbm8gcGF0aCBh
-dCBhbGwuIEZvciBoZWFkcGhvbmUgb3Igc3BlYWtlciBvdXRzIHdpdGhvdXQgcGF0aCwKPiBiZWNh
-dXNlIHRoZXkgZG9uJ3QgaGF2ZSBhIERBQyBhc3NpZ24gdG8gdGhlbSwgdGhpcyB3b3VsZCBnaXZl
-IGEgZmFsc2UKPiBwb3NpdGl2ZSByZXN1bHQuCj4KPgo+IHlvdXIgcHJldmlvdXMgcGF0Y2ggd2hp
-Y2ggaWdub3JlIEJBRF9OT19QUklNQVJZX0RBQyBpcyBub3QgZW5vdWdoLCB5b3UKbmVlZCB0byBh
-c3NpZ24gREFDIHRvIHNwZWFrZXIgcGF0aAoKZS5nLiBmb3IgaGRhIGNvZGVjIHdpdGggc2luZ2xl
-IERBQyB3aXRoIGludGVybmFsIHNwZWFrZXIsIGhlYWRwaG9uZSBhbmQKbGluZW91dCAsIHRoZSB0
-aHJlZSBwYXRocyBjb250YWluIHNhbWUgREFDIG5vZGUgMHgwMwoKaHR0cDovL2dpdC5rZXJuZWwu
-b3JnL2NnaXQvbGludXgva2VybmVsL2dpdC90aXdhaS9oZGEtZW11LmdpdC90cmVlL2NvZGVjcy9h
-ZDE5ODMtZGVsbC1vcHRpcGxleC03NDUKCnNlZW0gc25kX2hkYV9tdWx0aV9vdXRfYW5hbG9nX3By
-ZXBhcmUoKSBhbmQKc25kX2hkYV9tdWx0aV9vdXRfYW5hbG9nX2NsZWFudXAoKSBjYW4gaGFuZGxl
-IHNhbWUgREFDIGluIHRocmVlIHBhdGhzCgovKiBmcm9udCAqLwoJc25kX2hkYV9jb2RlY19zZXR1
-cF9zdHJlYW0oY29kZWMsIG5pZHNbSERBX0ZST05UXSwgc3RyZWFtX3RhZywKCQkJCSAgIDAsIGZv
-cm1hdCk7CglpZiAoIW1vdXQtPm5vX3NoYXJlX3N0cmVhbSAmJgoJICAgIG1vdXQtPmhwX25pZCAm
-JiBtb3V0LT5ocF9uaWQgIT0gbmlkc1tIREFfRlJPTlRdKQoJCS8qIGhlYWRwaG9uZSBvdXQgd2ls
-bCBqdXN0IGRlY29kZSBmcm9udCBsZWZ0L3JpZ2h0IChzdGVyZW8pICovCgkJc25kX2hkYV9jb2Rl
-Y19zZXR1cF9zdHJlYW0oY29kZWMsIG1vdXQtPmhwX25pZCwgc3RyZWFtX3RhZywKCQkJCQkgICAw
-LCBmb3JtYXQpOwoJLyogZXh0cmEgb3V0cHV0cyBjb3BpZWQgZnJvbSBmcm9udCAqLwoJZm9yIChp
-ID0gMDsgaSA8IEFSUkFZX1NJWkUobW91dC0+aHBfb3V0X25pZCk7IGkrKykKCQlpZiAoIW1vdXQt
-Pm5vX3NoYXJlX3N0cmVhbSAmJiBtb3V0LT5ocF9vdXRfbmlkW2ldKQoJCQlzbmRfaGRhX2NvZGVj
-X3NldHVwX3N0cmVhbShjb2RlYywKCQkJCQkJICAgbW91dC0+aHBfb3V0X25pZFtpXSwKCQkJCQkJ
-ICAgc3RyZWFtX3RhZywgMCwgZm9ybWF0KTsKCgkvKiBzdXJyb3VuZHMgKi8KCWZvciAoaSA9IDE7
-IGkgPCBtb3V0LT5udW1fZGFjczsgaSsrKSB7CgkJaWYgKGNocyA+PSAoaSArIDEpICogMikgLyog
-aW5kZXBlbmRlbnQgb3V0ICovCgkJCXNuZF9oZGFfY29kZWNfc2V0dXBfc3RyZWFtKGNvZGVjLCBu
-aWRzW2ldLCBzdHJlYW1fdGFnLAoJCQkJCQkgICBpICogMiwgZm9ybWF0KTsKCQllbHNlIGlmICgh
-bW91dC0+bm9fc2hhcmVfc3RyZWFtKSAvKiBjb3B5IGZyb250ICovCgkJCXNuZF9oZGFfY29kZWNf
-c2V0dXBfc3RyZWFtKGNvZGVjLCBuaWRzW2ldLCBzdHJlYW1fdGFnLAoJCQkJCQkgICAwLCBmb3Jt
-YXQpOwoJfQoKCS8qIGV4dHJhIHN1cnJvdW5kcyAqLwoJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJ
-WkUobW91dC0+ZXh0cmFfb3V0X25pZCk7IGkrKykgewoJCWludCBjaCA9IDA7CgkJaWYgKCFtb3V0
-LT5leHRyYV9vdXRfbmlkW2ldKQoJCQlicmVhazsKCQlpZiAoY2hzID49IChpICsgMSkgKiAyKQoJ
-CQljaCA9IGkgKiAyOwoJCWVsc2UgaWYgKCFtb3V0LT5ub19zaGFyZV9zdHJlYW0pCgkJCWJyZWFr
-OwoJCXNuZF9oZGFfY29kZWNfc2V0dXBfc3RyZWFtKGNvZGVjLCBtb3V0LT5leHRyYV9vdXRfbmlk
-W2ldLAoJCQkJCSAgIHN0cmVhbV90YWcsIGNoLCBmb3JtYXQpOwoJfQpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+T24gMDMvMDQvMjAxNSAwMjoyOCBQTSwgTWlrZSBMb29pam1hbnMgd3JvdGU6Cj4+IFcvbyB0aGUg
+QUZJRk8gZW5hYmxlZCBPTUFQLUwxMzggc2hvdWxkIGJlIGNsb3NlIGVub3VnaCBmb3IgdGhlIHBs
+YXRmb3JtcyB3aGljaAo+PiBkb2VzIG5vdCBoYXZlIEZJRk8uIEJ1dCBJIGNhbiB0ZXN0IHcvbyBG
+SUZPIGFuZCB3LyBGSUZPIG9uIHRoaXMgcGxhdGZvcm0uCj4gCj4gT2theSwgSSBoYWRuJ3QgZXZl
+biB0aG91Z2h0IG9mIHNpbXBseSBkaXNhYmxpbmcgdGhlIEZJRk8uIEdvb2QgdG8ga25vdyB5b3UK
+PiBhbHJlYWR5IHRvb2sgdGhpcyBpbnRvIGNvbnNpZGVyYXRpb24sIGdvb2Qgd29yay4KCkRvIHlv
+dSBoYXZlIHBvc3NpYmlsaXR5IG9mIHRlc3RpbmcgdGhlIGVkbWEtcGNtIGluIHlvdXIgc2V0dXAg
+YnkgYW55IGNoYW5jZT8KCj4gQlRXLCBJIHNpbXBseSBsaW5rZWQgdGhlIHBhcmFtcyBmb3IgdGhl
+IE1jQVNQLXRvLUREUiBpbiBhIGJpZyBsb29wIGZvciBteQo+IDIuNi4zNyBiYXNlZCBrZXJuZWws
+IHdoaWNoIHNvbHZlZCB0aGUgcHJvYmxlbXMgd2hlbiBzYW1wbGluZyAxNiBjaGFubmVscy4KClNv
+dW5kcyBpbnRlcmVzdGluZywgaXMgaXQgcG9zc2libGUgdG8gc2hhcmUgdGhpcyBjb2RlIHdpdGgg
+bWUgc28gSSBjYW4gc2VlCndoYXQgeW91IGhhdmUgZG9uZSBhbmQgSSBjYW4gY2hlY2sgaWYgeW91
+ciB1c2UgY2FzZSB3aWxsIHdvcmsgd2l0aCB0aGUKZWRtYS1wY20gYXMgd2VsbD8KClRoYW5rcywK
+UMOpdGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
