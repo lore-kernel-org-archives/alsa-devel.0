@@ -1,28 +1,19 @@
-From: Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH 2/4] ARM: mvebu: add audio I2S controller
- to Armada 38x Device Tree
-Date: Wed, 4 Mar 2015 13:12:10 +0100
-Message-ID: <CAPv3WKfEBXMbRzFeQioV5ZBVWpKMebcTkAQmyMhYwkObyyBKWw@mail.gmail.com>
-References: <1424901482-3809-1-git-send-email-mw@semihalf.com>
- <1424901482-3809-3-git-send-email-mw@semihalf.com>
- <54EE4AD6.6090101@gmail.com>
- <CAPv3WKf8b+fuB-4qVwKC57iKaNHTLZAf9VFpfDbow1Sb3YAsNw@mail.gmail.com>
- <54EE6942.9080800@gmail.com>
- <CAPv3WKezrx4jkZNo3PYSOGZtiSJH09+94BaknYNN4xPkB1AxKw@mail.gmail.com>
- <20150227150303.2c4ea0e7@free-electrons.com>
- <CAPv3WKeLfFsxcC5gvZeP9DZqysZ0XtashByppeuDzRfvjxjujg@mail.gmail.com>
- <20150228105844.3749a825@free-electrons.com>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
+ davinci-pcm
+Date: Wed, 4 Mar 2015 13:28:22 +0100
+Message-ID: <54F6FA66.8000803@topic.nl>
+References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
+ <54F6A3E5.1090201@topic.nl> <54F6C737.309@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
- [209.85.214.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 023E2265050
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 13:12:16 +0100 (CET)
-Received: by obcuy5 with SMTP id uy5so6340860obc.4
- for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2015 04:12:10 -0800 (PST)
-In-Reply-To: <20150228105844.3749a825@free-electrons.com>
+Received: from smtp102.mer-nm.internl.net (smtp102.mer-nm.internl.net
+ [217.149.192.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18109265050
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 13:28:29 +0100 (CET)
+In-Reply-To: <54F6C737.309@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,35 +23,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>, Grzegorz Jaszczyk <jaz@semihalf.com>, Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, =?UTF-8?Q?Gregory_Cl=C3=A9ment?= <gregory.clement@free-electrons.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Thomas,
-
-2015-02-28 10:58 GMT+01:00 Thomas Petazzoni
-<thomas.petazzoni@free-electrons.com>:
-> Dear Marcin Wojtas,
->
-> On Fri, 27 Feb 2015 21:22:30 +0100, Marcin Wojtas wrote:
->
->> Given all the facts, do you think that drivers/clk/mvebu/armada-38x.c
->> is a right place for adding this PLL setting support?
->
-> Yes, sounds right to me. I was thinking that maybe it should be in a
-> separate file armada-38x-pll.c, but that's probably a bit too much for
-> something that is causing to be a simple driver.
->
-
-I've got an update from Marvell - TDM and Audio are available in A39x
-and it has the same set of PLL registers like A38x. Shouldn't we place
-PLL configuration code in a separate file like clk-pll.c, or whatever
-name you suggest?
-
-> Have you sorted out how to handle the pin-muxing part of the problem?
->
-
-I'll come back with this issue after implementing poc.
-
-Best regards,
-Marcin
+77u/T24gMDQtMDMtMTUgMDk6NDksIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+IE9uIDAzLzA0LzIw
+MTUgMDg6MTkgQU0sIE1pa2UgTG9vaWptYW5zIHdyb3RlOgo+PiBPbiAwMy0wMy0xNSAxNTo0NSwg
+UGV0ZXIgVWpmYWx1c2kgd3JvdGU6Cj4+PiBIaSwKPj4+Cj4+PiBUaGlzIHNlcmllcyB3aWxsIGRl
+cHJlY2F0ZSBhbmQgcmVtb3ZlcyB0aGUgZGF2aW5jaS1wY20gcGxhdGZvcm0gZHJpdmVyIGFuZAo+
+Pj4gY29udmVydHMgdGhlIGRhVmluY2kgREFJIGRyaXZlcnMgdG8gdXNlIHRoZSBlZG1hLXBjbS4K
+Pj4+Cj4+PiBUaGUgbWFpbiBmZWF0dXJlIG9mIGRhdmluY2ktcGNtIGhhcyBiZWVuIHRoZSBzbyBj
+YWxsZWQgcGluZy1wb25nIG1vZGUsIHdoaWNoCj4+PiBjYW4gaGVscCBpbiBzaXR1YXRpb25zIHdo
+ZW4gdGhlIE1jQVNQL01jQlNQL0FTUC9WQ0lGIGV4cGVyaWVuY2VzIHVuZGVycnVuIG9yCj4+PiBv
+dmVycnVuIGluIHBsYXliYWNrIG9yIGNhcHR1cmUuIFRoaXMgd2FzIGR1ZSB0byB0aGUgZmFjdCB0
+aGUgZGF2aW5jaS1wY20gdy9vCj4+PiBwaW5nLXBvbmcgbmVlZGVkIHRvIHJlcHJvZ3JhbSB0aGUg
+cGFSQU0gc2xvdCBhZnRlciBlYWNoIHBlcmlvZCwgdGhpcyBjb3VsZAo+Pj4gY2F1c2UgZGVsYXkg
+aW4gRE1BIG9wZXJhdGlvbiwgd2hpY2ggbGVhZHMgdG8gc3RhcnZhdGlvbi4KPj4+IFRoZSBlZG0t
+cGNtIGRvZXMgbm90IG5lZWQgcmVwcm9ncmFtbWluZyBhbmQgaXQgc2VhbXMgdG8gYmUgd29ya2lu
+ZyBhcyBnb29kIGFzCj4+PiB0aGUgZGF2aW5jaS1wY20gd2l0aCBwaW5nLXBvbmcuCj4+Pgo+Pj4g
+SSBoYXZlIHRlc3RlZCB0aGlzIHNlcmllcyBvbiBPTUFQLUwxMzggRVZNIHdpdGggTWNBU1AgYW5k
+IE1jQlNQLiBWQ0lGIGhhcyBiZWVuCj4+PiBvbmx5IGNvbXBpbGUgdGVzdGVkIHNpbmNlIEkgZG8g
+bm90IGhhdmUgYWNjZXNzIHRvIHRoZSBIVy4gVGhlIGVkbWEtcGNtIGlzCj4+PiBhbHJlYWR5IHVz
+ZWQgYnkgQU0zMzV4IGFuZCBBTTQzN3ggYW5kIGl0IGhhcyBiZWVuIHRlc3RlZCBvbiB0aG9zZSBw
+bGF0Zm9ybXMKPj4+IGV4dGVuc2l2ZWx5Lgo+Pgo+PiBPbiB0aGUgT01BUC1MMTM4LCB0aGUgInBp
+bmcgcG9uZyIgb25seSBoYWQgYSBuZWdhdGl2ZSBlZmZlY3QsIGl0IGV2ZW4KPj4gaW5jcmVhc2Vk
+IHRoZSBjaGFuY2VzIG9mIG92ZXJydW4gYnkgcmVkdWNpbmcgdGhlIGludGVycnVwdCBsYXRlbmN5
+IHRvbGVyYW5jZQo+PiBhbmQgYnkgZG91YmxpbmcgdGhlIGFtb3VudCBvZiB0cmFmZmljIG9uIHRo
+ZSBidXMuIFRoZSBMMTM4IGhhcyBhIEZJRk8gaW4gdGhlCj4+IE1jQVNQIHdoaWNoIGNvbXBlbnNh
+dGVzIGZvciBERFIgYWNjZXNzIGxhdGVuY2llcyBhbmQgYWxsb3dzIGZvciBsYXJnZXIKPj4gdHJh
+bnNmZXIgYmxvY2tzLiBNYW55IG90aGVyIE9NQVAgY2hpcHMgZG8gbm90IGhhdmUgdGhpcyBGSUZP
+IGFuZCB0aGF0IGlzIHdoeQo+PiB0aGUgcGluZy1wb25nIHdhcyBhY3R1YWxseSBpbnRyb2R1Y2Vk
+LiBJdCBjb21wZW5zYXRlcyBmb3IgRERSIGFjY2VzcyB0aW1lcywKPj4gbm90IGZvciBpbnRlcnJ1
+cHQgbGF0ZW5jaWVzLgo+Cj4gSSBkaWQgdGVzdGVkIHRoZSBPTUFQLUwxMzggd2l0aCBBRklGTyBk
+aXNhYmxlZCBhcyB3ZWxsLiBUaGUgZWRtYS1wY20gd2FzCj4gYmVoYXZlZCBpbiBhIHNpbWlsYXIg
+bWFubmVyIHRvIHRoZSBwaW5nLXBvbmcgbW9kZSBvZiBkYXZpbmNpLXBjbS4KPiBXaGlsZSB3ZSBh
+cmUgaGVyZSBhdCB0aGUgcGluZy1wb25nOiB0aGUgaW1wbGVtZW50YXRpb24gaW4gdGhlIGRhdmlu
+Y2ktcGNtIGlzCj4gbm90IHRoZSBwaW5nLXBvbmcgd2hpY2ggaXMgZGVzY3JpYmVkIGluIHRoZSBU
+Uk1zLCBpdCBpcyBtb3JlIGxpa2UgZG91YmxlCj4gYnVmZmVyaW5nLiBUaGUgY2hhbm5lbCB3aGlj
+aCBzZXJ2aWNlcyB0aGUgTWNBU1AgaXMgb3BlcmF0aW5nIHRvL2Zyb20gU1JBTSBhbmQKPiB3ZSBo
+YXZlIHRoZSBvdGhlciBjaGFubmVsIHRvIGNvcHkgY2h1bmtzIG9mIGRhdGEgZnJvbS90byBERFIg
+dG8vZnJvbSBTUkFNLgo+IEluIHRoZSBjYXNlIG9mIHBpbmctcG9uZyB0aGUgcGFSQU0gZW50cmll
+cyBuZWVkcyBubyB1cGRhdGUgcnVudGltZSwgdGhleSBhcmUKPiBjaGFpbmVkL2xpbmtlZC4KPiBJ
+biB0aGUgZGlzdGFudCBwYXN0IHdlIGhhZCBzaW1pbGFyIHN3IHNldHVwIGZvciBPTUFQMTUxMC8x
+NzEwIE1jQlNQLCB0aGUgRE1BCj4gd2FzIHJlcHJvZ3JhbW1lZCBhZnRlciBlYWNoIHBlcmlvZCBh
+bmQgdGhpcyBpbnRyb2R1Y2VkIHJhbmRvbSBjaGFubmVsCj4gc3dhcC9zaGlmdCBkdXJpbmcgYXVk
+aW8gb3BlcmF0aW9uLiBBZnRlciB3ZSBpbnRyb2R1Y2VkIHRoZSB3YXkgdG8gbGluayB0aGUgRE1B
+Cj4gY2hhbm5lbHMgdGhpcyBpc3N1ZSB3ZXJlIGZpeGVkLgo+Cj4gQnV0LCB5ZXMuIE1jQVNQIEZJ
+Rk8gaXMgbm90IHVzZWQsIHRoZSBETUEgbmVlZCB0byBmZXRjaCB3b3JkLWJ5LXdvcmQgZnJvbSBE
+RFIKPiBpbiBjYXNlIG9mIHRoZSBlZG1hLXBjbS4gSW4gdGhlIHBpbmctcG9uZyBjYXNlIHdlIGhh
+ZCBidXJzdCBhY2Nlc3MgdG8gRERSIGFuZAo+IHdvcmQtYnktd29yZCBhY2Nlc3MgdG8gU1JBTS4K
+Pgo+PiBJZiB5b3UgaW50ZW5kIHRvIHRlc3QgdGhlIERNQSB0cmFuc2ZlcnMsIHRoZSBMMTM4IGlz
+IGRlZmluaXRlbHkgTk9UIHRoZQo+PiBwbGF0Zm9ybSB0byB0ZXN0IHRoaXMgb24sIGFzIGl0IHdp
+bGwgYWN0dWFsbHkgcGVyZm9ybSBiZXR0ZXIgd2l0aG91dCBwaW5nLXBvbmcKPj4gdGhyb3VnaCBv
+bi1jaGlwIFJBTS4KPgo+IFcvbyB0aGUgQUZJRk8gZW5hYmxlZCBPTUFQLUwxMzggc2hvdWxkIGJl
+IGNsb3NlIGVub3VnaCBmb3IgdGhlIHBsYXRmb3JtcyB3aGljaAo+IGRvZXMgbm90IGhhdmUgRklG
+Ty4gQnV0IEkgY2FuIHRlc3Qgdy9vIEZJRk8gYW5kIHcvIEZJRk8gb24gdGhpcyBwbGF0Zm9ybS4K
+Ck9rYXksIEkgaGFkbid0IGV2ZW4gdGhvdWdodCBvZiBzaW1wbHkgZGlzYWJsaW5nIHRoZSBGSUZP
+LiBHb29kIHRvIGtub3cgeW91IAphbHJlYWR5IHRvb2sgdGhpcyBpbnRvIGNvbnNpZGVyYXRpb24s
+IGdvb2Qgd29yay4KCkJUVywgSSBzaW1wbHkgbGlua2VkIHRoZSBwYXJhbXMgZm9yIHRoZSBNY0FT
+UC10by1ERFIgaW4gYSBiaWcgbG9vcCBmb3IgbXkgCjIuNi4zNyBiYXNlZCBrZXJuZWwsIHdoaWNo
+IHNvbHZlZCB0aGUgcHJvYmxlbXMgd2hlbiBzYW1wbGluZyAxNiBjaGFubmVscy4KCk1pa2UuCgoK
+Ck1ldCB2cmllbmRlbGlqa2UgZ3JvZXQgLyBraW5kIHJlZ2FyZHMsCgpNaWtlIExvb2lqbWFucwpT
+eXN0ZW0gRXhwZXJ0CgoKVE9QSUMgRW1iZWRkZWQgU3lzdGVtcwpFaW5kaG92ZW5zZXdlZyAzMi1D
+LCBOTC01NjgzIEtIIEJlc3QKUG9zdGJ1cyA0NDAsIE5MLTU2ODAgQUsgQmVzdApUZWxlZm9vbjog
+KCszMSkgKDApIDQ5OSAzMyA2OSA3OQpUZWxlZmF4OiAgKCszMSkgKDApIDQ5OSAzMyA2OSA3MApF
+LW1haWw6IG1pa2UubG9vaWptYW5zQHRvcGljLm5sCldlYnNpdGU6IHd3dy50b3BpYy5ubAoKUGxl
+YXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlLW1haWwK
+ClRvcGljIHpvZWt0IGdlZHJldmVuIChlbWJlZGRlZCkgc29mdHdhcmUgc3BlY2lhbGlzdGVuIQpo
+dHRwOi8vdG9waWMubmwvdmFjYXR1cmVzL3RvcGljLXpvZWt0LXNvZnR3YXJlLWVuZ2luZWVycy8K
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
