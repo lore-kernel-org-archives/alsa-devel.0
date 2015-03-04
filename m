@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 17/30] ASoC: z2: Register jacks at the card
-	level
-Date: Wed,  4 Mar 2015 10:33:32 +0100
-Message-ID: <1425461626-21103-18-git-send-email-lars@metafoo.de>
+Subject: [PATCH 18/30] ASoC: h1980_uda1380: Register jacks at
+	the card level
+Date: Wed,  4 Mar 2015 10:33:33 +0100
+Message-ID: <1425461626-21103-19-git-send-email-lars@metafoo.de>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-196.synserver.de (smtp-out-198.synserver.de
  [212.40.185.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 71E72265019
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:34:03 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 20A6C265043
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:34:04 +0100 (CET)
 In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,29 +31,28 @@ snd_soc_jack_new() to register them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/pxa/z2.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/samsung/h1940_uda1380.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
-index 76ccb17..bcbfbe8 100644
---- a/sound/soc/pxa/z2.c
-+++ b/sound/soc/pxa/z2.c
-@@ -143,13 +143,9 @@ static int z2_wm8750_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_disable_pin(dapm, "MONO1");
+diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
+index 59b0442..c72e9fb 100644
+--- a/sound/soc/samsung/h1940_uda1380.c
++++ b/sound/soc/samsung/h1940_uda1380.c
+@@ -162,13 +162,8 @@ static struct platform_device *s3c24xx_snd_device;
  
- 	/* Jack detection API stuff */
--	ret = snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
--				&hs_jack);
--	if (ret)
--		goto err;
+ static int h1940_uda1380_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_codec *codec = rtd->codec;
 -
--	ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
--				hs_jack_pins);
-+	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack", SND_JACK_HEADSET,
-+				    &hs_jack, hs_jack_pins,
-+				    ARRAY_SIZE(hs_jack_pins));
- 	if (ret)
- 		goto err;
+-	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
+-		&hp_jack);
+-
+-	snd_soc_jack_add_pins(&hp_jack, ARRAY_SIZE(hp_jack_pins),
+-		hp_jack_pins);
++	snd_soc_card_jack_new(rtd->card, "Headphone Jack", SND_JACK_HEADPHONE,
++		&hp_jack, hp_jack_pins, ARRAY_SIZE(hp_jack_pins));
  
+ 	snd_soc_jack_add_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
+ 		hp_jack_gpios);
 -- 
 1.8.0
