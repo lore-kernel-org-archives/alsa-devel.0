@@ -1,21 +1,18 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [TINYCOMPRESS][PATCH] crec: support streaming
-	output to stdout
-Date: Wed, 4 Mar 2015 16:27:13 +0000
-Message-ID: <20150304162713.GA6218@opensource.wolfsonmicro.com>
-References: <1424357740-6561-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20150224163626.GJ5208@intel.com>
- <20150225153042.GA31879@opensource.wolfsonmicro.com>
- <20150304125708.GS2613@intel.com>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [ALSA-UTILS][PATCH] Add support for cplay and
+	crecord
+Date: Wed, 4 Mar 2015 16:34:41 +0000
+Message-ID: <54F73421.3000108@imgtec.com>
+References: <1425483360-1806-1-git-send-email-qais.yousef@imgtec.com>
+ <20150304161013.GU2613@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7E50326512F
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 17:27:16 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20150304125708.GS2613@intel.com>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85C9526510B
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 17:34:43 +0100 (CET)
+In-Reply-To: <20150304161013.GU2613@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,26 +23,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 04, 2015 at 06:27:08PM +0530, Vinod Koul wrote:
-> On Wed, Feb 25, 2015 at 03:30:53PM +0000, Richard Fitzgerald wrote:
-> > On Tue, Feb 24, 2015 at 10:06:26PM +0530, Vinod Koul wrote:
-> > > On Thu, Feb 19, 2015 at 02:55:40PM +0000, Richard Fitzgerald wrote:
-> > > > From: Ammar Zahid Ali Syed <aali@opensource.wolfsonmicro.com>
-> > > > 
-> > > > It's useful for testing to be able to stream the captured
-> > > > audio to stdout instead of having to go via a file.
-> > > This looks okay to me. But it fails to apply, what was it generataed against?
-> > > 
-> > 
-> > It was generated against the master tinycompress branch.
-> > I have just tried to apply it on top of the current head patch
-> > "makefile.linux: allow env to override CROSS_COMPILE and CC" and it
-> > applies ok for me.
-> That is possible as your tree already knew this patch and how to resolve
-> this. Anyway I went ahead and have manually applied this one, can you check
-> if this is fine
+On 03/04/2015 04:10 PM, Vinod Koul wrote:
+> On Wed, Mar 04, 2015 at 03:36:00PM +0000, Qais Yousef wrote:
+>> cplay and crecord use compress offload API to play and record compressed audio.
+>>
+>> They're based on cplay and crec from tinycompress library using LGPL license.
+>>
+>> For now cplay only supports playing mp3 files.
+>>
+>> Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+>> Cc: Takashi Iwai <tiwai@suse.de>
+>> Cc: Vinod Koul <vinod.koul@intel.com>
+>> Cc: Mark Brown <broonie@kernel.org>
+>> ---
+>> I renamed crec to crecord also to match aplay and arecord, hopefully
+>> you don't mind Vinod.
+> No thats fine..
+>
+>> This patch is dependent on my other patch that adds support for compress offload
+>> to alsa-lib.
+> And where is that, should have preceded this
 
-I diffed upstream master against my tree and they are identical.
+Hmm not sure what went wrong. I resent it. Seems I have some emailer 
+issues as I had this problem before.
+Hopefully you received it now.
+
+>> I needed to include <sound/compress_params.h> in cplay.c and crec.c
+>> but I couldn't find an example of any C file which directly includes <sound/*.h>
+>> The norm seems to be to just include <alsa/asoundlib.h>. Do I need to
+>> redefine structs from <sound/compress_params.h> to newly added <alsa/compress.h>?
+>> <alsa/pcm.h> seems to redefine structs from <sound/asound.h>.
+> These are kernel headers and should be in your include path if you have
+> those installed
+>> I could only test cplay but have no means to test crecord at the moment.
+>>
+>>   Makefile.am       |   3 +
+>>   configure.ac      |   6 +-
+>>   cplay/Makefile.am |  14 ++
+>>   cplay/cplay.c     | 294 +++++++++++++++++++++++++++++++++++
+>>   cplay/crec.c      | 449 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>   cplay/tinymp3.h   |  72 +++++++++
+>>   6 files changed, 837 insertions(+), 1 deletion(-)
+>>   create mode 100644 cplay/Makefile.am
+>>   create mode 100644 cplay/cplay.c
+>>   create mode 100644 cplay/crec.c
+>>   create mode 100644 cplay/tinymp3.h
+> Okay here is where we need discussion on the future course. If we do this
+> then we end up in two code bases, something I would not encourage!
+>
+> On the other hand if we add the make file changes to tinycompress or if
+> required split this into two, lib and tools and then package lib part into
+> alsa-lib and players into tools, that way we can have single code base. That
+> was my intent behind ensuring that this is dual licensed.
+
+I'm not sure I follow you completely here. You mean keep cplay and crec 
+in tinycompress with the dual licensing but only merge the lib part 
+(which my other patch does) into alsa-lib? For me having this lib part 
+into alsa-lib is the important bit. Moving crec and cplay to alsa-utils 
+was something I thought would be useful but maybe not.
+
+Thanks,
+Qais
+
+>
+> Takashi, is that something we could achieve? I think last time we discussed
+> this topic you seemed okay with this, only thing was tinycompress lacks
+> proper make support which we can add
+>
