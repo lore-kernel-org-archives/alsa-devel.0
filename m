@@ -1,109 +1,75 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/8] clk: add helper function clk_is_match()
-Date: Wed, 4 Mar 2015 09:55:37 +0100
-Message-ID: <CAMuHMdX_co60Aez4_8iA4+41CMSD=Ky7af8mVJruQL-2v9m=0g@mail.gmail.com>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
-	<1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
-	<20150225172757.421.43718@quantum>
+From: Alnie <memobook80@comcast.net>
+Subject: Re: Issues w/ Creative Labs [SB X-Fi Xtreme Audio]
+	CA0110-IBG
+Date: Wed, 04 Mar 2015 01:01:32 -0800
+Message-ID: <54F6C9EC.3080100@comcast.net>
+References: <54F52C68.6010504@comcast.net>	<s5hzj7u7grx.wl-tiwai@suse.de>	<54F5614C.9010402@comcast.net>	<s5hwq2y7c8g.wl-tiwai@suse.de>	<54F57D07.9020900@comcast.net>	<54F62CDC.1010607@comcast.net>	<s5hoao97n1j.wl-tiwai@suse.de>	<54F66A0F.1050603@comcast.net>
+ <s5hk2yx6vld.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-pwm-owner@vger.kernel.org>
-In-Reply-To: <20150225172757.421.43718@quantum>
-Sender: linux-pwm-owner@vger.kernel.org
-To: Mike Turquette <mturquette@linaro.org>
-Cc: Shawn Guo <shawn.guo@linaro.org>, linux-pwm@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Russell King <linux@arm.linux.org.uk>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, DRI Development <dri-devel@lists.freedesktop.org>, Thierry Reding <thierry.reding@gmail.com>, Sascha Hauer <kernel@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from resqmta-po-02v.sys.comcast.net (resqmta-po-02v.sys.comcast.net
+ [96.114.154.161])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44BAB264EFA
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:01:35 +0100 (CET)
+In-Reply-To: <s5hk2yx6vld.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 25, 2015 at 6:27 PM, Mike Turquette <mturquette@linaro.org> wrote:
-> From: Michael Turquette <mturquette@linaro.org>
-> Date: Wed, 25 Feb 2015 09:11:01 -0800
-> Subject: [PATCH] clk: introduce clk_is_match
+
+
+On 03/04/2015 12:00 AM, Takashi Iwai wrote:
+> At Tue, 03 Mar 2015 18:12:31 -0800,
+> Alnie wrote:
+>>
+>>> My suggestion isn't about a compile option but that you add some debug
+>>> printk() calls manually around some codes.  We need to know the value
+>>> written and read by azx_write*() and azx_read*() calls.  Especially
+>>> the value read in pci_azx_read*() is more interesting. You can try to
+>>> modify sound/pci/hda/hda_intel.c and add a printk() to each
+>>> pci_azx_read*() function for printing the value to be returned.
+>>> Beware that this will likely flood many messages, so just try once.
+>>>
+>>>
+>>> Takashi
+>>>
+>>
+>> I can not find any reference to pci_azx_read in hda_intel.c
 >
-> Some drivers compare struct clk pointers as a means of knowing
-> if the two pointers reference the same clock hardware. This behavior is
-> dubious (drivers must not dereference struct clk), but did not cause any
-> regressions until the per-user struct clk patch was merged. Now the test
-> for matching clk's will always fail with per-user struct clk's.
+> You must be using a too old kernel, then.  Please use the latest
+> kernel for debugging.
 >
-> clk_is_match is introduced to fix the regression and prevent drivers
-> from comparing the pointers manually.
 >
-> Fixes: 035a61c314eb ("clk: Make clk API return per-user struct clk instances")
-> Cc: Russell King <linux@arm.linux.org.uk>
-> Cc: Stephen Boyd <sboyd@codeaurora.org>
-> Cc: Shawn Guo <shawn.guo@linaro.org>
-> Cc: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-> Signed-off-by: Michael Turquette <mturquette@linaro.org>
-> ---
->  drivers/clk/clk.c   | 26 ++++++++++++++++++++++++++
->  include/linux/clk.h | 18 ++++++++++++++++++
->  2 files changed, 44 insertions(+)
+> Takashi
 >
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index eb01529..09670de 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -2171,6 +2171,32 @@ int clk_get_phase(struct clk *clk)
->  }
->
->  /**
-> + * clk_is_match - check if two clk's point to the same hardware clock
-> + * @p: clk compared against q
-> + * @q: clk compared against p
-> + *
-> + * Returns true if the two struct clk pointers both point to the same hardware
-> + * clock node. Put differently, returns true if struct clk *p and struct clk *q
-> + * share the same struct clk_core object.
-> + *
-> + * Returns false otherwise. Note that two NULL clks are treated as matching.
-> + */
-> +bool clk_is_match(struct clk *p, struct clk *q)
 
-const struct clk *p, const struct clk *q
+Ok. I now have latest kernel.
 
-> --- a/include/linux/clk.h
-> +++ b/include/linux/clk.h
-> @@ -376,6 +376,19 @@ struct clk *clk_get_parent(struct clk *clk);
->   */
->  struct clk *clk_get_sys(const char *dev_id, const char *con_id);
->
-> +/**
-> + * clk_is_match - check if two clk's point to the same hardware clock
-> + * @p: clk compared against q
-> + * @q: clk compared against p
-> + *
-> + * Returns true if the two struct clk pointers both point to the same hardware
-> + * clock node. Put differently, returns true if struct clk *p and struct clk *q
-> + * share the same struct clk_core object.
-> + *
-> + * Returns false otherwise. Note that two NULL clks are treated as matching.
-> + */
-> +bool clk_is_match(struct clk *p, struct clk *q);
+Here is a small portion...
 
-const struct clk *p, const struct clk *q
+/* PCI register access. */
+static void pci_azx_writel(u32 value, u32 __iomem *addr)
+{
+	writel(value, addr);
+}
 
-> +
->  #else /* !CONFIG_HAVE_CLK */
->
->  static inline struct clk *clk_get(struct device *dev, const char *id)
-> @@ -429,6 +442,11 @@ static inline struct clk *clk_get_parent(struct clk *clk)
->         return NULL;
->  }
->
-> +static inline bool clk_is_match(struct clk *p, struct clk *q)
+static u32 pci_azx_readl(u32 __iomem *addr)
+{
+	return readl(addr);
+}
 
-const struct clk *p, const struct clk *q
+Can you show me how I can properly place printk without breaking things 
+and produce relevant messages?
 
-> +{
-> +       return p == q ? true : false;
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-Alnie
