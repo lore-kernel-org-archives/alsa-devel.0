@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V7 03/10] ASoC: qcom: Document Storm bindings
-Date: Tue,  3 Mar 2015 16:21:52 -0800
-Message-ID: <1425428519-12224-4-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V7 01/10] MAINTAINERS: Add QCOM audio ASoC maintainer
+Date: Tue,  3 Mar 2015 16:21:50 -0800
+Message-ID: <1425428519-12224-2-git-send-email-kwestfie@codeaurora.org>
 References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,46 +12,33 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add documentation to the sound directory of the
-device-tree bindings for the soundcard of the
-Storm board.
+Add maintainers for the Qualcomm Technologies
+sound drivers.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- Documentation/devicetree/bindings/sound/storm.txt | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/storm.txt
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/storm.txt b/Documentation/devicetree/bindings/sound/storm.txt
-new file mode 100644
-index 0000000000000000000000000000000000000000..2a308e9c4cd3f9550c0b7078200a14a787f02858
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/storm.txt
-@@ -0,0 +1,23 @@
-+* Sound complex for Storm boards
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ddc5a8cf9a8ac0078f8ca1bc99d9c48f8197214a..9514b794b74d7fb93072bbdbaefaaa79df38c5fd 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5254,6 +5254,13 @@ F:	drivers/char/ipmi/
+ F:	include/linux/ipmi*
+ F:	include/uapi/linux/ipmi*
+ 
++QCOM AUDIO (ASoC) DRIVERS
++M:	Patrick Lai <plai@codeaurora.org>
++M:	Banajit Goswami <bgoswami@codeaurora.org>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Supported
++F:	sound/soc/qcom/
 +
-+Models a soundcard for Storm boards with the Qualcomm Technologies IPQ806x SOC
-+connected to a MAX98357A DAC via I2S.
-+
-+Required properties:
-+
-+- compatible	: "google,storm"
-+- cpu		: Phandle of the CPU DAI
-+- codec		: Phandle of the codec DAI
-+
-+Optional properties:
-+
-+- qcom,model	: The user-visible name of this sound card.
-+
-+Example:
-+
-+sound {
-+	compatible = "google,storm";
-+	qcom,model = "ipq806x-storm";
-+	cpu = <&lpass_cpu>;
-+	codec = <&max98357a>;
-+};
+ IPS SCSI RAID DRIVER
+ M:	Adaptec OEM Raid Solutions <aacraid@adaptec.com>
+ L:	linux-scsi@vger.kernel.org
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
