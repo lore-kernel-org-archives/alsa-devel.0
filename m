@@ -1,73 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
-	davinci-pcm
-Date: Wed, 4 Mar 2015 17:26:15 +0000
-Message-ID: <20150304172615.GR21293@sirena.org.uk>
-References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [ASoC]fsl_ssi: fix of_property_read_u32_array return value check
+Date: Wed, 4 Mar 2015 17:27:36 +0000
+Message-ID: <20150304172736.GS21293@sirena.org.uk>
+References: <54E1199F.3000107@maciej.szmigiero.name>
+ <20150224082448.GY6236@finisterre.sirena.org.uk>
+ <54F70389.6020004@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1933923791078301016=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FA5B26526F
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 18:26:26 +0100 (CET)
-In-Reply-To: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, khilman@deeprootsystems.com, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="u9zu4ykPqKoh11OB"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54F70389.6020004@maciej.szmigiero.name>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1933923791078301016==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="N8bpTmlvM7/fDIud"
-Content-Disposition: inline
-
-
---N8bpTmlvM7/fDIud
+--u9zu4ykPqKoh11OB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 03, 2015 at 04:45:16PM +0200, Peter Ujfalusi wrote:
-> Hi,
->=20
-> This series will deprecate and removes the davinci-pcm platform driver and
-> converts the daVinci DAI drivers to use the edma-pcm.
+On Wed, Mar 04, 2015 at 02:07:21PM +0100, Maciej S. Szmigiero wrote:
 
-Looks good, applied all thanks.
+> Against which tree/branch patches for ASoC should be generated?
 
---N8bpTmlvM7/fDIud
+MAINTAINERS says:
+
+SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEMENT (ASoC)
+M:      Liam Girdwood <lgirdwood@gmail.com>
+M:      Mark Brown <broonie@kernel.org>
+T:      git git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+
+mainly the for-next branch, though bugfixes go on for-linus.
+
+--u9zu4ykPqKoh11OB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU90A2AAoJECTWi3JdVIfQmCkH/1PFeUk+2ggtAT2n6QChSwiN
-Fc1Kd7oxt5pQ6f2vi1lalEeTAn7459NaYmdw0Cc5dAjlEjcZybrMFDKvgsiAcy/y
-enMvZdnVuUhYAw1CcwLcSAYlK4XP4hjr8DcLJrNbvpd/mmjcz+moKDVjU0drjn5W
-x4nYTfkSb7VGLrI8f5GwUN2PRpF8Tkg6JGVfanNuyba5iWyDK+/gklycb20i4jaa
-46XWqZ3Bp2pZgZr5QogAGokQsVThozyhyU9Bp51zU4kZDgh8ro+zUTjMhZBQYaME
-pR4SoRQ9Ky2Hz8VzLUr9+zJMXAXvPVL8T2dwlxAVfOjNnmjxf0Hb+12A/Q3bJKg=
-=Y4X9
+iQEcBAEBCAAGBQJU90CHAAoJECTWi3JdVIfQIPYH/iuFBdmQDoUP1dAzzUWRjPtn
+pQ81azAh4D9Y9JpMIcWpxqIHWB10+2fo3vxlSQZFMDQgm8jwIh5HVFJHHoVtnLe0
+dT+7fVcs+rNB5CUCw9qqBNC63nc1An5XnhbMvYScshv4wP5d9SDxLB5JmFJi0fxT
+nMHz5qi6HcFvODbFH5pZaVQMOcWoJPaNGMfIPYg5q7+1wcdzncb50D5K8X3UtBsp
+Qqv3mLz+yjqnOndWZAiCFU571P+YU/IPu0xS7PnW9ECoA33Xt4uAqI9w9qNswMbZ
+pKpsJ3o+6lv58P1yB2V6c4NQomkPJytSS5OamR09ZHxEuDRAbiHglh0KEmUEZUE=
+=dZ5H
 -----END PGP SIGNATURE-----
 
---N8bpTmlvM7/fDIud--
-
---===============1933923791078301016==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1933923791078301016==--
+--u9zu4ykPqKoh11OB--
