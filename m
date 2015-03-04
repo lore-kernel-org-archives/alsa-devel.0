@@ -1,31 +1,21 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
- davinci-pcm
-Date: Wed, 4 Mar 2015 07:19:17 +0100
-Message-ID: <54F6A3E5.1090201@topic.nl>
-References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH 2/2] ASoC: simple-card: Add support for
+ samplerate and samplewidth constraints
+Date: Wed, 4 Mar 2015 09:48:32 +0200
+Message-ID: <54F6B8D0.4070904@ti.com>
+References: <cover.1425303942.git.jsarha@ti.com>
+ <9d01aa0d0bf48d8b41d5086a7e6c9ec08c2b9c48.1425303942.git.jsarha@ti.com>
+ <54F4C0F2.8000201@metafoo.de> <54F5884A.1090702@ti.com>
+ <20150303113041.GM21293@sirena.org.uk> <54F5A25F.6090904@ti.com>
+ <54F5D3C2.20705@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
- [217.149.192.139])
- by alsa0.perex.cz (Postfix) with ESMTP id 44EEE261ACD
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 07:19:19 +0100 (CET)
-Received: from amavisd-new (mailscanner06.wrt-nm.internl.net [217.149.192.58])
- by smtp103.mer-nm.internl.net (Postfix) with ESMTP id B40FB3F654
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 07:19:18 +0100 (CET)
-Received: from smtp103.mer-nm.internl.net ([217.149.192.139])
- by amavisd-new (mailscanner06.wrt-nm.internl.net [217.149.192.160])
- (amavisd-new, port 10024)
- with ESMTP for <alsa-devel@alsa-project.org>;
- Wed,  4 Mar 2015 07:19:18 +0100 (CET)
-Received: from TOP-EX01.TOPIC.LOCAL (mail.topic.nl [82.204.13.182])
- (using TLSv1 with cipher AES128-SHA (128/128 bits))
- (No client certificate requested)
- by smtp103.mer-nm.internl.net (Postfix) with ESMTPS
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 07:19:17 +0100 (CET)
-In-Reply-To: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 774DF264ED3
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 08:48:39 +0100 (CET)
+In-Reply-To: <54F5D3C2.20705@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,63 +25,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, peter.ujfalusi@ti.com, moinejf@free.fr, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
-77u/T24gMDMtMDMtMTUgMTU6NDUsIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+IEhpLAo+Cj4gVGhp
-cyBzZXJpZXMgd2lsbCBkZXByZWNhdGUgYW5kIHJlbW92ZXMgdGhlIGRhdmluY2ktcGNtIHBsYXRm
-b3JtIGRyaXZlciBhbmQKPiBjb252ZXJ0cyB0aGUgZGFWaW5jaSBEQUkgZHJpdmVycyB0byB1c2Ug
-dGhlIGVkbWEtcGNtLgo+Cj4gVGhlIG1haW4gZmVhdHVyZSBvZiBkYXZpbmNpLXBjbSBoYXMgYmVl
-biB0aGUgc28gY2FsbGVkIHBpbmctcG9uZyBtb2RlLCB3aGljaAo+IGNhbiBoZWxwIGluIHNpdHVh
-dGlvbnMgd2hlbiB0aGUgTWNBU1AvTWNCU1AvQVNQL1ZDSUYgZXhwZXJpZW5jZXMgdW5kZXJydW4g
-b3IKPiBvdmVycnVuIGluIHBsYXliYWNrIG9yIGNhcHR1cmUuIFRoaXMgd2FzIGR1ZSB0byB0aGUg
-ZmFjdCB0aGUgZGF2aW5jaS1wY20gdy9vCj4gcGluZy1wb25nIG5lZWRlZCB0byByZXByb2dyYW0g
-dGhlIHBhUkFNIHNsb3QgYWZ0ZXIgZWFjaCBwZXJpb2QsIHRoaXMgY291bGQKPiBjYXVzZSBkZWxh
-eSBpbiBETUEgb3BlcmF0aW9uLCB3aGljaCBsZWFkcyB0byBzdGFydmF0aW9uLgo+IFRoZSBlZG0t
-cGNtIGRvZXMgbm90IG5lZWQgcmVwcm9ncmFtbWluZyBhbmQgaXQgc2VhbXMgdG8gYmUgd29ya2lu
-ZyBhcyBnb29kIGFzCj4gdGhlIGRhdmluY2ktcGNtIHdpdGggcGluZy1wb25nLgo+Cj4gSSBoYXZl
-IHRlc3RlZCB0aGlzIHNlcmllcyBvbiBPTUFQLUwxMzggRVZNIHdpdGggTWNBU1AgYW5kIE1jQlNQ
-LiBWQ0lGIGhhcyBiZWVuCj4gb25seSBjb21waWxlIHRlc3RlZCBzaW5jZSBJIGRvIG5vdCBoYXZl
-IGFjY2VzcyB0byB0aGUgSFcuIFRoZSBlZG1hLXBjbSBpcwo+IGFscmVhZHkgdXNlZCBieSBBTTMz
-NXggYW5kIEFNNDM3eCBhbmQgaXQgaGFzIGJlZW4gdGVzdGVkIG9uIHRob3NlIHBsYXRmb3Jtcwo+
-IGV4dGVuc2l2ZWx5LgoKT24gdGhlIE9NQVAtTDEzOCwgdGhlICJwaW5nIHBvbmciIG9ubHkgaGFk
-IGEgbmVnYXRpdmUgZWZmZWN0LCBpdCBldmVuIAppbmNyZWFzZWQgdGhlIGNoYW5jZXMgb2Ygb3Zl
-cnJ1biBieSByZWR1Y2luZyB0aGUgaW50ZXJydXB0IGxhdGVuY3kgdG9sZXJhbmNlIAphbmQgYnkg
-ZG91YmxpbmcgdGhlIGFtb3VudCBvZiB0cmFmZmljIG9uIHRoZSBidXMuIFRoZSBMMTM4IGhhcyBh
-IEZJRk8gaW4gdGhlIApNY0FTUCB3aGljaCBjb21wZW5zYXRlcyBmb3IgRERSIGFjY2VzcyBsYXRl
-bmNpZXMgYW5kIGFsbG93cyBmb3IgbGFyZ2VyIAp0cmFuc2ZlciBibG9ja3MuIE1hbnkgb3RoZXIg
-T01BUCBjaGlwcyBkbyBub3QgaGF2ZSB0aGlzIEZJRk8gYW5kIHRoYXQgaXMgd2h5IAp0aGUgcGlu
-Zy1wb25nIHdhcyBhY3R1YWxseSBpbnRyb2R1Y2VkLiBJdCBjb21wZW5zYXRlcyBmb3IgRERSIGFj
-Y2VzcyB0aW1lcywgCm5vdCBmb3IgaW50ZXJydXB0IGxhdGVuY2llcy4KCklmIHlvdSBpbnRlbmQg
-dG8gdGVzdCB0aGUgRE1BIHRyYW5zZmVycywgdGhlIEwxMzggaXMgZGVmaW5pdGVseSBOT1QgdGhl
-IApwbGF0Zm9ybSB0byB0ZXN0IHRoaXMgb24sIGFzIGl0IHdpbGwgYWN0dWFsbHkgcGVyZm9ybSBi
-ZXR0ZXIgd2l0aG91dCBwaW5nLXBvbmcgCnRocm91Z2ggb24tY2hpcCBSQU0uCgoKPgo+IEFmdGVy
-IHRoaXMgc2VyaWVzIHdlIG5vIGxvbmdlciBoYXZlIGxlZ2FjeSBlRE1BIHVzZXJzIHdoaWNoIGNs
-ZWFycyB0aGUgcGF0aCBmb3IKPiB0aGUgZURNQSBkcml2ZXIgc3RhY2sgY2xlYW51cC4KPgo+IFJl
-Z2FyZHMsCj4gUGV0ZXIKPiAtLS0KPiBQZXRlciBVamZhbHVzaSAoNSk6Cj4gICAgQVNvQzogZGF2
-aW5jaTogU2VsZWN0IFNORF9FRE1BX1NPQyB3aGVuIFNORF9EQVZJTkNJX1NPQyBpcyBlbmFibGVk
-Cj4gICAgQVNvQzogZGF2aW5jaS1pMnM6IENvbnZlcnQgdG8gdXNlIGVkbWEtcGNtCj4gICAgQVNv
-QzogZGF2aW5jaS12Y2lmOiBDb252ZXJ0IHRvIHVzZSBlZG1hLXBjbQo+ICAgIEFTb0M6IGRhdmlu
-Y2ktbWNhc3A6IERlcHJlY2F0ZSB0aGUgdXNlIG9mIGRhdmluY2ktcGNtIGluIGZhdm9yIG9mCj4g
-ICAgICBlZG1hLXBjbQo+ICAgIEFTb0M6IGRhdmluY2k6IFJlbW92ZSB1bnVzZWQgZGF2aW5jaS1w
-Y20gcGxhdGZvcm0gZHJpdmVyCj4KPiAgIHNvdW5kL3NvYy9kYXZpbmNpL0tjb25maWcgICAgICAg
-ICB8ICAxOCArLQo+ICAgc291bmQvc29jL2RhdmluY2kvTWFrZWZpbGUgICAgICAgIHwgICAyIC0K
-PiAgIHNvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktaTJzLmMgICB8ICA2NyArKy0KPiAgIHNvdW5k
-L3NvYy9kYXZpbmNpL2RhdmluY2ktbWNhc3AuYyB8ICA4NyArLS0tCj4gICBzb3VuZC9zb2MvZGF2
-aW5jaS9kYXZpbmNpLXBjbS5jICAgfCA4NjEgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KPiAgIHNvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktcGNtLmggICB8ICA0MSAtLQo+
-ICAgc291bmQvc29jL2RhdmluY2kvZGF2aW5jaS12Y2lmLmMgIHwgIDU1ICsrLQo+ICAgNyBmaWxl
-cyBjaGFuZ2VkLCA3OSBpbnNlcnRpb25zKCspLCAxMDUyIGRlbGV0aW9ucygtKQo+ICAgZGVsZXRl
-IG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktcGNtLmMKPiAgIGRlbGV0ZSBt
-b2RlIDEwMDY0NCBzb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLXBjbS5oCj4KCgoKTWV0IHZyaWVu
-ZGVsaWprZSBncm9ldCAvIGtpbmQgcmVnYXJkcywKCk1pa2UgTG9vaWptYW5zClN5c3RlbSBFeHBl
-cnQKCgpUT1BJQyBFbWJlZGRlZCBTeXN0ZW1zCkVpbmRob3ZlbnNld2VnIDMyLUMsIE5MLTU2ODMg
-S0ggQmVzdApQb3N0YnVzIDQ0MCwgTkwtNTY4MCBBSyBCZXN0ClRlbGVmb29uOiAoKzMxKSAoMCkg
-NDk5IDMzIDY5IDc5ClRlbGVmYXg6ICAoKzMxKSAoMCkgNDk5IDMzIDY5IDcwCkUtbWFpbDogbWlr
-ZS5sb29pam1hbnNAdG9waWMubmwKV2Vic2l0ZTogd3d3LnRvcGljLm5sCgpQbGVhc2UgY29uc2lk
-ZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbAoKVG9waWMgem9l
-a3QgZ2VkcmV2ZW4gKGVtYmVkZGVkKSBzb2Z0d2FyZSBzcGVjaWFsaXN0ZW4hCmh0dHA6Ly90b3Bp
-Yy5ubC92YWNhdHVyZXMvdG9waWMtem9la3Qtc29mdHdhcmUtZW5naW5lZXJzLwoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 03/03/2015 05:31 PM, Lars-Peter Clausen wrote:
+> On 03/03/2015 01:00 PM, Jyri Sarha wrote:
+>> On 03/03/2015 01:30 PM, Mark Brown wrote:
+>>> On Tue, Mar 03, 2015 at 12:09:14PM +0200, Jyri Sarha wrote:
+>>>> On 03/02/2015 09:58 PM, Lars-Peter Clausen wrote:
+>>>
+>>>>> Can you include a description why this is needed and how and when
+>>>>> it is
+>>>>> supposed to be used?
+>>>
+>>>> Would this addition do:
+>>>> ------------------------------------------------------------
+>>>> These constraints help to disable the sample-format and sample-rate
+>>>> combinations that do not properly work on a specific HW.
+>>>> ------------------------------------------------------------
+>>>
+>>> Not entirely...
+>>>
+>>>> The reason why we need these is coming from limitations in McASP clock
+>>>> generation. With a simple divider one can only produce certain
+>>>> bit-clocks.
+>>>> With those bit-clocks we can only play/capture some sample-rate and
+>>>> sample-width combinations accurately.
+>>>
+>>>> The McASP driver could try to set the constraints automatically.
+>>>> However,
+>>>> since the constraint code can not select sample-width and sample-rate
+>>>> combinations there is a compromise to be made between them. Making such
+>>>> compromises automatically does not usually work that well.
+>>>
+>>> ...this is more the point.  Perhaps the constraints language needs
+>>> improvement here?
+>>>
+>>
+>> Improving constraint functionality would certainly help, however the way
+>> that code works is beyond my understanding and I do not believe such an
+>> improvement would be coming from anybody else any time soon either.
+>
+> Restricting the available sample formats based on the sample rate and
+> vice versa is possible with the current constraint framework. Take a
+> look at what Peter Rosin recently did to the pcm512x driver. Your
+> restrictions sound very similar to what he did.
+>
+
+Interesting. It indeed looks like the rule functionality could do what I 
+want. I'll look into than. Thanks!
+
+>>
+>>>> In our case these properties could of course be added to McASP
+>>>> driver, but
+>>>> then again I would expect that there is a wider need for this kind of
+>>>> functionality. And it may not always be clear if either end of the link
+>>>> alone is responsible for less than perfect operation.
+>>>
+>>> The trouble with this sort of interface is that it's a quick and dirty
+>>> way for people to bodge around things rather than actually fixing them
+>>> properly.  Of course sometimes fixing things properly is really hard and
+>>> that means we want a temporary bodge but having to put them in DT is
+>>> really unfortunate.
+>>>
+>>
+>> I agree with that. However, the simple-card binding goes already now
+>> quite a
+>> bit beyond just describing the hardware. The binding for instance decides
+>> the configuration that is going to be used over the dai-link. These
+>> constraints could be seen as an extension to that configuration.
+>>
+>> I am wondering if there would be some better way to select the dai-link
+>> configuration than writing it to DT or creating a custom machine
+>> driver for
+>> each setup.
+>>
+>> But about this patch. Should I just give it up, or would you be
+>> willing to
+>> apply it if I improve the description more and add a warning against
+>> using
+>> these properties to work around driver bugs to the binding document?
+>
+> Well, your description is basically saying that you want to use this to
+> work around a driver bug, so...
+
+Calling missing feature a bug is a bit harsh, but now that it seems 
+there is a better to deal with this, I'll look into that.
+
+Best regards,
+Jyri
