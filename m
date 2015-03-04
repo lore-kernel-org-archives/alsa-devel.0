@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/30] ASoC: ams-deltea: Register jacks at the
-	card level
-Date: Wed,  4 Mar 2015 10:33:25 +0100
-Message-ID: <1425461626-21103-11-git-send-email-lars@metafoo.de>
+Subject: [PATCH 11/30] ASoC: omap-abe-twl6040: Register jacks
+	at the card level
+Date: Wed,  4 Mar 2015 10:33:26 +0100
+Message-ID: <1425461626-21103-12-git-send-email-lars@metafoo.de>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-196.synserver.de (smtp-out-198.synserver.de
  [212.40.185.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A888264EFF
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:33:58 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B2B5264F0A
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:33:59 +0100 (CET)
 In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,23 +31,35 @@ snd_soc_jack_new() to register them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/omap/ams-delta.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/omap/omap-abe-twl6040.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
-index 7066130..16cc95f 100644
---- a/sound/soc/omap/ams-delta.c
-+++ b/sound/soc/omap/ams-delta.c
-@@ -479,8 +479,8 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
+index b9c65f1..0843a68 100644
+--- a/sound/soc/omap/omap-abe-twl6040.c
++++ b/sound/soc/omap/omap-abe-twl6040.c
+@@ -182,17 +182,17 @@ static int omap_abe_twl6040_init(struct snd_soc_pcm_runtime *rtd)
  
- 	/* Add hook switch - can be used to control the codec from userspace
- 	 * even if line discipline fails */
--	ret = snd_soc_jack_new(rtd->codec, "hook_switch",
--				SND_JACK_HEADSET, &ams_delta_hook_switch);
-+	ret = snd_soc_card_jack_new(card, "hook_switch", SND_JACK_HEADSET,
-+				    &ams_delta_hook_switch, NULL, 0);
- 	if (ret)
- 		dev_warn(card->dev,
- 				"Failed to allocate resources for hook switch, "
+ 	/* Headset jack detection only if it is supported */
+ 	if (priv->jack_detection) {
+-		ret = snd_soc_jack_new(codec, "Headset Jack",
+-					SND_JACK_HEADSET, &hs_jack);
++		ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
++					    SND_JACK_HEADSET, &hs_jack,
++					    hs_jack_pins,
++					    ARRAY_SIZE(hs_jack_pins));
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
+-					hs_jack_pins);
+ 		twl6040_hs_jack_detect(codec, &hs_jack, SND_JACK_HEADSET);
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static const struct snd_soc_dapm_route dmic_audio_map[] = {
 -- 
 1.8.0
