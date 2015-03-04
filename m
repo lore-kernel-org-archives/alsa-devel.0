@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 09/30] ASoC: mfld_machine: Register jacks at
-	the card level
-Date: Wed,  4 Mar 2015 10:33:24 +0100
-Message-ID: <1425461626-21103-10-git-send-email-lars@metafoo.de>
+Subject: [PATCH 10/30] ASoC: ams-deltea: Register jacks at the
+	card level
+Date: Wed,  4 Mar 2015 10:33:25 +0100
+Message-ID: <1425461626-21103-11-git-send-email-lars@metafoo.de>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-196.synserver.de (smtp-out-198.synserver.de
  [212.40.185.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AEC1E264F52
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:33:57 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A888264EFF
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:33:58 +0100 (CET)
 In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,37 +31,23 @@ snd_soc_jack_new() to register them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/intel/mfld_machine.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ sound/soc/omap/ams-delta.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/mfld_machine.c b/sound/soc/intel/mfld_machine.c
-index d22b44d..49c09a0 100644
---- a/sound/soc/intel/mfld_machine.c
-+++ b/sound/soc/intel/mfld_machine.c
-@@ -255,20 +255,15 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_disable_pin(dapm, "LINEINR");
+diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
+index 7066130..16cc95f 100644
+--- a/sound/soc/omap/ams-delta.c
++++ b/sound/soc/omap/ams-delta.c
+@@ -479,8 +479,8 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
  
- 	/* Headset and button jack detection */
--	ret_val = snd_soc_jack_new(runtime->codec, "Intel(R) MID Audio Jack",
--			SND_JACK_HEADSET | SND_JACK_BTN_0 |
--			SND_JACK_BTN_1, &mfld_jack);
-+	ret_val = snd_soc_card_jack_new(runtime->card,
-+			"Intel(R) MID Audio Jack", SND_JACK_HEADSET |
-+			SND_JACK_BTN_0 | SND_JACK_BTN_1, &mfld_jack,
-+			mfld_jack_pins, ARRAY_SIZE(mfld_jack_pins));
- 	if (ret_val) {
- 		pr_err("jack creation failed\n");
- 		return ret_val;
- 	}
- 
--	ret_val = snd_soc_jack_add_pins(&mfld_jack,
--			ARRAY_SIZE(mfld_jack_pins), mfld_jack_pins);
--	if (ret_val) {
--		pr_err("adding jack pins failed\n");
--		return ret_val;
--	}
- 	ret_val = snd_soc_jack_add_zones(&mfld_jack,
- 			ARRAY_SIZE(mfld_zones), mfld_zones);
- 	if (ret_val) {
+ 	/* Add hook switch - can be used to control the codec from userspace
+ 	 * even if line discipline fails */
+-	ret = snd_soc_jack_new(rtd->codec, "hook_switch",
+-				SND_JACK_HEADSET, &ams_delta_hook_switch);
++	ret = snd_soc_card_jack_new(card, "hook_switch", SND_JACK_HEADSET,
++				    &ams_delta_hook_switch, NULL, 0);
+ 	if (ret)
+ 		dev_warn(card->dev,
+ 				"Failed to allocate resources for hook switch, "
 -- 
 1.8.0
