@@ -1,33 +1,47 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V7 07/10] ASoC: qcom: Add Storm machine driver
-Date: Tue,  3 Mar 2015 16:21:56 -0800
-Message-ID: <1425428519-12224-8-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V7 05/10] ASoC: qcom: Add LPASS CPU DAI driver
+Date: Tue,  3 Mar 2015 16:21:54 -0800
+Message-ID: <1425428519-12224-6-git-send-email-kwestfie@codeaurora.org>
 References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8ACFD261ACE
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 01:22:07 +0100 (CET)
 In-Reply-To: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>
-Cc: Kenneth Westfield <kwestfie@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add machine driver for the Storm board with the
-IPQ806X SOC connected to the MAX98357A DAC.
+Add the CPU DAI driver for the Qualcomm
+Technologies low-power audio subsystem (LPASS).
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/qcom/storm.c | 162 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 162 insertions(+)
- create mode 100644 sound/soc/qcom/storm.c
+ sound/soc/qcom/lpass-cpu.c | 510 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 510 insertions(+)
+ create mode 100644 sound/soc/qcom/lpass-cpu.c
 
-diff --git a/sound/soc/qcom/storm.c b/sound/soc/qcom/storm.c
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..5b981af4aa38a6a3bba926b3dd877239eefe8cb0
+index 0000000000000000000000000000000000000000..d5167131787f3a7663665c94dffe6899bd050179
 --- /dev/null
-+++ b/sound/soc/qcom/storm.c
-@@ -0,0 +1,162 @@
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -0,0 +1,510 @@
 +/*
 + * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
 + *
@@ -40,155 +54,503 @@ index 0000000000000000000000000000000000000000..5b981af4aa38a6a3bba926b3dd877239
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 + * GNU General Public License for more details.
 + *
-+ * storm.c -- ALSA SoC machine driver for QTi ipq806x-based Storm board
++ * lpass-cpu.c -- ALSA SoC CPU DAI driver for QTi LPASS
 + */
 +
++#include <linux/clk.h>
++#include <linux/compiler.h>
 +#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/ioport.h>
++#include <linux/kernel.h>
++#include <linux/mod_devicetable.h>
 +#include <linux/module.h>
 +#include <linux/of.h>
-+#include <linux/mod_devicetable.h>
 +#include <linux/platform_device.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
++#include <linux/regmap.h>
 +#include <sound/soc.h>
++#include <sound/soc-dai.h>
++#include "lpass-lpaif-ipq806x.h"
++#include "lpass.h"
 +
-+#define STORM_SYSCLK_MULT			4
-+
-+static int storm_ops_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
++static int lpass_cpu_daiops_set_sysclk(struct snd_soc_dai *dai, int clk_id,
++		unsigned int freq, int dir)
 +{
-+	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
-+	struct snd_soc_card *card = soc_runtime->card;
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = clk_set_rate(drvdata->mi2s_osr_clk, freq);
++	if (ret)
++		dev_err(dai->dev, "%s() error setting mi2s osrclk to %u: %d\n",
++				__func__, freq, ret);
++
++	return ret;
++}
++
++static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = clk_prepare_enable(drvdata->mi2s_osr_clk);
++	if (ret) {
++		dev_err(dai->dev, "%s() error in enabling mi2s osr clk: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = clk_prepare_enable(drvdata->mi2s_bit_clk);
++	if (ret) {
++		dev_err(dai->dev, "%s() error in enabling mi2s bit clk: %d\n",
++				__func__, ret);
++		clk_disable_unprepare(drvdata->mi2s_osr_clk);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++
++	clk_disable_unprepare(drvdata->mi2s_bit_clk);
++	clk_disable_unprepare(drvdata->mi2s_osr_clk);
++}
++
++static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
 +	snd_pcm_format_t format = params_format(params);
++	unsigned int channels = params_channels(params);
 +	unsigned int rate = params_rate(params);
-+	unsigned int sysclk_freq;
++	unsigned int regval;
 +	int bitwidth, ret;
 +
 +	bitwidth = snd_pcm_format_width(format);
 +	if (bitwidth < 0) {
-+		dev_err(card->dev, "%s() invalid bit width given: %d\n",
++		dev_err(dai->dev, "%s() invalid bit width given: %d\n",
 +				__func__, bitwidth);
 +		return bitwidth;
 +	}
 +
-+	/*
-+	 * as the CPU DAI is the I2S bus master and no system clock is needed by
-+	 * the MAX98357a DAC, simply set the system clock to be a constant
-+	 * multiple of the bit clock for the clock divider
-+	 */
-+	sysclk_freq = rate * bitwidth * 2 * STORM_SYSCLK_MULT;
++	regval = LPAIF_I2SCTL_LOOPBACK_DISABLE |
++			LPAIF_I2SCTL_WSSRC_INTERNAL;
 +
-+	ret = snd_soc_dai_set_sysclk(soc_runtime->cpu_dai, 0, sysclk_freq, 0);
++	switch (bitwidth) {
++	case 16:
++		regval |= LPAIF_I2SCTL_BITWIDTH_16;
++		break;
++	case 24:
++		regval |= LPAIF_I2SCTL_BITWIDTH_24;
++		break;
++	case 32:
++		regval |= LPAIF_I2SCTL_BITWIDTH_32;
++		break;
++	default:
++		dev_err(dai->dev, "%s() invalid bitwidth given: %d\n",
++				__func__, bitwidth);
++		return -EINVAL;
++	}
++
++	switch (channels) {
++	case 1:
++		regval |= LPAIF_I2SCTL_SPKMODE_SD0;
++		regval |= LPAIF_I2SCTL_SPKMONO_MONO;
++		break;
++	case 2:
++		regval |= LPAIF_I2SCTL_SPKMODE_SD0;
++		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
++		break;
++	case 4:
++		regval |= LPAIF_I2SCTL_SPKMODE_QUAD01;
++		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
++		break;
++	case 6:
++		regval |= LPAIF_I2SCTL_SPKMODE_6CH;
++		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
++		break;
++	case 8:
++		regval |= LPAIF_I2SCTL_SPKMODE_8CH;
++		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
++		break;
++	default:
++		dev_err(dai->dev, "%s() invalid channels given: %u\n",
++				__func__, channels);
++		return -EINVAL;
++	}
++
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), regval);
 +	if (ret) {
-+		dev_err(card->dev, "%s() error setting sysclk to %u: %d\n",
-+				__func__, sysclk_freq, ret);
++		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = clk_set_rate(drvdata->mi2s_bit_clk, rate * bitwidth * 2);
++	if (ret) {
++		dev_err(dai->dev, "%s() error setting mi2s bitclk to %u: %d\n",
++				__func__, rate * bitwidth * 2, ret);
 +		return ret;
 +	}
 +
 +	return 0;
 +}
 +
-+static struct snd_soc_ops storm_soc_ops = {
-+	.hw_params	= storm_ops_hw_params,
-+};
-+
-+static struct snd_soc_dai_link storm_dai_link = {
-+	.name		= "Primary",
-+	.stream_name	= "Primary",
-+	.codec_dai_name	= "HiFi",
-+	.ops		= &storm_soc_ops,
-+};
-+
-+static struct snd_soc_card storm_soc_card = {
-+	.name	= "ipq806x-storm",
-+	.dev	= NULL,
-+};
-+
-+static int storm_parse_of(struct snd_soc_card *card)
++static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_dai_link *dai_link = card->dai_link;
-+	struct device_node *np = card->dev->of_node;
-+
-+	dai_link->cpu_of_node = of_parse_phandle(np, "cpu", 0);
-+	if (!dai_link->cpu_of_node) {
-+		dev_err(card->dev, "%s() error getting cpu phandle\n",
-+				__func__);
-+		return -EINVAL;
-+	}
-+	dai_link->platform_of_node = dai_link->cpu_of_node;
-+
-+	dai_link->codec_of_node = of_parse_phandle(np, "codec", 0);
-+	if (!dai_link->codec_of_node) {
-+		dev_err(card->dev, "%s() error getting codec phandle\n",
-+				__func__);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int storm_platform_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &storm_soc_card;
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
 +	int ret;
 +
-+	if (card->dev) {
-+		dev_err(&pdev->dev, "%s() error, existing soundcard\n",
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), 0);
++	if (ret)
++		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++				__func__, ret);
++
++	return ret;
++}
++
++static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = regmap_update_bits(drvdata->lpaif_map,
++			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
++			LPAIF_I2SCTL_SPKEN_MASK, LPAIF_I2SCTL_SPKEN_ENABLE);
++	if (ret)
++		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++				__func__, ret);
++
++	return ret;
++}
++
++static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
++		int cmd, struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ret = regmap_update_bits(drvdata->lpaif_map,
++				LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
++				LPAIF_I2SCTL_SPKEN_MASK,
++				LPAIF_I2SCTL_SPKEN_ENABLE);
++		if (ret)
++			dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++					__func__, ret);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ret = regmap_update_bits(drvdata->lpaif_map,
++				LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
++				LPAIF_I2SCTL_SPKEN_MASK,
++				LPAIF_I2SCTL_SPKEN_DISABLE);
++		if (ret)
++			dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++					__func__, ret);
++		break;
++	}
++
++	return ret;
++}
++
++static struct snd_soc_dai_ops lpass_cpu_dai_ops = {
++	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
++	.startup	= lpass_cpu_daiops_startup,
++	.shutdown	= lpass_cpu_daiops_shutdown,
++	.hw_params	= lpass_cpu_daiops_hw_params,
++	.hw_free	= lpass_cpu_daiops_hw_free,
++	.prepare	= lpass_cpu_daiops_prepare,
++	.trigger	= lpass_cpu_daiops_trigger,
++};
++
++static int lpass_cpu_dai_probe(struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	/* ensure audio hardware is disabled */
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), 0);
++	if (ret)
++		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++				__func__, ret);
++
++	return ret;
++}
++
++static struct snd_soc_dai_driver lpass_cpu_dai_driver = {
++	.playback = {
++		.stream_name	= "lpass-cpu-playback",
++		.formats	= SNDRV_PCM_FMTBIT_S16 |
++					SNDRV_PCM_FMTBIT_S24 |
++					SNDRV_PCM_FMTBIT_S32,
++		.rates		= SNDRV_PCM_RATE_8000 |
++					SNDRV_PCM_RATE_16000 |
++					SNDRV_PCM_RATE_32000 |
++					SNDRV_PCM_RATE_48000 |
++					SNDRV_PCM_RATE_96000,
++		.rate_min	= 8000,
++		.rate_max	= 96000,
++		.channels_min	= 1,
++		.channels_max	= 8,
++	},
++	.probe	= &lpass_cpu_dai_probe,
++	.ops    = &lpass_cpu_dai_ops,
++};
++
++static const struct snd_soc_component_driver lpass_cpu_comp_driver = {
++	.name = "lpass-cpu",
++};
++
++static bool lpass_cpu_regmap_writeable(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < LPAIF_I2S_PORT_NUM; ++i)
++		if (reg == LPAIF_I2SCTL_REG(i))
++			return true;
++
++	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i) {
++		if (reg == LPAIF_IRQEN_REG(i))
++			return true;
++		if (reg == LPAIF_IRQCLEAR_REG(i))
++			return true;
++	}
++
++	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i) {
++		if (reg == LPAIF_RDMACTL_REG(i))
++			return true;
++		if (reg == LPAIF_RDMABASE_REG(i))
++			return true;
++		if (reg == LPAIF_RDMABUFF_REG(i))
++			return true;
++		if (reg == LPAIF_RDMAPER_REG(i))
++			return true;
++	}
++
++	return false;
++}
++
++static bool lpass_cpu_regmap_readable(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < LPAIF_I2S_PORT_NUM; ++i)
++		if (reg == LPAIF_I2SCTL_REG(i))
++			return true;
++
++	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i) {
++		if (reg == LPAIF_IRQEN_REG(i))
++			return true;
++		if (reg == LPAIF_IRQSTAT_REG(i))
++			return true;
++	}
++
++	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i) {
++		if (reg == LPAIF_RDMACTL_REG(i))
++			return true;
++		if (reg == LPAIF_RDMABASE_REG(i))
++			return true;
++		if (reg == LPAIF_RDMABUFF_REG(i))
++			return true;
++		if (reg == LPAIF_RDMACURR_REG(i))
++			return true;
++		if (reg == LPAIF_RDMAPER_REG(i))
++			return true;
++	}
++
++	return false;
++}
++
++static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i)
++		if (reg == LPAIF_IRQSTAT_REG(i))
++			return true;
++
++	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i)
++		if (reg == LPAIF_RDMACURR_REG(i))
++			return true;
++
++	return false;
++}
++
++static const struct regmap_config lpass_cpu_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = LPAIF_RDMAPER_REG(LPAIF_RDMA_CHAN_MAX),
++	.writeable_reg = lpass_cpu_regmap_writeable,
++	.readable_reg = lpass_cpu_regmap_readable,
++	.volatile_reg = lpass_cpu_regmap_volatile,
++	.cache_type = REGCACHE_FLAT,
++};
++
++static int lpass_cpu_parse_of(struct device *dev)
++{
++	struct device_node *dsp_of_node;
++
++	dsp_of_node = of_get_child_by_name(dev->of_node, "qcom,adsp");
++	if (!dsp_of_node) {
++		dev_err(dev, "%s() error getting qcom,adsp sub-node\n",
 +				__func__);
++		return -EINVAL;
++	}
++
++	if (of_device_is_available(dsp_of_node)) {
++		dev_err(dev, "%s() DSP exists and holds audio resources\n",
++				__func__);
++		return -EBUSY;
++	}
++
++	return 0;
++}
++
++static int lpass_cpu_platform_probe(struct platform_device *pdev)
++{
++	struct lpass_data *drvdata;
++	struct resource *res;
++	int ret;
++
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct lpass_data),
++			GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, drvdata);
++
++	ret = lpass_cpu_parse_of(&pdev->dev);
++	if (ret) {
++		dev_err(&pdev->dev, "%s() error getting DT node info: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "lpass-lpaif");
++	if (!res) {
++		dev_err(&pdev->dev, "%s() error getting resource\n", __func__);
 +		return -ENODEV;
 +	}
-+	card->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, card);
 +
-+	ret = snd_soc_of_parse_card_name(card, "qcom,model");
++	drvdata->lpaif = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR((void const __force *)drvdata->lpaif)) {
++		dev_err(&pdev->dev, "%s() error mapping reg resource: %ld\n",
++				__func__,
++				PTR_ERR((void const __force *)drvdata->lpaif));
++		return PTR_ERR((void const __force *)drvdata->lpaif);
++	}
++
++	drvdata->lpaif_map = devm_regmap_init_mmio(&pdev->dev, drvdata->lpaif,
++			&lpass_cpu_regmap_config);
++	if (IS_ERR(drvdata->lpaif_map)) {
++		dev_err(&pdev->dev, "%s() error initializing regmap: %ld\n",
++				__func__, PTR_ERR(drvdata->lpaif_map));
++		return PTR_ERR(drvdata->lpaif_map);
++	}
++
++	drvdata->mi2s_osr_clk = devm_clk_get(&pdev->dev, "mi2s-osr-clk");
++	if (IS_ERR(drvdata->mi2s_osr_clk)) {
++		dev_err(&pdev->dev, "%s() error getting mi2s-osr-clk: %ld\n",
++				__func__, PTR_ERR(drvdata->mi2s_osr_clk));
++		return PTR_ERR(drvdata->mi2s_osr_clk);
++	}
++
++	drvdata->mi2s_bit_clk = devm_clk_get(&pdev->dev, "mi2s-bit-clk");
++	if (IS_ERR(drvdata->mi2s_bit_clk)) {
++		dev_err(&pdev->dev, "%s() error getting mi2s-bit-clk: %ld\n",
++				__func__, PTR_ERR(drvdata->mi2s_bit_clk));
++		return PTR_ERR(drvdata->mi2s_bit_clk);
++	}
++
++	drvdata->ahbix_clk = devm_clk_get(&pdev->dev, "ahbix-clk");
++	if (IS_ERR(drvdata->ahbix_clk)) {
++		dev_err(&pdev->dev, "%s() error getting ahbix-clk: %ld\n",
++				__func__, PTR_ERR(drvdata->ahbix_clk));
++		return PTR_ERR(drvdata->ahbix_clk);
++	}
++
++	ret = clk_set_rate(drvdata->ahbix_clk, LPASS_AHBIX_CLOCK_FREQUENCY);
 +	if (ret) {
-+		dev_err(&pdev->dev, "%s() error parsing card name: %d\n",
++		dev_err(&pdev->dev, "%s() error setting rate on ahbix_clk: %d\n",
 +				__func__, ret);
 +		return ret;
 +	}
++	dev_dbg(&pdev->dev, "%s() set ahbix_clk rate to %lu\n", __func__,
++			clk_get_rate(drvdata->ahbix_clk));
 +
-+	card->dai_link	= &storm_dai_link;
-+	card->num_links	= 1;
-+
-+	ret = storm_parse_of(card);
++	ret = clk_prepare_enable(drvdata->ahbix_clk);
 +	if (ret) {
-+		dev_err(&pdev->dev, "%s() error resolving dai links: %d\n",
++		dev_err(&pdev->dev, "%s() error enabling ahbix_clk: %d\n",
 +				__func__, ret);
 +		return ret;
 +	}
 +
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+	if (ret == -EPROBE_DEFER) {
-+		card->dev = NULL;
-+		return ret;
-+	} else if (ret) {
-+		dev_err(&pdev->dev, "%s() error registering soundcard: %d\n",
++	ret = devm_snd_soc_register_component(&pdev->dev,
++			&lpass_cpu_comp_driver, &lpass_cpu_dai_driver, 1);
++	if (ret) {
++		dev_err(&pdev->dev, "%s() error registering cpu driver: %d\n",
 +				__func__, ret);
-+		return ret;
++		goto err_clk;
 +	}
++
++	ret = asoc_qcom_lpass_platform_register(pdev);
++	if (ret) {
++		dev_err(&pdev->dev, "%s() error registering platform driver: %d\n",
++				__func__, ret);
++		goto err_clk;
++	}
++
++	return 0;
++
++err_clk:
++	clk_disable_unprepare(drvdata->ahbix_clk);
++	return ret;
++}
++
++static int lpass_cpu_platform_remove(struct platform_device *pdev)
++{
++	struct lpass_data *drvdata = platform_get_drvdata(pdev);
++
++	clk_disable_unprepare(drvdata->ahbix_clk);
 +
 +	return 0;
 +}
 +
 +#ifdef CONFIG_OF
-+static const struct of_device_id storm_device_id[]  = {
-+	{ .compatible = "google,storm" },
-+	{},
++static const struct of_device_id lpass_cpu_device_id[] = {
++	{ .compatible = "qcom,lpass-cpu" },
++	{}
 +};
-+MODULE_DEVICE_TABLE(of, storm_device_id);
++MODULE_DEVICE_TABLE(of, lpass_cpu_device_id);
 +#endif
 +
-+static struct platform_driver storm_platform_driver = {
-+	.driver = {
-+		.name = "storm-audio",
-+		.of_match_table =
-+			of_match_ptr(storm_device_id),
++static struct platform_driver lpass_cpu_platform_driver = {
++	.driver	= {
++		.name		= "lpass-cpu",
++		.of_match_table	= of_match_ptr(lpass_cpu_device_id),
 +	},
-+	.probe = storm_platform_probe,
++	.probe	= lpass_cpu_platform_probe,
++	.remove	= lpass_cpu_platform_remove,
 +};
-+module_platform_driver(storm_platform_driver);
++module_platform_driver(lpass_cpu_platform_driver);
 +
-+MODULE_DESCRIPTION("QTi IPQ806x-based Storm Machine Driver");
++MODULE_DESCRIPTION("QTi LPASS CPU Driver");
 +MODULE_LICENSE("GPL v2");
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
