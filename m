@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 22/30] ASoC: smartq: Register jacks at the card
-	level
-Date: Wed,  4 Mar 2015 10:33:37 +0100
-Message-ID: <1425461626-21103-23-git-send-email-lars@metafoo.de>
+Subject: [PATCH 24/30] ASoC: tobermory: Register jacks at the
+	card level
+Date: Wed,  4 Mar 2015 10:33:39 +0100
+Message-ID: <1425461626-21103-25-git-send-email-lars@metafoo.de>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-196.synserver.de (smtp-out-198.synserver.de
  [212.40.185.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DF6D0265091
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:34:06 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 45A67264F47
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:34:08 +0100 (CET)
 In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,30 +31,32 @@ snd_soc_jack_new() to register them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/samsung/smartq_wm8987.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ sound/soc/samsung/tobermory.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
-index 8291d2a..dfbe2db 100644
---- a/sound/soc/samsung/smartq_wm8987.c
-+++ b/sound/soc/samsung/smartq_wm8987.c
-@@ -151,13 +151,10 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
+diff --git a/sound/soc/samsung/tobermory.c b/sound/soc/samsung/tobermory.c
+index 9c80506..85ccfb7 100644
+--- a/sound/soc/samsung/tobermory.c
++++ b/sound/soc/samsung/tobermory.c
+@@ -179,15 +179,10 @@ static int tobermory_late_probe(struct snd_soc_card *card)
+ 	if (ret < 0)
+ 		return ret;
  
- 	/* Headphone jack detection */
--	err = snd_soc_jack_new(codec, "Headphone Jack",
--			       SND_JACK_HEADPHONE, &smartq_jack);
--	if (err)
--		return err;
+-	ret = snd_soc_jack_new(codec, "Headset",
+-			       SND_JACK_HEADSET | SND_JACK_BTN_0,
+-			       &tobermory_headset);
+-	if (ret)
+-		return ret;
 -
--	err = snd_soc_jack_add_pins(&smartq_jack, ARRAY_SIZE(smartq_jack_pins),
--				    smartq_jack_pins);
-+	err = snd_soc_card_jack_new(rtd->card, "Headphone Jack",
-+				    SND_JACK_HEADPHONE, &smartq_jack,
-+				    smartq_jack_pins,
-+				    ARRAY_SIZE(smartq_jack_pins));
- 	if (err)
- 		return err;
+-	ret = snd_soc_jack_add_pins(&tobermory_headset,
+-				    ARRAY_SIZE(tobermory_headset_pins),
+-				    tobermory_headset_pins);
++	ret = snd_soc_card_jack_new(card, "Headset", SND_JACK_HEADSET |
++				    SND_JACK_BTN_0, &tobermory_headset,
++				    tobermory_headset_pins,
++				    ARRAY_SIZE(tobermory_headset_pins));
+ 	if (ret)
+ 		return ret;
  
 -- 
 1.8.0
