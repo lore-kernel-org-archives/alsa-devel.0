@@ -1,28 +1,61 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 1/8] clk: add helper function clk_is_match()
-Date: Wed, 4 Mar 2015 09:51:55 +0000
-Message-ID: <20150304095155.GB8656@n2100.arm.linux.org.uk>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
- <1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
- <20150225172757.421.43718@quantum>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 27/30] ASoC: tegra_rt5640: Register jacks at
+	the card level
+Date: Wed,  4 Mar 2015 10:33:42 +0100
+Message-ID: <1425461626-21103-28-git-send-email-lars@metafoo.de>
+References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-pwm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150225172757.421.43718@quantum>
-Sender: linux-pwm-owner@vger.kernel.org
-To: Mike Turquette <mturquette@linaro.org>
-Cc: Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, Stephen Boyd <sboyd@codeaurora.org>, Thierry Reding <thierry.reding@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-196.synserver.de (smtp-out-198.synserver.de
+ [212.40.185.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78DA92650C5
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:34:10 +0100 (CET)
+In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Anatol Pomozov <anatol.pomozov@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Sean Cross <xobs@kosagi.com>, Dylan Reid <dgreid@chromium.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 25, 2015 at 09:27:57AM -0800, Mike Turquette wrote:
-> +static inline bool clk_is_match(struct clk *p, struct clk *q)
-> +{
-> +	return p == q ? true : false;
+The jacks are card level elements so use snd_soc_card_jack_new() instead of
+snd_soc_jack_new() to register them.
 
-When they created the C standard, they already taught the compiler that
-p == q returns a true / false boolean value; there's no need for ?: here.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/tegra/tegra_rt5640.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
+diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
+index ed759a3..773daec 100644
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -108,15 +108,11 @@ static const struct snd_kcontrol_new tegra_rt5640_controls[] = {
+ 
+ static int tegra_rt5640_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct tegra_rt5640 *machine = snd_soc_card_get_drvdata(rtd->card);
+ 
+-	snd_soc_jack_new(codec, "Headphones", SND_JACK_HEADPHONE,
+-			 &tegra_rt5640_hp_jack);
+-	snd_soc_jack_add_pins(&tegra_rt5640_hp_jack,
+-			ARRAY_SIZE(tegra_rt5640_hp_jack_pins),
+-			tegra_rt5640_hp_jack_pins);
++	snd_soc_card_jack_new(rtd->card, "Headphones", SND_JACK_HEADPHONE,
++			      &tegra_rt5640_hp_jack, tegra_rt5640_hp_jack_pins,
++			      ARRAY_SIZE(tegra_rt5640_hp_jack_pins));
+ 
+ 	if (gpio_is_valid(machine->gpio_hp_det)) {
+ 		tegra_rt5640_hp_jack_gpio.gpio = machine->gpio_hp_det;
 -- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
+1.8.0
