@@ -1,21 +1,111 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: Fix spelling typo in Documentation/DocBook/alsa-driver-api.xml
-Date: Tue, 3 Mar 2015 22:47:16 -0300
-Message-ID: <CAOMZO5BROYxWZKWe47BvdVep47y6ps-DZAVrUnj2WJa5tWX9aA@mail.gmail.com>
-References: <1425433516-13268-1-git-send-email-standby24x7@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Masanari Iida <standby24x7@gmail.com>
+Subject: [PATCH/v2] ALSA: Fix spelling typo in Documentation/DocBook/alsa-driver-api.xml
+Date: Wed,  4 Mar 2015 10:56:13 +0900
+Message-ID: <1425434173-13525-1-git-send-email-standby24x7@gmail.com>
+References: <CAOMZO5BROYxWZKWe47BvdVep47y6ps-DZAVrUnj2WJa5tWX9aA@mail.gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1425433516-13268-1-git-send-email-standby24x7@gmail.com>
+In-Reply-To: <CAOMZO5BROYxWZKWe47BvdVep47y6ps-DZAVrUnj2WJa5tWX9aA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Masanari Iida <standby24x7@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, perex@perex.cz, linux-kernel <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: tiwai@suse.de, perex@perex.cz, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Masanari Iida <standby24x7@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 3, 2015 at 10:45 PM, Masanari Iida <standby24x7@gmail.com> wrote:
-> This patch fix spelling typo found in alsa-driver-api.xml.
-> It is because this file is generated from comments in source files,
-> I have to fix source files.
-> ---
+This patch fix spelling typo found in alsa-driver-api.xml.
+It is because this file is generated from comments in source files,
+I have to fix source files.
 
-You missed your Signed-off-by tag.
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+
+---
+ include/sound/compress_driver.h       | 4 ++--
+ include/sound/control.h               | 2 +-
+ include/sound/soc.h                   | 2 +-
+ include/uapi/sound/compress_offload.h | 2 +-
+ sound/core/pcm_dmaengine.c            | 4 ++--
+ 5 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index f48089d..ffafda5b 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -70,7 +70,7 @@ struct snd_compr_runtime {
+  * @device: device pointer
+  * @direction: stream direction, playback/recording
+  * @metadata_set: metadata set flag, true when set
+- * @next_track: has userspace signall next track transistion, true when set
++ * @next_track: has userspace signal next track transition, true when set
+  * @private_data: pointer to DSP private data
+  */
+ struct snd_compr_stream {
+@@ -95,7 +95,7 @@ struct snd_compr_stream {
+  * and the stream properties
+  * @get_params: retrieve the codec parameters, mandatory
+  * @set_metadata: Set the metadata values for a stream
+- * @get_metadata: retreives the requested metadata values from stream
++ * @get_metadata: retrieves the requested metadata values from stream
+  * @trigger: Trigger operations like start, pause, resume, drain, stop.
+  * This callback is mandatory
+  * @pointer: Retrieve current h/w pointer information. Mandatory
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 75f3054..95aad6d 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -227,7 +227,7 @@ snd_ctl_add_slave(struct snd_kcontrol *master, struct snd_kcontrol *slave)
+  * Add a virtual slave control to the given master.
+  * Unlike snd_ctl_add_slave(), the element added via this function
+  * is supposed to have volatile values, and get callback is called
+- * at each time quried from the master.
++ * at each time queried from the master.
+  *
+  * When the control peeks the hardware values directly and the value
+  * can be changed by other means than the put callback of the element,
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 0d1ade1..cf0bb15 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1469,7 +1469,7 @@ static inline struct snd_soc_codec *snd_soc_kcontrol_codec(
+ }
+ 
+ /**
+- * snd_soc_kcontrol_platform() - Returns the platform that registerd the control
++ * snd_soc_kcontrol_platform() - Returns the platform that registered the control
+  * @kcontrol: The control for which to get the platform
+  *
+  * Note: This function will only work correctly if the control has been
+diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+index 22ed8cb..e00d8cb 100644
+--- a/include/uapi/sound/compress_offload.h
++++ b/include/uapi/sound/compress_offload.h
+@@ -75,7 +75,7 @@ struct snd_compr_tstamp {
+ /**
+  * struct snd_compr_avail - avail descriptor
+  * @avail: Number of bytes available in ring buffer for writing/reading
+- * @tstamp: timestamp infomation
++ * @tstamp: timestamp information
+  */
+ struct snd_compr_avail {
+ 	__u64 avail;
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 6542c40..fba365a 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -289,7 +289,7 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_request_channel);
+  *
+  * The function should usually be called from the pcm open callback. Note that
+  * this function will use private_data field of the substream's runtime. So it
+- * is not availabe to your pcm driver implementation.
++ * is not available to your pcm driver implementation.
+  */
+ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+ 	struct dma_chan *chan)
+@@ -328,7 +328,7 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open);
+  * This function will request a DMA channel using the passed filter function and
+  * data. The function should usually be called from the pcm open callback. Note
+  * that this function will use private_data field of the substream's runtime. So
+- * it is not availabe to your pcm driver implementation.
++ * it is not available to your pcm driver implementation.
+  */
+ int snd_dmaengine_pcm_open_request_chan(struct snd_pcm_substream *substream,
+ 	dma_filter_fn filter_fn, void *filter_data)
+-- 
+2.3.1.167.g7f4ba4b
