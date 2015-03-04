@@ -1,18 +1,17 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: Re: [ALSA-UTILS][PATCH] Add support for cplay and
-	crecord
-Date: Wed, 4 Mar 2015 16:34:41 +0000
-Message-ID: <54F73421.3000108@imgtec.com>
-References: <1425483360-1806-1-git-send-email-qais.yousef@imgtec.com>
- <20150304161013.GU2613@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/30] ASoC: Move jack registration to the
+	card level
+Date: Wed, 4 Mar 2015 17:11:06 +0000
+Message-ID: <20150304171106.GO21293@sirena.org.uk>
+References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7237247378440273405=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 85C9526510B
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 17:34:43 +0100 (CET)
-In-Reply-To: <20150304161013.GU2613@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A464265233
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 18:11:30 +0100 (CET)
+In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Sean Cross <xobs@kosagi.com>, Dylan Reid <dgreid@chromium.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/04/2015 04:10 PM, Vinod Koul wrote:
-> On Wed, Mar 04, 2015 at 03:36:00PM +0000, Qais Yousef wrote:
->> cplay and crecord use compress offload API to play and record compressed audio.
->>
->> They're based on cplay and crec from tinycompress library using LGPL license.
->>
->> For now cplay only supports playing mp3 files.
->>
->> Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
->> Cc: Takashi Iwai <tiwai@suse.de>
->> Cc: Vinod Koul <vinod.koul@intel.com>
->> Cc: Mark Brown <broonie@kernel.org>
->> ---
->> I renamed crec to crecord also to match aplay and arecord, hopefully
->> you don't mind Vinod.
-> No thats fine..
->
->> This patch is dependent on my other patch that adds support for compress offload
->> to alsa-lib.
-> And where is that, should have preceded this
 
-Hmm not sure what went wrong. I resent it. Seems I have some emailer 
-issues as I had this problem before.
-Hopefully you received it now.
+--===============7237247378440273405==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dXORoSZsDhHFGh8W"
+Content-Disposition: inline
 
->> I needed to include <sound/compress_params.h> in cplay.c and crec.c
->> but I couldn't find an example of any C file which directly includes <sound/*.h>
->> The norm seems to be to just include <alsa/asoundlib.h>. Do I need to
->> redefine structs from <sound/compress_params.h> to newly added <alsa/compress.h>?
->> <alsa/pcm.h> seems to redefine structs from <sound/asound.h>.
-> These are kernel headers and should be in your include path if you have
-> those installed
->> I could only test cplay but have no means to test crecord at the moment.
->>
->>   Makefile.am       |   3 +
->>   configure.ac      |   6 +-
->>   cplay/Makefile.am |  14 ++
->>   cplay/cplay.c     | 294 +++++++++++++++++++++++++++++++++++
->>   cplay/crec.c      | 449 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
->>   cplay/tinymp3.h   |  72 +++++++++
->>   6 files changed, 837 insertions(+), 1 deletion(-)
->>   create mode 100644 cplay/Makefile.am
->>   create mode 100644 cplay/cplay.c
->>   create mode 100644 cplay/crec.c
->>   create mode 100644 cplay/tinymp3.h
-> Okay here is where we need discussion on the future course. If we do this
-> then we end up in two code bases, something I would not encourage!
->
-> On the other hand if we add the make file changes to tinycompress or if
-> required split this into two, lib and tools and then package lib part into
-> alsa-lib and players into tools, that way we can have single code base. That
-> was my intent behind ensuring that this is dual licensed.
 
-I'm not sure I follow you completely here. You mean keep cplay and crec 
-in tinycompress with the dual licensing but only merge the lib part 
-(which my other patch does) into alsa-lib? For me having this lib part 
-into alsa-lib is the important bit. Moving crec and cplay to alsa-utils 
-was something I thought would be useful but maybe not.
+--dXORoSZsDhHFGh8W
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Qais
+On Wed, Mar 04, 2015 at 10:33:15AM +0100, Lars-Peter Clausen wrote:
+> Audio jacks are typically card level elements and when initially introduced
+> the API to register a jack took a card as its parameter. Back at that time
+> there was only one CODEC per card and DAPM support was only available at the
 
->
-> Takashi, is that something we could achieve? I think last time we discussed
-> this topic you seemed okay with this, only thing was tinycompress lacks
-> proper make support which we can add
->
+Nice cleanup, applied all thanks.
+
+--dXORoSZsDhHFGh8W
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU9zypAAoJECTWi3JdVIfQydkH/3JHupZOKgXc+XRPjUMgnNA3
+lVDpvOzuzM6geBQIfgLb/C/I3W5nI7aTCQtW2tbWkK9d+aSmSssmJzN3oyP0KdyC
+uRKYr9GDyCzHFEbYearSCZLmiY+Kg/VtFbTXz6kmGO+Jf0REDGvStt7QRrvjcBh5
+HL4zZEcaLCx30soLwj6pEokCdX/GXvZ2htKM/rsQTROUAjlyMtv0kCvaCfLI0KcR
+0VtYRGVoZMot4DGe/BDa+QkBeWowpV0cr4P35WOswRbTfXeyJ2O3bReVIMSSseVX
+8nFAe+qn3hc+s3dGKqIHluPASa7bLULGzB8Zoh5L/iutM/m/7W6kvy5g+abyEgI=
+=beKu
+-----END PGP SIGNATURE-----
+
+--dXORoSZsDhHFGh8W--
+
+--===============7237247378440273405==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7237247378440273405==--
