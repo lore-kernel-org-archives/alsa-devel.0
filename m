@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 08/30] ASoC: cht_bsw_rt5645: Register jacks at
+Subject: [PATCH 09/30] ASoC: mfld_machine: Register jacks at
 	the card level
-Date: Wed,  4 Mar 2015 10:33:23 +0100
-Message-ID: <1425461626-21103-9-git-send-email-lars@metafoo.de>
+Date: Wed,  4 Mar 2015 10:33:24 +0100
+Message-ID: <1425461626-21103-10-git-send-email-lars@metafoo.de>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-196.synserver.de (smtp-out-198.synserver.de
  [212.40.185.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 006FF264F50
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:33:56 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AEC1E264F52
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:33:57 +0100 (CET)
 In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,36 +31,37 @@ snd_soc_jack_new() to register them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/intel/cht_bsw_rt5645.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/mfld_machine.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/intel/cht_bsw_rt5645.c b/sound/soc/intel/cht_bsw_rt5645.c
-index dd93525..01222799 100644
---- a/sound/soc/intel/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/cht_bsw_rt5645.c
-@@ -169,17 +169,17 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
+diff --git a/sound/soc/intel/mfld_machine.c b/sound/soc/intel/mfld_machine.c
+index d22b44d..49c09a0 100644
+--- a/sound/soc/intel/mfld_machine.c
++++ b/sound/soc/intel/mfld_machine.c
+@@ -255,20 +255,15 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
+ 	snd_soc_dapm_disable_pin(dapm, "LINEINR");
+ 
+ 	/* Headset and button jack detection */
+-	ret_val = snd_soc_jack_new(runtime->codec, "Intel(R) MID Audio Jack",
+-			SND_JACK_HEADSET | SND_JACK_BTN_0 |
+-			SND_JACK_BTN_1, &mfld_jack);
++	ret_val = snd_soc_card_jack_new(runtime->card,
++			"Intel(R) MID Audio Jack", SND_JACK_HEADSET |
++			SND_JACK_BTN_0 | SND_JACK_BTN_1, &mfld_jack,
++			mfld_jack_pins, ARRAY_SIZE(mfld_jack_pins));
+ 	if (ret_val) {
+ 		pr_err("jack creation failed\n");
+ 		return ret_val;
  	}
  
--	ret = snd_soc_jack_new(codec, "Headphone Jack",
--				SND_JACK_HEADPHONE,
--				&ctx->hp_jack);
-+	ret = snd_soc_card_jack_new(runtime->card, "Headphone Jack",
-+				    SND_JACK_HEADPHONE, &ctx->hp_jack,
-+				    NULL, 0);
- 	if (ret) {
- 		dev_err(runtime->dev, "HP jack creation failed %d\n", ret);
- 		return ret;
- 	}
- 
--	ret = snd_soc_jack_new(codec, "Mic Jack",
--				SND_JACK_MICROPHONE,
--				&ctx->mic_jack);
-+	ret = snd_soc_card_jack_new(runtime->card, "Mic Jack",
-+				    SND_JACK_MICROPHONE, &ctx->mic_jack,
-+				    NULL, 0);
- 	if (ret) {
- 		dev_err(runtime->dev, "Mic jack creation failed %d\n", ret);
- 		return ret;
+-	ret_val = snd_soc_jack_add_pins(&mfld_jack,
+-			ARRAY_SIZE(mfld_jack_pins), mfld_jack_pins);
+-	if (ret_val) {
+-		pr_err("adding jack pins failed\n");
+-		return ret_val;
+-	}
+ 	ret_val = snd_soc_jack_add_zones(&mfld_jack,
+ 			ARRAY_SIZE(mfld_zones), mfld_zones);
+ 	if (ret_val) {
 -- 
 1.8.0
