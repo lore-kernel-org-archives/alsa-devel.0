@@ -1,31 +1,68 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [ASoC]fsl_ssi: fix of_property_read_u32_array return value check
-Date: Wed, 04 Mar 2015 14:07:21 +0100
-Message-ID: <54F70389.6020004@maciej.szmigiero.name>
-References: <54E1199F.3000107@maciej.szmigiero.name> <20150224082448.GY6236@finisterre.sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - Make path_has_mixer() tristate
+Date: Wed, 4 Mar 2015 22:08:56 +0800
+Message-ID: <CAN8cciYS4LhL-wA0PF32DHqvm8s5hgj+8JVv_znyZkhr7zJ-mA@mail.gmail.com>
+References: <54f5995b.6dd0d757.bm000@wupperonline.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150224082448.GY6236@finisterre.sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
+ [209.85.214.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 508B12650BE
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 15:08:57 +0100 (CET)
+Received: by obcuz6 with SMTP id uz6so6957193obc.9
+ for <alsa-devel@alsa-project.org>; Wed, 04 Mar 2015 06:08:56 -0800 (PST)
+In-Reply-To: <54f5995b.6dd0d757.bm000@wupperonline.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-W dniu 24.02.2015 09:24, Mark Brown pisze:
-> On Sun, Feb 15, 2015 at 11:11:43PM +0100, Maciej S. Szmigiero wrote:
->> of_property_read_u32_array returns 0 on success, so the return value shouldn't be inverted twice,
->> first on assignment then in condition expression.
-> 
-> This doesn't apply to current code, please check and resend.  Please
-> also keep your changelog under 80 columns as covered in
-> SubmittingPatches.
-> 
-
-Thanks for looking into it,
-
-Against which tree/branch patches for ASoC should be generated?
-
-Best regards,
-Maciej Szmigiero
+MjAxNS0wMy0wMyAxOToyMCBHTVQrMDg6MDAgSW5nbyBCcsO8Y2tsIDxpYkB3dXBwZXJvbmxpbmUu
+ZGU+OgoKPiAuLi4gaW4gb3JkZXIgdG8gZGlzdGluZ3Vpc2ggd2hldGhlciB0aGVyZSBpcyBubyBj
+dGwgb3Igbm8gcGF0aCBhdCBhbGwuCj4KPiBJdCBpcyB1c2VkIGFzICFwYXRoX2hhc19taXhlcigp
+IHdoaWNoIG1lYW5zIHRoYXQgaXQgaXMgdHJ1ZSBldmVuIGlmCj4gdGhlcmUgaXMgbm8gcGF0aCBh
+dCBhbGwuIEZvciBoZWFkcGhvbmUgb3Igc3BlYWtlciBvdXRzIHdpdGhvdXQgcGF0aCwKPiBiZWNh
+dXNlIHRoZXkgZG9uJ3QgaGF2ZSBhIERBQyBhc3NpZ24gdG8gdGhlbSwgdGhpcyB3b3VsZCBnaXZl
+IGEgZmFsc2UKPiBwb3NpdGl2ZSByZXN1bHQuCj4KPgo+IHlvdXIgcHJldmlvdXMgcGF0Y2ggd2hp
+Y2ggaWdub3JlIEJBRF9OT19QUklNQVJZX0RBQyBpcyBub3QgZW5vdWdoLCB5b3UKbmVlZCB0byBh
+c3NpZ24gREFDIHRvIHNwZWFrZXIgcGF0aAoKZS5nLiBmb3IgaGRhIGNvZGVjIHdpdGggc2luZ2xl
+IERBQyB3aXRoIGludGVybmFsIHNwZWFrZXIsIGhlYWRwaG9uZSBhbmQKbGluZW91dCAsIHRoZSB0
+aHJlZSBwYXRocyBjb250YWluIHNhbWUgREFDIG5vZGUgMHgwMwoKaHR0cDovL2dpdC5rZXJuZWwu
+b3JnL2NnaXQvbGludXgva2VybmVsL2dpdC90aXdhaS9oZGEtZW11LmdpdC90cmVlL2NvZGVjcy9h
+ZDE5ODMtZGVsbC1vcHRpcGxleC03NDUKCnNlZW0gc25kX2hkYV9tdWx0aV9vdXRfYW5hbG9nX3By
+ZXBhcmUoKSBhbmQKc25kX2hkYV9tdWx0aV9vdXRfYW5hbG9nX2NsZWFudXAoKSBjYW4gaGFuZGxl
+IHNhbWUgREFDIGluIHRocmVlIHBhdGhzCgovKiBmcm9udCAqLwoJc25kX2hkYV9jb2RlY19zZXR1
+cF9zdHJlYW0oY29kZWMsIG5pZHNbSERBX0ZST05UXSwgc3RyZWFtX3RhZywKCQkJCSAgIDAsIGZv
+cm1hdCk7CglpZiAoIW1vdXQtPm5vX3NoYXJlX3N0cmVhbSAmJgoJICAgIG1vdXQtPmhwX25pZCAm
+JiBtb3V0LT5ocF9uaWQgIT0gbmlkc1tIREFfRlJPTlRdKQoJCS8qIGhlYWRwaG9uZSBvdXQgd2ls
+bCBqdXN0IGRlY29kZSBmcm9udCBsZWZ0L3JpZ2h0IChzdGVyZW8pICovCgkJc25kX2hkYV9jb2Rl
+Y19zZXR1cF9zdHJlYW0oY29kZWMsIG1vdXQtPmhwX25pZCwgc3RyZWFtX3RhZywKCQkJCQkgICAw
+LCBmb3JtYXQpOwoJLyogZXh0cmEgb3V0cHV0cyBjb3BpZWQgZnJvbSBmcm9udCAqLwoJZm9yIChp
+ID0gMDsgaSA8IEFSUkFZX1NJWkUobW91dC0+aHBfb3V0X25pZCk7IGkrKykKCQlpZiAoIW1vdXQt
+Pm5vX3NoYXJlX3N0cmVhbSAmJiBtb3V0LT5ocF9vdXRfbmlkW2ldKQoJCQlzbmRfaGRhX2NvZGVj
+X3NldHVwX3N0cmVhbShjb2RlYywKCQkJCQkJICAgbW91dC0+aHBfb3V0X25pZFtpXSwKCQkJCQkJ
+ICAgc3RyZWFtX3RhZywgMCwgZm9ybWF0KTsKCgkvKiBzdXJyb3VuZHMgKi8KCWZvciAoaSA9IDE7
+IGkgPCBtb3V0LT5udW1fZGFjczsgaSsrKSB7CgkJaWYgKGNocyA+PSAoaSArIDEpICogMikgLyog
+aW5kZXBlbmRlbnQgb3V0ICovCgkJCXNuZF9oZGFfY29kZWNfc2V0dXBfc3RyZWFtKGNvZGVjLCBu
+aWRzW2ldLCBzdHJlYW1fdGFnLAoJCQkJCQkgICBpICogMiwgZm9ybWF0KTsKCQllbHNlIGlmICgh
+bW91dC0+bm9fc2hhcmVfc3RyZWFtKSAvKiBjb3B5IGZyb250ICovCgkJCXNuZF9oZGFfY29kZWNf
+c2V0dXBfc3RyZWFtKGNvZGVjLCBuaWRzW2ldLCBzdHJlYW1fdGFnLAoJCQkJCQkgICAwLCBmb3Jt
+YXQpOwoJfQoKCS8qIGV4dHJhIHN1cnJvdW5kcyAqLwoJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJ
+WkUobW91dC0+ZXh0cmFfb3V0X25pZCk7IGkrKykgewoJCWludCBjaCA9IDA7CgkJaWYgKCFtb3V0
+LT5leHRyYV9vdXRfbmlkW2ldKQoJCQlicmVhazsKCQlpZiAoY2hzID49IChpICsgMSkgKiAyKQoJ
+CQljaCA9IGkgKiAyOwoJCWVsc2UgaWYgKCFtb3V0LT5ub19zaGFyZV9zdHJlYW0pCgkJCWJyZWFr
+OwoJCXNuZF9oZGFfY29kZWNfc2V0dXBfc3RyZWFtKGNvZGVjLCBtb3V0LT5leHRyYV9vdXRfbmlk
+W2ldLAoJCQkJCSAgIHN0cmVhbV90YWcsIGNoLCBmb3JtYXQpOwoJfQpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
