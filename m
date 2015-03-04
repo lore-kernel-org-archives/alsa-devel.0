@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/30] ASoC: byt-max98090: Register jacks at
+Subject: [PATCH 08/30] ASoC: cht_bsw_rt5645: Register jacks at
 	the card level
-Date: Wed,  4 Mar 2015 10:33:22 +0100
-Message-ID: <1425461626-21103-8-git-send-email-lars@metafoo.de>
+Date: Wed,  4 Mar 2015 10:33:23 +0100
+Message-ID: <1425461626-21103-9-git-send-email-lars@metafoo.de>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-196.synserver.de (smtp-out-198.synserver.de
  [212.40.185.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 42677264F47
+ by alsa0.perex.cz (Postfix) with ESMTP id 006FF264F50
  for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 10:33:56 +0100 (CET)
 In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,37 +31,36 @@ snd_soc_jack_new() to register them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/intel/byt-max98090.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ sound/soc/intel/cht_bsw_rt5645.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/byt-max98090.c b/sound/soc/intel/byt-max98090.c
-index 9832afe..d8b1f03 100644
---- a/sound/soc/intel/byt-max98090.c
-+++ b/sound/soc/intel/byt-max98090.c
-@@ -84,7 +84,6 @@ static struct snd_soc_jack_gpio hs_jack_gpios[] = {
- static int byt_max98090_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	int ret;
--	struct snd_soc_codec *codec = runtime->codec;
- 	struct snd_soc_card *card = runtime->card;
- 	struct byt_max98090_private *drv = snd_soc_card_get_drvdata(card);
- 	struct snd_soc_jack *jack = &drv->jack;
-@@ -100,13 +99,9 @@ static int byt_max98090_init(struct snd_soc_pcm_runtime *runtime)
+diff --git a/sound/soc/intel/cht_bsw_rt5645.c b/sound/soc/intel/cht_bsw_rt5645.c
+index dd93525..01222799 100644
+--- a/sound/soc/intel/cht_bsw_rt5645.c
++++ b/sound/soc/intel/cht_bsw_rt5645.c
+@@ -169,17 +169,17 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
  	}
  
- 	/* Enable jack detection */
--	ret = snd_soc_jack_new(codec, "Headset",
--			       SND_JACK_LINEOUT | SND_JACK_HEADSET, jack);
--	if (ret)
--		return ret;
--
--	ret = snd_soc_jack_add_pins(jack, ARRAY_SIZE(hs_jack_pins),
--				    hs_jack_pins);
-+	ret = snd_soc_card_jack_new(runtime->card, "Headset",
-+				    SND_JACK_LINEOUT | SND_JACK_HEADSET, jack,
-+				    hs_jack_pins, ARRAY_SIZE(hs_jack_pins));
- 	if (ret)
+-	ret = snd_soc_jack_new(codec, "Headphone Jack",
+-				SND_JACK_HEADPHONE,
+-				&ctx->hp_jack);
++	ret = snd_soc_card_jack_new(runtime->card, "Headphone Jack",
++				    SND_JACK_HEADPHONE, &ctx->hp_jack,
++				    NULL, 0);
+ 	if (ret) {
+ 		dev_err(runtime->dev, "HP jack creation failed %d\n", ret);
  		return ret;
+ 	}
  
+-	ret = snd_soc_jack_new(codec, "Mic Jack",
+-				SND_JACK_MICROPHONE,
+-				&ctx->mic_jack);
++	ret = snd_soc_card_jack_new(runtime->card, "Mic Jack",
++				    SND_JACK_MICROPHONE, &ctx->mic_jack,
++				    NULL, 0);
+ 	if (ret) {
+ 		dev_err(runtime->dev, "Mic jack creation failed %d\n", ret);
+ 		return ret;
 -- 
 1.8.0
