@@ -1,47 +1,33 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V7 05/10] ASoC: qcom: Add LPASS CPU DAI driver
-Date: Tue,  3 Mar 2015 16:21:54 -0800
-Message-ID: <1425428519-12224-6-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V7 06/10] ASoC: qcom: Add LPASS platform driver
+Date: Tue,  3 Mar 2015 16:21:55 -0800
+Message-ID: <1425428519-12224-7-git-send-email-kwestfie@codeaurora.org>
 References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ACFD261ACE
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 01:22:07 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>
-Cc: MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>
+Cc: Kenneth Westfield <kwestfie@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add the CPU DAI driver for the Qualcomm
-Technologies low-power audio subsystem (LPASS).
+Add platform driver for the Qualcomm Technologies
+low-power audio subsystem (LPASS) ports.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/qcom/lpass-cpu.c | 510 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 510 insertions(+)
- create mode 100644 sound/soc/qcom/lpass-cpu.c
+ sound/soc/qcom/lpass-platform.c | 526 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 526 insertions(+)
+ create mode 100644 sound/soc/qcom/lpass-platform.c
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..d5167131787f3a7663665c94dffe6899bd050179
+index 0000000000000000000000000000000000000000..2fa6280dfb234b213904ad73dfad91c7f575538c
 --- /dev/null
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -0,0 +1,510 @@
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -0,0 +1,526 @@
 +/*
 + * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
 + *
@@ -54,503 +40,519 @@ index 0000000000000000000000000000000000000000..d5167131787f3a7663665c94dffe6899
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 + * GNU General Public License for more details.
 + *
-+ * lpass-cpu.c -- ALSA SoC CPU DAI driver for QTi LPASS
++ * lpass-platform.c -- ALSA SoC platform driver for QTi LPASS
 + */
 +
-+#include <linux/clk.h>
 +#include <linux/compiler.h>
 +#include <linux/device.h>
++#include <linux/dma-mapping.h>
 +#include <linux/err.h>
-+#include <linux/ioport.h>
++#include <linux/export.h>
 +#include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
 +#include <linux/module.h>
-+#include <linux/of.h>
++#include <linux/io.h>
 +#include <linux/platform_device.h>
++#include <sound/memalloc.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <linux/regmap.h>
 +#include <sound/soc.h>
-+#include <sound/soc-dai.h>
 +#include "lpass-lpaif-ipq806x.h"
 +#include "lpass.h"
 +
-+static int lpass_cpu_daiops_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-+		unsigned int freq, int dir)
++#define LPASS_PLATFORM_BUFFER_SIZE	(16 * 1024)
++#define LPASS_PLATFORM_PERIODS		2
++
++static struct snd_pcm_hardware lpass_platform_pcm_hardware = {
++	.info			=	SNDRV_PCM_INFO_MMAP |
++					SNDRV_PCM_INFO_MMAP_VALID |
++					SNDRV_PCM_INFO_INTERLEAVED |
++					SNDRV_PCM_INFO_PAUSE |
++					SNDRV_PCM_INFO_RESUME,
++	.formats		=	SNDRV_PCM_FMTBIT_S16 |
++					SNDRV_PCM_FMTBIT_S24 |
++					SNDRV_PCM_FMTBIT_S32,
++	.rates			=	SNDRV_PCM_RATE_8000_192000,
++	.rate_min		=	8000,
++	.rate_max		=	192000,
++	.channels_min		=	1,
++	.channels_max		=	8,
++	.buffer_bytes_max	=	LPASS_PLATFORM_BUFFER_SIZE,
++	.period_bytes_max	=	LPASS_PLATFORM_BUFFER_SIZE /
++						LPASS_PLATFORM_PERIODS,
++	.period_bytes_min	=	LPASS_PLATFORM_BUFFER_SIZE /
++						LPASS_PLATFORM_PERIODS,
++	.periods_min		=	LPASS_PLATFORM_PERIODS,
++	.periods_max		=	LPASS_PLATFORM_PERIODS,
++	.fifo_size		=	0,
++};
++
++static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
 +{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
 +	int ret;
 +
-+	ret = clk_set_rate(drvdata->mi2s_osr_clk, freq);
-+	if (ret)
-+		dev_err(dai->dev, "%s() error setting mi2s osrclk to %u: %d\n",
-+				__func__, freq, ret);
++	snd_soc_set_runtime_hwparams(substream, &lpass_platform_pcm_hardware);
 +
-+	return ret;
-+}
++	runtime->dma_bytes = lpass_platform_pcm_hardware.buffer_bytes_max;
 +
-+static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+	int ret;
-+
-+	ret = clk_prepare_enable(drvdata->mi2s_osr_clk);
-+	if (ret) {
-+		dev_err(dai->dev, "%s() error in enabling mi2s osr clk: %d\n",
++	ret = snd_pcm_hw_constraint_integer(runtime,
++			SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		dev_err(soc_runtime->dev, "%s() setting constraints failed: %d\n",
 +				__func__, ret);
-+		return ret;
++		return -EINVAL;
 +	}
 +
-+	ret = clk_prepare_enable(drvdata->mi2s_bit_clk);
-+	if (ret) {
-+		dev_err(dai->dev, "%s() error in enabling mi2s bit clk: %d\n",
-+				__func__, ret);
-+		clk_disable_unprepare(drvdata->mi2s_osr_clk);
-+		return ret;
-+	}
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
 +
 +	return 0;
 +}
 +
-+static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
++static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params)
 +{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-+
-+	clk_disable_unprepare(drvdata->mi2s_bit_clk);
-+	clk_disable_unprepare(drvdata->mi2s_osr_clk);
-+}
-+
-+static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
++	struct lpass_data *drvdata =
++		snd_soc_platform_get_drvdata(soc_runtime->platform);
 +	snd_pcm_format_t format = params_format(params);
 +	unsigned int channels = params_channels(params);
-+	unsigned int rate = params_rate(params);
 +	unsigned int regval;
-+	int bitwidth, ret;
++	int bitwidth;
++	int ret;
 +
 +	bitwidth = snd_pcm_format_width(format);
 +	if (bitwidth < 0) {
-+		dev_err(dai->dev, "%s() invalid bit width given: %d\n",
++		dev_err(soc_runtime->dev, "%s() invalid bit width given: %d\n",
 +				__func__, bitwidth);
 +		return bitwidth;
 +	}
 +
-+	regval = LPAIF_I2SCTL_LOOPBACK_DISABLE |
-+			LPAIF_I2SCTL_WSSRC_INTERNAL;
++	regval = LPAIF_RDMACTL_BURSTEN_INCR4 |
++			LPAIF_RDMACTL_AUDINTF_MI2S |
++			LPAIF_RDMACTL_FIFOWM_8;
 +
 +	switch (bitwidth) {
 +	case 16:
-+		regval |= LPAIF_I2SCTL_BITWIDTH_16;
++		switch (channels) {
++		case 1:
++		case 2:
++			regval |= LPAIF_RDMACTL_WPSCNT_ONE;
++			break;
++		case 4:
++			regval |= LPAIF_RDMACTL_WPSCNT_TWO;
++			break;
++		case 6:
++			regval |= LPAIF_RDMACTL_WPSCNT_THREE;
++			break;
++		case 8:
++			regval |= LPAIF_RDMACTL_WPSCNT_FOUR;
++			break;
++		default:
++			dev_err(soc_runtime->dev, "%s() invalid PCM config given: bw=%d, ch=%u\n",
++					__func__, bitwidth, channels);
++			return -EINVAL;
++		}
 +		break;
 +	case 24:
-+		regval |= LPAIF_I2SCTL_BITWIDTH_24;
-+		break;
 +	case 32:
-+		regval |= LPAIF_I2SCTL_BITWIDTH_32;
++		switch (channels) {
++		case 1:
++			regval |= LPAIF_RDMACTL_WPSCNT_ONE;
++			break;
++		case 2:
++			regval |= LPAIF_RDMACTL_WPSCNT_TWO;
++			break;
++		case 4:
++			regval |= LPAIF_RDMACTL_WPSCNT_FOUR;
++			break;
++		case 6:
++			regval |= LPAIF_RDMACTL_WPSCNT_SIX;
++			break;
++		case 8:
++			regval |= LPAIF_RDMACTL_WPSCNT_EIGHT;
++			break;
++		default:
++			dev_err(soc_runtime->dev, "%s() invalid PCM config given: bw=%d, ch=%u\n",
++					__func__, bitwidth, channels);
++			return -EINVAL;
++		}
 +		break;
 +	default:
-+		dev_err(dai->dev, "%s() invalid bitwidth given: %d\n",
-+				__func__, bitwidth);
-+		return -EINVAL;
-+	}
-+
-+	switch (channels) {
-+	case 1:
-+		regval |= LPAIF_I2SCTL_SPKMODE_SD0;
-+		regval |= LPAIF_I2SCTL_SPKMONO_MONO;
-+		break;
-+	case 2:
-+		regval |= LPAIF_I2SCTL_SPKMODE_SD0;
-+		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
-+		break;
-+	case 4:
-+		regval |= LPAIF_I2SCTL_SPKMODE_QUAD01;
-+		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
-+		break;
-+	case 6:
-+		regval |= LPAIF_I2SCTL_SPKMODE_6CH;
-+		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
-+		break;
-+	case 8:
-+		regval |= LPAIF_I2SCTL_SPKMODE_8CH;
-+		regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
-+		break;
-+	default:
-+		dev_err(dai->dev, "%s() invalid channels given: %u\n",
-+				__func__, channels);
++		dev_err(soc_runtime->dev, "%s() invalid PCM config given: bw=%d, ch=%u\n",
++				__func__, bitwidth, channels);
 +		return -EINVAL;
 +	}
 +
 +	ret = regmap_write(drvdata->lpaif_map,
-+			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), regval);
++			LPAIF_RDMACTL_REG(LPAIF_RDMA_CHAN_MI2S), regval);
 +	if (ret) {
-+		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++		dev_err(soc_runtime->dev, "%s() error writing to rdmactl reg: %d\n",
 +				__func__, ret);
-+		return ret;
-+	}
-+
-+	ret = clk_set_rate(drvdata->mi2s_bit_clk, rate * bitwidth * 2);
-+	if (ret) {
-+		dev_err(dai->dev, "%s() error setting mi2s bitclk to %u: %d\n",
-+				__func__, rate * bitwidth * 2, ret);
 +		return ret;
 +	}
 +
 +	return 0;
 +}
 +
-+static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
++static int lpass_platform_pcmops_hw_free(struct snd_pcm_substream *substream)
 +{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
++	struct lpass_data *drvdata =
++		snd_soc_platform_get_drvdata(soc_runtime->platform);
 +	int ret;
 +
 +	ret = regmap_write(drvdata->lpaif_map,
-+			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), 0);
++			LPAIF_RDMACTL_REG(LPAIF_RDMA_CHAN_MI2S), 0);
 +	if (ret)
-+		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++		dev_err(soc_runtime->dev, "%s() error writing to rdmactl reg: %d\n",
 +				__func__, ret);
 +
 +	return ret;
 +}
 +
-+static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
++static int lpass_platform_pcmops_prepare(struct snd_pcm_substream *substream)
 +{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
++	struct lpass_data *drvdata =
++		snd_soc_platform_get_drvdata(soc_runtime->platform);
 +	int ret;
 +
-+	ret = regmap_update_bits(drvdata->lpaif_map,
-+			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
-+			LPAIF_I2SCTL_SPKEN_MASK, LPAIF_I2SCTL_SPKEN_ENABLE);
-+	if (ret)
-+		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_RDMABASE_REG(LPAIF_RDMA_CHAN_MI2S),
++			runtime->dma_addr);
++	if (ret) {
++		dev_err(soc_runtime->dev, "%s() error writing to rdmabase reg: %d\n",
 +				__func__, ret);
++		return ret;
++	}
 +
-+	return ret;
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_RDMABUFF_REG(LPAIF_RDMA_CHAN_MI2S),
++			(snd_pcm_lib_buffer_bytes(substream) >> 2) - 1);
++	if (ret) {
++		dev_err(soc_runtime->dev, "%s() error writing to rdmabuff reg: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_RDMAPER_REG(LPAIF_RDMA_CHAN_MI2S),
++			(snd_pcm_lib_period_bytes(substream) >> 2) - 1);
++	if (ret) {
++		dev_err(soc_runtime->dev, "%s() error writing to rdmaper reg: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = regmap_update_bits(drvdata->lpaif_map,
++			LPAIF_RDMACTL_REG(LPAIF_RDMA_CHAN_MI2S),
++			LPAIF_RDMACTL_ENABLE_MASK, LPAIF_RDMACTL_ENABLE_ON);
++	if (ret) {
++		dev_err(soc_runtime->dev, "%s() error writing to rdmactl reg: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	return 0;
 +}
 +
-+static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
++static int lpass_platform_pcmops_trigger(struct snd_pcm_substream *substream,
++		int cmd)
 +{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
++	struct lpass_data *drvdata =
++		snd_soc_platform_get_drvdata(soc_runtime->platform);
 +	int ret;
 +
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
 +	case SNDRV_PCM_TRIGGER_RESUME:
 +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		ret = regmap_update_bits(drvdata->lpaif_map,
-+				LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
-+				LPAIF_I2SCTL_SPKEN_MASK,
-+				LPAIF_I2SCTL_SPKEN_ENABLE);
-+		if (ret)
-+			dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++		/* clear status before enabling interrupts */
++		ret = regmap_write(drvdata->lpaif_map,
++				LPAIF_IRQCLEAR_REG(LPAIF_IRQ_PORT_HOST),
++				LPAIF_IRQ_ALL(LPAIF_RDMA_CHAN_MI2S));
++		if (ret) {
++			dev_err(soc_runtime->dev, "%s() error writing to irqclear reg: %d\n",
 +					__func__, ret);
++			return ret;
++		}
++
++		ret = regmap_update_bits(drvdata->lpaif_map,
++				LPAIF_IRQEN_REG(LPAIF_IRQ_PORT_HOST),
++				LPAIF_IRQ_ALL(LPAIF_RDMA_CHAN_MI2S),
++				LPAIF_IRQ_ALL(LPAIF_RDMA_CHAN_MI2S));
++		if (ret) {
++			dev_err(soc_runtime->dev, "%s() error writing to irqen reg: %d\n",
++					__func__, ret);
++			return ret;
++		}
++
++		ret = regmap_update_bits(drvdata->lpaif_map,
++				LPAIF_RDMACTL_REG(LPAIF_RDMA_CHAN_MI2S),
++				LPAIF_RDMACTL_ENABLE_MASK,
++				LPAIF_RDMACTL_ENABLE_ON);
++		if (ret) {
++			dev_err(soc_runtime->dev, "%s() error writing to rdmactl reg: %d\n",
++					__func__, ret);
++			return ret;
++		}
 +		break;
 +	case SNDRV_PCM_TRIGGER_STOP:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 +		ret = regmap_update_bits(drvdata->lpaif_map,
-+				LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S),
-+				LPAIF_I2SCTL_SPKEN_MASK,
-+				LPAIF_I2SCTL_SPKEN_DISABLE);
-+		if (ret)
-+			dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
++				LPAIF_RDMACTL_REG(LPAIF_RDMA_CHAN_MI2S),
++				LPAIF_RDMACTL_ENABLE_MASK,
++				LPAIF_RDMACTL_ENABLE_OFF);
++		if (ret) {
++			dev_err(soc_runtime->dev, "%s() error writing to rdmactl reg: %d\n",
 +					__func__, ret);
++			return ret;
++		}
++
++		ret = regmap_update_bits(drvdata->lpaif_map,
++				LPAIF_IRQEN_REG(LPAIF_IRQ_PORT_HOST),
++				LPAIF_IRQ_ALL(LPAIF_RDMA_CHAN_MI2S), 0);
++		if (ret) {
++			dev_err(soc_runtime->dev, "%s() error writing to irqen reg: %d\n",
++					__func__, ret);
++			return ret;
++		}
 +		break;
 +	}
 +
++	return 0;
++}
++
++static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
++		struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
++	struct lpass_data *drvdata =
++			snd_soc_platform_get_drvdata(soc_runtime->platform);
++	unsigned int base_addr, curr_addr;
++	int ret;
++
++	ret = regmap_read(drvdata->lpaif_map,
++			LPAIF_RDMABASE_REG(LPAIF_RDMA_CHAN_MI2S), &base_addr);
++	if (ret) {
++		dev_err(soc_runtime->dev, "%s() error reading from rdmabase reg: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	ret = regmap_read(drvdata->lpaif_map,
++			LPAIF_RDMACURR_REG(LPAIF_RDMA_CHAN_MI2S), &curr_addr);
++	if (ret) {
++		dev_err(soc_runtime->dev, "%s() error reading from rdmacurr reg: %d\n",
++				__func__, ret);
++		return ret;
++	}
++
++	return bytes_to_frames(substream->runtime, curr_addr - base_addr);
++}
++
++static int lpass_platform_pcmops_mmap(struct snd_pcm_substream *substream,
++		struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	return dma_mmap_coherent(substream->pcm->card->dev, vma,
++			runtime->dma_area, runtime->dma_addr,
++			runtime->dma_bytes);
++}
++
++static struct snd_pcm_ops lpass_platform_pcm_ops = {
++	.open		= lpass_platform_pcmops_open,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= lpass_platform_pcmops_hw_params,
++	.hw_free	= lpass_platform_pcmops_hw_free,
++	.prepare	= lpass_platform_pcmops_prepare,
++	.trigger	= lpass_platform_pcmops_trigger,
++	.pointer	= lpass_platform_pcmops_pointer,
++	.mmap		= lpass_platform_pcmops_mmap,
++};
++
++static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
++{
++	struct snd_pcm_substream *substream = data;
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
++	struct lpass_data *drvdata =
++		snd_soc_platform_get_drvdata(soc_runtime->platform);
++	unsigned int interrupts;
++	irqreturn_t ret = IRQ_NONE;
++	int rv;
++
++	rv = regmap_read(drvdata->lpaif_map,
++			LPAIF_IRQSTAT_REG(LPAIF_IRQ_PORT_HOST), &interrupts);
++	if (rv) {
++		dev_err(soc_runtime->dev, "%s() error reading from irqstat reg: %d\n",
++				__func__, rv);
++		return IRQ_NONE;
++	}
++	interrupts &= LPAIF_IRQ_ALL(LPAIF_RDMA_CHAN_MI2S);
++
++	if (interrupts & LPAIF_IRQ_PER(LPAIF_RDMA_CHAN_MI2S)) {
++		rv = regmap_write(drvdata->lpaif_map,
++				LPAIF_IRQCLEAR_REG(LPAIF_IRQ_PORT_HOST),
++				LPAIF_IRQ_PER(LPAIF_RDMA_CHAN_MI2S));
++		if (rv) {
++			dev_err(soc_runtime->dev, "%s() error writing to irqclear reg: %d\n",
++					__func__, rv);
++			return IRQ_NONE;
++		}
++		snd_pcm_period_elapsed(substream);
++		ret = IRQ_HANDLED;
++	}
++
++	if (interrupts & LPAIF_IRQ_XRUN(LPAIF_RDMA_CHAN_MI2S)) {
++		rv = regmap_write(drvdata->lpaif_map,
++				LPAIF_IRQCLEAR_REG(LPAIF_IRQ_PORT_HOST),
++				LPAIF_IRQ_XRUN(LPAIF_RDMA_CHAN_MI2S));
++		if (rv) {
++			dev_err(soc_runtime->dev, "%s() error writing to irqclear reg: %d\n",
++					__func__, rv);
++			return IRQ_NONE;
++		}
++		dev_warn(soc_runtime->dev, "%s() xrun warning\n", __func__);
++		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
++		ret = IRQ_HANDLED;
++	}
++
++	if (interrupts & LPAIF_IRQ_ERR(LPAIF_RDMA_CHAN_MI2S)) {
++		rv = regmap_write(drvdata->lpaif_map,
++				LPAIF_IRQCLEAR_REG(LPAIF_IRQ_PORT_HOST),
++				LPAIF_IRQ_ERR(LPAIF_RDMA_CHAN_MI2S));
++		if (rv) {
++			dev_err(soc_runtime->dev, "%s() error writing to irqclear reg: %d\n",
++					__func__, rv);
++			return IRQ_NONE;
++		}
++		dev_err(soc_runtime->dev, "%s() bus access error\n", __func__);
++		snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
++		ret = IRQ_HANDLED;
++	}
++
 +	return ret;
 +}
 +
-+static struct snd_soc_dai_ops lpass_cpu_dai_ops = {
-+	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
-+	.startup	= lpass_cpu_daiops_startup,
-+	.shutdown	= lpass_cpu_daiops_shutdown,
-+	.hw_params	= lpass_cpu_daiops_hw_params,
-+	.hw_free	= lpass_cpu_daiops_hw_free,
-+	.prepare	= lpass_cpu_daiops_prepare,
-+	.trigger	= lpass_cpu_daiops_trigger,
-+};
-+
-+static int lpass_cpu_dai_probe(struct snd_soc_dai *dai)
++static int lpass_platform_alloc_buffer(struct snd_pcm_substream *substream,
++		struct snd_soc_pcm_runtime *soc_runtime)
 +{
-+	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++	size_t size = lpass_platform_pcm_hardware.buffer_bytes_max;
++
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = soc_runtime->dev;
++	buf->private_data = NULL;
++	buf->area = dma_alloc_coherent(soc_runtime->dev, size, &buf->addr,
++			GFP_KERNEL);
++	if (!buf->area) {
++		dev_err(soc_runtime->dev, "%s: Could not allocate DMA buffer\n",
++				__func__);
++		return -ENOMEM;
++	}
++	buf->bytes = size;
++
++	return 0;
++}
++
++static void lpass_platform_free_buffer(struct snd_pcm_substream *substream,
++		struct snd_soc_pcm_runtime *soc_runtime)
++{
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++
++	if (buf->area) {
++		dma_free_coherent(soc_runtime->dev, buf->bytes, buf->area,
++				buf->addr);
++	}
++	buf->area = NULL;
++}
++
++static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
++{
++	struct snd_pcm *pcm = soc_runtime->pcm;
++	struct snd_pcm_substream *substream =
++		pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
++	struct lpass_data *drvdata =
++		snd_soc_platform_get_drvdata(soc_runtime->platform);
 +	int ret;
++
++	soc_runtime->dev->coherent_dma_mask = DMA_BIT_MASK(32);
++	soc_runtime->dev->dma_mask = &soc_runtime->dev->coherent_dma_mask;
++
++	ret = lpass_platform_alloc_buffer(substream, soc_runtime);
++	if (ret)
++		return ret;
++
++	ret = devm_request_irq(soc_runtime->dev, drvdata->lpaif_irq,
++			lpass_platform_lpaif_irq, IRQF_TRIGGER_RISING,
++			"lpass-irq-lpaif", substream);
++	if (ret) {
++		dev_err(soc_runtime->dev, "%s() irq request failed: %d\n",
++				__func__, ret);
++		goto err_buf;
++	}
 +
 +	/* ensure audio hardware is disabled */
 +	ret = regmap_write(drvdata->lpaif_map,
-+			LPAIF_I2SCTL_REG(LPAIF_I2S_PORT_MI2S), 0);
-+	if (ret)
-+		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-+				__func__, ret);
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_dai_driver lpass_cpu_dai_driver = {
-+	.playback = {
-+		.stream_name	= "lpass-cpu-playback",
-+		.formats	= SNDRV_PCM_FMTBIT_S16 |
-+					SNDRV_PCM_FMTBIT_S24 |
-+					SNDRV_PCM_FMTBIT_S32,
-+		.rates		= SNDRV_PCM_RATE_8000 |
-+					SNDRV_PCM_RATE_16000 |
-+					SNDRV_PCM_RATE_32000 |
-+					SNDRV_PCM_RATE_48000 |
-+					SNDRV_PCM_RATE_96000,
-+		.rate_min	= 8000,
-+		.rate_max	= 96000,
-+		.channels_min	= 1,
-+		.channels_max	= 8,
-+	},
-+	.probe	= &lpass_cpu_dai_probe,
-+	.ops    = &lpass_cpu_dai_ops,
-+};
-+
-+static const struct snd_soc_component_driver lpass_cpu_comp_driver = {
-+	.name = "lpass-cpu",
-+};
-+
-+static bool lpass_cpu_regmap_writeable(struct device *dev, unsigned int reg)
-+{
-+	int i;
-+
-+	for (i = 0; i < LPAIF_I2S_PORT_NUM; ++i)
-+		if (reg == LPAIF_I2SCTL_REG(i))
-+			return true;
-+
-+	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i) {
-+		if (reg == LPAIF_IRQEN_REG(i))
-+			return true;
-+		if (reg == LPAIF_IRQCLEAR_REG(i))
-+			return true;
-+	}
-+
-+	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i) {
-+		if (reg == LPAIF_RDMACTL_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMABASE_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMABUFF_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMAPER_REG(i))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static bool lpass_cpu_regmap_readable(struct device *dev, unsigned int reg)
-+{
-+	int i;
-+
-+	for (i = 0; i < LPAIF_I2S_PORT_NUM; ++i)
-+		if (reg == LPAIF_I2SCTL_REG(i))
-+			return true;
-+
-+	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i) {
-+		if (reg == LPAIF_IRQEN_REG(i))
-+			return true;
-+		if (reg == LPAIF_IRQSTAT_REG(i))
-+			return true;
-+	}
-+
-+	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i) {
-+		if (reg == LPAIF_RDMACTL_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMABASE_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMABUFF_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMACURR_REG(i))
-+			return true;
-+		if (reg == LPAIF_RDMAPER_REG(i))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
-+{
-+	int i;
-+
-+	for (i = 0; i < LPAIF_IRQ_PORT_NUM; ++i)
-+		if (reg == LPAIF_IRQSTAT_REG(i))
-+			return true;
-+
-+	for (i = 0; i < LPAIF_RDMA_CHAN_NUM; ++i)
-+		if (reg == LPAIF_RDMACURR_REG(i))
-+			return true;
-+
-+	return false;
-+}
-+
-+static const struct regmap_config lpass_cpu_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = LPAIF_RDMAPER_REG(LPAIF_RDMA_CHAN_MAX),
-+	.writeable_reg = lpass_cpu_regmap_writeable,
-+	.readable_reg = lpass_cpu_regmap_readable,
-+	.volatile_reg = lpass_cpu_regmap_volatile,
-+	.cache_type = REGCACHE_FLAT,
-+};
-+
-+static int lpass_cpu_parse_of(struct device *dev)
-+{
-+	struct device_node *dsp_of_node;
-+
-+	dsp_of_node = of_get_child_by_name(dev->of_node, "qcom,adsp");
-+	if (!dsp_of_node) {
-+		dev_err(dev, "%s() error getting qcom,adsp sub-node\n",
-+				__func__);
-+		return -EINVAL;
-+	}
-+
-+	if (of_device_is_available(dsp_of_node)) {
-+		dev_err(dev, "%s() DSP exists and holds audio resources\n",
-+				__func__);
-+		return -EBUSY;
-+	}
-+
-+	return 0;
-+}
-+
-+static int lpass_cpu_platform_probe(struct platform_device *pdev)
-+{
-+	struct lpass_data *drvdata;
-+	struct resource *res;
-+	int ret;
-+
-+	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct lpass_data),
-+			GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, drvdata);
-+
-+	ret = lpass_cpu_parse_of(&pdev->dev);
++			LPAIF_IRQEN_REG(LPAIF_IRQ_PORT_HOST), 0);
 +	if (ret) {
-+		dev_err(&pdev->dev, "%s() error getting DT node info: %d\n",
++		dev_err(soc_runtime->dev, "%s() error writing to irqen reg: %d\n",
 +				__func__, ret);
 +		return ret;
 +	}
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "lpass-lpaif");
-+	if (!res) {
-+		dev_err(&pdev->dev, "%s() error getting resource\n", __func__);
-+		return -ENODEV;
-+	}
-+
-+	drvdata->lpaif = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR((void const __force *)drvdata->lpaif)) {
-+		dev_err(&pdev->dev, "%s() error mapping reg resource: %ld\n",
-+				__func__,
-+				PTR_ERR((void const __force *)drvdata->lpaif));
-+		return PTR_ERR((void const __force *)drvdata->lpaif);
-+	}
-+
-+	drvdata->lpaif_map = devm_regmap_init_mmio(&pdev->dev, drvdata->lpaif,
-+			&lpass_cpu_regmap_config);
-+	if (IS_ERR(drvdata->lpaif_map)) {
-+		dev_err(&pdev->dev, "%s() error initializing regmap: %ld\n",
-+				__func__, PTR_ERR(drvdata->lpaif_map));
-+		return PTR_ERR(drvdata->lpaif_map);
-+	}
-+
-+	drvdata->mi2s_osr_clk = devm_clk_get(&pdev->dev, "mi2s-osr-clk");
-+	if (IS_ERR(drvdata->mi2s_osr_clk)) {
-+		dev_err(&pdev->dev, "%s() error getting mi2s-osr-clk: %ld\n",
-+				__func__, PTR_ERR(drvdata->mi2s_osr_clk));
-+		return PTR_ERR(drvdata->mi2s_osr_clk);
-+	}
-+
-+	drvdata->mi2s_bit_clk = devm_clk_get(&pdev->dev, "mi2s-bit-clk");
-+	if (IS_ERR(drvdata->mi2s_bit_clk)) {
-+		dev_err(&pdev->dev, "%s() error getting mi2s-bit-clk: %ld\n",
-+				__func__, PTR_ERR(drvdata->mi2s_bit_clk));
-+		return PTR_ERR(drvdata->mi2s_bit_clk);
-+	}
-+
-+	drvdata->ahbix_clk = devm_clk_get(&pdev->dev, "ahbix-clk");
-+	if (IS_ERR(drvdata->ahbix_clk)) {
-+		dev_err(&pdev->dev, "%s() error getting ahbix-clk: %ld\n",
-+				__func__, PTR_ERR(drvdata->ahbix_clk));
-+		return PTR_ERR(drvdata->ahbix_clk);
-+	}
-+
-+	ret = clk_set_rate(drvdata->ahbix_clk, LPASS_AHBIX_CLOCK_FREQUENCY);
++	ret = regmap_write(drvdata->lpaif_map,
++			LPAIF_RDMACTL_REG(LPAIF_RDMA_CHAN_MI2S), 0);
 +	if (ret) {
-+		dev_err(&pdev->dev, "%s() error setting rate on ahbix_clk: %d\n",
++		dev_err(soc_runtime->dev, "%s() error writing to rdmactl reg: %d\n",
 +				__func__, ret);
 +		return ret;
-+	}
-+	dev_dbg(&pdev->dev, "%s() set ahbix_clk rate to %lu\n", __func__,
-+			clk_get_rate(drvdata->ahbix_clk));
-+
-+	ret = clk_prepare_enable(drvdata->ahbix_clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s() error enabling ahbix_clk: %d\n",
-+				__func__, ret);
-+		return ret;
-+	}
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+			&lpass_cpu_comp_driver, &lpass_cpu_dai_driver, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s() error registering cpu driver: %d\n",
-+				__func__, ret);
-+		goto err_clk;
-+	}
-+
-+	ret = asoc_qcom_lpass_platform_register(pdev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s() error registering platform driver: %d\n",
-+				__func__, ret);
-+		goto err_clk;
 +	}
 +
 +	return 0;
 +
-+err_clk:
-+	clk_disable_unprepare(drvdata->ahbix_clk);
++err_buf:
++	lpass_platform_free_buffer(substream, soc_runtime);
 +	return ret;
 +}
 +
-+static int lpass_cpu_platform_remove(struct platform_device *pdev)
++static void lpass_platform_pcm_free(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream =
++		pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
++	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
++
++	lpass_platform_free_buffer(substream, soc_runtime);
++}
++
++static struct snd_soc_platform_driver lpass_platform_driver = {
++	.pcm_new	= lpass_platform_pcm_new,
++	.pcm_free	= lpass_platform_pcm_free,
++	.ops		= &lpass_platform_pcm_ops,
++};
++
++int asoc_qcom_lpass_platform_register(struct platform_device *pdev)
 +{
 +	struct lpass_data *drvdata = platform_get_drvdata(pdev);
 +
-+	clk_disable_unprepare(drvdata->ahbix_clk);
++	drvdata->lpaif_irq = platform_get_irq_byname(pdev, "lpass-irq-lpaif");
++	if (drvdata->lpaif_irq < 0) {
++		dev_err(&pdev->dev, "%s() error getting irq handle: %d\n",
++				__func__, drvdata->lpaif_irq);
++		return -ENODEV;
++	}
 +
-+	return 0;
++	return devm_snd_soc_register_platform(&pdev->dev,
++			&lpass_platform_driver);
 +}
++EXPORT_SYMBOL_GPL(asoc_qcom_lpass_platform_register);
 +
-+#ifdef CONFIG_OF
-+static const struct of_device_id lpass_cpu_device_id[] = {
-+	{ .compatible = "qcom,lpass-cpu" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, lpass_cpu_device_id);
-+#endif
-+
-+static struct platform_driver lpass_cpu_platform_driver = {
-+	.driver	= {
-+		.name		= "lpass-cpu",
-+		.of_match_table	= of_match_ptr(lpass_cpu_device_id),
-+	},
-+	.probe	= lpass_cpu_platform_probe,
-+	.remove	= lpass_cpu_platform_remove,
-+};
-+module_platform_driver(lpass_cpu_platform_driver);
-+
-+MODULE_DESCRIPTION("QTi LPASS CPU Driver");
++MODULE_DESCRIPTION("QTi LPASS Platform Driver");
 +MODULE_LICENSE("GPL v2");
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
