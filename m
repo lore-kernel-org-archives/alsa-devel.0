@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/30] ASoC: Move jack registration to the
-	card level
-Date: Wed, 4 Mar 2015 17:11:06 +0000
-Message-ID: <20150304171106.GO21293@sirena.org.uk>
-References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: Allow complete
+ shutdown of McASP when not in use
+Date: Wed, 4 Mar 2015 17:13:57 +0000
+Message-ID: <20150304171357.GP21293@sirena.org.uk>
+References: <1425392792-12659-1-git-send-email-peter.ujfalusi@ti.com>
+ <20150303150742.GZ21293@sirena.org.uk> <54F6DA94.2000702@ti.com>
+ <20150304113004.GJ21293@sirena.org.uk> <54F6ED24.9060907@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7237247378440273405=="
+Content-Type: multipart/mixed; boundary="===============5060737375351328579=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A464265233
- for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 18:11:30 +0100 (CET)
-In-Reply-To: <1425461626-21103-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0909B265233
+ for <alsa-devel@alsa-project.org>; Wed,  4 Mar 2015 18:14:02 +0100 (CET)
+In-Reply-To: <54F6ED24.9060907@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Sean Cross <xobs@kosagi.com>, Dylan Reid <dgreid@chromium.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7237247378440273405==
+--===============5060737375351328579==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dXORoSZsDhHFGh8W"
+	protocol="application/pgp-signature"; boundary="7+jjqyDO/r5KaLYo"
 Content-Disposition: inline
 
 
---dXORoSZsDhHFGh8W
+--7+jjqyDO/r5KaLYo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 04, 2015 at 10:33:15AM +0100, Lars-Peter Clausen wrote:
-> Audio jacks are typically card level elements and when initially introduced
-> the API to register a jack took a card as its parameter. Back at that time
-> there was only one CODEC per card and DAPM support was only available at the
+On Wed, Mar 04, 2015 at 01:31:48PM +0200, Peter Ujfalusi wrote:
+> On 03/04/2015 01:30 PM, Mark Brown wrote:
 
-Nice cleanup, applied all thanks.
+> > You can just store the state before you do the enable...
 
---dXORoSZsDhHFGh8W
+> When we come out from suspend the pm_runtime status is disabled all the time.
+
+It's fine at the start of the suspend though, you can just record state?
+
+--7+jjqyDO/r5KaLYo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU9zypAAoJECTWi3JdVIfQydkH/3JHupZOKgXc+XRPjUMgnNA3
-lVDpvOzuzM6geBQIfgLb/C/I3W5nI7aTCQtW2tbWkK9d+aSmSssmJzN3oyP0KdyC
-uRKYr9GDyCzHFEbYearSCZLmiY+Kg/VtFbTXz6kmGO+Jf0REDGvStt7QRrvjcBh5
-HL4zZEcaLCx30soLwj6pEokCdX/GXvZ2htKM/rsQTROUAjlyMtv0kCvaCfLI0KcR
-0VtYRGVoZMot4DGe/BDa+QkBeWowpV0cr4P35WOswRbTfXeyJ2O3bReVIMSSseVX
-8nFAe+qn3hc+s3dGKqIHluPASa7bLULGzB8Zoh5L/iutM/m/7W6kvy5g+abyEgI=
-=beKu
+iQEcBAEBCAAGBQJU9z1UAAoJECTWi3JdVIfQi0UH/jhfzjeAOjohV5sCPsKf5dky
+NXQSevMRCbsgbxvfD0kKTZvmJmjaJCBDfGms0ppKMRHBA4RuatueYsZJMGWfM7VF
+9KIovmNRj9YeYcXq6aNVW+N0LJzz79ghOezxyphiCB4RlgokSbKeWokTG7UtVHFn
+gvbAXrN9sXRhU1K63O7feVDRvrZUqe4OYlYCrKZCe2b4KgfE2WlrrK4giof8ImJI
+hxGoCvlYGL4r0013t35XrA7N36ROpZI7SMnSYe4myxhqPb1BGmoE2RUfwRY7AbeO
+VSsuEDfgo6x0ub3A1tAwNrHoiY5N5tS5kA1v188QArgRDGD0aAuo5/W/5nwuk8U=
+=Q8m5
 -----END PGP SIGNATURE-----
 
---dXORoSZsDhHFGh8W--
+--7+jjqyDO/r5KaLYo--
 
---===============7237247378440273405==
+--===============5060737375351328579==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7237247378440273405==--
+--===============5060737375351328579==--
