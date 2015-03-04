@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [Patch V7 04/10] ASoC: qcom: add LPASS header files
-Date: Tue,  3 Mar 2015 16:21:53 -0800
-Message-ID: <1425428519-12224-5-git-send-email-kwestfie@codeaurora.org>
+Subject: [Patch V7 10/10] ARM: dts: Model IPQ LPASS audio hardware
+Date: Tue,  3 Mar 2015 16:21:59 -0800
+Message-ID: <1425428519-12224-11-git-send-email-kwestfie@codeaurora.org>
 References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,255 +12,65 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Add the LPASS header files for ipq806x SOC.  This
-includes the register definitions for the ipq806x
-LPAIF, and the structure definition for the driver
-data.
+Model the Qualcomm Technologies LPASS hardware for
+the ipq806x SOC.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/qcom/lpass-lpaif-ipq806x.h | 172 +++++++++++++++++++++++++++++++++++
- sound/soc/qcom/lpass.h               |  51 +++++++++++
- 2 files changed, 223 insertions(+)
- create mode 100644 sound/soc/qcom/lpass-lpaif-ipq806x.h
- create mode 100644 sound/soc/qcom/lpass.h
+ arch/arm/boot/dts/qcom-ipq8064.dtsi | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/sound/soc/qcom/lpass-lpaif-ipq806x.h b/sound/soc/qcom/lpass-lpaif-ipq806x.h
-new file mode 100644
-index 0000000000000000000000000000000000000000..dc423b8888425e60ebb11cd0ce78da2574ed27c2
---- /dev/null
-+++ b/sound/soc/qcom/lpass-lpaif-ipq806x.h
-@@ -0,0 +1,172 @@
-+/*
-+ * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * lpass-lpaif-ipq806x.h -- Definitions for the QTi LPAIF in the ipq806x LPASS
-+ */
+diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+index cb225dafe97cd83c9ae4cc19482ed55d4a71b8b3..8902d967463b3d9e6e02c6ec6518e392d8372050 100644
+--- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+@@ -2,6 +2,7 @@
+ 
+ #include "skeleton.dtsi"
+ #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
++#include <dt-bindings/clock/qcom,lcc-ipq806x.h>
+ #include <dt-bindings/soc/qcom,gsbi.h>
+ 
+ / {
+@@ -96,6 +97,24 @@
+ 			cpu-offset = <0x80000>;
+ 		};
+ 
++		lpass@28100000 {
++			compatible = "qcom,lpass-cpu";
++			status = "disabled";
++			clocks = <&lcc AHBIX_CLK>,
++					<&lcc MI2S_OSR_CLK>,
++					<&lcc MI2S_BIT_CLK>;
++			clock-names = "ahbix-clk",
++					"mi2s-osr-clk",
++					"mi2s-bit-clk";
++			interrupts = <0 85 1>;
++			interrupt-names = "lpass-irq-lpaif";
++			reg = <0x28100000 0x10000>;
++			reg-names = "lpass-lpaif";
++			qcom,adsp {
++				status = "disabled";
++			};
++		};
 +
-+#ifndef __LPASS_LPAIF_H__
-+#define __LPASS_LPAIF_H__
+ 		acc0: clock-controller@2088000 {
+ 			compatible = "qcom,kpss-acc-v1";
+ 			reg = <0x02088000 0x1000>, <0x02008000 0x1000>;
+@@ -279,5 +298,12 @@
+ 			#clock-cells = <1>;
+ 			#reset-cells = <1>;
+ 		};
 +
-+#define LPAIF_BANK_OFFSET		0x1000
-+
-+/* LPAIF I2S */
-+
-+#define LPAIF_I2SCTL_REG_BASE		0x0010
-+#define LPAIF_I2SCTL_REG_STRIDE		0x4
-+#define LPAIF_I2SCTL_REG_ADDR(addr, port) \
-+	(LPAIF_I2SCTL_REG_BASE + (addr) + (LPAIF_I2SCTL_REG_STRIDE * (port)))
-+
-+enum lpaif_i2s_ports {
-+	LPAIF_I2S_PORT_MIN		= 0,
-+
-+	LPAIF_I2S_PORT_CODEC_SPK	= 0,
-+	LPAIF_I2S_PORT_CODEC_MIC	= 1,
-+	LPAIF_I2S_PORT_SEC_SPK		= 2,
-+	LPAIF_I2S_PORT_SEC_MIC		= 3,
-+	LPAIF_I2S_PORT_MI2S		= 4,
-+
-+	LPAIF_I2S_PORT_MAX		= 4,
-+	LPAIF_I2S_PORT_NUM		= 5,
-+};
-+
-+#define LPAIF_I2SCTL_REG(port)		LPAIF_I2SCTL_REG_ADDR(0x0, (port))
-+
-+#define LPAIF_I2SCTL_LOOPBACK_MASK	0x8000
-+#define LPAIF_I2SCTL_LOOPBACK_SHIFT	15
-+#define LPAIF_I2SCTL_LOOPBACK_DISABLE	(0 << LPAIF_I2SCTL_LOOPBACK_SHIFT)
-+#define LPAIF_I2SCTL_LOOPBACK_ENABLE	(1 << LPAIF_I2SCTL_LOOPBACK_SHIFT)
-+
-+#define LPAIF_I2SCTL_SPKEN_MASK		0x4000
-+#define LPAIF_I2SCTL_SPKEN_SHIFT	14
-+#define LPAIF_I2SCTL_SPKEN_DISABLE	(0 << LPAIF_I2SCTL_SPKEN_SHIFT)
-+#define LPAIF_I2SCTL_SPKEN_ENABLE	(1 << LPAIF_I2SCTL_SPKEN_SHIFT)
-+
-+#define LPAIF_I2SCTL_SPKMODE_MASK	0x3C00
-+#define LPAIF_I2SCTL_SPKMODE_SHIFT	10
-+#define LPAIF_I2SCTL_SPKMODE_NONE	(0 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_I2SCTL_SPKMODE_SD0	(1 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_I2SCTL_SPKMODE_SD1	(2 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_I2SCTL_SPKMODE_SD2	(3 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_I2SCTL_SPKMODE_SD3	(4 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_I2SCTL_SPKMODE_QUAD01	(5 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_I2SCTL_SPKMODE_QUAD23	(6 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_I2SCTL_SPKMODE_6CH	(7 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+#define LPAIF_I2SCTL_SPKMODE_8CH	(8 << LPAIF_I2SCTL_SPKMODE_SHIFT)
-+
-+#define LPAIF_I2SCTL_SPKMONO_MASK	0x0200
-+#define LPAIF_I2SCTL_SPKMONO_SHIFT	9
-+#define LPAIF_I2SCTL_SPKMONO_STEREO	(0 << LPAIF_I2SCTL_SPKMONO_SHIFT)
-+#define LPAIF_I2SCTL_SPKMONO_MONO	(1 << LPAIF_I2SCTL_SPKMONO_SHIFT)
-+
-+#define LPAIF_I2SCTL_WSSRC_MASK		0x0004
-+#define LPAIF_I2SCTL_WSSRC_SHIFT	2
-+#define LPAIF_I2SCTL_WSSRC_INTERNAL	(0 << LPAIF_I2SCTL_WSSRC_SHIFT)
-+#define LPAIF_I2SCTL_WSSRC_EXTERNAL	(1 << LPAIF_I2SCTL_WSSRC_SHIFT)
-+
-+#define LPAIF_I2SCTL_BITWIDTH_MASK	0x0003
-+#define LPAIF_I2SCTL_BITWIDTH_SHIFT	0
-+#define LPAIF_I2SCTL_BITWIDTH_16	(0 << LPAIF_I2SCTL_BITWIDTH_SHIFT)
-+#define LPAIF_I2SCTL_BITWIDTH_24	(1 << LPAIF_I2SCTL_BITWIDTH_SHIFT)
-+#define LPAIF_I2SCTL_BITWIDTH_32	(2 << LPAIF_I2SCTL_BITWIDTH_SHIFT)
-+
-+/* LPAIF IRQ */
-+
-+#define LPAIF_IRQ_REG_BASE		0x3000
-+#define LPAIF_IRQ_REG_STRIDE		0x1000
-+#define LPAIF_IRQ_REG_ADDR(addr, port) \
-+	(LPAIF_IRQ_REG_BASE + (addr) + (LPAIF_IRQ_REG_STRIDE * (port)))
-+
-+enum lpaif_irq_ports {
-+	LPAIF_IRQ_PORT_MIN		= 0,
-+
-+	LPAIF_IRQ_PORT_HOST		= 0,
-+	LPAIF_IRQ_PORT_ADSP		= 1,
-+
-+	LPAIF_IRQ_PORT_MAX		= 2,
-+	LPAIF_IRQ_PORT_NUM		= 3,
-+};
-+
-+#define LPAIF_IRQEN_REG(port)		LPAIF_IRQ_REG_ADDR(0x0, (port))
-+#define LPAIF_IRQSTAT_REG(port)		LPAIF_IRQ_REG_ADDR(0x4, (port))
-+#define LPAIF_IRQCLEAR_REG(port)	LPAIF_IRQ_REG_ADDR(0xC, (port))
-+
-+#define LPAIF_IRQ_BITSTRIDE		3
-+#define LPAIF_IRQ_PER(chan)		(1 << (LPAIF_IRQ_BITSTRIDE * (chan)))
-+#define LPAIF_IRQ_XRUN(chan)		(2 << (LPAIF_IRQ_BITSTRIDE * (chan)))
-+#define LPAIF_IRQ_ERR(chan)		(4 << (LPAIF_IRQ_BITSTRIDE * (chan)))
-+#define LPAIF_IRQ_ALL(chan)		(7 << (LPAIF_IRQ_BITSTRIDE * (chan)))
-+
-+/* LPAIF DMA */
-+
-+#define LPAIF_RDMA_REG_BASE		0x6000
-+#define LPAIF_RDMA_REG_STRIDE		0x1000
-+#define LPAIF_RDMA_REG_ADDR(addr, chan) \
-+	(LPAIF_RDMA_REG_BASE + (addr) + (LPAIF_RDMA_REG_STRIDE * (chan)))
-+
-+enum lpaif_dma_channels {
-+	LPAIF_RDMA_CHAN_MIN		= 0,
-+
-+	LPAIF_RDMA_CHAN_MI2S		= 0,
-+	LPAIF_RDMA_CHAN_PCM0		= 1,
-+	LPAIF_RDMA_CHAN_PCM1		= 2,
-+
-+	LPAIF_RDMA_CHAN_MAX		= 4,
-+	LPAIF_RDMA_CHAN_NUM		= 5,
-+};
-+
-+#define LPAIF_RDMACTL_REG(chan)		LPAIF_RDMA_REG_ADDR(0x00, (chan))
-+#define LPAIF_RDMABASE_REG(chan)	LPAIF_RDMA_REG_ADDR(0x04, (chan))
-+#define	LPAIF_RDMABUFF_REG(chan)	LPAIF_RDMA_REG_ADDR(0x08, (chan))
-+#define LPAIF_RDMACURR_REG(chan)	LPAIF_RDMA_REG_ADDR(0x0C, (chan))
-+#define	LPAIF_RDMAPER_REG(chan)		LPAIF_RDMA_REG_ADDR(0x10, (chan))
-+
-+#define LPAIF_RDMACTL_BURSTEN_MASK	0x800
-+#define LPAIF_RDMACTL_BURSTEN_SHIFT	11
-+#define LPAIF_RDMACTL_BURSTEN_SINGLE	(0 << LPAIF_RDMACTL_BURSTEN_SHIFT)
-+#define LPAIF_RDMACTL_BURSTEN_INCR4	(1 << LPAIF_RDMACTL_BURSTEN_SHIFT)
-+
-+#define LPAIF_RDMACTL_WPSCNT_MASK	0x700
-+#define LPAIF_RDMACTL_WPSCNT_SHIFT	8
-+#define LPAIF_RDMACTL_WPSCNT_ONE	(0 << LPAIF_RDMACTL_WPSCNT_SHIFT)
-+#define LPAIF_RDMACTL_WPSCNT_TWO	(1 << LPAIF_RDMACTL_WPSCNT_SHIFT)
-+#define LPAIF_RDMACTL_WPSCNT_THREE	(2 << LPAIF_RDMACTL_WPSCNT_SHIFT)
-+#define LPAIF_RDMACTL_WPSCNT_FOUR	(3 << LPAIF_RDMACTL_WPSCNT_SHIFT)
-+#define LPAIF_RDMACTL_WPSCNT_SIX	(5 << LPAIF_RDMACTL_WPSCNT_SHIFT)
-+#define LPAIF_RDMACTL_WPSCNT_EIGHT	(7 << LPAIF_RDMACTL_WPSCNT_SHIFT)
-+
-+#define LPAIF_RDMACTL_AUDINTF_MASK	0x0F0
-+#define LPAIF_RDMACTL_AUDINTF_SHIFT	4
-+#define LPAIF_RDMACTL_AUDINTF_NONE	(0 << LPAIF_RDMACTL_AUDINTF_SHIFT)
-+#define LPAIF_RDMACTL_AUDINTF_CODEC	(1 << LPAIF_RDMACTL_AUDINTF_SHIFT)
-+#define LPAIF_RDMACTL_AUDINTF_PCM	(2 << LPAIF_RDMACTL_AUDINTF_SHIFT)
-+#define LPAIF_RDMACTL_AUDINTF_SEC_I2S	(3 << LPAIF_RDMACTL_AUDINTF_SHIFT)
-+#define LPAIF_RDMACTL_AUDINTF_MI2S	(4 << LPAIF_RDMACTL_AUDINTF_SHIFT)
-+#define LPAIF_RDMACTL_AUDINTF_HDMI	(5 << LPAIF_RDMACTL_AUDINTF_SHIFT)
-+#define LPAIF_RDMACTL_AUDINTF_SEC_PCM	(7 << LPAIF_RDMACTL_AUDINTF_SHIFT)
-+
-+#define LPAIF_RDMACTL_FIFOWM_MASK	0x00E
-+#define LPAIF_RDMACTL_FIFOWM_SHIFT	1
-+#define LPAIF_RDMACTL_FIFOWM_1		(0 << LPAIF_RDMACTL_FIFOWM_SHIFT)
-+#define LPAIF_RDMACTL_FIFOWM_2		(1 << LPAIF_RDMACTL_FIFOWM_SHIFT)
-+#define LPAIF_RDMACTL_FIFOWM_3		(2 << LPAIF_RDMACTL_FIFOWM_SHIFT)
-+#define LPAIF_RDMACTL_FIFOWM_4		(3 << LPAIF_RDMACTL_FIFOWM_SHIFT)
-+#define LPAIF_RDMACTL_FIFOWM_5		(4 << LPAIF_RDMACTL_FIFOWM_SHIFT)
-+#define LPAIF_RDMACTL_FIFOWM_6		(5 << LPAIF_RDMACTL_FIFOWM_SHIFT)
-+#define LPAIF_RDMACTL_FIFOWM_7		(6 << LPAIF_RDMACTL_FIFOWM_SHIFT)
-+#define LPAIF_RDMACTL_FIFOWM_8		(7 << LPAIF_RDMACTL_FIFOWM_SHIFT)
-+
-+#define LPAIF_RDMACTL_ENABLE_MASK	0x1
-+#define LPAIF_RDMACTL_ENABLE_SHIFT	0
-+#define LPAIF_RDMACTL_ENABLE_OFF	(0 << LPAIF_RDMACTL_ENABLE_SHIFT)
-+#define LPAIF_RDMACTL_ENABLE_ON		(1 << LPAIF_RDMACTL_ENABLE_SHIFT)
-+
-+#endif /* __LPASS_LPAIF_H__ */
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-new file mode 100644
-index 0000000000000000000000000000000000000000..5c99b3dace86d3634b0dbc8c070ac7711d070890
---- /dev/null
-+++ b/sound/soc/qcom/lpass.h
-@@ -0,0 +1,51 @@
-+/*
-+ * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * lpass.h - Definitions for the QTi LPASS
-+ */
-+
-+#ifndef __LPASS_H__
-+#define __LPASS_H__
-+
-+#include <linux/clk.h>
-+#include <linux/compiler.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#define LPASS_AHBIX_CLOCK_FREQUENCY		131072000
-+
-+/* Both the CPU DAI and platform drivers will access this data */
-+struct lpass_data {
-+
-+	/* AHB-I/X bus clocks inside the low-power audio subsystem (LPASS) */
-+	struct clk *ahbix_clk;
-+
-+	/* MI2S system clock */
-+	struct clk *mi2s_osr_clk;
-+
-+	/* MI2S bit clock (derived from system clock by a divider */
-+	struct clk *mi2s_bit_clk;
-+
-+	/* low-power audio interface (LPAIF) registers */
-+	void __iomem *lpaif;
-+
-+	/* regmap backed by the low-power audio interface (LPAIF) registers */
-+	struct regmap *lpaif_map;
-+
-+	/* interrupts from the low-power audio interface (LPAIF) */
-+	int lpaif_irq;
-+};
-+
-+/* register the platform driver from the CPU DAI driver */
-+int asoc_qcom_lpass_platform_register(struct platform_device *);
-+
-+#endif /* __LPASS_H__ */
++		lcc: clock-controller@28000000 {
++			compatible = "qcom,lcc-ipq8064";
++			reg = <0x28000000 0x1000>;
++			#clock-cells = <1>;
++			#reset-cells = <1>;
++		};
+ 	};
+ };
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
