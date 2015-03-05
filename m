@@ -1,19 +1,19 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 20/30] ASoC: lowland: Register jacks at	the
-	card level
-Date: Thu, 5 Mar 2015 09:57:40 +0000
-Message-ID: <20150305095740.GB4286@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 23/30] ASoC: speyside: Register jacks
+	at	the card level
+Date: Thu, 5 Mar 2015 09:58:14 +0000
+Message-ID: <20150305095814.GC4286@opensource.wolfsonmicro.com>
 References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
- <1425461626-21103-21-git-send-email-lars@metafoo.de>
+ <1425461626-21103-24-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 092BD265522
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 10:57:42 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0B5602654F6
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 10:58:15 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1425461626-21103-21-git-send-email-lars@metafoo.de>
+In-Reply-To: <1425461626-21103-24-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Sean Cross <xobs@kosagi.com>, Dylan Reid <dgreid@chromium.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 04, 2015 at 10:33:35AM +0100, Lars-Peter Clausen wrote:
+On Wed, Mar 04, 2015 at 10:33:38AM +0100, Lars-Peter Clausen wrote:
 > The jacks are card level elements so use snd_soc_card_jack_new() instead of
 > snd_soc_jack_new() to register them.
 > 
