@@ -1,19 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
- davinci-pcm
-Date: Thu, 5 Mar 2015 12:45:05 +0200
-Message-ID: <54F833B1.1070204@ti.com>
-References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
- <54F6A3E5.1090201@topic.nl> <54F6C737.309@ti.com> <54F6FA66.8000803@topic.nl>
- <54F71249.2090703@ti.com> <54F82553.7050508@topic.nl>
+From: Vishal Thanki <vishalthanki@gmail.com>
+Subject: Re: [PATCH] ASoC: simple-card: Add a NULL pointer
+	check in asoc_simple_card_dai_link_of
+Date: Thu, 5 Mar 2015 16:15:16 +0530
+Message-ID: <CAC3a_SDWqGLsgUu8_mRYkW=Y+KHvWvAWjUYr4Ba3BrDBiP6nNA@mail.gmail.com>
+References: <20150303132900.GA22246@vishal> <54F76B43.3030602@bfs.de>
+Reply-To: vishal.thanki@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id ABB65260415
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 11:45:10 +0100 (CET)
-In-Reply-To: <54F82553.7050508@topic.nl>
+Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
+ [209.85.223.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E47D265677
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 11:45:37 +0100 (CET)
+Received: by iecat20 with SMTP id at20so21822211iec.6
+ for <alsa-devel@alsa-project.org>; Thu, 05 Mar 2015 02:45:37 -0800 (PST)
+In-Reply-To: <54F76B43.3030602@bfs.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Looijmans <mike.looijmans@topic.nl>, alsa-devel@alsa-project.org
+To: wharms@bfs.de
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDMvMDUvMjAxNSAxMTo0MyBBTSwgTWlrZSBMb29pam1hbnMgd3JvdGU6Cj4gT24gMDQtMDMt
-MTUgMTU6MTAsIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+PiBPbiAwMy8wNC8yMDE1IDAyOjI4IFBN
-LCBNaWtlIExvb2lqbWFucyB3cm90ZToKPj4+PiBXL28gdGhlIEFGSUZPIGVuYWJsZWQgT01BUC1M
-MTM4IHNob3VsZCBiZSBjbG9zZSBlbm91Z2ggZm9yIHRoZSBwbGF0Zm9ybXMKPj4+PiB3aGljaAo+
-Pj4+IGRvZXMgbm90IGhhdmUgRklGTy4gQnV0IEkgY2FuIHRlc3Qgdy9vIEZJRk8gYW5kIHcvIEZJ
-Rk8gb24gdGhpcyBwbGF0Zm9ybS4KPj4+Cj4+PiBPa2F5LCBJIGhhZG4ndCBldmVuIHRob3VnaHQg
-b2Ygc2ltcGx5IGRpc2FibGluZyB0aGUgRklGTy4gR29vZCB0byBrbm93IHlvdQo+Pj4gYWxyZWFk
-eSB0b29rIHRoaXMgaW50byBjb25zaWRlcmF0aW9uLCBnb29kIHdvcmsuCj4+Cj4+IERvIHlvdSBo
-YXZlIHBvc3NpYmlsaXR5IG9mIHRlc3RpbmcgdGhlIGVkbWEtcGNtIGluIHlvdXIgc2V0dXAgYnkg
-YW55IGNoYW5jZT8KPiAKPiBOb3QgcmVhbGx5LCBzaW5jZSB0aGUgYm9hcmQgaGFzIHNvbWUgVEkg
-aGFyZHdhcmUgdGhhdCBkb2Vzbid0IHdvcmsgb24gbmV3ZXIKPiBrZXJuZWxzLiBUaGUgMTI3MSBX
-aWZpIGNoaXAgZm9yIG9uZSwgdGhhdCBzdG9wcGVkIHdvcmtpbmcgYWZ0ZXIgMy4yLgo+IAo+Pj4g
-QlRXLCBJIHNpbXBseSBsaW5rZWQgdGhlIHBhcmFtcyBmb3IgdGhlIE1jQVNQLXRvLUREUiBpbiBh
-IGJpZyBsb29wIGZvciBteQo+Pj4gMi42LjM3IGJhc2VkIGtlcm5lbCwgd2hpY2ggc29sdmVkIHRo
-ZSBwcm9ibGVtcyB3aGVuIHNhbXBsaW5nIDE2IGNoYW5uZWxzLgo+Pgo+PiBTb3VuZHMgaW50ZXJl
-c3RpbmcsIGlzIGl0IHBvc3NpYmxlIHRvIHNoYXJlIHRoaXMgY29kZSB3aXRoIG1lIHNvIEkgY2Fu
-IHNlZQo+PiB3aGF0IHlvdSBoYXZlIGRvbmUgYW5kIEkgY2FuIGNoZWNrIGlmIHlvdXIgdXNlIGNh
-c2Ugd2lsbCB3b3JrIHdpdGggdGhlCj4+IGVkbWEtcGNtIGFzIHdlbGw/Cj4gCj4gU3VyZSwgdGhv
-dWdoIEkgdGhpbmsgSSd2ZSBwb3N0ZWQgaXQgYmVmb3JlLgo+IAo+IFdoYXQgSSBkaWQgd2FzIGp1
-c3QgY3JlYXRlIGEgc2V0IG9mIHBhcmFtcyBpbiBhIGNsb3NlZCBjaXJjbGUsIGVhY2ggcG9pbnRp
-bmcKPiB0byB0aGUgbmV4dCwgYW5kIHRoZSBsYXN0IHBvaW50aW5nIHRvIHRoZSBmaXJzdC4gVGhp
-cyBtZWFucyB5b3UnbGwgbmVlZCBhcwo+IG1hbnkgcGFyYW0gc2xvdHMgYXMgdGhlcmUgYXJlIHBl
-cmlvZHMgdGhvdWdoLiBJIHR5cGljYWxseSB1c2UgOCwgYnV0IGFzIGZldyBhcwo+IDIgd2lsbCBk
-byBhcyB3ZWxsICh3aGljaCBpcyB3aGF0IHBpbmctcG9uZyBkb2VzIGludG8gdGhlIFNSQU0pLgoK
-VGhlIGVkbWEtcGNtICh2aWEgZG1hZW5naW5lKSBkb2VzIHRoZSBzYW1lIHRoaW5nLCB3ZSBoYXZl
-IHRoZSBtYXggbGltaXQgZm9yCnBlcmlvZHMgYXQgMTkgQVRNLCBidXQgSSdtIHdvcmtpbmcgb24g
-dG8gZ2V0IHRoYXQgb25lIGluY3JlYXNlZC4KCj4gVGhlIElSUSBoYW5kbGVyIGlzIHRoZW4gcmVk
-dWNlZCB0byBlbWl0IGp1c3QgdGhlICJwZXJpb2QiIHNpZ25hbC4gVGhlcmUncyBubwo+IGhhcmQg
-dGltaW5nIHJlcXVpcmVtZW50IHRvIHRoZSBJUlEgaGFuZGxlciwgdXNlciBzcGFjZSBqdXN0IG5l
-ZWRzIHRvIGdyYWIgKG9yCj4gZmlsbCkgdGhlIGRhdGEgYmVmb3JlIHRoZSBETUEgbG9vcHMgYXJv
-dW5kLiAoVGhpcyBhbGxvd3MgZm9yIHZlcnkgc2hvcnQKPiBwZXJpb2RzIHRvbywgaWYgbG93IGxh
-dGVuY3kgaXMgeW91ciBnb2FsLCBzaW5jZSBtaXNzaW5nIG9uZSBvciBldmVuIHNldmVyYWwKPiBp
-bnRlcnJ1cHRzIHdvbid0IGhhcm0gdGhlIHRyYW5zZmVyLikKPiAKPiBJIHNldCB1cCB0aGUgRE1B
-IHRvIHVzZSBsYXJnZXIgY2h1bmtzIGJ5IG9ubHkgdHJpZ2dlcmluZyBvbmNlIGV2ZXJ5IH4xNiB3
-b3JkcywKPiBzbyB0aGF0IHRoZSAiYSIgcGFyYW1ldGVyIG9mIHRoZSBwYXJhbSBjYW4gYmUgc2V0
-IG11Y2ggbGFyZ2VyLCBhbmQgaGVuY2UgdGhlCj4gYnl0ZXMtcGVyLXBlcmlvZCBjYW4gYmUgc2V0
-IHRvIHZhbHVlcyBiZXlvbmQgNjRrLiBTbyB0aGUgTWNBU1Agb25seSBzZW5kcyBvdXQKPiBvbmUg
-ZXZlbnQgZXZlcnkgMTYgd29yZHMsIGFuZCB0aGUgRE1BIGlzIHNldCB1cCBhY2NvcmRpbmdseS4K
-Ck9LLCB0aGlzIGlzIGFsc28gc3VwcG9ydGVkIGJ5IHRoZSBlZG1hLXBjbSwgeW91IG5lZWQgdG8g
-ZW5hYmxlIHRoZSBGSUZPIGFuZApzcGVjaWZ5IHRoZSB0aHJlc2hvbGQuCgo+IEkgdXNlIGEgNE1C
-IGJ1ZmZlciBmb3IgdGhhdCAxNi1jaGFubmVscy1vZi0zMi1iaXRzIHN5c3RlbSwgdXN1YWxseSB3
-aXRoIDgKPiBwZXJpb2RzIG9mIDUxMmtCIGVhY2guCgpHbGFkIHRvIGhlYXIsIGlmIHlvdSBldmVy
-IG5lZWQgdG8gdXBkYXRlIHRoZSBrZXJuZWwsIHRoZSBlZG1hLXBjbSBjb252ZXJzaW9uCndpbGwg
-bm90IGdvaW5nIHRvIGNhdXNlIHlvdSByZWdyZXNzaW9uIDspCgo+IE1ldCB2cmllbmRlbGlqa2Ug
-Z3JvZXQgLyBraW5kIHJlZ2FyZHMsCj4gCj4gTWlrZSBMb29pam1hbnMKPiBTeXN0ZW0gRXhwZXJ0
-Cj4gCj4gCj4gVE9QSUMgRW1iZWRkZWQgU3lzdGVtcwo+IEVpbmRob3ZlbnNld2VnIDMyLUMsIE5M
-LTU2ODMgS0ggQmVzdAo+IFBvc3RidXMgNDQwLCBOTC01NjgwIEFLIEJlc3QKPiBUZWxlZm9vbjog
-KCszMSkgKDApIDQ5OSAzMyA2OSA3OQo+IFRlbGVmYXg6ICAoKzMxKSAoMCkgNDk5IDMzIDY5IDcw
-Cj4gRS1tYWlsOiBtaWtlLmxvb2lqbWFuc0B0b3BpYy5ubAo+IFdlYnNpdGU6IHd3dy50b3BpYy5u
-bAo+IAo+IFBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRo
-aXMgZS1tYWlsCj4gCj4gVG9waWMgem9la3QgZ2VkcmV2ZW4gKGVtYmVkZGVkKSBzb2Z0d2FyZSBz
-cGVjaWFsaXN0ZW4hCj4gaHR0cDovL3RvcGljLm5sL3ZhY2F0dXJlcy90b3BpYy16b2VrdC1zb2Z0
-d2FyZS1lbmdpbmVlcnMvCj4gCgoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+I am new to kasprintf. I think we need to make sure of freeing memory
+allocated using kasprintf.
+
+On Thu, Mar 5, 2015 at 1:59 AM, walter harms <wharms@bfs.de> wrote:
+
+>
+>
+> Am 03.03.2015 14:29, schrieb Vishal Thanki:
+> > Make sure devm_kzalloc() succeeds.
+> >
+> > Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
+> > ---
+> >  sound/soc/generic/simple-card.c |    5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/sound/soc/generic/simple-card.c
+> b/sound/soc/generic/simple-card.c
+> > index f7c6734..fb550b5 100644
+> > --- a/sound/soc/generic/simple-card.c
+> > +++ b/sound/soc/generic/simple-card.c
+> > @@ -372,6 +372,11 @@ static int asoc_simple_card_dai_link_of(struct
+> device_node *node,
+> >                           strlen(dai_link->cpu_dai_name)   +
+> >                           strlen(dai_link->codec_dai_name) + 2,
+> >                           GFP_KERNEL);
+> > +     if (!name) {
+> > +             ret = -ENOMEM;
+> > +             goto dai_link_of_err;
+> > +     }
+> > +
+> >       sprintf(name, "%s-%s", dai_link->cpu_dai_name,
+> >                               dai_link->codec_dai_name);
+> >       dai_link->name = dai_link->stream_name = name;
+>
+>
+> maybe it is more simple to use kasprintf here ?
+>
+> just my 2 cents,
+> wh
+>
+>
