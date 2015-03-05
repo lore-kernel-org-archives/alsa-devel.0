@@ -1,20 +1,19 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
- davinci-pcm
-Date: Thu, 5 Mar 2015 10:43:47 +0100
-Message-ID: <54F82553.7050508@topic.nl>
-References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
- <54F6A3E5.1090201@topic.nl> <54F6C737.309@ti.com> <54F6FA66.8000803@topic.nl>
- <54F71249.2090703@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 19/30] ASoC: littlemill: Register jacks
+	at	the card level
+Date: Thu, 5 Mar 2015 09:57:17 +0000
+Message-ID: <20150305095717.GA4286@opensource.wolfsonmicro.com>
+References: <1425461626-21103-1-git-send-email-lars@metafoo.de>
+ <1425461626-21103-20-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
- [217.149.192.139])
- by alsa0.perex.cz (Postfix) with ESMTP id BB9082654CD
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 10:43:49 +0100 (CET)
-In-Reply-To: <54F71249.2090703@ti.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 86D692654C2
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 10:57:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1425461626-21103-20-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Yang A Fang <yang.a.fang@intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Sean Cross <xobs@kosagi.com>, Dylan Reid <dgreid@chromium.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-77u/T24gMDQtMDMtMTUgMTU6MTAsIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+IE9uIDAzLzA0LzIw
-MTUgMDI6MjggUE0sIE1pa2UgTG9vaWptYW5zIHdyb3RlOgo+Pj4gVy9vIHRoZSBBRklGTyBlbmFi
-bGVkIE9NQVAtTDEzOCBzaG91bGQgYmUgY2xvc2UgZW5vdWdoIGZvciB0aGUgcGxhdGZvcm1zIHdo
-aWNoCj4+PiBkb2VzIG5vdCBoYXZlIEZJRk8uIEJ1dCBJIGNhbiB0ZXN0IHcvbyBGSUZPIGFuZCB3
-LyBGSUZPIG9uIHRoaXMgcGxhdGZvcm0uCj4+Cj4+IE9rYXksIEkgaGFkbid0IGV2ZW4gdGhvdWdo
-dCBvZiBzaW1wbHkgZGlzYWJsaW5nIHRoZSBGSUZPLiBHb29kIHRvIGtub3cgeW91Cj4+IGFscmVh
-ZHkgdG9vayB0aGlzIGludG8gY29uc2lkZXJhdGlvbiwgZ29vZCB3b3JrLgo+Cj4gRG8geW91IGhh
-dmUgcG9zc2liaWxpdHkgb2YgdGVzdGluZyB0aGUgZWRtYS1wY20gaW4geW91ciBzZXR1cCBieSBh
-bnkgY2hhbmNlPwoKTm90IHJlYWxseSwgc2luY2UgdGhlIGJvYXJkIGhhcyBzb21lIFRJIGhhcmR3
-YXJlIHRoYXQgZG9lc24ndCB3b3JrIG9uIG5ld2VyIAprZXJuZWxzLiBUaGUgMTI3MSBXaWZpIGNo
-aXAgZm9yIG9uZSwgdGhhdCBzdG9wcGVkIHdvcmtpbmcgYWZ0ZXIgMy4yLgoKPj4gQlRXLCBJIHNp
-bXBseSBsaW5rZWQgdGhlIHBhcmFtcyBmb3IgdGhlIE1jQVNQLXRvLUREUiBpbiBhIGJpZyBsb29w
-IGZvciBteQo+PiAyLjYuMzcgYmFzZWQga2VybmVsLCB3aGljaCBzb2x2ZWQgdGhlIHByb2JsZW1z
-IHdoZW4gc2FtcGxpbmcgMTYgY2hhbm5lbHMuCj4KPiBTb3VuZHMgaW50ZXJlc3RpbmcsIGlzIGl0
-IHBvc3NpYmxlIHRvIHNoYXJlIHRoaXMgY29kZSB3aXRoIG1lIHNvIEkgY2FuIHNlZQo+IHdoYXQg
-eW91IGhhdmUgZG9uZSBhbmQgSSBjYW4gY2hlY2sgaWYgeW91ciB1c2UgY2FzZSB3aWxsIHdvcmsg
-d2l0aCB0aGUKPiBlZG1hLXBjbSBhcyB3ZWxsPwoKU3VyZSwgdGhvdWdoIEkgdGhpbmsgSSd2ZSBw
-b3N0ZWQgaXQgYmVmb3JlLgoKV2hhdCBJIGRpZCB3YXMganVzdCBjcmVhdGUgYSBzZXQgb2YgcGFy
-YW1zIGluIGEgY2xvc2VkIGNpcmNsZSwgZWFjaCBwb2ludGluZyAKdG8gdGhlIG5leHQsIGFuZCB0
-aGUgbGFzdCBwb2ludGluZyB0byB0aGUgZmlyc3QuIFRoaXMgbWVhbnMgeW91J2xsIG5lZWQgYXMg
-Cm1hbnkgcGFyYW0gc2xvdHMgYXMgdGhlcmUgYXJlIHBlcmlvZHMgdGhvdWdoLiBJIHR5cGljYWxs
-eSB1c2UgOCwgYnV0IGFzIGZldyBhcyAKMiB3aWxsIGRvIGFzIHdlbGwgKHdoaWNoIGlzIHdoYXQg
-cGluZy1wb25nIGRvZXMgaW50byB0aGUgU1JBTSkuCgpUaGUgSVJRIGhhbmRsZXIgaXMgdGhlbiBy
-ZWR1Y2VkIHRvIGVtaXQganVzdCB0aGUgInBlcmlvZCIgc2lnbmFsLiBUaGVyZSdzIG5vIApoYXJk
-IHRpbWluZyByZXF1aXJlbWVudCB0byB0aGUgSVJRIGhhbmRsZXIsIHVzZXIgc3BhY2UganVzdCBu
-ZWVkcyB0byBncmFiIChvciAKZmlsbCkgdGhlIGRhdGEgYmVmb3JlIHRoZSBETUEgbG9vcHMgYXJv
-dW5kLiAoVGhpcyBhbGxvd3MgZm9yIHZlcnkgc2hvcnQgCnBlcmlvZHMgdG9vLCBpZiBsb3cgbGF0
-ZW5jeSBpcyB5b3VyIGdvYWwsIHNpbmNlIG1pc3Npbmcgb25lIG9yIGV2ZW4gc2V2ZXJhbCAKaW50
-ZXJydXB0cyB3b24ndCBoYXJtIHRoZSB0cmFuc2Zlci4pCgpJIHNldCB1cCB0aGUgRE1BIHRvIHVz
-ZSBsYXJnZXIgY2h1bmtzIGJ5IG9ubHkgdHJpZ2dlcmluZyBvbmNlIGV2ZXJ5IH4xNiB3b3Jkcywg
-CnNvIHRoYXQgdGhlICJhIiBwYXJhbWV0ZXIgb2YgdGhlIHBhcmFtIGNhbiBiZSBzZXQgbXVjaCBs
-YXJnZXIsIGFuZCBoZW5jZSB0aGUgCmJ5dGVzLXBlci1wZXJpb2QgY2FuIGJlIHNldCB0byB2YWx1
-ZXMgYmV5b25kIDY0ay4gU28gdGhlIE1jQVNQIG9ubHkgc2VuZHMgb3V0IApvbmUgZXZlbnQgZXZl
-cnkgMTYgd29yZHMsIGFuZCB0aGUgRE1BIGlzIHNldCB1cCBhY2NvcmRpbmdseS4KCkkgdXNlIGEg
-NE1CIGJ1ZmZlciBmb3IgdGhhdCAxNi1jaGFubmVscy1vZi0zMi1iaXRzIHN5c3RlbSwgdXN1YWxs
-eSB3aXRoIDggCnBlcmlvZHMgb2YgNTEya0IgZWFjaC4KCgpNZXQgdnJpZW5kZWxpamtlIGdyb2V0
-IC8ga2luZCByZWdhcmRzLAoKTWlrZSBMb29pam1hbnMKU3lzdGVtIEV4cGVydAoKClRPUElDIEVt
-YmVkZGVkIFN5c3RlbXMKRWluZGhvdmVuc2V3ZWcgMzItQywgTkwtNTY4MyBLSCBCZXN0ClBvc3Ri
-dXMgNDQwLCBOTC01NjgwIEFLIEJlc3QKVGVsZWZvb246ICgrMzEpICgwKSA0OTkgMzMgNjkgNzkK
-VGVsZWZheDogICgrMzEpICgwKSA0OTkgMzMgNjkgNzAKRS1tYWlsOiBtaWtlLmxvb2lqbWFuc0B0
-b3BpYy5ubApXZWJzaXRlOiB3d3cudG9waWMubmwKClBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJv
-bm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsCgpUb3BpYyB6b2VrdCBnZWRyZXZlbiAo
-ZW1iZWRkZWQpIHNvZnR3YXJlIHNwZWNpYWxpc3RlbiEKaHR0cDovL3RvcGljLm5sL3ZhY2F0dXJl
-cy90b3BpYy16b2VrdC1zb2Z0d2FyZS1lbmdpbmVlcnMvCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, Mar 04, 2015 at 10:33:34AM +0100, Lars-Peter Clausen wrote:
+> The jacks are card level elements so use snd_soc_card_jack_new() instead of
+> snd_soc_jack_new() to register them.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Thanks,
+Charles
