@@ -1,85 +1,77 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: re: ALSA: line6: Fix volume calculation for big-endian
-Date: Thu, 5 Mar 2015 13:21:49 +0300
-Message-ID: <20150305102149.GA10971@mwanda>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: [PATCH] ucm: improve jack configuration documentation
+Date: Thu,  5 Mar 2015 12:30:05 +0200
+Message-ID: <1425551405-14066-1-git-send-email-tanu.kaskinen@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52DD226044D
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 11:30:09 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, han.lu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi Iwai,
+Signed-off-by: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+---
 
-The patch 0416980d0a2b: "ALSA: line6: Fix volume calculation for
-big-endian" from Jan 28, 2015, leads to the following static checker
-warning:
-
-	sound/usb/line6/playback.c:42 change_volume()
-		warn: always clamps to s16min
-	sound/usb/line6/playback.c:57 change_volume()
-		warn: always clamps to (-8388608)
-	sound/usb/line6/playback.c:129 add_monitor_signal()
-		warn: always clamps to s16min
-
-sound/usb/line6/playback.c
-    25  static void change_volume(struct urb *urb_out, int volume[],
-    26                            int bytes_per_frame)
-    27  {
-    28          int chn = 0;
-    29  
-    30          if (volume[0] == 256 && volume[1] == 256)
-    31                  return;         /* maximum volume - no change */
-    32  
-    33          if (bytes_per_frame == 4) {
-    34                  __le16 *p, *buf_end;
-    35  
-    36                  p = (__le16 *)urb_out->transfer_buffer;
-    37                  buf_end = p + urb_out->transfer_buffer_length / sizeof(*p);
-    38  
-    39                  for (; p < buf_end; ++p) {
-    40                          short pv = le16_to_cpu(*p);
-    41                          int val = (pv * volume[chn & 1]) >> 8;
-    42                          pv = clamp(val, 0x7fff, -0x8000);
-                                                ^^^^^^^^^^^^^^^^
-You didn't really add this, but you might know what was intended here.
-It is a complete mystery to me.  :)
-
-    43                          *p = cpu_to_le16(pv);
-    44                          ++chn;
-    45                  }
-    46          } else if (bytes_per_frame == 6) {
-    47                  unsigned char *p, *buf_end;
-    48  
-    49                  p = (unsigned char *)urb_out->transfer_buffer;
-    50                  buf_end = p + urb_out->transfer_buffer_length;
-    51  
-    52                  for (; p < buf_end; p += 3) {
-    53                          int val;
-    54  
-    55                          val = p[0] + (p[1] << 8) + ((signed char)p[2] << 16);
-    56                          val = (val * volume[chn & 1]) >> 8;
-    57                          val = clamp(val, 0x7fffff, -0x800000);
-                                                 ^^^^^^^^^^^^^^^^^^^^
-    58                          p[0] = val;
-    59                          p[1] = val >> 8;
-    60                          p[2] = val >> 16;
-    61                          ++chn;
-    62                  }
-    63          }
-    64  }
-
-	[snip]
+I worked with Han Lu on enabling jack detection in PulseAudio with UCM
+on Broadwell-rt286. Due to less-than-perfect coordination, we both
+independently wrote documentation for the new UCM values. Han sent his
+patch first, and it got applied already, but my patch has more
+detailed documentation, so it might make sense to replace the
+documentation with my version.
 
 
-   127                          short piv = le16_to_cpu(*pi);
-   128                          int val = pov + ((piv * volume) >> 8);
-   129                          pov = clamp(val, 0x7fff, -0x8000);
-                                                 ^^^^^^^^^^^^^^^^
-   130                          *po = cpu_to_le16(pov);
-   131                  }
+ include/use-case.h | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-regards,
-dan carpenter
+diff --git a/include/use-case.h b/include/use-case.h
+index 3728906..6c1fe70 100644
+--- a/include/use-case.h
++++ b/include/use-case.h
+@@ -284,10 +284,28 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
+  *   PlaybackMixerID	- mixer playback ID
+  *   CaptureMixer	- name of capture mixer
+  *   CaptureMixerID	- mixer capture ID
+- *   JackDev		- jack device name
+- *   JackControl	- jack control name
+- *   JackHWMute		- indicate if the HW mutes a device on jack insertion
+- *			  or not.
++ *   JackControl,
++ *   JackDev,
++ *   JackHWMute		- Jack information for a device. The jack status can be
++ *			  reported via a kcontrol and/or via an input device.
++ *			  JackControl is the kcontrol name of the jack, and
++ *			  JackDev is the input device id of the jack (if the
++ *			  full input device path is /dev/input/by-id/foo, the
++ *			  JackDev value should be "foo"). UCM configuration
++ *			  files should contain both JackControl and JackDev
++ *			  when possible, because applications are likely to
++ *			  support only one or the other. If JackHWMute is set,
++ *			  it indicates that when the jack is plugged in, the
++ *			  hardware automatically mutes some other device. The
++ *			  JackHWMute value is the name of the muted device.
++ *			  Note that JackHWMute should be used only when the
++ *			  hardware enforces the automatic muting. If the
++ *			  hardware doesn't enforce any muting, it may still be
++ *			  tempting to set JackHWMute to trick upper software
++ *			  layers to e.g. automatically mute speakers when
++ *			  headphones are plugged in, but that's application
++ *			  policy configuration that doesn't belong to UCM
++ *			  configuration files.
+  */
+ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
+                      const char *identifier,
+-- 
+1.9.3
