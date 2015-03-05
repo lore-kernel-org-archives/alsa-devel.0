@@ -1,76 +1,46 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH v2] ASoC: Add support for NAU8824 codec to ASoC
-Date: Wed, 04 Mar 2015 23:32:12 +0100
-Message-ID: <1425508332.2090.48.camel@tiscali.nl>
-References: <54F70052.1070109@nuvoton.com>
+From: han.lu@intel.com
+Subject: [PATCH v2 1/2] ucm: document some standard values
+Date: Thu,  5 Mar 2015 08:38:54 +0800
+Message-ID: <1425515935-12604-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <54F70052.1070109@nuvoton.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chih-Chiang Chang <ccchang12@nuvoton.com>
-Cc: Mark Brown <broonie@kernel.org>, "mcuos.com@gmail.com" <mcuos.com@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, liam.r.girdwood@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Chih-Chiang Chang schreef op wo 04-03-2015 om 20:53 [+0800]:
-> From fe37688e226f83ba477a3c2fbc1e64946cd4ec4e Mon Sep 17 00:00:00 2001
-> From: Chih-Chiang Chang <ccchang12@nuvoton.com>
-> Date: Wed, 4 Mar 2015 20:03:21 +0800
-> Subject: [PATCH v2] ASoC: Add support for NAU8824 codec to ASoC
+From: "Lu, Han" <han.lu@intel.com>
 
-It seems that none of those lines were needed.
+add standard value JackDev, JackControl and JackHWMute for speaker
+mute control on jack insertion. These values will be applied on
+pulseaudio.
 
-> --- /dev/null
-> +++ b/include/sound/nau8824.h
-> @@ -0,0 +1,22 @@
-> +/*
-> + * linux/sound/nau8824.h -- Platform data for NAU8824
-> + *
-> + * Copyright 2015 Nuvoton Technology Corp.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#ifndef __LINUX_SND_NAU8824_H
-> +#define __LINUX_SND_NAU8824_H
-> +
-> +struct nau8824_platform_data {
-> +       unsigned int audio_mclk1;
-> +       unsigned int gpio_irq;
-> +       int naudint_irq;
-> +       int headset_detect;
-> +       int button_press_detect;
-> +};
-> +
-> +#endif
+Signed-off-by: Lu, Han <han.lu@intel.com>
 
-In the future something other than just sound/soc/codecs/nau8824.h is
-going to include this header, right?
-
-> --- /dev/null
-> +++ b/sound/soc/codecs/nau8824.c
-> @@ -0,0 +1,807 @@
-> +/*
-> + * linux/sound/soc/codecs/nau8824.c
-> + *
-> + * Copyright 2015 Nuvoton Technology Corp.
-> + * Author: Meng-Huang Kuo <mhkuo@nuvoton.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-
-This states the license is GPL v2. (So do the two headers this patch
-adds.)
-
-> +MODULE_LICENSE("GPL");
-
-So that should probably be
-    MODULE_LICENSE("GPL v2");
-
-
-Paul Bolle
+diff --git a/include/use-case.h b/include/use-case.h
+index 697377a..3728906 100644
+--- a/include/use-case.h
++++ b/include/use-case.h
+@@ -284,6 +284,10 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
+  *   PlaybackMixerID	- mixer playback ID
+  *   CaptureMixer	- name of capture mixer
+  *   CaptureMixerID	- mixer capture ID
++ *   JackDev		- jack device name
++ *   JackControl	- jack control name
++ *   JackHWMute		- indicate if the HW mutes a device on jack insertion
++ *			  or not.
+  */
+ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
+                      const char *identifier,
+-- 
+2.1.0
