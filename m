@@ -1,58 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] regulator: core: Add devres versions of notifier
- registration
-Date: Thu, 5 Mar 2015 16:58:39 +0000
-Message-ID: <20150305165839.GR21293@sirena.org.uk>
-References: <1425569962-14285-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: fix platform_no_drv_owner.cocci warnings
+Date: Thu, 5 Mar 2015 17:08:06 +0000
+Message-ID: <20150305170806.GU21293@sirena.org.uk>
+References: <201503050334.H4jPvCBg%fengguang.wu@intel.com>
+ <20150304193739.GA91196@athens.lkp.intel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PWK6D6Fg0OM3dZe4"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="1KbtIL0gAKpEK4a6"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1425569962-14285-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, info@crazy-audio.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+In-Reply-To: <20150304193739.GA91196-2yRetTFTapcuUoWeoHoyuFaTQe2KTcn/@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: kbuild test robot <fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Cc: Anatol Pomozov <anatol.pomozov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, kbuild-all-JC7UmRfGjtg@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---PWK6D6Fg0OM3dZe4
+--1KbtIL0gAKpEK4a6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 05, 2015 at 03:39:20PM +0000, Charles Keepax wrote:
-> From: Charles Keepax <ckeepax@gmail.com>
->=20
-> Add devm_regulator_register_notifier, this adds the resource against the
-> device for the consumer supply we are registering the notifier for. There
-> seem to be few use-cases where this wouldn't be the users intention and
-> this ensures the notifiers will always be removed at the correct time.
+On Thu, Mar 05, 2015 at 03:37:39AM +0800, kbuild test robot wrote:
+> sound/soc/tegra/tegra_rt5677.c:334:3-8: No need to set .owner here. The core will do it.
 
-Applied all, thanks.
+Applied, thanks.
 
-> I have based this series of your ASoC tree Mark, because the
-> wm8804 patches have dependencies there. But just let me know
-> if you would rather I send the regulator patch against your
-> regulator tree.
-
-You should send against the relevant tree for the subsystem usually, but
-in this case they're the same as there's no relevant regulator changes.
-
---PWK6D6Fg0OM3dZe4
+--1KbtIL0gAKpEK4a6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU+Is+AAoJECTWi3JdVIfQQMQIAIbsmvdtJDLBbOYGxKvKlVng
-4AX5dbBEnHuiJnEGZUVTinwY1/fK8dARo0lQDbnneAgMQvyrP4V38vCr64rAK3As
-InvcEQzK2AS8MrzY1nXliU490xFYvFPYZCf6bcu0BqBt3nkiFNnoJr8sdOFCc2Sx
-YX2Yh5DDBgAkbr6ryrkqoT0Vn81H+4IxYiZ1033LPdbZJjb3aFfRReXAjmxwxuZi
-fZqNPKciWllECCgwVmSZN3hwk2GQktdpSIwTFUqM8T0V9on1F+sdPn0tEZyXd5cT
-V2E+w9UI3XteVYff1+PudnltKuz95600BjrFxiKtemBsIcLVrcGWN1/S5Q+6HCw=
-=sXOs
+iQEcBAEBCAAGBQJU+I11AAoJECTWi3JdVIfQBw4H/2BpV00MMYcng0bQ6YzAgD1K
+KQ8wyxEXT/mbE8AvKJrifLVjx+TEbVIOUI4X4kuE/ZtHrAGDWhQi5sRb/QY3VIld
+KvbjwTuwid/BCFjLnkUHkkhPMLLKhlNg6F8a91Sj+ftcU9bjWjna1fID/uy5FcTg
+EKBRT5pAcbJR+5PYQYGaug2EluwXc8dbLvKmK2pFtNFsXTXnNSMHnt6GBLYP3xdY
+6H5Y9ukEj/D8HVGSu6uj/WDwLqkscMUY0bF9aC3zNvizzT8fiwfRSQ5LaO3WbEz5
+OyRGwfz+asLTOv40JpJSeG2rSuUSPSC9DxchOOlba571HjqwQfMZPRWnJRPtR4Q=
+=FbT6
 -----END PGP SIGNATURE-----
 
---PWK6D6Fg0OM3dZe4--
+--1KbtIL0gAKpEK4a6--
