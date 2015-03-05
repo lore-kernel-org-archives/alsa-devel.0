@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Allow complete
- shutdown of McASP when not in use
-Date: Thu, 5 Mar 2015 11:38:46 +0000
-Message-ID: <20150305113846.GI21293@sirena.org.uk>
-References: <1425392792-12659-1-git-send-email-peter.ujfalusi@ti.com>
- <20150303150742.GZ21293@sirena.org.uk> <54F6DA94.2000702@ti.com>
- <20150304113004.GJ21293@sirena.org.uk> <54F6ED24.9060907@ti.com>
- <20150304171357.GP21293@sirena.org.uk> <54F83516.7010603@ti.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - Fix wrong detection of
+ "Headphone+LO" or "Speaker+LO"
+Date: Thu, 5 Mar 2015 19:43:04 +0800
+Message-ID: <CAN8ccibTukVjjNgdJXwS2XAkEPAOX5spkYTmwqteChg=-ROA7A@mail.gmail.com>
+References: <54F5DB0B.8020507@canonical.com>
+ <54f82ff9.6829c1e7.bm000@wupperonline.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6384180765500852007=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 50618260481
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 12:38:53 +0100 (CET)
-In-Reply-To: <54F83516.7010603@ti.com>
+Received: from mail-ob0-f182.google.com (mail-ob0-f182.google.com
+ [209.85.214.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F61F260499
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 12:43:05 +0100 (CET)
+Received: by obcuy5 with SMTP id uy5so6072795obc.11
+ for <alsa-devel@alsa-project.org>; Thu, 05 Mar 2015 03:43:04 -0800 (PST)
+In-Reply-To: <54f82ff9.6829c1e7.bm000@wupperonline.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +25,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com
+To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
+>
+> > Hmm. What do you think of the attached patch - would it work as well? It
+> > removes the part that returns early for all three, letting it fall
+> > through to the part that returns "Front" etc.
+>
+> > +++ b/sound/pci/hda/hda_generic.c
+> > @@ -1100,11 +1100,9 @@ static const char *get_line_out_pfx(struct
+> > hda_codec *codec, int ch,
+> >                 if (!ch && cfg->speaker_outs && cfg->hp_outs) {
+> >                         bool hp_lo_shared = !path_has_mixer(codec,
+spec->hp_paths[0], ctl_type);
+> >                         bool spk_lo_shared = !path_has_mixer(codec,
+spec->speaker_paths[0], ctl_type);
+> > -                       if (hp_lo_shared && spk_lo_shared)
+> > -                               return spec->vmaster_mute.hook ? "PCM"
+: "Master";
+> > -                       if (hp_lo_shared)
+> > +                       if (hp_lo_shared && !spk_lo_shared)
+> >                                 return "Headphone+LO";
+> > -                       if (spk_lo_shared)
+> > +                       if (spk_lo_shared && !hp_lo_shared)
+> >                                 return "Speaker+LO";
+> >                 }
+> >         }
+>
+> After a quick check, this seems better. Master is a real master now and
+there
+> is a Front control.
 
---===============6384180765500852007==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pVwHbKIQz3zWQZSU"
-Content-Disposition: inline
+>> >> With the patch I'm getting a real Master (for all
+Front/Surround/CLFE) and a
+>> separate Front Volume Control in addition to Surround, Center and LFE
+which >> is exactly how it should be.
+> > > Hmm. What do you think of the attached patch - would it work as well?
+It removes the part that returns early for all three, letting it fall
+through to the part that returns "Front" etc.
 
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa/mixer/paths/analog-output-headphones.conf?id=
+96369919e5100865e2469e42fb8f4b8e38e41aef
 
---pVwHbKIQz3zWQZSU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Do you mean front playback volume is set to maximum when headphone is
+plugged?
 
-On Thu, Mar 05, 2015 at 12:51:02PM +0200, Peter Ujfalusi wrote:
+How do Pulseaudio calculate dB min of headphone path and lineout path?
 
-> Yes, it is possible to add a bool for this, but I don't really see the point
-> of duplicating the dai->active within the mcasp private data.
+Do it just put dB min of front playback volume in headphone path only when
+there is no headphone playback volume?
 
-That's assuming that the runtime PM state maps completely onto the DAI
-being active.  That may be true right now but it seems like it'd be more
-robust to not make that assumption.
+BTW codec alc888 in buglink can use amp out in node 0x26 as Headphone
+Playback volume
 
---pVwHbKIQz3zWQZSU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU+EBFAAoJECTWi3JdVIfQQ64H/iVIj9Y4gEaaAKFY8AiC6uB/
-AQWCJlDg2jFxxLmjI6kYqVhhSQuF6QUCN0qrbiR0M5e168izgw8IJthk541u/gYo
-G/awvCrvcsQRgiVya7W6aGtuYjPp/3r1cjtCyfrdqMc2c70c/p4w2LACvzgBR/fM
-gp3mAhCLLBo2A59x/AzXstTryZW2uyvSrjsR3fc9NWQfD786VytSEiuBAszqzxzY
-7Gma3+CKCa1G/J4SiIyYrQdz3UPYgTDDwYUIzk9iLWlspe8HCN4f/AvjkTW5XBle
-eZ2jHz0zXwOEvpiDaVTYXcqkpsE3R4ZTVl5phq24/az4wSwMQn22IBwBjYjgzsM=
-=GwPx
------END PGP SIGNATURE-----
-
---pVwHbKIQz3zWQZSU--
-
---===============6384180765500852007==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6384180765500852007==--
+>
+> However, due to the speaker having no path with my forced config, I cannot
+> say whether this will work if the parser could find the multi-io config by
+> itself (and until then there probably shouldn't be patches I suggested).
+And,
+> by the way, as a result of the no-path I'm getting a Speaker+LO control.
+>
+> Here a little additional debug output during the get_line_out_pfx() calls.
+> The "path_has_mixer" output refers to a call which output is in the
+following
+> line, i. e. the call for getting spk_lo_shared:
+>
+> [    0.648407] sound hdaudioC1D0: get_line_out_pfx, AUTO_PIN_LINE_OUT:
+hp_lo_shared=1
+> [    0.648407] sound hdaudioC1D0: path_has_mixer: no path!
+> [    0.648408] sound hdaudioC1D0: get_line_out_pfx, AUTO_PIN_LINE_OUT:
+spk_lo_shared=1
+> [    0.648409] sound hdaudioC1D0: get_line_out_pfx, AUTO_PIN_LINE_OUT:
+hp_lo_shared=0
+> [    0.648410] sound hdaudioC1D0: path_has_mixer: no path!
+> [    0.648410] sound hdaudioC1D0: get_line_out_pfx, AUTO_PIN_LINE_OUT:
+spk_lo_shared=1
+>
+> Ingo
