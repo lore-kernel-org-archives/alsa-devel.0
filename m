@@ -1,102 +1,40 @@
-From: Kumar Gala <galak@codeaurora.org>
-Subject: Re: [Patch V7 02/10] ASoC: qcom: Document LPASS CPU bindings
-Date: Thu, 5 Mar 2015 12:52:30 -0600
-Message-ID: <7E5AFC65-1705-4BDC-B57F-0444E83A8987@codeaurora.org>
-References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org> <1425428519-12224-3-git-send-email-kwestfie@codeaurora.org>
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1425428519-12224-3-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
+From: walter harms <wharms@bfs.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: simple-card: Add a NULL pointer check
+ in asoc_simple_card_dai_link_of
+Date: Thu, 05 Mar 2015 20:35:35 +0100
+Message-ID: <54F8B007.80208@bfs.de>
+References: <20150303132900.GA22246@vishal> <54F76B43.3030602@bfs.de> <CAC3a_SDWqGLsgUu8_mRYkW=Y+KHvWvAWjUYr4Ba3BrDBiP6nNA@mail.gmail.com> <54F84614.3020108@metafoo.de>
+Reply-To: wharms@bfs.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <54F84614.3020108@metafoo.de>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: vishal.thanki@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On Mar 3, 2015, at 6:21 PM, Kenneth Westfield <kwestfie@codeaurora.org> wrote:
 
-> From: Kenneth Westfield <kwestfie@codeaurora.org>
+Am 05.03.2015 13:03, schrieb Lars-Peter Clausen:
+> On 03/05/2015 11:45 AM, Vishal Thanki wrote:
+>> I am new to kasprintf. I think we need to make sure of freeing memory
+>> allocated using kasprintf.
 > 
-> Add documentation to the sound directory of the
-> device-tree bindings for the QTi LPASS CPU DAI
-> device.
+> There is also devm_kasprintf().
 > 
-> Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
-> Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
-> ---
-> .../devicetree/bindings/sound/qcom,lpass-cpu.txt   | 49 ++++++++++++++++++++++
-> 1 file changed, 49 insertions(+)
-> create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+> But these are really two separate things. One thing is the missing NULL
+> check, which is a bug fix and is fixed by your patch. The other thing is
+> the conversion to kasprintf() which is a code cleanup and should be done
+> in a separate patch.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..e7c6e9321863f022ebf0d51b75d7bb83c10b9062
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> @@ -0,0 +1,49 @@
-> +* Qualcomm Technologies LPASS CPU DAI
-> +
-> +This node models the Qualcomm Technologies Low-Power Audio SubSystem (LPASS).
-> +
-> +Required properties:
-> +
-> +- compatible		: "qcom,lpass-cpu"
-> +- clocks		: Must contain an entry for each entry in clock-names.
-> +- clock-names		: A list which must include the following entries:
-> +				* "ahbix-clk"
-> +				* "mi2s-osr-clk"
-> +				* "mi2s-bit-clk"
-> +- interrupts		: Must contain an entry for each entry in
-> +			  interrupt-names.
-> +- interrupt-names	: A list which must include the following entries:
-> +				* "lpass-irq-lpaif"
-> +- pinctrl-N		: One property must exist for each entry in
-> +			  pinctrl-names.  See ../pinctrl/pinctrl-bindings.txt
-> +			  for details of the property values.
-> +- pinctrl-names		: Must contain a "default" entry.
-> +- reg			: Must contain an address for each entry in reg-names.
-> +- reg-names		: A list which must include the following entries:
-> +				* "lpass-lpaif"
-> +
-> +Required subnodes:
-> +
-> +- qcom,adsp		: Audio DSP sub-node
-> +
 
-What is the intent of this subnode?
+hi,
+thx for the hint:
+never read about  devm_kasprintf().
 
-> +Optional Audio DSP subnode properties:
-> +
-> +- status		: "disabled" indicates the adsp is not available.
-> +
-> +Example:
-> +
-> +lpass@28100000 {
-> +	compatible = "qcom,lpass-cpu";
-> +	clocks = <&lcc AHBIX_CLK>, <&lcc MI2S_OSR_CLK>, <&lcc MI2S_BIT_CLK>;
-> +	clock-names = "ahbix-clk", "mi2s-osr-clk", "mi2s-bit-clk";
-> +	interrupts = <0 85 1>;
-> +	interrupt-names = "lpass-irq-lpaif";
-> +	pinctrl-names = "default", "idle";
-> +	pinctrl-0 = <&mi2s_default>;
-> +	pinctrl-1 = <&mi2s_idle>;
-> +	reg = <0x28100000 0x10000>;
-> +	reg-names = "lpass-lpaif";
-> +	qcom,adsp {
-> +		status = "disabled";
-> +	};
-> +};
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-arm-msm" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ntl my mail was intended as hint about asprintf() not about the patch.
 
--- 
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+re,
+ wh
