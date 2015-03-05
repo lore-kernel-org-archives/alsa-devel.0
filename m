@@ -1,166 +1,169 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2] ASoC: davinci-mcasp: Allow complete
-	shutdown of McASP when not in use
-Date: Thu, 5 Mar 2015 16:55:21 +0200
-Message-ID: <1425567321-29572-1-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C2A02604A1
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 15:55:27 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] regulator: core: Add devres versions of notifier registration
+Date: Thu,  5 Mar 2015 15:39:20 +0000
+Message-ID: <1425569962-14285-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, info@crazy-audio.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Rearrange the pm_runtime_get/put_sync calls so the IP will be turned off
-when it is not in use.
+From: Charles Keepax <ckeepax@gmail.com>
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Add devm_regulator_register_notifier, this adds the resource against the
+device for the consumer supply we are registering the notifier for. There
+seem to be few use-cases where this wouldn't be the users intention and
+this ensures the notifiers will always be removed at the correct time.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
-Hi,
 
-Changs since v1:
-- use om_runtime_put instead of the _sync variant whenever it is feasible
-- Use pm runtime API to get information about the power state of McASP at supend
-  and use the saved information on resume to do the right thing.
+I have based this series of your ASoC tree Mark, because the
+wm8804 patches have dependencies there. But just let me know
+if you would rather I send the regulator patch against your
+regulator tree.
 
-Regards,
-Peter
+Thanks,
+Charles
 
- sound/soc/davinci/davinci-mcasp.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ drivers/regulator/devres.c         |   85 ++++++++++++++++++++++++++++++++++++
+ include/linux/regulator/consumer.h |   16 +++++++
+ 2 files changed, 101 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 0c882995a357..33cea0728cd2 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -62,6 +62,7 @@ struct davinci_mcasp_context {
- 	u32	config_regs[ARRAY_SIZE(context_regs)];
- 	u32	afifo_regs[2]; /* for read/write fifo control registers */
- 	u32	*xrsr_regs; /* for serializer configuration */
-+	bool	pm_state;
- };
+diff --git a/drivers/regulator/devres.c b/drivers/regulator/devres.c
+index 8f785bc..6ec1d40 100644
+--- a/drivers/regulator/devres.c
++++ b/drivers/regulator/devres.c
+@@ -413,3 +413,88 @@ void devm_regulator_bulk_unregister_supply_alias(struct device *dev,
+ 		devm_regulator_unregister_supply_alias(dev, id[i]);
+ }
+ EXPORT_SYMBOL_GPL(devm_regulator_bulk_unregister_supply_alias);
++
++struct regulator_notifier_match {
++	struct regulator *regulator;
++	struct notifier_block *nb;
++};
++
++static int devm_regulator_match_notifier(struct device *dev, void *res,
++					 void *data)
++{
++	struct regulator_notifier_match *match = res;
++	struct regulator_notifier_match *target = data;
++
++	return match->regulator == target->regulator && match->nb == target->nb;
++}
++
++static void devm_regulator_destroy_notifier(struct device *dev, void *res)
++{
++	struct regulator_notifier_match *match = res;
++
++	regulator_unregister_notifier(match->regulator, match->nb);
++}
++
++/**
++ * devm_regulator_register_notifier - Resource managed
++ * regulator_register_notifier
++ *
++ * @regulator: regulator source
++ * @nb: notifier block
++ *
++ * The notifier will be registers under the consumer device and be
++ * automatically be unregistered when the source device is unbound.
++ */
++int devm_regulator_register_notifier(struct regulator *regulator,
++				     struct notifier_block *nb)
++{
++	struct regulator_notifier_match *match;
++	int ret;
++
++	match = devres_alloc(devm_regulator_destroy_notifier,
++			     sizeof(struct regulator_notifier_match),
++			     GFP_KERNEL);
++	if (!match)
++		return -ENOMEM;
++
++	match->regulator = regulator;
++	match->nb = nb;
++
++	ret = regulator_register_notifier(regulator, nb);
++	if (ret < 0) {
++		devres_free(match);
++		return ret;
++	}
++
++	devres_add(regulator->dev, match);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(devm_regulator_register_notifier);
++
++/**
++ * devm_regulator_unregister_notifier - Resource managed
++ * regulator_unregister_notifier()
++ *
++ * @regulator: regulator source
++ * @nb: notifier block
++ *
++ * Unregister a notifier registered with devm_regulator_register_notifier().
++ * Normally this function will not need to be called and the resource
++ * management code will ensure that the resource is freed.
++ */
++void devm_regulator_unregister_notifier(struct regulator *regulator,
++					struct notifier_block *nb)
++{
++	struct regulator_notifier_match match;
++	int rc;
++
++	match.regulator = regulator;
++	match.nb = nb;
++
++	rc = devres_release(regulator->dev, devm_regulator_destroy_notifier,
++			    devm_regulator_match_notifier, &match);
++	if (rc != 0)
++		WARN_ON(rc);
++}
++EXPORT_SYMBOL_GPL(devm_regulator_unregister_notifier);
+diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
+index d17e1ff..bd631ee 100644
+--- a/include/linux/regulator/consumer.h
++++ b/include/linux/regulator/consumer.h
+@@ -252,8 +252,12 @@ int regulator_list_hardware_vsel(struct regulator *regulator,
+ /* regulator notifier block */
+ int regulator_register_notifier(struct regulator *regulator,
+ 			      struct notifier_block *nb);
++int devm_regulator_register_notifier(struct regulator *regulator,
++				     struct notifier_block *nb);
+ int regulator_unregister_notifier(struct regulator *regulator,
+ 				struct notifier_block *nb);
++void devm_regulator_unregister_notifier(struct regulator *regulator,
++					struct notifier_block *nb);
  
- struct davinci_mcasp {
-@@ -519,7 +520,7 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, FSRPOL);
- 	}
- out:
--	pm_runtime_put_sync(mcasp->dev);
-+	pm_runtime_put(mcasp->dev);
- 	return ret;
+ /* driver data - core doesn't touch */
+ void *regulator_get_drvdata(struct regulator *regulator);
+@@ -515,12 +519,24 @@ static inline int regulator_register_notifier(struct regulator *regulator,
+ 	return 0;
  }
  
-@@ -528,6 +529,7 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
++static inline int devm_regulator_register_notifier(struct regulator *regulator,
++						   struct notifier_block *nb)
++{
++	return 0;
++}
++
+ static inline int regulator_unregister_notifier(struct regulator *regulator,
+ 				struct notifier_block *nb)
  {
- 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
- 
-+	pm_runtime_get_sync(mcasp->dev);
- 	switch (div_id) {
- 	case 0:		/* MCLK divider */
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
-@@ -553,6 +555,7 @@ static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
- 		return -EINVAL;
- 	}
- 
-+	pm_runtime_put(mcasp->dev);
  	return 0;
  }
  
-@@ -567,6 +570,7 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
++static inline int devm_regulator_unregister_notifier(struct regulator *regulator,
++						     struct notifier_block *nb)
++{
++	return 0;
++}
++
+ static inline void *regulator_get_drvdata(struct regulator *regulator)
  {
- 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
- 
-+	pm_runtime_get_sync(mcasp->dev);
- 	if (dir == SND_SOC_CLOCK_OUT) {
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
-@@ -579,6 +583,7 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 
- 	mcasp->sysclk_freq = freq;
- 
-+	pm_runtime_put(mcasp->dev);
- 	return 0;
- }
- 
-@@ -1053,6 +1058,10 @@ static int davinci_mcasp_suspend(struct snd_soc_dai *dai)
- 	u32 reg;
- 	int i;
- 
-+	context->pm_state = pm_runtime_enabled(mcasp->dev)
-+	if (!context->pm_state)
-+		pm_runtime_get_sync(mcasp->dev);
-+
- 	for (i = 0; i < ARRAY_SIZE(context_regs); i++)
- 		context->config_regs[i] = mcasp_get_reg(mcasp, context_regs[i]);
- 
-@@ -1069,6 +1078,8 @@ static int davinci_mcasp_suspend(struct snd_soc_dai *dai)
- 		context->xrsr_regs[i] = mcasp_get_reg(mcasp,
- 						DAVINCI_MCASP_XRSRCTL_REG(i));
- 
-+	pm_runtime_put_sync(mcasp->dev);
-+
- 	return 0;
- }
- 
-@@ -1079,6 +1090,8 @@ static int davinci_mcasp_resume(struct snd_soc_dai *dai)
- 	u32 reg;
- 	int i;
- 
-+	pm_runtime_get_sync(mcasp->dev);
-+
- 	for (i = 0; i < ARRAY_SIZE(context_regs); i++)
- 		mcasp_set_reg(mcasp, context_regs[i], context->config_regs[i]);
- 
-@@ -1095,6 +1108,9 @@ static int davinci_mcasp_resume(struct snd_soc_dai *dai)
- 		mcasp_set_reg(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
- 			      context->xrsr_regs[i]);
- 
-+	if (!context->pm_state)
-+		pm_runtime_put_sync(mcasp->dev);
-+
- 	return 0;
- }
- #else
-@@ -1398,13 +1414,6 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(&pdev->dev);
- 
--	ret = pm_runtime_get_sync(&pdev->dev);
--	if (IS_ERR_VALUE(ret)) {
--		dev_err(&pdev->dev, "pm_runtime_get_sync() failed\n");
--		pm_runtime_disable(&pdev->dev);
--		return ret;
--	}
--
- 	mcasp->base = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
- 	if (!mcasp->base) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
-@@ -1584,14 +1593,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	return 0;
- 
- err:
--	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	return ret;
- }
- 
- static int davinci_mcasp_remove(struct platform_device *pdev)
- {
--	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
- 	return 0;
+ 	return NULL;
 -- 
-2.3.0
+1.7.2.5
