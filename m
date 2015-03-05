@@ -1,19 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [ALSA-LIB][PATCH] Add support for compress offload
- API
-Date: Thu, 5 Mar 2015 12:23:19 +0530
-Message-ID: <20150305065319.GV2613@intel.com>
-References: <1425486142-19910-1-git-send-email-qais.yousef@imgtec.com>
- <54F787CF.1030804@linux.intel.com>
+Subject: Re: [ALSA-UTILS][PATCH] Add support for cplay and
+ crecord
+Date: Thu, 5 Mar 2015 12:30:18 +0530
+Message-ID: <20150305070018.GW2613@intel.com>
+References: <1425483360-1806-1-git-send-email-qais.yousef@imgtec.com>
+ <20150304161013.GU2613@intel.com> <54F73421.3000108@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D900A2652DB
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 07:56:40 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFE742652C5
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 08:03:37 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <54F787CF.1030804@linux.intel.com>
+In-Reply-To: <54F73421.3000108@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,151 +23,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Qais Yousef <qais.yousef@imgtec.com>, Mark Brown <broonie@kernel.org>
+To: Qais Yousef <qais.yousef@imgtec.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 04, 2015 at 04:31:43PM -0600, Pierre-Louis Bossart wrote:
-> I am no lawyer but I think there is work to do on the license and
-> copyright parts, see below.
-> -Pierre
+On Wed, Mar 04, 2015 at 04:34:41PM +0000, Qais Yousef wrote:
+> On 03/04/2015 04:10 PM, Vinod Koul wrote:
+> >On Wed, Mar 04, 2015 at 03:36:00PM +0000, Qais Yousef wrote:
+> >>cplay and crecord use compress offload API to play and record compressed audio.
+> >>
+> >>They're based on cplay and crec from tinycompress library using LGPL license.
+> >>
+> >>For now cplay only supports playing mp3 files.
+> >>
+> >>Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+> >>Cc: Takashi Iwai <tiwai@suse.de>
+> >>Cc: Vinod Koul <vinod.koul@intel.com>
+> >>Cc: Mark Brown <broonie@kernel.org>
+> >>---
+> >>I renamed crec to crecord also to match aplay and arecord, hopefully
+> >>you don't mind Vinod.
+> >No thats fine..
+> >
+> >>This patch is dependent on my other patch that adds support for compress offload
+> >>to alsa-lib.
+> >And where is that, should have preceded this
 > 
-> On 3/4/15 10:22 AM, Qais Yousef wrote:
-> >Merge tinycompress library into alsa-lib using LGPL license.
-> >Only function names were modified to match the coding style in alsa-lib,
-> >prepending snd_compr to function names and structs.
-> >
-> >Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
-> >Cc: Takashi Iwai <tiwai@suse.de>
-> >Cc: Vinod Koul <vinod.koul@intel.com>
-> >Cc: Mark Brown <broonie@kernel.org>
-> >---
-> >  configure.ac                     |   9 +
-> >  include/Makefile.am              |   4 +
-> >  include/compress.h               | 245 ++++++++++++++++
-> >  include/sound/compress_offload.h | 191 +++++++++++++
-> >  include/sound/compress_params.h  | 404 ++++++++++++++++++++++++++
-> >  src/Makefile.am                  |   7 +
-> >  src/compress/Makefile.am         |   8 +
-> >  src/compress/compress.c          | 599 +++++++++++++++++++++++++++++++++++++++
-> >  8 files changed, 1467 insertions(+)
-> >  create mode 100644 include/compress.h
-> >  create mode 100644 include/sound/compress_offload.h
-> >  create mode 100644 include/sound/compress_params.h
-> >  create mode 100644 src/compress/Makefile.am
-> >  create mode 100644 src/compress/compress.c
-> >
-> >diff --git a/configure.ac b/configure.ac
-> >index f0995e3ae787..a768730781e0 100644
-> >--- a/configure.ac
-> >+++ b/configure.ac
-> >@@ -368,6 +368,9 @@ AC_ARG_ENABLE(mixer,
-> >  AC_ARG_ENABLE(pcm,
-> >    AS_HELP_STRING([--disable-pcm], [disable the PCM component]),
-> >    [build_pcm="$enableval"], [build_pcm="yes"])
-> >+AC_ARG_ENABLE(compress,
-> >+  AS_HELP_STRING([--disable-compress], [disable the compress component]),
-> >+  [build_compress="$enableval"], [build_compress="yes"])
-> >  AC_ARG_ENABLE(rawmidi,
-> >    AS_HELP_STRING([--disable-rawmidi], [disable the raw MIDI component]),
-> >    [build_rawmidi="$enableval"], [build_rawmidi="yes"])
-> >@@ -418,6 +421,7 @@ AC_SUBST(PYTHON_INCLUDES)
-> >
-> >  AM_CONDITIONAL([BUILD_MIXER], [test x$build_mixer = xyes])
-> >  AM_CONDITIONAL([BUILD_PCM], [test x$build_pcm = xyes])
-> >+AM_CONDITIONAL([BUILD_COMPRESS], [test x$build_compress = xyes])
-> >  AM_CONDITIONAL([BUILD_RAWMIDI], [test x$build_rawmidi = xyes])
-> >  AM_CONDITIONAL([BUILD_HWDEP], [test x$build_hwdep = xyes])
-> >  AM_CONDITIONAL([BUILD_SEQ], [test x$build_seq = xyes])
-> >@@ -431,6 +435,9 @@ fi
-> >  if test "$build_pcm" = "yes"; then
-> >    AC_DEFINE([BUILD_PCM], "1", [Build PCM component])
-> >  fi
-> >+if test "$build_compress" = "yes"; then
-> >+  AC_DEFINE([BUILD_COMPRESS], "1", [Build compress component])
-> >+fi
-> >  if test "$build_rawmidi" = "yes"; then
-> >    AC_DEFINE([BUILD_RAWMIDI], "1", [Build raw MIDI component])
-> >  fi
-> >@@ -641,6 +648,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
-> >  	  include/Makefile include/sound/Makefile src/Versions src/Makefile \
-> >            src/control/Makefile src/mixer/Makefile \
-> >  	  src/pcm/Makefile src/pcm/scopes/Makefile \
-> >+	  src/compress/Makefile \
-> >  	  src/rawmidi/Makefile src/timer/Makefile \
-> >            src/hwdep/Makefile src/seq/Makefile src/ucm/Makefile \
-> >            src/alisp/Makefile \
-> >@@ -693,6 +701,7 @@ cat >> include/asoundlib.h <<EOF
-> >  #include <alsa/conf.h>
-> >  EOF
-> >  test "$build_pcm" = "yes" && echo "#include <alsa/pcm.h>" >> include/asoundlib.h
-> >+test "$build_compress" = "yes" && echo "#include <alsa/compress.h>" >> include/asoundlib.h
-> >  test "$build_rawmidi" = "yes" && echo "#include <alsa/rawmidi.h>" >> include/asoundlib.h
-> >  test "$build_pcm" = "yes" && echo "#include <alsa/timer.h>" >> include/asoundlib.h
-> >  test "$build_hwdep" = "yes" && echo "#include <alsa/hwdep.h>" >> include/asoundlib.h
-> >diff --git a/include/Makefile.am b/include/Makefile.am
-> >index 4baa03af69e1..395a2ed60d70 100644
-> >--- a/include/Makefile.am
-> >+++ b/include/Makefile.am
-> >@@ -30,6 +30,10 @@ alsainclude_HEADERS += pcm_ioplug.h
-> >  endif
-> >  endif
-> >
-> >+if BUILD_COMPRESS
-> >+alsainclude_HEADERS += compress.h
-> >+endif
-> >+
-> >  if BUILD_RAWMIDI
-> >  alsainclude_HEADERS += rawmidi.h
-> >  endif
-> >diff --git a/include/compress.h b/include/compress.h
-> >new file mode 100644
-> >index 000000000000..250ce0c3f7c4
-> >--- /dev/null
-> >+++ b/include/compress.h
-> >@@ -0,0 +1,245 @@
-> >+/*
-> >+ * tinycompress library for compress audio offload in alsa
-> >+ * Copyright (c) 2011-2012, Intel Corporation.
-> >+ *
-> >+ *
-> >+ * This program is free software; you can redistribute it and/or modify it
-> >+ * under the terms and conditions of the GNU Lesser General Public License,
-> >+ * version 2.1, as published by the Free Software Foundation.
-> >+ *
-> >+ * This program is distributed in the hope it will be useful, but WITHOUT
-> >+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> >+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
-> >+ * License for more details.
+> Hmm not sure what went wrong. I resent it. Seems I have some emailer
+> issues as I had this problem before.
+> Hopefully you received it now.
 > 
-> It looks like this is pulled from
-> tinycompress/include/tinycompress/tinycompress.h, which was released
-> with a dual BSD and LGPL license. I wonder if you can remove the BSD
-> license really? At the very least you should make it clear where
-> this code came from.
-apart for legal stuff, we have another issue of having two versions which
-will lead to mainatince cost
-
-I was thinking that we can add support in alsa lib for tinycompress by
-pulling the git as part of this project, so that alsa gets latest code
-always and we can use single repostory for android and linux distros
-
-
-
-> >+ *  compress_offload.h - compress offload header definations
-> >+ *
-> >+ *  Copyright (C) 2011 Intel Corporation
-> >+ *  Authors:	Vinod Koul <vinod.koul@linux.intel.com>
-> >+ *		Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> >+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >+ *
-> >+ *  This program is free software; you can redistribute it and/or modify
-> >+ *  it under the terms of the GNU General Public License as published by
-> >+ *  the Free Software Foundation; version 2 of the License.
+> >>I needed to include <sound/compress_params.h> in cplay.c and crec.c
+> >>but I couldn't find an example of any C file which directly includes <sound/*.h>
+> >>The norm seems to be to just include <alsa/asoundlib.h>. Do I need to
+> >>redefine structs from <sound/compress_params.h> to newly added <alsa/compress.h>?
+> >><alsa/pcm.h> seems to redefine structs from <sound/asound.h>.
+> >These are kernel headers and should be in your include path if you have
+> >those installed
+> >>I could only test cplay but have no means to test crecord at the moment.
+> >>
+> >>  Makefile.am       |   3 +
+> >>  configure.ac      |   6 +-
+> >>  cplay/Makefile.am |  14 ++
+> >>  cplay/cplay.c     | 294 +++++++++++++++++++++++++++++++++++
+> >>  cplay/crec.c      | 449 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >>  cplay/tinymp3.h   |  72 +++++++++
+> >>  6 files changed, 837 insertions(+), 1 deletion(-)
+> >>  create mode 100644 cplay/Makefile.am
+> >>  create mode 100644 cplay/cplay.c
+> >>  create mode 100644 cplay/crec.c
+> >>  create mode 100644 cplay/tinymp3.h
+> >Okay here is where we need discussion on the future course. If we do this
+> >then we end up in two code bases, something I would not encourage!
+> >
+> >On the other hand if we add the make file changes to tinycompress or if
+> >required split this into two, lib and tools and then package lib part into
+> >alsa-lib and players into tools, that way we can have single code base. That
+> >was my intent behind ensuring that this is dual licensed.
 > 
-> So this one is pulled form the kernel and with GPL, not LGPL. Whoa.
-One should use *installed headers*, are these installed ones or copied from
-kernel?
+> I'm not sure I follow you completely here. You mean keep cplay and
+> crec in tinycompress with the dual licensing but only merge the lib
+> part (which my other patch does) into alsa-lib? For me having this
+> lib part into alsa-lib is the important bit. Moving crec and cplay
+> to alsa-utils was something I thought would be useful but maybe not.
+Not that
+
+Since alsa splits lib and tools, in order to take this into alsa-libs we
+need to split tinycompress, to something like lib and tool part.
+
+Then alsa-lib can import the lib part of tinycompress. Please note I am not
+saying we should copy or move code into alsa-lib.
+The reason for that is
+1. copying code will cause more maintaince of same code in two places :(
+2. moving into alsa-lib is not an option as existing users like android will
+suffer as they dont use alsa-lib
+
+So I think, while building and packaging alsa-library and tools we can
+import the tinycompress using LGPL license and use that to give complete
+library on Linux to users
+
+Takashi, can we get you blessing for this approach before we embark on this,
+or any other better ideas?
 
 -- 
 ~Vinod
