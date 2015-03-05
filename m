@@ -1,106 +1,49 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] ALSA: hda - Fix wrong detection of
- "Headphone+LO" or "Speaker+LO"
-Date: Thu, 5 Mar 2015 19:43:04 +0800
-Message-ID: <CAN8ccibTukVjjNgdJXwS2XAkEPAOX5spkYTmwqteChg=-ROA7A@mail.gmail.com>
-References: <54F5DB0B.8020507@canonical.com>
- <54f82ff9.6829c1e7.bm000@wupperonline.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: Add support for NAU8824 codec to ASoC
+Date: Thu, 5 Mar 2015 11:43:44 +0000
+Message-ID: <20150305114344.GJ21293@sirena.org.uk>
+References: <54F70052.1070109@nuvoton.com>
+ <1425508332.2090.48.camel@tiscali.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f182.google.com (mail-ob0-f182.google.com
- [209.85.214.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F61F260499
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 12:43:05 +0100 (CET)
-Received: by obcuy5 with SMTP id uy5so6072795obc.11
- for <alsa-devel@alsa-project.org>; Thu, 05 Mar 2015 03:43:04 -0800 (PST)
-In-Reply-To: <54f82ff9.6829c1e7.bm000@wupperonline.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, david.henningsson@canonical.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="OhU7L4N+XivK3AnT"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1425508332.2090.48.camel@tiscali.nl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Chih-Chiang Chang <ccchang12@nuvoton.com>, "mcuos.com@gmail.com" <mcuos.com@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> > Hmm. What do you think of the attached patch - would it work as well? It
-> > removes the part that returns early for all three, letting it fall
-> > through to the part that returns "Front" etc.
->
-> > +++ b/sound/pci/hda/hda_generic.c
-> > @@ -1100,11 +1100,9 @@ static const char *get_line_out_pfx(struct
-> > hda_codec *codec, int ch,
-> >                 if (!ch && cfg->speaker_outs && cfg->hp_outs) {
-> >                         bool hp_lo_shared = !path_has_mixer(codec,
-spec->hp_paths[0], ctl_type);
-> >                         bool spk_lo_shared = !path_has_mixer(codec,
-spec->speaker_paths[0], ctl_type);
-> > -                       if (hp_lo_shared && spk_lo_shared)
-> > -                               return spec->vmaster_mute.hook ? "PCM"
-: "Master";
-> > -                       if (hp_lo_shared)
-> > +                       if (hp_lo_shared && !spk_lo_shared)
-> >                                 return "Headphone+LO";
-> > -                       if (spk_lo_shared)
-> > +                       if (spk_lo_shared && !hp_lo_shared)
-> >                                 return "Speaker+LO";
-> >                 }
-> >         }
->
-> After a quick check, this seems better. Master is a real master now and
-there
-> is a Front control.
 
->> >> With the patch I'm getting a real Master (for all
-Front/Surround/CLFE) and a
->> separate Front Volume Control in addition to Surround, Center and LFE
-which >> is exactly how it should be.
-> > > Hmm. What do you think of the attached patch - would it work as well?
-It removes the part that returns early for all three, letting it fall
-through to the part that returns "Front" etc.
+--OhU7L4N+XivK3AnT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa/mixer/paths/analog-output-headphones.conf?id=
-96369919e5100865e2469e42fb8f4b8e38e41aef
+On Wed, Mar 04, 2015 at 11:32:12PM +0100, Paul Bolle wrote:
+> Chih-Chiang Chang schreef op wo 04-03-2015 om 20:53 [+0800]:
 
-Do you mean front playback volume is set to maximum when headphone is
-plugged?
+> > +struct nau8824_platform_data {
 
-How do Pulseaudio calculate dB min of headphone path and lineout path?
+> In the future something other than just sound/soc/codecs/nau8824.h is
+> going to include this header, right?
 
-Do it just put dB min of front playback volume in headphone path only when
-there is no headphone playback volume?
+It's platform data, that's the whole point of platform data...
 
-BTW codec alc888 in buglink can use amp out in node 0x26 as Headphone
-Playback volume
+--OhU7L4N+XivK3AnT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->
-> However, due to the speaker having no path with my forced config, I cannot
-> say whether this will work if the parser could find the multi-io config by
-> itself (and until then there probably shouldn't be patches I suggested).
-And,
-> by the way, as a result of the no-path I'm getting a Speaker+LO control.
->
-> Here a little additional debug output during the get_line_out_pfx() calls.
-> The "path_has_mixer" output refers to a call which output is in the
-following
-> line, i. e. the call for getting spk_lo_shared:
->
-> [    0.648407] sound hdaudioC1D0: get_line_out_pfx, AUTO_PIN_LINE_OUT:
-hp_lo_shared=1
-> [    0.648407] sound hdaudioC1D0: path_has_mixer: no path!
-> [    0.648408] sound hdaudioC1D0: get_line_out_pfx, AUTO_PIN_LINE_OUT:
-spk_lo_shared=1
-> [    0.648409] sound hdaudioC1D0: get_line_out_pfx, AUTO_PIN_LINE_OUT:
-hp_lo_shared=0
-> [    0.648410] sound hdaudioC1D0: path_has_mixer: no path!
-> [    0.648410] sound hdaudioC1D0: get_line_out_pfx, AUTO_PIN_LINE_OUT:
-spk_lo_shared=1
->
-> Ingo
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU+EFwAAoJECTWi3JdVIfQDeUH/jyKKQ8u4OoFltQ/K26MG5I0
+wTF46/tixokx7RDLJnA2AQ2YYJcsJ/DZIF2QcXy1ChBMGjQyLlswiKqdLVB0FA6j
+BoZOswBYenHbYU0wPL6O1qVbnT7/zKOCiKIbozPs/eF6jCa31kFuARa6kTeP7Vqy
+3u4ldcLotJ0tqc+U0N9e6Sk0G/pnVAQ2sM+a5oQMjwu3kRcHK/ZB+CTGkC7T65Z/
+sIpTzCDfjhpKu84vJ1J3+SleP9RwaEa69Cg/Bqqn+xaJqZTZMeKCNDSU62ZNBDkR
+dwUliRZxxuaWnI8qE1uDaeSknYuooPlkPSm1hdl5wFhPrDo1MKXHQYmD9OkmTJc=
+=iWp/
+-----END PGP SIGNATURE-----
+
+--OhU7L4N+XivK3AnT--
