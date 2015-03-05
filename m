@@ -1,16 +1,16 @@
 From: =?ISO-8859-1?Q?Ingo=20Br=FCckl?= <ib@wupperonline.de>
-Subject: Re: [PATCH] ALSA: hda - Make path_has_mixer() tristate
-Date: Thu, 05 Mar 2015 17:44:13 +0100
-Message-ID: <54f889c7.6f518a6b.bm000@wupperonline.de>
-References: <s5h1tl37jye.wl-tiwai@suse.de>
+Subject: Re: Intel HDA / ALC662 analog surround problem
+Date: Thu, 05 Mar 2015 17:52:19 +0100
+Message-ID: <54f889c7.33f7fe8f.bm001@wupperonline.de>
+References: <CAN8cciZ4=UXVLFgykv2V67e9+K5OwnYo3tq-cDUDJd2xgqszBw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutD.wup.tal.de (moutd.wup.tal.de [213.240.144.30])
- by alsa0.perex.cz (Postfix) with ESMTP id 7941026052B
+ by alsa0.perex.cz (Postfix) with ESMTP id 78E7A26052A
  for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 17:54:43 +0100 (CET)
-In-Reply-To: <s5h1tl37jye.wl-tiwai@suse.de>
+In-Reply-To: <CAN8cciZ4=UXVLFgykv2V67e9+K5OwnYo3tq-cDUDJd2xgqszBw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, superquad.vortex2@gmail.com, david.henningsson@canonical.com
+Cc: superquad.vortex2@gmail.com, tiwai@suse.de, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote on Thu, 05 Mar 2015 12:38:33 +0100:
+Raymond Yau wrote on Fri, 27 Feb 2015 10:11:20 +0800:
 
->> I would love the auto-parser to assign the speaker to node 0x02 (or simply
->> disable the speaker), but unfortunately I'm not getting a surround config
->> with the current code, but only:
->>
->> ==> lo_type=0, wired=1, mio=0
->> multi_outs = 14/0/0/0 : 2/0/0/0 (type LO)
->> hp_outs = 1b/0/0/0 : 4/0/0/0
->> spk_outs = 15/0/0/0 : 3/0/0/0
->>
->> This is unsatisfactory.
+> Try [...] to change node 0x15 Speaker as not connected
 
-> You can force the DAC assignment by specifying
-> spec->gen.perferred_dacs.  Did you try it?
+This is exactly what I did now:
 
-Yes, no success. I'm now ignoring speaker 0x15.
+diff -Nur a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+--- a/sound/pci/hda/patch_realtek.c	2015-02-27 02:49:36.000000000 +0100
++++ b/sound/pci/hda/patch_realtek.c	2015-03-05 17:09:15.305016021 +0100
+@@ -5665,9 +5665,10 @@
+
+ static int alc662_parse_auto_config(struct hda_codec *codec)
+ {
+-	static const hda_nid_t alc662_ignore[] = { 0x1d, 0 };
++	/* ignore internal speaker (0x15) in order to get a multi-io config */
++	static const hda_nid_t alc662_ignore[] = { 0x15, 0x1d, 0 };
+ 	static const hda_nid_t alc663_ssids[] = { 0x15, 0x1b, 0x14, 0x21 };
+-	static const hda_nid_t alc662_ssids[] = { 0x15, 0x1b, 0x14, 0 };
++	static const hda_nid_t alc662_ssids[] = { 0x1b, 0x14, 0 };
+ 	const hda_nid_t *ssids;
+
+ 	if (codec->vendor_id == 0x10ec0272 || codec->vendor_id == 0x10ec0663 ||
+
+It gives me the multi-io config without side effects and without the
+hp_lo_shared and spk_lo_shared issue in get_line_out_pfx().
+
+I'd like to make this configurable for people suffering from the same problem
+with their ALC662, but I don't know how to identify when it would occur.
 
 Ingo
