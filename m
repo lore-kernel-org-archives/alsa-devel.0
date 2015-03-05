@@ -1,21 +1,18 @@
-From: Vishal Thanki <vishalthanki@gmail.com>
-Subject: Re: [PATCH] ASoC: simple-card: Add a NULL pointer
-	check in asoc_simple_card_dai_link_of
-Date: Thu, 5 Mar 2015 16:15:16 +0530
-Message-ID: <CAC3a_SDWqGLsgUu8_mRYkW=Y+KHvWvAWjUYr4Ba3BrDBiP6nNA@mail.gmail.com>
-References: <20150303132900.GA22246@vishal> <54F76B43.3030602@bfs.de>
-Reply-To: vishal.thanki@gmail.com
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [ALSA-LIB][PATCH] Add support for compress offload
+ API
+Date: Thu, 5 Mar 2015 10:46:42 +0000
+Message-ID: <54F83412.9020906@imgtec.com>
+References: <1425486142-19910-1-git-send-email-qais.yousef@imgtec.com>
+ <54F787CF.1030804@linux.intel.com> <20150305065319.GV2613@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E47D265677
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 11:45:37 +0100 (CET)
-Received: by iecat20 with SMTP id at20so21822211iec.6
- for <alsa-devel@alsa-project.org>; Thu, 05 Mar 2015 02:45:37 -0800 (PST)
-In-Reply-To: <54F76B43.3030602@bfs.de>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61088260442
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 11:46:44 +0100 (CET)
+In-Reply-To: <20150305065319.GV2613@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +22,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: wharms@bfs.de
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I am new to kasprintf. I think we need to make sure of freeing memory
-allocated using kasprintf.
+On 03/05/2015 06:53 AM, Vinod Koul wrote:
+> On Wed, Mar 04, 2015 at 04:31:43PM -0600, Pierre-Louis Bossart wrote:
+>> I am no lawyer but I think there is work to do on the license and
+>> copyright parts, see below.
+>> -Pierre
+>>
+>> On 3/4/15 10:22 AM, Qais Yousef wrote:
+>>> Merge tinycompress library into alsa-lib using LGPL license.
+>>> Only function names were modified to match the coding style in alsa-lib,
+>>> prepending snd_compr to function names and structs.
+>>>
+>>> Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
+>>> Cc: Takashi Iwai <tiwai@suse.de>
+>>> Cc: Vinod Koul <vinod.koul@intel.com>
+>>> Cc: Mark Brown <broonie@kernel.org>
+>>> ---
+>>>   configure.ac                     |   9 +
+>>>   include/Makefile.am              |   4 +
+>>>   include/compress.h               | 245 ++++++++++++++++
+>>>   include/sound/compress_offload.h | 191 +++++++++++++
+>>>   include/sound/compress_params.h  | 404 ++++++++++++++++++++++++++
+>>>   src/Makefile.am                  |   7 +
+>>>   src/compress/Makefile.am         |   8 +
+>>>   src/compress/compress.c          | 599 +++++++++++++++++++++++++++++++++++++++
+>>>   8 files changed, 1467 insertions(+)
+>>>   create mode 100644 include/compress.h
+>>>   create mode 100644 include/sound/compress_offload.h
+>>>   create mode 100644 include/sound/compress_params.h
+>>>   create mode 100644 src/compress/Makefile.am
+>>>   create mode 100644 src/compress/compress.c
+>>>
+>>> diff --git a/configure.ac b/configure.ac
+>>> index f0995e3ae787..a768730781e0 100644
+>>> --- a/configure.ac
+>>> +++ b/configure.ac
+>>> @@ -368,6 +368,9 @@ AC_ARG_ENABLE(mixer,
+>>>   AC_ARG_ENABLE(pcm,
+>>>     AS_HELP_STRING([--disable-pcm], [disable the PCM component]),
+>>>     [build_pcm="$enableval"], [build_pcm="yes"])
+>>> +AC_ARG_ENABLE(compress,
+>>> +  AS_HELP_STRING([--disable-compress], [disable the compress component]),
+>>> +  [build_compress="$enableval"], [build_compress="yes"])
+>>>   AC_ARG_ENABLE(rawmidi,
+>>>     AS_HELP_STRING([--disable-rawmidi], [disable the raw MIDI component]),
+>>>     [build_rawmidi="$enableval"], [build_rawmidi="yes"])
+>>> @@ -418,6 +421,7 @@ AC_SUBST(PYTHON_INCLUDES)
+>>>
+>>>   AM_CONDITIONAL([BUILD_MIXER], [test x$build_mixer = xyes])
+>>>   AM_CONDITIONAL([BUILD_PCM], [test x$build_pcm = xyes])
+>>> +AM_CONDITIONAL([BUILD_COMPRESS], [test x$build_compress = xyes])
+>>>   AM_CONDITIONAL([BUILD_RAWMIDI], [test x$build_rawmidi = xyes])
+>>>   AM_CONDITIONAL([BUILD_HWDEP], [test x$build_hwdep = xyes])
+>>>   AM_CONDITIONAL([BUILD_SEQ], [test x$build_seq = xyes])
+>>> @@ -431,6 +435,9 @@ fi
+>>>   if test "$build_pcm" = "yes"; then
+>>>     AC_DEFINE([BUILD_PCM], "1", [Build PCM component])
+>>>   fi
+>>> +if test "$build_compress" = "yes"; then
+>>> +  AC_DEFINE([BUILD_COMPRESS], "1", [Build compress component])
+>>> +fi
+>>>   if test "$build_rawmidi" = "yes"; then
+>>>     AC_DEFINE([BUILD_RAWMIDI], "1", [Build raw MIDI component])
+>>>   fi
+>>> @@ -641,6 +648,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+>>>   	  include/Makefile include/sound/Makefile src/Versions src/Makefile \
+>>>             src/control/Makefile src/mixer/Makefile \
+>>>   	  src/pcm/Makefile src/pcm/scopes/Makefile \
+>>> +	  src/compress/Makefile \
+>>>   	  src/rawmidi/Makefile src/timer/Makefile \
+>>>             src/hwdep/Makefile src/seq/Makefile src/ucm/Makefile \
+>>>             src/alisp/Makefile \
+>>> @@ -693,6 +701,7 @@ cat >> include/asoundlib.h <<EOF
+>>>   #include <alsa/conf.h>
+>>>   EOF
+>>>   test "$build_pcm" = "yes" && echo "#include <alsa/pcm.h>" >> include/asoundlib.h
+>>> +test "$build_compress" = "yes" && echo "#include <alsa/compress.h>" >> include/asoundlib.h
+>>>   test "$build_rawmidi" = "yes" && echo "#include <alsa/rawmidi.h>" >> include/asoundlib.h
+>>>   test "$build_pcm" = "yes" && echo "#include <alsa/timer.h>" >> include/asoundlib.h
+>>>   test "$build_hwdep" = "yes" && echo "#include <alsa/hwdep.h>" >> include/asoundlib.h
+>>> diff --git a/include/Makefile.am b/include/Makefile.am
+>>> index 4baa03af69e1..395a2ed60d70 100644
+>>> --- a/include/Makefile.am
+>>> +++ b/include/Makefile.am
+>>> @@ -30,6 +30,10 @@ alsainclude_HEADERS += pcm_ioplug.h
+>>>   endif
+>>>   endif
+>>>
+>>> +if BUILD_COMPRESS
+>>> +alsainclude_HEADERS += compress.h
+>>> +endif
+>>> +
+>>>   if BUILD_RAWMIDI
+>>>   alsainclude_HEADERS += rawmidi.h
+>>>   endif
+>>> diff --git a/include/compress.h b/include/compress.h
+>>> new file mode 100644
+>>> index 000000000000..250ce0c3f7c4
+>>> --- /dev/null
+>>> +++ b/include/compress.h
+>>> @@ -0,0 +1,245 @@
+>>> +/*can
+>>> + * tinycompress library for compress audio offload in alsa
+>>> + * Copyright (c) 2011-2012, Intel Corporation.
+>>> + *
+>>> + *
+>>> + * This program is free software; you can redistribute it and/or modify it
+>>> + * under the terms and conditions of the GNU Lesser General Public License,
+>>> + * version 2.1, as published by the Free Software Foundation.
+>>> + *
+>>> + * This program is distributed in the hope it will be useful, but WITHOUT
+>>> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+>>> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+>>> + * License for more details.
+>> It looks like this is pulled from
+>> tinycompress/include/tinycompress/tinycompress.h, which was released
+>> with a dual BSD and LGPL license. I wonder if you can remove the BSD
+>> license really? At the very least you should make it clear where
+>> this code came from.
+> apart for legal stuff, we have another issue of having two versions which
+> will lead to mainatince cost
+>
+> I was thinking that we can add support in alsa lib for tinycompress by
+> pulling the git as part of this project, so that alsa gets latest code
+> always and we can use single repostory for android and linux distros
+>
 
-On Thu, Mar 5, 2015 at 1:59 AM, walter harms <wharms@bfs.de> wrote:
+I was hoping that we can live with one version in alsa-lib but 
+unfortunately not.
+Let me have a think about this. I need first to understand how we can 
+use the dual license code.
+If we can't make the api part of libasound then it's better to 
+distribute tinycompress separately anyway,
+no point in merging it back to alsa-lib in that case. It feels awkward 
+to have to link to a different library to use standard alsa 
+functionality though.
 
 >
+>>> + *  compress_offload.h - compress offload header definations
+>>> + *
+>>> + *  Copyright (C) 2011 Intel Corporation
+>>> + *  Authors:	Vinod Koul <vinod.koul@linux.intel.com>
+>>> + *		Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>> + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>> + *
+>>> + *  This program is free software; you can redistribute it and/or modify
+>>> + *  it under the terms of the GNU General Public License as published by
+>>> + *  the Free Software Foundation; version 2 of the License.
+>> So this one is pulled form the kernel and with GPL, not LGPL. Whoa.
+> One should use *installed headers*, are these installed ones or copied from
+> kernel?
 >
-> Am 03.03.2015 14:29, schrieb Vishal Thanki:
-> > Make sure devm_kzalloc() succeeds.
-> >
-> > Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
-> > ---
-> >  sound/soc/generic/simple-card.c |    5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/sound/soc/generic/simple-card.c
-> b/sound/soc/generic/simple-card.c
-> > index f7c6734..fb550b5 100644
-> > --- a/sound/soc/generic/simple-card.c
-> > +++ b/sound/soc/generic/simple-card.c
-> > @@ -372,6 +372,11 @@ static int asoc_simple_card_dai_link_of(struct
-> device_node *node,
-> >                           strlen(dai_link->cpu_dai_name)   +
-> >                           strlen(dai_link->codec_dai_name) + 2,
-> >                           GFP_KERNEL);
-> > +     if (!name) {
-> > +             ret = -ENOMEM;
-> > +             goto dai_link_of_err;
-> > +     }
-> > +
-> >       sprintf(name, "%s-%s", dai_link->cpu_dai_name,
-> >                               dai_link->codec_dai_name);
-> >       dai_link->name = dai_link->stream_name = name;
->
->
-> maybe it is more simple to use kasprintf here ?
->
-> just my 2 cents,
-> wh
->
->
+
+OK, that's where I went wrong then. Though as I mentioned other headers 
+in include/sound contain same copyright.
