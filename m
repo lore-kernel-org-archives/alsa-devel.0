@@ -1,18 +1,20 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: Re: [ALSA-LIB][PATCH] Add support for compress offload
- API
-Date: Thu, 5 Mar 2015 10:46:42 +0000
-Message-ID: <54F83412.9020906@imgtec.com>
-References: <1425486142-19910-1-git-send-email-qais.yousef@imgtec.com>
- <54F787CF.1030804@linux.intel.com> <20150305065319.GV2613@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 0/5] ASoC: davinci: Use edma-pcm and remove
+ davinci-pcm
+Date: Thu, 5 Mar 2015 12:48:48 +0200
+Message-ID: <54F83490.9010208@ti.com>
+References: <1425393921-14219-1-git-send-email-peter.ujfalusi@ti.com>
+ <54F6A3E5.1090201@topic.nl> <54F6C737.309@ti.com> <54F6FA66.8000803@topic.nl>
+ <54F71249.2090703@ti.com> <54F82553.7050508@topic.nl>
+ <54F833B1.1070204@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 61088260442
- for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 11:46:44 +0100 (CET)
-In-Reply-To: <20150305065319.GV2613@intel.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4805E260448
+ for <alsa-devel@alsa-project.org>; Thu,  5 Mar 2015 11:48:52 +0100 (CET)
+In-Reply-To: <54F833B1.1070204@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,161 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Mike Looijmans <mike.looijmans@topic.nl>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/05/2015 06:53 AM, Vinod Koul wrote:
-> On Wed, Mar 04, 2015 at 04:31:43PM -0600, Pierre-Louis Bossart wrote:
->> I am no lawyer but I think there is work to do on the license and
->> copyright parts, see below.
->> -Pierre
->>
->> On 3/4/15 10:22 AM, Qais Yousef wrote:
->>> Merge tinycompress library into alsa-lib using LGPL license.
->>> Only function names were modified to match the coding style in alsa-lib,
->>> prepending snd_compr to function names and structs.
->>>
->>> Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
->>> Cc: Takashi Iwai <tiwai@suse.de>
->>> Cc: Vinod Koul <vinod.koul@intel.com>
->>> Cc: Mark Brown <broonie@kernel.org>
->>> ---
->>>   configure.ac                     |   9 +
->>>   include/Makefile.am              |   4 +
->>>   include/compress.h               | 245 ++++++++++++++++
->>>   include/sound/compress_offload.h | 191 +++++++++++++
->>>   include/sound/compress_params.h  | 404 ++++++++++++++++++++++++++
->>>   src/Makefile.am                  |   7 +
->>>   src/compress/Makefile.am         |   8 +
->>>   src/compress/compress.c          | 599 +++++++++++++++++++++++++++++++++++++++
->>>   8 files changed, 1467 insertions(+)
->>>   create mode 100644 include/compress.h
->>>   create mode 100644 include/sound/compress_offload.h
->>>   create mode 100644 include/sound/compress_params.h
->>>   create mode 100644 src/compress/Makefile.am
->>>   create mode 100644 src/compress/compress.c
->>>
->>> diff --git a/configure.ac b/configure.ac
->>> index f0995e3ae787..a768730781e0 100644
->>> --- a/configure.ac
->>> +++ b/configure.ac
->>> @@ -368,6 +368,9 @@ AC_ARG_ENABLE(mixer,
->>>   AC_ARG_ENABLE(pcm,
->>>     AS_HELP_STRING([--disable-pcm], [disable the PCM component]),
->>>     [build_pcm="$enableval"], [build_pcm="yes"])
->>> +AC_ARG_ENABLE(compress,
->>> +  AS_HELP_STRING([--disable-compress], [disable the compress component]),
->>> +  [build_compress="$enableval"], [build_compress="yes"])
->>>   AC_ARG_ENABLE(rawmidi,
->>>     AS_HELP_STRING([--disable-rawmidi], [disable the raw MIDI component]),
->>>     [build_rawmidi="$enableval"], [build_rawmidi="yes"])
->>> @@ -418,6 +421,7 @@ AC_SUBST(PYTHON_INCLUDES)
->>>
->>>   AM_CONDITIONAL([BUILD_MIXER], [test x$build_mixer = xyes])
->>>   AM_CONDITIONAL([BUILD_PCM], [test x$build_pcm = xyes])
->>> +AM_CONDITIONAL([BUILD_COMPRESS], [test x$build_compress = xyes])
->>>   AM_CONDITIONAL([BUILD_RAWMIDI], [test x$build_rawmidi = xyes])
->>>   AM_CONDITIONAL([BUILD_HWDEP], [test x$build_hwdep = xyes])
->>>   AM_CONDITIONAL([BUILD_SEQ], [test x$build_seq = xyes])
->>> @@ -431,6 +435,9 @@ fi
->>>   if test "$build_pcm" = "yes"; then
->>>     AC_DEFINE([BUILD_PCM], "1", [Build PCM component])
->>>   fi
->>> +if test "$build_compress" = "yes"; then
->>> +  AC_DEFINE([BUILD_COMPRESS], "1", [Build compress component])
->>> +fi
->>>   if test "$build_rawmidi" = "yes"; then
->>>     AC_DEFINE([BUILD_RAWMIDI], "1", [Build raw MIDI component])
->>>   fi
->>> @@ -641,6 +648,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
->>>   	  include/Makefile include/sound/Makefile src/Versions src/Makefile \
->>>             src/control/Makefile src/mixer/Makefile \
->>>   	  src/pcm/Makefile src/pcm/scopes/Makefile \
->>> +	  src/compress/Makefile \
->>>   	  src/rawmidi/Makefile src/timer/Makefile \
->>>             src/hwdep/Makefile src/seq/Makefile src/ucm/Makefile \
->>>             src/alisp/Makefile \
->>> @@ -693,6 +701,7 @@ cat >> include/asoundlib.h <<EOF
->>>   #include <alsa/conf.h>
->>>   EOF
->>>   test "$build_pcm" = "yes" && echo "#include <alsa/pcm.h>" >> include/asoundlib.h
->>> +test "$build_compress" = "yes" && echo "#include <alsa/compress.h>" >> include/asoundlib.h
->>>   test "$build_rawmidi" = "yes" && echo "#include <alsa/rawmidi.h>" >> include/asoundlib.h
->>>   test "$build_pcm" = "yes" && echo "#include <alsa/timer.h>" >> include/asoundlib.h
->>>   test "$build_hwdep" = "yes" && echo "#include <alsa/hwdep.h>" >> include/asoundlib.h
->>> diff --git a/include/Makefile.am b/include/Makefile.am
->>> index 4baa03af69e1..395a2ed60d70 100644
->>> --- a/include/Makefile.am
->>> +++ b/include/Makefile.am
->>> @@ -30,6 +30,10 @@ alsainclude_HEADERS += pcm_ioplug.h
->>>   endif
->>>   endif
->>>
->>> +if BUILD_COMPRESS
->>> +alsainclude_HEADERS += compress.h
->>> +endif
->>> +
->>>   if BUILD_RAWMIDI
->>>   alsainclude_HEADERS += rawmidi.h
->>>   endif
->>> diff --git a/include/compress.h b/include/compress.h
->>> new file mode 100644
->>> index 000000000000..250ce0c3f7c4
->>> --- /dev/null
->>> +++ b/include/compress.h
->>> @@ -0,0 +1,245 @@
->>> +/*can
->>> + * tinycompress library for compress audio offload in alsa
->>> + * Copyright (c) 2011-2012, Intel Corporation.
->>> + *
->>> + *
->>> + * This program is free software; you can redistribute it and/or modify it
->>> + * under the terms and conditions of the GNU Lesser General Public License,
->>> + * version 2.1, as published by the Free Software Foundation.
->>> + *
->>> + * This program is distributed in the hope it will be useful, but WITHOUT
->>> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
->>> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
->>> + * License for more details.
->> It looks like this is pulled from
->> tinycompress/include/tinycompress/tinycompress.h, which was released
->> with a dual BSD and LGPL license. I wonder if you can remove the BSD
->> license really? At the very least you should make it clear where
->> this code came from.
-> apart for legal stuff, we have another issue of having two versions which
-> will lead to mainatince cost
->
-> I was thinking that we can add support in alsa lib for tinycompress by
-> pulling the git as part of this project, so that alsa gets latest code
-> always and we can use single repostory for android and linux distros
->
-
-I was hoping that we can live with one version in alsa-lib but 
-unfortunately not.
-Let me have a think about this. I need first to understand how we can 
-use the dual license code.
-If we can't make the api part of libasound then it's better to 
-distribute tinycompress separately anyway,
-no point in merging it back to alsa-lib in that case. It feels awkward 
-to have to link to a different library to use standard alsa 
-functionality though.
-
->
->>> + *  compress_offload.h - compress offload header definations
->>> + *
->>> + *  Copyright (C) 2011 Intel Corporation
->>> + *  Authors:	Vinod Koul <vinod.koul@linux.intel.com>
->>> + *		Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>> + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>> + *
->>> + *  This program is free software; you can redistribute it and/or modify
->>> + *  it under the terms of the GNU General Public License as published by
->>> + *  the Free Software Foundation; version 2 of the License.
->> So this one is pulled form the kernel and with GPL, not LGPL. Whoa.
-> One should use *installed headers*, are these installed ones or copied from
-> kernel?
->
-
-OK, that's where I went wrong then. Though as I mentioned other headers 
-in include/sound contain same copyright.
+T24gMDMvMDUvMjAxNSAxMjo0NSBQTSwgUGV0ZXIgVWpmYWx1c2kgd3JvdGU6Cj4gT0ssIHRoaXMg
+aXMgYWxzbyBzdXBwb3J0ZWQgYnkgdGhlIGVkbWEtcGNtLCB5b3UgbmVlZCB0byBlbmFibGUgdGhl
+IEZJRk8gYW5kCj4gc3BlY2lmeSB0aGUgdGhyZXNob2xkLgoKVmlhIGVkbWEtcGNtIHlvdSBjYW4g
+ZGlzYWJsZSB0aGUgcGVyaW9kIGludGVycnVwdHMgc28gZm9yIGV4YW1wbGUgUEEgY2FuIHdvcmsK
+aW4gdGhpcyBtb2RlLiBZb3UgaGF2ZSBiaWcgZW5vdWdoIGJ1ZmZlciBhbmQgeW91IGRvIG5vdCBn
+ZXQgYW55IGludGVycnVwdHMKZHVyaW5nIGF1ZGlvLCBqdXN0IHVzZXIgc3BhY2UgdGltZXIgdG8g
+Y2hlY2sgdGhlIGF1ZGlvIHN0YXR1cyBldmVyeSBub3cgYW5kIHRoZW4uClRoaXMgd2FzIG5vdCBw
+b3NzaWJsZSB3aXRoIHRoZSBkYXZpbmNpLXBjbS4KCj4+IEkgdXNlIGEgNE1CIGJ1ZmZlciBmb3Ig
+dGhhdCAxNi1jaGFubmVscy1vZi0zMi1iaXRzIHN5c3RlbSwgdXN1YWxseSB3aXRoIDgKPj4gcGVy
+aW9kcyBvZiA1MTJrQiBlYWNoLgo+IAo+IEdsYWQgdG8gaGVhciwgaWYgeW91IGV2ZXIgbmVlZCB0
+byB1cGRhdGUgdGhlIGtlcm5lbCwgdGhlIGVkbWEtcGNtIGNvbnZlcnNpb24KPiB3aWxsIG5vdCBn
+b2luZyB0byBjYXVzZSB5b3UgcmVncmVzc2lvbiA7KQo+IAo+PiBNZXQgdnJpZW5kZWxpamtlIGdy
+b2V0IC8ga2luZCByZWdhcmRzLAo+Pgo+PiBNaWtlIExvb2lqbWFucwo+PiBTeXN0ZW0gRXhwZXJ0
+Cj4+Cj4+Cj4+IFRPUElDIEVtYmVkZGVkIFN5c3RlbXMKPj4gRWluZGhvdmVuc2V3ZWcgMzItQywg
+TkwtNTY4MyBLSCBCZXN0Cj4+IFBvc3RidXMgNDQwLCBOTC01NjgwIEFLIEJlc3QKPj4gVGVsZWZv
+b246ICgrMzEpICgwKSA0OTkgMzMgNjkgNzkKPj4gVGVsZWZheDogICgrMzEpICgwKSA0OTkgMzMg
+NjkgNzAKPj4gRS1tYWlsOiBtaWtlLmxvb2lqbWFuc0B0b3BpYy5ubAo+PiBXZWJzaXRlOiB3d3cu
+dG9waWMubmwKPj4KPj4gUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJp
+bnRpbmcgdGhpcyBlLW1haWwKPj4KPj4gVG9waWMgem9la3QgZ2VkcmV2ZW4gKGVtYmVkZGVkKSBz
+b2Z0d2FyZSBzcGVjaWFsaXN0ZW4hCj4+IGh0dHA6Ly90b3BpYy5ubC92YWNhdHVyZXMvdG9waWMt
+em9la3Qtc29mdHdhcmUtZW5naW5lZXJzLwo+Pgo+IAo+IAoKCi0tIApQw6l0ZXIKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
