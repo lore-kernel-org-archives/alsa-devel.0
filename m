@@ -1,95 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add support for NAU8824 codec to ASoC
-Date: Fri, 6 Mar 2015 21:07:22 +0000
-Message-ID: <20150306210722.GK21293@sirena.org.uk>
-References: <1423986570-6355-1-git-send-email-Vincent.wan@amd.com>
- <20150224141314.GI6236@finisterre.sirena.org.uk>
- <54F6FC28.4030403@nuvoton.com>
- <20150304125527.GM21293@sirena.org.uk>
- <54F95721.7040103@nuvoton.com>
+Subject: Re: [PATCH 1/1] ASoC: Intel: remove conflicts when
+ load/unload multiple firmware images
+Date: Fri, 6 Mar 2015 21:08:24 +0000
+Message-ID: <20150306210824.GL21293@sirena.org.uk>
+References: <1424823981-14133-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qNmcRovokQDZCUb0"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <54F95721.7040103@nuvoton.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chih-Chiang Chang <ccchang12@nuvoton.com>
-Cc: "mcuos.com@gmail.com" <mcuos.com@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
+Content-Type: multipart/mixed; boundary="===============6482863078305492685=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7280266085
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 22:08:29 +0100 (CET)
+In-Reply-To: <1424823981-14133-1-git-send-email-han.lu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: han.lu@intel.com
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---qNmcRovokQDZCUb0
-Content-Type: text/plain; charset=utf-8
+--===============6482863078305492685==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2otm9oCO281xmWKR"
+Content-Disposition: inline
+
+
+--2otm9oCO281xmWKR
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 06, 2015 at 03:28:33PM +0800, Chih-Chiang Chang wrote:
+On Wed, Feb 25, 2015 at 08:26:21AM +0800, han.lu@intel.com wrote:
+> From: "Lu, Han" <han.lu@intel.com>
+>=20
+> Details:
+>   1. Unload all modules on fw_list of dsp when suspend, and reload all
+> modules on fw_list when resume.
+>   2. A DSP expects only one scratch, but hsw_parse_fw_image() allocates
+> scratch blocks for each firmware image it parses. Move the allocate funct=
+ion
+> sst_block_alloc_scratch() out of hsw_parse_fw_image() to make sure a scra=
+tch
+> be allocated only after all firmware images be parsed.
 
-Please fix your mailer to word wrap within paragraphs, it makes things a
-lot easier to read.
+Applied, thanks.
 
-> On 2015/3/4 =E4=B8=8B=E5=8D=88 08:55, Mark Brown wrote:
-> > On Wed, Mar 04, 2015 at 08:35:52PM +0800, Chih-Chiang Chang wrote:
-> >> On 2015/2/24 =E4=B8=8B=E5=8D=88 10:13, Mark Brown wrote:
-
-> > Add relevant control types if you need them, it's important to have
-> > proper stereo controls available to userspace.
-
-> We cannot find suitable macro in file "include\sound\soc.h", so we want t=
-o add below two macro for our chip.
-> SOC_DOUBLE_L_R_VALUE
-> SOC_DOUBLE_L_R_TLV
-
-Sounds good.
-
-> >>> This looks like you're reimplementing regmap's register sequence
-> >>> stuff...  It's also a *very* large sequence you have, are you sure it=
-'s
-> >>> all required?  It seems like this may be doing a bunch of machine
-> >>> specific configuration but since it's all magic numbers it's hard to
-> >>> tell.
-
-> >> Initial settings are arranged in order
-
-> > This doesn't answer or address my concern.
-
-> These large number of register setting is used to initial our codec,
-> and some of other codec have the same behavior. We will remove few
-> unnecessary register default setting and add some remark for
-> registers.
-
-I'd really like to have a better understanding of what this is doing -
-it can be valid to do this but there are some warning signs here such as
-the volume of writes being large in comparison with the set of controls
-the driver exposes which mean I'd like to be sure the use matches
-expectations.  Normally this sort of thing is a small number of fixes
-for undocumented registers or updates to register defaults changed in
-later revisions of the chip.
-
-> > Don't include noise like this in upstream communication, if your company
-> > won't fix this then please use an external mail account for upstream
-> > communication.
-
-> Our MIS report they have disabled to append message in mail. Hope you do =
-not see it in this mail.
-
-It's gone, thanks.
-
---qNmcRovokQDZCUb0
+--2otm9oCO281xmWKR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU+hcJAAoJECTWi3JdVIfQg6YH/1M5nzCRagPQG6eggs6T9+Qu
-cYGDJ+4EasNBfenrOZMGuqzZrPun4btjAscXHaaxTOmrc2VIjSxMMr8ReS164Dp5
-txtIcFbhkD2tFmwuk+LWUUBNCm7D8W/T1FHgiJbU6FMx9qQXZNbfV1HSPJ9UlelV
-c/kYbczgNDT7GuzzPxGI9b2lLMigiCgF7gyfKLmbPl29eirWVdztpLW23SOcy/xo
-XSsFAOiZylufhs6oC0bXcJK1NsmLiv2kAbr9pX9vpVO/WjhFiaofBwyrIvYe4vVY
-nNQS6JH8ZeCcP8sRHxLV4cTHRgu2CuQD1xumga8YzJ62gpw61vOlQ6oFRgnPZ14=
-=aHXV
+iQEcBAEBCAAGBQJU+hdHAAoJECTWi3JdVIfQAOUIAIJms2FNBYofI6+ZDEkDklw9
+e5+pf2Drs8gBsd2XmAekYLff9e2dYnzonXKkFTWZ4sW9a0na9blIM3t2/o5cQiVG
+eAUbaODhs2dIob0syV1wWH2awVjJktVE7/ExHrZCi0h8te9fYK+RkVwX+tcglrzd
+4VeQubeX27gsh5YuW7BmsNjVxuXmtzUqAP3C3+iqkFbYFKni6wAsIehdVVdK2f2e
+ASAGTvktt3TggNG+YE7EvY06i3mYWHBkCNe4UiBAHafOhmDxnXD/cTe3vHzjyh20
+JK+CW8nFH1ubVJ74abvLZ4Q8+g7UXr9JVnMXrYuCK1m2ZA8N1uGbQyUgsIg5feE=
+=Q/n9
 -----END PGP SIGNATURE-----
 
---qNmcRovokQDZCUb0--
+--2otm9oCO281xmWKR--
+
+--===============6482863078305492685==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6482863078305492685==--
