@@ -1,20 +1,19 @@
-From: Eric Nelson <eric.nelson@boundarydevices.com>
-Subject: Re: [PATCH RFC 0/6] ASoC: sgtl5000: fix use of
- regulators and internal LDO
-Date: Fri, 06 Mar 2015 15:49:39 -0700
-Message-ID: <54FA2F03.2060804@boundarydevices.com>
-References: <1424991273-10081-1-git-send-email-eric.nelson@boundarydevices.com>
+From: Alnie <memobook80@comcast.net>
+Subject: Re: Issues w/ Creative Labs [SB X-Fi Xtreme Audio]
+	CA0110-IBG
+Date: Fri, 06 Mar 2015 14:50:10 -0800
+Message-ID: <54FA2F22.8090500@comcast.net>
+References: <54F52C68.6010504@comcast.net>	<s5hzj7u7grx.wl-tiwai@suse.de>	<54F5614C.9010402@comcast.net>	<s5hwq2y7c8g.wl-tiwai@suse.de>	<54F57D07.9020900@comcast.net>	<54F62CDC.1010607@comcast.net>	<s5hoao97n1j.wl-tiwai@suse.de>	<54F66A0F.1050603@comcast.net>	<s5hk2yx6vld.wl-tiwai@suse.de>	<54F6C9EC.3080100@comcast.net>
+ <s5hegp56r78.wl-tiwai@suse.de> <54FA2C75.3070802@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id BF48C26609F
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 23:49:44 +0100 (CET)
-Received: by pdev10 with SMTP id v10so32050476pde.0
- for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2015 14:49:43 -0800 (PST)
-In-Reply-To: <1424991273-10081-1-git-send-email-eric.nelson@boundarydevices.com>
+Received: from resqmta-po-08v.sys.comcast.net (resqmta-po-08v.sys.comcast.net
+ [96.114.154.167])
+ by alsa0.perex.cz (Postfix) with ESMTP id 410692661B0
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 23:50:12 +0100 (CET)
+In-Reply-To: <54FA2C75.3070802@comcast.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,73 +23,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, lgirdwood@gmail.com, rmk+kernel@arm.linux.org.uk, jean-michel.hautbois@vodalys.com, troy.kisky@boundarydevices.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On 03/06/2015 02:38 PM, Alnie wrote:
+> On 03/04/2015 01:35 AM, Takashi Iwai wrote:
+>> At Wed, 04 Mar 2015 01:01:32 -0800,
+>> Alnie wrote:
+>>>
+>>>
+>>>
+>>> On 03/04/2015 12:00 AM, Takashi Iwai wrote:
+>>>> At Tue, 03 Mar 2015 18:12:31 -0800,
+>>>> Alnie wrote:
+>>>>>
+>>>>>> My suggestion isn't about a compile option but that you add some
+>>>>>> debug
+>>>>>> printk() calls manually around some codes.  We need to know the value
+>>>>>> written and read by azx_write*() and azx_read*() calls.  Especially
+>>>>>> the value read in pci_azx_read*() is more interesting. You can try to
+>>>>>> modify sound/pci/hda/hda_intel.c and add a printk() to each
+>>>>>> pci_azx_read*() function for printing the value to be returned.
+>>>>>> Beware that this will likely flood many messages, so just try once.
+>>>>>>
+>>>>>>
+>>>>>> Takashi
+>>>>>>
+>>>>>
+>>>>> I can not find any reference to pci_azx_read in hda_intel.c
+>>>>
+>>>> You must be using a too old kernel, then.  Please use the latest
+>>>> kernel for debugging.
+>>>>
+>>>>
+>>>> Takashi
+>>>>
+>>>
+>>> Ok. I now have latest kernel.
+>>>
+>>> Here is a small portion...
+>>>
+>>> /* PCI register access. */
+>>> static void pci_azx_writel(u32 value, u32 __iomem *addr)
+>>> {
+>>>     writel(value, addr);
+>>> }
+>>>
+>>> static u32 pci_azx_readl(u32 __iomem *addr)
+>>> {
+>>>     return readl(addr);
+>>> }
+>>>
+>>> Can you show me how I can properly place printk without breaking things
+>>> and produce relevant messages?
+>>
+>> Something like:
+>>
+>> static u32 pci_azx_readl(u32 __iomem *addr)
+>> {
+>>     u32 val =3D readl(addr);
+>>     pr_info("XXX readl %p %x\n", addr, val);
+>>     return val;
+>> }
+>>
+>> But since there are quite lots of accesses, it might be safer to use
+>> the ratelimited version.  Use like the following:
+>>     pr_info_ratelimited("XXX readl %p %x\n", addr, val);
+>>
+>> Also there are variants pci_azx_readw() and _readb().
+>>
+>>
+>> Takashi
+>>
+>
+> These are the mods I made...
+>
+> /* PCI register access. */
+> static void pci_azx_writel(u32 value, u32 __iomem *addr)
+> {
+>      writel(value, addr);
+>      pr_info_ratelimited("XXX writel %p %x\n", addr, val);
+>      return val;
+> }
+>
+> static u32 pci_azx_readl(u32 __iomem *addr)
+> {
+>      return readl(addr);
+>      pr_info_ratelimited("XXX readl %p %x\n", addr, val);
+>      return val;
+> }
+>
+> static void pci_azx_writew(u16 value, u16 __iomem *addr)
+> {
+>      writew(value, addr);
+>      pr_info_ratelimited("XXX writew %p %x\n", addr, val);
+>      return val;
+> }
+>
+> static u16 pci_azx_readw(u16 __iomem *addr)
+> {
+>      return readw(addr);
+>      pr_info_ratelimited("XXX readw %p %x\n", addr, val);
+>      return val;
+> }
+>
+> static void pci_azx_writeb(u8 value, u8 __iomem *addr)
+> {
+>      writeb(value, addr);
+>      pr_info_ratelimited("XXX writeb %p %x\n", addr, val);
+>      return val;
+> }
+>
+> static u8 pci_azx_readb(u8 __iomem *addr)
+> {
+>      return readb(addr);
+>      pr_info_ratelimited("XXX readb %p %x\n", addr, val);
+>      return val;
+> }
+>
+> But I am getting errors for each pci_azx value...
+>
+> In file included from include/linux/kernel.h:13:0,
+>                   from include/linux/delay.h:10,
+>                   from sound/pci/hda/hda_intel.c:37:
+> sound/pci/hda/hda_intel.c: In function =91pci_azx_writel=92:
+> sound/pci/hda/hda_intel.c:1701:50: error: =91val=92 undeclared (first use=
+ in
+> this function)
+>    pr_info_ratelimited("XXX writel %p %x\n", addr, val);
+>                                                    ^
+> include/linux/printk.h:361:17: note: in definition of macro
+> =91printk_ratelimited=92
+>     printk(fmt, ##__VA_ARGS__);    \
+>                   ^
+> sound/pci/hda/hda_intel.c:1701:2: note: in expansion of macro
+> =91pr_info_ratelimited=92
+>    pr_info_ratelimited("XXX writel %p %x\n", addr, val);
+>    ^
+> sound/pci/hda/hda_intel.c:1701:50: note: each undeclared identifier is
+> reported only once for each function it appears in
+>    pr_info_ratelimited("XXX writel %p %x\n", addr, val);
+>                                                    ^
+> include/linux/printk.h:361:17: note: in definition of macro
+> =91printk_ratelimited=92
+>     printk(fmt, ##__VA_ARGS__);    \
+>                   ^
+> sound/pci/hda/hda_intel.c:1701:2: note: in expansion of macro
+> =91pr_info_ratelimited=92
+>    pr_info_ratelimited("XXX writel %p %x\n", addr, val);
+>    ^
+> sound/pci/hda/hda_intel.c:1702:2: warning: =91return=92 with a value, in
+> function returning void [enabled by default]
+>    return val;
+>    ^
+>
 
-On 02/26/2015 03:54 PM, Eric Nelson wrote:
-> This patch set addresses a structural problem in the handling of regulators
-> for VDDIO, VDDA, and VDDD in the SGTL5000 driver.
-> 
-> The first two of these power rails must be powered on prior to any I2C
-> communication, and yet the regulators were tied to the codec, which is
-> instantiated only after a fair amount of I2C communication takes place.
-> 
-> In other words, these regulators could never have function, and we can
-> surmise that no user of this driver has switched power supply rails
-> connected to them.
-> 
-> The third power rail (VDDD) can be derived internally (by using I2C registers)
-> though the data sheet says that if an external VDDD is used, it should be
-> enabled before MCLK is started and I2C activity begins.
-> 
-> Patch 1 moves the regulators to the I2C device and initializes them before
-> 	I2C activity.
-> Patch 2 addresses an issue found during development of the patch and is
->         somewhat unrelated to regulators. It is included for discussion
-> Patch 3 removes the root cause of patch 2
-> Patch 4 adds return value checks when setting the LINREG and ANA_POWER
-> 	registers
-> Patch 5 addresses the cause of follow-on failures and the source of the
-> 	error in patch 3.
-> Patch 6 removes the naive use of the supplies to lower power consumption
-> 	and replaces it with something more modest.
-> 
-> The patch set is being sent as an RFC for discussion, and should probably
-> be squashed into two or three patches covering the regulator updates
-> (patches 1, 3-5 and perhaps 6), initialization error handling (patch 2).
-> 
-> Eric Nelson (6):
->   ASoC: sgtl5000: fix regulator support
->   ASoC: sgtl5000: write all default registers
->   ASoC: sgtl5000: initialize CHIP_ANA_POWER to power-on defaults
->   ASoC: sgtl5000: check return values
->   ASoC: sgtl5000: disable internal PLL early
->   ASoC: sgtl5000: Don't disable regulators in SND_SOC_BIAS_OFF
-> 
+Ack! Premature post. Already seeing where I made mistakes. Sorry, very =
 
-Based on your review, it seems like the following is needed for a
-V2 patch (set):
+unfamiliar with C :(
 
-- Move call to sgtl5000_fill_defaults() earlier in the
-  sgtl5000_i2c_probe routine, before adjusting ANA_POWER.
-  This will allow registers LINEREG_CTRL, CLK_CTRL, and even ANA_POWER
-  back into the default	register list.
-- Move regulators from codec to I2C device
-- switch to devm_regulator api
-- various code cleanups to simplify logic
-- Adjust regulator usage in SND_SOC_BIAS_OFF
-
-I'll leave out the "write all default" registers for the moment.
-
-Let me know if you'd like to see this in multiple patches or a
-single patch.
-
-I'll wait to see if there's other feedback before prepping V2.
-
-Regards,
-
-
-Eric
+-Alnie
