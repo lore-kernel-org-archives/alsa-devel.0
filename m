@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/6] ASoC: sgtl5000: fix regulator
-	support
-Date: Fri, 6 Mar 2015 20:04:15 +0000
-Message-ID: <20150306200415.GW21293@sirena.org.uk>
+Subject: Re: [RFC PATCH 3/6] ASoC: sgtl5000: initialize
+ CHIP_ANA_POWER to power-on defaults
+Date: Fri, 6 Mar 2015 20:12:07 +0000
+Message-ID: <20150306201207.GX21293@sirena.org.uk>
 References: <1424991273-10081-1-git-send-email-eric.nelson@boundarydevices.com>
- <1424991273-10081-2-git-send-email-eric.nelson@boundarydevices.com>
+ <1424991273-10081-4-git-send-email-eric.nelson@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8037921975042035985=="
+Content-Type: multipart/mixed; boundary="===============2296004386222498276=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F1F91265E17
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 21:04:29 +0100 (CET)
-In-Reply-To: <1424991273-10081-2-git-send-email-eric.nelson@boundarydevices.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 19F8D265E17
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 21:12:16 +0100 (CET)
+In-Reply-To: <1424991273-10081-4-git-send-email-eric.nelson@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,117 +27,66 @@ Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, lars@metafoo.de, t
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8037921975042035985==
+--===============2296004386222498276==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XMHnf4PRplAxZBfX"
+	protocol="application/pgp-signature"; boundary="NyAGqWZHBkCadxLI"
 Content-Disposition: inline
 
 
---XMHnf4PRplAxZBfX
+--NyAGqWZHBkCadxLI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 26, 2015 at 03:54:28PM -0700, Eric Nelson wrote:
+On Thu, Feb 26, 2015 at 03:54:30PM -0700, Eric Nelson wrote:
+> Initialize CHIP_ANA_POWER to match power on defaults, which disables
+> ADC, DAC, and charge pumps.
 
-> Since the internal LDO can only be enabled after I2C is available,
-> there's no benefit in treating it as a regulator, so this patch
-> removes the regulator structure surrounding it.
+> +++ b/sound/soc/codecs/sgtl5000.c
+> @@ -47,12 +47,10 @@ static const struct reg_default sgtl5000_reg_defaults[] = {
+>  	{ SGTL5000_CHIP_ANA_ADC_CTRL,		0x0000 },
+>  	{ SGTL5000_CHIP_ANA_HP_CTRL,		0x1818 },
+>  	{ SGTL5000_CHIP_ANA_CTRL,		0x0111 },
+> -	{ SGTL5000_CHIP_LINREG_CTRL,		0x0000 },
+>  	{ SGTL5000_CHIP_REF_CTRL,		0x0000 },
+>  	{ SGTL5000_CHIP_MIC_CTRL,		0x0000 },
+>  	{ SGTL5000_CHIP_LINE_OUT_CTRL,		0x0000 },
+>  	{ SGTL5000_CHIP_LINE_OUT_VOL,		0x0404 },
+> -	{ SGTL5000_CHIP_ANA_POWER,		0x7060 },
 
-The expected benefit would be that it is possible to then have the code
-that uses the regulator be constant:
+Two big problems here.  One is that this appears to also affect
+LINREG_CTRL which your changelog didn't mention.  The other is that
+contrary to what the changelog says this isn't fixing the default, it's
+removing it.  The whole point of the register defaults table is to
+contain the default power on register values, if it contains other
+things that is a bug and should be fixed by changing the values not
+removing them.
 
->  	case SND_SOC_BIAS_STANDBY:
->  		if (codec->dapm.bias_level =3D=3D SND_SOC_BIAS_OFF) {
->  			ret =3D regulator_bulk_enable(
-> -						ARRAY_SIZE(sgtl5000->supplies),
-> +						sgtl5000->num_supplies,
->  						sgtl5000->supplies);
+Given that confusion I'm really having a hard time understanding the
+rest of the commit.
 
-so we avoid stuff like this.
-
-> @@ -1115,7 +938,9 @@ static int sgtl5000_set_power_regs(struct snd_soc_co=
-dec *codec)
-> =20
->  	vdda  =3D regulator_get_voltage(sgtl5000->supplies[VDDA].consumer);
->  	vddio =3D regulator_get_voltage(sgtl5000->supplies[VDDIO].consumer);
-> -	vddd  =3D regulator_get_voltage(sgtl5000->supplies[VDDD].consumer);
-> +	vddd  =3D (sgtl5000->num_supplies > VDDD)
-> +		? regulator_get_voltage(sgtl5000->supplies[VDDD].consumer)
-> +		: LDO_VOLTAGE;
-
-Please write a normal if statement, this is not legible (and the test is
-more than a little obscure).
-
-> -	/* External VDDD only works before revision 0x11 */
-> -	if (sgtl5000->revision < 0x11) {
-> -		vddd =3D regulator_get_optional(codec->dev, "VDDD");
-
-It'd be good to keep at least a warning about this (not that there's one
-now but it's a good idea).
-
-> -	ret =3D regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
-> +	sgtl5000->num_supplies =3D ARRAY_SIZE(sgtl5000->supplies)
-> +				 - 1 + external_vddd;
-
-This is a bit obscure, why not just do this sooner (with a comment for
-the - 1) and increment num_supplies when we add the external regulator.
-A comment on the supply list saying that VDDD must be last would be good
-too.
-
-> +	ret =3D regulator_bulk_enable(sgtl5000->num_supplies,
-> +				    sgtl5000->supplies);
-> +	if (!ret)
-> +		usleep_range(10, 20);
-
-This is a separate change...
-
-> +	else
-> +		regulator_bulk_free(sgtl5000->num_supplies,
-> +				    sgtl5000->supplies);
-
-Convert to using devm_ since you're doing all this stuff.
-
-
->  	ret =3D clk_prepare_enable(sgtl5000->mclk);
-> -	if (ret)
-> -		return ret;
-> +	if (ret) {
-> +		dev_err(&client->dev, "Error  enabling clock %d\n", ret);
-> +		goto disable_regs;
-> +	}
-
-This is a separate fix as far as I can tell?
-
-> +	/* Follow section 2.2.1.1 of AN3663 */
-> +	if (sgtl5000->num_supplies <=3D VDDD) {
-> +		/* internal VDDD at 1.2V */
-
-These checks are just far too obscure, please set a flag or something.
-
---XMHnf4PRplAxZBfX
+--NyAGqWZHBkCadxLI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU+gg/AAoJECTWi3JdVIfQFAAH/Rc/jW3RdwOuW89d9SixNGTp
-3prmcmZbMsuoAIapdD0PBYCidSxKp0v1DWEktvOMAIX+PU4a+/aovwlw8hZITt0E
-7mLYKjlCC51a3qr8RGZgFezpbliVI0yecv3Y7k5R/4OasOx4SPPTl8fRSk02Wp3T
-tu28lJ2LeyDmgY7MppOu6qtOfo03wcbfn76gE0vS22S3G5eHK8d3oNPv2atEbcml
-C4pl2ACLcfi/8wpIDeVIc7kjHIbKhYeJ+fYaIjRBHFjiN2F+siLEhObk1vT3I+Mn
-QDDpUa9GulQndsXQzqKqf2vj/JD+X3jbO8TzbDm72cpTi7SrHj0EtOOUcOVZPOc=
-=DKer
+iQEcBAEBCAAGBQJU+goWAAoJECTWi3JdVIfQDzMH/11RIugkHlEOD+dG2Iqtr+SV
+fXkeibOLsTGPQMYAbugEvYkBQcyCjrlVSEypxuecm6w5rg906AGS5KkiJNsx1K7P
+u7f0Ut4OoSFLCDubQHP8wa4bbzfeJJGmKrJC5gGgpHrhUEVQ4B9xk4XHwsl/aTXV
+J9DiXwC5ElH75RyopCZa2hOBJPn0I2GUkxAbE9oQPvp9yMmlmn0pqn8kzjLaukX4
+iLzrx7vNImtbeP/cDf8oNOKhvvFtFiIHg95jpVZofSVaJrIDT3o9HWPlCOro+cB/
+jnlJ+wrU5Izj4rI7mi+s731d28R8d3q0aOGH3/Qzdez7QFFB+99rHI3IV6pIn0U=
+=PcxV
 -----END PGP SIGNATURE-----
 
---XMHnf4PRplAxZBfX--
+--NyAGqWZHBkCadxLI--
 
---===============8037921975042035985==
+--===============2296004386222498276==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8037921975042035985==--
+--===============2296004386222498276==--
