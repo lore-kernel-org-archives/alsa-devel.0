@@ -1,60 +1,47 @@
-From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Subject: Re: [Patch V7 02/10] ASoC: qcom: Document LPASS CPU bindings
-Date: Thu, 5 Mar 2015 17:51:31 -0800
-Message-ID: <20150306015131.GA15850@kwestfie-linux.qualcomm.com>
-References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
- <1425428519-12224-3-git-send-email-kwestfie@codeaurora.org>
- <7E5AFC65-1705-4BDC-B57F-0444E83A8987@codeaurora.org>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt286: Change the DMI mapping for Dino
+Date: Fri, 6 Mar 2015 10:12:58 +0800
+Message-ID: <1425607978-24333-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <7E5AFC65-1705-4BDC-B57F-0444E83A8987-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Cc: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00384265A10
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 03:13:24 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, mario_limonciello@dell.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 05, 2015 at 12:52:30PM -0600, Kumar Gala wrote:
-> 
-> On Mar 3, 2015, at 6:21 PM, Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org> wrote:
-> 
-> > +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> > @@ -0,0 +1,49 @@
-> > +* Qualcomm Technologies LPASS CPU DAI
-> > +
-> > +Required subnodes:
-> > +
-> > +- qcom,adsp		: Audio DSP sub-node
-> > +
-> > +Optional Audio DSP subnode properties:
-> > +
-> > +- status		: "disabled" indicates the adsp is not available.
-> > +
-> 
-> What is the intent of this subnode?
-> 
+The board ID will be changed between revisions. So, it is better
+to map it by project name.
 
->From the cover letter:
-Even though the ipq806x LPASS does not contain an audio DSP, other SOCs
-do have one.  For those SOCs, the audio DSP typically controls the
-hardware blocks in the LPASS.  Hence, different CPU DAI driver(s) would
-need to be used in order to facilitate audio with the DSP.  As such, the
-LPASS DT contains an adsp subnode, which is disabled for this SOC.  The
-same subnode should be enabled and populated for other SOCs that do
-contain an audio DSP.  Not using the audio DSP would require different
-CPU DAI driver(s), in addition to possible bootloader and/or firmware
-changes.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This was the result of a request from Mark.  See here:
-http://thread.gmane.org/gmane.linux.drivers.devicetree/109331/focus=11633
-
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 693decb..098fc78 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1209,7 +1209,7 @@ static struct dmi_system_id dmi_dell_dino[] = {
+ 		.ident = "Dell Dino",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_BOARD_NAME, "0144P8")
++			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 13 9343")
+ 		}
+ 	},
+ 	{ }
 -- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.8.1.1.439.g50a6b54
