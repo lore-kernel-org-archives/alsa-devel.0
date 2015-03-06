@@ -1,77 +1,60 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Intel HDA / ALC662 analog surround problem
-Date: Fri, 6 Mar 2015 09:49:40 +0800
-Message-ID: <CAN8cciZkEO+tTZ-DjyU7iB0tfX3JW2q7MpNd=yxy=QVKLVpC3w@mail.gmail.com>
-References: <CAN8cciZ4=UXVLFgykv2V67e9+K5OwnYo3tq-cDUDJd2xgqszBw@mail.gmail.com>
- <54f889c7.33f7fe8f.bm001@wupperonline.de>
+From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Subject: Re: [Patch V7 02/10] ASoC: qcom: Document LPASS CPU bindings
+Date: Thu, 5 Mar 2015 17:51:31 -0800
+Message-ID: <20150306015131.GA15850@kwestfie-linux.qualcomm.com>
+References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
+ <1425428519-12224-3-git-send-email-kwestfie@codeaurora.org>
+ <7E5AFC65-1705-4BDC-B57F-0444E83A8987@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f175.google.com (mail-ob0-f175.google.com
- [209.85.214.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 7794A26599E
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 02:49:41 +0100 (CET)
-Received: by obcuy5 with SMTP id uy5so10838999obc.11
- for <alsa-devel@alsa-project.org>; Thu, 05 Mar 2015 17:49:40 -0800 (PST)
-In-Reply-To: <54f889c7.33f7fe8f.bm001@wupperonline.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?SW5nbyBCcsO8Y2ts?= <ib@wupperonline.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, david.henningsson@canonical.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <7E5AFC65-1705-4BDC-B57F-0444E83A8987-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
->
-> > Try [...] to change node 0x15 Speaker as not connected
->
-> This is exactly what I did now:
->
-> diff -Nur a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> --- a/sound/pci/hda/patch_realtek.c     2015-02-27 02:49:36.000000000
-+0100
-> +++ b/sound/pci/hda/patch_realtek.c     2015-03-05 17:09:15.305016021
-+0100
-> @@ -5665,9 +5665,10 @@
->
->  static int alc662_parse_auto_config(struct hda_codec *codec)
->  {
-> -       static const hda_nid_t alc662_ignore[] = { 0x1d, 0 };
-> +       /* ignore internal speaker (0x15) in order to get a multi-io
-config */
-> +       static const hda_nid_t alc662_ignore[] = { 0x15, 0x1d, 0 };
->         static const hda_nid_t alc663_ssids[] = { 0x15, 0x1b, 0x14, 0x21
-};
-> -       static const hda_nid_t alc662_ssids[] = { 0x15, 0x1b, 0x14, 0 };
-> +       static const hda_nid_t alc662_ssids[] = { 0x1b, 0x14, 0 };
->         const hda_nid_t *ssids;
->
->         if (codec->vendor_id == 0x10ec0272 || codec->vendor_id ==
-0x10ec0663 ||
->
-> It gives me the multi-io config without side effects and without the
-> hp_lo_shared and spk_lo_shared issue in get_line_out_pfx().
->
-> I'd like to make this configurable for people suffering from the same
-problem
-> with their ALC662, but I don't know how to identify when it would occur.
->
+On Thu, Mar 05, 2015 at 12:52:30PM -0600, Kumar Gala wrote:
+> 
+> On Mar 3, 2015, at 6:21 PM, Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org> wrote:
+> 
+> > +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+> > @@ -0,0 +1,49 @@
+> > +* Qualcomm Technologies LPASS CPU DAI
+> > +
+> > +Required subnodes:
+> > +
+> > +- qcom,adsp		: Audio DSP sub-node
+> > +
+> > +Optional Audio DSP subnode properties:
+> > +
+> > +- status		: "disabled" indicates the adsp is not available.
+> > +
+> 
+> What is the intent of this subnode?
+> 
 
-you need pin fixup by removing internal speaker and snd_pci_quirk of your
-pci sbsystem id
+>From the cover letter:
+Even though the ipq806x LPASS does not contain an audio DSP, other SOCs
+do have one.  For those SOCs, the audio DSP typically controls the
+hardware blocks in the LPASS.  Hence, different CPU DAI driver(s) would
+need to be used in order to facilitate audio with the DSP.  As such, the
+LPASS DT contains an adsp subnode, which is disabled for this SOC.  The
+same subnode should be enabled and populated for other SOCs that do
+contain an audio DSP.  Not using the audio DSP would require different
+CPU DAI driver(s), in addition to possible bootloader and/or firmware
+changes.
 
-In theory, user can get back the internal speaker by specify model=nofixup
+This was the result of a request from Mark.  See here:
+http://thread.gmane.org/gmane.linux.drivers.devicetree/109331/focus=11633
 
-+ [ALC662_FIXUP_NO_SPEAKER] = {
-+ .type = ALC_FIXUP_PINS,
-+ .v.pins = (const struct alc_pincfg[]) {
-+ { 0x15, 0x4000000 }, /* remove internal speaker */
-+ { }
-+ }
-+ },
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
