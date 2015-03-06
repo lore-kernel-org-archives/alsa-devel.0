@@ -1,14 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: davinci-mcasp: Fix compilation error
-Date: Fri, 6 Mar 2015 09:07:32 +0200
-Message-ID: <1425625652-31217-1-git-send-email-peter.ujfalusi@ti.com>
+From: Chih-Chiang Chang <ccchang12@nuvoton.com>
+Subject: Re: [PATCH] ASoC: Add support for NAU8824 codec to ASoC
+Date: Fri, 6 Mar 2015 15:28:33 +0800
+Message-ID: <54F95721.7040103@nuvoton.com>
+References: <1423986570-6355-1-git-send-email-Vincent.wan@amd.com>
+ <20150224141314.GI6236@finisterre.sirena.org.uk>
+ <54F6FC28.4030403@nuvoton.com> <20150304125527.GM21293@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id ACB1C265AB2
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 08:07:39 +0100 (CET)
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id D54CA265AB2
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 08:28:36 +0100 (CET)
+In-Reply-To: <20150304125527.GM21293@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,31 +23,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mcuos.com@gmail.com" <mcuos.com@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Introduced by commit:
-6afda7f50754 ASoC: davinci-mcasp: Allow complete shutdown of McASP when not in use
-
-I'm really sorry for this...
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 33cea0728cd2..d40b392b3da2 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1058,7 +1058,7 @@ static int davinci_mcasp_suspend(struct snd_soc_dai *dai)
- 	u32 reg;
- 	int i;
- 
--	context->pm_state = pm_runtime_enabled(mcasp->dev)
-+	context->pm_state = pm_runtime_enabled(mcasp->dev);
- 	if (!context->pm_state)
- 		pm_runtime_get_sync(mcasp->dev);
- 
--- 
-2.3.0
+CgpPbiAyMDE1LzMvNCDkuIvljYggMDg6NTUsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gV2VkLCBN
+YXIgMDQsIDIwMTUgYXQgMDg6MzU6NTJQTSArMDgwMCwgQ2hpaC1DaGlhbmcgQ2hhbmcgd3JvdGU6
+Cj4+IE9uIDIwMTUvMi8yNCDkuIvljYggMTA6MTMsIE1hcmsgQnJvd24gd3JvdGU6Cj4gCj4+PiBJ
+IHdvdWxkIGhhdmUgZXhwZWN0ZWQgdGhlIGhlYWRwaG9uZSB2b2x1bWUgY29udHJvbCB0byBiZSBh
+IHN0ZXJlbwo+Pj4gKGRvdWJsZSkgY29udHJvbCAtIHNhbWUgZm9yIHNwZWFrZXJzLgo+IAo+PiBU
+aGUgbmF1ODgyNCByZWxhdGVkIHJlZ2lzdGVycyB3aGljaCBjb250cm9sIGxlZnQvcmlnaHQgdm9s
+dW1lIGFyZSBsb2NhdGVkCj4+IGluIGRpZmZlcmVudCBhZGRyZXNzZXMgYW5kIGRpZmZlcmVudCBz
+aGlmdCBiaXRzLiBTaW5jZSB0aGVyZSBpcyBubyBhdmFpbGFibGUKPj4gcHJlcHJvY2Vzc29yIG1h
+Y3JvIHRvIG1lZXQgb3VyIHJlcXVpcmVtZW50cywgdGhlIGRyaXZlciBjb25zaXN0cyBvZiBsZWZ0
+L3JpZ2h0Cj4+IHZvbHVtZSBjb250cm9sIHNlcGFyYXRlbHkuCj4gCj4gQWRkIHJlbGV2YW50IGNv
+bnRyb2wgdHlwZXMgaWYgeW91IG5lZWQgdGhlbSwgaXQncyBpbXBvcnRhbnQgdG8gaGF2ZQo+IHBy
+b3BlciBzdGVyZW8gY29udHJvbHMgYXZhaWxhYmxlIHRvIHVzZXJzcGFjZS4KV2UgY2Fubm90IGZp
+bmQgc3VpdGFibGUgbWFjcm8gaW4gZmlsZSAiaW5jbHVkZVxzb3VuZFxzb2MuaCIsIHNvIHdlIHdh
+bnQgdG8gYWRkIGJlbG93IHR3byBtYWNybyBmb3Igb3VyIGNoaXAuClNPQ19ET1VCTEVfTF9SX1ZB
+TFVFClNPQ19ET1VCTEVfTF9SX1RMVgo+IAo+Pj4+ICtzdHJ1Y3QgbmF1ODgyNF9pbml0X3JlZyB7
+Cj4+Pj4gKyAgICB1OCByZWc7Cj4+Pj4gKyAgICB1MTYgdmFsOwo+Pj4+ICt9Owo+IAo+Pj4gVGhp
+cyBsb29rcyBsaWtlIHlvdSdyZSByZWltcGxlbWVudGluZyByZWdtYXAncyByZWdpc3RlciBzZXF1
+ZW5jZQo+Pj4gc3R1ZmYuLi4gIEl0J3MgYWxzbyBhICp2ZXJ5KiBsYXJnZSBzZXF1ZW5jZSB5b3Ug
+aGF2ZSwgYXJlIHlvdSBzdXJlIGl0J3MKPj4+IGFsbCByZXF1aXJlZD8gIEl0IHNlZW1zIGxpa2Ug
+dGhpcyBtYXkgYmUgZG9pbmcgYSBidW5jaCBvZiBtYWNoaW5lCj4+PiBzcGVjaWZpYyBjb25maWd1
+cmF0aW9uIGJ1dCBzaW5jZSBpdCdzIGFsbCBtYWdpYyBudW1iZXJzIGl0J3MgaGFyZCB0bwo+Pj4g
+dGVsbC4KPiAKPj4gSW5pdGlhbCBzZXR0aW5ncyBhcmUgYXJyYW5nZWQgaW4gb3JkZXIKPiAKPiBU
+aGlzIGRvZXNuJ3QgYW5zd2VyIG9yIGFkZHJlc3MgbXkgY29uY2Vybi4KVGhlc2UgbGFyZ2UgbnVt
+YmVyIG9mIHJlZ2lzdGVyIHNldHRpbmcgaXMgdXNlZCB0byBpbml0aWFsIG91ciBjb2RlYywgYW5k
+IHNvbWUgb2Ygb3RoZXIgY29kZWMgaGF2ZSB0aGUgc2FtZSBiZWhhdmlvci4gV2Ugd2lsbCByZW1v
+dmUgZmV3IHVubmVjZXNzYXJ5IHJlZ2lzdGVyIGRlZmF1bHQgc2V0dGluZyBhbmQgYWRkIHNvbWUg
+cmVtYXJrIGZvciByZWdpc3RlcnMuCj4gCj4+Pj4gKyAgICAvKiBEeW5hbWljIEhlYWRzZXQgZGV0
+ZWN0aW9uIGVuYWJsZWQgKi8KPj4+PiArICAgIHNuZF9zb2NfdXBkYXRlX2JpdHMoY29kZWMsIDB4
+MDEsIDB4NDAwLCAweDQwMCk7Cj4+Pj4gKyAgICBzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCAw
+eDAyLCAweDAwMDgsIDB4MDAwOCk7Cj4+Pj4gKyAgICBzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVj
+LCAweDBmLCAweDAzMDAsIDB4MDEwMCk7Cj4+Pj4gKyAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCAw
+eDA5LCAweEUwMDApOwo+Pj4+ICsgICAgc25kX3NvY193cml0ZShjb2RlYywgTkFVODgyNF9JUlFf
+U0VUVElORywgMHgxMDA2KTsKPj4+PiArICAgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIDB4MTMsIDB4
+MTYxNSk7Cj4+Pj4gKyAgICBzbmRfc29jX3dyaXRlKGNvZGVjLCAweDE1LCAweDA0MTQpOwo+Pj4+
+ICsgICAgc25kX3NvY191cGRhdGVfYml0cyhjb2RlYywgMHgxNiwgMHhGRjAwLCAweDU5MDApOwo+
+Pj4+ICsgICAgc25kX3NvY191cGRhdGVfYml0cyhjb2RlYywgMHg2NiwgMHgwMDcwLCAweDAwNjAp
+Owo+IAo+Pj4gVG9vIG1hbnkgbWFnaWMgbnVtYmVycyBoZXJlIEkgdGhpbmsgYW5kIHRoaXMgbG9v
+a3MgbGlrZSBpdCBzaG91bGQgYmUKPj4+IGNvbmZpZ3VyZWQgdXNpbmcgcGxhdGZvcm0gZGF0YSBh
+bmQvb3IgdGhlIG1hY2hpbmUgZHJpdmVyICh3aGF0IGlmIHRoZQo+Pj4gaGVhZHBob25lIGRldGVj
+dGlvbi9JUlEgYXJlbid0IHdpcmVkIHVwPykuICBJJ2QgYWxzbyBleHBlY3QgdG8gc2VlCj4+PiBy
+ZXBvcnRpbmcgdmlhIHRoZSBzdGFuZGFyZCBpbnRlcmZhY2VzIGZvciBqYWNrIHJlcG9ydGluZy4K
+PiAKPj4gVGhlIGFib3ZlIGluaXRpYWwgc2V0dGluZ3MgYXJlIGZvciBqYWNrIGRldGVjdGlvbi4g
+QXMgZm9yIG90aGVyIGphY2sKPj4gZGV0ZWN0aW9uIGZsb3csIGl0IHdpbGwgYmUgaW1wbGVtZW50
+ZWQgaW4gbWFjaGluZSBkcml2ZXIgYnV0IG5vdCBiZSBpbmNsdWRlZCBpbgo+PiB0aGlzIGFwcGxp
+Y2F0aW9uLgo+IAo+IFBsZWFzZSBlaXRoZXIgcmVtb3ZlIHRoaXMgZm9yIG5vdyBvciBpbXBsZW1l
+bnQgaXQgcHJvcGVybHkuCldlIHdpbGwgcmVtb3ZlIGl0Lgo+IAo+PiA9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09Cj4+IFRoZSBwcml2aWxlZ2VkIGNvbmZpZGVudGlhbCBpbmZvcm1h
+dGlvbiBjb250YWluZWQgaW4gdGhpcyBlbWFpbCBpcyBpbnRlbmRlZCBmb3IgdXNlIG9ubHkgYnkg
+dGhlIGFkZHJlc3NlZXMgYXMgaW5kaWNhdGVkIGJ5IHRoZSBvcmlnaW5hbCBzZW5kZXIgb2YgdGhp
+cyBlbWFpbC4gSWYgeW91IGFyZSBub3QgdGhlIGFkZHJlc3NlZSBpbmRpY2F0ZWQgaW4gdGhpcyBl
+bWFpbCBvciBhcmUgbm90IHJlc3BvbnNpYmxlIGZvciBkZWxpdmVyeSBvZiB0aGUgZW1haWwgdG8g
+c3VjaCBhIHBlcnNvbiwgcGxlYXNlIGtpbmRseSByZXBseSB0byB0aGUgc2VuZGVyIGluZGljYXRp
+bmcgdGhpcyBmYWN0IGFuZCBkZWxldGUgYWxsIGNvcGllcyBvZiBpdCBmcm9tIHlvdXIgY29tcHV0
+ZXIgYW5kIG5ldHdvcmsgc2VydmVyIGltbWVkaWF0ZWx5LiBZb3VyIGNvb3BlcmF0aW9uIGlzIGhp
+Z2hseSBhcHByZWNpYXRlZC4gSXQgaXMgYWR2aXNlZCB0aGF0IGFueSB1bmF1dGhvcml6ZWQgdXNl
+IG9mIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiBvZiBOdXZvdG9uIGlzIHN0cmljdGx5IHByb2hp
+Yml0ZWQ7IGFuZCBhbnkgaW5mb3JtYXRpb24gaW4gdGhpcyBlbWFpbCBpcnJlbGV2YW50IHRvIHRo
+ZSBvZmZpY2lhbCBidXNpbmVzcyBvZiBOdXZvdG9uIHNoYWxsIGJlIGRlZW1lZCBhcyBuZWl0aGVy
+IGdpdmVuIG5vciBlbmRvcnNlZCBieSBOdXZvdG9uLgo+IAo+IERvbid0IGluY2x1ZGUgbm9pc2Ug
+bGlrZSB0aGlzIGluIHVwc3RyZWFtIGNvbW11bmljYXRpb24sIGlmIHlvdXIgY29tcGFueQo+IHdv
+bid0IGZpeCB0aGlzIHRoZW4gcGxlYXNlIHVzZSBhbiBleHRlcm5hbCBtYWlsIGFjY291bnQgZm9y
+IHVwc3RyZWFtCj4gY29tbXVuaWNhdGlvbi4KT3VyIE1JUyByZXBvcnQgdGhleSBoYXZlIGRpc2Fi
+bGVkIHRvIGFwcGVuZCBtZXNzYWdlIGluIG1haWwuIEhvcGUgeW91IGRvIG5vdCBzZWUgaXQgaW4g
+dGhpcyBtYWlsLgo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
