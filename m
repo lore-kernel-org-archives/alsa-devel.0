@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: Intel: remove conflicts when
- load/unload multiple firmware images
-Date: Fri, 6 Mar 2015 21:08:24 +0000
-Message-ID: <20150306210824.GL21293@sirena.org.uk>
-References: <1424823981-14133-1-git-send-email-han.lu@intel.com>
+From: Eric Nelson <eric.nelson@boundarydevices.com>
+Subject: Re: [RFC PATCH 1/6] ASoC: sgtl5000: fix regulator
+	support
+Date: Fri, 06 Mar 2015 14:09:20 -0700
+Message-ID: <54FA1780.4060906@boundarydevices.com>
+References: <1424991273-10081-1-git-send-email-eric.nelson@boundarydevices.com>
+ <1424991273-10081-2-git-send-email-eric.nelson@boundarydevices.com>
+ <20150306200415.GW21293@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6482863078305492685=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E7280266085
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 22:08:29 +0100 (CET)
-In-Reply-To: <1424823981-14133-1-git-send-email-han.lu@intel.com>
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id F255C26605D
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 22:09:24 +0100 (CET)
+Received: by pdbft15 with SMTP id ft15so17549287pdb.6
+ for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2015 13:09:23 -0800 (PST)
+In-Reply-To: <20150306200415.GW21293@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +26,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: han.lu@intel.com
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, lgirdwood@gmail.com, rmk+kernel@arm.linux.org.uk, jean-michel.hautbois@vodalys.com, troy.kisky@boundarydevices.com
 List-Id: alsa-devel@alsa-project.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
---===============6482863078305492685==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2otm9oCO281xmWKR"
-Content-Disposition: inline
+Hi Mark,
+
+Thanks for the review.
+
+On 03/06/2015 01:04 PM, Mark Brown wrote:
+> On Thu, Feb 26, 2015 at 03:54:28PM -0700, Eric Nelson wrote:
+> 
+>> Since the internal LDO can only be enabled after I2C is
+>> available, there's no benefit in treating it as a regulator, so
+>> this patch removes the regulator structure surrounding it.
+> 
+> The expected benefit would be that it is possible to then have the
+> code that uses the regulator be constant:
+> 
+
+That's a nice plan, but doesn't fit, since the internal regulator
+requires I2C access and can only be used after the rest of the
+power-up sequence has completed.
+
+>> case SND_SOC_BIAS_STANDBY: if (codec->dapm.bias_level ==
+>> SND_SOC_BIAS_OFF) { ret = regulator_bulk_enable( -
+>> ARRAY_SIZE(sgtl5000->supplies), +						sgtl5000->num_supplies, 
+>> sgtl5000->supplies);
+> 
+> so we avoid stuff like this.
+> 
+
+I understand the intent, but that doesn't work. If the internal LDO
+is wrapped in a regulator and placed here, the sequence needs to be:
+	enable VDDIO and VDDA regulators
+	re-enable the clock
+	wait 8 cycles
+	enable the LDO for VDDD
+
+>> @@ -1115,7 +938,9 @@ static int sgtl5000_set_power_regs(struct
+>> snd_soc_codec *codec)
+>> 
+>> vdda  =
+>> regulator_get_voltage(sgtl5000->supplies[VDDA].consumer); vddio =
+>> regulator_get_voltage(sgtl5000->supplies[VDDIO].consumer); -	vddd
+>> = regulator_get_voltage(sgtl5000->supplies[VDDD].consumer); +
+>> vddd  = (sgtl5000->num_supplies > VDDD) +		?
+>> regulator_get_voltage(sgtl5000->supplies[VDDD].consumer) +		:
+>> LDO_VOLTAGE;
+> 
+> Please write a normal if statement, this is not legible (and the
+> test is more than a little obscure).
+> 
+
+Will do (in a V2).
+
+>> -	/* External VDDD only works before revision 0x11 */ -	if
+>> (sgtl5000->revision < 0x11) { -		vddd =
+>> regulator_get_optional(codec->dev, "VDDD");
+> 
+> It'd be good to keep at least a warning about this (not that
+> there's one now but it's a good idea).
+> 
+
+I haven't been able to find the origin of this test, but it's in
+conflict with ER1.
+
+>> -	ret = regulator_bulk_get(codec->dev,
+>> ARRAY_SIZE(sgtl5000->supplies), +	sgtl5000->num_supplies =
+>> ARRAY_SIZE(sgtl5000->supplies) +				 - 1 + external_vddd;
+> 
+> This is a bit obscure, why not just do this sooner (with a comment
+> for the - 1) and increment num_supplies when we add the external
+> regulator. A comment on the supply list saying that VDDD must be
+> last would be good too.
+> 
+
+Agreed. I'll rework it.
+
+>> +	ret = regulator_bulk_enable(sgtl5000->num_supplies, +
+>> sgtl5000->supplies); +	if (!ret) +		usleep_range(10, 20);
+> 
+> This is a separate change...
+> 
+
+I changed udelay() to usleep_range() in order to keep
+checkpatch happy.
+
+>> +	else +		regulator_bulk_free(sgtl5000->num_supplies, +
+>> sgtl5000->supplies);
+> 
+> Convert to using devm_ since you're doing all this stuff.
+> 
+> 
+
+Will do.
+
+>> ret = clk_prepare_enable(sgtl5000->mclk); -	if (ret) -		return
+>> ret; +	if (ret) { +		dev_err(&client->dev, "Error  enabling clock
+>> %d\n", ret); +		goto disable_regs; +	}
+> 
+> This is a separate fix as far as I can tell?
+> 
+
+Not really. Once regulators are moved into the I2C device, we
+can't just return because that would leave the regulators enabled.
+
+>> +	/* Follow section 2.2.1.1 of AN3663 */ +	if
+>> (sgtl5000->num_supplies <= VDDD) { +		/* internal VDDD at 1.2V
+>> */
+> 
+> These checks are just far too obscure, please set a flag or
+> something.
+> 
+
+Got it. I'll fix this in V2 (not RFC).
+
+Regards,
 
 
---2otm9oCO281xmWKR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Feb 25, 2015 at 08:26:21AM +0800, han.lu@intel.com wrote:
-> From: "Lu, Han" <han.lu@intel.com>
->=20
-> Details:
->   1. Unload all modules on fw_list of dsp when suspend, and reload all
-> modules on fw_list when resume.
->   2. A DSP expects only one scratch, but hsw_parse_fw_image() allocates
-> scratch blocks for each firmware image it parses. Move the allocate funct=
-ion
-> sst_block_alloc_scratch() out of hsw_parse_fw_image() to make sure a scra=
-tch
-> be allocated only after all firmware images be parsed.
-
-Applied, thanks.
-
---2otm9oCO281xmWKR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
+Eric
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJU+hdHAAoJECTWi3JdVIfQAOUIAIJms2FNBYofI6+ZDEkDklw9
-e5+pf2Drs8gBsd2XmAekYLff9e2dYnzonXKkFTWZ4sW9a0na9blIM3t2/o5cQiVG
-eAUbaODhs2dIob0syV1wWH2awVjJktVE7/ExHrZCi0h8te9fYK+RkVwX+tcglrzd
-4VeQubeX27gsh5YuW7BmsNjVxuXmtzUqAP3C3+iqkFbYFKni6wAsIehdVVdK2f2e
-ASAGTvktt3TggNG+YE7EvY06i3mYWHBkCNe4UiBAHafOhmDxnXD/cTe3vHzjyh20
-JK+CW8nFH1ubVJ74abvLZ4Q8+g7UXr9JVnMXrYuCK1m2ZA8N1uGbQyUgsIg5feE=
-=Q/n9
+iQEcBAEBAgAGBQJU+heAAAoJEFUqXmm9AiVrx+0H/3juYAWgD0su7nwPLvw8nhPH
+8rGVc/laHcSTC/GBAjomkhmGWTL3Kb/gJo38hEo3GNeq9E6rlqPjP5qQMorcqVSo
+agy+GGaPZ6W8AvRoEqyG3r/pN/MrwmT8JtkmMp3iBlPtB9cDfksFmeych697jPuU
+gWj9xSuWyrnGcAZPJMrI2xJDfPHQ2/TStNhnR3bvVIAqfdfS8MKbqeUwQJ12gLhM
+GeEMTfHwx2P5IBPDucieJtMnl+pX4v+s/IoJdU8gIz1IC4k9jz9OQIFxYocLWcpe
+m6DhlTY0gMUdfnMIQ+WnDSk6dzNINglvFUqNsm0sMyXI+2MKZGFD+Dx33qOQX24=
+=1he2
 -----END PGP SIGNATURE-----
-
---2otm9oCO281xmWKR--
-
---===============6482863078305492685==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6482863078305492685==--
