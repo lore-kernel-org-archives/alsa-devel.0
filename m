@@ -1,47 +1,37 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt286: Change the DMI mapping for Dino
-Date: Fri, 6 Mar 2015 10:12:58 +0800
-Message-ID: <1425607978-24333-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 00384265A10
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 03:13:24 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, mario_limonciello@dell.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - One more Dell macine needs DELL1_MIC_NO_PRESENCE quirk
+Date: Fri,  6 Mar 2015 14:03:57 +0800
+Message-ID: <1425621837-13754-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-The board ID will be changed between revisions. So, it is better
-to map it by project name.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Cc: <stable@vger.kernel.org>
+BugLink: https://bugs.launchpad.net/bugs/1428947
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/soc/codecs/rt286.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 693decb..098fc78 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1209,7 +1209,7 @@ static struct dmi_system_id dmi_dell_dino[] = {
- 		.ident = "Dell Dino",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
--			DMI_MATCH(DMI_BOARD_NAME, "0144P8")
-+			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 13 9343")
- 		}
- 	},
- 	{ }
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b2b24a8..526398a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5209,6 +5209,13 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x17, 0x40000000},
+ 		{0x1d, 0x40700001},
+ 		{0x21, 0x02211040}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC255_STANDARD_PINS,
++		{0x12, 0x90a60170},
++		{0x14, 0x90170140},
++		{0x17, 0x40000000},
++		{0x1d, 0x40700001},
++		{0x21, 0x02211050}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0280, 0x103c, "HP", ALC280_FIXUP_HP_GPIO4,
+ 		{0x12, 0x90a60130},
+ 		{0x13, 0x40000000},
 -- 
-1.8.1.1.439.g50a6b54
+1.9.1
