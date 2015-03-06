@@ -1,79 +1,95 @@
-From: Kai Vehmanen <kvehmanen-nQfqiRJ1PMYxHbG02/KK1g@public.gmane.org>
-Subject: Re: Right interface for cellphone modem audio (was Re: [PATCHv2 0/2]
- N900 Modem Speech Support)
-Date: Fri, 6 Mar 2015 22:49:50 +0200 (EET)
-Message-ID: <alpine.DEB.2.00.1503062139320.2610@ecabase.localdomain>
-References: <1425343454-6551-1-git-send-email-sre@kernel.org> <20150305113013.GA3867@amd> <alpine.DEB.2.00.1503051844420.2610@ecabase.localdomain> <20150306094354.GA32369@amd>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Add support for NAU8824 codec to ASoC
+Date: Fri, 6 Mar 2015 21:07:22 +0000
+Message-ID: <20150306210722.GK21293@sirena.org.uk>
+References: <1423986570-6355-1-git-send-email-Vincent.wan@amd.com>
+ <20150224141314.GI6236@finisterre.sirena.org.uk>
+ <54F6FC28.4030403@nuvoton.com>
+ <20150304125527.GM21293@sirena.org.uk>
+ <54F95721.7040103@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
-Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150306094354.GA32369@amd>
-Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
-Cc: perex-/Fr2/VpizcU@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, Kai Vehmanen <kvcontact-nQfqiRJ1PMYxHbG02/KK1g@public.gmane.org>, Pali Rohar <pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>, Ivaylo Dimitrov <ivo.g.dimitrov.75-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qNmcRovokQDZCUb0"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54F95721.7040103@nuvoton.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chih-Chiang Chang <ccchang12@nuvoton.com>
+Cc: "mcuos.com@gmail.com" <mcuos.com@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Fri, 6 Mar 2015, Pavel Machek wrote:
+--qNmcRovokQDZCUb0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> Our take was that ALSA is not the right interface for cmt_speech. The
->> cmt_speech interface in the modem is _not_ a PCM interface as modelled by
->> ALSA. Specifically:
->>
->> - the interface is lossy in both directions
->> - data is sent in packets, not a stream of samples (could be other things
->>   than PCM samples), with timing and meta-data
->> - timing of uplink is of utmost importance
->
-> I see that you may not have data available in "downlink" scenario, but
-> how is it lossy in "uplink" scenario? Phone should always try to fill
-> the uplink, no? (Or do you detect silence and not transmit in this
+On Fri, Mar 06, 2015 at 03:28:33PM +0800, Chih-Chiang Chang wrote:
 
-Lossy was perhaps not the best choice of words, non-continuous would be 
-a better choice in the uplink case. To adjust timing, some samples from 
-the continuous locally recorded PCM stream need to be skipped and/or 
-duplicated. This would normally be done between speech bursts to avoid 
-artifacts.
+Please fix your mailer to word wrap within paragraphs, it makes things a
+lot easier to read.
 
-> Packets vs. stream of samples... does userland need to know about the
-> packets? Could we simply hide it from the userland? As userland daemon
-> is (supposed to be) realtime, do we really need extra set of
-> timestamps? What other metadata are there?
+> On 2015/3/4 =E4=B8=8B=E5=8D=88 08:55, Mark Brown wrote:
+> > On Wed, Mar 04, 2015 at 08:35:52PM +0800, Chih-Chiang Chang wrote:
+> >> On 2015/2/24 =E4=B8=8B=E5=8D=88 10:13, Mark Brown wrote:
 
-Yes, we need flags that tell about the frame. Please see docs for 
-'frame_flags' and 'spc_flags' in libcmtspeechdata cmtspeech.h:
-https://www.gitorious.org/libcmtspeechdata/libcmtspeechdata/source/9206835ea3c96815840a80ccba9eaeb16ff7e294:cmtspeech.h
+> > Add relevant control types if you need them, it's important to have
+> > proper stereo controls available to userspace.
 
-Kernel space does not have enough info to handle these flags as the audio 
-mixer is not implemented in kernel, so they have to be passed to/from 
-user-space.
+> We cannot find suitable macro in file "include\sound\soc.h", so we want t=
+o add below two macro for our chip.
+> SOC_DOUBLE_L_R_VALUE
+> SOC_DOUBLE_L_R_TLV
 
-And some further info in libcmtspeechdata/docs/ 
-https://www.gitorious.org/libcmtspeechdata/libcmtspeechdata/source/9206835ea3c96815840a80ccba9eaeb16ff7e294:doc/libcmtspeechdata_api_docs_main.txt
+Sounds good.
 
-> Uplink timing... As the daemon is realtime, can it just send the data
-> at the right time? Also normally uplink would be filled, no?
+> >>> This looks like you're reimplementing regmap's register sequence
+> >>> stuff...  It's also a *very* large sequence you have, are you sure it=
+'s
+> >>> all required?  It seems like this may be doing a bunch of machine
+> >>> specific configuration but since it's all magic numbers it's hard to
+> >>> tell.
 
-But how would you implement that via the ALSA API? With cmt_speech, a 
-speech packet is prepared in a mmap'ed buffer, flags are set to describe 
-the buffer, and at the correct time, write() is called to trigger 
-transmission in HW (see cmtspeech_ul_buffer_release() in 
-libcmtspeechdata() -> compare this to snd_pcm_mmap_commit() in ALSA). In 
-ALSA, the mmap commit and PCM write variants just add data to the 
-ringbuffer and update the appl pointer. Only initial start (and stop) on 
-stream have the "do something now" semantics in ALSA.
+> >> Initial settings are arranged in order
 
-The ALSA compressed offload API did not exist back when we were working on 
-cmt_speech, but that's still not a good fit, although adds some of the 
-concepts (notably frames).
+> > This doesn't answer or address my concern.
 
-> Well, packets are of fixed size, right? So the userland can simply
-> supply the right size in the common case. As for sending at the right
-> time... well... if the userspace is already real-time, that should be 
-> easy
+> These large number of register setting is used to initial our codec,
+> and some of other codec have the same behavior. We will remove few
+> unnecessary register default setting and add some remark for
+> registers.
 
-See above, ALSA just doesn't work like that, there's no syscall for "send 
-these samples now", the model is different.
+I'd really like to have a better understanding of what this is doing -
+it can be valid to do this but there are some warning signs here such as
+the volume of writes being large in comparison with the set of controls
+the driver exposes which mean I'd like to be sure the use matches
+expectations.  Normally this sort of thing is a small number of fixes
+for undocumented registers or updates to register defaults changed in
+later revisions of the chip.
 
-Br, Kai
+> > Don't include noise like this in upstream communication, if your company
+> > won't fix this then please use an external mail account for upstream
+> > communication.
+
+> Our MIS report they have disabled to append message in mail. Hope you do =
+not see it in this mail.
+
+It's gone, thanks.
+
+--qNmcRovokQDZCUb0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU+hcJAAoJECTWi3JdVIfQg6YH/1M5nzCRagPQG6eggs6T9+Qu
+cYGDJ+4EasNBfenrOZMGuqzZrPun4btjAscXHaaxTOmrc2VIjSxMMr8ReS164Dp5
+txtIcFbhkD2tFmwuk+LWUUBNCm7D8W/T1FHgiJbU6FMx9qQXZNbfV1HSPJ9UlelV
+c/kYbczgNDT7GuzzPxGI9b2lLMigiCgF7gyfKLmbPl29eirWVdztpLW23SOcy/xo
+XSsFAOiZylufhs6oC0bXcJK1NsmLiv2kAbr9pX9vpVO/WjhFiaofBwyrIvYe4vVY
+nNQS6JH8ZeCcP8sRHxLV4cTHRgu2CuQD1xumga8YzJ62gpw61vOlQ6oFRgnPZ14=
+=aHXV
+-----END PGP SIGNATURE-----
+
+--qNmcRovokQDZCUb0--
