@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 5/6] ASoC: sgtl5000: disable internal
-	PLL early
-Date: Fri, 6 Mar 2015 20:15:51 +0000
-Message-ID: <20150306201551.GZ21293@sirena.org.uk>
+Subject: Re: [RFC PATCH 6/6] ASoC: sgtl5000: Don't disable
+ regulators in SND_SOC_BIAS_OFF
+Date: Fri, 6 Mar 2015 20:16:46 +0000
+Message-ID: <20150306201646.GA21293@sirena.org.uk>
 References: <1424991273-10081-1-git-send-email-eric.nelson@boundarydevices.com>
- <1424991273-10081-6-git-send-email-eric.nelson@boundarydevices.com>
+ <1424991273-10081-7-git-send-email-eric.nelson@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8194432443107405203=="
+Content-Type: multipart/mixed; boundary="===============2297488965628152342=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A3BD265E20
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 21:15:58 +0100 (CET)
-In-Reply-To: <1424991273-10081-6-git-send-email-eric.nelson@boundarydevices.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CEA4E265FE4
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 21:16:52 +0100 (CET)
+In-Reply-To: <1424991273-10081-7-git-send-email-eric.nelson@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,48 +27,47 @@ Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, lars@metafoo.de, t
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8194432443107405203==
+--===============2297488965628152342==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XH/KETVr6lXMy7LH"
+	protocol="application/pgp-signature"; boundary="Xf7APsN6pwAFhtFV"
 Content-Disposition: inline
 
 
---XH/KETVr6lXMy7LH
+--Xf7APsN6pwAFhtFV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 26, 2015 at 03:54:32PM -0700, Eric Nelson wrote:
+On Thu, Feb 26, 2015 at 03:54:33PM -0700, Eric Nelson wrote:
+> Disabling the SGTL5000 through regulators would certainly save
+> power than simply disabling the reference voltages as described
+> in the data sheet, but won't properly restore things on resume.
 
->  static const struct reg_default sgtl5000_reg_defaults[] = {
->  	{ SGTL5000_CHIP_DIG_POWER,		0x0000 },
-> -	{ SGTL5000_CHIP_CLK_CTRL,		0x0008 },
+Why not just fix the code, reinitializing the chip is usually pretty
+trivial?
 
-Again, you shouldn't be changing the register defaults table unless the
-defaults don't match power up values.
-
---XH/KETVr6lXMy7LH
+--Xf7APsN6pwAFhtFV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU+gr2AAoJECTWi3JdVIfQLyoH/AkqTCCsWKpLJVgbdB8FVvQ3
-83+BpVCtwym+y6qAySwkiDl+tor5i5O40H5+VlJ2VjI2PR30O26Nq1Z2b2+oLkIZ
-9okRmCOC28LMoK3QR5vKBVsH3wrRhjRaf51DSQNEXuFLQzik9MeQ6gw/A/+5Ajry
-hVw8xJjpysdgoT/PaGWsZywi7aO1Yf/uawsh0K6GMBb3b6zj7cbJCDpVJ6fTrEKa
-+JVs7Ewgscawh0GCvDgxYA6MOReIue/EvklRmNaJ/NTavbtj+++L2vPcM/Ayti0h
-HqJ9avx0HRuc+8zGG5qenoIue6J17JbhPgn/QDLigc2jjIiuINGITLrDgVTR9r8=
-=awr/
+iQEcBAEBCAAGBQJU+gsuAAoJECTWi3JdVIfQr0sH/i11btv61VvFI4DAF/k3JGjC
+wfub+uzWI5Io5GYzOecC8xObxP8Qj7QUoVjZ0xANot+z4m2aowy8IiPFJvokh7x0
+UIc/jJmlc0sZGydbNEOPqhL6eSTt2BWknYU3JReAb9kooqyry7tg2PtnHZrNmYFt
+l2zO2Tn73/IxgjMT9VXydQvBp+Ktkx2wiErI3sYuYjVIBjOtVatV1JPmMcuWd9pM
+KkfO59wl5ep2Bx6IKN9wnmJovkBpBNWMLulbkt8J5KVIvl4MML2w19vI7r6ywrMj
+tAFc5dlCCdLFatdsDB93cqYbYfMcbVwAKEpPnjeExpyEI/9itl8+UiwTkBp/SNY=
+=V+/4
 -----END PGP SIGNATURE-----
 
---XH/KETVr6lXMy7LH--
+--Xf7APsN6pwAFhtFV--
 
---===============8194432443107405203==
+--===============2297488965628152342==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8194432443107405203==--
+--===============2297488965628152342==--
