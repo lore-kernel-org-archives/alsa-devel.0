@@ -1,236 +1,79 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add max98925 codec driver
-Date: Fri, 6 Mar 2015 20:46:26 +0000
-Message-ID: <20150306204626.GJ21293@sirena.org.uk>
-References: <1425597344-6199-1-git-send-email-yesanishhere@gmail.com>
+From: Kai Vehmanen <kvehmanen-nQfqiRJ1PMYxHbG02/KK1g@public.gmane.org>
+Subject: Re: Right interface for cellphone modem audio (was Re: [PATCHv2 0/2]
+ N900 Modem Speech Support)
+Date: Fri, 6 Mar 2015 22:49:50 +0200 (EET)
+Message-ID: <alpine.DEB.2.00.1503062139320.2610@ecabase.localdomain>
+References: <1425343454-6551-1-git-send-email-sre@kernel.org> <20150305113013.GA3867@amd> <alpine.DEB.2.00.1503051844420.2610@ecabase.localdomain> <20150306094354.GA32369@amd>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9159385203595985328=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 590D8265FFA
- for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 21:46:35 +0100 (CET)
-In-Reply-To: <1425597344-6199-1-git-send-email-yesanishhere@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anish Kumar <yesanishhere@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150306094354.GA32369@amd>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
+Cc: perex-/Fr2/VpizcU@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, Kai Vehmanen <kvcontact-nQfqiRJ1PMYxHbG02/KK1g@public.gmane.org>, Pali Rohar <pali.rohar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>, Ivaylo Dimitrov <ivo.g.dimitrov.75-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============9159385203595985328==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5CpfyHqbcU92Qzwd"
-Content-Disposition: inline
+On Fri, 6 Mar 2015, Pavel Machek wrote:
 
+>> Our take was that ALSA is not the right interface for cmt_speech. The
+>> cmt_speech interface in the modem is _not_ a PCM interface as modelled by
+>> ALSA. Specifically:
+>>
+>> - the interface is lossy in both directions
+>> - data is sent in packets, not a stream of samples (could be other things
+>>   than PCM samples), with timing and meta-data
+>> - timing of uplink is of utmost importance
+>
+> I see that you may not have data available in "downlink" scenario, but
+> how is it lossy in "uplink" scenario? Phone should always try to fill
+> the uplink, no? (Or do you detect silence and not transmit in this
 
---5CpfyHqbcU92Qzwd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Lossy was perhaps not the best choice of words, non-continuous would be 
+a better choice in the uplink case. To adjust timing, some samples from 
+the continuous locally recorded PCM stream need to be skipped and/or 
+duplicated. This would normally be done between speech bursts to avoid 
+artifacts.
 
-On Thu, Mar 05, 2015 at 03:15:44PM -0800, Anish Kumar wrote:
+> Packets vs. stream of samples... does userland need to know about the
+> packets? Could we simply hide it from the userland? As userland daemon
+> is (supposed to be) realtime, do we really need extra set of
+> timestamps? What other metadata are there?
 
-Looks pretty good but still a few things which are hopefully fairly easy
-to address.
+Yes, we need flags that tell about the frame. Please see docs for 
+'frame_flags' and 'spc_flags' in libcmtspeechdata cmtspeech.h:
+https://www.gitorious.org/libcmtspeechdata/libcmtspeechdata/source/9206835ea3c96815840a80ccba9eaeb16ff7e294:cmtspeech.h
 
-> changes since v1:
-> 	- addressed mark brown comments regarding
-> 	  open coding functions.
-> 	- changed the mixer namings
-> 	- added some dapm widgets
+Kernel space does not have enough info to handle these flags as the audio 
+mixer is not implemented in kernel, so they have to be passed to/from 
+user-space.
 
-Don't put stuff like this in the changelog, put it after the --- as
-covered in SubmittingPatches.
+And some further info in libcmtspeechdata/docs/ 
+https://www.gitorious.org/libcmtspeechdata/libcmtspeechdata/source/9206835ea3c96815840a80ccba9eaeb16ff7e294:doc/libcmtspeechdata_api_docs_main.txt
 
-> +static const struct soc_enum max98925_enum[] = {
-> +	SOC_ENUM_SINGLE(MAX98925_GAIN, 5, 4, dai_text),
-> +	SOC_ENUM_SINGLE(MAX98925_FILTERS, 0, 6, hpf_text),
-> +};
-> +
-> +static const struct snd_kcontrol_new max98925_dai_sel =
-> +	SOC_DAPM_ENUM("Route", max98925_enum[0]);
-> +
-> +static const struct snd_kcontrol_new max98925_hpf_sel =
-> +	SOC_DAPM_ENUM("Route", max98925_enum[1]);
+> Uplink timing... As the daemon is realtime, can it just send the data
+> at the right time? Also normally uplink would be filled, no?
 
-Don't use magic number indexes into a table of arrays, this does nothing
-for legibility or maintainability.  Use individual variables like other
-drivers do.
+But how would you implement that via the ALSA API? With cmt_speech, a 
+speech packet is prepared in a mmap'ed buffer, flags are set to describe 
+the buffer, and at the correct time, write() is called to trigger 
+transmission in HW (see cmtspeech_ul_buffer_release() in 
+libcmtspeechdata() -> compare this to snd_pcm_mmap_commit() in ALSA). In 
+ALSA, the mmap commit and PCM write variants just add data to the 
+ringbuffer and update the appl pointer. Only initial start (and stop) on 
+stream have the "do something now" semantics in ALSA.
 
-> +static int max98925_spk_gain_put(struct snd_kcontrol *kcontrol,
-> +				struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> +	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-> +	unsigned int sel = ucontrol->value.integer.value[0];
-> +
-> +	if (sel < ((1 << M98925_SPK_GAIN_WIDTH) - 1)) {
-> +		regmap_update_bits(max98925->regmap, MAX98925_GAIN,
-> +			M98925_SPK_GAIN_MASK, sel << M98925_SPK_GAIN_SHIFT);
-> +		max98925->spk_gain = sel;
+The ALSA compressed offload API did not exist back when we were working on 
+cmt_speech, but that's still not a good fit, although adds some of the 
+concepts (notably frames).
 
-My previous comment about this not being used anywere and this being
-suitable for a normal control still seem to apply here.
+> Well, packets are of fixed size, right? So the userland can simply
+> supply the right size in the common case. As for sending at the right
+> time... well... if the userspace is already real-time, that should be 
+> easy
 
-> +static int max98925_boost_voltage_get(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> +	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-> +	int data;
-> +
-> +	regmap_read(max98925->regmap, MAX98925_CONFIGURATION, &data);
-> +	ucontrol->value.integer.value[0] =
-> +		(data & M98925_BST_VOUT_MASK) >> M98925_BST_VOUT_SHIFT;
-> +	return 0;
-> +}
+See above, ALSA just doesn't work like that, there's no syscall for "send 
+these samples now", the model is different.
 
-Similarly for this control, why is this open coded?
-
-> +static const struct snd_kcontrol_new max98925_snd_controls[] = {
-> +	SOC_SINGLE_EXT_TLV("Speaker Gain", MAX98925_GAIN,
-> +		M98925_SPK_GAIN_SHIFT, (1<<M98925_SPK_GAIN_WIDTH)-1, 0,
-> +		max98925_spk_gain_get, max98925_spk_gain_put, max98925_spk_tlv),
-
-All volume controls should be called ...Volume, see ControlNames.txt.
-
-> +	SOC_SINGLE("Speaker Ramp", MAX98925_GAIN_RAMPING,
-> +				M98925_SPK_RMP_EN_SHIFT, 1, 0),
-
-Similarly on/off switches should be called ...Switch.
-
-> +	pr_debug("%s: sample rate is %d, returning %d\n",
-> +				__func__, rate_table[i].rate, *value);
-
-Use dev_ print functions rather than pr_ where you have a device.
-
-> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> +	case SND_SOC_DAIFMT_CBS_CFS:
-> +		max98925_set_slave(max98925);
-> +		break;
-> +	case SND_SOC_DAIFMT_CBM_CFM:
-> +		max98925_set_master(max98925);
-> +		break;
-
-I don't really understand why we have these functions - they're small
-enough just to have the code inline here aren't they?
-
-> +	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_S16_LE:
-
-Use params_width() rather than relying on the specific memory format.
-
-> +
-> +	dev_dbg(codec->dev, "%s: mute %d\n", __func__, mute);
-> +	if (mute) {
-> +		regmap_update_bits(max98925->regmap, MAX98925_GAIN,
-> +			M98925_SPK_GAIN_MASK, 0x00);
-
-This will collide with the volume control exposed to users, don't do
-this - if you don't have a suitable mute control in the hardware just
-don't implement this function.
-
-> +static int max98925_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
-> +	int ret = 0;
-> +	int reg = 0;
-> +
-> +	dev_info(codec->dev, "build number %s\n", MAX98925_REVISION);
-
-Don't print noise like this, it's not adding anything - the kernel
-already displays it's own version.
-
-> +
-> +	max98925->codec = codec;
-> +	codec->control_data = max98925->regmap;
-> +	ret = regmap_read(max98925->regmap,
-> +			MAX98925_REV_VERSION, &reg);
-> +	if ((ret < 0) ||
-> +		((reg != MAX98925_VERSION) &&
-> +		(reg != MAX98925_VERSION1))) {
-> +		dev_err(codec->dev,
-> +			"device initialization error (%d 0x%02X)\n",
-> +			ret, reg);
-> +		goto err_access;
-> +	}
-
-Move all this basic I2C setup and version display stuff to the I2C level
-probe, no need to defer it and it means that we confirm we can talk to
-the CODEC before we start the sound card.
-
-> +	if (!of_property_read_u32(i2c->dev.of_node, "vmon-slot-no", &value)) {
-> +		if (value > M98925_DAI_VMON_SLOT_1E_1F) {
-> +			dev_err(&i2c->dev, "vmon slot number is wrong:\n");
-> +			return -EINVAL;
-> +		}
-> +		max98925->v_slot = value;
-> +	}
-
-All DT bindings need to be documented but there is no binding document
-for this CODEC.
-
-> +static int max98925_i2c_remove(struct i2c_client *client)
-> +{
-> +	snd_soc_unregister_codec(&client->dev);
-> +	kfree(i2c_get_clientdata(client));
-
-Use devm_kzalloc().
-
-> +static const struct i2c_device_id max98925_i2c_id[] = {
-> +	{ "max98925", 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, max98925_i2c_id);
-> +
-> +static struct i2c_driver max98925_i2c_driver = {
-> +	.driver = {
-> +		.name = "max98925",
-> +		.owner = THIS_MODULE,
-> +		.pm = NULL,
-> +	},
-> +	.probe  = max98925_i2c_probe,
-> +	.remove = max98925_i2c_remove,
-> +	.id_table = max98925_i2c_id,
-> +};
-
-You have DT bindings but no of_match_table.
-
-> +#define MAX98925_REVISION	"0.00.0333"
-
-Remove this, for in-tree code the kernel is already well enough
-versioned and nobody working in tree is going to care to update this.
-
---5CpfyHqbcU92Qzwd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU+hIhAAoJECTWi3JdVIfQyqMH/RGPJmrvUfDtmMJHVETCRcFP
-inTo+4HA11Mrb/CGdqcKkozPZiiWn5rJbtINztutPjwVLdJV9bFerm0hwL4IFJLY
-0D2Yk9O2pHsr62UlCWfKRa2fwYQaCI25hnzhMk454XQRCX4UlhFuzLO2avCuyqRA
-p6ko6Wgde5rOuGYMZSl+39yrfME8S88755axBcoKJQpqSJgXxdhu8PLIl+NqToGz
-Nu2tmbdsLESD3IcMmsUeaibe0ERgX5RhRXN8fei7VWiihea4NmTaHrsPz7zLN0Y0
-XUihWqN2p9RMCiJz1yiSouBJ0M/faGb0TAFhbBhaKAwsDp/PVWEtBjoaVjihYtM=
-=7cwt
------END PGP SIGNATURE-----
-
---5CpfyHqbcU92Qzwd--
-
---===============9159385203595985328==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9159385203595985328==--
+Br, Kai
