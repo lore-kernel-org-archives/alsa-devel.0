@@ -1,74 +1,60 @@
-From: Kumar Gala <galak@codeaurora.org>
-Subject: Re: [Patch V7 02/10] ASoC: qcom: Document LPASS CPU bindings
-Date: Fri, 6 Mar 2015 10:07:01 -0600
-Message-ID: <D5A5C916-4D40-4C51-8307-9CA90FC68347@codeaurora.org>
-References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org> <1425428519-12224-3-git-send-email-kwestfie@codeaurora.org> <7E5AFC65-1705-4BDC-B57F-0444E83A8987@codeaurora.org> <20150306015131.GA15850@kwestfie-linux.qualcomm.com>
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150306015131.GA15850@kwestfie-linux.qualcomm.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ALSA: ac97: ac97_patch: Simplify
+	patch_vt1613_specific()
+Date: Fri,  6 Mar 2015 13:41:42 -0300
+Message-ID: <1425660102-5419-1-git-send-email-festevam@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
+ [209.85.216.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9DA9265DE2
+ for <alsa-devel@alsa-project.org>; Fri,  6 Mar 2015 17:41:55 +0100 (CET)
+Received: by qcvs11 with SMTP id s11so17724596qcv.7
+ for <alsa-devel@alsa-project.org>; Fri, 06 Mar 2015 08:41:54 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, mail@maciej.szmigiero.name, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-On Mar 5, 2015, at 7:51 PM, Kenneth Westfield <kwestfie@codeaurora.org>=
- wrote:
+We can simplify the code by returning patch_build_controls() directly.
 
-> On Thu, Mar 05, 2015 at 12:52:30PM -0600, Kumar Gala wrote:
->>=20
->> On Mar 3, 2015, at 6:21 PM, Kenneth Westfield <kwestfie@codeaurora.o=
-rg> wrote:
->>=20
->>> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
->>> @@ -0,0 +1,49 @@
->>> +* Qualcomm Technologies LPASS CPU DAI
->>> +
->>> +Required subnodes:
->>> +
->>> +- qcom,adsp		: Audio DSP sub-node
->>> +
->>> +Optional Audio DSP subnode properties:
->>> +
->>> +- status		: "disabled" indicates the adsp is not available.
->>> +
->>=20
->> What is the intent of this subnode?
->>=20
->=20
-> From the cover letter:
-> Even though the ipq806x LPASS does not contain an audio DSP, other SO=
-Cs
-> do have one.  For those SOCs, the audio DSP typically controls the
-> hardware blocks in the LPASS.  Hence, different CPU DAI driver(s) wou=
-ld
-> need to be used in order to facilitate audio with the DSP.  As such, =
-the
-> LPASS DT contains an adsp subnode, which is disabled for this SOC.  T=
-he
-> same subnode should be enabled and populated for other SOCs that do
-> contain an audio DSP.  Not using the audio DSP would require differen=
-t
-> CPU DAI driver(s), in addition to possible bootloader and/or firmware
-> changes.
->=20
-> This was the result of a request from Mark.  See here:
-> http://thread.gmane.org/gmane.linux.drivers.devicetree/109331/focus=3D=
-11633
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/pci/ac97/ac97_patch.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-Two quick comments before I read Mark=92s comments.
-
-1. Its not normal practice to put something into a DT that does not exi=
-st.  Having a node, but marking it disabled implies existence.
-2. How would one normally address the audio DSP if it did exist.  I=92m=
- just wondering if having a subnode is the proper solution vs maybe a p=
-handle
-
-- k
---=20
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora For=
-um,
-a Linux Foundation Collaborative Project
+diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
+index eca2210..f4234ed 100644
+--- a/sound/pci/ac97/ac97_patch.c
++++ b/sound/pci/ac97/ac97_patch.c
+@@ -3360,14 +3360,8 @@ AC97_SINGLE("DC Offset removal", 0x5a, 10, 1, 0),
+ 
+ static int patch_vt1613_specific(struct snd_ac97 *ac97)
+ {
+-	int err;
+-
+-	err = patch_build_controls(ac97, &snd_ac97_controls_vt1613[0],
+-				ARRAY_SIZE(snd_ac97_controls_vt1613));
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return patch_build_controls(ac97, &snd_ac97_controls_vt1613[0],
++				    ARRAY_SIZE(snd_ac97_controls_vt1613));
+ };
+ 
+ static const struct snd_ac97_build_ops patch_vt1613_ops = {
+-- 
+1.9.1
