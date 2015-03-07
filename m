@@ -1,94 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH][ASoC]Add DT bindings for generic ASoC AC97
-	CODEC driver
-Date: Sat, 7 Mar 2015 14:34:34 +0000
-Message-ID: <20150307143434.GL28806@sirena.org.uk>
-References: <54F9F81E.8080105@maciej.szmigiero.name>
- <20150307105201.GB28806@sirena.org.uk>
- <54FB041D.8010102@maciej.szmigiero.name>
+Subject: Re: [PATCH 01/28 v3] dmaengine: export symbol of
+ of_dma_request_slave_channel()
+Date: Sat, 7 Mar 2015 15:03:24 +0000
+Message-ID: <20150307150323.GO28806@sirena.org.uk>
+References: <87fva0opax.wl%kuninori.morimoto.gx@renesas.com>
+ <87egpkop98.wl%kuninori.morimoto.gx@renesas.com>
+ <87bnkk162d.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9038488810078120263=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8590B2605CB
- for <alsa-devel@alsa-project.org>; Sat,  7 Mar 2015 15:34:51 +0100 (CET)
-In-Reply-To: <54FB041D.8010102@maciej.szmigiero.name>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: Mark Rutland <mark.rutland@arm.com>, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NT59pYSnj1ZLVgEN"
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87bnkk162d.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Simon <horms@verge.net.au>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Arnd Bergmann <arnd@arndb.de>, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9038488810078120263==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+278g007AL/ykmV8"
-Content-Disposition: inline
-
-
---+278g007AL/ykmV8
+--NT59pYSnj1ZLVgEN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 07, 2015 at 02:58:53PM +0100, Maciej S. Szmigiero wrote:
-> W dniu 07.03.2015 11:52, Mark Brown pisze:
-> > On Fri, Mar 06, 2015 at 07:55:26PM +0100, Maciej S. Szmigiero wrote:
+On Tue, Feb 24, 2015 at 12:54:16AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Current DMAEngine implementation of DT bindings can't support
+> DT subnode. This patch export symbols of of_dma_request_slave_channel()
+> for subnode DMA DT bingings.
 
-> > AC'97 shouldn't need DT bindings for the CODEC, it's an enumerable bus.
+Applied, thanks.
 
-> What this driver did / does is essentially to allow attaching AC'97 bus
-> to ASoC AC'97 controllers which don't do it on its own (from what I can
-> see only board files do it).
-
-That's true, and it's something it's easy to get away with with board
-files, but that doesn't mean it's something we should be doing for
-device tree where we're not just finding an expedient way to load things
-but rather defining an ABI.
-
-> This driver originally constrained rates to 8000, 11025, 22050, 44100,
-> 48000.
-
-> An alternative would be to remove this constraint at all from this
-> driver and leave such constraining for controller and AC'97 bus code.
-
-That's a much better approach.
-
-> But since this driver was originally limited to these rates I think it
-> would be safer to do it only when instantiated via OF.
-
-Again, DT is defining an ABI.
-
---+278g007AL/ykmV8
+--NT59pYSnj1ZLVgEN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU+wx5AAoJECTWi3JdVIfQkKIH/1m9xSCDcLm1T19DFx9j4/t2
-MC2zbugpd567aqpzuVvXdnN7XE3AgZGljTmjC3fJzZD22crr+ewoLXRqdPCLEh0g
-ILgDTuO3dTcy2EgS1ALNkKH9hbf0pgV5ImVmcCOk8BfuP3ELylb3dxwnJ+ewL4b5
-ysBtVTtLK8WXQ34gd7YMjUZZvrYsyh32G3rCI7F6sog66C7EiYRLU5bDpB0maanP
-sedn3rIFPxdUcy0DzxxolFJS5qUdutJ/8Kqn8k0GjCFTBSmmnIFnjJFbl+PuQU15
-PiBY3gWAzs9IoOiDZG3qgZnfmxwqxEa4YFd5zWlnmlpC/kfGx11D9J23qTIx0Wo=
-=/qlL
+iQEcBAEBCAAGBQJU+xM7AAoJECTWi3JdVIfQI+oH/0FehomP6o9831IwE17iyf9l
+vyk61Oj6oEISGDe9T9yV+od4aVn3SOgxmJ7jBHioUXkLWgiCs08ku6+PhTg89Ss9
+HxveAP4ijCKEXLXvywaat6eNjnJU+XvKuhTvkZh6ogf4ArLWcw4RuQQhDjFnW4sS
+VD41wH4vvlIjWQXz/h72tfFxU7rfvN9sGeH+5P939VjSy2ptfDZnqlJdy36ostkj
+X978pL0HaF5mSO7klThpMQlLRjXdnL9hDVL2n8hCN5QO8J3avJ4fstW6NxaNn0YB
+/URF4Ex+OcLyxFTq5o9AgxFxyW+CvGJY94fiTd9ZYB1hOKwe35oVKyTvwxIXPrs=
+=uTLY
 -----END PGP SIGNATURE-----
 
---+278g007AL/ykmV8--
-
---===============9038488810078120263==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9038488810078120263==--
+--NT59pYSnj1ZLVgEN--
