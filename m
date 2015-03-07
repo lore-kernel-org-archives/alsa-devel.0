@@ -1,67 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch V7 02/10] ASoC: qcom: Document LPASS CPU bindings
-Date: Sat, 7 Mar 2015 11:18:38 +0000
-Message-ID: <20150307111838.GI28806@sirena.org.uk>
-References: <1425428519-12224-1-git-send-email-kwestfie@codeaurora.org>
- <1425428519-12224-3-git-send-email-kwestfie@codeaurora.org>
- <7E5AFC65-1705-4BDC-B57F-0444E83A8987@codeaurora.org>
- <20150306015131.GA15850@kwestfie-linux.qualcomm.com>
- <D5A5C916-4D40-4C51-8307-9CA90FC68347@codeaurora.org>
- <20150306220342.GA25363@kwestfie-linux.qualcomm.com>
- <37AEDC0C-448D-4F3A-B87D-C37B9F2D8E1B@codeaurora.org>
+From: "Maciej S. Szmigiero" <mail-APzI5cXaD1zVlRWJc41N0YvC60bnQu0Y@public.gmane.org>
+Subject: Re: [PATCH][ASoC]Add DT bindings for generic ASoC AC97 CODEC driver
+Date: Sat, 07 Mar 2015 14:58:53 +0100
+Message-ID: <54FB041D.8010102@maciej.szmigiero.name>
+References: <54F9F81E.8080105@maciej.szmigiero.name> <20150307105201.GB28806@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HkMjoL2LAeBLhbFV"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <37AEDC0C-448D-4F3A-B87D-C37B9F2D8E1B@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kumar Gala <galak@codeaurora.org>
-Cc: Kenneth Westfield <kwestfie@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Greg KH <gregkh@linuxfoundation.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150307105201.GB28806-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for looking into the patch.
 
---HkMjoL2LAeBLhbFV
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+W dniu 07.03.2015 11:52, Mark Brown pisze:
+> On Fri, Mar 06, 2015 at 07:55:26PM +0100, Maciej S. Szmigiero wrote:
+> 
+>> Add and document DT bindings for generic ASoC AC97 CODEC driver,
+>> make it selectable in config.
+> 
+> AC'97 shouldn't need DT bindings for the CODEC, it's an enumerable bus.
 
-On Fri, Mar 06, 2015 at 04:06:48PM -0600, Kumar Gala wrote:
+What this driver did / does is essentially to allow attaching AC'97 bus
+to ASoC AC'97 controllers which don't do it on its own (from what I can
+see only board files do it).
 
-As previously and repeatedly requested please fix your mailer to word
-wrap within paragraphs, not doing this makes your mails harder to read
-and reply to.  I've reflowed your message for legibility.
+> 
+>> +  - playback-rates : A list of supported playback rates.
+>> +
+>> +  - capture-rates : A list of supported capture rates.
+> 
+> Why would we need these properties - the sample rate support is defined
+> by the standard, and any extensions can be enumerated from the device.
 
-> > The audio DSP is, in fact, contained within the audio subsystem.  The
-> > representation of that relationship in the DT, I believe, would be a su=
-bnode.
-> > OTOH, if there is a strong sentiment towards using a phandle, that woul=
-d be
-> > fine with me.
+This driver originally constrained rates to 8000, 11025, 22050, 44100,
+48000.
 
-> Just depends on how we communicate with the DSP.  If its mostly via
-> MMIO access than a sub node makes sense.  If its via some other
-> RPC/communication mechanism than possibly a phandle.  Trying to
-> understand a bit more to than see what I=E2=80=99d recommend.
+An alternative would be to remove this constraint at all from this
+driver and leave such constraining for controller and AC'97 bus code.
 
-It should be a phandle, while these things are all part of the same
-logical function in the CPU they're separate IPs and there may be many
-DAIs.
+But since this driver was originally limited to these rates I think it
+would be safer to do it only when instantiated via OF.
 
---HkMjoL2LAeBLhbFV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Best regards,
+Maciej Szmigiero
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU+t6NAAoJECTWi3JdVIfQP8cH/1TSR9AtKzeR9iTdXDlf13aa
-b2WIll9t73mx3P0InEhzBMM3ENA/juCxKKuE5I3yPHc+Ux46WsQlhd97+BOKDCzl
-2paN2XiZoESfR/IhtBbu8MY6ydykbzEqi7SD+rO49FeB+eqtaYO2t7sDY79xh7Op
-zrqBR7uWhMSRq/kcpQ74NQILicoRVRcWLIz42ZAspuGzO9KPjyDMoS7oJGArOBu0
-ydeU83tpyenFPu4RRg3wmXWaJ+YCx39Pkm3ZaPu0v2mtcoi1avoFrXGfMe0IJb0j
-7KE/oASWrJ4fA4IBtjrlBqb7PR63fVAnhmBhnt4INRoMQOXuU4GtO3cxLp8xwqg=
-=LqNV
------END PGP SIGNATURE-----
-
---HkMjoL2LAeBLhbFV--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
