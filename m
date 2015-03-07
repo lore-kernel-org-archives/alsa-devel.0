@@ -1,54 +1,219 @@
-From: "Maciej S. Szmigiero" <mail-APzI5cXaD1zVlRWJc41N0YvC60bnQu0Y@public.gmane.org>
-Subject: Re: [PATCH][ASoC]Add DT bindings for generic ASoC AC97 CODEC driver
-Date: Sat, 07 Mar 2015 16:33:12 +0100
-Message-ID: <54FB1A38.3080609@maciej.szmigiero.name>
-References: <54F9F81E.8080105@maciej.szmigiero.name> <20150307105201.GB28806@sirena.org.uk> <54FB041D.8010102@maciej.szmigiero.name> <20150307143434.GL28806@sirena.org.uk>
+From: Alnie <memobook80@comcast.net>
+Subject: Re: Issues w/ Creative Labs [SB X-Fi Xtreme Audio]
+	CA0110-IBG
+Date: Sat, 07 Mar 2015 08:28:29 -0800
+Message-ID: <54FB272D.1080004@comcast.net>
+References: <54F52C68.6010504@comcast.net>	<s5hzj7u7grx.wl-tiwai@suse.de>	<54F5614C.9010402@comcast.net>	<s5hwq2y7c8g.wl-tiwai@suse.de>	<54F57D07.9020900@comcast.net>	<54F62CDC.1010607@comcast.net>	<s5hoao97n1j.wl-tiwai@suse.de>	<54F66A0F.1050603@comcast.net>	<s5hk2yx6vld.wl-tiwai@suse.de>	<54F6C9EC.3080100@comcast.net>	<s5hegp56r78.wl-tiwai@suse.de>	<54FA38D4.6090206@comcast.net>
+ <s5hoao5z1dv.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150307143434.GL28806-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from resqmta-po-12v.sys.comcast.net (resqmta-po-12v.sys.comcast.net
+ [96.114.154.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34C7F2605D0
+ for <alsa-devel@alsa-project.org>; Sat,  7 Mar 2015 17:28:32 +0100 (CET)
+In-Reply-To: <s5hoao5z1dv.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-W dniu 07.03.2015 15:34, Mark Brown pisze:
-> On Sat, Mar 07, 2015 at 02:58:53PM +0100, Maciej S. Szmigiero wrote:
->> W dniu 07.03.2015 11:52, Mark Brown pisze:
->>> On Fri, Mar 06, 2015 at 07:55:26PM +0100, Maciej S. Szmigiero wrote:
-> 
->>> AC'97 shouldn't need DT bindings for the CODEC, it's an enumerable bus.
-> 
->> What this driver did / does is essentially to allow attaching AC'97 bus
->> to ASoC AC'97 controllers which don't do it on its own (from what I can
->> see only board files do it).
-> 
-> That's true, and it's something it's easy to get away with with board
-> files, but that doesn't mean it's something we should be doing for
-> device tree where we're not just finding an expedient way to load things
-> but rather defining an ABI.
+On 03/06/2015 11:56 PM, Takashi Iwai wrote:
+> At Fri, 06 Mar 2015 15:31:32 -0800,
+> Alnie wrote:
+>>
+>> On 03/04/2015 01:35 AM, Takashi Iwai wrote:
+>>> At Wed, 04 Mar 2015 01:01:32 -0800,
+>>> Alnie wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 03/04/2015 12:00 AM, Takashi Iwai wrote:
+>>>>> At Tue, 03 Mar 2015 18:12:31 -0800,
+>>>>> Alnie wrote:
+>>>>>>
+>>>>>>> My suggestion isn't about a compile option but that you add some debug
+>>>>>>> printk() calls manually around some codes.  We need to know the value
+>>>>>>> written and read by azx_write*() and azx_read*() calls.  Especially
+>>>>>>> the value read in pci_azx_read*() is more interesting. You can try to
+>>>>>>> modify sound/pci/hda/hda_intel.c and add a printk() to each
+>>>>>>> pci_azx_read*() function for printing the value to be returned.
+>>>>>>> Beware that this will likely flood many messages, so just try once.
+>>>>>>>
+>>>>>>>
+>>>>>>> Takashi
+>>>>>>>
+>>>>>>
+>>>>>> I can not find any reference to pci_azx_read in hda_intel.c
+>>>>>
+>>>>> You must be using a too old kernel, then.  Please use the latest
+>>>>> kernel for debugging.
+>>>>>
+>>>>>
+>>>>> Takashi
+>>>>>
+>>>>
+>>>> Ok. I now have latest kernel.
+>>>>
+>>>> Here is a small portion...
+>>>>
+>>>> /* PCI register access. */
+>>>> static void pci_azx_writel(u32 value, u32 __iomem *addr)
+>>>> {
+>>>> 	writel(value, addr);
+>>>> }
+>>>>
+>>>> static u32 pci_azx_readl(u32 __iomem *addr)
+>>>> {
+>>>> 	return readl(addr);
+>>>> }
+>>>>
+>>>> Can you show me how I can properly place printk without breaking things
+>>>> and produce relevant messages?
+>>>
+>>> Something like:
+>>>
+>>> static u32 pci_azx_readl(u32 __iomem *addr)
+>>> {
+>>> 	u32 val = readl(addr);
+>>> 	pr_info("XXX readl %p %x\n", addr, val);
+>>> 	return val;
+>>> }
+>>>
+>>> But since there are quite lots of accesses, it might be safer to use
+>>> the ratelimited version.  Use like the following:
+>>> 	pr_info_ratelimited("XXX readl %p %x\n", addr, val);
+>>>
+>>> Also there are variants pci_azx_readw() and _readb().
+>>>
+>>>
+>>> Takashi
+>>>
+>>
+>>
+>> Ok, I was only able to guess through the code for the read values. If
+>> you need write information too please show me how.
+>> here are the mods I made...
+>>
+>> /* PCI register access. */
+>> static void pci_azx_writel(u32 value, u32 __iomem *addr)
+>> {
+>> 	writel(value, addr);
+>> }
+>>
+>> static u32 pci_azx_readl(u32 __iomem *addr)
+>> {
+>>       u32 val = readl(addr);
+>>       pr_info_ratelimited("XXX readl %p %x\n", addr, val);
+>>       return val;
+>> }
+>>
+>> static void pci_azx_writew(u16 value, u16 __iomem *addr)
+>> {
+>> 	writew(value, addr);
+>> }
+>>
+>> static u16 pci_azx_readw(u16 __iomem *addr)
+>> {
+>> 	u16 val = readw(addr);
+>> 	pr_info_ratelimited("XXX readw %p %x\n", addr, val);
+>> 	return val;
+>> }
+>>
+>> static void pci_azx_writeb(u8 value, u8 __iomem *addr)
+>> {
+>> 	writeb(value, addr);
+>> }
+>>
+>> static u8 pci_azx_readb(u8 __iomem *addr)
+>> {
+>> 	u8 val = readb(addr);
+>> 	pr_info_ratelimited("XXX readb %p %x\n", addr, val);
+>> 	return val;
+>> }
+>>
+>> and i was able to produce this...
+>>
+>> dmesg | grep -i read
+>> [    0.764102] tpm_tis 00:05: A TPM error (7) occurred attempting to
+>> read a pcr value
+>> [    0.769674] Write protecting the kernel read-only data: 12288k
+>> [    1.729952] sd 0:0:0:0: [sda] Write cache: enabled, read cache:
+>> enabled, doesn't support DPO or FUA
+>> [    2.071100] sd 1:0:0:0: [sdb] Write cache: enabled, read cache:
+>> enabled, doesn't support DPO or FUA
+>> [    2.778875] EXT4-fs (sda5): INFO: recovery required on readonly
+>> filesystem
+>> [    2.817982] EXT4-fs (sda5): orphan cleanup on readonly fs
+>> [    4.662442] XXX readw ffffc90004f30000 4401
+>
+> This reads good, but I thought you have two sound devices (onboard and
+> Creative)?  If so, disable the onboard one via enable=0 option (if the
+> onboard one is assigned first).  Otherwise the all good and bad
+> results are mixed up.
+>
+>
+> Takashi
+>
 
-Do you recommend then putting AC'97 bus/mixer attach in
-simple-card/fsl-asoc-card or controller driver instead?
+I included options snd-hda-intel enable=0 index=0
 
->> This driver originally constrained rates to 8000, 11025, 22050, 44100,
->> 48000.
-> 
->> An alternative would be to remove this constraint at all from this
->> driver and leave such constraining for controller and AC'97 bus code.
-> 
-> That's a much better approach.
-> 
->> But since this driver was originally limited to these rates I think it
->> would be safer to do it only when instantiated via OF.
-> 
-> Again, DT is defining an ABI.
+This is dmesg output (1b is onboard)...
+dmesg | grep -i hda
+[    3.700213] snd_hda_intel: probe of 0000:00:1b.0 failed with error -2
+[   37.729507] snd_hda_intel 0000:06:00.0: enabling device (0000 -> 0002)
+[   37.729703] snd_hda_intel 0000:06:00.0: enabling bus mastering
+[   37.736026] snd_hda_intel 0000:06:00.0: CORB reset timeout#1, CORBRP = 0
+[   38.740090] snd_hda_intel 0000:06:00.0: Codec #1 probe error; 
+disabling it...
+[   38.747292] snd_hda_intel 0000:06:00.0: CORB reset timeout#1, CORBRP = 0
+[   43.776089] snd_hda_intel 0000:06:00.0: no AFG or MFG node found
+[   43.776111] snd_hda_intel 0000:06:00.0: no codecs initialized
 
-Best regards,
-Maciej Szmigiero
+dmesg | grep -i XXX
+[   37.729723] XXX readw ffffc90005188000 3300
+[   37.729768] XXX readl ffffc90005188008 0
+[   37.729774] XXX readb ffffc90005188008 0
+[   37.730803] XXX readb ffffc90005188008 0
+[   37.730812] XXX readb ffffc90005188008 0
+[   37.731839] XXX readb ffffc90005188008 1
+[   37.733060] XXX readb ffffc90005188008 1
+[   37.733065] XXX readl ffffc90005188008 1
+[   37.733069] XXX readw ffffc9000518800e 2
+[   37.733075] XXX readl ffffc90005188020 0
+[   37.733081] XXX readw ffffc9000518804a 0
+[   37.733086] XXX readw ffffc9000518804a 0
+[   37.733090] XXX readw ffffc9000518804a 0
+[   37.733095] XXX readw ffffc9000518804a 0
+[   37.733099] XXX readw ffffc9000518804a 0
+[   37.733104] XXX readw ffffc9000518804a 0
+[   37.733108] XXX readw ffffc9000518804a 0
+[   37.733113] XXX readw ffffc9000518804a 0
+[   37.736839] XXX readl ffffc90005188024 c0000000
+[   37.736844] XXX readb ffffc9000518805d 1
+[   38.740103] XXX readb ffffc90005188080 0
+[   38.740110] XXX readb ffffc900051880a0 0
+[   38.740116] XXX readb ffffc900051880c0 0
+[   38.740122] XXX readb ffffc900051880e0 0
+[   38.740134] XXX readl ffffc90005188020 c0000000
+[   38.740144] XXX readl ffffc90005188008 101
+[   38.743555] XXX readl ffffc90005188008 1
+[   38.743567] XXX readl ffffc90005188020 0
+[   38.747380] XXX readl ffffc90005188024 c0000000
+[   39.752132] XXX readl ffffc90005188024 c0000000
+[   42.768069] XXX readw ffffc90005188048 4
+[   42.768073] XXX readw ffffc9000518804a 4
+[   42.768113] XXX readl ffffc90005188024 c0000000
+[   42.768119] XXX readb ffffc9000518805d 1
+[   42.768201] XXX readw ffffc90005188058 0
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-Alnie
