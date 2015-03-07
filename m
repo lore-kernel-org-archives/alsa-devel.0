@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 6/6] ASoC: sgtl5000: Don't disable
- regulators in SND_SOC_BIAS_OFF
-Date: Sat, 7 Mar 2015 10:41:52 +0000
-Message-ID: <20150307104152.GO21293@sirena.org.uk>
+Subject: Re: [PATCH RFC 0/6] ASoC: sgtl5000: fix use of
+ regulators and internal LDO
+Date: Sat, 7 Mar 2015 10:45:24 +0000
+Message-ID: <20150307104524.GP21293@sirena.org.uk>
 References: <1424991273-10081-1-git-send-email-eric.nelson@boundarydevices.com>
- <1424991273-10081-7-git-send-email-eric.nelson@boundarydevices.com>
- <20150306201646.GA21293@sirena.org.uk>
- <54FA2BB8.10203@boundarydevices.com>
+ <54FA2F03.2060804@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4287511417587829523=="
+Content-Type: multipart/mixed; boundary="===============1111134173720398973=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CB5F92605F3
- for <alsa-devel@alsa-project.org>; Sat,  7 Mar 2015 11:41:59 +0100 (CET)
-In-Reply-To: <54FA2BB8.10203@boundarydevices.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C171B26062A
+ for <alsa-devel@alsa-project.org>; Sat,  7 Mar 2015 11:45:32 +0100 (CET)
+In-Reply-To: <54FA2F03.2060804@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,58 +27,61 @@ Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, lars@metafoo.de, t
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4287511417587829523==
+--===============1111134173720398973==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="isFuM/k5xG11LieK"
+	protocol="application/pgp-signature"; boundary="f4clD4lIR7c7nGwg"
 Content-Disposition: inline
 
 
---isFuM/k5xG11LieK
+--f4clD4lIR7c7nGwg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 06, 2015 at 03:35:36PM -0700, Eric Nelson wrote:
-> On 03/06/2015 01:16 PM, Mark Brown wrote:
+On Fri, Mar 06, 2015 at 03:49:39PM -0700, Eric Nelson wrote:
 
-> > Why not just fix the code, reinitializing the chip is usually
-> > pretty trivial?
+> Based on your review, it seems like the following is needed for a
+> V2 patch (set):
 
-> Apparently not.
+> - Move call to sgtl5000_fill_defaults() earlier in the
+>   sgtl5000_i2c_probe routine, before adjusting ANA_POWER.
+>   This will allow registers LINEREG_CTRL, CLK_CTRL, and even ANA_POWER
+>   back into the default	register list.
 
-Well, I'm not sure if that's actually true or not - the current driver
-code is pretty bad and there's been a history of worrying submissions
-that people assure me are working well and address problems.  All of
-this is indicating to me that the complexity here is largely due to code
-quality issues and that if we address those then things might get a lot
-easier.
+I think that whole area of code also needs some revisions to make the
+code look like it's doing what it's supposed to be doing - the fact that
+it is described as register defaults at the minute but aren't really
+what a driver would normally mean by register defaults seems to be a big
+source of confusion.
 
-Requiring a funny power on sequence shouldn't be hard and is needed for
-suspend and resume anyway, all having the regulator support does is mean
-we can potentially take advantage of that code path at runtime.
+> Let me know if you'd like to see this in multiple patches or a
+> single patch.
 
---isFuM/k5xG11LieK
+Definitely multiple patches, the level of splitting you've got now is
+pretty good.
+
+--f4clD4lIR7c7nGwg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU+tXwAAoJECTWi3JdVIfQ0HEH+wbyXENcZpcGegjJuD3WYSU7
-jYZs+fRR9/wrjfXYFQQ51rtV1TictbGE9KSOxwNxKDQgZ6Nl9Xuak1j5zi5RIhBc
-VHtjyjsyukKUHrY6HAoLodUFYrmMp70esEpxYBa5XMP2iIlwHv5Xb7ZjKpvkgBr1
-y5roHeHdO+nfoAej1cVuAlBDW9B1adrV9hG0qc7QdSsIW8Z7CZP9OoDVKLJvUEyj
-6K5LDjRB2goJ7BcqMh/Bda8KFyXJxrB9GvBCA1Aps0lDb22xHjYHwfmHs+Zb6ZUh
-UxQo+gcd9/Tk/U3ueAF+PFIcSAvtyl9Q0uC8X/MLQZXV7a+hzQ+StWe0oRFI9ro=
-=bUkT
+iQEcBAEBCAAGBQJU+tbEAAoJECTWi3JdVIfQx0oH/0M7dM/Vh/kqS1y87+T/QAkx
+v2wPK0u1ncPeHFj8mtBMq2HA4pXNgZk8z3gy7xivrUvwHshjP23yP/Y79Y4jB5qO
+bQNbnQUm9HLNpaFYevAtU/IJ9Vw3I1BDqgcFmAZOKPR73AW/gBJ6PwNro4A5BScl
+455vO5F+aFibdB3lF3+EG4HMWsz2JimTdiyGcD0kjvwPXG1f6Fu2bitnNbBzrTKB
+yFzU0JssPsIMuhiBuZTkKSeEOgdnmNIB1zM9jeRKG6Su3IqiziS+4lwhy027yDo/
+uns+LICuIWY5oUy9kBrzW1Swn04kT/F2yUUOsOju/v1tJ9KdLf/y+9PHf1jgssM=
+=ysOc
 -----END PGP SIGNATURE-----
 
---isFuM/k5xG11LieK--
+--f4clD4lIR7c7nGwg--
 
---===============4287511417587829523==
+--===============1111134173720398973==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4287511417587829523==--
+--===============1111134173720398973==--
