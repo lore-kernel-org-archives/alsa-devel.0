@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Fix component lists locking
-Date: Sun, 8 Mar 2015 19:46:37 +0000
-Message-ID: <20150308194637.GZ28806@sirena.org.uk>
-References: <1425753243-28288-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Remove unnecessary
+	device_remove_file()
+Date: Sun, 8 Mar 2015 19:46:48 +0000
+Message-ID: <20150308194648.GA28806@sirena.org.uk>
+References: <1425753308-28695-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4288068594863506773=="
+Content-Type: multipart/mixed; boundary="===============3181561146992819051=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E1CBA2604FC
- for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2015 20:46:47 +0100 (CET)
-In-Reply-To: <1425753243-28288-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 869C02604FC
+ for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2015 20:46:55 +0100 (CET)
+In-Reply-To: <1425753308-28695-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,47 +26,46 @@ Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lg
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4288068594863506773==
+--===============3181561146992819051==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6ysXqiu0yoUmUNJB"
+	protocol="application/pgp-signature"; boundary="bgVZo3zXaTQrZhjg"
 Content-Disposition: inline
 
 
---6ysXqiu0yoUmUNJB
+--bgVZo3zXaTQrZhjg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Mar 07, 2015 at 07:34:03PM +0100, Lars-Peter Clausen wrote:
-> Any access to the component_list, codec_list and platform_list needs to be
-> properly locked by the client_mutex. Otherwise undefined behavior can occur
-> if the list is modified in one thread and concurrently accessed from another
-> thread.
+On Sat, Mar 07, 2015 at 07:35:08PM +0100, Lars-Peter Clausen wrote:
+> Since commit d29697dc3b92 ("ASoC: Add sysfs entries via static attribute
+> groups") the sysfs attributes of the rtd are manged by the device core and
+> there is no need to manually call device_remove_file() anymore.
 
 Applied, thanks.
 
---6ysXqiu0yoUmUNJB
+--bgVZo3zXaTQrZhjg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU/KccAAoJECTWi3JdVIfQutsH/22jKU90/GHghvswxvdLQhq+
-U7PDP588KkKkrm6lTupggh0w9TXUoMLKBQf9cUX2zxG7htrfw8kMvWZcgpUT3su7
-qSv41J13uXkrkt+4gtV8msNPq1gryjTYQYKpGHUKaVItX218b2EsXKUXCUA0X5/e
-r+OvkAMpgFJkFT4deWZpLF6NPx95H/9YTgWmFm6P+1aOM5Prwi84s9ZV9QP1F9AA
-oz2SCDzgYWlsxf2iGFZncbxZWkVE/VtDQjpDFXI/6KHkkVvJ8gq9m9fhRwrMTMHa
-5CVMbpUFBpdBd0q+t0zBLvqdsSHnCpWuZ2Ja+6fRZN3ZcLayk1SnkyDsUbcwp6Y=
-=HR+t
+iQEcBAEBCAAGBQJU/KcnAAoJECTWi3JdVIfQ6hQH/2gcpWmwUY5P/hb6VAPrlKSB
+3ESuDeB3619A71sC/DVL5YAcnvNBORyKmTh8/Qz7hqO1dsEVL+EVpPhdANyN7r7y
+zlO1d6dmpSWAeAEX8G1Ch//QIkcodkmzY+pqceFnPt4p0cwBLr6xvMFKhm9pMa/h
+WiVBrXTKxwsAtUutPA9VnKT5s8+BbgoDvu5Ysjc19413/9NMcuBQ+ynSvIUEIcy/
+APIelmnk6VUIB2prdKrouyFTTp4mE4sgialvo1/7l4dw2vkuroP6IdbDQINTGaFW
+8uJHnOkAzPCiUAcV++xODMWP3MtdEyif8CdQVZlMLDyyLFZJ1+mXZ8d2p9Uo0Og=
+=jjdK
 -----END PGP SIGNATURE-----
 
---6ysXqiu0yoUmUNJB--
+--bgVZo3zXaTQrZhjg--
 
---===============4288068594863506773==
+--===============3181561146992819051==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4288068594863506773==--
+--===============3181561146992819051==--
