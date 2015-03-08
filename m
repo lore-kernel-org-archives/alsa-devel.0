@@ -1,48 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5100: match wait_for_completion_timeout return
- type
-Date: Sun, 8 Mar 2015 18:49:02 +0000
-Message-ID: <20150308184902.GT28806@sirena.org.uk>
-References: <1425812227-24172-1-git-send-email-hofrat@osadl.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd_usb_audio - siberia elite prism soundcard
+	issues
+Date: Sun, 08 Mar 2015 20:02:08 +0100
+Message-ID: <54FC9CB0.2030003@ladisch.de>
+References: <CAHti5NHPMjxAtg_XLHD1kL4rUCAPaNGa_2ZAZwvv_Kc4u43uAw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lpUp1egui7PDlNtH"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1425812227-24172-1-git-send-email-hofrat@osadl.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Xiubo Li <Li.Xiubo@freescale.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Axel Lin <axel.lin@ingics.com>, abdoulaye berthe <berthe.ab@gmail.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 307C82604FC
+ for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2015 20:02:42 +0100 (CET)
+In-Reply-To: <CAHti5NHPMjxAtg_XLHD1kL4rUCAPaNGa_2ZAZwvv_Kc4u43uAw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel <dferradal@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Daniel wrote:
+> numid=1,iface=PCM,name='Capture Channel Map'
+>   ; type=INTEGER,access=r----R--,values=2,min=0,max=36,step=0
+>   : values=0,0
+>   |     | chmap-fixed=FL,FR
+> numid=2,iface=PCM,name='Playback Channel Map'
+>   ; type=INTEGER,access=r----R--,values=2,min=0,max=36,step=0
+>   : values=0,0
+>   |     | chmap-fixed=FL,FR
 
---lpUp1egui7PDlNtH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This device reports that it supports two channels.
+What makes you think that you can play eight channels?
 
-On Sun, Mar 08, 2015 at 06:57:07AM -0400, Nicholas Mc Guire wrote:
-> return type of wait_for_completion_timeout is unsigned long not int. An
-> appropriately named unsigned long is added and the assignment fixed up.
+> amixer: Control hw:2 element read error: Invalid argument
+> usb 1-1.3: 10:0: cannot get min/max values for control 3 (id 10)
+> usb 1-1.3: 2:1: cannot get freq at ep 0x1
 
-You are sending these to a very large CC list many of whom have no
-obvious connection to the driver - please take care to ensure that the
-people you are sending patches to are likely to want to review the code,
-this helps keep people's mailboxes less noisy.
+These are bugs in the device firmware.  However, the driver could
+handle them better.
 
---lpUp1egui7PDlNtH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU/JmeAAoJECTWi3JdVIfQfscH/3EDzSwHC0Yy1HKnD4Z4Y+mK
-jS+ae68ynhAo9WKtJZwQBRo/eR5pIEC9qac07Ke+e1Jhip0cskIQsCmHPggpd9No
-QK9ljPCEoBtrCxPMMq4IFhemm8ZMWEnWX3Cfd3E6tShUS8r88TUQm1xVKLEGHK02
-SQAMYUPiRTvomNRC/fGWnYev+zvMZ2FDypEchpxHBICcSH6AWEbdyO1pXBzWBRyQ
-3lM3p+kFWw9YkXsIma6a9rF0AwEu6/O0SomMTeKlXYe4FRWc6mKpzSb2OnrX/LdD
-aBs3FxTDlvSgzfPFOXJHxSZXCYHZ+jUPrRjWvO8HymiPCOOJz5j8oAa3DH5qSZA=
-=+nR3
------END PGP SIGNATURE-----
-
---lpUp1egui7PDlNtH--
+Regards,
+Clemens
