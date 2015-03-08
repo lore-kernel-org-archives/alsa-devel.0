@@ -1,15 +1,14 @@
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH] ASoC: arizona: match
-	wait_for_completion_timeout return type
-Date: Sun,  8 Mar 2015 09:16:49 -0400
-Message-ID: <1425820609-28684-1-git-send-email-hofrat@osadl.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [RFC 0/5] Create hdalib for common hda code
+Date: Sun,  8 Mar 2015 20:07:54 +0530
+Message-ID: <1425825479-28780-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.osadl.org (www.osadl.org [62.245.132.105])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ECA4260444
- for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2015 14:21:07 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49A0026044F
+ for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2015 15:41:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,56 +18,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Lee Jones <lee.jones@linaro.org>, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Nicholas Mc Guire <hofrat@osadl.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-return type of wait_for_completion_timeout is unsigned long not int. An
-appropriately named unsigned long is added and the assignment fixed up.
+This patch series attempts to split existing HDA code to create common hda
+library. This is done in order to make HDA code available to other users like
+upcoming Intel platforms which sport a HDA controller along with an I2S
+link.  This series is 1st patch series which will try to refactor HDA by
+splitting it up and then adding ASoC HDA controller driver for these
+platforms.
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
+This series moves code to sound/hda, renames the files mostly. The second
+series will do API changes and subsequent ones will be using HDA bus patches
+which Takashi posted recently
 
-Note that the error message
- "Timed out waiting for lock"
-might not be that clear in a kernel log message as it 
-could probably be read as relating to a kernel lock 
- "Timed out waiting for FLL lock"
-might be clearer.
+Comments welcome...
 
-This was only compile tested for exynos_defconfig + CONFIG_COMPILE_TEST=y
-SND_SOC_ALL_CODECS=m, EXTCON_ARIZONA=m, CONFIG_MFD_ARIZONA_SPI=m, 
-CONFIG_MFD_WM5102=y, (implies SND_SOC_ARIZONA=m)
+~Vinod
 
-Patch is against 4.0-rc2 linux-next (localversion-next is -next-20150306)
+Jeeja KP (5):
+  ALSA: hda: move hdaudio header files to global include
+  ALSA: HDA: create HDA common lib
+  ALSA: hdalib - fix existing checkpatch issues
+  ALSA: hda: rename sound/hda/hda* as sound/hda/hdalib
+  ALSA: hdalib: rename common header files as hdalib_*
 
- sound/soc/codecs/arizona.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../hda/hda_priv.h => include/sound/hda_register.h |   10 +--
+ .../sound/hdalib_auto_parser.h                     |    6 +-
+ .../hda/hda_beep.h => include/sound/hdalib_beep.h  |    6 +-
+ .../hda_codec.h => include/sound/hdalib_codec.h    |   23 +++---
+ .../sound/hdalib_controller.h                      |   11 +--
+ .../hda_local.h => include/sound/hdalib_controls.h |   20 ++---
+ .../sound/hdalib_generic.h                         |    6 +-
+ include/sound/{hda_hwdep.h => hdalib_hwdep.h}      |    4 +-
+ .../hda/hda_jack.h => include/sound/hdalib_jack.h  |    6 +-
+ sound/Kconfig                                      |    2 +
+ sound/Makefile                                     |    2 +-
+ sound/hda/Kconfig                                  |   85 ++++++++++++++++++++
+ sound/hda/Makefile                                 |   21 +++++
+ sound/{pci => }/hda/hda_intel_trace.h              |    0
+ sound/{pci => }/hda/hda_trace.h                    |    0
+ .../hda_auto_parser.c => hda/hdalib_auto_parser.c} |    7 +-
+ sound/{pci/hda/hda_beep.c => hda/hdalib_beep.c}    |    8 +-
+ sound/{pci/hda/hda_codec.c => hda/hdalib_codec.c}  |   21 +++--
+ .../hda_controller.c => hda/hdalib_controller.c}   |   10 ++-
+ sound/{pci/hda/hda_eld.c => hda/hdalib_eld.c}      |    4 +-
+ .../hda/hda_generic.c => hda/hdalib_generic.c}     |   13 +--
+ sound/{pci/hda/hda_hwdep.c => hda/hdalib_hwdep.c}  |    6 +-
+ sound/{pci/hda/hda_jack.c => hda/hdalib_jack.c}    |    8 +-
+ sound/{pci/hda/hda_proc.c => hda/hdalib_proc.c}    |   13 +--
+ sound/{pci/hda/hda_sysfs.c => hda/hdalib_sysfs.c}  |    6 +-
+ sound/pci/hda/Kconfig                              |   44 ----------
+ sound/pci/hda/Makefile                             |   14 +---
+ sound/pci/hda/hda_i915.c                           |    3 +-
+ sound/pci/hda/hda_intel.c                          |    7 +-
+ sound/pci/hda/patch_hdmi.c                         |   10 ++-
+ sound/pci/hda/patch_realtek.c                      |   10 ++-
+ 31 files changed, 229 insertions(+), 157 deletions(-)
+ rename sound/pci/hda/hda_priv.h => include/sound/hda_register.h (98%)
+ rename sound/pci/hda/hda_auto_parser.h => include/sound/hdalib_auto_parser.h (96%)
+ rename sound/pci/hda/hda_beep.h => include/sound/hdalib_beep.h (95%)
+ rename sound/pci/hda/hda_codec.h => include/sound/hdalib_codec.h (97%)
+ rename sound/pci/hda/hda_controller.h => include/sound/hdalib_controller.h (90%)
+ rename sound/pci/hda/hda_local.h => include/sound/hdalib_controls.h (98%)
+ rename sound/pci/hda/hda_generic.h => include/sound/hdalib_generic.h (99%)
+ rename include/sound/{hda_hwdep.h => hdalib_hwdep.h} (95%)
+ rename sound/pci/hda/hda_jack.h => include/sound/hdalib_jack.h (96%)
+ create mode 100644 sound/hda/Kconfig
+ create mode 100644 sound/hda/Makefile
+ rename sound/{pci => }/hda/hda_intel_trace.h (100%)
+ rename sound/{pci => }/hda/hda_trace.h (100%)
+ rename sound/{pci/hda/hda_auto_parser.c => hda/hdalib_auto_parser.c} (99%)
+ rename sound/{pci/hda/hda_beep.c => hda/hdalib_beep.c} (98%)
+ rename sound/{pci/hda/hda_codec.c => hda/hdalib_codec.c} (99%)
+ rename sound/{pci/hda/hda_controller.c => hda/hdalib_controller.c} (99%)
+ rename sound/{pci/hda/hda_eld.c => hda/hdalib_eld.c} (99%)
+ rename sound/{pci/hda/hda_generic.c => hda/hdalib_generic.c} (99%)
+ rename sound/{pci/hda/hda_hwdep.c => hda/hdalib_hwdep.c} (96%)
+ rename sound/{pci/hda/hda_jack.c => hda/hdalib_jack.c} (99%)
+ rename sound/{pci/hda/hda_proc.c => hda/hdalib_proc.c} (99%)
+ rename sound/{pci/hda/hda_sysfs.c => hda/hdalib_sysfs.c} (99%)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 95d31d6..57da0ce 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1902,7 +1902,7 @@ static int arizona_is_enabled_fll(struct arizona_fll *fll)
- static int arizona_enable_fll(struct arizona_fll *fll)
- {
- 	struct arizona *arizona = fll->arizona;
--	int ret;
-+	unsigned long time_left;
- 	bool use_sync = false;
- 	int already_enabled = arizona_is_enabled_fll(fll);
- 	struct arizona_fll_cfg cfg;
-@@ -1978,9 +1978,9 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 		regmap_update_bits_async(arizona->regmap, fll->base + 1,
- 					 ARIZONA_FLL1_FREERUN, 0);
- 
--	ret = wait_for_completion_timeout(&fll->ok,
-+	time_left = wait_for_completion_timeout(&fll->ok,
- 					  msecs_to_jiffies(250));
--	if (ret == 0)
-+	if (time_left == 0)
- 		arizona_fll_warn(fll, "Timed out waiting for lock\n");
- 
- 	return 0;
 -- 
-1.7.10.4
+1.7.9.5
