@@ -1,71 +1,99 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Remove unnecessary
-	device_remove_file()
-Date: Sun, 8 Mar 2015 19:46:48 +0000
-Message-ID: <20150308194648.GA28806@sirena.org.uk>
-References: <1425753308-28695-1-git-send-email-lars@metafoo.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] clk: provide clk_is_match() dummy for non-common clk
+Date: Sun, 08 Mar 2015 22:05:29 +0100
+Message-ID: <8682755.oK0Ae34OOP@wuerfel>
+References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org> <1424876018-17852-2-git-send-email-shawn.guo@linaro.org> <20150225172757.421.43718@quantum>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3181561146992819051=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 869C02604FC
- for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2015 20:46:55 +0100 (CET)
-In-Reply-To: <1425753308-28695-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-pwm-owner@vger.kernel.org>
+In-Reply-To: <20150225172757.421.43718@quantum>
+Sender: linux-pwm-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Mike Turquette <mturquette@linaro.org>, Shawn Guo <shawn.guo@linaro.org>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Thierry Reding <thierry.reding@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+ARM randconfig build tests found a new error for configurations
+with COMMON_CLK disabled but HAS_CLK selected by the platform:
 
---===============3181561146992819051==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bgVZo3zXaTQrZhjg"
-Content-Disposition: inline
+ERROR: "clk_is_match" [sound/soc/fsl/snd-soc-fsl-spdif.ko] undefined!
 
+This moves the declaration around, so this case is covered
+by the existing static inline helper function.
 
---bgVZo3zXaTQrZhjg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: c69e182e51d89 ("clk: introduce clk_is_match")
+----
+BTW, we have a preexisting problem in clk_get_parent,
+clk_round_rate and clk_set_parent, which I've worked around in
+my randconfig builds so far. Should we do that the same way?
 
-On Sat, Mar 07, 2015 at 07:35:08PM +0100, Lars-Peter Clausen wrote:
-> Since commit d29697dc3b92 ("ASoC: Add sysfs entries via static attribute
-> groups") the sysfs attributes of the rtd are manged by the device core and
-> there is no need to manually call device_remove_file() anymore.
+diff --git a/include/linux/clk.h b/include/linux/clk.h
+index 5c076e4d90f9..a9b91595d106 100644
+--- a/include/linux/clk.h
++++ b/include/linux/clk.h
+@@ -125,6 +125,19 @@ int clk_set_phase(struct clk *clk, int degrees);
+  */
+ int clk_get_phase(struct clk *clk);
+ 
++/**
++ * clk_is_match - check if two clk's point to the same hardware clock
++ * @p: clk compared against q
++ * @q: clk compared against p
++ *
++ * Returns true if the two struct clk pointers both point to the same hardware
++ * clock node. Put differently, returns true if struct clk *p and struct clk *q
++ * share the same struct clk_core object.
++ *
++ * Returns false otherwise. Note that two NULL clks are treated as matching.
++ */
++bool clk_is_match(struct clk *p, struct clk *q);
++
+ #else
+ 
+ static inline long clk_get_accuracy(struct clk *clk)
+@@ -142,6 +155,11 @@ static inline long clk_get_phase(struct clk *clk)
+ 	return -ENOTSUPP;
+ }
+ 
++static inline bool clk_is_match(struct clk *p, struct clk *q)
++{
++	return p == q ? true : false;
++}
++
+ #endif
+ 
+ /**
+@@ -376,19 +394,6 @@ struct clk *clk_get_parent(struct clk *clk);
+  */
+ struct clk *clk_get_sys(const char *dev_id, const char *con_id);
+ 
+-/**
+- * clk_is_match - check if two clk's point to the same hardware clock
+- * @p: clk compared against q
+- * @q: clk compared against p
+- *
+- * Returns true if the two struct clk pointers both point to the same hardware
+- * clock node. Put differently, returns true if struct clk *p and struct clk *q
+- * share the same struct clk_core object.
+- *
+- * Returns false otherwise. Note that two NULL clks are treated as matching.
+- */
+-bool clk_is_match(struct clk *p, struct clk *q);
+-
+ #else /* !CONFIG_HAVE_CLK */
+ 
+ static inline struct clk *clk_get(struct device *dev, const char *id)
+@@ -442,11 +447,6 @@ static inline struct clk *clk_get_parent(struct clk *clk)
+ 	return NULL;
+ }
+ 
+-static inline bool clk_is_match(struct clk *p, struct clk *q)
+-{
+-	return p == q ? true : false;
+-}
+-
+ #endif
+ 
+ /* clk_prepare_enable helps cases using clk_enable in non-atomic context. */
 
-Applied, thanks.
-
---bgVZo3zXaTQrZhjg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU/KcnAAoJECTWi3JdVIfQ6hQH/2gcpWmwUY5P/hb6VAPrlKSB
-3ESuDeB3619A71sC/DVL5YAcnvNBORyKmTh8/Qz7hqO1dsEVL+EVpPhdANyN7r7y
-zlO1d6dmpSWAeAEX8G1Ch//QIkcodkmzY+pqceFnPt4p0cwBLr6xvMFKhm9pMa/h
-WiVBrXTKxwsAtUutPA9VnKT5s8+BbgoDvu5Ysjc19413/9NMcuBQ+ynSvIUEIcy/
-APIelmnk6VUIB2prdKrouyFTTp4mE4sgialvo1/7l4dw2vkuroP6IdbDQINTGaFW
-8uJHnOkAzPCiUAcV++xODMWP3MtdEyif8CdQVZlMLDyyLFZJ1+mXZ8d2p9Uo0Og=
-=jjdK
------END PGP SIGNATURE-----
-
---bgVZo3zXaTQrZhjg--
-
---===============3181561146992819051==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3181561146992819051==--
