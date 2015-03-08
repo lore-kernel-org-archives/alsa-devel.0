@@ -1,14 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [RFC 0/5] Create hdalib for common hda code
-Date: Sun,  8 Mar 2015 20:07:54 +0530
-Message-ID: <1425825479-28780-1-git-send-email-vinod.koul@intel.com>
+Subject: [RFC 1/5] ALSA: hda: move hdaudio header files to
+	global include
+Date: Sun,  8 Mar 2015 20:07:55 +0530
+Message-ID: <1425825479-28780-2-git-send-email-vinod.koul@intel.com>
+References: <1425825479-28780-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 49A0026044F
- for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2015 15:41:25 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C3B0260455
+ for <alsa-devel@alsa-project.org>; Sun,  8 Mar 2015 15:41:26 +0100 (CET)
+In-Reply-To: <1425825479-28780-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +25,277 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch series attempts to split existing HDA code to create common hda
-library. This is done in order to make HDA code available to other users like
-upcoming Intel platforms which sport a HDA controller along with an I2S
-link.  This series is 1st patch series which will try to refactor HDA by
-splitting it up and then adding ASoC HDA controller driver for these
-platforms.
+From: Jeeja KP <jeeja.kp@intel.com>
 
-This series moves code to sound/hda, renames the files mostly. The second
-series will do API changes and subsequent ones will be using HDA bus patches
-which Takashi posted recently
+The hd-audio headers are local to sound/pci/hda. Moving them out helps to
+use these headers in other places like the upcoming ASoC HDA code
 
-Comments welcome...
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ {sound/pci/hda => include/sound}/hda_auto_parser.h |    0
+ {sound/pci/hda => include/sound}/hda_beep.h        |    0
+ {sound/pci/hda => include/sound}/hda_codec.h       |    0
+ {sound/pci/hda => include/sound}/hda_controller.h  |    0
+ {sound/pci/hda => include/sound}/hda_generic.h     |    0
+ {sound/pci/hda => include/sound}/hda_jack.h        |    0
+ {sound/pci/hda => include/sound}/hda_local.h       |    0
+ {sound/pci/hda => include/sound}/hda_priv.h        |    0
+ sound/pci/hda/hda_auto_parser.c                    |    6 +++---
+ sound/pci/hda/hda_beep.c                           |    4 ++--
+ sound/pci/hda/hda_codec.c                          |    8 ++++----
+ sound/pci/hda/hda_controller.c                     |    4 ++--
+ sound/pci/hda/hda_eld.c                            |    4 ++--
+ sound/pci/hda/hda_generic.c                        |   12 ++++++------
+ sound/pci/hda/hda_hwdep.c                          |    4 ++--
+ sound/pci/hda/hda_i915.c                           |    2 +-
+ sound/pci/hda/hda_intel.c                          |    6 +++---
+ sound/pci/hda/hda_jack.c                           |    8 ++++----
+ sound/pci/hda/hda_proc.c                           |    4 ++--
+ sound/pci/hda/hda_sysfs.c                          |    4 ++--
+ 20 files changed, 33 insertions(+), 33 deletions(-)
+ rename {sound/pci/hda => include/sound}/hda_auto_parser.h (100%)
+ rename {sound/pci/hda => include/sound}/hda_beep.h (100%)
+ rename {sound/pci/hda => include/sound}/hda_codec.h (100%)
+ rename {sound/pci/hda => include/sound}/hda_controller.h (100%)
+ rename {sound/pci/hda => include/sound}/hda_generic.h (100%)
+ rename {sound/pci/hda => include/sound}/hda_jack.h (100%)
+ rename {sound/pci/hda => include/sound}/hda_local.h (100%)
+ rename {sound/pci/hda => include/sound}/hda_priv.h (100%)
 
-~Vinod
-
-Jeeja KP (5):
-  ALSA: hda: move hdaudio header files to global include
-  ALSA: HDA: create HDA common lib
-  ALSA: hdalib - fix existing checkpatch issues
-  ALSA: hda: rename sound/hda/hda* as sound/hda/hdalib
-  ALSA: hdalib: rename common header files as hdalib_*
-
- .../hda/hda_priv.h => include/sound/hda_register.h |   10 +--
- .../sound/hdalib_auto_parser.h                     |    6 +-
- .../hda/hda_beep.h => include/sound/hdalib_beep.h  |    6 +-
- .../hda_codec.h => include/sound/hdalib_codec.h    |   23 +++---
- .../sound/hdalib_controller.h                      |   11 +--
- .../hda_local.h => include/sound/hdalib_controls.h |   20 ++---
- .../sound/hdalib_generic.h                         |    6 +-
- include/sound/{hda_hwdep.h => hdalib_hwdep.h}      |    4 +-
- .../hda/hda_jack.h => include/sound/hdalib_jack.h  |    6 +-
- sound/Kconfig                                      |    2 +
- sound/Makefile                                     |    2 +-
- sound/hda/Kconfig                                  |   85 ++++++++++++++++++++
- sound/hda/Makefile                                 |   21 +++++
- sound/{pci => }/hda/hda_intel_trace.h              |    0
- sound/{pci => }/hda/hda_trace.h                    |    0
- .../hda_auto_parser.c => hda/hdalib_auto_parser.c} |    7 +-
- sound/{pci/hda/hda_beep.c => hda/hdalib_beep.c}    |    8 +-
- sound/{pci/hda/hda_codec.c => hda/hdalib_codec.c}  |   21 +++--
- .../hda_controller.c => hda/hdalib_controller.c}   |   10 ++-
- sound/{pci/hda/hda_eld.c => hda/hdalib_eld.c}      |    4 +-
- .../hda/hda_generic.c => hda/hdalib_generic.c}     |   13 +--
- sound/{pci/hda/hda_hwdep.c => hda/hdalib_hwdep.c}  |    6 +-
- sound/{pci/hda/hda_jack.c => hda/hdalib_jack.c}    |    8 +-
- sound/{pci/hda/hda_proc.c => hda/hdalib_proc.c}    |   13 +--
- sound/{pci/hda/hda_sysfs.c => hda/hdalib_sysfs.c}  |    6 +-
- sound/pci/hda/Kconfig                              |   44 ----------
- sound/pci/hda/Makefile                             |   14 +---
- sound/pci/hda/hda_i915.c                           |    3 +-
- sound/pci/hda/hda_intel.c                          |    7 +-
- sound/pci/hda/patch_hdmi.c                         |   10 ++-
- sound/pci/hda/patch_realtek.c                      |   10 ++-
- 31 files changed, 229 insertions(+), 157 deletions(-)
- rename sound/pci/hda/hda_priv.h => include/sound/hda_register.h (98%)
- rename sound/pci/hda/hda_auto_parser.h => include/sound/hdalib_auto_parser.h (96%)
- rename sound/pci/hda/hda_beep.h => include/sound/hdalib_beep.h (95%)
- rename sound/pci/hda/hda_codec.h => include/sound/hdalib_codec.h (97%)
- rename sound/pci/hda/hda_controller.h => include/sound/hdalib_controller.h (90%)
- rename sound/pci/hda/hda_local.h => include/sound/hdalib_controls.h (98%)
- rename sound/pci/hda/hda_generic.h => include/sound/hdalib_generic.h (99%)
- rename include/sound/{hda_hwdep.h => hdalib_hwdep.h} (95%)
- rename sound/pci/hda/hda_jack.h => include/sound/hdalib_jack.h (96%)
- create mode 100644 sound/hda/Kconfig
- create mode 100644 sound/hda/Makefile
- rename sound/{pci => }/hda/hda_intel_trace.h (100%)
- rename sound/{pci => }/hda/hda_trace.h (100%)
- rename sound/{pci/hda/hda_auto_parser.c => hda/hdalib_auto_parser.c} (99%)
- rename sound/{pci/hda/hda_beep.c => hda/hdalib_beep.c} (98%)
- rename sound/{pci/hda/hda_codec.c => hda/hdalib_codec.c} (99%)
- rename sound/{pci/hda/hda_controller.c => hda/hdalib_controller.c} (99%)
- rename sound/{pci/hda/hda_eld.c => hda/hdalib_eld.c} (99%)
- rename sound/{pci/hda/hda_generic.c => hda/hdalib_generic.c} (99%)
- rename sound/{pci/hda/hda_hwdep.c => hda/hdalib_hwdep.c} (96%)
- rename sound/{pci/hda/hda_jack.c => hda/hdalib_jack.c} (99%)
- rename sound/{pci/hda/hda_proc.c => hda/hdalib_proc.c} (99%)
- rename sound/{pci/hda/hda_sysfs.c => hda/hdalib_sysfs.c} (99%)
-
+diff --git a/sound/pci/hda/hda_auto_parser.h b/include/sound/hda_auto_parser.h
+similarity index 100%
+rename from sound/pci/hda/hda_auto_parser.h
+rename to include/sound/hda_auto_parser.h
+diff --git a/sound/pci/hda/hda_beep.h b/include/sound/hda_beep.h
+similarity index 100%
+rename from sound/pci/hda/hda_beep.h
+rename to include/sound/hda_beep.h
+diff --git a/sound/pci/hda/hda_codec.h b/include/sound/hda_codec.h
+similarity index 100%
+rename from sound/pci/hda/hda_codec.h
+rename to include/sound/hda_codec.h
+diff --git a/sound/pci/hda/hda_controller.h b/include/sound/hda_controller.h
+similarity index 100%
+rename from sound/pci/hda/hda_controller.h
+rename to include/sound/hda_controller.h
+diff --git a/sound/pci/hda/hda_generic.h b/include/sound/hda_generic.h
+similarity index 100%
+rename from sound/pci/hda/hda_generic.h
+rename to include/sound/hda_generic.h
+diff --git a/sound/pci/hda/hda_jack.h b/include/sound/hda_jack.h
+similarity index 100%
+rename from sound/pci/hda/hda_jack.h
+rename to include/sound/hda_jack.h
+diff --git a/sound/pci/hda/hda_local.h b/include/sound/hda_local.h
+similarity index 100%
+rename from sound/pci/hda/hda_local.h
+rename to include/sound/hda_local.h
+diff --git a/sound/pci/hda/hda_priv.h b/include/sound/hda_priv.h
+similarity index 100%
+rename from sound/pci/hda/hda_priv.h
+rename to include/sound/hda_priv.h
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index 1ede82200ee5..e518a74b3d66 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -13,9 +13,9 @@
+ #include <linux/export.h>
+ #include <linux/sort.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
+-#include "hda_local.h"
+-#include "hda_auto_parser.h"
++#include <sound/hda_codec.h>
++#include <sound/hda_local.h>
++#include <sound/hda_auto_parser.h>
+ 
+ /*
+  * Helper for automatic pin configuration
+diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
+index 1e7de08e77cb..3ce849899bb5 100644
+--- a/sound/pci/hda/hda_beep.c
++++ b/sound/pci/hda/hda_beep.c
+@@ -24,8 +24,8 @@
+ #include <linux/workqueue.h>
+ #include <linux/export.h>
+ #include <sound/core.h>
+-#include "hda_beep.h"
+-#include "hda_local.h"
++#include <sound/hda_beep.h>
++#include <sound/hda_local.h>
+ 
+ enum {
+ 	DIGBEEP_HZ_STEP = 46875,	/* 46.875 Hz */
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 2fe86d2e1b09..5eb244a02b59 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -27,14 +27,14 @@
+ #include <linux/module.h>
+ #include <linux/async.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include <sound/asoundef.h>
+ #include <sound/tlv.h>
+ #include <sound/initval.h>
+ #include <sound/jack.h>
+-#include "hda_local.h"
+-#include "hda_beep.h"
+-#include "hda_jack.h"
++#include <sound/hda_local.h>
++#include <sound/hda_beep.h>
++#include <sound/hda_jack.h>
+ #include <sound/hda_hwdep.h>
+ 
+ #define CREATE_TRACE_POINTS
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 0cfc9c8c4b4e..5ae5fcb9b8a9 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -30,8 +30,8 @@
+ #include <linux/reboot.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
+-#include "hda_priv.h"
+-#include "hda_controller.h"
++#include <sound/hda_priv.h>
++#include <sound/hda_controller.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include "hda_intel_trace.h"
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index 0e6d7534f491..f1b6493c65d9 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -26,8 +26,8 @@
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <asm/unaligned.h>
+-#include "hda_codec.h"
+-#include "hda_local.h"
++#include <sound/hda_codec.h>
++#include <sound/hda_local.h>
+ 
+ enum eld_versions {
+ 	ELD_VER_CEA_861D	= 2,
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index b680b4ec6331..bac07550f7be 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -32,12 +32,12 @@
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/tlv.h>
+-#include "hda_codec.h"
+-#include "hda_local.h"
+-#include "hda_auto_parser.h"
+-#include "hda_jack.h"
+-#include "hda_beep.h"
+-#include "hda_generic.h"
++#include <sound/hda_codec.h>
++#include <sound/hda_local.h>
++#include <sound/hda_auto_parser.h>
++#include <sound/hda_jack.h>
++#include <sound/hda_beep.h>
++#include <sound/hda_generic.h>
+ 
+ 
+ /**
+diff --git a/sound/pci/hda/hda_hwdep.c b/sound/pci/hda/hda_hwdep.c
+index 014a7849e8fd..8b17ad1cbb1b 100644
+--- a/sound/pci/hda/hda_hwdep.c
++++ b/sound/pci/hda/hda_hwdep.c
+@@ -22,8 +22,8 @@
+ #include <linux/slab.h>
+ #include <linux/compat.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
+-#include "hda_local.h"
++#include <sound/hda_codec.h>
++#include <sound/hda_local.h>
+ #include <sound/hda_hwdep.h>
+ #include <sound/minors.h>
+ 
+diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
+index d4d0375ac181..ca15d465c8b0 100644
+--- a/sound/pci/hda/hda_i915.c
++++ b/sound/pci/hda/hda_i915.c
+@@ -20,7 +20,7 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <drm/i915_powerwell.h>
+-#include "hda_priv.h"
++#include <sound/hda_priv.h>
+ #include "hda_i915.h"
+ 
+ /* Intel HSW/BDW display HDA controller Extended Mode registers.
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index d426a0bd6a5f..70606016843b 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -60,9 +60,9 @@
+ #include <linux/vgaarb.h>
+ #include <linux/vga_switcheroo.h>
+ #include <linux/firmware.h>
+-#include "hda_codec.h"
+-#include "hda_controller.h"
+-#include "hda_priv.h"
++#include <sound/hda_codec.h>
++#include <sound/hda_controller.h>
++#include <sound/hda_priv.h>
+ #include "hda_i915.h"
+ 
+ /* position fix mode */
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index e664307617bd..bcaee91e655e 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -15,10 +15,10 @@
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/jack.h>
+-#include "hda_codec.h"
+-#include "hda_local.h"
+-#include "hda_auto_parser.h"
+-#include "hda_jack.h"
++#include <sound/hda_codec.h>
++#include <sound/hda_local.h>
++#include <sound/hda_auto_parser.h>
++#include <sound/hda_jack.h>
+ 
+ /**
+  * is_jack_detectable - Check whether the given pin is jack-detectable
+diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
+index ce5a6da83419..9c60c8cbe89d 100644
+--- a/sound/pci/hda/hda_proc.c
++++ b/sound/pci/hda/hda_proc.c
+@@ -25,8 +25,8 @@
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <linux/module.h>
+-#include "hda_codec.h"
+-#include "hda_local.h"
++#include <sound/hda_codec.h>
++#include <sound/hda_local.h>
+ 
+ static int dump_coef = -1;
+ module_param(dump_coef, int, 0644);
+diff --git a/sound/pci/hda/hda_sysfs.c b/sound/pci/hda/hda_sysfs.c
+index ccc962a1699f..b25001cc3f83 100644
+--- a/sound/pci/hda/hda_sysfs.c
++++ b/sound/pci/hda/hda_sysfs.c
+@@ -14,8 +14,8 @@
+ #include <linux/string.h>
+ #include <linux/export.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
+-#include "hda_local.h"
++#include <sound/hda_codec.h>
++#include <sound/hda_local.h>
+ #include <sound/hda_hwdep.h>
+ #include <sound/minors.h>
+ 
 -- 
 1.7.9.5
