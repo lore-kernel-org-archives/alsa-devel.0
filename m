@@ -1,18 +1,17 @@
-From: Xuebing Wang <xbing6@gmail.com>
-Subject: About iMX6SL sign extension of SSI Receive
- Configuration Register (SSIx_SRCR)
-Date: Mon, 09 Mar 2015 17:09:34 +0800
-Message-ID: <54FD634E.8040007@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: rt5670: Revert Keep sysclk on
+	patch
+Date: Mon, 9 Mar 2015 10:49:52 +0000
+Message-ID: <20150309104952.GF28806@sirena.org.uk>
+References: <1425891323-21445-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4895069645827989692=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f169.google.com (mail-qc0-f169.google.com
- [209.85.216.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B1172605CC
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 10:09:41 +0100 (CET)
-Received: by qcvs11 with SMTP id s11so30936845qcv.6
- for <alsa-devel@alsa-project.org>; Mon, 09 Mar 2015 02:09:40 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B1312605EB
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 11:50:04 +0100 (CET)
+In-Reply-To: <1425891323-21445-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, nicoleotsuka@gmail.com
-Cc: niranjan Patil <Niranjan.Patil@infocus.com>, markus.lindroth@limesaudio.com, richard Jiang <Richard.Jiang@infocus.com>
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, yao.jin@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTmljb2xpbiBhbmQgY29tbXVuaXR5LAoKaU1YNlNMIHJlZmVyZW5jZSBtYW51YWwgc2VjdGlv
-biAiNDguOS44IFNTSSBSZWNlaXZlIENvbmZpZ3VyYXRpb24gClJlZ2lzdGVyIChTU0l4X1NSQ1Ip
-IiBzYXlzIGFib3V0IHNpZ24gZXh0ZW5zaW9uLgoKQmVsb3cgaXMgYSBxdW90ZSBmcm9tIGlNWDZT
-TCByZWZlcmVuY2UgbWFudWFsOgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClJlY2VpdmUgRGF0YSBFeHRlbnNpb24uIFRoaXMgY29u
-dHJvbCBiaXQgYWxsb3dzIFNTSSB0byBzdG9yZSB0aGUgCnJlY2VpdmVkIGRhdGEgd29yZCBpbiBz
-aWduIGV4dGVuZGVkIGZvcm0uClRoaXMgYml0IGFmZmVjdHMgZGF0YSBzdG9yYWdlIG9ubHkgaW4g
-Y2FzZSByZWNlaXZlZCBkYXRhIGlzIExTQiBhbGlnbmVkIAooU1JDUls5XT0xKQoKMCBPRkYg4oCU
-IFNpZ24gZXh0ZW5zaW9uIHR1cm5lZCBvZmYuCjEgT04g4oCUIFNpZ24gZXh0ZW5zaW9uIHR1cm5l
-ZCBvbi4KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQoKQWZ0ZXIgSSByZWNlaXZlIGRhdGEgKGluIHRoZSBmb3JtYXQgb2YgUzE2X0xF
-KSBmcm9tIFNTSS9JMlMsIEkgZ290IGRhdGEgCmxpa2UgMHg3RkZGIG9yIDB4NzdkMi4gQXJlIHRo
-ZXkgc3VwcG9zZWQgdG8gYmUgMHhGRkZGIG9yIDB4RjdkMj8KCkFmdGVyIHNldHRpbmcgYml0IDEw
-IChSWEVYVCkgb2YgU1NJeF9TUkNSLCBJIHN0aWxsIGdldCAweDdGRkYgb3IgMHg3N2QyLgotLSBO
-b3RlOiBTUkNSWzldIGlzIDEuCgpBbnkgc3VnZ2VzdGlvbnM/IFRoYW5rcy4KCi0tIApYdWViaW5n
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============4895069645827989692==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gnQ/OOKD4CRsnGw/"
+Content-Disposition: inline
+
+
+--gnQ/OOKD4CRsnGw/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Mar 09, 2015 at 04:55:22PM +0800, Bard Liao wrote:
+> The "Keep sysclk on if JD func is used" patch force enable/disable
+> pin in rt5670_set_dai_sysclk. But some machine driver call it in
+> dapm widget event. It will cause kernel crash.
+
+Could you go into more detail on what's going wrong here please - this
+sounds like the machine drivers are buggy, not the jack detection code?
+Configuring jack detection in response to a DAPM event would be very
+unusual.
+
+--gnQ/OOKD4CRsnGw/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU/XrPAAoJECTWi3JdVIfQjDEH/iL2wnlj9+WeM70ny6SqhCsW
+Axd2V8pAp2YVkHBfV453PnZeRLKGWSlEov1iKv1T/wiwMQEotlMAWbmLLUSIYRLT
+O6vG2HMyLGZFVeG8WYW6MvkfYu2R58Kb87mx26zvFndQbyeWn37cZemNLKzTL5W9
+6z3FK7gUMjIleWpnhKxrP1WkhGdUV1RhJ1q66f0WlhxPFR23CBFR/PYI4ee04nBy
+TvCMm49QP+PHC+MUSJ8IrSgWJEiAxBIsN7PPWpJgiqhSYhtLHnEm7QG7b1gq/4+w
+iUS2cXd9JCQFmpuC2msGYoLLIxp+8KYvvWoWb7FRlg4Uj+fE3z2STky1Eak1Q5g=
+=8CFI
+-----END PGP SIGNATURE-----
+
+--gnQ/OOKD4CRsnGw/--
+
+--===============4895069645827989692==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4895069645827989692==--
