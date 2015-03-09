@@ -1,14 +1,19 @@
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH_V3] ASoC: jz4740: Add jz4780 support
-Date: Mon, 9 Mar 2015 12:11:08 +0000
-Message-ID: <1425903068-60790-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: rt5670: Revert Keep sysclk on
+	patch
+Date: Mon, 9 Mar 2015 12:19:31 +0000
+Message-ID: <20150309121931.GH28806@sirena.org.uk>
+References: <1425891323-21445-1-git-send-email-bardliao@realtek.com>
+ <20150309104952.GF28806@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D7010591A9@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7845989298648923153=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A4EF2605EA
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 13:11:48 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46EE32605EA
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 13:19:42 +0100 (CET)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7010591A9@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,214 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, linux-kernel@vger.kernel.org, Zubair.Kakakhel@imgtec.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "mengdong.lin@intel.com" <mengdong.lin@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "yao.jin@intel.com" <yao.jin@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The jz4780 and jz4740 have very similar i2s blocks.
 
-The slight difference is in Rx/Tx fifos.
-And the bitclocks for input/output are different.
+--===============7845989298648923153==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jOtImjXIA9XXnHrK"
+Content-Disposition: inline
 
-This patch adds jz4780 support to the driver
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+--jOtImjXIA9XXnHrK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
----
-Patch based on 4.0-rc3
-Tested on the MIPS Creator CI20.
+On Mon, Mar 09, 2015 at 12:13:04PM +0000, Bard Liao wrote:
 
-V2 -> V3
-Added struct snd_soc_dai_driver jz4780_i2s_dai instead of modifying
-bit for symmetric_rates.
+> System clock is needed for rt5670 jack detection function. Usually,
+> the system clock source is from MCLK. But some platform such as
+> Intel BSW will turn off MCLK in idle mode. So rt5670 need to switch the
+> system clock source to its internal clock. The action is done by machine
+> driver.
 
-V1 - > V2
-Removed SND_DMAENGINE_PCM_FLAG_NO_RESIDUE as it is handled by dma driver
-Added a check for symmetric_rates flag for jz4780
----
- .../bindings/sound/ingenic,jz4740-i2s.txt          |  2 +-
- sound/soc/jz4740/jz4740-i2s.c                      | 84 +++++++++++++++++++---
- 2 files changed, 75 insertions(+), 11 deletions(-)
+OK...  but if this is the case why does your patch not update any
+machine drivers?
 
-diff --git a/Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt b/Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
-index b414333..b623d50 100644
---- a/Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/ingenic,jz4740-i2s.txt
-@@ -1,7 +1,7 @@
- Ingenic JZ4740 I2S controller
- 
- Required properties:
--- compatible : "ingenic,jz4740-i2s"
-+- compatible : "ingenic,jz4740-i2s" or "ingenic,jz4780-i2s"
- - reg : I2S registers location and length
- - clocks : AIC and I2S PLL clock specifiers.
- - clock-names: "aic" and "i2s"
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 07f7781..b05fb1c 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -58,6 +58,12 @@
- 
- #define JZ_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET 12
- #define JZ_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET 8
-+#define JZ4780_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET 24
-+#define JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET 16
-+#define JZ4780_AIC_CONF_FIFO_RX_THRESHOLD_MASK \
-+			(0xf << JZ4780_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET)
-+#define JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_MASK \
-+			(0x1f <<  JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET)
- 
- #define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_MASK (0x7 << 19)
- #define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK (0x7 << 16)
-@@ -79,6 +85,7 @@
- #define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET  16
- 
- #define JZ_AIC_I2S_FMT_DISABLE_BIT_CLK BIT(12)
-+#define JZ_AIC_I2S_FMT_DISABLE_BIT_ICLK BIT(13)
- #define JZ_AIC_I2S_FMT_ENABLE_SYS_CLK BIT(4)
- #define JZ_AIC_I2S_FMT_MSB BIT(0)
- 
-@@ -87,6 +94,13 @@
- #define JZ_AIC_CLK_DIV_MASK 0xf
- #define I2SDIV_DV_SHIFT 8
- #define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
-+#define I2SDIV_IDV_SHIFT 8
-+#define I2SDIV_IDV_MASK (0xf << I2SDIV_IDV_SHIFT)
-+
-+enum jz47xx_i2s_version {
-+	JZ_I2S_JZ4740,
-+	JZ_I2S_JZ4780,
-+};
- 
- struct jz4740_i2s {
- 	struct resource *mem;
-@@ -98,6 +112,8 @@ struct jz4740_i2s {
- 
- 	struct snd_dmaengine_dai_dma_data playback_dma_data;
- 	struct snd_dmaengine_dai_dma_data capture_dma_data;
-+
-+	enum jz47xx_i2s_version version;
- };
- 
- static inline uint32_t jz4740_i2s_read(const struct jz4740_i2s *i2s,
-@@ -267,13 +283,22 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
- 			ctrl |= JZ_AIC_CTRL_MONO_TO_STEREO;
- 		else
- 			ctrl &= ~JZ_AIC_CTRL_MONO_TO_STEREO;
-+
-+		div_reg &= ~I2SDIV_DV_MASK;
-+		div_reg |= (div - 1) << I2SDIV_DV_SHIFT;
- 	} else {
- 		ctrl &= ~JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK;
- 		ctrl |= sample_size << JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET;
-+
-+		if (i2s->version >= JZ_I2S_JZ4780) {
-+			div_reg &= ~I2SDIV_IDV_MASK;
-+			div_reg |= (div - 1) << I2SDIV_IDV_SHIFT;
-+		} else {
-+			div_reg &= ~I2SDIV_DV_MASK;
-+			div_reg |= (div - 1) << I2SDIV_DV_SHIFT;
-+		}
- 	}
- 
--	div_reg &= ~I2SDIV_DV_MASK;
--	div_reg |= (div - 1) << I2SDIV_DV_SHIFT;
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CLK_DIV, div_reg);
- 
-@@ -369,11 +394,19 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
- 	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
- 		&i2s->capture_dma_data);
- 
--	conf = (7 << JZ_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET) |
--		(8 << JZ_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET) |
--		JZ_AIC_CONF_OVERFLOW_PLAY_LAST |
--		JZ_AIC_CONF_I2S |
--		JZ_AIC_CONF_INTERNAL_CODEC;
-+	if (i2s->version >= JZ_I2S_JZ4780) {
-+		conf = (7 << JZ4780_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET) |
-+			(8 << JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET) |
-+			JZ_AIC_CONF_OVERFLOW_PLAY_LAST |
-+			JZ_AIC_CONF_I2S |
-+			JZ_AIC_CONF_INTERNAL_CODEC;
-+	} else {
-+		conf = (7 << JZ_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET) |
-+			(8 << JZ_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET) |
-+			JZ_AIC_CONF_OVERFLOW_PLAY_LAST |
-+			JZ_AIC_CONF_I2S |
-+			JZ_AIC_CONF_INTERNAL_CODEC;
-+	}
- 
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, JZ_AIC_CONF_RESET);
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
-@@ -422,13 +455,34 @@ static struct snd_soc_dai_driver jz4740_i2s_dai = {
- 	.resume = jz4740_i2s_resume,
- };
- 
-+static struct snd_soc_dai_driver jz4780_i2s_dai = {
-+	.probe = jz4740_i2s_dai_probe,
-+	.remove = jz4740_i2s_dai_remove,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.formats = JZ4740_I2S_FMTS,
-+	},
-+	.capture = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.formats = JZ4740_I2S_FMTS,
-+	},
-+	.ops = &jz4740_i2s_dai_ops,
-+	.suspend = jz4740_i2s_suspend,
-+	.resume = jz4740_i2s_resume,
-+};
-+
- static const struct snd_soc_component_driver jz4740_i2s_component = {
- 	.name		= "jz4740-i2s",
- };
- 
- #ifdef CONFIG_OF
- static const struct of_device_id jz4740_of_matches[] = {
--	{ .compatible = "ingenic,jz4740-i2s" },
-+	{ .compatible = "ingenic,jz4740-i2s", .data = (void *)JZ_I2S_JZ4740 },
-+	{ .compatible = "ingenic,jz4780-i2s", .data = (void *)JZ_I2S_JZ4780 },
- 	{ /* sentinel */ }
- };
- #endif
-@@ -438,11 +492,16 @@ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
- 	struct jz4740_i2s *i2s;
- 	struct resource *mem;
- 	int ret;
-+	const struct of_device_id *match;
- 
- 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
- 	if (!i2s)
- 		return -ENOMEM;
- 
-+	match = of_match_device(jz4740_of_matches, &pdev->dev);
-+	if (match)
-+		i2s->version = (enum jz47xx_i2s_version)match->data;
-+
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	i2s->base = devm_ioremap_resource(&pdev->dev, mem);
- 	if (IS_ERR(i2s->base))
-@@ -460,8 +519,13 @@ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, i2s);
- 
--	ret = devm_snd_soc_register_component(&pdev->dev,
--		&jz4740_i2s_component, &jz4740_i2s_dai, 1);
-+	if (i2s->version == JZ_I2S_JZ4780)
-+		ret = devm_snd_soc_register_component(&pdev->dev,
-+			&jz4740_i2s_component, &jz4780_i2s_dai, 1);
-+	else
-+		ret = devm_snd_soc_register_component(&pdev->dev,
-+			&jz4740_i2s_component, &jz4740_i2s_dai, 1);
-+
- 	if (ret)
- 		return ret;
- 
--- 
-1.9.1
+> There is a PLL power in rt5670. It should be on if we want to use
+> PLL as the system clock source. So we call force enable/disable pin
+> in rt5670_set_dai_sysclk. However, cht_bsw_rt5672.c call
+> snd_soc_dai_set_sysclk in platform_clock_control which is the dapm
+> event of "Platform Clock" widget. In that case,
+> snd_soc_dapm_disable_pin and snd_soc_dapm_sync are called
+> within a dapm event. I think it is not valid.
+
+This is very unusual, normally such system clock reconfiguration would
+be done in the set_bias_level() callback not in a DAPM event.  Doing it
+in a DAPM event sounds unreliable as there are only weak guarantees
+about the state of the system.
+
+--jOtImjXIA9XXnHrK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJU/Y/SAAoJECTWi3JdVIfQsXMH/A2l8lgdYc2dYEUBo1fpF1og
+8/Cdw8M2jjhex9MpICEkLES4nuQf5zinbmQBu6OeMcB/rqLqD8UqCvpgcK86pSLw
+EvUq3QYeIHNb4uQARJ+rmCPzBzyqDUKxXLEgDv//uvtBgDib3Q4kgffbr9Go24eV
+EwfbxVaaEgH3AlOEJNdXc6FBhKn8rXmKycw95FeadCFMg2sbkYVZ5X6aXMllGSzG
+B2/u60+Kcm55uBpUJjnVFq3fjxdQ2GMxJh0BHycF5U4VTVC8HkKGNUMywVUXpE/N
+jI+ckjuNAP+dLTBOstA/WbEenLuIzgjk/h7w4YH96pMvV4AVe1u2CLkC01f8y1c=
+=M0u2
+-----END PGP SIGNATURE-----
+
+--jOtImjXIA9XXnHrK--
+
+--===============7845989298648923153==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7845989298648923153==--
