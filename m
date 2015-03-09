@@ -1,45 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: arizona: match wait_for_completion_timeout return
+Subject: Re: [PATCH] ASoC: wm2200: match wait_for_completion_timeout return
  type
-Date: Mon, 9 Mar 2015 18:18:03 +0000
-Message-ID: <20150309181803.GS28806@sirena.org.uk>
-References: <1425820609-28684-1-git-send-email-hofrat@osadl.org>
+Date: Mon, 9 Mar 2015 18:18:49 +0000
+Message-ID: <20150309181849.GT28806@sirena.org.uk>
+References: <1425812765-24384-1-git-send-email-hofrat@osadl.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8bIXokQePRfDuBGo"
+	protocol="application/pgp-signature"; boundary="FxsMg9mYBDvYslEH"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1425820609-28684-1-git-send-email-hofrat@osadl.org>
+In-Reply-To: <1425812765-24384-1-git-send-email-hofrat@osadl.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Xiubo Li <Li.Xiubo@freescale.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---8bIXokQePRfDuBGo
+--FxsMg9mYBDvYslEH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Mar 08, 2015 at 09:16:49AM -0400, Nicholas Mc Guire wrote:
+On Sun, Mar 08, 2015 at 07:06:05AM -0400, Nicholas Mc Guire wrote:
 > return type of wait_for_completion_timeout is unsigned long not int. An
 > appropriately named unsigned long is added and the assignment fixed up.
 
-Applied, thanks.
+applied, thanks.
 
---8bIXokQePRfDuBGo
+--FxsMg9mYBDvYslEH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU/ePbAAoJECTWi3JdVIfQDhIH/jrI3qV0x77VD/OiTmv/KquI
-D5odfDLLeBPFWRl0vchJ3nlEvJzsWw8P7GZ31IIcsaK+qLSQ7WRF6PG00rQeGcBA
-5kpvzYDJQYpLuxF+feAZ8w1GDa8BhcxZ6tx6izSNnYmpWVzcu5dbYGN0lh7FBKGL
-iq3n7TCyizi/C+ME9MSpJtaN/9f0fHGfkWko+AMRSnzLpEu7o1dYANgcr0CqvFi1
-rUSdSkGGQ3xOoU0jA0EVhun02b0ra/TPQswbIIhimSpA1ojqwUjV/zbU3YnkVh8O
-BPSRK2EOx5LsAnWflswBzquWvOiihn7+eWDybJXyvzCpX2H2wskfKVgbdaAnCZU=
-=Symd
+iQEcBAEBCAAGBQJU/eQIAAoJECTWi3JdVIfQ2uQH/iK4MKbEkOg9Qdx/tb01NfKQ
+B6WzIHqRQv5Zc0JE1on9WgTPJPHhZrlpSg0MxzXovIkHXUN0jRkDdFbOSh/qdoKf
+bPWzsxkifmLsNASo7BWEGvetZhzV08NzykpH4e0U5hqLDoAPfjXai45teuvZjHdq
+axX5Czx5KlA7A0C4SITpHFWSX8zGyDvoLr4yvp235mGhsc2Fhv1BGlHLqXCQ6uD/
+nIIZIJvw/jZooNeRJHqyPLSx/DYk/5nXB5FAbohu2lUzADBZOdNhGYBo99cKNZ0O
+HbjiECSuK5oxczBrs+2Vm4uNEnJaGK54iDaGkgL0e2PRauFtHfyq99GVXC0gS24=
+=aXON
 -----END PGP SIGNATURE-----
 
---8bIXokQePRfDuBGo--
+--FxsMg9mYBDvYslEH--
