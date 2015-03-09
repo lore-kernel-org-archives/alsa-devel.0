@@ -1,45 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5100: match wait_for_completion_timeout return
- type
-Date: Mon, 9 Mar 2015 18:16:54 +0000
-Message-ID: <20150309181654.GR28806@sirena.org.uk>
-References: <1425812227-24172-1-git-send-email-hofrat@osadl.org>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH] ASoC: tlv320aic23: remove incorrect __exit markups
+Date: Mon, 9 Mar 2015 11:18:14 -0700
+Message-ID: <20150309181814.GA27608@dtor-ws>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MGmrTRZxVujQoXMz"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1425812227-24172-1-git-send-email-hofrat@osadl.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Xiubo Li <Li.Xiubo@freescale.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Axel Lin <axel.lin@ingics.com>, abdoulaye berthe <berthe.ab@gmail.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Even if bus is not hot-pluggable, the devices can be unbound from the
+driver via sysfs, so we should not be using __exit annotations on
+remove() methods. The only exception is drivers registered with
+platform_driver_probe() which specifically disables sysfs bind/unbind
+attributes.
 
---MGmrTRZxVujQoXMz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ sound/soc/codecs/tlv320aic23-i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Sun, Mar 08, 2015 at 06:57:07AM -0400, Nicholas Mc Guire wrote:
-> return type of wait_for_completion_timeout is unsigned long not int. An
-> appropriately named unsigned long is added and the assignment fixed up.
+diff --git a/sound/soc/codecs/tlv320aic23-i2c.c b/sound/soc/codecs/tlv320aic23-i2c.c
+index f137019..78a94af 100644
+--- a/sound/soc/codecs/tlv320aic23-i2c.c
++++ b/sound/soc/codecs/tlv320aic23-i2c.c
+@@ -31,7 +31,7 @@ static int tlv320aic23_i2c_probe(struct i2c_client *i2c,
+ 	return tlv320aic23_probe(&i2c->dev, regmap);
+ }
+ 
+-static int __exit tlv320aic23_i2c_remove(struct i2c_client *i2c)
++static int tlv320aic23_i2c_remove(struct i2c_client *i2c)
+ {
+ 	snd_soc_unregister_codec(&i2c->dev);
+ 	return 0;
+@@ -56,7 +56,7 @@ static struct i2c_driver tlv320aic23_i2c_driver = {
+ 		   .of_match_table = of_match_ptr(tlv320aic23_of_match),
+ 		   },
+ 	.probe = tlv320aic23_i2c_probe,
+-	.remove = __exit_p(tlv320aic23_i2c_remove),
++	.remove = tlv320aic23_i2c_remove,
+ 	.id_table = tlv320aic23_id,
+ };
+ 
+-- 
+2.2.0.rc0.207.ga3a616c
 
-Applied, thanks.
 
---MGmrTRZxVujQoXMz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU/eOVAAoJECTWi3JdVIfQoHgH/2siguLGN9P0KINqN5v4IJgK
-wMWe1nYJu+94sb3Mcz9gNj2x3eLWld+ufBx+Hfu6Pj392nnqZt1vwsDX8d+xQGWM
-9boChGNMgBYG2k5IUgra1FFtdHHVKSzKwvdngOKjwlAABrvRtwV/R1PQWSExkPyv
-gXw65zju0JNwNH23e1XvWfuVdyb2nITrdu9J88fFEDBzcUCZIovMW8YIAGB5RLv+
-TmhEtkZC+UfjH3J/EP38A0PgGneURMIs2Iqd1TUAX/8L9YmXnHYPHyaSJ08PAqPs
-h34xI1sTyj5F0oGlUUgSUsbM7xYuTjGsS7DuR1IrGLnDbPwRt0qreaBW+K29EIo=
-=9oTZ
------END PGP SIGNATURE-----
-
---MGmrTRZxVujQoXMz--
+-- 
+Dmitry
