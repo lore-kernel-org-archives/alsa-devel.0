@@ -1,71 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5670: Revert Keep sysclk on
-	patch
-Date: Mon, 9 Mar 2015 18:13:02 +0000
-Message-ID: <20150309181302.GO28806@sirena.org.uk>
-References: <1425891323-21445-1-git-send-email-bardliao@realtek.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH] ASoC: cx20442: remove incorerct __exit markups
+Date: Mon, 9 Mar 2015 11:15:28 -0700
+Message-ID: <20150309181528.GA26428@dtor-ws>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2259117698649604591=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 94C712607E9
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 19:13:07 +0100 (CET)
-In-Reply-To: <1425891323-21445-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, yao.jin@intel.com, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Even if bus is not hot-pluggable, the devices can be unbound from the
+driver via sysfs, so we should not be using __exit annotations on
+remove() methods. The only exception is drivers registered with
+platform_driver_probe() which specifically disables sysfs bind/unbind
+attributes.
 
---===============2259117698649604591==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y8OL7jWO5wDKNv+B"
-Content-Disposition: inline
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ sound/soc/codecs/cx20442.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
---y8OL7jWO5wDKNv+B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Mar 09, 2015 at 04:55:22PM +0800, Bard Liao wrote:
-> The "Keep sysclk on if JD func is used" patch force enable/disable
-> pin in rt5670_set_dai_sysclk. But some machine driver call it in
-> dapm widget event. It will cause kernel crash.
-
-Applied both, thanks.
-
---y8OL7jWO5wDKNv+B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU/eKtAAoJECTWi3JdVIfQyegH/AzDW3u47wOImAAPyHsYQ+Al
-3M56jfpuIfKY33Fp6kvYM3PAXNa+qwnNjldpSAg5RYDslxUkVGDfYVT2u84ON0QL
-rkGjGcG3wZ72uSQ/JygQeUd96Z/2nndU+1JFkvXUCaByB7jpeKxuHNTboxKABJnA
-BKJffWh+N3adPwvdWpyG1Y6SUxRW55uMXe3g8DpP3dAzCy4oxwtGqyR0SARfaXYK
-YcXivW/7YkZHjMrmjNleXPeaXXoCcQTVyMwKJt6it+bmoO35ozezEUyOI2dI5pW/
-ne7rxnEEsQAtYoIOtPLyxhu2p4tcjuE3Cf+6OldQ24H9UdrOnd4yF1JjX5ECdts=
-=UX+2
------END PGP SIGNATURE-----
-
---y8OL7jWO5wDKNv+B--
-
---===============2259117698649604591==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index 0b10979..0f334bc 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -420,7 +420,7 @@ static int cx20442_platform_probe(struct platform_device *pdev)
+ 			&cx20442_codec_dev, &cx20442_dai, 1);
+ }
+ 
+-static int __exit cx20442_platform_remove(struct platform_device *pdev)
++static int cx20442_platform_remove(struct platform_device *pdev)
+ {
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	return 0;
+@@ -431,7 +431,7 @@ static struct platform_driver cx20442_platform_driver = {
+ 		.name = "cx20442-codec",
+ 		},
+ 	.probe = cx20442_platform_probe,
+-	.remove = __exit_p(cx20442_platform_remove),
++	.remove = cx20442_platform_remove,
+ };
+ 
+ module_platform_driver(cx20442_platform_driver);
+-- 
+2.2.0.rc0.207.ga3a616c
 
 
---===============2259117698649604591==--
+-- 
+Dmitry
