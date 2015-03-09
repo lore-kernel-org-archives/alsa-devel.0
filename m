@@ -1,25 +1,17 @@
 From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: snd-aloop not working in linux-3.12.10
-Date: Mon, 9 Mar 2015 05:09:48 +0000
-Message-ID: <1425877835921.58813@tataelxsi.co.in>
-References: <1425483360-1806-1-git-send-email-qais.yousef@imgtec.com>
- <20150304161013.GU2613@intel.com>	<54F73421.3000108@imgtec.com>
- <20150305070018.GW2613@intel.com>	<54F80916.50703@perex.cz>
- <20150305083054.GY2613@intel.com> <s5h7fuv25dc.wl-tiwai@suse.de>
- <54F84E0D.1070907@imgtec.com>,<54F85C82.9010608@perex.cz>
- <1425563166355.75990@tataelxsi.co.in>,<54F86478.7050107@perex.cz>
- <1425573780241.58049@tataelxsi.co.in>,<54F8A5CA.5090309@perex.cz>
- <1425638151396.85144@tataelxsi.co.in>, <54F98F69.7060308@perex.cz>,
- <1425663849401.16670@tataelxsi.co.in>
+Subject: Re: Using loopback card to Connect GSM two way call to
+ the real sound card UDA1345TS
+Date: Mon, 9 Mar 2015 05:18:33 +0000
+Message-ID: <1425878360800.70892@tataelxsi.co.in>
+References: <1425878251963.1340@tataelxsi.co.in>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="_007_142587836080070892tataelxsicoin_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from APAC01-SG1-obe.outbound.protection.outlook.com
- (mail-sg1hn0125.outbound.protection.outlook.com [134.170.132.125])
- by alsa0.perex.cz (Postfix) with ESMTP id E2B1626055A
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 06:09:56 +0100 (CET)
-In-Reply-To: <1425663849401.16670@tataelxsi.co.in>
+ (mail-sg1hn0124.outbound.protection.outlook.com [134.170.132.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id C189F26055A
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 06:18:36 +0100 (CET)
+In-Reply-To: <1425878251963.1340@tataelxsi.co.in>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,322 +23,343 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Jaroslav,
+--_007_142587836080070892tataelxsicoin_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Very Good Morning!
 
-Could you please kindly help me in clarifying my inline doubts, as I am pretty new to linux audio particularly ALSA Framework as I was involved only in intial codec bringup using aplay & arecord utilities , as I was having some trouble getting a grasp on it all,
 
-Once the inline doubts are calrified, I can plan my design accordingly
+Dear All,
 
-And you really appreciate your prompt replies for my earlier two queries
+Could you please provide any inputs w.r.t the loopback card using snd-aloop=
+ & alsaloop, how this loopback card can be used to connect the GSM two way =
+call simultanoeusly to the UDA1345TS codec on MCASP0 of the am335x (UDA1345=
+TS ie., real sound card)
 
-Kindly do the needful as early possible
+The codec has two output channels VOUTL, VOUTR & two input channels VINL , =
+VINR
+
+As I am pretty new to linux audio particularly ALSA Framework as I was invo=
+lved only in intial codec bringup using aplay & arecord utilities , as I wa=
+s having some trouble getting a grasp on it all, (as I want this to be dare=
+cord one in ALSA only without entering into gstreamer or ffmpeg, could you =
+please confirm on the same that whether can it be done in ALSA only)
+
+
+If this probably isn't the place to ask this question, but I am not sure wh=
+ere is.  Feel free to point me somewhere else if there is a better place :)
+
+
+So it seems what is happening is basically when i up the channels from VINL=
+ to VOUTL, & VINR to VOUTR ie., I am able capture from VINR & play back usi=
+ng VOUTR & similarly I am able to capture from VINR & route to VOUTR using =
+the below asound.conf & the attached application
+
+With this am able to achieve only one way call at a time by running only on=
+e application at a time ie., alsa_loopback_min_mono_VINL.c or alsa_loopback=
+_min_mono_VINR.c
+
+Could you please kindly let me know how two way call can be established sim=
+ultaneously finally with only one application , as I tried merging both app=
+s ie., (alsa_loopback_min_mono_VINL & alsa_loopback_min_mono_VINR) at that =
+moment am getting device resource busy,
+when I tried to open snd_pcm_open (&playback_handle_left, pldevice, SND_PCM=
+_STREAM_PLAYBACK, 0) in the application alsa_loopback_min_mono.c
+
+
+
+
+Kindly do the needful as early as possible,
+
 
 Awaiting for your replies,
 
-Many Many Thanks in advance again,
 
-________________________________________
-From: alsa-devel-bounces@alsa-project.org <alsa-devel-bounces@alsa-project.org> on behalf of Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Sent: Friday, March 6, 2015 11:13 PM
-To: Jaroslav Kysela
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] snd-aloop not working in linux-3.12.10
-
-Once again Many Thanks a lot Jaroslav, and would appreciate a lot
-
-Now am very clear w.r.t loopback card
-
-Basically I need two sound card devices using loopback. One is a GSM modem with a sink/source and the other is a audio codec, Using loopback module to connect the sink/source and source/sink GSM and Codec.
-
-Could you please clarify the following points w.r.t loopback card(as am new to Alsa, Extremely sorry if this doubts seems to be silly for you)
-
-1) As per the link http://alsa.opensrc.org/Jack_and_Loopback_device_as_Alsa-to-Jack_bridge
-
-In the section, The Jack Bridge, ie.,Creating permanent Jack clients using alsa_in and alsa_out
-
-Again am little bit confused in the link it is mentioned that
-
-ie., Since we used subdevice 0,0 for playback and subdevice 0,1 for capture,
-I didn't understand that how the signal will be available in subdevice 1,0, which alsa_in listens to. The "cloop" client we created can now be connected to the jack system output ports and o miracle, you will hear your ALSA app :)
-
-Could you please help me out in understanding
-
-# capture client
-alsa_in -j cloop -dcloop
-
-# playback client
-alsa_out -j ploop -dploop
-
-ie., Is it possible to record using alsa_in & is it possible to playback the same recorded data using alsa_out independently?? or does it has any interdependencies on the loopback card as we discussed earlier (ie., for example in your case loopbackcard hw:3,0 (playback) & loopbackcard hw:3,1 (capture) )
-
-2)Regarding w.r.t alsaloop
-aplay -D plughw:1,0 <your_wav_file>
-alsaloop -C hw:1,1 -P hw:0,0 -t 50000
-
-i) Could you please clarify ie., alsaloop does this performs the same as one playback device to another capture device
-so it returns them to the userspace. ie., after aplay only alsaloop can be used or what??
-
-ii) Could you please clarify ,inorder to use alsaloop is it mandatory to have amixer controls,
-I didn't understand as what you said that is  alsaloop detects the PCM
-stream paramter changes automatically using the control API ie., amixer -c 3 controls
+Many Many Thanks a lot for your replies & would appreciate the same w.r.t m=
+y earlier two queries
 
 
-Kindly do the needful as early as possible
-
-Awaiting for your replies
-
-Once again Many Thanks a lot for your prompt support w.r.t snd-aloop
-
-________________________________________
-From: Jaroslav Kysela <perex@perex.cz>
-Sent: Friday, March 6, 2015 4:58 PM
-To: Srinivasan S
-Cc: alsa-devel@alsa-project.org
-Subject: Re: snd-aloop not working in linux-3.12.10
-
-Dne 6.3.2015 v 11:35 Srinivasan S napsal(a):
-> Once again many Thanks for the quick responses,
->
-> Could you please try  & let me know whether does it works viceversa ie., arecord on loopback card first & then aplay on the loopback card as shown below
->
-> $ arecord -D plughw:3,1,0 -f dat -c 1 a.wav
-> Recording WAVE 'a.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
->
-> $ aplay -D plughw:3,0,0 a.wav
-> Playing WAVE '/usr/share/sounds/alsa/Noise.wav' : Signed 16 bit Little
-> Endian, Rate 48000 Hz, Mono
->
-> Awaiting for your replies,
-
-I'm not sure, if you understand the purpose of the loopback card. It
-just passes the data from one playback device to another capture device
-so it returns them to the userspace. So you need to have an input
-(source) to be loopbacked. You're probably trying to loopback the zero
-(silence) samples which are provided when the source is not available
-from the loopback card.
-
-You cannot do (simple notation):
-
-arecord Loopback,1 | aplay Loopback,0
-
-it's endless silence loop, but you can do (both commands should be
-executed at same time):
-
-aplay Loopback,0 <some_wav_file_with_real_content>
-arecord Loopback,1 <loopbacked_result_stored_to_wav>
-
-                                        Jaroslav
-
->
-> Thanks in advance again.
-> Srinivasan S
->
->
-> ________________________________________
-> From: Jaroslav Kysela <perex@perex.cz>
-> Sent: Friday, March 6, 2015 12:21 AM
-> To: Srinivasan S
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: snd-aloop not working in linux-3.12.10
->
-> Dne 5.3.2015 v 17:42 Srinivasan S napsal(a):
->> Thanks for your replies,
->>
->> I even tried in the below linux host machine first ie., ubuntu 12.04 prior trying in embedded board
->> Linux srinivasan-Latitude-3440 3.13.0-43-generic #72~precise1-Ubuntu SMP Tue Dec 9 12:14:18 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
->>
->> am getting the below
->>
->>> card 1, device 0
->>> card 1, device 1
->>
->> aplay -D hw:1,0,0 TangoForTajMusic11.wav
->>
->> arecord -D hw:1,1,0 record .wav
->>
->> Still this is not working in the linux host machine
->>
->> Could you please help me out in resolving this issue in host machine
->
-> On my host, kernel 3.17.8-200.fc20.x86_64, loopback card is #3:
->
-> $ aplay -D plughw:3,0,0 /usr/share/sounds/alsa/Noise.wav
-> Playing WAVE '/usr/share/sounds/alsa/Noise.wav' : Signed 16 bit Little
-> Endian, Rate 48000 Hz, Mono
-> $ arecord -D plughw:3,1,0 -f dat -c 1 a.wav
-> Recording WAVE 'a.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
->
-> As you see, the "capture" program must set the same parameters as the
-> sample provider.
->
-> This also works:
->
-> $ alsaloop -C hw:3,1 -P plughw:1 -t 50000
->
-> The "plughw:1" is the real sound hardware in this case (first device,
-> second soundcard #1). The aplay command is same as in the first example
-> with device "plughw:3,0,0". In this case, the alsaloop detects the PCM
-> stream paramter changes automatically using the control API:
->
-> $ amixer -c 3 controls
-> numid=2,iface=PCM,name='PCM Notify'
-> numid=1,iface=PCM,name='PCM Rate Shift 100000'
-> numid=3,iface=PCM,name='PCM Slave Active'
-> numid=6,iface=PCM,name='PCM Slave Channels'
-> numid=4,iface=PCM,name='PCM Slave Format'
-> numid=5,iface=PCM,name='PCM Slave Rate'
-> numid=8,iface=PCM,name='PCM Notify',subdevice=1
-> numid=7,iface=PCM,name='PCM Rate Shift 100000',subdevice=1
-> numid=9,iface=PCM,name='PCM Slave Active',subdevice=1
->
->
->                                         Jaroslav
->
->
->>
->> Thanks in advance
->>
->>
->>
->> ________________________________________
->> From: Jaroslav Kysela <perex@perex.cz>
->> Sent: Thursday, March 5, 2015 7:43 PM
->> To: Srinivasan S
->> Cc: alsa-devel@alsa-project.org
->> Subject: Re: snd-aloop not working in linux-3.12.10
->>
->> Dne 5.3.2015 v 14:45 Srinivasan S napsal(a):
->>> Dear Jaroslav
->>>
->>> As this feature ie., snd-aloop designed by you,  could you please redirect to the respective links where my queries can be posted & get the solutions for the problem
->>
->> No idea. It looks like you are asking for a commercial support.
->> It may be a cache coherency issue or something else. The embedded/ARM
->> platforms might behave completely differently than x86 on which
->> this code was developed and tested.
->>
->>                                 Jaroslav
->>
->>>
->>> As we are trying to establish GSM two way calls via stereo codec
->>>
->>> We are planning to use loopback module (ie.,snd-aloop and alsaloop in ti sdk 7) to connect the sink/source and source/sink GSM and Codec.
->>>
->>> The below is the virtual devices created after configuring snd-aloop in the linux kernel 3.12.10
->>>
->>> card 0, device 0
->>> card 0, device 1
->>>
->>> whatever am playing we are unable to record in the virtual device, but we are able to play & record with actual device
->>>
->>> aplay -D hw:0,0,0 play.wav
->>> arecord -D hw:0,1,0 record.wav or alsaloop -C hw:0,1 -P hw:0,0 -t 50000 # second terminal, latency 50ms
->>>
->>> As per the logs below, am using the above commands to perform loopback, could you please let me know why am unable to perform the loopback with the below commands or please let me know am I missing any configurations,
->>>
->>> As this is feature is not working in ti sdk 7 (ie.,snd-aloop and alsaloop),
->>>
->>> Kindly requesting to try in your am335x-evm where it has tlv codec & verify this feature ie., snd-aloop & let me know as early as possible
->>>
->>>
->>> logs :
->>> ======
->>> root@am335x-evm:/# ls /dev/snd/
->>> by-path    controlC1  pcmC0D0p   pcmC0D1p   pcmC1D0p
->>> controlC0  pcmC0D0c   pcmC0D1c   pcmC1D0c   timer
->>> root@am335x-evm:/# cat /proc/asound/devices
->>>   0: [ 0]   : control
->>>  16: [ 0- 0]: digital audio playback
->>>  17: [ 0- 1]: digital audio playback
->>>  24: [ 0- 0]: digital audio capture
->>>  25: [ 0- 1]: digital audio capture
->>>  32: [ 1]   : control
->>>  33:        : timer
->>>  48: [ 1- 0]: digital audio playback
->>>  56: [ 1- 0]: digital audio capture
->>> root@am335x-evm:/#
->>>
->>> Loopback device
->>> ----------------
->>> root@am335x-evm:/# aplay -l
->>> **** List of PLAYBACK Hardware Devices ****
->>> card 0: Loopback [Loopback], device 0: Loopback PCM [Loopback PCM]
->>>   Subdevices: 8/8
->>>   Subdevice #0: subdevice #0
->>>   Subdevice #1: subdevice #1
->>>   Subdevice #2: subdevice #2
->>>   Subdevice #3: subdevice #3
->>>   Subdevice #4: subdevice #4
->>>   Subdevice #5: subdevice #5
->>>   Subdevice #6: subdevice #6
->>>   Subdevice #7: subdevice #7
->>> card 0: Loopback [Loopback], device 1: Loopback PCM [Loopback PCM]
->>>   Subdevices: 8/8
->>>   Subdevice #0: subdevice #0
->>>   Subdevice #1: subdevice #1
->>>   Subdevice #2: subdevice #2
->>>   Subdevice #3: subdevice #3
->>>   Subdevice #4: subdevice #4
->>>   Subdevice #5: subdevice #5
->>>   Subdevice #6: subdevice #6
->>>   Subdevice #7: subdevice #7
->>> card 1: UDA1345TS [TI UDA1345TS], device 0: UDA134x uda134x-hifi-0 []
->>>   Subdevices: 1/1
->>>   Subdevice #0: subdevice #0
->>> root@am335x-evm:/# aplay -D hw:0,0,0 TangoForTajMusic11.wav
->>> Playing WAVE 'TangoForTajMusic11.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
->>>
->>>
->>>
->>> Actual device
->>> -------------
->>> root@am335x-evm:/# aplay -D hw:1,0,0 TangoForTajMusic11.wav
->>> Playing WAVE 'TangoForTajMusic11.wav' : Signed 16 bit Li[ 2219.654309] DAVINCIIIIIIIIII UDA134XXXXX SYSCLK=12288000
->>> ttle Endian, Rate 48000 Hz, Stereo
->>> [ 2219.663776] DAVINCIIIIIIIIII UDA134XXXXX BCLK FREQQ=1536000
->>> [ 2219.672880] DAVINCIIIIIIIIII UDA134XXXXX SYSCLK/BCLK_FREQ =8
->>> [ 2219.678982] uda134x_hw_params CLOCKS uda134x_hw_params uda134x->sysclk: 12288000, params_rate(params):48000
->>> [ 2219.689474] uda134x_hw_params FORMATS uda134x_hw_params dai_fmt: 16385, params_format:2
->>> [ 2219.698095] uda134x_hw_params FORMATS uda134x_hw_params uda134x->sysclk / params_rate(params) 256
->>> [ 2219.707644] UDA1345TSSSSSSSSSSSS SYSCLK / fs ratio is 256
->>> [ 2219.713470] uda134x_hw_params dai_fmt: 16385, params_format:2
->>> [ 2219.719639] UDA1345TSSSSSSSSSSSS FORMAT SND_SOC_DAIFMT_I2S
->>> [ 2219.725716] ENTERED davinci_config_channel_size davinci_config_channel_size: tx_rotate = 4
->>> [ 2219.734620] ENTERED davinci_config_channel_size davinci_config_channel_size: MASK= 65535
->>> [ 2219.748324] uda134x_unnnnnnnnmuteeeeeeeeee uda134x_mute mute: 0
->>> [ 2219.756522] davinci_mcasp_starttttttttttttttttttttt SNDRV_PCM_STREAM_PLAYBACK
->>>
->>>
->>> Kindly do the needful as early as possible
->>> Awaiting for your replies,
->>>
->>> Many Thanks in advance,
->>
->>
->> --
->> Jaroslav Kysela <perex@perex.cz>
->> Linux Kernel Sound Maintainer
->> ALSA Project; Red Hat, Inc.
->>
->
->
-> --
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project; Red Hat, Inc.
->
 
 
---
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+--_007_142587836080070892tataelxsicoin_
+Content-Type: text/plain; name="alsa_loopback_min_mono.txt"
+Content-Description: alsa_loopback_min_mono.txt
+Content-Disposition: attachment; filename="alsa_loopback_min_mono.txt";
+	size=4017; creation-date="Mon, 09 Mar 2015 05:18:25 GMT";
+	modification-date="Mon, 09 Mar 2015 05:18:25 GMT"
+Content-Transfer-Encoding: base64
+
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPGFsc2EvYXNv
+dW5kbGliLmg+CiNkZWZpbmUgQlVGX0JZVEVTIDEyOAogCmludCBtYWluICgvKmludCBhcmdjLCBj
+aGFyICphcmd2W10qLykgewoJaW50IGVycjsKCXVuc2lnbmVkIGNoYXIgYnVmX3JpZ2h0W0JVRl9C
+WVRFU107Cgl1bnNpZ25lZCBjaGFyIGJ1Zl9sZWZ0W0JVRl9CWVRFU107CgkgLy9jaGFyICpidWY7
+CglpbnQgc2l6ZTsKCglzbmRfcGNtX3QgKnBsYXliYWNrX2hhbmRsZV9yaWdodDsKCXNuZF9wY21f
+dCAqY2FwdHVyZV9oYW5kbGVfcmlnaHQ7CgkKCXNuZF9wY21fdCAqcGxheWJhY2tfaGFuZGxlX2xl
+ZnQ7CglzbmRfcGNtX3QgKmNhcHR1cmVfaGFuZGxlX2xlZnQ7CgoKI2lmIDAJCgljaGFyKiBkZXZp
+Y2UgPSAiZGVmYXVsdCI7CglpZiAoYXJnYyA+IDEpIGRldmljZSA9IGFyZ3ZbMV07CiNlbmRpZgoJ
+Y2hhciogY3JkZXZpY2UgPSAiVklOUiI7CgoJY2hhciogcHJkZXZpY2UgPSAiVk9VVFIiOwoKCWNo
+YXIqIGNsZGV2aWNlID0gIlZJTkwiOwoKCWNoYXIqIHBsZGV2aWNlID0gIlZPVVRMIjsKCgoJdW5z
+aWduZWQgaW50IHJhdGUgPSA0ODAwMDsKCXVuc2lnbmVkIGludCBuY2hhbm5lbHMgPSAxOwoJc25k
+X3BjbV9mb3JtYXRfdCBmb3JtYXQgPSBTTkRfUENNX0ZPUk1BVF9TMTZfTEU7Cgl1bnNpZ25lZCBp
+bnQgYnVmX2ZyYW1lc19yaWdodCA9IEJVRl9CWVRFUyAvIG5jaGFubmVscyAvIDI7Cgl1bnNpZ25l
+ZCBpbnQgYnVmX2ZyYW1lc19sZWZ0ID0gQlVGX0JZVEVTIC8gbmNoYW5uZWxzIC8gMjsKCi8vLy8v
+IFJJR0hUIENIQU5ORUwgCglpZiAoKGVyciA9IHNuZF9wY21fb3BlbiAoJnBsYXliYWNrX2hhbmRs
+ZV9yaWdodCwgcHJkZXZpY2UsIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLLCAwKSkgPCAwKSB7Cglm
+cHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgb3BlbiBwbGF5YmFjayByaWdodCBhdWRpbyBkZXZpY2Ug
+JXMgKCVzKVxuIiwgcHJkZXZpY2UsIHNuZF9zdHJlcnJvciAoZXJyKSk7IGV4aXQgKDEpOwoJfQoJ
+ZWxzZQoJewoJICBwcmludGYoIk9wZW5lZCBQbGF5YmFjayByaWdodCBhdWRpbyBkZXZpY2UgIHN1
+Y2Nlc3NmdWxseSAlcyBcbiIsIHByZGV2aWNlKTsKCX0KCQoJaWYgKChlcnIgPSBzbmRfcGNtX3Nl
+dF9wYXJhbXMocGxheWJhY2tfaGFuZGxlX3JpZ2h0LCBmb3JtYXQsIFNORF9QQ01fQUNDRVNTX1JX
+X0lOVEVSTEVBVkVELCBuY2hhbm5lbHMsIHJhdGUsIDEsIDUwMDAwMCkpIDwgMCkgeyAvKiAwLjVz
+ZWMgKi8KCWZwcmludGYoc3RkZXJyLCAiUGxheWJhY2sgcmlnaHQgb3BlbiBlcnJvcjogJXNcbiIs
+IHNuZF9zdHJlcnJvcihlcnIpKTsgZXhpdCgxKTsKCX0KCglpZiAoKGVyciA9IHNuZF9wY21fb3Bl
+biAoJmNhcHR1cmVfaGFuZGxlX3JpZ2h0LCBjcmRldmljZSwgU05EX1BDTV9TVFJFQU1fQ0FQVFVS
+RSwgMCkpIDwgMCkgewoJZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IG9wZW4gY2FwdHVyZSByaWdo
+dCBhdWRpbyBkZXZpY2UgJXMgKCVzKVxuIiwgY3JkZXZpY2UsIHNuZF9zdHJlcnJvciAoZXJyKSk7
+IGV4aXQgKDEpOwoJfQoJZWxzZQoJewoJICBwcmludGYoIk9wZW5lZCBDYXB0dXJlIHJpZ2h0IGF1
+ZGlvIGRldmljZSBzdWNjZXNzZnVsbHkgJXMgXG4iLCBjcmRldmljZSk7Cgl9CgoJaWYgKChlcnIg
+PSBzbmRfcGNtX3NldF9wYXJhbXMoY2FwdHVyZV9oYW5kbGVfcmlnaHQsIGZvcm1hdCwgU05EX1BD
+TV9BQ0NFU1NfUldfSU5URVJMRUFWRUQsIG5jaGFubmVscywgcmF0ZSwgMSwgNTAwMDAwKSkgPCAw
+KSB7IC8qIDAuNXNlYyAqLwoJZnByaW50ZihzdGRlcnIsICJjYXB0dXJlIHJpZ2h0IG9wZW4gZXJy
+b3I6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7IGV4aXQoMSk7Cgl9CQoKLy8vL0xFRlQgQ0hB
+Tk5FTAoJaWYgKChlcnIgPSBzbmRfcGNtX29wZW4gKCZwbGF5YmFja19oYW5kbGVfbGVmdCwgcGxk
+ZXZpY2UsIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLLCAwKSkgPCAwKSB7CglmcHJpbnRmIChzdGRl
+cnIsICJjYW5ub3Qgb3BlbiBwbGF5YmFjayBsZWZ0IGF1ZGlvIGRldmljZSAlcyAoJXMpXG4iLCBw
+bGRldmljZSwgc25kX3N0cmVycm9yIChlcnIpKTsgZXhpdCAoMSk7Cgl9CgllbHNlCgl7CgkgIHBy
+aW50ZigiT3BlbmVkIFBsYXliYWNrIGxlZnQgYXVkaW8gZGV2aWNlIHN1Y2Nlc3NmdWxseSAlcyBc
+biIsIHBsZGV2aWNlKTsKCX0KCQoJaWYgKChlcnIgPSBzbmRfcGNtX3NldF9wYXJhbXMocGxheWJh
+Y2tfaGFuZGxlX2xlZnQsIGZvcm1hdCwgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQsIG5j
+aGFubmVscywgcmF0ZSwgMSwgNTAwMDAwKSkgPCAwKSB7IC8qIDAuNXNlYyAqLwoJZnByaW50Zihz
+dGRlcnIsICJQbGF5YmFjayBsZWZ0IG9wZW4gZXJyb3I6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJy
+KSk7IGV4aXQoMSk7Cgl9CgoJaWYgKChlcnIgPSBzbmRfcGNtX29wZW4gKCZjYXB0dXJlX2hhbmRs
+ZV9sZWZ0LCBjbGRldmljZSwgU05EX1BDTV9TVFJFQU1fQ0FQVFVSRSwgMCkpIDwgMCkgewoJZnBy
+aW50ZiAoc3RkZXJyLCAiY2Fubm90IG9wZW4gY2FwdHVyZSBsZWZ0IGF1ZGlvIGRldmljZSAlcyAo
+JXMpXG4iLCBjbGRldmljZSwgc25kX3N0cmVycm9yIChlcnIpKTsgZXhpdCAoMSk7Cgl9CgllbHNl
+Cgl7CgkgIHByaW50ZigiT3BlbmVkIENhcHR1cmUgbGVmdCBhdWRpbyBkZXZpY2Ugc3VjY2Vzc2Z1
+bGx5ICVzIFxuIiwgY3JkZXZpY2UpOwoJfQoKCWlmICgoZXJyID0gc25kX3BjbV9zZXRfcGFyYW1z
+KGNhcHR1cmVfaGFuZGxlX2xlZnQsIGZvcm1hdCwgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFW
+RUQsIG5jaGFubmVscywgcmF0ZSwgMSwgNTAwMDAwKSkgPCAwKSB7IC8qIDAuNXNlYyAqLwoJZnBy
+aW50ZihzdGRlcnIsICJjYXB0dXJlIGxlZnQgb3BlbiBlcnJvcjogJXNcbiIsIHNuZF9zdHJlcnJv
+cihlcnIpKTsgZXhpdCgxKTsKCX0KCgoKCXdoaWxlKDEpIHsKLy8vLy8gUklHSFQgQ0hBTk5FTCAK
+CQlpZiAoKGVyciA9IHNuZF9wY21fcmVhZGkgKGNhcHR1cmVfaGFuZGxlX3JpZ2h0LCBidWZfcmln
+aHQsIGJ1Zl9mcmFtZXNfcmlnaHQpKSAhPSBidWZfZnJhbWVzX3JpZ2h0KSB7CgkJZnByaW50ZiAo
+c3RkZXJyLCAicmVhZCBmcm9tIGF1ZGlvIGludGVyZmFjZSByaWdodCBmYWlsZWQgKCVzKVxuIiwg
+c25kX3N0cmVycm9yIChlcnIpKTsgZXhpdCAoMSk7CgkJfQkKCgkJaWYgKChlcnIgPSBzbmRfcGNt
+X3dyaXRlaSAocGxheWJhY2tfaGFuZGxlX3JpZ2h0LCBidWZfcmlnaHQsIGJ1Zl9mcmFtZXNfcmln
+aHQpKSAhPSBidWZfZnJhbWVzX3JpZ2h0KSB7CgkJZnByaW50ZiAoc3RkZXJyLCAid3JpdGUgdG8g
+YXVkaW8gaW50ZXJmYWNlIHJpZ2h0IGZhaWxlZCAoJXMpXG4iLCBzbmRfc3RyZXJyb3IgKGVycikp
+OyBleGl0ICgxKTsKCQl9Ci8vLy9MRUZUIENIQU5ORUwKCQlpZiAoKGVyciA9IHNuZF9wY21fcmVh
+ZGkgKGNhcHR1cmVfaGFuZGxlX2xlZnQsIGJ1Zl9sZWZ0LCBidWZfZnJhbWVzX2xlZnQpKSAhPSBi
+dWZfZnJhbWVzX2xlZnQpIHsKCQlmcHJpbnRmIChzdGRlcnIsICJyZWFkIGZyb20gYXVkaW8gaW50
+ZXJmYWNlIGxlZnQgZmFpbGVkICglcylcbiIsIHNuZF9zdHJlcnJvciAoZXJyKSk7IGV4aXQgKDEp
+OwoJCX0JCgoJCWlmICgoZXJyID0gc25kX3BjbV93cml0ZWkgKHBsYXliYWNrX2hhbmRsZV9sZWZ0
+LCBidWZfbGVmdCwgYnVmX2ZyYW1lc19sZWZ0KSkgIT0gYnVmX2ZyYW1lc19sZWZ0KSB7CgkJZnBy
+aW50ZiAoc3RkZXJyLCAid3JpdGUgdG8gYXVkaW8gaW50ZXJmYWNlIGxlZnQgZmFpbGVkICglcylc
+biIsIHNuZF9zdHJlcnJvciAoZXJyKSk7IGV4aXQgKDEpOwoJCX0KCgl9CiAKCWZwcmludGYgKHN0
+ZGVyciwgImNsb3NlIGhhbmRsZXNcbiIpOwoJc25kX3BjbV9jbG9zZSAocGxheWJhY2tfaGFuZGxl
+X3JpZ2h0KTsKCXNuZF9wY21fY2xvc2UgKGNhcHR1cmVfaGFuZGxlX3JpZ2h0KTsKCglzbmRfcGNt
+X2Nsb3NlIChwbGF5YmFja19oYW5kbGVfbGVmdCk7CglzbmRfcGNtX2Nsb3NlIChjYXB0dXJlX2hh
+bmRsZV9sZWZ0KTsKCglyZXR1cm4gMDsKfSAK
+
+--_007_142587836080070892tataelxsicoin_
+Content-Type: text/plain; name="alsa_loopback_min_mono_VINL.txt"
+Content-Description: alsa_loopback_min_mono_VINL.txt
+Content-Disposition: attachment; filename="alsa_loopback_min_mono_VINL.txt";
+	size=4055; creation-date="Mon, 09 Mar 2015 05:18:25 GMT";
+	modification-date="Mon, 09 Mar 2015 05:18:25 GMT"
+Content-Transfer-Encoding: base64
+
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPGFsc2EvYXNv
+dW5kbGliLmg+CiNkZWZpbmUgQlVGX0JZVEVTIDEyOAogCmludCBtYWluICgvKmludCBhcmdjLCBj
+aGFyICphcmd2W10qLykgewoJaW50IGVycjsKCXVuc2lnbmVkIGNoYXIgYnVmX3JpZ2h0W0JVRl9C
+WVRFU107Cgl1bnNpZ25lZCBjaGFyIGJ1Zl9sZWZ0W0JVRl9CWVRFU107CgkgLy9jaGFyICpidWY7
+CglpbnQgc2l6ZTsKCi8vCXNuZF9wY21fdCAqcGxheWJhY2tfaGFuZGxlX3JpZ2h0OwovLwlzbmRf
+cGNtX3QgKmNhcHR1cmVfaGFuZGxlX3JpZ2h0OwoJCglzbmRfcGNtX3QgKnBsYXliYWNrX2hhbmRs
+ZV9sZWZ0OwoJc25kX3BjbV90ICpjYXB0dXJlX2hhbmRsZV9sZWZ0OwoKCiNpZiAwCQoJY2hhciog
+ZGV2aWNlID0gImRlZmF1bHQiOwoJaWYgKGFyZ2MgPiAxKSBkZXZpY2UgPSBhcmd2WzFdOwojZW5k
+aWYKLy8JY2hhciogY3JkZXZpY2UgPSAiVklOUiI7CgovLwljaGFyKiBwcmRldmljZSA9ICJWT1VU
+UiI7CgoJY2hhciogY2xkZXZpY2UgPSAiVklOTCI7CgoJY2hhciogcGxkZXZpY2UgPSAiVk9VVEwi
+OwoKCgl1bnNpZ25lZCBpbnQgcmF0ZSA9IDQ4MDAwOwoJdW5zaWduZWQgaW50IG5jaGFubmVscyA9
+IDE7CglzbmRfcGNtX2Zvcm1hdF90IGZvcm1hdCA9IFNORF9QQ01fRk9STUFUX1MxNl9MRTsKLy8J
+dW5zaWduZWQgaW50IGJ1Zl9mcmFtZXNfcmlnaHQgPSBCVUZfQllURVMgLyBuY2hhbm5lbHMgLyAy
+OwoJdW5zaWduZWQgaW50IGJ1Zl9mcmFtZXNfbGVmdCA9IEJVRl9CWVRFUyAvIG5jaGFubmVscyAv
+IDI7CiNpZiAwCi8vLy8vIFJJR0hUIENIQU5ORUwgCglpZiAoKGVyciA9IHNuZF9wY21fb3BlbiAo
+JnBsYXliYWNrX2hhbmRsZV9yaWdodCwgcHJkZXZpY2UsIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNL
+LCAwKSkgPCAwKSB7CglmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgb3BlbiBwbGF5YmFjayByaWdo
+dCBhdWRpbyBkZXZpY2UgJXMgKCVzKVxuIiwgcHJkZXZpY2UsIHNuZF9zdHJlcnJvciAoZXJyKSk7
+IGV4aXQgKDEpOwoJfQoJZWxzZQoJewoJICBwcmludGYoIk9wZW5lZCBQbGF5YmFjayByaWdodCBh
+dWRpbyBkZXZpY2UgIHN1Y2Nlc3NmdWxseSAlcyBcbiIsIHByZGV2aWNlKTsKCX0KCQoJaWYgKChl
+cnIgPSBzbmRfcGNtX3NldF9wYXJhbXMocGxheWJhY2tfaGFuZGxlX3JpZ2h0LCBmb3JtYXQsIFNO
+RF9QQ01fQUNDRVNTX1JXX0lOVEVSTEVBVkVELCBuY2hhbm5lbHMsIHJhdGUsIDEsIDUwMDAwMCkp
+IDwgMCkgeyAvKiAwLjVzZWMgKi8KCWZwcmludGYoc3RkZXJyLCAiUGxheWJhY2sgcmlnaHQgb3Bl
+biBlcnJvcjogJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsgZXhpdCgxKTsKCX0KCglpZiAoKGVy
+ciA9IHNuZF9wY21fb3BlbiAoJmNhcHR1cmVfaGFuZGxlX3JpZ2h0LCBjcmRldmljZSwgU05EX1BD
+TV9TVFJFQU1fQ0FQVFVSRSwgMCkpIDwgMCkgewoJZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IG9w
+ZW4gY2FwdHVyZSByaWdodCBhdWRpbyBkZXZpY2UgJXMgKCVzKVxuIiwgY3JkZXZpY2UsIHNuZF9z
+dHJlcnJvciAoZXJyKSk7IGV4aXQgKDEpOwoJfQoJZWxzZQoJewoJICBwcmludGYoIk9wZW5lZCBD
+YXB0dXJlIHJpZ2h0IGF1ZGlvIGRldmljZSBzdWNjZXNzZnVsbHkgJXMgXG4iLCBjcmRldmljZSk7
+Cgl9CgoJaWYgKChlcnIgPSBzbmRfcGNtX3NldF9wYXJhbXMoY2FwdHVyZV9oYW5kbGVfcmlnaHQs
+IGZvcm1hdCwgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQsIG5jaGFubmVscywgcmF0ZSwg
+MSwgNTAwMDAwKSkgPCAwKSB7IC8qIDAuNXNlYyAqLwoJZnByaW50ZihzdGRlcnIsICJjYXB0dXJl
+IHJpZ2h0IG9wZW4gZXJyb3I6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7IGV4aXQoMSk7Cgl9
+CQojZW5kaWYKLy8vL0xFRlQgQ0hBTk5FTAoJaWYgKChlcnIgPSBzbmRfcGNtX29wZW4gKCZwbGF5
+YmFja19oYW5kbGVfbGVmdCwgcGxkZXZpY2UsIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLLCAwKSkg
+PCAwKSB7CglmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgb3BlbiBwbGF5YmFjayBsZWZ0IGF1ZGlv
+IGRldmljZSAlcyAoJXMpXG4iLCBwbGRldmljZSwgc25kX3N0cmVycm9yIChlcnIpKTsgZXhpdCAo
+MSk7Cgl9CgllbHNlCgl7CgkgIHByaW50ZigiT3BlbmVkIFBsYXliYWNrIGxlZnQgYXVkaW8gZGV2
+aWNlIHN1Y2Nlc3NmdWxseSAlcyBcbiIsIHBsZGV2aWNlKTsKCX0KCQoJaWYgKChlcnIgPSBzbmRf
+cGNtX3NldF9wYXJhbXMocGxheWJhY2tfaGFuZGxlX2xlZnQsIGZvcm1hdCwgU05EX1BDTV9BQ0NF
+U1NfUldfSU5URVJMRUFWRUQsIG5jaGFubmVscywgcmF0ZSwgMSwgNTAwMDAwKSkgPCAwKSB7IC8q
+IDAuNXNlYyAqLwoJZnByaW50ZihzdGRlcnIsICJQbGF5YmFjayBsZWZ0IG9wZW4gZXJyb3I6ICVz
+XG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7IGV4aXQoMSk7Cgl9CgoJaWYgKChlcnIgPSBzbmRfcGNt
+X29wZW4gKCZjYXB0dXJlX2hhbmRsZV9sZWZ0LCBjbGRldmljZSwgU05EX1BDTV9TVFJFQU1fQ0FQ
+VFVSRSwgMCkpIDwgMCkgewoJZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IG9wZW4gY2FwdHVyZSBs
+ZWZ0IGF1ZGlvIGRldmljZSAlcyAoJXMpXG4iLCBjbGRldmljZSwgc25kX3N0cmVycm9yIChlcnIp
+KTsgZXhpdCAoMSk7Cgl9CgllbHNlCgl7CgkgIHByaW50ZigiT3BlbmVkIENhcHR1cmUgbGVmdCBh
+dWRpbyBkZXZpY2Ugc3VjY2Vzc2Z1bGx5ICVzIFxuIiwgY2xkZXZpY2UpOwoJfQoKCWlmICgoZXJy
+ID0gc25kX3BjbV9zZXRfcGFyYW1zKGNhcHR1cmVfaGFuZGxlX2xlZnQsIGZvcm1hdCwgU05EX1BD
+TV9BQ0NFU1NfUldfSU5URVJMRUFWRUQsIG5jaGFubmVscywgcmF0ZSwgMSwgNTAwMDAwKSkgPCAw
+KSB7IC8qIDAuNXNlYyAqLwoJZnByaW50ZihzdGRlcnIsICJjYXB0dXJlIGxlZnQgb3BlbiBlcnJv
+cjogJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsgZXhpdCgxKTsKCX0KCgoKCXdoaWxlKDEpIHsK
+I2lmIDAKLy8vLy8gUklHSFQgQ0hBTk5FTCAKCQlpZiAoKGVyciA9IHNuZF9wY21fcmVhZGkgKGNh
+cHR1cmVfaGFuZGxlX3JpZ2h0LCBidWZfcmlnaHQsIGJ1Zl9mcmFtZXNfcmlnaHQpKSAhPSBidWZf
+ZnJhbWVzX3JpZ2h0KSB7CgkJZnByaW50ZiAoc3RkZXJyLCAicmVhZCBmcm9tIGF1ZGlvIGludGVy
+ZmFjZSByaWdodCBmYWlsZWQgKCVzKVxuIiwgc25kX3N0cmVycm9yIChlcnIpKTsgZXhpdCAoMSk7
+CgkJfQkKCgkJaWYgKChlcnIgPSBzbmRfcGNtX3dyaXRlaSAocGxheWJhY2tfaGFuZGxlX3JpZ2h0
+LCBidWZfcmlnaHQsIGJ1Zl9mcmFtZXNfcmlnaHQpKSAhPSBidWZfZnJhbWVzX3JpZ2h0KSB7CgkJ
+ZnByaW50ZiAoc3RkZXJyLCAid3JpdGUgdG8gYXVkaW8gaW50ZXJmYWNlIHJpZ2h0IGZhaWxlZCAo
+JXMpXG4iLCBzbmRfc3RyZXJyb3IgKGVycikpOyBleGl0ICgxKTsKCQl9CiNlbmRpZgovLy8vTEVG
+VCBDSEFOTkVMCgkJaWYgKChlcnIgPSBzbmRfcGNtX3JlYWRpIChjYXB0dXJlX2hhbmRsZV9sZWZ0
+LCBidWZfbGVmdCwgYnVmX2ZyYW1lc19sZWZ0KSkgIT0gYnVmX2ZyYW1lc19sZWZ0KSB7CgkJZnBy
+aW50ZiAoc3RkZXJyLCAicmVhZCBmcm9tIGF1ZGlvIGludGVyZmFjZSBsZWZ0IGZhaWxlZCAoJXMp
+XG4iLCBzbmRfc3RyZXJyb3IgKGVycikpOyBleGl0ICgxKTsKCQl9CQoKCQlpZiAoKGVyciA9IHNu
+ZF9wY21fd3JpdGVpIChwbGF5YmFja19oYW5kbGVfbGVmdCwgYnVmX2xlZnQsIGJ1Zl9mcmFtZXNf
+bGVmdCkpICE9IGJ1Zl9mcmFtZXNfbGVmdCkgewoJCWZwcmludGYgKHN0ZGVyciwgIndyaXRlIHRv
+IGF1ZGlvIGludGVyZmFjZSBsZWZ0IGZhaWxlZCAoJXMpXG4iLCBzbmRfc3RyZXJyb3IgKGVycikp
+OyBleGl0ICgxKTsKCQl9CgoJfQogCglmcHJpbnRmIChzdGRlcnIsICJjbG9zZSBoYW5kbGVzXG4i
+KTsKLy8Jc25kX3BjbV9jbG9zZSAocGxheWJhY2tfaGFuZGxlX3JpZ2h0KTsKLy8Jc25kX3BjbV9j
+bG9zZSAoY2FwdHVyZV9oYW5kbGVfcmlnaHQpOwoKCXNuZF9wY21fY2xvc2UgKHBsYXliYWNrX2hh
+bmRsZV9sZWZ0KTsKCXNuZF9wY21fY2xvc2UgKGNhcHR1cmVfaGFuZGxlX2xlZnQpOwoKCXJldHVy
+biAwOwp9IAo=
+
+--_007_142587836080070892tataelxsicoin_
+Content-Type: text/plain; name="alsa_loopback_min_mono_VINR.txt"
+Content-Description: alsa_loopback_min_mono_VINR.txt
+Content-Disposition: attachment; filename="alsa_loopback_min_mono_VINR.txt";
+	size=3907; creation-date="Mon, 09 Mar 2015 05:18:25 GMT";
+	modification-date="Mon, 09 Mar 2015 05:18:25 GMT"
+Content-Transfer-Encoding: base64
+
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPGFsc2EvYXNv
+dW5kbGliLmg+CiNkZWZpbmUgQlVGX0JZVEVTIDEyOAogCmludCBtYWluICgvKmludCBhcmdjLCBj
+aGFyICphcmd2W10qLykgewoJaW50IGVycjsKCXVuc2lnbmVkIGNoYXIgYnVmX3JpZ2h0W0JVRl9C
+WVRFU107Cgl1bnNpZ25lZCBjaGFyIGJ1Zl9sZWZ0W0JVRl9CWVRFU107CgkgLy9jaGFyICpidWY7
+CglpbnQgc2l6ZTsKCglzbmRfcGNtX3QgKnBsYXliYWNrX2hhbmRsZV9yaWdodDsKCXNuZF9wY21f
+dCAqY2FwdHVyZV9oYW5kbGVfcmlnaHQ7CgkKCWNoYXIqIGNyZGV2aWNlID0gIlZJTlIiOwoKCWNo
+YXIqIHByZGV2aWNlID0gIlZPVVRSIjsKCi8vCWNoYXIqIGNsZGV2aWNlID0gIlZJTkwiOwoKLy8J
+Y2hhciogcGxkZXZpY2UgPSAiVk9VVEwiOwoKCgl1bnNpZ25lZCBpbnQgcmF0ZSA9IDQ4MDAwOwoJ
+dW5zaWduZWQgaW50IG5jaGFubmVscyA9IDE7CglzbmRfcGNtX2Zvcm1hdF90IGZvcm1hdCA9IFNO
+RF9QQ01fRk9STUFUX1MxNl9MRTsKCXVuc2lnbmVkIGludCBidWZfZnJhbWVzX3JpZ2h0ID0gQlVG
+X0JZVEVTIC8gbmNoYW5uZWxzIC8gMjsKLy8JdW5zaWduZWQgaW50IGJ1Zl9mcmFtZXNfbGVmdCA9
+IEJVRl9CWVRFUyAvIG5jaGFubmVscyAvIDI7CgovLy8vLyBSSUdIVCBDSEFOTkVMIAoJaWYgKChl
+cnIgPSBzbmRfcGNtX29wZW4gKCZwbGF5YmFja19oYW5kbGVfcmlnaHQsIHByZGV2aWNlLCBTTkRf
+UENNX1NUUkVBTV9QTEFZQkFDSywgMCkpIDwgMCkgewoJZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90
+IG9wZW4gcGxheWJhY2sgcmlnaHQgYXVkaW8gZGV2aWNlICVzICglcylcbiIsIHByZGV2aWNlLCBz
+bmRfc3RyZXJyb3IgKGVycikpOyBleGl0ICgxKTsKCX0KCWVsc2UKCXsKCSAgcHJpbnRmKCJPcGVu
+ZWQgUGxheWJhY2sgcmlnaHQgYXVkaW8gZGV2aWNlICBzdWNjZXNzZnVsbHkgJXMgXG4iLCBwcmRl
+dmljZSk7Cgl9CgkKCWlmICgoZXJyID0gc25kX3BjbV9zZXRfcGFyYW1zKHBsYXliYWNrX2hhbmRs
+ZV9yaWdodCwgZm9ybWF0LCBTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZFRCwgbmNoYW5uZWxz
+LCByYXRlLCAxLCA1MDAwMDApKSA8IDApIHsgLyogMC41c2VjICovCglmcHJpbnRmKHN0ZGVyciwg
+IlBsYXliYWNrIHJpZ2h0IG9wZW4gZXJyb3I6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7IGV4
+aXQoMSk7Cgl9CgoJaWYgKChlcnIgPSBzbmRfcGNtX29wZW4gKCZjYXB0dXJlX2hhbmRsZV9yaWdo
+dCwgY3JkZXZpY2UsIFNORF9QQ01fU1RSRUFNX0NBUFRVUkUsIDApKSA8IDApIHsKCWZwcmludGYg
+KHN0ZGVyciwgImNhbm5vdCBvcGVuIGNhcHR1cmUgcmlnaHQgYXVkaW8gZGV2aWNlICVzICglcylc
+biIsIGNyZGV2aWNlLCBzbmRfc3RyZXJyb3IgKGVycikpOyBleGl0ICgxKTsKCX0KCWVsc2UKCXsK
+CSAgcHJpbnRmKCJPcGVuZWQgQ2FwdHVyZSByaWdodCBhdWRpbyBkZXZpY2Ugc3VjY2Vzc2Z1bGx5
+ICVzIFxuIiwgY3JkZXZpY2UpOwoJfQoKCWlmICgoZXJyID0gc25kX3BjbV9zZXRfcGFyYW1zKGNh
+cHR1cmVfaGFuZGxlX3JpZ2h0LCBmb3JtYXQsIFNORF9QQ01fQUNDRVNTX1JXX0lOVEVSTEVBVkVE
+LCBuY2hhbm5lbHMsIHJhdGUsIDEsIDUwMDAwMCkpIDwgMCkgeyAvKiAwLjVzZWMgKi8KCWZwcmlu
+dGYoc3RkZXJyLCAiY2FwdHVyZSByaWdodCBvcGVuIGVycm9yOiAlc1xuIiwgc25kX3N0cmVycm9y
+KGVycikpOyBleGl0KDEpOwoJfQkKI2lmIDAKLy8vL0xFRlQgQ0hBTk5FTAoJaWYgKChlcnIgPSBz
+bmRfcGNtX29wZW4gKCZwbGF5YmFja19oYW5kbGVfbGVmdCwgcGxkZXZpY2UsIFNORF9QQ01fU1RS
+RUFNX1BMQVlCQUNLLCAwKSkgPCAwKSB7CglmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgb3BlbiBw
+bGF5YmFjayBsZWZ0IGF1ZGlvIGRldmljZSAlcyAoJXMpXG4iLCBwbGRldmljZSwgc25kX3N0cmVy
+cm9yIChlcnIpKTsgZXhpdCAoMSk7Cgl9CgllbHNlCgl7CgkgIHByaW50ZigiT3BlbmVkIFBsYXli
+YWNrIGxlZnQgYXVkaW8gZGV2aWNlIHN1Y2Nlc3NmdWxseSAlcyBcbiIsIHBsZGV2aWNlKTsKCX0K
+CQoJaWYgKChlcnIgPSBzbmRfcGNtX3NldF9wYXJhbXMocGxheWJhY2tfaGFuZGxlX2xlZnQsIGZv
+cm1hdCwgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQsIG5jaGFubmVscywgcmF0ZSwgMSwg
+NTAwMDAwKSkgPCAwKSB7IC8qIDAuNXNlYyAqLwoJZnByaW50ZihzdGRlcnIsICJQbGF5YmFjayBs
+ZWZ0IG9wZW4gZXJyb3I6ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7IGV4aXQoMSk7Cgl9CgoJ
+aWYgKChlcnIgPSBzbmRfcGNtX29wZW4gKCZjYXB0dXJlX2hhbmRsZV9sZWZ0LCBjbGRldmljZSwg
+U05EX1BDTV9TVFJFQU1fQ0FQVFVSRSwgMCkpIDwgMCkgewoJZnByaW50ZiAoc3RkZXJyLCAiY2Fu
+bm90IG9wZW4gY2FwdHVyZSBsZWZ0IGF1ZGlvIGRldmljZSAlcyAoJXMpXG4iLCBjbGRldmljZSwg
+c25kX3N0cmVycm9yIChlcnIpKTsgZXhpdCAoMSk7Cgl9CgllbHNlCgl7CgkgIHByaW50ZigiT3Bl
+bmVkIENhcHR1cmUgbGVmdCBhdWRpbyBkZXZpY2Ugc3VjY2Vzc2Z1bGx5ICVzIFxuIiwgY3JkZXZp
+Y2UpOwoJfQoKCWlmICgoZXJyID0gc25kX3BjbV9zZXRfcGFyYW1zKGNhcHR1cmVfaGFuZGxlX2xl
+ZnQsIGZvcm1hdCwgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQsIG5jaGFubmVscywgcmF0
+ZSwgMSwgNTAwMDAwKSkgPCAwKSB7IC8qIDAuNXNlYyAqLwoJZnByaW50ZihzdGRlcnIsICJjYXB0
+dXJlIGxlZnQgb3BlbiBlcnJvcjogJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsgZXhpdCgxKTsK
+CX0KCiNlbmRpZgoKCXdoaWxlKDEpIHsKLy8vLy8gUklHSFQgQ0hBTk5FTCAKCQlpZiAoKGVyciA9
+IHNuZF9wY21fcmVhZGkgKGNhcHR1cmVfaGFuZGxlX3JpZ2h0LCBidWZfcmlnaHQsIGJ1Zl9mcmFt
+ZXNfcmlnaHQpKSAhPSBidWZfZnJhbWVzX3JpZ2h0KSB7CgkJZnByaW50ZiAoc3RkZXJyLCAicmVh
+ZCBmcm9tIGF1ZGlvIGludGVyZmFjZSByaWdodCBmYWlsZWQgKCVzKVxuIiwgc25kX3N0cmVycm9y
+IChlcnIpKTsgZXhpdCAoMSk7CgkJfQkKCgkJaWYgKChlcnIgPSBzbmRfcGNtX3dyaXRlaSAocGxh
+eWJhY2tfaGFuZGxlX3JpZ2h0LCBidWZfcmlnaHQsIGJ1Zl9mcmFtZXNfcmlnaHQpKSAhPSBidWZf
+ZnJhbWVzX3JpZ2h0KSB7CgkJZnByaW50ZiAoc3RkZXJyLCAid3JpdGUgdG8gYXVkaW8gaW50ZXJm
+YWNlIHJpZ2h0IGZhaWxlZCAoJXMpXG4iLCBzbmRfc3RyZXJyb3IgKGVycikpOyBleGl0ICgxKTsK
+CQl9CiNpZiAwCi8vLy9MRUZUIENIQU5ORUwKCQlpZiAoKGVyciA9IHNuZF9wY21fcmVhZGkgKGNh
+cHR1cmVfaGFuZGxlX2xlZnQsIGJ1Zl9sZWZ0LCBidWZfZnJhbWVzX2xlZnQpKSAhPSBidWZfZnJh
+bWVzX2xlZnQpIHsKCQlmcHJpbnRmIChzdGRlcnIsICJyZWFkIGZyb20gYXVkaW8gaW50ZXJmYWNl
+IGxlZnQgZmFpbGVkICglcylcbiIsIHNuZF9zdHJlcnJvciAoZXJyKSk7IGV4aXQgKDEpOwoJCX0J
+CgoJCWlmICgoZXJyID0gc25kX3BjbV93cml0ZWkgKHBsYXliYWNrX2hhbmRsZV9sZWZ0LCBidWZf
+bGVmdCwgYnVmX2ZyYW1lc19sZWZ0KSkgIT0gYnVmX2ZyYW1lc19sZWZ0KSB7CgkJZnByaW50ZiAo
+c3RkZXJyLCAid3JpdGUgdG8gYXVkaW8gaW50ZXJmYWNlIGxlZnQgZmFpbGVkICglcylcbiIsIHNu
+ZF9zdHJlcnJvciAoZXJyKSk7IGV4aXQgKDEpOwoJCX0KI2VuZGlmCgl9CiAKCWZwcmludGYgKHN0
+ZGVyciwgImNsb3NlIGhhbmRsZXNcbiIpOwoJc25kX3BjbV9jbG9zZSAocGxheWJhY2tfaGFuZGxl
+X3JpZ2h0KTsKCXNuZF9wY21fY2xvc2UgKGNhcHR1cmVfaGFuZGxlX3JpZ2h0KTsKCi8vCXNuZF9w
+Y21fY2xvc2UgKHBsYXliYWNrX2hhbmRsZV9sZWZ0KTsKLy8Jc25kX3BjbV9jbG9zZSAoY2FwdHVy
+ZV9oYW5kbGVfbGVmdCk7CgoJcmV0dXJuIDA7Cn0gCg==
+
+--_007_142587836080070892tataelxsicoin_
+Content-Type: text/plain; name="asound.conf.txt"
+Content-Description: asound.conf.txt
+Content-Disposition: attachment; filename="asound.conf.txt"; size=1281;
+	creation-date="Mon, 09 Mar 2015 05:18:26 GMT";
+	modification-date="Mon, 09 Mar 2015 05:18:26 GMT"
+Content-Transfer-Encoding: base64
+
+IyBkZWZhdWx0IEFyYWdvIGNvbmZpZ3VyYXRpb24KcGNtLmNhcmQwIHsKICB0eXBlIGh3CiAgY2Fy
+ZCAwCn0KCmN0bC5jYXJkMCB7CiAgdHlwZSBodwogIGNhcmQgMAp9CgpwY20uVk9VVFIgewogIHNs
+YXZlLnBjbSBjYXJkMAogIHNsYXZlLmNoYW5uZWxzIDIKIyAgdHlwZSBwbHVnCiAgdHlwZSByb3V0
+ZQogIHR0YWJsZSB7CiAgICAjIENvcHkgYm90aCBpbnB1dCBjaGFubmVscyB0byBvdXRwdXQgY2hh
+bm5lbCAwIChMZWZ0KS4KICAgIDAuMCAxCiAgICAxLjEgMQogICAgIyBTZW5kIG5vdGhpbmcgdG8g
+b3V0cHV0IGNoYW5uZWwgMSAoUmlnaHQpLgogICAgMC4xIDAKICAgIDEuMSAwCiAgfQp9CgpjdGwu
+Vk9VVFIgewogIHR5cGUgaHcKICBjYXJkIDAKfQoKCnBjbS5WT1VUTCB7CiAgc2xhdmUucGNtIGNh
+cmQwCiAgc2xhdmUuY2hhbm5lbHMgMgojICB0eXBlIHBsdWcKICB0eXBlIHJvdXRlCiAgdHRhYmxl
+IHsKICAgICMgU2VuZCBub3RoaW5nIHRvIG91dHB1dCBjaGFubmVsIDAgKExlZnQpLgogICAgMC4x
+IDEKICAgIDAuMSAxCiAgICAjIENvcHkgYm90aCBpbnB1dCBjaGFubmVscyB0byBvdXRwdXQgY2hh
+bm5lbCAxIChSaWdodCkuCiAgICAwLjAgMAogICAgMS4xIDAKICB9Cn0KCmN0bC5WT1VUTCB7CiAg
+dHlwZSBodwogIGNhcmQgMAp9CgoKCiMjIyBEc25vb3Agc3BsaXRlZCBjaGFubmVscwpwY20uVklO
+TCB7CiAgICAgdHlwZSBkc25vb3AKICAgICBpcGNfa2V5IDMyCiAgICAgc2xhdmUgewogICAgICAg
+ICBwY20gImNhcmQwIgogICAgICAgICBjaGFubmVscyAyCiAgICAgfQogICAgIGJpbmRpbmdzLjAg
+IDAKfQoKcGNtLlZJTlIgewogICAgIHR5cGUgZHNub29wCiAgICAgaXBjX2tleSAzMgogICAgIHNs
+YXZlIHsKICAgICAgICAgcGNtICJjYXJkMCIKICAgICAgICAgY2hhbm5lbHMgMgogICAgIH0KICAg
+ICBiaW5kaW5ncy4wICAxCn0KCgojIyMgUExVR1MgIyMKCiMjIyB1c2VkIHdpdGggZGFya2ljZQoK
+IyMjIGRldmljZSA9IHBsdWc6cGx1Z19vbmJvYXJkX2xlZnQKCiNwY20ucGx1Z19WSU5SewoKIyAg
+ICAgICB0eXBlIHJvdXRlCgojICAgICAgICBzbGF2ZS5wY20gIlZJTlIiCgojICAgICAgICBzbGF2
+ZS5jaGFubmVscyAxCgojICAgICAgICB0dGFibGUuMC4wIDEKCiN9CgojcGNtLnBsdWdfVklOTHsK
+CiMgICAgICAgIHR5cGUgcm91dGUKCiMgICAgICAgIHNsYXZlLnBjbSAiVklOTCIKCiMgICAgICAg
+IHNsYXZlLmNoYW5uZWxzIDEKCiMgICAgICAgIHR0YWJsZS4wLjAgMQoKI30KCnBjbS4hZGVmYXVs
+dCBWT1VUUgpwY20uIWRlZmF1bHQgVk9VVEwK
+
+--_007_142587836080070892tataelxsicoin_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_007_142587836080070892tataelxsicoin_--
