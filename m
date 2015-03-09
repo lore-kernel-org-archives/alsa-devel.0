@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5670: Revert Keep sysclk on
-	patch
-Date: Mon, 9 Mar 2015 10:49:52 +0000
-Message-ID: <20150309104952.GF28806@sirena.org.uk>
-References: <1425891323-21445-1-git-send-email-bardliao@realtek.com>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: Re: [DAPM question] DAPM support for single input
+	multiple outputs
+Date: Mon, 9 Mar 2015 19:16:18 +0800
+Message-ID: <54FD8102.7020503@marvell.com>
+References: <54FD5C1D.9030909@marvell.com> <54FD5F9E.3080606@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4895069645827989692=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B1312605EB
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 11:50:04 +0100 (CET)
-In-Reply-To: <1425891323-21445-1-git-send-email-bardliao@realtek.com>
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A2112605C6
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 12:16:22 +0100 (CET)
+In-Reply-To: <54FD5F9E.3080606@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, yao.jin@intel.com, flove@realtek.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4895069645827989692==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gnQ/OOKD4CRsnGw/"
-Content-Disposition: inline
-
-
---gnQ/OOKD4CRsnGw/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Mar 09, 2015 at 04:55:22PM +0800, Bard Liao wrote:
-> The "Keep sysclk on if JD func is used" patch force enable/disable
-> pin in rt5670_set_dai_sysclk. But some machine driver call it in
-> dapm widget event. It will cause kernel crash.
-
-Could you go into more detail on what's going wrong here please - this
-sounds like the machine drivers are buggy, not the jack detection code?
-Configuring jack detection in response to a DAPM event would be very
-unusual.
-
---gnQ/OOKD4CRsnGw/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU/XrPAAoJECTWi3JdVIfQjDEH/iL2wnlj9+WeM70ny6SqhCsW
-Axd2V8pAp2YVkHBfV453PnZeRLKGWSlEov1iKv1T/wiwMQEotlMAWbmLLUSIYRLT
-O6vG2HMyLGZFVeG8WYW6MvkfYu2R58Kb87mx26zvFndQbyeWn37cZemNLKzTL5W9
-6z3FK7gUMjIleWpnhKxrP1WkhGdUV1RhJ1q66f0WlhxPFR23CBFR/PYI4ee04nBy
-TvCMm49QP+PHC+MUSJ8IrSgWJEiAxBIsN7PPWpJgiqhSYhtLHnEm7QG7b1gq/4+w
-iUS2cXd9JCQFmpuC2msGYoLLIxp+8KYvvWoWb7FRlg4Uj+fE3z2STky1Eak1Q5g=
-=8CFI
------END PGP SIGNATURE-----
-
---gnQ/OOKD4CRsnGw/--
-
---===============4895069645827989692==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On 03/09/2015 04:53 PM, Lars-Peter Clausen wrote:
+> On 03/09/2015 09:38 AM, Qiao Zhou wrote:
+>> Hi Mark,
+>>
+>> I have one question and need your suggestion. Thanks in advance.
+>>
+>> In our DSP, one stream path is like this: There is one bit controlling
+>> whether a signal A goes to A_out or B_out. That's the reverse case of
+>> DAPM_MUX(multiple inputs, single output).
+>>
+>> One way is to use two switches but it seems not good since two switches
+>> control the same bit. It's strange. Do you have any opinion about such
+>> requirement support?
+>
+> There is currently no support for a demux. But it shouldn't be too hard to
+> add one in the DAPM core, if you want to take a try at it.
+>
+> A demux would behave very similar to a mux, except that you'd reverse
+> sources and sinks. The only thing that is a bit tricky is that we only have
+> one control element per path and currently it always belongs to the sink.
+> For a demux it needs to be long to the source. This means you can't have a
+> mixer directly connected to the same path as a demux and the core needs to
+> make sure that that doesn't happen.
+I'll have a try to specially handle demux type. Thanks for the 
+suggestions. BTW, is there plan to add demux support?
+>
+> - Lars
+>
 
 
---===============4895069645827989692==--
+-- 
+
+Best Regards
+Qiao
