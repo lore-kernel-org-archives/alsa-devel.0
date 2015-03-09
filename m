@@ -1,18 +1,19 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: RawMIDI behaviour with MidiFace 4x4
-Date: Mon, 9 Mar 2015 15:29:08 +0100
-Message-ID: <alpine.DEB.2.02.1503091524320.7125@lnxricardw1.se.axis.com>
-References: <6A72E9C91650BD49A6D9B305755BC04C42D801FA@mbs1.ad.jyu.fi>
- <alpine.DEB.2.02.1503090933530.7125@lnxricardw1.se.axis.com>
- <54FD5E2D.40801@ladisch.de>
+From: Alnie <memobook80@comcast.net>
+Subject: Re: Issues w/ Creative Labs [SB X-Fi Xtreme Audio]
+	CA0110-IBG
+Date: Mon, 09 Mar 2015 08:22:34 -0700
+Message-ID: <54FDBABA.2080707@comcast.net>
+References: <54F52C68.6010504@comcast.net>	<s5hzj7u7grx.wl-tiwai@suse.de>	<54F5614C.9010402@comcast.net>	<s5hwq2y7c8g.wl-tiwai@suse.de>	<54F57D07.9020900@comcast.net>	<54F62CDC.1010607@comcast.net>	<s5hoao97n1j.wl-tiwai@suse.de>	<54F66A0F.1050603@comcast.net>	<s5hk2yx6vld.wl-tiwai@suse.de>	<54F6C9EC.3080100@comcast.net>	<s5hegp56r78.wl-tiwai@suse.de>	<54FA38D4.6090206@comcast.net>	<s5hoao5z1dv.wl-tiwai@suse.de>	<54FB272D.1080004@comcast.net>
+ <s5hfv9gzs2e.wl-tiwai@suse.de> <54FB3E0F.4060101@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 83094260712
- for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 15:29:22 +0100 (CET)
-In-Reply-To: <54FD5E2D.40801@ladisch.de>
+Received: from resqmta-po-09v.sys.comcast.net (resqmta-po-09v.sys.comcast.net
+ [96.114.154.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id A82AB2606BA
+ for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2015 16:22:45 +0100 (CET)
+In-Reply-To: <54FB3E0F.4060101@comcast.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +23,230 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kalvas,
- Taneli" <taneli.v.m.kalvas@jyu.fi>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 03/07/2015 10:06 AM, Alnie wrote:
+> On 03/07/2015 08:32 AM, Takashi Iwai wrote:
+>> At Sat, 07 Mar 2015 08:28:29 -0800,
+>> Alnie wrote:
+>>>
+>>> On 03/06/2015 11:56 PM, Takashi Iwai wrote:
+>>>> At Fri, 06 Mar 2015 15:31:32 -0800,
+>>>> Alnie wrote:
+>>>>>
+>>>>> On 03/04/2015 01:35 AM, Takashi Iwai wrote:
+>>>>>> At Wed, 04 Mar 2015 01:01:32 -0800,
+>>>>>> Alnie wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> On 03/04/2015 12:00 AM, Takashi Iwai wrote:
+>>>>>>>> At Tue, 03 Mar 2015 18:12:31 -0800,
+>>>>>>>> Alnie wrote:
+>>>>>>>>>
+>>>>>>>>>> My suggestion isn't about a compile option but that you add
+>>>>>>>>>> some debug
+>>>>>>>>>> printk() calls manually around some codes.  We need to know
+>>>>>>>>>> the value
+>>>>>>>>>> written and read by azx_write*() and azx_read*() calls.
+>>>>>>>>>> Especially
+>>>>>>>>>> the value read in pci_azx_read*() is more interesting. You can
+>>>>>>>>>> try to
+>>>>>>>>>> modify sound/pci/hda/hda_intel.c and add a printk() to each
+>>>>>>>>>> pci_azx_read*() function for printing the value to be returned.
+>>>>>>>>>> Beware that this will likely flood many messages, so just try
+>>>>>>>>>> once.
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Takashi
+>>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> I can not find any reference to pci_azx_read in hda_intel.c
+>>>>>>>>
+>>>>>>>> You must be using a too old kernel, then.  Please use the latest
+>>>>>>>> kernel for debugging.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Takashi
+>>>>>>>>
+>>>>>>>
+>>>>>>> Ok. I now have latest kernel.
+>>>>>>>
+>>>>>>> Here is a small portion...
+>>>>>>>
+>>>>>>> /* PCI register access. */
+>>>>>>> static void pci_azx_writel(u32 value, u32 __iomem *addr)
+>>>>>>> {
+>>>>>>>     writel(value, addr);
+>>>>>>> }
+>>>>>>>
+>>>>>>> static u32 pci_azx_readl(u32 __iomem *addr)
+>>>>>>> {
+>>>>>>>     return readl(addr);
+>>>>>>> }
+>>>>>>>
+>>>>>>> Can you show me how I can properly place printk without breaking
+>>>>>>> things
+>>>>>>> and produce relevant messages?
+>>>>>>
+>>>>>> Something like:
+>>>>>>
+>>>>>> static u32 pci_azx_readl(u32 __iomem *addr)
+>>>>>> {
+>>>>>>     u32 val = readl(addr);
+>>>>>>     pr_info("XXX readl %p %x\n", addr, val);
+>>>>>>     return val;
+>>>>>> }
+>>>>>>
+>>>>>> But since there are quite lots of accesses, it might be safer to use
+>>>>>> the ratelimited version.  Use like the following:
+>>>>>>     pr_info_ratelimited("XXX readl %p %x\n", addr, val);
+>>>>>>
+>>>>>> Also there are variants pci_azx_readw() and _readb().
+>>>>>>
+>>>>>>
+>>>>>> Takashi
+>>>>>>
+>>>>>
+>>>>>
+>>>>> Ok, I was only able to guess through the code for the read values. If
+>>>>> you need write information too please show me how.
+>>>>> here are the mods I made...
+>>>>>
+>>>>> /* PCI register access. */
+>>>>> static void pci_azx_writel(u32 value, u32 __iomem *addr)
+>>>>> {
+>>>>>     writel(value, addr);
+>>>>> }
+>>>>>
+>>>>> static u32 pci_azx_readl(u32 __iomem *addr)
+>>>>> {
+>>>>>        u32 val = readl(addr);
+>>>>>        pr_info_ratelimited("XXX readl %p %x\n", addr, val);
+>>>>>        return val;
+>>>>> }
+>>>>>
+>>>>> static void pci_azx_writew(u16 value, u16 __iomem *addr)
+>>>>> {
+>>>>>     writew(value, addr);
+>>>>> }
+>>>>>
+>>>>> static u16 pci_azx_readw(u16 __iomem *addr)
+>>>>> {
+>>>>>     u16 val = readw(addr);
+>>>>>     pr_info_ratelimited("XXX readw %p %x\n", addr, val);
+>>>>>     return val;
+>>>>> }
+>>>>>
+>>>>> static void pci_azx_writeb(u8 value, u8 __iomem *addr)
+>>>>> {
+>>>>>     writeb(value, addr);
+>>>>> }
+>>>>>
+>>>>> static u8 pci_azx_readb(u8 __iomem *addr)
+>>>>> {
+>>>>>     u8 val = readb(addr);
+>>>>>     pr_info_ratelimited("XXX readb %p %x\n", addr, val);
+>>>>>     return val;
+>>>>> }
+>>>>>
+>>>>> and i was able to produce this...
+>>>>>
+>>>>> dmesg | grep -i read
+>>>>> [    0.764102] tpm_tis 00:05: A TPM error (7) occurred attempting to
+>>>>> read a pcr value
+>>>>> [    0.769674] Write protecting the kernel read-only data: 12288k
+>>>>> [    1.729952] sd 0:0:0:0: [sda] Write cache: enabled, read cache:
+>>>>> enabled, doesn't support DPO or FUA
+>>>>> [    2.071100] sd 1:0:0:0: [sdb] Write cache: enabled, read cache:
+>>>>> enabled, doesn't support DPO or FUA
+>>>>> [    2.778875] EXT4-fs (sda5): INFO: recovery required on readonly
+>>>>> filesystem
+>>>>> [    2.817982] EXT4-fs (sda5): orphan cleanup on readonly fs
+>>>>> [    4.662442] XXX readw ffffc90004f30000 4401
+>>>>
+>>>> This reads good, but I thought you have two sound devices (onboard and
+>>>> Creative)?  If so, disable the onboard one via enable=0 option (if the
+>>>> onboard one is assigned first).  Otherwise the all good and bad
+>>>> results are mixed up.
+>>>>
+>>>>
+>>>> Takashi
+>>>>
+>>>
+>>> I included options snd-hda-intel enable=0 index=0
+>>>
+>>> This is dmesg output (1b is onboard)...
+>>> dmesg | grep -i hda
+>>> [    3.700213] snd_hda_intel: probe of 0000:00:1b.0 failed with error -2
+>>> [   37.729507] snd_hda_intel 0000:06:00.0: enabling device (0000 ->
+>>> 0002)
+>>> [   37.729703] snd_hda_intel 0000:06:00.0: enabling bus mastering
+>>> [   37.736026] snd_hda_intel 0000:06:00.0: CORB reset timeout#1,
+>>> CORBRP = 0
+>>> [   38.740090] snd_hda_intel 0000:06:00.0: Codec #1 probe error;
+>>> disabling it...
+>>> [   38.747292] snd_hda_intel 0000:06:00.0: CORB reset timeout#1,
+>>> CORBRP = 0
+>>> [   43.776089] snd_hda_intel 0000:06:00.0: no AFG or MFG node found
+>>> [   43.776111] snd_hda_intel 0000:06:00.0: no codecs initialized
+>>>
+>>> dmesg | grep -i XXX
+>>> [   37.729723] XXX readw ffffc90005188000 3300
+>>> [   37.729768] XXX readl ffffc90005188008 0
+>>
+>> OK, so all read look fine.  Right now we saw a bug report with git
+>> bisection showing a bad commit in HD-audio controller code.  This
+>> might be your issue, too.  Could you try the following oneliner?
+>>
+>>
+>> thanks,
+>>
+>> Takashi
+>>
+>> diff --git a/sound/pci/hda/hda_controller.c
+>> b/sound/pci/hda/hda_controller.c
+>> index 7b4377265b25..57c4575fac26 100644
+>> --- a/sound/pci/hda/hda_controller.c
+>> +++ b/sound/pci/hda/hda_controller.c
+>> @@ -1194,7 +1194,7 @@ static unsigned int azx_rirb_get_response(struct
+>> hda_bus *bus,
+>>           }
+>>       }
+>>
+>> -    if (!bus->no_response_fallback)
+>> +    if (bus->no_response_fallback)
+>>           return -1;
+>>
+>>       if (!chip->polling_mode && chip->poll_count < 2) {
+>>
+>
+>
+> I believe I applied the patch correctly... if you would like to double
+> check here is the hda_controller.c file (http://pastebin.com/NA7AV2n1)
+>
+> Same complaint comes up, after reinsert and force-reload as well...
+>
+> [  419.344572] snd_hda_intel 0000:06:00.0: enabling bus mastering
+> [  419.350967] snd_hda_intel 0000:06:00.0: CORB reset timeout#1, CORBRP = 0
+> [  422.360107] snd_hda_intel 0000:06:00.0: azx_get_response timeout,
+> switching to polling mode: last cmd=0x100f0000
+> [  423.364094] snd_hda_intel 0000:06:00.0: Codec #1 probe error;
+> disabling it...
+> [  423.371128] snd_hda_intel 0000:06:00.0: CORB reset timeout#1, CORBRP = 0
+> [  424.376098] snd_hda_intel 0000:06:00.0: azx_get_response timeout,
+> switching to single_cmd mode: last cmd=0x100f0000
+> [  424.377052] snd_hda_intel 0000:06:00.0: no AFG or MFG node found
+> [  424.377067] snd_hda_intel 0000:06:00.0: no codecs initialized
+>
 
-On Mon, 9 Mar 2015, Clemens Ladisch wrote:
+I'm assuming we've exhausted our options for now. It seems probable this 
+model card (ExpressCard/54) never worked in Linux to begin with. I 
+looked over the forum posts from those claiming they had it operational 
+(in 2.6 kernel), but it was for the PCI-E version. I greatly appreciate 
+your assistance with this. Thank you.
 
-> Ricard Wanderlof wrote:
-> > On Sat, 7 Mar 2015, Kalvas, Taneli wrote:
-> >> I am developing a patch librarian for a synthesizer. Because the
-> >> communication happens with Midi sysex and timing is not relevant I cho=
-se
-> >> RawMIDI interface and not the alsa sequencer. The problem I have
-> >> encountered is that writing to the midi port with snd_rawmidi_write()
-> >> seems to broken. The function accepts any size of data block and claims
-> >> to have sent everything. In reality only a part of the message is sent.
-> >> For a large block size I can see the activity light blinking for
-> >> fraction of a second. This happens both in blocking and non-blocking
-> >> mode. I would expect the snd_rawmidi_write() to accept only a part of
-> >> the message.
-> >
-> > Can't help with rawmidi, but I can at least report that my experience
-> > using the sequencer interface has been that it is rather straightforward
-> > to use, even if just using it to send and transmit sysex data, even when
-> > the data is longer than 300 bytes.
-> =
 
-> If the data is larger than the RawMIDI buffer size (4096 bytes), the
-> sequencer does not wait (like snd_rawmidi_write() would do), but just
-> drops data.
-
-Interesting. Thanks for the info. I've only tried sending patch dumps for =
-
-single synthesizer patches, in the region of 400 bytes, which are more =
-
-than 300 but far less than 4096 obviously.
-
-I have noted though, that when sending data with snd_seq_ev_set_sysex() =
-
-that the ALSA lib internally copies the data to an internal, malloced =
-
-buffer, so I always thought that it would take care of any amount of data =
-
-from there, but apparently not then?
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+-Alnie
