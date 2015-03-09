@@ -1,47 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: wm8996: match wait_for_completion_timeout
- return type
-Date: Mon, 9 Mar 2015 18:16:12 +0000
-Message-ID: <20150309181612.GQ28806@sirena.org.uk>
-References: <1425808935-17070-1-git-send-email-hofrat@osadl.org>
+Subject: Re: [PATCH] ASoC: wm5100: match wait_for_completion_timeout return
+ type
+Date: Mon, 9 Mar 2015 18:16:54 +0000
+Message-ID: <20150309181654.GR28806@sirena.org.uk>
+References: <1425812227-24172-1-git-send-email-hofrat@osadl.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="utew04vv9FCWZJ01"
+	protocol="application/pgp-signature"; boundary="MGmrTRZxVujQoXMz"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1425808935-17070-1-git-send-email-hofrat@osadl.org>
+In-Reply-To: <1425812227-24172-1-git-send-email-hofrat@osadl.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Xiubo Li <Li.Xiubo@freescale.com>, Sachin Kamat <sachin.kamat@samsung.com>, Axel Lin <axel.lin@ingics.com>, abdoulaye berthe <berthe.ab@gmail.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Xiubo Li <Li.Xiubo@freescale.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Axel Lin <axel.lin@ingics.com>, abdoulaye berthe <berthe.ab@gmail.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---utew04vv9FCWZJ01
+--MGmrTRZxVujQoXMz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Mar 08, 2015 at 06:02:15AM -0400, Nicholas Mc Guire wrote:
+On Sun, Mar 08, 2015 at 06:57:07AM -0400, Nicholas Mc Guire wrote:
 > return type of wait_for_completion_timeout is unsigned long not int. An
-> appropriately named unsigned long is added and the assignment fixed up
-> in case of completion occurring the remaining time is >=1 so ret is set to
-> 1 if no timeout occurred.
+> appropriately named unsigned long is added and the assignment fixed up.
 
-Applied both, thanks.
+Applied, thanks.
 
---utew04vv9FCWZJ01
+--MGmrTRZxVujQoXMz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU/eNsAAoJECTWi3JdVIfQQWEH/3qBO+lXhQlI+EFjkdFLGxYn
-S1J4Dg/ihLsu59Bmicy2l5md7R3WUnuKTFVpNcgpgVBUp+43e/hMJomOzOny6uVz
-f9qNY8JfNPbSNyJS57D1iywwH4PCE1HCztF2xqTi2vhqxQRiPWfQuYjk48chVFaO
-COjkJz4ZPQ9aEcmrl49AGpVQkNZbRiUSRv0/OBfsa9HSSA0yhcBo/daECXhciHVY
-ByiSgIhGyrmLNp5+lXao4vx3s6hDV5vbCC8++2z0w5WGtWqCohpUZlFwjRqXaFHR
-ub5uUDIelpi8xwvTD53kkbtnYgjLL+Bpv4pGIXqLz7JEgvVFFlhOAWUkkZrjTP8=
-=EFbY
+iQEcBAEBCAAGBQJU/eOVAAoJECTWi3JdVIfQoHgH/2siguLGN9P0KINqN5v4IJgK
+wMWe1nYJu+94sb3Mcz9gNj2x3eLWld+ufBx+Hfu6Pj392nnqZt1vwsDX8d+xQGWM
+9boChGNMgBYG2k5IUgra1FFtdHHVKSzKwvdngOKjwlAABrvRtwV/R1PQWSExkPyv
+gXw65zju0JNwNH23e1XvWfuVdyb2nITrdu9J88fFEDBzcUCZIovMW8YIAGB5RLv+
+TmhEtkZC+UfjH3J/EP38A0PgGneURMIs2Iqd1TUAX/8L9YmXnHYPHyaSJ08PAqPs
+h34xI1sTyj5F0oGlUUgSUsbM7xYuTjGsS7DuR1IrGLnDbPwRt0qreaBW+K29EIo=
+=9oTZ
 -----END PGP SIGNATURE-----
 
---utew04vv9FCWZJ01--
+--MGmrTRZxVujQoXMz--
