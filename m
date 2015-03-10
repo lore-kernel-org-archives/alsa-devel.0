@@ -1,19 +1,19 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 12/14] ASoC: wm8960: Fix wrong value
+Subject: Re: [PATCH 13/14] ASoC: wm9712: Fix wrong value
 	references for	boolean kctl
-Date: Tue, 10 Mar 2015 15:01:26 +0000
-Message-ID: <20150310150126.GF17136@opensource.wolfsonmicro.com>
+Date: Tue, 10 Mar 2015 15:01:45 +0000
+Message-ID: <20150310150145.GG17136@opensource.wolfsonmicro.com>
 References: <1425987556-569-1-git-send-email-tiwai@suse.de>
- <1425987556-569-13-git-send-email-tiwai@suse.de>
+ <1425987556-569-14-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C90C62625E0
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 16:01:26 +0100 (CET)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E0DD2619FA
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 16:01:46 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1425987556-569-13-git-send-email-tiwai@suse.de>
+In-Reply-To: <1425987556-569-14-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 10, 2015 at 12:39:14PM +0100, Takashi Iwai wrote:
+On Tue, Mar 10, 2015 at 12:39:15PM +0100, Takashi Iwai wrote:
 > The correct values referred by a boolean control are
 > value.integer.value[], not value.enumerated.item[].
 > The former is long while the latter is int, so it's even incompatible
