@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/14] ASoC: tas5086: Fix wrong value
+Subject: [PATCH 01/14] ASoC: adav80x: Fix wrong value
 	references for boolean kctl
-Date: Tue, 10 Mar 2015 12:39:08 +0100
-Message-ID: <1425987556-569-7-git-send-email-tiwai@suse.de>
+Date: Tue, 10 Mar 2015 12:39:03 +0100
+Message-ID: <1425987556-569-2-git-send-email-tiwai@suse.de>
 References: <1425987556-569-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C4296260436
+ by alsa0.perex.cz (Postfix) with ESMTP id C8F18260537
  for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 12:39:23 +0100 (CET)
 In-Reply-To: <1425987556-569-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,30 +33,30 @@ on 64bit architectures.
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/tas5086.c | 4 ++--
+ sound/soc/codecs/adav80x.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-index 249ef5c4c762..32942bed34b1 100644
---- a/sound/soc/codecs/tas5086.c
-+++ b/sound/soc/codecs/tas5086.c
-@@ -281,7 +281,7 @@ static int tas5086_get_deemph(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+index b67480f1b1aa..4373ada95648 100644
+--- a/sound/soc/codecs/adav80x.c
++++ b/sound/soc/codecs/adav80x.c
+@@ -317,7 +317,7 @@ static int adav80x_put_deemph(struct snd_kcontrol *kcontrol,
+ {
  	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
+-	unsigned int deemph = ucontrol->value.enumerated.item[0];
++	unsigned int deemph = ucontrol->value.integer.value[0];
  
--	ucontrol->value.enumerated.item[0] = priv->deemph;
-+	ucontrol->value.integer.value[0] = priv->deemph;
+ 	if (deemph > 1)
+ 		return -EINVAL;
+@@ -333,7 +333,7 @@ static int adav80x_get_deemph(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
  
+-	ucontrol->value.enumerated.item[0] = adav80x->deemph;
++	ucontrol->value.integer.value[0] = adav80x->deemph;
  	return 0;
- }
-@@ -292,7 +292,7 @@ static int tas5086_put_deemph(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
+ };
  
--	priv->deemph = ucontrol->value.enumerated.item[0];
-+	priv->deemph = ucontrol->value.integer.value[0];
- 
- 	return tas5086_set_deemph(codec);
- }
 -- 
 2.3.2
