@@ -1,37 +1,62 @@
-From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Subject: Re: [LAD] Fw: [alsa-devel] Using loopback card to Connect GSM two
-	way call	to the real sound card UDA1345TS
-Date: Tue, 10 Mar 2015 11:50:17 +0100
-Message-ID: <54FECC69.9020600@ladisch.de>
-References: <1425878251963.1340@tataelxsi.co.in>	<1425878360800.70892@tataelxsi.co.in>,
- <54FD552C.7020902@ladisch.de>,
- <1425922601141.50130@tataelxsi.co.in>
- <1425964490006.15084@tataelxsi.co.in>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 03/14] ASoC: cs4271: Fix wrong value references
+	for boolean kctl
+Date: Tue, 10 Mar 2015 12:39:05 +0100
+Message-ID: <1425987556-569-4-git-send-email-tiwai@suse.de>
+References: <1425987556-569-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-In-Reply-To: <1425964490006.15084-Ig93jE4/MIihbFNETrL9Qw@public.gmane.org>
-List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
- <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev/>
-List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
- <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Sender: "Linux-audio-dev" <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-To: Srinivasan S <srinivasan.s-Ig93jE4/MIihbFNETrL9Qw@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org" <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C734C2604F8
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 12:39:23 +0100 (CET)
+In-Reply-To: <1425987556-569-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Srinivasan S wrote:
-> $ aplay -f dat -D VOUTL new.wav
-> Playing WAVE 'new.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-> aplay: set_params:1087: Channels count non available
+The correct values referred by a boolean control are
+value.integer.value[], not value.enumerated.item[].
+The former is long while the latter is int, so it's even incompatible
+on 64bit architectures.
 
-You are trying to play a two-channel file on a single-channel device.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/codecs/cs4271.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 79a4efcb894c..7d3a6accaf9a 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -286,7 +286,7 @@ static int cs4271_get_deemph(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+ 
+-	ucontrol->value.enumerated.item[0] = cs4271->deemph;
++	ucontrol->value.integer.value[0] = cs4271->deemph;
+ 	return 0;
+ }
+ 
+@@ -296,7 +296,7 @@ static int cs4271_put_deemph(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+ 
+-	cs4271->deemph = ucontrol->value.enumerated.item[0];
++	cs4271->deemph = ucontrol->value.integer.value[0];
+ 	return cs4271_set_deemph(codec);
+ }
+ 
+-- 
+2.3.2
