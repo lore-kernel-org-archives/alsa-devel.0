@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/14] Fix wrong ctl value references in
-	ASoC codecs
-Date: Tue, 10 Mar 2015 20:15:32 +0000
-Message-ID: <20150310201532.GL28806@sirena.org.uk>
-References: <1425987556-569-1-git-send-email-tiwai@suse.de>
+Subject: Re: [PATCH 0/2] ASoC: rsnd: fixup patches for
+	DMA/debugfs
+Date: Tue, 10 Mar 2015 20:17:14 +0000
+Message-ID: <20150310201714.GM28806@sirena.org.uk>
+References: <87385dtzla.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0709053562338438225=="
+Content-Type: multipart/mixed; boundary="===============2778136013883722768=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DDBBD2605CF
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 21:15:45 +0100 (CET)
-In-Reply-To: <1425987556-569-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A5DA42605A2
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 21:17:19 +0100 (CET)
+In-Reply-To: <87385dtzla.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0709053562338438225==
+--===============2778136013883722768==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n8d7KAgWmJ23Ts4y"
+	protocol="application/pgp-signature"; boundary="kzMQwe+b+L5ZMwhV"
 Content-Disposition: inline
 
 
---n8d7KAgWmJ23Ts4y
+--kzMQwe+b+L5ZMwhV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 10, 2015 at 12:39:02PM +0100, Takashi Iwai wrote:
-> Hi,
+On Tue, Mar 10, 2015 at 01:23:45AM +0000, Kuninori Morimoto wrote:
 >=20
-> while looking through the ASoC codec codes, I noticed that lots of
-> drivers refer to the wrong union value type for boolean controls.
+> Hi Mark
+>=20
+> These are rsnd fixup patches
+> 1) is for new DMA method
+> 2) is for debugfs
 
-Applied all, thanks.
+Applied both, thanks.
 
---n8d7KAgWmJ23Ts4y
+--kzMQwe+b+L5ZMwhV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU/1DjAAoJECTWi3JdVIfQZ+sH/1FHqwYUxPJqZKkPrNiEimQU
-BfD3gRfdZsvFpCKSgwLNMG/3sFA0wfsqlW5VIl/Gpkd0TVPA3SQBLX6ihG6yUib/
-V7jNymLx7g3totOr4LblwmnyJU+1tCv9Q/QZuUxJaqSyr045TpH8QwkV7x6ON/NE
-pk1I3vZRPMp3AsnCF6/i3XFpPZPUlObZPQS/YAdiU4DSTgrzf7Uj0lptOSLRL95m
-sE/EtU3ffkopAEop9BwCZ2eQ/uWk7BrY3eINpX9lHT9OJ9BF/tbzPxR2habqe+p3
-qdB0y8eu+TmJFxwlzI3p+EX8s4LTICv/3qjKeIKDAAKpVKh4sJw9VzI4R8S834E=
-=p5aW
+iQEcBAEBCAAGBQJU/1FJAAoJECTWi3JdVIfQJCIH/3J+exj3EGkaLwRC3efOORbk
+k/ugnCSsuDi6uL7E93EVElbz3QxcvEvdJ3YiURrrzKwVxMQJX1Jw98qdWzBDxbRH
+IcaPodHizQa9Yp0xYaIGnbxhp2SJXCD29MF2AzoyvpZ3DRaUwF+pRMwr8zai9+tb
+JYGsPZ6Q2psQLZ+/btrWRWN96clHL+d4Z0ws1OJoaxTl2MwjH12nFQqes1gmR8SE
+07SBGrZxipDxu1gxRV+GxV3o+DjTVpqkA0IVJCjy07/aTT06wacXkU9EzWLdK2fa
+T7/L1KkHFrTeU09Km3R98X894qPjsYcMKyRybNiRmlFCTqARwaPWCeg+wmYgqUA=
+=w7r/
 -----END PGP SIGNATURE-----
 
---n8d7KAgWmJ23Ts4y--
+--kzMQwe+b+L5ZMwhV--
 
---===============0709053562338438225==
+--===============2778136013883722768==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0709053562338438225==--
+--===============2778136013883722768==--
