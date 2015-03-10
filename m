@@ -1,20 +1,19 @@
-From: "Lu, Han" <han.lu@intel.com>
-Subject: Re: [PATCH 7/8] ASoC: Intel: add kcontrol to set
- parameter to sound effect module waves
-Date: Tue, 10 Mar 2015 02:42:12 +0000
-Message-ID: <B51200AC81AB024499A3C2C9A1BB90A836F421@SHSMSX101.ccr.corp.intel.com>
-References: <1425281778-17513-1-git-send-email-han.lu@intel.com>
- <1425281778-17513-7-git-send-email-han.lu@intel.com>
- <20150306113509.GK21293@sirena.org.uk>
+From: Fengguang Wu <fengguang.wu@intel.com>
+Subject: Re: [PATCH baohua] ASoC: sirf: atlas7:
+ atlas7_iacc_dai_ops can be static
+Date: Tue, 10 Mar 2015 11:41:39 +0800
+Message-ID: <20150310034139.GA17221@wfg-t540p.sh.intel.com>
+References: <201502060130.hszyNa1F%fengguang.wu@intel.com>
+ <20150205170352.GA49811@snb> <20150205171159.GY21293@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C628B261B25
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 03:42:23 +0100 (CET)
-In-Reply-To: <20150306113509.GK21293@sirena.org.uk>
-Content-Language: en-US
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D66A2614D9
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 04:41:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20150205171159.GY21293@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rongjun Ying <rongjun.ying@csr.com>, kbuild-all@01.org, Barry Song <Barry.Song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Friday, March 6, 2015 7:35 PM
-> To: Lu, Han
-> Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [PATCH 7/8] ASoC: Intel: add kcontrol to set parameter to sound
-> effect module waves
+On Thu, Feb 05, 2015 at 05:11:59PM +0000, Mark Brown wrote:
+> On Fri, Feb 06, 2015 at 01:03:52AM +0800, kbuild test robot wrote:
+> > sound/soc/sirf/atlas7-iacc.c:168:24: sparse: symbol 'atlas7_iacc_dai_ops' was not declared. Should it be static?
 > 
-> On Mon, Mar 02, 2015 at 03:36:17PM +0800, han.lu@intel.com wrote:
-> 
-> > +static int hsw_waves_param_get(struct snd_kcontrol *kcontrol,
-> > +				struct snd_ctl_elem_value *ucontrol) {
-> > +	/* keep an empty function here to match alsa-lib calling */
-> > +	return 0;
-> > +}
-> 
-> No, if it's valid to omit this we should be able to remove the function
-> - but I'd really expect to always be able to read the current state of any
-> control.  Applications should be able to do that and then write the value back
-> without changing anything.  Either we should actually read things back or this
-> should return an error (which is presumably what the core does if the
-> function is missing).
+> This file isn't in an upstream tree, should this patch have been sent
+> upstream (I suspect non-upstream trees may need a bit of filtering in
+> the scripts)?
 
-[Han Lu] OK. I made patch v2 against current code, and remove unnecessary logs. For the read back kcontrol, I do not modify patch 7/8 but add actual read back code on patch 8/8, (merge patch 7 and 8 may make the patch too long and unclear?) please review. Thanks.
+Good point! I just added some tests trying to avoid this, which should
+be much better, but nevertheless not complete enough to cover all cases.
+Please help point out inadequate cases when you come across them in future!
+
+Thanks,
+Fengguang
