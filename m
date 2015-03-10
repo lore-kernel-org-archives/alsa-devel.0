@@ -1,48 +1,111 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: Use %pad to print dma_addr_t in
- rsnd_dmapp_init()
-Date: Tue, 10 Mar 2015 18:33:53 +0000
-Message-ID: <20150310183353.GF28806@sirena.org.uk>
-References: <1425984485-28421-1-git-send-email-geert+renesas@glider.be>
+Subject: Re: [PATCH 03/14] ASoC: cs4271: Fix wrong value
+ references for boolean kctl
+Date: Tue, 10 Mar 2015 20:14:04 +0000
+Message-ID: <20150310201404.GK28806@sirena.org.uk>
+References: <1425987556-569-1-git-send-email-tiwai@suse.de>
+ <1425987556-569-4-git-send-email-tiwai@suse.de>
+ <000f424d.62f04d674689d696@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Km2V3aJx5eFEhJmw"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1425984485-28421-1-git-send-email-geert+renesas@glider.be>
-Sender: linux-sh-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4792492217081972903=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAE842605A2
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 21:14:29 +0100 (CET)
+In-Reply-To: <000f424d.62f04d674689d696@cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
+Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "lars@metafoo.de" <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---Km2V3aJx5eFEhJmw
-Content-Type: text/plain; charset=us-ascii
+--===============4792492217081972903==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/cYA8VCGycg41AiS"
 Content-Disposition: inline
 
-On Tue, Mar 10, 2015 at 11:48:05AM +0100, Geert Uytterhoeven wrote:
-> sound/soc/sh/rcar/dma.c: In function 'rsnd_dmapp_init':
-> sound/soc/sh/rcar/dma.c:341:2: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'dma_addr_t' [-Wformat=]
->   dev_dbg(dev, "id/src/dst/chcr = %d/%x/%x/%08x\n",
->   ^
-> sound/soc/sh/rcar/dma.c:341:2: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'dma_addr_t' [-Wformat=]
 
-Applied, thanks.
+--/cYA8VCGycg41AiS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---Km2V3aJx5eFEhJmw
+On Tue, Mar 10, 2015 at 01:14:49PM +0000, Handrigan, Paul wrote:
+>=20
+>=20
+> ------ Original message------
+>=20
+> From: Takashi Iwai
+
+Dunno what your mail client is doing here Paul but it's pretty
+spectacular...!
+
+>=20
+> Date: Tue, Mar 10, 2015 6:39 AM
+>=20
+> To: Mark Brown;
+>=20
+> Cc: Liam Girdwood;Lars-Peter Clausen;Austin, Brian;Handrigan, Paul;Charle=
+s Keepax;alsa-devel@alsa-project.org<mailto:;alsa-devel@alsa-project.org>;
+>=20
+> Subject:[PATCH 03/14] ASoC: cs4271: Fix wrong value references for boolea=
+n kctl
+>=20
+>=20
+> The correct values referred by a boolean control are
+> value.integer.va<http://value.integer.va>lue[], not value.enumerated.it<h=
+ttp://value.enumerated.it>em[].
+> The former is long while the latter is int, so it's even incompatible
+> on 64bit architectures.
+>=20
+> Cc: ><mailto:<stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai ><mailto:<tiwai@suse.de>
+> ---
+>  sound/soc/codecs/cs4271.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+> index 79a4efcb894c..7d3a6accaf9a 100644
+> --- a/sound/soc/codecs/cs4271.c
+> +++ b/sound/soc/codecs/cs4271.c
+>=20
+> Thanks!
+>=20
+> Acked-by: Paul Handrigan ><mailto:<Paul.Handrigan@cirrus.com>
+>=20
+
+--/cYA8VCGycg41AiS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJU/zkQAAoJECTWi3JdVIfQWokH/jG14uTC8iOPabGOVekihfsl
-eIUcVsi/IChlf1VVChrJXI/Opi4I9F+cjpDQmI1dd3nqU9w1FfSt8qsUtxoescqg
-HlJatjEPrNGqqc5/hVpJAO2DGqDDnDjX5/1obfPUcjVXwP12ZBURqq2yvb/g0Krj
-JU3M6P4FBopq8E6M7cPwd3BlgoQBV+lWNKj3N6+zA4iBesuAR0h9KB8tUxTHORHw
-bSqeyt11Pcl3kva3jb9Q7lhFl+gE6gnfNd4vIwwta7U49HUWnc3jkiC1o3dJSgIb
-5L8hee5B3Eh0EBwvZ8cOKFZdqXqDkRcA6G4KzkHY9wpuFZkXbLAILtZo7qO56Ic=
-=3Zxb
+iQEcBAEBCAAGBQJU/1CLAAoJECTWi3JdVIfQGb0H/2M8novG5Gu/ZFWgldTMfHlS
+sOsmEshWJHMyglKfrJVIcsoCx5Pl2GLBAJDh6hG+b8TkROp1XrSdVSqz+k3qd7Pg
+BmR/Zsscbz5shRMyFLzRQDhgbfJNP8eJZr51XrqcdkjD2rRZ9BWhAQaHUwpEBpf0
+EoaOF5EdiIpH950yf2QzTd6ZgMJbYIJviMCAuhxrBY2/Z9rbIp/R54n5w9LeeELh
+3xh2D+hXrjqFJcHtqYXQC4bONoAM0JOo9Uvx7Gn2twRmCk/qjy6WlUeA9fMVQn/V
+pAOIaeZicsGrNeFgJmjEHkroA3x+F2PUtKB7OYogB3eeN+BYd9Ko+rt4ERwebVE=
+=10NU
 -----END PGP SIGNATURE-----
 
---Km2V3aJx5eFEhJmw--
+--/cYA8VCGycg41AiS--
+
+--===============4792492217081972903==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4792492217081972903==--
