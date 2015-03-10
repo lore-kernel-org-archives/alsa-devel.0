@@ -1,72 +1,45 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: move sysclk source setting to
- platform_clock_control for balance.
-Date: Tue, 10 Mar 2015 20:41:06 +0000
-Message-ID: <20150310204106.GQ28806@sirena.org.uk>
-References: <1425949538-20068-1-git-send-email-yao.jin@linux.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] clk: provide clk_is_match() dummy for non-common clk
+Date: Tue, 10 Mar 2015 22:42:54 +0100
+Message-ID: <CAMuHMdWvaO-qEohYX=DNybR1=1d4me=FHO8Rj-eEn2OgAKaPgg@mail.gmail.com>
+References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
+ <1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
+ <20150225172757.421.43718@quantum> <8682755.oK0Ae34OOP@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6796216366456630457=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AD2AC2605CA
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 21:41:11 +0100 (CET)
-In-Reply-To: <1425949538-20068-1-git-send-email-yao.jin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jin Yao <yao.jin@linux.intel.com>
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com, bardliao@realtek.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <8682755.oK0Ae34OOP@wuerfel>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-pwm@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mike Turquette <mturquette@linaro.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@codeaurora.org>, DRI Development <dri-devel@lists.freedesktop.org>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Russell King <linux@arm.linux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6796216366456630457==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Kjn60822oUuI93ff"
-Content-Disposition: inline
-
-
---Kjn60822oUuI93ff
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Mar 10, 2015 at 09:05:38AM +0800, Jin Yao wrote:
-> A playback noise happens after suspend/resume on Braswell. The issue is due to
-> the codec PLL and codec ASRC are not enabled correctly due to the incorrect
-> sysclk setting after resume. This patch resets the sysclk source setting in
-> platform clock control widget handler.
-
-Applied, thanks.
-
---Kjn60822oUuI93ff
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJU/1bhAAoJECTWi3JdVIfQM58H/j7Uf5pjAW0K2jeorAWGEUSP
-f7WXQiW5ZtiHGtfOwksvWqaULx/XUzCf5lKOCbfEw1d84TQZoPIN6eq5zCikDFzu
-HiL1WUZVwappI2As4bGmxck56Nm02yOgjHVJ/o0BZXquWgmh8GDeD2WfsbskH9Wx
-YrIPMvjMfDleUhikkohYAAwPp+9M/WStz5jTcq7Ughfvo/FikkRv3+NULMLxApuU
-whidB9Yq0EZsUIR0rXnI5lR9Xt8J5cK3Pg33JxngrUR03M/e9+AiuwkkH+sTWaLy
-cQtoL2kPkIgzw/twEIMRyfCJAfuDn9817eY96kremEQ/Ktv1CVekK+MtZeiFqfk=
-=Ek02
------END PGP SIGNATURE-----
-
---Kjn60822oUuI93ff--
-
---===============6796216366456630457==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6796216366456630457==--
+T24gU3VuLCBNYXIgOCwgMjAxNSBhdCAxMDowNSBQTSwgQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5k
+Yi5kZT4gd3JvdGU6Cj4gQVJNIHJhbmRjb25maWcgYnVpbGQgdGVzdHMgZm91bmQgYSBuZXcgZXJy
+b3IgZm9yIGNvbmZpZ3VyYXRpb25zCj4gd2l0aCBDT01NT05fQ0xLIGRpc2FibGVkIGJ1dCBIQVNf
+Q0xLIHNlbGVjdGVkIGJ5IHRoZSBwbGF0Zm9ybToKPgo+IEVSUk9SOiAiY2xrX2lzX21hdGNoIiBb
+c291bmQvc29jL2ZzbC9zbmQtc29jLWZzbC1zcGRpZi5rb10gdW5kZWZpbmVkIQo+Cj4gVGhpcyBt
+b3ZlcyB0aGUgZGVjbGFyYXRpb24gYXJvdW5kLCBzbyB0aGlzIGNhc2UgaXMgY292ZXJlZAo+IGJ5
+IHRoZSBleGlzdGluZyBzdGF0aWMgaW5saW5lIGhlbHBlciBmdW5jdGlvbi4KPgo+IFNpZ25lZC1v
+ZmYtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+Cj4gRml4ZXM6IGM2OWUxODJlNTFk
+ODkgKCJjbGs6IGludHJvZHVjZSBjbGtfaXNfbWF0Y2giKQoKRllJLCB0aGlzIGFsc28gaGFwcGVu
+cyBmb3Igc2gvYWxsbW9kY29uZmlnCmh0dHA6Ly9raXNza2IuZWxsZXJtYW4uaWQuYXUva2lzc2ti
+L2J1aWxkcmVzdWx0LzEyMzc5ODg0LwoKR3J7b2V0amUsZWV0aW5nfXMsCgogICAgICAgICAgICAg
+ICAgICAgICAgICBHZWVydAoKLS0KR2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90cyBv
+ZiBMaW51eCBiZXlvbmQgaWEzMiAtLSBnZWVydEBsaW51eC1tNjhrLm9yZwoKSW4gcGVyc29uYWwg
+Y29udmVyc2F0aW9ucyB3aXRoIHRlY2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBoYWNr
+ZXIuIEJ1dAp3aGVuIEknbSB0YWxraW5nIHRvIGpvdXJuYWxpc3RzIEkganVzdCBzYXkgInByb2dy
+YW1tZXIiIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQuCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgLS0gTGludXMgVG9ydmFsZHMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9kcmktZGV2ZWwK
