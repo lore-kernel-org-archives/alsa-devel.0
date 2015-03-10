@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: rsnd: fixup patches for
-	DMA/debugfs
-Date: Tue, 10 Mar 2015 20:17:14 +0000
-Message-ID: <20150310201714.GM28806@sirena.org.uk>
-References: <87385dtzla.wl%kuninori.morimoto.gx@renesas.com>
+From: Belisko Marek <marek.belisko@gmail.com>
+Subject: dummy codec + simple card combination
+Date: Tue, 10 Mar 2015 21:35:46 +0100
+Message-ID: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2778136013883722768=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A5DA42605A2
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 21:17:19 +0100 (CET)
-In-Reply-To: <87385dtzla.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-we0-f173.google.com (mail-we0-f173.google.com
+ [74.125.82.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 030E02605A2
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 21:35:47 +0100 (CET)
+Received: by wesw62 with SMTP id w62so4580845wes.0
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 13:35:46 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============2778136013883722768==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kzMQwe+b+L5ZMwhV"
-Content-Disposition: inline
+I'm trying to add audio support for gta04 (for gsm + bt and fm audio).
+All audio sources are clock masters so basically connection is dummy
+codecs -> cpu dai (mcbsp ports).
 
+For implementing such thing I can see 2 options:
+1. simple card driver which can easily describe cpu dai interface but
+dummy codec cannot because there are no DT bindings (there was sever
+attempts to add DT bindings for dummy-codec but AFAIK none was
+accepted)
 
---kzMQwe+b+L5ZMwhV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This turns it to only solution to create gta04 soundcard which will
+get from DT cpu dai links and use in card driver dummy codecs
+directly.
 
-On Tue, Mar 10, 2015 at 01:23:45AM +0000, Kuninori Morimoto wrote:
->=20
-> Hi Mark
->=20
-> These are rsnd fixup patches
-> 1) is for new DMA method
-> 2) is for debugfs
+Is my assumption correct? I would like to get some feedback before
+wasting my time with implementing something which cannot be pushed
+mainline. Thanks for all suggestions.
 
-Applied both, thanks.
+BR,
 
---kzMQwe+b+L5ZMwhV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+marek
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+-- 
+as simple and primitive as possible
+-------------------------------------------------
+Marek Belisko - OPEN-NANDRA
+Freelance Developer
 
-iQEcBAEBCAAGBQJU/1FJAAoJECTWi3JdVIfQJCIH/3J+exj3EGkaLwRC3efOORbk
-k/ugnCSsuDi6uL7E93EVElbz3QxcvEvdJ3YiURrrzKwVxMQJX1Jw98qdWzBDxbRH
-IcaPodHizQa9Yp0xYaIGnbxhp2SJXCD29MF2AzoyvpZ3DRaUwF+pRMwr8zai9+tb
-JYGsPZ6Q2psQLZ+/btrWRWN96clHL+d4Z0ws1OJoaxTl2MwjH12nFQqes1gmR8SE
-07SBGrZxipDxu1gxRV+GxV3o+DjTVpqkA0IVJCjy07/aTT06wacXkU9EzWLdK2fa
-T7/L1KkHFrTeU09Km3R98X894qPjsYcMKyRybNiRmlFCTqARwaPWCeg+wmYgqUA=
-=w7r/
------END PGP SIGNATURE-----
-
---kzMQwe+b+L5ZMwhV--
-
---===============2778136013883722768==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2778136013883722768==--
+Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
+Tel: +421 915 052 184
+skype: marekwhite
+twitter: #opennandra
+web: http://open-nandra.com
