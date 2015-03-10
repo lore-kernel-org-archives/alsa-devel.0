@@ -1,44 +1,42 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [USB UAC2] How to route pcm stream for UAC2
-	virtual	sound card for lowest latency?
-Date: Tue, 10 Mar 2015 09:30:45 +0100
-Message-ID: <54FEABB5.8060905@ladisch.de>
-References: <54FEAAF5.1090306@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 7A693261557
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 09:30:47 +0100 (CET)
-In-Reply-To: <54FEAAF5.1090306@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Xuebing Wang <xbing6@gmail.com>, alsa-devel@alsa-project.org, richard Jiang <Richard.Jiang@infocus.com>, niranjan Patil <Niranjan.Patil@infocus.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ASoC: rsnd: Use %pad to print dma_addr_t in rsnd_dmapp_init()
+Date: Tue, 10 Mar 2015 11:48:05 +0100
+Message-ID: <1425984485-28421-1-git-send-email-geert+renesas@glider.be>
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: alsa-devel@alsa-project.org
 
-Xuebing Wang wrote:
-> I am developing a commercial product based on Freescale iMX6SL + UAC2.
->
-> I can get UAC2 working for below command. 'hw:1,0' is the virtual sound card. 'hw:0,0' is the physical sound card.
-> export RATE=44100; arecord -D hw:1,0 -c 2 -r $RATE -f S16_LE | aplay -c 2 -r $RATE -f S16_LE &
->
-> Any suggestions on what is the best way to get PCM stream from UAC2
-> virtual sound card and feed to the physical sound card?
+sound/soc/sh/rcar/dma.c: In function 'rsnd_dmapp_init':
+sound/soc/sh/rcar/dma.c:341:2: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'dma_addr_t' [-Wformat=]
+  dev_dbg(dev, "id/src/dst/chcr = %d/%x/%x/%08x\n",
+  ^
+sound/soc/sh/rcar/dma.c:341:2: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'dma_addr_t' [-Wformat=]
 
-This will not work unless the clocks of the virtual sound card (i.e.,
-the USB bus clock) and the clock of the actual sound device are
-synchronized.
+Fixes: 288f392e729dd4d3 ("ASoC: rsnd: add Audio DMAC peri peri support rework")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Perhaps this can still be folded in the original commit?
 
-Otherwise, you have to write your own UAC2 driver.
+ sound/soc/sh/rcar/dma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index 92fd55044ee6b494..2b73df84a76904dc 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -338,8 +338,8 @@ static int rsnd_dmapp_init(struct rsnd_priv *priv, struct rsnd_dma *dma, int id,
+ 
+ 	rsnd_dmapp_stop(dma);
+ 
+-	dev_dbg(dev, "id/src/dst/chcr = %d/%x/%x/%08x\n",
+-		dmapp->dmapp_id, dma->src_addr, dma->dst_addr, dmapp->chcr);
++	dev_dbg(dev, "id/src/dst/chcr = %d/%pad/%pad/%08x\n",
++		dmapp->dmapp_id, &dma->src_addr, &dma->dst_addr, dmapp->chcr);
+ 
+ 	return 0;
+ }
+-- 
+1.9.1
 
-Regards,
-Clemens
