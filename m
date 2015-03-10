@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 11/14] ASoC: wm8955: Fix wrong value references
-	for boolean kctl
-Date: Tue, 10 Mar 2015 12:39:13 +0100
-Message-ID: <1425987556-569-12-git-send-email-tiwai@suse.de>
+Subject: [PATCH 05/14] ASoC: pcm1681: Fix wrong value
+	references for boolean kctl
+Date: Tue, 10 Mar 2015 12:39:07 +0100
+Message-ID: <1425987556-569-6-git-send-email-tiwai@suse.de>
 References: <1425987556-569-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 112652616F6
+ by alsa0.perex.cz (Postfix) with ESMTP id 0482C26164D
  for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 12:39:24 +0100 (CET)
 In-Reply-To: <1425987556-569-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,30 +33,30 @@ on 64bit architectures.
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8955.c | 4 ++--
+ sound/soc/codecs/pcm1681.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8955.c b/sound/soc/codecs/wm8955.c
-index 1ab2d462afad..00bec915d652 100644
---- a/sound/soc/codecs/wm8955.c
-+++ b/sound/soc/codecs/wm8955.c
-@@ -393,7 +393,7 @@ static int wm8955_get_deemph(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+index a722a023c262..477e13d30971 100644
+--- a/sound/soc/codecs/pcm1681.c
++++ b/sound/soc/codecs/pcm1681.c
+@@ -118,7 +118,7 @@ static int pcm1681_get_deemph(struct snd_kcontrol *kcontrol,
  	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct wm8955_priv *wm8955 = snd_soc_codec_get_drvdata(codec);
+ 	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
  
--	ucontrol->value.enumerated.item[0] = wm8955->deemph;
-+	ucontrol->value.integer.value[0] = wm8955->deemph;
+-	ucontrol->value.enumerated.item[0] = priv->deemph;
++	ucontrol->value.integer.value[0] = priv->deemph;
+ 
  	return 0;
  }
- 
-@@ -402,7 +402,7 @@ static int wm8955_put_deemph(struct snd_kcontrol *kcontrol,
- {
+@@ -129,7 +129,7 @@ static int pcm1681_put_deemph(struct snd_kcontrol *kcontrol,
  	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct wm8955_priv *wm8955 = snd_soc_codec_get_drvdata(codec);
--	int deemph = ucontrol->value.enumerated.item[0];
-+	int deemph = ucontrol->value.integer.value[0];
+ 	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
  
- 	if (deemph > 1)
- 		return -EINVAL;
+-	priv->deemph = ucontrol->value.enumerated.item[0];
++	priv->deemph = ucontrol->value.integer.value[0];
+ 
+ 	return pcm1681_set_deemph(codec);
+ }
 -- 
 2.3.2
