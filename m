@@ -1,17 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] Revert "ALSA: dice: fix wrong offsets for Dice
-	interface"
-Date: Tue, 10 Mar 2015 21:58:48 +0900
-Message-ID: <1425992328-2049-1-git-send-email-o-takashi@sakamocchi.jp>
-References: <1425201136-24461-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/2 v2] ALSA: core: optimizations for creating
+	new controls
+Date: Tue, 10 Mar 2015 22:13:29 +0900
+Message-ID: <1425993211-2370-1-git-send-email-o-takashi@sakamocchi.jp>
+References: <1425570206-21026-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 81D2E261569
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 13:58:52 +0100 (CET)
-In-Reply-To: <1425201136-24461-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id A86B5261569
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 14:13:35 +0100 (CET)
+In-Reply-To: <1425570206-21026-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,80 +25,18 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit 8cdebf71098c07168ef6335e2f1f35d85dbe3049.
+This patchset is for reducing calculating time and stack usage at creating
+new control instances, fixes nothing.
 
-The reverted commit breaks out-stream functionality of Dice driver.
+Differences from my previous patches:
+ - Remove superfluous parentheses.
 
+Takashi Sakamoto (2):
+  ALSA: core: use precomputed table to check userspace control params
+  ALSA: core: reduce stack usage related to snd_ctl_new()
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-interface.h | 18 +++++++++---------
- sound/firewire/dice/dice-proc.c      |  4 ++--
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ sound/core/control.c | 271 +++++++++++++++++++++++++++++----------------------
+ 1 file changed, 157 insertions(+), 114 deletions(-)
 
-diff --git a/sound/firewire/dice/dice-interface.h b/sound/firewire/dice/dice-interface.h
-index de7602b..27b044f 100644
---- a/sound/firewire/dice/dice-interface.h
-+++ b/sound/firewire/dice/dice-interface.h
-@@ -299,23 +299,23 @@
- #define RX_ISOCHRONOUS			0x008
- 
- /*
-+ * Index of first quadlet to be interpreted; read/write.  If > 0, that many
-+ * quadlets at the beginning of each data block will be ignored, and all the
-+ * audio and MIDI quadlets will follow.
-+ */
-+#define RX_SEQ_START			0x00c
-+
-+/*
-  * The number of audio channels; read-only.  There will be one quadlet per
-  * channel.
-  */
--#define RX_NUMBER_AUDIO			0x00c
-+#define RX_NUMBER_AUDIO			0x010
- 
- /*
-  * The number of MIDI ports, 0-8; read-only.  If > 0, there will be one
-  * additional quadlet in each data block, following the audio quadlets.
-  */
--#define RX_NUMBER_MIDI			0x010
--
--/*
-- * Index of first quadlet to be interpreted; read/write.  If > 0, that many
-- * quadlets at the beginning of each data block will be ignored, and all the
-- * audio and MIDI quadlets will follow.
-- */
--#define RX_SEQ_START			0x014
-+#define RX_NUMBER_MIDI			0x014
- 
- /*
-  * Names of all audio channels; read-only.  Quadlets are byte-swapped.  Names
-diff --git a/sound/firewire/dice/dice-proc.c b/sound/firewire/dice/dice-proc.c
-index ecfe20f..f5c1d1b 100644
---- a/sound/firewire/dice/dice-proc.c
-+++ b/sound/firewire/dice/dice-proc.c
-@@ -99,9 +99,9 @@ static void dice_proc_read(struct snd_info_entry *entry,
- 		} tx;
- 		struct {
- 			u32 iso;
-+			u32 seq_start;
- 			u32 number_audio;
- 			u32 number_midi;
--			u32 seq_start;
- 			char names[RX_NAMES_SIZE];
- 			u32 ac3_caps;
- 			u32 ac3_enable;
-@@ -204,10 +204,10 @@ static void dice_proc_read(struct snd_info_entry *entry,
- 			break;
- 		snd_iprintf(buffer, "rx %u:\n", stream);
- 		snd_iprintf(buffer, "  iso channel: %d\n", (int)buf.rx.iso);
-+		snd_iprintf(buffer, "  sequence start: %u\n", buf.rx.seq_start);
- 		snd_iprintf(buffer, "  audio channels: %u\n",
- 			    buf.rx.number_audio);
- 		snd_iprintf(buffer, "  midi ports: %u\n", buf.rx.number_midi);
--		snd_iprintf(buffer, "  sequence start: %u\n", buf.rx.seq_start);
- 		if (quadlets >= 68) {
- 			dice_proc_fixup_string(buf.rx.names, RX_NAMES_SIZE);
- 			snd_iprintf(buffer, "  names: %s\n", buf.rx.names);
 -- 
 2.1.0
