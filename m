@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 12/14] ASoC: wm8960: Fix wrong value references
+Subject: [PATCH 08/14] ASoC: wm8731: Fix wrong value references
 	for boolean kctl
-Date: Tue, 10 Mar 2015 12:39:14 +0100
-Message-ID: <1425987556-569-13-git-send-email-tiwai@suse.de>
+Date: Tue, 10 Mar 2015 12:39:10 +0100
+Message-ID: <1425987556-569-9-git-send-email-tiwai@suse.de>
 References: <1425987556-569-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DCEC2616F3
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E63D2616C9
  for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 12:39:24 +0100 (CET)
 In-Reply-To: <1425987556-569-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,30 +33,30 @@ on 64bit architectures.
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8960.c | 4 ++--
+ sound/soc/codecs/wm8731.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index cf8fecf97f2c..3035d9856415 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -184,7 +184,7 @@ static int wm8960_get_deemph(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 098c143f44d6..c6d10533e2bd 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -125,7 +125,7 @@ static int wm8731_get_deemph(struct snd_kcontrol *kcontrol,
  	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
  
--	ucontrol->value.enumerated.item[0] = wm8960->deemph;
-+	ucontrol->value.integer.value[0] = wm8960->deemph;
+-	ucontrol->value.enumerated.item[0] = wm8731->deemph;
++	ucontrol->value.integer.value[0] = wm8731->deemph;
+ 
  	return 0;
  }
- 
-@@ -193,7 +193,7 @@ static int wm8960_put_deemph(struct snd_kcontrol *kcontrol,
+@@ -135,7 +135,7 @@ static int wm8731_put_deemph(struct snd_kcontrol *kcontrol,
  {
  	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
 -	int deemph = ucontrol->value.enumerated.item[0];
 +	int deemph = ucontrol->value.integer.value[0];
+ 	int ret = 0;
  
  	if (deemph > 1)
- 		return -EINVAL;
 -- 
 2.3.2
