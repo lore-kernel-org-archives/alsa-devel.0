@@ -1,16 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/14] ASoC: adav80x: Fix wrong value
-	references for boolean kctl
-Date: Tue, 10 Mar 2015 12:39:03 +0100
-Message-ID: <1425987556-569-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 10/14] ASoC: wm8904: Fix wrong value references
+	for boolean kctl
+Date: Tue, 10 Mar 2015 12:39:12 +0100
+Message-ID: <1425987556-569-11-git-send-email-tiwai@suse.de>
 References: <1425987556-569-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C8F18260537
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 12:39:23 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 04E2A26167A
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 12:39:24 +0100 (CET)
 In-Reply-To: <1425987556-569-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,30 +33,30 @@ on 64bit architectures.
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/adav80x.c | 4 ++--
+ sound/soc/codecs/wm8904.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
-index b67480f1b1aa..4373ada95648 100644
---- a/sound/soc/codecs/adav80x.c
-+++ b/sound/soc/codecs/adav80x.c
-@@ -317,7 +317,7 @@ static int adav80x_put_deemph(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index d3b3f57668cc..215e93c1ddf0 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -525,7 +525,7 @@ static int wm8904_get_deemph(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
+ 
+-	ucontrol->value.enumerated.item[0] = wm8904->deemph;
++	ucontrol->value.integer.value[0] = wm8904->deemph;
+ 	return 0;
+ }
+ 
+@@ -534,7 +534,7 @@ static int wm8904_put_deemph(struct snd_kcontrol *kcontrol,
  {
  	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
--	unsigned int deemph = ucontrol->value.enumerated.item[0];
-+	unsigned int deemph = ucontrol->value.integer.value[0];
+ 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
+-	int deemph = ucontrol->value.enumerated.item[0];
++	int deemph = ucontrol->value.integer.value[0];
  
  	if (deemph > 1)
  		return -EINVAL;
-@@ -333,7 +333,7 @@ static int adav80x_get_deemph(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
- 
--	ucontrol->value.enumerated.item[0] = adav80x->deemph;
-+	ucontrol->value.integer.value[0] = adav80x->deemph;
- 	return 0;
- };
- 
 -- 
 2.3.2
