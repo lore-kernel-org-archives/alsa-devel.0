@@ -1,17 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] sound:pci:Change return type of function,
-	shift_bits	in xonar_dg.c to avoid overflow
-Date: Thu, 12 Mar 2015 08:49:39 +0100
-Message-ID: <55014513.4030201@ladisch.de>
-References: <1426134946-21167-1-git-send-email-xerofoify@gmail.com>
+From: Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: move sysclk source setting to
+	platform_clock_control for balance.
+Date: Tue, 10 Mar 2015 09:05:38 +0800
+Message-ID: <1425949538-20068-1-git-send-email-yao.jin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C248F2656F6
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 08:49:44 +0100 (CET)
-In-Reply-To: <1426134946-21167-1-git-send-email-xerofoify@gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 627562614C2
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 01:59:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +19,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicholas Krause <xerofoify@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, yao.jin@linux.intel.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Nicholas Krause wrote:
-> This changes the return type of the function,shift_bits to unsigned
-> long in order to avoid overflowing issues with this function when
-> called as found when running sparse on the kernel source tree.
+A playback noise happens after suspend/resume on Braswell. The issue is due to
+the codec PLL and codec ASRC are not enabled correctly due to the incorrect
+sysclk setting after resume. This patch resets the sysclk source setting in
+platform clock control widget handler.
 
-sparse is just a tool to help finding problems.  The goal is not to do
-something to shut it up, but the remove the actual problem.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ sound/soc/intel/cht_bsw_rt5672.c | 40 ++++++++++++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
 
-In this case, if the return type of shift_bits() were a problem, you
-would have just moved the problem to its caller where the value is
-then returned as unsigned int anyway.
-
-Stop spamming us with patches for code that you do not understand.
-
-
-Regards,
-Clemens
-
-> Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
-> ---
->  sound/pci/oxygen/xonar_dg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
-> index 4cf3200..2337a76 100644
-> --- a/sound/pci/oxygen/xonar_dg.c
-> +++ b/sound/pci/oxygen/xonar_dg.c
-> @@ -238,7 +238,7 @@ void set_cs4245_adc_params(struct oxygen *chip,
->  	cs4245_write_spi(chip, CS4245_MCLK_FREQ);
->  }
->
-> -static inline unsigned int shift_bits(unsigned int value,
-> +static inline unsigned long shift_bits(unsigned int value,
->  				      unsigned int shift_from,
->  				      unsigned int shift_to,
->  				      unsigned int mask)
+diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
+index bc8dcac..279df4c 100644
+--- a/sound/soc/intel/cht_bsw_rt5672.c
++++ b/sound/soc/intel/cht_bsw_rt5672.c
+@@ -50,6 +50,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_dapm_context *dapm = w->dapm;
+ 	struct snd_soc_card *card = dapm->card;
+ 	struct snd_soc_dai *codec_dai;
++	int ret;
+ 
+ 	codec_dai = cht_get_codec_dai(card);
+ 	if (!codec_dai) {
+@@ -57,17 +58,31 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		return -EIO;
+ 	}
+ 
+-	if (!SND_SOC_DAPM_EVENT_OFF(event))
+-		return 0;
+-
+-	/* Set codec sysclk source to its internal clock because codec PLL will
+-	 * be off when idle and MCLK will also be off by ACPI when codec is
+-	 * runtime suspended. Codec needs clock for jack detection and button
+-	 * press.
+-	 */
+-	snd_soc_dai_set_sysclk(codec_dai, RT5670_SCLK_S_RCCLK,
+-			       0, SND_SOC_CLOCK_IN);
+-
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		/* set codec PLL source to the 19.2MHz platform clock (MCLK) */
++		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5670_PLL1_S_MCLK,
++				CHT_PLAT_CLK_3_HZ, 48000 * 512);
++		if (ret < 0) {
++			dev_err(card->dev, "can't set codec pll: %d\n", ret);
++			return ret;
++		}
++
++		/* set codec sysclk source to PLL */
++		ret = snd_soc_dai_set_sysclk(codec_dai, RT5670_SCLK_S_PLL1,
++			48000 * 512, SND_SOC_CLOCK_IN);
++		if (ret < 0) {
++			dev_err(card->dev, "can't set codec sysclk: %d\n", ret);
++			return ret;
++		}
++	} else {
++		/* Set codec sysclk source to its internal clock because codec
++		 * PLL will be off when idle and MCLK will also be off by ACPI
++		 * when codec is runtime suspended. Codec needs clock for jack
++		 * detection and button press.
++		 */
++		snd_soc_dai_set_sysclk(codec_dai, RT5670_SCLK_S_RCCLK,
++				       48000 * 512, SND_SOC_CLOCK_IN);
++	}
+ 	return 0;
+ }
+ 
+@@ -77,7 +92,8 @@ static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Int Mic", NULL),
+ 	SND_SOC_DAPM_SPK("Ext Spk", NULL),
+ 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+-			platform_clock_control, SND_SOC_DAPM_POST_PMD),
++			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
++			SND_SOC_DAPM_POST_PMD),
+ };
+ 
+ static const struct snd_soc_dapm_route cht_audio_map[] = {
+-- 
+1.9.1
