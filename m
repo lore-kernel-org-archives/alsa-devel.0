@@ -1,16 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH v2 4/8] ASoC: Intel: add kcontrol to
-	enable/disable sound effect module waves
-Date: Tue, 10 Mar 2015 10:41:23 +0800
-Message-ID: <1425955287-29661-4-git-send-email-han.lu@intel.com>
+Subject: [PATCH v2 6/8] ASoC: Intel: add function to set
+	parameter to sound effect module waves
+Date: Tue, 10 Mar 2015 10:41:25 +0800
+Message-ID: <1425955287-29661-6-git-send-email-han.lu@intel.com>
 References: <1425955287-29661-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D30642617B5
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 03:41:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 73AE42617B8
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 03:41:54 +0100 (CET)
 In-Reply-To: <1425955287-29661-1-git-send-email-han.lu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,67 +27,128 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add kcontrol to enable/disable module waves. IPC is valid only when module
-is loaded.
-
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index a604cc4..3d10acc 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -318,6 +318,42 @@ static int hsw_volume_get(struct snd_kcontrol *kcontrol,
- 	return 0;
+diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
+index ebca903..a97324d 100644
+--- a/sound/soc/intel/sst-haswell-ipc.c
++++ b/sound/soc/intel/sst-haswell-ipc.c
+@@ -2166,6 +2166,65 @@ int sst_hsw_module_disable(struct sst_hsw *hsw,
+ 	return ret;
  }
  
-+static int hsw_waves_switch_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
++int sst_hsw_module_set_param(struct sst_hsw *hsw,
++	u32 module_id, u32 instance_id, u32 parameter_id,
++	u32 param_size, char *param)
 +{
-+	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
-+	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
-+	struct sst_hsw *hsw = pdata->hsw;
-+	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
++	int ret;
++	unsigned char *data = NULL;
++	u32 header = 0;
++	u32 payload_size = 0, transfer_parameter_size = 0;
++	dma_addr_t dma_addr = 0;
++	struct sst_hsw_transfer_parameter *parameter;
++	struct device *dev = hsw->dev;
 +
-+	ucontrol->value.integer.value[0] = sst_hsw_is_module_active(hsw, id);
-+	return 0;
-+}
++	header = IPC_GLB_TYPE(IPC_GLB_MODULE_OPERATION) |
++			IPC_MODULE_OPERATION(IPC_MODULE_SET_PARAMETER) |
++			IPC_MODULE_ID(module_id);
++	dev_dbg(dev, "sst_hsw_module_set_param header=%x\n", header);
 +
-+static int hsw_waves_switch_put(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
-+	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
-+	struct sst_hsw *hsw = pdata->hsw;
-+	int ret = 0;
-+	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
-+	bool switch_on = (bool)ucontrol->value.integer.value[0];
++	payload_size = param_size +
++		sizeof(struct sst_hsw_transfer_parameter) -
++		sizeof(struct sst_hsw_transfer_list);
++	dev_dbg(dev, "parameter size : %d\n", param_size);
++	dev_dbg(dev, "payload size   : %d\n", payload_size);
 +
-+	if (sst_hsw_is_module_loaded(hsw, id)) {
-+		if (switch_on == sst_hsw_is_module_active(hsw, id))
-+			return 0;
++	if (payload_size <= SST_HSW_IPC_MAX_SHORT_PARAMETER_SIZE) {
++		/* short parameter, mailbox can contain data */
++		dev_dbg(dev, "transfer parameter size : %d\n",
++			transfer_parameter_size);
 +
-+		/* ipc is valid only when module is loaded */
-+		if (switch_on)
-+			ret = sst_hsw_module_enable(hsw, id, 0);
-+		else
-+			ret = sst_hsw_module_disable(hsw, id, 0);
++		transfer_parameter_size = ALIGN(payload_size, 4);
++		dev_dbg(dev, "transfer parameter aligned size : %d\n",
++			transfer_parameter_size);
++
++		parameter = kzalloc(transfer_parameter_size, GFP_KERNEL);
++		if (parameter == NULL)
++			return -ENOMEM;
++
++		memcpy(parameter->data, param, param_size);
++	} else {
++		dev_warn(dev, "transfer parameter size too large!");
++		return 0;
 +	}
++
++	parameter->parameter_id = parameter_id;
++	parameter->data_size = param_size;
++
++	ret = ipc_tx_message_wait(hsw, header,
++		parameter, transfer_parameter_size , NULL, 0);
++	if (ret < 0)
++		dev_err(dev, "ipc: module set parameter failed - %d\n", ret);
++
++	kfree(parameter);
++
++	if (data)
++		dma_free_coherent(hsw->dsp->dma_dev,
++			param_size, (void *)data, dma_addr);
 +
 +	return ret;
 +}
 +
- /* TLV used by both global and stream volumes */
- static const DECLARE_TLV_DB_SCALE(hsw_vol_tlv, -9000, 300, 1);
+ static struct sst_dsp_device hsw_dev = {
+ 	.thread = hsw_irq_thread,
+ 	.ops = &haswell_ops,
+diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
+index 48290a1..16bec43 100644
+--- a/sound/soc/intel/sst-haswell-ipc.h
++++ b/sound/soc/intel/sst-haswell-ipc.h
+@@ -37,6 +37,7 @@
+ #define SST_HSW_IPC_MAX_PAYLOAD_SIZE	400
+ #define SST_HSW_MAX_INFO_SIZE		64
+ #define SST_HSW_BUILD_HASH_LENGTH	40
++#define SST_HSW_IPC_MAX_SHORT_PARAMETER_SIZE	500
  
-@@ -339,6 +375,9 @@ static const struct snd_kcontrol_new hsw_volume_controls[] = {
- 	SOC_DOUBLE_EXT_TLV("Mic Capture Volume", 4, 0, 8,
- 		ARRAY_SIZE(volume_map) - 1, 0,
- 		hsw_stream_volume_get, hsw_stream_volume_put, hsw_vol_tlv),
-+	/* enable/disable module waves */
-+	SOC_SINGLE_BOOL_EXT("Waves Switch", 0,
-+		hsw_waves_switch_get, hsw_waves_switch_put),
+ struct sst_hsw;
+ struct sst_hsw_stream;
+@@ -187,6 +188,28 @@ enum sst_hsw_performance_action {
+ 	SST_HSW_PERF_STOP = 1,
  };
  
- /* Create DMA buffer page table for DSP */
++struct sst_hsw_transfer_info {
++	uint32_t destination;       /* destination address */
++	uint32_t reverse:1;         /* if 1 data flows from destination */
++	uint32_t size:31;           /* transfer size in bytes.*/
++	uint16_t first_page_offset; /* offset to data in the first page. */
++	uint8_t  packed_pages;   /* page addresses. Each occupies 20 bits */
++} __attribute__((packed));
++
++struct sst_hsw_transfer_list {
++	uint32_t transfers_count;
++	struct sst_hsw_transfer_info transfers;
++} __attribute__((packed));
++
++struct sst_hsw_transfer_parameter {
++	uint32_t parameter_id;
++	uint32_t data_size;
++	union {
++		uint8_t data[1];
++		struct sst_hsw_transfer_list transfer_list;
++	};
++} __attribute__((packed));
++
+ /* SST firmware module info */
+ struct sst_hsw_module_info {
+ 	u8 name[SST_HSW_MAX_INFO_SIZE];
+@@ -487,6 +510,9 @@ int sst_hsw_module_enable(struct sst_hsw *hsw,
+ 	u32 module_id, u32 instance_id);
+ int sst_hsw_module_disable(struct sst_hsw *hsw,
+ 	u32 module_id, u32 instance_id);
++int sst_hsw_module_set_param(struct sst_hsw *hsw,
++	u32 module_id, u32 instance_id, u32 parameter_id,
++	u32 param_size, char *param);
+ 
+ /* runtime module management */
+ struct sst_module_runtime *sst_hsw_runtime_module_create(struct sst_hsw *hsw,
 -- 
 1.9.1
