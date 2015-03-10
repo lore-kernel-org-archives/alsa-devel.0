@@ -1,19 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 01/14] ASoC: adav80x: Fix wrong value
- references for boolean kctl
-Date: Tue, 10 Mar 2015 12:42:07 +0100
-Message-ID: <54FED88F.5030904@metafoo.de>
-References: <1425987556-569-1-git-send-email-tiwai@suse.de>
- <1425987556-569-2-git-send-email-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: firewire-lib: leave unit reference
+	counting completely
+Date: Tue, 10 Mar 2015 21:54:35 +0900
+Message-ID: <1425992075-1707-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-239.synserver.de (smtp-out-239.synserver.de
- [212.40.185.239])
- by alsa0.perex.cz (Postfix) with ESMTP id 59BDA2617C6
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 12:42:03 +0100 (CET)
-In-Reply-To: <1425987556-569-2-git-send-email-tiwai@suse.de>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id B04472604CA
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 13:54:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/10/2015 12:39 PM, Takashi Iwai wrote:
-> The correct values referred by a boolean control are
-> value.integer.value[], not value.enumerated.item[].
-> The former is long while the latter is int, so it's even incompatible
-> on 64bit architectures.
->
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+With previous commit, this module managed to leave the counting to each
+drivers, but the isochronous resources functionality still increment/decrement
+the count.
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+This commit purge such codes to leave the responsibility to each drivers.
 
-Thanks.
+Fix: c6f224dc20ad ('ALSA: firewire-lib: remove reference counting')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/iso-resources.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/firewire/iso-resources.c b/sound/firewire/iso-resources.c
+index 5f17b77..f0e4d50 100644
+--- a/sound/firewire/iso-resources.c
++++ b/sound/firewire/iso-resources.c
+@@ -26,7 +26,7 @@
+ int fw_iso_resources_init(struct fw_iso_resources *r, struct fw_unit *unit)
+ {
+ 	r->channels_mask = ~0uLL;
+-	r->unit = fw_unit_get(unit);
++	r->unit = unit;
+ 	mutex_init(&r->mutex);
+ 	r->allocated = false;
+ 
+@@ -42,7 +42,6 @@ void fw_iso_resources_destroy(struct fw_iso_resources *r)
+ {
+ 	WARN_ON(r->allocated);
+ 	mutex_destroy(&r->mutex);
+-	fw_unit_put(r->unit);
+ }
+ EXPORT_SYMBOL(fw_iso_resources_destroy);
+ 
+-- 
+2.1.0
