@@ -1,15 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH v2 5/8] ASoC: Intel: track module state on RTD3
-Date: Tue, 10 Mar 2015 10:41:24 +0800
-Message-ID: <1425955287-29661-5-git-send-email-han.lu@intel.com>
+Subject: [PATCH v2 7/8] ASoC: Intel: add kcontrol to set
+	parameter to sound effect module waves
+Date: Tue, 10 Mar 2015 10:41:26 +0800
+Message-ID: <1425955287-29661-7-git-send-email-han.lu@intel.com>
 References: <1425955287-29661-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D2532617B6
- for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 03:41:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 360972617BB
+ for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2015 03:41:54 +0100 (CET)
 In-Reply-To: <1425955287-29661-1-git-send-email-han.lu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,127 +27,75 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Track module state over suspend so it's state can be restored on resume.
+Each kcontrol command includes a line of parameters up to 128 bytes.
+kcontrol command to set param:
+    cset "name='Waves Set Param' <0x01,0xff,...>"
+or
+    cset-bin-file "name='Waves Set Param' <path/to/binary/config/file>"
+alsa-lib v1.0.29 or commit 6ea14c36 and f47480af are required to support the
+kcontrol commands.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 265d754..ebca903 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -337,6 +337,10 @@ struct sst_hsw {
- 
- 	/* FW log stream */
- 	struct sst_hsw_log_stream log_stream;
-+
-+	/* flags bit field to track module state when resume from RTD3,
-+	 * each bit represent state (enabled/disabled) of single module */
-+	u32 enabled_modules_rtd3;
- };
- 
- #define CREATE_TRACE_POINTS
-@@ -1986,6 +1990,21 @@ bool sst_hsw_is_module_active(struct sst_hsw *hsw, u32 module_id)
- 		return false;
- }
- 
-+void sst_hsw_set_module_enabled_rtd3(struct sst_hsw *hsw, u32 module_id)
-+{
-+	hsw->enabled_modules_rtd3 |= (1 << module_id);
-+}
-+
-+void sst_hsw_set_module_disabled_rtd3(struct sst_hsw *hsw, u32 module_id)
-+{
-+	hsw->enabled_modules_rtd3 &= ~(1 << module_id);
-+}
-+
-+bool sst_hsw_is_module_enabled_rtd3(struct sst_hsw *hsw, u32 module_id)
-+{
-+	return hsw->enabled_modules_rtd3 & (1 << module_id);
-+}
-+
- int sst_hsw_module_load(struct sst_hsw *hsw,
- 	u32 module_id, u32 instance_id, char *name)
- {
 diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
-index 30c65b2..48290a1 100644
+index 16bec43..737f206 100644
 --- a/sound/soc/intel/sst-haswell-ipc.h
 +++ b/sound/soc/intel/sst-haswell-ipc.h
-@@ -477,6 +477,9 @@ struct sst_dsp *sst_hsw_get_dsp(struct sst_hsw *hsw);
- void sst_hsw_init_module_state(struct sst_hsw *hsw);
- bool sst_hsw_is_module_loaded(struct sst_hsw *hsw, u32 module_id);
- bool sst_hsw_is_module_active(struct sst_hsw *hsw, u32 module_id);
-+void sst_hsw_set_module_enabled_rtd3(struct sst_hsw *hsw, u32 module_id);
-+void sst_hsw_set_module_disabled_rtd3(struct sst_hsw *hsw, u32 module_id);
-+bool sst_hsw_is_module_enabled_rtd3(struct sst_hsw *hsw, u32 module_id);
+@@ -38,6 +38,7 @@
+ #define SST_HSW_MAX_INFO_SIZE		64
+ #define SST_HSW_BUILD_HASH_LENGTH	40
+ #define SST_HSW_IPC_MAX_SHORT_PARAMETER_SIZE	500
++#define WAVES_PARAM_COUNT		128
  
- int sst_hsw_module_load(struct sst_hsw *hsw,
- 	u32 module_id, u32 instance_id, char *name);
+ struct sst_hsw;
+ struct sst_hsw_stream;
 diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 3d10acc..72e9e9a 100644
+index 72e9e9a..470f206 100644
 --- a/sound/soc/intel/sst-haswell-pcm.c
 +++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -326,7 +326,9 @@ static int hsw_waves_switch_get(struct snd_kcontrol *kcontrol,
- 	struct sst_hsw *hsw = pdata->hsw;
- 	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
- 
--	ucontrol->value.integer.value[0] = sst_hsw_is_module_active(hsw, id);
-+	ucontrol->value.integer.value[0] =
-+		(sst_hsw_is_module_active(hsw, id) ||
-+		sst_hsw_is_module_enabled_rtd3(hsw, id));
- 	return 0;
+@@ -366,6 +366,33 @@ static int hsw_waves_switch_put(struct snd_kcontrol *kcontrol,
+ 	return ret;
  }
  
-@@ -349,6 +351,16 @@ static int hsw_waves_switch_put(struct snd_kcontrol *kcontrol,
- 			ret = sst_hsw_module_enable(hsw, id, 0);
- 		else
- 			ret = sst_hsw_module_disable(hsw, id, 0);
-+	} else {
-+		/* on RTD3, module is unloaded */
-+		if (switch_on == sst_hsw_is_module_enabled_rtd3(hsw, id))
-+			return 0;
++static int hsw_waves_param_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	/* keep an empty function here to match alsa-lib calling */
++	return 0;
++}
 +
-+		/* set flag for track */
-+		if (switch_on)
-+			sst_hsw_set_module_enabled_rtd3(hsw, id);
-+		else
-+			sst_hsw_set_module_disabled_rtd3(hsw, id);
- 	}
- 
- 	return ret;
-@@ -1157,10 +1169,18 @@ static int hsw_pcm_runtime_suspend(struct device *dev)
- {
- 	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
- 	struct sst_hsw *hsw = pdata->hsw;
++static int hsw_waves_param_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
++	struct sst_hsw *hsw = pdata->hsw;
 +	int ret;
- 
- 	if (pdata->pm_state >= HSW_PM_STATE_RTD3)
- 		return 0;
- 
-+	/* fw modules will be unloaded on RTD3, set flag to track */
-+	if (sst_hsw_is_module_active(hsw, SST_HSW_MODULE_WAVES)) {
-+		ret = sst_hsw_module_disable(hsw, SST_HSW_MODULE_WAVES, 0);
-+		if (ret < 0)
-+			return ret;
-+		sst_hsw_set_module_enabled_rtd3(hsw, SST_HSW_MODULE_WAVES);
-+	}
- 	sst_hsw_dsp_runtime_suspend(hsw);
- 	sst_hsw_dsp_runtime_sleep(hsw);
- 	pdata->pm_state = HSW_PM_STATE_RTD3;
-@@ -1195,6 +1215,15 @@ static int hsw_pcm_runtime_resume(struct device *dev)
- 	else if (ret == 1) /* no action required */
- 		return 0;
- 
-+	/* check flag when resume */
-+	if (sst_hsw_is_module_enabled_rtd3(hsw, SST_HSW_MODULE_WAVES)) {
-+		ret = sst_hsw_module_enable(hsw, SST_HSW_MODULE_WAVES, 0);
-+		if (ret < 0)
-+			return ret;
-+		/* unset flag */
-+		sst_hsw_set_module_disabled_rtd3(hsw, SST_HSW_MODULE_WAVES);
-+	}
++	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
++	int param_id = ucontrol->value.bytes.data[0];
++	int param_size = WAVES_PARAM_COUNT;
 +
- 	pdata->pm_state = HSW_PM_STATE_D0;
- 	return ret;
- }
++	if (sst_hsw_is_module_loaded(hsw, id)) {
++		if (!sst_hsw_is_module_active(hsw, id))
++			return 0;
++		ret = sst_hsw_module_set_param(hsw, id, 0, param_id,
++				param_size, ucontrol->value.bytes.data);
++	}
++	return ret;
++}
++
+ /* TLV used by both global and stream volumes */
+ static const DECLARE_TLV_DB_SCALE(hsw_vol_tlv, -9000, 300, 1);
+ 
+@@ -390,6 +417,9 @@ static const struct snd_kcontrol_new hsw_volume_controls[] = {
+ 	/* enable/disable module waves */
+ 	SOC_SINGLE_BOOL_EXT("Waves Switch", 0,
+ 		hsw_waves_switch_get, hsw_waves_switch_put),
++	/* set parameters to module waves */
++	SND_SOC_BYTES_EXT("Waves Set Param", WAVES_PARAM_COUNT,
++		hsw_waves_param_get, hsw_waves_param_put),
+ };
+ 
+ /* Create DMA buffer page table for DSP */
 -- 
 1.9.1
