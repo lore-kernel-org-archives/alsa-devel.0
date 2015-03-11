@@ -1,62 +1,71 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] clk: provide clk_is_match() dummy for non-common clk
-Date: Wed, 11 Mar 2015 12:29:05 +0000
-Message-ID: <20150311122905.GY8656@n2100.arm.linux.org.uk>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
- <1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
- <20150225172757.421.43718@quantum>
- <8682755.oK0Ae34OOP@wuerfel>
- <20150311102208.GX8656@n2100.arm.linux.org.uk>
- <20150311111755.GI952@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
+ resume_post for Braswell snd_soc_card
+Date: Wed, 11 Mar 2015 12:50:47 +0000
+Message-ID: <20150311125047.GD28806@sirena.org.uk>
+References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-pwm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150311111755.GI952@pengutronix.de>
-Sender: linux-pwm-owner@vger.kernel.org
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Mike Turquette <mturquette@linaro.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, linux-serial@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============3235672408420308392=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5ED662651D5
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 13:50:55 +0100 (CET)
+In-Reply-To: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jin Yao <yao.jin@linux.intel.com>
+Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 11, 2015 at 12:17:55PM +0100, Uwe Kleine-K=F6nig wrote:
-> Hey Russell,
->=20
-> On Wed, Mar 11, 2015 at 10:22:09AM +0000, Russell King - ARM Linux wr=
-ote:
-> > On Sun, Mar 08, 2015 at 10:05:29PM +0100, Arnd Bergmann wrote:
-> > > ARM randconfig build tests found a new error for configurations
-> > > with COMMON_CLK disabled but HAS_CLK selected by the platform:
-> > >=20
-> > > ERROR: "clk_is_match" [sound/soc/fsl/snd-soc-fsl-spdif.ko] undefi=
-ned!
-> > >=20
-> > > This moves the declaration around, so this case is covered
-> > > by the existing static inline helper function.
-> > >=20
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > Fixes: c69e182e51d89 ("clk: introduce clk_is_match")
-> > > ----
-> > > BTW, we have a preexisting problem in clk_get_parent,
-> > > clk_round_rate and clk_set_parent, which I've worked around in
-> > > my randconfig builds so far. Should we do that the same way?
-> >=20
-> > NAK, as Uwe points out, you didn't address my comment.
-> You commented on the patch that is c69e182e51d8 ("clk: introduce
-> clk_is_match") now in next. Arnd just moved this around.
 
-*Sigh*
+--===============3235672408420308392==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4Cp72eN6HUuZZoDF"
+Content-Disposition: inline
 
-Mike - please remove this commit until proper kernel patch process is
-honoured.  We'll have some order here, and mutual respect of fellow
-kernel developers, rather than people selectively ignoring people.
-Yes, I realise that it fixes a bug, but it's utterly disgusting that
-comments on a patch are ignored and it's just picked up irrespective
-of comments being addressed.
 
-If you don't like that, bloody well do a better job.
+--4Cp72eN6HUuZZoDF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---=20
-=46TTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps u=
-p
-according to speedtest.net.
+On Wed, Mar 11, 2015 at 11:48:33AM +0800, Jin Yao wrote:
+> On Braswell, we need to add some machine specific setting before suspend
+> and after resume. For example, disable/enable jack detection in codec so
+> use snd_soc_card suspend_pre and resume_post ops for this purpose.
+
+Reverted since it doesn't build!
+
+--4Cp72eN6HUuZZoDF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVADomAAoJECTWi3JdVIfQOtgH/3eRdyvH/1tGM4SwypurM00F
+zPTfQqc3bt0xlrvyH/cskhhOfbBgHhuAn15qYjbNab7fSSZwY/WrbbCNnsr1aUdH
+Dp/09JM05rAjDE0bM9wPZw8NkAOWgLpLQyQL6r0taxhHjPVQc3hXQ3oJULKjra0T
+Wu8sPjaFS24lN7Dsa6HLU7I29mOegA+EtDk2m9TRc9ymXKA74S9EBCHscFro6TPH
+951SgUl6goIFr9QuXDNpmrIkmhyAovC/Zt4fyApfbjQ61GhSuYykBY7/5twOla5/
+XJz0E3qnCqYy6nxwUlnXO1rkFAtMJ22+apYnWjBfe97SjLtOlKH+8SK0Y+3AtEA=
+=b4TR
+-----END PGP SIGNATURE-----
+
+--4Cp72eN6HUuZZoDF--
+
+--===============3235672408420308392==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3235672408420308392==--
