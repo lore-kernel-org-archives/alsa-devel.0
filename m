@@ -1,71 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: rt5670: Add IRQ function
-Date: Wed, 11 Mar 2015 12:08:31 +0000
-Message-ID: <20150311120831.GA28806@sirena.org.uk>
-References: <1426045365-15975-1-git-send-email-bardliao@realtek.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] clk: provide clk_is_match() dummy for non-common clk
+Date: Wed, 11 Mar 2015 12:29:05 +0000
+Message-ID: <20150311122905.GY8656@n2100.arm.linux.org.uk>
+References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
+ <1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
+ <20150225172757.421.43718@quantum>
+ <8682755.oK0Ae34OOP@wuerfel>
+ <20150311102208.GX8656@n2100.arm.linux.org.uk>
+ <20150311111755.GI952@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6797238420779800536=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AA0D2651C7
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 13:08:46 +0100 (CET)
-In-Reply-To: <1426045365-15975-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, yao.jin@intel.com, flove@realtek.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-pwm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150311111755.GI952@pengutronix.de>
+Sender: linux-pwm-owner@vger.kernel.org
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Mike Turquette <mturquette@linaro.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, linux-serial@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Mar 11, 2015 at 12:17:55PM +0100, Uwe Kleine-K=F6nig wrote:
+> Hey Russell,
+>=20
+> On Wed, Mar 11, 2015 at 10:22:09AM +0000, Russell King - ARM Linux wr=
+ote:
+> > On Sun, Mar 08, 2015 at 10:05:29PM +0100, Arnd Bergmann wrote:
+> > > ARM randconfig build tests found a new error for configurations
+> > > with COMMON_CLK disabled but HAS_CLK selected by the platform:
+> > >=20
+> > > ERROR: "clk_is_match" [sound/soc/fsl/snd-soc-fsl-spdif.ko] undefi=
+ned!
+> > >=20
+> > > This moves the declaration around, so this case is covered
+> > > by the existing static inline helper function.
+> > >=20
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > Fixes: c69e182e51d89 ("clk: introduce clk_is_match")
+> > > ----
+> > > BTW, we have a preexisting problem in clk_get_parent,
+> > > clk_round_rate and clk_set_parent, which I've worked around in
+> > > my randconfig builds so far. Should we do that the same way?
+> >=20
+> > NAK, as Uwe points out, you didn't address my comment.
+> You commented on the patch that is c69e182e51d8 ("clk: introduce
+> clk_is_match") now in next. Arnd just moved this around.
 
---===============6797238420779800536==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5NsQWDwfMDrsTk14"
-Content-Disposition: inline
+*Sigh*
 
+Mike - please remove this commit until proper kernel patch process is
+honoured.  We'll have some order here, and mutual respect of fellow
+kernel developers, rather than people selectively ignoring people.
+Yes, I realise that it fixes a bug, but it's utterly disgusting that
+comments on a patch are ignored and it's just picked up irrespective
+of comments being addressed.
 
---5NsQWDwfMDrsTk14
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If you don't like that, bloody well do a better job.
 
-On Wed, Mar 11, 2015 at 11:42:44AM +0800, Bard Liao wrote:
-> This patch adds the IRQ function support of rt5670. We use a flag
-> named dev_gpio in platform data to inform codec driver if the IRQ
-> function is used or not. Also, we export rt5670_set_jack_detect
-> for machine driver to pass the jack point.
-
-Applied both, thanks.
-
---5NsQWDwfMDrsTk14
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVADA+AAoJECTWi3JdVIfQFUgH/02mxWVRJo2HXHfC++g3zmSs
-riJaJFqTNqqQjBX7Rusw3PBwHy6qXqdInj+hYr7mS/O9xwpf9EY5a3Us/s7QP3WA
-EgI20W8eEHx5Fca2DstV2zILvt3gWeUkDjZV8S5rzdiC+1al3CkszEpjx75MHqqj
-oYX3jI88eFXdazvcsEJJj0RpaOLXPxXmR62Nl5zmKKaaFdiI6igWdj4Pb4bNPTdt
-l3l9yNxFPHJ2Q84eYTDuKhY/3Id3EQBDRyKnRUmFZn3UTpM4MsHjK4oqmqnriOZq
-ncz9k+df4LHpTIJKlxQUSQ2C5PJechoMi0bFEXptQiOn04mFrFE8WR1mS051TgA=
-=G9ab
------END PGP SIGNATURE-----
-
---5NsQWDwfMDrsTk14--
-
---===============6797238420779800536==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6797238420779800536==--
+--=20
+=46TTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps u=
+p
+according to speedtest.net.
