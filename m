@@ -1,48 +1,33 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 11/15] ASoC: ab8500-codec: don't export static symbol
-Date: Wed, 11 Mar 2015 18:29:01 +0000
-Message-ID: <20150311182901.GI28806@sirena.org.uk>
-References: <1426092997-30605-1-git-send-email-Julia.Lawall@lip6.fr>
- <1426092997-30605-12-git-send-email-Julia.Lawall@lip6.fr>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [asoc:topic/max98925 1/1] sound/soc/codecs/max98925.c:189:1: sparse:
+ symbol 'max98925_spk_tlv' was not declared. Should it be static?
+Date: Thu, 12 Mar 2015 03:05:44 +0800
+Message-ID: <201503120256.08LBzgQA%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="R34W7XFXM/Lcyq1t"
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1426092997-30605-12-git-send-email-Julia.Lawall@lip6.fr>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, daniel@iogearbox.net
+Sender: linux-kernel-owner@vger.kernel.org
+To: Anish Kumar <yesanishhere@gmail.com>
+Cc: kbuild-all@01.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/max98925
+head:   31bdf73603f61a22c1643d1d887cf36eaa3a6834
+commit: 31bdf73603f61a22c1643d1d887cf36eaa3a6834 [1/1] ASoC: Add max98925 codec driver
+reproduce:
+  # apt-get install sparse
+  git checkout 31bdf73603f61a22c1643d1d887cf36eaa3a6834
+  make ARCH=x86_64 allmodconfig
+  make C=1 CF=-D__CHECK_ENDIAN__
 
---R34W7XFXM/Lcyq1t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 11, 2015 at 05:56:33PM +0100, Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
->=20
-> The semantic patch that fixes this problem is as follows:
-> (http://coccinelle.lip6.fr/)
+sparse warnings: (new ones prefixed by >>)
 
-Applied, thanks.
+>> sound/soc/codecs/max98925.c:189:1: sparse: symbol 'max98925_spk_tlv' was not declared. Should it be static?
 
---R34W7XFXM/Lcyq1t
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Please review and possibly fold the followup patch.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVAIlsAAoJECTWi3JdVIfQElAH/3K5krgP6p+mkXoy07eaiLAv
-lzJQ+xGcSM+FMWtrOMEmgnnzu0Nj/ePkQubi2JXXKLHbT8yq6G6i/n7AP34NZP+B
-CjxtPbIjXThehc87oxYd+ItXlPcRXW0TV+iQ92oK/lVfbeeGPR6YNBQp11JR3VRa
-BapZSaUnYm/Lbg53yR6TW5Map2qeW6DRlrmBiXrXRkmByijG7oxLtppPkhP87KNl
-wEXS+Md7cEUq9ZjMb3Kvpb0X91dAbnq59tSRiIHsqkqLHgRBHpCtCHltQeLr4PCe
-nyHe4YXz0Da2Cf+zM17lH2ig6Dw9XPKJEEaYE61f6nsFtrF70F01Ai06DnunoJ8=
-=0sA2
------END PGP SIGNATURE-----
-
---R34W7XFXM/Lcyq1t--
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+http://lists.01.org/mailman/listinfo/kbuild                 Intel Corporation
