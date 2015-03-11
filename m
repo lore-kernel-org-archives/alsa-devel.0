@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
- resume_post for Braswell snd_soc_card
-Date: Wed, 11 Mar 2015 11:50:11 +0000
-Message-ID: <20150311115011.GY28806@sirena.org.uk>
-References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: move the jack creation to
+ Braswell machine driver
+Date: Wed, 11 Mar 2015 11:53:54 +0000
+Message-ID: <20150311115354.GZ28806@sirena.org.uk>
+References: <1426055081-10295-1-git-send-email-yao.jin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4117444990549126154=="
+Content-Type: multipart/mixed; boundary="===============2738334564381625754=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1790226057B
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 12:50:22 +0100 (CET)
-In-Reply-To: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FD6E26057F
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 12:54:00 +0100 (CET)
+In-Reply-To: <1426055081-10295-1-git-send-email-yao.jin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,46 +26,47 @@ Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@inte
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4117444990549126154==
+--===============2738334564381625754==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="z8fvYVVi1MVTXPE1"
+	protocol="application/pgp-signature"; boundary="OqXX2KyyhehiiWxy"
 Content-Disposition: inline
 
 
---z8fvYVVi1MVTXPE1
+--OqXX2KyyhehiiWxy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 11, 2015 at 11:48:33AM +0800, Jin Yao wrote:
-> On Braswell, we need to add some machine specific setting before suspend
-> and after resume. For example, disable/enable jack detection in codec so
-> use snd_soc_card suspend_pre and resume_post ops for this purpose.
+On Wed, Mar 11, 2015 at 02:24:41PM +0800, Jin Yao wrote:
+> The jack creation code was in rt5670 codec driver before due to the
+> jack resources (gpio/irq) were defined under the node of codec device
+> in ACPI on Braswell. We used the snd_soc_jack_new() to create a jack
+> instance.
 
 Applied, thanks.
 
---z8fvYVVi1MVTXPE1
+--OqXX2KyyhehiiWxy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVACvyAAoJECTWi3JdVIfQWkEH/2UyE8R57hlnCylK/QjkrIHM
-vTvYMGk8NXwzekRyPFogIlZ4CD6mI1GF3bfrSpEjr4a4UL9ILFym8bbs75PFifkO
-enz7VMSOAeEZZfUp7g95bdxN7ujjzDXAPM1bZmbdtE8nVHj9Tv/HI70/Zc9AR9Y8
-uxiUWi8ht2kTj4bJQOQVMq4Qf5yZ5TuqMLDQ5vmJ3TEgVMqUzPPxcgwvB+zmqBH+
-zcXF7p0FYlbEXvUzGfm3M7m41S/VDICbCo4wvIYRgEV3ZWlh1iDjV4f7RQlSTiaL
-WwlYUszk4WFE2pTmjXAYKTzmR90nQMky+m8Aj4c5GAA99mg91fKeY/lVLo+yVe4=
-=1E55
+iQEcBAEBCAAGBQJVACzSAAoJECTWi3JdVIfQtYIIAIMN+eGIRKRljnQ0c6Cziteb
+MbB5ACVGOKMRBYmYoiz47jaclNpxCOYAYT5RTd3z1k90QS9KSYpMQyYjkRMofHw7
+wix9HM8yMQlMqKrs4Mk7x3O0dcV1zZLb+h6HDdWuktGtjDRcglY56uvJsuuuLd0D
+QGhLAGQ7K08ARLNgyFjI7arojq/QfTRzG1ylO8SMIyiR2JwAxKTSjwKAVWk3slQI
+bB3b5DNCMq6YGLxDP4NdFWzk01ssjeWxDzaczfwr9rvQQyV7giCkPf2tvGMvADd1
+zzAxRlC6hHfADecWSLl7XtOdOZvyiyhVgPa13cI/clUtrnwPFk1TP6O9IE1Vnrs=
+=UaIN
 -----END PGP SIGNATURE-----
 
---z8fvYVVi1MVTXPE1--
+--OqXX2KyyhehiiWxy--
 
---===============4117444990549126154==
+--===============2738334564381625754==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4117444990549126154==--
+--===============2738334564381625754==--
