@@ -1,18 +1,19 @@
 From: "Lu, Han" <han.lu@intel.com>
-Subject: Re: [PATCH v2 1/8] ASoC: Intel: add function to load
-	firmware image
-Date: Wed, 11 Mar 2015 06:48:51 +0000
-Message-ID: <B51200AC81AB024499A3C2C9A1BB90A8373CA7@SHSMSX101.ccr.corp.intel.com>
+Subject: Re: [PATCH v2 4/8] ASoC: Intel: add kcontrol to
+ enable/disable sound effect module waves
+Date: Wed, 11 Mar 2015 07:07:12 +0000
+Message-ID: <B51200AC81AB024499A3C2C9A1BB90A8373CC6@SHSMSX101.ccr.corp.intel.com>
 References: <1425955287-29661-1-git-send-email-han.lu@intel.com>
- <20150310203837.GO28806@sirena.org.uk>
+ <1425955287-29661-4-git-send-email-han.lu@intel.com>
+ <20150310203730.GN28806@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 050A5265015
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 07:49:56 +0100 (CET)
-In-Reply-To: <20150310203837.GO28806@sirena.org.uk>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCDAE2650FF
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 08:07:21 +0100 (CET)
+In-Reply-To: <20150310203730.GN28806@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,28 +31,41 @@ List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
 > From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, March 11, 2015 4:39 AM
+> Sent: Wednesday, March 11, 2015 4:38 AM
 > To: Lu, Han
 > Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [PATCH v2 1/8] ASoC: Intel: add function to load firmware image
+> Subject: Re: [PATCH v2 4/8] ASoC: Intel: add kcontrol to enable/disable
+> sound effect module waves
 > 
-> On Tue, Mar 10, 2015 at 10:41:20AM +0800, han.lu@intel.com wrote:
-> > From: "Lu, Han" <han.lu@intel.com>
-> >
-> > Add a general method to load firmware image, and apply to base
-> > firmware image loading. With the method, the driver will support
-> > loading multiple different modules in order to support different features.
+> On Tue, Mar 10, 2015 at 10:41:23AM +0800, han.lu@intel.com wrote:
 > 
-> This doesn't apply against current code - you should be sending things against
-> my git tree (or -next is often close enough).
+> > +static int hsw_waves_switch_put(struct snd_kcontrol *kcontrol,
+> > +				struct snd_ctl_elem_value *ucontrol) {
+> > +	struct snd_soc_platform *platform =
+> snd_soc_kcontrol_platform(kcontrol);
+> > +	struct hsw_priv_data *pdata =
+> snd_soc_platform_get_drvdata(platform);
+> > +	struct sst_hsw *hsw = pdata->hsw;
+> > +	int ret = 0;
+> > +	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
+> > +	bool switch_on = (bool)ucontrol->value.integer.value[0];
+> > +
+> > +	if (sst_hsw_is_module_loaded(hsw, id)) {
+> > +		if (switch_on == sst_hsw_is_module_active(hsw, id))
+> > +			return 0;
+> > +
+> > +		/* ipc is valid only when module is loaded */
+> > +		if (switch_on)
+> > +			ret = sst_hsw_module_enable(hsw, id, 0);
+> > +		else
+> > +			ret = sst_hsw_module_disable(hsw, id, 0);
+> > +	}
+> 
+> I'm not clear how this setting is saved when the module is not in RAM on the
+> DSP.  If the module enable/disable calls do that that's fine but I'd expect the
+> function to return an error if the module isn't loaded (or better yet for the
+> control not to be made visible to userspace at all) - we shouldn't be silently
+> ignoring what the user is setting.
 
-[Han] sorry, I made patches against for-next branch, and I just run
-	$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-	$ cd sound
-	$ git checkout origin/for-next -b for-next
-And apply the patches manually
-	$ patch -p1 < 0001-ASoC-Intel-add-function-to-load-firmware-image.patch
-	$ patch -p1 < 0002-ASoC-Intel-add-function-to-load-sound-effect-module-.patch
-	...
-	$ patch -p1 < 0008-ASoC-Intel-enable-parameter-restore-for-sound-effect.patch
-But didn't find conflict. Is there any mistake in my operation, or could you please share the error log so I can correct my patch? Very sorry for inconvenient.
+[Han] if module is not in RAM on the DSP, sst_hsw_is_module_loaded() will return false. Also sst_hsw_module_enable() and sst_hsw_module_disable() will check the module status in DSP before send IPC commands to DSP.
+In case sst_hsw_is_module_loaded() return false, (eg. System go RTD3 and modules in DSP RAM be unloaded) the user setting will be stored in variant u32 enabled_modules_rtd3, which is implemented in patch 0005. So which is better for next version of patch, to add error return here, merge patch 0005 with 0004, or  do not change this part? Thanks.
