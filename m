@@ -1,50 +1,71 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] clk: provide clk_is_match() dummy for non-common clk
-Date: Wed, 11 Mar 2015 12:17:55 +0100
-Message-ID: <20150311111755.GI952@pengutronix.de>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
- <1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
- <20150225172757.421.43718@quantum> <8682755.oK0Ae34OOP@wuerfel>
- <20150311102208.GX8656@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
+ resume_post for Braswell snd_soc_card
+Date: Wed, 11 Mar 2015 11:50:11 +0000
+Message-ID: <20150311115011.GY28806@sirena.org.uk>
+References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20150311102208.GX8656@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, Mike Turquette <mturquette@linaro.org>, linux-serial@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============4117444990549126154=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1790226057B
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 12:50:22 +0100 (CET)
+In-Reply-To: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jin Yao <yao.jin@linux.intel.com>
+Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-SGV5IFJ1c3NlbGwsCgpPbiBXZWQsIE1hciAxMSwgMjAxNSBhdCAxMDoyMjowOUFNICswMDAwLCBS
-dXNzZWxsIEtpbmcgLSBBUk0gTGludXggd3JvdGU6Cj4gT24gU3VuLCBNYXIgMDgsIDIwMTUgYXQg
-MTA6MDU6MjlQTSArMDEwMCwgQXJuZCBCZXJnbWFubiB3cm90ZToKPiA+IEFSTSByYW5kY29uZmln
-IGJ1aWxkIHRlc3RzIGZvdW5kIGEgbmV3IGVycm9yIGZvciBjb25maWd1cmF0aW9ucwo+ID4gd2l0
-aCBDT01NT05fQ0xLIGRpc2FibGVkIGJ1dCBIQVNfQ0xLIHNlbGVjdGVkIGJ5IHRoZSBwbGF0Zm9y
-bToKPiA+IAo+ID4gRVJST1I6ICJjbGtfaXNfbWF0Y2giIFtzb3VuZC9zb2MvZnNsL3NuZC1zb2Mt
-ZnNsLXNwZGlmLmtvXSB1bmRlZmluZWQhCj4gPiAKPiA+IFRoaXMgbW92ZXMgdGhlIGRlY2xhcmF0
-aW9uIGFyb3VuZCwgc28gdGhpcyBjYXNlIGlzIGNvdmVyZWQKPiA+IGJ5IHRoZSBleGlzdGluZyBz
-dGF0aWMgaW5saW5lIGhlbHBlciBmdW5jdGlvbi4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogQXJu
-ZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4KPiA+IEZpeGVzOiBjNjllMTgyZTUxZDg5ICgiY2xr
-OiBpbnRyb2R1Y2UgY2xrX2lzX21hdGNoIikKPiA+IC0tLS0KPiA+IEJUVywgd2UgaGF2ZSBhIHBy
-ZWV4aXN0aW5nIHByb2JsZW0gaW4gY2xrX2dldF9wYXJlbnQsCj4gPiBjbGtfcm91bmRfcmF0ZSBh
-bmQgY2xrX3NldF9wYXJlbnQsIHdoaWNoIEkndmUgd29ya2VkIGFyb3VuZCBpbgo+ID4gbXkgcmFu
-ZGNvbmZpZyBidWlsZHMgc28gZmFyLiBTaG91bGQgd2UgZG8gdGhhdCB0aGUgc2FtZSB3YXk/Cj4g
-Cj4gTkFLLCBhcyBVd2UgcG9pbnRzIG91dCwgeW91IGRpZG4ndCBhZGRyZXNzIG15IGNvbW1lbnQu
-CllvdSBjb21tZW50ZWQgb24gdGhlIHBhdGNoIHRoYXQgaXMgYzY5ZTE4MmU1MWQ4ICgiY2xrOiBp
-bnRyb2R1Y2UKY2xrX2lzX21hdGNoIikgbm93IGluIG5leHQuIEFybmQganVzdCBtb3ZlZCB0aGlz
-IGFyb3VuZC4KCkJlc3QgcmVnYXJkcwpVd2UKCi0tIApQZW5ndXRyb25peCBlLksuICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgfCBVd2UgS2xlaW5lLUvDtm5pZyAgICAgICAgICAgIHwKSW5kdXN0
-cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgICAgICAgICAgIHwgaHR0cDovL3d3dy5wZW5ndXRy
-b25peC5kZS8gIHwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-Cmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+--===============4117444990549126154==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="z8fvYVVi1MVTXPE1"
+Content-Disposition: inline
+
+
+--z8fvYVVi1MVTXPE1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 11, 2015 at 11:48:33AM +0800, Jin Yao wrote:
+> On Braswell, we need to add some machine specific setting before suspend
+> and after resume. For example, disable/enable jack detection in codec so
+> use snd_soc_card suspend_pre and resume_post ops for this purpose.
+
+Applied, thanks.
+
+--z8fvYVVi1MVTXPE1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVACvyAAoJECTWi3JdVIfQWkEH/2UyE8R57hlnCylK/QjkrIHM
+vTvYMGk8NXwzekRyPFogIlZ4CD6mI1GF3bfrSpEjr4a4UL9ILFym8bbs75PFifkO
+enz7VMSOAeEZZfUp7g95bdxN7ujjzDXAPM1bZmbdtE8nVHj9Tv/HI70/Zc9AR9Y8
+uxiUWi8ht2kTj4bJQOQVMq4Qf5yZ5TuqMLDQ5vmJ3TEgVMqUzPPxcgwvB+zmqBH+
+zcXF7p0FYlbEXvUzGfm3M7m41S/VDICbCo4wvIYRgEV3ZWlh1iDjV4f7RQlSTiaL
+WwlYUszk4WFE2pTmjXAYKTzmR90nQMky+m8Aj4c5GAA99mg91fKeY/lVLo+yVe4=
+=1E55
+-----END PGP SIGNATURE-----
+
+--z8fvYVVi1MVTXPE1--
+
+--===============4117444990549126154==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4117444990549126154==--
