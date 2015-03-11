@@ -1,38 +1,51 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] clk: provide clk_is_match() dummy for non-common clk
-Date: Wed, 11 Mar 2015 08:09:49 +0100
-Message-ID: <20150311070949.GH952@pengutronix.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] clk: provide clk_is_match() dummy for
+	non-common clk
+Date: Wed, 11 Mar 2015 10:22:09 +0000
+Message-ID: <20150311102208.GX8656@n2100.arm.linux.org.uk>
 References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org>
  <1424876018-17852-2-git-send-email-shawn.guo@linaro.org>
  <20150225172757.421.43718@quantum> <8682755.oK0Ae34OOP@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id B35672651B7
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 11:22:32 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <8682755.oK0Ae34OOP@wuerfel>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, Mike Turquette <mturquette@linaro.org>, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Russell King <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+Cc: linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, Mike Turquette <mturquette@linaro.org>, kernel@pengutronix.de, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, linux-serial@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sIAoKT24gU3VuLCBNYXIgMDgsIDIwMTUgYXQgMTA6MDU6MjlQTSArMDEwMCwgQXJuZCBC
-ZXJnbWFubiB3cm90ZToKPiArc3RhdGljIGlubGluZSBib29sIGNsa19pc19tYXRjaChzdHJ1Y3Qg
-Y2xrICpwLCBzdHJ1Y3QgY2xrICpxKQo+ICt7Cj4gKwlyZXR1cm4gcCA9PSBxID8gdHJ1ZSA6IGZh
-bHNlOwpPSywgdGhpcyBpcyBvbmx5IGEgbW92ZSwgYnV0IEkgd29uZGVyIHdoeSBSdXNzZWxsJ3Mg
-Y29tbWVudCB0aGF0IHRoaXMgaXMKZXF1aXZhbGVudCB0byB0aGUgZWFzaWVyCgoJcmV0dXJuIHAg
-PT0gcTsKCndhc24ndCBhZGRyZXNzZWQ/IQoKQmVzdCByZWdhcmRzClV3ZQoKLS0gClBlbmd1dHJv
-bml4IGUuSy4gICAgICAgICAgICAgICAgICAgICAgICAgICB8IFV3ZSBLbGVpbmUtS8O2bmlnICAg
-ICAgICAgICAgfApJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAgICAgICAgICAgICAgICAgfCBo
-dHRwOi8vd3d3LnBlbmd1dHJvbml4LmRlLyAgfApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0
-cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2RyaS1kZXZlbAo=
+On Sun, Mar 08, 2015 at 10:05:29PM +0100, Arnd Bergmann wrote:
+> ARM randconfig build tests found a new error for configurations
+> with COMMON_CLK disabled but HAS_CLK selected by the platform:
+> 
+> ERROR: "clk_is_match" [sound/soc/fsl/snd-soc-fsl-spdif.ko] undefined!
+> 
+> This moves the declaration around, so this case is covered
+> by the existing static inline helper function.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: c69e182e51d89 ("clk: introduce clk_is_match")
+> ----
+> BTW, we have a preexisting problem in clk_get_parent,
+> clk_round_rate and clk_set_parent, which I've worked around in
+> my randconfig builds so far. Should we do that the same way?
+
+NAK, as Uwe points out, you didn't address my comment.
+
+-- 
+FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
+according to speedtest.net.
