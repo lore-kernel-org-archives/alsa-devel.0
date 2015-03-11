@@ -1,46 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH asoc] ASoC: max98925_spk_tlv can be static
-Date: Wed, 11 Mar 2015 19:13:10 +0000
-Message-ID: <20150311191310.GJ28806@sirena.org.uk>
-References: <201503120256.08LBzgQA%fengguang.wu@intel.com>
- <20150311190544.GA22459@lkp-sb04>
+From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Subject: Re: [PATCH 41/45] include/uapi/sound/emu10k1.h: hide gpr_valid, tram_valid and code_valid in userspace
+Date: Wed, 11 Mar 2015 10:46:29 +0100
+Message-ID: <2168807.4Yxh5gl11Q@wuerfel>
+References: <1424127948-22484-1-git-send-email-mikko.rapeli@iki.fi> <20150311012204.GE12550@lakka.kapsi.fi> <s5h4mpsnjw9.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="uCT+dex/jsWOzqWN"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150311190544.GA22459@lkp-sb04>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Anish Kumar <yesanishhere@gmail.com>, kbuild-all@01.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5h4mpsnjw9.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Mikko Rapeli <mikko.rapeli-X3B1VOXEql0@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-
---uCT+dex/jsWOzqWN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Mar 12, 2015 at 03:05:44AM +0800, kbuild test robot wrote:
+On Wednesday 11 March 2015 07:11:18 Takashi Iwai wrote:
+> At Wed, 11 Mar 2015 03:22:04 +0200,
+> Mikko Rapeli wrote:
+> >=20
+> > On Tue, Feb 17, 2015 at 07:27:38AM +0100, Takashi Iwai wrote:
+> > > At Tue, 17 Feb 2015 00:05:44 +0100,
+> > > Mikko Rapeli wrote:
+> > > >=20
+> > > > The DECLARE_BITMAP macro is not available in userspace headers.
+> > > > Fixes userspace compile error:
+> > > > error: expected specifier-qualifier-list before =E2=80=98DECLAR=
+E_BITMAP=E2=80=99
+> > >=20
+> > > It's nonsense.  This results in an incompatible structure, thus A=
+BI
+> > > would be broken completely (actually this will break the compile =
+of
+> > > ld10k1).
+> >=20
+> > None of the exported headers after 'make headers_install' have defi=
+nition
+> > of DECLARE_BITMAP macro. It is defined in include/linux/types.h whi=
+ch is
+> > different from include/uapi/linux/types.h and missing this definiti=
+on and
+> > a few other things.
+> >=20
+> > One option would be add DECLARE_BITMAP macro to include/uapi/linux/=
+types.h
+> > and add include/linux/bitops.h to uapi.
+> >=20
+> > Thoughts?
 >=20
-> Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+> Are there any other headers like that?  If this is the only one, leav=
+e
+> it as is.  The only program that reads this are some alsa-tools ones
+> and they have already own DECLARE_BITMAP() definition.  Adding the
+> extra definition here will even break the compilation out of sudden.
 
-applied, thanks.
+I think it's a worthy goal to have the header files be compilable
+standalone, but I don't think we should make the DECLARE_BITMAP()
+macro globally visible in user space, in particular because it will
+clash with every instance in which user space has a macro of the
+same name.
 
---uCT+dex/jsWOzqWN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+What we could do here is to add a private copy of the macro to emu10k1.=
+h
+under a different name, such as __EMU10K1_DECLARE_BITMAP().
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVAJPFAAoJECTWi3JdVIfQlaMH/RLs9/LeqHPFnSJI0txoYfK1
-ZVC6PHqkrd0C2xxaKdnMNO7njG3zqvE3rEH5DUJI2J6nn48oebhGsltH2bFzM631
-0sHKDu+l6uYOBLm2lBwKsvKf5Pj9VrdkR9KMFe+NuXMvJ34J+N0YdwagN0a2WiEf
-3rLHoiWtXxKD87Q1u3UvGrH6SnylnOCoDiVgXixH79QcYNM5q5w7q4UNtwdZ67Dl
-tgnciKjtWBERf0/qI15PwHiILYhGdsE/Hjuk2ze+FuDf6A72RC6VnT/fe+5/dDE1
-g0yOL3xC39cANvksWLFyl5r98xpnOCNhs/A2VvVypnmKHDBE2c7x5Ffjdeu6skw=
-=V9QW
------END PGP SIGNATURE-----
-
---uCT+dex/jsWOzqWN--
+	Arnd
