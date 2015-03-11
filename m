@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
- resume_post for Braswell snd_soc_card
-Date: Wed, 11 Mar 2015 12:50:47 +0000
-Message-ID: <20150311125047.GD28806@sirena.org.uk>
-References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
+Subject: Re: [PATCH v2 2/2] ASoC: rt5670: export jack
+	suspend/resume APIs
+Date: Wed, 11 Mar 2015 12:51:27 +0000
+Message-ID: <20150311125127.GE28806@sirena.org.uk>
+References: <1426045365-15975-1-git-send-email-bardliao@realtek.com>
+ <1426045365-15975-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3235672408420308392=="
+Content-Type: multipart/mixed; boundary="===============5527888740451664878=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ED662651D5
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 13:50:55 +0100 (CET)
-In-Reply-To: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F3AA52652CF
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 13:51:33 +0100 (CET)
+In-Reply-To: <1426045365-15975-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jin Yao <yao.jin@linux.intel.com>
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com, bardliao@realtek.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, mengdong.lin@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, Jin Yao <yao.jin@linux.intel.com>, yao.jin@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3235672408420308392==
+--===============5527888740451664878==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4Cp72eN6HUuZZoDF"
+	protocol="application/pgp-signature"; boundary="jmfxxgLgPT+fSo7V"
 Content-Disposition: inline
 
 
---4Cp72eN6HUuZZoDF
+--jmfxxgLgPT+fSo7V
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 11, 2015 at 11:48:33AM +0800, Jin Yao wrote:
-> On Braswell, we need to add some machine specific setting before suspend
-> and after resume. For example, disable/enable jack detection in codec so
-> use snd_soc_card suspend_pre and resume_post ops for this purpose.
+On Wed, Mar 11, 2015 at 11:42:45AM +0800, Bard Liao wrote:
+> We force enable "Mic Det Power" when a jack is inserted. Also, we
+> set codec idle_bias_off = true. As a result, codec driver will not
+> suspend as we expect.
 
-Reverted since it doesn't build!
+Reverted since it doesn't build.
 
---4Cp72eN6HUuZZoDF
+--jmfxxgLgPT+fSo7V
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVADomAAoJECTWi3JdVIfQOtgH/3eRdyvH/1tGM4SwypurM00F
-zPTfQqc3bt0xlrvyH/cskhhOfbBgHhuAn15qYjbNab7fSSZwY/WrbbCNnsr1aUdH
-Dp/09JM05rAjDE0bM9wPZw8NkAOWgLpLQyQL6r0taxhHjPVQc3hXQ3oJULKjra0T
-Wu8sPjaFS24lN7Dsa6HLU7I29mOegA+EtDk2m9TRc9ymXKA74S9EBCHscFro6TPH
-951SgUl6goIFr9QuXDNpmrIkmhyAovC/Zt4fyApfbjQ61GhSuYykBY7/5twOla5/
-XJz0E3qnCqYy6nxwUlnXO1rkFAtMJ22+apYnWjBfe97SjLtOlKH+8SK0Y+3AtEA=
-=b4TR
+iQEcBAEBCAAGBQJVADpOAAoJECTWi3JdVIfQRNUH/3MT29+aAdhcTx9RVNpw5gkY
+m7098oPlynXEHfOEUY5pJGQUI/n/RjI7zqoAk5taIuTL8zwZTp+2TuSDfiUZTWor
+3ELEHVJ1VFMygL+vWbr/r7PcCva+9KtGI889k/0ZhKSYlgbcp99cs8qDXcGMFEAz
+8wDwiBTR6NVH79cC3C9rLl2mVhptJpeVnerej5V9FiBfO3sUql7yvYgE87HnGMzf
+YuOtnedkJkfoWqzJU/1BaXfrAxfLgRV2gHZennUJkaslqbRuPElsVJL3B7Hd/GQU
+8tXpJcCxhV/XShfm3c3v4ZjM0KwobHrLzSRAjFN8XsPNZUY5R0DpRgIz9JYgdXM=
+=5hk8
 -----END PGP SIGNATURE-----
 
---4Cp72eN6HUuZZoDF--
+--jmfxxgLgPT+fSo7V--
 
---===============3235672408420308392==
+--===============5527888740451664878==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3235672408420308392==--
+--===============5527888740451664878==--
