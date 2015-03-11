@@ -1,18 +1,18 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 11/15] ASoC: ab8500-codec: don't export static
-	symbol
-Date: Wed, 11 Mar 2015 17:56:33 +0100
-Message-ID: <1426092997-30605-12-git-send-email-Julia.Lawall@lip6.fr>
-References: <1426092997-30605-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix built-in mic on Compaq
+	Presario CQ60
+Date: Wed, 11 Mar 2015 18:08:00 +0100
+Message-ID: <1426093680-29643-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id CA0A8265325
- for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 18:04:12 +0100 (CET)
-In-Reply-To: <1426092997-30605-1-git-send-email-Julia.Lawall@lip6.fr>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEEE026531A
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 18:08:02 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 1E1F2AAC8
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 17:08:02 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, daniel@iogearbox.net, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+Compaq Presario CQ60 laptop with CX20561 gives a wrong pin for the
+built-in mic NID 0x17 instead of NID 0x1d, and it results in the
+non-working mic.  This patch just remaps the pin correctly via fixup.
 
-The semantic patch that fixes this problem is as follows:
-(http://coccinelle.lip6.fr/)
-
-// <smpl>
-@r@
-type T;
-identifier f;
-@@
-
-static T f (...) { ... }
-
-@@
-identifier r.f;
-declarer name EXPORT_SYMBOL_GPL;
-@@
-
--EXPORT_SYMBOL_GPL(f);
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
+Bugzilla: https://bugzilla.opensuse.org/show_bug.cgi?id=920604
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/ab8500-codec.c |    2 --
- 1 file changed, 2 deletions(-)
+ sound/pci/hda/patch_conexant.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff -u -p a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2003,7 +2003,6 @@ static int ab8500_audio_setup_mics(struc
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index fd3ed18670e9..da67ea8645a6 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -223,6 +223,7 @@ enum {
+ 	CXT_PINCFG_LENOVO_TP410,
+ 	CXT_PINCFG_LEMOTE_A1004,
+ 	CXT_PINCFG_LEMOTE_A1205,
++	CXT_PINCFG_COMPAQ_CQ60,
+ 	CXT_FIXUP_STEREO_DMIC,
+ 	CXT_FIXUP_INC_MIC_BOOST,
+ 	CXT_FIXUP_HEADPHONE_MIC_PIN,
+@@ -660,6 +661,15 @@ static const struct hda_fixup cxt_fixups[] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = cxt_pincfg_lemote,
+ 	},
++	[CXT_PINCFG_COMPAQ_CQ60] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			/* 0x17 was falsely set up as a mic, it should 0x1d */
++			{ 0x17, 0x400001f0 },
++			{ 0x1d, 0x97a70120 },
++			{ }
++		}
++	},
+ 	[CXT_FIXUP_STEREO_DMIC] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cxt_fixup_stereo_dmic,
+@@ -769,6 +779,7 @@ static const struct hda_model_fixup cxt5047_fixup_models[] = {
+ };
  
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(ab8500_audio_setup_mics);
- 
- static int ab8500_audio_set_ear_cmv(struct snd_soc_codec *codec,
- 				enum ear_cm_voltage ear_cmv)
-@@ -2036,7 +2035,6 @@ static int ab8500_audio_set_ear_cmv(stru
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(ab8500_audio_set_ear_cmv);
- 
- static int ab8500_audio_set_bit_delay(struct snd_soc_dai *dai,
- 				unsigned int delay)
+ static const struct snd_pci_quirk cxt5051_fixups[] = {
++	SND_PCI_QUIRK(0x103c, 0x360b, "Compaq CQ60", CXT_PINCFG_COMPAQ_CQ60),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo X200", CXT_PINCFG_LENOVO_X200),
+ 	{}
+ };
+-- 
+2.3.2
