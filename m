@@ -1,19 +1,17 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: Intel SST on a Bay Trail tablet
-Date: Thu, 12 Mar 2015 14:45:03 +0100
-Message-ID: <20150312144503.5e1d556e408a0b166e20058d@ao2.it>
-References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
- <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
- <54F5CB3D.7020100@linux.intel.com>
- <20150304170218.7b397993ce670902800109f1@ao2.it>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH 1/5] ASoC: Intel: create common folder and move
+	common files in
+Date: Thu, 12 Mar 2015 22:31:56 +0800
+Message-ID: <1426170720-8260-2-git-send-email-yang.jie@intel.com>
+References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
- by alsa0.perex.cz (Postfix) with ESMTP id 30783265779
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 14:45:12 +0100 (CET)
-In-Reply-To: <20150304170218.7b397993ce670902800109f1@ao2.it>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0385D265850
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 15:29:55 +0100 (CET)
+In-Reply-To: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,50 +21,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, vinod.koul@intel.com, mengdong.lin@intel.com, jarkko.nikula@intel.com, yao.jin@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 4 Mar 2015 17:02:18 +0100
-Antonio Ospite <ao2@ao2.it> wrote:
+Restructure the sound/soc/intel/ directory: create common folder, and move
+sst common files here.
 
-> On Tue, 03 Mar 2015 16:54:53 +0200
-> Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
-> 
-> > Hi
-> > 
-> > On 03/03/2015 04:16 PM, Antonio Ospite wrote:
-> > > On Mon, 23 Feb 2015 18:39:13 +0100
-> > > Antonio Ospite <ao2@ao2.it> wrote:
-> > >
-> > >> Hi,
-> > >>
-> > >> I am trying to get the Intel SST driver working on a Teclast X98 Air 3G
-> > >> [1], it's a Bay Trail tablet. The tests below have been made with
-> > >> 4.0.0-rc1 and the firmware files from
-> > >> https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/intel
-> > >>
-> > >
-> > > Hi, has anyone had a chance to take a look at my previous message?
-> > >
-> > I forgot to answer...
-> 
-> Do you confirm that the ADMA0F28 and SSPX0000 devices I mentioned in the
-> original mail are not necessary in the DSDT?
-[...]
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+---
+ sound/soc/intel/Makefile                    | 6 +-----
+ sound/soc/intel/common/Makefile             | 6 ++++++
+ sound/soc/intel/{ => common}/sst-acpi.c     | 0
+ sound/soc/intel/{ => common}/sst-dsp-priv.h | 0
+ sound/soc/intel/{ => common}/sst-dsp.c      | 0
+ sound/soc/intel/{ => common}/sst-dsp.h      | 0
+ sound/soc/intel/{ => common}/sst-firmware.c | 0
+ 7 files changed, 7 insertions(+), 5 deletions(-)
+ create mode 100644 sound/soc/intel/common/Makefile
+ rename sound/soc/intel/{ => common}/sst-acpi.c (100%)
+ rename sound/soc/intel/{ => common}/sst-dsp-priv.h (100%)
+ rename sound/soc/intel/{ => common}/sst-dsp.c (100%)
+ rename sound/soc/intel/{ => common}/sst-dsp.h (100%)
+ rename sound/soc/intel/{ => common}/sst-firmware.c (100%)
 
-Ping.
-
-Can anyone comment on this and my other questions in the previous email
-regarding the DSP firmware?
-
-Thanks,
-   Antonio
-
+diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+index a8e53c4..28de8cd 100644
+--- a/sound/soc/intel/Makefile
++++ b/sound/soc/intel/Makefile
+@@ -1,6 +1,5 @@
+ # Core support
+-snd-soc-sst-dsp-objs := sst-dsp.o sst-firmware.o
+-snd-soc-sst-acpi-objs := sst-acpi.o
++obj-$(CONFIG_SND_SOC_INTEL_SST) += common/
+ 
+ snd-soc-sst-mfld-platform-objs := sst-mfld-platform-pcm.o \
+ 	sst-mfld-platform-compress.o sst-atom-controls.o
+@@ -9,9 +8,6 @@ snd-soc-mfld-machine-objs := mfld_machine.o
+ obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += snd-soc-sst-mfld-platform.o
+ obj-$(CONFIG_SND_MFLD_MACHINE) += snd-soc-mfld-machine.o
+ 
+-obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o
+-obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+-
+ # Platform Support
+ snd-soc-sst-haswell-pcm-objs := \
+ 	sst-haswell-ipc.o sst-haswell-pcm.o sst-haswell-dsp.o
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+new file mode 100644
+index 0000000..3df0e1c
+--- /dev/null
++++ b/sound/soc/intel/common/Makefile
+@@ -0,0 +1,6 @@
++snd-soc-sst-dsp-objs := sst-dsp.o sst-firmware.o
++snd-soc-sst-acpi-objs := sst-acpi.o
++
++obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o
++obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
++
+diff --git a/sound/soc/intel/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+similarity index 100%
+rename from sound/soc/intel/sst-acpi.c
+rename to sound/soc/intel/common/sst-acpi.c
+diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
+similarity index 100%
+rename from sound/soc/intel/sst-dsp-priv.h
+rename to sound/soc/intel/common/sst-dsp-priv.h
+diff --git a/sound/soc/intel/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
+similarity index 100%
+rename from sound/soc/intel/sst-dsp.c
+rename to sound/soc/intel/common/sst-dsp.c
+diff --git a/sound/soc/intel/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
+similarity index 100%
+rename from sound/soc/intel/sst-dsp.h
+rename to sound/soc/intel/common/sst-dsp.h
+diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+similarity index 100%
+rename from sound/soc/intel/sst-firmware.c
+rename to sound/soc/intel/common/sst-firmware.c
 -- 
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+1.9.1
