@@ -1,18 +1,28 @@
-From: "Jin, Yao" <yao.jin@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
- resume_post for Braswell snd_soc_card
-Date: Thu, 12 Mar 2015 08:52:22 +0800
-Message-ID: <5500E346.8020700@linux.intel.com>
-References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
- <20150311125047.GD28806@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_usb_audio - siberia elite prism soundcard
+	issues
+Date: Thu, 12 Mar 2015 09:10:24 +0800
+Message-ID: <CAN8ccibUrZVFk5P2rdHhMYznQ8M2WJkL-NTm7WxRY99bwDZZ2g@mail.gmail.com>
+References: <CAHti5NHPMjxAtg_XLHD1kL4rUCAPaNGa_2ZAZwvv_Kc4u43uAw@mail.gmail.com>
+ <54FC9CB0.2030003@ladisch.de>
+ <CAHti5NEvVwsxdOnJdJErMCssu3_5ohaRsDC0WVCuhB0upLF_mQ@mail.gmail.com>
+ <CAN8cciZcnD4zPbL-jD8+t5AHaugWvbrbo33_iuVBktHnpKpRuw@mail.gmail.com>
+ <CAHti5NEfeguhQTZANNg=QnBZXRjDJZV0DAd3H1i+p4nCsmkQmQ@mail.gmail.com>
+ <CAN8cciaMGdGtqTJrHV8q1_5vgpM2qXRK7XRAdiiqR7SKhVCb8Q@mail.gmail.com>
+ <CAHti5NGTMPUwQ-sczhoAQ09A94mheq3rHORCocZzy3WxQjL0gQ@mail.gmail.com>
+ <CAN8ccibuXoLWHi7rZX8bSUHvE9wdGGXyFVRwovVLb7UOemZhUA@mail.gmail.com>
+ <CAHti5NF8G7iArtC_cN_WA2EFRpwGe8rMmVRHvKtrKNHpuEK46A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 1416F265497
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 01:52:26 +0100 (CET)
-In-Reply-To: <20150311125047.GD28806@sirena.org.uk>
+Received: from mail-ie0-f178.google.com (mail-ie0-f178.google.com
+ [209.85.223.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0203265499
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 02:10:29 +0100 (CET)
+Received: by iecsl2 with SMTP id sl2so6339798iec.1
+ for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2015 18:10:28 -0700 (PDT)
+In-Reply-To: <CAHti5NF8G7iArtC_cN_WA2EFRpwGe8rMmVRHvKtrKNHpuEK46A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +32,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com, bardliao@realtek.com
+To: Daniel <dferradal@gmail.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Bard,
-
-This patch has dependency on Bard's patch "ASoC: rt5670: export jack
-suspend/resume APIs". I pull the Mark's for-next branch right now and I
-can see Bard's patch "ASoC: rt5670: export jack suspend/resume APIs" has
-been integrated.
-
-So there now is only one build error in rt5670.c:
-
-sound/soc/codecs/rt5670.c: In function 'is_sys_clk_from_pll':
-sound/soc/codecs/rt5670.c:702:38: error: 'struct snd_soc_dapm_widget'
-has no member named 'codec'
-  struct snd_soc_codec *codec = source->codec;
-                                      ^
-After I fix it with my change as following, the build is successful.
-
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -699,7 +699,7 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
-                         struct snd_soc_dapm_widget *sink)
- {
--       struct snd_soc_codec *codec = source->codec;
-+       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
-        struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
-
-        if (rt5670->sysclk_src == RT5670_SCLK_S_PLL1)
-
-Could Bard take a look at it?
-
-For my patch, the build is successful.
-
-ASoC: Intel: Add suspend_pre and resume_post for Braswell snd_soc_card
-ASoC: Intel: move the jack creation to Braswell machine driver
-
-Thanks
-Jin Yao
-
-On 2015/3/11 20:50, Mark Brown wrote:
-> On Wed, Mar 11, 2015 at 11:48:33AM +0800, Jin Yao wrote:
->> On Braswell, we need to add some machine specific setting before suspend
->> and after resume. For example, disable/enable jack detection in codec so
->> use snd_soc_card suspend_pre and resume_post ops for this purpose.
-> 
-> Reverted since it doesn't build!
-> 
+Pj4gPj4KPj4gPj4gPj4gPiA+Cj4+ID4+ID4+ID4gPiA+IGFtaXhlcjogQ29udHJvbCBodzoyIGVs
+ZW1lbnQgcmVhZCBlcnJvcjogSW52YWxpZCBhcmd1bWVudAo+PiA+PiA+PiA+ID4gPiB1c2IgMS0x
+LjM6IDEwOjA6IGNhbm5vdCBnZXQgbWluL21heCB2YWx1ZXMgZm9yIGNvbnRyb2wgMyAoaWQKMTAp
+Cj4+ID4+ID4+ID4gPiA+IHVzYiAxLTEuMzogMjoxOiBjYW5ub3QgZ2V0IGZyZXEgYXQgZXAgMHgx
+Cj4+ID4+Cj4+ID4+IG51bWlkPTUsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFZvbHVtZScgOwp0eXBl
+PUlOVEVHRVIsYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0yLG1pbj0wLG1heD0xLHN0ZXA9MCBhbWl4
+ZXI6IENvbnRyb2wKaHc6MiBlbGVtZW50IHJlYWQgZXJyb3I6IEludmFsaWQgYXJndW1lbnQKPj4g
+Pj4KPj4gPj4gbnVtaWQ9NixpZmFjZT1NSVhFUixuYW1lPSdQQ00gVm9sdW1lJyxpbmRleD0xIDsK
+dHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLS0tLSx2YWx1ZXM9MSxtaW49MCxtYXg9MSxzdGVwPTAg
+YW1peGVyOiBDb250cm9sCmh3OjIgZWxlbWVudCByZWFkIGVycm9yOiBJbnZhbGlkIGFyZ3VtZW50
+Cj4+ID4+Cj4+ID4+IG51bWlkPTcsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFZvbHVtZScsaW5kZXg9
+MiA7CnR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0tLS0sdmFsdWVzPTEsbWluPTAsbWF4PTEsc3Rl
+cD0wIGFtaXhlcjogQ29udHJvbApodzoyIGVsZW1lbnQgcmVhZCBlcnJvcjogSW52YWxpZCBhcmd1
+bWVudAo+PiA+Pgo+PiA+PiBudW1pZD04LGlmYWNlPU1JWEVSLG5hbWU9J1BDTSBWb2x1bWUnLGlu
+ZGV4PTMgOwp0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xLG1pbj0wLG1heD0x
+LHN0ZXA9MCBhbWl4ZXI6IENvbnRyb2wKaHc6MiBlbGVtZW50IHJlYWQgZXJyb3I6IEludmFsaWQg
+YXJndW1lbnQKPj4gPj4KPj4gPj4gbnVtaWQ9OSxpZmFjZT1NSVhFUixuYW1lPSdQQ00gVm9sdW1l
+JyxpbmRleD00IDsKdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLS0tLSx2YWx1ZXM9MSxtaW49MCxt
+YXg9MSxzdGVwPTAgYW1peGVyOiBDb250cm9sCmh3OjIgZWxlbWVudCByZWFkIGVycm9yOiBJbnZh
+bGlkIGFyZ3VtZW50Cj4+ID4+Cj4+ID4+ID4gICAgICAgQXVkaW9Db250cm9sIEludGVyZmFjZSBE
+ZXNjcmlwdG9yOgo+PiA+PiA+ICAgICAgICAgYkxlbmd0aCAgICAgICAgICAgICAgICAxMwo+PiA+
+PiA+ICAgICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAzNgo+PiA+PiA+ICAgICAgICAgYkRl
+c2NyaXB0b3JTdWJ0eXBlICAgICAgNCAoTUlYRVJfVU5JVCkKPj4gPj4gPiAgICAgICBXYXJuaW5n
+OiBEZXNjcmlwdG9yIHRvbyBzaG9ydAo+PiA+PiA+ICAgICAgICAgYlVuaXRJRCAgICAgICAgICAg
+ICAgICAxMAo+PiA+PiA+ICAgICAgICAgYk5ySW5QaW5zICAgICAgICAgICAgICAgMgo+PiA+PiA+
+ICAgICAgICAgYmFTb3VyY2VJRCggMCkgICAgICAgICAgOQo+PiA+PiA+ICAgICAgICAgYmFTb3Vy
+Y2VJRCggMSkgICAgICAgICAgMQo+PiA+PiA+ICAgICAgICAgYk5yQ2hhbm5lbHMgICAgICAgICAg
+ICA4Cj4+ID4+ID4gICAgICAgICB3Q2hhbm5lbENvbmZpZyAgICAgMHgwNjNmCj4+ID4+ID4gICAg
+ICAgICAgIExlZnQgRnJvbnQgKEwpCj4+ID4+ID4gICAgICAgICAgIFJpZ2h0IEZyb250IChSKQo+
+PiA+PiA+ICAgICAgICAgICBDZW50ZXIgRnJvbnQgKEMpCj4+ID4+ID4gICAgICAgICAgIExvdyBG
+cmVxZW5jeSBFbmhhbmNlbWVudCAoTEZFKQo+PiA+PiA+ICAgICAgICAgICBMZWZ0IFN1cnJvdW5k
+IChMUykKPj4gPj4gPiAgICAgICAgICAgUmlnaHQgU3Vycm91bmQgKFJTKQo+PiA+PiA+ICAgICAg
+ICAgICBTaWRlIExlZnQgKFNMKQo+PiA+PiA+ICAgICAgICAgICBTaWRlIFJpZ2h0IChTUikKPj4g
+Pj4gPiAgICAgICAgIGlDaGFubmVsTmFtZXMgICAgICAgICAgIDAKPj4gPj4gPiAgICAgICAgIGJt
+Q29udHJvbHMgICAgICAgICAweDAwCj4+ID4+ID4gICAgICAgICBibUNvbnRyb2xzICAgICAgICAg
+MHgwMAo+PiA+PiA+ICAgICAgICAgaU1peGVyICAgICAgICAgICAgICAgICAzMyAoZXJyb3IpCgpS
+ZWZlciB0byB1c2IgYXVkaW8gc3BlY2lmaWNhdGlvbiAxLjAKClRhYmxlIDQtNTogTWl4ZXIgVW5p
+dCBEZXNjcmlwdG9yCgpiTGVuZ3RoID0gMTAgKyAgcCArICBOID0gMTQKCk51bWJlciBvZiBJbnB1
+dCBQaW5zIG9mIHRoaXMgVW5pdDogcAoKPiA+PiA+ICAgICAgICAgYk5ySW5QaW5zICAgICAgICAg
+ICAgICAgMgoKVGhlIElEIG9mIHRoZSBVbml0IG9yIFRlcm1pbmFsIHRvIHdoaWNoIHRoZSBmaXJz
+dCBhbmQgc2Vjb25kIElucHV0IFBpbnMgb2YKdGhpcyBNaXhlciBVbml0IGlzIGNvbm5lY3RlZC4K
+Cj4gPj4gPiAgICAgICAgIGJhU291cmNlSUQoIDApICAgICAgICAgIDkKPj4gPj4gPiAgICAgICAg
+IGJhU291cmNlSUQoIDEpICAgICAgICAgIDEKCk51bWJlciBvZiBsb2dpY2FsIG91dHB1dCBjaGFu
+bmVscyBpbiB0aGUgTWl4ZXLigJlzIG91dHB1dCBhdWRpbyBjaGFubmVsCmNsdXN0ZXIuCgo+PiA+
+PiA+ICAgICAgICAgYk5yQ2hhbm5lbHMgICAgICAgICAgICA4CgpEZXNjcmliZXMgdGhlIHNwYXRp
+YWwgbG9jYXRpb24gb2YgdGhlIGxvZ2ljYWwgY2hhbm5lbHMuCgo+PiA+PiA+ICAgICAgICAgd0No
+YW5uZWxDb25maWcgICAgIDB4MDYzZgo+PiA+PiA+ICAgICAgICAgICBMZWZ0IEZyb250IChMKQo+
+PiA+PiA+ICAgICAgICAgICBSaWdodCBGcm9udCAoUikKPj4gPj4gPiAgICAgICAgICAgQ2VudGVy
+IEZyb250IChDKQo+PiA+PiA+ICAgICAgICAgICBMb3cgRnJlcWVuY3kgRW5oYW5jZW1lbnQgKExG
+RSkKPj4gPj4gPiAgICAgICAgICAgTGVmdCBTdXJyb3VuZCAoTFMpCj4+ID4+ID4gICAgICAgICAg
+IFJpZ2h0IFN1cnJvdW5kIChSUykKPj4gPj4gPiAgICAgICAgICAgU2lkZSBMZWZ0IChTTCkKPj4g
+Pj4gPiAgICAgICAgICAgU2lkZSBSaWdodCAoU1IpCgpCaXQgbWFwIGluZGljYXRpbmcgd2hpY2gg
+bWl4aW5nIENvbnRyb2xzIGFyZSBwcm9ncmFtbWFibGUuCgo+PiA+PiA+ICAgICAgICAgYm1Db250
+cm9scyAgICAgICAgIDB4MDAKPj4gPj4gPiAgICAgICAgIGJtQ29udHJvbHMgICAgICAgICAweDAw
+CgpUaGUgTWl4ZXIgVW5pdCBEZXNjcmlwdG9yIHJlcG9ydHMgd2hpY2ggQ29udHJvbHMgYXJlIHBy
+b2dyYW1tYWJsZSBpbiB0aGUKYm1Db250cm9scyBiaXRtYXAgZmllbGQuIFRoaXMgYml0bWFwIG11
+c3QgYmUgaW50ZXJwcmV0ZWQgYXMgYQp0d28tZGltZW5zaW9uYWwgYml0IGFycmF5IHRoYXQgaGFz
+IGEgcm93IGZvciBlYWNoIGxvZ2ljYWwgaW5wdXQgY2hhbm5lbCBhbmQKYSBjb2x1bW4gZm9yIGVh
+Y2ggbG9naWNhbCBvdXRwdXQgY2hhbm5lbC4gSWYgYSBiaXQgYXQgcG9zaXRpb24gW3UsIHZdIGlz
+CnNldCwgdGhpcyBtZWFucyB0aGF0IHRoZSBNaXhlciBVbml0IGNvbnRhaW5zIGEgcHJvZ3JhbW1h
+YmxlIG1peGluZyBDb250cm9sCnRoYXQgY29ubmVjdHMgaW5wdXQgY2hhbm5lbCB1IHRvIG91dHB1
+dCBjaGFubmVsIHYuIElmIGJpdCBbdSwgdl0gaXMgY2xlYXIsCnRoaXMgaW5kaWNhdGVzIHRoYXQg
+dGhlIGNvbm5lY3Rpb24gYmV0d2VlbiBpbnB1dCBjaGFubmVsIHUgYW5kIG91dHB1dApjaGFubmVs
+IHYgaXMgbm9uLXByb2dyYW1tYWJsZS4gSXRzIGZpeGVkIHZhbHVlIGNhbiBiZSByZXRyaWV2ZWQg
+dGhyb3VnaCB0aGUKYXBwcm9wcmlhdGUgcmVxdWVzdC4gVGhlIHZhbGlkIHJhbmdlIGZvciB1IGlz
+IGZyb20gb25lIHRvIG4uIFRoZSB2YWxpZApyYW5nZSBmb3IgdiBpcyBmcm9tIG9uZSB0byBtLgoK
+VGhlIGJtQ29udHJvbHMgZmllbGQgc3RvcmVzIHRoZSBiaXQgYXJyYXkgcm93IGFmdGVyIHJvdyB3
+aGVyZSB0aGUgTVNiIG9mCnRoZSBmaXJzdCBieXRlIGNvcnJlc3BvbmRzIHRvIHRoZSBjb25uZWN0
+aW9uIGJldHdlZW4gaW5wdXQgY2hhbm5lbCAxIGFuZApvdXRwdXQgY2hhbm5lbCAxLiBJZiAobiB4
+IG0pIGlzIG5vdCBhbiBpbnRlZ2VyIG11bHRpcGxlIG9mIDgsIHRoZSBiaXQgYXJyYXkKaXMgcGFk
+ZGVkIHdpdGggemVyb3MgdW50aWwgYW4gaW50ZWdlciBudW1iZXIgb2YgYnl0ZXMgaXMgb2NjdXBp
+ZWQuCgpUaGUgbnVtYmVyIG9mIGJ5dGVzIHVzZWQgdG8gc3RvcmUgdGhlIGJpdCBhcnJheSwgTiwg
+Y2FuIGJlIGNhbGN1bGF0ZWQgYXMKZm9sbG93czoKSUYgKChuIHggbSkgTU9EIDgpIDw+IDAgVEhF
+TgpOID0gKChuIHggbSkgRElWIDgpICsgMQpFTFNFCk4gPSAoKG4geCBtKSBESVYgOCkKCkluZGV4
+IG9mIGEgc3RyaW5nIGRlc2NyaXB0b3IsIGRlc2NyaWJpbmcgdGhlIG5hbWUgb2YgdGhlIGZpcnN0
+IGxvZ2ljYWwKY2hhbm5lbC4KCj4+ID4gICAgICAgICBpQ2hhbm5lbE5hbWVzICAgICAgICAgICAw
+CgpJbmRleCBvZiBhIHN0cmluZyBkZXNjcmlwdG9yLCBkZXNjcmliaW5nIHRoZSBNaXhlciBVbml0
+LgoKPj4gPj4gPiAgICAgICAgIGlNaXhlciAgICAgICAgICAgICAgICAgMzMKCj4+Cj4+Cj4+IGlm
+IChjaGVja19tYXRyaXhfYml0bWFwKGMsIGljaCwgb2NoLCBudW1fb3V0cykpIHsKPj4gaWNoX2hh
+c19jb250cm9scyA9IDE7Cj4+IGJyZWFrOwo+PiB9Cj4+IH0KClRoaXMgbWVhbiB2YWx1ZSByZXR1
+cm5lZCBieSBjaGVja19tYXRyaXhfYml0bWFwKCkgaXMgaW5jb3JyZWN0IGFzCgo+PiA+PiA+ICAg
+ICAgICAgYm1Db250cm9scyAgICAgICAgIDB4MDAKPj4gPj4gPiAgICAgICAgIGJtQ29udHJvbHMg
+ICAgICAgICAweDAwCgo+PiBpZiAoaWNoX2hhc19jb250cm9scykKPj4gYnVpbGRfbWl4ZXJfdW5p
+dF9jdGwoc3RhdGUsIGRlc2MsIHBpbiwgaWNoLAo+PiAgICAgIHVuaXRpZCwgJml0ZXJtKTsKPj4g
+fQo+PiB9Cj4+IHJldHVybiAwOwo+PiB9Cj4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
