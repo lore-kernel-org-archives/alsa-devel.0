@@ -1,155 +1,42 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8994: Manage wm8994's MCLK in codec
- driver
-Date: Thu, 12 Mar 2015 14:02:18 +0900
-Message-ID: <20150312140218.716a0ac1@songinha-Samsung-DeskTop-System>
-References: <1426128580-18320-1-git-send-email-ideal.song@samsung.com>
- <5501172D.2080804@samsung.com>
+From: han.lu@intel.com
+Subject: [PATCH v3 0/3] add sound effect module waves
+Date: Thu, 12 Mar 2015 13:52:59 +0800
+Message-ID: <1426139582-7245-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <5501172D.2080804@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chanwoo Choi <cw00.choi@samsung.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, nikesh@opensource.wolfsonmicro.com, lars@metafoo.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, Li.Xiubo@freescale.com, sachin.kamat@samsung.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA6FA26055F
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 06:53:51 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Cc: "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Chanwoo,
+From: "Lu, Han" <han.lu@intel.com>
 
-Thanks for your comments.
+Merged 5 patches(0004 to 0008) of last revision into 3 new patches
 
-On Thu, 12 Mar 2015 13:33:49 +0900
-Chanwoo Choi <cw00.choi@samsung.com> wrote:
+Lu, Han (3):
+  ASoC: Intel: add kcontrol to enable/disable sound effect module waves
+  ASoC: Intel: add function to set parameter to sound effect module
+    waves
+  ASoC: Intel: add kcontrol to set parameter to sound effect module
+    waves
 
-> Hi Inha,
-> 
-> On 03/12/2015 11:49 AM, Inha Song wrote:
-> > Previously, When we use wm8994 codec, we should control its MCLK in machine driver.
-> > But, It should be managed by wm8994 codec driver, not machine driver.
-> > 
-> > This patch add MCLK clock DT parsing logic and control own MCLK.
-> > 
-> > Signed-off-by: Inha Song <ideal.song@samsung.com>
-> > ---
-> >  sound/soc/codecs/wm8994.c | 27 ++++++++++++++++++++++++++-
-> >  sound/soc/codecs/wm8994.h |  1 +
-> >  2 files changed, 27 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-> > index 247b390..d80dcc6 100644
-> > --- a/sound/soc/codecs/wm8994.c
-> > +++ b/sound/soc/codecs/wm8994.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/init.h>
-> >  #include <linux/delay.h>
-> >  #include <linux/pm.h>
-> > +#include <linux/clk.h>
-> >  #include <linux/gcd.h>
-> >  #include <linux/i2c.h>
-> >  #include <linux/platform_device.h>
-> > @@ -2470,6 +2471,7 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
-> >  {
-> >  	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-> >  	struct wm8994 *control = wm8994->wm8994;
-> > +	int i;
-> >  
-> >  	wm_hubs_set_bias_level(codec, level);
-> >  
-> > @@ -2491,8 +2493,19 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
-> >  			break;
-> >  		}
-> >  
-> > -		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY)
-> > +		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY) {
-> > +			for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++) {
-> > +				if (!IS_ERR(wm8994->clk_mclk[i]))
-> > +					clk_prepare_enable(wm8994->clk_mclk[i]);
-> 
-> I think that you don't need to check error by using 'if' statement.
-> clk_prepare_enable() function will check the NULL state of clk instance
-> before preparing and enabling the clock. 
+ sound/soc/intel/sst-haswell-ipc.c | 142 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/sst-haswell-ipc.h |  35 ++++++++++
+ sound/soc/intel/sst-haswell-pcm.c | 118 +++++++++++++++++++++++++++++++
+ 3 files changed, 295 insertions(+)
 
-So that, I can handle it more concisely. Thanks, I will fix this.
-
-> 
-> 			for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++)
-> 				clk_prepare_enable(wm8994->clk_mclk[i]);
-> 
-> But, wm8994_probe() have to initialize the NULL for wm8994->clk_mclk[i].
-> I added the comment about this on below.
-> 
-> > +			}
-> >  			active_reference(codec);
-> > +		} else if (codec->dapm.bias_level == SND_SOC_BIAS_ON) {
-> > +			for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++) {
-> > +				if (!IS_ERR(wm8994->clk_mclk[i]))
-> > +					clk_disable_unprepare(
-> > +							wm8994->clk_mclk[i]);
-
-ditto
-
-> > +			}
-> > +		}
-> >  		break;
-> >  
-> >  	case SND_SOC_BIAS_STANDBY:
-> > @@ -4451,6 +4464,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8994 = {
-> >  static int wm8994_probe(struct platform_device *pdev)
-> >  {
-> >  	struct wm8994_priv *wm8994;
-> > +	int i;
-> >  
-> >  	wm8994 = devm_kzalloc(&pdev->dev, sizeof(struct wm8994_priv),
-> >  			      GFP_KERNEL);
-> > @@ -4460,6 +4474,17 @@ static int wm8994_probe(struct platform_device *pdev)
-> >  
-> >  	wm8994->wm8994 = dev_get_drvdata(pdev->dev.parent);
-> >  
-> > +	for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++) {
-> > +		char mclk_name[] = "MCLKx";
-> > +
-> > +		snprintf(mclk_name, sizeof(mclk_name), "MCLK%d", i + 1);
-> > +
-> > +		wm8994->clk_mclk[i] = devm_clk_get(pdev->dev.parent, mclk_name);
-> > +		if (IS_ERR(wm8994->clk_mclk[i]))
-> > +			if (PTR_ERR(wm8994->clk_mclk) == -EPROBE_DEFER)
-> > +				return -EPROBE_DEFER;
-> 
-> I think you better to modify exception handling as following:
-> 
-> 		if (IS_ERR(wm8994->clk_mclk[i])) {
-> 			wm8994->clk_mclk[i] = NULL;
-> 			return PTR_ERR(wm8994->clk_mclk);
-
-I will fix. (MCLK is optional properties in wm8994)
-
-	if (IS_ERR(wm8994->clk_mclk[i]))
-		wm8994->clk_mclk[i] = NULL;
-
-Best Regards,
-Inha Song.
-
-> 		}
-> 
-> > +	}
-> > +
-> >  	pm_runtime_enable(&pdev->dev);
-> >  	pm_runtime_idle(&pdev->dev);
-> >  
-> > diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-> > index 6536f8d..8cf06a4 100644
-> > --- a/sound/soc/codecs/wm8994.h
-> > +++ b/sound/soc/codecs/wm8994.h
-> > @@ -78,6 +78,7 @@ struct wm8994_priv {
-> >  	int sysclk[2];
-> >  	int sysclk_rate[2];
-> >  	int mclk[2];
-> > +	struct clk *clk_mclk[2];
-> >  	int aifclk[2];
-> >  	int aifdiv[2];
-> >  	int channels[2];
-> > 
-> 
-> Thanks,
-> Chanwoo Choi
+-- 
+1.9.1
