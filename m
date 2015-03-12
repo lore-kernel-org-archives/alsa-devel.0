@@ -1,77 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/5] Intel SST driver restructure
-Date: Thu, 12 Mar 2015 19:54:20 +0000
-Message-ID: <20150312195420.GB28806@sirena.org.uk>
-References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
+From: anish <yesanishhere@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add maintainer for maxim codecs
+Date: Thu, 12 Mar 2015 16:35:31 -0700
+Message-ID: <CABCoZhBJfomfZwZGUSdymuY_ZEACL4=E9g0SjC+nBGK-_evmfQ@mail.gmail.com>
+References: <1425338170-30924-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9209488429956638151=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 69CB626060B
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 20:54:29 +0100 (CET)
-In-Reply-To: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, vinod.koul@intel.com, mengdong.lin@intel.com, jarkko.nikula@intel.com, yao.jin@intel.com, pierre-louis.bossart@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1425338170-30924-1-git-send-email-yesanishhere@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Nitin Mittal <nitin.mittal@maximintegrated.com>, Anish Kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Is it picked up?
 
---===============9209488429956638151==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="sjH5kukjteSWPjDM"
-Content-Disposition: inline
-
-
---sjH5kukjteSWPjDM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Mar 12, 2015 at 10:31:55PM +0800, Jie Yang wrote:
-> In order to prepare for the upstreaming of Skylake drivers and to
-> allow reuse of code between different Intel audio DSP products,
-> this patch series restructures the Intel directory as follows:
-
-This is all fine by me - I'd just like to see an ack before we do this
-=66rom the other Intel people to make sure they're not going to get
-surprised, and also make sure that any in flight patches (particularly
-bug fixes) get merged before the rename since this will make it easier
-to apply things.  Indeed, do we have an ETA for the Skylake code?  If
-it's not due before the merge window then it might be best to apply
-these (or changes like them) at the very end of this development cycle. =20
-
---sjH5kukjteSWPjDM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVAe7rAAoJECTWi3JdVIfQWCQH/2pjhRZvd0CrVyOgasgBGy1S
-V5/iHLPzfP9I1Je5wNk429oFJUBP57OtbYm0atcPDa1yez3tD0PjUBFURT1pF70G
-ZRz7GIKGgdGIj6NmpEbQaHpLKMp+/9FXWeIlLfWXIKMnsy4rU2e/LYzDpnMM8Tv/
-Pd/Hm0NsEmmDYOgWAfwA5hXavWc13qU0t/tXDqvmdse5umDvJcwm17mLIZiCttkQ
-T5kgsUjXVJCFlF8mp0j3v5ncLjxsOvq+SlUr9vFAIv4uVcDe0FYaSUsFw2g7QY67
-9qmXZHXNJ/R4jS9ficqF/BTIyhJdCfjqo5A64O1nThSaGahBD36JjBgOVVR0ljg=
-=xtwU
------END PGP SIGNATURE-----
-
---sjH5kukjteSWPjDM--
-
---===============9209488429956638151==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9209488429956638151==--
+On Mon, Mar 2, 2015 at 3:16 PM, Anish Kumar <yesanishhere@gmail.com> wrote:
+> This patch adds maintainer for maxim audio codecs.
+> Signed-off-by: Anish Kumar <yesanishhere@gmail.com>
+> ---
+>  MAINTAINERS | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8bdd7a7..2128586 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -7387,6 +7387,13 @@ S:       Supported
+>  F:     sound/soc/
+>  F:     include/sound/soc*
+>
+> +MAXIM INTEGRATED SOC CODEC DRIVER
+> +M:     Anish Kumar <yesanishhere@gmail.com>
+> +L:     alsa-devel@alsa-project.org (moderated for non-subscribers)
+> +S:     Maintained
+> +F:     sound/soc/codecs/max*
+> +F:     include/sound/max*
+> +
+>  SPARC + UltraSPARC (sparc/sparc64)
+>  M:     "David S. Miller" <davem@davemloft.net>
+>  L:     sparclinux@vger.kernel.org
+> --
+> 1.9.3
+>
