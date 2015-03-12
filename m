@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
- resume_post for Braswell snd_soc_card
-Date: Thu, 12 Mar 2015 18:01:48 +0000
-Message-ID: <20150312180148.GT28806@sirena.org.uk>
-References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
- <20150311125047.GD28806@sirena.org.uk>
- <5500E346.8020700@linux.intel.com>
- <ABFD875FF5FB574BA706497D987D48D701059B20@RTITMBSV03.realtek.com.tw>
- <550189CF.6020304@linux.intel.com>
+From: Belisko Marek <marek.belisko@gmail.com>
+Subject: Re: dummy codec + simple card combination
+Date: Thu, 12 Mar 2015 19:33:23 +0100
+Message-ID: <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
+References: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0475558161885262954=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A7F02605E4
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 19:27:49 +0100 (CET)
-In-Reply-To: <550189CF.6020304@linux.intel.com>
+Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
+ [209.85.212.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9F932605E4
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 19:33:23 +0100 (CET)
+Received: by wiwh11 with SMTP id h11so74334wiw.1
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 11:33:23 -0700 (PDT)
+In-Reply-To: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,65 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Jin, Yao" <yao.jin@linux.intel.com>
-Cc: Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "subhransu.s.prusty@intel.com" <subhransu.s.prusty@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mengdong.lin@intel.com" <mengdong.lin@intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0475558161885262954==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+Ccw6gpuJ1V99M/T"
-Content-Disposition: inline
+I posted same question on alsa-devel ML this week but I forgot to add
+sound omap + asoc maintainers (sorry about that)
 
+I'm trying to add audio support for gta04 (for gsm + bt and fm audio).
+All audio sources are clock masters so basically connection is dummy
+codecs -> cpu dai (mcbsp ports).
 
---+Ccw6gpuJ1V99M/T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For implementing such thing I can see 2 options:
+1. simple card driver which can easily describe cpu dai interface but
+dummy codec cannot because there are no DT bindings (there was sever
+attempts to add DT bindings for dummy-codec but AFAIK none was
+accepted)
 
-On Thu, Mar 12, 2015 at 08:42:55PM +0800, Jin, Yao wrote:
+This turns it to only solution to create gta04 soundcard which will
+get from DT cpu dai links and use in card driver dummy codecs
+directly.
 
-> I pull the for-next branch right now and I can see the following rt5670
-> patches have been integrated.
+Is my assumption correct? I would like to get some feedback before
+wasting my time with implementing something which cannot be pushed
+mainline. Thanks for all suggestions.
 
-> 66454b3 ASoC: rt5670: Replace w->codec snd_soc_dapm_to_codec(w->dapm)
-> cc3c340 ASoC: rt5670: export jack suspend/resume APIs
-> d3ef705 ASoC: rt5670: Add IRQ function
+BR,
 
-> Then I build the for-next branch with my patches (reverted before):
+marek
 
-> ASoC: Intel: Add suspend_pre and resume_post for Braswell snd_soc_card
-> ASoC: Intel: move the jack creation to Braswell machine driver
+--
+as simple and primitive as possible
+-------------------------------------------------
+Marek Belisko - OPEN-NANDRA
+Freelance Developer
 
-> The build is successful. So it looks we don't need to resend the patch
-> series, just re-applying my patches should be OK.
-
-These are two separate branches, if there's dependencies between the two
-branches we need to merge them before applying new patches - I think
-that's the missing piece of information here.
-
---+Ccw6gpuJ1V99M/T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVAdSLAAoJECTWi3JdVIfQM1YH/0644qwYKY85eVsd9Jy2op89
-bwD3PIE6KIbRDcbKlh0HSsViAdxXQQ141QSvN6Dz0A9V0q9KX4ST0BFoYVuqlXDe
-4Mcx0aZstmxi4RWkXFtuoXikPkoBFliittx5Uew9XCKtnbhNuVGm0K0SaAFbJzgU
-0YcBKIaJZe5EQAV+LrCrJS6Vq0DVTIKd5XVKTLF3oMogVjlyVhHEKx3QDZzM5uU8
-fFlD6HAFoafJxD4XsYp/8RP92XnkL5eAs1+pcZ7BzZhcerhXzpQ/xdVXUVu241Xw
-c91Jc7fuRg43/3gbXOmFQtueSXxNRXcSYWsyNMmRjdOt9+oL3XdCf5q5W8O4s8I=
-=BNKW
------END PGP SIGNATURE-----
-
---+Ccw6gpuJ1V99M/T--
-
---===============0475558161885262954==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0475558161885262954==--
+Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
+Tel: +421 915 052 184
+skype: marekwhite
+twitter: #opennandra
+web: http://open-nandra.com
