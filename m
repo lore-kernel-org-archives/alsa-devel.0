@@ -1,19 +1,16 @@
-From: Belisko Marek <marek.belisko@gmail.com>
-Subject: Re: dummy codec + simple card combination
-Date: Thu, 12 Mar 2015 19:33:23 +0100
-Message-ID: <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
-References: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/3] add sound effect module waves
+Date: Thu, 12 Mar 2015 19:18:41 +0000
+Message-ID: <20150312191841.GW28806@sirena.org.uk>
+References: <1426139582-7245-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0038743296610959037=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
- [209.85.212.178])
- by alsa0.perex.cz (Postfix) with ESMTP id A9F932605E4
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 19:33:23 +0100 (CET)
-Received: by wiwh11 with SMTP id h11so74334wiw.1
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 11:33:23 -0700 (PDT)
-In-Reply-To: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C340B2605D6
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 20:18:48 +0100 (CET)
+In-Reply-To: <1426139582-7245-1-git-send-email-han.lu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>
+To: han.lu@intel.com
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I posted same question on alsa-devel ML this week but I forgot to add
-sound omap + asoc maintainers (sorry about that)
+--===============0038743296610959037==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fKMJiToQsVzOkqLC"
+Content-Disposition: inline
 
-I'm trying to add audio support for gta04 (for gsm + bt and fm audio).
-All audio sources are clock masters so basically connection is dummy
-codecs -> cpu dai (mcbsp ports).
 
-For implementing such thing I can see 2 options:
-1. simple card driver which can easily describe cpu dai interface but
-dummy codec cannot because there are no DT bindings (there was sever
-attempts to add DT bindings for dummy-codec but AFAIK none was
-accepted)
+--fKMJiToQsVzOkqLC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This turns it to only solution to create gta04 soundcard which will
-get from DT cpu dai links and use in card driver dummy codecs
-directly.
+On Thu, Mar 12, 2015 at 01:52:59PM +0800, han.lu@intel.com wrote:
+> From: "Lu, Han" <han.lu@intel.com>
+>=20
+> Merged 5 patches(0004 to 0008) of last revision into 3 new patches
 
-Is my assumption correct? I would like to get some feedback before
-wasting my time with implementing something which cannot be pushed
-mainline. Thanks for all suggestions.
+Applied all, thanks.
 
-BR,
+--fKMJiToQsVzOkqLC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-marek
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
---
-as simple and primitive as possible
--------------------------------------------------
-Marek Belisko - OPEN-NANDRA
-Freelance Developer
+iQEcBAEBCAAGBQJVAeaQAAoJECTWi3JdVIfQlWwH/3eYHb9bobj9tDhWsg2CmPqd
+unXQ47ACWSfwcQc31p02QBDT6CtUy7eThEnihtNCpgju3oenQg5WKtY6Wjk/OD27
+U7DrpzjqrEcYRGwFLZ41/h4TGm9qJLPtnmxN7GOKtVjPqnYO4ioaox80ZvzYvy/T
+mQsMvpCRDhiFoMcOmeWlQO8hMDCKtofHSAOpNc6L9TsneqZQutcIs+QEZsIntKXT
+czjmfjSHiuLEkeLOFPRnuAk8t1lYeIHmzl5mekrnzGLw9e7cN3KZ16f/fPCovHxS
+0difCqLcr2xPTZxbOJIxJkrwNf+WY8qlE3nReKl/fige0IjOSPh+EPaw24mCauw=
+=WakU
+-----END PGP SIGNATURE-----
 
-Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
-Tel: +421 915 052 184
-skype: marekwhite
-twitter: #opennandra
-web: http://open-nandra.com
+--fKMJiToQsVzOkqLC--
+
+--===============0038743296610959037==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0038743296610959037==--
