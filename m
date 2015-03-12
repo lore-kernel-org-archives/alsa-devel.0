@@ -1,177 +1,74 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH] clk: provide clk_is_match() dummy for non-common clk
-Date: Wed, 11 Mar 2015 17:35:42 -0700
-Message-ID: <5500DF5E.7010404@codeaurora.org>
-References: <1424876018-17852-1-git-send-email-shawn.guo@linaro.org> <1424876018-17852-2-git-send-email-shawn.guo@linaro.org> <20150225172757.421.43718@quantum> <8682755.oK0Ae34OOP@wuerfel> <20150311102208.GX8656@n2100.arm.linux.org.uk> <20150311111755.GI952@pengutronix.de> <20150311122905.GY8656@n2100.arm.linux.org.uk>
+From: "Jin, Yao" <yao.jin@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
+ resume_post for Braswell snd_soc_card
+Date: Thu, 12 Mar 2015 08:52:22 +0800
+Message-ID: <5500E346.8020700@linux.intel.com>
+References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
+ <20150311125047.GD28806@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-pwm-owner@vger.kernel.org>
-In-Reply-To: <20150311122905.GY8656@n2100.arm.linux.org.uk>
-Sender: linux-pwm-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>, =?windows-1252?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Mike Turquette <mturquette@linaro.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, linux-serial@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1416F265497
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 01:52:26 +0100 (CET)
+In-Reply-To: <20150311125047.GD28806@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/11/15 05:29, Russell King - ARM Linux wrote:
-> On Wed, Mar 11, 2015 at 12:17:55PM +0100, Uwe Kleine-K=F6nig wrote:
->> Hey Russell,
->>
->> On Wed, Mar 11, 2015 at 10:22:09AM +0000, Russell King - ARM Linux w=
-rote:
->>> On Sun, Mar 08, 2015 at 10:05:29PM +0100, Arnd Bergmann wrote:
->>>> ARM randconfig build tests found a new error for configurations
->>>> with COMMON_CLK disabled but HAS_CLK selected by the platform:
->>>>
->>>> ERROR: "clk_is_match" [sound/soc/fsl/snd-soc-fsl-spdif.ko] undefin=
-ed!
->>>>
->>>> This moves the declaration around, so this case is covered
->>>> by the existing static inline helper function.
->>>>
->>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>>> Fixes: c69e182e51d89 ("clk: introduce clk_is_match")
->>>> ----
->>>> BTW, we have a preexisting problem in clk_get_parent,
->>>> clk_round_rate and clk_set_parent, which I've worked around in
->>>> my randconfig builds so far. Should we do that the same way?
->>> NAK, as Uwe points out, you didn't address my comment.
->> You commented on the patch that is c69e182e51d8 ("clk: introduce
->> clk_is_match") now in next. Arnd just moved this around.
-> *Sigh*
->
-> Mike - please remove this commit until proper kernel patch process is
-> honoured.  We'll have some order here, and mutual respect of fellow
-> kernel developers, rather than people selectively ignoring people.
-> Yes, I realise that it fixes a bug, but it's utterly disgusting that
-> comments on a patch are ignored and it's just picked up irrespective
-> of comments being addressed.
->
-> If you don't like that, bloody well do a better job.
->
+Hi Mark, Bard,
 
-The patch was *not* picked up after your mail was sent. The patch was
-picked up the same day it was posted to the list (Feb 25). You sent
-review comments a week later (March 4). I don't see any selective
-ignoring here.
+This patch has dependency on Bard's patch "ASoC: rt5670: export jack
+suspend/resume APIs". I pull the Mark's for-next branch right now and I
+can see Bard's patch "ASoC: rt5670: export jack suspend/resume APIs" has
+been integrated.
 
-I'll fold the const comments from Geert, your comments, and Arnd's fix
-into the patch. Here's the new patch:
+So there now is only one build error in rt5670.c:
 
-----8<----
+sound/soc/codecs/rt5670.c: In function 'is_sys_clk_from_pll':
+sound/soc/codecs/rt5670.c:702:38: error: 'struct snd_soc_dapm_widget'
+has no member named 'codec'
+  struct snd_soc_codec *codec = source->codec;
+                                      ^
+After I fix it with my change as following, the build is successful.
 
-=46rom: Michael Turquette <mturquette@linaro.org>
-Subject: [PATCH] clk: introduce clk_is_match
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -699,7 +699,7 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
+ static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
+                         struct snd_soc_dapm_widget *sink)
+ {
+-       struct snd_soc_codec *codec = source->codec;
++       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
+        struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
 
-Some drivers compare struct clk pointers as a means of knowing
-if the two pointers reference the same clock hardware. This behavior is
-dubious (drivers must not dereference struct clk), but did not cause an=
-y
-regressions until the per-user struct clk patch was merged. Now the tes=
-t
-for matching clk's will always fail with per-user struct clk's.
+        if (rt5670->sysclk_src == RT5670_SCLK_S_PLL1)
 
-clk_is_match is introduced to fix the regression and prevent drivers
-from comparing the pointers manually.
+Could Bard take a look at it?
 
-=46ixes: 035a61c314eb ("clk: Make clk API return per-user struct clk in=
-stances")
-Cc: Russell King <linux@arm.linux.org.uk>
-Cc: Shawn Guo <shawn.guo@linaro.org>
-Cc: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Signed-off-by: Michael Turquette <mturquette@linaro.org>
-[arnd@arndb.de: Fix COMMON_CLK=3DN && HAS_CLK=3DY config]
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-[sboyd@codeaurora.org: const arguments to clk_is_match() and
-remove unnecessary ternary operation]
-Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
----
- drivers/clk/clk.c   | 26 ++++++++++++++++++++++++++
- include/linux/clk.h | 18 ++++++++++++++++++
- 2 files changed, 44 insertions(+)
+For my patch, the build is successful.
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index b9f85fc2ce3f..237f23f68bfc 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -2170,6 +2170,32 @@ int clk_get_phase(struct clk *clk)
- }
-=20
- /**
-+ * clk_is_match - check if two clk's point to the same hardware clock
-+ * @p: clk compared against q
-+ * @q: clk compared against p
-+ *
-+ * Returns true if the two struct clk pointers both point to the same =
-hardware
-+ * clock node. Put differently, returns true if struct clk *p and stru=
-ct clk *q
-+ * share the same struct clk_core object.
-+ *
-+ * Returns false otherwise. Note that two NULL clks are treated as mat=
-ching.
-+ */
-+bool clk_is_match(const struct clk *p, const struct clk *q)
-+{
-+	/* trivial case: identical struct clk's or both NULL */
-+	if (p =3D=3D q)
-+		return true;
-+
-+	/* true if clk->core pointers match. Avoid derefing garbage */
-+	if (!IS_ERR_OR_NULL(p) && !IS_ERR_OR_NULL(q))
-+		if (p->core =3D=3D q->core)
-+			return true;
-+
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(clk_is_match);
-+
-+/**
-  * __clk_init - initialize the data structures in a struct clk
-  * @dev:	device initializing this clk, placeholder for now
-  * @clk:	clk being initialized
-diff --git a/include/linux/clk.h b/include/linux/clk.h
-index 8381bbfbc308..68c16a6bedb3 100644
---- a/include/linux/clk.h
-+++ b/include/linux/clk.h
-@@ -125,6 +125,19 @@ int clk_set_phase(struct clk *clk, int degrees);
-  */
- int clk_get_phase(struct clk *clk);
-=20
-+/**
-+ * clk_is_match - check if two clk's point to the same hardware clock
-+ * @p: clk compared against q
-+ * @q: clk compared against p
-+ *
-+ * Returns true if the two struct clk pointers both point to the same =
-hardware
-+ * clock node. Put differently, returns true if struct clk *p and stru=
-ct clk *q
-+ * share the same struct clk_core object.
-+ *
-+ * Returns false otherwise. Note that two NULL clks are treated as mat=
-ching.
-+ */
-+bool clk_is_match(const struct clk *p, const struct clk *q);
-+
- #else
-=20
- static inline long clk_get_accuracy(struct clk *clk)
-@@ -142,6 +155,11 @@ static inline long clk_get_phase(struct clk *clk)
- 	return -ENOTSUPP;
- }
-=20
-+static inline bool clk_is_match(const struct clk *p, const struct clk =
-*q)
-+{
-+	return p =3D=3D q;
-+}
-+
- #endif
-=20
- /**
+ASoC: Intel: Add suspend_pre and resume_post for Braswell snd_soc_card
+ASoC: Intel: move the jack creation to Braswell machine driver
 
---=20
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thanks
+Jin Yao
 
+On 2015/3/11 20:50, Mark Brown wrote:
+> On Wed, Mar 11, 2015 at 11:48:33AM +0800, Jin Yao wrote:
+>> On Braswell, we need to add some machine specific setting before suspend
+>> and after resume. For example, disable/enable jack detection in codec so
+>> use snd_soc_card suspend_pre and resume_post ops for this purpose.
+> 
+> Reverted since it doesn't build!
+> 
