@@ -1,18 +1,14 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] rate: Allow LGPL for libsamplerate commercial
-	licensee
-Date: Thu, 12 Mar 2015 09:19:00 +0100
-Message-ID: <1426148340-3685-1-git-send-email-tiwai@suse.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH] ALSA: snd-usb: add quirks for Roland UA-22
+Date: Thu, 12 Mar 2015 09:41:32 +0100
+Message-ID: <1426149692-598-1-git-send-email-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A0397261498
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 09:19:01 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5F457AC76
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 08:19:01 +0000 (UTC)
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA26C2605B4
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 09:41:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <daniel@zonque.org>, raphael@doursenaud.fr, rafalafuente@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-alsa-plugins-rate is tagged with GPL just for following the license of
-libsamplerate.  However, libsamplerate provides a commercial license
-to allow it used with less restrictions.  In that case, we also don't
-have to stick with GPL.  Instead, the code follows LGPL like other
-plugin codes in this package.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-
-If anyone sees a legal problem with this, please let me know.
-I find it OK, but IANAL.
-
- rate/rate_samplerate.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
-
-diff --git a/rate/rate_samplerate.c b/rate/rate_samplerate.c
-index 53a0627b21dc..0b14a59000bf 100644
---- a/rate/rate_samplerate.c
-+++ b/rate/rate_samplerate.c
-@@ -3,6 +3,14 @@
-  *
-  * Copyright (c) 2006 by Takashi Iwai <tiwai@suse.de>
-  *
-+ * This plugin code is supposed to be used and distributed primarily
-+ * under GPL v2 or later, in order to follow the license of libsamplerate.
-+ * However, if you already own a commercial license to use libsamplerate
-+ * for dynamic linking, this plugin code can be used and distributed also
-+ * under LGPL v2.1 or later.
-+ *
-+ * For GPL-2.0+:
-+ *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation; either version 2 of the License, or
-@@ -13,9 +21,17 @@
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
-+ * For LGPL-2.1+:
-+ *
-+ * This library is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU Lesser General Public
-+ * License as published by the Free Software Foundation; either
-+ * version 2.1 of the License, or (at your option) any later version.
-+ *
-+ * This library is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * Lesser General Public License for more details.
-  */
- 
- #include <stdio.h>
--- 
-2.3.2
+VGhlIGRldmljZSBjb21wbGllcyB0byB0aGUgVUFDMSBzdGFuZGFyZCBidXQgaGlkZXMgdGhhdCBm
+YWN0IHdpdGgKcHJvcHJpZXRhcnkgZGVzY3JpcHRvcnMuIFRoZSBhdXRvZGV0ZWN0IHF1aXJrIGZv
+ciBSb2xhbmQgZGV2aWNlcwpjYXRjaGVzIHRoZSBhdWRpbyBpbnRlcmZhY2UgYnV0IG1pc3NlcyB0
+aGUgTUlESSBwYXJ0LCBzbyBhIHNwZWNpZmljCnF1aXJrIGlzIG5lZWRlZC4KClNpZ25lZC1vZmYt
+Ynk6IERhbmllbCBNYWNrIDxkYW5pZWxAem9ucXVlLm9yZz4KUmVwb3J0ZWQtYnk6IFJhZmEgTGFm
+dWVudGUgPHJhZmFsYWZ1ZW50ZUBnbWFpbC5jb20+ClRlc3RlZC1ieTogUmFwaGHDq2wgRG91cnNl
+bmF1ZCA8cmFwaGFlbEBkb3Vyc2VuYXVkLmZyPgotLS0KIHNvdW5kL3VzYi9xdWlya3MtdGFibGUu
+aCB8IDMwICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDMw
+IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmggYi9z
+b3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKaW5kZXggNjdkNDc2NS4uMDdmOTg0ZCAxMDA2NDQKLS0t
+IGEvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCisrKyBiL3NvdW5kL3VzYi9xdWlya3MtdGFibGUu
+aApAQCAtMTc3Myw2ICsxNzczLDM2IEBAIFlBTUFIQV9ERVZJQ0UoMHg3MDEwLCAiVUI5OSIpLAog
+CQl9CiAJfQogfSwKK3sKKwlVU0JfREVWSUNFKDB4MDU4MiwgMHgwMTU5KSwKKwkuZHJpdmVyX2lu
+Zm8gPSAodW5zaWduZWQgbG9uZykgJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmsp
+IHsKKwkJLyogLnZlbmRvcl9uYW1lID0gIlJvbGFuZCIsICovCisJCS8qIC5wcm9kdWN0X25hbWUg
+PSAiVUEtMjIiLCAqLworCQkuaWZudW0gPSBRVUlSS19BTllfSU5URVJGQUNFLAorCQkudHlwZSA9
+IFFVSVJLX0NPTVBPU0lURSwKKwkJLmRhdGEgPSAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9f
+cXVpcmtbXSkgeworCQkJeworCQkJCS5pZm51bSA9IDAsCisJCQkJLnR5cGUgPSBRVUlSS19BVURJ
+T19TVEFOREFSRF9JTlRFUkZBQ0UKKwkJCX0sCisJCQl7CisJCQkJLmlmbnVtID0gMSwKKwkJCQku
+dHlwZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFDRQorCQkJfSwKKwkJCXsKKwkJCQku
+aWZudW0gPSAyLAorCQkJCS50eXBlID0gUVVJUktfTUlESV9GSVhFRF9FTkRQT0lOVCwKKwkJCQku
+ZGF0YSA9ICYgKGNvbnN0IHN0cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRfaW5mbykgeworCQkJ
+CQkub3V0X2NhYmxlcyA9IDB4MDAwMSwKKwkJCQkJLmluX2NhYmxlcyA9IDB4MDAwMQorCQkJCX0K
+KwkJCX0sCisJCQl7CisJCQkJLmlmbnVtID0gLTEKKwkJCX0KKwkJfQorCX0KK30sCiAvKiB0aGlz
+IGNhdGNoZXMgbW9zdCByZWNlbnQgdmVuZG9yLXNwZWNpZmljIFJvbGFuZCBkZXZpY2VzICovCiB7
+CiAJLm1hdGNoX2ZsYWdzID0gVVNCX0RFVklDRV9JRF9NQVRDSF9WRU5ET1IgfAotLSAKMi4zLjEK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
