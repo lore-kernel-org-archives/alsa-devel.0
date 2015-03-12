@@ -1,8 +1,10 @@
 From: Inha Song <ideal.song@samsung.com>
-Subject: [alsa-devel] [PATCH] ASoC: wm8994: Manage wm8994's MCLK in codec driver
-Date: Thu, 12 Mar 2015 11:49:39 +0900
-Message-ID: <1426128580-18320-1-git-send-email-ideal.song@samsung.com>
+Subject: [PATCH] ASoC: wm8994: Manage wm8994's MCLK in codec driver
+Date: Thu, 12 Mar 2015 11:49:40 +0900
+Message-ID: <1426128580-18320-2-git-send-email-ideal.song@samsung.com>
+References: <1426128580-18320-1-git-send-email-ideal.song@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <1426128580-18320-1-git-send-email-ideal.song@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, nikesh@opensource.wolfsonmicro.com, lars@metafoo.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, Li.Xiubo@freescale.com, sachin.kamat@samsung.com, cw00.choi@samsung.com, Inha Song <ideal.song@samsung.com>
