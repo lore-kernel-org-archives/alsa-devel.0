@@ -1,98 +1,57 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: [alsa-devel] [PATCH v2] ASoC: wm8994: Manage wm8994's MCLK in codec
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: wm8994: Manage wm8994's MCLK in codec
  driver
-Date: Thu, 12 Mar 2015 19:46:21 +0900
-Message-ID: <1426157181-6403-1-git-send-email-ideal.song@samsung.com>
+Date: Thu, 12 Mar 2015 11:39:45 +0000
+Message-ID: <20150312113945.GO28806@sirena.org.uk>
+References: <1426128580-18320-1-git-send-email-ideal.song@samsung.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+PRXPAOP3MYWro6n"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1426128580-18320-1-git-send-email-ideal.song@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, nikesh@opensource.wolfsonmicro.com, lars@metafoo.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, Li.Xiubo@freescale.com, sachin.kamat@samsung.com, cw00.choi@samsung.com, Inha Song <ideal.song@samsung.com>
+To: Inha Song <ideal.song@samsung.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, nikesh@opensource.wolfsonmicro.com, lars@metafoo.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, Li.Xiubo@freescale.com, sachin.kamat@samsung.com, cw00.choi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Previously, When we use wm8994 codec, we should control its MCLK in machine driver.
-But, It should be managed by wm8994 codec driver, not machine driver.
 
-This patch add MCLK clock DT parsing logic and control own MCLK.
+--+PRXPAOP3MYWro6n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Inha Song <ideal.song@samsung.com>
----
- sound/soc/codecs/wm8994.c | 22 +++++++++++++++++++++-
- sound/soc/codecs/wm8994.h |  1 +
- 2 files changed, 22 insertions(+), 1 deletion(-)
+On Thu, Mar 12, 2015 at 11:49:39AM +0900, Inha Song wrote:
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 4fbc768..acb6b44 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -16,6 +16,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
-+#include <linux/clk.h>
- #include <linux/gcd.h>
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
-@@ -2471,6 +2472,7 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	struct wm8994 *control = wm8994->wm8994;
-+	int i;
- 
- 	wm_hubs_set_bias_level(codec, level);
- 
-@@ -2492,8 +2494,15 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 			break;
- 		}
- 
--		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY)
-+		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY) {
-+			for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++)
-+				clk_prepare_enable(wm8994->clk_mclk[i]);
-+
- 			active_reference(codec);
-+		} else if (codec->dapm.bias_level == SND_SOC_BIAS_ON) {
-+			for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++)
-+				clk_disable_unprepare(wm8994->clk_mclk[i]);
-+		}
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
-@@ -4449,6 +4458,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8994 = {
- static int wm8994_probe(struct platform_device *pdev)
- {
- 	struct wm8994_priv *wm8994;
-+	int i;
- 
- 	wm8994 = devm_kzalloc(&pdev->dev, sizeof(struct wm8994_priv),
- 			      GFP_KERNEL);
-@@ -4460,6 +4470,16 @@ static int wm8994_probe(struct platform_device *pdev)
- 
- 	wm8994->wm8994 = dev_get_drvdata(pdev->dev.parent);
- 
-+	for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++) {
-+		char mclk_name[] = "MCLKx";
-+
-+		snprintf(mclk_name, sizeof(mclk_name), "MCLK%d", i + 1);
-+
-+		wm8994->clk_mclk[i] = devm_clk_get(pdev->dev.parent, mclk_name);
-+		if (IS_ERR(wm8994->clk_mclk[i]))
-+			wm8994->clk_mclk[i] = NULL;
-+	}
-+
- 	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_idle(&pdev->dev);
- 
-diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index dd73387..d426c44 100644
---- a/sound/soc/codecs/wm8994.h
-+++ b/sound/soc/codecs/wm8994.h
-@@ -79,6 +79,7 @@ struct wm8994_priv {
- 	int sysclk[2];
- 	int sysclk_rate[2];
- 	int mclk[2];
-+	struct clk *clk_mclk[2];
- 	int aifclk[2];
- 	int aifdiv[2];
- 	int channels[2];
--- 
-2.0.0.390.gcb682f8
+> -		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY)
+> +		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY) {
+> +			for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++) {
+> +				if (!IS_ERR(wm8994->clk_mclk[i]))
+> +					clk_prepare_enable(wm8994->clk_mclk[i]);
+> +			}
+
+This isn't checking return values.  It's also enabling both clocks all
+the time which isn't always going to be what's desired - it may result
+in an expensive high frequency reference clock being enabled when only
+a 32kHz clock is needed for example.  That doesn't seem desirable.
+
+>  			active_reference(codec);
+
+Should this perhaps be being done in active_reference instead?
+
+--+PRXPAOP3MYWro6n
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVAXsAAAoJECTWi3JdVIfQrzcIAIT9IQzpRbgZkHGj/ja/giYM
+S0g16WvvbKd2s0zk9TGu8MvC5OvcATv8nzXQIJWMb/39N7fCxTPJCPZHkwv11GBf
+uqVHFl12PU3XfbQ8uLMDpQIrg3y7W/dblCOJZSmu9EsKcRT8NjZOvIpJCaioLcZc
+Yg9sNurm1FjgtDWRU6zT3ZLIM9/r6CLhymmQ+VjAl9OVKv29LkicgK1l0CFZISWK
+3Cplkl19ZHOqZhtjeH1LMoF14atPdlkgd1zUcYpLuHw0QRdsEIt4XqTA3iIOE4Fv
+b66z9Fqc9Uo5R/OVzc1nhOPgL81F/dDbxAQnhT+5j1h5nOV+c197fNBHM1aCme4=
+=MHkl
+-----END PGP SIGNATURE-----
+
+--+PRXPAOP3MYWro6n--
