@@ -1,53 +1,44 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ALSA: snd-usb: add quirks for Roland UA-22
-Date: Thu, 12 Mar 2015 09:41:32 +0100
-Message-ID: <1426149692-598-1-git-send-email-daniel@zonque.org>
+From: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>
+Subject: Re: [PATCH 41/45] include/uapi/sound/emu10k1.h: hide gpr_valid, tram_valid and code_valid in userspace
+Date: Thu, 12 Mar 2015 09:45:42 +0100
+Message-ID: <38157374.ndif9EAmZu@wuerfel>
+References: <1424127948-22484-1-git-send-email-mikko.rapeli@iki.fi> <2168807.4Yxh5gl11Q@wuerfel> <s5hr3sun3rv.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id BA26C2605B4
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 09:41:44 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <daniel@zonque.org>, raphael@doursenaud.fr, rafalafuente@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5hr3sun3rv.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Mikko Rapeli <mikko.rapeli-X3B1VOXEql0@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGRldmljZSBjb21wbGllcyB0byB0aGUgVUFDMSBzdGFuZGFyZCBidXQgaGlkZXMgdGhhdCBm
-YWN0IHdpdGgKcHJvcHJpZXRhcnkgZGVzY3JpcHRvcnMuIFRoZSBhdXRvZGV0ZWN0IHF1aXJrIGZv
-ciBSb2xhbmQgZGV2aWNlcwpjYXRjaGVzIHRoZSBhdWRpbyBpbnRlcmZhY2UgYnV0IG1pc3NlcyB0
-aGUgTUlESSBwYXJ0LCBzbyBhIHNwZWNpZmljCnF1aXJrIGlzIG5lZWRlZC4KClNpZ25lZC1vZmYt
-Ynk6IERhbmllbCBNYWNrIDxkYW5pZWxAem9ucXVlLm9yZz4KUmVwb3J0ZWQtYnk6IFJhZmEgTGFm
-dWVudGUgPHJhZmFsYWZ1ZW50ZUBnbWFpbC5jb20+ClRlc3RlZC1ieTogUmFwaGHDq2wgRG91cnNl
-bmF1ZCA8cmFwaGFlbEBkb3Vyc2VuYXVkLmZyPgotLS0KIHNvdW5kL3VzYi9xdWlya3MtdGFibGUu
-aCB8IDMwICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDMw
-IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmggYi9z
-b3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKaW5kZXggNjdkNDc2NS4uMDdmOTg0ZCAxMDA2NDQKLS0t
-IGEvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCisrKyBiL3NvdW5kL3VzYi9xdWlya3MtdGFibGUu
-aApAQCAtMTc3Myw2ICsxNzczLDM2IEBAIFlBTUFIQV9ERVZJQ0UoMHg3MDEwLCAiVUI5OSIpLAog
-CQl9CiAJfQogfSwKK3sKKwlVU0JfREVWSUNFKDB4MDU4MiwgMHgwMTU5KSwKKwkuZHJpdmVyX2lu
-Zm8gPSAodW5zaWduZWQgbG9uZykgJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmsp
-IHsKKwkJLyogLnZlbmRvcl9uYW1lID0gIlJvbGFuZCIsICovCisJCS8qIC5wcm9kdWN0X25hbWUg
-PSAiVUEtMjIiLCAqLworCQkuaWZudW0gPSBRVUlSS19BTllfSU5URVJGQUNFLAorCQkudHlwZSA9
-IFFVSVJLX0NPTVBPU0lURSwKKwkJLmRhdGEgPSAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9f
-cXVpcmtbXSkgeworCQkJeworCQkJCS5pZm51bSA9IDAsCisJCQkJLnR5cGUgPSBRVUlSS19BVURJ
-T19TVEFOREFSRF9JTlRFUkZBQ0UKKwkJCX0sCisJCQl7CisJCQkJLmlmbnVtID0gMSwKKwkJCQku
-dHlwZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFDRQorCQkJfSwKKwkJCXsKKwkJCQku
-aWZudW0gPSAyLAorCQkJCS50eXBlID0gUVVJUktfTUlESV9GSVhFRF9FTkRQT0lOVCwKKwkJCQku
-ZGF0YSA9ICYgKGNvbnN0IHN0cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRfaW5mbykgeworCQkJ
-CQkub3V0X2NhYmxlcyA9IDB4MDAwMSwKKwkJCQkJLmluX2NhYmxlcyA9IDB4MDAwMQorCQkJCX0K
-KwkJCX0sCisJCQl7CisJCQkJLmlmbnVtID0gLTEKKwkJCX0KKwkJfQorCX0KK30sCiAvKiB0aGlz
-IGNhdGNoZXMgbW9zdCByZWNlbnQgdmVuZG9yLXNwZWNpZmljIFJvbGFuZCBkZXZpY2VzICovCiB7
-CiAJLm1hdGNoX2ZsYWdzID0gVVNCX0RFVklDRV9JRF9NQVRDSF9WRU5ET1IgfAotLSAKMi4zLjEK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thursday 12 March 2015 07:11:48 Takashi Iwai wrote:
+> At Wed, 11 Mar 2015 10:46:29 +0100,
+> Arnd Bergmann wrote:
+> > 
+> > On Wednesday 11 March 2015 07:11:18 Takashi Iwai wrote:
+> > > At Wed, 11 Mar 2015 03:22:04 +0200,
+> > > 
+> > > Are there any other headers like that?  If this is the only one, leave
+> > > it as is.  The only program that reads this are some alsa-tools ones
+> > > and they have already own DECLARE_BITMAP() definition.  Adding the
+> > > extra definition here will even break the compilation out of sudden.
+> > 
+> > I think it's a worthy goal to have the header files be compilable
+> > standalone,
+> 
+> In general yes, but this case is very minor issue:
+> - the file in question is for a hardware device-specific data
+>   definition,
+> - there are only two programs read this file, both can be built
+>   properly,
+> - and the device and the programs are very old, modifying such need
+>   extra care.
+
+Right, we should only do it if the goal is to have all uapi headers
+includable standalone. For a particular header file there is very
+little benefit as you say, but it would be useful if we can automatically
+test for regressions with new or modified headers.
+
+	Arnd
