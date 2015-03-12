@@ -1,103 +1,102 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
-	resume_post for Braswell snd_soc_card
-Date: Thu, 12 Mar 2015 02:38:33 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D701059B20@RTITMBSV03.realtek.com.tw>
-References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
- <20150311125047.GD28806@sirena.org.uk> <5500E346.8020700@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id BFCE12654AD
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 03:38:40 +0100 (CET)
-In-Reply-To: <5500E346.8020700@linux.intel.com>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Jin, Yao" <yao.jin@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: "mengdong.lin@intel.com" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "subhransu.s.prusty@intel.com" <subhransu.s.prusty@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+From: Inha Song <ideal.song@samsung.com>
+Subject: [alsa-devel] [PATCH] ASoC: wm8994: Manage wm8994's MCLK in codec driver
+Date: Thu, 12 Mar 2015 11:49:39 +0900
+Message-ID: <1426128580-18320-1-git-send-email-ideal.song@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, nikesh@opensource.wolfsonmicro.com, lars@metafoo.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, Li.Xiubo@freescale.com, sachin.kamat@samsung.com, cw00.choi@samsung.com, Inha Song <ideal.song@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Jin, Yao [mailto:yao.jin@linux.intel.com]
-> Sent: Thursday, March 12, 2015 8:52 AM
-> To: Mark Brown
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org;
-> mengdong.lin@intel.com; subhransu.s.prusty@intel.com; Bard Liao
-> Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and resume_post for
-> Braswell snd_soc_card
-> 
-> Hi Mark, Bard,
-> 
-> This patch has dependency on Bard's patch "ASoC: rt5670: export jack
-> suspend/resume APIs". I pull the Mark's for-next branch right now and I
-> can see Bard's patch "ASoC: rt5670: export jack suspend/resume APIs" has
-> been integrated.
+Previously, When we use wm8994 codec, we should control its MCLK in machine driver.
+But, It should be managed by wm8994 codec driver, not machine driver.
 
-I think we should send the dependency patches in a series.
+This patch add MCLK clock DT parsing logic and control own MCLK.
 
-> function 'snd_soc_card_jack_new' [-Werror=implicit-function-declaration]
->             ret = snd_soc_card_jack_new(runtime->card, "Headset",
->             ^
+Signed-off-by: Inha Song <ideal.song@samsung.com>
+---
+ sound/soc/codecs/wm8994.c | 27 ++++++++++++++++++++++++++-
+ sound/soc/codecs/wm8994.h |  1 +
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-I think it is due to Lars-Peter's "ASoC: simple-card: Register jacks at
-the card level" patch is not applied on branch topic/intel.
-
-> 
-> So there now is only one build error in rt5670.c:
-> 
-> sound/soc/codecs/rt5670.c: In function 'is_sys_clk_from_pll':
-> sound/soc/codecs/rt5670.c:702:38: error: 'struct snd_soc_dapm_widget'
-> has no member named 'codec'
->   struct snd_soc_codec *codec = source->codec;
->                                       ^
-> After I fix it with my change as following, the build is successful.
-> 
-> --- a/sound/soc/codecs/rt5670.c
-> +++ b/sound/soc/codecs/rt5670.c
-> @@ -699,7 +699,7 @@ static int set_dmic_clk(struct
-> snd_soc_dapm_widget *w,  static int is_sys_clk_from_pll(struct
-> snd_soc_dapm_widget *source,
->                          struct snd_soc_dapm_widget *sink)  {
-> -       struct snd_soc_codec *codec = source->codec;
-> +       struct snd_soc_codec *codec =
-> + snd_soc_dapm_to_codec(source->dapm);
->         struct rt5670_priv *rt5670 =
-> snd_soc_codec_get_drvdata(codec);
-> 
->         if (rt5670->sysclk_src == RT5670_SCLK_S_PLL1)
-> 
-> Could Bard take a look at it?
-
-It is already in Lars-Peter's "ASoC: rt5670: Replace w->codec
-snd_soc_dapm_to_codec(w->dapm)" patch
-
-> 
-> For my patch, the build is successful.
-> 
-> ASoC: Intel: Add suspend_pre and resume_post for Braswell snd_soc_card
-> ASoC: Intel: move the jack creation to Braswell machine driver
-> 
-> Thanks
-> Jin Yao
-> 
-> On 2015/3/11 20:50, Mark Brown wrote:
-> > On Wed, Mar 11, 2015 at 11:48:33AM +0800, Jin Yao wrote:
-> >> On Braswell, we need to add some machine specific setting before
-> >> suspend and after resume. For example, disable/enable jack detection
-> >> in codec so use snd_soc_card suspend_pre and resume_post ops for
-> this purpose.
-> >
-> > Reverted since it doesn't build!
-> >
-> 
-> ------Please consider the environment before printing this e-mail.
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 247b390..d80dcc6 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -16,6 +16,7 @@
+ #include <linux/init.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
++#include <linux/clk.h>
+ #include <linux/gcd.h>
+ #include <linux/i2c.h>
+ #include <linux/platform_device.h>
+@@ -2470,6 +2471,7 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
+ {
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8994 *control = wm8994->wm8994;
++	int i;
+ 
+ 	wm_hubs_set_bias_level(codec, level);
+ 
+@@ -2491,8 +2493,19 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
+ 			break;
+ 		}
+ 
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY)
++		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY) {
++			for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++) {
++				if (!IS_ERR(wm8994->clk_mclk[i]))
++					clk_prepare_enable(wm8994->clk_mclk[i]);
++			}
+ 			active_reference(codec);
++		} else if (codec->dapm.bias_level == SND_SOC_BIAS_ON) {
++			for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++) {
++				if (!IS_ERR(wm8994->clk_mclk[i]))
++					clk_disable_unprepare(
++							wm8994->clk_mclk[i]);
++			}
++		}
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+@@ -4451,6 +4464,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8994 = {
+ static int wm8994_probe(struct platform_device *pdev)
+ {
+ 	struct wm8994_priv *wm8994;
++	int i;
+ 
+ 	wm8994 = devm_kzalloc(&pdev->dev, sizeof(struct wm8994_priv),
+ 			      GFP_KERNEL);
+@@ -4460,6 +4474,17 @@ static int wm8994_probe(struct platform_device *pdev)
+ 
+ 	wm8994->wm8994 = dev_get_drvdata(pdev->dev.parent);
+ 
++	for (i = 0; i < ARRAY_SIZE(wm8994->clk_mclk); i++) {
++		char mclk_name[] = "MCLKx";
++
++		snprintf(mclk_name, sizeof(mclk_name), "MCLK%d", i + 1);
++
++		wm8994->clk_mclk[i] = devm_clk_get(pdev->dev.parent, mclk_name);
++		if (IS_ERR(wm8994->clk_mclk[i]))
++			if (PTR_ERR(wm8994->clk_mclk) == -EPROBE_DEFER)
++				return -EPROBE_DEFER;
++	}
++
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_idle(&pdev->dev);
+ 
+diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
+index 6536f8d..8cf06a4 100644
+--- a/sound/soc/codecs/wm8994.h
++++ b/sound/soc/codecs/wm8994.h
+@@ -78,6 +78,7 @@ struct wm8994_priv {
+ 	int sysclk[2];
+ 	int sysclk_rate[2];
+ 	int mclk[2];
++	struct clk *clk_mclk[2];
+ 	int aifclk[2];
+ 	int aifdiv[2];
+ 	int channels[2];
+-- 
+2.0.0.390.gcb682f8
