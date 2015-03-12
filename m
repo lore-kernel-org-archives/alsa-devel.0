@@ -1,16 +1,16 @@
 From: han.lu@intel.com
-Subject: [PATCH v3 2/3] ASoC: Intel: add function to set
+Subject: [PATCH v3 3/3] ASoC: Intel: add kcontrol to set
 	parameter to sound effect module waves
-Date: Thu, 12 Mar 2015 13:53:01 +0800
-Message-ID: <1426139582-7245-3-git-send-email-han.lu@intel.com>
+Date: Thu, 12 Mar 2015 13:53:02 +0800
+Message-ID: <1426139582-7245-4-git-send-email-han.lu@intel.com>
 References: <1426139582-7245-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 42448265554
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 06:53:57 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 073A226055F
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 06:53:58 +0100 (CET)
 In-Reply-To: <1426139582-7245-1-git-send-email-han.lu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,131 +27,210 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Lu, Han" <han.lu@intel.com>
 
-Add function to set parameters to module waves. The parameters can be set
-only when module is enabled, and parameter size is limited to 500 Bytes.
+Each kcontrol command includes a line of parameters up to 128 bytes.
+kcontrol command to set param:
+    cset "name='Waves Set Param' <0x01,0xff,...>"
+or
+    cset-bin-file "name='Waves Set Param' <path/to/binary/config/file>"
+
+The parameter lines are stored in a buffer array, so can be read back from
+buffer rather than from DSP, and be relaunched to DSP when resume from RTD3.
+The buffer size is 160 parameter lines.
+kcontrol command to reset the buffer:
+    cset "name='Waves Set Param' 0xff"
+
+alsa-lib v1.0.29 or commit 6ea14c36 and f47480af are required to support the
+kcontrol commands.
 
 Signed-off-by: Lu, Han <han.lu@intel.com>
 
 diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 980df59..15b811f 100644
+index 15b811f..699099c 100644
 --- a/sound/soc/intel/sst-haswell-ipc.c
 +++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -2166,6 +2166,65 @@ int sst_hsw_module_disable(struct sst_hsw *hsw,
- 	return ret;
+@@ -341,6 +341,11 @@ struct sst_hsw {
+ 	/* flags bit field to track module state when resume from RTD3,
+ 	 * each bit represent state (enabled/disabled) of single module */
+ 	u32 enabled_modules_rtd3;
++
++	/* buffer to store parameter lines */
++	u32 param_idx_w;	/* write index */
++	u32 param_idx_r;	/* read index */
++	u8 param_buf[WAVES_PARAM_LINES][WAVES_PARAM_COUNT];
+ };
+ 
+ #define CREATE_TRACE_POINTS
+@@ -2005,6 +2010,62 @@ bool sst_hsw_is_module_enabled_rtd3(struct sst_hsw *hsw, u32 module_id)
+ 	return hsw->enabled_modules_rtd3 & (1 << module_id);
  }
  
-+int sst_hsw_module_set_param(struct sst_hsw *hsw,
-+	u32 module_id, u32 instance_id, u32 parameter_id,
-+	u32 param_size, char *param)
++void sst_hsw_reset_param_buf(struct sst_hsw *hsw)
 +{
-+	int ret;
-+	unsigned char *data = NULL;
-+	u32 header = 0;
-+	u32 payload_size = 0, transfer_parameter_size = 0;
-+	dma_addr_t dma_addr = 0;
-+	struct sst_hsw_transfer_parameter *parameter;
-+	struct device *dev = hsw->dev;
-+
-+	header = IPC_GLB_TYPE(IPC_GLB_MODULE_OPERATION) |
-+			IPC_MODULE_OPERATION(IPC_MODULE_SET_PARAMETER) |
-+			IPC_MODULE_ID(module_id);
-+	dev_dbg(dev, "sst_hsw_module_set_param header=%x\n", header);
-+
-+	payload_size = param_size +
-+		sizeof(struct sst_hsw_transfer_parameter) -
-+		sizeof(struct sst_hsw_transfer_list);
-+	dev_dbg(dev, "parameter size : %d\n", param_size);
-+	dev_dbg(dev, "payload size   : %d\n", payload_size);
-+
-+	if (payload_size <= SST_HSW_IPC_MAX_SHORT_PARAMETER_SIZE) {
-+		/* short parameter, mailbox can contain data */
-+		dev_dbg(dev, "transfer parameter size : %d\n",
-+			transfer_parameter_size);
-+
-+		transfer_parameter_size = ALIGN(payload_size, 4);
-+		dev_dbg(dev, "transfer parameter aligned size : %d\n",
-+			transfer_parameter_size);
-+
-+		parameter = kzalloc(transfer_parameter_size, GFP_KERNEL);
-+		if (parameter == NULL)
-+			return -ENOMEM;
-+
-+		memcpy(parameter->data, param, param_size);
-+	} else {
-+		dev_warn(dev, "transfer parameter size too large!");
-+		return 0;
-+	}
-+
-+	parameter->parameter_id = parameter_id;
-+	parameter->data_size = param_size;
-+
-+	ret = ipc_tx_message_wait(hsw, header,
-+		parameter, transfer_parameter_size , NULL, 0);
-+	if (ret < 0)
-+		dev_err(dev, "ipc: module set parameter failed - %d\n", ret);
-+
-+	kfree(parameter);
-+
-+	if (data)
-+		dma_free_coherent(hsw->dsp->dma_dev,
-+			param_size, (void *)data, dma_addr);
-+
-+	return ret;
++	hsw->param_idx_w = 0;
++	hsw->param_idx_r = 0;
++	memset((void *)hsw->param_buf, 0, sizeof(hsw->param_buf));
 +}
 +
- static struct sst_dsp_device hsw_dev = {
- 	.thread = hsw_irq_thread,
- 	.ops = &haswell_ops,
++int sst_hsw_store_param_line(struct sst_hsw *hsw, u8 *buf)
++{
++	/* save line to the first available position of param buffer */
++	if (hsw->param_idx_w > WAVES_PARAM_LINES - 1) {
++		dev_warn(hsw->dev, "warning: param buffer overflow!\n");
++		return -EPERM;
++	}
++	memcpy(hsw->param_buf[hsw->param_idx_w], buf, WAVES_PARAM_COUNT);
++	hsw->param_idx_w++;
++	return 0;
++}
++
++int sst_hsw_load_param_line(struct sst_hsw *hsw, u8 *buf)
++{
++	u8 id = 0;
++
++	/* read the first matching line from param buffer */
++	while (hsw->param_idx_r < WAVES_PARAM_LINES) {
++		id = hsw->param_buf[hsw->param_idx_r][0];
++		hsw->param_idx_r++;
++		if (buf[0] == id) {
++			memcpy(buf, hsw->param_buf[hsw->param_idx_r],
++				WAVES_PARAM_COUNT);
++			break;
++		}
++	}
++	if (hsw->param_idx_r > WAVES_PARAM_LINES - 1) {
++		dev_dbg(hsw->dev, "end of buffer, roll to the beginning\n");
++		hsw->param_idx_r = 0;
++		return 0;
++	}
++	return 0;
++}
++
++int sst_hsw_launch_param_buf(struct sst_hsw *hsw)
++{
++	int ret, idx;
++
++	/* put all param lines to DSP through ipc */
++	for (idx = 0; idx < hsw->param_idx_w; idx++) {
++		ret = sst_hsw_module_set_param(hsw,
++			SST_HSW_MODULE_WAVES, 0, hsw->param_buf[idx][0],
++			WAVES_PARAM_COUNT, hsw->param_buf[idx]);
++		if (ret < 0)
++			return ret;
++	}
++	return 0;
++}
++
+ int sst_hsw_module_load(struct sst_hsw *hsw,
+ 	u32 module_id, u32 instance_id, char *name)
+ {
+@@ -2304,6 +2365,9 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
+ 	if (ret < 0)
+ 		goto boot_err;
+ 
++	/* init param buffer */
++	sst_hsw_reset_param_buf(hsw);
++
+ 	/* wait for DSP boot completion */
+ 	sst_dsp_boot(hsw->dsp);
+ 	ret = wait_event_timeout(hsw->boot_wait, hsw->boot_complete,
 diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
-index 48290a1..16bec43 100644
+index 16bec43..06d71ae 100644
 --- a/sound/soc/intel/sst-haswell-ipc.h
 +++ b/sound/soc/intel/sst-haswell-ipc.h
-@@ -37,6 +37,7 @@
- #define SST_HSW_IPC_MAX_PAYLOAD_SIZE	400
+@@ -38,6 +38,8 @@
  #define SST_HSW_MAX_INFO_SIZE		64
  #define SST_HSW_BUILD_HASH_LENGTH	40
-+#define SST_HSW_IPC_MAX_SHORT_PARAMETER_SIZE	500
+ #define SST_HSW_IPC_MAX_SHORT_PARAMETER_SIZE	500
++#define WAVES_PARAM_COUNT		128
++#define WAVES_PARAM_LINES		160
  
  struct sst_hsw;
  struct sst_hsw_stream;
-@@ -187,6 +188,28 @@ enum sst_hsw_performance_action {
- 	SST_HSW_PERF_STOP = 1,
+@@ -503,6 +505,10 @@ bool sst_hsw_is_module_active(struct sst_hsw *hsw, u32 module_id);
+ void sst_hsw_set_module_enabled_rtd3(struct sst_hsw *hsw, u32 module_id);
+ void sst_hsw_set_module_disabled_rtd3(struct sst_hsw *hsw, u32 module_id);
+ bool sst_hsw_is_module_enabled_rtd3(struct sst_hsw *hsw, u32 module_id);
++void sst_hsw_reset_param_buf(struct sst_hsw *hsw);
++int sst_hsw_store_param_line(struct sst_hsw *hsw, u8 *buf);
++int sst_hsw_load_param_line(struct sst_hsw *hsw, u8 *buf);
++int sst_hsw_launch_param_buf(struct sst_hsw *hsw);
+ 
+ int sst_hsw_module_load(struct sst_hsw *hsw,
+ 	u32 module_id, u32 instance_id, char *name);
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index b3de87a..b40ec74 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -366,6 +366,49 @@ static int hsw_waves_switch_put(struct snd_kcontrol *kcontrol,
+ 	return ret;
+ }
+ 
++static int hsw_waves_param_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
++	struct sst_hsw *hsw = pdata->hsw;
++
++	/* return a matching line from param buffer */
++	return sst_hsw_load_param_line(hsw, ucontrol->value.bytes.data);
++}
++
++static int hsw_waves_param_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
++	struct sst_hsw *hsw = pdata->hsw;
++	int ret;
++	enum sst_hsw_module_id id = SST_HSW_MODULE_WAVES;
++	int param_id = ucontrol->value.bytes.data[0];
++	int param_size = WAVES_PARAM_COUNT;
++
++	/* clear param buffer and reset buffer index */
++	if (param_id == 0xFF) {
++		sst_hsw_reset_param_buf(hsw);
++		return 0;
++	}
++
++	/* store params into buffer */
++	ret = sst_hsw_store_param_line(hsw, ucontrol->value.bytes.data);
++	if (ret < 0)
++		return ret;
++
++	if (sst_hsw_is_module_loaded(hsw, id)) {
++		if (!sst_hsw_is_module_active(hsw, id))
++			return 0;
++
++		ret = sst_hsw_module_set_param(hsw, id, 0, param_id,
++				param_size, ucontrol->value.bytes.data);
++	}
++	return ret;
++}
++
+ /* TLV used by both global and stream volumes */
+ static const DECLARE_TLV_DB_SCALE(hsw_vol_tlv, -9000, 300, 1);
+ 
+@@ -390,6 +433,9 @@ static const struct snd_kcontrol_new hsw_volume_controls[] = {
+ 	/* enable/disable module waves */
+ 	SOC_SINGLE_BOOL_EXT("Waves Switch", 0,
+ 		hsw_waves_switch_get, hsw_waves_switch_put),
++	/* set parameters to module waves */
++	SND_SOC_BYTES_EXT("Waves Set Param", WAVES_PARAM_COUNT,
++		hsw_waves_param_get, hsw_waves_param_put),
  };
  
-+struct sst_hsw_transfer_info {
-+	uint32_t destination;       /* destination address */
-+	uint32_t reverse:1;         /* if 1 data flows from destination */
-+	uint32_t size:31;           /* transfer size in bytes.*/
-+	uint16_t first_page_offset; /* offset to data in the first page. */
-+	uint8_t  packed_pages;   /* page addresses. Each occupies 20 bits */
-+} __attribute__((packed));
-+
-+struct sst_hsw_transfer_list {
-+	uint32_t transfers_count;
-+	struct sst_hsw_transfer_info transfers;
-+} __attribute__((packed));
-+
-+struct sst_hsw_transfer_parameter {
-+	uint32_t parameter_id;
-+	uint32_t data_size;
-+	union {
-+		uint8_t data[1];
-+		struct sst_hsw_transfer_list transfer_list;
-+	};
-+} __attribute__((packed));
-+
- /* SST firmware module info */
- struct sst_hsw_module_info {
- 	u8 name[SST_HSW_MAX_INFO_SIZE];
-@@ -487,6 +510,9 @@ int sst_hsw_module_enable(struct sst_hsw *hsw,
- 	u32 module_id, u32 instance_id);
- int sst_hsw_module_disable(struct sst_hsw *hsw,
- 	u32 module_id, u32 instance_id);
-+int sst_hsw_module_set_param(struct sst_hsw *hsw,
-+	u32 module_id, u32 instance_id, u32 parameter_id,
-+	u32 param_size, char *param);
- 
- /* runtime module management */
- struct sst_module_runtime *sst_hsw_runtime_module_create(struct sst_hsw *hsw,
+ /* Create DMA buffer page table for DSP */
+@@ -1220,6 +1266,10 @@ static int hsw_pcm_runtime_resume(struct device *dev)
+ 		ret = sst_hsw_module_enable(hsw, SST_HSW_MODULE_WAVES, 0);
+ 		if (ret < 0)
+ 			return ret;
++		/* put parameters from buffer to dsp */
++		ret = sst_hsw_launch_param_buf(hsw);
++		if (ret < 0)
++			return ret;
+ 		/* unset flag */
+ 		sst_hsw_set_module_disabled_rtd3(hsw, SST_HSW_MODULE_WAVES);
+ 	}
 -- 
 1.9.1
