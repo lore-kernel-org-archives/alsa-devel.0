@@ -1,108 +1,103 @@
-From: Songjun Wu <songjun.wu@atmel.com>
-Subject: [RFC PATCH] ASoC: wm8731: let codec to manage clock by itself
-Date: Thu, 12 Mar 2015 10:17:11 +0800
-Message-ID: <1426126631-27240-1-git-send-email-songjun.wu@atmel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and
+	resume_post for Braswell snd_soc_card
+Date: Thu, 12 Mar 2015 02:38:33 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D701059B20@RTITMBSV03.realtek.com.tw>
+References: <1426045713-1738-1-git-send-email-yao.jin@linux.intel.com>
+ <20150311125047.GD28806@sirena.org.uk> <5500E346.8020700@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, fabio.estevam@freescale.com, manuel.lauss@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, voice.shen@atmel.com
-Cc: Songjun Wu <songjun.wu@atmel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFCE12654AD
+ for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 03:38:40 +0100 (CET)
+In-Reply-To: <5500E346.8020700@linux.intel.com>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Jin, Yao" <yao.jin@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: "mengdong.lin@intel.com" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "subhransu.s.prusty@intel.com" <subhransu.s.prusty@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable WM8731 to support common clock framework.
+> -----Original Message-----
+> From: Jin, Yao [mailto:yao.jin@linux.intel.com]
+> Sent: Thursday, March 12, 2015 8:52 AM
+> To: Mark Brown
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+> mengdong.lin@intel.com; subhransu.s.prusty@intel.com; Bard Liao
+> Subject: Re: [PATCH] ASoC: Intel: Add suspend_pre and resume_post for
+> Braswell snd_soc_card
+> 
+> Hi Mark, Bard,
+> 
+> This patch has dependency on Bard's patch "ASoC: rt5670: export jack
+> suspend/resume APIs". I pull the Mark's for-next branch right now and I
+> can see Bard's patch "ASoC: rt5670: export jack suspend/resume APIs" has
+> been integrated.
 
-Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
----
- sound/soc/codecs/wm8731.c |   34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+I think we should send the dependency patches in a series.
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 098c143..8df1550 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -25,6 +25,7 @@
- #include <linux/spi/spi.h>
- #include <linux/of_device.h>
- #include <linux/mutex.h>
-+#include <linux/clk.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -45,6 +46,7 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
- /* codec private data */
- struct wm8731_priv {
- 	struct regmap *regmap;
-+	struct clk *mclk;
- 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
- 	const struct snd_pcm_hw_constraint_list *constraints;
- 	unsigned int sysclk;
-@@ -390,6 +392,8 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	switch (clk_id) {
- 	case WM8731_SYSCLK_XTAL:
- 	case WM8731_SYSCLK_MCLK:
-+		if (wm8731->mclk && clk_set_rate(wm8731->mclk, freq))
-+			return -EINVAL;
- 		wm8731->sysclk_type = clk_id;
- 		break;
- 	default:
-@@ -491,6 +495,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-+		if (wm8731->mclk)
-+			clk_prepare_enable(wm8731->mclk);
- 		break;
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
-@@ -509,6 +515,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
- 		snd_soc_write(codec, WM8731_PWR, reg | 0x0040);
- 		break;
- 	case SND_SOC_BIAS_OFF:
-+		if (wm8731->mclk)
-+			clk_disable_unprepare(wm8731->mclk);
- 		snd_soc_write(codec, WM8731_PWR, 0xffff);
- 		regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies),
- 				       wm8731->supplies);
-@@ -667,6 +675,19 @@ static int wm8731_spi_probe(struct spi_device *spi)
- 	if (wm8731 == NULL)
- 		return -ENOMEM;
- 
-+	wm8731->mclk = devm_clk_get(&spi->dev, "mclk");
-+	if (IS_ERR(wm8731->mclk)) {
-+		ret = PTR_ERR(wm8731->mclk);
-+		if (ret == -ENOENT) {
-+			wm8731->mclk = NULL;
-+			dev_warn(&spi->dev, "Assuming static MCLK\n");
-+		} else {
-+			dev_err(&spi->dev, "Failed to get MCLK: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
- 	mutex_init(&wm8731->lock);
- 
- 	wm8731->regmap = devm_regmap_init_spi(spi, &wm8731_regmap);
-@@ -718,6 +739,19 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
- 	if (wm8731 == NULL)
- 		return -ENOMEM;
- 
-+	wm8731->mclk = devm_clk_get(&i2c->dev, "mclk");
-+	if (IS_ERR(wm8731->mclk)) {
-+		ret = PTR_ERR(wm8731->mclk);
-+		if (ret == -ENOENT) {
-+			wm8731->mclk = NULL;
-+			dev_warn(&i2c->dev, "Assuming static MCLK\n");
-+		} else {
-+			dev_err(&i2c->dev, "Failed to get MCLK: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
- 	mutex_init(&wm8731->lock);
- 
- 	wm8731->regmap = devm_regmap_init_i2c(i2c, &wm8731_regmap);
--- 
-1.7.9.5
+> function 'snd_soc_card_jack_new' [-Werror=implicit-function-declaration]
+>             ret = snd_soc_card_jack_new(runtime->card, "Headset",
+>             ^
+
+I think it is due to Lars-Peter's "ASoC: simple-card: Register jacks at
+the card level" patch is not applied on branch topic/intel.
+
+> 
+> So there now is only one build error in rt5670.c:
+> 
+> sound/soc/codecs/rt5670.c: In function 'is_sys_clk_from_pll':
+> sound/soc/codecs/rt5670.c:702:38: error: 'struct snd_soc_dapm_widget'
+> has no member named 'codec'
+>   struct snd_soc_codec *codec = source->codec;
+>                                       ^
+> After I fix it with my change as following, the build is successful.
+> 
+> --- a/sound/soc/codecs/rt5670.c
+> +++ b/sound/soc/codecs/rt5670.c
+> @@ -699,7 +699,7 @@ static int set_dmic_clk(struct
+> snd_soc_dapm_widget *w,  static int is_sys_clk_from_pll(struct
+> snd_soc_dapm_widget *source,
+>                          struct snd_soc_dapm_widget *sink)  {
+> -       struct snd_soc_codec *codec = source->codec;
+> +       struct snd_soc_codec *codec =
+> + snd_soc_dapm_to_codec(source->dapm);
+>         struct rt5670_priv *rt5670 =
+> snd_soc_codec_get_drvdata(codec);
+> 
+>         if (rt5670->sysclk_src == RT5670_SCLK_S_PLL1)
+> 
+> Could Bard take a look at it?
+
+It is already in Lars-Peter's "ASoC: rt5670: Replace w->codec
+snd_soc_dapm_to_codec(w->dapm)" patch
+
+> 
+> For my patch, the build is successful.
+> 
+> ASoC: Intel: Add suspend_pre and resume_post for Braswell snd_soc_card
+> ASoC: Intel: move the jack creation to Braswell machine driver
+> 
+> Thanks
+> Jin Yao
+> 
+> On 2015/3/11 20:50, Mark Brown wrote:
+> > On Wed, Mar 11, 2015 at 11:48:33AM +0800, Jin Yao wrote:
+> >> On Braswell, we need to add some machine specific setting before
+> >> suspend and after resume. For example, disable/enable jack detection
+> >> in codec so use snd_soc_card suspend_pre and resume_post ops for
+> this purpose.
+> >
+> > Reverted since it doesn't build!
+> >
+> 
+> ------Please consider the environment before printing this e-mail.
