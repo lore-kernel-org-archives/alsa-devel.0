@@ -1,55 +1,60 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC (do not merge)] ASoC: davinci-mcasp: Set rule constraint
- if implicit bclk divider is used
-Date: Fri, 13 Mar 2015 16:21:44 +0200
-Message-ID: <5502F278.2070608@ti.com>
-References: <1426246615-12772-1-git-send-email-jsarha@ti.com> <5502D052.1030804@metafoo.de>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: [PATCH 0/5] Intel SST driver restructure
+Date: Fri, 13 Mar 2015 15:32:06 +0100
+Message-ID: <20150313153206.4ef29f561736f07c34a5de06@ao2.it>
+References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
+ <20150312195420.GB28806@sirena.org.uk>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BD6C63@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5502D052.1030804@metafoo.de>
-Sender: linux-omap-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8874C2651B8
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 15:32:17 +0100 (CET)
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BD6C63@SHSMSX101.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Jie, Yang" <yang.jie@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Li, Jocelyn" <jocelyn.li@intel.com>, Mark Brown <broonie@kernel.org>, "Chehab, John" <john.chehab@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "Jin, Yao" <yao.jin@intel.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/13/15 13:56, Lars-Peter Clausen wrote:
-> On 03/13/2015 12:36 PM, Jyri Sarha wrote:
-> [...]
->> In theory this patch does exactly what it is supposed to. It only
->> allows a sample-rate and sample-format combination if the rate can be
->> produced with reasonable accuracy. Unfortunately the alsa-lib and
->> alsa-tools are not able use this information too well. If the requested
->> sample-rate and sample-format is not available the aplay/arecord
->> fails, even if plughw is selected, with:
->>
->> pcm_params.c:170: snd1_pcm_hw_param_get_min: Assertion
->> `!snd_interval_empty(i)' failed.
-> [...]
->> +
->> +    /*
->> +     * If we rely on implicit BCLK divider setting we should
->> +     * set constraints based on what we can provide.
->> +     */
->> +    if (mcasp->bclk_master && mcasp->bclk_div == 0 &&
->> mcasp->sysclk_freq)
->> +        return snd_pcm_hw_rule_add(substream->runtime, 0,
->> +                       SNDRV_PCM_HW_PARAM_RATE,
->> +                       davinci_mcasp_hw_rule_rate,
->> +                       mcasp,
->> +                       SNDRV_PCM_HW_PARAM_FRAME_BITS,
->> +                       SNDRV_PCM_HW_PARAM_CHANNELS, -1);
->> +
->
-> For things to work correctly you also need reverse rules restricting
-> CHANNELS and FRAME_BITS based on the RATE. This might fix the issue you
-> are seeing with the ALSA tools.
->
+On Fri, 13 Mar 2015 01:28:00 +0000
+"Jie, Yang" <yang.jie@intel.com> wrote:
 
-Thanks, that was indeed the case. I mail a new patch once I get my patch 
-in order.
+[...]
+> > On Thu, Mar 12, 2015 at 10:31:55PM +0800, Jie Yang wrote:
+> > > In order to prepare for the upstreaming of Skylake drivers and to
+> > > allow reuse of code between different Intel audio DSP products, this
+> > > patch series restructures the Intel directory as follows:
+> > 
+> > This is all fine by me - I'd just like to see an ack before we do this from the
+> > other Intel people to make sure they're not going to get surprised, and also
+> [Keyon] understood. I have sent this series to Intel internal before here, and
+> Most Intel Linux Audio driver people should have known about this change.
+> Vinod(Atoms & BSW), Jarkko(Baytrail), Mengdong(BSW), Liam(Haswell), 
+> could you please help add 'acked-by' if it's OK for you? Thanks.
+[...]
 
-Best regards,
-Jyri
+Please, insert a blank line between the quote and the reply, it makes
+it easier to follow the discussion.
 
+Thanks,
+   Antonio
+
+-- 
+Antonio Ospite
+http://ao2.it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
