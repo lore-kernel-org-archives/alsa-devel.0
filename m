@@ -1,17 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>
 Subject: Re: dummy codec + simple card combination
-Date: Fri, 13 Mar 2015 11:28:57 +0200
-Message-ID: <5502ADD9.9070603@ti.com>
+Date: Fri, 13 Mar 2015 10:54:22 +0100
+Message-ID: <7087ED0D-9625-48EA-9012-A6A05869E014@goldelico.com>
 References: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
  <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <5502ADD9.9070603@ti.com>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EF7926145A
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 10:29:04 +0100 (CET)
-In-Reply-To: <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
+ [81.169.146.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85386261497
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 10:54:27 +0100 (CET)
+In-Reply-To: <5502ADD9.9070603@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +23,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Belisko Marek <marek.belisko@gmail.com>, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Belisko Marek <marek.belisko@gmail.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAwMy8xMi8yMDE1IDA4OjMzIFBNLCBCZWxpc2tvIE1hcmVrIHdyb3RlOgo+IEhpLAo+
-IAo+IEkgcG9zdGVkIHNhbWUgcXVlc3Rpb24gb24gYWxzYS1kZXZlbCBNTCB0aGlzIHdlZWsgYnV0
-IEkgZm9yZ290IHRvIGFkZAo+IHNvdW5kIG9tYXAgKyBhc29jIG1haW50YWluZXJzIChzb3JyeSBh
-Ym91dCB0aGF0KQo+IAo+IEknbSB0cnlpbmcgdG8gYWRkIGF1ZGlvIHN1cHBvcnQgZm9yIGd0YTA0
-IChmb3IgZ3NtICsgYnQgYW5kIGZtIGF1ZGlvKS4KPiBBbGwgYXVkaW8gc291cmNlcyBhcmUgY2xv
-Y2sgbWFzdGVycyBzbyBiYXNpY2FsbHkgY29ubmVjdGlvbiBpcyBkdW1teQo+IGNvZGVjcyAtPiBj
-cHUgZGFpIChtY2JzcCBwb3J0cykuCgpUaGUgRk0gc2VhbXMgdG8gYmUgc2xhdmUgZGV2aWNlIChT
-aTQ3MDUvU2k0NzIxKSBvbiB0aGUgSTJTIGJ1cy4KQnV0IGluIGFueSBvZiB0aGUgY2FzZXMgKEZN
-LCBHU00gYW5kIEJUKSBob3cgZG8geW91IGNvbmZpZ3VyZSB0aGUgREFJIGZvcm1hdHMKb2YgdGhl
-ICdjb2RlY3MnPyBTaTQ3eHggaGFzIHN1cHBvcnQgZm9yIEkyUywgTF9KVVNUIGFuZCBEU1AgbW9k
-ZSBmb3IgZXhhbXBsZS4KV2hhdCBhYm91dCB0aGUgc2FtcGxlIGZvcm1hdHMgYW5kIHJhdGVzPwpJ
-IHRoaW5rIHRoZXJlIHNob3VsZCBiZSBhIGRyaXZlciBmb3IgYXQgbGVhc3QgdGhlIEZNLiBGb3Ig
-QlQgdGhlcmUgaXMgYSBidC1zY28KY29kZWMgZHJpdmVyIGJ1dCB3L28gRFQgc3VwcG9ydC4KCj4g
-Rm9yIGltcGxlbWVudGluZyBzdWNoIHRoaW5nIEkgY2FuIHNlZSAyIG9wdGlvbnM6Cj4gMS4gc2lt
-cGxlIGNhcmQgZHJpdmVyIHdoaWNoIGNhbiBlYXNpbHkgZGVzY3JpYmUgY3B1IGRhaSBpbnRlcmZh
-Y2UgYnV0Cj4gZHVtbXkgY29kZWMgY2Fubm90IGJlY2F1c2UgdGhlcmUgYXJlIG5vIERUIGJpbmRp
-bmdzICh0aGVyZSB3YXMgc2V2ZXIKPiBhdHRlbXB0cyB0byBhZGQgRFQgYmluZGluZ3MgZm9yIGR1
-bW15LWNvZGVjIGJ1dCBBRkFJSyBub25lIHdhcwo+IGFjY2VwdGVkKQoKWWVzLCB0aGUgZHVtbXkt
-Y29kZWMgaXMgTGludXgvQVNvQyBjb25jZXB0IGFuZCBzaG91bGQgbm90IGJlIGRlc2NyaWJlZCBp
-biBEVC4KSG93ZXZlciBJIHRoaW5rIHRoZXJlIHNob3VsZCBiZSBhIHdheSB0byBkZXNjcmliaW5n
-IHBhc3NpdmUgREFJcy4gU2xhdmUKZGV2aWNlcyBvbmx5IGxpc3RlbmluZywgb3IgbWFzdGVycyBz
-dHJlYW1pbmcgdGhlIGRhdGEuCkJ1dCwgSSB0aGluayBldmVuIGlmIHlvdSBoYXZlIHN1Y2ggYSBk
-ZXZpY2UgeW91IGRvIGhhdmUgc29tZSBjb250cm9sLCBhdCBsZWFzdAp0byBlbmFibGUvZGlzYWJs
-ZSB0aGVtLi4uCgo+IFRoaXMgdHVybnMgaXQgdG8gb25seSBzb2x1dGlvbiB0byBjcmVhdGUgZ3Rh
-MDQgc291bmRjYXJkIHdoaWNoIHdpbGwKPiBnZXQgZnJvbSBEVCBjcHUgZGFpIGxpbmtzIGFuZCB1
-c2UgaW4gY2FyZCBkcml2ZXIgZHVtbXkgY29kZWNzCj4gZGlyZWN0bHkuCgpJIHdvdWxkIGxvb2sg
-dXAgdGhlIGRyaXZlciBmb3IgdGhlIEZNIGFuZCB3cml0ZSB0aGUgY29kZWMgZHJpdmVyIGZvciBp
-dCwKcHJvYmFibHkgdGhlIHNhbWUgY2FuIGJlIGRvbmUgZm9yIHRoZSBHU00gYW5kIGFkZCBiaW5k
-aW5ncyBmb3IgdGhlIGJ0LXNjbyBzbwphbGwgb2YgdGhpcyBjYW4gd29yayB3aXRoIHNpbXBsZS1j
-YXJkLgpPciB3cml0ZSBhIGN1c3RvbSBtYWNoaW5lIGRyaXZlciBhbmQgZ2V0IGl0IGRvbmUgOykK
-Cj4gSXMgbXkgYXNzdW1wdGlvbiBjb3JyZWN0PyBJIHdvdWxkIGxpa2UgdG8gZ2V0IHNvbWUgZmVl
-ZGJhY2sgYmVmb3JlCj4gd2FzdGluZyBteSB0aW1lIHdpdGggaW1wbGVtZW50aW5nIHNvbWV0aGlu
-ZyB3aGljaCBjYW5ub3QgYmUgcHVzaGVkCj4gbWFpbmxpbmUuIFRoYW5rcyBmb3IgYWxsIHN1Z2dl
-c3Rpb25zLgo+IAo+IEJSLAo+IAo+IG1hcmVrCj4gCj4gLS0KPiBhcyBzaW1wbGUgYW5kIHByaW1p
-dGl2ZSBhcyBwb3NzaWJsZQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KPiBNYXJlayBCZWxpc2tvIC0gT1BFTi1OQU5EUkEKPiBGcmVlbGFuY2UgRGV2
-ZWxvcGVyCj4gCj4gUnVza2EgTm92YSBWZXMgMjE5IHwgUHJlc292LCAwODAwNSBTbG92YWsgUmVw
-dWJsaWMKPiBUZWw6ICs0MjEgOTE1IDA1MiAxODQKPiBza3lwZTogbWFyZWt3aGl0ZQo+IHR3aXR0
-ZXI6ICNvcGVubmFuZHJhCj4gd2ViOiBodHRwOi8vb3Blbi1uYW5kcmEuY29tCj4gCgoKLS0gClDD
-qXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+Am 13.03.2015 um 10:28 schrieb Peter Ujfalusi <peter.ujfalusi@ti.com>:
+
+> Hi,
+> =
+
+> On 03/12/2015 08:33 PM, Belisko Marek wrote:
+>> Hi,
+>> =
+
+>> I posted same question on alsa-devel ML this week but I forgot to add
+>> sound omap + asoc maintainers (sorry about that)
+>> =
+
+>> I'm trying to add audio support for gta04 (for gsm + bt and fm audio).
+>> All audio sources are clock masters so basically connection is dummy
+>> codecs -> cpu dai (mcbsp ports).
+> =
+
+> The FM seams to be slave device (Si4705/Si4721) on the I2S bus.
+> But in any of the cases (FM, GSM and BT) how do you configure the DAI for=
+mats
+> of the 'codecs'? Si47xx has support for I2S, L_JUST and DSP mode for exam=
+ple.
+> What about the sample formats and rates?
+
+That was previously (before DT) set up in some board specific paches into t=
+he
+audio systems and partially in the board-file.
+
+> I think there should be a driver for at least the FM.
+
+We control it through its i2c interface and a user space tool which can set=
+ up
+the Si4721.
+
+> For BT there is a bt-sco
+> codec driver but w/o DT support.
+> =
+
+>> For implementing such thing I can see 2 options:
+>> 1. simple card driver which can easily describe cpu dai interface but
+>> dummy codec cannot because there are no DT bindings (there was sever
+>> attempts to add DT bindings for dummy-codec but AFAIK none was
+>> accepted)
+> =
+
+> Yes, the dummy-codec is Linux/ASoC concept and should not be described in=
+ DT.
+> However I think there should be a way to describing passive DAIs. Slave
+> devices only listening, or masters streaming the data.
+> But, I think even if you have such a device you do have some control, at =
+least
+> to enable/disable them...
+> =
+
+>> This turns it to only solution to create gta04 soundcard which will
+>> get from DT cpu dai links and use in card driver dummy codecs
+>> directly.
+> =
+
+> I would look up the driver for the FM and write the codec driver for it,
+> probably the same can be done for the GSM and add bindings for the bt-sco=
+ so
+> all of this can work with simple-card.
+
+For GSM there is some special logic for tri-stating a DAI because the
+audio channel is wired to the twl4030 *and* a McBSP. This is for either
+routing the voice directly to the twl or through the CPU (and some filters,
+answering machine, sound scrambling etc.). This needs tri-state support
+of the McBSP DX line.
+
+> Or write a custom machine driver and get it done ;)
+
+If you would find time (which is beyond what we can realistically expect) t=
+o look
+into the non-DT 3.12 kernel where everything works, it would be here:
+
+http://git.goldelico.com/?p=3Dgta04-kernel.git;a=3Dtree;f=3Dsound/soc/omap;=
+hb=3DHEAD
+
+Basically we want to rebuild this using DT and use as much standard pieces
+as possible. So that we only need to upstream what is missing for full gta04
+support.
+
+> =
+
+>> Is my assumption correct? I would like to get some feedback before
+>> wasting my time with implementing something which cannot be pushed
+>> mainline. Thanks for all suggestions.
+>> =
+
+>> BR,
+>> =
+
+>> marek
+>> =
+
+>> --
+>> as simple and primitive as possible
+>> -------------------------------------------------
+>> Marek Belisko - OPEN-NANDRA
+>> Freelance Developer
+>> =
+
+>> Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
+>> Tel: +421 915 052 184
+>> skype: marekwhite
+>> twitter: #opennandra
+>> web: http://open-nandra.com
+>> =
+
+> =
+
+> =
+
+> -- =
+
+> P=E9ter
+
+BR,
+Nikolaus
