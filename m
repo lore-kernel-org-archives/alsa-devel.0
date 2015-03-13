@@ -1,108 +1,109 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Don't access stereo amps for mono
-	channel widgets
-Date: Fri, 13 Mar 2015 07:41:05 +0100
-Message-ID: <1426228865-12377-1-git-send-email-tiwai@suse.de>
+From: Songjun Wu <songjun.wu@atmel.com>
+Subject: [RESEND RFC PATCH] ASoC: wm8731: let codec to manage clock by itself
+Date: Fri, 13 Mar 2015 15:46:02 +0800
+Message-ID: <1426232762-3304-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D8A726055F
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 07:41:06 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 27E4BAAC9
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 06:41:06 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, fabio.estevam@freescale.com, manuel.lauss@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@vger.kernel.org, voice.shen@atmel.com, linux-sound@vger.kernel.org
+Cc: Songjun Wu <songjun.wu@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The current HDA generic parser initializes / modifies the amp values
-always in stereo, but this seems causing the problem on ALC3229 codec
-that has a few mono channel widgets: namely, these mono widgets react
-to actions for both channels equally.
+Enable WM8731 to support common clock framework.
 
-In the driver code, we do care the mono channel and create a control
-only for the left channel (as defined in HD-audio spec) for such a
-node.  When the control is updated, only the left channel value is
-changed.  However, in the resume, the right channel value is also
-restored from the initial value we took as stereo, and this overwrites
-the left channel value.  This ends up being the silent output as the
-right channel has been never touched and remains muted.
-
-This patch covers the places where unconditional stereo amp accesses
-are done and converts to the conditional accesses.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=94581
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
 ---
- sound/pci/hda/hda_generic.c | 30 ++++++++++++++++++++++--------
- 1 file changed, 22 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8731.c |   34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index b680b4ec6331..fe18071bf93a 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -692,7 +692,23 @@ static void init_amp(struct hda_codec *codec, hda_nid_t nid, int dir, int idx)
- {
- 	unsigned int caps = query_amp_caps(codec, nid, dir);
- 	int val = get_amp_val_to_activate(codec, nid, dir, caps, false);
--	snd_hda_codec_amp_init_stereo(codec, nid, dir, idx, 0xff, val);
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 098c143..8df1550 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -25,6 +25,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/of_device.h>
+ #include <linux/mutex.h>
++#include <linux/clk.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -45,6 +46,7 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
+ /* codec private data */
+ struct wm8731_priv {
+ 	struct regmap *regmap;
++	struct clk *mclk;
+ 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
+ 	const struct snd_pcm_hw_constraint_list *constraints;
+ 	unsigned int sysclk;
+@@ -390,6 +392,8 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	switch (clk_id) {
+ 	case WM8731_SYSCLK_XTAL:
+ 	case WM8731_SYSCLK_MCLK:
++		if (wm8731->mclk && clk_set_rate(wm8731->mclk, freq))
++			return -EINVAL;
+ 		wm8731->sysclk_type = clk_id;
+ 		break;
+ 	default:
+@@ -491,6 +495,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
++		if (wm8731->mclk)
++			clk_prepare_enable(wm8731->mclk);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+@@ -509,6 +515,8 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8731_PWR, reg | 0x0040);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
++		if (wm8731->mclk)
++			clk_disable_unprepare(wm8731->mclk);
+ 		snd_soc_write(codec, WM8731_PWR, 0xffff);
+ 		regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies),
+ 				       wm8731->supplies);
+@@ -667,6 +675,19 @@ static int wm8731_spi_probe(struct spi_device *spi)
+ 	if (wm8731 == NULL)
+ 		return -ENOMEM;
+ 
++	wm8731->mclk = devm_clk_get(&spi->dev, "mclk");
++	if (IS_ERR(wm8731->mclk)) {
++		ret = PTR_ERR(wm8731->mclk);
++		if (ret == -ENOENT) {
++			wm8731->mclk = NULL;
++			dev_warn(&spi->dev, "Assuming static MCLK\n");
++		} else {
++			dev_err(&spi->dev, "Failed to get MCLK: %d\n",
++				ret);
++			return ret;
++		}
++	}
 +
-+	if (get_wcaps(codec, nid) & AC_WCAP_STEREO)
-+		snd_hda_codec_amp_init_stereo(codec, nid, dir, idx, 0xff, val);
-+	else
-+		snd_hda_codec_amp_init(codec, nid, 0, dir, idx, 0xff, val);
-+}
+ 	mutex_init(&wm8731->lock);
+ 
+ 	wm8731->regmap = devm_regmap_init_spi(spi, &wm8731_regmap);
+@@ -718,6 +739,19 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+ 	if (wm8731 == NULL)
+ 		return -ENOMEM;
+ 
++	wm8731->mclk = devm_clk_get(&i2c->dev, "mclk");
++	if (IS_ERR(wm8731->mclk)) {
++		ret = PTR_ERR(wm8731->mclk);
++		if (ret == -ENOENT) {
++			wm8731->mclk = NULL;
++			dev_warn(&i2c->dev, "Assuming static MCLK\n");
++		} else {
++			dev_err(&i2c->dev, "Failed to get MCLK: %d\n",
++				ret);
++			return ret;
++		}
++	}
 +
-+/* update the amp, doing in stereo or mono depending on NID */
-+static int update_amp(struct hda_codec *codec, hda_nid_t nid, int dir, int idx,
-+		      unsigned int mask, unsigned int val)
-+{
-+	if (get_wcaps(codec, nid) & AC_WCAP_STEREO)
-+		return snd_hda_codec_amp_stereo(codec, nid, dir, idx,
-+						mask, val);
-+	else
-+		return snd_hda_codec_amp_update(codec, nid, 0, dir, idx,
-+						mask, val);
- }
+ 	mutex_init(&wm8731->lock);
  
- /* calculate amp value mask we can modify;
-@@ -732,7 +748,7 @@ static void activate_amp(struct hda_codec *codec, hda_nid_t nid, int dir,
- 		return;
- 
- 	val &= mask;
--	snd_hda_codec_amp_stereo(codec, nid, dir, idx, mask, val);
-+	update_amp(codec, nid, dir, idx, mask, val);
- }
- 
- static void activate_amp_out(struct hda_codec *codec, struct nid_path *path,
-@@ -4424,13 +4440,11 @@ static void mute_all_mixer_nid(struct hda_codec *codec, hda_nid_t mix)
- 	has_amp = nid_has_mute(codec, mix, HDA_INPUT);
- 	for (i = 0; i < nums; i++) {
- 		if (has_amp)
--			snd_hda_codec_amp_stereo(codec, mix,
--						 HDA_INPUT, i,
--						 0xff, HDA_AMP_MUTE);
-+			update_amp(codec, mix, HDA_INPUT, i,
-+				   0xff, HDA_AMP_MUTE);
- 		else if (nid_has_volume(codec, conn[i], HDA_OUTPUT))
--			snd_hda_codec_amp_stereo(codec, conn[i],
--						 HDA_OUTPUT, 0,
--						 0xff, HDA_AMP_MUTE);
-+			update_amp(codec, conn[i], HDA_OUTPUT, 0,
-+				   0xff, HDA_AMP_MUTE);
- 	}
- }
- 
+ 	wm8731->regmap = devm_regmap_init_i2c(i2c, &wm8731_regmap);
 -- 
-2.3.2
+1.7.9.5
+
