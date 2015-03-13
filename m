@@ -1,17 +1,17 @@
-From: Adam Goode <agoode@google.com>
-Subject: Adding new (old) SNDRV_SEQ_PORT_TYPE_MIDI_* defines
-Date: Thu, 12 Mar 2015 20:36:19 -0400
-Message-ID: <CAOf41NnyZRX5B9TfGQvTq26-3x7NefsRETJ4SESE5uXFYSxUtw@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: control: Fix breakage of user ctl
+	element addition
+Date: Fri, 13 Mar 2015 09:37:15 +0900
+Message-ID: <5502313B.5030409@sakamocchi.jp>
+References: <1426176130-1163-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f181.google.com (mail-vc0-f181.google.com
- [209.85.220.181])
- by alsa0.perex.cz (Postfix) with ESMTP id D00252658BA
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 01:36:40 +0100 (CET)
-Received: by mail-vc0-f181.google.com with SMTP id hq12so6702436vcb.12
- for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2015 17:36:40 -0700 (PDT)
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BFFD2658D8
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 01:37:20 +0100 (CET)
+In-Reply-To: <1426176130-1163-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mar 13 2015 01:02, Takashi Iwai wrote:
+> In the commit [2225e79b9b03: 'ALSA: core: reduce stack usage related
+> to snd_ctl_new()'], the id field of the newly added kctl is untouched,
+> thus all attribute like name string remain empty.  The fix is just to
+> add the forgotten memcpy of the id field.
+> 
+> Fixes: 2225e79b9b03 ('ALSA: core: reduce stack usage related to snd_ctl_new()')
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/control.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/core/control.c b/sound/core/control.c
+> index 54a412af3224..d677c27746e9 100644
+> --- a/sound/core/control.c
+> +++ b/sound/core/control.c
+> @@ -1267,6 +1267,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+>  	err = snd_ctl_new(&kctl, count, access, file);
+>  	if (err < 0)
+>  		return err;
+> +	memcpy(&kctl->id, &info->id, sizeof(kctl->id));
+>  	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size,
+>  				     GFP_KERNEL);
+>  	if (kctl->private_data == NULL) {
 
-I found the /* TODO: read port flags from descriptors */ in
-sound/usb/midi.c and was thinking about what to do to implement this.
+Oops, exactly... Thanks.
 
-The first thing to do would be to ensure that all the flags from the
-element descriptors in the USB MIDI standard are available for returning
-from snd_seq_port_info_get_type.
+Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-USB MIDI (see page 23):
-http://www.usb.org/developers/docs/devclass_docs/midi10.pdf
+I think the line can be simpler, like:
 
-I propose adding these flags to ALSA:
+kctl->id = info->id;
 
-#define SNDRV_SEQ_PORT_TYPE_MIDI_CLOCK  (1<<7)  /* MIDI CLOCK compatible
-device */
-#define SNDRV_SEQ_PORT_TYPE_MIDI_TIME_CODE (1<<8) /* MTC compatible device
-*/
-#define SNDRV_SEQ_PORT_TYPE_MIDI_MACHINE_CONTROL (1<<9) /* MMC compatible
-device */
-#define SNDRV_SEQ_PORT_TYPE_MIDI_EFX    (1<<21) /* Audio effects processor
-device */
-#define SNDRV_SEQ_PORT_TYPE_MIDI_PATCH_BAY (1<<22) /* MIDI patcher or
-router device */
-#define SNDRV_SEQ_PORT_TYPE_MIDI_DLS1   (1<<23) /* DownLoadable Sounds
-Standard Level 1 compatible device */
-#define SNDRV_SEQ_PORT_TYPE_MIDI_DLS2   (1<<24) /* DownLoadable Sounds
-Standard Level 2 compatible device */
+But in both cases, assembler code may be the same due to compiler
+optimization.
 
 
-Thoughts? I can send a couple patches for the kernel and alsa-lib. I don't
-think this is a breaking change.
-
-
-Thanks,
-
-Adam
+Takashi Sakamoto
