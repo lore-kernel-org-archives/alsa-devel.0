@@ -1,68 +1,161 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Remove adc stereo2 filter
-Date: Fri, 13 Mar 2015 11:13:26 +0000
-Message-ID: <20150313111326.GD28806@sirena.org.uk>
-References: <1426215026-15550-1-git-send-email-bardliao@realtek.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH RFC (do not merge)] ASoC: davinci-mcasp: Set rule constraint if implicit bclk divider is used
+Date: Fri, 13 Mar 2015 13:36:55 +0200
+Message-ID: <1426246615-12772-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0543204650464511186=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 97CF3260461
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 12:13:33 +0100 (CET)
-In-Reply-To: <1426215026-15550-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, john.lin@realtek.com, alsa-devel@alsa-project.org, koro.chen@mediatek.com, lgirdwood@gmail.com, flove@realtek.com
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, lars@metafoo.de, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Set a rule constraint to allow only sample-rate and sample-format
+combinations that can be played/captured with reasonable accuracy.
 
---===============0543204650464511186==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="g/2gxic02LijnRx4"
-Content-Disposition: inline
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+In theory this patch does exactly what it is supposed to. It only
+allows a sample-rate and sample-format combination if the rate can be
+produced with reasonable accuracy. Unfortunately the alsa-lib and
+alsa-tools are not able use this information too well. If the requested
+sample-rate and sample-format is not available the aplay/arecord
+fails, even if plughw is selected, with:
 
+pcm_params.c:170: snd1_pcm_hw_param_get_min: Assertion `!snd_interval_empty(i)' failed.
 
---g/2gxic02LijnRx4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think we are better of without this patch until the behavior of ALSA
+userspace improved.
 
-On Fri, Mar 13, 2015 at 10:50:26AM +0800, Bard Liao wrote:
-> Remove adc stereo2 filter since it is not in rt5645/rt5650 codec.
+ sound/soc/davinci/davinci-mcasp.c | 94 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 84 insertions(+), 10 deletions(-)
 
-applied, thanks.
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index de3b155..4ff5820 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -855,6 +855,29 @@ static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp,
+ 	return 0;
+ }
+ 
++static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
++				      unsigned int bclk_freq,
++				      int *error_ppm)
++{
++	int div = mcasp->sysclk_freq / bclk_freq;
++	int rem = mcasp->sysclk_freq % bclk_freq;
++
++	if (rem != 0) {
++		if (div == 0 ||
++		    ((mcasp->sysclk_freq / div) - bclk_freq) >
++		    (bclk_freq - (mcasp->sysclk_freq / (div+1)))) {
++			div++;
++			rem = rem - bclk_freq;
++		}
++	}
++	if (error_ppm)
++		*error_ppm =
++			(div*1000000 + 1000*((rem*1000)/(int)bclk_freq))/div
++			- 1000000;
++
++	return div;
++}
++
+ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params,
+ 					struct snd_soc_dai *cpu_dai)
+@@ -872,16 +895,14 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 	 * the machine driver, we need to calculate the ratio.
+ 	 */
+ 	if (mcasp->bclk_master && mcasp->bclk_div == 0 && mcasp->sysclk_freq) {
+-		unsigned int bclk_freq = snd_soc_params_to_bclk(params);
+-		unsigned int div = mcasp->sysclk_freq / bclk_freq;
+-		if (mcasp->sysclk_freq % bclk_freq != 0) {
+-			if (((mcasp->sysclk_freq / div) - bclk_freq) >
+-			    (bclk_freq - (mcasp->sysclk_freq / (div+1))))
+-				div++;
+-			dev_warn(mcasp->dev,
+-				 "Inaccurate BCLK: %u Hz / %u != %u Hz\n",
+-				 mcasp->sysclk_freq, div, bclk_freq);
+-		}
++		int ppm;
++		uint bclk_freq = snd_soc_params_to_bclk(params);
++		int div = davinci_mcasp_calc_clk_div(mcasp, bclk_freq, &ppm);
++
++		if (ppm)
++			dev_info(mcasp->dev, "BCLK rate is off by %d PPM\n",
++				 ppm);
++
+ 		__davinci_mcasp_set_clkdiv(cpu_dai, 1, div, 0);
+ 	}
+ 
+@@ -973,6 +994,46 @@ static int davinci_mcasp_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static const unsigned int davinci_mcasp_dai_rates[] = {
++	8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000,
++	88200, 96000, 176400, 192000,
++};
++
++#define DAVINCI_MAX_RATE_ERROR_PPM 1000
++
++static int davinci_mcasp_hw_rule_rate(struct snd_pcm_hw_params *params,
++				      struct snd_pcm_hw_rule *rule)
++{
++	struct davinci_mcasp *mcasp = rule->private;
++	unsigned int list[ARRAY_SIZE(davinci_mcasp_dai_rates)];
++	int frame_size;
++	int i, count = 0;
++
++	frame_size = snd_soc_params_to_frame_size(params);
++	if (frame_size < 0)
++		return frame_size;
++
++	for (i = 0; i < ARRAY_SIZE(davinci_mcasp_dai_rates); i++) {
++		uint bclk_freq = frame_size*davinci_mcasp_dai_rates[i];
++		int ppm;
++
++		davinci_mcasp_calc_clk_div(mcasp, bclk_freq, &ppm);
++
++		dev_dbg(mcasp->dev,
++			"%u bit frames @ %u Hz => %d PPM error\n",
++			frame_size, davinci_mcasp_dai_rates[i], ppm);
++
++		if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM)
++			list[count++] = davinci_mcasp_dai_rates[i];
++
++	}
++	dev_dbg(mcasp->dev, "%d frequencies for %u fsize\n",
++		count, frame_size);
++
++	return snd_interval_list(hw_param_interval(params, rule->var),
++				 count, list, 0);
++}
++
+ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *cpu_dai)
+ {
+@@ -1012,6 +1073,19 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 	snd_pcm_hw_constraint_minmax(substream->runtime,
+ 				     SNDRV_PCM_HW_PARAM_CHANNELS,
+ 				     2, max_channels);
++
++	/*
++	 * If we rely on implicit BCLK divider setting we should
++	 * set constraints based on what we can provide.
++	 */
++	if (mcasp->bclk_master && mcasp->bclk_div == 0 && mcasp->sysclk_freq)
++		return snd_pcm_hw_rule_add(substream->runtime, 0,
++					   SNDRV_PCM_HW_PARAM_RATE,
++					   davinci_mcasp_hw_rule_rate,
++					   mcasp,
++					   SNDRV_PCM_HW_PARAM_FRAME_BITS,
++					   SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++
+ 	return 0;
+ }
+ 
+-- 
+1.9.1
 
---g/2gxic02LijnRx4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVAsZVAAoJECTWi3JdVIfQH6sH+wV1VD3PF66bxN+oomSCewIq
-sFnR8Q8zLy0XlO7AcQSjETTnlJMN6osvzI+1K4zegiglsumaqALWd6Wp7EYFbzT3
-ni//qL1gR73ofqflbsD+SRJJl9jQlF8KyP1ary8V0ocGz0Th58Grolivua7fevAA
-6gfXxbly2KlZjKAyZR/MGbOlKJ/kGouomElPo1ltZY+s/hLQJUj/DffuWEusv8Io
-7WJq/VYmDfT4JvO/D4ClUgHviECSNSneHqOkYkUClGFSpsQrLym5n3VECczPa5nT
-4JuBsSuNSZGLbciariDtv+6+i4PY7D6ngLvO8ATjfSoCDonINEDHPhs0IiaSXgw=
-=aUPT
------END PGP SIGNATURE-----
-
---g/2gxic02LijnRx4--
-
---===============0543204650464511186==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0543204650464511186==--
