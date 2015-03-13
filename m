@@ -1,17 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: control: Fix breakage of user ctl
-	element addition
-Date: Fri, 13 Mar 2015 09:37:15 +0900
-Message-ID: <5502313B.5030409@sakamocchi.jp>
-References: <1426176130-1163-1-git-send-email-tiwai@suse.de>
+Subject: Re: [PATCH v2] ALSA: control: Add sanity checks for
+ user ctl id name string
+Date: Fri, 13 Mar 2015 09:43:02 +0900
+Message-ID: <55023296.3080504@sakamocchi.jp>
+References: <1426142461-16095-1-git-send-email-tiwai@suse.de>
+ <550138C1.4060308@sakamocchi.jp> <s5hegoun1k0.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BFFD2658D8
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 01:37:20 +0100 (CET)
-In-Reply-To: <1426176130-1163-1-git-send-email-tiwai@suse.de>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 951222658BA
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 01:43:15 +0100 (CET)
+In-Reply-To: <s5hegoun1k0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mar 13 2015 01:02, Takashi Iwai wrote:
-> In the commit [2225e79b9b03: 'ALSA: core: reduce stack usage related
-> to snd_ctl_new()'], the id field of the newly added kctl is untouched,
-> thus all attribute like name string remain empty.  The fix is just to
-> add the forgotten memcpy of the id field.
+On Mar 12 2015 15:59, Takashi Iwai wrote:
+> At Thu, 12 Mar 2015 15:57:05 +0900,
+> Takashi Sakamoto wrote:
+>>
+>> Iwai-san,
+>>
+>> On Mar 12 2015 15:41, Takashi Iwai wrote:
+>>> There was no check about the id string of user control elements, so we
+>>> accepted even a control element with an empty string, which is
+>>> obviously bogus.  This patch adds more sanity checks of id strings.
+>>>
+>>> Cc: <stable@vger.kernel.org>
+>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>> ---
+>>> v1->v2: fix typos, thinkos
+>>>
+>>>   sound/core/control.c | 4 ++++
+>>>   1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/sound/core/control.c b/sound/core/control.c
+>>> index 35324a8e83c8..eeb691d1911f 100644
+>>> --- a/sound/core/control.c
+>>> +++ b/sound/core/control.c
+>>> @@ -1170,6 +1170,10 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+>>>
+>>>   	if (info->count < 1)
+>>>   		return -EINVAL;
+>>> +	if (!*info->id.name)
+>>> +		return -EINVAL;
+>>> +	if (strnlen(info->id.name, sizeof(info->id.name)) >= sizeof(info->id.name))
+>>> +		return -EINVAL;
+>>
+>> Over 80 characters.
+>>
+>> $ ./scripts/checkpatch.pl /tmp/patches/*
+>> WARNING: line over 80 characters
+>> #25: FILE: sound/core/control.c:1019:
+>> +	if (strnlen(info->id.name, sizeof(info->id.name)) >= 
+>> sizeof(info->id.name))
+>>
+>> total: 0 errors, 1 warnings, 10 lines checked
 > 
-> Fixes: 2225e79b9b03 ('ALSA: core: reduce stack usage related to snd_ctl_new()')
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/control.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/core/control.c b/sound/core/control.c
-> index 54a412af3224..d677c27746e9 100644
-> --- a/sound/core/control.c
-> +++ b/sound/core/control.c
-> @@ -1267,6 +1267,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
->  	err = snd_ctl_new(&kctl, count, access, file);
->  	if (err < 0)
->  		return err;
-> +	memcpy(&kctl->id, &info->id, sizeof(kctl->id));
->  	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size,
->  				     GFP_KERNEL);
->  	if (kctl->private_data == NULL) {
+> It's no error, you may ignore it unless it becomes too ugly and
+> unreadable.
 
-Oops, exactly... Thanks.
+Hm. OK, I'll do the same thing for my patchsets if it contributes
+readability.
 
 Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-I think the line can be simpler, like:
-
-kctl->id = info->id;
-
-But in both cases, assembler code may be the same due to compiler
-optimization.
 
 
 Takashi Sakamoto
