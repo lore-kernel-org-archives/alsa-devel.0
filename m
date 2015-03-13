@@ -1,78 +1,62 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [PATCH V8 3/5] ASoC: qcom: Add ability to build QCOM drivers
-Date: Fri, 13 Mar 2015 01:01:06 -0700
-Message-ID: <1426233668-30593-4-git-send-email-kwestfie@codeaurora.org>
-References: <1426233668-30593-1-git-send-email-kwestfie@codeaurora.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1426233668-30593-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kumar Gala <galak@codeaurora.org>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Rob Herring <robh+dt@kernel.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Adding new (old) SNDRV_SEQ_PORT_TYPE_MIDI_* defines
+Date: Fri, 13 Mar 2015 09:07:57 +0100
+Message-ID: <55029ADD.7020403@ladisch.de>
+References: <CAOf41NnyZRX5B9TfGQvTq26-3x7NefsRETJ4SESE5uXFYSxUtw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B6425260682
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 09:07:58 +0100 (CET)
+In-Reply-To: <CAOf41NnyZRX5B9TfGQvTq26-3x7NefsRETJ4SESE5uXFYSxUtw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adam Goode <agoode@google.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Kenneth Westfield <kwestfie@codeaurora.org>
+Adam Goode wrote:
+> I found the /* TODO: read port flags from descriptors */ in
+> sound/usb/midi.c and was thinking about what to do to implement this.
+>
+> The first thing to do would be to ensure that all the flags from the
+> element descriptors in the USB MIDI standard are available for returning
+> from snd_seq_port_info_get_type.
 
-Define the LPASS platform driver, the LPASS
-CPU DAI driver and the Storm machine driver
-configurations, and how to build them.
+I don't know of any class-compliant USB MIDI device that actually has
+elements and declares them in its descriptors.
 
-Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
-Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
----
- sound/soc/qcom/Kconfig  | 25 +++++++++++++++++++++++++
- sound/soc/qcom/Makefile | 11 +++++++++++
- 2 files changed, 36 insertions(+)
- create mode 100644 sound/soc/qcom/Kconfig
- create mode 100644 sound/soc/qcom/Makefile
+Do you have anything that would allow us to test this?
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-new file mode 100644
-index 0000000000000000000000000000000000000000..5f58e4f1bca98b5c4c4c951dce24036aafa2d694
---- /dev/null
-+++ b/sound/soc/qcom/Kconfig
-@@ -0,0 +1,25 @@
-+config SND_SOC_QCOM
-+	tristate "ASoC support for QCOM platforms"
-+	help
-+          Say Y or M if you want to add support to use audio devices
-+          in Qualcomm Technologies SOC-based platforms.
-+
-+config SND_SOC_LPASS_CPU
-+	tristate
-+	depends on SND_SOC_QCOM
-+	select REGMAP_MMIO
-+
-+config SND_SOC_LPASS_PLATFORM
-+	tristate
-+	depends on SND_SOC_QCOM
-+	select REGMAP_MMIO
-+
-+config SND_SOC_STORM
-+	tristate "ASoC I2S support for Storm boards"
-+	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
-+	select SND_SOC_LPASS_CPU
-+	select SND_SOC_LPASS_PLATFORM
-+	select SND_SOC_MAX98357A
-+	help
-+          Say Y or M if you want add support for SoC audio on the
-+          Qualcomm Technologies IPQ806X-based Storm board.
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-new file mode 100644
-index 0000000000000000000000000000000000000000..c5ce96c761c47b3a1b98e27d863fe0b5b9bc019e
---- /dev/null
-+++ b/sound/soc/qcom/Makefile
-@@ -0,0 +1,11 @@
-+# Platform
-+snd-soc-lpass-cpu-objs := lpass-cpu.o
-+snd-soc-lpass-platform-objs := lpass-platform.o
-+
-+obj-$(CONFIG_SND_SOC_LPASS_CPU) += snd-soc-lpass-cpu.o
-+obj-$(CONFIG_SND_SOC_LPASS_PLATFORM) += snd-soc-lpass-platform.o
-+
-+# Machine
-+snd-soc-storm-objs := storm.o
-+
-+obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> I propose adding these flags to ALSA:
+>
+> #define SNDRV_SEQ_PORT_TYPE_MIDI_CLOCK  (1<<7)  /* MIDI CLOCK compatible device */
+> #define SNDRV_SEQ_PORT_TYPE_MIDI_TIME_CODE (1<<8) /* MTC compatible device */
+> #define SNDRV_SEQ_PORT_TYPE_MIDI_MACHINE_CONTROL (1<<9) /* MMC compatible device */
+> #define SNDRV_SEQ_PORT_TYPE_MIDI_EFX    (1<<21) /* Audio effects processor device */
+> #define SNDRV_SEQ_PORT_TYPE_MIDI_PATCH_BAY (1<<22) /* MIDI patcher or router device */
+> #define SNDRV_SEQ_PORT_TYPE_MIDI_DLS1   (1<<23) /* DownLoadable Sounds Standard Level 1 compatible device */
+> #define SNDRV_SEQ_PORT_TYPE_MIDI_DLS2   (1<<24) /* DownLoadable Sounds Standard Level 2 compatible device */
+>
+> Thoughts? I can send a couple patches for the kernel and alsa-lib. I don't
+> think this is a breaking change.
+
+The first three flags might be useful.  Their problem is that software
+cannot rely on them being set for all ports connected to devices that
+support these features, but the other PORT_TYPE_MIDI flags have the same
+problem.
+
+I don't see any useful application for the other four flags.  I think
+the driver should just ignore them.
+
+
+Regards,
+Clemens
