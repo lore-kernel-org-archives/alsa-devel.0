@@ -1,81 +1,55 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH 0/5] Intel SST driver restructure
-Date: Fri, 13 Mar 2015 14:13:17 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BD7F2C@SHSMSX101.ccr.corp.intel.com>
-References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
- <20150313062829.GA32000@intel.com> <55029D8B.9060309@intel.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH RFC (do not merge)] ASoC: davinci-mcasp: Set rule constraint
+ if implicit bclk divider is used
+Date: Fri, 13 Mar 2015 16:21:44 +0200
+Message-ID: <5502F278.2070608@ti.com>
+References: <1426246615-12772-1-git-send-email-jsarha@ti.com> <5502D052.1030804@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C5A1264FE3
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 15:13:26 +0100 (CET)
-In-Reply-To: <55029D8B.9060309@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Nikula, Jarkko" <jarkko.nikula@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "Jin, Yao" <yao.jin@intel.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <5502D052.1030804@metafoo.de>
+Sender: linux-omap-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Nikula, Jarkko
-> Sent: Friday, March 13, 2015 4:19 PM
-> To: Koul, Vinod; Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R;
-> Bossart, Pierre-louis; Lin, Mengdong; Jin, Yao
-> Subject: Re: [PATCH 0/5] Intel SST driver restructure
-> 
-> On 03/13/2015 08:28 AM, Vinod Koul wrote:
-> > On Thu, Mar 12, 2015 at 10:31:55PM +0800, Jie Yang wrote:
-> >> In order to prepare for the upstreaming of Skylake drivers and to
-> >> allow reuse of code between different Intel audio DSP products, this
-> >> patch series restructures the Intel directory as follows:
-> >>
-> >> 1. Create "common" directory. Move common files into this directory.
-> >>
-> >> 2. Create "boards" directory. Move all machine drivers into this directory.
-> >>
-> >> 3. Create "haswell" directory. Move all remaining hsw/bdw code into this
-> directory.
-> >>
-> >> 4. Create "baytrail" directory. Move remaining baytrail driver to this
-> directory.
-> >>
-> >> 5. Create "atom" directory. Move all MCG platform drivers(including
-> >> sst/ folder) to this directory.
-> >>
-> >> Todo next step:
-> >> 1. Change and move atom related codes(in atom/sst/) to corresponding
-> >> and try share as many as possible codes(e.g. sst_acpi.c).
-> >> 2. Share more common codes about IPC for different platforms, e.g.
-> >> The methods for queueing and sending/reciving Tx/Rx messages, The
-> >> methods for mailbox IO, The IPC error return codes, etc.
-> >>
-> >> Jie Yang (5):
-> >>    ASoC: Intel: create common folder and move common files in
-> >>    ASoC: Intel: create haswell folder and move haswell platform files in
-> >>    ASoC: Intel: create boards folder and move sst boards files in
-> >>    ASoC: Intel: create baytrail folder and move baytrail platform files
-> >>      in
-> >>    ASoC: Intel: create atom folder and move atom platform files in
-> >>
-> > For atom parts
-> >
-> > Acked-by: Vinod Koul <vinod.koul@intel.com>
-> >
-> I tested the set on byt-rt5640. To all patches (or 1, 3 and 4):
-> 
-> Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-[Keyon] thank you all. Hi Mark, so should I keep them locally and send to you
-2 or 3 weeks later, or you will keep them in queue and apply them one day?
+On 03/13/15 13:56, Lars-Peter Clausen wrote:
+> On 03/13/2015 12:36 PM, Jyri Sarha wrote:
+> [...]
+>> In theory this patch does exactly what it is supposed to. It only
+>> allows a sample-rate and sample-format combination if the rate can be
+>> produced with reasonable accuracy. Unfortunately the alsa-lib and
+>> alsa-tools are not able use this information too well. If the requested
+>> sample-rate and sample-format is not available the aplay/arecord
+>> fails, even if plughw is selected, with:
+>>
+>> pcm_params.c:170: snd1_pcm_hw_param_get_min: Assertion
+>> `!snd_interval_empty(i)' failed.
+> [...]
+>> +
+>> +    /*
+>> +     * If we rely on implicit BCLK divider setting we should
+>> +     * set constraints based on what we can provide.
+>> +     */
+>> +    if (mcasp->bclk_master && mcasp->bclk_div == 0 &&
+>> mcasp->sysclk_freq)
+>> +        return snd_pcm_hw_rule_add(substream->runtime, 0,
+>> +                       SNDRV_PCM_HW_PARAM_RATE,
+>> +                       davinci_mcasp_hw_rule_rate,
+>> +                       mcasp,
+>> +                       SNDRV_PCM_HW_PARAM_FRAME_BITS,
+>> +                       SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+>> +
+>
+> For things to work correctly you also need reverse rules restricting
+> CHANNELS and FRAME_BITS based on the RATE. This might fix the issue you
+> are seeing with the ALSA tools.
+>
+
+Thanks, that was indeed the case. I mail a new patch once I get my patch 
+in order.
+
+Best regards,
+Jyri
+
