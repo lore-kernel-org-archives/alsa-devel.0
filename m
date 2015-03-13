@@ -1,17 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: [PATCH 0/5] Intel SST driver restructure
-Date: Fri, 13 Mar 2015 11:58:29 +0530
-Message-ID: <20150313062829.GA32000@intel.com>
+Date: Fri, 13 Mar 2015 12:02:05 +0530
+Message-ID: <20150313063205.GB32000@intel.com>
 References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
+ <20150312195420.GB28806@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6960326152419709308=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E9F9026055F
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 07:32:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C0EE26055F
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 07:35:42 +0100 (CET)
+In-Reply-To: <20150312195420.GB28806@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,137 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, mengdong.lin@intel.com, broonie@kernel.org, jarkko.nikula@intel.com, yao.jin@intel.com, pierre-louis.bossart@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com, mengdong.lin@intel.com, jarkko.nikula@intel.com, yao.jin@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 12, 2015 at 10:31:55PM +0800, Jie Yang wrote:
-> In order to prepare for the upstreaming of Skylake drivers and to
-> allow reuse of code between different Intel audio DSP products,
-> this patch series restructures the Intel directory as follows:
-> 
-> 1. Create "common" directory. Move common files into this directory.
-> 
-> 2. Create "boards" directory. Move all machine drivers into this directory.
-> 
-> 3. Create "haswell" directory. Move all remaining hsw/bdw code into this directory.
-> 
-> 4. Create "baytrail" directory. Move remaining baytrail driver to this directory.
-> 
-> 5. Create "atom" directory. Move all MCG platform drivers(including sst/ folder)
-> to this directory.
-> 
-> Todo next step:
-> 1. Change and move atom related codes(in atom/sst/) to corresponding and try
-> share as many as possible codes(e.g. sst_acpi.c).
-> 2. Share more common codes about IPC for different platforms, e.g. The methods for
-> queueing and sending/reciving Tx/Rx messages, The methods for mailbox IO, The IPC
-> error return codes, etc.
-> 
-> Jie Yang (5):
->   ASoC: Intel: create common folder and move common files in
->   ASoC: Intel: create haswell folder and move haswell platform files in
->   ASoC: Intel: create boards folder and move sst boards files in
->   ASoC: Intel: create baytrail folder and move baytrail platform files
->     in
->   ASoC: Intel: create atom folder and move atom platform files in
-> 
->  sound/soc/intel/Makefile                           | 42 +++-------------------
->  sound/soc/intel/atom/Makefile                      |  7 ++++
->  sound/soc/intel/{ => atom}/sst-atom-controls.c     |  0
->  sound/soc/intel/{ => atom}/sst-atom-controls.h     |  0
->  sound/soc/intel/{ => atom}/sst-mfld-dsp.h          |  0
->  .../intel/{ => atom}/sst-mfld-platform-compress.c  |  0
->  sound/soc/intel/{ => atom}/sst-mfld-platform-pcm.c |  0
->  sound/soc/intel/{ => atom}/sst-mfld-platform.h     |  0
->  sound/soc/intel/{ => atom}/sst/Makefile            |  0
->  sound/soc/intel/{ => atom}/sst/sst.c               |  0
->  sound/soc/intel/{ => atom}/sst/sst.h               |  0
->  sound/soc/intel/{ => atom}/sst/sst_acpi.c          |  0
->  sound/soc/intel/{ => atom}/sst/sst_drv_interface.c |  0
->  sound/soc/intel/{ => atom}/sst/sst_ipc.c           |  0
->  sound/soc/intel/{ => atom}/sst/sst_loader.c        |  0
->  sound/soc/intel/{ => atom}/sst/sst_pci.c           |  0
->  sound/soc/intel/{ => atom}/sst/sst_pvt.c           |  0
->  sound/soc/intel/{ => atom}/sst/sst_stream.c        |  0
-For atom parts
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+--===============6960326152419709308==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VS++wcV0S1rZb1Fb"
+Content-Disposition: inline
 
--- 
+
+--VS++wcV0S1rZb1Fb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 12, 2015 at 07:54:20PM +0000, Mark Brown wrote:
+> On Thu, Mar 12, 2015 at 10:31:55PM +0800, Jie Yang wrote:
+> > In order to prepare for the upstreaming of Skylake drivers and to
+> > allow reuse of code between different Intel audio DSP products,
+> > this patch series restructures the Intel directory as follows:
+>=20
+> This is all fine by me - I'd just like to see an ack before we do this
+> from the other Intel people to make sure they're not going to get
+> surprised, and also make sure that any in flight patches (particularly
+> bug fixes) get merged before the rename since this will make it easier
+> to apply things. Indeed, do we have an ETA for the Skylake code?  If
+Am working on it :) That will take time IMO, the HDA things are tricky here
+and will get done first followed by ASoC core bits and then finally driver.
+
+> it's not due before the merge window then it might be best to apply
+> these (or changes like them) at the very end of this development cycle. =
+=20
+
+I think that is a good suggestion, we can send this when merge wondow closes
+so no issue with in flght code
+
+--=20
 ~Vinod
 
->  sound/soc/intel/baytrail/Makefile                  |  4 +++
->  sound/soc/intel/{ => baytrail}/sst-baytrail-dsp.c  |  4 +--
->  sound/soc/intel/{ => baytrail}/sst-baytrail-ipc.c  |  4 +--
->  sound/soc/intel/{ => baytrail}/sst-baytrail-ipc.h  |  0
->  sound/soc/intel/{ => baytrail}/sst-baytrail-pcm.c  |  4 +--
->  sound/soc/intel/boards/Makefile                    | 15 ++++++++
->  sound/soc/intel/{ => boards}/broadwell.c           |  6 ++--
->  sound/soc/intel/{ => boards}/byt-max98090.c        |  2 +-
->  sound/soc/intel/{ => boards}/byt-rt5640.c          |  4 +--
->  .../{bytcr_dpcm_rt5640.c => boards/bytcr_rt5640.c} |  0
->  sound/soc/intel/{ => boards}/cht_bsw_rt5645.c      |  0
->  sound/soc/intel/{ => boards}/cht_bsw_rt5672.c      |  0
->  sound/soc/intel/{ => boards}/haswell.c             |  6 ++--
->  sound/soc/intel/{ => boards}/mfld_machine.c        |  0
->  sound/soc/intel/common/Makefile                    |  6 ++++
->  sound/soc/intel/{ => common}/sst-acpi.c            |  0
->  sound/soc/intel/{ => common}/sst-dsp-priv.h        |  0
->  sound/soc/intel/{ => common}/sst-dsp.c             |  0
->  sound/soc/intel/{ => common}/sst-dsp.h             |  0
->  sound/soc/intel/{ => common}/sst-firmware.c        |  0
->  sound/soc/intel/haswell/Makefile                   |  4 +++
->  sound/soc/intel/{ => haswell}/sst-haswell-dsp.c    |  6 ++--
->  sound/soc/intel/{ => haswell}/sst-haswell-ipc.c    |  4 +--
->  sound/soc/intel/{ => haswell}/sst-haswell-ipc.h    |  0
->  sound/soc/intel/{ => haswell}/sst-haswell-pcm.c    |  6 ++--
->  43 files changed, 64 insertions(+), 60 deletions(-)
->  create mode 100644 sound/soc/intel/atom/Makefile
->  rename sound/soc/intel/{ => atom}/sst-atom-controls.c (100%)
->  rename sound/soc/intel/{ => atom}/sst-atom-controls.h (100%)
->  rename sound/soc/intel/{ => atom}/sst-mfld-dsp.h (100%)
->  rename sound/soc/intel/{ => atom}/sst-mfld-platform-compress.c (100%)
->  rename sound/soc/intel/{ => atom}/sst-mfld-platform-pcm.c (100%)
->  rename sound/soc/intel/{ => atom}/sst-mfld-platform.h (100%)
->  rename sound/soc/intel/{ => atom}/sst/Makefile (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst.c (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst.h (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst_acpi.c (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst_drv_interface.c (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst_ipc.c (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst_loader.c (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst_pci.c (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst_pvt.c (100%)
->  rename sound/soc/intel/{ => atom}/sst/sst_stream.c (100%)
->  create mode 100644 sound/soc/intel/baytrail/Makefile
->  rename sound/soc/intel/{ => baytrail}/sst-baytrail-dsp.c (99%)
->  rename sound/soc/intel/{ => baytrail}/sst-baytrail-ipc.c (99%)
->  rename sound/soc/intel/{ => baytrail}/sst-baytrail-ipc.h (100%)
->  rename sound/soc/intel/{ => baytrail}/sst-baytrail-pcm.c (99%)
->  create mode 100644 sound/soc/intel/boards/Makefile
->  rename sound/soc/intel/{ => boards}/broadwell.c (98%)
->  rename sound/soc/intel/{ => boards}/byt-max98090.c (99%)
->  rename sound/soc/intel/{ => boards}/byt-rt5640.c (98%)
->  rename sound/soc/intel/{bytcr_dpcm_rt5640.c => boards/bytcr_rt5640.c} (100%)
->  rename sound/soc/intel/{ => boards}/cht_bsw_rt5645.c (100%)
->  rename sound/soc/intel/{ => boards}/cht_bsw_rt5672.c (100%)
->  rename sound/soc/intel/{ => boards}/haswell.c (98%)
->  rename sound/soc/intel/{ => boards}/mfld_machine.c (100%)
->  create mode 100644 sound/soc/intel/common/Makefile
->  rename sound/soc/intel/{ => common}/sst-acpi.c (100%)
->  rename sound/soc/intel/{ => common}/sst-dsp-priv.h (100%)
->  rename sound/soc/intel/{ => common}/sst-dsp.c (100%)
->  rename sound/soc/intel/{ => common}/sst-dsp.h (100%)
->  rename sound/soc/intel/{ => common}/sst-firmware.c (100%)
->  create mode 100644 sound/soc/intel/haswell/Makefile
->  rename sound/soc/intel/{ => haswell}/sst-haswell-dsp.c (99%)
->  rename sound/soc/intel/{ => haswell}/sst-haswell-ipc.c (99%)
->  rename sound/soc/intel/{ => haswell}/sst-haswell-ipc.h (100%)
->  rename sound/soc/intel/{ => haswell}/sst-haswell-pcm.c (99%)
-> 
-> -- 
-> 1.9.1
-> 
+--VS++wcV0S1rZb1Fb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
--- 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJVAoRlAAoJEHwUBw8lI4NH86cP/j3TTVGCfCoNhpkFPDSZrJjL
+rwmp7GtzwDZm3+AO465B4ufHOwjGUdu7uBpKJmyPPONQNCCFbeETtMk/KLqpH6r5
+cO5LW9QhPe5moqxqLOoBy536hW6+Of16F+OYlzBoUXkRgTqJRKAdCw7u5TsrOPa3
+O3y9zX//HxuH0Y1Aj98tvJR/e+W1IrsGDQCvwFFL6JepfuSZj1n7pxU187ooGKz0
+16qfBZJmw3gwr2hobNBsUeK9J5HrreyOfIzZy6LcmML21PaKX7iKp8PKwr/lRhD5
+qdGIj6eQ8YioyVswiIhgohc3zrhFkPRZGNcDdqAMvc6qOkXecr6PWbzfK3Tvc4nF
+3citFRPl3dL+R3prrAFcE3O8RCNnvyPksCsL8wr0cLDMQeHbFBiq6EcST/XM94Vo
+/vHOSSahrmr5CuHE7xUgMM5Wm9YvwzMlqUyvq7Kk/kA229VdBYNJD6y4kITRDKFS
+IfOXyb3J8B5HNpkg6OuJQ+vm0yhkJDyM1Zx2iVDmJ4SdRpftgCPI+8LmtgNe1w4Q
+bM4ynLU+L/ouIWhVwVjmdzj7x8PM8rdh8bzqLMA1QIfWRr2oWBmhs/gGdbNmBlBL
+sl7dnyA9/WKYNwVb2T0pGMX4f1RwbH/8XVjfKMG5kyyL9hMaujs2s/TiPnhpap9D
+orTQqpJQHCFXwnhiLd87
+=foDT
+-----END PGP SIGNATURE-----
+
+--VS++wcV0S1rZb1Fb--
+
+--===============6960326152419709308==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6960326152419709308==--
