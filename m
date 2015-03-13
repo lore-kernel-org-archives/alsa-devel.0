@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: pcm512x driver: Mixer control naming issue
-Date: Fri, 13 Mar 2015 18:27:29 +0000
-Message-ID: <20150313182729.GE28806@sirena.org.uk>
-References: <5500DE5B.2020401@hmbedded.co.uk> <5502DAE1.30609@hmbedded.co.uk>
+Subject: Re: [PATCH 0/5] Intel SST driver restructure
+Date: Fri, 13 Mar 2015 23:34:07 +0000
+Message-ID: <20150313233407.GF28806@sirena.org.uk>
+References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
+ <20150313062829.GA32000@intel.com> <55029D8B.9060309@intel.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BD7F2C@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2376269254468989142=="
+Content-Type: multipart/mixed; boundary="===============8123862871758182531=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 06B322604BC
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 19:27:37 +0100 (CET)
-In-Reply-To: <5502DAE1.30609@hmbedded.co.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id D99012604FD
+ for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2015 00:34:13 +0100 (CET)
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BD7F2C@SHSMSX101.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,65 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Howard Mitchell <hm@hmbedded.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Gordon Garrity <gordon.garrity@gmail.com>
+To: "Jie, Yang" <yang.jie@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Jin, Yao" <yao.jin@intel.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2376269254468989142==
+--===============8123862871758182531==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TleQwOBuDO0rokqK"
+	protocol="application/pgp-signature"; boundary="/rpqzglUoB70AQHl"
 Content-Disposition: inline
 
 
---TleQwOBuDO0rokqK
+--/rpqzglUoB70AQHl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 13, 2015 at 12:41:05PM +0000, Howard Mitchell wrote:
+On Fri, Mar 13, 2015 at 02:13:17PM +0000, Jie, Yang wrote:
 
-> Boost Volume) provides a boost of +0.8dB. The hardware reset value of both
-> of these gain controls is 0dB, however, in the Raspbian distribution
-> 'Playback Volume' is being defaulted to -6dB.
+> [Keyon] thank you all. Hi Mark, so should I keep them locally and send to you
+> 2 or 3 weeks later, or you will keep them in queue and apply them one day?
 
->  * Either change the names of these controls to something that's not
->    affected by the alsa restore mechanism,
+Well, they won't apply as-is since other people are sending patches for
+the files as well.  What might make more sense is to send a script which
+generates the commit (so a bunch of mv commands, patch for the Makefile
+and a changelog entry) then I can do that just before or just after the
+merge window.  Does that make sense?
 
-You say "these controls" but it seems like only "Playback Volume" has
-a problem?  My first suggestion would be to define "Analog" or
-"Analogue" as a prefix in ControlNames and then use that, that would
-avoid confusing applications while still fittig in with the naming
-convention.
-
->  * or remove them as mixer controls, but make them accessible some
->    other way - e.g. device tree.
-
-It may not be policy that someone wants to tweak at runtime on your
-board but it almost certainly will be on someone's board.
-
---TleQwOBuDO0rokqK
+--/rpqzglUoB70AQHl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVAywQAAoJECTWi3JdVIfQf0kIAIHH6xp1uCei48xUN5ZUGQeC
-TuPntRhh+LiCFePoqmiu1YBnKuel7/76PfGZGow7po6HFwc37TXo3FSADic8Y9VQ
-sJHFNCBl7nJA2FQcZqczRNs5Ottvzkm0iQCvte/Ods6sYivmW9NghmGwLRaMew1W
-IfUsj1yC9RyN7ESo/VdaU4u7LzdnL0l2EqGO0FHqoQVnXtY8Je/3n3cA1JFxdMrV
-IdPR3Odwppt81HVPjIsCmxqoiLwGOO4Vo7iw7V+pxFKqy54hwHwmG0o/yCBJD7kv
-8XNG50Aqr9I5TjmuoSHePYHkGgSyj8373ICEVucq952/3BQvN1UcZr1kzlEkKJs=
-=2GPT
+iQEcBAEBCAAGBQJVA3PuAAoJECTWi3JdVIfQLykH/iJRCrc1XVbxHXTyNShR6cgY
+WvLAajbTK/NEJ56QA7eiS9JluJztkfk6CeR3ZukAixJh/J2gma67ByHc2u0dGfKM
+klIhE081PrxtA0NXETFjoiF8FfslwhNcVwXJsfJzG6RCIGdezEklJ+8MTNZIAYhM
+5tCIEhe3n1d47VQlLp15E/PMUqghr4F9kq47hvb50QJZH+jT0m3RIWi+w3yzYlLT
+WlLV7F8QgTTRm/HteVN+A+l/pFtCIJFyl3+cPc6hcKuDshgVY2CJftu6s3Y2oyzX
+sF7rxaGHp063qbkboL2t4I9Zaq4dOgyO+HVZA+XZDeoPkFy3xfurhhemx/IKh18=
+=JY0X
 -----END PGP SIGNATURE-----
 
---TleQwOBuDO0rokqK--
+--/rpqzglUoB70AQHl--
 
---===============2376269254468989142==
+--===============8123862871758182531==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2376269254468989142==--
+--===============8123862871758182531==--
