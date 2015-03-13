@@ -1,22 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Intel SST on a Bay Trail tablet
-Date: Fri, 13 Mar 2015 12:03:45 +0530
-Message-ID: <20150313063345.GC32000@intel.com>
-References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
- <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
- <54F5CB3D.7020100@linux.intel.com>
- <20150304170218.7b397993ce670902800109f1@ao2.it>
- <20150312144503.5e1d556e408a0b166e20058d@ao2.it>
- <5501A30E.2000408@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Don't access stereo amps for mono
+	channel widgets
+Date: Fri, 13 Mar 2015 07:41:05 +0100
+Message-ID: <1426228865-12377-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 4876C26055F
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 07:37:20 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <5501A30E.2000408@linux.intel.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D8A726055F
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 07:41:06 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 27E4BAAC9
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 06:41:06 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,34 +22,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Antonio Ospite <ao2@ao2.it>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 12, 2015 at 04:30:38PM +0200, Jarkko Nikula wrote:
-> Hi
-> 
-> On 03/12/2015 03:45 PM, Antonio Ospite wrote:
-> >>Do you confirm that the ADMA0F28 and SSPX0000 devices I mentioned in the
-> >>original mail are not necessary in the DSDT?
-> >[...]
-> >
-> I don't know what their function is. I've seen them only in newer
-> DSDT tables. I guess Windows 8.1 uses them for power management etc
-> or it has separate drivers for DMA and SSP ports.
-> 
-> >Ping.
-> >
-> >Can anyone comment on this and my other questions in the previous email
-> >regarding the DSP firmware?
-> >
-> Vinod, Ramesh: Do you know would it be possible to run that Android
-> ELF firmware that is installed in the Teclast with the newer stack
-> in sound/soc/intel/sst?
-Sorry havent followed the thread, but we should be able to use the upstream
-firware.
-The ELF binary and the upstream ones are similar, we decided sometime back
-to not use ELF for future dev so we didnt upstream that part.
+The current HDA generic parser initializes / modifies the amp values
+always in stereo, but this seems causing the problem on ALC3229 codec
+that has a few mono channel widgets: namely, these mono widgets react
+to actions for both channels equally.
 
+In the driver code, we do care the mono channel and create a control
+only for the left channel (as defined in HD-audio spec) for such a
+node.  When the control is updated, only the left channel value is
+changed.  However, in the resume, the right channel value is also
+restored from the initial value we took as stereo, and this overwrites
+the left channel value.  This ends up being the silent output as the
+right channel has been never touched and remains muted.
+
+This patch covers the places where unconditional stereo amp accesses
+are done and converts to the conditional accesses.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=94581
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_generic.c | 30 ++++++++++++++++++++++--------
+ 1 file changed, 22 insertions(+), 8 deletions(-)
+
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index b680b4ec6331..fe18071bf93a 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -692,7 +692,23 @@ static void init_amp(struct hda_codec *codec, hda_nid_t nid, int dir, int idx)
+ {
+ 	unsigned int caps = query_amp_caps(codec, nid, dir);
+ 	int val = get_amp_val_to_activate(codec, nid, dir, caps, false);
+-	snd_hda_codec_amp_init_stereo(codec, nid, dir, idx, 0xff, val);
++
++	if (get_wcaps(codec, nid) & AC_WCAP_STEREO)
++		snd_hda_codec_amp_init_stereo(codec, nid, dir, idx, 0xff, val);
++	else
++		snd_hda_codec_amp_init(codec, nid, 0, dir, idx, 0xff, val);
++}
++
++/* update the amp, doing in stereo or mono depending on NID */
++static int update_amp(struct hda_codec *codec, hda_nid_t nid, int dir, int idx,
++		      unsigned int mask, unsigned int val)
++{
++	if (get_wcaps(codec, nid) & AC_WCAP_STEREO)
++		return snd_hda_codec_amp_stereo(codec, nid, dir, idx,
++						mask, val);
++	else
++		return snd_hda_codec_amp_update(codec, nid, 0, dir, idx,
++						mask, val);
+ }
+ 
+ /* calculate amp value mask we can modify;
+@@ -732,7 +748,7 @@ static void activate_amp(struct hda_codec *codec, hda_nid_t nid, int dir,
+ 		return;
+ 
+ 	val &= mask;
+-	snd_hda_codec_amp_stereo(codec, nid, dir, idx, mask, val);
++	update_amp(codec, nid, dir, idx, mask, val);
+ }
+ 
+ static void activate_amp_out(struct hda_codec *codec, struct nid_path *path,
+@@ -4424,13 +4440,11 @@ static void mute_all_mixer_nid(struct hda_codec *codec, hda_nid_t mix)
+ 	has_amp = nid_has_mute(codec, mix, HDA_INPUT);
+ 	for (i = 0; i < nums; i++) {
+ 		if (has_amp)
+-			snd_hda_codec_amp_stereo(codec, mix,
+-						 HDA_INPUT, i,
+-						 0xff, HDA_AMP_MUTE);
++			update_amp(codec, mix, HDA_INPUT, i,
++				   0xff, HDA_AMP_MUTE);
+ 		else if (nid_has_volume(codec, conn[i], HDA_OUTPUT))
+-			snd_hda_codec_amp_stereo(codec, conn[i],
+-						 HDA_OUTPUT, 0,
+-						 0xff, HDA_AMP_MUTE);
++			update_amp(codec, conn[i], HDA_OUTPUT, 0,
++				   0xff, HDA_AMP_MUTE);
+ 	}
+ }
+ 
 -- 
-~Vinod
+2.3.2
