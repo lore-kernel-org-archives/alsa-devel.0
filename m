@@ -1,7 +1,7 @@
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: [PATCH V8 4/5] ASoC: Allow for building QCOM drivers
-Date: Fri, 13 Mar 2015 01:01:07 -0700
-Message-ID: <1426233668-30593-5-git-send-email-kwestfie@codeaurora.org>
+Subject: [PATCH V8 3/5] ASoC: qcom: Add ability to build QCOM drivers
+Date: Fri, 13 Mar 2015 01:01:06 -0700
+Message-ID: <1426233668-30593-4-git-send-email-kwestfie@codeaurora.org>
 References: <1426233668-30593-1-git-send-email-kwestfie@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1426233668-30593-1-git-send-email-kwestfie@codeaurora.org>
@@ -12,40 +12,67 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Allow for the Qualcomm Technologies ASoC drivers
-to build.
+Define the LPASS platform driver, the LPASS
+CPU DAI driver and the Storm machine driver
+configurations, and how to build them.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/Kconfig  | 1 +
- sound/soc/Makefile | 1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/qcom/Kconfig  | 25 +++++++++++++++++++++++++
+ sound/soc/qcom/Makefile | 11 +++++++++++
+ 2 files changed, 36 insertions(+)
+ create mode 100644 sound/soc/qcom/Kconfig
+ create mode 100644 sound/soc/qcom/Makefile
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index dcc79aa0236b548bfe5408fe56689241fc597e97..3ba52da18bc69a9bb41c84627cfc7d08f47e3bf0 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -47,6 +47,7 @@ source "sound/soc/kirkwood/Kconfig"
- source "sound/soc/intel/Kconfig"
- source "sound/soc/mxs/Kconfig"
- source "sound/soc/pxa/Kconfig"
-+source "sound/soc/qcom/Kconfig"
- source "sound/soc/rockchip/Kconfig"
- source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 5b3c8f67c8db7a29ff7199a6103d445428978125..974ba708b4826a03077a58251434a311542d5e3c 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -28,6 +28,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
- obj-$(CONFIG_SND_SOC)	+= omap/
- obj-$(CONFIG_SND_SOC)	+= kirkwood/
- obj-$(CONFIG_SND_SOC)	+= pxa/
-+obj-$(CONFIG_SND_SOC)	+= qcom/
- obj-$(CONFIG_SND_SOC)	+= rockchip/
- obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+new file mode 100644
+index 0000000000000000000000000000000000000000..5f58e4f1bca98b5c4c4c951dce24036aafa2d694
+--- /dev/null
++++ b/sound/soc/qcom/Kconfig
+@@ -0,0 +1,25 @@
++config SND_SOC_QCOM
++	tristate "ASoC support for QCOM platforms"
++	help
++          Say Y or M if you want to add support to use audio devices
++          in Qualcomm Technologies SOC-based platforms.
++
++config SND_SOC_LPASS_CPU
++	tristate
++	depends on SND_SOC_QCOM
++	select REGMAP_MMIO
++
++config SND_SOC_LPASS_PLATFORM
++	tristate
++	depends on SND_SOC_QCOM
++	select REGMAP_MMIO
++
++config SND_SOC_STORM
++	tristate "ASoC I2S support for Storm boards"
++	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
++	select SND_SOC_LPASS_CPU
++	select SND_SOC_LPASS_PLATFORM
++	select SND_SOC_MAX98357A
++	help
++          Say Y or M if you want add support for SoC audio on the
++          Qualcomm Technologies IPQ806X-based Storm board.
+diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+new file mode 100644
+index 0000000000000000000000000000000000000000..c5ce96c761c47b3a1b98e27d863fe0b5b9bc019e
+--- /dev/null
++++ b/sound/soc/qcom/Makefile
+@@ -0,0 +1,11 @@
++# Platform
++snd-soc-lpass-cpu-objs := lpass-cpu.o
++snd-soc-lpass-platform-objs := lpass-platform.o
++
++obj-$(CONFIG_SND_SOC_LPASS_CPU) += snd-soc-lpass-cpu.o
++obj-$(CONFIG_SND_SOC_LPASS_PLATFORM) += snd-soc-lpass-platform.o
++
++# Machine
++snd-soc-storm-objs := storm.o
++
++obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
