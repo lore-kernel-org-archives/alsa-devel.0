@@ -1,17 +1,17 @@
-From: Jarkko Nikula <jarkko.nikula@intel.com>
-Subject: Re: [PATCH 0/5] Intel SST driver restructure
-Date: Fri, 13 Mar 2015 10:19:23 +0200
-Message-ID: <55029D8B.9060309@intel.com>
-References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
- <20150313062829.GA32000@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: dummy codec + simple card combination
+Date: Fri, 13 Mar 2015 11:28:57 +0200
+Message-ID: <5502ADD9.9070603@ti.com>
+References: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
+ <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id B19FE26071A
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 09:19:28 +0100 (CET)
-In-Reply-To: <20150313062829.GA32000@intel.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EF7926145A
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 10:29:04 +0100 (CET)
+In-Reply-To: <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, mengdong.lin@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, yao.jin@intel.com, pierre-louis.bossart@intel.com
+To: Belisko Marek <marek.belisko@gmail.com>, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/13/2015 08:28 AM, Vinod Koul wrote:
-> On Thu, Mar 12, 2015 at 10:31:55PM +0800, Jie Yang wrote:
->> In order to prepare for the upstreaming of Skylake drivers and to
->> allow reuse of code between different Intel audio DSP products,
->> this patch series restructures the Intel directory as follows:
->>
->> 1. Create "common" directory. Move common files into this directory.
->>
->> 2. Create "boards" directory. Move all machine drivers into this directory.
->>
->> 3. Create "haswell" directory. Move all remaining hsw/bdw code into this directory.
->>
->> 4. Create "baytrail" directory. Move remaining baytrail driver to this directory.
->>
->> 5. Create "atom" directory. Move all MCG platform drivers(including sst/ folder)
->> to this directory.
->>
->> Todo next step:
->> 1. Change and move atom related codes(in atom/sst/) to corresponding and try
->> share as many as possible codes(e.g. sst_acpi.c).
->> 2. Share more common codes about IPC for different platforms, e.g. The methods for
->> queueing and sending/reciving Tx/Rx messages, The methods for mailbox IO, The IPC
->> error return codes, etc.
->>
->> Jie Yang (5):
->>    ASoC: Intel: create common folder and move common files in
->>    ASoC: Intel: create haswell folder and move haswell platform files in
->>    ASoC: Intel: create boards folder and move sst boards files in
->>    ASoC: Intel: create baytrail folder and move baytrail platform files
->>      in
->>    ASoC: Intel: create atom folder and move atom platform files in
->>
-> For atom parts
->
-> Acked-by: Vinod Koul <vinod.koul@intel.com>
->
-I tested the set on byt-rt5640. To all patches (or 1, 3 and 4):
-
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----------------------------------------------------------------------
-Intel Finland Oy
-Registered Address: PL 281, 00181 Helsinki 
-Business Identity Code: 0357606 - 4 
-Domiciled in Helsinki 
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+SGksCgpPbiAwMy8xMi8yMDE1IDA4OjMzIFBNLCBCZWxpc2tvIE1hcmVrIHdyb3RlOgo+IEhpLAo+
+IAo+IEkgcG9zdGVkIHNhbWUgcXVlc3Rpb24gb24gYWxzYS1kZXZlbCBNTCB0aGlzIHdlZWsgYnV0
+IEkgZm9yZ290IHRvIGFkZAo+IHNvdW5kIG9tYXAgKyBhc29jIG1haW50YWluZXJzIChzb3JyeSBh
+Ym91dCB0aGF0KQo+IAo+IEknbSB0cnlpbmcgdG8gYWRkIGF1ZGlvIHN1cHBvcnQgZm9yIGd0YTA0
+IChmb3IgZ3NtICsgYnQgYW5kIGZtIGF1ZGlvKS4KPiBBbGwgYXVkaW8gc291cmNlcyBhcmUgY2xv
+Y2sgbWFzdGVycyBzbyBiYXNpY2FsbHkgY29ubmVjdGlvbiBpcyBkdW1teQo+IGNvZGVjcyAtPiBj
+cHUgZGFpIChtY2JzcCBwb3J0cykuCgpUaGUgRk0gc2VhbXMgdG8gYmUgc2xhdmUgZGV2aWNlIChT
+aTQ3MDUvU2k0NzIxKSBvbiB0aGUgSTJTIGJ1cy4KQnV0IGluIGFueSBvZiB0aGUgY2FzZXMgKEZN
+LCBHU00gYW5kIEJUKSBob3cgZG8geW91IGNvbmZpZ3VyZSB0aGUgREFJIGZvcm1hdHMKb2YgdGhl
+ICdjb2RlY3MnPyBTaTQ3eHggaGFzIHN1cHBvcnQgZm9yIEkyUywgTF9KVVNUIGFuZCBEU1AgbW9k
+ZSBmb3IgZXhhbXBsZS4KV2hhdCBhYm91dCB0aGUgc2FtcGxlIGZvcm1hdHMgYW5kIHJhdGVzPwpJ
+IHRoaW5rIHRoZXJlIHNob3VsZCBiZSBhIGRyaXZlciBmb3IgYXQgbGVhc3QgdGhlIEZNLiBGb3Ig
+QlQgdGhlcmUgaXMgYSBidC1zY28KY29kZWMgZHJpdmVyIGJ1dCB3L28gRFQgc3VwcG9ydC4KCj4g
+Rm9yIGltcGxlbWVudGluZyBzdWNoIHRoaW5nIEkgY2FuIHNlZSAyIG9wdGlvbnM6Cj4gMS4gc2lt
+cGxlIGNhcmQgZHJpdmVyIHdoaWNoIGNhbiBlYXNpbHkgZGVzY3JpYmUgY3B1IGRhaSBpbnRlcmZh
+Y2UgYnV0Cj4gZHVtbXkgY29kZWMgY2Fubm90IGJlY2F1c2UgdGhlcmUgYXJlIG5vIERUIGJpbmRp
+bmdzICh0aGVyZSB3YXMgc2V2ZXIKPiBhdHRlbXB0cyB0byBhZGQgRFQgYmluZGluZ3MgZm9yIGR1
+bW15LWNvZGVjIGJ1dCBBRkFJSyBub25lIHdhcwo+IGFjY2VwdGVkKQoKWWVzLCB0aGUgZHVtbXkt
+Y29kZWMgaXMgTGludXgvQVNvQyBjb25jZXB0IGFuZCBzaG91bGQgbm90IGJlIGRlc2NyaWJlZCBp
+biBEVC4KSG93ZXZlciBJIHRoaW5rIHRoZXJlIHNob3VsZCBiZSBhIHdheSB0byBkZXNjcmliaW5n
+IHBhc3NpdmUgREFJcy4gU2xhdmUKZGV2aWNlcyBvbmx5IGxpc3RlbmluZywgb3IgbWFzdGVycyBz
+dHJlYW1pbmcgdGhlIGRhdGEuCkJ1dCwgSSB0aGluayBldmVuIGlmIHlvdSBoYXZlIHN1Y2ggYSBk
+ZXZpY2UgeW91IGRvIGhhdmUgc29tZSBjb250cm9sLCBhdCBsZWFzdAp0byBlbmFibGUvZGlzYWJs
+ZSB0aGVtLi4uCgo+IFRoaXMgdHVybnMgaXQgdG8gb25seSBzb2x1dGlvbiB0byBjcmVhdGUgZ3Rh
+MDQgc291bmRjYXJkIHdoaWNoIHdpbGwKPiBnZXQgZnJvbSBEVCBjcHUgZGFpIGxpbmtzIGFuZCB1
+c2UgaW4gY2FyZCBkcml2ZXIgZHVtbXkgY29kZWNzCj4gZGlyZWN0bHkuCgpJIHdvdWxkIGxvb2sg
+dXAgdGhlIGRyaXZlciBmb3IgdGhlIEZNIGFuZCB3cml0ZSB0aGUgY29kZWMgZHJpdmVyIGZvciBp
+dCwKcHJvYmFibHkgdGhlIHNhbWUgY2FuIGJlIGRvbmUgZm9yIHRoZSBHU00gYW5kIGFkZCBiaW5k
+aW5ncyBmb3IgdGhlIGJ0LXNjbyBzbwphbGwgb2YgdGhpcyBjYW4gd29yayB3aXRoIHNpbXBsZS1j
+YXJkLgpPciB3cml0ZSBhIGN1c3RvbSBtYWNoaW5lIGRyaXZlciBhbmQgZ2V0IGl0IGRvbmUgOykK
+Cj4gSXMgbXkgYXNzdW1wdGlvbiBjb3JyZWN0PyBJIHdvdWxkIGxpa2UgdG8gZ2V0IHNvbWUgZmVl
+ZGJhY2sgYmVmb3JlCj4gd2FzdGluZyBteSB0aW1lIHdpdGggaW1wbGVtZW50aW5nIHNvbWV0aGlu
+ZyB3aGljaCBjYW5ub3QgYmUgcHVzaGVkCj4gbWFpbmxpbmUuIFRoYW5rcyBmb3IgYWxsIHN1Z2dl
+c3Rpb25zLgo+IAo+IEJSLAo+IAo+IG1hcmVrCj4gCj4gLS0KPiBhcyBzaW1wbGUgYW5kIHByaW1p
+dGl2ZSBhcyBwb3NzaWJsZQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KPiBNYXJlayBCZWxpc2tvIC0gT1BFTi1OQU5EUkEKPiBGcmVlbGFuY2UgRGV2
+ZWxvcGVyCj4gCj4gUnVza2EgTm92YSBWZXMgMjE5IHwgUHJlc292LCAwODAwNSBTbG92YWsgUmVw
+dWJsaWMKPiBUZWw6ICs0MjEgOTE1IDA1MiAxODQKPiBza3lwZTogbWFyZWt3aGl0ZQo+IHR3aXR0
+ZXI6ICNvcGVubmFuZHJhCj4gd2ViOiBodHRwOi8vb3Blbi1uYW5kcmEuY29tCj4gCgoKLS0gClDD
+qXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
