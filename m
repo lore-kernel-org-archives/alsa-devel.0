@@ -1,16 +1,30 @@
-From: Howard Mitchell <hm@hmbedded.co.uk>
-Subject: pcm512x driver: Mixer control naming issue
-Date: Fri, 13 Mar 2015 12:41:05 +0000
-Message-ID: <5502DAE1.30609@hmbedded.co.uk>
-References: <5500DE5B.2020401@hmbedded.co.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_usb_audio - siberia elite prism soundcard
+	issues
+Date: Fri, 13 Mar 2015 21:51:12 +0800
+Message-ID: <CAN8ccibFxQHH4bP_dUm9Xqdy=acHGOcwihyph5WKGUCVeAP=zQ@mail.gmail.com>
+References: <CAHti5NHPMjxAtg_XLHD1kL4rUCAPaNGa_2ZAZwvv_Kc4u43uAw@mail.gmail.com>
+ <54FC9CB0.2030003@ladisch.de>
+ <CAHti5NEvVwsxdOnJdJErMCssu3_5ohaRsDC0WVCuhB0upLF_mQ@mail.gmail.com>
+ <CAN8cciZcnD4zPbL-jD8+t5AHaugWvbrbo33_iuVBktHnpKpRuw@mail.gmail.com>
+ <CAHti5NEfeguhQTZANNg=QnBZXRjDJZV0DAd3H1i+p4nCsmkQmQ@mail.gmail.com>
+ <CAN8cciaMGdGtqTJrHV8q1_5vgpM2qXRK7XRAdiiqR7SKhVCb8Q@mail.gmail.com>
+ <CAHti5NGTMPUwQ-sczhoAQ09A94mheq3rHORCocZzy3WxQjL0gQ@mail.gmail.com>
+ <CAN8ccibuXoLWHi7rZX8bSUHvE9wdGGXyFVRwovVLb7UOemZhUA@mail.gmail.com>
+ <CAHti5NF8G7iArtC_cN_WA2EFRpwGe8rMmVRHvKtrKNHpuEK46A@mail.gmail.com>
+ <CAN8ccibUrZVFk5P2rdHhMYznQ8M2WJkL-NTm7WxRY99bwDZZ2g@mail.gmail.com>
+ <CAHti5NGuDA=A_-BF4-EXD07O+h-JGK085_hjsYDqxa6h7TMJyQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avasout02.plus.net (avasout02.plus.net [212.159.14.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 29150260469
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 13:41:08 +0100 (CET)
-In-Reply-To: <5500DE5B.2020401@hmbedded.co.uk>
+Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
+ [209.85.214.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4326F260470
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 14:51:13 +0100 (CET)
+Received: by obcwp18 with SMTP id wp18so19741420obc.6
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 06:51:12 -0700 (PDT)
+In-Reply-To: <CAHti5NGuDA=A_-BF4-EXD07O+h-JGK085_hjsYDqxa6h7TMJyQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,39 +34,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Gordon Garrity <gordon.garrity@gmail.com>, broonie@kernel.org
+To: Daniel <dferradal@gmail.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-As you may be aware the Raspbian distribution for the RaspberryPi has 
-recently been upgraded to kernel version 3.18. It was previously at 
-version 3.12. This has had the unfortunate side effect that users of the 
-PCM5122 DAC have found that the output volume has been significantly 
-reduced. The issue is related to this commit 
-<https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/sound/soc/codecs/pcm512x.c?id=5be2fc20b101b5138c4f54a584dc11790ef16598> 
-which adds support for a couple of analogue gain controls. One control 
-(Playback Volume) sets a gain of either 0db or -6dB and is intended to 
-set the full scale output at 2Vrms or 1Vrms respectively. The other 
-(Playback Boost Volume) provides a boost of +0.8dB. The hardware reset 
-value of both of these gain controls is 0dB, however, in the Raspbian 
-distribution 'Playback Volume' is being defaulted to -6dB.
-
-After some investigation I figured out that this was caused by the alsa 
-restore mechanism. If '/var/lib/alsa/asound.state' doesn't exist or 
-there is no saved state for a particular control then the defaults in 
-'/usr/share/alsa/init/default' are used. In this file the default for a 
-control named 'Playback Volume' is -20dB which is forcing the control to 
-it's minimum value of -6dB. This seems like incorrect behaviour for 
-something that is essentially an implementation detail, i.e. a choice 
-that should be made by the board designer not the end user. Therefore 
-I'd like to see what you think of the following suggestions (which I'd 
-be more than happy to implement and submit patches for):
-
-  * Either change the names of these controls to something that's not
-    affected by the alsa restore mechanism,
-  * or remove them as mixer controls, but make them accessible some
-    other way - e.g. device tree.
-
-Howard Mitchell
+Pj4gPj4gPj4KPj4gPj4gPj4gPiAgICAgICBBdWRpb0NvbnRyb2wgSW50ZXJmYWNlIERlc2NyaXB0
+b3I6Cj4+ID4+ID4+ID4gICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgIDEzCj4+ID4+ID4+
+ID4gICAgICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgIDM2Cj4+ID4+ID4+ID4gICAgICAgICBi
+RGVzY3JpcHRvclN1YnR5cGUgICAgICA0IChNSVhFUl9VTklUKQo+PiA+PiA+PiA+ICAgICAgIFdh
+cm5pbmc6IERlc2NyaXB0b3IgdG9vIHNob3J0Cj4+ID4+ID4+ID4gICAgICAgICBiVW5pdElEICAg
+ICAgICAgICAgICAgIDEwCj4+ID4+ID4+ID4gICAgICAgICBiTnJJblBpbnMgICAgICAgICAgICAg
+ICAyCj4+ID4+ID4+ID4gICAgICAgICBiYVNvdXJjZUlEKCAwKSAgICAgICAgICA5Cj4+ID4+ID4+
+ID4gICAgICAgICBiYVNvdXJjZUlEKCAxKSAgICAgICAgICAxCj4+ID4+ID4+ID4gICAgICAgICBi
+TnJDaGFubmVscyAgICAgICAgICAgIDgKPj4gPj4gPj4gPiAgICAgICAgIHdDaGFubmVsQ29uZmln
+ICAgICAweDA2M2YKPj4gPj4gPj4gPiAgICAgICAgICAgTGVmdCBGcm9udCAoTCkKPj4gPj4gPj4g
+PiAgICAgICAgICAgUmlnaHQgRnJvbnQgKFIpCj4+ID4+ID4+ID4gICAgICAgICAgIENlbnRlciBG
+cm9udCAoQykKPj4gPj4gPj4gPiAgICAgICAgICAgTG93IEZyZXFlbmN5IEVuaGFuY2VtZW50IChM
+RkUpCj4+ID4+ID4+ID4gICAgICAgICAgIExlZnQgU3Vycm91bmQgKExTKQo+PiA+PiA+PiA+ICAg
+ICAgICAgICBSaWdodCBTdXJyb3VuZCAoUlMpCj4+ID4+ID4+ID4gICAgICAgICAgIFNpZGUgTGVm
+dCAoU0wpCj4+ID4+ID4+ID4gICAgICAgICAgIFNpZGUgUmlnaHQgKFNSKQo+PiA+PiA+PiA+ICAg
+ICAgICAgaUNoYW5uZWxOYW1lcyAgICAgICAgICAgMAo+PiA+PiA+PiA+ICAgICAgICAgYm1Db250
+cm9scyAgICAgICAgIDB4MDAKPj4gPj4gPj4gPiAgICAgICAgIGJtQ29udHJvbHMgICAgICAgICAw
+eDAwCj4+ID4+ID4+ID4gICAgICAgICBpTWl4ZXIgICAgICAgICAgICAgICAgIDMzIChlcnJvcikK
+Pj4KPj4gUmVmZXIgdG8gdXNiIGF1ZGlvIHNwZWNpZmljYXRpb24gMS4wCj4+Cj4+IFRhYmxlIDQt
+NTogTWl4ZXIgVW5pdCBEZXNjcmlwdG9yCj4+Cj4+IGJMZW5ndGggPSAxMCArICBwICsgIE4gPSAx
+NAoKQnVzIDAwMSBEZXZpY2UgMDAzOiBJRCAxMDM4OjEyMjUgSWRlYXpvbiwgSW5jLgpEZXZpY2Ug
+RGVzY3JpcHRvcjoKYkxlbmd0aCAxOApiRGVzY3JpcHRvclR5cGUgMQpiY2RVU0IgMi4wMAoKWW91
+ciB1c2IgYXVkaW8gZGV2aWNlIGFyZSAyLjAKYkxlbmd0aCA9IDEzICsgcCArIE4KCj4+Cj4+IE51
+bWJlciBvZiBJbnB1dCBQaW5zIG9mIHRoaXMgVW5pdDogcAo+Pgo+PiA+ID4+ID4gICAgICAgICBi
+TnJJblBpbnMgICAgICAgICAgICAgICAyCj4+Cj4+IFRoZSBJRCBvZiB0aGUgVW5pdCBvciBUZXJt
+aW5hbCB0byB3aGljaCB0aGUgZmlyc3QgYW5kIHNlY29uZCBJbnB1dCBQaW5zCm9mIHRoaXMgTWl4
+ZXIgVW5pdCBpcyBjb25uZWN0ZWQuCj4+Cj4+ID4gPj4gPiAgICAgICAgIGJhU291cmNlSUQoIDAp
+ICAgICAgICAgIDkKPj4gPj4gPj4gPiAgICAgICAgIGJhU291cmNlSUQoIDEpICAgICAgICAgIDEK
+Pj4KPj4gTnVtYmVyIG9mIGxvZ2ljYWwgb3V0cHV0IGNoYW5uZWxzIGluIHRoZSBNaXhlcuKAmXMg
+b3V0cHV0IGF1ZGlvIGNoYW5uZWwKY2x1c3Rlci4KPj4KPj4gPj4gPj4gPiAgICAgICAgIGJOckNo
+YW5uZWxzICAgICAgICAgICAgOAo+Pgo+PiBEZXNjcmliZXMgdGhlIHNwYXRpYWwgbG9jYXRpb24g
+b2YgdGhlIGxvZ2ljYWwgY2hhbm5lbHMuCj4+Cj4+ID4+ID4+ID4gICAgICAgICB3Q2hhbm5lbENv
+bmZpZyAgICAgMHgwNjNmCgpTZWVtIHVzZSA0IGJ5dGVzIGluc3RlYWQgb2YgMiBieXRlcyBmb3Ig
+dXNiIGF1ZGlvIDIuMCBkZXZpY2VzClRoaXMgbWVhbiB0aGUgdmFsdWVzIG91dHB1dCBieSBsc3Vz
+YiAgaXMgZGlmZmVyZW50IGZyb20gc3BlY2lmaWNhdGlvbgoKPj4gPj4gPj4gPiAgICAgICAgICAg
+TGVmdCBGcm9udCAoTCkKPj4gPj4gPj4gPiAgICAgICAgICAgUmlnaHQgRnJvbnQgKFIpCj4+ID4+
+ID4+ID4gICAgICAgICAgIENlbnRlciBGcm9udCAoQykKPj4gPj4gPj4gPiAgICAgICAgICAgTG93
+IEZyZXFlbmN5IEVuaGFuY2VtZW50IChMRkUpCj4+ID4+ID4+ID4gICAgICAgICAgIExlZnQgU3Vy
+cm91bmQgKExTKQo+PiA+PiA+PiA+ICAgICAgICAgICBSaWdodCBTdXJyb3VuZCAoUlMpCj4+ID4+
+ID4+ID4gICAgICAgICAgIFNpZGUgTGVmdCAoU0wpCj4+ID4+ID4+ID4gICAgICAgICAgIFNpZGUg
+UmlnaHQgKFNSKQo+Pgo+PiBCaXQgbWFwIGluZGljYXRpbmcgd2hpY2ggbWl4aW5nIENvbnRyb2xz
+IGFyZSBwcm9ncmFtbWFibGUuCj4+Cj4+ID4+ID4+ID4gICAgICAgICBibUNvbnRyb2xzICAgICAg
+ICAgMHgwMAo+PiA+PiA+PiA+ICAgICAgICAgYm1Db250cm9scyAgICAgICAgIDB4MDAKPj4KCj4+
+Cj4+IEluZGV4IG9mIGEgc3RyaW5nIGRlc2NyaXB0b3IsIGRlc2NyaWJpbmcgdGhlIG5hbWUgb2Yg
+dGhlIGZpcnN0IGxvZ2ljYWwKY2hhbm5lbC4KPj4KPj4gPj4gPiAgICAgICAgIGlDaGFubmVsTmFt
+ZXMgICAgICAgICAgIDAKPj4KPj4gSW5kZXggb2YgYSBzdHJpbmcgZGVzY3JpcHRvciwgZGVzY3Jp
+YmluZyB0aGUgTWl4ZXIgVW5pdC4KPj4KPj4gPj4gPj4gPiAgICAgICAgIGlNaXhlciAgICAgICAg
+ICAgICAgICAgMzMKPj4KCj4gSW4gY2FzZSB0aGlzIGNhbiBiZSBvZiBhbnkgdXNlZnVsIGluZm8s
+IGluIHRoZSBmb3JtIG9mIHVua25vd24gY29udHJvbHMKcmVwb3J0ZWQgYnkgdGhlIGxzdXNiIG91
+dHB1dCwgbWFudWZhY3R1cmVyIHNvZnR3YXJlIGluIG90aGVyIE9TIGhhcwpjb250cm9scyBmb3I6
+Cj4KPiAqIGRvbGJ5IHN1cnJvdW5kIGFjdGl2YXRpb24gKG9mZiBhbmQgb24pLgo+ICogbWljcm9w
+aG9uZSBpbnB1dCB2b2x1bWUgKHdoaWNoIHdvcmtzIGZpbmUgbm93KSBpbiBzbmRfdXNiX2F1ZGlv
+Cj4gKiBtaWNyb3Bob25lIGlucHV0ICJjb21wcmVzc2lvbiIgKHN1cHBvc2VkbHkgdG8ga2VlcCBp
+bnB1dCB3aXRoaW4gY2VydGFpbgpub24gZGlzdG9ydGluZyBsZXZlbHMpCj4gKiBpbnB1dCBub2lz
+ZSByZWR1Y3Rpb24gKG9mZiBhbmQgb24gdG9vKQo+ICogbWljcm8gcmV0cm8gZmVlZGJhY2sgdm9s
+dW1lCj4gKiBlcXVhbGl6ZXIuCj4KClRha2UgYSBsb29rIGF0IDQuNy4yLjYgTWl4ZXIgVW5pdCBE
+ZXNjcmlwdG9yIG9mIFVTQiBBdWRpbyAyLjAgc3BlY3MKCkRvIHRoZSBzb3VuZCBjYXJkIHdvcmsg
+d2l0aCBhbHNhIHdoZW4geW91IGZvcmNlIHRoZSBkcml2ZXIgdG8gc2tpcApidWlsZF9taXhlcl91
+bml0X2N0bCgpIGZvciB1bml0aWQgMTAgID8KCkNhbiBhbHNhbWl4ZXIgY2hhbmdlIHRoZSA4IGNo
+YW5uZWxzIHNwZWFrZXIgcGxheWJhY2sgdm9sdW1lIGNvbnRyb2wgPwoKWW91IGNhbiBhZGQgdXNi
+X2F1ZGlvX2luZm8gdG8gZHVtcCB0aG9zZSB2YWx1ZXMgb2YgdGhlIEF1ZGlvQ29udHJvbApJbnRl
+cmZhY2UgRGVzY3JpcHRvciAgd2l0aCB1bml0aWQgMTAKCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcv
+Y2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC90cmVlL3NvdW5kL3VzYi9taXhl
+ci5jCgpmb3IgKDsgaWNoIDwgbnVtX2luczsgaWNoKyspIHsKaW50IG9jaCwgaWNoX2hhc19jb250
+cm9scyA9IDA7Cgpmb3IgKG9jaCA9IDA7IG9jaCA8IG51bV9vdXRzOyBvY2grKykgewpfX3U4ICpj
+ID0gdWFjX21peGVyX3VuaXRfYm1Db250cm9scyhkZXNjLCBzdGF0ZS0+bWl4ZXItPnByb3RvY29s
+KTsKCisgICB1c2JfYXVkaW9faW5mbyhzdGF0ZS0+Y2hpcCwgIiBibUNvbnRyb2xzIFslZCwlZF0g
+OiAleFxuIiwgaWNoLCBvY2gsICpjKTsKCmlmIChjaGVja19tYXRyaXhfYml0bWFwKGMsIGljaCwg
+b2NoLCBudW1fb3V0cykpIHsKaWNoX2hhc19jb250cm9scyA9IDE7CmJyZWFrOwp9Cn0KCisgaWYg
+KHN0YXRlLT5jaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MTAzOCwweDEyMjUpKQorICAgICAgaWYo
+dW5pdGlkID09IDEwKQorICAgICAgICAgICAgaWNoX2hhc19jb250cm9sID0gMDsKCmlmIChpY2hf
+aGFzX2NvbnRyb2xzKQpidWlsZF9taXhlcl91bml0X2N0bChzdGF0ZSwgZGVzYywgcGluLCBpY2gs
+CiAgICAgdW5pdGlkLCAmaXRlcm0pOwp9Cn0KcmV0dXJuIDA7Cn0KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
