@@ -1,22 +1,16 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: Intel SST on a Bay Trail tablet
-Date: Fri, 13 Mar 2015 15:36:55 +0100
-Message-ID: <20150313153655.610514ca7ecac1ddb7d934d9@ao2.it>
-References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
- <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
- <54F5CB3D.7020100@linux.intel.com>
- <20150304170218.7b397993ce670902800109f1@ao2.it>
- <20150312144503.5e1d556e408a0b166e20058d@ao2.it>
- <5501A30E.2000408@linux.intel.com>
- <20150313063345.GC32000@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: pcm512x driver: Mixer control naming issue
+Date: Fri, 13 Mar 2015 18:27:29 +0000
+Message-ID: <20150313182729.GE28806@sirena.org.uk>
+References: <5500DE5B.2020401@hmbedded.co.uk> <5502DAE1.30609@hmbedded.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2376269254468989142=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
- by alsa0.perex.cz (Postfix) with ESMTP id DF624264FE3
- for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 15:37:01 +0100 (CET)
-In-Reply-To: <20150313063345.GC32000@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06B322604BC
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 19:27:37 +0100 (CET)
+In-Reply-To: <5502DAE1.30609@hmbedded.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,48 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Howard Mitchell <hm@hmbedded.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Gordon Garrity <gordon.garrity@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13 Mar 2015 12:03:45 +0530
-Vinod Koul <vinod.koul@intel.com> wrote:
 
-> On Thu, Mar 12, 2015 at 04:30:38PM +0200, Jarkko Nikula wrote:
-[...]
-> > Vinod, Ramesh: Do you know would it be possible to run that Android
-> > ELF firmware that is installed in the Teclast with the newer stack
-> > in sound/soc/intel/sst?
-> Sorry havent followed the thread, but we should be able to use the upstream
-> firware.
-> The ELF binary and the upstream ones are similar, we decided sometime back
-> to not use ELF for future dev so we didnt upstream that part.
-> 
+--===============2376269254468989142==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="TleQwOBuDO0rokqK"
+Content-Disposition: inline
 
-Jakko said that the firmware distributed at linux-firmware.git
-hardcodes the SSP to SSP2, while on some boards the codec may be
-connected to SSP0, which could be my case.
 
-That was the whole point of trying to reuse the firmware that was
-working in my Android installation.
+--TleQwOBuDO0rokqK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Any hint about how to extract the firmware from the ELF and convert it
-to an SST firmware image usable with the upstream drivers? I could dig
-into the sources and figure out the structures myself but maybe you have
-some more accessible information.
+On Fri, Mar 13, 2015 at 12:41:05PM +0000, Howard Mitchell wrote:
 
-Vinod, if you feel like catching up, the thread is also here:
-http://thread.gmane.org/gmane.linux.alsa.devel/134554
+> Boost Volume) provides a boost of +0.8dB. The hardware reset value of both
+> of these gain controls is 0dB, however, in the Raspbian distribution
+> 'Playback Volume' is being defaulted to -6dB.
 
-I ask a lot of questions, I know.
+>  * Either change the names of these controls to something that's not
+>    affected by the alsa restore mechanism,
 
-Thanks,
-   Antonio
+You say "these controls" but it seems like only "Playback Volume" has
+a problem?  My first suggestion would be to define "Analog" or
+"Analogue" as a prefix in ControlNames and then use that, that would
+avoid confusing applications while still fittig in with the naming
+convention.
 
--- 
-Antonio Ospite
-http://ao2.it
+>  * or remove them as mixer controls, but make them accessible some
+>    other way - e.g. device tree.
 
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+It may not be policy that someone wants to tweak at runtime on your
+board but it almost certainly will be on someone's board.
+
+--TleQwOBuDO0rokqK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVAywQAAoJECTWi3JdVIfQf0kIAIHH6xp1uCei48xUN5ZUGQeC
+TuPntRhh+LiCFePoqmiu1YBnKuel7/76PfGZGow7po6HFwc37TXo3FSADic8Y9VQ
+sJHFNCBl7nJA2FQcZqczRNs5Ottvzkm0iQCvte/Ods6sYivmW9NghmGwLRaMew1W
+IfUsj1yC9RyN7ESo/VdaU4u7LzdnL0l2EqGO0FHqoQVnXtY8Je/3n3cA1JFxdMrV
+IdPR3Odwppt81HVPjIsCmxqoiLwGOO4Vo7iw7V+pxFKqy54hwHwmG0o/yCBJD7kv
+8XNG50Aqr9I5TjmuoSHePYHkGgSyj8373ICEVucq952/3BQvN1UcZr1kzlEkKJs=
+=2GPT
+-----END PGP SIGNATURE-----
+
+--TleQwOBuDO0rokqK--
+
+--===============2376269254468989142==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2376269254468989142==--
