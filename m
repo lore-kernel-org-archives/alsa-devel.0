@@ -1,20 +1,30 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH 0/5] Intel SST driver restructure
-Date: Sat, 14 Mar 2015 06:04:39 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BD8116@SHSMSX101.ccr.corp.intel.com>
-References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
- <20150313062829.GA32000@intel.com> <55029D8B.9060309@intel.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BD7F2C@SHSMSX101.ccr.corp.intel.com>
- <20150313233407.GF28806@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_usb_audio - siberia elite prism soundcard
+	issues
+Date: Sat, 14 Mar 2015 14:10:13 +0800
+Message-ID: <CAN8cciYNonxGix1u=OfcfwL_K2p4kLd5qA2U5o2jRr1AnZaGeQ@mail.gmail.com>
+References: <CAHti5NHPMjxAtg_XLHD1kL4rUCAPaNGa_2ZAZwvv_Kc4u43uAw@mail.gmail.com>
+ <54FC9CB0.2030003@ladisch.de>
+ <CAHti5NEvVwsxdOnJdJErMCssu3_5ohaRsDC0WVCuhB0upLF_mQ@mail.gmail.com>
+ <CAN8cciZcnD4zPbL-jD8+t5AHaugWvbrbo33_iuVBktHnpKpRuw@mail.gmail.com>
+ <CAHti5NEfeguhQTZANNg=QnBZXRjDJZV0DAd3H1i+p4nCsmkQmQ@mail.gmail.com>
+ <CAN8cciaMGdGtqTJrHV8q1_5vgpM2qXRK7XRAdiiqR7SKhVCb8Q@mail.gmail.com>
+ <CAHti5NGTMPUwQ-sczhoAQ09A94mheq3rHORCocZzy3WxQjL0gQ@mail.gmail.com>
+ <CAN8ccibuXoLWHi7rZX8bSUHvE9wdGGXyFVRwovVLb7UOemZhUA@mail.gmail.com>
+ <CAHti5NF8G7iArtC_cN_WA2EFRpwGe8rMmVRHvKtrKNHpuEK46A@mail.gmail.com>
+ <CAN8ccibUrZVFk5P2rdHhMYznQ8M2WJkL-NTm7WxRY99bwDZZ2g@mail.gmail.com>
+ <CAHti5NGuDA=A_-BF4-EXD07O+h-JGK085_hjsYDqxa6h7TMJyQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A2DD260563
- for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2015 07:04:53 +0100 (CET)
-In-Reply-To: <20150313233407.GF28806@sirena.org.uk>
-Content-Language: en-US
+Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
+ [209.85.218.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2060260563
+ for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2015 07:10:14 +0100 (CET)
+Received: by oibu204 with SMTP id u204so3119006oib.0
+ for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2015 23:10:14 -0700 (PDT)
+In-Reply-To: <CAHti5NGuDA=A_-BF4-EXD07O+h-JGK085_hjsYDqxa6h7TMJyQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +34,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Jin, Yao" <yao.jin@intel.com>, "Bossart,
- Pierre-louis" <pierre-louis.bossart@intel.com>
+To: Daniel <dferradal@gmail.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Saturday, March 14, 2015 7:34 AM
-> To: Jie, Yang
-> Cc: Nikula, Jarkko; Koul, Vinod; alsa-devel@alsa-project.org; Girdwood, Liam
-> R; Bossart, Pierre-louis; Lin, Mengdong; Jin, Yao
-> Subject: Re: [PATCH 0/5] Intel SST driver restructure
-> 
-> On Fri, Mar 13, 2015 at 02:13:17PM +0000, Jie, Yang wrote:
-> 
-> > [Keyon] thank you all. Hi Mark, so should I keep them locally and send
-> > to you
-> > 2 or 3 weeks later, or you will keep them in queue and apply them one day?
-> 
-> Well, they won't apply as-is since other people are sending patches for the
-> files as well.  What might make more sense is to send a script which
-> generates the commit (so a bunch of mv commands, patch for the Makefile
-> and a changelog entry) then I can do that just before or just after the merge
-> window.  Does that make sense?
-[Keyon] yes, it make sense. I will prepare these scripts and send to you later.
-Thanks.
+Pj4gPj4gPj4gPj4gPiA+Cj4+ID4+ID4+ID4+ID4gPiA+IGFtaXhlcjogQ29udHJvbCBodzoyIGVs
+ZW1lbnQgcmVhZCBlcnJvcjogSW52YWxpZCBhcmd1bWVudAo+PiA+PiA+PiA+PiA+ID4gPiB1c2Ig
+MS0xLjM6IDEwOjA6IGNhbm5vdCBnZXQgbWluL21heCB2YWx1ZXMgZm9yIGNvbnRyb2wgMwooaWQg
+MTApCj4+ID4+ID4+ID4+ID4gPiA+IHVzYiAxLTEuMzogMjoxOiBjYW5ub3QgZ2V0IGZyZXEgYXQg
+ZXAgMHgxCj4+ID4+ID4+Cj4+ID4+ID4+IG51bWlkPTUsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFZv
+bHVtZScgOwp0eXBlPUlOVEVHRVIsYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0yLG1pbj0wLG1heD0x
+LHN0ZXA9MCBhbWl4ZXI6IENvbnRyb2wKaHc6MiBlbGVtZW50IHJlYWQgZXJyb3I6IEludmFsaWQg
+YXJndW1lbnQKPj4gPj4gPj4KPj4gPj4gPj4gbnVtaWQ9NixpZmFjZT1NSVhFUixuYW1lPSdQQ00g
+Vm9sdW1lJyxpbmRleD0xIDsKdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLS0tLSx2YWx1ZXM9MSxt
+aW49MCxtYXg9MSxzdGVwPTAgYW1peGVyOiBDb250cm9sCmh3OjIgZWxlbWVudCByZWFkIGVycm9y
+OiBJbnZhbGlkIGFyZ3VtZW50Cj4+ID4+ID4+Cj4+ID4+ID4+IG51bWlkPTcsaWZhY2U9TUlYRVIs
+bmFtZT0nUENNIFZvbHVtZScsaW5kZXg9MiA7CnR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0tLS0s
+dmFsdWVzPTEsbWluPTAsbWF4PTEsc3RlcD0wIGFtaXhlcjogQ29udHJvbApodzoyIGVsZW1lbnQg
+cmVhZCBlcnJvcjogSW52YWxpZCBhcmd1bWVudAo+PiA+PiA+Pgo+PiA+PiA+PiBudW1pZD04LGlm
+YWNlPU1JWEVSLG5hbWU9J1BDTSBWb2x1bWUnLGluZGV4PTMgOwp0eXBlPUlOVEVHRVIsYWNjZXNz
+PXJ3LS0tLS0tLHZhbHVlcz0xLG1pbj0wLG1heD0xLHN0ZXA9MCBhbWl4ZXI6IENvbnRyb2wKaHc6
+MiBlbGVtZW50IHJlYWQgZXJyb3I6IEludmFsaWQgYXJndW1lbnQKPj4gPj4gPj4KPj4gPj4gPj4g
+bnVtaWQ9OSxpZmFjZT1NSVhFUixuYW1lPSdQQ00gVm9sdW1lJyxpbmRleD00IDsKdHlwZT1JTlRF
+R0VSLGFjY2Vzcz1ydy0tLS0tLSx2YWx1ZXM9MSxtaW49MCxtYXg9MSxzdGVwPTAgYW1peGVyOiBD
+b250cm9sCmh3OjIgZWxlbWVudCByZWFkIGVycm9yOiBJbnZhbGlkIGFyZ3VtZW50Cj4+ID4+ID4+
+Cgo+Cj4gSW4gY2FzZSB0aGlzIGNhbiBiZSBvZiBhbnkgdXNlZnVsIGluZm8sIGluIHRoZSBmb3Jt
+IG9mIHVua25vd24gY29udHJvbHMKcmVwb3J0ZWQgYnkgdGhlIGxzdXNiIG91dHB1dCwgbWFudWZh
+Y3R1cmVyIHNvZnR3YXJlIGluIG90aGVyIE9TIGhhcwpjb250cm9scyBmb3I6Cj4KPiAqIGRvbGJ5
+IHN1cnJvdW5kIGFjdGl2YXRpb24gKG9mZiBhbmQgb24pLgo+ICogbWljcm9waG9uZSBpbnB1dCB2
+b2x1bWUgKHdoaWNoIHdvcmtzIGZpbmUgbm93KSBpbiBzbmRfdXNiX2F1ZGlvCj4gKiBtaWNyb3Bo
+b25lIGlucHV0ICJjb21wcmVzc2lvbiIgKHN1cHBvc2VkbHkgdG8ga2VlcCBpbnB1dCB3aXRoaW4g
+Y2VydGFpbgpub24gZGlzdG9ydGluZyBsZXZlbHMpCj4gKiBpbnB1dCBub2lzZSByZWR1Y3Rpb24g
+KG9mZiBhbmQgb24gdG9vKQo+ICogbWljcm8gcmV0cm8gZmVlZGJhY2sgdm9sdW1lCj4gKiBlcXVh
+bGl6ZXIuCgpZb3UgbmVlZCB0byBmaW5kIG91dCB0aGUgdGVybWluYWxzIG9mIHR3byBpbnB1dHMg
+aWYgeW91IHdhbnQgdG8ga25vdyB0aGUKZnVuY3Rpb24gb2YgdGhpcyBtaXhlciB1bml0Cgo+IGJV
+bml0SUQgMTAKPiBiTnJJblBpbnMgMgo+IGJhU291cmNlSUQoIDApIDkKPiBiYVNvdXJjZUlEKCAx
+KSAxCgpUaGVyZSBhcmUgZGVidWcgb3V0cHV0IGluIHRoZSBzeXN0ZW0gbG9nIHdoZW4geW91IGNv
+bXBpbGVkIHRoZSBkcml2ZXIgd2l0aApkZWJ1ZyBvcHRpb24KCnVzYl9hdWRpb19kYmcoc3RhdGUt
+PmNoaXAsICJbJWRdIE1VIFslc10gY2ggPSAlZCwgdmFsID0gJWQvJWRcbiIsCiAgICBjdmFsLT5o
+ZWFkLmlkLCBrY3RsLT5pZC5uYW1lLCBjdmFsLT5jaGFubmVscywgY3ZhbC0+bWluLCBjdmFsLT5t
+YXgpOwoKSXMgdGhlIHN1ZmZpeCAiVm9sdW1lIiBjb3JyZWN0IHNpbmNlIGl0IG1heSBiZSBqdXN0
+IGEgbXV0ZSBzd2l0Y2ggPwoKMy4xMy40IE1peGVyIFVuaXQKVGhlIE1peGVyIFVuaXQgKE1VKSB0
+cmFuc2Zvcm1zIGEgbnVtYmVyIG9mIGxvZ2ljYWwgaW5wdXQgY2hhbm5lbHMgaW50byBhCm51bWJl
+ciBvZiBsb2dpY2FsIG91dHB1dCBjaGFubmVscy4gVGhlIGlucHV0IGNoYW5uZWxzIGFyZSBncm91
+cGVkIGludG8gb25lCm9yIG1vcmUgYXVkaW8gY2hhbm5lbCBjbHVzdGVycy4gRWFjaCBjbHVzdGVy
+IGVudGVycyB0aGUgTWl4ZXIgVW5pdCB0aHJvdWdoCmFuIElucHV0IFBpbi4gVGhlIGxvZ2ljYWwg
+b3V0cHV0IGNoYW5uZWxzIGFyZSBncm91cGVkIGludG8gb25lIGF1ZGlvCmNoYW5uZWwgY2x1c3Rl
+ciBhbmQgbGVhdmUgdGhlIE1peGVyIFVuaXQgdGhyb3VnaCBhIHNpbmdsZSBPdXRwdXQgUGluLiBF
+dmVyeQppbnB1dCBjaGFubmVsIGNhbiB2aXJ0dWFsbHkgYmUgbWl4ZWQgaW50byBhbGwgb2YgdGhl
+IG91dHB1dCBjaGFubmVscy4gSWYgbgppcyB0aGUgdG90YWwgbnVtYmVyIG9mIGlucHV0IGl4ZXIg
+Y2hhbm5lbHMgYW5kIG0gaXMgdGhlIG51bWJlciBvZiBvdXRwdXQKY2hhbm5lbHMsIHRoZW4gdGhl
+cmUgaXMgYSB0d28tZGltZW5zaW9uYWwgYXJyYXkgKG4gwrcgbSkgb2YgTSBDb250cm9scyBpbgp0
+aGUgTWl4ZXIgVW5pdC4KCk5vdCBhbGwgb2YgdGhlc2UgQ29udHJvbHMgaGF2ZSB0byBiZSBwaHlz
+aWNhbGx5IGltcGxlbWVudGVkLiBTb21lIENvbnRyb2xzCmNhbiBoYXZlIGEgZml4ZWQgc2V0dGlu
+ZyBhbmQgYmUgbm9uLXByb2dyYW1tYWJsZS4KClRoZSBNaXhlciBVbml0IERlc2NyaXB0b3IgcmVw
+b3J0cyB3aGljaCBDb250cm9scyBhcmUgcHJvZ3JhbW1hYmxlIGluIHRoZQpibUNvbnRyb2xzIGJp
+dG1hcCBmaWVsZC4gVXNpbmcgdGhpcyBtb2RlbCwgYSBwZXJtYW5lbnQgY29ubmVjdGlvbiBjYW4g
+YmUKaW1wbGVtZW50ZSBkIGJ5IHJlcG9ydGluZyB0aGUgQ29udHJvbCBhcyBub24tcHJvZ3JhbW1h
+YmxlIGluIHRoZSBibUNvbnRyb2xzCmJpdG1hcCBhbmQgYnkgcmV0dXJuaW5nIGEgbm5lY3Rpb24g
+Y2FuIGJlIGltcGxlbWVudGVkIGJ5IENvbnRyb2wgc2V0dGluZyBvZgowIGRCIHdoZW4gcmVxdWVz
+dGVkLiBMaWtld2lzZSwgYSBtaXNzaW5nIChtdXRpbmcpIGNvIHJlcG9ydGluZyB0aGUgQ29udHJv
+bAphcyBub24tcHJvZ3JhbW1hYmxlIGluIHRoZSBibUNvbnRyb2xzIGJpdG1hcCBhbmQgYnkgcmV0
+dXJuaW5nIGEgQ29udHJvbApzZXR0aW5nIG9mIOKAk+KIniBkQi4gQSBNaXhlciBVbml0IE1VU1Qg
+cmVzcG9uZCB0byB0aGUgYXBwcm9wcmlhdGUgR2V0IFJlcXVlc3QKdG8gYWxsb3cgdGhlIEhvc3Qg
+dG8gcmV0cmlldmUgdGhlIGFjdHVhbCBzZXR0aW5ncyBvbiBlYWNoIG9mIHRoZSAobiDCtyBtKQpN
+aXhlciBDb250cm9scy4KCjQuNy4yLjYgTWl4ZXIgVW5pdCBEZXNjcmlwdG9yCgpUaGUgYm1NaXhl
+ckNvbnRyb2xzIGZpZWxkIHN0b3JlcyB0aGUgYml0IGFycmF5IHJvdyBhZnRlciByb3cgd2hlcmUg
+dGhlIE1TYgpvZiB0aGUgZmlyc3QgYnl0ZSBjb3JyZXNwb25kcyB0byB0aGUgY29ubmVjdGlvbiBi
+ZXR3ZWVuIGlucHV0IGNoYW5uZWwgMSBhbmQKb3V0cHV0IGNoYW5uZWwgMS4gSWYgKG4gwrcgbSkg
+aXMgbm90IGFuIGludGVnZXIgbXVsdGlwbGUgb2YgOCwgdGhlIGJpdCBhcnJheQppcyBwYWRkZWQg
+d2l0aCB6ZXJvcyB1bnRpbCBhbiBpbnRlZ2VyIG51bWJlciBvZiBieXRlcyBpcyBvY2N1cGllZC4K
+ClRoZSBudW1iZXIgb2YgYnl0ZXMgdXNlZCB0byBzdG9yZSB0aGUgYml0IGFycmF5LCBOLCBjYW4g
+YmUgY2FsY3VsYXRlZCBhcwpmb2xsb3dzOgpJRiAoKG4gKiBtKSBNT0QgOCkgPD4gMCBUSEVOCk4g
+PSAoKG4gKiBtKSBESVYgOCkgKyAxCkVMU0UKTiA9ICgobiAqIG0pIERJViA4KQoKVGhlIGJtQ29u
+dHJvbHMgZmllbGQgY29udGFpbnMgYSBzZXQgb2YgYml0IHBhaXJzLCBpbmRpY2F0aW5nIHdoaWNo
+IENvbnRyb2xzCmFyZSBwcmVzZW50IGFuZCB3aGF0IHRoZWlyIGNhcGFiaWxpdGllcyBhcmUuICBJ
+ZiBhIENvbnRyb2wgaXMgcHJlc2VudCwgaXQKbXVzdCBiZSBIb3N0IHJlYWRhYmxlLiBJZiBhIGNl
+cnRhaW4gQ29udHJvbCBpcyBub3QgcHJlc2VudCB0aGVuIHRoZSBiaXQKcGFpciBtdXN0IGJlIHNl
+dCB0byAwYjAwLiBJZiBhIENvbnRyb2wgaXMgcHJlc2VudCBidXQgcmVhZC1vbmx5LCB0aGUgYml0
+CnBhaXIgbXVzdCBiZSBzZXQgdG8gMGIwMS4gSWYgYSBDb250cm9sIGlzIGFsc28gSG9zdCBwcm9n
+cmFtbWFibGUsIHRoZSBiaXQKcGFpciBtdXN0IGJlIHNldCB0byAwYjExLiBUaGUgdmFsdWUgMGIx
+MCBpcyBub3QgYWxsb3dlZC4KCkZvciB1YWMyCgpBdCBsb2NhdGlvbiAxMSArIHAgKyBOCgpEMS4u
+MDogQ2x1c3RlciBDb250cm9sCkQzLi4yOiBVbmRlcmZsb3cgQ29udHJvbApENS4uNDogT3ZlcmZs
+b3cgQ29udHJvbApENy4uNjogUmVzZXJ2ZWQuIE11c3QgYmUgc2V0IHRvIDAuCgpzdGF0aWMgdm9p
+ZCBidWlsZF9taXhlcl91bml0X2N0bChzdHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0YXRlLApzdHJ1Y3Qg
+dWFjX21peGVyX3VuaXRfZGVzY3JpcHRvciAqZGVzYywKaW50IGluX3BpbiwgaW50IGluX2NoLCBp
+bnQgdW5pdGlkLApzdHJ1Y3QgdXNiX2F1ZGlvX3Rlcm0gKml0ZXJtKQp7CnN0cnVjdCB1c2JfbWl4
+ZXJfZWxlbV9pbmZvICpjdmFsOwp1bnNpZ25lZCBpbnQgbnVtX291dHMgPSB1YWNfbWl4ZXJfdW5p
+dF9iTnJDaGFubmVscyhkZXNjKTsKdW5zaWduZWQgaW50IGksIGxlbjsKc3RydWN0IHNuZF9rY29u
+dHJvbCAqa2N0bDsKY29uc3Qgc3RydWN0IHVzYm1peF9uYW1lX21hcCAqbWFwOwoKbWFwID0gZmlu
+ZF9tYXAoc3RhdGUsIHVuaXRpZCwgMCk7CmlmIChjaGVja19pZ25vcmVkX2N0bChtYXApKQpyZXR1
+cm47CgpjdmFsID0ga3phbGxvYyhzaXplb2YoKmN2YWwpLCBHRlBfS0VSTkVMKTsKaWYgKCFjdmFs
+KQpyZXR1cm47CgpzbmRfdXNiX21peGVyX2VsZW1faW5pdF9zdGQoJmN2YWwtPmhlYWQsIHN0YXRl
+LT5taXhlciwgdW5pdGlkKTsKY3ZhbC0+Y29udHJvbCA9IGluX2NoICsgMTsgLyogYmFzZWQgb24g
+MSAqLwpjdmFsLT52YWxfdHlwZSA9IFVTQl9NSVhFUl9TMTY7CmZvciAoaSA9IDA7IGkgPCBudW1f
+b3V0czsgaSsrKSB7Cl9fdTggKmMgPSB1YWNfbWl4ZXJfdW5pdF9ibUNvbnRyb2xzKGRlc2MsIHN0
+YXRlLT5taXhlci0+cHJvdG9jb2wpOwoKaWYgKGNoZWNrX21hdHJpeF9iaXRtYXAoYywgaW5fY2gs
+IGksIG51bV9vdXRzKSkgewpjdmFsLT5jbWFzayB8PSAoMSA8PCBpKTsKY3ZhbC0+Y2hhbm5lbHMr
+KzsKfQp9CgovKiBnZXQgbWluL21heCB2YWx1ZXMgKi8KZ2V0X21pbl9tYXgoY3ZhbCwgMCk7Cgpr
+Y3RsID0gc25kX2N0bF9uZXcxKCZ1c2JfZmVhdHVyZV91bml0X2N0bCwgY3ZhbCk7CmlmICgha2N0
+bCkgewp1c2JfYXVkaW9fZXJyKHN0YXRlLT5jaGlwLCAiY2Fubm90IG1hbGxvYyBrY29udHJvbFxu
+Iik7CmtmcmVlKGN2YWwpOwpyZXR1cm47Cn0Ka2N0bC0+cHJpdmF0ZV9mcmVlID0gc25kX3VzYl9t
+aXhlcl9lbGVtX2ZyZWU7CgpsZW4gPSBjaGVja19tYXBwZWRfbmFtZShtYXAsIGtjdGwtPmlkLm5h
+bWUsIHNpemVvZihrY3RsLT5pZC5uYW1lKSk7CmlmICghbGVuKQpsZW4gPSBnZXRfdGVybV9uYW1l
+KHN0YXRlLCBpdGVybSwga2N0bC0+aWQubmFtZSwKICAgIHNpemVvZihrY3RsLT5pZC5uYW1lKSwg
+MCk7CmlmICghbGVuKQpsZW4gPSBzcHJpbnRmKGtjdGwtPmlkLm5hbWUsICJNaXhlciBTb3VyY2Ug
+JWQiLCBpbl9jaCArIDEpOwphcHBlbmRfY3RsX25hbWUoa2N0bCwgIiBWb2x1bWUiKTsKCnVzYl9h
+dWRpb19kYmcoc3RhdGUtPmNoaXAsICJbJWRdIE1VIFslc10gY2ggPSAlZCwgdmFsID0gJWQvJWRc
+biIsCiAgICBjdmFsLT5oZWFkLmlkLCBrY3RsLT5pZC5uYW1lLCBjdmFsLT5jaGFubmVscywgY3Zh
+bC0+bWluLCBjdmFsLT5tYXgpOwpzbmRfdXNiX21peGVyX2FkZF9jb250cm9sKCZjdmFsLT5oZWFk
+LCBrY3RsKTsKfQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
