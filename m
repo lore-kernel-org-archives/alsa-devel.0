@@ -1,19 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 04/13] ASoC: dapm: add driver prefix
- matching for snd_soc_dapm_add_route()
-Date: Sat, 14 Mar 2015 13:19:56 +0100
-Message-ID: <5504276C.4050503@metafoo.de>
-References: <874mppsngc.wl%kuninori.morimoto.gx@renesas.com>
- <87wq2lr8s8.wl%kuninori.morimoto.gx@renesas.com>
+From: =?UTF-8?Q?Cl=C3=A9ment_Guedez?= <klem.dev@gmail.com>
+Subject: Re: [PATCH 5/6] ESI W192M : Add text Line in/Mic for
+ selecting input gain state
+Date: Sat, 14 Mar 2015 14:45:24 +0100
+Message-ID: <CADoA7KaQpDBRZXunqqW6KhMfXWR98b1pCUO+cM8_OraSp0VyYA@mail.gmail.com>
+References: <55039da3.6a07c20a.1b00.ffffa602@mx.google.com>
+ <s5h3858roc2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-169.synserver.de (smtp-out-170.synserver.de
- [212.40.185.170])
- by alsa0.perex.cz (Postfix) with ESMTP id C09342605D3
- for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2015 13:19:49 +0100 (CET)
-In-Reply-To: <87wq2lr8s8.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-ie0-f170.google.com (mail-ie0-f170.google.com
+ [209.85.223.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18304260615
+ for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2015 14:45:26 +0100 (CET)
+Received: by iegc3 with SMTP id c3so143128919ieg.3
+ for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2015 06:45:24 -0700 (PDT)
+In-Reply-To: <s5h3858roc2.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, shiiba <naoya.shiiba.nx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Das Biju <biju.das@bp.renesas.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/13/2015 02:22 AM, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> Current DAPM will lost correct route settings if some CPU/Codec was using
-> same stream name, and it will be problem when DPCM case.
-> For example, stream name of Renesas sound drver / ak4642 / dummy for DPCM
-> have same name as "Playback", like below
->
-> FE CPU   (rsnd):   "DAI0 Playback"
->     Codec (dummy):  "Playback"
->
-> BE CPU   (dummy):  "Playback"
->     Codec (ak4642): "Playback"
->
-> Then, "Playback" - "DAI0 Playback" can't match correctly. This patch adds
-> "driver name" prefix for this case.
-> We can use "ak4642-hifi Playback" - "DAI0 Playback" here.
-
-Hi,
-
-There is already a prefix mechanism to handle this. If you have widgets with 
-the same name in different contexts you can use the snd_soc_codec_conf 
-struct and set the name_prefix field to assign a unique prefix to each context.
-
-- Lars
+SGksCgpJIGhhZCBhIGxvb2sgb24gdGhlIHNuZF9jdGxfZW51bV9pbmZvIGZ1bmN0aW9uLCBpdCB3
+aWxsIGJlIGJldHRlciB3aXRoIGl0CmZvciBzdXJlLgoKRXhjdXNlIG1lLCBidXQgd2hhdCBkbyB5
+b3UgbWVhbiBieSB0aGUgY29udHJvbCBuYW1lIHN1ZmZpeCA/CgpBZnRlciBjb3JyZWN0aW5nIHRo
+b3NlLCBJIHdpbGwgc2VuZCB0aGUgd2hvbGUgcGF0Y2hzZXQuCgpUaGFua3MKCjIwMTUtMDMtMTQg
+OToxMCBHTVQrMDE6MDAgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjoKCj4gQXQgU2F0LCAx
+NCBNYXIgMjAxNSAwMzozMTo0MSArMDEwMCwKPiBrbGVtLmRldkBnbWFpbC5jb20gd3JvdGU6Cj4g
+Pgo+ID4gRnJvbTogQ2zDqW1lbnQgR3VlZGV6IDxrbGVtLmRldkBnbWFpbC5jb20+Cj4gPgo+ID4g
+QWRkIHRleHQgTGluZSBpbi9NaWMgZm9yIHNlbGVjdGluZyBpbnB1dCBnYWluIHN0YXRlIGluIG1p
+eGVyIGZvciBFU0kKPiBXMTkyTS4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBDbMOpbWVudCBHdWVk
+ZXogPGtsZW0uZGV2QGdtYWlsLmNvbT4KPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2lj
+ZTE3MTIvd3RtLmMgYi9zb3VuZC9wY2kvaWNlMTcxMi93dG0uYwo+ID4gaW5kZXggM2FmOWRhZi4u
+NDk3ZmYxYSAxMDA2NDQKPiA+IC0tLSBhL3NvdW5kL3BjaS9pY2UxNzEyL3d0bS5jCj4gPiArKysg
+Yi9zb3VuZC9wY2kvaWNlMTcxMi93dG0uYwo+ID4gQEAgLTMzOSw4ICszMzksMjMgQEAgc3RhdGlj
+IGludCBzdGFjOTQ2MF9hZGNfdm9sX3B1dChzdHJ1Y3Qgc25kX2tjb250cm9sCj4gKmtjb250cm9s
+LAo+ID4gIC8qCj4gPiAgICogTUlDIC8gTElORSBzd2l0Y2ggZm9uY3Rpb24KPiA+ICAgKi8KPiA+
+ICtzdGF0aWMgaW50IHN0YWM5NDYwX21pY19zd19pbmZvKHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtj
+b250cm9sLAo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IHNuZF9jdGxf
+ZWxlbV9pbmZvICp1aW5mbykKPiA+ICt7Cj4gPiArICAgICBzdGF0aWMgY2hhciAqdGV4dHNbMl0g
+PSB7ICJMaW5lIEluIiwgIk1pYyIgfTsKPiA+ICsKPiA+ICsgICAgIHVpbmZvLT50eXBlID0gU05E
+UlZfQ1RMX0VMRU1fVFlQRV9FTlVNRVJBVEVEOwo+ID4gKyAgICAgdWluZm8tPmNvdW50ID0gMTsK
+PiA+ICsgICAgIHVpbmZvLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1zID0gMjsKPiA+ICsgICAgIGlm
+ICh1aW5mby0+dmFsdWUuZW51bWVyYXRlZC5pdGVtID49IHVpbmZvLT52YWx1ZS5lbnVtZXJhdGVk
+Lml0ZW1zKQo+ID4gKyAgICAgICAgICAgICB1aW5mby0+dmFsdWUuZW51bWVyYXRlZC5pdGVtID0K
+PiB1aW5mby0+dmFsdWUuZW51bWVyYXRlZC5pdGVtcwo+ID4gKyAgICAgICAgICAgICAtIDE7Cj4g
+PiArICAgICBzdHJjcHkodWluZm8tPnZhbHVlLmVudW1lcmF0ZWQubmFtZSwKPiA+ICsgICAgICAg
+ICAgICAgdGV4dHNbdWluZm8tPnZhbHVlLmVudW1lcmF0ZWQuaXRlbV0pOwo+ID4gKwo+ID4gKyAg
+ICAgcmV0dXJuIDA7Cj4KPiBZb3UgY2FuIHVzZSBzbmRfY3RsX2VudW1faW5mbygpIGhlbHBlci4K
+Pgo+IEFsc28sIGlmIHlvdSBjaGFuZ2UgZnJvbSBhIHN3aXRjaCB0byBhbiBlbnVtLCBmaXggdGhl
+IGNvbnRyb2wgbmFtZQo+IHN1ZmZpeCwgdG9vLgo+Cj4KPiBUYWthc2hpCj4KPgo+ID4gK30KPiA+
+Cj4gPiAtI2RlZmluZSBzdGFjOTQ2MF9taWNfc3dfaW5mbyAgICAgICAgIHNuZF9jdGxfYm9vbGVh
+bl9tb25vX2luZm8KPiA+Cj4gPiAgc3RhdGljIGludCBzdGFjOTQ2MF9taWNfc3dfZ2V0KHN0cnVj
+dCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgc3RydWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCj4gPiBAQCAtMzU0LDcgKzM2
+OSw3IEBAIHN0YXRpYyBpbnQgc3RhYzk0NjBfbWljX3N3X2dldChzdHJ1Y3Qgc25kX2tjb250cm9s
+Cj4gKmtjb250cm9sLAo+ID4gICAgICAgICAgICAgICB2YWwgPSBzdGFjOTQ2MF9nZXQoaWNlLCBT
+VEFDOTQ2WF9HRU5FUkFMX1BVUlBPU0UpOwo+ID4gICAgICAgZWxzZQo+ID4gICAgICAgICAgICAg
+ICB2YWwgPSBzdGFjOTQ2MF8yX2dldChpY2UsIFNUQUM5NDZYX0dFTkVSQUxfUFVSUE9TRSk7Cj4g
+PiAtICAgICB1Y29udHJvbC0+dmFsdWUuaW50ZWdlci52YWx1ZVswXSA9IH52YWw+PjcgJiAweDE7
+Cj4gPiArICAgICB1Y29udHJvbC0+dmFsdWUuZW51bWVyYXRlZC5pdGVtWzBdID0gKHZhbCA+PiA3
+KSAmIDB4MTsKPiA+ICAgICAgIHJldHVybiAwOwo+ID4gIH0KPiA+Cj4gPiBAQCAtMzcwLDcgKzM4
+NSw3IEBAIHN0YXRpYyBpbnQgc3RhYzk0NjBfbWljX3N3X3B1dChzdHJ1Y3Qgc25kX2tjb250cm9s
+Cj4gKmtjb250cm9sLAo+ID4gICAgICAgICAgICAgICBvbGQgPSBzdGFjOTQ2MF9nZXQoaWNlLCBT
+VEFDOTQ2WF9HRU5FUkFMX1BVUlBPU0UpOwo+ID4gICAgICAgZWxzZQo+ID4gICAgICAgICAgICAg
+ICBvbGQgPSBzdGFjOTQ2MF8yX2dldChpY2UsIFNUQUM5NDZYX0dFTkVSQUxfUFVSUE9TRSk7Cj4g
+PiAtICAgICBuZXcgPSAofnVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdIDw8IDcgJiAw
+eDgwKSB8IChvbGQgJgo+IH4weDgwKTsKPiA+ICsgICAgIG5ldyA9ICh1Y29udHJvbC0+dmFsdWUu
+ZW51bWVyYXRlZC5pdGVtWzBdIDw8IDcgJiAweDgwKSB8IChvbGQgJgo+IH4weDgwKTsKPiA+ICAg
+ICAgIGNoYW5nZSA9IChuZXcgIT0gb2xkKTsKPiA+ICAgICAgIGlmIChjaGFuZ2UpIHsKPiA+ICAg
+ICAgICAgICAgICAgaWYgKGlkID09IDApCj4gPiAtLQo+ID4gMi4xLjQKPiA+Cj4KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
