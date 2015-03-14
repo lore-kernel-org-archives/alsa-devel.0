@@ -1,12 +1,20 @@
-From: klem.dev@gmail.com
-Subject: [PATCH 6/6] ESI W192M : Add sampling rate control of
-	the ADC/DAC
-Date: Sat, 14 Mar 2015 05:04:00 +0100
-Message-ID: <5503b337.8866b40a.3f51.ffffb09a@mx.google.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH 0/5] Intel SST driver restructure
+Date: Sat, 14 Mar 2015 06:04:39 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BD8116@SHSMSX101.ccr.corp.intel.com>
+References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
+ <20150313062829.GA32000@intel.com> <55029D8B.9060309@intel.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BD7F2C@SHSMSX101.ccr.corp.intel.com>
+ <20150313233407.GF28806@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A2DD260563
+ for <alsa-devel@alsa-project.org>; Sat, 14 Mar 2015 07:04:53 +0100 (CET)
+In-Reply-To: <20150313233407.GF28806@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,98 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: =?UTF-8?q?Cl=C3=A9ment=20Guedez?= <klem.dev@gmail.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Jin, Yao" <yao.jin@intel.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQ2zDqW1lbnQgR3VlZGV6IDxrbGVtLmRldkBnbWFpbC5jb20+CgpBZGQgc2FtcGxpbmcg
-cmF0ZSBjb250cm9sIGZvciBBREMvREFDIGZvciBFU0kgVzE5Mk0uCkFsbG93IHRvIHN3aXRjaCBi
-ZXR3ZWVuIDQ4Sy85NksvMTkySyBzYW1wbGluZyByYXRlLgpBbGwgREFDIG5lZWQgdG8gYmUgbXV0
-ZSB3aGVuIGNoYW5naW5nIHNhbXBsZXJhdGUuCgpTaWduZWQtb2ZmLWJ5OiBDbMOpbWVudCBHdWVk
-ZXogPGtsZW0uZGV2QGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaWNlMTcxMi93
-dG0uYyBiL3NvdW5kL3BjaS9pY2UxNzEyL3d0bS5jCmluZGV4IDY3NGUyYTEuLmQzZjBlMjQgMTAw
-NjQ0Ci0tLSBhL3NvdW5kL3BjaS9pY2UxNzEyL3d0bS5jCisrKyBiL3NvdW5kL3BjaS9pY2UxNzEy
-L3d0bS5jCkBAIC0zMCwxMiArMzAsMTggQEAKICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+CiAjaW5j
-bHVkZSA8c291bmQvY29yZS5oPgogI2luY2x1ZGUgPHNvdW5kL3Rsdi5oPgorI2luY2x1ZGUgPGxp
-bnV4L3NsYWIuaD4KIAogI2luY2x1ZGUgImljZTE3MTIuaCIKICNpbmNsdWRlICJlbnZ5MjRodC5o
-IgogI2luY2x1ZGUgInd0bS5oIgogI2luY2x1ZGUgInN0YWM5NDZ4LmgiCiAKK3N0cnVjdCB3dG1f
-c3BlYyB7CisJLyogcmF0ZSBjaGFuZ2UgbmVlZHMgYXRvbWljIG11dGUvdW5tdXRlIG9mIGFsbCBk
-YWNzKi8KKwlzdHJ1Y3QgbXV0ZXggbXV0ZV9tdXRleDsKK307CisKIAogLyoKICAqCTIqQURDIDYq
-REFDIG5vMSByaW5nYnVmZmVyIHIvdyBvbiBpMmMgYnVzCkBAIC02OSwxNSArNzUsNjUgQEAgc3Rh
-dGljIGlubGluZSB1bnNpZ25lZCBjaGFyIHN0YWM5NDYwXzJfZ2V0KHN0cnVjdCBzbmRfaWNlMTcx
-MiAqaWNlLCBpbnQgcmVnKQogLyoKICAqCURBQyBtdXRlIGNvbnRyb2wKICAqLworc3RhdGljIHZv
-aWQgc3RhYzk0NjBfZGFjX211dGVfYWxsKHN0cnVjdCBzbmRfaWNlMTcxMiAqaWNlLCB1bnNpZ25l
-ZCBjaGFyIG11dGUsCisJCQkJdW5zaWduZWQgc2hvcnQgaW50ICpjaGFuZ2VfbWFzaykKK3sKKwl1
-bnNpZ25lZCBjaGFyIG5ldywgb2xkOworCWludCBpZCwgaWR4LCBjaGFuZ2U7CisKKwkvKnN0YWM5
-NDYwIDEqLworCWZvciAoaWQgPSAwOyBpZCA8IDc7IGlkKyspIHsKKwkJaWYgKCpjaGFuZ2VfbWFz
-ayAmICgweDAxIDw8IGlkKSkgeworCQkJaWYgKGlkID09IDApCisJCQkJaWR4ID0gU1RBQzk0Nlhf
-TUFTVEVSX1ZPTFVNRTsKKwkJCWVsc2UKKwkJCQlpZHggPSBTVEFDOTQ2WF9MRl9WT0xVTUUgLSAx
-ICsgaWQ7CisJCQlvbGQgPSBzdGFjOTQ2MF9nZXQoaWNlLCBpZHgpOworCQkJbmV3ID0gKH5tdXRl
-IDw8IDcgJiAweDgwKSB8IChvbGQgJiB+MHg4MCk7CisJCQljaGFuZ2UgPSAobmV3ICE9IG9sZCk7
-CisJCQlpZiAoY2hhbmdlKSB7CisJCQkJc3RhYzk0NjBfcHV0KGljZSwgaWR4LCBuZXcpOworCQkJ
-CSpjaGFuZ2VfbWFzayA9ICpjaGFuZ2VfbWFzayB8ICgweDAxIDw8IGlkKTsKKwkJCX0gZWxzZSB7
-CisJCQkJKmNoYW5nZV9tYXNrID0gKmNoYW5nZV9tYXNrICYgfigweDAxIDw8IGlkKTsKKwkJCX0K
-KwkJfQorCX0KKworCS8qc3RhYzk0NjAgMiovCisJZm9yIChpZCA9IDA7IGlkIDwgMzsgaWQrKykg
-eworCQlpZiAoKmNoYW5nZV9tYXNrICYgKDB4MDEgPDwgKGlkICsgNykpKSB7CisJCQlpZiAoaWQg
-PT0gMCkKKwkJCQlpZHggPSBTVEFDOTQ2WF9NQVNURVJfVk9MVU1FOworCQkJZWxzZQorCQkJCWlk
-eCA9IFNUQUM5NDZYX0xGX1ZPTFVNRSAtIDEgKyBpZDsKKwkJCW9sZCA9IHN0YWM5NDYwXzJfZ2V0
-KGljZSwgaWR4KTsKKwkJCW5ldyA9ICh+bXV0ZSA8PCA3ICYgMHg4MCkgfCAob2xkICYgfjB4ODAp
-OworCQkJY2hhbmdlID0gKG5ldyAhPSBvbGQpOworCQkJaWYgKGNoYW5nZSkgeworCQkJCXN0YWM5
-NDYwXzJfcHV0KGljZSwgaWR4LCBuZXcpOworCQkJCSpjaGFuZ2VfbWFzayA9ICpjaGFuZ2VfbWFz
-ayB8ICgweDAxIDw8IGlkKTsKKwkJCX0gZWxzZSB7CisJCQkJKmNoYW5nZV9tYXNrID0gKmNoYW5n
-ZV9tYXNrICYgfigweDAxIDw8IGlkKTsKKwkJCX0KKwkJfQorCX0KK30KKworCisKICNkZWZpbmUg
-c3RhYzk0NjBfZGFjX211dGVfaW5mbwkJc25kX2N0bF9ib29sZWFuX21vbm9faW5mbwogCiBzdGF0
-aWMgaW50IHN0YWM5NDYwX2RhY19tdXRlX2dldChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJv
-bCwKIAkJCQlzdHJ1Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkKIHsKIAlzdHJ1Y3Qg
-c25kX2ljZTE3MTIgKmljZSA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsKKwlzdHJ1Y3Qg
-d3RtX3NwZWMgKnNwZWMgPSBpY2UtPnNwZWM7CiAJdW5zaWduZWQgY2hhciB2YWw7CiAJaW50IGlk
-eCwgaWQ7CiAKKwltdXRleF9sb2NrKCZzcGVjLT5tdXRlX211dGV4KTsKKwogCWlmIChrY29udHJv
-bC0+cHJpdmF0ZV92YWx1ZSkgewogCQlpZHggPSBTVEFDOTQ2WF9NQVNURVJfVk9MVU1FOwogCQlp
-ZCA9IDA7CkBAIC05MCw2ICsxNDYsOCBAQCBzdGF0aWMgaW50IHN0YWM5NDYwX2RhY19tdXRlX2dl
-dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKIAllbHNlCiAJCXZhbCA9IHN0YWM5NDYw
-XzJfZ2V0KGljZSwgaWR4IC0gNik7CiAJdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWVbMF0g
-PSAofnZhbCA+PiA3KSAmIDB4MTsKKworCW11dGV4X3VubG9jaygmc3BlYy0+bXV0ZV9tdXRleCk7
-CiAJcmV0dXJuIDA7CiB9CiAKQEAgLTM5Nyw2ICs0NTUsNDQgQEAgc3RhdGljIGludCBzdGFjOTQ2
-MF9taWNfc3dfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAogfQogCiAKKy8qCisg
-KiBIYW5kbGVyIGZvciBzZXR0aW5nIGNvcnJlY3QgY29kZWMgcmF0ZSAtIGNhbGxlZCB3aGVuIHJh
-dGUgY2hhbmdlIGlzIGRldGVjdGVkCisgKi8KK3N0YXRpYyB2b2lkIHN0YWM5NDYwX3NldF9yYXRl
-X3ZhbChzdHJ1Y3Qgc25kX2ljZTE3MTIgKmljZSwgdW5zaWduZWQgaW50IHJhdGUpCit7CisJdW5z
-aWduZWQgY2hhciBvbGQsIG5ldzsKKwl1bnNpZ25lZCBzaG9ydCBpbnQgY2hhbmdlZDsKKwlzdHJ1
-Y3Qgd3RtX3NwZWMgKnNwZWMgPSBpY2UtPnNwZWM7CisKKwlpZiAocmF0ZSA9PSAwKSAgLyogbm8g
-aGludCAtIFMvUERJRiBpbnB1dCBpcyBtYXN0ZXIsIHNpbXBseSByZXR1cm4gKi8KKwkJcmV0dXJu
-OworCWVsc2UgaWYgKHJhdGUgPD0gNDgwMDApCisJCW5ldyA9IDB4MDg7ICAgICAvKiAyNTZ4LCBi
-YXNlIHJhdGUgbW9kZSAqLworCWVsc2UgaWYgKHJhdGUgPD0gOTYwMDApCisJCW5ldyA9IDB4MTE7
-ICAgICAvKiAyNTZ4LCBtaWQgcmF0ZSBtb2RlICovCisJZWxzZQorCQluZXcgPSAweDEyOyAgICAg
-LyogMTI4eCwgaGlnaCByYXRlIG1vZGUgKi8KKworCW9sZCA9IHN0YWM5NDYwX2dldChpY2UsIFNU
-QUM5NDZYX01BU1RFUl9DTE9DS0lORyk7CisJaWYgKG9sZCA9PSBuZXcpCisJCXJldHVybjsKKwkv
-KiBjaGFuZ2UgZGV0ZWN0ZWQsIHNldHRpbmcgbWFzdGVyIGNsb2NrLCBtdXRpbmcgZmlyc3QgKi8K
-KwkvKiBkdWUgdG8gcG9zc2libGUgY29uZmxpY3RzIHdpdGggbXV0ZSBjb250cm9scyAtIG11dGV4
-aW5nICovCisJbXV0ZXhfbG9jaygmc3BlYy0+bXV0ZV9tdXRleCk7CisJLyogd2UgaGF2ZSB0byBy
-ZW1lbWJlciBjdXJyZW50IG11dGUgc3RhdHVzIGZvciBlYWNoIERBQyAqLworCWNoYW5nZWQgPSAw
-eEZGRkY7CisJc3RhYzk0NjBfZGFjX211dGVfYWxsKGljZSwgMCwgJmNoYW5nZWQpOworCS8qcHJp
-bnRrKEtFUk5fREVCVUcgIlJhdGUgY2hhbmdlOiAlZCwgbmV3IE1DOiAweCUwMnhcbiIsIHJhdGUs
-IG5ldyk7Ki8KKwlzdGFjOTQ2MF9wdXQoaWNlLCBTVEFDOTQ2WF9NQVNURVJfQ0xPQ0tJTkcsIG5l
-dyk7CisJc3RhYzk0NjBfMl9wdXQoaWNlLCBTVEFDOTQ2WF9NQVNURVJfQ0xPQ0tJTkcsIG5ldyk7
-CisJdWRlbGF5KDEwKTsKKwkvKiB1bm11dGluZyAtIG9ubHkgb3JpZ2luYWxseSB1bm11dGVkIGRh
-Y3MgLQorCSogaS5lLiB0aG9zZSBjaGFuZ2VkIHdoZW4gbXV0aW5nICovCisJc3RhYzk0NjBfZGFj
-X211dGVfYWxsKGljZSwgMSwgJmNoYW5nZWQpOworCW11dGV4X3VubG9jaygmc3BlYy0+bXV0ZV9t
-dXRleCk7Cit9CisKKwogLypMaW1pdHMgdmFsdWUgaW4gZEIgZm9yIGZhZGVyKi8KIHN0YXRpYyBj
-b25zdCBERUNMQVJFX1RMVl9EQl9TQ0FMRShkYl9zY2FsZV9kYWMsIC0xOTEyNSwgNzUsIDApOwog
-c3RhdGljIGNvbnN0IERFQ0xBUkVfVExWX0RCX1NDQUxFKGRiX3NjYWxlX2FkYywgMCwgMTUwLCAw
-KTsKQEAgLTQ5NiwyMSArNTkyLDMyIEBAIHN0YXRpYyBpbnQgd3RtX2luaXQoc3RydWN0IHNuZF9p
-Y2UxNzEyICppY2UpCiB7CiAJc3RhdGljIHVuc2lnbmVkIHNob3J0IHN0YWNfaW5pdHNfd3RtW10g
-PSB7CiAJCVNUQUM5NDZYX1JFU0VULCAwLAorCQlTVEFDOTQ2WF9NQVNURVJfQ0xPQ0tJTkcsIDB4
-MTEsCiAJCSh1bnNpZ25lZCBzaG9ydCktMQogCX07CiAJdW5zaWduZWQgc2hvcnQgKnA7CisJc3Ry
-dWN0IHd0bV9zcGVjICpzcGVjOwogCiAJLypXVE0gMTkyTSovCiAJaWNlLT5udW1fdG90YWxfZGFj
-cyA9IDg7CiAJaWNlLT5udW1fdG90YWxfYWRjcyA9IDQ7CiAJaWNlLT5mb3JjZV9yZG1hMSA9IDE7
-CiAKKwkvKmluaXQgbXV0ZXggZm9yIGRhYyBtdXRlIGNvbmZsaWN0Ki8KKwlzcGVjID0ga3phbGxv
-YyhzaXplb2YoKnNwZWMpLCBHRlBfS0VSTkVMKTsKKwlpZiAoIXNwZWMpCisJCXJldHVybiAtRU5P
-TUVNOworCWljZS0+c3BlYyA9IHNwZWM7CisJbXV0ZXhfaW5pdCgmc3BlYy0+bXV0ZV9tdXRleCk7
-CisKKwogCS8qaW5pdGlhbGl6ZSBjb2RlYyovCiAJcCA9IHN0YWNfaW5pdHNfd3RtOwogCWZvciAo
-OyAqcCAhPSAodW5zaWduZWQgc2hvcnQpLTE7IHAgKz0gMikgewogCQlzdGFjOTQ2MF9wdXQoaWNl
-LCBwWzBdLCBwWzFdKTsKIAkJc3RhYzk0NjBfMl9wdXQoaWNlLCBwWzBdLCBwWzFdKTsKIAl9CisJ
-aWNlLT5ncGlvLnNldF9wcm9fcmF0ZSA9IHN0YWM5NDYwX3NldF9yYXRlX3ZhbDsKIAlyZXR1cm4g
-MDsKIH0KIAotLSAKMi4xLjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Saturday, March 14, 2015 7:34 AM
+> To: Jie, Yang
+> Cc: Nikula, Jarkko; Koul, Vinod; alsa-devel@alsa-project.org; Girdwood, Liam
+> R; Bossart, Pierre-louis; Lin, Mengdong; Jin, Yao
+> Subject: Re: [PATCH 0/5] Intel SST driver restructure
+> 
+> On Fri, Mar 13, 2015 at 02:13:17PM +0000, Jie, Yang wrote:
+> 
+> > [Keyon] thank you all. Hi Mark, so should I keep them locally and send
+> > to you
+> > 2 or 3 weeks later, or you will keep them in queue and apply them one day?
+> 
+> Well, they won't apply as-is since other people are sending patches for the
+> files as well.  What might make more sense is to send a script which
+> generates the commit (so a bunch of mv commands, patch for the Makefile
+> and a changelog entry) then I can do that just before or just after the merge
+> window.  Does that make sense?
+[Keyon] yes, it make sense. I will prepare these scripts and send to you later.
+Thanks.
