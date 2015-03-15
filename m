@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/11] digi00x: improve MIDI capture/playback
-Date: Mon, 16 Mar 2015 01:01:08 +0900
-Message-ID: <1426435269-17059-11-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/11] ALSA: digi00x: apply double-oh-three
+	algorism to multiplex PCM samples
+Date: Mon, 16 Mar 2015 01:01:09 +0900
+Message-ID: <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
 References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 38ADA260881
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DF3E2608AB
  for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 17:01:21 +0100 (CET)
 In-Reply-To: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,108 +25,181 @@ To: clemens@ladisch.de, tiwai@suse.de, robin@gareus.org, damien@zamaudio.com
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Digi 002/003 family are not conformant to IEC 61883-6:2005 or MMA/AMEI
-RP-027. In fact, they uses AM824 format data, but data channel includes
-port number in its LSB. The MSB is always 0x80, even if the data channel
-includes any MIDI messages. As a result, every MIDI conformant data
-channel can transfer maximum 2 bytes.
+Digi 002/003 family uses own way to multiplex PCM samples into data
+blocks in CIP payload for received stream, thus AMDTP-conformant
+implementation causes noisy sound.
 
-This commit adds own callback functions to handle this quirk.
+This commit applies double-oh-three algorism, which discovered by Robin
+Gareus and Damien Zammit in 2012.
+
+As long as I tested, this patch still has disorder that:
+ * 1st PCM channel still causes noise in 2nd PCM channel.
+ * At 88.2/96.0kHz, any PCM channels still causes noise in the other PCM
+   channels.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/digi00x-protocol.c | 48 +++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x-stream.c   |  3 ++
- sound/firewire/digi00x/digi00x.h          |  4 +++
- 3 files changed, 55 insertions(+)
+ sound/firewire/digi00x/digi00x-protocol.c | 113 ++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x-stream.c   |   2 +
+ sound/firewire/digi00x/digi00x.h          |   3 +
+ 3 files changed, 118 insertions(+)
 
 diff --git a/sound/firewire/digi00x/digi00x-protocol.c b/sound/firewire/digi00x/digi00x-protocol.c
-index 3e5b3bec..4dd373d 100644
+index 4dd373d..ac092cb 100644
 --- a/sound/firewire/digi00x/digi00x-protocol.c
 +++ b/sound/firewire/digi00x/digi00x-protocol.c
-@@ -8,6 +8,54 @@
+@@ -2,12 +2,125 @@
+  * digi00x-protocol.c - a part of driver for Digidesign Digi 002/003 family
+  *
+  * Copyright (c) 2014-2015 Takashi Sakamoto
++ * Copyright (C) 2012 Robin Gareus <robin@gareus.org>
++ * Copyright (C) 2012 Damien Zammit <damien@zamaudio.com>
+  *
+  * Licensed under the terms of the GNU General Public License, version 2.
+  */
  
  #include "digi00x.h"
  
-+void snd_dg00x_protocol_fill_midi(struct amdtp_stream *s,
++/*
++ * The double-oh-three algorism is invented by Robin Gareus and Damien Zammit
++ * in 2012, with reverse-engineering for Digi 003 Rack.
++ */
++
++struct dot_state {
++	__u8 carry;
++	__u8 idx;
++	unsigned int off;
++};
++
++#define BYTE_PER_SAMPLE (4)
++#define MAGIC_DOT_BYTE (2)
++
++#define MAGIC_BYTE_OFF(x) (((x) * BYTE_PER_SAMPLE) + MAGIC_DOT_BYTE)
++
++/*
++ * double-oh-three look up table
++ *
++ * @param idx index byte (audio-sample data) 0x00..0xff
++ * @param off channel offset shift
++ * @return salt to XOR with given data
++ */
++static const __u8 dot_scrt(const __u8 idx, const unsigned int off)
++{
++	/*
++	 * the length of the added pattern only depends on the lower nibble
++	 * of the last non-zero data
++	 */
++	static const __u8 len[16] = {0, 1, 3, 5, 7, 9, 11, 13, 14,
++				     12, 10, 8, 6, 4, 2, 0};
++
++	/*
++	 * the lower nibble of the salt. Interleaved sequence.
++	 * this is walked backwards according to len[]
++	 */
++	static const __u8 nib[15] = {0x8, 0x7, 0x9, 0x6, 0xa, 0x5, 0xb, 0x4,
++				     0xc, 0x3, 0xd, 0x2, 0xe, 0x1, 0xf};
++
++	/* circular list for the salt's hi nibble. */
++	static const __u8 hir[15] = {0x0, 0x6, 0xf, 0x8, 0x7, 0x5, 0x3, 0x4,
++				     0xc, 0xd, 0xe, 0x1, 0x2, 0xb, 0xa};
++
++	/*
++	 * start offset for upper nibble mapping.
++	 * note: 9 is /special/. In the case where the high nibble == 0x9,
++	 * hir[] is not used and - coincidentally - the salt's hi nibble is
++	 * 0x09 regardless of the offset.
++	 */
++	static const __u8 hio[16] = {0, 11, 12, 6, 7, 5, 1, 4,
++				     3, 0x00, 14, 13, 8, 9, 10, 2};
++
++	const __u8 ln = idx & 0xf;
++	const __u8 hn = (idx >> 4) & 0xf;
++	const __u8 hr = (hn == 0x9) ? 0x9 : hir[(hio[hn] + off) % 15];
++
++	if (len[ln] < off)
++		return 0x00;
++
++	return ((nib[14 + off - len[ln]]) | (hr << 4));
++}
++
++static inline void dot_state_reset(struct dot_state *state)
++{
++	state->carry = 0x00;
++	state->idx   = 0x00;
++	state->off   = 0;
++}
++
++static void dot_encode_step(struct dot_state *state, __be32 *const buffer)
++{
++	__u8 * const data = (__u8 *) buffer;
++
++	if (data[MAGIC_DOT_BYTE] != 0x00) {
++		state->off = 0;
++		state->idx = data[MAGIC_DOT_BYTE] ^ state->carry;
++	}
++	data[MAGIC_DOT_BYTE] ^= state->carry;
++	state->carry = dot_scrt(state->idx, ++(state->off));
++}
++
++void snd_dg00x_protocol_write_s32(struct amdtp_stream *s,
++				  struct snd_pcm_substream *pcm,
 +				  __be32 *buffer, unsigned int frames)
 +{
-+	unsigned int f, port;
-+	u8 *b;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u32 *src;
++	static struct dot_state state;
 +
-+	for (f = 0; f < frames; f++) {
-+		port = (s->data_block_counter + f) % 4;
-+		b = (u8 *)&buffer[s->midi_position];
++	channels = s->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
 +
-+		/*
-+		 * The device allows to transfer MIDI messages by maximum two
-+		 * bytes per data channel. But this module transfers one byte
-+		 * one time because MIDI data rate is quite lower than IEEE
-+		 * 1394 bus data rate.
-+		 */
-+		if (amdtp_midi_ratelimit_per_packet(s, port) &&
-+		    s->midi[port] != NULL &&
-+		    snd_rawmidi_transmit(s->midi[port], &b[1], 1) == 1) {
-+			amdtp_midi_rate_use_one_byte(s, port);
-+			b[3] = 0x01 | (0x10 << port);
-+		} else {
-+			b[1] = 0;
-+			b[3] = 0;
++	for (i = 0; i < frames; ++i) {
++		dot_state_reset(&state);
++
++		for (c = 0; c < channels; ++c) {
++			buffer[s->pcm_positions[c]] =
++					cpu_to_be32((*src >> 8) | 0x40000000);
++			dot_encode_step(&state, &buffer[s->pcm_positions[c]]);
++			src++;
 +		}
-+		b[0] = 0x80;
-+		b[2] = 0;
 +
 +		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
 +	}
 +}
 +
-+void snd_dg00x_protocol_pull_midi(struct amdtp_stream *s,
-+				  __be32 *buffer, unsigned int frames)
-+{
-+	unsigned int f;
-+	u8 *b;
-+
-+	for (f = 0; f < frames; f++) {
-+		b = (u8 *)&buffer[s->midi_position];
-+
-+		if (s->midi[0] && (b[3] > 0))
-+			snd_rawmidi_receive(s->midi[0], b + 1, b[3]);
-+
-+		buffer += s->data_block_quadlets;
-+	}
-+}
-+
- struct workqueue_struct *midi_wq;
- 
- static void send_midi_control(struct work_struct *work)
+ void snd_dg00x_protocol_fill_midi(struct amdtp_stream *s,
+ 				  __be32 *buffer, unsigned int frames)
+ {
 diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
-index 92eb86d..410b971 100644
+index 410b971..bc4c88c 100644
 --- a/sound/firewire/digi00x/digi00x-stream.c
 +++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -204,6 +204,9 @@ static int keep_resources(struct snd_dg00x *dg00x, unsigned int rate)
+@@ -204,6 +204,8 @@ static int keep_resources(struct snd_dg00x *dg00x, unsigned int rate)
  	dg00x->rx_stream.midi_position = 0;
  	dg00x->tx_stream.midi_position = 0;
  
-+	dg00x->rx_stream.transfer_midi = snd_dg00x_protocol_fill_midi;
-+	dg00x->tx_stream.transfer_midi = snd_dg00x_protocol_pull_midi;
-+
- 	return 0;
- error:
- 	release_resources(dg00x);
++	/* Apply doubleOhThree algorism. */
++	dg00x->rx_stream.transfer_samples = snd_dg00x_protocol_write_s32;
+ 	dg00x->rx_stream.transfer_midi = snd_dg00x_protocol_fill_midi;
+ 	dg00x->tx_stream.transfer_midi = snd_dg00x_protocol_pull_midi;
+ 
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 20b178f..a658f44 100644
+index a658f44..07e54fc 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -84,6 +84,10 @@ enum snd_dg00x_optical_mode {
+@@ -84,6 +84,9 @@ enum snd_dg00x_optical_mode {
  	SND_DG00X_OPTICAL_MODE_SPDIF,
  };
  
-+void snd_dg00x_protocol_fill_midi(struct amdtp_stream *s,
++void snd_dg00x_protocol_write_s32(struct amdtp_stream *s,
++				  struct snd_pcm_substream *pcm,
 +				  __be32 *buffer, unsigned int frames);
-+void snd_dg00x_protocol_pull_midi(struct amdtp_stream *s,
-+				  __be32 *buffer, unsigned int frames);
- void snd_dg00x_protocol_queue_midi_message(struct snd_dg00x *dg00x);
- int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x);
- void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x);
+ void snd_dg00x_protocol_fill_midi(struct amdtp_stream *s,
+ 				  __be32 *buffer, unsigned int frames);
+ void snd_dg00x_protocol_pull_midi(struct amdtp_stream *s,
 -- 
 2.1.0
