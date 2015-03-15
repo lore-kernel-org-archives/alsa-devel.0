@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 05/11] ALSA: digi00x: add MIDI functionality
-Date: Mon, 16 Mar 2015 01:01:03 +0900
-Message-ID: <1426435269-17059-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/11] ALSA: firewire-lib: allows to implement
+	external MIDI callback function
+Date: Mon, 16 Mar 2015 01:01:07 +0900
+Message-ID: <1426435269-17059-10-git-send-email-o-takashi@sakamocchi.jp>
 References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id F1648260870
- for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 17:01:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 333E726087F
+ for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 17:01:21 +0100 (CET)
 In-Reply-To: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,235 +25,134 @@ To: clemens@ladisch.de, tiwai@suse.de, robin@gareus.org, damien@zamaudio.com
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Digi 002/003 uses AM824 format data to transfer MIDI messages. It's a
-first data channel in each data block of CIP packet.
-
-This commit adds MIDI functionality to transfer/receive MIDI messages
-in the first data channel, with AMDTP functionality ALSA firewire stack
-gives. But the device handles these MIDI message in disorder because
-Digi 002/003 are not conformant to MMA/AMEI RP-027 or IEC 61883-6:2005.
+This commit is a preparation for devices unconformant to IEC 61883-1:2005
+or MMA/AMEI RP-027. This commit allows each driver to implement own MIDI
+callback functions.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/Makefile         |   3 +-
- sound/firewire/digi00x/digi00x-midi.c   | 149 ++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x-stream.c |   3 +
- sound/firewire/digi00x/digi00x.c        |   4 +
- sound/firewire/digi00x/digi00x.h        |   3 +
- 5 files changed, 161 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/digi00x/digi00x-midi.c
+ sound/firewire/amdtp.c | 30 +++++++++++++++++++++++-------
+ sound/firewire/amdtp.h |  5 +++++
+ 2 files changed, 28 insertions(+), 7 deletions(-)
 
-diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index f2ed472..8ae72b9 100644
---- a/sound/firewire/digi00x/Makefile
-+++ b/sound/firewire/digi00x/Makefile
-@@ -1,2 +1,3 @@
--snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o digi00x-pcm.o
-+snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o digi00x-pcm.o \
-+		    digi00x-midi.o
- obj-m += snd-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-midi.c b/sound/firewire/digi00x/digi00x-midi.c
-new file mode 100644
-index 0000000..9936c40
---- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-midi.c
-@@ -0,0 +1,149 @@
-+/*
-+ * digi00x-midi.h - a part of driver for Digidesign Digi 002/003 family
-+ *
-+ * Copyright (c) 2014-2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index e061355..2758fb8 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -68,6 +68,11 @@
+ 
+ static void pcm_period_tasklet(unsigned long data);
+ 
++static void amdtp_fill_midi(struct amdtp_stream *s,
++			    __be32 *buffer, unsigned int frames);
++static void amdtp_pull_midi(struct amdtp_stream *s,
++			    __be32 *buffer, unsigned int frames);
 +
-+#include "digi00x.h"
-+
-+static int midi_capture_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->rmidi->private_data;
-+	int err;
-+
-+	mutex_lock(&dg00x->mutex);
-+	dg00x->capture_substreams++;
-+	err = snd_dg00x_stream_start_duplex(dg00x, 0);
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return err;
-+}
-+
-+static int midi_playback_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->rmidi->private_data;
-+	int err;
-+
-+	mutex_lock(&dg00x->mutex);
-+	dg00x->playback_substreams++;
-+	err = snd_dg00x_stream_start_duplex(dg00x, 0);
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return err;
-+}
-+
-+static int midi_capture_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->rmidi->private_data;
-+
-+	mutex_lock(&dg00x->mutex);
-+	dg00x->capture_substreams--;
-+	snd_dg00x_stream_stop_duplex(dg00x);
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return 0;
-+}
-+
-+static int midi_playback_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->rmidi->private_data;
-+
-+	mutex_lock(&dg00x->mutex);
-+	dg00x->playback_substreams--;
-+	snd_dg00x_stream_stop_duplex(dg00x);
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_dg00x *dg00x = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dg00x->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&dg00x->tx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&dg00x->tx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&dg00x->lock, flags);
-+}
-+
-+static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
-+{
-+	struct snd_dg00x *dg00x = substrm->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dg00x->lock, flags);
-+
-+	if (up)
-+		amdtp_stream_midi_trigger(&dg00x->rx_stream,
-+					  substrm->number, substrm);
-+	else
-+		amdtp_stream_midi_trigger(&dg00x->rx_stream,
-+					  substrm->number, NULL);
-+
-+	spin_unlock_irqrestore(&dg00x->lock, flags);
-+}
-+
-+static struct snd_rawmidi_ops midi_capture_ops = {
-+	.open		= midi_capture_open,
-+	.close		= midi_capture_close,
-+	.trigger	= midi_capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops midi_playback_ops = {
-+	.open		= midi_playback_open,
-+	.close		= midi_playback_close,
-+	.trigger	= midi_playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct snd_dg00x *dg00x,
-+				     struct snd_rawmidi_str *str)
-+{
-+	struct snd_rawmidi_substream *subs;
-+
-+	list_for_each_entry(subs, &str->substreams, list) {
-+		snprintf(subs->name, sizeof(subs->name),
-+			 "%s MIDI %d",
-+			 dg00x->card->shortname, subs->number + 1);
+ /**
+  * amdtp_stream_init - initialize an AMDTP stream structure
+  * @s: the AMDTP stream to initialize
+@@ -236,7 +241,7 @@ sfc_found:
+ 	 * We do not know the actual MIDI FIFO size of most devices.  Just
+ 	 * assume two bytes, i.e., one byte can be received over the bus while
+ 	 * the previous one is transmitted over MIDI.
+-	 * (The value here is adjusted for midi_ratelimit_per_packet().)
++	 * (The value here is adjusted for amdtp_midi_ratelimit_per_packet().)
+ 	 */
+ 	s->midi_fifo_limit = rate - MIDI_BYTES_PER_SECOND * s->syt_interval + 1;
+ }
+@@ -490,7 +495,7 @@ static void amdtp_fill_pcm_silence(struct amdtp_stream *s,
+  * fractional values, the values in midi_fifo_used[] are measured in bytes
+  * multiplied by the sample rate.
+  */
+-static bool midi_ratelimit_per_packet(struct amdtp_stream *s, unsigned int port)
++bool amdtp_midi_ratelimit_per_packet(struct amdtp_stream *s, unsigned int port)
+ {
+ 	int used;
+ 
+@@ -504,11 +509,13 @@ static bool midi_ratelimit_per_packet(struct amdtp_stream *s, unsigned int port)
+ 
+ 	return used < s->midi_fifo_limit;
+ }
++EXPORT_SYMBOL(amdtp_midi_ratelimit_per_packet);
+ 
+-static void midi_rate_use_one_byte(struct amdtp_stream *s, unsigned int port)
++void amdtp_midi_rate_use_one_byte(struct amdtp_stream *s, unsigned int port)
+ {
+ 	s->midi_fifo_used[port] += amdtp_rate_table[s->sfc];
+ }
++EXPORT_SYMBOL(amdtp_midi_rate_use_one_byte);
+ 
+ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 			    __be32 *buffer, unsigned int frames)
+@@ -521,10 +528,10 @@ static void amdtp_fill_midi(struct amdtp_stream *s,
+ 
+ 		port = (s->data_block_counter + f) % 8;
+ 		if (f < MAX_MIDI_RX_BLOCKS &&
+-		    midi_ratelimit_per_packet(s, port) &&
++		    amdtp_midi_ratelimit_per_packet(s, port) &&
+ 		    s->midi[port] != NULL &&
+ 		    snd_rawmidi_transmit(s->midi[port], &b[1], 1) == 1) {
+-			midi_rate_use_one_byte(s, port);
++			amdtp_midi_rate_use_one_byte(s, port);
+ 			b[0] = 0x81;
+ 		} else {
+ 			b[0] = 0x80;
+@@ -662,7 +669,7 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
+ 	else
+ 		amdtp_fill_pcm_silence(s, buffer, data_blocks);
+ 	if (s->midi_ports)
+-		amdtp_fill_midi(s, buffer, data_blocks);
++		s->transfer_midi(s, buffer, data_blocks);
+ 
+ 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
+ 
+@@ -760,7 +767,7 @@ static void handle_in_packet(struct amdtp_stream *s,
+ 			s->transfer_samples(s, pcm, buffer, data_blocks);
+ 
+ 		if (s->midi_ports)
+-			amdtp_pull_midi(s, buffer, data_blocks);
++			s->transfer_midi(s, buffer, data_blocks);
+ 	}
+ 
+ 	if (s->flags & CIP_DBC_IS_END_EVENT)
+@@ -925,6 +932,15 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 	s->syt_offset_state = initial_state[s->sfc].syt_offset;
+ 	s->last_syt_offset = TICKS_PER_CYCLE;
+ 
++	/* Confirm MIDI callback function. */
++	if (s->transfer_midi == NULL) {
++		if (s->direction == AMDTP_OUT_STREAM)
++			s->transfer_midi = amdtp_fill_midi;
++		else
++			s->transfer_midi = amdtp_pull_midi;
 +	}
-+}
 +
-+int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x)
-+{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *str;
-+	int err;
 +
-+	err = snd_rawmidi_new(dg00x->card, dg00x->card->driver, 0,
-+			      1, 2, &rmidi);
-+	if (err < 0)
-+		return err;
-+
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", dg00x->card->shortname);
-+	rmidi->private_data = dg00x;
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+			    &midi_capture_ops);
-+	str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
-+	set_midi_substream_names(dg00x, str);
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+			    &midi_playback_ops);
-+	str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
-+	set_midi_substream_names(dg00x, str);
-+
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
-+
-+	return 0;
-+}
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
-index 75f67b5..26b6885 100644
---- a/sound/firewire/digi00x/digi00x-stream.c
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -260,6 +260,9 @@ int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x, unsigned int rate)
- 	err = snd_dg00x_stream_get_rate(dg00x, &curr_rate);
- 	if (err < 0)
- 		goto error;
-+	/* For MIDI substreams. */
-+	if (rate == 0)
-+		rate = curr_rate;
- 	if ((curr_rate != rate) |
- 	    amdtp_streaming_error(&dg00x->tx_stream) |
- 	    amdtp_streaming_error(&dg00x->rx_stream)) {
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 493437a..5b678ec 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -90,6 +90,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+ 	/* initialize packet buffer */
+ 	if (s->direction == AMDTP_IN_STREAM) {
+ 		dir = DMA_FROM_DEVICE;
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 8a03a91..3999376 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -124,6 +124,8 @@ struct amdtp_stream {
+ 				 struct snd_pcm_substream *pcm,
+ 				 __be32 *buffer, unsigned int frames);
+ 	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
++	void (*transfer_midi)(struct amdtp_stream *s,
++			      __be32 *buffer, unsigned int frame);
+ 	u8 midi_position;
  
-+	err = snd_dg00x_create_midi_devices(dg00x);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 754486a..b41a418 100644
---- a/sound/firewire/digi00x/digi00x.h
-+++ b/sound/firewire/digi00x/digi00x.h
-@@ -23,6 +23,7 @@
- #include <sound/info.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/rawmidi.h>
+ 	unsigned int syt_interval;
+@@ -185,6 +187,9 @@ void amdtp_stream_pcm_abort(struct amdtp_stream *s);
+ extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
+ extern const unsigned int amdtp_rate_table[CIP_SFC_COUNT];
  
- #include "../lib.h"
- #include "../packets-buffer.h"
-@@ -88,4 +89,6 @@ void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
- 
- int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
++bool amdtp_midi_ratelimit_per_packet(struct amdtp_stream *s, unsigned int port);
++void amdtp_midi_rate_use_one_byte(struct amdtp_stream *s, unsigned int port);
 +
-+int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x);
- #endif
+ /**
+  * amdtp_stream_running - check stream is running or not
+  * @s: the AMDTP stream
 -- 
 2.1.0
