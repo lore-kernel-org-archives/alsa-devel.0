@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/11] ALSA: digi00x: add streaming
-	functionality
-Date: Mon, 16 Mar 2015 01:01:00 +0900
-Message-ID: <1426435269-17059-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/11] ALSA: digi00x: support unknown
+	asynchronous message
+Date: Mon, 16 Mar 2015 01:01:05 +0900
+Message-ID: <1426435269-17059-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CE1426078A
- for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 17:01:19 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id F1A6A26087E
+ for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 17:01:20 +0100 (CET)
 In-Reply-To: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,58 +25,45 @@ To: clemens@ladisch.de, tiwai@suse.de, robin@gareus.org, damien@zamaudio.com
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a functionality to manage streaming and to handle packets.
+Digi 002/003 family use asynchronous transaction for messaging.
+The address to receive this message is stored on a certain register.
 
-As long as seeing Digi 002, the device uses AMDTP stream in IEC 61883-1/6.
-But the streaming is not controlled by CMP. It's controlled by writing to
-certain addresses.
+This commit allocates a certain range of address on OHCI 1394 host
+controller, to handle this notification. Currently, the purpose of
+this message is unknown.
 
-In Digi 002, several clock sources are available, while there're no
-differences for packets in different clock sources. The value of SYT field
-in transferred packets is always zero. Thus, streams in both direction don't
-build synchronization. Tthis driver also ignores the synchronization.
+Usually, these devices notify 0x00007051. But there're cases that
+0x00007052/0200007058. In these cases, the device sounds quite a
+short gap.
 
-And the device always requires received-stream to transmit packets, thus
-the driver must transmit packets for both direction.
+I guess that this notification is related to clock synchronization.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                  |   1 +
- sound/firewire/digi00x/Makefile         |   2 +-
- sound/firewire/digi00x/digi00x-stream.c | 351 ++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c        |  16 ++
- sound/firewire/digi00x/digi00x.h        |  52 +++++
- 5 files changed, 421 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/digi00x/digi00x-stream.c
+ sound/firewire/digi00x/Makefile           |   2 +-
+ sound/firewire/digi00x/digi00x-protocol.c | 122 ++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.c          |  12 +++
+ sound/firewire/digi00x/digi00x.h          |   5 ++
+ 4 files changed, 140 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/digi00x/digi00x-protocol.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 594b6d1..6b9b0a1 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -120,6 +120,7 @@ config SND_BEBOB
- 
- config SND_DIGI00X
- 	tristate "Digidesign 002/003 family support"
-+	select SND_FIREWIRE_LIB
- 	help
- 	 Say Y here to include support for Digidesign 002/003 family.
- 
 diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index e30e233..fe8fceb 100644
+index deb3683..e42b5cc 100644
 --- a/sound/firewire/digi00x/Makefile
 +++ b/sound/firewire/digi00x/Makefile
-@@ -1,2 +1,2 @@
--snd-digi00x-objs := digi00x.o
-+snd-digi00x-objs := digi00x.o digi00x-stream.o
+@@ -1,3 +1,3 @@
+ snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o digi00x-pcm.o \
+-		    digi00x-midi.o digi00x-hwdep.o
++		    digi00x-midi.o digi00x-hwdep.o digi00x-protocol.o
  obj-m += snd-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
+diff --git a/sound/firewire/digi00x/digi00x-protocol.c b/sound/firewire/digi00x/digi00x-protocol.c
 new file mode 100644
-index 0000000..75f67b5
+index 0000000..b19708d
 --- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -0,0 +1,351 @@
++++ b/sound/firewire/digi00x/digi00x-protocol.c
+@@ -0,0 +1,122 @@
 +/*
-+ * digi00x-stream.c - a part of driver for Digidesign Digi 002/003 family
++ * digi00x-protocol.c - a part of driver for Digidesign Digi 002/003 family
 + *
 + * Copyright (c) 2014-2015 Takashi Sakamoto
 + *
@@ -85,464 +72,175 @@ index 0000000..75f67b5
 +
 +#include "digi00x.h"
 +
-+#define CALLBACK_TIMEOUT 500
++static struct snd_dg00x *instances[SNDRV_CARDS];
++static DEFINE_SPINLOCK(instances_lock);
 +
-+const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT] = {
-+	[0] = 44100,
-+	[1] = 48000,
-+	[2] = 88200,
-+	[3] = 96000,
-+};
-+
-+/* Multi Bit Linear Audio data channels for each sampling transfer frequency. */
-+const unsigned int
-+snd_dg00x_stream_mbla_data_channels[SND_DG00X_RATE_COUNT] = {
-+	/* Analog/ADAT/SPDIF */
-+	[0] = (8 + 8 + 2),
-+	[1] = (8 + 8 + 2),
-+	/* Analog/SPDIF */
-+	[2] = (8 + 2),
-+	[3] = (8 + 2),
-+};
-+
-+int snd_dg00x_stream_get_rate(struct snd_dg00x *dg00x, unsigned int *rate)
++static void handle_unknown_message(struct snd_dg00x *dg00x,
++				   unsigned long long offset, u32 *buf)
 +{
-+	__be32 data;
-+	int err;
-+
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 0xffffe0000110ull, &data, sizeof(data), 0);
-+	if (err < 0)
-+		goto end;
-+
-+	data = be32_to_cpu(data) & 0x0f;
-+	if (data >= ARRAY_SIZE(snd_dg00x_stream_rates)) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	*rate = snd_dg00x_stream_rates[data];
-+end:
-+	return err;
++	snd_printk(KERN_INFO"%08llx: %08x\n", offset, be32_to_cpu(*buf));
 +}
 +
-+int snd_dg00x_stream_set_rate(struct snd_dg00x *dg00x, unsigned int rate)
++static void handle_message(struct fw_card *card, struct fw_request *request,
++			   int tcode, int destination, int source,
++			   int generation, unsigned long long offset,
++			   void *data, size_t length, void *callback_data)
 +{
-+	__be32 data;
++	u32 *buf = (__be32 *)data;
++	struct fw_device *device;
++	struct snd_dg00x *dg00x;
 +	unsigned int i;
 +
-+	for (i = 0; i < ARRAY_SIZE(snd_dg00x_stream_rates); i++) {
-+		if (rate == snd_dg00x_stream_rates[i])
-+			break;
-+	}
-+	if (i == ARRAY_SIZE(snd_dg00x_stream_rates))
-+		return -EIO;
-+
-+	data = cpu_to_be32(i);
-+	return snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				  0xffffe0000110ull, &data, sizeof(data), 0);
-+}
-+
-+int snd_dg00x_stream_get_clock(struct snd_dg00x *dg00x,
-+			       enum snd_dg00x_clock *clock)
-+{
-+	__be32 data;
-+	int err;
-+
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 0xffffe0000118ull, &data, sizeof(data), 0);
-+	if (err < 0)
-+		return err;
-+
-+	*clock = be32_to_cpu(data) & 0x0f;
-+	if (*clock >= ARRAY_SIZE(snd_dg00x_stream_rates))
-+		err = -EIO;
-+
-+	return err;
-+}
-+
-+int snd_dg00x_stream_get_optical_mode(struct snd_dg00x *dg00x,
-+				      enum snd_dg00x_optical_mode *mode)
-+{
-+	__be32 data;
-+	int err;
-+
-+	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
-+				 0xffffe000011c, &data, sizeof(data), 0);
-+	if (err >= 0)
-+		*mode = be32_to_cpu(data) & 0x01;
-+
-+	return err;
-+}
-+
-+static void finish_session(struct snd_dg00x *dg00x)
-+{
-+	__be32 data = cpu_to_be32(0x00000003);
-+
-+	snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   0xffffe0000004ull, &data, sizeof(data), 0);
-+}
-+
-+static int begin_session(struct snd_dg00x *dg00x)
-+{
-+	__be32 data;
-+	u32 curr;
-+	int err;
-+
-+	err = snd_fw_transaction(dg00x->unit,
-+				 TCODE_READ_QUADLET_REQUEST,
-+				 0xffffe0000000ull,
-+				 &data, sizeof(data), 0);
-+	if (err < 0)
-+		goto error;
-+	curr = be32_to_cpu(data);
-+
-+	if (curr == 0)
-+		curr = 2;
-+
-+	curr--;
-+	while (curr > 0) {
-+		data = cpu_to_be32(curr);
-+		err = snd_fw_transaction(dg00x->unit,
-+					 TCODE_WRITE_QUADLET_REQUEST,
-+					 0xffffe0000004ull,
-+					 &data, sizeof(data), 0);
-+		if (err < 0)
-+			goto error;
-+
-+		msleep(20);
-+		curr--;
++	spin_lock_irq(&instances_lock);
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		dg00x = instances[i];
++		if (dg00x == NULL)
++			continue;
++		device = fw_parent_device(dg00x->unit);
++		if (device->card != card)
++			continue;
++		smp_rmb();	/* node id vs. generation */
++		if (device->node_id != source)
++			continue;
++		break;
 +	}
 +
-+	return 0;
-+error:
-+	finish_session(dg00x);
-+	return err;
-+}
++	if (offset == 0xffffe0000000)
++		handle_unknown_message(dg00x, offset, buf);
 +
-+static void release_resources(struct snd_dg00x *dg00x)
-+{
-+	__be32 data = 0;
-+
-+	/* Unregister isochronous channels for both direction. */
-+	snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   0xffffe0000100ull, &data, sizeof(data), 0);
-+
-+	/* Release isochronous resources. */
-+	fw_iso_resources_free(&dg00x->tx_resources);
-+	fw_iso_resources_free(&dg00x->rx_resources);
-+}
-+
-+static int keep_resources(struct snd_dg00x *dg00x, unsigned int rate)
-+{
-+	unsigned int i, p;
-+	__be32 data;
-+	int err;
-+
-+	/* Check sampling rate. */
-+	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
-+		if (snd_dg00x_stream_rates[i] == rate)
-+			break;
-+	}
-+	if (i == SND_DG00X_RATE_COUNT)
-+		return -EINVAL;
-+
-+	/* Keep resources for out-stream. */
-+	amdtp_stream_set_parameters(&dg00x->rx_stream, rate,
-+				    snd_dg00x_stream_mbla_data_channels[i], 2);
-+	err = fw_iso_resources_allocate(&dg00x->rx_resources,
-+				amdtp_stream_get_max_payload(&dg00x->rx_stream),
-+				fw_parent_device(dg00x->unit)->max_speed);
-+	if (err < 0)
-+		return err;
-+
-+	/* Keep resources for in-stream. */
-+	amdtp_stream_set_parameters(&dg00x->tx_stream, rate,
-+				    snd_dg00x_stream_mbla_data_channels[i], 1);
-+	err = fw_iso_resources_allocate(&dg00x->tx_resources,
-+				amdtp_stream_get_max_payload(&dg00x->tx_stream),
-+				fw_parent_device(dg00x->unit)->max_speed);
-+	if (err < 0)
-+		goto error;
-+
-+	/* Register isochronous channels for both direction. */
-+	data = cpu_to_be32((dg00x->tx_resources.channel << 16) |
-+			   dg00x->rx_resources.channel);
-+	err = snd_fw_transaction(dg00x->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 0xffffe0000100ull, &data, sizeof(data), 0);
-+	if (err < 0)
-+		goto error;
-+
-+	/* The first data channel in a packet is for MIDI conformant data. */
-+	for (p = 0; p < snd_dg00x_stream_mbla_data_channels[i]; p++) {
-+		dg00x->rx_stream.pcm_positions[p] = p + 1;
-+		dg00x->tx_stream.pcm_positions[p] = p + 1;
-+	}
-+	dg00x->rx_stream.midi_position = 0;
-+	dg00x->tx_stream.midi_position = 0;
-+
-+	return 0;
-+error:
-+	release_resources(dg00x);
-+	return err;
-+}
-+
-+int snd_dg00x_stream_init_duplex(struct snd_dg00x *dg00x)
-+{
-+	int err;
-+
-+	/* For out-stream. */
-+	err = fw_iso_resources_init(&dg00x->rx_resources, dg00x->unit);
-+	if (err < 0)
-+		return err;
-+	err = amdtp_stream_init(&dg00x->rx_stream, dg00x->unit,
-+				AMDTP_OUT_STREAM, CIP_NONBLOCKING);
-+
-+	/* For in-stream. */
-+	err = fw_iso_resources_init(&dg00x->tx_resources, dg00x->unit);
-+	if (err < 0)
-+		return err;
-+	err = amdtp_stream_init(&dg00x->tx_stream, dg00x->unit,
-+				AMDTP_IN_STREAM,
-+				CIP_BLOCKING | CIP_SKIP_INIT_DBC_CHECK);
-+	if (err < 0)
-+		amdtp_stream_destroy(&dg00x->rx_stream);
-+
-+	return err;
++	spin_unlock_irq(&instances_lock);
++	fw_send_response(card, request, RCODE_COMPLETE);
 +}
 +
 +/*
-+ * This function should be called before starting streams or after stopping
-+ * streams.
++ * Use the same range of address for asynchronous messages from any devices, to
++ * save resources on host controller.
 + */
-+void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x)
++static struct fw_address_handler async_handler;
++
++int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x)
 +{
-+	amdtp_stream_destroy(&dg00x->rx_stream);
-+	fw_iso_resources_destroy(&dg00x->rx_resources);
++	struct fw_device *device = fw_parent_device(dg00x->unit);
++	__be32 data[2];
++	unsigned int i;
++	int err;
 +
-+	amdtp_stream_destroy(&dg00x->tx_stream);
-+	fw_iso_resources_destroy(&dg00x->tx_resources);
-+}
-+
-+int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x, unsigned int rate)
-+{
-+	unsigned int curr_rate;
-+	int err = 0;
-+
-+	if (dg00x->playback_substreams == 0 &&
-+	    dg00x->capture_substreams == 0)
-+		goto end;
-+
-+	/* Check current sampling rate. */
-+	err = snd_dg00x_stream_get_rate(dg00x, &curr_rate);
++	/* Unknown. 4bytes. */
++	data[0] = cpu_to_be32((device->card->node_id << 16) |
++			      (async_handler.offset >> 32));
++	data[1] = cpu_to_be32(async_handler.offset);
++	err = snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
++				 0xffffe0000014ull, &data, sizeof(data), 0);
 +	if (err < 0)
-+		goto error;
-+	if ((curr_rate != rate) |
-+	    amdtp_streaming_error(&dg00x->tx_stream) |
-+	    amdtp_streaming_error(&dg00x->rx_stream)) {
-+		finish_session(dg00x);
++		return err;
 +
-+		amdtp_stream_stop(&dg00x->tx_stream);
-+		amdtp_stream_stop(&dg00x->rx_stream);
-+		release_resources(dg00x);
++	spin_lock_irq(&instances_lock);
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (instances[i] != NULL)
++			continue;
++		instances[i] = dg00x;
++		break;
 +	}
++	spin_unlock_irq(&instances_lock);
 +
-+	/* No streams are transmitted without receiving a stream. */
-+	if (!amdtp_stream_running(&dg00x->rx_stream)) {
-+		err = snd_dg00x_stream_set_rate(dg00x, rate);
-+		if (err < 0)
-+			goto error;
-+
-+		err = keep_resources(dg00x, rate);
-+		if (err < 0)
-+			goto error;
-+
-+		err = begin_session(dg00x);
-+		if (err < 0)
-+			goto error;
-+
-+		err = amdtp_stream_start(&dg00x->rx_stream,
-+				dg00x->rx_resources.channel,
-+				fw_parent_device(dg00x->unit)->max_speed);
-+		if (err < 0)
-+			goto error;
-+
-+		if (!amdtp_stream_wait_callback(&dg00x->rx_stream,
-+						CALLBACK_TIMEOUT)) {
-+			err = -ETIMEDOUT;
-+			goto error;
-+		}
-+	}
-+
-+	/*
-+	 * The value of SYT field in transmitted packets is always 0x0000. Thus,
-+	 * duplex streams with timestamp synchronization cannot be built.
-+	 */
-+	if (dg00x->capture_substreams > 0 &&
-+	    !amdtp_stream_running(&dg00x->tx_stream)) {
-+		err = amdtp_stream_start(&dg00x->tx_stream,
-+				dg00x->tx_resources.channel,
-+				fw_parent_device(dg00x->unit)->max_speed);
-+		if (err < 0)
-+			goto error;
-+
-+		if (!amdtp_stream_wait_callback(&dg00x->tx_stream,
-+						CALLBACK_TIMEOUT)) {
-+			err = -ETIMEDOUT;
-+			goto error;
-+		}
-+	}
-+end:
-+	return err;
-+error:
-+	finish_session(dg00x);
-+
-+	amdtp_stream_stop(&dg00x->tx_stream);
-+	amdtp_stream_stop(&dg00x->rx_stream);
-+	release_resources(dg00x);
-+
-+	return err;
++	return 0;
 +}
 +
-+void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x)
++void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x)
 +{
-+	if (dg00x->capture_substreams > 0)
-+		return;
-+	amdtp_stream_stop(&dg00x->tx_stream);
++	unsigned int i;
 +
-+	if (dg00x->playback_substreams > 0)
-+		return;
-+	finish_session(dg00x);
-+	amdtp_stream_stop(&dg00x->rx_stream);
-+	release_resources(dg00x);
++	spin_lock_irq(&instances_lock);
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (instances[i] != dg00x)
++			continue;
++		instances[i] = NULL;
++		break;
++	}
++	spin_unlock_irq(&instances_lock);
 +}
 +
-+/* TODO: investigation. */
-+void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x)
++int snd_dg00x_protocol_register(void)
 +{
-+	fw_iso_resources_update(&dg00x->tx_resources);
-+	fw_iso_resources_update(&dg00x->rx_resources);
++	static const struct fw_address_region resp_register_region = {
++		.start	= 0xffffe0000000ull,
++		.end	= 0xffffe000ffffull,
++	};
++	int err;
 +
-+	amdtp_stream_update(&dg00x->tx_stream);
-+	amdtp_stream_update(&dg00x->rx_stream);
++	async_handler.length = 4;
++	async_handler.address_callback = handle_message;
++	async_handler.callback_data = NULL;
++
++	err = fw_core_add_address_handler(&async_handler,
++					  &resp_register_region);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
++void snd_dg00x_protocol_unregister(void)
++{
++	fw_core_remove_address_handler(&async_handler);
 +}
 diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 6f427a2..b82bce7 100644
+index c170cbb..db0997d 100644
 --- a/sound/firewire/digi00x/digi00x.c
 +++ b/sound/firewire/digi00x/digi00x.c
-@@ -47,6 +47,8 @@ static void dg00x_card_free(struct snd_card *card)
- {
+@@ -48,6 +48,7 @@ static void dg00x_card_free(struct snd_card *card)
  	struct snd_dg00x *dg00x = card->private_data;
  
-+	snd_dg00x_stream_destroy_duplex(dg00x);
-+
+ 	snd_dg00x_stream_destroy_duplex(dg00x);
++	snd_dg00x_protocol_remove_instance(dg00x);
+ 
  	fw_unit_put(dg00x->unit);
  
- 	mutex_destroy(&dg00x->mutex);
-@@ -78,6 +80,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+@@ -99,6 +100,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
  	if (err < 0)
  		goto error;
  
-+	err = snd_dg00x_stream_init_duplex(dg00x);
++	err = snd_dg00x_protocol_add_instance(dg00x);
 +	if (err < 0)
 +		goto error;
 +
  	err = snd_card_register(card);
  	if (err < 0)
  		goto error;
-@@ -90,6 +96,15 @@ error:
- 	return err;
+@@ -155,11 +160,18 @@ static struct fw_driver dg00x_driver = {
+ 
+ static int __init snd_dg00x_init(void)
+ {
++	int err;
++
++	err = snd_dg00x_protocol_register();
++	if (err < 0)
++		return err;
++
+ 	return driver_register(&dg00x_driver.driver);
  }
  
-+static void snd_dg00x_update(struct fw_unit *unit)
-+{
-+	struct snd_dg00x *dg00x = dev_get_drvdata(&unit->device);
-+
-+	mutex_lock(&dg00x->mutex);
-+	snd_dg00x_stream_update_duplex(dg00x);
-+	mutex_unlock(&dg00x->mutex);
-+}
-+
- static void snd_dg00x_remove(struct fw_unit *unit)
+ static void __exit snd_dg00x_exit(void)
  {
- 	struct snd_dg00x *dg00x = dev_get_drvdata(&unit->device);
-@@ -118,6 +133,7 @@ static struct fw_driver dg00x_driver = {
- 		.bus = &fw_bus_type,
- 	},
- 	.probe    = snd_dg00x_probe,
-+	.update   = snd_dg00x_update,
- 	.remove   = snd_dg00x_remove,
- 	.id_table = snd_dg00x_id_table,
- };
++	snd_dg00x_protocol_unregister();
+ 	driver_unregister(&dg00x_driver.driver);
+ }
+ 
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 59425cd..61cfd6e 100644
+index 7503d31..85cfb39 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -21,6 +21,11 @@
- #include <sound/core.h>
- #include <sound/initval.h>
- 
-+#include "../lib.h"
-+#include "../packets-buffer.h"
-+#include "../iso-resources.h"
-+#include "../amdtp.h"
-+
- struct snd_dg00x {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
-@@ -28,6 +33,53 @@ struct snd_dg00x {
- 
- 	struct mutex mutex;
- 	spinlock_t lock;
-+
-+	struct amdtp_stream tx_stream;
-+	struct fw_iso_resources tx_resources;
-+
-+	struct amdtp_stream rx_stream;
-+	struct fw_iso_resources rx_resources;
-+
-+	unsigned int playback_substreams;
-+	unsigned int capture_substreams;
-+};
-+
-+/* values for SND_DG00X_ADDR_OFFSET_RATE */
-+enum snd_dg00x_rate {
-+	SND_DG00X_RATE_44100 = 0,
-+	SND_DG00X_RATE_48000,
-+	SND_DG00X_RATE_88200,
-+	SND_DG00X_RATE_96000,
-+	SND_DG00X_RATE_COUNT,
+@@ -78,6 +78,11 @@ enum snd_dg00x_optical_mode {
+ 	SND_DG00X_OPTICAL_MODE_SPDIF,
  };
  
-+/* values for SND_DG00X_ADDR_OFFSET_CLOCK */
-+enum snd_dg00x_clock {
-+	SND_DG00X_CLOCK_INTERNAL = 0,
-+	SND_DG00X_CLOCK_SPDIF,
-+	SND_DG00X_CLOCK_ADAT,
-+	SND_DG00X_CLOCK_WORD,
-+};
++int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x);
++void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x);
++int snd_dg00x_protocol_register(void);
++void snd_dg00x_protocol_unregister(void);
 +
-+/* values for SND_DG00X_ADDR_OFFSET_OPTICAL_MODE */
-+enum snd_dg00x_optical_mode {
-+	SND_DG00X_OPTICAL_MODE_ADAT = 0,
-+	SND_DG00X_OPTICAL_MODE_SPDIF,
-+};
-+
-+extern const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT];
-+extern const unsigned int
-+snd_dg00x_stream_mbla_data_channels[SND_DG00X_RATE_COUNT];
-+int snd_dg00x_stream_get_rate(struct snd_dg00x *dg00x, unsigned int *rate);
-+int snd_dg00x_stream_set_rate(struct snd_dg00x *dg00x, unsigned int rate);
-+int snd_dg00x_stream_get_clock(struct snd_dg00x *dg00x,
-+			       enum snd_dg00x_clock *clock);
-+int snd_dg00x_stream_get_optical_mode(struct snd_dg00x *dg00x,
-+				      enum snd_dg00x_optical_mode *mode);
-+int snd_dg00x_stream_init_duplex(struct snd_dg00x *dg00x);
-+int snd_dg00x_stream_start_duplex(struct snd_dg00x *dg00x, unsigned int rate);
-+void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
-+void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
-+void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
-+
- #endif
+ extern const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT];
+ extern const unsigned int
+ snd_dg00x_stream_mbla_data_channels[SND_DG00X_RATE_COUNT];
 -- 
 2.1.0
