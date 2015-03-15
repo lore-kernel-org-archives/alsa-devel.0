@@ -1,16 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: nuc900: No need to track the dma buffer
-	in the driver state struct
-Date: Sun, 15 Mar 2015 12:15:24 +0100
-Message-ID: <1426418124-1096-1-git-send-email-lars@metafoo.de>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] ASoC: fsl-ssi: Fix bitclock calculation for
+	master mode
+Date: Sun, 15 Mar 2015 13:11:59 +0100
+Message-ID: <1426421519-2224-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-060.synserver.de (smtp-out-060.synserver.de
- [212.40.185.60])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D12526049D
- for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 12:15:18 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 87913260417
+ for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 13:12:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,91 +19,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Wan ZongShun <mcuos.com@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The DMA buffer and address can be accessed through the snd_pcm_runtime.
-There is no need to manually track them in the driver's state struct.
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+in fsl_ssi_set_bclk we are looking for the best divider by iterating
+over all possible dividers. The divider is in the range 1..256, so
+make this clear by using 'div' as name for the loop counter and iterate
+from 1 to 256 instead of 0 to 255. This makes obvious that tmprate is
+calculated wrong, it has to be freq * factor * div, not
+freq * factor * (i + 2).
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- sound/soc/nuc900/nuc900-audio.h |  3 ---
- sound/soc/nuc900/nuc900-pcm.c   | 31 +++++--------------------------
- 2 files changed, 5 insertions(+), 29 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/nuc900/nuc900-audio.h b/sound/soc/nuc900/nuc900-audio.h
-index 59f7e8e..d0b7257 100644
---- a/sound/soc/nuc900/nuc900-audio.h
-+++ b/sound/soc/nuc900/nuc900-audio.h
-@@ -100,10 +100,7 @@
- struct nuc900_audio {
- 	void __iomem *mmio;
- 	spinlock_t lock;
--	dma_addr_t dma_addr[2];
--	unsigned long buffersize[2];
- 	unsigned long irq_num;
--	struct snd_pcm_substream *substream;
- 	struct resource *res;
- 	struct clk *clk;
- 	struct device *dev;
-diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
-index b809fa9..5ae5ca1 100644
---- a/sound/soc/nuc900/nuc900-pcm.c
-+++ b/sound/soc/nuc900/nuc900-pcm.c
-@@ -42,29 +42,10 @@ static const struct snd_pcm_hardware nuc900_pcm_hardware = {
- static int nuc900_dma_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct nuc900_audio *nuc900_audio = runtime->private_data;
--	unsigned long flags;
--	int ret = 0;
--
--	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
--	if (ret < 0)
--		return ret;
--
--	spin_lock_irqsave(&nuc900_audio->lock, flags);
--
--	nuc900_audio->substream = substream;
--	nuc900_audio->dma_addr[substream->stream] = runtime->dma_addr;
--	nuc900_audio->buffersize[substream->stream] =
--						params_buffer_bytes(params);
--
--	spin_unlock_irqrestore(&nuc900_audio->lock, flags);
--
--	return ret;
-+	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
- }
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index b9fabbf69db6..b8af08e49085 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -578,7 +578,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct regmap *regs = ssi_private->regs;
+ 	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates, ret;
+-	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
++	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, div;
+ 	unsigned long clkrate, baudrate, tmprate;
+ 	u64 sub, savesub = 100000;
+ 	unsigned int freq;
+@@ -602,8 +602,8 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
  
--static void nuc900_update_dma_register(struct snd_pcm_substream *substream,
--				dma_addr_t dma_addr, size_t count)
-+static void nuc900_update_dma_register(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct nuc900_audio *nuc900_audio = runtime->private_data;
-@@ -78,8 +59,8 @@ static void nuc900_update_dma_register(struct snd_pcm_substream *substream,
- 		mmio_len = nuc900_audio->mmio + ACTL_RDST_LENGTH;
- 	}
+ 	factor = (div2 + 1) * (7 * psr + 1) * 2;
  
--	AUDIO_WRITE(mmio_addr, dma_addr);
--	AUDIO_WRITE(mmio_len, count);
-+	AUDIO_WRITE(mmio_addr, runtime->dma_addr);
-+	AUDIO_WRITE(mmio_len, runtime->dma_bytes);
- }
+-	for (i = 0; i < 255; i++) {
+-		tmprate = freq * factor * (i + 2);
++	for (div = 1; div < 256; div++) {
++		tmprate = freq * factor * div;
  
- static void nuc900_dma_start(struct snd_pcm_substream *substream)
-@@ -170,9 +151,7 @@ static int nuc900_dma_prepare(struct snd_pcm_substream *substream)
+ 		if (baudclk_is_used)
+ 			clkrate = clk_get_rate(ssi_private->baudclk);
+@@ -618,7 +618,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 			continue;
  
- 	spin_lock_irqsave(&nuc900_audio->lock, flags);
+ 		clkrate /= factor;
+-		afreq = clkrate / (i + 1);
++		afreq = clkrate / div;
  
--	nuc900_update_dma_register(substream,
--				nuc900_audio->dma_addr[substream->stream],
--				nuc900_audio->buffersize[substream->stream]);
-+	nuc900_update_dma_register(substream);
+ 		if (freq == afreq)
+ 			sub = 0;
+@@ -636,7 +636,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 		if (sub < savesub) {
+ 			baudrate = tmprate;
+ 			savesub = sub;
+-			pm = i;
++			pm = div - 1;
+ 		}
  
- 	val = AUDIO_READ(nuc900_audio->mmio + ACTL_RESET);
- 
+ 		/* We are lucky */
 -- 
-1.8.0
+2.1.4
