@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/11] ALSA: digi00x: support unknown
-	asynchronous message
-Date: Mon, 16 Mar 2015 01:01:05 +0900
-Message-ID: <1426435269-17059-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 08/11] ALSA: digi00x: support MIDI ports for
+	device control
+Date: Mon, 16 Mar 2015 01:01:06 +0900
+Message-ID: <1426435269-17059-9-git-send-email-o-takashi@sakamocchi.jp>
 References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id F1A6A26087E
+ by alsa0.perex.cz (Postfix) with ESMTP id EE432260867
  for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 17:01:20 +0100 (CET)
 In-Reply-To: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,222 +25,321 @@ To: clemens@ladisch.de, tiwai@suse.de, robin@gareus.org, damien@zamaudio.com
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Digi 002/003 family use asynchronous transaction for messaging.
-The address to receive this message is stored on a certain register.
+Digi 002/003 family uses asynchronous transactions for MIDI
+device control message. The address to transfer is stored on
+a certain address, while the address to receive is 0xffffe0000040.
 
-This commit allocates a certain range of address on OHCI 1394 host
-controller, to handle this notification. Currently, the purpose of
-this message is unknown.
-
-Usually, these devices notify 0x00007051. But there're cases that
-0x00007052/0200007058. In these cases, the device sounds quite a
-short gap.
-
-I guess that this notification is related to clock synchronization.
+This commit supports MIDI ports for this purpose. For capture
+MIDI message, the handler of notification is extended. For playback
+MIDI message, a workqueue is used because Linux FireWire subsystem
+uses 'complete' to wait response event and this context should be
+able to sleep.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/Makefile           |   2 +-
- sound/firewire/digi00x/digi00x-protocol.c | 122 ++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c          |  12 +++
- sound/firewire/digi00x/digi00x.h          |   5 ++
- 4 files changed, 140 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/digi00x/digi00x-protocol.c
+ sound/firewire/digi00x/digi00x-midi.c     | 68 +++++++++++++++++++------
+ sound/firewire/digi00x/digi00x-protocol.c | 82 ++++++++++++++++++++++++++++++-
+ sound/firewire/digi00x/digi00x.h          |  7 +++
+ 3 files changed, 139 insertions(+), 18 deletions(-)
 
-diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index deb3683..e42b5cc 100644
---- a/sound/firewire/digi00x/Makefile
-+++ b/sound/firewire/digi00x/Makefile
-@@ -1,3 +1,3 @@
- snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o digi00x-pcm.o \
--		    digi00x-midi.o digi00x-hwdep.o
-+		    digi00x-midi.o digi00x-hwdep.o digi00x-protocol.o
- obj-m += snd-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-protocol.c b/sound/firewire/digi00x/digi00x-protocol.c
-new file mode 100644
-index 0000000..b19708d
---- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-protocol.c
-@@ -0,0 +1,122 @@
-+/*
-+ * digi00x-protocol.c - a part of driver for Digidesign Digi 002/003 family
-+ *
-+ * Copyright (c) 2014-2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+diff --git a/sound/firewire/digi00x/digi00x-midi.c b/sound/firewire/digi00x/digi00x-midi.c
+index 460f8eb..c4990ad 100644
+--- a/sound/firewire/digi00x/digi00x-midi.c
++++ b/sound/firewire/digi00x/digi00x-midi.c
+@@ -13,6 +13,10 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
+ 	int err;
+ 
++	/* This port is for Asynchronous transaction. */
++	if (substream->number == 0)
++		return 0;
 +
-+#include "digi00x.h"
+ 	err = snd_dg00x_stream_lock_try(dg00x);
+ 	if (err < 0)
+ 		return err;
+@@ -32,6 +36,10 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
+ 	int err;
+ 
++	/* This port is for Asynchronous transaction. */
++	if (substream->number == 0)
++		return 0;
 +
-+static struct snd_dg00x *instances[SNDRV_CARDS];
-+static DEFINE_SPINLOCK(instances_lock);
+ 	err = snd_dg00x_stream_lock_try(dg00x);
+ 	if (err < 0)
+ 		return err;
+@@ -50,6 +58,9 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
+ 
++	if (substream->number == 0)
++		return 0;
 +
-+static void handle_unknown_message(struct snd_dg00x *dg00x,
-+				   unsigned long long offset, u32 *buf)
-+{
-+	snd_printk(KERN_INFO"%08llx: %08x\n", offset, be32_to_cpu(*buf));
-+}
+ 	mutex_lock(&dg00x->mutex);
+ 	dg00x->capture_substreams--;
+ 	snd_dg00x_stream_stop_duplex(dg00x);
+@@ -63,6 +74,9 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
+ 
++	if (substream->number == 0)
++		return 0;
 +
-+static void handle_message(struct fw_card *card, struct fw_request *request,
-+			   int tcode, int destination, int source,
-+			   int generation, unsigned long long offset,
-+			   void *data, size_t length, void *callback_data)
-+{
-+	u32 *buf = (__be32 *)data;
-+	struct fw_device *device;
-+	struct snd_dg00x *dg00x;
-+	unsigned int i;
-+
-+	spin_lock_irq(&instances_lock);
-+	for (i = 0; i < SNDRV_CARDS; i++) {
-+		dg00x = instances[i];
-+		if (dg00x == NULL)
-+			continue;
-+		device = fw_parent_device(dg00x->unit);
-+		if (device->card != card)
-+			continue;
-+		smp_rmb();	/* node id vs. generation */
-+		if (device->node_id != source)
-+			continue;
-+		break;
+ 	mutex_lock(&dg00x->mutex);
+ 	dg00x->playback_substreams--;
+ 	snd_dg00x_stream_stop_duplex(dg00x);
+@@ -79,12 +93,19 @@ static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
+ 
+ 	spin_lock_irqsave(&dg00x->lock, flags);
+ 
+-	if (up)
+-		amdtp_stream_midi_trigger(&dg00x->tx_stream,
+-					  substrm->number, substrm);
+-	else
+-		amdtp_stream_midi_trigger(&dg00x->tx_stream,
+-					  substrm->number, NULL);
++	if (substrm->number == 0) {
++		if (up)
++			dg00x->in_control = substrm;
++		else
++			dg00x->in_control = NULL;
++	} else {
++		if (up)
++			amdtp_stream_midi_trigger(&dg00x->tx_stream,
++						  substrm->number - 1, substrm);
++		else
++			amdtp_stream_midi_trigger(&dg00x->tx_stream,
++						  substrm->number - 1, NULL);
 +	}
+ 
+ 	spin_unlock_irqrestore(&dg00x->lock, flags);
+ }
+@@ -96,12 +117,21 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
+ 
+ 	spin_lock_irqsave(&dg00x->lock, flags);
+ 
+-	if (up)
+-		amdtp_stream_midi_trigger(&dg00x->rx_stream,
+-					  substrm->number, substrm);
+-	else
+-		amdtp_stream_midi_trigger(&dg00x->rx_stream,
+-					  substrm->number, NULL);
++	if (substrm->number == 0) {
++		if (up) {
++			dg00x->out_control = substrm;
++			snd_dg00x_protocol_queue_midi_message(dg00x);
++		} else {
++			dg00x->out_control = NULL;
++		}
++	} else {
++		if (up)
++			amdtp_stream_midi_trigger(&dg00x->rx_stream,
++						  substrm->number - 1, substrm);
++		else
++			amdtp_stream_midi_trigger(&dg00x->rx_stream,
++						  substrm->number - 1, NULL);
++	}
+ 
+ 	spin_unlock_irqrestore(&dg00x->lock, flags);
+ }
+@@ -124,9 +154,15 @@ static void set_midi_substream_names(struct snd_dg00x *dg00x,
+ 	struct snd_rawmidi_substream *subs;
+ 
+ 	list_for_each_entry(subs, &str->substreams, list) {
+-		snprintf(subs->name, sizeof(subs->name),
+-			 "%s MIDI %d",
+-			 dg00x->card->shortname, subs->number + 1);
++		/* This port is for device control. */
++		if (subs->number == 0) {
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s control", dg00x->card->shortname);
++		} else {
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s MIDI %d",
++				 dg00x->card->shortname, subs->number + 1);
++		}
+ 	}
+ }
+ 
+@@ -137,7 +173,7 @@ int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x)
+ 	int err;
+ 
+ 	err = snd_rawmidi_new(dg00x->card, dg00x->card->driver, 0,
+-			      1, 2, &rmidi);
++			      3, 2, &rmidi);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/firewire/digi00x/digi00x-protocol.c b/sound/firewire/digi00x/digi00x-protocol.c
+index b19708d..3e5b3bec 100644
+--- a/sound/firewire/digi00x/digi00x-protocol.c
++++ b/sound/firewire/digi00x/digi00x-protocol.c
+@@ -8,6 +8,43 @@
+ 
+ #include "digi00x.h"
+ 
++struct workqueue_struct *midi_wq;
 +
-+	if (offset == 0xffffe0000000)
-+		handle_unknown_message(dg00x, offset, buf);
++static void send_midi_control(struct work_struct *work)
++{
++	struct snd_dg00x *dg00x =
++			container_of(work, struct snd_dg00x, midi_control);
++	struct fw_device *device = fw_parent_device(dg00x->unit);
 +
-+	spin_unlock_irq(&instances_lock);
-+	fw_send_response(card, request, RCODE_COMPLETE);
++	unsigned int len;
++	__be32 buf = 0;
++	u8 *b = (u8 *)&buf;
++
++	/* Send MIDI control. */
++	if (!dg00x->out_control)
++		return;
++
++	do {
++		len = snd_rawmidi_transmit(dg00x->out_control, b + 1, 2);
++		if (len > 0) {
++			b[0] = 0x80;
++			b[3] = 0xc0 | len;
++
++			/* Don't check transaction status. */
++			fw_run_transaction(device->card,
++					   TCODE_WRITE_QUADLET_REQUEST,
++					   device->node_id, device->generation,
++					   device->max_speed,
++					   0xffffe0000400, &buf, sizeof(buf));
++		}
++	} while (len > 0);
 +}
 +
-+/*
-+ * Use the same range of address for asynchronous messages from any devices, to
-+ * save resources on host controller.
-+ */
-+static struct fw_address_handler async_handler;
-+
-+int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x)
++void snd_dg00x_protocol_queue_midi_message(struct snd_dg00x *dg00x)
 +{
-+	struct fw_device *device = fw_parent_device(dg00x->unit);
-+	__be32 data[2];
-+	unsigned int i;
-+	int err;
++	queue_work(midi_wq, &dg00x->midi_control);
++}
 +
-+	/* Unknown. 4bytes. */
+ static struct snd_dg00x *instances[SNDRV_CARDS];
+ static DEFINE_SPINLOCK(instances_lock);
+ 
+@@ -17,6 +54,26 @@ static void handle_unknown_message(struct snd_dg00x *dg00x,
+ 	snd_printk(KERN_INFO"%08llx: %08x\n", offset, be32_to_cpu(*buf));
+ }
+ 
++static void handle_midi_control(struct snd_dg00x *dg00x, u32 *buf,
++				unsigned int length)
++{
++	unsigned int i;
++	unsigned int len;
++	u8 *b;
++
++	if (dg00x->in_control == NULL)
++		return;
++
++	length /= 4;
++
++	for (i = 0; i < length; i++) {
++		b = (u8 *)&buf[i];
++		len = b[3] & 0xf;
++		if (len > 0)
++			snd_rawmidi_receive(dg00x->in_control, b + 1, len);
++	}
++}
++
+ static void handle_message(struct fw_card *card, struct fw_request *request,
+ 			   int tcode, int destination, int source,
+ 			   int generation, unsigned long long offset,
+@@ -43,6 +100,8 @@ static void handle_message(struct fw_card *card, struct fw_request *request,
+ 
+ 	if (offset == 0xffffe0000000)
+ 		handle_unknown_message(dg00x, offset, buf);
++	else if (offset == 0xffffe0000004)
++		handle_midi_control(dg00x, buf, length);
+ 
+ 	spin_unlock_irq(&instances_lock);
+ 	fw_send_response(card, request, RCODE_COMPLETE);
+@@ -70,6 +129,15 @@ int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x)
+ 	if (err < 0)
+ 		return err;
+ 
++	/* Asynchronous transactions for MIDI control message. 8 bytes. */
 +	data[0] = cpu_to_be32((device->card->node_id << 16) |
 +			      (async_handler.offset >> 32));
-+	data[1] = cpu_to_be32(async_handler.offset);
++	data[1] = cpu_to_be32(async_handler.offset + 4);
 +	err = snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
-+				 0xffffe0000014ull, &data, sizeof(data), 0);
++				 0xffffe0000008ull, &data, sizeof(data), 0);
 +	if (err < 0)
 +		return err;
 +
-+	spin_lock_irq(&instances_lock);
-+	for (i = 0; i < SNDRV_CARDS; i++) {
-+		if (instances[i] != NULL)
-+			continue;
-+		instances[i] = dg00x;
-+		break;
-+	}
-+	spin_unlock_irq(&instances_lock);
-+
-+	return 0;
-+}
-+
-+void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x)
-+{
-+	unsigned int i;
-+
-+	spin_lock_irq(&instances_lock);
-+	for (i = 0; i < SNDRV_CARDS; i++) {
-+		if (instances[i] != dg00x)
-+			continue;
-+		instances[i] = NULL;
-+		break;
-+	}
-+	spin_unlock_irq(&instances_lock);
-+}
-+
-+int snd_dg00x_protocol_register(void)
-+{
-+	static const struct fw_address_region resp_register_region = {
-+		.start	= 0xffffe0000000ull,
-+		.end	= 0xffffe000ffffull,
-+	};
-+	int err;
-+
-+	async_handler.length = 4;
-+	async_handler.address_callback = handle_message;
-+	async_handler.callback_data = NULL;
-+
-+	err = fw_core_add_address_handler(&async_handler,
-+					  &resp_register_region);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
-+
-+void snd_dg00x_protocol_unregister(void)
-+{
-+	fw_core_remove_address_handler(&async_handler);
-+}
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index c170cbb..db0997d 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -48,6 +48,7 @@ static void dg00x_card_free(struct snd_card *card)
- 	struct snd_dg00x *dg00x = card->private_data;
+ 	spin_lock_irq(&instances_lock);
+ 	for (i = 0; i < SNDRV_CARDS; i++) {
+ 		if (instances[i] != NULL)
+@@ -79,6 +147,8 @@ int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x)
+ 	}
+ 	spin_unlock_irq(&instances_lock);
  
- 	snd_dg00x_stream_destroy_duplex(dg00x);
-+	snd_dg00x_protocol_remove_instance(dg00x);
- 
- 	fw_unit_put(dg00x->unit);
- 
-@@ -99,6 +100,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
-+	err = snd_dg00x_protocol_add_instance(dg00x);
-+	if (err < 0)
-+		goto error;
++	INIT_WORK(&dg00x->midi_control, send_midi_control);
 +
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-@@ -155,11 +160,18 @@ static struct fw_driver dg00x_driver = {
- 
- static int __init snd_dg00x_init(void)
- {
-+	int err;
-+
-+	err = snd_dg00x_protocol_register();
-+	if (err < 0)
-+		return err;
-+
- 	return driver_register(&dg00x_driver.driver);
+ 	return 0;
  }
  
- static void __exit snd_dg00x_exit(void)
- {
-+	snd_dg00x_protocol_unregister();
- 	driver_unregister(&dg00x_driver.driver);
+@@ -104,19 +174,27 @@ int snd_dg00x_protocol_register(void)
+ 	};
+ 	int err;
+ 
+-	async_handler.length = 4;
++	midi_wq = alloc_workqueue("snd-digi00x",
++				  WQ_SYSFS | WQ_POWER_EFFICIENT, 0);
++	if (midi_wq == NULL)
++		return -ENOMEM;
++
++	async_handler.length = 12;
+ 	async_handler.address_callback = handle_message;
+ 	async_handler.callback_data = NULL;
+ 
+ 	err = fw_core_add_address_handler(&async_handler,
+ 					  &resp_register_region);
+-	if (err < 0)
++	if (err < 0) {
++		destroy_workqueue(midi_wq);
+ 		return err;
++	}
+ 
+ 	return 0;
  }
  
+ void snd_dg00x_protocol_unregister(void)
+ {
++	destroy_workqueue(midi_wq);
+ 	fw_core_remove_address_handler(&async_handler);
+ }
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 7503d31..85cfb39 100644
+index 85cfb39..20b178f 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -78,6 +78,11 @@ enum snd_dg00x_optical_mode {
+@@ -17,6 +17,7 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
++#include <linux/workqueue.h>
+ 
+ #include <sound/core.h>
+ #include <sound/initval.h>
+@@ -53,6 +54,11 @@ struct snd_dg00x {
+ 	int dev_lock_count;
+ 	bool dev_lock_changed;
+ 	wait_queue_head_t hwdep_wait;
++
++	/* For asynchronous MIDI controls. */
++	struct work_struct midi_control;
++	struct snd_rawmidi_substream *in_control;
++	struct snd_rawmidi_substream *out_control;
+ };
+ 
+ /* values for SND_DG00X_ADDR_OFFSET_RATE */
+@@ -78,6 +84,7 @@ enum snd_dg00x_optical_mode {
  	SND_DG00X_OPTICAL_MODE_SPDIF,
  };
  
-+int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x);
-+void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x);
-+int snd_dg00x_protocol_register(void);
-+void snd_dg00x_protocol_unregister(void);
-+
- extern const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT];
- extern const unsigned int
- snd_dg00x_stream_mbla_data_channels[SND_DG00X_RATE_COUNT];
++void snd_dg00x_protocol_queue_midi_message(struct snd_dg00x *dg00x);
+ int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x);
+ void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x);
+ int snd_dg00x_protocol_register(void);
 -- 
 2.1.0
