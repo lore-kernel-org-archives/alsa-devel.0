@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/11] ALSA: digi00x: add skelton for Digi
-	002/003 device driver
-Date: Mon, 16 Mar 2015 01:00:59 +0900
-Message-ID: <1426435269-17059-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/11] ALSA: digi00x: add PCM functionality
+Date: Mon, 16 Mar 2015 01:01:02 +0900
+Message-ID: <1426435269-17059-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DF692607E9
+ by alsa0.perex.cz (Postfix) with ESMTP id 12F05260815
  for <alsa-devel@alsa-project.org>; Sun, 15 Mar 2015 17:01:19 +0100 (CET)
 In-Reply-To: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,69 +24,40 @@ To: clemens@ladisch.de, tiwai@suse.de, robin@gareus.org, damien@zamaudio.com
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new driver for Digidesign 002/003 family. Currently
-this driver just creates/removes card instance according to bus event.
+As long as seeing Digi 002, any PCM samples are transferred by Multi Bit
+Linear Audio data channel in AMDTP packet. There're no quirks.
 
-Digidesign 002/003 family consists of:
- * Agere FW802B for IEEE 1394 PHY layer
- * PDI 1394L40 for IEEE 1394 LINK layer and IEC 61883 interface
- * ALTERA ACEX EP1K50 for IEC 61883 layer and DSP controller
- * ADSP-21065L for signal processing
+On the other hand, for received packets, the device expects drivers to use
+a certain algorism to multiplex PCM samples into packets.
+
+This commit adds PCM functionality to transmit/receive PCM samples with
+current ALSA AMDTP engine, thus PCM playback substream causes noisy sound.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig           |   8 +++
- sound/firewire/Makefile          |   1 +
- sound/firewire/digi00x/Makefile  |   2 +
- sound/firewire/digi00x/digi00x.c | 136 +++++++++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.h |  33 ++++++++++
- 5 files changed, 180 insertions(+)
- create mode 100644 sound/firewire/digi00x/Makefile
- create mode 100644 sound/firewire/digi00x/digi00x.c
- create mode 100644 sound/firewire/digi00x/digi00x.h
+ sound/firewire/digi00x/Makefile      |   2 +-
+ sound/firewire/digi00x/digi00x-pcm.c | 325 +++++++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.c     |   4 +
+ sound/firewire/digi00x/digi00x.h     |   4 +
+ 4 files changed, 334 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/digi00x/digi00x-pcm.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index ecec547..594b6d1 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -118,4 +118,12 @@ config SND_BEBOB
-           To compile this driver as a module, choose M here: the module
-           will be called snd-bebob.
- 
-+config SND_DIGI00X
-+	tristate "Digidesign 002/003 family support"
-+	help
-+	 Say Y here to include support for Digidesign 002/003 family.
-+
-+         To compile this driver as a module, choose M here: the module
-+         will be called snd-digi00x.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 8b37f08..9b99ab2 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -11,3 +11,4 @@ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
- obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
- obj-$(CONFIG_SND_FIREWORKS) += fireworks/
- obj-$(CONFIG_SND_BEBOB) += bebob/
-+obj-$(CONFIG_SND_DIGI00X) += digi00x/
 diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-new file mode 100644
-index 0000000..e30e233
---- /dev/null
+index aaec823..f2ed472 100644
+--- a/sound/firewire/digi00x/Makefile
 +++ b/sound/firewire/digi00x/Makefile
-@@ -0,0 +1,2 @@
-+snd-digi00x-objs := digi00x.o
-+obj-m += snd-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+@@ -1,2 +1,2 @@
+-snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o
++snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o digi00x-pcm.o
+ obj-m += snd-digi00x.o
+diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
 new file mode 100644
-index 0000000..6f427a2
+index 0000000..4522b38
 --- /dev/null
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -0,0 +1,136 @@
++++ b/sound/firewire/digi00x/digi00x-pcm.c
+@@ -0,0 +1,325 @@
 +/*
-+ * digi00x.c - a part of driver for Digidesign Digi 002/003 family
++ * digi00x-pcm.c - a part of driver for Digidesign Digi 002/003 family
 + *
 + * Copyright (c) 2014-2015 Takashi Sakamoto
 + *
@@ -96,170 +66,355 @@ index 0000000..6f427a2
 +
 +#include "digi00x.h"
 +
-+MODULE_DESCRIPTION("Digidesign 002/003 Driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+#define VENDOR_DIGIDESIGN	0x00a07e
-+#define MODEL_DIGI00X		0x000002
-+
-+static int name_card(struct snd_dg00x *dg00x)
++static int hw_rule_rate(struct snd_pcm_hw_params *params,
++			struct snd_pcm_hw_rule *rule)
 +{
-+	struct fw_device *fw_dev = fw_parent_device(dg00x->unit);
-+	char name[32] = {0};
-+	char *model;
++	struct snd_interval *r =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	const struct snd_interval *c =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1,
++	};
++	unsigned int i;
++
++	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
++		if (!snd_interval_test(c,
++				       snd_dg00x_stream_mbla_data_channels[i]))
++			continue;
++
++		t.min = min(t.min, snd_dg00x_stream_rates[i]);
++		t.max = max(t.max, snd_dg00x_stream_rates[i]);
++	}
++
++	return snd_interval_refine(r, &t);
++}
++
++static int hw_rule_channels(struct snd_pcm_hw_params *params,
++			    struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	const struct snd_interval *r =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1,
++	};
++	unsigned int i;
++
++	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
++		if (!snd_interval_test(r, snd_dg00x_stream_rates[i]))
++			continue;
++
++		t.min = min(t.min, snd_dg00x_stream_mbla_data_channels[i]);
++		t.max = max(t.max, snd_dg00x_stream_mbla_data_channels[i]);
++	}
++
++	return snd_interval_refine(c, &t);
++}
++
++static int pcm_init_hw_params(struct snd_dg00x *dg00x,
++			      struct snd_pcm_substream *substream)
++{
++	static const struct snd_pcm_hardware hardware = {
++		.info = SNDRV_PCM_INFO_BATCH |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_JOINT_DUPLEX |
++			SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID,
++		.formats = SNDRV_PCM_FMTBIT_S32,
++		.rates = SNDRV_PCM_RATE_44100 |
++			 SNDRV_PCM_RATE_48000 |
++			 SNDRV_PCM_RATE_88200 |
++			 SNDRV_PCM_RATE_96000,
++		.rate_min = 44100,
++		.rate_max = 96000,
++		.channels_min = 10,
++		.channels_max = 18,
++		.period_bytes_min = 4 * 18,
++		.period_bytes_max = 4 * 18 * 2048,
++		.buffer_bytes_max = 4 * 18 * 2048 * 2,
++		.periods_min = 2,
++		.periods_max = UINT_MAX,
++	};
 +	int err;
 +
-+	err = fw_csr_string(dg00x->unit->directory, CSR_MODEL, name,
-+			    sizeof(name));
++	substream->runtime->hw = hardware;
++
++	err = snd_pcm_hw_rule_add(substream->runtime, 0,
++				  SNDRV_PCM_HW_PARAM_CHANNELS,
++				  hw_rule_channels, NULL,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		goto end;
++
++	err = snd_pcm_hw_rule_add(substream->runtime, 0,
++				  SNDRV_PCM_HW_PARAM_RATE,
++				  hw_rule_rate, NULL,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		goto end;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		err = amdtp_stream_add_pcm_hw_constraints(&dg00x->tx_stream,
++							  substream->runtime);
++	else
++		err = amdtp_stream_add_pcm_hw_constraints(&dg00x->rx_stream,
++							  substream->runtime);
++end:
++	return err;
++}
++
++static int pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++	enum snd_dg00x_clock clock;
++	unsigned int rate;
++	int err;
++
++	err = pcm_init_hw_params(dg00x, substream);
 +	if (err < 0)
 +		return err;
 +
-+	model = name;
-+	if (model[0] == ' ')
-+		model = strchr(model, ' ') + 1;
++	err = snd_dg00x_stream_get_clock(dg00x, &clock);
++	if (clock != SND_DG00X_CLOCK_INTERNAL) {
++		err = snd_dg00x_stream_get_rate(dg00x, &rate);
++		if (err < 0)
++			return err;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
++	}
 +
-+	strcpy(dg00x->card->driver, "Digi00x");
-+	strcpy(dg00x->card->shortname, model);
-+	strcpy(dg00x->card->mixername, model);
-+	snprintf(dg00x->card->longname, sizeof(dg00x->card->longname),
-+		 "Digidesign %s, GUID %08x%08x at %s, S%d", model,
-+		 cpu_to_be32(fw_dev->config_rom[3]),
-+		 cpu_to_be32(fw_dev->config_rom[4]),
-+		 dev_name(&dg00x->unit->device), 100 << fw_dev->max_speed);
++	snd_pcm_set_sync(substream);
 +
 +	return 0;
 +}
 +
-+static void dg00x_card_free(struct snd_card *card)
++static int pcm_close(struct snd_pcm_substream *substream)
 +{
-+	struct snd_dg00x *dg00x = card->private_data;
-+
-+	fw_unit_put(dg00x->unit);
-+
-+	mutex_destroy(&dg00x->mutex);
++	return 0;
 +}
 +
-+static int snd_dg00x_probe(struct fw_unit *unit,
-+			   const struct ieee1394_device_id *entry)
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
 +{
-+	struct snd_card *card;
-+	struct snd_dg00x *dg00x;
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&dg00x->mutex);
++		dg00x->capture_substreams++;
++		mutex_unlock(&dg00x->mutex);
++	}
++	amdtp_stream_set_pcm_format(&dg00x->tx_stream,
++				    params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&dg00x->mutex);
++		dg00x->playback_substreams++;
++		mutex_unlock(&dg00x->mutex);
++	}
++	amdtp_stream_set_pcm_format(&dg00x->rx_stream,
++				    params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	mutex_lock(&dg00x->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		dg00x->capture_substreams--;
++
++	snd_dg00x_stream_stop_duplex(dg00x);
++
++	mutex_unlock(&dg00x->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	mutex_lock(&dg00x->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		dg00x->playback_substreams--;
++
++	snd_dg00x_stream_stop_duplex(dg00x);
++
++	mutex_unlock(&dg00x->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
 +	int err;
 +
-+	/* create card */
-+	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-+			   sizeof(struct snd_dg00x), &card);
++	mutex_lock(&dg00x->mutex);
++
++	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&dg00x->tx_stream);
++
++	mutex_unlock(&dg00x->mutex);
++
++	return err;
++}
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&dg00x->mutex);
++
++	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&dg00x->rx_stream);
++
++	mutex_unlock(&dg00x->mutex);
++
++	return err;
++}
++
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&dg00x->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&dg00x->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_dg00x *dg00x = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&dg00x->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&dg00x->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_dg00x *dg00x = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&dg00x->tx_stream);
++}
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_dg00x *dg00x = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
++}
++
++static struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++static struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(dg00x->card, dg00x->card->driver, 0, 1, 1, &pcm);
 +	if (err < 0)
 +		return err;
-+	card->private_free = dg00x_card_free;
 +
-+	/* initialize myself */
-+	dg00x = card->private_data;
-+	dg00x->card = card;
-+	dg00x->unit = fw_unit_get(unit);
++	pcm->private_data = dg00x;
++	snprintf(pcm->name, sizeof(pcm->name),
++		 "%s PCM", dg00x->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
 +
-+	mutex_init(&dg00x->mutex);
-+	spin_lock_init(&dg00x->lock);
++	return 0;
++}
 +
-+	err = name_card(dg00x);
+diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+index d9c9e14..493437a 100644
+--- a/sound/firewire/digi00x/digi00x.c
++++ b/sound/firewire/digi00x/digi00x.c
+@@ -86,6 +86,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+ 
+ 	snd_dg00x_proc_init(dg00x);
+ 
++	err = snd_dg00x_create_pcm_devices(dg00x);
 +	if (err < 0)
 +		goto error;
 +
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto error;
-+
-+	dev_set_drvdata(&unit->device, dg00x);
-+
-+	return err;
-+error:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static void snd_dg00x_remove(struct fw_unit *unit)
-+{
-+	struct snd_dg00x *dg00x = dev_get_drvdata(&unit->device);
-+
-+	/* No need to wait for releasing card object in this context. */
-+	snd_card_free_when_closed(dg00x->card);
-+}
-+
-+
-+static const struct ieee1394_device_id snd_dg00x_id_table[] = {
-+	/* Both of 002/003 use the same ID. */
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id = VENDOR_DIGIDESIGN,
-+		.model_id = MODEL_DIGI00X,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, snd_dg00x_id_table);
-+
-+static struct fw_driver dg00x_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "snd-digi00x",
-+		.bus = &fw_bus_type,
-+	},
-+	.probe    = snd_dg00x_probe,
-+	.remove   = snd_dg00x_remove,
-+	.id_table = snd_dg00x_id_table,
-+};
-+
-+static int __init snd_dg00x_init(void)
-+{
-+	return driver_register(&dg00x_driver.driver);
-+}
-+
-+static void __exit snd_dg00x_exit(void)
-+{
-+	driver_unregister(&dg00x_driver.driver);
-+}
-+
-+module_init(snd_dg00x_init);
-+module_exit(snd_dg00x_exit);
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-new file mode 100644
-index 0000000..59425cd
---- /dev/null
+index dde039f..754486a 100644
+--- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -0,0 +1,33 @@
-+/*
-+ * digi00x.h - a part of driver for Digidesign Digi 002/003 family
-+ *
-+ * Copyright (c) 2014-2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+@@ -21,6 +21,8 @@
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/info.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
+ 
+ #include "../lib.h"
+ #include "../packets-buffer.h"
+@@ -84,4 +86,6 @@ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
+ 
+ void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
 +
-+#ifndef SOUND_DIGI00X_H_INCLUDED
-+#define SOUND_DIGI00X_H_INCLUDED
-+
-+#include <linux/compat.h>
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+
-+struct snd_dg00x {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+	int card_index;
-+
-+	struct mutex mutex;
-+	spinlock_t lock;
-+};
-+
-+#endif
++int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
+ #endif
 -- 
 2.1.0
