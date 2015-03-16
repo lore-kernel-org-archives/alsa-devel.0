@@ -1,21 +1,17 @@
-From: Damien Zammit <damien@zamaudio.com>
-Subject: Re: [PATCH 11/11] ALSA: digi00x: apply double-oh-three
- algorism to multiplex PCM samples
-Date: Mon, 16 Mar 2015 22:39:01 +1100
-Message-ID: <5506C0D5.7000909@zamaudio.com>
-References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
- <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Make snd_soc_dapm_kcontrol_codec()
+	inline
+Date: Mon, 16 Mar 2015 11:40:35 +0000
+Message-ID: <20150316114035.GN28806@sirena.org.uk>
+References: <1426411641-23769-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1119146289703328114=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id AEE5D260686
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 12:39:12 +0100 (CET)
-Received: by pdnc3 with SMTP id c3so56155327pdn.0
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 04:39:11 -0700 (PDT)
-In-Reply-To: <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41CCC261171
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 12:40:44 +0100 (CET)
+In-Reply-To: <1426411641-23769-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,25 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de, tiwai@suse.de, robin@gareus.org
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 16/03/15 03:01, Takashi Sakamoto wrote:
-> Digi 002/003 family uses own way to multiplex PCM samples into data
-> blocks in CIP payload for received stream, thus AMDTP-conformant
-> implementation causes noisy sound.
->
-> This commit applies double-oh-three algorism, which discovered by Robin
-> Gareus and Damien Zammit in 2012.
->
-> As long as I tested, this patch still has disorder that:
->  * 1st PCM channel still causes noise in 2nd PCM channel.
->  * At 88.2/96.0kHz, any PCM channels still causes noise in the other PCM
->    channels.
 
-Can you please double check, I dont think snd_dg00x_protocol_write_s32()
-is even being called because amdtp.c needs a small change to prevent
-overriding the transmit_samples function pointer.
+--===============1119146289703328114==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5NmCl6OEQDB0SMwx"
+Content-Disposition: inline
 
-Damien
+
+--5NmCl6OEQDB0SMwx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Mar 15, 2015 at 10:27:20AM +0100, Lars-Peter Clausen wrote:
+> snd_soc_dapm_kcontrol_codec() is a extremely simple function and inlining it
+> typically results in less code than necessary for calling the non-inlined
+> version of the function.
+
+Applied, thanks.
+
+--5NmCl6OEQDB0SMwx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVBsEyAAoJECTWi3JdVIfQJbUH/AiOdjoIfBnFy3zau6Rl7Ahy
+lgpc/NDxgykn2UZ6UZ/xR8WMTm74tMMH8nhgfJrX27x+TBM/DwuK/6oe0+twHi9Q
+TEDB+/A0mhGZBgJqM91M+3gJtPD2t84n9rSB4eugK1zj39DdgiKJRx8dnv5OnK/0
+bbY76THnbus4lE7vYZOwICnVZZnru/lCXHAOlldV3l1gmFISe2TGlFXpSGMfaBDd
+2s30LT4zNJlw+u+u5woyEIrNjPYLb/0AvZuRKqRDr3JmtFdlE7QQZ+9sf986Z6mu
+iESVpWUkes4qYC649m6CWue6Te2uR129xWlELIXGPWOLIGifs3YXw59bmIN4PWM=
+=oWoZ
+-----END PGP SIGNATURE-----
+
+--5NmCl6OEQDB0SMwx--
+
+--===============1119146289703328114==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1119146289703328114==--
