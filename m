@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ASoC: rt286: Drop unnecessary dapm
+Subject: [PATCH 2/2] ASoC: wm2200: Drop unnecessary dapm
 	bias_level initialization
-Date: Mon, 16 Mar 2015 16:39:56 +0100
-Message-ID: <1426520397-24263-1-git-send-email-lars@metafoo.de>
+Date: Mon, 16 Mar 2015 16:39:57 +0100
+Message-ID: <1426520397-24263-2-git-send-email-lars@metafoo.de>
+References: <1426520397-24263-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-125.synserver.de (smtp-out-126.synserver.de
  [212.40.185.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 679892612C9
+ by alsa0.perex.cz (Postfix) with ESMTP id DAA732612D2
  for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 16:39:53 +0100 (CET)
+In-Reply-To: <1426520397-24263-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,20 +31,20 @@ called, there is no need to initialize it explicitly.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/rt286.c | 1 -
+ sound/soc/codecs/wm2200.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index fb3f5d3..7bbe714 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1048,7 +1048,6 @@ static int rt286_probe(struct snd_soc_codec *codec)
- 	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index b48694a..5a9da28 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -1554,7 +1554,6 @@ static int wm2200_probe(struct snd_soc_codec *codec)
+ 	int ret;
  
- 	rt286->codec = codec;
+ 	wm2200->codec = codec;
 -	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
  
- 	if (rt286->i2c->irq) {
- 		regmap_update_bits(rt286->regmap,
+ 	ret = snd_soc_add_codec_controls(codec, wm_adsp1_fw_controls, 2);
+ 	if (ret != 0)
 -- 
 1.8.0
