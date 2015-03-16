@@ -1,20 +1,18 @@
-From: Robin Gareus <robin@gareus.org>
-Subject: Re: [PATCH 11/11] ALSA: digi00x: apply double-oh-three
- algorism to multiplex PCM samples
-Date: Mon, 16 Mar 2015 18:13:31 +0100
-Message-ID: <55070F3B.7000509@gareus.org>
-References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
- <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
- <5506E7EE.6060300@gareus.org> <55070409.8090107@sakamocchi.jp>
+From: Howard Mitchell <hm@hmbedded.co.uk>
+Subject: Re: pcm512x driver: Mixer control naming issue
+Date: Mon, 16 Mar 2015 17:37:28 +0000
+Message-ID: <550714D8.5060407@hmbedded.co.uk>
+References: <5500DE5B.2020401@hmbedded.co.uk> <5502DAE1.30609@hmbedded.co.uk>
+ <20150313182729.GE28806@sirena.org.uk> <55060771.7060200@hmbedded.co.uk>
+ <20150316113845.GM28806@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
- [81.169.146.219])
- by alsa0.perex.cz (Postfix) with ESMTP id 30A0A26145B
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 18:13:44 +0100 (CET)
-In-Reply-To: <55070409.8090107@sakamocchi.jp>
+Received: from avasout05.plus.net (avasout05.plus.net [84.93.230.250])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF685261489
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 18:40:04 +0100 (CET)
+In-Reply-To: <20150316113845.GM28806@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, damien@zamaudio.com, clemens@ladisch.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Gordon Garrity <gordon.garrity@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/16/2015 05:25 PM, Takashi Sakamoto wrote:
-[..]
-> 
-> We can see the data in 7th MBLA data channel influences data in next
-> data block (data block is represented as 'frame' in driver code). The
-> pattern is what you discovered. In my understanding, this is the lack of
-> my implementation.
-> 
-> Do you mean this issue?
-> 
 
-yes, precisely.
 
-Though from the information Damien sent me it looked like it wraps
-around in the current frame, rather then progress to the next..
+On 16/03/15 11:38, Mark Brown wrote:
+> On Sun, Mar 15, 2015 at 10:28:01PM +0000, Howard Mitchell wrote:
+>
+>> Defining a new prefix sounds like a reasonable idea in principle but calling
+>> it "Analog(ue)" seems like it's saying this is a proper analogue volume
+>> control whereas these particular controls merely provide very limited
+>> selections of gain. I could imagine that at some point in the future a
+> Userspace can determine how much control there is from the TLV
+> information.  Ideally a smart userspace will manage to combine all the
+> different controls it finds to make the best use it can of them - if it
+> can use analogue volume control for some of the control that's generally
+> better since it maximizes the resolution of the digital parts.
 
-Anyway, in this case the original code at
-https://github.com/x42/003amdtp is also wrong and the driver will have
-to allocate space for the state and retain it for subsequent calls.
-Using a static on the stack won't work in case someone has multiple of
-those devices.
+Makes sense.
+>> default for "Analogue Playback Volume" may well be added to "alsactl
+>> restore" and then we end up back in the same situation. How about defining a
+>> prefix that is documented as saying that a default should not be used if
+>> there's nothing in asound.state for that control?
+> Really the problem here is using asound.state - it's far too dumb a
+> means of controlling random cards, and attempting to change it is most
+> likely going to break something else.  Any attempt to introduce a
+> default for analogue control will inevitably result in problems on cards
+> that currently work fine with digital/default control unless those are
+> changed which would then cause problems for things without the analogue
+> control.
+So it sounds like adding an analogue prefix should be fairly safe in
+which case are you happy for me to go ahead and prepare a patch?
 
-best,
-robin
+- Howard
