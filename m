@@ -1,41 +1,43 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm8741: Fix rates constraints values
-Date: Mon, 16 Mar 2015 14:57:39 +0000
-Message-ID: <20150316145739.GJ17136@opensource.wolfsonmicro.com>
-References: <1426281614-12147-1-git-send-email-ce3a@gmx.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH] ASoC: wm8731: let codec to manage clock by itself
+Date: Mon, 16 Mar 2015 15:01:12 +0000
+Message-ID: <20150316150112.GT28806@sirena.org.uk>
+References: <1426126631-27240-1-git-send-email-songjun.wu@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 341552610B1
- for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 15:57:40 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ey7axMtC4Hj1PEsG"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1426281614-12147-1-git-send-email-ce3a@gmx.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sergej Sawazki <ce3a@gmx.de>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+In-Reply-To: <1426126631-27240-1-git-send-email-songjun.wu@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Songjun Wu <songjun.wu@atmel.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, fabio.estevam@freescale.com, manuel.lauss@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, voice.shen@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 13, 2015 at 10:20:14PM +0100, Sergej Sawazki wrote:
-> According to table 11 in the datasheet (Rev 4.3):
-> Example: With a master clock (MCLK) of 11.2896MHz, the following sampling rates (LRCLK) are supported:
->   44.1kHz (MCLK/256), 88.2kHz (MCLK/128)
-> 
-> For the rates lists, we should use 82000 instead of 88235 and 176400 instead of 1764000 (seems to be a typo).
-> 
-> Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+--ey7axMtC4Hj1PEsG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Charles
+On Thu, Mar 12, 2015 at 10:17:11AM +0800, Songjun Wu wrote:
+> Enable WM8731 to support common clock framework.
+
+Applied, thanks.
+
+--ey7axMtC4Hj1PEsG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVBvA3AAoJECTWi3JdVIfQhYUH/0ancB6y5BUJdsTLZGz2Bi6r
+fRg4yhPp6Nly+aWdqnhDoIQv1SD6K0RNBud0v6ROcnIeryEefukLXAkTYfOYGkcT
+Xe9a2rZ2VpLUhkv8+O4NgTJfbEufPqhw2HBw/wuqHL2Icc+J6myRhw0oq+eVduiR
+b4WYpF1qXwEskmJDjBmAgTciIZUSYG0cIX6xl4Y70Y3z2uk58pwZlEt2r7QMPSE+
+14VsGp0Zo5ifO+8vdwstivGF42Svxri5QJb62VhNH2Ks/oXy6FgU3LAn4Sw07dRr
+jHFjbWQkUNLmhuKO3WaYV7+tVpAv6tF4N7kjutI4YPnUedOFh1QEAEEKcIsVM7w=
+=U5jM
+-----END PGP SIGNATURE-----
+
+--ey7axMtC4Hj1PEsG--
