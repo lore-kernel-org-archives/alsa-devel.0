@@ -1,48 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: qcom: Change qcom,adsp in LPASS CPU bindings
-Date: Mon, 16 Mar 2015 11:06:54 +0000
-Message-ID: <20150316110654.GK28806@sirena.org.uk>
-References: <1426233257-27532-1-git-send-email-kwestfie@codeaurora.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH V8 4/5] ASoC: Allow for building QCOM drivers
+Date: Mon, 16 Mar 2015 11:25:10 +0000
+Message-ID: <20150316112510.GL28806@sirena.org.uk>
+References: <1426233668-30593-1-git-send-email-kwestfie@codeaurora.org>
+ <1426233668-30593-5-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aQCvZzThlHwFiHtP"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="m4dDEz192B/qme3Z"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1426233257-27532-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, David Brown <davidb@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, Rob Herring <robh+dt@kernel.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Device Tree Mailing List <devicetree@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <1426233668-30593-5-git-send-email-kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, David Brown <davidb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Bryan Huntsman <bryanh-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, ALSA Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, MSM Mailing List <linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Device Tree Mailing List <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---aQCvZzThlHwFiHtP
+--m4dDEz192B/qme3Z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 13, 2015 at 12:54:16AM -0700, Kenneth Westfield wrote:
-> From: Kenneth Westfield <kwestfie@codeaurora.org>
+On Fri, Mar 13, 2015 at 01:01:07AM -0700, Kenneth Westfield wrote:
+> From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 >=20
-> Change the representation of the audio DSP, in the
-> LPASS CPU bindings description, from a required
-> subnode to an optional phandle.
+> Allow for the Qualcomm Technologies ASoC drivers
+> to build.
 
-Applied both, thanks.
+Applied everything up to here, thanks.
 
---aQCvZzThlHwFiHtP
+--m4dDEz192B/qme3Z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVBrlOAAoJECTWi3JdVIfQriYH/3tydtZMLW8ZlNgiM/RyltDz
-OqJ4TK0ysW9+dL0xgc1C2uby1Q7yPSjSu4Da5RdgLytwcxScHjs/u0wpRK47rGap
-TqpCEk+heh1IQ2OFAEIsPWkptxNxP3+sHBNGtPa53O86EBljk9BZHmCPIDWhoSrF
-R5wDuxxG2sTpNQJraOdY5uhdt90nzzDk/wIBPMomyAHzMWVSHf2UgXiHCSno4mUT
-d4Ao+U/PjengnnxngpfKBjeSnNt34sCuKi/FVO1l0a87JUCtysjuCTVEnDqahWc5
-JZq3wzcPdxsEG62GXHFoH2G5UXLernyvbpKho/JnDw503osAfBVfgqrzXvQ2BQU=
-=FjJF
+iQEcBAEBCAAGBQJVBr2VAAoJECTWi3JdVIfQyeQH/3QTsFc9K8ptqybmJxxTKj5T
+riRXq4ANrnqA0TuuY0A55gTnOLp96pFC6rg9YqodDb69pOQouh1eC/tN6Ahr9usS
+YLrfNaPZtBk82TQGurQsx/c8z/oMWunybzxNn68H8o/iv7CQrBJCxqjQSZxHqaCs
+khrAr7zBLGg9X7IHuUzwyZoSTO5462zaxNFLD9XdIE+ZXUBJUZjpk5CMqdXN63/R
+MtYv0JxR3feee5jCsug1q7zqe7g4V8phnD8p6+nTPqEvCxc7yVefY9WLCNqiemb7
+DN8wSNQiIpwIj0K+6eQ9nrnkGXv0dsuJVdtVg+CzGzyZEbNN08Tm1BIORIr8ySo=
+=bxrd
 -----END PGP SIGNATURE-----
 
---aQCvZzThlHwFiHtP--
+--m4dDEz192B/qme3Z--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
