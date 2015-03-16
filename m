@@ -1,27 +1,89 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH] ASoC: wm8731: let codec to manage clock by itself
-Date: Mon, 16 Mar 2015 14:53:15 +0000
-Message-ID: <20150316145315.GI17136@opensource.wolfsonmicro.com>
-References: <1426126631-27240-1-git-send-email-songjun.wu@atmel.com>
+From: =?UTF-8?Q?Cl=C3=A9ment_Guedez?= <klem.dev@gmail.com>
+Subject: Re: [PATCH 5/6] ESI W192M : Add text Line in/Mic for
+ selecting input gain state
+Date: Mon, 16 Mar 2015 15:54:43 +0100
+Message-ID: <CADoA7KZxZmJuxm-NrBo11-j9XFjWU8tHVprn3MwNmow148uuww@mail.gmail.com>
+References: <550621f3.28eec20a.543a.fffffbe6@mx.google.com>
+ <s5h7fuhqt1g.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1426126631-27240-1-git-send-email-songjun.wu@atmel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Songjun Wu <songjun.wu@atmel.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, fabio.estevam@freescale.com, manuel.lauss@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, voice.shen@atmel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f175.google.com (mail-ig0-f175.google.com
+ [209.85.213.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C3A426128A
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 15:54:45 +0100 (CET)
+Received: by igcqo1 with SMTP id qo1so44081763igc.0
+ for <alsa-devel@alsa-project.org>; Mon, 16 Mar 2015 07:54:43 -0700 (PDT)
+In-Reply-To: <s5h7fuhqt1g.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 12, 2015 at 10:17:11AM +0800, Songjun Wu wrote:
-> Enable WM8731 to support common clock framework.
-> 
-> Signed-off-by: Songjun Wu <songjun.wu@atmel.com>
-> ---
-
-Looks ok to me:
-
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-
-Thanks,
-Charles
+T2ssIEkgd2FzIG5vdCBhd2FyZSBvZiB0aGlzIG1lY2hhbmlzbS4KCkluIGZhY3QgdGhpcyBpcyBh
+IGJvb2xlYW4gY29udHJvbCB0byBhY3RpdmF0ZSB0aGUgaW5wdXQgZ2FpbiBhbXBsaWZpZXIgZm9y
+Cm1pY3JvcGhvbmUgc2lnbmFsIG9yIHRvIGRlYWN0aXZhdGUgaXQgZm9yIHN0YW5kYXJkIGxpbmUg
+c2lnbmFsLgpJIHVzZSB0aGUgZW51bSB0byBoYXZlIGNob2ljZSB2YWx1ZSBtb3JlIGV4cGxpY2l0
+IHRoYW4gb24vb2ZmIG9yCnRydWUvZmFsc2UsIGZvciB0aGUgZW5kIHVzZXIuCkFsc28gdGhlcmUg
+d2lsbCBuZXZlciBiZSBtb3JlIHZhbHVlIHRoYW4gdGhvc2UgdHdvLgoKU28gSSBjaG91bGQgY2hh
+bmdlIHRoZSBjb250cm9sIG5hbWUgdG8gIk1pYy9MaW5lIElucHV0IEVudW0iIGFuZCBrZWVwIHRo
+ZQplbnVtIGZvciB2YWx1ZXMsIG1vcmUgdGhhbiBuYW1lIGl0ICJJbnB1dCBHYWluIFN3aXRjaCIg
+YW5kIHVzZSBib29sZWFuID8KCgpUaGFua3MKCgoKCgoyMDE1LTAzLTE2IDg6NTEgR01UKzAxOjAw
+IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cgo+IEF0IE1vbiwgMTYgTWFyIDIwMTUgMDE6
+MjA6NTQgKzAxMDAsCj4ga2xlbS5kZXZAZ21haWwuY29tIHdyb3RlOgo+ID4KPiA+IEZyb206IENs
+w6ltZW50IEd1ZWRleiA8a2xlbS5kZXZAZ21haWwuY29tPgo+ID4KPiA+IEFkZCB0ZXh0IExpbmUg
+aW4vTWljIGZvciBzZWxlY3RpbmcgaW5wdXQgZ2FpbiBzdGF0ZSBpbiBtaXhlciBmb3IgRVNJCj4g
+VzE5Mk0uCj4KPiBXaGF0IEkgbWVhbnQgaXMgdG8gY2hhbmdlIGNvbnRyb2wgbmFtZSAiTGluZSBT
+d2l0Y2giIHRvIGEgZGlmZmVyZW50Cj4gc3VmZml4IChvaCwgYW55d2F5IHRoZXJlIGlzIGEgdHlw
+byBpbiB0aGUgb3JpZ2luYWwgY29kZSwgaXQncyB3cml0dGVuCj4gYXMgInN3aXRjaCIsIG5vdCAi
+U3dpdGNoIi4uLikKPgo+IFRoZSB0eXBlIG9mIGNvbnRyb2wgZWxlbWVudCBpcyBpZGVudGlmaWVk
+IGJ5IGEgc3RyaW5nIG5hbWUgcnVsZSBpbgo+IHNvbWUgbGV2ZWxzLiAgV2hlbiBhIGNvbnRyb2wg
+aXMgbmFtZWQgYXMgIlhYWCBTd2l0Y2giLCBpdCdzIHRha2VuIGFzIGEKPiBib29sZWFuIGNvbnRy
+b2wuICBGb3IgZW51bSBjb250cm9sLCB3ZSB1c3VhbGx5IHRha2UgIkVudW0iIHN1ZmZpeCBzbwo+
+IHRoYXQgYWxzYS1saWIgc2ltcGxlIG1peGVyIGludGVyZmFjZSBjYW4gcmVjb2duaXplIGl0IGFz
+IGFuIGVudW1lcmF0ZWQKPiBjb250cm9sLgo+Cj4gKEhtLCBpdCdzIG5vdCBtZW50aW9uZWQgaW4g
+RG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0NvbnRyb2xOYW1lcy50eHQuCj4gIEFuIHVwZGF0ZSBp
+cyBuZWVkZWQuLi4pCj4KPgo+IFRha2FzaGkKPgo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IENsw6lt
+ZW50IEd1ZWRleiA8a2xlbS5kZXZAZ21haWwuY29tPgo+ID4KPiA+IGRpZmYgLS1naXQgYS9zb3Vu
+ZC9wY2kvaWNlMTcxMi93dG0uYyBiL3NvdW5kL3BjaS9pY2UxNzEyL3d0bS5jCj4gPiBpbmRleCBj
+N2ZmYWZhLi5hNmU3YWZhIDEwMDY0NAo+ID4gLS0tIGEvc291bmQvcGNpL2ljZTE3MTIvd3RtLmMK
+PiA+ICsrKyBiL3NvdW5kL3BjaS9pY2UxNzEyL3d0bS5jCj4gPiBAQCAtMzM5LDggKzMzOSwxNCBA
+QCBzdGF0aWMgaW50IHN0YWM5NDYwX2FkY192b2xfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wKPiAq
+a2NvbnRyb2wsCj4gPiAgLyoKPiA+ICAgKiBNSUMgLyBMSU5FIHN3aXRjaCBmb25jdGlvbgo+ID4g
+ICAqLwo+ID4gK3N0YXRpYyBpbnQgc3RhYzk0NjBfbWljX3N3X2luZm8oc3RydWN0IHNuZF9rY29u
+dHJvbCAqa2NvbnRyb2wsCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qg
+c25kX2N0bF9lbGVtX2luZm8gKnVpbmZvKQo+ID4gK3sKPiA+ICsgICAgIHN0YXRpYyBjb25zdCBj
+aGFyICogY29uc3QgdGV4dHNbMl0gPSB7ICJMaW5lIEluIiwgIk1pYyIgfTsKPiA+ICsKPiA+ICsg
+ICAgIHJldHVybiBzbmRfY3RsX2VudW1faW5mbyh1aW5mbywgMSwgMiwgdGV4dHMpOwo+ID4gK30K
+PiA+Cj4gPiAtI2RlZmluZSBzdGFjOTQ2MF9taWNfc3dfaW5mbyAgICAgICAgIHNuZF9jdGxfYm9v
+bGVhbl9tb25vX2luZm8KPiA+Cj4gPiAgc3RhdGljIGludCBzdGFjOTQ2MF9taWNfc3dfZ2V0KHN0
+cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgc3RydWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCj4gPiBAQCAtMzU0LDcg
+KzM2MCw3IEBAIHN0YXRpYyBpbnQgc3RhYzk0NjBfbWljX3N3X2dldChzdHJ1Y3Qgc25kX2tjb250
+cm9sCj4gKmtjb250cm9sLAo+ID4gICAgICAgICAgICAgICB2YWwgPSBzdGFjOTQ2MF9nZXQoaWNl
+LCBTVEFDOTQ2WF9HRU5FUkFMX1BVUlBPU0UpOwo+ID4gICAgICAgZWxzZQo+ID4gICAgICAgICAg
+ICAgICB2YWwgPSBzdGFjOTQ2MF8yX2dldChpY2UsIFNUQUM5NDZYX0dFTkVSQUxfUFVSUE9TRSk7
+Cj4gPiAtICAgICB1Y29udHJvbC0+dmFsdWUuaW50ZWdlci52YWx1ZVswXSA9IH52YWw+PjcgJiAw
+eDE7Cj4gPiArICAgICB1Y29udHJvbC0+dmFsdWUuZW51bWVyYXRlZC5pdGVtWzBdID0gKHZhbCA+
+PiA3KSAmIDB4MTsKPiA+ICAgICAgIHJldHVybiAwOwo+ID4gIH0KPiA+Cj4gPiBAQCAtMzcwLDcg
+KzM3Niw3IEBAIHN0YXRpYyBpbnQgc3RhYzk0NjBfbWljX3N3X3B1dChzdHJ1Y3Qgc25kX2tjb250
+cm9sCj4gKmtjb250cm9sLAo+ID4gICAgICAgICAgICAgICBvbGQgPSBzdGFjOTQ2MF9nZXQoaWNl
+LCBTVEFDOTQ2WF9HRU5FUkFMX1BVUlBPU0UpOwo+ID4gICAgICAgZWxzZQo+ID4gICAgICAgICAg
+ICAgICBvbGQgPSBzdGFjOTQ2MF8yX2dldChpY2UsIFNUQUM5NDZYX0dFTkVSQUxfUFVSUE9TRSk7
+Cj4gPiAtICAgICBuZXcgPSAofnVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdIDw8IDcg
+JiAweDgwKSB8IChvbGQgJgo+IH4weDgwKTsKPiA+ICsgICAgIG5ldyA9ICh1Y29udHJvbC0+dmFs
+dWUuZW51bWVyYXRlZC5pdGVtWzBdIDw8IDcgJiAweDgwKSB8IChvbGQgJgo+IH4weDgwKTsKPiA+
+ICAgICAgIGNoYW5nZSA9IChuZXcgIT0gb2xkKTsKPiA+ICAgICAgIGlmIChjaGFuZ2UpIHsKPiA+
+ICAgICAgICAgICAgICAgaWYgKGlkID09IDApCj4gPiAtLQo+ID4gMi4xLjQKPiA+Cj4KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
