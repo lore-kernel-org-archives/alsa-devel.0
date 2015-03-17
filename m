@@ -1,53 +1,47 @@
-From: "Christian Gleerup" <cromozon@swn.nu>
-Subject: getting the sound to work on my asus m6s00v
-Date: Tue, 17 Mar 2015 22:45:21 +0100
-Message-ID: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v9] ASoC: dapm: add code to configure dai link parameters
+Date: Tue, 17 Mar 2015 22:55:33 +0000
+Message-ID: <20150317225533.GT28806@sirena.org.uk>
+References: <1422896805-18135-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.itoverblik.dk (mail.itoverblik.dk [81.7.162.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E697260612
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 22:44:11 +0100 (CET)
-Received: from swn.nu
- by mail.itoverblik.dk (mail.itoverblik.dk) with ASMTP id 201503172244115178
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 22:44:11 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="cX6v06kgJwdgCvne"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1422896805-18135-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-I had some problems getting the sound to work on my asus m6s00v 
-(I think that is the model, it is a bit worn so I can't really read it)
 
-the symptoms was
-* on the integrated speakers, no sound at all
-* on the headphone speakers, sound for a very very short period that faded into nothing.
+--cX6v06kgJwdgCvne
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-with help from debianuser on freenode#alsa we managed to get it working.
-the option that i had to load the module with is the following:
-sudo modprobe snd-hda-intel model=3stack-digout
-the status now (perfect)...
-* sound on integrated speaker.
-* sound in headphones (disables integrated speaker output which is fine)
-* mic works, both for direct playback and recording
-* when recording it is the 'digital' channel that controls the volume of the recording level, all others
+On Mon, Feb 02, 2015 at 05:06:44PM +0000, Nikesh Oswal wrote:
+> dai-link params for codec-codec links were fixed. The fixed
+> link between codec and another chip which may be another codec,
+> baseband, bluetooth codec etc may require run time configuaration
+> changes. This change provides an optional alsa control to select
+> one of the params from a list of params.
 
-Notice: 
-I don't have OSS or pulseaudio installed.
+Applied, thanks!
 
-I am thinking it would be really nice if the driver automatically could detect that this option is required.
+--cX6v06kgJwdgCvne
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-this is the output from the alsa-info script
-http://www.alsa-project.org/db/?f=28b98a3bd1efc6a80dbd5c54b52c4472d8ea5496
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-let me know if I can do anything to help with this.
+iQEcBAEBCAAGBQJVCLDkAAoJECTWi3JdVIfQipIH/2xHR5tKQf8e/BILLMXTLeEn
+J4xCTpCbsEGJ8+SOzCdgh1PZrrEqBbl3A47OeaIWzhVNnxnpfY6Zmzi8Cdl4l1DW
+nDZ3Y+eYv7SbX0hOT6tkYvL46itreok4hy5O6vzL9OqjOjFY+vABmldxHNDkZqAz
+EeV6V+3zLMokgNz0V4uy8Ft3z5fwGm4jqFMyL0cyp3u/S8/7LJpDOBVlXCJMwzTp
+MsNIFv1N3IX+UBcoccaFWVl5zWhOt2t6mbU0EKVfkbIWxPKIvR2m/xkodYp/WcEf
+hFFcK91EQSwNXLOu/pkyvVhbcVuv2DdpL1bneiWN46DVJoDS6GZcVOD/5pYFHUE=
+=zKuA
+-----END PGP SIGNATURE-----
 
-Regards.
+--cX6v06kgJwdgCvne--
