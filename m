@@ -1,15 +1,17 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: Add max98925 codec driver
-Date: Tue, 17 Mar 2015 21:28:43 +0300
-Message-ID: <20150317182843.GA30354@mwanda>
+From: "Christian Gleerup" <cromozon@swn.nu>
+Subject: getting the sound to work on my asus m6s00v
+Date: Tue, 17 Mar 2015 22:45:21 +0100
+Message-ID: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id E3D7E262632
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 19:29:05 +0100 (CET)
-Content-Disposition: inline
+Received: from mail.itoverblik.dk (mail.itoverblik.dk [81.7.162.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E697260612
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 22:44:11 +0100 (CET)
+Received: from swn.nu
+ by mail.itoverblik.dk (mail.itoverblik.dk) with ASMTP id 201503172244115178
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 22:44:11 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,41 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: yesanishhere@gmail.com
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Anish Kumar,
+I had some problems getting the sound to work on my asus m6s00v 
+(I think that is the model, it is a bit worn so I can't really read it)
 
-The patch 1ff2765182d1: "ASoC: Add max98925 codec driver" from Mar 9,
-2015, leads to the following static checker warning:
+the symptoms was
+* on the integrated speakers, no sound at all
+* on the headphone speakers, sound for a very very short period that faded into nothing.
 
-	sound/soc/codecs/max98925.c:274 max98925_rate_value()
-	error: buffer overflow 'rate_table' 9 <= 9
+with help from debianuser on freenode#alsa we managed to get it working.
+the option that i had to load the module with is the following:
+sudo modprobe snd-hda-intel model=3stack-digout
+the status now (perfect)...
+* sound on integrated speaker.
+* sound in headphones (disables integrated speaker output which is fine)
+* mic works, both for direct playback and recording
+* when recording it is the 'digital' channel that controls the volume of the recording level, all others
 
-sound/soc/codecs/max98925.c
-   259  static inline int max98925_rate_value(struct snd_soc_codec *codec,
-   260                  int rate, int clock, int *value, int *n, int *m)
-   261  {
-   262          int ret = -EINVAL;
-   263          int i;
-   264  
-   265          for (i = 0; i < ARRAY_SIZE(rate_table); i++) {
-   266                  if (rate_table[i].rate >= rate) {
-   267                          *value = rate_table[i].sr;
-   268                          *n = rate_table[i].divisors[clock][0];
-   269                          *m = rate_table[i].divisors[clock][1];
-   270                          ret = 0;
-   271                          break;
-   272                  }
-   273          }
-   274          dev_dbg(codec->dev, "%s: sample rate is %d, returning %d\n",
-   275                                  __func__, rate_table[i].rate, *value);
-                                                  ^^^^^^^^^^^^^^^^^^
-If we don't break then we're off by one.
+Notice: 
+I don't have OSS or pulseaudio installed.
 
-   276          return ret;
-   277  }
+I am thinking it would be really nice if the driver automatically could detect that this option is required.
 
-regards,
-dan carpenter
+this is the output from the alsa-info script
+http://www.alsa-project.org/db/?f=28b98a3bd1efc6a80dbd5c54b52c4472d8ea5496
+
+let me know if I can do anything to help with this.
+
+Regards.
