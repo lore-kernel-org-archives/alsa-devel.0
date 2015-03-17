@@ -1,17 +1,14 @@
-From: Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: move the jack creation to
-	Braswell machine driver
-Date: Tue, 17 Mar 2015 10:23:31 +0800
-Message-ID: <1426559011-8499-3-git-send-email-yao.jin@linux.intel.com>
-References: <1426559011-8499-1-git-send-email-yao.jin@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v4.0
+Date: Tue, 17 Mar 2015 11:36:35 +0000
+Message-ID: <20150317113635.GB28806@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4795189783413720242=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A7F8261A1D
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 03:17:35 +0100 (CET)
-In-Reply-To: <1426559011-8499-1-git-send-email-yao.jin@linux.intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6383A261B01
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 12:36:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,74 +18,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, yao.jin@linux.intel.com, bardliao@realtek.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The jack creation code was in rt5670 codec driver before due to the
-jack resources (gpio/irq) were defined under the node of codec device
-in ACPI on Braswell. We used the snd_soc_jack_new() to create a jack
-instance.
 
-But now snd_soc_jack_new() is removed from upstream and we can't
-use snd_soc_card_jack_new() in codec driver, so we move the jack
-creation code to machine driver and pass the jack instance to codec
-driver for further processing.
+--===============4795189783413720242==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="JsPm5tED8eNFkDPA"
+Content-Disposition: inline
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- sound/soc/intel/cht_bsw_rt5672.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
 
-diff --git a/sound/soc/intel/cht_bsw_rt5672.c b/sound/soc/intel/cht_bsw_rt5672.c
-index c41fae3..4204fc4 100644
---- a/sound/soc/intel/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/cht_bsw_rt5672.c
-@@ -22,6 +22,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/jack.h>
- #include "../codecs/rt5670.h"
- #include "sst-atom-controls.h"
- 
-@@ -29,6 +30,20 @@
- #define CHT_PLAT_CLK_3_HZ	19200000
- #define CHT_CODEC_DAI	"rt5670-aif1"
- 
-+static struct snd_soc_jack cht_bsw_headset;
-+
-+/* Headset jack detection DAPM pins */
-+static struct snd_soc_jack_pin cht_bsw_headset_pins[] = {
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+	{
-+		.pin = "Headphone",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+};
-+
- static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
- {
- 	int i;
-@@ -178,6 +193,15 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 				| RT5670_AD_MONO_L_FILTER
- 				| RT5670_AD_MONO_R_FILTER,
- 				RT5670_CLK_SEL_I2S1_ASRC);
-+
-+        ret = snd_soc_card_jack_new(runtime->card, "Headset",
-+                SND_JACK_HEADSET | SND_JACK_BTN_0 |
-+                SND_JACK_BTN_1 | SND_JACK_BTN_2, &cht_bsw_headset,
-+                cht_bsw_headset_pins, ARRAY_SIZE(cht_bsw_headset_pins));
-+        if (ret)
-+                return ret;
-+
-+	rt5670_set_jack_detect(codec, &cht_bsw_headset);
- 	return 0;
- }
- 
--- 
-1.9.1
+--JsPm5tED8eNFkDPA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 06e5801b8cb3fc057d88cb4dc03c0b64b2744cda:
+
+  Linux 4.0-rc4 (2015-03-15 17:38:20 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.0-rc4
+
+for you to fetch changes up to 33484c67398295108ab31e17b50b5a6fba1f5eef:
+
+  Merge remote-tracking branches 'asoc/fix/sgtl5000' and 'asoc/fix/sn95031' into asoc-linus (2015-03-16 12:03:17 +0000)
+
+----------------------------------------------------------------
+ASoC: Fixes for v4.0
+
+As well as the usual collection of driver specific fixes there's a few
+more generic things:
+
+ - Lots of fixes from Takashi for drivers using the wrong field in the
+   control union to communicate with userspace, leading to potential
+   errors on 64 bit systems.
+ - A fix from Lars for locking of the lists of devices we maintain,
+   mostly only likely to trigger during device probe and removal.
+
+----------------------------------------------------------------
+Bard Liao (1):
+      ASoC: rt286: Change the DMI mapping for Dino
+
+Eric Nelson (1):
+      ASoC: sgtl5000: remove useless register write clearing CHRGPUMP_POWERUP
+
+Lars-Peter Clausen (4):
+      ASoC: ak4671: Fix control-less DAPM routes
+      ASoC: da732x: Fix control-less DAPM routes
+      ASoC: sn95031: Fix control-less DAPM routes
+      ASoC: Fix component lists locking
+
+Lu, Han (1):
+      ASoC: Intel: remove conflicts when load/unload multiple firmware images
+
+Maciej S. Szmigiero (1):
+      fsl_ssi: fix of_property_read_u32_array return value check
+
+Mark Brown (3):
+      Merge remote-tracking branch 'asoc/fix/intel' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/ak4671', 'asoc/fix/control', 'asoc/fix/da732x', 'asoc/fix/fsl-ssi', 'asoc/fix/lock' and 'asoc/fix/rt286' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/sgtl5000' and 'asoc/fix/sn95031' into asoc-linus
+
+Nicolin Chen (1):
+      ASoC: fsl_ssi: Don't try to round-up for PM divisor calculation
+
+Takashi Iwai (14):
+      ASoC: adav80x: Fix wrong value references for boolean kctl
+      ASoC: ak4641: Fix wrong value references for boolean kctl
+      ASoC: cs4271: Fix wrong value references for boolean kctl
+      ASoC: es8238: Fix wrong value references for boolean kctl
+      ASoC: pcm1681: Fix wrong value references for boolean kctl
+      ASoC: tas5086: Fix wrong value references for boolean kctl
+      ASoC: wm2000: Fix wrong value references for boolean kctl
+      ASoC: wm8731: Fix wrong value references for boolean kctl
+      ASoC: wm8903: Fix wrong value references for boolean kctl
+      ASoC: wm8904: Fix wrong value references for boolean kctl
+      ASoC: wm8955: Fix wrong value references for boolean kctl
+      ASoC: wm8960: Fix wrong value references for boolean kctl
+      ASoC: wm9712: Fix wrong value references for boolean kctl
+      ASoC: wm9713: Fix wrong value references for boolean kctl
+
+ sound/soc/codecs/adav80x.c        |  4 ++--
+ sound/soc/codecs/ak4641.c         |  4 ++--
+ sound/soc/codecs/ak4671.c         | 44 +++++++++++++++++++--------------------
+ sound/soc/codecs/cs4271.c         |  4 ++--
+ sound/soc/codecs/da732x.c         |  8 +++----
+ sound/soc/codecs/es8328.c         |  4 ++--
+ sound/soc/codecs/pcm1681.c        |  4 ++--
+ sound/soc/codecs/rt286.c          |  2 +-
+ sound/soc/codecs/sgtl5000.c       |  8 +------
+ sound/soc/codecs/sn95031.c        |  4 ++--
+ sound/soc/codecs/tas5086.c        |  4 ++--
+ sound/soc/codecs/wm2000.c         |  8 +++----
+ sound/soc/codecs/wm8731.c         |  4 ++--
+ sound/soc/codecs/wm8903.c         |  4 ++--
+ sound/soc/codecs/wm8904.c         |  4 ++--
+ sound/soc/codecs/wm8955.c         |  4 ++--
+ sound/soc/codecs/wm8960.c         |  4 ++--
+ sound/soc/codecs/wm9712.c         |  6 +++---
+ sound/soc/codecs/wm9713.c         |  6 +++---
+ sound/soc/fsl/fsl_ssi.c           |  4 ++--
+ sound/soc/intel/sst-haswell-dsp.c |  3 ---
+ sound/soc/intel/sst-haswell-ipc.c | 32 +++++++++++++++++++++-------
+ sound/soc/soc-core.c              | 41 ++++++++++++++++++++++++++----------
+ 23 files changed, 118 insertions(+), 92 deletions(-)
+
+--JsPm5tED8eNFkDPA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVCBHCAAoJECTWi3JdVIfQNPIH/RvlGwYQPl/TffpzN3ttXic9
+clZJPmA6vISQNQBrf5QWzePki+st9E5ppqVI+TJkHb23LUOQR5Ir7Uv8AOQxjEWG
+UpyIpW6BihAnTyCDrY3fmotY7xDi6rZ85n6H/02xp4njY22RDo+WQBEyBgCiZFj0
+aSfPVkqv3NOmChUcxyyfKR3Nnc88BvcbwI2WN5oYD6Q8Lj2nT4ci3SN7lSAUqZfA
+D7Rh0pZ31Eax5tmi78gE7j854abEgq/P1juo7I3zX2DSCpRMnEkTRFmtSvDe1Jla
+E5Rs7FQ6JkSjDB0sp+PI4ea5/uvcUyB3HNtVnpB13nsbwU6pYDKntROcAwAvY/g=
+=3Ikq
+-----END PGP SIGNATURE-----
+
+--JsPm5tED8eNFkDPA--
+
+--===============4795189783413720242==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4795189783413720242==--
