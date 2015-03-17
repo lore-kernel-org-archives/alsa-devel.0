@@ -1,118 +1,242 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: dummy codec + simple card combination
-Date: Tue, 17 Mar 2015 16:07:25 +0200
-Message-ID: <5508351D.7050304@ti.com>
-References: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
- <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
- <5502ADD9.9070603@ti.com>
- <7087ED0D-9625-48EA-9012-A6A05869E014@goldelico.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH] ASoC: davinci-mcasp: Set rule constraints if implicit BCLK divider is used
+Date: Tue, 17 Mar 2015 16:56:43 +0200
+Message-ID: <1426604203-6467-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id C7CD7264F23
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 15:07:31 +0100 (CET)
-In-Reply-To: <7087ED0D-9625-48EA-9012-A6A05869E014@goldelico.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: Belisko Marek <marek.belisko@gmail.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, jarkko.nikula@bitmer.com
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, broonie@kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, lars@metafoo.de, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/13/2015 11:54 AM, Dr. H. Nikolaus Schaller wrote:
-> =
+Set a rule constraints to allow only combinations of sample-rate and
+number of frame-bits that can be played/captured with a reasonable
+sample-rate accuracy.
 
-> For GSM there is some special logic for tri-stating a DAI because the
-> audio channel is wired to the twl4030 *and* a McBSP. This is for either
-> routing the voice directly to the twl or through the CPU (and some filter=
-s,
-> answering machine, sound scrambling etc.). This needs tri-state support
-> of the McBSP DX line.
-> =
+Also, takes the number of serializers into account when implicitly
+selecting the BLCK divider.
 
->> Or write a custom machine driver and get it done ;)
-> =
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+---
+Now this works as it should.
 
-> If you would find time (which is beyond what we can realistically expect)=
- to look
-> into the non-DT 3.12 kernel where everything works, it would be here:
-> =
+Thanks,
+Jyri
 
-> http://git.goldelico.com/?p=3Dgta04-kernel.git;a=3Dtree;f=3Dsound/soc/oma=
-p;hb=3DHEAD
-> =
+ sound/soc/davinci/davinci-mcasp.c | 150 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 140 insertions(+), 10 deletions(-)
 
-> Basically we want to rebuild this using DT and use as much standard pieces
-> as possible. So that we only need to upstream what is missing for full gt=
-a04
-> support.
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index de3b155..3ecee3b 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -26,6 +26,7 @@
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/of_device.h>
++#include <linux/math64.h>
+ 
+ #include <sound/asoundef.h>
+ #include <sound/core.h>
+@@ -64,6 +65,11 @@ struct davinci_mcasp_context {
+ 	u32	*xrsr_regs; /* for serializer configuration */
+ };
+ 
++struct davinci_mcasp_ruledata {
++	struct davinci_mcasp *mcasp;
++	int serializers;
++};
++
+ struct davinci_mcasp {
+ 	struct davinci_pcm_dma_params dma_params[2];
+ 	struct snd_dmaengine_dai_dma_data dma_data[2];
+@@ -98,6 +104,8 @@ struct davinci_mcasp {
+ #ifdef CONFIG_PM_SLEEP
+ 	struct davinci_mcasp_context context;
+ #endif
++
++	struct davinci_mcasp_ruledata ruledata[2];
+ };
+ 
+ static inline void mcasp_set_bits(struct davinci_mcasp *mcasp, u32 offset,
+@@ -855,6 +863,30 @@ static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp,
+ 	return 0;
+ }
+ 
++static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
++				      unsigned int bclk_freq,
++				      int *error_ppm)
++{
++	int div = mcasp->sysclk_freq / bclk_freq;
++	int rem = mcasp->sysclk_freq % bclk_freq;
++
++	if (rem != 0) {
++		if (div == 0 ||
++		    ((mcasp->sysclk_freq / div) - bclk_freq) >
++		    (bclk_freq - (mcasp->sysclk_freq / (div+1)))) {
++			div++;
++			rem = rem - bclk_freq;
++		}
++	}
++	if (error_ppm)
++		*error_ppm =
++			(div*1000000 + (int)div64_long(1000000LL*rem,
++						       (int)bclk_freq))
++			/div - 1000000;
++
++	return div;
++}
++
+ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params,
+ 					struct snd_soc_dai *cpu_dai)
+@@ -872,16 +904,19 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 	 * the machine driver, we need to calculate the ratio.
+ 	 */
+ 	if (mcasp->bclk_master && mcasp->bclk_div == 0 && mcasp->sysclk_freq) {
+-		unsigned int bclk_freq = snd_soc_params_to_bclk(params);
+-		unsigned int div = mcasp->sysclk_freq / bclk_freq;
+-		if (mcasp->sysclk_freq % bclk_freq != 0) {
+-			if (((mcasp->sysclk_freq / div) - bclk_freq) >
+-			    (bclk_freq - (mcasp->sysclk_freq / (div+1))))
+-				div++;
+-			dev_warn(mcasp->dev,
+-				 "Inaccurate BCLK: %u Hz / %u != %u Hz\n",
+-				 mcasp->sysclk_freq, div, bclk_freq);
+-		}
++		uint bclk_freq = snd_soc_params_to_bclk(params);
++		int dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
++			TX_MODE : RX_MODE;
++		int ppm, div;
++
++		bclk_freq /= mcasp->ruledata[dir].serializers;
++
++		div = davinci_mcasp_calc_clk_div(mcasp, bclk_freq, &ppm);
++
++		if (ppm)
++			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
++				 ppm);
++
+ 		__davinci_mcasp_set_clkdiv(cpu_dai, 1, div, 0);
+ 	}
+ 
+@@ -973,6 +1008,74 @@ static int davinci_mcasp_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static const unsigned int davinci_mcasp_dai_rates[] = {
++	8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000,
++	88200, 96000, 176400, 192000,
++};
++
++#define DAVINCI_MAX_RATE_ERROR_PPM 1000
++
++static int davinci_mcasp_hw_rule_rate(struct snd_pcm_hw_params *params,
++				      struct snd_pcm_hw_rule *rule)
++{
++	struct davinci_mcasp_ruledata *rd = rule->private;
++	unsigned int list[ARRAY_SIZE(davinci_mcasp_dai_rates)];
++	int frame_size;
++	int i, count = 0;
++
++	frame_size = snd_soc_params_to_frame_size(params);
++	if (frame_size < 0)
++		return frame_size;
++
++	for (i = 0; i < ARRAY_SIZE(davinci_mcasp_dai_rates); i++) {
++		uint bclk_freq = frame_size*davinci_mcasp_dai_rates[i]/
++			rd->serializers;
++		int ppm;
++
++		davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
++		if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM)
++			list[count++] = davinci_mcasp_dai_rates[i];
++
++	}
++	dev_dbg(rd->mcasp->dev, "%d frequencies for %u fsize (%d)\n",
++		count, frame_size, rd->serializers);
++
++	return snd_interval_list(hw_param_interval(params, rule->var),
++				 count, list, 0);
++}
++
++static int davinci_mcasp_hw_rule_framebits(struct snd_pcm_hw_params *params,
++					   struct snd_pcm_hw_rule *rule)
++{
++	struct davinci_mcasp_ruledata *rd = rule->private;
++	struct snd_interval *ci =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	unsigned int max_chan_per_wire = ci->max / rd->serializers;
++	unsigned int list[max_chan_per_wire*4];
++	int rate = params_rate(params);
++	int chans, fbits, count = 0;
++
++	for (chans = ci->min; chans <= max_chan_per_wire; chans++) {
++		for (fbits = 8; fbits <= 32; fbits += 8) {
++			uint bclk_freq = chans*fbits*rate;
++			int ppm;
++
++			davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
++			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
++				list[count++] = chans*fbits*rd->serializers;
++				BUG_ON(count > ARRAY_SIZE(list));
++			}
++		}
++	}
++
++	dev_dbg(rd->mcasp->dev,
++		"%d possible frame size for %d Hz (%d)\n",
++		count, rate, rd->serializers);
++
++	return snd_interval_list(hw_param_interval(params, rule->var),
++				 count, list, 0);
++}
++
+ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *cpu_dai)
+ {
+@@ -998,6 +1101,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 		if (mcasp->serial_dir[i] == dir)
+ 			max_channels++;
+ 	}
++	mcasp->ruledata[dir].serializers = max_channels;
+ 	max_channels *= mcasp->tdm_slots;
+ 	/*
+ 	 * If the already active stream has less channels than the calculated
+@@ -1012,6 +1116,32 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 	snd_pcm_hw_constraint_minmax(substream->runtime,
+ 				     SNDRV_PCM_HW_PARAM_CHANNELS,
+ 				     2, max_channels);
++
++	/*
++	 * If we rely on implicit BCLK divider setting we should
++	 * set constraints based on what we can provide.
++	 */
++	if (mcasp->bclk_master && mcasp->bclk_div == 0 && mcasp->sysclk_freq) {
++		int ret;
++
++		mcasp->ruledata[dir].mcasp = mcasp;
++
++		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
++					  SNDRV_PCM_HW_PARAM_RATE,
++					  davinci_mcasp_hw_rule_rate,
++					  &mcasp->ruledata[dir],
++					  SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
++		if (ret)
++			return ret;
++		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
++					  SNDRV_PCM_HW_PARAM_FRAME_BITS,
++					  davinci_mcasp_hw_rule_framebits,
++					  &mcasp->ruledata[dir],
++					  SNDRV_PCM_HW_PARAM_RATE, -1);
++		if (ret)
++			return ret;
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+1.9.1
 
-I see. You have had written dummy codecs for the GSM, BT, the FM had an act=
-ual
-working driver.
-
-Hrm. There is one thing which would make sense for these audio devices:
-Since you do not have control over them in terms of formats, rates and
-protocol - they use fixed interfaces.
-
-I think it would make sense to have binding for something like:
-compatible =3D "fixed-codec" or something like that, implying that it's
-configuration can not be changed.
-In it's bindings you would have the supported properties of the interface,
-like rate, channels, sample width, protocol on the bus (I2S, DSP, etc) and =
-to
-indicate if it is bus master or slave.
-
-You could use this 'fixed-codec' to describe the DAIs and use simple-card to
-connect them with the CPU.
-
-I think this will fill in some gaps and it is actually going to describe the
-HW you have as well, so it is not Linux specific.
-
-> =
-
->>
->>> Is my assumption correct? I would like to get some feedback before
->>> wasting my time with implementing something which cannot be pushed
->>> mainline. Thanks for all suggestions.
->>>
->>> BR,
->>>
->>> marek
->>>
->>> --
->>> as simple and primitive as possible
->>> -------------------------------------------------
->>> Marek Belisko - OPEN-NANDRA
->>> Freelance Developer
->>>
->>> Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
->>> Tel: +421 915 052 184
->>> skype: marekwhite
->>> twitter: #opennandra
->>> web: http://open-nandra.com
->>>
->>
->>
->> -- =
-
->> P=E9ter
-> =
-
-> BR,
-> Nikolaus
-> =
-
-
-
--- =
-
-P=E9ter
