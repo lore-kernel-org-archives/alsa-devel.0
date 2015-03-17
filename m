@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/12 v2] ASoC: ak4642: tidyup DAPM route
-	for playback
-Date: Tue, 17 Mar 2015 12:22:41 +0000
-Message-ID: <20150317122241.GL28806@sirena.org.uk>
-References: <87egopk13d.wl%kuninori.morimoto.gx@renesas.com>
- <877fuhk0t1.wl%kuninori.morimoto.gx@renesas.com>
+From: Robin Gareus <robin@gareus.org>
+Subject: Re: [PATCH 11/11] ALSA: digi00x: apply double-oh-three
+ algorism to multiplex PCM samples
+Date: Tue, 17 Mar 2015 14:37:10 +0100
+Message-ID: <55082E06.6010008@gareus.org>
+References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
+ <5506E7EE.6060300@gareus.org> <55070409.8090107@sakamocchi.jp>
+ <55070F3B.7000509@gareus.org> <55075D65.20406@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2095804185757637987=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 721E7260696
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 13:22:48 +0100 (CET)
-In-Reply-To: <877fuhk0t1.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
+ [81.169.146.216])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4572264F0F
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 14:37:26 +0100 (CET)
+In-Reply-To: <55075D65.20406@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, shiiba <naoya.shiiba.nx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Das Biju <biju.das@bp.renesas.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, damien@zamaudio.com, clemens@ladisch.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+On 03/16/2015 11:47 PM, Takashi Sakamoto wrote:
 
---===============2095804185757637987==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="X0jFZ9B+Xs9PGREg"
-Content-Disposition: inline
+Hi Takashi,
 
+> This is another sample, with the last four data blocks in a CIP and the
+> first four data blocks in next CIP. You can see the continuous value in
+> data-block-counter (dbc) field in each CIP header.
+> 
 
---X0jFZ9B+Xs9PGREg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[snip]
 
-On Mon, Mar 16, 2015 at 04:45:54AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> It needs DAC -> Playback route instead of direct settings via
-> SND_SOC_DAPM_DAC. otherwise, it can't find correct path if
-> sound card used prefix name
-
-applied, thanks.
-
---X0jFZ9B+Xs9PGREg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVCByQAAoJECTWi3JdVIfQhu4H/2o3bvFII9DB09FsmIOdXd/V
-7hJeQGhNpcPo+n26Nywyc16UfdvzjiIDifpR6yz+3gUNEQHkwjE8YqNQxLcOy0+e
-26SELnzZFWtdh/CerAKJiCXg/r/mtuJ11gvpHicIA7La8+7GGnBONm/Zng7mfzQc
-t9WOIEowQNYPVqtg/Re68vBrTEH1//vTOSa7E3ZCwp5xx36+iB3qOjFAoUgDZYHa
-N2uMaZaaQR30nRRKRAbifuo9vzZ1EttLEeAetHTqdS8zn5z5M8olML2giyDkZCnb
-fMDfegDgtBk3sV9XHJm6ksb2rSTKK6ejX8WMXZHxw1gXNzaCUUX2Xlz6M2XxM3g=
-=4luJ
------END PGP SIGNATURE-----
-
---X0jFZ9B+Xs9PGREg--
-
---===============2095804185757637987==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> We can see the pattern is carried to the data block in next packet. But
+> current implementation is not good for this case.
 
 
---===============2095804185757637987==--
+Indeed, thanks for the heads up.
+
+I've just updated https://github.com/x42/003amdtp/ accordingly.
+
+You'll have to retain the state and reset it on open/re-start but that's
+part of driver integration.
+
+Cheers!
+robin
