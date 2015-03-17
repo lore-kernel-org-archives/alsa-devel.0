@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: pcm512x driver: Mixer control naming issue
-Date: Tue, 17 Mar 2015 17:23:05 +0000
-Message-ID: <20150317172304.GR28806@sirena.org.uk>
-References: <5500DE5B.2020401@hmbedded.co.uk> <5502DAE1.30609@hmbedded.co.uk>
- <20150313182729.GE28806@sirena.org.uk>
- <55060771.7060200@hmbedded.co.uk>
- <20150316113845.GM28806@sirena.org.uk>
- <550714D8.5060407@hmbedded.co.uk>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: Support two wm8962 codec in i.mx6 board.
+Date: Tue, 17 Mar 2015 11:00:07 -0700
+Message-ID: <20150317180006.GA5336@Asurada>
+References: <CAOaGyfUHS90nKcSxpQZm7X3Lgwtb_9V4xLzyObhd5v=diGHJLw@mail.gmail.com>
+ <20150317005503.GA5480@Asurada-GSX>
+ <CAOaGyfUBoQLpa0YZjKEtZXmhRL_p=zGq3XEJ9oZHbHrVr1SQ8w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3727665043967402732=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E3E09264F52
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 18:23:14 +0100 (CET)
-In-Reply-To: <550714D8.5060407@hmbedded.co.uk>
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4786626501B
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 19:00:16 +0100 (CET)
+Received: by pacwe9 with SMTP id we9so16265358pac.1
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 11:00:15 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <CAOaGyfUBoQLpa0YZjKEtZXmhRL_p=zGq3XEJ9oZHbHrVr1SQ8w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +26,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Howard Mitchell <hm@hmbedded.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Gordon Garrity <gordon.garrity@gmail.com>
+To: Shawn Embedded <programassem@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Mar 17, 2015 at 09:51:22AM +0800, Shawn Embedded wrote:
 
---===============3727665043967402732==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2ibbZKN8N91xLJga"
-Content-Disposition: inline
+>    Actually I donot know much about dai-link. I just got started
+> recently to working on this requirement.
+>    You mean to create the same platform device as the now-working one
+> in board-xxx.c. Sure I can do that.
 
+Are you using old kernel version that's not included Device Tree yet?
 
---2ibbZKN8N91xLJga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If so, yes, you need to add a similar platform device as the original
+one but you need to assign a different AUDMUX port.
 
-On Mon, Mar 16, 2015 at 05:37:28PM +0000, Howard Mitchell wrote:
-> On 16/03/15 11:38, Mark Brown wrote:
+>    Since the two wm8962 codecs are on different I2C buses, so I just
+> need to update the corresponding i2c's i2c_board_info structure to
+> support the second one as a I2C device?
 
-> >Really the problem here is using asound.state - it's far too dumb a
-> >means of controlling random cards, and attempting to change it is most
-> >likely going to break something else.  Any attempt to introduce a
-> >default for analogue control will inevitably result in problems on cards
-> >that currently work fine with digital/default control unless those are
-> >changed which would then cause problems for things without the analogue
-> >control.
+Exactly.
 
-> So it sounds like adding an analogue prefix should be fairly safe in
-> which case are you happy for me to go ahead and prepare a patch?
+> > Supposing two WM8962 chips on one board, there should be two WM8962
+> > nodes hanging to the I2C node with different I2C slave addresses.
+> 
+>   Yes, but the I2C slave addresses should be the same, IIRC, only on
+> different I2C buses.
 
-I'm certainly happy with that.
+No problem for this. You can use same slave address but connecting to
+different I2C buses. As long as you system probes two different CODECs,
+that's fine.
 
---2ibbZKN8N91xLJga
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>   What do you mean by "two wm8962 nodes" ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+If you are not using code from Linux Mainline, just forget about it.
 
-iQEcBAEBCAAGBQJVCGL4AAoJECTWi3JdVIfQ7BYH/i/PoN2DmRohkldy488ioC/c
-mL4cyoFUVyJBwZKbGDr0IA1mYBMtBHkgXOm5QvFwKSRQe42Fu6q4jO/KLg4TnVUU
-CO8I0Yqa9XFfZ69hd6tYXI3iN+wvrhdRZVxZZs2F9e1+X0lElw8tC/OWrQeWuZ0P
-Tk77ZnuXqJpuCO4wrvYd3pc+IrHDC2a3wbJijxU0gfBbwYWegT7blANbF5aF/mfd
-TEUMPlu2HWXoveKMn9a/3SnuG9dEYJR3JZFkH+pwnqXsDuphAJKvZsBXeBxGfBJG
-VfsKmyJVcsPmbS5FVykF7Z36z62VI7F0PpZNKDPch0LbzP3Uy7T1gKa4wPo5Lgs=
-=2v/m
------END PGP SIGNATURE-----
+>   In my experience, the corresponding files are board-xxx.c,
+> imx-wm8962.c, wm8962.c.
+> 
+>   I looked at the wm8962.c, which is the codec driver file, very independent.
+>   There comes the wm8962_i2c_probe() and wm8962_probe().
+>   In wm8962_i2c_probe(), snd_soc_register_codec() is called, so a new
+> codec structure will be created when there comes another i2c device
+> named "wm8962".
+>   Seems no need to change anything in wm8962.c, if the external
+> hardware signals of the second wm8962 are connected in the same way as
+> the first now-working one, right?
 
---2ibbZKN8N91xLJga--
+No, you don't need to. Just register it in the board level driver.
 
---===============3727665043967402732==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>   Do you think any changes should be made to imx-wm8962.c which is the
+> machine driver file for wm8962 on imx6?
 
+Ideally, You only need to append a new platform device in the board
+level driver, same as you do for WM8962 CODECs.
 
---===============3727665043967402732==--
+> static struct snd_soc_dai_link imx_dai[] = {
+> {
+> .name = "HiFi",
+> .stream_name = "HiFi",
+> .codec_dai_name = "wm8962",
+> .codec_name = "wm8962.0-001a",
+> .cpu_dai_name = "imx-ssi.1",
+> .platform_name = "imx-pcm-audio.1",
+> .init = imx_wm8962_init,
+> .ops = &imx_hifi_ops,
+> },
+> };
+
+Okay...this one looks like you are using an old version BSP, other
+than the code from Linux Mainline.
+
+> in imx-wm8962.c, should I copy them to create a new copy of them
+> respectively? Or no need to do this?
+
+In this case, yes, because the structure has hard code. Otherwise,
+you new dai-link will not be successfully connected.
+
+> In board-xxx.c, do I just need to copy declarations related to wm8962?
+> Is that enough?
+
+I think so.
+
+>   Again, could you tell me how to make two different dai-link nodes?
+>   Sorry for knowing not much about this.
+
+That's for Device Tree which you are not using.
+
+Nicolin
