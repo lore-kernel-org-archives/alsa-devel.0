@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: Intel: fixup patches for
- Braswell machine driver
-Date: Tue, 17 Mar 2015 12:17:37 +0000
-Message-ID: <20150317121737.GJ28806@sirena.org.uk>
-References: <1426559011-8499-1-git-send-email-yao.jin@linux.intel.com>
+Subject: Re: [PATCH 05/12 v2] ASoC: ak4642: tidyup DAPM route
+	for playback
+Date: Tue, 17 Mar 2015 12:22:41 +0000
+Message-ID: <20150317122241.GL28806@sirena.org.uk>
+References: <87egopk13d.wl%kuninori.morimoto.gx@renesas.com>
+ <877fuhk0t1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7083450287709280653=="
+Content-Type: multipart/mixed; boundary="===============2095804185757637987=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A23CE2606B4
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 13:17:43 +0100 (CET)
-In-Reply-To: <1426559011-8499-1-git-send-email-yao.jin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 721E7260696
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 13:22:48 +0100 (CET)
+In-Reply-To: <877fuhk0t1.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jin Yao <yao.jin@linux.intel.com>
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com, bardliao@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, shiiba <naoya.shiiba.nx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Das Biju <biju.das@bp.renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7083450287709280653==
+--===============2095804185757637987==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mnamcX5BDF+ZiagH"
+	protocol="application/pgp-signature"; boundary="X0jFZ9B+Xs9PGREg"
 Content-Disposition: inline
 
 
---mnamcX5BDF+ZiagH
+--X0jFZ9B+Xs9PGREg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 17, 2015 at 10:23:29AM +0800, Jin Yao wrote:
-> Hi Mark,
+On Mon, Mar 16, 2015 at 04:45:54AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> These are Braswell machine driver fixup patches.
+> It needs DAC -> Playback route instead of direct settings via
+> SND_SOC_DAPM_DAC. otherwise, it can't find correct path if
+> sound card used prefix name
 
-Applied both, thanks.
+applied, thanks.
 
---mnamcX5BDF+ZiagH
+--X0jFZ9B+Xs9PGREg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVCBtgAAoJECTWi3JdVIfQmhcH/3BUDrFGdLb+LmHbv4/YJZpy
-UBX1GM2xptUn6xoikBXX5N4xvt/f6WT8JkKz4/Vj37js11OgfmsGMOEZ+9fqIv2Z
-S7cSws+TdiXHy+N+Y3BBbuwmBH5Ldr77zsNyG5eNZ7/2r3H8iyArUfaFxjCFb7eO
-qJKMekXNp0OuyulkRffLWoxraQvn3Es8iLvC8P+sEqTxbYTkpEkkfs7eoO0lpNDV
-tjZi2aEMvGO4PHnd4Ua46hrCQHp1f234feLKy8/JDMotK1g75xe0KoXTnMdOPhq0
-L871Ux/QFAgjvshgXNko6yptQTHg8b0xs2HVNqZSQgZN5P7v7WM2ki63+Wg0J5E=
-=VYAf
+iQEcBAEBCAAGBQJVCByQAAoJECTWi3JdVIfQhu4H/2o3bvFII9DB09FsmIOdXd/V
+7hJeQGhNpcPo+n26Nywyc16UfdvzjiIDifpR6yz+3gUNEQHkwjE8YqNQxLcOy0+e
+26SELnzZFWtdh/CerAKJiCXg/r/mtuJ11gvpHicIA7La8+7GGnBONm/Zng7mfzQc
+t9WOIEowQNYPVqtg/Re68vBrTEH1//vTOSa7E3ZCwp5xx36+iB3qOjFAoUgDZYHa
+N2uMaZaaQR30nRRKRAbifuo9vzZ1EttLEeAetHTqdS8zn5z5M8olML2giyDkZCnb
+fMDfegDgtBk3sV9XHJm6ksb2rSTKK6ejX8WMXZHxw1gXNzaCUUX2Xlz6M2XxM3g=
+=4luJ
 -----END PGP SIGNATURE-----
 
---mnamcX5BDF+ZiagH--
+--X0jFZ9B+Xs9PGREg--
 
---===============7083450287709280653==
+--===============2095804185757637987==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7083450287709280653==--
+--===============2095804185757637987==--
