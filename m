@@ -1,24 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: Support two wm8962 codec in i.mx6 board.
-Date: Tue, 17 Mar 2015 18:33:01 -0700
-Message-ID: <20150318013301.GA6432@Asurada-GSX>
-References: <CAOaGyfUHS90nKcSxpQZm7X3Lgwtb_9V4xLzyObhd5v=diGHJLw@mail.gmail.com>
- <20150317005503.GA5480@Asurada-GSX>
- <CAOaGyfUBoQLpa0YZjKEtZXmhRL_p=zGq3XEJ9oZHbHrVr1SQ8w@mail.gmail.com>
- <20150317180006.GA5336@Asurada>
- <CAOaGyfUk6LLkZhLXpLVE_akGTD3Ekk0TX_u1Gzw5y3oidBMQOg@mail.gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: getting the sound to work on my asus m6s00v
+Date: Wed, 18 Mar 2015 10:05:01 +0800
+Message-ID: <5508DD4D.3040901@canonical.com>
+References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f181.google.com (mail-pd0-f181.google.com
- [209.85.192.181])
- by alsa0.perex.cz (Postfix) with ESMTP id D7D97265062
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 02:33:09 +0100 (CET)
-Received: by pdnc3 with SMTP id c3so26525521pdn.0
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 18:33:08 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAOaGyfUk6LLkZhLXpLVE_akGTD3Ekk0TX_u1Gzw5y3oidBMQOg@mail.gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56ED1260418
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 03:05:09 +0100 (CET)
+In-Reply-To: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,51 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Embedded <programassem@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Christian Gleerup <cromozon@swn.nu>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 18, 2015 at 09:12:19AM +0800, Shawn Embedded wrote:
+On 03/18/2015 05:45 AM, Christian Gleerup wrote:
+> I had some problems getting the sound to work on my asus m6s00v
+> (I think that is the model, it is a bit worn so I can't really read it)
+>
+> the symptoms was
+> * on the integrated speakers, no sound at all
+> * on the headphone speakers, sound for a very very short period that faded into nothing.
+>
+> with help from debianuser on freenode#alsa we managed to get it working.
+> the option that i had to load the module with is the following:
+> sudo modprobe snd-hda-intel model=3stack-digout
+> the status now (perfect)...
+> * sound on integrated speaker.
+> * sound in headphones (disables integrated speaker output which is fine)
+> * mic works, both for direct playback and recording
+> * when recording it is the 'digital' channel that controls the volume of the recording level, all others
+>
+> Notice:
+> I don't have OSS or pulseaudio installed.
+>
+> I am thinking it would be really nice if the driver automatically could detect that this option is required.
+>
+> this is the output from the alsa-info script
+> http://www.alsa-project.org/db/?f=28b98a3bd1efc6a80dbd5c54b52c4472d8ea5496
+>
+> let me know if I can do anything to help with this.
+It seems the latest kernel already had a fixup for this machine, but the 
+fixup is ALC880_FIXUP_ASUS_W5A instead of ALC880_FIXUP_3ST_DIG. Probably 
+you should use latest upstream kernel without "model=3stack-digout" to 
+test again, if it can't fix your problem, maybe the patch below can work.
 
->    Yes, it's and old version, without support of device tree.
->    For AUDMUX configuration, is the code below enough, snippet 1 and 2?
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1349,7 +1349,7 @@ static const struct hda_fixup alc880_fixups[] = {
 
-I think so.
+  static const struct snd_pci_quirk alc880_fixup_tbl[] = {
+         SND_PCI_QUIRK(0x1019, 0x0f69, "Coeus G610P", ALC880_FIXUP_W810),
+-       SND_PCI_QUIRK(0x1043, 0x10c3, "ASUS W5A", ALC880_FIXUP_ASUS_W5A),
++       SND_PCI_QUIRK(0x1043, 0x10c3, "ASUS W5A", ALC880_FIXUP_3ST_DIG),
+         SND_PCI_QUIRK(0x1043, 0x1964, "ASUS Z71V", ALC880_FIXUP_Z71V),
+         SND_PCI_QUIRK_VENDOR(0x1043, "ASUS", ALC880_FIXUP_GPIO1),
+         SND_PCI_QUIRK(0x147b, 0x1045, "ABit AA8XE", 
+ALC880_FIXUP_6ST_AUTOMUTE),
 
->     And here I have another question about clock source sharing
-> between the two codecs.
->     The two wm8962 codecs use the same clock source from imx6, in my
-> case, clko, as the code mentioned below,
-
-> Since the two codecs share the same clock source, clko, and we donot
-> know when mxc_wm8962_init() and wm8962_clk_enable() will be called by
-> using the function pointer exactly, do you think it's necessary to
-> make NULL to init, make wm8962_clk_enable_do_nothing to clock_enable,
-> and manually calling mxc_wm8962_init() and wm8962_clk_enable() in the
-> xxx_board_init() function instead?
-
-I don't think you need to change this part.
-
-> 2. In imx-wm8962.c:
-> 
-> static int __devinit imx_wm8962_probe(struct platform_device *pdev)
-> {
->     ....
->     imx_audmux_config(src, ext);    // should keep the same, not need
-> to change, right?
->     ....
-> }
-
-No, you don't need to.
- 
->   But there is a question here.
->   How should I track the  card_priv and its copy for the two codecs repectively.
->   They are used heavily.
->    In order to make the functions run without problems, seems
-> necessary to differentiate the function call is for which codec of the
-> two, right?
->   The same situation may exist for other just copied global variables
-> in imx-wm8962.c.
-
-Each dai-link will create an individual sound card during system
-boot-up. Use 'aplay -l', you will see they are different devices.
+> Regards.
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
