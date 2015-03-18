@@ -1,17 +1,20 @@
-From: Hui Wang <hui.wang@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: getting the sound to work on my asus m6s00v
-Date: Wed, 18 Mar 2015 10:05:01 +0800
-Message-ID: <5508DD4D.3040901@canonical.com>
+Date: Wed, 18 Mar 2015 11:17:31 +0800
+Message-ID: <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
 References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
+ <5508DD4D.3040901@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 56ED1260418
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 03:05:09 +0100 (CET)
-In-Reply-To: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
+Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
+ [209.85.218.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 442FA260418
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 04:17:33 +0100 (CET)
+Received: by oier21 with SMTP id r21so26042761oie.1
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 20:17:32 -0700 (PDT)
+In-Reply-To: <5508DD4D.3040901@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Gleerup <cromozon@swn.nu>, alsa-devel@alsa-project.org
+To: Hui Wang <hui.wang@canonical.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Christian Gleerup <cromozon@swn.nu>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2015 05:45 AM, Christian Gleerup wrote:
-> I had some problems getting the sound to work on my asus m6s00v
-> (I think that is the model, it is a bit worn so I can't really read it)
->
-> the symptoms was
-> * on the integrated speakers, no sound at all
-> * on the headphone speakers, sound for a very very short period that faded into nothing.
->
-> with help from debianuser on freenode#alsa we managed to get it working.
-> the option that i had to load the module with is the following:
-> sudo modprobe snd-hda-intel model=3stack-digout
-> the status now (perfect)...
-> * sound on integrated speaker.
-> * sound in headphones (disables integrated speaker output which is fine)
-> * mic works, both for direct playback and recording
-> * when recording it is the 'digital' channel that controls the volume of the recording level, all others
->
-> Notice:
-> I don't have OSS or pulseaudio installed.
->
-> I am thinking it would be really nice if the driver automatically could detect that this option is required.
->
-> this is the output from the alsa-info script
-> http://www.alsa-project.org/db/?f=28b98a3bd1efc6a80dbd5c54b52c4472d8ea5496
->
-> let me know if I can do anything to help with this.
-It seems the latest kernel already had a fixup for this machine, but the 
-fixup is ALC880_FIXUP_ASUS_W5A instead of ALC880_FIXUP_3ST_DIG. Probably 
-you should use latest upstream kernel without "model=3stack-digout" to 
-test again, if it can't fix your problem, maybe the patch below can work.
-
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -1349,7 +1349,7 @@ static const struct hda_fixup alc880_fixups[] = {
-
-  static const struct snd_pci_quirk alc880_fixup_tbl[] = {
-         SND_PCI_QUIRK(0x1019, 0x0f69, "Coeus G610P", ALC880_FIXUP_W810),
--       SND_PCI_QUIRK(0x1043, 0x10c3, "ASUS W5A", ALC880_FIXUP_ASUS_W5A),
-+       SND_PCI_QUIRK(0x1043, 0x10c3, "ASUS W5A", ALC880_FIXUP_3ST_DIG),
-         SND_PCI_QUIRK(0x1043, 0x1964, "ASUS Z71V", ALC880_FIXUP_Z71V),
-         SND_PCI_QUIRK_VENDOR(0x1043, "ASUS", ALC880_FIXUP_GPIO1),
-         SND_PCI_QUIRK(0x147b, 0x1045, "ABit AA8XE", 
-ALC880_FIXUP_6ST_AUTOMUTE),
-
-> Regards.
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+MjAxNS0zLTE4IOS4iuWNiDEwOjA1IOaWvCAiSHVpIFdhbmciIDxodWkud2FuZ0BjYW5vbmljYWwu
+Y29tPiDlr6vpgZPvvJoKPgo+IE9uIDAzLzE4LzIwMTUgMDU6NDUgQU0sIENocmlzdGlhbiBHbGVl
+cnVwIHdyb3RlOgo+Pgo+PiBJIGhhZCBzb21lIHByb2JsZW1zIGdldHRpbmcgdGhlIHNvdW5kIHRv
+IHdvcmsgb24gbXkgYXN1cyBtNnMwMHYKPj4gKEkgdGhpbmsgdGhhdCBpcyB0aGUgbW9kZWwsIGl0
+IGlzIGEgYml0IHdvcm4gc28gSSBjYW4ndCByZWFsbHkgcmVhZCBpdCkKPj4KPj4gdGhlIHN5bXB0
+b21zIHdhcwo+PiAqIG9uIHRoZSBpbnRlZ3JhdGVkIHNwZWFrZXJzLCBubyBzb3VuZCBhdCBhbGwK
+Pj4gKiBvbiB0aGUgaGVhZHBob25lIHNwZWFrZXJzLCBzb3VuZCBmb3IgYSB2ZXJ5IHZlcnkgc2hv
+cnQgcGVyaW9kIHRoYXQKZmFkZWQgaW50byBub3RoaW5nLgo+Pgo+PiB3aXRoIGhlbHAgZnJvbSBk
+ZWJpYW51c2VyIG9uIGZyZWVub2RlI2Fsc2Egd2UgbWFuYWdlZCB0byBnZXQgaXQgd29ya2luZy4K
+Pj4gdGhlIG9wdGlvbiB0aGF0IGkgaGFkIHRvIGxvYWQgdGhlIG1vZHVsZSB3aXRoIGlzIHRoZSBm
+b2xsb3dpbmc6Cj4+IHN1ZG8gbW9kcHJvYmUgc25kLWhkYS1pbnRlbCBtb2RlbD0zc3RhY2stZGln
+b3V0Cj4+IHRoZSBzdGF0dXMgbm93IChwZXJmZWN0KS4uLgo+PiAqIHNvdW5kIG9uIGludGVncmF0
+ZWQgc3BlYWtlci4KPj4gKiBzb3VuZCBpbiBoZWFkcGhvbmVzIChkaXNhYmxlcyBpbnRlZ3JhdGVk
+IHNwZWFrZXIgb3V0cHV0IHdoaWNoIGlzIGZpbmUpCj4+ICogbWljIHdvcmtzLCBib3RoIGZvciBk
+aXJlY3QgcGxheWJhY2sgYW5kIHJlY29yZGluZwo+PiAqIHdoZW4gcmVjb3JkaW5nIGl0IGlzIHRo
+ZSAnZGlnaXRhbCcgY2hhbm5lbCB0aGF0IGNvbnRyb2xzIHRoZSB2b2x1bWUgb2YKdGhlIHJlY29y
+ZGluZyBsZXZlbCwgYWxsIG90aGVycwo+Pgo+PiBOb3RpY2U6Cj4+IEkgZG9uJ3QgaGF2ZSBPU1Mg
+b3IgcHVsc2VhdWRpbyBpbnN0YWxsZWQuCj4+Cj4+IEkgYW0gdGhpbmtpbmcgaXQgd291bGQgYmUg
+cmVhbGx5IG5pY2UgaWYgdGhlIGRyaXZlciBhdXRvbWF0aWNhbGx5IGNvdWxkCmRldGVjdCB0aGF0
+IHRoaXMgb3B0aW9uIGlzIHJlcXVpcmVkLgo+Pgo+PiB0aGlzIGlzIHRoZSBvdXRwdXQgZnJvbSB0
+aGUgYWxzYS1pbmZvIHNjcmlwdAo+PgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9
+MjhiOThhM2JkMWVmYzZhODBkYmQ1YzU0YjUyYzQ0NzJkOGVhNTQ5Ngo+Pgo+PiBsZXQgbWUga25v
+dyBpZiBJIGNhbiBkbyBhbnl0aGluZyB0byBoZWxwIHdpdGggdGhpcy4KPgo+IEl0IHNlZW1zIHRo
+ZSBsYXRlc3Qga2VybmVsIGFscmVhZHkgaGFkIGEgZml4dXAgZm9yIHRoaXMgbWFjaGluZSwgYnV0
+IHRoZQpmaXh1cCBpcyBBTEM4ODBfRklYVVBfQVNVU19XNUEgaW5zdGVhZCBvZiBBTEM4ODBfRklY
+VVBfM1NUX0RJRy4gUHJvYmFibHkKeW91IHNob3VsZCB1c2UgbGF0ZXN0IHVwc3RyZWFtIGtlcm5l
+bCB3aXRob3V0ICJtb2RlbD0zc3RhY2stZGlnb3V0IiB0byB0ZXN0CmFnYWluLCBpZiBpdCBjYW4n
+dCBmaXggeW91ciBwcm9ibGVtLCBtYXliZSB0aGUgcGF0Y2ggYmVsb3cgY2FuIHdvcmsuCj4KPiAt
+LS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwo+ICsrKyBiL3NvdW5kL3BjaS9oZGEv
+cGF0Y2hfcmVhbHRlay5jCj4gQEAgLTEzNDksNyArMTM0OSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
+Y3QgaGRhX2ZpeHVwIGFsYzg4MF9maXh1cHNbXSA9IHsKPgo+ICBzdGF0aWMgY29uc3Qgc3RydWN0
+IHNuZF9wY2lfcXVpcmsgYWxjODgwX2ZpeHVwX3RibFtdID0gewo+ICAgICAgICAgU05EX1BDSV9R
+VUlSSygweDEwMTksIDB4MGY2OSwgIkNvZXVzIEc2MTBQIiwgQUxDODgwX0ZJWFVQX1c4MTApLAo+
+IC0gICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTBjMywgIkFTVVMgVzVBIiwgQUxDODgw
+X0ZJWFVQX0FTVVNfVzVBKSwKPiArICAgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDEwYzMs
+ICJBU1VTIFc1QSIsIEFMQzg4MF9GSVhVUF8zU1RfRElHKSwKPiAgICAgICAgIFNORF9QQ0lfUVVJ
+UksoMHgxMDQzLCAweDE5NjQsICJBU1VTIFo3MVYiLCBBTEM4ODBfRklYVVBfWjcxViksCj4gICAg
+ICAgICBTTkRfUENJX1FVSVJLX1ZFTkRPUigweDEwNDMsICJBU1VTIiwgQUxDODgwX0ZJWFVQX0dQ
+SU8xKSwKPiAgICAgICAgIFNORF9QQ0lfUVVJUksoMHgxNDdiLCAweDEwNDUsICJBQml0IEFBOFhF
+IiwKQUxDODgwX0ZJWFVQXzZTVF9BVVRPTVVURSksCj4KPgoKU3lzZnMgRmlsZXMKISEtLS0tLS0t
+LS0tLQoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvaW5pdF9waW5fY29uZmlnczoKMHgxNCAweDAx
+MjE0MTFmCjB4MTUgMHg0MTExMTFmMAoweDE2IDB4NDExMTExZjAKMHgxNyAweDQxMTExMWYwCjB4
+MTggMHgwMWExOTkyMAoweDE5IDB4NDExMTExZjAKMHgxYSAweDQxMTExMWYwCjB4MWIgMHg0MTEx
+MTFmMAoweDFjIDB4YjczMzExMjEKMHgxZCAweDQxMTExMWYwCjB4MWUgMHgwMTQ1NDExZQoweDFm
+IDB4NDExMTExZjAKClNpbXBsZSBtaXhlciBjb250cm9sICdDaGFubmVsIE1vZGUnLDAKICBDYXBh
+YmlsaXRpZXM6IGVudW0KICBJdGVtczogJzJjaCcgJzZjaCcKICBJdGVtMDogJzJjaCcKU2ltcGxl
+IG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMAogIENhcGFiaWxpdGllczogY2VudW0KICBJ
+dGVtczogJ01pYycgJ0Zyb250IE1pYycgJ0xpbmUnICdDRCcKICBJdGVtMDogJ01pYycKU2ltcGxl
+IG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMQogIENhcGFiaWxpdGllczogY2VudW0KICBJ
+dGVtczogJ01pYycgJ0Zyb250IE1pYycgJ0xpbmUnICdDRCcKICBJdGVtMDogJ01pYycKU2ltcGxl
+IG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMgogIENhcGFiaWxpdGllczogY2VudW0KICBJ
+dGVtczogJ01pYycgJ0Zyb250IE1pYycgJ0xpbmUnICdDRCcKICBJdGVtMDogJ01pYycKClNlZW0g
+bWlzc2luZyBpbnRlcm5hbCBzcGVha2VyIGFuZCByZWR1bmRhbnQgIENEIHBpbgoKRG8geW91ciBt
+aWMgamFjayBhbmQgaW50ZXJuYWwgbWljIHdvcmsgYXMgZXhwZWN0ZWQgPwoKSXQgaXMgbm90IGNv
+cnJlY3QgdG8gdXNlIDNzdGFjayB3aGVuIHlvdXIgbGFwdG9wIGRvZXMgbm90IGhhdmUgdGhyZWUg
+YXVkaW8KamFja3MgZm9yIHN1cnJvdW5kIDUuMQoKISEKCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcv
+Y2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC9jb21taXQvc291bmQvcGNpL2hk
+YT9pZD00ODdhNTg4ZDA5ZGIwZDY1MDgyNjE4NjdkZjIwOGQ4YmRjNzE4MjUxCgpTZWVtIG5vIG1p
+YyBqYWNrIGFuZCBzcGVha2VyIGluIHc1bgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
