@@ -1,14 +1,24 @@
-From: klem.dev@gmail.com
-Subject: [PATCH 6/6] ESI W192M : Add sampling rate control of
-	the ADC/DAC
-Date: Wed, 18 Mar 2015 02:26:31 +0100
-Message-ID: <5508d462.4160b40a.64fa.44ee@mx.google.com>
-References: <1426641991-3694-1-git-send-email-me>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: Support two wm8962 codec in i.mx6 board.
+Date: Tue, 17 Mar 2015 18:33:01 -0700
+Message-ID: <20150318013301.GA6432@Asurada-GSX>
+References: <CAOaGyfUHS90nKcSxpQZm7X3Lgwtb_9V4xLzyObhd5v=diGHJLw@mail.gmail.com>
+ <20150317005503.GA5480@Asurada-GSX>
+ <CAOaGyfUBoQLpa0YZjKEtZXmhRL_p=zGq3XEJ9oZHbHrVr1SQ8w@mail.gmail.com>
+ <20150317180006.GA5336@Asurada>
+ <CAOaGyfUk6LLkZhLXpLVE_akGTD3Ekk0TX_u1Gzw5y3oidBMQOg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1426641991-3694-1-git-send-email-me>
+Received: from mail-pd0-f181.google.com (mail-pd0-f181.google.com
+ [209.85.192.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7D97265062
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 02:33:09 +0100 (CET)
+Received: by pdnc3 with SMTP id c3so26525521pdn.0
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 18:33:08 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <CAOaGyfUk6LLkZhLXpLVE_akGTD3Ekk0TX_u1Gzw5y3oidBMQOg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,98 +28,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: =?UTF-8?q?Cl=C3=A9ment=20Guedez?= <klem.dev@gmail.com>, alsa-devel@alsa-project.org
+To: Shawn Embedded <programassem@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQ2zDqW1lbnQgR3VlZGV6IDxrbGVtLmRldkBnbWFpbC5jb20+CgpBZGQgc2FtcGxpbmcg
-cmF0ZSBjb250cm9sIGZvciBBREMvREFDIGZvciBFU0kgVzE5Mk0uCkFsbG93IHRvIHN3aXRjaCBi
-ZXR3ZWVuIDQ4Sy85NksvMTkySyBzYW1wbGluZyByYXRlLgpBbGwgREFDIG5lZWQgdG8gYmUgbXV0
-ZSB3aGVuIGNoYW5naW5nIHNhbXBsZXJhdGUuCgpTaWduZWQtb2ZmLWJ5OiBDbMOpbWVudCBHdWVk
-ZXogPGtsZW0uZGV2QGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaWNlMTcxMi93
-dG0uYyBiL3NvdW5kL3BjaS9pY2UxNzEyL3d0bS5jCmluZGV4IDZkMzQxMmYuLjk5MDYxMTkgMTAw
-NjQ0Ci0tLSBhL3NvdW5kL3BjaS9pY2UxNzEyL3d0bS5jCisrKyBiL3NvdW5kL3BjaS9pY2UxNzEy
-L3d0bS5jCkBAIC0zMCwxMiArMzAsMTggQEAKICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+CiAjaW5j
-bHVkZSA8c291bmQvY29yZS5oPgogI2luY2x1ZGUgPHNvdW5kL3Rsdi5oPgorI2luY2x1ZGUgPGxp
-bnV4L3NsYWIuaD4KIAogI2luY2x1ZGUgImljZTE3MTIuaCIKICNpbmNsdWRlICJlbnZ5MjRodC5o
-IgogI2luY2x1ZGUgInd0bS5oIgogI2luY2x1ZGUgInN0YWM5NDZ4LmgiCiAKK3N0cnVjdCB3dG1f
-c3BlYyB7CisJLyogcmF0ZSBjaGFuZ2UgbmVlZHMgYXRvbWljIG11dGUvdW5tdXRlIG9mIGFsbCBk
-YWNzKi8KKwlzdHJ1Y3QgbXV0ZXggbXV0ZV9tdXRleDsKK307CisKIAogLyoKICAqCTIqQURDIDYq
-REFDIG5vMSByaW5nYnVmZmVyIHIvdyBvbiBpMmMgYnVzCkBAIC02OSwxNSArNzUsNjUgQEAgc3Rh
-dGljIGlubGluZSB1bnNpZ25lZCBjaGFyIHN0YWM5NDYwXzJfZ2V0KHN0cnVjdCBzbmRfaWNlMTcx
-MiAqaWNlLCBpbnQgcmVnKQogLyoKICAqCURBQyBtdXRlIGNvbnRyb2wKICAqLworc3RhdGljIHZv
-aWQgc3RhYzk0NjBfZGFjX211dGVfYWxsKHN0cnVjdCBzbmRfaWNlMTcxMiAqaWNlLCB1bnNpZ25l
-ZCBjaGFyIG11dGUsCisJCQkJdW5zaWduZWQgc2hvcnQgaW50ICpjaGFuZ2VfbWFzaykKK3sKKwl1
-bnNpZ25lZCBjaGFyIG5ldywgb2xkOworCWludCBpZCwgaWR4LCBjaGFuZ2U7CisKKwkvKnN0YWM5
-NDYwIDEqLworCWZvciAoaWQgPSAwOyBpZCA8IDc7IGlkKyspIHsKKwkJaWYgKCpjaGFuZ2VfbWFz
-ayAmICgweDAxIDw8IGlkKSkgeworCQkJaWYgKGlkID09IDApCisJCQkJaWR4ID0gU1RBQzk0Nlhf
-TUFTVEVSX1ZPTFVNRTsKKwkJCWVsc2UKKwkJCQlpZHggPSBTVEFDOTQ2WF9MRl9WT0xVTUUgLSAx
-ICsgaWQ7CisJCQlvbGQgPSBzdGFjOTQ2MF9nZXQoaWNlLCBpZHgpOworCQkJbmV3ID0gKH5tdXRl
-IDw8IDcgJiAweDgwKSB8IChvbGQgJiB+MHg4MCk7CisJCQljaGFuZ2UgPSAobmV3ICE9IG9sZCk7
-CisJCQlpZiAoY2hhbmdlKSB7CisJCQkJc3RhYzk0NjBfcHV0KGljZSwgaWR4LCBuZXcpOworCQkJ
-CSpjaGFuZ2VfbWFzayA9ICpjaGFuZ2VfbWFzayB8ICgweDAxIDw8IGlkKTsKKwkJCX0gZWxzZSB7
-CisJCQkJKmNoYW5nZV9tYXNrID0gKmNoYW5nZV9tYXNrICYgfigweDAxIDw8IGlkKTsKKwkJCX0K
-KwkJfQorCX0KKworCS8qc3RhYzk0NjAgMiovCisJZm9yIChpZCA9IDA7IGlkIDwgMzsgaWQrKykg
-eworCQlpZiAoKmNoYW5nZV9tYXNrICYgKDB4MDEgPDwgKGlkICsgNykpKSB7CisJCQlpZiAoaWQg
-PT0gMCkKKwkJCQlpZHggPSBTVEFDOTQ2WF9NQVNURVJfVk9MVU1FOworCQkJZWxzZQorCQkJCWlk
-eCA9IFNUQUM5NDZYX0xGX1ZPTFVNRSAtIDEgKyBpZDsKKwkJCW9sZCA9IHN0YWM5NDYwXzJfZ2V0
-KGljZSwgaWR4KTsKKwkJCW5ldyA9ICh+bXV0ZSA8PCA3ICYgMHg4MCkgfCAob2xkICYgfjB4ODAp
-OworCQkJY2hhbmdlID0gKG5ldyAhPSBvbGQpOworCQkJaWYgKGNoYW5nZSkgeworCQkJCXN0YWM5
-NDYwXzJfcHV0KGljZSwgaWR4LCBuZXcpOworCQkJCSpjaGFuZ2VfbWFzayA9ICpjaGFuZ2VfbWFz
-ayB8ICgweDAxIDw8IGlkKTsKKwkJCX0gZWxzZSB7CisJCQkJKmNoYW5nZV9tYXNrID0gKmNoYW5n
-ZV9tYXNrICYgfigweDAxIDw8IGlkKTsKKwkJCX0KKwkJfQorCX0KK30KKworCisKICNkZWZpbmUg
-c3RhYzk0NjBfZGFjX211dGVfaW5mbwkJc25kX2N0bF9ib29sZWFuX21vbm9faW5mbwogCiBzdGF0
-aWMgaW50IHN0YWM5NDYwX2RhY19tdXRlX2dldChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJv
-bCwKIAkJCQlzdHJ1Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkKIHsKIAlzdHJ1Y3Qg
-c25kX2ljZTE3MTIgKmljZSA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsKKwlzdHJ1Y3Qg
-d3RtX3NwZWMgKnNwZWMgPSBpY2UtPnNwZWM7CiAJdW5zaWduZWQgY2hhciB2YWw7CiAJaW50IGlk
-eCwgaWQ7CiAKKwltdXRleF9sb2NrKCZzcGVjLT5tdXRlX211dGV4KTsKKwogCWlmIChrY29udHJv
-bC0+cHJpdmF0ZV92YWx1ZSkgewogCQlpZHggPSBTVEFDOTQ2WF9NQVNURVJfVk9MVU1FOwogCQlp
-ZCA9IDA7CkBAIC05MCw2ICsxNDYsOCBAQCBzdGF0aWMgaW50IHN0YWM5NDYwX2RhY19tdXRlX2dl
-dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKIAllbHNlCiAJCXZhbCA9IHN0YWM5NDYw
-XzJfZ2V0KGljZSwgaWR4IC0gNik7CiAJdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWVbMF0g
-PSAofnZhbCA+PiA3KSAmIDB4MTsKKworCW11dGV4X3VubG9jaygmc3BlYy0+bXV0ZV9tdXRleCk7
-CiAJcmV0dXJuIDA7CiB9CiAKQEAgLTM4OCw2ICs0NDYsNDQgQEAgc3RhdGljIGludCBzdGFjOTQ2
-MF9taWNfc3dfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAogfQogCiAKKy8qCisg
-KiBIYW5kbGVyIGZvciBzZXR0aW5nIGNvcnJlY3QgY29kZWMgcmF0ZSAtIGNhbGxlZCB3aGVuIHJh
-dGUgY2hhbmdlIGlzIGRldGVjdGVkCisgKi8KK3N0YXRpYyB2b2lkIHN0YWM5NDYwX3NldF9yYXRl
-X3ZhbChzdHJ1Y3Qgc25kX2ljZTE3MTIgKmljZSwgdW5zaWduZWQgaW50IHJhdGUpCit7CisJdW5z
-aWduZWQgY2hhciBvbGQsIG5ldzsKKwl1bnNpZ25lZCBzaG9ydCBpbnQgY2hhbmdlZDsKKwlzdHJ1
-Y3Qgd3RtX3NwZWMgKnNwZWMgPSBpY2UtPnNwZWM7CisKKwlpZiAocmF0ZSA9PSAwKSAgLyogbm8g
-aGludCAtIFMvUERJRiBpbnB1dCBpcyBtYXN0ZXIsIHNpbXBseSByZXR1cm4gKi8KKwkJcmV0dXJu
-OworCWVsc2UgaWYgKHJhdGUgPD0gNDgwMDApCisJCW5ldyA9IDB4MDg7ICAgICAvKiAyNTZ4LCBi
-YXNlIHJhdGUgbW9kZSAqLworCWVsc2UgaWYgKHJhdGUgPD0gOTYwMDApCisJCW5ldyA9IDB4MTE7
-ICAgICAvKiAyNTZ4LCBtaWQgcmF0ZSBtb2RlICovCisJZWxzZQorCQluZXcgPSAweDEyOyAgICAg
-LyogMTI4eCwgaGlnaCByYXRlIG1vZGUgKi8KKworCW9sZCA9IHN0YWM5NDYwX2dldChpY2UsIFNU
-QUM5NDZYX01BU1RFUl9DTE9DS0lORyk7CisJaWYgKG9sZCA9PSBuZXcpCisJCXJldHVybjsKKwkv
-KiBjaGFuZ2UgZGV0ZWN0ZWQsIHNldHRpbmcgbWFzdGVyIGNsb2NrLCBtdXRpbmcgZmlyc3QgKi8K
-KwkvKiBkdWUgdG8gcG9zc2libGUgY29uZmxpY3RzIHdpdGggbXV0ZSBjb250cm9scyAtIG11dGV4
-aW5nICovCisJbXV0ZXhfbG9jaygmc3BlYy0+bXV0ZV9tdXRleCk7CisJLyogd2UgaGF2ZSB0byBy
-ZW1lbWJlciBjdXJyZW50IG11dGUgc3RhdHVzIGZvciBlYWNoIERBQyAqLworCWNoYW5nZWQgPSAw
-eEZGRkY7CisJc3RhYzk0NjBfZGFjX211dGVfYWxsKGljZSwgMCwgJmNoYW5nZWQpOworCS8qcHJp
-bnRrKEtFUk5fREVCVUcgIlJhdGUgY2hhbmdlOiAlZCwgbmV3IE1DOiAweCUwMnhcbiIsIHJhdGUs
-IG5ldyk7Ki8KKwlzdGFjOTQ2MF9wdXQoaWNlLCBTVEFDOTQ2WF9NQVNURVJfQ0xPQ0tJTkcsIG5l
-dyk7CisJc3RhYzk0NjBfMl9wdXQoaWNlLCBTVEFDOTQ2WF9NQVNURVJfQ0xPQ0tJTkcsIG5ldyk7
-CisJdWRlbGF5KDEwKTsKKwkvKiB1bm11dGluZyAtIG9ubHkgb3JpZ2luYWxseSB1bm11dGVkIGRh
-Y3MgLQorCSogaS5lLiB0aG9zZSBjaGFuZ2VkIHdoZW4gbXV0aW5nICovCisJc3RhYzk0NjBfZGFj
-X211dGVfYWxsKGljZSwgMSwgJmNoYW5nZWQpOworCW11dGV4X3VubG9jaygmc3BlYy0+bXV0ZV9t
-dXRleCk7Cit9CisKKwogLypMaW1pdHMgdmFsdWUgaW4gZEIgZm9yIGZhZGVyKi8KIHN0YXRpYyBj
-b25zdCBERUNMQVJFX1RMVl9EQl9TQ0FMRShkYl9zY2FsZV9kYWMsIC0xOTEyNSwgNzUsIDApOwog
-c3RhdGljIGNvbnN0IERFQ0xBUkVfVExWX0RCX1NDQUxFKGRiX3NjYWxlX2FkYywgMCwgMTUwLCAw
-KTsKQEAgLTQ4NywyMSArNTgzLDMyIEBAIHN0YXRpYyBpbnQgd3RtX2luaXQoc3RydWN0IHNuZF9p
-Y2UxNzEyICppY2UpCiB7CiAJc3RhdGljIHVuc2lnbmVkIHNob3J0IHN0YWNfaW5pdHNfd3RtW10g
-PSB7CiAJCVNUQUM5NDZYX1JFU0VULCAwLAorCQlTVEFDOTQ2WF9NQVNURVJfQ0xPQ0tJTkcsIDB4
-MTEsCiAJCSh1bnNpZ25lZCBzaG9ydCktMQogCX07CiAJdW5zaWduZWQgc2hvcnQgKnA7CisJc3Ry
-dWN0IHd0bV9zcGVjICpzcGVjOwogCiAJLypXVE0gMTkyTSovCiAJaWNlLT5udW1fdG90YWxfZGFj
-cyA9IDg7CiAJaWNlLT5udW1fdG90YWxfYWRjcyA9IDQ7CiAJaWNlLT5mb3JjZV9yZG1hMSA9IDE7
-CiAKKwkvKmluaXQgbXV0ZXggZm9yIGRhYyBtdXRlIGNvbmZsaWN0Ki8KKwlzcGVjID0ga3phbGxv
-YyhzaXplb2YoKnNwZWMpLCBHRlBfS0VSTkVMKTsKKwlpZiAoIXNwZWMpCisJCXJldHVybiAtRU5P
-TUVNOworCWljZS0+c3BlYyA9IHNwZWM7CisJbXV0ZXhfaW5pdCgmc3BlYy0+bXV0ZV9tdXRleCk7
-CisKKwogCS8qaW5pdGlhbGl6ZSBjb2RlYyovCiAJcCA9IHN0YWNfaW5pdHNfd3RtOwogCWZvciAo
-OyAqcCAhPSAodW5zaWduZWQgc2hvcnQpLTE7IHAgKz0gMikgewogCQlzdGFjOTQ2MF9wdXQoaWNl
-LCBwWzBdLCBwWzFdKTsKIAkJc3RhYzk0NjBfMl9wdXQoaWNlLCBwWzBdLCBwWzFdKTsKIAl9CisJ
-aWNlLT5ncGlvLnNldF9wcm9fcmF0ZSA9IHN0YWM5NDYwX3NldF9yYXRlX3ZhbDsKIAlyZXR1cm4g
-MDsKIH0KIAotLSAKMi4xLjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+On Wed, Mar 18, 2015 at 09:12:19AM +0800, Shawn Embedded wrote:
+
+>    Yes, it's and old version, without support of device tree.
+>    For AUDMUX configuration, is the code below enough, snippet 1 and 2?
+
+I think so.
+
+>     And here I have another question about clock source sharing
+> between the two codecs.
+>     The two wm8962 codecs use the same clock source from imx6, in my
+> case, clko, as the code mentioned below,
+
+> Since the two codecs share the same clock source, clko, and we donot
+> know when mxc_wm8962_init() and wm8962_clk_enable() will be called by
+> using the function pointer exactly, do you think it's necessary to
+> make NULL to init, make wm8962_clk_enable_do_nothing to clock_enable,
+> and manually calling mxc_wm8962_init() and wm8962_clk_enable() in the
+> xxx_board_init() function instead?
+
+I don't think you need to change this part.
+
+> 2. In imx-wm8962.c:
+> 
+> static int __devinit imx_wm8962_probe(struct platform_device *pdev)
+> {
+>     ....
+>     imx_audmux_config(src, ext);    // should keep the same, not need
+> to change, right?
+>     ....
+> }
+
+No, you don't need to.
+ 
+>   But there is a question here.
+>   How should I track the  card_priv and its copy for the two codecs repectively.
+>   They are used heavily.
+>    In order to make the functions run without problems, seems
+> necessary to differentiate the function call is for which codec of the
+> two, right?
+>   The same situation may exist for other just copied global variables
+> in imx-wm8962.c.
+
+Each dai-link will create an individual sound card during system
+boot-up. Use 'aplay -l', you will see they are different devices.
