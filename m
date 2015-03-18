@@ -1,20 +1,24 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: getting the sound to work on my asus m6s00v
-Date: Wed, 18 Mar 2015 11:17:31 +0800
-Message-ID: <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
-References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
- <5508DD4D.3040901@canonical.com>
+From: Shawn Embedded <programassem@gmail.com>
+Subject: Re: Support two wm8962 codec in i.mx6 board.
+Date: Wed, 18 Mar 2015 12:48:24 +0800
+Message-ID: <CAOaGyfUWROtRSfYf5JLbSWqJMUbqmEpyDE6SuELkcvZ2SHidJw@mail.gmail.com>
+References: <CAOaGyfUHS90nKcSxpQZm7X3Lgwtb_9V4xLzyObhd5v=diGHJLw@mail.gmail.com>
+ <20150317005503.GA5480@Asurada-GSX>
+ <CAOaGyfUBoQLpa0YZjKEtZXmhRL_p=zGq3XEJ9oZHbHrVr1SQ8w@mail.gmail.com>
+ <20150317180006.GA5336@Asurada>
+ <CAOaGyfUk6LLkZhLXpLVE_akGTD3Ekk0TX_u1Gzw5y3oidBMQOg@mail.gmail.com>
+ <20150318013301.GA6432@Asurada-GSX>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
- [209.85.218.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 442FA260418
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 04:17:33 +0100 (CET)
-Received: by oier21 with SMTP id r21so26042761oie.1
- for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 20:17:32 -0700 (PDT)
-In-Reply-To: <5508DD4D.3040901@canonical.com>
+Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com
+ [209.85.218.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BD4526041D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 05:48:25 +0100 (CET)
+Received: by oibu204 with SMTP id u204so27145469oib.0
+ for <alsa-devel@alsa-project.org>; Tue, 17 Mar 2015 21:48:24 -0700 (PDT)
+In-Reply-To: <20150318013301.GA6432@Asurada-GSX>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +28,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Christian Gleerup <cromozon@swn.nu>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAxNS0zLTE4IOS4iuWNiDEwOjA1IOaWvCAiSHVpIFdhbmciIDxodWkud2FuZ0BjYW5vbmljYWwu
-Y29tPiDlr6vpgZPvvJoKPgo+IE9uIDAzLzE4LzIwMTUgMDU6NDUgQU0sIENocmlzdGlhbiBHbGVl
-cnVwIHdyb3RlOgo+Pgo+PiBJIGhhZCBzb21lIHByb2JsZW1zIGdldHRpbmcgdGhlIHNvdW5kIHRv
-IHdvcmsgb24gbXkgYXN1cyBtNnMwMHYKPj4gKEkgdGhpbmsgdGhhdCBpcyB0aGUgbW9kZWwsIGl0
-IGlzIGEgYml0IHdvcm4gc28gSSBjYW4ndCByZWFsbHkgcmVhZCBpdCkKPj4KPj4gdGhlIHN5bXB0
-b21zIHdhcwo+PiAqIG9uIHRoZSBpbnRlZ3JhdGVkIHNwZWFrZXJzLCBubyBzb3VuZCBhdCBhbGwK
-Pj4gKiBvbiB0aGUgaGVhZHBob25lIHNwZWFrZXJzLCBzb3VuZCBmb3IgYSB2ZXJ5IHZlcnkgc2hv
-cnQgcGVyaW9kIHRoYXQKZmFkZWQgaW50byBub3RoaW5nLgo+Pgo+PiB3aXRoIGhlbHAgZnJvbSBk
-ZWJpYW51c2VyIG9uIGZyZWVub2RlI2Fsc2Egd2UgbWFuYWdlZCB0byBnZXQgaXQgd29ya2luZy4K
-Pj4gdGhlIG9wdGlvbiB0aGF0IGkgaGFkIHRvIGxvYWQgdGhlIG1vZHVsZSB3aXRoIGlzIHRoZSBm
-b2xsb3dpbmc6Cj4+IHN1ZG8gbW9kcHJvYmUgc25kLWhkYS1pbnRlbCBtb2RlbD0zc3RhY2stZGln
-b3V0Cj4+IHRoZSBzdGF0dXMgbm93IChwZXJmZWN0KS4uLgo+PiAqIHNvdW5kIG9uIGludGVncmF0
-ZWQgc3BlYWtlci4KPj4gKiBzb3VuZCBpbiBoZWFkcGhvbmVzIChkaXNhYmxlcyBpbnRlZ3JhdGVk
-IHNwZWFrZXIgb3V0cHV0IHdoaWNoIGlzIGZpbmUpCj4+ICogbWljIHdvcmtzLCBib3RoIGZvciBk
-aXJlY3QgcGxheWJhY2sgYW5kIHJlY29yZGluZwo+PiAqIHdoZW4gcmVjb3JkaW5nIGl0IGlzIHRo
-ZSAnZGlnaXRhbCcgY2hhbm5lbCB0aGF0IGNvbnRyb2xzIHRoZSB2b2x1bWUgb2YKdGhlIHJlY29y
-ZGluZyBsZXZlbCwgYWxsIG90aGVycwo+Pgo+PiBOb3RpY2U6Cj4+IEkgZG9uJ3QgaGF2ZSBPU1Mg
-b3IgcHVsc2VhdWRpbyBpbnN0YWxsZWQuCj4+Cj4+IEkgYW0gdGhpbmtpbmcgaXQgd291bGQgYmUg
-cmVhbGx5IG5pY2UgaWYgdGhlIGRyaXZlciBhdXRvbWF0aWNhbGx5IGNvdWxkCmRldGVjdCB0aGF0
-IHRoaXMgb3B0aW9uIGlzIHJlcXVpcmVkLgo+Pgo+PiB0aGlzIGlzIHRoZSBvdXRwdXQgZnJvbSB0
-aGUgYWxzYS1pbmZvIHNjcmlwdAo+PgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9
-MjhiOThhM2JkMWVmYzZhODBkYmQ1YzU0YjUyYzQ0NzJkOGVhNTQ5Ngo+Pgo+PiBsZXQgbWUga25v
-dyBpZiBJIGNhbiBkbyBhbnl0aGluZyB0byBoZWxwIHdpdGggdGhpcy4KPgo+IEl0IHNlZW1zIHRo
-ZSBsYXRlc3Qga2VybmVsIGFscmVhZHkgaGFkIGEgZml4dXAgZm9yIHRoaXMgbWFjaGluZSwgYnV0
-IHRoZQpmaXh1cCBpcyBBTEM4ODBfRklYVVBfQVNVU19XNUEgaW5zdGVhZCBvZiBBTEM4ODBfRklY
-VVBfM1NUX0RJRy4gUHJvYmFibHkKeW91IHNob3VsZCB1c2UgbGF0ZXN0IHVwc3RyZWFtIGtlcm5l
-bCB3aXRob3V0ICJtb2RlbD0zc3RhY2stZGlnb3V0IiB0byB0ZXN0CmFnYWluLCBpZiBpdCBjYW4n
-dCBmaXggeW91ciBwcm9ibGVtLCBtYXliZSB0aGUgcGF0Y2ggYmVsb3cgY2FuIHdvcmsuCj4KPiAt
-LS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwo+ICsrKyBiL3NvdW5kL3BjaS9oZGEv
-cGF0Y2hfcmVhbHRlay5jCj4gQEAgLTEzNDksNyArMTM0OSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
-Y3QgaGRhX2ZpeHVwIGFsYzg4MF9maXh1cHNbXSA9IHsKPgo+ICBzdGF0aWMgY29uc3Qgc3RydWN0
-IHNuZF9wY2lfcXVpcmsgYWxjODgwX2ZpeHVwX3RibFtdID0gewo+ICAgICAgICAgU05EX1BDSV9R
-VUlSSygweDEwMTksIDB4MGY2OSwgIkNvZXVzIEc2MTBQIiwgQUxDODgwX0ZJWFVQX1c4MTApLAo+
-IC0gICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTBjMywgIkFTVVMgVzVBIiwgQUxDODgw
-X0ZJWFVQX0FTVVNfVzVBKSwKPiArICAgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDEwYzMs
-ICJBU1VTIFc1QSIsIEFMQzg4MF9GSVhVUF8zU1RfRElHKSwKPiAgICAgICAgIFNORF9QQ0lfUVVJ
-UksoMHgxMDQzLCAweDE5NjQsICJBU1VTIFo3MVYiLCBBTEM4ODBfRklYVVBfWjcxViksCj4gICAg
-ICAgICBTTkRfUENJX1FVSVJLX1ZFTkRPUigweDEwNDMsICJBU1VTIiwgQUxDODgwX0ZJWFVQX0dQ
-SU8xKSwKPiAgICAgICAgIFNORF9QQ0lfUVVJUksoMHgxNDdiLCAweDEwNDUsICJBQml0IEFBOFhF
-IiwKQUxDODgwX0ZJWFVQXzZTVF9BVVRPTVVURSksCj4KPgoKU3lzZnMgRmlsZXMKISEtLS0tLS0t
-LS0tLQoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvaW5pdF9waW5fY29uZmlnczoKMHgxNCAweDAx
-MjE0MTFmCjB4MTUgMHg0MTExMTFmMAoweDE2IDB4NDExMTExZjAKMHgxNyAweDQxMTExMWYwCjB4
-MTggMHgwMWExOTkyMAoweDE5IDB4NDExMTExZjAKMHgxYSAweDQxMTExMWYwCjB4MWIgMHg0MTEx
-MTFmMAoweDFjIDB4YjczMzExMjEKMHgxZCAweDQxMTExMWYwCjB4MWUgMHgwMTQ1NDExZQoweDFm
-IDB4NDExMTExZjAKClNpbXBsZSBtaXhlciBjb250cm9sICdDaGFubmVsIE1vZGUnLDAKICBDYXBh
-YmlsaXRpZXM6IGVudW0KICBJdGVtczogJzJjaCcgJzZjaCcKICBJdGVtMDogJzJjaCcKU2ltcGxl
-IG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMAogIENhcGFiaWxpdGllczogY2VudW0KICBJ
-dGVtczogJ01pYycgJ0Zyb250IE1pYycgJ0xpbmUnICdDRCcKICBJdGVtMDogJ01pYycKU2ltcGxl
-IG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMQogIENhcGFiaWxpdGllczogY2VudW0KICBJ
-dGVtczogJ01pYycgJ0Zyb250IE1pYycgJ0xpbmUnICdDRCcKICBJdGVtMDogJ01pYycKU2ltcGxl
-IG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMgogIENhcGFiaWxpdGllczogY2VudW0KICBJ
-dGVtczogJ01pYycgJ0Zyb250IE1pYycgJ0xpbmUnICdDRCcKICBJdGVtMDogJ01pYycKClNlZW0g
-bWlzc2luZyBpbnRlcm5hbCBzcGVha2VyIGFuZCByZWR1bmRhbnQgIENEIHBpbgoKRG8geW91ciBt
-aWMgamFjayBhbmQgaW50ZXJuYWwgbWljIHdvcmsgYXMgZXhwZWN0ZWQgPwoKSXQgaXMgbm90IGNv
-cnJlY3QgdG8gdXNlIDNzdGFjayB3aGVuIHlvdXIgbGFwdG9wIGRvZXMgbm90IGhhdmUgdGhyZWUg
-YXVkaW8KamFja3MgZm9yIHN1cnJvdW5kIDUuMQoKISEKCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcv
-Y2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC9jb21taXQvc291bmQvcGNpL2hk
-YT9pZD00ODdhNTg4ZDA5ZGIwZDY1MDgyNjE4NjdkZjIwOGQ4YmRjNzE4MjUxCgpTZWVtIG5vIG1p
-YyBqYWNrIGFuZCBzcGVha2VyIGluIHc1bgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+Hi Nicolin,
+
+On Wed, Mar 18, 2015 at 9:33 AM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> On Wed, Mar 18, 2015 at 09:12:19AM +0800, Shawn Embedded wrote:
+>
+>>    Yes, it's and old version, without support of device tree.
+>>    For AUDMUX configuration, is the code below enough, snippet 1 and 2?
+>
+> I think so.
+>
+>>     And here I have another question about clock source sharing
+>> between the two codecs.
+>>     The two wm8962 codecs use the same clock source from imx6, in my
+>> case, clko, as the code mentioned below,
+>
+>> Since the two codecs share the same clock source, clko, and we donot
+>> know when mxc_wm8962_init() and wm8962_clk_enable() will be called by
+>> using the function pointer exactly, do you think it's necessary to
+>> make NULL to init, make wm8962_clk_enable_do_nothing to clock_enable,
+>> and manually calling mxc_wm8962_init() and wm8962_clk_enable() in the
+>> xxx_board_init() function instead?
+>
+> I don't think you need to change this part.
+
+   If donot change it, what will happen to the working codec if the
+clock_enable is called caused by stopping the other codec? the working
+codec will not be affected?
+
+>
+>> 2. In imx-wm8962.c:
+>>
+>> static int __devinit imx_wm8962_probe(struct platform_device *pdev)
+>> {
+>>     ....
+>>     imx_audmux_config(src, ext);    // should keep the same, not need
+>> to change, right?
+>>     ....
+>> }
+>
+> No, you don't need to.
+>
+>>   But there is a question here.
+>>   How should I track the  card_priv and its copy for the two codecs repectively.
+>>   They are used heavily.
+>>    In order to make the functions run without problems, seems
+>> necessary to differentiate the function call is for which codec of the
+>> two, right?
+>>   The same situation may exist for other just copied global variables
+>> in imx-wm8962.c.
+>
+> Each dai-link will create an individual sound card during system
+> boot-up. Use 'aplay -l', you will see they are different devices.
+>
+
+   I know what you mean.
+   But let me paste a snippet of code here, for two codecs on board,
+do'not you think it's necessary to setup 2 structure imx_priv to track
+the two codecs respectively?
+
+In imx-wm8962.c
+
+static struct imx_priv card_priv;
+
+static void imx_hifi_shutdown(struct snd_pcm_substream *substream)
+{
+     struct snd_soc_pcm_runtime *rtd = substream->private_data;
+     struct snd_soc_dai *codec_dai = rtd->codec_dai;
+     struct imx_priv *priv = &card_priv;
+     struct mxc_audio_platform_data *plat = priv->pdev->dev.platform_data;
+
+     if (!codec_dai->active)
+          plat->clock_enable(0);
+
+     return;
+}
+
+/*
+ * This function will register the snd_soc_pcm_link drivers.
+ */
+static int __devinit imx_wm8962_probe(struct platform_device *pdev)
+{
+
+     struct mxc_audio_platform_data *plat = pdev->dev.platform_data;
+     struct imx_priv *priv = &card_priv;
+     int ret = 0;
+
+     priv->pdev = pdev;
+
+     imx_audmux_config(plat->src_port, plat->ext_port);
+
+     if (plat->init && plat->init()) {
+          ret = -EINVAL;
+     return ret;
+     }
+
+     priv->sysclk = plat->sysclk;
+
+     priv->sdev.name = "h2w";
+     ret = switch_dev_register(&priv->sdev);
+     if (ret < 0) {
+          ret = -EINVAL;
+     return ret;
+     }
+
+     if (plat->hp_gpio != -1) {
+          priv->hp_status = gpio_get_value(plat->hp_gpio);
+
+          if (priv->hp_status != plat->hp_active_low)
+               switch_set_state(&priv->sdev, 2);
+          else
+               switch_set_state(&priv->sdev, 0);
+     }
+     priv->first_stream = NULL;
+     priv->second_stream = NULL;
+
+     return ret;
+}
+
+
+Thank you.
+
+Best Regards,
+Shawn
