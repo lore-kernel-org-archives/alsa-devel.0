@@ -1,47 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v9] ASoC: dapm: add code to configure dai link parameters
-Date: Tue, 17 Mar 2015 22:55:33 +0000
-Message-ID: <20150317225533.GT28806@sirena.org.uk>
-References: <1422896805-18135-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 11/11] ALSA: digi00x: apply double-oh-three
+ algorism to multiplex PCM samples
+Date: Wed, 18 Mar 2015 10:06:45 +0900
+Message-ID: <5508CFA5.7060903@sakamocchi.jp>
+References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
+ <5506E7EE.6060300@gareus.org> <55070409.8090107@sakamocchi.jp>
+ <55070F3B.7000509@gareus.org> <55075D65.20406@sakamocchi.jp>
+ <55082E06.6010008@gareus.org> <55083103.5030704@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cX6v06kgJwdgCvne"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1422896805-18135-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED0AA265062
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 02:06:48 +0100 (CET)
+In-Reply-To: <55083103.5030704@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Damien Zammit <damien.zammit@gmail.com>, Robin Gareus <robin@gareus.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-
---cX6v06kgJwdgCvne
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Feb 02, 2015 at 05:06:44PM +0000, Nikesh Oswal wrote:
-> dai-link params for codec-codec links were fixed. The fixed
-> link between codec and another chip which may be another codec,
-> baseband, bluetooth codec etc may require run time configuaration
-> changes. This change provides an optional alsa control to select
-> one of the params from a list of params.
-
-Applied, thanks!
-
---cX6v06kgJwdgCvne
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVCLDkAAoJECTWi3JdVIfQipIH/2xHR5tKQf8e/BILLMXTLeEn
-J4xCTpCbsEGJ8+SOzCdgh1PZrrEqBbl3A47OeaIWzhVNnxnpfY6Zmzi8Cdl4l1DW
-nDZ3Y+eYv7SbX0hOT6tkYvL46itreok4hy5O6vzL9OqjOjFY+vABmldxHNDkZqAz
-EeV6V+3zLMokgNz0V4uy8Ft3z5fwGm4jqFMyL0cyp3u/S8/7LJpDOBVlXCJMwzTp
-MsNIFv1N3IX+UBcoccaFWVl5zWhOt2t6mbU0EKVfkbIWxPKIvR2m/xkodYp/WcEf
-hFFcK91EQSwNXLOu/pkyvVhbcVuv2DdpL1bneiWN46DVJoDS6GZcVOD/5pYFHUE=
-=zKuA
------END PGP SIGNATURE-----
-
---cX6v06kgJwdgCvne--
+CgpPbiAyMDE15bm0MDPmnIgxN+aXpSAyMjo0OSwgRGFtaWVuIFphbW1pdCB3cm90ZToKPiBDYW4g
+d2UgaW5jbHVkZSBteSBtaXhlciBjb250cm9sIGludG8gdGhlIGRyaXZlcj8KCkRlcGVuZHMgb24g
+dGhlIHJlYXNvbi4KCj4gSSB0aGluayBpdCBpcyBpbXBvcnRhbnQgdG8gaW5jbHVkZSB0aGUgY2xv
+Y2sgc291cmNlIHNlbGVjdG9yIHN3aXRjaCBhcwo+IGFuIGFsc2FtaXhlciBzZXR0aW5nLgoKUGxl
+YXNlIGV4cGxhaW4gdGhlIGltcG9ydGFuY2UsIGVzcGVjaWFsbHkgdGhlIHJlYXNvbiB0byBpbmNs
+dWRlIHRoZSAKc2VsZWN0b3IgaW50byBrZXJuZWwgY29kZSBpbnN0ZWFkIG9mIHVzZXJzcGFjZSBh
+cHBsaWNhdGlvbi4KCj4gRXZlcnkgb3RoZXIgc2VyaW91cyBzb3VuZGNhcmQgYWxsb3dzIGNsb2Nr
+IHNvdXJjZSBzZWxlY3Rpb24uCgpPdmVyIGdlbmVyYWxpemF0aW9uLgoKU29tZSBBTFNBIGRyaXZl
+cnMgc3RpbGwgZXhwZWN0IHVzZXJzcGFjZSBhcHBsaWNhdGlvbnMgdG8gaW1wbGVtZW50IHRoaXMg
+CmZ1bmN0aW9uYWxpdHkuCgo+IEkgdGVzdGVkIDAwM1IrIHdpdGggUm9iaW4ncyBzdWdnZXN0aW9u
+IG9mIGhhY2tpbmcgdGhlIHN0YXRlIHRvIGJlCj4gc3RhdGljYWxseSBpbml0aWFsaXNlZCB0byB6
+ZXJvICh3aGljaCB3b24ndCB3b3JrIGZvciBtdWx0aSBkZXZpY2VzKSwKPiBhbmQgdGhlIHJlc3Vs
+dHMgd2VyZSBncmVhdDogZGVhZCBzaWxlbmNlIG9uIGNoYW5uZWwgMSB3aGVuIHBsYXlpbmcgaW50
+bwo+IGNoYW5uZWwgMTguICBUaGlzIHNtYWxsIGhhY2sgbWVhbnMgdGhhdCBSb2JpbidzIHVwZGF0
+ZSB0byAwMDNhbWR0cAo+IHNob3VsZCB3b3JrIGZsYXdsZXNzbHkgd2hlbiBpbnRlZ3JhdGVkIGlu
+dG8gdGhlIGRyaXZlciBwcm9wZXJseS4KCldoYXQgd2UgbmVlZCBpcyB0byB0ZXN0IFJvYmluJ3Mg
+bmV3IGNvZGUgdGhvcm91Z2hseSwgbm90IGluY2x1ZGUgZXh0cmEgCmZ1bmN0aW9uYWxpdHkgc3Vj
+aCBhcyBjbG9jayBzb3VyY2Ugc2VsZWN0b3IgdW5yZWxhdGVkIHRvIHN0cmVhbWluZyAKZnVuY3Rp
+b25hbGl0eS4KCj4gVGFrYXNoaTogIEkgYW0gYWxzbyByZXBvcnRpbmcgdGhhdCBBREFUIHN5bmMs
+IFNQRElGIHN5bmMgYm90aCB3b3JrIHVzaW5nCj4gbXkgY2xvY2sgc291cmNlIHNlbGVjdG9yIGNv
+bnRyb2wuICBJbiBmYWN0LCB3aXRob3V0IHRoZSBzeW5jIHRvIGV4dGVybmFsCj4gZGV2aWNlLCB0
+aGVyZSBhcmUgbWFueSBkcm9wb3V0cyBpbiB0aGUgMTM5NCBzdHJlYW1zLgo+IEhvdyBjYW4gd2Ug
+YWRkcmVzcyB0aGlzIGlzc3VlPwoKSW4gdGhpcyBjYXNlLCB0aGUga2VybmVsIGRyaXZlciBzaG91
+bGQgcmV0dXJuIGVycm9yIGNvZGUgdG8gdXNlcnNwYWNlIAphcHBsaWNhdGlvbi4gSWYgdGhlIGRy
+aXZlciBjYW5ub3QgaGFuZGxlIGFueSBpbi1wYWNrZXRzIGFmdGVyIHN0YXJ0aW5nIAp0cmFuc21p
+dHRlZCBzdHJlYW0sIGl0IGRldGVjdHMgdGltZW91dCAoNTAwbXNlYykgYW5kIHJldHVybiAtRVRJ
+TUVET1VULiAKSWYgdGhlIGluLXBhY2tldHMgaW5jbHVkZSBkaXNjb250aW51aXR5IG9mIHRoZSB2
+YWx1ZSBpbiBkYmMgZmllbGQgb2YgQ0lQIApoZWFkZXIsIEFMU0EgQU1EVFAgaW1wbGVtZW50YXRp
+b24gZGV0ZWN0cyBpdCBhbmQgc3RvcCB0cmFuc21pdHRlZCAKc3RyZWFtLCB0aGVuIHRoZSBkcml2
+ZXIgYWxzbyByZXR1cm5zIC1FVElNRURPVVQuCgoKUmVnYXJkcwoKVGFrYXNoaSBTYWthbW90bwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
