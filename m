@@ -1,21 +1,17 @@
-From: =?UTF-8?Q?Cl=C3=A9ment_Guedez?= <klem.dev@gmail.com>
-Subject: Re: [PATCH 1/6] ESI W192M : Correct copy/paste from
-	prodigy driver
-Date: Wed, 18 Mar 2015 15:13:03 +0100
-Message-ID: <CADoA7KZF9+uocgTAFAr0O9xb6um7gLFnB-c_2q63QhYh-nZbGg@mail.gmail.com>
-References: <5508d452.4160b40a.64fa.44e3@mx.google.com>
- <s5ha8zamykz.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/7] Yet more HD-audio restrucruing
+Date: Wed, 18 Mar 2015 16:16:30 +0100
+Message-ID: <1426691797-17178-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f172.google.com (mail-ig0-f172.google.com
- [209.85.213.172])
- by alsa0.perex.cz (Postfix) with ESMTP id E283E26047A
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 15:13:05 +0100 (CET)
-Received: by igbue6 with SMTP id ue6so44946683igb.1
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 07:13:03 -0700 (PDT)
-In-Reply-To: <s5ha8zamykz.wl-tiwai@suse.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id D66B62604AA
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 16:16:41 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id AC226AD32
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 15:16:40 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +21,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-R3JlYXQgISBUaGFua3MgYSBsb3QuCgoyMDE1LTAzLTE4IDEwOjQyIEdNVCswMTowMCBUYWthc2hp
-IEl3YWkgPHRpd2FpQHN1c2UuZGU+OgoKPiBBdCBXZWQsIDE4IE1hciAyMDE1IDAyOjI2OjI2ICsw
-MTAwLAo+IGtsZW0uZGV2QGdtYWlsLmNvbSB3cm90ZToKPiA+Cj4gPiBGcm9tOiBDbMOpbWVudCBH
-dWVkZXogPGtsZW0uZGV2QGdtYWlsLmNvbT4KPiA+Cj4gPiBDb3JyZWN0IGNvcHkvcGFzdGUgbmFt
-ZSBmcm9tIHByb2RpZ3kgZHJpdmVyLCBubyBiZWhhdmlvdXIgY2hhbmdlLCBvbmx5Cj4gbmFtZS4K
-PiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBDbMOpbWVudCBHdWVkZXogPGtsZW0uZGV2QGdtYWlsLmNv
-bT4KPgo+IEFwcGxpZWQgYWxsIHNpeCBwYXRjaGVzIG5vdy4gIFRoYW5rcy4KPgo+Cj4gVGFrYXNo
-aQo+Cj4gPgo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9pY2UxNzEyL3d0bS5jIGIvc291bmQv
-cGNpL2ljZTE3MTIvd3RtLmMKPiA+IGluZGV4IGJjZjMwYTMuLmY2NWFjMTkgMTAwNjQ0Cj4gPiAt
-LS0gYS9zb3VuZC9wY2kvaWNlMTcxMi93dG0uYwo+ID4gKysrIGIvc291bmQvcGNpL2ljZTE3MTIv
-d3RtLmMKPiA+IEBAIC00NjMsNyArNDYzLDcgQEAgc3RhdGljIGludCB3dG1fYWRkX2NvbnRyb2xz
-KHN0cnVjdCBzbmRfaWNlMTcxMiAqaWNlKQo+ID4KPiA+ICBzdGF0aWMgaW50IHd0bV9pbml0KHN0
-cnVjdCBzbmRfaWNlMTcxMiAqaWNlKQo+ID4gIHsKPiA+IC0gICAgIHN0YXRpYyB1bnNpZ25lZCBz
-aG9ydCBzdGFjX2luaXRzX3Byb2RpZ3lbXSA9IHsKPiA+ICsgICAgIHN0YXRpYyB1bnNpZ25lZCBz
-aG9ydCBzdGFjX2luaXRzX3d0bVtdID0gewo+ID4gICAgICAgICAgICAgICBTVEFDOTQ2WF9SRVNF
-VCwgMCwKPiA+ICAgICAgICAgICAgICAgKHVuc2lnbmVkIHNob3J0KS0xCj4gPiAgICAgICB9Owo+
-ID4gQEAgLTQ3NSw3ICs0NzUsNyBAQCBzdGF0aWMgaW50IHd0bV9pbml0KHN0cnVjdCBzbmRfaWNl
-MTcxMiAqaWNlKQo+ID4gICAgICAgaWNlLT5mb3JjZV9yZG1hMSA9IDE7Cj4gPgo+ID4gICAgICAg
-Lyppbml0aWFsaXplIGNvZGVjKi8KPiA+IC0gICAgIHAgPSBzdGFjX2luaXRzX3Byb2RpZ3k7Cj4g
-PiArICAgICBwID0gc3RhY19pbml0c193dG07Cj4gPiAgICAgICBmb3IgKDsgKnAgIT0gKHVuc2ln
-bmVkIHNob3J0KS0xOyBwICs9IDIpIHsKPiA+ICAgICAgICAgICAgICAgc3RhYzk0NjBfcHV0KGlj
-ZSwgcFswXSwgcFsxXSk7Cj4gPiAgICAgICAgICAgICAgIHN0YWM5NDYwXzJfcHV0KGljZSwgcFsw
-XSwgcFsxXSk7Cj4gPiAtLQo+ID4gMi4xLjQKPiA+Cj4KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+this is the patchset I mentioned in the previous post -- moving some
+HD-audio core stuff into sound/hda/ directory.  As of now, only the
+codec drivers are split to sound/hda/.  The legacy bus (controller)
+driver still remains almost intact, but the split of the core
+controller driver is also planned, and will be finished hopefully
+before 4.1 merge window.
+
+The original patches are found in topic/hda-core branch of sound git
+tree.  The patches posted here are the ones rebased on top of the
+previous widget PM patches, and found in test/hda-core branch.  Once
+when the widget PM patches get merged, I'll adjust this patchset on
+top of it.
+
+
+Takashi
+
+===
+
+Takashi Iwai (7):
+  ALSA: hda - Make snd_hda_bus_type public
+  ALSA: hda - Move some codes up to hdac_bus struct
+  ALSA: hda - Move a part of hda_codec stuff into hdac_device
+  ALSA: hda - Add widget sysfs tree
+  ALSA: hda - Support indirect execution of verbs
+  ALSA: hda - Fix possible runtime PM refcount unbalance
+  ALSA: hda - Re-add tracepoints to HD-audio core driver
+
+ include/sound/hdaudio.h         | 181 ++++++++++++
+ sound/Kconfig                   |   2 +
+ sound/Makefile                  |   2 +-
+ sound/hda/Kconfig               |   2 +
+ sound/hda/Makefile              |   6 +
+ sound/hda/hda_bus_type.c        |  42 +++
+ sound/hda/hdac_bus.c            | 186 +++++++++++++
+ sound/hda/hdac_device.c         | 527 +++++++++++++++++++++++++++++++++++
+ sound/hda/hdac_sysfs.c          | 404 +++++++++++++++++++++++++++
+ sound/hda/local.h               |  23 ++
+ sound/hda/trace.c               |   6 +
+ sound/hda/trace.h               |  62 +++++
+ sound/pci/hda/Kconfig           |   1 +
+ sound/pci/hda/Makefile          |   1 -
+ sound/pci/hda/hda_auto_parser.c |  33 ++-
+ sound/pci/hda/hda_beep.c        |   4 +-
+ sound/pci/hda/hda_bind.c        | 157 +++--------
+ sound/pci/hda/hda_codec.c       | 600 +++++++++-------------------------------
+ sound/pci/hda/hda_codec.h       |  87 ++----
+ sound/pci/hda/hda_controller.c  |   8 +-
+ sound/pci/hda/hda_generic.c     |  25 +-
+ sound/pci/hda/hda_intel.c       |   4 +-
+ sound/pci/hda/hda_local.h       |  16 +-
+ sound/pci/hda/hda_proc.c        |  42 +--
+ sound/pci/hda/hda_sysfs.c       |  60 ++--
+ sound/pci/hda/hda_trace.h       | 119 --------
+ sound/pci/hda/local.h           |  39 +++
+ sound/pci/hda/patch_analog.c    |   2 +-
+ sound/pci/hda/patch_ca0132.c    |   6 +-
+ sound/pci/hda/patch_conexant.c  |  20 +-
+ sound/pci/hda/patch_hdmi.c      |  20 +-
+ sound/pci/hda/patch_realtek.c   |  78 +++---
+ sound/pci/hda/patch_si3054.c    |   6 +-
+ sound/pci/hda/patch_sigmatel.c  |  84 +++---
+ sound/pci/hda/patch_via.c       |  23 +-
+ sound/pci/hda/thinkpad_helper.c |   2 +-
+ 36 files changed, 1895 insertions(+), 985 deletions(-)
+ create mode 100644 include/sound/hdaudio.h
+ create mode 100644 sound/hda/Kconfig
+ create mode 100644 sound/hda/Makefile
+ create mode 100644 sound/hda/hda_bus_type.c
+ create mode 100644 sound/hda/hdac_bus.c
+ create mode 100644 sound/hda/hdac_device.c
+ create mode 100644 sound/hda/hdac_sysfs.c
+ create mode 100644 sound/hda/local.h
+ create mode 100644 sound/hda/trace.c
+ create mode 100644 sound/hda/trace.h
+ delete mode 100644 sound/pci/hda/hda_trace.h
+ create mode 100644 sound/pci/hda/local.h
+
+-- 
+2.3.3
