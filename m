@@ -1,29 +1,13 @@
 From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH 1/7 linux-next] ALSA: aoa: constify
-	of_device_id array
-Date: Wed, 18 Mar 2015 17:48:56 +0100
-Message-ID: <1426697344-4884-2-git-send-email-fabf@skynet.be>
+Subject: [PATCH 3/7 linux-next] ASoC: kirkwood: constify of_device_id array
+Date: Wed, 18 Mar 2015 17:48:58 +0100
+Message-ID: <1426697344-4884-4-git-send-email-fabf@skynet.be>
 References: <1426697344-4884-1-git-send-email-fabf@skynet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay106.isp.belgacom.be (mailrelay106.isp.belgacom.be
- [195.238.20.133])
- by alsa0.perex.cz (Postfix) with ESMTP id C03D92604AA
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 17:49:22 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1426697344-4884-1-git-send-email-fabf@skynet.be>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Fabian Frederick <fabf@skynet.be>, Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org
+Cc: Fabian Frederick <fabf@skynet.be>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 of_device_id is always used as const.
@@ -31,21 +15,21 @@ of_device_id is always used as const.
 
 Signed-off-by: Fabian Frederick <fabf@skynet.be>
 ---
- sound/aoa/soundbus/i2sbus/core.c | 2 +-
+ sound/soc/kirkwood/kirkwood-i2s.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index b9737fa..1cbf210 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -31,7 +31,7 @@ module_param(force, int, 0444);
- MODULE_PARM_DESC(force, "Force loading i2sbus even when"
- 			" no layout-id property is present");
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index d194830..3a36d60 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -643,7 +643,7 @@ static int kirkwood_i2s_dev_remove(struct platform_device *pdev)
+ }
  
--static struct of_device_id i2sbus_match[] = {
-+static const struct of_device_id i2sbus_match[] = {
- 	{ .name = "i2s" },
- 	{ }
- };
+ #ifdef CONFIG_OF
+-static struct of_device_id mvebu_audio_of_match[] = {
++static const struct of_device_id mvebu_audio_of_match[] = {
+ 	{ .compatible = "marvell,kirkwood-audio" },
+ 	{ .compatible = "marvell,dove-audio" },
+ 	{ .compatible = "marvell,armada370-audio" },
 -- 
 1.9.1
