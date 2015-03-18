@@ -1,35 +1,35 @@
 From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH 0/7 linux-next] sound: constify of_device_id array
-Date: Wed, 18 Mar 2015 17:48:55 +0100
-Message-ID: <1426697344-4884-1-git-send-email-fabf@skynet.be>
+Subject: [PATCH 7/7 linux-next] ASoC: rsnd: constify of_device_id array
+Date: Wed, 18 Mar 2015 17:49:02 +0100
+Message-ID: <1426697344-4884-8-git-send-email-fabf@skynet.be>
+References: <1426697344-4884-1-git-send-email-fabf@skynet.be>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1426697344-4884-1-git-send-email-fabf@skynet.be>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Fabian Frederick <fabf@skynet.be>, Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Cc: Fabian Frederick <fabf@skynet.be>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This small patchset adds const to of_device_id arrays in
-sound branch.
+of_device_id is always used as const.
+(See driver.of_match_table and open firmware functions)
 
-Fabian Frederick (7):
-  ALSA: aoa: constify of_device_id array
-  ASoC: fsl: constify of_device_id array
-  ASoC: kirkwood: constify of_device_id array
-  ASoC: rt5631: constify of_device_id array
-  ASoC: ak4554: constify of_device_id array
-  ASoC: fsi: constify of_device_id array
-  ASoC: rsnd: constify of_device_id array
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+ sound/soc/sh/rcar/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- sound/aoa/soundbus/i2sbus/core.c    | 2 +-
- sound/soc/codecs/ak4554.c           | 2 +-
- sound/soc/codecs/rt5631.c           | 2 +-
- sound/soc/fsl/mpc5200_psc_ac97.c    | 2 +-
- sound/soc/fsl/mpc5200_psc_i2s.c     | 2 +-
- sound/soc/fsl/pcm030-audio-fabric.c | 2 +-
- sound/soc/kirkwood/kirkwood-i2s.c   | 2 +-
- sound/soc/sh/fsi.c                  | 4 ++--
- sound/soc/sh/rcar/core.c            | 2 +-
- 9 files changed, 10 insertions(+), 10 deletions(-)
-
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index be03474..e9bac7c 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -107,7 +107,7 @@ static struct rsnd_of_data rsnd_of_data_gen2 = {
+ 	.flags = RSND_GEN2,
+ };
+ 
+-static struct of_device_id rsnd_of_match[] = {
++static const struct of_device_id rsnd_of_match[] = {
+ 	{ .compatible = "renesas,rcar_sound-gen1", .data = &rsnd_of_data_gen1 },
+ 	{ .compatible = "renesas,rcar_sound-gen2", .data = &rsnd_of_data_gen2 },
+ 	{},
 -- 
 1.9.1
