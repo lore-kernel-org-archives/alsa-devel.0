@@ -1,73 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: Intel: Remove vague commit about
- slave DMA config from firmware loader
-Date: Wed, 18 Mar 2015 11:44:11 +0000
-Message-ID: <20150318114411.GF2869@sirena.org.uk>
-References: <1426666040-1727-1-git-send-email-jarkko.nikula@linux.intel.com>
- <1426666040-1727-2-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH] ASoC: samsung: Enable SND_SIMPLE_CARD for Odroid X2/U3
+Date: Wed, 18 Mar 2015 11:51:46 +0000
+Message-ID: <20150318115146.GG2869@sirena.org.uk>
+References: <1426675939-25125-1-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7091490290154921562=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 75BDC2605F2
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 12:44:15 +0100 (CET)
-In-Reply-To: <1426666040-1727-2-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jin Yao <yao.jin@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zGQnqpIoxlsbsOfg"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1426675939-25125-1-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: liquid.acid@gmx.net, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7091490290154921562==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TeJTyD9hb8KJN2Jy"
-Content-Disposition: inline
-
-
---TeJTyD9hb8KJN2Jy
+--zGQnqpIoxlsbsOfg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 18, 2015 at 10:07:20AM +0200, Jarkko Nikula wrote:
-> Intel MID DMA driver is going to be removed, commit should be a few lines
-> down near to dmaengine_slave_config() call in order to not confuse and at
-> quick look Synopsys DesignWare does seem to use some of the slave config
-> structure fields (see drivers/dma/dw/core.c: dwc_config()).
+On Wed, Mar 18, 2015 at 11:52:19AM +0100, Sylwester Nawrocki wrote:
+> Odroid X2/U3 sound support can now be specified in device tree using
+> the simple card binding, make SND_SOC_ODROIDX2 select SND_SIMPLE_CARD
+> to ensure there are always required drivers in place.
 
-Applied both, thanks.
+No, this isn't an actual dependency so it shouldn't be in Kconfig.
 
---TeJTyD9hb8KJN2Jy
+--zGQnqpIoxlsbsOfg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVCWUKAAoJECTWi3JdVIfQpekH/3rWDT5OHrVoicJS1CYPFLwx
-b9R2k87i4vPH4mKauuj6cmLX8pGqMikiPBzC32J7KnDZXz7SLqOTkm2hhTspfrBu
-TSN6xQQphci4sL4X5EvubD/Fio0c5m/HEgOwc/DUuyNRzDDCbgw8nRBxbbTiiZth
-mmqTlQtogNZ7E7Bvl8cOFCfUvSfw0ZqJcoSoUa93/BkoFWQHfYgDpXRiHCsDAph+
-RTu7amSch9RJ66vu8zMKIPQXHuOgs2uIXWVvCE+NiKu0F6agd6qD+v8FWdtdz0uB
-RnJ/nliJdZpK8BjNDuNWhtdG0ZawEb2Pw5FjzRVWJ7m0pE5rWkNtTCvapEQBhr8=
-=omyz
+iQEcBAEBCAAGBQJVCWbSAAoJECTWi3JdVIfQiqgH/AnZCmXls1gNwp58Stlpf5y4
+9bVewChgF/1TERktx0G2pZvU5OhfsgKSlzGdm8Is1khSSlJZMXA27iQQtfajre26
+IgoX/XL3wBKNkqsCYCC7g/W6oP1m3Bsp7oJyqRwJ+qFjniTqOwYMdHoyeg3tsn9N
+78Ufy3m5mKvdG6yXVZm79fPfjKIcg4gWN0LucWyXuFGb/ZFCnmd68L7gYtiDfrWm
+WiBILhg+d6OfScTdV7Scl+LNoKohEeKiysd8dyuA9V++92VPXWMSApmIIkvzGlVn
+XH+WWAL3PGYXUDximzaoupTnUeeZn5BgD1RHHIi1npYcxUcaebPVKrXbpNSFYZQ=
+=UBAs
 -----END PGP SIGNATURE-----
 
---TeJTyD9hb8KJN2Jy--
-
---===============7091490290154921562==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7091490290154921562==--
+--zGQnqpIoxlsbsOfg--
