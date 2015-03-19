@@ -1,206 +1,90 @@
-From: Greg Knight <g.knight@symetrica.com>
-Subject: Patches to bind the SGTL5000 chip to AM33XX McASP
-Date: Thu, 19 Mar 2015 01:07:39 -0400
-Message-ID: <1426741659.10003.9.camel@midgaarde>
+From: Damien Zammit <damien.zammit@gmail.com>
+Subject: Re: [PATCH 11/11] ALSA: digi00x: apply double-oh-three
+ algorism to multiplex PCM samples
+Date: Thu, 19 Mar 2015 16:18:00 +1100
+Message-ID: <550A5C08.1010705@gmail.com>
+References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
+ <5506E7EE.6060300@gareus.org> <55070409.8090107@sakamocchi.jp>
+ <55070F3B.7000509@gareus.org> <55075D65.20406@sakamocchi.jp>
+ <55082E06.6010008@gareus.org> <55083103.5030704@gmail.com>
+ <5508CFA5.7060903@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-6YEoiG07Btkn/evehSgq"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19121260525
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 06:18:09 +0100 (CET)
+Received: by pabyw6 with SMTP id yw6so64533903pab.2
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 22:18:07 -0700 (PDT)
+In-Reply-To: <5508CFA5.7060903@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Robin Gareus <robin@gareus.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-
---=-6YEoiG07Btkn/evehSgq
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
-Hi, Mark, Jaroslav,
-
-I've attached a couple patches to provide support for the Freescale
-SGTL5000 chip when using the McASP on the AM3359.
-
-This adds an optional hack, "clock-to-talk" to the McASP subsystem which
-can start AHCLKX/AHCLKR prior to initializing the codec. This is needed
-on the SGTL5000, which depends on AHCLKX for its master clock.
-
-These patches are based off of 3.14.31-ti-r49. What is the process for
-getting these merged?
-
-Patch #3 is a completely unrelated patch in the SPI system, will send
-with different subject.
-
-Thanks,
-Greg
-
---=-6YEoiG07Btkn/evehSgq
-Content-Disposition: attachment;
-	filename*0=0001-davinci-mcasp-add-clock-to-talk-option-to-mcasp-devi.pat;
-	filename*1=ch
-Content-Type: text/x-patch;
-	name="0001-davinci-mcasp-add-clock-to-talk-option-to-mcasp-devi.patch";
-	charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
->From fbcdbfb151d54e6b18c0e04eb5f80dd05527e06b Mon Sep 17 00:00:00 2001
-From: Greg Knight <g.knight@symetrica.com>
-Date: Mon, 23 Feb 2015 19:41:05 -0500
-Subject: [PATCH 1/3] davinci-mcasp: add clock-to-talk option to mcasp
- device-tree which forces enable of AHCLKX/AHCLKR if set. This allows the
- AHCLKX line to operate as a main clock for chips such as the SGTL5000.
-
----
- include/linux/platform_data/davinci_asp.h | 14 +++++++++++++
- sound/soc/davinci/davinci-mcasp.c         | 33 +++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
-
-diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
-index 85ad68f..7dee1b2 100644
---- a/include/linux/platform_data/davinci_asp.h
-+++ b/include/linux/platform_data/davinci_asp.h
-@@ -29,6 +29,15 @@ struct davinci_mcasp_pdata {
- 	 * when compared to previous behavior.
- 	 */
- 	unsigned enable_channel_combine:1;
-+
-+	/**
-+	 * If set, we can anticipate device-tree failures during boot
-+	 * if the high-speed clock(s) are not running.
-+	 * Bit 0: Enable AHCLKX at startup
-+	 * Bit 1: Enable AHCLKR at startup
-+	 */
-+	unsigned clock_to_talk:2;
-+
- 	unsigned sram_size_playback;
- 	unsigned sram_size_capture;
- 	struct gen_pool *sram_pool;
-@@ -102,6 +111,11 @@ enum mcbsp_clk_input_pin {
- 	MCBSP_CLKS,
- };
- 
-+enum clock_to_talk_bits {
-+	MCASP_CLOCK_TO_TALK_X = 0,
-+	MCASP_CLOCK_TO_TALK_R
-+};
-+
- #define INACTIVE_MODE	0
- #define TX_MODE		1
- #define RX_MODE		2
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index eeb51f9..d0e6cab 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1326,6 +1326,15 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
- 	if (ret >= 0)
- 		pdata->sram_size_capture = val;
- 
-+	ret = of_property_read_u32(np, "clock-to-talk", &val);
-+	if (ret >= 0) {
-+		if (val >= 4) {
-+			ret = -EINVAL;
-+			goto nodata;
-+		}
-+		pdata->clock_to_talk = (unsigned) val;
-+	}
-+
- 	return  pdata;
- 
- nodata:
-@@ -1337,6 +1346,21 @@ nodata:
- 	return  pdata;
- }
- 
-+int davinci_mcasp_clock_to_talk_hack(struct davinci_mcasp* mcasp, int which)
-+{
-+	if (which & (1 << MCASP_CLOCK_TO_TALK_R)) {
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
-+		mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXHCLKRST);
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKR);
-+	}
-+	if (which & (1 << MCASP_CLOCK_TO_TALK_X)) {
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
-+		mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, TXHCLKRST);
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
-+	}
-+	return 0;
-+}
-+
- static int davinci_mcasp_probe(struct platform_device *pdev)
- {
- 	struct davinci_pcm_dma_params *dma_params;
-@@ -1557,6 +1581,15 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
-+	if (pdata->clock_to_talk != 0) {
-+		ret = davinci_mcasp_clock_to_talk_hack(mcasp, pdata->clock_to_talk);
-+		dev_dbg(&pdev->dev, "clock to talk: %u\n", pdata->clock_to_talk);
-+		if (ret) {
-+			dev_err(&pdev->dev, "clock to talk hack failed: %d\n", ret);
-+			goto err;
-+		}
-+	}
-+
- 	return 0;
- 
- err:
--- 
-1.9.1
-
-
---=-6YEoiG07Btkn/evehSgq
-Content-Disposition: attachment;
-	filename*0=0002-davinci-evm-add-evm_sgtl5000_link-to-bind-the-SGTL50.pat;
-	filename*1=ch
-Content-Type: text/x-patch;
-	name="0002-davinci-evm-add-evm_sgtl5000_link-to-bind-the-SGTL50.patch";
-	charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
->From 0cfd020bac9053326c97d273d60864776e7850e8 Mon Sep 17 00:00:00 2001
-From: Greg Knight <g.knight@symetrica.com>
-Date: Mon, 23 Feb 2015 19:41:40 -0500
-Subject: [PATCH 2/3] davinci-evm: add evm_sgtl5000_link to bind the SGTL5000
- chip to the davinci-evm SOM module
-
----
- sound/soc/davinci/davinci-evm.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index b9010c9..e71975f 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -468,6 +468,15 @@ static struct snd_soc_dai_link dra7xx_evm_link = {
- 		   SND_SOC_DAIFMT_IB_NF,
- };
- 
-+static struct snd_soc_dai_link evm_sgtl5000_link = {
-+	.name           = "Freescale SGTL5000",
-+	.stream_name    = "SGTL",
-+	.codec_dai_name = "sgtl5000",
-+	.ops            = &evm_ops,
-+	.dai_fmt        = SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_I2S |
-+                      SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CONT,
-+};
-+
- static const struct of_device_id davinci_evm_dt_ids[] = {
- 	{
- 		.compatible = "ti,da830-evm-audio",
-@@ -481,6 +490,10 @@ static const struct of_device_id davinci_evm_dt_ids[] = {
- 		.compatible = "ti,dra7xx-evm-audio",
- 		.data = (void *) &dra7xx_evm_link,
- 	},
-+	{
-+		.compatible = "ti,sgtl5000-audio",
-+		.data = &evm_sgtl5000_link
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, davinci_evm_dt_ids);
--- 
-1.9.1
-
-
---=-6YEoiG07Btkn/evehSgq--
-
+T24gMTgvMDMvMTUgMTI6MDYsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gT24gMjAxNeW5tDAz
+5pyIMTfml6UgMjI6NDksIERhbWllbiBaYW1taXQgd3JvdGU6Cj4+IENhbiB3ZSBpbmNsdWRlIG15
+IG1peGVyIGNvbnRyb2wgaW50byB0aGUgZHJpdmVyPwo+IAo+IERlcGVuZHMgb24gdGhlIHJlYXNv
+bi4KVGhlIHJlYXNvbiBmb3IgYWxsb3dpbmcgdGhlIG1peGVyIGNsb2NrIHNvdXJjZSBjb250cm9s
+IGluIHRoZSBrZXJuZWwgaXMKYmVjYXVzZSBpdCBpcyAqY29yZSogZnVuY3Rpb25hbGl0eSB0byBi
+ZSBhYmxlIHRvIGRlY2lkZSB3aGVyZSB0aGUgc291bmQKY2FyZCBnZXRzIGl0cyBjbG9jayBmcm9t
+LiAgSXQgd291bGQgYmUgY3VtYmVyc29tZSBhbmQgYXdrd2FyZCBpZiB1c2VycwpoYWQgdG8gZmly
+ZSB1cCBhbiBleHRlcm5hbCB1c2Vyc3BhY2UgcHJvZ3JhbSBqdXN0IHRvIGNvbmZpZ3VyZSB0aGUg
+Y2xvY2sKc291cmNlISAgVGhlIG9ubHkgcmVhc29uIHNvbWUgc291bmQgY2FyZHMgaGF2ZSBleHRl
+cm5hbCB1c2Vyc3BhY2UKcHJvZ3JhbXMgdG8gY29uZmlndXJlIHRoZXNlIGV4dHJhcyBpcyBiZWNh
+dXNlIG5vIG9uZSBoYXMgYm90aGVyZWQgdG8KaW1wbGVtZW50IHRoZW0gaW4gdGhlIGtlcm5lbCB5
+ZXQuIChXZWxsIHRoYXQgaXMgbXkgb3BpbmlvbikuCgo+PiBJIHRlc3RlZCAwMDNSKyB3aXRoIFJv
+YmluJ3Mgc3VnZ2VzdGlvbiBvZiBoYWNraW5nIHRoZSBzdGF0ZSB0byBiZQo+PiBzdGF0aWNhbGx5
+IGluaXRpYWxpc2VkIHRvIHplcm8gKHdoaWNoIHdvbid0IHdvcmsgZm9yIG11bHRpIGRldmljZXMp
+LAo+PiBhbmQgdGhlIHJlc3VsdHMgd2VyZSBncmVhdDogZGVhZCBzaWxlbmNlIG9uIGNoYW5uZWwg
+MSB3aGVuIHBsYXlpbmcgaW50bwo+PiBjaGFubmVsIDE4LiAgVGhpcyBzbWFsbCBoYWNrIG1lYW5z
+IHRoYXQgUm9iaW4ncyB1cGRhdGUgdG8gMDAzYW1kdHAKPj4gc2hvdWxkIHdvcmsgZmxhd2xlc3Ns
+eSB3aGVuIGludGVncmF0ZWQgaW50byB0aGUgZHJpdmVyIHByb3Blcmx5Lgo+IAo+IFdoYXQgd2Ug
+bmVlZCBpcyB0byB0ZXN0IFJvYmluJ3MgbmV3IGNvZGUgdGhvcm91Z2hseSwgbm90IGluY2x1ZGUg
+ZXh0cmEKPiBmdW5jdGlvbmFsaXR5IHN1Y2ggYXMgY2xvY2sgc291cmNlIHNlbGVjdG9yIHVucmVs
+YXRlZCB0byBzdHJlYW1pbmcKPiBmdW5jdGlvbmFsaXR5LgpUYWthc2hpLCBJIGFncmVlIHRoYXQg
+bXkgY2xvY2sgc291cmNlIG1peGVyIGNvbnRyb2wgaXMgYSBzZXBhcmF0ZSBpc3N1ZSwKYnV0IHBs
+ZWFzZSBkb24ndCB1bmRlcmVzdGltYXRlIHRoZSB3b3JrIFJvYmluIGFuZCBJIGhhdmUgZG9uZSB3
+aXRoCjAwM2FtZHRwOiAgV2UgYXJlIGluZm9ybWluZyB5b3UgdGhhdCBpdCBub3cgd29ya3MgY29y
+cmVjdGx5IGZvciBhbGwKY2hhbm5lbHMsIHNvIGxvbmcgYXMgaXQgaXMgaW50ZWdyYXRlZCBpbnRv
+IHRoZSBkcml2ZXIgY29ycmVjdGx5LiAgV2UKa25vdyB0aGlzIGJlY2F1c2Ugd2UgdGVzdGVkIGl0
+IHRob3JvdWdobHkgd2l0aCBhIGJ1cyBhbmFseXNlciB0byB2ZXJpZnkKdGhhdCB0aGUgZXhwZWN0
+ZWQgcGF0dGVybnMgd2VyZSBiZWluZyBwbGF5ZWQgaW50byB0aGUgZGV2aWNlIGFuZCBJIHVzZWQK
+bXkgZWFycyB0byBsaXN0ZW4gdG8gdGhlIHB1cmUgc2lsZW5jZSBvbiB0aGUgb3RoZXIgY2hhbm5l
+bHMgd2hlbiB0aGUKbWFnaWMgYml0IHBhdHRlcm4gd2FzIGJlaW5nIHBsYXllZCBpbnRvIHRoZSBk
+ZXZpY2UsIGFzIHdlbGwgYXMgdXNpbmcgYQpwcm9ncmFtIHRvIG1vbml0b3IgdGhlIGxldmVscyAo
+emVybykuCgo+PiBUYWthc2hpOiAgSSBhbSBhbHNvIHJlcG9ydGluZyB0aGF0IEFEQVQgc3luYywg
+U1BESUYgc3luYyBib3RoIHdvcmsgdXNpbmcKPj4gbXkgY2xvY2sgc291cmNlIHNlbGVjdG9yIGNv
+bnRyb2wuICBJbiBmYWN0LCB3aXRob3V0IHRoZSBzeW5jIHRvIGV4dGVybmFsCj4+IGRldmljZSwg
+dGhlcmUgYXJlIG1hbnkgZHJvcG91dHMgaW4gdGhlIDEzOTQgc3RyZWFtcy4KPj4gSG93IGNhbiB3
+ZSBhZGRyZXNzIHRoaXMgaXNzdWU/Cj4gSW4gdGhpcyBjYXNlLCB0aGUga2VybmVsIGRyaXZlciBz
+aG91bGQgcmV0dXJuIGVycm9yIGNvZGUgdG8gdXNlcnNwYWNlCj4gYXBwbGljYXRpb24uIElmIHRo
+ZSBkcml2ZXIgY2Fubm90IGhhbmRsZSBhbnkgaW4tcGFja2V0cyBhZnRlciBzdGFydGluZwo+IHRy
+YW5zbWl0dGVkIHN0cmVhbSwgaXQgZGV0ZWN0cyB0aW1lb3V0ICg1MDBtc2VjKSBhbmQgcmV0dXJu
+IC1FVElNRURPVVQuCkkgd291bGQgbm90IGhhdmUgYmVlbiBhYmxlIHRvIG5vdGljZSB0aGUgZGlm
+ZmVyZW5jZSBpbiBkcm9wb3V0cyB3aXRob3V0Cm15IG1peGVyIGNvbnRyb2wgZW5hYmxlZCwgc28g
+SSB0aGluayBmcm9tIGEgZGV2ZWxvcG1lbnQgcG9pbnQgb2YgdmlldyBpdAppcyB1c2VmdWwgdG8g
+aW5jbHVkZSB0aGUgbWl4ZXIgY29udHJvbCBpbi1rZXJuZWwuIChhbm90aGVyIHJlYXNvbikuCgo+
+IElmIHRoZSBpbi1wYWNrZXRzIGluY2x1ZGUgZGlzY29udGludWl0eSBvZiB0aGUgdmFsdWUgaW4g
+ZGJjIGZpZWxkIG9mIENJUAo+IGhlYWRlciwgQUxTQSBBTURUUCBpbXBsZW1lbnRhdGlvbiBkZXRl
+Y3RzIGl0IGFuZCBzdG9wIHRyYW5zbWl0dGVkCj4gc3RyZWFtLCB0aGVuIHRoZSBkcml2ZXIgYWxz
+byByZXR1cm5zIC1FVElNRURPVVQuClRha2FzaGksIHlvdSBoYXZlIHByb3ZpZGVkIGhlcmUgdGhl
+IGNvbmRpdGlvbnMgZm9yIHdoaWNoIC1FVElNRURPVVQKb2NjdXJzLiAgSSBhbSBhc2tpbmcgaG93
+IGNhbiB3ZSBwcmV2ZW50IHRoZSBkcm9wb3V0cywgbm90IGhvdyBpdCBvY2N1cnMuClBlcmhhcHMg
+dGhlIGRiYyBmaWVsZCBpcyBpcnJlbGV2YW50IGZvciAwMHggPyAgSSBkb24ndCBrbm93LCBwbGVh
+c2UgbGV0Cm1lIGtub3cgaWYgdGhlcmUgaXMgYW55dGhpbmcgSSBjYW4gZHVtcCBmb3IgeW91IHRv
+IGhlbHAgZmluZCBvdXQuCgpEYW1pZW4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
