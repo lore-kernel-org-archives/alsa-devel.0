@@ -1,151 +1,206 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_usb_audio - siberia elite prism soundcard
-	issues
-Date: Thu, 19 Mar 2015 13:05:17 +0800
-Message-ID: <CAN8cciZjEtmS__52oRbda8ePnZTGO_ss65Nwr8qA1D+ip1d-qA@mail.gmail.com>
-References: <CAHti5NHPMjxAtg_XLHD1kL4rUCAPaNGa_2ZAZwvv_Kc4u43uAw@mail.gmail.com>
- <54FC9CB0.2030003@ladisch.de>
- <CAHti5NEvVwsxdOnJdJErMCssu3_5ohaRsDC0WVCuhB0upLF_mQ@mail.gmail.com>
- <CAN8cciZcnD4zPbL-jD8+t5AHaugWvbrbo33_iuVBktHnpKpRuw@mail.gmail.com>
- <CAHti5NEfeguhQTZANNg=QnBZXRjDJZV0DAd3H1i+p4nCsmkQmQ@mail.gmail.com>
+From: Greg Knight <g.knight@symetrica.com>
+Subject: Patches to bind the SGTL5000 chip to AM33XX McASP
+Date: Thu, 19 Mar 2015 01:07:39 -0400
+Message-ID: <1426741659.10003.9.camel@midgaarde>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f176.google.com (mail-ob0-f176.google.com
- [209.85.214.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 06EC3260511
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 06:05:18 +0100 (CET)
-Received: by obdfc2 with SMTP id fc2so46833315obd.3
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 22:05:17 -0700 (PDT)
-In-Reply-To: <CAHti5NEfeguhQTZANNg=QnBZXRjDJZV0DAd3H1i+p4nCsmkQmQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel <dferradal@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: multipart/mixed; boundary="=-6YEoiG07Btkn/evehSgq"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
->> >
->> > > Daniel wrote:
->> > > > numid=1,iface=PCM,name='Capture Channel Map'
->> > > >   ; type=INTEGER,access=r----R--,values=2,min=0,max=36,step=0
->> > > >   : values=0,0
->> > > >   |     | chmap-fixed=FL,FR
->> > > > numid=2,iface=PCM,name='Playback Channel Map'
->> > > >   ; type=INTEGER,access=r----R--,values=2,min=0,max=36,step=0
->> > > >   : values=0,0
->> > > >   |     | chmap-fixed=FL,FR
->> > >
->> > > This device reports that it supports two channels.
->> > > What makes you think that you can play eight channels?
->> > >
->> > > > amixer: Control hw:2 element read error: Invalid argument
->> > > > usb 1-1.3: 10:0: cannot get min/max values for control 3 (id 10)
->> > > > usb 1-1.3: 2:1: cannot get freq at ep 0x1
->> > >
->> > > These are bugs in the device firmware.  However, the driver could
->> > > handle them better.
->> > >
->> > >
->> >
->> >
->> > Forgive my ignorance if I'm totally wrong, what made me think that is
-7.1
->> > capable is:
->> >
->> > The headset is made to emulate 7.1 sound in headphones, that it does
->> > through the sound card it provides.
->> >
->> > Also the aplay output...
->> >
->> > aplay --dump-hw-params returns  CHANNELS: [2 8]
->> >
->> > and "aplay -L" output also reports:
->> > surround71:CARD=Elite,DEV=0
->> >     SteelSeries Siberia Elite, USB Audio
->> >     7.1 Surround output to Front, Center, Side, Rear and Woofer
-speakers
->> >
->> >
->> > With the manufacturer driver under other OS's you do select 7.1 setup
-and
->> > then you plug the specific headphones to the soundcard and can hear the
->> > surround sound, but I don't mean to compare though, just that it also
-made
->> > me believe this hardware supports 7.1
->> >
->> >
->> numid=11,iface=MIXER,name='Speaker Playback Volume' ;
-type=INTEGER,access=rw---R--,values=8,min=0,max=74,step=0 :
-values=54,54,54,54,54,54,54,54 | dBminmax-min=-74.00dB,max=0.00dB
->>
->> You need workaround since pulseaudio don't like volume control with more
-than two channels
->>
->> https://bugs.freedesktop.org/show_bug.cgi?id=84983#c35
->>
->> Can you post output of your usb audio device ?
->>
->> lsusb -vvvv
->
->
->
-> Certainly!
->
-> Here it is:
->
-> Bus 001 Device 003: ID 1038:1225 Ideazon, Inc.
-> Device Descriptor:
->   bLength                18
->   bDescriptorType         1
->   bcdUSB               2.00
->   bDeviceClass            0 (Defined at Interface level)
->   bDeviceSubClass         0
->   bDeviceProtocol         0
->   bMaxPacketSize0        64
->   idVendor           0x1038 Ideazon, Inc.
->   idProduct          0x1225
->   bcdDevice            0.03
->   iManufacturer           1 SteelSeries
->   iProduct                2 SteelSeries Siberia Elite
->   iSerial                 3 000000000000
->   bNumConfigurations      1
 
->
->       AudioControl Interface Descriptor:
->         bLength                13
->         bDescriptorType        36
->         bDescriptorSubtype      4 (MIXER_UNIT)
->       Warning: Descriptor too short
+--=-6YEoiG07Btkn/evehSgq
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-https://github.com/gregkh/usbutils/blob/master/lsusb.c
+Hi, Mark, Jaroslav,
 
-Seem no warning for descriptor too short for uac2 and can dump those uac2
-specific variables
+I've attached a couple patches to provide support for the Freescale
+SGTL5000 chip when using the McASP on the AM3359.
 
->         bUnitID                10
->         bNrInPins               2
->         baSourceID( 0)          9
->         baSourceID( 1)          1
->         bNrChannels             8
->         wChannelConfig     0x063f
->           Left Front (L)
->           Right Front (R)
->           Center Front (C)
->           Low Freqency Enhancement (LFE)
->           Left Surround (LS)
->           Right Surround (RS)
->           Side Left (SL)
->           Side Right (SR)
->         iChannelNames           0
->         bmControls         0x00
->         bmControls         0x00
->         iMixer                 33 (error)
->
+This adds an optional hack, "clock-to-talk" to the McASP subsystem which
+can start AHCLKX/AHCLKR prior to initializing the codec. This is needed
+on the SGTL5000, which depends on AHCLKX for its master clock.
+
+These patches are based off of 3.14.31-ti-r49. What is the process for
+getting these merged?
+
+Patch #3 is a completely unrelated patch in the SPI system, will send
+with different subject.
+
+Thanks,
+Greg
+
+--=-6YEoiG07Btkn/evehSgq
+Content-Disposition: attachment;
+	filename*0=0001-davinci-mcasp-add-clock-to-talk-option-to-mcasp-devi.pat;
+	filename*1=ch
+Content-Type: text/x-patch;
+	name="0001-davinci-mcasp-add-clock-to-talk-option-to-mcasp-devi.patch";
+	charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+>From fbcdbfb151d54e6b18c0e04eb5f80dd05527e06b Mon Sep 17 00:00:00 2001
+From: Greg Knight <g.knight@symetrica.com>
+Date: Mon, 23 Feb 2015 19:41:05 -0500
+Subject: [PATCH 1/3] davinci-mcasp: add clock-to-talk option to mcasp
+ device-tree which forces enable of AHCLKX/AHCLKR if set. This allows the
+ AHCLKX line to operate as a main clock for chips such as the SGTL5000.
+
+---
+ include/linux/platform_data/davinci_asp.h | 14 +++++++++++++
+ sound/soc/davinci/davinci-mcasp.c         | 33 +++++++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
+
+diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
+index 85ad68f..7dee1b2 100644
+--- a/include/linux/platform_data/davinci_asp.h
++++ b/include/linux/platform_data/davinci_asp.h
+@@ -29,6 +29,15 @@ struct davinci_mcasp_pdata {
+ 	 * when compared to previous behavior.
+ 	 */
+ 	unsigned enable_channel_combine:1;
++
++	/**
++	 * If set, we can anticipate device-tree failures during boot
++	 * if the high-speed clock(s) are not running.
++	 * Bit 0: Enable AHCLKX at startup
++	 * Bit 1: Enable AHCLKR at startup
++	 */
++	unsigned clock_to_talk:2;
++
+ 	unsigned sram_size_playback;
+ 	unsigned sram_size_capture;
+ 	struct gen_pool *sram_pool;
+@@ -102,6 +111,11 @@ enum mcbsp_clk_input_pin {
+ 	MCBSP_CLKS,
+ };
+ 
++enum clock_to_talk_bits {
++	MCASP_CLOCK_TO_TALK_X = 0,
++	MCASP_CLOCK_TO_TALK_R
++};
++
+ #define INACTIVE_MODE	0
+ #define TX_MODE		1
+ #define RX_MODE		2
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index eeb51f9..d0e6cab 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1326,6 +1326,15 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
+ 	if (ret >= 0)
+ 		pdata->sram_size_capture = val;
+ 
++	ret = of_property_read_u32(np, "clock-to-talk", &val);
++	if (ret >= 0) {
++		if (val >= 4) {
++			ret = -EINVAL;
++			goto nodata;
++		}
++		pdata->clock_to_talk = (unsigned) val;
++	}
++
+ 	return  pdata;
+ 
+ nodata:
+@@ -1337,6 +1346,21 @@ nodata:
+ 	return  pdata;
+ }
+ 
++int davinci_mcasp_clock_to_talk_hack(struct davinci_mcasp* mcasp, int which)
++{
++	if (which & (1 << MCASP_CLOCK_TO_TALK_R)) {
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
++		mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXHCLKRST);
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKR);
++	}
++	if (which & (1 << MCASP_CLOCK_TO_TALK_X)) {
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
++		mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, TXHCLKRST);
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
++	}
++	return 0;
++}
++
+ static int davinci_mcasp_probe(struct platform_device *pdev)
+ {
+ 	struct davinci_pcm_dma_params *dma_params;
+@@ -1557,6 +1581,15 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
++	if (pdata->clock_to_talk != 0) {
++		ret = davinci_mcasp_clock_to_talk_hack(mcasp, pdata->clock_to_talk);
++		dev_dbg(&pdev->dev, "clock to talk: %u\n", pdata->clock_to_talk);
++		if (ret) {
++			dev_err(&pdev->dev, "clock to talk hack failed: %d\n", ret);
++			goto err;
++		}
++	}
++
+ 	return 0;
+ 
+ err:
+-- 
+1.9.1
+
+
+--=-6YEoiG07Btkn/evehSgq
+Content-Disposition: attachment;
+	filename*0=0002-davinci-evm-add-evm_sgtl5000_link-to-bind-the-SGTL50.pat;
+	filename*1=ch
+Content-Type: text/x-patch;
+	name="0002-davinci-evm-add-evm_sgtl5000_link-to-bind-the-SGTL50.patch";
+	charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+>From 0cfd020bac9053326c97d273d60864776e7850e8 Mon Sep 17 00:00:00 2001
+From: Greg Knight <g.knight@symetrica.com>
+Date: Mon, 23 Feb 2015 19:41:40 -0500
+Subject: [PATCH 2/3] davinci-evm: add evm_sgtl5000_link to bind the SGTL5000
+ chip to the davinci-evm SOM module
+
+---
+ sound/soc/davinci/davinci-evm.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index b9010c9..e71975f 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -468,6 +468,15 @@ static struct snd_soc_dai_link dra7xx_evm_link = {
+ 		   SND_SOC_DAIFMT_IB_NF,
+ };
+ 
++static struct snd_soc_dai_link evm_sgtl5000_link = {
++	.name           = "Freescale SGTL5000",
++	.stream_name    = "SGTL",
++	.codec_dai_name = "sgtl5000",
++	.ops            = &evm_ops,
++	.dai_fmt        = SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_I2S |
++                      SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CONT,
++};
++
+ static const struct of_device_id davinci_evm_dt_ids[] = {
+ 	{
+ 		.compatible = "ti,da830-evm-audio",
+@@ -481,6 +490,10 @@ static const struct of_device_id davinci_evm_dt_ids[] = {
+ 		.compatible = "ti,dra7xx-evm-audio",
+ 		.data = (void *) &dra7xx_evm_link,
+ 	},
++	{
++		.compatible = "ti,sgtl5000-audio",
++		.data = &evm_sgtl5000_link
++	},
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, davinci_evm_dt_ids);
+-- 
+1.9.1
+
+
+--=-6YEoiG07Btkn/evehSgq--
+
