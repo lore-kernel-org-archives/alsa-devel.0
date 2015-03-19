@@ -1,7 +1,7 @@
 From: Greg Knight <g.knight@symetrica.com>
 Subject: Re: Patches to bind the SGTL5000 chip to AM33XX McASP
-Date: Thu, 19 Mar 2015 13:17:02 -0400
-Message-ID: <1426785422.13824.12.camel@symus-gk-mint>
+Date: Thu, 19 Mar 2015 13:48:08 -0400
+Message-ID: <1426787288.13824.36.camel@symus-gk-mint>
 References: <1426741659.10003.9.camel@midgaarde>	<550AC783.8040304@ti.com>
 	 <CAAQQ3u=opRm3UzD+bG6aJvhQU2CFmzH4sXzuA=GxDp2d+MMiNg@mail.gmail.com>
 	 <550AF442.5040203@ti.com>
@@ -15,25 +15,23 @@ To: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-03-19 at 18:07 +0200, Peter Ujfalusi wrote:
-> Another issue this hack has is: what happens if for some reason the
-> SGTL5000
-> driver loads first? McASP will not enable the AHCLKX so the codec
-> driver will
-> fail reading the CHIP_ID and fails to load. You need to provide a
-> dummy clock
-> node to the codec, so that will not fail, but you will not have the
-> MCLK.
+> For a codec such as the SGTL5000 I would connect a clock, which is
+running all
+> the time. If you take a look at the driver, it enables the clock at
+probe and
+> leaves it running as long as the driver is loaded.
 
-Fair enough. The second patch, providing the codec binding to the
-AM3359, may still be applicable, but I couldn't submit it in good
-conscience without rewiring the clock as per your recommendations and
-re-testing. Don't have the time for this in the near future, sadly.
-Sounds like I'll have to come up with a new fix whenever we get around
-to updating kernel on this platform.
+Speaking briefly to my "electrical" colleague, he's a bit concerned
+about the extra power load that a crystal oscillator might incur, while
+I'm concerned about audio quality from a source like CLKOUT2.
 
-I'm not familiar with the kernel clock management - any advice for
-reading material on that? Not clear on what a 'dummy clock' is, etc.
+Is there a straightforward way we could enable the clock on-demand -
+when we're communicating with the codec/mixer or actually using the
+audio subsystem - while keeping it disabled when not in use? We don't
+expect to be using the audio subsystem frequently.
+
+Worst-case we can set up a GPIO and enable/disable it as needed in
+user-space - acceptable, if annoying, for our application.
 
 Thanks,
 Greg
