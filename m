@@ -1,304 +1,275 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2] ASoC: davinci-mcasp: Set rule constraints if implicit
- BCLK divider is used
-Date: Thu, 19 Mar 2015 11:11:00 +0200
-Message-ID: <550A92A4.2090207@ti.com>
-References: <1426755069-28644-1-git-send-email-jsarha@ti.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] ALSA: jack: create jack kcontrols for
+ every jack input device
+Date: Thu, 19 Mar 2015 09:12:50 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDA2B8@SHSMSX101.ccr.corp.intel.com>
+References: <1426754418-13477-1-git-send-email-yang.jie@intel.com>
+ <1426755215.7258.9.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1426755069-28644-1-git-send-email-jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, liam.r.girdwood@linux.intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F4C0260413
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 10:12:55 +0100 (CET)
+In-Reply-To: <1426755215.7258.9.camel@loki>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/19/2015 10:51 AM, Jyri Sarha wrote:
-> Set rule constraints to allow only combinations of sample-rate,
-> sample-bits, and channels that can be played/captured with reasonable
-> sample-rate accuracy.
+> -----Original Message-----
+> From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
+> Sent: Thursday, March 19, 2015 4:54 PM
+> To: Jie, Yang
+> Cc: tiwai@suse.de; perex@perex.cz; broonie@kernel.org; alsa-devel@alsa-
+> project.org
+> Subject: Re: [PATCH] ALSA: jack: create jack kcontrols for every jack input
+> device
 > 
-> The logic with tdm-slots and serializers (=i2s data wires) goes like
-> this: The first wire will take all channels up to number of tdm-slots,
-> before following wires (if any) are used. If the first wire is used
-> fully, the remaining wires share the same clocks and the divider can
-> be calculated for the first wire.
+> On Thu, 2015-03-19 at 16:40 +0800, Jie Yang wrote:
+> > From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> >
 > 
-> Also, takes the number of tdm-slots into account when implicitly
-> selecting the BLCK divider.
-
-Looks good, thanks.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
+> I cant claim much credit for this as it's mostly your work now :)
+[Keyon] OK, I will change it, thanks. :)
 > 
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
+> Liam
 > 
-> I hope the logic with tdm-slots and serializers is now correct. I do
-> not have HW to test multiple serializers case, so please review
-> davinci_mcasp_hw_rule_channels() extra carefully.
+> > Currently the ALSA jack core registers only input devices for each
+> > jack registered. These jack input devices are not readable by
+> > userspace devices that run as non root.
+> >
+> > This patch adds support for additionally registering jack kcontrol
+> > devices for every input jack registered. This allows non root
+> > userspace to read jack status.
+> >
+> > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> > Modified-by: Jie Yang <yang.jie@intel.com>
+> > Signed-off-by: Jie Yang <yang.jie@intel.com>
+> > Reveiwed-by: Mark Brown <broonie@kernel.org>
+> > ---
+> >  include/sound/control.h |  2 ++
+> >  include/sound/jack.h    |  2 ++
+> >  sound/core/jack.c       | 89
+> +++++++++++++++++++++++++++++++++++++++++++++++--
+> >  3 files changed, 91 insertions(+), 2 deletions(-)  mode change 100644
+> > => 100755 sound/core/jack.c
+> >
+> > diff --git a/include/sound/control.h b/include/sound/control.h index
+> > 75f3054..023b70a 100644
+> > --- a/include/sound/control.h
+> > +++ b/include/sound/control.h
+> > @@ -66,6 +66,7 @@ struct snd_kcontrol_volatile {
+> >
+> >  struct snd_kcontrol {
+> >  	struct list_head list;		/* list of controls */
+> > +	struct list_head jack_list;		/* list of controls belong to
+> the same jack*/
+> >  	struct snd_ctl_elem_id id;
+> >  	unsigned int count;		/* count of same elements */
+> >  	snd_kcontrol_info_t *info;
+> > @@ -75,6 +76,7 @@ struct snd_kcontrol {
+> >  		snd_kcontrol_tlv_rw_t *c;
+> >  		const unsigned int *p;
+> >  	} tlv;
+> > +	unsigned int jack_bit_idx;	/*the corresponding jack type bit
+> index */
+> >  	unsigned long private_value;
+> >  	void *private_data;
+> >  	void (*private_free)(struct snd_kcontrol *kcontrol); diff --git
+> > a/include/sound/jack.h b/include/sound/jack.h index 2182350..477dcb4
+> > 100644
+> > --- a/include/sound/jack.h
+> > +++ b/include/sound/jack.h
+> > @@ -73,6 +73,8 @@ enum snd_jack_types {
+> >
+> >  struct snd_jack {
+> >  	struct input_dev *input_dev;
+> > +	struct list_head kctl_list;
+> > +	struct snd_card *card;
+> >  	int registered;
+> >  	int type;
+> >  	const char *id;
+> > diff --git a/sound/core/jack.c b/sound/core/jack.c old mode 100644 new
+> > mode 100755 index 8658578..c067b6a
+> > --- a/sound/core/jack.c
+> > +++ b/sound/core/jack.c
+> > @@ -24,6 +24,7 @@
+> >  #include <linux/module.h>
+> >  #include <sound/jack.h>
+> >  #include <sound/core.h>
+> > +#include <sound/control.h>
+> >
+> >  static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+> >  	SW_HEADPHONE_INSERT,
+> > @@ -54,7 +55,13 @@ static int snd_jack_dev_disconnect(struct
+> > snd_device *device)  static int snd_jack_dev_free(struct snd_device
+> > *device)  {
+> >  	struct snd_jack *jack = device->device_data;
+> > +	struct snd_card *card = device->card;
+> > +	struct snd_kcontrol *kctl;
+> >
+> > +	list_for_each_entry(kctl, &jack->kctl_list, jack_list) {
+> > +		list_del(&kctl->jack_list);
 > 
-> Best regards,
-> Jyri
+> This is not safe, as we cant iterate over a list when we are removing items
+> using list_for_each_entry(). There are other list methods in list.h to safely
+> iterate and remove items.
+[Keyon] thanks for pointing out this, will modify it.
 > 
->  sound/soc/davinci/davinci-mcasp.c | 195 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 185 insertions(+), 10 deletions(-)
+> > +		snd_ctl_remove(card, kctl);
+> > +	}
+> >  	if (jack->private_free)
+> >  		jack->private_free(jack);
+> >
+> > @@ -100,6 +107,63 @@ static int snd_jack_dev_register(struct snd_device
+> *device)
+> >  	return err;
+> >  }
+> >
+> > +
+> > +/* get the first unused/available index number for the given kctl
+> > +name */ static int get_available_index(struct snd_card *card, const
+> > +char *name) {
+> > +	struct snd_kcontrol *kctl;
+> > +	int idx = 0;
+> > +	int len = strlen(name);
+> > +
+> > +	down_write(&card->controls_rwsem);
+> > +	next:
+> > +	list_for_each_entry(kctl, &card->controls, list) {
+> > +		if (!strncmp(name, kctl->id.name, len) &&
+> > +		    !strcmp(" Jack", kctl->id.name + len) &&
+> > +		    kctl->id.index == idx) {
+> > +			idx++;
+> > +			goto next;
 > 
-> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-> index de3b155..3b2fb56 100644
-> --- a/sound/soc/davinci/davinci-mcasp.c
-> +++ b/sound/soc/davinci/davinci-mcasp.c
-> @@ -26,6 +26,7 @@
->  #include <linux/of.h>
->  #include <linux/of_platform.h>
->  #include <linux/of_device.h>
-> +#include <linux/math64.h>
->  
->  #include <sound/asoundef.h>
->  #include <sound/core.h>
-> @@ -64,6 +65,11 @@ struct davinci_mcasp_context {
->  	u32	*xrsr_regs; /* for serializer configuration */
->  };
->  
-> +struct davinci_mcasp_ruledata {
-> +	struct davinci_mcasp *mcasp;
-> +	int serializers;
-> +};
-> +
->  struct davinci_mcasp {
->  	struct davinci_pcm_dma_params dma_params[2];
->  	struct snd_dmaengine_dai_dma_data dma_data[2];
-> @@ -98,6 +104,8 @@ struct davinci_mcasp {
->  #ifdef CONFIG_PM_SLEEP
->  	struct davinci_mcasp_context context;
->  #endif
-> +
-> +	struct davinci_mcasp_ruledata ruledata[2];
->  };
->  
->  static inline void mcasp_set_bits(struct davinci_mcasp *mcasp, u32 offset,
-> @@ -855,6 +863,30 @@ static int mcasp_dit_hw_param(struct davinci_mcasp *mcasp,
->  	return 0;
->  }
->  
-> +static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
-> +				      unsigned int bclk_freq,
-> +				      int *error_ppm)
-> +{
-> +	int div = mcasp->sysclk_freq / bclk_freq;
-> +	int rem = mcasp->sysclk_freq % bclk_freq;
-> +
-> +	if (rem != 0) {
-> +		if (div == 0 ||
-> +		    ((mcasp->sysclk_freq / div) - bclk_freq) >
-> +		    (bclk_freq - (mcasp->sysclk_freq / (div+1)))) {
-> +			div++;
-> +			rem = rem - bclk_freq;
-> +		}
-> +	}
-> +	if (error_ppm)
-> +		*error_ppm =
-> +			(div*1000000 + (int)div64_long(1000000LL*rem,
-> +						       (int)bclk_freq))
-> +			/div - 1000000;
-> +
-> +	return div;
-> +}
-> +
->  static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
->  					struct snd_pcm_hw_params *params,
->  					struct snd_soc_dai *cpu_dai)
-> @@ -872,16 +904,20 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
->  	 * the machine driver, we need to calculate the ratio.
->  	 */
->  	if (mcasp->bclk_master && mcasp->bclk_div == 0 && mcasp->sysclk_freq) {
-> -		unsigned int bclk_freq = snd_soc_params_to_bclk(params);
-> -		unsigned int div = mcasp->sysclk_freq / bclk_freq;
-> -		if (mcasp->sysclk_freq % bclk_freq != 0) {
-> -			if (((mcasp->sysclk_freq / div) - bclk_freq) >
-> -			    (bclk_freq - (mcasp->sysclk_freq / (div+1))))
-> -				div++;
-> -			dev_warn(mcasp->dev,
-> -				 "Inaccurate BCLK: %u Hz / %u != %u Hz\n",
-> -				 mcasp->sysclk_freq, div, bclk_freq);
-> -		}
-> +		int channels = params_channels(params);
-> +		int rate = params_rate(params);
-> +		int sbits = params_width(params);
-> +		int ppm, div;
-> +
-> +		if (channels > mcasp->tdm_slots)
-> +			channels = mcasp->tdm_slots;
-> +
-> +		div = davinci_mcasp_calc_clk_div(mcasp, rate*sbits*channels,
-> +						 &ppm);
-> +		if (ppm)
-> +			dev_info(mcasp->dev, "Sample-rate is off by %d PPM\n",
-> +				 ppm);
-> +
->  		__davinci_mcasp_set_clkdiv(cpu_dai, 1, div, 0);
->  	}
->  
-> @@ -973,6 +1009,108 @@ static int davinci_mcasp_trigger(struct snd_pcm_substream *substream,
->  	return ret;
->  }
->  
-> +static const unsigned int davinci_mcasp_dai_rates[] = {
-> +	8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000,
-> +	88200, 96000, 176400, 192000,
-> +};
-> +
-> +#define DAVINCI_MAX_RATE_ERROR_PPM 1000
-> +
-> +static int davinci_mcasp_hw_rule_rate(struct snd_pcm_hw_params *params,
-> +				      struct snd_pcm_hw_rule *rule)
-> +{
-> +	struct davinci_mcasp_ruledata *rd = rule->private;
-> +	int sbits = params_width(params);
-> +	int channels = params_channels(params);
-> +	unsigned int list[ARRAY_SIZE(davinci_mcasp_dai_rates)];
-> +	int i, count = 0;
-> +
-> +	if (channels > rd->mcasp->tdm_slots)
-> +		channels = rd->mcasp->tdm_slots;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(davinci_mcasp_dai_rates); i++) {
-> +		uint bclk_freq = sbits*channels*davinci_mcasp_dai_rates[i];
-> +		int ppm;
-> +
-> +		davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
-> +		if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM)
-> +			list[count++] = davinci_mcasp_dai_rates[i];
-> +
-> +	}
-> +	dev_dbg(rd->mcasp->dev, "%d frequencies for %d sbits and %d channels\n",
-> +		count, sbits, channels);
-> +
-> +	return snd_interval_list(hw_param_interval(params, rule->var),
-> +				 count, list, 0);
-> +}
-> +
-> +static int davinci_mcasp_hw_rule_samplebits(struct snd_pcm_hw_params *params,
-> +					    struct snd_pcm_hw_rule *rule)
-> +{
-> +	struct davinci_mcasp_ruledata *rd = rule->private;
-> +	int channels = params_channels(params);
-> +	int rate = params_rate(params);
-> +	unsigned int list[4];
-> +	int sbits, count = 0;
-> +
-> +	if (channels > rd->mcasp->tdm_slots)
-> +		channels = rd->mcasp->tdm_slots;
-> +
-> +	for (sbits = 8; sbits <= 32; sbits += 8) {
-> +		uint bclk_freq = channels*sbits*rate;
-> +		int ppm;
-> +
-> +		davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
-> +		if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM)
-> +			list[count++] = sbits;
-> +	}
-> +	dev_dbg(rd->mcasp->dev,
-> +		"%d possible sample size for %d Hz and %d channels\n",
-> +		count, rate, channels);
-> +
-> +	return snd_interval_list(hw_param_interval(params, rule->var),
-> +				 count, list, 0);
-> +}
-> +
-> +static int davinci_mcasp_hw_rule_channels(struct snd_pcm_hw_params *params,
-> +					  struct snd_pcm_hw_rule *rule)
-> +{
-> +	struct davinci_mcasp_ruledata *rd = rule->private;
-> +	struct snd_interval *ci =
-> +		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-> +	int sbits = params_width(params);
-> +	int rate = params_rate(params);
-> +	int max_chan_per_wire = rd->mcasp->tdm_slots < ci->max ?
-> +		rd->mcasp->tdm_slots : ci->max;
-> +	unsigned int list[ci->max - ci->min + 1];
-> +	int c1, c, count = 0;
-> +
-> +	for (c1 = ci->min; c1 <= max_chan_per_wire; c1++) {
-> +		uint bclk_freq = c1*sbits*rate;
-> +		int ppm;
-> +
-> +		davinci_mcasp_calc_clk_div(rd->mcasp, bclk_freq, &ppm);
-> +		if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
-> +			/* If we can use all tdm_slots, we can put any
-> +			   amount of channels to remaining wires as
-> +			   long as they fit in. */
-> +			if (c1 == rd->mcasp->tdm_slots) {
-> +				for (c = c1; c <= rd->serializers*c1 &&
-> +					     c <= ci->max; c++)
-> +					list[count++] = c;
-> +			} else {
-> +				list[count++] = c1;
-> +			}
-> +		}
-> +	}
-> +	dev_dbg(rd->mcasp->dev,
-> +		"%d possible channel counts for %d Hz and %d sbits\n",
-> +		count, rate, sbits);
-> +
-> +	return snd_interval_list(hw_param_interval(params, rule->var),
-> +				 count, list, 0);
-> +}
-> +
->  static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
->  				 struct snd_soc_dai *cpu_dai)
->  {
-> @@ -998,6 +1136,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
->  		if (mcasp->serial_dir[i] == dir)
->  			max_channels++;
->  	}
-> +	mcasp->ruledata[dir].serializers = max_channels;
->  	max_channels *= mcasp->tdm_slots;
->  	/*
->  	 * If the already active stream has less channels than the calculated
-> @@ -1012,6 +1151,42 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
->  	snd_pcm_hw_constraint_minmax(substream->runtime,
->  				     SNDRV_PCM_HW_PARAM_CHANNELS,
->  				     2, max_channels);
-> +
-> +	/*
-> +	 * If we rely on implicit BCLK divider setting we should
-> +	 * set constraints based on what we can provide.
-> +	 */
-> +	if (mcasp->bclk_master && mcasp->bclk_div == 0 && mcasp->sysclk_freq) {
-> +		int ret;
-> +
-> +		mcasp->ruledata[dir].mcasp = mcasp;
-> +
-> +		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
-> +					  SNDRV_PCM_HW_PARAM_RATE,
-> +					  davinci_mcasp_hw_rule_rate,
-> +					  &mcasp->ruledata[dir],
-> +					  SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-> +					  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-> +		if (ret)
-> +			return ret;
-> +		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
-> +					  SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-> +					  davinci_mcasp_hw_rule_samplebits,
-> +					  &mcasp->ruledata[dir],
-> +					  SNDRV_PCM_HW_PARAM_RATE,
-> +					  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-> +		if (ret)
-> +			return ret;
-> +		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
-> +					  SNDRV_PCM_HW_PARAM_CHANNELS,
-> +					  davinci_mcasp_hw_rule_channels,
-> +					  &mcasp->ruledata[dir],
-> +					  SNDRV_PCM_HW_PARAM_RATE,
-> +					  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	return 0;
->  }
->  
+> Wont continue work here instead of goto ?
+[Keyon] we need goto to iterate the list again with bigger idx.
 > 
+> > +		}
+> > +	}
+> > +	up_write(&card->controls_rwsem);
+> > +	return idx;
+> > +}
+> > +
+> > +static void kctl_private_free(struct snd_kcontrol *kctl) {
+> > +	list_del(&kctl->jack_list);
+> > +}
+> > +
+> > +static int snd_jack_new_kctl(struct snd_card *card, struct snd_jack
+> > +*jack, int type) {
+> > +	struct snd_kcontrol *kctl;
+> > +	int i, err, index, state = 0 /* use 0 for default state ?? */;
+> > +
+> > +	INIT_LIST_HEAD(&jack->kctl_list);
+> > +	for (i = 0; i < fls(SND_JACK_BTN_0); i++) {
+> > +		int testbit = 1 << i;
+> > +		if (type & testbit) {
+> > +			index = get_available_index(card,jack->id);
+> > +			kctl = snd_kctl_jack_new(jack->id, index, card);
+> > +			if (!kctl)
+> > +				return -ENOMEM;
+> > +			kctl->private_free = kctl_private_free;
+> > +			/* use jack_bit_idx for the kctl type bit */
+> > +			kctl->jack_bit_idx = i;
+> > +
+> 
+> This section above could do with some new lines to break the code into
+> logical chunks.
+[Keyon] OK.
+> 
+> > +			err = snd_ctl_add(card, kctl);
+> > +			if (err < 0)
+> > +				return err;
+> > +			list_add_tail(&kctl->jack_list, &jack->kctl_list);
+> > +
+> > +			/* set initial jack state */
+> > +			snd_kctl_jack_report(card, kctl, state & testbit);
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  /**
+> >   * snd_jack_new - Create a new jack
+> >   * @card:  the card instance
+> > @@ -138,7 +202,7 @@ int snd_jack_new(struct snd_card *card, const char
+> *id, int type,
+> >  	}
+> >
+> >  	jack->input_dev->phys = "ALSA";
+> > -
+> > +	jack->card = card;
+> >  	jack->type = type;
+> >
+> >  	for (i = 0; i < SND_JACK_SWITCH_TYPES; i++) @@ -150,10 +214,17
+> @@
+> > int snd_jack_new(struct snd_card *card, const char *id, int type,
+> >  	if (err < 0)
+> >  		goto fail_input;
+> >
+> > +	/* register jack kcontrols  */
+> > +	err = snd_jack_new_kctl(card, jack, type);
+> > +	if (err < 0)
+> > +		goto fail_kctl;
+> > +
+> >  	*jjack = jack;
+> >
+> >  	return 0;
+> >
+> > +fail_kctl:
+> > +	snd_device_free(card, jack);
+> >  fail_input:
+> >  	input_free_device(jack->input_dev);
+> >  	kfree(jack->id);
+> > @@ -230,6 +301,7 @@ EXPORT_SYMBOL(snd_jack_set_key);
+> >   */
+> >  void snd_jack_report(struct snd_jack *jack, int status)  {
+> > +	struct snd_kcontrol *kctl;
+> >  	int i;
+> >
+> >  	if (!jack)
+> > @@ -245,13 +317,26 @@ void snd_jack_report(struct snd_jack *jack, int
+> > status)
+> >
+> >  	for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++) {
+> >  		int testbit = 1 << i;
+> > -		if (jack->type & testbit)
+> > +		if (jack->type & testbit) {
+> >  			input_report_switch(jack->input_dev,
+> >  					    jack_switch_types[i],
+> >  					    status & testbit);
+> > +		}
+> >  	}
+> >
+> >  	input_sync(jack->input_dev);
+> > +
+> > +	for (i = 0; i < fls(SND_JACK_BTN_0); i++) {
+> > +		int testbit = 1 << i;
+> > +		if (jack->type & testbit) {
+> > +			list_for_each_entry(kctl, &jack->kctl_list, jack_list) {
+> > +				if (kctl->jack_bit_idx == i) {
+> > +					snd_kctl_jack_report(jack->card, kctl,
+> > +								status &
+> testbit);
+> > +				}
+> > +			}
+> > +		}
+> > +	}
+> >  }
+> >  EXPORT_SYMBOL(snd_jack_report);
+> >
+> 
+> Liam
