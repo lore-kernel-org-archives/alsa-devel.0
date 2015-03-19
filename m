@@ -1,22 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: getting the sound to work on my asus m6s00v
-Date: Thu, 19 Mar 2015 14:04:48 +0800
-Message-ID: <CAN8cciYW6gcFuq-=oGyB85TgW=m9017yy83_M6vZMmy+f=yz=g@mail.gmail.com>
-References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
- <5508DD4D.3040901@canonical.com>
- <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
- <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ALSA: jack: create jack kcontrols for every
+	jack input device
+Date: Thu, 19 Mar 2015 16:40:18 +0800
+Message-ID: <1426754418-13477-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 91ADA26053E
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 07:04:49 +0100 (CET)
-Received: by obdfc2 with SMTP id fc2so47519863obd.3
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 23:04:48 -0700 (PDT)
-In-Reply-To: <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BB0E26057D
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 09:37:34 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,47 +19,218 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Gleerup <cromozon@swn.nu>, nb@dagami.org
-Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: tiwai@suse.de, perex@perex.cz, broonie@kernel.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> The internal mic also works.
->
-> but; I am a bit puzled, because I tried to comment out 'options
-snd-hda-intel model=3stack-digout' and did a powercycle (power off)...
-> and now the sound still works, so it seems the soundcard was woken from
-some deepsleep.
-> The machine have been turned of for many (4/5) years...
->
-> Anyway since the soundcard now is working with my current kernel without
-the extra options, I am unsure if trying the newest vanilla kernel would
-make any sense?
->
-> Any recommendations?
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-If it is a netbook with one jack which can be used as headphone or mic
+Currently the ALSA jack core registers only input devices for each jack
+registered. These jack input devices are not readable by userspace devices
+that run as non root.
 
-The best way is to measure the impedance of the jack to determince  HP or
-mic and swtich pin ctls to OUT or IN as pincap support ImpSense
+This patch adds support for additionally registering jack kcontrol devices
+for every input jack registered. This allows non root userspace to read
+jack status.
 
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003f: IN OUT HP Detect Trigger ImpSense
-  Pin Default 0x0121411f: [Jack] HP Out at Ext Rear
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x1, Sequence = 0xf
-    Misc = NO_PRESENCE
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x0c
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Modified-by: Jie Yang <yang.jie@intel.com>
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+Reveiwed-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/control.h |  2 ++
+ include/sound/jack.h    |  2 ++
+ sound/core/jack.c       | 89 +++++++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 91 insertions(+), 2 deletions(-)
+ mode change 100644 => 100755 sound/core/jack.c
 
-Try
-
-hda-verb  /dev/snd/hwC0D0 0x14 SET_PIN_SENSE 0
-
-hda-verb /dev/snd/hwC0D0 0x14 GET_PIN_SENSE 0
-
-and check the returned values when you plug hp and mic are different
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 75f3054..023b70a 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -66,6 +66,7 @@ struct snd_kcontrol_volatile {
+ 
+ struct snd_kcontrol {
+ 	struct list_head list;		/* list of controls */
++	struct list_head jack_list;		/* list of controls belong to the same jack*/
+ 	struct snd_ctl_elem_id id;
+ 	unsigned int count;		/* count of same elements */
+ 	snd_kcontrol_info_t *info;
+@@ -75,6 +76,7 @@ struct snd_kcontrol {
+ 		snd_kcontrol_tlv_rw_t *c;
+ 		const unsigned int *p;
+ 	} tlv;
++	unsigned int jack_bit_idx;	/*the corresponding jack type bit index */
+ 	unsigned long private_value;
+ 	void *private_data;
+ 	void (*private_free)(struct snd_kcontrol *kcontrol);
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 2182350..477dcb4 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -73,6 +73,8 @@ enum snd_jack_types {
+ 
+ struct snd_jack {
+ 	struct input_dev *input_dev;
++	struct list_head kctl_list;
++	struct snd_card *card;
+ 	int registered;
+ 	int type;
+ 	const char *id;
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+old mode 100644
+new mode 100755
+index 8658578..c067b6a
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -24,6 +24,7 @@
+ #include <linux/module.h>
+ #include <sound/jack.h>
+ #include <sound/core.h>
++#include <sound/control.h>
+ 
+ static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+ 	SW_HEADPHONE_INSERT,
+@@ -54,7 +55,13 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
+ static int snd_jack_dev_free(struct snd_device *device)
+ {
+ 	struct snd_jack *jack = device->device_data;
++	struct snd_card *card = device->card;
++	struct snd_kcontrol *kctl;
+ 
++	list_for_each_entry(kctl, &jack->kctl_list, jack_list) {
++		list_del(&kctl->jack_list);
++		snd_ctl_remove(card, kctl);
++	}
+ 	if (jack->private_free)
+ 		jack->private_free(jack);
+ 
+@@ -100,6 +107,63 @@ static int snd_jack_dev_register(struct snd_device *device)
+ 	return err;
+ }
+ 
++
++/* get the first unused/available index number for the given kctl name */
++static int get_available_index(struct snd_card *card, const char *name)
++{
++	struct snd_kcontrol *kctl;
++	int idx = 0;
++	int len = strlen(name);
++
++	down_write(&card->controls_rwsem);
++	next:
++	list_for_each_entry(kctl, &card->controls, list) {
++		if (!strncmp(name, kctl->id.name, len) &&
++		    !strcmp(" Jack", kctl->id.name + len) &&
++		    kctl->id.index == idx) {
++			idx++;
++			goto next;
++		}
++	}
++	up_write(&card->controls_rwsem);
++	return idx;
++}
++
++static void kctl_private_free(struct snd_kcontrol *kctl)
++{
++	list_del(&kctl->jack_list);
++}
++
++static int snd_jack_new_kctl(struct snd_card *card, struct snd_jack *jack, int type)
++{
++	struct snd_kcontrol *kctl;
++	int i, err, index, state = 0 /* use 0 for default state ?? */;
++
++	INIT_LIST_HEAD(&jack->kctl_list);
++	for (i = 0; i < fls(SND_JACK_BTN_0); i++) {
++		int testbit = 1 << i;
++		if (type & testbit) {
++			index = get_available_index(card,jack->id);
++			kctl = snd_kctl_jack_new(jack->id, index, card);
++			if (!kctl)
++				return -ENOMEM;
++			kctl->private_free = kctl_private_free;
++			/* use jack_bit_idx for the kctl type bit */
++			kctl->jack_bit_idx = i;
++
++			err = snd_ctl_add(card, kctl);
++			if (err < 0)
++				return err;
++			list_add_tail(&kctl->jack_list, &jack->kctl_list);
++
++			/* set initial jack state */
++			snd_kctl_jack_report(card, kctl, state & testbit);
++		}
++	}
++
++	return 0;
++}
++
+ /**
+  * snd_jack_new - Create a new jack
+  * @card:  the card instance
+@@ -138,7 +202,7 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 	}
+ 
+ 	jack->input_dev->phys = "ALSA";
+-
++	jack->card = card;
+ 	jack->type = type;
+ 
+ 	for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
+@@ -150,10 +214,17 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 	if (err < 0)
+ 		goto fail_input;
+ 
++	/* register jack kcontrols  */
++	err = snd_jack_new_kctl(card, jack, type);
++	if (err < 0)
++		goto fail_kctl;
++
+ 	*jjack = jack;
+ 
+ 	return 0;
+ 
++fail_kctl:
++	snd_device_free(card, jack);
+ fail_input:
+ 	input_free_device(jack->input_dev);
+ 	kfree(jack->id);
+@@ -230,6 +301,7 @@ EXPORT_SYMBOL(snd_jack_set_key);
+  */
+ void snd_jack_report(struct snd_jack *jack, int status)
+ {
++	struct snd_kcontrol *kctl;
+ 	int i;
+ 
+ 	if (!jack)
+@@ -245,13 +317,26 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++) {
+ 		int testbit = 1 << i;
+-		if (jack->type & testbit)
++		if (jack->type & testbit) {
+ 			input_report_switch(jack->input_dev,
+ 					    jack_switch_types[i],
+ 					    status & testbit);
++		}
+ 	}
+ 
+ 	input_sync(jack->input_dev);
++
++	for (i = 0; i < fls(SND_JACK_BTN_0); i++) {
++		int testbit = 1 << i;
++		if (jack->type & testbit) {
++			list_for_each_entry(kctl, &jack->kctl_list, jack_list) {
++				if (kctl->jack_bit_idx == i) {
++					snd_kctl_jack_report(jack->card, kctl,
++								status & testbit);
++				}
++			}
++		}
++	}
+ }
+ EXPORT_SYMBOL(snd_jack_report);
+ 
+-- 
+1.9.1
