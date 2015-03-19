@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
+From: "Jie, Yang" <yang.jie@intel.com>
 Subject: Re: Separate input and output jacks for one UCM device?
-Date: Thu, 19 Mar 2015 14:19:53 +0000
-Message-ID: <20150319141953.GU2869@sirena.org.uk>
-References: <5509D4D4.6030000@linux.intel.com> <1426756559.7258.22.camel@loki>
- <s5h3851t6xx.wl-tiwai@suse.de>
+Date: Thu, 19 Mar 2015 14:22:18 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDA3C7@SHSMSX101.ccr.corp.intel.com>
+References: <5509D4D4.6030000@linux.intel.com>
+ <1426756559.7258.22.camel@loki> <s5h3851t6xx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1947511693489109509=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EA8F7260577
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 15:20:02 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95738260577
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 15:22:25 +0100 (CET)
 In-Reply-To: <s5h3851t6xx.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Arun Raghavan <arun@accosted.net>, Han Lu <han.lu@intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "Lu, Han" <han.lu@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arun Raghavan <arun@accosted.net>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1947511693489109509==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="twKjCw1/F6C/WBH6"
-Content-Disposition: inline
-
-
---twKjCw1/F6C/WBH6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 19, 2015 at 03:09:30PM +0100, Takashi Iwai wrote:
-
-> As far as I understand correctly, so far ASoC drivers also report
-> headset as boolean (the bits are multiple, but reports are either zero
-> or N bits).  So, we agreed on creating boolean "Headset" kctls.
-
-That's right - every input our output that might appear on the port is a
-separate boolean flag so we can represent any combination of them.
-
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thursday, March 19, 2015 10:10 PM
+> To: Liam Girdwood
+> Cc: Tanu Kaskinen; alsa-devel@alsa-project.org; Arun Raghavan; Lu, Han;
+> Mark Brown; Jie, Yang
+> Subject: Re: Separate input and output jacks for one UCM device?
+> 
+> At Thu, 19 Mar 2015 09:15:59 +0000,
+> Liam Girdwood wrote:
+> >
+> > On Wed, 2015-03-18 at 21:41 +0200, Tanu Kaskinen wrote:
+> > > Hi Liam and alsa-devel,
+> > >
+> >
+> > I've added a few others on the CC that would be interested.
+> >
+> > > My understanding is that a UCM device can represent a thing that has
+> > > both input and output (I don't particularly like that, but it's too
+> > > late to complain).
+> >
+> > Yes, but it can also represent simplex devices too e.g.
+> > "Headset-Speakers" and "Headset-Mic". There are not any hard rules
+> > here, but most examples are using duplex devices as historically UCM
+> > came from the phone ecosystem use cases.
+> >
+> > > How likely do you think that there are or there will be some drivers
+> > > that expose separate input and output jack kcontrols for a headset
+> > > jack, to differentiate between headphones/headset/microphone? My
+> > > understanding is that jack kcontrols store only booleans, so there's
+> > > no way to distinguish between headphones and a headset with just one
+> kcontrol.
+> > >
+> >
+> > This sounds like we need to extend the jack kcontrol so that we can
+> > differentiate between Headphones and Headset unless the kcontrol
+> > naming was intended to differentiate and define the jack type ?
+> 
+> Yeah, that's what we really need to face seriously now to.
+> Keyon is working on merging input and kctl jacks, and this is the biggest
+> problem that has to be sorted out.
+> 
+> As far as I understand correctly, so far ASoC drivers also report headset as
+> boolean (the bits are multiple, but reports are either zero or N bits).  So, we
+> agreed on creating boolean "Headset" kctls.
+> 
 > One option is to provide multiple boolean kctls ("Headset Mic Jack").
+[Keyon] how about using "Headset Jack Mic" and "Headset Jack Speakers"?
+Then we can understand of that both these two kctls are belong to the
+Headset Jack.
 > Another option is to allow enum type for kctl jacks.  Or, yet another
-> alternative is to provide an enum ctl (e.g. "Headset Jack Type") in
-> addition to a boolean kctl ("Headset Jack").  There can be other ways,
-> too...
-
-I think any of those work; my guess is that the "Headset Jack Type" enum
-is the one that's going to be least disruptive to the ABI (in that it
-keeps the existing control untouched).
-
---twKjCw1/F6C/WBH6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVCtsIAAoJECTWi3JdVIfQfdQH/ibQuSwVHd1CCKlbDyMoDu+t
-xaNICKS1Tj6w6oLP8LFbVbkXTOlXZuLabnwlZq3M82gPyP/Lstbk78SId24v+E+6
-B4suSuDPHOEe6b7E9SPwvLCZTAjNaMRuZ2T3XFz4wMkTc2JuDrqnNEgarhn2cE0C
-9BrWrbY4yuJRxzvvwUDrZrDrEkMnP3PqHRvexHNcFdwSmMW0PvZecGd/At+pAyku
-rigQNAnfxndmcTaq3a5fI0vKg7C4kABsxieIyyZwr19iQseJaM56tGXYIQHMnvuY
-Yx1NoShFpbwd8gHbZhoyLnwH5PNesQkIDsMiFtgqfy9s4syNB6jcxa6/q+8+2gk=
-=EXO+
------END PGP SIGNATURE-----
-
---twKjCw1/F6C/WBH6--
-
---===============1947511693489109509==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1947511693489109509==--
+> alternative is to provide an enum ctl (e.g. "Headset Jack Type") in addition to
+> a boolean kctl ("Headset Jack").  There can be other ways, too...
+> 
+> 
+> Takashi
