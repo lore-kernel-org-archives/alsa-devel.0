@@ -1,48 +1,104 @@
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH 05/16] page-flags: define behavior of FS/IO-related flags
- on compound pages
-Date: Thu, 19 Mar 2015 22:02:52 +0200
-Message-ID: <20150319200252.GA13348@node.dhcp.inet.fi>
-References: <1426784902-125149-1-git-send-email-kirill.shutemov@linux.intel.com>
- <1426784902-125149-6-git-send-email-kirill.shutemov@linux.intel.com>
- <550B15A0.9090308@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 11/11] ALSA: digi00x: apply double-oh-three
+ algorism to multiplex PCM samples
+Date: Fri, 20 Mar 2015 07:46:20 +0900
+Message-ID: <550B51BC.80506@sakamocchi.jp>
+References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
+ <5506E7EE.6060300@gareus.org> <55070409.8090107@sakamocchi.jp>
+ <55070F3B.7000509@gareus.org> <55075D65.20406@sakamocchi.jp>
+ <55082E06.6010008@gareus.org> <55083103.5030704@gmail.com>
+ <5508CFA5.7060903@sakamocchi.jp> <550AD65F.10803@gareus.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <owner-linux-mm@kvack.org>
-Content-Disposition: inline
-In-Reply-To: <550B15A0.9090308@intel.com>
-Sender: owner-linux-mm@kvack.org
-To: Dave Hansen <dave.hansen@intel.com>, Hugh Dickins <hughd@google.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Andrea Arcangeli <aarcange@redhat.com>, Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@redhat.com>, Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>, Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>, Steve Capper <steve.capper@linaro.org>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.cz>, Jerome Marchand <jmarchan@redhat.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id E750226067F
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 23:46:24 +0100 (CET)
+In-Reply-To: <550AD65F.10803@gareus.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Robin Gareus <robin@gareus.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net, Damien Zammit <damien.zammit@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 19, 2015 at 11:29:52AM -0700, Dave Hansen wrote:
-> On 03/19/2015 10:08 AM, Kirill A. Shutemov wrote:
-> > The odd exception is PG_dirty: sound uses compound pages and maps them
-> > with PTEs. NO_COMPOUND triggers VM_BUG_ON() in set_page_dirty() on
-> > handling shared fault. Let's use HEAD for PG_dirty.
+Robin and Damien,
+
+On Mar 19 2015 22:59, Robin Gareus wrote:
+> On 03/18/2015 02:06 AM, Takashi Sakamoto wrote:
+>> Please explain the importance, especially the reason to include the
+>> selector into kernel code instead of userspace application.
 > 
-> Can we get the sound guys to look at this, btw?  It seems like an odd
-> thing that we probably don't want to keep around, right?
+> Can one access the device from userspace while the kernel is using it to
+> stream audio or midi ("Device or resource busy") ?
 
-CC: +sound guys
+I can't understand what character devices you mention about. If you
+mention about ALSA PCM character devices (usually
+/dev/snd/pcmC%uD%d[p|c]), it's yes. In fact, one ALSA application can
+use ALSA PCM character device for one direction (playback/capture). So
+the access by any other applications causes -EBUSY. (here, I ignore
+alsa-lib's PCM direct mixing layer.)
 
-I'm not sure what is right fix here. At the time adding __GFP_COMP was a
-fix: see f3d48f0373c1.
+But, when you utilize kernel control functionality, the character device
+is not PCM one, it's Control one (/dev/snd/controlC%u).
 
-Other odd part about __GFP_COMP here is that we have ->_mapcount in tail
-pages to be used for both: mapcount of the individual page and for gup
-pins. __compound_tail_refcounted() doesn't recognize that we don't need
-tail page accounting for these pages.
+By the way, we can program any userspace application via FireWire
+character device (/dev/fw*). Actually, I utilize firewire-request in
+Linux FireWire utilities (former known as jujuutils), and write my own
+I/O library, libhinawa.
 
-Hugh, I tried to ask you about the situation several times (last time on
-the summit). Any comments?
+Linux FireWire utilities
+https://github.com/cladisch/linux-firewire-utils
 
--- 
- Kirill A. Shutemov
+libhinawa
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/086969.html
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+For example, to control the clock selector of Digi 002/003 family, we
+just execute this command with firewire-request.
+
+$ ./firewire-request /dev/fw1 write 0xffffe0000118 0x0000000[0|1|2|3]
+
+We can perform to control them from userspace.
+
+> This is one of the reasons, why USB soundcards expose all settings
+> though the alsa mixer interface. It also offers a standardized interface
+> for userspace apps to build on top and a method to directly link mixer
+> to soundcard for systems with multiple soundcards.
+> 
+> How do you envisage to handle this?
+
+These USB-connected sound devices basically tells their control
+capabilities by USB descriptor information. This mechanism is
+standardized and included in USB specification. Thus single parser has a
+meaning.
+
+On the other hand, IEEE 1394 bus-connected sound devices implements its
+own way to tell their control capabilities and model-specific way to
+perform control. Thus we should prepare for model-specific parsers. The
+idea to include these parsers into kernel-space increases maintaining
+efforts.
+
+(Actually, USB-connected sound devices includes vendor-specific
+interface. Such interfaces require own codes and snd-usb-audio includes
+these code. You can see such codes in sound/usb/mixer_quirks.c and the
+other USB Audio device class driver codes.)
+
+In an aspect of user experience, I cannot find any differences between
+using alsamixer (or amixer) and using specific-application. ALSA PCM
+character devices, ALSA Control character devices and Linux FireWire
+character devices are completely different and users don't mind the
+differences. What the users' want is to control their physical devices,
+to consider about to which character devices they access.
+
+
+Regards
+
+Takashi Sakamoto
