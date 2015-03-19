@@ -1,16 +1,16 @@
 From: "Jie, Yang" <yang.jie@intel.com>
 Subject: Re: Separate input and output jacks for one UCM device?
-Date: Thu, 19 Mar 2015 14:22:18 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDA3C7@SHSMSX101.ccr.corp.intel.com>
+Date: Thu, 19 Mar 2015 14:31:58 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDA3F0@SHSMSX101.ccr.corp.intel.com>
 References: <5509D4D4.6030000@linux.intel.com>
  <1426756559.7258.22.camel@loki> <s5h3851t6xx.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 95738260577
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 15:22:25 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 115AA260584
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 15:32:04 +0100 (CET)
 In-Reply-To: <s5h3851t6xx.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -73,12 +73,12 @@ List-Id: alsa-devel@alsa-project.org
 > agreed on creating boolean "Headset" kctls.
 > 
 > One option is to provide multiple boolean kctls ("Headset Mic Jack").
-[Keyon] how about using "Headset Jack Mic" and "Headset Jack Speakers"?
-Then we can understand of that both these two kctls are belong to the
-Headset Jack.
 > Another option is to allow enum type for kctl jacks.  Or, yet another
 > alternative is to provide an enum ctl (e.g. "Headset Jack Type") in addition to
 > a boolean kctl ("Headset Jack").  There can be other ways, too...
+[Keyon] I have another concern, should app(e.g. pulseaudio) also need be
+able to handle different index with same "Headset Jack" kctl name? or we
+should register them as "Headset Jack N Mic" (n=0, 1, 2, ...)?
 > 
 > 
 > Takashi
