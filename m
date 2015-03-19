@@ -1,15 +1,17 @@
-From: han.lu@intel.com
-Subject: [PATCH 1/1] Intel: ASoC: Add condition check before
-	set param to waves
-Date: Thu, 19 Mar 2015 08:38:00 +0800
-Message-ID: <1426725480-31645-1-git-send-email-han.lu@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1] Intel: ASoC: Add condition check
+ before set param to waves
+Date: Thu, 19 Mar 2015 00:49:25 +0000
+Message-ID: <20150319004925.GK2869@sirena.org.uk>
+References: <1426725480-31645-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4277631939364063883=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 532B3260504
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 01:40:06 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BDF826051B
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 01:49:31 +0100 (CET)
+In-Reply-To: <1426725480-31645-1-git-send-email-han.lu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,51 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
-Cc: "Lu, Han" <han.lu@intel.com>
+To: han.lu@intel.com
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
 
-Check waves state before set parameter through ipc to prevent unexpected
-operation. Also remove redundant check.
+--===============4277631939364063883==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pN9MePJoZbRKbUk1"
+Content-Disposition: inline
 
-Signed-off-by: Lu, Han <han.lu@intel.com>
 
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 43fb5f3..20b629a 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -2055,6 +2055,11 @@ int sst_hsw_launch_param_buf(struct sst_hsw *hsw)
- {
- 	int ret, idx;
- 
-+	if (!sst_hsw_is_module_active(hsw, SST_HSW_MODULE_WAVES)) {
-+		dev_dbg(hsw->dev, "module waves is not active\n");
-+		return 0;
-+	}
-+
- 	/* put all param lines to DSP through ipc */
- 	for (idx = 0; idx < hsw->param_idx_w; idx++) {
- 		ret = sst_hsw_module_set_param(hsw,
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index b40ec74..6c6229a 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -399,13 +399,9 @@ static int hsw_waves_param_put(struct snd_kcontrol *kcontrol,
- 	if (ret < 0)
- 		return ret;
- 
--	if (sst_hsw_is_module_loaded(hsw, id)) {
--		if (!sst_hsw_is_module_active(hsw, id))
--			return 0;
--
-+	if (sst_hsw_is_module_active(hsw, id))
- 		ret = sst_hsw_module_set_param(hsw, id, 0, param_id,
- 				param_size, ucontrol->value.bytes.data);
--	}
- 	return ret;
- }
- 
--- 
-1.9.1
+--pN9MePJoZbRKbUk1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 19, 2015 at 08:38:00AM +0800, han.lu@intel.com wrote:
+> From: "Lu, Han" <han.lu@intel.com>
+>=20
+> Check waves state before set parameter through ipc to prevent unexpected
+> operation. Also remove redundant check.
+
+Applied, thanks.
+
+--pN9MePJoZbRKbUk1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVCh0UAAoJECTWi3JdVIfQB/EH/ROzNLCcHemDblPs0eFoR2Z0
+K3PCoR3a7lfFdJr09D2vtAAMDnzkCelUroQUUeg/Ps9Eo9E2Ar/yy5ISFaIdPJTP
+06zRr2O+/13S2R4zgekjLG7vMCoxrVfNZ+gm83/n7YIaCtf3pwE2sgAkzSUQ+aJg
+D/b3Z2bjLWhz4kMDBRbW9NvjJiO300kJ5Cd1ld2gjTFpk8QE3r7y4RE9JneUTmW6
+pGLiP8sFPcjvt4QrMnIASpecXEb7L68ruFifK1mFxvv9FYTgD4S+OIjwuGevlIjg
+pCUj9oTICCSPl5TK8pL91w1gQVGD2jphW4RyWiuIMxo54lwHgyVgO7ufe6ZFtxY=
+=+1wp
+-----END PGP SIGNATURE-----
+
+--pN9MePJoZbRKbUk1--
+
+--===============4277631939364063883==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4277631939364063883==--
