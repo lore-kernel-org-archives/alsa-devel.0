@@ -1,25 +1,22 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Re: [PATCH 11/11] ALSA: digi00x: apply double-oh-three
- algorism to multiplex PCM samples
-Date: Thu, 19 Mar 2015 16:18:00 +1100
-Message-ID: <550A5C08.1010705@gmail.com>
-References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
- <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
- <5506E7EE.6060300@gareus.org> <55070409.8090107@sakamocchi.jp>
- <55070F3B.7000509@gareus.org> <55075D65.20406@sakamocchi.jp>
- <55082E06.6010008@gareus.org> <55083103.5030704@gmail.com>
- <5508CFA5.7060903@sakamocchi.jp>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: getting the sound to work on my asus m6s00v
+Date: Thu, 19 Mar 2015 14:04:48 +0800
+Message-ID: <CAN8cciYW6gcFuq-=oGyB85TgW=m9017yy83_M6vZMmy+f=yz=g@mail.gmail.com>
+References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
+ <5508DD4D.3040901@canonical.com>
+ <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
+ <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 19121260525
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 06:18:09 +0100 (CET)
-Received: by pabyw6 with SMTP id yw6so64533903pab.2
- for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 22:18:07 -0700 (PDT)
-In-Reply-To: <5508CFA5.7060903@sakamocchi.jp>
+Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
+ [209.85.214.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91ADA26053E
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 07:04:49 +0100 (CET)
+Received: by obdfc2 with SMTP id fc2so47519863obd.3
+ for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2015 23:04:48 -0700 (PDT)
+In-Reply-To: <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,62 +26,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Robin Gareus <robin@gareus.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Christian Gleerup <cromozon@swn.nu>, nb@dagami.org
+Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTgvMDMvMTUgMTI6MDYsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gT24gMjAxNeW5tDAz
-5pyIMTfml6UgMjI6NDksIERhbWllbiBaYW1taXQgd3JvdGU6Cj4+IENhbiB3ZSBpbmNsdWRlIG15
-IG1peGVyIGNvbnRyb2wgaW50byB0aGUgZHJpdmVyPwo+IAo+IERlcGVuZHMgb24gdGhlIHJlYXNv
-bi4KVGhlIHJlYXNvbiBmb3IgYWxsb3dpbmcgdGhlIG1peGVyIGNsb2NrIHNvdXJjZSBjb250cm9s
-IGluIHRoZSBrZXJuZWwgaXMKYmVjYXVzZSBpdCBpcyAqY29yZSogZnVuY3Rpb25hbGl0eSB0byBi
-ZSBhYmxlIHRvIGRlY2lkZSB3aGVyZSB0aGUgc291bmQKY2FyZCBnZXRzIGl0cyBjbG9jayBmcm9t
-LiAgSXQgd291bGQgYmUgY3VtYmVyc29tZSBhbmQgYXdrd2FyZCBpZiB1c2VycwpoYWQgdG8gZmly
-ZSB1cCBhbiBleHRlcm5hbCB1c2Vyc3BhY2UgcHJvZ3JhbSBqdXN0IHRvIGNvbmZpZ3VyZSB0aGUg
-Y2xvY2sKc291cmNlISAgVGhlIG9ubHkgcmVhc29uIHNvbWUgc291bmQgY2FyZHMgaGF2ZSBleHRl
-cm5hbCB1c2Vyc3BhY2UKcHJvZ3JhbXMgdG8gY29uZmlndXJlIHRoZXNlIGV4dHJhcyBpcyBiZWNh
-dXNlIG5vIG9uZSBoYXMgYm90aGVyZWQgdG8KaW1wbGVtZW50IHRoZW0gaW4gdGhlIGtlcm5lbCB5
-ZXQuIChXZWxsIHRoYXQgaXMgbXkgb3BpbmlvbikuCgo+PiBJIHRlc3RlZCAwMDNSKyB3aXRoIFJv
-YmluJ3Mgc3VnZ2VzdGlvbiBvZiBoYWNraW5nIHRoZSBzdGF0ZSB0byBiZQo+PiBzdGF0aWNhbGx5
-IGluaXRpYWxpc2VkIHRvIHplcm8gKHdoaWNoIHdvbid0IHdvcmsgZm9yIG11bHRpIGRldmljZXMp
-LAo+PiBhbmQgdGhlIHJlc3VsdHMgd2VyZSBncmVhdDogZGVhZCBzaWxlbmNlIG9uIGNoYW5uZWwg
-MSB3aGVuIHBsYXlpbmcgaW50bwo+PiBjaGFubmVsIDE4LiAgVGhpcyBzbWFsbCBoYWNrIG1lYW5z
-IHRoYXQgUm9iaW4ncyB1cGRhdGUgdG8gMDAzYW1kdHAKPj4gc2hvdWxkIHdvcmsgZmxhd2xlc3Ns
-eSB3aGVuIGludGVncmF0ZWQgaW50byB0aGUgZHJpdmVyIHByb3Blcmx5Lgo+IAo+IFdoYXQgd2Ug
-bmVlZCBpcyB0byB0ZXN0IFJvYmluJ3MgbmV3IGNvZGUgdGhvcm91Z2hseSwgbm90IGluY2x1ZGUg
-ZXh0cmEKPiBmdW5jdGlvbmFsaXR5IHN1Y2ggYXMgY2xvY2sgc291cmNlIHNlbGVjdG9yIHVucmVs
-YXRlZCB0byBzdHJlYW1pbmcKPiBmdW5jdGlvbmFsaXR5LgpUYWthc2hpLCBJIGFncmVlIHRoYXQg
-bXkgY2xvY2sgc291cmNlIG1peGVyIGNvbnRyb2wgaXMgYSBzZXBhcmF0ZSBpc3N1ZSwKYnV0IHBs
-ZWFzZSBkb24ndCB1bmRlcmVzdGltYXRlIHRoZSB3b3JrIFJvYmluIGFuZCBJIGhhdmUgZG9uZSB3
-aXRoCjAwM2FtZHRwOiAgV2UgYXJlIGluZm9ybWluZyB5b3UgdGhhdCBpdCBub3cgd29ya3MgY29y
-cmVjdGx5IGZvciBhbGwKY2hhbm5lbHMsIHNvIGxvbmcgYXMgaXQgaXMgaW50ZWdyYXRlZCBpbnRv
-IHRoZSBkcml2ZXIgY29ycmVjdGx5LiAgV2UKa25vdyB0aGlzIGJlY2F1c2Ugd2UgdGVzdGVkIGl0
-IHRob3JvdWdobHkgd2l0aCBhIGJ1cyBhbmFseXNlciB0byB2ZXJpZnkKdGhhdCB0aGUgZXhwZWN0
-ZWQgcGF0dGVybnMgd2VyZSBiZWluZyBwbGF5ZWQgaW50byB0aGUgZGV2aWNlIGFuZCBJIHVzZWQK
-bXkgZWFycyB0byBsaXN0ZW4gdG8gdGhlIHB1cmUgc2lsZW5jZSBvbiB0aGUgb3RoZXIgY2hhbm5l
-bHMgd2hlbiB0aGUKbWFnaWMgYml0IHBhdHRlcm4gd2FzIGJlaW5nIHBsYXllZCBpbnRvIHRoZSBk
-ZXZpY2UsIGFzIHdlbGwgYXMgdXNpbmcgYQpwcm9ncmFtIHRvIG1vbml0b3IgdGhlIGxldmVscyAo
-emVybykuCgo+PiBUYWthc2hpOiAgSSBhbSBhbHNvIHJlcG9ydGluZyB0aGF0IEFEQVQgc3luYywg
-U1BESUYgc3luYyBib3RoIHdvcmsgdXNpbmcKPj4gbXkgY2xvY2sgc291cmNlIHNlbGVjdG9yIGNv
-bnRyb2wuICBJbiBmYWN0LCB3aXRob3V0IHRoZSBzeW5jIHRvIGV4dGVybmFsCj4+IGRldmljZSwg
-dGhlcmUgYXJlIG1hbnkgZHJvcG91dHMgaW4gdGhlIDEzOTQgc3RyZWFtcy4KPj4gSG93IGNhbiB3
-ZSBhZGRyZXNzIHRoaXMgaXNzdWU/Cj4gSW4gdGhpcyBjYXNlLCB0aGUga2VybmVsIGRyaXZlciBz
-aG91bGQgcmV0dXJuIGVycm9yIGNvZGUgdG8gdXNlcnNwYWNlCj4gYXBwbGljYXRpb24uIElmIHRo
-ZSBkcml2ZXIgY2Fubm90IGhhbmRsZSBhbnkgaW4tcGFja2V0cyBhZnRlciBzdGFydGluZwo+IHRy
-YW5zbWl0dGVkIHN0cmVhbSwgaXQgZGV0ZWN0cyB0aW1lb3V0ICg1MDBtc2VjKSBhbmQgcmV0dXJu
-IC1FVElNRURPVVQuCkkgd291bGQgbm90IGhhdmUgYmVlbiBhYmxlIHRvIG5vdGljZSB0aGUgZGlm
-ZmVyZW5jZSBpbiBkcm9wb3V0cyB3aXRob3V0Cm15IG1peGVyIGNvbnRyb2wgZW5hYmxlZCwgc28g
-SSB0aGluayBmcm9tIGEgZGV2ZWxvcG1lbnQgcG9pbnQgb2YgdmlldyBpdAppcyB1c2VmdWwgdG8g
-aW5jbHVkZSB0aGUgbWl4ZXIgY29udHJvbCBpbi1rZXJuZWwuIChhbm90aGVyIHJlYXNvbikuCgo+
-IElmIHRoZSBpbi1wYWNrZXRzIGluY2x1ZGUgZGlzY29udGludWl0eSBvZiB0aGUgdmFsdWUgaW4g
-ZGJjIGZpZWxkIG9mIENJUAo+IGhlYWRlciwgQUxTQSBBTURUUCBpbXBsZW1lbnRhdGlvbiBkZXRl
-Y3RzIGl0IGFuZCBzdG9wIHRyYW5zbWl0dGVkCj4gc3RyZWFtLCB0aGVuIHRoZSBkcml2ZXIgYWxz
-byByZXR1cm5zIC1FVElNRURPVVQuClRha2FzaGksIHlvdSBoYXZlIHByb3ZpZGVkIGhlcmUgdGhl
-IGNvbmRpdGlvbnMgZm9yIHdoaWNoIC1FVElNRURPVVQKb2NjdXJzLiAgSSBhbSBhc2tpbmcgaG93
-IGNhbiB3ZSBwcmV2ZW50IHRoZSBkcm9wb3V0cywgbm90IGhvdyBpdCBvY2N1cnMuClBlcmhhcHMg
-dGhlIGRiYyBmaWVsZCBpcyBpcnJlbGV2YW50IGZvciAwMHggPyAgSSBkb24ndCBrbm93LCBwbGVh
-c2UgbGV0Cm1lIGtub3cgaWYgdGhlcmUgaXMgYW55dGhpbmcgSSBjYW4gZHVtcCBmb3IgeW91IHRv
-IGhlbHAgZmluZCBvdXQuCgpEYW1pZW4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+>
+> The internal mic also works.
+>
+> but; I am a bit puzled, because I tried to comment out 'options
+snd-hda-intel model=3stack-digout' and did a powercycle (power off)...
+> and now the sound still works, so it seems the soundcard was woken from
+some deepsleep.
+> The machine have been turned of for many (4/5) years...
+>
+> Anyway since the soundcard now is working with my current kernel without
+the extra options, I am unsure if trying the newest vanilla kernel would
+make any sense?
+>
+> Any recommendations?
+
+If it is a netbook with one jack which can be used as headphone or mic
+
+The best way is to measure the impedance of the jack to determince  HP or
+mic and swtich pin ctls to OUT or IN as pincap support ImpSense
+
+Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0000003f: IN OUT HP Detect Trigger ImpSense
+  Pin Default 0x0121411f: [Jack] HP Out at Ext Rear
+    Conn = 1/8, Color = Green
+    DefAssociation = 0x1, Sequence = 0xf
+    Misc = NO_PRESENCE
+  Pin-ctls: 0xc0: OUT HP
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x0c
+
+Try
+
+hda-verb  /dev/snd/hwC0D0 0x14 SET_PIN_SENSE 0
+
+hda-verb /dev/snd/hwC0D0 0x14 GET_PIN_SENSE 0
+
+and check the returned values when you plug hp and mic are different
