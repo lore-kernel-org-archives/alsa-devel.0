@@ -1,20 +1,26 @@
-From: Xuebing Wang <xbing6@gmail.com>
-Subject: Re: Can iMX6SL supports different sampling rate for
- different SSIs?
-Date: Fri, 20 Mar 2015 07:13:19 +0800
-Message-ID: <550B580F.6070101@gmail.com>
-References: <5507743B.5040808@gmail.com> <20150317003830.GA552@Asurada-GSX>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Separate input and output jacks for one UCM device?
+Date: Fri, 20 Mar 2015 12:03:15 +0800
+Message-ID: <CAN8ccib9=F2=SUgHmiXrf3aygX=-usoTPpYVV47+fY1kp+yjtQ@mail.gmail.com>
+References: <5509D4D4.6030000@linux.intel.com> <1426756559.7258.22.camel@loki>
+ <s5h3851t6xx.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDA3F0@SHSMSX101.ccr.corp.intel.com>
+ <s5hd2455a07.wl-tiwai@suse.de>
+ <20150319144240.GV2869@sirena.org.uk>
+ <s5hpp85rqg5.wl-tiwai@suse.de>
+ <20150319151851.GW2869@sirena.org.uk>
+ <s5hh9thnh07.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f174.google.com (mail-qc0-f174.google.com
- [209.85.216.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F157260695
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 00:13:25 +0100 (CET)
-Received: by qcto4 with SMTP id o4so80405940qct.3
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 16:13:24 -0700 (PDT)
-In-Reply-To: <20150317003830.GA552@Asurada-GSX>
+Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
+ [209.85.218.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6966D2606B6
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 05:03:17 +0100 (CET)
+Received: by oier21 with SMTP id r21so82235186oie.1
+ for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 21:03:16 -0700 (PDT)
+In-Reply-To: <s5hh9thnh07.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,56 +30,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, niranjan Patil <Niranjan.Patil@infocus.com>, Richard Jiang <Richard.Jiang@infocus.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Arun Raghavan <arun@accosted.net>, "Lu,
+ Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-On 03/17/2015 08:38 AM, Nicolin Chen wrote:
-> On Tue, Mar 17, 2015 at 08:24:27AM +0800, Xuebing Wang wrote:
+> >
+> > > > The theory is that this is handled by the fact that the userspace
+ABI
+> > > > includes a reference to the struct device and therefore a chain
+showing
+> > > > where the thing is attached; anything registering two different
+jacks
+> > > > with the same name attached to the same device probably qualifies as
+> > > > broken.
+> >
+> > > So this implicitly assumes the name uniqueness.  For HD-audio, this
+> > > was a problem because we need to generate jack names dynamically; for
+> > > example, there are laptops with two headphones, and we assigned
+> > > indices in such a case.
+> >
+> > That's on the same card, though?
 >
->> 2) As pll4_main_clk is global for all 3 SSIs, I think that we can *not* use
->> 8k for ssi1 and 44.1k for ssi2, right? Because 8k and 44.1k requires
->> different pll4 clock, right?
-> True.
->
->>      -- However, as 48k, 32k, 16k, 8k can use same pll4, thus different SSI
->> can use different sampling rate in this subset (48k, 32k, 16k, 8k).
->>      -- Same principle applies for 44.1k, 22.050, 11.025 subset of sampling
->> rates.
-> Correct. You need to choose 48K-group or 44.1K-group if only using PLL4.
->
-> If you are so obsessed with full sample rate support in hardware level,
-> you might need to do a trade-off like sacrificing video function -- you
-> would then be allowed to use PLL5 to forge a rate for another rate group.
->
-> I forgot if PLL3, another possible parent clock of SSI, is suitable for
-> one of the groups. You may also take a look at it.
+> Yeah, on the same laptop, even both on the front.  The designer must
+> have smoked, or just looked for a partner sitting at next to listen to
+> music together :)
 
-Nicolin,
+http://en.community.dell.com/support-forums/laptop/f/3517/t/19440542
 
-Thanks a lot for your help.
+One of the headphone jack is actually headphone/SPDIF combo jack
 
-I am using an unused PLL3_PFD (454.7M) for SSI3, and it is working ok.
-
-1) 454.7M is actually 454.736842. For 48k sampling rate, I am using 
-(clk_pred = 1, clk_podf = 37) to generate ssi baudclk.
--- 454.736842 / 1 / 37 = 12.290185 MHz
-
-2) If I derive from PLL4, then ssi baudclk = 12.288000, which correspond 
-to iMX6SL reference manual "Table 48-7. SSI Bit Clock and Frame Rate as 
-a Function of PSR, PM, and DIV2".
--- This is very accurate down to 1Hz
-
-3) There is some deviation of baudclk (12.290185 vs 12.288000 MHz), 
-which translates to the deviation of bit_clock of (3.072546 MHz vs 
-3.072000 MHz for 48k rate, 546Hz deviation).
-
-Is this the most accurate clock we can get if we use PLL3_PFD? Thanks again.
-
-
-> Nicolin
->
-
--- 
-Xuebing
+and the two headphone jacks and mic jack can support surround 5.1
