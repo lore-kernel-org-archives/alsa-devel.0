@@ -1,24 +1,20 @@
-From: Robin Gareus <robin@gareus.org>
-Subject: firewire mixer interface -- was Re: [PATCH 11/11]
- ALSA: digi00x: apply double-oh-three algorism to multiplex PCM samples
-Date: Fri, 20 Mar 2015 13:05:16 +0100
-Message-ID: <550C0CFC.4060404@gareus.org>
-References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>
- <1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>
- <5506E7EE.6060300@gareus.org> <55070409.8090107@sakamocchi.jp>
- <55070F3B.7000509@gareus.org> <55075D65.20406@sakamocchi.jp>
- <55082E06.6010008@gareus.org> <55083103.5030704@gmail.com>
- <5508CFA5.7060903@sakamocchi.jp> <550AD65F.10803@gareus.org>
- <550B51BC.80506@sakamocchi.jp>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols
+ for every jack input device
+Date: Fri, 20 Mar 2015 12:22:10 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDB90F@SHSMSX101.ccr.corp.intel.com>
+References: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
+ <1426841719-14576-3-git-send-email-yang.jie@intel.com>
+ <s5hd2446mt2.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
- [81.169.146.220])
- by alsa0.perex.cz (Postfix) with ESMTP id 07A1E2654AD
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 13:05:31 +0100 (CET)
-In-Reply-To: <550B51BC.80506@sakamocchi.jp>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 520402654B2
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 13:22:16 +0100 (CET)
+In-Reply-To: <s5hd2446mt2.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,54 +24,227 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net, Damien Zammit <damien.zammit@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/19/2015 11:46 PM, Takashi Sakamoto wrote:
-
-Hi Takashi
-
-Thanks for elaborating.
-
-[..]
-
-> For example, to control the clock selector of Digi 002/003 family, we
-> just execute this command with firewire-request.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, March 20, 2015 5:28 PM
+> To: Jie, Yang
+> Cc: perex@perex.cz; broonie@kernel.org; alsa-devel@alsa-project.org;
+> Girdwood, Liam R; Liam Girdwood
+> Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols for every jack
+> input device
 > 
-> $ ./firewire-request /dev/fw1 write 0xffffe0000118 0x0000000[0|1|2|3]
-
-Yes, that's what I was asking about. Can one safely write raw control
-messages to /dev/fw* without interfering with ongoing streaming?
-
-
-Instead interfacing via established protocols /dev/snd/control* or
-rather libasound's snd_mixer_t seems like a no-brainer to me.
-
-Are there any control elements on common 1394 devices that cannot be
-properly exposed using existing infrastructure?
-
-> On the other hand, IEEE 1394 bus-connected sound devices implements its
-> own way to tell their control capabilities and model-specific way to
-> perform control. Thus we should prepare for model-specific parsers. The
-> idea to include these parsers into kernel-space increases maintaining
-> efforts.
-
-Agreed. Most of the heavy lifting should probably be done by libasound.
-
-> In an aspect of user experience, I cannot find any differences between
-> using alsamixer (or amixer) and using specific-application.
-
-Uhm. It's a huge difference. There is a whole lot of existing
-infrastructure: from Sys-V init.d and/or SystemD save/restore, dbus
-hooks, existing mixer GUIs and application integration, not to mention
-various language bindings (eg pyalsa).
-
-Linux Audio is already fragmented enough as it stands, adding yet
-another interface/toolchain won't help. One might just as well continue
-to use ffado. I was under the impression that the whole point of moving
-1394 audio into the kernel was to allow seamless integration with the
-rest of ALSA.
-
-2c,
-robin
+> At Fri, 20 Mar 2015 16:55:18 +0800,
+> Jie Yang wrote:
+> >
+> > Currently the ALSA jack core registers only input devices for each
+> > jack registered. These jack input devices are not readable by
+> > userspace devices that run as non root.
+> >
+> > This patch adds support for additionally registering jack kcontrol
+> > devices for every input jack registered. This allows non root
+> > userspace to read jack status.
+> >
+> > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> > Modified-by: Jie Yang <yang.jie@intel.com>
+> > Signed-off-by: Jie Yang <yang.jie@intel.com>
+> > Reveiwed-by: Mark Brown <broonie@kernel.org>
+> > ---
+> >  include/sound/jack.h |  8 +++++
+> >  sound/core/jack.c    | 99
+> ++++++++++++++++++++++++++++++++++++++++++++++++++--
+> >  2 files changed, 105 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/sound/jack.h b/include/sound/jack.h index
+> > 2182350..ef0f0ed 100644
+> > --- a/include/sound/jack.h
+> > +++ b/include/sound/jack.h
+> > @@ -73,6 +73,8 @@ enum snd_jack_types {
+> >
+> >  struct snd_jack {
+> >  	struct input_dev *input_dev;
+> > +	struct list_head kctl_list;
+> > +	struct snd_card *card;
+> >  	int registered;
+> >  	int type;
+> >  	const char *id;
+> > @@ -82,6 +84,12 @@ struct snd_jack {
+> >  	void (*private_free)(struct snd_jack *);  };
+> >
+> > +struct snd_jack_kctl {
+> > +	struct snd_kcontrol *kctl;
+> > +	struct list_head jack_list;		/* list of controls belong to
+> the same jack*/
+> > +	unsigned int jack_bit_idx;	/* the corresponding jack type bit
+> index */
+> 
+> You can omit jack_ prefix here.
+[Keyon] OK.
+> 
+> > +};
+> > +
+> >  #ifdef CONFIG_SND_JACK
+> 
+> Remove CONFIG_SND_JACK, both from Kconfig and ifdefs, as now it's always
+> enabled together with CONFIG_SND_JACK.
+> (Or do it later in the patch series.)
+> 
+> >  int snd_jack_new(struct snd_card *card, const char *id, int type,
+> > diff --git a/sound/core/jack.c b/sound/core/jack.c index
+> > 8658578..741924f 100644
+> > --- a/sound/core/jack.c
+> > +++ b/sound/core/jack.c
+> > @@ -24,6 +24,7 @@
+> >  #include <linux/module.h>
+> >  #include <sound/jack.h>
+> >  #include <sound/core.h>
+> > +#include <sound/control.h>
+> >
+> >  static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+> >  	SW_HEADPHONE_INSERT,
+> > @@ -54,7 +55,13 @@ static int snd_jack_dev_disconnect(struct
+> > snd_device *device)  static int snd_jack_dev_free(struct snd_device
+> > *device)  {
+> >  	struct snd_jack *jack = device->device_data;
+> > +	struct snd_card *card = device->card;
+> > +	struct snd_jack_kctl *jack_kctl, *tmp_jack_kctl;
+> >
+> > +	list_for_each_entry_safe(jack_kctl, tmp_jack_kctl, &jack->kctl_list,
+> jack_list) {
+> > +		list_del(&jack_kctl->jack_list);
+> 
+> Use list_del_init().  Otherwise it'll strike back.
+> (list_del() will be called again in private_free callback from  snd_ctl_remove(),
+> and this can be broken.)
+[Keyon] good! Thanks for pointing out this potential risk!
+> 
+> > +		snd_ctl_remove(card, jack_kctl->kctl);
+> > +	}
+> >  	if (jack->private_free)
+> >  		jack->private_free(jack);
+> >
+> > @@ -100,6 +107,73 @@ static int snd_jack_dev_register(struct snd_device
+> *device)
+> >  	return err;
+> >  }
+> >
+> > +
+> > +/* get the first unused/available index number for the given kctl
+> > +name */ static int get_available_index(struct snd_card *card, const
+> > +char *name) {
+> > +	struct snd_kcontrol *kctl;
+> > +	int idx = 0;
+> > +	int len = strlen(name);
+> > +
+> > +	down_write(&card->controls_rwsem);
+> 
+> Use down_read(), as Liam already suggested.
+> 
+> > +	next:
+> > +	list_for_each_entry(kctl, &card->controls, list) {
+> > +		if (!strncmp(name, kctl->id.name, len) &&
+> > +		    !strcmp(" Jack", kctl->id.name + len) &&
+> > +		    kctl->id.index == idx) {
+> > +			idx++;
+> > +			goto next;
+> > +		}
+> > +	}
+> 
+> Better to split a small function, e.g.
+> 
+> 	while (!jack_ctl_name_found(card, kctl))
+> 		idx++;
+> 
+> than using ugly goto.
+[Keyon] OK, will do like that.
+> 
+> > +	up_write(&card->controls_rwsem);
+> > +	return idx;
+> > +}
+> > +
+> > +static void kctl_private_free(struct snd_kcontrol *kctl) {
+> > +	struct snd_jack_kctl *jack_kctl = kctl->private_data;
+> > +	list_del(&jack_kctl->jack_list);
+> 
+> kfree() is forgotten.
+[Keyon] right.
+> 
+> > +}
+> > +
+> > +static int snd_jack_new_kctl(struct snd_card *card, struct snd_jack
+> > +*jack, int type) {
+> > +	struct snd_kcontrol *kctl;
+> > +	struct snd_jack_kctl *jack_kctl;
+> > +	int i, err, index, state = 0 /* use 0 for default state ?? */;
+> > +
+> > +	INIT_LIST_HEAD(&jack->kctl_list);
+> > +	for (i = 0; i < fls(SND_JACK_BTN_0); i++) {
+> > +		int testbit = 1 << i;
+> > +		if (type & testbit) {
+> 
+> With this implementation, you'll get multiple boolean kctls for a headset.  I
+> thought we agreed with creating a single boolean for headset?
+[Keyon] We agreed with creating multiple kctls for combo jack, e.g. headset.
+Furthermore, e.g., imagine that type = SND_JACK_HEADSET  | SND_JACK_BTN_0,
+we will create 3 kctls for the jack, when BTN_0 is pressed, we will report to
+the 3rd kctl.
+> 
+> In the case of input device, the situation is a bit different, so we shouldn't
+> mix up.
+> 
+> 
+> > +			index = get_available_index(card,jack->id);
+> > +			kctl = snd_kctl_jack_new(jack->id, index, card);
+> > +			if (!kctl)
+> > +				return -ENOMEM;
+> > +
+> > +			err = snd_ctl_add(card, kctl);
+> > +			if (err < 0)
+> > +				return err;
+> > +
+> > +			jack_kctl = kzalloc(sizeof(*jack_kctl), GFP_KERNEL);
+> 
+> Missing NULL check.
+[Keyon] got it, add it soon.
+> 
+> > +			jack_kctl->kctl = kctl;
+> > +
+> > +			kctl->private_data = jack_kctl;
+> > +			kctl->private_free = kctl_private_free;
+> > +
+> > +			/* use jack_bit_idx for the kctl type bit */
+> > +			jack_kctl->jack_bit_idx = i;
+> 
+> This can be better to hold bit mask instead of bit index.
+[Keyon] good idea, will change to bit mask.
+> Then in the below...
+> 
+> > @@ -245,13 +327,26 @@ void snd_jack_report(struct snd_jack *jack, int
+> > status)
+> ....
+> >  	}
+> >
+> >  	input_sync(jack->input_dev);
+> > +
+> > +	for (i = 0; i < fls(SND_JACK_BTN_0); i++) {
+> > +		int testbit = 1 << i;
+> > +		if (jack->type & testbit) {
+> > +			list_for_each_entry(jack_kctl, &jack->kctl_list,
+> jack_list) {
+> > +				if (jack_kctl->jack_bit_idx == i) {
+> > +					snd_kctl_jack_report(jack->card,
+> jack_kctl->kctl,
+> > +								status &
+> testbit);
+> > +				}
+> 
+> .... you can reduce to a single loop.
+> 
+> 
+> thanks,
+> 
+> Takashi
