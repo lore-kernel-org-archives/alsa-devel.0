@@ -1,46 +1,51 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Patches to bind the SGTL5000 chip to AM33XX McASP
-Date: Fri, 20 Mar 2015 10:09:04 +0200
-Message-ID: <550BD5A0.6080400@ti.com>
-References: <1426741659.10003.9.camel@midgaarde>	<550AC783.8040304@ti.com>	 <CAAQQ3u=opRm3UzD+bG6aJvhQU2CFmzH4sXzuA=GxDp2d+MMiNg@mail.gmail.com>	 <550AF442.5040203@ti.com> <1426787288.13824.36.camel@symus-gk-mint>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH v2 0/2] ALSA: jack: Refactoring for jack kctls
+Date: Fri, 20 Mar 2015 16:55:16 +0800
+Message-ID: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1426787288.13824.36.camel@symus-gk-mint>
-Sender: linux-omap-owner@vger.kernel.org
-To: Greg Knight <g.knight@symetrica.com>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12E2E2606E0
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 09:52:32 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, perex@perex.cz, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Greg,
+Currently only hda will create kctls for hda jacks, for asoc, people
+may need create jack kctls in specific driver.
 
-On 03/19/2015 07:48 PM, Greg Knight wrote:
->> For a codec such as the SGTL5000 I would connect a clock, which is
-> running all
->> the time. If you take a look at the driver, it enables the clock at
-> probe and
->> leaves it running as long as the driver is loaded.
->=20
-> Speaking briefly to my "electrical" colleague, he's a bit concerned
-> about the extra power load that a crystal oscillator might incur, whi=
-le
-> I'm concerned about audio quality from a source like CLKOUT2.
->=20
-> Is there a straightforward way we could enable the clock on-demand -
-> when we're communicating with the codec/mixer or actually using the
-> audio subsystem - while keeping it disabled when not in use? We don't
-> expect to be using the audio subsystem frequently.
->=20
-> Worst-case we can set up a GPIO and enable/disable it as needed in
-> user-space - acceptable, if annoying, for our application.
+Here we are introducing kctls for each jack, by creating kctls and add
+them to jack controls list (considering exist of combo jack). At the
+same time, we will report events for each control in the list.
 
-See my reply to Nikolay.
+With this implement, we are no longer need hda jack specific kctls, so
+here also remove jack kctls for hda.
 
---=20
-P=C3=A9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Any comments are welcome.
+
+Jie Yang (2):
+  ALSA: jack: create jack kcontrols for every jack input device
+  ALSA: hda - Remove jack kctls
+
+ include/sound/jack.h     |  8 ++++
+ sound/core/Kconfig       |  3 --
+ sound/core/Makefile      |  3 +-
+ sound/core/jack.c        | 99 +++++++++++++++++++++++++++++++++++++++++++++++-
+ sound/pci/hda/Kconfig    | 10 +----
+ sound/pci/hda/hda_jack.c | 45 ++--------------------
+ sound/pci/hda/hda_jack.h |  3 --
+ 7 files changed, 110 insertions(+), 61 deletions(-)
+
+-- 
+1.9.1
