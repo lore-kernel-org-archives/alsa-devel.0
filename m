@@ -1,26 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Separate input and output jacks for one UCM device?
-Date: Fri, 20 Mar 2015 12:03:15 +0800
-Message-ID: <CAN8ccib9=F2=SUgHmiXrf3aygX=-usoTPpYVV47+fY1kp+yjtQ@mail.gmail.com>
-References: <5509D4D4.6030000@linux.intel.com> <1426756559.7258.22.camel@loki>
- <s5h3851t6xx.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDA3F0@SHSMSX101.ccr.corp.intel.com>
- <s5hd2455a07.wl-tiwai@suse.de>
- <20150319144240.GV2869@sirena.org.uk>
- <s5hpp85rqg5.wl-tiwai@suse.de>
- <20150319151851.GW2869@sirena.org.uk>
- <s5hh9thnh07.wl-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Patches to bind the SGTL5000 chip to AM33XX McASP
+Date: Fri, 20 Mar 2015 10:05:37 +0200
+Message-ID: <550BD4D1.5080604@ti.com>
+References: <1426741659.10003.9.camel@midgaarde>	<550AC783.8040304@ti.com>
+ <CAAQQ3u=opRm3UzD+bG6aJvhQU2CFmzH4sXzuA=GxDp2d+MMiNg@mail.gmail.com>
+ <550AF442.5040203@ti.com> <550B1017.2000405@mail.bg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
- [209.85.218.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 6966D2606B6
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 05:03:17 +0100 (CET)
-Received: by oier21 with SMTP id r21so82235186oie.1
- for <alsa-devel@alsa-project.org>; Thu, 19 Mar 2015 21:03:16 -0700 (PDT)
-In-Reply-To: <s5hh9thnh07.wl-tiwai@suse.de>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23496265066
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 09:05:42 +0100 (CET)
+In-Reply-To: <550B1017.2000405@mail.bg>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,34 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Arun Raghavan <arun@accosted.net>, "Lu,
- Han" <han.lu@intel.com>
+To: Nikolay Dimitrov <picmaster@mail.bg>, Greg Knight <g.knight@symetrica.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > > > The theory is that this is handled by the fact that the userspace
-ABI
-> > > > includes a reference to the struct device and therefore a chain
-showing
-> > > > where the thing is attached; anything registering two different
-jacks
-> > > > with the same name attached to the same device probably qualifies as
-> > > > broken.
-> >
-> > > So this implicitly assumes the name uniqueness.  For HD-audio, this
-> > > was a problem because we need to generate jack names dynamically; for
-> > > example, there are laptops with two headphones, and we assigned
-> > > indices in such a case.
-> >
-> > That's on the same card, though?
->
-> Yeah, on the same laptop, even both on the front.  The designer must
-> have smoked, or just looked for a partner sitting at next to listen to
-> music together :)
-
-http://en.community.dell.com/support-forums/laptop/f/3517/t/19440542
-
-One of the headphone jack is actually headphone/SPDIF combo jack
-
-and the two headphone jacks and mic jack can support surround 5.1
+T24gMDMvMTkvMjAxNSAwODowNiBQTSwgTmlrb2xheSBEaW1pdHJvdiB3cm90ZToKPiBTbGlnaHQg
+Y2xhcmlmaWNhdGlvbiBoZXJlIC0gSSBjYW4ndCBmaW5kIGFueSBzdWNoIHJlZmVyZW5jZSBpbiB0
+aGUKPiBTR1RMNTAwMCBkYXRhc2hlZXQgd2hlcmUgaXQncyBleHBsaWNpdGx5IHdyaXR0ZW4gdGhh
+dCB0aGUgSTJDIGJ1cwo+ICpyZXF1aXJlcyogdGhlIE1DTEsgcnVubmluZy4gVW5mb3J0dW5hdGVs
+eSwgYWxsIG9mIHVzIGZvdW5kIHRoaXMKPiBvYnNjdXJlIGRlcGVuZGVuY3kgZW1waXJpY2FsbHku
+CgpJdCBpcyBub3Qgc3BlbGxlZCBvdXQgYXMgc3VjaCwgYnV0IGluOgpodHRwOi8vY2FjaGUuZnJl
+ZXNjYWxlLmNvbS9maWxlcy9hbmFsb2cvZG9jL2RhdGFfc2hlZXQvU0dUTDUwMDAucGRmP3BzcGxs
+PTEKYm90dG9tIG9mIHBhZ2U5IChub3RlIDEpIGFuZCB0aGUgcG93ZXIgdXAgc2VxdWVuY2UgaW4g
+cGFnZTEwLiBTZWUgYWxzbyBwYWdlMTMsClJFU0VUIHNlY3Rpb24uCgo+PiBJZiB5b3UgY2hhbmdl
+IGF1ZGlvIGNvbnRyb2xzIHdoaWxlIHlvdSBkb24ndCBoYXZlIGF1ZGlvIGFjdGl2aXR5LCB5b3Ug
+d2lsbAo+PiBzdGlsbCBuZWVkIHRvIGhhdmUgdGhlIE1DTEsgcnVubmluZy4KPiAKPiBDb3JyZWN0
+LiBBbmQgdGhpcyBpcyBhIGJpZyBpc3N1ZS4gQXMgZmFyIGFzIEkga25vdywgdGhlIGtlcm5lbCBk
+cml2ZXJzCj4gY29udHJvbCBzZXBhcmF0ZWx5IHRoZSBjbG9jayBkb21haW5zLCBhbmQgc2VwYXJh
+dGVseSBpMmMgZGV2aWNlcywgc28KPiB0aGUgYmFzaWMgZXhwZWN0YXRpb24gb24gdGhlIGtlcm5l
+bCBzaWRlIGlzIHRoYXQgdGhlcmUncyBubyBjb25uZWN0aW9uCj4gYmV0d2VlbiB0aGVzZSAyLiBJ
+biB0aGlzIHNwZWNpZmljIGNhc2UsIGJlY2F1c2Ugb2YgdGhlIFNHVEw1MDAwJ3MKPiBpbXBsZW1l
+bnRhdGlvbiwgdGhlcmUncyBhIGRlcGVuZGVuY3kuIFJpZ2h0IG5vdyBhcyBJIHNlZSBpdCwgdGhl
+cmUgYXJlCj4gc2V2ZXJhbCB3YXlzIHRvIHJlc29sdmUgaXQ6Cj4gCj4gMS4gUnVuIHRoZSByZWZl
+cmVuY2UgY2xvY2sgYWxsIHRoZSB0aW1lLCBzbyB0aGUgU0dUTDUwMDAgY29kZWMgaXMKPiBoYXBw
+eSwgYW5kIERBUE0gd2lkZ2V0cyBjYW4gd29yayBhcy1pcy4gV2UndmUgYmVlbiBkb2luZyB0aGlz
+IGFsbCB0aGUKPiB0aW1lIC0gdGhlIHJlZmVyZW5jZSBjbG9ja3MgYXJlIHJvdXRpbmVseSBjb25m
+aWd1cmVkIGVpdGhlciBpbiB0aGUKPiBib290bG9hZGVyLCBvciBpbiB0aGUgRFRTIGlvbXV4YyBu
+b2RlLiBXaGlsZSB0aGlzIGNhbiB3b3JrIGluIHNvbWUKPiBjYXNlcyAob3IgdW50aWwgc29tZW9u
+ZSB0b3VjaGVzIHRoZSBzYW1lIGNsb2NrIG9yIG9uZSBvZiBpdHMgcGFyZW50cwo+IDpEKSwgdGhl
+cmUgYXJlIG90aGVyIGNhc2VzIChsaWtlIGJhdHRlcnktcG93ZXJlZCBkZXZpY2VzKSB3aGVyZSBw
+ZW9wbGUKPiB3b3VsZCB3YW50IG1vcmUgYWdncmVzc2l2ZSBwb3dlciBtYW5hZ2VtZW50LCB3aGlj
+aCBtZWFucyBjb250cm9sbGluZwo+IHRoZSByZWZlcmVuY2UgY2xvY2sgYXQgcnVudGltZSAoc2Vl
+ICMyKS4KCk5vdGUgdGhlIHRoZSBjb2RlYyBkcml2ZXIgd2lsbCBlbmFibGUgdGhlIGNsb2NrIGFu
+ZCB3aWxsIG5vdCBsZXQgaXQgdG8gYmUKdHVybmVkIG9mZi4gWW91IG5lZWQgdG8gd29yayBvbiB0
+aGUgY29kZWMgZHJpdmVyIHRvIHNvcnQgdGhpcyBvdXQuCgo+IDIuIEFkZCAiaGFja3MiIGluIHRo
+ZSBEQVBNIHdpZGdldHMgdGhhdCBhZGQgY29udHJvbCB0byB0aGUgY29kZWMncwo+IHJlZmVyZW5j
+ZSBjbG9ja3MuIFdoaWxlIHRoaXMgc2VlbXMgdGhlIHByZWZlcnJlZCByb3V0ZSB0byBtYW55LCB0
+aGUKPiBnZW5lcmFsIGZlZWxpbmcgaXMgdGhhdCBzdWNoIGFwcHJvYWNoIGlzIG5vdCB2ZXJ5IHdl
+bGNvbWUgaW4gdXBzdHJlYW0uCgpTTkRfU09DX0RBUE1fQ0xPQ0tfU1VQUExZKCkKCj4gMy4gQWRk
+IGV4cGxpY2l0IHN1cHBvcnQgaW4gdGhlIGtlcm5lbCdzIGF1ZGlvIHN1YnN5c3RlbSBmb3IKPiBk
+ZXBlbmRlbmNpZXMgYmV0d2VlbiBpMmMgZGV2aWNlcyBhbmQgY2xvY2tzLCBtYXliZSB2aWEgIkRB
+UE0gY2xvY2sKPiB3aWRnZXQiIG9yIHNvbWV0aGluZyBsaWtlIHRoaXMuIFByb3ZpZGVkIHRoYXQg
+dGhlIERBUE0gZ3JhcGhzIGFyZQo+IGRlZmluZWQgcHJvcGVybHksIHRoaXMgd2lsbCB3b3JrIG91
+dC1vZi10aGUtYm94IGZvciBhbGwgdXNlIGNhc2VzLAo+IHdpdGhvdXQgdGhlIGhhY2tzICh1bnRp
+bCB3ZSBzZWUgZXZlbiBtb3JlIHR3aXN0ZWQgY2FzZXMpLgoKVGhpcyBjYW4gYmUgaGFuZGxlZCB3
+aXRoaW4gdGhlIGNvZGVjIGRyaXZlciB3aXRoIHNvbWUgY2hhbmdlcy4gSWYgeW91IGhhdmUKZXh0
+ZXJuYWwgY2xvY2sgd2hpY2ggY2FuIGJlIGVuYWJsZWQvZGlhYmxlZCB3aXRoIGEgR1BJTywgdGhl
+biB5b3UgY2FuIHVzZQp0aGF0LiBXZSBhbHJlYWR5IGhhdmUgYmluZGluZyBmb3IgdGhpcyB0eXBl
+IG9mIGV4dGVybmFsIGNsb2NrcyAoaW4KbGludXgtbmV4dCk6IGxvb2sgZm9yICJncGlvLWdhdGUt
+Y2xvY2siCllvdSBkZWZpbmUgeW91ciBleHRlcm5hbCBHUElPIGNvbnRyb2xsZWQgY2xvY2sgd2l0
+aCB0aGlzIGJpbmRpbmcgYW5kIHVzZSB0aGUKcGhhbmRsZSBpbiB0aGUgY29kZWMgZHJpdmVyLgpD
+aGFuZ2UgdGhlIGNvZGVjIGRyaXZlciB0byBlbmFibGUvZGlzYWJsZSB0aGUgY2xvY2sgd2hlbiBu
+ZWVkZWQuCldoZW4geW91IGRvIG5vdCBoYXZlIGF1ZGlvIGFjdGl2aXR5LCBzZXQgdGhlIHJlZ21h
+cCB0byBjYWNoZSBvbmx5IHNvIGFueQpjaGFuZ2UgaW4gdGhlIGNvbnRyb2xzIHdpbGwgbm90IHJl
+YWNoIHRoZSBIVy4gV2hlbiB5b3UgcG93ZXIgdXAgbmV4dCB0aW1lIHRoZQpyZWdtYXAgd2lsbCBz
+eW5jIHRoZSBjaGFuZ2VzIHRvIHRoZSBjaGlwLCBzbyB5b3Ugd2lsbCBoYXZlIHRoZSBjaGFuZ2Vz
+IGNvbW1pdGVkLgoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
