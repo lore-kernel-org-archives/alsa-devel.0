@@ -1,14 +1,16 @@
 From: Jie Yang <yang.jie@intel.com>
 Subject: [PATCH v2 0/2] ALSA: jack: Refactoring for jack kctls
-Date: Fri, 20 Mar 2015 16:55:16 +0800
-Message-ID: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
+Date: Fri, 20 Mar 2015 16:55:17 +0800
+Message-ID: <1426841719-14576-2-git-send-email-yang.jie@intel.com>
+References: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 12E2E2606E0
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 09:52:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E2A452606E4
+ for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 09:52:33 +0100 (CET)
+In-Reply-To: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,8 +31,8 @@ Here we are introducing kctls for each jack, by creating kctls and add
 them to jack controls list (considering exist of combo jack). At the
 same time, we will report events for each control in the list.
 
-With this implement, we are no longer need hda jack specific kctls, so
-here also remove jack kctls for hda.
+With this implement, we are no longer need hda jack kctls, so here
+also remove jack kctls for hda.
 
 Any comments are welcome.
 
