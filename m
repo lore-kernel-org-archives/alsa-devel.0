@@ -1,21 +1,18 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Re: firewire mixer interface -- was Re: [PATCH 11/11]
- ALSA: digi00x: apply double-oh-three algorism to multiplex PCM samples
-Date: Sat, 21 Mar 2015 16:59:53 +1100
-Message-ID: <550D08D9.7070509@gmail.com>
-References: <1426435269-17059-1-git-send-email-o-takashi@sakamocchi.jp>	<1426435269-17059-12-git-send-email-o-takashi@sakamocchi.jp>	<5506E7EE.6060300@gareus.org>	<55070409.8090107@sakamocchi.jp>	<55070F3B.7000509@gareus.org>	<55075D65.20406@sakamocchi.jp>	<55082E06.6010008@gareus.org>	<55083103.5030704@gmail.com>	<5508CFA5.7060903@sakamocchi.jp>	<550AD65F.10803@gareus.org>	<550B51BC.80506@sakamocchi.jp>	<550C0CFC.4060404@gareus.org>	<550C1FC6.4050700@sakamocchi.jp>	<s5hmw376bck.wl-tiwai@suse.de>	<550C25DD.3080507@sakamocchi.jp>	<s5hfv8z69jz.wl-tiwai@suse.de>	<550C3294.7020003@sakamocchi.jp>
- <s5hsicz1znq.wl-tiwai@suse.de>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH 0/4] More aggressive PM for HD-audio
+Date: Sat, 21 Mar 2015 14:38:11 +0800
+Message-ID: <550D11D3.8000009@canonical.com>
+References: <1426668658-15911-1-git-send-email-tiwai@suse.de>
+ <550C48EB.1050200@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 612C42604C7
- for <alsa-devel@alsa-project.org>; Sat, 21 Mar 2015 07:00:02 +0100 (CET)
-Received: by pdbcz9 with SMTP id cz9so128795754pdb.3
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 23:00:01 -0700 (PDT)
-In-Reply-To: <s5hsicz1znq.wl-tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2E382604DA
+ for <alsa-devel@alsa-project.org>; Sat, 21 Mar 2015 07:38:16 +0100 (CET)
+In-Reply-To: <550C48EB.1050200@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 21/03/15 02:01, Takashi Iwai wrote:
-> OK, point taken.  Then it's no matter whether plugin or not.  Rather a
-> question is whether it works out-of-the-box without any extra
-> configuration, right?
-I think it would be a nice feature if it just worked out of the box like
-any other alsa mixer control, and I'm sure many other people who are
-currently using FFADO would agree that having everything to control the
-sound card in ALSA would be more convenient than what they have now.
-
-Takashi S: can we perhaps focus on getting the streaming working better
-with 003amdtp for digi00x and revisit the issue of mixer controls later?
-Have you looked at the updated 003amdtp documentation?  I believe Robin
-has made suggestions on how to integrate the latest code into the driver.
-
-<snip>
-
-#ifdef EXAMPLE
-  // NB. this should not be static (multiple devices)
-  // and also re-initialzed on open/close or stream-restart.
-  // use digi_state_reset(&state);
-  static DigiMagic digistate = {0x00, 0x00, 0};
-#endif
-
-</snip>
-
-Damien
+T24gMDMvMjEvMjAxNSAxMjoyMCBBTSwgRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6Cj4KPiBPbiAy
+MDE1LTAzLTE4IDA5OjUwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+IEhpLAo+Pgo+PiBoZXJlIGlz
+IGEgcGF0Y2hzZXQgZm9yIHN1cHBvcnRpbmcgbW9yZSBhZ2dyZXNzaXZlIFBNIGZvciBIRC1hdWRp
+by4KPj4gVGhpcyBhbGxvd3MgdG8gY2hhbmdlIHRoZSBwb3dlciBzdGF0ZSBvZiBlYWNoIHdpZGdl
+dCBtb3JlIGR5bmFtaWNhbGx5Cj4+IHdpdGggamFjayBhbmQgc3RyZWFtIHN0YXRlcy4gIEl0J3Mg
+YWN0aXZhdGVkIG9ubHkgd2hlbiB0aGUgY29kZWMKPj4gZHJpdmVyIChvciB2aWEgc3lzZnMgb3Ig
+Zi93IHBhdGNoKSBzZXRzIGNvZGVjLT5wb3dlcl9tZ210IGZsYWcuCj4+Cj4+IEluIHRoZW9yeSwg
+dGhpcyBzaG91bGQgd29yayBmb3IgdGhlIHJlY2VudCBSZWFsdGVrIGNvZGVjcywgYnV0Cj4+IGN1
+cnJlbnRseSBJIGhhdmUgbm8gbWFjaGluZSBmb3IgdGVzdC4KPj4KPj4gRGF2aWQsIGNvdWxkIHlv
+dSBvciB5b3VyIHRlYW0gY2hlY2sgd2hldGhlciB0aGlzIHdvcmtzIGZvciBBTEMyODIgb3IKPj4g
+c3VjaD8gIEp1c3QgYWRkIGxpa2U6Cj4+Cj4+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVh
+bHRlay5jCj4+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCj4+IEBAIC01NDE1
+LDYgKzU0MTUsNyBAQCBzdGF0aWMgaW50IHBhdGNoX2FsYzI2OShzdHJ1Y3QgaGRhX2NvZGVjICpj
+b2RlYykKPj4KPj4gICAgICAgc3BlYyA9IGNvZGVjLT5zcGVjOwo+PiAgICAgICBzcGVjLT5nZW4u
+c2hhcmVkX21pY192cmVmX3BpbiA9IDB4MTg7Cj4+ICsgICAgY29kZWMtPnBvd2VyX21nbXQgPSAx
+Owo+Pgo+PiAgICAgICBzbmRfaGRhX3BpY2tfZml4dXAoY29kZWMsIGFsYzI2OV9maXh1cF9tb2Rl
+bHMsCj4+ICAgICAgICAgICAgICAgICAgYWxjMjY5X2ZpeHVwX3RibCwgYWxjMjY5X2ZpeHVwcyk7
+Cj4+Cj4+Cj4+IFRoZSBwYXRjaHNldCBpcyBmb3IgZm9yLW5leHQgYnJhbmNoIG9mIHNvdW5kIGdp
+dCB0cmVlLCBidXQgdGhleSBtaWdodAo+PiBiZSBhcHBsaWNhYmxlIHRvIDQuMC1yYyAob3IgZXZl
+biBvbGRlciksIHRvby4gIFRoZSBjdXJyZW50IHBhdGNoZXMgYXJlCj4+IGZvdW5kIGluIHRvcGlj
+L2hkYS1wb3dlciBicmFuY2guCj4KPiBTbyBJIGhvcGVkIHRvIGJlIGFibGUgdG8gbG9vayBhdCB0
+aGlzIHRvZGF5LCBidXQgaXQgdHVybnMgb3V0IHRoZSAKPiBtYWNoaW5lIEkgd2FzIHRoaW5raW5n
+IG9mIHVzaW5nIGZvciB0ZXN0aW5nIGhhcyBhbiBBTEMyNjIgY29kZWMsIHdoaWNoIAo+IGhhcmRs
+eSBjb3VudHMgYXMgIm5ldyIuCj4KPiBIdWksIGlzIHRoaXMgc29tZXRoaW5nIHlvdSBmZWVsIGxp
+a2UgdGFraW5nIG9uPyBPdGhlcndpc2UgSSdsbCB0cnkgdG8gCj4gdGFsayB0byBzb21lb25lIGlu
+IFRhaXBlaS4KPgpPS++8jCBJIHdpbGwgbG9vayBmb3IgdGhlIG1hY2hpbmUgdG8gZG8gdGhlIHRl
+c3QgbmV4dCB3ZWVrLgoKUmVnYXJkcywKSHVpLgoKPiBBbnlob3csIGFmdGVyIHJlYWRpbmcgdGhy
+b3VnaCB0aGUgY29kZSwgSSBoYXZlIGEgcXVlc3Rpb24gYWJvdXQgTEVEcy4gCj4gSXQgY291bGQg
+YmUgdGhhdCBpZiB2cmVmIGlzIHVzZWQgZm9yIGNvbnRyb2xsaW5nIGEgTEVELCBtYXliZSB0aGF0
+IHBpbiAKPiBuZWVkcyB0byBzdGF5IGluIEQwIGZvciB0aGUgTEVEIHRvIHN0YXkgbGl0LiBJcyB0
+aGlzIGNvcnJlY3RseSAKPiBoYW5kbGVkPyBJIGNvdWxkbid0IGZpbmQgYW55IGNvZGUgc3BlY2lm
+aWMgdG8gdGhhdCBpc3N1ZSwgYnV0IG1heWJlIEkgCj4ganVzdCBtaXNzZWQgaXQuCj4KPiBBbHNv
+LCBJIGZpbmQgdGhlIHBvd2VyX21nbXQgbmFtZSBlYXN5IHRvIGNvbmZ1c2Ugd2l0aCB0aGUgZXhp
+c3RpbmcgCj4gcG93ZXJfc2F2ZSBwYXJhbWV0ZXIsIHBlcmhhcHMgcG93ZXJfc2F2ZV9waW4sIHBv
+d2VyX3NhdmVfbm9kZSBvciAKPiBwb3dlcl9zYXZlX3dpZGdldCBpcyBiZXR0ZXI/Cj4KPj4KPj4K
+Pj4gdGhhbmtzLAo+Pgo+PiBUYWthc2hpCj4+Cj4+ID09PQo+Pgo+PiBUYWthc2hpIEl3YWkgKDQp
+Ogo+PiAgICBBTFNBOiBoZGEgLSBTaW1wbGlmeSBQQ00gc2V0dXAgb3ZlcnJpZGVzCj4+ICAgIEFM
+U0E6IGhkYSAtIFN1cHBvcnQgYWR2YW5jZWQgcG93ZXIgc3RhdGUgY29udHJvbHMKPj4gICAgQUxT
+QTogaGRhIC0gVXNlIHRoZSBuZXcgcG93ZXIgY29udHJvbCBmb3IgVklBIGNvZGVjcwo+PiAgICBB
+TFNBOiBoZGEgLSBBZGp1c3QgcG93ZXIgb2YgYmVlcCB3aWRnZXQgYW5kIG91dHB1dHMKPj4KPj4g
+ICBzb3VuZC9wY2kvaGRhL2hkYV9iZWVwLmMgICAgICAgfCAgMjkgKy0KPj4gICBzb3VuZC9wY2kv
+aGRhL2hkYV9iZWVwLmggICAgICAgfCAgIDEgKwo+PiAgIHNvdW5kL3BjaS9oZGEvaGRhX2NvZGVj
+LmMgICAgICB8ICAgNCArCj4+ICAgc291bmQvcGNpL2hkYS9oZGFfY29kZWMuaCAgICAgIHwgICAy
+ICsKPj4gICBzb3VuZC9wY2kvaGRhL2hkYV9nZW5lcmljLmMgICAgfCA0ODAgKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tLS0tCj4+ICAgc291bmQvcGNpL2hkYS9oZGFfZ2VuZXJpYy5oICAgIHwg
+ICA1ICstCj4+ICAgc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgIHwgIDQxIC0tLQo+PiAg
+IHNvdW5kL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYyB8ICAgNSArCj4+ICAgc291bmQvcGNpL2hk
+YS9wYXRjaF92aWEuYyAgICAgIHwgNjYyIAo+PiArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQo+PiAgIDkgZmlsZXMgY2hhbmdlZCwgNDI3IGluc2VydGlvbnMoKyksIDgw
+MiBkZWxldGlvbnMoLSkKPj4KPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
