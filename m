@@ -1,24 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: getting the sound to work on my asus m6s00v
-Date: Sat, 21 Mar 2015 09:43:23 +0800
-Message-ID: <CAN8cciY-K-FkQp1H6Bj0v51CRHrOyFrJ2=ZaY5YLvkRmNU8TRg@mail.gmail.com>
-References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
- <5508DD4D.3040901@canonical.com>
- <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
- <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
- <CAN8cciY7zPaM1kGbky3st_V5G=vg_aeLrm2QrNbpVinYOU=qyA@mail.gmail.com>
- <64443a816660f3098fc300c7d7b5a01f@swn.nu>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v3 1/2] ALSA: jack: create jack kcontrols
+ for every jack input device
+Date: Sat, 21 Mar 2015 02:22:47 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDBBA0@SHSMSX101.ccr.corp.intel.com>
+References: <1426865953-1606-1-git-send-email-yang.jie@intel.com>
+ <1426865953-1606-2-git-send-email-yang.jie@intel.com>
+ <s5ha8z7zlrd.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
- [209.85.218.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 0170E2604BA
- for <alsa-devel@alsa-project.org>; Sat, 21 Mar 2015 02:43:24 +0100 (CET)
-Received: by oifl3 with SMTP id l3so74746034oif.0
- for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2015 18:43:23 -0700 (PDT)
-In-Reply-To: <64443a816660f3098fc300c7d7b5a01f@swn.nu>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA51C2604BA
+ for <alsa-devel@alsa-project.org>; Sat, 21 Mar 2015 03:23:00 +0100 (CET)
+In-Reply-To: <s5ha8z7zlrd.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,151 +24,213 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Gleerup <cromozon@swn.nu>
-Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nb <nb@dagami.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Tanu Kaskinen (tanu.kaskinen@linux.intel.com)" <tanu.kaskinen@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pgo+ID4gPiBUaGUgaW50ZXJuYWwgbWljIGFsc28gd29ya3MuCj4gPiA+Cj4gPiA+IGJ1dDsgSSBh
-bSBhIGJpdCBwdXpsZWQsIGJlY2F1c2UgSSB0cmllZCB0byBjb21tZW50IG91dCAnb3B0aW9ucwo+
-ID4gc25kLWhkYS1pbnRlbCBtb2RlbD0zc3RhY2stZGlnb3V0JyBhbmQgZGlkIGEgcG93ZXJjeWNs
-ZSAocG93ZXIgb2ZmKS4uLgo+ID4gPiBhbmQgbm93IHRoZSBzb3VuZCBzdGlsbCB3b3Jrcywgc28g
-aXQgc2VlbXMgdGhlIHNvdW5kY2FyZCB3YXMgd29rZW4KZnJvbQo+ID4gc29tZSBkZWVwc2xlZXAu
-Cj4gPiA+IFRoZSBtYWNoaW5lIGhhdmUgYmVlbiB0dXJuZWQgb2YgZm9yIG1hbnkgKDQvNSkgeWVh
-cnMuLi4KPiA+ID4KPiA+ID4gQW55d2F5IHNpbmNlIHRoZSBzb3VuZGNhcmQgbm93IGlzIHdvcmtp
-bmcgd2l0aCBteSBjdXJyZW50IGtlcm5lbAp3aXRob3V0Cj4gPiB0aGUgZXh0cmEgb3B0aW9ucywg
-SSBhbSB1bnN1cmUgaWYgdHJ5aW5nIHRoZSBuZXdlc3QgdmFuaWxsYSBrZXJuZWwgd291bGQKPiA+
-IG1ha2UgYW55IHNlbnNlPwo+ID4gPgo+ID4gPiBBbnkgcmVjb21tZW5kYXRpb25zPwo+ID4KPiA+
-Cj4gPiBTaW5jZSB5b3VyIHBjaSBzc2lkIGFyZSBzYW1lIGFzIG5iICdzIEFTVVMgVzVBLCB5b3Ug
-d2lsbCBuZWVkIHRvIGFzayB3aHkKPiA+IEhQIGFuZCBtaWMgZGlzYWJsZSBqYWNrIGRldGVjdGlv
-biBhbmQgdXNpbmcgQUxDODgwX0ZJWFVQX0dQSU8xCj4KPiBUaGF0IHc1YSBzZWVtcyBtdWNoIG5l
-dmVyIHRoYW4gdGhpcyBvbmUsIEkgaGF2ZSB0cmllZCBsb29raW5nIHNvbWUgbW9yZQppbnRvIGFz
-dXMgd2Vic2l0ZSB0byBmaW5kIHRoaXMgbW9kZWwsIGFuZCBJIGd1ZXNzIGl0IGlzIGVpdGhlciBt
-NnYgb3IKbTZuLi4uIEl0IGlzIGEgcGVudGl1bSBzaW5nbGUgY29yZSwgbm8gd2ViY2FtIGFuZCB0
-d28gamFja3MKPiAqIE1JQwo+ICogUy9QRElGCj4KCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxMy1Ob3ZlbWJlci8wNjgzNTkuaHRtbAoKPiA+
-Cj4gPiArIFtBTEM4ODBfRklYVVBfQVNVU19XNUFdID0gewo+ID4gKyAudHlwZSA9IEhEQV9GSVhV
-UF9QSU5TLAo+ID4gKyAudi5waW5zID0gKGNvbnN0IHN0cnVjdCBoZGFfcGludGJsW10pIHsKPiA+
-ICsgLyogc2V0IHVwIHRoZSB3aG9sZSBwaW5zIGFzIEJJT1MgaXMgdXR0ZXJseSBicm9rZW4gKi8K
-PiA+ICsgeyAweDE0LCAweDAxMjE0MTFmIH0sIC8qIEhQICovCj4gPiArIHsgMHgxNSwgMHg0MTEx
-MTFmMCB9LCAvKiBOL0EgKi8KPiA+ICsgeyAweDE2LCAweDQxMTExMWYwIH0sIC8qIE4vQSAqLwo+
-ID4gKyB7IDB4MTcsIDB4NDExMTExZjAgfSwgLyogTi9BICovCj4gPiArIHsgMHgxOCwgMHg5MGE2
-MDE2MCB9LCAvKiBtaWMgKi8KPiA+ICsgeyAweDE5LCAweDQxMTExMWYwIH0sIC8qIE4vQSAqLwo+
-ID4gKyB7IDB4MWEsIDB4NDExMTExZjAgfSwgLyogTi9BICovCj4gPiArIHsgMHgxYiwgMHg0MTEx
-MTFmMCB9LCAvKiBOL0EgKi8KPiA+ICsgeyAweDFjLCAweDQxMTExMWYwIH0sIC8qIE4vQSAqLwo+
-ID4gKyB7IDB4MWQsIDB4NDExMTExZjAgfSwgLyogTi9BICovCj4gPiArIHsgMHgxZSwgMHhiNzQz
-MTExZSB9LCAvKiBTUERJRiBvdXQgKi8KPiA+ICsgeyB9Cj4gPiArIH0sCj4gPiArIC5jaGFpbmVk
-ID0gdHJ1ZSwKPiA+ICsgLmNoYWluX2lkID0gQUxDODgwX0ZJWFVQX0dQSU8xLAo+ID4KPiA+Cmh0
-dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdp
-dC9jb21taXQvc291bmQvcGNpL2hkYT9pZD0yOWUzZmRjYzg0ZTVkYTA0Y2I3ZTZhMzZmZWUwYTc3
-MmM5MWQzYjI4Cj4gPgo+Cj4gSSBhbSBub3Qgc3VyZSB3aGF0IHRvIG1ha2Ugb2YgdGhhdCwgSSBh
-bSBndWVzc2luZyB0aGF0IHRob3NlIG51bWJlcnMgYXJlCmlkZW50aWNhbCB0byBzb21lIHNpZ25h
-dHVyZSBteSBsYXB0b3AgaGF2ZT8gSSBoYXZlIG5vIGV4cGVyaWVuY2Ugd2l0aAprZXJuZWwgaGFj
-a2luZyAvIGRyaXZlciBkZXZlbG9wbWVudCwgc28gdGhlcmUgbWlnaHQgYmUgc29tZXRoaW5nIEkg
-YW0KbWlzc2luZyBoZXJlLgoKaHR0cDovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVs
-L2dpdC90aXdhaS9oZGEtZW11LmdpdC90cmVlL2NvZGVjcy9hbGM4ODAtYXN1cy13NmE/aWQ9SEVB
-RAoKIUFkdmFuY2VkIGluZm9ybWF0aW9uIC0gUENJIFZlbmRvci9EZXZpY2UvU3VzYnN5c3RlbSBJ
-RCdzCiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KCjAwOjFiLjAgMDQwMzogODA4NjoyNjY4IChyZXYgMDQpClN1YnN5c3RlbTogMTA0Mzox
-MGMyCgo+Cj4gPiBNb3N0IGFzdXMgY29tcHV0ZXJzIHVzaW5nIGFsYzg4MCB3ZXJlIHVzaW5nIGFz
-dXMgbW9kZWwgaW4gcHJldmlvdXMKdmVyc2lvbgo+Cj4gPgo+ID4gRG8gdGhlIGZyb250IG9yIHN1
-cnJvdW5kICBwbGF5YmFjayB2b2x1bWUgYWZmZWN0IHRoZSBzcGVha2VyIGFuZApoZWFkcGhvbmUK
-PiA+IGluIHlvdXIgYXN1cyBtNnMwMHYgPwo+Cj4gZnJvbnQgYWZmZWN0cyBib3RoIGludGVybmFs
-IHNwZWFrZXIgYW5kIEhlYWRwaG9uZS4KPgo+ID4gRG8gdGhlIG1pYyBqYWNrIHdvcmtzID8KPgo+
-IFllcwo+Cj4gPiBEbyBtaWMgYm9vc3QgYW5kIGZyb250IG1pYyBib29zdCBhZmZlY3QgdGhlIG1p
-YyBhbmQgaW50ZXJuYWwgbWljID8KPgo+IEkgZG9uJ3Qgc2VlIGEgbWljIGJvb3N0IG9wdGlvbiBh
-bnl3aGVyZS4gVGhlIHJlY29yZGluZyBwYXJ0IG9mIGFsc2FtaXhlcgp0aGF0IGlzIHJlbGF0ZWQg
-dG8gcmVjb3JkaW5nIG9uIG15IGxhcHRvcCBpcyAnZGlnaXRhbCcgJ2NhcHR1cmUnICdjYXB0dXJl
-CjEnIGFuZCAnY2FwdHVyZSAyJyBzZWVtcyB0byBiZSBpZ25vcmVkCgpIb3cgYWJvdXQgbWljIHBs
-YXliYWNrIHZvbHVtZSB3aGljaCBhbGxvdyB5b3UgaGVhciB3aGF0IGlzIHJlY29yZGluZyBmcm9t
-CnlvdXIgbWljCgpTaW1wbGUgbWl4ZXIgY29udHJvbCAnTWljJywwCiAgQ2FwYWJpbGl0aWVzOiBw
-dm9sdW1lIHBzd2l0Y2ggcGVudW0KICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZy
-b250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gNjUKICBNb25vOgogIEZyb250IExlZnQ6
-IFBsYXliYWNrIDYyIFs5NSVdIFsyNy4wMGRCXSBbb2ZmXQogIEZyb250IFJpZ2h0OiBQbGF5YmFj
-ayA2MiBbOTUlXSBbMjcuMDBkQl0gW29mZl0KCk5vZGUgMHgwYiBbQXVkaW8gTWl4ZXJdIHdjYXBz
-IDB4MjAwMTBiOiBTdGVyZW8gQW1wLUluCiAgQ29udHJvbDogbmFtZT0iQ0QgUGxheWJhY2sgVm9s
-dW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlk
-eD00LCBvZnM9MAogIENvbnRyb2w6IG5hbWU9IkNEIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAs
-IGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9NCwgb2ZzPTAKICBD
-b250cm9sOiBuYW1lPSJMaW5lIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAg
-ICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9Miwgb2ZzPTAKICBDb250cm9sOiBuYW1l
-PSJMaW5lIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1w
-OiBjaHM9MywgZGlyPUluLCBpZHg9Miwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJNaWMgUGxheWJh
-Y2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9
-SW4sIGlkeD0wLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9Ik1pYyBQbGF5YmFjayBTd2l0Y2giLCBp
-bmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9m
-cz0wCiAgQ29udHJvbDogbmFtZT0iQmVlcCBQbGF5YmFjayBWb2x1bWUiLCBpbmRleD0wLCBkZXZp
-Y2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTUsIG9mcz0wCiAgQ29udHJv
-bDogbmFtZT0iQmVlcCBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29u
-dHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTUsIG9mcz0wCiAgQW1wLUluIGNhcHM6IG9mcz0w
-eDIzLCBuc3RlcHM9MHg0MSwgc3RlcHNpemU9MHgwMywgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBb
-MHhiZSAweGJlXSBbMHg4MCAweDgwXSBbMHgzYiAweDNiXSBbMHg4MCAweDgwXSBbMHhiYyAweGJj
-XQpbMHgzOCAweDM4XSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXQogIENvbm5lY3Rpb246IDgKICAg
-ICAweDE4IDB4MTkgMHgxYSAweDFiIDB4MWMgMHgxZCAweDE0IDB4MTUKCklmIG5vZGUgMHgxOCBp
-cyB0aGUgbWljIGphY2sgLCBjYW4geW91IGhlYXIgdGhlIGludGVybmFsIG1pYyAncyByZWNvcmRp
-bmcKd2hlbiB5b3UgdHVybiBvbiBsaW5lIHBsYXliYWNrIHN3aXRjaCA/Cgo+Cj4gPiBUcnkgaGRh
-amFja3NlbnNldGVzdCB0byB0ZXN0IHRoZSBqYWNrIGRldGVjdGlvbiBvZiBocCBhbmQgbWljIGph
-Y2sKPiA+Cj4gPgpodHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS10b29scy5naXQ7
-YT10cmVlO2Y9aGRhamFja3NlbnNldGVzdDtoYj1IRUFECj4KPiBXaXRoIG5vdGhpbmcgcGx1Z2dl
-ZCBpbjoKPiAvaGRhamFja3NlbnNldGVzdCAtYQo+IFBpbiAweDE0IChHcmVlbiBIZWFkcGhvbmUs
-IFJlYXIgc2lkZSk6IHByZXNlbnQgPSBObwo+IFBpbiAweDE1IChOb3QgY29ubmVjdGVkKTogcHJl
-c2VudCA9IE5vCj4gUGluIDB4MTYgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50ID0gTm8KPiBQaW4g
-MHgxNyAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAweDE4IChQaW5rIE1pYywg
-UmVhciBzaWRlKTogcHJlc2VudCA9IE5vCj4gUGluIDB4MTkgKE5vdCBjb25uZWN0ZWQpOiBwcmVz
-ZW50ID0gTm8KPiBQaW4gMHgxYSAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAw
-eDFiIChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4gUGluIDB4MWMgKEludGVybmFsIENE
-LCBNb2JpbGUtSW4pOiBwcmVzZW50ID0gTm8KPiBQaW4gMHgxZCAoTm90IGNvbm5lY3RlZCk6IHBy
-ZXNlbnQgPSBObwo+IFBpbiAweDFlIChHcmVlbiBTUERJRiBPdXQsIFJlYXIgc2lkZSk6IHByZXNl
-bnQgPSBObwo+IFBpbiAweDFmIChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4KPiBXaXRo
-IEhlYWRwaG9uZXMgcGx1Z2dlZCBpbjoKPiAuL2hkYWphY2tzZW5zZXRlc3QgLWEKPiBQaW4gMHgx
-NCAoR3JlZW4gSGVhZHBob25lLCBSZWFyIHNpZGUpOiBwcmVzZW50ID0gTm8KPiBQaW4gMHgxNSAo
-Tm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBZZXMKPiBQaW4gMHgxNiAoTm90IGNvbm5lY3RlZCk6
-IHByZXNlbnQgPSBObwo+IFBpbiAweDE3IChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4g
-UGluIDB4MTggKFBpbmsgTWljLCBSZWFyIHNpZGUpOiBwcmVzZW50ID0gTm8KPiBQaW4gMHgxOSAo
-Tm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAweDFhIChOb3QgY29ubmVjdGVkKTog
-cHJlc2VudCA9IFllcwo+IFBpbiAweDFiIChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4g
-UGluIDB4MWMgKEludGVybmFsIENELCBNb2JpbGUtSW4pOiBwcmVzZW50ID0gTm8KPiBQaW4gMHgx
-ZCAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAweDFlIChHcmVlbiBTUERJRiBP
-dXQsIFJlYXIgc2lkZSk6IHByZXNlbnQgPSBObwo+IFBpbiAweDFmIChOb3QgY29ubmVjdGVkKTog
-cHJlc2VudCA9IE5vCgpJdCBpcyBwb3NzaWJsZSB0aGF0IG5vZGUgMHgxNSBpcyB0aGUgaGVhZHBo
-b25lIGphY2sgc2luY2UgcGluY3RsIGlzIE9VVCAsCmJ1dCB0aGlzIG5vZGUgaXMgY29ubmVjdGVk
-IHRvIHN1cnJvdW5kIHBsYXliYWNrIHZvbHVtZSBhdCBub2RlIDB4MGQgYW5kIEhQCmFtcCBpcyBu
-b3QgZW5hYmxlZCBpbiBwaW4gY3RscwoKTm9kZSAweDE1IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
-MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4
-MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCiAg
-UGluY2FwIDB4MDAwMDAwM2Y6IElOIE9VVCBIUCBEZXRlY3QgVHJpZ2dlciBJbXBTZW5zZQogIFBp
-biBEZWZhdWx0IDB4NDExMTExZjA6IFtOL0FdIFNwZWFrZXIgYXQgRXh0IFJlYXIKICAgIENvbm4g
-PSAxLzgsIENvbG9yID0gQmxhY2sKICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9
-IDB4MAogICAgTWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFVuc29s
-aWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIENvbm5lY3Rpb246IDEKICAgICAweDBkCgo+Cj4g
-V2l0aCBNaWMgcGx1Z2dlZCBpbgo+IC4vaGRhamFja3NlbnNldGVzdCAtYQo+IFBpbiAweDE0IChH
-cmVlbiBIZWFkcGhvbmUsIFJlYXIgc2lkZSk6IHByZXNlbnQgPSBZZXMKPiBQaW4gMHgxNSAoTm90
-IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAweDE2IChOb3QgY29ubmVjdGVkKTogcHJl
-c2VudCA9IE5vCj4gUGluIDB4MTcgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50ID0gTm8KPiBQaW4g
-MHgxOCAoUGluayBNaWMsIFJlYXIgc2lkZSk6IHByZXNlbnQgPSBZZXMKPiBQaW4gMHgxOSAoTm90
-IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAweDFhIChOb3QgY29ubmVjdGVkKTogcHJl
-c2VudCA9IE5vCj4gUGluIDB4MWIgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50ID0gTm8KPiBQaW4g
-MHgxYyAoSW50ZXJuYWwgQ0QsIE1vYmlsZS1Jbik6IHByZXNlbnQgPSBObwo+IFBpbiAweDFkIChO
-b3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4gUGluIDB4MWUgKEdyZWVuIFNQRElGIE91dCwg
-UmVhciBzaWRlKTogcHJlc2VudCA9IE5vCj4gUGluIDB4MWYgKE5vdCBjb25uZWN0ZWQpOiBwcmVz
-ZW50ID0gTm8KPgoKMSkgTm90aGluZyBwbHVnZ2VkIGluOiAuL2hkYS12ZXJiIC9kZXYvc25kL2h3
-QzBEMCAweDE0IFNFVF9QSU5fU0VOU0UgMCBuaWQKPSAweDE0LCB2ZXJiID0gMHg3MDksIHBhcmFt
-ID0gMHgwIHZhbHVlID0gMHgwCgouL2hkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDE0IEdFVF9Q
-SU5fU0VOU0UgMCBuaWQgPSAweDE0LCB2ZXJiID0gMHhmMDksCnBhcmFtID0gMHgwIHZhbHVlID0g
-MHg3ZmZmZmZmZgoKMikgSGVhZHBob25lcyBwbHVnZ2VkIGluIGluIFMvUERJRiAuL2hkYS12ZXJi
-IC9kZXYvc25kL2h3QzBEMCAweDE0ClNFVF9QSU5fU0VOU0UgMCBuaWQgPSAweDE0LCB2ZXJiID0g
-MHg3MDksIHBhcmFtID0gMHgwIHZhbHVlID0gMHgwCgouL2hkYS12ZXJiIC9kZXYvc25kL2h3QzBE
-MCAweDE0IEdFVF9QSU5fU0VOU0UgMCBuaWQgPSAweDE0LCB2ZXJiID0gMHhmMDksCnBhcmFtID0g
-MHgwIHZhbHVlID0gMHg3ZmZmZmZmZgoKMykgbWljcm9waG9uZSBwbHVnZ2VkIGluICdNaWMnIC4v
-aGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MTQKU0VUX1BJTl9TRU5TRSAwIG5pZCA9IDB4MTQs
-IHZlcmIgPSAweDcwOSwgcGFyYW0gPSAweDAgdmFsdWUgPSAweDAKCi4vaGRhLXZlcmIgL2Rldi9z
-bmQvaHdDMEQwIDB4MTQgR0VUX1BJTl9TRU5TRSAwIG5pZCA9IDB4MTQsIHZlcmIgPSAweGYwOSwK
-cGFyYW0gPSAweDAgdmFsdWUgPSAweDdmZmZmZmZmCgpBIHJldHVybmVkIHZhbHVlIG9mIDB4N0ZG
-RixGRkZGIChhbGwgMeKAn3MpIGluZGljYXRlcyB0aGF0IGEgdmFsaWQgc2Vuc2UKcmVhZGluZyBp
-cyBub3QgYXZhaWxhYmxlLCBvciB0aGUgc2Vuc2UgbWVhc3VyZW1lbnQgaXMgYnVzeQoKTW9zdCBT
-aWduaWZpY2FudCBCaXQgaW5kaWNhdGluZyB0aGUgc3RhdGUgb2YgdGhlIFByZXNlbmNlIERldGVj
-dApjYXBhYmlsaXR5LiAgQSAxIGluZGljYXRlcyB0aGF0IHRoZXJlIGlzIOKAnHNvbWV0aGluZ+KA
-nSBwbHVnZ2VkIGludG8gdGhlIGphY2sKYXNzb2NpYXRlZCB3aXRoIHRoZSBQaW4gQ29tcGxleCAw
-eDgwMDAwMDAwCgpUcnkgbm9kZSAweDE1IGFuZCBub2RlIDB4MTgKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Saturday, March 21, 2015 12:17 AM
+> To: Jie, Yang
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R;
+> Liam Girdwood
+> Subject: Re: [PATCH v3 1/2] ALSA: jack: create jack kcontrols for every jack
+> input device
+> 
+> At Fri, 20 Mar 2015 23:39:12 +0800,
+> Jie Yang wrote:
+> >
+> > Currently the ALSA jack core registers only input devices for each
+> > jack registered. These jack input devices are not readable by
+> > userspace devices that run as non root.
+> >
+> > This patch adds support for additionally registering jack kcontrol
+> > devices for every input jack registered. This allows non root
+> > userspace to read jack status.
+> >
+> > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> > Modified-by: Jie Yang <yang.jie@intel.com>
+> > Signed-off-by: Jie Yang <yang.jie@intel.com>
+> > Reveiwed-by: Mark Brown <broonie@kernel.org>
+> 
+> Thanks for a quick update.  It's getting better, but still some points to be fixed.
+> Let's see...
+> 
+> 
+> > +struct snd_jack_kctl {
+> > +	struct snd_kcontrol *kctl;
+> > +	struct list_head jack_list;		/* list of controls belong to
+> the same jack*/
+> 
+> jack_ prefix is superfluous.
+[Keyon] OK.
+> 
+> > +static int jack_ctl_name_found(struct snd_card *card, const char
+> > +*name, int index)
+> 
+> Use bool.
+[Keyon] OK, will change it.
+> 
+> > +{
+> > +	struct snd_kcontrol *kctl;
+> > +	int len = strlen(name);
+> > +
+> > +	down_read(&card->controls_rwsem);
+> > +
+> > +	list_for_each_entry(kctl, &card->controls, list) {
+> > +		if (!strncmp(name, kctl->id.name, len) &&
+> > +		    !strcmp(" Jack", kctl->id.name + len) &&
+> > +		    kctl->id.index == index) {
+> 
+> This doesn't work when ctl elements are with multiple counts.  A single kctl
+> object may contain multiple snd_kcontrol_volatile entries.
+> That's why snd_ctl_find_id() checks like:
+> 
+> 	list_for_each_entry(kctl, &card->controls, list) {
+> 		....
+> 		if (kctl->id.index > id->index)
+> 			continue;
+> 		if (kctl->id.index + kctl->count <= id->index)
+> 			continue;
+> 
+> Also, more importantly, your code checks only the name string.  But the
+> same name string can be assigned for different iface, device and subdevice
+> entries.  You need to compare them as well.
+> 
+> That said, it'd be even simpler just to call snd_ctl_find_id() after creating a ctl
+> id instance instead of writing an own funciton.  It ends up with a bit more
+> stack usage, but it should be still acceptable.
+[Keyon] Here I did the getting index work by imitating function from
+had_jack.c:get_unique_index(), and I also noticed and concerned about
+not checking other snd_ctl_elem_id items.
+
+Thank you for explaining this detail, Takashi, will change to use snd_ctl_find_id(). 
+
+> 
+> 
+> > +static int snd_jack_new_kctl(struct snd_card *card, struct snd_jack
+> > +*jack, int type) {
+> > +	struct snd_kcontrol *kctl;
+> > +	struct snd_jack_kctl *jack_kctl;
+> > +	int i, err, index, state = 0 /* use 0 for default state ?? */;
+> > +
+> > +	INIT_LIST_HEAD(&jack->kctl_list);
+> > +	for (i = 0; i < fls(SND_JACK_BTN_0); i++) {
+> > +		int testbit = 1 << i;
+> > +
+> > +		/* we only new headphone kctl for headset jack */
+> > +		if ((testbit == SND_JACK_MICROPHONE) &&
+> > +				((type & SND_JACK_HEADSET) ==
+> SND_JACK_HEADSET))
+> > +			continue;
+> 
+> The parentheses are superfluous.
+[Keyon] OK.
+> 
+> > +		/* we only new lineout kctl for avout jack */
+> > +		if ((testbit == SND_JACK_VIDEOOUT) &&
+> > +				((type & SND_JACK_AVOUT) ==
+> SND_JACK_AVOUT))
+> > +			continue;
+> > +
+> > +		if (type & testbit) {
+> 
+> This check can be at the beginning of the loop, i.e.
+> 
+> 		if (!(type & testbit))
+> 			continue;
+> 
+> then you'll reduce one indent level.
+[Keyon] good idea. Will change it.
+> 
+> 
+> Now, a bigger question:
+> 
+> > +			index = get_available_index(card,jack->id);
+> > +			kctl = snd_kctl_jack_new(jack->id, index, card);
+> 
+> So, here you are creating multiple kctl elements with the very same name
+> string.  Did you take a look at the actual usages of snd_jack_new(), especially
+> snd_soc_card_jack_new()?
+[Keyon] yes, I noticed this.  I can also find it at soc/intel/broadwell.c:
+
+        ret = snd_soc_card_jack_new(rtd->card, "Headset",
+                SND_JACK_HEADSET | SND_JACK_BTN_0, &broadwell_headset,
+                broadwell_headset_pins, ARRAY_SIZE(broadwell_headset_pins));
+
+it will create 2 kctl elements with the same name string "Headset":
+
+numid=12,iface=CARD,name='Headset Jack'
+numid=13,iface=CARD,name='Headset Jack',index=1
+
+> 
+> Try like
+> 
+> % git grep -A2 snd_soc_card_jack_new sound/soc/
+> 
+> sound/soc/fsl/imx-es8328.c:             ret = snd_soc_card_jack_new(rtd->card,
+> "Headphone",
+> sound/soc/fsl/imx-es8328.c-                                         SND_JACK_HEADPHONE |
+> SND_JACK_BTN_0,
+> sound/soc/fsl/imx-es8328.c-                                         &headset_jack, NULL, 0);
+> --
+> sound/soc/fsl/wm1133-ev1.c:     snd_soc_card_jack_new(rtd->card,
+> "Headphone", SND_JACK_HEADPHONE,
+> sound/soc/fsl/wm1133-ev1.c-                           &hp_jack, hp_jack_pins,
+> ARRAY_SIZE(hp_jack_pins));
+> sound/soc/fsl/wm1133-ev1.c-     wm8350_hp_jack_detect(codec,
+> WM8350_JDR, &hp_jack, SND_JACK_HEADPHONE);
+> --
+> sound/soc/fsl/wm1133-ev1.c:     snd_soc_card_jack_new(rtd->card,
+> "Microphone",
+> sound/soc/fsl/wm1133-ev1.c-                           SND_JACK_MICROPHONE |
+> SND_JACK_BTN_0, &mic_jack,
+> sound/soc/fsl/wm1133-ev1.c-                           mic_jack_pins,
+> ARRAY_SIZE(mic_jack_pins));
+> .....
+> 
+> As you'll find through the whole output, many calls are combined with
+> SND_JACK_BTN_* bits.  And think again how this will result with your patch.
+> A call like
+> 
+> 	snd_soc_card_jack_new(card, "Headphone",
+> 		SND_JACK_HEADPHONE | SND_JACK_BTN_0 |
+> SND_JACK_BTN_1, ...)
+> 
+> would give three kctls, all "Headphone Jack" with indices 0, 1 and 2.
+> How user-space knows what is for what?
+[Keyon] yes, this is an issue I was thinking about, we need discussing and conclusion
+about that, including comments from user-space, here adding Tanu.
+Here I am thinking about
+1. do we really need kctls for buttons(SND_JACK_BTN_n)? if no, that is simplest, 
+we can filter out them at this kctl creating stage.
+2. if yes, then we need an name regenerator here, to generate understandable
+(for user-space) kctl names for buttons.
+
+> 
+> Also, when you look through the grep above, you'll find that many calls
+> already contain "Jack" name suffix.  So, they will result in a name like
+> "Headset Jack Jack".
+[Keyon] do you think we should implement intelligent name regenerator here
+to remove this suffix? 
+
+And furthermore, we can check more here, e.g. if the name ("Headset") is 
+matched with the type(type should have SND_JACK_HEADSET bits), or 
+something like that. 
+
+> 
+> One last bit:
+> > +			/* set initial jack state */
+> > +			snd_kctl_jack_report(card, kctl, state & testbit);
+> 
+> This can be dropped.  The value is zero as default, so unless the actual value
+> is different, you don't need to call it.
+[Keyon] OK.
+> 
+> Or, yet another last bit: remove EXPORT_SYMBOL_GPL() from ctljack.c, as
+> they are merely internal functions.  But this can be done another patch later.
+[Keyon] OK, I will add this to another patch.
+> 
+> 
+> Takashi
