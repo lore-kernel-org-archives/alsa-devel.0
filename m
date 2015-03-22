@@ -1,132 +1,75 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: [alsa-devel] [PATCH RESEND] ARM: dts: Support audio on
- Exynos5422-odroidxu3 using simple-audio-card
-Date: Mon, 23 Mar 2015 11:51:33 +0900
-Message-ID: <1427079093-28483-1-git-send-email-ideal.song@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: s.nawrocki@samsung.com, broonie@kernel.org
-Cc: kgene@kernel.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, galak@codeaurora.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, cw00.choi@samsung.com, Inha Song <ideal.song@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 01/10 v3] ASoC: core: add
+ snd_soc_get_dai_drv() to get DAI driver
+Date: Sun, 22 Mar 2015 18:08:27 +0000
+Message-ID: <20150322180827.GU6643@sirena.org.uk>
+References: <87mw39eide.wl%kuninori.morimoto.gx@renesas.com>
+ <87lhiteic9.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============8170626389572933380=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CBE726044F
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 05:58:54 +0100 (CET)
+In-Reply-To: <87lhiteic9.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, shiiba <naoya.shiiba.nx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Das Biju <biju.das@bp.renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add MAX98090 audio codec, I2S interface and the sound nodes to support
-audio on Exynos5422 SoC Based Odroid-XU3 board. Now we can support audio
-in Odroid-XU3 board using simple-audio-card DT binding.
 
-Signed-off-by: Inha Song <ideal.song@samsung.com>
----
- arch/arm/boot/dts/exynos5420.dtsi          |  9 +++++
- arch/arm/boot/dts/exynos5422-odroidxu3.dts | 57 ++++++++++++++++++++++++++++++
- 2 files changed, 66 insertions(+)
+--===============8170626389572933380==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rNtUoUA3Tn0/N1iC"
+Content-Disposition: inline
 
-diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
-index 4eaeabe..e459c1d 100644
---- a/arch/arm/boot/dts/exynos5420.dtsi
-+++ b/arch/arm/boot/dts/exynos5420.dtsi
-@@ -415,6 +415,9 @@
- 			<&clock_audss EXYNOS_I2S_BUS>,
- 			<&clock_audss EXYNOS_SCLK_I2S>;
- 		clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
-+		#clock-cells = <1>;
-+		clock-output-names = "i2s_cdclk0";
-+		#sound-dai-cells = <1>;
- 		samsung,idma-addr = <0x03000000>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s0_bus>;
-@@ -429,6 +432,9 @@
- 		dma-names = "tx", "rx";
- 		clocks = <&clock CLK_I2S1>, <&clock CLK_SCLK_I2S1>;
- 		clock-names = "iis", "i2s_opclk0";
-+		#clock-cells = <1>;
-+		clock-output-names = "i2s_cdclk1";
-+		#sound-dai-cells = <1>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s1_bus>;
- 		status = "disabled";
-@@ -442,6 +448,9 @@
- 		dma-names = "tx", "rx";
- 		clocks = <&clock CLK_I2S2>, <&clock CLK_SCLK_I2S2>;
- 		clock-names = "iis", "i2s_opclk0";
-+		#clock-cells = <1>;
-+		clock-output-names = "i2s_cdclk2";
-+		#sound-dai-cells = <1>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s2_bus>;
- 		status = "disabled";
-diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-index edc25cf..9275ad6 100644
---- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-+++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-@@ -11,6 +11,7 @@
- */
- 
- /dts-v1/;
-+#include <dt-bindings/sound/samsung-i2s.h>
- #include "exynos5800.dtsi"
- 
- / {
-@@ -285,6 +286,62 @@
- 	rtc@101E0000 {
- 		status = "okay";
- 	};
-+
-+	sound: sound {
-+		compatible = "simple-audio-card";
-+		assigned-clocks = <&clock_audss EXYNOS_MOUT_AUDSS>,
-+				<&clock_audss EXYNOS_MOUT_I2S>,
-+				<&clock_audss EXYNOS_DOUT_AUD_BUS>;
-+		assigned-clock-parents = <&clock CLK_FIN_PLL>,
-+				<&clock_audss EXYNOS_MOUT_AUDSS>;
-+		assigned-clock-rates = <0>,
-+				<0>,
-+				<19200000>;
-+
-+		simple-audio-card,name = "Odroid-XU3";
-+
-+		simple-audio-card,widgets =
-+			"Headphone", "Headphone Jack",
-+			"Speakers", "Speakers";
-+		simple-audio-card,routing =
-+			"Headphone Jack", "HPL",
-+			"Headphone Jack", "HPR",
-+			"Headphone Jack", "MICBIAS",
-+			"IN1", "Headphone Jack",
-+			"Speakers", "SPKL",
-+			"Speakers", "SPKR";
-+
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&link0_codec>;
-+		simple-audio-card,frame-master = <&link0_codec>;
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s0 0>;
-+			system-clock-frequency = <19200000>;
-+		};
-+
-+		link0_codec: simple-audio-card,codec {
-+			sound-dai = <&max98090>;
-+			clocks = <&i2s0 CLK_I2S_CDCLK>;
-+		};
-+	};
-+};
-+
-+&hsi2c_5 {
-+	status = "okay";
-+	max98090: max98090@10 {
-+		compatible = "maxim,max98090";
-+		reg = <0x10>;
-+		interrupt-parent = <&gpx3>;
-+		interrupts = <2 0>;
-+		clocks = <&i2s0 CLK_I2S_CDCLK>;
-+		clock-names = "mclk";
-+		#sound-dai-cells = <0>;
-+	};
-+};
-+
-+&i2s0 {
-+	status = "okay";
- };
- 
- &hdmi {
--- 
-2.0.0.390.gcb682f8
+
+--rNtUoUA3Tn0/N1iC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 19, 2015 at 04:12:50AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Sometimes sound card driver want to get cpu/codec driver.
+> This patch adds snd_soc_get_dai_drv() and enable it.
+
+Why would a sound card driver need to get the DAI driver?  The changelog
+should explain this.
+
+--rNtUoUA3Tn0/N1iC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVDwUaAAoJECTWi3JdVIfQnFEH/ihxpVTNHQXytBQmEyavMUnP
+MrkPzN9SfzahK1upXYVWC0fJd1n6TA+FC1ukjyHs5fsob38ccrPWoAY8TZOxINZX
+WYxIdIQFRZjGdFGhzrFKtmA4vgE8ljREZUhUK0gmp7Hd5vFt51NhUdxSH7PxcoAK
+ibrtNhjXnhVlbLnKVSNAphqsdy56HFouKTHSVezatIgmNjbZ2fAGqcOUwjlUFw91
+pBezUaR/B+zdvHtiQgCHyCpf6wHfVGIPixIPa9pNyII4+y3pvSe/fOIAzKjJfEzS
+BIxG2Xuwk4JcxS/DSrug7I+2+ou9VP3RQIrfRv9nM9dzmZ6SoW5gVuGIpjdgn2M=
+=2KAK
+-----END PGP SIGNATURE-----
+
+--rNtUoUA3Tn0/N1iC--
+
+--===============8170626389572933380==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8170626389572933380==--
