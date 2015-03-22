@@ -1,79 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: dummy codec and the dummy platform use the same
- name: snd-soc-dummy
-Date: Sun, 22 Mar 2015 16:15:24 +0000
-Message-ID: <20150322161523.GD6643@sirena.org.uk>
-References: <A63A0DC671D719488CD1A6CD8BDC16CF602268B58C@SC-VEXCH4.marvell.com>
+Subject: Re: [PATCH][ASoC]Add ability to remove rate constraints from generic
+ ASoC AC'97 CODEC driver
+Date: Sun, 22 Mar 2015 18:27:44 +0000
+Message-ID: <20150322182744.GB6643@sirena.org.uk>
+References: <54FF7E13.4060801@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0723764909033009356=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CF39526170F
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 05:59:22 +0100 (CET)
-In-Reply-To: <A63A0DC671D719488CD1A6CD8BDC16CF602268B58C@SC-VEXCH4.marvell.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zhao Ye <zhaoy@marvell.com>
-Cc: "'tiwai@suse.de'" <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Qiao Zhou <zhouqiao@marvell.com>, 'Liam Girdwood' <liam.r.girdwood@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2R+TDOstMAPx/aG/"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <54FF7E13.4060801@maciej.szmigiero.name>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0723764909033009356==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
-Content-Disposition: inline
-
-
---/3yNEOqWowh/8j+e
+--2R+TDOstMAPx/aG/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 20, 2015 at 11:27:35PM -0700, Zhao Ye wrote:
+On Wed, Mar 11, 2015 at 12:28:19AM +0100, Maciej S. Szmigiero wrote:
+> Add ability to remove rate constraints from generic ASoC AC'97 CODEC
+> driver via passed platform data, make it selectable in config.
 
-> Then in
-> static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
-> and,
-> static void soc_init_platform_debugfs(struct snd_soc_platform *platform)
+Please use subject lines matching the style for the subsystem.  This is
+helpful for identifying relevant patches and not getting your messages
+deleted unread...
 
-> this two place will make two debugfs_create_dir() with the " snd-soc-dummy" name twice.
+> This way this driver can be used for platforms which don't need
+> specialized AC'97 CODEC drivers while at the same avoiding
+> code duplication from implementing equivalent functionality in
+> a controller driver.
 
-> So I think we should change one of the names.
+I'm sorry but this just doesn't explain what this patch is intended to
+accomplish.  If we can talk to the AC'97 CODEC at all we can already
+identify whatever constraints it has by looking at the ID registers so
+it's not clear when or why a platform would need to use this.  It feels
+like there is some underlying problem that you're trying to address.
 
-Well, upstream what I'd expect to be happening here is that we merge
-everything into a single dummy component which avoids the problem
-another way.
-
---/3yNEOqWowh/8j+e
+--2R+TDOstMAPx/aG/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVDuqbAAoJECTWi3JdVIfQn14H/iDQbXV0wxe8cE8Lg1YNFj4s
-TVMCwnu7f9o9MSwWfoFs6WZavcIcOOc94TctzVVpJ9KCHRTCmk9zH0wwbvFoNpUQ
-12CK0Yh2vu8gz4PKAqRLNOsfCWXJgd4BA9SGikGpaOGOFYvfETo63td0lnkoFNak
-rbtEYVuAdeO7yHY9WjEpzArDzolZrIcCdHWpdUddWEKAX8dO6dVOyjFplwzThfTy
-NLZPCuLcPOOuVgNuHK50kAsuAe/sUgnRoR1pMM3dx5DWEc5B1vqJg2AYUEaL9/K9
-rKCHfMGQ/hi7k84xEA9ZuQGy0ny0tzYpRlWw+LMhNOJJWjHByxrqdBUGAoNS5cs=
-=hAib
+iQEcBAEBCAAGBQJVDwmfAAoJECTWi3JdVIfQN84H/18TqDPTkaSBYxKIm+pJPOT5
+krsYp23mu1fN+CWxTT5tK2p/WIzunwjkXBRUvXmzCexeTRblhUNoxIQiNrt1ggoS
+pybInRCxS9iw1mZ2i0taI6MX+TqOA++lXHdiOOK2Ijf1HqycWf2amk/Rfp6KefgB
+7uljKuxo9eCKFHtimFTCFhamTxPf8nuO1YncawiEraEu8AUHhv+rZ4rJRrC8mqxL
+tBSE6sz0hc+q0StwckXSlx4c3ln/AlL9e3qx47TZSPhYvWt0EQWKmwaQZ4KLv7MK
++AEyZWeC3T24mXZPEyJgSSe4yBorccafOnkkCeZgniX/7xM1XqGEAr5144jnH2g=
+=FuKL
 -----END PGP SIGNATURE-----
 
---/3yNEOqWowh/8j+e--
-
---===============0723764909033009356==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0723764909033009356==--
+--2R+TDOstMAPx/aG/--
