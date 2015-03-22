@@ -1,46 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC:pcm512x: Fix divide by zero issue.
-Date: Sun, 22 Mar 2015 16:19:56 +0000
-Message-ID: <20150322161956.GF6643@sirena.org.uk>
-References: <1426886025-10731-1-git-send-email-hm@hmbedded.co.uk>
+Subject: Re: [PATCH 09/10 v3] ASoC: rsnd: add dai_link stream
+	name
+Date: Sun, 22 Mar 2015 18:20:57 +0000
+Message-ID: <20150322182057.GA6643@sirena.org.uk>
+References: <87mw39eide.wl%kuninori.morimoto.gx@renesas.com>
+ <87a8z9ei84.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xaMk4Io5JJdpkLEb"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1426886025-10731-1-git-send-email-hm@hmbedded.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Howard Mitchell <hm@hmbedded.co.uk>
-Cc: peda@axentia.se, tiwai@suse.de, lgirdwood@gmail.com, perex@perex.cz, corbet@lwn.net, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============8293165227856829931=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEBC9261734
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 05:59:54 +0100 (CET)
+In-Reply-To: <87a8z9ei84.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, shiiba <naoya.shiiba.nx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Das Biju <biju.das@bp.renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---xaMk4Io5JJdpkLEb
-Content-Type: text/plain; charset=us-ascii
+--===============8293165227856829931==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="x0PBmTWHB3bjoOVh"
 Content-Disposition: inline
 
-On Fri, Mar 20, 2015 at 09:13:45PM +0000, Howard Mitchell wrote:
-> If den=1 and pllin_rate>20MHz then den and num are adjusted to 0
-> causing a divide by zero error a few lines further on. Therefore
-> this patch correctly scales num and den such that
-> pllin_rate/den < 20MHz as required in the device data sheet.
+
+--x0PBmTWHB3bjoOVh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 19, 2015 at 04:15:18AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> This patch adds missing dai_link stream_name
+> which is used when DPCM
 
 Applied, thanks.
 
---xaMk4Io5JJdpkLEb
+--x0PBmTWHB3bjoOVh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVDuurAAoJECTWi3JdVIfQPCAH/2maoGnETffqZhgJVDf1NiVs
-5k4dgrhWbg0WeJ58roJGyFJF2ii8m1sYGKCC2nEcR/GV9XfG/3VcqdwzqcNLUa5k
-3K6cIW5umlgs3kHxPnY2hWNdmsYpN0/dYYWvnJMiqi1/2Lwe+/pdU1kFKq64HATZ
-K2z8SCNuYwRYIvYIfuTAahnq0Ggz3t1usTqfJCzxGVw5jQg+l63eaFOLxUcrU36+
-On7Q47biI3UaHj0aR63i0wpx4rxeZUIjW2U/Zsb7d6ulmfX3fLpyZDkcF0rzq5KS
-R/m3Uq3L3Z/iQ19fS3xRXf/J129nvNDdnR3FmM/Q72q5zUP44nAsS84yWnou/hs=
-=G++z
+iQEcBAEBCAAGBQJVDwgIAAoJECTWi3JdVIfQVjwH/1mv5aryZr6uY7QZHIstdMvg
+Mqt7uQY0Qp3ijQuFqZmYbl6iaAYWcFl3rCOe5TDOcOHrFCqvhFgw7qHaNJDIpu8g
+C4nx7xhcI1QUa4iEm3plAQ9vOnpoavKesuG5dSSwY0FyvaOiCOz62JsJJ7NY1lMz
+1LM+nwxDfU/MEy2aOMHWihMOvtJCq6D0c11q7xzFdTQyKhWZGpMxPyYykVDCSFjY
+XSEDUp/Osv19MNKvVW2c5SfjzagVESAjdD1MjjkzZsTJhR3v1yGnAJGTeEh77dQ4
+Uzv6L45viw2zePjjyg7iUG3lUk1hcUBUiVaCEnUg7wXCTM4zVQ6aHnc+oZpCaxM=
+=4feh
 -----END PGP SIGNATURE-----
 
---xaMk4Io5JJdpkLEb--
+--x0PBmTWHB3bjoOVh--
+
+--===============8293165227856829931==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8293165227856829931==--
