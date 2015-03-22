@@ -1,58 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH][ASoC]Add ability to remove rate constraints from generic
- ASoC AC'97 CODEC driver
-Date: Sun, 22 Mar 2015 18:27:44 +0000
-Message-ID: <20150322182744.GB6643@sirena.org.uk>
-References: <54FF7E13.4060801@maciej.szmigiero.name>
+Subject: Re: [PATCH] ASoC:pcm512x: Make PLL lock output selectable via device
+ tree.
+Date: Sun, 22 Mar 2015 16:24:09 +0000
+Message-ID: <20150322162409.GG6643@sirena.org.uk>
+References: <1426886563-10936-1-git-send-email-hm@hmbedded.co.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2R+TDOstMAPx/aG/"
+	protocol="application/pgp-signature"; boundary="xjyYRNSh/RebjC6o"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <54FF7E13.4060801@maciej.szmigiero.name>
+In-Reply-To: <1426886563-10936-1-git-send-email-hm@hmbedded.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org
+To: Howard Mitchell <hm@hmbedded.co.uk>
+Cc: peda@axentia.se, tiwai@suse.de, lgirdwood@gmail.com, perex@perex.cz, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---2R+TDOstMAPx/aG/
+--xjyYRNSh/RebjC6o
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 11, 2015 at 12:28:19AM +0100, Maciej S. Szmigiero wrote:
-> Add ability to remove rate constraints from generic ASoC AC'97 CODEC
-> driver via passed platform data, make it selectable in config.
+On Fri, Mar 20, 2015 at 09:22:43PM +0000, Howard Mitchell wrote:
 
-Please use subject lines matching the style for the subsystem.  This is
-helpful for identifying relevant patches and not getting your messages
-deleted unread...
+> +	if (pcm512x->pll_lock) {
 
-> This way this driver can be used for platforms which don't need
-> specialized AC'97 CODEC drivers while at the same avoiding
-> code duplication from implementing equivalent functionality in
-> a controller driver.
+> +                if (of_property_read_u32(np, "pll-lock", &val) >= 0) {
+> +                        if (val > 6) {
+> +                                dev_err(dev, "Invalid pll-lock\n");
+> +                                ret = -EINVAL;
+> +                                goto err_clk;
+> +                        }
+> +                        pcm512x->pll_lock = val;
+> +                }
 
-I'm sorry but this just doesn't explain what this patch is intended to
-accomplish.  If we can talk to the AC'97 CODEC at all we can already
-identify whatever constraints it has by looking at the ID registers so
-it's not clear when or why a platform would need to use this.  It feels
-like there is some underlying problem that you're trying to address.
+This breaks existing boards which rely on GPIO 4 being set as the lock
+output.  This is very unfortunate since it's a silly thing for the
+driver to default to but nontheless we should really continue to support
+them - at a guess Peter's board is relying on this, and even if it isn't
+someone else's might.
 
---2R+TDOstMAPx/aG/
+--xjyYRNSh/RebjC6o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVDwmfAAoJECTWi3JdVIfQN84H/18TqDPTkaSBYxKIm+pJPOT5
-krsYp23mu1fN+CWxTT5tK2p/WIzunwjkXBRUvXmzCexeTRblhUNoxIQiNrt1ggoS
-pybInRCxS9iw1mZ2i0taI6MX+TqOA++lXHdiOOK2Ijf1HqycWf2amk/Rfp6KefgB
-7uljKuxo9eCKFHtimFTCFhamTxPf8nuO1YncawiEraEu8AUHhv+rZ4rJRrC8mqxL
-tBSE6sz0hc+q0StwckXSlx4c3ln/AlL9e3qx47TZSPhYvWt0EQWKmwaQZ4KLv7MK
-+AEyZWeC3T24mXZPEyJgSSe4yBorccafOnkkCeZgniX/7xM1XqGEAr5144jnH2g=
-=FuKL
+iQEcBAEBCAAGBQJVDuyoAAoJECTWi3JdVIfQdgYH/i3lcuCGgadJbS33VOnhHEz2
+MRrbFWtyfoQdu+NbR5qcd/i2qcP1JXpsKkCXKjWKuirX2wvQVvltJMkkVoIRVOmP
+W888YowRDECARUSfzIJ+5C27SVFvDDn/u+tuovfDQMScHJYfLDWnKKGOJt3yCsmG
+hOhs5lre87cJkV3llc1cuKGhTEfVP1SzfjlPLRUQuCsja/kYDk6CrbBfb2xk2QmM
+BU2drcKdMeIIqvy5if1/F6tPz/cEp14GpuHxN4eVDahMU6rSaoj65zwkAnGIkSe0
+dC2xVSp+Gc6gtwjv7cVciTHuoShws/0EzlhqfthhdM6zYVwmEEqAP0jUVAp2DPI=
+=nseg
 -----END PGP SIGNATURE-----
 
---2R+TDOstMAPx/aG/--
+--xjyYRNSh/RebjC6o--
