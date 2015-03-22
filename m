@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/5 v4] ASoC: soc-core: call
- soc_cleanup_card_debugfs() from snd_soc_unregister_card()
-Date: Sun, 22 Mar 2015 18:33:47 +0000
-Message-ID: <20150322183347.GD6643@sirena.org.uk>
+Subject: Re: [PATCH 5/5 v4] ASoC: soc-core: indicate warning
+ for unbind/bind issue
+Date: Sun, 22 Mar 2015 18:50:14 +0000
+Message-ID: <20150322185014.GG6643@sirena.org.uk>
 References: <874mqq5slj.wl%kuninori.morimoto.gx@renesas.com>
- <87zj8i4dz4.wl%kuninori.morimoto.gx@renesas.com>
+ <87wq3m4dyf.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1798493733237951162=="
+Content-Type: multipart/mixed; boundary="===============4108697289345725607=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EA8726163C
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 06:02:19 +0100 (CET)
-In-Reply-To: <87zj8i4dz4.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C9449261B23
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 06:03:14 +0100 (CET)
+In-Reply-To: <87wq3m4dyf.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +27,53 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam G
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1798493733237951162==
+--===============4108697289345725607==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HsYKTmaHn9HHfM39"
+	protocol="application/pgp-signature"; boundary="yq2ad9TzNXzcxitU"
 Content-Disposition: inline
 
 
---HsYKTmaHn9HHfM39
+--yq2ad9TzNXzcxitU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 13, 2015 at 04:43:40AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> soc_cleanup_card_debugfs() is called from soc_cleanup_card_resources(),
-> but, card debugfs is called from snd_soc_register_card().
-> cleanup function should be called paired function.
+On Fri, Feb 13, 2015 at 04:44:05AM +0000, Kuninori Morimoto wrote:
 
-This makes sense but there seems to be a dependency on one of the
-earlier patches in the series.
+> Ideally the correct fix would somehow make sure that the card itself is
+> unbound and put back onto the probe_defer list in the future.
+> We indicate warning to this issue for now.
 
---HsYKTmaHn9HHfM39
+I don't think we should be trying to do this at the ASoC level at all,
+we should do it at the driver core level.  A similar issue applies to
+other inter device dependencies - if someone manages to remove a GPIO
+controller, a clock or a regulator for example.  The components of a
+card are really no different here.  Like I said in my mail just now
+let's have a look at how this is supposed to work at the driver core
+level and ask Greg if there's nothing clear.
+
+--yq2ad9TzNXzcxitU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVDwsKAAoJECTWi3JdVIfQcrwH/i9Ie1HPXUoZHDWOqcxTvn0d
-vtu14L1zdbu/Z69G/zFq5aO4uMHEOIDF8jtV7xtb8z4sOr6uGnfu5XLOog/kWlHF
-C+K1FCMWdShSG+1eV9IVvpUGk+OtU/J3uO9NCaN4S/rHPdLtn8FJ6pPR4+gcjRVO
-BYIe/FUZT9l4NemRa7qjowT/CBJtx/5/rzNhrQuD1Gia/UNLVAZVNw9o24Zg5jpZ
-vAb9VuWDVn/8ZUpApHUDEWoP5fIajkHUPSZVTWf1Nr0aPsz0S+/0Gu/UNssLa4VT
-2GP4wUuE6nDh80nCb7DJrow2nIo32GQyhieerUh4TtfGPXs7BK9oERT4Kla+CV0=
-=HSRb
+iQEcBAEBCAAGBQJVDw7lAAoJECTWi3JdVIfQlPQH+wRcw97D6dWtOek/YDJkaqpD
+UJ+NocLdMZZNSn6ucSkPzLNaYtRKorQxSj+z0aPfC/1b+vWtJ5cPFTzwdCu+buWh
+uEM0tary7XMtD7w7qL/RE3n6oNSHeU5j5oFoOiYkKzt2I2Q6G1d47Bv44wgZOPC4
+Oz8VZeA/mbU/rLGjdGizP8qUVL/SJtlPU7BtoJ2H3T0AMrsxenOXtdJ7DH/LDqCb
+udMIGAYmAC33IKN8/ao+ZEulMrW8Xx/aZ+Wk4V+9X48DSGqlACpNXGf8Yo5OFdg/
+yAtd2z1pJ9N8xyduO8zuuqjmwU5KwYo/Yz9c96mmK/e/SsccuzdCSfJQ6qeu3HU=
+=nz4Y
 -----END PGP SIGNATURE-----
 
---HsYKTmaHn9HHfM39--
+--yq2ad9TzNXzcxitU--
 
---===============1798493733237951162==
+--===============4108697289345725607==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1798493733237951162==--
+--===============4108697289345725607==--
