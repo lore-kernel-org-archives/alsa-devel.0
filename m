@@ -1,51 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ARM: shmobile: armadillo800eva: Properly specify
- HDMI audio link format
-Date: Sun, 22 Mar 2015 18:52:37 +0000
-Message-ID: <20150322185237.GH6643@sirena.org.uk>
-References: <1421847492-8857-1-git-send-email-lars@metafoo.de>
- <87d25wg804.wl%kuninori.morimoto.gx@renesas.com>
- <20150211002802.GC7826@verge.net.au>
- <87k2z4fbfv.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: dummy codec and the dummy platform use the same
+ name: snd-soc-dummy
+Date: Sun, 22 Mar 2015 16:15:24 +0000
+Message-ID: <20150322161523.GD6643@sirena.org.uk>
+References: <A63A0DC671D719488CD1A6CD8BDC16CF602268B58C@SC-VEXCH4.marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZDIREgaZHBBvWU9r"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87k2z4fbfv.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Simon Horman <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0723764909033009356=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF39526170F
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 05:59:22 +0100 (CET)
+In-Reply-To: <A63A0DC671D719488CD1A6CD8BDC16CF602268B58C@SC-VEXCH4.marvell.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zhao Ye <zhaoy@marvell.com>
+Cc: "'tiwai@suse.de'" <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Qiao Zhou <zhouqiao@marvell.com>, 'Liam Girdwood' <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---ZDIREgaZHBBvWU9r
+--===============0723764909033009356==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
+Content-Disposition: inline
+
+
+--/3yNEOqWowh/8j+e
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Feb 27, 2015 at 12:23:26AM +0000, Kuninori Morimoto wrote:
+On Fri, Mar 20, 2015 at 11:27:35PM -0700, Zhao Ye wrote:
 
-> As I mentioned above (and, Simon agreed), I think we can
-> agree if [2/3] patch was exchanged
+> Then in
+> static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
+> and,
+> static void soc_init_platform_debugfs(struct snd_soc_platform *platform)
 
-Do you mean that patch 2/3 should be replaced with soemthing else - if
-so what should it be replaced by?  I've not seen an updated version of
-this series...
+> this two place will make two debugfs_create_dir() with the " snd-soc-dummy" name twice.
 
---ZDIREgaZHBBvWU9r
+> So I think we should change one of the names.
+
+Well, upstream what I'd expect to be happening here is that we merge
+everything into a single dummy component which avoids the problem
+another way.
+
+--/3yNEOqWowh/8j+e
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVDw91AAoJECTWi3JdVIfQA/MH/0P/q+CGqYAg3GMuwely8zll
-Dggqzsc1PGIfT7tQ7WEKSwIE6yvpG/QrT7qaC0VxZyBtAOiFRxBNzCinjrN3LKPJ
-ogMuxgmK4wt9d9gEvjRG7Dtjrla8LVnNSDspMKgHj28KTcYJyHUMicgvNwbrxLqk
-cjy0KFA1+gkArHDIMpx/uA/oacA30c/H9V8IoTNVf0Co6ueivD2svF6boIYGmlSz
-+6Y/5wIItPXLGkrkVtOuNkuPwCMXNc7s561W7nsVGPxNQBhSZgdNMwmQh4Mz8xNj
-OTV450IyqbKPFgbsDnnSeb/n3Z6U86/N/j14gijMfNWeWFnc7CFVxa1NYlNte0o=
-=VC4a
+iQEcBAEBCAAGBQJVDuqbAAoJECTWi3JdVIfQn14H/iDQbXV0wxe8cE8Lg1YNFj4s
+TVMCwnu7f9o9MSwWfoFs6WZavcIcOOc94TctzVVpJ9KCHRTCmk9zH0wwbvFoNpUQ
+12CK0Yh2vu8gz4PKAqRLNOsfCWXJgd4BA9SGikGpaOGOFYvfETo63td0lnkoFNak
+rbtEYVuAdeO7yHY9WjEpzArDzolZrIcCdHWpdUddWEKAX8dO6dVOyjFplwzThfTy
+NLZPCuLcPOOuVgNuHK50kAsuAe/sUgnRoR1pMM3dx5DWEc5B1vqJg2AYUEaL9/K9
+rKCHfMGQ/hi7k84xEA9ZuQGy0ny0tzYpRlWw+LMhNOJJWjHByxrqdBUGAoNS5cs=
+=hAib
 -----END PGP SIGNATURE-----
 
---ZDIREgaZHBBvWU9r--
+--/3yNEOqWowh/8j+e--
+
+--===============0723764909033009356==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0723764909033009356==--
