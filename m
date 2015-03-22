@@ -1,58 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC:pcm512x: Make PLL lock output selectable via device
- tree.
-Date: Sun, 22 Mar 2015 16:24:09 +0000
-Message-ID: <20150322162409.GG6643@sirena.org.uk>
-References: <1426886563-10936-1-git-send-email-hm@hmbedded.co.uk>
+Subject: Re: [PATCH 3/7 linux-next] ASoC: kirkwood: constify of_device_id
+ array
+Date: Sun, 22 Mar 2015 18:03:42 +0000
+Message-ID: <20150322180342.GP6643@sirena.org.uk>
+References: <1426697344-4884-1-git-send-email-fabf@skynet.be>
+ <1426697344-4884-4-git-send-email-fabf@skynet.be>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xjyYRNSh/RebjC6o"
+	protocol="application/pgp-signature"; boundary="i0LFOk513GRb+T2w"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1426886563-10936-1-git-send-email-hm@hmbedded.co.uk>
+In-Reply-To: <1426697344-4884-4-git-send-email-fabf@skynet.be>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Howard Mitchell <hm@hmbedded.co.uk>
-Cc: peda@axentia.se, tiwai@suse.de, lgirdwood@gmail.com, perex@perex.cz, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Fabian Frederick <fabf@skynet.be>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---xjyYRNSh/RebjC6o
+--i0LFOk513GRb+T2w
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 20, 2015 at 09:22:43PM +0000, Howard Mitchell wrote:
+On Wed, Mar 18, 2015 at 05:48:58PM +0100, Fabian Frederick wrote:
+> of_device_id is always used as const.
+> (See driver.of_match_table and open firmware functions)
 
-> +	if (pcm512x->pll_lock) {
+Applied, thanks.
 
-> +                if (of_property_read_u32(np, "pll-lock", &val) >= 0) {
-> +                        if (val > 6) {
-> +                                dev_err(dev, "Invalid pll-lock\n");
-> +                                ret = -EINVAL;
-> +                                goto err_clk;
-> +                        }
-> +                        pcm512x->pll_lock = val;
-> +                }
-
-This breaks existing boards which rely on GPIO 4 being set as the lock
-output.  This is very unfortunate since it's a silly thing for the
-driver to default to but nontheless we should really continue to support
-them - at a guess Peter's board is relying on this, and even if it isn't
-someone else's might.
-
---xjyYRNSh/RebjC6o
+--i0LFOk513GRb+T2w
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVDuyoAAoJECTWi3JdVIfQdgYH/i3lcuCGgadJbS33VOnhHEz2
-MRrbFWtyfoQdu+NbR5qcd/i2qcP1JXpsKkCXKjWKuirX2wvQVvltJMkkVoIRVOmP
-W888YowRDECARUSfzIJ+5C27SVFvDDn/u+tuovfDQMScHJYfLDWnKKGOJt3yCsmG
-hOhs5lre87cJkV3llc1cuKGhTEfVP1SzfjlPLRUQuCsja/kYDk6CrbBfb2xk2QmM
-BU2drcKdMeIIqvy5if1/F6tPz/cEp14GpuHxN4eVDahMU6rSaoj65zwkAnGIkSe0
-dC2xVSp+Gc6gtwjv7cVciTHuoShws/0EzlhqfthhdM6zYVwmEEqAP0jUVAp2DPI=
-=nseg
+iQEcBAEBCAAGBQJVDwP9AAoJECTWi3JdVIfQQAYH/jVPtlVJKdFPc4hFW7JIBpz1
+/1bL0dH2ssQJyuemXJ1e42ETl5Bwp4ERKmmsqovPaaLuF/RrYFPbiTijpcnMRBd2
+W3kZ/NVlg6Jn+gogg1/aqqAV0KmIcBZxxMNz+ZtzbltfSS7fsE/VSrC/D2kdEDNK
+TZZkVIRLSMGIOqBo75nNJjlJUBzYAxV9tPVa3jUxH/oRRZo8TTzwTrL2iNCes4xG
+SGHcOo3tzKf0fZeVvYvJf585XyeP8Bh7uZC4xQJSm+pGb9L3ukUSlDhgzMTGiBkc
+MG/CROCtTipRZrWfvVkLng/+XiDz/xE6TfqGsb4UyAFCEsDAd4RlQkzQ7HnSj9o=
+=vRqq
 -----END PGP SIGNATURE-----
 
---xjyYRNSh/RebjC6o--
+--i0LFOk513GRb+T2w--
