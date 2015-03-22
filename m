@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/5 v4] ASoC: soc-core: call
- snd_soc_remove_card() when component del
-Date: Sun, 22 Mar 2015 18:43:22 +0000
-Message-ID: <20150322184322.GE6643@sirena.org.uk>
-References: <874mqq5slj.wl%kuninori.morimoto.gx@renesas.com>
- <87y4o24dyq.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: Intel: remove misleading DMA error
+ messages on Baytrail platforms
+Date: Sun, 22 Mar 2015 16:30:24 +0000
+Message-ID: <20150322163024.GH6643@sirena.org.uk>
+References: <1426883494-13640-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7521146022952622069=="
+Content-Type: multipart/mixed; boundary="===============7370142330977839822=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BF58265041
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 06:01:34 +0100 (CET)
-In-Reply-To: <87y4o24dyq.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EC13726501D
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 06:01:48 +0100 (CET)
+In-Reply-To: <1426883494-13640-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7521146022952622069==
+--===============7370142330977839822==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/T5/D81aE6hAEKcd"
+	protocol="application/pgp-signature"; boundary="zhtSGe8h3+lMyY1M"
 Content-Disposition: inline
 
 
---/T5/D81aE6hAEKcd
+--zhtSGe8h3+lMyY1M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Feb 13, 2015 at 04:43:53AM +0000, Kuninori Morimoto wrote:
+On Fri, Mar 20, 2015 at 03:31:34PM -0500, Pierre-Louis Bossart wrote:
 
-> +	struct list_head unbinded_list;
+> Those error messages are misleading, there is no error since the DMA
+> is explicitly not configured for Baytrail.
+> Add a test to remove DMA error checks when DMA is not configured
+> and return silently.
 
-This should be "unbound".  However the whole idea of having this list
-seems to be a bit problematic - it's moving us back to the old mechanism
-we used to have where we open coded deferred probe.  What would be
-better would be if we could force the driver to unbind so we go back to
-the state we were in prior to the card being instantiated.  I had a
-brief look and it looks like device_release_driver() might be what's
-needed but it's unclear to me if this will do exactly what we want and
-cause the device to try to rebind.  We probably need to ask Greg unless
-there's an obvious answer I'm missing right now.
+A bit surprising to have no DMA but OK, applied - thanks!
 
---/T5/D81aE6hAEKcd
+--zhtSGe8h3+lMyY1M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVDw1JAAoJECTWi3JdVIfQ6O0H/09rsGg8kbvUI/B4+O5Vk5QY
-NEBHOBIyHDwYOZ/KBtwSj+7phurHddPiW65H6XDN5H9QBeTGbi1QsSzTL7+J0BzU
-0yNbYjycOexlHu8OPhAbbdJWVDm6BspT8TkEskwAkj9UkOgveoTUAZGwVM0LdWbF
-ypI5+v7z+qslBg/2FDdFuoBu2CN9NrvvgGW7GrJKs4NdXxpX/DPGbsmBF+yF6bGq
-SOnqSgM/TvN+hcrZOpQOW7YUTiOL2wSIXrPI85sDbjH/ttHgC7Jn2PHgg32FoyGY
-n8JhtdteVdrvGvD7jsoavb9A3PrPZBO2y6xRCnTQgSs8lCzu2DkeYYMzJhSsGi8=
-=Gyhd
+iQEcBAEBCAAGBQJVDu4fAAoJECTWi3JdVIfQBroH/13OX5CLovbaujRKRz2xHNJL
+xyng/nd5FUVLeJjWCRZfC8LqUavGKyDjdCGz0mKuH9/MEnSbvi2QimsDJ8Z5WDy+
+Ov6AjfI3q3Izn4HUXiq7+AphNpKwra1AoJxJePIL1C7W0a4gx1vZifuwv6SDntVB
+GEvMChUKcTGyADunl1+kXHieRjGxSq3HPoOyawh6xEJcHpP+oAL+UVbNuIUt8O03
+mSQbL41o6yVNZuwbfdAmwV3YeahUd5AkWBy0A9RCruFjQ+aTuSdKGODIhnyVXMHl
++JGiPGt+h3lUIrk6MyQR8NLdldRMoVOo5Garl61Rz16HOGxtpMUISnQmmWyg1pQ=
+=XX5w
 -----END PGP SIGNATURE-----
 
---/T5/D81aE6hAEKcd--
+--zhtSGe8h3+lMyY1M--
 
---===============7521146022952622069==
+--===============7370142330977839822==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7521146022952622069==--
+--===============7370142330977839822==--
