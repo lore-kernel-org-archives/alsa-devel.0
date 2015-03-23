@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/2] ALSA: jack: create jack kcontrols
- for every jack input device
-Date: Mon, 23 Mar 2015 07:57:30 -0700
-Message-ID: <20150323145730.GA14954@sirena.org.uk>
+Subject: Re: [PATCH v3 0/2] ALSA: jack: Refactoring for jack
+ kctls
+Date: Mon, 23 Mar 2015 08:00:31 -0700
+Message-ID: <20150323150031.GB14954@sirena.org.uk>
 References: <1426865953-1606-1-git-send-email-yang.jie@intel.com>
- <1426865953-1606-2-git-send-email-yang.jie@intel.com>
- <s5ha8z7zlrd.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDBBA0@SHSMSX101.ccr.corp.intel.com>
- <1427105297.2968.19.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5hzj743p0x.wl-tiwai@suse.de>
+ <550FDA5B.8020604@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8107834136267692257=="
+Content-Type: multipart/mixed; boundary="===============0137976131688266844=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 67CFD260690
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 15:57:11 +0100 (CET)
-In-Reply-To: <s5hzj743p0x.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id F009A26066D
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 16:00:05 +0100 (CET)
+In-Reply-To: <550FDA5B.8020604@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,57 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Girdwood, Liam R" <liam.r.girdwood@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8107834136267692257==
+--===============0137976131688266844==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
+	protocol="application/pgp-signature"; boundary="DKU6Jbt7q3WqK7+M"
 Content-Disposition: inline
 
 
---Nq2Wo0NMKNjxTN9z
+--DKU6Jbt7q3WqK7+M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 23, 2015 at 12:57:02PM +0100, Takashi Iwai wrote:
+On Mon, Mar 23, 2015 at 10:18:19AM +0100, David Henningsson wrote:
 
-> It's a good point.  The notification via kctl can't follow the
-> complete state changes since it's nothing but a notification telling
-> "something changed".  So, events like buttons that need the complete
-> state change history, the current implementation isn't appropriate.
-> For things like jacks, we usually care only about the final state, and
-> the state change is much less frequent, so kctl notification works
-> well.
+> Hmm, I must have missed this. It's great that you try to implement kctl
+> jacks for ASoC, but your actual implementation seems to regress HDA, unle=
+ss
+> I'm missing something.
 
-I'd expect the buttons to be going through only as input devices, not as
-kcontrols at all.
+> In particular, the phantom jacks currently show up in the kctl jack layer
+> only, not in the /dev/input layer, and I prefer to keep it that way in or=
+der
+> not to pollute the /dev/input layer with phantom jacks.
+> But it looks like these will just disappear (?!) with your patch, but I'm
+> not entirely sure. Could you elaborate?
 
---Nq2Wo0NMKNjxTN9z
+We shouldn't be hacking individual drivers to support whatever random
+subset of userspace interfaces some system decides it wants to use -
+that isn't making anyone happy.  If we want to have the ability to
+customize which userspace interfaces appear it seems better to put that
+in the core code so individual drivers don't need to worry about it,
+=66rom that point of view unifying the interfaces should be progress.
+
+--DKU6Jbt7q3WqK7+M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVECnZAAoJECTWi3JdVIfQ32EIAIC1LL0wSoyheNzc2TYDljaG
-HrwBpFGEvnKu2hftaRvRXUKfkdaBUbbIcJggJ8qtd3WbWkbGix7mZ1/71GntZumg
-Ymn4q9qobN0buTaV83xafLpUFDHgkq8db0TwKW9rt0xZWhTeyNzMuxI5ZlBZFfOY
-7Ks3DB606zz+YXcTl8Xgg91SSKh0+oJJaH3/dtr0uiFdnKIPlQ59r66C59Q8IJZq
-L+cSTa0nqM0GjVtaQEFd6zSo79WHbPZ3xU2X8A5QFebnjY5Iivhcgls3o/x5br10
-YTiGldJQsPx/qOU4zAvRHinFdn03POsxKHMXJ4M3i4w1ANdWIdqA1o4BuxC8pks=
-=d82R
+iQEcBAEBCAAGBQJVECqOAAoJECTWi3JdVIfQqaAH/01P1XwFyIXq2cNawdr/QA+B
+zq7P93J8bVDSarQuFZGt5bbKt1c4ULS7XTD2OJJA9A2Gka0+RNIKUy7cV+nycqAF
+inLB1mOHjURE73WXSRotKAnp5cPL2iQsfNEkDpG+/VkZlE0EhMMyGqi4t1Z+16Fk
+fZ3pq7iPiK9J7V2fkw44UkGEcN5VHvAf/JOMiIRM8USuMSfjnXwdpxorIefe068w
+ycU2w824DxbzszrArzfJRZ2tQdsOoioB2lLFz/10ZsjG85gxucpXFXMZBKIhZv7I
+ggxv6Z3JDOdoO6q2vgDw6z6N/7jprYznUuAlPKyjuKAG/BURUgNUw+hjaC9rHt8=
+=SIov
 -----END PGP SIGNATURE-----
 
---Nq2Wo0NMKNjxTN9z--
+--DKU6Jbt7q3WqK7+M--
 
---===============8107834136267692257==
+--===============0137976131688266844==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8107834136267692257==--
+--===============0137976131688266844==--
