@@ -1,64 +1,133 @@
-From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Subject: RE: [PATCH] ASoC:pcm512x: Make PLL lock output selectable via
- device tree.
-Date: Mon, 23 Mar 2015 11:00:53 +0000
-Message-ID: <105aef6a0e21488d8661d2a2823515d8@EMAIL.axentia.se>
-References: <1426886563-10936-1-git-send-email-hm@hmbedded.co.uk>
- <20150322162409.GG6643@sirena.org.uk> <550FE05F.6070204@hmbedded.co.uk>
+From: Inha Song <ideal.song@samsung.com>
+Subject: Re: [alsa-devel] [PATCH RESEND] ARM: dts: Support audio on
+ Exynos5422-odroidxu3 using simple-audio-card
+Date: Mon, 23 Mar 2015 20:09:42 +0900
+Message-ID: <20150323200942.0994a370@songinha-Samsung-DeskTop-System>
+References: <1427079093-28483-1-git-send-email-ideal.song@samsung.com>
+ <550FF0FF.4000604@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <550FE05F.6070204-n6SlHCM0l+K9FHfhHBbuYA@public.gmane.org>
-Content-Language: sv-SE
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Howard Mitchell <hm-n6SlHCM0l+K9FHfhHBbuYA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <550FF0FF.4000604@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: broonie@kernel.org, kgene@kernel.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, galak@codeaurora.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, cw00.choi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Howard Mitchell wrote:
-> On 22/03/15 16:24, Mark Brown wrote:
-> > On Fri, Mar 20, 2015 at 09:22:43PM +0000, Howard Mitchell wrote:
-> >
-> >> +	if (pcm512x->pll_lock) {
-> >> +                if (of_property_read_u32(np, "pll-lock", &val) >= 0) {
-> >> +                        if (val > 6) {
-> >> +                                dev_err(dev, "Invalid pll-lock\n");
-> >> +                                ret = -EINVAL;
-> >> +                                goto err_clk;
-> >> +                        }
-> >> +                        pcm512x->pll_lock = val;
-> >> +                }
-> > This breaks existing boards which rely on GPIO 4 being set as the lock
-> > output.  This is very unfortunate since it's a silly thing for the
-> > driver to default to but nontheless we should really continue to support
-> > them - at a guess Peter's board is relying on this, and even if it isn't
-> > someone else's might.
-> I take your point, but the reason I pushed this patch was that I wanted
-> to use GPIO4 for pll-out and unfortunately because the pll-lock
-> configuration is after the pll-out configuration it stomps on it. If I
-> modify the patch to provide a default for pll-lock I will then be
-> obliged to specify pll-lock on another GPIO. The pcm5122 has limited IO
-> so being forced to have a GPIO for pll-lock seems wrong to me. A future
-> user of the device may well decide to use the GPIOs for other purposes
-> and therefore not want a pll-lock signal at all. Surely we should allow
-> for that possibility?
+Hi Sylwester,
+
+Thanks for your review.
+
+On Mon, 23 Mar 2015 11:54:55 +0100
+Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
+
+> On 23/03/15 03:51, Inha Song wrote:
+> > Add MAX98090 audio codec, I2S interface and the sound nodes to support
+> > audio on Exynos5422 SoC Based Odroid-XU3 board. Now we can support audio
+> > in Odroid-XU3 board using simple-audio-card DT binding.
+> > 
+> > Signed-off-by: Inha Song <ideal.song@samsung.com>
+> > ---
+> >  arch/arm/boot/dts/exynos5420.dtsi          |  9 +++++
+> >  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 57 ++++++++++++++++++++++++++++++
+> >  2 files changed, 66 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
+> > index 4eaeabe..e459c1d 100644
+> > --- a/arch/arm/boot/dts/exynos5420.dtsi
+> > +++ b/arch/arm/boot/dts/exynos5420.dtsi
+> > @@ -415,6 +415,9 @@
+> >  			<&clock_audss EXYNOS_I2S_BUS>,
+> >  			<&clock_audss EXYNOS_SCLK_I2S>;
+> >  		clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
+> > +		#clock-cells = <1>;
+> > +		clock-output-names = "i2s_cdclk0";
+> > +		#sound-dai-cells = <1>;
+> >  		samsung,idma-addr = <0x03000000>;
+> >  		pinctrl-names = "default";
+> >  		pinctrl-0 = <&i2s0_bus>;
+> > @@ -429,6 +432,9 @@
+> >  		dma-names = "tx", "rx";
+> >  		clocks = <&clock CLK_I2S1>, <&clock CLK_SCLK_I2S1>;
+> >  		clock-names = "iis", "i2s_opclk0";
+> > +		#clock-cells = <1>;
+> > +		clock-output-names = "i2s_cdclk1";
+> > +		#sound-dai-cells = <1>;
+> >  		pinctrl-names = "default";
+> >  		pinctrl-0 = <&i2s1_bus>;
+> >  		status = "disabled";
+> > @@ -442,6 +448,9 @@
+> >  		dma-names = "tx", "rx";
+> >  		clocks = <&clock CLK_I2S2>, <&clock CLK_SCLK_I2S2>;
+> >  		clock-names = "iis", "i2s_opclk0";
+> > +		#clock-cells = <1>;
+> > +		clock-output-names = "i2s_cdclk2";
+> > +		#sound-dai-cells = <1>;
+> >  		pinctrl-names = "default";
+> >  		pinctrl-0 = <&i2s2_bus>;
+> >  		status = "disabled";
+> > diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> > index edc25cf..9275ad6 100644
+> > --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> > +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> > @@ -11,6 +11,7 @@
+> >  */
+> >  
+> >  /dts-v1/;
+> > +#include <dt-bindings/sound/samsung-i2s.h>
+> >  #include "exynos5800.dtsi"
+> >  
+> >  / {
+> > @@ -285,6 +286,62 @@
+> >  	rtc@101E0000 {
+> >  		status = "okay";
+> >  	};
+> > +
+> > +	sound: sound {
+> > +		compatible = "simple-audio-card";
+> > +		assigned-clocks = <&clock_audss EXYNOS_MOUT_AUDSS>,
+> > +				<&clock_audss EXYNOS_MOUT_I2S>,
+> > +				<&clock_audss EXYNOS_DOUT_AUD_BUS>;
+> > +		assigned-clock-parents = <&clock CLK_FIN_PLL>,
+> > +				<&clock_audss EXYNOS_MOUT_AUDSS>;
+> > +		assigned-clock-rates = <0>,
+> > +				<0>,
+> > +				<19200000>;
 > 
-> Given that Peter has indicated that he'd be happy with this solution and
-> that this code hasn't reached a published kernel would it be reasonable
-> to go ahead with my current patch (happy to clean up the indent issues
-> that Peter pointed out of course)?
+> The patch looks good, except it would be more appropriate to move the
+> above properties to &clock_audss { }; node in this file.
 
-Strongly agreed that we should fix this before it is published (I assumed
-that is was included in 3.19, it felt so long ago that Mark merged it...). My
-preference would be to remove the pll-lock things entirely though. Assuming
-you don't need it for your board of course, but I doubt it from your description.
-I used it to make sure I had understood the chip correctly, that's all.
-
-Cheers,
-Peter
+Ok. I will fix and send v2 with your sign.
 
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
++++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+
++&clock_audss {
++       assigned-clocks = <&clock_audss EXYNOS_MOUT_AUDSS>,
++                       <&clock_audss EXYNOS_MOUT_I2S>,
++                       <&clock_audss EXYNOS_DOUT_AUD_BUS>;
++       assigned-clock-parents = <&clock CLK_FIN_PLL>,
++                       <&clock_audss EXYNOS_MOUT_AUDSS>;
++       assigned-clock-rates = <0>,
++                       <0>,
++                       <19200000>;
++};
++
+
+> With that change feel free to add:
+> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> 
+> As a side note, this is a dts patch and of course Kukjin maintains that.
+> You would likely get it applied sooner if you would have addressed it
+> directly to Kukjin, rather than Mark or me.
+
+Ok.
+
+Best Regrads,
+Inha Song.
+
+> 
+> -- 
+> Thanks,
+> Sylwester
