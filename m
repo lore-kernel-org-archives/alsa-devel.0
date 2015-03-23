@@ -1,51 +1,73 @@
-From: Howard Mitchell <hm-n6SlHCM0l+K9FHfhHBbuYA@public.gmane.org>
-Subject: Re: [PATCH] ASoC:pcm512x: Make PLL lock output selectable via device
- tree.
-Date: Mon, 23 Mar 2015 09:43:59 +0000
-Message-ID: <550FE05F.6070204@hmbedded.co.uk>
-References: <1426886563-10936-1-git-send-email-hm@hmbedded.co.uk> <20150322162409.GG6643@sirena.org.uk>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: Re: [PATCH v3 1/2] ALSA: jack: create jack kcontrols
+ for every jack input device
+Date: Mon, 23 Mar 2015 12:08:17 +0200
+Message-ID: <1427105297.2968.19.camel@tkkaskin-mobl3.ger.corp.intel.com>
+References: <1426865953-1606-1-git-send-email-yang.jie@intel.com>
+ <1426865953-1606-2-git-send-email-yang.jie@intel.com>
+ <s5ha8z7zlrd.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDBBA0@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150322162409.GG6643-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF9BB260555
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 11:08:22 +0100 (CET)
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BDBBA0@SHSMSX101.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Jie, Yang" <yang.jie@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 22/03/15 16:24, Mark Brown wrote:
-> On Fri, Mar 20, 2015 at 09:22:43PM +0000, Howard Mitchell wrote:
->
->> +	if (pcm512x->pll_lock) {
->> +                if (of_property_read_u32(np, "pll-lock", &val) >= 0) {
->> +                        if (val > 6) {
->> +                                dev_err(dev, "Invalid pll-lock\n");
->> +                                ret = -EINVAL;
->> +                                goto err_clk;
->> +                        }
->> +                        pcm512x->pll_lock = val;
->> +                }
-> This breaks existing boards which rely on GPIO 4 being set as the lock
-> output.  This is very unfortunate since it's a silly thing for the
-> driver to default to but nontheless we should really continue to support
-> them - at a guess Peter's board is relying on this, and even if it isn't
-> someone else's might.
-I take your point, but the reason I pushed this patch was that I wanted 
-to use GPIO4 for pll-out and unfortunately because the pll-lock 
-configuration is after the pll-out configuration it stomps on it. If I 
-modify the patch to provide a default for pll-lock I will then be 
-obliged to specify pll-lock on another GPIO. The pcm5122 has limited IO 
-so being forced to have a GPIO for pll-lock seems wrong to me. A future 
-user of the device may well decide to use the GPIOs for other purposes 
-and therefore not want a pll-lock signal at all. Surely we should allow 
-for that possibility?
+On Sat, 2015-03-21 at 02:22 +0000, Jie, Yang wrote:
+> > As you'll find through the whole output, many calls are combined with
+> > SND_JACK_BTN_* bits.  And think again how this will result with your patch.
+> > A call like
+> > 
+> > 	snd_soc_card_jack_new(card, "Headphone",
+> > 		SND_JACK_HEADPHONE | SND_JACK_BTN_0 |
+> > SND_JACK_BTN_1, ...)
+> > 
+> > would give three kctls, all "Headphone Jack" with indices 0, 1 and 2.
+> > How user-space knows what is for what?
+> [Keyon] yes, this is an issue I was thinking about, we need discussing and conclusion
+> about that, including comments from user-space, here adding Tanu.
+> Here I am thinking about
+> 1. do we really need kctls for buttons(SND_JACK_BTN_n)? if no, that is simplest, 
+> we can filter out them at this kctl creating stage.
+> 2. if yes, then we need an name regenerator here, to generate understandable
+> (for user-space) kctl names for buttons.
 
-Given that Peter has indicated that he'd be happy with this solution and 
-that this code hasn't reached a published kernel would it be reasonable 
-to go ahead with my current patch (happy to clean up the indent issues 
-that Peter pointed out of course)?
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>From PulseAudio point of view, you must make sure that "Headphone Jack"
+with index 0 doesn't refer to a button, because the assumption is that
+"Headphone Jack" at index 0 refers to a jack and not a button (indexes
+other than 0 are currently ignored). Other than that, PulseAudio doesn't
+currently care, because there's no support for buttons.
+
+When thinking about how to implement button support in PulseAudio, the
+first question is that are kcontrols a realiable interface for getting
+button events? What happens when the button is pressed? Does one press
+cause only one on->off or off->on state transition, or is the state "on"
+only for the duration of the press? If the former, then kcontrols should
+be fine, but if the latter, is it guaranteed that the application sees
+the event? If the button press is a short one, causing a quick
+off->on->off transition, is it possible that the application gets a
+notification of a mixer change, but when the application then inspects
+the mixer state, the button state is already "off", so the application
+doesn't get enough information about what happened?
+
+If buttons are exposed as kcontrols, I suppose "Headphone Button N"
+would be a fine name.
+
+-- 
+Tanu
