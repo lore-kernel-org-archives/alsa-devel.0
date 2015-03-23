@@ -1,94 +1,56 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/2] ALSA: jack: Refactoring for jack
- kctls
-Date: Mon, 23 Mar 2015 09:52:51 -0700
-Message-ID: <20150323165250.GG14954@sirena.org.uk>
-References: <1426865953-1606-1-git-send-email-yang.jie@intel.com>
- <550FDA5B.8020604@canonical.com>
- <20150323150031.GB14954@sirena.org.uk>
- <s5ha8z34uoi.wl-tiwai@suse.de>
- <20150323163543.GD14954@sirena.org.uk>
- <s5hy4mn3c01.wl-tiwai@suse.de>
+Subject: Re: [PATCH] ASoC:pcm512x: Make PLL lock output selectable via device
+ tree.
+Date: Mon, 23 Mar 2015 09:56:21 -0700
+Message-ID: <20150323165621.GH14954@sirena.org.uk>
+References: <1426886563-10936-1-git-send-email-hm@hmbedded.co.uk>
+ <20150322162409.GG6643@sirena.org.uk>
+ <550FE05F.6070204@hmbedded.co.uk>
+ <105aef6a0e21488d8661d2a2823515d8@EMAIL.axentia.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0360846636505216816=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D65A5260531
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 17:52:27 +0100 (CET)
-In-Reply-To: <s5hy4mn3c01.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@intel.com, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="PW0Eas8rCkcu1VkF"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <105aef6a0e21488d8661d2a2823515d8@EMAIL.axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@axentia.se>
+Cc: Howard Mitchell <hm@hmbedded.co.uk>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0360846636505216816==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="t4apE7yKrX2dGgJC"
-Content-Disposition: inline
-
-
---t4apE7yKrX2dGgJC
+--PW0Eas8rCkcu1VkF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 23, 2015 at 05:38:22PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Mon, Mar 23, 2015 at 11:00:53AM +0000, Peter Rosin wrote:
 
-> > > Now the question is whether we need representing the same item for
-> > > input jack, even though it's nothing but a place holder.  If we want
-> > > to have consistency between input and kctl jack items, then yes.
-> > > OTOH, we might want to drop buttons from kctls in anyway, so such a
-> > > consistency has no importance.  Then we may just ignore phantom jacks
-> > > for input jacks but create only phatom jack kctls, too, either by
-> > > adding a new flag to indicate that, or let type=0 behaving like that.
+> Strongly agreed that we should fix this before it is published (I assumed
+> that is was included in 3.19, it felt so long ago that Mark merged it...). My
+> preference would be to remove the pll-lock things entirely though. Assuming
+> you don't need it for your board of course, but I doubt it from your description.
+> I used it to make sure I had understood the chip correctly, that's all.
 
-> > I'm not sure I see the relevancy of buttons here?
+It didn't make v3.19 so if we're very quick we can get this in as a fix.
+Can someone resend a version which splits this into two patches, one
+deleting the existing code to configure GPIO 4 and the other adding the
+configurability?  I can then send the removal as a bug fix to v4.0 so we
+don't have any compatibility issues and add the new feature for v4.1.
 
-> Well, you pointed that buttons are needed only for input devices, that
-> implicitly means that we don't need to create kctls for buttons.
-
-OK, right - if we had a jack that was button only and didn't have any
-capability for detecting accessories.  That'd be a bit odd though.
-
-> That is, it's not guaranteed that all jack items have to be present in
-> as both input and kctl.  Following this logic, we may make phantom
-> jacks only appearing in kctls but not in input.
-
-Right, I understood that bit - I was just confused about the buttons.
-
---t4apE7yKrX2dGgJC
+--PW0Eas8rCkcu1VkF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVEETiAAoJECTWi3JdVIfQ4VwH/RBJ3biQC3nyMqse7nmYvBhF
-E8S7KUhX0c/OH2S9RQTbXqgVmu6iU2s2WPPXw1Hxf+3qi3Lycf5jriUFxUPazlQR
-E1IMQEqTNaFlJ6uBWknlIv1JydSXVoVX6ZeEp+dbMRV56v3r9aMbcE0bKqHgy1r1
-bVqdm9hIh4MyeMg8e8XgwjF1JRuAIyDoAoRi9rAypQwMRUfbuo7ZtU1n5FT53leQ
-mWGr1WRX3S/jdrfOARRqJ8sl4K+w3ae35dQxZNUkKVmp5A/w6TVu4pSLkMzXruNO
-zWT86wxEYsZXmpc4XGQLC5OqF5vwlag7/U7l7SMCxrTpL/F4QeIUF5X9MXGArHA=
-=Y/cs
+iQEcBAEBCAAGBQJVEEW0AAoJECTWi3JdVIfQvzYH/2xMMbtkw/+CYYyy6RP2NlUS
+YgABW2ZvwFwtgfD3DMjch3qW8iJy0rq5zDMLtpOtSrwCq0J1CC6Te4yzeuH3Gm04
+W7VYzgpX7wPVkBCt59EVXYJ7NyW0XIw4XdDrltiDN0mLBiksvTLytjnbQYNFHedX
+lDoAXfS1djTLYeNvpcj6J8fDAmiPI1681Hb22wGU96xre1NBrEbSzlevqIuYn3ct
+06mq4ni/r9F4EwFh20YOrKU9gv1HuV372DvB2AZr4QYiNlmQQMmnGOAZc1n24S9R
+2x2vUcoamftRe6FOa8MITZBN0MMbGMRH081ByP2TyG/MMSzDJhr6sGr2iuCff8w=
+=uWR1
 -----END PGP SIGNATURE-----
 
---t4apE7yKrX2dGgJC--
-
---===============0360846636505216816==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0360846636505216816==--
+--PW0Eas8rCkcu1VkF--
