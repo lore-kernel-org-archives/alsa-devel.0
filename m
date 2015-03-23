@@ -1,18 +1,20 @@
-From: Sebastian Wicki <gandro@gmx.net>
-Subject: [PATCH v2] ALSA: hda - Add dock support for Thinkpad
-	T450s (17aa:5036)
-Date: Mon, 23 Mar 2015 17:23:11 +0100
-Message-ID: <1427127791-1245-1-git-send-email-gandro@gmx.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/2] ALSA: jack: Refactoring for jack
+ kctls
+Date: Mon, 23 Mar 2015 09:35:43 -0700
+Message-ID: <20150323163543.GD14954@sirena.org.uk>
+References: <1426865953-1606-1-git-send-email-yang.jie@intel.com>
+ <550FDA5B.8020604@canonical.com>
+ <20150323150031.GB14954@sirena.org.uk>
+ <s5ha8z34uoi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1244654930839221532=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 499C5260421
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 17:23:26 +0100 (CET)
-Received: from ThinkPad.ethz.ch ([195.176.111.10]) by mail.gmx.com (mrgmx102)
- with ESMTPSA (Nemesis) id 0MJmcS-1YbB3x3ukO-0019gS for
- <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 17:23:26 +0100
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9C12260421
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 17:35:20 +0100 (CET)
+In-Reply-To: <s5ha8z34uoi.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,24 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@intel.com, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-This model uses the same dock port as the previous generation.
 
-Signed-off-by: Sebastian Wicki <gandro@gmx.net>
+--===============1244654930839221532==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="at6+YcpfzWZg/htY"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index eee4532..8775389 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4995,6 +4995,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x501e, "Thinkpad L440", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x5026, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x17aa, 0x5036, "Thinkpad T450s", ALC292_FIXUP_TPT440_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
--- 
-2.3.3
+
+--at6+YcpfzWZg/htY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Mar 23, 2015 at 04:09:33PM +0100, Takashi Iwai wrote:
+
+> Right, but it's a bit irrelevant.  We do want to have a common core
+> code, indeed.  However, as David suggested, the latest patchset still
+> doesn't care about "phantom" jack that is a mandatory feature.
+> HD-audio create kctl items even for fixed pins without jack detection.
+> This is needed for having consistent pin mapping.
+
+OK, right - phantom jacks aren't something I was aware of.
+
+> Now the question is whether we need representing the same item for
+> input jack, even though it's nothing but a place holder.  If we want
+> to have consistency between input and kctl jack items, then yes.
+> OTOH, we might want to drop buttons from kctls in anyway, so such a
+> consistency has no importance.  Then we may just ignore phantom jacks
+> for input jacks but create only phatom jack kctls, too, either by
+> adding a new flag to indicate that, or let type=0 behaving like that.
+
+I'm not sure I see the relevancy of buttons here?
+
+--at6+YcpfzWZg/htY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVEEDfAAoJECTWi3JdVIfQCm0H/0+m5BlIEATYANG2Tro6rW4U
+Sk7oky4DG4ol1FPNVG/fYBJHJqDEJCepdpoozTRLGXZDld88EvIg0V7Debk40WlY
+LmH37K6hOuKv8lTUbHk68be4X488FJv88yjB0izm1kxEA1kdVATwFVzY+BhWt9a9
+AvYssQHoWZxuZ2qP8K1Ev1SOQGEEaIsg8mdoFScSBcO2/Lc5JAmYSkty6mgG7xez
+pLSYsZrWzPreXiDlCWtMi9oLgOsBJ/iRiF92z7GbHUSj/Jh9gh1lEuZy0SspaAIm
+6Yjd6fWnfXwcF/C5xd1QKOYwNiN4CYiCf9u47yCVnddrePq01s1SV0mjGZD2uqw=
+=CCVc
+-----END PGP SIGNATURE-----
+
+--at6+YcpfzWZg/htY--
+
+--===============1244654930839221532==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1244654930839221532==--
