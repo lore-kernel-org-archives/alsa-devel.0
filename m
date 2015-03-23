@@ -1,18 +1,22 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [TINYCOMPRESS][PATCH 0/6] Convert build system to
-	autotools
-Date: Mon, 23 Mar 2015 22:10:55 +0530
-Message-ID: <20150323164055.GA32683@intel.com>
-References: <1427116145-519-1-git-send-email-qais.yousef@imgtec.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/2] ALSA: jack: Refactoring for jack
+ kctls
+Date: Mon, 23 Mar 2015 09:52:51 -0700
+Message-ID: <20150323165250.GG14954@sirena.org.uk>
+References: <1426865953-1606-1-git-send-email-yang.jie@intel.com>
+ <550FDA5B.8020604@canonical.com>
+ <20150323150031.GB14954@sirena.org.uk>
+ <s5ha8z34uoi.wl-tiwai@suse.de>
+ <20150323163543.GD14954@sirena.org.uk>
+ <s5hy4mn3c01.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0360846636505216816=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A03B260439
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 17:44:57 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1427116145-519-1-git-send-email-qais.yousef@imgtec.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D65A5260531
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 17:52:27 +0100 (CET)
+In-Reply-To: <s5hy4mn3c01.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,84 +26,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qais Yousef <qais.yousef@imgtec.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@intel.com, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 23, 2015 at 01:08:59PM +0000, Qais Yousef wrote:
-> This series converts the build system to use autotools and splits the files into
-> lib and utils.
-> 
-> Also patch 5 fixes error handling code.
-> 
-> I can't test Android builds but both cross and native compiling worked for me.
-> 
-> I left AUTHORS, ChangeLog and NEWS files empty. I used the license header to fill COPYING.
-Thanks :)
 
-I was planning to do this after my current SKL work but this is welcome too.
-Just one advise, pls generate patches using -M option, that shows code moves
-nicely...
+--===============0360846636505216816==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="t4apE7yKrX2dGgJC"
+Content-Disposition: inline
 
--- 
-~Vinod
 
-> 
-> Qais Yousef (6):
->   Convert the build system to autotools
->   add .gitignore file
->   makefile.linux: delete as no longer necessary/used
->   Android.mk: Update to use the new location of source files
->   compress.c: fix check for errors from poll(), read() and write()
->   src/lib/utils.c: remove this empty file
-> 
->  .gitignore            |  39 ++++
->  AUTHORS               |   0
->  Android.mk            |   6 +-
->  COPYING               |  51 ++++
->  ChangeLog             |   0
->  INSTALL               | 365 +++++++++++++++++++++++++++++
->  Makefile.am           |   3 +
->  NEWS                  |   0
->  autogen.sh            |   6 +
->  compress.c            | 632 -------------------------------------------------
->  configure.ac          |  31 +++
->  cplay.c               | 330 --------------------------
->  crec.c                | 489 --------------------------------------
->  m4/.place_holder      |   0
->  makefile.linux        |  41 ----
->  src/Makefile.am       |   1 +
->  src/lib/Makefile.am   |   5 +
->  src/lib/compress.c    | 634 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  src/utils/Makefile.am |  11 +
->  src/utils/cplay.c     | 330 ++++++++++++++++++++++++++
->  src/utils/crec.c      | 489 ++++++++++++++++++++++++++++++++++++++
->  utils.c               |  62 -----
->  22 files changed, 1968 insertions(+), 1557 deletions(-)
->  create mode 100644 .gitignore
->  create mode 100644 AUTHORS
->  create mode 100644 COPYING
->  create mode 100644 ChangeLog
->  create mode 100644 INSTALL
->  create mode 100644 Makefile.am
->  create mode 100644 NEWS
->  create mode 100755 autogen.sh
->  delete mode 100644 compress.c
->  create mode 100644 configure.ac
->  delete mode 100644 cplay.c
->  delete mode 100644 crec.c
->  create mode 100644 m4/.place_holder
->  delete mode 100644 makefile.linux
->  create mode 100644 src/Makefile.am
->  create mode 100644 src/lib/Makefile.am
->  create mode 100644 src/lib/compress.c
->  create mode 100644 src/utils/Makefile.am
->  create mode 100644 src/utils/cplay.c
->  create mode 100644 src/utils/crec.c
->  delete mode 100644 utils.c
-> 
-> -- 
-> 2.1.0
-> 
+--t4apE7yKrX2dGgJC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
+On Mon, Mar 23, 2015 at 05:38:22PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
+
+> > > Now the question is whether we need representing the same item for
+> > > input jack, even though it's nothing but a place holder.  If we want
+> > > to have consistency between input and kctl jack items, then yes.
+> > > OTOH, we might want to drop buttons from kctls in anyway, so such a
+> > > consistency has no importance.  Then we may just ignore phantom jacks
+> > > for input jacks but create only phatom jack kctls, too, either by
+> > > adding a new flag to indicate that, or let type=0 behaving like that.
+
+> > I'm not sure I see the relevancy of buttons here?
+
+> Well, you pointed that buttons are needed only for input devices, that
+> implicitly means that we don't need to create kctls for buttons.
+
+OK, right - if we had a jack that was button only and didn't have any
+capability for detecting accessories.  That'd be a bit odd though.
+
+> That is, it's not guaranteed that all jack items have to be present in
+> as both input and kctl.  Following this logic, we may make phantom
+> jacks only appearing in kctls but not in input.
+
+Right, I understood that bit - I was just confused about the buttons.
+
+--t4apE7yKrX2dGgJC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVEETiAAoJECTWi3JdVIfQ4VwH/RBJ3biQC3nyMqse7nmYvBhF
+E8S7KUhX0c/OH2S9RQTbXqgVmu6iU2s2WPPXw1Hxf+3qi3Lycf5jriUFxUPazlQR
+E1IMQEqTNaFlJ6uBWknlIv1JydSXVoVX6ZeEp+dbMRV56v3r9aMbcE0bKqHgy1r1
+bVqdm9hIh4MyeMg8e8XgwjF1JRuAIyDoAoRi9rAypQwMRUfbuo7ZtU1n5FT53leQ
+mWGr1WRX3S/jdrfOARRqJ8sl4K+w3ae35dQxZNUkKVmp5A/w6TVu4pSLkMzXruNO
+zWT86wxEYsZXmpc4XGQLC5OqF5vwlag7/U7l7SMCxrTpL/F4QeIUF5X9MXGArHA=
+=Y/cs
+-----END PGP SIGNATURE-----
+
+--t4apE7yKrX2dGgJC--
+
+--===============0360846636505216816==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0360846636505216816==--
