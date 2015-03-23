@@ -1,144 +1,88 @@
-From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Subject: RE: [PATCH] ASoC:pcm512x: Make PLL lock output selectable via
- device tree.
-Date: Sun, 22 Mar 2015 21:25:35 +0000
-Message-ID: <222bcd862d8442158dffedd0657c8ab2@EMAIL.axentia.se>
-References: <1426886563-10936-1-git-send-email-hm@hmbedded.co.uk>
+From: Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH 05/16] page-flags: define behavior of FS/IO-related flags
+ on compound pages
+Date: Sun, 22 Mar 2015 17:02:58 -0700 (PDT)
+Message-ID: <alpine.LSU.2.11.1503221613280.2680@eggly.anvils>
+References: <1426784902-125149-1-git-send-email-kirill.shutemov@linux.intel.com> <1426784902-125149-6-git-send-email-kirill.shutemov@linux.intel.com> <550B15A0.9090308@intel.com> <20150319200252.GA13348@node.dhcp.inet.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1426886563-10936-1-git-send-email-hm-n6SlHCM0l+K9FHfhHBbuYA@public.gmane.org>
-Content-Language: sv-SE
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Howard Mitchell <hm-n6SlHCM0l+K9FHfhHBbuYA@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150319200252.GA13348@node.dhcp.inet.fi>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Dave Hansen <dave.hansen@intel.com>, Hugh Dickins <hughd@google.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Andrea Arcangeli <aarcange@redhat.com>, Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@redhat.com>, Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>, Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>, Steve Capper <steve.capper@linaro.org>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.cz>, Jerome Marchand <jmarchan@redhat.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Howard Mitchell wrote:
-> Currently the PLL Lock output signal is hardcoded to GPIO4. This
-> makes it seletable in the same way as pll-in and pll-out.
+On Thu, 19 Mar 2015, Kirill A. Shutemov wrote:
+> On Thu, Mar 19, 2015 at 11:29:52AM -0700, Dave Hansen wrote:
+> > On 03/19/2015 10:08 AM, Kirill A. Shutemov wrote:
+> > > The odd exception is PG_dirty: sound uses compound pages and maps them
+> > > with PTEs. NO_COMPOUND triggers VM_BUG_ON() in set_page_dirty() on
+> > > handling shared fault. Let's use HEAD for PG_dirty.
 
-Oops, I never intended the plllock code the hit upstream. I thought
-I had removed that testing code and was very surprised to see it, that
-was an odd experience. From my point of view it is fine to instead
-remove the whole pll-lock thing.
+It really depends on what you do with PageDirty of the head, when you
+get to support 4k pagecache with subpages of a huge compound page.
 
-But now the cat is out, so maybe we have to keep a way to output
-the pll-lock signal for backwards compatibility?
+HEAD will be fine, so long as PageDirty on the head means the whole
+huge page must be written back.  I expect that's what you will choose;
+but one could consider that if a huge page is only mapped read-only,
+but a few subpages of it writable, then only the few need be written
+back, in which case ANY would be more appropriate.  NO_COMPOUND is
+certainly wrong.
 
-Appart from the space-indent changes, this looks fine (if we do in fact
-need to keep it at all). But I would like to see a new version of the
-patch without the whitespace changes before I commit to that.
+But that does illustrate that I consider this patch series premature:
+it belongs with your huge pagecache implementation.  You seem to be
+"tidying up" and adding overhead to things that are fine as they are.
 
-Cheers,
-Peter
+> > 
+> > Can we get the sound guys to look at this, btw?  It seems like an odd
+> > thing that we probably don't want to keep around, right?
+> 
+> CC: +sound guys
 
-> Signed-off-by: Howard Mitchell <hm-n6SlHCM0l+K9FHfhHBbuYA@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/pcm512x.txt          |    3 ++
->  sound/soc/codecs/pcm512x.c                         |   47 +++++++++++++-------
->  2 files changed, 33 insertions(+), 17 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt
-> b/Documentation/devicetree/bindings/sound/pcm512x.txt
-> index 3aae3b4..432f186 100644
-> --- a/Documentation/devicetree/bindings/sound/pcm512x.txt
-> +++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
-> @@ -26,6 +26,8 @@ Optional properties:
->      given pll-in pin and PLL output on the given pll-out pin.  An
->      external connection from the pll-out pin to the SCLK pin is assumed.
-> 
-> +  - pll-lock : gpio pin used to output the PLL lock flag.
-> +
->  Examples:
-> 
->  	pcm5122: pcm5122@4c {
-> @@ -49,4 +51,5 @@ Examples:
->  		clocks = <&sck>;
->  		pll-in = <3>;
->  		pll-out = <6>;
-> +		pll-lock = <4>;
->  	};
-> diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-> index 8472099..a4217d7 100644
-> --- a/sound/soc/codecs/pcm512x.c
-> +++ b/sound/soc/codecs/pcm512x.c
-> @@ -49,6 +49,7 @@ struct pcm512x_priv {
->  	int fmt;
->  	int pll_in;
->  	int pll_out;
-> +	int pll_lock;
->  	int pll_r;
->  	int pll_j;
->  	int pll_d;
-> @@ -1296,24 +1297,26 @@ static int pcm512x_hw_params(struct
-> snd_pcm_substream *substream,
->  				ret, pcm512x->pll_out);
->  			return ret;
->  		}
-> +	}
-> 
-> -		gpio = PCM512x_G1OE << (4 - 1);
-> -		ret = regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_EN,
-> -					 gpio, gpio);
-> -		if (ret != 0) {
-> -			dev_err(codec->dev, "Failed to enable gpio %d: %d\n",
-> -				4, ret);
-> -			return ret;
-> -		}
-> -
-> -		gpio = PCM512x_GPIO_OUTPUT_1 + 4 - 1;
-> -		ret = regmap_update_bits(pcm512x->regmap, gpio,
-> -					 PCM512x_GxSL, PCM512x_GxSL_PLLLK);
-> -		if (ret != 0) {
-> -			dev_err(codec->dev,
-> -				"Failed to output pll lock on %d: %d\n",
-> -				ret, 4);
-> -			return ret;
-> +	if (pcm512x->pll_lock) {
-> +                gpio = PCM512x_G1OE << (pcm512x->pll_lock - 1);
-> +                ret = regmap_update_bits(pcm512x->regmap, PCM512x_GPIO_EN,
-> +                                         gpio, gpio);
-> +                if (ret != 0) {
-> +                        dev_err(codec->dev, "Failed to enable gpio %d: %d\n",
-> +                                pcm512x->pll_lock, ret);
-> +                        return ret;
-> +                }
-> +
-> +                gpio = PCM512x_GPIO_OUTPUT_1 + pcm512x->pll_lock - 1;
-> +                ret = regmap_update_bits(pcm512x->regmap, gpio,
-> +                                         PCM512x_GxSL, PCM512x_GxSL_PLLLK);
-> +                if (ret != 0) {
-> +                        dev_err(codec->dev,
-> +                                "Failed to output pll lock on %d: %d\n",
-> +                                ret, pcm512x->pll_lock);
-> +                        return ret;
->  		}
->  	}
-> 
-> @@ -1518,6 +1521,16 @@ int pcm512x_probe(struct device *dev, struct
-> regmap *regmap)
->  			ret = -EINVAL;
->  			goto err_clk;
->  		}
-> +
-> +                if (of_property_read_u32(np, "pll-lock", &val) >= 0) {
-> +                        if (val > 6) {
-> +                                dev_err(dev, "Invalid pll-lock\n");
-> +                                ret = -EINVAL;
-> +                                goto err_clk;
-> +                        }
-> +                        pcm512x->pll_lock = val;
-> +                }
-> +
->  	}
->  #endif
-> 
-> --
-> 1.7.9.5
+I don't think this is peculiar to sound at all: there are other users
+of __GFP_COMP in the tree, aren't there?  And although some of them
+might turn out not to need it any more, I expect most of them still
+need it for the same reason they did originally.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> I'm not sure what is right fix here. At the time adding __GFP_COMP was a
+> fix: see f3d48f0373c1.
+
+The only thing special about this one, was that I failed to add
+__GFP_COMP at first.
+
+The purpose of __GFP_COMP is to allow a >0-order page (originally, just
+a hugetlb page: see 2.5.60) to be mapped into userspace, and parts of it
+then subjected to get_user_pages (ptrace, futex, direct I/O, infiniband
+etc), and now even munmap, without destroying the integrity of the
+underlying >0-order page.
+
+We don't bother with __GFP_COMP when a >0-order page cannot be mapped
+into userspace (except through /dev/mem or suchlike); we add __GFP_COMP
+when it might be, to get the right reference counting.
+
+It's normal for set_page_dirty() to be called in the course of
+get_user_pages(), and it's normal for set_page_dirty() to be called
+when releasing the get_user_pages() references, and it's normal for
+set_page_dirty() to be called when munmap'ing a pte_dirty().
+
+> 
+> Other odd part about __GFP_COMP here is that we have ->_mapcount in tail
+> pages to be used for both: mapcount of the individual page and for gup
+> pins. __compound_tail_refcounted() doesn't recognize that we don't need
+> tail page accounting for these pages.
+
+So page->_mapcount of the tails is being used for both their mapcount
+and their reference count: that's certainly funny, and further reason
+to pursue your aim of simplifying the way THPs are refcounted.  But
+not responsible for any actual bug, I think?
+
+> 
+> Hugh, I tried to ask you about the situation several times (last time on
+> the summit). Any comments?
+
+I do remember we began a curtailed conversation about this at LSF/MM.
+I do not remember you asking about it earlier: when was that?
+
+Hugh
