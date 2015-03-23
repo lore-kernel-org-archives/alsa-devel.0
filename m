@@ -1,17 +1,18 @@
-From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [TINYCOMPRESS][PATCH 6/6] src/lib/utils.c: remove this
-	empty file
-Date: Mon, 23 Mar 2015 13:09:05 +0000
-Message-ID: <1427116145-519-7-git-send-email-qais.yousef@imgtec.com>
-References: <1427116145-519-1-git-send-email-qais.yousef@imgtec.com>
+From: Sebastian Wicki <gandro@gmx.net>
+Subject: [PATCH] ALSA: hda - Add dock support for Thinkpad
+	T450s (17aa:5036)
+Date: Mon, 23 Mar 2015 15:09:27 +0100
+Message-ID: <1427119767-5249-1-git-send-email-gandro@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 25AE2260606
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 14:09:23 +0100 (CET)
-In-Reply-To: <1427116145-519-1-git-send-email-qais.yousef@imgtec.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9129F26066B
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 15:14:04 +0100 (CET)
+Received: from ThinkPad.ethz.ch ([195.176.111.3]) by mail.gmx.com (mrgmx102)
+ with ESMTPSA (Nemesis) id 0LqF9o-1Z4y1U0Y08-00dlrB for
+ <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 15:14:04 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,109 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@intel.com
-Cc: alsa-devel@alsa-project.org, Qais Yousef <qais.yousef@imgtec.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-utils.c isn't implementing anything so delete it
----
- Android.mk          |  2 +-
- src/lib/Makefile.am |  2 +-
- src/lib/utils.c     | 62 -----------------------------------------------------
- 3 files changed, 2 insertions(+), 64 deletions(-)
- delete mode 100644 src/lib/utils.c
+This model uses the same dock port as the previous generation.
 
-diff --git a/Android.mk b/Android.mk
-index 14878cccc805..d201cfa1abff 100644
---- a/Android.mk
-+++ b/Android.mk
-@@ -2,7 +2,7 @@ LOCAL_PATH:= $(call my-dir)
- 
- include $(CLEAR_VARS)
- LOCAL_C_INCLUDES:= $(LOCAL_PATH)/include
--LOCAL_SRC_FILES:= src/lib/compress.c src/lib/utils.c
-+LOCAL_SRC_FILES:= src/lib/compress.c
- LOCAL_MODULE := libtinycompress
- LOCAL_SHARED_LIBRARIES:= libcutils libutils
- LOCAL_MODULE_TAGS := optional
-diff --git a/src/lib/Makefile.am b/src/lib/Makefile.am
-index 01afb8a443a1..6f900ac98a27 100644
---- a/src/lib/Makefile.am
-+++ b/src/lib/Makefile.am
-@@ -1,5 +1,5 @@
- tinycompressdir = $(libdir)
- 
- tinycompress_LTLIBRARIES = libtinycompress.la
--libtinycompress_la_SOURCES = compress.c utils.c
-+libtinycompress_la_SOURCES = compress.c
- libtinycompress_la_CFLAGS = -I $(top_builddir)/include
-diff --git a/src/lib/utils.c b/src/lib/utils.c
-deleted file mode 100644
-index 9a0f86a3160a..000000000000
---- a/src/lib/utils.c
-+++ /dev/null
-@@ -1,62 +0,0 @@
--/*
-- * BSD LICENSE
-- *
-- * tinycompress utility functions
-- * Copyright (c) 2011-2013, Intel Corporation
-- * All rights reserved.
-- *
-- * Author: Vinod Koul <vinod.koul@intel.com>
-- *
-- * Redistribution and use in source and binary forms, with or without
-- * modification, are permitted provided that the following conditions are met:
-- *
-- * Redistributions of source code must retain the above copyright notice,
-- * this list of conditions and the following disclaimer.
-- * Redistributions in binary form must reproduce the above copyright notice,
-- * this list of conditions and the following disclaimer in the documentation
-- * and/or other materials provided with the distribution.
-- * Neither the name of Intel Corporation nor the names of its contributors
-- * may be used to endorse or promote products derived from this software
-- * without specific prior written permission.
-- *
-- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
-- * THE POSSIBILITY OF SUCH DAMAGE.
-- *
-- * LGPL LICENSE
-- *
-- * tinycompress utility functions
-- * Copyright (c) 2011-2013, Intel Corporation
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms and conditions of the GNU Lesser General Public License,
-- * version 2.1, as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
-- * License for more details.
-- *
-- * You should have received a copy of the GNU Lesser General Public License
-- * along with this program; if not, write to
-- * the Free Software Foundation, Inc.,
-- * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
-- */
--#include <stdio.h>
--#include <stdlib.h>
--#include <stdbool.h>
--#include <linux/types.h>
--#include <sys/time.h>
--#define __force
--#define __bitwise
--#define __user
--#include "tinycompress/tinycompress.h"
--
+Signed-off-by: Sebastian Wicki <gandro@gmx.net>
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index eee4532..a9e2e6e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4988,6 +4988,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x2210, "Thinkpad T540p", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad T440", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad X240", ALC292_FIXUP_TPT440_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x5036, "Thinkpad T450s", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
 -- 
-2.1.0
+2.3.3
