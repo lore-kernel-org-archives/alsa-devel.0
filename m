@@ -1,16 +1,15 @@
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [TINYCOMPRESS][PATCH 2/6] add .gitignore file
-Date: Mon, 23 Mar 2015 13:09:01 +0000
-Message-ID: <1427116145-519-3-git-send-email-qais.yousef@imgtec.com>
-References: <1427116145-519-1-git-send-email-qais.yousef@imgtec.com>
+Subject: [TINYCOMPRESS][PATCH 0/6] Convert build system to
+	autotools
+Date: Mon, 23 Mar 2015 13:08:59 +0000
+Message-ID: <1427116145-519-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 04B8E26060B
- for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 14:09:19 +0100 (CET)
-In-Reply-To: <1427116145-519-1-git-send-email-qais.yousef@imgtec.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C0411260606
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 14:09:17 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +23,67 @@ To: vinod.koul@intel.com
 Cc: alsa-devel@alsa-project.org, Qais Yousef <qais.yousef@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
----
- .gitignore | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 .gitignore
+This series converts the build system to use autotools and splits the files into
+lib and utils.
 
-diff --git a/.gitignore b/.gitignore
-new file mode 100644
-index 000000000000..581b31038c8f
---- /dev/null
-+++ b/.gitignore
-@@ -0,0 +1,39 @@
-+.*
-+*.o
-+*.so
-+*.la
-+*.lo
-+*~
-+configure
-+config.log
-+config.cache
-+config.status
-+config.guess
-+config.sub
-+config.h
-+config.h.in
-+Makefile
-+Makefile.in
-+libtool
-+depcomp
-+ltmain.sh
-+aclocal.m4
-+autom4te.cache
-+compile
-+install-sh
-+missing
-+stamp-h1
-+m4/libtool.m4
-+m4/ltoptions.m4
-+m4/ltsugar.m4
-+m4/ltversion.m4
-+m4/lt~obsolete.m4
-+
-+# binary ignores
-+cplay
-+crecord
-+
-+# other ignores
-+*.patch
-+cscope.*
-+tags
+Also patch 5 fixes error handling code.
+
+I can't test Android builds but both cross and native compiling worked for me.
+
+I left AUTHORS, ChangeLog and NEWS files empty. I used the license header to fill COPYING.
+
+Qais Yousef (6):
+  Convert the build system to autotools
+  add .gitignore file
+  makefile.linux: delete as no longer necessary/used
+  Android.mk: Update to use the new location of source files
+  compress.c: fix check for errors from poll(), read() and write()
+  src/lib/utils.c: remove this empty file
+
+ .gitignore            |  39 ++++
+ AUTHORS               |   0
+ Android.mk            |   6 +-
+ COPYING               |  51 ++++
+ ChangeLog             |   0
+ INSTALL               | 365 +++++++++++++++++++++++++++++
+ Makefile.am           |   3 +
+ NEWS                  |   0
+ autogen.sh            |   6 +
+ compress.c            | 632 -------------------------------------------------
+ configure.ac          |  31 +++
+ cplay.c               | 330 --------------------------
+ crec.c                | 489 --------------------------------------
+ m4/.place_holder      |   0
+ makefile.linux        |  41 ----
+ src/Makefile.am       |   1 +
+ src/lib/Makefile.am   |   5 +
+ src/lib/compress.c    | 634 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/utils/Makefile.am |  11 +
+ src/utils/cplay.c     | 330 ++++++++++++++++++++++++++
+ src/utils/crec.c      | 489 ++++++++++++++++++++++++++++++++++++++
+ utils.c               |  62 -----
+ 22 files changed, 1968 insertions(+), 1557 deletions(-)
+ create mode 100644 .gitignore
+ create mode 100644 AUTHORS
+ create mode 100644 COPYING
+ create mode 100644 ChangeLog
+ create mode 100644 INSTALL
+ create mode 100644 Makefile.am
+ create mode 100644 NEWS
+ create mode 100755 autogen.sh
+ delete mode 100644 compress.c
+ create mode 100644 configure.ac
+ delete mode 100644 cplay.c
+ delete mode 100644 crec.c
+ create mode 100644 m4/.place_holder
+ delete mode 100644 makefile.linux
+ create mode 100644 src/Makefile.am
+ create mode 100644 src/lib/Makefile.am
+ create mode 100644 src/lib/compress.c
+ create mode 100644 src/utils/Makefile.am
+ create mode 100644 src/utils/cplay.c
+ create mode 100644 src/utils/crec.c
+ delete mode 100644 utils.c
+
 -- 
 2.1.0
