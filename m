@@ -1,33 +1,33 @@
 From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: [PATCH] ASoC: rsnd: Fix duplicate const for DVC ramp rates
-Date: Tue, 24 Mar 2015 11:47:43 +0100
-Message-ID: <1427194063-31572-1-git-send-email-k.kozlowski@samsung.com>
+Subject: [PATCH] ALSA: asihpi: Fix duplicate const for clock sources
+Date: Tue, 24 Mar 2015 11:48:24 +0100
+Message-ID: <1427194104-31617-1-git-send-email-k.kozlowski@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <k.kozlowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Replace duplicated const keyword for 'dvc_ramp_rate' with proper
+Replace duplicated const keyword for 'sampleclock_sources' with proper
 array of const pointers to const strings.
 
 Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
 ---
- sound/soc/sh/rcar/dvc.c | 2 +-
+ sound/pci/asihpi/asihpi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index aeeef1352eee..6d85e36c6c2b 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -36,7 +36,7 @@ struct rsnd_dvc {
- 	     ((pos) = (struct rsnd_dvc *)(priv)->dvc + i);	\
- 	     i++)
- 
--static const char const *dvc_ramp_rate[] = {
-+static const char * const dvc_ramp_rate[] = {
- 	"128 dB/1 step",	 /* 00000 */
- 	"64 dB/1 step",		 /* 00001 */
- 	"32 dB/1 step",		 /* 00010 */
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index e5cd7be85355..1039eccbb895 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -2376,7 +2376,7 @@ static int snd_asihpi_cmode_add(struct snd_card_asihpi *asihpi,
+ /*------------------------------------------------------------
+    Sampleclock source  controls
+  ------------------------------------------------------------*/
+-static const char const *sampleclock_sources[] = {
++static const char * const sampleclock_sources[] = {
+ 	"N/A", "Local PLL", "Digital Sync", "Word External", "Word Header",
+ 	"SMPTE", "Digital1", "Auto", "Network", "Invalid",
+ 	"Prev Module", "BLU-Link",
 -- 
 1.9.1
