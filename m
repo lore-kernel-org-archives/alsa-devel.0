@@ -1,16 +1,16 @@
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [TINYCOMPRESS][v2 PATCH 3/7] makefile.linux: delete as
-	no longer necessary/used
-Date: Tue, 24 Mar 2015 10:32:30 +0000
-Message-ID: <1427193154-6753-4-git-send-email-qais.yousef@imgtec.com>
+Subject: [TINYCOMPRESS][v2 PATCH 7/7] tinycompress.h:
+	explicitly include required headers
+Date: Tue, 24 Mar 2015 10:32:34 +0000
+Message-ID: <1427193154-6753-8-git-send-email-qais.yousef@imgtec.com>
 References: <1427193154-6753-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E759260452
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 11:32:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F403260464
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 11:32:45 +0100 (CET)
 In-Reply-To: <1427193154-6753-1-git-send-email-qais.yousef@imgtec.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,58 +25,26 @@ To: vinod.koul@intel.com
 Cc: alsa-devel@alsa-project.org, Qais Yousef <qais.yousef@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now autotools takes care of generating Makefiles.
+tinycompress.h was relying on other files to include linux/types.h and stdbool.h
+which are required by it. Explicitly include it to fix compile errors when external
+program tries to include this header.
 ---
- makefile.linux | 41 -----------------------------------------
- 1 file changed, 41 deletions(-)
- delete mode 100644 makefile.linux
+ include/tinycompress/tinycompress.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/makefile.linux b/makefile.linux
-deleted file mode 100644
-index c4dab6d3b7d5..000000000000
---- a/makefile.linux
-+++ /dev/null
-@@ -1,41 +0,0 @@
--LIB = libtinycompress
--VER = 0.1
--LIBSRC = compress.c
--PLAYBIN = cplay
--RECBIN = crec
--PLAYSRC = cplay.c utils.c
--RECSRC = crec.c utils.c
--LIBOBJ = ${LIBSRC:.c=.o}
--PLAYOBJ = ${PLAYSRC:.c=.o}
--RECOBJ = ${RECSRC:.c=.o}
--
--CROSS_COMPILE ?=
--CC ?= ${CROSS_COMPILE}gcc
--
--CFLAGS += -std=c99 -Wall -Wextra -Wunused -DVERSION=\"${VER}\" -I./include
--LDFLAGS += -L. -ltinycompress
--LIBLDFLAGS = -lasound
--
--all: libtinycompress cplay crec
--
--$(LIB): ${LIBOBJ}
--	@echo "  LD	"$@
--	@${CC} ${CFLAGS} -shared -Wl,-soname,$@.so -o $@.so ${LIBOBJ} ${LIBLDFLAGS}
--
--$(PLAYBIN): ${PLAYOBJ} ${LIB}
--	@echo "  LD	"$@
--	@${CC} ${CFLAGS} -o $@ ${PLAYOBJ} ${LDFLAGS}
--
--$(RECBIN): ${RECOBJ} ${LIB}
--	@echo "  LD	"$@
--	@${CC} ${CFLAGS} -o $@ ${RECOBJ} ${LDFLAGS}
--
--%.o: %.c
--	@echo "  CC	"$<
--	@${CC} ${CFLAGS} -c -fPIC -o $@ $<
--
--clean:
--	@rm -rf ${BIN} ${PLAYOBJ} ${RECOBJ} ${LIB}.so ${LIBOBJ}
--
--
--.PHONY: all clean
+diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
+index 03c396fccea5..68626a42e4e7 100644
+--- a/include/tinycompress/tinycompress.h
++++ b/include/tinycompress/tinycompress.h
+@@ -53,6 +53,9 @@
+ #ifndef __TINYCOMPRESS_H
+ #define __TINYCOMPRESS_H
+ 
++#include <linux/types.h>
++#include <stdbool.h>
++
+ #if defined(__cplusplus)
+ extern "C" {
+ #endif
 -- 
 2.1.0
