@@ -1,53 +1,46 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: pcm512x: Remove hardcoding of pll-lock to GPIO4
-Date: Mon, 23 Mar 2015 14:38:44 -0700
-Message-ID: <20150323213844.GV14954@sirena.org.uk>
-References: <1427145421-5544-1-git-send-email-hm@hmbedded.co.uk>
+From: anish <yesanishhere@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add maintainer for maxim codecs
+Date: Mon, 23 Mar 2015 17:04:26 -0700
+Message-ID: <CABCoZhD+pMPM3yazjh8R3s+8m1Sq7q3B81TBY0NKxJvgKBf4mw@mail.gmail.com>
+References: <1425338170-30924-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TG7lY2/6mW/akb80"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1427145421-5544-1-git-send-email-hm-n6SlHCM0l+K9FHfhHBbuYA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Howard Mitchell <hm-n6SlHCM0l+K9FHfhHBbuYA@public.gmane.org>
-Cc: peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1425338170-30924-1-git-send-email-yesanishhere@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, gregkh@linuxfoundation.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Anish Kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
---TG7lY2/6mW/akb80
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I was wondering if this patch is in any of the queue?
 
-On Mon, Mar 23, 2015 at 09:17:01PM +0000, Howard Mitchell wrote:
-> Currently GPIO4 is hardcoded to output the pll-lock signal.
-> Unfortunately this is after the pll-out GPIO is configured which
-> is selectable in the device tree. Therefore it is not possible to
-> use GPIO4 for pll-out. Therefore this patch removes the
-> configuration of GPIO4.
-
-Applied, thanks.  Please pay attention to your CC lists - try to avoid
-CC irrelevant people on your mails.  This helps cut down on people's
-mail loads.
-
---TG7lY2/6mW/akb80
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVEIfjAAoJECTWi3JdVIfQu/IH/3yzgU/nLeKm32oWI7d9mpK/
-+DkfQiRT22DMAnUkCvAj7ZRhqeet7JS8Uu+eHISy5OCnR/lpn0dKEooZavazrelj
-uU3zRuR+FzpEf+RApjLgN/B/9an2TqpNzjdmLOlDBF1q8Glbbce2zaywXbT57Nlu
-CAgbh6+kKrDfuMwrP0+DYU0kICGcLJBdCLWrXGz+a1pTzbOQrRWmOePjjYGVUqc+
-wgYX5DEVmn98xUGCZw2VfH5eEUSor2QBGd47ZwBS11UkbSBzu6x5i7pqPDJmBGW2
-cGzwTGh99N0zr+7DBnscGhpVKyXS2n3FpHAO3MyHqdjYj+oYUO215+KMfTJt7aE=
-=SWXY
------END PGP SIGNATURE-----
-
---TG7lY2/6mW/akb80--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Mon, Mar 2, 2015 at 3:16 PM, Anish Kumar <yesanishhere@gmail.com> wrote:
+> This patch adds maintainer for maxim audio codecs.
+> Signed-off-by: Anish Kumar <yesanishhere@gmail.com>
+> ---
+>  MAINTAINERS | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8bdd7a7..2128586 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -7387,6 +7387,13 @@ S:       Supported
+>  F:     sound/soc/
+>  F:     include/sound/soc*
+>
+> +MAXIM INTEGRATED SOC CODEC DRIVER
+> +M:     Anish Kumar <yesanishhere@gmail.com>
+> +L:     alsa-devel@alsa-project.org (moderated for non-subscribers)
+> +S:     Maintained
+> +F:     sound/soc/codecs/max*
+> +F:     include/sound/max*
+> +
+>  SPARC + UltraSPARC (sparc/sparc64)
+>  M:     "David S. Miller" <davem@davemloft.net>
+>  L:     sparclinux@vger.kernel.org
+> --
+> 1.9.3
+>
