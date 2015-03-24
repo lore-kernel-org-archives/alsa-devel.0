@@ -1,107 +1,71 @@
-From: Kukjin Kim <kgene@kernel.org>
-Subject: RE: [alsa-devel] [PATCH RESEND] ARM: dts: Support audio on
- Exynos5422-odroidxu3 using simple-audio-card
-Date: Tue, 24 Mar 2015 21:58:29 +0900
-Message-ID: <02cf01d06632$39be11a0$ad3a34e0$@kernel.org>
-References: <1427079093-28483-1-git-send-email-ideal.song@samsung.com>
- <550FF0FF.4000604@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt286: check regmap_read result for
+	ID check
+Date: Tue, 24 Mar 2015 08:56:21 -0700
+Message-ID: <20150324155621.GB17265@sirena.org.uk>
+References: <1427161872-12356-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <550FF0FF.4000604@samsung.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Sylwester Nawrocki' <s.nawrocki@samsung.com>, 'Inha Song' <ideal.song@samsung.com>
-Cc: broonie@kernel.org, kgene@kernel.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, galak@codeaurora.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, cw00.choi@samsung.com
+Content-Type: multipart/mixed; boundary="===============5441624634117251039=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34F1C26047A
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 16:56:15 +0100 (CET)
+In-Reply-To: <1427161872-12356-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, matt.fleming@intel.com, jocelyn.li@intel.com, lgirdwood@gmail.com, liam.r.girdwood@linux.intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Sylwester Nawrocki wrote:
-> 
-> On 23/03/15 03:51, Inha Song wrote:
-> > Add MAX98090 audio codec, I2S interface and the sound nodes to support
-> > audio on Exynos5422 SoC Based Odroid-XU3 board. Now we can support audio
-> > in Odroid-XU3 board using simple-audio-card DT binding.
-> >
-> > Signed-off-by: Inha Song <ideal.song@samsung.com>
-> > ---
-> >  arch/arm/boot/dts/exynos5420.dtsi          |  9 +++++
-> >  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 57 ++++++++++++++++++++++++++++++
-> >  2 files changed, 66 insertions(+)
-> >
-> > diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
-> > index 4eaeabe..e459c1d 100644
-> > --- a/arch/arm/boot/dts/exynos5420.dtsi
-> > +++ b/arch/arm/boot/dts/exynos5420.dtsi
-> > @@ -415,6 +415,9 @@
-> >  			<&clock_audss EXYNOS_I2S_BUS>,
-> >  			<&clock_audss EXYNOS_SCLK_I2S>;
-> >  		clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
-> > +		#clock-cells = <1>;
-> > +		clock-output-names = "i2s_cdclk0";
-> > +		#sound-dai-cells = <1>;
-> >  		samsung,idma-addr = <0x03000000>;
-> >  		pinctrl-names = "default";
-> >  		pinctrl-0 = <&i2s0_bus>;
-> > @@ -429,6 +432,9 @@
-> >  		dma-names = "tx", "rx";
-> >  		clocks = <&clock CLK_I2S1>, <&clock CLK_SCLK_I2S1>;
-> >  		clock-names = "iis", "i2s_opclk0";
-> > +		#clock-cells = <1>;
-> > +		clock-output-names = "i2s_cdclk1";
-> > +		#sound-dai-cells = <1>;
-> >  		pinctrl-names = "default";
-> >  		pinctrl-0 = <&i2s1_bus>;
-> >  		status = "disabled";
-> > @@ -442,6 +448,9 @@
-> >  		dma-names = "tx", "rx";
-> >  		clocks = <&clock CLK_I2S2>, <&clock CLK_SCLK_I2S2>;
-> >  		clock-names = "iis", "i2s_opclk0";
-> > +		#clock-cells = <1>;
-> > +		clock-output-names = "i2s_cdclk2";
-> > +		#sound-dai-cells = <1>;
-> >  		pinctrl-names = "default";
-> >  		pinctrl-0 = <&i2s2_bus>;
-> >  		status = "disabled";
-> > diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> > index edc25cf..9275ad6 100644
-> > --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> > +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> > @@ -11,6 +11,7 @@
-> >  */
-> >
-> >  /dts-v1/;
-> > +#include <dt-bindings/sound/samsung-i2s.h>
-> >  #include "exynos5800.dtsi"
-> >
-> >  / {
-> > @@ -285,6 +286,62 @@
-> >  	rtc@101E0000 {
-> >  		status = "okay";
-> >  	};
-> > +
-> > +	sound: sound {
-> > +		compatible = "simple-audio-card";
-> > +		assigned-clocks = <&clock_audss EXYNOS_MOUT_AUDSS>,
-> > +				<&clock_audss EXYNOS_MOUT_I2S>,
-> > +				<&clock_audss EXYNOS_DOUT_AUD_BUS>;
-> > +		assigned-clock-parents = <&clock CLK_FIN_PLL>,
-> > +				<&clock_audss EXYNOS_MOUT_AUDSS>;
-> > +		assigned-clock-rates = <0>,
-> > +				<0>,
-> > +				<19200000>;
-> 
-> The patch looks good, except it would be more appropriate to move the
-> above properties to &clock_audss { }; node in this file.
-> With that change feel free to add:
-> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> 
-> As a side note, this is a dts patch and of course Kukjin maintains that.
-> You would likely get it applied sooner if you would have addressed it
-> directly to Kukjin, rather than Mark or me.
-> 
-Yes, please. I'll apply this once you address comments per Sylwester's
-suggestion.
 
-Thanks,
-Kukjin
+--===============5441624634117251039==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nVMJ2NtxeReIH9PS"
+Content-Disposition: inline
+
+
+--nVMJ2NtxeReIH9PS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Mar 24, 2015 at 09:51:12AM +0800, Bard Liao wrote:
+> It is worth to check the regmap_read result for ID check since it
+> is the first regmap_read. And we can check if there is any i2c
+> issue.
+
+Applied, thanks.
+
+--nVMJ2NtxeReIH9PS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVEYkkAAoJECTWi3JdVIfQJTIH/1dKvdlIpesvr/dFfcMPpc8q
+6226g9k4az3FTqy7BuUFcGb7SWQyHn7a9TlgWgjqG5H6gSF2PlzKOxxGsqqhA0LI
+zA2liBlksuWvMbOACtK/BZz/FVqqkwFWBpZ/rAGMFv60UYHLI5D2xMgzbcpfaYGT
+R+IZ9jvC3YIr7T//m5GUfPTFgxaFQ4KU/N0fNDZ7gfWvuykMcgp8A1n5Sc0F7vqf
+db6/OsHxnpIjOzc5ACt5MgZB60cNJJJz5Kw19T6YlQXnxZzlzZ3MYU3yXwTDwoc7
+Ylrp2S+O3VU6mzwL7jARvrJzcqNp1pFNeScBDrHYw96V5SDu4SY4KbMhnbLSnmA=
+=USe8
+-----END PGP SIGNATURE-----
+
+--nVMJ2NtxeReIH9PS--
+
+--===============5441624634117251039==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5441624634117251039==--
