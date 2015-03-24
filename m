@@ -1,135 +1,165 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: [alsa-devel] [PATCH v2] ARM: dts: Support audio on
- Exynos5422-odroidxu3 using simple-audio-card
-Date: Tue, 24 Mar 2015 10:19:35 +0900
-Message-ID: <1427159975-3488-1-git-send-email-ideal.song@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: kgene@kernel.org
-Cc: s.nawrocki@samsung.com, broonie@kernel.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, cw00.choi@samsung.com, Inha Song <ideal.song@samsung.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_usb_audio - siberia elite prism soundcard
+	issues
+Date: Tue, 24 Mar 2015 09:35:45 +0800
+Message-ID: <CAN8cciYtRPRwXNS=c9qotvEkAcstiV739EHFNNun-PLY3AvEVw@mail.gmail.com>
+References: <CAHti5NHPMjxAtg_XLHD1kL4rUCAPaNGa_2ZAZwvv_Kc4u43uAw@mail.gmail.com>
+ <54FC9CB0.2030003@ladisch.de>
+ <CAHti5NEvVwsxdOnJdJErMCssu3_5ohaRsDC0WVCuhB0upLF_mQ@mail.gmail.com>
+ <CAN8cciZcnD4zPbL-jD8+t5AHaugWvbrbo33_iuVBktHnpKpRuw@mail.gmail.com>
+ <CAHti5NEfeguhQTZANNg=QnBZXRjDJZV0DAd3H1i+p4nCsmkQmQ@mail.gmail.com>
+ <CAN8cciZjEtmS__52oRbda8ePnZTGO_ss65Nwr8qA1D+ip1d-qA@mail.gmail.com>
+ <CAHti5NEOnozoTDCKgzNsUEE4Yxd-VURXx_mH2vy4rq1dB51ySA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
+ [209.85.218.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AA8526155E
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 02:35:47 +0100 (CET)
+Received: by oifl3 with SMTP id l3so126162540oif.0
+ for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2015 18:35:46 -0700 (PDT)
+In-Reply-To: <CAHti5NEOnozoTDCKgzNsUEE4Yxd-VURXx_mH2vy4rq1dB51ySA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel <dferradal@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add MAX98090 audio codec, I2S interface and the sound nodes to support
-audio on Exynos5422 SoC Based Odroid-XU3 board. Now we can support audio
-in Odroid-XU3 board using simple-audio-card DT binding.
+>> >> >
+>> >> >
+>> >> numid=11,iface=MIXER,name='Speaker Playback Volume' ;
+type=INTEGER,access=rw---R--,values=8,min=0,max=74,step=0 :
+values=54,54,54,54,54,54,54,54 | dBminmax-min=-74.00dB,max=0.00dB
+>> >>
+>> >> You need workaround since pulseaudio don't like volume control with
+more than two channels
+>> >>
+>> >> https://bugs.freedesktop.org/show_bug.cgi?id=84983#c35
+>> >>
+>> >> Can you post output of your usb audio device ?
+>> >>
+>> >> lsusb -vvvv
+>> >
+>> >
+>> >
+>> > Certainly!
+>> >
+>> > Here it is:
+>> >
+>> > Bus 001 Device 003: ID 1038:1225 Ideazon, Inc.
+>> > Device Descriptor:
+>> >   bLength                18
+>> >   bDescriptorType         1
+>> >   bcdUSB               2.00
+>> >   bDeviceClass            0 (Defined at Interface level)
+>> >   bDeviceSubClass         0
+>> >   bDeviceProtocol         0
+>> >   bMaxPacketSize0        64
+>> >   idVendor           0x1038 Ideazon, Inc.
+>> >   idProduct          0x1225
+>> >   bcdDevice            0.03
+>> >   iManufacturer           1 SteelSeries
+>> >   iProduct                2 SteelSeries Siberia Elite
+>> >   iSerial                 3 000000000000
+>> >   bNumConfigurations      1
+>>
+>> >
+>> >       AudioControl Interface Descriptor:
+>> >         bLength                13
+>> >         bDescriptorType        36
+>> >         bDescriptorSubtype      4 (MIXER_UNIT)
+>> >       Warning: Descriptor too short
+>>
+>> https://github.com/gregkh/usbutils/blob/master/lsusb.c
+>>
+>> Seem no warning for descriptor too short for uac2 and can dump those
+uac2 specific variables
+>>
+>> >         bUnitID                10
+>> >         bNrInPins               2
+>> >         baSourceID( 0)          9
+>> >         baSourceID( 1)          1
+>> >         bNrChannels             8
+>> >         wChannelConfig     0x063f
+>> >           Left Front (L)
+>> >           Right Front (R)
+>> >           Center Front (C)
+>> >           Low Freqency Enhancement (LFE)
+>> >           Left Surround (LS)
+>> >           Right Surround (RS)
+>> >           Side Left (SL)
+>> >           Side Right (SR)
+>> >         iChannelNames           0
+>> >         bmControls         0x00
+>> >         bmControls         0x00
+>> >         iMixer                 33 (error)
+>> >
+>
+>
+> Maybe it's the language barrier, but I am not sure if you wanted me to do
+something. I, out of curiosity, tried to compile that lsusb but I'm missing
+headers such as config.h.
+>
+> Should you need any more feedback from me about this device, please do
+not hesitate asking through mailing list or directly, just consider I'm not
+dev! :)
+>
 
-Signed-off-by: Inha Song <ideal.song@samsung.com>
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- arch/arm/boot/dts/exynos5420.dtsi          |  9 +++++
- arch/arm/boot/dts/exynos5422-odroidxu3.dts | 59 ++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
+Do you mean there is no sound using alsa hw device since pulseaudio does
+not support the multichannel speaker playback volume comtrol ?
 
-diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
-index 4eaeabe..e459c1d 100644
---- a/arch/arm/boot/dts/exynos5420.dtsi
-+++ b/arch/arm/boot/dts/exynos5420.dtsi
-@@ -415,6 +415,9 @@
- 			<&clock_audss EXYNOS_I2S_BUS>,
- 			<&clock_audss EXYNOS_SCLK_I2S>;
- 		clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
-+		#clock-cells = <1>;
-+		clock-output-names = "i2s_cdclk0";
-+		#sound-dai-cells = <1>;
- 		samsung,idma-addr = <0x03000000>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s0_bus>;
-@@ -429,6 +432,9 @@
- 		dma-names = "tx", "rx";
- 		clocks = <&clock CLK_I2S1>, <&clock CLK_SCLK_I2S1>;
- 		clock-names = "iis", "i2s_opclk0";
-+		#clock-cells = <1>;
-+		clock-output-names = "i2s_cdclk1";
-+		#sound-dai-cells = <1>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s1_bus>;
- 		status = "disabled";
-@@ -442,6 +448,9 @@
- 		dma-names = "tx", "rx";
- 		clocks = <&clock CLK_I2S2>, <&clock CLK_SCLK_I2S2>;
- 		clock-names = "iis", "i2s_opclk0";
-+		#clock-cells = <1>;
-+		clock-output-names = "i2s_cdclk2";
-+		#sound-dai-cells = <1>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s2_bus>;
- 		status = "disabled";
-diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-index edc25cf..c038f0d 100644
---- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-+++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-@@ -11,6 +11,7 @@
- */
- 
- /dts-v1/;
-+#include <dt-bindings/sound/samsung-i2s.h>
- #include "exynos5800.dtsi"
- 
- / {
-@@ -285,6 +286,64 @@
- 	rtc@101E0000 {
- 		status = "okay";
- 	};
-+
-+	sound: sound {
-+		compatible = "simple-audio-card";
-+
-+		simple-audio-card,name = "Odroid-XU3";
-+		simple-audio-card,widgets =
-+			"Headphone", "Headphone Jack",
-+			"Speakers", "Speakers";
-+		simple-audio-card,routing =
-+			"Headphone Jack", "HPL",
-+			"Headphone Jack", "HPR",
-+			"Headphone Jack", "MICBIAS",
-+			"IN1", "Headphone Jack",
-+			"Speakers", "SPKL",
-+			"Speakers", "SPKR";
-+
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&link0_codec>;
-+		simple-audio-card,frame-master = <&link0_codec>;
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s0 0>;
-+			system-clock-frequency = <19200000>;
-+		};
-+
-+		link0_codec: simple-audio-card,codec {
-+			sound-dai = <&max98090>;
-+			clocks = <&i2s0 CLK_I2S_CDCLK>;
-+		};
-+	};
-+};
-+
-+&clock_audss {
-+	assigned-clocks = <&clock_audss EXYNOS_MOUT_AUDSS>,
-+			<&clock_audss EXYNOS_MOUT_I2S>,
-+			<&clock_audss EXYNOS_DOUT_AUD_BUS>;
-+	assigned-clock-parents = <&clock CLK_FIN_PLL>,
-+			<&clock_audss EXYNOS_MOUT_AUDSS>;
-+	assigned-clock-rates = <0>,
-+			<0>,
-+			<19200000>;
-+};
-+
-+&hsi2c_5 {
-+	status = "okay";
-+	max98090: max98090@10 {
-+		compatible = "maxim,max98090";
-+		reg = <0x10>;
-+		interrupt-parent = <&gpx3>;
-+		interrupts = <2 0>;
-+		clocks = <&i2s0 CLK_I2S_CDCLK>;
-+		clock-names = "mclk";
-+		#sound-dai-cells = <0>;
-+	};
-+};
-+
-+&i2s0 {
-+	status = "okay";
- };
- 
- &hdmi {
--- 
-2.0.0.390.gcb682f8
+speaker-test -c8 -t wav -D hw:CARD=Elite
+
+speaker-test -c2 -t wav -D hw:CARD=Elite
+
+You need to know how to compile alsa driver for you running kernel if you
+want to fix the problem
+
+>> >> > > > amixer: Control hw:2 element read error: Invalid argument
+
+If alsamixer or amixer cannot set the speaker playback volume
+
+Try skip the problematic PCM Volume controls by adding
+
+if (state->chip->usb_id == USB_ID(0x1038,0x1225))
+if(unitid == 10)
+ich_has_control = 0;
+
+If the driver really need this mixer unit for the playback path, you need
+to fix those controls
+
+bUnitID 10
+bNrInPins 2
+baSourceID( 0) 9             microphone
+baSourceID( 1) 1             usb streaming
+
+This look like the first four problematic controls related to microphone
+and the last control related to streaming
+
+numid=5,iface=MIXER,name='PCM Volume' ;
+type=INTEGER,access=rw------,values=2,min=0,max=1,step=0 amixer: Control
+hw:2 element read error: Invalid argument
+
+numid=6,iface=MIXER,name='PCM Volume',index=1 ;
+type=INTEGER,access=rw------,values=1,min=0,max=1,step=0 amixer: Control
+hw:2 element read error: Invalid argument
+
+numid=7,iface=MIXER,name='PCM Volume',index=2 ;
+type=INTEGER,access=rw------,values=1,min=0,max=1,step=0 amixer: Control
+hw:2 element read error: Invalid argument
+
+numid=8,iface=MIXER,name='PCM Volume',index=3 ;
+type=INTEGER,access=rw------,values=1,min=0,max=1,step=0 amixer: Control
+hw:2 element read error: Invalid argument
+
+numid=9,iface=MIXER,name='PCM Volume',index=4 ;
+type=INTEGER,access=rw------,values=1,min=0,max=1,step=0 amixer: Control
+hw:2 element read error: Invalid argument
