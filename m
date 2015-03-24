@@ -1,66 +1,41 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC: Max98090 Codec DAPM Widget setup in Open
-	Embedded
-Date: Tue, 24 Mar 2015 08:26:59 +0100
-Message-ID: <551111C3.3000704@metafoo.de>
-References: <CAES_P+9kc9Q6TR7e1rdjV8cWHGWJs9bHoMLOz0Z0iHaYZbqpQw@mail.gmail.com>
+From: Peter Rosin <peda@axentia.se>
+Subject: RE: [PATCH] ASoC: pcm512x: Remove hardcoding of pll-lock to GPIO4
+Date: Tue, 24 Mar 2015 07:52:59 +0000
+Message-ID: <80347e73030a4e31b9765defd4f6ff5a@EMAIL.axentia.se>
+References: <1427145421-5544-1-git-send-email-hm@hmbedded.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-168.synserver.de (smtp-out-168.synserver.de
- [212.40.185.168])
- by alsa0.perex.cz (Postfix) with ESMTP id EE07E260564
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 08:27:05 +0100 (CET)
-In-Reply-To: <CAES_P+9kc9Q6TR7e1rdjV8cWHGWJs9bHoMLOz0Z0iHaYZbqpQw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: noman pouigt <variksla@gmail.com>, tiwai@suse.de, perex@perex.cz
-Cc: alsa-user@lists.sourceforge.net, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, omer.job@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1427145421-5544-1-git-send-email-hm@hmbedded.co.uk>
+Content-Language: sv-SE
+Sender: linux-kernel-owner@vger.kernel.org
+To: Howard Mitchell <hm@hmbedded.co.uk>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/24/2015 07:54 AM, noman pouigt wrote:
-> On Mon, Mar 23, 2015 at 11:53 PM, noman pouigt <variksla@gmail.com> wrote:
->>> I would like to know which file I can use to connect/enable
->>> DPAM widgets permanently so a simple aplay/record can work?
->>>
->>> My environment is:
->>> - Yocto Linux Kernel 3.10 - (DTS based)
->>> - Max98090 Codec
->>> - imx6SL SoC
->>>
->>> I thought about doing this in alsa.conf or asound.conf but I couldn't
->>> find a single example with DAPM widgets .
->>
->> I am also stuck with the same problem. I am sure ALSA experts
->> can help here.
->>
->> What i want to know is how to set the dapm widgets in open
->> embedded? Is it alsa.conf or asound.conf ?
->>
->> I need to set something like this:
->> amixer cset  name="LEFT MIXER DAC" 1
->>
->> Using amixer i am able to playback but i don't know how can i
->> modify conf file to have this dapm widgets associated with
->> a device.
->>
->> Any example would suffice.
+Howard Mitchell wrote:
+> Currently GPIO4 is hardcoded to output the pll-lock signal.
+> Unfortunately this is after the pll-out GPIO is configured which
+> is selectable in the device tree. Therefore it is not possible to
+> use GPIO4 for pll-out. Therefore this patch removes the
+> configuration of GPIO4.
 
-Hi,
+Howard, thanks for picking up my laundry!
 
-The whole point of DAPM (dynamic audio power management) is that you don't 
-have to manually power up or down a widget. Userspace configures the routing 
-of the audio paths and the kernel automatically detects which parts of the 
-chip need to be powered up for the current routing configuration.
+Is master mode working for you otherwise? Have you seen any sign
+of bad dividers for the various clocks, or anything like that?
 
-Why do you want to manually enable a widget?
+Regarding the pin configuration, I suppose the cleanest approach
+would be to implement it as a pin control driver? Then you could
+also expose the pins as gpios and  select the pin functions in a more
+standard way, right? I wouldn't know where to start with that
+though. I have the feeling that it would also mean that there would
+have to be a mfd driver for the chip???
 
-- Lars
+However, there is the issue that we don't need anything more from
+the chip, so we're happy with the driver as is (assuming the overclocking
+patch goes in as planned for 4.1).
+
+Cheers,
+Peter
