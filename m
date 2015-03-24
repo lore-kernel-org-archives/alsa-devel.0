@@ -1,20 +1,15 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: 4.0-rc3: sound broken in chromium but not in mpg123
-Date: Tue, 24 Mar 2015 20:01:59 +0100
-Message-ID: <20150324190158.GA29071@amd>
-References: <20150314201109.GA21052@amd> <s5htwxmr85c.wl-tiwai@suse.de>
- <20150315081544.GA17650@amd> <s5hr3sqr7nw.wl-tiwai@suse.de>
- <20150316123719.GA14161@amd> <s5hoanthx6z.wl-tiwai@suse.de>
+From: Sergej Sawazki <ce3a@gmx.de>
+Subject: [PATCH resend] ASoC: wm8741: Fix rates constraints
+	values
+Date: Tue, 24 Mar 2015 21:13:22 +0100
+Message-ID: <1427228002-10214-1-git-send-email-ce3a@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 29D742604A7
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 19:57:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hoanthx6z.wl-tiwai@suse.de>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3B8E26061D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 21:13:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,43 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kernel list <linux-kernel@vger.kernel.org>
+To: broonie@kernel.org
+Cc: Sergej Sawazki <ce3a@gmx.de>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+The WM8741 DAC supports the following typical audio sampling rates:
+  44.1kHz, 88.2kHz, 176.4kHz (eg: with a master clock of 22.5792MHz)
+  32kHz, 48kHz, 96kHz, 192kHz (eg: with a master clock of 24.576MHz)
 
-> > > OK, then another thing I would check is to try different sample rates
-> > > (e.g. via playing WAV files over PA).
-> > 
-> > Like this?
-> > 
-> > pavel@amd:/usr/share$ pacat ./sounds/alsa/Front_Right.wav
-> > pavel@amd:/usr/share$ pacat --rate=48000 ./sounds/alsa/Front_Right.wav
-> > pavel@amd:/usr/share$ pacat --rate=44100 ./sounds/alsa/Front_Right.wav
-> > pavel@amd:/usr/share$ pacat --rate=32000 ./sounds/alsa/Front_Right.wav
-> > pavel@amd:/usr/share$ pacat --rate=16000 ./sounds/alsa/Front_Right.wav
-> > pavel@amd:/usr/share$ pacat --rate=8000 ./sounds/alsa/Front_Right.wav
-> > 
-> > This seems to have behaved as expected.
-> 
-> Hmm.  You might see a difference when comparing
-> /proc/asound/card*/pcm0p/sub0/* files between working and broken
-> cases (while playing something).
-> 
-> Other than that, I have no idea.  A bisection would be needed, I'm
-> afraid.
+For the rates lists, we should use 82000 instead of 88235, 176400
+instead of 1764000 and 192000 instead of 19200 (seems to be a typo).
 
-:-(.
+Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
+---
+ sound/soc/codecs/wm8741.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-To make it more fun, it now appeared on x60... it looks like it has
-something to do with starting browser early after boot.
-
-Restarting the browser seems to fix it.
-
-Best regards,
-									Pavel
-
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index 31bb480..9e71c76 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -123,7 +123,7 @@ static struct {
+ };
+ 
+ static const unsigned int rates_11289[] = {
+-	44100, 88235,
++	44100, 88200,
+ };
+ 
+ static const struct snd_pcm_hw_constraint_list constraints_11289 = {
+@@ -150,7 +150,7 @@ static const struct snd_pcm_hw_constraint_list constraints_16384 = {
+ };
+ 
+ static const unsigned int rates_16934[] = {
+-	44100, 88235,
++	44100, 88200,
+ };
+ 
+ static const struct snd_pcm_hw_constraint_list constraints_16934 = {
+@@ -168,7 +168,7 @@ static const struct snd_pcm_hw_constraint_list constraints_18432 = {
+ };
+ 
+ static const unsigned int rates_22579[] = {
+-	44100, 88235, 1764000
++	44100, 88200, 176400
+ };
+ 
+ static const struct snd_pcm_hw_constraint_list constraints_22579 = {
+@@ -186,7 +186,7 @@ static const struct snd_pcm_hw_constraint_list constraints_24576 = {
+ };
+ 
+ static const unsigned int rates_36864[] = {
+-	48000, 96000, 19200
++	48000, 96000, 192000
+ };
+ 
+ static const struct snd_pcm_hw_constraint_list constraints_36864 = {
 -- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+1.9.1
