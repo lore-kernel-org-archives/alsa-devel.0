@@ -1,25 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak4642: enable stereo line output
-	power-save mode
-Date: Tue, 24 Mar 2015 10:00:59 -0700
-Message-ID: <20150324170059.GN17265@sirena.org.uk>
-References: <87vbj64dsa.wl%kuninori.morimoto.gx@renesas.com>
- <54DDCF15.1060205@renesas.com>
- <87d25an1z5.wl%kuninori.morimoto.gx@renesas.com>
- <54E7314A.7070902@renesas.com> <54EFB1B9.8060004@renesas.com>
- <87ioenhqa8.wl%kuninori.morimoto.gx@renesas.com>
- <87ioe9sa2y.wl%kuninori.morimoto.gx@renesas.com>
- <550A0C63.6030305@renesas.com>
- <87twxheu5v.wl%kuninori.morimoto.gx@renesas.com>
- <87zj732czb.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: Fix duplicate const for DVC
+	ramp rates
+Date: Tue, 24 Mar 2015 10:09:07 -0700
+Message-ID: <20150324170906.GR17265@sirena.org.uk>
+References: <1427194063-31572-1-git-send-email-k.kozlowski@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7694471924311806865=="
+Content-Type: multipart/mixed; boundary="===============5790983231223986918=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 34AA42604A1
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 18:00:32 +0100 (CET)
-In-Reply-To: <87zj732czb.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 55E5F2604A1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 18:08:43 +0100 (CET)
+In-Reply-To: <1427194063-31572-1-git-send-email-k.kozlowski@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,53 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: tomoharu.fukawa.eb@renesas.com, Linux-ALSA <alsa-devel@alsa-project.org>, naoya.shiiba.nx@renesas.com, Liam Girdwood <lgirdwood@gmail.com>, toshiaki.komatsu.ud@renesas.com, ryo.kataoka.wt@renesas.com, Simon <horms@verge.net.au>, "takeshi.kihara" <takeshi.kihara.df@renesas.com>, kuninori.morimoto.gx@gmail.com
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7694471924311806865==
+--===============5790983231223986918==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="b1ERR0FXR0PvNIRE"
+	protocol="application/pgp-signature"; boundary="7L9kolmstoDTZ4pm"
 Content-Disposition: inline
 
 
---b1ERR0FXR0PvNIRE
+--7L9kolmstoDTZ4pm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 24, 2015 at 05:15:22AM +0000, Kuninori Morimoto wrote:
-> From: Takeshi Kihara <takeshi.kihara.df@renesas.com>
->=20
-> ak4642 has power-save mode for stereo line to reduce pop noise.
-> This patch enables it.
+On Tue, Mar 24, 2015 at 11:47:43AM +0100, Krzysztof Kozlowski wrote:
+> Replace duplicated const keyword for 'dvc_ramp_rate' with proper
+> array of const pointers to const strings.
 
 Applied, thanks.
 
---b1ERR0FXR0PvNIRE
+--7L9kolmstoDTZ4pm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVEZhKAAoJECTWi3JdVIfQoNoH/i5Xk68kvqounGIOOIP2c8DK
-dDUiCmqWMEJTAHKyqLcyfCDn656gJ11CpRrIIQCLYkuRe+agWa+1iN6t7lVior3Q
-YNDEcNqlMveoNiS9/kwpXmTkDyUG+twBqtAgH76fPIO8KqEh9uH1KQCo2JagG1em
-T1qi7/9PSUWKJTGLh5j1rYuo+XrqYO2vP7IuSo/mXi7KE45Hom6V9pucBxrWtTSY
-MEJu56Y9qoIHUAIeWgcK5FhQxHayJBnfBi77GfC7gEziUQC6VNGOMsPQjoJWJCO2
-kYnhw3GPT6RUkfXHzx2EvFG+9isr6Vr6Bi4hoXnI+LTlbwnXEWMyzfVzqiZNtQI=
-=mtCw
+iQEcBAEBCAAGBQJVEZoyAAoJECTWi3JdVIfQVGgH/AmMSiKLfFz73iR/LzbU/Qqa
+rzoTymxhyd7xkiFnzwSU8sxwO4U8WTY3odncTJsepye/xWHBPBTyfJ69aIhbAlhT
+Fte9wfGZA057sG4HHeUbY3gmyl1IWHqHYlPJcSetxTs2AVheTrrHsJCz12EGR0D6
+lwzMhtnk2mANeFWuD5mVE5WYzCjcsKg/cYFzgN5q7+SC+m8kUaPE3DorkdA/8djF
+5XO84O0mRsnUfLnriDilvwMo9mO0MBPBGyjwc7z+YZKR3SiSSyyNgYzMAscXTRxP
+1Xi7xJfRGfX3h45pp/uvQiAm+6FkCdKRLNmIjzgBMRG5ZIZ4tWxR2rj4AYo8TGg=
+=xRjb
 -----END PGP SIGNATURE-----
 
---b1ERR0FXR0PvNIRE--
+--7L9kolmstoDTZ4pm--
 
---===============7694471924311806865==
+--===============5790983231223986918==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7694471924311806865==--
+--===============5790983231223986918==--
