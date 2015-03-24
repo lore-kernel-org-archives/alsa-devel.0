@@ -1,18 +1,15 @@
-From: Howard Mitchell <hm@hmbedded.co.uk>
-Subject: Re: [PATCH] ASoC: pcm512x: Remove hardcoding of
-	pll-lock to GPIO4
-Date: Tue, 24 Mar 2015 10:10:35 +0000
-Message-ID: <5511381B.8030709@hmbedded.co.uk>
-References: <1427145421-5544-1-git-send-email-hm@hmbedded.co.uk>
- <80347e73030a4e31b9765defd4f6ff5a@EMAIL.axentia.se>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: [TINYCOMPRESS][v2 PATCH 0/7] Convert build system to
+	autotools
+Date: Tue, 24 Mar 2015 10:32:27 +0000
+Message-ID: <1427193154-6753-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avasout05.plus.net (avasout05.plus.net [84.93.230.250])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FC74260418
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 11:13:14 +0100 (CET)
-In-Reply-To: <80347e73030a4e31b9765defd4f6ff5a@EMAIL.axentia.se>
+Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDBA3260436
+ for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 11:32:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +19,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Rosin <peda@axentia.se>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org, Qais Yousef <qais.yousef@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 24/03/15 07:52, Peter Rosin wrote:
-> Howard Mitchell wrote:
->> Currently GPIO4 is hardcoded to output the pll-lock signal.
->> Unfortunately this is after the pll-out GPIO is configured which
->> is selectable in the device tree. Therefore it is not possible to
->> use GPIO4 for pll-out. Therefore this patch removes the
->> configuration of GPIO4.
-> Howard, thanks for picking up my laundry!
-No problem. It was pretty quick and easy to redo from my previous patch 
-anyway.
-> Is master mode working for you otherwise? Have you seen any sign
-> of bad dividers for the various clocks, or anything like that?
-Not so far. I've run though all the sampling rates from 44.1KHz to 
-192KHz with a 24.576MHz input clock and they all sounded ok. I haven't 
-done the maths and checked every single divider setting but I think I 
-would have heard if something wasn't quite right.
-> Regarding the pin configuration, I suppose the cleanest approach
-> would be to implement it as a pin control driver? Then you could
-> also expose the pins as gpios and  select the pin functions in a more
-> standard way, right? I wouldn't know where to start with that
-> though. I have the feeling that it would also mean that there would
-> have to be a mfd driver for the chip???
-Yes that would allow userspace access as well. I guess a good place to 
-start would be one of the I2C gpio expanders: 
-.../drivers_/_gpio_/_gpio-pca953x.c for instance.
-> However, there is the issue that we don't need anything more from
-> the chip, so we're happy with the driver as is (assuming the overclocking
-> patch goes in as planned for 4.1).
-On our board the additional gpios are not even tracked out so the driver 
-is fine as is for now. For the future we have discussed the possibility 
-of providing two master clock oscillators to avoid using the pll 
-altogether. In this case one of the gpios could be used for switching.
+This series converts the build system to use autotools and splits the files into
+lib and utils.
 
-- Howard
+Also patch 5 fixes error handling code.
+
+I can't test Android builds but both cross and native compiling worked for me.
+
+I left AUTHORS, ChangeLog and NEWS files empty. I used the license header to fill COPYING.
+
+Changes in v2:
+ - Use -M option when generating the patches
+ - Add Makefile.am to include directory that exports tinycompress.h
+ - New patch (7) that fixes include dependency in tinycompress.h
+
+Qais Yousef (7):
+  Convert the build system to autotools
+  add .gitignore file
+  makefile.linux: delete as no longer necessary/used
+  Android.mk: Update to use the new location of source files
+  compress.c: fix check for errors from poll(), read() and write()
+  src/lib/utils.c: remove this empty file
+  tinycompress.h: explicitly include required headers
+
+ .gitignore                          |  39 ++++
+ AUTHORS                             |   0
+ Android.mk                          |   6 +-
+ COPYING                             |  51 +++++
+ ChangeLog                           |   0
+ INSTALL                             | 365 ++++++++++++++++++++++++++++++++++++
+ Makefile.am                         |   3 +
+ NEWS                                |   0
+ autogen.sh                          |   6 +
+ configure.ac                        |  32 ++++
+ include/Makefile.am                 |   6 +
+ include/tinycompress/tinycompress.h |   3 +
+ m4/.place_holder                    |   0
+ makefile.linux                      |  41 ----
+ src/Makefile.am                     |   1 +
+ src/lib/Makefile.am                 |   5 +
+ compress.c => src/lib/compress.c    |  22 ++-
+ src/utils/Makefile.am               |  11 ++
+ cplay.c => src/utils/cplay.c        |   0
+ crec.c => src/utils/crec.c          |   0
+ utils.c                             |  62 ------
+ 21 files changed, 537 insertions(+), 116 deletions(-)
+ create mode 100644 .gitignore
+ create mode 100644 AUTHORS
+ create mode 100644 COPYING
+ create mode 100644 ChangeLog
+ create mode 100644 INSTALL
+ create mode 100644 Makefile.am
+ create mode 100644 NEWS
+ create mode 100755 autogen.sh
+ create mode 100644 configure.ac
+ create mode 100644 include/Makefile.am
+ create mode 100644 m4/.place_holder
+ delete mode 100644 makefile.linux
+ create mode 100644 src/Makefile.am
+ create mode 100644 src/lib/Makefile.am
+ rename compress.c => src/lib/compress.c (98%)
+ create mode 100644 src/utils/Makefile.am
+ rename cplay.c => src/utils/cplay.c (100%)
+ rename crec.c => src/utils/crec.c (100%)
+ delete mode 100644 utils.c
+
+-- 
+2.1.0
