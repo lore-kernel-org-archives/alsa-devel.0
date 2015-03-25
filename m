@@ -1,31 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v3 1/2] ALSA: jack: create jack kcontrols
  for every jack input device
-Date: Wed, 25 Mar 2015 10:14:32 +0800
-Message-ID: <CAN8cciYKmOZOzp9OXTgsDA_ti_w7_ceGkYgkjQZzTZvpFgfu3w@mail.gmail.com>
-References: <1426841719-14576-3-git-send-email-yang.jie@intel.com>
- <s5hd2446mt2.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB90F@SHSMSX101.ccr.corp.intel.com>
- <s5hvbhv6eio.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB93C@SHSMSX101.ccr.corp.intel.com>
- <s5hr3sj6bzj.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB993@SHSMSX101.ccr.corp.intel.com>
- <s5hegoj69bs.wl-tiwai@suse.de>
- <1427108203.2968.57.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <550FFE2B.7050008@canonical.com>
- <20150323164129.GE14954@sirena.org.uk>
- <5511093F.1010708@canonical.com>
+Date: Wed, 25 Mar 2015 04:11:28 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDD602@SHSMSX101.ccr.corp.intel.com>
+References: <1426865953-1606-1-git-send-email-yang.jie@intel.com>
+ <1426865953-1606-2-git-send-email-yang.jie@intel.com>
+ <s5ha8z7zlrd.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDBBA0@SHSMSX101.ccr.corp.intel.com>
+ <1427105297.2968.19.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5hzj743p0x.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f181.google.com (mail-ob0-f181.google.com
- [209.85.214.181])
- by alsa0.perex.cz (Postfix) with ESMTP id DC54D260688
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 03:14:33 +0100 (CET)
-Received: by obcjt1 with SMTP id jt1so8995413obc.2
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 19:14:33 -0700 (PDT)
-In-Reply-To: <5511093F.1010708@canonical.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 683FE2606B4
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 05:11:37 +0100 (CET)
+In-Reply-To: <s5hzj743p0x.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,46 +27,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, "Girdwood,
+To: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
  Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->>
->>
->>>> One thing that is unclear for me is that how are those jacks
-represented
->>>> that support any of headsets/headphones/microphones, but don't provide
->>>> information about which device type has been plugged in.
->>
->>
->>> For headphone or headset, independent switches:
->>
->>
->>>   * "Headphone Jack"
->>>   * "Headset Mic Jack"
->>
->>
->>> For headphone or headset, one hw switch only:
->>
->>
->>>   * "Headphone Jack"
->>>   * "Headset Mic Phantom Jack"
->>
->>
->> I'd have expected these to be the same thing, just with the second case
->> always having the same state for both switches.
->
->
-> We need to distinguish the use cases: in case of independent switches, we
-can make the assumption that if the user plugged in a headset, the user
-wants to use the headset mic instead of the internal mic, so we switch to
-it.
->
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, March 23, 2015 7:57 PM
+> To: Tanu Kaskinen
+> Cc: Jie, Yang; broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood,
+> Liam R; Liam Girdwood
+> Subject: Re: [PATCH v3 1/2] ALSA: jack: create jack kcontrols for every jack
+> input device
+> 
+> At Mon, 23 Mar 2015 12:08:17 +0200,
+> Tanu Kaskinen wrote:
+> >
+> > On Sat, 2015-03-21 at 02:22 +0000, Jie, Yang wrote:
+> > > > As you'll find through the whole output, many calls are combined
+> > > > with
+> > > > SND_JACK_BTN_* bits.  And think again how this will result with your
+> patch.
+> > > > A call like
+> > > >
+> > > > 	snd_soc_card_jack_new(card, "Headphone",
+> > > > 		SND_JACK_HEADPHONE | SND_JACK_BTN_0 |
+> SND_JACK_BTN_1, ...)
+> > > >
+> > > > would give three kctls, all "Headphone Jack" with indices 0, 1 and 2.
+> > > > How user-space knows what is for what?
+> > > [Keyon] yes, this is an issue I was thinking about, we need
+> > > discussing and conclusion about that, including comments from user-
+> space, here adding Tanu.
+> > > Here I am thinking about
+> > > 1. do we really need kctls for buttons(SND_JACK_BTN_n)? if no, that
+> > > is simplest, we can filter out them at this kctl creating stage.
+> > > 2. if yes, then we need an name regenerator here, to generate
+> > > understandable (for user-space) kctl names for buttons.
+> >
+> > >From PulseAudio point of view, you must make sure that "Headphone
+> Jack"
+> > with index 0 doesn't refer to a button, because the assumption is that
+> > "Headphone Jack" at index 0 refers to a jack and not a button (indexes
+> > other than 0 are currently ignored). Other than that, PulseAudio
+> > doesn't currently care, because there's no support for buttons.
+> >
+> > When thinking about how to implement button support in PulseAudio, the
+> > first question is that are kcontrols a realiable interface for getting
+> > button events? What happens when the button is pressed? Does one
+> press
+> > cause only one on->off or off->on state transition, or is the state "on"
+> > only for the duration of the press? If the former, then kcontrols
+> > should be fine, but if the latter, is it guaranteed that the
+> > application sees the event? If the button press is a short one,
+> > causing a quick
+> > off->on->off transition, is it possible that the application gets a
+> > notification of a mixer change, but when the application then inspects
+> > the mixer state, the button state is already "off", so the application
+> > doesn't get enough information about what happened?
+> 
+> It's a good point.  The notification via kctl can't follow the complete state
+> changes since it's nothing but a notification telling "something changed".  So,
+> events like buttons that need the complete state change history, the current
+> implementation isn't appropriate.
+> For things like jacks, we usually care only about the final state, and the state
+> change is much less frequent, so kctl notification works well.
+[Keyon] Agree that we don't need create kctl for button(just leave it to input
+event notification/handler), then I can update patch to filter out them at kctl
+creating stage, which may make life easier IMO. :)
 
-What will happen for those Dell Alienware 14, 15 and 17 which have three
-jacks: headset, headphone and mic
+BTW, Takashi, according to what Tanu mentioned, kctls indexes other than 0 
+are currently ignored by PA, so creating and exporting kctls with non-zero 
+indices for the same name in HD-Audio Jack before, seems no use for upper
+layer?
 
-http://www.dell.com/support/home/us/en/19/product-support/product/alienware-17/manuals
-
-Alienware 17 Quick Start Guide
+> 
+> 
+> Takashi
