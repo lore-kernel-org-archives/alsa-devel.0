@@ -1,29 +1,18 @@
-From: Omer <omer.job@gmail.com>
-Subject: Re:
-	=?utf-8?q?ASoC=3A_Max98090_Codec_DAPM_Widget_setup_i?=
-	=?utf-8?q?n_Open=09Embedded?=
-Date: Wed, 25 Mar 2015 07:22:29 +0000 (UTC)
-Message-ID: <loom.20150325T081642-60@post.gmane.org>
-References: <CAES_P+9kc9Q6TR7e1rdjV8cWHGWJs9bHoMLOz0Z0iHaYZbqpQw@mail.gmail.com>
- <551111C3.3000704@metafoo.de>
- <1BBF0420-296C-435B-9208-5939803DAD57@gmail.com>
+From: "W. Trevor King" <wking@tremily.us>
+Subject: [PATCH v2] ALSA: hda/via - Add beep controls to VIA
+	codecs
+Date: Wed, 25 Mar 2015 00:43:42 -0700
+Message-ID: <75dc1612e1a507e7f89549e70f83e303d78370dc.1427269200.git.wking@tremily.us>
+References: <s5ha8z1h7iw.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id AE34F261B0E
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 08:40:07 +0100 (CET)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Yafv3-0004fi-At
- for alsa-devel@alsa-project.org; Wed, 25 Mar 2015 08:40:05 +0100
-Received: from 99-6-84-247.lightspeed.sntcca.sbcglobal.net ([99.6.84.247])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 08:40:05 +0100
-Received: from omer.job by 99-6-84-247.lightspeed.sntcca.sbcglobal.net with
- local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 08:40:05 +0100
+Received: from resqmta-po-05v.sys.comcast.net (resqmta-po-05v.sys.comcast.net
+ [96.114.154.164])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56072261AA3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 08:45:48 +0100 (CET)
+In-Reply-To: <s5ha8z1h7iw.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,112 +23,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Raymond Yau <superquad.vortex2@gmail.com>, "W. Trevor King" <wking@tremily.us>
 List-Id: alsa-devel@alsa-project.org
 
-Variksla <variksla <at> gmail.com> writes:
+My codec has a beep-generating node:
 
-> 
-> 
-> > On Mar 24, 2015, at 12:26 AM, Lars-Peter Clausen <lars <at> metafoo.de> 
-> > 
-> >> On 03/24/2015 07:54 AM, noman pouigt wrote:
-> >> On Mon, Mar 23, 2015 at 11:53 PM, noman pouigt <variksla <at> gmail.com> 
-wrote:
-> >>>> I would like to know which file I can use to connect/enable
-> >>>> DPAM widgets permanently so a simple aplay/record can work?
-> >>>> 
-> >>>> My environment is:
-> >>>> - Yocto Linux Kernel 3.10 - (DTS based)
-> >>>> - Max98090 Codec
-> >>>> - imx6SL SoC
-> >>>> 
-> >>>> I thought about doing this in alsa.conf or asound.conf but I couldn't
-> >>>> find a single example with DAPM widgets .
-> >>> 
-> >>> I am also stuck with the same problem. I am sure ALSA experts
-> >>> can help here.
-> >>> 
-> >>> What i want to know is how to set the dapm widgets in open
-> >>> embedded? Is it alsa.conf or asound.conf ?
-> >>> 
-> >>> I need to set something like this:
-> >>> amixer cset  name="LEFT MIXER DAC" 1
-> >>> 
-> >>> Using amixer i am able to playback but i don't know how can i
-> >>> modify conf file to have this dapm widgets associated with
-> >>> a device.
-> >>> 
-> >>> Any example would suffice.
-> > 
-> > Hi,
-> > 
-> > The whole point of DAPM (dynamic audio power management) is that you don't
- have to manually power up or down
-> a widget. Userspace configures the routing of the audio paths and the kernel 
-automatically detects which
-> parts of the chip need to be powered up for the current routing configuration.
-> > 
-> > Why do you want to manually enable a widget?
-> 
-> In android we have ucm files where dapm routings are associated with each
- device. Same way where can I list
-> down dapm routings in open embedded?
-> We know that user space gives the routings but we need to associate each 
-device with certain set of dapm
-> routes so i am looking for a place where we can list down dapm routes which
- gets triggered when a specific
-> device is chosen for playback or recording. Something analogous to ucm files
- in open embedded? I couldn't
-> find a way to associate dapm routes with a specific device in conf files.
- Can we use Asound.conf for this purpose?
-> > 
-> > - Lars
-> > 
-> 
+  $ cat /proc/asound/card1/codec#0
+  Codec: VIA VT1802
+  ...
+  Vendor Id: 0x11068446
+  Subsystem Id: 0x15587410
+  Revision Id: 0x100000
+  ...
+  Node 0x22 [Beep Generator Widget] wcaps 0x70040c: Mono Amp-Out
+    Amp-Out caps: ofs=0x0a, nsteps=0x12, stepsize=0x05, mute=1
+    Amp-Out vals:  [0x0a]
+    Power states:  D0 D1 D2 D3
+    Power: setting=D0, actual=D0
+  ...
 
-In my  case, I do not want users to run these amixer commands to setup DAPM
-routing if they just want to use aplay/arecord.
+But I was missing the:
 
-amixer cset name='LINMOD Mux' 1
-amixer cset name='Left Receiver Mixer Left DAC Switch' 1
-amixer cset name='Right Receiver Mixer Right DAC Switch' 1
+  Control: name=...
 
-When I run aplay without above commands, I can see aplay not able to
-connect further than '"DACL" since there are multiple routes available
-in codec driver. Only enabling the right DAC switches using above
-commands completes routes:
-Logs:
-dapm_mark_dirty:max98090:dapm enter HiFi Playback
-dapm_dirty_widget:max98090:dapm enter HiFi Playback
-max98090 2-0010: Marking HiFi Playback dirty due to stream event
-dapm_power_widgets:max98090:dapm enter
-dapm_reset:max98090:dapm enter
-dapm_power_one_widget:max98090:dapm enter
-dapm_dac_check_power:max98090:dapm enter
-dapm_generic_check_power:max98090:dapm enter
-is_connected_input_ep:max98090:dapm HiFi Playback
-is_connected_output_ep:max98090:dapm HiFi Playback
-is_connected_output_ep:max98090:dapm AIFINL
-is_connected_output_ep:max98090:dapm LTENL Mux
-is_connected_output_ep:max98090:dapm DACL
-is_connected_output_ep:max98090:dapm AIFINR
-is_connected_output_ep:max98090:dapm LTENR Mux
-is_connected_output_ep:max98090:dapm DACR
-is_connected_output_ep:max98090:dapm AIFINL
-is_connected_output_ep:max98090:dapm AIFINR
+entries that I need to manage this widget from alsamixer.  With this
+patch (based on the similar Mono Amp-Out handling in
+patch_conexant.c), I get a new:
 
+  input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/sound/card1/hdaudioC1D0/input15
 
-Available DAPM Routes:
-{"Right Headphone Mixer", "Left DAC Switch", "DACL"},
-{"Left Speaker Mixer", "Left DAC Switch", "DACL"},
-{"Right Speaker Mixer", "Left DAC Switch", "DACL"},
-{"Left Receiver Mixer", "Left DAC Switch", "DACL"},
-{"Right Receiver Mixer", "Left DAC Switch", "DACL"},
+entry in dmesg and controls to manage that beep:
 
+  $ cat /proc/asound/card1/codec#0 | grep -A5 Beep
+  Node 0x22 [Beep Generator Widget] wcaps 0x70040c: Mono Amp-Out
+    Control: name="Beep Playback Volume", index=0, device=0
+      ControlAmp: chs=1, dir=Out, idx=0, ofs=0
+    Control: name="Beep Playback Switch", index=0, device=0
+      ControlAmp: chs=1, dir=Out, idx=0, ofs=0
+    Amp-Out caps: ofs=0x0a, nsteps=0x12, stepsize=0x05, mute=1
+    Amp-Out vals:  [0x12]
+    Power states:  D0 D1 D2 D3
+    Power: setting=D0, actual=D0
 
-I think there must be a way to enable complete DAPM routes all the
- way from "HiFi Playback" to one of the outputs defined in
-SND_SOC_DAPM_OUTPUT() from userspace without having to type commands.
+Signed-off-by: W. Trevor King <wking@tremily.us>
+---
+On Wed, Mar 25, 2015 at 08:15:51AM +0100, Takashi Iwai wrote:
+> Care to brush up your patch as a formal form to be merged to upstream?
+> There are a few conflicts with the latest sound.git tree code, but I
+> can manage to resolve them.
 
-asound.state save states however its not dynamic. i.e, it will just reload
- settings. Won't switch between paths.
+Done.  The only change since v1 is rebasing from v3.19 to the current
+sound.git master, resolving some trivial conflicts with 688b12cc
+(ALSA: hda - Use the new power control for VIA codecs, 2015-03-17).
+If you feel inclined to make further edits to my commit message,
+you have my permission.
+
+> Later on, we can move the common code to the generic parser (with yet
+> some behavior flag), but it can be done by another patch.
+
+Works for me.
+
+ sound/pci/hda/patch_via.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index a34d767..3f63c34f 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -107,6 +107,8 @@ struct via_spec {
+ 	/* work to check hp jack state */
+ 	int hp_work_active;
+ 	int vt1708_jack_detect;
++
++	unsigned int beep_amp;
+ };
+ 
+ static enum VIA_HDA_CODEC get_codec_type(struct hda_codec *codec);
+@@ -266,6 +268,59 @@ static const struct snd_kcontrol_new via_pin_power_ctl_enum[] = {
+ 	{} /* terminator */
+ };
+ 
++#ifdef CONFIG_SND_HDA_INPUT_BEEP
++static inline void set_beep_amp(struct via_spec *spec, hda_nid_t nid,
++				int idx, int dir)
++{
++	spec->gen.beep_nid = nid;
++	spec->beep_amp = HDA_COMPOSE_AMP_VAL(nid, 1, idx, dir);
++}
++/* additional beep mixers; the actual parameters are overwritten at build */
++static const struct snd_kcontrol_new cxt_beep_mixer[] = {
++	HDA_CODEC_VOLUME_MONO("Beep Playback Volume", 0, 1, 0, HDA_OUTPUT),
++	HDA_CODEC_MUTE_BEEP_MONO("Beep Playback Switch", 0, 1, 0, HDA_OUTPUT),
++	{ } /* end */
++};
++
++/* create beep controls if needed */
++static int add_beep_ctls(struct hda_codec *codec)
++{
++	struct via_spec *spec = codec->spec;
++	int err;
++
++	if (spec->beep_amp) {
++		const struct snd_kcontrol_new *knew;
++		for (knew = cxt_beep_mixer; knew->name; knew++) {
++			struct snd_kcontrol *kctl;
++			kctl = snd_ctl_new1(knew, codec);
++			if (!kctl)
++				return -ENOMEM;
++			kctl->private_value = spec->beep_amp;
++			err = snd_hda_ctl_add(codec, 0, kctl);
++			if (err < 0)
++				return err;
++		}
++	}
++	return 0;
++}
++
++static void auto_parse_beep(struct hda_codec *codec)
++{
++	struct via_spec *spec = codec->spec;
++	hda_nid_t nid, end_nid;
++
++	end_nid = codec->start_nid + codec->num_nodes;
++	for (nid = codec->start_nid; nid < end_nid; nid++)
++		if (get_wcaps_type(get_wcaps(codec, nid)) == AC_WID_BEEP) {
++			set_beep_amp(spec, nid, 0, HDA_OUTPUT);
++			break;
++		}
++}
++#else
++#define set_beep_amp(spec, nid, idx, dir) /* NOP */
++#define add_beep_ctls(codec)	0
++#define auto_parse_beep(codec)
++#endif
+ 
+ /* check AA path's mute status */
+ static bool is_aa_path_mute(struct hda_codec *codec)
+@@ -352,6 +407,10 @@ static int via_build_controls(struct hda_codec *codec)
+ 	if (err < 0)
+ 		return err;
+ 
++	err = add_beep_ctls(codec);
++	if (err < 0)
++		return err;
++
+ 	spec->mixers[spec->num_mixers++] = via_pin_power_ctl_enum;
+ 
+ 	for (i = 0; i < spec->num_mixers; i++) {
+@@ -512,6 +571,8 @@ static int via_parse_auto_config(struct hda_codec *codec)
+ 	if (err < 0)
+ 		return err;
+ 
++	auto_parse_beep(codec);
++
+ 	err = snd_hda_gen_parse_auto_config(codec, &spec->gen.autocfg);
+ 	if (err < 0)
+ 		return err;
+-- 
+2.1.0.60.g85f0837
