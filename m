@@ -1,17 +1,22 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH resend] ASoC: fsl-ssi: Fix bitclock
- calculation for master mode
-Date: Wed, 25 Mar 2015 22:44:02 +0100
-Message-ID: <55132C22.3050503@pengutronix.de>
-References: <1427121972-5059-1-git-send-email-mkl@pengutronix.de>
- <20150325165814.GJ3572@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: RawMIDI behaviour with MidiFace 4x4
+Date: Wed, 25 Mar 2015 22:45:40 +0100
+Message-ID: <55132C84.5030506@ladisch.de>
+References: <6A72E9C91650BD49A6D9B305755BC04C42D801FA@mbs1.ad.jyu.fi>,
+ <54FD5D4C.3040204@ladisch.de>
+ <6A72E9C91650BD49A6D9B305755BC04C42D8067A@mbs1.ad.jyu.fi>,
+ <54FE14F4.9070704@ladisch.de>
+ <6A72E9C91650BD49A6D9B305755BC04C42D80787@mbs1.ad.jyu.fi>,
+ <54FEA526.10708@ladisch.de>
+ <6A72E9C91650BD49A6D9B305755BC04C42D8CE0F@mbs1.ad.jyu.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3324011548229775947=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7F54A261AB0
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 22:44:19 +0100 (CET)
-In-Reply-To: <20150325165814.GJ3572@sirena.org.uk>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id D4917261ACE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 22:46:33 +0100 (CET)
+In-Reply-To: <6A72E9C91650BD49A6D9B305755BC04C42D8CE0F@mbs1.ad.jyu.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+To: "Kalvas, Taneli" <taneli.v.m.kalvas@jyu.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============3324011548229775947==
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="AQLbtvjWV2GD4lviMGqmm6jPOm79FwAoc"
+Kalvas, Taneli wrote:
+> What is the policy with external contributions for the snd-usb-audio/midi?
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---AQLbtvjWV2GD4lviMGqmm6jPOm79FwAoc
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+See Documentation/SubmittingPatches.
 
-On 03/25/2015 05:58 PM, Mark Brown wrote:
-> On Mon, Mar 23, 2015 at 03:46:12PM +0100, Marc Kleine-Budde wrote:
->> From: Sascha Hauer <s.hauer@pengutronix.de>
->>
->> in fsl_ssi_set_bclk we are looking for the best divider by iterating
->> over all possible dividers. The divider is in the range 1..256, so
->=20
-> This doesn't apply against current code, please check and resend.
+> From my first session with the usb documents ("USB MIDI Devices 1.0")
+> and the kernel code I could not find the flow-control for the midi
+> interface buffer in either one.
 
-The problem has been fixed by:
-
-    6c8ca30eec7b ASoC: fsl_ssi: Don't try to round-up for PM divisor
-                 calculation
-
-in the meantime.
-
-Marc
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+The flow control is implicit in the USB bulk transfer protocol, i.e.,
+the device must accept a packet only when it can handle it.  The host
+controller hardware automatically retries sending until this succeeds.
 
 
---AQLbtvjWV2GD4lviMGqmm6jPOm79FwAoc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJVEywoAAoJECte4hHFiupUuy0P/1q9fKeSIigGmV4qO6zXDaTs
-91XR4cc/+pWwZp2N9XQd1i5ZJPOUtwi7H0KvOQWCLvbapKkDkUxvTnBvfQFVnzsA
-K6/d+9afVMl3VZOFw3jqF2HKMeNvKH8xXR5ayjk8tKQG6QAafcrIr7S12khwbt60
-8wDkIQ9HujbafRFiVQCvIucUw4SAsltczqhKG8zegtGi+fz1y1+7WIhuXuP3GENt
-soYRUrkNp8kP0ctS9NM42jxvDUfWjGJYe9J2/m0NruT1yYcmJQfkA3RgjkoA0SFU
-W4c0mtbwND9dXi2XCOjTi4CLasS9FcEGLKuxOxNGcasE5COUl9L48tHIFZ7Vr45j
-nulPD/HX6J9RwSAbRjUSEEVZlurB0/N+UgDo3fmjXSMDwg2weG8+xZFfw4gr+D60
-K3vY2muwHa+RjMSV1BdabepraEXi7eixOrCkX2a7+M5xauxXI+2ZfQGGaSsvwhC4
-ciV08ngLi0lhZuY6kTEg4cNHkETJrT0ILwgldALtA7Yp2cevW7CXcw3fBMntDNN5
-2wiSeJJgV+1hJthRoHvaU9KCBivEz3vYz7Ya02IZj6BAi80K+8mAMtFm55RsR4P0
-nymufNv6Pqd1+GpYoYii2up6oddFa9CVR0WQTsnyv+E00gdey/7GepE8cfXBcGQA
-vR4MEQkgImV3iXaGNMaj
-=2YIN
------END PGP SIGNATURE-----
-
---AQLbtvjWV2GD4lviMGqmm6jPOm79FwAoc--
-
---===============3324011548229775947==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3324011548229775947==--
+Regards,
+Clemens
