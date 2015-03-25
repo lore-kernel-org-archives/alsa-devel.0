@@ -1,26 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v3 1/2] ALSA: jack: create jack kcontrols
- for every jack input device
-Date: Wed, 25 Mar 2015 13:27:07 +0800
-Message-ID: <CAN8ccibHD_5NGZuP11yLdvpYhB-TA-4q_=AHyGQyCPA1PxVQag@mail.gmail.com>
-References: <1426865953-1606-1-git-send-email-yang.jie@intel.com>
- <1426865953-1606-2-git-send-email-yang.jie@intel.com>
- <s5ha8z7zlrd.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDBBA0@SHSMSX101.ccr.corp.intel.com>
- <1427105297.2968.19.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5hzj743p0x.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDD602@SHSMSX101.ccr.corp.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [RFC v2 1/3] ALSA: hda: add HDA_MAX_CODECS
+Date: Wed, 25 Mar 2015 11:31:37 +0530
+Message-ID: <1427263299-14707-2-git-send-email-vinod.koul@intel.com>
+References: <1427263299-14707-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 75FB72614BB
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 06:27:09 +0100 (CET)
-Received: by obdfc2 with SMTP id fc2so11300474obd.3
- for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2015 22:27:08 -0700 (PDT)
-In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BDD602@SHSMSX101.ccr.corp.intel.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2052726166B
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 07:05:45 +0100 (CET)
+In-Reply-To: <1427263299-14707-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,20 +20,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Jie, Yang" <yang.jie@intel.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> BTW, Takashi, according to what Tanu mentioned, kctls indexes other than 0
-> are currently ignored by PA, so creating and exporting kctls with non-zero
-> indices for the same name in HD-Audio Jack before, seems no use for upper
-> layer?
+This moves AZX_MAX_CODECS define to HDA_MAX_CODECS so that common code can
+use this as well
 
-Does this mean that pulseaudio don't support notebook with dual headphone
-jacks since you need to use  jack states of both headphone jacks to
-determine the speaker is muted or not even you assign different name to the
-headphone jacks
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/hda_verbs.h      |    1 +
+ sound/pci/hda/hda_controller.c |    4 ++--
+ sound/pci/hda/hda_controller.h |    9 ++++-----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-For notebook with dock station ,  headphone jack and dock headphone jack
-usually share volume
+diff --git a/include/sound/hda_verbs.h b/include/sound/hda_verbs.h
+index d0509db6d0ec..42b8415b2254 100644
+--- a/include/sound/hda_verbs.h
++++ b/include/sound/hda_verbs.h
+@@ -550,5 +550,6 @@ enum {
+ 
+ /* max. codec address */
+ #define HDA_MAX_CODEC_ADDRESS	0x0f
++#define HDA_MAX_CODECS		8
+ 
+ #endif /* __SOUND_HDA_VERBS_H */
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 26ce990592a0..abb3822f5488 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1066,7 +1066,7 @@ static unsigned int azx_command_addr(u32 cmd)
+ {
+ 	unsigned int addr = cmd >> 28;
+ 
+-	if (addr >= AZX_MAX_CODECS) {
++	if (addr >= HDA_MAX_CODECS) {
+ 		snd_BUG();
+ 		addr = 0;
+ 	}
+@@ -1136,7 +1136,7 @@ static void azx_update_rirb(struct azx *chip)
+ 		res_ex = le32_to_cpu(chip->rirb.buf[rp + 1]);
+ 		res = le32_to_cpu(chip->rirb.buf[rp]);
+ 		addr = res_ex & 0xf;
+-		if ((addr >= AZX_MAX_CODECS) || !(chip->codec_mask & (1 << addr))) {
++		if ((addr >= HDA_MAX_CODECS) || !(chip->codec_mask & (1 << addr))) {
+ 			dev_err(chip->card->dev, "spurious response %#x:%#x, rp = %d, wp = %d",
+ 				res, res_ex,
+ 				chip->rirb.rp, wp);
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index be1b7ded8d82..2aa75e34a718 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -119,9 +119,8 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define RIRB_INT_MASK		0x05
+ 
+ /* STATESTS int mask: S3,SD2,SD1,SD0 */
+-#define AZX_MAX_CODECS		8
+ #define AZX_DEFAULT_CODECS	4
+-#define STATESTS_INT_MASK	((1 << AZX_MAX_CODECS) - 1)
++#define STATESTS_INT_MASK	((1 << HDA_MAX_CODECS) - 1)
+ 
+ /* SD_CTL bits */
+ #define SD_CTL_STREAM_RESET	0x01	/* stream reset bit */
+@@ -245,8 +244,8 @@ struct azx_rb {
+ 	dma_addr_t addr;	/* physical address of CORB/RIRB buffer */
+ 	/* for RIRB */
+ 	unsigned short rp, wp;	/* read/write pointers */
+-	int cmds[AZX_MAX_CODECS];	/* number of pending requests */
+-	u32 res[AZX_MAX_CODECS];	/* last read value */
++	int cmds[HDA_MAX_CODECS];	/* number of pending requests */
++	u32 res[HDA_MAX_CODECS];	/* last read value */
+ };
+ 
+ struct azx;
+@@ -360,7 +359,7 @@ struct azx {
+ 	unsigned int disabled:1; /* disabled by VGA-switcher */
+ 
+ 	/* for debugging */
+-	unsigned int last_cmd[AZX_MAX_CODECS];
++	unsigned int last_cmd[HDA_MAX_CODECS];
+ 
+ #ifdef CONFIG_SND_HDA_DSP_LOADER
+ 	struct azx_dev saved_azx_dev;
+-- 
+1.7.9.5
