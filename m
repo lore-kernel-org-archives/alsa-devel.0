@@ -1,15 +1,17 @@
 From: saulery@legtux.org
-Subject: Fix a small typo in manpage cspctl.1 of
-	alsa-tools/sb16_csp
-Date: Wed, 25 Mar 2015 18:38:52 +0100
-Message-ID: <1427305133-12754-1-git-send-email-saulery@legtux.org>
+Subject: [PATCH] cspctl.1: remove ".LO" macro. This macro don't
+	exist for manpages syntax.
+Date: Wed, 25 Mar 2015 18:38:53 +0100
+Message-ID: <1427305133-12754-2-git-send-email-saulery@legtux.org>
+References: <1427305133-12754-1-git-send-email-saulery@legtux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.legtux.org (legtux.org [91.121.155.10])
- by alsa0.perex.cz (Postfix) with ESMTP id E3E3A2608C7
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 18:46:06 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 21B272612BD
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 18:46:10 +0100 (CET)
+In-Reply-To: <1427305133-12754-1-git-send-email-saulery@legtux.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,12 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: saulery@legtux.org
+Cc: saulery@legtux.org, =?UTF-8?q?St=C3=A9phane=20Aulery?= <saulery@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-I found an error in man pages cspctl.1.
-Could you please integrate this patch ?
-
-Regards,
+RnJvbTogU3TDqXBoYW5lIEF1bGVyeSA8c2F1bGVyeUBmcmVlLmZyPgoKU2lnbmVkLW9mZi1ieTog
+U3TDqXBoYW5lIEF1bGVyeSA8c2F1bGVyeUBmcmVlLmZyPgotLS0KIHNiMTZfY3NwL2NzcGN0bC4x
+IHwgMSAtCiAxIGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NiMTZf
+Y3NwL2NzcGN0bC4xIGIvc2IxNl9jc3AvY3NwY3RsLjEKaW5kZXggMTAyNDlmOC4uZTljY2Y2ZCAx
+MDA2NDQKLS0tIGEvc2IxNl9jc3AvY3NwY3RsLjEKKysrIGIvc2IxNl9jc3AvY3NwY3RsLjEKQEAg
+LTEsNSArMSw0IEBACiAuVEggY3NwY3RsIDEgIkFwcmlsIDI3LCAyMDAwIgotLkxPIDEKIC5TSCBO
+QU1FCiBjc3BjdGwgXC0gU291bmQgQmxhc3RlciAxNiBBU1AvQ1NQIGNvbnRyb2wgcHJvZ3JhbQog
+Ci0tIAoyLjEuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
