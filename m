@@ -1,31 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols
- for every jack input device
-Date: Thu, 26 Mar 2015 00:13:09 +0800
-Message-ID: <CAN8ccib2J7Dq0RDrzgn9uUwQAPcvya0mmxuuHc1V3LuL2Mt_mg@mail.gmail.com>
-References: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
- <1426841719-14576-3-git-send-email-yang.jie@intel.com>
- <s5hd2446mt2.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB90F@SHSMSX101.ccr.corp.intel.com>
- <s5hvbhv6eio.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB93C@SHSMSX101.ccr.corp.intel.com>
- <s5hr3sj6bzj.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB993@SHSMSX101.ccr.corp.intel.com>
- <s5hegoj69bs.wl-tiwai@suse.de>
- <1427108203.2968.57.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <550FFE2B.7050008@canonical.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDD854@SHSMSX101.ccr.corp.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: snd_soc_tas5086: Reinit register
+	values on probe
+Date: Wed, 25 Mar 2015 09:20:29 -0700
+Message-ID: <20150325162029.GF3572@sirena.org.uk>
+References: <1427297379-17736-1-git-send-email-pascal.huerst@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7227407915761801310=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
- [209.85.214.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DCF5265363
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 17:13:11 +0100 (CET)
-Received: by obbgg8 with SMTP id gg8so23391291obb.1
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 09:13:10 -0700 (PDT)
-In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BDD854@SHSMSX101.ccr.corp.intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00E96265363
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 17:20:15 +0100 (CET)
+In-Reply-To: <1427297379-17736-1-git-send-email-pascal.huerst@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,23 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Jie, Yang" <yang.jie@intel.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>
+To: Pascal Huerst <pascal.huerst@gmail.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, lgirdwood@gmail.com, zonque@gmail.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-> > Headphone or mic, one hw switch:
-> [Keyon]I am fresh about this kind of hw jack, it should use different
-> segment of the plug, seems we don't need check the actual connected
-> status at the jack creation stage, just creating "Headphone Mic Jack"
-> should works, right?
-> >
-> >   * "Headphone Mic Jack"
-> >
->
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=5780b627e24113323427c102175296ae43dfb9d7
+--===============7227407915761801310==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="O98KdSgI27dgYlM5"
+Content-Disposition: inline
 
-http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/?id=7369a53ab5f606e87a3cd1cd4eebd40226bab090
 
-http://www.asus.com/Notebooks_Ultrabooks/Eee_PC_1015PX/specifications/
+--O98KdSgI27dgYlM5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 25, 2015 at 04:29:39PM +0100, Pascal Huerst wrote:
+
+> If the machine driver has been un/reloaded, the register values of
+> the codec driver have to be reinitialized in order to run properly.
+
+Hrm.  This isn't something that I'd expect to be required - I'd expect
+that as part of the machine driver teardown to put the hardware into a
+reasonable default state so that things come back as normal.  Can you be
+a bit more specific about the problem that you are seeing?  We probably
+shouldn't need the existing reset that's in the ASoC level probe either.
+
+I do think a version of this is useful regardless of the above...
+
+>  	tas5086_reset(priv);
+> +	regcache_mark_dirty(priv->regmap);
+
+Since the device has hardware reset support we really ought to be able
+to do the register cache resync only if the reset GPIO is missing.  How
+about putting your code into the reset function and doing it in the
+case where the reset GPIO is missing?  That way anything that thinks
+it's resetting the device will get the benefit of your code.
+
+--O98KdSgI27dgYlM5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVEuBFAAoJECTWi3JdVIfQKBAH/0eIsWORRP9dyVF+jgISgL83
+8Fn4/Jh0ig9y3W+WilmHKlRnR1UcPyEj5RTYQHRYX6Z02K/zpHXcilOsanM4QMVp
+5E+E6tIwwmxfRr8hfL7vdeVKheNzIKAH+hcCiqZ4dV1CDSh32BVCHvTPrcNzUZke
+ErvWr3339deCPsjAOuaaaAcQErCW6VmSsljbN2dwi9sdfjlM65cN5cgz2YGwUzZF
+9iOMzO6pydXURo6VNuCR9M46ZvARxzueEo2YxZrGbHuOX5xJWXvk5wOOLxsNbVKB
+/9dsoVHBY9X8/pWeOeHY8+1gyQTldRAyI55nwpWslvu8tgKcTb7kaIQEBbdSad4=
+=pM3k
+-----END PGP SIGNATURE-----
+
+--O98KdSgI27dgYlM5--
+
+--===============7227407915761801310==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7227407915761801310==--
