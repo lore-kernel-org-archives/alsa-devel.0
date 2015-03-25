@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH resend] ASoC: fsl-ssi: Fix bitclock
- calculation for master mode
-Date: Wed, 25 Mar 2015 09:58:15 -0700
-Message-ID: <20150325165814.GJ3572@sirena.org.uk>
-References: <1427121972-5059-1-git-send-email-mkl@pengutronix.de>
+From: Pascal Huerst <pascal.huerst@gmail.com>
+Subject: Re: [PATCH] ASoC: snd_soc_tas5086: Reinit register
+	values on probe
+Date: Wed, 25 Mar 2015 18:29:15 +0100
+Message-ID: <5512F06B.1030301@gmail.com>
+References: <1427297379-17736-1-git-send-email-pascal.huerst@gmail.com>
+ <20150325162029.GF3572@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0507502371593835269=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A5182612C6
- for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 17:57:51 +0100 (CET)
-In-Reply-To: <1427121972-5059-1-git-send-email-mkl@pengutronix.de>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 229CB2608C7
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 18:29:17 +0100 (CET)
+Received: by wibg7 with SMTP id g7so118149192wib.1
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 10:29:16 -0700 (PDT)
+In-Reply-To: <20150325162029.GF3572@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, lgirdwood@gmail.com, zonque@gmail.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On 25.03.2015 17:20, Mark Brown wrote:
+> On Wed, Mar 25, 2015 at 04:29:39PM +0100, Pascal Huerst wrote:
+> 
+>> If the machine driver has been un/reloaded, the register values of
+>> the codec driver have to be reinitialized in order to run properly.
+> 
+> Hrm.  This isn't something that I'd expect to be required - I'd expect
+> that as part of the machine driver teardown to put the hardware into a
+> reasonable default state so that things come back as normal.  Can you be
+> a bit more specific about the problem that you are seeing?  We probably
+> shouldn't need the existing reset that's in the ASoC level probe either.
 
---===============0507502371593835269==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="VSaCG/zfRnOiPJtU"
-Content-Disposition: inline
+The symptom is, that if I rmmod the machine driver and then modprobe it
+again. The codec does not play audio at all. I can call aplay without
+any problems, but there is no output. My guess was that I have to
+rewrite the default values after a reset. May be regmap_reinit_cache()
+is the better choice to reinit the register values? Not sure about that.
 
+> I do think a version of this is useful regardless of the above...
+> 
+>>  	tas5086_reset(priv);
+>> +	regcache_mark_dirty(priv->regmap);
+> 
+> Since the device has hardware reset support we really ought to be able
+> to do the register cache resync only if the reset GPIO is missing.  How
+> about putting your code into the reset function and doing it in the
+> case where the reset GPIO is missing?  That way anything that thinks
+> it's resetting the device will get the benefit of your code.
 
---VSaCG/zfRnOiPJtU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 23, 2015 at 03:46:12PM +0100, Marc Kleine-Budde wrote:
-> From: Sascha Hauer <s.hauer@pengutronix.de>
->=20
-> in fsl_ssi_set_bclk we are looking for the best divider by iterating
-> over all possible dividers. The divider is in the range 1..256, so
-
-This doesn't apply against current code, please check and resend.
-
---VSaCG/zfRnOiPJtU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVEukmAAoJECTWi3JdVIfQIm4H/jQeht9sZPoYYA6KeLZcpi/i
-9xMuk9xhf9iFjOWT2GXElsvsR/D8T1XmwCFLp2jOhNyDG9FtPh5y52FwcXSrCfip
-APL8aJJ5KIZURmVre3fFuhWb9OG0qlY1QnRIF0pNeL2+Pw+H62gSQzAJoZLhTWKa
-YO9cuhhxD0+RX0R/KKNFI3FlS/WCQlwHwT+2HEMEuvrbFMwU5k5HhiLKhLqHFJHi
-Ls72zEdJ1W8ts1L7PYocfIAq8jhUF4mSeJHkMPG9ZBI+3/6LIobVz7DLl2cRZHaz
-9suT392hok9nApYZlKSzfEKiOJjizB20jcZLHTCe5QA7YSn8PxN4hHepAbMHXKM=
-=y/+R
------END PGP SIGNATURE-----
-
---VSaCG/zfRnOiPJtU--
-
---===============0507502371593835269==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0507502371593835269==--
+I thing this would not fix the issue. I do have a hardware reset. In
+that case my code would not be called at all and I would face the same
+issue (no audio output) again.
