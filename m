@@ -1,46 +1,96 @@
-From: Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH 05/16] page-flags: define behavior of FS/IO-related flags
- on compound pages
-Date: Wed, 25 Mar 2015 11:56:56 -0700 (PDT)
-Message-ID: <alpine.LSU.2.11.1503251149290.3915@eggly.anvils>
-References: <1426784902-125149-1-git-send-email-kirill.shutemov@linux.intel.com> <1426784902-125149-6-git-send-email-kirill.shutemov@linux.intel.com> <550B15A0.9090308@intel.com> <20150319200252.GA13348@node.dhcp.inet.fi> <alpine.LSU.2.11.1503221613280.2680@eggly.anvils>
- <20150323121726.GB30088@node.dhcp.inet.fi> <alpine.LSU.2.11.1503241406270.1591@eggly.anvils> <20150325102344.GA10471@node.dhcp.inet.fi>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: Re: [PATCH resend] ASoC: fsl-ssi: Fix bitclock
+ calculation for master mode
+Date: Wed, 25 Mar 2015 22:44:02 +0100
+Message-ID: <55132C22.3050503@pengutronix.de>
+References: <1427121972-5059-1-git-send-email-mkl@pengutronix.de>
+ <20150325165814.GJ3572@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <20150325102344.GA10471@node.dhcp.inet.fi>
-Sender: owner-linux-mm@kvack.org
-To: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Hugh Dickins <hughd@google.com>, Dave Hansen <dave.hansen@intel.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Andrea Arcangeli <aarcange@redhat.com>, Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@redhat.com>, Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@gentwo.org>, Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>, Steve Capper <steve.capper@linaro.org>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.cz>, Jerome Marchand <jmarchan@redhat.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3324011548229775947=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7F54A261AB0
+ for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2015 22:44:19 +0100 (CET)
+In-Reply-To: <20150325165814.GJ3572@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 25 Mar 2015, Kirill A. Shutemov wrote:
-> 
-> We only need tail refcounting for THP, so I think this should fix the issue:
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 4a3a38522ab4..9ab432660adb 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -456,7 +456,7 @@ static inline int page_count(struct page *page)
->  
->  static inline bool __compound_tail_refcounted(struct page *page)
->  {
-> -       return !PageSlab(page) && !PageHeadHuge(page);
-> +       return !PageSlab(page) && !PageHeadHuge(page) && PageAnon(page);
->  }
->  
->  /*
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============3324011548229775947==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="AQLbtvjWV2GD4lviMGqmm6jPOm79FwAoc"
 
-Yes, that should be a good fix for the mapcount issue.
-And no coincidence that it's just what I needed too,
-when reusing the PG_compound_lock bit: see my 10/24
-(which had to rearrange mm.h. not having your 1/16).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--AQLbtvjWV2GD4lviMGqmm6jPOm79FwAoc
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hugh
+On 03/25/2015 05:58 PM, Mark Brown wrote:
+> On Mon, Mar 23, 2015 at 03:46:12PM +0100, Marc Kleine-Budde wrote:
+>> From: Sascha Hauer <s.hauer@pengutronix.de>
+>>
+>> in fsl_ssi_set_bclk we are looking for the best divider by iterating
+>> over all possible dividers. The divider is in the range 1..256, so
+>=20
+> This doesn't apply against current code, please check and resend.
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+The problem has been fixed by:
+
+    6c8ca30eec7b ASoC: fsl_ssi: Don't try to round-up for PM divisor
+                 calculation
+
+in the meantime.
+
+Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--AQLbtvjWV2GD4lviMGqmm6jPOm79FwAoc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCgAGBQJVEywoAAoJECte4hHFiupUuy0P/1q9fKeSIigGmV4qO6zXDaTs
+91XR4cc/+pWwZp2N9XQd1i5ZJPOUtwi7H0KvOQWCLvbapKkDkUxvTnBvfQFVnzsA
+K6/d+9afVMl3VZOFw3jqF2HKMeNvKH8xXR5ayjk8tKQG6QAafcrIr7S12khwbt60
+8wDkIQ9HujbafRFiVQCvIucUw4SAsltczqhKG8zegtGi+fz1y1+7WIhuXuP3GENt
+soYRUrkNp8kP0ctS9NM42jxvDUfWjGJYe9J2/m0NruT1yYcmJQfkA3RgjkoA0SFU
+W4c0mtbwND9dXi2XCOjTi4CLasS9FcEGLKuxOxNGcasE5COUl9L48tHIFZ7Vr45j
+nulPD/HX6J9RwSAbRjUSEEVZlurB0/N+UgDo3fmjXSMDwg2weG8+xZFfw4gr+D60
+K3vY2muwHa+RjMSV1BdabepraEXi7eixOrCkX2a7+M5xauxXI+2ZfQGGaSsvwhC4
+ciV08ngLi0lhZuY6kTEg4cNHkETJrT0ILwgldALtA7Yp2cevW7CXcw3fBMntDNN5
+2wiSeJJgV+1hJthRoHvaU9KCBivEz3vYz7Ya02IZj6BAi80K+8mAMtFm55RsR4P0
+nymufNv6Pqd1+GpYoYii2up6oddFa9CVR0WQTsnyv+E00gdey/7GepE8cfXBcGQA
+vR4MEQkgImV3iXaGNMaj
+=2YIN
+-----END PGP SIGNATURE-----
+
+--AQLbtvjWV2GD4lviMGqmm6jPOm79FwAoc--
+
+--===============3324011548229775947==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3324011548229775947==--
