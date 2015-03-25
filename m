@@ -1,7 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: DAPM: Fix build warning
-Date: Wed, 25 Mar 2015 10:13:28 +0000
-Message-ID: <1427278408-27134-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2] ASoC: dapm: Fix build warning
+Date: Wed, 25 Mar 2015 10:19:02 +0000
+Message-ID: <1427278742-27283-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
@@ -22,6 +22,10 @@ w_param_text.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
+
+Changes since v1:
+ - Just small fix to commit message
+
  sound/soc/soc-dapm.c |   10 ++++++----
  1 files changed, 6 insertions(+), 4 deletions(-)
 
