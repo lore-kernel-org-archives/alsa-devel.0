@@ -1,146 +1,67 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols
- for every jack input device
-Date: Thu, 26 Mar 2015 10:05:39 +0100
-Message-ID: <5513CBE3.2090908@canonical.com>
-References: <1426841719-14576-1-git-send-email-yang.jie@intel.com>	
- <1426841719-14576-3-git-send-email-yang.jie@intel.com>	
- <s5hd2446mt2.wl-tiwai@suse.de>	
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB90F@SHSMSX101.ccr.corp.intel.com>	
- <s5hvbhv6eio.wl-tiwai@suse.de>	
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB93C@SHSMSX101.ccr.corp.intel.com>	
- <s5hr3sj6bzj.wl-tiwai@suse.de>	
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDB993@SHSMSX101.ccr.corp.intel.com>	
- <s5hegoj69bs.wl-tiwai@suse.de>
- <1427108203.2968.57.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <550FFE2B.7050008@canonical.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDD854@SHSMSX101.ccr.corp.intel.com>
- <5513AA46.2080804@canonical.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BDDB1D@SHSMSX101.ccr.corp.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D75A260574
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2015 10:05:43 +0100 (CET)
-In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BDDB1D@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Jie, Yang" <yang.jie@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Add one more node in the EAPD supporting candidate list
+Date: Thu, 26 Mar 2015 17:14:55 +0800
+Message-ID: <1427361295-7899-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
+We have a HP machine which use the codec node 0x17 connecting the
+internal speaker, and from the node capability, we saw the EAPD,
+if we don't set the EAPD on for this node, the internal speaker
+can't output any sound.
 
+Cc: <stable@vger.kernel.org>
+BugLink: https://bugs.launchpad.net/bugs/1436745
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+picked some content from the alsa-info.txt of this machine:
 
-On 2015-03-26 09:29, Jie, Yang wrote:
->
-> Thank you so much, David!
->
-> So, I summarized as below table:
+Codec: Realtek ALC221
+Address: 0
+AFG Function Id: 0x1 (unsol 1)
+Vendor Id: 0x10ec0221
+Subsystem Id: 0x103c8105
+Revision Id: 0x100103
+No Modem Function Group found
+...
+...
+...
+Node 0x17 [Pin Complex] wcaps 0x40050c: Mono Amp-Out
+  Control: name="Speaker Playback Switch", index=0, device=0
+    ControlAmp: chs=1, dir=Out, idx=0, ofs=0
+  Control: name="Speaker Phantom Jack", index=0, device=0
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00]
+  Pincap 0x00010010: OUT EAPD
+  EAPD 0x0:
+  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
+    Conn = Analog, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x0f
 
-I've added how I see them with the new API, see below for further comments:
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> Jack Type					kctls/switches name					detection																description
->
-> Headphone					Headphone Jack					HP plugged in/unplugged	
-
-SND_JACK_HEADPHONE
-
->
-> Mic						Mic Jack						Mic plugged in/unplugged	
-
-SND_JACK_MICROPHONE
-
->
-> Headset					Headphone Jack					Nothing plugged in:   ""Headphone Jack"" = false, ""Headset Mic Jack"" = false
-> 						Headset Mic Jack"					Headphones plugged in:   ""Headphone Jack"" = true, ""Headset Mic Jack"" = false
-> 													Headset plugged in:   ""Headphone Jack"" = true, ""Headset Mic Jack"" = true
-> 													Mic plugged in:   ""Headphone Jack"" = true ""Headset Mic Jack"" = false(should not plugged in Mic, detect wrongly)"		independent switches
-
-SND_JACK_HEADSET
-
-"Mic plugged in" case is irrelevant - not supported by hw
-
->
-> Headset Mic					Headphone Jack					Nothing plugged in:   ""Headphone Jack"" = false, ""Headset Mic Phantom Jack"" = false
-> 						Headset Mic Phantom Jack				Headphones plugged in:   ""Headphone Jack"" = true, ""Headset Mic Phantom Jack"" = false?
-> 													Headset plugged in:   ""Headphone Jack"" = false, ""Headset Mic Phantom Jack"" = true ?
-> 													Mic plugged in:   ""Headphone Jack"" = true, ""Headset Mic Phantom Jack"" = false(should not plugged in Mic, detect wrongly)"    one hw switch only
-
-SND_JACK_HEADPHONE, the "Headset Mic Phantom Jack" is created manually
-
-> Headphone Mic				Headphone Mic Jack					Nothing plugged in:   ""Headphone Mic Jack"" = false
-> 													Headphones plugged in:   ""Headphone Mic Jack"" = true
-> 													Mic plugged in:   ""Headphone Mic Jack"" = true
-> 													Headset plugged in:   ""Headphone Mic Jack"" = true?"											one hw switch
-
-SND_JACK_HEADPHONE (probably)
-
-> Headset Headphone Mic			Headphone Mic Jack					Nothing plugged in:   ""Headphone Mic Jack"" = false, ""Headset Mic Phantom Jack"" = false
-> 						Headset Mic Phantom Jack				Headphones plugged in:   ""Headphone Mic Jack"" = true, ""Headset Mic Phantom Jack"" = false
-> 													Headset plugged in:   ""Headphone Mic Jack"" = false, ""Headset Mic Phantom Jack"" = true ?
-> 													Mic plugged in:   ""Headphone Mic Jack"" = true, ""Headset Mic Phantom Jack"" = false"					one hw switch only
-
-SND_JACK_HEADPHONE (probably), the "Headset Mic Phantom Jack" is created 
-manually
-
-> Headphone Mic Headset			Headphone Mic Jack					Nothing plugged in:   ""Headphone Mic Jack"" = false, ""Headset Mic Jack"" = false
-> 						Headset Mic Jack					Headphones plugged in:   ""Headphone Mic Jack"" = true, ""Headset Mic Jack"" = false
-> 													Headset plugged in:   ""Headphone Mic Jack"" = true, ""Headset Mic Jack"" = true
-> 													Mic plugged in:   ""Headphone Mic Jack"" = true, ""Headset Mic Jack"" = false
-> 																									one switch for hp/mic and the other for the headset mic
-
-SND_JACK_HEADSET (probably)
-
->
-> so, we may need extend snd_jack_types enum, by adding types:  Headset Mic, Headphone Mic, Headset Headphone Mic, Headphone Mic Headset.
->
-> enum snd_jack_types {
-> 	SND_JACK_HEADPHONE	= 0x0001,
-> 	SND_JACK_MICROPHONE	= 0x0002,
-> 	SND_JACK_HEADSET	= SND_JACK_HEADPHONE | SND_JACK_MICROPHONE,
-> 	SND_JACK_LINEOUT	= 0x0004,
-> 	SND_JACK_MECHANICAL	= 0x0008, /* If detected separately */
-> 	SND_JACK_VIDEOOUT	= 0x0010,
-> 	SND_JACK_AVOUT		= SND_JACK_LINEOUT | SND_JACK_VIDEOOUT,
-> 	SND_JACK_LINEIN		= 0x0020,
->
-> 	SND_JACK_HEADSET_MIC	= 0x0040, /* one hw switch only */
-> 	SND_JACK_HEADPHONE_MIC	= 0x0080, /* one hw switch only, headphone, or mic */
-> 	SND_JACK_HEADSET_ HEADPHONE_MIC	= 0x0100, /* one hw switch only,  headset, headphone, or mic*/
-> 	SND_JACK_ HEADPHONE_HEADSET_ MIC	= 0x0200, /* headset, headphone, or mic; one switch for hp/mic and the other for the headset mic  */
-
-This seems overly complex. I don't think we really need to add all of that.
-
-First, for the phantom jacks. We'll need phantom jacks not only for 
-"Headset Mic Phantom Jack" but also for "Internal Speaker Phantom Jack" 
-and "Internal Mic Phantom Jack", and probably some others as well. So 
-that means that the HDA driver needs to still create some kctls using 
-the current kctl API instead of your new unified API.
-
-A phantom jack is merely a marker to userspace indicating what hardware 
-is present. It always returns "plugged in" when trying to read it.
-
-With the phantom jacks dealt with separately, the question remains about 
-the Headphone Mic stuff. If the name remains the way it is, maybe all we 
-need is a SND_JACK_HEADPHONE (or SND_JACK_HEADSET) jack with the 
-"Headphone Mic Jack" name and then userspace would know that this jack 
-could potentially accomodate a microphone too. Otherwise we might need 
-to add a SND_JACK_HEADPHONE_OR_MIC constant, but I prefer that the names 
-are kept properly, because there might be other relevant info added to 
-the name too (e g "Front Headphone Jack" instead of "Headphone Jack").
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8775389..75880fe 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -396,7 +396,7 @@ static void alc_auto_setup_eapd(struct hda_codec *codec, bool on)
+ {
+ 	/* We currently only handle front, HP */
+ 	static hda_nid_t pins[] = {
+-		0x0f, 0x10, 0x14, 0x15, 0
++		0x0f, 0x10, 0x14, 0x15, 0x17, 0
+ 	};
+ 	hda_nid_t *p;
+ 	for (p = pins; *p; p++)
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.9.1
