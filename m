@@ -1,22 +1,23 @@
 From: "Christian Gleerup" <cromozon@swn.nu>
 Subject: Re: getting the sound to work on my asus m6s00v
-Date: Thu, 26 Mar 2015 22:32:12 +0100
-Message-ID: <6a4c25a94ed577c470b74b1089baa6f9@swn.nu>
+Date: Thu, 26 Mar 2015 22:51:42 +0100
+Message-ID: <90f085140779c677b686bdc5cf4464d2@swn.nu>
 References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
  <5508DD4D.3040901@canonical.com>
  <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
  <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
- <CAN8cciYW6gcFuq-=oGyB85TgW=m9017yy83_M6vZMmy+f=yz=g@mail.gmail.com>
- <150081b6e7eaeec3b9495753945733c4@swn.nu>
- <CAN8cciYFUAKwv2OA8xO6VDbMf=MmpABBTwFwwv7t+N9m7HX8AA@mail.gmail.com>
+ <CAN8cciY7zPaM1kGbky3st_V5G=vg_aeLrm2QrNbpVinYOU=qyA@mail.gmail.com>
+ <64443a816660f3098fc300c7d7b5a01f@swn.nu>
+ <CAN8cciY-K-FkQp1H6Bj0v51CRHrOyFrJ2=ZaY5YLvkRmNU8TRg@mail.gmail.com>
+ <ec6b05bc169224058a4835e2139cbcb4@swn.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.itoverblik.dk (mail.itoverblik.dk [81.7.162.170])
- by alsa0.perex.cz (Postfix) with ESMTP id CE66126582D
- for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2015 22:30:44 +0100 (CET)
-In-Reply-To: <CAN8cciYFUAKwv2OA8xO6VDbMf=MmpABBTwFwwv7t+N9m7HX8AA@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CAD66265824
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2015 22:50:15 +0100 (CET)
+In-Reply-To: <ec6b05bc169224058a4835e2139cbcb4@swn.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,47 +27,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nb@dagami.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nb <nb@dagami.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiA+ID4gPiBUaGUgaW50ZXJuYWwgbWljIGFsc28gd29ya3MuCj4gPiA+ID4KPiA+ID4gPiBidXQ7
-IEkgYW0gYSBiaXQgcHV6bGVkLCBiZWNhdXNlIEkgdHJpZWQgdG8gY29tbWVudCBvdXQgJ29wdGlv
-bnMKPiA+ID4gc25kLWhkYS1pbnRlbCBtb2RlbD0zc3RhY2stZGlnb3V0JyBhbmQgZGlkIGEgcG93
-ZXJjeWNsZSAocG93ZXIgb2ZmKS4uLgo+ID4gPiA+IGFuZCBub3cgdGhlIHNvdW5kIHN0aWxsIHdv
-cmtzLCBzbyBpdCBzZWVtcyB0aGUgc291bmRjYXJkIHdhcyB3b2tlbgo+IGZyb20KPiA+ID4gc29t
-ZSBkZWVwc2xlZXAuCj4gPiA+ID4gVGhlIG1hY2hpbmUgaGF2ZSBiZWVuIHR1cm5lZCBvZiBmb3Ig
-bWFueSAoNC81KSB5ZWFycy4uLgo+ID4gPiA+Cj4gPiA+ID4gQW55d2F5IHNpbmNlIHRoZSBzb3Vu
-ZGNhcmQgbm93IGlzIHdvcmtpbmcgd2l0aCBteSBjdXJyZW50IGtlcm5lbAo+IHdpdGhvdXQKPiA+
-ID4gdGhlIGV4dHJhIG9wdGlvbnMsIEkgYW0gdW5zdXJlIGlmIHRyeWluZyB0aGUgbmV3ZXN0IHZh
-bmlsbGEga2VybmVsIHdvdWxkCj4gPiA+IG1ha2UgYW55IHNlbnNlPwo+ID4gPiA+Cj4gPiA+ID4g
-QW55IHJlY29tbWVuZGF0aW9ucz8KPiA+ID4KPiA+ID4gSWYgaXQgaXMgYSBuZXRib29rIHdpdGgg
-b25lIGphY2sgd2hpY2ggY2FuIGJlIHVzZWQgYXMgaGVhZHBob25lIG9yIG1pYwo+ID4KPiA+IE5v
-dCBhIG5lZXRib29rLCB0d28gamFja3MsIG9uZSBNaWMsIGFuZCBvbmUgUy9QRElGCj4gCj4gaHR0
-cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0
-L2NvbW1pdC9zb3VuZC9wY2kvaGRhP2lkPTQ4N2E1ODhkMDlkYjBkNjUwODI2MTg2N2RmMjA4ZDhi
-ZGM3MTgyNTEKPiAKPiArIFtBTEM4ODBfRklYVVBfQVNVU19XNUFdID0gewo+ICsgLnR5cGUgPSBI
-REFfRklYVVBfUElOUywKPiArIC52LnBpbnMgPSAoY29uc3Qgc3RydWN0IGhkYV9waW50YmxbXSkg
-ewo+ICsgLyogc2V0IHVwIHRoZSB3aG9sZSBwaW5zIGFzIEJJT1MgaXMgdXR0ZXJseSBicm9rZW4g
-Ki8KPiArIHsgMHgxNCwgMHgwMTIxNDExZiB9LCAvKiBIUCAqLwo+ICsgeyAweDE1LCAweDQxMTEx
-MWYwIH0sIC8qIE4vQSAqLwo+ICsgeyAweDE2LCAweDQxMTExMWYwIH0sIC8qIE4vQSAqLwo+ICsg
-eyAweDE3LCAweDQxMTExMWYwIH0sIC8qIE4vQSAqLwo+ICsgeyAweDE4LCAweDkwYTYwMTYwIH0s
-IC8qIG1pYyAqLwo+ICsgeyAweDE5LCAweDQxMTExMWYwIH0sIC8qIE4vQSAqLwo+ICsgeyAweDFh
-LCAweDQxMTExMWYwIH0sIC8qIE4vQSAqLwo+ICsgeyAweDFiLCAweDQxMTExMWYwIH0sIC8qIE4v
-QSAqLwo+ICsgeyAweDFjLCAweDQxMTExMWYwIH0sIC8qIE4vQSAqLwo+ICsgeyAweDFkLCAweDQx
-MTExMWYwIH0sIC8qIE4vQSAqLwo+ICsgeyAweDFlLCAweGI3NDMxMTFlIH0sIC8qIFNQRElGIG91
-dCAqLwo+ICsgeyB9Cj4gKyB9LAo+ICsgLmNoYWluZWQgPSB0cnVlLAo+ICsgLmNoYWluX2lkID0g
-QUxDODgwX0ZJWFVQX0dQSU8xLAo+ICsgfSwKPiAKCkkgYW0gbm90IHN1cmUgaWYgeW91IHdvdWxk
-IGxpa2UgbWUgdG8gYXBwbHkgdGhpcyBwYXRjaCwgaWYgc28gaG93IGRvIEkgZG8gaXQ/Cgo+IFVz
-aW5nIGhkYSBlbXUgYW5kIHRoZSBsYXRlc3QgYWxzYSBkcml2ZXIsIMKgIGhlYWRwaG9uZSBtaWMg
-cGhhbnRvbSBqYWNrIGlzCj4gY3JlYXRlZCBhbmQgZW5hYmxlIHNoYXJlZCBJL08gamFjayBhdCBu
-b2RlIDB4MTQKCkFyZSB0aGVzZSBvcHRpb25zIEkgc2hvdWxkIHNwZWNpZnkgd2hlbiB0cnlpbmcg
-dG8gbG9hZCB0aGUgZHJpdmVyPwrCoAo+IDB4MTgsIDB4OTBhNjAxNjAgwqAgW0ZpeGVkXSBNaWMg
-YXQgSW50Cj4gCj4gdGhpcyBzZWVtIGRpZmZlcmVudCBmcm9tIHlvdXIgaGRhamFja3NlbnNldGVz
-dCByZXN1bHQgaWYgeW91IGNhbiBkZXRlY3QgbWljCj4gamFjayBhdCBub2RlIDB4MTgKCkkgdGhp
-bmsgdGhpcyBpbmZvIHNob3VsZCBiZSBpbiBteSBvdGhlciBtYWlsLCB5ZXM/CsKgCj4gVGhpcyBt
-ZWFuIGJ1ZyBpbiBjcmVhdGUgaGVhZHBob25lIMKgbWljIGphY2sgaWYgaGVhZHBob25lIG1pYyBy
-ZXF1aXJlCj4gc3BlY2lmYyBzZXF1ZW5jZSBudW1iZXIKCgoKCgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+SSBsb29rZWQgY2xvc2VyIGF0IHRoZSBwcmV2aW91cyBpbWFnZSwKCmFuZCB0aGVyZSB3aGVyZSBz
+b21lIHRoaW5ncyB0aGF0IGRpZG50IGxvb2sgcmlnaHQuCgpUaGUgcmlnaHQgbW9kZWwgaXMgbTZ2
+CmFuZCBpdCBzZWVtcyBsaWtlIGl0IGFjdHVhbGx5IGhhdmUgNCBzcGVha2VycyAhCgpoZXJlIGlz
+IHNvbWUgY3V0cyBmcm9tIHRoZSBtYW51YWwgCmh0dHA6Ly9wb3N0aW1nLm9yZy9pbWFnZS80enB0
+cHJ1OTcvIAoKQW5kIHRoZSBtYW51YWwgCsKgaHR0cDovL2RsY2RuZXQuYXN1cy5jb20vcHViL0FT
+VVMvbmIvTTZWQS9lMTkxNl9tNl9ody5wZGYKCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
