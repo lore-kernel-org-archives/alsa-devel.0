@@ -1,16 +1,16 @@
 From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 3/4] ASoC: rt5645: Use update_bits for bit
-	control
-Date: Fri, 27 Mar 2015 20:19:08 +0800
-Message-ID: <1427458749-821-3-git-send-email-bardliao@realtek.com>
+Subject: [PATCH 4/4] ASoC: rt5645: Restore HP depop setting in
+	HP off
+Date: Fri, 27 Mar 2015 20:19:09 +0800
+Message-ID: <1427458749-821-4-git-send-email-bardliao@realtek.com>
 References: <1427458749-821-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C91B265A79
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 13:19:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AE81C265A7C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 13:19:21 +0100 (CET)
 In-Reply-To: <1427458749-821-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,28 +25,28 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, jason.ym.lin@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-In codec bias level off, we need to disable gate mode with MCLK
-for power saving. It is set by one bit. We don't need to write
-while register for that.
+This driver will set RT5645_DEPOP_MAN bit in headphone power up
+depop process. We need to restore it in headphone power down
+process. Otherwise, we will get headphone noise when push button
+function is enabled.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/rt5645.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index f9edf09..b6d5b95 100644
+index b6d5b95..69528ae 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -2396,7 +2396,8 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
- 
- 	case SND_SOC_BIAS_OFF:
- 		snd_soc_write(codec, RT5645_DEPOP_M2, 0x1100);
--		snd_soc_write(codec, RT5645_GEN_CTRL1, 0x0128);
-+		snd_soc_update_bits(codec, RT5645_GEN_CTRL1,
-+				RT5645_DIG_GATE_CTRL, 0);
- 		snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
- 				RT5645_PWR_VREF1 | RT5645_PWR_MB |
- 				RT5645_PWR_BG | RT5645_PWR_VREF2 |
+@@ -1270,6 +1270,8 @@ static void hp_amp_power(struct snd_soc_codec *codec, int on)
+ 			snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
+ 				RT5645_PWR_HP_L | RT5645_PWR_HP_R |
+ 				RT5645_PWR_HA, 0);
++			snd_soc_update_bits(codec, RT5645_DEPOP_M2,
++				RT5645_DEPOP_MASK, 0);
+ 		}
+ 	}
+ }
 -- 
 1.8.1.1.439.g50a6b54
