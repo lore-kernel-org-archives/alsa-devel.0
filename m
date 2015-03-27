@@ -1,118 +1,54 @@
-From: noman pouigt <variksla@gmail.com>
-Subject: Re: recording problem in beagleboard-mcbsp
-Date: Fri, 27 Mar 2015 14:20:29 -0700
-Message-ID: <CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>
-References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 0/5 v2] ASoC: rsnd: DPCM base sampling rate convert
+ support
+Date: Fri, 27 Mar 2015 16:01:10 -0700
+Message-ID: <20150327230109.GJ1743@sirena.org.uk>
+References: <87h9t85ry1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f48.google.com (mail-oi0-f48.google.com
- [209.85.218.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D7DA2612D3
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 22:20:32 +0100 (CET)
-Received: by oiag65 with SMTP id g65so86721589oia.2
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 14:20:30 -0700 (PDT)
-In-Reply-To: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5uO961YFyoDlzFnP"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <87h9t85ry1.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Das Biju <biju.das-kTT6dE0pTRh9uiUsa/gSgQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 27, 2015 at 1:24 PM, noman pouigt <variksla@gmail.com> wrote:
-> Problem: not able to record with any of the devices
-> in beagleboard-xm.
->
-> Analysis: userspace is stuck in snd_pcm_readi function
-> and kernel space i don't see snd_pcm_update_hw_ptr
-> function being called.
->
-> Checked the I2S clocks and they are perfect and recording
-> data line is moving based on the data. I am able to do playback
-> though.
->
-> I am using below command to do recording. Do i need to add
-> additional switches?
->
->
-> Linux kernel: 3.19
->
-> root@arm:~# arecord -t wav -c 2 -r 44100 -f S32_LE -v test.wav
-> Recording WAVE 'test.wav' : Signed 32 bit Little Endian, Rate 44100 Hz, Stereo
-> Plug PCM: Linear conversion PCM (S16_LE)
-> Its setup is:
->   stream       : CAPTURE
->   access       : RW_INTERLEAVED
->   format       : S32_LE
->   subformat    : STD
->   channels     : 2
->   rate         : 44100
->   exact rate   : 44100 (44100/1)
->   msbits       : 32
->   buffer_size  : 27560
->   period_size  : 5512
->   period_time  : 124988
->   tstamp_mode  : NONE
->   period_step  : 1
->   avail_min    : 5512
->   period_event : 0
->   start_threshold  : 1
->   stop_threshold   : 27560
->   silence_threshold: 0
->   silence_size : 0
->   boundary     : 1806172160
-> Slave: Hardware PCM card 0 'omap3beagle' device 0 subdevice 0
-> Its setup is:
->   stream       : CAPTURE
->   access       : MMAP_INTERLEAVED
->   format       : S16_LE
->   subformat    : STD
->   channels     : 2
->   rate         : 44100
->   exact rate   : 44100 (44100/1)
->   msbits       : 16
->   buffer_size  : 27560
->   period_size  : 5512
->   period_time  : 124988
->   tstamp_mode  : NONE
->   period_step  : 1
->   avail_min    : 5512
->   period_event : 0
->   start_threshold  : 1
->   stop_threshold   : 27560
->   silence_threshold: 0
->   silence_size : 0
->   boundary     : 1806172160
->   appl_ptr     : 0
->   hw_ptr       : 0
->
-> [   74.696319] omap-mcbsp 48074000.mcbsp: **** McBSP255 regs ****
-> [   74.696380] omap-mcbsp 48074000.mcbsp: DRR2:  0xedd0abce
-> [   74.696411] omap-mcbsp 48074000.mcbsp: DRR1:  0x0000
-> [   74.696441] omap-mcbsp 48074000.mcbsp: DXR2:  0x0000
-> [   74.696472] omap-mcbsp 48074000.mcbsp: DXR1:  0x0000
-> [   74.696502] omap-mcbsp 48074000.mcbsp: SPCR2: 0x0230
-> [   74.696533] omap-mcbsp 48074000.mcbsp: SPCR1: 0x0031
-> [   74.696563] omap-mcbsp 48074000.mcbsp: RCR2:  0x8041
-> [   74.696594] omap-mcbsp 48074000.mcbsp: RCR1:  0x0040
-> [   74.696594] omap-mcbsp 48074000.mcbsp: XCR2:  0x8041
-> [   74.696624] omap-mcbsp 48074000.mcbsp: XCR1:  0x0040
-> [   74.696655] omap-mcbsp 48074000.mcbsp: SRGR2: 0x001f
-> [   74.696685] omap-mcbsp 48074000.mcbsp: SRGR1: 0x0f00
-> [   74.696716] omap-mcbsp 48074000.mcbsp: PCR0:  0x000f
->
->
-> setup:
-> beagleoboard-xm
-> ubuntu distribution
-> arecord used
-> jaroslav recording application also tried
-using max98090 codec and not using twl.
+
+--5uO961YFyoDlzFnP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 26, 2015 at 04:00:44AM +0000, Kuninori Morimoto wrote:
+>=20
+> Hi Mark
+>=20
+> These are v2 of remains of my previous patch set.
+> Basically, these doesn't need soc-core's new feature, but it is assuming
+> DPCM base sampling rate convert has both playback/capture in same time.
+
+Applied all, thanks.
+
+--5uO961YFyoDlzFnP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVFeEuAAoJECTWi3JdVIfQFogH/jXpzUdtoUTSfPSx8vMsM8yo
+EaH/V5m3zkSXjajXazF1NCdD+rpaQff6jP7G1UmvxqtDyi/60T7qUQ7ofq7EW0OZ
+ncAW/YcyKYmRUbuEWt3Ygq4ULiUjdY8wM6cpQoZYcCnoimE+jum8XRPz4jSyccp5
+o+k8U9Xdme7X1RghGY26Mmfl6pPs8U4CNdiUzSSsWafIo2Yv+9gz4nBMgfPsLXE+
+F6tjrNgpkCZARNgCALPzdKCAGsFNJuh+1jUMfzMVp8fp1mbH+7XPmOgjaX5HHdr2
+a1UKCbQvQJrqGottUEzH68Uc2RbeKGMyOJYcRBZ2qo8oem5bYD4lt9TBqJkROFU=
+=qWBk
+-----END PGP SIGNATURE-----
+
+--5uO961YFyoDlzFnP--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
