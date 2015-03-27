@@ -1,46 +1,100 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ARM: shmobile: armadillo: fixup CPU settings
-Date: Thu, 26 Mar 2015 18:35:15 -0700
-Message-ID: <20150327013515.GC1743@sirena.org.uk>
-References: <87fv8v4353.wl%kuninori.morimoto.gx@renesas.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols
+ for every jack input device
+Date: Fri, 27 Mar 2015 02:13:38 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDE6B1@SHSMSX101.ccr.corp.intel.com>
+References: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
+ <1426841719-14576-3-git-send-email-yang.jie@intel.com>
+ <s5hd2446mt2.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB90F@SHSMSX101.ccr.corp.intel.com>
+ <s5hvbhv6eio.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB93C@SHSMSX101.ccr.corp.intel.com>
+ <s5hr3sj6bzj.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB993@SHSMSX101.ccr.corp.intel.com>
+ <s5hegoj69bs.wl-tiwai@suse.de>
+ <1427108203.2968.57.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <550FFE2B.7050008@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDD854@SHSMSX101.ccr.corp.intel.com>
+ <5513AA46.2080804@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDDB1D@SHSMSX101.ccr.corp.intel.com>
+ <5513CBE3.2090908@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDDBAF@SHSMSX101.ccr.corp.intel.com>
+ <CAN8cciYD1gsoyjEWgwYT89MTeYP0gJHH2a-a=zMuxn2-S8Jx8g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7qSK/uQB79J36Y4o"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87fv8v4353.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Simon <horms@verge.net.au>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9D3E26588F
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 03:13:56 +0100 (CET)
+In-Reply-To: <CAN8cciYD1gsoyjEWgwYT89MTeYP0gJHH2a-a=zMuxn2-S8Jx8g@mail.gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---7qSK/uQB79J36Y4o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Mar 24, 2015 at 01:05:02AM +0000, Kuninori Morimoto wrote:
->=20
-> Hi Mark, Lars
-> Cc Simon
-
-Applied all, thanks.
-
---7qSK/uQB79J36Y4o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVFLPTAAoJECTWi3JdVIfQ3hUH+QF6g4jg9ewWPdtjwrheB1XO
-dteHfoWgKZnZS3saBTK3gyCFwueBbUZDCl0UTOPmxSamGfq6j1Z7AoDomwItsKqZ
-KYE/BOh/DzSGiFYMjOLw5VQa4gddJa4tB4MFvEnMeqk8txVL0XXJW6kRP3pFlt8t
-qALNv8YbkwnX/M/mwVNVzoYha6X/fSMoxB8AZPg63pyDPnXCeYsAWuoe2jixCmfL
-OcTm68xaoqobmoQMMC7Zj9ACVEt3phM8nHO/I5MI5NAiDN8mrM7yxQ3KL2cE3mPt
-7IA9mij1EmgJjWbqWktpsPPf8iTQSfZWl+vv3ZWI7sp0+SlQNrR5jG6Cp2BA7LM=
-=vsXD
------END PGP SIGNATURE-----
-
---7qSK/uQB79J36Y4o--
+DQpGcm9tOiBSYXltb25kIFlhdSBbbWFpbHRvOnN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbV0N
+ClNlbnQ6IEZyaWRheSwgTWFyY2ggMjcsIDIwMTUgODozOSBBTQ0KVG86IEppZSwgWWFuZw0KQ2M6
+IEFMU0EgRGV2ZWxvcG1lbnQgTWFpbGluZyBMaXN0OyBMaWFtIEdpcmR3b29kOyBUYWthc2hpIEl3
+YWk7IERhdmlkIEhlbm5pbmdzc29uOyBHaXJkd29vZCwgTGlhbSBSOyBUYW51IEthc2tpbmVuOyBi
+cm9vbmllQGtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIIHYyIDEv
+Ml0gQUxTQTogamFjazogY3JlYXRlIGphY2sga2NvbnRyb2xzIGZvciBldmVyeSBqYWNrIGlucHV0
+IGRldmljZQ0KDQoNCmwNCj4NCj4NCj4gT0ssIHRoZW4gSSBhbSB0aGlua2luZyB3ZSBjYW4gYWRk
+IGphY2sga2N0bHMgY3JlYXRpbmcgY29kZSBsaWtlIGJlbG93Og0KPg0KPiBzbmRfamFja19uZXco
+c3RydWN0IHNuZF9jYXJkICpjYXJkLCBjb25zdCBjaGFyICppZCwgaW50IHR5cGUsIHN0cnVjdCBz
+bmRfamFjayAqKmpqYWNrKSB7DQo+IC4uLg0KPiAgICAgICAgIFN3aXRjaCh0eXBlIHwgU05EX0pB
+Q0tfSEVBRFNFVCkNCj4gICAgICAgICB7DQo+ICAgICAgICAgICAgICAgICBjYXNlIFNORF9KQUNL
+X01JQ1JPUEhPTkU6DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGNyZWF0ZSAiTWljIEphY2si
+IGtjdGw7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KPiAgICAgICAgICAgICAg
+ICAgY2FzZSBTTkRfSkFDS19IRUFEU0VUOg0KPiAgICAgICAgICAgICAgICAgICAgICAgICBpZiAo
+aWQgPT0gIkhlYWRwaG9uZSBNaWMgSGVhZHNldCIpIHsNCj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBjcmVhdGUgIiBIZWFkcGhvbmUgTWljIEphY2sgIiBrY3RsOw0KPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGNyZWF0ZSAiIEhlYWRzZXQgTWljIEphY2sgIiBrY3Rs
+Ow0KPiAgICAgICAgICAgICAgICAgICAgICAgICB9IGVsc2Ugew0KPiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIGNyZWF0ZSAiIEhlYWRwaG9uZSBKYWNrICIga2N0bDsNCj4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBjcmVhdGUgIiBIZWFkc2V0IE1pYyBKYWNrICIga2N0
+bDsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgfQ0KPiAgICAgICAgICAgICAgICAgICAgICAg
+ICBicmVhazsNCj4gICAgICAgICAgICAgICAgIGNhc2UgU05EX0pBQ0tfSEVBRFBIT05FOg0KPiAg
+ICAgICAgICAgICAgICAgICAgICAgICBpZiAoaWQgPT0gIkhlYWRzZXQgTWljIikgew0KPiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNyZWF0ZSAiIEhlYWRwaG9uZSBKYWNrICIga2N0
+bDsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgLy8gICAgICBjcmVhdGUgIiBIZWFkc2V0IE1p
+YyBQaGFudG9tIEphY2sgIiBrY3RsOw0KPiAgICAgICAgICAgICAgICAgICAgICAgICB9IGVsc2Ug
+aWYgKGlkID09ICJIZWFkcGhvbmUgTWljIikgIHsNCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBjcmVhdGUgIiBIZWFkcGhvbmUgTWljIEphY2sgIiBrY3RsOw0KPiAgICAgICAgICAg
+ICAgICAgICAgICAgICB9IGVsc2UgaWYgKGlkID09ICJIZWFkc2V0IEhlYWRwaG9uZSBNaWMiKSAg
+ew0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNyZWF0ZSAiIEhlYWRwaG9uZSBN
+aWMgSmFjayAiIGtjdGw7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIC8vICAgICAgY3JlYXRl
+ICIgSGVhZHNldCBNaWMgUGhhbnRvbSBKYWNrICIga2N0bDsNCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgfSBlbHNlIHsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjcmVhdGUg
+IiBIZWFkcGhvbmUgSmFjayAiIGtjdGw7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIH0NCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ICAgICAgICAgICAgICAgICBkZWZhdWx0
+Og0KPiAgICAgICAgICAgICAgICAgICAgICAgICBjcmVhdGUgIk1pYyBKYWNrIiBrY3RsOw0KPiAg
+ICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gICAgICAgICB9DQo+IC4uLg0KPiB9DQoN
+Cmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5k
+LmdpdC90cmVlL3NvdW5kL3BjaS9oZGEvaGRhX2phY2suYw0KDQpJZiB5b3UgbG9vayBhdCBzbmRf
+aGRhX2phY2tfYWRkX2tjdGwoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBuaWQs
+IGNvbnN0IGNoYXIgKm5hbWUsIGludCBpZHgpIHdoaWNoIGFkZCBrY3RsIGFuZCBjYWxsIHNuZF9q
+YWNrX25ldyBpZiBpdCBpcyBub3QgcGhhbnRvbQ0KDQpbS2V5b25dIGl04oCZcyBnb29kIHRoYXQg
+d2UgZG9u4oCZdCBuZWVkIGhhbmRsZSBwaGFudG9tIGphY2sgaW4gc25kX2phY2tfbmV3KCkuDQoN
+Ckl0IGlzIHVubGlrZWx5IHNuZF9qYWNrX25ldygpIGNyZWF0ZSB0aG9zZSBrY3RsDQoNCkZvciBt
+b2JpbGUgcGhvbmUgb3IgdGFibGV0ICwgdGhlcmUgaXMgb25lIGFuZCBvbmx5IG9uZSBpbnB1dCA6
+IGhlYWRzZXQNCg0KW0tleW9uXSB0aGF04oCZcyBPSy4NCg0KZm9yIG5vdGVib29rIGFuZCBkZXNr
+dG9wLCB0aGVyZSBhcmUgZHVhbCBoZWFkcGhvbmUgamFja3MsIGZvdXIgbGluZSBvdXQgamFja3Mg
+Zm9yIDcuMSBzdXJyb3VuZCwgbGluZSBpbiwNCg0KcGhhbnRvbSBqYWNrIGZvciBzcGRpZiwgc3Vy
+cm91bmQgc3BlYWtlcnMgLCBocCBhbmQgbWljIGZvciB0aG9zZSBkZXNrdG9wIHVzaW5nIGFjOTcg
+ZnJvbnQgYXVkaW8gcGFuZWwNCg0KW0tleW9uXSB3ZSB3aWxsIGNyZWF0ZSBrY3RscyBmb3IgZWFj
+aCBoZWFkcGhvbmUvbWljL2hlYWRzZXQgamFja3MsIGJ1dCBub3QgZm9yIGxpbmUgaW4vb3V0IGFu
+ZCBwaGFudG9tDQoNCmphY2tzLCBpcyB0aGlzIE9LPw0KDQpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
