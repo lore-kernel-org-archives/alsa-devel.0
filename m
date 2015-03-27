@@ -1,15 +1,15 @@
 From: Bard Liao <bardliao@realtek.com>
 Subject: [PATCH 1/4] ASoC: rt5645: Redefine format config for
 	rt5650
-Date: Fri, 27 Mar 2015 20:16:43 +0800
-Message-ID: <1427458603-772-1-git-send-email-bardliao@realtek.com>
+Date: Fri, 27 Mar 2015 20:19:06 +0800
+Message-ID: <1427458749-821-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 59FA8265A6C
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 13:17:13 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A4DE265A6C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 13:19:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
