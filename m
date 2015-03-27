@@ -1,30 +1,36 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: getting the sound to work on my asus m6s00v
-Date: Fri, 27 Mar 2015 17:08:47 +0800
-Message-ID: <CAN8cciZNz1TGSQah+KzRGGhRwGWR4U3LbMVUxV+=0mtX1gdM=w@mail.gmail.com>
-References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
- <5508DD4D.3040901@canonical.com>
- <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
- <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
- <CAN8cciY7zPaM1kGbky3st_V5G=vg_aeLrm2QrNbpVinYOU=qyA@mail.gmail.com>
- <64443a816660f3098fc300c7d7b5a01f@swn.nu>
- <CAN8cciY-K-FkQp1H6Bj0v51CRHrOyFrJ2=ZaY5YLvkRmNU8TRg@mail.gmail.com>
- <ec6b05bc169224058a4835e2139cbcb4@swn.nu>
- <CAN8cciYo-SSeoBg69qaj+aYBx+ZRbVuhbgkURutuBWGwCxauWA@mail.gmail.com>
- <CAN8cciam2=TE3zhWNB_GQEr1Q1z_X7S+k34fAgajE_XNYJzo0Q@mail.gmail.com>
- <CAN8cciZhtL_C-DAErzhM4E3t3nn7KdAbjQXQEPk3iVcBvm4aUw@mail.gmail.com>
- <CAN8cciZqdwONrrpWc0EKNfGz9Xwibh9Xj+=JnZ=ieK+m1rbF8w@mail.gmail.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols
+ for every jack input device
+Date: Fri, 27 Mar 2015 09:11:11 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BDE8AE@SHSMSX101.ccr.corp.intel.com>
+References: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
+ <1426841719-14576-3-git-send-email-yang.jie@intel.com>
+ <s5hd2446mt2.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB90F@SHSMSX101.ccr.corp.intel.com>
+ <s5hvbhv6eio.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB93C@SHSMSX101.ccr.corp.intel.com>
+ <s5hr3sj6bzj.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB993@SHSMSX101.ccr.corp.intel.com>
+ <s5hegoj69bs.wl-tiwai@suse.de>
+ <1427108203.2968.57.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <550FFE2B.7050008@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDD854@SHSMSX101.ccr.corp.intel.com>
+ <5513AA46.2080804@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDDB1D@SHSMSX101.ccr.corp.intel.com>
+ <5513CBE3.2090908@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDDBCA@SHSMSX101.ccr.corp.intel.com>
+ <5514FDA6.1000705@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDE7F0@SHSMSX101.ccr.corp.intel.com>
+ <55150E59.8080803@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 23B73260434
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 10:08:49 +0100 (CET)
-Received: by obbld8 with SMTP id ld8so14483016obb.3
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 02:08:48 -0700 (PDT)
-In-Reply-To: <CAN8cciZqdwONrrpWc0EKNfGz9Xwibh9Xj+=JnZ=ieK+m1rbF8w@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id E078E26044E
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 10:13:13 +0100 (CET)
+In-Reply-To: <55150E59.8080803@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,137 +40,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Gleerup <cromozon@swn.nu>
-Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nb <nb@dagami.org>
+To: David Henningsson <david.henningsson@canonical.com>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> I have done a couple of things
-> First I left the laptop off with no power connected;
-> This made the laptop awake in the non functional state regarding the
-soundcard.
-> I then used this opportunity to update to the latest kernel.
->
-> With the latest kernel, the sound is still not working.
-> Unmuting the S/PDIF in alsamixer turn on red light in the headphone jack.
->
-> also, using 3stack-digout option doesn't bring back sound.
->
-> This is the output from the alsa information tool
-> http://www.alsa-project.org/db/?f=df46a9ee01e04dde11b194e0278c9f22594540d0
->
-> after updating this is the output from various commands
->
-> [
-> Nothing plugged in:
-> ./hdajacksensetest -a
-> Pin 0x14 (Green Headphone, Rear side): present = No
-> Pin 0x15 (Not connected): present = No
-> Pin 0x16 (Not connected): present = No
-> Pin 0x17 (Not connected): present = No
-> Pin 0x18 (Internal Mic): present = Yes
-> Pin 0x19 (Not connected): present = No
-> Pin 0x1a (Not connected): present = Yes
-> Pin 0x1b (Not connected): present = No
-> Pin 0x1c (Not connected): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Internal SPDIF Out, Mobile-In): present = No
-> Pin 0x1f (Not connected): present = No
->
-> ./hda-verb /dev/snd/hwC0D0 0x1{4,5,8} SET_PIN_SENSE 0 nid
-> nid = 0x14, verb = 0x709, param = 0x0
-> value = 0x0
->
-> nid = 0x15, verb = 0x709, param = 0x0
-> value = 0x0
->
-> nid = 0x18, verb = 0x709, param = 0x0
-> value = 0x0
->
-> ./hda-verb /dev/snd/hwC0D0 0x1{4,5,8} GET_PIN_SENSE 0 nid
-> nid = 0x14, verb = 0xf09, param = 0x0
-> value = 0x80001f41
->
-> nid = 0x15, verb = 0xf09, param = 0x0
-> value = 0x80001f41
->
-> nid = 0x18, verb = 0xf09, param = 0x0
-> value = 0x7fffffff
-> ]
->
-> [
-> With headphone plugged in
-> ./hdajacksensetest/hdajacksensetest -a
-> Pin 0x14 (Green Headphone, Rear side): present = No
-> Pin 0x15 (Not connected): present = Yes
-> Pin 0x16 (Not connected): present = No
-> Pin 0x17 (Not connected): present = No
-> Pin 0x18 (Internal Mic): present = Yes
-> Pin 0x19 (Not connected): present = No
-> Pin 0x1a (Not connected): present = Yes
-> Pin 0x1b (Not connected): present = No
-> Pin 0x1c (Not connected): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Internal SPDIF Out, Mobile-In): present = No
-> Pin 0x1f (Not connected): present = No
->
-> // and also ecact same output for hda-verb as with nothing plugged in
-> ]
->
-> [
-> with Mic plugged in, the following items changed
->
-> ./hdajacksensetest/hdajacksensetest -a
-> Pin 0x14 (Green Headphone, Rear side): present = Yes
-> Pin 0x15 (Not connected): present = Yes
-> Pin 0x16 (Not connected): present = No
-> Pin 0x17 (Not connected): present = No
-> Pin 0x18 (Internal Mic): present = Yes
-> Pin 0x19 (Not connected): present = No
-> Pin 0x1a (Not connected): present = Yes
-> Pin 0x1b (Not connected): present = No
-> Pin 0x1c (Not connected): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Internal SPDIF Out, Mobile-In): present = No
-> Pin 0x1f (Not connected): present = No
->
-> ./hda-verb /dev/snd/hwC0D0 0x15 GET_PIN_SENSE 0 nid
-> nid = 0x15, verb = 0xf09, param = 0x0
-> value = 0x7fffffff
->
-> ./hda-verb /dev/snd/hwC0D0 0x18 GET_PIN_SENSE 0 nid
-> nid = 0x18, verb = 0xf09, param = 0x0
-> value = 0x80001f41
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Friday, March 27, 2015 4:01 PM
+> To: Jie, Yang; Tanu Kaskinen; Takashi Iwai
+> Cc: perex@perex.cz; broonie@kernel.org; alsa-devel@alsa-project.org;
+> Girdwood, Liam R; Liam Girdwood
+> Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols for every jack
+> input device
+> 
+> 
+> 
+> On 2015-03-27 08:45, Jie, Yang wrote:
+> >> -----Original Message-----
+> >> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> >> Sent: Friday, March 27, 2015 2:50 PM
+> >> To: Jie, Yang; Tanu Kaskinen; Takashi Iwai
+> >> Cc: perex@perex.cz; broonie@kernel.org; alsa-devel@alsa-project.org;
+> >> Girdwood, Liam R; Liam Girdwood
+> >> Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols for
+> >> every jack input device
+> >>
+> >>
+> >>
+> >> On 2015-03-26 13:43, Jie, Yang wrote:
+> >>>
+> >>> Sorry, Correct a typo(removing line "create "Mic Jack" kctl;" in
+> >>> default case)
+> >>
+> >> It looks like your code can be simplified as:
+> > [Keyon] thanks, I will try simplify them.
+> >>
+> >> switch (type | SND_JACK_HEADSET) {
+> >> 	case SND_JACK_HEADSET:
+> >> 		create "Headset Mic Jack" kctl;
+> >> 		/* fall through */
+> >> 	case SND_JACK_MICROPHONE:
+> >> 	case SND_JACK_HEADPHONE:
+> >> 		create format("%s Jack", id) kctl;
+> > [Keyon] I don't want to fill "id" to kctl name, because sometimes it
+> > can be string which can't be understood by PA, such as:
+> >
+> > soc/intel/mfld_machine.c:       ret_val = snd_soc_card_jack_new(runtime-
+> >card,
+> > soc/intel/mfld_machine.c-                       "Intel(R) MID Audio Jack",
+> SND_JACK_HEADSET |
+> > soc/intel/mfld_machine.c-                       SND_JACK_BTN_0 |
+> SND_JACK_BTN_1, &mfld_jack,
+> >
+> > soc/omap/ams-delta.c:   ret = snd_soc_card_jack_new(card,
+> "hook_switch", SND_JACK_HEADSET,
+> > soc/omap/ams-delta.c-                               &ams_delta_hook_switch, NULL, 0);
+> 
+> Ok, good point. It's a matter of different conventions between ASoC and
+> HDA. In ASoC, naming is wild west. In HDA, naming is (mostly) consistent and
+> we depend on the exact naming for userspace to know exactly how the jack
+> functions.
+> 
+> Another example is HDMI/DisplayPort, where the hw often supports several
+> ports and we need to know which jack belongs to which PCM device, and we
+> use the name of the jack to determine that.
+> 
+> I would very much prefer that all the ASoC jack names (and mixer control
+> names!) would be fixed up to be consistent to the extent that makes sense,
+> but the ASoC people haven't really agreed to do that, but instead prefer to
+> use a large database of UCM files. :-( And seen from a UCM context, that the
+> ASoC jacks are labelled terribly inconsistent, isn't that big of a deal given that
+> UCM will specify the jack name anyhow.
+[Keyon] that's the bad status. :(
+Maybe we can just make HDA jack kctls works and leave not standard name
+soc jack kctls invisible for PA?
 
-Seem impedance measurement is not correct, mic should have higher impedance
-than headphone
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/alsa/HD-Audio.txt
-
-You can disable it by hint trigger_sense=0
-
-- trigger_sense (bool): indicates that the jack detection needs the
-  explicit call of AC_VERB_SET_PIN_SENSE verb
-
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Control: name="Master Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Headphone Mic Phantom Jack", index=0, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003f: IN OUT HP Detect Trigger ImpSense
-  Pin Default 0x0121411f: [Jack] HP Out at Ext Rear
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x1, Sequence = 0xf
-    Misc = NO_PRESENCE
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x0c
-
-To get back headphone phantom jack if HP is really shared with speaker
-
-Disable hp mic by hint  hp_mic_detect=0
-
-- hp_mic_detect (bool): enable/disable the hp/mic shared input for a single
-built-in mic case; default true
+> 
+> >> }
+> >>
+> >> ...that way, prefixes such as "Front Headphone Jack" are preserved too,
+> > [Keyon] if PA can recognize "Front Headphone Jack" and "Rear Headphone
+> Jack", then I
+> > prefer to add a determine here:
+> >
+> > 	if (!strcmp(id, "Front Headphone Jack") || !strcmp(id, "Rear
+> Headphone Jack"))
+> > 		create format("%s Jack", id) kctl;
+> 
+> This will not scale, there are too many variants.
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
