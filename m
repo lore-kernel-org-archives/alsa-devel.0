@@ -1,56 +1,48 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH RFT] ASoC: max98925: Fix bit-width 24 settings
- in max98925_dai_hw_params
-Date: Fri, 27 Mar 2015 17:25:21 +0800
-Message-ID: <1427448321.29963.0.camel@phoenix>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH] ASoC: davinci-mcasp: Index ruledata in drvdata with substream->stream
+Date: Fri, 27 Mar 2015 11:47:51 +0200
+Message-ID: <1427449671-18014-1-git-send-email-jsarha@ti.com>
+References: <20150327062008.GA11983@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id E0F702606D1
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 10:25:27 +0100 (CET)
-Received: by pdnc3 with SMTP id c3so91202397pdn.0
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 02:25:26 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Anish kumar <anish.kumar@maximintegrated.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ralph Birt <rdbirt@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20150327062008.GA11983@mwanda>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, dan.carpenter@oracle.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Trivial typo fix.
+The serializer direction definitions runs from 1 to 2, which does not
+suite the purpose. The substream->stream is perfect for the purpose
+and should have been used from the beginning.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
-Hi Anish,
-This looks like a typo, can you confirm if this patch is correct.
-Thanks.
-
- sound/soc/codecs/max98925.c | 4 ++--
+ sound/soc/davinci/davinci-mcasp.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
-index 0796dfa..9b5a17d 100644
---- a/sound/soc/codecs/max98925.c
-+++ b/sound/soc/codecs/max98925.c
-@@ -442,8 +442,8 @@ static int max98925_dai_hw_params(struct snd_pcm_substream *substream,
- 	case 24:
- 		regmap_update_bits(max98925->regmap,
- 				MAX98925_FORMAT,
--				M98925_DAI_CHANSZ_MASK, M98925_DAI_CHANSZ_32);
--		max98925->ch_size = 32;
-+				M98925_DAI_CHANSZ_MASK, M98925_DAI_CHANSZ_24);
-+		max98925->ch_size = 24;
- 		break;
- 	case 32:
- 		regmap_update_bits(max98925->regmap,
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 76156d18..0b6b1b2 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1149,7 +1149,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 		if (mcasp->serial_dir[i] == dir)
+ 			max_channels++;
+ 	}
+-	mcasp->ruledata[dir].serializers = max_channels;
++	mcasp->ruledata[substream->stream].serializers = max_channels;
+ 	max_channels *= mcasp->tdm_slots;
+ 	/*
+ 	 * If the already active stream has less channels than the calculated
+@@ -1172,7 +1172,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 	if (mcasp->bclk_master && mcasp->bclk_div == 0 && mcasp->sysclk_freq) {
+ 		int ret;
+ 
+-		mcasp->ruledata[dir].mcasp = mcasp;
++		mcasp->ruledata[substream->stream].mcasp = mcasp;
+ 
+ 		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
+ 					  SNDRV_PCM_HW_PARAM_RATE,
 -- 
 1.9.1
+
