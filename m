@@ -1,74 +1,103 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add support for NAU8824 codec to ASoC
-Date: Thu, 26 Mar 2015 17:28:01 -0700
-Message-ID: <20150327002801.GA3572@sirena.org.uk>
-References: <1423986570-6355-1-git-send-email-Vincent.wan@amd.com>
- <20150224141314.GI6236@finisterre.sirena.org.uk>
- <54F6FC28.4030403@nuvoton.com>
- <20150304125527.GM21293@sirena.org.uk>
- <54F95721.7040103@nuvoton.com>
- <20150306210722.GK21293@sirena.org.uk>
- <5514811D.1060901@nuvoton.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2 1/2] ALSA: jack: create jack kcontrols
+ for every jack input device
+Date: Fri, 27 Mar 2015 08:39:10 +0800
+Message-ID: <CAN8cciYD1gsoyjEWgwYT89MTeYP0gJHH2a-a=zMuxn2-S8Jx8g@mail.gmail.com>
+References: <1426841719-14576-1-git-send-email-yang.jie@intel.com>
+ <1426841719-14576-3-git-send-email-yang.jie@intel.com>
+ <s5hd2446mt2.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB90F@SHSMSX101.ccr.corp.intel.com>
+ <s5hvbhv6eio.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB93C@SHSMSX101.ccr.corp.intel.com>
+ <s5hr3sj6bzj.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDB993@SHSMSX101.ccr.corp.intel.com>
+ <s5hegoj69bs.wl-tiwai@suse.de>
+ <1427108203.2968.57.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <550FFE2B.7050008@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDD854@SHSMSX101.ccr.corp.intel.com>
+ <5513AA46.2080804@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDDB1D@SHSMSX101.ccr.corp.intel.com>
+ <5513CBE3.2090908@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A901BDDBAF@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="u3gIr+u2NK768I+f"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5514811D.1060901@nuvoton.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chih-Chiang Chang <ccchang12@nuvoton.com>
-Cc: "mcuos.com@gmail.com" <mcuos.com@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, AP MS30 Linux Kernel community <linux-kernel@vger.kernel.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
+ [209.85.218.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1077F26582D
+ for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 01:39:12 +0100 (CET)
+Received: by oifl3 with SMTP id l3so63997517oif.0
+ for <alsa-devel@alsa-project.org>; Thu, 26 Mar 2015 17:39:10 -0700 (PDT)
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BDDBAF@SHSMSX101.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Jie, Yang" <yang.jie@intel.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+l
+>
+>
+> OK, then I am thinking we can add jack kctls creating code like below:
+>
+> snd_jack_new(struct snd_card *card, const char *id, int type, struct
+snd_jack **jjack) {
+> ...
+>         Switch(type | SND_JACK_HEADSET)
+>         {
+>                 case SND_JACK_MICROPHONE:
+>                         create "Mic Jack" kctl;
+>                         break;
+>                 case SND_JACK_HEADSET:
+>                         if (id == "Headphone Mic Headset") {
+>                                 create " Headphone Mic Jack " kctl;
+>                                 create " Headset Mic Jack " kctl;
+>                         } else {
+>                                 create " Headphone Jack " kctl;
+>                                 create " Headset Mic Jack " kctl;
+>                         }
+>                         break;
+>                 case SND_JACK_HEADPHONE:
+>                         if (id == "Headset Mic") {
+>                                 create " Headphone Jack " kctl;
+>                         //      create " Headset Mic Phantom Jack " kctl;
+>                         } else if (id == "Headphone Mic")  {
+>                                 create " Headphone Mic Jack " kctl;
+>                         } else if (id == "Headset Headphone Mic")  {
+>                                 create " Headphone Mic Jack " kctl;
+>                         //      create " Headset Mic Phantom Jack " kctl;
+>                         } else {
+>                                 create " Headphone Jack " kctl;
+>                         }
+>                         break;
+>                 default:
+>                         create "Mic Jack" kctl;
+>                         break;
+>         }
+> ...
+> }
 
---u3gIr+u2NK768I+f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/pci/hda/hda_jack.c
 
-On Thu, Mar 26, 2015 at 02:58:53PM -0700, Chih-Chiang Chang wrote:
-> On 3/6/2015 1:07 PM, Mark Brown wrote:
-> > On Fri, Mar 06, 2015 at 03:28:33PM +0800, Chih-Chiang Chang wrote:
+If you look at snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t
+nid, const char *name, int idx) which add kctl and call snd_jack_new if it
+is not phantom
 
-> > Please fix your mailer to word wrap within paragraphs, it makes things a
-> > lot easier to read.
+It is unlikely snd_jack_new() create those kctl
 
-> This seems to violate the kernel's rule. I am using the Thunderbird to
-> do upstream. And in kernel's documentation, it shows we should set
-> "mailnews.wraplength" from "72" to "0". Any way, for your convenience, I
-> already modify the "mailnews.wraplength" back to "72".
+For mobile phone or tablet , there is one and only one input : headset
 
-You should never word wrap code since that corrupts the patches but
-always word wrap text.
+for notebook and desktop, there are dual headphone jacks, four line out
+jacks for 7.1 surround, line in,
 
-> > I'd really like to have a better understanding of what this is doing -
-> > it can be valid to do this but there are some warning signs here such as
-> > the volume of writes being large in comparison with the set of controls
-> > the driver exposes which mean I'd like to be sure the use matches
-> > expectations.  Normally this sort of thing is a small number of fixes
-> > for undocumented registers or updates to register defaults changed in
-> > later revisions of the chip.
-
-> We have tried to reduce the sequence recently, but it got some issues in
-> the tests. We think these large number of register settings are
-> necessary to our NAU8824 codec. We will provide the comments of all
-> values in source to have a better understanding, is it acceptable to you?
-
-It sounds reasonable but obviously I've not seen the results yet.
-
---u3gIr+u2NK768I+f
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVFKQJAAoJECTWi3JdVIfQp1kH/ik9Fu9AQaxyMYEhfuJs+dcj
-ke0Uj80Y/FCtYD+zgRocOPpM5hXfVCSMTct63G5m087BSYBWeW1MzZ/6YWtkQ8cy
-zazYrCVEepzfcAinq9bRsrHLxr0zun/CH2rzSpADxQ5dx5drcSONfN9V2CbcMdK/
-ZEf84HpUhYDSwYxHdRmcMYrD37AdEDTh0CiTaLAudH+BxxaydbEKug/TVuTGRIQP
-ZE2ql+RrTQYrncyBGfPYGsHSgVP952CL+WUR5Ri5ILGJD7bVbnwei+3/WOc1LsG2
-Rbfd1O2ImVQxNv2ScBvOeZOB2Wr1kh+X5QcFoVEYrci8vPBfO3Ouq++V1IAZNgI=
-=MigT
------END PGP SIGNATURE-----
-
---u3gIr+u2NK768I+f--
+phantom jack for spdif, surround speakers , hp and mic for those desktop
+using ac97 front audio panel
