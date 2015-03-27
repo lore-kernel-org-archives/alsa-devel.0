@@ -1,48 +1,57 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH] ASoC: davinci-mcasp: Index ruledata in drvdata with substream->stream
-Date: Fri, 27 Mar 2015 11:47:51 +0200
-Message-ID: <1427449671-18014-1-git-send-email-jsarha@ti.com>
-References: <20150327062008.GA11983@mwanda>
+From: Markos Chandras <Markos.Chandras@imgtec.com>
+Subject: Re: [PATCH 1/6] ASoC: jz4740: Remove Makefile entry for removed file
+Date: Fri, 27 Mar 2015 10:51:43 +0000
+Message-ID: <5515363F.1050209@imgtec.com>
+References: <1398199596-23649-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20150327062008.GA11983@mwanda>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, dan.carpenter@oracle.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1398199596-23649-1-git-send-email-lars@metafoo.de>
+Sender: stable-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The serializer direction definitions runs from 1 to 2, which does not
-suite the purpose. The substream->stream is perfect for the purpose
-and should have been used from the beginning.
+On 04/22/2014 09:46 PM, Lars-Peter Clausen wrote:
+> Commit 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
+> jz4740-pcm.c file, but neglected to remove the Makefile entries.
+> 
+> Fixes: 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Reported-by: Ralf Baechle <ralf@linux-mips.org>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  sound/soc/jz4740/Makefile | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/soc/jz4740/Makefile b/sound/soc/jz4740/Makefile
+> index be873c1..d32c540 100644
+> --- a/sound/soc/jz4740/Makefile
+> +++ b/sound/soc/jz4740/Makefile
+> @@ -1,10 +1,8 @@
+>  #
+>  # Jz4740 Platform Support
+>  #
+> -snd-soc-jz4740-objs := jz4740-pcm.o
+>  snd-soc-jz4740-i2s-objs := jz4740-i2s.o
+>  
+> -obj-$(CONFIG_SND_JZ4740_SOC) += snd-soc-jz4740.o
+>  obj-$(CONFIG_SND_JZ4740_SOC_I2S) += snd-soc-jz4740-i2s.o
+>  
+>  # Jz4740 Machine Support
+> 
+Hi,
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This patch (eebdec044e82) is present in 3.15-rc1 but the build failure
+that was introduced by 0406a40a0 ("ASoC: jz4740: Use the generic
+dmaengine PCM driver") is present in 3.14-rc1 so 3.14 is still broken.
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 76156d18..0b6b1b2 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1149,7 +1149,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
- 		if (mcasp->serial_dir[i] == dir)
- 			max_channels++;
- 	}
--	mcasp->ruledata[dir].serializers = max_channels;
-+	mcasp->ruledata[substream->stream].serializers = max_channels;
- 	max_channels *= mcasp->tdm_slots;
- 	/*
- 	 * If the already active stream has less channels than the calculated
-@@ -1172,7 +1172,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
- 	if (mcasp->bclk_master && mcasp->bclk_div == 0 && mcasp->sysclk_freq) {
- 		int ret;
- 
--		mcasp->ruledata[dir].mcasp = mcasp;
-+		mcasp->ruledata[substream->stream].mcasp = mcasp;
- 
- 		ret = snd_pcm_hw_rule_add(substream->runtime, 0,
- 					  SNDRV_PCM_HW_PARAM_RATE,
+Greg, would it be possible to cherry pick eebdec044e82 ("ASoC: jz4740:
+Remove Makefile entry for removed file") to 3.14 stable branch? It seems
+to apply without conflicts.
+
+Thank you
+
 -- 
-1.9.1
-
+markos
