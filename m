@@ -1,135 +1,74 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH 0/4] More aggressive PM for HD-audio
-Date: Fri, 27 Mar 2015 08:11:05 +0800
-Message-ID: <5514A019.7030604@canonical.com>
-References: <1426668658-15911-1-git-send-email-tiwai@suse.de>	<550C48EB.1050200@canonical.com>	<550D11D3.8000009@canonical.com>	<5513FA8B.402@canonical.com>	<s5hoanfdhvq.wl-tiwai@suse.de>
- <s5hfv8rdfx3.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Add support for NAU8824 codec to ASoC
+Date: Thu, 26 Mar 2015 17:28:01 -0700
+Message-ID: <20150327002801.GA3572@sirena.org.uk>
+References: <1423986570-6355-1-git-send-email-Vincent.wan@amd.com>
+ <20150224141314.GI6236@finisterre.sirena.org.uk>
+ <54F6FC28.4030403@nuvoton.com>
+ <20150304125527.GM21293@sirena.org.uk>
+ <54F95721.7040103@nuvoton.com>
+ <20150306210722.GK21293@sirena.org.uk>
+ <5514811D.1060901@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id EB0C626582D
- for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2015 01:11:15 +0100 (CET)
-In-Reply-To: <s5hfv8rdfx3.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="u3gIr+u2NK768I+f"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5514811D.1060901@nuvoton.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chih-Chiang Chang <ccchang12@nuvoton.com>
+Cc: "mcuos.com@gmail.com" <mcuos.com@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, AP MS30 Linux Kernel community <linux-kernel@vger.kernel.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDMvMjYvMjAxNSAwOTo1MiBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFRodSwgMjYg
-TWFyIDIwMTUgMTQ6MTA6MTcgKzAxMDAsCj4gVGFrYXNoaSBJd2FpIHdyb3RlOgo+PiBBdCBUaHUs
-IDI2IE1hciAyMDE1IDIwOjI0OjQzICswODAwLAo+PiBIdWkgV2FuZyB3cm90ZToKPj4+IE9uIDAz
-LzIxLzIwMTUgMDI6MzggUE0sIEh1aSBXYW5nIHdyb3RlOgo+Pj4+IE9uIDAzLzIxLzIwMTUgMTI6
-MjAgQU0sIERhdmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+Pj4+PiBPbiAyMDE1LTAzLTE4IDA5OjUw
-LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+Pj4+PiBIaSwKPj4+Pj4+Cj4+Pj4+PiBoZXJlIGlzIGEg
-cGF0Y2hzZXQgZm9yIHN1cHBvcnRpbmcgbW9yZSBhZ2dyZXNzaXZlIFBNIGZvciBIRC1hdWRpby4K
-Pj4+Pj4+IFRoaXMgYWxsb3dzIHRvIGNoYW5nZSB0aGUgcG93ZXIgc3RhdGUgb2YgZWFjaCB3aWRn
-ZXQgbW9yZSBkeW5hbWljYWxseQo+Pj4+Pj4gd2l0aCBqYWNrIGFuZCBzdHJlYW0gc3RhdGVzLiAg
-SXQncyBhY3RpdmF0ZWQgb25seSB3aGVuIHRoZSBjb2RlYwo+Pj4+Pj4gZHJpdmVyIChvciB2aWEg
-c3lzZnMgb3IgZi93IHBhdGNoKSBzZXRzIGNvZGVjLT5wb3dlcl9tZ210IGZsYWcuCj4+Pj4+Pgo+
-Pj4+Pj4gSW4gdGhlb3J5LCB0aGlzIHNob3VsZCB3b3JrIGZvciB0aGUgcmVjZW50IFJlYWx0ZWsg
-Y29kZWNzLCBidXQKPj4+Pj4+IGN1cnJlbnRseSBJIGhhdmUgbm8gbWFjaGluZSBmb3IgdGVzdC4K
-Pj4+Pj4+Cj4+Pj4+PiBEYXZpZCwgY291bGQgeW91IG9yIHlvdXIgdGVhbSBjaGVjayB3aGV0aGVy
-IHRoaXMgd29ya3MgZm9yIEFMQzI4MiBvcgo+Pj4+Pj4gc3VjaD8gIEp1c3QgYWRkIGxpa2U6Cj4+
-Pj4+Pgo+Pj4+Pj4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKPj4+Pj4+ICsr
-KyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCj4+Pj4+PiBAQCAtNTQxNSw2ICs1NDE1
-LDcgQEAgc3RhdGljIGludCBwYXRjaF9hbGMyNjkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCj4+
-Pj4+Pgo+Pj4+Pj4gICAgICAgIHNwZWMgPSBjb2RlYy0+c3BlYzsKPj4+Pj4+ICAgICAgICBzcGVj
-LT5nZW4uc2hhcmVkX21pY192cmVmX3BpbiA9IDB4MTg7Cj4+Pj4+PiArICAgIGNvZGVjLT5wb3dl
-cl9tZ210ID0gMTsKPj4+Pj4+Cj4+Pj4+PiAgICAgICAgc25kX2hkYV9waWNrX2ZpeHVwKGNvZGVj
-LCBhbGMyNjlfZml4dXBfbW9kZWxzLAo+Pj4+Pj4gICAgICAgICAgICAgICAgICAgYWxjMjY5X2Zp
-eHVwX3RibCwgYWxjMjY5X2ZpeHVwcyk7Cj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+IFRoZSBwYXRjaHNl
-dCBpcyBmb3IgZm9yLW5leHQgYnJhbmNoIG9mIHNvdW5kIGdpdCB0cmVlLCBidXQgdGhleSBtaWdo
-dAo+Pj4+Pj4gYmUgYXBwbGljYWJsZSB0byA0LjAtcmMgKG9yIGV2ZW4gb2xkZXIpLCB0b28uICBU
-aGUgY3VycmVudCBwYXRjaGVzIGFyZQo+Pj4+Pj4gZm91bmQgaW4gdG9waWMvaGRhLXBvd2VyIGJy
-YW5jaC4KPj4+Pj4gU28gSSBob3BlZCB0byBiZSBhYmxlIHRvIGxvb2sgYXQgdGhpcyB0b2RheSwg
-YnV0IGl0IHR1cm5zIG91dCB0aGUKPj4+Pj4gbWFjaGluZSBJIHdhcyB0aGlua2luZyBvZiB1c2lu
-ZyBmb3IgdGVzdGluZyBoYXMgYW4gQUxDMjYyIGNvZGVjLAo+Pj4+PiB3aGljaCBoYXJkbHkgY291
-bnRzIGFzICJuZXciLgo+Pj4+Pgo+Pj4+PiBIdWksIGlzIHRoaXMgc29tZXRoaW5nIHlvdSBmZWVs
-IGxpa2UgdGFraW5nIG9uPyBPdGhlcndpc2UgSSdsbCB0cnkgdG8KPj4+Pj4gdGFsayB0byBzb21l
-b25lIGluIFRhaXBlaS4KPj4+Pj4KPj4+PiBPS++8jCBJIHdpbGwgbG9vayBmb3IgdGhlIG1hY2hp
-bmUgdG8gZG8gdGhlIHRlc3QgbmV4dCB3ZWVrLgo+Pj4+Cj4+Pj4gUmVnYXJkcywKPj4+PiBIdWku
-Cj4+Pj4KPj4+IFNvcnJ5IGZvciBsYXRlIHJlc3BvbnNlLCB0b2RheSBpcyBteSBmaXJzdCBkYXkg
-aW4gdGhlIG9mZmljZSBiYWNrIGZyb20KPj4+IHZhY2F0aW9uLCBJIGNoZWNrZWQgYWxsIG1hY2hp
-bmVzIGluIHRoZSBCZWlqaW5nIG9mZmljZSwgbm9uZSBvZiB0aGVtIGhhcwo+Pj4gdGhlIEFMQzI4
-MiBjb2RlYywgSSB3aWxsIGNvbnRpbnVlIHRvIGxvb2sgZm9yIHRoZSBtYWNoaW5lIGZyb20gb3Ro
-ZXIgb2ZmaWNlLgo+Pj4KPj4+IEFuZCBJIGRpZCB0aGUgdGVzdCBvbiB0aGUgbWFjaGluZXMgd2l0
-aCB0aGUgYWxjMjgzLCBhbGMyNTUsIGFsYzI5MiBhbmQKPj4+IGFsYzI2OSwgdGhlIHRlc3Rpbmcg
-cmVzdWx0IHdlcmUgc2FtZSwgdGhlcmUgd2VyZSBubyBzb3VuZCBvdXRwdXQgZnJvbQo+Pj4gaW50
-ZXJuYWwgc3BlYWtlciBvciBoZWFkcGhvbmUsIGFuZCB0aGUgaW50ZXJuYWwgbWljIG9yIGV4dGVy
-bmFsIG1pYwo+Pj4gY2FuJ3QgcmVjb3JkIGFueSBzb3VuZC4gVGhlIHRlc3Qgc3RlcHMgYXMgYmVs
-b3c6Cj4+Pgo+Pj4gMS4gcG93ZXJfc2F2ZV9ub2RlID0gMAo+Pj4gY2hlY2tvdXQgdGhlIGhkYS1w
-b3dlciBicmFuY2gsIGJ1aWxkIHRoZSBrZXJuZWwgYmFzZWQgb24gdGhpcyBicmFuY2guCj4+PiBJ
-bnN0YWxsIHRoZSBrZXJuZWwgdG8gdGhlIGFib3ZlIG1hY2hpbmVzIGFuZCBib290IGludG8gdGhl
-IGRlc2t0b3AKPj4+IHRlc3QgaW50ZXJuYWwgc3BlYWtlciBhbmQgaW50ZXJuYWwgbWljLCB3b3Jr
-cyB2ZXJ5IHdlbGwsIHBsdWcgYSBoZWFkc2V0LAo+Pj4gdGVzdCBoZWFkcGhvbmUgYW5kIGV4dGVy
-bmFsIG1pYywgd29ya3MgdmVyeSB3ZWxsLgo+Pj4gcnVuIHBtX3N1c3BlbmQsIHdhaXQgNSBzZWNv
-bmRzLCB3YWtldXAgdGhlIHN5c3RlbSwgcmVkbyB0aGUgYWJvdmUgdGVzdCwKPj4+IGV2ZXJ5dGhp
-bmcgd29ya3MgdmVyeSB3ZWxsLgo+PiBPSywgdGhpcyBpcyBleHBlY3RlZC4gIFRoZSBwYXRjaCBz
-aG91bGRuJ3QgdG91Y2ggdGhpcyBjYXNlLgo+Pgo+Pj4gMi4gcG93ZXJfc2F2ZV9ub2RlID0gMQo+
-Pj4gZW5hYmxlIHRoZSBwb3dlcl9zYXZlX25vZGUgYXMgYmVsb3c6Cj4+PiBAQCAtNTQyNiw2ICs1
-NDI2LDggQEAgc3RhdGljIGludCBwYXRjaF9hbGMyNjkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMp
-Cj4+Pgo+Pj4gICAgICAgICAgIGFsY19hdXRvX3BhcnNlX2N1c3RvbWl6ZV9kZWZpbmUoY29kZWMp
-Owo+Pj4KPj4+ICsgICAgICAgY29kZWMtPnBvd2VyX3NhdmVfbm9kZSA9IDE7Cj4+PiArCj4+PiAg
-ICAgICAgICAgaWYgKGhhc19jZGVmaW5lX2JlZXAoY29kZWMpKQo+Pj4gICAgICAgICAgICAgICAg
-ICAgc3BlYy0+Z2VuLmJlZXBfbmlkID0gMHgwMTsKPj4+IHJlYnVpbGQgdGhlIGtlcm5lbCwgaW5z
-dGFsbCB0aGUga2VybmVsIHRvIHRoZSBhYm92ZSBtYWNoaW5lcyBhbmQgYm9vdAo+Pj4gaW50byB0
-aGUgZGVza3RvcAo+Pj4gdGVzdCBpbnRlcm5hbCBzcGVha2VyIGFuZCBpbnRlcm5hbCBtaWMsIHdl
-IGNhbiBwbGF5IHNvdW5kIHRvIGludGVybmFsCj4+PiBzcGVha2VyIHdpdGhvdXQgYW55IGVycm9y
-cywgYnV0IEkgY2FuJ3QgaGVhciBhbnkgc291bmQgZnJvbSB0aGUgc3BlYWtlcjsKPj4+IEkgY2Fu
-IHVzZSB0aGUgaW50ZXJuYWwgbWljIHRvIHJlY29yZCB3aXRob3V0IGVycm9ycywgYnV0IHJlY29y
-ZGVkIGZpbGUKPj4+IGRpZCBub3QgaW5jbHVkZSBhbnkgc291bmQgcGNtIChtYXliZSBhbGwgMHgw
-MCBvciAweGZmKQo+Pj4gSSBwbHVnIGEgaGVhZHNldCBpbnRvIHRoZSBoZWFkc2V0IGphY2ssIHRo
-ZSBkZXRlY3Rpb24gd29ya3MgdmVyeSB3ZWxsLAo+Pj4gYnV0IEkgY2FuJ3QgaGVhciBzb3VuZCBm
-cm9tIGhlYWRwaG9uZSB3aGVuIHBsYXkgYSBzb3VuZCwgYW5kIEkgY2FuJ3QgdXNlCj4+PiBoZWFk
-c2V0IG1pYyB0byByZWNvcmQgYW55IHNvdW5kIGFzIHdlbGwuCj4+Pgo+Pj4KPj4+IEFuZCBJIGF0
-dGFjaGVkIDIgYWxzYS1pbmZvLnR4dCwgb25lIGlzIHRoZSBwb3dlcl9zYXZlX25vZGU9MCwgdGhl
-IG90aGVyCj4+PiBpcyB0aGUgcG93ZXJfc2F2ZV9ub2RlPTEKPj4gVGhhbmtzLiAgVGhlIGFsc2Et
-aW5mby5zaCBvdXRwdXRzIHNob3cgbm8gZGlmZmVyZW5jZSBidXQgdGhlIHBvd2VyCj4+IHN0YXRl
-LCBzbyB0aGUgd2lkZ2V0IGF0dHJpYnV0ZXMgc2VlbSBrZXB0IHdpdGggdGhlIHBvd2VyIHN0YXRl
-IGNoYW5nZSwKPj4gYXMgaXQgc2VlbXMuCj4+Cj4+IENvdWxkIHlvdSBnaXZlIGFsc2EtaW5mby5z
-aCBvdXRwdXQgKmR1cmluZyogcGxheWluZyB3aXRoCj4+IHBvd2VyX3NhdmVfbm9kZT0xPwo+IEFs
-c28sIHRyeSB0byBwdWxsIHRvcGljL2hkYS1yZWdtYXAgYnJhbmNoIGluIGFkZGl0aW9uLCBhbmQg
-YXBwbHkgdGhlCj4gcGF0Y2ggYmVsb3cuICBUaGlzIGltcGxlbWVudHMgdGhlIHBhcnRpYWwgc3lu
-YyBmb3IgdGhlIHdpZGdldCBwYXRoLgo+IE5vdGUgdGhhdCB0aGUgcGF0Y2ggaXMgdG90YWxseSB1
-bnRlc3RlZC4KR290IGl0LCBJIHdpbGwgZG8gdGhlIHRlc3QgbmV4dCBNb25kYXksIHNpbmNlIEkg
-Y2FuJ3QgYWNjZXNzIHRob3NlIAptYWNoaW5lcyB1bnRpbCBuZXh0IE1vbmRheS4KClJlZ2FyZHMs
-Ckh1aS4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3Nv
-dW5kL2hkYV9yZWdtYXAuaCBiL2luY2x1ZGUvc291bmQvaGRhX3JlZ21hcC5oCj4gaW5kZXggNzY2
-NDhjY2ZiYmY4Li43MjdhNTgwMWUyOTggMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9zb3VuZC9oZGFf
-cmVnbWFwLmgKPiArKysgYi9pbmNsdWRlL3NvdW5kL2hkYV9yZWdtYXAuaAo+IEBAIC0yMDIsNCAr
-MjAyLDE2IEBAIHNuZF9oZGFjX3JlZ21hcF91cGRhdGVfYW1wX3N0ZXJlbyhzdHJ1Y3QgaGRhY19k
-ZXZpY2UgKmNvZGVjLCBoZGFfbmlkX3QgbmlkLAo+ICAgCXJldHVybiBzbmRfaGRhY19yZWdtYXBf
-dXBkYXRlX3Jhdyhjb2RlYywgY21kLCBtYXNrLCB2YWwpOwo+ICAgfQo+ICAgCj4gKy8qKgo+ICsg
-KiBzbmRfaGRhY19yZWdtYXBfc3luY19ub2RlIC0gc3luYyB0aGUgd2lkZ2V0IG5vZGUgYXR0cmli
-dXRlcwo+ICsgKiBAY29kZWM6IEhELWF1ZGlvIGNvZGVjCj4gKyAqIEBuaWQ6IE5JRCB0byBzeW5j
-Cj4gKyAqLwo+ICtzdGF0aWMgaW5saW5lIHZvaWQKPiArc25kX2hkYWNfcmVnbWFwX3N5bmNfbm9k
-ZShzdHJ1Y3QgaGRhY19kZXZpY2UgKmNvZGVjLCBoZGFfbmlkX3QgbmlkKQo+ICt7Cj4gKwlyZWdj
-YWNoZV9tYXJrX2RpcnR5KGNvZGVjLT5yZWdtYXApOwo+ICsJcmVnY2FjaGVfc3luY19yZWdpb24o
-Y29kZWMtPnJlZ21hcCwgbmlkIDw8IDIwLCAoKG5pZCArIDEpIDw8IDIwKSAtMSk7Cj4gK30KPiAr
-Cj4gICAjZW5kaWYgLyogX19TT1VORF9IREFfUkVHTUFQX0ggKi8KPiBkaWZmIC0tZ2l0IGEvc291
-bmQvcGNpL2hkYS9oZGFfZ2VuZXJpYy5jIGIvc291bmQvcGNpL2hkYS9oZGFfZ2VuZXJpYy5jCj4g
-aW5kZXggZjdjY2VmNTU1OWRlLi4xZjJjYTdiZTE0NjggMTAwNjQ0Cj4gLS0tIGEvc291bmQvcGNp
-L2hkYS9oZGFfZ2VuZXJpYy5jCj4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfZ2VuZXJpYy5jCj4g
-QEAgLTg0MiwxMCArODQyLDggQEAgc3RhdGljIGhkYV9uaWRfdCBwYXRoX3Bvd2VyX3VwZGF0ZShz
-dHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKPiAgIAkJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMs
-IG5pZCwgMCwKPiAgIAkJCQkJICAgIEFDX1ZFUkJfU0VUX1BPV0VSX1NUQVRFLCBzdGF0ZSk7Cj4g
-ICAJCQljaGFuZ2VkID0gbmlkOwo+IC0JCQkvKiBoZXJlIHdlIGFzc3VtZSB0aGF0IHdpZGdldCBh
-dHRyaWJ1dGVzIChlLmcuIGFtcCwKPiAtCQkJICogcGluY3RsIGNvbm5lY3Rpb24pIGRvbid0IGNo
-YW5nZSB3aXRoIGxvY2FsIHBvd2VyCj4gLQkJCSAqIHN0YXRlIGNoYW5nZS4gIElmIG5vdCwgbmVl
-ZCB0byBzeW5jIHRoZSBjYWNoZS4KPiAtCQkJICovCj4gKwkJCWlmIChzdGF0ZSA9PSBBQ19QV1JT
-VF9EMCkKPiArCQkJCXNuZF9oZGFjX3JlZ21hcF9zeW5jX25vZGUoJmNvZGVjLT5jb3JlLCBuaWQp
-Owo+ICAgCQl9Cj4gICAJfQo+ICAgCXJldHVybiBjaGFuZ2VkOwo+CgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--u3gIr+u2NK768I+f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Mar 26, 2015 at 02:58:53PM -0700, Chih-Chiang Chang wrote:
+> On 3/6/2015 1:07 PM, Mark Brown wrote:
+> > On Fri, Mar 06, 2015 at 03:28:33PM +0800, Chih-Chiang Chang wrote:
+
+> > Please fix your mailer to word wrap within paragraphs, it makes things a
+> > lot easier to read.
+
+> This seems to violate the kernel's rule. I am using the Thunderbird to
+> do upstream. And in kernel's documentation, it shows we should set
+> "mailnews.wraplength" from "72" to "0". Any way, for your convenience, I
+> already modify the "mailnews.wraplength" back to "72".
+
+You should never word wrap code since that corrupts the patches but
+always word wrap text.
+
+> > I'd really like to have a better understanding of what this is doing -
+> > it can be valid to do this but there are some warning signs here such as
+> > the volume of writes being large in comparison with the set of controls
+> > the driver exposes which mean I'd like to be sure the use matches
+> > expectations.  Normally this sort of thing is a small number of fixes
+> > for undocumented registers or updates to register defaults changed in
+> > later revisions of the chip.
+
+> We have tried to reduce the sequence recently, but it got some issues in
+> the tests. We think these large number of register settings are
+> necessary to our NAU8824 codec. We will provide the comments of all
+> values in source to have a better understanding, is it acceptable to you?
+
+It sounds reasonable but obviously I've not seen the results yet.
+
+--u3gIr+u2NK768I+f
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVFKQJAAoJECTWi3JdVIfQp1kH/ik9Fu9AQaxyMYEhfuJs+dcj
+ke0Uj80Y/FCtYD+zgRocOPpM5hXfVCSMTct63G5m087BSYBWeW1MzZ/6YWtkQ8cy
+zazYrCVEepzfcAinq9bRsrHLxr0zun/CH2rzSpADxQ5dx5drcSONfN9V2CbcMdK/
+ZEf84HpUhYDSwYxHdRmcMYrD37AdEDTh0CiTaLAudH+BxxaydbEKug/TVuTGRIQP
+ZE2ql+RrTQYrncyBGfPYGsHSgVP952CL+WUR5Ri5ILGJD7bVbnwei+3/WOc1LsG2
+Rbfd1O2ImVQxNv2ScBvOeZOB2Wr1kh+X5QcFoVEYrci8vPBfO3Ouq++V1IAZNgI=
+=MigT
+-----END PGP SIGNATURE-----
+
+--u3gIr+u2NK768I+f--
