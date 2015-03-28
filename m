@@ -1,17 +1,15 @@
-From: "Nikita N." <nikitan@operamail.com>
-Subject: bug
-Date: Sat, 28 Mar 2015 07:03:06 -0700
-Message-ID: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
+From: Michael Gernoth <michael@gernoth.net>
+Subject: [PATCH] ALSA: emu10k1: add Audigy 5/Rx
+Date: Sat, 28 Mar 2015 19:20:35 +0100
+Message-ID: <20150328182035.GA11499@zerfleddert.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id AEFBC260542
- for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2015 15:03:07 +0100 (CET)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailout.nyi.internal (Postfix) with ESMTP id 44BBA203DB
- for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2015 10:03:04 -0400 (EDT)
+Received: from eddie.zerfleddert.de (eddie.zerfleddert.de [188.246.9.226])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F3F7260609
+ for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2015 19:20:36 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,7 +22,40 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-is any programmer listening here?
+The Audigy 5/Rx is essentially an Audigy 4 behind a PLX PCIe-
+bridge with an additional TOSLINK output.
 
+Signed-off-by: Michael Gernoth <michael@gernoth.net>
+---
+ sound/pci/emu10k1/emu10k1_main.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index b4458a6..8e510e9 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -1325,6 +1325,22 @@ static int snd_emu10k1_dev_free(struct snd_device *device)
+ }
+ 
+ static struct snd_emu_chip_details emu_chip_details[] = {
++	/* Audigy 5/Rx SB1550 */
++	/* Tested by michael@gernoth.net 28 Mar 2015 */
++	/* DSP: CA10300-IAT LF
++	 * DAC: Cirrus Logic CS4382-KQZ
++	 * ADC: Philips 1361T
++	 * AC97: Sigmatel STAC9750
++	 * CA0151: None
++	 */
++	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10241102,
++	 .driver = "Audigy2", .name = "SB Audigy 5/Rx [SB1550]",
++	 .id = "Audigy2",
++	 .emu10k2_chip = 1,
++	 .ca0108_chip = 1,
++	 .spk71 = 1,
++	 .adc_1361t = 1,  /* 24 bit capture instead of 16bit */
++	 .ac97_chip = 1} ,
+ 	/* Audigy4 (Not PRO) SB0610 */
+ 	/* Tested by James@superbug.co.uk 4th April 2006 */
+ 	/* A_IOCFG bits
 -- 
-http://www.fastmail.com - A no graphics, no pop-ups email service
+2.1.4
