@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/11] ALSA: digi00x: add PCM functionality
-Date: Mon, 30 Mar 2015 00:05:24 +0900
-Message-ID: <1427641531-9047-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/11] ALSA: digi00x: support unknown
+	asynchronous message
+Date: Mon, 30 Mar 2015 00:05:27 +0900
+Message-ID: <1427641531-9047-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1427641531-9047-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 87DD7260499
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 17:05:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 70DDA2606CD
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 17:05:45 +0200 (CEST)
 In-Reply-To: <1427641531-9047-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,42 +25,129 @@ To: clemens@ladisch.de
 Cc: damien@zamaudio.com, robin@gareus.org, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-As long as seeing Digi 002, any PCM samples are transferred or received
-in Multi Bit Linear Audio data channel as AM824 format data. Actually,
-the label is always 0x40, thus 24 bit sample is just supported.
+Digi 002/003 family use asynchronous transaction for messaging.
+The address to receive this message is stored on a certain register.
 
-But Windows driver transmit 16 bit samples in 0x40 label channel. This is
-out of IEC 61883-6. Furthermore, these channels includes some multiplexed
-bit pattern.
+This commit allocates a certain range of address on OHCI 1394 host
+controller, to handle this notification. Currently, the purpose of
+this message is unknown.
 
-This commit adds PCM functionality to transmit/receive PCM samples with
-current ALSA AMDTP engine, thus PCM playback substream causes noisy sound.
+Usually, these devices confirmedly notify these messages below:
+ * Clock source is set as internal:
+ - 0x00007051
+ - 0x00007052
+ - 0x00007054
+ - 0x00007057
+ - 0x00007058
+ * Clock source is set as somewhat external:
+ - 0x00009000
+ - 0x00009010
+ - 0x00009020
+ - 0x00009021
+ - 0x00009022
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/Makefile      |   2 +-
- sound/firewire/digi00x/digi00x-pcm.c | 330 +++++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c     |   4 +
- sound/firewire/digi00x/digi00x.h     |   4 +
- 4 files changed, 339 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/digi00x/digi00x-pcm.c
+ include/uapi/sound/firewire.h             |   7 ++
+ sound/firewire/digi00x/Makefile           |   2 +-
+ sound/firewire/digi00x/digi00x-hwdep.c    |  12 ++-
+ sound/firewire/digi00x/digi00x-protocol.c | 131 ++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.c          |  12 +++
+ sound/firewire/digi00x/digi00x.h          |   8 ++
+ 6 files changed, 169 insertions(+), 3 deletions(-)
+ create mode 100644 sound/firewire/digi00x/digi00x-protocol.c
 
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index f67d228..8e32b41 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -9,6 +9,7 @@
+ #define SNDRV_FIREWIRE_EVENT_LOCK_STATUS	0x000010cc
+ #define SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION	0xd1ce004e
+ #define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
++#define SNDRV_FIREWIRE_EVENT_DIGI00x_MESSAGE	0x746e736c
+ 
+ struct snd_firewire_event_common {
+ 	unsigned int type; /* SNDRV_FIREWIRE_EVENT_xxx */
+@@ -40,11 +41,17 @@ struct snd_firewire_event_efw_response {
+ 	__be32 response[0];	/* some responses */
+ };
+ 
++struct snd_firewire_event_digi00x_message {
++	unsigned int type;
++	__u32 message;	/* Digi00x-specific message */
++};
++
+ union snd_firewire_event {
+ 	struct snd_firewire_event_common            common;
+ 	struct snd_firewire_event_lock_status       lock_status;
+ 	struct snd_firewire_event_dice_notification dice_notification;
+ 	struct snd_firewire_event_efw_response      efw_response;
++	struct snd_firewire_event_digi00x_message   digi00x_message;
+ };
+ 
+ 
 diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index aaec823..f2ed472 100644
+index deb3683..e42b5cc 100644
 --- a/sound/firewire/digi00x/Makefile
 +++ b/sound/firewire/digi00x/Makefile
-@@ -1,2 +1,2 @@
--snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o
-+snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o digi00x-pcm.o
+@@ -1,3 +1,3 @@
+ snd-digi00x-objs := digi00x.o digi00x-stream.o digi00x-proc.o digi00x-pcm.o \
+-		    digi00x-midi.o digi00x-hwdep.o
++		    digi00x-midi.o digi00x-hwdep.o digi00x-protocol.o
  obj-m += snd-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
+diff --git a/sound/firewire/digi00x/digi00x-hwdep.c b/sound/firewire/digi00x/digi00x-hwdep.c
+index d629e41..a3e1c37 100644
+--- a/sound/firewire/digi00x/digi00x-hwdep.c
++++ b/sound/firewire/digi00x/digi00x-hwdep.c
+@@ -12,6 +12,7 @@
+  * 1.get firewire node information
+  * 2.get notification about starting/stopping stream
+  * 3.lock/unlock stream
++ * 4.get asynchronous messaging
+  */
+ 
+ #include "digi00x.h"
+@@ -25,7 +26,7 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
+ 
+ 	spin_lock_irq(&dg00x->lock);
+ 
+-	while (!dg00x->dev_lock_changed) {
++	while (!dg00x->dev_lock_changed && dg00x->msg == 0) {
+ 		prepare_to_wait(&dg00x->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
+ 		spin_unlock_irq(&dg00x->lock);
+ 		schedule();
+@@ -42,6 +43,13 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
+ 		dg00x->dev_lock_changed = false;
+ 
+ 		count = min_t(long, count, sizeof(event.lock_status));
++	} else {
++		event.digi00x_message.type =
++					SNDRV_FIREWIRE_EVENT_DIGI00x_MESSAGE;
++		event.digi00x_message.message = dg00x->msg;
++		dg00x->msg = 0;
++
++		count = min_t(long, count, sizeof(event.digi00x_message));
+ 	}
+ 
+ 	spin_unlock_irq(&dg00x->lock);
+@@ -61,7 +69,7 @@ static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
+ 	poll_wait(file, &dg00x->hwdep_wait, wait);
+ 
+ 	spin_lock_irq(&dg00x->lock);
+-	if (dg00x->dev_lock_changed)
++	if (dg00x->dev_lock_changed || dg00x->msg)
+ 		events = POLLIN | POLLRDNORM;
+ 	else
+ 		events = 0;
+diff --git a/sound/firewire/digi00x/digi00x-protocol.c b/sound/firewire/digi00x/digi00x-protocol.c
 new file mode 100644
-index 0000000..33db601
+index 0000000..72c942a
 --- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-pcm.c
-@@ -0,0 +1,330 @@
++++ b/sound/firewire/digi00x/digi00x-protocol.c
+@@ -0,0 +1,131 @@
 +/*
-+ * digi00x-pcm.c - a part of driver for Digidesign Digi 002/003 family
++ * digi00x-protocol.c - a part of driver for Digidesign Digi 002/003 family
 + *
 + * Copyright (c) 2014-2015 Takashi Sakamoto
 + *
@@ -68,360 +156,194 @@ index 0000000..33db601
 +
 +#include "digi00x.h"
 +
-+static int hw_rule_rate(struct snd_pcm_hw_params *params,
-+			struct snd_pcm_hw_rule *rule)
++static struct snd_dg00x *instances[SNDRV_CARDS];
++static DEFINE_SPINLOCK(instances_lock);
++
++/*
++ * Use the same range of address for asynchronous messages from any devices, to
++ * save resources on host controller.
++ */
++static struct fw_address_handler async_handler;
++
++static void handle_unknown_message(struct snd_dg00x *dg00x,
++				   unsigned long long offset, u32 *buf)
 +{
-+	struct snd_interval *r =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	const struct snd_interval *c =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1,
-+	};
++	unsigned long flags;
++
++	spin_lock_irqsave(&dg00x->lock, flags);
++	dg00x->msg = be32_to_cpu(*buf);
++	spin_unlock_irqrestore(&dg00x->lock, flags);
++
++	wake_up(&dg00x->hwdep_wait);
++}
++
++static void handle_message(struct fw_card *card, struct fw_request *request,
++			   int tcode, int destination, int source,
++			   int generation, unsigned long long offset,
++			   void *data, size_t length, void *callback_data)
++{
++	u32 *buf = (__be32 *)data;
++	struct fw_device *device;
++	struct snd_dg00x *dg00x;
 +	unsigned int i;
 +
-+	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
-+		if (!snd_interval_test(c,
-+				       snd_dg00x_stream_mbla_data_channels[i]))
++	spin_lock_irq(&instances_lock);
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		dg00x = instances[i];
++		if (dg00x == NULL)
 +			continue;
-+
-+		t.min = min(t.min, snd_dg00x_stream_rates[i]);
-+		t.max = max(t.max, snd_dg00x_stream_rates[i]);
++		device = fw_parent_device(dg00x->unit);
++		if (device->card != card)
++			continue;
++		smp_rmb();	/* node id vs. generation */
++		if (device->node_id != source)
++			continue;
++		break;
 +	}
 +
-+	return snd_interval_refine(r, &t);
++	if (offset == async_handler.offset)
++		handle_unknown_message(dg00x, offset, buf);
++	else if (offset == async_handler.offset + 4)
++		handle_midi_control(dg00x, buf, length);
++
++	spin_unlock_irq(&instances_lock);
++	fw_send_response(card, request, RCODE_COMPLETE);
 +}
 +
-+static int hw_rule_channels(struct snd_pcm_hw_params *params,
-+			    struct snd_pcm_hw_rule *rule)
++int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x)
 +{
-+	struct snd_interval *c =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	const struct snd_interval *r =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1,
-+	};
++	struct fw_device *device = fw_parent_device(dg00x->unit);
++	__be32 data[2];
 +	unsigned int i;
-+
-+	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
-+		if (!snd_interval_test(r, snd_dg00x_stream_rates[i]))
-+			continue;
-+
-+		t.min = min(t.min, snd_dg00x_stream_mbla_data_channels[i]);
-+		t.max = max(t.max, snd_dg00x_stream_mbla_data_channels[i]);
-+	}
-+
-+	return snd_interval_refine(c, &t);
-+}
-+
-+static int pcm_init_hw_params(struct snd_dg00x *dg00x,
-+			      struct snd_pcm_substream *substream)
-+{
-+	static const struct snd_pcm_hardware hardware = {
-+		.info = SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_JOINT_DUPLEX |
-+			SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID,
-+		.rates = SNDRV_PCM_RATE_44100 |
-+			 SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 |
-+			 SNDRV_PCM_RATE_96000,
-+		.rate_min = 44100,
-+		.rate_max = 96000,
-+		.channels_min = 10,
-+		.channels_max = 18,
-+		.period_bytes_min = 4 * 18,
-+		.period_bytes_max = 4 * 18 * 2048,
-+		.buffer_bytes_max = 4 * 18 * 2048 * 2,
-+		.periods_min = 2,
-+		.periods_max = UINT_MAX,
-+	};
-+	struct amdtp_stream *s;
 +	int err;
 +
-+	substream->runtime->hw = hardware;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		substream->runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
-+		s = &dg00x->tx_stream;
-+	} else {
-+		substream->runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+		s = &dg00x->rx_stream;
-+	}
-+
-+	err = snd_pcm_hw_rule_add(substream->runtime, 0,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  hw_rule_channels, NULL,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_pcm_hw_rule_add(substream->runtime, 0,
-+				  SNDRV_PCM_HW_PARAM_RATE,
-+				  hw_rule_rate, NULL,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		goto end;
-+
-+	err = amdtp_stream_add_pcm_hw_constraints(s, substream->runtime);
-+end:
-+	return err;
-+}
-+
-+static int pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	enum snd_dg00x_clock clock;
-+	unsigned int rate;
-+	int err;
-+
-+	err = pcm_init_hw_params(dg00x, substream);
++	/* Unknown. 4bytes. */
++	data[0] = cpu_to_be32((device->card->node_id << 16) |
++			      (async_handler.offset >> 32));
++	data[1] = cpu_to_be32(async_handler.offset);
++	err = snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
++				 DG00X_ADDR_BASE + DG00X_OFFSET_MESSAGE_ADDR,
++				 &data, sizeof(data), 0);
 +	if (err < 0)
 +		return err;
 +
-+	err = snd_dg00x_stream_get_clock(dg00x, &clock);
-+	if ((clock != SND_DG00X_CLOCK_INTERNAL) |
-+	    amdtp_stream_pcm_running(&dg00x->rx_stream) |
-+	    amdtp_stream_pcm_running(&dg00x->tx_stream)) {
-+		err = snd_dg00x_stream_get_rate(dg00x, &rate);
-+		if (err < 0)
-+			return err;
-+		substream->runtime->hw.rate_min = rate;
-+		substream->runtime->hw.rate_max = rate;
++	spin_lock_irq(&instances_lock);
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (instances[i] != NULL)
++			continue;
++		instances[i] = dg00x;
++		break;
 +	}
-+
-+	snd_pcm_set_sync(substream);
++	spin_unlock_irq(&instances_lock);
 +
 +	return 0;
 +}
 +
-+static int pcm_close(struct snd_pcm_substream *substream)
++void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x)
 +{
-+	return 0;
-+}
++	unsigned int i;
 +
-+static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		mutex_lock(&dg00x->mutex);
-+		dg00x->capture_substreams++;
-+		mutex_unlock(&dg00x->mutex);
++	spin_lock_irq(&instances_lock);
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (instances[i] != dg00x)
++			continue;
++		instances[i] = NULL;
++		break;
 +	}
-+	amdtp_stream_set_pcm_format(&dg00x->tx_stream,
-+				    params_format(hw_params));
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		mutex_lock(&dg00x->mutex);
-+		dg00x->playback_substreams++;
-+		mutex_unlock(&dg00x->mutex);
-+	}
-+	amdtp_stream_set_pcm_format(&dg00x->rx_stream,
-+				    params_format(hw_params));
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
++	spin_unlock_irq(&instances_lock);
 +}
 +
-+static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++int snd_dg00x_protocol_register(void)
 +{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		dg00x->capture_substreams--;
-+
-+	snd_dg00x_stream_stop_duplex(dg00x);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		dg00x->playback_substreams--;
-+
-+	snd_dg00x_stream_stop_duplex(dg00x);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int pcm_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
++	static const struct fw_address_region resp_register_region = {
++		.start	= 0xffffe0000000ull,
++		.end	= 0xffffe000ffffull,
++	};
 +	int err;
 +
-+	mutex_lock(&dg00x->mutex);
++	async_handler.length = 4;
++	async_handler.address_callback = handle_message;
++	async_handler.callback_data = NULL;
 +
-+	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
-+	if (err >= 0)
-+		amdtp_stream_pcm_prepare(&dg00x->tx_stream);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return err;
-+}
-+static int pcm_playback_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
-+	if (err >= 0)
-+		amdtp_stream_pcm_prepare(&dg00x->rx_stream);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return err;
-+}
-+
-+static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&dg00x->tx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&dg00x->tx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&dg00x->rx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&dg00x->rx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_dg00x *dg00x = sbstrm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&dg00x->tx_stream);
-+}
-+static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_dg00x *dg00x = sbstrm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
-+}
-+
-+static struct snd_pcm_ops pcm_capture_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_capture_hw_params,
-+	.hw_free	= pcm_capture_hw_free,
-+	.prepare	= pcm_capture_prepare,
-+	.trigger	= pcm_capture_trigger,
-+	.pointer	= pcm_capture_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+};
-+static struct snd_pcm_ops pcm_playback_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_playback_hw_params,
-+	.hw_free	= pcm_playback_hw_free,
-+	.prepare	= pcm_playback_prepare,
-+	.trigger	= pcm_playback_trigger,
-+	.pointer	= pcm_playback_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
-+};
-+
-+int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
-+{
-+	struct snd_pcm *pcm;
-+	int err;
-+
-+	err = snd_pcm_new(dg00x->card, dg00x->card->driver, 0, 1, 1, &pcm);
++	err = fw_core_add_address_handler(&async_handler,
++					  &resp_register_region);
 +	if (err < 0)
 +		return err;
 +
-+	pcm->private_data = dg00x;
-+	snprintf(pcm->name, sizeof(pcm->name),
-+		 "%s PCM", dg00x->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
-+
 +	return 0;
 +}
 +
++void snd_dg00x_protocol_unregister(void)
++{
++	fw_core_remove_address_handler(&async_handler);
++}
 diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index d9c9e14..493437a 100644
+index c170cbb..db0997d 100644
 --- a/sound/firewire/digi00x/digi00x.c
 +++ b/sound/firewire/digi00x/digi00x.c
-@@ -86,6 +86,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+@@ -48,6 +48,7 @@ static void dg00x_card_free(struct snd_card *card)
+ 	struct snd_dg00x *dg00x = card->private_data;
  
- 	snd_dg00x_proc_init(dg00x);
+ 	snd_dg00x_stream_destroy_duplex(dg00x);
++	snd_dg00x_protocol_remove_instance(dg00x);
  
-+	err = snd_dg00x_create_pcm_devices(dg00x);
+ 	fw_unit_put(dg00x->unit);
+ 
+@@ -99,6 +100,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	err = snd_dg00x_protocol_add_instance(dg00x);
 +	if (err < 0)
 +		goto error;
 +
  	err = snd_card_register(card);
  	if (err < 0)
  		goto error;
+@@ -155,11 +160,18 @@ static struct fw_driver dg00x_driver = {
+ 
+ static int __init snd_dg00x_init(void)
+ {
++	int err;
++
++	err = snd_dg00x_protocol_register();
++	if (err < 0)
++		return err;
++
+ 	return driver_register(&dg00x_driver.driver);
+ }
+ 
+ static void __exit snd_dg00x_exit(void)
+ {
++	snd_dg00x_protocol_unregister();
+ 	driver_unregister(&dg00x_driver.driver);
+ }
+ 
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index a16a535..318b1b5 100644
+index 5d9beaf..4e3d359 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -21,6 +21,8 @@
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/info.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
- 
- #include "../lib.h"
- #include "../packets-buffer.h"
-@@ -107,4 +109,6 @@ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
- 
- void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
+@@ -53,6 +53,9 @@ struct snd_dg00x {
+ 	int dev_lock_count;
+ 	bool dev_lock_changed;
+ 	wait_queue_head_t hwdep_wait;
 +
-+int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
- #endif
++	/* For asynchronous messages. */
++	u32 msg;
+ };
+ 
+ #define DG00X_ADDR_BASE		0xffffe0000000ull
+@@ -103,6 +106,11 @@ enum snd_dg00x_optical_mode {
+ 	SND_DG00X_OPT_IFACE_MODE_COUNT,
+ };
+ 
++int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x);
++void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x);
++int snd_dg00x_protocol_register(void);
++void snd_dg00x_protocol_unregister(void);
++
+ extern const unsigned int snd_dg00x_stream_rates[SND_DG00X_RATE_COUNT];
+ extern const unsigned int
+ snd_dg00x_stream_mbla_data_channels[SND_DG00X_RATE_COUNT];
 -- 
 2.1.0
