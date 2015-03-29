@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC v2][PATCH 00/11] digi00x: new driver for
-	Digidesign 002/003 family
-Date: Mon, 30 Mar 2015 00:05:20 +0900
-Message-ID: <1427641531-9047-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/11] ALSA: digi00x: improve MIDI
+	capture/playback
+Date: Mon, 30 Mar 2015 00:05:30 +0900
+Message-ID: <1427641531-9047-11-git-send-email-o-takashi@sakamocchi.jp>
+References: <1427641531-9047-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FC232604BC
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 17:05:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 756AD2606D0
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 17:05:45 +0200 (CEST)
+In-Reply-To: <1427641531-9047-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,83 +25,111 @@ To: clemens@ladisch.de
 Cc: damien@zamaudio.com, robin@gareus.org, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patchset is revised version of my previous set.
+Digi 002/003 family are not conformant to IEC 61883-6:2005 or MMA/AMEI
+RP-027. In fact, they uses AM824 format data, but data channel includes
+port number in its LSB. The MSB is always 0x80, even if the data channel
+includes any MIDI messages. As a result, every MIDI conformant data
+channel can transfer maximum 2 bytes.
 
-[alsa-devel] [RFC][PATCH 00/11] digi00x: new driver for Digidesign 002/003 family
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-March/089141.html
+This commit adds own callback functions to handle this quirk.
 
-Improvements from the previous set:
- * improve double-oh-three (DOT) application
- * extend hwdep interface for asynchronous messaging
- * limit sampling rate for PCM substream when clock source is external or
-   any PCM substreams are running
- * support s16 samples for PCM playback
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/digi00x/digi00x-protocol.c | 55 +++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x-stream.c   |  2 ++
+ sound/firewire/digi00x/digi00x.h          |  1 +
+ 3 files changed, 58 insertions(+)
 
-In this time, I test PCM functionality with my test programs. As a result,
-I can confirm that S/PDIF and ADAT output from my Digi 002 Rack includes
-expected PCM samples as my programs generates. I think we can judge the
-implementation of DOT is proper for Digi 002 rack.
-
-Currently, several issues remains:
- * The port for MIDI machine control message is not tested yet, because
-   002/003 console model are required.
- * When allocates 2 or more channel numbers for the device, after 15 to 20
-   seconds from playbacking, any PCM samples causes noisy sound. Then, all
-   of LED on the front panel light. The streaming still continues correctly.
- * The actual effects of external clock source is not clear. When set the
-   clock source is somewhat external, even if stopping the clock source,
-   the device continues to sound PCM samples against my expectation.
- * The meaning of asynchronous messages is unknown. This patchset adds
-   a functionality to receive it in userspace. You can test it with
-   updated libhinawa sample script.
-   https://github.com/takaswie/libhinawa
-
-Well, I'll stop my work for this driver in this developing period
-(for Linux 4.0), because this work is not in my original plan. I hope any
-users test this driver and report the result till Linux 4.2 merge window.
-If not, this driver will not be merged into upstream, naturally.
-
-I prepare for DKMS package to test this patchset. Please use it if needed.
-https://github.com/takaswie/snd-firewire-improve
-
-Takashi Sakamoto (11):
-  ALSA: digi00x: add skeleton for Digi 002/003 device driver
-  ALSA: digi00x: add streaming functionality
-  ALSA: digi00x: add proc node for clock status
-  ALSA: digi00x: add PCM functionality
-  ALSA: digi00x: add MIDI functionality
-  ALSA: digi00x: add hwdep interface
-  ALSA: digi00x: support unknown asynchronous message
-  ALSA: digi00x: support MIDI ports for device control
-  ALSA: firewire-lib: allows to implement external MIDI callback function
-  ALSA: digi00x: improve MIDI capture/playback
-  ALSA: digi00x: apply double-oh-three algorithm to multiplex PCM samples
-
- include/uapi/sound/asound.h               |   3 +-
- include/uapi/sound/firewire.h             |   8 +
- sound/firewire/Kconfig                    |  10 +
- sound/firewire/Makefile                   |   1 +
- sound/firewire/amdtp.c                    |  30 ++-
- sound/firewire/amdtp.h                    |   5 +
- sound/firewire/digi00x/Makefile           |   3 +
- sound/firewire/digi00x/digi00x-hwdep.c    | 200 +++++++++++++++
- sound/firewire/digi00x/digi00x-midi.c     | 199 +++++++++++++++
- sound/firewire/digi00x/digi00x-pcm.c      | 344 +++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x-proc.c     |  86 +++++++
- sound/firewire/digi00x/digi00x-protocol.c | 406 ++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x-stream.c   | 393 +++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c          | 179 +++++++++++++
- sound/firewire/digi00x/digi00x.h          | 167 ++++++++++++
- 15 files changed, 2026 insertions(+), 8 deletions(-)
- create mode 100644 sound/firewire/digi00x/Makefile
- create mode 100644 sound/firewire/digi00x/digi00x-hwdep.c
- create mode 100644 sound/firewire/digi00x/digi00x-midi.c
- create mode 100644 sound/firewire/digi00x/digi00x-pcm.c
- create mode 100644 sound/firewire/digi00x/digi00x-proc.c
- create mode 100644 sound/firewire/digi00x/digi00x-protocol.c
- create mode 100644 sound/firewire/digi00x/digi00x-stream.c
- create mode 100644 sound/firewire/digi00x/digi00x.c
- create mode 100644 sound/firewire/digi00x/digi00x.h
-
+diff --git a/sound/firewire/digi00x/digi00x-protocol.c b/sound/firewire/digi00x/digi00x-protocol.c
+index 40aea36..9104691 100644
+--- a/sound/firewire/digi00x/digi00x-protocol.c
++++ b/sound/firewire/digi00x/digi00x-protocol.c
+@@ -8,6 +8,61 @@
+ 
+ #include "digi00x.h"
+ 
++static void fill_midi(struct amdtp_stream *s, __be32 *buffer,
++		      unsigned int frames)
++{
++	unsigned int f, port;
++	u8 *b;
++
++	for (f = 0; f < frames; f++) {
++		port = (s->data_block_counter + f) % 4;
++		b = (u8 *)&buffer[s->midi_position];
++
++		/*
++		 * The device allows to transfer MIDI messages by maximum two
++		 * bytes per data channel. But this module transfers one byte
++		 * one time because MIDI data rate is quite lower than IEEE
++		 * 1394 bus data rate.
++		 */
++		if (amdtp_midi_ratelimit_per_packet(s, port) &&
++		    s->midi[port] != NULL &&
++		    snd_rawmidi_transmit(s->midi[port], &b[1], 1) == 1) {
++			amdtp_midi_rate_use_one_byte(s, port);
++			b[3] = 0x01 | (0x10 << port);
++		} else {
++			b[1] = 0;
++			b[3] = 0;
++		}
++		b[0] = 0x80;
++		b[2] = 0;
++
++		buffer += s->data_block_quadlets;
++	}
++}
++
++static void pull_midi(struct amdtp_stream *s, __be32 *buffer,
++		      unsigned int frames)
++{
++	unsigned int f;
++	u8 *b;
++
++	for (f = 0; f < frames; f++) {
++		b = (u8 *)&buffer[s->midi_position];
++
++		if (s->midi[0] && (b[3] > 0))
++			snd_rawmidi_receive(s->midi[0], b + 1, b[3]);
++
++		buffer += s->data_block_quadlets;
++	}
++}
++
++/* Use own way to multiplex MIDI messages for data channels. */
++void snd_dg00x_protocol_set_midi_function(struct snd_dg00x *dg00x)
++{
++	dg00x->rx_stream.transfer_midi = fill_midi;
++	dg00x->tx_stream.transfer_midi = pull_midi;
++}
++
+ struct workqueue_struct *midi_wq;
+ 
+ static void send_midi_control(struct work_struct *work)
+diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
+index 5d72264..8220d53 100644
+--- a/sound/firewire/digi00x/digi00x-stream.c
++++ b/sound/firewire/digi00x/digi00x-stream.c
+@@ -196,6 +196,8 @@ static int keep_resources(struct snd_dg00x *dg00x, unsigned int rate)
+ 		dg00x->tx_stream.pcm_positions[c] = c + 1;
+ 	}
+ 
++	snd_dg00x_protocol_set_midi_function(dg00x);
++
+ 	return 0;
+ error:
+ 	release_resources(dg00x);
+diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
+index d534f90..b9d072c 100644
+--- a/sound/firewire/digi00x/digi00x.h
++++ b/sound/firewire/digi00x/digi00x.h
+@@ -112,6 +112,7 @@ enum snd_dg00x_optical_mode {
+ 	SND_DG00X_OPT_IFACE_MODE_COUNT,
+ };
+ 
++void snd_dg00x_protocol_set_midi_function(struct snd_dg00x *dg00x);
+ void snd_dg00x_protocol_queue_midi_message(struct snd_dg00x *dg00x);
+ int snd_dg00x_protocol_add_instance(struct snd_dg00x *dg00x);
+ void snd_dg00x_protocol_remove_instance(struct snd_dg00x *dg00x);
 -- 
 2.1.0
