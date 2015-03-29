@@ -1,19 +1,18 @@
-From: =?UTF-8?B?Sm/Dq2wgS3LDpGhlbWFubg==?= <weedlight@gmail.com>
-Subject: Re: Atomic operations not multi-thread aware
-Date: Sun, 29 Mar 2015 15:25:50 +0000
-Message-ID: <CANr2zYjU0gt_fQPFfyxzYcFdwkWd1zij1U4HnUiabEgbF1ciKQ@mail.gmail.com>
-References: <CANr2zYgqJ=fV9E6Dtbkw9Lhv_5r5GwuZSN0_-VT+RuLJ3ozQ4w@mail.gmail.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH][ASoC]Add ability to remove rate
+ constraints from generic ASoC AC'97 CODEC driver
+Date: Sun, 29 Mar 2015 18:00:33 +0200
+Message-ID: <551821A1.5030902@maciej.szmigiero.name>
+References: <54FF7E13.4060801@maciej.szmigiero.name>
+ <20150322182744.GB6643@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
- [209.85.218.42])
- by alsa0.perex.cz (Postfix) with ESMTP id AE2ED260487
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 17:25:51 +0200 (CEST)
-Received: by oifl3 with SMTP id l3so109664997oif.0
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 08:25:50 -0700 (PDT)
-In-Reply-To: <CANr2zYgqJ=fV9E6Dtbkw9Lhv_5r5GwuZSN0_-VT+RuLJ3ozQ4w@mail.gmail.com>
+Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DD9526049A
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 18:00:45 +0200 (CEST)
+In-Reply-To: <20150322182744.GB6643@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Wolfram Sang <wsa@the-dreams.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksIGZ1cnRoZXIgaW5mb3JtYXRpb25zOgoKaHR0cDovL2xpbnV4ZnJvbXNjcmF0Y2gub3JnCmh0
-dHA6Ly9taW5vcy1vbmUub3JnL2Rvd25sb2Fkcy9taW5vcy1vbmVfdjEuMy5pc28gLSBXQVJOSU5H
-IGluY2x1ZGVzCmJhc2ggYnVnISBOb3RlIGZvciBiZXN0IHN0YWJpbGl0eSB5b3UgaGF2ZSB0byBk
-ZCB0aGUgbGl2ZSBEVkQgdG8KaGFyZC1kaXNrIGRyaXZlLgoKbGludXgga2VybmVsIDMuMTQuMjUt
-cnQyMgpnY2MgKEdDQykgNC45LjIKCmJlc3RzCkpvw6tsCgpPbiBTdW4sIE1hciAyOSwgMjAxNSBh
-dCAyOjUyIFBNLCBKb8OrbCBLcsOkaGVtYW5uIDx3ZWVkbGlnaHRAZ21haWwuY29tPiB3cm90ZToK
-PiBIaSwgcGxlYXNlIHRha2UgYSBhIGxvb2sgYXQgZ3NlcXVlbmNlci5vcmcgZXNwZWNpYWxseSBh
-dDoKPgo+IGxpYmFncy1hdWRpbwo+ICogaHR0cDovL2dzZXF1ZW5jZXIub3JnL2FwaS9hZ3MvYWdz
-LUFnc1BvcnQuaHRtbAo+Cj4gZ3NlcXVlbmNlcgo+ICAqIGh0dHA6Ly9nc2VxdWVuY2VyLm9yZy9h
-cGkvYWdzL2Fncy1BZ3NMaW5lTWVtYmVyLmh0bWwKPgo+IEkgY2FuIGNyYXNoIG15IGFwcGxpY2F0
-aW9uIHdoaWxlIG1vZGlmeWluZyB2YWx1ZXMgb2YgdGhlIExBRFNQQSBwbHVnaW4KPiBhc3NpZ25l
-ZCBkaWFsIHdpZGdldCB3aGF0IHVzZXMgYXRvbWljIG9wZXJhdGlvbnMgYW5kIGEgdGFzayBlbmdp
-bmUgLi4uCj4KPiBXaGVyZSBjYW4gbWUgcmVhZCBhYm91dCBzdGF0ZSBvZiBBdG9taWMgT3BlcmF0
-aW9ucyBvZiBsaW51eCBvciBnbGliYz8KPiBNZSBkb2luZyBmdXJ0aGVyIGludmVzdGlnYXRpb24u
-Cj4KPiBiZXN0cwo+IEpvw6tsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+Thanks for looking into the patch.
+
+W dniu 22.03.2015 19:27, Mark Brown pisze:
+> On Wed, Mar 11, 2015 at 12:28:19AM +0100, Maciej S. Szmigiero wrote:
+>> Add ability to remove rate constraints from generic ASoC AC'97 CODEC
+>> driver via passed platform data, make it selectable in config.
+> 
+> Please use subject lines matching the style for the subsystem.  This is
+> helpful for identifying relevant patches and not getting your messages
+> deleted unread...
+
+I assume "[PATCH] ASoC: driver: subject" format would be right?
+
+>> This way this driver can be used for platforms which don't need
+>> specialized AC'97 CODEC drivers while at the same avoiding
+>> code duplication from implementing equivalent functionality in
+>> a controller driver.
+> 
+> I'm sorry but this just doesn't explain what this patch is intended to
+> accomplish.  If we can talk to the AC'97 CODEC at all we can already
+> identify whatever constraints it has by looking at the ID registers so
+> it's not clear when or why a platform would need to use this.  It feels
+> like there is some underlying problem that you're trying to address.
+
+This patch itself is supposed to allow using this CODEC driver with
+CODECs that support other rates that these that were already hard-coded
+in the driver (8000, 11025, 22050, 44100, 48000).
+
+In general sense what I want to accomplish is to add sound support for
+UDOO board to the mainline kernel.
+It uses i.MX6 SSI core as controller with VT1613 AC'97 codec.
+
+While it would be possible to simply add ac97 bus enumeration to
+either fsl_ssi driver or fsl-asoc-card sound card driver it looks to me
+that even in this case a platform device for codec would need to be
+registered anyway.
+
+This is because as far I see ASoC CODEC DAIs in links are identified
+either by OF node or name of their platform device.
+I've already tried to accomplish all of this via adding OF node of
+AC'97 codec but such patch was rejected.
+
+If the ac97 bus enumeration is added to fsl_ssi driver then there is
+also a problem of communicating a name of ac97 platform device
+to sound card driver so it can then reference it in DAI links
+that it builds.
+If such name would be hardcoded then there would be a possibility to
+use only one such CODEC in the system
+(this SoC theoretically allows up to three).
+
+And, naturally, this would result in a small code duplication with
+regard to this generic driver.
+
+Best regards,
+Maciej Szmigiero
