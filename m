@@ -1,33 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: getting the sound to work on my asus m6s00v
-Date: Mon, 30 Mar 2015 00:06:19 +0800
-Message-ID: <CAN8cciatm9MjVkc9wy-dOwQow9i9KuffxE-XcyqkbSi=78Se7w@mail.gmail.com>
-References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
- <5508DD4D.3040901@canonical.com>
- <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
- <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
- <CAN8cciY7zPaM1kGbky3st_V5G=vg_aeLrm2QrNbpVinYOU=qyA@mail.gmail.com>
- <64443a816660f3098fc300c7d7b5a01f@swn.nu>
- <CAN8cciY-K-FkQp1H6Bj0v51CRHrOyFrJ2=ZaY5YLvkRmNU8TRg@mail.gmail.com>
- <ec6b05bc169224058a4835e2139cbcb4@swn.nu>
- <CAN8cciYo-SSeoBg69qaj+aYBx+ZRbVuhbgkURutuBWGwCxauWA@mail.gmail.com>
- <CAN8cciam2=TE3zhWNB_GQEr1Q1z_X7S+k34fAgajE_XNYJzo0Q@mail.gmail.com>
- <CAN8cciZhtL_C-DAErzhM4E3t3nn7KdAbjQXQEPk3iVcBvm4aUw@mail.gmail.com>
- <CAN8cciZqdwONrrpWc0EKNfGz9Xwibh9Xj+=JnZ=ieK+m1rbF8w@mail.gmail.com>
- <CAN8cciZNz1TGSQah+KzRGGhRwGWR4U3LbMVUxV+=0mtX1gdM=w@mail.gmail.com>
- <f7a08a5262537ca8764cb91177f85646@swn.nu>
- <s5hiodlz116.wl-tiwai@suse.de>
+From: Damien Zammit <damien@zamaudio.com>
+Subject: Re: [RFC v2][PATCH 00/11] digi00x: new driver for
+ Digidesign 002/003 family
+Date: Mon, 30 Mar 2015 03:45:31 +1100
+Message-ID: <55182C2B.5000307@zamaudio.com>
+References: <1427641531-9047-1-git-send-email-o-takashi@sakamocchi.jp>
+ <551815D7.80602@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
- [209.85.214.172])
- by alsa0.perex.cz (Postfix) with ESMTP id CD6EB2606CA
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 18:06:20 +0200 (CEST)
-Received: by obbld8 with SMTP id ld8so51342221obb.3
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 09:06:20 -0700 (PDT)
-In-Reply-To: <s5hiodlz116.wl-tiwai@suse.de>
+Received: from mail-pd0-f176.google.com (mail-pd0-f176.google.com
+ [209.85.192.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58ACF26047C
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 18:45:41 +0200 (CEST)
+Received: by pdcp1 with SMTP id p1so58819174pdc.3
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 09:45:39 -0700 (PDT)
+In-Reply-To: <551815D7.80602@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,67 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: cromozon@swn.nu, tiwai@suse.de
-Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nb <nb@dagami.org>, korobka@en.gov.ua
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, robin@gareus.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Pgo+Cj4gPiBJdCBsb29rcyBsaWtlIHRoZSBwaW4gY29ubmVjdGlvbiBtYXAgYXMgYmVsb3c6Cj4g
-Pgo+ID4gMHgxNDogZXh0ZXJuYWwgbWljIGluIGphY2sKPiA+IDB4MTU6IGV4dGVybmFsIGhlYWRw
-aG9uZSBqYWNrCj4gPiAweDE4OiBpbnRlcm5hbCBtaWMKPiA+IDB4MWE6IGludGVybmFsIHNwZWFr
-ZXIKPiA+IDB4MWU6IGludGVybmFsIFNQRElGIE91dAo+Cj4gbm9vYiBxdWVzdGlvbjoKPiBob3cg
-ZG8gSSB1c2UgdGhpcyBrbm93bGVkZ2UgdG8gZ2V0IHNvdW5kIG91dG91dAo+Cj4KCmh0dHA6Ly9n
-aXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLXRvb2xzLmdpdDthPWJsb2I7Zj1oZGFqYWNrcmV0
-YXNrL1JFQURNRTtoYj1IRUFECgpObyBuZWVkIHRvIHVzZSBoaW50IGhwX21pY19kZXRlY3Q9MCBp
-ZiB5b3UgZmluZCB0aGUgbm9kZSBvZiBpbnRlcm5hbCBtaWMKYW5kIG1pYyBqYWNrCgo3LjMuMy4x
-NSBQaW4gU2Vuc2UKVGhlIFBpbiBTZW5zZSBjb250cm9sIHJldHVybnMgdGhlIFByZXNlbmNlIERl
-dGVjdCBzdGF0dXMsIEVESUQtTGlrZSBEYXRhCihFTEQpIFZhbGlkLCBhbmQgdGhlIGltcGVkYW5j
-ZSBtZWFzdXJlbWVudCBvZiB0aGUgZGV2aWNlIGF0dGFjaGVkIHRvIHRoZQpwaW4uCgpTb21lIGNv
-ZGVjcyBtYXkgcmVxdWlyZSB0aGF0IHRoZSBpbXBlZGFuY2UgbWVhc3VyZW1lbnQgYmUgdHJpZ2dl
-cmVkIGJ5CnNvZnR3YXJlOyBpbiB0aGF0IGNhc2UsIHNlbmRpbmcgdGhlIEV4ZWN1dGUgY29tbWFu
-ZCB3aWxsIGNhdXNlIHRoZQppbXBlZGFuY2UgbWVhc3VyZW1lbnQgdG8gYmVnaW4uCgpUaGUg4oCc
-UHJlc2VuY2UgRGV0ZWN04oCdIGJpdCB3aWxsIGFsd2F5cyBiZSBhY2N1cmF0ZSBpZiB0aGF0IGZ1
-bmN0aW9uYWxpdHkgaXMKc3VwcG9ydGVkIGJ5IHRoZSB3aWRnZXQuCgpOb3RlIHRoYXQgdGhlIFBp
-biBDb21wbGV4IFdpZGdldCBtYXkgc3VwcG9ydCB0aGUgZ2VuZXJhdGlvbiBvZiBhbgpVbnNvbGlj
-aXRlZCBSZXNwb25zZSB0byBpbmRpY2F0ZSB0aGF0IHRoZSBTZW5zZSBNZWFzdXJlbWVudCAoZWl0
-aGVyIHRoZQpQcmVzZW5jZSBEZXRlY3Qgb3IgdGhlIEltcGVkYW5jZSkgdmFsdWUgaGFzIGNoYW5n
-ZWQsIHRoZSBnZW5lcmF0aW9uIG9mCndoaWNoIGltcGxpZXMgdGhhdCB0aGUgbWVhc3VyZW1lbnQg
-aXMgY29tcGxldGUuCgpSaWdodCBDaG5sOiAgTm9ybWFsbHkgaW1wZWRhbmNlIHNlbnNpbmcgaXMg
-ZG9uZSBvbiB0aGUgbGVmdCBjaGFubmVsIG9yCuKAnHRpcOKAnSBvZiB0aGUgY29ubmVjdG9yLiAg
-SG93ZXZlciwgUGluIFdpZGdldHMgbWF5IG9wdGlvbmFsbHkgc3VwcG9ydApzZW5zaW5nIG9uIHRo
-ZSByaWdodCBjaGFubmVsIG9yIOKAnHJpbmfigJ0gb2YgdGhlIGNvbm5lY3Rvci4gIFdoZW4gdGhp
-cyBiaXQgaXMKMSwgdGhlIGltcGVkYW5jZSB2YWx1ZSBpcyB0YWtlbiBvbiB0aGUgcmlnaHQgY2hh
-bm5lbCBpZiB0aGUgUGluIFdpZGdldApzdXBwb3J0cyB0aGlzOyBpZiBub3Qgc3VwcG9ydGVkLCB0
-aGlzIGJpdCBpcyBpZ25vcmVkLiAgV2hlbiB0aGlzIGJpdCBpcyAwLAp0aGUgbGVmdCBjaGFubmVs
-IGlzIHNlbnNlZC4KCj4gPgo+ID4KPiA+ID4gU2VlbSBpbXBlZGFuY2UgbWVhc3VyZW1lbnQgaXMg
-bm90IGNvcnJlY3QsIG1pYyBzaG91bGQgaGF2ZSBoaWdoZXIKaW1wZWRhbmNlCj4gPiA+IHRoYW4g
-aGVhZHBob25lCj4gPiA+Cj4gPiA+Cmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9r
-ZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC90cmVlL0RvY3VtZW50YXRpb24vc291bmQvYWxzYS9I
-RC1BdWRpby50eHQKPiA+ID4KPiA+ID4gWW91IGNhbiBkaXNhYmxlIGl0IGJ5IGhpbnQgdHJpZ2dl
-cl9zZW5zZT0wCj4gPiA+Cj4gPiA+IC0gdHJpZ2dlcl9zZW5zZSAoYm9vbCk6IGluZGljYXRlcyB0
-aGF0IHRoZSBqYWNrIGRldGVjdGlvbiBuZWVkcyB0aGUKPiA+ID4gICBleHBsaWNpdCBjYWxsIG9m
-IEFDX1ZFUkJfU0VUX1BJTl9TRU5TRSB2ZXJiCj4gPiA+Cj4gPiA+IE5vZGUgMHgxNCBbUGluIENv
-bXBsZXhdIHdjYXBzIDB4NDAwMThkOiBTdGVyZW8gQW1wLU91dAo+ID4gPiAgIENvbnRyb2w6IG5h
-bWU9Ik1hc3RlciBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAo+ID4gPiAgICAg
-Q29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAo+ID4gPiAgIENvbnRyb2w6
-IG5hbWU9IkhlYWRwaG9uZSBNaWMgUGhhbnRvbSBKYWNrIiwgaW5kZXg9MCwgZGV2aWNlPTAKPiA+
-ID4gICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwg
-bXV0ZT0xCj4gPiA+ICAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KPiA+ID4gICBQaW5jYXAg
-MHgwMDAwMDAzZjogSU4gT1VUIEhQIERldGVjdCBUcmlnZ2VyIEltcFNlbnNlCj4gPiA+ICAgUGlu
-IERlZmF1bHQgMHgwMTIxNDExZjogW0phY2tdIEhQIE91dCBhdCBFeHQgUmVhcgo+ID4gPiAgICAg
-Q29ubiA9IDEvOCwgQ29sb3IgPSBHcmVlbgo+ID4gPiAgICAgRGVmQXNzb2NpYXRpb24gPSAweDEs
-IFNlcXVlbmNlID0gMHhmCj4gPiA+ICAgICBNaXNjID0gTk9fUFJFU0VOQ0UKPiA+ID4gICBQaW4t
-Y3RsczogMHhjMDogT1VUIEhQCj4gPiA+ICAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0w
-Cj4gPiA+ICAgQ29ubmVjdGlvbjogMQo+ID4gPiAgICAgIDB4MGMKPiA+ID4KPiA+ID4gVG8gZ2V0
-IGJhY2sgaGVhZHBob25lIHBoYW50b20gamFjayBpZiBIUCBpcyByZWFsbHkgc2hhcmVkIHdpdGgg
-c3BlYWtlcgo+ID4gPgo+ID4gPiBEaXNhYmxlIGhwIG1pYyBieSBoaW50ICBocF9taWNfZGV0ZWN0
-PTAKPiA+ID4KPiA+ID4gLSBocF9taWNfZGV0ZWN0IChib29sKTogZW5hYmxlL2Rpc2FibGUgdGhl
-IGhwL21pYyBzaGFyZWQgaW5wdXQgZm9yIGEKc2luZ2xlCj4gPiA+IGJ1aWx0LWluIG1pYyBjYXNl
-OyBkZWZhdWx0IHRydWUKPiA+Cj4gPiBub3Qgc3VyZSBpZiB0aGlzIGlzIGNvcnJlY3QsIGJ1dCBp
-dCBkb2VzbnQgdHVybiBvbiBzb3VuZAo+ID4gc3VkbyBtb2Rwcm9iZSBzbmQtaGRhLWludGVsIG9w
-dGlvbnM9dHJpZ2dlcl9zZW5zZT0wCj4KPiBUaGUgaGludCBzdHJpbmdzIGFyZW4ndCBwYXNzZWQg
-aW4gdGhhdCB3YXkuICBJdCdzIHBhc3NlZCBpbiBhIGZpcm13YXJlCj4gInBhdGNoIiBmaWxlIHRo
-YXQgaXMgc3BlY2lmaWVkIHZpYSBwYXRjaCBvcHRpb24gc25kLWhkYS1pbnRlbCBtb2R1bGUuCj4g
-U2VlIERvY3VtZW50YXRpb24vc291bmQvYWxzYS9IRC1BdWRpby50eHQgZm9yIGRldGFpbHMuCj4K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi folks,
+
+I tested Takashi's latest commit 502849718c70ed0b from github on my
+003Rack+ and the driver works.  I also confirm there is no hissing noise
+on any channels with this driver so 003amdtp is correctly implemented.
+
+Good job Takashi, is there any way we can push forward to get it upstream?
+
+Damien
+
+On 30/03/15 02:10, Takashi Sakamoto wrote:
+> On Mar 30 2015 00:05, Takashi Sakamoto wrote:
+>> Well, I'll stop my work for this driver in this developing period
+>> (for Linux 4.0),
+> 
+> Oops. '(for Linux 4.1)' is correct...
+> 
+> 
+> Regards
+> 
+> Takashi Sakamoto
+> 
