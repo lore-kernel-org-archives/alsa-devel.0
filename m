@@ -1,21 +1,16 @@
-From: Damien Zammit <damien@zamaudio.com>
-Subject: Re: [RFC v2][PATCH 00/11] digi00x: new driver for
- Digidesign 002/003 family
-Date: Mon, 30 Mar 2015 03:45:31 +1100
-Message-ID: <55182C2B.5000307@zamaudio.com>
-References: <1427641531-9047-1-git-send-email-o-takashi@sakamocchi.jp>
- <551815D7.80602@sakamocchi.jp>
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 3/4] ASoC: fsi: fix license specification
+Date: Sun, 29 Mar 2015 21:47:16 +0200
+Message-ID: <1427658437-23136-3-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1427658437-23136-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f176.google.com (mail-pd0-f176.google.com
- [209.85.192.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 58ACF26047C
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 18:45:41 +0200 (CEST)
-Received: by pdcp1 with SMTP id p1so58819174pdc.3
- for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 09:45:39 -0700 (PDT)
-In-Reply-To: <551815D7.80602@sakamocchi.jp>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 0E5AF260421
+ for <alsa-devel@alsa-project.org>; Sun, 29 Mar 2015 21:47:24 +0200 (CEST)
+In-Reply-To: <1427658437-23136-1-git-send-email-u.kleine-koenig@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,29 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org, robin@gareus.org, ffado-devel@lists.sf.net
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
-
-I tested Takashi's latest commit 502849718c70ed0b from github on my
-003Rack+ and the driver works.  I also confirm there is no hissing noise
-on any channels with this driver so 003amdtp is correctly implemented.
-
-Good job Takashi, is there any way we can push forward to get it upstream?
-
-Damien
-
-On 30/03/15 02:10, Takashi Sakamoto wrote:
-> On Mar 30 2015 00:05, Takashi Sakamoto wrote:
->> Well, I'll stop my work for this driver in this developing period
->> (for Linux 4.0),
-> 
-> Oops. '(for Linux 4.1)' is correct...
-> 
-> 
-> Regards
-> 
-> Takashi Sakamoto
-> 
+QWNjb3JkaW5nIHRvIHRoZSBmaWxlIGhlYWRlciBvbmx5IEdQTCB2MiBhcHBsaWVzIHRvIGl0LiBG
+aXggdGhlCk1PRFVMRV9MSUNFTlNFIHBhcmFtZXRlciBhY2NvcmRpbmdseS4KClNpZ25lZC1vZmYt
+Ynk6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGU+Ci0t
+LQogc291bmQvc29jL3NoL2ZzaS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
+KCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NoL2ZzaS5jIGIvc291
+bmQvc29jL3NoL2ZzaS5jCmluZGV4IDU4MjdjMGViNmI5MC4uMGMyYWYyMWIwYjgyIDEwMDY0NAot
+LS0gYS9zb3VuZC9zb2Mvc2gvZnNpLmMKKysrIGIvc291bmQvc29jL3NoL2ZzaS5jCkBAIC0yMTE4
+LDcgKzIxMTgsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBmc2lfZHJpdmVyID0g
+ewogCiBtb2R1bGVfcGxhdGZvcm1fZHJpdmVyKGZzaV9kcml2ZXIpOwogCi1NT0RVTEVfTElDRU5T
+RSgiR1BMIik7CitNT0RVTEVfTElDRU5TRSgiR1BMIHYyIik7CiBNT0RVTEVfREVTQ1JJUFRJT04o
+IlN1cGVySCBvbmNoaXAgRlNJIGF1ZGlvIGRyaXZlciIpOwogTU9EVUxFX0FVVEhPUigiS3VuaW5v
+cmkgTW9yaW1vdG8gPG1vcmltb3RvLmt1bmlub3JpQHJlbmVzYXMuY29tPiIpOwogTU9EVUxFX0FM
+SUFTKCJwbGF0Zm9ybTpmc2ktcGNtLWF1ZGlvIik7Ci0tIAoyLjEuNAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
