@@ -1,61 +1,39 @@
-From: Michael Gernoth <michael@gernoth.net>
-Subject: [PATCH] ALSA: emu10k1: add Audigy 5/Rx
-Date: Sat, 28 Mar 2015 19:20:35 +0100
-Message-ID: <20150328182035.GA11499@zerfleddert.de>
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH 76/86] sound/pci: use uapi/linux/pci_ids.h directly
+Date: Sun, 29 Mar 2015 15:42:59 +0200
+Message-ID: <1427635734-24786-77-git-send-email-mst@redhat.com>
+References: <1427635734-24786-1-git-send-email-mst@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eddie.zerfleddert.de (eddie.zerfleddert.de [188.246.9.226])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F3F7260609
- for <alsa-devel@alsa-project.org>; Sat, 28 Mar 2015 19:20:36 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <1427635734-24786-1-git-send-email-mst@redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Benoit Taine <benoit.taine@lip6.fr>, Bjorn Helgaas <bhelgaas@google.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The Audigy 5/Rx is essentially an Audigy 4 behind a PLX PCIe-
-bridge with an additional TOSLINK output.
+Header moved from linux/pci_ids.h to uapi/linux/pci_ids.h,
+use the new header directly so we can drop
+the wrapper in include/linux/pci_ids.h.
 
-Signed-off-by: Michael Gernoth <michael@gernoth.net>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- sound/pci/emu10k1/emu10k1_main.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/pci/ctxfi/xfi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index b4458a6..8e510e9 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1325,6 +1325,22 @@ static int snd_emu10k1_dev_free(struct snd_device *device)
- }
- 
- static struct snd_emu_chip_details emu_chip_details[] = {
-+	/* Audigy 5/Rx SB1550 */
-+	/* Tested by michael@gernoth.net 28 Mar 2015 */
-+	/* DSP: CA10300-IAT LF
-+	 * DAC: Cirrus Logic CS4382-KQZ
-+	 * ADC: Philips 1361T
-+	 * AC97: Sigmatel STAC9750
-+	 * CA0151: None
-+	 */
-+	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10241102,
-+	 .driver = "Audigy2", .name = "SB Audigy 5/Rx [SB1550]",
-+	 .id = "Audigy2",
-+	 .emu10k2_chip = 1,
-+	 .ca0108_chip = 1,
-+	 .spk71 = 1,
-+	 .adc_1361t = 1,  /* 24 bit capture instead of 16bit */
-+	 .ac97_chip = 1} ,
- 	/* Audigy4 (Not PRO) SB0610 */
- 	/* Tested by James@superbug.co.uk 4th April 2006 */
- 	/* A_IOCFG bits
+diff --git a/sound/pci/ctxfi/xfi.c b/sound/pci/ctxfi/xfi.c
+index f2f3277..7e26876 100644
+--- a/sound/pci/ctxfi/xfi.c
++++ b/sound/pci/ctxfi/xfi.c
+@@ -11,7 +11,7 @@
+ #include <linux/init.h>
+ #include <linux/pci.h>
+ #include <linux/moduleparam.h>
+-#include <linux/pci_ids.h>
++#include <uapi/linux/pci_ids.h>
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
 -- 
-2.1.4
+MST
