@@ -1,18 +1,22 @@
-From: =?windows-1252?Q?S=E9bastien_Bourdeauducq?= <sb@m-labs.hk>
-Subject: Re: baytrail-pcm-audio: audio broken on Lenovo
- Thinkpad Tablet 10
-Date: Mon, 30 Mar 2015 22:19:29 +0800
-Message-ID: <55195B71.6080108@m-labs.hk>
-References: <54E2DE80.1060308@m-labs.hk> <54E4A6D9.30005@linux.intel.com>
- <54E77B97.9050506@m-labs.hk> <54EB240C.5020105@linux.intel.com>
+From: "Nikita N." <nikitan@operamail.com>
+Subject: Re: bug
+Date: Mon, 30 Mar 2015 07:37:02 -0700
+Message-ID: <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
+References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
+ <5518F8F3.10304@ladisch.de>
+ <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
+ <55192FBC.1070307@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ssl.serverraum.org (ssl.serverraum.org [88.198.40.39])
- by alsa0.perex.cz (Postfix) with ESMTP id B6BE4260555
- for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 16:20:07 +0200 (CEST)
-In-Reply-To: <54EB240C.5020105@linux.intel.com>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 0E333260555
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 16:37:06 +0200 (CEST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id CF80820B3C
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 10:36:59 -0400 (EDT)
+In-Reply-To: <55192FBC.1070307@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,102 +26,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+We are the devs involved in dCore porting, and that is one of our users
+report:
+http://forum.tinycorelinux.net/index.php/topic,18225
 
-On 02/23/2015 08:58 PM, Jarkko Nikula wrote:
->> Is there a way I can try sound/soc/codecs/rt5670.c instead? I edited it
->> so that it attaches to my ACPI ID (and rt5640 doesn't), but that did not
->> work. I noticed that the kernel has some Baytrail-specific modules for
->> RT564x, and I guess those would need to be changed as well - but it's
->> not straightforward.
->>
-> Basically three changes are needed:
-> =
+We verified that in few of our legacy laptops.
+It didn't reproduce for every laptop, but indeed in a couple of them,
+the temperature of the speakers reached extremes levels in few seconds,
+only unplugging the AC/DC cable saved them.
+This is a serious problem in our opinion, and we would hate to see our
+dCore reputation spoiled.
+We hate to admit, but it is *NOT* our bug, and would hate to see this
+bug reverse engineered into a virus/malware (on Linux, or other OS) and
+see ourselves blamed for it.
+So we would like to keep the incident quiet, and we are going to remove
+that thread from our forum.
+On the other side, we would expect any action from ALSA project in
+removing that tool and/or exposing the real individual/s guilty of
+writing that tool.
 
-> 1. Hack add "10EC5640" to rt5670.c as you have done
-> 2. Add a new machine driver sound/soc/intel/sst-acpi.c/byt-rt5670
->    I guess cht_bsw_rt5672.c can be used as a starting point for audio
->    routes and byt-rt5640.c for dai link definitions.mess
-> 3. Hack change sound/soc/intel/sst-acpi.c so that "10EC5640" loads
->    the new machine driver instead of byt-rt5640.
-
-Thanks. I did that and I get the following in the kernel log:
-[    6.831422] byt-rt5670 byt-rt5670: ASoC: CPU DAI baytrail-pcm-audio
-not regis
-tered
-[    6.831443] byt-rt5670 byt-rt5670: snd_soc_register_card failed -517
-[    6.831453] platform byt-rt5670: Driver byt-rt5670 requests probe
-deferral
-
-[    6.884013] baytrail-pcm-audio baytrail-pcm-audio: error: invalid DMA
-engine
-0
-[    6.884023] baytrail-pcm-audio baytrail-pcm-audio: sst_dma_new failed -22
+Thank you for your attentions and looking forward your feedback.
+-- 
+  Nikita N.
+  nikitan@operamail.com
 
 
-Note: it seems to me that all Baytrail machines will have this "error:
-invalid DMA engine" message. AFAICT it is emitted from sst-firmware.c
-because sst->pdata->dma_engine is 0 and in sst-acpi.c the function
-sst_acpi_probe does not set it for Baytrail because resindex_dma_base is
--1 in sst_acpi_baytrail_desc.
+On Mon, Mar 30, 2015, at 04:13 AM, Clemens Ladisch wrote:
+> Nikita N. wrote:
+> > is anybody here aware that latest alsamixergui
+> 
+> Despite its name, this program was not written by the ALSA project.
+> 
+> > has a bug capable of
+> > produce irreversible damage to internal laptop speakers?
+> 
+> What is the bug?
+> 
+> 
+> Regards,
+> Clemens
 
-[    6.924094] baytrail-pcm-audio baytrail-pcm-audio: FW version:
-04.05.13.a0
-[    6.924106] baytrail-pcm-audio baytrail-pcm-audio: Build type: a0
-[    6.924109] baytrail-pcm-audio baytrail-pcm-audio: Build date: Apr  2
-2014 14:14:39
-[    6.931503] byt-rt5670 byt-rt5670: rt5670-aif1 <-> baytrail-pcm-audio
-mapping ok
-[    6.931624] byt-rt5670 byt-rt5670: ASoC: no source widget found for
-ssp2 Tx
-[    6.931629] byt-rt5670 byt-rt5670: ASoC: Failed to add route ssp2 Tx
--> direct -> AIF1 Playback
-[    6.931636] byt-rt5670 byt-rt5670: ASoC: no source widget found for
-codec_out0
-[    6.931640] byt-rt5670 byt-rt5670: ASoC: Failed to add route
-codec_out0 -> direct -> ssp2 Tx
-[    6.931647] byt-rt5670 byt-rt5670: ASoC: no source widget found for
-codec_out1
-[    6.931650] byt-rt5670 byt-rt5670: ASoC: Failed to add route
-codec_out1 -> direct -> ssp2 Tx
-[    6.931656] byt-rt5670 byt-rt5670: ASoC: no source widget found for
-ssp2 Rx
-[    6.931660] byt-rt5670 byt-rt5670: ASoC: Failed to add route ssp2 Rx
--> direct -> codec_in0
-[    6.931666] byt-rt5670 byt-rt5670: ASoC: no source widget found for
-ssp2 Rx
-[    6.931670] byt-rt5670 byt-rt5670: ASoC: Failed to add route ssp2 Rx
--> direct -> codec_in1
-[    6.931677] byt-rt5670 byt-rt5670: ASoC: no sink widget found for ssp2 Rx
-[    6.931680] byt-rt5670 byt-rt5670: ASoC: Failed to add route AIF1
-Capture -> direct -> ssp2 Rx
-
-My byt-rt5670 is there:
-https://gist.github.com/sbourdeauducq/8c5da8ac0da13e21ee31
-
-I have to say that I am unfamiliar with Intel SST and I'm don't quite
-know what I am doing there. I wish sound devices were straightforward
-DMA-to-DAC devices instead of this complicated DSP architecture which
-AFAICT boils down to a glorified memcpy/resampler under Linux (this
-seems to be a pattern with this SoC though; I had a look at how to get
-the MIPI cameras to work on this machine and it's an even worse mess).
-
-> However, above changes may not make audio working since there has been
-> couple other new Baytrail based machines with correct codec but audio
-> seems to not move between the DSP and codec chip.
-
-Despite the error messages, the audio device is created and userspace
-applications can send data into it, but no sound is coming out. I also
-have to say that the settings in alsamixer are a terrible mess which
-seems not to originate from my hacks.
-
-> One assumption is if they use another SSP port than SSP2. Unfortunately
-> it's difficult to test since Linux DSP FW is hard-coded for SSP2.
-
-If only there were no DSP in the first place...
-
-S=E9bastien
+-- 
+http://www.fastmail.com - IMAP accessible web-mail
