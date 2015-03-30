@@ -1,76 +1,99 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: [RFC 0/11] dw_hdmi cleanups, audio preparation, helpers and ahb
- audio support
-Date: Mon, 30 Mar 2015 20:39:11 +0100
-Message-ID: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH RFC 01/11] drm: bridge/dw_hdmi: clean up
+ hdmi_set_clk_regenerator()
+Date: Mon, 30 Mar 2015 20:40:01 +0100
+Message-ID: <E1YcfXV-0002uL-9O@rmk-PC.arm.linux.org.uk>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id E61FA2605C0
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 21:40:05 +0200 (CEST)
+In-Reply-To: <20150330193911.GM24899@n2100.arm.linux.org.uk>
 Content-Disposition: inline
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-SSdtIHNlbmRpbmcgdGhpcyBzZXJpZXMgZm9yIGNvbW1lbnRzLCBhbmQgdG8gYWxsb3cgcGVvcGxl
-IHRvIHVwZGF0ZQp0aGVpciBjb2RlIGJhc2VzIChmb3IgdGhvc2Ugd2hvIGFyZSB1c2luZyBteSBB
-SEIgYXVkaW8gZHJpdmVyIG9uCmlNWDYpLiAgVGhpcyBpcyByZWFsbHkgc2V2ZXJhbCBzZXJpZXMs
-IGFuZCBJJ20gbm90IGV4cGVjdGluZyB0aGlzCnRvIGJlIHJlYWR5IGZvciB0aGUgdXBjb21pbmcg
-bWVyZ2Ugd2luZG93LiAgVGhhdCBzYWlkLCBpZiBhbnlvbmUKd2FudHMgdG8gc2F5IHRoYXQgdGhl
-eSdyZSBoYXBweSB3aXRoIHNvbWUgb2YgdGhlIGluaXRpYWwgZm91ciBwYXRjaGVzLApJJ20gaGFw
-cHkgdG8gcXVldWUgdGhvc2UgZm9yIERhdmlkLCBpZiBoZSdzIHdpbGxpbmcgdG8gdGFrZSB0aGVt
-LgoKVGhpcyBzZXJpZXMgYXBwbGllcyBvbiB0b3Agb2YgbXkgcHJldmlvdXMgc2VyaWVzLCB3aGlj
-aCBmaW5pc2hlZCB3aXRoCnRoZSBwYXRjaCAiZHJtOiBicmlkZ2UvZHdfaGRtaTogYWRqdXN0IG4v
-Y3RzIHNldHRpbmcgb3JkZXIiLgoKVGhlIGZpcnN0IGZvdXIgcGF0Y2hlcyBhcmUgYSBmZXcgY2xl
-YW51cHMgdG8gdGhlIGR3X2hkbWkgZHJpdmVyLgoKVGhlIG5leHQgdHdvIHBhdGNoZXMgaW50cm9k
-dWNlIG5ldyBpbnRlcmZhY2VzIHRvIHRoZSBkd19oZG1pIGRyaXZlcgp0byBzdXBwb3J0IEFIQiBh
-dWRpbywgaW5jbHVkaW5nIHRoZSBlcnJhdGEgZm91bmQgb24gaU1YNiB3aGljaApyZXF1aXJlcyBO
-IHRvIGJlIHByb2dyYW1tZWQgdG8gemVybyB3aGVuIHRoZSBhdWRpbyBGSUZPIGlzIG5vdCBmdWxs
-LgpJJ20gZXhwZWN0aW5nIHNvbWUgZGlzY3Vzc2lvbiB3aXRoIHRoZXNlIGxhc3QgdHdvIGFzIHdl
-IHRyeSB0byB3b3JrCm91dCBob3cgdG8gZGVhbCB3aXRoIHRoZSB0d28gdmFyaWFudHMgb2YgYXVk
-aW8gc3VwcG9ydCBmb3IgdGhpcyBwYXJ0CihBSEIgYXVkaW8gdnMgSTJTIGF1ZGlvKS4KClRoZSBm
-b2xsb3dpbmcgdGhyZWUgYWRkIHZhcmlvdXMgaGVscGVycyB0byB0aGUgRFJNIGFuZCBBTFNBIHN1
-YnN5c3RlbXMKZm9yIGF1ZGlvIHN1cHBvcnQgd2hpY2ggaXMgbm9uLXNwZWNpZmljIHRvIHRoZSBB
-SEIgYXVkaW8gZHJpdmVyLiAgRm9yCkRSTSwgdGhpcyBpcyBhIGhlbHBlciBtYWNybyB0byBvYnRh
-aW4gdGhlIHBvaW50ZXIgaW50byB0aGUgc2hvcnQgYXVkaW8KZGVzY3JpcHRvcnMuICBGb3IgQUxT
-QSwgaXQncyBhIHNldCBvZiBoZWxwZXJzIHRvIHJlc3RyaWN0IGFuIGF1ZGlvIFBDTQpkZXZpY2Un
-cyBjYXBhYmlsaXRpZXMgYWNjb3JkaW5nIHRvIHRoZSBFTEQsIGFuZCB0byBnZW5lcmF0ZSB0aGUg
-SUVDOTU4CmNoYW5uZWwgc3RhdHVzIGRhdGEuICBJZiB0aGVzZSBoZWxwZXJzIGFyZSBhY2NlcHRh
-YmxlLCB3ZSBjYW4gY29udmVydAphIG51bWJlciBvZiBkcml2ZXJzIHRvIHRoZW0uCgpUaGUgRUxE
-IGhlbHBlciBpc24ndCBxdWl0ZSBmaW5pc2hlZCwgYnV0IHNob3VsZCBiZSBzdWZmaWNpZW50IGZv
-cgppbml0aWFsIHRlc3RpbmcuCgpUaGUgbGFzdCB0d28gcGF0Y2hlcyBhZGQgc3VwcG9ydCBmb3Ig
-dGhlIGR3X2hkbWkgYXVkaW8uICBUaGlzIGlzIGFuCkFMU0EgZHJpdmVyIHJhdGhlciB0aGFuIGFu
-IEFTb0MgZHJpdmVyIGFzIGl0J3MgYSBwcmV0dHkgc2ltcGxlIGFmZmFpci4KSSBjb3VsZG4ndCBm
-aW5kIGEgc3VpdGFibGUgbG9jYXRpb24gaW4gdGhlIHNvdW5kLyBzdWJ0cmVlIHRvIHBsYWNlIGl0
-LApzbyBJJ3ZlIHBsYWNlZCBpdCBuZXh0IHRvIHRoZSBicmlkZ2UgLSB5ZXMsIHdlIHByb2JhYmx5
-IG5lZWQgdG8gZmluZAppdCBhIGJldHRlciBob21lIGluIHRoZSBzb3VuZC8gc3VidHJlZSwgYnV0
-IGl0IGN1cnJlbnRseSBtYWtlcwp1c2Ugb2YgZHdfaGRtaS5oIGluIHRoZSBkaXJlY3RvcnkgaXQg
-bGl2ZXMuCgogZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9LY29uZmlnICAgICAgICAgICAgIHwgIDEx
-ICsKIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvTWFrZWZpbGUgICAgICAgICAgICB8ICAgMSArCiBk
-cml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvLmMgfCA1NjYgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysKIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS1haGIt
-YXVkaW8uaCB8ICAxNCArCiBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWkuYyAgICAgICAg
-ICAgfCAyNTAgKysrKysrKystLS0tLQogZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kd19oZG1pLmgg
-ICAgICAgICAgIHwgICAzICsKIGluY2x1ZGUvZHJtL2JyaWRnZS9kd19oZG1pLmggICAgICAgICAg
-ICAgICB8ICAgNyArCiBpbmNsdWRlL2RybS9kcm1fZWRpZC5oICAgICAgICAgICAgICAgICAgICAg
-fCAgMTkgKwogaW5jbHVkZS9zb3VuZC9wY21fZHJtX2VsZC5oICAgICAgICAgICAgICAgIHwgICA2
-ICsKIGluY2x1ZGUvc291bmQvcGNtX2llYzk1OC5oICAgICAgICAgICAgICAgICB8ICAgOSArCiBz
-b3VuZC9jb3JlL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDYgKwogc291bmQv
-Y29yZS9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzICsKIHNvdW5kL2NvcmUv
-cGNtX2RybV9lbGQuYyAgICAgICAgICAgICAgICAgICB8ICA5MSArKysrKwogc291bmQvY29yZS9w
-Y21faWVjOTU4LmMgICAgICAgICAgICAgICAgICAgIHwgIDcwICsrKysKIDE0IGZpbGVzIGNoYW5n
-ZWQsIDk2NCBpbnNlcnRpb25zKCspLCA5MiBkZWxldGlvbnMoLSkKCi0tIApGVFRDIGJyb2FkYmFu
-ZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgMTAuNU1icHMgZG93biA0MDBrYnBzIHVw
-CmFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0
-cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2RyaS1kZXZlbAo=
+Clean up hdmi_set_clk_regenerator() by allowing it to take the audio
+sample rate and ratio directly, rather than hiding it inside the
+function.  Raise the unsupported pixel clock/sample rate message from
+debug to error level as this results in audio not working correctly.
+
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ drivers/gpu/drm/bridge/dw_hdmi.c | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
+index cca1c3d165e2..49df6c8c4ea8 100644
+--- a/drivers/gpu/drm/bridge/dw_hdmi.c
++++ b/drivers/gpu/drm/bridge/dw_hdmi.c
+@@ -335,39 +335,37 @@ static unsigned int hdmi_compute_cts(unsigned int freq, unsigned long pixel_clk,
+ }
+ 
+ static void hdmi_set_clk_regenerator(struct dw_hdmi *hdmi,
+-				     unsigned long pixel_clk)
++	unsigned long pixel_clk, unsigned int sample_rate, unsigned int ratio)
+ {
+-	unsigned int clk_n, clk_cts;
++	unsigned int n, cts;
+ 
+-	clk_n = hdmi_compute_n(hdmi->sample_rate, pixel_clk,
+-			       hdmi->ratio);
+-	clk_cts = hdmi_compute_cts(hdmi->sample_rate, pixel_clk,
+-				   hdmi->ratio);
+-
+-	if (!clk_cts) {
+-		dev_dbg(hdmi->dev, "%s: pixel clock not supported: %lu\n",
+-			__func__, pixel_clk);
+-		return;
++	n = hdmi_compute_n(sample_rate, pixel_clk, ratio);
++	cts = hdmi_compute_cts(sample_rate, pixel_clk, ratio);
++	if (!cts) {
++		dev_err(hdmi->dev,
++			"%s: pixel clock/sample rate not supported: %luMHz / %ukHz\n",
++			__func__, pixel_clk, sample_rate);
+ 	}
+ 
+-	dev_dbg(hdmi->dev, "%s: samplerate=%d  ratio=%d  pixelclk=%lu  N=%d cts=%d\n",
+-		__func__, hdmi->sample_rate, hdmi->ratio,
+-		pixel_clk, clk_n, clk_cts);
++	dev_dbg(hdmi->dev, "%s: samplerate=%ukHz ratio=%d pixelclk=%luMHz N=%d cts=%d\n",
++		__func__, sample_rate, ratio, pixel_clk, n, cts);
+ 
+-	hdmi_set_cts_n(hdmi, clk_cts, clk_n);
++	hdmi_set_cts_n(hdmi, cts, n);
+ }
+ 
+ static void hdmi_init_clk_regenerator(struct dw_hdmi *hdmi)
+ {
+ 	mutex_lock(&hdmi->audio_mutex);
+-	hdmi_set_clk_regenerator(hdmi, 74250000);
++	hdmi_set_clk_regenerator(hdmi, 74250000, hdmi->sample_rate,
++				 hdmi->ratio);
+ 	mutex_unlock(&hdmi->audio_mutex);
+ }
+ 
+ static void hdmi_clk_regenerator_update_pixel_clock(struct dw_hdmi *hdmi)
+ {
+ 	mutex_lock(&hdmi->audio_mutex);
+-	hdmi_set_clk_regenerator(hdmi, hdmi->hdmi_data.video_mode.mpixelclock);
++	hdmi_set_clk_regenerator(hdmi, hdmi->hdmi_data.video_mode.mpixelclock,
++				 hdmi->sample_rate, hdmi->ratio);
+ 	mutex_unlock(&hdmi->audio_mutex);
+ }
+ 
+-- 
+1.8.3.1
