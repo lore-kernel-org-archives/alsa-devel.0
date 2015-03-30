@@ -1,43 +1,99 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: [PATCH] ASoC: atmel-pcm-dma: increase buffer_bytes_max
-Date: Mon, 30 Mar 2015 21:40:37 +0200
-Message-ID: <1427744437-14610-1-git-send-email-alexandre.belloni@free-electrons.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Bo Shen <voice.shen@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH RFC 04/11] drm: bridge/dw_hdmi: remove
+ mhsyncpolarity/mvsyncpolarity/minterlaced
+Date: Mon, 30 Mar 2015 20:40:16 +0100
+Message-ID: <E1YcfXk-0002un-Lw@rmk-PC.arm.linux.org.uk>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 57F2F2605BB
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 21:40:24 +0200 (CEST)
+In-Reply-To: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-atmel-pcm-dma is not limited to a buffer size of 64kB like atmel-pcm-pdc.
-Increase buffer_bytes_max to 512kB to allow for higher bit rates (i.e. 32bps at
-192kHz) to work correctly. By default, keep the prealloc at 64kB.
+Remove the struct hdmi_vmode mhsyncpolarity/mvsyncpolarity/minterlaced
+members, which are only used within a single function.  We can directly
+reference the appropriate mode->flags instead.
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 ---
- sound/soc/atmel/atmel-pcm-dma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/bridge/dw_hdmi.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-index b8e7bad05eb1..b6625c8c411b 100644
---- a/sound/soc/atmel/atmel-pcm-dma.c
-+++ b/sound/soc/atmel/atmel-pcm-dma.c
-@@ -54,7 +54,7 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
- 	.period_bytes_max	= 2 * 0xffff,	/* if 2 bytes format */
- 	.periods_min		= 8,
- 	.periods_max		= 1024,		/* no limit */
--	.buffer_bytes_max	= ATMEL_SSC_DMABUF_SIZE,
-+	.buffer_bytes_max	= 512 * 1024,
- };
+diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
+index fd02a220ad5b..06b5583140a8 100644
+--- a/drivers/gpu/drm/bridge/dw_hdmi.c
++++ b/drivers/gpu/drm/bridge/dw_hdmi.c
+@@ -82,9 +82,6 @@ static const u16 csc_coeff_rgb_in_eitu709[3][4] = {
  
- /**
-@@ -119,7 +119,7 @@ static int atmel_pcm_configure_dma(struct snd_pcm_substream *substream,
- static const struct snd_dmaengine_pcm_config atmel_dmaengine_pcm_config = {
- 	.prepare_slave_config = atmel_pcm_configure_dma,
- 	.pcm_hardware = &atmel_pcm_dma_hardware,
--	.prealloc_buffer_size = ATMEL_SSC_DMABUF_SIZE,
-+	.prealloc_buffer_size = 64 * 1024,
- };
+ struct hdmi_vmode {
+ 	bool mdvi;
+-	bool mhsyncpolarity;
+-	bool mvsyncpolarity;
+-	bool minterlaced;
+ 	bool mdataenablepolarity;
  
- int atmel_pcm_dma_platform_register(struct device *dev)
+ 	unsigned int mpixelclock;
+@@ -1025,9 +1022,6 @@ static void hdmi_av_composer(struct dw_hdmi *hdmi,
+ 	struct hdmi_vmode *vmode = &hdmi->hdmi_data.video_mode;
+ 	int hblank, vblank, h_de_hs, v_de_vs, hsync_len, vsync_len;
+ 
+-	vmode->mhsyncpolarity = !!(mode->flags & DRM_MODE_FLAG_PHSYNC);
+-	vmode->mvsyncpolarity = !!(mode->flags & DRM_MODE_FLAG_PVSYNC);
+-	vmode->minterlaced = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
+ 	vmode->mpixelclock = mode->clock * 1000;
+ 
+ 	dev_dbg(hdmi->dev, "final pixclk = %d\n", vmode->mpixelclock);
+@@ -1037,13 +1031,13 @@ static void hdmi_av_composer(struct dw_hdmi *hdmi,
+ 		HDMI_FC_INVIDCONF_HDCP_KEEPOUT_ACTIVE :
+ 		HDMI_FC_INVIDCONF_HDCP_KEEPOUT_INACTIVE);
+ 
+-	inv_val |= (vmode->mvsyncpolarity ?
++	inv_val |= mode->flags & DRM_MODE_FLAG_PVSYNC ?
+ 		HDMI_FC_INVIDCONF_VSYNC_IN_POLARITY_ACTIVE_HIGH :
+-		HDMI_FC_INVIDCONF_VSYNC_IN_POLARITY_ACTIVE_LOW);
++		HDMI_FC_INVIDCONF_VSYNC_IN_POLARITY_ACTIVE_LOW;
+ 
+-	inv_val |= (vmode->mhsyncpolarity ?
++	inv_val |= mode->flags & DRM_MODE_FLAG_PHSYNC ?
+ 		HDMI_FC_INVIDCONF_HSYNC_IN_POLARITY_ACTIVE_HIGH :
+-		HDMI_FC_INVIDCONF_HSYNC_IN_POLARITY_ACTIVE_LOW);
++		HDMI_FC_INVIDCONF_HSYNC_IN_POLARITY_ACTIVE_LOW;
+ 
+ 	inv_val |= (vmode->mdataenablepolarity ?
+ 		HDMI_FC_INVIDCONF_DE_IN_POLARITY_ACTIVE_HIGH :
+@@ -1052,13 +1046,13 @@ static void hdmi_av_composer(struct dw_hdmi *hdmi,
+ 	if (hdmi->vic == 39)
+ 		inv_val |= HDMI_FC_INVIDCONF_R_V_BLANK_IN_OSC_ACTIVE_HIGH;
+ 	else
+-		inv_val |= (vmode->minterlaced ?
++		inv_val |= mode->flags & DRM_MODE_FLAG_INTERLACE ?
+ 			HDMI_FC_INVIDCONF_R_V_BLANK_IN_OSC_ACTIVE_HIGH :
+-			HDMI_FC_INVIDCONF_R_V_BLANK_IN_OSC_ACTIVE_LOW);
++			HDMI_FC_INVIDCONF_R_V_BLANK_IN_OSC_ACTIVE_LOW;
+ 
+-	inv_val |= (vmode->minterlaced ?
++	inv_val |= mode->flags & DRM_MODE_FLAG_INTERLACE ?
+ 		HDMI_FC_INVIDCONF_IN_I_P_INTERLACED :
+-		HDMI_FC_INVIDCONF_IN_I_P_PROGRESSIVE);
++		HDMI_FC_INVIDCONF_IN_I_P_PROGRESSIVE;
+ 
+ 	inv_val |= (vmode->mdvi ?
+ 		HDMI_FC_INVIDCONF_DVI_MODEZ_DVI_MODE :
 -- 
-2.1.0
+1.8.3.1
