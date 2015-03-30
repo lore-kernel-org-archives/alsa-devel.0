@@ -1,55 +1,43 @@
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH RFC 03/11] drm: bridge/dw_hdmi: simplify
- hdmi_config_AVI() a little
-Date: Mon, 30 Mar 2015 20:40:11 +0100
-Message-ID: <E1YcfXf-0002ue-If@rmk-PC.arm.linux.org.uk>
-References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id A1BA92605D3
- for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 21:40:16 +0200 (CEST)
-In-Reply-To: <20150330193911.GM24899@n2100.arm.linux.org.uk>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: [PATCH] ASoC: atmel-pcm-dma: increase buffer_bytes_max
+Date: Mon, 30 Mar 2015 21:40:37 +0200
+Message-ID: <1427744437-14610-1-git-send-email-alexandre.belloni@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Bo Shen <voice.shen@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-When a YCBCR format is selected, we can merely copy the colorimetry
-information directly as we use the same definitions for both the
-unpacked AVI info frame and the hdmi_data_info structure.
+atmel-pcm-dma is not limited to a buffer size of 64kB like atmel-pcm-pdc.
+Increase buffer_bytes_max to 512kB to allow for higher bit rates (i.e. 32bps at
+192kHz) to work correctly. By default, keep the prealloc at 64kB.
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 ---
- drivers/gpu/drm/bridge/dw_hdmi.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/soc/atmel/atmel-pcm-dma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
-index 44c63883db19..fd02a220ad5b 100644
---- a/drivers/gpu/drm/bridge/dw_hdmi.c
-+++ b/drivers/gpu/drm/bridge/dw_hdmi.c
-@@ -944,10 +944,7 @@ static void hdmi_config_AVI(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
- 			frame.extended_colorimetry =
- 				HDMI_EXTENDED_COLORIMETRY_XV_YCC_709;
- 	} else if (hdmi->hdmi_data.enc_out_format != RGB) {
--		if (hdmi->hdmi_data.colorimetry == HDMI_COLORIMETRY_ITU_601)
--			frame.colorimetry = HDMI_COLORIMETRY_ITU_601;
--		else /*hdmi->hdmi_data.colorimetry == HDMI_COLORIMETRY_ITU_709*/
--			frame.colorimetry = HDMI_COLORIMETRY_ITU_709;
-+		frame.colorimetry = hdmi->hdmi_data.colorimetry;
- 		frame.extended_colorimetry = HDMI_EXTENDED_COLORIMETRY_XV_YCC_601;
- 	} else { /* Carries no data */
- 		frame.colorimetry = HDMI_COLORIMETRY_NONE;
+diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
+index b8e7bad05eb1..b6625c8c411b 100644
+--- a/sound/soc/atmel/atmel-pcm-dma.c
++++ b/sound/soc/atmel/atmel-pcm-dma.c
+@@ -54,7 +54,7 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
+ 	.period_bytes_max	= 2 * 0xffff,	/* if 2 bytes format */
+ 	.periods_min		= 8,
+ 	.periods_max		= 1024,		/* no limit */
+-	.buffer_bytes_max	= ATMEL_SSC_DMABUF_SIZE,
++	.buffer_bytes_max	= 512 * 1024,
+ };
+ 
+ /**
+@@ -119,7 +119,7 @@ static int atmel_pcm_configure_dma(struct snd_pcm_substream *substream,
+ static const struct snd_dmaengine_pcm_config atmel_dmaengine_pcm_config = {
+ 	.prepare_slave_config = atmel_pcm_configure_dma,
+ 	.pcm_hardware = &atmel_pcm_dma_hardware,
+-	.prealloc_buffer_size = ATMEL_SSC_DMABUF_SIZE,
++	.prealloc_buffer_size = 64 * 1024,
+ };
+ 
+ int atmel_pcm_dma_platform_register(struct device *dev)
 -- 
-1.8.3.1
+2.1.0
