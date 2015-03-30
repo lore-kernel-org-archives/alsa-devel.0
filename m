@@ -1,48 +1,51 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/5 v2] ASoC: rsrc-card: add Renesas sampling rate convert
- sound card support
-Date: Mon, 30 Mar 2015 11:57:04 +0200
-Message-ID: <CAMuHMdVa=KZRT294AjDZ7QZy5PFU=aKh55ookWYruf6cJhbdbg@mail.gmail.com>
-References: <87h9t85ry1.wl%kuninori.morimoto.gx@renesas.com>
-	<87fv8s5rwt.wl%kuninori.morimoto.gx@renesas.com>
+From: "Nikita N." <nikitan@operamail.com>
+Subject: Re: bug
+Date: Mon, 30 Mar 2015 03:27:14 -0700
+Message-ID: <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
+References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
+ <5518F8F3.10304@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87fv8s5rwt.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Das Biju <biju.das@bp.renesas.com>, Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 48C2B26049D
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 12:27:15 +0200 (CEST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.nyi.internal (Postfix) with ESMTP id 6AD6A20753
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 06:27:11 -0400 (EDT)
+In-Reply-To: <5518F8F3.10304@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 26, 2015 at 5:01 AM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
-> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-> new file mode 100644
-> index 0000000..12e287e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-> @@ -0,0 +1,66 @@
-> +Renesas Sampling Rate Convert Sound Card:
-> +
-> +Renesas Sampling Rate Convert Sound Card specifies audio DAI connections of SoC <-> codec.
-> +
-> +Required properties:
-> +
-> +- compatible                           : "renesas,rsrc-card,<board>"
-> +                                         Examples with soctypes are:
+is anybody here aware that latest alsamixergui has a bug capable of
+produce irreversible damage to internal laptop speakers?
+-- 
+  Nikita N.
+  nikitan@operamail.com
 
-board types
 
-> +                                           - "renesas,rsrc-card,lager"
-> +                                           - "renesas,rsrc-card,koelsch"
+On Mon, Mar 30, 2015, at 12:19 AM, Clemens Ladisch wrote:
+> Nikita N. wrote:
+> > is any programmer listening here?
+> 
+> No.
+> 
+> But several are reading here.
+> 
+> 
+> Regards,
+> Clemens
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+http://www.fastmail.com - Or how I learned to stop worrying and
+                          love email again
