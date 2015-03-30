@@ -1,41 +1,67 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 17/25] sound: Use bool function return values of true/false not 1/0
-Date: Mon, 30 Mar 2015 16:46:15 -0700
-Message-ID: <89241da97a2fb2d869ea7902b34743bc4991e88b.1427759009.git.joe@perches.com>
+Subject: [PATCH 25/25] sound: wm5100-tables: Use bool function return values of true/false not 1/0
+Date: Mon, 30 Mar 2015 16:46:23 -0700
+Message-ID: <9340bd2566359c81dd562496b08408f167e9f7d3.1427759010.git.joe@perches.com>
 References: <cover.1427759009.git.joe@perches.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1427759009.git.joe@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Use the normal return values for bool functions
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- include/sound/soc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm5100-tables.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index fcb312b..5ca7ec0 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1418,13 +1418,13 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
- static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
- {
- 	if (mc->reg == mc->rreg && mc->shift == mc->rshift)
--		return 0;
-+		return false;
- 	/*
- 	 * mc->reg == mc->rreg && mc->shift != mc->rshift, or
- 	 * mc->reg != mc->rreg means that the control is
- 	 * stereo (bits in one register or in two registers)
- 	 */
--	return 1;
-+	return true;
+diff --git a/sound/soc/codecs/wm5100-tables.c b/sound/soc/codecs/wm5100-tables.c
+index e239f4b..9e987cf 100644
+--- a/sound/soc/codecs/wm5100-tables.c
++++ b/sound/soc/codecs/wm5100-tables.c
+@@ -30,7 +30,7 @@ bool wm5100_volatile_register(struct device *dev, unsigned int reg)
+ 	case WM5100_OUTPUT_STATUS_2:
+ 	case WM5100_INPUT_ENABLES_STATUS:
+ 	case WM5100_MIC_DETECT_3:
+-		return 1;
++		return true;
+ 	default:
+ 		if ((reg >= WM5100_DSP1_PM_0 && reg <= WM5100_DSP1_PM_1535) ||
+ 		    (reg >= WM5100_DSP1_ZM_0 && reg <= WM5100_DSP1_ZM_2047) ||
+@@ -41,9 +41,9 @@ bool wm5100_volatile_register(struct device *dev, unsigned int reg)
+ 		    (reg >= WM5100_DSP3_PM_0 && reg <= WM5100_DSP3_PM_1535) ||
+ 		    (reg >= WM5100_DSP3_ZM_0 && reg <= WM5100_DSP3_ZM_2047) ||
+ 		    (reg >= WM5100_DSP3_DM_0 && reg <= WM5100_DSP3_DM_511))
+-			return 1;
++			return true;
+ 		else
+-			return 0;
++			return false;
+ 	}
  }
  
- static inline unsigned int snd_soc_enum_val_to_item(struct soc_enum *e,
+@@ -798,7 +798,7 @@ bool wm5100_readable_register(struct device *dev, unsigned int reg)
+ 	case WM5100_DSP3_CONTROL_28:
+ 	case WM5100_DSP3_CONTROL_29:
+ 	case WM5100_DSP3_CONTROL_30:
+-		return 1;
++		return true;
+ 	default:
+ 		if ((reg >= WM5100_DSP1_PM_0 && reg <= WM5100_DSP1_PM_1535) ||
+ 		    (reg >= WM5100_DSP1_ZM_0 && reg <= WM5100_DSP1_ZM_2047) ||
+@@ -809,9 +809,9 @@ bool wm5100_readable_register(struct device *dev, unsigned int reg)
+ 		    (reg >= WM5100_DSP3_PM_0 && reg <= WM5100_DSP3_PM_1535) ||
+ 		    (reg >= WM5100_DSP3_ZM_0 && reg <= WM5100_DSP3_ZM_2047) ||
+ 		    (reg >= WM5100_DSP3_DM_0 && reg <= WM5100_DSP3_DM_511))
+-			return 1;
++			return true;
+ 		else
+-			return 0;
++			return false;
+ 	}
+ }
+ 
 -- 
 2.1.2
