@@ -1,15 +1,16 @@
 From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH RFC 08/11] sound/core: add DRM ELD helper
-Date: Mon, 30 Mar 2015 20:40:37 +0100
-Message-ID: <E1YcfY5-0002vT-5K@rmk-PC.arm.linux.org.uk>
+Subject: [PATCH RFC 09/11] sound/core: add IEC958 channel
+	status helper
+Date: Mon, 30 Mar 2015 20:40:42 +0100
+Message-ID: <E1YcfYA-0002vc-Al@rmk-PC.arm.linux.org.uk>
 References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 11EE3260662
- for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 21:40:51 +0200 (CEST)
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 8D5F0260688
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 21:40:56 +0200 (CEST)
 In-Reply-To: <20150330193911.GM24899@n2100.arm.linux.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,64 +26,71 @@ To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kern
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a helper for the EDID like data structure, which is typically passed
-from a HDMI adapter to its associated audio driver.  This informs the
-audio driver of the capabilities of the attached HDMI sink.
+Add a helper to create the IEC958 channel status from an ALSA
+snd_pcm_runtime structure, taking account of the sample rate.
 
 Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 ---
- include/sound/pcm_drm_eld.h |  6 +++
- sound/core/Kconfig          |  3 ++
- sound/core/Makefile         |  1 +
- sound/core/pcm_drm_eld.c    | 91 +++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 101 insertions(+)
- create mode 100644 include/sound/pcm_drm_eld.h
- create mode 100644 sound/core/pcm_drm_eld.c
+ include/sound/pcm_iec958.h |  9 ++++++
+ sound/core/Kconfig         |  3 ++
+ sound/core/Makefile        |  2 ++
+ sound/core/pcm_iec958.c    | 70 ++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 84 insertions(+)
+ create mode 100644 include/sound/pcm_iec958.h
+ create mode 100644 sound/core/pcm_iec958.c
 
-diff --git a/include/sound/pcm_drm_eld.h b/include/sound/pcm_drm_eld.h
+diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
 new file mode 100644
-index 000000000000..93357b25d2e2
+index 000000000000..0eed397aca8e
 --- /dev/null
-+++ b/include/sound/pcm_drm_eld.h
-@@ -0,0 +1,6 @@
-+#ifndef __SOUND_PCM_DRM_ELD_H
-+#define __SOUND_PCM_DRM_ELD_H
++++ b/include/sound/pcm_iec958.h
+@@ -0,0 +1,9 @@
++#ifndef __SOUND_PCM_IEC958_H
++#define __SOUND_PCM_IEC958_H
 +
-+int snd_pcm_hw_constraint_eld(struct snd_pcm_runtime *runtime, void *eld);
++#include <linux/types.h>
++
++int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
++	size_t len);
 +
 +#endif
 diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-index 313f22e9d929..b534c8a6046b 100644
+index b534c8a6046b..1507469425ec 100644
 --- a/sound/core/Kconfig
 +++ b/sound/core/Kconfig
-@@ -6,6 +6,9 @@ config SND_PCM
- 	tristate
- 	select SND_TIMER
+@@ -9,6 +9,9 @@ config SND_PCM
+ config SND_PCM_ELD
+ 	bool
  
-+config SND_PCM_ELD
++config SND_PCM_IEC958
 +	bool
 +
  config SND_DMAENGINE_PCM
  	tristate
  
 diff --git a/sound/core/Makefile b/sound/core/Makefile
-index 4daf2f58261c..591b49157b4d 100644
+index 591b49157b4d..70ea06712ec2 100644
 --- a/sound/core/Makefile
 +++ b/sound/core/Makefile
-@@ -13,6 +13,7 @@ snd-$(CONFIG_SND_JACK)	  += jack.o
- snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
+@@ -14,10 +14,12 @@ snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
  		pcm_memory.o memalloc.o
  snd-pcm-$(CONFIG_SND_DMA_SGBUF) += sgbuf.o
-+snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
+ snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
++snd-pcm-$(CONFIG_SND_PCM_IEC958) += snd-pcm-iec958.o
  
  # for trace-points
  CFLAGS_pcm_lib.o := -I$(src)
-diff --git a/sound/core/pcm_drm_eld.c b/sound/core/pcm_drm_eld.c
+ 
++snd-pcm-iec958-objs := pcm_iec958.o
+ snd-pcm-dmaengine-objs := pcm_dmaengine.o
+ 
+ snd-rawmidi-objs  := rawmidi.o
+diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
 new file mode 100644
-index 000000000000..78d551a1b05f
+index 000000000000..e1ff88a17dde
 --- /dev/null
-+++ b/sound/core/pcm_drm_eld.c
-@@ -0,0 +1,91 @@
++++ b/sound/core/pcm_iec958.c
+@@ -0,0 +1,70 @@
 +/*
 + *  PCM DRM helpers
 + *
@@ -91,88 +99,67 @@ index 000000000000..78d551a1b05f
 + *   the Free Software Foundation; either version 2 of the License.
 + */
 +#include <linux/export.h>
-+#include <drm/drm_edid.h>
++#include <linux/types.h>
++#include <sound/asoundef.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_drm_eld.h>
++#include <sound/pcm_iec958.h>
 +
-+static const unsigned int eld_rates[] = {
-+	32000,
-+	44100,
-+	48000,
-+	88200,
-+	96000,
-+	176400,
-+	192000,
-+};
-+
-+static int eld_limit_rates(struct snd_pcm_hw_params *params,
-+			   struct snd_pcm_hw_rule *rule)
++/**
++ * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
++ * @runtime: pcm runtime structure with ->rate filled in
++ * @cs: channel status buffer, at least four bytes
++ * @len: length of channel status buffer
++ *
++ * Create the consumer format channel status data in @cs of maximum size
++ * @len corresponding to the parameters of the PCM runtime @runtime.
++ *
++ * Drivers may wish to tweak the contents of the buffer after creation.
++ *
++ * Returns: length of buffer, or negative error code if something failed.
++ */
++int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
++	size_t len)
 +{
-+	struct snd_interval *r = hw_param_interval(params, rule->var);
-+	struct snd_interval *c;
-+	unsigned int rate_mask = 7, i;
-+	const u8 *sad, *eld = rule->private;
++	unsigned int fs;
 +
-+	sad = drm_eld_sad(eld);
-+	if (sad) {
-+		c = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	if (len < 4)
++		return -EINVAL;
 +
-+		for (i = drm_eld_sad_count(eld); i > 0; i--, sad += 3) {
-+			unsigned channels = 1 + (sad[0] & 7);
-+
-+			/*
-+			 * Exclude SADs which do not include the
-+			 * requested number of channels.
-+			 */
-+			if (c->min <= channels)
-+				rate_mask |= sad[1];
-+		}
++	switch (runtime->rate) {
++	case 32000:
++		fs = IEC958_AES3_CON_FS_32000;
++		break;
++	case 44100:
++		fs = IEC958_AES3_CON_FS_44100;
++		break;
++	case 48000:
++		fs = IEC958_AES3_CON_FS_48000;
++		break;
++	case 88200:
++		fs = IEC958_AES3_CON_FS_88200;
++		break;
++	case 96000:
++		fs = IEC958_AES3_CON_FS_96000;
++		break;
++	case 176400:
++		fs = IEC958_AES3_CON_FS_176400;
++		break;
++	case 192000:
++		fs = IEC958_AES3_CON_FS_192000;
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
-+	return snd_interval_list(r, ARRAY_SIZE(eld_rates), eld_rates,
-+				 rate_mask);
++	memset(cs, 0, len);
++
++	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
++	cs[1] = IEC958_AES1_CON_GENERAL;
++	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
++	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | fs;
++
++	return len;
 +}
-+
-+static int eld_limit_channels(struct snd_pcm_hw_params *params,
-+			      struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *var = hw_param_interval(params, rule->var);
-+	struct snd_interval t = { .min = 1, .max = 2, .integer = 1, };
-+	unsigned int i;
-+	const u8 *sad, *eld = rule->private;
-+
-+	sad = drm_eld_sad(eld);
-+	if (sad) {
-+		for (i = drm_eld_sad_count(eld); i > 0; i--, sad += 3) {
-+			switch (sad[0] & 0x78) {
-+			case 0x08:
-+				t.max = max(t.max, (sad[0] & 7) + 1u);
-+				break;
-+			}
-+		}
-+	}
-+
-+	return snd_interval_refine(var, &t);
-+}
-+
-+int snd_pcm_hw_constraint_eld(struct snd_pcm_runtime *runtime, void *eld)
-+{
-+	int ret;
-+
-+	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				  eld_limit_rates, eld,
-+				  SNDRV_PCM_HW_PARAM_RATE,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  eld_limit_channels, eld,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_pcm_hw_constraint_eld);
++EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
 -- 
 1.8.3.1
