@@ -1,16 +1,16 @@
 From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH RFC 05/11] drm: bridge/dw_hdmi: introduce
- interface to setting sample rate
-Date: Mon, 30 Mar 2015 20:40:21 +0100
-Message-ID: <E1YcfXp-0002ux-PC@rmk-PC.arm.linux.org.uk>
+Subject: [PATCH RFC 06/11] drm: bridge/dw_hdmi: introduce
+ interfaces to enable and disable audio
+Date: Mon, 30 Mar 2015 20:40:26 +0100
+Message-ID: <E1YcfXu-0002v9-SB@rmk-PC.arm.linux.org.uk>
 References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 5C939260612
- for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 21:40:30 +0200 (CEST)
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id A2F8426062B
+ for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 21:40:37 +0200 (CEST)
 In-Reply-To: <20150330193911.GM24899@n2100.arm.linux.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,56 +26,116 @@ To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kern
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Introduce dw_hdmi_set_sample_rate(), which allows us to configure the
-audio sample rate, setting the CTS/N values appropriately.
+iMX6 devices from an errata (ERR005174) where the audio FIFO can be
+emptied while it is partially full, resulting in misalignment of the
+audio samples.
+
+To prevent this, the errata workaround recommends writing N as zero
+until the audio FIFO has been loaded by DMA.  Writing N=0 prevents the
+HDMI bridge from reading from the audio FIFO, effectively disabling
+audio.
+
+This means we need to provide the audio driver with a pair of functions
+to enable/disable audio.  These are dw_hdmi_audio_enable() and
+dw_hdmi_audio_disable().
+
+A spinlock is introduced to ensure that setting the CTS/N values can't
+race, ensuring that the audio driver calling the enable/disable
+functions (which are called in an atomic context) can't race with a
+modeset.
 
 Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 ---
- drivers/gpu/drm/bridge/dw_hdmi.c | 10 ++++++++++
- include/drm/bridge/dw_hdmi.h     |  5 +++++
- 2 files changed, 15 insertions(+)
+ drivers/gpu/drm/bridge/dw_hdmi.c | 34 +++++++++++++++++++++++++++++++++-
+ include/drm/bridge/dw_hdmi.h     |  2 ++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
-index 06b5583140a8..245d17e58dec 100644
+index 245d17e58dec..67f07d15c12b 100644
 --- a/drivers/gpu/drm/bridge/dw_hdmi.c
 +++ b/drivers/gpu/drm/bridge/dw_hdmi.c
-@@ -366,6 +366,16 @@ static void hdmi_clk_regenerator_update_pixel_clock(struct dw_hdmi *hdmi)
- 	mutex_unlock(&hdmi->audio_mutex);
+@@ -18,6 +18,7 @@
+ #include <linux/hdmi.h>
+ #include <linux/mutex.h>
+ #include <linux/of_device.h>
++#include <linux/spinlock.h>
+ 
+ #include <drm/drm_of.h>
+ #include <drm/drmP.h>
+@@ -124,8 +125,12 @@ struct dw_hdmi {
+ 	struct i2c_adapter *ddc;
+ 	void __iomem *regs;
+ 
++	spinlock_t audio_lock;
+ 	struct mutex audio_mutex;
+ 	unsigned int sample_rate;
++	unsigned int audio_cts;
++	unsigned int audio_n;
++	bool audio_enable;
+ 	int ratio;
+ 
+ 	void (*write)(struct dw_hdmi *hdmi, u8 val, int offset);
+@@ -347,7 +352,11 @@ static void hdmi_set_clk_regenerator(struct dw_hdmi *hdmi,
+ 	dev_dbg(hdmi->dev, "%s: samplerate=%ukHz ratio=%d pixelclk=%luMHz N=%d cts=%d\n",
+ 		__func__, sample_rate, ratio, pixel_clk, n, cts);
+ 
+-	hdmi_set_cts_n(hdmi, cts, n);
++	spin_lock_irq(&hdmi->audio_lock);
++	hdmi->audio_n = n;
++	hdmi->audio_cts = cts;
++	hdmi_set_cts_n(hdmi, cts, hdmi->audio_enable ? n : 0);
++	spin_unlock_irq(&hdmi->audio_lock);
  }
  
-+void dw_hdmi_set_sample_rate(struct dw_hdmi *hdmi, unsigned int rate)
+ static void hdmi_init_clk_regenerator(struct dw_hdmi *hdmi)
+@@ -376,6 +385,28 @@ void dw_hdmi_set_sample_rate(struct dw_hdmi *hdmi, unsigned int rate)
+ }
+ EXPORT_SYMBOL_GPL(dw_hdmi_set_sample_rate);
+ 
++void dw_hdmi_audio_enable(struct dw_hdmi *hdmi)
 +{
-+	mutex_lock(&hdmi->audio_mutex);
-+	hdmi->sample_rate = rate;
-+	hdmi_set_clk_regenerator(hdmi, hdmi->hdmi_data.video_mode.mpixelclock,
-+				 hdmi->sample_rate, hdmi->ratio);
-+	mutex_unlock(&hdmi->audio_mutex);
++	unsigned long flags;
++
++	spin_lock_irqsave(&hdmi->audio_lock, flags);
++	hdmi->audio_enable = true;
++	hdmi_set_cts_n(hdmi, hdmi->audio_cts, hdmi->audio_n);
++	spin_unlock_irqrestore(&hdmi->audio_lock, flags);
 +}
-+EXPORT_SYMBOL_GPL(dw_hdmi_set_sample_rate);
++EXPORT_SYMBOL_GPL(dw_hdmi_audio_enable);
++
++void dw_hdmi_audio_disable(struct dw_hdmi *hdmi)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&hdmi->audio_lock, flags);
++	hdmi->audio_enable = false;
++	hdmi_set_cts_n(hdmi, hdmi->audio_cts, 0);
++	spin_unlock_irqrestore(&hdmi->audio_lock, flags);
++}
++EXPORT_SYMBOL_GPL(dw_hdmi_audio_disable);
 +
  /*
   * this submodule is responsible for the video data synchronization.
   * for example, for RGB 4:4:4 input, the data map is defined as
+@@ -1579,6 +1610,7 @@ int dw_hdmi_bind(struct device *dev, struct device *master,
+ 	hdmi->encoder = encoder;
+ 
+ 	mutex_init(&hdmi->audio_mutex);
++	spin_lock_init(&hdmi->audio_lock);
+ 
+ 	of_property_read_u32(np, "reg-io-width", &val);
+ 
 diff --git a/include/drm/bridge/dw_hdmi.h b/include/drm/bridge/dw_hdmi.h
-index 5a4f49005169..424b51f6a215 100644
+index 424b51f6a215..ab5d36e83ea2 100644
 --- a/include/drm/bridge/dw_hdmi.h
 +++ b/include/drm/bridge/dw_hdmi.h
-@@ -12,6 +12,8 @@
- 
- #include <drm/drmP.h>
- 
-+struct dw_hdmi;
-+
- enum {
- 	DW_HDMI_RES_8,
- 	DW_HDMI_RES_10,
-@@ -58,4 +60,7 @@ int dw_hdmi_bind(struct device *dev, struct device *master,
- 		 void *data, struct drm_encoder *encoder,
- 		 struct resource *iores, int irq,
+@@ -62,5 +62,7 @@ int dw_hdmi_bind(struct device *dev, struct device *master,
  		 const struct dw_hdmi_plat_data *plat_data);
-+
-+void dw_hdmi_set_sample_rate(struct dw_hdmi *hdmi, unsigned int rate);
-+
+ 
+ void dw_hdmi_set_sample_rate(struct dw_hdmi *hdmi, unsigned int rate);
++void dw_hdmi_audio_enable(struct dw_hdmi *hdmi);
++void dw_hdmi_audio_disable(struct dw_hdmi *hdmi);
+ 
  #endif /* __IMX_HDMI_H__ */
 -- 
 1.8.3.1
