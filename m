@@ -1,17 +1,20 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH] ASoC: atmel-pcm-pdc: merge atmel-pcm back
-	in
-Date: Tue, 31 Mar 2015 10:22:25 +0200
-Message-ID: <551A5941.2010200@atmel.com>
-References: <1427738094-6348-1-git-send-email-alexandre.belloni@free-electrons.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: bug
+Date: Tue, 31 Mar 2015 10:24:06 +0200
+Message-ID: <alpine.DEB.2.02.1503311008160.13892@lnxricardw1.se.axis.com>
+References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
+ <5518F8F3.10304@ladisch.de>
+ <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
+ <55192FBC.1070307@ladisch.de>
+ <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eusmtp01.atmel.com (eusmtp01.atmel.com [212.144.249.243])
- by alsa0.perex.cz (Postfix) with ESMTP id D33D52612AC
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 10:22:50 +0200 (CEST)
-In-Reply-To: <1427738094-6348-1-git-send-email-alexandre.belloni@free-electrons.com>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEBB22612AC
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 10:24:08 +0200 (CEST)
+In-Reply-To: <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,303 +24,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Mark Brown <broonie@kernel.org>, Bo Shen <voice.shen@atmel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: "Nikita N." <nikitan@operamail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Le 30/03/2015 19:54, Alexandre Belloni a =E9crit :
-> atmel-pcm.c was split into two files to create a generic framework for bo=
-th PDC
-> and DMA.
+
+On Mon, 30 Mar 2015, Nikita N. wrote:
+
+> We are the devs involved in dCore porting, and that is one of our users
+> report:
+> http://forum.tinycorelinux.net/index.php/topic,18225
 > =
 
-> atmel-pcm-dma.c is using the generic dmaengine framework since 95e0e07e71=
-0e
-> (ASoC: atmel-pcm: use generic dmaengine framework).
-> =
+> We verified that in few of our legacy laptops.
+> It didn't reproduce for every laptop, but indeed in a couple of them,
+> the temperature of the speakers reached extremes levels in few seconds,
+> only unplugging the AC/DC cable saved them.
+> This is a serious problem in our opinion, and we would hate to see our
+> dCore reputation spoiled.
+> We hate to admit, but it is *NOT* our bug, and would hate to see this
+> bug reverse engineered into a virus/malware (on Linux, or other OS) and
+> see ourselves blamed for it.
+> So we would like to keep the incident quiet, and we are going to remove
+> that thread from our forum.
+> On the other side, we would expect any action from ALSA project in
+> removing that tool and/or exposing the real individual/s guilty of
+> writing that tool.
 
-> Merge atmel-pcm.c in atmel-pcm-pdc.c as this is now the only user.
-> =
+First of all, I can't say I'm representing the ALSA project or anyone else =
 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+in this matter, so the following is just my personal opinion. Furthermore =
 
-It seems okay:
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+I have no real experience with the mixer application under discussion =
 
+(alsamixergui), but on the face of it it just looks like any mixer =
 
-> ---
->  sound/soc/atmel/Makefile        |   2 -
->  sound/soc/atmel/atmel-pcm-pdc.c |  79 ++++++++++++++++++++++++++
->  sound/soc/atmel/atmel-pcm.c     | 121 ----------------------------------=
-------
->  sound/soc/atmel/atmel-pcm.h     |   5 --
->  4 files changed, 79 insertions(+), 128 deletions(-)
->  delete mode 100644 sound/soc/atmel/atmel-pcm.c
-> =
+application.
 
-> diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
-> index 466a821da98c..b327e5cc8de3 100644
-> --- a/sound/soc/atmel/Makefile
-> +++ b/sound/soc/atmel/Makefile
-> @@ -1,10 +1,8 @@
->  # AT91 Platform Support
-> -snd-soc-atmel-pcm-objs :=3D atmel-pcm.o
->  snd-soc-atmel-pcm-pdc-objs :=3D atmel-pcm-pdc.o
->  snd-soc-atmel-pcm-dma-objs :=3D atmel-pcm-dma.o
->  snd-soc-atmel_ssc_dai-objs :=3D atmel_ssc_dai.o
->  =
+>From the thread linked above, it seems that if someone maxes out all =
 
-> -obj-$(CONFIG_SND_ATMEL_SOC) +=3D snd-soc-atmel-pcm.o
->  obj-$(CONFIG_SND_ATMEL_SOC_PDC) +=3D snd-soc-atmel-pcm-pdc.o
->  obj-$(CONFIG_SND_ATMEL_SOC_DMA) +=3D snd-soc-atmel-pcm-dma.o
->  obj-$(CONFIG_SND_ATMEL_SOC_SSC) +=3D snd-soc-atmel_ssc_dai.o
-> diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-=
-pdc.c
-> index a366b3503c28..da861b44413f 100644
-> --- a/sound/soc/atmel/atmel-pcm-pdc.c
-> +++ b/sound/soc/atmel/atmel-pcm-pdc.c
-> @@ -47,6 +47,85 @@
->  #include "atmel-pcm.h"
->  =
+controls in the mixer, this results in a high-pitched whine in the =
 
->  =
+speakers, which on certain laptops seem to cause the destruction of =
 
-> +static int atmel_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
-> +	int stream)
-> +{
-> +	struct snd_pcm_substream *substream =3D pcm->streams[stream].substream;
-> +	struct snd_dma_buffer *buf =3D &substream->dma_buffer;
-> +	size_t size =3D ATMEL_SSC_DMABUF_SIZE;
-> +
-> +	buf->dev.type =3D SNDRV_DMA_TYPE_DEV;
-> +	buf->dev.dev =3D pcm->card->dev;
-> +	buf->private_data =3D NULL;
-> +	buf->area =3D dma_alloc_coherent(pcm->card->dev, size,
-> +			&buf->addr, GFP_KERNEL);
-> +	pr_debug("atmel-pcm: alloc dma buffer: area=3D%p, addr=3D%p, size=3D%zu=
-\n",
-> +			(void *)buf->area, (void *)(long)buf->addr, size);
-> +
-> +	if (!buf->area)
-> +		return -ENOMEM;
-> +
-> +	buf->bytes =3D size;
-> +	return 0;
-> +}
-> +
-> +static int atmel_pcm_mmap(struct snd_pcm_substream *substream,
-> +	struct vm_area_struct *vma)
-> +{
-> +	return remap_pfn_range(vma, vma->vm_start,
-> +		       substream->dma_buffer.addr >> PAGE_SHIFT,
-> +		       vma->vm_end - vma->vm_start, vma->vm_page_prot);
-> +}
-> +
-> +static int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_card *card =3D rtd->card->snd_card;
-> +	struct snd_pcm *pcm =3D rtd->pcm;
-> +	int ret;
-> +
-> +	ret =3D dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
-> +		pr_debug("atmel-pcm: allocating PCM playback DMA buffer\n");
-> +		ret =3D atmel_pcm_preallocate_dma_buffer(pcm,
-> +			SNDRV_PCM_STREAM_PLAYBACK);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
-> +		pr_debug("atmel-pcm: allocating PCM capture DMA buffer\n");
-> +		ret =3D atmel_pcm_preallocate_dma_buffer(pcm,
-> +			SNDRV_PCM_STREAM_CAPTURE);
-> +		if (ret)
-> +			goto out;
-> +	}
-> + out:
-> +	return ret;
-> +}
-> +
-> +static void atmel_pcm_free(struct snd_pcm *pcm)
-> +{
-> +	struct snd_pcm_substream *substream;
-> +	struct snd_dma_buffer *buf;
-> +	int stream;
-> +
-> +	for (stream =3D 0; stream < 2; stream++) {
-> +		substream =3D pcm->streams[stream].substream;
-> +		if (!substream)
-> +			continue;
-> +
-> +		buf =3D &substream->dma_buffer;
-> +		if (!buf->area)
-> +			continue;
-> +		dma_free_coherent(pcm->card->dev, buf->bytes,
-> +				  buf->area, buf->addr);
-> +		buf->area =3D NULL;
-> +	}
-> +}
-> +
->  /*----------------------------------------------------------------------=
-----*\
->   * Hardware definition
->  \*----------------------------------------------------------------------=
-----*/
-> diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
-> deleted file mode 100644
-> index 8ae3fa5ac60a..000000000000
-> --- a/sound/soc/atmel/atmel-pcm.c
-> +++ /dev/null
-> @@ -1,121 +0,0 @@
-> -/*
-> - * atmel-pcm.c  --  ALSA PCM interface for the Atmel atmel SoC.
-> - *
-> - *  Copyright (C) 2005 SAN People
-> - *  Copyright (C) 2008 Atmel
-> - *
-> - * Authors: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-> - *
-> - * Based on at91-pcm. by:
-> - * Frank Mandarino <fmandarino@endrelia.com>
-> - * Copyright 2006 Endrelia Technologies Inc.
-> - *
-> - * Based on pxa2xx-pcm.c by:
-> - *
-> - * Author:	Nicolas Pitre
-> - * Created:	Nov 30, 2004
-> - * Copyright:	(C) 2004 MontaVista Software, Inc.
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License for more details.
-> - *
-> - * You should have received a copy of the GNU General Public License
-> - * along with this program; if not, write to the Free Software
-> - * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 =
- USA
-> - */
-> -
-> -#include <linux/module.h>
-> -#include <linux/dma-mapping.h>
-> -#include <sound/pcm.h>
-> -#include <sound/soc.h>
-> -#include "atmel-pcm.h"
-> -
-> -static int atmel_pcm_preallocate_dma_buffer(struct snd_pcm *pcm,
-> -	int stream)
-> -{
-> -	struct snd_pcm_substream *substream =3D pcm->streams[stream].substream;
-> -	struct snd_dma_buffer *buf =3D &substream->dma_buffer;
-> -	size_t size =3D ATMEL_SSC_DMABUF_SIZE;
-> -
-> -	buf->dev.type =3D SNDRV_DMA_TYPE_DEV;
-> -	buf->dev.dev =3D pcm->card->dev;
-> -	buf->private_data =3D NULL;
-> -	buf->area =3D dma_alloc_coherent(pcm->card->dev, size,
-> -			&buf->addr, GFP_KERNEL);
-> -	pr_debug("atmel-pcm: alloc dma buffer: area=3D%p, addr=3D%p, size=3D%zu=
-\n",
-> -			(void *)buf->area, (void *)(long)buf->addr, size);
-> -
-> -	if (!buf->area)
-> -		return -ENOMEM;
-> -
-> -	buf->bytes =3D size;
-> -	return 0;
-> -}
-> -
-> -int atmel_pcm_mmap(struct snd_pcm_substream *substream,
-> -	struct vm_area_struct *vma)
-> -{
-> -	return remap_pfn_range(vma, vma->vm_start,
-> -		       substream->dma_buffer.addr >> PAGE_SHIFT,
-> -		       vma->vm_end - vma->vm_start, vma->vm_page_prot);
-> -}
-> -EXPORT_SYMBOL_GPL(atmel_pcm_mmap);
-> -
-> -int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd)
-> -{
-> -	struct snd_card *card =3D rtd->card->snd_card;
-> -	struct snd_pcm *pcm =3D rtd->pcm;
-> -	int ret;
-> -
-> -	ret =3D dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
-> -	if (ret)
-> -		return ret;
-> -
-> -	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
-> -		pr_debug("atmel-pcm: allocating PCM playback DMA buffer\n");
-> -		ret =3D atmel_pcm_preallocate_dma_buffer(pcm,
-> -			SNDRV_PCM_STREAM_PLAYBACK);
-> -		if (ret)
-> -			goto out;
-> -	}
-> -
-> -	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
-> -		pr_debug("atmel-pcm: allocating PCM capture DMA buffer\n");
-> -		ret =3D atmel_pcm_preallocate_dma_buffer(pcm,
-> -			SNDRV_PCM_STREAM_CAPTURE);
-> -		if (ret)
-> -			goto out;
-> -	}
-> - out:
-> -	return ret;
-> -}
-> -EXPORT_SYMBOL_GPL(atmel_pcm_new);
-> -
-> -void atmel_pcm_free(struct snd_pcm *pcm)
-> -{
-> -	struct snd_pcm_substream *substream;
-> -	struct snd_dma_buffer *buf;
-> -	int stream;
-> -
-> -	for (stream =3D 0; stream < 2; stream++) {
-> -		substream =3D pcm->streams[stream].substream;
-> -		if (!substream)
-> -			continue;
-> -
-> -		buf =3D &substream->dma_buffer;
-> -		if (!buf->area)
-> -			continue;
-> -		dma_free_coherent(pcm->card->dev, buf->bytes,
-> -				  buf->area, buf->addr);
-> -		buf->area =3D NULL;
-> -	}
-> -}
-> -EXPORT_SYMBOL_GPL(atmel_pcm_free);
-> -
-> diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
-> index 12ae814eff21..6eaf081cad50 100644
-> --- a/sound/soc/atmel/atmel-pcm.h
-> +++ b/sound/soc/atmel/atmel-pcm.h
-> @@ -83,11 +83,6 @@ struct atmel_pcm_dma_params {
->  #define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
->  #define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (=
-reg))
->  =
+something in the machine (likely the speakers themselves). It is further =
 
-> -int atmel_pcm_new(struct snd_soc_pcm_runtime *rtd);
-> -void atmel_pcm_free(struct snd_pcm *pcm);
-> -int atmel_pcm_mmap(struct snd_pcm_substream *substream,
-> -		struct vm_area_struct *vma);
-> -
->  #if defined(CONFIG_SND_ATMEL_SOC_PDC) || \
->  	defined(CONFIG_SND_ATMEL_SOC_PDC_MODULE)
->  int atmel_pcm_pdc_platform_register(struct device *dev);
-> =
+speculated in the thread that what might be happening is acoustic feedback =
 
+from the speakers to the microphone, which would make sense given the =
 
+results, but would seem strange from a system design point of view.
 
+First of all, it would seem that this wouldn't be dependent on a =
+
+particular mixer application such as alsamixergui, but should be able to =
+
+happen with any mixer application, given the appropriate settings.
+
+Secondly, if you believe that alsamixergui specifically is missbehaving, =
+
+why don't you just take it out of your distribution (dCore)?
+
+Thirdly, and perhaps most importantly, this seems to be a hardware =
+
+problem. If the drive capability of the laptops's output stage is too much =
+
+for the speakers, then there is a serious design flaw in the hardware. =
+
+Given the proliferation of cheap PC hardware this is not surprising, but =
+
+it is hardly a software problem.
+
+And finally, as Clemens said, alsamixergui is not created by the ALSA =
+
+project, so this mailing list is the wrong place to look if none other =
+
+than for that particular reason.
+
+/Ricard
 -- =
 
-Nicolas Ferre
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
