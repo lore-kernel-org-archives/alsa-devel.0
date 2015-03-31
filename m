@@ -1,24 +1,18 @@
-From: "Nikita N." <nikitan@operamail.com>
-Subject: Re: bug
-Date: Tue, 31 Mar 2015 01:56:01 -0700
-Message-ID: <1427792161.2150884.247436393.3D8D2571@webmail.messagingengine.com>
-References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
- <5518F8F3.10304@ladisch.de>
- <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
- <55192FBC.1070307@ladisch.de>
- <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
- <alpine.DEB.2.02.1503311008160.13892@lnxricardw1.se.axis.com>
+From: Yang Kuankuan <ykk@rock-chips.com>
+Subject: Re: [PATCH RFC 02/11] drm: bridge/dw_hdmi: use
+	drm_hdmi_avi_infoframe_from_display_mode()
+Date: Tue, 31 Mar 2015 05:02:20 -0400
+Message-ID: <551A629C.5010306@rock-chips.com>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+ <E1YcfXa-0002uU-E3@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 00996260621
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 10:56:02 +0200 (CEST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id 8CCE9206B3
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 04:55:58 -0400 (EDT)
-In-Reply-To: <alpine.DEB.2.02.1503311008160.13892@lnxricardw1.se.axis.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97013260621
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 11:01:38 +0200 (CEST)
+In-Reply-To: <E1YcfXa-0002uU-E3@rmk-PC.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,149 +22,228 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-> First of all, I can't say I'm representing the ALSA project or anyone els=
-e =
+Hi Russell,
 
-> in this matter, so the following is just my personal opinion.
-As we already wrote, we are not blaming you or ALSA.
+On 03/30/2015 03:40 PM, Russell King wrote:
+> Use drm_hdmi_avi_infoframe_from_display_mode() to compose the AVI
+> frame.
 
-> particular mixer application such as alsamixergui, but should be able to =
+Very interesting, I am also preparing the 
+drm_hdmi_avi_infoframe_from_display_mode
+patches to upstream, seems it is unnecessary now :)
 
-> happen with any mixer application, given the appropriate settings.
-That is indeed what we are afraid, if anybody will have the brilliant
-idea to reverse engineer that tool to a more damaging level in a
-virus/malware , and make its effect unstoppable. =
+Besides, as you are going an dw_hdmi cleanups, I want to point another 
+bugs that relate
+to the HDMI CTS test. There are somethings wrong with General Control 
+Pack, as for now
+the encoder color depth is 8-bit packing mode, so the color depth only 
+support 24 bits per
+pixel video, In this case the CD filed in GCP should set to "Color Depth 
+Not indicated".
+In the end we should keep the *csc_color_depth(HDMI_CSC_SCALE)* &
+*color_depth(HDMI_VP_PR_CD)* to zero, code should modify like this GCP 
+would test pass:
 
+diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c 
+b/drivers/gpu/drm/bridge/dw_hdmi.c
+index bf5be679..c5d9b16 100644
+--- a/drivers/gpu/drm/bridge/dw_hdmi.c
++++ b/drivers/gpu/drm/bridge/dw_hdmi.c
+@@ -695,7 +695,7 @@ static void hdmi_video_packetize(struct dw_hdmi *hdmi)
+                 if (!hdmi_data->enc_color_depth) {
+                         output_select = 
+HDMI_VP_CONF_OUTPUT_SELECTOR_BYPASS;
+                 } else if (hdmi_data->enc_color_depth == 8) {
+-                       color_depth = 4;
++                       color_depth = 0;
+                         output_select = 
+HDMI_VP_CONF_OUTPUT_SELECTOR_BYPASS;
+                 } else if (hdmi_data->enc_color_depth == 10) {
+                         color_depth = 5;
 
-> Secondly, if you believe that alsamixergui specifically is missbehaving, =
-
-> why don't you just take it out of your distribution (dCore)?
-as we wrote, we are going to do this.
-
-> Given the proliferation of cheap PC hardware this is not surprising
-as you say, given the proliferation of cheap PC hardware, a
-proliferation of such virus/malware could upset not only our users.
-
-> it is hardly a software problem.
-I personally don't agree with that.
-As we wrote, not everybody is omniscient, I personally was not aware of
-this issue, before was pointed out.
-Without warnings, even a Teddy Bear can be dangerous.
-
-> alsamixergui is not created by the ALSA =
-
-> project, so this mailing list is the wrong place to look if none other =
-
-> than for that particular reason.
-Sure, we would be very grateful if you could point that out, so we can
-contact the individual who programmed this tool
-Unless it's not a secret or there is smtng to hide.
- =
-
--- =
-
-  Nikita N.
-  nikitan@operamail.com
-
-
-On Tue, Mar 31, 2015, at 01:24 AM, Ricard Wanderlof wrote:
-> =
-
-> On Mon, 30 Mar 2015, Nikita N. wrote:
-> =
-
-> > We are the devs involved in dCore porting, and that is one of our users
-> > report:
-> > http://forum.tinycorelinux.net/index.php/topic,18225
-> > =
-
-> > We verified that in few of our legacy laptops.
-> > It didn't reproduce for every laptop, but indeed in a couple of them,
-> > the temperature of the speakers reached extremes levels in few seconds,
-> > only unplugging the AC/DC cable saved them.
-> > This is a serious problem in our opinion, and we would hate to see our
-> > dCore reputation spoiled.
-> > We hate to admit, but it is *NOT* our bug, and would hate to see this
-> > bug reverse engineered into a virus/malware (on Linux, or other OS) and
-> > see ourselves blamed for it.
-> > So we would like to keep the incident quiet, and we are going to remove
-> > that thread from our forum.
-> > On the other side, we would expect any action from ALSA project in
-> > removing that tool and/or exposing the real individual/s guilty of
-> > writing that tool.
-> =
-
-> First of all, I can't say I'm representing the ALSA project or anyone
-> else =
-
-> in this matter, so the following is just my personal opinion. Furthermore =
-
-> I have no real experience with the mixer application under discussion =
-
-> (alsamixergui), but on the face of it it just looks like any mixer =
-
-> application.
-> =
-
-> From the thread linked above, it seems that if someone maxes out all =
-
-> controls in the mixer, this results in a high-pitched whine in the =
-
-> speakers, which on certain laptops seem to cause the destruction of =
-
-> something in the machine (likely the speakers themselves). It is further =
-
-> speculated in the thread that what might be happening is acoustic
-> feedback =
-
-> from the speakers to the microphone, which would make sense given the =
-
-> results, but would seem strange from a system design point of view.
-> =
-
-> First of all, it would seem that this wouldn't be dependent on a =
-
-> particular mixer application such as alsamixergui, but should be able to =
-
-> happen with any mixer application, given the appropriate settings.
-> =
-
-> Secondly, if you believe that alsamixergui specifically is missbehaving, =
-
-> why don't you just take it out of your distribution (dCore)?
-> =
-
-> Thirdly, and perhaps most importantly, this seems to be a hardware =
-
-> problem. If the drive capability of the laptops's output stage is too
-> much =
-
-> for the speakers, then there is a serious design flaw in the hardware. =
-
-> Given the proliferation of cheap PC hardware this is not surprising, but =
-
-> it is hardly a software problem.
-> =
-
-> And finally, as Clemens said, alsamixergui is not created by the ALSA =
-
-> project, so this mailing list is the wrong place to look if none other =
-
-> than for that particular reason.
-> =
-
-> /Ricard
-> -- =
-
-> Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden            www.axis.com
-> Phone +46 46 272 2016                           Fax +46 46 13 61 30
-
--- =
-
-http://www.fastmail.com - Or how I learned to stop worrying and
-                          love email again
+Best regards.
+Yakir Yang
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> ---
+>   drivers/gpu/drm/bridge/dw_hdmi.c | 126 +++++++++++++++++++++------------------
+>   1 file changed, 67 insertions(+), 59 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
+> index 49df6c8c4ea8..44c63883db19 100644
+> --- a/drivers/gpu/drm/bridge/dw_hdmi.c
+> +++ b/drivers/gpu/drm/bridge/dw_hdmi.c
+> @@ -919,74 +919,79 @@ static void hdmi_tx_hdcp_config(struct dw_hdmi *hdmi)
+>   		  HDMI_A_HDCPCFG1_ENCRYPTIONDISABLE_MASK, HDMI_A_HDCPCFG1);
+>   }
+>   
+> -static void hdmi_config_AVI(struct dw_hdmi *hdmi)
+> +static void hdmi_config_AVI(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
+>   {
+> -	u8 val, pix_fmt, under_scan;
+> -	u8 act_ratio, coded_ratio, colorimetry, ext_colorimetry;
+> -	bool aspect_16_9;
+> +	struct hdmi_avi_infoframe frame;
+> +	u8 val;
+>   
+> -	aspect_16_9 = false; /* FIXME */
+> +	/* Initialise info frame from DRM mode */
+> +	drm_hdmi_avi_infoframe_from_display_mode(&frame, mode);
+>   
+> -	/* AVI Data Byte 1 */
+>   	if (hdmi->hdmi_data.enc_out_format == YCBCR444)
+> -		pix_fmt = HDMI_FC_AVICONF0_PIX_FMT_YCBCR444;
+> +		frame.colorspace = HDMI_COLORSPACE_YUV444;
+>   	else if (hdmi->hdmi_data.enc_out_format == YCBCR422_8BITS)
+> -		pix_fmt = HDMI_FC_AVICONF0_PIX_FMT_YCBCR422;
+> +		frame.colorspace = HDMI_COLORSPACE_YUV422;
+>   	else
+> -		pix_fmt = HDMI_FC_AVICONF0_PIX_FMT_RGB;
+> -
+> -		under_scan =  HDMI_FC_AVICONF0_SCAN_INFO_NODATA;
+> -
+> -	/*
+> -	 * Active format identification data is present in the AVI InfoFrame.
+> -	 * Under scan info, no bar data
+> -	 */
+> -	val = pix_fmt | under_scan |
+> -		HDMI_FC_AVICONF0_ACTIVE_FMT_INFO_PRESENT |
+> -		HDMI_FC_AVICONF0_BAR_DATA_NO_DATA;
+> -
+> -	hdmi_writeb(hdmi, val, HDMI_FC_AVICONF0);
+> -
+> -	/* AVI Data Byte 2 -Set the Aspect Ratio */
+> -	if (aspect_16_9) {
+> -		act_ratio = HDMI_FC_AVICONF1_ACTIVE_ASPECT_RATIO_16_9;
+> -		coded_ratio = HDMI_FC_AVICONF1_CODED_ASPECT_RATIO_16_9;
+> -	} else {
+> -		act_ratio = HDMI_FC_AVICONF1_ACTIVE_ASPECT_RATIO_4_3;
+> -		coded_ratio = HDMI_FC_AVICONF1_CODED_ASPECT_RATIO_4_3;
+> -	}
+> +		frame.colorspace = HDMI_COLORSPACE_RGB;
+>   
+>   	/* Set up colorimetry */
+>   	if (hdmi->hdmi_data.enc_out_format == XVYCC444) {
+> -		colorimetry = HDMI_FC_AVICONF1_COLORIMETRY_EXTENDED_INFO;
+> +		frame.colorimetry = HDMI_COLORIMETRY_EXTENDED;
+>   		if (hdmi->hdmi_data.colorimetry == HDMI_COLORIMETRY_ITU_601)
+> -			ext_colorimetry =
+> -				HDMI_FC_AVICONF2_EXT_COLORIMETRY_XVYCC601;
+> +			frame.extended_colorimetry =
+> +				HDMI_EXTENDED_COLORIMETRY_XV_YCC_601;
+>   		else /*hdmi->hdmi_data.colorimetry == HDMI_COLORIMETRY_ITU_709*/
+> -			ext_colorimetry =
+> -				HDMI_FC_AVICONF2_EXT_COLORIMETRY_XVYCC709;
+> +			frame.extended_colorimetry =
+> +				HDMI_EXTENDED_COLORIMETRY_XV_YCC_709;
+>   	} else if (hdmi->hdmi_data.enc_out_format != RGB) {
+>   		if (hdmi->hdmi_data.colorimetry == HDMI_COLORIMETRY_ITU_601)
+> -			colorimetry = HDMI_FC_AVICONF1_COLORIMETRY_SMPTE;
+> +			frame.colorimetry = HDMI_COLORIMETRY_ITU_601;
+>   		else /*hdmi->hdmi_data.colorimetry == HDMI_COLORIMETRY_ITU_709*/
+> -			colorimetry = HDMI_FC_AVICONF1_COLORIMETRY_ITUR;
+> -		ext_colorimetry = HDMI_FC_AVICONF2_EXT_COLORIMETRY_XVYCC601;
+> +			frame.colorimetry = HDMI_COLORIMETRY_ITU_709;
+> +		frame.extended_colorimetry = HDMI_EXTENDED_COLORIMETRY_XV_YCC_601;
+>   	} else { /* Carries no data */
+> -		colorimetry = HDMI_FC_AVICONF1_COLORIMETRY_NO_DATA;
+> -		ext_colorimetry = HDMI_FC_AVICONF2_EXT_COLORIMETRY_XVYCC601;
+> +		frame.colorimetry = HDMI_COLORIMETRY_NONE;
+> +		frame.extended_colorimetry = HDMI_EXTENDED_COLORIMETRY_XV_YCC_601;
+>   	}
+>   
+> -	val = colorimetry | coded_ratio | act_ratio;
+> +	frame.scan_mode = HDMI_SCAN_MODE_NONE;
+> +
+> +	/*
+> +	 * The Designware IP uses a different byte format from standard
+> +	 * AVI info frames, though generally the bits are in the correct
+> +	 * bytes.
+> +	 */
+> +
+> +	/*
+> +	 * AVI data byte 1 differences: Colorspace in bits 4,5 rather than 5,6,
+> +	 * active aspect present in bit 6 rather than 4.
+> +	 */
+> +	val = (frame.colorspace & 3) << 4 | (frame.scan_mode & 0x3);
+> +	if (frame.active_aspect & 15)
+> +		val |= HDMI_FC_AVICONF0_ACTIVE_FMT_INFO_PRESENT;
+> +	if (frame.top_bar || frame.bottom_bar)
+> +		val |= HDMI_FC_AVICONF0_BAR_DATA_HORIZ_BAR;
+> +	if (frame.left_bar || frame.right_bar)
+> +		val |= HDMI_FC_AVICONF0_BAR_DATA_VERT_BAR;
+> +	hdmi_writeb(hdmi, val, HDMI_FC_AVICONF0);
+> +
+> +	/* AVI data byte 2 differences: none */
+> +	val = ((frame.colorimetry & 0x3) << 6) |
+> +	      ((frame.picture_aspect & 0x3) << 4) |
+> +	      (frame.active_aspect & 0xf);
+>   	hdmi_writeb(hdmi, val, HDMI_FC_AVICONF1);
+>   
+> -	/* AVI Data Byte 3 */
+> -	val = HDMI_FC_AVICONF2_IT_CONTENT_NO_DATA | ext_colorimetry |
+> -		HDMI_FC_AVICONF2_RGB_QUANT_DEFAULT |
+> -		HDMI_FC_AVICONF2_SCALING_NONE;
+> +	/* AVI data byte 3 differences: none */
+> +	val = ((frame.extended_colorimetry & 0x7) << 4) |
+> +	      ((frame.quantization_range & 0x3) << 2) |
+> +	      (frame.nups & 0x3);
+> +	if (frame.itc)
+> +		val |= HDMI_FC_AVICONF2_IT_CONTENT_VALID;
+>   	hdmi_writeb(hdmi, val, HDMI_FC_AVICONF2);
+>   
+> -	/* AVI Data Byte 4 */
+> -	hdmi_writeb(hdmi, hdmi->vic, HDMI_FC_AVIVID);
+> +	/* AVI data byte 4 differences: none */
+> +	val = frame.video_code & 0x7f;
+> +	hdmi_writeb(hdmi, val, HDMI_FC_AVIVID);
+>   
+>   	/* AVI Data Byte 5- set up input and output pixel repetition */
+>   	val = (((hdmi->hdmi_data.video_mode.mpixelrepetitioninput + 1) <<
+> @@ -997,20 +1002,23 @@ static void hdmi_config_AVI(struct dw_hdmi *hdmi)
+>   		HDMI_FC_PRCONF_OUTPUT_PR_FACTOR_MASK);
+>   	hdmi_writeb(hdmi, val, HDMI_FC_PRCONF);
+>   
+> -	/* IT Content and quantization range = don't care */
+> -	val = HDMI_FC_AVICONF3_IT_CONTENT_TYPE_GRAPHICS |
+> -		HDMI_FC_AVICONF3_QUANT_RANGE_LIMITED;
+> +	/*
+> +	 * AVI data byte 5 differences: content type in 0,1 rather than 4,5,
+> +	 * ycc range in bits 2,3 rather than 6,7
+> +	 */
+> +	val = ((frame.ycc_quantization_range & 0x3) << 2) |
+> +	      (frame.content_type & 0x3);
+>   	hdmi_writeb(hdmi, val, HDMI_FC_AVICONF3);
+>   
+>   	/* AVI Data Bytes 6-13 */
+> -	hdmi_writeb(hdmi, 0, HDMI_FC_AVIETB0);
+> -	hdmi_writeb(hdmi, 0, HDMI_FC_AVIETB1);
+> -	hdmi_writeb(hdmi, 0, HDMI_FC_AVISBB0);
+> -	hdmi_writeb(hdmi, 0, HDMI_FC_AVISBB1);
+> -	hdmi_writeb(hdmi, 0, HDMI_FC_AVIELB0);
+> -	hdmi_writeb(hdmi, 0, HDMI_FC_AVIELB1);
+> -	hdmi_writeb(hdmi, 0, HDMI_FC_AVISRB0);
+> -	hdmi_writeb(hdmi, 0, HDMI_FC_AVISRB1);
+> +	hdmi_writeb(hdmi, frame.top_bar & 0xff, HDMI_FC_AVIETB0);
+> +	hdmi_writeb(hdmi, (frame.top_bar >> 8) & 0xff, HDMI_FC_AVIETB1);
+> +	hdmi_writeb(hdmi, frame.bottom_bar & 0xff, HDMI_FC_AVISBB0);
+> +	hdmi_writeb(hdmi, (frame.bottom_bar >> 8) & 0xff, HDMI_FC_AVISBB1);
+> +	hdmi_writeb(hdmi, frame.left_bar & 0xff, HDMI_FC_AVIELB0);
+> +	hdmi_writeb(hdmi, (frame.left_bar >> 8) & 0xff, HDMI_FC_AVIELB1);
+> +	hdmi_writeb(hdmi, frame.right_bar & 0xff, HDMI_FC_AVISRB0);
+> +	hdmi_writeb(hdmi, (frame.right_bar >> 8) & 0xff, HDMI_FC_AVISRB1);
+>   }
+>   
+>   static void hdmi_av_composer(struct dw_hdmi *hdmi,
+> @@ -1244,7 +1252,7 @@ static int dw_hdmi_setup(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
+>   		hdmi_enable_audio_clk(hdmi);
+>   
+>   		/* HDMI Initialization Step F - Configure AVI InfoFrame */
+> -		hdmi_config_AVI(hdmi);
+> +		hdmi_config_AVI(hdmi, mode);
+>   	}
+>   
+>   	hdmi_video_packetize(hdmi);
