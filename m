@@ -1,23 +1,27 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Speaker burnout
-Date: Tue, 31 Mar 2015 12:43:25 +0200
-Message-ID: <551A7A4D.203@canonical.com>
+From: "Nikita N." <nikitan@operamail.com>
+Subject: Re: bug
+Date: Tue, 31 Mar 2015 03:49:55 -0700
+Message-ID: <1427798995.588863.247475933.12C0B9B0@webmail.messagingengine.com>
 References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
  <5518F8F3.10304@ladisch.de>
  <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
  <55192FBC.1070307@ladisch.de>
  <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
- <551A6A15.1070605@canonical.com>
- <1427796392.581386.247465613.43178C71@webmail.messagingengine.com>
+ <alpine.DEB.2.02.1503311008160.13892@lnxricardw1.se.axis.com>
+ <1427792161.2150884.247436393.3D8D2571@webmail.messagingengine.com>
+ <alpine.DEB.2.02.1503311111460.13892@lnxricardw1.se.axis.com>
+ <D1185AE0-6829-4E51-AD60-EED3D63B677F@resorama.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BB362614F4
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 12:43:26 +0200 (CEST)
-In-Reply-To: <1427796392.581386.247465613.43178C71@webmail.messagingengine.com>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A23C7261609
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 12:49:56 +0200 (CEST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+ by mailout.nyi.internal (Postfix) with ESMTP id F1C8820612
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 06:49:52 -0400 (EDT)
+In-Reply-To: <D1185AE0-6829-4E51-AD60-EED3D63B677F@resorama.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,34 +31,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Nikita N." <nikitan@operamail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: Maarten de Boer <maarten@resorama.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 2015-03-31 12:06, Nikita N. wrote:
->> If you have any concrete examples (alsa-info please!) of speakers that
->> can be burned out, and you know a maximum speaker volume where this
-> As we said, that is not our bug, we are not audio experts, nor any of us
-> is interested in audio matters.
-
-Here's my suggestion how to move forward on this:
-
-  1) Gather consensus that limit the maximum volume on internal speakers 
-is the right way forward. Takashi, Clemens, anyone against that strategy?
-
-  2) From the person with the hardware, we will need alsa-info ( 
-https://wiki.ubuntu.com/Audio/AlsaInfo ), and also the max volume where 
-this does not happen. Is -6 dB good enough? -12 dB? I don't know - this 
-is something someone with the hardware must tell us, it cannot simply be 
-guessed.
-
-  3) I or someone else can write a kernel patch that limits the maximum 
-volume of the speakers to the amount deducted from point 2). Considering 
-that we're actually dealing with hardware breakage, this should be sent 
-to stable as well. Then no userspace application can set the volume 
-higher than our limit.
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+RGVhciBNYWFydGVuIGRlIEJvZXIsCmFzIHlvdSByZWFkIGZyb20gbWFueSB2b2ljZXMgaGVyZSwg
+eW91ciBzb2Z0d2FyZSBpcyB2ZXJpZmllZCBjYW4gZGFtYWdlCnRoZSBzcGVha2VycywgaWYgbm90
+IHVzZWQgc29tZWhvdyBjb3JyZWN0bHkuClRoZSBkZWZpbml0aW9uIG9mIGNvcnJlY3RseSBpcyBz
+dGlsbCB0byB1cyB1bmtub3duLCBub3IgeW91IGFyZSBnaXZpbmcKdXMgYW55IGhvcGUgaW4gdGhh
+dC4KV2Ugd2VyZSBob3BpbmcgaW4gc29tZSBmb3JtIG9mIGFtZW5kIGZyb20geW91cnNlbGYsIGFi
+b3V0IHRoZSBkYW5nZXJvdXMKc29mdHdhcmUgeW91IHByb2R1Y2VkIGFuZCBkaXN0cmlidXRlZCB0
+byBwdWJsaWMuCldlIHdlcmUgaG9waW5nIGluIHNvbWUgZm9ybSBvZiBidWcgZml4IG9yIGFueSBw
+cm9mZXNzaW9uYWwgYXBwcm9hY2ggdG8Kc29sdmluZyB0aGF0IGlzc3VlLgpXZSB3ZXJlIGhvcGlu
+ZyBhdCBsZWFzdCBpbiBhIHNpbXBsZSB3YXJuaW5nIHBvcHBpbmcgdXAgZnJvbSB5b3VyIHRvb2ws
+CndoZW4gdXNlciBzZXRzIGFueSAiaGF6YXJkb3VzIiBsZXZlbHMuCldlIHdlcmUgaG9waW5nIGF0
+IGxlYXN0LWxlYXN0IGluIGEgd2FybmluZyBwb3BwaW5nIHVwIGZyb20geW91ciB0b29sIGF0CnJ1
+bnRpbWUsIHNvbWV0aGluZyBsaWtlICJXYXJuaW5nOiBpbXByb3BlciBzZXR0aW5ncyBmb3IgdGhp
+cyBsZXZlbCwgdGhpcwpsZXZlbCBhbmQgdGhpcyBtaWdodCByZXN1bHQgaW4gZGFtYWdlcyB0byB5
+b3VyIGF1ZGlvIGRldmljZXMiLgpCdXQsIHdlIG9ubHkgc2VlIGEgbmljZSB0dXJuYXJvdW5kICJU
+aGVyZSBpcyBub3QgbXVjaCB0aGF0IEkgY2FuIGFkZCIuCllvdXIgcHJvZ3JhbSBkb2VzIG5vdCBy
+ZXNwZWN0IHRoZSBtaW5pbXVtIHJlcXVpcmVtZW50IGZvciBhIHNvZnR3YXJlIHRvCmJlIHB1Ymxp
+c2hlZCwgc3VjaCBhcyBiZWluZyAicmVhc29uYWJseSIgYnVnIGZyZWUuCkFzIGZvciAiYnVnIiBp
+cyBpbnRlbmRlZCBhIHNvZnR3YXJlIHdoaWNoIGlzIGxpbWl0ZWQgaW4gY3JlYXRpbmcKc29mdHdh
+cmUgcHJvYmxlbXMuCldoaWxlIGluc3RlYWQsIHlvdXIgdG9vbCBleHBhbmRzIHRvIGEgd2hvbGUg
+bmV3LCBhbmQgbW9yZSBkYW5nZXJvdXMKbGV2ZWwgLSBoYXJkd2FyZSBkYW1hZ2UuCkhlbmNlIHlv
+dXIgc29mdHdhcmUsIGFzIGlzLCBkb2Vzbid0IHJlc3BlY3Qgb3VyIERlYmlhbi9VYnVudHUKcGhp
+bG9zb3BoeS4KU28sIGF0IHRoaXMgcG9pbnQgIlRoZXJlIGlzIG5vdCBtdWNoIHRoYXQiIHdlIGNh
+biBhZGQuCldlIGFsc28gd2lzaCB5b3UgIkdvb2QgbHVjayB3aXRoIHRoYXQuIgoKT24gVHVlLCBN
+YXIgMzEsIDIwMTUsIGF0IDAzOjI2IEFNLCBNYWFydGVuIGRlIEJvZXIgd3JvdGU6Cj4gSGVsbG8s
+Cj4gCj4gSSBhbSB0aGUgYXV0aG9yIG9mIGFsc2FtaXhlcmd1aS4gSSBhbSBub3QgYWN0aXZlbHkg
+bWFpbnRhaW5pbmcKPiBhbHNhbWl4ZXJndWkgYW55bW9yZSAoYW5kIGhhdmVu4oCZdCBiZWVuIGZv
+ciB5ZWFycykuIEl0IGlzIHByZXR0eSBtdWNoCj4gY29pbmNpZGVuY2UgdGhhdCBJIHNhdyB0aGlz
+IG1haWwgdGhyZWFkOyBhIHNsaWdodGx5IG1vcmUgaW5mb3JtYXRpdmUKPiBzdWJqZWN0IHdvdWxk
+IGhhdmUgaGVscGVkLgo+IAo+IFRoZXJlIGlzIG5vdCBtdWNoIHRoYXQgSSBjYW4gYWRkIHRvIHRo
+aXMgdGhyZWFkICh0aGFua3MgZXZlcnlvbmUgZm9yIHlvdXIKPiByZXBsaWVzKSwgYnV0IGluIHNo
+b3J0Ogo+IAo+IC0gYWxzYW1peGVyZ3VpIGlzIGp1c3QgYSBncmFwaGljYWwgZnJvbnRlbmQsIGFu
+ZCBleHBvc2VzIHRoZSBtaXhlcgo+IGNhcGFiaWxpdGllcyBvZiB0aGUgc291bmQgY2FyZCBpbiB0
+aGUgc2FtZSB3YXkgYWxzYW1peGVyLCBhbWl4ZXIgb3IgYW55Cj4gb3RoZXIgYWxzYSBtaXhlciBk
+b2VzLCBzbyB0aGlzIGlzIG5vdCBhbHNhbWl4ZXJndWkgc3BlY2lmaWMuIChzdHJvbmdseQo+IGJh
+c2VkIG9uIHRoZSBhbHNhbWl4ZXIgY29kZSAodmVyYmF0aW0pIHdpdGggZmx0ayBndWkgY29kZSBh
+ZGRlZCB0byBpdC4pLgo+IAo+IC0gdGhpcyBpcyBub3QgYSBzb2Z0d2FyZSBwcm9ibGVtLCB0aGlz
+IGlzIGEgaGFyZHdhcmUgcHJvYmxlbS4gVGhlIHVzZXIKPiBhZGp1c3RzIHRoZSBtaXhlciB0byBj
+YXVzZSBhIGZlZWRiYWNrIGJldHdlZW4gc3BlYWtlciBhbmQgaW50ZXJuYWwKPiBtaWNyb3Bob25l
+LCBhbmQgbGVhdmVzIHRoaXMgcnVubmluZyBmb3IgPjMwIHNlY29uZHMsIGFuZCBoaXMgaGFyZHdh
+cmUKPiBjYW7igJl0IGRlYWwgd2l0aCBpdC4gSXQgaXMgcHJvYmFibHkgbm90IGV2ZW4gb3BlcmF0
+aW5nIHN5c3RlbSBzcGVjaWZpYy4KPiAKPiBGaW5hbGx5LCBJIHJlYWxseSBkb27igJl0IGxpa2Ug
+dGhlIHRvbmUgeW91IHVzZSwgTmlraXRhLCBwYXJ0aWN1bGFybHkgeW91cgo+IHRhbGsgb2Yg4oCc
+ZXhwb3NpbmcgdGhlIGluZGl2aWR1YWxzIGd1aWx0eeKAnSBhbmQgeW91ciBhY2N1c2F0aW9ucyBv
+Zgo+IHNlY3JlY3kuIEFuZCAiZXhwb3NlIGNsZWFybHkgdG8gdGhlIHB1YmxpYyB0aGF0IHRvb2wg
+YXMgYSB2aXJ1cy9tYWx3YXJlLAo+IGFuZCBpbmZvcm0gdGhlIGFudGl2aXJ1cyBhdXRob3JpdGll
+cyBhYm91dCBpdC7igJ0sIHJlYWxseT8gR29vZCBsdWNrIHdpdGgKPiB0aGF0Lgo+IAo+IElmIHlv
+dSB3YW50IHRvIGJsYWNrbGlzdCBhbHNhbWl4ZXJndWkgZnJvbSB5b3VyIGRpc3RybywgcGxlYXNl
+IGdvIGFoZWFkLAo+IGJ1dCBkb27igJl0IGZvcmdldCB0byBibGFja2xpc3QgYWxzYW1peGVyIGFu
+ZCBhbWl4ZXIgdG9vLCBhcyB3ZWxsIGFzIGFueQo+IG90aGVyIGFsc2EgbWl4ZXIgZnJvbnQgZW5k
+cy4KPiAKPiBNYWFydGVuCj4gCj4gCj4gT24gMzEgTWFyIDIwMTUsIGF0IDExOjE0LCBSaWNhcmQg
+V2FuZGVybG9mIDxyaWNhcmQud2FuZGVybG9mQGF4aXMuY29tPgo+IHdyb3RlOgo+IAo+ID4gCj4g
+PiBPbiBUdWUsIDMxIE1hciAyMDE1LCBOaWtpdGEgTi4gd3JvdGU6Cj4gPiAKPiA+Pj4gYWxzYW1p
+eGVyZ3VpIGlzIG5vdCBjcmVhdGVkIGJ5IHRoZSBBTFNBIAo+ID4+PiBwcm9qZWN0LCBzbyB0aGlz
+IG1haWxpbmcgbGlzdCBpcyB0aGUgd3JvbmcgcGxhY2UgdG8gbG9vayBpZiBub25lIG90aGVyIAo+
+ID4+PiB0aGFuIGZvciB0aGF0IHBhcnRpY3VsYXIgcmVhc29uLgo+ID4+IFN1cmUsIHdlIHdvdWxk
+IGJlIHZlcnkgZ3JhdGVmdWwgaWYgeW91IGNvdWxkIHBvaW50IHRoYXQgb3V0LCBzbyB3ZSBjYW4K
+PiA+PiBjb250YWN0IHRoZSBpbmRpdmlkdWFsIHdobyBwcm9ncmFtbWVkIHRoaXMgdG9vbAo+ID4+
+IFVubGVzcyBpdCdzIG5vdCBhIHNlY3JldCBvciB0aGVyZSBpcyBzbXRuZyB0byBoaWRlLgo+ID4g
+Cj4gPiBJIGhhdmUgbm8gaWRlYSB3aG8gd3JvdGUgaXQsIENsZW1lbnMgcG9zdGVkIGEgbGluayBi
+dXQgYXQgdG8gbWUgaXQgc2VlbXMgCj4gPiBkZWFkLCB0aGVyZSBzaG91bGQgYmUgc29tZXRoaW5n
+IGluIHRoZSBzb3VyY2UgY29kZSAocGVyaGFwcyB0aGF0J3Mgd2hlcmUgCj4gPiBoZSBnb3QgaXQg
+ZnJvbWU/KS4gQ291bGQgdmVyeSB3ZWxsIGJlIHRoYXQgaXQgd2FzIHdyaXR0ZW4gYnkgc29tZW9u
+ZSB3aG8gCj4gPiBoYXMgc2luY2UgbW92ZWQgb24gdG8gb3RoZXIgdGhpbmdzIHNvIHRoYXQgYW55
+IGxpbmtzIG9yIGVtYWlsIGFkcmVzc2VzIGFyZSAKPiA+IG91dGRhdGVkLiBJdCdzIG5vdCBuZWNl
+c3NhcmlseSBhIHNlY3JldCwgaXQgY291bGQganVzdCBiZSB1bmtub3duIGF0IHRoaXMgCj4gPiBw
+b2ludCwgYW5kIGlmIHRoZSBwZXJzb24gd2hvIHdyb3RlIGl0IGlzIG5vdCBhY3RpdmVseSBtYWlu
+dGFpbmluZyBpdCBhbnkgCj4gPiBtb3JlIHRoZXJlJ3MgcHJvYmFibHkgbGl0dGxlIHRvIGJlIGdh
+aW5lZCBmcm9tIGNvbnRhY3RpbmcgaGltLgo+ID4gCj4gPiAvUmljYXJkCj4gPiAtLSAKPiA+IFJp
+Y2FyZCBXb2xmIFdhbmRlcmzDtmYgICAgICAgICAgICAgICAgICAgICAgICAgICByaWNhcmR3KGF0
+KWF4aXMuY29tCj4gPiBBeGlzIENvbW11bmljYXRpb25zIEFCLCBMdW5kLCBTd2VkZW4gICAgICAg
+ICAgICB3d3cuYXhpcy5jb20KPiA+IFBob25lICs0NiA0NiAyNzIgMjAxNiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIEZheCArNDYgNDYgMTMgNjEgMzAKPiA+IF9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+
+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPiBodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+IAoKLS0gCmh0dHA6Ly93d3cu
+ZmFzdG1haWwuY29tIC0gQWNjZXNzIGFsbCBvZiB5b3VyIG1lc3NhZ2VzIGFuZCBmb2xkZXJzCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgd2hlcmV2ZXIgeW91IGFyZQoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
