@@ -1,70 +1,82 @@
-From: "Nikita N." <nikitan@operamail.com>
-Subject: Re: bug
-Date: Tue, 31 Mar 2015 02:05:14 -0700
-Message-ID: <1427792714.2152814.247446829.32E51ED1@webmail.messagingengine.com>
-References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
- <5518F8F3.10304@ladisch.de>
- <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
- <55192FBC.1070307@ladisch.de>
- <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
- <551A4A2E.8040905@blennerhassett.gen.nz>
- <1427789953.2143209.247430925.7143290B@webmail.messagingengine.com>
- <551A5D21.8000406@ladisch.de>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH RFC 09/11] sound/core: add IEC958 channel status helper
+Date: Tue, 31 Mar 2015 11:10:34 +0200
+Message-ID: <1427793034.2969.17.camel@pengutronix.de>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+ <E1YcfYA-0002vc-Al@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id C3C1D260621
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 11:05:15 +0200 (CEST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 3B8C520A4D
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 05:05:11 -0400 (EDT)
-In-Reply-To: <551A5D21.8000406@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <E1YcfYA-0002vc-Al@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-> http://www.iua.upf.es/~mdeboer/projects/alsamixergui/
-this link is broken, please provide a correct one, thanks.
-
-> Please note that _every_ mixer application on _every_ OS might be able
-> to set the controls to those dangerous values.
-is it "might" or it is? Is also your alsamixer textual version tool,
-capable of speakers burnout?
-Thanks
-
--- 
-  Nikita N.
-  nikitan@operamail.com
-
-
-On Tue, Mar 31, 2015, at 01:38 AM, Clemens Ladisch wrote:
-> Nikita N. wrote:
-> > If ALSA can't fix/remove that tool, we kindly ask you to point us to the
-> > individual who programmed it, and we will contact him/her directly.
-> 
-> http://www.iua.upf.es/~mdeboer/projects/alsamixergui/
-> 
-> > If that is a secret and/or we will not receive feedback, then we will
-> > expose clearly to the public that tool as a virus/malware, and inform
-> > the antivirus authorities about it.
-> 
-> Please note that _every_ mixer application on _every_ OS might be able
-> to set the controls to those dangerous values.
-> 
-> 
-> Regards,
-> Clemens
-
--- 
-http://www.fastmail.com - Does exactly what it says on the tin
+SGksCgpBbSBNb250YWcsIGRlbiAzMC4wMy4yMDE1LCAyMDo0MCArMDEwMCBzY2hyaWViIFJ1c3Nl
+bGwgS2luZzoKPiBBZGQgYSBoZWxwZXIgdG8gY3JlYXRlIHRoZSBJRUM5NTggY2hhbm5lbCBzdGF0
+dXMgZnJvbSBhbiBBTFNBCj4gc25kX3BjbV9ydW50aW1lIHN0cnVjdHVyZSwgdGFraW5nIGFjY291
+bnQgb2YgdGhlIHNhbXBsZSByYXRlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFJ1c3NlbGwgS2luZyA8
+cm1rK2tlcm5lbEBhcm0ubGludXgub3JnLnVrPgo+IC0tLQo+ICBpbmNsdWRlL3NvdW5kL3BjbV9p
+ZWM5NTguaCB8ICA5ICsrKysrKwo+ICBzb3VuZC9jb3JlL0tjb25maWcgICAgICAgICB8ICAzICsr
+Cj4gIHNvdW5kL2NvcmUvTWFrZWZpbGUgICAgICAgIHwgIDIgKysKPiAgc291bmQvY29yZS9wY21f
+aWVjOTU4LmMgICAgfCA3MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrCj4gIDQgZmlsZXMgY2hhbmdlZCwgODQgaW5zZXJ0aW9ucygrKQo+ICBjcmVhdGUgbW9k
+ZSAxMDA2NDQgaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4LmgKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0
+IHNvdW5kL2NvcmUvcGNtX2llYzk1OC5jCj4gCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvc291bmQv
+cGNtX2llYzk1OC5oIGIvaW5jbHVkZS9zb3VuZC9wY21faWVjOTU4LmgKPiBuZXcgZmlsZSBtb2Rl
+IDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4uMGVlZDM5N2FjYThlCj4gLS0tIC9kZXYvbnVs
+bAo+ICsrKyBiL2luY2x1ZGUvc291bmQvcGNtX2llYzk1OC5oCj4gQEAgLTAsMCArMSw5IEBACj4g
+KyNpZm5kZWYgX19TT1VORF9QQ01fSUVDOTU4X0gKPiArI2RlZmluZSBfX1NPVU5EX1BDTV9JRUM5
+NThfSAo+ICsKPiArI2luY2x1ZGUgPGxpbnV4L3R5cGVzLmg+Cj4gKwo+ICtpbnQgc25kX3BjbV9j
+cmVhdGVfaWVjOTU4X2NvbnN1bWVyKHN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUsIHU4
+ICpjcywKPiArCXNpemVfdCBsZW4pOwo+ICsKPiArI2VuZGlmCj4gZGlmZiAtLWdpdCBhL3NvdW5k
+L2NvcmUvS2NvbmZpZyBiL3NvdW5kL2NvcmUvS2NvbmZpZwo+IGluZGV4IGI1MzRjOGE2MDQ2Yi4u
+MTUwNzQ2OTQyNWVjIDEwMDY0NAo+IC0tLSBhL3NvdW5kL2NvcmUvS2NvbmZpZwo+ICsrKyBiL3Nv
+dW5kL2NvcmUvS2NvbmZpZwo+IEBAIC05LDYgKzksOSBAQCBjb25maWcgU05EX1BDTQo+ICBjb25m
+aWcgU05EX1BDTV9FTEQKPiAgCWJvb2wKPiAgCj4gK2NvbmZpZyBTTkRfUENNX0lFQzk1OAo+ICsJ
+Ym9vbAo+ICsKPiAgY29uZmlnIFNORF9ETUFFTkdJTkVfUENNCj4gIAl0cmlzdGF0ZQo+ICAKPiBk
+aWZmIC0tZ2l0IGEvc291bmQvY29yZS9NYWtlZmlsZSBiL3NvdW5kL2NvcmUvTWFrZWZpbGUKPiBp
+bmRleCA1OTFiNDkxNTdiNGQuLjcwZWEwNjcxMmVjMiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9jb3Jl
+L01ha2VmaWxlCj4gKysrIGIvc291bmQvY29yZS9NYWtlZmlsZQo+IEBAIC0xNCwxMCArMTQsMTIg
+QEAgc25kLXBjbS15IDo9IHBjbS5vIHBjbV9uYXRpdmUubyBwY21fbGliLm8gcGNtX3RpbWVyLm8g
+cGNtX21pc2MubyBcCj4gIAkJcGNtX21lbW9yeS5vIG1lbWFsbG9jLm8KPiAgc25kLXBjbS0kKENP
+TkZJR19TTkRfRE1BX1NHQlVGKSArPSBzZ2J1Zi5vCj4gIHNuZC1wY20tJChDT05GSUdfU05EX1BD
+TV9FTEQpICs9IHBjbV9kcm1fZWxkLm8KPiArc25kLXBjbS0kKENPTkZJR19TTkRfUENNX0lFQzk1
+OCkgKz0gc25kLXBjbS1pZWM5NTgubwo+ICAKPiAgIyBmb3IgdHJhY2UtcG9pbnRzCj4gIENGTEFH
+U19wY21fbGliLm8gOj0gLUkkKHNyYykKPiAgCj4gK3NuZC1wY20taWVjOTU4LW9ianMgOj0gcGNt
+X2llYzk1OC5vCj4gIHNuZC1wY20tZG1hZW5naW5lLW9ianMgOj0gcGNtX2RtYWVuZ2luZS5vCgpU
+aGlzIGZhaWxzIHRvIGJ1aWxkIGZvciBtZSBvbiA0LjAtcmM2OgptYWtlWzJdOiAqKiogTm8gcnVs
+ZSB0byBtYWtlIHRhcmdldCAnc291bmQvY29yZS9zbmQtcGNtLWllYzk1OC5vJywgbmVlZGVkIGJ5
+ICdzb3VuZC9jb3JlL3NuZC1wY20ubycuICBTdG9wLgpzY3JpcHRzL01ha2VmaWxlLmJ1aWxkOjQw
+MzogcmVjaXBlIGZvciB0YXJnZXQgJ3NvdW5kL2NvcmUnIGZhaWxlZAoKdW5sZXNzIEkgY2hhbmdl
+IGl0IHRvIGVpdGhlcjoKLS0tIGEvc291bmQvY29yZS9NYWtlZmlsZQorKysgYi9zb3VuZC9jb3Jl
+L01ha2VmaWxlCkBAIC0xNCw3ICsxNCw4IEBAIHNuZC1wY20teSA6PSBwY20ubyBwY21fbmF0aXZl
+Lm8gcGNtX2xpYi5vIHBjbV90aW1lci5vIHBjbV9taXNjLm8gXAogICAgICAgICAgICAgICAgcGNt
+X21lbW9yeS5vIG1lbWFsbG9jLm8KIHNuZC1wY20tJChDT05GSUdfU05EX0RNQV9TR0JVRikgKz0g
+c2didWYubwogc25kLXBjbS0kKENPTkZJR19TTkRfUENNX0VMRCkgKz0gcGNtX2RybV9lbGQubwot
+c25kLXBjbS0kKENPTkZJR19TTkRfUENNX0lFQzk1OCkgKz0gc25kLXBjbS1pZWM5NTgubworCitv
+YmotJChDT05GSUdfU05EX1BDTV9JRUM5NTgpICs9IHNuZC1wY20taWVjOTU4Lm8KIAogIyBmb3Ig
+dHJhY2UtcG9pbnRzCiBDRkxBR1NfcGNtX2xpYi5vIDo9IC1JJChzcmMpCgpvcjoKLS0tIGEvc291
+bmQvY29yZS9NYWtlZmlsZQorKysgYi9zb3VuZC9jb3JlL01ha2VmaWxlCkBAIC0xNCwxMiArMTQs
+MTEgQEAgc25kLXBjbS15IDo9IHBjbS5vIHBjbV9uYXRpdmUubyBwY21fbGliLm8gcGNtX3RpbWVy
+Lm8gcGNtX21pc2MubyBcCiAgICAgICAgICAgICAgICBwY21fbWVtb3J5Lm8gbWVtYWxsb2Mubwog
+c25kLXBjbS0kKENPTkZJR19TTkRfRE1BX1NHQlVGKSArPSBzZ2J1Zi5vCiBzbmQtcGNtLSQoQ09O
+RklHX1NORF9QQ01fRUxEKSArPSBwY21fZHJtX2VsZC5vCi1zbmQtcGNtLSQoQ09ORklHX1NORF9Q
+Q01fSUVDOTU4KSArPSBzbmQtcGNtLWllYzk1OC5vCitzbmQtcGNtLSQoQ09ORklHX1NORF9QQ01f
+SUVDOTU4KSArPSBwY21faWVjOTU4Lm8KIAogIyBmb3IgdHJhY2UtcG9pbnRzCiBDRkxBR1NfcGNt
+X2xpYi5vIDo9IC1JJChzcmMpCiAKLXNuZC1wY20taWVjOTU4LW9ianMgOj0gcGNtX2llYzk1OC5v
+CiBzbmQtcGNtLWRtYWVuZ2luZS1vYmpzIDo9IHBjbV9kbWFlbmdpbmUubwogCiBzbmQtcmF3bWlk
+aS1vYmpzICA6PSByYXdtaWRpLm8KCnJlZ2FyZHMKUGhpbGlwcAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
+ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
