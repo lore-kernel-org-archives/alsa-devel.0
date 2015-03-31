@@ -1,103 +1,67 @@
 From: Scott Branden <sbranden@broadcom.com>
-Subject: [PATCH 1/2] ASoC: cygnus-audio: adding device tree bindings
-Date: Mon, 30 Mar 2015 20:16:23 -0700
-Message-ID: <1427771784-29950-2-git-send-email-sbranden@broadcom.com>
-References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
+Subject: [PATCH 0/2] Cygnus Audio Driver
+Date: Mon, 30 Mar 2015 20:16:22 -0700
+Message-ID: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org, Dmitry Torokhov <dtor@google.com>, Anatol Pomazao <anatol@google.com>, abrestic@google.com, bryeung@google.com, olofj@google.com, pwestin@google.com, Lori Hikichi <lhikichi@broadcom.com>, Scott Branden <sbranden@broadcom.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gw3-out.broadcom.com (mail-gw3-out.broadcom.com
+ [216.31.210.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id B678E260559
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 05:16:30 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam
+ Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: devicetree@vger.kernel.org, Scott Branden <sbranden@broadcom.com>, linux-kernel@vger.kernel.org, bryeung@google.com, abrestic@google.com, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, pwestin@google.com, Anatol Pomazao <anatol@google.com>, olofj@google.com, Dmitry Torokhov <dtor@google.com>, linux-rpi-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Lori Hikichi <lhikichi@broadcom.com>
+Please provide comments on the initial version of this driver.
 
-Add device tree binding documentation for the Cygnus SOC audio block
+This patchset contains the devicetree bindings and core audio driver
+for the Cygnus SoC.
 
-Reviewed-by: Jonathan Richardson <jonathar@broadcom.com>
-Reviewed-by: Ray Jui <rjui@broadcom.com>
-Signed-off-by: Scott Branden <sbranden@broadcom.com>
-Signed-off-by: Lori Hikichi <lhikichi@broadcom.com>
----
- .../bindings/sound/brcm,cygnus-audio.txt           | 68 ++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
+There is an open question on how to fit this driver into the clock
+framework (if at all).
+
+The audio PLL is embedded in the audio block and only used
+by the audio block. The audio PLL registers are also in the middle of 
+the audio register map.
+
+In addition, the audio PLL is adjustable to less than 1 Hz.
+The existing clock driver framework does not provide a mechanism to take
+advantage of the resolution of the hardware.
+
+Can the audio PLL remain within the audio driver and/or any modifications
+required?
+
+Lori Hikichi (2):
+  ASoC: cygnus-audio: adding device tree bindings
+  ASoC: add core audio driver for Broadcom Cygnus SOC.
+
+ .../bindings/sound/brcm,cygnus-audio.txt           |   68 +
+ sound/soc/bcm/Kconfig                              |   11 +
+ sound/soc/bcm/Makefile                             |    5 +-
+ sound/soc/bcm/cygnus-pcm.c                         |  918 +++++++++++
+ sound/soc/bcm/cygnus-pcm.h                         |   45 +
+ sound/soc/bcm/cygnus-ssp.c                         | 1613 ++++++++++++++++++++
+ sound/soc/bcm/cygnus-ssp.h                         |   84 +
+ 7 files changed, 2743 insertions(+), 1 deletion(-)
  create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+ create mode 100644 sound/soc/bcm/cygnus-pcm.c
+ create mode 100644 sound/soc/bcm/cygnus-pcm.h
+ create mode 100644 sound/soc/bcm/cygnus-ssp.c
+ create mode 100644 sound/soc/bcm/cygnus-ssp.h
 
-diff --git a/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
-new file mode 100644
-index 0000000..5358cc3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
-@@ -0,0 +1,68 @@
-+BROADCOM Cygnus Audio I2S/TDM/SPDIF controller
-+
-+Required properties:
-+	- compatible : "brcm,cygnus-audio"
-+	- #address-cells: 32bit valued, 1 cell. <1>
-+	- #size-cells:  32bit valued, 1 cell. <1>
-+	- reg : Should contain audio registers location and length
-+	- interrupts: audio DMA interrupt number
-+
-+SSP Subnode properties:
-+- dai-name: The name of the DAI registered with ASOC
-+- ssp-port-id: The ssp port interface to use
-+	Valid value are 0, 1, 2, or 3 (for spdif)
-+- mode: Controls if this port should be configured as I2S or TDM mode.
-+	Valid values are: "tdm" or "i2s"
-+- tdm-bits-per-frame:  only if mode is "tdm" then this property must set.
-+	Valid values are (128/256/512)
-+- port-status: Controls if port is enabled or not
-+	Valid values "enabled" or "disabled"
-+- channel-group: Control grouping of serial port
-+	Valid values are "2_0", "3_1", or "5_1"
-+
-+Example:
-+	cygnus_audio: audio@0x180ae000 {
-+		compatible = "brcm,cygnus-audio";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		reg = <0x180ae000 0x1000>;
-+
-+		interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		ssp0: ssp_port@0 {
-+			dai-name = "cygnus-ssp0";
-+			ssp-port-id = <0>;
-+
-+			mode = "i2s"; /* "i2s" or "tdm" */
-+			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
-+			port-status = "enabled";
-+		};
-+
-+		ssp1: ssp_port@1 {
-+			dai-name = "cygnus-ssp1";
-+			ssp-port-id = <1>;
-+
-+			mode = "i2s"; /* "i2s" or "tdm" */
-+			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
-+			port-status = "disabled";
-+		};
-+
-+		ssp2: ssp_port@2 {
-+			dai-name = "cygnus-ssp2";
-+			ssp-port-id = <2>;
-+
-+			mode = "tdm"; /* "i2s" or "tdm" */
-+			tdm-bits-per-frame = <256>;
-+			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
-+			port-status = "disabled";
-+		};
-+
-+		spdif: spdif_port@3 {
-+			dai-name = "cygnus-spdif";
-+			ssp-port-id = <3>;
-+
-+			mode = "i2s"; /* "i2s" or "tdm" */
-+			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
-+			port-status = "disabled";
-+		};
-+	};
 -- 
 2.3.3
