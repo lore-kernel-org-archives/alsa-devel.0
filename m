@@ -1,22 +1,17 @@
-From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
-Subject: Re: potential speaker burnout
-Date: Tue, 31 Mar 2015 21:41:05 +1300
-Message-ID: <551A5DA1.2070603@blennerhassett.gen.nz>
-References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
- <5518F8F3.10304@ladisch.de>
- <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
- <55192FBC.1070307@ladisch.de>
- <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
- <551A4A2E.8040905@blennerhassett.gen.nz>
- <1427789953.2143209.247430925.7143290B@webmail.messagingengine.com>
+From: Pascal Huerst <pascal.huerst@gmail.com>
+Subject: ASoC: cs4271: init/timing problem
+Date: Tue, 31 Mar 2015 10:50:17 +0200
+Message-ID: <551A5FC9.4010109@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from omr.mail.isx.net.nz (omr.mail.isx.net.nz [111.65.230.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 32F282612AC
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 10:41:12 +0200 (CEST)
-In-Reply-To: <1427789953.2143209.247430925.7143290B@webmail.messagingengine.com>
+Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
+ [209.85.212.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76EA6260604
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 10:50:19 +0200 (CEST)
+Received: by wiaa2 with SMTP id a2so16910503wia.0
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 01:50:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,33 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Nikita N." <nikitan@operamail.com>, alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: brian.austin@cirrus.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Paul.Handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-On 31/03/15 21:19, Nikita N. wrote:
->> And in my opinion, you are blaming the wrong party here.
-> we are not blaming anybody.
+Hey all,
 
-You talk about finding the person who is "guilty"
+We have a custom built hw, based on am335x and from time to time we need
+to rmmod/modprobe the ASoC machine driver. Depending on the hw, the
+first call to regmap_update_bits(..) in cs4271_codec_probe(..) fails
+with -EREMOTEIO.
 
->> (Yes I can confirm that happens on my laptop with mic gain set to 20dB below maximum).
+The error is originated in:
 
-> Thank you very much for your confirmation, so in the meantime we start
-> as blacklisting that tool from our repos.
+drivers/i2c/busses/i2c-omap.c
 
-I agree it would be upsetting to have your laptop speakers go up in smoke.
+and happens if no i2c package acknowledge is received by the host.
 
-But I reiterate, it is not the alsamixergui tool. ANY tool that is
-capable of adjusting the underlying controls of the soundcard is capable
-of reproducing the effect.  I.e. commandline "amixer", terminal
-"alsamixer', possibly others...
+I think this is a timing issue and on some devices, the codec is just
+not ready yet, for communication.
 
-You would be better to blacklist the problematic laptop hardware, not
-these control apps.
+What is the right way to fix that? My attempt would be something like this:
 
-The one thing maybe worth thinking about is whether there is any useful
-purpose for the control that enables direct feed from microphone to
-speakers?  This is something that is provided by the underlying sound
-driver, and would need to be "fixed" there.
-I.e. your distro would have to patch drivers before building the kernel.
+const int retries = 5;
+
+while (retries) {
+	ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
+                                 CS4271_MODE2_PDN | CS4271_MODE2_CPEN,
+                                 CS4271_MODE2_PDN | CS4271_MODE2_CPEN);
+
+        if (ret == -EREMOTEIO) {
+                retries--;
+                udelay(1);
+                continue;
+
+        } else if (ret)
+                return ret;
+
+        break;
+}
+
+But I might also just add a proper delay before the first call to
+regmap_update_bits(..)
+
+So what is the proper way to handle this?
+
+Thanks
+Pascal
