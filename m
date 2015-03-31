@@ -1,53 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: cygnus-audio: adding device tree bindings
-Date: Tue, 31 Mar 2015 08:00:01 +0100
-Message-ID: <20150331070001.GF2869@sirena.org.uk>
-References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
- <1427771784-29950-2-git-send-email-sbranden@broadcom.com>
+Subject: Re: [PATCH 17/25] sound: Use bool function return values of
+ true/false not 1/0
+Date: Tue, 31 Mar 2015 08:11:40 +0100
+Message-ID: <20150331071140.GG2869@sirena.org.uk>
+References: <cover.1427759009.git.joe@perches.com>
+ <89241da97a2fb2d869ea7902b34743bc4991e88b.1427759009.git.joe@perches.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="heQF7/FOvX7GgW47"
+	protocol="application/pgp-signature"; boundary="ujOy8a1yc0D9aEKa"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1427771784-29950-2-git-send-email-sbranden@broadcom.com>
+In-Reply-To: <89241da97a2fb2d869ea7902b34743bc4991e88b.1427759009.git.joe@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Scott Branden <sbranden@broadcom.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org, Dmitry Torokhov <dtor@google.com>, Anatol Pomazao <anatol@google.com>, abrestic@google.com, bryeung@google.com, olofj@google.com, pwestin@google.com, Lori Hikichi <lhikichi@broadcom.com>
+To: Joe Perches <joe@perches.com>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---heQF7/FOvX7GgW47
+--ujOy8a1yc0D9aEKa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 30, 2015 at 08:16:23PM -0700, Scott Branden wrote:
+On Mon, Mar 30, 2015 at 04:46:15PM -0700, Joe Perches wrote:
+> Use the normal return values for bool functions
 
-> +Required properties:
-> +	- compatible : "brcm,cygnus-audio"
-> +	- #address-cells: 32bit valued, 1 cell. <1>
-> +	- #size-cells:  32bit valued, 1 cell. <1>
-> +	- reg : Should contain audio registers location and length
-> +	- interrupts: audio DMA interrupt number
-> +
-> +SSP Subnode properties:
+Joe, as has been *repeatedly* requested you should use subject lines
+matching the style for the subsystem. =20
 
-This document does rather gloss over the fact that the binding requires
-subnodes, it should mention this requirement and say what they mean.
+Please also remember to CC people on the cover letters for serieses so
+they know if there's dependencies (if the series is actually a bunch of
+separate patches consider sending that way).
 
---heQF7/FOvX7GgW47
+--ujOy8a1yc0D9aEKa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVGkXxAAoJECTWi3JdVIfQz8cIAIR8jeTG3UP+V0whUM0oJcqu
-zMYdFw5mfde67G/aN2quuK+ICp4gma3I250obkTiarNX2XAdY7pYedOHlIx+5DcY
-5mbTJ0BYQq6/zpa02+wVjL1NVguYDmWiM780WJs5g2V59Qsv8w2wS7GFGyo7RojQ
-gZsiLb/pHpVvawrugD3rYq4vMLeG2DWAsRjwNXocOWp3iU0Ddqe0I2wmFrP3kDG2
-lK5HYkYzrPH/vJnasjzZXDaj0F0K2DGSyzFP4O/7/e1pBXovfPDaT/0sDzbHMNB2
-XbGQMp+CFV40yIwqFX7tgsk9wyccKD3LomBTmXsNeMSuGqNTBh/5L+rEuEKydko=
-=elSm
+iQEcBAEBCAAGBQJVGkisAAoJECTWi3JdVIfQ1DMH/R6HE7mnHnY2Rspq2FPwOyWy
+XwRgtOeTloYfz0Dp7RmEemhFc1kgVZJj2qh8Q3afbKWGeMMBLUGi4MgU/DJCwHjk
+YHjhSGWKMkBMMa2WwWdRL1PHD7xDa9q2qtGQKSCQZCWCs3AIvQC03PA13OtN2i1C
+EG8UdCocftRvrLmhR3rG1Xv1cfSAfw/BkXR1OkaYK/1KM+NWs6Vj2KlN0Zo7spxq
+gMcA1sPxD9BD0jhmGTmon9A3m6wnBsGs+rxRYycEPM7ySFxcRFtrkdjiOmxhM0Bt
+C7/wbUc60CXV1AgJpFMDQxGPsORE5eQ87Cfzw5ECwvkjcM6ltAZUHnqt2X3deaU=
+=luv/
 -----END PGP SIGNATURE-----
 
---heQF7/FOvX7GgW47--
+--ujOy8a1yc0D9aEKa--
