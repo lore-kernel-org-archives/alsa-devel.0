@@ -1,23 +1,53 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: cygnus-audio: adding device tree
- bindings
-Date: Tue, 31 Mar 2015 09:26:47 +0200
-Message-ID: <551A4C37.5090903@metafoo.de>
-References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com> <1427771784-29950-2-git-send-email-sbranden@broadcom.com>
+From: Eric Wong <normalperson@yhbt.net>
+Subject: [PATCH] ALSA: usb-audio: don't try to get Benchmark DAC1 sample rate
+Date: Tue, 31 Mar 2015 07:34:05 +0000
+Message-ID: <20150331073405.GA5912@dcvr.yhbt.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1427771784-29950-2-git-send-email-sbranden@broadcom.com>
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: Scott Branden <sbranden@broadcom.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, Lori Hikichi <lhikichi@broadcom.com>, linux-kernel@vger.kernel.org, bryeung@google.com, abrestic@google.com, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, pwestin@google.com, Anatol Pomazao <anatol@google.com>, olofj@google.com, Dmitry Torokhov <dtor@google.com>, linux-rpi-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>, Joe Turner <joe@oampo.co.uk>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Eric Wong <normalperson@yhbt.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/31/2015 05:16 AM, Scott Branden wrote:
-[...]
-> +- ssp-port-id: The ssp port interface to use
-> +	Valid value are 0, 1, 2, or 3 (for spdif)
+Adding this quirk allows us to avoid the noisy
+"cannot get freq at ep 0x1" message in dmesg output every time
+playback starts.
 
-How about using 'reg' as the property name here. It is the standard property 
-name for identifying or assigning an address to a sub-node.
+This ought to affect other Benchmark DAC1 variations using the same
+"Microchip Technology, Inc." chip as well, but I have only tested
+with the "Pre" variant.
+
+Signed-off-by: Eric Wong <normalperson@yhbt.net>
+Cc: Joe Turner <joe@oampo.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>
+---
+  I also had another generic patch prepared before I noticed Joe's
+  quirk addition for the MS Lifecam HD-5000.
+
+ sound/usb/quirks.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 753a47d..9a28365 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1113,8 +1113,13 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+ 
+ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+ {
+-	/* MS Lifecam HD-5000 doesn't support reading the sample rate. */
+-	return chip->usb_id == USB_ID(0x045E, 0x076D);
++	/* devices which do not support reading the sample rate. */
++	switch (chip->usb_id) {
++	case USB_ID(0x045E, 0x076D): /* MS Lifecam HD-5000 */
++	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
++		return true;
++	}
++	return false;
+ }
+ 
+ /* Marantz/Denon USB DACs need a vendor cmd to switch
+-- 
+EW
