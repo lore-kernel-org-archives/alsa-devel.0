@@ -1,20 +1,18 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: bug
-Date: Tue, 31 Mar 2015 10:24:06 +0200
-Message-ID: <alpine.DEB.2.02.1503311008160.13892@lnxricardw1.se.axis.com>
-References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
- <5518F8F3.10304@ladisch.de>
- <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
- <55192FBC.1070307@ladisch.de>
- <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
+From: Yang Kuankuan <ykk@rock-chips.com>
+Subject: Re: [PATCH RFC 09/11] sound/core: add IEC958 channel
+	status helper
+Date: Tue, 31 Mar 2015 04:30:39 -0400
+Message-ID: <551A5B2F.50203@rock-chips.com>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+ <E1YcfYA-0002vc-Al@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id EEBB22612AC
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 10:24:08 +0200 (CEST)
-In-Reply-To: <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFDB62612AC
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 10:29:56 +0200 (CEST)
+In-Reply-To: <E1YcfYA-0002vc-Al@rmk-PC.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,86 +22,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Nikita N." <nikitan@operamail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Russell,
 
-On Mon, 30 Mar 2015, Nikita N. wrote:
+On 03/30/2015 03:40 PM, Russell King wrote:
+> Add a helper to create the IEC958 channel status from an ALSA
+> snd_pcm_runtime structure, taking account of the sample rate.
+>
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> ---
+>   include/sound/pcm_iec958.h |  9 ++++++
+>   sound/core/Kconfig         |  3 ++
+>   sound/core/Makefile        |  2 ++
+>   sound/core/pcm_iec958.c    | 70 ++++++++++++++++++++++++++++++++++++++++++++++
+>   4 files changed, 84 insertions(+)
+>   create mode 100644 include/sound/pcm_iec958.h
+>   create mode 100644 sound/core/pcm_iec958.c
+>
+> diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
+> new file mode 100644
+> index 000000000000..0eed397aca8e
+> --- /dev/null
+> +++ b/include/sound/pcm_iec958.h
+> @@ -0,0 +1,9 @@
+> +#ifndef __SOUND_PCM_IEC958_H
+> +#define __SOUND_PCM_IEC958_H
+> +
+> +#include <linux/types.h>
+> +
+> +int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +	size_t len);
+> +
+> +#endif
+> diff --git a/sound/core/Kconfig b/sound/core/Kconfig
+> index b534c8a6046b..1507469425ec 100644
+> --- a/sound/core/Kconfig
+> +++ b/sound/core/Kconfig
+> @@ -9,6 +9,9 @@ config SND_PCM
+>   config SND_PCM_ELD
+>   	bool
+>   
+> +config SND_PCM_IEC958
+> +	bool
+> +
+>   config SND_DMAENGINE_PCM
+>   	tristate
+>   
+> diff --git a/sound/core/Makefile b/sound/core/Makefile
+> index 591b49157b4d..70ea06712ec2 100644
+> --- a/sound/core/Makefile
+> +++ b/sound/core/Makefile
+> @@ -14,10 +14,12 @@ snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
+>   		pcm_memory.o memalloc.o
+>   snd-pcm-$(CONFIG_SND_DMA_SGBUF) += sgbuf.o
+>   snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
+> +snd-pcm-$(CONFIG_SND_PCM_IEC958) += snd-pcm-iec958.o
+>   
+>   # for trace-points
+>   CFLAGS_pcm_lib.o := -I$(src)
+>   
+> +snd-pcm-iec958-objs := pcm_iec958.o
+>   snd-pcm-dmaengine-objs := pcm_dmaengine.o
+>   
+>   snd-rawmidi-objs  := rawmidi.o
+> diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
+> new file mode 100644
+> index 000000000000..e1ff88a17dde
+> --- /dev/null
+> +++ b/sound/core/pcm_iec958.c
+> @@ -0,0 +1,70 @@
+> +/*
+> + *  PCM DRM helpers
+> + *
+> + *   This program is free software; you can redistribute it and/or modify
+> + *   it under the terms of the GNU General Public License as published by
+> + *   the Free Software Foundation; either version 2 of the License.
+> + */
+> +#include <linux/export.h>
+> +#include <linux/types.h>
+> +#include <sound/asoundef.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_iec958.h>
+> +
+> +/**
+> + * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
+> + * @runtime: pcm runtime structure with ->rate filled in
+> + * @cs: channel status buffer, at least four bytes
+> + * @len: length of channel status buffer
+> + *
+> + * Create the consumer format channel status data in @cs of maximum size
+> + * @len corresponding to the parameters of the PCM runtime @runtime.
+> + *
+> + * Drivers may wish to tweak the contents of the buffer after creation.
+> + *
+> + * Returns: length of buffer, or negative error code if something failed.
+> + */
+> +int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
+> +	size_t len)
+> +{
+> +	unsigned int fs;
+> +
+> +	if (len < 4)
+> +		return -EINVAL;
+> +
+> +	switch (runtime->rate) {
+> +	case 32000:
+> +		fs = IEC958_AES3_CON_FS_32000;
+> +		break;
+> +	case 44100:
+> +		fs = IEC958_AES3_CON_FS_44100;
+> +		break;
+> +	case 48000:
+> +		fs = IEC958_AES3_CON_FS_48000;
+> +		break;
+> +	case 88200:
+> +		fs = IEC958_AES3_CON_FS_88200;
+> +		break;
+> +	case 96000:
+> +		fs = IEC958_AES3_CON_FS_96000;
+> +		break;
+> +	case 176400:
+> +		fs = IEC958_AES3_CON_FS_176400;
+> +		break;
+> +	case 192000:
+> +		fs = IEC958_AES3_CON_FS_192000;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	memset(cs, 0, len);
+> +
+> +	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
+> +	cs[1] = IEC958_AES1_CON_GENERAL;
+> +	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
+> +	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | fs;
+> +
 
-> We are the devs involved in dCore porting, and that is one of our users
-> report:
-> http://forum.tinycorelinux.net/index.php/topic,18225
-> =
+Pretty good, also suitable to rockchip platform, but why not add the
+"IEC958_AES2_CON_CHANNEL_MASK" & "IEC958_AES2_CON_WORDLEN" ?
 
-> We verified that in few of our legacy laptops.
-> It didn't reproduce for every laptop, but indeed in a couple of them,
-> the temperature of the speakers reached extremes levels in few seconds,
-> only unplugging the AC/DC cable saved them.
-> This is a serious problem in our opinion, and we would hate to see our
-> dCore reputation spoiled.
-> We hate to admit, but it is *NOT* our bug, and would hate to see this
-> bug reverse engineered into a virus/malware (on Linux, or other OS) and
-> see ourselves blamed for it.
-> So we would like to keep the incident quiet, and we are going to remove
-> that thread from our forum.
-> On the other side, we would expect any action from ALSA project in
-> removing that tool and/or exposing the real individual/s guilty of
-> writing that tool.
+Seems sample frequency & channle number & word length are the basic
+message :)
 
-First of all, I can't say I'm representing the ALSA project or anyone else =
+Best regards.
+Yakir Yang
 
-in this matter, so the following is just my personal opinion. Furthermore =
-
-I have no real experience with the mixer application under discussion =
-
-(alsamixergui), but on the face of it it just looks like any mixer =
-
-application.
-
->From the thread linked above, it seems that if someone maxes out all =
-
-controls in the mixer, this results in a high-pitched whine in the =
-
-speakers, which on certain laptops seem to cause the destruction of =
-
-something in the machine (likely the speakers themselves). It is further =
-
-speculated in the thread that what might be happening is acoustic feedback =
-
-from the speakers to the microphone, which would make sense given the =
-
-results, but would seem strange from a system design point of view.
-
-First of all, it would seem that this wouldn't be dependent on a =
-
-particular mixer application such as alsamixergui, but should be able to =
-
-happen with any mixer application, given the appropriate settings.
-
-Secondly, if you believe that alsamixergui specifically is missbehaving, =
-
-why don't you just take it out of your distribution (dCore)?
-
-Thirdly, and perhaps most importantly, this seems to be a hardware =
-
-problem. If the drive capability of the laptops's output stage is too much =
-
-for the speakers, then there is a serious design flaw in the hardware. =
-
-Given the proliferation of cheap PC hardware this is not surprising, but =
-
-it is hardly a software problem.
-
-And finally, as Clemens said, alsamixergui is not created by the ALSA =
-
-project, so this mailing list is the wrong place to look if none other =
-
-than for that particular reason.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+> +	return len;
+> +}
+> +EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
