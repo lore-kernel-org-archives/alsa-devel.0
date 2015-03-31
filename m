@@ -1,29 +1,16 @@
-From: "Nikita N." <nikitan@operamail.com>
-Subject: Re: Speaker burnout
-Date: Tue, 31 Mar 2015 12:14:20 -0700
-Message-ID: <1427829260.1063958.247709277.4E3DDE63@webmail.messagingengine.com>
-References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
- <5518F8F3.10304@ladisch.de>
- <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
- <55192FBC.1070307@ladisch.de>
- <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
- <551A6A15.1070605@canonical.com>
- <1427796392.581386.247465613.43178C71@webmail.messagingengine.com>
- <551A7A4D.203@canonical.com>
- <alpine.DEB.2.02.1503311322220.13892@lnxricardw1.se.axis.com>
- <551A88CA.7090802@canonical.com>
- <20150331154726.18fbe9b2@torsten-laptop>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: ASoC: cs4271: init/timing problem
+Date: Tue, 31 Mar 2015 16:01:01 -0500
+Message-ID: <alpine.DEB.2.10.1503311600000.13828@heelrod-desktop>
+References: <551A5FC9.4010109@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 86BB9264F23
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 21:14:21 +0200 (CEST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 8F0E420CB7
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 15:14:17 -0400 (EDT)
-In-Reply-To: <20150331154726.18fbe9b2@torsten-laptop>
+Received: from m0077473.ppops.net (mx0a-001ae601.pphosted.com [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DCEE265065
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 23:01:05 +0200 (CEST)
+In-Reply-To: <551A5FC9.4010109@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,66 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Torsten Schenk <torsten.schenk@zoho.com>, David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Pascal Huerst <pascal.huerst@gmail.com>
+Cc: brian.austin@cirrus.com, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-RGVhciBUb3JzdGVuLAoKPiBOaWtpdGEncywgdG9uZSBoZXJlIG9uIHRoZSBsaXN0LiBGaXJzdCBv
-ZiBhbGwsIHdoeSBhcmUgeW91IGNvbXBsYWluaW5nPwoKYXMgbWF0dGVyIG9mIGZhY3QsIGFuZCBh
-cyBhbHJlYWR5IHNhaWQsIHdlIGFyZSBub3QgYmxhbWluZyBhbnlvbmUuCkFsc28sIG91ciBjb21w
-bGFpbnMgYXJlIG5vdyBkZWZpbml0ZWx5IG92ZXIuCiJUaGUgVWJ1bnR1IGNvbW11bml0eSBpcyBi
-dWlsdCBvbiB0aGUgaWRlYXMgZW5zaHJpbmVkIGluIHRoZSBVYnVudHUKTWFuaWZlc3RvOiB0aGF0
-IHNvZnR3YXJlIHNob3VsZCBiZSBhdmFpbGFibGUgZnJlZSBvZiBjaGFyZ2UsIHRoYXQKc29mdHdh
-cmUgdG9vbHMgc2hvdWxkIGJlIHVzYWJsZSBieSBwZW9wbGUgaW4gdGhlaXIgbG9jYWwgbGFuZ3Vh
-Z2UgYW5kCmRlc3BpdGUgYW55IGRpc2FiaWxpdGllcywgYW5kIHRoYXQgcGVvcGxlIHNob3VsZCBo
-YXZlIHRoZSBmcmVlZG9tIHRvCmN1c3RvbWl6ZSBhbmQgYWx0ZXIgdGhlaXIgc29mdHdhcmUgaW4g
-d2hhdGV2ZXIgd2F5IHRoZXkgc2VlIGZpdC4iCklmIE1yLiBNYWFydGVuIHNlZSBmaXQgdGhpcyBz
-b2Z0d2FyZSBhcyBoZSByZWFsbHkgd2lzaGVzLCBub2JvZHkgY2FuCmNvbXBsYWluLCBhcyBsb25n
-IGFzIHRoZSBpZGVudGl0eSBvZiB0aGUgb3duZXIgb2YgdGhlIHNvZnR3YXJlIGlzIHdlbGwKY2xl
-YXIgYW5kIGtub3duLgpJZiBmdXJ0aGVyIGlzc3VlcyB3aWxsIHJpc2UsIHRoZSBMaW51eCBjb21t
-dW5pdHkgd2lsbCBrbm93IHRoZSBvd25lcgppZGVudGl0eSwgYW5kIGNvbnRhY3QgaGltIGRpcmVj
-dGx5IGluIHRoZSBtb3N0IGFwcHJvcHJpYXRlIHdheS4KCj4gQXMgeW91IGNhbiBzZWUsIG1hbnkg
-cGVvcGxlIG5vdyBhcmUgdHJ5aW5nIHRvIGZpZ3VyZSBvdXQgd2hhdCB0byBkbyB0byBmaXggdGhp
-cy4KV2UgYXJlIHZlcnkgaGFwcHkgYWJvdXQgdGhhdCwgYW5kIGFnYWluIHdlIGFwb2xvZ2l6ZSBp
-ZiBvdXIgdG9uZXMgaGFzCmJlZW4gbWF0dGVyIG9mIG1pc3VuZGVyc3RhbmRpbmcuCldlIGFyZSBu
-b3cgc3VyZSBhIHByb3BlciBzb2x1dGlvbiB3aWxsIGJlIGZvdW5kLgpCeSBub3csIHdhaXRpbmcg
-Zm9yIGEgbW9yZSBzdGFibGUgc29sdXRpb25zLCB3ZSB3b3VsZCBsaWtlIHRvIHN1Z2dlc3QsCmlm
-IHBvc3NpYmxlLCBwbGVhc2UgYWRkIGEgdmVyeSBzaW1wbGUgcG9wdXAsIG9ubHkgYSBzaW5nbGUg
-b25lIHdoZW4KYWxzYW1peGVyLXRleHQgYW5kL29yIGFsc2FtaXhlcmd1aSBhcmUgcnVuLCB3aXRo
-IHN1Y2ggc2ltaWxhciBtZXNzYWdlOgoiQ2F1dGlvbjogaW5jb3JyZWN0IHNldHRpbmdzIG1pZ2h0
-IGNhdXNlIGRhbWFnZSB0byB5b3VyIGF1ZGlvIGRldmljZXMiLgpUaGF0IHdvdWxkIHNhdmUgdXMg
-ZnJvbSBkb2luZyBpdCBvdXJzZWx2ZXMsIGF0IGltcG9ydCB0aW1lLgpUaGFuayB5b3UgZm9yIHlv
-dXIgYXR0ZW50aW9uLCBhbmQgcGxlYXNlIGtlZXAgdXAgd2l0aCB5b3VyIG91dHN0YW5kaW5nCmFj
-aGlldmVtZW50cy4KCi0tIAogIE5pa2l0YSBOLgogIG5pa2l0YW5Ab3BlcmFtYWlsLmNvbQoKCk9u
-IFR1ZSwgTWFyIDMxLCAyMDE1LCBhdCAwNjo0NyBBTSwgVG9yc3RlbiBTY2hlbmsgd3JvdGU6Cj4g
-SGkgZXZlcnlvbmUsCj4gCj4gSSBhbHNvIGZvbGxvd2VkIHRoZSBkaXNjdXNzaW9uLgo+IEZpcnN0
-IG9mIGFsbCBJIGhhdmUgdG8gYWdyZWUgdG8gTWFhcnRlbiB0aGF0IEkgZG9udCcgbGlrZSB5b3Vy
-LAo+IE5pa2l0YSdzLCB0b25lIGhlcmUgb24gdGhlIGxpc3QuIEZpcnN0IG9mIGFsbCwgd2h5IGFy
-ZSB5b3UgY29tcGxhaW5pbmc/Cj4gQXMgeW91IGNhbiBzZWUsIG1hbnkgcGVvcGxlIG5vdyBhcmUg
-dHJ5aW5nIHRvIGZpZ3VyZSBvdXQgd2hhdCB0byBkbyB0bwo+IGZpeCB0aGlzLiBCdXQgaW5zdGVh
-ZCB5b3Uga2VlcCBibGFtaW5nLCBhY2N1c2luZyBhbmQgb2ZmZW5kaW5nCj4gTWFhcnRlbi4gSGUg
-aXMgcmlnaHQgdGhhdCBhIG1peGVyIGFwcGxpY2F0aW9uIGp1c3QgYWxsb3dzIGNvbnRyb2xsaW5n
-Cj4gdGhvc2UgcGFyYW1ldGVycyB0aGUgaGFyZHdhcmUgdGVsbHMgdG8gYmUgbWFuaXB1bGF0YWJs
-ZS4gU28gdGhlIHRvb2wKPiBDQU5OT1QgYmUgaGVsZCByZXNwb25zaWJsZS4gUG9wcGluZyB1cCB3
-YXJuaW5ncyB3aWxsIGJlIGFubm95aW5nIGZvciBhbGwKPiB0aGUgdXNlcnMgdGhhdCBORUVEIHRv
-IHNldCB0aGUgdm9sdW1lIHRvIGEgaGlnaCBsZXZlbCBhbmQgd291bGQgYmUKPiBvdmVya2lsbCBp
-ZiBqdXN0IHZlcnkgZmV3IGRldmljZXMgYXJlIHRvIGJlIGFkZHJlc3NlZC4KPiAKPiBSZWdhcmRp
-bmcgdGhlIHRlY2huaWNhbCBzaWRlIG9mIHRoaXM6IFNpbmNlIGl0IGludGVyZXN0ZWQgbWUgaWYg
-dGhpcwo+IGhhcHBlbmVkIHRvIG90aGVyIHBlb3BsZSwgSSBmb3VuZCB0aGlzIHBvc3Q6Cj4gCj4g
-aHR0cDovL21hcmNpbi5qdXN6a2lld2ljei5jb20ucGwvMjAxMi8xMi8xMC9ob3ctdG8tZnJ5LXNw
-ZWFrZXJzLWluLXlvdXItY2hyb21lYm9vay8KPiAKPiBhbmQgdGhlIHByZXZpb3VzIHBvc3Qgb24g
-dGhpcyBzaXRlLgo+IFNvIGl0IHNlZW1zIHRoYXQgb24gYSBTYW1zdW5nIENocm9tZWJvb2sgeW91
-IGNhbiBkZWZpbml0aXZlbHkgYnVybiB5b3VyCj4gc3BlYWtlcnMuIE9uZSBjb21tZW50IGluc2lk
-ZSB0aGVzZSBwb3N0IEkgZm91bmQgbm90aWNlYWJsZToKPiAKPiA+IEnigJltIGd1ZXNzaW5nIHRo
-YXQgYSBwYXRoIHdhcyBzZXQgdXAgZnJvbSBNSUMxICh3aXJlZCB0byBETUlDIGluKSB0bwo+ID4g
-dGhlIGxlZnQgc3BlYWtlciBvdXRwdXQuIFBsYXlpbmcgdGhlIGRpZ2l0YWwgbWljIGlucHV0IGFz
-IGFuYWxvZyBhdAo+ID4gZnVsbCB2b2x1bWUgc2VlbXMgbGlrZSBzb21ldGhpbmcgdGhhdCBtaWdo
-dCBjYXVzZSBzcGVha2VyIGZhaWx1cmUsIGFuZAo+ID4gd291bGRu4oCZdCBuZWNlc3NhcmlseSBi
-ZSBhdWRpYmxlIHdoaWxlIGl0IGlzIGhhcHBlbmluZy4KPiAKPiBTbyB0aGlzIHdvdWxkIGluZGlj
-YXRlIHRoYXQgbm90IHRoZSB2b2x1bWUgbGV2ZWwgY2F1c2VzIHRoZSBkYW1hZ2UgYnV0Cj4gYSBi
-YWQgYXVkaW8gcm91dGluZy4KPiAKPiBSZWdhcmRzLAo+IFRvcnN0ZW4KPiAKCi0tIApodHRwOi8v
-d3d3LmZhc3RtYWlsLmNvbSAtIEFjY2VzcyBhbGwgb2YgeW91ciBtZXNzYWdlcyBhbmQgZm9sZGVy
-cwogICAgICAgICAgICAgICAgICAgICAgICAgIHdoZXJldmVyIHlvdSBhcmUKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, 31 Mar 2015, Pascal Huerst wrote:
+
+> Hey all,
+> 
+> We have a custom built hw, based on am335x and from time to time we need
+> to rmmod/modprobe the ASoC machine driver. Depending on the hw, the
+> first call to regmap_update_bits(..) in cs4271_codec_probe(..) fails
+> with -EREMOTEIO.
+> 
+> The error is originated in:
+> 
+> drivers/i2c/busses/i2c-omap.c
+> 
+> and happens if no i2c package acknowledge is received by the host.
+> 
+> I think this is a timing issue and on some devices, the codec is just
+> not ready yet, for communication.
+> 
+> What is the right way to fix that? My attempt would be something like this:
+
+The error you are referring to is a NACK from a device (CODEC). That is 
+usually seen when you dont have it hooked up correctly. Could also be that 
+the I2C bus is too fast. How fast are you running the bus?
+
+-Brian 
