@@ -1,42 +1,37 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 00/25] treewide: Use bool function return values of
- true/false not 1/0
-Date: Mon, 30 Mar 2015 17:14:48 -0700
-Message-ID: <1427760888.14276.37.camel@perches.com>
-References: <cover.1427759009.git.joe@perches.com>
-	 <5519E53B.5040504@schaufler-ca.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC v2][PATCH 00/11] digi00x: new driver for
+ Digidesign 002/003 family
+Date: Tue, 31 Mar 2015 09:23:35 +0900
+Message-ID: <5519E907.40003@sakamocchi.jp>
+References: <1427641531-9047-1-git-send-email-o-takashi@sakamocchi.jp>
+ <551815D7.80602@sakamocchi.jp> <55182C2B.5000307@zamaudio.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <5519E53B.5040504@schaufler-ca.com>
-Sender: owner-linux-mm@kvack.org
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-omap@vger.kernel.org, kvm-ppc@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-ide@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net, linux-mm@kvack.org, linux-pm@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, patches@opensource.wolfsonmicro.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33451260603
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 02:23:41 +0200 (CEST)
+In-Reply-To: <55182C2B.5000307@zamaudio.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2015-03-30 at 17:07 -0700, Casey Schaufler wrote:
-> On 3/30/2015 4:45 PM, Joe Perches wrote:
-> > Joe Perches (25):
-> >   arm: Use bool function return values of true/false not 1/0
+On Mar 30 2015 01:45, Damien Zammit wrote:
+> Good job Takashi, is there any way we can push forward to get it upstream?
 
-[etc...]
+All of remained issues should be clear, somewhat. Please see the first
+post of this patchset.
 
-> Why, and why these in particular?
 
-bool functions are probably better returning
-bool values instead of 1 and 0.
+Regards
 
-Especially when the functions intermix returning
-returning 1/0 and true/false.
-
-(there are only a couple of those though)
-
-These are all the remaining instances in the
-kernel tree.
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Takashi Sakamoto
