@@ -1,70 +1,103 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: pcm512x: Do not redefine
-	DIV_ROUND_CLOSEST_ULL
-Date: Mon, 30 Mar 2015 22:31:02 -0300
-Message-ID: <1427765462-7318-1-git-send-email-festevam@gmail.com>
+From: Scott Branden <sbranden@broadcom.com>
+Subject: [PATCH 1/2] ASoC: cygnus-audio: adding device tree bindings
+Date: Mon, 30 Mar 2015 20:16:23 -0700
+Message-ID: <1427771784-29950-2-git-send-email-sbranden@broadcom.com>
+References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f178.google.com (mail-qc0-f178.google.com
- [209.85.216.178])
- by alsa0.perex.cz (Postfix) with ESMTP id CD311260603
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 03:31:17 +0200 (CEST)
-Received: by qcgx3 with SMTP id x3so2435576qcg.3
- for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2015 18:31:16 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, peda@axentia.se
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org, Dmitry Torokhov <dtor@google.com>, Anatol Pomazao <anatol@google.com>, abrestic@google.com, bryeung@google.com, olofj@google.com, pwestin@google.com, Lori Hikichi <lhikichi@broadcom.com>, Scott Branden <sbranden@broadcom.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+From: Lori Hikichi <lhikichi@broadcom.com>
 
-DIV_ROUND_CLOSEST_ULL is already defined at <linux/kernel.h>, so use the 
-definition from this header file rather than re-defining it locally.
+Add device tree binding documentation for the Cygnus SOC audio block
 
-This fixes the following build warning:
-
-sound/soc/codecs/pcm512x.c:34:0: warning: "DIV_ROUND_CLOSEST_ULL" redefined [enabled by default]
-In file included from include/linux/list.h:8:0,
-                 from include/linux/module.h:9,
-                 from sound/soc/codecs/pcm512x.c:19:
-include/linux/kernel.h:110:0: note: this is the location of the previous definition
-
-Reported-by: Olof's autobuilder <build@lixom.net>
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Reviewed-by: Jonathan Richardson <jonathar@broadcom.com>
+Reviewed-by: Ray Jui <rjui@broadcom.com>
+Signed-off-by: Scott Branden <sbranden@broadcom.com>
+Signed-off-by: Lori Hikichi <lhikichi@broadcom.com>
 ---
- sound/soc/codecs/pcm512x.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ .../bindings/sound/brcm,cygnus-audio.txt           | 68 ++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
 
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 5a30fdd..e12764d 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -18,6 +18,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/clk.h>
-+#include <linux/kernel.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-@@ -31,8 +32,6 @@
- 
- #define DIV_ROUND_DOWN_ULL(ll, d) \
- 	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
--#define DIV_ROUND_CLOSEST_ULL(ll, d) \
--	({ unsigned long long _tmp = (ll)+(d)/2; do_div(_tmp, d); _tmp; })
- 
- #define PCM512x_NUM_SUPPLIES 3
- static const char * const pcm512x_supply_names[PCM512x_NUM_SUPPLIES] = {
+diff --git a/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+new file mode 100644
+index 0000000..5358cc3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/brcm,cygnus-audio.txt
+@@ -0,0 +1,68 @@
++BROADCOM Cygnus Audio I2S/TDM/SPDIF controller
++
++Required properties:
++	- compatible : "brcm,cygnus-audio"
++	- #address-cells: 32bit valued, 1 cell. <1>
++	- #size-cells:  32bit valued, 1 cell. <1>
++	- reg : Should contain audio registers location and length
++	- interrupts: audio DMA interrupt number
++
++SSP Subnode properties:
++- dai-name: The name of the DAI registered with ASOC
++- ssp-port-id: The ssp port interface to use
++	Valid value are 0, 1, 2, or 3 (for spdif)
++- mode: Controls if this port should be configured as I2S or TDM mode.
++	Valid values are: "tdm" or "i2s"
++- tdm-bits-per-frame:  only if mode is "tdm" then this property must set.
++	Valid values are (128/256/512)
++- port-status: Controls if port is enabled or not
++	Valid values "enabled" or "disabled"
++- channel-group: Control grouping of serial port
++	Valid values are "2_0", "3_1", or "5_1"
++
++Example:
++	cygnus_audio: audio@0x180ae000 {
++		compatible = "brcm,cygnus-audio";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0x180ae000 0x1000>;
++
++		interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>;
++
++		ssp0: ssp_port@0 {
++			dai-name = "cygnus-ssp0";
++			ssp-port-id = <0>;
++
++			mode = "i2s"; /* "i2s" or "tdm" */
++			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
++			port-status = "enabled";
++		};
++
++		ssp1: ssp_port@1 {
++			dai-name = "cygnus-ssp1";
++			ssp-port-id = <1>;
++
++			mode = "i2s"; /* "i2s" or "tdm" */
++			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
++			port-status = "disabled";
++		};
++
++		ssp2: ssp_port@2 {
++			dai-name = "cygnus-ssp2";
++			ssp-port-id = <2>;
++
++			mode = "tdm"; /* "i2s" or "tdm" */
++			tdm-bits-per-frame = <256>;
++			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
++			port-status = "disabled";
++		};
++
++		spdif: spdif_port@3 {
++			dai-name = "cygnus-spdif";
++			ssp-port-id = <3>;
++
++			mode = "i2s"; /* "i2s" or "tdm" */
++			channel-group = "2_0"; /* Use 2_0, 3_1, 5_1 */
++			port-status = "disabled";
++		};
++	};
 -- 
-1.9.1
+2.3.3
