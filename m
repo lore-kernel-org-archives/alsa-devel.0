@@ -1,92 +1,60 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Speaker burnout
-Date: Tue, 31 Mar 2015 13:45:14 +0200
-Message-ID: <551A88CA.7090802@canonical.com>
-References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
- <5518F8F3.10304@ladisch.de>
- <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
- <55192FBC.1070307@ladisch.de>
- <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
- <551A6A15.1070605@canonical.com>
- <1427796392.581386.247465613.43178C71@webmail.messagingengine.com>
- <551A7A4D.203@canonical.com>
- <alpine.DEB.2.02.1503311322220.13892@lnxricardw1.se.axis.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 02/11] drm: bridge/dw_hdmi: use
+ drm_hdmi_avi_infoframe_from_display_mode()
+Date: Tue, 31 Mar 2015 12:57:18 +0100
+Message-ID: <20150331115718.GS24899@n2100.arm.linux.org.uk>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+ <E1YcfXa-0002uU-E3@rmk-PC.arm.linux.org.uk>
+ <551A629C.5010306@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EB56261AA5
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 13:45:15 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1503311322220.13892@lnxricardw1.se.axis.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikita N." <nikitan@operamail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <551A629C.5010306@rock-chips.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Yang Kuankuan <ykk@rock-chips.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 2015-03-31 13:31, Ricard Wanderlof wrote:
->
-> On Tue, 31 Mar 2015, David Henningsson wrote:
->
->> On 2015-03-31 12:06, Nikita N. wrote:
->>>> If you have any concrete examples (alsa-info please!) of speakers that
->>>> can be burned out, and you know a maximum speaker volume where this
->>> As we said, that is not our bug, we are not audio experts, nor any of us
->>> is interested in audio matters.
->>
->> Here's my suggestion how to move forward on this:
->>
->>    1) Gather consensus that limit the maximum volume on internal speakers
->> is the right way forward. Takashi, Clemens, anyone against that strategy?
->>
->>    2) From the person with the hardware, we will need alsa-info (
->> https://wiki.ubuntu.com/Audio/AlsaInfo ), and also the max volume where
->> this does not happen. Is -6 dB good enough? -12 dB? I don't know - this
->> is something someone with the hardware must tell us, it cannot simply be
->> guessed.
->>
->>    3) I or someone else can write a kernel patch that limits the maximum
->> volume of the speakers to the amount deducted from point 2). Considering
->> that we're actually dealing with hardware breakage, this should be sent
->> to stable as well. Then no userspace application can set the volume
->> higher than our limit.
->
-> While we could technically limit the output level in a driver, the output
-> level at which the speakers get damaged must surely depend not only on the
-> codec but also on the particular analog output stage driving the speakers
-> (assuming it's not built into the codec), the speakers themselves, as well
-> as any other hardware on the board, for instance coupling capacitors, or
-> potential overload protection circuitry, most of which are components
-> which we cannot identify in the driver.
->
-> My point is that unless this is a problem with a very specific hardware,
-> there's no way the software can actually know what a "dangerous" level
-> would be, and hence we cannot limit it in software. What is a "dangerous"
-> level in one setup could be an unusably low level in another setup, where
-> both setups look identical from a driver point of view.
->
-> I'm thinking that any limits must be dependent on a particular hardware
-> setup, which means in order to be successful, we would have to extract
-> some sort of model name of the system we're actually running on, to be
-> compared against some sort of graylist. With the proliferation of model
-> names of PC:s, such a list would be sketchy at best.
-
-Yes, this is a problem with very specific hardware, and that's why I 
-asked for alsa-info - part of what we get from that is somewhat of a 
-unique model-ID (in the form of a PCI SSID).
-
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+T24gVHVlLCBNYXIgMzEsIDIwMTUgYXQgMDU6MDI6MjBBTSAtMDQwMCwgWWFuZyBLdWFua3VhbiB3
+cm90ZToKPiBCZXNpZGVzLCBhcyB5b3UgYXJlIGdvaW5nIGFuIGR3X2hkbWkgY2xlYW51cHMsIEkg
+d2FudCB0byBwb2ludCBhbm90aGVyIGJ1Z3MKPiB0aGF0IHJlbGF0ZSB0byB0aGUgSERNSSBDVFMg
+dGVzdC4gVGhlcmUgYXJlIHNvbWV0aGluZ3Mgd3Jvbmcgd2l0aCBHZW5lcmFsCj4gQ29udHJvbCBQ
+YWNrLCBhcyBmb3Igbm93IHRoZSBlbmNvZGVyIGNvbG9yIGRlcHRoIGlzIDgtYml0IHBhY2tpbmcg
+bW9kZSwKPiBzbyB0aGUgY29sb3IgZGVwdGggb25seSBzdXBwb3J0IDI0IGJpdHMgcGVyIHBpeGVs
+IHZpZGVvLCBJbiB0aGlzIGNhc2UgdGhlCj4gQ0QgZmlsZWQgaW4gR0NQIHNob3VsZCBzZXQgdG8g
+IkNvbG9yIERlcHRoIE5vdCBpbmRpY2F0ZWQiLgoKSSdtIG5vdCBzdXJlIEkgZm9sbG93LgoKQWNj
+b3JkaW5nIHRvIHRoZSBpTVg2IGRvY3VtZW50YXRpb24sIHNldHRpbmcgdGhlIENEIGZpZWxkIHRv
+IGVpdGhlciAwMDAwCm9yIDAxMDAgaW5kaWNhdGVzIHRoYXQgdGhlIGNvbG9yIGRlcHRoIGlzIDI0
+IGJpdHMgcGVyIHBpeGVsLCA4IGJpdHMgcGVyCmNvbXBvbmVudCwgOCBiaXQgcGFja2luZyBtb2Rl
+IC0gdGhlcmUncyBubyBkb2N1bWVudGVkIGRpZmZlcmVuY2UgYmV0d2Vlbgp0aGVzZS4KCkFyZSB5
+b3Ugc2F5aW5nIHRoYXQgeW91IHdpc2ggdG8gcGFzcyBzb21ldGhpbmcgb3RoZXIgdGhhbiAyNCBi
+cHAgdmlkZW8KdG8geW91ciBIRE1JIGVuY29kZXI/Cgo+IEluIHRoZSBlbmQgd2Ugc2hvdWxkIGtl
+ZXAgdGhlICpjc2NfY29sb3JfZGVwdGgoSERNSV9DU0NfU0NBTEUpKiAmCj4gKmNvbG9yX2RlcHRo
+KEhETUlfVlBfUFJfQ0QpKiB0byB6ZXJvLCBjb2RlIHNob3VsZCBtb2RpZnkgbGlrZSB0aGlzIEdD
+UAo+IHdvdWxkIHRlc3QgcGFzczoKCkZyb20gd2hhdCB5b3UncmUgZGVzY3JpYmluZywgeW91IHdh
+bnQgQ0QgZmllbGQgPSAwIGFuZCBDU0NfU0NBTEUgPSAwLgpJdCBsb29rcyBsaWtlIGhkbWlfdmlk
+ZW9fcGFja2V0aXplKCkgd2lsbCBzZXQgdGhlIENEIGZpZWxkIHRvIHplcm8gaWYKaGRtaV9kYXRh
+LmVuY19jb2xvcl9kZXB0aCA9IDAsIGJ1dCB0aGF0IHdvdWxkIGNhdXNlIGhkbWlfdmlkZW9fc2Ft
+cGxlKCkKYW5kIGhkbWlfdmlkZW9fY3NjKCkgdG8gZmFpbC4gIE1heWJlIHRob3NlIHR3byBmdW5j
+dGlvbnMgc2hvdWxkIGJlIGZpeGVkCnRvIGFjY2VwdCBhIGNvbG9yIGRlcHRoIG9mIHplcm8sIGFu
+ZCBtYXliZSB5b3UgbmVlZCB0byBzZXQKZW5jX2NvbG9yX2RlcHRoIHRvIDA/CgpJbnRlcmVzdGlu
+Z2x5LCBIRE1JX0NTQ19TQ0FMRV9DU0NfQ09MT1JERV9QVEhfMjRCUFAgaXMgZGVmaW5lZCB0byBi
+ZQp6ZXJvLCBidXQgYWdhaW4sIGluIHRoZSBpTVg2IGRhdGEsIGl0IGNvdWxkIHRha2UgYSB2YWx1
+ZSBvZiBlaXRoZXIKMHgwMCBvciAweDQwLiAgSSB0aGluayBoZG1pX3ZpZGVvX2NzYygpIHNob3Vs
+ZCBzZXQgdGhpcyB0byAweDQwIGlmCmhkbWlfZGF0YS5lbmNfY29sb3JfZGVwdGggPSAwLCBhbmQg
+MHg0MCBmb3IgaGRtaV9kYXRhLmVuY19jb2xvcl9kZXB0aCA9IDguCgotLSAKRlRUQyBicm9hZGJh
+bmQgZm9yIDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEwLjVNYnBzIGRvd24gNDAwa2JwcyB1
+cAphY2NvcmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9kcmktZGV2ZWwK
