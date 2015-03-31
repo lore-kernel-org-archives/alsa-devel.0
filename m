@@ -1,60 +1,52 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 02/11] drm: bridge/dw_hdmi: use
- drm_hdmi_avi_infoframe_from_display_mode()
-Date: Tue, 31 Mar 2015 12:57:18 +0100
-Message-ID: <20150331115718.GS24899@n2100.arm.linux.org.uk>
-References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
- <E1YcfXa-0002uU-E3@rmk-PC.arm.linux.org.uk>
- <551A629C.5010306@rock-chips.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: bug
+Date: Tue, 31 Mar 2015 14:42:08 +0200
+Message-ID: <551A9620.6090308@ladisch.de>
+References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>	<5518F8F3.10304@ladisch.de>	<1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>	<55192FBC.1070307@ladisch.de>	<1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>	<551A4A2E.8040905@blennerhassett.gen.nz>	<1427789953.2143209.247430925.7143290B@webmail.messagingengine.com>	<551A5D21.8000406@ladisch.de>
+ <1427792714.2152814.247446829.32E51ED1@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <551A629C.5010306@rock-chips.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Yang Kuankuan <ykk@rock-chips.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id F03FA261A7F
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 14:42:11 +0200 (CEST)
+In-Reply-To: <1427792714.2152814.247446829.32E51ED1@webmail.messagingengine.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Nikita N." <nikitan@operamail.com>
+Cc: alsa-devel@alsa-project.org, Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBNYXIgMzEsIDIwMTUgYXQgMDU6MDI6MjBBTSAtMDQwMCwgWWFuZyBLdWFua3VhbiB3
-cm90ZToKPiBCZXNpZGVzLCBhcyB5b3UgYXJlIGdvaW5nIGFuIGR3X2hkbWkgY2xlYW51cHMsIEkg
-d2FudCB0byBwb2ludCBhbm90aGVyIGJ1Z3MKPiB0aGF0IHJlbGF0ZSB0byB0aGUgSERNSSBDVFMg
-dGVzdC4gVGhlcmUgYXJlIHNvbWV0aGluZ3Mgd3Jvbmcgd2l0aCBHZW5lcmFsCj4gQ29udHJvbCBQ
-YWNrLCBhcyBmb3Igbm93IHRoZSBlbmNvZGVyIGNvbG9yIGRlcHRoIGlzIDgtYml0IHBhY2tpbmcg
-bW9kZSwKPiBzbyB0aGUgY29sb3IgZGVwdGggb25seSBzdXBwb3J0IDI0IGJpdHMgcGVyIHBpeGVs
-IHZpZGVvLCBJbiB0aGlzIGNhc2UgdGhlCj4gQ0QgZmlsZWQgaW4gR0NQIHNob3VsZCBzZXQgdG8g
-IkNvbG9yIERlcHRoIE5vdCBpbmRpY2F0ZWQiLgoKSSdtIG5vdCBzdXJlIEkgZm9sbG93LgoKQWNj
-b3JkaW5nIHRvIHRoZSBpTVg2IGRvY3VtZW50YXRpb24sIHNldHRpbmcgdGhlIENEIGZpZWxkIHRv
-IGVpdGhlciAwMDAwCm9yIDAxMDAgaW5kaWNhdGVzIHRoYXQgdGhlIGNvbG9yIGRlcHRoIGlzIDI0
-IGJpdHMgcGVyIHBpeGVsLCA4IGJpdHMgcGVyCmNvbXBvbmVudCwgOCBiaXQgcGFja2luZyBtb2Rl
-IC0gdGhlcmUncyBubyBkb2N1bWVudGVkIGRpZmZlcmVuY2UgYmV0d2Vlbgp0aGVzZS4KCkFyZSB5
-b3Ugc2F5aW5nIHRoYXQgeW91IHdpc2ggdG8gcGFzcyBzb21ldGhpbmcgb3RoZXIgdGhhbiAyNCBi
-cHAgdmlkZW8KdG8geW91ciBIRE1JIGVuY29kZXI/Cgo+IEluIHRoZSBlbmQgd2Ugc2hvdWxkIGtl
-ZXAgdGhlICpjc2NfY29sb3JfZGVwdGgoSERNSV9DU0NfU0NBTEUpKiAmCj4gKmNvbG9yX2RlcHRo
-KEhETUlfVlBfUFJfQ0QpKiB0byB6ZXJvLCBjb2RlIHNob3VsZCBtb2RpZnkgbGlrZSB0aGlzIEdD
-UAo+IHdvdWxkIHRlc3QgcGFzczoKCkZyb20gd2hhdCB5b3UncmUgZGVzY3JpYmluZywgeW91IHdh
-bnQgQ0QgZmllbGQgPSAwIGFuZCBDU0NfU0NBTEUgPSAwLgpJdCBsb29rcyBsaWtlIGhkbWlfdmlk
-ZW9fcGFja2V0aXplKCkgd2lsbCBzZXQgdGhlIENEIGZpZWxkIHRvIHplcm8gaWYKaGRtaV9kYXRh
-LmVuY19jb2xvcl9kZXB0aCA9IDAsIGJ1dCB0aGF0IHdvdWxkIGNhdXNlIGhkbWlfdmlkZW9fc2Ft
-cGxlKCkKYW5kIGhkbWlfdmlkZW9fY3NjKCkgdG8gZmFpbC4gIE1heWJlIHRob3NlIHR3byBmdW5j
-dGlvbnMgc2hvdWxkIGJlIGZpeGVkCnRvIGFjY2VwdCBhIGNvbG9yIGRlcHRoIG9mIHplcm8sIGFu
-ZCBtYXliZSB5b3UgbmVlZCB0byBzZXQKZW5jX2NvbG9yX2RlcHRoIHRvIDA/CgpJbnRlcmVzdGlu
-Z2x5LCBIRE1JX0NTQ19TQ0FMRV9DU0NfQ09MT1JERV9QVEhfMjRCUFAgaXMgZGVmaW5lZCB0byBi
-ZQp6ZXJvLCBidXQgYWdhaW4sIGluIHRoZSBpTVg2IGRhdGEsIGl0IGNvdWxkIHRha2UgYSB2YWx1
-ZSBvZiBlaXRoZXIKMHgwMCBvciAweDQwLiAgSSB0aGluayBoZG1pX3ZpZGVvX2NzYygpIHNob3Vs
-ZCBzZXQgdGhpcyB0byAweDQwIGlmCmhkbWlfZGF0YS5lbmNfY29sb3JfZGVwdGggPSAwLCBhbmQg
-MHg0MCBmb3IgaGRtaV9kYXRhLmVuY19jb2xvcl9kZXB0aCA9IDguCgotLSAKRlRUQyBicm9hZGJh
-bmQgZm9yIDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEwLjVNYnBzIGRvd24gNDAwa2JwcyB1
-cAphY2NvcmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9kcmktZGV2ZWwK
+Nikita N. wrote:
+>> http://www.iua.upf.es/~mdeboer/projects/alsamixergui/
+>
+> this link is broken, please provide a correct one
+
+This is the last known link.
+
+>> Please note that _every_ mixer application on _every_ OS might be able
+>> to set the controls to those dangerous values.
+>
+> is it "might" or it is?
+
+I was not able to test all of them.  But I would be surprised if there
+is any mixer that knows about this broken hardware and somehow restricts
+the mixer ranges.
+
+> Is also your alsamixer textual version tool, capable of speakers
+> burnout?
+
+As I already wrote above, on that hardware, I estimate that _every_
+mixer tool is capable of that.
+
+
+Regards,
+Clemens
