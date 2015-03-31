@@ -1,53 +1,128 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 0/2] Cygnus Audio Driver
-Date: Tue, 31 Mar 2015 07:43:38 +0100
-Message-ID: <20150331064338.GE2869@sirena.org.uk>
-References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
+From: Yang Kuankuan <ykk@rock-chips.com>
+Subject: Re: [PATCH RFC 01/11] drm: bridge/dw_hdmi: clean up
+	hdmi_set_clk_regenerator()
+Date: Tue, 31 Mar 2015 02:55:53 -0400
+Message-ID: <551A44F9.80108@rock-chips.com>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+ <E1YcfXV-0002uL-9O@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1MovezAcxqLtNama"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1427771784-29950-1-git-send-email-sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Dmitry Torokhov <dtor-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Anatol Pomazao <anatol-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, abrestic-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, bryeung-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, pwestin-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id E12BC26053B
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 08:55:13 +0200 (CEST)
+In-Reply-To: <E1YcfXV-0002uL-9O@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Russell,
 
---1MovezAcxqLtNama
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 03/30/2015 03:40 PM, Russell King wrote:
+> Clean up hdmi_set_clk_regenerator() by allowing it to take the audio
+> sample rate and ratio directly, rather than hiding it inside the
+> function.  Raise the unsupported pixel clock/sample rate message from
+> debug to error level as this results in audio not working correctly.
+>
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> ---
+>   drivers/gpu/drm/bridge/dw_hdmi.c | 32 +++++++++++++++-----------------
+>   1 file changed, 15 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
+> index cca1c3d165e2..49df6c8c4ea8 100644
+> --- a/drivers/gpu/drm/bridge/dw_hdmi.c
+> +++ b/drivers/gpu/drm/bridge/dw_hdmi.c
+> @@ -335,39 +335,37 @@ static unsigned int hdmi_compute_cts(unsigned int freq, unsigned long pixel_clk,
+>   }
+>   
+>   static void hdmi_set_clk_regenerator(struct dw_hdmi *hdmi,
+> -				     unsigned long pixel_clk)
+> +	unsigned long pixel_clk, unsigned int sample_rate, unsigned int ratio)
+>   {
+> -	unsigned int clk_n, clk_cts;
+> +	unsigned int n, cts;
+>   
+> -	clk_n = hdmi_compute_n(hdmi->sample_rate, pixel_clk,
+> -			       hdmi->ratio);
+> -	clk_cts = hdmi_compute_cts(hdmi->sample_rate, pixel_clk,
+> -				   hdmi->ratio);
+> -
+> -	if (!clk_cts) {
+> -		dev_dbg(hdmi->dev, "%s: pixel clock not supported: %lu\n",
+> -			__func__, pixel_clk);
+> -		return;
+> +	n = hdmi_compute_n(sample_rate, pixel_clk, ratio);
+> +	cts = hdmi_compute_cts(sample_rate, pixel_clk, ratio);
+> +	if (!cts) {
+> +		dev_err(hdmi->dev,
+> +			"%s: pixel clock/sample rate not supported: %luMHz / %ukHz\n",
+> +			__func__, pixel_clk, sample_rate);
+>   	}
+>   
+> -	dev_dbg(hdmi->dev, "%s: samplerate=%d  ratio=%d  pixelclk=%lu  N=%d cts=%d\n",
+> -		__func__, hdmi->sample_rate, hdmi->ratio,
+> -		pixel_clk, clk_n, clk_cts);
+> +	dev_dbg(hdmi->dev, "%s: samplerate=%ukHz ratio=%d pixelclk=%luMHz N=%d cts=%d\n",
+> +		__func__, sample_rate, ratio, pixel_clk, n, cts);
+>   
+> -	hdmi_set_cts_n(hdmi, clk_cts, clk_n);
+> +	hdmi_set_cts_n(hdmi, cts, n);
+>   }
+>   
+>   static void hdmi_init_clk_regenerator(struct dw_hdmi *hdmi)
+>   {
+>   	mutex_lock(&hdmi->audio_mutex);
+> -	hdmi_set_clk_regenerator(hdmi, 74250000);
+> +	hdmi_set_clk_regenerator(hdmi, 74250000, hdmi->sample_rate,
+> +				 hdmi->ratio);
+>   	mutex_unlock(&hdmi->audio_mutex);
+>   }
+>   
+>   static void hdmi_clk_regenerator_update_pixel_clock(struct dw_hdmi *hdmi)
+>   {
+>   	mutex_lock(&hdmi->audio_mutex);
+> -	hdmi_set_clk_regenerator(hdmi, hdmi->hdmi_data.video_mode.mpixelclock);
+> +	hdmi_set_clk_regenerator(hdmi, hdmi->hdmi_data.video_mode.mpixelclock,
+> +				 hdmi->sample_rate, hdmi->ratio);
 
-On Mon, Mar 30, 2015 at 08:16:22PM -0700, Scott Branden wrote:
+I'm okay with this change, and also I am preparing that collect N/CTS
+setting to an array, like this :
 
-> The audio PLL is embedded in the audio block and only used
-> by the audio block. The audio PLL registers are also in the middle of=20
-> the audio register map.
+     struct n_cts {
+         unsigned int cts;
+         unsigned int n;
+     };
 
-When you say it's only used by the audio block do you mean to say that
-the audio block exposes no clock signals other than the bit and frame
-clocks?
+     struct tmds_n_cts {
+         unsigned long tmds;
+         /* 1 entry each for 32KHz, 44.1KHz, and 48KHz */
+         struct n_cts n_cts[3];
+     };
 
---1MovezAcxqLtNama
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+     static const struct tmds_n_cts n_cts_table[] = {
+         { 25175000, {{ 28125,  4576}, { 31250,  7007}, { 25175, 6144} } },
+     }
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+But I am confused by the "hdmi->ratio", this variable was modify to 100 
+in bind
+funciton, then nowhere would change it again. In this case "hdmi->ratio" 
+seems
+an unused variable, can we remove it ?
 
-iQEcBAEBCAAGBQJVGkIaAAoJECTWi3JdVIfQGrEH/iGykGJzu81+lPktlVNEUG8q
-h79v8GTsjD2eXwqtvpPrlOMUk0WxFNSXh2C/tdK/rNkUxip62VdBh9Y5lUkXKpZn
-hvnrlsUrGz1zBYT4nj30PdrzkdboUUdoatmBe+Njgrw688llicw2d6/2QDYzEqy3
-3wr7FiS2eiu9QGPbf1/zrOC7XJ5wDOqoJ8xOJYy8x44evs4NWWyl20VFlZjjUfk1
-ZVvCkkq1X5ahmnGtNe9a8BVZqNbMJ7qAw/lUOIINsdmUHZMYPRyhZQnCjnyBrgch
-hz0qOtzB1AiO1yMU/yf0Mbn1NMC+4kiUsNMrF85LyD3TWkssaIA2UH5RS/FIJCE=
-=uHqD
------END PGP SIGNATURE-----
+Best regards.
+Yakir Yang
 
---1MovezAcxqLtNama--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>   	mutex_unlock(&hdmi->audio_mutex);
+>   }
+>   
