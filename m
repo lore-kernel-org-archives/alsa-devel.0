@@ -1,110 +1,64 @@
-From: Maarten de Boer <maarten@resorama.com>
-Subject: Re: bug
-Date: Tue, 31 Mar 2015 12:26:04 +0200
-Message-ID: <D1185AE0-6829-4E51-AD60-EED3D63B677F@resorama.com>
-References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
- <5518F8F3.10304@ladisch.de>
- <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
- <55192FBC.1070307@ladisch.de>
- <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
- <alpine.DEB.2.02.1503311008160.13892@lnxricardw1.se.axis.com>
- <1427792161.2150884.247436393.3D8D2571@webmail.messagingengine.com>
- <alpine.DEB.2.02.1503311111460.13892@lnxricardw1.se.axis.com>
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
- by alsa0.perex.cz (Postfix) with ESMTP id C95782614F4
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 12:26:12 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1503311111460.13892@lnxricardw1.se.axis.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Nikita N." <nikitan@operamail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 01/11] drm: bridge/dw_hdmi: clean up
+ hdmi_set_clk_regenerator()
+Date: Tue, 31 Mar 2015 11:35:19 +0100
+Message-ID: <20150331103519.GR24899@n2100.arm.linux.org.uk>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+ <E1YcfXV-0002uL-9O@rmk-PC.arm.linux.org.uk>
+ <551A44F9.80108@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <551A44F9.80108@rock-chips.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Yang Kuankuan <ykk@rock-chips.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-I am the author of alsamixergui. I am not actively maintaining alsamixergui=
- anymore (and haven=92t been for years). It is pretty much coincidence that=
- I saw this mail thread; a slightly more informative subject would have hel=
-ped.
-
-There is not much that I can add to this thread (thanks everyone for your r=
-eplies), but in short:
-
-- alsamixergui is just a graphical frontend, and exposes the mixer capabili=
-ties of the sound card in the same way alsamixer, amixer or any other alsa =
-mixer does, so this is not alsamixergui specific. (strongly based on the al=
-samixer code (verbatim) with fltk gui code added to it.).
-
-- this is not a software problem, this is a hardware problem. The user adju=
-sts the mixer to cause a feedback between speaker and internal microphone, =
-and leaves this running for >30 seconds, and his hardware can=92t deal with=
- it. It is probably not even operating system specific.
-
-Finally, I really don=92t like the tone you use, Nikita, particularly your =
-talk of =93exposing the individuals guilty=94 and your accusations of secre=
-cy. And "expose clearly to the public that tool as a virus/malware, and inf=
-orm the antivirus authorities about it.=94, really? Good luck with that.
-
-If you want to blacklist alsamixergui from your distro, please go ahead, bu=
-t don=92t forget to blacklist alsamixer and amixer too, as well as any othe=
-r alsa mixer front ends.
-
-Maarten
-
-
-On 31 Mar 2015, at 11:14, Ricard Wanderlof <ricard.wanderlof@axis.com> wrot=
-e:
-
-> =
-
-> On Tue, 31 Mar 2015, Nikita N. wrote:
-> =
-
->>> alsamixergui is not created by the ALSA =
-
->>> project, so this mailing list is the wrong place to look if none other =
-
->>> than for that particular reason.
->> Sure, we would be very grateful if you could point that out, so we can
->> contact the individual who programmed this tool
->> Unless it's not a secret or there is smtng to hide.
-> =
-
-> I have no idea who wrote it, Clemens posted a link but at to me it seems =
-
-> dead, there should be something in the source code (perhaps that's where =
-
-> he got it frome?). Could very well be that it was written by someone who =
-
-> has since moved on to other things so that any links or email adresses ar=
-e =
-
-> outdated. It's not necessarily a secret, it could just be unknown at this =
-
-> point, and if the person who wrote it is not actively maintaining it any =
-
-> more there's probably little to be gained from contacting him.
-> =
-
-> /Ricard
-> -- =
-
-> Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden            www.axis.com
-> Phone +46 46 272 2016                           Fax +46 46 13 61 30
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gVHVlLCBNYXIgMzEsIDIwMTUgYXQgMDI6NTU6NTNBTSAtMDQwMCwgWWFuZyBLdWFua3VhbiB3
+cm90ZToKPiBIaSBSdXNzZWxsLAo+IAo+IEknbSBva2F5IHdpdGggdGhpcyBjaGFuZ2UsIGFuZCBh
+bHNvIEkgYW0gcHJlcGFyaW5nIHRoYXQgY29sbGVjdCBOL0NUUwo+IHNldHRpbmcgdG8gYW4gYXJy
+YXksIGxpa2UgdGhpcyA6Cj4gCj4gICAgIHN0cnVjdCBuX2N0cyB7Cj4gICAgICAgICB1bnNpZ25l
+ZCBpbnQgY3RzOwo+ICAgICAgICAgdW5zaWduZWQgaW50IG47Cj4gICAgIH07Cj4gCj4gICAgIHN0
+cnVjdCB0bWRzX25fY3RzIHsKPiAgICAgICAgIHVuc2lnbmVkIGxvbmcgdG1kczsKPiAgICAgICAg
+IC8qIDEgZW50cnkgZWFjaCBmb3IgMzJLSHosIDQ0LjFLSHosIGFuZCA0OEtIeiAqLwo+ICAgICAg
+ICAgc3RydWN0IG5fY3RzIG5fY3RzWzNdOwo+ICAgICB9Owo+IAo+ICAgICBzdGF0aWMgY29uc3Qg
+c3RydWN0IHRtZHNfbl9jdHMgbl9jdHNfdGFibGVbXSA9IHsKPiAgICAgICAgIHsgMjUxNzUwMDAs
+IHt7IDI4MTI1LCAgNDU3Nn0sIHsgMzEyNTAsICA3MDA3fSwgeyAyNTE3NSwgNjE0NH0gfSB9LAo+
+ICAgICB9CgpJIHRoaW5rIHRoaXMgaXMgc29tZXRoaW5nIHdoaWNoIHNob3VsZCBiZSBhIGNvbW1v
+biBoZWxwZXIgcmF0aGVyIHRoYW4KYmVpbmcgc3BlY2lmaWMgdG8gdGhlIGRyaXZlci4gIEkgYmVs
+aWV2ZSB0aGVzZSBhcmUgdGhlIHN0YW5kYXJkIHZhbHVlcwpmb3IgY29oZXJlbnQgYXVkaW8vdmlk
+ZW8gY2xvY2tzIHdoaWNoIGNhbiBiZSBmb3VuZCBpbiB0aGUgSERNSQpzcGVjaWZpY2F0aW9ucy4g
+IFN1Y2ggYSBoZWxwZXIgc2hvdWxkIGRvY3VtZW50IHRoYXQgaXQgaXMgb25seSBmb3IKdXNlIHdo
+ZW4gdGhlIGF1ZGlvIGFuZCB2aWRlbyBjbG9ja3MgYXJlIGNvaGVyZW50LgoKKFRoZSBIRE1JIHNw
+ZWMgZ2l2ZXMgYWx0ZXJuYXRpdmUgTiB2YWx1ZXMgZm9yIHVzZSB3aXRoIGF1dG8tQ1RTIHZhbHVl
+CmdlbmVyYXRpb24gZm9yIG5vbi1jb2hlcmVudCBjbG9ja3MuKQoKSSdkIGFsc28gcHJlZmVyIHRo
+ZSBsb29rdXAgdG8gdXNlIHRoZSBzYW1lIHVuaXRzIGFzIHRoZSBkcm1fZGlzcGxheV9tb2RlCnZp
+ZGVvIGNsb2NrIHNwZWNpZmljYXRpb24sIHdoaWNoIGlzIGtIeiwgc28gd2UgY2FuIGV2ZW50dWFs
+bHkga2lsbCB0aGUKbmVlZGxlc3MgKjEwMDAgaW4gZHdfaGRtaS4KCk9uZSBvZiB0aGUgaXNzdWVz
+IHdpdGggdXNpbmcgYSBjb21tb24gaGVscGVyIGlzIHRoYXQgdGhlIGNvbW1vbiBoZWxwZXIKd291
+bGQgaW5jbHVkZSB0aGUgMS4wMDEgY2xvY2tzLCB3aGljaCBhcmUgYWxsZWdlZGx5IHVuc3VwcG9y
+dGVkIGJ5IHRoZQpGU0wgaU1YNiBpbXBsZW1lbnRhdGlvbiwgYW5kLCBpZiBwcm92ZW4gdGhhdCB0
+aGV5IGRvbid0IHdvcmssIHdlIHdvdWxkCm5lZWQgc29tZSB3YXkgdG8gZGlzYWJsZSBhdWRpbyBm
+b3IgdGhvc2UgZGV2aWNlcy4KCj4gQnV0IEkgYW0gY29uZnVzZWQgYnkgdGhlICJoZG1pLT5yYXRp
+byIsIHRoaXMgdmFyaWFibGUgd2FzIG1vZGlmeSB0bwo+IDEwMCBpbiBiaW5kIGZ1bmNpdG9uLCB0
+aGVuIG5vd2hlcmUgd291bGQgY2hhbmdlIGl0IGFnYWluLiBJbiB0aGlzCj4gY2FzZSAiaGRtaS0+
+cmF0aW8iIHNlZW1zIGFuIHVudXNlZCB2YXJpYWJsZSwgY2FuIHdlIHJlbW92ZSBpdCA/CgpJIGd1
+ZXNzIHRoZSBGU0wgc291cmNlcyBzaG91bGQgYmUgY2hlY2tlZCB0byBmaW5kIG91dCB3aGF0IHRo
+ZSBpbnRlbmRlZAp1c2UgZm9yIHRoYXQgd2FzLCBhbmQgd2UgdGhlbiBuZWVkIHRvIGRlY2lkZSB3
+aGV0aGVyIHRvIGtlZXAgaXQgKGFuZAppbXBsZW1lbnQgaXQpIG9yIHJlbW92ZSBpdC4KCi0tIApG
+VFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgMTAuNU1icHMgZG93
+biA0MDBrYnBzIHVwCmFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRy
+aS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
