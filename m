@@ -1,15 +1,20 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH] ASoC: rcar: mark device data as constant
-Date: Tue, 31 Mar 2015 20:35:09 +0200
-Message-ID: <20150331183509.GN17728@pengutronix.de>
+From: noman pouigt <variksla@gmail.com>
+Subject: Re: recording problem in beagleboard-mcbsp
+Date: Tue, 31 Mar 2015 11:41:49 -0700
+Message-ID: <CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>
+References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>
+ <CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7B324264F0A
- for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 20:35:12 +0200 (CEST)
-Content-Disposition: inline
+Received: from mail-ob0-f180.google.com (mail-ob0-f180.google.com
+ [209.85.214.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC5A1264F0A
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 20:41:50 +0200 (CEST)
+Received: by obvd1 with SMTP id d1so41303712obv.0
+ for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2015 11:41:49 -0700 (PDT)
+In-Reply-To: <CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,54 +24,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, Fabian Frederick <fabf@skynet.be>, kernel@pengutronix.de
+To: "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-A driver's device data should and can be const. This is a follow-up on
-commit 33187fb4a203 (ASoC: rsnd: constify of_device_id array) which
-marked the of_device_id as const.
-
-Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
----
-This is also patch 4 of my series[1] which degraded to this hunk when
-rebasing to next because all the other changes were already addressed by
-Fabian.
-
-Best regards
-Uwe
-
-[1] http://thread.gmane.org/gmane.linux.alsa.devel/136241/
-
- sound/soc/sh/rcar/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 3d8e4d60c83d..9f48d75fa992 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -99,11 +99,11 @@
- #define RSND_RATES SNDRV_PCM_RATE_8000_96000
- #define RSND_FMTS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
- =
-
--static struct rsnd_of_data rsnd_of_data_gen1 =3D {
-+static const struct rsnd_of_data rsnd_of_data_gen1 =3D {
- 	.flags =3D RSND_GEN1,
- };
- =
-
--static struct rsnd_of_data rsnd_of_data_gen2 =3D {
-+static const struct rsnd_of_data rsnd_of_data_gen2 =3D {
- 	.flags =3D RSND_GEN2,
- };
- =
-
--- =
-
-2.1.4
-
--- =
-
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+On Fri, Mar 27, 2015 at 2:20 PM, noman pouigt <variksla@gmail.com> wrote:
+> On Fri, Mar 27, 2015 at 1:24 PM, noman pouigt <variksla@gmail.com> wrote:
+>> Problem: not able to record with any of the devices
+>> in beagleboard-xm.
+>>
+>> Analysis: userspace is stuck in snd_pcm_readi function
+>> and kernel space i don't see snd_pcm_update_hw_ptr
+>> function being called.
+>>
+>> Checked the I2S clocks and they are perfect and recording
+>> data line is moving based on the data. I am able to do playback
+>> though.
+>>
+>> I am using below command to do recording. Do i need to add
+>> additional switches?
+>>
+>>
+>> Linux kernel: 3.19
+>>
+>> root@arm:~# arecord -t wav -c 2 -r 44100 -f S32_LE -v test.wav
+>> Recording WAVE 'test.wav' : Signed 32 bit Little Endian, Rate 44100 Hz, Stereo
+>> Plug PCM: Linear conversion PCM (S16_LE)
+>> Its setup is:
+>>   stream       : CAPTURE
+>>   access       : RW_INTERLEAVED
+>>   format       : S32_LE
+>>   subformat    : STD
+>>   channels     : 2
+>>   rate         : 44100
+>>   exact rate   : 44100 (44100/1)
+>>   msbits       : 32
+>>   buffer_size  : 27560
+>>   period_size  : 5512
+>>   period_time  : 124988
+>>   tstamp_mode  : NONE
+>>   period_step  : 1
+>>   avail_min    : 5512
+>>   period_event : 0
+>>   start_threshold  : 1
+>>   stop_threshold   : 27560
+>>   silence_threshold: 0
+>>   silence_size : 0
+>>   boundary     : 1806172160
+>> Slave: Hardware PCM card 0 'omap3beagle' device 0 subdevice 0
+>> Its setup is:
+>>   stream       : CAPTURE
+>>   access       : MMAP_INTERLEAVED
+>>   format       : S16_LE
+>>   subformat    : STD
+>>   channels     : 2
+>>   rate         : 44100
+>>   exact rate   : 44100 (44100/1)
+>>   msbits       : 16
+>>   buffer_size  : 27560
+>>   period_size  : 5512
+>>   period_time  : 124988
+>>   tstamp_mode  : NONE
+>>   period_step  : 1
+>>   avail_min    : 5512
+>>   period_event : 0
+>>   start_threshold  : 1
+>>   stop_threshold   : 27560
+>>   silence_threshold: 0
+>>   silence_size : 0
+>>   boundary     : 1806172160
+>>   appl_ptr     : 0
+>>   hw_ptr       : 0
+>>
+>> [   74.696319] omap-mcbsp 48074000.mcbsp: **** McBSP255 regs ****
+>> [   74.696380] omap-mcbsp 48074000.mcbsp: DRR2:  0xedd0abce
+>> [   74.696411] omap-mcbsp 48074000.mcbsp: DRR1:  0x0000
+>> [   74.696441] omap-mcbsp 48074000.mcbsp: DXR2:  0x0000
+>> [   74.696472] omap-mcbsp 48074000.mcbsp: DXR1:  0x0000
+>> [   74.696502] omap-mcbsp 48074000.mcbsp: SPCR2: 0x0230
+>> [   74.696533] omap-mcbsp 48074000.mcbsp: SPCR1: 0x0031
+>> [   74.696563] omap-mcbsp 48074000.mcbsp: RCR2:  0x8041
+>> [   74.696594] omap-mcbsp 48074000.mcbsp: RCR1:  0x0040
+>> [   74.696594] omap-mcbsp 48074000.mcbsp: XCR2:  0x8041
+>> [   74.696624] omap-mcbsp 48074000.mcbsp: XCR1:  0x0040
+>> [   74.696655] omap-mcbsp 48074000.mcbsp: SRGR2: 0x001f
+>> [   74.696685] omap-mcbsp 48074000.mcbsp: SRGR1: 0x0f00
+>> [   74.696716] omap-mcbsp 48074000.mcbsp: PCR0:  0x000f
+>>
+>>
+>> setup:
+>> beagleoboard-xm
+>> ubuntu distribution
+>> arecord used
+>> jaroslav recording application also tried
+> using max98090 codec and not using twl.
+I was wondering if i can get some help in this?
