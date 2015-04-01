@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/8] ASoC: wm8971: Use
- system_power_efficient_wq instead of custom workqueue
-Date: Wed, 1 Apr 2015 21:28:30 +0100
-Message-ID: <20150401202830.GC6023@sirena.org.uk>
-References: <1427742293-8588-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: omap-hdmi-audio: No not use
+ IEC958_AES1_PRO_MODE_NOTID
+Date: Wed, 1 Apr 2015 21:29:47 +0100
+Message-ID: <20150401202947.GE6023@sirena.org.uk>
+References: <1427909757-19483-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5086347862928490148=="
+Content-Type: multipart/mixed; boundary="===============1938440173894512656=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 186C7264E9F
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 22:28:42 +0200 (CEST)
-In-Reply-To: <1427742293-8588-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 49FF626512B
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 22:29:56 +0200 (CEST)
+In-Reply-To: <1427909757-19483-1-git-send-email-jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, tomi.valkeinen@ti.com, linux@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5086347862928490148==
+--===============1938440173894512656==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WfZ7S8PLGjBY9Voh"
+	protocol="application/pgp-signature"; boundary="lteA1dqeVaWQ9QQl"
 Content-Disposition: inline
 
 
---WfZ7S8PLGjBY9Voh
+--lteA1dqeVaWQ9QQl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 30, 2015 at 09:04:45PM +0200, Lars-Peter Clausen wrote:
-> The delayed work used by the wm8971 driver to manage the caps charging
-> doesn't have any special requirements that would justify using a custom
-> workqueue, just use the generic system_power_efficient_wq instead.
+On Wed, Apr 01, 2015 at 08:35:57PM +0300, Jyri Sarha wrote:
+> No IEC958_AES?_PRO_* macros should be used in HDMI consumer audio mode
+> and IEC958_AES1_PRO_MODE_NOTID should be applied to byte 1 when
+> applicable. However IEC958_AES1_PRO_MODE_NOTID is defined as 0 so this
+> fix does not affect the functionality in any way.
 
-Applied all, thanks.
+Applied, thanks.
 
---WfZ7S8PLGjBY9Voh
+--lteA1dqeVaWQ9QQl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVHFTtAAoJECTWi3JdVIfQKnAH/29n3MiITU1zYCTuve5huS9V
-7GtpHLJxX7SgHo7ol/V6SfzzGPein+HwvwEL3xgM9YnTxtrjQssd8a3E2SYZgfWs
-szYJJsJaBq7BCguqjwzdnBKx1YEMAY2ti469pJE0VPlRctegyGTnSyaid13kyb1w
-yOpOm3hBs31BXl8OUMA/SBhooCsxYtHjQCCQ17oUJ7IxVqOmXVlmqoT8+UaEnjKZ
-lPSXVp5dOPNU6BwSAnGJhbD5XfYL/ya/FH5vsZRCpe+dQZbWJ8w1KeSTMFy7BMQy
-5WcA+hGl7Z+Nyb1YbHb7AfwE0H+8TaUHzLDl1ggGi7MJqpFDQPankm7brJ8BnkE=
-=Axku
+iQEcBAEBCAAGBQJVHFU6AAoJECTWi3JdVIfQz/oH/RZgMGi95grvAolma7j6SX/B
+uoxQpBhLhEMbVWUC+q2tkJemu8JFsu3O79fhyEfqo1pdybkt6TfcPdS3klD5wbbK
+kTFf68VpppunVsNicDINOElNwA6KU2vy62qC9TEvJQpUsBXeJD7mTFn/3OX/o888
+ZniIt+Y2qZczEzU+tyMfbIXgCcY0mncxtunkbw88aUgBo8gh0rjkQjjQg+6ik2gl
+Hc1dKJSLBICyD5fitzpxpFA/P8WZhlZEWsEL7TyBMYnIX2/uJeL4dh99SqzGeWU1
+ofgq276bHEYhgYH1gyGocH1v5fPTRn2gMucrLgQr6qefPZsKN4yCmoTocSsQoCU=
+=Ogwf
 -----END PGP SIGNATURE-----
 
---WfZ7S8PLGjBY9Voh--
+--lteA1dqeVaWQ9QQl--
 
---===============5086347862928490148==
+--===============1938440173894512656==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5086347862928490148==--
+--===============1938440173894512656==--
