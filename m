@@ -1,19 +1,19 @@
-From: Yakir <ykk@rock-chips.com>
-Subject: Re: [PATCH RFC 02/11] drm: bridge/dw_hdmi: use
-	drm_hdmi_avi_infoframe_from_display_mode()
-Date: Wed, 01 Apr 2015 09:31:43 +0800
-Message-ID: <551B4A7F.30700@rock-chips.com>
-References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
- <E1YcfXa-0002uU-E3@rmk-PC.arm.linux.org.uk> <551A629C.5010306@rock-chips.com>
- <20150331115718.GS24899@n2100.arm.linux.org.uk>
+From: Be <be.0@gmx.com>
+Subject: Re: Rane SL2/3/4 driver?
+Date: Tue, 31 Mar 2015 20:42:42 -0500
+Message-ID: <551B4D12.8020108@gmx.com>
+References: <55112145.8010807@gmx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.133])
- by alsa0.perex.cz (Postfix) with ESMTP id EF7FF2650E7
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 03:31:50 +0200 (CEST)
-In-Reply-To: <20150331115718.GS24899@n2100.arm.linux.org.uk>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49A9E2650E4
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 03:43:23 +0200 (CEST)
+Received: from localhost.localdomain ([24.12.142.252]) by mail.gmx.com
+ (mrgmx103) with ESMTPSA (Nemesis) id 0M6zvN-1ZQQU12VUb-00wpm2 for
+ <alsa-devel@alsa-project.org>; Wed, 01 Apr 2015 03:43:20 +0200
+In-Reply-To: <55112145.8010807@gmx.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,58 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUnVzc2VsbCwKCuWcqCAyMDE1LzMvMzEgMTk6NTcsIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51
-eCDlhpnpgZM6Cj4gT24gVHVlLCBNYXIgMzEsIDIwMTUgYXQgMDU6MDI6MjBBTSAtMDQwMCwgWWFu
-ZyBLdWFua3VhbiB3cm90ZToKPj4gQmVzaWRlcywgYXMgeW91IGFyZSBnb2luZyBhbiBkd19oZG1p
-IGNsZWFudXBzLCBJIHdhbnQgdG8gcG9pbnQgYW5vdGhlciBidWdzCj4+IHRoYXQgcmVsYXRlIHRv
-IHRoZSBIRE1JIENUUyB0ZXN0LiBUaGVyZSBhcmUgc29tZXRoaW5ncyB3cm9uZyB3aXRoIEdlbmVy
-YWwKPj4gQ29udHJvbCBQYWNrLCBhcyBmb3Igbm93IHRoZSBlbmNvZGVyIGNvbG9yIGRlcHRoIGlz
-IDgtYml0IHBhY2tpbmcgbW9kZSwKPj4gc28gdGhlIGNvbG9yIGRlcHRoIG9ubHkgc3VwcG9ydCAy
-NCBiaXRzIHBlciBwaXhlbCB2aWRlbywgSW4gdGhpcyBjYXNlIHRoZQo+PiBDRCBmaWxlZCBpbiBH
-Q1Agc2hvdWxkIHNldCB0byAiQ29sb3IgRGVwdGggTm90IGluZGljYXRlZCIuCj4gSSdtIG5vdCBz
-dXJlIEkgZm9sbG93Lgo+Cj4gQWNjb3JkaW5nIHRvIHRoZSBpTVg2IGRvY3VtZW50YXRpb24sIHNl
-dHRpbmcgdGhlIENEIGZpZWxkIHRvIGVpdGhlciAwMDAwCj4gb3IgMDEwMCBpbmRpY2F0ZXMgdGhh
-dCB0aGUgY29sb3IgZGVwdGggaXMgMjQgYml0cyBwZXIgcGl4ZWwsIDggYml0cyBwZXIKPiBjb21w
-b25lbnQsIDggYml0IHBhY2tpbmcgbW9kZSAtIHRoZXJlJ3Mgbm8gZG9jdW1lbnRlZCBkaWZmZXJl
-bmNlIGJldHdlZW4KPiB0aGVzZS4KWWVhaCwgdGhhdCBpcyB0aGUgcG9pbnQuIFRob3VnaCB0aGVy
-ZSdzIG5vIGRlc2lnbmVkd2FyZSBkYXRhc2hlZXQgCmRpZmZlcmVuY2UgYmV0d2VlbgoiMDAwMGIi
-ICYgMDEwMGIiIGluIHZwX3ByX2NkLCBidXQgSSB0aGluayB0aGUgY29sb3JfZGVwdGggaW4gdnBf
-cHJfY2QgCnJlZ2lzdGVyIGFyZQptYXBwaW5nIHRvIENEMC1DRDMgZmlsZWQgaW4gR0NQIHBhY2tl
-dCwgYW5kIGFjdXRhbGx5ICIwMDAwYiIgJiAiMDEwMGIiIAphcmUgZGlmZmVybmVudAppbiBDRCBm
-aWxlZCAoIjAwMDBiIENvbG9yIERlcHRoIG5vdCBpbmRpY2F0ZWQiICYgIjAxMDBiIDI0IGJpdCBw
-ZXIgcGl4ZWwiKS4KCklmIHRoZSBDRCBmaWxlZCBpcyBub24temVybywgdGhhdCBpbmRpY2F0ZSB3
-ZSBhcmUgc3VwcG9ydCBkZXB0aCBjb2xvciAKbW9kZShidXQgSSB0aGluawp0aGUgZGVwdGggY29s
-b3IgbW9kZSBuZWVkIGF0IGxlYXN0IDM2YnBwKS4gQmVzaWRlcyBhcyB0aGUgSERNSSAKU3BlY2lm
-aWNhdGlvbiBkZXNjcmlwdGUsCiIvSWYgdGhlIFNpbmsgZG9zZSBub3QgcmVjZWl2ZSBhIEdDUCB3
-aXRoIG5vbi16ZXJvIENEIGZyb20gbW9yZSB0aGFuIDQgCmNvbnNlY3V0aXZlIHZpZGVvLy8KLy9m
-aWVsZHMsIGl0IHNob3VsZCBleGl0IGRlZXAgY29sb3IgbW9kZSBhbmQgcmV2ZXJ0aW5nIHRvIDI0
-LWJpdCAKY29sb3IvIigyNC1iaXQgY29sb3IgaXMgZGVmYXVsdCkuCgpJbiB0aGUgZW5kIEkgdGhp
-bmsgaWYgd2Ugb25seSBvdXRwdXQgMjQtYml0IGNvbG9yLCB3ZSBzaG91bGQgbWFrZSB0aGUgQ0Qg
-CmZpZWxkIHRvIHplcm8gOikKCj4gQXJlIHlvdSBzYXlpbmcgdGhhdCB5b3Ugd2lzaCB0byBwYXNz
-IHNvbWV0aGluZyBvdGhlciB0aGFuIDI0IGJwcCB2aWRlbwo+IHRvIHlvdXIgSERNSSBlbmNvZGVy
-Pwo+Cj4+IEluIHRoZSBlbmQgd2Ugc2hvdWxkIGtlZXAgdGhlICpjc2NfY29sb3JfZGVwdGgoSERN
-SV9DU0NfU0NBTEUpKiAmCj4+ICpjb2xvcl9kZXB0aChIRE1JX1ZQX1BSX0NEKSogdG8gemVybywg
-Y29kZSBzaG91bGQgbW9kaWZ5IGxpa2UgdGhpcyBHQ1AKPj4gd291bGQgdGVzdCBwYXNzOgo+ID5G
-cm9tIHdoYXQgeW91J3JlIGRlc2NyaWJpbmcsIHlvdSB3YW50IENEIGZpZWxkID0gMCBhbmQgQ1ND
-X1NDQUxFID0gMC4KPiBJdCBsb29rcyBsaWtlIGhkbWlfdmlkZW9fcGFja2V0aXplKCkgd2lsbCBz
-ZXQgdGhlIENEIGZpZWxkIHRvIHplcm8gaWYKPiBoZG1pX2RhdGEuZW5jX2NvbG9yX2RlcHRoID0g
-MCwgYnV0IHRoYXQgd291bGQgY2F1c2UgaGRtaV92aWRlb19zYW1wbGUoKQo+IGFuZCBoZG1pX3Zp
-ZGVvX2NzYygpIHRvIGZhaWwuICBNYXliZSB0aG9zZSB0d28gZnVuY3Rpb25zIHNob3VsZCBiZSBm
-aXhlZAo+IHRvIGFjY2VwdCBhIGNvbG9yIGRlcHRoIG9mIHplcm8sIGFuZCBtYXliZSB5b3UgbmVl
-ZCB0byBzZXQKPiBlbmNfY29sb3JfZGVwdGggdG8gMD8KPgo+IEludGVyZXN0aW5nbHksIEhETUlf
-Q1NDX1NDQUxFX0NTQ19DT0xPUkRFX1BUSF8yNEJQUCBpcyBkZWZpbmVkIHRvIGJlCj4gemVybywg
-YnV0IGFnYWluLCBpbiB0aGUgaU1YNiBkYXRhLCBpdCBjb3VsZCB0YWtlIGEgdmFsdWUgb2YgZWl0
-aGVyCj4gMHgwMCBvciAweDQwLiAgSSB0aGluayBoZG1pX3ZpZGVvX2NzYygpIHNob3VsZCBzZXQg
-dGhpcyB0byAweDQwIGlmCj4gaGRtaV9kYXRhLmVuY19jb2xvcl9kZXB0aCA9IDAsIGFuZCAweDQw
-IGZvciBoZG1pX2RhdGEuZW5jX2NvbG9yX2RlcHRoID0gOC4KQWdyZWUhIElmIHdlIG9ubHkgb3V0
-cHV0IDI0LWJpdCBjb2xvciwgd2Ugc2hvdWxkIGxldCB0aGUgCmhkbWlfZGF0YS5lbmNfY29sb3Jf
-ZGVwdGggPSAwLAphbmQgaGRtaV92aWRlb19jc2MoKSAmIGhkbWlfdmlkZW9fcGFja2V0aXplKCkg
-c2hvdWxkIGhhbmRsZSB0aGUgCiJlbmNfY29sb3JfZGVwdGggPSAwIi4KCkJlc3QgcmVnYXJkcy4K
-WWFraXIgWWFuZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+I recorded USB signals with Wireshark with the Rane SL4 plugged into a
+Windows 7 VM. I recorded connecting the device, switching the
+passthroughs on/off with the driver's control panel program, flipping
+the hardware switches, and playing a track with Mixxx. If anyone is
+interested in using this to write a driver, respond off-list and I can
+send you the 19 MB archive of the USB signal logs.
+
+On 03/24/2015 03:33 AM, Be wrote:
+> Hi, I recently published the first version of Crossfade GNU/Linux, a
+> distro for DJing from USB drives on any PC (see
+> http://mixxx.org/forums/viewtopic.php?f=1&t=7031 for details). I just
+> tried it on my friend's Macbook which he uses with a Rane SL4 USB sound
+> card. I realized there is no Linux driver for the current line of sound
+> cards sold for digital vinyl emulation with Serato DJ. These are the
+> Rane SL2, SL3, and SL4 (http://serato.com/hardware/all/mixers-interfaces
+> ; the Denon DS1 was also recently announced but not available yet:
+> http://serato.com/latest/blog/17973/announcing-denon-ds1 ). They range
+> from 4 in/4 out to 10 in/10 out and all have phono preamps built in.
+> There appears to be support for the old and discontinued Rane SL1, which
+> used USB 1.1, but the SL2/3/4 use USB 2.0. Has anyone thought about
+> writing a driver for these?
