@@ -1,72 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: omap-hdmi-audio: No not use
- IEC958_AES1_PRO_MODE_NOTID
-Date: Wed, 1 Apr 2015 21:29:47 +0100
-Message-ID: <20150401202947.GE6023@sirena.org.uk>
-References: <1427909757-19483-1-git-send-email-jsarha@ti.com>
+Subject: Re: [PATCH] ASoC: atmel-pcm-dma: increase buffer_bytes_max
+Date: Wed, 1 Apr 2015 21:33:42 +0100
+Message-ID: <20150401203342.GH6023@sirena.org.uk>
+References: <1427744437-14610-1-git-send-email-alexandre.belloni@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1938440173894512656=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 49FF626512B
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 22:29:56 +0200 (CEST)
-In-Reply-To: <1427909757-19483-1-git-send-email-jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, tomi.valkeinen@ti.com, linux@arm.linux.org.uk
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qM81t570OJUP5TU/"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1427744437-14610-1-git-send-email-alexandre.belloni@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Bo Shen <voice.shen@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1938440173894512656==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lteA1dqeVaWQ9QQl"
-Content-Disposition: inline
-
-
---lteA1dqeVaWQ9QQl
+--qM81t570OJUP5TU/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Apr 01, 2015 at 08:35:57PM +0300, Jyri Sarha wrote:
-> No IEC958_AES?_PRO_* macros should be used in HDMI consumer audio mode
-> and IEC958_AES1_PRO_MODE_NOTID should be applied to byte 1 when
-> applicable. However IEC958_AES1_PRO_MODE_NOTID is defined as 0 so this
-> fix does not affect the functionality in any way.
+On Mon, Mar 30, 2015 at 09:40:37PM +0200, Alexandre Belloni wrote:
+> atmel-pcm-dma is not limited to a buffer size of 64kB like atmel-pcm-pdc.
+> Increase buffer_bytes_max to 512kB to allow for higher bit rates (i.e. 32bps at
+> 192kHz) to work correctly. By default, keep the prealloc at 64kB.
 
-Applied, thanks.
+Applied, but please look into Lars' suggestion - we should be able to
+just figure everything out from the DMA controller.
 
---lteA1dqeVaWQ9QQl
+--qM81t570OJUP5TU/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVHFU6AAoJECTWi3JdVIfQz/oH/RZgMGi95grvAolma7j6SX/B
-uoxQpBhLhEMbVWUC+q2tkJemu8JFsu3O79fhyEfqo1pdybkt6TfcPdS3klD5wbbK
-kTFf68VpppunVsNicDINOElNwA6KU2vy62qC9TEvJQpUsBXeJD7mTFn/3OX/o888
-ZniIt+Y2qZczEzU+tyMfbIXgCcY0mncxtunkbw88aUgBo8gh0rjkQjjQg+6ik2gl
-Hc1dKJSLBICyD5fitzpxpFA/P8WZhlZEWsEL7TyBMYnIX2/uJeL4dh99SqzGeWU1
-ofgq276bHEYhgYH1gyGocH1v5fPTRn2gMucrLgQr6qefPZsKN4yCmoTocSsQoCU=
-=Ogwf
+iQEcBAEBCAAGBQJVHFYlAAoJECTWi3JdVIfQ+8cH/0byFLSIR25J6M3sC4SS2pMk
+yFnT1RvGCrMypOIoezdsp8Egp0sJ06LasDF3o4lrh0/B1DEo2TZr7ngbODfHhXjI
+PNXHWKW2maEFEPb4boR45ivU35nvlSveJNDjT2lOFj//PIMJ3p65GkeVkTGL+Dd0
+IM5xr/em3/rt5py2Jx7ILOD4f/BHa+7wZEILrqcFiDxMrrhmuI8n6mnN5wxyGAxa
+hYQoli1m+QgCJaKNWW0UIevRyHrHYFsOf92ruObsCX7rHbb0VVwW1fhugBHzoNqD
+Z+LRLjuICqy4ifKWSoP/Cpc6v7/2khE0NMgbd9xmB/8NI+sBDdVtO81M4vW7T4I=
+=k4wT
 -----END PGP SIGNATURE-----
 
---lteA1dqeVaWQ9QQl--
-
---===============1938440173894512656==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1938440173894512656==--
+--qM81t570OJUP5TU/--
