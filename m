@@ -1,22 +1,28 @@
-From: Belisko Marek <marek.belisko@gmail.com>
-Subject: Re: dummy codec + simple card combination
-Date: Wed, 1 Apr 2015 23:08:30 +0200
-Message-ID: <CAAfyv35ZAnZEFB9ia=TjkeA4Romd=+V=42d2Nj0hHqjGmpTssw@mail.gmail.com>
-References: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
- <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
- <5502ADD9.9070603@ti.com>
- <7087ED0D-9625-48EA-9012-A6A05869E014@goldelico.com>
- <5508351D.7050304@ti.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda_intel: add
+ AZX_DCAPS_I915_POWERWELL for skl
+Date: Wed, 1 Apr 2015 21:55:27 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19634094@SHSMSX103.ccr.corp.intel.com>
+References: <1427440204-49331-1-git-send-email-libin.yang@intel.com>
+ <s5hfv8q98lm.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19622F1C@SHSMSX103.ccr.corp.intel.com>
+ <s5hegoa97jj.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19622F67@SHSMSX103.ccr.corp.intel.com>
+ <s5ha8yy971s.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19622F84@SHSMSX103.ccr.corp.intel.com>
+ <96A12704CE18D347B625EE2D4A099D1962E18F@SHSMSX103.ccr.corp.intel.com>
+ <551B9EC0.2060308@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19633E41@SHSMSX103.ccr.corp.intel.com>
+ <551BA856.8060402@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f42.google.com (mail-wg0-f42.google.com [74.125.82.42])
- by alsa0.perex.cz (Postfix) with ESMTP id E94122617C6
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 23:08:30 +0200 (CEST)
-Received: by wgra20 with SMTP id a20so66405375wgr.3
- for <alsa-devel@alsa-project.org>; Wed, 01 Apr 2015 14:08:30 -0700 (PDT)
-In-Reply-To: <5508351D.7050304@ti.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5560B2614C2
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 23:55:33 +0200 (CEST)
+In-Reply-To: <551BA856.8060402@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,67 +32,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>, alsa-devel@alsa-project.org, broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
+To: David Henningsson <david.henningsson@canonical.com>, 'Takashi Iwai' <tiwai@suse.de>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBNYXIgMTcsIDIwMTUgYXQgMzowNyBQTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
-ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDMvMTMvMjAxNSAxMTo1NCBBTSwgRHIuIEguIE5p
-a29sYXVzIFNjaGFsbGVyIHdyb3RlOgo+Pgo+PiBGb3IgR1NNIHRoZXJlIGlzIHNvbWUgc3BlY2lh
-bCBsb2dpYyBmb3IgdHJpLXN0YXRpbmcgYSBEQUkgYmVjYXVzZSB0aGUKPj4gYXVkaW8gY2hhbm5l
-bCBpcyB3aXJlZCB0byB0aGUgdHdsNDAzMCAqYW5kKiBhIE1jQlNQLiBUaGlzIGlzIGZvciBlaXRo
-ZXIKPj4gcm91dGluZyB0aGUgdm9pY2UgZGlyZWN0bHkgdG8gdGhlIHR3bCBvciB0aHJvdWdoIHRo
-ZSBDUFUgKGFuZCBzb21lIGZpbHRlcnMsCj4+IGFuc3dlcmluZyBtYWNoaW5lLCBzb3VuZCBzY3Jh
-bWJsaW5nIGV0Yy4pLiBUaGlzIG5lZWRzIHRyaS1zdGF0ZSBzdXBwb3J0Cj4+IG9mIHRoZSBNY0JT
-UCBEWCBsaW5lLgo+Pgo+Pj4gT3Igd3JpdGUgYSBjdXN0b20gbWFjaGluZSBkcml2ZXIgYW5kIGdl
-dCBpdCBkb25lIDspCj4+Cj4+IElmIHlvdSB3b3VsZCBmaW5kIHRpbWUgKHdoaWNoIGlzIGJleW9u
-ZCB3aGF0IHdlIGNhbiByZWFsaXN0aWNhbGx5IGV4cGVjdCkgdG8gbG9vawo+PiBpbnRvIHRoZSBu
-b24tRFQgMy4xMiBrZXJuZWwgd2hlcmUgZXZlcnl0aGluZyB3b3JrcywgaXQgd291bGQgYmUgaGVy
-ZToKPj4KPj4gaHR0cDovL2dpdC5nb2xkZWxpY28uY29tLz9wPWd0YTA0LWtlcm5lbC5naXQ7YT10
-cmVlO2Y9c291bmQvc29jL29tYXA7aGI9SEVBRAo+Pgo+PiBCYXNpY2FsbHkgd2Ugd2FudCB0byBy
-ZWJ1aWxkIHRoaXMgdXNpbmcgRFQgYW5kIHVzZSBhcyBtdWNoIHN0YW5kYXJkIHBpZWNlcwo+PiBh
-cyBwb3NzaWJsZS4gU28gdGhhdCB3ZSBvbmx5IG5lZWQgdG8gdXBzdHJlYW0gd2hhdCBpcyBtaXNz
-aW5nIGZvciBmdWxsIGd0YTA0Cj4+IHN1cHBvcnQuCj4KPiBJIHNlZS4gWW91IGhhdmUgaGFkIHdy
-aXR0ZW4gZHVtbXkgY29kZWNzIGZvciB0aGUgR1NNLCBCVCwgdGhlIEZNIGhhZCBhbiBhY3R1YWwK
-PiB3b3JraW5nIGRyaXZlci4KPgo+IEhybS4gVGhlcmUgaXMgb25lIHRoaW5nIHdoaWNoIHdvdWxk
-IG1ha2Ugc2Vuc2UgZm9yIHRoZXNlIGF1ZGlvIGRldmljZXM6Cj4gU2luY2UgeW91IGRvIG5vdCBo
-YXZlIGNvbnRyb2wgb3ZlciB0aGVtIGluIHRlcm1zIG9mIGZvcm1hdHMsIHJhdGVzIGFuZAo+IHBy
-b3RvY29sIC0gdGhleSB1c2UgZml4ZWQgaW50ZXJmYWNlcy4KPgo+IEkgdGhpbmsgaXQgd291bGQg
-bWFrZSBzZW5zZSB0byBoYXZlIGJpbmRpbmcgZm9yIHNvbWV0aGluZyBsaWtlOgo+IGNvbXBhdGli
-bGUgPSAiZml4ZWQtY29kZWMiIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQsIGltcGx5aW5nIHRoYXQg
-aXQncwo+IGNvbmZpZ3VyYXRpb24gY2FuIG5vdCBiZSBjaGFuZ2VkLgpmaXhlZC1jb2RlYyBzb3Vu
-ZHMgZ29vZC4KPiBJbiBpdCdzIGJpbmRpbmdzIHlvdSB3b3VsZCBoYXZlIHRoZSBzdXBwb3J0ZWQg
-cHJvcGVydGllcyBvZiB0aGUgaW50ZXJmYWNlLAo+IGxpa2UgcmF0ZSwgY2hhbm5lbHMsIHNhbXBs
-ZSB3aWR0aCwgcHJvdG9jb2wgb24gdGhlIGJ1cyAoSTJTLCBEU1AsIGV0YykgYW5kIHRvCj4gaW5k
-aWNhdGUgaWYgaXQgaXMgYnVzIG1hc3RlciBvciBzbGF2ZS4KSW5zdGVhZCBvZiBhZGRpbmcgbWFu
-eSBwcm9wZXJ0aWVzIHRvIERUIGFuZCBwYXJzaW5nIHRoZW0gY2Fubm90IHdlCmp1c3QgaGFyZCBj
-b2RlIHRoZW0KKHJhdGUsIGNoYW5uZWxzLCB3aWR0aCkgaW4gZml4ZWQtY29kZWMgZHJpdmVyIChz
-aW1pbGFyIGFzIGlzIGRvbmUgZm9yCmR1bW15LWNvZGVjIGluIHNvYy11dGlscykuCkknbSBub3Qg
-c3VyZSBidXQgaG93IHRvIHVzZSBwcm90b2NvbCBvbiB0aGUgYnVzIGFuZCBtYXN0ZXIvc2xhdmUg
-aW4KY29kZWMgZHJpdmVyKG11c3QgYmUgdXNlZCBpbiBnbHVlIGNhcmQgZHJpdmVyKS4KVGhpcyBm
-aXhlZC1jb2RlYyBkcml2ZXIgY291bGQgYWxzbyBjb3ZlciBlLmcuIHNwZGlmX3JlY2VpdmVyIGFu
-ZApzcGRpZl90cmFuc21pdHRlciBjb2RlY3Mgd2hpY2ggYXJlIGFsc28Kb25seSBkdW1teS4KPgo+
-IFlvdSBjb3VsZCB1c2UgdGhpcyAnZml4ZWQtY29kZWMnIHRvIGRlc2NyaWJlIHRoZSBEQUlzIGFu
-ZCB1c2Ugc2ltcGxlLWNhcmQgdG8KPiBjb25uZWN0IHRoZW0gd2l0aCB0aGUgQ1BVLgo+Cj4gSSB0
-aGluayB0aGlzIHdpbGwgZmlsbCBpbiBzb21lIGdhcHMgYW5kIGl0IGlzIGFjdHVhbGx5IGdvaW5n
-IHRvIGRlc2NyaWJlIHRoZQo+IEhXIHlvdSBoYXZlIGFzIHdlbGwsIHNvIGl0IGlzIG5vdCBMaW51
-eCBzcGVjaWZpYy4KPgoKQlIsCgptYXJlawo+Pgo+Pj4KPj4+PiBJcyBteSBhc3N1bXB0aW9uIGNv
-cnJlY3Q/IEkgd291bGQgbGlrZSB0byBnZXQgc29tZSBmZWVkYmFjayBiZWZvcmUKPj4+PiB3YXN0
-aW5nIG15IHRpbWUgd2l0aCBpbXBsZW1lbnRpbmcgc29tZXRoaW5nIHdoaWNoIGNhbm5vdCBiZSBw
-dXNoZWQKPj4+PiBtYWlubGluZS4gVGhhbmtzIGZvciBhbGwgc3VnZ2VzdGlvbnMuCj4+Pj4KPj4+
-PiBCUiwKPj4+Pgo+Pj4+IG1hcmVrCj4+Pj4KPj4+PiAtLQo+Pj4+IGFzIHNpbXBsZSBhbmQgcHJp
-bWl0aXZlIGFzIHBvc3NpYmxlCj4+Pj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQo+Pj4+IE1hcmVrIEJlbGlza28gLSBPUEVOLU5BTkRSQQo+Pj4+IEZy
-ZWVsYW5jZSBEZXZlbG9wZXIKPj4+Pgo+Pj4+IFJ1c2thIE5vdmEgVmVzIDIxOSB8IFByZXNvdiwg
-MDgwMDUgU2xvdmFrIFJlcHVibGljCj4+Pj4gVGVsOiArNDIxIDkxNSAwNTIgMTg0Cj4+Pj4gc2t5
-cGU6IG1hcmVrd2hpdGUKPj4+PiB0d2l0dGVyOiAjb3Blbm5hbmRyYQo+Pj4+IHdlYjogaHR0cDov
-L29wZW4tbmFuZHJhLmNvbQo+Pj4+Cj4+Pgo+Pj4KPj4+IC0tCj4+PiBQw6l0ZXIKPj4KPj4gQlIs
-Cj4+IE5pa29sYXVzCj4+Cj4KPgo+IC0tCj4gUMOpdGVyCgoKCi0tIAphcyBzaW1wbGUgYW5kIHBy
-aW1pdGl2ZSBhcyBwb3NzaWJsZQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCk1hcmVrIEJlbGlza28gLSBPUEVOLU5BTkRSQQpGcmVlbGFuY2UgRGV2ZWxv
-cGVyCgpSdXNrYSBOb3ZhIFZlcyAyMTkgfCBQcmVzb3YsIDA4MDA1IFNsb3ZhayBSZXB1YmxpYwpU
-ZWw6ICs0MjEgOTE1IDA1MiAxODQKc2t5cGU6IG1hcmVrd2hpdGUKdHdpdHRlcjogI29wZW5uYW5k
-cmEKd2ViOiBodHRwOi8vb3Blbi1uYW5kcmEuY29tCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi David,
+
+
+
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Wednesday, April 01, 2015 4:12 PM
+> To: Yang, Libin; 'Takashi Iwai'
+> Cc: 'alsa-devel@alsa-project.org'
+> Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
+> AZX_DCAPS_I915_POWERWELL for skl
+> 
+> 
+> 
+> On 2015-04-01 10:00, Yang, Libin wrote:
+> > Hi David,
+> >
+> >> -----Original Message-----
+> >> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
+> >> bounces@alsa-project.org] On Behalf Of David Henningsson
+> >> Sent: Wednesday, April 01, 2015 3:31 PM
+> >> To: Yang, Libin; 'Takashi Iwai'
+> >> Cc: 'alsa-devel@alsa-project.org'
+> >> Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
+> >> AZX_DCAPS_I915_POWERWELL for skl
+> >>
+> >>
+> >>
+> >> On 2015-03-30 04:47, Yang, Libin wrote:
+> >>>   From our silicon team's comment, it seems we need power on
+> >>> the powerwell when detecting and probing the HDMI codec.
+> >>>
+> >>> For the skl case (HDMI codec is in powerwell, while controller not),
+> >>> my thinking is:
+> >>>
+> >>> 1. power on the power well
+> >>> 2. read STATESTS to determine the codec_mask
+> >>> 3. if codec is not present, power off the power well
+> >>>       and remove the flag. (seems we need a new flag)
+> >>> 4. if codec is present, we will power on the power well
+> >>>       when dealing with HDMI codec.
+> >>>
+> >>> What do you think?
+> >>
+> >> Side question - do you know if it's the same for braswell? I e, the
+> HDMI
+> >> codec is in the powerwell but the controller is not?
+> >
+> > Yes, BSW has the same issue.
+> >
+> > At first, my thinking is:
+> > 1. define a new flag, power on the power well if flag is set
+> > 2. read STATESTS to determine the codec_mask
+> > 3. if codec is not present, power off the power well
+> >      and remove the flag.
+> > 4. after initialization, power off the power well if new flag
+> >      is set and AZX_DCAPS_I915_POWERWELL is not set
+> > 5. power on power well when pcm open
+> > 6. power off the power well when pcm close
+> 
+> ...and we're opening the right codec - in case of analog playback, the
+> powerwell can still be off, right?
+> 
+> > After a second thought, the method may have limitation:
+> > the codec may send the unsolicited responses.
+> >
+> > So my currently thinking is:
+> > If the codec is in powerwell, the behavior is like the flag
+> > AZX_DCAPS_I915_POWERWELL: always power on unless
+> > suspend.
+> > This method may cause power consumption. But consider
+> > normally audio will be in suspend state in most case.
+> 
+> Ok, thanks for the clarification. I was wondering - the reason the codec
+> might send unsol events is just due to hotplug events, right?
+> 
+> And these unsol events are triggered by the i915 side by setting some
+> registers, right?
+> 
+> Is it then possible that i915, when it detects a video hotplug event,
+> can increment the powerwell counter (so that the powerwell is turned
+> on), trigger the hotplug event to the audio side, and then decrement
+> the
+> powerwell again (possibly with a few seconds delay if needed)?
+> 
+> The idea is that once the audio side has got the hotplug event, it can
+> turn on and off the powerwell itself. We just need the i915 driver to
+> turn it on for us to get the hotplug event through.
+
+Normally, it's the hotplug unsol event. But sometimes, I found on
+SKL, when suspending, there is some strange event sending
+from hdmi codec. And the controller will fallback to single cmd
+mode. Then the analog audio will be impacted after resume.
+
+BSW may also have this issue. But I didn't find it on our RVP board.
+
+I will test power on power well during unsol events.
+
+
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
+
+Regards,
+Libin
