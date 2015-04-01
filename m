@@ -1,46 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: atmel-pcm-dma: increase buffer_bytes_max
-Date: Wed, 1 Apr 2015 21:33:42 +0100
-Message-ID: <20150401203342.GH6023@sirena.org.uk>
-References: <1427744437-14610-1-git-send-email-alexandre.belloni@free-electrons.com>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: Index ruledata in drvdata with
+ substream->stream
+Date: Wed, 1 Apr 2015 21:34:22 +0100
+Message-ID: <20150401203422.GI6023@sirena.org.uk>
+References: <20150327062008.GA11983@mwanda>
+ <1427449671-18014-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qM81t570OJUP5TU/"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="VkVuOCYP9O7H3CXI"
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1427744437-14610-1-git-send-email-alexandre.belloni@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Bo Shen <voice.shen@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1427449671-18014-1-git-send-email-jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
 
---qM81t570OJUP5TU/
+--VkVuOCYP9O7H3CXI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 30, 2015 at 09:40:37PM +0200, Alexandre Belloni wrote:
-> atmel-pcm-dma is not limited to a buffer size of 64kB like atmel-pcm-pdc.
-> Increase buffer_bytes_max to 512kB to allow for higher bit rates (i.e. 32bps at
-> 192kHz) to work correctly. By default, keep the prealloc at 64kB.
+On Fri, Mar 27, 2015 at 11:47:51AM +0200, Jyri Sarha wrote:
+> The serializer direction definitions runs from 1 to 2, which does not
+> suite the purpose. The substream->stream is perfect for the purpose
+> and should have been used from the beginning.
 
-Applied, but please look into Lars' suggestion - we should be able to
-just figure everything out from the DMA controller.
+Applied, thanks.
 
---qM81t570OJUP5TU/
+--VkVuOCYP9O7H3CXI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVHFYlAAoJECTWi3JdVIfQ+8cH/0byFLSIR25J6M3sC4SS2pMk
-yFnT1RvGCrMypOIoezdsp8Egp0sJ06LasDF3o4lrh0/B1DEo2TZr7ngbODfHhXjI
-PNXHWKW2maEFEPb4boR45ivU35nvlSveJNDjT2lOFj//PIMJ3p65GkeVkTGL+Dd0
-IM5xr/em3/rt5py2Jx7ILOD4f/BHa+7wZEILrqcFiDxMrrhmuI8n6mnN5wxyGAxa
-hYQoli1m+QgCJaKNWW0UIevRyHrHYFsOf92ruObsCX7rHbb0VVwW1fhugBHzoNqD
-Z+LRLjuICqy4ifKWSoP/Cpc6v7/2khE0NMgbd9xmB/8NI+sBDdVtO81M4vW7T4I=
-=k4wT
+iQEcBAEBCAAGBQJVHFZNAAoJECTWi3JdVIfQwwoH/1OewVKBRhANTEbwGkAWoE7m
+AI+RlXNhQWy1v5uWj7MszAj0MsXlgxUqlWnF1JjkOO7SjkRgF/+o675jOXvE9cZy
+1/zIaXo/ET+kjqJ1Ljxf+Xx3Mqnukf4lNwwSPLxl58gni+/jPvLPa9Jk2A1ofO1d
+GZ6X3evY//pICqdPdZX8PagwD06aEKdHjCU3o2sJB23LblKpw6MjLJUukyvjNuHj
+KJfApnbitbz2JyniYDwHU/x6TkQ1Pw095VVrFHJqCzlRihJb57ZAiNkPE+OWkPmR
+1lDduyhPrncs3qO+d04JYBDqHspaAjq+p6OqEzxoDRMeS1KB/+ewSom1VDLzQp8=
+=st2x
 -----END PGP SIGNATURE-----
 
---qM81t570OJUP5TU/--
+--VkVuOCYP9O7H3CXI--
