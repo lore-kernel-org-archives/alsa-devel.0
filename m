@@ -1,27 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda_intel: add
- AZX_DCAPS_I915_POWERWELL for skl
-Date: Wed, 01 Apr 2015 10:12:06 +0200
-Message-ID: <551BA856.8060402@canonical.com>
-References: <1427440204-49331-1-git-send-email-libin.yang@intel.com>
- <s5hfv8q98lm.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19622F1C@SHSMSX103.ccr.corp.intel.com>
- <s5hegoa97jj.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19622F67@SHSMSX103.ccr.corp.intel.com>
- <s5ha8yy971s.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19622F84@SHSMSX103.ccr.corp.intel.com>
- <96A12704CE18D347B625EE2D4A099D1962E18F@SHSMSX103.ccr.corp.intel.com>
- <551B9EC0.2060308@canonical.com>
- <96A12704CE18D347B625EE2D4A099D19633E41@SHSMSX103.ccr.corp.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/4] ASoC: fsi: reorder code to make a
+ forward declaration superfluous
+Date: Wed, 1 Apr 2015 09:31:27 +0100
+Message-ID: <20150401083127.GB2869@sirena.org.uk>
+References: <1427813339-23817-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <1427813339-23817-2-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3977294689177479923=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 22CC3260442
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 10:12:08 +0200 (CEST)
-In-Reply-To: <96A12704CE18D347B625EE2D4A099D19633E41@SHSMSX103.ccr.corp.intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B665260442
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 10:31:37 +0200 (CEST)
+In-Reply-To: <1427813339-23817-2-git-send-email-u.kleine-koenig@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,85 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Yang, Libin" <libin.yang@intel.com>, 'Takashi Iwai' <tiwai@suse.de>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Fabian Frederick <fabf@skynet.be>, kernel@pengutronix.de, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============3977294689177479923==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mivPOCKq5W5a6OJq"
+Content-Disposition: inline
 
-On 2015-04-01 10:00, Yang, Libin wrote:
-> Hi David,
->
->> -----Original Message-----
->> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
->> bounces@alsa-project.org] On Behalf Of David Henningsson
->> Sent: Wednesday, April 01, 2015 3:31 PM
->> To: Yang, Libin; 'Takashi Iwai'
->> Cc: 'alsa-devel@alsa-project.org'
->> Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
->> AZX_DCAPS_I915_POWERWELL for skl
->>
->>
->>
->> On 2015-03-30 04:47, Yang, Libin wrote:
->>>   From our silicon team's comment, it seems we need power on
->>> the powerwell when detecting and probing the HDMI codec.
->>>
->>> For the skl case (HDMI codec is in powerwell, while controller not),
->>> my thinking is:
->>>
->>> 1. power on the power well
->>> 2. read STATESTS to determine the codec_mask
->>> 3. if codec is not present, power off the power well
->>>       and remove the flag. (seems we need a new flag)
->>> 4. if codec is present, we will power on the power well
->>>       when dealing with HDMI codec.
->>>
->>> What do you think?
->>
->> Side question - do you know if it's the same for braswell? I e, the HDMI
->> codec is in the powerwell but the controller is not?
->
-> Yes, BSW has the same issue.
->
-> At first, my thinking is:
-> 1. define a new flag, power on the power well if flag is set
-> 2. read STATESTS to determine the codec_mask
-> 3. if codec is not present, power off the power well
->      and remove the flag.
-> 4. after initialization, power off the power well if new flag
->      is set and AZX_DCAPS_I915_POWERWELL is not set
-> 5. power on power well when pcm open
-> 6. power off the power well when pcm close
 
-...and we're opening the right codec - in case of analog playback, the 
-powerwell can still be off, right?
+--mivPOCKq5W5a6OJq
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> After a second thought, the method may have limitation:
-> the codec may send the unsolicited responses.
->
-> So my currently thinking is:
-> If the codec is in powerwell, the behavior is like the flag
-> AZX_DCAPS_I915_POWERWELL: always power on unless
-> suspend.
-> This method may cause power consumption. But consider
-> normally audio will be in suspend state in most case.
+On Tue, Mar 31, 2015 at 04:48:56PM +0200, Uwe Kleine-K=F6nig wrote:
+> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-Ok, thanks for the clarification. I was wondering - the reason the codec 
-might send unsol events is just due to hotplug events, right?
+Applied, thanks.
 
-And these unsol events are triggered by the i915 side by setting some 
-registers, right?
+--mivPOCKq5W5a6OJq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Is it then possible that i915, when it detects a video hotplug event, 
-can increment the powerwell counter (so that the powerwell is turned 
-on), trigger the hotplug event to the audio side, and then decrement the 
-powerwell again (possibly with a few seconds delay if needed)?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-The idea is that once the audio side has got the hotplug event, it can 
-turn on and off the powerwell itself. We just need the i915 driver to 
-turn it on for us to get the hotplug event through.
+iQEcBAEBCAAGBQJVG6zeAAoJECTWi3JdVIfQRAAH/38ctfHZ9okouawbvPLhdoHB
+a3E3pozIoomhQ3/vCDG6HY6kyNvOxzG0xqZbNJVTiK5wzQKD63zhnU1i2+UNtbdX
+jB7W/CgwsR674+htF8caat+wwCNXWxu/EOG5rSvtpvaarXpQA2eEzzlqTipm3EZF
+gg/cuaWlOysDf+E/KyX0hHO8Vd32o4Esc8F7742RJexGvVzhsv+PYveoZmmjb3Gz
+MDhWN+qk0CjNjffMZbfaPVq3MmkPbLBZfmPgBSxkACtm7CZfvdUlfNZkIYzO4HGx
+DnHmnsWeKGjG5QlUJC3PpCMvL039PxvdqqmIzExtB+yd4Q66x2QVfTSclblGSTo=
+=HD06
+-----END PGP SIGNATURE-----
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--mivPOCKq5W5a6OJq--
+
+--===============3977294689177479923==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3977294689177479923==--
