@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/5] Intel SST driver restructure
-Date: Wed, 1 Apr 2015 23:51:51 +0100
-Message-ID: <20150401225151.GK6023@sirena.org.uk>
-References: <1427874143-26256-1-git-send-email-yang.jie@intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Separate input and output jacks for one UCM device?
+Date: Thu, 2 Apr 2015 07:24:40 +0800
+Message-ID: <CAN8cciYU-KKSUhYQZgvqLHdAQFtBnpwaDtJ1K_fRwEROM-PRdg@mail.gmail.com>
+References: <5509D4D4.6030000@linux.intel.com> <1426756559.7258.22.camel@loki>
+ <1427820547.2856.10.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <1427891224.2711.31.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4636205458833202055=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C3B726154B
- for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2015 00:51:59 +0200 (CEST)
-In-Reply-To: <1427874143-26256-1-git-send-email-yang.jie@intel.com>
+Received: from mail-ob0-f178.google.com (mail-ob0-f178.google.com
+ [209.85.214.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77AF826152C
+ for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2015 01:24:41 +0200 (CEST)
+Received: by obbec2 with SMTP id ec2so103168707obb.3
+ for <alsa-devel@alsa-project.org>; Wed, 01 Apr 2015 16:24:40 -0700 (PDT)
+In-Reply-To: <1427891224.2711.31.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +25,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Mark Brown <broonie@kernel.org>, Arun Raghavan <arun@accosted.net>, Han Lu <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+> > > >
+> > >
+> > > I've added a few others on the CC that would be interested.
+> > >
+> > > > My understanding is that a UCM device can represent a thing that has
+> > > > both input and output (I don't particularly like that, but it's too
+late
+> > > > to complain).
+> > >
+> > > Yes, but it can also represent simplex devices too e.g.
+> > > "Headset-Speakers" and "Headset-Mic". There are not any hard rules
+here,
+> > > but most examples are using duplex devices as historically UCM came
+from
+> > > the phone ecosystem use cases.
 
---===============4636205458833202055==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fUvfsPTz/SzOZDdw"
-Content-Disposition: inline
+On some mobile phones which have FM radio , how do UCM handle FM radio
+since it need to use the headphone as antenna ?
 
-
---fUvfsPTz/SzOZDdw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 01, 2015 at 03:42:18PM +0800, Jie Yang wrote:
-> In order to prepare for the upstreaming of Skylake drivers and to
-> allow reuse of code between different Intel audio DSP products,
-> this patch series restructures the Intel directory as follows:
-
-I've reverted these due to a series of build failures reported by the
-0day tester.
-
---fUvfsPTz/SzOZDdw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVHHaGAAoJECTWi3JdVIfQCN8H/iv13cC+Hc/SY3pazyXcIQAw
-TbIU++ObFhhqQbt4jRaDMHRJ5N1p5MAwgnB+B6gwFu9cM469pSkYtryGeu6dO3eE
-B89W34jnfjT/5798rh3yPqDP4K97p+hnuQoZ5ZdDyERf+FxQYCE0XThCuzdX+KVK
-y+amuwTTcU5H8eygqkTv220mRW9epzXe2oIoQNLb1623zlPRueWcRtkyL3Q81oJY
-tJq3I+EuYDxJKuqvpQunBBQQ+jDvhAx3COt574NGIzNPFBdjkFQ1cuRV1S1+QaLy
-NKkRVeaNUd12Oy0h1i5UKbgCYc9ju93ih5hC+4c/7UqxtcD0Pwqzwi7s2CsdJLM=
-=uoV+
------END PGP SIGNATURE-----
-
---fUvfsPTz/SzOZDdw--
-
---===============4636205458833202055==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4636205458833202055==--
+> > >
+> > > > How likely do you think that there are or there will be
+> > > > some drivers that expose separate input and output jack kcontrols
+for a
+> > > > headset jack, to differentiate between
+headphones/headset/microphone? My
+> > > > understanding is that jack kcontrols store only booleans, so
+there's no
+> > > > way to distinguish between headphones and a headset with just one
+kcontrol.
+> > > >
+> > >
+> > > This sounds like we need to extend the jack kcontrol so that we can
+> > > differentiate between Headphones and Headset unless the kcontrol
+naming
+> > > was intended to differentiate and define the jack type ?
+> >
+> > I guess it's now clear that all jack kcontrols will be booleans, and
+> > headset jacks will require two jack kcontrols.
+> >
+> > > > The current UCM "spec" doesn't support specifying multiple
+kcontrols,
+> > > > since there's only one "JackControl" value. (Perhaps the "JackDev"
+value
+> > > > suffers from this problem too, but I don't know if jack input
+devices
+> > > > already support reporting the state separately for input and
+output.)
+> > > >
+> > >
+> > > I think in this case we could define simplex UCM devices and attach a
+> > > JackControl value to each device.
+> >
+> > So is your preference that UCM configuration authors are forced to
+> > define simplex devices to deal with headset jacks, rather than using
+> > duplex devices and defining "PlaybackJackControl" and
+> > "CaptureJackControl" separately? (I don't personally mind either way.)
+>
+> I don't really mind either, but what's easier for audio servers like
+> pulseaudio that will be the main UCM clients ? I guess that pulseaudio,
+> CRAS, and other audio servers probably deal with simplex PCM streams
+> internally so mapping to simplex jacks/devices might be better ?
+>
+> Liam
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
