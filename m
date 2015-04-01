@@ -1,21 +1,19 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH 0/5] Intel SST driver restructure
-Date: Wed, 1 Apr 2015 01:53:41 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901BEDE95@SHSMSX101.ccr.corp.intel.com>
-References: <1426170720-8260-1-git-send-email-yang.jie@intel.com>
- <20150313062829.GA32000@intel.com> <55029D8B.9060309@intel.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BD7F2C@SHSMSX101.ccr.corp.intel.com>
- <20150313233407.GF28806@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A901BD8116@SHSMSX101.ccr.corp.intel.com>
+From: Yakir <ykk@rock-chips.com>
+Subject: Re: [PATCH RFC 01/11] drm: bridge/dw_hdmi: clean up
+	hdmi_set_clk_regenerator()
+Date: Wed, 01 Apr 2015 09:54:47 +0800
+Message-ID: <551B4FE7.3040804@rock-chips.com>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+ <E1YcfXV-0002uL-9O@rmk-PC.arm.linux.org.uk> <551A44F9.80108@rock-chips.com>
+ <20150331103519.GR24899@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 067D52650E4
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 03:53:57 +0200 (CEST)
-In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901BD8116@SHSMSX101.ccr.corp.intel.com>
-Content-Language: en-US
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96B7C2650F2
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 03:54:51 +0200 (CEST)
+In-Reply-To: <20150331103519.GR24899@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,51 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@kernel.org>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Jin, Yao" <yao.jin@intel.com>, "Bossart,
- Pierre-louis" <pierre-louis.bossart@intel.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi, Mark,
-
-No chance to finish these scripts yet, busy on the Jack patches. :(
-
-I just tried and found that this patch series can still apply directly on your for-next branch, seems no more intel patches sent out these days(and merge window are coming?), is it OK that I send the latest series then you can help apply?
-
-Thanks,
-~Keyon
-
-> -----Original Message-----
-> From: Jie, Yang
-> Sent: Saturday, March 14, 2015 2:05 PM
-> To: Mark Brown
-> Cc: Nikula, Jarkko; Koul, Vinod; alsa-devel@alsa-project.org; Girdwood, Liam
-> R; Bossart, Pierre-louis; Lin, Mengdong; Jin, Yao
-> Subject: RE: [PATCH 0/5] Intel SST driver restructure
-> 
-> > -----Original Message-----
-> > From: Mark Brown [mailto:broonie@kernel.org]
-> > Sent: Saturday, March 14, 2015 7:34 AM
-> > To: Jie, Yang
-> > Cc: Nikula, Jarkko; Koul, Vinod; alsa-devel@alsa-project.org;
-> > Girdwood, Liam R; Bossart, Pierre-louis; Lin, Mengdong; Jin, Yao
-> > Subject: Re: [PATCH 0/5] Intel SST driver restructure
-> >
-> > On Fri, Mar 13, 2015 at 02:13:17PM +0000, Jie, Yang wrote:
-> >
-> > > [Keyon] thank you all. Hi Mark, so should I keep them locally and
-> > > send to you
-> > > 2 or 3 weeks later, or you will keep them in queue and apply them one
-> day?
-> >
-> > Well, they won't apply as-is since other people are sending patches
-> > for the files as well.  What might make more sense is to send a script
-> > which generates the commit (so a bunch of mv commands, patch for the
-> > Makefile and a changelog entry) then I can do that just before or just
-> > after the merge window.  Does that make sense?
-> [Keyon] yes, it make sense. I will prepare these scripts and send to you later.
-> Thanks.
+SGkgUnVzZWxsLAoK5ZyoIDIwMTUvMy8zMSAxODozNSwgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4
+IOWGmemBkzoKPiBPbiBUdWUsIE1hciAzMSwgMjAxNSBhdCAwMjo1NTo1M0FNIC0wNDAwLCBZYW5n
+IEt1YW5rdWFuIHdyb3RlOgo+PiBIaSBSdXNzZWxsLAo+Pgo+PiBJJ20gb2theSB3aXRoIHRoaXMg
+Y2hhbmdlLCBhbmQgYWxzbyBJIGFtIHByZXBhcmluZyB0aGF0IGNvbGxlY3QgTi9DVFMKPj4gc2V0
+dGluZyB0byBhbiBhcnJheSwgbGlrZSB0aGlzIDoKPj4KPj4gICAgICBzdHJ1Y3Qgbl9jdHMgewo+
+PiAgICAgICAgICB1bnNpZ25lZCBpbnQgY3RzOwo+PiAgICAgICAgICB1bnNpZ25lZCBpbnQgbjsK
+Pj4gICAgICB9Owo+Pgo+PiAgICAgIHN0cnVjdCB0bWRzX25fY3RzIHsKPj4gICAgICAgICAgdW5z
+aWduZWQgbG9uZyB0bWRzOwo+PiAgICAgICAgICAvKiAxIGVudHJ5IGVhY2ggZm9yIDMyS0h6LCA0
+NC4xS0h6LCBhbmQgNDhLSHogKi8KPj4gICAgICAgICAgc3RydWN0IG5fY3RzIG5fY3RzWzNdOwo+
+PiAgICAgIH07Cj4+Cj4+ICAgICAgc3RhdGljIGNvbnN0IHN0cnVjdCB0bWRzX25fY3RzIG5fY3Rz
+X3RhYmxlW10gPSB7Cj4+ICAgICAgICAgIHsgMjUxNzUwMDAsIHt7IDI4MTI1LCAgNDU3Nn0sIHsg
+MzEyNTAsICA3MDA3fSwgeyAyNTE3NSwgNjE0NH0gfSB9LAo+PiAgICAgIH0KPiBJIHRoaW5rIHRo
+aXMgaXMgc29tZXRoaW5nIHdoaWNoIHNob3VsZCBiZSBhIGNvbW1vbiBoZWxwZXIgcmF0aGVyIHRo
+YW4KPiBiZWluZyBzcGVjaWZpYyB0byB0aGUgZHJpdmVyLiAgSSBiZWxpZXZlIHRoZXNlIGFyZSB0
+aGUgc3RhbmRhcmQgdmFsdWVzCj4gZm9yIGNvaGVyZW50IGF1ZGlvL3ZpZGVvIGNsb2NrcyB3aGlj
+aCBjYW4gYmUgZm91bmQgaW4gdGhlIEhETUkKPiBzcGVjaWZpY2F0aW9ucy4gIFN1Y2ggYSBoZWxw
+ZXIgc2hvdWxkIGRvY3VtZW50IHRoYXQgaXQgaXMgb25seSBmb3IKPiB1c2Ugd2hlbiB0aGUgYXVk
+aW8gYW5kIHZpZGVvIGNsb2NrcyBhcmUgY29oZXJlbnQuCgpZZXAsIGl0IHdpbGwgYmUgbG9naWNh
+bCB0byBhZGQgdGhlIG4vY3RzIGNhbGN1IHRvIGEgY29tbW9uIGhlbHBlci4gQW5kIAphY3R1YWxs
+eQp0aGUgSERNSSBzcGVjaWZpY2F0aW9ucyBoYXZlIGdpdmUgdGhlIFJldm9tbWVuZGVkIE4gYW5k
+IEV4cGVjdGVkIENUUyAKdmFsdWVzIGZvcgpzZXZlcmFsIHN0YW5kYXJkIFRNRFMgY2xvY2sgcmF0
+ZXMoMjUuMi8xLjAwMSAuLi4pLgoKPgo+IChUaGUgSERNSSBzcGVjIGdpdmVzIGFsdGVybmF0aXZl
+IE4gdmFsdWVzIGZvciB1c2Ugd2l0aCBhdXRvLUNUUyB2YWx1ZQo+IGdlbmVyYXRpb24gZm9yIG5v
+bi1jb2hlcmVudCBjbG9ja3MuKQo+Cj4gSSdkIGFsc28gcHJlZmVyIHRoZSBsb29rdXAgdG8gdXNl
+IHRoZSBzYW1lIHVuaXRzIGFzIHRoZSBkcm1fZGlzcGxheV9tb2RlCj4gdmlkZW8gY2xvY2sgc3Bl
+Y2lmaWNhdGlvbiwgd2hpY2ggaXMga0h6LCBzbyB3ZSBjYW4gZXZlbnR1YWxseSBraWxsIHRoZQo+
+IG5lZWRsZXNzICoxMDAwIGluIGR3X2hkbWkuCj4KPiBPbmUgb2YgdGhlIGlzc3VlcyB3aXRoIHVz
+aW5nIGEgY29tbW9uIGhlbHBlciBpcyB0aGF0IHRoZSBjb21tb24gaGVscGVyCj4gd291bGQgaW5j
+bHVkZSB0aGUgMS4wMDEgY2xvY2tzLCB3aGljaCBhcmUgYWxsZWdlZGx5IHVuc3VwcG9ydGVkIGJ5
+IHRoZQo+IEZTTCBpTVg2IGltcGxlbWVudGF0aW9uLCBhbmQsIGlmIHByb3ZlbiB0aGF0IHRoZXkg
+ZG9uJ3Qgd29yaywgd2Ugd291bGQKPiBuZWVkIHNvbWUgd2F5IHRvIGRpc2FibGUgYXVkaW8gZm9y
+IHRob3NlIGRldmljZXMuCgpPa2F5LCBidXQgcm9ja2NoaXAgcGxhdGZvcm0gY2FuIGhhbmRsZSB0
+aGUgMS4wMDEgY2xvY2tzLCBzbyBtYXliZSB3ZSBjYW4gCmNhbGwKc29tZSB2YWxpZCBmdW5jdGlv
+biBmcm9tIGR3X2hkbWktaW14ICYgZHdfaGRtaS1yb2NrY2hpcCB0byBtYXJrIHRoZSAKZWZmZWN0
+aXZlCmNsb2NrIHRoYXQgcGxhdGZvcm0gc3VwcG9ydCA/Cgo+PiBCdXQgSSBhbSBjb25mdXNlZCBi
+eSB0aGUgImhkbWktPnJhdGlvIiwgdGhpcyB2YXJpYWJsZSB3YXMgbW9kaWZ5IHRvCj4+IDEwMCBp
+biBiaW5kIGZ1bmNpdG9uLCB0aGVuIG5vd2hlcmUgd291bGQgY2hhbmdlIGl0IGFnYWluLiBJbiB0
+aGlzCj4+IGNhc2UgImhkbWktPnJhdGlvIiBzZWVtcyBhbiB1bnVzZWQgdmFyaWFibGUsIGNhbiB3
+ZSByZW1vdmUgaXQgPwo+IEkgZ3Vlc3MgdGhlIEZTTCBzb3VyY2VzIHNob3VsZCBiZSBjaGVja2Vk
+IHRvIGZpbmQgb3V0IHdoYXQgdGhlIGludGVuZGVkCj4gdXNlIGZvciB0aGF0IHdhcywgYW5kIHdl
+IHRoZW4gbmVlZCB0byBkZWNpZGUgd2hldGhlciB0byBrZWVwIGl0IChhbmQKPiBpbXBsZW1lbnQg
+aXQpIG9yIHJlbW92ZSBpdC4KTmVlZCBGU0wgYWNrLi4uCgpCZXN0IHJlZ2FyZHMuCllha2lyIFlh
+bmcKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
