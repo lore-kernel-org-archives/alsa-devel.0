@@ -1,45 +1,80 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC 07/11] drm/edid: add function to help find SADs
-Date: Wed, 1 Apr 2015 12:56:03 +0100
-Message-ID: <20150401115602.GB24899@n2100.arm.linux.org.uk>
-References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
- <E1YcfY0-0002vI-0F@rmk-PC.arm.linux.org.uk>
- <87wq1wrrxn.fsf@intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: Separate input and output jacks for one UCM device?
+Date: Wed, 01 Apr 2015 13:27:04 +0100
+Message-ID: <1427891224.2711.31.camel@loki>
+References: <5509D4D4.6030000@linux.intel.com> <1426756559.7258.22.camel@loki>
+ <1427820547.2856.10.camel@tkkaskin-mobl3.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <87wq1wrrxn.fsf@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9327226518B
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 14:27:09 +0200 (CEST)
+In-Reply-To: <1427820547.2856.10.camel@tkkaskin-mobl3.ger.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Han Lu <han.lu@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Arun Raghavan <arun@accosted.net>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBBcHIgMDEsIDIwMTUgYXQgMDI6NDc6MzJQTSArMDMwMCwgSmFuaSBOaWt1bGEgd3Jv
-dGU6Cj4gT24gTW9uLCAzMCBNYXIgMjAxNSwgUnVzc2VsbCBLaW5nIDxybWsra2VybmVsQGFybS5s
-aW51eC5vcmcudWs+IHdyb3RlOgo+ID4gQWRkIGEgZnVuY3Rpb24gdG8gZmluZCB0aGUgc3RhcnQg
-b2YgdGhlIFNBRHMgaW4gdGhlIEVMRC4gIFRoaXMKPiA+IGNvbXBsZW1lbnRzIHRoZSBoZWxwZXIg
-dG8gcmV0cmlldmUgdGhlIFNBRCBjb3VudC4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBSdXNzZWxs
-IEtpbmcgPHJtaytrZXJuZWxAYXJtLmxpbnV4Lm9yZy51az4KPiAKPiBJIGd1ZXNzIHZlcnNpb24g
-MzEgaXMgc3BlY2lmaWMgZW5vdWdoIHRvIHdhcnJhbnQgYSAjZGVmaW5lIG9mIGl0cyBvd24sCj4g
-YnV0IG1laC4KCldoYXQgYWJvdXQgdmVyc2lvbiAyPyAgV2UgZG9uJ3QgaGF2ZSBhbnkgdmVyc2lv
-biBkZWZpbml0aW9ucyBpbgpkcm1fZWRpZC5oIGF0IGFsbC4gIEl0IHdvdWxkIGJlIG5pY2UgdG8g
-c2VlIHNvbWUuLi4KCkl0IHdvdWxkIGFsc28gYmUgbmljZSB0byBzZWUgc29tZSBvZiB0aGlzIHN0
-dWZmIG5vdCBiZWluZyBEUk0gc3BlY2lmaWMsCmJlY2F1c2UgRURJRCBwYXJzaW5nIGlzbid0IHNv
-bWV0aGluZyBsaW1pdGVkIHRvIERSTSAtIGFuZCBsZXQncyBmYWNlIGl0LApvbmUgb2YgdGhlIGJp
-Z2dlc3QgY29uc3VtZXJzIG9mIGdyYXBoaWNzIG9uIExpbnV4IGlzIEFuZHJvaWQsIHdoaWNoIEkn
-bQp0b2xkIGlzIHByZXR0eSBtdWNoIHdlZGRlZCB0byB0aGUgZmJkZXYgQVBJLgoKLS0gCkZUVEMg
-YnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQw
-MGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRl
-dmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On Tue, 2015-03-31 at 19:49 +0300, Tanu Kaskinen wrote:
+> Reviving this thread...
+> 
+> On Thu, 2015-03-19 at 09:15 +0000, Liam Girdwood wrote:
+> > On Wed, 2015-03-18 at 21:41 +0200, Tanu Kaskinen wrote:
+> > > Hi Liam and alsa-devel,
+> > > 
+> > 
+> > I've added a few others on the CC that would be interested.
+> > 
+> > > My understanding is that a UCM device can represent a thing that has 
+> > > both input and output (I don't particularly like that, but it's too late 
+> > > to complain). 
+> > 
+> > Yes, but it can also represent simplex devices too e.g.
+> > "Headset-Speakers" and "Headset-Mic". There are not any hard rules here,
+> > but most examples are using duplex devices as historically UCM came from
+> > the phone ecosystem use cases.
+> > 
+> > > How likely do you think that there are or there will be 
+> > > some drivers that expose separate input and output jack kcontrols for a 
+> > > headset jack, to differentiate between headphones/headset/microphone? My 
+> > > understanding is that jack kcontrols store only booleans, so there's no 
+> > > way to distinguish between headphones and a headset with just one kcontrol.
+> > > 
+> > 
+> > This sounds like we need to extend the jack kcontrol so that we can
+> > differentiate between Headphones and Headset unless the kcontrol naming
+> > was intended to differentiate and define the jack type ?
+> 
+> I guess it's now clear that all jack kcontrols will be booleans, and
+> headset jacks will require two jack kcontrols.
+> 
+> > > The current UCM "spec" doesn't support specifying multiple kcontrols, 
+> > > since there's only one "JackControl" value. (Perhaps the "JackDev" value 
+> > > suffers from this problem too, but I don't know if jack input devices 
+> > > already support reporting the state separately for input and output.)
+> > > 
+> > 
+> > I think in this case we could define simplex UCM devices and attach a
+> > JackControl value to each device.
+> 
+> So is your preference that UCM configuration authors are forced to
+> define simplex devices to deal with headset jacks, rather than using
+> duplex devices and defining "PlaybackJackControl" and
+> "CaptureJackControl" separately? (I don't personally mind either way.)
+
+I don't really mind either, but what's easier for audio servers like
+pulseaudio that will be the main UCM clients ? I guess that pulseaudio,
+CRAS, and other audio servers probably deal with simplex PCM streams
+internally so mapping to simplex jacks/devices might be better ?
+
+Liam
