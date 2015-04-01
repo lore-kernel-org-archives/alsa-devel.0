@@ -1,55 +1,42 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH RFC 07/11] drm/edid: add function to help find SADs
-Date: Wed, 01 Apr 2015 14:47:32 +0300
-Message-ID: <87wq1wrrxn.fsf@intel.com>
-References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
- <E1YcfY0-0002vI-0F@rmk-PC.arm.linux.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/8] ASoC: wm8971: Use
+	system_power_efficient_wq	instead of custom workqueue
+Date: Wed, 1 Apr 2015 12:52:21 +0100
+Message-ID: <20150401115221.GB5442@opensource.wolfsonmicro.com>
+References: <1427742293-8588-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <E1YcfY0-0002vI-0F@rmk-PC.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6DC7626518B
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 13:52:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1427742293-8588-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAzMCBNYXIgMjAxNSwgUnVzc2VsbCBLaW5nIDxybWsra2VybmVsQGFybS5saW51eC5v
-cmcudWs+IHdyb3RlOgo+IEFkZCBhIGZ1bmN0aW9uIHRvIGZpbmQgdGhlIHN0YXJ0IG9mIHRoZSBT
-QURzIGluIHRoZSBFTEQuICBUaGlzCj4gY29tcGxlbWVudHMgdGhlIGhlbHBlciB0byByZXRyaWV2
-ZSB0aGUgU0FEIGNvdW50Lgo+Cj4gU2lnbmVkLW9mZi1ieTogUnVzc2VsbCBLaW5nIDxybWsra2Vy
-bmVsQGFybS5saW51eC5vcmcudWs+CgpJIGd1ZXNzIHZlcnNpb24gMzEgaXMgc3BlY2lmaWMgZW5v
-dWdoIHRvIHdhcnJhbnQgYSAjZGVmaW5lIG9mIGl0cyBvd24sCmJ1dCBtZWguCgpSZXZpZXdlZC1i
-eTogSmFuaSBOaWt1bGEgPGphbmkubmlrdWxhQGludGVsLmNvbT4KCj4gLS0tCj4gIGluY2x1ZGUv
-ZHJtL2RybV9lZGlkLmggfCAxOSArKysrKysrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFuZ2Vk
-LCAxOSBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0vZHJtX2VkaWQu
-aCBiL2luY2x1ZGUvZHJtL2RybV9lZGlkLmgKPiBpbmRleCA4N2Q4NWU4MWQzYTcuLmM0NGFkNTEz
-ZTBmNyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2RybS9kcm1fZWRpZC5oCj4gKysrIGIvaW5jbHVk
-ZS9kcm0vZHJtX2VkaWQuaAo+IEBAIC0zNDYsNiArMzQ2LDI1IEBAIHN0YXRpYyBpbmxpbmUgaW50
-IGRybV9lbGRfbW5sKGNvbnN0IHVpbnQ4X3QgKmVsZCkKPiAgfQo+ICAKPiAgLyoqCj4gKyAqIGRy
-bV9lbGRfc2FkIC0gR2V0IEVMRCBTQUQgc3RydWN0dXJlcy4KPiArICogQGVsZDogcG9pbnRlciB0
-byBhbiBlbGQgbWVtb3J5IHN0cnVjdHVyZSB3aXRoIHNhZF9jb3VudCBzZXQKPiArICovCj4gK3N0
-YXRpYyBpbmxpbmUgY29uc3QgdWludDhfdCAqZHJtX2VsZF9zYWQoY29uc3QgdWludDhfdCAqZWxk
-KQo+ICt7Cj4gKwl1bnNpZ25lZCBpbnQgdmVyLCBtbmw7Cj4gKwo+ICsJdmVyID0gKGVsZFtEUk1f
-RUxEX1ZFUl0gJiBEUk1fRUxEX1ZFUl9NQVNLKSA+PiBEUk1fRUxEX1ZFUl9TSElGVDsKPiArCWlm
-ICh2ZXIgIT0gMiAmJiB2ZXIgIT0gMzEpCj4gKwkJcmV0dXJuIE5VTEw7Cj4gKwo+ICsJbW5sID0g
-ZHJtX2VsZF9tbmwoZWxkKTsKPiArCWlmIChtbmwgPiAxNikKPiArCQlyZXR1cm4gTlVMTDsKPiAr
-Cj4gKwlyZXR1cm4gZWxkICsgRFJNX0VMRF9DRUFfU0FEKG1ubCwgMCk7Cj4gK30KPiArCj4gKy8q
-Kgo+ICAgKiBkcm1fZWxkX3NhZF9jb3VudCAtIEdldCBFTEQgU0FEIGNvdW50Lgo+ICAgKiBAZWxk
-OiBwb2ludGVyIHRvIGFuIGVsZCBtZW1vcnkgc3RydWN0dXJlIHdpdGggc2FkX2NvdW50IHNldAo+
-ICAgKi8KPiAtLSAKPiAxLjguMy4xCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+IGRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBkcmktZGV2ZWxAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCj4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2RyaS1kZXZlbAoKLS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBU
-ZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
-ZXZlbAo=
+On Mon, Mar 30, 2015 at 09:04:45PM +0200, Lars-Peter Clausen wrote:
+> The delayed work used by the wm8971 driver to manage the caps charging
+> doesn't have any special requirements that would justify using a custom
+> workqueue, just use the generic system_power_efficient_wq instead.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+
+Whole series looks good to me:
+
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+Thanks,
+Charles
