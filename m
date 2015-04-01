@@ -1,47 +1,92 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Index ruledata in drvdata with
- substream->stream
-Date: Wed, 1 Apr 2015 21:34:22 +0100
-Message-ID: <20150401203422.GI6023@sirena.org.uk>
-References: <20150327062008.GA11983@mwanda>
- <1427449671-18014-1-git-send-email-jsarha@ti.com>
+From: Belisko Marek <marek.belisko@gmail.com>
+Subject: Re: dummy codec + simple card combination
+Date: Wed, 1 Apr 2015 23:08:30 +0200
+Message-ID: <CAAfyv35ZAnZEFB9ia=TjkeA4Romd=+V=42d2Nj0hHqjGmpTssw@mail.gmail.com>
+References: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
+ <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
+ <5502ADD9.9070603@ti.com>
+ <7087ED0D-9625-48EA-9012-A6A05869E014@goldelico.com>
+ <5508351D.7050304@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="VkVuOCYP9O7H3CXI"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1427449671-18014-1-git-send-email-jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, dan.carpenter@oracle.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f42.google.com (mail-wg0-f42.google.com [74.125.82.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id E94122617C6
+ for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 23:08:30 +0200 (CEST)
+Received: by wgra20 with SMTP id a20so66405375wgr.3
+ for <alsa-devel@alsa-project.org>; Wed, 01 Apr 2015 14:08:30 -0700 (PDT)
+In-Reply-To: <5508351D.7050304@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "Dr. H. Nikolaus Schaller" <hns@goldelico.com>, alsa-devel@alsa-project.org, broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-
---VkVuOCYP9O7H3CXI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Mar 27, 2015 at 11:47:51AM +0200, Jyri Sarha wrote:
-> The serializer direction definitions runs from 1 to 2, which does not
-> suite the purpose. The substream->stream is perfect for the purpose
-> and should have been used from the beginning.
-
-Applied, thanks.
-
---VkVuOCYP9O7H3CXI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVHFZNAAoJECTWi3JdVIfQwwoH/1OewVKBRhANTEbwGkAWoE7m
-AI+RlXNhQWy1v5uWj7MszAj0MsXlgxUqlWnF1JjkOO7SjkRgF/+o675jOXvE9cZy
-1/zIaXo/ET+kjqJ1Ljxf+Xx3Mqnukf4lNwwSPLxl58gni+/jPvLPa9Jk2A1ofO1d
-GZ6X3evY//pICqdPdZX8PagwD06aEKdHjCU3o2sJB23LblKpw6MjLJUukyvjNuHj
-KJfApnbitbz2JyniYDwHU/x6TkQ1Pw095VVrFHJqCzlRihJb57ZAiNkPE+OWkPmR
-1lDduyhPrncs3qO+d04JYBDqHspaAjq+p6OqEzxoDRMeS1KB/+ewSom1VDLzQp8=
-=st2x
------END PGP SIGNATURE-----
-
---VkVuOCYP9O7H3CXI--
+T24gVHVlLCBNYXIgMTcsIDIwMTUgYXQgMzowNyBQTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
+ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDMvMTMvMjAxNSAxMTo1NCBBTSwgRHIuIEguIE5p
+a29sYXVzIFNjaGFsbGVyIHdyb3RlOgo+Pgo+PiBGb3IgR1NNIHRoZXJlIGlzIHNvbWUgc3BlY2lh
+bCBsb2dpYyBmb3IgdHJpLXN0YXRpbmcgYSBEQUkgYmVjYXVzZSB0aGUKPj4gYXVkaW8gY2hhbm5l
+bCBpcyB3aXJlZCB0byB0aGUgdHdsNDAzMCAqYW5kKiBhIE1jQlNQLiBUaGlzIGlzIGZvciBlaXRo
+ZXIKPj4gcm91dGluZyB0aGUgdm9pY2UgZGlyZWN0bHkgdG8gdGhlIHR3bCBvciB0aHJvdWdoIHRo
+ZSBDUFUgKGFuZCBzb21lIGZpbHRlcnMsCj4+IGFuc3dlcmluZyBtYWNoaW5lLCBzb3VuZCBzY3Jh
+bWJsaW5nIGV0Yy4pLiBUaGlzIG5lZWRzIHRyaS1zdGF0ZSBzdXBwb3J0Cj4+IG9mIHRoZSBNY0JT
+UCBEWCBsaW5lLgo+Pgo+Pj4gT3Igd3JpdGUgYSBjdXN0b20gbWFjaGluZSBkcml2ZXIgYW5kIGdl
+dCBpdCBkb25lIDspCj4+Cj4+IElmIHlvdSB3b3VsZCBmaW5kIHRpbWUgKHdoaWNoIGlzIGJleW9u
+ZCB3aGF0IHdlIGNhbiByZWFsaXN0aWNhbGx5IGV4cGVjdCkgdG8gbG9vawo+PiBpbnRvIHRoZSBu
+b24tRFQgMy4xMiBrZXJuZWwgd2hlcmUgZXZlcnl0aGluZyB3b3JrcywgaXQgd291bGQgYmUgaGVy
+ZToKPj4KPj4gaHR0cDovL2dpdC5nb2xkZWxpY28uY29tLz9wPWd0YTA0LWtlcm5lbC5naXQ7YT10
+cmVlO2Y9c291bmQvc29jL29tYXA7aGI9SEVBRAo+Pgo+PiBCYXNpY2FsbHkgd2Ugd2FudCB0byBy
+ZWJ1aWxkIHRoaXMgdXNpbmcgRFQgYW5kIHVzZSBhcyBtdWNoIHN0YW5kYXJkIHBpZWNlcwo+PiBh
+cyBwb3NzaWJsZS4gU28gdGhhdCB3ZSBvbmx5IG5lZWQgdG8gdXBzdHJlYW0gd2hhdCBpcyBtaXNz
+aW5nIGZvciBmdWxsIGd0YTA0Cj4+IHN1cHBvcnQuCj4KPiBJIHNlZS4gWW91IGhhdmUgaGFkIHdy
+aXR0ZW4gZHVtbXkgY29kZWNzIGZvciB0aGUgR1NNLCBCVCwgdGhlIEZNIGhhZCBhbiBhY3R1YWwK
+PiB3b3JraW5nIGRyaXZlci4KPgo+IEhybS4gVGhlcmUgaXMgb25lIHRoaW5nIHdoaWNoIHdvdWxk
+IG1ha2Ugc2Vuc2UgZm9yIHRoZXNlIGF1ZGlvIGRldmljZXM6Cj4gU2luY2UgeW91IGRvIG5vdCBo
+YXZlIGNvbnRyb2wgb3ZlciB0aGVtIGluIHRlcm1zIG9mIGZvcm1hdHMsIHJhdGVzIGFuZAo+IHBy
+b3RvY29sIC0gdGhleSB1c2UgZml4ZWQgaW50ZXJmYWNlcy4KPgo+IEkgdGhpbmsgaXQgd291bGQg
+bWFrZSBzZW5zZSB0byBoYXZlIGJpbmRpbmcgZm9yIHNvbWV0aGluZyBsaWtlOgo+IGNvbXBhdGli
+bGUgPSAiZml4ZWQtY29kZWMiIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQsIGltcGx5aW5nIHRoYXQg
+aXQncwo+IGNvbmZpZ3VyYXRpb24gY2FuIG5vdCBiZSBjaGFuZ2VkLgpmaXhlZC1jb2RlYyBzb3Vu
+ZHMgZ29vZC4KPiBJbiBpdCdzIGJpbmRpbmdzIHlvdSB3b3VsZCBoYXZlIHRoZSBzdXBwb3J0ZWQg
+cHJvcGVydGllcyBvZiB0aGUgaW50ZXJmYWNlLAo+IGxpa2UgcmF0ZSwgY2hhbm5lbHMsIHNhbXBs
+ZSB3aWR0aCwgcHJvdG9jb2wgb24gdGhlIGJ1cyAoSTJTLCBEU1AsIGV0YykgYW5kIHRvCj4gaW5k
+aWNhdGUgaWYgaXQgaXMgYnVzIG1hc3RlciBvciBzbGF2ZS4KSW5zdGVhZCBvZiBhZGRpbmcgbWFu
+eSBwcm9wZXJ0aWVzIHRvIERUIGFuZCBwYXJzaW5nIHRoZW0gY2Fubm90IHdlCmp1c3QgaGFyZCBj
+b2RlIHRoZW0KKHJhdGUsIGNoYW5uZWxzLCB3aWR0aCkgaW4gZml4ZWQtY29kZWMgZHJpdmVyIChz
+aW1pbGFyIGFzIGlzIGRvbmUgZm9yCmR1bW15LWNvZGVjIGluIHNvYy11dGlscykuCkknbSBub3Qg
+c3VyZSBidXQgaG93IHRvIHVzZSBwcm90b2NvbCBvbiB0aGUgYnVzIGFuZCBtYXN0ZXIvc2xhdmUg
+aW4KY29kZWMgZHJpdmVyKG11c3QgYmUgdXNlZCBpbiBnbHVlIGNhcmQgZHJpdmVyKS4KVGhpcyBm
+aXhlZC1jb2RlYyBkcml2ZXIgY291bGQgYWxzbyBjb3ZlciBlLmcuIHNwZGlmX3JlY2VpdmVyIGFu
+ZApzcGRpZl90cmFuc21pdHRlciBjb2RlY3Mgd2hpY2ggYXJlIGFsc28Kb25seSBkdW1teS4KPgo+
+IFlvdSBjb3VsZCB1c2UgdGhpcyAnZml4ZWQtY29kZWMnIHRvIGRlc2NyaWJlIHRoZSBEQUlzIGFu
+ZCB1c2Ugc2ltcGxlLWNhcmQgdG8KPiBjb25uZWN0IHRoZW0gd2l0aCB0aGUgQ1BVLgo+Cj4gSSB0
+aGluayB0aGlzIHdpbGwgZmlsbCBpbiBzb21lIGdhcHMgYW5kIGl0IGlzIGFjdHVhbGx5IGdvaW5n
+IHRvIGRlc2NyaWJlIHRoZQo+IEhXIHlvdSBoYXZlIGFzIHdlbGwsIHNvIGl0IGlzIG5vdCBMaW51
+eCBzcGVjaWZpYy4KPgoKQlIsCgptYXJlawo+Pgo+Pj4KPj4+PiBJcyBteSBhc3N1bXB0aW9uIGNv
+cnJlY3Q/IEkgd291bGQgbGlrZSB0byBnZXQgc29tZSBmZWVkYmFjayBiZWZvcmUKPj4+PiB3YXN0
+aW5nIG15IHRpbWUgd2l0aCBpbXBsZW1lbnRpbmcgc29tZXRoaW5nIHdoaWNoIGNhbm5vdCBiZSBw
+dXNoZWQKPj4+PiBtYWlubGluZS4gVGhhbmtzIGZvciBhbGwgc3VnZ2VzdGlvbnMuCj4+Pj4KPj4+
+PiBCUiwKPj4+Pgo+Pj4+IG1hcmVrCj4+Pj4KPj4+PiAtLQo+Pj4+IGFzIHNpbXBsZSBhbmQgcHJp
+bWl0aXZlIGFzIHBvc3NpYmxlCj4+Pj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQo+Pj4+IE1hcmVrIEJlbGlza28gLSBPUEVOLU5BTkRSQQo+Pj4+IEZy
+ZWVsYW5jZSBEZXZlbG9wZXIKPj4+Pgo+Pj4+IFJ1c2thIE5vdmEgVmVzIDIxOSB8IFByZXNvdiwg
+MDgwMDUgU2xvdmFrIFJlcHVibGljCj4+Pj4gVGVsOiArNDIxIDkxNSAwNTIgMTg0Cj4+Pj4gc2t5
+cGU6IG1hcmVrd2hpdGUKPj4+PiB0d2l0dGVyOiAjb3Blbm5hbmRyYQo+Pj4+IHdlYjogaHR0cDov
+L29wZW4tbmFuZHJhLmNvbQo+Pj4+Cj4+Pgo+Pj4KPj4+IC0tCj4+PiBQw6l0ZXIKPj4KPj4gQlIs
+Cj4+IE5pa29sYXVzCj4+Cj4KPgo+IC0tCj4gUMOpdGVyCgoKCi0tIAphcyBzaW1wbGUgYW5kIHBy
+aW1pdGl2ZSBhcyBwb3NzaWJsZQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCk1hcmVrIEJlbGlza28gLSBPUEVOLU5BTkRSQQpGcmVlbGFuY2UgRGV2ZWxv
+cGVyCgpSdXNrYSBOb3ZhIFZlcyAyMTkgfCBQcmVzb3YsIDA4MDA1IFNsb3ZhayBSZXB1YmxpYwpU
+ZWw6ICs0MjEgOTE1IDA1MiAxODQKc2t5cGU6IG1hcmVrd2hpdGUKdHdpdHRlcjogI29wZW5uYW5k
+cmEKd2ViOiBodHRwOi8vb3Blbi1uYW5kcmEuY29tCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
