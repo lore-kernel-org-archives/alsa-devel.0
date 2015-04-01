@@ -1,70 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/5] Intel SST driver restructure
-Date: Wed, 1 Apr 2015 08:54:01 +0100
-Message-ID: <20150401075401.GA2869@sirena.org.uk>
-References: <1427874143-26256-1-git-send-email-yang.jie@intel.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC 09/11] sound/core: add IEC958 channel status helper
+Date: Wed, 1 Apr 2015 08:58:24 +0100
+Message-ID: <20150401075824.GX24899@n2100.arm.linux.org.uk>
+References: <20150330193911.GM24899@n2100.arm.linux.org.uk>
+ <E1YcfYA-0002vc-Al@rmk-PC.arm.linux.org.uk>
+ <551A5B2F.50203@rock-chips.com>
+ <20150331091329.GP24899@n2100.arm.linux.org.uk>
+ <551B5213.8070902@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2737448570113763267=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EC678260563
- for <alsa-devel@alsa-project.org>; Wed,  1 Apr 2015 09:54:07 +0200 (CEST)
-In-Reply-To: <1427874143-26256-1-git-send-email-yang.jie@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <551B5213.8070902@rock-chips.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Yakir <ykk@rock-chips.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2737448570113763267==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="L03nwNtaNEtLvHct"
-Content-Disposition: inline
-
-
---L03nwNtaNEtLvHct
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 01, 2015 at 03:42:18PM +0800, Jie Yang wrote:
-> In order to prepare for the upstreaming of Skylake drivers and to
-> allow reuse of code between different Intel audio DSP products,
-> this patch series restructures the Intel directory as follows:
-
-Applied all, thanks.
-
---L03nwNtaNEtLvHct
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVG6QYAAoJECTWi3JdVIfQhWwH/jsiyPgL1vWoGlXcetolI75D
-uSKlTqOwdE5t/G75rlDPLOx3Jvw4NZjDspmvANnF2O3xV6g6zWEHm/topOLo66c3
-5WOoRHEig0gQhIKKalRbz+mBs+R63Taowxosj4CBHORKa6pRyewMDOjAoZHd6sq3
-CN6Cc3e1XyB3/bJTYpzU3fHxUhKZbo1g6TPkzEiKuJEQ2qAJLsk1gPhPNx8SRJE9
-S7pUua8iYjaF7GXV3ACyk5qGNCCxCSPynfKQMCAAM3KA1Ha62oOTaFPt0d/OatDI
-IX2bqlQVfaJPlrz8OjkjR1SDDE1xShFqT0vj/YSxUvgTLlGz74Va8Ey6dOOcxQk=
-=/6ey
------END PGP SIGNATURE-----
-
---L03nwNtaNEtLvHct--
-
---===============2737448570113763267==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2737448570113763267==--
+T24gV2VkLCBBcHIgMDEsIDIwMTUgYXQgMTA6MDQ6MDNBTSArMDgwMCwgWWFraXIgd3JvdGU6Cj4g
+SGkgUnVzc2VsbCwKPiAKPiDlnKggMjAxNS8zLzMxIDE3OjEzLCBSdXNzZWxsIEtpbmcgLSBBUk0g
+TGludXgg5YaZ6YGTOgo+ID5BcyBmb3IgdGhlIGNoYW5uZWwgbnVtYmVyLCB0aGlzIGlzIGludGVu
+dGlvbmFsbHkgbGVmdCB0byB0aGUgZHJpdmVyIC0KPiA+bW9zdCBjYXNlcyBJJ3ZlIGZvdW5kIGVp
+dGhlciB0aGUgZHJpdmVyIGlzbid0IGludGVyZXN0ZWQsIG9yIHdoZXJlCj4gPnRoZXkgYXJlIGlu
+dGVyZXN0ZWQgKHRoZSBvbmx5IGNhc2UgSSBrbm93IG9mIGlzIG15IGR3X2hkbWkgYWhiIGF1ZGlv
+Cj4gPmRyaXZlciksIGl0J3MgbW9yZSBhcHByb3ByaWF0ZSB0byBnZW5lcmF0ZSBhIGJhc2VsaW5l
+IGNoYW5uZWwgc3RhdHVzLAo+ID5hbmQgbGV0IHRoZSBkcml2ZXIgaXRlcmF0ZSBvdmVyIHRoZSBj
+aGFubmVscyBhZGRpbmcgdGhlIGFwcHJvcHJpYXRlCj4gPmNoYW5uZWwgbnVtYmVyIGluLgo+IE9r
+YXksIGFncmVlIHdpdGggeW91IHRvIGtlZXAgYmFzZWxpbmUgY2hhbm5lbCBzdGF0dXMsIGJ1dCBz
+ZWVtcyBkd19oZG1pCj4gaTJzIGF1ZGlvIGFyZSBpbnRlcmVzdGVkIGluIGNoYW5ubGUgbnVtYmVy
+ICh0byBmaWxsIGluIHNjaG5sIHJlc2lnZXRlcnMpLgoKQ29ycmVjdCAtIGJ1dCBpdCdzIHBvaW50
+bGVzcyBoYXZpbmcgaXQgaW4gdGhpcyBoZWxwZXIgYXMgSSBleHBsYWluZWQuClBsZWFzZSByZWFk
+IG15IGR3X2hkbWktYWhiLWF1ZGlvIGNvZGUgdG8gc2VlIHdoeS4KCkl0IHdvdWxkIGJlIHdhc3Rl
+ZnVsIHRvIG1lbXNldCB0aGUgc3RydWN0dXJlIGJhY2sgdG8gemVybywgb25seSB0bwpyZS1maWxs
+IGl0IHdpdGggZXhhY3RseSB0aGUgc2FtZSBkYXRhIGV4Y2VwdCBmb3IgdGhlIGNoYW5uZWwgbnVt
+YmVyLgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAx
+MC41TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWls
+aW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
