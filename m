@@ -1,16 +1,16 @@
 From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH RFC v2 05/13] drm: bridge/dw_hdmi: simplify
- hdmi_config_AVI() a little
-Date: Thu, 02 Apr 2015 10:21:40 +0100
-Message-ID: <E1YdbJk-000852-Uw@rmk-PC.arm.linux.org.uk>
+Subject: [PATCH RFC v2 06/13] drm: bridge/dw_hdmi: remove
+ mhsyncpolarity/mvsyncpolarity/minterlaced
+Date: Thu, 02 Apr 2015 10:21:46 +0100
+Message-ID: <E1YdbJq-000856-1r@rmk-PC.arm.linux.org.uk>
 References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 711F226570A
- for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2015 11:21:54 +0200 (CEST)
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 6FDF3265716
+ for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2015 11:21:55 +0200 (CEST)
 In-Reply-To: <20150402092050.GH24899@n2100.arm.linux.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,30 +26,74 @@ To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kern
 Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-When a YCBCR format is selected, we can merely copy the colorimetry
-information directly as we use the same definitions for both the
-unpacked AVI info frame and the hdmi_data_info structure.
+Remove the struct hdmi_vmode mhsyncpolarity/mvsyncpolarity/minterlaced
+members, which are only used within a single function.  We can directly
+reference the appropriate mode->flags instead.
 
 Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 ---
- drivers/gpu/drm/bridge/dw_hdmi.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/gpu/drm/bridge/dw_hdmi.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
-index 0f3ccfa3ccfc..a8bd3fbf4300 100644
+index a8bd3fbf4300..75728ba552d0 100644
 --- a/drivers/gpu/drm/bridge/dw_hdmi.c
 +++ b/drivers/gpu/drm/bridge/dw_hdmi.c
-@@ -943,10 +943,7 @@ static void hdmi_config_AVI(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
- 			frame.extended_colorimetry =
- 				HDMI_EXTENDED_COLORIMETRY_XV_YCC_709;
- 	} else if (hdmi->hdmi_data.enc_out_format != RGB) {
--		if (hdmi->hdmi_data.colorimetry == HDMI_COLORIMETRY_ITU_601)
--			frame.colorimetry = HDMI_COLORIMETRY_ITU_601;
--		else /*hdmi->hdmi_data.colorimetry == HDMI_COLORIMETRY_ITU_709*/
--			frame.colorimetry = HDMI_COLORIMETRY_ITU_709;
-+		frame.colorimetry = hdmi->hdmi_data.colorimetry;
- 		frame.extended_colorimetry = HDMI_EXTENDED_COLORIMETRY_XV_YCC_601;
- 	} else { /* Carries no data */
- 		frame.colorimetry = HDMI_COLORIMETRY_NONE;
+@@ -82,9 +82,6 @@ static const u16 csc_coeff_rgb_in_eitu709[3][4] = {
+ 
+ struct hdmi_vmode {
+ 	bool mdvi;
+-	bool mhsyncpolarity;
+-	bool mvsyncpolarity;
+-	bool minterlaced;
+ 	bool mdataenablepolarity;
+ 
+ 	unsigned int mpixelclock;
+@@ -1024,9 +1021,6 @@ static void hdmi_av_composer(struct dw_hdmi *hdmi,
+ 	struct hdmi_vmode *vmode = &hdmi->hdmi_data.video_mode;
+ 	int hblank, vblank, h_de_hs, v_de_vs, hsync_len, vsync_len;
+ 
+-	vmode->mhsyncpolarity = !!(mode->flags & DRM_MODE_FLAG_PHSYNC);
+-	vmode->mvsyncpolarity = !!(mode->flags & DRM_MODE_FLAG_PVSYNC);
+-	vmode->minterlaced = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
+ 	vmode->mpixelclock = mode->clock * 1000;
+ 
+ 	dev_dbg(hdmi->dev, "final pixclk = %d\n", vmode->mpixelclock);
+@@ -1036,13 +1030,13 @@ static void hdmi_av_composer(struct dw_hdmi *hdmi,
+ 		HDMI_FC_INVIDCONF_HDCP_KEEPOUT_ACTIVE :
+ 		HDMI_FC_INVIDCONF_HDCP_KEEPOUT_INACTIVE);
+ 
+-	inv_val |= (vmode->mvsyncpolarity ?
++	inv_val |= mode->flags & DRM_MODE_FLAG_PVSYNC ?
+ 		HDMI_FC_INVIDCONF_VSYNC_IN_POLARITY_ACTIVE_HIGH :
+-		HDMI_FC_INVIDCONF_VSYNC_IN_POLARITY_ACTIVE_LOW);
++		HDMI_FC_INVIDCONF_VSYNC_IN_POLARITY_ACTIVE_LOW;
+ 
+-	inv_val |= (vmode->mhsyncpolarity ?
++	inv_val |= mode->flags & DRM_MODE_FLAG_PHSYNC ?
+ 		HDMI_FC_INVIDCONF_HSYNC_IN_POLARITY_ACTIVE_HIGH :
+-		HDMI_FC_INVIDCONF_HSYNC_IN_POLARITY_ACTIVE_LOW);
++		HDMI_FC_INVIDCONF_HSYNC_IN_POLARITY_ACTIVE_LOW;
+ 
+ 	inv_val |= (vmode->mdataenablepolarity ?
+ 		HDMI_FC_INVIDCONF_DE_IN_POLARITY_ACTIVE_HIGH :
+@@ -1051,13 +1045,13 @@ static void hdmi_av_composer(struct dw_hdmi *hdmi,
+ 	if (hdmi->vic == 39)
+ 		inv_val |= HDMI_FC_INVIDCONF_R_V_BLANK_IN_OSC_ACTIVE_HIGH;
+ 	else
+-		inv_val |= (vmode->minterlaced ?
++		inv_val |= mode->flags & DRM_MODE_FLAG_INTERLACE ?
+ 			HDMI_FC_INVIDCONF_R_V_BLANK_IN_OSC_ACTIVE_HIGH :
+-			HDMI_FC_INVIDCONF_R_V_BLANK_IN_OSC_ACTIVE_LOW);
++			HDMI_FC_INVIDCONF_R_V_BLANK_IN_OSC_ACTIVE_LOW;
+ 
+-	inv_val |= (vmode->minterlaced ?
++	inv_val |= mode->flags & DRM_MODE_FLAG_INTERLACE ?
+ 		HDMI_FC_INVIDCONF_IN_I_P_INTERLACED :
+-		HDMI_FC_INVIDCONF_IN_I_P_PROGRESSIVE);
++		HDMI_FC_INVIDCONF_IN_I_P_PROGRESSIVE;
+ 
+ 	inv_val |= (vmode->mdvi ?
+ 		HDMI_FC_INVIDCONF_DVI_MODEZ_DVI_MODE :
 -- 
 1.8.3.1
