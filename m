@@ -1,51 +1,83 @@
-From: pascal.huerst@gmail.com
-Subject: [PATCH] ASoC: cs4271: Increase delay time after reset
-Date: Thu,  2 Apr 2015 10:17:40 +0200
-Message-ID: <1427962660-23517-1-git-send-email-pascal.huerst@gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [RFC v2 0/13] dw_hdmi cleanups, audio preparation, helpers and ahb
+ audio support
+Date: Thu, 2 Apr 2015 10:20:50 +0100
+Message-ID: <20150402092050.GH24899@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, broonie@kernel.org, Pascal Huerst <pascal.huerst@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Pascal Huerst <pascal.huerst@gmail.com>
-
-The delay time after a reset in the codec probe callback was too short,
-and did not work on certain hw because the codec needs more time to
-power on. This increases the delay time from 1us to 1ms.
-
-Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
----
- sound/soc/codecs/cs4271.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index 7d3a6ac..e770ee6 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -561,10 +561,10 @@ static int cs4271_codec_probe(struct snd_soc_codec *codec)
- 	if (gpio_is_valid(cs4271->gpio_nreset)) {
- 		/* Reset codec */
- 		gpio_direction_output(cs4271->gpio_nreset, 0);
--		udelay(1);
-+		mdelay(1);
- 		gpio_set_value(cs4271->gpio_nreset, 1);
- 		/* Give the codec time to wake up */
--		udelay(1);
-+		mdelay(1);
- 	}
- 
- 	ret = regmap_update_bits(cs4271->regmap, CS4271_MODE2,
--- 
-1.9.3
+SSdtIHNlbmRpbmcgdGhpcyBzZXJpZXMgZm9yIGNvbW1lbnRzLCBhbmQgdG8gYWxsb3cgcGVvcGxl
+IHRvIHVwZGF0ZQp0aGVpciBjb2RlIGJhc2VzIChmb3IgdGhvc2Ugd2hvIGFyZSB1c2luZyBteSBB
+SEIgYXVkaW8gZHJpdmVyIG9uCmlNWDYpLiAgVGhpcyBpcyByZWFsbHkgc2V2ZXJhbCBzZXJpZXMs
+IGFuZCBJJ20gbm90IGV4cGVjdGluZyB0aGlzCnRvIGJlIHJlYWR5IGZvciB0aGUgdXBjb21pbmcg
+bWVyZ2Ugd2luZG93LiAgVGhhdCBzYWlkLCBpZiBhbnlvbmUKd2FudHMgdG8gc2F5IHRoYXQgdGhl
+eSdyZSBoYXBweSB3aXRoIHNvbWUgb2YgdGhlIGluaXRpYWwgc2l4IHBhdGNoZXMsCkknbSBoYXBw
+eSB0byBxdWV1ZSB0aG9zZSBmb3IgRGF2aWQsIGlmIGhlJ3Mgd2lsbGluZyB0byB0YWtlIHRoZW0u
+CgpUaGlzIHNlcmllcyBhcHBsaWVzIG9uIHRvcCBvZiBteSBwcmV2aW91cyBzZXJpZXMsIHdpdGgg
+dGhlIHRocmVlCnBhdGNoZXMgZnJvbSB0aGUgcm9ja2NoaXAgZ3V5cyBhcHBsaWVkLCBpb3c6Cgog
+ZHJtOiByb2NrY2hpcC9kd19oZG1pLXJvY2tjaGlwOiBpbXByb3ZlIGZvciBIRE1JIGVsZWN0cmlj
+YWwgdGVzdAogZHJtOiBicmlkZ2UvZHdfaGRtaTogc2VwYXJhdGUgVkxFVkNUUkwgc2V0dHRpbmcg
+aW50byBwbGF0Zm9ybSBkcml2ZXIKIGRybTogYnJpZGdlL2R3X2hkbWk6IGZpeGVkIGNvZGVjIHN0
+eWxlCiBkcm06IGJyaWRnZS9kd19oZG1pOiBhZGp1c3Qgbi9jdHMgc2V0dGluZyBvcmRlcgogZHJt
+OiBicmlkZ2UvZHdfaGRtaTogcHJvdGVjdCBuL2N0cyBzZXR0aW5nIHdpdGggYSBtdXRleAogZHJt
+OiBicmlkZ2UvZHdfaGRtaTogY29tYmluZSBoZG1pX3NldF9jbG9ja19yZWdlbmVyYXRvcl9uKCkg
+YW5kIGhkbWlfcmVnZW5lcmF0ZV9jdHMoKQoKVGhlIGZpcnN0IGZvdXIgcGF0Y2hlcyBhcmUgYSBm
+ZXcgY2xlYW51cHMgdG8gdGhlIGR3X2hkbWkgZHJpdmVyLgoKVGhlIG5leHQgdHdvIHBhdGNoZXMg
+aW50cm9kdWNlIG5ldyBpbnRlcmZhY2VzIHRvIHRoZSBkd19oZG1pIGRyaXZlcgp0byBzdXBwb3J0
+IEFIQiBhdWRpbywgaW5jbHVkaW5nIHRoZSBlcnJhdGEgZm91bmQgb24gaU1YNiB3aGljaApyZXF1
+aXJlcyBOIHRvIGJlIHByb2dyYW1tZWQgdG8gemVybyB3aGVuIHRoZSBhdWRpbyBGSUZPIGlzIG5v
+dCBmdWxsLgpJJ20gZXhwZWN0aW5nIHNvbWUgZGlzY3Vzc2lvbiB3aXRoIHRoZXNlIGxhc3QgdHdv
+IGFzIHdlIHRyeSB0byB3b3JrCm91dCBob3cgdG8gZGVhbCB3aXRoIHRoZSB0d28gdmFyaWFudHMg
+b2YgYXVkaW8gc3VwcG9ydCBmb3IgdGhpcyBwYXJ0CihBSEIgYXVkaW8gdnMgSTJTIGF1ZGlvKS4K
+ClRoZSBmb2xsb3dpbmcgdGhyZWUgYWRkIHZhcmlvdXMgaGVscGVycyB0byB0aGUgRFJNIGFuZCBB
+TFNBIHN1YnN5c3RlbXMKZm9yIGF1ZGlvIHN1cHBvcnQgd2hpY2ggaXMgbm9uLXNwZWNpZmljIHRv
+IHRoZSBBSEIgYXVkaW8gZHJpdmVyLiAgRm9yCkRSTSwgdGhpcyBpcyBhIGhlbHBlciBtYWNybyB0
+byBvYnRhaW4gdGhlIHBvaW50ZXIgaW50byB0aGUgc2hvcnQgYXVkaW8KZGVzY3JpcHRvcnMuICBG
+b3IgQUxTQSwgaXQncyBhIHNldCBvZiBoZWxwZXJzIHRvIHJlc3RyaWN0IGFuIGF1ZGlvIFBDTQpk
+ZXZpY2UncyBjYXBhYmlsaXRpZXMgYWNjb3JkaW5nIHRvIHRoZSBFTEQsIGFuZCB0byBnZW5lcmF0
+ZSB0aGUgSUVDOTU4CmNoYW5uZWwgc3RhdHVzIGRhdGEuICBJZiB0aGVzZSBoZWxwZXJzIGFyZSBh
+Y2NlcHRhYmxlLCB3ZSBjYW4gY29udmVydAphIG51bWJlciBvZiBkcml2ZXJzIHRvIHRoZW0uCgpU
+aGUgRUxEIGhlbHBlciBpc24ndCBxdWl0ZSBmaW5pc2hlZCwgYnV0IHNob3VsZCBiZSBzdWZmaWNp
+ZW50IGZvcgppbml0aWFsIHRlc3RpbmcuCgpUaGUgbGFzdCB0d28gcGF0Y2hlcyBhZGQgc3VwcG9y
+dCBmb3IgdGhlIGR3X2hkbWkgYXVkaW8uICBUaGlzIGlzIGFuCkFMU0EgZHJpdmVyIHJhdGhlciB0
+aGFuIGFuIEFTb0MgZHJpdmVyIGFzIGl0J3MgYSBwcmV0dHkgc2ltcGxlIGFmZmFpci4KSSBjb3Vs
+ZG4ndCBmaW5kIGEgc3VpdGFibGUgbG9jYXRpb24gaW4gdGhlIHNvdW5kLyBzdWJ0cmVlIHRvIHBs
+YWNlIGl0LApzbyBJJ3ZlIHBsYWNlZCBpdCBuZXh0IHRvIHRoZSBicmlkZ2UgLSB5ZXMsIHdlIHBy
+b2JhYmx5IG5lZWQgdG8gZmluZAppdCBhIGJldHRlciBob21lIGluIHRoZSBzb3VuZC8gc3VidHJl
+ZSwgYnV0IGl0IGN1cnJlbnRseSBtYWtlcwp1c2Ugb2YgZHdfaGRtaS5oIGluIHRoZSBkaXJlY3Rv
+cnkgaXQgbGl2ZXMuCgogZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9LY29uZmlnICAgICAgICAgICAg
+IHwgIDExICsKIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvTWFrZWZpbGUgICAgICAgICAgICB8ICAg
+MSArCiBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvLmMgfCA1NjYgKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysKIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRt
+aS1haGItYXVkaW8uaCB8ICAxNCArCiBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWkuYyAg
+ICAgICAgICAgfCAzMjEgKysrKysrKysrLS0tLS0tLQogZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9k
+d19oZG1pLmggICAgICAgICAgIHwgICAzICsKIGRyaXZlcnMvZ3B1L2RybS9pbXgvZHdfaGRtaS1p
+bXguYyAgICAgICAgICB8ICAgNSArCiBpbmNsdWRlL2RybS9icmlkZ2UvZHdfaGRtaS5oICAgICAg
+ICAgICAgICAgfCAgIDcgKwogaW5jbHVkZS9kcm0vZHJtX2VkaWQuaCAgICAgICAgICAgICAgICAg
+ICAgIHwgIDE5ICsKIGluY2x1ZGUvc291bmQvcGNtX2RybV9lbGQuaCAgICAgICAgICAgICAgICB8
+ICAgNiArCiBpbmNsdWRlL3NvdW5kL3BjbV9pZWM5NTguaCAgICAgICAgICAgICAgICAgfCAgIDkg
+Kwogc291bmQvY29yZS9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2ICsKIHNv
+dW5kL2NvcmUvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCiBzb3VuZC9j
+b3JlL3BjbV9kcm1fZWxkLmMgICAgICAgICAgICAgICAgICAgfCAgOTIgKysrKysKIHNvdW5kL2Nv
+cmUvcGNtX2llYzk1OC5jICAgICAgICAgICAgICAgICAgICB8ICA5NSArKysrKwogMTUgZmlsZXMg
+Y2hhbmdlZCwgMTAyOSBpbnNlcnRpb25zKCspLCAxMjggZGVsZXRpb25zKC0pCgotLSAKRlRUQyBi
+cm9hZGJhbmQgZm9yIDAuOG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEwLjVNYnBzIGRvd24gNDAw
+a2JwcyB1cAphY2NvcmRpbmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2
+ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
