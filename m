@@ -1,17 +1,23 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v3 4/5] ASoC: Intel: create baytrail folder and
-	move baytrail platform files in
-Date: Thu,  2 Apr 2015 15:37:03 +0800
-Message-ID: <1427960224-3528-5-git-send-email-yang.jie@intel.com>
-References: <1427960224-3528-1-git-send-email-yang.jie@intel.com>
+From: Pascal Huerst <pascal.huerst@gmail.com>
+Subject: Re: ASoC: cs4271: init/timing problem
+Date: Thu, 02 Apr 2015 09:56:48 +0200
+Message-ID: <551CF640.5010203@gmail.com>
+References: <551A5FC9.4010109@gmail.com>
+ <alpine.DEB.2.10.1503311600000.13828@heelrod-desktop>
+ <551BC102.6010403@gmail.com> <551BCE01.2070007@gmail.com>
+ <9FF9C0F5-716B-4F31-AFAC-17B1C8991AB8@cirrus.com>
+ <551C10B8.5080409@gmail.com>
+ <alpine.DEB.2.10.1504011206320.13828@heelrod-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 598AB2654C7
- for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2015 09:34:07 +0200 (CEST)
-In-Reply-To: <1427960224-3528-1-git-send-email-yang.jie@intel.com>
+Received: from mail-wg0-f49.google.com (mail-wg0-f49.google.com [74.125.82.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A8F9261685
+ for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2015 09:56:50 +0200 (CEST)
+Received: by wgbdm7 with SMTP id dm7so77005166wgb.1
+ for <alsa-devel@alsa-project.org>; Thu, 02 Apr 2015 00:56:49 -0700 (PDT)
+In-Reply-To: <alpine.DEB.2.10.1504011206320.13828@heelrod-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,113 +27,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Restructure the sound/soc/intel/ directory: create baytrail folder, and move
-sst baytrail platform files here.
+On 01.04.2015 19:08, Brian Austin wrote:
+>>>> I just lowered the clock-frequency to 50 kHz and I face the same
+>>>> problem, but it very much depends on the hardware. On some devices I
+>>>> don't face the problem at all and on others I can reproduce it very
+>>>> reliable. If I add a mdelay(20), or use the loop I postet earlier, the
+>>>> issue is gone on all devices.
+>>> Are there any other devices on the I2C bus? Lets take this off the ALSA list until there
+>>> is a determination that it is an ASoC issue which it does not appear to be right now.
+>>
+>> Well I think it is. There is a delay needed in sound/soc/codec/cs4271.c
+>> at line 569, in certain cases, because the call to regmap_update_bits on
+>> line 570 fails sometimes. If I add a delay of a few us on line 569, the
+>> call never fails.
+>>
+>> But let me just send in a patch so we really know what we are talking
+>> about, then.
+>>
+> can you try something like this?
+> 
+> gpio_direction_output(cs4271->gpio_nreset, 0);
+> -udelay(1);
+> gpio_set_value(cs4271->gpio_nreset, 1);
+> /* Give the codec time to wake up */
+> -udelay(1);
+> 
+> gpio_direction_output(cs4271->gpio_nreset, 0);
+> +mdelay(1);
+> gpio_set_value(cs4271->gpio_nreset, 1);
+> /* Give the codec time to wake up */
+> +mdelay(1);
+> 
+> See if that helps instead of adding another delay.
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/intel/Makefile                          | 5 +----
- sound/soc/intel/baytrail/Makefile                 | 4 ++++
- sound/soc/intel/{ => baytrail}/sst-baytrail-dsp.c | 4 ++--
- sound/soc/intel/{ => baytrail}/sst-baytrail-ipc.c | 4 ++--
- sound/soc/intel/{ => baytrail}/sst-baytrail-ipc.h | 0
- sound/soc/intel/{ => baytrail}/sst-baytrail-pcm.c | 4 ++--
- 6 files changed, 11 insertions(+), 10 deletions(-)
- create mode 100644 sound/soc/intel/baytrail/Makefile
- rename sound/soc/intel/{ => baytrail}/sst-baytrail-dsp.c (99%)
- rename sound/soc/intel/{ => baytrail}/sst-baytrail-ipc.c (99%)
- rename sound/soc/intel/{ => baytrail}/sst-baytrail-ipc.h (100%)
- rename sound/soc/intel/{ => baytrail}/sst-baytrail-pcm.c (99%)
-
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index ac0248f..62de82a 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -10,10 +10,7 @@ obj-$(CONFIG_SND_MFLD_MACHINE) += snd-soc-mfld-machine.o
- 
- # Platform Support
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += haswell/
--snd-soc-sst-baytrail-pcm-objs := \
--	sst-baytrail-ipc.o sst-baytrail-pcm.o sst-baytrail-dsp.o
--
--obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += snd-soc-sst-baytrail-pcm.o
-+obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += baytrail/
- 
- # Machine support
- obj-$(CONFIG_SND_SOC_INTEL_SST) += boards/
-diff --git a/sound/soc/intel/baytrail/Makefile b/sound/soc/intel/baytrail/Makefile
-new file mode 100644
-index 0000000..488408c
---- /dev/null
-+++ b/sound/soc/intel/baytrail/Makefile
-@@ -0,0 +1,4 @@
-+snd-soc-sst-baytrail-pcm-objs := \
-+	        sst-baytrail-ipc.o sst-baytrail-pcm.o sst-baytrail-dsp.o
-+
-+obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += snd-soc-sst-baytrail-pcm.o
-diff --git a/sound/soc/intel/sst-baytrail-dsp.c b/sound/soc/intel/baytrail/sst-baytrail-dsp.c
-similarity index 99%
-rename from sound/soc/intel/sst-baytrail-dsp.c
-rename to sound/soc/intel/baytrail/sst-baytrail-dsp.c
-index 5a9e567..01d023c 100644
---- a/sound/soc/intel/sst-baytrail-dsp.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-dsp.c
-@@ -22,8 +22,8 @@
- #include <linux/platform_device.h>
- #include <linux/firmware.h>
- 
--#include "sst-dsp.h"
--#include "sst-dsp-priv.h"
-+#include "../common/sst-dsp.h"
-+#include "../common/sst-dsp-priv.h"
- #include "sst-baytrail-ipc.h"
- 
- #define SST_BYT_FW_SIGNATURE_SIZE	4
-diff --git a/sound/soc/intel/sst-baytrail-ipc.c b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
-similarity index 99%
-rename from sound/soc/intel/sst-baytrail-ipc.c
-rename to sound/soc/intel/baytrail/sst-baytrail-ipc.c
-index b4ad98c..aabb9b0 100644
---- a/sound/soc/intel/sst-baytrail-ipc.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
-@@ -29,8 +29,8 @@
- #include <asm/div64.h>
- 
- #include "sst-baytrail-ipc.h"
--#include "sst-dsp.h"
--#include "sst-dsp-priv.h"
-+#include "../common/sst-dsp.h"
-+#include "../common/sst-dsp-priv.h"
- 
- /* IPC message timeout */
- #define IPC_TIMEOUT_MSECS	300
-diff --git a/sound/soc/intel/sst-baytrail-ipc.h b/sound/soc/intel/baytrail/sst-baytrail-ipc.h
-similarity index 100%
-rename from sound/soc/intel/sst-baytrail-ipc.h
-rename to sound/soc/intel/baytrail/sst-baytrail-ipc.h
-diff --git a/sound/soc/intel/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-similarity index 99%
-rename from sound/soc/intel/sst-baytrail-pcm.c
-rename to sound/soc/intel/baytrail/sst-baytrail-pcm.c
-index 224c49c..79547be 100644
---- a/sound/soc/intel/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-@@ -20,8 +20,8 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include "sst-baytrail-ipc.h"
--#include "sst-dsp-priv.h"
--#include "sst-dsp.h"
-+#include "../common/sst-dsp-priv.h"
-+#include "../common/sst-dsp.h"
- 
- #define BYT_PCM_COUNT		2
- 
--- 
-1.9.1
+Works perfect for me. Tested on different devices without any problems.
+If you agree on that, I'll send in a patch.
