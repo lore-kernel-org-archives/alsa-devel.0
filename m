@@ -1,36 +1,52 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ALSA: hda: fix possible null dereference
-Date: Thu,  2 Apr 2015 16:51:43 +0530
-Message-ID: <1427973703-2365-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: atmel: ac97c: Remove unused variable
+Date: Thu,  2 Apr 2015 09:42:06 -0300
+Message-ID: <1427978526-17604-1-git-send-email-festevam@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f178.google.com (mail-qc0-f178.google.com
+ [209.85.216.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB23F2604CA
+ for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2015 14:42:43 +0200 (CEST)
+Received: by qcgx3 with SMTP id x3so65799194qcg.3
+ for <alsa-devel@alsa-project.org>; Thu, 02 Apr 2015 05:42:40 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alexanders83@web.de, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-we are dereferencing pcm first then checking pcm. instead now lets put
-them in same if condition so that pcm is checked first.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+Remove the unused 'match' variable to fix the following build warning:
+
+sound/atmel/ac97c.c:919:29: warning: unused variable 'match' [-Wunused-variable]
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/pci/hda/hda_codec.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/atmel/ac97c.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 145cae7..7df18e2 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3717,9 +3717,8 @@ static int add_std_chmaps(struct hda_codec *codec)
- 			struct snd_pcm_chmap *chmap;
- 			const struct snd_pcm_chmap_elem *elem;
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index cf4cedf..6dad042 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -916,7 +916,6 @@ static struct ac97c_platform_data *atmel_ac97c_probe_dt(struct device *dev)
+ {
+ 	struct ac97c_platform_data *pdata;
+ 	struct device_node *node = dev->of_node;
+-	const struct of_device_id *match;
  
--			if (pcm->own_chmap)
--				continue;
--			if (!pcm || !hinfo->substreams)
-+			if (!pcm || pcm->own_chmap ||
-+			    !hinfo->substreams)
- 				continue;
- 			elem = hinfo->chmap ? hinfo->chmap : snd_pcm_std_chmaps;
- 			err = snd_pcm_add_chmap_ctls(pcm->pcm, str, elem,
+ 	if (!node) {
+ 		dev_err(dev, "Device does not have associated DT data\n");
 -- 
-1.8.1.2
+1.9.1
