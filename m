@@ -1,68 +1,39 @@
-From: Valdis.Kletnieks@vt.edu
-Subject: Re: [alsa-devel] linux-next - strange audio bug
-Date: Thu, 02 Apr 2015 22:21:40 -0400
-Message-ID: <4518.1428027700@turing-police.cc.vt.edu>
-References: <57781.1428021275@turing-police.cc.vt.edu>
-            <551DE25C.6020201@canonical.com>
+From: =?UTF-8?B?Sm/Dq2wgS3LDpGhlbWFubg==?= <weedlight-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [LAD] Advanced Gtk+ Sequencer aka GSequencer now on GitHub
+Date: Fri, 3 Apr 2015 03:05:56 +0000
+Message-ID: <CANr2zYgHBN1-nRMvrmTTXynXp4qq9G2wemCHopZbrhjuwR4LBA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1428027700_2100P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: Your message of "Fri, 03 Apr 2015 08:44:12 +0800."
-             <551DE25C.6020201@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hui Wang <hui.wang@canonical.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev/>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Sender: "Linux-audio-dev" <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+To: alsa-devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linux Audio Developers <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
---==_Exmh_1428027700_2100P
-Content-Type: text/plain; charset=us-ascii
-
-On Fri, 03 Apr 2015 08:44:12 +0800, Hui Wang said:
-
-> It sounds like the suspend or resume of power management introduces this
-> problem. Probably you could reproduce this problem very soon just
-> repeatedly suspend and resume the system.
-
-I don't do suspend on this laptop, I poweroff and reboot when I get
-wherever I'm going.
-
-However... device-level power management? Hmm..  I *do* remember that
-each time I found it dead, I was coming back to my laptop from doing something
-else, so the sound would have been idle....
-
-commit c4c2533f802d6877803c4d778def43d8a122f27b
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Tue Mar 3 17:22:12 2015 +0100
-
-    ALSA: hda - Fix possible runtime PM refcount unbalance
-
-That landed in next-20150324 - which is broken for me.
-
-Looks worth trying a revert before I bisect, thanks for the hint, will
-report back (probably tomorrow) on what happens...
-
---==_Exmh_1428027700_2100P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Exmh version 2.5 07/13/2001
-
-iQIVAwUBVR35NAdmEQWDXROgAQISqA//esdta7q7PcQZ6HF7Za/8VjiBpBY5pgNy
-f4/qwZtX9zcCgiYthlA1x1XaXnbv88FvXX71lyzjGs8Db9umb4plWGpMm0jIYf5H
-25IussuZiY2XlaRlKK61hz8FHq1dpEDb1TQqDTNwDrXBT3zIh1HznI/eHd8kGK8p
-U1jjCNpUNYrP29E8749D3VPaHwqkQK9IGwh0HKWzhJImjwHV8LOHteFmqdfF68fB
-Eg4bhr5XkoIw2qSseKdFmKoUDxJjnq9pKWmq+YF2H52YgvSLj8WSk4n+8sMfRgFx
-FPR4ugfJTrk6bpC8YeGFLDHveanyM0/eY+2J5tDGyU4e4H6OLoAfJWX+aNXvp+pK
-p3IWTOYCzVq2/Rp4mmUz6dBo0gu7I/fL5EclpNZpDjxk8oYDZ7nMSk1bEp+lvByB
-cgJ4jIUEdKh4LAib/Urve1bAMbkI6R97pvoynxWfHExoDTphal80wfJEgBv3XHSA
-OAfHdUFK9v2gg27LPjnqrxrCc3RUYCJ3hbzkvOlNj6gezMNQI9UFaxRukp2AJgv4
-uu+VBGURXx7bqU0D7DnihJnAMgxvLi0qYMGz1lkRg46MxAXCstN65iBhAOASap+X
-7ztSbYi2tn5GXZgSGmFXYYlt54Q5UXfGaicrrcgAxXrF4zWNfd4LP1hLap/uy4Mr
-X8tqvlZHVAQ=
-=J/UZ
------END PGP SIGNATURE-----
-
---==_Exmh_1428027700_2100P--
+SGkgYWxsLCBtZSBqdXN0IG1pZ3JhdGVkIGdzZXF1ZW5jZXIgdG8gR2l0SHViLgoKaHR0cDovL3d3
+dy5nc2VxdWVuY2VyLm9yZwoKRnVydGhlciBtZSBkaWQgcmVuYW1lZCBiaW5hcnkgZnJvbSBgYWdz
+YCB0byBgZ3NlcXVlbmNlcmAuIEFib3V0IHRoZQpzdGF0ZSBvZiB0aGUgc2VxdWVuY2VyOiBWZXJz
+aW9uIDAuNC4yLTQ0IGlzIGJlbGlldmVkIHRvIGJlIHN0YWJsZS4KU2luY2UgbWUgZG9uJ3QgaGF2
+ZSB0aGUgdGltZSB0byB0ZXN0IGl0IHdlbGwsIG1lIG5lZWQgcGVvcGxlIHRvIHRlc3QKaXQuIFBs
+ZWFzZSwgbGV0IG1lIGtub3cgeW91ciBleHBlcmllbmNlcy4KCk1JREkgc3VwcG9ydCBpcyBpbnRl
+bmRlZCB0byBiZSBhZGRlZCBmb3IgcmVsZWFzZSBWZXJzaW9uIDAuNC4zIGFuZAptYW55IG90aGVy
+IG5ldyBleGNpdGluZyBmZWF0dXJlcy4gSWYgc29tZW9uZSBjYW4gaGVscCB3aXRoIEFMU0EKcmF3
+bWlkaSwgcGxlYXNlIGxldCBtZSBrbm93LgoKSSBkb24ndCB3YW50IHRvIGRvIEpBQ0ssIHNpbmNl
+IGl0IGlzIGJlbGlldmVkIHRvIGJlIHNvbWVob3cgdGhlIFF0IHRoaW5nLgoKV2hhdCBtZSBjYW4g
+c2F5IHNvIGZhciBhYm91dCBNSURJIG1lIHJlYWQgeWVhcnMgYWdvIGFib3V0IGl0IGluICJUaGUK
+Y29tcHV0ZXIgbXVzaWMgdHV0b3JpYWwgLSBUaGUgTUlUIFByZXNzLCBJU0JOIDAtMjYyLTY4MDgy
+LTMiLiBBbmQgTUlESQpjb25zaXN0IG9mIG1lc3NhZ2VzIHdoaWNoIGFyZSByb3V0ZWFibGUuICBT
+b21lb25lIGdpdmluZyBzcGVjaWZpY2F0aW9uCmhvdyB0aGUgTUlESSBtZXNzYWdlIHN0cnVjdCBp
+cyBwYXNzZWQgdG8gQUxTQSBhbmQgaG93IGl0IGxvb2tzIGxpa2UKd291bGQgYmUgZ3JlYXQuCgoK
+VGhhbmsgeW91IGluIGFkdmFuY2UKSm/Dq2wKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXgtYXVkaW8tZGV2IG1haWxpbmcgbGlzdApMaW51eC1hdWRp
+by1kZXZAbGlzdHMubGludXhhdWRpby5vcmcKaHR0cDovL2xpc3RzLmxpbnV4YXVkaW8ub3JnL2xp
+c3RpbmZvL2xpbnV4LWF1ZGlvLWRldgo=
