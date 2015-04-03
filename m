@@ -1,48 +1,58 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm5102: Remove set of volume update bits
-	for output 3R
-Date: Fri,  3 Apr 2015 18:28:32 +0100
-Message-ID: <1428082112-2390-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/6] ASoC: jz4740: Remove Makefile entry for removed file
+Date: Fri, 3 Apr 2015 20:25:40 +0200
+Message-ID: <20150403182540.GA12460@kroah.com>
+References: <1398199596-23649-1-git-send-email-lars@metafoo.de>
+ <5515363F.1050209@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E18822604EA
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2015 19:33:21 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5515363F.1050209@imgtec.com>
+Sender: stable-owner@vger.kernel.org
+To: Markos Chandras <Markos.Chandras@imgtec.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, alsa-devel@alsa-project.org, stable <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The earpiece on wm5102 is mono, thus there is no output 3R. Don't toggle
-the volume update bits for this output, although worth noting that doing
-so had no negative effects it is just redundant.
+On Fri, Mar 27, 2015 at 10:51:43AM +0000, Markos Chandras wrote:
+> On 04/22/2014 09:46 PM, Lars-Peter Clausen wrote:
+> > Commit 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
+> > jz4740-pcm.c file, but neglected to remove the Makefile entries.
+> > 
+> > Fixes: 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
+> > Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> > Reported-by: Ralf Baechle <ralf@linux-mips.org>
+> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > ---
+> >  sound/soc/jz4740/Makefile | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/sound/soc/jz4740/Makefile b/sound/soc/jz4740/Makefile
+> > index be873c1..d32c540 100644
+> > --- a/sound/soc/jz4740/Makefile
+> > +++ b/sound/soc/jz4740/Makefile
+> > @@ -1,10 +1,8 @@
+> >  #
+> >  # Jz4740 Platform Support
+> >  #
+> > -snd-soc-jz4740-objs := jz4740-pcm.o
+> >  snd-soc-jz4740-i2s-objs := jz4740-i2s.o
+> >  
+> > -obj-$(CONFIG_SND_JZ4740_SOC) += snd-soc-jz4740.o
+> >  obj-$(CONFIG_SND_JZ4740_SOC_I2S) += snd-soc-jz4740-i2s.o
+> >  
+> >  # Jz4740 Machine Support
+> > 
+> Hi,
+> 
+> This patch (eebdec044e82) is present in 3.15-rc1 but the build failure
+> that was introduced by 0406a40a0 ("ASoC: jz4740: Use the generic
+> dmaengine PCM driver") is present in 3.14-rc1 so 3.14 is still broken.
+> 
+> Greg, would it be possible to cherry pick eebdec044e82 ("ASoC: jz4740:
+> Remove Makefile entry for removed file") to 3.14 stable branch? It seems
+> to apply without conflicts.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5102.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+Now applied, thanks.
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 6d0fe0a..0c6d1bc 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -1861,7 +1861,6 @@ static unsigned int wm5102_digital_vu[] = {
- 	ARIZONA_DAC_DIGITAL_VOLUME_2L,
- 	ARIZONA_DAC_DIGITAL_VOLUME_2R,
- 	ARIZONA_DAC_DIGITAL_VOLUME_3L,
--	ARIZONA_DAC_DIGITAL_VOLUME_3R,
- 	ARIZONA_DAC_DIGITAL_VOLUME_4L,
- 	ARIZONA_DAC_DIGITAL_VOLUME_4R,
- 	ARIZONA_DAC_DIGITAL_VOLUME_5L,
--- 
-1.7.2.5
+greg k-h
