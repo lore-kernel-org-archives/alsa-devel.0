@@ -1,18 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/4] ASoC: tegra_rt5677: Use card DAPM context
-	to access widgets
-Date: Fri,  3 Apr 2015 13:04:06 +0200
-Message-ID: <1428059048-32315-2-git-send-email-lars@metafoo.de>
-References: <1428059048-32315-1-git-send-email-lars@metafoo.de>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH v4 0/5] ALSA: jack: Refactoring for jack kctls
+Date: Fri,  3 Apr 2015 20:07:13 +0800
+Message-ID: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-122.synserver.de (smtp-out-122.synserver.de
- [212.40.185.122])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BA9926585A
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2015 13:04:18 +0200 (CEST)
-In-Reply-To: <1428059048-32315-1-git-send-email-lars@metafoo.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35F50265866
+ for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2015 14:04:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +18,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Lucas Stach <dev@lynxeye.de>, Anatol Pomozov <anatol.pomozov@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The dapm field of the snd_soc_codec struct will eventually be removed
-(replaced with the DAPM context from the component embedded inside the
-CODEC). Replace its usage with the card's DAPM context. The idea is that
-DAPM is hierarchical and with the card at the root it is possible to access
-widgets from other contexts through the card context.
+Currently only hda will create kctls for hda jacks, for asoc, people
+may need create jack kctls in specific driver.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/tegra/tegra_rt5677.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Here we are introducing kctls for each jack, by creating kctls and add
+them to jack controls list (considering exist of combo jack). At the
+same time, we will report events for each control in the list.
 
-diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
-index d082882..1470873 100644
---- a/sound/soc/tegra/tegra_rt5677.c
-+++ b/sound/soc/tegra/tegra_rt5677.c
-@@ -141,9 +141,6 @@ static const struct snd_kcontrol_new tegra_rt5677_controls[] = {
- 
- static int tegra_rt5677_asoc_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	struct tegra_rt5677 *machine = snd_soc_card_get_drvdata(rtd->card);
- 
- 	snd_soc_card_jack_new(rtd->card, "Headphone Jack", SND_JACK_HEADPHONE,
-@@ -167,7 +164,7 @@ static int tegra_rt5677_asoc_init(struct snd_soc_pcm_runtime *rtd)
- 				&tegra_rt5677_mic_jack_gpio);
- 	}
- 
--	snd_soc_dapm_force_enable_pin(dapm, "MICBIAS1");
-+	snd_soc_dapm_force_enable_pin(&rtd->card->dapm, "MICBIAS1");
- 
- 	return 0;
- }
+With this new implementation, both HDA and soc jack kctls works fine,
+they are compatible for old HDA jack kctls, too.
+
+For soc,
+a. snd_jack_new() with NULL jack_kctl;
+b. for each pin, call snd_jack_add_kctls() to add one kctl(it will
+call snd_ctl_add() to add kctl to card);
+
+For hda,
+a. call snd_jack_kctl_new()(in __snd_hda_jack_add_kctl()) to new a
+jack_kctl(also new kctl); and use snd_hda_ctl_add to add kctl to card;
+b. new a hda_jack_tbl, appoint jack_tbl->jack_kctl = jack_kctl;
+c. for non-phantom jack, call snd_jack_new() with this jack_kctl,
+then the jack_kctl will be added to the new created jack;
+
+Changes in v4:
+1. use snd_ctl_find_id() to get avaliable index;
+2. add initial kctl for snd_jack_new(compatible for HDA);
+3. add struct snd_jack_kctl * field to struct hda_jack_tbl;
+4. new kctls for soc jack during jack pins creating.
+5. add a patch to remove exporting snd_kctl_jack_new().
+
+Changes in v3:
+1. replace bit index with bit mask in jack_kctl;
+2. add exception for SND_JACK_HEADSET and SND_JACK_AVOUT, only create
+one jack kctl for these two combo jacks, respectively.
+3. add NULL check, mem kfree, and fix some potential risk.
+
+Change in v2:
+1. define jack_kctl struct, and put jack kctl related stuff there;
+2. add a patch to remove the existing controls for HDA jack.
+
+Jie Yang (5):
+  ALSA: jack: create jack kcontrols for every jack input
+  ALSA: jack: add a parameter to pass kctl for snd_jack_new
+  ALSA: hda - Update to use the new jack kctls method
+  ASoC: jack: create kctls according to jack pins info
+  ALSA: jack: remove export snd_kctl_jack_new()
+
+ include/sound/jack.h            |  25 ++++++-
+ sound/core/ctljack.c            |   1 -
+ sound/core/jack.c               | 152 +++++++++++++++++++++++++++++++++++++++-
+ sound/pci/hda/hda_jack.c        |  52 +++++++-------
+ sound/pci/hda/hda_jack.h        |   4 +-
+ sound/pci/oxygen/xonar_wm87x6.c |   2 +-
+ sound/soc/soc-jack.c            |   3 +-
+ 7 files changed, 200 insertions(+), 39 deletions(-)
+
 -- 
-1.8.0
+1.9.1
