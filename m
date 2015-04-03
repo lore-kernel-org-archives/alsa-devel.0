@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/4] ASoC: tegra_wm9712: Use card DAPM context
+Subject: [PATCH 2/4] ASoC: tegra_rt5677: Use card DAPM context
 	to access widgets
-Date: Fri,  3 Apr 2015 13:04:08 +0200
-Message-ID: <1428059048-32315-4-git-send-email-lars@metafoo.de>
+Date: Fri,  3 Apr 2015 13:04:06 +0200
+Message-ID: <1428059048-32315-2-git-send-email-lars@metafoo.de>
 References: <1428059048-32315-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-122.synserver.de (smtp-out-122.synserver.de
  [212.40.185.122])
- by alsa0.perex.cz (Postfix) with ESMTP id 96D50265862
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BA9926585A
  for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2015 13:04:18 +0200 (CEST)
 In-Reply-To: <1428059048-32315-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,25 +34,31 @@ widgets from other contexts through the card context.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/tegra/tegra_wm9712.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/tegra/tegra_rt5677.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
-index 2868b48..6492f81 100644
---- a/sound/soc/tegra/tegra_wm9712.c
-+++ b/sound/soc/tegra/tegra_wm9712.c
-@@ -46,11 +46,7 @@ static const struct snd_soc_dapm_widget tegra_wm9712_dapm_widgets[] = {
+diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
+index d082882..1470873 100644
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -141,9 +141,6 @@ static const struct snd_kcontrol_new tegra_rt5677_controls[] = {
  
- static int tegra_wm9712_init(struct snd_soc_pcm_runtime *rtd)
+ static int tegra_rt5677_asoc_init(struct snd_soc_pcm_runtime *rtd)
  {
 -	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 -	struct snd_soc_codec *codec = codec_dai->codec;
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
--
--	return snd_soc_dapm_force_enable_pin(dapm, "Mic Bias");
-+	return snd_soc_dapm_force_enable_pin(&rtd->card->dapm, "Mic Bias");
- }
+ 	struct tegra_rt5677 *machine = snd_soc_card_get_drvdata(rtd->card);
  
- static struct snd_soc_dai_link tegra_wm9712_dai = {
+ 	snd_soc_card_jack_new(rtd->card, "Headphone Jack", SND_JACK_HEADPHONE,
+@@ -167,7 +164,7 @@ static int tegra_rt5677_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ 				&tegra_rt5677_mic_jack_gpio);
+ 	}
+ 
+-	snd_soc_dapm_force_enable_pin(dapm, "MICBIAS1");
++	snd_soc_dapm_force_enable_pin(&rtd->card->dapm, "MICBIAS1");
+ 
+ 	return 0;
+ }
 -- 
 1.8.0
