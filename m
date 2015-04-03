@@ -1,82 +1,54 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Issues and/or possible bugs in alsa
-Date: Fri, 3 Apr 2015 23:10:58 +0800
-Message-ID: <CAN8cciYc6ggpnOZydy4Mm_TsXo4c8SAN_cyutJ1FFeuiqxCEnw@mail.gmail.com>
-References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
- <54ED8466.7020102@gmail.com>
- <CAN8cciYnyLahS2gQ0g0vSaNj+xo=Tz9_FQ9L-WazOb1t5no_kA@mail.gmail.com>
- <54F1C10B.2050008@gmail.com> <s5hmw3ygjcx.wl-tiwai@suse.de>
- <CACui-2k_6R7SG2_o0SO+oLMNz-Lo7zpY6tuvOOYJ1eq7N056hg@mail.gmail.com>
- <CAN8ccia6_ZSdAtL3w4s4B0RYLnOXZK-LddpQi4LCjdHZrtJqfA@mail.gmail.com>
- <CACui-2ngDGDf3R-Jp0mxrYKrJQuWCS6msk-A3LdTk0n2LZCqTQ@mail.gmail.com>
- <CACui-2kLt+x6RieNZ05bFbs5veu7zy3m50MfurPCpPtBAwY07Q@mail.gmail.com>
- <CACui-2n2MTnA9DWzGdprfJ=bY+OjYMkBtFe7YQQnTf5BBtyk=Q@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [PATCH 00/14] Fix fallout from per-user struct clk patches
+Date: Fri, 3 Apr 2015 18:11:49 +0100
+Message-ID: <20150403171149.GC13898@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f174.google.com (mail-ob0-f174.google.com
- [209.85.214.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D7CA2604C6
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2015 17:11:00 +0200 (CEST)
-Received: by obbec2 with SMTP id ec2so173490833obb.3
- for <alsa-devel@alsa-project.org>; Fri, 03 Apr 2015 08:10:59 -0700 (PDT)
-In-Reply-To: <CACui-2n2MTnA9DWzGdprfJ=bY+OjYMkBtFe7YQQnTf5BBtyk=Q@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Yomi Ogunwumi <abyomi0@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-media-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org
+Cc: Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Gregory Clement <gregory.clement@free-electrons.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Jason Cooper <jason@lakedaemon.net>, Kevin Hilman <khilman@deeprootsystems.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Mike Turquette <mturquette@linaro.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Roland Stigge <stigge@antcom.de>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Sekhar Nori <nsekhar@ti.com>, Stephen Boyd <sboyd@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, Tony Lindgren <tony@atomide.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pgo+IEknbSBnb2luZyB0byB0YWtlIGEgZ3Vlc3MgYW5kIGNvbmNsdWRlIHRoYXQgdGhlcmUgbXVz
-dCBiZSBidWdzIGluIHRoZQppbnRlcmZhY2UgcGF0Y2ggd3JpdHRlbiBmb3IgdGhlIHJlYWx0ZWsg
-Y29kZWNzLiBJIGhhcHBlbmVkIHRvIHRlc3QgdHdvCm90aGVyIGxhcHRvcHMgYW5kIHRoZXkgd29y
-a2VkIGp1c3QgZmluZS4gKEludGVsLi4uKQo+Cj4gLi4uSSBndWVzcyBpbiBzaG91bGQgcmVwb3J0
-IGEgYnVnIHJlbGF0ZWQgdG8gdGhhdCByZWFsdGVrIHBhdGNoLi4uCj4KPiDigKIKPj4+PiA+Cj4+
-Pj4gPiBJcyB0aGVyZSBhbnl0aGluZyBlbHNlIEkgbmVlZCB0byBkbz8KPj4+Pgo+Pj4+IENvZGVj
-OiBSZWFsdGVrIEFMQzI2OVZCCj4+Pj4gQWRkcmVzczogMAo+Pj4+IEFGRyBGdW5jdGlvbiBJZDog
-MHgxICh1bnNvbCAxKQo+Pj4+IFZlbmRvciBJZDogMHgxMGVjMDI2OQo+Pj4+IFN1YnN5c3RlbSBJ
-ZDogMHgxMTc5ZmEyMgo+Pj4+IFJldmlzaW9uIElkOiAweDEwMDEwMAo+Pj4+IE5vIE1vZGVtIEZ1
-bmN0aW9uIEdyb3VwIGZvdW5kCj4+Pj4gRGVmYXVsdCBQQ006Cj4+Pj4gTi9BCj4+Pj4gRGVmYXVs
-dCBBbXAtSW4gY2FwczogTi9BCj4+Pj4gRGVmYXVsdCBBbXAtT3V0IGNhcHM6IE4vQQo+Pj4+IFN0
-YXRlIG9mIEFGRyBub2RlIDB4MDE6Cj4+Pj4gICBQb3dlcjogc2V0dGluZz1VTktOT1dOLCBhY3R1
-YWw9VU5LTk9XTiwgRXJyb3IsIENsb2NrLXN0b3AtT0ssClNldHRpbmctcmVzZXQKPj4+PiBJbnZh
-bGlkIEFGRyBzdWJ0cmVlCgpZb3UgbmVlZCB0byBmaW5kIG91dCB3aGF0IHZhbHVlIHJldHVybiBz
-bmRfaGRhX3BhcmFtX3JlYWQoKSAgaW4Kc25kX2hkYV9nZXRfc3ViX25vZGVzICgpCgphbmQgdmFs
-dWUgb2YgcHdyIHJldHVybiBieSBzbmRfaGRhX2NvZGVjX3JlYWQoY29kZWMsIG5pZCwgMCwKICAg
-ICBBQ19WRVJCX0dFVF9QT1dFUl9TVEFURSwgMCk7CgppbnQgc25kX2hkYV9nZXRfc3ViX25vZGVz
-KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlkX3QgbmlkLAogICAgICAgICAgICAgICAg
-ICAgICAgICBoZGFfbmlkX3QgKnN0YXJ0X2lkKQp7CiAgICAgICAgIHVuc2lnbmVkIGludCBwYXJt
-OwoKICAgICAgICBwYXJtID0gc25kX2hkYV9wYXJhbV9yZWFkKGNvZGVjLCBuaWQsIEFDX1BBUl9O
-T0RFX0NPVU5UKTsKICAgICAgIGlmIChwYXJtID09IC0xKSB7CiAgICAgICAgICAgICAgKnN0YXJ0
-X2lkID0gMAogICAgICAgICAgICAgICAgIHJldHVybiAwOwogICAgICB9CiAgICAgICAqc3RhcnRf
-aWQgPSAocGFybSA+PiAxNikgJiAweDdmZmY7CiAgICAgIHJldHVybiAoaW50KShwYXJtICYgMHg3
-ZmZmKTsKfQpub2RlcyA9IHNuZF9oZGFfZ2V0X3N1Yl9ub2Rlcyhjb2RlYywgZmcsICZuaWQpOwpp
-ZiAoISBuaWQgfHwgbm9kZXMgPCAwKSB7CnNuZF9pcHJpbnRmKGJ1ZmZlciwgIkludmFsaWQgQUZH
-IHN1YnRyZWVcbiIpOwpzbmRfaGRhX3Bvd2VyX2Rvd24oY29kZWMpOwpyZXR1cm47Cn0KCgpQb3dl
-cjogc2V0dGluZz1VTktOT1dOLCBhY3R1YWw9VU5LTk9XTiwgRXJyb3IsIENsb2NrLXN0b3AtT0ss
-IFNldHRpbmctcmVzZXQKCnN0YXRpYyBjb25zdCBjaGFyICpnZXRfcHdyX3N0YXRlKHUzMiBzdGF0
-ZSkKewpzdGF0aWMgY29uc3QgY2hhciAqIGNvbnN0IGJ1ZltdID0gewoiRDAiLCAiRDEiLCAiRDIi
-LCAiRDMiLCAiRDNjb2xkIgp9OwppZiAoc3RhdGUgPCBBUlJBWV9TSVpFKGJ1ZikpCnJldHVybiBi
-dWZbc3RhdGVdOwpyZXR1cm4gIlVOS05PV04iOwp9CgoKaW50IHN1cCA9IHNuZF9oZGFfcGFyYW1f
-cmVhZChjb2RlYywgbmlkLCBBQ19QQVJfUE9XRVJfU1RBVEUpOwppbnQgcHdyID0gc25kX2hkYV9j
-b2RlY19yZWFkKGNvZGVjLCBuaWQsIDAsCiAgICAgQUNfVkVSQl9HRVRfUE9XRVJfU1RBVEUsIDAp
-OwppZiAoc3VwICE9IC0xKQpzbmRfaXByaW50ZihidWZmZXIsICIgIFBvd2VyIHN0YXRlczogJXNc
-biIsCiAgICBiaXRzX25hbWVzKHN1cCwgbmFtZXMsIEFSUkFZX1NJWkUobmFtZXMpKSk7CgpzbmRf
-aXByaW50ZihidWZmZXIsICIgIFBvd2VyOiBzZXR0aW5nPSVzLCBhY3R1YWw9JXMiLAogICAgZ2V0
-X3B3cl9zdGF0ZShwd3IgJiBBQ19QV1JTVF9TRVRUSU5HKSwKICAgIGdldF9wd3Jfc3RhdGUoKHB3
-ciAmIEFDX1BXUlNUX0FDVFVBTCkgPj4KICBBQ19QV1JTVF9BQ1RVQUxfU0hJRlQpKTsKaWYgKHB3
-ciAmIEFDX1BXUlNUX0VSUk9SKQpzbmRfaXByaW50ZihidWZmZXIsICIsIEVycm9yIik7CmlmIChw
-d3IgJiBBQ19QV1JTVF9DTEtfU1RPUF9PSykKc25kX2lwcmludGYoYnVmZmVyLCAiLCBDbG9jay1z
-dG9wLU9LIik7CmlmIChwd3IgJiBBQ19QV1JTVF9TRVRUSU5HX1JFU0VUKQpzbmRfaXByaW50Zihi
-dWZmZXIsICIsIFNldHRpbmctcmVzZXQiKTsKc25kX2lwcmludGYoYnVmZmVyLCAiXG4iKTsKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Sorry for posting this soo close to the 4.1 merge window, I had
+completely forgotten about this chunk of work I did earlier this
+month.
+
+The per-user struct clk patches rather badly broke clkdev and
+various other places.  This was reported, but was forgotten about.
+Really, the per-user clk stuff should've been reverted, but we've
+lived with it far too long for that.
+
+So, our only other option is to now rush these patches into 4.1
+and hope for the best.
+
+The series cleans up quite a number of places too...
+
+ arch/arm/mach-davinci/da850.c                |  1 +
+ arch/arm/mach-lpc32xx/clock.c                |  5 +-
+ arch/arm/mach-omap1/board-nokia770.c         |  2 +-
+ arch/arm/mach-omap2/clkt2xxx_virt_prcm_set.c | 12 +---
+ arch/arm/mach-omap2/omap_device.c            | 24 +++-----
+ arch/arm/mach-pxa/eseries.c                  |  1 +
+ arch/arm/mach-pxa/lubbock.c                  |  1 +
+ arch/arm/mach-pxa/tosa.c                     |  1 +
+ arch/arm/plat-orion/common.c                 |  6 +-
+ arch/sh/kernel/cpu/sh4a/clock-sh7734.c       |  3 +-
+ arch/sh/kernel/cpu/sh4a/clock-sh7757.c       |  4 +-
+ arch/sh/kernel/cpu/sh4a/clock-sh7785.c       |  4 +-
+ arch/sh/kernel/cpu/sh4a/clock-sh7786.c       |  4 +-
+ arch/sh/kernel/cpu/sh4a/clock-shx3.c         |  4 +-
+ drivers/clk/clk-s2mps11.c                    |  4 +-
+ drivers/clk/clkdev.c                         | 83 ++++++++++++++++++++--------
+ drivers/media/platform/omap3isp/isp.c        | 18 ------
+ drivers/media/platform/omap3isp/isp.h        |  1 -
+ include/linux/clk.h                          | 27 ++++-----
+ include/linux/clkdev.h                       |  6 +-
+ include/media/omap3isp.h                     |  6 --
+ sound/soc/sh/migor.c                         |  3 +-
+ 22 files changed, 108 insertions(+), 112 deletions(-)
+
+-- 
+FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
+according to speedtest.net.
