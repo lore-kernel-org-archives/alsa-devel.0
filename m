@@ -1,58 +1,37 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/6] ASoC: jz4740: Remove Makefile entry for removed file
-Date: Fri, 3 Apr 2015 20:25:40 +0200
-Message-ID: <20150403182540.GA12460@kroah.com>
-References: <1398199596-23649-1-git-send-email-lars@metafoo.de>
- <5515363F.1050209@imgtec.com>
+From: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH 0/2] Cygnus Audio Driver
+Date: Fri, 3 Apr 2015 12:33:12 -0700
+Message-ID: <551EEAF8.7050108@broadcom.com>
+References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com> <20150331064338.GE2869@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5515363F.1050209@imgtec.com>
-Sender: stable-owner@vger.kernel.org
-To: Markos Chandras <Markos.Chandras@imgtec.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, alsa-devel@alsa-project.org, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150331064338.GE2869-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Dmitry Torokhov <dtor-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Anatol Pomazao <anatol-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, abrestic-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, bryeung-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, pwestin-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 27, 2015 at 10:51:43AM +0000, Markos Chandras wrote:
-> On 04/22/2014 09:46 PM, Lars-Peter Clausen wrote:
-> > Commit 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
-> > jz4740-pcm.c file, but neglected to remove the Makefile entries.
-> > 
-> > Fixes: 0406a40a0 ("ASoC: jz4740: Use the generic dmaengine PCM driver")
-> > Reported-by: kbuild test robot <fengguang.wu@intel.com>
-> > Reported-by: Ralf Baechle <ralf@linux-mips.org>
-> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > ---
-> >  sound/soc/jz4740/Makefile | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/sound/soc/jz4740/Makefile b/sound/soc/jz4740/Makefile
-> > index be873c1..d32c540 100644
-> > --- a/sound/soc/jz4740/Makefile
-> > +++ b/sound/soc/jz4740/Makefile
-> > @@ -1,10 +1,8 @@
-> >  #
-> >  # Jz4740 Platform Support
-> >  #
-> > -snd-soc-jz4740-objs := jz4740-pcm.o
-> >  snd-soc-jz4740-i2s-objs := jz4740-i2s.o
-> >  
-> > -obj-$(CONFIG_SND_JZ4740_SOC) += snd-soc-jz4740.o
-> >  obj-$(CONFIG_SND_JZ4740_SOC_I2S) += snd-soc-jz4740-i2s.o
-> >  
-> >  # Jz4740 Machine Support
-> > 
-> Hi,
-> 
-> This patch (eebdec044e82) is present in 3.15-rc1 but the build failure
-> that was introduced by 0406a40a0 ("ASoC: jz4740: Use the generic
-> dmaengine PCM driver") is present in 3.14-rc1 so 3.14 is still broken.
-> 
-> Greg, would it be possible to cherry pick eebdec044e82 ("ASoC: jz4740:
-> Remove Makefile entry for removed file") to 3.14 stable branch? It seems
-> to apply without conflicts.
+Hi Mark,
 
-Now applied, thanks.
 
-greg k-h
+On 15-03-30 11:43 PM, Mark Brown wrote:
+> On Mon, Mar 30, 2015 at 08:16:22PM -0700, Scott Branden wrote:
+>
+>> The audio PLL is embedded in the audio block and only used
+>> by the audio block. The audio PLL registers are also in the middle of
+>> the audio register map.
+>
+> When you say it's only used by the audio block do you mean to say that
+> the audio block exposes no clock signals other than the bit and frame
+> clocks?
+>
+The audio block exposes the MCLK in addition to the bit and frame clock.
+
+Regards,
+  Scott
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
