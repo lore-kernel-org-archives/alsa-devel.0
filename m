@@ -1,17 +1,27 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v4 3/5] ALSA: hda - Update to use the new jack
-	kctls method
-Date: Fri,  3 Apr 2015 20:07:16 +0800
-Message-ID: <1428062838-14786-4-git-send-email-yang.jie@intel.com>
-References: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
+From: Belisko Marek <marek.belisko@gmail.com>
+Subject: Re: dummy codec + simple card combination
+Date: Fri, 3 Apr 2015 14:29:55 +0200
+Message-ID: <CAAfyv37vKcbRDrSMEO-+gcrCUUSBBWhv79YzaevcfC23rQ3RVg@mail.gmail.com>
+References: <CAAfyv37dgX=6aBYH4FWuJgh=k4jQB1Osh_3fwJhRU5unt6Bd6A@mail.gmail.com>
+ <CAAfyv36tTpvWgrKaMySdfYnBcoSAr64NzAH6fCsNt2MN5PX3wg@mail.gmail.com>
+ <5502ADD9.9070603@ti.com>
+ <7087ED0D-9625-48EA-9012-A6A05869E014@goldelico.com>
+ <5508351D.7050304@ti.com>
+ <CAAfyv35ZAnZEFB9ia=TjkeA4Romd=+V=42d2Nj0hHqjGmpTssw@mail.gmail.com>
+ <20150402071118.0d34d46d@armhf>
+ <CAAfyv34qpJcgaTZj2APhh11XuyDfOs4s+9RO2EjWqStK_uZ_Xg@mail.gmail.com>
+ <20150403104552.5c7ff4f2@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 66BFE265872
- for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2015 14:04:19 +0200 (CEST)
-In-Reply-To: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
+Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
+ [209.85.212.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id E87F826586A
+ for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2015 14:29:55 +0200 (CEST)
+Received: by wibgn9 with SMTP id gn9so138562133wib.1
+ for <alsa-devel@alsa-project.org>; Fri, 03 Apr 2015 05:29:55 -0700 (PDT)
+In-Reply-To: <20150403104552.5c7ff4f2@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,168 +31,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, "Dr. H. Nikolaus Schaller" <hns@goldelico.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, broonie@kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-In the new jack kctls design, snd_kcontrol is created during
-snd_jack_kctl creating, then, we can wrap it in struct
-hda_jack_tbl. The new method to create HDA jack kctl as
-below:
-
-1. call snd_jack_kctl_new()(in __snd_hda_jack_add_kctl()) to
-new a jack_kctl(also new kctl), and use snd_hda_ctl_add to
-add kctl to card;
-2. new a hda_jack_tbl, appoint jack_kctl to jack_tbl->jack_kctl;
-3. for non-phantom jack, call snd_jack_new() with this jack_kctl,
-then the jack_kctl will be added to the new created jack;
-
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/pci/hda/hda_jack.c | 52 ++++++++++++++++++++++--------------------------
- sound/pci/hda/hda_jack.h |  4 +---
- 2 files changed, 25 insertions(+), 31 deletions(-)
-
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index 9397250..9a1ba35 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -132,11 +132,11 @@ void snd_hda_jack_tbl_clear(struct hda_codec *codec)
- 
- 	for (i = 0; i < codec->jacktbl.used; i++, jack++) {
- 		struct hda_jack_callback *cb, *next;
--#ifdef CONFIG_SND_HDA_INPUT_JACK
-+
- 		/* free jack instances manually when clearing/reconfiguring */
- 		if (!codec->bus->shutdown && jack->jack)
- 			snd_device_free(codec->bus->card, jack->jack);
--#endif
-+
- 		for (cb = jack->callback; cb; cb = next) {
- 			next = cb->next;
- 			kfree(cb);
-@@ -337,20 +337,16 @@ void snd_hda_jack_report_sync(struct hda_codec *codec)
- 	jack = codec->jacktbl.list;
- 	for (i = 0; i < codec->jacktbl.used; i++, jack++)
- 		if (jack->nid) {
--			if (!jack->kctl || jack->block_report)
-+			if (!jack->jack_kctl || jack->block_report)
- 				continue;
- 			state = get_jack_plug_state(jack->pin_sense);
--			snd_kctl_jack_report(codec->bus->card, jack->kctl, state);
--#ifdef CONFIG_SND_HDA_INPUT_JACK
- 			if (jack->jack)
- 				snd_jack_report(jack->jack,
- 						state ? jack->type : 0);
--#endif
- 		}
- }
- EXPORT_SYMBOL_GPL(snd_hda_jack_report_sync);
- 
--#ifdef CONFIG_SND_HDA_INPUT_JACK
- /* guess the jack type from the pin-config */
- static int get_input_jack_type(struct hda_codec *codec, hda_nid_t nid)
- {
-@@ -371,13 +367,12 @@ static int get_input_jack_type(struct hda_codec *codec, hda_nid_t nid)
- 	}
- }
- 
--static void hda_free_jack_priv(struct snd_jack *jack)
-+static void hda_free_jack_priv(struct snd_jack_kctl *jack_kctl)
- {
--	struct hda_jack_tbl *jacks = jack->private_data;
-+	struct hda_jack_tbl *jacks = jack_kctl->private_data;
- 	jacks->nid = 0;
- 	jacks->jack = NULL;
- }
--#endif
- 
- /**
-  * snd_hda_jack_add_kctl - Add a kctl for the given pin
-@@ -394,37 +389,38 @@ static int __snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
- 			  const char *name, int idx, bool phantom_jack)
- {
- 	struct hda_jack_tbl *jack;
--	struct snd_kcontrol *kctl;
--	int err, state;
-+	struct snd_jack_kctl *jack_kctl;
-+	int err, state, type;
- 
- 	jack = snd_hda_jack_tbl_new(codec, nid);
- 	if (!jack)
- 		return 0;
--	if (jack->kctl)
-+	if (jack->jack_kctl)
- 		return 0; /* already created */
--	kctl = snd_kctl_jack_new(name, idx, codec);
--	if (!kctl)
-+
-+	type = get_input_jack_type(codec, nid);
-+	jack_kctl = snd_jack_kctl_new(codec->bus->card, name, type);
-+	if (!jack_kctl)
- 		return -ENOMEM;
--	err = snd_hda_ctl_add(codec, nid, kctl);
-+
-+	err = snd_hda_ctl_add(codec, nid, jack_kctl->kctl);
- 	if (err < 0)
- 		return err;
--	jack->kctl = kctl;
-+	jack->jack_kctl = jack_kctl;
- 	jack->phantom_jack = !!phantom_jack;
- 
- 	state = snd_hda_jack_detect(codec, nid);
--	snd_kctl_jack_report(codec->bus->card, kctl, state);
--#ifdef CONFIG_SND_HDA_INPUT_JACK
-+	snd_kctl_jack_report(codec->bus->card, jack_kctl->kctl, state);
- 	if (!phantom_jack) {
--		jack->type = get_input_jack_type(codec, nid);
-+		jack->type = type;
- 		err = snd_jack_new(codec->bus->card, name, jack->type,
--				   &jack->jack, NULL);
-+				   &jack->jack, jack_kctl);
- 		if (err < 0)
- 			return err;
--		jack->jack->private_data = jack;
--		jack->jack->private_free = hda_free_jack_priv;
-+		jack->jack_kctl->private_data = jack;
-+		jack->jack_kctl->private_free = hda_free_jack_priv;
- 		snd_jack_report(jack->jack, state ? jack->type : 0);
- 	}
--#endif
- 	return 0;
- }
- 
-@@ -453,10 +449,10 @@ static int get_unique_index(struct hda_codec *codec, const char *name, int idx)
- 	jack = codec->jacktbl.list;
- 	for (i = 0; i < codec->jacktbl.used; i++, jack++) {
- 		/* jack->kctl.id contains "XXX Jack" name string with index */
--		if (jack->kctl &&
--		    !strncmp(name, jack->kctl->id.name, len) &&
--		    !strcmp(" Jack", jack->kctl->id.name + len) &&
--		    jack->kctl->id.index == idx) {
-+		if (jack->jack_kctl->kctl &&
-+		    !strncmp(name, jack->jack_kctl->kctl->id.name, len) &&
-+		    !strcmp(" Jack", jack->jack_kctl->kctl->id.name + len) &&
-+		    jack->jack_kctl->kctl->id.index == idx) {
- 			idx++;
- 			goto again;
- 		}
-diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
-index b279e32..346a639 100644
---- a/sound/pci/hda/hda_jack.h
-+++ b/sound/pci/hda/hda_jack.h
-@@ -39,11 +39,9 @@ struct hda_jack_tbl {
- 	unsigned int block_report:1;    /* in a transitional state - do not report to userspace */
- 	hda_nid_t gating_jack;		/* valid when gating jack plugged */
- 	hda_nid_t gated_jack;		/* gated is dependent on this jack */
--	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
--#ifdef CONFIG_SND_HDA_INPUT_JACK
- 	int type;
-+	struct snd_jack_kctl *jack_kctl;
- 	struct snd_jack *jack;
--#endif
- };
- 
- struct hda_jack_tbl *
--- 
-1.9.1
+T24gRnJpLCBBcHIgMywgMjAxNSBhdCAxMDo0NSBBTSwgSmVhbi1GcmFuY29pcyBNb2luZSA8bW9p
+bmVqZkBmcmVlLmZyPiB3cm90ZToKPiBPbiBUaHUsIDIgQXByIDIwMTUgMjI6MjQ6NDUgKzAyMDAK
+PiBCZWxpc2tvIE1hcmVrIDxtYXJlay5iZWxpc2tvQGdtYWlsLmNvbT4gd3JvdGU6Cj4KPj4gRm9y
+IHdoYXQga2luZCBvZiBkZXZpY2UgZG8geW91IHdyb3RlIHNpbXBsZSBjb2RlYz8gV2Ugd291bGQg
+dXNlIGl0IGZvcgo+PiBHU00gYW5kIEJUCj4KPiBBdCB0aGlzIHRpbWUsIEkgd2FudGVkIHRvIHVz
+ZSBEUENNLCBhbmQgYSBkdW1teSBjb2RlYyB3YXMgbmVlZGVkLgo+IFRoZSBzaW1wbGUgY29kZWMg
+Y291bGQgYWxzbyBoYXZlIGJlZW4gdXNlZCB0byByZXBsYWNlIGVtcHR5IGNvZGVjcyBhcwo+IHMv
+cGRpZiBhbmQgaGRtaS4KPgo+PiAod2UgY291bGQgdXNlIGJ0LXNjbyBkcml2ZXIpIHdoaWNoIHBy
+b2R1Y2UgUENNIHNhbXBsZXMgKHJhdGUgaXMKPj4gZGV0ZXJtaW5lZCBieSBtY2xrIGFuZCBiY2xr
+KS4KPj4gSWYgeW91ciBwcm9wb3NhbCB3YXNuJ3QgYWNjZXB0ZWQgdGhlbiBJIHRoaW5rIHRoZSBi
+ZXN0IHdvdWxkIGJlIGZvcgo+PiBvdXIgcHVycG9zZSB0byB3cml0ZSBkdW1teSBjb2RlY3MKPj4g
+Zm9yIGJvdGggaW50ZXJmYWNlcyBhbmQgbm90IGdlbmVyaWMgc2ltcGxlIGNvZGVjLgo+Cj4gVGhl
+IGdlbmVyaWMgc2ltcGxlIGNvZGVjIHdhcyBqdXN0IGEgZHVtbXkgY29kZWMuCj4gV2hpY2ggZGlm
+ZmVyZW5jZSBkbyB5b3Ugc2VlPwpkdW1teSBjb2RlYyBjYW5ub3QgYmUgZGVzY3JpYmVkIGluIERU
+LiBUaGVyZSB3YXMgYW4gYXR0ZW1wdHMgdG8gYWRkIGl0CmJ1dCBpdCB3YXMgcmVqZWN0ZWQuClNv
+IEkgc2VlIG9ubHkgcG9zc2liaWxpdGllczoKMToKLSB1c2UgZHVtbXkgY29kZWMgZm9yIGdzbSBw
+YXRoCi0gdXNlIGJ0LXNjbyBmb3IgYmx1ZXRvb290aCBwYXRoCi0gZGVzY3JpYmUgaXQgaW4gRFQg
+dmlhIHNpbXBsZSBjYXJkCgoyOiBjcmVhdGUgbmV3IGNhcmQgbWFjaGluZSBkcml2ZXIgYW5kIHVz
+ZSBkdW1teSBjb2RlY3MgZm9yIGdzbSBhbmQgYnQKPgo+IC0tCj4gS2VuIGFyIGMnaGVudGHDsSB8
+ICAgICAgICAgICAgICoqIEJyZWl6aCBoYSBMaW51eCBhdGF2ISAqKgo+IEplZiAgICAgICAgICAg
+ICB8ICAgICAgICAgICAgICAgaHR0cDovL21vaW5lamYuZnJlZS5mci8KCkJSLAoKbWFyZWsKCi0t
+IAphcyBzaW1wbGUgYW5kIHByaW1pdGl2ZSBhcyBwb3NzaWJsZQotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1hcmVrIEJlbGlza28gLSBPUEVOLU5BTkRS
+QQpGcmVlbGFuY2UgRGV2ZWxvcGVyCgpSdXNrYSBOb3ZhIFZlcyAyMTkgfCBQcmVzb3YsIDA4MDA1
+IFNsb3ZhayBSZXB1YmxpYwpUZWw6ICs0MjEgOTE1IDA1MiAxODQKc2t5cGU6IG1hcmVrd2hpdGUK
+dHdpdHRlcjogI29wZW5uYW5kcmEKd2ViOiBodHRwOi8vb3Blbi1uYW5kcmEuY29tCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
