@@ -1,95 +1,46 @@
-From: Stanislav Sergiienko <pythonpowerd@gmail.com>
-Subject: BugReport: Dice works partially [Broken]
-Date: Sun, 5 Apr 2015 15:15:24 +0300
-Message-ID: <CAPv3Zfxaw9ZEBd_JjCoHjHC=xxJyEpG+dLHpB-vrmNCms=0uRQ@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 00/14] Fix fallout from per-user struct clk patches
+Date: Sun, 5 Apr 2015 15:13:39 +0100
+Message-ID: <20150405141339.GF4027@n2100.arm.linux.org.uk>
+References: <20150403171149.GC13898@n2100.arm.linux.org.uk>
+ <CAMuHMdWue2Pw15j_2ikhSQWxOMGLLO4ojmmyxSvZ=9YwD_+14w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f45.google.com (mail-vn0-f45.google.com
- [209.85.216.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 660FE261481
- for <alsa-devel@alsa-project.org>; Sun,  5 Apr 2015 14:15:25 +0200 (CEST)
-Received: by vnbg62 with SMTP id g62so1070531vnb.7
- for <alsa-devel@alsa-project.org>; Sun, 05 Apr 2015 05:15:24 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWue2Pw15j_2ikhSQWxOMGLLO4ojmmyxSvZ=9YwD_+14w@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Gregory Clement <gregory.clement@free-electrons.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Jason Cooper <jason@lakedaemon.net>, Kevin Hilman <khilman@deeprootsystems.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Mike Turquette <mturquette@linaro.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Roland Stigge <stigge@antcom.de>, Sebastian
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I am a user of TC Electronic DesktopKonnekt6 and latest kernel
-update 3.19.2 add partial support for my device and thus broke my
-usual sound workflow. So i want to make good bug report to make device
-usable on latest kernels.
+On Sun, Apr 05, 2015 at 11:04:56AM +0200, Geert Uytterhoeven wrote:
+> Hi Russell,
+> 
+> On Fri, Apr 3, 2015 at 7:11 PM, Russell King - ARM Linux
+> <linux@arm.linux.org.uk> wrote:
+> > Sorry for posting this soo close to the 4.1 merge window, I had
+> > completely forgotten about this chunk of work I did earlier this
+> > month.
+> >
+> > The per-user struct clk patches rather badly broke clkdev and
+> > various other places.  This was reported, but was forgotten about.
+> > Really, the per-user clk stuff should've been reverted, but we've
+> > lived with it far too long for that.
+> >
+> > So, our only other option is to now rush these patches into 4.1
+> > and hope for the best.
+> >
+> > The series cleans up quite a number of places too...
+> 
+> Thanks for your patches!
+> 
+> Can you please tell which are critical fixes for regressions, and which are
+> cleanups? It's not so obvious to me from the patch descriptions.
 
-With 3.19.2 kernel device is successfully recognized by system and
-even sometimes can play sound(!). But always, after some time sound is
-breaks (usually after 30-90 seconds) and to restore it i must restart
-pulseaudio(v6.0) and application. So device becomes unusable on
-latests kernels.
-Earlier i use my sound card through ffado + jackdbus + pulseaudio. Now
-it's impossible, so i have to downgrade kernel.
+The 5th one is the most important as far as fixing the regression caused
+by the per-user clk patches.
 
-Please request any additional info that you need to fix problem and i
-will post it here soon. Also i can test any "bleeding edge" changes
-thru dkms as described here:
-https://github.com/takaswie/snd-firewire-improve
-
-Related bug(not mine):
-https://bugs.archlinux.org/task/44258
-
-Some useful info:
-
-cat /proc/asound/cards
- 0 [DesktopKonnekt6]: DICE - DesktopKonnekt6
-                      TC Electronic DesktopKonnekt6 (serial 12941) at
-fw1.0, S400
-
-cat /proc/asound/card0/dice
-sections:
-  global: offset 10, size 90
-  tx: offset 100, size 142
-  rx: offset 242, size 282
-  ext_sync: offset 524, size 4
-  unused2: offset 0, size 0
-global:
-  owner: ffc1:000100000000
-  notification: 00000040
-  nick name: DesktopKonnekt6
-  clock select: internal 44100
-  enable: 1
-  status: locked 44100
-  ext status: 00000000
-  sample rate: 44100
-  version: 1.0.4.0
-  clock caps: 44100 48000 88200 96000 176400 192000 arx1 arx2 internal
-  clock source names:
-Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\INTERNAL\\
-tx 0:
-  iso channel: 0
-  audio channels: 6
-  midi ports: 0
-  speed: S400
-  names: ch 1\ch 2\ - \ - \ - \ - \\
-  ac3 caps: 00000000
-  ac3 enable: 00000000
-rx 0:
-  iso channel: 1
-  sequence start: 0
-  audio channels: 6
-  midi ports: 0
-  names: main out 1\main out 2\phones out 1\phones out 2\ - \ - \\
-  ac3 caps: 00000000
-  ac3 enable: 00000000
-ext status:
-  clock source: internal
-  locked: 1
-  rate: 44100
-  adat user data: 0
+-- 
+FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
+according to speedtest.net.
