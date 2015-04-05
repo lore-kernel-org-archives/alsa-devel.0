@@ -1,15 +1,16 @@
 From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 4/9] sound/soc/omap/am3517evm.c: fix error return code
-Date: Sun, 5 Apr 2015 14:13:32 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1504051413280.2038@localhost6.localdomain6>
-References: <1428233914-4503-1-git-send-email-Julia.Lawall@lip6.fr> <1428233914-4503-10-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Re: [PATCH 2/10] sound/soc/fsl/imx-sgtl5000.c: fix error return
+ code
+Date: Sun, 5 Apr 2015 14:13:02 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1504051412590.2038@localhost6.localdomain6>
+References: <1428233914-4503-1-git-send-email-Julia.Lawall@lip6.fr> <1428233914-4503-2-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1428233914-4503-10-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <1428233914-4503-2-git-send-email-Julia.Lawall@lip6.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, kernel-janitors@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lrg@ti.com>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Please ignore. Wrong patch set.
@@ -18,8 +19,8 @@ On Sun, 5 Apr 2015, Julia Lawall wrote:
 
 > From: Julia Lawall <Julia.Lawall@lip6.fr>
 > 
-> It was forgotten to initialize ret to the result of calling
-> snd_soc_dai_set_sysclk, unlike at the other calls in the same function.
+> Initialize ret on the second call to imx_audmux_v2_configure_port so that
+> the subsequent test checks that result and not the previous one.
 > 
 > A simplified version of the semantic match that finds this problem is as
 > follows: (http://coccinelle.lip6.fr/)
@@ -45,22 +46,22 @@ On Sun, 5 Apr 2015, Julia Lawall wrote:
 > Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 > 
 > ---
->  sound/soc/omap/am3517evm.c |    2 +-
+>  sound/soc/fsl/imx-sgtl5000.c |    2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
-> index 009533a..df65f98 100644
-> --- a/sound/soc/omap/am3517evm.c
-> +++ b/sound/soc/omap/am3517evm.c
-> @@ -59,7 +59,7 @@ static int am3517evm_hw_params(struct snd_pcm_substream *substream,
+> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+> index fb21b17..199408e 100644
+> --- a/sound/soc/fsl/imx-sgtl5000.c
+> +++ b/sound/soc/fsl/imx-sgtl5000.c
+> @@ -94,7 +94,7 @@ static int __devinit imx_sgtl5000_probe(struct platform_device *pdev)
+>  		dev_err(&pdev->dev, "audmux internal port setup failed\n");
 >  		return ret;
 >  	}
->  
-> -	snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_FSR_SRC_FSX, 0,
-> +	ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_FSR_SRC_FSX, 0,
->  				SND_SOC_CLOCK_IN);
->  	if (ret < 0) {
->  		printk(KERN_ERR "can't set CPU system clock OMAP_MCBSP_FSR_SRC_FSX\n");
+> -	imx_audmux_v2_configure_port(ext_port,
+> +	ret = imx_audmux_v2_configure_port(ext_port,
+>  			IMX_AUDMUX_V2_PTCR_SYN,
+>  			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
+>  	if (ret) {
 > 
 > --
 > To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
