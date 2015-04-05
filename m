@@ -1,76 +1,95 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 13/16] ALSA: au1x00: fix error return code
-Date: Sun,  5 Apr 2015 14:06:33 +0200
-Message-ID: <1428235596-4757-14-git-send-email-Julia.Lawall@lip6.fr>
-References: <1428235596-4757-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1428235596-4757-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Stanislav Sergiienko <pythonpowerd@gmail.com>
+Subject: BugReport: Dice works partially [Broken]
+Date: Sun, 5 Apr 2015 15:15:24 +0300
+Message-ID: <CAPv3Zfxaw9ZEBd_JjCoHjHC=xxJyEpG+dLHpB-vrmNCms=0uRQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vn0-f45.google.com (mail-vn0-f45.google.com
+ [209.85.216.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 660FE261481
+ for <alsa-devel@alsa-project.org>; Sun,  5 Apr 2015 14:15:25 +0200 (CEST)
+Received: by vnbg62 with SMTP id g62so1070531vnb.7
+ for <alsa-devel@alsa-project.org>; Sun, 05 Apr 2015 05:15:24 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Return a negative error code on failure.
+Hi, I am a user of TC Electronic DesktopKonnekt6 and latest kernel
+update 3.19.2 add partial support for my device and thus broke my
+usual sound workflow. So i want to make good bug report to make device
+usable on latest kernels.
 
-A simplified version of the semantic match that finds this problem is as
-follows: (http://coccinelle.lip6.fr/)
+With 3.19.2 kernel device is successfully recognized by system and
+even sometimes can play sound(!). But always, after some time sound is
+breaks (usually after 30-90 seconds) and to restore it i must restart
+pulseaudio(v6.0) and application. So device becomes unusable on
+latests kernels.
+Earlier i use my sound card through ffado + jackdbus + pulseaudio. Now
+it's impossible, so i have to downgrade kernel.
 
-// <smpl>
-@@
-identifier ret; expression e1,e2;
-@@
-(
-if (\(ret < 0\|ret != 0\))
- { ... return ret; }
-|
-ret = 0
-)
-... when != ret = e1
-    when != &ret
-*if(...)
-{
-  ... when != ret = e2
-      when forall
- return ret;
-}
-// </smpl>
+Please request any additional info that you need to fix problem and i
+will post it here soon. Also i can test any "bleeding edge" changes
+thru dkms as described here:
+https://github.com/takaswie/snd-firewire-improve
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Related bug(not mine):
+https://bugs.archlinux.org/task/44258
 
----
- sound/mips/au1x00.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Some useful info:
 
-diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
-index fbcaa54..1e30e84 100644
---- a/sound/mips/au1x00.c
-+++ b/sound/mips/au1x00.c
-@@ -633,19 +633,25 @@ static int au1000_ac97_probe(struct platform_device *pdev)
- 
- 	au1000->stream[PLAYBACK] = kmalloc(sizeof(struct audio_stream),
- 					   GFP_KERNEL);
--	if (!au1000->stream[PLAYBACK])
-+	if (!au1000->stream[PLAYBACK]) {
-+		err = -ENOMEM;
- 		goto out;
-+	}
- 	au1000->stream[PLAYBACK]->dma = -1;
- 
- 	au1000->stream[CAPTURE] = kmalloc(sizeof(struct audio_stream),
- 					  GFP_KERNEL);
--	if (!au1000->stream[CAPTURE])
-+	if (!au1000->stream[CAPTURE]) {
-+		err = -ENOMEM;
- 		goto out;
-+	}
- 	au1000->stream[CAPTURE]->dma = -1;
- 
- 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!r)
-+	if (!r) {
-+		err = -ENODEV;
- 		goto out;
-+	}
- 
- 	err = -EBUSY;
- 	au1000->ac97_res_port = request_mem_region(r->start, resource_size(r),
+cat /proc/asound/cards
+ 0 [DesktopKonnekt6]: DICE - DesktopKonnekt6
+                      TC Electronic DesktopKonnekt6 (serial 12941) at
+fw1.0, S400
+
+cat /proc/asound/card0/dice
+sections:
+  global: offset 10, size 90
+  tx: offset 100, size 142
+  rx: offset 242, size 282
+  ext_sync: offset 524, size 4
+  unused2: offset 0, size 0
+global:
+  owner: ffc1:000100000000
+  notification: 00000040
+  nick name: DesktopKonnekt6
+  clock select: internal 44100
+  enable: 1
+  status: locked 44100
+  ext status: 00000000
+  sample rate: 44100
+  version: 1.0.4.0
+  clock caps: 44100 48000 88200 96000 176400 192000 arx1 arx2 internal
+  clock source names:
+Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\Unused\INTERNAL\\
+tx 0:
+  iso channel: 0
+  audio channels: 6
+  midi ports: 0
+  speed: S400
+  names: ch 1\ch 2\ - \ - \ - \ - \\
+  ac3 caps: 00000000
+  ac3 enable: 00000000
+rx 0:
+  iso channel: 1
+  sequence start: 0
+  audio channels: 6
+  midi ports: 0
+  names: main out 1\main out 2\phones out 1\phones out 2\ - \ - \\
+  ac3 caps: 00000000
+  ac3 enable: 00000000
+ext status:
+  clock source: internal
+  locked: 1
+  rate: 44100
+  adat user data: 0
