@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 3/3] ALSA: hda - add soc hda bus wrapper
-Date: Mon, 6 Apr 2015 18:08:04 +0100
-Message-ID: <20150406170804.GQ6023@sirena.org.uk>
-References: <1427968651-7821-1-git-send-email-vinod.koul@intel.com>
- <1427968651-7821-4-git-send-email-vinod.koul@intel.com>
+From: James Miller <jamesstewartmiller@gmail.com>
+Subject: steinberg ur44 - soundcard not connecting,
+	acl problem (systemd?)
+Date: Mon, 6 Apr 2015 19:45:43 +0100
+Message-ID: <CAKJvYZGd4F0DDq0V4CxQeoOK1iN=yUzwb5h2yTuNwDOmHoMm9g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3921069198167726864=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7096926043C
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 19:08:12 +0200 (CEST)
-In-Reply-To: <1427968651-7821-4-git-send-email-vinod.koul@intel.com>
+Received: from mail-ie0-f176.google.com (mail-ie0-f176.google.com
+ [209.85.223.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63AB326047B
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 20:45:45 +0200 (CEST)
+Received: by iebmp1 with SMTP id mp1so28231589ieb.0
+ for <alsa-devel@alsa-project.org>; Mon, 06 Apr 2015 11:45:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,117 +22,185 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com, pathes.audio@intel.com, Ramesh Babu <ramesh.babu@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi, I've just bought a steinberg ur44.  It is reported as having worked in
+an earlier kernel to the 3.18 rt custom/3.19 low latency generic that I am
+using.  The low latency kernel is generic but the realtime is compiled with
+the alsa quirks as described here:
 
---===============3921069198167726864==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8so8ZvRz607RvwFp"
-Content-Disposition: inline
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/074120.html
 
+On plugging it in, the card is recognised by udev but is disconnected after
+seemingly being set up.   The same error seems to be occurring when I start
+the machine with the card plugged in. There seems to be an ACL error
+reported in journalctl.  I include the appropriate lines from the udevadm
+and from journalctl
 
---8so8ZvRz607RvwFp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+udevadm:
 
-On Thu, Apr 02, 2015 at 03:27:31PM +0530, Vinod Koul wrote:
+sudo udevadm monitor
 
-> index 000000000000..09ef831b8513
-> --- /dev/null
-> +++ b/sound/soc/hda/Kconfig
-> @@ -0,0 +1,4 @@
-> +config SND_SOC_HDA_BUS
-> +	tristate "SoC HDA bus wrapper"
-> +	help
-> +	 This adds support the SOC HDA Bus wrapper
+monitor will print the received events for:
+UDEV - the event which udev sends out after rule processing
+KERNEL - the kernel uevent
 
-ASoC (in both places please).
+KERNEL[2741.779546] add      /devices/pci0000:00/0000:00:1a.7/usb1/1-5 (usb)
+KERNEL[2741.779705] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.0 (usb)
+KERNEL[2741.781720] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1 (usb)
+KERNEL[2741.787500] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3 (sound)
+KERNEL[2741.787611] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/controlC3
+(sound)
+KERNEL[2741.787813] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/pcmC3D0p
+(sound)
+KERNEL[2741.787933] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/pcmC3D0c
+(sound)
+KERNEL[2741.788073] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/midiC3D0
+(sound)
+KERNEL[2741.788189] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/midi3 (sound)
+KERNEL[2741.789228] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/dmmidi3
+(sound)
+KERNEL[2741.789294] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/midi3 (sound)
+KERNEL[2741.789315] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/dmmidi3
+(sound)
+KERNEL[2741.789365] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/midiC3D0
+(sound)
+KERNEL[2741.789418] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/pcmC3D0p
+(sound)
+KERNEL[2741.789436] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/pcmC3D0c
+(sound)
+KERNEL[2741.789487] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/controlC3
+(sound)
+KERNEL[2741.789503] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3 (sound)
+KERNEL[2741.789556] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.2 (usb)
+KERNEL[2741.789577] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.3 (usb)
+KERNEL[2741.790043] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.4 (usb)
+UDEV  [2741.810128] add      /devices/pci0000:00/0000:00:1a.7/usb1/1-5 (usb)
+UDEV  [2741.810172] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.3 (usb)
+UDEV  [2741.810195] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.2 (usb)
+UDEV  [2741.810217] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1 (usb)
+UDEV  [2741.810237] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3 (sound)
+UDEV  [2741.810260] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/pcmC3D0c
+(sound)
+UDEV  [2741.810279] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/pcmC3D0c
+(sound)
+UDEV  [2741.810301] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.4 (usb)
+UDEV  [2741.815664] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/pcmC3D0p
+(sound)
+UDEV  [2741.815903] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/pcmC3D0p
+(sound)
+UDEV  [2741.820639] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/midi3 (sound)
+UDEV  [2741.821530] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/midi3 (sound)
+UDEV  [2741.823891] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/dmmidi3
+(sound)
+UDEV  [2741.823931] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/dmmidi3
+(sound)
+UDEV  [2741.826596] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/midiC3D0
+(sound)
+UDEV  [2741.827398] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/midiC3D0
+(sound)
+UDEV  [2741.837736] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/controlC3
+(sound)
+UDEV  [2741.839478] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/controlC3
+(sound)
+UDEV  [2741.840171] remove
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3 (sound)
+UDEV  [2742.842156] add
+/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.0 (usb)
 
-> +void snd_soc_hdac_device_put(struct snd_soc_hdac_device *pdev)
-> +{
-> +	if (pdev)
-> +		put_device(&pdev->hdac.dev);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_hdac_device_put);
-> +
-> +/**
-> + * snd_soc_hdac_device_add_data - add platform-specific data to a hda device
-> + * @pdev: hda device allocated by platform_device_alloc to add resources to
-> + * @data: hda specific data for this hda device
-> + * @size: size of platform specific data
-> + *
-> + */
-> +int snd_soc_hdac_device_add_data(struct snd_soc_hdac_device *pdev,
-> +	const void *data, size_t size)
-> +{
-> +	void *d = NULL;
-> +
-> +	if (data) {
-> +		d = kmemdup(data, size, GFP_KERNEL);
-> +		if (!d)
-> +			return -ENOMEM;
-> +	}
-> +
-> +	kfree(pdev->hdac.dev.platform_data);
-> +	pdev->hdac.dev.platform_data = d;
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_hdac_device_add_data);
+journactl (on hotplug add):
 
-I didn't notice the put function cleaning this up?
+Apr 06 19:26:09 super-R720 kernel: usb 1-5: USB disconnect, device number 4
+Apr 06 19:26:09 super-R720 systemd-udevd[309]: error opening USB device
+'descriptors' file
+Apr 06 19:26:11 super-R720 kernel: usb 1-5: new high-speed USB device
+number 5 using ehci-pci
+Apr 06 19:26:12 super-R720 kernel: usb 1-5: New USB device found,
+idVendor=0499, idProduct=150e
+Apr 06 19:26:12 super-R720 kernel: usb 1-5: New USB device strings: Mfr=1,
+Product=2, SerialNumber=0
+Apr 06 19:26:12 super-R720 kernel: usb 1-5: Product: Steinberg UR44
+Apr 06 19:26:12 super-R720 kernel: usb 1-5: Manufacturer: Yamaha Corporation
+Apr 06 19:26:12 super-R720 kernel: snd-usb-audio: probe of 1-5:1.1 failed
+with error -16
+Apr 06 19:26:12 super-R720 mtp-probe[3550]: checking bus 1, device 5:
+"/sys/devices/pci0000:00/0000:00:1a.7/usb1/1-5"
+Apr 06 19:26:12 super-R720 mtp-probe[3550]: bus: 1, device: 5 was not an
+MTP device
+Apr 06 19:26:12 super-R720 systemd-udevd[3547]: error opening
+ATTR{/sys/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/controlC3/
+Apr 06 19:26:12 super-R720 systemd-udevd[3560]: Failed to apply ACL on
+/dev/dmmidi3: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3560]: Failed to apply ACL on
+/dev/dmmidi3: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3559]: Failed to apply ACL on
+/dev/midi3: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3559]: Failed to apply ACL on
+/dev/midi3: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3558]: Failed to apply ACL on
+/dev/snd/midiC3D0: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3558]: Failed to apply ACL on
+/dev/snd/midiC3D0: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3549]: Failed to apply ACL on
+/dev/snd/pcmC3D0c: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3549]: Failed to apply ACL on
+/dev/snd/pcmC3D0c: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3548]: Failed to apply ACL on
+/dev/snd/pcmC3D0p: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3548]: Failed to apply ACL on
+/dev/snd/pcmC3D0p: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3547]: Failed to apply ACL on
+/dev/snd/controlC3: No such file or directory
+Apr 06 19:26:12 super-R720 systemd-udevd[3547]: Failed to apply ACL on
+/dev/snd/controlC3: No such file or directory
 
-> +/**
-> + * hda_device_unregister - unregister a hda device
-> + * @pdev: hda device we're unregistering
-> + *
-> + * Unregistration is done in 2 steps. First we release all resources
-> + * and remove it from the subsystem, then we drop reference count by
-> + * calling hda_device_put().
-> + */
-> +void snd_soc_hdac_device_unregister(struct snd_soc_hdac_device *pdev)
-> +{
-> +	snd_hdac_device_exit(&pdev->hdac);
-> +	snd_hdac_device_unregister(&pdev->hdac);
-> +	snd_soc_hdac_device_put(pdev);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_hdac_device_unregister);
+journalctl -b:
 
-Takashi queried bits of this too...  I have to say I don't entirely
-understand how this device management is supposed to work and the lack
-of any users in the current series isn't giving me anything to refer to
-here, perhaps it's all obvious given them but I don't have them just
-now.  A lot of this looks like it's boilerplate which should be
-duplicating something device modelish and there certainly seem to be
-some things with object lifetimes that need paying attention to.
+systemd-udevd[416]: error opening
+ATTR{/sys/devices/pci0000:00/0000:00:1a.7/usb1/1-5/1-5:1.1/sound/card3/controlC3/.
 
-All the commit message says is "create asoc wrppers on top of hdac", can
-we have more words please?
+I can compile a kernel reasonably well, and can understand and program in
+c, c++, but am not well versed in lower level usb hardware coding.  I'd be
+grateful for any help, many thanks!
 
---8so8ZvRz607RvwFp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Many thanks
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVIr1zAAoJECTWi3JdVIfQFaUH/jdXq6lz9bGwT40SwYMINSlC
-gfl8KKyOp9SIPN5ca0XJe8TNO9Y1QU9JZnxQW09BGQP3aKCU03SDRXqME6IQxTsl
-AZglfhfRoZTyD7R3qglWU3oJz496z6kLIxOLZvsxh8GgtWppO2RQvY/Ox8Cv3eXV
-tKoI6KxITC31DLWX6rfgTJi6a6S7JfQyKZ0WvrQf1LOfPtqDtIgMF4xaCoMp0X/7
-HO1cG5sIdlkcOES3NXx3nKCsItogJg9HuffVDGS3nxrt3UGajU74swqlta3qXbWS
-mM0f8LRL9CbXWOUMKrGrGcI7r8AdsbwfltBFr3liTikS4Z+xFufhfs/C2ID8OuY=
-=YieG
------END PGP SIGNATURE-----
-
---8so8ZvRz607RvwFp--
-
---===============3921069198167726864==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3921069198167726864==--
+-- 
+James Stewart Miller Bsc(hons) Psych.
