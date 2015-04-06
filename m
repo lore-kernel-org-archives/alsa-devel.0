@@ -1,134 +1,62 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: Separate input and output jacks for one UCM device?
-Date: Mon, 06 Apr 2015 10:26:33 +0100
-Message-ID: <1428312393.2616.19.camel@loki>
-References: <5509D4D4.6030000@linux.intel.com> <1426756559.7258.22.camel@loki>
- <1427820547.2856.10.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <1427891224.2711.31.camel@loki>
- <CAEUnVG4iCJGGPw2=R+TxVCoj3ky2SBgZDpZrFbswXh36b-WydA@mail.gmail.com>
- <CAN8cciaYWDECp0cP+E0i-rMbfJKn=WiEZXe0YvS9q48MmB89Ng@mail.gmail.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 0/2] Cygnus Audio Driver
+Date: Mon, 6 Apr 2015 10:58:03 +0100
+Message-ID: <20150406095803.GD6023@sirena.org.uk>
+References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
+ <20150331064338.GE2869@sirena.org.uk>
+ <551EEAF8.7050108@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 11030260867
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 11:26:37 +0200 (CEST)
-In-Reply-To: <CAN8cciaYWDECp0cP+E0i-rMbfJKn=WiEZXe0YvS9q48MmB89Ng@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Arun Raghavan <arun@accosted.net>, Han Lu <han.lu@intel.com>, Dylan Reid <dgreid@chromium.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+Xnt6BZa+I2KmHWw"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <551EEAF8.7050108-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Dmitry Torokhov <dtor-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Anatol Pomazao <anatol-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, abrestic-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, bryeung-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, pwestin-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2015-04-04 at 13:39 +0800, Raymond Yau wrote:
-> > >> >
-> > >> > I've added a few others on the CC that would be interested.
-> > >> >
-> > >> > > My understanding is that a UCM device can represent a thing
-> that has
-> > >> > > both input and output (I don't particularly like that, but
-> it's too late
-> > >> > > to complain).
-> > >> >
-> > >> > Yes, but it can also represent simplex devices too e.g.
-> > >> > "Headset-Speakers" and "Headset-Mic". There are not any hard
-> rules here,
-> > >> > but most examples are using duplex devices as historically UCM
-> came from
-> > >> > the phone ecosystem use cases.
-> > >> >
-> > >> > > How likely do you think that there are or there will be
-> > >> > > some drivers that expose separate input and output jack
-> kcontrols for a
-> > >> > > headset jack, to differentiate between
-> headphones/headset/microphone? My
-> > >> > > understanding is that jack kcontrols store only booleans, so
-> there's no
-> > >> > > way to distinguish between headphones and a headset with just
-> one kcontrol.
-> > >> > >
-> > >> >
-> > >> > This sounds like we need to extend the jack kcontrol so that we
-> can
-> > >> > differentiate between Headphones and Headset unless the
-> kcontrol naming
-> > >> > was intended to differentiate and define the jack type ?
-> > >>
-> > >> I guess it's now clear that all jack kcontrols will be booleans,
-> and
-> > >> headset jacks will require two jack kcontrols.
-> > >>
-> > >> > > The current UCM "spec" doesn't support specifying multiple
-> kcontrols,
-> > >> > > since there's only one "JackControl" value. (Perhaps the
-> "JackDev" value
-> > >> > > suffers from this problem too, but I don't know if jack input
-> devices
-> > >> > > already support reporting the state separately for input and
-> output.)
-> > >> > >
-> > >> >
-> > >> > I think in this case we could define simplex UCM devices and
-> attach a
-> > >> > JackControl value to each device.
-> > >>
-> > >> So is your preference that UCM configuration authors are forced
-> to
-> > >> define simplex devices to deal with headset jacks, rather than
-> using
-> > >> duplex devices and defining "PlaybackJackControl" and
-> > >> "CaptureJackControl" separately? (I don't personally mind either
-> way.)
-> > >
-> > > I don't really mind either, but what's easier for audio servers
-> like
-> > > pulseaudio that will be the main UCM clients ? I guess that
-> pulseaudio,
-> > > CRAS, and other audio servers probably deal with simplex PCM
-> streams
-> > > internally so mapping to simplex jacks/devices might be better ?
-> >
-> > There is an advantage to having a separate device for the headphone
-> and mic
-> > even if they are connected to the same jack.  The user can enable
-> one and not
-> > the other, most commonly to use the headphones but record from the
-> built-in mic,
-> > ignoring the headset mic.  Because of this we require all ChromeOS
-> devices to
-> > support separate reporting and selection of headphone/mic on the
-> headset jack.
-> > There is always one UCM device and one user-visible i/o node per
-> jack.
-> >
-> > >
-> 
-> How do these kind of jack handle by UCM ?
-> 
-> http://www.dell.com/support/home/us/en/19/product-support/product/inspiron-15-3537/manuals
-> 
-> 6 Headset port Connect a headphone, a microphone, or a headphone and
-> microphone combo (headset).
-> 
 
-UCM is not really needed for this device as Pulseaudio handles the
-standardised HDA jacks and routing (there is nothing stopping a UCM
-config being defined though). So for each input/output endpoint above
-you would list it's jack kcontrol in the endpoint device section. e.g.
-sound server reads jack input and type, checks UCM config and matches
-the device before setting routing according to UCM device.
+--+Xnt6BZa+I2KmHWw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-UCM is mainly needed for non HDA devices that have different jack pins,
-volume controls and routing controls. Sound servers have no way of
-guessing the correct mixers and volume controls to use for non HDA
-devices as they are all very different HW. 
+On Fri, Apr 03, 2015 at 12:33:12PM -0700, Scott Branden wrote:
+> On 15-03-30 11:43 PM, Mark Brown wrote:
+> >On Mon, Mar 30, 2015 at 08:16:22PM -0700, Scott Branden wrote:
 
-Liam
+> >>The audio PLL is embedded in the audio block and only used
+> >>by the audio block. The audio PLL registers are also in the middle of
+> >>the audio register map.
+
+> >When you say it's only used by the audio block do you mean to say that
+> >the audio block exposes no clock signals other than the bit and frame
+> >clocks?
+
+> The audio block exposes the MCLK in addition to the bit and frame clock.
+
+OK, then it's going to need to be a clock provider at some point - the
+clock will be going into external devices which are going to need to be
+able to interact with the clock (for example, to get the rate).
+
+--+Xnt6BZa+I2KmHWw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVIliqAAoJECTWi3JdVIfQdjoH/1joz01UIrzgobn+St3bC0rY
+o1pA7Ul7sENnJI66FoHZwHn8NzwJQpI1EEQBlMlZbAnXUtKvSprrirFex0hWYg/N
+is8kTIsoj5Wfr7JingLCQ72WB3T7JV4dGqttFcVYY3HmH5MtW0Zr3lqk46aW9bby
+lpEqiF6Wx73ouwiz36GV1OFdCH1BgYQXxAKfd+S18mLHbEfN7uGirp2Itf5Oehpn
+1Yyiwko+7vLI3ypDrMINRr+Xsnbz8hDFbzHRfJ3zFSOP5hwUpqvzGH0gbrHBNZKB
+YVa4RX84OL6FORizMvY5Y3aWRJ+wOtPDkcnndRh8rEFYaqAiAdCDo/42uKO9wUs=
+=/stg
+-----END PGP SIGNATURE-----
+
+--+Xnt6BZa+I2KmHWw--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
