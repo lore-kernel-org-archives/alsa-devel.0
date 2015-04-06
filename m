@@ -1,75 +1,80 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: add core audio driver for Broadcom Cygnus SOC.
-Date: Mon, 6 Apr 2015 17:19:39 +0100
-Message-ID: <20150406161939.GJ6023@sirena.org.uk>
-References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
- <1427771784-29950-3-git-send-email-sbranden@broadcom.com>
- <20150331064209.GD2869@sirena.org.uk>
- <551D8EB6.1050004@broadcom.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: RME MADIFX mainline inclusion
+Date: Mon, 06 Apr 2015 18:24:43 +0200
+Message-ID: <5522B34B.3090404@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6xTM0kUsJcaNctaW"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <551D8EB6.1050004-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Cc: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, Dmitry Torokhov <dtor-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Anatol Pomazao <anatol-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, abrestic-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, bryeung-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, pwestin-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ltw.loris.tv (ltw.loris.tv [188.40.101.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FBCC26042B
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 18:24:45 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi!
 
---6xTM0kUsJcaNctaW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Back in the days (late 2012 I guess), I wrote the MADIFX driver based on
+the existing RME hdspm.c.
 
-On Thu, Apr 02, 2015 at 11:47:18AM -0700, Lori Hikichi wrote:
-> On 15-03-30 11:42 PM, Mark Brown wrote:
+I never had physical access to this 1399 Euro audio interface, only the
+OSX driver and a shell login to one of IOSONO's machines which
+temporarily featured such a card.
 
-> >>+config SND_SOC_CYGNUS
-> >>+	tristate "SoC platform audio for Broadcom Cygnus chips"
-> >>+	depends on ARCH_BCM_CYGNUS || COMPILE_TEST
-> >>+	default ARCH_BCM_CYGNUS
+I know there are other users like University of Washington (DXARTS) and
+probably some more (the usual WFS suspects).
 
-> Okay.
+Long story short: I don't have such a card and since I no longer work in
+Linux audio, I guess I won't have access in the foreseeable future.
 
-You don't need to reply to every single comment, the general assumption
-will be that if there's no other followup all review comments will be
-addressed.  It's better to just reply to things where there's something
-more detailed to say, if you explicitly reply to everything then that
-makes it easier for actual replies to be missed since there's a lot of
-there's a lot of the mail that's just going to be skipped through.
+That said, I think the driver should be part of the mainline kernel, so
+it gets all the love the other drivers get (static code analysis, API
+changes etc.)
 
-> >>+static void ringbuf_inc(void __iomem *audio_io, bool is_playback,
-> >>+			const struct ringbuf_regs *p_rbuf)
+I think I've ported everything you guys have done to hdspm: I've read
+the commitlog for hdspm and applied those changes to the madifx driver.
 
-> >So it looks like we're getting an interrupt per period and we have to
-> >manually advance to the next one?
+Code is here:
 
-> Yes.
+    https://github.com/adiknoth/madifx/commits/tokernel
 
-OK, so that seems fragile - what happens if we're slightly late
-processing an interrupt or miss one entirely?  Most hardware has some
-way to read back the current position which tends to be more reliable,
-is that not an option here?
 
---6xTM0kUsJcaNctaW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Status:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+  * PCM playback/capture working (SS and DS tested, QS untested)
+  * MIDI working
+  * All card settings working (e.g. TX64, SMUX, AESpro, WC-Term, 
+WC-singlespeed...)
+  * Slave Mode/External clock selection working
+  * Mirror-MADI1-to-Out2+3 maybe working (untested)
+  * Redundancy mode maybe working (untested)
+  * ioctls implemented (see ioctl.c)
+  * Static mixer working (fixed 1:1 mapping)
+  * DSP NOT working. RME doesn't intend to release any information 
+regarding the DSP.
+  * Adjustable mixer NOT working (needs new userspace tools)
+  * Levelmetering NOT working (maybe wrong, needs new userspace tools)
 
-iQEcBAEBCAAGBQJVIrIaAAoJECTWi3JdVIfQiAYH+wVe4O1UcpvFO9F0GnMCsFnF
-wJAziQ23f2t2CPa70+UbIMHo5a+EBrAYVWu+GbMPTkFeDwEiWC6baE2nVH9YK7Se
-O8zHqXBRdDvqiRgdRd/VJ3o8K/8uCtHV7Lj7Bi0g8A+vEpl8kBNOyGgvMHH4LDmS
-QwnkFF+2LmItLyP0IzcnpaQEWhqNx7EvEF3hfz+vLVF8t1Fc/m1/rGyxGWQ0oAwY
-BxnypCyvZJMRroMQMt85BSsr4n37J0Q8GKh9dnXAmYzbmmCDdZo8Mw2l2TDxVO5D
-PZkRw2f0OecdU1OqSO+F/jNJl8lU1PapcaARfb1NNADqLCyRlEz42Phior7P5Lc=
-=Ayjf
------END PGP SIGNATURE-----
 
---6xTM0kUsJcaNctaW--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I have no idea who could write the new mixer code. Apparently, demand is
+low, maybe zero.
+
+checkpatch reports four warnings of which one is a false-positive, the
+other one doesn't make sense and only two are real but somewhat ugly to
+fix (line over 80 with really long array indices).
+
+In its current state, can I send you three patches (Kconfig, madifx.h,
+madifx.c) that add said driver to sound/pci/rme9652?
+
+
+Cheers
