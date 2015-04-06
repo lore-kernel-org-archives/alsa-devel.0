@@ -1,34 +1,37 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH 06/14] clkdev: add clkdev_create() helper
-Date: Mon, 06 Apr 2015 13:19:33 -0700
-Message-ID: <5522EA55.5080804@codeaurora.org>
-References: <20150403171149.GC13898@n2100.arm.linux.org.uk> <E1Ye59J-0001BF-CZ@rmk-PC.arm.linux.org.uk>
+From: James Miller <jamesstewartmiller@gmail.com>
+Subject: steinberg ur44 - soundcard not connecting,
+	acl problem (systemd?)
+Date: Mon, 6 Apr 2015 21:37:57 +0100
+Message-ID: <CAKJvYZEbh44mX5xUnN_FKgTxARRG=nU8D4NeYGv4eAMhPQaavg@mail.gmail.com>
+References: <CAKJvYZGd4F0DDq0V4CxQeoOK1iN=yUzwb5h2yTuNwDOmHoMm9g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <E1Ye59J-0001BF-CZ@rmk-PC.arm.linux.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f180.google.com (mail-ig0-f180.google.com
+ [209.85.213.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6432C2604CA
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 22:37:59 +0200 (CEST)
+Received: by ignm3 with SMTP id m3so787249ign.0
+ for <alsa-devel@alsa-project.org>; Mon, 06 Apr 2015 13:37:58 -0700 (PDT)
+In-Reply-To: <CAKJvYZGd4F0DDq0V4CxQeoOK1iN=yUzwb5h2yTuNwDOmHoMm9g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/03/15 10:12, Russell King wrote:
-> @@ -316,6 +329,29 @@ clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
->  }
->  EXPORT_SYMBOL(clkdev_alloc);
->  
-> +/**
-> + * clkdev_create - allocate and add a clkdev lookup structure
-> + * @clk: struct clk to associate with all clk_lookups
-> + * @con_id: connection ID string on device
-> + * @dev_fmt: format string describing device name
-> + *
-> + * Returns a clk_lookup structure, which can be later unregistered and
-> + * freed.
+Hi,  I found the switch on the back of the sound card that sets the ur44 to
+work with none windows machines and it now connects fine with no problems.
 
-Please add that this returns NULL on failure.
+I'm running a realtime kernel and there are no problems so far.
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Many thanks
 
+James Stewart Miller Bsc(hons) Psych.
