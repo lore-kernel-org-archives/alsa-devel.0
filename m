@@ -1,62 +1,71 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 0/2] Cygnus Audio Driver
-Date: Mon, 6 Apr 2015 10:58:03 +0100
-Message-ID: <20150406095803.GD6023@sirena.org.uk>
-References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com>
- <20150331064338.GE2869@sirena.org.uk>
- <551EEAF8.7050108@broadcom.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 0/5] ALSA: jack: Refactoring for jack
+	kctls
+Date: Mon, 6 Apr 2015 17:11:55 +0100
+Message-ID: <20150406161155.GH6023@sirena.org.uk>
+References: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+Xnt6BZa+I2KmHWw"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <551EEAF8.7050108-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Dmitry Torokhov <dtor-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Anatol Pomazao <anatol-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, abrestic-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, bryeung-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, pwestin-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============4565580609505983333=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9889260425
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 18:12:01 +0200 (CEST)
+In-Reply-To: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jie Yang <yang.jie@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---+Xnt6BZa+I2KmHWw
+--===============4565580609505983333==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="QuX0r7ZseMwydPce"
+Content-Disposition: inline
+
+
+--QuX0r7ZseMwydPce
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 03, 2015 at 12:33:12PM -0700, Scott Branden wrote:
-> On 15-03-30 11:43 PM, Mark Brown wrote:
-> >On Mon, Mar 30, 2015 at 08:16:22PM -0700, Scott Branden wrote:
+On Fri, Apr 03, 2015 at 08:07:13PM +0800, Jie Yang wrote:
+> Currently only hda will create kctls for hda jacks, for asoc, people
+> may need create jack kctls in specific driver.
 
-> >>The audio PLL is embedded in the audio block and only used
-> >>by the audio block. The audio PLL registers are also in the middle of
-> >>the audio register map.
+Sorry, you'll have got some pushed messages for this - I applied it
+locally to have a look at it and pushed it by mistake.
 
-> >When you say it's only used by the audio block do you mean to say that
-> >the audio block exposes no clock signals other than the bit and frame
-> >clocks?
-
-> The audio block exposes the MCLK in addition to the bit and frame clock.
-
-OK, then it's going to need to be a clock provider at some point - the
-clock will be going into external devices which are going to need to be
-able to interact with the clock (for example, to get the rate).
-
---+Xnt6BZa+I2KmHWw
+--QuX0r7ZseMwydPce
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVIliqAAoJECTWi3JdVIfQdjoH/1joz01UIrzgobn+St3bC0rY
-o1pA7Ul7sENnJI66FoHZwHn8NzwJQpI1EEQBlMlZbAnXUtKvSprrirFex0hWYg/N
-is8kTIsoj5Wfr7JingLCQ72WB3T7JV4dGqttFcVYY3HmH5MtW0Zr3lqk46aW9bby
-lpEqiF6Wx73ouwiz36GV1OFdCH1BgYQXxAKfd+S18mLHbEfN7uGirp2Itf5Oehpn
-1Yyiwko+7vLI3ypDrMINRr+Xsnbz8hDFbzHRfJ3zFSOP5hwUpqvzGH0gbrHBNZKB
-YVa4RX84OL6FORizMvY5Y3aWRJ+wOtPDkcnndRh8rEFYaqAiAdCDo/42uKO9wUs=
-=/stg
+iQEcBAEBCAAGBQJVIrBKAAoJECTWi3JdVIfQ4UkH/2UKVyqoFfJM//NC8e4XgBSG
+hGNO3m94+vLT5atCb2RadWlI5BnaYNCquKJaGj/ZPRLR1CY22BaGX9o8LRQSHeQn
+FOXZMupYw1rNBha+a8D8bZmDRCfudePF32yTXsbTlKaQH0wm+ceSeB9VD0fhyftl
+DliRsGD6fCptgZf7iZqIbSqMWargosfa3S3QDcqXQe6k/hWpc0y4XtarEXHUqthQ
+N99yrgo44cwq5GjcyfVTDJ5dBNzokWlD1BElyHEtivYREzQ7anJDE8M29gchlb78
+5T8sgG5qSOzAmMFa+AaMZ4YlHsnwLV4F3Ezp553drE7v/udV6zLymvwMU3T7qk8=
+=xgjd
 -----END PGP SIGNATURE-----
 
---+Xnt6BZa+I2KmHWw--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--QuX0r7ZseMwydPce--
+
+--===============4565580609505983333==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4565580609505983333==--
