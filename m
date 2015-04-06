@@ -1,14 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH/alsa-utils] amixer: fix 'cset' operation to
- set several channels
-Date: Mon, 06 Apr 2015 11:33:45 +0900
-Message-ID: <5521F089.6000702@sakamocchi.jp>
-References: <1428287450-3665-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH 03/14] clkdev: get rid of redundant
+ clk_add_alias() prototype in linux/clk.h
+Date: Mon, 6 Apr 2015 11:20:48 +0530
+Message-ID: <55221EB8.7080403@ti.com>
+References: <20150403171149.GC13898@n2100.arm.linux.org.uk>
+ <E1Ye593-0001B1-W4@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1428287450-3665-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F4D92614CD
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 07:50:56 +0200 (CEST)
+In-Reply-To: <E1Ye593-0001B1-W4@rmk-PC.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,40 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@alsa-project.org, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org
+Cc: Kevin Hilman <khilman@deeprootsystems.com>, Tony Lindgren <tony@atomide.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
- > [PATCH/alsa-lib] amixer: fix 'cset' operation to set several channels
-
-Oops. This patch is for alsa-utils, sorry...
-
-On Apr 06 2015 11:30, Takashi Sakamoto wrote:
-> For an enumerated element with several channels, when given comma-separated
-> string values, 'cset' operation sets these values just to the first channel,
-> instead of corresponding channels.
->
-> This commit adds missing-increment to fix this bug.
->
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+On Friday 03 April 2015 10:42 PM, Russell King wrote:
+> clk_add_alias() is provided by clkdev, and is not part of the clk API.
+> Howver, it is prototyped in two locations: linux/clkdev.h and
+> linux/clk.h.  This is a mess.  Get rid of the redundant and unnecessary
+> version in linux/clk.h.
+> 
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 > ---
->   amixer/amixer.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/amixer/amixer.c b/amixer/amixer.c
-> index 36c92eb..e9fe735 100644
-> --- a/amixer/amixer.c
-> +++ b/amixer/amixer.c
-> @@ -1290,8 +1290,10 @@ static int sset_enum(snd_mixer_elem_t *elem, unsigned int argc, char **argv)
->   			if (snd_mixer_selem_set_enum_item(elem, item++, ival) >= 0)
->   				check_flag = 1;
->   			/* skip separators */
-> -			while (*ptr == ',' || isspace(*ptr))
-> +			while (*ptr == ',' || isspace(*ptr)) {
->   				ptr++;
-> +				chn++;
-> +			}
->   		}
->   	}
->   	return check_flag;
->
+>  arch/arm/mach-davinci/da850.c        |  1 +
+
+For the DaVinci change:
+
+Acked-by: Sekhar Nori <nsekhar@ti.com>
+
+Thanks,
+Sekhar
