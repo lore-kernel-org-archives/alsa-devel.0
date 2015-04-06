@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 0/5] ALSA: jack: Refactoring for jack
-	kctls
-Date: Mon, 6 Apr 2015 17:11:55 +0100
-Message-ID: <20150406161155.GH6023@sirena.org.uk>
-References: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: wm5102: Remove set of volume update
+ bits for output 3R
+Date: Mon, 6 Apr 2015 17:12:52 +0100
+Message-ID: <20150406161252.GI6023@sirena.org.uk>
+References: <1428082112-2390-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4565580609505983333=="
+Content-Type: multipart/mixed; boundary="===============3315772576565138856=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E9889260425
- for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 18:12:01 +0200 (CEST)
-In-Reply-To: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 11CB1260429
+ for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2015 18:13:01 +0200 (CEST)
+In-Reply-To: <1428082112-2390-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4565580609505983333==
+--===============3315772576565138856==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QuX0r7ZseMwydPce"
+	protocol="application/pgp-signature"; boundary="p14GW7TY4DvKqgVo"
 Content-Disposition: inline
 
 
---QuX0r7ZseMwydPce
+--p14GW7TY4DvKqgVo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 03, 2015 at 08:07:13PM +0800, Jie Yang wrote:
-> Currently only hda will create kctls for hda jacks, for asoc, people
-> may need create jack kctls in specific driver.
+On Fri, Apr 03, 2015 at 06:28:32PM +0100, Charles Keepax wrote:
+> The earpiece on wm5102 is mono, thus there is no output 3R. Don't toggle
+> the volume update bits for this output, although worth noting that doing
+> so had no negative effects it is just redundant.
 
-Sorry, you'll have got some pushed messages for this - I applied it
-locally to have a look at it and pushed it by mistake.
+Applied, thanks.
 
---QuX0r7ZseMwydPce
+--p14GW7TY4DvKqgVo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVIrBKAAoJECTWi3JdVIfQ4UkH/2UKVyqoFfJM//NC8e4XgBSG
-hGNO3m94+vLT5atCb2RadWlI5BnaYNCquKJaGj/ZPRLR1CY22BaGX9o8LRQSHeQn
-FOXZMupYw1rNBha+a8D8bZmDRCfudePF32yTXsbTlKaQH0wm+ceSeB9VD0fhyftl
-DliRsGD6fCptgZf7iZqIbSqMWargosfa3S3QDcqXQe6k/hWpc0y4XtarEXHUqthQ
-N99yrgo44cwq5GjcyfVTDJ5dBNzokWlD1BElyHEtivYREzQ7anJDE8M29gchlb78
-5T8sgG5qSOzAmMFa+AaMZ4YlHsnwLV4F3Ezp553drE7v/udV6zLymvwMU3T7qk8=
-=xgjd
+iQEcBAEBCAAGBQJVIrCDAAoJECTWi3JdVIfQmbEH/066cC5yIaVxYt+LUzM8ir9/
+LWZJ7TULiOPEOh/Lg/BDfksz3kUw0P2RKDHoMZVJzTqkWoArCvzHY9addAiRivYH
+oVj7ZDYFM+d+zRfrCV/SyKv3teu/p+/A8GeBnZH58eZQVo3+4qWXH2F1KUdBJX4n
+rjYSafoz6FqiMD/3pmZcr8w5rtR2ak5bcTh9dwdORQeRHd1A+11uypDOovCveER7
+NRUyVcn/ogshtYFoaK2MylW1ffjBUbe1ALWKTF0BOU2RfYSlBLfIjH04JvO4WLuU
+67xa8KQjHMCd3taHtZ5hCSYWMWlyuVxW3mKOu09JqDZcl9ojbmJRwY8gCX1myFY=
+=Nhdn
 -----END PGP SIGNATURE-----
 
---QuX0r7ZseMwydPce--
+--p14GW7TY4DvKqgVo--
 
---===============4565580609505983333==
+--===============3315772576565138856==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4565580609505983333==--
+--===============3315772576565138856==--
