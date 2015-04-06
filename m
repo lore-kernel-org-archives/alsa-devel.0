@@ -1,41 +1,43 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH 03/14] clkdev: get rid of redundant clk_add_alias() prototype
- in linux/clk.h
-Date: Mon, 06 Apr 2015 12:04:21 -0700
-Message-ID: <5522D8B5.7050205@codeaurora.org>
-References: <20150403171149.GC13898@n2100.arm.linux.org.uk> <E1Ye593-0001B1-W4@rmk-PC.arm.linux.org.uk> <87lhi8rrmd.fsf@free.fr>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [PATCH asoc] ASoC: Intel: read_shim_data() can be static
+Date: Tue, 7 Apr 2015 03:06:06 +0800
+Message-ID: <20150406190606.GA41498@snb>
+References: <201504070339.UuD6nVub%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87lhi8rrmd.fsf@free.fr>
-Sender: linux-sh-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Kevin Hilman <khilman@deeprootsystems.com>, Sekhar Nori <nsekhar@ti.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Tony Lindgren <tony@atomide.com>, Daniel Mack <daniel@zonque.org>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <201504070339.UuD6nVub%fengguang.wu@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jie Yang <yang.jie@intel.com>
+Cc: kbuild-all@01.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/04/15 05:43, Robert Jarzmik wrote:
-> Russell King <rmk+kernel@arm.linux.org.uk> writes:
->
->> clk_add_alias() is provided by clkdev, and is not part of the clk API.
->> Howver, it is prototyped in two locations: linux/clkdev.h and
->> linux/clk.h.  This is a mess.  Get rid of the redundant and unnecessary
->> version in linux/clk.h.
->>
->> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
-> Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
->
-> Actually, this serie fixes a regression I've seen in linux-next, and which was
-> triggering the Oops in [1] on lubbock. With your serie, the kernel boots fine.
->
->
 
-Is this with the lubbock_defconfig? Is it a regression in 4.0-rc series
-or is it due to some pending -next patches interacting with the per-user
-clock patches? It looks like the latter because __clk_get_hw() should be
-inlined on lubbock_defconfig where CONFIG_COMMON_CLK=n.
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+---
+ sst_pvt.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
+index 3c17844..2d74249 100644
+--- a/sound/soc/intel/atom/sst/sst_pvt.c
++++ b/sound/soc/intel/atom/sst/sst_pvt.c
+@@ -111,7 +111,7 @@ int sst_wait_interruptible(struct intel_sst_drv *sst_drv_ctx,
+ 
+ }
+ 
+-unsigned long long read_shim_data(struct intel_sst_drv *sst, int addr)
++static unsigned long long read_shim_data(struct intel_sst_drv *sst, int addr)
+ {
+ 	unsigned long long val = 0;
+ 
+@@ -124,7 +124,7 @@ unsigned long long read_shim_data(struct intel_sst_drv *sst, int addr)
+ 	return val;
+ }
+ 
+-void write_shim_data(struct intel_sst_drv *sst, int addr,
++static void write_shim_data(struct intel_sst_drv *sst, int addr,
+ 				unsigned long long data)
+ {
+ 	switch (sst->dev_id) {
