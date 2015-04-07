@@ -1,73 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Fix ruledata setup in
- davinci_mcasp_startup
-Date: Tue, 7 Apr 2015 12:05:52 +0100
-Message-ID: <20150407110552.GE6023@sirena.org.uk>
-References: <1428404633-25365-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 4/4] ASoC: wm8804: Enable runtime PM
+Date: Tue, 7 Apr 2015 12:09:06 +0100
+Message-ID: <20150407110906.GF6023@sirena.org.uk>
+References: <1428402893-11787-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1428402893-11787-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8751660526572809563=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A72A260545
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 13:05:59 +0200 (CEST)
-In-Reply-To: <1428404633-25365-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, jsarha@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4FfB8yLUWtffWRXD"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1428402893-11787-4-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, info-Ht5PubfIbSajfpyLsbbDOw@public.gmane.org, sapthagiri.baratam-sjhevXS25z0S+FvcfC7Uqw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8751660526572809563==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kqAFKZ++CrkAX0DV"
-Content-Disposition: inline
-
-
---kqAFKZ++CrkAX0DV
+--4FfB8yLUWtffWRXD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 07, 2015 at 02:03:53PM +0300, Peter Ujfalusi wrote:
-> Passing &mcasp->ruledata[dir] to snd_pcm_hw_rule_add() is not correct since
-> commit:
-> 7b3d165a2821 ASoC: davinci-mcasp: Index ruledata in drvdata with substream->stream
-> now sets up the struct based on the substream->stream (0 or 1) while we pass
-> a pointer which we take with dir (1 or 2). This will lead kernel crash.
+On Tue, Apr 07, 2015 at 11:34:53AM +0100, Charles Keepax wrote:
+> From: Charles Keepax <ckeepax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Applied, thanks.
+Are you sure?
 
---kqAFKZ++CrkAX0DV
+--4FfB8yLUWtffWRXD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVI7oPAAoJECTWi3JdVIfQrKQH/3FtCzAyPWjnq3u3zcIzmDiA
-B9SuoudzQLGfahH+eT+DQfGEglTNFOAqrjA5Vaa8wRDvKGgd4CrOs/v2vpEmepXI
-/RMbIXiHCGQlLLM5JFUzKHHF6dtmNwZVhLbvEMQ1fDZVjzd9M+X9daSuTZau1pC9
-jgYtFv/ybnQTQPvcgNGGSUX3GdWrVc+qpYG9VzJVhYp5NzZ9AemnpuCJ6NSEuzKp
-aXeA7GmSpsCAAo0wje34Xkr5h+PeqIb57S9FmnubvQ2NKiILvOePzwjtonmRKWiX
-0k32u6g+XewgaYYaa8ksDSdQaMoog5F4L1AwSmvj2eUfwMC8cW+t6/u8ZdzFneA=
-=EsdI
+iQEcBAEBCAAGBQJVI7rRAAoJECTWi3JdVIfQE/UH/RAlpSQAQHJxpWH6dBHmL6GI
+GylaQcmsGL4+2GJSM6NE2lh7MkqznW3inP409rkZN6HF3rB7G/kqSjPQWYnZHfkF
+KJrWoFgxSLwhtpHBfgWFNOxXvN4RC1CKzPHPm/hG3rAzrlW0zEHrRNw05XKs8MMw
+uQg2tMu0OWuASRvZOcBsOM2FgJNvwwt+uI5DrHXMpitJMNGuR7ndvfpyeuJCdHSW
+DBOszJk2DINWOFzhz4JuTnMdtsvreMehaeOjY3XE3kR/6DJBONZaAAmCTcdqd2a2
+3nkOJ+M0vl+F/HzzebVHceGE1brJZL6e4SHfAi7rxf9S0MkKrTZnzBWW25hdwDQ=
+=n35G
 -----END PGP SIGNATURE-----
 
---kqAFKZ++CrkAX0DV--
-
---===============8751660526572809563==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8751660526572809563==--
+--4FfB8yLUWtffWRXD--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
