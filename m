@@ -1,43 +1,48 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: recording problem in beagleboard-mcbsp
-Date: Tue, 7 Apr 2015 12:22:59 +0300
-Message-ID: <5523A1F3.2000701@ti.com>
-References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>	<CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>	<CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>	<551C3D19.2050200@ti.com>
- <CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 07/14] media: omap3isp: remove unused clkdev
+Date: Tue, 07 Apr 2015 12:42:52 +0300
+Message-ID: <1894989.AGoQvgsks0@avalon>
+References: <20150403171149.GC13898@n2100.arm.linux.org.uk> <36620233.VbNiGUfDRt@avalon> <20150405142034.GG4027@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 196C126145B
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 11:23:03 +0200 (CEST)
-In-Reply-To: <CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: noman pouigt <variksla@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20150405142034.GG4027@n2100.arm.linux.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, sakari.ailus@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMDcvMjAxNSAwNzoyOSBBTSwgbm9tYW4gcG91aWd0IHdyb3RlOgo+IE9uIFdlZCwgQXBy
-IDEsIDIwMTUgYXQgMTE6NDYgQU0sIFBldGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5j
-b20+IHdyb3RlOgo+PiBPbiAwMy8zMS8yMDE1IDA5OjQxIFBNLCBub21hbiBwb3VpZ3Qgd3JvdGU6
-Cj4+PiBJIHdhcyB3b25kZXJpbmcgaWYgaSBjYW4gZ2V0IHNvbWUgaGVscCBpbiB0aGlzPwo+Pgo+
-PiBJIGNhbiB0YWtlIGEgbG9vayBhdCB0aGlzIG9uIE1vbmRheSB0aGUgZWFybGllc3QuLi4KPiBI
-aSBQZXRlciwKPiAKPiBEaWQgeW91IGdldCBhIGNoYW5jZSB0byBsb29rIGF0IGl0PwoKWWVzLApN
-b25kYXkgd2FzIGEgZGF5IG9mZiA7KQoKSSBoYXZlIHRlc3RlZCBhbmQgY2FwdHVyZSB3b3JrcyBv
-biBCZWFnbGUteE06Ck1jQlNQMiBzbGF2ZSwgdHdsNDAzMCBtYXN0ZXIKTWNCU1AyIG1hc3Rlciwg
-dHdsNDAzMCBzbGF2ZQoKV2l0aCB0aGUgZm9sbG93aW5nIGNvbW1hbmQ6CmFyZWNvcmQgLURodzow
-LDAgLXQgd2F2IC1jIDIgLXIgNDQxMDAgLWYgUzMyX0xFIC12ID4gL2Rldi9udWxsCmFyZWNvcmQg
-LURodzowLDEgLXQgd2F2IC1jIDIgLXIgNDQxMDAgLWYgUzMyX0xFIC12ID4gL2Rldi9udWxsCgpO
-b3RlIHRoYXQgaHc6MCwxIGlzIG5vdCBhdmFpbGFibGUgdXBzdHJlYW0sIGl0IGlzIG15IHRlc3Qg
-UENNIGZvciBDeFMgc2V0dXAKKGNvZGVjIHNsYXZlKS4KCi0tIApQw6l0ZXIKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hello Russell,
+
+On Sunday 05 April 2015 15:20:34 Russell King - ARM Linux wrote:
+> On Sat, Apr 04, 2015 at 12:44:35AM +0300, Laurent Pinchart wrote:
+> > Hi Russell,
+> > 
+> > Thank you for the patch;
+> > 
+> > On Friday 03 April 2015 18:12:58 Russell King wrote:
+> > > No merged platform supplies xclks via platform data.  As we want to
+> > > slightly change the clkdev interface, rather than fixing this unused
+> > > code, remove it instead.
+> > > 
+> > > Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> > 
+> > Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > 
+> > with one caveat though : it conflicts with patches queued for v4.1 in the
+> > media tree. I'll post a rebased version in a reply to your e-mail. How
+> > would you like to handle the conflict ?
+> 
+> How bad is the conflict?
+
+It's not too bad, it's mostly a context-related conflict. There are two 
+additional lines to remove (plus the associated comment) from isp_xclk_init(), 
+as your patch makes a loop now terminate with if (condition) continue;. Those 
+two lines could be removed later, keeping them doesn't break anything.
+
+-- 
+Regards,
+
+Laurent Pinchart
+
