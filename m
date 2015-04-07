@@ -1,24 +1,19 @@
-From: noman pouigt <variksla@gmail.com>
-Subject: Re: recording problem in beagleboard-mcbsp
-Date: Tue, 7 Apr 2015 11:33:56 -0700
-Message-ID: <CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>
-References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>
- <CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>
- <CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>
- <551C3D19.2050200@ti.com>
- <CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>
- <5523A1F3.2000701@ti.com>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: Re: Separate input and output jacks for one UCM device?
+Date: Tue, 07 Apr 2015 23:37:35 +0300
+Message-ID: <1428439055.12283.54.camel@tkkaskin-mobl3.ger.corp.intel.com>
+References: <5509D4D4.6030000@linux.intel.com> <1426756559.7258.22.camel@loki>
+ <1427820547.2856.10.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <1427891224.2711.31.camel@loki>
+ <CAEUnVG4iCJGGPw2=R+TxVCoj3ky2SBgZDpZrFbswXh36b-WydA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
- [209.85.214.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 35E062605F4
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 20:33:58 +0200 (CEST)
-Received: by obbeb7 with SMTP id eb7so29260624obb.3
- for <alsa-devel@alsa-project.org>; Tue, 07 Apr 2015 11:33:57 -0700 (PDT)
-In-Reply-To: <5523A1F3.2000701@ti.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C07CD264FE7
+ for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 22:40:56 +0200 (CEST)
+In-Reply-To: <CAEUnVG4iCJGGPw2=R+TxVCoj3ky2SBgZDpZrFbswXh36b-WydA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,51 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: Dylan Reid <dgreid@chromium.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Arun Raghavan <arun@accosted.net>, Han Lu <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBcHIgNywgMjAxNSBhdCAyOjIyIEFNLCBQZXRlciBVamZhbHVzaSA8cGV0ZXIudWpm
-YWx1c2lAdGkuY29tPiB3cm90ZToKPiBPbiAwNC8wNy8yMDE1IDA3OjI5IEFNLCBub21hbiBwb3Vp
-Z3Qgd3JvdGU6Cj4+IE9uIFdlZCwgQXByIDEsIDIwMTUgYXQgMTE6NDYgQU0sIFBldGVyIFVqZmFs
-dXNpIDxwZXRlci51amZhbHVzaUB0aS5jb20+IHdyb3RlOgo+Pj4gT24gMDMvMzEvMjAxNSAwOTo0
-MSBQTSwgbm9tYW4gcG91aWd0IHdyb3RlOgo+Pj4+IEkgd2FzIHdvbmRlcmluZyBpZiBpIGNhbiBn
-ZXQgc29tZSBoZWxwIGluIHRoaXM/Cj4+Pgo+Pj4gSSBjYW4gdGFrZSBhIGxvb2sgYXQgdGhpcyBv
-biBNb25kYXkgdGhlIGVhcmxpZXN0Li4uCj4+IEhpIFBldGVyLAo+Pgo+PiBEaWQgeW91IGdldCBh
-IGNoYW5jZSB0byBsb29rIGF0IGl0Pwo+Cj4gWWVzLAo+IE1vbmRheSB3YXMgYSBkYXkgb2ZmIDsp
-Cj4KPiBJIGhhdmUgdGVzdGVkIGFuZCBjYXB0dXJlIHdvcmtzIG9uIEJlYWdsZS14TToKPiBNY0JT
-UDIgc2xhdmUsIHR3bDQwMzAgbWFzdGVyCj4gTWNCU1AyIG1hc3RlciwgdHdsNDAzMCBzbGF2ZQo+
-Cj4gV2l0aCB0aGUgZm9sbG93aW5nIGNvbW1hbmQ6Cj4gYXJlY29yZCAtRGh3OjAsMCAtdCB3YXYg
-LWMgMiAtciA0NDEwMCAtZiBTMzJfTEUgLXYgPiAvZGV2L251bGwKCkluIG15IHNldHVwIGNvZGVj
-KG1heDk4MDkwKSBpcyBtYXN0ZXIgYW5kIG1jYnNwIGlzIHNsYXZlLiBJIHVzZWQgYWJvdmUKY29t
-bWFuZCBhbmQgZ290IGJlbG93IGVycm9yOgphcmVjb3JkOiBzZXRfcGFyYW1zOjEyMzM6IFNhbXBs
-ZSBmb3JtYXQgbm9uIGF2YWlsYWJsZQpBdmFpbGFibGUgZm9ybWF0czoKLSBTMTZfTEUKClNvIGkg
-Y2hhbmdlZCB0aGUgZm9ybWF0IHRvIFMxNl9MRSBhbmQgZ290IGJlbG93IGVycm9yOgphcmVjb3Jk
-OiBwY21fcmVhZDoyMDMxOiByZWFkIGVycm9yOiBJbnB1dC9vdXRwdXQgZXJyb3IKCkkgY2hlY2tl
-ZCB0aGUgZG1lc2cgYW5kIGZvdW5kIG91dCB0aGF0IGludGVycnVwdCB0cmlnZ2VyZWQgb25seQpv
-bmNlIGFuZCBhZnRlciBzb21lIHRpbWUgYWxsIHdpZGdldHMgZ2V0cyBwb3dlcmVkIGRvd24uCkJl
-bG93IGlzIHBhcnQgb2YgdGhlIGRtZXNnLgoKWyAgMTc0LjE4NjQzMV0gc25kX3BjbV9saWJfcmVh
-ZApbICAxNzQuMTg2NDYyXSBzbmRfcGNtX2xpYl9yZWFkMQpbICAxNzQuMTg3MDQyXSBvbWFwLW1j
-YnNwIDQ4MDc0MDAwLm1jYnNwOiAqKioqIE1jQlNQMjU1IHJlZ3MgKioqKgpbICAxNzQuMTg3MDcy
-XSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1jYnNwOiBEUlIyOiAgMHhlZGQwYWJjZQpbICAxNzQuMTg3
-MTAzXSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1jYnNwOiBEUlIxOiAgMHgwMDAwClsgIDE3NC4xODcx
-MzNdIG9tYXAtbWNic3AgNDgwNzQwMDAubWNic3A6IERYUjI6ICAweDAwMDAKWyAgMTc0LjE4NzE2
-NF0gb21hcC1tY2JzcCA0ODA3NDAwMC5tY2JzcDogRFhSMTogIDB4MDAwMApbICAxNzQuMTg3MTk0
-XSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1jYnNwOiBTUENSMjogMHgwMjMwClsgIDE3NC4xODcyMjVd
-IG9tYXAtbWNic3AgNDgwNzQwMDAubWNic3A6IFNQQ1IxOiAweDAwMzEKWyAgMTc0LjE4NzI1NV0g
-b21hcC1tY2JzcCA0ODA3NDAwMC5tY2JzcDogUkNSMjogIDB4ODA0MQpbICAxNzQuMTg3Mjg2XSBv
-bWFwLW1jYnNwIDQ4MDc0MDAwLm1jYnNwOiBSQ1IxOiAgMHgwMDQwClsgIDE3NC4xODczMTZdIG9t
-YXAtbWNic3AgNDgwNzQwMDAubWNic3A6IFhDUjI6ICAweDgwNDEKWyAgMTc0LjE4NzM0N10gb21h
-cC1tY2JzcCA0ODA3NDAwMC5tY2JzcDogWENSMTogIDB4MDA0MApbICAxNzQuMTg3Mzc3XSBvbWFw
-LW1jYnNwIDQ4MDc0MDAwLm1jYnNwOiBTUkdSMjogMHgwMDFmClsgIDE3NC4xODc0MDhdIG9tYXAt
-bWNic3AgNDgwNzQwMDAubWNic3A6IFNSR1IxOiAweDBmMDAKWyAgMTc0LjE4NzQzOF0gb21hcC1t
-Y2JzcCA0ODA3NDAwMC5tY2JzcDogUENSMDogIDB4MDAwZgpbICAxNzQuMTg3NDY5XSBvbWFwLW1j
-YnNwIDQ4MDc0MDAwLm1jYnNwOiAqKioqKioqKioqKioqKioqKioqKioqKgpbICAxNzQuMTg3NDk5
-XSBzbmRfcGNtX3VwZGF0ZV9od19wdHIwCgpNYXkgaSBrbm93IHdoZXJlIGFtIGkgZ29pbmcgd3Jv
-bmc/Cgo+IGFyZWNvcmQgLURodzowLDEgLXQgd2F2IC1jIDIgLXIgNDQxMDAgLWYgUzMyX0xFIC12
-ID4gL2Rldi9udWxsCj4KPiBOb3RlIHRoYXQgaHc6MCwxIGlzIG5vdCBhdmFpbGFibGUgdXBzdHJl
-YW0sIGl0IGlzIG15IHRlc3QgUENNIGZvciBDeFMgc2V0dXAKPiAoY29kZWMgc2xhdmUpLgo+Cj4g
-LS0KPiBQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On Thu, 2015-04-02 at 08:28 -0700, Dylan Reid wrote:
+> On Wed, Apr 1, 2015 at 5:27 AM, Liam Girdwood
+> <liam.r.girdwood@linux.intel.com> wrote:
+> > On Tue, 2015-03-31 at 19:49 +0300, Tanu Kaskinen wrote:
+> >> So is your preference that UCM configuration authors are forced to
+> >> define simplex devices to deal with headset jacks, rather than using
+> >> duplex devices and defining "PlaybackJackControl" and
+> >> "CaptureJackControl" separately? (I don't personally mind either way.)
+> >
+> > I don't really mind either, but what's easier for audio servers like
+> > pulseaudio that will be the main UCM clients ? I guess that pulseaudio,
+> > CRAS, and other audio servers probably deal with simplex PCM streams
+> > internally so mapping to simplex jacks/devices might be better ?
+> 
+> There is an advantage to having a separate device for the headphone and mic
+> even if they are connected to the same jack.  The user can enable one and not
+> the other, most commonly to use the headphones but record from the built-in mic,
+> ignoring the headset mic.  Because of this we require all ChromeOS devices to
+> support separate reporting and selection of headphone/mic on the headset jack.
+> There is always one UCM device and one user-visible i/o node per jack.
+
+I'm not sure what you mean... "There is always one UCM device [...] per
+jack" sounds like you want there to be only one device representing
+headset, but on the other hand you talk about it being advantageous to
+have a separate device for the headphone and mic... Can you clarify the
+number of UCM devices per physical headset jack?
+
+-- 
+Tanu
