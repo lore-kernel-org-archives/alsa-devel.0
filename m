@@ -1,23 +1,26 @@
-From: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
-Subject: Re: Speaker burnout
-Date: Tue, 07 Apr 2015 17:30:59 +1200
-Message-ID: <55236B93.9070504@blennerhassett.gen.nz>
-References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
- <5518F8F3.10304@ladisch.de>
- <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
- <55192FBC.1070307@ladisch.de>
- <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
- <551A6A15.1070605@canonical.com>
- <1427796392.581386.247465613.43178C71@webmail.messagingengine.com>
- <551A7A4D.203@canonical.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda_intel:
+	add	AZX_DCAPS_I915_POWERWELL for skl
+Date: Tue, 7 Apr 2015 05:47:50 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196351E8@SHSMSX103.ccr.corp.intel.com>
+References: <1427440204-49331-1-git-send-email-libin.yang@intel.com>
+ <s5hfv8q98lm.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19622F1C@SHSMSX103.ccr.corp.intel.com>
+ <s5hegoa97jj.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19622F67@SHSMSX103.ccr.corp.intel.com>
+ <s5ha8yy971s.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19622F84@SHSMSX103.ccr.corp.intel.com>
+ <96A12704CE18D347B625EE2D4A099D1962E18F@SHSMSX103.ccr.corp.intel.com>
+ <s5h4mowyxzf.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from omr.mail.isx.net.nz (omr.mail.isx.net.nz [111.65.230.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A760260568
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 07:31:05 +0200 (CEST)
-In-Reply-To: <551A7A4D.203@canonical.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E8F4260574
+ for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 07:47:55 +0200 (CEST)
+In-Reply-To: <s5h4mowyxzf.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +30,205 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, "Nikita N." <nikitan@operamail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 31/03/15 23:43, David Henningsson wrote:
+Hi Takashi,
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Saturday, April 04, 2015 6:44 PM
+> To: Yang, Libin
+> Cc: 'alsa-devel@alsa-project.org'
+> Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
+> AZX_DCAPS_I915_POWERWELL for skl
+> 
+> At Mon, 30 Mar 2015 02:47:45 +0000,
+> Yang, Libin wrote:
+> >
+> > Hi Takashi,
+> >
+> >
+> > > -----Original Message-----
+> > > From: Yang, Libin
+> > > Sent: Friday, March 27, 2015 4:34 PM
+> > > To: Takashi Iwai
+> > > Cc: alsa-devel@alsa-project.org
+> > > Subject: RE: [alsa-devel] [PATCH] ALSA: hda_intel: add
+> > > AZX_DCAPS_I915_POWERWELL for skl
+> > >
+> > > Hi Takashi,
+> > >
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > Sent: Friday, March 27, 2015 4:30 PM
+> > > > To: Yang, Libin
+> > > > Cc: alsa-devel@alsa-project.org
+> > > > Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
+> > > > AZX_DCAPS_I915_POWERWELL for skl
+> > > >
+> > > > At Fri, 27 Mar 2015 08:25:52 +0000,
+> > > > Yang, Libin wrote:
+> > > > >
+> > > > > Hi Takashi,
+> > > > >
+> > > > >
+> > > > > > -----Original Message-----
+> > > > > > From: alsa-devel-bounces@alsa-project.org [mailto:alsa-
+> devel-
+> > > > > > bounces@alsa-project.org] On Behalf Of Takashi Iwai
+> > > > > > Sent: Friday, March 27, 2015 4:19 PM
+> > > > > > To: Yang, Libin
+> > > > > > Cc: alsa-devel@alsa-project.org
+> > > > > > Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
+> > > > > > AZX_DCAPS_I915_POWERWELL for skl
+> > > > > >
+> > > > > > At Fri, 27 Mar 2015 08:02:54 +0000,
+> > > > > > Yang, Libin wrote:
+> > > > > > >
+> > > > > > > Hi Takashi,
+> > > > > > >
+> > > > > > >
+> > > > > > >
+> > > > > > > > -----Original Message-----
+> > > > > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > > > > > Sent: Friday, March 27, 2015 3:57 PM
+> > > > > > > > To: Yang, Libin
+> > > > > > > > Cc: alsa-devel@alsa-project.org
+> > > > > > > > Subject: Re: [PATCH] ALSA: hda_intel: add
+> > > > > > > > AZX_DCAPS_I915_POWERWELL for skl
+> > > > > > > >
+> > > > > > > > At Fri, 27 Mar 2015 15:10:04 +0800,
+> > > > > > > > libin.yang@intel.com wrote:
+> > > > > > > > >
+> > > > > > > > > From: Libin Yang <libin.yang@intel.com>
+> > > > > > > > >
+> > > > > > > > > HDMI/DP codec on SKL is in the power well.
+> > > > > > > > > The power well must be turned on before probing the
+> > > > > > > > > HDMI/DP codec.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Libin Yang <libin.yang@intel.com>
+> > > > > > > >
+> > > > > > > > So, was the previous question clarified?
+> > > > > > >
+> > > > > > > Yes, I have confirmed with our silicon team.
+> > > > > > >
+> > > > > > > >
+> > > > > > > > This certainly sucks.  It means that the powerwell is on
+> even
+> > > > you
+> > > > > > > > don't use the HDMI/DP at all.  If this is intended as a
+> > > temporarily
+> > > > > > > > workaround, it should be mentioned so.  Please give more
+> > > > > > comments
+> > > > > > > > and
+> > > > > > > > backgrounds.
+> > > > > > >
+> > > > > > > Yes, as this is added in the skl audio controller, even there is
+> no
+> > > > > > HDMI/DP
+> > > > > > > codec, we should also add this flag. Otherwise the HDMI/DP
+> > > > codec
+> > > > > > > may not be detected correctly.
+> > > > > >
+> > > > > > But it's possible to do it only at probing, not permanently.  If
+> so,
+> > > > > > we'll have another patch in future.
+> > > > > >
+> > > > > > Please write more information in the changelog and resubmit.
+> > > > >
+> > > > > Do you mean to add more description in the patch comments?
+> > > >
+> > > > Yes.  The hardware design is different from HSW/BDW, thus
+> applying
+> > > > this isn't straightforward but just a workaround.  I don't know
+> > > > whether you think it's a temporary workaround or a permanent
+> fix.
+> > > > Such information must be written there, too.
+> > >
+> > > OK. I see. It seems we need more input from our silicon team
+> > > for this issue.
+> >
+> > >From our silicon team's comment, it seems we need power on
+> > the powerwell when detecting and probing the HDMI codec.
+> >
+> > For the skl case (HDMI codec is in powerwell, while controller not),
+> > my thinking is:
+> >
+> > 1. power on the power well
+> > 2. read STATESTS to determine the codec_mask
+> > 3. if codec is not present, power off the power well
+> >     and remove the flag. (seems we need a new flag)
+> > 4. if codec is present, we will power on the power well
+> >     when dealing with HDMI codec.
+> >
+> > What do you think?
+> 
+> Yes, it's also similar to my plan.  My plan has a bit more code
+> changes for adapting to the new structure:
+
+Glad to know that :-)
+
+> 
+> - Move hda_i915.c code into sound/hda to be used for both legacy and
+>   new drivers
+> 
+> - Add a reference counter to get/put, so that it can be called from
+>   both controller and codec drivers
+> 
+> - Move the component from struct hda_intel to hdac_bus, but
+>   dynamically allocating.  The helper code can check it like
+> 
+> 	if (bus->audio_component)
+> 		bus->audio_component->ops->get_power(...)
+> 
+>   (Or the NULL check can be in a helper function)
+> 
+> - get_power() is called at probing as is now
+> 
+> - put_power() is called at the end of azx_probe*()
+> 
+> - There will be two DCAPS flags, one indicating for the old chips that
+>   need get_power() for runtime PM, and one indicating get_power()
+> only
+>   for probing.
+
+Yes, we need separate these situations. Currently,
+we may consider such situations:
+1. HDA controller and HDA(HDMI) codec are in power well.
+2. HDA(HDMI) codec is in power well.
+3. HDA controller is in power well while HDA codec not.
+4. HDA controller and HDA code are not in power well.
+
+We currently don't have really boards which are
+the 3rd and 4th situations.
+
+For second situation, we need power on the power
+well for probing and each time we use the HDMI codec.
+
+As this may takes some time, what do you think I submit
+a temporary patch that using AZX_DCAPS_I915_POWERWELL 
+for the second situation?
+After the restructure is finished, we can revert the patch.
+
+> 
+> Now an open question is how to make codec driver to call get_power /
+> put_power.  To be more clear, currently there is no solid way to allow
+> the codec driver doing something special before / after
+> hda_set_power_state().  One may implement a tricky
+> set_power_state()
+> ops in the codec driver.  Or, we may reimplement pre_resume and
+> post_suspend patch_ops again.
+
+Yes, we need consider this situation. What about the suspend_late and
+resume_early in dev_pm_ops?
+
 > 
 > 
-> On 2015-03-31 12:06, Nikita N. wrote:
->>> If you have any concrete examples (alsa-info please!) of speakers that
->>> can be burned out, and you know a maximum speaker volume where this
->> As we said, that is not our bug, we are not audio experts, nor any of us
->> is interested in audio matters.
-> 
-> Here's my suggestion how to move forward on this:
-> 
->  1) Gather consensus that limit the maximum volume on internal speakers
-> is the right way forward. Takashi, Clemens, anyone against that strategy?
+> Takashi
 
-I'm not sure about this (though in the end it doesn't affect me).  Just
-running some experiments on my laptop. (HDA intel PCH sound)
-
-Playing some ordinary music, the level from the internal speakers is
-comfortable when master and PCM gains are set to maximum.
-
-At this setting, enabling the internal mic feedthrough with mic boost
-set to maximum,  feedback happens when mic playback gain is at -6dB
-(max=+12dB).
-The signal when recorded is 1325Hz rail to rail square wave.
-
-My point is that in this case for normal usage the maximum output is
-fine, I'd even say it is required.  So limiting output would not be a
-good idea.
-Also when using the mic for speech capture (with headphones for output),
-a gain greater than the 'feedback inducing' one is likely to be useful.
-
-So it is (only?) the pathological case of feeding mic direct to speakers
-that is problematic.
-
-Given that we can't fix the hardware or wacky user behaviour,
-My suggestion would be to either limit, or hide completely the various
-"Mic Playback" controls that enable direct feed from input to output.
-What is the use case for this anyway? - karaoke?
-
-Given that this goes against the "expose everything in the hardware",
-maybe have a module option that can unhide these controls if anybody
-actually wants to use them.
---
-Eliot
+Regards,
+Libin
