@@ -1,18 +1,24 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Support Dell headset mode for ALC288
-Date: Tue, 7 Apr 2015 07:08:36 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A0D0C8@RTITMBSV09.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A17A0C909@RTITMBSV09.realtek.com.tw>
- <s5hoan4xdxi.wl-tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Speaker burnout
+Date: Tue, 07 Apr 2015 09:09:00 +0200
+Message-ID: <5523828C.8060301@canonical.com>
+References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
+ <5518F8F3.10304@ladisch.de>
+ <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
+ <55192FBC.1070307@ladisch.de>
+ <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
+ <551A6A15.1070605@canonical.com>
+ <1427796392.581386.247465613.43178C71@webmail.messagingengine.com>
+ <551A7A4D.203@canonical.com> <55236B93.9070504@blennerhassett.gen.nz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id C11A126051F
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 09:08:46 +0200 (CEST)
-In-Reply-To: <s5hoan4xdxi.wl-tiwai@suse.de>
-Content-Language: zh-TW
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 934E72605DF
+ for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 09:08:58 +0200 (CEST)
+In-Reply-To: <55236B93.9070504@blennerhassett.gen.nz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +28,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>, "Nikita N." <nikitan@operamail.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
- 
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Saturday, April 04, 2015 8:43 PM
-> To: Kailang
-> Cc: (alsa-devel@alsa-project.org)
-> Subject: Re: Support Dell headset mode for ALC288
-> 
-> At Tue, 31 Mar 2015 08:01:57 +0000,
-> Kailang wrote:
-> > 
-> > 
-> > Hi Takashi,
-> >   
-> >  Dell has new platform with ALC288.
-> >  Attach patch is support headset mode for ALC288.
-> 
-> > @@ -3828,6 +3894,11 @@ static void 
-> alc_determine_headset_type(struct hda_codec *codec)
-> >   conteol) */
-> >  		{}
-> >  	};
-> > +	static struct coef_fw coef0286[] = {
-> > +		//UPDATE_COEF(0x4f, 0xfcc0, 0x5400), /* Combo 
-> Jack auto detect */
-> > +		UPDATE_COEF(0x4f, 0xfcc0, 0xd400),
-> 
-> Why is this commented out and what's the next line does instead?
-> And it's 0286?  Not 0288?
-> 
-> > @@ -3949,8 +4027,15 @@ static void 
-> alc_update_headset_jack_cb(struct hda_codec *codec,
-> >  				       struct hda_jack_callback 
-> *jack)  {
-> >  	struct alc_spec *spec = codec->spec;
-> > +	int present;
-> >  	spec->current_headset_type = ALC_HEADSET_TYPE_UNKNOWN;
-> >  	snd_hda_gen_hp_automute(codec, jack);
-> > +	present = spec->gen.hp_jack_present ? 0x40 : 0;
-> > +	if (codec->bus->pci->subsystem_vendor == 0x1028 &&
-> > +				codec->core.vendor_id == 0x10ec0288)
-> > +		/* Headset Mic enable and disable, ony for Dell Dino */
-> > +		snd_hda_codec_write(codec, 0x01, 0, 
-> AC_VERB_SET_GPIO_DATA,
-> > +					present);
-> 
-> This is too ugly to put in the common function.
-> For Dell, prepare its own callback function and use it 
-> instead.  Or, put a new hook there to call additionally.  
-> This avoids the PCI ID check in each place.
-> 
-> So, better to split to a few patches.  One for adding ALC286 
-> (or 288?) support generically.  And another for adding 
-> Dell-specific things.
+
+On 2015-04-07 07:30, Eliot Blennerhassett wrote:
+> On 31/03/15 23:43, David Henningsson wrote:
+>>
+>>
+>> On 2015-03-31 12:06, Nikita N. wrote:
+>>>> If you have any concrete examples (alsa-info please!) of speakers that
+>>>> can be burned out, and you know a maximum speaker volume where this
+>>> As we said, that is not our bug, we are not audio experts, nor any of us
+>>> is interested in audio matters.
+>>
+>> Here's my suggestion how to move forward on this:
+>>
+>>   1) Gather consensus that limit the maximum volume on internal speakers
+>> is the right way forward. Takashi, Clemens, anyone against that strategy?
 >
- 
-Ok! I will split it for two patches.
-But spec->gen.hp_automute_hook = alc_update_headset_jack_cb in alc_fixup_headset_mode().
-If I move dell specific part to fixup table by SSID, spec->gen.hp_automute_hook will be reinit to new.
-So, I just place the code here.
+> I'm not sure about this (though in the end it doesn't affect me).  Just
+> running some experiments on my laptop. (HDA intel PCH sound)
+>
+> Playing some ordinary music, the level from the internal speakers is
+> comfortable when master and PCM gains are set to maximum.
+>
+> At this setting, enabling the internal mic feedthrough with mic boost
+> set to maximum,  feedback happens when mic playback gain is at -6dB
+> (max=+12dB).
+> The signal when recorded is 1325Hz rail to rail square wave.
+>
+> My point is that in this case for normal usage the maximum output is
+> fine, I'd even say it is required.  So limiting output would not be a
+> good idea.
+> Also when using the mic for speech capture (with headphones for output),
+> a gain greater than the 'feedback inducing' one is likely to be useful.
+>
+> So it is (only?) the pathological case of feeding mic direct to speakers
+> that is problematic.
+>
+> Given that we can't fix the hardware or wacky user behaviour,
+> My suggestion would be to either limit, or hide completely the various
+> "Mic Playback" controls that enable direct feed from input to output.
+> What is the use case for this anyway? - karaoke?
+>
+> Given that this goes against the "expose everything in the hardware",
+> maybe have a module option that can unhide these controls if anybody
+> actually wants to use them.
 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
-> 
+On one hand I find your arguments convincing, because limiting internal 
+mic playback volume is far less of a limitation (almost no people use 
+it), compared to limiting the internal speaker volume.
+
+What bothers me is the following reasoning: If it is possible to burn 
+your speakers out by having the speakers outputting some tone caused by 
+feedback, would it not be possible to also burn your speakers out by 
+simply having a wave file with the same tone and playing it back?
+
+E g, imagine a malicious web page that starts playing this tone back as 
+soon as you visit it. Would it be able to cause hardware damage to your 
+speakers, if you happened to have the speaker volume at maximum when you 
+visited that web page?
+Or is there something that causes the feedback tone to be of a larger 
+amplitude than could ever be produced by the wave file?
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
