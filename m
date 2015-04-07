@@ -1,16 +1,23 @@
-From: IOhannes m zmoelnig <zmoelnig@iem.at>
-Subject: Re: RME MADIFX mainline inclusion
-Date: Tue, 07 Apr 2015 13:28:07 +0200
-Message-ID: <5523BF47.3040901@iem.at>
-References: <5522B34B.3090404@drcomp.erfurt.thur.de>
- <s5hd23g9rx4.wl-tiwai@suse.de> <5523BA14.3050904@drcomp.erfurt.thur.de>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Speaker burnout
+Date: Tue, 7 Apr 2015 13:29:17 +0200
+Message-ID: <alpine.DEB.2.02.1504071323390.967@lnxricardw1.se.axis.com>
+References: <1427551386.3092172.246393281.691C33A7@webmail.messagingengine.com>
+ <5518F8F3.10304@ladisch.de>
+ <1427711234.231499.246955417.6E2E7C65@webmail.messagingengine.com>
+ <55192FBC.1070307@ladisch.de>
+ <1427726222.1872206.247049189.3E3BB0F7@webmail.messagingengine.com>
+ <551A6A15.1070605@canonical.com>
+ <1427796392.581386.247465613.43178C71@webmail.messagingengine.com>
+ <551A7A4D.203@canonical.com> <55236B93.9070504@blennerhassett.gen.nz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7088253927844564747=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.iem.at (inf185.kug.ac.at [193.170.191.185])
- by alsa0.perex.cz (Postfix) with ESMTP id E08C9260545
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 13:28:36 +0200 (CEST)
-In-Reply-To: <5523BA14.3050904@drcomp.erfurt.thur.de>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EBA7261600
+ for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 13:29:20 +0200 (CEST)
+In-Reply-To: <55236B93.9070504@blennerhassett.gen.nz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,70 +27,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adrian Knoth <adi@drcomp.erfurt.thur.de>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikita N." <nikitan@operamail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============7088253927844564747==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="B0Q9Dg16bikUH5A4S42EPvmJefmCI0rQO"
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---B0Q9Dg16bikUH5A4S42EPvmJefmCI0rQO
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, 7 Apr 2015, Eliot Blennerhassett wrote:
 
-On 2015-04-07 13:05, Adrian Knoth wrote:
-> Let me CC a few I've found - maybe they can test a merged version or at=
+> At this setting, enabling the internal mic feedthrough with mic boost
+> set to maximum,  feedback happens when mic playback gain is at -6dB
+> (max=3D+12dB).
+> The signal when recorded is 1325Hz rail to rail square wave.
+> =
 
-> least testify that what they're using atm actually works.
->=20
+> My point is that in this case for normal usage the maximum output is
+> fine, I'd even say it is required.  So limiting output would not be a
+> good idea.
+> Also when using the mic for speech capture (with headphones for output),
+> a gain greater than the 'feedback inducing' one is likely to be useful.
+> =
 
-i can confirm that i'm  successfully using the madifx driver on (at
-least) one of our systems here at uni.
-however, we are still using an older revision (
-ab51234f3e49def959f01bc3b9dedf1a021fcd88 from adrian's github
-repository) - mainly because there hasn't been a need to upgrade to a
-newer version, as everything used to work :-)
-i will try to test the new code in the next few days.
+> So it is (only?) the pathological case of feeding mic direct to speakers
+> that is problematic.
+> =
 
+> Given that we can't fix the hardware or wacky user behaviour,
+> My suggestion would be to either limit, or hide completely the various
+> "Mic Playback" controls that enable direct feed from input to output.
+> What is the use case for this anyway? - karaoke?
 
-fgasdmr
-IOhannes
+Can it be used to provide a side tone (telephone system terminology for =
 
+feeding back a portion of the microphone signal to the ear piece in a =
 
---B0Q9Dg16bikUH5A4S42EPvmJefmCI0rQO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+telephone; psychologically it helps avoid the impression that the =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+telephone is not connected, so all telephone type equipment have it since =
 
-iQIcBAEBCAAGBQJVI79KAAoJELZQGcR/ejb45IwP/3SfA3hENo7h3gV/5W5xH8hx
-A5Xkuh7N1YIcp/UV+LWgciTPOk55nrTyU1rC3X6Mez444WQP3PGX1oPpmpNZQfgF
-AHxVvkYwuuZvuk8+nXjgOOnb8xGacB0ufF9LSumbnvD8KkDB0BJ/OoEkRRQiA+6t
-NPiu3Zv2dsTprIUwlqMDoMkhdH8k55nwmT3Ny/0iBYF3je+WjvkKzcbz2LJ7leHw
-p8E+dWGUfnKzx/CEgfvXdC5+kIbeqg4L5a6eFrKSPtf6b95PvDfsRUI48+KiyuyY
-nkBcmDw+YF9JJg6eM9DenNYUiT9arRdW0ieKF7X5G/xkA+p9qREY2CE2ccUWRWae
-Z96xwyaoM4k9aqIBr3PQ8K6poCaOsvhLVsftlIpVJb8gQupzqJDn9HV93lXn/5/0
-CdGVHEfev+piJsaCbigCI+j3iScNA8LCNcdG42F5YvO3ISreq3hOHf3F3C7K4Vxl
-mlozikBkA1eeOjZdOmxpbnFROoXP3i5twy4wnqnKpjtRzkMcn5AAeZOqvYpmvbg2
-2HrghnRqv3Ors9tUwS9a4uyGWG42wxZSUx15jF/V2ZeQyVAPP0FCcol+awW0Phhj
-RPIt9lQVyjjQ1SdVo0W1zWbdTrpCm233DsuL6Q8tXSTud/pZ2XSjRIg8HS5CUKgJ
-HP6ii8x6NQ9blD4ZiuHu
-=/mc+
------END PGP SIGNATURE-----
+the birth of telephone technology) in telephone applications?
 
---B0Q9Dg16bikUH5A4S42EPvmJefmCI0rQO--
+> Given that this goes against the "expose everything in the hardware",
+> maybe have a module option that can unhide these controls if anybody
+> actually wants to use them.
 
---===============7088253927844564747==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This sounds like a useful suggestion to me. Many applications have an =
 
+'advanced' option or button which enables things you normally don't need. =
 
---===============7088253927844564747==--
+If the 'mic to playback' function isn't really used normally it would seem =
+
+a reasonable option but I suppose that needs to be researched first =
+
+whether it really is of little use.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
