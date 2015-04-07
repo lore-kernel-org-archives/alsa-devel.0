@@ -1,39 +1,41 @@
-From: humbert.olivier.1@free.fr
-Subject: Re: RME MADIFX mainline inclusion
-Date: Tue, 7 Apr 2015 12:36:40 +0200 (CEST)
-Message-ID: <1477182380.942277400.1428403000706.JavaMail.root@zimbra61-e11.priv.proxad.net>
-References: <s5hd23g9rx4.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id B528B2614CD
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 12:36:41 +0200 (CEST)
-In-Reply-To: <s5hd23g9rx4.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: [PATCH 2/4] ASoC: wm8804: Update binding documentation to include reset GPIO
+Date: Tue,  7 Apr 2015 11:33:28 +0100
+Message-ID: <1428402810-11729-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1428402810-11729-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1428402810-11729-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, info-Ht5PubfIbSajfpyLsbbDOw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote :
+From: Charles Keepax <ckeepax-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-> Well, I really want some testers whether the merged code actually
-> works.  The code looks fine through a quick glance, so the only
-> requirement is the test (and the demands, of course).  If we can get
-> someone, then I'll happily merge the code after review.
-> 
-> Could you contact some people for testing?
+Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/wm8804.txt |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-FYI, a call has been sent here : http://www.linuxmao.org/forumthread60977 (french)
+diff --git a/Documentation/devicetree/bindings/sound/wm8804.txt b/Documentation/devicetree/bindings/sound/wm8804.txt
+index 10ef076..6fd124b 100644
+--- a/Documentation/devicetree/bindings/sound/wm8804.txt
++++ b/Documentation/devicetree/bindings/sound/wm8804.txt
+@@ -13,6 +13,10 @@ Required properties:
+   - PVDD-supply, DVDD-supply : Power supplies for the device, as covered
+     in Documentation/devicetree/bindings/regulator/regulator.txt
+ 
++Optional properties:
++
++  - wlf,reset-gpio: A GPIO specifier for the GPIO controlling the reset pin
++
+ Example:
+ 
+ codec: wm8804@1a {
+-- 
+1.7.2.5
 
-Regards,
-Olivier
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
