@@ -1,30 +1,18 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] ALSA: hda_intel:
-	add	AZX_DCAPS_I915_POWERWELL for skl
-Date: Tue, 7 Apr 2015 06:40:39 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1963529D@SHSMSX103.ccr.corp.intel.com>
-References: <1427440204-49331-1-git-send-email-libin.yang@intel.com>
- <s5hfv8q98lm.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19622F1C@SHSMSX103.ccr.corp.intel.com>
- <s5hegoa97jj.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19622F67@SHSMSX103.ccr.corp.intel.com>
- <s5ha8yy971s.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19622F84@SHSMSX103.ccr.corp.intel.com>
- <96A12704CE18D347B625EE2D4A099D1962E18F@SHSMSX103.ccr.corp.intel.com>
- <s5h4mowyxzf.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D196351E8@SHSMSX103.ccr.corp.intel.com>
- <s5hiod8wk8q.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1963524B@SHSMSX103.ccr.corp.intel.com>
- <s5hfv8cwj5r.wl-tiwai@suse.de>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Support Dell headset mode for ALC288
+Date: Tue, 7 Apr 2015 07:08:36 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A0D0C8@RTITMBSV09.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A17A0C909@RTITMBSV09.realtek.com.tw>
+ <s5hoan4xdxi.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id E039B26051F
- for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 08:40:57 +0200 (CEST)
-In-Reply-To: <s5hfv8cwj5r.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id C11A126051F
+ for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2015 09:08:46 +0200 (CEST)
+In-Reply-To: <s5hoan4xdxi.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,279 +23,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+ 
 
 > -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, April 07, 2015 2:24 PM
-> To: Yang, Libin
-> Cc: 'alsa-devel@alsa-project.org'
-> Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
-> AZX_DCAPS_I915_POWERWELL for skl
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Saturday, April 04, 2015 8:43 PM
+> To: Kailang
+> Cc: (alsa-devel@alsa-project.org)
+> Subject: Re: Support Dell headset mode for ALC288
 > 
-> At Tue, 7 Apr 2015 06:12:00 +0000,
-> Yang, Libin wrote:
-> >
+> At Tue, 31 Mar 2015 08:01:57 +0000,
+> Kailang wrote:
+> > 
+> > 
 > > Hi Takashi,
-> >
-> > > > > -----Original Message-----
-> > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > Sent: Saturday, April 04, 2015 6:44 PM
-> > > > > To: Yang, Libin
-> > > > > Cc: 'alsa-devel@alsa-project.org'
-> > > > > Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
-> > > > > AZX_DCAPS_I915_POWERWELL for skl
-> > > > >
-> > > > > At Mon, 30 Mar 2015 02:47:45 +0000,
-> > > > > Yang, Libin wrote:
-> > > > > >
-> > > > > > Hi Takashi,
-> > > > > >
-> > > > > >
-> > > > > > > -----Original Message-----
-> > > > > > > From: Yang, Libin
-> > > > > > > Sent: Friday, March 27, 2015 4:34 PM
-> > > > > > > To: Takashi Iwai
-> > > > > > > Cc: alsa-devel@alsa-project.org
-> > > > > > > Subject: RE: [alsa-devel] [PATCH] ALSA: hda_intel: add
-> > > > > > > AZX_DCAPS_I915_POWERWELL for skl
-> > > > > > >
-> > > > > > > Hi Takashi,
-> > > > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > > -----Original Message-----
-> > > > > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > > > > Sent: Friday, March 27, 2015 4:30 PM
-> > > > > > > > To: Yang, Libin
-> > > > > > > > Cc: alsa-devel@alsa-project.org
-> > > > > > > > Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
-> > > > > > > > AZX_DCAPS_I915_POWERWELL for skl
-> > > > > > > >
-> > > > > > > > At Fri, 27 Mar 2015 08:25:52 +0000,
-> > > > > > > > Yang, Libin wrote:
-> > > > > > > > >
-> > > > > > > > > Hi Takashi,
-> > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > > -----Original Message-----
-> > > > > > > > > > From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-
-> > > > > devel-
-> > > > > > > > > > bounces@alsa-project.org] On Behalf Of Takashi Iwai
-> > > > > > > > > > Sent: Friday, March 27, 2015 4:19 PM
-> > > > > > > > > > To: Yang, Libin
-> > > > > > > > > > Cc: alsa-devel@alsa-project.org
-> > > > > > > > > > Subject: Re: [alsa-devel] [PATCH] ALSA: hda_intel: add
-> > > > > > > > > > AZX_DCAPS_I915_POWERWELL for skl
-> > > > > > > > > >
-> > > > > > > > > > At Fri, 27 Mar 2015 08:02:54 +0000,
-> > > > > > > > > > Yang, Libin wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > Hi Takashi,
-> > > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > > -----Original Message-----
-> > > > > > > > > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > > > > > > > > > Sent: Friday, March 27, 2015 3:57 PM
-> > > > > > > > > > > > To: Yang, Libin
-> > > > > > > > > > > > Cc: alsa-devel@alsa-project.org
-> > > > > > > > > > > > Subject: Re: [PATCH] ALSA: hda_intel: add
-> > > > > > > > > > > > AZX_DCAPS_I915_POWERWELL for skl
-> > > > > > > > > > > >
-> > > > > > > > > > > > At Fri, 27 Mar 2015 15:10:04 +0800,
-> > > > > > > > > > > > libin.yang@intel.com wrote:
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > From: Libin Yang <libin.yang@intel.com>
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > HDMI/DP codec on SKL is in the power well.
-> > > > > > > > > > > > > The power well must be turned on before
-> probing
-> > > the
-> > > > > > > > > > > > > HDMI/DP codec.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Signed-off-by: Libin Yang <libin.yang@intel.com>
-> > > > > > > > > > > >
-> > > > > > > > > > > > So, was the previous question clarified?
-> > > > > > > > > > >
-> > > > > > > > > > > Yes, I have confirmed with our silicon team.
-> > > > > > > > > > >
-> > > > > > > > > > > >
-> > > > > > > > > > > > This certainly sucks.  It means that the powerwell is
-> on
-> > > > > even
-> > > > > > > > you
-> > > > > > > > > > > > don't use the HDMI/DP at all.  If this is intended as
-> a
-> > > > > > > temporarily
-> > > > > > > > > > > > workaround, it should be mentioned so.  Please
-> give
-> > > more
-> > > > > > > > > > comments
-> > > > > > > > > > > > and
-> > > > > > > > > > > > backgrounds.
-> > > > > > > > > > >
-> > > > > > > > > > > Yes, as this is added in the skl audio controller, even
-> > > there is
-> > > > > no
-> > > > > > > > > > HDMI/DP
-> > > > > > > > > > > codec, we should also add this flag. Otherwise the
-> > > HDMI/DP
-> > > > > > > > codec
-> > > > > > > > > > > may not be detected correctly.
-> > > > > > > > > >
-> > > > > > > > > > But it's possible to do it only at probing, not
-> permanently.
-> > > If
-> > > > > so,
-> > > > > > > > > > we'll have another patch in future.
-> > > > > > > > > >
-> > > > > > > > > > Please write more information in the changelog and
-> > > resubmit.
-> > > > > > > > >
-> > > > > > > > > Do you mean to add more description in the patch
-> > > comments?
-> > > > > > > >
-> > > > > > > > Yes.  The hardware design is different from HSW/BDW,
-> thus
-> > > > > applying
-> > > > > > > > this isn't straightforward but just a workaround.  I don't
-> know
-> > > > > > > > whether you think it's a temporary workaround or a
-> > > permanent
-> > > > > fix.
-> > > > > > > > Such information must be written there, too.
-> > > > > > >
-> > > > > > > OK. I see. It seems we need more input from our silicon
-> team
-> > > > > > > for this issue.
-> > > > > >
-> > > > > > >From our silicon team's comment, it seems we need power
-> on
-> > > > > > the powerwell when detecting and probing the HDMI codec.
-> > > > > >
-> > > > > > For the skl case (HDMI codec is in powerwell, while controller
-> > > not),
-> > > > > > my thinking is:
-> > > > > >
-> > > > > > 1. power on the power well
-> > > > > > 2. read STATESTS to determine the codec_mask
-> > > > > > 3. if codec is not present, power off the power well
-> > > > > >     and remove the flag. (seems we need a new flag)
-> > > > > > 4. if codec is present, we will power on the power well
-> > > > > >     when dealing with HDMI codec.
-> > > > > >
-> > > > > > What do you think?
-> > > > >
-> > > > > Yes, it's also similar to my plan.  My plan has a bit more code
-> > > > > changes for adapting to the new structure:
-> > > >
-> > > > Glad to know that :-)
-> > > >
-> > > > >
-> > > > > - Move hda_i915.c code into sound/hda to be used for both
-> legacy
-> > > and
-> > > > >   new drivers
-> > > > >
-> > > > > - Add a reference counter to get/put, so that it can be called
-> from
-> > > > >   both controller and codec drivers
-> > > > >
-> > > > > - Move the component from struct hda_intel to hdac_bus, but
-> > > > >   dynamically allocating.  The helper code can check it like
-> > > > >
-> > > > > 	if (bus->audio_component)
-> > > > > 		bus->audio_component->ops->get_power(...)
-> > > > >
-> > > > >   (Or the NULL check can be in a helper function)
-> > > > >
-> > > > > - get_power() is called at probing as is now
-> > > > >
-> > > > > - put_power() is called at the end of azx_probe*()
-> > > > >
-> > > > > - There will be two DCAPS flags, one indicating for the old chips
-> that
-> > > > >   need get_power() for runtime PM, and one indicating
-> get_power()
-> > > > > only
-> > > > >   for probing.
-> > > >
-> > > > Yes, we need separate these situations. Currently,
-> > > > we may consider such situations:
-> > > > 1. HDA controller and HDA(HDMI) codec are in power well.
-> > > > 2. HDA(HDMI) codec is in power well.
-> > > > 3. HDA controller is in power well while HDA codec not.
-> > > > 4. HDA controller and HDA code are not in power well.
-> > > >
-> > > > We currently don't have really boards which are
-> > > > the 3rd and 4th situations.
-> > > >
-> > > > For second situation, we need power on the power
-> > > > well for probing and each time we use the HDMI codec.
-> > > >
-> > > > As this may takes some time, what do you think I submit
-> > > > a temporary patch that using AZX_DCAPS_I915_POWERWELL
-> > > > for the second situation?
-> > > > After the restructure is finished, we can revert the patch.
-> > >
-> > > Yes, it makes sense, but please describe it in the changelog more
-> > > clearly.
-> >
-> > Got it. Thanks.
-> >
-> > >
-> > >
-> > > > > Now an open question is how to make codec driver to call
-> > > get_power /
-> > > > > put_power.  To be more clear, currently there is no solid way to
-> > > allow
-> > > > > the codec driver doing something special before / after
-> > > > > hda_set_power_state().  One may implement a tricky
-> > > > > set_power_state()
-> > > > > ops in the codec driver.  Or, we may reimplement pre_resume
-> and
-> > > > > post_suspend patch_ops again.
-> > > >
-> > > > Yes, we need consider this situation. What about the
-> suspend_late
-> > > and
-> > > > resume_early in dev_pm_ops?
-> > >
-> > > It's a good alternative, too.  Maybe we should clean up the codec
-> > > driver code to use driver and pm ops directly at first.
-> >
-> > Yes, use pm ops is a good idea :-)
-> >
-> > Besides suspend/resume, I'm still wondering how to handling the
-> > unsol event. Is it possible that codec is power off, but it still send
-> > the events. Especially for HDMI codec, I met such situation,
-> > we didn't get power for HDMI codec, but when S4, BSW and SKL
-> > will get unsol event (maybe gfx driver has power on the
-> > power well), and HDA controller can handle this event correctly,
-> > and it will fallback.
+> >   
+> >  Dell has new platform with ALC288.
+> >  Attach patch is support headset mode for ALC288.
 > 
-> The unsol events aren't handled usually while the device is not in
-> use (thus in power save mode).  We thought that the unsol event
-> could
-> be delivered even in D3 when EPSS is available, but it didn't work as
-> expected in the end.
+> > @@ -3828,6 +3894,11 @@ static void 
+> alc_determine_headset_type(struct hda_codec *codec)
+> >   conteol) */
+> >  		{}
+> >  	};
+> > +	static struct coef_fw coef0286[] = {
+> > +		//UPDATE_COEF(0x4f, 0xfcc0, 0x5400), /* Combo 
+> Jack auto detect */
+> > +		UPDATE_COEF(0x4f, 0xfcc0, 0xd400),
 > 
-> Upon power-save resume, the driver checks the jack state.  It's mostly
-> OK, the only problem is that any GUI won't be notified at the moment
-> the jack state changed but only at the moment the power-saving state
-> changed.  So I don't think we need anything special for SKL.
-
-Got it. Thanks a lot.
+> Why is this commented out and what's the next line does instead?
+> And it's 0286?  Not 0288?
+> 
+> > @@ -3949,8 +4027,15 @@ static void 
+> alc_update_headset_jack_cb(struct hda_codec *codec,
+> >  				       struct hda_jack_callback 
+> *jack)  {
+> >  	struct alc_spec *spec = codec->spec;
+> > +	int present;
+> >  	spec->current_headset_type = ALC_HEADSET_TYPE_UNKNOWN;
+> >  	snd_hda_gen_hp_automute(codec, jack);
+> > +	present = spec->gen.hp_jack_present ? 0x40 : 0;
+> > +	if (codec->bus->pci->subsystem_vendor == 0x1028 &&
+> > +				codec->core.vendor_id == 0x10ec0288)
+> > +		/* Headset Mic enable and disable, ony for Dell Dino */
+> > +		snd_hda_codec_write(codec, 0x01, 0, 
+> AC_VERB_SET_GPIO_DATA,
+> > +					present);
+> 
+> This is too ugly to put in the common function.
+> For Dell, prepare its own callback function and use it 
+> instead.  Or, put a new hook there to call additionally.  
+> This avoids the PCI ID check in each place.
+> 
+> So, better to split to a few patches.  One for adding ALC286 
+> (or 288?) support generically.  And another for adding 
+> Dell-specific things.
+>
+ 
+Ok! I will split it for two patches.
+But spec->gen.hp_automute_hook = alc_update_headset_jack_cb in alc_fixup_headset_mode().
+If I move dell specific part to fixup table by SSID, spec->gen.hp_automute_hook will be reinit to new.
+So, I just place the code here.
 
 > 
+> thanks,
 > 
 > Takashi
-
-
-Regards,
-Libin
+> 
+> ------Please consider the environment before printing this e-mail.
+> 
