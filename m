@@ -1,76 +1,169 @@
-From: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: [PATCH] ASoC: max98090: add shutdown callback for max98090
-Date: Wed,  8 Apr 2015 16:52:08 +0800
-Message-ID: <1428483128-23498-2-git-send-email-wxt@rock-chips.com>
-References: <1428483128-23498-1-git-send-email-wxt@rock-chips.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v4 0/5] ALSA: jack: Refactoring for jack
+ kctls
+Date: Wed, 8 Apr 2015 09:18:10 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A905506247@shsmsx102.ccr.corp.intel.com>
+References: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
+ <s5h1tjvq5wd.wl-tiwai@suse.de> <5524D6D8.60205@canonical.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90550618B@shsmsx102.ccr.corp.intel.com>
+ <5524E677.2020803@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1428483128-23498-1-git-send-email-wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Sonny Rao <sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Cheng-Yi Chiang <cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, zhengxing <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "jay.xu" <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1CA42651AC
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 11:18:17 +0200 (CEST)
+In-Reply-To: <5524E677.2020803@canonical.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-To fix pop noise when shutdown,the pop noise during shutdown
-is the pmic cutoff power of codec without any notice.
-
-Signed-off-by: jay.xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Signed-off-by: zhengxing <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Signed-off-by: Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-
-Serien-cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Serien-cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Serien-cc: dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
-
----
-
- sound/soc/codecs/max98090.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index b112b1c..066954a0 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2611,6 +2611,22 @@ static int max98090_i2c_remove(struct i2c_client *client)
- 	return 0;
- }
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Wednesday, April 08, 2015 4:28 PM
+> To: Jie, Yang; Takashi Iwai
+> Cc: alsa-devel@alsa-project.org; broonie@kernel.org; Girdwood, Liam R
+> Subject: Re: [alsa-devel] [PATCH v4 0/5] ALSA: jack: Refactoring for jack kctls
+> 
+> 
+> 
+> On 2015-04-08 09:59, Jie, Yang wrote:
+> >> -----Original Message-----
+> >> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> >> Sent: Wednesday, April 08, 2015 3:21 PM
+> >> To: Takashi Iwai; Jie, Yang
+> >> Cc: alsa-devel@alsa-project.org; broonie@kernel.org; Girdwood, Liam R
+> >> Subject: Re: [alsa-devel] [PATCH v4 0/5] ALSA: jack: Refactoring for
+> >> jack kctls
+> >>
+> >>
+> >>
+> >> On 2015-04-07 18:06, Takashi Iwai wrote:
+> >>> This would work, yes.  But, I have some uneasy feeling, something
+> >>> not well digested...
+> >>>
+> >>> Ideally, we want a single API for representing both input and kctl
+> >>> jacks.
+> >>
+> >> Maybe this is somewhat my fault for steering Yang in that direction.
+> >> But the requirements are somewhat different.
+> >>
+> >> HDA has the phantom jacks, and the exact naming for each kctl
+> requirements.
+> >> ASoC has the combination/button requirements, i e one jack can
+> >> represent more than one kctl.
+> >>
+> >> The phantom jack requirement means that the snd_kctl_jack_new API
+> >> cannot be removed straight away; we could move it to be internal to
+> >> HDA (it's not much code anyway), but I don't see a need for that.
+> >>
+> >> But the HDA code can be moved around to look like this:
+> >>
+> >>      if (phantom_jack) {
+> >>         snd_kctl_jack_new();
+> >
+> > Let me add line here to clarify:
+> > +        snd_hda_ctl_add();
+> >
+> >>      }
+> >>      else {
+> >>         snd_jack_new();
+> >>         snd_jack_add_new_kctls();
+> >
+> > I thought of this at the beginning, as you talk below, it looks more
+> > like what we did for ASoC case.
+> >
+> > What I concern here is that it may make input jack kctl looks like a
+> > little different with before(I am not sure, maybe you guys are more
+> > clearly about what will occurs without calling snd_ctl_add()--
+> >snd_array_new()...)?
+> 
+> I'm not sure I understand this question. Maybe the answers below help
+> answering it?
  
-+static void max98090_i2c_shutdown(struct i2c_client *i2c)
-+{
-+	struct max98090_priv *max98090 = dev_get_drvdata(&i2c->dev);
-+
-+	dev_info(&i2c->dev, "shut down device\n");
-+
-+	/* Enable volume smoothing, disable zero cross.  This will cause
-+	 * a quick 40ms ramp to mute on shutdown.
-+	 */
-+	regmap_write(max98090->regmap,
-+		M98090_REG_LEVEL_CONTROL, M98090_VSENN_MASK);
-+	regmap_write(max98090->regmap,
-+		M98090_REG_DEVICE_SHUTDOWN, 0x00);
-+	msleep(40);
-+}
-+
- #ifdef CONFIG_PM
- static int max98090_runtime_resume(struct device *dev)
- {
-@@ -2697,6 +2713,7 @@ static struct i2c_driver max98090_i2c_driver = {
- 	},
- 	.probe  = max98090_i2c_probe,
- 	.remove = max98090_i2c_remove,
-+	.shutdown = max98090_i2c_shutdown,
- 	.id_table = max98090_i2c_id,
- };
+Right.
+
+> 
+> >>      }
+> >>
+> >> Now the HDA looks more like the ASoC variant. Yang, what do you think
+> >> about that? That would make the API simpler, wouldn't it?
+> >
+> > Here repeat what I stated in another reply:
+> >
+> > For jack creating, we use the same API -- snd_jack_new();
+> >
+> > For kctl creating, yes, we use different APIs:
+> > snd_jack_kctl_new() for input jacks(HDA),
+> > snd_jack_add_kctls() for kctl jacks(ASoC).
+> >
+> > There are 2 reasons that I made them different:
+> > 1. a. for HDA phantom jack, in the old/exist logic,
+> > __snd_hda_jack_add_kctl() will also call snd_kctl_jack_new() and
+> > snd_hda_ctl_add(), it will create kctls and add them to card(also
+> > assigning some arrays, they are different with calling
+> > snd_ctl_add() only, which is what we will do for ASoC kctl adding);
+> 
+> Actually, now that I look at snd_hda_ctl_add, I don't know why we need to
+> call it for HDA jacks. There does not seem to be anything relevant for HDA
+> jacks there. I think we can just call snd_ctl_add for HDA jacks too.
+
+OK, then it may make life easier.  Hi Takashi, you agree with this?
+Do we need add those kctls to the HDA codec, or to hda_nid_item?
+
+> 
+> With your refactoring, all we need to remember is to remove the jacks (i e
+> both the input device and the kctls) in both snd_hda_codec_reset and
+> snd_hda_codec_free, and I suspect this is already taken care of?
+
+Yes, in my solution, almost nothing change for HDA jack, that is:
+in  snd_hda_codec_reset/free, 
+snd_hda_ctls_clear() is called, where the kctls will be removed;
+snd_hda_jack_tbl_clear() is called, Where the jacks will be removed.
+
+> 
+> >      b. for HDA input/phantom jack, all of those occurs before calling
+> > snd_jack_new().
+> 
+> My point is that it would be possible to move the HDA code around so that
+> snd_jack_new is called first. And with Takashi's suggestion of a
+> "create_input_dev" flag, it would be called for both real and phantom jacks.
  
--- 
-1.9.1
+I can add this if it is really needed.
+
+> 
+> > So, we have to split jack new and kctl new functions here, because for
+> > HDA phantom/input jack and ASoC kctl jack, they are quite different here.
+> >
+> > 2. we may need generate kctl name for ASoC
+> > kctls(snd_jack_kctl_name_gen(), removing suffix " Jack" as you
+> > proposed before, or everything needed after); but for HDA input jack
+> > kctls, the naming has been finished before calling
+> __snd_hda_jack_add_kctl(), we should not change them anymore.
+> 
+> snd_jack_kctl_name_gen seems only to remove a " Jack" suffix. I think we
+> can safely call it for both ASoC and HDA jacks. If a HDA jack ends up being
+> labelled something with " Jack Jack", it's a bug anyway.
+> 
+> (Side note: but you might want to fix snd_jack_kctl_name_gen to make
+> strange names like "My Jacket Computer" not be cropped to "My Jacket
+> Com")
+
+Thanks for pointing out this, fixed now. 
+
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
