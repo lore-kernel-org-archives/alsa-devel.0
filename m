@@ -1,41 +1,29 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH 06/14] clkdev: add clkdev_create() helper
-Date: Tue, 07 Apr 2015 16:09:39 -0700
-Message-ID: <552463B3.4040804@codeaurora.org>
-References: <20150403171149.GC13898@n2100.arm.linux.org.uk> <E1Ye59J-0001BF-CZ@rmk-PC.arm.linux.org.uk> <5522EA55.5080804@codeaurora.org> <20150407124342.GJ4027@n2100.arm.linux.org.uk>
+From: Taylor Smock <smocktaylor@gmail.com>
+Subject: Re: Audio Jack Out does not work
+Date: Tue, 07 Apr 2015 21:07:06 -0400
+Message-ID: <1428455226.1107.2.camel@gmail.com>
+References: <CAD67Mo_N1_uEtjWKcV4+Rkjrvc6kcZuvUgrMPvBURJX0hFaaMA@mail.gmail.com>
+	 <20150407225642.GN16501@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20150407124342.GJ4027@n2100.arm.linux.org.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linux-omap@vger.kernel.org, linux-sh@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150407225642.GN16501@mwanda>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: perex@perex.cz, tiwai@suse.de, david.henningsson@canonical.com, joe@perches.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/07/15 05:43, Russell King - ARM Linux wrote:
-> On Mon, Apr 06, 2015 at 01:19:33PM -0700, Stephen Boyd wrote:
->> On 04/03/15 10:12, Russell King wrote:
->>> @@ -316,6 +329,29 @@ clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
->>>  }
->>>  EXPORT_SYMBOL(clkdev_alloc);
->>>  
->>> +/**
->>> + * clkdev_create - allocate and add a clkdev lookup structure
->>> + * @clk: struct clk to associate with all clk_lookups
->>> + * @con_id: connection ID string on device
->>> + * @dev_fmt: format string describing device name
->>> + *
->>> + * Returns a clk_lookup structure, which can be later unregistered and
->>> + * freed.
->> Please add that this returns NULL on failure.
-> Will do, but please remember that _I'm_ taking the clkdev patches through
-> my tree, as I'm the maintainer for clkdev.  Thanks.
->
+Yes; reverting the patch does fix the problem.
 
-Sounds good to me. Thanks.
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+On Wed, 2015-04-08 at 01:56 +0300, Dan Carpenter wrote:
+> So it's 03ad6a8c93b6df2 ('ALSA: hda - Fix "PCM" name being used on > one
+> DAC when there are two DACs') which causes the problem?  Have you 
+> tried
+> to just revert that patch?
+> 
+> git show 03ad6a8c93b6df2d65c305b5b5f9474068b45bfb | patch -p1 -R
+> 
+> regards,
+> dan carpenter
+> 
