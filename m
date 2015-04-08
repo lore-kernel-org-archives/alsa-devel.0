@@ -1,63 +1,70 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: max98090: add shutdown callback for max98090
-Date: Wed, 8 Apr 2015 10:50:05 +0100
-Message-ID: <20150408095005.GS6023@sirena.org.uk>
-References: <1428483128-23498-1-git-send-email-wxt@rock-chips.com>
- <1428483128-23498-2-git-send-email-wxt@rock-chips.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: recording problem in beagleboard-mcbsp
+Date: Wed, 8 Apr 2015 12:52:17 +0300
+Message-ID: <5524FA51.9060606@ti.com>
+References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>	<CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>	<CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>	<551C3D19.2050200@ti.com>	<CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>	<5523A1F3.2000701@ti.com>
+ <CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="AEApRQ7IrnsbU9Wi"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1428483128-23498-2-git-send-email-wxt@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Caesar Wang <wxt@rock-chips.com>
-Cc: Sonny Rao <sonnyrao@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Heiko Stuebner <heiko@sntech.de>, zhengxing <zhengxing@rock-chips.com>, "jay.xu" <xjq@rock-chips.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Tushar Behera <tushar.b@samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6681F2651B4
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 11:52:22 +0200 (CEST)
+In-Reply-To: <CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: noman pouigt <variksla@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---AEApRQ7IrnsbU9Wi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 08, 2015 at 04:52:08PM +0800, Caesar Wang wrote:
-
-> +static void max98090_i2c_shutdown(struct i2c_client *i2c)
-> +{
-> +	struct max98090_priv *max98090 = dev_get_drvdata(&i2c->dev);
-> +
-> +	dev_info(&i2c->dev, "shut down device\n");
-
-Remove this, it's adding noise.
-
-> +
-> +	/* Enable volume smoothing, disable zero cross.  This will cause
-> +	 * a quick 40ms ramp to mute on shutdown.
-> +	 */
-> +	regmap_write(max98090->regmap,
-> +		M98090_REG_LEVEL_CONTROL, M98090_VSENN_MASK);
-> +	regmap_write(max98090->regmap,
-> +		M98090_REG_DEVICE_SHUTDOWN, 0x00);
-> +	msleep(40);
-> +}
-
-This is OK but equivalent code should be being added to the driver
-remove path as the same thing should be happening there.
-
---AEApRQ7IrnsbU9Wi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVJPnMAAoJECTWi3JdVIfQAyIH/1X66xgsTbr0s6cYbuWsTO7+
-ldRRcN7gq1RybnEfPb+lpiwlq7Vv4wJ6FF4UTKV/pc8F4C/REk65pRdmfD2Xb78s
-ZeO0nUrkH7WyUz+LKutupGj7Tya1pdhRYqwWcGlkQAAOGbbjIueV80OOwV89T0zF
-jso/88v9ymy/bUlW4FTA72kezBzgt/VquYcCQwTqvnn7sGe9D8OQ3AzD4pdjeb0R
-WLfNftdjYapL4SoIaa0cEN3dC2H5Bxw+PAWef8w/pMAa5b6UGLgd3Ucx7BP04PcO
-0iKf4qYFPCQA2a9UqxeXwGiMU3R3xBen48ApmCKeUrf3U9m3oqco8PvjVCQYXT8=
-=0GYR
------END PGP SIGNATURE-----
-
---AEApRQ7IrnsbU9Wi--
+T24gMDQvMDcvMjAxNSAwOTozMyBQTSwgbm9tYW4gcG91aWd0IHdyb3RlOgo+IEluIG15IHNldHVw
+IGNvZGVjKG1heDk4MDkwKSBpcyBtYXN0ZXIgYW5kIG1jYnNwIGlzIHNsYXZlLiBJIHVzZWQgYWJv
+dmUKPiBjb21tYW5kIGFuZCBnb3QgYmVsb3cgZXJyb3I6Cj4gYXJlY29yZDogc2V0X3BhcmFtczox
+MjMzOiBTYW1wbGUgZm9ybWF0IG5vbiBhdmFpbGFibGUKPiBBdmFpbGFibGUgZm9ybWF0czoKPiAt
+IFMxNl9MRQoKVGhlIGNvZGVjIG9ubHkgc3VwcG9ydHMgUzE2X0xFIG9yIFMyNF9MRS4KCj4gU28g
+aSBjaGFuZ2VkIHRoZSBmb3JtYXQgdG8gUzE2X0xFIGFuZCBnb3QgYmVsb3cgZXJyb3I6Cj4gYXJl
+Y29yZDogcGNtX3JlYWQ6MjAzMTogcmVhZCBlcnJvcjogSW5wdXQvb3V0cHV0IGVycm9yCj4gCj4g
+SSBjaGVja2VkIHRoZSBkbWVzZyBhbmQgZm91bmQgb3V0IHRoYXQgaW50ZXJydXB0IHRyaWdnZXJl
+ZCBvbmx5Cj4gb25jZSBhbmQgYWZ0ZXIgc29tZSB0aW1lIGFsbCB3aWRnZXRzIGdldHMgcG93ZXJl
+ZCBkb3duLgo+IEJlbG93IGlzIHBhcnQgb2YgdGhlIGRtZXNnLgo+IAo+IFsgIDE3NC4xODY0MzFd
+IHNuZF9wY21fbGliX3JlYWQKPiBbICAxNzQuMTg2NDYyXSBzbmRfcGNtX2xpYl9yZWFkMQo+IFsg
+IDE3NC4xODcwNDJdIG9tYXAtbWNic3AgNDgwNzQwMDAubWNic3A6ICoqKiogTWNCU1AyNTUgcmVn
+cyAqKioqCj4gWyAgMTc0LjE4NzA3Ml0gb21hcC1tY2JzcCA0ODA3NDAwMC5tY2JzcDogRFJSMjog
+IDB4ZWRkMGFiY2UKPiBbICAxNzQuMTg3MTAzXSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1jYnNwOiBE
+UlIxOiAgMHgwMDAwCj4gWyAgMTc0LjE4NzEzM10gb21hcC1tY2JzcCA0ODA3NDAwMC5tY2JzcDog
+RFhSMjogIDB4MDAwMAo+IFsgIDE3NC4xODcxNjRdIG9tYXAtbWNic3AgNDgwNzQwMDAubWNic3A6
+IERYUjE6ICAweDAwMDAKPiBbICAxNzQuMTg3MTk0XSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1jYnNw
+OiBTUENSMjogMHgwMjMwCj4gWyAgMTc0LjE4NzIyNV0gb21hcC1tY2JzcCA0ODA3NDAwMC5tY2Jz
+cDogU1BDUjE6IDB4MDAzMQo+IFsgIDE3NC4xODcyNTVdIG9tYXAtbWNic3AgNDgwNzQwMDAubWNi
+c3A6IFJDUjI6ICAweDgwNDEKPiBbICAxNzQuMTg3Mjg2XSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1j
+YnNwOiBSQ1IxOiAgMHgwMDQwCj4gWyAgMTc0LjE4NzMxNl0gb21hcC1tY2JzcCA0ODA3NDAwMC5t
+Y2JzcDogWENSMjogIDB4ODA0MQo+IFsgIDE3NC4xODczNDddIG9tYXAtbWNic3AgNDgwNzQwMDAu
+bWNic3A6IFhDUjE6ICAweDAwNDAKPiBbICAxNzQuMTg3Mzc3XSBvbWFwLW1jYnNwIDQ4MDc0MDAw
+Lm1jYnNwOiBTUkdSMjogMHgwMDFmCj4gWyAgMTc0LjE4NzQwOF0gb21hcC1tY2JzcCA0ODA3NDAw
+MC5tY2JzcDogU1JHUjE6IDB4MGYwMAo+IFsgIDE3NC4xODc0MzhdIG9tYXAtbWNic3AgNDgwNzQw
+MDAubWNic3A6IFBDUjA6ICAweDAwMGYKPiBbICAxNzQuMTg3NDY5XSBvbWFwLW1jYnNwIDQ4MDc0
+MDAwLm1jYnNwOiAqKioqKioqKioqKioqKioqKioqKioqKgo+IFsgIDE3NC4xODc0OTldIHNuZF9w
+Y21fdXBkYXRlX2h3X3B0cjAKPiAKPiBNYXkgaSBrbm93IHdoZXJlIGFtIGkgZ29pbmcgd3Jvbmc/
+CgpGaXJzdCBjaGVjayB0aGUgL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBjL3N1YjAvc3RhdHVzIHdo
+aWxlIHRoZSBjYXB0dXJlIGlzCnJ1bm5pbmcgYW5kIGxvb2sgYXQgdGhlIGh3X3B0ciBpZiBpdCBo
+YXMgbW92ZWQgYXQgYWxsLgoKRW5hYmxlIG1vcmUgaW50ZXJydXB0cyBpbiBzb3VuZC9zb2Mvb21h
+cC9tY2JzcC5jOm9tYXBfbWNic3BfY29uZmlnKCksIGxpa2UKUlVOREZMRU4sIFJPVkZMRU4gYW5k
+IHNlZSBpZiB5b3UgaGF2ZSBvdmVyZmxvdyBpbiBNY0JTUC4KCklmIHRoZSBETUEgaGFzIG5vdCBt
+b3ZlZCBpdCBtZWFucyB0aGF0IE1jQlNQIGRvZXMgbm90IHJlY2VpdmVkIHRoZSBGUyB3aGljaAp3
+b3VsZCBpbmRpY2F0ZSB0aGUgZnJhbWUgc3RhcnQsIHRodXMgaXQgd2lsbCBub3Qgc2FtcGxlIGRh
+dGEgaW4sIHRodXMgaXQgd2lsbApub3QgdHJpZ2dlciB0aGUgRE1BIHRvIHJlYWQgdGhlIGRhdGEg
+b3V0LgoKU2luY2UgdGhlIGNhcHR1cmUgaXMgd29ya2luZyBvbiBNY0JTUDIgaW4gTWNCU1Agc2xh
+dmUgKGFuZCBtYXN0ZXIgYWxzbykgdGhlCm9ubHkgdGhpbmcgd2hpY2ggY2FuIGJlIHdyb25nIGlz
+IHRoZSB3YXkgdGhlIG1heDk4MDkwIGlzIHdpcmVkIHVwIG9yIHNvbWUgbXV4Cmlzc3VlIGFnYWlu
+IGFzIGl0IHdhcyBiZWZvcmUgZm9yIHlvdS4KCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
