@@ -1,97 +1,51 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/4] ALSA: ctl: fix to handle several elements
-	added by
-Date: Thu,  9 Apr 2015 02:07:18 +0900
-Message-ID: <1428512838-2493-5-git-send-email-o-takashi@sakamocchi.jp>
-References: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: max98090: add shutdown callback for max98090
+Date: Wed, 8 Apr 2015 18:09:49 +0100
+Message-ID: <20150408170949.GD6023@sirena.org.uk>
+References: <1428491156-31803-1-git-send-email-wxt@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A9F62654C6
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 19:07:22 +0200 (CEST)
-In-Reply-To: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lhTn81PdljI0Ow1Z"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1428491156-31803-1-git-send-email-wxt@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Caesar Wang <wxt@rock-chips.com>
+Cc: Sonny Rao <sonnyrao@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Heiko Stuebner <heiko@sntech.de>, zhengxing <zhengxing@rock-chips.com>, "jay.xu" <xjq@rock-chips.com>, devicetree@vger.kernel.org, dianders@chromium.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Tushar Behera <tushar.b@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-An element instance can have several elements with the same feature.
-Some userspace applications can add such an element instance by add
-operation with the number of elements. Then, an userspace element
-instance keeps a memory object to keep state of these elements.
 
-But the element instance has just one memory object for the elements.
-This forces each read/write operations to the different elements
-brings the same result.
+--lhTn81PdljI0Ow1Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This commit fixes this bug by allocating enough memory objects to element
-instance for each of elements.
+On Wed, Apr 08, 2015 at 07:05:56PM +0800, Caesar Wang wrote:
+> To fix pop noise when shutdown,the pop noise during shutdown
+> is the pmic cutoff power of codec without any notice.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/control.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+Applied, thanks. =20
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index b0b110a..2ab7ee5 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1074,9 +1074,14 @@ static int snd_ctl_elem_user_get(struct snd_kcontrol *kcontrol,
- 				 struct snd_ctl_elem_value *ucontrol)
- {
- 	struct user_element *ue = kcontrol->private_data;
-+	char *data = ue->elem_data;
-+	unsigned int size = ue->elem_data_size;
-+	unsigned int offset;
-+
-+	offset = (ucontrol->id.numid - kcontrol->id.numid) * size;
- 
- 	mutex_lock(&ue->card->user_ctl_lock);
--	memcpy(&ucontrol->value, ue->elem_data, ue->elem_data_size);
-+	memcpy(&ucontrol->value, data + offset, size);
- 	mutex_unlock(&ue->card->user_ctl_lock);
- 	return 0;
- }
-@@ -1084,13 +1089,18 @@ static int snd_ctl_elem_user_get(struct snd_kcontrol *kcontrol,
- static int snd_ctl_elem_user_put(struct snd_kcontrol *kcontrol,
- 				 struct snd_ctl_elem_value *ucontrol)
- {
--	int change;
- 	struct user_element *ue = kcontrol->private_data;
-+	char *data = ue->elem_data;
-+	unsigned int size = ue->elem_data_size;
-+	unsigned int offset;
-+	int change;
-+
-+	offset = (ucontrol->id.numid - kcontrol->id.numid) * size;
- 
- 	mutex_lock(&ue->card->user_ctl_lock);
--	change = memcmp(&ucontrol->value, ue->elem_data, ue->elem_data_size) != 0;
-+	change = memcmp(&ucontrol->value, data + offset, size) != 0;
- 	if (change)
--		memcpy(ue->elem_data, &ucontrol->value, ue->elem_data_size);
-+		memcpy(data + offset, &ucontrol->value, size);
- 	mutex_unlock(&ue->card->user_ctl_lock);
- 	return change;
- }
-@@ -1273,7 +1283,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	if (err < 0)
- 		return err;
- 	memcpy(&kctl->id, &info->id, sizeof(kctl->id));
--	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size,
-+	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size * count,
- 				     GFP_KERNEL);
- 	if (kctl->private_data == NULL) {
- 		kfree(kctl);
--- 
-2.1.0
+Please do make an effort to only send patches to relevant people -
+sending people patches that aren't relevant to them adds to the volume
+of mail they have to handle which can get in the way of things that need
+the attention.  For example I'm not sure why the dri-devel list is on
+this.
+
+--lhTn81PdljI0Ow1Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVJWDcAAoJECTWi3JdVIfQ/koH/0A7PCAJzUFqyXCFJGmSW7rc
+RtnFQxwEonURGpx4Tli4P81w4fsuS6bo49/bTIArusBN/dKPDv/RqOIvXjZKb75C
+BdGGO/kXGwXyYDRoO2uTQ4+qdbz+o8uA7k8TQ4QjO1MvA+XPENWuxqvA7d4Jm57d
+gSD2ZXEiSq4tJSCgwKCISEKMA4NfrqO0NjMCUSHAgEetALqMSvrwrZ9r628v/qkX
+nsbSCHgM7vq0rqOaFfoUG/aumgNnQB699vJqqyVflAf0m0tI5QRdKO3zcYZDXPgO
+1K0FuwPCvOU6+c2somT7iZ85FhCr1IOroRbOsRiKGT3fIELmoQGnGJfwhJYX6Do=
+=dQda
+-----END PGP SIGNATURE-----
+
+--lhTn81PdljI0Ow1Z--
