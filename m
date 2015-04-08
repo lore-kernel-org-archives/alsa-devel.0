@@ -1,19 +1,21 @@
-From: Ramesh Babu <ramesh.babu@intel.com>
-Subject: Re: [RFC 3/3] ALSA: hda - add soc hda bus wrapper
-Date: Wed, 8 Apr 2015 10:17:20 +0530
-Message-ID: <11406.573750037$1428467736@news.gmane.org>
-References: <1427968651-7821-1-git-send-email-vinod.koul@intel.com>
- <1427968651-7821-4-git-send-email-vinod.koul@intel.com>
- <20150406170804.GQ6023@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v4 0/5] ALSA: jack: Refactoring for jack
+	kctls
+Date: Wed, 8 Apr 2015 12:39:20 +0800
+Message-ID: <CAN8cciZdu4aXytuQqC1b-BeMF5_JbX5K6q8ZnnJf_7AMr5kv1Q@mail.gmail.com>
+References: <1428062838-14786-1-git-send-email-yang.jie@intel.com>
+ <s5h1tjvq5wd.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id DF3132650DB
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 06:35:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150406170804.GQ6023@sirena.org.uk>
+Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
+ [209.85.214.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C0722650DB
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 06:39:22 +0200 (CEST)
+Received: by obbgh1 with SMTP id gh1so115923830obb.1
+ for <alsa-devel@alsa-project.org>; Tue, 07 Apr 2015 21:39:21 -0700 (PDT)
+In-Reply-To: <s5h1tjvq5wd.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com, pathes.audio@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 06, 2015 at 06:08:04PM +0100, Mark Brown wrote:
-
-Hi Takashi, Mark
-
-> On Thu, Apr 02, 2015 at 03:27:31PM +0530, Vinod Koul wrote:
-> 
-> 
-> > +/**
-> > + * hda_device_unregister - unregister a hda device
-> > + * @pdev: hda device we're unregistering
-> > + *
-> > + * Unregistration is done in 2 steps. First we release all resources
-> > + * and remove it from the subsystem, then we drop reference count by
-> > + * calling hda_device_put().
-> > + */
-> > +void snd_soc_hdac_device_unregister(struct snd_soc_hdac_device *pdev)
-> > +{
-> > +	snd_hdac_device_exit(&pdev->hdac);
-> > +	snd_hdac_device_unregister(&pdev->hdac);
-> > +	snd_soc_hdac_device_put(pdev);
-> > +}
-> > +EXPORT_SYMBOL_GPL(snd_soc_hdac_device_unregister);
-> 
-> Takashi queried bits of this too...  I have to say I don't entirely
-> understand how this device management is supposed to work and the lack
-> of any users in the current series isn't giving me anything to refer to
-> here, perhaps it's all obvious given them but I don't have them just
-> now.  A lot of this looks like it's boilerplate which should be
-> duplicating something device modelish and there certainly seem to be
-> some things with object lifetimes that need paying attention to.
-> 
-> All the commit message says is "create asoc wrppers on top of hdac", can
-> we have more words please?
-
-Will fix your comments in next version of the RFC patches.
--- 
+MjAxNS00LTgg5LiK5Y2IMTI6MDcg5pa8ICJUYWthc2hpIEl3YWkiIDx0aXdhaUBzdXNlLmRlPiDl
+r6vpgZPvvJoKPgo+IEF0IEZyaSwgIDMgQXByIDIwMTUgMjA6MDc6MTMgKzA4MDAsCj4gSmllIFlh
+bmcgd3JvdGU6Cj4gPgo+ID4gQ3VycmVudGx5IG9ubHkgaGRhIHdpbGwgY3JlYXRlIGtjdGxzIGZv
+ciBoZGEgamFja3MsIGZvciBhc29jLCBwZW9wbGUKPiA+IG1heSBuZWVkIGNyZWF0ZSBqYWNrIGtj
+dGxzIGluIHNwZWNpZmljIGRyaXZlci4KPiA+Cj4gPiBIZXJlIHdlIGFyZSBpbnRyb2R1Y2luZyBr
+Y3RscyBmb3IgZWFjaCBqYWNrLCBieSBjcmVhdGluZyBrY3RscyBhbmQgYWRkCj4gPiB0aGVtIHRv
+IGphY2sgY29udHJvbHMgbGlzdCAoY29uc2lkZXJpbmcgZXhpc3Qgb2YgY29tYm8gamFjaykuIEF0
+IHRoZQo+ID4gc2FtZSB0aW1lLCB3ZSB3aWxsIHJlcG9ydCBldmVudHMgZm9yIGVhY2ggY29udHJv
+bCBpbiB0aGUgbGlzdC4KPiA+Cj4gPiBXaXRoIHRoaXMgbmV3IGltcGxlbWVudGF0aW9uLCBib3Ro
+IEhEQSBhbmQgc29jIGphY2sga2N0bHMgd29ya3MgZmluZSwKPiA+IHRoZXkgYXJlIGNvbXBhdGli
+bGUgZm9yIG9sZCBIREEgamFjayBrY3RscywgdG9vLgo+ID4KPiA+IEZvciBzb2MsCj4gPiBhLiBz
+bmRfamFja19uZXcoKSB3aXRoIE5VTEwgamFja19rY3RsOwo+ID4gYi4gZm9yIGVhY2ggcGluLCBj
+YWxsIHNuZF9qYWNrX2FkZF9rY3RscygpIHRvIGFkZCBvbmUga2N0bChpdCB3aWxsCj4gPiBjYWxs
+IHNuZF9jdGxfYWRkKCkgdG8gYWRkIGtjdGwgdG8gY2FyZCk7Cj4KPiBTbywgaWYgSSB1bmRlcnN0
+YW5kIGNvcnJlY3RseSwgdGhlcmUgaXMgbm8gYXNzb2NpYXRpb24gYmV0d2VlbiBpbnB1dAo+IGph
+Y2sgYW5kIGN0bCBqYWNrIG5hbWVzIGF0IGFsbD8gIFRoZSBmb3JtZXIgaXMgY3JlYXRlZCB2aWEK
+PiBzbmRfamFja19uZXcoKSB3aGlsZSB0aGUgbGF0dGVyIGlzIGNyZWF0ZWQgZnJvbSBlYWNoIHBp
+biBuYW1lIHN0cmluZy4KPgo+ID4gRm9yIGhkYSwKPiA+IGEuIGNhbGwgc25kX2phY2tfa2N0bF9u
+ZXcoKShpbiBfX3NuZF9oZGFfamFja19hZGRfa2N0bCgpKSB0byBuZXcgYQo+ID4gamFja19rY3Rs
+KGFsc28gbmV3IGtjdGwpOyBhbmQgdXNlIHNuZF9oZGFfY3RsX2FkZCB0byBhZGQga2N0bCB0byBj
+YXJkOwo+ID4gYi4gbmV3IGEgaGRhX2phY2tfdGJsLCBhcHBvaW50IGphY2tfdGJsLT5qYWNrX2tj
+dGwgPSBqYWNrX2tjdGw7Cj4gPiBjLiBmb3Igbm9uLXBoYW50b20gamFjaywgY2FsbCBzbmRfamFj
+a19uZXcoKSB3aXRoIHRoaXMgamFja19rY3RsLAo+ID4gdGhlbiB0aGUgamFja19rY3RsIHdpbGwg
+YmUgYWRkZWQgdG8gdGhlIG5ldyBjcmVhdGVkIGphY2s7Cj4KPiBUaGlzIHdvdWxkIHdvcmssIHll
+cy4gIEJ1dCwgSSBoYXZlIHNvbWUgdW5lYXN5IGZlZWxpbmcsIHNvbWV0aGluZyBub3QKPiB3ZWxs
+IGRpZ2VzdGVkLi4uCj4KPiBJZGVhbGx5LCB3ZSB3YW50IGEgc2luZ2xlIEFQSSBmb3IgcmVwcmVz
+ZW50aW5nIGJvdGggaW5wdXQgYW5kIGtjdGwKPiBqYWNrcy4gIE5vdywgd2l0aCB0aGlzIGltcGxl
+bWVudGF0aW9uLCBlc3NlbnRpYWxseSBpdCdzIHN0aWxsIHR3byBBUEkKPiBjYWxscyAtLSBzbmRf
+amFja19uZXcoKSBmb3IgaW5wdXQgamFja3MgYW5kIHNuZF9qYWNrX2tjdGxfbmV3KCkgZm9yCj4g
+a2N0bCBqYWNrcy4gIChBY3R1YWxseSBveHlnZW4gZHJpdmVyIHN0aWxsIHNlZW1zIGxhY2tpbmcg
+a2N0bCBqYWNrCj4gYmVjYXVzZSBvZiB0aGlzLikgIFRoZSBvYnZpb3VzIGRpZmZlcmVuY2UgZnJv
+bSB0aGUgY3VycmVudCBjb2RlIGlzCj4gdGhhdCB0aGVyZSBpcyBhbiBpbnRlcm5hbCBhc3NvY2lh
+dGlvbiBmcm9tIGtjdGxzIHRvIGlucHV0LWphY2sgb2JqZWN0Cj4gKGFsdGhvdWdoIHRoZSByZWxh
+dGlvbiBpcyBpbnZpc2libGUgaW4gb3V0c2lkZSkuICBIbW0uLi4KPgo+CgpEbyBwdWxzZWF1ZGlv
+IG5lZWQgb3h5Z2VuIGNoYW5nZSBmcm9tIGlucHV0IGRldmljZSB0byBrY3RsIHNpbmNlIHRoZXJl
+IGlzCm5vIGhlYWRwaG9uZSBwbGF5YmFjayB2b2x1bWUgYW5kIHB1bHNlYXVkaW8gZHJvcCB0aGUg
+c3VwcG9ydCBtdWx0aSBjaGFubmVsCnZvbHVtZSBjb250cm9sIHJlY2VudGx5ID8KCkNhcmQgaHc6
+MCAnRFMnLydBc3VzIFZpcnR1b3NvIDY2IChyZXYgMikgYXQgMHhlODAwLCBpcnEgMTYnCiAgTWl4
+ZXIgbmFtZSA6ICdBVjIwMCcKICBDb21wb25lbnRzIDogJ1dNODc3NiBXTTg3NjYgQVYyMDAnCiAg
+Q29udHJvbHMgICAgICA6IDMxCiAgU2ltcGxlIGN0cmxzICA6IDI1ClNpbXBsZSBtaXhlciBjb250
+cm9sICdNYXN0ZXInLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaCBwc3dpdGNoLWpv
+aW5lZCBwZW51bQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQg
+LSBSZWFyIExlZnQgLSBSZWFyIFJpZ2h0IC0KRnJvbnQgQ2VudGVyIC0gV29vZmVyIC0gU2lkZSBM
+ZWZ0IC0gU2lkZSBSaWdodAogIExpbWl0czogUGxheWJhY2sgMTM1IC0gMjU1CiAgTW9ubzoKICBG
+cm9udCBMZWZ0OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBGcm9udCBSaWdo
+dDogUGxheWJhY2sgMjU1IFsxMDAlXSBbMC4wMGRCXSBbb25dCiAgUmVhciBMZWZ0OiBQbGF5YmFj
+ayAyNTUgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBSZWFyIFJpZ2h0OiBQbGF5YmFjayAyNTUgWzEw
+MCVdIFswLjAwZEJdIFtvbl0KICBGcm9udCBDZW50ZXI6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAu
+MDBkQl0gW29uXQogIFdvb2ZlcjogUGxheWJhY2sgMjU1IFsxMDAlXSBbMC4wMGRCXSBbb25dCiAg
+U2lkZSBMZWZ0OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBTaWRlIFJpZ2h0
+OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wg
+J0hlYWRwaG9uZScsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoIHBzd2l0Y2gtam9p
+bmVkIHBlbnVtCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAog
+IExpbWl0czogUGxheWJhY2sgNjEgLSAxMjcKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNr
+IDEyNyBbMTAwJV0gW29uXQogIEZyb250IFJpZ2h0OiBQbGF5YmFjayAxMjcgWzEwMCVdIFtvbl0K
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
