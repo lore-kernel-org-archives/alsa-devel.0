@@ -1,17 +1,20 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: ASoC: Failed to create DAPM debugfs
-Date: Wed, 8 Apr 2015 15:31:44 -0300
-Message-ID: <CAOMZO5DP4fahmC9W6eBFdjxR1DqPMgyhgwxwSZP_TcqxLSy=7A@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH v4 0/5] ALSA: jack: Refactoring for jack
+ kctls
+Date: Wed, 08 Apr 2015 20:47:15 +0200
+Message-ID: <552577B3.1060808@canonical.com>
+References: <1428062838-14786-1-git-send-email-yang.jie@intel.com>	<s5h1tjvq5wd.wl-tiwai@suse.de>	<5524D6D8.60205@canonical.com>	<E7B1D079BA13FB44A978CC8F69C7D6A90550618B@shsmsx102.ccr.corp.intel.com>	<5524E677.2020803@canonical.com>	<E7B1D079BA13FB44A978CC8F69C7D6A905506247@shsmsx102.ccr.corp.intel.com>
+ <s5hr3rvnfe8.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90550C4BE@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f43.google.com (mail-la0-f43.google.com
- [209.85.215.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 4650C2606CB
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 20:31:45 +0200 (CEST)
-Received: by layy10 with SMTP id y10so72650157lay.0
- for <alsa-devel@alsa-project.org>; Wed, 08 Apr 2015 11:31:44 -0700 (PDT)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6701B2606D3
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 20:47:16 +0200 (CEST)
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A90550C4BE@SHSMSX101.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,23 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>
+To: "Jie, Yang" <yang.jie@intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On a imx6q-hummingboard the following warning is seen when running
-linux-next 20150408:
 
-[    2.270006] imx-spdif sound-spdif: ASoC: Failed to create DAPM
-debugfs directory
+On 2015-04-08 16:14, Jie, Yang wrote:
+>> -----Original Message-----
+>> From: Takashi Iwai [mailto:tiwai@suse.de]
+>> Sent: Wednesday, April 08, 2015 5:22 PM
+>> To: Jie, Yang
+>> Cc: David Henningsson; alsa-devel@alsa-project.org; broonie@kernel.org;
+>> Girdwood, Liam R
+>> Subject: Re: [alsa-devel] [PATCH v4 0/5] ALSA: jack: Refactoring for jack kctls
+>>
+>> At Wed, 8 Apr 2015 09:18:10 +0000,
+>> Jie, Yang wrote:
+>>> OK, then it may make life easier.  Hi Takashi, you agree with this?
+>>> Do we need add those kctls to the HDA codec, or to hda_nid_item?
+>>
+>> It's been added in the local list to manage the kctls belonging to a codec more
+>> easily.  But if snd_hda_codec_free() and _reset() can remove them
+>> gracefully, there is no big reason to keep tracking there.
+>>
+>
+> I am not sure if snd_hda_codec_free() and _reset() can remove them, with
+> removing tracking them in HDA codec in my current patch series. To be more
+> simply and safely, I just keep this old tracking ATM, and we can add patch
+> to optimize them later if needed, do you agree?
 
-Looking at sound/soc/fsl/imx-spdif.c and sound/soc/fsl/fsl_spdif.c I
-am not sure how to avoid such warning.
+Is it possible for the snd_jack object to own its kctls, so when 
+snd_jack_dev_free is called, that would free the kctls too? Or at least 
+have some kind of flag that would allow snd_jack_free to also delete its 
+associated kctls?
 
-Any ideas?
+(And then snd_hda_codec_reset/free would end up calling snd_jack_dev_free.)
 
-Thanks,
-
-Fabio Estevam
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
