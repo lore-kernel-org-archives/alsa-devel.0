@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Adds push button support for
-	rt5650
-Date: Wed, 8 Apr 2015 18:14:59 +0100
-Message-ID: <20150408171459.GE6023@sirena.org.uk>
-References: <1428407718-10641-1-git-send-email-bardliao@realtek.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v2] ASoC: fsl_ssi: Do not create debugfs
+	directory
+Date: Wed,  8 Apr 2015 14:21:24 -0300
+Message-ID: <1428513684-26577-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6064156878514219438=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D1F72265467
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 19:15:06 +0200 (CEST)
-In-Reply-To: <1428407718-10641-1-git-send-email-bardliao@realtek.com>
+Received: from mail-vn0-f44.google.com (mail-vn0-f44.google.com
+ [209.85.216.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 141AD265375
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 19:22:04 +0200 (CEST)
+Received: by vnbg129 with SMTP id g129so16195903vnb.4
+ for <alsa-devel@alsa-project.org>; Wed, 08 Apr 2015 10:22:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, john.lin@realtek.com, koro.chen@mediatek.com, flove@realtek.com
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
---===============6064156878514219438==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wmp8XYsjNC4bnPNJ"
-Content-Disposition: inline
+Since commit 81c7cfd1b22a0 ("ASoC: Move debugfs registration to the
+component level") ASoC core code deals with registering debugfs, so we
+should not be creating the debugfs directory locally in order to avoid
+the following warning:
 
+fsl-ssi-dai 2028000.ssi: ASoC: Failed to create component debugfs directory
 
---wmp8XYsjNC4bnPNJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+Changes since v1:
+- Only remove dir creation/remove as suggested by Mark Brown
 
-On Tue, Apr 07, 2015 at 07:55:18PM +0800, Bard Liao wrote:
+ sound/soc/fsl/fsl_ssi.h     |  1 -
+ sound/soc/fsl/fsl_ssi_dbg.c | 13 +++----------
+ 2 files changed, 3 insertions(+), 11 deletions(-)
 
-> +int rt5650_set_button_detect(struct snd_soc_codec *codec,
-> +	struct snd_soc_jack *jack)
-> +{
-
-Why is this not part of the existing set_jack_detect() function?
-
---wmp8XYsjNC4bnPNJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVJWISAAoJECTWi3JdVIfQvhQH/jhjzyiKfKb76iUGoNzsS/M4
-UCHwIHgebZ2UUwGoFgk0EwFIIghlryrKzccq7MCFsF4DOj2fj6X1owevfn33bf+r
-2uCJh6/CQyZzNaP7aJVJKS5EeZt0I+3RU1YGPfDTG9JLIlcRk12NO+M05N9tBddP
-b7nVZuhOtg+AOO0rJqJmQDk4P/AscVwgdV2JJg9KiTZ/qxJM/stEJZ+x6KCY6iYB
-FcfjbXlwNbH5+qXS1QOxF8GN71OcdiA4Kl26J7AuuDZeCcqFrn/rJ8YbzPBGm1K5
-P9lnM9xX6m/zOQu15uKCSXS/sjDHfhLyZZCxB9s1GgCGsZipg8gAU4lZCASwHSw=
-=wEmE
------END PGP SIGNATURE-----
-
---wmp8XYsjNC4bnPNJ--
-
---===============6064156878514219438==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6064156878514219438==--
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index 5065105..68aef90 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -211,7 +211,6 @@ struct device;
+ #if IS_ENABLED(CONFIG_DEBUG_FS)
+ 
+ struct fsl_ssi_dbg {
+-	struct dentry *dbg_dir;
+ 	struct dentry *dbg_stats;
+ 
+ 	struct {
+diff --git a/sound/soc/fsl/fsl_ssi_dbg.c b/sound/soc/fsl/fsl_ssi_dbg.c
+index 5469ffb..46cea84 100644
+--- a/sound/soc/fsl/fsl_ssi_dbg.c
++++ b/sound/soc/fsl/fsl_ssi_dbg.c
+@@ -142,22 +142,15 @@ static const struct file_operations fsl_ssi_stats_ops = {
+ 
+ int fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg, struct device *dev)
+ {
+-	ssi_dbg->dbg_dir = debugfs_create_dir(dev_name(dev), NULL);
+-	if (!ssi_dbg->dbg_dir)
++	ssi_dbg->dbg_stats = debugfs_create_file("stats", S_IRUGO, NULL,
++						 ssi_dbg, &fsl_ssi_stats_ops);
++	if (!ssi_dbg->dbg_stats)
+ 		return -ENOMEM;
+ 
+-	ssi_dbg->dbg_stats = debugfs_create_file("stats", S_IRUGO,
+-			ssi_dbg->dbg_dir, ssi_dbg, &fsl_ssi_stats_ops);
+-	if (!ssi_dbg->dbg_stats) {
+-		debugfs_remove(ssi_dbg->dbg_dir);
+-		return -ENOMEM;
+-	}
+-
+ 	return 0;
+ }
+ 
+ void fsl_ssi_debugfs_remove(struct fsl_ssi_dbg *ssi_dbg)
+ {
+ 	debugfs_remove(ssi_dbg->dbg_stats);
+-	debugfs_remove(ssi_dbg->dbg_dir);
+ }
+-- 
+1.9.1
