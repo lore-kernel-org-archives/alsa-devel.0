@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/5] amixer: arrange validation logic
-Date: Thu,  9 Apr 2015 01:30:57 +0900
-Message-ID: <1428510659-30393-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] amixer: fix a bug to handle omitted value
+	in parameter for enumerated element
+Date: Thu,  9 Apr 2015 01:30:55 +0900
+Message-ID: <1428510659-30393-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1428510659-30393-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 93EE12606C2
+ by alsa0.perex.cz (Postfix) with ESMTP id 942FC265388
  for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 18:31:11 +0200 (CEST)
 In-Reply-To: <1428510659-30393-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,68 +25,62 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For better reading and easy understanding.
+In processing of 'sset' operation for enumerated elements, while loop is
+used to skip separators for arguments which shows the value of each channel.
+But the actual channel is not incremented, thus this sample causes wrong
+result that D is set to third channel, instead of the last channel.
 
+$ amixer sset enum-element-13,1019 A,B,,D
+
+Furthermore, when the value of first channel is omitted, the command causes
+'Invalid command' output.
+
+This commit fixes these bug, by incrementing channel number according to
+the loop and move the loop to the beginning of outer loop.
+
+Fixes: 1a19ec153850('amixer: Don't set only the first item in sset_enum()')
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- amixer/amixer.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ amixer/amixer.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/amixer/amixer.c b/amixer/amixer.c
-index 65ebf20..aec8d01 100644
+index ff1a927..a3de375 100644
 --- a/amixer/amixer.c
 +++ b/amixer/amixer.c
-@@ -1271,14 +1271,18 @@ static int get_enum_item_index(snd_mixer_elem_t *elem, char **ptrp)
- 		if (snd_mixer_selem_get_enum_item_name(elem, i, sizeof(name)-1, name) < 0)
- 			continue;
+@@ -1279,22 +1279,28 @@ static int get_enum_item_index(snd_mixer_elem_t *elem, char **ptrp)
+ static int sset_enum(snd_mixer_elem_t *elem, unsigned int argc, char **argv)
+ {
+ 	unsigned int idx;
+-	unsigned int item = 0;
++	unsigned int chn;
+ 	int check_flag = ignore_error ? 0 : -1;
+ 	int ival;
+ 	char *ptr;
  
-+		/* Check given strings itself. */
- 		len = strlen(name);
--		if (! strncmp(name, ptr, len)) {
--			if (! ptr[len] || ptr[len] == ',' || ptr[len] == '\n') {
--				ptr += len;
--				*ptrp = ptr;
--				return i;
--			}
--		}
-+		if (strncmp(name, ptr, len) != 0)
-+			continue;
-+
-+		/* Lack of separators between channels. */
-+		if (ptr[len] != '\0' && ptr[len] != ',' && ptr[len] != '\n')
-+			continue;
-+
-+		/* OK. The string is exactly one of items. */
-+		*ptrp = ptr + len;
-+		return i;
- 	}
- 	return -1;
- }
-@@ -1294,9 +1298,9 @@ static int sset_enum(snd_mixer_elem_t *elem, unsigned int argc, char **argv)
  	for (idx = 1; idx < argc; idx++) {
  		ptr = argv[idx];
- 		chn = 0;
--		while (*ptr) {
-+		while (ptr[0] != '\0') {
- 			/* Skip separators between the value of each channel. */
--			while (*ptr == ',' || isspace(*ptr)) {
-+			while (ptr[0] == ',' || isspace(ptr[0])) {
- 				ptr++;
- 				chn++;
- 			}
-@@ -1304,8 +1308,12 @@ static int sset_enum(snd_mixer_elem_t *elem, unsigned int argc, char **argv)
- 			/* Get index for given argument as enumerated item. */
++		chn = 0;
+ 		while (*ptr) {
++			/* Skip separators between the value of each channel. */
++			while (*ptr == ',' || isspace(*ptr)) {
++				ptr++;
++				chn++;
++			}
++
++			/* Get index for given argument as enumerated item. */
  			ival = get_enum_item_index(elem, &ptr);
  			if (ival < 0)
--				return check_flag;
-+				break;
- 
-+			/*
-+			 * Stand success flag when at least one channel is
-+			 * changed.
-+			 */
- 			if (snd_mixer_selem_set_enum_item(elem, chn, ival) >= 0)
+ 				return check_flag;
+-			if (snd_mixer_selem_set_enum_item(elem, item++, ival) >= 0)
++
++			if (snd_mixer_selem_set_enum_item(elem, chn, ival) >= 0)
  				check_flag = 1;
+-			/* skip separators */
+-			while (*ptr == ',' || isspace(*ptr))
+-				ptr++;
  		}
+ 	}
+ 	return check_flag;
 -- 
 2.1.0
