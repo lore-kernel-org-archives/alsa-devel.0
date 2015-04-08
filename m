@@ -1,19 +1,20 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: Audio Jack Out does not work
-Date: Wed, 8 Apr 2015 11:07:18 +0300
-Message-ID: <20150408080630.GO16501@mwanda>
-References: <CAD67Mo_N1_uEtjWKcV4+Rkjrvc6kcZuvUgrMPvBURJX0hFaaMA@mail.gmail.com>
- <20150407225642.GN16501@mwanda>
- <CAN8cciY89MH1p7An-RsRkMbFgdKF3OdYGO1hHV594buOpjSuBw@mail.gmail.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Support Dell headset mode for ALC288
+Date: Wed, 8 Apr 2015 08:08:47 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A0D1D7@RTITMBSV09.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A17A0C909@RTITMBSV09.realtek.com.tw>
+ <s5hoan4xdxi.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A0D1AB@RTITMBSV09.realtek.com.tw>
+ <s5hsicb6pbc.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id A7594265132
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 10:07:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAN8cciY89MH1p7An-RsRkMbFgdKF3OdYGO1hHV594buOpjSuBw@mail.gmail.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id BCF07265182
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 10:08:51 +0200 (CEST)
+In-Reply-To: <s5hsicb6pbc.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +24,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, Taylor Smock <smocktaylor@gmail.com>, joe@perches.com, david.henningsson@canonical.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 08, 2015 at 09:57:13AM +0800, Raymond Yau wrote:
-> This patch only change the name of control, you will also need pulseaudio
-> patch if you are using pulseaudio
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Wednesday, April 08, 2015 3:40 PM
+> To: Kailang
+> Cc: (alsa-devel@alsa-project.org)
+> Subject: Re: Support Dell headset mode for ALC288
 > 
-> http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa/mixer?id=aec811798cd883a454b9b5cd82c77831906bbd2d
+> At Wed, 8 Apr 2015 07:31:33 +0000,
+> Kailang wrote:
+> > 
+> > 
+> > Hi Takashi,
+> > 
+> > Attach patch is support alc288 headset mode.
+> 
+> This also supports ALC286, too, right?
 
-Ugh...  You are going to make Linus start cursing.
+Yes, they are brother.
 
-https://lkml.org/lkml/2012/12/23/75
-
-regards,
-dan carpenter
+> 
+> 
+> Takashi
+> 
+> > 
+> > BR,
+> > Kailang
+> > 
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Saturday, April 04, 2015 8:43 PM
+> > > To: Kailang
+> > > Cc: (alsa-devel@alsa-project.org)
+> > > Subject: Re: Support Dell headset mode for ALC288
+> > > 
+> > > At Tue, 31 Mar 2015 08:01:57 +0000,
+> > > Kailang wrote:
+> > > > 
+> > > > 
+> > > > Hi Takashi,
+> > > >   
+> > > >  Dell has new platform with ALC288.
+> > > >  Attach patch is support headset mode for ALC288.
+> > > 
+> > > > @@ -3828,6 +3894,11 @@ static void
+> > > alc_determine_headset_type(struct hda_codec *codec)
+> > > >   conteol) */
+> > > >  		{}
+> > > >  	};
+> > > > +	static struct coef_fw coef0286[] = {
+> > > > +		//UPDATE_COEF(0x4f, 0xfcc0, 0x5400), /* Combo
+> > > Jack auto detect */
+> > > > +		UPDATE_COEF(0x4f, 0xfcc0, 0xd400),
+> > > 
+> > > Why is this commented out and what's the next line does instead?
+> > > And it's 0286?  Not 0288?
+> > > 
+> > > > @@ -3949,8 +4027,15 @@ static void
+> > > alc_update_headset_jack_cb(struct hda_codec *codec,
+> > > >  				       struct hda_jack_callback
+> > > *jack)  {
+> > > >  	struct alc_spec *spec = codec->spec;
+> > > > +	int present;
+> > > >  	spec->current_headset_type = ALC_HEADSET_TYPE_UNKNOWN;
+> > > >  	snd_hda_gen_hp_automute(codec, jack);
+> > > > +	present = spec->gen.hp_jack_present ? 0x40 : 0;
+> > > > +	if (codec->bus->pci->subsystem_vendor == 0x1028 &&
+> > > > +				codec->core.vendor_id 
+> == 0x10ec0288)
+> > > > +		/* Headset Mic enable and disable, ony 
+> for Dell Dino */
+> > > > +		snd_hda_codec_write(codec, 0x01, 0,
+> > > AC_VERB_SET_GPIO_DATA,
+> > > > +					present);
+> > > 
+> > > This is too ugly to put in the common function.
+> > > For Dell, prepare its own callback function and use it 
+> instead.  Or, 
+> > > put a new hook there to call additionally.
+> > > This avoids the PCI ID check in each place.
+> > > 
+> > > So, better to split to a few patches.  One for adding ALC286 (or 
+> > > 288?) support generically.  And another for adding Dell-specific 
+> > > things.
+> > > 
+> > > 
+> > > thanks,
+> > > 
+> > > Takashi
+> > > 
+> > > ------Please consider the environment before printing this e-mail.
+> > > 
+> > [2 0000-alc288-headset-mode.patch <application/octet-stream 
+> (base64)>]
+> > 
+> 
