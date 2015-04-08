@@ -1,70 +1,154 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: recording problem in beagleboard-mcbsp
-Date: Wed, 8 Apr 2015 12:52:17 +0300
-Message-ID: <5524FA51.9060606@ti.com>
-References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>	<CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>	<CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>	<551C3D19.2050200@ti.com>	<CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>	<5523A1F3.2000701@ti.com>
- <CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>
+From: Caesar Wang <wxt@rock-chips.com>
+Subject: Re: [PATCH] ASoC: max98090: add shutdown callback for max98090
+Date: Wed, 08 Apr 2015 18:14:18 +0800
+Message-ID: <5524FF7A.1090802@rock-chips.com>
+References: <1428483128-23498-1-git-send-email-wxt@rock-chips.com> <1428483128-23498-2-git-send-email-wxt@rock-chips.com> <15530630.jvXTF4Jl8n@diego>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 6681F2651B4
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 11:52:22 +0200 (CEST)
-In-Reply-To: <CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: noman pouigt <variksla@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <15530630.jvXTF4Jl8n@diego>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>
+Cc: Sonny Rao <sonnyrao@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, zhengxing <zhengxing@rock-chips.com>, "jay.xu" <xjq@rock-chips.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Tushar Behera <tushar.b@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMDcvMjAxNSAwOTozMyBQTSwgbm9tYW4gcG91aWd0IHdyb3RlOgo+IEluIG15IHNldHVw
-IGNvZGVjKG1heDk4MDkwKSBpcyBtYXN0ZXIgYW5kIG1jYnNwIGlzIHNsYXZlLiBJIHVzZWQgYWJv
-dmUKPiBjb21tYW5kIGFuZCBnb3QgYmVsb3cgZXJyb3I6Cj4gYXJlY29yZDogc2V0X3BhcmFtczox
-MjMzOiBTYW1wbGUgZm9ybWF0IG5vbiBhdmFpbGFibGUKPiBBdmFpbGFibGUgZm9ybWF0czoKPiAt
-IFMxNl9MRQoKVGhlIGNvZGVjIG9ubHkgc3VwcG9ydHMgUzE2X0xFIG9yIFMyNF9MRS4KCj4gU28g
-aSBjaGFuZ2VkIHRoZSBmb3JtYXQgdG8gUzE2X0xFIGFuZCBnb3QgYmVsb3cgZXJyb3I6Cj4gYXJl
-Y29yZDogcGNtX3JlYWQ6MjAzMTogcmVhZCBlcnJvcjogSW5wdXQvb3V0cHV0IGVycm9yCj4gCj4g
-SSBjaGVja2VkIHRoZSBkbWVzZyBhbmQgZm91bmQgb3V0IHRoYXQgaW50ZXJydXB0IHRyaWdnZXJl
-ZCBvbmx5Cj4gb25jZSBhbmQgYWZ0ZXIgc29tZSB0aW1lIGFsbCB3aWRnZXRzIGdldHMgcG93ZXJl
-ZCBkb3duLgo+IEJlbG93IGlzIHBhcnQgb2YgdGhlIGRtZXNnLgo+IAo+IFsgIDE3NC4xODY0MzFd
-IHNuZF9wY21fbGliX3JlYWQKPiBbICAxNzQuMTg2NDYyXSBzbmRfcGNtX2xpYl9yZWFkMQo+IFsg
-IDE3NC4xODcwNDJdIG9tYXAtbWNic3AgNDgwNzQwMDAubWNic3A6ICoqKiogTWNCU1AyNTUgcmVn
-cyAqKioqCj4gWyAgMTc0LjE4NzA3Ml0gb21hcC1tY2JzcCA0ODA3NDAwMC5tY2JzcDogRFJSMjog
-IDB4ZWRkMGFiY2UKPiBbICAxNzQuMTg3MTAzXSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1jYnNwOiBE
-UlIxOiAgMHgwMDAwCj4gWyAgMTc0LjE4NzEzM10gb21hcC1tY2JzcCA0ODA3NDAwMC5tY2JzcDog
-RFhSMjogIDB4MDAwMAo+IFsgIDE3NC4xODcxNjRdIG9tYXAtbWNic3AgNDgwNzQwMDAubWNic3A6
-IERYUjE6ICAweDAwMDAKPiBbICAxNzQuMTg3MTk0XSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1jYnNw
-OiBTUENSMjogMHgwMjMwCj4gWyAgMTc0LjE4NzIyNV0gb21hcC1tY2JzcCA0ODA3NDAwMC5tY2Jz
-cDogU1BDUjE6IDB4MDAzMQo+IFsgIDE3NC4xODcyNTVdIG9tYXAtbWNic3AgNDgwNzQwMDAubWNi
-c3A6IFJDUjI6ICAweDgwNDEKPiBbICAxNzQuMTg3Mjg2XSBvbWFwLW1jYnNwIDQ4MDc0MDAwLm1j
-YnNwOiBSQ1IxOiAgMHgwMDQwCj4gWyAgMTc0LjE4NzMxNl0gb21hcC1tY2JzcCA0ODA3NDAwMC5t
-Y2JzcDogWENSMjogIDB4ODA0MQo+IFsgIDE3NC4xODczNDddIG9tYXAtbWNic3AgNDgwNzQwMDAu
-bWNic3A6IFhDUjE6ICAweDAwNDAKPiBbICAxNzQuMTg3Mzc3XSBvbWFwLW1jYnNwIDQ4MDc0MDAw
-Lm1jYnNwOiBTUkdSMjogMHgwMDFmCj4gWyAgMTc0LjE4NzQwOF0gb21hcC1tY2JzcCA0ODA3NDAw
-MC5tY2JzcDogU1JHUjE6IDB4MGYwMAo+IFsgIDE3NC4xODc0MzhdIG9tYXAtbWNic3AgNDgwNzQw
-MDAubWNic3A6IFBDUjA6ICAweDAwMGYKPiBbICAxNzQuMTg3NDY5XSBvbWFwLW1jYnNwIDQ4MDc0
-MDAwLm1jYnNwOiAqKioqKioqKioqKioqKioqKioqKioqKgo+IFsgIDE3NC4xODc0OTldIHNuZF9w
-Y21fdXBkYXRlX2h3X3B0cjAKPiAKPiBNYXkgaSBrbm93IHdoZXJlIGFtIGkgZ29pbmcgd3Jvbmc/
-CgpGaXJzdCBjaGVjayB0aGUgL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBjL3N1YjAvc3RhdHVzIHdo
-aWxlIHRoZSBjYXB0dXJlIGlzCnJ1bm5pbmcgYW5kIGxvb2sgYXQgdGhlIGh3X3B0ciBpZiBpdCBo
-YXMgbW92ZWQgYXQgYWxsLgoKRW5hYmxlIG1vcmUgaW50ZXJydXB0cyBpbiBzb3VuZC9zb2Mvb21h
-cC9tY2JzcC5jOm9tYXBfbWNic3BfY29uZmlnKCksIGxpa2UKUlVOREZMRU4sIFJPVkZMRU4gYW5k
-IHNlZSBpZiB5b3UgaGF2ZSBvdmVyZmxvdyBpbiBNY0JTUC4KCklmIHRoZSBETUEgaGFzIG5vdCBt
-b3ZlZCBpdCBtZWFucyB0aGF0IE1jQlNQIGRvZXMgbm90IHJlY2VpdmVkIHRoZSBGUyB3aGljaAp3
-b3VsZCBpbmRpY2F0ZSB0aGUgZnJhbWUgc3RhcnQsIHRodXMgaXQgd2lsbCBub3Qgc2FtcGxlIGRh
-dGEgaW4sIHRodXMgaXQgd2lsbApub3QgdHJpZ2dlciB0aGUgRE1BIHRvIHJlYWQgdGhlIGRhdGEg
-b3V0LgoKU2luY2UgdGhlIGNhcHR1cmUgaXMgd29ya2luZyBvbiBNY0JTUDIgaW4gTWNCU1Agc2xh
-dmUgKGFuZCBtYXN0ZXIgYWxzbykgdGhlCm9ubHkgdGhpbmcgd2hpY2ggY2FuIGJlIHdyb25nIGlz
-IHRoZSB3YXkgdGhlIG1heDk4MDkwIGlzIHdpcmVkIHVwIG9yIHNvbWUgbXV4Cmlzc3VlIGFnYWlu
-IGFzIGl0IHdhcyBiZWZvcmUgZm9yIHlvdS4KCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Heiko,
+
+=E5=9C=A8 2015=E5=B9=B404=E6=9C=8808=E6=97=A5 17:25, Heiko St=C3=BCbner=
+ =E5=86=99=E9=81=93:
+> Hi Caesar,
+>
+> Am Mittwoch, 8. April 2015, 16:52:08 schrieb Caesar Wang:
+>> To fix pop noise when shutdown,the pop noise during shutdown
+>> is the pmic cutoff power of codec without any notice.
+>>
+>> Signed-off-by: jay.xu <xjq@rock-chips.com>
+>> Signed-off-by: zhengxing <zhengxing@rock-chips.com>
+>> Signed-off-by: Caesar Wang <wxt@rock-chips.com>
+>>
+>> Serien-cc: linux-kernel@vger.kernel.org
+>> Serien-cc: devicetree@vger.kernel.org
+>> Serien-cc: dianders@chromium.org
+>>
+>> ---
+>>
+>>   sound/soc/codecs/max98090.c | 17 +++++++++++++++++
+>>   1 file changed, 17 insertions(+)
+>>
+>> diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090=
+=2Ec
+>> index b112b1c..066954a0 100644
+>> --- a/sound/soc/codecs/max98090.c
+>> +++ b/sound/soc/codecs/max98090.c
+>> @@ -2611,6 +2611,22 @@ static int max98090_i2c_remove(struct i2c_cli=
+ent
+>> *client) return 0;
+>>   }
+>>
+>> +static void max98090_i2c_shutdown(struct i2c_client *i2c)
+>> +{
+>> +	struct max98090_priv *max98090 =3D dev_get_drvdata(&i2c->dev);
+>> +
+>> +	dev_info(&i2c->dev, "shut down device\n");
+> is this dev_info really necessary? dev_dbg might be better, or leave =
+it out
+> completely, as it doesn't really provide any additional benefit.
+>
+
+As Mark suggestion, I will remove it.
+>> +
+>> +	/* Enable volume smoothing, disable zero cross.  This will cause
+>> +	 * a quick 40ms ramp to mute on shutdown.
+>> +	 */
+> Comment style is off ... should be
+>
+> /*
+>   * Enable volume smoothing, disable zero cross.  This will cause
+>   * a quick 40ms ramp to mute on shutdown.
+>   */
+>
+
+Done
+>> +	regmap_write(max98090->regmap,
+>> +		M98090_REG_LEVEL_CONTROL, M98090_VSENN_MASK);
+>> +	regmap_write(max98090->regmap,
+>> +		M98090_REG_DEVICE_SHUTDOWN, 0x00);
+>> +	msleep(40);
+>> +}
+>> +
+>>   #ifdef CONFIG_PM
+>>   static int max98090_runtime_resume(struct device *dev)
+>>   {
+>> @@ -2697,6 +2713,7 @@ static struct i2c_driver max98090_i2c_driver =3D=
+ {
+>>   	},
+>>   	.probe  =3D max98090_i2c_probe,
+>>   	.remove =3D max98090_i2c_remove,
+>> +	.shutdown =3D max98090_i2c_shutdown,
+>>   	.id_table =3D max98090_i2c_id,
+>>   };
+>
+>
+>
+
+--=20
+***********************************************************************=
+***************
+=E7=8E=8B=E6=99=93=E8=85=BE    Caesar Wang
+=E7=B3=BB=E7=BB=9F=E4=BA=A7=E5=93=81=E4=B8=89=E9=83=A8   Product R&D De=
+pt.III
+=E7=A6=8F=E5=B7=9E=E7=91=9E=E8=8A=AF=E5=BE=AE=E7=94=B5=E5=AD=90=E6=9C=89=
+=E9=99=90=E5=85=AC=E5=8F=B8 Fuzhou Rockchip Electronics Co.Ltd
+=E5=9C=B0=E5=9D=80=EF=BC=9A=E7=A6=8F=E5=BB=BA=E7=9C=81=E7=A6=8F=E5=B7=9E=
+=E5=B8=82=E9=93=9C=E7=9B=98=E8=B7=AF=E8=BD=AF=E4=BB=B6=E5=A4=A7=E9=81=93=
+89=E5=8F=B7=E8=BD=AF=E4=BB=B6=E5=9B=ADA=E5=8C=BA18=E5=8F=B7=E6=A5=BC =EF=
+=BC=88=E7=A6=8F=E5=B7=9E=E6=80=BB=E9=83=A8=EF=BC=89
+         =E6=B7=B1=E5=9C=B3=E5=8D=97=E5=B1=B1=E5=8C=BA=E7=A7=91=E6=8A=80=
+=E4=B8=AD=E4=B8=80=E8=B7=AF=E4=B8=87=E5=88=A9=E8=BE=BE=E5=A4=A7=E5=8E=A6=
+21=E5=B1=82 =EF=BC=88=E6=B7=B1=E5=9C=B3=E5=88=86=E5=85=AC=E5=8F=B8=EF=BC=
+=89
+Addr=EF=BC=9A  NO.18 Building, A District, Fuzhou Software Park,Gulou D=
+istrict,Fuzhou, Fujian,China(Fuzhou Headquarters)
+          21F,Malata Building,Kejizhongyi Avenue,Nanshan District,Shenz=
+hen  (Shenzhen Office)
+Tel=EF=BC=9A+86-591-83991906/07 - 8221
+Mobile:+86 15059456742
+E-mail : wxt@rock-chips.com
+***********************************************************************=
+****************
+***********************************************************************=
+****************
+=E4=BF=9D=E5=AF=86=E6=8F=90=E7=A4=BA=EF=BC=9A=E6=9C=AC=E9=82=AE=E4=BB=B6=
+=E5=8F=8A=E5=85=B6=E9=99=84=E4=BB=B6=E5=90=AB=E6=9C=89=E6=9C=BA=E5=AF=86=
+=E4=BF=A1=E6=81=AF=EF=BC=8C=E4=BB=85=E5=8F=91=E9=80=81=E7=BB=99=E6=9C=AC=
+=E9=82=AE=E4=BB=B6=E6=89=80=E6=8C=87=E7=89=B9=E5=AE=9A=E6=94=B6=E4=BB=B6=
+=E4=BA=BA=E3=80=82=E8=8B=A5=E9=9D=9E=E8=AF=A5=E7=89=B9=E5=AE=9A=E6=94=B6=
+=E4=BB=B6=E4=BA=BA=EF=BC=8C=E8=AF=B7=E5=8B=BF=E5=A4=8D=E5=88=B6=E3=80=81=
+ =E4=BD=BF=E7=94=A8=E6=88=96=E6=8A=AB=E9=9C=B2=E6=9C=AC=E9=82=AE=E4=BB=B6=
+=E7=9A=84=E4=BB=BB=E4=BD=95=E5=86=85=E5=AE=B9=E3=80=82
+=E8=8B=A5=E8=AF=AF=E6=94=B6=E6=9C=AC=E9=82=AE=E4=BB=B6=EF=BC=8C=E8=AF=B7=
+=E4=BB=8E=E7=B3=BB=E7=BB=9F=E4=B8=AD=E6=B0=B8=E4=B9=85=E6=80=A7=E5=88=A0=
+=E9=99=A4=E6=9C=AC=E9=82=AE=E4=BB=B6=E5=8F=8A=E6=89=80=E6=9C=89=E9=99=84=
+=E4=BB=B6=EF=BC=8C=E5=B9=B6=E4=BB=A5=E5=9B=9E=E5=A4=8D=E9=82=AE=E4=BB=B6=
+=E6=88=96=E5=85=B6=E4=BB=96=E6=96=B9=E5=BC=8F=E5=8D=B3=E5=88=BB=E5=91=8A=
+=E7=9F=A5=E5=8F=91=E4=BB=B6=E4=BA=BA=E3=80=82=E7=A6=8F=E5=B7=9E=E7=91=9E=
+=E8=8A=AF=E5=BE=AE=E7=94=B5=E5=AD=90=E6=9C=89=E9=99=90=E5=85=AC=E5=8F=B8=
+=E6=8B=A5=E6=9C=89=E6=9C=AC=E9=82=AE=E4=BB=B6=E4=BF=A1
+=E6=81=AF=E7=9A=84=E8=91=97=E4=BD=9C=E6=9D=83=E5=8F=8A=E8=A7=A3=E9=87=8A=
+=E6=9D=83=EF=BC=8C=E7=A6=81=E6=AD=A2=E4=BB=BB=E4=BD=95=E6=9C=AA=E7=BB=8F=
+=E6=8E=88=E6=9D=83=E8=AE=B8=E5=8F=AF=E7=9A=84=E4=BE=B5=E6=9D=83=E8=A1=8C=
+=E4=B8=BA=E3=80=82
+ =20
+IMPORTANT NOTICE: This email is from Fuzhou Rockchip Electronics Co., L=
+td .The contents of this email and any attachments may
+contain information that is privileged, confidential and/or exempt from=
+ disclosure under applicable law and relevant NDA.
+If you are not the intended recipient, you are hereby notified that any=
+ disclosure, copying, distribution, or use of the
+information is STRICTLY PROHIBITED. Please immediately contact the send=
+er as soon as possible and destroy the material
+in its entirety in any format. Thank you.
+***********************************************************************=
+****************
