@@ -1,17 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/5 alsa-utils] amixer fixes for enumerated
-	elements
-Date: Thu, 09 Apr 2015 01:37:04 +0900
-Message-ID: <55255930.5040008@sakamocchi.jp>
-References: <1428510659-30393-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Audio Jack Out does not work
+Date: Thu, 9 Apr 2015 00:44:16 +0800
+Message-ID: <CAN8cciZoHSryL329cr5SGxUmpUepGG6auWWTrnLzADzsSOCFrA@mail.gmail.com>
+References: <CAD67Mo_N1_uEtjWKcV4+Rkjrvc6kcZuvUgrMPvBURJX0hFaaMA@mail.gmail.com>
+ <20150407225642.GN16501@mwanda>
+ <CAN8cciY89MH1p7An-RsRkMbFgdKF3OdYGO1hHV594buOpjSuBw@mail.gmail.com>
+ <20150408080630.GO16501@mwanda>
+ <CAN8ccib8mOjUKEEexssF0Xocs4WgnE7n1g-N=og3PbUj2Z-q7w@mail.gmail.com>
+ <20150408152042.GV16501@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 179192606C2
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 18:37:10 +0200 (CEST)
-In-Reply-To: <1428510659-30393-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
+ [209.85.214.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57F472606C2
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 18:44:24 +0200 (CEST)
+Received: by obbfy7 with SMTP id fy7so146945468obb.2
+ for <alsa-devel@alsa-project.org>; Wed, 08 Apr 2015 09:44:23 -0700 (PDT)
+In-Reply-To: <20150408152042.GV16501@mwanda>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +28,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, Taylor Smock <smocktaylor@gmail.com>, joe@perches.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-> [PATCH 0/5 alsa-lib] amixer fixes for enumerated elements
+>
+> I don't understand what you are saying.  Are you trying to justify
+> breaking userspace somehow?
+>
+> WE DON:T BREAK USERSPACE!!11! etc etc.
+>
+> regards,
+> dan carpenter
 
-This is for 'alsa-utils', again...
-(I seems to be obsessed by it...)
++ case AUTO_PIN_LINE_OUT:
++ /* This deals with the case where we have two DACs and
++ * one LO, one HP and one Speaker */
++ if (!ch && cfg->speaker_outs && cfg->hp_outs) {
 
-On Apr 09 2015 01:30, Takashi Sakamoto wrote:
-> The amixer still has issues according to sset operation to enumerated
-> items. The issues are:
->  - Fail to handle omitted value of each channel.
->  - The name of enumerated element is truncated.
->  - Unclear separators for values of channels.
-> 
-> This patchset fixes these issues, including a small code
-> refactoring for better reading.
-> 
-> Takashi Sakamoto (5):
->   amixer: gather local variables in the beginning of functions
->   amixer: fix a bug to handle omitted value in parameter for enumerated
->     element
->   amixer: expand local storage for item name according to kernel code
->   amixer: arrange validation logic
->   amixer: use the same characters for separator.
-> 
->  amixer/amixer.c | 60 ++++++++++++++++++++++++++++++++++++++++-----------------
->  1 file changed, 42 insertions(+), 18 deletions(-)
+The patch did not check one LO and two DACs
+
+cfg->line_outs == 1
