@@ -1,24 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Audio Jack Out does not work
-Date: Thu, 9 Apr 2015 00:44:16 +0800
-Message-ID: <CAN8cciZoHSryL329cr5SGxUmpUepGG6auWWTrnLzADzsSOCFrA@mail.gmail.com>
-References: <CAD67Mo_N1_uEtjWKcV4+Rkjrvc6kcZuvUgrMPvBURJX0hFaaMA@mail.gmail.com>
- <20150407225642.GN16501@mwanda>
- <CAN8cciY89MH1p7An-RsRkMbFgdKF3OdYGO1hHV594buOpjSuBw@mail.gmail.com>
- <20150408080630.GO16501@mwanda>
- <CAN8ccib8mOjUKEEexssF0Xocs4WgnE7n1g-N=og3PbUj2Z-q7w@mail.gmail.com>
- <20150408152042.GV16501@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: remove unused functions
+Date: Wed, 8 Apr 2015 17:47:33 +0100
+Message-ID: <20150408164733.GB6023@sirena.org.uk>
+References: <1428498265-9066-1-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8763129292829098166=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
- [209.85.214.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 57F472606C2
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 18:44:24 +0200 (CEST)
-Received: by obbfy7 with SMTP id fy7so146945468obb.2
- for <alsa-devel@alsa-project.org>; Wed, 08 Apr 2015 09:44:23 -0700 (PDT)
-In-Reply-To: <20150408152042.GV16501@mwanda>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94BEF2606C2
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 18:47:53 +0200 (CEST)
+In-Reply-To: <1428498265-9066-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,24 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, Taylor Smock <smocktaylor@gmail.com>, joe@perches.com, david.henningsson@canonical.com
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> I don't understand what you are saying.  Are you trying to justify
-> breaking userspace somehow?
->
-> WE DON:T BREAK USERSPACE!!11! etc etc.
->
-> regards,
-> dan carpenter
 
-+ case AUTO_PIN_LINE_OUT:
-+ /* This deals with the case where we have two DACs and
-+ * one LO, one HP and one Speaker */
-+ if (!ch && cfg->speaker_outs && cfg->hp_outs) {
+--===============8763129292829098166==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nK0ftjkuqgJzeakL"
+Content-Disposition: inline
 
-The patch did not check one LO and two DACs
 
-cfg->line_outs == 1
+--nK0ftjkuqgJzeakL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Apr 08, 2015 at 06:34:25PM +0530, Sudip Mukherjee wrote:
+> these functions were never called by anyone.
+
+Applied, thanks.
+
+--nK0ftjkuqgJzeakL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVJVukAAoJECTWi3JdVIfQG/UH/jbb6IBDpveLVy2VKJJe8mhz
+jOOGKeGKWQfNXfGTgMBTInTfU6jH2s5aov3bpCGuAwhz39m60U82KHf5mg410yp5
+dKXN5lUe2ugfm44+jEF9VwPZZ7RODYLwIGXG9sD6cJQjkqF2CenLclTKjp5JFWgm
+UwIaKa7R7Xiyqs9cwsnkA7uqxysneuBBRDK5UULohcpjBQh35pmqUedg9ZE0uEQX
+vR7BC3qHI0BQq9V4BJQvIrNhMuX4JA4qiffhJO5zZqX/i3Xy7vTOAV+naVBf0V4A
+R90wTK/cuC3gU2bP/LmO6l+n6Xj/zXgwx0Jd4fA7+Bc7yRyHf0x7sT/2BB8KyZo=
+=FRHl
+-----END PGP SIGNATURE-----
+
+--nK0ftjkuqgJzeakL--
+
+--===============8763129292829098166==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8763129292829098166==--
