@@ -1,68 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix a buffer overflow issue
-Date: Wed, 8 Apr 2015 11:17:59 +0100
-Message-ID: <20150408101759.GT6023@sirena.org.uk>
-References: <1428408899-28677-1-git-send-email-yang.jie@intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3600553373103972248=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C51F5265211
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 12:18:06 +0200 (CEST)
-In-Reply-To: <1428408899-28677-1-git-send-email-yang.jie@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+From: Caesar Wang <wxt@rock-chips.com>
+Subject: [PATCH v2] ASoC: max98090: add shutdown callback for max98090
+Date: Wed,  8 Apr 2015 18:18:31 +0800
+Message-ID: <1428488311-27237-1-git-send-email-wxt@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sonny Rao <sonnyrao@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Heiko Stuebner <heiko@sntech.de>, Mark Brown <broonie@kernel.org>, zhengxing <zhengxing@rock-chips.com>, "jay.xu" <xjq@rock-chips.com>
+Cc: linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org, Caesar Wang <wxt@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Tushar Behera <tushar.b@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+To fix pop noise when shutdown,the pop noise during shutdown
+is the pmic cutoff power of codec without any notice.
 
---===============3600553373103972248==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kyiIRZ01VUpA+bwC"
-Content-Disposition: inline
+Signed-off-by: jay.xu <xjq@rock-chips.com>
+Signed-off-by: zhengxing <zhengxing@rock-chips.com>
+Signed-off-by: Caesar Wang <wxt@rock-chips.com>
 
+Serien-cc: linux-kernel@vger.kernel.org
+Serien-cc: devicetree@vger.kernel.org
+Serien-cc: dianders@chromium.org
 
---kyiIRZ01VUpA+bwC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+---
 
-On Tue, Apr 07, 2015 at 08:14:59PM +0800, Jie Yang wrote:
-> 0day robot reported a buffer overflow issue:
+Changes in v2:
+- remove the dev_info(..)
+- fix the comment style
+- add the max98090_i2c_shutdown() in remove() fuction
 
-Applied, thanks.
+ sound/soc/codecs/max98090.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
---kyiIRZ01VUpA+bwC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVJQBWAAoJECTWi3JdVIfQx6MH/3QZM8mI3c7GLocA0zJmsdAu
-h0qIzaUNmVLhgPYKZm9V9iMTcDUsf7Fs/35XjarJmN0npYpTGtYBuNOSPUZ9YTcj
-enXW3xzDrQjTz5HjQN9Y2My7c8f0L2LD1Re2MVXkOmgD9WP8/RJfL898yKjl3z+t
-PanIMc1dYh6s3TzT+LxrUeMFt2P02ivdnAe+iBNCMUvzGuHoFI3HVDqsfGiSy0te
-sj6NewnkF8BlmzQBYghCtILDBH6+tiV0AeaN79/f81mMD2svrG7fxFIhXk3VkpTV
-RxLtN/Jalc37LFh0sH/iJgYcEFg91kh1JyhFIj2G+7UaV5hGUprkaiufgzzoz6o=
-=YfM1
------END PGP SIGNATURE-----
-
---kyiIRZ01VUpA+bwC--
-
---===============3600553373103972248==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3600553373103972248==--
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index b112b1c..e59013a 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2607,10 +2607,26 @@ err_enable:
+ 
+ static int max98090_i2c_remove(struct i2c_client *client)
+ {
++	max98090_i2c_shutdown(client);
+ 	snd_soc_unregister_codec(&client->dev);
+ 	return 0;
+ }
+ 
++static void max98090_i2c_shutdown(struct i2c_client *i2c)
++{
++	struct max98090_priv *max98090 = dev_get_drvdata(&i2c->dev);
++
++	/*
++	 * Enable volume smoothing, disable zero cross.  This will cause
++	 * a quick 40ms ramp to mute on shutdown.
++	 */
++	regmap_write(max98090->regmap,
++		M98090_REG_LEVEL_CONTROL, M98090_VSENN_MASK);
++	regmap_write(max98090->regmap,
++		M98090_REG_DEVICE_SHUTDOWN, 0x00);
++	msleep(40);
++}
++
+ #ifdef CONFIG_PM
+ static int max98090_runtime_resume(struct device *dev)
+ {
+@@ -2697,6 +2713,7 @@ static struct i2c_driver max98090_i2c_driver = {
+ 	},
+ 	.probe  = max98090_i2c_probe,
+ 	.remove = max98090_i2c_remove,
++	.shutdown = max98090_i2c_shutdown,
+ 	.id_table = max98090_i2c_id,
+ };
+ 
+-- 
+1.9.1
