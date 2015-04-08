@@ -1,54 +1,56 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ASoC: Intel: remove unused functions
-Date: Wed,  8 Apr 2015 18:34:25 +0530
-Message-ID: <1428498265-9066-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Audio Jack Out does not work
+Date: Wed, 8 Apr 2015 21:20:29 +0800
+Message-ID: <CAN8ccib8mOjUKEEexssF0Xocs4WgnE7n1g-N=og3PbUj2Z-q7w@mail.gmail.com>
+References: <CAD67Mo_N1_uEtjWKcV4+Rkjrvc6kcZuvUgrMPvBURJX0hFaaMA@mail.gmail.com>
+ <20150407225642.GN16501@mwanda>
+ <CAN8cciY89MH1p7An-RsRkMbFgdKF3OdYGO1hHV594buOpjSuBw@mail.gmail.com>
+ <20150408080630.GO16501@mwanda>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
+ [209.85.214.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id A90412652CE
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 15:20:31 +0200 (CEST)
+Received: by obbfy7 with SMTP id fy7so136940865obb.2
+ for <alsa-devel@alsa-project.org>; Wed, 08 Apr 2015 06:20:30 -0700 (PDT)
+In-Reply-To: <20150408080630.GO16501@mwanda>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, Taylor Smock <smocktaylor@gmail.com>, joe@perches.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-these functions were never called by anyone.
+> > This patch only change the name of control, you will also need
+pulseaudio
+> > patch if you are using pulseaudio
+> >
+> >
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa/mixer?id=aec811798cd883a454b9b5cd82c77831906bbd2d
+>
+> Ugh...  You are going to make Linus start cursing.
+>
+> https://lkml.org/lkml/2012/12/23/75
+>
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
- sound/soc/intel/atom/sst/sst_pvt.c | 24 ------------------------
- 1 file changed, 24 deletions(-)
+The patch does not only affect codecs with two DAC , using hda-emu
 
-diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
-index 2d74249..adb32fe 100644
---- a/sound/soc/intel/atom/sst/sst_pvt.c
-+++ b/sound/soc/intel/atom/sst/sst_pvt.c
-@@ -111,30 +111,6 @@ int sst_wait_interruptible(struct intel_sst_drv *sst_drv_ctx,
- 
- }
- 
--static unsigned long long read_shim_data(struct intel_sst_drv *sst, int addr)
--{
--	unsigned long long val = 0;
--
--	switch (sst->dev_id) {
--	case SST_MRFLD_PCI_ID:
--	case SST_BYT_ACPI_ID:
--		val = sst_shim_read64(sst->shim, addr);
--		break;
--	}
--	return val;
--}
--
--static void write_shim_data(struct intel_sst_drv *sst, int addr,
--				unsigned long long data)
--{
--	switch (sst->dev_id) {
--	case SST_MRFLD_PCI_ID:
--	case SST_BYT_ACPI_ID:
--		sst_shim_write64(sst->shim, addr, (u64) data);
--		break;
--	}
--}
--
- /*
-  * sst_wait_timeout - wait on event for timeout
-  *
--- 
-1.8.1.2
+it also affect several codecs
+
+cmi9880-lg-lw60
+idt92hd73c1x5-alienware-m17x
+stac9200-dell-precision-490
+stac9228-dell-xps-m1330
+
+Rename "PCM playback volume" control also force the system to create
+softvol  "PCM playback volume" when application use front or sysdefault
+device
