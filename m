@@ -1,70 +1,57 @@
-From: Caesar Wang <wxt@rock-chips.com>
-Subject: [PATCH v3] ASoC: max98090: add shutdown callback for max98090
-Date: Wed,  8 Apr 2015 19:05:56 +0800
-Message-ID: <1428491156-31803-1-git-send-email-wxt@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sonny Rao <sonnyrao@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Heiko Stuebner <heiko@sntech.de>, Mark Brown <broonie@kernel.org>, zhengxing <zhengxing@rock-chips.com>, "jay.xu" <xjq@rock-chips.com>
-Cc: devicetree@vger.kernel.org, dianders@chromium.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Caesar Wang <wxt@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Tushar Behera <tushar.b@samsung.com>
+From: Sudip Mukherjee <sudipm.mukherjee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH 00/14] parport: check success of attach call
+Date: Wed,  8 Apr 2015 16:50:26 +0530
+Message-ID: <1428492040-5581-1-git-send-email-sudipm.mukherjee@gmail.com>
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Jean Delvare <jdelvare-l3A5Bk7waGM@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, Rodolfo Giometti <giometti-AVVDYK/kqiJWk0Htik3J/w@public.gmane.org>, "James E.J. Bottomley" <JBottomley-bzQdu9zFT3WakBO8gow8eQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Willy Tarreau <willy-859RlTSWH48dnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Sudip Mukherjee <sudipm.mukherjee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-To fix pop noise when shutdown,the pop noise during shutdown
-is the pmic cutoff power of codec without any notice.
+Currently we are not checking if attach has succeeded or not. Also
+parport_register_driver() always return 0 even if attach fails.
+But in many places where attach has been used, it can fail.
+So, modified the parport code to check the return value of attach and
+accordingly return either 0 or error code from parport_register_driver.
 
-Signed-off-by: jay.xu <xjq@rock-chips.com>
-Signed-off-by: zhengxing <zhengxing@rock-chips.com>
-Signed-off-by: Caesar Wang <wxt@rock-chips.com>
 
----
+Sudip Mukherjee (14):
+  parport: return value of attach and parport_register_driver
+  ALSA: portman2x4: return proper error values from attach
+  ALSA: mts64: return proper error values from attach
+  staging: panel: return proper error values from attach
+  spi: lm70llp: return proper error values from attach
+  spi: butterfly: return proper error values from attach
+  [SCSI] ppa: return proper error values from attach
+  [SCSI] imm: return proper error values from attach
+  pps: return proper error values from attach
+  pps: return proper error values from attach
+  net: plip: return proper error values from attach
+  i2c-parport: return proper error values from attach
+  ppdev: return proper error values from attach
+  char: lp: return proper error values from attach
 
-Changes in v3:
-- modify the shutdown function before remove(..)
-- fix the `Serien-cc`
+ drivers/char/lp.c                        | 16 +++++++++++-----
+ drivers/char/ppdev.c                     | 10 +++++++---
+ drivers/i2c/busses/i2c-parport.c         |  7 ++++---
+ drivers/net/plip/plip.c                  | 16 ++++++++++------
+ drivers/parport/share.c                  | 20 +++++++++++++++-----
+ drivers/pps/clients/pps_parport.c        |  7 ++++---
+ drivers/pps/generators/pps_gen_parport.c |  9 +++++----
+ drivers/scsi/imm.c                       |  4 ++--
+ drivers/scsi/ppa.c                       |  4 ++--
+ drivers/spi/spi-butterfly.c              |  7 ++++---
+ drivers/spi/spi-lm70llp.c                |  7 ++++---
+ drivers/staging/panel/panel.c            | 11 ++++++-----
+ include/linux/parport.h                  |  2 +-
+ sound/drivers/mts64.c                    | 13 ++++++++-----
+ sound/drivers/portman2x4.c               | 15 ++++++++++-----
+ 15 files changed, 93 insertions(+), 55 deletions(-)
 
-Changes in v2:
-- remove the dev_info(..)
-- fix the comment style
-- add the max98090_i2c_shutdown() in remove() fuction
-
- sound/soc/codecs/max98090.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index b112b1c..3e33ef2 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2605,8 +2605,24 @@ err_enable:
- 	return ret;
- }
- 
-+static void max98090_i2c_shutdown(struct i2c_client *i2c)
-+{
-+	struct max98090_priv *max98090 = dev_get_drvdata(&i2c->dev);
-+
-+	/*
-+	 * Enable volume smoothing, disable zero cross.  This will cause
-+	 * a quick 40ms ramp to mute on shutdown.
-+	 */
-+	regmap_write(max98090->regmap,
-+		M98090_REG_LEVEL_CONTROL, M98090_VSENN_MASK);
-+	regmap_write(max98090->regmap,
-+		M98090_REG_DEVICE_SHUTDOWN, 0x00);
-+	msleep(40);
-+}
-+
- static int max98090_i2c_remove(struct i2c_client *client)
- {
-+	max98090_i2c_shutdown(client);
- 	snd_soc_unregister_codec(&client->dev);
- 	return 0;
- }
-@@ -2696,6 +2712,7 @@ static struct i2c_driver max98090_i2c_driver = {
- 		.acpi_match_table = ACPI_PTR(max98090_acpi_match),
- 	},
- 	.probe  = max98090_i2c_probe,
-+	.shutdown = max98090_i2c_shutdown,
- 	.remove = max98090_i2c_remove,
- 	.id_table = max98090_i2c_id,
- };
 -- 
-1.9.1
+1.8.1.2
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
