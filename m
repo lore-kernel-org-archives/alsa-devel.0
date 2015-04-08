@@ -1,97 +1,49 @@
 From: Caesar Wang <wxt@rock-chips.com>
 Subject: Re: [PATCH] ASoC: max98090: add shutdown callback for max98090
-Date: Wed, 08 Apr 2015 18:14:18 +0800
-Message-ID: <5524FF7A.1090802@rock-chips.com>
-References: <1428483128-23498-1-git-send-email-wxt@rock-chips.com> <1428483128-23498-2-git-send-email-wxt@rock-chips.com> <15530630.jvXTF4Jl8n@diego>
+Date: Wed, 08 Apr 2015 18:15:28 +0800
+Message-ID: <5524FFC0.4070900@rock-chips.com>
+References: <1428483128-23498-1-git-send-email-wxt@rock-chips.com> <1428483128-23498-2-git-send-email-wxt@rock-chips.com> <20150408095005.GS6023@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8;
 	format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <15530630.jvXTF4Jl8n@diego>
+In-Reply-To: <20150408095005.GS6023@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>
-Cc: Sonny Rao <sonnyrao@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, zhengxing <zhengxing@rock-chips.com>, "jay.xu" <xjq@rock-chips.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Tushar Behera <tushar.b@samsung.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Sonny Rao <sonnyrao@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>, Heiko Stuebner <heiko@sntech.de>, zhengxing <zhengxing@rock-chips.com>, "jay.xu" <xjq@rock-chips.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Tushar Behera <tushar.b@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Heiko,
+Mark,
 
-=E5=9C=A8 2015=E5=B9=B404=E6=9C=8808=E6=97=A5 17:25, Heiko St=C3=BCbner=
- =E5=86=99=E9=81=93:
-> Hi Caesar,
+
+=E5=9C=A8 2015=E5=B9=B404=E6=9C=8808=E6=97=A5 17:50, Mark Brown =E5=86=99=
+=E9=81=93:
+> On Wed, Apr 08, 2015 at 04:52:08PM +0800, Caesar Wang wrote:
 >
-> Am Mittwoch, 8. April 2015, 16:52:08 schrieb Caesar Wang:
->> To fix pop noise when shutdown,the pop noise during shutdown
->> is the pmic cutoff power of codec without any notice.
->>
->> Signed-off-by: jay.xu <xjq@rock-chips.com>
->> Signed-off-by: zhengxing <zhengxing@rock-chips.com>
->> Signed-off-by: Caesar Wang <wxt@rock-chips.com>
->>
->> Serien-cc: linux-kernel@vger.kernel.org
->> Serien-cc: devicetree@vger.kernel.org
->> Serien-cc: dianders@chromium.org
->>
->> ---
->>
->>   sound/soc/codecs/max98090.c | 17 +++++++++++++++++
->>   1 file changed, 17 insertions(+)
->>
->> diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090=
-=2Ec
->> index b112b1c..066954a0 100644
->> --- a/sound/soc/codecs/max98090.c
->> +++ b/sound/soc/codecs/max98090.c
->> @@ -2611,6 +2611,22 @@ static int max98090_i2c_remove(struct i2c_cli=
-ent
->> *client) return 0;
->>   }
->>
 >> +static void max98090_i2c_shutdown(struct i2c_client *i2c)
 >> +{
 >> +	struct max98090_priv *max98090 =3D dev_get_drvdata(&i2c->dev);
 >> +
 >> +	dev_info(&i2c->dev, "shut down device\n");
-> is this dev_info really necessary? dev_dbg might be better, or leave =
-it out
-> completely, as it doesn't really provide any additional benefit.
->
+> Remove this, it's adding noise.
 
-As Mark suggestion, I will remove it.
+Done
 >> +
 >> +	/* Enable volume smoothing, disable zero cross.  This will cause
 >> +	 * a quick 40ms ramp to mute on shutdown.
 >> +	 */
-> Comment style is off ... should be
->
-> /*
->   * Enable volume smoothing, disable zero cross.  This will cause
->   * a quick 40ms ramp to mute on shutdown.
->   */
->
-
-Done
 >> +	regmap_write(max98090->regmap,
 >> +		M98090_REG_LEVEL_CONTROL, M98090_VSENN_MASK);
 >> +	regmap_write(max98090->regmap,
 >> +		M98090_REG_DEVICE_SHUTDOWN, 0x00);
 >> +	msleep(40);
 >> +}
->> +
->>   #ifdef CONFIG_PM
->>   static int max98090_runtime_resume(struct device *dev)
->>   {
->> @@ -2697,6 +2713,7 @@ static struct i2c_driver max98090_i2c_driver =3D=
- {
->>   	},
->>   	.probe  =3D max98090_i2c_probe,
->>   	.remove =3D max98090_i2c_remove,
->> +	.shutdown =3D max98090_i2c_shutdown,
->>   	.id_table =3D max98090_i2c_id,
->>   };
->
->
->
+> This is OK but equivalent code should be being added to the driver
+> remove path as the same thing should be happening there.
+Yeah.I will fix it in v2 patch.
+
+Thanks!
 
 --=20
 ***********************************************************************=
