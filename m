@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: tegra_alc5632: Use card DAPM
- context to access widgets
-Date: Wed, 8 Apr 2015 21:10:11 +0100
-Message-ID: <20150408201011.GO6023@sirena.org.uk>
-References: <1428059048-32315-1-git-send-email-lars@metafoo.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: ASoC: Failed to create DAPM debugfs
+Date: Wed, 8 Apr 2015 17:35:50 -0300
+Message-ID: <CAOMZO5AxT9dgE=QaH18FUYD5CbMvn67XpMo4dH6T0v9Qen-RRg@mail.gmail.com>
+References: <CAOMZO5DP4fahmC9W6eBFdjxR1DqPMgyhgwxwSZP_TcqxLSy=7A@mail.gmail.com>
+ <55258272.2010205@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7063458981316458423=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AA4872606E2
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 22:10:27 +0200 (CEST)
-In-Reply-To: <1428059048-32315-1-git-send-email-lars@metafoo.de>
+Received: from mail-la0-f54.google.com (mail-la0-f54.google.com
+ [209.85.215.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 189462605AF
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 22:35:51 +0200 (CEST)
+Received: by laat2 with SMTP id t2so67934328laa.1
+ for <alsa-devel@alsa-project.org>; Wed, 08 Apr 2015 13:35:50 -0700 (PDT)
+In-Reply-To: <55258272.2010205@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Lucas Stach <dev@lynxeye.de>, Liam Girdwood <lgirdwood@gmail.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Russell King <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Apr 8, 2015 at 4:33 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
 
---===============7063458981316458423==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MPbi04vS07RSAQLa"
-Content-Disposition: inline
+> Does the card name contain a '/' like in 'S/PDIF'?
 
+Yes, it does. I also tried to change it like this:
 
---MPbi04vS07RSAQLa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -37,8 +37,8 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+                goto end;
+        }
 
-On Fri, Apr 03, 2015 at 01:04:05PM +0200, Lars-Peter Clausen wrote:
-> The dapm field of the snd_soc_codec struct will eventually be removed
-> (replaced with the DAPM context from the component embedded inside the
-> CODEC). Replace its usage with the card's DAPM context. The idea is that
-> DAPM is hierarchical and with the card at the root it is possible to access
-> widgets from other contexts through the card context.
+-       data->dai.name = "S/PDIF PCM";
+-       data->dai.stream_name = "S/PDIF PCM";
++       data->dai.name = "SPDIF PCM";
++       data->dai.stream_name = "SPDIF PCM";
+        data->dai.codec_dai_name = "snd-soc-dummy-dai";
+        data->dai.codec_name = "snd-soc-dummy";
+        data->dai.cpu_of_node = spdif_np;
 
-Applied all, thanks.
+,but I still get the warning.
 
---MPbi04vS07RSAQLa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Thanks,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVJYsiAAoJECTWi3JdVIfQjfEH/isJvQX9D5sd5bTRmf2rcUF3
-9cSIdJMEvZWHrtWkMfQmJCSrkuUw52pA9hkfzlIrVBEt/ZjQHq5oR21v5uCmmnRB
-KyZ4O3B2kPD2KIt0tYnEi9/CTBt40So0HPI+W574Ordvvb8sdOLCXk47wyFx48nT
-+91x2yi2CSS06JtiESq2zNju/vKHT0DA86dbJjpOM5KT9D5HlYdBk+huzEY86R4o
-MQEF6OiojnriuG4POVlysbggPzkYVqaYU6arCVBZLjgt/NG3Ab/8lUFc0S2T27sQ
-C5cFFCX69qDOQ69PhpggHK/X3UKAHbOjxBAehFcXKh8YBSzQYYpOObY+bfZCpL4=
-=IaUh
------END PGP SIGNATURE-----
-
---MPbi04vS07RSAQLa--
-
---===============7063458981316458423==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7063458981316458423==--
+Fabio Estevam
