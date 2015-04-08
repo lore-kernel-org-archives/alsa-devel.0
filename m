@@ -1,16 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2] ALSA: ctl: refactoring for read operation
-Date: Thu,  9 Apr 2015 01:55:08 +0900
-Message-ID: <1428512108-1852-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1428512108-1852-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Remove custom
+ fsl_ssi_debugfs_create/remove()
+Date: Wed, 8 Apr 2015 17:59:46 +0100
+Message-ID: <20150408165946.GC6023@sirena.org.uk>
+References: <1428512062-17229-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2872495618327643293=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BFA0265677
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 18:55:13 +0200 (CEST)
-In-Reply-To: <1428512108-1852-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D91F1265375
+ for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 19:00:16 +0200 (CEST)
+In-Reply-To: <1428512062-17229-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,128 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_ctl_read() has nested loop and complicated condition for return
-status. This is not better for reading.
 
-This commit applies refactoring with two loops.
+--===============2872495618327643293==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="FkEFdId2WpBqWH91"
+Content-Disposition: inline
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/control.c | 74 ++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 46 insertions(+), 28 deletions(-)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index de19d56..6870baf 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1520,58 +1520,76 @@ static ssize_t snd_ctl_read(struct file *file, char __user *buffer,
- 			    size_t count, loff_t * offset)
- {
- 	struct snd_ctl_file *ctl;
--	int err = 0;
--	ssize_t result = 0;
-+	struct snd_ctl_event ev;
-+	struct snd_kctl_event *kev;
-+	wait_queue_t wait;
-+	size_t result;
-+	int err;
- 
- 	ctl = file->private_data;
- 	if (snd_BUG_ON(!ctl || !ctl->card))
- 		return -ENXIO;
- 	if (!ctl->subscribed)
- 		return -EBADFD;
-+
-+	/* The size of given buffer should be larger than at least one event. */
- 	if (count < sizeof(struct snd_ctl_event))
- 		return -EINVAL;
-+
-+	/* Block till any events were queued. */
- 	spin_lock_irq(&ctl->read_lock);
--	while (count >= sizeof(struct snd_ctl_event)) {
--		struct snd_ctl_event ev;
--		struct snd_kctl_event *kev;
--		while (list_empty(&ctl->events)) {
--			wait_queue_t wait;
--			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
--				err = -EAGAIN;
--				goto __end_lock;
--			}
--			init_waitqueue_entry(&wait, current);
--			add_wait_queue(&ctl->change_sleep, &wait);
--			set_current_state(TASK_INTERRUPTIBLE);
-+	while (list_empty(&ctl->events)) {
-+		if (file->f_flags & O_NONBLOCK) {
-+			spin_unlock_irq(&ctl->read_lock);
-+			return -EAGAIN;
-+		}
-+
-+		/* The card was disconnected. The queued events are dropped. */
-+		if (ctl->card->shutdown) {
- 			spin_unlock_irq(&ctl->read_lock);
--			schedule();
--			remove_wait_queue(&ctl->change_sleep, &wait);
--			if (ctl->card->shutdown)
--				return -ENODEV;
--			if (signal_pending(current))
--				return -ERESTARTSYS;
--			spin_lock_irq(&ctl->read_lock);
-+			return -ENODEV;
- 		}
-+
-+
-+		init_waitqueue_entry(&wait, current);
-+		add_wait_queue(&ctl->change_sleep, &wait);
-+		set_current_state(TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&ctl->read_lock);
-+
-+		schedule();
-+
-+		remove_wait_queue(&ctl->change_sleep, &wait);
-+
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+
-+		spin_lock_irq(&ctl->read_lock);
-+	}
-+
-+	/* Copy events till the buffer filled, or no events are remained. */
-+	result = 0;
-+	while (count >= sizeof(struct snd_ctl_event)) {
-+		if (list_empty(&ctl->events))
-+			break;
- 		kev = snd_kctl_event(ctl->events.next);
-+		list_del(&kev->list);
-+
- 		ev.type = SNDRV_CTL_EVENT_ELEM;
- 		ev.data.elem.mask = kev->mask;
- 		ev.data.elem.id = kev->id;
--		list_del(&kev->list);
--		spin_unlock_irq(&ctl->read_lock);
- 		kfree(kev);
- 		if (copy_to_user(buffer, &ev, sizeof(struct snd_ctl_event))) {
- 			err = -EFAULT;
--			goto __end;
-+			break;
- 		}
--		spin_lock_irq(&ctl->read_lock);
-+
- 		buffer += sizeof(struct snd_ctl_event);
- 		count -= sizeof(struct snd_ctl_event);
- 		result += sizeof(struct snd_ctl_event);
- 	}
--      __end_lock:
-+
- 	spin_unlock_irq(&ctl->read_lock);
--      __end:
--      	return result > 0 ? result : err;
-+	return result;
- }
- 
- static unsigned int snd_ctl_poll(struct file *file, poll_table * wait)
--- 
-2.1.0
+--FkEFdId2WpBqWH91
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Apr 08, 2015 at 01:54:22PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Since commit 81c7cfd1b22a0 ("ASoC: Move debugfs registration to the
+> component level") ASoC core code deals with registering debugfs, so we
+> should remove the custom fsl_ssi_debugfs_create/remove() to avoid the
+> following warning:
+
+So this sounds like an issue but...
+
+> -int fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg, struct device *d=
+ev)
+> -{
+> -	ssi_dbg->dbg_dir =3D debugfs_create_dir(dev_name(dev), NULL);
+> -	if (!ssi_dbg->dbg_dir)
+> -		return -ENOMEM;
+> -
+> -	ssi_dbg->dbg_stats =3D debugfs_create_file("stats", S_IRUGO,
+> -			ssi_dbg->dbg_dir, ssi_dbg, &fsl_ssi_stats_ops);
+> -	if (!ssi_dbg->dbg_stats) {
+> -		debugfs_remove(ssi_dbg->dbg_dir);
+> -		return -ENOMEM;
+> -	}
+> -
+> -	return 0;
+> -}
+
+=2E..shouldn't this just be removing the creation of the directory, not
+the stats file that was being put inside it?
+
+--FkEFdId2WpBqWH91
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVJV6CAAoJECTWi3JdVIfQDt8H/1ts9VtYflueUslbEC8ZEeeg
+AXmeZ19XTnZ6nqnSiSZ5WdxytblLxHxFFja3I8xHNwsGb4Z1bwvh6wnizpGdiPrB
+76aDFGuq+GNEnyASoe3FtKM/rpE5bZIhnrVz2rgl+9iVeB+yfIFluua5HIEOrSPK
+U3hqOTxJsEM8fFls3VgBbVNA3x9QaPSIqZmgjpa5EBklwZzK47CLzH2e8SzzAC5P
+zBhL2wE/zQjJj2MJBvyrh9rxhIos4sMp0S1VztAayzigE7B5BcH5GYls6oXqUhjy
+jY9hgOz63GhS89JDIWGWnPfMnp2IwAeZQ3+v5Iu6VO+g+X+FsD6pyEhEvLrClgY=
+=h8nS
+-----END PGP SIGNATURE-----
+
+--FkEFdId2WpBqWH91--
+
+--===============2872495618327643293==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2872495618327643293==--
