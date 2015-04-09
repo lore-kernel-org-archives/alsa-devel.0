@@ -1,16 +1,25 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH v2] ASoC: fsl: Add the audio interface acronyms
-	in Kconfig text
-Date: Thu, 9 Apr 2015 15:32:09 -0300
-Message-ID: <1428604329-23575-1-git-send-email-fabio.estevam@freescale.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: ASoC: Failed to create DAPM debugfs
+Date: Thu, 9 Apr 2015 12:37:00 -0700
+Message-ID: <20150409193659.GA9875@Asurada-CZ80>
+References: <CAOMZO5DP4fahmC9W6eBFdjxR1DqPMgyhgwxwSZP_TcqxLSy=7A@mail.gmail.com>
+ <55258272.2010205@metafoo.de>
+ <CAOMZO5AxT9dgE=QaH18FUYD5CbMvn67XpMo4dH6T0v9Qen-RRg@mail.gmail.com>
+ <55262C9D.5080005@metafoo.de> <20150409082246.GB62585@Asurada-CZ80>
+ <55263873.108@metafoo.de> <20150409084509.GC62585@Asurada-CZ80>
+ <55263E7C.9070501@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0112.outbound.protection.outlook.com [157.56.111.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 32979265947
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 20:32:24 +0200 (CEST)
+Received: from mail-pd0-f178.google.com (mail-pd0-f178.google.com
+ [209.85.192.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7656B265917
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 21:37:06 +0200 (CEST)
+Received: by pddn5 with SMTP id n5so163193415pdd.2
+ for <alsa-devel@alsa-project.org>; Thu, 09 Apr 2015 12:37:05 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <55263E7C.9070501@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,42 +29,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Russell King <linux@arm.linux.org.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-To keep consistency with the other Kconfig entries, use the audio
-interface acronyms (SSI and SPDIF) in the Kconfig menu text.
+On Thu, Apr 09, 2015 at 10:55:24AM +0200, Lars-Peter Clausen wrote:
+> >But the snd_soc_dapm_debugfs_init() call that's going to access the
+> >card->debugfs_root was put before the snd_init_card_debugfs() at the
+> >first place....
+> >
+> >I'm not sure if this could be a fix but the warning is actually gone:
+> 
+> There is more stuff that expects the directory to exist in
+> snd_soc_instantiate_card() so we need to move
+> soc_init_card_debugfs() further up. See the patch I just sent.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Fix typo in 'interfacce'
-
- sound/soc/fsl/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 081e406..fa44fc6 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -24,7 +24,7 @@ config SND_SOC_FSL_SAI
- 	  in-tree drivers select it automatically.
- 
- config SND_SOC_FSL_SSI
--	tristate "Synchronous Serial Interface module support"
-+	tristate "Synchronous Serial Interface module (SSI) support"
- 	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
- 	select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && (MXC_TZIC || MXC_AVIC)
- 	select REGMAP_MMIO
-@@ -35,7 +35,7 @@ config SND_SOC_FSL_SSI
- 	  in-tree drivers select it automatically.
- 
- config SND_SOC_FSL_SPDIF
--	tristate "Sony/Philips Digital Interface module support"
-+	tristate "Sony/Philips Digital Interface (SPDIF) module support"
- 	select REGMAP_MMIO
- 	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
- 	select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && (MXC_TZIC || MXC_AVIC)
--- 
-1.9.1
+Yea, I saw that. Thank you for the fix.
