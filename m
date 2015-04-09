@@ -1,24 +1,15 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: ASoC: Failed to create DAPM debugfs
-Date: Thu, 9 Apr 2015 01:45:10 -0700
-Message-ID: <20150409084509.GC62585@Asurada-CZ80>
-References: <CAOMZO5DP4fahmC9W6eBFdjxR1DqPMgyhgwxwSZP_TcqxLSy=7A@mail.gmail.com>
- <55258272.2010205@metafoo.de>
- <CAOMZO5AxT9dgE=QaH18FUYD5CbMvn67XpMo4dH6T0v9Qen-RRg@mail.gmail.com>
- <55262C9D.5080005@metafoo.de> <20150409082246.GB62585@Asurada-CZ80>
- <55263873.108@metafoo.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/3] ASoC: Create card debugfs directory earlier
+Date: Thu,  9 Apr 2015 10:52:36 +0200
+Message-ID: <1428569558-15883-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id B7BB2265268
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 10:45:15 +0200 (CEST)
-Received: by pacyx8 with SMTP id yx8so142697974pac.1
- for <alsa-devel@alsa-project.org>; Thu, 09 Apr 2015 01:45:13 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <55263873.108@metafoo.de>
+Received: from smtp-out-026.synserver.de (smtp-out-026.synserver.de
+ [212.40.185.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 852652651D2
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 10:52:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,79 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Russell King <linux@arm.linux.org.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Fabio Estevam <festevam@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 09, 2015 at 10:29:39AM +0200, Lars-Peter Clausen wrote:
-> On 04/09/2015 10:22 AM, Nicolin Chen wrote:
-> >On Thu, Apr 09, 2015 at 09:39:09AM +0200, Lars-Peter Clausen wrote:
-> >
-> >>The whole thing is a bit confusing. The message you get is what
-> >>you'd get if the 'dapm' sub-directory in the card debugfs directory
-> >>can not be created. One of the few reasons why it would fail is if
-> >>it already existed, but we should never register two dapm contexts
-> >>for the card, so that's a bit strange. One of the few reasons I can
-> >>imagine this could happen is if the parent directory could not be
-> >>created and now we try to create multiple dapm directories at the
-> >>top-level.
-> >>
-> >>Try to do some more debugging and see why and where exactly things
-> >>go wrong. Can you also try this:
-> >>
-> >>diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> >>index b6f8820..7810262 100644
-> >>--- a/sound/soc/soc-dapm.c
-> >>+++ b/sound/soc/soc-dapm.c
-> >>@@ -1898,6 +1898,11 @@
-> >>  {
-> >>  	struct dentry *d;
-> >>
-> >>+	if (!parent) {
-> >>+		dev_warn(dapm->dev, "No debugfs parent!\n");
-> >
-> >I tried, yes, the parent is NULL. And I did a little tracing and found
-> >that the card->debugfs_root, which is NULL, should be initialized in
-> >the soc_init_card_debugfs() while snd_soc_dapm_debugfs_init() seems
-> >to access this card->debugfs_root before calling soc_init_card_debugfs().
-> >
-> >I think I must have missed something over here....
-> 
-> Looks like this is the culprit: http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=4e2576bd36a12e78ac3786d05b99a820dffe687f
->
+Create the card debugfs directory at the begining of the initilization
+rather then the end as various steps in the initilization sequence will try
+to register files and sub-directories in the card directory.
 
-I think this patch didn't move the snd_init_card_debugfs() backwards.
-It just wrapped the call at the end of snd_soc_instantiate_card().
-
-But the snd_soc_dapm_debugfs_init() call that's going to access the
-card->debugfs_root was put before the snd_init_card_debugfs() at the
-first place....
-
-I'm not sure if this could be a fix but the warning is actually gone:
+Fixes: 4e2576bd36a1 ("ASoC: soc-core: initialize debugfs in snd_soc_instantiate_card()")
+Reported-by: Fabio Estevam <festevam@gmail.com>
+Reported-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2801578..0412795 100644
+index 2801578..7bd1599 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1560,10 +1560,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 	card->dapm.card = card;
- 	list_add(&card->dapm.list, &card->dapm_list);
+@@ -1555,6 +1555,8 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		goto base_error;
+ 	}
  
--#ifdef CONFIG_DEBUG_FS
--	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
--#endif
--
- #ifdef CONFIG_PM_SLEEP
- 	/* deferred resume work */
- 	INIT_WORK(&card->deferred_resume_work, soc_resume_deferred);
-@@ -1686,6 +1682,10 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 
- 	soc_init_card_debugfs(card);
- 
-+#ifdef CONFIG_DEBUG_FS
-+	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
-+#endif
++	soc_init_card_debugfs(card);
 +
+ 	card->dapm.bias_level = SND_SOC_BIAS_OFF;
+ 	card->dapm.dev = card->dev;
+ 	card->dapm.card = card;
+@@ -1684,8 +1686,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	mutex_unlock(&card->mutex);
+ 	mutex_unlock(&client_mutex);
+ 
+-	soc_init_card_debugfs(card);
+-
  	return 0;
  
  probe_aux_dev_err:
+@@ -1699,6 +1699,7 @@ card_probe_error:
+ 	if (card->remove)
+ 		card->remove(card);
+ 
++	soc_cleanup_card_debugfs(card);
+ 	snd_card_free(card->snd_card);
+ 
+ base_error:
+-- 
+1.8.0
