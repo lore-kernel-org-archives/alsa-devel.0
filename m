@@ -1,18 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/2] ALSA: ctl: refactoring for read
-	operation
-Date: Thu, 09 Apr 2015 16:35:06 +0900
-Message-ID: <55262BAA.9060004@sakamocchi.jp>
-References: <1428512108-1852-1-git-send-email-o-takashi@sakamocchi.jp>	<1428512108-1852-3-git-send-email-o-takashi@sakamocchi.jp>
- <s5h7ftl7tn4.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: ASoC: Failed to create DAPM debugfs
+Date: Thu, 09 Apr 2015 09:39:09 +0200
+Message-ID: <55262C9D.5080005@metafoo.de>
+References: <CAOMZO5DP4fahmC9W6eBFdjxR1DqPMgyhgwxwSZP_TcqxLSy=7A@mail.gmail.com>	<55258272.2010205@metafoo.de>
+ <CAOMZO5AxT9dgE=QaH18FUYD5CbMvn67XpMo4dH6T0v9Qen-RRg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 63D242606E1
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 09:35:09 +0200 (CEST)
-In-Reply-To: <s5h7ftl7tn4.wl-tiwai@suse.de>
+Received: from smtp-out-026.synserver.de (smtp-out-026.synserver.de
+ [212.40.185.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65A4A261600
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 09:39:09 +0200 (CEST)
+In-Reply-To: <CAOMZO5AxT9dgE=QaH18FUYD5CbMvn67XpMo4dH6T0v9Qen-RRg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,145 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Russell King <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Apr 09 2015 14:33, Takashi Iwai wrote:
-> At Thu,  9 Apr 2015 01:55:08 +0900,
-> Takashi Sakamoto wrote:
->>
->> snd_ctl_read() has nested loop and complicated condition for return
->> status. This is not better for reading.
->>
->> This commit applies refactoring with two loops.
->>
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->> ---
->>   sound/core/control.c | 74 ++++++++++++++++++++++++++++++++--------------------
->>   1 file changed, 46 insertions(+), 28 deletions(-)
->>
->> diff --git a/sound/core/control.c b/sound/core/control.c
->> index de19d56..6870baf 100644
->> --- a/sound/core/control.c
->> +++ b/sound/core/control.c
->> @@ -1520,58 +1520,76 @@ static ssize_t snd_ctl_read(struct file *file, char __user *buffer,
->>   			    size_t count, loff_t * offset)
->>   {
->>   	struct snd_ctl_file *ctl;
->> -	int err = 0;
->> -	ssize_t result = 0;
->> +	struct snd_ctl_event ev;
->> +	struct snd_kctl_event *kev;
->> +	wait_queue_t wait;
->> +	size_t result;
->> +	int err;
->>
->>   	ctl = file->private_data;
->>   	if (snd_BUG_ON(!ctl || !ctl->card))
->>   		return -ENXIO;
->>   	if (!ctl->subscribed)
->>   		return -EBADFD;
->> +
->> +	/* The size of given buffer should be larger than at least one event. */
->>   	if (count < sizeof(struct snd_ctl_event))
->>   		return -EINVAL;
->> +
->> +	/* Block till any events were queued. */
->>   	spin_lock_irq(&ctl->read_lock);
->> -	while (count >= sizeof(struct snd_ctl_event)) {
->> -		struct snd_ctl_event ev;
->> -		struct snd_kctl_event *kev;
->> -		while (list_empty(&ctl->events)) {
->> -			wait_queue_t wait;
->> -			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
->> -				err = -EAGAIN;
->> -				goto __end_lock;
->> -			}
->> -			init_waitqueue_entry(&wait, current);
->> -			add_wait_queue(&ctl->change_sleep, &wait);
->> -			set_current_state(TASK_INTERRUPTIBLE);
->> +	while (list_empty(&ctl->events)) {
->> +		if (file->f_flags & O_NONBLOCK) {
->> +			spin_unlock_irq(&ctl->read_lock);
->> +			return -EAGAIN;
+On 04/08/2015 10:35 PM, Fabio Estevam wrote:
+> On Wed, Apr 8, 2015 at 4:33 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
 >
-> It's better not to spread the unlock call allover the places but just
-> "goto unlock".
+>> Does the card name contain a '/' like in 'S/PDIF'?
 >
->> +		}
->> +
->> +		/* The card was disconnected. The queued events are dropped. */
->> +		if (ctl->card->shutdown) {
->>   			spin_unlock_irq(&ctl->read_lock);
->> -			schedule();
->> -			remove_wait_queue(&ctl->change_sleep, &wait);
->> -			if (ctl->card->shutdown)
->> -				return -ENODEV;
->> -			if (signal_pending(current))
->> -				return -ERESTARTSYS;
->> -			spin_lock_irq(&ctl->read_lock);
->> +			return -ENODEV;
->>   		}
->> +
->> +
->> +		init_waitqueue_entry(&wait, current);
->> +		add_wait_queue(&ctl->change_sleep, &wait);
->> +		set_current_state(TASK_INTERRUPTIBLE);
->> +		spin_unlock_irq(&ctl->read_lock);
->> +
->> +		schedule();
->> +
->> +		remove_wait_queue(&ctl->change_sleep, &wait);
->> +
->> +		if (signal_pending(current))
->> +			return -ERESTARTSYS;
->> +
->> +		spin_lock_irq(&ctl->read_lock);
->> +	}
->> +
->> +	/* Copy events till the buffer filled, or no events are remained. */
->> +	result = 0;
->> +	while (count >= sizeof(struct snd_ctl_event)) {
->> +		if (list_empty(&ctl->events))
->> +			break;
->>   		kev = snd_kctl_event(ctl->events.next);
->> +		list_del(&kev->list);
->> +
->>   		ev.type = SNDRV_CTL_EVENT_ELEM;
->>   		ev.data.elem.mask = kev->mask;
->>   		ev.data.elem.id = kev->id;
->> -		list_del(&kev->list);
->> -		spin_unlock_irq(&ctl->read_lock);
->>   		kfree(kev);
->>   		if (copy_to_user(buffer, &ev, sizeof(struct snd_ctl_event))) {
->>   			err = -EFAULT;
->> -			goto __end;
->> +			break;
->>   		}
->> -		spin_lock_irq(&ctl->read_lock);
->> +
->>   		buffer += sizeof(struct snd_ctl_event);
->>   		count -= sizeof(struct snd_ctl_event);
->>   		result += sizeof(struct snd_ctl_event);
->>   	}
->> -      __end_lock:
->> +
->>   	spin_unlock_irq(&ctl->read_lock);
->> -      __end:
->> -      	return result > 0 ? result : err;
->> +	return result;
+> Yes, it does. I also tried to change it like this:
 >
-> You can't ignore the error.  -EFAULT should be still returned when it
-> happens at the first read.
+> --- a/sound/soc/fsl/imx-spdif.c
+> +++ b/sound/soc/fsl/imx-spdif.c
+> @@ -37,8 +37,8 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+>                  goto end;
+>          }
+>
+> -       data->dai.name = "S/PDIF PCM";
+> -       data->dai.stream_name = "S/PDIF PCM";
+> +       data->dai.name = "SPDIF PCM";
+> +       data->dai.stream_name = "SPDIF PCM";
+>          data->dai.codec_dai_name = "snd-soc-dummy-dai";
+>          data->dai.codec_name = "snd-soc-dummy";
+>          data->dai.cpu_of_node = spdif_np;
+>
+> ,but I still get the warning.
 
-Exactly. It's my fault. I should have assign it to result, instead of err.
+That's the DAI name, which could cause problems on its own. But not the one 
+you are seeing right now.
 
-Well, I'd like to post revised version, but it's just before a week to 
-open merge window for Linux 4.01. Should I postpone the posting a few 
-weeks later?
+The whole thing is a bit confusing. The message you get is what you'd get if 
+the 'dapm' sub-directory in the card debugfs directory can not be created. 
+One of the few reasons why it would fail is if it already existed, but we 
+should never register two dapm contexts for the card, so that's a bit 
+strange. One of the few reasons I can imagine this could happen is if the 
+parent directory could not be created and now we try to create multiple dapm 
+directories at the top-level.
 
+Try to do some more debugging and see why and where exactly things go wrong. 
+Can you also try this:
 
-Thanks.
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b6f8820..7810262 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1898,6 +1898,11 @@
+  {
+  	struct dentry *d;
 
-Takashi Sakamoto
++	if (!parent) {
++		dev_warn(dapm->dev, "No debugfs parent!\n");
++		return;
++	}
++
+  	dapm->debugfs_dapm = debugfs_create_dir("dapm", parent);
+
+  	if (!dapm->debugfs_dapm) {
