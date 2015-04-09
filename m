@@ -1,99 +1,166 @@
-From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-Subject: Re: [PATCH 12/14] i2c-parport: return proper error values from attach
-Date: Thu, 9 Apr 2015 09:13:07 +0200
-Message-ID: <20150409071307.GA1166@katana>
-References: <1428492040-5581-1-git-send-email-sudipm.mukherjee@gmail.com>
- <1428492040-5581-13-git-send-email-sudipm.mukherjee@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 2/2] ALSA: ctl: refactoring for read
+	operation
+Date: Thu, 09 Apr 2015 16:35:06 +0900
+Message-ID: <55262BAA.9060004@sakamocchi.jp>
+References: <1428512108-1852-1-git-send-email-o-takashi@sakamocchi.jp>	<1428512108-1852-3-git-send-email-o-takashi@sakamocchi.jp>
+ <s5h7ftl7tn4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1428492040-5581-13-git-send-email-sudipm.mukherjee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sudip Mukherjee <sudipm.mukherjee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Jean Delvare <jdelvare-l3A5Bk7waGM@public.gmane.org>, Rodolfo Giometti <giometti-AVVDYK/kqiJWk0Htik3J/w@public.gmane.org>, "James E.J. Bottomley" <JBottomley-bzQdu9zFT3WakBO8gow8eQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Willy Tarreau <willy-859RlTSWH48dnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63D242606E1
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 09:35:09 +0200 (CEST)
+In-Reply-To: <s5h7ftl7tn4.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
+On Apr 09 2015 14:33, Takashi Iwai wrote:
+> At Thu,  9 Apr 2015 01:55:08 +0900,
+> Takashi Sakamoto wrote:
+>>
+>> snd_ctl_read() has nested loop and complicated condition for return
+>> status. This is not better for reading.
+>>
+>> This commit applies refactoring with two loops.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
+>>   sound/core/control.c | 74 ++++++++++++++++++++++++++++++++--------------------
+>>   1 file changed, 46 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/sound/core/control.c b/sound/core/control.c
+>> index de19d56..6870baf 100644
+>> --- a/sound/core/control.c
+>> +++ b/sound/core/control.c
+>> @@ -1520,58 +1520,76 @@ static ssize_t snd_ctl_read(struct file *file, char __user *buffer,
+>>   			    size_t count, loff_t * offset)
+>>   {
+>>   	struct snd_ctl_file *ctl;
+>> -	int err = 0;
+>> -	ssize_t result = 0;
+>> +	struct snd_ctl_event ev;
+>> +	struct snd_kctl_event *kev;
+>> +	wait_queue_t wait;
+>> +	size_t result;
+>> +	int err;
+>>
+>>   	ctl = file->private_data;
+>>   	if (snd_BUG_ON(!ctl || !ctl->card))
+>>   		return -ENXIO;
+>>   	if (!ctl->subscribed)
+>>   		return -EBADFD;
+>> +
+>> +	/* The size of given buffer should be larger than at least one event. */
+>>   	if (count < sizeof(struct snd_ctl_event))
+>>   		return -EINVAL;
+>> +
+>> +	/* Block till any events were queued. */
+>>   	spin_lock_irq(&ctl->read_lock);
+>> -	while (count >= sizeof(struct snd_ctl_event)) {
+>> -		struct snd_ctl_event ev;
+>> -		struct snd_kctl_event *kev;
+>> -		while (list_empty(&ctl->events)) {
+>> -			wait_queue_t wait;
+>> -			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
+>> -				err = -EAGAIN;
+>> -				goto __end_lock;
+>> -			}
+>> -			init_waitqueue_entry(&wait, current);
+>> -			add_wait_queue(&ctl->change_sleep, &wait);
+>> -			set_current_state(TASK_INTERRUPTIBLE);
+>> +	while (list_empty(&ctl->events)) {
+>> +		if (file->f_flags & O_NONBLOCK) {
+>> +			spin_unlock_irq(&ctl->read_lock);
+>> +			return -EAGAIN;
+>
+> It's better not to spread the unlock call allover the places but just
+> "goto unlock".
+>
+>> +		}
+>> +
+>> +		/* The card was disconnected. The queued events are dropped. */
+>> +		if (ctl->card->shutdown) {
+>>   			spin_unlock_irq(&ctl->read_lock);
+>> -			schedule();
+>> -			remove_wait_queue(&ctl->change_sleep, &wait);
+>> -			if (ctl->card->shutdown)
+>> -				return -ENODEV;
+>> -			if (signal_pending(current))
+>> -				return -ERESTARTSYS;
+>> -			spin_lock_irq(&ctl->read_lock);
+>> +			return -ENODEV;
+>>   		}
+>> +
+>> +
+>> +		init_waitqueue_entry(&wait, current);
+>> +		add_wait_queue(&ctl->change_sleep, &wait);
+>> +		set_current_state(TASK_INTERRUPTIBLE);
+>> +		spin_unlock_irq(&ctl->read_lock);
+>> +
+>> +		schedule();
+>> +
+>> +		remove_wait_queue(&ctl->change_sleep, &wait);
+>> +
+>> +		if (signal_pending(current))
+>> +			return -ERESTARTSYS;
+>> +
+>> +		spin_lock_irq(&ctl->read_lock);
+>> +	}
+>> +
+>> +	/* Copy events till the buffer filled, or no events are remained. */
+>> +	result = 0;
+>> +	while (count >= sizeof(struct snd_ctl_event)) {
+>> +		if (list_empty(&ctl->events))
+>> +			break;
+>>   		kev = snd_kctl_event(ctl->events.next);
+>> +		list_del(&kev->list);
+>> +
+>>   		ev.type = SNDRV_CTL_EVENT_ELEM;
+>>   		ev.data.elem.mask = kev->mask;
+>>   		ev.data.elem.id = kev->id;
+>> -		list_del(&kev->list);
+>> -		spin_unlock_irq(&ctl->read_lock);
+>>   		kfree(kev);
+>>   		if (copy_to_user(buffer, &ev, sizeof(struct snd_ctl_event))) {
+>>   			err = -EFAULT;
+>> -			goto __end;
+>> +			break;
+>>   		}
+>> -		spin_lock_irq(&ctl->read_lock);
+>> +
+>>   		buffer += sizeof(struct snd_ctl_event);
+>>   		count -= sizeof(struct snd_ctl_event);
+>>   		result += sizeof(struct snd_ctl_event);
+>>   	}
+>> -      __end_lock:
+>> +
+>>   	spin_unlock_irq(&ctl->read_lock);
+>> -      __end:
+>> -      	return result > 0 ? result : err;
+>> +	return result;
+>
+> You can't ignore the error.  -EFAULT should be still returned when it
+> happens at the first read.
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Exactly. It's my fault. I should have assign it to result, instead of err.
 
-On Wed, Apr 08, 2015 at 04:50:38PM +0530, Sudip Mukherjee wrote:
-> now that we are monitoring the return value from attach, make the
-> required changes to return proper value from its attach function.
->=20
-> Signed-off-by: Sudip Mukherjee <sudip-ofJRbWXBVFamYgehrs7/Lw@public.gmane.org>
-> ---
->  drivers/i2c/busses/i2c-parport.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-parport.c b/drivers/i2c/busses/i2c-pa=
-rport.c
-> index a1fac5a..761a775 100644
-> --- a/drivers/i2c/busses/i2c-parport.c
-> +++ b/drivers/i2c/busses/i2c-parport.c
-> @@ -160,14 +160,14 @@ static void i2c_parport_irq(void *data)
->  			"SMBus alert received but no ARA client!\n");
->  }
-> =20
-> -static void i2c_parport_attach(struct parport *port)
-> +static int i2c_parport_attach(struct parport *port)
->  {
->  	struct i2c_par *adapter;
-> =20
->  	adapter =3D kzalloc(sizeof(struct i2c_par), GFP_KERNEL);
->  	if (adapter =3D=3D NULL) {
->  		printk(KERN_ERR "i2c-parport: Failed to kzalloc\n");
-> -		return;
-> +		return -ENOMEM;
-
-ENOMEM does not need printout. Please remove printk while we are here.
-
-> =20
->  	pr_debug("i2c-parport: attaching to %s\n", port->name);
-> @@ -230,13 +230,14 @@ static void i2c_parport_attach(struct parport *port)
->  	mutex_lock(&adapter_list_lock);
->  	list_add_tail(&adapter->node, &adapter_list);
->  	mutex_unlock(&adapter_list_lock);
-> -	return;
-> +	return 0;
-> =20
->   err_unregister:
->  	parport_release(adapter->pdev);
->  	parport_unregister_device(adapter->pdev);
->   err_free:
->  	kfree(adapter);
-> +	return -ENODEV;
-
-Ideally, we would return different -Esomething for each failing case. We
-can leave that for someone who is acutally using the driver. However, I
-wonder if ENODEV is a proper catch-all case because the driver core will
-not report failures.
+Well, I'd like to post revised version, but it's just before a week to 
+open merge window for Linux 4.01. Should I postpone the posting a few 
+weeks later?
 
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Thanks.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVJiaDAAoJEBQN5MwUoCm2iRwP/ijI5Z76EKO0xyEKIMZmx0kU
-Q/gdzLbAVd+ifa+aJub2Lv9xyEa4MssHm0yn4982Dmt1jTxT0QTkPoSAhmxUmkpP
-5DGvJH3Yp+DCawSy6+RPCsujtmoQPz8xNLjaHMCx7V8kBz2BTIKiUeDeQu574zr/
-Nv7R9q77W9ZUHFP+1ui8RwZylYnX/frwI1Xgli71dY3xuo7eh/6UntTRCVeRIw+h
-rsIurGoC78AfxW3FSzxSPVxSuK/upAmwgB5ECRo7l5itaKmATW4KFLBdp0wl1Myt
-jhL1HjQRH4BcFpiFDxAlemcmWQXeIpnimVsMRk9alLIEJlnfivVPTR2sh38cHYTV
-Bm0kasy34LwJZsTnGImdCYACKbzv4mKDSXt+Kzc+iHxgsmf8PzZ2yTXJxAJd8+l8
-AMVMXMRVoW7oXGzAkLTZaRZvFlfPhUgfVCo8/P33PHcyJ6BRzKeXK+XXs9UgUkt/
-/u5N3pk4Wy47/JZSQlB8EZVW+x5ODBUVXFkMh7rPmgm19p5CwXqizC2wXXgdPQlv
-A/QtciA8ZAwGdkO5qa+mVcPGhoH77WGN5CQIZxITvCyy7phRLUK9zWv2vLpTpv3h
-7MTzn5Oldf5OATEeO9ygiUXgnb6/szYNI94W/rKC2oGaGfSN6XKltyGVkciSTllI
-y4uJB1rGeX8LLg+hAzjd
-=2iEF
------END PGP SIGNATURE-----
-
---Nq2Wo0NMKNjxTN9z--
+Takashi Sakamoto
