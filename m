@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: Restore default in probe
-Date: Thu, 9 Apr 2015 11:32:08 +0100
-Message-ID: <20150409103208.GS6023@sirena.org.uk>
-References: <1428549632-27893-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH 2/3] ASoC: Make soc_dpcm_debugfs_add()
+	non-fatal
+Date: Thu, 9 Apr 2015 11:44:09 +0100
+Message-ID: <20150409104409.GT6023@sirena.org.uk>
+References: <1428569558-15883-1-git-send-email-lars@metafoo.de>
+ <1428569558-15883-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4181360060115324010=="
+Content-Type: multipart/mixed; boundary="===============6414987816871045495=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 149D026051B
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 12:32:15 +0200 (CEST)
-In-Reply-To: <1428549632-27893-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 66F4A2657BE
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 12:44:20 +0200 (CEST)
+In-Reply-To: <1428569558-15883-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, john.lin@realtek.com, han.lu@intel.com, flove@realtek.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4181360060115324010==
+--===============6414987816871045495==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iYOBPcVA6aqRzaCT"
+	protocol="application/pgp-signature"; boundary="rhFcA3qSmEuZzUxm"
 Content-Disposition: inline
 
 
---iYOBPcVA6aqRzaCT
+--rhFcA3qSmEuZzUxm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 09, 2015 at 11:20:32AM +0800, Bard Liao wrote:
-> RT286 can't do register reset. If the hardware power is still existing
-> in power off, rt286 will keep the register settings. So, we need to
-> restore the default register value in probe to make sure the cache value
-> is the same as the real register value.
+On Thu, Apr 09, 2015 at 10:52:37AM +0200, Lars-Peter Clausen wrote:
+> Failing to register the debugfs entries is not fatal and will not affect
+> normal operation of the sound card. Don't abort the card registration if
+> soc_dpcm_debugfs_add() fails.
 
-That's really unfortunate but OK, applied.
+Applied, thanks.
 
---iYOBPcVA6aqRzaCT
+--rhFcA3qSmEuZzUxm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVJlUoAAoJECTWi3JdVIfQbpEIAIRlxV6AXWEWzX+s/XrM49ZX
-DIh1JChbb0EOcynLlmk5Gui9mAnNHH7P3Env+fywQDfleut4TejCZH+gkNtsrLGG
-wEfdgxZ3y2gKxkEPodsfbJjtNpn72ryPjz2A8yxkaO9tNArr5lkWKYQU991rClHy
-Iz/KGrVFBh03B7ptqoIehalq+r1d5ptZEJJ55MkfdSOhlOS1sjuxd4FM6LDRDwKZ
-RthgDm10nFco5YU1mMUddja9zBBOJY/i+DkiowHPgOwJl3o2CbfRpzh68ajKS6v4
-5uABa7q2Yck1C7THvOXb9nVoi/TlOGQ+Ypv26P0Ey5TS2YtvAqzRsy9cQIyas+4=
-=9B2G
+iQEcBAEBCAAGBQJVJlf4AAoJECTWi3JdVIfQiGAH/1w7Tf2aR1BpsKPFwZ0j8bBn
+GgbtTqYn3UOYN0euoXYfiTPCNKzcxBhmswLXpbQ04d/S/MHTiYKvubkQM1lNx9jo
+Z31fwPAkGhjXLPwIJAg4hro6JKmTKtVIYo8blQWDgBFprgm5a9wWDY2eo6Zo65h6
+HNvuKz8TcwwXNAeBchg3OAseebS1CyoYj9eZE57Bw1hUbyTriwDUXZbxG1MBjaP9
+ygLa0VmtFhy6L3K3ak73WQwP7GRsK1R0F17WGDj74IOTLyG6mheX8xzrMTI02oc5
+3RaExt3H5If4Z8k0OJ90OHdsUxQshBPdHaElOc879L7Jp91qfAiwSbgPRWUb0pE=
+=ZSFk
 -----END PGP SIGNATURE-----
 
---iYOBPcVA6aqRzaCT--
+--rhFcA3qSmEuZzUxm--
 
---===============4181360060115324010==
+--===============6414987816871045495==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4181360060115324010==--
+--===============6414987816871045495==--
