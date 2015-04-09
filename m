@@ -1,46 +1,82 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ASoC: Intel: do cast earlier in
-	sst_cdev_tstamp()
-Date: Thu, 9 Apr 2015 12:02:39 +0300
-Message-ID: <20150409090239.GA17605@mwanda>
+From: Jean Delvare <jdelvare@suse.de>
+Subject: Re: [PATCH 12/14] i2c-parport: return proper error values from
+ attach
+Date: Thu, 9 Apr 2015 11:33:42 +0200
+Message-ID: <20150409113342.5621af83@endymion.delvare>
+References: <1428492040-5581-1-git-send-email-sudipm.mukherjee@gmail.com>
+	<1428492040-5581-13-git-send-email-sudipm.mukherjee@gmail.com>
+	<20150409071307.GA1166@katana>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 27BBD2651D2
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 11:02:57 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <20150409071307.GA1166@katana>
+Sender: linux-scsi-owner@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rodolfo Giometti <giometti@enneenne.com>, "James E.J. Bottomley" <JBottomley@parallels.com>, Mark Brown <broonie@kernel.org>, Willy Tarreau <willy@meta-x.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, netdev@vger.kernel.org, linux-scsi@vger.kernel.org, linux-spi@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-My static checker complains about these because it looks like the
-multiply can overflow and then we cast to a larger data type.  I don't
-think this is a problem, but it's also harmless to do the cast earlier
-so let's silence the static checker warning.
+On Thu, 9 Apr 2015 09:13:07 +0200, Wolfram Sang wrote:
+> On Wed, Apr 08, 2015 at 04:50:38PM +0530, Sudip Mukherjee wrote:
+> > now that we are monitoring the return value from attach, make the
+> > required changes to return proper value from its attach function.
+> > 
+> > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> > ---
+> >  drivers/i2c/busses/i2c-parport.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/i2c/busses/i2c-parport.c b/drivers/i2c/busses/i2c-parport.c
+> > index a1fac5a..761a775 100644
+> > --- a/drivers/i2c/busses/i2c-parport.c
+> > +++ b/drivers/i2c/busses/i2c-parport.c
+> > @@ -160,14 +160,14 @@ static void i2c_parport_irq(void *data)
+> >  			"SMBus alert received but no ARA client!\n");
+> >  }
+> >  
+> > -static void i2c_parport_attach(struct parport *port)
+> > +static int i2c_parport_attach(struct parport *port)
+> >  {
+> >  	struct i2c_par *adapter;
+> >  
+> >  	adapter = kzalloc(sizeof(struct i2c_par), GFP_KERNEL);
+> >  	if (adapter == NULL) {
+> >  		printk(KERN_ERR "i2c-parport: Failed to kzalloc\n");
+> > -		return;
+> > +		return -ENOMEM;
+> 
+> ENOMEM does not need printout. Please remove printk while we are here.
+> 
+> >  
+> >  	pr_debug("i2c-parport: attaching to %s\n", port->name);
+> > @@ -230,13 +230,14 @@ static void i2c_parport_attach(struct parport *port)
+> >  	mutex_lock(&adapter_list_lock);
+> >  	list_add_tail(&adapter->node, &adapter_list);
+> >  	mutex_unlock(&adapter_list_lock);
+> > -	return;
+> > +	return 0;
+> >  
+> >   err_unregister:
+> >  	parport_release(adapter->pdev);
+> >  	parport_unregister_device(adapter->pdev);
+> >   err_free:
+> >  	kfree(adapter);
+> > +	return -ENODEV;
+> 
+> Ideally, we would return different -Esomething for each failing case. We
+> can leave that for someone who is acutally using the driver. However, I
+> wonder if ENODEV is a proper catch-all case because the driver core will
+> not report failures.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+It doesn't really matter that the error codes are different, it matters
+that they are meaningful. As much as possible you should pass error
+codes from the lower layers. parport_claim_or_block() and
+i2c_bit_add_bus() return proper error codes so you should record and
+transmit them. Only parport_register_device() does not, so you have to
+craft one and -ENODEV seems appropriate to me.
 
-diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
-index 718838b..7b50a9d 100644
---- a/sound/soc/intel/atom/sst/sst_drv_interface.c
-+++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
-@@ -381,7 +381,7 @@ static int sst_cdev_tstamp(struct device *dev, unsigned int str_id,
- 	tstamp->copied_total = fw_tstamp.ring_buffer_counter;
- 	tstamp->pcm_frames = fw_tstamp.frames_decoded;
- 	tstamp->pcm_io_frames = div_u64(fw_tstamp.hardware_counter,
--			(u64)((stream->num_ch) * SST_GET_BYTES_PER_SAMPLE(24)));
-+			(u64)stream->num_ch * SST_GET_BYTES_PER_SAMPLE(24));
- 	tstamp->sampling_rate = fw_tstamp.sampling_frequency;
- 
- 	dev_dbg(dev, "PCM  = %u\n", tstamp->pcm_io_frames);
+Note: I can test this driver.
+
+-- 
+Jean Delvare
+SUSE L3 Support
