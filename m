@@ -1,18 +1,21 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/3] ASoC: Don't try to register debugfs
-	entries if the parent does not exist
-Date: Thu,  9 Apr 2015 10:52:38 +0200
-Message-ID: <1428569558-15883-3-git-send-email-lars@metafoo.de>
-References: <1428569558-15883-1-git-send-email-lars@metafoo.de>
+Subject: Re: ASoC: Failed to create DAPM debugfs
+Date: Thu, 09 Apr 2015 10:55:24 +0200
+Message-ID: <55263E7C.9070501@metafoo.de>
+References: <CAOMZO5DP4fahmC9W6eBFdjxR1DqPMgyhgwxwSZP_TcqxLSy=7A@mail.gmail.com>
+ <55258272.2010205@metafoo.de>
+ <CAOMZO5AxT9dgE=QaH18FUYD5CbMvn67XpMo4dH6T0v9Qen-RRg@mail.gmail.com>
+ <55262C9D.5080005@metafoo.de> <20150409082246.GB62585@Asurada-CZ80>
+ <55263873.108@metafoo.de> <20150409084509.GC62585@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-026.synserver.de (smtp-out-026.synserver.de
  [212.40.185.26])
- by alsa0.perex.cz (Postfix) with ESMTP id E2FE8265919
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 10:52:56 +0200 (CEST)
-In-Reply-To: <1428569558-15883-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CFE16265238
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 10:55:23 +0200 (CEST)
+In-Reply-To: <20150409084509.GC62585@Asurada-CZ80>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,177 +25,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Fabio Estevam <festevam@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Russell King <linux@arm.linux.org.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-If the registration of a debugfs directory fails this is treated as a
-non-fatal error in ASoC and operation continues as normal. This means we
-need to be careful and check if the parent debugfs directory exists if we
-try to register a debugfs file or sub-directory. Otherwise we might end up
-passing NULL for the parent and the file or directory will be registered in
-the top-level debugfs directory.
+On 04/09/2015 10:45 AM, Nicolin Chen wrote:
+> On Thu, Apr 09, 2015 at 10:29:39AM +0200, Lars-Peter Clausen wrote:
+>> On 04/09/2015 10:22 AM, Nicolin Chen wrote:
+>>> On Thu, Apr 09, 2015 at 09:39:09AM +0200, Lars-Peter Clausen wrote:
+>>>
+>>>> The whole thing is a bit confusing. The message you get is what
+>>>> you'd get if the 'dapm' sub-directory in the card debugfs directory
+>>>> can not be created. One of the few reasons why it would fail is if
+>>>> it already existed, but we should never register two dapm contexts
+>>>> for the card, so that's a bit strange. One of the few reasons I can
+>>>> imagine this could happen is if the parent directory could not be
+>>>> created and now we try to create multiple dapm directories at the
+>>>> top-level.
+>>>>
+>>>> Try to do some more debugging and see why and where exactly things
+>>>> go wrong. Can you also try this:
+>>>>
+>>>> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+>>>> index b6f8820..7810262 100644
+>>>> --- a/sound/soc/soc-dapm.c
+>>>> +++ b/sound/soc/soc-dapm.c
+>>>> @@ -1898,6 +1898,11 @@
+>>>>   {
+>>>>   	struct dentry *d;
+>>>>
+>>>> +	if (!parent) {
+>>>> +		dev_warn(dapm->dev, "No debugfs parent!\n");
+>>>
+>>> I tried, yes, the parent is NULL. And I did a little tracing and found
+>>> that the card->debugfs_root, which is NULL, should be initialized in
+>>> the soc_init_card_debugfs() while snd_soc_dapm_debugfs_init() seems
+>>> to access this card->debugfs_root before calling soc_init_card_debugfs().
+>>>
+>>> I think I must have missed something over here....
+>>
+>> Looks like this is the culprit: http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=4e2576bd36a12e78ac3786d05b99a820dffe687f
+>>
+>
+> I think this patch didn't move the snd_init_card_debugfs() backwards.
+> It just wrapped the call at the end of snd_soc_instantiate_card().
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-core.c | 66 +++++++++++++++++++++++++++++++++++-----------------
- sound/soc/soc-dapm.c |  3 +++
- sound/soc/soc-pcm.c  |  8 +++++--
- 3 files changed, 54 insertions(+), 23 deletions(-)
+Previously it was called before snd_soc_instantiate_card() and there is a 
+lot of things inside snd_soc_instantiate_card() that expect the card debugfs 
+directory to exist. So those now all end up at the top-level.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e97b395..32ebe5b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -292,6 +292,9 @@ static const struct file_operations codec_reg_fops = {
- 
- static void soc_init_component_debugfs(struct snd_soc_component *component)
- {
-+	if (!component->card->debugfs_card_root)
-+		return;
-+
- 	if (component->debugfs_prefix) {
- 		char *name;
- 
-@@ -455,6 +458,9 @@ static const struct file_operations platform_list_fops = {
- 
- static void soc_init_card_debugfs(struct snd_soc_card *card)
- {
-+	if (!snd_soc_debugfs_root)
-+		return;
-+
- 	card->debugfs_card_root = debugfs_create_dir(card->name,
- 						     snd_soc_debugfs_root);
- 	if (!card->debugfs_card_root) {
-@@ -476,6 +482,34 @@ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- 	debugfs_remove_recursive(card->debugfs_card_root);
- }
- 
-+
-+static void snd_soc_debugfs_init(void)
-+{
-+	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
-+	if (IS_ERR(snd_soc_debugfs_root) || !snd_soc_debugfs_root) {
-+		pr_warn("ASoC: Failed to create debugfs directory\n");
-+		snd_soc_debugfs_root = NULL;
-+		return;
-+	}
-+
-+	if (!debugfs_create_file("codecs", 0444, snd_soc_debugfs_root, NULL,
-+				 &codec_list_fops))
-+		pr_warn("ASoC: Failed to create CODEC list debugfs file\n");
-+
-+	if (!debugfs_create_file("dais", 0444, snd_soc_debugfs_root, NULL,
-+				 &dai_list_fops))
-+		pr_warn("ASoC: Failed to create DAI list debugfs file\n");
-+
-+	if (!debugfs_create_file("platforms", 0444, snd_soc_debugfs_root, NULL,
-+				 &platform_list_fops))
-+		pr_warn("ASoC: Failed to create platform list debugfs file\n");
-+}
-+
-+static void snd_soc_debugfs_exit(void)
-+{
-+	debugfs_remove_recursive(snd_soc_debugfs_root);
-+}
-+
- #else
- 
- #define soc_init_codec_debugfs NULL
-@@ -497,6 +531,15 @@ static inline void soc_init_card_debugfs(struct snd_soc_card *card)
- static inline void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- {
- }
-+
-+static inline void snd_soc_debugfs_init(void)
-+{
-+}
-+
-+static inline void snd_soc_debugfs_exit(void)
-+{
-+}
-+
- #endif
- 
- struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
-@@ -3584,26 +3627,7 @@ EXPORT_SYMBOL_GPL(snd_soc_of_get_dai_link_codecs);
- 
- static int __init snd_soc_init(void)
- {
--#ifdef CONFIG_DEBUG_FS
--	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
--	if (IS_ERR(snd_soc_debugfs_root) || !snd_soc_debugfs_root) {
--		pr_warn("ASoC: Failed to create debugfs directory\n");
--		snd_soc_debugfs_root = NULL;
--	}
--
--	if (!debugfs_create_file("codecs", 0444, snd_soc_debugfs_root, NULL,
--				 &codec_list_fops))
--		pr_warn("ASoC: Failed to create CODEC list debugfs file\n");
--
--	if (!debugfs_create_file("dais", 0444, snd_soc_debugfs_root, NULL,
--				 &dai_list_fops))
--		pr_warn("ASoC: Failed to create DAI list debugfs file\n");
--
--	if (!debugfs_create_file("platforms", 0444, snd_soc_debugfs_root, NULL,
--				 &platform_list_fops))
--		pr_warn("ASoC: Failed to create platform list debugfs file\n");
--#endif
--
-+	snd_soc_debugfs_init();
- 	snd_soc_util_init();
- 
- 	return platform_driver_register(&soc_driver);
-@@ -3613,9 +3637,9 @@ module_init(snd_soc_init);
- static void __exit snd_soc_exit(void)
- {
- 	snd_soc_util_exit();
-+	snd_soc_debugfs_exit();
- 
- #ifdef CONFIG_DEBUG_FS
--	debugfs_remove_recursive(snd_soc_debugfs_root);
- #endif
- 	platform_driver_unregister(&soc_driver);
- }
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 4bd2a6f..defe0f0 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1918,6 +1918,9 @@ void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm,
- {
- 	struct dentry *d;
- 
-+	if (!parent)
-+		return;
-+
- 	dapm->debugfs_dapm = debugfs_create_dir("dapm", parent);
- 
- 	if (!dapm->debugfs_dapm) {
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e67378a..35fe58f4 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1097,8 +1097,9 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
- 			stream ? "<-" : "->", be->dai_link->name);
- 
- #ifdef CONFIG_DEBUG_FS
--	dpcm->debugfs_state = debugfs_create_u32(be->dai_link->name, 0644,
--			fe->debugfs_dpcm_root, &dpcm->state);
-+	if (fe->debugfs_dpcm_root)
-+		dpcm->debugfs_state = debugfs_create_u32(be->dai_link->name, 0644,
-+				fe->debugfs_dpcm_root, &dpcm->state);
- #endif
- 	return 1;
- }
-@@ -2808,6 +2809,9 @@ void soc_dpcm_debugfs_add(struct snd_soc_pcm_runtime *rtd)
- 	if (!rtd->dai_link)
- 		return;
- 
-+	if (!rtd->card->debugfs_card_root)
-+		return;
-+
- 	rtd->debugfs_dpcm_root = debugfs_create_dir(rtd->dai_link->name,
- 			rtd->card->debugfs_card_root);
- 	if (!rtd->debugfs_dpcm_root) {
--- 
-1.8.0
+>
+> But the snd_soc_dapm_debugfs_init() call that's going to access the
+> card->debugfs_root was put before the snd_init_card_debugfs() at the
+> first place....
+>
+> I'm not sure if this could be a fix but the warning is actually gone:
+
+There is more stuff that expects the directory to exist in 
+snd_soc_instantiate_card() so we need to move soc_init_card_debugfs() 
+further up. See the patch I just sent.
+
+>
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 2801578..0412795 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1560,10 +1560,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+>   	card->dapm.card = card;
+>   	list_add(&card->dapm.list, &card->dapm_list);
+>
+> -#ifdef CONFIG_DEBUG_FS
+> -	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
+> -#endif
+> -
+>   #ifdef CONFIG_PM_SLEEP
+>   	/* deferred resume work */
+>   	INIT_WORK(&card->deferred_resume_work, soc_resume_deferred);
+> @@ -1686,6 +1682,10 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+>
+>   	soc_init_card_debugfs(card);
+>
+> +#ifdef CONFIG_DEBUG_FS
+> +	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
+> +#endif
+> +
+>   	return 0;
+>
+>   probe_aux_dev_err:
+>
