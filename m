@@ -1,17 +1,24 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/5] ALSA: hda/generic - Fix wrong initial
-	power state for fixed pins
-Date: Thu,  9 Apr 2015 10:40:35 +0200
-Message-ID: <1428568838-21550-3-git-send-email-tiwai@suse.de>
-References: <1428568838-21550-1-git-send-email-tiwai@suse.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: ASoC: Failed to create DAPM debugfs
+Date: Thu, 9 Apr 2015 01:45:10 -0700
+Message-ID: <20150409084509.GC62585@Asurada-CZ80>
+References: <CAOMZO5DP4fahmC9W6eBFdjxR1DqPMgyhgwxwSZP_TcqxLSy=7A@mail.gmail.com>
+ <55258272.2010205@metafoo.de>
+ <CAOMZO5AxT9dgE=QaH18FUYD5CbMvn67XpMo4dH6T0v9Qen-RRg@mail.gmail.com>
+ <55262C9D.5080005@metafoo.de> <20150409082246.GB62585@Asurada-CZ80>
+ <55263873.108@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 10D1C265268
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 10:40:40 +0200 (CEST)
-In-Reply-To: <1428568838-21550-1-git-send-email-tiwai@suse.de>
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7BB2265268
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 10:45:15 +0200 (CEST)
+Received: by pacyx8 with SMTP id yx8so142697974pac.1
+ for <alsa-devel@alsa-project.org>; Thu, 09 Apr 2015 01:45:13 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <55263873.108@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +28,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Hui Wang <hui.wang@canonical.com>, David Henningsson <david.henningsson@canonical.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Russell King <linux@arm.linux.org.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-When the widget power-saving is enabled, the first automute hook
-invocation checks through the whole pins and it also tries to
-synchronize the power state.  However, this results in a wrong state
-because it calls unconditionally snd_hda_jack_detect_state().
-This patch adds a check of jack detectability before the actual jack
-detection call.
+On Thu, Apr 09, 2015 at 10:29:39AM +0200, Lars-Peter Clausen wrote:
+> On 04/09/2015 10:22 AM, Nicolin Chen wrote:
+> >On Thu, Apr 09, 2015 at 09:39:09AM +0200, Lars-Peter Clausen wrote:
+> >
+> >>The whole thing is a bit confusing. The message you get is what
+> >>you'd get if the 'dapm' sub-directory in the card debugfs directory
+> >>can not be created. One of the few reasons why it would fail is if
+> >>it already existed, but we should never register two dapm contexts
+> >>for the card, so that's a bit strange. One of the few reasons I can
+> >>imagine this could happen is if the parent directory could not be
+> >>created and now we try to create multiple dapm directories at the
+> >>top-level.
+> >>
+> >>Try to do some more debugging and see why and where exactly things
+> >>go wrong. Can you also try this:
+> >>
+> >>diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> >>index b6f8820..7810262 100644
+> >>--- a/sound/soc/soc-dapm.c
+> >>+++ b/sound/soc/soc-dapm.c
+> >>@@ -1898,6 +1898,11 @@
+> >>  {
+> >>  	struct dentry *d;
+> >>
+> >>+	if (!parent) {
+> >>+		dev_warn(dapm->dev, "No debugfs parent!\n");
+> >
+> >I tried, yes, the parent is NULL. And I did a little tracing and found
+> >that the card->debugfs_root, which is NULL, should be initialized in
+> >the soc_init_card_debugfs() while snd_soc_dapm_debugfs_init() seems
+> >to access this card->debugfs_root before calling soc_init_card_debugfs().
+> >
+> >I think I must have missed something over here....
+> 
+> Looks like this is the culprit: http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=4e2576bd36a12e78ac3786d05b99a820dffe687f
+>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_generic.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+I think this patch didn't move the snd_init_card_debugfs() backwards.
+It just wrapped the call at the end of snd_soc_instantiate_card().
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index afc6b1b0898c..46b559832d2c 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -3959,6 +3959,14 @@ static hda_nid_t set_path_power(struct hda_codec *codec, hda_nid_t nid,
- 	return changed;
- }
+But the snd_soc_dapm_debugfs_init() call that's going to access the
+card->debugfs_root was put before the snd_init_card_debugfs() at the
+first place....
+
+I'm not sure if this could be a fix but the warning is actually gone:
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2801578..0412795 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1560,10 +1560,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	card->dapm.card = card;
+ 	list_add(&card->dapm.list, &card->dapm_list);
  
-+/* check the jack status for power control */
-+static bool detect_pin_state(struct hda_codec *codec, hda_nid_t pin)
-+{
-+	if (!is_jack_detectable(codec, pin))
-+		return true;
-+	return snd_hda_jack_detect_state(codec, pin) != HDA_JACK_NOT_PRESENT;
-+}
-+
- /* power up/down the paths of the given pin according to the jack state;
-  * power = 0/1 : only power up/down if it matches with the jack state,
-  *       < 0   : force power up/down to follow the jack sate
-@@ -3973,7 +3981,8 @@ static hda_nid_t set_pin_power_jack(struct hda_codec *codec, hda_nid_t pin,
- 	if (!codec->power_save_node)
- 		return 0;
+-#ifdef CONFIG_DEBUG_FS
+-	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
+-#endif
+-
+ #ifdef CONFIG_PM_SLEEP
+ 	/* deferred resume work */
+ 	INIT_WORK(&card->deferred_resume_work, soc_resume_deferred);
+@@ -1686,6 +1682,10 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
  
--	on = snd_hda_jack_detect_state(codec, pin) != HDA_JACK_NOT_PRESENT;
-+	on = detect_pin_state(codec, pin);
+ 	soc_init_card_debugfs(card);
+ 
++#ifdef CONFIG_DEBUG_FS
++	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
++#endif
 +
- 	if (power >= 0 && on != power)
- 		return 0;
- 	return set_path_power(codec, pin, on, -1);
-@@ -4225,8 +4234,7 @@ static void do_automute(struct hda_codec *codec, int num_pins, hda_nid_t *pins,
- 		if (codec->power_save_node) {
- 			bool on = !mute;
- 			if (on)
--				on = snd_hda_jack_detect_state(codec, nid)
--					!= HDA_JACK_NOT_PRESENT;
-+				on = detect_pin_state(codec, nid);
- 			set_path_power(codec, nid, on, -1);
- 		}
- 	}
--- 
-2.3.5
+ 	return 0;
+ 
+ probe_aux_dev_err:
