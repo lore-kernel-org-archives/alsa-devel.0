@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/2] ALSA: ctl: evaluate macro instead of
-	numerical value
-Date: Fri, 10 Apr 2015 08:43:00 +0900
-Message-ID: <1428622981-9747-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/2] ALSA: ctl: refactoring for read operation
+Date: Fri, 10 Apr 2015 08:43:01 +0900
+Message-ID: <1428622981-9747-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1428512108-1852-1-git-send-email-o-takashi@sakamocchi.jp>
  <1428622981-9747-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
@@ -10,7 +9,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id A2F992605B4
+ by alsa0.perex.cz (Postfix) with ESMTP id A65C42605C3
  for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 01:43:08 +0200 (CEST)
 In-Reply-To: <1428622981-9747-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,53 +25,125 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SNDRV_CTL_TLV_OP_XXX is defined but not used in core code. Instead,
-raw numerical value is evaluated.
+snd_ctl_read() has nested loop and complicated condition for return
+value. This is not better for reading.
 
-This commit replaces these values to these macros for better looking.
+This commit applies refactoring with two loops.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ sound/core/control.c | 77 ++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 47 insertions(+), 30 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 2ab7ee5..de19d56 100644
+index de19d56..da6497d 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1114,7 +1114,7 @@ static int snd_ctl_elem_user_tlv(struct snd_kcontrol *kcontrol,
- 	int change = 0;
- 	void *new_data;
+@@ -1520,58 +1520,75 @@ static ssize_t snd_ctl_read(struct file *file, char __user *buffer,
+ 			    size_t count, loff_t * offset)
+ {
+ 	struct snd_ctl_file *ctl;
+-	int err = 0;
+-	ssize_t result = 0;
++	struct snd_ctl_event ev;
++	struct snd_kctl_event *kev;
++	wait_queue_t wait;
++	ssize_t result;
  
--	if (op_flag > 0) {
-+	if (op_flag == SNDRV_CTL_TLV_OP_WRITE) {
- 		if (size > 1024 * 128)	/* sane value */
- 			return -EINVAL;
+ 	ctl = file->private_data;
+ 	if (snd_BUG_ON(!ctl || !ctl->card))
+ 		return -ENXIO;
+ 	if (!ctl->subscribed)
+ 		return -EBADFD;
++
++	/* The size of given buffer should be larger than at least one event. */
+ 	if (count < sizeof(struct snd_ctl_event))
+ 		return -EINVAL;
++
++	/* Block till any events were queued. */
+ 	spin_lock_irq(&ctl->read_lock);
+-	while (count >= sizeof(struct snd_ctl_event)) {
+-		struct snd_ctl_event ev;
+-		struct snd_kctl_event *kev;
+-		while (list_empty(&ctl->events)) {
+-			wait_queue_t wait;
+-			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
+-				err = -EAGAIN;
+-				goto __end_lock;
+-			}
+-			init_waitqueue_entry(&wait, current);
+-			add_wait_queue(&ctl->change_sleep, &wait);
+-			set_current_state(TASK_INTERRUPTIBLE);
+-			spin_unlock_irq(&ctl->read_lock);
+-			schedule();
+-			remove_wait_queue(&ctl->change_sleep, &wait);
+-			if (ctl->card->shutdown)
+-				return -ENODEV;
+-			if (signal_pending(current))
+-				return -ERESTARTSYS;
+-			spin_lock_irq(&ctl->read_lock);
++	while (list_empty(&ctl->events)) {
++		if (file->f_flags & O_NONBLOCK) {
++			result = -EAGAIN;
++			goto unlock;
+ 		}
++
++		/* The card was disconnected. The queued events are dropped. */
++		if (ctl->card->shutdown) {
++			result = -ENODEV;
++			goto unlock;
++		}
++
++
++		init_waitqueue_entry(&wait, current);
++		add_wait_queue(&ctl->change_sleep, &wait);
++		set_current_state(TASK_INTERRUPTIBLE);
++		spin_unlock_irq(&ctl->read_lock);
++
++		schedule();
++
++		remove_wait_queue(&ctl->change_sleep, &wait);
++
++		if (signal_pending(current))
++			return -ERESTARTSYS;
++
++		spin_lock_irq(&ctl->read_lock);
++	}
++
++	/* Copy events till the buffer filled, or no events are remained. */
++	result = 0;
++	while (count >= sizeof(struct snd_ctl_event)) {
++		if (list_empty(&ctl->events))
++			break;
+ 		kev = snd_kctl_event(ctl->events.next);
++		list_del(&kev->list);
++
+ 		ev.type = SNDRV_CTL_EVENT_ELEM;
+ 		ev.data.elem.mask = kev->mask;
+ 		ev.data.elem.id = kev->id;
+-		list_del(&kev->list);
+-		spin_unlock_irq(&ctl->read_lock);
+ 		kfree(kev);
+ 		if (copy_to_user(buffer, &ev, sizeof(struct snd_ctl_event))) {
+-			err = -EFAULT;
+-			goto __end;
++			result = -EFAULT;
++			break;
+ 		}
+-		spin_lock_irq(&ctl->read_lock);
++
+ 		buffer += sizeof(struct snd_ctl_event);
+ 		count -= sizeof(struct snd_ctl_event);
+ 		result += sizeof(struct snd_ctl_event);
+ 	}
+-      __end_lock:
++unlock:
+ 	spin_unlock_irq(&ctl->read_lock);
+-      __end:
+-      	return result > 0 ? result : err;
++	return result;
+ }
  
-@@ -1411,9 +1411,12 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
- 		goto __kctl_end;
- 	}
- 	vd = &kctl->vd[tlv.numid - kctl->id.numid];
--	if ((op_flag == 0 && (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ) == 0) ||
--	    (op_flag > 0 && (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE) == 0) ||
--	    (op_flag < 0 && (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND) == 0)) {
-+	if ((op_flag == SNDRV_CTL_TLV_OP_READ &&
-+	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ) == 0) ||
-+	    (op_flag == SNDRV_CTL_TLV_OP_WRITE &&
-+	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE) == 0) ||
-+	    (op_flag == SNDRV_CTL_TLV_OP_CMD &&
-+	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND) == 0)) {
- 	    	err = -ENXIO;
- 	    	goto __kctl_end;
- 	}
-@@ -1430,7 +1433,7 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
- 			return 0;
- 		}
- 	} else {
--		if (op_flag) {
-+		if (op_flag != SNDRV_CTL_ELEM_ACCESS_TLV_READ) {
- 			err = -ENXIO;
- 			goto __kctl_end;
- 		}
+ static unsigned int snd_ctl_poll(struct file *file, poll_table * wait)
 -- 
 2.1.0
