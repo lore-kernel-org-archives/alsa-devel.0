@@ -1,81 +1,50 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 15/19] drm/i915: HSW cdclk support
-Date: Thu, 9 Apr 2015 15:51:27 +0200
-Message-ID: <20150409135127.GO12038@phenom.ffwll.local>
-References: <1427800454-5236-1-git-send-email-mika.kahola@intel.com>
- <552378CB.7@intel.com> <5523814C.9070505@intel.com>
- <20150407082934.GG17410@intel.com> <55239722.9030505@intel.com>
- <20150407092925.GA3027@sorvi>
- <20150407135238.GI6354@phenom.ffwll.local>
- <1428564264.7745.14.camel@sorvi>
- <20150409093200.GB12038@phenom.ffwll.local>
- <1428586886.3155.5.camel@sorvi>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: recording problem in beagleboard-mcbsp
+Date: Thu, 9 Apr 2015 17:07:45 +0300
+Message-ID: <552687B1.5060108@ti.com>
+References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>	<CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>	<CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>	<551C3D19.2050200@ti.com>	<CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>	<5523A1F3.2000701@ti.com>	<CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>	<5524FA51.9060606@ti.com>
+ <CAES_P+8oJ0xDJ-2w02Q0pZmgQyY9tyaRB=+_PqMhTdwuYNRShw@mail.gmail.com>
+ <55266B38.6030503@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <1428586886.3155.5.camel@sorvi>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Mika Kahola <mika.kahola@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9C0F26052E
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 16:07:50 +0200 (CEST)
+In-Reply-To: <55266B38.6030503@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: noman pouigt <variksla@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBBcHIgMDksIDIwMTUgYXQgMDQ6NDE6MjZQTSArMDMwMCwgTWlrYSBLYWhvbGEgd3Jv
-dGU6Cj4gT24gVGh1LCAyMDE1LTA0LTA5IGF0IDExOjMyICswMjAwLCBEYW5pZWwgVmV0dGVyIHdy
-b3RlOgo+ID4gT24gVGh1LCBBcHIgMDksIDIwMTUgYXQgMTA6MjQ6MjRBTSArMDMwMCwgTWlrYSBL
-YWhvbGEgd3JvdGU6Cj4gPiA+IEkgZGlkIHNvbWUgdGVzdGluZyBvbiBhdWRpbyBwYXJ0IHdpdGgg
-SERNSS1IRE1JIGFuZCBEUC1IRE1JIGNhYmxlcwo+ID4gPiBjb25uZWN0ZWQgdG8gbXkgSGFzd2Vs
-bCBib3guIEJlZm9yZSBhcHBseWluZyB0aGUgcGF0Y2ggSSB0ZXN0ZWQgYXMgYQo+ID4gPiByZWZl
-cmVuY2Ugd2l0aCB0aGUgbGF0ZXN0IC1uaWdodGx5ICgwNC0wOC0yMDE1KSwgNC4wLXJjNy4gVW5m
-b3J0dW5hdGVseSwKPiA+ID4gSSBmYWlsZWQgdG8gZ2V0IGFueSBhdWRpbyBvdmVyIEhETUkgY2Fi
-bGUuIEZvciBhIHJlZmVyZW5jZSBJIHRlc3RlZCB3aXRoCj4gPiA+IHRoZSB2ZXJ5IHNhbWUgc2V0
-dXAgdGhlIHZhbmlsbGxhIGtlcm5lbCBmcm9tIExpbnVzIHRyZWUgNC4wLXJjNyBhbmQgd2l0aAo+
-ID4gPiB0aGF0IGtlcm5lbCB0aGUgYXVkaW8gd29ya2VkIG9rLiBUaGVuIEkgZGlkIHNvbWUgR0lU
-IGJpc2VjdGluZyBhbmQgaXQKPiA+ID4gdHVybmVkIG91dCB0aGF0IHRoZSBmaXJzdCBjb21taXQg
-dGhhdCBJIGZhaWxlZCB0byBnZXQgYXVkaW8gd29ya2luZyB3YXMKPiA+ID4gYWEyZmVlNDI4NmU0
-M2I0Nzg0OTgyYjE3NjY5YjAyY2M5OWMxYWU1NS4KPiA+IAo+IEkgcmVydW4gdGhlIGJpc2VjdGlu
-ZyBhbmQgdGhpcyB0aW1lIHRoZSByZXN1bHQgd2FzCj4gCj4gY29tbWl0IDBhNTk5ODM4NzM3YTI1
-MjdjMzVlNGQ5NGY3OTRhZWZlNTlkZjE3ODEKPiBNZXJnZTogMmQ4NDZjNyBhNTlkNzE5Cj4gQXV0
-aG9yOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4gRGF0ZTogICBXZWQgQXByIDggMTE6
-Mjk6NTYgMjAxNSArMDIwMAo+IAo+ICAgICBNZXJnZSBicmFuY2ggJ2Zvci1saW51cycgaW50byBm
-b3ItbmV4dAo+ICAgICAKPiAgICAgQmFjayBtZXJnZSBIRC1hdWRpbyBxdWlya3MgdG8gZm9yLW5l
-eHQgYnJhbmNoLCBzbyB0aGF0IHdlIGNhbiBhcHBseQo+ICAgICBhIGNvdXBsZSBvZiBtb3JlIHF1
-aXJrcy4KPiAgICAgCj4gICAgIFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3Vz
-ZS5kZT4KCkFkZGluZyBUYWthc2hpIGFuZCBpbnRlbCBhdWRpbyBmb2xrcy4KLURhbmllbAoKPiAK
-PiA+IEkgZG9uJ3QgaGF2ZSB0aGlzIHNoYTEgYW55d2hlcmUuIENhbiB5b3UgcGxlYXNlIGRvdWJs
-ZS1jaGVjaz8KPiA+IAo+ID4gQWxzbyB0byBhdm9pZCBzdWNoIGlzc3VlcyBwbGVhc2UgYWx3YXlz
-IGFkZCBhdCBsZWFzdCB0aGUgY29tbWl0IHN1YmplY3QKPiA+IGFuZCBhdXRob3IsIHNvIHRoYXQg
-SSBjYW4gZmluZCBpdCBpZiBpdCdzIHNvbWVob3cgcmViYXNlZC4KPiA+IC1EYW5pZWwKPiA+IAo+
-ID4gPiAKPiA+ID4gVG8gdGVzdCB0aGlzIHBhdGNoIGF1ZGlvIGZ1bmN0aW9uYWxpdHkgSSBjaGVj
-a291dCB0aGUgLW5pZ2h0bHkgdmVyc2lvbgo+ID4gPiB0aGF0IHdvcmtzIGZvciBtZSBhbmQgYXBw
-bHkgdGhlIHBhdGNoIGFuZCB0ZXN0IGl0LiBJJ2xsIGNvbWUgYmFjayB3aXRoCj4gPiA+IHRoZSBy
-ZXN1bHRzIGxhdGVyIG9uLiAKPiA+ID4gCj4gPiA+IEkgaGFkIHRoZSBtb2R1bGUgb3B0aW9uIGk5
-MTUuZGlzYWJsZV9wb3dlcl93ZWxsPTAKPiA+ID4gCj4gPiA+IFRoZSB0ZXN0IHJvdXRpbmUgdGhh
-dCBJIHVzZWQgZm9yIGF1ZGlvIHRlc3Rpbmcgd2FzCj4gPiA+IHNwZWFrZXItdGVzdCAtYyAyIC1y
-IDQ4MDAwIC1mIFMxNl9MRSAtdCBwaW5rIC0tZGV2aWNlPXBsdWdodzowLDMKPiA+ID4gCj4gPiA+
-IE9uIFR1ZSwgMjAxNS0wNC0wNyBhdCAxNTo1MiArMDIwMCwgRGFuaWVsIFZldHRlciB3cm90ZToK
-PiA+ID4gPiBPbiBUdWUsIEFwciAwNywgMjAxNSBhdCAxMjoyOToyNVBNICswMzAwLCBNaWthIEth
-aG9sYSB3cm90ZToKPiA+ID4gPiA+IERlZmluaXRlbHkgYSBnb29kIGlkZWEgdG8gY2hlY2sgdGhl
-IGF1ZGlvIHBhcnQgYXMgd2VsbCBpZiB0aGVyZSBpcwo+ID4gPiA+ID4gYSBkb3VidCB0aGF0IGJ5
-IGNoYW5naW5nIENEIGNsb2NrIHRoZSBhdWRpbyB3b3VsZCBmYWlsLiBJIGNhbiBjaGVjawo+ID4g
-PiA+ID4gdGhpcyBhbmQgSSdsbCBnZXQgYmFjayBvbmNlIEkgaGF2ZSB0aGUgcmVzdWx0cy4KPiA+
-ID4gPiAKPiA+ID4gPiBXZSBmb3JjZSBhIGZ1bGwgbW9kZXNldCwgd2hpY2ggc2hvdWxkIHJlc3Vs
-dCBpbiBhbiBpbnRlcnJ1cHQgb24gdGhlIGF1ZGlvCj4gPiA+ID4gc2lkZSwgd2hpY2ggc2hvdWxk
-IHJlc3VsdCBpbiB0aGUgYXVkaW8gZHJpdmVyIHJlLXJlYWRpbmcgdGhlIGN1cnJlbnQKPiA+ID4g
-PiBjZGNsay4gSWYgdGhhdCdzIG5vIHRoZSBjYXNlIGl0J3MgYnVnZ3kgYWxyZWFkeS4KPiA+ID4g
-PiAtRGFuaWVsCj4gPiA+IAo+ID4gPiAtLSAKPiA+ID4gTWlrYSBLYWhvbGEsIEludGVsIE9UQwo+
-ID4gPiAKPiA+ID4gCj4gPiA+IAo+ID4gCj4gCj4gLS0gCj4gTWlrYSBLYWhvbGEsIEludGVsIE9U
-Qwo+IAo+IAo+IAoKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENv
-cnBvcmF0aW9uCmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxp
-c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
-bGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On 04/09/2015 03:06 PM, Peter Ujfalusi wrote:
+> Hrm, McBSP1 is kind of problematic port since it has 6pin config by defau=
+lt.
+> It might worth a try to do something like:
+> http://lists.infradead.org/pipermail/linux-arm-kernel/2012-August/113058.=
+html
+> has removed.
+> Or to switch to use McBSP3.
+> =
+
+> But for some reason now I can not get the recording working via McBSP1 ei=
+ther.
+> I remember that it worked not that long time ago...
+
+One thing I would also try:
+use the codec as master and connect the FS to McBSP1 FSX _and_ FSR. Do the
+same for the bclk (connect it to BCLKX _and_ BCLKR of McBSP1)
+Configure the pin mux for these pins also.
+
+-- =
+
+P=E9ter
