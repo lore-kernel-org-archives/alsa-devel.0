@@ -1,71 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: Create card debugfs directory
-	earlier
-Date: Thu, 9 Apr 2015 11:24:15 +0100
-Message-ID: <20150409102415.GR6023@sirena.org.uk>
-References: <1428569558-15883-1-git-send-email-lars@metafoo.de>
+From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Subject: Re: [PATCH 12/14] i2c-parport: return proper error values from attach
+Date: Thu, 9 Apr 2015 12:25:28 +0200
+Message-ID: <20150409102528.GC1166@katana>
+References: <1428492040-5581-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <1428492040-5581-13-git-send-email-sudipm.mukherjee@gmail.com>
+ <20150409071307.GA1166@katana>
+ <20150409113342.5621af83@endymion.delvare>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8160961715451559654=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D53DB26051B
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 12:24:25 +0200 (CEST)
-In-Reply-To: <1428569558-15883-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bKyqfOwhbdpXa4YI"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150409113342.5621af83-R0o5gVi9kd7kN2dkZ6Wm7A@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean Delvare <jdelvare-l3A5Bk7waGM@public.gmane.org>
+Cc: Sudip Mukherjee <sudipm.mukherjee-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Rodolfo Giometti <giometti-AVVDYK/kqiJWk0Htik3J/w@public.gmane.org>, "James E.J. Bottomley" <JBottomley-bzQdu9zFT3WakBO8gow8eQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Willy Tarreau <willy-859RlTSWH48dnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8160961715451559654==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="E57q0RgUZocldiZC"
-Content-Disposition: inline
-
-
---E57q0RgUZocldiZC
+--bKyqfOwhbdpXa4YI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 09, 2015 at 10:52:36AM +0200, Lars-Peter Clausen wrote:
-> Create the card debugfs directory at the begining of the initilization
-> rather then the end as various steps in the initilization sequence will try
-> to register files and sub-directories in the card directory.
 
-Applied, thanks.
+> It doesn't really matter that the error codes are different, it matters
+> that they are meaningful. As much as possible you should pass error
+> codes from the lower layers. parport_claim_or_block() and
+> i2c_bit_add_bus() return proper error codes so you should record and
+> transmit them.
 
---E57q0RgUZocldiZC
+Oh, surely yes. I assumed they don't and this series is a first step to
+fix this. Should have looked myself. Thanks for jumping in here.
+
+
+--bKyqfOwhbdpXa4YI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQEcBAEBCAAGBQJVJlNOAAoJECTWi3JdVIfQAhgH/AgNz4zoAHIpFxmwf5xJfk9/
-h2bZXUcSSjl35HfSwigIpGWNT479u5gZ/+OfLgsAz5tbby0aB2nKu5wkh1oYDfse
-41XY8w7GMsi47Kr+xfRehGBD3NO+0RzrGcrPSNBKC0SFVgpB17h5FhdcD3XE0Kpq
-eSmW3A7kHxMIV45+Q7EuNM72jNF6IYlpiV8wUckrA9Sf4NyccAAGHQramo7kLSM+
-Utz+k6tRHTh0YTmgkx5SckRuW9RhoMl4YvgVW5R670iYMrQZ6gOCX08jnVwVj7G3
-yiexW61tLsL9rxXVjlc4VhuNrq4cbxmlE/o0HtHGVr5SvgTdg22iqBPzhOjgLYM=
-=AcPS
+iQIcBAEBAgAGBQJVJlOYAAoJEBQN5MwUoCm2PpgP/1MTplCt+Gjk06kYCV2YpxIv
+5zTjJsS43a95yR+TC332DLCI7WbSWwiLY3+5aDWqE7Tzqb8vM6tob0HL4OVEVmyN
+UZymI9gOBWbjMPGZqE5e37INqojwpiUvByl02st9nTGoou6G+JG4M4Ores5zSwgs
+n3Z/zSK9bbW/i1MtCtvZ0hdYab0UHrdQ2nrizMBG/PI/w+mcE5iHTOcSB11LvvBL
+hytC2M7TBQ+rbLCMJf5nh2g7M2K5gZmZw4mXrh9C49fXh4LpINltohM9s6MCqUxi
+JtoPtf3FK3asim28qcTdhqESJ5qogQBWp5eE6RKY9ELROeMoslComGT0kt0FoB58
+SIVChAGFcTQly6TNPITdft0cSGtppQh6tjgrVgDpv3behoBlT2rlwPWfY3Kx37/M
+JLvg6BguO4t10nUSWedKeW0y88UFqdb3kShV9bQMqHrQ+cyir7L/L3gKZUrx81ku
+YXWjkAojjk4kS7+IB8zzKAhl9bQOdntsK1oE79E6O+0A2UDfOdGXXJJK8UR+Dq9D
+/lcXHipIB2+oqcUAsV6GSxxnRzUjS4fCsNXjpuUbziAYDtAk+aVoGc9r12kqd3iH
+ik1LFz7ONBXmf55Dsf6RwhOdvBmMDmpHwQR/0oN6ah6ySm5JndooGxedwvaSiIk5
+DrntpQ2FDo/lOgro8X2U
+=/a/0
 -----END PGP SIGNATURE-----
 
---E57q0RgUZocldiZC--
-
---===============8160961715451559654==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8160961715451559654==--
+--bKyqfOwhbdpXa4YI--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
