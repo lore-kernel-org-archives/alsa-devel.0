@@ -1,175 +1,341 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Audio Jack Out does not work
-Date: Thu, 9 Apr 2015 09:34:05 +0800
-Message-ID: <CAN8cciagfHz_URd=ia5eYwKONw7LYf8GvaBPqbnqnExsygeKLQ@mail.gmail.com>
-References: <CAD67Mo_N1_uEtjWKcV4+Rkjrvc6kcZuvUgrMPvBURJX0hFaaMA@mail.gmail.com>
- <20150407225642.GN16501@mwanda> <1428455226.1107.2.camel@gmail.com>
- <s5hoamz6nd8.wl-tiwai@suse.de> <1428500098.907.2.camel@gmail.com>
- <s5hy4m2n27y.wl-tiwai@suse.de> <1428510844.1169.8.camel@gmail.com>
- <s5hegnu78iq.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E0CF260474
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 03:34:06 +0200 (CEST)
-Received: by obbfy7 with SMTP id fy7so165662079obb.2
- for <alsa-devel@alsa-project.org>; Wed, 08 Apr 2015 18:34:05 -0700 (PDT)
-In-Reply-To: <s5hegnu78iq.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Taylor Smock <smocktaylor@gmail.com>, david.henningsson@canonical.com, joe@perches.com, Dan Carpenter <dan.carpenter@oracle.com>
+From: Matthew Garrett <mjg59@coreos.com>
+Subject: [PATCH] ALSA: hda - make power_save threshold per-codec
+Date: Wed,  8 Apr 2015 18:53:48 -0700
+Message-ID: <1428544428-6351-1-git-send-email-mjg59@coreos.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Matthew Garrett <mjg59@coreos.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > > > > Taylor Smock wrote:
-> > > > > >
-> > > > > > Yes; reverting the patch does fix the problem.
-> > > > >
-> > > > > What if you just adjust the new volume manually without
-> > > > > reverting the
-> > > > > patch?  Run "alsamixer -c0" (or -c1, depending on the setup).
-> > > > > Once
-> > > > > after the setup, run "alsactl store" as root to save as the
-> > > > > system
-> > > > > default volume.
-> > > > >
-> > > > > The renamed volume should have been set in full volume as
-> > > > > default by
-> > > > > the driver, and this shouldn't matter whether PA is new or old.
-> > > > > If
-> > > > > the mixer adjustment isn't kept after relogin or reboot, it
-> > > > > means
-> > > > > that
-> > > > > some user-space stuff overrides it.
-> > > > >
-> > > > > In anyway, please give alsa-info.sh output before and after the
-> > > > > commit.
-> > > > >
-> > > > >
-> > > > > Takashi
-> > > > >
-> > > > > > On Wed, 2015-04-08 at 01:56 +0300, Dan Carpenter wrote:
-> > > > > > > So it's 03ad6a8c93b6df2 ('ALSA: hda - Fix "PCM" name being
-> > > > > > > used
-> > > > > > > on > one
-> > > > > > > DAC when there are two DACs') which causes the problem?
-> > > > > > > Have
-> > > > > > > you
-> > > > > > > tried
-> > > > > > > to just revert that patch?
-> > > > > > >
-> > > > > > > git show 03ad6a8c93b6df2d65c305b5b5f9474068b45bfb | patch -
-> > > > > > > p1 -R
-> > > > > > >
-> > > > > > > regards,
-> > > > > > > dan carpenter
-> > > > > > >
-> > > > > >
-> > > >
-> > > > I ran alsamixer -c0.
-> > > > Headphones did nothing.
-> > > > Speaker+L0 did change headphone volume.
-> > >
-> > > Please elaborate a bit what you're testing and what you expected.
-> > > When you change "Headphone" volume and mute, it did nothing for which
-> > > output?  "Speaker+LO" changes which output and which not?
-> > >
-> > > You seem to have three outputs, one headphone jack on a laptop and
-> > > one
-> > > on a docking station, and there is a built-in speaker.  Since your
-> > > codec has only two DACs, two of three must be tied.
-> > >
-> > > The bad thing is that BIOS pin configuration doesn't set the
-> > > headphone
-> > > pin with the associate number 0x0f but only set it to the dock
-> > > headphone.  Thus the driver assumes that the dock jack is the right
-> > > headphone and handles the laptop headphone as a sub output.
-> > > The commit you spotted took this difference more severely, and now
-> > > you
-> > > see the unexpected mixer assignment.
-> > >
-> > > So, the right "fix" would be rather to correct the pin config.
-> > > For example, try the patch below.
-> > >
-> > > (BTW, what is the product of your laptop model?  A more exact name
-> > > can
-> > >  be filled in the quirk string.)
-> > >
-> > > > PCM also seemed to affect headphone volume.
-> > >
-> > > This is a mixer element added by alsa-lib softvol plugin, and it's
-> > > not
-> > > what the kernel manages.
-> > >
-> > > Judging from the description that this PCM volume affects, you are
-> > > playing without PulseAudio but dmix, I suppose?
-> > >
-> > >
-> > > Takashi
-> > >
-> > > diff --git a/sound/pci/hda/patch_realtek.c
-> > > b/sound/pci/hda/patch_realtek.c
-> > > index 7b5c93e0e78c..9d935e5c008a 100644
-> > > --- a/sound/pci/hda/patch_realtek.c
-> > > +++ b/sound/pci/hda/patch_realtek.c
-> > > @@ -4429,6 +4429,7 @@ enum {
-> > >       ALC269_FIXUP_QUANTA_MUTE,
-> > >       ALC269_FIXUP_LIFEBOOK,
-> > >       ALC269_FIXUP_LIFEBOOK_EXTMIC,
-> > > +     ALC269_FIXUP_FUJITSU_HP_PIN,
-> > >       ALC269_FIXUP_AMIC,
-> > >       ALC269_FIXUP_DMIC,
-> > >       ALC269VB_FIXUP_AMIC,
-> > > @@ -4585,6 +4586,13 @@ static const struct hda_fixup alc269_fixups[]
-> > > = {
-> > >                       { }
-> > >               },
-> > >       },
-> > > +     [ALC269_FIXUP_FUJITSU_HP_PIN] = {
-> > > +             .type = HDA_FIXUP_PINS,
-> > > +             .v.pins = (const struct hda_pintbl[]) {
-> > > +                     { 0x21, 0x0221102f }, /* HP out */
-> > > +                     { }
-> > > +             },
-> > > +     },
->
+Modern hardware will often have multiple HDA devices, and the desired
+power saving configuration may vary depending on the codecs attached to
+each of them. Push the power_save value down to the individual codec
+structures, keeping the module parameter as a global control mechanism
+for compatibility purposes.
 
-Do you mind explaining the logic of this pin fixup as driver also change
-max channels from 2 to 4 ?
+Signed-off-by: Matthew Garrett <mjg59@coreos.com>
+---
+ Documentation/sound/alsa/HD-Audio.txt |  5 +++--
+ sound/pci/hda/hda_codec.c             | 28 ++++++++++++++++++++--------
+ sound/pci/hda/hda_codec.h             | 19 ++++---------------
+ sound/pci/hda/hda_controller.c        |  6 +++---
+ sound/pci/hda/hda_controller.h        |  2 +-
+ sound/pci/hda/hda_intel.c             |  7 +++----
+ sound/pci/hda/hda_sysfs.c             | 30 ++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_tegra.c             |  4 ++--
+ 8 files changed, 66 insertions(+), 35 deletions(-)
 
-The parser put one headphone in the line_outs before your patch but type is
-still line
-
-autoconfig for ALC269VB: line_outs=1 (0x21/0x0/0x0/0x0/0x0) type:line
-   speaker_outs=1 (0x14/0x0/0x0/0x0/0x0)
-   hp_outs=1 (0x1a/0x0/0x0/0x0/0x0)
-   mono: mono_out=0x0
-   inputs:
-     Internal Mic=0x12
-     Mic=0x18
-
-the headphone and dock headphone was put in the hp_outsafter your patch
-
-autoconfig for ALC269VB: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:speaker
-   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-   hp_outs=2 (0x1a/0x21/0x0/0x0/0x0)
-   mono: mono_out=0x0
-   inputs:
-     Internal Mic=0x12
-     Mic=0x18
-
-
-Do the driver need to distinguish between
-
-notebook with headphone and Dock headphone
-notebook with dual headphone jacks
+diff --git a/Documentation/sound/alsa/HD-Audio.txt b/Documentation/sound/alsa/HD-Audio.txt
+index 42a0a39..99f2fb8 100644
+--- a/Documentation/sound/alsa/HD-Audio.txt
++++ b/Documentation/sound/alsa/HD-Audio.txt
+@@ -569,8 +569,9 @@ Power-Saving
+ The power-saving is a kind of auto-suspend of the device.  When the
+ device is inactive for a certain time, the device is automatically
+ turned off to save the power.  The time to go down is specified via
+-`power_save` module option, and this option can be changed dynamically
+-via sysfs.
++`power_save` module option. This option can be changed dynamically
++via sysfs, either globally (via /sys/module/snd_hda_*/parameters/power_save)
++or per-codec (via the power_save sysfs parameter in the codec directory)
+ 
+ The power-saving won't work when the analog loopback is enabled on
+ some codecs.  Make sure that you mute all unneeded signal routes when
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 2fe86d2..5e8394a 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -895,7 +895,6 @@ int snd_hda_bus_new(struct snd_card *card,
+ 	bus->private_data = temp->private_data;
+ 	bus->pci = temp->pci;
+ 	bus->modelname = temp->modelname;
+-	bus->power_save = temp->power_save;
+ 	bus->ops = temp->ops;
+ 
+ 	mutex_init(&bus->cmd_mutex);
+@@ -1436,8 +1435,9 @@ static void snd_hda_codec_dev_release(struct device *dev)
+  * Returns 0 if successful, or a negative error code.
+  */
+ int snd_hda_codec_new(struct hda_bus *bus,
+-				unsigned int codec_addr,
+-				struct hda_codec **codecp)
++		      unsigned int codec_addr,
++		      struct hda_codec **codecp,
++		      int power_save)
+ {
+ 	struct hda_codec *codec;
+ 	char component[31];
+@@ -1495,6 +1495,7 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ 
+ 	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
+ 	codec->depop_delay = -1;
++	codec->power_save = power_save;
+ 	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
+ 
+ #ifdef CONFIG_PM
+@@ -5112,23 +5113,34 @@ static void __snd_hda_power_up(struct hda_codec *codec, bool wait_power_down)
+ 	codec->power_transition = 0;
+ }
+ 
+-#define power_save(codec)	\
+-	((codec)->bus->power_save ? *(codec)->bus->power_save : 0)
+-
+ /* Transition to powered down */
+ static void __snd_hda_power_down(struct hda_codec *codec)
+ {
+ 	if (!codec->power_on || codec->power_count || codec->power_transition)
+ 		return;
+ 
+-	if (power_save(codec)) {
++	if (codec->power_save >= 0) {
+ 		codec->power_transition = -1; /* avoid reentrance */
+ 		queue_delayed_work(codec->bus->workq, &codec->power_work,
+-				msecs_to_jiffies(power_save(codec) * 1000));
++				   msecs_to_jiffies(codec->power_save * 1000));
+ 	}
+ }
+ 
+ /**
++ *
++ * snd_hda_power_save_set - set the power-down time for the codec
++ *
++ * @codec: HD-audio codec
++ * @value: seconds to wait before powering down the codec
++ */
++void snd_hda_power_save_set(struct hda_codec *codec, int value)
++{
++	codec->power_save = value;
++	snd_hda_power_save(codec, 0, false);
++}
++EXPORT_SYMBOL_GPL(snd_hda_power_save_set);
++
++/**
+  * snd_hda_power_save - Power-up/down/sync the codec
+  * @codec: HD-audio codec
+  * @delta: the counter delta to change
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 9c8820f..faaab58 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -106,7 +106,6 @@ struct hda_bus_template {
+ 	void *private_data;
+ 	struct pci_dev *pci;
+ 	const char *modelname;
+-	int *power_save;
+ 	struct hda_bus_ops ops;
+ };
+ 
+@@ -123,7 +122,6 @@ struct hda_bus {
+ 	void *private_data;
+ 	struct pci_dev *pci;
+ 	const char *modelname;
+-	int *power_save;
+ 	struct hda_bus_ops ops;
+ 
+ 	/* codec linked list */
+@@ -398,6 +396,7 @@ struct hda_codec {
+ 	struct snd_array jacks;
+ #endif
+ 
++	int power_save;
+ 	int depop_delay; /* depop delay in ms, -1 for default delay time */
+ 
+ 	/* fix-up list */
+@@ -423,7 +422,7 @@ enum {
+ int snd_hda_bus_new(struct snd_card *card, const struct hda_bus_template *temp,
+ 		    struct hda_bus **busp);
+ int snd_hda_codec_new(struct hda_bus *bus, unsigned int codec_addr,
+-		      struct hda_codec **codecp);
++		      struct hda_codec **codecp, int power_save);
+ int snd_hda_codec_configure(struct hda_codec *codec);
+ int snd_hda_codec_update_widgets(struct hda_codec *codec);
+ 
+@@ -588,9 +587,11 @@ const char *snd_hda_get_jack_location(u32 cfg);
+  * power saving
+  */
+ #ifdef CONFIG_PM
++void snd_hda_power_save_set(struct hda_codec *codec, int value);
+ void snd_hda_power_save(struct hda_codec *codec, int delta, bool d3wait);
+ void snd_hda_update_power_acct(struct hda_codec *codec);
+ #else
++static inline void snd_hda_power_save_set(struct hda_codec *codec, int value) {}
+ static inline void snd_hda_power_save(struct hda_codec *codec, int delta,
+ 				      bool d3wait) {}
+ #endif
+@@ -634,18 +635,6 @@ static inline void snd_hda_power_down(struct hda_codec *codec)
+ 	snd_hda_power_save(codec, -1, false);
+ }
+ 
+-/**
+- * snd_hda_power_sync - Synchronize the power-save status
+- * @codec: HD-audio codec
+- *
+- * Synchronize the actual power state with the power account;
+- * called when power_save parameter is changed
+- */
+-static inline void snd_hda_power_sync(struct hda_codec *codec)
+-{
+-	snd_hda_power_save(codec, 0, false);
+-}
+-
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ /*
+  * patch firmware
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 17c2637..4bb13ae 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1813,7 +1813,7 @@ static int get_jackpoll_interval(struct azx *chip)
+ /* Codec initialization */
+ int azx_codec_create(struct azx *chip, const char *model,
+ 		     unsigned int max_slots,
+-		     int *power_save_to)
++		     int power_save)
+ {
+ 	struct hda_bus_template bus_temp;
+ 	int c, codecs, err;
+@@ -1827,7 +1827,6 @@ int azx_codec_create(struct azx *chip, const char *model,
+ 	bus_temp.ops.attach_pcm = azx_attach_pcm_stream;
+ 	bus_temp.ops.bus_reset = azx_bus_reset;
+ #ifdef CONFIG_PM
+-	bus_temp.power_save = power_save_to;
+ 	bus_temp.ops.pm_notify = azx_power_notify;
+ #endif
+ #ifdef CONFIG_SND_HDA_DSP_LOADER
+@@ -1886,7 +1885,8 @@ int azx_codec_create(struct azx *chip, const char *model,
+ 	for (c = 0; c < max_slots; c++) {
+ 		if ((chip->codec_mask & (1 << c)) & chip->codec_probe_mask) {
+ 			struct hda_codec *codec;
+-			err = snd_hda_codec_new(chip->bus, c, &codec);
++			err = snd_hda_codec_new(chip->bus, c, &codec,
++						power_save);
+ 			if (err < 0)
+ 				continue;
+ 			codec->jackpoll_interval = get_jackpoll_interval(chip);
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index c90d10f..d187121 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -45,7 +45,7 @@ irqreturn_t azx_interrupt(int irq, void *dev_id);
+ /* Codec interface */
+ int azx_codec_create(struct azx *chip, const char *model,
+ 		     unsigned int max_slots,
+-		     int *power_save_to);
++		     int power_save);
+ int azx_codec_configure(struct azx *chip);
+ int azx_mixer_create(struct azx *chip);
+ int azx_init_stream(struct azx *chip);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index a8a1e14..d51779a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -174,7 +174,6 @@ static struct kernel_param_ops param_ops_xint = {
+ #define param_check_xint param_check_int
+ 
+ static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
+-static int *power_save_addr = &power_save;
+ module_param(power_save, xint, 0644);
+ MODULE_PARM_DESC(power_save, "Automatic power-saving timeout "
+ 		 "(in second, 0 = disable).");
+@@ -187,7 +186,7 @@ static bool power_save_controller = 1;
+ module_param(power_save_controller, bool, 0644);
+ MODULE_PARM_DESC(power_save_controller, "Reset controller in power save mode.");
+ #else
+-static int *power_save_addr;
++static int power_save = -1;
+ #endif /* CONFIG_PM */
+ 
+ static int align_buffer_size = -1;
+@@ -754,7 +753,7 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
+ 		if (!chip->bus || chip->disabled)
+ 			continue;
+ 		list_for_each_entry(c, &chip->bus->codec_list, list)
+-			snd_hda_power_sync(c);
++			snd_hda_power_save_set(c, power_save);
+ 	}
+ 	mutex_unlock(&card_list_lock);
+ 	return 0;
+@@ -1898,7 +1897,7 @@ static int azx_probe_continue(struct azx *chip)
+ 	/* create codec instances */
+ 	err = azx_codec_create(chip, model[dev],
+ 			       azx_max_codecs[chip->driver_type],
+-			       power_save_addr);
++			       power_save);
+ 
+ 	if (err < 0)
+ 		goto out_free;
+diff --git a/sound/pci/hda/hda_sysfs.c b/sound/pci/hda/hda_sysfs.c
+index ccc962a..69bbb0b 100644
+--- a/sound/pci/hda/hda_sysfs.c
++++ b/sound/pci/hda/hda_sysfs.c
+@@ -44,8 +44,37 @@ static ssize_t power_off_acct_show(struct device *dev,
+ 	return sprintf(buf, "%u\n", jiffies_to_msecs(codec->power_off_acct));
+ }
+ 
++static ssize_t power_save_show(struct device *dev,
++			       struct device_attribute *attr,
++			       char *buf)
++{
++	struct hda_codec *codec = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%d\n", jiffies_to_msecs(codec->power_save));
++}
++
++static ssize_t power_save_store(struct device *dev,
++				struct device_attribute *attr,
++				const char *buf, size_t count)
++{
++	struct hda_codec *codec = dev_get_drvdata(dev);
++	unsigned long val;
++	int err = kstrtol(buf, 0, &val);
++
++	if (err < 0)
++		return err;
++
++	if (val < -1)
++		return -EINVAL;
++
++	snd_hda_power_save_set(codec, val);
++	return count;
++}
++
+ static DEVICE_ATTR_RO(power_on_acct);
+ static DEVICE_ATTR_RO(power_off_acct);
++static DEVICE_ATTR_RW(power_save);
++
+ #endif /* CONFIG_PM */
+ 
+ #define CODEC_INFO_SHOW(type)					\
+@@ -759,6 +788,7 @@ static struct attribute *hda_dev_attrs[] = {
+ #ifdef CONFIG_PM
+ 	&dev_attr_power_on_acct.attr,
+ 	&dev_attr_power_off_acct.attr,
++	&dev_attr_power_save.attr,
+ #endif
+ #ifdef CONFIG_SND_HDA_RECONFIG
+ 	&dev_attr_init_verbs.attr,
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 375e94f..69b76fc 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -82,7 +82,7 @@ module_param(power_save, bint, 0644);
+ MODULE_PARM_DESC(power_save,
+ 		 "Automatic power-saving timeout (in seconds, 0 = disable).");
+ #else
+-static int power_save = 0;
++static int power_save = -1;
+ #endif
+ 
+ /*
+@@ -503,7 +503,7 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		goto out_free;
+ 
+ 	/* create codec instances */
+-	err = azx_codec_create(chip, NULL, 0, &power_save);
++	err = azx_codec_create(chip, NULL, 0, power_save);
+ 	if (err < 0)
+ 		goto out_free;
+ 
+-- 
+2.3.4
