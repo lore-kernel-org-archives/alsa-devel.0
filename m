@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: Don't try to register debugfs
- entries if the parent does not exist
-Date: Thu, 9 Apr 2015 12:24:44 +0100
-Message-ID: <20150409112444.GV6023@sirena.org.uk>
-References: <1428569558-15883-1-git-send-email-lars@metafoo.de>
- <1428569558-15883-3-git-send-email-lars@metafoo.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: recording problem in beagleboard-mcbsp
+Date: Thu, 9 Apr 2015 15:06:16 +0300
+Message-ID: <55266B38.6030503@ti.com>
+References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>	<CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>	<CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>	<551C3D19.2050200@ti.com>	<CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>	<5523A1F3.2000701@ti.com>	<CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>	<5524FA51.9060606@ti.com>
+ <CAES_P+8oJ0xDJ-2w02Q0pZmgQyY9tyaRB=+_PqMhTdwuYNRShw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7352679217683813661=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C6CF2606E7
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 13:24:53 +0200 (CEST)
-In-Reply-To: <1428569558-15883-3-git-send-email-lars@metafoo.de>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id A166626052F
+ for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 14:06:20 +0200 (CEST)
+In-Reply-To: <CAES_P+8oJ0xDJ-2w02Q0pZmgQyY9tyaRB=+_PqMhTdwuYNRShw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: noman pouigt <variksla@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7352679217683813661==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6lvd+yiLX1l9HjL3"
-Content-Disposition: inline
-
-
---6lvd+yiLX1l9HjL3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Apr 09, 2015 at 10:52:38AM +0200, Lars-Peter Clausen wrote:
-> If the registration of a debugfs directory fails this is treated as a
-> non-fatal error in ASoC and operation continues as normal. This means we
-> need to be careful and check if the parent debugfs directory exists if we
-> try to register a debugfs file or sub-directory. Otherwise we might end up
-> passing NULL for the parent and the file or directory will be registered in
-> the top-level debugfs directory.
-
-Hrm, right.  On the one hand just silently ignoring the knock on errors
-feels icky on the other hand it's probably better to do something like
-this providing the earlier errors got reported (and were actually
-earlier, I can see us reordering things and causing further problems
-later on).
-
---6lvd+yiLX1l9HjL3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVJmF7AAoJECTWi3JdVIfQpUcH/2snrXSRIzDNUggylnqS6CMP
-l8coKNtq1n65pcmW3dTT2QinpPH/UuCzR8vDBoB4luVbrB4rNOAcLJhMjjlKA/d9
-L4otqT9CC7J3nlgoM+gkyjeOl64IgSS0zt1n3wd9DkVg92mSTxu34Iu3XidMpHI/
-lX27hkIKolo8mvmXFKcN32azS6Vco9pUVSk47hzj9qaYrwvAMmxrZ4zf2v0foKAk
-6JPzodxutgYbqfS31zxHThScIDPwhnUYPhwXHfHCvmjKwJZdKEmwHKI0XTiDM1zP
-KrHl6U3lz5tAgS2evTXU6Qs1EtSy3DUzbNkcuYygOCkF9uC4P4tFiKKJeH1y83k=
-=0NMw
------END PGP SIGNATURE-----
-
---6lvd+yiLX1l9HjL3--
-
---===============7352679217683813661==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7352679217683813661==--
+T24gMDQvMDkvMjAxNSAwMjo0NCBBTSwgbm9tYW4gcG91aWd0IHdyb3RlOgo+PiBGaXJzdCBjaGVj
+ayB0aGUgL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBjL3N1YjAvc3RhdHVzIHdoaWxlIHRoZSBjYXB0
+dXJlIGlzCj4+IHJ1bm5pbmcgYW5kIGxvb2sgYXQgdGhlIGh3X3B0ciBpZiBpdCBoYXMgbW92ZWQg
+YXQgYWxsLgo+IAo+IEl0IGhhcyBub3QgbW92ZWQgYXQgYWxsLgoKU28gTWNCU1AgZG9lcyBub3Qg
+ZGV0ZWN0IHN0YXJ0IGNvbmRpdGlvbiBvbiB0aGUgRlMgbGluZS4KCj4+IEVuYWJsZSBtb3JlIGlu
+dGVycnVwdHMgaW4gc291bmQvc29jL29tYXAvbWNic3AuYzpvbWFwX21jYnNwX2NvbmZpZygpLCBs
+aWtlCj4+IFJVTkRGTEVOLCBST1ZGTEVOIGFuZCBzZWUgaWYgeW91IGhhdmUgb3ZlcmZsb3cgaW4g
+TWNCU1AuCj4gCj4gSSBkaWQgZW5hYmxlIHRoZSBpbnRlcnJ1cHQgYnV0IGFsbCBpIGFtIGdldHRp
+bmcgaXMgYmVsb3cgZm9yIGJvdGgKPiBwbGF5YmFjayBhbmQgY2FwdHVyZQo+IHVzZWNhc2U6Cj4g
+b21hcC1tY2JzcCA0ODA3NDAwMC5tY2JzcDogUlggQnVmZmVyIFVuZGVyZmxvdyEKClRoaXMgaXMg
+YmVjYXVzZSB5b3UgZHVtcCB0aGUgcmVnaXN0ZXJzIGFuZCBpdCByZWFkIHRoZSBERFIgcmVnaXN0
+ZXIuIFRoZSBGSUZPCmlzIGVtcHR5IGFuZCB5b3UgdHJ5IHRvIHJlYWQgZGF0YSBvdXQuCgo+IFJl
+bWVtYmVyIHBsYXliYWNrIGlzIHdvcmtpbmcgaW4gYm90aCB0aGUgc2xhdmUgYW5kIG1hc3RlciBt
+b2RlIChjb2RlYyBzbGF2ZQo+IGFuZCBjb2RlYyBtYXN0ZXIpLgo+Pgo+PiBJZiB0aGUgRE1BIGhh
+cyBub3QgbW92ZWQgaXQgbWVhbnMgdGhhdCBNY0JTUCBkb2VzIG5vdCByZWNlaXZlZCB0aGUgRlMg
+d2hpY2gKPj4gd291bGQgaW5kaWNhdGUgdGhlIGZyYW1lIHN0YXJ0LCB0aHVzIGl0IHdpbGwgbm90
+IHNhbXBsZSBkYXRhIGluLCB0aHVzIGl0IHdpbGwKPj4gbm90IHRyaWdnZXIgdGhlIERNQSB0byBy
+ZWFkIHRoZSBkYXRhIG91dC4KPiAKPiBVc2VkIHNjb3BlIHRvIGNoZWNrIEZTIGFuZCBCaXQgY2xv
+Y2sgYW5kIGZvdW5kIGJlbG93IChydW5uaW5nIGFyZWNvcmQKPiB3aXRoIDQ0MTAwKToKPiBiaXQg
+Y2xvY2sgaXMgcnVubmluZyBhdCAxLjQyMCBNSHogYW5kIEZTIGF0IDQ0MTAwIGtIei4gQ29uZmln
+dXJlZCBNQ0JzcAo+IGluIG1hc3RlciBtb2RlIHRoaXMgdGltZS4KPiAKPj4KPj4gU2luY2UgdGhl
+IGNhcHR1cmUgaXMgd29ya2luZyBvbiBNY0JTUDIgaW4gTWNCU1Agc2xhdmUgKGFuZCBtYXN0ZXIg
+YWxzbykgdGhlCj4+IG9ubHkgdGhpbmcgd2hpY2ggY2FuIGJlIHdyb25nIGlzIHRoZSB3YXkgdGhl
+IG1heDk4MDkwIGlzIHdpcmVkIHVwIG9yIHNvbWUgbXV4Cj4+IGlzc3VlIGFnYWluIGFzIGl0IHdh
+cyBiZWZvcmUgZm9yIHlvdS4KPiAKPiBCZWxvdyBpcyB0aGUgbXV4IHNldHRpbmcgd2hpY2ggaSBk
+aWQgYW5kIGJlY2F1c2Ugb2Ygd2hpY2ggcGxheWJhY2sgaXMgd29ya2luZzoKPiBNQ0JzcCBpbiBt
+YXN0ZXIgbW9kZQo+IGNvbmZpZ3VyZWQgbWNic3AxX2Nsa3gsIG1jYnNwMV9mc3gsIG1jYnNwMV9k
+eCBhbmQgbWNic3AxX2RyCj4gKwo+ICsgICAgICAgbWNic3AxX3BpbnM6IHBpbm11eF9tY2JzcDFf
+cGlucyB7Cj4gKyAgICAgICAgICAgICAgICBwaW5jdHJsLXNpbmdsZSxwaW5zID0gPAo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICBPTUFQM19DT1JFMV9JT1BBRCgweDIxOTYsIFBJTl9PVVRQVVQg
+fCBNVVhfTU9ERTApCj4gKyAgICAgICAgICAgICAgICAgICAgICAgIE9NQVAzX0NPUkUxX0lPUEFE
+KDB4MjE5OCwgUElOX09VVFBVVCB8IE1VWF9NT0RFMCkKPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgT01BUDNfQ09SRTFfSU9QQUQoMHgyMTkwLCBQSU5fT1VUUFVUIHwgTVVYX01PREUwKQo+ICsg
+ICAgICAgICAgICAgICAgICAgICAgICBPTUFQM19DT1JFMV9JT1BBRCgweDIxOTIsIFBJTl9JTlBV
+VCB8IE1VWF9NT0RFMCkKPiArICAgICAgICAgICAgICAgICAgICAgICAgT01BUDNfQ09SRTFfSU9Q
+QUQoMHgyMThDLCBQSU5fT1VUUFVUIHwgTVVYX01PREUwKQo+ICsgICAgICAgICAgICAgICAgPjsK
+PiArICAgICAgICB9Owo+ICB9Owo+IAo+IEV2ZW4gaWYgTUNCU1BfRFIgaXMgbm90IGNvbm5lY3Rl
+ZCBwcm9wZXJseSBpdCBzaG91bGQgcmVjb3JkIGF0bGVhc3Qgbm9pc2UuCj4gCj4gSSBhbHNvIHRy
+aWVkIFRob21hcyBOaWVkZXJwcsO8bSBiZWxvdyBhZHZpY2Ugd2hlbiBydW5uaW5nIE1jQnNwIGlu
+IHNsYXZlIG1vZGUKPiBzaG9ydGVuIHRoZSBDTEtSIGFuZCBDTEtYIHBpbnMgYW5kIG11eCB0aGUg
+Q0xLUiBwaW4gYXMgSU5QVVQgaW4geW91cgo+IGR0cy4gVGhlbiB5b3VyCj4gYml0Y2xvY2sgd291
+bGQgZW50ZXIgdGhyb3VnaCBDTEtSIGFzIHdlbGwgYXMgQ0xLWC4KPiBCdXQgdGhpcyBhbHNvIGRp
+ZG4ndCB3b3JrLgo+IAo+IEZvdW5kIG91dCBvbmx5IGJlbG93IHJlZ2lzdGVyIGNoYW5nZXMgYmV0
+d2VlbiBwbGF5YmFjayBhbmQgY2FwdHVyZToKPiBJbiBwbGF5YmFjawo+IFNQQ1IyOiAweDAyZjUK
+PiBTUENSMTogMHgwMDMwCj4gSW4gY2FwdHVyZToKPiBTUENSMjogMHgwMmYwCj4gU1BDUjE6IDB4
+MDAzMQo+IAo+IFRoZXJlIGFyZSBubyBkaWZmZXJlbmNlIGJldHdlZW4gYW55IG90aGVyIHJlZ2lz
+dGVyLiBJIHRoaW5rIG1jYnNwCj4gcmVnaXN0ZXJzIGFyZSBmaW5lCj4gYnV0IGNhbiB5b3UgY29u
+ZmlybSBpZiB0aGVyZSBzaG91bGQgYmUgYW55IG1vcmUgZGlmZmVyZW5jZXM/Cj4gUGxlYXNlIGFk
+dmljZSB3aGF0IG1pZ2h0IGJlIGdvaW5nIHdyb25nPwoKSHJtLCBNY0JTUDEgaXMga2luZCBvZiBw
+cm9ibGVtYXRpYyBwb3J0IHNpbmNlIGl0IGhhcyA2cGluIGNvbmZpZyBieSBkZWZhdWx0LgpJdCBt
+aWdodCB3b3J0aCBhIHRyeSB0byBkbyBzb21ldGhpbmcgbGlrZToKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LWFybS1rZXJuZWwvMjAxMi1BdWd1c3QvMTEzMDU4Lmh0
+bWwKaGFzIHJlbW92ZWQuCk9yIHRvIHN3aXRjaCB0byB1c2UgTWNCU1AzLgoKQnV0IGZvciBzb21l
+IHJlYXNvbiBub3cgSSBjYW4gbm90IGdldCB0aGUgcmVjb3JkaW5nIHdvcmtpbmcgdmlhIE1jQlNQ
+MSBlaXRoZXIuCkkgcmVtZW1iZXIgdGhhdCBpdCB3b3JrZWQgbm90IHRoYXQgbG9uZyB0aW1lIGFn
+by4uLgoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
