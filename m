@@ -1,82 +1,47 @@
-From: Jean Delvare <jdelvare@suse.de>
-Subject: Re: [PATCH 12/14] i2c-parport: return proper error values from
- attach
-Date: Thu, 9 Apr 2015 11:33:42 +0200
-Message-ID: <20150409113342.5621af83@endymion.delvare>
-References: <1428492040-5581-1-git-send-email-sudipm.mukherjee@gmail.com>
-	<1428492040-5581-13-git-send-email-sudipm.mukherjee@gmail.com>
-	<20150409071307.GA1166@katana>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [patch] ASoC: Intel: do cast earlier in sst_cdev_tstamp()
+Date: Thu, 9 Apr 2015 11:00:54 +0100
+Message-ID: <20150409100054.GQ6023@sirena.org.uk>
+References: <20150409090239.GA17605@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-scsi-owner@vger.kernel.org>
-In-Reply-To: <20150409071307.GA1166@katana>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rodolfo Giometti <giometti@enneenne.com>, "James E.J. Bottomley" <JBottomley@parallels.com>, Mark Brown <broonie@kernel.org>, Willy Tarreau <willy@meta-x.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, netdev@vger.kernel.org, linux-scsi@vger.kernel.org, linux-spi@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="KAj9AL6usbKsxRUD"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150409090239.GA17605@mwanda>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Jie Yang <yang.jie@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 Apr 2015 09:13:07 +0200, Wolfram Sang wrote:
-> On Wed, Apr 08, 2015 at 04:50:38PM +0530, Sudip Mukherjee wrote:
-> > now that we are monitoring the return value from attach, make the
-> > required changes to return proper value from its attach function.
-> > 
-> > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-> > ---
-> >  drivers/i2c/busses/i2c-parport.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/i2c/busses/i2c-parport.c b/drivers/i2c/busses/i2c-parport.c
-> > index a1fac5a..761a775 100644
-> > --- a/drivers/i2c/busses/i2c-parport.c
-> > +++ b/drivers/i2c/busses/i2c-parport.c
-> > @@ -160,14 +160,14 @@ static void i2c_parport_irq(void *data)
-> >  			"SMBus alert received but no ARA client!\n");
-> >  }
-> >  
-> > -static void i2c_parport_attach(struct parport *port)
-> > +static int i2c_parport_attach(struct parport *port)
-> >  {
-> >  	struct i2c_par *adapter;
-> >  
-> >  	adapter = kzalloc(sizeof(struct i2c_par), GFP_KERNEL);
-> >  	if (adapter == NULL) {
-> >  		printk(KERN_ERR "i2c-parport: Failed to kzalloc\n");
-> > -		return;
-> > +		return -ENOMEM;
-> 
-> ENOMEM does not need printout. Please remove printk while we are here.
-> 
-> >  
-> >  	pr_debug("i2c-parport: attaching to %s\n", port->name);
-> > @@ -230,13 +230,14 @@ static void i2c_parport_attach(struct parport *port)
-> >  	mutex_lock(&adapter_list_lock);
-> >  	list_add_tail(&adapter->node, &adapter_list);
-> >  	mutex_unlock(&adapter_list_lock);
-> > -	return;
-> > +	return 0;
-> >  
-> >   err_unregister:
-> >  	parport_release(adapter->pdev);
-> >  	parport_unregister_device(adapter->pdev);
-> >   err_free:
-> >  	kfree(adapter);
-> > +	return -ENODEV;
-> 
-> Ideally, we would return different -Esomething for each failing case. We
-> can leave that for someone who is acutally using the driver. However, I
-> wonder if ENODEV is a proper catch-all case because the driver core will
-> not report failures.
 
-It doesn't really matter that the error codes are different, it matters
-that they are meaningful. As much as possible you should pass error
-codes from the lower layers. parport_claim_or_block() and
-i2c_bit_add_bus() return proper error codes so you should record and
-transmit them. Only parport_register_device() does not, so you have to
-craft one and -ENODEV seems appropriate to me.
+--KAj9AL6usbKsxRUD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Note: I can test this driver.
+On Thu, Apr 09, 2015 at 12:02:39PM +0300, Dan Carpenter wrote:
 
--- 
-Jean Delvare
-SUSE L3 Support
+> My static checker complains about these because it looks like the
+> multiply can overflow and then we cast to a larger data type.  I don't
+> think this is a problem, but it's also harmless to do the cast earlier
+> so let's silence the static checker warning.
+
+Applied, thanks.
+
+--KAj9AL6usbKsxRUD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVJk3VAAoJECTWi3JdVIfQ0uIH/RXFJFHg+/YLdbQnm2Raf32J
+Fz1A7mMfiXBY2lkurdXR4by0+K8844zrzWYTqlPgzAqZn2/IIL5wUlaLVLKX+4kt
+s/DbcDGCMX40/1bKom3Pil2V7Ug3vdS95wZX99A5zwsm1nw0T0jMDnIximYrcaTA
+boglIHGN0yZ0Uuje3ACJXJTc2lkuPjmzn2OBn+b0cXeCWq+Ddou8Egpi07xYqx0U
+gxaI5X1N/0YjHNluvEShN4pFA+AbFpSOPaGE3dqTB237/O3mZsq3slYohJ/BcAeJ
+Bvrt8uSSpSFRumuJrz8oYfLCg6eXDrKCA//sO9bOWqdnkNr7NV/5oblk4l+p1uo=
+=5scd
+-----END PGP SIGNATURE-----
+
+--KAj9AL6usbKsxRUD--
