@@ -1,80 +1,138 @@
-From: Michael Gernoth <michael@gernoth.net>
-Subject: [PATCH] ALSA: emu10k1: don't deadlock in proc-functions
-Date: Thu, 9 Apr 2015 23:42:15 +0200
-Message-ID: <20150409214215.GA27140@zerfleddert.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eddie.zerfleddert.de (eddie.zerfleddert.de [188.246.9.226])
- by alsa0.perex.cz (Postfix) with ESMTP id 08E5C2605AB
- for <alsa-devel@alsa-project.org>; Thu,  9 Apr 2015 23:42:15 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Alexey Ignatov <lexszero@gmail.com>
+Subject: [PATCH 1/2] ASoC: davinci: Clear VCIF read FIFO on errors
+Date: Fri, 10 Apr 2015 02:00:50 +0300
+Message-ID: <1428620479-32696-1-git-send-email-lexszero@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: davinci-linux-open-source@linux.davincidsp.com
+Cc: Alexey Ignatov <lexszero@gmail.com>, Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@deeprootsystems.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Wolfram Sang <wsa@the-dreams.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The functions snd_emu10k1_proc_spdif_read and snd_emu1010_fpga_read
-acquire the emu_lock before accessing the FPGA. The function used
-to access the FPGA (snd_emu1010_fpga_read) also tries to take
-the emu_lock which causes a deadlock.
-Remove the outer locking in the proc-functions (guarding only the
-already safe fpga read) to prevent this deadlock.
+Clearing VCIF read FIFO on overflow and underflow events fixes audio glitching
+when DMA load is high. This happened when simultaneously capturing and encoding
+video and audio, for example.
 
-Signed-off-by: Michael Gernoth <michael@gernoth.net>
+Signed-off-by: Alexey Ignatov <lexszero@gmail.com>
 ---
- sound/pci/emu10k1/emuproc.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ sound/soc/davinci/davinci-vcif.c | 60 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 56 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
-index 2ca9f2e..415d23c 100644
---- a/sound/pci/emu10k1/emuproc.c
-+++ b/sound/pci/emu10k1/emuproc.c
-@@ -245,27 +245,19 @@ static void snd_emu10k1_proc_spdif_read(struct snd_info_entry *entry,
- 	u32 rate;
+diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
+index 5bee0427..0d8014e 100644
+--- a/sound/soc/davinci/davinci-vcif.c
++++ b/sound/soc/davinci/davinci-vcif.c
+@@ -45,6 +45,10 @@
+ 	} \
+ } while (0)
  
- 	if (emu->card_capabilities->emu_model) {
--		spin_lock_irqsave(&emu->emu_lock, flags);
- 		snd_emu1010_fpga_read(emu, 0x38, &value);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
- 		if ((value & 0x1) == 0) {
--			spin_lock_irqsave(&emu->emu_lock, flags);
- 			snd_emu1010_fpga_read(emu, 0x2a, &value);
- 			snd_emu1010_fpga_read(emu, 0x2b, &value2);
--			spin_unlock_irqrestore(&emu->emu_lock, flags);
- 			rate = 0x1770000 / (((value << 5) | value2)+1);	
- 			snd_iprintf(buffer, "ADAT Locked : %u\n", rate);
- 		} else {
- 			snd_iprintf(buffer, "ADAT Unlocked\n");
- 		}
--		spin_lock_irqsave(&emu->emu_lock, flags);
- 		snd_emu1010_fpga_read(emu, 0x20, &value);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
- 		if ((value & 0x4) == 0) {
--			spin_lock_irqsave(&emu->emu_lock, flags);
- 			snd_emu1010_fpga_read(emu, 0x28, &value);
- 			snd_emu1010_fpga_read(emu, 0x29, &value2);
--			spin_unlock_irqrestore(&emu->emu_lock, flags);
- 			rate = 0x1770000 / (((value << 5) | value2)+1);	
- 			snd_iprintf(buffer, "SPDIF Locked : %d\n", rate);
- 		} else {
-@@ -415,9 +407,7 @@ static void snd_emu_proc_emu1010_reg_read(struct snd_info_entry *entry,
- 	snd_iprintf(buffer, "EMU1010 Registers:\n\n");
- 
- 	for(i = 0; i < 0x40; i+=1) {
--		spin_lock_irqsave(&emu->emu_lock, flags);
- 		snd_emu1010_fpga_read(emu, i, &value);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
- 		snd_iprintf(buffer, "%02X: %08X, %02X\n", i, value, (value >> 8) & 0x7f);
- 	}
++#define DAVINCI_VC_INT_RERR_MASK \
++	(DAVINCI_VC_INT_RERRUDR_MASK | \
++	 DAVINCI_VC_INT_RERROVF_MASK)
++
+ struct davinci_vcif_dev {
+ 	struct davinci_vc *davinci_vc;
+ 	struct davinci_pcm_dma_params	dma_params[2];
+@@ -87,6 +91,22 @@ static void davinci_vcif_stop(struct snd_pcm_substream *substream)
+ 	writel(w, davinci_vc->base + DAVINCI_VC_CTRL);
  }
+ 
++static void davinci_vcif_interrupts(struct snd_pcm_substream *substream,
++		int enable)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct davinci_vcif_dev *davinci_vcif_dev =
++			snd_soc_dai_get_drvdata(rtd->cpu_dai);
++	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		writel(DAVINCI_VC_INT_RERR_MASK,
++				davinci_vc->base + DAVINCI_VC_INTCLR);
++		writel(enable ? DAVINCI_VC_INT_RERR_MASK : 0,
++				davinci_vc->base + DAVINCI_VC_INTEN);
++	}
++}
++
+ static int davinci_vcif_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params,
+ 				  struct snd_soc_dai *dai)
+@@ -104,10 +124,6 @@ static int davinci_vcif_hw_params(struct snd_pcm_substream *substream,
+ 	/* General line settings */
+ 	writel(DAVINCI_VC_CTRL_MASK, davinci_vc->base + DAVINCI_VC_CTRL);
+ 
+-	writel(DAVINCI_VC_INT_MASK, davinci_vc->base + DAVINCI_VC_INTCLR);
+-
+-	writel(DAVINCI_VC_INT_MASK, davinci_vc->base + DAVINCI_VC_INTEN);
+-
+ 	w = readl(davinci_vc->base + DAVINCI_VC_CTRL);
+ 
+ 	/* Determine xfer data type */
+@@ -149,6 +165,32 @@ static int davinci_vcif_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
++static irqreturn_t davinci_vcif_irq_handler(int irq, void *data)
++{
++	struct davinci_vcif_dev *davinci_vcif_dev = data;
++	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
++	uint32_t w;
++
++	w = readl(davinci_vc->base + DAVINCI_VC_INTSTATUS);
++
++	if (w & DAVINCI_VC_INT_RERR_MASK) {
++		pr_debug("vc overflow or underflow occurred, resetting fifo\n");
++
++		w = readl(davinci_vc->base + DAVINCI_VC_CTRL);
++		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RFIFOCL, 1);
++		writel(w, davinci_vc->base + DAVINCI_VC_CTRL);
++
++		w = readl(davinci_vc->base + DAVINCI_VC_CTRL);
++		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RFIFOCL, 0);
++		writel(w, davinci_vc->base + DAVINCI_VC_CTRL);
++
++		writel(DAVINCI_VC_INT_RERR_MASK,
++				davinci_vc->base + DAVINCI_VC_INTCLR);
++	}
++
++	return IRQ_HANDLED;
++}
++
+ static int davinci_vcif_trigger(struct snd_pcm_substream *substream, int cmd,
+ 				struct snd_soc_dai *dai)
+ {
+@@ -159,10 +201,12 @@ static int davinci_vcif_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		davinci_vcif_start(substream);
++		davinci_vcif_interrupts(substream, 1);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		davinci_vcif_interrupts(substream, 0);
+ 		davinci_vcif_stop(substream);
+ 		break;
+ 	default:
+@@ -178,6 +222,7 @@ static int davinci_vcif_startup(struct snd_pcm_substream *substream,
+ 	struct davinci_vcif_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 
+ 	snd_soc_dai_set_dma_data(dai, substream, dev->dma_params);
++
+ 	return 0;
+ }
+ 
+@@ -238,6 +283,13 @@ static int davinci_vcif_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&pdev->dev, davinci_vcif_dev);
+ 
++	ret = devm_request_irq(&pdev->dev, IRQ_MBXINT, davinci_vcif_irq_handler,
++			0, "vcif", davinci_vcif_dev);
++	if (ret != 0) {
++		dev_err(&pdev->dev, "could not request irq: %d\n", ret);
++		return ret;
++	}
++
+ 	ret = snd_soc_register_component(&pdev->dev, &davinci_vcif_component,
+ 					 &davinci_vcif_dai, 1);
+ 	if (ret != 0) {
 -- 
-2.1.4
+2.3.5
