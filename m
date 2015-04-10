@@ -1,16 +1,16 @@
 From: Koro Chen <koro.chen@mediatek.com>
-Subject: [RESEND RFC PATCH 2/3] ASoC: mediatek: Add AFE
-	connection control
-Date: Fri, 10 Apr 2015 16:14:08 +0800
-Message-ID: <1428653649-38200-3-git-send-email-koro.chen@mediatek.com>
+Subject: [RESEND RFC PATCH 3/3] ASoC: mediatek: Add AFE
+	platform driver
+Date: Fri, 10 Apr 2015 16:14:09 +0800
+Message-ID: <1428653649-38200-4-git-send-email-koro.chen@mediatek.com>
 References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AF37265DDF
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 10:15:09 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2822C265DE9
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 10:15:11 +0200 (CEST)
 In-Reply-To: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,27 +25,75 @@ To: robh+dt@kernel.org, matthias.bgg@gmail.com, broonie@kernel.org, perex@perex.
 Cc: devicetree@vger.kernel.org, koro.chen@mediatek.com, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, galak@codeaurora.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This is the AFE inter-connection control APIs.
+This is the platform driver of Mediatek's AFE (Audio Front End) unit
 
 Signed-off-by: Koro Chen <koro.chen@mediatek.com>
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/mediatek/mtk-afe-common.h     | 105 ++++++++
- sound/soc/mediatek/mtk-afe-connection.c | 416 ++++++++++++++++++++++++++++++++
- sound/soc/mediatek/mtk-afe-connection.h |  30 +++
- 3 files changed, 551 insertions(+)
- create mode 100644 sound/soc/mediatek/mtk-afe-common.h
- create mode 100644 sound/soc/mediatek/mtk-afe-connection.c
- create mode 100644 sound/soc/mediatek/mtk-afe-connection.h
+ sound/soc/Kconfig                |    1 +
+ sound/soc/Makefile               |    1 +
+ sound/soc/mediatek/Kconfig       |    8 +
+ sound/soc/mediatek/Makefile      |    2 +
+ sound/soc/mediatek/mtk-afe-pcm.c | 1497 ++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 1509 insertions(+)
+ create mode 100644 sound/soc/mediatek/Kconfig
+ create mode 100644 sound/soc/mediatek/Makefile
+ create mode 100644 sound/soc/mediatek/mtk-afe-pcm.c
 
-diff --git a/sound/soc/mediatek/mtk-afe-common.h b/sound/soc/mediatek/mtk-afe-common.h
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index dcc79aa..c022374 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -45,6 +45,7 @@ source "sound/soc/nuc900/Kconfig"
+ source "sound/soc/omap/Kconfig"
+ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/intel/Kconfig"
++source "sound/soc/mediatek/Kconfig"
+ source "sound/soc/mxs/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/rockchip/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 5b3c8f6..6f69f01d 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -23,6 +23,7 @@ obj-$(CONFIG_SND_SOC)	+= dwc/
+ obj-$(CONFIG_SND_SOC)	+= fsl/
+ obj-$(CONFIG_SND_SOC)	+= jz4740/
+ obj-$(CONFIG_SND_SOC)	+= intel/
++obj-$(CONFIG_SND_SOC)	+= mediatek/
+ obj-$(CONFIG_SND_SOC)	+= mxs/
+ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
 new file mode 100644
-index 0000000..71b426d
+index 0000000..7d97cf1
 --- /dev/null
-+++ b/sound/soc/mediatek/mtk-afe-common.h
-@@ -0,0 +1,105 @@
++++ b/sound/soc/mediatek/Kconfig
+@@ -0,0 +1,8 @@
++config SND_SOC_MEDIATEK
++	bool "ASoC support for Mediatek chip"
++	depends on ARCH_MEDIATEK
++	help
++	  This adds ASoC platform driver support for Mediatek chip
++	  that can be used with other codecs.
++	  Select Y if you have such device.
++	  Ex: MT8173
+diff --git a/sound/soc/mediatek/Makefile b/sound/soc/mediatek/Makefile
+new file mode 100644
+index 0000000..12003bb
+--- /dev/null
++++ b/sound/soc/mediatek/Makefile
+@@ -0,0 +1,2 @@
++# MTK Platform Support
++obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-connection.o mtk-afe-pcm.o
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+new file mode 100644
+index 0000000..a89c753
+--- /dev/null
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -0,0 +1,1497 @@
 +/*
-+ * mtk_afe_common.h  --  Mediatek audio driver common definitions
++ * Mediatek ALSA SoC Afe platform driver
 + *
 + * Copyright (c) 2015 MediaTek Inc.
 + * Author: Koro Chen <koro.chen@mediatek.com>
@@ -63,549 +111,1483 @@ index 0000000..71b426d
 + * GNU General Public License for more details.
 + */
 +
-+#ifndef _MTK_AFE_COMMON_H_
-+#define _MTK_AFE_COMMON_H_
-+
-+#include <linux/clk.h>
-+#include <linux/regmap.h>
-+#include <dt-bindings/sound/mtk-afe.h>
-+
-+enum {
-+	MTK_CLK_INFRASYS_AUD,
-+	MTK_CLK_TOP_PDN_AUD,
-+	MTK_CLK_TOP_PDN_AUD_BUS,
-+	MTK_CLK_I2S0_M,
-+	MTK_CLK_I2S1_M,
-+	MTK_CLK_I2S2_M,
-+	MTK_CLK_I2S3_M,
-+	MTK_CLK_I2S3_B,
-+	MTK_CLK_BCK0,
-+	MTK_CLK_BCK1,
-+	MTK_CLK_NUM
-+};
-+
-+struct mtk_afe;
-+struct snd_pcm_substream;
-+
-+struct mtk_afe_io_data {
-+	int num;
-+	const char *name;
-+	int (*startup)(struct mtk_afe *, struct snd_pcm_substream *);
-+	void (*shutdown)(struct mtk_afe *, struct snd_pcm_substream *);
-+	int (*prepare)(struct mtk_afe *, struct snd_pcm_substream *);
-+	int (*start)(struct mtk_afe *, struct snd_pcm_substream *);
-+	void (*pause)(struct mtk_afe *, struct snd_pcm_substream *);
-+};
-+
-+struct mtk_afe_io {
-+	const struct mtk_afe_io_data *data;
-+	struct clk *m_ck;
-+	struct clk *b_ck;
-+	u32 *connections;
-+	int num_connections;
-+	int mem[2]; /* playback and capture */
-+};
-+
-+struct mtk_afe_irq_data {
-+	int reg_cnt;
-+	int cnt_shift;
-+	int en_shift;
-+	int fs_shift;
-+	int clr_shift;
-+};
-+
-+struct mtk_afe_memif_data {
-+	int id;
-+	const char *name;
-+	int reg_ofs_base;
-+	int reg_ofs_cur;
-+	int fs_shift;
-+	int mono_shift;
-+	int enable_shift;
-+};
-+
-+struct mtk_afe_memif {
-+	unsigned int phys_buf_addr;
-+	int buffer_size;
-+	unsigned int hw_ptr;		/* Previous IRQ's HW ptr */
-+	bool use_sram;
-+	struct snd_pcm_substream *substream;
-+	const struct mtk_afe_memif_data *data;
-+	const struct mtk_afe_irq_data *irqdata;
-+};
-+
-+struct mtk_afe {
-+	/* address for ioremap audio hardware register */
-+	void __iomem *base_addr;
-+	void __iomem *sram_address;
-+	u32 sram_phy_address;
-+	u32 sram_size;
-+	struct device *dev;
-+	struct regmap *regmap;
-+
-+	struct mtk_afe_memif memif[MTK_AFE_MEMIF_NUM];
-+	struct mtk_afe_io ios[MTK_AFE_IO_NUM];
-+
-+	struct clk *clocks[MTK_CLK_NUM];
-+};
-+#endif
-diff --git a/sound/soc/mediatek/mtk-afe-connection.c b/sound/soc/mediatek/mtk-afe-connection.c
-new file mode 100644
-index 0000000..714e9cd
---- /dev/null
-+++ b/sound/soc/mediatek/mtk-afe-connection.c
-@@ -0,0 +1,416 @@
-+/*
-+ * Mediatek AFE audio interconnect support
-+ *
-+ * Copyright (c) 2015 MediaTek Inc.
-+ * Author: Koro Chen <koro.chen@mediatek.com>
-+ *             Sascha Hauer <s.hauer@pengutronix.de>
-+ *             Hidalgo Huang <hidalgo.huang@mediatek.com>
-+ *             Ir Lian <ir.lian@mediatek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/regmap.h>
-+#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/pm_runtime.h>
++#include <sound/soc.h>
 +#include "mtk-afe-common.h"
 +#include "mtk-afe-connection.h"
++#include <dt-bindings/sound/mtk-afe.h>
 +
-+#define MTK_AFE_INTERCONN_NUM_INPUT	21
-+#define MTK_AFE_INTERCONN_NUM_OUTPUT	23
++/*****************************************************************************
++ *                  R E G I S T E R       D E F I N I T I O N
++ *****************************************************************************/
++#define AUDIO_TOP_CON0		0x0000
++#define AUDIO_TOP_CON1		0x0004
++#define AFE_DAC_CON0		0x0010
++#define AFE_DAC_CON1		0x0014
++#define AFE_I2S_CON		0x0018
++#define AFE_I2S_CON1		0x0034
++#define AFE_I2S_CON2		0x0038
++#define AFE_I2S_CON3		0x004c
++#define AFE_CONN_24BIT		0x006c
 +
-+#define MTK_AFE_HDMI_CONN_INPUT_BASE	30
-+#define MTK_AFE_HDMI_CONN_INPUT_MAX	37
-+#define MTK_AFE_NUM_HDMI_INPUT		(37 - 30 + 1)
++/* Memory interface */
++#define AFE_DL1_BASE		0x0040
++#define AFE_DL1_CUR		0x0044
++#define AFE_DL1_END		0x0048
++#define AFE_DL2_BASE		0x0050
++#define AFE_DL2_CUR		0x0054
++#define AFE_DL2_END		0x0058
++#define AFE_AWB_BASE		0x0070
++#define AFE_AWB_END		0x0078
++#define AFE_AWB_CUR		0x007c
++#define AFE_VUL_BASE		0x0080
++#define AFE_VUL_END		0x0088
++#define AFE_VUL_CUR		0x008c
++#define AFE_DAI_BASE		0x0090
++#define AFE_DAI_END		0x0098
++#define AFE_DAI_CUR		0x009c
++#define AFE_MOD_PCM_BASE	0x0330
++#define AFE_MOD_PCM_END		0x0338
++#define AFE_MOD_PCM_CUR		0x033C
++#define AFE_HDMI_OUT_BASE	0x0374
++#define AFE_HDMI_OUT_CUR	0x0378
++#define AFE_HDMI_OUT_END	0x037c
 +
-+#define MTK_AFE_HDMI_CONN_OUTPUT_BASE	30
-+#define MTK_AFE_HDMI_CONN_OUTPUT_MAX	41
-+#define MTK_AFE_NUM_HDMI_OUTPUT		(41 - 30 + 1)
++#define AFE_ADDA_DL_SRC2_CON0	0x0108
++#define AFE_ADDA_DL_SRC2_CON1	0x010c
++#define AFE_ADDA_UL_SRC_CON0	0x0114
++#define AFE_ADDA_UL_SRC_CON1	0x0118
++#define AFE_ADDA_TOP_CON0	0x0120
++#define AFE_ADDA_UL_DL_CON0	0x0124
++#define AFE_ADDA_NEWIF_CFG0     0x0138
++#define AFE_ADDA_NEWIF_CFG1     0x013C
++#define AFE_ADDA2_TOP_CON0	0x0600
 +
-+struct mtk_afe_connection {
-+	short creg, sreg;
-+	char cshift, sshift;
++#define AFE_HDMI_OUT_CON0	0x0370
++
++#define AFE_IRQ_MCU_CON		0x03a0
++#define AFE_IRQ_STATUS		0x03a4
++#define AFE_IRQ_CLR		0x03a8
++#define AFE_IRQ_CNT1		0x03ac
++#define AFE_IRQ_CNT2		0x03b0
++#define AFE_IRQ_MCU_EN		0x03b4
++#define AFE_IRQ_CNT5		0x03bc
++#define AFE_IRQ_CNT7		0x03dc
++
++#define AFE_TDM_CON1		0x0548
++#define AFE_TDM_CON2		0x054c
++
++#define AFE_BASE_END_OFFSET	8
++#define AFE_IRQ_STATUS_BITS	0xff
++
++#define AFE_TDM_CON1_BCK_INV			(1 << 1)
++#define AFE_TDM_CON1_LRCK_INV			(1 << 2)
++#define AFE_TDM_CON1_1_BCK_DELAY		(1 << 3)
++#define AFE_TDM_CON1_MSB_ALIGNED		(1 << 4)
++#define AFE_TDM_CON1_WLEN_16BIT			(1 << 8)
++#define AFE_TDM_CON1_WLEN_32BIT			(2 << 8)
++#define AFE_TDM_CON1_2CH_SDATA			(0 << 10)
++#define AFE_TDM_CON1_4CH_SDATA			(1 << 10)
++#define AFE_TDM_CON1_8CH_SDATA			(2 << 10)
++#define AFE_TDM_CON1_16_BCK_CYCLES		(0 << 12)
++#define AFE_TDM_CON1_24_BCK_CYCLES		(1 << 12)
++#define AFE_TDM_CON1_32_BCK_CYCLES		(2 << 12)
++#define AFE_TDM_CON1_LRCK_TDM_WIDTH(x)		(((x) - 1) << 24)
++
++#define MTK_AFE_I2S_CON_PHASE_SHIFT_FIX		(1 << 31)
++#define MTK_AFE_I2S_CON_BCK_INVERT		(1 << 29)
++#define MTK_AFE_I2S_CON_FROM_IO_MUX		(1 << 28)
++#define MTK_AFE_I2S_CON_LOW_JITTER_CLOCK	(1 << 12)
++#define MTK_AFE_I2S_CON_INV_LRCK		(1 << 5)
++#define MTK_AFE_I2S_CON_FORMAT_I2S		(1 << 3)
++#define MTK_AFE_I2S_CON_SRC_SLAVE		(1 << 2)
++#define MTK_AFE_I2S_CON_WLEN_32BITS		(1 << 1)
++#define MTK_AFE_I2S_CON_ENABLE			(1 << 0)
++
++#define MTK_AFE_I2S_CON3_LR_SWAP		(1 << 31)
++#define MTK_AFE_I2S_CON3_LOW_JITTER_CLOCK	(1 << 12)
++#define MTK_AFE_I2S_CON3_RATE(x)		(((x) & 0xf) << 8)
++#define MTK_AFE_I2S_CON3_INV_LRCK		(1 << 5)
++#define MTK_AFE_I2S_CON3_FORMAT_I2S		(1 << 3)
++#define MTK_AFE_I2S_CON3_WLEN_32BITS		(1 << 1)
++#define MTK_AFE_I2S_CON3_ENABLE			(1 << 0)
++
++#define MTK_AFE_I2S_CON2_LR_SWAP		(1 << 31)
++#define MTK_AFE_I2S_CON2_BCK_INVERT		(1 << 23)
++#define MTK_AFE_I2S_CON2_LOW_JITTER_CLOCK	(1 << 12)
++#define MTK_AFE_I2S_CON2_RATE(x)		(((x) & 0xf) << 8)
++#define MTK_AFE_I2S_CON2_FORMAT_I2S		(1 << 3)
++#define MTK_AFE_I2S_CON2_WLEN_32BITS		(1 << 1)
++#define MTK_AFE_I2S_CON2_ENABLE			(1 << 0)
++
++#define MTK_AFE_I2S_CON1_LR_SWAP		(1 << 31)
++#define MTK_AFE_I2S_CON1_LOW_JITTER_CLOCK	(1 << 12)
++#define MTK_AFE_I2S_CON1_RATE(x)		(((x) & 0xf) << 8)
++#define MTK_AFE_I2S_CON1_INV_LRCK		(1 << 5)
++#define MTK_AFE_I2S_CON1_FORMAT_I2S		(1 << 3)
++#define MTK_AFE_I2S_CON1_WLEN_32BITS		(1 << 1)
++#define MTK_AFE_I2S_CON1_ENABLE			(1 << 0)
++
++enum mtk_afe_tdm_ch_start {
++	MTK_AFE_TDM_CH_START_O30_O31 = 0,
++	MTK_AFE_TDM_CH_START_O32_O33,
++	MTK_AFE_TDM_CH_START_O34_O35,
++	MTK_AFE_TDM_CH_START_O36_O37,
++	MTK_AFE_TDM_CH_ZERO,
 +};
 +
-+/*
-+ * The MTK AFE unit has a audio interconnect with MTK_AFE_INTERCONN_NUM_INPUT
-+ * inputs and MTK_AFE_INTERCONN_NUM_OUTPUT outputs. Below table holds the
-+ * register/bits to set to connect an input with an output.
-+ */
-+static const struct mtk_afe_connection
-+	connections[MTK_AFE_INTERCONN_NUM_INPUT][MTK_AFE_INTERCONN_NUM_OUTPUT] = {
-+	[0][0] =   { .creg = 0x020, .cshift =  0, .sreg = 0x020, .sshift = 10},
-+	[0][1] =   { .creg = 0x020, .cshift = 16, .sreg = 0x020, .sshift = 26},
-+	[0][2] =   { .creg = 0x024, .cshift =  0, .sreg = 0x024, .sshift = 10},
-+	[0][3] =   { .creg = 0x024, .cshift = 16, .sreg = 0x024, .sshift = 26},
-+	[0][4] =   { .creg = 0x028, .cshift =  0, .sreg = 0x028, .sshift = 10},
-+	[0][5] =   { .creg = 0x028, .cshift = 16, .sreg = 0x030, .sshift = 19},
-+	[0][7] =   { .creg = 0x05c, .cshift =  2, },
-+	[0][9] =   { .creg = 0x05c, .cshift =  8, },
-+	[0][10] =  { .creg = 0x05c, .cshift = 12, },
-+	[0][13] =  { .creg = 0x448, .cshift =  2, },
-+	[0][14] =  { .creg = 0x448, .cshift = 15, },
-+	[0][15] =  { .creg = 0x438, .cshift = 16, .sreg = 0x438, .sshift = 31},
-+	[0][16] =  { .creg = 0x438, .cshift = 22, .sreg = 0x440, .sshift = 25},
-+	[0][19] =  { .creg = 0x464, .cshift =  8, .sreg = 0x464, .sshift =  9},
-+	[0][20] =  { .creg = 0x464, .cshift = 24, .sreg = 0x464, .sshift = 25},
-+	[1][0] =   { .creg = 0x020, .cshift =  1, .sreg = 0x020, .sshift = 11},
-+	[1][1] =   { .creg = 0x020, .cshift = 17, .sreg = 0x020, .sshift = 27},
-+	[1][2] =   { .creg = 0x024, .cshift =  1, .sreg = 0x024, .sshift = 11},
-+	[1][3] =   { .creg = 0x024, .cshift = 17, .sreg = 0x024, .sshift = 27},
-+	[1][4] =   { .creg = 0x028, .cshift =  1, .sreg = 0x028, .sshift = 11},
-+	[1][6] =   { .creg = 0x028, .cshift = 22, .sreg = 0x030, .sshift = 20},
-+	[1][7] =   { .creg = 0x05c, .cshift =  3, },
-+	[1][8] =   { .creg = 0x05c, .cshift =  6, },
-+	[1][9] =   { .creg = 0x05c, .cshift =  9, },
-+	[1][10] =  { .creg = 0x05c, .cshift = 13, },
-+	[1][13] =  { .creg = 0x448, .cshift =  3, },
-+	[1][14] =  { .creg = 0x448, .cshift = 16, },
-+	[1][15] =  { .creg = 0x438, .cshift = 17, .sreg = 0x440, .sshift = 16},
-+	[1][16] =  { .creg = 0x438, .cshift = 23, .sreg = 0x440, .sshift =  4},
-+	[1][19] =  { .creg = 0x464, .cshift = 10, .sreg = 0x464, .sshift = 11},
-+	[1][20] =  { .creg = 0x464, .cshift = 26, .sreg = 0x464, .sshift = 27},
-+	[1][22] =  { .creg = 0x0bc, .cshift =  2, },
-+	[2][1] =   { .creg = 0x020, .cshift = 18, },
-+	[2][2] =   { .creg = 0x024, .cshift =  2, },
-+	[2][3] =   { .creg = 0x024, .cshift = 18, },
-+	[2][7] =   { .creg = 0x030, .cshift = 21, },
-+	[2][11] =  { .creg = 0x02c, .cshift =  6, },
-+	[2][13] =  { .creg = 0x448, .cshift =  4, },
-+	[2][14] =  { .creg = 0x448, .cshift = 17, },
-+	[3][0] =   { .creg = 0x020, .cshift =  3, },
-+	[3][1] =   { .creg = 0x020, .cshift = 19, },
-+	[3][2] =   { .creg = 0x024, .cshift =  3, .sreg = 0x030, .sshift = 25},
-+	[3][3] =   { .creg = 0x024, .cshift = 19, },
-+	[3][4] =   { .creg = 0x028, .cshift =  3, },
-+	[3][5] =   { .creg = 0x028, .cshift = 18, },
-+	[3][7] =   { .creg = 0x028, .cshift = 26, },
-+	[3][9] =   { .creg = 0x02c, .cshift =  0, },
-+	[3][13] =  { .creg = 0x448, .cshift =  5, },
-+	[3][14] =  { .creg = 0x448, .cshift = 18, },
-+	[3][15] =  { .creg = 0x438, .cshift = 19, },
-+	[3][16] =  { .creg = 0x438, .cshift = 25, },
-+	[3][19] =  { .creg = 0x464, .cshift = 12, },
-+	[3][20] =  { .creg = 0x464, .cshift = 28, },
-+	[3][21] =  { .creg = 0x05c, .cshift = 31, },
-+	[4][0] =   { .creg = 0x020, .cshift =  4, },
-+	[4][1] =   { .creg = 0x020, .cshift = 20, },
-+	[4][2] =   { .creg = 0x024, .cshift =  4, .sreg = 0x030, .sshift = 26},
-+	[4][3] =   { .creg = 0x024, .cshift = 20, },
-+	[4][4] =   { .creg = 0x028, .cshift =  4, },
-+	[4][6] =   { .creg = 0x028, .cshift = 23, },
-+	[4][8] =   { .creg = 0x028, .cshift = 29, },
-+	[4][10] =  { .creg = 0x02c, .cshift =  3, },
-+	[4][13] =  { .creg = 0x448, .cshift =  6, },
-+	[4][14] =  { .creg = 0x448, .cshift = 19, },
-+	[4][15] =  { .creg = 0x438, .cshift = 20, },
-+	[4][16] =  { .creg = 0x438, .cshift = 26, },
-+	[4][19] =  { .creg = 0x464, .cshift = 13, },
-+	[4][20] =  { .creg = 0x464, .cshift = 29, },
-+	[4][22] =  { .creg = 0x0bc, .cshift =  3, },
-+	[5][0] =   { .creg = 0x020, .cshift =  5, .sreg = 0x020, .sshift = 12},
-+	[5][1] =   { .creg = 0x020, .cshift = 21, .sreg = 0x020, .sshift = 28},
-+	[5][2] =   { .creg = 0x024, .cshift =  5, .sreg = 0x024, .sshift = 12},
-+	[5][3] =   { .creg = 0x024, .cshift = 21, .sreg = 0x024, .sshift = 28},
-+	[5][4] =   { .creg = 0x028, .cshift =  5, .sreg = 0x028, .sshift = 12},
-+	[5][5] =   { .creg = 0x028, .cshift = 19, },
-+	[5][7] =   { .creg = 0x028, .cshift = 27, },
-+	[5][9] =   { .creg = 0x02c, .cshift =  1, },
-+	[5][13] =  { .creg = 0x420, .cshift = 16, },
-+	[5][14] =  { .creg = 0x420, .cshift = 20, },
-+	[5][19] =  { .creg = 0x464, .cshift = 14, .sreg = 0x464, .sshift = 15},
-+	[5][20] =  { .creg = 0x464, .cshift = 31, .sreg = 0x464, .sshift = 30},
-+	[6][0] =   { .creg = 0x020, .cshift =  6, .sreg = 0x020, .sshift = 13},
-+	[6][1] =   { .creg = 0x020, .cshift = 22, .sreg = 0x020, .sshift = 29},
-+	[6][2] =   { .creg = 0x024, .cshift =  6, .sreg = 0x024, .sshift = 13},
-+	[6][3] =   { .creg = 0x024, .cshift = 22, .sreg = 0x024, .sshift = 29},
-+	[6][4] =   { .creg = 0x028, .cshift =  6, .sreg = 0x028, .sshift = 13},
-+	[6][6] =   { .creg = 0x028, .cshift = 24, },
-+	[6][8] =   { .creg = 0x028, .cshift = 30, },
-+	[6][10] =  { .creg = 0x02c, .cshift =  4, },
-+	[6][12] =  { .creg = 0x02c, .cshift =  9, },
-+	[6][13] =  { .creg = 0x420, .cshift = 17, },
-+	[6][14] =  { .creg = 0x420, .cshift = 21, },
-+	[6][19] =  { .creg = 0x464, .cshift = 16, .sreg = 0x464, .sshift = 17},
-+	[7][0] =   { .creg = 0x020, .cshift =  7, .sreg = 0x020, .sshift = 14},
-+	[7][1] =   { .creg = 0x020, .cshift = 23, .sreg = 0x020, .sshift = 30},
-+	[7][2] =   { .creg = 0x024, .cshift =  7, .sreg = 0x024, .sshift = 14},
-+	[7][3] =   { .creg = 0x024, .cshift = 23, .sreg = 0x024, .sshift = 30},
-+	[7][4] =   { .creg = 0x028, .cshift =  7, .sreg = 0x028, .sshift = 14},
-+	[7][5] =   { .creg = 0x028, .cshift = 20, },
-+	[7][7] =   { .creg = 0x028, .cshift = 28, },
-+	[7][9] =   { .creg = 0x02c, .cshift =  2, },
-+	[7][13] =  { .creg = 0x420, .cshift = 18, },
-+	[7][14] =  { .creg = 0x420, .cshift = 22, },
-+	[7][19] =  { .creg = 0x464, .cshift = 18, .sreg = 0x464, .sshift = 19},
-+	[8][0] =   { .creg = 0x020, .cshift =  8, .sreg = 0x020, .sshift = 15},
-+	[8][1] =   { .creg = 0x020, .cshift = 24, .sreg = 0x020, .sshift = 31},
-+	[8][2] =   { .creg = 0x024, .cshift =  8, .sreg = 0x024, .sshift = 15},
-+	[8][3] =   { .creg = 0x024, .cshift = 24, .sreg = 0x024, .sshift = 31},
-+	[8][4] =   { .creg = 0x028, .cshift =  8, .sreg = 0x028, .sshift = 15},
-+	[8][6] =   { .creg = 0x028, .cshift = 25, },
-+	[8][8] =   { .creg = 0x028, .cshift = 31, },
-+	[8][10] =  { .creg = 0x02c, .cshift =  5, },
-+	[8][12] =  { .creg = 0x02c, .cshift = 10, },
-+	[8][13] =  { .creg = 0x420, .cshift = 19, },
-+	[8][14] =  { .creg = 0x420, .cshift = 23, },
-+	[8][19] =  { .creg = 0x464, .cshift = 20, .sreg = 0x464, .sshift = 21},
-+	[9][0] =   { .creg = 0x020, .cshift =  9, },
-+	[9][1] =   { .creg = 0x020, .cshift = 25, },
-+	[9][2] =   { .creg = 0x024, .cshift =  9, },
-+	[9][3] =   { .creg = 0x024, .cshift = 25, },
-+	[9][4] =   { .creg = 0x028, .cshift =  9, },
-+	[9][5] =   { .creg = 0x028, .cshift = 21, },
-+	[9][9] =   { .creg = 0x05c, .cshift = 10, },
-+	[9][12] =  { .creg = 0x02c, .cshift = 11, },
-+	[9][13] =  { .creg = 0x448, .cshift =  7, },
-+	[9][14] =  { .creg = 0x448, .cshift = 20, },
-+	[9][15] =  { .creg = 0x438, .cshift = 21, },
-+	[9][16] =  { .creg = 0x438, .cshift = 27, },
-+	[9][19] =  { .creg = 0x05c, .cshift = 22, },
-+	[9][20] =  { .creg = 0x05c, .cshift =  6, },
-+	[10][0] =  { .creg = 0x420, .cshift =  0, .sreg = 0x420, .sshift =  1},
-+	[10][3] =  { .creg = 0x420, .cshift =  8, .sreg = 0x420, .sshift =  9},
-+	[10][5] =  { .creg = 0x420, .cshift = 12, },
-+	[10][7] =  { .creg = 0x420, .cshift = 14, },
-+	[10][12] = { .creg = 0x448, .cshift =  0, },
-+	[10][19] = { .creg = 0x448, .cshift = 28, },
-+	[10][21] = { .creg = 0x448, .cshift =  0, },
-+	[10][22] = { .creg = 0x44c, .cshift =  0, },
-+	[11][1] =  { .creg = 0x420, .cshift =  2, .sreg = 0x420, .sshift =  3},
-+	[11][4] =  { .creg = 0x420, .cshift = 10, .sreg = 0x420, .sshift = 11},
-+	[11][6] =  { .creg = 0x420, .cshift = 13, },
-+	[11][8] =  { .creg = 0x420, .cshift = 15, },
-+	[11][12] = { .creg = 0x448, .cshift =  1, },
-+	[11][20] = { .creg = 0x448, .cshift = 29, },
-+	[11][21] = { .creg = 0x448, .cshift = 31, },
-+	[11][22] = { .creg = 0x44c, .cshift =  1, },
-+	[12][0] =  { .creg = 0x438, .cshift =  0, .sreg = 0x438, .sshift =  1},
-+	[12][3] =  { .creg = 0x438, .cshift =  8, .sreg = 0x438, .sshift =  9},
-+	[12][5] =  { .creg = 0x438, .cshift = 12, },
-+	[12][7] =  { .creg = 0x438, .cshift = 14, },
-+	[12][19] = { .creg = 0x444, .cshift =  2, },
-+	[12][21] = { .creg = 0x444, .cshift =  4, },
-+	[12][22] = { .creg = 0x444, .cshift =  6, },
-+	[13][1] =  { .creg = 0x438, .cshift =  2, .sreg = 0x438, .sshift =  3},
-+	[13][4] =  { .creg = 0x438, .cshift = 10, .sreg = 0x438, .sshift = 11},
-+	[13][6] =  { .creg = 0x438, .cshift = 13, },
-+	[13][8] =  { .creg = 0x438, .cshift = 15, },
-+	[13][20] = { .creg = 0x444, .cshift =  3, },
-+	[13][21] = { .creg = 0x444, .cshift =  4, },
-+	[13][22] = { .creg = 0x444, .cshift =  7, },
-+	[15][0] =  { .creg = 0x02c, .cshift = 13, .sreg = 0x02c, .sshift = 15},
-+	[15][1] =  { .creg = 0x02c, .cshift = 18, .sreg = 0x02c, .sshift = 20},
-+	[15][3] =  { .creg = 0x02c, .cshift = 28, .sreg = 0x02c, .sshift = 30},
-+	[15][4] =  { .creg = 0x030, .cshift =  1, .sreg = 0x030, .sshift =  3},
-+	[15][5] =  { .creg = 0x030, .cshift =  6, .sreg = 0x030, .sshift =  7},
-+	[15][9] =  { .creg = 0x030, .cshift = 10, },
-+	[15][13] = { .creg = 0x448, .cshift =  9, },
-+	[15][14] = { .creg = 0x448, .cshift = 22, },
-+	[15][15] = { .creg = 0x438, .cshift = 29, .sreg = 0x440, .sshift =  0},
-+	[15][16] = { .creg = 0x440, .cshift =  2, },
-+	[16][0] =  { .creg = 0x02c, .cshift = 14, .sreg = 0x02c, .sshift = 16},
-+	[16][1] =  { .creg = 0x02c, .cshift = 19, .sreg = 0x02c, .sshift = 21},
-+	[16][2] =  { .creg = 0x02c, .cshift = 24, .sreg = 0x02c, .sshift = 26},
-+	[16][3] =  { .creg = 0x02c, .cshift = 29, .sreg = 0x02c, .sshift = 31},
-+	[16][4] =  { .creg = 0x030, .cshift =  2, .sreg = 0x030, .sshift =  4},
-+	[16][6] =  { .creg = 0x030, .cshift =  8, .sreg = 0x030, .sshift =  9},
-+	[16][10] = { .creg = 0x030, .cshift = 11, },
-+	[16][13] = { .creg = 0x448, .cshift = 10, },
-+	[16][14] = { .creg = 0x448, .cshift = 23, },
-+	[16][15] = { .creg = 0x438, .cshift = 30, },
-+	[16][16] = { .creg = 0x440, .cshift =  3, .sreg = 0x440, .sshift =  5},
-+	[17][0] =  { .creg = 0x460, .cshift =  0, },
-+	[17][2] =  { .creg = 0x02c, .cshift = 27, .sreg = 0x0bc, .sshift = 30},
-+	[17][3] =  { .creg = 0x05c, .cshift =  0, },
-+	[17][5] =  { .creg = 0x460, .cshift = 22, },
-+	[17][7] =  { .creg = 0x460, .cshift = 26, },
-+	[17][9] =  { .creg = 0x460, .cshift = 30, },
-+	[17][11] = { .creg = 0x464, .cshift =  2, },
-+	[17][13] = { .creg = 0x448, .cshift = 11, },
-+	[17][14] = { .creg = 0x448, .cshift = 24, },
-+	[17][15] = { .creg = 0x440, .cshift = 21, },
-+	[17][16] = { .creg = 0x440, .cshift = 30, },
-+	[17][19] = { .creg = 0x464, .cshift = 22, },
-+	[17][21] = { .creg = 0x0bc, .cshift =  0, },
-+	[18][1] =  { .creg = 0x460, .cshift =  3, },
-+	[18][2] =  { .creg = 0x02c, .cshift = 28, .sreg = 0x0bc, .sshift = 31},
-+	[18][4] =  { .creg = 0x05c, .cshift =  1, },
-+	[18][6] =  { .creg = 0x460, .cshift = 24, },
-+	[18][8] =  { .creg = 0x460, .cshift = 28, },
-+	[18][10] = { .creg = 0x464, .cshift =  0, },
-+	[18][12] = { .creg = 0x464, .cshift =  4, },
-+	[18][13] = { .creg = 0x448, .cshift = 12, },
-+	[18][14] = { .creg = 0x448, .cshift = 25, },
-+	[18][15] = { .creg = 0x440, .cshift = 22, },
-+	[18][16] = { .creg = 0x440, .cshift = 31, },
-+	[18][19] = { .creg = 0x464, .cshift = 23, },
-+	[18][22] = { .creg = 0x0bc, .cshift =  4, },
-+	[19][0] =  { .creg = 0x460, .cshift =  1, .sreg = 0x460, .sshift =  2},
-+	[19][2] =  { .creg = 0x460, .cshift = 10, .sreg = 0x460, .sshift = 11},
-+	[19][3] =  { .creg = 0x460, .cshift = 14, .sreg = 0x460, .sshift = 16},
-+	[19][4] =  { .creg = 0x460, .cshift = 18, .sreg = 0x460, .sshift = 19},
-+	[19][5] =  { .creg = 0x460, .cshift = 23, },
-+	[19][7] =  { .creg = 0x460, .cshift = 27, },
-+	[19][9] =  { .creg = 0x460, .cshift = 31, },
-+	[19][11] = { .creg = 0x464, .cshift =  3, },
-+	[19][13] = { .creg = 0x448, .cshift = 13, },
-+	[19][14] = { .creg = 0x448, .cshift = 26, },
-+	[19][15] = { .creg = 0x440, .cshift = 23, },
-+	[19][16] = { .creg = 0x444, .cshift =  0, },
-+	[19][19] = { .creg = 0x05c, .cshift = 24, },
-+	[19][20] = { .creg = 0x05c, .cshift = 28, },
-+	[19][21] = { .creg = 0x0bc, .cshift =  1, },
-+	[20][1] =  { .creg = 0x460, .cshift =  4, .sreg = 0x460, .sshift =  5},
-+	[20][2] =  { .creg = 0x460, .cshift = 12, .sreg = 0x460, .sshift = 13},
-+	[20][3] =  { .creg = 0x460, .cshift = 16, .sreg = 0x460, .sshift = 17},
-+	[20][4] =  { .creg = 0x460, .cshift = 20, .sreg = 0x460, .sshift = 21},
-+	[20][6] =  { .creg = 0x460, .cshift = 25, },
-+	[20][8] =  { .creg = 0x460, .cshift = 29, },
-+	[20][10] = { .creg = 0x464, .cshift =  1, },
-+	[20][12] = { .creg = 0x464, .cshift =  5, },
-+	[20][13] = { .creg = 0x448, .cshift = 14, },
-+	[20][14] = { .creg = 0x448, .cshift = 27, },
-+	[20][15] = { .creg = 0x440, .cshift = 24, },
-+	[20][16] = { .creg = 0x444, .cshift =  1, },
-+	[20][19] = { .creg = 0x05c, .cshift = 25, },
-+	[20][20] = { .creg = 0x05c, .cshift = 29, },
-+	[20][22] = { .creg = 0x0bc, .cshift =  5, },
++enum mtk_afe_i2s_rate {
++	MTK_AFE_I2S_RATE_8K = 0,
++	MTK_AFE_I2S_RATE_11K = 1,
++	MTK_AFE_I2S_RATE_12K = 2,
++	MTK_AFE_I2S_RATE_16K = 4,
++	MTK_AFE_I2S_RATE_22K = 5,
++	MTK_AFE_I2S_RATE_24K = 6,
++	MTK_AFE_I2S_RATE_32K = 8,
++	MTK_AFE_I2S_RATE_44K = 9,
++	MTK_AFE_I2S_RATE_48K = 10,
++	MTK_AFE_I2S_RATE_88K = 11,
++	MTK_AFE_I2S_RATE_96K = 12,
++	MTK_AFE_I2S_RATE_174K = 13,
++	MTK_AFE_I2S_RATE_192K = 14,
 +};
 +
-+struct mtk_afe_hdmi_connection {
-+	short reg;
-+	char shift;
++static const struct snd_pcm_hardware mtk_afe_hardware = {
++	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
++		 SNDRV_PCM_INFO_RESUME | SNDRV_PCM_INFO_MMAP_VALID),
++	.buffer_bytes_max = 256 * 1024,
++	.period_bytes_min = 512,
++	.period_bytes_max = 128 * 1024,
++	.periods_min = 2,
++	.periods_max = 256,
++	.fifo_size = 0,
 +};
 +
-+static const struct mtk_afe_hdmi_connection
-+	hdmi_connections[MTK_AFE_NUM_HDMI_OUTPUT] = {
-+	{ .reg = 0x390, .shift = 0 },
-+	{ .reg = 0x390, .shift = 3 },
-+	{ .reg = 0x390, .shift = 6 },
-+	{ .reg = 0x390, .shift = 9 },
-+
-+	{ .reg = 0x390, .shift = 12 },
-+	{ .reg = 0x390, .shift = 15 },
-+	{ .reg = 0x390, .shift = 18 },
-+	{ .reg = 0x390, .shift = 21 },
-+
-+	{ .reg = 0x390, .shift = 24 },
-+	{ .reg = 0x390, .shift = 27 },
-+	{ .reg = 0x398, .shift = 0 },
-+	{ .reg = 0x398, .shift = 2 },
-+};
-+
-+static int mtk_afe_interconn_hdmi(struct mtk_afe *afe_info, u32 in,
-+				  u32 out)
++static int mtk_afe_pcm_open(struct snd_pcm_substream *substream)
 +{
-+	const struct mtk_afe_hdmi_connection *con;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++	struct mtk_afe_memif *memif;
++	int ret;
 +
-+	if (in < MTK_AFE_HDMI_CONN_INPUT_BASE ||
-+	    out < MTK_AFE_HDMI_CONN_OUTPUT_BASE)
-+		return -EINVAL;
++	if (io->mem[substream->stream] < 0)
++		/* memif is not specified */
++		return -ENXIO;
++	memif = &afe->memif[io->mem[substream->stream]];
++	memif->substream = substream;
 +
-+	in -= MTK_AFE_HDMI_CONN_INPUT_BASE;
-+	out -= MTK_AFE_HDMI_CONN_OUTPUT_BASE;
-+
-+	if (out >= MTK_AFE_NUM_HDMI_OUTPUT)
-+		return -EINVAL;
-+
-+	if (in >= MTK_AFE_NUM_HDMI_INPUT)
-+		return -EINVAL;
-+
-+	con = &hdmi_connections[out];
-+
-+	regmap_update_bits(afe_info->regmap, con->reg,
-+			   0x7 << con->shift, in << con->shift);
-+	return 0;
-+}
-+
-+static const struct mtk_afe_connection *mtk_afe_get_connection(
-+		struct mtk_afe *afe_info, u32 in, u32 out)
-+{
-+	if (in >= MTK_AFE_INTERCONN_NUM_INPUT ||
-+	    out >= MTK_AFE_INTERCONN_NUM_OUTPUT) {
-+		dev_err(afe_info->dev,
-+			"out of bound mpConnectionTable[%d][%d]\n", in, out);
-+		return NULL;
++	snd_soc_set_runtime_hwparams(substream, &mtk_afe_hardware);
++	ret = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		dev_err(afe->dev, "snd_pcm_hw_constraint_integer failed\n");
++		return ret;
 +	}
 +
-+	if (connections[in][out].creg == 0) {
-+		dev_err(afe_info->dev,
-+			"No connection between I%02d and O%02d\n", in, out);
-+		return NULL;
-+	}
-+
-+	return &connections[in][out];
-+}
-+
-+/*
-+ * mtk_afe_interconn_connect - Connect an input with an output
-+ * @afe_info:	Context
-+ * @in:		Input number, as in the SoC datasheet
-+ * @out:	Output number, as in the SoC datasheet
-+ * @rightshift:	Apply a rightshift on the input data
-+ *
-+ * This function connects an input of the audio interconnect with an
-+ * output.
-+ */
-+int mtk_afe_interconn_connect(struct mtk_afe *afe_info, unsigned int in,
-+			      unsigned int out, bool rightshift)
-+{
-+	const struct mtk_afe_connection *con;
-+
-+	if (in >= MTK_AFE_HDMI_CONN_INPUT_BASE ||
-+	    out >= MTK_AFE_HDMI_CONN_OUTPUT_BASE)
-+		return mtk_afe_interconn_hdmi(afe_info, in, out);
-+
-+	con = mtk_afe_get_connection(afe_info, in, out);
-+	if (!con)
-+		return -EINVAL;
-+
-+	regmap_update_bits(afe_info->regmap, con->creg,
-+			   1 << con->cshift, 1 << con->cshift);
-+
-+	if (!con->sreg)
++	if (!memif->use_sram)
 +		return 0;
 +
-+	if (rightshift)
-+		regmap_update_bits(afe_info->regmap, con->sreg,
-+				   1 << con->sshift, 1 << con->sshift);
-+	else
-+		regmap_update_bits(afe_info->regmap, con->sreg,
-+				   1 << con->sshift, 0);
-+
-+	return 0;
++	return snd_pcm_hw_constraint_minmax(runtime,
++					    SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++					    mtk_afe_hardware.period_bytes_min,
++					    afe->sram_size);
 +}
 +
-+/*
-+ * mtk_afe_interconn_disconnect - Disconnect an input from an output
-+ * @afe_info:	Context
-+ * @in:		Input number, as in the SoC datasheet
-+ * @out:	Output number, as in the SoC datasheet
-+ *
-+ * This function disconnects an input of the audio interconnect from an
-+ * output.
-+ */
-+int mtk_afe_interconn_disconnect(struct mtk_afe *afe_info, unsigned int in,
-+				 unsigned int out)
++static int mtk_afe_pcm_close(struct snd_pcm_substream *substream)
 +{
-+	const struct mtk_afe_connection *con;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
 +
-+	con = mtk_afe_get_connection(afe_info, in, out);
-+	if (!con)
-+		return -EINVAL;
-+
-+	regmap_update_bits(afe_info->regmap, con->creg, 1 << con->cshift, 0);
++	afe->memif[io->mem[substream->stream]].substream = NULL;
 +
 +	return 0;
 +}
-diff --git a/sound/soc/mediatek/mtk-afe-connection.h b/sound/soc/mediatek/mtk-afe-connection.h
-new file mode 100644
-index 0000000..eac2555
---- /dev/null
-+++ b/sound/soc/mediatek/mtk-afe-connection.h
-@@ -0,0 +1,30 @@
-+/*
-+ * mtk_afe_connection.h  --  Mediatek AFE connection support
-+ *
-+ * Copyright (c) 2015 MediaTek Inc.
-+ * Author: Koro Chen <koro.chen@mediatek.com>
-+ *             Sascha Hauer <s.hauer@pengutronix.de>
-+ *             Hidalgo Huang <hidalgo.huang@mediatek.com>
-+ *             Ir Lian <ir.lian@mediatek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
 +
-+#ifndef _MTK_AFE_CONNECTION_H_
-+#define _MTK_AFE_CONNECTION_H_
++static int mtk_afe_pcm_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++	struct mtk_afe_memif *memif = &afe->memif[io->mem[substream->stream]];
++	int ret;
 +
-+struct mtk_afe;
++	dev_dbg(afe->dev,
++		"%s period = %u,rate= %u, channels=%u\n",
++		__func__, params_period_size(params), params_rate(params),
++		params_channels(params));
 +
-+int mtk_afe_interconn_connect(struct mtk_afe *afe_info, unsigned int in,
-+			      unsigned int out, bool rightshift);
-+int mtk_afe_interconn_disconnect(struct mtk_afe *afe_info, unsigned int in,
-+				 unsigned int out);
++	if (memif->use_sram) {
++		struct snd_dma_buffer *dma_buf = &substream->dma_buffer;
++		int size = params_buffer_bytes(params);
 +
-+#endif
++		memif->buffer_size = size;
++		memif->phys_buf_addr = afe->sram_phy_address;
++
++		dma_buf->bytes = size;
++		dma_buf->area = (unsigned char *)afe->sram_address;
++		dma_buf->addr = afe->sram_phy_address;
++		dma_buf->dev.type = SNDRV_DMA_TYPE_DEV;
++		dma_buf->dev.dev = substream->pcm->card->dev;
++		snd_pcm_set_runtime_buffer(substream, dma_buf);
++	} else {
++		ret = snd_pcm_lib_malloc_pages(substream,
++					       params_buffer_bytes(params));
++		if (ret < 0)
++			return ret;
++
++		memif->phys_buf_addr = substream->runtime->dma_addr;
++		memif->buffer_size = substream->runtime->dma_bytes;
++	}
++	memif->hw_ptr = 0;
++
++	/* start */
++	regmap_write(afe->regmap,
++		     memif->data->reg_ofs_base, memif->phys_buf_addr);
++	/* end */
++	regmap_write(afe->regmap,
++		     memif->data->reg_ofs_base + AFE_BASE_END_OFFSET,
++		     memif->phys_buf_addr + memif->buffer_size - 1);
++
++	return 0;
++}
++
++static int mtk_afe_pcm_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++	struct mtk_afe_memif *memif = &afe->memif[io->mem[substream->stream]];
++
++	if (memif->use_sram)
++		return 0;
++
++	return snd_pcm_lib_free_pages(substream);
++}
++
++static snd_pcm_uframes_t mtk_afe_pcm_pointer
++			 (struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++	struct mtk_afe_memif *memif = &afe->memif[io->mem[substream->stream]];
++
++	return bytes_to_frames(substream->runtime, memif->hw_ptr);
++}
++
++static const struct snd_pcm_ops mtk_afe_pcm_ops = {
++	.open = mtk_afe_pcm_open,
++	.close = mtk_afe_pcm_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = mtk_afe_pcm_hw_params,
++	.hw_free = mtk_afe_pcm_hw_free,
++	.pointer = mtk_afe_pcm_pointer,
++};
++
++static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	size_t size;
++	struct snd_card *card = rtd->card->snd_card;
++	struct snd_pcm *pcm = rtd->pcm;
++
++	size = mtk_afe_hardware.buffer_bytes_max;
++
++	return snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
++						     card->dev, size, size);
++}
++
++static void mtk_afe_pcm_free(struct snd_pcm *pcm)
++{
++	snd_pcm_lib_preallocate_free_for_all(pcm);
++}
++
++static const struct snd_soc_platform_driver mtk_afe_pcm_platform = {
++	.ops = &mtk_afe_pcm_ops,
++	.pcm_new = mtk_afe_pcm_new,
++	.pcm_free = mtk_afe_pcm_free,
++};
++
++struct mtk_afe_rate {
++	int rate;
++	int regvalue;
++};
++
++static const struct mtk_afe_rate mtk_afe_adda_rates[] = {
++	{ .rate = 8000, .regvalue = 0 },
++	{ .rate = 11025, .regvalue = 1 },
++	{ .rate = 12000, .regvalue = 2 },
++	{ .rate = 16000, .regvalue = 3 },
++	{ .rate = 22050, .regvalue = 4 },
++	{ .rate = 24000, .regvalue = 5 },
++	{ .rate = 32000, .regvalue = 6 },
++	{ .rate = 44100, .regvalue = 7 },
++	{ .rate = 48000, .regvalue = 8 },
++};
++
++static int mtk_afe_adda_fs(u32 sample_rate)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(mtk_afe_adda_rates); i++)
++		if (mtk_afe_adda_rates[i].rate == sample_rate)
++			return mtk_afe_adda_rates[i].regvalue;
++
++	return -EINVAL;
++}
++
++static const struct mtk_afe_rate mtk_afe_i2s_rates[] = {
++	{ .rate = 8000, .regvalue = MTK_AFE_I2S_RATE_8K },
++	{ .rate = 11025, .regvalue = MTK_AFE_I2S_RATE_11K },
++	{ .rate = 12000, .regvalue = MTK_AFE_I2S_RATE_12K },
++	{ .rate = 16000, .regvalue = MTK_AFE_I2S_RATE_16K },
++	{ .rate = 22050, .regvalue = MTK_AFE_I2S_RATE_22K },
++	{ .rate = 24000, .regvalue = MTK_AFE_I2S_RATE_24K },
++	{ .rate = 32000, .regvalue = MTK_AFE_I2S_RATE_32K },
++	{ .rate = 44100, .regvalue = MTK_AFE_I2S_RATE_44K },
++	{ .rate = 48000, .regvalue = MTK_AFE_I2S_RATE_48K },
++	{ .rate = 88000, .regvalue = MTK_AFE_I2S_RATE_88K },
++	{ .rate = 96000, .regvalue = MTK_AFE_I2S_RATE_96K },
++	{ .rate = 174000, .regvalue = MTK_AFE_I2S_RATE_174K },
++	{ .rate = 192000, .regvalue = MTK_AFE_I2S_RATE_192K },
++};
++
++static int mtk_afe_i2s_fs(u32 sample_rate)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(mtk_afe_i2s_rates); i++)
++		if (mtk_afe_i2s_rates[i].rate == sample_rate)
++			return mtk_afe_i2s_rates[i].regvalue;
++
++	return -EINVAL;
++}
++
++static int mtk_afe_set_adda_dac_out(struct mtk_afe *afe, uint32_t rate)
++{
++	u32 audio_i2s_dac = 0;
++	u32 con0, con1;
++
++	/* set dl src2 */
++	con0 = (mtk_afe_adda_fs(rate) << 28) | (0x03 << 24) | (0x03 << 11);
++
++	/* 8k or 16k voice mode */
++	if (con0 == 0 || con0 == 3)
++		con0 |= 0x01 << 5;
++
++	/* SA suggests to apply -0.3db to audio/speech path */
++	con0 = con0 | (0x01 << 1);
++	con1 = 0xf74f0000;
++
++	/* set and turn off */
++	regmap_write(afe->regmap, AFE_ADDA_DL_SRC2_CON0, con0);
++
++	regmap_write(afe->regmap, AFE_ADDA_DL_SRC2_CON1, 0xf74f0000);
++
++	audio_i2s_dac =	MTK_AFE_I2S_CON1_FORMAT_I2S |
++		MTK_AFE_I2S_CON1_RATE(mtk_afe_i2s_fs(rate));
++
++	/* set and turn off */
++	regmap_write(afe->regmap, AFE_I2S_CON1, audio_i2s_dac);
++	return 0;
++}
++
++static void mtk_afe_pmic_shutdown(struct mtk_afe *afe,
++				  struct snd_pcm_substream *substream)
++{
++	/* output */
++	regmap_update_bits(afe->regmap, AFE_ADDA_DL_SRC2_CON0, 1, 0);
++	regmap_update_bits(afe->regmap, AFE_I2S_CON1, 1, 0);
++
++	/* input */
++	regmap_update_bits(afe->regmap, AFE_ADDA_UL_SRC_CON0, 1, 0);
++	/* disable ADDA */
++	regmap_update_bits(afe->regmap, AFE_ADDA_UL_DL_CON0, 1, false);
++}
++
++static int mtk_afe_pmic_prepare(struct mtk_afe *afe,
++				struct snd_pcm_substream *substream)
++{
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		mtk_afe_set_adda_dac_out(afe, substream->runtime->rate);
++		regmap_update_bits(afe->regmap, AFE_ADDA_DL_SRC2_CON0, 1, 1);
++		regmap_update_bits(afe->regmap, AFE_I2S_CON1, 1, 1);
++
++	} else {
++		u32 rate = mtk_afe_i2s_fs(substream->runtime->rate);
++		u32 voice_mode = 0;
++
++		/* Use Int ADC */
++		regmap_update_bits(afe->regmap, AFE_ADDA_TOP_CON0, 1, 0);
++
++		if (rate == MTK_AFE_I2S_RATE_8K)
++			voice_mode = 0;
++		else if (rate == MTK_AFE_I2S_RATE_16K)
++			voice_mode = 1;
++		else if (rate == MTK_AFE_I2S_RATE_32K)
++			voice_mode = 2;
++		else if (rate == MTK_AFE_I2S_RATE_48K)
++			voice_mode = 3;
++
++		/* set and turn off */
++		regmap_write(afe->regmap, AFE_ADDA_UL_SRC_CON0,
++			     ((voice_mode << 2) | voice_mode) << 17);
++
++		regmap_update_bits(afe->regmap, AFE_ADDA_NEWIF_CFG1,
++				   0xc00, ((voice_mode < 3) ? 1 : 3) << 10);
++
++		regmap_update_bits(afe->regmap, AFE_ADDA_UL_SRC_CON0, 1, 1);
++	}
++	/* enable ADDA */
++	regmap_update_bits(afe->regmap, AFE_ADDA_UL_DL_CON0, 1, true);
++	return 0;
++}
++
++static int mtk_afe_set_2nd_i2s(struct mtk_afe *afe, bool doublew,
++			       uint32_t rate, bool bck_inv, bool slave)
++{
++	uint32_t val;
++	unsigned int fs = mtk_afe_i2s_fs(rate);
++
++	regmap_update_bits(afe->regmap, AFE_DAC_CON1, 0xf00, fs << 8);
++
++	val = MTK_AFE_I2S_CON_PHASE_SHIFT_FIX |
++	      MTK_AFE_I2S_CON_FROM_IO_MUX |
++	      MTK_AFE_I2S_CON_LOW_JITTER_CLOCK |
++	      MTK_AFE_I2S_CON_FORMAT_I2S;
++
++	if (bck_inv)
++		val |= MTK_AFE_I2S_CON_BCK_INVERT;
++	if (slave)
++		val |= MTK_AFE_I2S_CON_SRC_SLAVE;
++	if (doublew)
++		val |= MTK_AFE_I2S_CON_WLEN_32BITS;
++
++	regmap_update_bits(afe->regmap,
++			   AFE_I2S_CON, 0xfffffffe, val);
++
++	/* set output */
++	val = MTK_AFE_I2S_CON3_LOW_JITTER_CLOCK |
++	      MTK_AFE_I2S_CON3_RATE(fs) |
++	      MTK_AFE_I2S_CON3_FORMAT_I2S;
++
++	if (doublew)
++		val |= MTK_AFE_I2S_CON3_WLEN_32BITS;
++
++	regmap_update_bits(afe->regmap,
++			   AFE_I2S_CON3, 0xfffffffe, val);
++	return 0;
++}
++
++static int mtk_afe_set_i2s(struct mtk_afe *afe, uint32_t rate)
++{
++	uint32_t val;
++	unsigned int fs = mtk_afe_i2s_fs(rate);
++
++	/* from external ADC */
++	regmap_update_bits(afe->regmap, AFE_ADDA2_TOP_CON0, 0x1, 0x1);
++
++	/* set input */
++	val = MTK_AFE_I2S_CON2_LOW_JITTER_CLOCK |
++	      MTK_AFE_I2S_CON2_RATE(fs) |
++	      MTK_AFE_I2S_CON2_FORMAT_I2S;
++
++	regmap_update_bits(afe->regmap,
++			   AFE_I2S_CON2, 0xfffffffe, val);
++
++	/* set output */
++	val = MTK_AFE_I2S_CON1_LOW_JITTER_CLOCK |
++	      MTK_AFE_I2S_CON1_RATE(fs) |
++	      MTK_AFE_I2S_CON1_FORMAT_I2S;
++
++	regmap_update_bits(afe->regmap,
++			   AFE_I2S_CON1, 0xfffffffe, val);
++	return 0;
++}
++
++static void mtk_afe_set_2nd_i2s_enable(struct mtk_afe *afe,
++				       uint32_t rate, bool enable)
++{
++	int val;
++
++	regmap_read(afe->regmap, AFE_I2S_CON, &val);
++	if (!!(val & MTK_AFE_I2S_CON_ENABLE) == enable)
++		return; /* must skip soft reset */
++
++	/* 2nd I2S soft reset begin */
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 2, 2);
++
++	/* input */
++	regmap_update_bits(afe->regmap, AFE_I2S_CON, 1, enable);
++
++	/* output */
++	regmap_update_bits(afe->regmap, AFE_I2S_CON3, 1, enable);
++
++	/* 2nd I2S soft reset end */
++	udelay(1);
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 2, 0);
++}
++
++static void mtk_afe_set_i2s_enable(struct mtk_afe *afe,
++				   uint32_t rate, bool enable)
++{
++	int val;
++
++	regmap_read(afe->regmap, AFE_I2S_CON2, &val);
++	if (!!(val & MTK_AFE_I2S_CON2_ENABLE) == enable)
++		return; /* must skip soft reset */
++
++	/* I2S soft reset begin */
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 4, 4);
++
++	/* input */
++	regmap_update_bits(afe->regmap, AFE_I2S_CON2, 1, enable);
++
++	/* output */
++	regmap_update_bits(afe->regmap, AFE_I2S_CON1, 1, enable);
++
++	/* I2S soft reset end */
++	udelay(1);
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 4, 0);
++}
++
++static void mtk_afe_i2s_shutdown(struct mtk_afe *afe,
++				 struct snd_pcm_substream *substream)
++{
++	mtk_afe_set_i2s_enable(afe, substream->runtime->rate, false);
++}
++
++static int mtk_afe_i2s_prepare(struct mtk_afe *afe,
++			       struct snd_pcm_substream *substream)
++{
++	/* config I2S */
++	mtk_afe_set_i2s(afe, substream->runtime->rate);
++	mtk_afe_set_i2s_enable(afe, substream->runtime->rate, true);
++
++	return 0;
++}
++
++static void mtk_afe_i2s2_shutdown(struct mtk_afe *afe,
++				  struct snd_pcm_substream *substream)
++{
++	mtk_afe_set_2nd_i2s_enable(afe, substream->runtime->rate, false);
++}
++
++static int mtk_afe_i2s2_prepare(struct mtk_afe *afe,
++				struct snd_pcm_substream *substream)
++{
++	/* config I2S */
++	mtk_afe_set_2nd_i2s(afe, false, substream->runtime->rate, false, false);
++	mtk_afe_set_2nd_i2s_enable(afe, substream->runtime->rate, true);
++	return 0;
++}
++
++static int mtk_afe_hdmi_start(struct mtk_afe *afe,
++			      struct snd_pcm_substream *substream)
++{
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
++			   (1 << 20) | (1 << 21), 0);
++
++	/* enable Out control */
++	regmap_update_bits(afe->regmap, AFE_HDMI_OUT_CON0, 1, 1);
++
++	/* enable tdm */
++	regmap_update_bits(afe->regmap, AFE_TDM_CON1, 1, 1);
++
++	return 0;
++}
++
++static void mtk_afe_hdmi_pause(struct mtk_afe *afe,
++			       struct snd_pcm_substream *substream)
++{
++	/* disable tdm */
++	regmap_update_bits(afe->regmap, AFE_TDM_CON1, 1, 0);
++
++	/* disable Out control */
++	regmap_update_bits(afe->regmap, AFE_HDMI_OUT_CON0, 1, 0);
++
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
++			   (1 << 20) | (1 << 21), (1 << 20) | (1 << 21));
++}
++
++static int mtk_afe_hdmi_prepare(struct mtk_afe *afe,
++				struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	u32 val;
++
++	val = AFE_TDM_CON1_BCK_INV |
++		AFE_TDM_CON1_1_BCK_DELAY |
++		AFE_TDM_CON1_MSB_ALIGNED | /* I2S mode */
++		AFE_TDM_CON1_WLEN_32BIT |
++		AFE_TDM_CON1_32_BCK_CYCLES |
++		AFE_TDM_CON1_LRCK_TDM_WIDTH(32);
++
++	regmap_update_bits(afe->regmap, AFE_TDM_CON1, ~1, val);
++
++	/* set tdm2 config */
++	switch (runtime->channels) {
++	case 7:
++	case 8:
++		val |= MTK_AFE_TDM_CH_START_O30_O31;
++		val |= (MTK_AFE_TDM_CH_START_O32_O33 << 4);
++		val |= (MTK_AFE_TDM_CH_START_O34_O35 << 8);
++		val |= (MTK_AFE_TDM_CH_START_O36_O37 << 12);
++		break;
++	case 5:
++	case 6:
++		val |= MTK_AFE_TDM_CH_START_O30_O31;
++		val |= (MTK_AFE_TDM_CH_START_O32_O33 << 4);
++		val |= (MTK_AFE_TDM_CH_START_O34_O35 << 8);
++		val |= (MTK_AFE_TDM_CH_ZERO << 12);
++		break;
++	case 3:
++	case 4:
++		val |= MTK_AFE_TDM_CH_START_O30_O31;
++		val |= (MTK_AFE_TDM_CH_START_O32_O33 << 4);
++		val |= (MTK_AFE_TDM_CH_ZERO << 8);
++		val |= (MTK_AFE_TDM_CH_ZERO << 12);
++		break;
++	case 1:
++	case 2:
++		val |= MTK_AFE_TDM_CH_START_O30_O31;
++		val |= (MTK_AFE_TDM_CH_ZERO << 4);
++		val |= (MTK_AFE_TDM_CH_ZERO << 8);
++		val |= (MTK_AFE_TDM_CH_ZERO << 12);
++		break;
++	default:
++		val = 0;
++	}
++	regmap_update_bits(afe->regmap, AFE_TDM_CON2,
++			   0x0000ffff, val);
++
++	regmap_update_bits(afe->regmap, AFE_HDMI_OUT_CON0,
++			   0x000000f0, runtime->channels << 4);
++	return 0;
++}
++
++static int mtk_set_connections(struct mtk_afe *afe, struct mtk_afe_io *io)
++{
++	int i, ret;
++
++	for (i = 0; i < io->num_connections; i++) {
++		ret = mtk_afe_interconn_connect(afe, io->connections[i * 2],
++						io->connections[i * 2 + 1],
++						0);
++		if (ret) {
++			dev_err(afe->dev, "Cannot create connection %d <-> %d\n",
++				io->connections[i * 2],
++				io->connections[i * 2 + 1]);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int mtk_afe_dais_startup(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++	int ret;
++
++	dev_dbg(afe->dev, "%s\n", __func__);
++
++	if (dai->active)
++		return 0;
++
++	ret = mtk_set_connections(afe, io);
++	if (ret)
++		return ret;
++
++	dev_dbg(afe->dev, "enabling io %s\n", io->data->name);
++	if (io->m_ck) {
++		ret = clk_prepare_enable(io->m_ck);
++		if (ret) {
++			dev_err(afe->dev, "Failed to enable m_ck\n");
++			return ret;
++		}
++		regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
++				   (1 << 8) | (1 << 9), 0);
++	}
++
++	if (io->b_ck) {
++		ret = clk_prepare_enable(io->b_ck);
++		if (ret) {
++			dev_err(afe->dev, "Failed to enable b_ck\n");
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static void mtk_afe_dais_shutdown(struct snd_pcm_substream *substream,
++				  struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++
++	dev_dbg(afe->dev, "%s\n", __func__);
++
++	if (dai->active)
++		return;
++
++	if (io->data->shutdown)
++		io->data->shutdown(afe, substream);
++
++	if (io->m_ck) {
++		regmap_update_bits(afe->regmap, AUDIO_TOP_CON0,
++				   (1 << 8) | (1 << 9),
++				   (1 << 8) | (1 << 9));
++		clk_disable_unprepare(io->m_ck);
++	}
++	if (io->b_ck)
++		clk_disable_unprepare(io->b_ck);
++	/* disable AFE */
++	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 1, 0);
++}
++
++static int mtk_afe_dais_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params,
++				  struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++	struct mtk_afe_memif *memif = &afe->memif[io->mem[substream->stream]];
++	unsigned int mono;
++	int sample_rate = params_rate(params);
++	int fs_shift = memif->data->fs_shift;
++	u32 val;
++
++	/* set channel */
++	if (memif->data->mono_shift >= 0) {
++		mono = (params_channels(params) == 1) ? 1 : 0;
++		regmap_update_bits(afe->regmap, AFE_DAC_CON1,
++				   1 << memif->data->mono_shift,
++				   mono << memif->data->mono_shift);
++	}
++
++	/* set rate */
++	if (fs_shift < 0)
++		return 0;
++	if (memif->data->id == MTK_AFE_MEMIF_DAI ||
++	    memif->data->id == MTK_AFE_MEMIF_MOD_DAI) {
++		if (sample_rate == 8000)
++			val = 0;
++		else if (sample_rate == 16000)
++			val = 1;
++		else if (sample_rate == 32000)
++			val = 2;
++		else
++			return -EINVAL;
++		if (memif->data->id == MTK_AFE_MEMIF_DAI)
++			regmap_update_bits(afe->regmap, AFE_DAC_CON0,
++					   0x3 << fs_shift, val << fs_shift);
++		else
++			regmap_update_bits(afe->regmap, AFE_DAC_CON1,
++					   0x3 << fs_shift, val << fs_shift);
++
++	} else {
++		regmap_update_bits(afe->regmap, AFE_DAC_CON1,
++				   0xf << fs_shift,
++				   mtk_afe_i2s_fs(sample_rate) << fs_shift);
++	}
++
++	return 0;
++}
++
++static int mtk_afe_dais_prepare(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime * const runtime = substream->runtime;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++	int ret;
++
++	dev_dbg(afe->dev, "%s: %d\n", __func__, substream->runtime->rate);
++
++	if (io->m_ck) {
++		ret = clk_set_rate(io->m_ck, runtime->rate * 256);
++		if (ret) {
++			dev_err(afe->dev, "Failed to set m_ck rate\n");
++			return ret;
++		}
++	}
++
++	if (io->b_ck) {
++		ret = clk_set_rate(io->b_ck, runtime->rate *
++				   runtime->channels * 32 * 16);
++		if (ret) {
++			dev_err(afe->dev, "Failed to set b_ck rate\n");
++			return ret;
++		}
++	}
++
++	if (io->data->prepare)
++		ret = io->data->prepare(afe, substream);
++
++	/* enable AFE */
++	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 1, 1);
++	return 0;
++}
++
++static int mtk_afe_dais_trigger(struct snd_pcm_substream *substream, int cmd,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime * const runtime = substream->runtime;
++	struct mtk_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_afe_io *io = &afe->ios[rtd->cpu_dai->id];
++	struct mtk_afe_memif *memif = &afe->memif[io->mem[substream->stream]];
++	unsigned int counter = runtime->period_size;
++	int ret;
++	int enable_shift = memif->data->enable_shift;
++
++	dev_info(afe->dev, "%s %s cmd=%d\n", __func__, memif->data->name, cmd);
++
++	if (!memif->irqdata) {
++		dev_err(afe->dev, "IRQ for memif %d is not described\n",
++			rtd->cpu_dai->id);
++		return -ENXIO;
++	}
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		if (enable_shift >= 0)
++			regmap_update_bits(afe->regmap, AFE_DAC_CON0,
++					   1 << enable_shift, 0xffffffff);
++
++		/* set irq counter */
++		regmap_update_bits(afe->regmap,
++				   memif->irqdata->reg_cnt,
++				   0x3ffff << memif->irqdata->cnt_shift,
++				   counter << memif->irqdata->cnt_shift);
++
++		/* set irq fs */
++		if (memif->irqdata->fs_shift >= 0)
++			regmap_update_bits(afe->regmap,
++					   AFE_IRQ_MCU_CON,
++					   0xf << memif->irqdata->fs_shift,
++					   mtk_afe_i2s_fs(runtime->rate) <<
++					       memif->irqdata->fs_shift);
++		/* enable interrupt */
++		regmap_update_bits(afe->regmap, AFE_IRQ_MCU_CON,
++				   1 << memif->irqdata->en_shift,
++				   1 << memif->irqdata->en_shift);
++
++		if (io->data->start) {
++			ret = io->data->start(afe, substream);
++			if (ret)
++				return ret;
++		}
++		return 0;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		if (io->data->pause)
++			io->data->pause(afe, substream);
++
++		if (enable_shift >= 0)
++			regmap_update_bits(afe->regmap, AFE_DAC_CON0,
++					   1 << enable_shift, 0);
++		/* disable interrupt */
++		regmap_update_bits(afe->regmap, AFE_IRQ_MCU_CON,
++				   1 << memif->irqdata->en_shift,
++				   0 << memif->irqdata->en_shift);
++		/* and clear pending IRQ */
++		regmap_write(afe->regmap, AFE_IRQ_CLR,
++			     1 << memif->irqdata->clr_shift);
++		memif->hw_ptr = 0;
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
++static const struct snd_soc_dai_ops mtk_afe_dai_ops = {
++	.startup	= mtk_afe_dais_startup,
++	.shutdown	= mtk_afe_dais_shutdown,
++	.hw_params	= mtk_afe_dais_hw_params,
++	.prepare	= mtk_afe_dais_prepare,
++	.trigger	= mtk_afe_dais_trigger,
++};
++
++static const struct mtk_afe_io_data mtk_afe_io_data[MTK_AFE_IO_NUM] = {
++	[MTK_AFE_IO_PMIC] = {
++		.num = MTK_AFE_IO_PMIC,
++		.name = "pmic",
++		.shutdown = mtk_afe_pmic_shutdown,
++		.prepare = mtk_afe_pmic_prepare,
++	},
++	[MTK_AFE_IO_I2S] = {
++		.num = MTK_AFE_IO_I2S,
++		.name = "i2s",
++		.shutdown = mtk_afe_i2s_shutdown,
++		.prepare = mtk_afe_i2s_prepare,
++	},
++	[MTK_AFE_IO_2ND_I2S] = {
++		.num = MTK_AFE_IO_2ND_I2S,
++		.name = "i2s2",
++		.shutdown = mtk_afe_i2s2_shutdown,
++		.prepare = mtk_afe_i2s2_prepare,
++	},
++	[MTK_AFE_IO_HDMI] = {
++		.num = MTK_AFE_IO_HDMI,
++		.name = "hdmi",
++		.prepare = mtk_afe_hdmi_prepare,
++		.start = mtk_afe_hdmi_start,
++		.pause = mtk_afe_hdmi_pause,
++	},
++};
++
++static struct snd_soc_dai_driver mtk_afe_pcm_dais[] = {
++	{
++		.name  = "I2S",
++		.id  = MTK_AFE_IO_I2S,
++		.playback = {
++			.stream_name = "I2S Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++		.capture = {
++			.stream_name = "I2S Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++		.ops = &mtk_afe_dai_ops,
++		.symmetric_rates = 1,
++	}, {
++		.name = "2nd I2S",
++		.id  = MTK_AFE_IO_2ND_I2S,
++		.playback = {
++			.stream_name = "2nd I2S Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++		.capture = {
++			.stream_name = "2nd I2S Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++		.ops = &mtk_afe_dai_ops,
++		.symmetric_rates = 1,
++	}, {
++		.name = "HDMI",
++		.id  = MTK_AFE_IO_HDMI,
++		.playback = {
++			.stream_name = "HDMI Playback",
++			.channels_min = 2,
++			.channels_max = 8,
++			.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
++				SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
++				SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
++				SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++		.ops = &mtk_afe_dai_ops,
++	}, {
++		.name = "PMIC",
++		.id  = MTK_AFE_IO_PMIC,
++		.playback = {
++			.stream_name = "PMIC Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++		.capture = {
++			.stream_name = "PMIC Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		},
++		.ops = &mtk_afe_dai_ops,
++	},
++};
++
++static const struct snd_soc_component_driver mtk_afe_pcm_dai_component = {
++	.name		= "mtk-afe-pcm-dai",
++};
++
++static const char *aud_clks[MTK_CLK_NUM] = {
++	[MTK_CLK_INFRASYS_AUD] = "infra_sys_audio_clk",
++	[MTK_CLK_TOP_PDN_AUD] = "top_pdn_audio",
++	[MTK_CLK_TOP_PDN_AUD_BUS] = "top_pdn_aud_intbus",
++	[MTK_CLK_I2S0_M] =  "i2s0_m",
++	[MTK_CLK_I2S1_M] =  "i2s1_m",
++	[MTK_CLK_I2S2_M] =  "i2s2_m",
++	[MTK_CLK_I2S3_M] =  "i2s3_m",
++	[MTK_CLK_I2S3_B] =  "i2s3_b",
++	[MTK_CLK_BCK0] =  "bck0",
++	[MTK_CLK_BCK1] =  "bck1",
++};
++
++static const struct mtk_afe_irq_data irq_data[MTK_AFE_IRQ_NUM] = {
++	[MTK_AFE_IRQ_1] = {
++		.reg_cnt = AFE_IRQ_CNT1,
++		.cnt_shift = 0,
++		.en_shift = 0,
++		.fs_shift = 4,
++		.clr_shift = 0,
++	},
++	[MTK_AFE_IRQ_2] = {
++		.reg_cnt = AFE_IRQ_CNT2,
++		.cnt_shift = 0,
++		.en_shift = 1,
++		.fs_shift = 8,
++		.clr_shift = 1,
++	},
++	[MTK_AFE_IRQ_3] = {
++		.reg_cnt = AFE_IRQ_CNT1,
++		.cnt_shift = 20,
++		.en_shift = 2,
++		.fs_shift = 16,
++		.clr_shift = 2,
++	},
++	[MTK_AFE_IRQ_4] = {
++		.reg_cnt = AFE_IRQ_CNT2,
++		.cnt_shift = 20,
++		.en_shift = 3,
++		.fs_shift = 20,
++		.clr_shift = 3,
++	},
++	[MTK_AFE_IRQ_5] = {
++		.reg_cnt = AFE_IRQ_CNT5,
++		.cnt_shift = 0,
++		.en_shift = 12,
++		.fs_shift = -1,
++		.clr_shift = 4,
++	},
++	[MTK_AFE_IRQ_7] = {
++		.reg_cnt = AFE_IRQ_CNT7,
++		.cnt_shift = 0,
++		.en_shift = 14,
++		.fs_shift = 24,
++		.clr_shift = 6,
++	},
++};
++
++static const struct mtk_afe_memif_data memif_data[MTK_AFE_MEMIF_NUM] = {
++	{
++		.name = "DL1",
++		.id = MTK_AFE_MEMIF_DL1,
++		.reg_ofs_base = AFE_DL1_BASE,
++		.reg_ofs_cur = AFE_DL1_CUR,
++		.fs_shift = 0,
++		.mono_shift = 21,
++		.enable_shift = 1,
++	}, {
++		.name = "DL2",
++		.id = MTK_AFE_MEMIF_DL2,
++		.reg_ofs_base = AFE_DL2_BASE,
++		.reg_ofs_cur = AFE_DL2_CUR,
++		.fs_shift = 4,
++		.mono_shift = 22,
++		.enable_shift = 2,
++	}, {
++		.name = "VUL",
++		.id = MTK_AFE_MEMIF_VUL,
++		.reg_ofs_base = AFE_VUL_BASE,
++		.reg_ofs_cur = AFE_VUL_CUR,
++		.fs_shift = 16,
++		.mono_shift = 27,
++		.enable_shift = 3,
++	}, {
++		.name = "DAI",
++		.id = MTK_AFE_MEMIF_DAI,
++		.reg_ofs_base = AFE_DAI_BASE,
++		.reg_ofs_cur = AFE_DAI_CUR,
++		.fs_shift = 24,
++		.mono_shift = -1,
++		.enable_shift = 4,
++	}, {
++		.name = "AWB",
++		.id = MTK_AFE_MEMIF_AWB,
++		.reg_ofs_base = AFE_AWB_BASE,
++		.reg_ofs_cur = AFE_AWB_CUR,
++		.fs_shift = 12,
++		.mono_shift = 24,
++		.enable_shift = 6,
++	}, {
++		.name = "MOD_DAI",
++		.id = MTK_AFE_MEMIF_MOD_DAI,
++		.reg_ofs_base = AFE_MOD_PCM_BASE,
++		.reg_ofs_cur = AFE_MOD_PCM_CUR,
++		.fs_shift = 30,
++		.mono_shift = 30,
++		.enable_shift = 7,
++	}, {
++		.name = "HDMI",
++		.id = MTK_AFE_MEMIF_HDMI,
++		.reg_ofs_base = AFE_HDMI_OUT_BASE,
++		.reg_ofs_cur = AFE_HDMI_OUT_CUR,
++		.fs_shift = -1,
++		.mono_shift = -1,
++		.enable_shift = -1,
++	},
++};
++
++static const struct regmap_config mtk_afe_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = AFE_ADDA2_TOP_CON0,
++	.cache_type = REGCACHE_NONE,
++};
++
++static irqreturn_t mtk_afe_irq_handler(int irq, void *dev_id)
++{
++	struct mtk_afe *afe = dev_id;
++	unsigned int reg_value, hw_ptr;
++	int i, ret;
++
++	ret = regmap_read(afe->regmap, AFE_IRQ_STATUS, &reg_value);
++	if (ret) {
++		dev_err(afe->dev, "%s irq status err\n", __func__);
++		reg_value = AFE_IRQ_STATUS_BITS;
++		goto err_irq;
++	}
++
++	for (i = 0; i < MTK_AFE_MEMIF_NUM; i++) {
++		struct mtk_afe_memif *memif = &afe->memif[i];
++
++		if (!memif->irqdata)
++			continue;
++		if (!(reg_value & (1 << memif->irqdata->clr_shift)))
++			continue;
++
++		ret = regmap_read(afe->regmap, memif->data->reg_ofs_cur,
++				  &hw_ptr);
++		if (ret || hw_ptr == 0) {
++			dev_err(afe->dev, "%s hw_ptr err\n", __func__);
++			hw_ptr = memif->phys_buf_addr;
++		}
++		memif->hw_ptr = hw_ptr - memif->phys_buf_addr;
++		snd_pcm_period_elapsed(memif->substream);
++	}
++
++err_irq:
++	/* clear irq */
++	regmap_write(afe->regmap, AFE_IRQ_CLR, reg_value & AFE_IRQ_STATUS_BITS);
++
++	return IRQ_HANDLED;
++}
++
++static int mtk_afe_runtime_suspend(struct device *dev)
++{
++	struct mtk_afe *afe = dev_get_drvdata(dev);
++
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0, 1 << 2, 1 << 2);
++
++	clk_disable_unprepare(afe->clocks[MTK_CLK_BCK0]);
++	clk_disable_unprepare(afe->clocks[MTK_CLK_BCK1]);
++	clk_disable_unprepare(afe->clocks[MTK_CLK_TOP_PDN_AUD]);
++	clk_disable_unprepare(afe->clocks[MTK_CLK_TOP_PDN_AUD_BUS]);
++	clk_disable_unprepare(afe->clocks[MTK_CLK_INFRASYS_AUD]);
++	return 0;
++}
++
++static int mtk_afe_runtime_resume(struct device *dev)
++{
++	struct mtk_afe *afe = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(afe->clocks[MTK_CLK_INFRASYS_AUD]);
++	if (ret)
++		return ret;
++
++	ret = clk_prepare_enable(afe->clocks[MTK_CLK_TOP_PDN_AUD_BUS]);
++	if (ret)
++		goto err_infra;
++
++	ret = clk_prepare_enable(afe->clocks[MTK_CLK_TOP_PDN_AUD]);
++	if (ret)
++		goto err_top_aud_bus;
++
++	ret = clk_prepare_enable(afe->clocks[MTK_CLK_BCK0]);
++	if (ret)
++		goto err_top_aud;
++	ret = clk_prepare_enable(afe->clocks[MTK_CLK_BCK1]);
++	if (ret)
++		goto err_bck0;
++
++	/* enable AFE clk */
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON0, 1 << 2, 0);
++
++	/* set O3/O4 16bits */
++	regmap_update_bits(afe->regmap, AFE_CONN_24BIT, (1 << 3) | (1 << 4), 0);
++
++	/* unmask all IRQs */
++	regmap_update_bits(afe->regmap, AFE_IRQ_MCU_EN, 0xff, 0xff);
++	return 0;
++
++err_bck0:
++	clk_disable_unprepare(afe->clocks[MTK_CLK_BCK0]);
++err_top_aud:
++	clk_disable_unprepare(afe->clocks[MTK_CLK_TOP_PDN_AUD]);
++err_top_aud_bus:
++	clk_disable_unprepare(afe->clocks[MTK_CLK_TOP_PDN_AUD_BUS]);
++err_infra:
++	clk_disable_unprepare(afe->clocks[MTK_CLK_INFRASYS_AUD]);
++	return ret;
++}
++
++static int mtk_afe_init_audio_clk(struct mtk_afe *afe)
++{
++	size_t i;
++
++	for (i = 0; i < ARRAY_SIZE(aud_clks); i++) {
++		afe->clocks[i] = devm_clk_get(afe->dev, aud_clks[i]);
++		if (IS_ERR(afe->clocks[i])) {
++			dev_err(afe->dev, "%s devm_clk_get %s fail\n",
++				__func__, aud_clks[i]);
++			return PTR_ERR(afe->clocks[i]);
++		}
++	}
++	afe->ios[MTK_AFE_IO_2ND_I2S].m_ck = afe->clocks[MTK_CLK_I2S0_M];
++	afe->ios[MTK_AFE_IO_I2S].m_ck = afe->clocks[MTK_CLK_I2S1_M];
++	afe->ios[MTK_AFE_IO_HDMI].m_ck = afe->clocks[MTK_CLK_I2S3_M];
++	afe->ios[MTK_AFE_IO_HDMI].b_ck = afe->clocks[MTK_CLK_I2S3_B];
++
++	clk_set_rate(afe->clocks[MTK_CLK_BCK0], 22579200);
++	clk_set_rate(afe->clocks[MTK_CLK_BCK1], 24576000);
++	return 0;
++}
++
++static int mtk_afe_parse_memif(struct mtk_afe *afe, struct device_node *np,
++			       const char *propname, int *mem)
++{
++	struct mtk_afe_memif *memif;
++	int ret;
++	u32 val;
++	static bool use_sram;
++	*mem = -1;
++	ret = of_property_read_u32_index(np, propname, 0, &val);
++	if (ret)
++		/* to be check later since we may have only play or capture */
++		return 0;
++	if (val > MTK_AFE_MEMIF_NUM) {
++		dev_err(afe->dev, "invalid memif %d\n", val);
++		return -EINVAL;
++	}
++	*mem = val;
++	memif = &afe->memif[val];
++
++	ret = of_property_read_u32_index(np, propname, 1, &val);
++	if (ret)
++		return ret;
++	if (val >= MTK_AFE_IRQ_NUM) {
++		dev_err(afe->dev, "invalid mem irq %d\n", val);
++		return -EINVAL;
++	}
++	memif->irqdata = &irq_data[val];
++
++	ret = of_property_read_u32_index(np, propname, 2, &val);
++	if (ret)
++		return ret;
++	if (val && use_sram)
++		return -EINVAL; /* only one memif can use SRAM */
++	memif->use_sram = val ? true : false;
++	use_sram = memif->use_sram;
++	return 0;
++}
++
++static int mtk_afe_init_subnode(struct mtk_afe *afe, struct device_node *np)
++{
++	struct mtk_afe_io *io;
++	u32 val;
++	int ret, n, i;
++
++	ret = of_property_read_u32(np, "io", &val);
++	if (ret)
++		return ret;
++	if (val >= MTK_AFE_IO_NUM) {
++		dev_err(afe->dev, "invalid io %d\n", val);
++		return -EINVAL;
++	}
++	io = &afe->ios[val];
++
++	n = of_property_count_u32_elems(np, "connections");
++	if (n <= 0)
++		return n;
++	io->connections = devm_kzalloc(afe->dev, n * sizeof(u32),
++			GFP_KERNEL);
++	if (!io->connections)
++		return -ENOMEM;
++	io->num_connections = n / 2;
++	ret = of_property_read_u32_array(np, "connections", io->connections,
++					 n);
++	if (ret)
++		return ret;
++	for (i = 0; i < io->num_connections; i++) {
++		dev_dbg(afe->dev, "connection %d: %d -> %d\n", i,
++			io->connections[i * 2],
++			io->connections[i * 2 + 1]);
++	}
++
++	ret = mtk_afe_parse_memif(afe, np, "mem-interface-playback", io->mem);
++	if (ret)
++		return ret;
++	ret = mtk_afe_parse_memif(afe, np, "mem-interface-capture",
++				  io->mem + 1);
++	if (ret)
++		return ret;
++	if (io->mem[0] < 0 && io->mem[1] < 0) {
++		dev_err(afe->dev, "no mem interface given\n");
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int mtk_afe_pcm_dev_probe(struct platform_device *pdev)
++{
++	int ret, i;
++	unsigned int irq_id;
++	struct mtk_afe *afe;
++	struct device_node *dainode;
++	struct resource *res;
++
++	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
++	if (!afe)
++		return -ENOMEM;
++
++	afe->dev = &pdev->dev;
++
++	irq_id = platform_get_irq(pdev, 0);
++	if (!irq_id) {
++		dev_err(afe->dev, "np %s no irq\n", afe->dev->of_node->name);
++		return -ENXIO;
++	}
++	ret = devm_request_irq(afe->dev, irq_id, mtk_afe_irq_handler,
++			       0, "Afe_ISR_Handle", (void *)afe);
++	if (ret) {
++		dev_err(afe->dev, "could not request_irq\n");
++		return ret;
++	}
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	afe->base_addr = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(afe->base_addr))
++		return PTR_ERR(afe->base_addr);
++
++	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
++		&mtk_afe_regmap_config);
++	if (IS_ERR(afe->regmap))
++		return PTR_ERR(afe->regmap);
++
++	/* get SRAM base */
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	afe->sram_address = devm_ioremap_resource(&pdev->dev, res);
++	if (!IS_ERR(afe->sram_address)) {
++		afe->sram_phy_address = res->start;
++		afe->sram_size = resource_size(res);
++	}
++
++	/* initial audio related clock */
++	ret = mtk_afe_init_audio_clk(afe);
++	if (ret) {
++		dev_err(afe->dev, "mtk_afe_init_audio_clk fail\n");
++		return ret;
++	}
++
++	for (i = 0; i < MTK_AFE_MEMIF_NUM; i++)
++		afe->memif[i].data = &memif_data[i];
++
++	for (i = 0; i < MTK_AFE_IO_NUM; i++)
++		afe->ios[i].data = &mtk_afe_io_data[i];
++
++	for_each_child_of_node(pdev->dev.of_node, dainode) {
++		ret = mtk_afe_init_subnode(afe, dainode);
++		if (ret)
++			return ret;
++	}
++
++	platform_set_drvdata(pdev, afe);
++
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = mtk_afe_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_pm_disable;
++	}
++
++	ret = snd_soc_register_platform(&pdev->dev, &mtk_afe_pcm_platform);
++	if (ret)
++		goto err_pm_disable;
++
++	ret = snd_soc_register_component(&pdev->dev,
++					 &mtk_afe_pcm_dai_component,
++					 mtk_afe_pcm_dais,
++					 ARRAY_SIZE(mtk_afe_pcm_dais));
++	if (ret)
++		goto err_platform;
++
++	dev_info(&pdev->dev, "MTK AFE driver initialized.\n");
++	return 0;
++
++err_platform:
++	snd_soc_unregister_platform(&pdev->dev);
++err_pm_disable:
++	pm_runtime_disable(&pdev->dev);
++	return ret;
++}
++
++static int mtk_afe_pcm_dev_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++	snd_soc_unregister_component(&pdev->dev);
++	snd_soc_unregister_platform(&pdev->dev);
++	return 0;
++}
++
++static const struct of_device_id mtk_afe_pcm_dt_match[] = {
++	{ .compatible = "mediatek,mt8173-afe-pcm", },
++	{ }
++};
++
++static const struct dev_pm_ops mtk_afe_pm_ops = {
++	SET_RUNTIME_PM_OPS(mtk_afe_runtime_suspend, mtk_afe_runtime_resume,
++			   NULL)
++};
++
++static struct platform_driver mtk_afe_pcm_driver = {
++	.driver = {
++		   .name = "mtk-afe-pcm",
++		   .owner = THIS_MODULE,
++		   .of_match_table = mtk_afe_pcm_dt_match,
++		   .pm = &mtk_afe_pm_ops,
++	},
++	.probe = mtk_afe_pcm_dev_probe,
++	.remove = mtk_afe_pcm_dev_remove,
++};
++
++module_platform_driver(mtk_afe_pcm_driver);
++
++MODULE_DESCRIPTION("Mediatek ALSA SoC Afe platform driver");
++MODULE_AUTHOR("Koro Chen <koro.chen@mediatek.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_DEVICE_TABLE(of, mtk_afe_pcm_dt_match);
 -- 
 1.8.1.1.dirty
