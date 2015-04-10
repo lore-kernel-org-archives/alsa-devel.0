@@ -1,32 +1,17 @@
-From: Yomi Ogunwumi <abyomi0@gmail.com>
-Subject: Re: Issues and/or possible bugs in alsa
-Date: Fri, 10 Apr 2015 12:17:02 -0400
-Message-ID: <CACui-2nXLr__yMy0-wW2F72wxJ-nkeBVmmSGn_Yj_hMOyJGKeA@mail.gmail.com>
-References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
- <54ED8466.7020102@gmail.com>
- <CAN8cciYnyLahS2gQ0g0vSaNj+xo=Tz9_FQ9L-WazOb1t5no_kA@mail.gmail.com>
- <54F1C10B.2050008@gmail.com> <s5hmw3ygjcx.wl-tiwai@suse.de>
- <CACui-2k_6R7SG2_o0SO+oLMNz-Lo7zpY6tuvOOYJ1eq7N056hg@mail.gmail.com>
- <CAN8ccia6_ZSdAtL3w4s4B0RYLnOXZK-LddpQi4LCjdHZrtJqfA@mail.gmail.com>
- <CACui-2ngDGDf3R-Jp0mxrYKrJQuWCS6msk-A3LdTk0n2LZCqTQ@mail.gmail.com>
- <CACui-2kLt+x6RieNZ05bFbs5veu7zy3m50MfurPCpPtBAwY07Q@mail.gmail.com>
- <CACui-2n2MTnA9DWzGdprfJ=bY+OjYMkBtFe7YQQnTf5BBtyk=Q@mail.gmail.com>
- <CAN8cciYc6ggpnOZydy4Mm_TsXo4c8SAN_cyutJ1FFeuiqxCEnw@mail.gmail.com>
- <CACui-2ndKUv=JPdDqQ9isctMhthEBL1hD_UJRy6GaONmfjkvTA@mail.gmail.com>
- <CAN8ccibNsvV5_TG3XCDOdTjkPSEd9aC1QjV1rrjz4NnidhbrDA@mail.gmail.com>
- <CACui-2kobAiBJB0=dd8_jhEGMkHzq1Rjd4cLM0Aus3CRyc9QgA@mail.gmail.com>
- <CAN8cciZ4VK-NHOvrMpkx=pFHExMn-vf-jN1hL-31buMNt9v9SQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl: Add the audio interfacce
+ acronyms in Kconfig text
+Date: Fri, 10 Apr 2015 18:18:54 +0100
+Message-ID: <20150410171854.GP6023@sirena.org.uk>
+References: <1428604202-23515-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4780005815726833854=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f182.google.com (mail-ig0-f182.google.com
- [209.85.213.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 775A6260633
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 18:17:03 +0200 (CEST)
-Received: by iget9 with SMTP id t9so17210960ige.1
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 09:17:02 -0700 (PDT)
-In-Reply-To: <CAN8cciZ4VK-NHOvrMpkx=pFHExMn-vf-jN1hL-31buMNt9v9SQ@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CD1D26061A
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 19:19:03 +0200 (CEST)
+In-Reply-To: <1428604202-23515-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,72 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Nothing changes when I plug in or unplug my headphones. The output of
-hdajacksensetest stays the same.
-However, in alsamixer, the level of Internal Mic Boost goes from 20 to
-zero, and Mic Boost goes to 20.
 
-Output of hdajacksensetest:
-
-Pin 0x03 ( Digital Out, HDMI): present = No
-Pin 0x05 (Not connected): present = No
-Pin 0x07 (Not connected): present = No
+--===============4780005815726833854==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pE/jFWfT0RKy7Gly"
+Content-Disposition: inline
 
 
-On Fri, Apr 10, 2015 at 9:18 AM, Raymond Yau <superquad.vortex2@gmail.com>
-wrote:
+--pE/jFWfT0RKy7Gly
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >
-> > Okay, I added those lines to a clone of tiwai's repo.
-> > Output of alsa-info.sh :
-> https://gist.github.com/Yomi0/f4059fe45d960f141b33#file-rpatch
-> >
->
-> Try hdajacksensetest -a when you plugged and unplugged HP and mic
->
-> Did headphone playback volume change to minimum when you plug and unplug ?
->
->
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/log/sound/pci/hda/patch_realtek.c?qt=grep&q=toshiba
->
-> Seem no specifc hack used by other toshiba
->
-> Simple mixer control 'Headphone',0
->   Capabilities: pvolume pswitch
->   Playback channels: Front Left - Front Right
->   Limits: Playback 0 - 87
->   Mono:
->   Front Left: Playback 0 [0%] [-65.25dB] [off]
->   Front Right: Playback 0 [0%] [-65.25dB] [off]
->
-> control.14 {
-> iface CARD
-> name 'Mic Jack'
-> value true
-> comment {
-> access read
-> type BOOLEAN
-> count 1
-> }
-> }
->
-> control.16 {
-> iface CARD
-> name 'Headphone Jack'
-> value false
-> comment {
-> access read
-> type BOOLEAN
-> count 1
-> }
-> }
->
+On Thu, Apr 09, 2015 at 03:30:02PM -0300, Fabio Estevam wrote:
+> To keep consistency with the other Kconfig entries, use the audio
+> interfacce acronyms (SSI and SPDIF) in the Kconfig menu text.
+
+Applied, thanks - though S/PDIF has a / in there.
+
+--pE/jFWfT0RKy7Gly
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVKAX9AAoJECTWi3JdVIfQFjMH/iN7CVP50mSYJrbOcSg4Fqur
+Cq7NY7WKFsRgraarP1aIiVR/0Vav8rFvNhaEWy2hQKKNN3tfYHGdwObZDPpTCSZQ
+mH4GvuT1aF9/cyMaX+mO6Xril02MWbpaJn7TyLrLFe/hd68X7Nr688iED7Lxc0/S
+0Rpa+J69PnmFwP5HgGCOus8EV+WTJ92azohzq29GbLiEJDfHjfwgU8XwS+CFKYi7
+14YaH+hoLxHZtmp0OWnQmDAWKpUTVBj0mOa59CuXQjx6fueceTtrfipZMlC1Hir6
+sgtCXAuVMdw60DGtUI55g0rLE+7J8xjPI8VkABWXPqBV98aRSFvTiduUZlJxaWQ=
+=WXz+
+-----END PGP SIGNATURE-----
+
+--pE/jFWfT0RKy7Gly--
+
+--===============4780005815726833854==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-
--- 
-*Yomi*
+--===============4780005815726833854==--
