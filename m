@@ -1,93 +1,71 @@
-From: Lori Hikichi <lhikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: add core audio driver for Broadcom Cygnus SOC.
-Date: Thu, 9 Apr 2015 19:06:22 -0700
-Message-ID: <5527301E.6070906@broadcom.com>
-References: <1427771784-29950-1-git-send-email-sbranden@broadcom.com> <1427771784-29950-3-git-send-email-sbranden@broadcom.com> <20150331064209.GD2869@sirena.org.uk> <551D8EB6.1050004@broadcom.com> <20150406161939.GJ6023@sirena.org.uk> <552492E1.3050207@broadcom.com> <20150408192309.GI6023@sirena.org.uk>
+From: Yomi Ogunwumi <abyomi0@gmail.com>
+Subject: Re: Issues and/or possible bugs in alsa
+Date: Thu, 9 Apr 2015 23:26:45 -0400
+Message-ID: <CACui-2kobAiBJB0=dd8_jhEGMkHzq1Rjd4cLM0Aus3CRyc9QgA@mail.gmail.com>
+References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
+ <54ED8466.7020102@gmail.com>
+ <CAN8cciYnyLahS2gQ0g0vSaNj+xo=Tz9_FQ9L-WazOb1t5no_kA@mail.gmail.com>
+ <54F1C10B.2050008@gmail.com> <s5hmw3ygjcx.wl-tiwai@suse.de>
+ <CACui-2k_6R7SG2_o0SO+oLMNz-Lo7zpY6tuvOOYJ1eq7N056hg@mail.gmail.com>
+ <CAN8ccia6_ZSdAtL3w4s4B0RYLnOXZK-LddpQi4LCjdHZrtJqfA@mail.gmail.com>
+ <CACui-2ngDGDf3R-Jp0mxrYKrJQuWCS6msk-A3LdTk0n2LZCqTQ@mail.gmail.com>
+ <CACui-2kLt+x6RieNZ05bFbs5veu7zy3m50MfurPCpPtBAwY07Q@mail.gmail.com>
+ <CACui-2n2MTnA9DWzGdprfJ=bY+OjYMkBtFe7YQQnTf5BBtyk=Q@mail.gmail.com>
+ <CAN8cciYc6ggpnOZydy4Mm_TsXo4c8SAN_cyutJ1FFeuiqxCEnw@mail.gmail.com>
+ <CACui-2ndKUv=JPdDqQ9isctMhthEBL1hD_UJRy6GaONmfjkvTA@mail.gmail.com>
+ <CAN8ccibNsvV5_TG3XCDOdTjkPSEd9aC1QjV1rrjz4NnidhbrDA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150408192309.GI6023-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, Dmitry Torokhov <dtor-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Anatol Pomazao <anatol-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, abrestic-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, bryeung-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, olofj-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, pwestin-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f175.google.com (mail-ig0-f175.google.com
+ [209.85.213.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92B3E2605BB
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 05:26:46 +0200 (CEST)
+Received: by igbqf9 with SMTP id qf9so8081197igb.1
+ for <alsa-devel@alsa-project.org>; Thu, 09 Apr 2015 20:26:45 -0700 (PDT)
+In-Reply-To: <CAN8ccibNsvV5_TG3XCDOdTjkPSEd9aC1QjV1rrjz4NnidhbrDA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 15-04-08 12:23 PM, Mark Brown wrote:
-> On Tue, Apr 07, 2015 at 07:30:57PM -0700, Lori Hikichi wrote:
->> On 15-04-06 09:19 AM, Mark Brown wrote:
->=20
->>> OK, so that seems fragile - what happens if we're slightly late
->>> processing an interrupt or miss one entirely?  Most hardware has so=
-me
->>> way to read back the current position which tends to be more reliab=
-le,
->>> is that not an option here?
->=20
->> The hardware updates a read pointer (rdaddr) which we feed to ALSA v=
-ia the
->> ".pointer" hook. So yes, the hardware does have a register that tell=
-s us its
->> progress.  This routine (ringbuf_inc) actually updates a write point=
-er
->> (wraddr) which is a misnomer.  The write pointer doesn=E2=80=99t act=
-ually tell us
->> where we are writing to =E2=80=93 ALSA keeps track of that. The wrad=
-dr only prevents
->> the hardware from reading past it.  We just use it, along with a low=
- water
->> mark configuration register, to keep the periodic interrupts firing.=
-  The
->> hardware is tracking the distance between rdaddr and wraddr and comp=
-aring
->> that to the low water mark.
->=20
-> The code has handling for both read and write so it's not just updati=
-ng
-> a write pointer.  Is there no flexibility in the hardware regarding
-> interrupt generation?
->=20
->> Being late processing the interrupt is okay since there are more sam=
-ples to
->> read.  That is, it was only a low water mark interrupt and we have o=
-ne
->> period of valid data still (we configure low water to be one period)=
-=2E
->> Missing an interrupt is okay since the hardware will just stop readi=
-ng from
->> buffer when rdaddr has hit wraddr.
->=20
-> Stopping if we miss an interrupt is precisely the sort of situation w=
-e
-> want to avoid if we can - if the application is sufficiently far ahea=
-d
-> of the hardware everything should continue to work fine.  The minimal
-> period size appears to be very small so this is a potential issue, if=
- an
-> application tries to use many very small periods it's both more
-> vulnerable to some other interrupt taking longer than might be desira=
-ble
-> and likely that things would be fine as the application is hopefully
-> more than one period ahead of where the hardware is at.
->=20
-> If the hardware is always going to halt at the end of the period ther=
-e's
-> not a huge amount we can do about this except possibly raise the mini=
-mum
-> period if systems are running into trouble but if there's a way to av=
-oid
-> doing that then that would be even better.
->=20
-Makes sense, thanks for clarifying the desired behaviour, I will make t=
-he=20
-necessary adjustments to keep the hardware supplied with valid data eve=
-n if=20
-interrupts are held off past a whole period.
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T2theSwgSSBhZGRlZCB0aG9zZSBsaW5lcyB0byBhIGNsb25lIG9mIHRpd2FpJ3MgcmVwby4KT3V0
+cHV0IG9mIGFsc2EtaW5mby5zaCA6Cmh0dHBzOi8vZ2lzdC5naXRodWIuY29tL1lvbWkwL2Y0MDU5
+ZmU0NWQ5NjBmMTQxYjMzI2ZpbGUtcnBhdGNoCgoKCk9uIFRodSwgQXByIDksIDIwMTUgYXQgOToy
+MCBQTSwgUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbT4Kd3JvdGU6Cgo+
+ID4KPiA+IENhbiB5b3Ugc2VuZCBtZSBhIG1vZGlmaWVkIHNvdW5kL3BjaS9oZGEvaGRhX3Byb2Mu
+Yywgd2l0aCB0aGUgY2hhbmdlcwo+IHlvdSBpbmNsdWRlZCBpbiBsYXN0IGVtYWlsPwo+Cj4gSnVz
+dCBjaGFuZ2UgdHdvIGxpbmVzIHRvIGR1bXAgbmlkLCBub2RlcyBhbmQgcHdyCj4KPiBzbmRfaXBy
+aW50ZihidWZmZXIsICJJbnZhbGlkIEFGRyBzdWJ0cmVlIG5pZD0leCBub2Rlcz0leFxuIiwgbmlk
+LCBub2Rlcyk7Cj4KPiBzbmRfaXByaW50ZihidWZmZXIsICIgIFBvd2VyOiAleCBzZXR0aW5nPSVz
+LCBhY3R1YWw9JXMiLCBwd3IsCj4gICAgIGdldF9wd3Jfc3RhdGUocHdyICYgQUNfUFdSU1RfU0VU
+VElORyksCj4gICAgIGdldF9wd3Jfc3RhdGUoKHB3ciAmIEFDX1BXUlNUX0FDVFVBTCkgPj4KPiAg
+IEFDX1BXUlNUX0FDVFVBTF9TSElGVCkpOwo+Cj4gPj4gPgo+ID4+ID4gSSdtIGdvaW5nIHRvIHRh
+a2UgYSBndWVzcyBhbmQgY29uY2x1ZGUgdGhhdCB0aGVyZSBtdXN0IGJlIGJ1Z3MgaW4gdGhlCj4g
+aW50ZXJmYWNlIHBhdGNoIHdyaXR0ZW4gZm9yIHRoZSByZWFsdGVrIGNvZGVjcy4gSSBoYXBwZW5l
+ZCB0byB0ZXN0IHR3bwo+IG90aGVyIGxhcHRvcHMgYW5kIHRoZXkgd29ya2VkIGp1c3QgZmluZS4g
+KEludGVsLi4uKQo+ID4+ID4KPiA+PiA+IC4uLkkgZ3Vlc3MgaW4gc2hvdWxkIHJlcG9ydCBhIGJ1
+ZyByZWxhdGVkIHRvIHRoYXQgcmVhbHRlayBwYXRjaC4uLgo+ID4+ID4KPiA+PiA+IOKAogo+ID4+
+ID4+Pj4gPgo+ID4+ID4+Pj4gPiBJcyB0aGVyZSBhbnl0aGluZyBlbHNlIEkgbmVlZCB0byBkbz8K
+PiA+PiA+Pj4+Cj4gPj4gPj4+PiBDb2RlYzogUmVhbHRlayBBTEMyNjlWQgo+ID4+ID4+Pj4gQWRk
+cmVzczogMAo+ID4+ID4+Pj4gQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29sIDEpCj4gPj4gPj4+
+PiBWZW5kb3IgSWQ6IDB4MTBlYzAyNjkKPiA+PiA+Pj4+IFN1YnN5c3RlbSBJZDogMHgxMTc5ZmEy
+Mgo+ID4+ID4+Pj4gUmV2aXNpb24gSWQ6IDB4MTAwMTAwCj4gPj4gPj4+PiBObyBNb2RlbSBGdW5j
+dGlvbiBHcm91cCBmb3VuZAo+ID4+ID4+Pj4gRGVmYXVsdCBQQ006Cj4gPj4gPj4+PiBOL0EKPiA+
+PiA+Pj4+IERlZmF1bHQgQW1wLUluIGNhcHM6IE4vQQo+ID4+ID4+Pj4gRGVmYXVsdCBBbXAtT3V0
+IGNhcHM6IE4vQQo+ID4+ID4+Pj4gU3RhdGUgb2YgQUZHIG5vZGUgMHgwMToKPiA+PiA+Pj4+ICAg
+UG93ZXI6IHNldHRpbmc9VU5LTk9XTiwgYWN0dWFsPVVOS05PV04sIEVycm9yLCBDbG9jay1zdG9w
+LU9LLAo+IFNldHRpbmctcmVzZXQKPiA+PiA+Pj4+IEludmFsaWQgQUZHIHN1YnRyZWUKPiA+Pgo+
+ID4+Cj4KCgoKLS0gCipZb21pKgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
