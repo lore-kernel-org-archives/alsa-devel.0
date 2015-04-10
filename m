@@ -1,17 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2] ALSA: ctl: refactoring for read operation
-Date: Fri, 10 Apr 2015 08:43:01 +0900
-Message-ID: <1428622981-9747-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1428512108-1852-1-git-send-email-o-takashi@sakamocchi.jp>
- <1428622981-9747-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: ASoC: Failed to create DAPM debugfs
+Date: Thu, 9 Apr 2015 21:05:44 -0300
+Message-ID: <CAOMZO5Bn6ZPD3h5n=b-eEbNBZvtwLV_o_MWNQYkAjSTHL+KO9w@mail.gmail.com>
+References: <CAOMZO5DP4fahmC9W6eBFdjxR1DqPMgyhgwxwSZP_TcqxLSy=7A@mail.gmail.com>
+ <55258272.2010205@metafoo.de>
+ <CAOMZO5AxT9dgE=QaH18FUYD5CbMvn67XpMo4dH6T0v9Qen-RRg@mail.gmail.com>
+ <55262C9D.5080005@metafoo.de> <20150409082246.GB62585@Asurada-CZ80>
+ <55263873.108@metafoo.de> <20150409084509.GC62585@Asurada-CZ80>
+ <55263E7C.9070501@metafoo.de> <20150409193659.GA9875@Asurada-CZ80>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id A65C42605C3
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 01:43:08 +0200 (CEST)
-In-Reply-To: <1428622981-9747-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mail-lb0-f174.google.com (mail-lb0-f174.google.com
+ [209.85.217.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C512260532
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 02:05:45 +0200 (CEST)
+Received: by lbbqq2 with SMTP id qq2so2084436lbb.3
+ for <alsa-devel@alsa-project.org>; Thu, 09 Apr 2015 17:05:44 -0700 (PDT)
+In-Reply-To: <20150409193659.GA9875@Asurada-CZ80>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,129 +28,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_ctl_read() has nested loop and complicated condition for return
-value. This is not better for reading.
+On Thu, Apr 9, 2015 at 4:37 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> On Thu, Apr 09, 2015 at 10:55:24AM +0200, Lars-Peter Clausen wrote:
+>> >But the snd_soc_dapm_debugfs_init() call that's going to access the
+>> >card->debugfs_root was put before the snd_init_card_debugfs() at the
+>> >first place....
+>> >
+>> >I'm not sure if this could be a fix but the warning is actually gone:
+>>
+>> There is more stuff that expects the directory to exist in
+>> snd_soc_instantiate_card() so we need to move
+>> soc_init_card_debugfs() further up. See the patch I just sent.
+>
+> Yea, I saw that. Thank you for the fix.
 
-This commit applies refactoring with two loops.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/control.c | 77 ++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 47 insertions(+), 30 deletions(-)
-
-diff --git a/sound/core/control.c b/sound/core/control.c
-index de19d56..da6497d 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1520,58 +1520,75 @@ static ssize_t snd_ctl_read(struct file *file, char __user *buffer,
- 			    size_t count, loff_t * offset)
- {
- 	struct snd_ctl_file *ctl;
--	int err = 0;
--	ssize_t result = 0;
-+	struct snd_ctl_event ev;
-+	struct snd_kctl_event *kev;
-+	wait_queue_t wait;
-+	ssize_t result;
- 
- 	ctl = file->private_data;
- 	if (snd_BUG_ON(!ctl || !ctl->card))
- 		return -ENXIO;
- 	if (!ctl->subscribed)
- 		return -EBADFD;
-+
-+	/* The size of given buffer should be larger than at least one event. */
- 	if (count < sizeof(struct snd_ctl_event))
- 		return -EINVAL;
-+
-+	/* Block till any events were queued. */
- 	spin_lock_irq(&ctl->read_lock);
--	while (count >= sizeof(struct snd_ctl_event)) {
--		struct snd_ctl_event ev;
--		struct snd_kctl_event *kev;
--		while (list_empty(&ctl->events)) {
--			wait_queue_t wait;
--			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
--				err = -EAGAIN;
--				goto __end_lock;
--			}
--			init_waitqueue_entry(&wait, current);
--			add_wait_queue(&ctl->change_sleep, &wait);
--			set_current_state(TASK_INTERRUPTIBLE);
--			spin_unlock_irq(&ctl->read_lock);
--			schedule();
--			remove_wait_queue(&ctl->change_sleep, &wait);
--			if (ctl->card->shutdown)
--				return -ENODEV;
--			if (signal_pending(current))
--				return -ERESTARTSYS;
--			spin_lock_irq(&ctl->read_lock);
-+	while (list_empty(&ctl->events)) {
-+		if (file->f_flags & O_NONBLOCK) {
-+			result = -EAGAIN;
-+			goto unlock;
- 		}
-+
-+		/* The card was disconnected. The queued events are dropped. */
-+		if (ctl->card->shutdown) {
-+			result = -ENODEV;
-+			goto unlock;
-+		}
-+
-+
-+		init_waitqueue_entry(&wait, current);
-+		add_wait_queue(&ctl->change_sleep, &wait);
-+		set_current_state(TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&ctl->read_lock);
-+
-+		schedule();
-+
-+		remove_wait_queue(&ctl->change_sleep, &wait);
-+
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+
-+		spin_lock_irq(&ctl->read_lock);
-+	}
-+
-+	/* Copy events till the buffer filled, or no events are remained. */
-+	result = 0;
-+	while (count >= sizeof(struct snd_ctl_event)) {
-+		if (list_empty(&ctl->events))
-+			break;
- 		kev = snd_kctl_event(ctl->events.next);
-+		list_del(&kev->list);
-+
- 		ev.type = SNDRV_CTL_EVENT_ELEM;
- 		ev.data.elem.mask = kev->mask;
- 		ev.data.elem.id = kev->id;
--		list_del(&kev->list);
--		spin_unlock_irq(&ctl->read_lock);
- 		kfree(kev);
- 		if (copy_to_user(buffer, &ev, sizeof(struct snd_ctl_event))) {
--			err = -EFAULT;
--			goto __end;
-+			result = -EFAULT;
-+			break;
- 		}
--		spin_lock_irq(&ctl->read_lock);
-+
- 		buffer += sizeof(struct snd_ctl_event);
- 		count -= sizeof(struct snd_ctl_event);
- 		result += sizeof(struct snd_ctl_event);
- 	}
--      __end_lock:
-+unlock:
- 	spin_unlock_irq(&ctl->read_lock);
--      __end:
--      	return result > 0 ? result : err;
-+	return result;
- }
- 
- static unsigned int snd_ctl_poll(struct file *file, poll_table * wait)
--- 
-2.1.0
+Thanks for the fix, Lars!
