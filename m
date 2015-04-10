@@ -1,17 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Use devm_ioremap_resource()
-Date: Fri, 10 Apr 2015 07:12:29 -0300
-Message-ID: <1428660749-9637-1-git-send-email-festevam@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 2/2] ALSA: ctl: refactoring for read
+	operation
+Date: Fri, 10 Apr 2015 19:32:58 +0900
+Message-ID: <5527A6DA.50800@sakamocchi.jp>
+References: <1428512108-1852-1-git-send-email-o-takashi@sakamocchi.jp>	<1428622981-9747-1-git-send-email-o-takashi@sakamocchi.jp>	<1428622981-9747-3-git-send-email-o-takashi@sakamocchi.jp>
+ <s5h61945spk.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f44.google.com (mail-vn0-f44.google.com
- [209.85.216.44])
- by alsa0.perex.cz (Postfix) with ESMTP id CE39E260606
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 12:12:48 +0200 (CEST)
-Received: by vnbf129 with SMTP id f129so4397334vnb.9
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 03:12:47 -0700 (PDT)
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE1E3260606
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 12:33:04 +0200 (CEST)
+In-Reply-To: <s5h61945spk.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +22,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Apr 10 2015 16:48, Takashi Iwai wrote:
+> At Fri, 10 Apr 2015 08:43:01 +0900,
+> Takashi Sakamoto wrote:
+>>
+>> snd_ctl_read() has nested loop and complicated condition for return
+>> value. This is not better for reading.
+>>
+>> This commit applies refactoring with two loops.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
+>>  sound/core/control.c | 77 ++++++++++++++++++++++++++++++++--------------------
+>>  1 file changed, 47 insertions(+), 30 deletions(-)
+>>
+>> diff --git a/sound/core/control.c b/sound/core/control.c
+>> index de19d56..da6497d 100644
+>> --- a/sound/core/control.c
+>> +++ b/sound/core/control.c
+>> @@ -1520,58 +1520,75 @@ static ssize_t snd_ctl_read(struct file *file, char __user *buffer,
+>>  			    size_t count, loff_t * offset)
+>>  {
+>>  	struct snd_ctl_file *ctl;
+>> -	int err = 0;
+>> -	ssize_t result = 0;
+>> +	struct snd_ctl_event ev;
+>> +	struct snd_kctl_event *kev;
+>> +	wait_queue_t wait;
+>> +	ssize_t result;
+>>  
+>>  	ctl = file->private_data;
+>>  	if (snd_BUG_ON(!ctl || !ctl->card))
+>>  		return -ENXIO;
+>>  	if (!ctl->subscribed)
+>>  		return -EBADFD;
+>> +
+>> +	/* The size of given buffer should be larger than at least one event. */
+>>  	if (count < sizeof(struct snd_ctl_event))
+>>  		return -EINVAL;
+>> +
+>> +	/* Block till any events were queued. */
+>>  	spin_lock_irq(&ctl->read_lock);
+>> -	while (count >= sizeof(struct snd_ctl_event)) {
+>> -		struct snd_ctl_event ev;
+>> -		struct snd_kctl_event *kev;
+>> -		while (list_empty(&ctl->events)) {
+>> -			wait_queue_t wait;
+>> -			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
+>> -				err = -EAGAIN;
+>> -				goto __end_lock;
+>> -			}
+>> -			init_waitqueue_entry(&wait, current);
+>> -			add_wait_queue(&ctl->change_sleep, &wait);
+>> -			set_current_state(TASK_INTERRUPTIBLE);
+>> -			spin_unlock_irq(&ctl->read_lock);
+>> -			schedule();
+>> -			remove_wait_queue(&ctl->change_sleep, &wait);
+>> -			if (ctl->card->shutdown)
+>> -				return -ENODEV;
+>> -			if (signal_pending(current))
+>> -				return -ERESTARTSYS;
+>> -			spin_lock_irq(&ctl->read_lock);
+>> +	while (list_empty(&ctl->events)) {
+>> +		if (file->f_flags & O_NONBLOCK) {
+>> +			result = -EAGAIN;
+>> +			goto unlock;
+>>  		}
+>> +
+>> +		/* The card was disconnected. The queued events are dropped. */
+>> +		if (ctl->card->shutdown) {
+>> +			result = -ENODEV;
+>> +			goto unlock;
+>> +		}
+>> +
+>> +
+>> +		init_waitqueue_entry(&wait, current);
+>> +		add_wait_queue(&ctl->change_sleep, &wait);
+>> +		set_current_state(TASK_INTERRUPTIBLE);
+>> +		spin_unlock_irq(&ctl->read_lock);
+>> +
+>> +		schedule();
+>> +
+>> +		remove_wait_queue(&ctl->change_sleep, &wait);
+>> +
+>> +		if (signal_pending(current))
+>> +			return -ERESTARTSYS;
+>> +
+>> +		spin_lock_irq(&ctl->read_lock);
+>> +	}
+>> +
+>> +	/* Copy events till the buffer filled, or no events are remained. */
+>> +	result = 0;
+>> +	while (count >= sizeof(struct snd_ctl_event)) {
+>> +		if (list_empty(&ctl->events))
+>> +			break;
+>>  		kev = snd_kctl_event(ctl->events.next);
+>> +		list_del(&kev->list);
+>> +
+>>  		ev.type = SNDRV_CTL_EVENT_ELEM;
+>>  		ev.data.elem.mask = kev->mask;
+>>  		ev.data.elem.id = kev->id;
+>> -		list_del(&kev->list);
+>> -		spin_unlock_irq(&ctl->read_lock);
+>>  		kfree(kev);
+>>  		if (copy_to_user(buffer, &ev, sizeof(struct snd_ctl_event))) {
+>> -			err = -EFAULT;
+>> -			goto __end;
+>> +			result = -EFAULT;
+>> +			break;
+> 
+> This still changes the behavior.  The read returns the size that has
+> been read at first even when an error happens if some data was already
+> read.  The error code is returned at the next read.  This is a design
+> problem of read syscall.
 
-Using platform_get_resource() and devm_ioremap_resource() can make the
-code a bit simpler. 
+I'm unaware of it... These code should be:
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+if (copy_to_user(buffer, &ev, sizeof(struct snd_ctl_event))) {
+    if (result == 0)
+        result = -EFAULT;
+    break;
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 143cc16..e8bb8ee 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1288,7 +1288,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	const struct of_device_id *of_id;
- 	const char *p, *sprop;
- 	const uint32_t *iprop;
--	struct resource res;
-+	struct resource *res;
- 	void __iomem *iomem;
- 	char name[64];
- 
-@@ -1335,19 +1335,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
- 	ssi_private->cpu_dai_drv.name = dev_name(&pdev->dev);
- 
--	/* Get the addresses and IRQ */
--	ret = of_address_to_resource(np, 0, &res);
--	if (ret) {
--		dev_err(&pdev->dev, "could not determine device resources\n");
--		return ret;
--	}
--	ssi_private->ssi_phys = res.start;
--
--	iomem = devm_ioremap(&pdev->dev, res.start, resource_size(&res));
--	if (!iomem) {
--		dev_err(&pdev->dev, "could not map device resources\n");
--		return -ENOMEM;
--	}
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	iomem = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(iomem))
-+		return PTR_ERR(iomem);
-+	ssi_private->ssi_phys = res->start;
- 
- 	ret = of_property_match_string(np, "clock-names", "ipg");
- 	if (ret < 0) {
--- 
-1.9.1
+And I realize sound/firewire/fireworks/fireworks_hwdep.c has the same
+bug. I'll post another patch for this bug.
+
+
+Thanks
+
+Takashi Sakamoto
+
+> Takashi
+> 
+>>  		}
+>> -		spin_lock_irq(&ctl->read_lock);
+>> +
+>>  		buffer += sizeof(struct snd_ctl_event);
+>>  		count -= sizeof(struct snd_ctl_event);
+>>  		result += sizeof(struct snd_ctl_event);
+>>  	}
+>> -      __end_lock:
+>> +unlock:
+>>  	spin_unlock_irq(&ctl->read_lock);
+>> -      __end:
+>> -      	return result > 0 ? result : err;
+>> +	return result;
+>>  }
+>>  
+>>  static unsigned int snd_ctl_poll(struct file *file, poll_table * wait)
+>> -- 
+>> 2.1.0
