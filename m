@@ -1,31 +1,17 @@
-From: noman pouigt <variksla@gmail.com>
-Subject: Re: recording problem in beagleboard-mcbsp
-Date: Fri, 10 Apr 2015 15:58:27 -0700
-Message-ID: <CAES_P+_o3-4bd3B7SKMzj2Y8iRKJ-YiF2LoB0XyC04O1L7cShg@mail.gmail.com>
-References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>
- <CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>
- <CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>
- <551C3D19.2050200@ti.com>
- <CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>
- <5523A1F3.2000701@ti.com>
- <CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>
- <5524FA51.9060606@ti.com>
- <CAES_P+8oJ0xDJ-2w02Q0pZmgQyY9tyaRB=+_PqMhTdwuYNRShw@mail.gmail.com>
- <55266B38.6030503@ti.com>
- <CAES_P+-5vgq1LxSsUQLua4j06M4U8+ogLgnEK5KJ-4QPJs1vJQ@mail.gmail.com>
- <5527781B.10705@ti.com>
- <CAES_P+9nP3V6H_dU9EwjHf07O-SgHr8MFYD1M8FVYzoGgY7WOQ@mail.gmail.com>
+From: anish kumar <yesanishhere@gmail.com>
+Subject: Re: [PATCH v3] ASoC: max98090: add shutdown callback
+	for max98090
+Date: Fri, 10 Apr 2015 17:50:55 -0700
+Message-ID: <CABCoZhB-1nZA5-9YNfuxtNSJpa1bA-YcB4L5ZzEKBNzhZjdKfQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary=089e013c614c072b4205136846c1
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f43.google.com (mail-vn0-f43.google.com
- [209.85.216.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 40DE6260688
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 00:58:29 +0200 (CEST)
-Received: by vnbf62 with SMTP id f62so9286119vnb.3
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 15:58:28 -0700 (PDT)
-In-Reply-To: <CAES_P+9nP3V6H_dU9EwjHf07O-SgHr8MFYD1M8FVYzoGgY7WOQ@mail.gmail.com>
+Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
+ [209.85.215.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7705D26069E
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 02:50:56 +0200 (CEST)
+Received: by lagv1 with SMTP id v1so24038875lag.3
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 17:50:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,142 +21,184 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: xjq@rock-chips.com, zhengxing@rock-chips.com, wxt@rock-chips.com
+Cc: Maxwell McKinnon <Maxwell.McKinnon@maximintegrated.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Nitin Mittal <nitin.mittal@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBcHIgMTAsIDIwMTUgYXQgMTA6NTMgQU0sIG5vbWFuIHBvdWlndCA8dmFyaWtzbGFA
-Z21haWwuY29tPiB3cm90ZToKPiBPbiBGcmksIEFwciAxMCwgMjAxNSBhdCAxMjoxMyBBTSwgUGV0
-ZXIgVWpmYWx1c2kgPHBldGVyLnVqZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4+IE9uIDA0LzEwLzIw
-MTUgMDI6MDIgQU0sIG5vbWFuIHBvdWlndCB3cm90ZToKPj4+IE9uIFRodSwgQXByIDksIDIwMTUg
-YXQgNTowNiBBTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVqZmFsdXNpQHRpLmNvbT4gd3JvdGU6
-Cj4+Pj4gT24gMDQvMDkvMjAxNSAwMjo0NCBBTSwgbm9tYW4gcG91aWd0IHdyb3RlOgo+Pj4+Pj4g
-Rmlyc3QgY2hlY2sgdGhlIC9wcm9jL2Fzb3VuZC9jYXJkMC9wY20wYy9zdWIwL3N0YXR1cyB3aGls
-ZSB0aGUgY2FwdHVyZSBpcwo+Pj4+Pj4gcnVubmluZyBhbmQgbG9vayBhdCB0aGUgaHdfcHRyIGlm
-IGl0IGhhcyBtb3ZlZCBhdCBhbGwuCj4+Pj4+Cj4+Pj4+IEl0IGhhcyBub3QgbW92ZWQgYXQgYWxs
-Lgo+Pj4+Cj4+Pj4gU28gTWNCU1AgZG9lcyBub3QgZGV0ZWN0IHN0YXJ0IGNvbmRpdGlvbiBvbiB0
-aGUgRlMgbGluZS4KPj4+Pgo+Pj4+Pj4gRW5hYmxlIG1vcmUgaW50ZXJydXB0cyBpbiBzb3VuZC9z
-b2Mvb21hcC9tY2JzcC5jOm9tYXBfbWNic3BfY29uZmlnKCksIGxpa2UKPj4+Pj4+IFJVTkRGTEVO
-LCBST1ZGTEVOIGFuZCBzZWUgaWYgeW91IGhhdmUgb3ZlcmZsb3cgaW4gTWNCU1AuCj4+Pj4+Cj4+
-Pj4+IEkgZGlkIGVuYWJsZSB0aGUgaW50ZXJydXB0IGJ1dCBhbGwgaSBhbSBnZXR0aW5nIGlzIGJl
-bG93IGZvciBib3RoCj4+Pj4+IHBsYXliYWNrIGFuZCBjYXB0dXJlCj4+Pj4+IHVzZWNhc2U6Cj4+
-Pj4+IG9tYXAtbWNic3AgNDgwNzQwMDAubWNic3A6IFJYIEJ1ZmZlciBVbmRlcmZsb3chCj4+Pj4K
-Pj4+PiBUaGlzIGlzIGJlY2F1c2UgeW91IGR1bXAgdGhlIHJlZ2lzdGVycyBhbmQgaXQgcmVhZCB0
-aGUgRERSIHJlZ2lzdGVyLiBUaGUgRklGTwo+Pj4+IGlzIGVtcHR5IGFuZCB5b3UgdHJ5IHRvIHJl
-YWQgZGF0YSBvdXQuCj4+Pj4KPj4+Pj4gUmVtZW1iZXIgcGxheWJhY2sgaXMgd29ya2luZyBpbiBi
-b3RoIHRoZSBzbGF2ZSBhbmQgbWFzdGVyIG1vZGUgKGNvZGVjIHNsYXZlCj4+Pj4+IGFuZCBjb2Rl
-YyBtYXN0ZXIpLgo+Pj4+Pj4KPj4+Pj4+IElmIHRoZSBETUEgaGFzIG5vdCBtb3ZlZCBpdCBtZWFu
-cyB0aGF0IE1jQlNQIGRvZXMgbm90IHJlY2VpdmVkIHRoZSBGUyB3aGljaAo+Pj4+Pj4gd291bGQg
-aW5kaWNhdGUgdGhlIGZyYW1lIHN0YXJ0LCB0aHVzIGl0IHdpbGwgbm90IHNhbXBsZSBkYXRhIGlu
-LCB0aHVzIGl0IHdpbGwKPj4+Pj4+IG5vdCB0cmlnZ2VyIHRoZSBETUEgdG8gcmVhZCB0aGUgZGF0
-YSBvdXQuCj4+Pj4+Cj4+Pj4+IFVzZWQgc2NvcGUgdG8gY2hlY2sgRlMgYW5kIEJpdCBjbG9jayBh
-bmQgZm91bmQgYmVsb3cgKHJ1bm5pbmcgYXJlY29yZAo+Pj4+PiB3aXRoIDQ0MTAwKToKPj4+Pj4g
-Yml0IGNsb2NrIGlzIHJ1bm5pbmcgYXQgMS40MjAgTUh6IGFuZCBGUyBhdCA0NDEwMCBrSHouIENv
-bmZpZ3VyZWQgTUNCc3AKPj4+Pj4gaW4gbWFzdGVyIG1vZGUgdGhpcyB0aW1lLgo+Pj4+Pgo+Pj4+
-Pj4KPj4+Pj4+IFNpbmNlIHRoZSBjYXB0dXJlIGlzIHdvcmtpbmcgb24gTWNCU1AyIGluIE1jQlNQ
-IHNsYXZlIChhbmQgbWFzdGVyIGFsc28pIHRoZQo+Pj4+Pj4gb25seSB0aGluZyB3aGljaCBjYW4g
-YmUgd3JvbmcgaXMgdGhlIHdheSB0aGUgbWF4OTgwOTAgaXMgd2lyZWQgdXAgb3Igc29tZSBtdXgK
-Pj4+Pj4+IGlzc3VlIGFnYWluIGFzIGl0IHdhcyBiZWZvcmUgZm9yIHlvdS4KPj4+Pj4KPj4+Pj4g
-QmVsb3cgaXMgdGhlIG11eCBzZXR0aW5nIHdoaWNoIGkgZGlkIGFuZCBiZWNhdXNlIG9mIHdoaWNo
-IHBsYXliYWNrIGlzIHdvcmtpbmc6Cj4+Pj4+IE1DQnNwIGluIG1hc3RlciBtb2RlCj4+Pj4+IGNv
-bmZpZ3VyZWQgbWNic3AxX2Nsa3gsIG1jYnNwMV9mc3gsIG1jYnNwMV9keCBhbmQgbWNic3AxX2Ry
-Cj4+Pj4+ICsKPj4+Pj4gKyAgICAgICBtY2JzcDFfcGluczogcGlubXV4X21jYnNwMV9waW5zIHsK
-Pj4+Pj4gKyAgICAgICAgICAgICAgICBwaW5jdHJsLXNpbmdsZSxwaW5zID0gPAo+Pj4+PiArICAg
-ICAgICAgICAgICAgICAgICAgICAgT01BUDNfQ09SRTFfSU9QQUQoMHgyMTk2LCBQSU5fT1VUUFVU
-IHwgTVVYX01PREUwKQo+Pj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgT01BUDNfQ09SRTFf
-SU9QQUQoMHgyMTk4LCBQSU5fT1VUUFVUIHwgTVVYX01PREUwKQo+Pj4+PiArICAgICAgICAgICAg
-ICAgICAgICAgICAgT01BUDNfQ09SRTFfSU9QQUQoMHgyMTkwLCBQSU5fT1VUUFVUIHwgTVVYX01P
-REUwKQo+Pj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgT01BUDNfQ09SRTFfSU9QQUQoMHgy
-MTkyLCBQSU5fSU5QVVQgfCBNVVhfTU9ERTApCj4+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICBPTUFQM19DT1JFMV9JT1BBRCgweDIxOEMsIFBJTl9PVVRQVVQgfCBNVVhfTU9ERTApCj4+Pj4+
-ICsgICAgICAgICAgICAgICAgPjsKPj4+Pj4gKyAgICAgICAgfTsKPj4+Pj4gIH07Cj4+Pj4+Cj4+
-Pj4+IEV2ZW4gaWYgTUNCU1BfRFIgaXMgbm90IGNvbm5lY3RlZCBwcm9wZXJseSBpdCBzaG91bGQg
-cmVjb3JkIGF0bGVhc3Qgbm9pc2UuCj4+Pj4+Cj4+Pj4+IEkgYWxzbyB0cmllZCBUaG9tYXMgTmll
-ZGVycHLDvG0gYmVsb3cgYWR2aWNlIHdoZW4gcnVubmluZyBNY0JzcCBpbiBzbGF2ZSBtb2RlCj4+
-Pj4+IHNob3J0ZW4gdGhlIENMS1IgYW5kIENMS1ggcGlucyBhbmQgbXV4IHRoZSBDTEtSIHBpbiBh
-cyBJTlBVVCBpbiB5b3VyCj4+Pj4+IGR0cy4gVGhlbiB5b3VyCj4+Pj4+IGJpdGNsb2NrIHdvdWxk
-IGVudGVyIHRocm91Z2ggQ0xLUiBhcyB3ZWxsIGFzIENMS1guCj4+Pj4+IEJ1dCB0aGlzIGFsc28g
-ZGlkbid0IHdvcmsuCj4+Pj4+Cj4+Pj4+IEZvdW5kIG91dCBvbmx5IGJlbG93IHJlZ2lzdGVyIGNo
-YW5nZXMgYmV0d2VlbiBwbGF5YmFjayBhbmQgY2FwdHVyZToKPj4+Pj4gSW4gcGxheWJhY2sKPj4+
-Pj4gU1BDUjI6IDB4MDJmNQo+Pj4+PiBTUENSMTogMHgwMDMwCj4+Pj4+IEluIGNhcHR1cmU6Cj4+
-Pj4+IFNQQ1IyOiAweDAyZjAKPj4+Pj4gU1BDUjE6IDB4MDAzMQo+Pj4+Pgo+Pj4+PiBUaGVyZSBh
-cmUgbm8gZGlmZmVyZW5jZSBiZXR3ZWVuIGFueSBvdGhlciByZWdpc3Rlci4gSSB0aGluayBtY2Jz
-cAo+Pj4+PiByZWdpc3RlcnMgYXJlIGZpbmUKPj4+Pj4gYnV0IGNhbiB5b3UgY29uZmlybSBpZiB0
-aGVyZSBzaG91bGQgYmUgYW55IG1vcmUgZGlmZmVyZW5jZXM/Cj4+Pj4+IFBsZWFzZSBhZHZpY2Ug
-d2hhdCBtaWdodCBiZSBnb2luZyB3cm9uZz8KPj4+Pgo+Pj4+IEhybSwgTWNCU1AxIGlzIGtpbmQg
-b2YgcHJvYmxlbWF0aWMgcG9ydCBzaW5jZSBpdCBoYXMgNnBpbiBjb25maWcgYnkgZGVmYXVsdC4K
-Pj4+PiBJdCBtaWdodCB3b3J0aCBhIHRyeSB0byBkbyBzb21ldGhpbmcgbGlrZToKPj4+PiBodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtYXJtLWtlcm5lbC8yMDEyLUF1
-Z3VzdC8xMTMwNTguaHRtbAo+Pj4+IGhhcyByZW1vdmVkLgo+Pj4gVGhpcyBwYXRjaCBzZWVtcyBw
-cmV0dHkgb2xkIGFuZCBJIGFtIG5vdCBhYmxlIHRvIGFwcGx5IGl0IGFzIGkgYW0KPj4+IHVzaW5n
-IGxhdGVzdCBrZXJuZWwuCj4+PiBrZXJuZWw6IDMuMTkKPj4KPj4gSXQgcmVtb3ZlZCBmdW5jdGlv
-bmFsaXR5LCB5b3UgbWlnaHQgd2FudCB0b24gaGFjayBzb21ldGhpbmcgc2ltaWxhciBiYWNrIGZv
-cgo+PiB0ZXN0aW5nCj4KPiBJIHdpbGwgZ2l2ZSBpdCBhIHRyeSBidXQgd291bGRuJ3QgaXQgYmUg
-bmljZSBpZiBpIGNhbiBkaXJlY3RseSB3cml0ZQo+IHRvIG11eCByZWdpc3RlcnMKPiB0byBnZXQg
-YmFjayB0aGUgZnVuY3Rpb25hbGl0eS4KCkFueXdheSBpIHRyaWVkIGFkZGluZyB0aGlzIGhhY2sg
-YmVsb3cKIHZvaWQgX19pbml0IG9tYXAzX2N0cmxfaW5pdCh2b2lkKQogeworICAgICAgIGludCBk
-ZXZjb25mMDsKICAgICAgICBvbWFwX2N0cmxfd3JpdGVsKE9NQVAzNDMwX0FVVE9JRExFX01BU0ss
-IE9NQVAyX0NPTlRST0xfU1lTQ09ORklHKTsKCiAgICAgICAgb21hcDNfY3RybF9zZXRfaXZhX2Jv
-b3Rtb2RlX2lkbGUoKTsKCiAgICAgICAgb21hcDNfY3RybF9zZXR1cF9kMmRfcGFkY29uZigpOwor
-ZGV2Y29uZjAgPSBvbWFwX2N0cmxfcmVhZGwoT01BUDJfQ09OVFJPTF9ERVZDT05GMCk7CitkZXZj
-b25mMCB8PSAgT01BUDJfTUNCU1AxX0NMS1JfTUFTSyB8IE9NQVAyX01DQlNQMV9GU1JfTUFTSzsK
-K29tYXBfY3RybF93cml0ZWwoZGV2Y29uZjAsIE9NQVAyX0NPTlRST0xfREVWQ09ORjApOwogfQoK
-YW5kIHJ1biBpbiBjb2RlYyBzbGF2ZSBhbmQgbWNic3AxIG1hc3RlciBtb2RlLiBJdCBkaWRuJ3Qg
-d29yay4gUGxheWJhY2sKYXMgeW91IGtub3cgaXMgYWxyZWFkeSB3b3JraW5nIHdpdGhvdXQgdGhp
-cyBjaGFuZ2UuCgo+Pgo+Pj4KPj4+PiBPciB0byBzd2l0Y2ggdG8gdXNlIE1jQlNQMy4KPj4+Cj4+
-PiB0cmllZCB0aGlzIGFzIHdlbGwgYnV0IGV2ZW4gcGxheWJhY2sgZGlkbid0IHdvcmsuCj4+PiAr
-ICAgICAgIG1jYnNwM19waW5zOiBwaW5tdXhfbWNic3AzX3BpbnMgewo+Pj4gKyAgICAgICAgICAg
-ICAgICBwaW5jdHJsLXNpbmdsZSxwaW5zID0gPAo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE2QywgUElOX09VVFBVVCB8IE1VWF9NT0RFMSkKPj4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICBPTUFQM19DT1JFMV9JT1BBRCgweDIxNkUsIFBJTl9JTlBV
-VCB8IE1VWF9NT0RFMSkKPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICBPTUFQM19DT1JFMV9J
-T1BBRCgweDIxNzAsIFBJTl9PVVRQVVQgfCBNVVhfTU9ERTEpCj4+PiArICAgICAgICAgICAgICAg
-ICAgICAgICAgT01BUDNfQ09SRTFfSU9QQUQoMHgyMTcyLCBQSU5fT1VUUFVUIHwgTVVYX01PREUw
-KQo+Pj4gKyAgICAgICAgICAgICAgICA+Owo+Pj4gKyAgICAgICAgfTsKPj4+Cj4+PiBhdHRhY2hl
-ZCBwYXRjaCB3aGVyZSBpIHJlcGxhY2VkIHRoZSBtY2JzcDEgdG8gbWNic3AzIG51bWJlciBpbiBt
-YWNoaW5lIGZpbGUuCj4+PiBkbyB5b3UgdGhpbmsgdGhpcyBjb25maWd1cmF0aW9uIGlzICByaWdo
-dD8gSSB0cmllZCBib3RoIG1hc3RlciBhbmQgc2xhdmUgbW9kZQo+Pj4gYW5kIGJvdGggZGlkbid0
-IHdvcmsgYnV0IGkgd2FzIGdldHRpbmcgcmlnaHQgYml0IGNsb2NrIGFuZCBGUyBjbG9jay4KPj4K
-Pj4gQnkgZGVmYXVsdCBjb2RlYyBpcyBtYXN0ZXIsIHNvIHRyeSB0byBzZXQgdGhlIG11eCBhY2Nv
-cmRpbmdseS4KPiBJIGRpZCBjaGFuZ2UgdGhlIG1hY2hpbmUgZHJpdmVyIGFjY29yZGluZ2x5IGFz
-IGJlbG93IGFuZCBzZW50IHlvdSB0aGUgcGF0Y2gKPiB3aGljaCBpIHVzZWQuCj4gYW55d2F5IGJl
-bG93IGlzIHRoZSBjaGFuZ2Ugd2hpY2ggaSBkaWQ6Cj4gKyAgICAgICBzdHJ1Y3Qgc25kX3NvY19k
-YWkgKmNvZGVjX2RhaSA9IHJ0ZC0+Y29kZWNfZGFpOwo+ICsgICAgICAgc3RydWN0IHNuZF9zb2Nf
-ZGFpICpjcHVfZGFpID0gcnRkLT5jcHVfZGFpOwo+ICsgICAgICAgaW50IGVyciA9IDA7Cj4gKyAg
-ICAgICBpbnQgcmV0ID0gMDsKPiAraW50IGRpdiwgY2xrX2lkLGZyZXE7Cj4KPiAgICAgICAgIHN3
-aXRjaCAocGFyYW1zX2NoYW5uZWxzKHBhcmFtcykpIHsKPiAgICAgICAgIGNhc2UgMjogLyogU3Rl
-cmVvIEkyUyBtb2RlICovCj4gICAgICAgICAgICAgICAgIGZtdCA9ICAgU05EX1NPQ19EQUlGTVRf
-STJTIHwKPiAgICAgICAgICAgICAgICAgICAgICAgICBTTkRfU09DX0RBSUZNVF9OQl9ORiB8Cj4g
-LSAgICAgICAgICAgICAgICAgICAgICAgU05EX1NPQ19EQUlGTVRfQ0JNX0NGTTsKPiArICAgICAg
-ICAgICAgICAgICAgICAgICBTTkRfU09DX0RBSUZNVF9DQlNfQ0ZTOwo+ICAgICAgICAgICAgICAg
-ICBicmVhazsKPiAgICAgICAgIGNhc2UgNDogLyogRm91ciBjaGFubmVsIFRETSBtb2RlICovCj4g
-ICAgICAgICAgICAgICAgIGZtdCA9ICAgU05EX1NPQ19EQUlGTVRfRFNQX0EgfAo+ICAgICAgICAg
-ICAgICAgICAgICAgICAgIFNORF9TT0NfREFJRk1UX0lCX05GIHwKPiAtICAgICAgICAgICAgICAg
-ICAgICAgICBTTkRfU09DX0RBSUZNVF9DQk1fQ0ZNOwo+ICsgICAgICAgICAgICAgICAgICAgICAg
-IFNORF9TT0NfREFJRk1UX0NCU19DRlM7Cj4gICAgICAgICAgICAgICAgIGJyZWFrOwo+ICAgICAg
-ICAgZGVmYXVsdDoKPiAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7Cj4gICAgICAgICB9
-Cj4KPiAtICAgICAgIHJldHVybiBzbmRfc29jX3J1bnRpbWVfc2V0X2RhaV9mbXQocnRkLCBmbXQp
-Owo+ICsgICAgICAgc25kX3NvY19ydW50aW1lX3NldF9kYWlfZm10KHJ0ZCwgZm10KTsKPiArICAg
-ICAgIHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY29kZWNfZGFpLCAwLCAxMzAwMDAwMCwKPiArICAg
-ICAgICAgICAgICAgU05EX1NPQ19DTE9DS19JTik7Cj4gK2RpdiA9IGNsa19pZCA9IGZyZXEgPSAw
-Owo+ICtzd2l0Y2ggKHBhcmFtc19yYXRlKHBhcmFtcykpIHsKPiArY2FzZSA0NDEwMDogLyogNDQu
-MTE3ICovCj4gKyAgICAgICAgZGl2ID0gNjg7Cj4gKyAgICAgICAgY2xrX2lkID0gT01BUF9NQ0JT
-UF9TWVNDTEtfQ0xLU19GQ0xLOwo+ICsgICAgICAgIGZyZXEgPSA5NjAwMDAwMDsKPiArICAgICAg
-ICBicmVhazsKPiArY2FzZSA0ODAwMDogLyogNDguMDMyICovCj4gKyAgICAgICAgZGl2ID0gNTQ7
-Cj4gKyAgICAgICAgY2xrX2lkID0gT01BUF9NQ0JTUF9TWVNDTEtfQ0xLOwo+ICsgICAgICAgIGZy
-ZXEgPSA4MzAwMDAwMDsKPiArICAgICAgICBicmVhazsKPiArZGVmYXVsdDoKPiArICAgICAgICBw
-cmludGsoS0VSTl9FUlIgImh3IHBhcmFtczogdW5rbm93biByYXRlICVkXG4iLAo+ICsgICAgICAg
-ICAgICAgICAgcGFyYW1zX3JhdGUocGFyYW1zKSk7Cj4gKyAgICAgICAgcmV0dXJuIC1FSU5WQUw7
-Cj4gK30KPiByZXQgPSBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKGNwdV9kYWksIGNsa19pZCwgZnJl
-cSwgU05EX1NPQ19DTE9DS19JTik7Cj4gaWYgKHJldCA8IDApIHsKPiAgICAgICAgIHByaW50aygi
-d2hhdCB0aGUgaGVsbFxuIik7Cj4gICAgICAgICByZXR1cm4gLUVJTlZBTDsKPiB9Cj4gcmV0ID0g
-c25kX3NvY19kYWlfc2V0X2Nsa2RpdihjcHVfZGFpLCBPTUFQX01DQlNQX0NMS0dEViwgZGl2KTsK
-PiBpZiAocmV0IDwgMCkgewo+ICAgICAgICAgcHJpbnRrKCJ3aGF0IHRoZSBoZWxsIGdvaW5nIG9u
-XG4iKTsKPiAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+IH0KPiAgICAgICAgIHJldHVybiByZXQ7
-Cj4KPj4KPj4+Cj4+Pj4KPj4+PiBCdXQgZm9yIHNvbWUgcmVhc29uIG5vdyBJIGNhbiBub3QgZ2V0
-IHRoZSByZWNvcmRpbmcgd29ya2luZyB2aWEgTWNCU1AxIGVpdGhlci4KPj4+PiBJIHJlbWVtYmVy
-IHRoYXQgaXQgd29ya2VkIG5vdCB0aGF0IGxvbmcgdGltZSBhZ28uLi4KPj4+Pgo+Pj4+IC0tCj4+
-Pj4gUMOpdGVyCj4+Cj4+Cj4+IC0tCj4+IFDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+--089e013c614c072b4205136846c1
+Content-Type: text/plain; charset=UTF-8
+
+On Fri, Apr 10, 2015 at 5:45 PM, anish singh
+<anish198519851985@gmail.com> wrote:
+>
+> ---------- Forwarded message ----------
+> From: Caesar Wang <wxt@rock-chips.com>
+> Date: Wed, Apr 8, 2015 at 4:05 AM
+> Subject: [PATCH v3] ASoC: max98090: add shutdown callback for max98090
+> To: Sonny Rao <sonnyrao@chromium.org>, Cheng-Yi Chiang
+> <cychiang@chromium.org>, Heiko Stuebner <heiko@sntech.de>, Mark Brown
+> <broonie@kernel.org>, zhengxing <zhengxing@rock-chips.com>, "jay.xu"
+> <xjq@rock-chips.com>
+> Cc: devicetree@vger.kernel.org, dianders@chromium.org,
+> dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+> linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+> Caesar Wang <wxt@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>,
+> alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Dylan Reid
+> <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter
+> Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+> Tushar Behera <tushar.b@samsung.com>
+>
+>
+> To fix pop noise when shutdown,the pop noise during shutdown
+> is the pmic cutoff power of codec without any notice.
+>
+> Signed-off-by: jay.xu <xjq@rock-chips.com>
+> Signed-off-by: zhengxing <zhengxing@rock-chips.com>
+> Signed-off-by: Caesar Wang <wxt@rock-chips.com>
+>
+> ---
+>
+> Changes in v3:
+> - modify the shutdown function before remove(..)
+> - fix the `Serien-cc`
+>
+> Changes in v2:
+> - remove the dev_info(..)
+> - fix the comment style
+> - add the max98090_i2c_shutdown() in remove() fuction
+>
+>  sound/soc/codecs/max98090.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+> index b112b1c..3e33ef2 100644
+> --- a/sound/soc/codecs/max98090.c
+> +++ b/sound/soc/codecs/max98090.c
+> @@ -2605,8 +2605,24 @@ err_enable:
+>         return ret;
+>  }
+>
+
+Please check attached patch and see if it solves your problem.
+We tested it here with zcd on.
+
++static void max98090_i2c_shutdown(struct i2c_client *i2c)
++{
++       struct max98090_priv *max98090 = dev_get_drvdata(&i2c->dev);
++
++       dev_info(&i2c->dev, "shut down device\n");
++
++       /* enable zero crossing */
++       regmap_write(max98090->regmap,
++               M98090_REG_LEVEL_CONTROL, M98090_ZDENN_MASK-1);
++
++       /* turn down volume levels for all the outputs */
++       regmap_write(max98090->regmap,
++               M98090_REG_RCV_LOUTL_VOLUME, 0x00);
++       regmap_write(max98090->regmap,
++               M98090_REG_LOUTR_VOLUME, 0x00);
++       regmap_write(max98090->regmap,
++               M98090_REG_LEFT_SPK_VOLUME, 0x00);
++       regmap_write(max98090->regmap,
++               M98090_REG_RIGHT_SPK_VOLUME, 0x00);
++       regmap_write(max98090->regmap,
++               M98090_REG_LEFT_HP_VOLUME, 0x00);
++       regmap_write(max98090->regmap,
++               M98090_REG_RIGHT_HP_VOLUME, 0x00);
++       regmap_write(max98090->regmap,
++               M98090_REG_DEVICE_SHUTDOWN, 0x00);
++       msleep(40);
++}
++
+
+if it doesn't solve your problem then please dump
+your registers and send it to us to look further. I assume
+dapm is turning off the widgets before shutting down
+the codec.
+
+> +static void max98090_i2c_shutdown(struct i2c_client *i2c)
+> +{
+> +       struct max98090_priv *max98090 = dev_get_drvdata(&i2c->dev);
+> +
+> +       /*
+> +        * Enable volume smoothing, disable zero cross.  This will cause
+> +        * a quick 40ms ramp to mute on shutdown.
+> +        */
+> +       regmap_write(max98090->regmap,
+> +               M98090_REG_LEVEL_CONTROL, M98090_VSENN_MASK);
+> +       regmap_write(max98090->regmap,
+> +               M98090_REG_DEVICE_SHUTDOWN, 0x00);
+> +       msleep(40);
+> +}
+> +
+>  static int max98090_i2c_remove(struct i2c_client *client)
+>  {
+> +       max98090_i2c_shutdown(client);
+>         snd_soc_unregister_codec(&client->dev);
+>         return 0;
+>  }
+> @@ -2696,6 +2712,7 @@ static struct i2c_driver max98090_i2c_driver = {
+>                 .acpi_match_table = ACPI_PTR(max98090_acpi_match),
+>         },
+>         .probe  = max98090_i2c_probe,
+> +       .shutdown = max98090_i2c_shutdown,
+>         .remove = max98090_i2c_remove,
+>         .id_table = max98090_i2c_id,
+>  };
+> --
+> 1.9.1
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+>
+
+--089e013c614c072b4205136846c1
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-To-fix-pop-noise-when-shutdown-the-pop-noise-during-.patch"
+Content-Disposition: attachment;
+	filename="0001-To-fix-pop-noise-when-shutdown-the-pop-noise-during-.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_i8cb0mvx0
+
+RnJvbSAzZTU3NjQ2NjkxZDRjYjYwZTJiNjI5NWE5YmRhNjRmZjhkMDYwNWM1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBBbmlzaCBLdW1hciA8eWVzYW5pc2hoZXJlQGdtYWlsLmNvbT4K
+RGF0ZTogRnJpLCAxMCBBcHIgMjAxNSAxNzo0MTozNiAtMDcwMApTdWJqZWN0OiBbUEFUQ0hdIFRv
+IGZpeCBwb3Agbm9pc2Ugd2hlbiBzaHV0ZG93bix0aGUgcG9wIG5vaXNlIGR1cmluZyBzaHV0ZG93
+bgogaXMgdGhlIHBtaWMgY3V0b2ZmIHBvd2VyIG9mIGNvZGVjIHdpdGhvdXQgYW55IG5vdGljZS4K
+ClNpZ25lZC1vZmYtYnk6IEFuaXNoIEt1bWFyIDxhbmlzaC5rdW1hckBtYXhpbWludGVncmF0ZWQu
+Y29tPgotLS0KIHNvdW5kL3NvYy9jb2RlY3MvbWF4OTgwOTAuYyB8IDI4ICsrKysrKysrKysrKysr
+KysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCAyOCBpbnNlcnRpb25zKCspCgpkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2NvZGVjcy9tYXg5ODA5MC5jIGIvc291bmQvc29jL2NvZGVjcy9tYXg5
+ODA5MC5jCmluZGV4IGZjMTc2MDQuLjY1ZTI4ZjQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2Rl
+Y3MvbWF4OTgwOTAuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL21heDk4MDkwLmMKQEAgLTIzNDks
+NiArMjM0OSwzNCBAQCBzdGF0aWMgaW50IG1heDk4MDkwX2kyY19yZW1vdmUoc3RydWN0IGkyY19j
+bGllbnQgKmNsaWVudCkKIAlyZXR1cm4gMDsKIH0KIAorc3RhdGljIHZvaWQgbWF4OTgwOTBfaTJj
+X3NodXRkb3duKHN0cnVjdCBpMmNfY2xpZW50ICppMmMpCit7CisJc3RydWN0IG1heDk4MDkwX3By
+aXYgKm1heDk4MDkwID0gZGV2X2dldF9kcnZkYXRhKCZpMmMtPmRldik7CisKKwlkZXZfaW5mbygm
+aTJjLT5kZXYsICJzaHV0IGRvd24gZGV2aWNlXG4iKTsKKworCS8qIGVuYWJsZSB6ZXJvIGNyb3Nz
+aW5nICovCisJcmVnbWFwX3dyaXRlKG1heDk4MDkwLT5yZWdtYXAsCisJCU05ODA5MF9SRUdfTEVW
+RUxfQ09OVFJPTCwgTTk4MDkwX1pERU5OX01BU0stMSk7CisKKwkvKiB0dXJuIGRvd24gdm9sdW1l
+IGxldmVscyBmb3IgYWxsIHRoZSBvdXRwdXRzICovCisJcmVnbWFwX3dyaXRlKG1heDk4MDkwLT5y
+ZWdtYXAsCisJCU05ODA5MF9SRUdfUkNWX0xPVVRMX1ZPTFVNRSwgMHgwMCk7CisJcmVnbWFwX3dy
+aXRlKG1heDk4MDkwLT5yZWdtYXAsCisJCU05ODA5MF9SRUdfTE9VVFJfVk9MVU1FLCAweDAwKTsK
+KwlyZWdtYXBfd3JpdGUobWF4OTgwOTAtPnJlZ21hcCwKKwkJTTk4MDkwX1JFR19MRUZUX1NQS19W
+T0xVTUUsIDB4MDApOworCXJlZ21hcF93cml0ZShtYXg5ODA5MC0+cmVnbWFwLAorCQlNOTgwOTBf
+UkVHX1JJR0hUX1NQS19WT0xVTUUsIDB4MDApOworCXJlZ21hcF93cml0ZShtYXg5ODA5MC0+cmVn
+bWFwLAorCQlNOTgwOTBfUkVHX0xFRlRfSFBfVk9MVU1FLCAweDAwKTsKKwlyZWdtYXBfd3JpdGUo
+bWF4OTgwOTAtPnJlZ21hcCwKKwkJTTk4MDkwX1JFR19SSUdIVF9IUF9WT0xVTUUsIDB4MDApOwor
+CXJlZ21hcF93cml0ZShtYXg5ODA5MC0+cmVnbWFwLAorCQlNOTgwOTBfUkVHX0RFVklDRV9TSFVU
+RE9XTiwgMHgwMCk7CisJbXNsZWVwKDQwKTsKK30KKwogc3RhdGljIGludCBtYXg5ODA5MF9ydW50
+aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpCiB7CiAJc3RydWN0IG1heDk4MDkwX3ByaXYg
+Km1heDk4MDkwID0gZGV2X2dldF9kcnZkYXRhKGRldik7Ci0tIAoxLjkuMwoK
+--089e013c614c072b4205136846c1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--089e013c614c072b4205136846c1--
