@@ -1,16 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: at91sam9g20ek: Automatically disconnect
-	non-connected pins
-Date: Sat, 11 Apr 2015 11:18:43 +0200
-Message-ID: <1428743923-26675-1-git-send-email-lars@metafoo.de>
+From: Michael Gernoth <michael@gernoth.net>
+Subject: [PATCH] ALSA: emu10k1: add toggles for E-mu 1010
+	optical ports
+Date: Sat, 11 Apr 2015 11:52:45 +0200
+Message-ID: <20150411095245.GA12192@zerfleddert.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-051.synserver.de (smtp-out-051.synserver.de
- [212.40.185.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B1A02612D3
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 11:19:00 +0200 (CEST)
+Received: from eddie.zerfleddert.de (eddie.zerfleddert.de [188.246.9.226])
+ by alsa0.perex.cz (Postfix) with ESMTP id 256EC2612D3
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 11:52:46 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,66 +20,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Nicolas Ferre <nicolas.ferre@atmel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-According to the schematics the both LHPOUT and RHPOUT are connected to the
-external connector. RHPOUT is missing from the DAPM routes, but otherwise
-they seem to be complete.
+The optical ports on the E-mu 1010 (and dock) can be configured
+for ADAT- or SP/DIF-mode, which is currently hardcoded to ADAT.
+Add two mixer elements to expose this setting.
+Tested on an E-mu 1010 PCIe with connected micro dock.
 
-This patch adds the missing route and then sets the fully_routed flag for
-the card. This allows to remove all the manual calls to
-snd_soc_dapm_nc_pin().
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Michael Gernoth <michael@gernoth.net>
 ---
- sound/soc/atmel/sam9g20_wm8731.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/pci/emu10k1/emumixer.c | 120 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 120 insertions(+)
 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index 8de8361..d7469cd 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -95,8 +95,9 @@ static const struct snd_soc_dapm_widget at91sam9g20ek_dapm_widgets[] = {
- 
- static const struct snd_soc_dapm_route intercon[] = {
- 
--	/* speaker connected to LHPOUT */
-+	/* speaker connected to LHPOUT/RHPOUT */
- 	{"Ext Spk", NULL, "LHPOUT"},
-+	{"Ext Spk", NULL, "RHPOUT"},
- 
- 	/* mic is connected to Mic Jack, with WM8731 Mic Bias */
- 	{"MICIN", NULL, "Mic Bias"},
-@@ -108,9 +109,7 @@ static const struct snd_soc_dapm_route intercon[] = {
-  */
- static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int ret;
- 
- 	printk(KERN_DEBUG
-@@ -124,10 +123,6 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
- 	}
- 
--	/* not connected */
--	snd_soc_dapm_nc_pin(dapm, "RLINEIN");
--	snd_soc_dapm_nc_pin(dapm, "LLINEIN");
--
- #ifndef ENABLE_MIC_INPUT
- 	snd_soc_dapm_nc_pin(&rtd->card->dapm, "Int Mic");
- #endif
-@@ -158,6 +153,7 @@ static struct snd_soc_card snd_soc_at91sam9g20ek = {
- 	.num_dapm_widgets = ARRAY_SIZE(at91sam9g20ek_dapm_widgets),
- 	.dapm_routes = intercon,
- 	.num_dapm_routes = ARRAY_SIZE(intercon),
-+	.fully_routed = true,
+diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
+index 1de3302..e0d6053 100644
+--- a/sound/pci/emu10k1/emumixer.c
++++ b/sound/pci/emu10k1/emumixer.c
+@@ -806,6 +806,110 @@ static struct snd_kcontrol_new snd_emu1010_internal_clock =
+ 	.put =          snd_emu1010_internal_clock_put
  };
  
- static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
++static int snd_emu1010_optical_out_info(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_info *uinfo)
++{
++	static const char * const texts[2] = {
++		"SPDIF", "ADAT"
++	};
++
++	return snd_ctl_enum_info(uinfo, 1, 2, texts);
++}
++
++static int snd_emu1010_optical_out_get(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
++
++	ucontrol->value.enumerated.item[0] = emu->emu1010.optical_out;
++	return 0;
++}
++
++static int snd_emu1010_optical_out_put(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
++	unsigned int val;
++	u32 tmp;
++	int change = 0;
++
++	val = ucontrol->value.enumerated.item[0] ;
++	/* Limit: uinfo->value.enumerated.items = 2; */
++	if (val >= 2)
++		return -EINVAL;
++	change = (emu->emu1010.optical_out != val);
++	if (change) {
++		emu->emu1010.optical_out = val;
++		tmp = (emu->emu1010.optical_in ? EMU_HANA_OPTICAL_IN_ADAT : 0) |
++			(emu->emu1010.optical_out ? EMU_HANA_OPTICAL_OUT_ADAT : 0);
++		snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, tmp);
++	}
++        return change;
++}
++
++static struct snd_kcontrol_new snd_emu1010_optical_out =
++{
++	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =         "Optical Output Mode",
++	.count =	1,
++	.info =         snd_emu1010_optical_out_info,
++	.get =          snd_emu1010_optical_out_get,
++	.put =          snd_emu1010_optical_out_put
++};
++
++static int snd_emu1010_optical_in_info(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_info *uinfo)
++{
++	static const char * const texts[2] = {
++		"SPDIF", "ADAT"
++	};
++
++	return snd_ctl_enum_info(uinfo, 1, 2, texts);
++}
++
++static int snd_emu1010_optical_in_get(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
++
++	ucontrol->value.enumerated.item[0] = emu->emu1010.optical_in;
++	return 0;
++}
++
++static int snd_emu1010_optical_in_put(struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
++	unsigned int val;
++	u32 tmp;
++	int change = 0;
++
++	val = ucontrol->value.enumerated.item[0] ;
++	/* Limit: uinfo->value.enumerated.items = 2; */
++	if (val >= 2)
++		return -EINVAL;
++	change = (emu->emu1010.optical_in != val);
++	if (change) {
++		emu->emu1010.optical_in = val;
++		tmp = (emu->emu1010.optical_in ? EMU_HANA_OPTICAL_IN_ADAT : 0) |
++			(emu->emu1010.optical_out ? EMU_HANA_OPTICAL_OUT_ADAT : 0);
++		snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, tmp);
++	}
++        return change;
++}
++
++static struct snd_kcontrol_new snd_emu1010_optical_in =
++{
++	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =         "Optical Input Mode",
++	.count =	1,
++	.info =         snd_emu1010_optical_in_info,
++	.get =          snd_emu1010_optical_in_get,
++	.put =          snd_emu1010_optical_in_put
++};
++
+ static int snd_audigy_i2c_capture_source_info(struct snd_kcontrol *kcontrol,
+ 					  struct snd_ctl_elem_info *uinfo)
+ {
+@@ -2051,6 +2155,14 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 			snd_ctl_new1(&snd_emu1010_internal_clock, emu));
+ 		if (err < 0)
+ 			return err;
++		err = snd_ctl_add(card,
++			snd_ctl_new1(&snd_emu1010_optical_out, emu));
++		if (err < 0)
++			return err;
++		err = snd_ctl_add(card,
++			snd_ctl_new1(&snd_emu1010_optical_in, emu));
++		if (err < 0)
++			return err;
+ 
+ 	} else if (emu->card_capabilities->emu_model) {
+ 		/* all other e-mu cards for now */
+@@ -2086,6 +2198,14 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 			snd_ctl_new1(&snd_emu1010_internal_clock, emu));
+ 		if (err < 0)
+ 			return err;
++		err = snd_ctl_add(card,
++			snd_ctl_new1(&snd_emu1010_optical_out, emu));
++		if (err < 0)
++			return err;
++		err = snd_ctl_add(card,
++			snd_ctl_new1(&snd_emu1010_optical_in, emu));
++		if (err < 0)
++			return err;
+ 	}
+ 
+ 	if ( emu->card_capabilities->i2c_adc) {
 -- 
-1.8.0
+2.1.4
