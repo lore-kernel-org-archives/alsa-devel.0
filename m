@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Issues and/or possible bugs in alsa
-Date: Sat, 11 Apr 2015 09:54:31 +0800
-Message-ID: <CAN8cciaCK80+bb6B+-eC-BTAUK9w3bzdHHyq3_4kJjQ7LgOq0w@mail.gmail.com>
+Date: Sat, 11 Apr 2015 10:44:05 +0800
+Message-ID: <CAN8cciZy7g=nO6GfzEwzs+CGhYNTGXgQ-rhnb09BRpZBNVMc1Q@mail.gmail.com>
 References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
  <54ED8466.7020102@gmail.com>
  <CAN8cciYnyLahS2gQ0g0vSaNj+xo=Tz9_FQ9L-WazOb1t5no_kA@mail.gmail.com>
@@ -21,12 +21,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f175.google.com (mail-qk0-f175.google.com
- [209.85.220.175])
- by alsa0.perex.cz (Postfix) with ESMTP id D1A312606F6
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 03:54:32 +0200 (CEST)
-Received: by qkgx75 with SMTP id x75so55990072qkg.1
- for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 18:54:32 -0700 (PDT)
+Received: from mail-qk0-f178.google.com (mail-qk0-f178.google.com
+ [209.85.220.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18B44260708
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 04:44:07 +0200 (CEST)
+Received: by qkx62 with SMTP id 62so57860387qkx.0
+ for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2015 19:44:06 -0700 (PDT)
 In-Reply-To: <CACui-2nXLr__yMy0-wW2F72wxJ-nkeBVmmSGn_Yj_hMOyJGKeA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -38,7 +38,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Yomi Ogunwumi <abyomi0@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 >
@@ -46,80 +46,7 @@ List-Id: alsa-devel@alsa-project.org
 hdajacksensetest stays the same.
 > However, in alsamixer, the level of Internal Mic Boost goes from 20 to
 zero, and Mic Boost goes to 20.
->
-> Output of hdajacksensetest:
->
-> Pin 0x03 ( Digital Out, HDMI): present = No
-> Pin 0x05 (Not connected): present = No
-> Pin 0x07 (Not connected): present = No
 
-This seem to be your HDMI codec
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=531d8791accf1464bc6854ff69d08dd866189d17
 
-You need to specify card 1 when you run hdajacksensetest since option "-a"
-just mean all pin complex instead of all cards
-
-hdaudioC1D0: autoconfig for ALC269VB: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
-type:speaker
-hdaudioC1D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-hdaudioC1D0:    hp_outs=1 (0x21/0x0/0x0/0x0/0x0)
-hdaudioC1D0:    mono: mono_out=0x0
-hdaudioC1D0:    inputs:
-hdaudioC1D0:      Mic=0x18
-hdaudioC1D0:      Internal Mic=0x12
-
-You have to post three outputs: no jacks plugged, headphone plugged and mic
-jack plugged
-
->
->
-> On Fri, Apr 10, 2015 at 9:18 AM, Raymond Yau <superquad.vortex2@gmail.com>
-wrote:
->>
->> >
->> > Okay, I added those lines to a clone of tiwai's repo.
->> > Output of alsa-info.sh :
-https://gist.github.com/Yomi0/f4059fe45d960f141b33#file-rpatch
->> >
->>
->> Try hdajacksensetest -a when you plugged and unplugged HP and mic
->>
->> Did headphone playback volume change to minimum when you plug and unplug
-?
->>
->>
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/log/sound/pci/hda/patch_realtek.c?qt=grep&q=toshiba
->>
->> Seem no specifc hack used by other toshiba
->>
->> Simple mixer control 'Headphone',0
->>   Capabilities: pvolume pswitch
->>   Playback channels: Front Left - Front Right
->>   Limits: Playback 0 - 87
->>   Mono:
->>   Front Left: Playback 0 [0%] [-65.25dB] [off]
->>   Front Right: Playback 0 [0%] [-65.25dB] [off]
->>
->> control.14 {
->> iface CARD
->> name 'Mic Jack'
->> value true
->> comment {
->> access read
->> type BOOLEAN
->> count 1
->> }
->> }
->>
->> control.16 {
->> iface CARD
->> name 'Headphone Jack'
->> value false
->> comment {
->> access read
->> type BOOLEAN
->> count 1
->> }
->> }
->
->
->
+May be HP  need to connect to DAC at node 0x03 for alc269vb
