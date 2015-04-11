@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/4] ctl: fix a bug to return no identical
-	information in info operation for userspace controls
-Date: Sat, 11 Apr 2015 17:41:03 +0900
-Message-ID: <1428741665-22262-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ctl: fix to handle several elements added
+	by one operation for userspace element
+Date: Sat, 11 Apr 2015 17:41:05 +0900
+Message-ID: <1428741665-22262-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
  <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
@@ -10,7 +10,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id A8E41261492
+ by alsa0.perex.cz (Postfix) with ESMTP id A760E2612D3
  for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 10:41:12 +0200 (CEST)
 In-Reply-To: <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,47 +26,66 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In operations of SNDRV_CTL_IOCTL_ELEM_INFO, identical information in
-returned value is cleared. This is not better to userspace application.
+An element instance can have several elements with the same feature.
+Some userspace applications can add such an element instance by add
+operation with the number of elements. Then, an userspace element
+instance keeps a memory object to keep state of these elements.
 
-This commit confirms to return full identical information to the
-operations.
+But the element instance has just one memory object for the elements.
+This causes the same result to each read/write operations to the
+different elements.
+
+This commit fixes this bug by allocating enough memory objects to element
+instance for each of elements.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/core/control.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 90a9e5d..a750846 100644
+index ccb1ca2..23ea738 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1040,8 +1040,12 @@ static int snd_ctl_elem_user_info(struct snd_kcontrol *kcontrol,
- 				  struct snd_ctl_elem_info *uinfo)
+@@ -1078,9 +1078,12 @@ static int snd_ctl_elem_user_get(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_value *ucontrol)
  {
  	struct user_element *ue = kcontrol->private_data;
-+	unsigned int offset;
++	unsigned int size = ue->elem_data_size;
++	/* The caller filled whole identical information. */
++	char *target = ue->elem_data + ucontrol->id.index * size;
  
-+	offset = snd_ctl_get_ioff(kcontrol, &uinfo->id);
- 	*uinfo = ue->info;
-+	snd_ctl_build_ioff(&uinfo->id, kcontrol, offset);
-+
+ 	mutex_lock(&ue->card->user_ctl_lock);
+-	memcpy(&ucontrol->value, ue->elem_data, ue->elem_data_size);
++	memcpy(&ucontrol->value, target, size);
+ 	mutex_unlock(&ue->card->user_ctl_lock);
  	return 0;
  }
- 
-@@ -1051,10 +1055,13 @@ static int snd_ctl_elem_user_enum_info(struct snd_kcontrol *kcontrol,
+@@ -1090,11 +1093,14 @@ static int snd_ctl_elem_user_put(struct snd_kcontrol *kcontrol,
+ {
+ 	int change;
  	struct user_element *ue = kcontrol->private_data;
- 	const char *names;
- 	unsigned int item;
-+	unsigned int offset;
++	unsigned int size = ue->elem_data_size;
++	/* The caller filled whole identical information. */
++	char *target = ue->elem_data + ucontrol->id.index * size;
  
- 	item = uinfo->value.enumerated.item;
- 
-+	offset = snd_ctl_get_ioff(kcontrol, &uinfo->id);
- 	*uinfo = ue->info;
-+	snd_ctl_build_ioff(&uinfo->id, kcontrol, offset);
- 
- 	item = min(item, uinfo->value.enumerated.items - 1);
- 	uinfo->value.enumerated.item = item;
+ 	mutex_lock(&ue->card->user_ctl_lock);
+-	change = memcmp(&ucontrol->value, ue->elem_data, ue->elem_data_size) != 0;
++	change = memcmp(&ucontrol->value, target, size) != 0;
+ 	if (change)
+-		memcpy(ue->elem_data, &ucontrol->value, ue->elem_data_size);
++		memcpy(target, &ucontrol->value, size);
+ 	mutex_unlock(&ue->card->user_ctl_lock);
+ 	return change;
+ }
+@@ -1278,7 +1284,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	if (err < 0)
+ 		return err;
+ 	memcpy(&kctl->id, &info->id, sizeof(kctl->id));
+-	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size,
++	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size * count,
+ 				     GFP_KERNEL);
+ 	if (kctl->private_data == NULL) {
+ 		kfree(kctl);
 -- 
 2.1.0
