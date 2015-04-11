@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/4] ctl: fill identical information to return
-	value when adding userspace elements
-Date: Sat, 11 Apr 2015 17:41:04 +0900
-Message-ID: <1428741665-22262-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/4] ctl: fix a bug to return no identical
+	information in info operation for userspace controls
+Date: Sat, 11 Apr 2015 17:41:03 +0900
+Message-ID: <1428741665-22262-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
  <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
@@ -10,7 +10,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id A5C9D2612C7
+ by alsa0.perex.cz (Postfix) with ESMTP id A8E41261492
  for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 10:41:12 +0200 (CEST)
 In-Reply-To: <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,68 +26,47 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-currently some members related identical information are not fiiled
-in returned parameter of SNDRV_CTL_IOCTL_ELEM_ADD. This is not better
-for userspace application.
+In operations of SNDRV_CTL_IOCTL_ELEM_INFO, identical information in
+returned value is cleared. This is not better to userspace application.
 
-This commit copies information to returned value. When failing to copy
-into userspace, the added elements are going to be removed. Then, no
-applications can lock these elements between adding and removing because
-these are already locked.
+This commit confirms to return full identical information to the
+operations.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ sound/core/control.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index a750846..ccb1ca2 100644
+index 90a9e5d..a750846 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1214,6 +1214,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	unsigned int access;
- 	long private_size;
- 	struct user_element *ue;
-+	unsigned int offset;
- 	int err;
- 
- 	if (!*info->id.name)
-@@ -1316,6 +1317,15 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	err = snd_ctl_add(card, kctl);
- 	if (err < 0)
- 		return err;
-+	offset = snd_ctl_get_ioff(kctl, &info->id);
-+	snd_ctl_build_ioff(&info->id, kctl, offset);
-+	/*
-+	 * Here we cannot fill any field for the number of elements added by
-+	 * this operation because there're no specific fields. The usage of
-+	 * 'owner' field for this purpose may cause any bugs to userspace
-+	 * applications because the field originally means PID of a process
-+	 * which locks the element.
-+	 */
- 
- 	down_write(&card->controls_rwsem);
- 	card->user_ctl_count++;
-@@ -1328,9 +1338,19 @@ static int snd_ctl_elem_add_user(struct snd_ctl_file *file,
- 				 struct snd_ctl_elem_info __user *_info, int replace)
+@@ -1040,8 +1040,12 @@ static int snd_ctl_elem_user_info(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_info *uinfo)
  {
- 	struct snd_ctl_elem_info info;
-+	int err;
+ 	struct user_element *ue = kcontrol->private_data;
++	unsigned int offset;
+ 
++	offset = snd_ctl_get_ioff(kcontrol, &uinfo->id);
+ 	*uinfo = ue->info;
++	snd_ctl_build_ioff(&uinfo->id, kcontrol, offset);
 +
- 	if (copy_from_user(&info, _info, sizeof(info)))
- 		return -EFAULT;
--	return snd_ctl_elem_add(file, &info, replace);
-+	err = snd_ctl_elem_add(file, &info, replace);
-+	if (err < 0)
-+		return err;
-+	if (copy_to_user(_info, &info, sizeof(info))) {
-+		snd_ctl_remove_user_ctl(file, &info.id);
-+		return -EFAULT;
-+	}
-+
-+	return 0;
+ 	return 0;
  }
  
- static int snd_ctl_elem_remove(struct snd_ctl_file *file,
+@@ -1051,10 +1055,13 @@ static int snd_ctl_elem_user_enum_info(struct snd_kcontrol *kcontrol,
+ 	struct user_element *ue = kcontrol->private_data;
+ 	const char *names;
+ 	unsigned int item;
++	unsigned int offset;
+ 
+ 	item = uinfo->value.enumerated.item;
+ 
++	offset = snd_ctl_get_ioff(kcontrol, &uinfo->id);
+ 	*uinfo = ue->info;
++	snd_ctl_build_ioff(&uinfo->id, kcontrol, offset);
+ 
+ 	item = min(item, uinfo->value.enumerated.items - 1);
+ 	uinfo->value.enumerated.item = item;
 -- 
 2.1.0
