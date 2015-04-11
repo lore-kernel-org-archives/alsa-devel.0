@@ -1,16 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: wm1133-ev1: Use card DAPM context to
+Subject: [PATCH] ASoC: mop500_ab8500: Use card DAPM context to
 	access widgets
-Date: Sat, 11 Apr 2015 12:52:01 +0200
-Message-ID: <1428749521-7426-1-git-send-email-lars@metafoo.de>
+Date: Sat, 11 Apr 2015 13:01:02 +0200
+Message-ID: <1428750062-10614-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-051.synserver.de
  [212.40.185.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 296C4260867
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 12:52:03 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 64E7E260867
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 13:01:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,7 +21,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Fabio Baltieri <fabio.baltieri@linaro.org>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The dapm field of the snd_soc_codec struct will eventually be removed
@@ -32,29 +32,62 @@ widgets from other contexts through the card context.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/fsl/wm1133-ev1.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/ux500/mop500_ab8500.c | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
-index 0653aa8..b454972 100644
---- a/sound/soc/fsl/wm1133-ev1.c
-+++ b/sound/soc/fsl/wm1133-ev1.c
-@@ -202,7 +202,6 @@ static struct snd_soc_jack_pin mic_jack_pins[] = {
- static int wm1133_ev1_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/ux500/mop500_ab8500.c b/sound/soc/ux500/mop500_ab8500.c
+index aa65370..b81a7a4c 100644
+--- a/sound/soc/ux500/mop500_ab8500.c
++++ b/sound/soc/ux500/mop500_ab8500.c
+@@ -362,7 +362,7 @@ struct snd_soc_ops mop500_ab8500_ops[] = {
+ 
+ int mop500_ab8500_machine_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
+ 	struct device *dev = rtd->card->dev;
+ 	struct mop500_ab8500_drvdata *drvdata;
+ 	int ret;
+@@ -407,23 +407,23 @@ int mop500_ab8500_machine_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
  
- 	/* Headphone jack detection */
- 	snd_soc_card_jack_new(rtd->card, "Headphone", SND_JACK_HEADPHONE,
-@@ -216,7 +215,7 @@ static int wm1133_ev1_init(struct snd_soc_pcm_runtime *rtd)
- 	wm8350_mic_jack_detect(codec, &mic_jack, SND_JACK_MICROPHONE,
- 			       SND_JACK_BTN_0);
+-	ret = snd_soc_dapm_disable_pin(&codec->dapm, "Earpiece");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "Speaker Left");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "Speaker Right");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "LineOut Left");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "LineOut Right");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "Vibra 1");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "Vibra 2");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "Mic 1");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "Mic 2");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "LineIn Left");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "LineIn Right");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "DMic 1");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "DMic 2");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "DMic 3");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "DMic 4");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "DMic 5");
+-	ret |= snd_soc_dapm_disable_pin(&codec->dapm, "DMic 6");
++	ret = snd_soc_dapm_disable_pin(dapm, "Earpiece");
++	ret |= snd_soc_dapm_disable_pin(dapm, "Speaker Left");
++	ret |= snd_soc_dapm_disable_pin(dapm, "Speaker Right");
++	ret |= snd_soc_dapm_disable_pin(dapm, "LineOut Left");
++	ret |= snd_soc_dapm_disable_pin(dapm, "LineOut Right");
++	ret |= snd_soc_dapm_disable_pin(dapm, "Vibra 1");
++	ret |= snd_soc_dapm_disable_pin(dapm, "Vibra 2");
++	ret |= snd_soc_dapm_disable_pin(dapm, "Mic 1");
++	ret |= snd_soc_dapm_disable_pin(dapm, "Mic 2");
++	ret |= snd_soc_dapm_disable_pin(dapm, "LineIn Left");
++	ret |= snd_soc_dapm_disable_pin(dapm, "LineIn Right");
++	ret |= snd_soc_dapm_disable_pin(dapm, "DMic 1");
++	ret |= snd_soc_dapm_disable_pin(dapm, "DMic 2");
++	ret |= snd_soc_dapm_disable_pin(dapm, "DMic 3");
++	ret |= snd_soc_dapm_disable_pin(dapm, "DMic 4");
++	ret |= snd_soc_dapm_disable_pin(dapm, "DMic 5");
++	ret |= snd_soc_dapm_disable_pin(dapm, "DMic 6");
  
--	snd_soc_dapm_force_enable_pin(dapm, "Mic Bias");
-+	snd_soc_dapm_force_enable_pin(&rtd->card->dapm, "Mic Bias");
- 
- 	return 0;
+ 	return ret;
  }
 -- 
 1.8.0
