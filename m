@@ -1,16 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: davinci-evm: Use card DAPM context to
-	access widgets
-Date: Sat, 11 Apr 2015 13:11:28 +0200
-Message-ID: <1428750688-12171-1-git-send-email-lars@metafoo.de>
+From: Michael Gernoth <michael@gernoth.net>
+Subject: [PATCH] ALSA: emu10k1: handle dock disconnects
+Date: Sat, 11 Apr 2015 14:34:44 +0200
+Message-ID: <20150411123444.GA15194@zerfleddert.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-051.synserver.de (smtp-out-051.synserver.de
- [212.40.185.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EB312608AB
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 13:11:30 +0200 (CEST)
+Received: from eddie.zerfleddert.de (eddie.zerfleddert.de [188.246.9.226])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B6FF2608AB
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 14:34:45 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jyri Sarha <jsarha@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The dapm field of the snd_soc_codec struct will eventually be removed
-(replaced with the DAPM context from the component embedded inside the
-CODEC). Replace its usage with the card's DAPM context. The idea is that
-DAPM is hierarchical and with the card at the root it is possible to access
-widgets from other contexts through the card context.
+When the dock on an E-mu 1010 card is disconnected, all outputs get
+muted by the hardware. Add logic to detect a disconnect and unmute.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Michael Gernoth <michael@gernoth.net>
 ---
- sound/soc/davinci/davinci-evm.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/pci/emu10k1/emu10k1_main.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 8c2b9be..731fb0d 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -117,7 +117,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
- static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index b4458a6..ee50c1d 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -707,6 +707,7 @@ static int emu1010_firmware_thread(void *data)
  {
- 	struct snd_soc_card *card = rtd->card;
--	struct snd_soc_codec *codec = rtd->codec;
- 	struct device_node *np = card->dev->of_node;
- 	int ret;
+ 	struct snd_emu10k1 *emu = data;
+ 	u32 tmp, tmp2, reg;
++	u32 last_reg = 0;
+ 	int err;
  
-@@ -136,9 +135,9 @@ static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
+ 	for (;;) {
+@@ -782,7 +783,15 @@ static int emu1010_firmware_thread(void *data)
+ 			msleep(10);
+ 			/* Unmute all. Default is muted after a firmware load */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE);
++		} else if (!reg && last_reg) {
++			/* Audio Dock removed */
++			dev_info(emu->card->dev,
++				 "emu1010: Audio Dock detached\n");
++			/* Unmute all */
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE);
+ 		}
++
++		last_reg = reg;
  	}
- 
- 	/* not connected */
--	snd_soc_dapm_nc_pin(&codec->dapm, "MONO_LOUT");
--	snd_soc_dapm_nc_pin(&codec->dapm, "HPLCOM");
--	snd_soc_dapm_nc_pin(&codec->dapm, "HPRCOM");
-+	snd_soc_dapm_nc_pin(&card->dapm, "MONO_LOUT");
-+	snd_soc_dapm_nc_pin(&card->dapm, "HPLCOM");
-+	snd_soc_dapm_nc_pin(&card->dapm, "HPRCOM");
- 
+ 	dev_info(emu->card->dev, "emu1010: firmware thread stopping\n");
  	return 0;
- }
 -- 
-1.8.0
+2.1.4
