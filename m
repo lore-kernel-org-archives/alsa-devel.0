@@ -1,16 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/4 v2] fix userspace control element operations
-Date: Sat, 11 Apr 2015 17:41:01 +0900
-Message-ID: <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/4] ctl: confirm to return all identical
+	information in 'activate' event
+Date: Sat, 11 Apr 2015 17:41:02 +0900
+Message-ID: <1428741665-22262-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id A3843260621
+ by alsa0.perex.cz (Postfix) with ESMTP id AA67F261493
  for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 10:41:12 +0200 (CEST)
-In-Reply-To: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
+In-Reply-To: <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +26,37 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patchset is revised version of my previous one.
+When event originator doesn't set numerical ID in identical information,
+the event data includes no numerical ID, thus userspace applications
+cannot identify the control just by unique ID in event data.
 
-[alsa-devel] [PATCH 0/4] ALSA: ctl: fix userspace control element operations
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-April/090206.html
+This commit fix this bug so as the event data includes all of identical
+information.
 
-Changes:
- - Use helper functions to processing identical information
- - Revise a comment about the number of added element in returned value
- - Remove elements at add operation when EFAULT occurs
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/control.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Takashi Sakamoto (4):
-  ctl: confirm to return all identical information in 'activate' event
-  ctl: fix a bug to return no identical information in info operation
-    for userspace controls
-  ctl: fill identical information to return value when adding userspace
-    elements
-  ctl: fix to handle several elements added by one operation for
-    userspace element
-
- sound/core/control.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 40 insertions(+), 5 deletions(-)
-
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 00fcaa0..90a9e5d 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -578,6 +578,7 @@ error:
+  *
+  * Finds the control instance with the given id, and activate or
+  * inactivate the control together with notification, if changed.
++ * The given ID data is filled with full information.
+  *
+  * Return: 0 if unchanged, 1 if changed, or a negative error code on failure.
+  */
+@@ -607,6 +608,7 @@ int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
+ 			goto unlock;
+ 		vd->access |= SNDRV_CTL_ELEM_ACCESS_INACTIVE;
+ 	}
++	snd_ctl_build_ioff(id, kctl, index_offset);
+ 	ret = 1;
+  unlock:
+ 	up_write(&card->controls_rwsem);
 -- 
 2.1.0
