@@ -1,19 +1,18 @@
-From: Enrico Mioso <mrkiko.rs@gmail.com>
-Subject: Re: Intel HDA audio on EEE PC 1101HGo
-Date: Sat, 11 Apr 2015 10:13:51 +0200 (CEST)
-Message-ID: <alpine.LNX.2.20.1504111011090.1174@localhost.localdomain>
-References: <alpine.LNX.2.20.1504082130290.1715@localhost.localdomain>
- <s5hegntl2cs.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/4] ctl: fill identical information to return
+	value when adding userspace elements
+Date: Sat, 11 Apr 2015 17:41:04 +0900
+Message-ID: <1428741665-22262-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f48.google.com (mail-wg0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 435862612BD
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 10:13:55 +0200 (CEST)
-Received: by wgso17 with SMTP id o17so37047297wgs.1
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 01:13:54 -0700 (PDT)
-In-Reply-To: <s5hegntl2cs.wl-tiwai@suse.de>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5C9D2612C7
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 10:41:12 +0200 (CEST)
+In-Reply-To: <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,58 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com, david.henningsson@canonical.com
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When I plug in the jack and the audio is going, sometimes the audio will go to 
-the headphones and to the PC speakers. But stopping the audio and waiting for 
-the controller to enter power save mode, and starting it again, solves the 
-problem. But in my situation I had to ask the driver to reset the controller 
-any time it exits power save:
-options snd_hda_intel power_save_controller=1 power_save=5
-so - I think the driver is not able to communicate properly with the device due 
-to problems elsewhere, not of it's own. I would like so much to see what 
-windows does in these cases. :)
-thank you guys for your work again - this intended to be an hilarious mail.
-Have a good weekend.
-Enrico
+currently some members related identical information are not fiiled
+in returned parameter of SNDRV_CTL_IOCTL_ELEM_ADD. This is not better
+for userspace application.
 
-I have CONFIG_SND_HDA_INPUT_JACK=y (I know it's uncorrelated).
-On Thu, 9 Apr 2015, Takashi Iwai wrote:
+This commit copies information to returned value. When failing to copy
+into userspace, the added elements are going to be removed. Then, no
+applications can lock these elements between adding and removing because
+these are already locked.
 
-==Date: Thu, 9 Apr 2015 17:59:15
-==From: Takashi Iwai <tiwai@suse.de>
-==To: Enrico Mioso <mrkiko.rs@gmail.com>
-==Cc: perex@perex.cz, hui.wang@canonical.com, david.henningsson@canonical.com,
-==    kailang@realtek.com, alsa-devel@alsa-project.org
-==Subject: Re: Intel HDA audio on EEE PC 1101HGo
-==
-==At Wed, 8 Apr 2015 21:40:53 +0200 (CEST),
-==Enrico Mioso wrote:
-==> 
-==> Hello guys.
-==> I am writing to you all to talk you about a strange behaviour of the Intel HDA 
-==> Audio device on an EEE PC 1101H.
-==> The audio device at some point simply doesn't react to commands, giving in 
-==> dmesgo utput like this:
-==> 
-==> [22321.638079] snd_hda_intel 0000:00:1b.0: azx_get_response timeout, switching 
-==> to polling mode: last cmd=0x00170503
-==> [22322.641410] snd_hda_intel 0000:00:1b.0: azx_get_response timeout, switching 
-==> to single_cmd mode: last cmd=0x00170503
-==
-==This looks already bad.  It means that power down of the codec
-==failed.
-==
-==But, the recent version should ignore this error.  There was a logic
-==failure to check this, but this was corrected recently.
-==
-==Could you check the latest 4.0-rc whether it works better?
-==If not, take alsa-info.sh output snapshots at good and bad working
-==moments.  Run the script with --no-upload option, and attach the
-==outputs (better compressed).
-==
-==
-==Takashi
-==
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/control.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/sound/core/control.c b/sound/core/control.c
+index a750846..ccb1ca2 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1214,6 +1214,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	unsigned int access;
+ 	long private_size;
+ 	struct user_element *ue;
++	unsigned int offset;
+ 	int err;
+ 
+ 	if (!*info->id.name)
+@@ -1316,6 +1317,15 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	err = snd_ctl_add(card, kctl);
+ 	if (err < 0)
+ 		return err;
++	offset = snd_ctl_get_ioff(kctl, &info->id);
++	snd_ctl_build_ioff(&info->id, kctl, offset);
++	/*
++	 * Here we cannot fill any field for the number of elements added by
++	 * this operation because there're no specific fields. The usage of
++	 * 'owner' field for this purpose may cause any bugs to userspace
++	 * applications because the field originally means PID of a process
++	 * which locks the element.
++	 */
+ 
+ 	down_write(&card->controls_rwsem);
+ 	card->user_ctl_count++;
+@@ -1328,9 +1338,19 @@ static int snd_ctl_elem_add_user(struct snd_ctl_file *file,
+ 				 struct snd_ctl_elem_info __user *_info, int replace)
+ {
+ 	struct snd_ctl_elem_info info;
++	int err;
++
+ 	if (copy_from_user(&info, _info, sizeof(info)))
+ 		return -EFAULT;
+-	return snd_ctl_elem_add(file, &info, replace);
++	err = snd_ctl_elem_add(file, &info, replace);
++	if (err < 0)
++		return err;
++	if (copy_to_user(_info, &info, sizeof(info))) {
++		snd_ctl_remove_user_ctl(file, &info.id);
++		return -EFAULT;
++	}
++
++	return 0;
+ }
+ 
+ static int snd_ctl_elem_remove(struct snd_ctl_file *file,
+-- 
+2.1.0
