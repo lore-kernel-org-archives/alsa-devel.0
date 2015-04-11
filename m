@@ -1,18 +1,16 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/4] ctl: confirm to return all identical
-	information in 'activate' event
-Date: Sat, 11 Apr 2015 17:41:02 +0900
-Message-ID: <1428741665-22262-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
- <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: n810: Consistently pass the card
+	DAPM context to n810_ext_control()
+Date: Sat, 11 Apr 2015 10:47:57 +0200
+Message-ID: <1428742078-9704-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id AA67F261493
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 10:41:12 +0200 (CEST)
-In-Reply-To: <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from smtp-out-051.synserver.de (smtp-out-051.synserver.de
+ [212.40.185.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41BC5260621
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 10:48:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-When event originator doesn't set numerical ID in identical information,
-the event data includes no numerical ID, thus userspace applications
-cannot identify the control just by unique ID in event data.
+Some callers of n810_ext_control() pass the card DAPM context and some pass
+the CODEC DAPM context. Given that some of the widgets that are accessed in
+the function are in the card's context, always passing it is the obvious
+choice.
 
-This commit fix this bug so as the event data includes all of identical
-information.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/core/control.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/omap/n810.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 00fcaa0..90a9e5d 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -578,6 +578,7 @@ error:
-  *
-  * Finds the control instance with the given id, and activate or
-  * inactivate the control together with notification, if changed.
-+ * The given ID data is filled with full information.
-  *
-  * Return: 0 if unchanged, 1 if changed, or a negative error code on failure.
-  */
-@@ -607,6 +608,7 @@ int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
- 			goto unlock;
- 		vd->access |= SNDRV_CTL_ELEM_ACCESS_INACTIVE;
- 	}
-+	snd_ctl_build_ioff(id, kctl, index_offset);
- 	ret = 1;
-  unlock:
- 	up_write(&card->controls_rwsem);
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 5d7f9ce..617eae3 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -98,12 +98,11 @@ static int n810_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec *codec = rtd->codec;
+ 
+ 	snd_pcm_hw_constraint_minmax(runtime,
+ 				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
+ 
+-	n810_ext_control(&codec->dapm);
++	n810_ext_control(&rtd->card->dapm);
+ 	return clk_prepare_enable(sys_clkout2);
+ }
+ 
 -- 
-2.1.0
+1.8.0
