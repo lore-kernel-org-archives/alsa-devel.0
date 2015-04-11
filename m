@@ -1,18 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/2] ASoC: atmel: Improve machine driver
-	compile test coverage
-Date: Sat, 11 Apr 2015 11:16:19 +0200
-Message-ID: <1428743779-25581-2-git-send-email-lars@metafoo.de>
-References: <1428743779-25581-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH] ASoC: at91sam9g20ek: Automatically disconnect
+	non-connected pins
+Date: Sat, 11 Apr 2015 11:18:43 +0200
+Message-ID: <1428743923-26675-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-051.synserver.de
  [212.40.185.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 043DE261493
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 11:16:21 +0200 (CEST)
-In-Reply-To: <1428743779-25581-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B1A02612D3
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 11:19:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,48 +24,62 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Atmel ASoC machine drivers don't have any compile time arch dependencies
-anymore. Make it possible to select them when COMPILE_TEST is enabled to get
-better compile test coverage.
+According to the schematics the both LHPOUT and RHPOUT are connected to the
+external connector. RHPOUT is missing from the DAPM routes, but otherwise
+they seem to be complete.
+
+This patch adds the missing route and then sets the fully_routed flag for
+the card. This allows to remove all the manual calls to
+snd_soc_dapm_nc_pin().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/atmel/Kconfig | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/atmel/sam9g20_wm8731.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 2f185e5..e7d0880 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -25,7 +25,8 @@ config SND_ATMEL_SOC_SSC
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index 8de8361..d7469cd 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -95,8 +95,9 @@ static const struct snd_soc_dapm_widget at91sam9g20ek_dapm_widgets[] = {
  
- config SND_AT91_SOC_SAM9G20_WM8731
- 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
--	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC && SND_SOC_I2C_AND_SPI
-+	depends on ARCH_AT91 || COMPILE_TEST
-+	depends on ATMEL_SSC && SND_ATMEL_SOC && SND_SOC_I2C_AND_SPI
- 	select SND_ATMEL_SOC_PDC
- 	select SND_ATMEL_SOC_SSC
- 	select SND_SOC_WM8731
-@@ -35,7 +36,8 @@ config SND_AT91_SOC_SAM9G20_WM8731
+ static const struct snd_soc_dapm_route intercon[] = {
  
- config SND_ATMEL_SOC_WM8904
- 	tristate "Atmel ASoC driver for boards using WM8904 codec"
--	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC && I2C
-+	depends on ARCH_AT91 || COMPILE_TEST
-+	depends on ATMEL_SSC && SND_ATMEL_SOC && I2C
- 	select SND_ATMEL_SOC_SSC
- 	select SND_ATMEL_SOC_DMA
- 	select SND_SOC_WM8904
-@@ -45,7 +47,8 @@ config SND_ATMEL_SOC_WM8904
+-	/* speaker connected to LHPOUT */
++	/* speaker connected to LHPOUT/RHPOUT */
+ 	{"Ext Spk", NULL, "LHPOUT"},
++	{"Ext Spk", NULL, "RHPOUT"},
  
- config SND_AT91_SOC_SAM9X5_WM8731
- 	tristate "SoC Audio support for WM8731-based at91sam9x5 board"
--	depends on ARCH_AT91 && ATMEL_SSC && SND_ATMEL_SOC && SND_SOC_I2C_AND_SPI
-+	depends on ARCH_AT91 || COMPILE_TEST
-+	depends on ATMEL_SSC && SND_ATMEL_SOC && SND_SOC_I2C_AND_SPI
- 	select SND_ATMEL_SOC_SSC
- 	select SND_ATMEL_SOC_DMA
- 	select SND_SOC_WM8731
+ 	/* mic is connected to Mic Jack, with WM8731 Mic Bias */
+ 	{"MICIN", NULL, "Mic Bias"},
+@@ -108,9 +109,7 @@ static const struct snd_soc_dapm_route intercon[] = {
+  */
+ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret;
+ 
+ 	printk(KERN_DEBUG
+@@ -124,10 +123,6 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
+ 
+-	/* not connected */
+-	snd_soc_dapm_nc_pin(dapm, "RLINEIN");
+-	snd_soc_dapm_nc_pin(dapm, "LLINEIN");
+-
+ #ifndef ENABLE_MIC_INPUT
+ 	snd_soc_dapm_nc_pin(&rtd->card->dapm, "Int Mic");
+ #endif
+@@ -158,6 +153,7 @@ static struct snd_soc_card snd_soc_at91sam9g20ek = {
+ 	.num_dapm_widgets = ARRAY_SIZE(at91sam9g20ek_dapm_widgets),
+ 	.dapm_routes = intercon,
+ 	.num_dapm_routes = ARRAY_SIZE(intercon),
++	.fully_routed = true,
+ };
+ 
+ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
 -- 
 1.8.0
