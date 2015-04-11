@@ -1,57 +1,37 @@
-From: Yves-Alexis Perez <corsac@debian.org>
-Subject: Re: [PATCH] ALSA: hda - Add dock support for ThinkPad X250
- (17aa:2226)
-Date: Sat, 11 Apr 2015 21:03:44 +0200
-Message-ID: <1428779024.2887.20.camel@debian.org>
-References: <1428737495-9906-1-git-send-email-corsac@debian.org>
-	 <1428737495-9906-2-git-send-email-corsac@debian.org>
-	 <s5hlhhy4rej.wl-tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Playback - Overwrite buffer with silence
+Date: Sat, 11 Apr 2015 22:05:02 +0200
+Message-ID: <55297E6E.20302@ladisch.de>
+References: <5529421B.7050601@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha256";
-	protocol="application/pgp-signature"; boundary="=-WFjKHH0X6ofzWrdtgePN"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hlhhy4rej.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnaud Ebalard <arno@natisbad.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 756A2260434
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 22:05:22 +0200 (CEST)
+In-Reply-To: <5529421B.7050601@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nilhcraiv <nilhcraiv@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Nilhcraiv wrote:
+> If I obtain the boundary for ring pointers in frames at the start (snd_pcm_sw_params_get_boundary), the boundary is always zero.
 
---=-WFjKHH0X6ofzWrdtgePN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+It is impossible for the boundar to be zero.
 
-On sam., 2015-04-11 at 17:27 +0200, Takashi Iwai wrote:
-> At Sat, 11 Apr 2015 09:31:35 +0200,
-> Yves-Alexis Perez wrote:
-> >=20
-> > This model uses the same dock port as the previous generation.
-> >=20
-> > Signed-off-by: Yves-Alexis Perez <corsac@debian.org>
->=20
-> Thanks, applied with Cc to stable.
-> But, at the next time, please put maintainers to Cc.
+> Here you can see a light version of my code (without error checking):
 
-Thanks, and sorry for that, will pay attention next time.
+Error checking would be important.
+
 
 Regards,
---=20
-Yves-Alexis
-
---=-WFjKHH0X6ofzWrdtgePN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAABCAAGBQJVKXAQAAoJEG3bU/KmdcClfyIIAIkIeuRooCBPyZ4wV6KTu8on
-lq94nxlhKJHVUPDTPuvecZtOCPfV/5pqpSD9gCPp3y0fNAGn9kGB3EeO29QBYASQ
-J+JBG6Rh8m4z8Rp37wYdNcjAonUV0LzCIkG6yyEHCyqF/PbkI4/1RzrpD/SbBcZz
-JRp1uxVyz5aQk/7Qsjtb5RfQO0S4e87u9KTqVZgb2XsgX/DftJNhIzsgMc1Xl85X
-k2/WKkL2dg04cA6JvNvRaGGr4ueWCqtXzBvtolWd4FyCe+rspQHu15GepmrXTYQs
-S0miqCLPwhGmVGG30ESOwWiTLQ/NVeP7yNPzVSFiT4uIy6rWcfSCVutNDqaFhwA=
-=dyn5
------END PGP SIGNATURE-----
-
---=-WFjKHH0X6ofzWrdtgePN--
+Clemens
