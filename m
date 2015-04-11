@@ -1,22 +1,19 @@
-From: Nilhcraiv <nilhcraiv@gmail.com>
-Subject: Playback - Overwrite buffer with silence
-Date: Sat, 11 Apr 2015 17:47:39 +0200
-Message-ID: <5529421B.7050601@gmail.com>
+From: Michael Gernoth <michael@gernoth.net>
+Subject: Re: [PATCH] ALSA: emu10k1: add toggles for E-mu 1010
+ optical ports
+Date: Sat, 11 Apr 2015 17:56:29 +0200
+Message-ID: <20150411155629.GA2388@zerfleddert.de>
+References: <20150411095245.GA12192@zerfleddert.de>
+ <s5hk2xi4rb4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com
- [209.85.212.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 4946A260A50
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 17:47:42 +0200 (CEST)
-Received: by wiun10 with SMTP id n10so26317554wiu.1
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 08:47:42 -0700 (PDT)
-Received: from [192.168.1.103] ([90.174.220.210])
- by mx.google.com with ESMTPSA id vq9sm3290247wjc.6.2015.04.11.08.47.40
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 11 Apr 2015 08:47:41 -0700 (PDT)
+Received: from eddie.zerfleddert.de (eddie.zerfleddert.de [188.246.9.226])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59099260A50
+ for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 17:56:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hk2xi4rb4.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,69 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpJIGFtIHdvcmtpbmcgYW4gYXBwbGljYXRpb24gYW5kIEkgaGF2ZSBwcm9ibGVtcyBw
-bGF5aW5nIHRoZSBhdWRpbyB3aXRoIApBTFNBLiBJbiBteSBhcHBsaWNhdGlvbiwgSSByZWNlaXZl
-IHRoZSBzb3VuZCBkYXRhLCB0aGlzIGRhdGEgbXVzdCBiZSAKZGVjb2RlZCB0byBiZSByZXByb2R1
-Y2UuIEluIHRoaXMgcHJvY2VzcywgYWx3YXlzIG9idGFpbiBhbiAKdW5kZXItcnVuZXJyb3IuIFRv
-IGZpeCB0aGlzIHByb2JsZW0sIEkgZm9sbG93ZWQgdGhlIGRvY3VtZW50YXRpb24gaS5lLiBJIAp1
-c2Ugc25kX3BjbV9zd19wYXJhbXNfc2V0X3NpbGVuY2Vfc2l6ZSgpIGFuZCAKc25kX3BjbV9zd19w
-YXJhbXNfc2V0X3NpbGVuY2VfdGhyZXNob2xkKCkgdG8gb3ZlcndyaXRlIHRoZSBidWZmZXIgd2l0
-aCAKc2lsZW5jZS4gLS0+IApodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvYWxzYS1kb2MvYWxz
-YS1saWIvZ3JvdXBfX19wX2NfbV9fX3Nfd19fX3BhcmFtcy5odG1sI2dhZWI0YTMzNWExNjk4MWI1
-ZWEzZmE2NzE5NDZmYmRjYTMgCmJ1dCB0aGlzIGRvZXMgbm90IHdvcmsuIERvZXMgdGhlIGRvYyBp
-cyB3cm9uZz8KCklmIEkgb2J0YWluIHRoZSBib3VuZGFyeSBmb3IgcmluZyBwb2ludGVycyBpbiBm
-cmFtZXMgYXQgdGhlIHN0YXJ0IAooc25kX3BjbV9zd19wYXJhbXNfZ2V0X2JvdW5kYXJ5KSwgdGhl
-IGJvdW5kYXJ5IGlzIGFsd2F5cyB6ZXJvLiBJZiBJIApvYnRhaW4gdGhlIGJvdW5kYXJ5IGVhY2gg
-dGltZSAoaW4gdGhlIHJlY2VpdmVkX2RhdGEoKSBmdW5jdGlvbikgaXQgaXMgCm1vcmUgdGhhbiB0
-aGUgYnVmZmVyIHNpemUgYW5kIEkgZ2V0IGVycm9yIHdoZW4gSSBwdXQgaXQgaW4gCnNuZF9wY21f
-c3dfcGFyYW1zX3NldF9zaWxlbmNlX3NpemUoKSwgwr9XaHk/LCBJcyBpdCBjb3JyZWN0IHRvIHVz
-ZSB0aGUgCmJvdW5kYXJ5IHZhbHVlPywgwr9Ib3cgSSBjYW4gYXZvaWQgdW5kZXItcnVuIGJ5IHB1
-dHRpbmcgc2lsZW5jZSBpZiBJIGhhdmUgCm5vdCBkYXRhIGF0IHRpbWU/CgpIZXJlIHlvdSBjYW4g
-c2VlIGEgbGlnaHQgdmVyc2lvbiBvZiBteSBjb2RlICh3aXRob3V0IGVycm9yIGNoZWNraW5nKToK
-CiAgICAgI2RlZmluZSBGUkFNRVMgICAgICAgICAgICAgICAgIDI0MAogICAgICNkZWZpbmUgUEVS
-SU9EICAgICAgICAgICAgICAgICAgMSpGUkFNRVMKICAgICAjZGVmaW5lIEJVRkZFUl9TSVpFICAg
-ICAgICAgUEVSSU9EKjIKICAgICAjZGVmaW5lIENIQU5ORUxTICAgICAgICAgICAgIDEKICAgICAj
-ZGVmaW5lIFNBTVBMRV9SQVRFICAgICAgICA0ODAwMAoKICAgICBzbmRfcGNtX2h3X3BhcmFtc190
-ICpod3BhcmFtczsKICAgICBzbmRfcGNtX3N3X3BhcmFtc190ICpzd3BhcmFtczsKICAgICBpbnQg
-ZXhhY3RfcmF0ZSxkaXI7CiAgICAgc25kX3BjbV91ZnJhbWVzX3QgYm91bmRhcnk9MDsKCiAgICAg
-c25kX3BjbV9zdHJlYW1fdCBzdHJlYW0gPSBTTkRfUENNX1NUUkVBTV9QTEFZQkFDSzsKICAgICBz
-bmRfcGNtX2h3X3BhcmFtc19hbGxvY2EoJmh3cGFyYW1zKTsKICAgICBzbmRfcGNtX3N3X3BhcmFt
-c19hbGxvY2EoJnN3cGFyYW1zKTsKCgogICAgIC8qUGxheUJhY2sgaHcgKi8KICAgICBzbmRfcGNt
-X29wZW4oJnBjbV9oYW5kbGUsICJkZWZhdWx0Iiwgc3RyZWFtLCAwKTsKICAgICBzbmRfcGNtX2h3
-X3BhcmFtc19hbnkocGNtX2hhbmRsZSwgaHdwYXJhbXMpOwogICAgIHNuZF9wY21faHdfcGFyYW1z
-X3NldF9hY2Nlc3MocGNtX2hhbmRsZSwgaHdwYXJhbXMsIApTTkRfUENNX0FDQ0VTU19SV19JTlRF
-UkxFQVZFRCk7CiAgICAgc25kX3BjbV9od19wYXJhbXNfc2V0X2Zvcm1hdChwY21faGFuZGxlLCBo
-d3BhcmFtcywgClNORF9QQ01fRk9STUFUX1MxNl9MRSk7CiAgICAgZXhhY3RfcmF0ZSA9IFNBTVBM
-RV9SQVRFOwogICAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9yYXRlX25lYXIocGNtX2hhbmRsZSwg
-aHdwYXJhbXMsICZleGFjdF9yYXRlLCAwKTsKICAgICBzbmRfcGNtX2h3X3BhcmFtc19zZXRfY2hh
-bm5lbHMocGNtX2hhbmRsZSwgaHdwYXJhbXMsIENIQU5ORUxTKTsKICAgICBzbmRfcGNtX2h3X3Bh
-cmFtc19zZXRfYnVmZmVyX3NpemUocGNtX2hhbmRsZSwgaHdwYXJhbXMsIEJVRkZFUl9TSVpFKTsK
-ICAgICBzbmRfcGNtX2h3X3BhcmFtcyhwY21faGFuZGxlLCBod3BhcmFtcyk7CgogICAgIC8qQXZv
-aWQgdW5kZXItcnVuICBzdyovCiAgICAgc25kX3BjbV9zd19wYXJhbXNfY3VycmVudChwY21faGFu
-ZGxlLCBzd3BhcmFtcyk7CiAgICAgc25kX3BjbV9zd19wYXJhbXNfZ2V0X2JvdW5kYXJ5KHN3cGFy
-YW1zLCAmYm91bmRhcnkpOyAvKkhlcmUsIApib3VuZGFyeSBpcyBhbGx3YXlzIFpFUk8qLwogICAg
-IHNuZF9wY21fc3dfcGFyYW1zX3NldF9zaWxlbmNlX3RocmVzaG9sZChwY21faGFuZGxlLCBzd3Bh
-cmFtcywgMCk7IAovKkFjY29yZGluZyB0byB0aGUgZG9jLiovCiAgICAgc25kX3BjbV9zd19wYXJh
-bXNfc2V0X3NpbGVuY2Vfc2l6ZShwY21faGFuZGxlLCBzd3BhcmFtcywgYm91bmRhcnkpOyAKLypB
-Y2NvcmRpbmcgdG8gdGhlIGRvYy4qLwogICAgIHNuZF9wY21fc3dfcGFyYW1zKHBjbV9oYW5kbGUs
-c3dwYXJhbXMpOwogICAgIC8qRU5EIEF2b2lkIHVuZGVyLXJ1biovCgogICAgIHNuZF9wY21fcHJl
-cGFyZShwY21faGFuZGxlKTsKCiAgICAgdm9pZCByZWNlaXZlZF9kYXRhKHZvaWQgKnRfZGF0YSkv
-KnNob3J0IHZlcnNpb24gb2YgdGhlIGZ1bmN0aW9uKi8KICAgICB7CiAgICAgICAgIHNob3J0ICpk
-ZWNvZGVkX2RhdGEgPSBOVUxMOwogICAgICAgICBpbnQgbGVuPTA7CgogICAgICAgICBkZWNvZGVk
-X2RhdGEgPSAoc2hvcnQgKiltYWxsb2MoUEVSSU9EICogRlJBTUVfU0laRSk7CiAgICAgICAgIGxl
-biA9IGRlY29kZXIoJmRlY29kZWRfZGF0YSx0X2RhdGEpOwoKICAgICAgICAgc25kX3BjbV9zd19w
-YXJhbXNfZ2V0X2JvdW5kYXJ5KHN3cGFyYW1zLCAmYm91bmRhcnkpOyAvKkhlcmUsIApib3VuZGFy
-eSBpcyBhbHdheXMgYSBsYXJnZSBudW1iZXIqLwogICAgICAgICBzbmRfcGNtX3N3X3BhcmFtc19z
-ZXRfc2lsZW5jZV9zaXplKHBjbV9oYW5kbGUsIHN3cGFyYW1zLCAKYm91bmRhcnkpOy8qSGVyZSwg
-Ym91bmRhcnkgaW4gZnJhbWVzIGlzIGFsd2F5cyBhIGxhcmdlIG51bWJlciwgYW5kIHRoZXJlIAph
-cmUgYW4gZXJyb3IuLi4qLwogICAgICAgICBzbmRfcGNtX3N3X3BhcmFtcyhwY21faGFuZGxlLHN3
-cGFyYW1zKTsKCiAgICAgICAgIHBjbXJldHVybiA9IHNuZF9wY21fd3JpdGVpKHBjbV9oYW5kbGUs
-IGRlY29kZWRfZGF0YSwgbGVuKTsvKkluIAptb3N0IGNhc2VzIHRoZXJlIGFyZSBVTkRFUlJVTi4u
-LiovCiAgICAgICAgIHhydW5fcmVjb3ZlcnkoJnBjbV9oYW5kbGUsIHBjbXJldHVybik7LypSZWNv
-dmVyIGluIGNhc2Ugb2YgYW4gCmVycm9yLiovCiAgICAgfQoKVGhhbmtzIGluIGFkdmFuY2UhClZp
-Y2VudGUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Sat, Apr 11, 2015 at 05:29:03PM +0200, Takashi Iwai wrote:
+> The changes look OK, but could you fix what checkpatch.pl complains,
+> at least the errors?
+
+Yes, sorry. I forgot to run checkpatch.
+I will post a new version shortly.
+
+Thanks,
+  Michael
