@@ -1,20 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 4/4] ctl: fix to handle several elements
- added by one operation for userspace element
-Date: Sun, 12 Apr 2015 09:15:30 +0900
-Message-ID: <5529B922.7010103@sakamocchi.jp>
-References: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
- <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
- <1428741665-22262-5-git-send-email-o-takashi@sakamocchi.jp>
- <s5ha8ye4qnx.wl-tiwai@suse.de>
+Subject: [PATCH] ctl: fix to handle several elements added by
+	one operation for userspace element
+Date: Sun, 12 Apr 2015 10:12:25 +0900
+Message-ID: <1428801145-5203-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id A370A260453
- for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 02:15:36 +0200 (CEST)
-In-Reply-To: <s5ha8ye4qnx.wl-tiwai@suse.de>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5318260464
+ for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 03:12:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,65 +19,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNeW5tDA05pyIMTLml6UgMDA6NDIsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBBdCBTYXQs
-IDExIEFwciAyMDE1IDE3OjQxOjA1ICswOTAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-Cj4+IEFuIGVsZW1lbnQgaW5zdGFuY2UgY2FuIGhhdmUgc2V2ZXJhbCBlbGVtZW50cyB3aXRoIHRo
-ZSBzYW1lIGZlYXR1cmUuCj4+IFNvbWUgdXNlcnNwYWNlIGFwcGxpY2F0aW9ucyBjYW4gYWRkIHN1
-Y2ggYW4gZWxlbWVudCBpbnN0YW5jZSBieSBhZGQKPj4gb3BlcmF0aW9uIHdpdGggdGhlIG51bWJl
-ciBvZiBlbGVtZW50cy4gVGhlbiwgYW4gdXNlcnNwYWNlIGVsZW1lbnQKPj4gaW5zdGFuY2Uga2Vl
-cHMgYSBtZW1vcnkgb2JqZWN0IHRvIGtlZXAgc3RhdGUgb2YgdGhlc2UgZWxlbWVudHMuCj4+Cj4+
-IEJ1dCB0aGUgZWxlbWVudCBpbnN0YW5jZSBoYXMganVzdCBvbmUgbWVtb3J5IG9iamVjdCBmb3Ig
-dGhlIGVsZW1lbnRzLgo+PiBUaGlzIGNhdXNlcyB0aGUgc2FtZSByZXN1bHQgdG8gZWFjaCByZWFk
-L3dyaXRlIG9wZXJhdGlvbnMgdG8gdGhlCj4+IGRpZmZlcmVudCBlbGVtZW50cy4KPj4KPj4gVGhp
-cyBjb21taXQgZml4ZXMgdGhpcyBidWcgYnkgYWxsb2NhdGluZyBlbm91Z2ggbWVtb3J5IG9iamVj
-dHMgdG8gZWxlbWVudAo+PiBpbnN0YW5jZSBmb3IgZWFjaCBvZiBlbGVtZW50cy4KPj4KPj4gU2ln
-bmVkLW9mZi1ieTogVGFrYXNoaSBTYWthbW90byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+Cj4+
-IC0tLQo+PiAgc291bmQvY29yZS9jb250cm9sLmMgfCAxNCArKysrKysrKysrLS0tLQo+PiAgMSBm
-aWxlIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYg
-LS1naXQgYS9zb3VuZC9jb3JlL2NvbnRyb2wuYyBiL3NvdW5kL2NvcmUvY29udHJvbC5jCj4+IGlu
-ZGV4IGNjYjFjYTIuLjIzZWE3MzggMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL2NvcmUvY29udHJvbC5j
-Cj4+ICsrKyBiL3NvdW5kL2NvcmUvY29udHJvbC5jCj4+IEBAIC0xMDc4LDkgKzEwNzgsMTIgQEAg
-c3RhdGljIGludCBzbmRfY3RsX2VsZW1fdXNlcl9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2Nv
-bnRyb2wsCj4+ICAJCQkJIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQo+PiAg
-ewo+PiAgCXN0cnVjdCB1c2VyX2VsZW1lbnQgKnVlID0ga2NvbnRyb2wtPnByaXZhdGVfZGF0YTsK
-Pj4gKwl1bnNpZ25lZCBpbnQgc2l6ZSA9IHVlLT5lbGVtX2RhdGFfc2l6ZTsKPj4gKwkvKiBUaGUg
-Y2FsbGVyIGZpbGxlZCB3aG9sZSBpZGVudGljYWwgaW5mb3JtYXRpb24uICovCj4+ICsJY2hhciAq
-dGFyZ2V0ID0gdWUtPmVsZW1fZGF0YSArIHVjb250cm9sLT5pZC5pbmRleCAqIHNpemU7Cj4+ICAK
-Pj4gIAltdXRleF9sb2NrKCZ1ZS0+Y2FyZC0+dXNlcl9jdGxfbG9jayk7Cj4+IC0JbWVtY3B5KCZ1
-Y29udHJvbC0+dmFsdWUsIHVlLT5lbGVtX2RhdGEsIHVlLT5lbGVtX2RhdGFfc2l6ZSk7Cj4+ICsJ
-bWVtY3B5KCZ1Y29udHJvbC0+dmFsdWUsIHRhcmdldCwgc2l6ZSk7Cj4gCj4gWW91IG11c3QgY2hl
-Y2sgdGhlIHZhbGlkaXR5IG9mIHRoZSBhZGRyZXNzLCBpLmUuIGluZGV4IG9mZnNldC4KPiBUaGlz
-IGlzIGEgc2VjdXJpdHkgaG9sZS4KCk9LLiBJIGZvcmdvdCB0aGUgY2FzZSB0aGF0IHRoZSB2YWx1
-ZSBvZiBrY3RsLT5pbmRleCBzdGFydHMgMSBvciBsYXJnZXIuLi4KCgpUaGFua3MKClRha2FzaGkg
-U2FrYW1vdG8KCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKPiAKPj4gIAltdXRleF91bmxvY2soJnVl
-LT5jYXJkLT51c2VyX2N0bF9sb2NrKTsKPj4gIAlyZXR1cm4gMDsKPj4gIH0KPj4gQEAgLTEwOTAs
-MTEgKzEwOTMsMTQgQEAgc3RhdGljIGludCBzbmRfY3RsX2VsZW1fdXNlcl9wdXQoc3RydWN0IHNu
-ZF9rY29udHJvbCAqa2NvbnRyb2wsCj4+ICB7Cj4+ICAJaW50IGNoYW5nZTsKPj4gIAlzdHJ1Y3Qg
-dXNlcl9lbGVtZW50ICp1ZSA9IGtjb250cm9sLT5wcml2YXRlX2RhdGE7Cj4+ICsJdW5zaWduZWQg
-aW50IHNpemUgPSB1ZS0+ZWxlbV9kYXRhX3NpemU7Cj4+ICsJLyogVGhlIGNhbGxlciBmaWxsZWQg
-d2hvbGUgaWRlbnRpY2FsIGluZm9ybWF0aW9uLiAqLwo+PiArCWNoYXIgKnRhcmdldCA9IHVlLT5l
-bGVtX2RhdGEgKyB1Y29udHJvbC0+aWQuaW5kZXggKiBzaXplOwo+PiAgCj4+ICAJbXV0ZXhfbG9j
-aygmdWUtPmNhcmQtPnVzZXJfY3RsX2xvY2spOwo+PiAtCWNoYW5nZSA9IG1lbWNtcCgmdWNvbnRy
-b2wtPnZhbHVlLCB1ZS0+ZWxlbV9kYXRhLCB1ZS0+ZWxlbV9kYXRhX3NpemUpICE9IDA7Cj4+ICsJ
-Y2hhbmdlID0gbWVtY21wKCZ1Y29udHJvbC0+dmFsdWUsIHRhcmdldCwgc2l6ZSkgIT0gMDsKPj4g
-IAlpZiAoY2hhbmdlKQo+PiAtCQltZW1jcHkodWUtPmVsZW1fZGF0YSwgJnVjb250cm9sLT52YWx1
-ZSwgdWUtPmVsZW1fZGF0YV9zaXplKTsKPj4gKwkJbWVtY3B5KHRhcmdldCwgJnVjb250cm9sLT52
-YWx1ZSwgc2l6ZSk7Cj4+ICAJbXV0ZXhfdW5sb2NrKCZ1ZS0+Y2FyZC0+dXNlcl9jdGxfbG9jayk7
-Cj4+ICAJcmV0dXJuIGNoYW5nZTsKPj4gIH0KPj4gQEAgLTEyNzgsNyArMTI4NCw3IEBAIHN0YXRp
-YyBpbnQgc25kX2N0bF9lbGVtX2FkZChzdHJ1Y3Qgc25kX2N0bF9maWxlICpmaWxlLAo+PiAgCWlm
-IChlcnIgPCAwKQo+PiAgCQlyZXR1cm4gZXJyOwo+PiAgCW1lbWNweSgma2N0bC0+aWQsICZpbmZv
-LT5pZCwgc2l6ZW9mKGtjdGwtPmlkKSk7Cj4+IC0Ja2N0bC0+cHJpdmF0ZV9kYXRhID0ga3phbGxv
-YyhzaXplb2Yoc3RydWN0IHVzZXJfZWxlbWVudCkgKyBwcml2YXRlX3NpemUsCj4+ICsJa2N0bC0+
-cHJpdmF0ZV9kYXRhID0ga3phbGxvYyhzaXplb2Yoc3RydWN0IHVzZXJfZWxlbWVudCkgKyBwcml2
-YXRlX3NpemUgKiBjb3VudCwKPj4gIAkJCQkgICAgIEdGUF9LRVJORUwpOwo+PiAgCWlmIChrY3Rs
-LT5wcml2YXRlX2RhdGEgPT0gTlVMTCkgewo+PiAgCQlrZnJlZShrY3RsKTsKPj4gLS0gCj4+IDIu
-MS4wCj4+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+
-IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+An element instance can have several elements with the same feature.
+Some userspace applications can add such an element instance by add
+operation with the number of elements. Then, the element instance
+gets a memory object to keep states of these elements.
+
+But the element instance has just one memory object for the elements.
+This causes the same result to each read/write operations to the
+different elements.
+
+This commit fixes this bug by allocating enough memory objects to the
+element instance for each of elements.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/control.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/sound/core/control.c b/sound/core/control.c
+index ccb1ca2..5b2c352 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1029,7 +1029,7 @@ static int snd_ctl_elem_unlock(struct snd_ctl_file *file,
+ struct user_element {
+ 	struct snd_ctl_elem_info info;
+ 	struct snd_card *card;
+-	void *elem_data;		/* element data */
++	char *elem_data;		/* element data */
+ 	unsigned long elem_data_size;	/* size of element data in bytes */
+ 	void *tlv_data;			/* TLV data */
+ 	unsigned long tlv_data_size;	/* TLV data size */
+@@ -1078,9 +1078,12 @@ static int snd_ctl_elem_user_get(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct user_element *ue = kcontrol->private_data;
++	unsigned int size = ue->elem_data_size;
++	char *src = ue->elem_data +
++			snd_ctl_get_ioff(kcontrol, &ucontrol->id) * size;
+ 
+ 	mutex_lock(&ue->card->user_ctl_lock);
+-	memcpy(&ucontrol->value, ue->elem_data, ue->elem_data_size);
++	memcpy(&ucontrol->value, src, size);
+ 	mutex_unlock(&ue->card->user_ctl_lock);
+ 	return 0;
+ }
+@@ -1090,11 +1093,14 @@ static int snd_ctl_elem_user_put(struct snd_kcontrol *kcontrol,
+ {
+ 	int change;
+ 	struct user_element *ue = kcontrol->private_data;
++	unsigned int size = ue->elem_data_size;
++	char *dst = ue->elem_data +
++			snd_ctl_get_ioff(kcontrol, &ucontrol->id) * size;
+ 
+ 	mutex_lock(&ue->card->user_ctl_lock);
+-	change = memcmp(&ucontrol->value, ue->elem_data, ue->elem_data_size) != 0;
++	change = memcmp(&ucontrol->value, dst, size) != 0;
+ 	if (change)
+-		memcpy(ue->elem_data, &ucontrol->value, ue->elem_data_size);
++		memcpy(dst, &ucontrol->value, size);
+ 	mutex_unlock(&ue->card->user_ctl_lock);
+ 	return change;
+ }
+@@ -1278,7 +1284,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	if (err < 0)
+ 		return err;
+ 	memcpy(&kctl->id, &info->id, sizeof(kctl->id));
+-	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size,
++	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size * count,
+ 				     GFP_KERNEL);
+ 	if (kctl->private_data == NULL) {
+ 		kfree(kctl);
+-- 
+2.1.0
