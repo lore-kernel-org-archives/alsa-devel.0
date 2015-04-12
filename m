@@ -1,19 +1,20 @@
-From: Nilhcraiv <nilhcraiv@gmail.com>
-Subject: Re: Playback - Overwrite buffer with silence
-Date: Sun, 12 Apr 2015 01:15:24 +0200
-Message-ID: <14caac41f10.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
-References: <5529421B.7050601@gmail.com>
- <55297E6E.20302@ladisch.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 4/4] ctl: fix to handle several elements
+ added by one operation for userspace element
+Date: Sun, 12 Apr 2015 09:15:30 +0900
+Message-ID: <5529B922.7010103@sakamocchi.jp>
+References: <1428512838-2493-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1428741665-22262-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1428741665-22262-5-git-send-email-o-takashi@sakamocchi.jp>
+ <s5ha8ye4qnx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f51.google.com (mail-wg0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id EAFE526043A
- for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 01:15:28 +0200 (CEST)
-Received: by wgsk9 with SMTP id k9so48068327wgs.3
- for <alsa-devel@alsa-project.org>; Sat, 11 Apr 2015 16:15:28 -0700 (PDT)
-In-Reply-To: <14caab5d6d0.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id A370A260453
+ for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 02:15:36 +0200 (CEST)
+In-Reply-To: <s5ha8ye4qnx.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,83 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello Clemens,
-
-Fisrt of all thanks for your answer.
-
-In my code there are error checking, of course. The code of this email 
-thread is only just to simplify the question.
-
-Clemens wrote:
-It is impossible for the boundar to be zero.
-
-
-I am sure, if you compile this code, "boundary" variable is always zero.
-But the question is, How I can put silence data in buffer if the received 
-data is not available at time? (to avoid under-run) Is the doc wrong?
-
-
-#define FRAMES 240
-#define PERIOD 1*FRAMES
-#define BUFFER_SIZE PERIOD*2
-#define CHANNELS 1
-#define SAMPLE_RATE 48000
-
-snd_pcm_hw_params_t *hwparams;
-snd_pcm_sw_params_t *swparams;
-int exact_rate,dir;
-snd_pcm_uframes_t boundary=0;
-
-snd_pcm_stream_t stream = SND_PCM_STREAM_PLAYBACK;
-snd_pcm_hw_params_alloca(&hwparams);
-snd_pcm_sw_params_alloca(&swparams);
-
-
-/*PlayBack hw */
-snd_pcm_open(&pcm_handle, "default", stream, 0);
-snd_pcm_hw_params_any(pcm_handle, hwparams);
-snd_pcm_hw_params_set_access(pcm_handle, hwparams,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-snd_pcm_hw_params_set_format(pcm_handle, hwparams,
-SND_PCM_FORMAT_S16_LE);
-exact_rate = SAMPLE_RATE;
-snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, &exact_rate, 0);
-snd_pcm_hw_params_set_channels(pcm_handle, hwparams, CHANNELS);
-snd_pcm_hw_params_set_buffer_size(pcm_handle, hwparams, BUFFER_SIZE);
-snd_pcm_hw_params(pcm_handle, hwparams);
-
-/*Avoid under-run sw*/
-snd_pcm_sw_params_current(pcm_handle, swparams);
-snd_pcm_sw_params_get_boundary(swparams, &boundary); /*Here,
-boundary is allways ZERO*/
-snd_pcm_sw_params_set_silence_threshold(pcm_handle, swparams, 0);
-/*According to the doc.*/
-snd_pcm_sw_params_set_silence_size(pcm_handle, swparams, boundary);
-/*According to the doc.*/
-snd_pcm_sw_params(pcm_handle,swparams);
-/*END Avoid under-run*/
-
-snd_pcm_prepare(pcm_handle);
-
-
-Thanks!
-
-
-
-
-Nilhcraiv wrote:
-> If I obtain the boundary for ring pointers in frames at the start 
-> (snd_pcm_sw_params_get_boundary), the boundary is always zero.
-
-It is impossible for the boundar to be zero.
-
-> Here you can see a light version of my code (without error checking):
-
-Error checking would be important.
-
-
-Regards,
-Clemens
+T24gMjAxNeW5tDA05pyIMTLml6UgMDA6NDIsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBBdCBTYXQs
+IDExIEFwciAyMDE1IDE3OjQxOjA1ICswOTAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
+Cj4+IEFuIGVsZW1lbnQgaW5zdGFuY2UgY2FuIGhhdmUgc2V2ZXJhbCBlbGVtZW50cyB3aXRoIHRo
+ZSBzYW1lIGZlYXR1cmUuCj4+IFNvbWUgdXNlcnNwYWNlIGFwcGxpY2F0aW9ucyBjYW4gYWRkIHN1
+Y2ggYW4gZWxlbWVudCBpbnN0YW5jZSBieSBhZGQKPj4gb3BlcmF0aW9uIHdpdGggdGhlIG51bWJl
+ciBvZiBlbGVtZW50cy4gVGhlbiwgYW4gdXNlcnNwYWNlIGVsZW1lbnQKPj4gaW5zdGFuY2Uga2Vl
+cHMgYSBtZW1vcnkgb2JqZWN0IHRvIGtlZXAgc3RhdGUgb2YgdGhlc2UgZWxlbWVudHMuCj4+Cj4+
+IEJ1dCB0aGUgZWxlbWVudCBpbnN0YW5jZSBoYXMganVzdCBvbmUgbWVtb3J5IG9iamVjdCBmb3Ig
+dGhlIGVsZW1lbnRzLgo+PiBUaGlzIGNhdXNlcyB0aGUgc2FtZSByZXN1bHQgdG8gZWFjaCByZWFk
+L3dyaXRlIG9wZXJhdGlvbnMgdG8gdGhlCj4+IGRpZmZlcmVudCBlbGVtZW50cy4KPj4KPj4gVGhp
+cyBjb21taXQgZml4ZXMgdGhpcyBidWcgYnkgYWxsb2NhdGluZyBlbm91Z2ggbWVtb3J5IG9iamVj
+dHMgdG8gZWxlbWVudAo+PiBpbnN0YW5jZSBmb3IgZWFjaCBvZiBlbGVtZW50cy4KPj4KPj4gU2ln
+bmVkLW9mZi1ieTogVGFrYXNoaSBTYWthbW90byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+Cj4+
+IC0tLQo+PiAgc291bmQvY29yZS9jb250cm9sLmMgfCAxNCArKysrKysrKysrLS0tLQo+PiAgMSBm
+aWxlIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYg
+LS1naXQgYS9zb3VuZC9jb3JlL2NvbnRyb2wuYyBiL3NvdW5kL2NvcmUvY29udHJvbC5jCj4+IGlu
+ZGV4IGNjYjFjYTIuLjIzZWE3MzggMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL2NvcmUvY29udHJvbC5j
+Cj4+ICsrKyBiL3NvdW5kL2NvcmUvY29udHJvbC5jCj4+IEBAIC0xMDc4LDkgKzEwNzgsMTIgQEAg
+c3RhdGljIGludCBzbmRfY3RsX2VsZW1fdXNlcl9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2Nv
+bnRyb2wsCj4+ICAJCQkJIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQo+PiAg
+ewo+PiAgCXN0cnVjdCB1c2VyX2VsZW1lbnQgKnVlID0ga2NvbnRyb2wtPnByaXZhdGVfZGF0YTsK
+Pj4gKwl1bnNpZ25lZCBpbnQgc2l6ZSA9IHVlLT5lbGVtX2RhdGFfc2l6ZTsKPj4gKwkvKiBUaGUg
+Y2FsbGVyIGZpbGxlZCB3aG9sZSBpZGVudGljYWwgaW5mb3JtYXRpb24uICovCj4+ICsJY2hhciAq
+dGFyZ2V0ID0gdWUtPmVsZW1fZGF0YSArIHVjb250cm9sLT5pZC5pbmRleCAqIHNpemU7Cj4+ICAK
+Pj4gIAltdXRleF9sb2NrKCZ1ZS0+Y2FyZC0+dXNlcl9jdGxfbG9jayk7Cj4+IC0JbWVtY3B5KCZ1
+Y29udHJvbC0+dmFsdWUsIHVlLT5lbGVtX2RhdGEsIHVlLT5lbGVtX2RhdGFfc2l6ZSk7Cj4+ICsJ
+bWVtY3B5KCZ1Y29udHJvbC0+dmFsdWUsIHRhcmdldCwgc2l6ZSk7Cj4gCj4gWW91IG11c3QgY2hl
+Y2sgdGhlIHZhbGlkaXR5IG9mIHRoZSBhZGRyZXNzLCBpLmUuIGluZGV4IG9mZnNldC4KPiBUaGlz
+IGlzIGEgc2VjdXJpdHkgaG9sZS4KCk9LLiBJIGZvcmdvdCB0aGUgY2FzZSB0aGF0IHRoZSB2YWx1
+ZSBvZiBrY3RsLT5pbmRleCBzdGFydHMgMSBvciBsYXJnZXIuLi4KCgpUaGFua3MKClRha2FzaGkg
+U2FrYW1vdG8KCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKPiAKPj4gIAltdXRleF91bmxvY2soJnVl
+LT5jYXJkLT51c2VyX2N0bF9sb2NrKTsKPj4gIAlyZXR1cm4gMDsKPj4gIH0KPj4gQEAgLTEwOTAs
+MTEgKzEwOTMsMTQgQEAgc3RhdGljIGludCBzbmRfY3RsX2VsZW1fdXNlcl9wdXQoc3RydWN0IHNu
+ZF9rY29udHJvbCAqa2NvbnRyb2wsCj4+ICB7Cj4+ICAJaW50IGNoYW5nZTsKPj4gIAlzdHJ1Y3Qg
+dXNlcl9lbGVtZW50ICp1ZSA9IGtjb250cm9sLT5wcml2YXRlX2RhdGE7Cj4+ICsJdW5zaWduZWQg
+aW50IHNpemUgPSB1ZS0+ZWxlbV9kYXRhX3NpemU7Cj4+ICsJLyogVGhlIGNhbGxlciBmaWxsZWQg
+d2hvbGUgaWRlbnRpY2FsIGluZm9ybWF0aW9uLiAqLwo+PiArCWNoYXIgKnRhcmdldCA9IHVlLT5l
+bGVtX2RhdGEgKyB1Y29udHJvbC0+aWQuaW5kZXggKiBzaXplOwo+PiAgCj4+ICAJbXV0ZXhfbG9j
+aygmdWUtPmNhcmQtPnVzZXJfY3RsX2xvY2spOwo+PiAtCWNoYW5nZSA9IG1lbWNtcCgmdWNvbnRy
+b2wtPnZhbHVlLCB1ZS0+ZWxlbV9kYXRhLCB1ZS0+ZWxlbV9kYXRhX3NpemUpICE9IDA7Cj4+ICsJ
+Y2hhbmdlID0gbWVtY21wKCZ1Y29udHJvbC0+dmFsdWUsIHRhcmdldCwgc2l6ZSkgIT0gMDsKPj4g
+IAlpZiAoY2hhbmdlKQo+PiAtCQltZW1jcHkodWUtPmVsZW1fZGF0YSwgJnVjb250cm9sLT52YWx1
+ZSwgdWUtPmVsZW1fZGF0YV9zaXplKTsKPj4gKwkJbWVtY3B5KHRhcmdldCwgJnVjb250cm9sLT52
+YWx1ZSwgc2l6ZSk7Cj4+ICAJbXV0ZXhfdW5sb2NrKCZ1ZS0+Y2FyZC0+dXNlcl9jdGxfbG9jayk7
+Cj4+ICAJcmV0dXJuIGNoYW5nZTsKPj4gIH0KPj4gQEAgLTEyNzgsNyArMTI4NCw3IEBAIHN0YXRp
+YyBpbnQgc25kX2N0bF9lbGVtX2FkZChzdHJ1Y3Qgc25kX2N0bF9maWxlICpmaWxlLAo+PiAgCWlm
+IChlcnIgPCAwKQo+PiAgCQlyZXR1cm4gZXJyOwo+PiAgCW1lbWNweSgma2N0bC0+aWQsICZpbmZv
+LT5pZCwgc2l6ZW9mKGtjdGwtPmlkKSk7Cj4+IC0Ja2N0bC0+cHJpdmF0ZV9kYXRhID0ga3phbGxv
+YyhzaXplb2Yoc3RydWN0IHVzZXJfZWxlbWVudCkgKyBwcml2YXRlX3NpemUsCj4+ICsJa2N0bC0+
+cHJpdmF0ZV9kYXRhID0ga3phbGxvYyhzaXplb2Yoc3RydWN0IHVzZXJfZWxlbWVudCkgKyBwcml2
+YXRlX3NpemUgKiBjb3VudCwKPj4gIAkJCQkgICAgIEdGUF9LRVJORUwpOwo+PiAgCWlmIChrY3Rs
+LT5wcml2YXRlX2RhdGEgPT0gTlVMTCkgewo+PiAgCQlrZnJlZShrY3RsKTsKPj4gLS0gCj4+IDIu
+MS4wCj4+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+
+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
