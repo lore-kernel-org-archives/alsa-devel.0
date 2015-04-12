@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [RFC 01/11] ALSA: hda - add id table support for hdac
-	device/driver
-Date: Sun, 12 Apr 2015 18:06:08 +0530
-Message-ID: <1428842178-7105-2-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [RFC 02/11] ALSA: hda - Add generic helper function to
+	register/unregister driver
+Date: Sun, 12 Apr 2015 18:06:09 +0530
+Message-ID: <1428842178-7105-3-git-send-email-subhransu.s.prusty@intel.com>
 References: <1428842178-7105-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id CF54126058F
- for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 15:05:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CF49260591
+ for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 15:05:49 +0200 (CEST)
 In-Reply-To: <1428842178-7105-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,123 +27,59 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-For device/driver matching, uses id table
-if device type is HDA_DEV_ASOC.
+ASOC HD codec drivers will use the generic functions
+to register/unregister driver
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio.h  | 16 ++++++++++++++++
- sound/hda/hda_bus_type.c |  2 ++
- sound/hda/hdac_bus.c     | 24 ++++++++++++++++++++++++
- 3 files changed, 42 insertions(+)
+ include/sound/hdaudio.h |  3 +++
+ sound/hda/hdac_bus.c    | 21 +++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
 diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 1652764..3628a09 100644
+index 3628a09..b63cd03 100644
 --- a/include/sound/hdaudio.h
 +++ b/include/sound/hdaudio.h
-@@ -42,6 +42,14 @@ struct hdac_widget_tree;
-  */
- extern struct bus_type snd_hda_bus_type;
+@@ -153,6 +153,9 @@ struct hdac_driver {
  
-+/*HDA device table*/
-+#define HDA_NAME_SIZE      20
-+struct hdac_device_id {
-+	__u32 id;
-+	char name[HDA_NAME_SIZE];
-+	unsigned long driver_data;
-+};
+ #define drv_to_hdac_driver(_drv) container_of(_drv, struct hdac_driver, driver)
+ 
++int snd_hdac_driver_register(struct hdac_driver *drv);
++void snd_hdac_driver_unregister(struct hdac_driver *drv);
 +
  /*
-  * HD-audio codec base device
+  * HD-audio bus base driver
   */
-@@ -82,6 +90,8 @@ struct hdac_device {
- 
- 	/* sysfs */
- 	struct hdac_widget_tree *widgets;
-+
-+	const struct hdac_device_id *id_entry;
- };
- 
- /* device/driver type used for matching */
-@@ -96,6 +106,9 @@ enum {
- 	HDA_INPUT, HDA_OUTPUT
- };
- 
-+
-+#define hda_get_device_id(pdev)    ((pdev)->id_entry)
-+
- #define dev_to_hdac_dev(_dev)	container_of(_dev, struct hdac_device, dev)
- 
- int snd_hdac_device_init(struct hdac_device *dev, struct hdac_bus *bus,
-@@ -126,12 +139,14 @@ static inline void snd_hdac_power_up(struct hdac_device *codec) {}
- static inline void snd_hdac_power_down(struct hdac_device *codec) {}
- #endif
- 
-+
- /*
-  * HD-audio codec base driver
-  */
- struct hdac_driver {
- 	struct device_driver driver;
- 	int type;
-+	struct hdac_device_id *id_table;
- 	int (*match)(struct hdac_device *dev, struct hdac_driver *drv);
- 	void (*unsol_event)(struct hdac_device *dev, unsigned int event);
- };
-@@ -248,6 +263,7 @@ void snd_hdac_bus_queue_event(struct hdac_bus *bus, u32 res, u32 res_ex);
- int snd_hdac_bus_add_device(struct hdac_bus *bus, struct hdac_device *codec);
- void snd_hdac_bus_remove_device(struct hdac_bus *bus,
- 				struct hdac_device *codec);
-+int snd_hdac_bus_match_id(struct hdac_device *dev, struct hdac_driver *drv);
- 
- static inline void snd_hdac_codec_link_up(struct hdac_device *codec)
- {
-diff --git a/sound/hda/hda_bus_type.c b/sound/hda/hda_bus_type.c
-index 519914a..8899c56 100644
---- a/sound/hda/hda_bus_type.c
-+++ b/sound/hda/hda_bus_type.c
-@@ -19,6 +19,8 @@ static int hda_bus_match(struct device *dev, struct device_driver *drv)
- 		return 0;
- 	if (hdrv->match)
- 		return hdrv->match(hdev, hdrv);
-+	if (hdrv->id_table)
-+		return snd_hdac_bus_match_id(hdev, hdrv);
- 	return 1;
- }
- 
 diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 3294fd4..f0ee295 100644
+index f0ee295..4ecb4ec 100644
 --- a/sound/hda/hdac_bus.c
 +++ b/sound/hda/hdac_bus.c
-@@ -195,3 +195,27 @@ void snd_hdac_bus_remove_device(struct hdac_bus *bus,
- 	bus->num_codecs--;
+@@ -219,3 +219,24 @@ int snd_hdac_bus_match_id(struct hdac_device *dev,
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(snd_hdac_bus_remove_device);
+ EXPORT_SYMBOL_GPL(snd_hdac_bus_match_id);
 +
 +/**
-+ * snd_hdac_bus_match_id - bind hdac device to hdac driver.
-+ * @hdev: device.
-+ * @hdrv: driver.
-+ *
++ * snd_hdac_driver_register - register a driver for hda devices
++ * @drv: hdac driver structure
 + */
-+int snd_hdac_bus_match_id(struct hdac_device *dev,
-+		 struct hdac_driver *drv)
++int snd_hdac_driver_register(struct hdac_driver *drv)
 +{
-+	if (drv->id_table) {
-+		struct hdac_device_id *id = drv->id_table;
-+
-+		while (id->name[0]) {
-+			if (dev->vendor_id == id->id) {
-+				dev->id_entry = id;
-+				return 1;
-+			}
-+			id++;
-+		}
-+	}
-+	return 0;
++	drv->driver.bus = &snd_hda_bus_type;
++	return driver_register(&drv->driver);
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_bus_match_id);
++EXPORT_SYMBOL_GPL(snd_hdac_driver_register);
++
++/**
++ * snd_hdac_driver_unregister - unregister a driver for hda devices
++ * @drv: hdac driver structure
++ */
++void snd_hdac_driver_unregister(struct hdac_driver *drv)
++{
++	driver_unregister(&drv->driver);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_driver_unregister);
 -- 
 1.9.0
