@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [RFC 02/11] ALSA: hda - Add generic helper function to
-	register/unregister driver
-Date: Sun, 12 Apr 2015 18:06:09 +0530
-Message-ID: <1428842178-7105-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [RFC 03/11] ALSA: hda - add generic function to
+	unregister all devices on bus
+Date: Sun, 12 Apr 2015 18:06:10 +0530
+Message-ID: <1428842178-7105-4-git-send-email-subhransu.s.prusty@intel.com>
 References: <1428842178-7105-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CF49260591
- for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 15:05:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5ADC726059D
+ for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 15:05:52 +0200 (CEST)
 In-Reply-To: <1428842178-7105-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,59 +27,47 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-ASOC HD codec drivers will use the generic functions
-to register/unregister driver
+This will be used by SKL controller in driver remove
+to unregister  all hda devices added during probe.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio.h |  3 +++
- sound/hda/hdac_bus.c    | 21 +++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ include/sound/hdaudio.h |  2 ++
+ sound/hda/hdac_bus.c    | 10 ++++++++++
+ 2 files changed, 12 insertions(+)
 
 diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 3628a09..b63cd03 100644
+index b63cd03..247c4a7 100644
 --- a/include/sound/hdaudio.h
 +++ b/include/sound/hdaudio.h
-@@ -153,6 +153,9 @@ struct hdac_driver {
+@@ -268,6 +268,8 @@ void snd_hdac_bus_remove_device(struct hdac_bus *bus,
+ 				struct hdac_device *codec);
+ int snd_hdac_bus_match_id(struct hdac_device *dev, struct hdac_driver *drv);
  
- #define drv_to_hdac_driver(_drv) container_of(_drv, struct hdac_driver, driver)
- 
-+int snd_hdac_driver_register(struct hdac_driver *drv);
-+void snd_hdac_driver_unregister(struct hdac_driver *drv);
++void snd_hdac_bus_device_unregister(struct hdac_bus *bus);
 +
- /*
-  * HD-audio bus base driver
-  */
+ static inline void snd_hdac_codec_link_up(struct hdac_device *codec)
+ {
+ 	set_bit(codec->addr, &codec->bus->codec_powered);
 diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index f0ee295..4ecb4ec 100644
+index 4ecb4ec..23b6076 100644
 --- a/sound/hda/hdac_bus.c
 +++ b/sound/hda/hdac_bus.c
-@@ -219,3 +219,24 @@ int snd_hdac_bus_match_id(struct hdac_device *dev,
- 	return 0;
+@@ -240,3 +240,13 @@ void snd_hdac_driver_unregister(struct hdac_driver *drv)
+ 	driver_unregister(&drv->driver);
  }
- EXPORT_SYMBOL_GPL(snd_hdac_bus_match_id);
+ EXPORT_SYMBOL_GPL(snd_hdac_driver_unregister);
 +
-+/**
-+ * snd_hdac_driver_register - register a driver for hda devices
-+ * @drv: hdac driver structure
-+ */
-+int snd_hdac_driver_register(struct hdac_driver *drv)
++void snd_hdac_bus_device_unregister(struct hdac_bus *bus)
 +{
-+	drv->driver.bus = &snd_hda_bus_type;
-+	return driver_register(&drv->driver);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_driver_register);
++	struct hdac_device *hdev;
 +
-+/**
-+ * snd_hdac_driver_unregister - unregister a driver for hda devices
-+ * @drv: hdac driver structure
-+ */
-+void snd_hdac_driver_unregister(struct hdac_driver *drv)
-+{
-+	driver_unregister(&drv->driver);
++	/*unregister all devices on bus */
++	list_for_each_entry(hdev, &bus->codec_list, list)
++				snd_hdac_device_unregister(hdev);
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_driver_unregister);
++EXPORT_SYMBOL_GPL(snd_hdac_bus_device_unregister);
 -- 
 1.9.0
