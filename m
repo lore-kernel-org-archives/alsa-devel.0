@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinci-evm: Use card DAPM context
- to access widgets
-Date: Sun, 12 Apr 2015 12:44:37 +0100
-Message-ID: <20150412114437.GB6023@sirena.org.uk>
-References: <1428750688-12171-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: n810: Consistently pass the card
+ DAPM context to n810_ext_control()
+Date: Sun, 12 Apr 2015 12:45:41 +0100
+Message-ID: <20150412114541.GC6023@sirena.org.uk>
+References: <1428742078-9704-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7108443658816435112=="
+Content-Type: multipart/mixed; boundary="===============0549347704223390675=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 00E2E26056A
- for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 13:44:44 +0200 (CEST)
-In-Reply-To: <1428750688-12171-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 14EA32605C8
+ for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 13:45:51 +0200 (CEST)
+In-Reply-To: <1428742078-9704-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7108443658816435112==
+--===============0549347704223390675==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2M5S/FFnatmgZKAU"
+	protocol="application/pgp-signature"; boundary="q4jrepk2VNZYINwh"
 Content-Disposition: inline
 
 
---2M5S/FFnatmgZKAU
+--q4jrepk2VNZYINwh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Apr 11, 2015 at 01:11:28PM +0200, Lars-Peter Clausen wrote:
-> The dapm field of the snd_soc_codec struct will eventually be removed
-> (replaced with the DAPM context from the component embedded inside the
-> CODEC). Replace its usage with the card's DAPM context. The idea is that
-> DAPM is hierarchical and with the card at the root it is possible to access
-> widgets from other contexts through the card context.
+On Sat, Apr 11, 2015 at 10:47:57AM +0200, Lars-Peter Clausen wrote:
+> Some callers of n810_ext_control() pass the card DAPM context and some pass
+> the CODEC DAPM context. Given that some of the widgets that are accessed in
+> the function are in the card's context, always passing it is the obvious
+> choice.
 
-Applied, thanks.
+Applied both, thanks.
 
---2M5S/FFnatmgZKAU
+--q4jrepk2VNZYINwh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVKlqkAAoJECTWi3JdVIfQSo4H/20MYRk7fP74iMK23RALTNDc
-x65PzqLN+AO7ZkEZyuFJZ7fHoXNeY4lx1mGhxHSOnguLrxceeZ01TfJph/jAsteC
-brGJq84zgYGOBQfiazoVTjnzKdsMjwVeDFfcJl3KoYwJAUcWGEszZSm+V/IQx+Gr
-eNVTszjrZ/+gU4LcJfqeOrvGoYzRDm763Cva/DkN6iEZZlHauZmb0J7VrgtkT6ph
-rzSxOv7sH81kX2F0KBMjrI2e1D+5rbqLRYNiLrOt+gV8L4rktHlBP4FECBuWvSvj
-iV6WIcO6fyAU8YpNojQoh/+WeBcrdFdNjRftFt8//PZXfSqFQ01FkuQbUN0l9Dw=
-=77E9
+iQEcBAEBCAAGBQJVKlrkAAoJECTWi3JdVIfQi5YH/RHB4JLdKz6n/T2Fn6SBAyqb
+sdLZAVL5LETrKaAwATo5sWN4RDmdTUniiKWBVrfW6MdtImpyY2VOgdsTyrmIgIaY
+WkyLB/RcgKMXuqzzpX1GwTaTtLUB0EAytekGTGjKYCPtNOIm6GSLrinxnB5mETgf
+LEf8JLr+bh6aRM6j6PTRpY1J/wN/Uui5yndKyNd5hwv4pbsJysNp0h7EyZ5T7VF9
+H7X2Zn9u6JoCVl9giis7H83B9xjk8NOsFKz085VGWf5M7k1rAI+/Hdf3mwzgp+0c
+b2B0vbhVHAEhxOBNp2L2eCJcth+YpOlia8+bq5zE5XlBPucHe27dN64Zu/s4RYE=
+=OpnC
 -----END PGP SIGNATURE-----
 
---2M5S/FFnatmgZKAU--
+--q4jrepk2VNZYINwh--
 
---===============7108443658816435112==
+--===============0549347704223390675==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7108443658816435112==--
+--===============0549347704223390675==--
