@@ -1,16 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [RFC 04/11] ALSA: hda: corrected
-	snd_hdac_stream_init() declaration
-Date: Sun, 12 Apr 2015 18:06:11 +0530
-Message-ID: <1428842178-7105-5-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [RFC 05/11] ALSA: hda - exported link_reset enter/exit
+Date: Sun, 12 Apr 2015 18:06:12 +0530
+Message-ID: <1428842178-7105-6-git-send-email-subhransu.s.prusty@intel.com>
 References: <1428842178-7105-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 4182D260600
- for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 15:05:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 06CA0260629
+ for <alsa-devel@alsa-project.org>; Sun, 12 Apr 2015 15:05:57 +0200 (CEST)
 In-Reply-To: <1428842178-7105-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,27 +26,88 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Corrected snd_hdac_stream_init() declaration in header file.
+Exported azx_enter_link_reset and azx_exit_link_reset
+functions to be used by the SKL controller driver
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/hdaudio.h     |  3 +++
+ sound/hda/hdac_controller.c | 10 ++++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 247c4a7..bffb2a9 100644
+index bffb2a9..4eebc31 100644
 --- a/include/sound/hdaudio.h
 +++ b/include/sound/hdaudio.h
-@@ -340,7 +340,7 @@ struct hdac_stream {
- 	struct mutex dsp_mutex;
- };
+@@ -286,6 +286,8 @@ int snd_hdac_bus_get_response(struct hdac_bus *bus, unsigned int addr,
  
--void snd_hdac_bus_stream_init(struct hdac_bus *bus, struct hdac_stream *azx_dev,
-+void snd_hdac_stream_init(struct hdac_bus *bus, struct hdac_stream *azx_dev,
- 			      int idx, int direction, int tag);
- struct hdac_stream *snd_hdac_stream_assign(struct hdac_bus *bus,
- 					   struct snd_pcm_substream *substream);
+ void snd_hdac_bus_init_chip(struct hdac_bus *bus, bool full_reset);
+ void snd_hdac_bus_stop_chip(struct hdac_bus *bus);
++void snd_hdac_bus_enter_link_reset(struct hdac_bus *bus);
++void snd_hdac_bus_exit_link_reset(struct hdac_bus *bus);
+ 
+ void snd_hdac_bus_update_rirb(struct hdac_bus *bus);
+ void snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus, unsigned int status,
+@@ -359,6 +361,7 @@ void snd_hdac_stream_sync(struct hdac_stream *azx_dev, bool start,
+ 			  unsigned int streams);
+ void snd_hdac_stream_timecounter_init(struct hdac_stream *azx_dev,
+ 				      unsigned int streams);
++
+ /*DSP loader functions */
+ int snd_hdac_load_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
+ 				unsigned int byte_size,
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 5b1cd94..23aec0e 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -212,7 +212,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_bus_get_response);
+  */
+ 
+ /* enter link reset */
+-static void azx_enter_link_reset(struct hdac_bus *bus)
++void snd_hdac_bus_enter_link_reset(struct hdac_bus *bus)
+ {
+ 	unsigned long timeout;
+ 
+@@ -224,9 +224,10 @@ static void azx_enter_link_reset(struct hdac_bus *bus)
+ 	       time_before(jiffies, timeout))
+ 		usleep_range(500, 1000);
+ }
++EXPORT_SYMBOL_GPL(snd_hdac_bus_enter_link_reset);
+ 
+ /* exit link reset */
+-static void azx_exit_link_reset(struct hdac_bus *bus)
++void snd_hdac_bus_exit_link_reset(struct hdac_bus *bus)
+ {
+ 	unsigned long timeout;
+ 
+@@ -236,6 +237,7 @@ static void azx_exit_link_reset(struct hdac_bus *bus)
+ 	while (!azx_readb(bus, GCTL) && time_before(jiffies, timeout))
+ 		usleep_range(500, 1000);
+ }
++EXPORT_SYMBOL_GPL(snd_hdac_bus_exit_link_reset);
+ 
+ /* reset codec link */
+ static int azx_reset(struct hdac_bus *bus, bool full_reset)
+@@ -247,7 +249,7 @@ static int azx_reset(struct hdac_bus *bus, bool full_reset)
+ 	azx_writew(bus, STATESTS, STATESTS_INT_MASK);
+ 
+ 	/* reset controller */
+-	azx_enter_link_reset(bus);
++	snd_hdac_bus_enter_link_reset(bus);
+ 
+ 	/* delay for >= 100us for codec PLL to settle per spec
+ 	 * Rev 0.9 section 5.5.1
+@@ -255,7 +257,7 @@ static int azx_reset(struct hdac_bus *bus, bool full_reset)
+ 	usleep_range(500, 1000);
+ 
+ 	/* Bring controller out of reset */
+-	azx_exit_link_reset(bus);
++	snd_hdac_bus_exit_link_reset(bus);
+ 
+ 	/* Brent Chartrand said to wait >= 540us for codecs to initialize */
+ 	usleep_range(1000, 1200);
 -- 
 1.9.0
