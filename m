@@ -1,19 +1,18 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - not use regmap for vendor verb
- 0x781 of Intel HDMI codec
-Date: Mon, 13 Apr 2015 13:29:47 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B826848@SHSMSX101.ccr.corp.intel.com>
-References: <2f716e6b90b7416eb34d35ed1954c7761bfd2050.1428918546.git.mengdong.lin@intel.com>
- <s5hpp78p94w.wl-tiwai@suse.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: ASoC: davinci-mcasp: Set rule constraints if
+ implicit BCLK divider is used
+Date: Mon, 13 Apr 2015 16:32:24 +0300
+Message-ID: <552BC568.7070907@ti.com>
+References: <20150410093336.GA5779@mwanda> <552BAADA.5060401@ti.com>
+ <20150413121639.GU16501@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 8763C26508C
- for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2015 15:29:53 +0200 (CEST)
-In-Reply-To: <s5hpp78p94w.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4DEF26508C
+ for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2015 15:32:28 +0200 (CEST)
+In-Reply-To: <20150413121639.GU16501@mwanda>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,41 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, April 13, 2015 7:21 PM
-> To: Lin, Mengdong
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [PATCH] ALSA: hda - not use regmap for vendor verb 0x781 of Intel
-> HDMI codec
-> 
-> At Mon, 13 Apr 2015 17:50:43 +0800,
-> mengdong.lin@intel.com wrote:
-> >
-> > From: Mengdong Lin <mengdong.lin@intel.com>
-> >
-> > For HDMI codec on Haswell/Broadwell/Skylake platforms, the vendor verb
-> > 0x781 is used enable DP 1.2 mode as a fixup if BIOS has not done this,
-> > in function intel_haswell_fixup_enable_dp12(). Otherwise, the display
-> > audio playback will be silent.
-> >
-> > Although the verb 0x781 is added to vendor verbs array, but
-> > snd_hdac_regmap_
-> > encode_verb() will translate it to verb 0xf81 and cause regmap_write
-> > IO failure because 0xf81 is not in the vendor verb array and so will
-> > not be taken as a writable register.
-> >
-> > So this patch no longer uses regmap for verb 0x781 but directly send
-> > this command to enable DP1.2 mode.
-> 
-> What if just add INTEL_GET_VENDOR_VERB as a vendor verb?
+On 04/13/15 15:16, Dan Carpenter wrote:
+> Thanks for looking at this.  I haven't double checked your analysis, but
+> 512 means the stack is 2k and that's too high.  I think there is
+> supposed to be a build warning if we use more than 1k of stack in a
+> function?
+>
+> It's better to allocate it with kmalloc() and free it at the end.
+>
+> regards,
+> dan carpenter
+>
 
-Yes, it should work. hda_reg_write will drop the GET bit. 
-I'll have a test tomorrow.
+The function may get called hundreds or even thousands of times when an 
+audio stream is started. How heavy is kmalloc/free cycle?
 
-Thanks
-Mengdong
+Using kmalloc just feels a bit stupid since in any remotely feasible 
+case the maximum number of channels is 8. But maybe I just should not care.
+
+Best regards,
+Jyri
