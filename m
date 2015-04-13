@@ -1,17 +1,15 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH] ASoC: at91sam9g20ek: Automatically
- disconnect non-connected pins
-Date: Mon, 13 Apr 2015 11:07:40 +0200
-Message-ID: <552B875C.4070403@atmel.com>
-References: <1428743923-26675-1-git-send-email-lars@metafoo.de>
+From: mengdong.lin@intel.com
+Subject: [PATCH] ALSA: hda - not use regmap for vendor verb
+	0x781 of Intel HDMI codec
+Date: Mon, 13 Apr 2015 17:50:43 +0800
+Message-ID: <2f716e6b90b7416eb34d35ed1954c7761bfd2050.1428918546.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eusmtp01.atmel.com (eusmtp01.atmel.com [212.144.249.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 719E3261A83
- for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2015 11:08:12 +0200 (CEST)
-In-Reply-To: <1428743923-26675-1-git-send-email-lars@metafoo.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9905F261A5E
+ for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2015 11:40:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,90 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Le 11/04/2015 11:18, Lars-Peter Clausen a =E9crit :
-> According to the schematics the both LHPOUT and RHPOUT are connected to t=
-he
-> external connector. RHPOUT is missing from the DAPM routes, but otherwise
-> they seem to be complete.
-> =
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-> This patch adds the missing route and then sets the fully_routed flag for
-> the card. This allows to remove all the manual calls to
-> snd_soc_dapm_nc_pin().
-> =
+For HDMI codec on Haswell/Broadwell/Skylake platforms, the vendor verb 0x781
+is used enable DP 1.2 mode as a fixup if BIOS has not done this, in function
+intel_haswell_fixup_enable_dp12(). Otherwise, the display audio playback will
+be silent.
 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Although the verb 0x781 is added to vendor verbs array, but snd_hdac_regmap_
+encode_verb() will translate it to verb 0xf81 and cause regmap_write IO failure
+because 0xf81 is not in the vendor verb array and so will not be taken as a
+writable register.
 
-It seems good:
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+So this patch no longer uses regmap for verb 0x781 but directly send this
+command to enable DP1.2 mode.
 
-> ---
->  sound/soc/atmel/sam9g20_wm8731.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> =
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-> diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_w=
-m8731.c
-> index 8de8361..d7469cd 100644
-> --- a/sound/soc/atmel/sam9g20_wm8731.c
-> +++ b/sound/soc/atmel/sam9g20_wm8731.c
-> @@ -95,8 +95,9 @@ static const struct snd_soc_dapm_widget at91sam9g20ek_d=
-apm_widgets[] =3D {
->  =
-
->  static const struct snd_soc_dapm_route intercon[] =3D {
->  =
-
-> -	/* speaker connected to LHPOUT */
-> +	/* speaker connected to LHPOUT/RHPOUT */
->  	{"Ext Spk", NULL, "LHPOUT"},
-> +	{"Ext Spk", NULL, "RHPOUT"},
->  =
-
->  	/* mic is connected to Mic Jack, with WM8731 Mic Bias */
->  	{"MICIN", NULL, "Mic Bias"},
-> @@ -108,9 +109,7 @@ static const struct snd_soc_dapm_route intercon[] =3D=
- {
->   */
->  static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
->  {
-> -	struct snd_soc_codec *codec =3D rtd->codec;
->  	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
-> -	struct snd_soc_dapm_context *dapm =3D &codec->dapm;
->  	int ret;
->  =
-
->  	printk(KERN_DEBUG
-> @@ -124,10 +123,6 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_=
-pcm_runtime *rtd)
->  		return ret;
->  	}
->  =
-
-> -	/* not connected */
-> -	snd_soc_dapm_nc_pin(dapm, "RLINEIN");
-> -	snd_soc_dapm_nc_pin(dapm, "LLINEIN");
-> -
->  #ifndef ENABLE_MIC_INPUT
->  	snd_soc_dapm_nc_pin(&rtd->card->dapm, "Int Mic");
->  #endif
-> @@ -158,6 +153,7 @@ static struct snd_soc_card snd_soc_at91sam9g20ek =3D {
->  	.num_dapm_widgets =3D ARRAY_SIZE(at91sam9g20ek_dapm_widgets),
->  	.dapm_routes =3D intercon,
->  	.num_dapm_routes =3D ARRAY_SIZE(intercon),
-> +	.fully_routed =3D true,
->  };
->  =
-
->  static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
-> =
-
-
-
--- =
-
-Nicolas Ferre
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index ca0c05e..1849c94 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2298,8 +2298,7 @@ static void intel_haswell_fixup_enable_dp12(struct hda_codec *codec)
+ 
+ 	/* enable DP1.2 mode */
+ 	vendor_param |= INTEL_EN_DP12;
+-	snd_hdac_regmap_add_vendor_verb(&codec->core, INTEL_SET_VENDOR_VERB);
+-	snd_hda_codec_write_cache(codec, INTEL_VENDOR_NID, 0,
++	snd_hda_codec_read(codec, INTEL_VENDOR_NID, 0,
+ 				INTEL_SET_VENDOR_VERB, vendor_param);
+ }
+ 
+-- 
+1.9.1
