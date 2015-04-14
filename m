@@ -1,20 +1,18 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - not use regmap for vendor verb
- 0x781 of Intel HDMI codec
-Date: Tue, 14 Apr 2015 03:26:10 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B826F6A@SHSMSX101.ccr.corp.intel.com>
-References: <2f716e6b90b7416eb34d35ed1954c7761bfd2050.1428918546.git.mengdong.lin@intel.com>
- <s5hpp78p94w.wl-tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F82B826848@SHSMSX101.ccr.corp.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC 0/3] ALSA: Add soc hda bus support
+Date: Tue, 14 Apr 2015 09:52:37 +0530
+Message-ID: <20150414042237.GC2963@intel.com>
+References: <1427968651-7821-1-git-send-email-vinod.koul@intel.com>
+ <5524CAA9.8030209@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 5422C2606D9
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 05:26:15 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B826848@SHSMSX101.ccr.corp.intel.com>
-Content-Language: en-US
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CDED2606B5
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 06:27:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <5524CAA9.8030209@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,49 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Lin, Mengdong
-> Sent: Monday, April 13, 2015 9:30 PM
-
-> > > For HDMI codec on Haswell/Broadwell/Skylake platforms, the vendor
-> > > verb
-> > > 0x781 is used enable DP 1.2 mode as a fixup if BIOS has not done
-> > > this, in function intel_haswell_fixup_enable_dp12(). Otherwise, the
-> > > display audio playback will be silent.
-> > >
-> > > Although the verb 0x781 is added to vendor verbs array, but
-> > > snd_hdac_regmap_
-> > > encode_verb() will translate it to verb 0xf81 and cause regmap_write
-> > > IO failure because 0xf81 is not in the vendor verb array and so will
-> > > not be taken as a writable register.
-> > >
-> > > So this patch no longer uses regmap for verb 0x781 but directly send
-> > > this command to enable DP1.2 mode.
-> >
-> > What if just add INTEL_GET_VENDOR_VERB as a vendor verb?
+On Wed, Apr 08, 2015 at 08:28:57AM +0200, David Henningsson wrote:
 > 
-> Yes, it should work. hda_reg_write will drop the GET bit.
-> I'll have a test tomorrow.
-
-> > What if just add INTEL_GET_VENDOR_VERB as a vendor verb?
 > 
-> Yes, it should work. hda_reg_write will drop the GET bit.
-> I'll have a test tomorrow.
+> On 2015-04-02 11:57, Vinod Koul wrote:
+> >This series of 3 patches adds support for ASoC HDA
+> >bus. ASoC HDA bus is essentially a wrapper for
+> >HDA core bus and it manages ASoC hda drivers
+> 
+> Hi,
+> 
+> I'm seeing several patch sets - as well as the added hdac
+> indirection layer earlier - related to HDA and ASoC. But I'm curious
+> about the bigger picture here.
+Sure, as we discussed in last meeting, the SKL audio controller is HDA audio
+controller which also supports a DSP and I2S ports. Although if you get a
+SKL board with a HDA codec you can bypass DSP and it will work as previuos
+gen Intel HDA controller so current hda code works well for "legacy" HDA
+mode
 
-Hi Takashi,
+Now we are moving bits and pieces out of current hda code into hdac layer
+(hda-core) which will be used by SKL ASoC driver as well as current
+implementations.
+So first remaining parts of hdac will be merged follow by asoc wrappers,
+then SKL controller driver and fllowed up by DSP and I2S support.
 
-I've submitted v2 and v3 patches, both can work one my SKL. Please review.
+> In addition, I notice the rt286/rt288 ASoC driver looks very much
+> hda-like, i e, we're in practice sending HDA commands over an i2s
+> (or i2c) bus.
+> 
+> Adding two and two together it could mean you're trying to move
+> rt286/rt288 over to use the hda codec driver (which would be
+> awesome!). And perhaps other, similar ASoC codecs as well, if there
+> are any.
+some of the RT codecs support both HDA and I2S, but right now merging them
+is not in my radar but yes it is doable and I will look into this once base
+driver and merged
+> 
+> But I still feel I'm missing the bigger roadmap here. Anyone who
+> wants to enlighten me? :-)
+Hope this would have helped, do let me know if you have more questions :)
 
-V2: add INTEL_GET_VENDOR_VERB as a vendor verb as you suggested.
-   I verified this on a SKL desktop, on which BIOS does not enable DP1.2 mode by default and so we observed the HDMI/DP audio failure.
-
-V3: set GET bit when adding a vendor verb to the codec regmap
-   It also works on my SKL. It's more generic than v2, because I observed other HD-A codecs (Conexant, si3054, sigmatel) also add their own vendor SET verbs and may have the same problem.
-   However, I have no chance to verify these codecs since I cannot find platforms with them.
-
-Thanks
-Mengdong
+-- 
+~Vinod
