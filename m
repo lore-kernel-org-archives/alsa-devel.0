@@ -1,17 +1,31 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: [patch 04/39] sound: Use hrtimer_resolution instead of
- hrtimer_get_res()
-Date: Tue, 14 Apr 2015 21:08:30 -0000
-Message-ID: <20150414203500.799133359@linutronix.de>
-References: <20150414203303.702062272@linutronix.de>
+From: noman pouigt <variksla@gmail.com>
+Subject: Re: recording problem in beagleboard-mcbsp
+Date: Tue, 14 Apr 2015 15:32:35 -0700
+Message-ID: <CAES_P+-zTJ1EQweQ-gMSrA9i0WWzu-QNtuLkp8APVjNGZYJmNg@mail.gmail.com>
+References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>
+ <CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>
+ <CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>
+ <551C3D19.2050200@ti.com>
+ <CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>
+ <5523A1F3.2000701@ti.com>
+ <CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>
+ <5524FA51.9060606@ti.com>
+ <CAES_P+8oJ0xDJ-2w02Q0pZmgQyY9tyaRB=+_PqMhTdwuYNRShw@mail.gmail.com>
+ <55266B38.6030503@ti.com>
+ <CAES_P+-5vgq1LxSsUQLua4j06M4U8+ogLgnEK5KJ-4QPJs1vJQ@mail.gmail.com>
+ <552BDD3E.5080607@ti.com> <552CE047.1030505@ti.com>
+ <552D0A6A.20800@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (www.linutronix.de [62.245.132.108])
- by alsa0.perex.cz (Postfix) with ESMTP id B0B97265497
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 23:08:21 +0200 (CEST)
-Content-Disposition: inline; filename=sound-use-hrtimer-resolution.patch
+Received: from mail-vn0-f41.google.com (mail-vn0-f41.google.com
+ [209.85.216.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83D0526531F
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2015 00:32:36 +0200 (CEST)
+Received: by vnbf62 with SMTP id f62so9156118vnb.3
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 15:32:35 -0700 (PDT)
+In-Reply-To: <552D0A6A.20800@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,83 +35,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: alsa-devel@alsa-project.org, Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <fweisbec@gmail.com>, Marcelo Tosatti <mtosatt@redhat.com>, Takashi Iwai <tiwai@suse.de>, Viresh Kumar <viresh.kumar@linaro.org>, Preeti U Murthy <preeti@linux.vnet.ibm.com>, Ingo Molnar <mingo@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-No point in converting a timespec now that the value is directly
-accessible. Get rid of the null check while at it. Resolution is
-guaranteed to be > 0.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
----
- sound/core/hrtimer.c      |    9 +--------
- sound/drivers/pcsp/pcsp.c |   15 ++++++---------
- 2 files changed, 7 insertions(+), 17 deletions(-)
-
-Index: tip/sound/core/hrtimer.c
-===================================================================
---- tip.orig/sound/core/hrtimer.c
-+++ tip/sound/core/hrtimer.c
-@@ -121,16 +121,9 @@ static struct snd_timer *mytimer;
- static int __init snd_hrtimer_init(void)
- {
- 	struct snd_timer *timer;
--	struct timespec tp;
- 	int err;
- 
--	hrtimer_get_res(CLOCK_MONOTONIC, &tp);
--	if (tp.tv_sec > 0 || !tp.tv_nsec) {
--		pr_err("snd-hrtimer: Invalid resolution %u.%09u",
--			   (unsigned)tp.tv_sec, (unsigned)tp.tv_nsec);
--		return -EINVAL;
--	}
--	resolution = tp.tv_nsec;
-+	resolution = hrtimer_resolution;
- 
- 	/* Create a new timer and set up the fields */
- 	err = snd_timer_global_new("hrtimer", SNDRV_TIMER_GLOBAL_HRTIMER,
-Index: tip/sound/drivers/pcsp/pcsp.c
-===================================================================
---- tip.orig/sound/drivers/pcsp/pcsp.c
-+++ tip/sound/drivers/pcsp/pcsp.c
-@@ -42,16 +42,13 @@ struct snd_pcsp pcsp_chip;
- static int snd_pcsp_create(struct snd_card *card)
- {
- 	static struct snd_device_ops ops = { };
--	struct timespec tp;
--	int err;
--	int div, min_div, order;
--
--	hrtimer_get_res(CLOCK_MONOTONIC, &tp);
-+	unsigned int resolution = hrtimer_resolution;
-+	int err, div, min_div, order;
- 
- 	if (!nopcm) {
--		if (tp.tv_sec || tp.tv_nsec > PCSP_MAX_PERIOD_NS) {
-+		if (resolution > PCSP_MAX_PERIOD_NS) {
- 			printk(KERN_ERR "PCSP: Timer resolution is not sufficient "
--				"(%linS)\n", tp.tv_nsec);
-+				"(%linS)\n", resolution);
- 			printk(KERN_ERR "PCSP: Make sure you have HPET and ACPI "
- 				"enabled.\n");
- 			printk(KERN_ERR "PCSP: Turned into nopcm mode.\n");
-@@ -59,13 +56,13 @@ static int snd_pcsp_create(struct snd_ca
- 		}
- 	}
- 
--	if (loops_per_jiffy >= PCSP_MIN_LPJ && tp.tv_nsec <= PCSP_MIN_PERIOD_NS)
-+	if (loops_per_jiffy >= PCSP_MIN_LPJ && resolution <= PCSP_MIN_PERIOD_NS)
- 		min_div = MIN_DIV;
- 	else
- 		min_div = MAX_DIV;
- #if PCSP_DEBUG
- 	printk(KERN_DEBUG "PCSP: lpj=%li, min_div=%i, res=%li\n",
--	       loops_per_jiffy, min_div, tp.tv_nsec);
-+	       loops_per_jiffy, min_div, resolution);
- #endif
- 
- 	div = MAX_DIV / min_div;
+T24gVHVlLCBBcHIgMTQsIDIwMTUgYXQgNTozOSBBTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
+ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDQvMTQvMjAxNSAxMjozOSBQTSwgUGV0ZXIgVWpm
+YWx1c2kgd3JvdGU6Cj4+IE9LLCBnb3QgYW5vdGhlciBTRCBjYXJkLgo+PiBNY0JTUDMgaW4gbWFz
+dGVyIG1vZGUgd29ya3MgKG5vIGNvZGVjIGNvbm5lY3RlZCkgcGxheWJhY2sgYW5kIGNhcHR1cmUg
+YXMgd2VsbC4KPj4KPj4gVGhlIHBpbnMgZm9yIE1jQlNQMzoKPj4gT01BUDNfQ09SRTFfSU9QQUQo
+MHgyMTcyLCBQSU5fT1VUUFVUIHwgTVVYX01PREUwKSAvKiBtY2JzcDNfZnN4Lm1jYnNwM19mc3gg
+Ki8KPj4gT01BUDNfQ09SRTFfSU9QQUQoMHgyMTc4LCBQSU5fT1VUUFVUIHwgTVVYX01PREUxKSAv
+KiB1YXJ0Ml90eC5tY2JzcDNfY2xreCAqLwo+PiBPTUFQM19DT1JFMV9JT1BBRCgweDIxNzQsIFBJ
+Tl9PVVRQVVQgfCBNVVhfTU9ERTEpIC8qIHVhcnQyX2N0cy5tY2JzcDNfZHggKi8KPj4gT01BUDNf
+Q09SRTFfSU9QQUQoMHgyMTc2LCBQSU5fSU5QVVQgfCBNVVhfTU9ERTEpICAvKiB1YXJ0Ml9ydHMu
+bWNic3AzX2RyICovCj4+Cj4+IEkgc3RpbGwgbm90IHN1cmUgd2h5IE1jQlNQMSBpcyBub3Qgd29y
+a2luZy4uCj4KPiBUaGlzIHBpbmN0cmwgc2V0dGluZyBpcyBub3QgY29ycmVjdCBmb3IgTWNCU1Az
+LiBJIHdhcyBjaGFuZ2luZyB0aGUgcmVnaXN0ZXJzCj4gb24gdGhlIGZseSwgdGhhdCdzIHdoeSBp
+dCB3YXMgd29ya2luZyB3aGVuIEkgcmVwbGllZC4KCk9rIGdyZWF0LiBGSU5BTExZIGl0IGlzIHdv
+cmtpbmcgYWZ0ZXIgbG90cyBvZiB0cnkgYW5kIGluY2FzZSBpdCBtaWdodCBhbnlvbmUKd2hvIGlz
+IHRyeWluZyB0byB1c2UgYmVsb3cgY29tYmluYXRpb24gaXMgd29ya2luZzoKCkxpbnV4IGtlcm5l
+bCA6ClZFUlNJT04gPSAzClBBVENITEVWRUwgPSAxOQpTVUJMRVZFTCA9IDAKRVhUUkFWRVJTSU9O
+ID0KTkFNRSA9IERpc2Vhc2VkIE5ld3QKCk1DQlNCMyBpbiBzbGF2ZSBtb2RlLCBtYXg5ODA5MCBp
+biBtYXN0ZXIgbW9kZSBhbmQgbXV4IHNldHRpbmcKYXMgYmVsb3c6Cj4gT01BUDNfQ09SRTFfSU9Q
+QUQoMHgyMTcyLCBQSU5fSU5QVVQgfCBNVVhfTU9ERTApIC8qIG1jYnNwM19mc3gubWNic3AzX2Zz
+eCAqLwo+IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE3OCwgUElOX0lOUFVUIHwgTVVYX01PREUxKSAv
+KiB1YXJ0Ml90eC5tY2JzcDNfY2xreCAqLwo+IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE3NCwgUElO
+X09VVFBVVCB8IE1VWF9NT0RFMSkgLyogdWFydDJfY3RzLm1jYnNwM19keCAqLwo+IE9NQVAzX0NP
+UkUxX0lPUEFEKDB4MjE3NiwgUElOX0lOUFVUIHwgTVVYX01PREUxKSAgLyogdWFydDJfcnRzLm1j
+YnNwM19kciAqLwpib3RoIHJlY29yZGluZyBhbmQgcGxheWJhY2sgaXMgd29ya2luZy4KCk1DQlNQ
+MyBpcyB3b3JraW5nIGFsc28gaW4gdGhlIGNhc2Ugd2hlcmUgaXQgaXMgbWFzdGVyIG1vZGUgYW5k
+CmNvZGVjIGlzIGluIHNsYXZlIG1vZGUuCgpJIHJlZmVyZW5jZWQgQU0vRE0zN1ggTXVsdGltZWRp
+YSBEZXZpY2UgU2lsaWNvbiBSZXZpc2lvbiAxLnggdmVyc2lvbgpSKHB1YmxpYyB2ZXJzaW9uKQpm
+b3IgdGhlIG11eCBzZXR0aW5ncy4gSW4gdGhpcyBpIHNlZSBNQ0JTUDNfRFggYXMgMjE2Yy4gSSB0
+aGluayB0aGlzIGlzIG5vdCB0aGUKcmlnaHQgcmV2aXNpb24uCj4KPiBXaGljaCB3b3VsZCB3b3Jr
+IGluIE1jQlNQMyBzbGF2ZSBtb2RlIGFzIHdlbGwuCj4gUGxheWJhY2ssIGNhcHR1cmUgd29ya3Mg
+KE1jQlNQMyBtYXN0ZXIpLiBJIGhhdmUgY29ubmVjdGVkIERYIHRvIERSIGFuZAo+IGNhcHR1cmVk
+IHdoYXRldmVyIEkgd2FzIHBsYXlpbmcuIENhbWUgYmFjayBmaW5lLgo+Cj4gQXMgZm9yIE1jQlNQ
+MSBJIHRoaW5rIHRoaXMgc2hvdWxkIGdldCBpdCB3b3JraW5nOgo+IE9NQVAzX0NPUkUxX0lPUEFE
+KDB4MjE5NiwgUElOX0lOUFVUIHwgTVVYX01PREUwKSAvKiBtY2JzcDFfZnN4Lm1jYnNwMV9mc3gg
+Ki8KPiBPTUFQM19DT1JFMV9JT1BBRCgweDIxOGUsIFBJTl9JTlBVVCB8IE1VWF9NT0RFMCkgLyog
+bWNic3AxX2Zzci5tY2JzcDFfZnNyICovCj4gT01BUDNfQ09SRTFfSU9QQUQoMHgyMTk4LCBQSU5f
+SU5QVVQgfCBNVVhfTU9ERTApIC8qIG1jYnNwMV9jbGt4Lm1jYnNwMV9jbGt4ICovCj4gT01BUDNf
+Q09SRTFfSU9QQUQoMHgyMThjLCBQSU5fSU5QVVQgfCBNVVhfTU9ERTApIC8qIG1jYnNwMV9jbGty
+Lm1jYnNwMV9jbGtyICovCj4gT01BUDNfQ09SRTFfSU9QQUQoMHgyMTkwLCBQSU5fT1VUUFVUIHwg
+TVVYX01PREUwKSAvKiBtY2JzcDFfZHgubWNic3AxX2R4ICovCj4gT01BUDNfQ09SRTFfSU9QQUQo
+MHgyMTkyLCBQSU5fSU5QVVQgfCBNVVhfTU9ERTApICAvKiBtY2JzcDFfZHIubWNic3AxX2RyICov
+Cj4KPiBJZiBNY0JTUDEgaXMgc2xhdmUsIHRoZW4gY29ubmVjdCB0aGUgRlMgdG8gYm90aCBGU1gg
+YW5kIEZTUiBhbmQgZG8gdGhlIHNhbWUKPiBmb3IgQ0xLLgoKSSBkaWRuJ3QgdGVzdCB0aGlzIGhv
+d2V2ZXIgYXMgaSBqdXN0IHdhbnRlZCBhbnkgbWNic3AgY29ubmVjdGlvbiB0byB3b3JrIGJ1dApp
+IHRoaW5rIHRoaXMgc2hvdWxkIHdvcmsgYXMgd2VsbC4KPgo+IC0tCj4gUMOpdGVyClRoYW5rcyBh
+IHRvbiBmb3IgaGVscGluZyBvdXQhISEKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
