@@ -1,34 +1,17 @@
-From: Yomi Ogunwumi <abyomi0@gmail.com>
-Subject: Re: Issues and/or possible bugs in alsa
-Date: Mon, 13 Apr 2015 21:36:56 -0400
-Message-ID: <CACui-2nSTWM5XC=UeDNhjUpvJyna8Uo-qghGJv-XLVHL9n2Ldw@mail.gmail.com>
-References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
- <54ED8466.7020102@gmail.com>
- <CAN8cciYnyLahS2gQ0g0vSaNj+xo=Tz9_FQ9L-WazOb1t5no_kA@mail.gmail.com>
- <54F1C10B.2050008@gmail.com> <s5hmw3ygjcx.wl-tiwai@suse.de>
- <CACui-2k_6R7SG2_o0SO+oLMNz-Lo7zpY6tuvOOYJ1eq7N056hg@mail.gmail.com>
- <CAN8ccia6_ZSdAtL3w4s4B0RYLnOXZK-LddpQi4LCjdHZrtJqfA@mail.gmail.com>
- <CACui-2ngDGDf3R-Jp0mxrYKrJQuWCS6msk-A3LdTk0n2LZCqTQ@mail.gmail.com>
- <CACui-2kLt+x6RieNZ05bFbs5veu7zy3m50MfurPCpPtBAwY07Q@mail.gmail.com>
- <CACui-2n2MTnA9DWzGdprfJ=bY+OjYMkBtFe7YQQnTf5BBtyk=Q@mail.gmail.com>
- <CAN8cciYc6ggpnOZydy4Mm_TsXo4c8SAN_cyutJ1FFeuiqxCEnw@mail.gmail.com>
- <CACui-2ndKUv=JPdDqQ9isctMhthEBL1hD_UJRy6GaONmfjkvTA@mail.gmail.com>
- <CAN8ccibNsvV5_TG3XCDOdTjkPSEd9aC1QjV1rrjz4NnidhbrDA@mail.gmail.com>
- <CACui-2kobAiBJB0=dd8_jhEGMkHzq1Rjd4cLM0Aus3CRyc9QgA@mail.gmail.com>
- <CAN8ccibAhwFmLLSq=KEu_oRzdgGzO+LRG+C=7ETTFXmM7qnfXQ@mail.gmail.com>
- <CACui-2kV+6gbH7fizttHBnRcuc7rsx5X2bmVpLQMB+wUAT-Wpg@mail.gmail.com>
- <CAN8ccibSwV5VojnNchLwvewanxP4DF5nXHzYVqXF5pkm4abZ6A@mail.gmail.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2] ALSA: hda - add Intel get vendor verb 0xf81
+	to regmap of the HDMI codec
+Date: Tue, 14 Apr 2015 10:15:46 +0800
+Message-ID: <1428977746-26461-1-git-send-email-mengdong.lin@intel.com>
+References: <2f716e6b90b7416eb34d35ed1954c7761bfd2050.1428918546.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f174.google.com (mail-ig0-f174.google.com
- [209.85.213.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DC6E2619BF
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 03:36:59 +0200 (CEST)
-Received: by igblo3 with SMTP id lo3so62197551igb.1
- for <alsa-devel@alsa-project.org>; Mon, 13 Apr 2015 18:36:57 -0700 (PDT)
-In-Reply-To: <CAN8ccibSwV5VojnNchLwvewanxP4DF5nXHzYVqXF5pkm4abZ6A@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A18C26147E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 04:05:25 +0200 (CEST)
+In-Reply-To: <2f716e6b90b7416eb34d35ed1954c7761bfd2050.1428918546.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,94 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Dylan Reid <dgreid@chromium.org>, Kailang Yang <kailang@realtek.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SSBzaG91bGQgaGF2ZSBlbGFib3JhdGVkIGEgYml0IG1vcmUgb24gdGhlIHJlc3VsdCBvZiB0aGUg
-bGFzdCBjYXNlLgoKTm8sIHdoZW4gSSBwbHVnIGluIHRoZSBoZWFkcGhvbmVzIGludG8gdGhlIE1p
-Y3JvcGhvbmUgamFjaywgdGhlIGhlYWRwaG9uZXMKZG8gbm90IHdvcmsgYXQgYWxsLiAod2hpY2gg
-bWFrZXMgc2Vuc2UsIGJlY2F1c2UgaXQncyBhIG1pYyBqYWNrLi4uaXQgd291bGQKYmUgZXhwZWN0
-aW5nIGEgbWljLCByaWdodD8pCgpXaGlsZSBhbHNhbWl4ZXIgd2lsbCBjb3JyZWN0bHkgcmFpc2Ug
-dGhlIGhlYWRwaG9uZSBvdXRwdXQgYW5kIG11dGUgdGhlCnNwZWFrZXJzICh3aGVuIEkgcGx1Z2dl
-ZCB0aGUgaGVhZHBob25lcyBpbnRvIHRoZSBtaWMgamFjaykg4oCUIG5vIHNvdW5kIGNvbWVzCnRo
-cm91Z2ggdGhlIGhlYWRwaG9uZXMuCgpKdXN0IHRvIGF2b2lkIGFueSBwb3NzaWJsZSBjb25mdXNp
-b24uLi4KCkFyZSB0aG9zZSBtb3JlIGNoYW5nZXMgSSBzaG91bGQgbWFrZSB0byB0aGUgY29kZT8K
-CkhlYWRwaG9uZXMgdW5wbHVnZ2VkLgpQaW4gMHgxOCAoQmxhY2sgTWljLCBSaWdodCBzaWRlKTog
-cHJlc2VudCA9IE5vClBpbiAweDIxIChCbGFjayBIZWFkcGhvbmUsIFJpZ2h0IHNpZGUpOiBwcmVz
-ZW50ID0gTm8KCkhlYWRwaG9uZXMgcGx1Z2dlZCBpbnRvIEhlYWRwaG9uZSBwb3J0LgpQaW4gMHgx
-OCAoQmxhY2sgTWljLCBSaWdodCBzaWRlKTogcHJlc2VudCA9IFllcwpQaW4gMHgyMSAoQmxhY2sg
-SGVhZHBob25lLCBSaWdodCBzaWRlKTogcHJlc2VudCA9IE5vCgpIZWFkcGhvbmVzIHBsdWdnZWQg
-aW50byBNaWMgcG9ydC4KUGluIDB4MTggKEJsYWNrIE1pYywgUmlnaHQgc2lkZSk6IHByZXNlbnQg
-PSBZZXMKUGluIDB4MjEgKEJsYWNrIEhlYWRwaG9uZSwgUmlnaHQgc2lkZSk6IHByZXNlbnQgPSBZ
-ZXMKCk9uIE1vbiwgQXByIDEzLCAyMDE1IGF0IDk6MjAgUE0sIFJheW1vbmQgWWF1IDxzdXBlcnF1
-YWQudm9ydGV4MkBnbWFpbC5jb20+Cndyb3RlOgoKPiA+Cj4gPiBIZWFkcGhvbmVzIHVucGx1Z2dl
-ZC4KPiA+IFsxMToxMDo0NCB8IHlvbWlAeGFuYSB+L3NvZnR3YXJlL2Fsc2EtdG9vbHMvaGRhamFj
-a3NlbnNldGVzdF0gwrsgc3Vkbwo+IC4vaGRhamFja3NlbnNldGVzdCAtYyAxCj4gPiBbc3Vkb10g
-cGFzc3dvcmQgZm9yIHlvbWk6Cj4gPiBQaW4gMHgxOCAoQmxhY2sgTWljLCBSaWdodCBzaWRlKTog
-cHJlc2VudCA9IE5vCj4gPiBQaW4gMHgyMSAoQmxhY2sgSGVhZHBob25lLCBSaWdodCBzaWRlKTog
-cHJlc2VudCA9IE5vCj4gPgo+ID4gSGVhZHBob25lcyBwbHVnZ2VkIGluLgo+ID4gWzExOjEwOjUw
-IHwgeW9taUB4YW5hIH4vc29mdHdhcmUvYWxzYS10b29scy9oZGFqYWNrc2Vuc2V0ZXN0XSDCuyBz
-dWRvCj4gLi9oZGFqYWNrc2Vuc2V0ZXN0IC1jIDEKPiA+IFBpbiAweDE4IChCbGFjayBNaWMsIFJp
-Z2h0IHNpZGUpOiBwcmVzZW50ID0gWWVzCj4gPiBQaW4gMHgyMSAoQmxhY2sgSGVhZHBob25lLCBS
-aWdodCBzaWRlKTogcHJlc2VudCA9IE5vCj4gPgo+ID4gVGhhdCdzIG9kZC4gSXQgc2VlbXMgdG8g
-ZGV0ZWN0IG15IGhlYWRwaG9uZXMgYXMgYmVpbmcgcGx1Z2dlZCBpbnRvIHRoZQo+IE1pYyBqYWNr
-LiBJdCBpc24ndC4gSXQgaXMgcGx1Z2dlZCBpbnRvIHRoZSBoZWFkcGhvbmUgamFjay4gSSBjaGVj
-a2VkLgo+ID4gSGFoYS4gSWYgSSBwbHVnIG15IGhlYWRwaG9uZXMgaW50byB0aGUgTWljIEphY2su
-Li5hbHNhbWl4ZXIgY29ycmVjdGx5Cj4gbXV0ZXMgdGhlIHNwZWFrZXJzIGFuZCByYWlzZXMgdGhl
-IHZvbHVtZSBvZiB0aGUgaGVhZHBob25lcyBvdXRwdXQuCj4gPgo+ID4gSGVhZHBob25lcyBwbHVn
-Z2VkIGludG8gTWljIEphY2suCj4gPiBbMTE6MTE6MDggfCB5b21pQHhhbmEgfi9zb2Z0d2FyZS9h
-bHNhLXRvb2xzL2hkYWphY2tzZW5zZXRlc3RdIMK7IHN1ZG8KPiAuL2hkYWphY2tzZW5zZXRlc3Qg
-LWMgMQo+ID4gW3N1ZG9dIHBhc3N3b3JkIGZvciB5b21pOgo+ID4gUGluIDB4MTggKEJsYWNrIE1p
-YywgUmlnaHQgc2lkZSk6IHByZXNlbnQgPSBZZXMKPiA+IFBpbiAweDIxIChCbGFjayBIZWFkcGhv
-bmUsIFJpZ2h0IHNpZGUpOiBwcmVzZW50ID0gWWVzCj4KPiBEbyB5b3UgbWVhbiBoZWFkcGhvbmUg
-YW5kIG1pYyB3b3JrIGFzIGV4cGVjdGVkIG9ubHkgd2hlbiBib3RoIGFyZSBwbHVnZ2VkCj4gYW5k
-IGFsd2F5cyBmYWlsIHdoZW4gaGVhZHBob25lIG9yIG1pYyBpcyBwbHVnZ2VkID8KPgo+IExvb2sg
-IGxpa2UgamFjayBzZW5zZSBjaXJjdWl0IG9mIGhwIGFuZCBtaWMgYXJlIHN3YXBwZWQKPgo+Cj4g
-aHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQu
-Z2l0L3RyZWUvc291bmQvcGNpL2hkYS9oZGFfamFjay5jCj4KPiBUaGUgY3VycmVudCBpbXBsZW1l
-bnRhdGlvbiBhc3N1bWUga2N0bCByZXR1cm4gamFjayBzdGF0ZSBvZiAgdGhlCj4gY29ycmVzcG9u
-ZGluZyBwaW4gY29tcGxleAo+Cj4gQ2FuIHR3byBwaW5zIHVzZSB0aGUgb3RoZXIgcGluIGFzIHRo
-ZSBnYXRlZCBqYWNrIGF0IHNhbWUgdGltZSA/Cj4gc25kX2hkYV9qYWNrX3NldF9nYXRpbmdfamFj
-aygpCj4KPiBBTFNBOiBoZGEgLSBBbGxvdyBqYWNrIHN0YXRlIHRvIGRlcGVuZCBvbiBhbm90aGVy
-IGphY2sKPgo+Cj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQv
-dGl3YWkvc291bmQuZ2l0L2NvbW1pdC9zb3VuZC9wY2kvaGRhL2hkYV9qYWNrLmM/aWQ9MDYxOWJh
-OGMxN2IxMjFlZjAyNzNiZTE4MTE5ODY1OWIxN2Q4NDI0Nwo+Cj4geW91ciBjYXNlIHNlZW0gbm90
-IGp1c3QgbmVlZCB0byAgc3dhcCB0aGUgcmVzdWx0IHJldHVybiBieSByZWFkX3Bpbl9zZW5zZSgp
-Cj4KPiAgICAgIHN3aXRjaChuaWQpewo+ICAgICAgY2FzZSAweDE4Ogo+ICAgICAgICAgICAgICB2
-YWwgPSBzbmRfaGRhX2NvZGVjX3JlYWQoY29kZWMsIDB4MjEsIDAsCj4gICBBQ19WRVJCX0dFVF9Q
-SU5fU0VOU0UsIDApOwo+ICAgICAgICAgICAgICBicmVhazsKPiAgICAgIGNhc2UgMHgyMQo+ICAg
-ICAgICAgICAgICB2YWwgPSBzbmRfaGRhX2NvZGVjX3JlYWQoY29kZWMsIDB4MTgsIDAsCj4gICBB
-Q19WRVJCX0dFVF9QSU5fU0VOU0UsIDApOwo+ICAgICAgICAgICAgICBicmVhazsKPiAgICAgIGRl
-ZmF1bHQ6Cj4gICAgICAgICAgICB2YWwgPSBzbmRfaGRhX2NvZGVjX3JlYWQoY29kZWMsIG5pZCwg
-MCwKPiAgIEFDX1ZFUkJfR0VUX1BJTl9TRU5TRSwgMCk7Cj4gICAgICAgICAgICAgICBicmVhazsK
-PiAgICAgIH0KPgo+IGJ1dCBhbHNvIHN3YXAgdGhlIHVuc29saWNpdGVkIGV2ZW50IHRhZyBvbiB0
-aG9zZSB0d28gcGluIGNvbXBsZXggc2luY2UgdGhlCj4gZHJpdmVyIHVzZSBqYWNrLT50YWcgdG8g
-ZGV0ZXJtaW5lIHBpbiBjb21wbGV4Cj4KPiBzbmRfaGRhX2NvZGVjX3dyaXRlX2NhY2hlKGNvZGVj
-LCBuaWQsIDAsCj4gQUNfVkVSQl9TRVRfVU5TT0xJQ0lURURfRU5BQkxFLAo+IEFDX1VTUlNQX0VO
-IHwgamFjay0+dGFnKTsKPgo+IE5vZGUgMHgxOCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMThm
-OiBTdGVyZW8gQW1wLUluIEFtcC1PdXQKPiAgIENvbnRyb2w6IG5hbWU9Ik1pYyBCb29zdCBWb2x1
-bWUiLCBpbmRleD0wLCBkZXZpY2U9MAo+ICAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBp
-ZHg9MCwgb2ZzPTAKPiAgIENvbnRyb2w6IG5hbWU9Ik1pYyBKYWNrIiwgaW5kZXg9MCwgZGV2aWNl
-PTAKPiAgIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MmYs
-IG11dGU9MAo+ICAgQW1wLUluIHZhbHM6ICBbMHgwMSAweDAxXQo+ICAgQW1wLU91dCBjYXBzOiBv
-ZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQo+ICAgQW1wLU91dCB2
-YWxzOiAgWzB4ODAgMHg4MF0KPiAgIFBpbmNhcCAweDAwMDAxNzM0OiBJTiBPVVQgRGV0ZWN0Cj4g
-ICAgIFZyZWYgY2FwczogSElaIDUwIEdSRCA4MAo+ICAgUGluIERlZmF1bHQgMHgwNGExMTAzMDog
-W0phY2tdIE1pYyBhdCBFeHQgUmlnaHQKPiAgICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawo+
-ICAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MywgU2VxdWVuY2UgPSAweDAKPiAgIFBpbi1jdGxzOiAw
-eDI0OiBJTiBWUkVGXzgwCj4gICBVbnNvbGljaXRlZDogdGFnPTAyLCBlbmFibGVkPTEKPiAgIENv
-bm5lY3Rpb246IDEKPiAgICAgIDB4MGQKPgo+IE5vZGUgMHgyMSBbUGluIENvbXBsZXhdIHdjYXBz
-IDB4NDAwMThkOiBTdGVyZW8gQW1wLU91dAo+ICAgQ29udHJvbDogbmFtZT0iSGVhZHBob25lIFBs
-YXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCj4gICAgIENvbnRyb2xBbXA6IGNocz0z
-LCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKPiAgIENvbnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBKYWNr
-IiwgaW5kZXg9MCwgZGV2aWNlPTAKPiAgIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0w
-eDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKPiAgIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBd
-Cj4gICBQaW5jYXAgMHgwMDAwMDAxYzogT1VUIEhQIERldGVjdAo+ICAgUGluIERlZmF1bHQgMHgw
-NDIxMTAyMDogW0phY2tdIEhQIE91dCBhdCBFeHQgUmlnaHQKPiAgICAgQ29ubiA9IDEvOCwgQ29s
-b3IgPSBCbGFjawo+ICAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MiwgU2VxdWVuY2UgPSAweDAKPiAg
-IFBpbi1jdGxzOiAweGMwOiBPVVQgSFAKPiAgIFVuc29saWNpdGVkOiB0YWc9MDEsIGVuYWJsZWQ9
-MQo+ICAgQ29ubmVjdGlvbjogMgo+ICAgICAgMHgwYyogMHgwZHAKPgoKCgotLSAKKllvbWkqCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Mengdong Lin <mengdong.lin@intel.com>
+
+For HDMI codec on Haswell/Broadwell/Skylake, the SET vendor verb 0x781 is used
+enable DP 1.2 mode as a fixup if BIOS has not done this, in function
+intel_haswell_fixup_enable_dp12(). Otherwise, the display audio playback will
+be silent.
+
+So this patch adds its peer GET vendor verb 0xf81 to the codec's regmap, to
+avoid I/O error when sending 0x781 thru remap.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index ca0c05e..84ee5ff 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2298,7 +2298,7 @@ static void intel_haswell_fixup_enable_dp12(struct hda_codec *codec)
+ 
+ 	/* enable DP1.2 mode */
+ 	vendor_param |= INTEL_EN_DP12;
+-	snd_hdac_regmap_add_vendor_verb(&codec->core, INTEL_SET_VENDOR_VERB);
++	snd_hdac_regmap_add_vendor_verb(&codec->core, INTEL_GET_VENDOR_VERB);
+ 	snd_hda_codec_write_cache(codec, INTEL_VENDOR_NID, 0,
+ 				INTEL_SET_VENDOR_VERB, vendor_param);
+ }
+-- 
+1.9.1
