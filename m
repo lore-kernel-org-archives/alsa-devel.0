@@ -1,18 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: recording problem in beagleboard-mcbsp
-Date: Tue, 14 Apr 2015 15:39:06 +0300
-Message-ID: <552D0A6A.20800@ti.com>
-References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>	<CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>	<CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>	<551C3D19.2050200@ti.com>	<CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>	<5523A1F3.2000701@ti.com>	<CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>	<5524FA51.9060606@ti.com>	<CAES_P+8oJ0xDJ-2w02Q0pZmgQyY9tyaRB=+_PqMhTdwuYNRShw@mail.gmail.com>	<55266B38.6030503@ti.com>
- <CAES_P+-5vgq1LxSsUQLua4j06M4U8+ogLgnEK5KJ-4QPJs1vJQ@mail.gmail.com>
- <552BDD3E.5080607@ti.com> <552CE047.1030505@ti.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Tue, 14 Apr 2015 15:02:36 +0200
+Message-ID: <20150414150236.3e8288307124a43941ab94f7@ao2.it>
+References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
+ <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
+ <54F5CB3D.7020100@linux.intel.com>
+ <20150304170218.7b397993ce670902800109f1@ao2.it>
+ <20150403153414.b8de8df914664d7d7967120c@ao2.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B84926054A
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 14:39:09 +0200 (CEST)
-In-Reply-To: <552CE047.1030505@ti.com>
+Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2995265019
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 15:03:12 +0200 (CEST)
+In-Reply-To: <20150403153414.b8de8df914664d7d7967120c@ao2.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +24,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: noman pouigt <variksla@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/14/2015 12:39 PM, Peter Ujfalusi wrote:
-> OK, got another SD card.
-> McBSP3 in master mode works (no codec connected) playback and capture as =
-well.
-> =
+On Wed, 4 Mar 2015 17:02:18 +0100
+Antonio Ospite <ao2@ao2.it> wrote:
 
-> The pins for McBSP3:
-> OMAP3_CORE1_IOPAD(0x2172, PIN_OUTPUT | MUX_MODE0) /* mcbsp3_fsx.mcbsp3_fs=
-x */
-> OMAP3_CORE1_IOPAD(0x2178, PIN_OUTPUT | MUX_MODE1) /* uart2_tx.mcbsp3_clkx=
- */
-> OMAP3_CORE1_IOPAD(0x2174, PIN_OUTPUT | MUX_MODE1) /* uart2_cts.mcbsp3_dx =
-*/
-> OMAP3_CORE1_IOPAD(0x2176, PIN_INPUT | MUX_MODE1)  /* uart2_rts.mcbsp3_dr =
-*/
-> =
+> On Tue, 03 Mar 2015 16:54:53 +0200
+> Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
+> 
+[...]
+> > > [...]
+> > >> Last question, what is the difference between having the device detected
+> > >> by sound/soc/intel/sst-acpi.c (like in my case) opposed to
+> > >> sound/soc/intel/sst/sst_acpi.c? I can see the 80860F28 id in both the
+> > >> files but they seem to load different firmwares.
+> > >>
+> > 
+> > Different firmware, driver stack and machine driver despite the same LPE 
+> > ACPI ID and codec ACPI ID. (We really should have some additional DMI 
+> > quirks that does the selection because of the same ACPI IDs).
+> >
+> 
+> Just curios, is a unification of the drivers possible/planned?
+>
 
-> I still not sure why McBSP1 is not working..
+Hi again, I am back on this after having read something more, the full
+thread is still here for those willing to catch up:
+http://thread.gmane.org/gmane.linux.alsa.devel/134554
 
-This pinctrl setting is not correct for McBSP3. I was changing the registers
-on the fly, that's why it was working when I replied.
+Since the firmware which comes with Andoid is more similar to the
+upstream fw_sst_0f28.bin than is to fw_sst_0f28.bin-48kHz_i2s_master I
+decided to give another try to bytcr_dpcm_rt5640.c instead of insisting
+with byt-rt5640.c
 
-In McBSP3 master mode, you need:
-OMAP3_CORE1_IOPAD(0x2172, PIN_INPUT | MUX_MODE0) /* mcbsp3_fsx.mcbsp3_fsx */
-OMAP3_CORE1_IOPAD(0x2178, PIN_INPUT | MUX_MODE1) /* uart2_tx.mcbsp3_clkx */
-OMAP3_CORE1_IOPAD(0x2174, PIN_OUTPUT | MUX_MODE1) /* uart2_cts.mcbsp3_dx */
-OMAP3_CORE1_IOPAD(0x2176, PIN_INPUT | MUX_MODE1)  /* uart2_rts.mcbsp3_dr */
+The log is still as below, but I got one step further, keep reading.
 
-Which would work in McBSP3 slave mode as well.
-Playback, capture works (McBSP3 master). I have connected DX to DR and
-captured whatever I was playing. Came back fine.
+> [    9.940954] bytt100_rt5640 bytt100_rt5640: snd-soc-dummy-dai <-> media-cpu-dai mapping ok
+> [    9.941015] compress asoc: snd-soc-dummy-dai <-> compress-cpu-dai mapping ok
+> [    9.941090] bytt100_rt5640 bytt100_rt5640: rt5640-aif1 <-> ssp2-port mapping ok
+> [    9.941249] bytt100_rt5640 bytt100_rt5640: Connecting non-supply widget to supply widget is not supported (Int Mic -> LDO2)
+> [    9.941254] bytt100_rt5640 bytt100_rt5640: ASoC: no dapm match for Int Mic --> (null) --> LDO2
+> [    9.941259] bytt100_rt5640 bytt100_rt5640: ASoC: Failed to add route Int Mic -> direct -> LDO2
+> [   10.826466] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 0 doesn't have DAPM widget!!!
+> [   10.826988] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 1 doesn't have DAPM widget!!!
+> [   10.827496] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 2 doesn't have DAPM widget!!!
+> [   10.828008] sst-mfld-platform sst-mfld-platform: Slot control: codec_out tx interleaver slot 3 doesn't have DAPM widget!!!
+> [   10.828501] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
+> [   10.829022] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
+> [   10.829550] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_0 doesn't have DAPM widget!!!
+> [   10.830212] sst-mfld-platform sst-mfld-platform: Slot control: codec_in rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
+> 
+> but then I couldn't use the card:
+> 
+> [   57.970464]  Baytrail Audio Port: ASoC: no backend DAIs enabled for Baytrail Audio Port
+> 
+> Full dmesg here:
+> http://ao2.it/tmp/sst-baytrail-on-Teclast-X98-Air-3G/dmesg_mainline_snd_intel_sst_acpi.log
+> 
 
-As for McBSP1 I think this should get it working:
-OMAP3_CORE1_IOPAD(0x2196, PIN_INPUT | MUX_MODE0) /* mcbsp1_fsx.mcbsp1_fsx */
-OMAP3_CORE1_IOPAD(0x218e, PIN_INPUT | MUX_MODE0) /* mcbsp1_fsr.mcbsp1_fsr */
-OMAP3_CORE1_IOPAD(0x2198, PIN_INPUT | MUX_MODE0) /* mcbsp1_clkx.mcbsp1_clkx=
- */
-OMAP3_CORE1_IOPAD(0x218c, PIN_INPUT | MUX_MODE0) /* mcbsp1_clkr.mcbsp1_clkr=
- */
-OMAP3_CORE1_IOPAD(0x2190, PIN_OUTPUT | MUX_MODE0) /* mcbsp1_dx.mcbsp1_dx */
-OMAP3_CORE1_IOPAD(0x2192, PIN_INPUT | MUX_MODE0)  /* mcbsp1_dr.mcbsp1_dr */
+I realized than I needed to set up the path between the FrontEnd DAI
+and the BackEnd one, and in fact the error below goes away and I can
+_start_ some playback after switching on these controls:
+	codec_out1 mix 0 pcm0_in Switch
+	media0_out mix 0 media1_in Switch
+which AFAICS constitute the playback path.
 
-If McBSP1 is slave, then connect the FS to both FSX and FSR and do the same
-for CLK.
+However there is still no sound, and the playback stalls, and the
+interrupt count suddenly stops for the intel_sst_driver IRQ
+(in /proc/interrupts).
 
--- =
+By looking at /sys/kernel/debug under Android it looks like the
+codec is connected to SSP2, and not SSP0 as we imagined before:
+/sys/kernel/debug/asoc/baytrailaudio/sst-platform/dapm/ssp2 playback
+/sys/kernel/debug/asoc/baytrailaudio/sst-platform/dapm/ssp2 Capture
 
-P=E9ter
+So now I'd like to make sure the mixer settings are OK before looking
+elsewhere again.
+
+Vinod, Subhransu, or anyone else, can you share some working alsa state
+files for the baytrailcraudio device in linux mainline?
+
+JFTR I am running a 64bit kernel, is this OK on BayTrail?
+I guess it is, but I just wanted to mention this to be sure.
+
+Thanks,
+   Antonio
+
+-- 
+Antonio Ospite
+http://ao2.it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
