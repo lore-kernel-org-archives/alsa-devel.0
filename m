@@ -1,17 +1,30 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: Intel SST on a Bay Trail tablet
-Date: Tue, 14 Apr 2015 17:06:27 +0300
-Message-ID: <552D1EE3.6090707@linux.intel.com>
-References: <20150223183913.fb262011d6300425da7f34be@ao2.it>	<20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>	<54F5CB3D.7020100@linux.intel.com>	<20150304170218.7b397993ce670902800109f1@ao2.it>	<20150403153414.b8de8df914664d7d7967120c@ao2.it>
- <20150414150236.3e8288307124a43941ab94f7@ao2.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+From: Variksla <variksla@gmail.com>
+Subject: Re: recording problem in beagleboard-mcbsp
+Date: Tue, 14 Apr 2015 09:41:50 -0700
+Message-ID: <8EE6AA19-869C-4EFD-984E-7BCAADE91D1F@gmail.com>
+References: <CAES_P+8NEcMfDSDVT5d0UHU4mo8d2-3rJg31zf5GRT0HaLVXYw@mail.gmail.com>
+ <CAES_P+-yk29wzBMhO3uYjr1fnXt8iyskr77QLc=AvwCuX=Najg@mail.gmail.com>
+ <CAES_P+-ufoqcY++WzvS42tyQLfd2zzuANNp2rPwuUk3x_Tn-jg@mail.gmail.com>
+ <551C3D19.2050200@ti.com>
+ <CAES_P+_zc1u=grsF4J3rH+uwamWTOrgQKYmcY-9p6b=W9-PxUA@mail.gmail.com>
+ <5523A1F3.2000701@ti.com>
+ <CAES_P+_nr4LvcU-WQ=ZuhNwCSRuUs=xenqKGpupYAgx01fnATg@mail.gmail.com>
+ <5524FA51.9060606@ti.com>
+ <CAES_P+8oJ0xDJ-2w02Q0pZmgQyY9tyaRB=+_PqMhTdwuYNRShw@mail.gmail.com>
+ <55266B38.6030503@ti.com>
+ <CAES_P+-5vgq1LxSsUQLua4j06M4U8+ogLgnEK5KJ-4QPJs1vJQ@mail.gmail.com>
+ <552BDD3E.5080607@ti.com> <552CE047.1030505@ti.com> <552D0A6A.20800@ti.com>
+Mime-Version: 1.0 (1.0)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C512F2605D4
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 16:07:37 +0200 (CEST)
-In-Reply-To: <20150414150236.3e8288307124a43941ab94f7@ao2.it>
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1939826128A
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 18:41:55 +0200 (CEST)
+Received: by pabsx10 with SMTP id sx10so17469518pab.3
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 09:41:54 -0700 (PDT)
+In-Reply-To: <552D0A6A.20800@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +34,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Antonio Ospite <ao2@ao2.it>, alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-My 2c below.
-
-On 04/14/2015 04:02 PM, Antonio Ospite wrote:
-> On Wed, 4 Mar 2015 17:02:18 +0100
-> Antonio Ospite <ao2@ao2.it> wrote:
-
-> I realized than I needed to set up the path between the FrontEnd DAI
-> and the BackEnd one, and in fact the error below goes away and I can
-> _start_ some playback after switching on these controls:
-> 	codec_out1 mix 0 pcm0_in Switch
-> 	media0_out mix 0 media1_in Switch
-> which AFAICS constitute the playback path.
->
-> However there is still no sound, and the playback stalls, and the
-> interrupt count suddenly stops for the intel_sst_driver IRQ
-> (in /proc/interrupts).
->
-What comes to my mind did you change .acpi_ipc_irq_index = 5 to 0 zero 
-in sound/soc/intel/sst/sst_acpi.c: byt_rvp_res_info structure?
-
-According to Teclast's DSDT table the DSP-host interrupt is at first 
-interrupt resource index.
-
-> By looking at /sys/kernel/debug under Android it looks like the
-> codec is connected to SSP2, and not SSP0 as we imagined before:
-> /sys/kernel/debug/asoc/baytrailaudio/sst-platform/dapm/ssp2 playback
-> /sys/kernel/debug/asoc/baytrailaudio/sst-platform/dapm/ssp2 Capture
->
-> So now I'd like to make sure the mixer settings are OK before looking
-> elsewhere again.
->
-> Vinod, Subhransu, or anyone else, can you share some working alsa state
-> files for the baytrailcraudio device in linux mainline?
->
-Question to Vinod et all too:
-
-I don't find above "ssp2 playback" and "ssp2 Capture" stream names from 
-sound/soc/intel/sst-mfld-platform-pcm.c so I guess it has been evolved a 
-bit from those original Android drivers.
-
-Which makes me thinking how does those strings describe the SSP port 
-setup? E.g. do they reflect what port is actually used or could it be 
-possible that those are just driver strings but firmware could have been 
-tuned for SSP0? If I looked at earlier right, Teclast has the low 
-pin-count Baytrail without SSP2 but I'm not sure about that.
-
-> JFTR I am running a 64bit kernel, is this OK on BayTrail?
-> I guess it is, but I just wanted to mention this to be sure.
->
-Generally yes. I've used both 32- and 64-bit kernels when developing the 
-sound/soc/intel/sst-baytrail-* but I haven't tested 
-sound/soc/intel/sst/. Vinod, I guess that should be 64-bit safe too?
-
--- 
-Jarkko
+CgoKCj4gT24gQXByIDE0LCAyMDE1LCBhdCA1OjM5IEFNLCBQZXRlciBVamZhbHVzaSA8cGV0ZXIu
+dWpmYWx1c2lAdGkuY29tPiB3cm90ZToKPiAKPj4gT24gMDQvMTQvMjAxNSAxMjozOSBQTSwgUGV0
+ZXIgVWpmYWx1c2kgd3JvdGU6Cj4+IE9LLCBnb3QgYW5vdGhlciBTRCBjYXJkLgo+PiBNY0JTUDMg
+aW4gbWFzdGVyIG1vZGUgd29ya3MgKG5vIGNvZGVjIGNvbm5lY3RlZCkgcGxheWJhY2sgYW5kIGNh
+cHR1cmUgYXMgd2VsbC4KPj4gCj4+IFRoZSBwaW5zIGZvciBNY0JTUDM6Cj4+IE9NQVAzX0NPUkUx
+X0lPUEFEKDB4MjE3MiwgUElOX09VVFBVVCB8IE1VWF9NT0RFMCkgLyogbWNic3AzX2ZzeC5tY2Jz
+cDNfZnN4ICovCj4+IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE3OCwgUElOX09VVFBVVCB8IE1VWF9N
+T0RFMSkgLyogdWFydDJfdHgubWNic3AzX2Nsa3ggKi8KPj4gT01BUDNfQ09SRTFfSU9QQUQoMHgy
+MTc0LCBQSU5fT1VUUFVUIHwgTVVYX01PREUxKSAvKiB1YXJ0Ml9jdHMubWNic3AzX2R4ICovCj4+
+IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE3NiwgUElOX0lOUFVUIHwgTVVYX01PREUxKSAgLyogdWFy
+dDJfcnRzLm1jYnNwM19kciAqLwo+PiAKPj4gSSBzdGlsbCBub3Qgc3VyZSB3aHkgTWNCU1AxIGlz
+IG5vdCB3b3JraW5nLi4KPiAKPiBUaGlzIHBpbmN0cmwgc2V0dGluZyBpcyBub3QgY29ycmVjdCBm
+b3IgTWNCU1AzLiBJIHdhcyBjaGFuZ2luZyB0aGUgcmVnaXN0ZXJzCj4gb24gdGhlIGZseSwgdGhh
+dCdzIHdoeSBpdCB3YXMgd29ya2luZyB3aGVuIEkgcmVwbGllZC4KPiAKPiBJbiBNY0JTUDMgbWFz
+dGVyIG1vZGUsIHlvdSBuZWVkOgo+IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE3MiwgUElOX0lOUFVU
+IHwgTVVYX01PREUwKSAvKiBtY2JzcDNfZnN4Lm1jYnNwM19mc3ggKi8KPiBPTUFQM19DT1JFMV9J
+T1BBRCgweDIxNzgsIFBJTl9JTlBVVCB8IE1VWF9NT0RFMSkgLyogdWFydDJfdHgubWNic3AzX2Ns
+a3ggKi8KPiBPTUFQM19DT1JFMV9JT1BBRCgweDIxNzQsIFBJTl9PVVRQVVQgfCBNVVhfTU9ERTEp
+IC8qIHVhcnQyX2N0cy5tY2JzcDNfZHggKi8KPiBPTUFQM19DT1JFMV9JT1BBRCgweDIxNzYsIFBJ
+Tl9JTlBVVCB8IE1VWF9NT0RFMSkgIC8qIHVhcnQyX3J0cy5tY2JzcDNfZHIgKi8KCldlaXJkLiBJ
+ZiBtY2JzcDMgaXMgbWFzdGVyIEkgYW0gd29uZGVyaW5nIHdoeSB3ZSBhcmUgY29uZmlndXJpbmcg
+ZnN4IGFuZCBjbGt4IGFzIGlucHV0LiAKPiAKPiBXaGljaCB3b3VsZCB3b3JrIGluIE1jQlNQMyBz
+bGF2ZSBtb2RlIGFzIHdlbGwuCj4gUGxheWJhY2ssIGNhcHR1cmUgd29ya3MgKE1jQlNQMyBtYXN0
+ZXIpLiBJIGhhdmUgY29ubmVjdGVkIERYIHRvIERSIGFuZAo+IGNhcHR1cmVkIHdoYXRldmVyIEkg
+d2FzIHBsYXlpbmcuIENhbWUgYmFjayBmaW5lLgo+IAo+IEFzIGZvciBNY0JTUDEgSSB0aGluayB0
+aGlzIHNob3VsZCBnZXQgaXQgd29ya2luZzoKPiBPTUFQM19DT1JFMV9JT1BBRCgweDIxOTYsIFBJ
+Tl9JTlBVVCB8IE1VWF9NT0RFMCkgLyogbWNic3AxX2ZzeC5tY2JzcDFfZnN4ICovCj4gT01BUDNf
+Q09SRTFfSU9QQUQoMHgyMThlLCBQSU5fSU5QVVQgfCBNVVhfTU9ERTApIC8qIG1jYnNwMV9mc3Iu
+bWNic3AxX2ZzciAqLwo+IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5OCwgUElOX0lOUFVUIHwgTVVY
+X01PREUwKSAvKiBtY2JzcDFfY2xreC5tY2JzcDFfY2xreCAqLwo+IE9NQVAzX0NPUkUxX0lPUEFE
+KDB4MjE4YywgUElOX0lOUFVUIHwgTVVYX01PREUwKSAvKiBtY2JzcDFfY2xrci5tY2JzcDFfY2xr
+ciAqLwo+IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5MCwgUElOX09VVFBVVCB8IE1VWF9NT0RFMCkg
+LyogbWNic3AxX2R4Lm1jYnNwMV9keCAqLwo+IE9NQVAzX0NPUkUxX0lPUEFEKDB4MjE5MiwgUElO
+X0lOUFVUIHwgTVVYX01PREUwKSAgLyogbWNic3AxX2RyLm1jYnNwMV9kciAqLwo+IAo+IElmIE1j
+QlNQMSBpcyBzbGF2ZSwgdGhlbiBjb25uZWN0IHRoZSBGUyB0byBib3RoIEZTWCBhbmQgRlNSIGFu
+ZCBkbyB0aGUgc2FtZQo+IGZvciBDTEsuCj4gCj4gLS0gCj4gUMOpdGVyCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
