@@ -1,18 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 0/3] ALSA: Add soc hda bus support
-Date: Tue, 14 Apr 2015 09:52:37 +0530
-Message-ID: <20150414042237.GC2963@intel.com>
-References: <1427968651-7821-1-git-send-email-vinod.koul@intel.com>
- <5524CAA9.8030209@canonical.com>
+Subject: Re: [RFC 01/11] ALSA: hda - add id table support for
+ hdac device/driver
+Date: Tue, 14 Apr 2015 10:04:11 +0530
+Message-ID: <20150414043411.GD2963@intel.com>
+References: <1428842178-7105-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1428842178-7105-2-git-send-email-subhransu.s.prusty@intel.com>
+ <s5hiod0p7xq.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CDED2606B5
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 06:27:51 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC9892619BF
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 06:39:08 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <5524CAA9.8030209@canonical.com>
+In-Reply-To: <s5hiod0p7xq.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +24,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 08, 2015 at 08:28:57AM +0200, David Henningsson wrote:
+On Mon, Apr 13, 2015 at 01:46:25PM +0200, Takashi Iwai wrote:
+> At Sun, 12 Apr 2015 18:06:08 +0530,
+> Subhransu S. Prusty wrote:
+> > 
+> > From: Jeeja KP <jeeja.kp@intel.com>
+> > diff --git a/sound/hda/hda_bus_type.c b/sound/hda/hda_bus_type.c
+> > index 519914a..8899c56 100644
+> > --- a/sound/hda/hda_bus_type.c
+> > +++ b/sound/hda/hda_bus_type.c
+> > @@ -19,6 +19,8 @@ static int hda_bus_match(struct device *dev, struct device_driver *drv)
+> >  		return 0;
+> >  	if (hdrv->match)
+> >  		return hdrv->match(hdev, hdrv);
+> > +	if (hdrv->id_table)
+> > +		return snd_hdac_bus_match_id(hdev, hdrv);
+> >  	return 1;
+> >  }
+> >  
+> > diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
+> > index 3294fd4..f0ee295 100644
+> > --- a/sound/hda/hdac_bus.c
+> > +++ b/sound/hda/hdac_bus.c
+> > @@ -195,3 +195,27 @@ void snd_hdac_bus_remove_device(struct hdac_bus *bus,
+> >  	bus->num_codecs--;
+> >  }
+> >  EXPORT_SYMBOL_GPL(snd_hdac_bus_remove_device);
+> > +
+> > +/**
+> > + * snd_hdac_bus_match_id - bind hdac device to hdac driver.
+> > + * @hdev: device.
+> > + * @hdrv: driver.
+> > + *
+> > + */
+> > +int snd_hdac_bus_match_id(struct hdac_device *dev,
+> > +		 struct hdac_driver *drv)
+> > +{
+> > +	if (drv->id_table) {
+> > +		struct hdac_device_id *id = drv->id_table;
+> > +
+> > +		while (id->name[0]) {
+> > +			if (dev->vendor_id == id->id) {
+> > +				dev->id_entry = id;
+> > +				return 1;
+> > +			}
+> > +			id++;
+> > +		}
+> > +	}
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(snd_hdac_bus_match_id);
 > 
+> Please make these rather ASoC specific.  These ID checks aren't needed
+> for the legacy driver as they need more other fields checks like
+> revision id.
 > 
-> On 2015-04-02 11:57, Vinod Koul wrote:
-> >This series of 3 patches adds support for ASoC HDA
-> >bus. ASoC HDA bus is essentially a wrapper for
-> >HDA core bus and it manages ASoC hda drivers
+> For example,
 > 
-> Hi,
+> struct hda_soc_device {
+> 	struct hdac_device core;
+> 	const struct hda_soc_device_id *id_entry;
+> 	....
+> };
 > 
-> I'm seeing several patch sets - as well as the added hdac
-> indirection layer earlier - related to HDA and ASoC. But I'm curious
-> about the bigger picture here.
-Sure, as we discussed in last meeting, the SKL audio controller is HDA audio
-controller which also supports a DSP and I2S ports. Although if you get a
-SKL board with a HDA codec you can bypass DSP and it will work as previuos
-gen Intel HDA controller so current hda code works well for "legacy" HDA
-mode
-
-Now we are moving bits and pieces out of current hda code into hdac layer
-(hda-core) which will be used by SKL ASoC driver as well as current
-implementations.
-So first remaining parts of hdac will be merged follow by asoc wrappers,
-then SKL controller driver and fllowed up by DSP and I2S support.
-
-> In addition, I notice the rt286/rt288 ASoC driver looks very much
-> hda-like, i e, we're in practice sending HDA commands over an i2s
-> (or i2c) bus.
-> 
-> Adding two and two together it could mean you're trying to move
-> rt286/rt288 over to use the hda codec driver (which would be
-> awesome!). And perhaps other, similar ASoC codecs as well, if there
-> are any.
-some of the RT codecs support both HDA and I2S, but right now merging them
-is not in my radar but yes it is doable and I will look into this once base
-driver and merged
-> 
-> But I still feel I'm missing the bigger roadmap here. Anyone who
-> wants to enlighten me? :-)
-Hope this would have helped, do let me know if you have more questions :)
+> and give the match ops to hdac_driver for checking the ID.
+Okay, will move these to asoc then. I am planning to move this to generic
+asoc layer and not in skl driver specfic
 
 -- 
 ~Vinod
