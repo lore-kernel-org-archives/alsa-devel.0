@@ -1,17 +1,20 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH v3] ALSA: hda - set GET bit when adding a
-	vendor verb to the codec regmap
-Date: Tue, 14 Apr 2015 11:25:36 +0800
-Message-ID: <1428981936-24976-1-git-send-email-mengdong.lin@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - not use regmap for vendor verb
+ 0x781 of Intel HDMI codec
+Date: Tue, 14 Apr 2015 03:26:10 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B826F6A@SHSMSX101.ccr.corp.intel.com>
 References: <2f716e6b90b7416eb34d35ed1954c7761bfd2050.1428918546.git.mengdong.lin@intel.com>
+ <s5hpp78p94w.wl-tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B826848@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 466432617BB
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 05:15:12 +0200 (CEST)
-In-Reply-To: <2f716e6b90b7416eb34d35ed1954c7761bfd2050.1428918546.git.mengdong.lin@intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5422C2606D9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 05:26:15 +0200 (CEST)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B826848@SHSMSX101.ccr.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+> -----Original Message-----
+> From: Lin, Mengdong
+> Sent: Monday, April 13, 2015 9:30 PM
 
-Some HD-A codecs may add their own vendor 'set' verb to the regmap, thru func
-snd_hdac_add_vendor_verb(). This patch sets the GET bit (bit 11)  when adding
-the verb so that its peer vendor 'get' verb is actually added. This can avoid
-I/O error when writing the 'set' verb thru remap, since HD-A regmap internally
-looks up a writable vendor verb with GET bit set at first.
+> > > For HDMI codec on Haswell/Broadwell/Skylake platforms, the vendor
+> > > verb
+> > > 0x781 is used enable DP 1.2 mode as a fixup if BIOS has not done
+> > > this, in function intel_haswell_fixup_enable_dp12(). Otherwise, the
+> > > display audio playback will be silent.
+> > >
+> > > Although the verb 0x781 is added to vendor verbs array, but
+> > > snd_hdac_regmap_
+> > > encode_verb() will translate it to verb 0xf81 and cause regmap_write
+> > > IO failure because 0xf81 is not in the vendor verb array and so will
+> > > not be taken as a writable register.
+> > >
+> > > So this patch no longer uses regmap for verb 0x781 but directly send
+> > > this command to enable DP1.2 mode.
+> >
+> > What if just add INTEL_GET_VENDOR_VERB as a vendor verb?
+> 
+> Yes, it should work. hda_reg_write will drop the GET bit.
+> I'll have a test tomorrow.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> > What if just add INTEL_GET_VENDOR_VERB as a vendor verb?
+> 
+> Yes, it should work. hda_reg_write will drop the GET bit.
+> I'll have a test tomorrow.
 
-diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
-index 1eb4320..9e933c3 100644
---- a/sound/hda/hdac_regmap.c
-+++ b/sound/hda/hdac_regmap.c
-@@ -368,7 +368,7 @@ int snd_hdac_regmap_add_vendor_verb(struct hdac_device *codec,
- 
- 	if (!p)
- 		return -ENOMEM;
--	*p = verb;
-+	*p = verb | 0x800; /* set GET bit */
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_regmap_add_vendor_verb);
--- 
-1.9.1
+Hi Takashi,
+
+I've submitted v2 and v3 patches, both can work one my SKL. Please review.
+
+V2: add INTEL_GET_VENDOR_VERB as a vendor verb as you suggested.
+   I verified this on a SKL desktop, on which BIOS does not enable DP1.2 mode by default and so we observed the HDMI/DP audio failure.
+
+V3: set GET bit when adding a vendor verb to the codec regmap
+   It also works on my SKL. It's more generic than v2, because I observed other HD-A codecs (Conexant, si3054, sigmatel) also add their own vendor SET verbs and may have the same problem.
+   However, I have no chance to verify these codecs since I cannot find platforms with them.
+
+Thanks
+Mengdong
