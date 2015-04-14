@@ -1,16 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: parallel, real time safe waiting?
-Date: Tue, 14 Apr 2015 14:35:36 +0200
-Message-ID: <552D0998.4080806@ladisch.de>
-References: <trinity-43de15d6-c64e-46fe-80ab-acaeb4930fc6-1428947762351@3capp-gmx-bs04>
+Subject: Re: Playback - Overwrite buffer with silence
+Date: Tue, 14 Apr 2015 14:37:21 +0200
+Message-ID: <552D0A01.6050308@ladisch.de>
+References: <5529421B.7050601@gmail.com>
+ <55297E6E.20302@ladisch.de>	<14caac41f10.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>	<552A0974.1000005@ladisch.de>
+ <14cb33de7e8.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id ADBCE26054A
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 14:35:37 +0200 (CEST)
-In-Reply-To: <trinity-43de15d6-c64e-46fe-80ab-acaeb4930fc6-1428947762351@3capp-gmx-bs04>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1DAF226054A
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 14:37:21 +0200 (CEST)
+In-Reply-To: <14cb33de7e8.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,23 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Johannes Lorenz <johannes89@mailueberfall.de>, alsa-devel@alsa-project.org
+To: Nilhcraiv <nilhcraiv@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Johannes Lorenz wrote:
->   1.) Let each thread open a handle using snd_seq_open()
->   2.) Call snd_pcm_wait() in each thread
-
-> Are these functions
+Nilhcraiv wrote:
+> Clemens wrote:
+> > It is impossible for the boundar to be zero.
 >
->   a) real time safe?
+> In my code snd_pcm_sw_params_get_boundary(swparams, &boundary)
+> function does not return a negative value
 
-snd_seq_open() is not, but why would that matter?
-Don't you call it from the GUI thread?
-
->   b) race-condition free, assuming I'll use pairwise different handles each thread
-
-Yes.
+But an earlier function probably did.
 
 
 Regards,
