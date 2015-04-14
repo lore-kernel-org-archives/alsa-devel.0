@@ -1,20 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 09/11] ALSA: hda - moved interrupt handler to
- controller library
-Date: Tue, 14 Apr 2015 10:13:56 +0530
-Message-ID: <20150414044355.GI2963@intel.com>
+Subject: Re: [RFC 10/11] ASoC: hda - add Skylake HD audio driver
+Date: Tue, 14 Apr 2015 10:14:58 +0530
+Message-ID: <20150414044458.GJ2963@intel.com>
 References: <1428842178-7105-1-git-send-email-subhransu.s.prusty@intel.com>
- <1428842178-7105-10-git-send-email-subhransu.s.prusty@intel.com>
- <s5h7ftgp783.wl-tiwai@suse.de>
+ <1428842178-7105-11-git-send-email-subhransu.s.prusty@intel.com>
+ <s5ha8ycp7aw.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BB83260478
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 06:48:53 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A3D6261A73
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 06:49:54 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5h7ftgp783.wl-tiwai@suse.de>
+In-Reply-To: <s5ha8ycp7aw.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,76 +27,74 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 13, 2015 at 02:01:48PM +0200, Takashi Iwai wrote:
-> At Sun, 12 Apr 2015 18:06:16 +0530,
+On Mon, Apr 13, 2015 at 02:00:07PM +0200, Takashi Iwai wrote:
+> At Sun, 12 Apr 2015 18:06:17 +0530,
 > Subhransu S. Prusty wrote:
 > > 
 > > From: Jeeja KP <jeeja.kp@intel.com>
 > > 
-> > This will be used by controller legacy and SKL driver
+> > Add ASoC Skylake HD audio controller driver
 > > 
 > > Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 > > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 > > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 > > ---
-> >  include/sound/hdaudio.h     |  1 +
-> >  sound/hda/hdac_controller.c | 24 ++++++++++++++++++++++++
-> >  2 files changed, 25 insertions(+)
+> >  include/sound/hdaudio.h |  11 +
+> >  sound/soc/hda/hda_skl.c | 829 ++++++++++++++++++++++++++++++++++++++++++++++++
+> >  sound/soc/hda/hda_skl.h |  49 +++
+> >  3 files changed, 889 insertions(+)
+> >  create mode 100644 sound/soc/hda/hda_skl.c
+> >  create mode 100644 sound/soc/hda/hda_skl.h
 > > 
 > > diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-> > index 1f9f4ec..2d62410 100644
+> > index 2d62410..1ef0b79 100644
 > > --- a/include/sound/hdaudio.h
 > > +++ b/include/sound/hdaudio.h
-> > @@ -293,6 +293,7 @@ void snd_hdac_bus_update_rirb(struct hdac_bus *bus);
-> >  void snd_hdac_bus_handle_stream_irq(struct hdac_bus *bus, unsigned int status,
-> >  				    void (*ack)(struct hdac_bus *,
-> >  						struct hdac_stream *));
-> > +irqreturn_t snd_hdac_bus_interrupt(int irq, void *dev_id);
+> > @@ -197,6 +197,11 @@ struct hda_rb {
+> >  	u32 res[HDA_MAX_CODECS];	/* last read value */
+> >  };
 > >  
-> >  int snd_hdac_bus_alloc_stream_pages(struct hdac_bus *bus);
-> >  void snd_hdac_bus_free_stream_pages(struct hdac_bus *bus);
-> > diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-> > index 4d4e0d6..831cc0d 100644
-> > --- a/sound/hda/hdac_controller.c
-> > +++ b/sound/hda/hdac_controller.c
-> > @@ -5,6 +5,7 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/delay.h>
-> >  #include <linux/export.h>
-> > +#include <linux/pm_runtime.h>
-> >  #include <sound/core.h>
-> >  #include <sound/hdaudio.h>
-> >  #include <sound/hda_registers.h>
-> > @@ -381,6 +382,29 @@ EXPORT_SYMBOL_GPL(snd_hdac_bus_stop_chip);
-> >  /*
-> >   * interrupt handler
-> >   */
-> > +irqreturn_t snd_hdac_bus_interrupt(int irq, void *dev_id)
-> > +{
-> > +	struct hdac_bus *chip = dev_id;
-> > +	u32 status;
+> > +typedef unsigned int (*hdac_stream_get_pos_callback_t)(struct hdac_bus *,
+> > +			struct hdac_stream *);
+> > +typedef int (*hdac_stream_get_delay_callback_t)(struct hdac_bus *,
+> > +		struct hdac_stream *, unsigned int pos);
 > > +
-> > +#ifdef CONFIG_PM
-> > +	if (!pm_runtime_active(chip->dev))
-> > +		return IRQ_NONE;
-> > +#endif
-> > +
-> > +	spin_lock(&chip->reg_lock);
-> > +
-> > +	status = azx_readl(chip, INTSTS);
-> > +	if (status == 0 || status == 0xffffffff) {
-> > +		spin_unlock(&chip->reg_lock);
-> > +		return IRQ_NONE;
-> > +	}
-> > +	spin_unlock(&chip->reg_lock);
-> > +
-> > +	return IRQ_WAKE_THREAD;
-> > +}
-> > +EXPORT_SYMBOL_GPL(snd_hdac_bus_interrupt);
+> >  struct hdac_bus {
+> >  	struct device *dev;
+> >  	const struct hdac_bus_ops *ops;
+> > @@ -233,6 +238,10 @@ struct hdac_bus {
+> >  	struct snd_dma_buffer rb;
+> >  	struct snd_dma_buffer posbuf;
+> >  
+> > +	/* position adjustment callbacks */
+> > +	hdac_stream_get_pos_callback_t get_position[2];
+> > +	hdac_stream_get_delay_callback_t get_delay[2];
 > 
-> Again, this is specific to ASoC driver, so let's keep it local.
-Hmmm, but most of this is based on HDA spec and not doing much wrt driver.
-Moving to ASoC is fine too... WIll move
+> So, do you still need the dynamic switch of get_position and get_delay
+> functions on SKL?  These are basically for old platforms that have no
+> position buffer support or unstable reads.
+> 
+> Otherwise you can use always LPIB and position buffers for position
+> and delay calculations.  That's why I didn't put them at the first
+> place.
+Jeeja tested this last evening so we dont need this on SKL and will remove,
+and you were right :)
+
+> 
+> > +
+> >  	/* hdac_stream linked list */
+> >  	struct list_head stream_list;
+> >  
+> > @@ -330,6 +339,8 @@ struct hdac_stream {
+> >  
+> >  	unsigned int opened:1;
+> >  	unsigned int running:1;
+> > +	unsigned int prepared:1;
+> > +	unsigned int irq_pending:1;
+> 
+> The irq_pending is also another question.  This was a workaround, and
+> whether it's still needed for the modern chips is not sure.
+nope, will drop this patch
 
 -- 
 ~Vinod
