@@ -1,18 +1,18 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [PATCH] ASoC: qcom: Return an error for invalid
- PCM trigger command
-Date: Tue, 14 Apr 2015 16:31:12 -0700
-Message-ID: <20150414233112.GA15118@kwestfie-linux.qualcomm.com>
-References: <1428927809-4919-1-git-send-email-tiwai@suse.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl_ssi: Fix platform_get_irq() error
+	handling
+Date: Wed, 15 Apr 2015 00:08:15 -0300
+Message-ID: <1429067295-16052-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id BD960265456
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2015 01:31:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1428927809-4919-1-git-send-email-tiwai@suse.de>
+Received: from mail-qk0-f179.google.com (mail-qk0-f179.google.com
+ [209.85.220.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 405912605BD
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2015 05:09:56 +0200 (CEST)
+Received: by qkx62 with SMTP id 62so55271988qkx.0
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 20:09:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 13, 2015 at 02:23:29PM +0200, Takashi Iwai wrote:
-> Fix a compile warning
->   sound/soc/qcom/lpass-cpu.c: In function ???lpass_cpu_daiops_trigger???:
->   sound/soc/qcom/lpass-cpu.c:224:2: warning: ???ret??? may be used uninitialized in this function [-Wmaybe-uninitialized]
->     return ret;
->       ^
-> Although switch () lists the most of existing cases, it's still better
-> to cover the rest as an error properly.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/soc/qcom/lpass-cpu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
+We should check whether platform_get_irq() returns a negative number and
+propagate the error in this case.
 
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index e8bb8ee..0d48804 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1357,7 +1357,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ssi_private->irq = platform_get_irq(pdev, 0);
+-	if (!ssi_private->irq) {
++	if (ssi_private->irq < 0) {
+ 		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
+ 		return ssi_private->irq;
+ 	}
 -- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+1.9.1
