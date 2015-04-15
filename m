@@ -1,18 +1,24 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Fix platform_get_irq() error
-	handling
-Date: Wed, 15 Apr 2015 00:08:15 -0300
-Message-ID: <1429067295-16052-1-git-send-email-festevam@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Playback - Overwrite buffer with silence
+Date: Wed, 15 Apr 2015 11:14:51 +0800
+Message-ID: <CAN8ccibpiKiLXDvjTGGUe8ZkdOvp=9N6QoOrJPLnPmkNWZjOhg@mail.gmail.com>
+References: <5529421B.7050601@gmail.com> <55297E6E.20302@ladisch.de>
+ <14caac41f10.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
+ <552A0974.1000005@ladisch.de>
+ <14cb33de7e8.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
+ <552D0A01.6050308@ladisch.de>
+ <14cb8fa84c0.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f179.google.com (mail-qk0-f179.google.com
- [209.85.220.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 405912605BD
- for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2015 05:09:56 +0200 (CEST)
-Received: by qkx62 with SMTP id 62so55271988qkx.0
- for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 20:09:55 -0700 (PDT)
+Received: from mail-vn0-f43.google.com (mail-vn0-f43.google.com
+ [209.85.216.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40BE426545B
+ for <alsa-devel@alsa-project.org>; Wed, 15 Apr 2015 05:14:53 +0200 (CEST)
+Received: by vnbf62 with SMTP id f62so10915900vnb.3
+ for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2015 20:14:52 -0700 (PDT)
+In-Reply-To: <14cb8fa84c0.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +28,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
+To: Nilhcraiv <nilhcraiv@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> Clemens wrote:
+>    But an earlier function probably did.
+>
+> It is the first call to " snd_pcm_sw_params_get_boundary" function and it
+return zero. If I use the function after "writei" then, the boundary value
+is a large number. What boundary means when the value is a large number?
+>
 
-We should check whether platform_get_irq() returns a negative number and
-propagate the error in this case.
+You have to add snd_pcm_dump() after snd_pcm_hw_params() to dump those
+paramters accepted by your default device
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Not all default device support two periods per buffer as you did not
+explicitly set periods or period_size
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e8bb8ee..0d48804 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1357,7 +1357,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
- 
- 	ssi_private->irq = platform_get_irq(pdev, 0);
--	if (!ssi_private->irq) {
-+	if (ssi_private->irq < 0) {
- 		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
- 		return ssi_private->irq;
- 	}
--- 
-1.9.1
+Most functions which you used can return error
