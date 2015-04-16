@@ -1,56 +1,36 @@
-From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
-Subject: Re: Separate input and output jacks for one UCM device?
-Date: Thu, 16 Apr 2015 11:31:48 +0300
-Message-ID: <1429173108.2971.0.camel@tkkaskin-mobl3.ger.corp.intel.com>
-References: <5509D4D4.6030000@linux.intel.com> <1426756559.7258.22.camel@loki>
- <1427820547.2856.10.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <1427891224.2711.31.camel@loki>
- <CAEUnVG4iCJGGPw2=R+TxVCoj3ky2SBgZDpZrFbswXh36b-WydA@mail.gmail.com>
- <1428439055.12283.54.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <1429112366.4506.9.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <CAEUnVG4A=p04fkZ+6ZMr0_NhDTcOs=S9er5FR1zrYUQjiCBryg@mail.gmail.com>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [patch 04/39] sound: Use hrtimer_resolution instead of
+ hrtimer_get_res()
+Date: Thu, 16 Apr 2015 11:08:59 +0200 (CEST)
+Message-ID: <alpine.DEB.2.11.1504161108260.3845@nanos>
+References: <20150414203303.702062272@linutronix.de> <20150414203500.799133359@linutronix.de> <s5h618wsdho.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D69C26067E
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 10:31:53 +0200 (CEST)
-In-Reply-To: <CAEUnVG4A=p04fkZ+6ZMr0_NhDTcOs=S9er5FR1zrYUQjiCBryg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Arun Raghavan <arun@accosted.net>, Han Lu <han.lu@intel.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h618wsdho.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Preeti U Murthy <preeti@linux.vnet.ibm.com>, Viresh Kumar <viresh.kumar@linaro.org>, Marcelo Tosatti <mtosatt@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2015-04-15 at 09:10 -0700, Dylan Reid wrote:
-> On Wed, Apr 15, 2015 at 8:39 AM, Tanu Kaskinen
-> <tanu.kaskinen@linux.intel.com> wrote:
-> > On Tue, 2015-04-07 at 23:37 +0300, Tanu Kaskinen wrote:
-> >> I'm not sure what you mean... "There is always one UCM device [...] per
-> >> jack" sounds like you want there to be only one device representing
-> >> headset, but on the other hand you talk about it being advantageous to
-> >> have a separate device for the headphone and mic... Can you clarify the
-> >> number of UCM devices per physical headset jack?
-> >
-> > Ping? I'd like to get this clarified, because depending on what CRAS
-> > does, we may or may not have to change the use-case.h documentation (and
-> > PulseAudio code).
+On Thu, 16 Apr 2015, Takashi Iwai wrote:
+> At Tue, 14 Apr 2015 21:08:30 -0000,
+> Thomas Gleixner wrote:
+> > 
+> > No point in converting a timespec now that the value is directly
+> > accessible. Get rid of the null check while at it. Resolution is
+> > guaranteed to be > 0.
+> > 
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Jaroslav Kysela <perex@perex.cz>
+> > Cc: Takashi Iwai <tiwai@suse.de>
 > 
-> Sorry I missed this.  CRAS handles separate UCM devices for the
-> headphone and mic of a combo jack.  However there is no support for
-> handling a "Headset Jack" kcontrol or input event.  We have ensured
-> all our platforms are capable of detecting if a mic is present and
-> that they report the headphone and mic as separate jacks.
+> Would you like me picking up this through sound git tree, or apply the
+> whole set through tip?  In the latter case, feel free to take my ack:
+>   Acked-by: Takashi Iwai <tiwai@suse.de>
 
-Thanks, no need to change anything then! (At least for now.)
+I pick it up as it has a dependency on core code changes.
 
--- 
-Tanu
+Thanks,
+
+	tglx
