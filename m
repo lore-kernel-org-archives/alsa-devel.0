@@ -1,16 +1,21 @@
-From: Scott Wood <scottwood@freescale.com>
-Subject: [PATCH] ALSA: intel8x0: Check pci_iomap() success for
-	DEVICE_ALI
-Date: Wed, 15 Apr 2015 18:16:47 -0500
-Message-ID: <1429139807-7059-1-git-send-email-scottwood@freescale.com>
+From: Caesar Wang <wxt@rock-chips.com>
+Subject: Re: [PATCH] ASoC: max98090: add shutdown callback for
+	max98090
+Date: Thu, 16 Apr 2015 10:19:30 +0800
+Message-ID: <552F1C32.8050407@rock-chips.com>
+References: <mailman.2466.1428559383.807.alsa-devel@alsa-project.org>,
+ <CAK7N6vow0D8i6jQdjGbZ5L+VdyOtmSWSFdpyiE5JRH7SGtv=Dw@mail.gmail.com>
+ <B03A893ADFE80748942D13AFAF28451924E3198860@ITSVLEX06.it.maxim-ic.internal>,
+ <55271D74.30300@rock-chips.com>
+ <B03A893ADFE80748942D13AFAF28451924E4BADE53@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bn0107.outbound.protection.outlook.com [157.56.110.107])
- by alsa0.perex.cz (Postfix) with ESMTP id F10B1260588
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 01:17:03 +0200 (CEST)
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33F20260644
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 04:19:48 +0200 (CEST)
+In-Reply-To: <B03A893ADFE80748942D13AFAF28451924E4BADE53@ITSVLEX06.it.maxim-ic.internal>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,37 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Scott Wood <scottwood@freescale.com>, alsa-devel@alsa-project.org
+To: Anish Kumar <Anish.Kumar@maximintegrated.com>, Jianqun <xjq@rock-chips.com>, Matthew Mowdy <Matthew.Mowdy@maximintegrated.com>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, Nitin Mittal <nitin.mittal@maximintegrated.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-DEVICE_ALI previously would jump to port_inited after calling
-pci_iomap(), bypassing the check for bmaddr being NULL.
-
-Signed-off-by: Scott Wood <scottwood@freescale.com>
----
- sound/pci/intel8x0.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
-index 2c5484e..dfb77a5 100644
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -3101,13 +3101,13 @@ static int snd_intel8x0_create(struct snd_card *card,
- 		chip->bmaddr = pci_iomap(pci, 3, 0);
- 	else
- 		chip->bmaddr = pci_iomap(pci, 1, 0);
-+
-+ port_inited:
- 	if (!chip->bmaddr) {
- 		dev_err(card->dev, "Controller space ioremap problem\n");
- 		snd_intel8x0_free(chip);
- 		return -EIO;
- 	}
--
-- port_inited:
- 	chip->bdbars_count = bdbars[device_type];
- 
- 	/* initialize offsets */
--- 
-2.1.0
+5ZyoIDIwMTXlubQwNOaciDE25pelIDA1OjE0LCBBbmlzaCBLdW1hciDlhpnpgZM6Cj4g5ZyoIDA0
+LzEwLzIwMTUgMDM6MzggQU0sIEFuaXNoIEt1bWFyIOWGmemBkzoKPj4+IFRvIGZpeCBwb3Agbm9p
+c2Ugd2hlbiBzaHV0ZG93bix0aGUgcG9wIG5vaXNlIGR1cmluZyBzaHV0ZG93bgo+Pj4gaXMgdGhl
+IHBtaWMgY3V0b2ZmIHBvd2VyIG9mIGNvZGVjIHdpdGhvdXQgYW55IG5vdGljZS4KPj4gSXMgdGhl
+IHBvd2VyIHR1cm5lZCBvZmYgd2l0aG91dCBhbnkgaW50aW1hdGlvbiB0byB0aGUgY29kZWMgZHJp
+dmVyPwo+PiBPciBpcyBpdCBwaHlzaWNhbGx5IHJlbW92ZWQ/IENhbiB5b3UgZGVzY3JpYmUgdGhl
+IHByb2JlbG0KPj4gYmV0dGVyPwo+PiBXaGVuIGRldmljZSBpcyBzaHV0ZG93biB3aXRoIHBsYXlp
+bmcgbXVzaWMsIHRoZSBvcmlnaW4gZHJpdmVyIGRvZXMgbm90aGluZyBmb3Igc2h1dGRvd24gb3Bl
+cmF0aW9uLAo+PiBhcyBhIHJlc3VsdCwgcG1pYyB3aWxsIGN1dCBvZmYgdGhlIHBvd2VyIG9mIGNv
+ZGVjIElDLCB0aHVzIGNhdXNlIGEgcG9wIG5vaXNlIGZyb20gc3BlYWtlciBhbmQgaGVhZHBob25l
+Lgo+PiBTbyB0aGUgcGF0Y2ggYWRkZWQgYSBzaHV0ZG93biBjYWxsYmFjayBmb3IgZHJpdmVyLCBl
+bmFibGUgdm9sdW1lIHNtb290aGluZyBhbmQgZGlzYWJsZSB6ZXJvIGNyb3NzLAo+PiB0aGlzIGlz
+IHJlZmVyZW5jZWQgZnJvbSBtaWNfaW5wdXQgd2hpY2ggZG9lcyB0aGUgc2FtZXRoaW5nIGJlZm9y
+ZSBtaWMgc3dpdGNoLgo+PiBJJ20gdmVyeSBoYXBweSBpZiBzb21lIHN1Z2dlc3Rpb24gZnJvbSBt
+YXhpbWludGVncmF0ZSAuIDotKQo+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB0aGUgcGF0Y2ggd29y
+a2VkIGZvciB5b3UuCgpZZXMsIHRoZSBwYXRjaCBjYW4gd29yayBmb3IgbWUuCldlIGhhZCB0ZXN0
+ZWQgb24gY2hyb21pdW1vcy4KCj4+ICtzdGF0aWMgdm9pZCBtYXg5ODA5MF9pMmNfc2h1dGRvd24o
+c3RydWN0IGkyY19jbGllbnQgKmkyYykKPj4gK3sKPj4gKyAgICAgICBzdHJ1Y3QgbWF4OTgwOTBf
+cHJpdiAqbWF4OTgwOTAgPSBkZXZfZ2V0X2RydmRhdGEoJmkyYy0+ZGV2KTsKPj4gKwo+PiArICAg
+ICAgIGRldl9pbmZvKCZpMmMtPmRldiwgInNodXQgZG93biBkZXZpY2VcbiIpOwo+PiArCj4+ICsg
+ICAgICAgLyogRW5hYmxlIHZvbHVtZSBzbW9vdGhpbmcsIGRpc2FibGUgemVybyBjcm9zcy4gIFRo
+aXMgd2lsbCBjYXVzZQo+PiArICAgICAgICAqIGEgcXVpY2sgNDBtcyByYW1wIHRvIG11dGUgb24g
+c2h1dGRvd24uCj4+ICsgICAgICAgICovCj4+ICsgICAgICAgcmVnbWFwX3dyaXRlKG1heDk4MDkw
+LT5yZWdtYXAsCj4+ICsgICAgICAgICAgICAgICBNOTgwOTBfUkVHX0xFVkVMX0NPTlRST0wsIE05
+ODA5MF9WU0VOTl9NQVNLKTsKPj4gKyAgICAgICByZWdtYXBfd3JpdGUobWF4OTgwOTAtPnJlZ21h
+cCwKPj4gKyAgICAgICAgICAgICAgIE05ODA5MF9SRUdfREVWSUNFX1NIVVRET1dOLCAweDAwKTsK
+Pj4gKyAgICAgICBtc2xlZXAoNDApOwo+PiArfQo+PiArCj4+Cj4+Cj4KPgo+Cj4KCi0tIAoqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKgrnjovmmZPohb4gICAgQ2Flc2FyIFdhbmcKUHJvZHVj
+dCBSJkQgRGVwdC5JSUkKRnV6aG91IFJvY2tjaGlwIEVsZWN0cm9uaWNzIENvLkx0ZApBZGRy77ya
+ICBOTy4xOCBCdWlsZGluZywgQSBEaXN0cmljdCwgRnV6aG91IFNvZnR3YXJlIFBhcmssR3Vsb3Ug
+RGlzdHJpY3QsRnV6aG91LCBGdWppYW4sQ2hpbmEoRnV6aG91IEhlYWRxdWFydGVycykKICAgICAg
+ICAgICAgICAgMjFGLE1hbGF0YSBCdWlsZGluZyxLZWppemhvbmd5aSBBdmVudWUsTmFuc2hhbiBE
+aXN0cmljdCxTaGVuemhlbiAgKFNoZW56aGVuIE9mZmljZSkKVGVs77yaKzg2LTU5MS04Mzk5MTkw
+Ni8wNyAtIDgyMjEKTW9iaWxlOis4NiAxNTA1OTQ1Njc0MgpFLW1haWwgOiB3eHRAcm9jay1jaGlw
+cy5jb20KKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKgpJTVBPUlRBTlQgTk9USUNFOiBUaGlzIGVtYWlsIGlzIGZyb20gRnV6aG91IFJv
+Y2tjaGlwIEVsZWN0cm9uaWNzIENvLiwgTHRkIC5UaGUgY29udGVudHMgb2YgdGhpcyBlbWFpbCBh
+bmQgYW55IGF0dGFjaG1lbnRzIG1heQpjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmls
+ZWdlZCwgY29uZmlkZW50aWFsIGFuZC9vciBleGVtcHQgZnJvbSBkaXNjbG9zdXJlIHVuZGVyIGFw
+cGxpY2FibGUgbGF3IGFuZCByZWxldmFudCBOREEuCklmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRl
+ZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55IGRpc2Nsb3N1cmUs
+IGNvcHlpbmcsIGRpc3RyaWJ1dGlvbiwgb3IgdXNlIG9mIHRoZQppbmZvcm1hdGlvbiBpcyBTVFJJ
+Q1RMWSBQUk9ISUJJVEVELiBQbGVhc2UgaW1tZWRpYXRlbHkgY29udGFjdCB0aGUgc2VuZGVyIGFz
+IHNvb24gYXMgcG9zc2libGUgYW5kIGRlc3Ryb3kgdGhlIG1hdGVyaWFsCmluIGl0cyBlbnRpcmV0
+eSBpbiBhbnkgZm9ybWF0LiBUaGFuayB5b3UuCioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
