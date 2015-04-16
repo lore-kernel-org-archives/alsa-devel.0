@@ -1,17 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/16] ALSA: hda - Merge codec and controller
-	helpers
-Date: Thu, 16 Apr 2015 18:14:19 +0200
-Message-ID: <1429200870-5288-6-git-send-email-tiwai@suse.de>
-References: <1429200870-5288-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 00/16] HD-audio core controller split
+Date: Thu, 16 Apr 2015 18:14:14 +0200
+Message-ID: <1429200870-5288-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 511F9261543
+ by alsa0.perex.cz (Postfix) with ESMTP id 56D1E26155E
  for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 18:14:38 +0200 (CEST)
-In-Reply-To: <1429200870-5288-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,54 +22,68 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is no much merit to keep the HD-audio codec and controller
-helper codes in separate modules any longer.  Let's merge them into a
-single helper module.
+Hi,
 
-This patch just changes Makefile entries to merge two individual
-modules to one.  The only code change is the removal of superfluous
-MODULE_*() macros in one side.
+this is a patch series for splitting the existing HD-audio controller
+code to a core library.  The purose of this split is to help writing
+other HD-audio controller codes more easily.  With these library
+codes, a controller driver can be written up with small skeleton
+codes.  I have done quick tests, and no obvious regression found, so
+submitted here for reviews.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/Makefile         | 3 +--
- sound/pci/hda/hda_controller.c | 3 ---
- 2 files changed, 1 insertion(+), 5 deletions(-)
+The patches are found in topic/hda branch of sound git tree.
 
-diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
-index af78fb33a4fd..c5e6651efb49 100644
---- a/sound/pci/hda/Makefile
-+++ b/sound/pci/hda/Makefile
-@@ -1,10 +1,10 @@
- snd-hda-intel-objs := hda_intel.o
--snd-hda-controller-objs := hda_controller.o
- snd-hda-tegra-objs := hda_tegra.o
- # for haswell power well
- snd-hda-intel-$(CONFIG_SND_HDA_I915) +=	hda_i915.o
- 
- snd-hda-codec-y := hda_bind.o hda_codec.o hda_jack.o hda_auto_parser.o hda_sysfs.o
-+snd-hda-codec-y += hda_controller.o
- snd-hda-codec-$(CONFIG_PROC_FS) += hda_proc.o
- snd-hda-codec-$(CONFIG_SND_HDA_HWDEP) += hda_hwdep.o
- snd-hda-codec-$(CONFIG_SND_HDA_INPUT_BEEP) += hda_beep.o
-@@ -27,7 +27,6 @@ snd-hda-codec-hdmi-objs :=	patch_hdmi.o hda_eld.o
- 
- # common driver
- obj-$(CONFIG_SND_HDA) := snd-hda-codec.o
--obj-$(CONFIG_SND_HDA) += snd-hda-controller.o
- 
- # codec drivers
- obj-$(CONFIG_SND_HDA_GENERIC) += snd-hda-codec-generic.o
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index b4474e27631d..6b39f2e8c820 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -1966,6 +1966,3 @@ int azx_init_stream(struct azx *chip)
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(azx_init_stream);
--
--MODULE_LICENSE("GPL");
--MODULE_DESCRIPTION("Common HDA driver functions");
+Note that this series isn't targeted for 4.1 but for 4.2.
+
+
+Takashi
+
+===
+
+Jeeja KP (1):
+  ALSA: hda - moved alloc/free stream pages function to controller
+    library
+
+Takashi Iwai (15):
+  ALSA: hda - Handle error from get_response bus ops directly
+  ALSA: hda - Add the controller helper codes to hda-core module
+  ALSA: hda - Add DSP loader to core library code
+  ALSA: hda - Merge codec and controller helpers
+  ALSA: hda - Move send_cmd / get_response to hdac_bus_ops
+  ALSA: hda - Pass bus io_ops directly from the top-level driver
+  ALSA: hda - Migrate hdac_stream into legacy driver
+  ALSA: hda - Migrate more hdac_stream codes
+  ALSA: hda - Embed bus into controller object
+  ALSA: hda - Minor refactoring
+  ALSA: hda - Move PCM format and rate handling code to core library
+  ALSA: hda - Add missing inclusion of <linux/clocksource.h>
+  ALSA: hda - Reenable tracepoints for controller
+  ALSA: hda/tegra - Fix build error and warning
+  ALSA: hda - Drop azx_sd_read*/write*() macros
+
+ include/sound/hda_register.h    |  152 +++++
+ include/sound/hdaudio.h         |  282 ++++++++-
+ sound/hda/Kconfig               |    3 +
+ sound/hda/Makefile              |    2 +-
+ sound/hda/hdac_bus.c            |   20 +-
+ sound/hda/hdac_controller.c     |  507 +++++++++++++++
+ sound/hda/hdac_device.c         |  300 +++++++++
+ sound/hda/hdac_stream.c         |  648 ++++++++++++++++++++
+ sound/pci/hda/Kconfig           |    3 -
+ sound/pci/hda/Makefile          |    3 +-
+ sound/pci/hda/hda_codec.c       |  409 +------------
+ sound/pci/hda/hda_codec.h       |   31 +-
+ sound/pci/hda/hda_controller.c  | 1295 ++++++++-------------------------------
+ sound/pci/hda/hda_controller.h  |  269 +-------
+ sound/pci/hda/hda_intel.c       |  234 +++----
+ sound/pci/hda/hda_intel.h       |    1 +
+ sound/pci/hda/hda_intel_trace.h |    4 +-
+ sound/pci/hda/hda_tegra.c       |   76 +--
+ sound/pci/hda/patch_ca0132.c    |    7 +-
+ 19 files changed, 2395 insertions(+), 1851 deletions(-)
+ create mode 100644 include/sound/hda_register.h
+ create mode 100644 sound/hda/hdac_controller.c
+ create mode 100644 sound/hda/hdac_stream.c
+
 -- 
 2.3.5
