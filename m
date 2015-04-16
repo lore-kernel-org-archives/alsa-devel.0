@@ -1,7 +1,7 @@
 From: Antonio Ospite <ao2@ao2.it>
 Subject: Re: Intel SST on a Bay Trail tablet
-Date: Thu, 16 Apr 2015 17:21:17 +0200
-Message-ID: <20150416172117.6d861af81a71db400ee8ddf2@ao2.it>
+Date: Thu, 16 Apr 2015 17:21:51 +0200
+Message-ID: <20150416172151.1c0590be0b81ab6369003478@ao2.it>
 References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
  <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
  <54F5CB3D.7020100@linux.intel.com>
@@ -13,9 +13,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp207.alice.it (smtp207.alice.it [82.57.200.103])
- by alsa0.perex.cz (Postfix) with ESMTP id 765CD2614FB
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 17:21:53 +0200 (CEST)
+Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8866261543
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 17:21:55 +0200 (CEST)
 In-Reply-To: <552D1EE3.6090707@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
