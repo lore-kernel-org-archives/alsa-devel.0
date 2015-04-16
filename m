@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 03/16] ALSA: hda - Add DSP loader to core
-	library code
-Date: Thu, 16 Apr 2015 18:14:17 +0200
-Message-ID: <1429200870-5288-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 07/16] ALSA: hda - Pass bus io_ops directly
+	from the top-level driver
+Date: Thu, 16 Apr 2015 18:14:21 +0200
+Message-ID: <1429200870-5288-8-git-send-email-tiwai@suse.de>
 References: <1429200870-5288-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8475926172C
+ by alsa0.perex.cz (Postfix) with ESMTP id 53F0B261546
  for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 18:14:38 +0200 (CEST)
 In-Reply-To: <1429200870-5288-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,246 +25,421 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Copied from the legacy driver code, no transition done yet.
+One less redirection again.  This also requires the change of the call
+order in the toplevel divers.  Namely, the bus has to be created at
+first before other initializations since the memory allocation ops are
+called through bus object now.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/hdaudio.h |  46 ++++++++++++++++++++
- sound/hda/Kconfig       |   3 ++
- sound/hda/hdac_stream.c | 113 ++++++++++++++++++++++++++++++++++++++++++++++++
- sound/pci/hda/Kconfig   |   3 --
- 4 files changed, 162 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_codec.c      |  3 ++-
+ sound/pci/hda/hda_codec.h      |  1 +
+ sound/pci/hda/hda_controller.c | 26 +++++++++++++-------------
+ sound/pci/hda/hda_controller.h | 40 +++++++++++++++-------------------------
+ sound/pci/hda/hda_intel.c      | 34 +++++++++++++++++++++-------------
+ sound/pci/hda/hda_tegra.c      | 25 ++++++++++++++-----------
+ 6 files changed, 66 insertions(+), 63 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 9349ccf15a36..69f27bc49eb4 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -187,6 +187,11 @@ struct hdac_io_ops {
- 	u16 (*reg_readw)(u16 __iomem *addr);
- 	void (*reg_writeb)(u8 value, u8 __iomem *addr);
- 	u8 (*reg_readb)(u8 __iomem *addr);
-+	/* Allocation ops */
-+	int (*dma_alloc_pages)(struct hdac_bus *bus, int type, size_t size,
-+			       struct snd_dma_buffer *buf);
-+	void (*dma_free_pages)(struct hdac_bus *bus,
-+			       struct snd_dma_buffer *buf);
- };
- 
- #define HDA_UNSOL_QUEUE_SIZE	64
-@@ -374,6 +379,7 @@ struct hdac_stream {
- 	bool opened:1;
- 	bool running:1;
- 	bool no_period_wakeup:1;
-+	bool locked:1;
- 
- 	/* timestamp */
- 	unsigned long start_wallclk;	/* start + minimum wallclk */
-@@ -383,6 +389,10 @@ struct hdac_stream {
- 	int delay_negative_threshold;
- 
- 	struct list_head list;
-+#ifdef CONFIG_SND_HDA_DSP_LOADER
-+	/* DSP access mutex */
-+	struct mutex dsp_mutex;
-+#endif
- };
- 
- void snd_hdac_stream_init(struct hdac_bus *bus, struct hdac_stream *azx_dev,
-@@ -440,6 +450,42 @@ void snd_hdac_stream_timecounter_init(struct hdac_stream *azx_dev,
- 			       (snd_hdac_stream_readb(dev, reg) & \
- 				~(mask)) | (val))
- 
-+#ifdef CONFIG_SND_HDA_DSP_LOADER
-+/* DSP lock helpers */
-+#define snd_hdac_dsp_lock_init(dev)	mutex_init(&(dev)->dsp_mutex)
-+#define snd_hdac_dsp_lock(dev)		mutex_lock(&(dev)->dsp_mutex)
-+#define snd_hdac_dsp_unlock(dev)	mutex_unlock(&(dev)->dsp_mutex)
-+#define snd_hdac_stream_is_locked(dev)	((dev)->locked)
-+/* DSP loader helpers */
-+int snd_hdac_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
-+			 unsigned int byte_size, struct snd_dma_buffer *bufp);
-+void snd_hdac_dsp_trigger(struct hdac_stream *azx_dev, bool start);
-+void snd_hdac_dsp_cleanup(struct hdac_stream *azx_dev,
-+			  struct snd_dma_buffer *dmab);
-+#else /* CONFIG_SND_HDA_DSP_LOADER */
-+#define snd_hdac_dsp_lock_init(dev)	do {} while (0)
-+#define snd_hdac_dsp_lock(dev)		do {} while (0)
-+#define snd_hdac_dsp_unlock(dev)	do {} while (0)
-+#define snd_hdac_stream_is_locked(dev)	0
-+
-+static inline int
-+snd_hdac_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
-+		     unsigned int byte_size, struct snd_dma_buffer *bufp)
-+{
-+	return 0;
-+}
-+
-+static inline void snd_hdac_dsp_trigger(struct hdac_stream *azx_dev, bool start)
-+{
-+}
-+
-+static inline void snd_hdac_dsp_cleanup(struct hdac_stream *azx_dev,
-+					struct snd_dma_buffer *dmab)
-+{
-+}
-+#endif /* CONFIG_SND_HDA_DSP_LOADER */
-+
-+
- /*
-  * generic array helpers
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 7e3dcaba6365..ddebe7541390 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -516,6 +516,7 @@ static int snd_hda_bus_dev_disconnect(struct snd_device *device)
   */
-diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
-index 001c6588a5ff..7a17fca4f627 100644
---- a/sound/hda/Kconfig
-+++ b/sound/hda/Kconfig
-@@ -1,3 +1,6 @@
- config SND_HDA_CORE
- 	tristate
- 	select REGMAP
-+
-+config SND_HDA_DSP_LOADER
-+	bool
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index b513a15c777f..7f6b845d90eb 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -33,6 +33,7 @@ void snd_hdac_stream_init(struct hdac_bus *bus, struct hdac_stream *azx_dev,
- 	azx_dev->index = idx;
- 	azx_dev->direction = direction;
- 	azx_dev->stream_tag = tag;
-+	snd_hdac_dsp_lock_init(azx_dev);
- 	list_add_tail(&azx_dev->list, &bus->stream_list);
+ int snd_hda_bus_new(struct snd_card *card,
+ 		    const struct hdac_bus_ops *ops,
++		    const struct hdac_io_ops *io_ops,
+ 		    struct hda_bus **busp)
+ {
+ 	struct hda_bus *bus;
+@@ -532,7 +533,7 @@ int snd_hda_bus_new(struct snd_card *card,
+ 	if (!bus)
+ 		return -ENOMEM;
+ 
+-	err = snd_hdac_bus_init(&bus->core, card->dev, ops, NULL);
++	err = snd_hdac_bus_init(&bus->core, card->dev, ops, io_ops);
+ 	if (err < 0) {
+ 		kfree(bus);
+ 		return err;
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index b4261721d8f1..c8031360de90 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -328,6 +328,7 @@ struct hda_codec {
+  */
+ int snd_hda_bus_new(struct snd_card *card,
+ 		    const struct hdac_bus_ops *ops,
++		    const struct hdac_io_ops *io_ops,
+ 		    struct hda_bus **busp);
+ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		      unsigned int codec_addr, struct hda_codec **codecp);
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 666dee232e95..aadce642aabc 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -985,8 +985,8 @@ static int azx_attach_pcm_stream(struct hda_bus *bus, struct hda_codec *codec,
+ static int azx_alloc_cmd_io(struct azx *chip)
+ {
+ 	/* single page (at least 4096 bytes) must suffice for both ringbuffes */
+-	return chip->ops->dma_alloc_pages(chip, SNDRV_DMA_TYPE_DEV,
+-					  PAGE_SIZE, &chip->rb);
++	return chip->io_ops->dma_alloc_pages(azx_bus(chip), SNDRV_DMA_TYPE_DEV,
++					     PAGE_SIZE, &chip->rb);
  }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_init);
-@@ -534,3 +535,115 @@ void snd_hdac_stream_sync(struct hdac_stream *azx_dev, bool start,
+ 
+ static void azx_init_cmd_io(struct azx *chip)
+@@ -1396,8 +1396,8 @@ static int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
+ 	azx_dev->locked = 1;
+ 	spin_unlock_irq(&chip->reg_lock);
+ 
+-	err = chip->ops->dma_alloc_pages(chip, SNDRV_DMA_TYPE_DEV_SG,
+-					 byte_size, bufp);
++	err = chip->io_ops->dma_alloc_pages(&bus->core, SNDRV_DMA_TYPE_DEV_SG,
++					    byte_size, bufp);
+ 	if (err < 0)
+ 		goto err_alloc;
+ 
+@@ -1422,7 +1422,7 @@ static int azx_load_dsp_prepare(struct hda_bus *bus, unsigned int format,
+ 	return azx_dev->stream_tag;
+ 
+  error:
+-	chip->ops->dma_free_pages(chip, bufp);
++	chip->io_ops->dma_free_pages(&bus->core, bufp);
+  err_alloc:
+ 	spin_lock_irq(&chip->reg_lock);
+ 	if (azx_dev->opened)
+@@ -1464,7 +1464,7 @@ static void azx_load_dsp_cleanup(struct hda_bus *bus,
+ 	azx_dev->period_bytes = 0;
+ 	azx_dev->format_val = 0;
+ 
+-	chip->ops->dma_free_pages(chip, dmab);
++	chip->io_ops->dma_free_pages(&bus->core, dmab);
+ 	dmab->area = NULL;
+ 
+ 	spin_lock_irq(&chip->reg_lock);
+@@ -1483,14 +1483,14 @@ int azx_alloc_stream_pages(struct azx *chip)
+ 	for (i = 0; i < chip->num_streams; i++) {
+ 		dsp_lock_init(&chip->azx_dev[i]);
+ 		/* allocate memory for the BDL for each stream */
+-		err = chip->ops->dma_alloc_pages(chip, SNDRV_DMA_TYPE_DEV,
++		err = chip->io_ops->dma_alloc_pages(azx_bus(chip), SNDRV_DMA_TYPE_DEV,
+ 						 BDL_SIZE,
+ 						 &chip->azx_dev[i].bdl);
+ 		if (err < 0)
+ 			return -ENOMEM;
  	}
+ 	/* allocate memory for the position buffer */
+-	err = chip->ops->dma_alloc_pages(chip, SNDRV_DMA_TYPE_DEV,
++	err = chip->io_ops->dma_alloc_pages(azx_bus(chip), SNDRV_DMA_TYPE_DEV,
+ 					 chip->num_streams * 8, &chip->posbuf);
+ 	if (err < 0)
+ 		return -ENOMEM;
+@@ -1509,13 +1509,13 @@ void azx_free_stream_pages(struct azx *chip)
+ 	if (chip->azx_dev) {
+ 		for (i = 0; i < chip->num_streams; i++)
+ 			if (chip->azx_dev[i].bdl.area)
+-				chip->ops->dma_free_pages(
+-					chip, &chip->azx_dev[i].bdl);
++				chip->io_ops->dma_free_pages(azx_bus(chip),
++							     &chip->azx_dev[i].bdl);
+ 	}
+ 	if (chip->rb.area)
+-		chip->ops->dma_free_pages(chip, &chip->rb);
++		chip->io_ops->dma_free_pages(azx_bus(chip), &chip->rb);
+ 	if (chip->posbuf.area)
+-		chip->ops->dma_free_pages(chip, &chip->posbuf);
++		chip->io_ops->dma_free_pages(azx_bus(chip), &chip->posbuf);
  }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_sync);
-+
-+#ifdef CONFIG_SND_HDA_DSP_LOADER
-+/**
-+ * snd_hdac_dsp_prepare - prepare for DSP loading
-+ * @azx_dev: HD-audio core stream used for DSP loading
-+ * @format: HD-audio stream format
-+ * @byte_size: data chunk byte size
-+ * @bufp: allocated buffer
-+ *
-+ * Allocate the buffer for the given size and set up the given stream for
-+ * DSP loading.  Returns the stream tag (>= 0), or a negative error code.
-+ */
-+int snd_hdac_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
-+			 unsigned int byte_size, struct snd_dma_buffer *bufp)
-+{
-+	struct hdac_bus *bus = azx_dev->bus;
-+	u32 *bdl;
-+	int err;
-+
-+	snd_hdac_dsp_lock(azx_dev);
-+	spin_lock_irq(&bus->reg_lock);
-+	if (azx_dev->running || azx_dev->locked) {
-+		spin_unlock_irq(&bus->reg_lock);
-+		err = -EBUSY;
-+		goto unlock;
-+	}
-+	azx_dev->locked = true;
-+	spin_unlock_irq(&bus->reg_lock);
-+
-+	err = bus->io_ops->dma_alloc_pages(bus, SNDRV_DMA_TYPE_DEV_SG,
-+					   byte_size, bufp);
-+	if (err < 0)
-+		goto err_alloc;
-+
-+	azx_dev->bufsize = byte_size;
-+	azx_dev->period_bytes = byte_size;
-+	azx_dev->format_val = format;
-+
-+	snd_hdac_stream_reset(azx_dev);
-+
-+	/* reset BDL address */
-+	snd_hdac_stream_writel(azx_dev, SD_BDLPL, 0);
-+	snd_hdac_stream_writel(azx_dev, SD_BDLPU, 0);
-+
-+	azx_dev->frags = 0;
-+	bdl = (u32 *)azx_dev->bdl.area;
-+	err = setup_bdle(bus, bufp, azx_dev, &bdl, 0, byte_size, 0);
-+	if (err < 0)
-+		goto error;
-+
-+	snd_hdac_stream_setup(azx_dev);
-+	snd_hdac_dsp_unlock(azx_dev);
-+	return azx_dev->stream_tag;
-+
-+ error:
-+	bus->io_ops->dma_free_pages(bus, bufp);
-+ err_alloc:
-+	spin_lock_irq(&bus->reg_lock);
-+	azx_dev->locked = false;
-+	spin_unlock_irq(&bus->reg_lock);
-+ unlock:
-+	snd_hdac_dsp_unlock(azx_dev);
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_dsp_prepare);
-+
-+/**
-+ * snd_hdac_dsp_trigger - start / stop DSP loading
-+ * @azx_dev: HD-audio core stream used for DSP loading
-+ * @start: trigger start or stop
-+ */
-+void snd_hdac_dsp_trigger(struct hdac_stream *azx_dev, bool start)
-+{
-+	if (start)
-+		snd_hdac_stream_start(azx_dev, true);
-+	else
-+		snd_hdac_stream_stop(azx_dev);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_dsp_trigger);
-+
-+/**
-+ * snd_hdac_dsp_cleanup - clean up the stream from DSP loading to normal
-+ * @azx_dev: HD-audio core stream used for DSP loading
-+ * @dmab: buffer used by DSP loading
-+ */
-+void snd_hdac_dsp_cleanup(struct hdac_stream *azx_dev,
-+			  struct snd_dma_buffer *dmab)
-+{
-+	struct hdac_bus *bus = azx_dev->bus;
-+
-+	if (!dmab->area || !azx_dev->locked)
-+		return;
-+
-+	snd_hdac_dsp_lock(azx_dev);
-+	/* reset BDL address */
-+	snd_hdac_stream_writel(azx_dev, SD_BDLPL, 0);
-+	snd_hdac_stream_writel(azx_dev, SD_BDLPU, 0);
-+	snd_hdac_stream_writel(azx_dev, SD_CTL, 0);
-+	azx_dev->bufsize = 0;
-+	azx_dev->period_bytes = 0;
-+	azx_dev->format_val = 0;
-+
-+	bus->io_ops->dma_free_pages(bus, dmab);
-+	dmab->area = NULL;
-+
-+	spin_lock_irq(&bus->reg_lock);
-+	azx_dev->locked = false;
-+	spin_unlock_irq(&bus->reg_lock);
-+	snd_hdac_dsp_unlock(azx_dev);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_dsp_cleanup);
-+#endif /* CONFIG_SND_HDA_DSP_LOADER */
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index a5ed1c181784..47aa7b8b7519 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -38,9 +38,6 @@ config SND_HDA_TEGRA
+ EXPORT_SYMBOL_GPL(azx_free_stream_pages);
  
- if SND_HDA
+@@ -1834,7 +1834,7 @@ int azx_bus_create(struct azx *chip, const char *model)
+ 	struct hda_bus *bus;
+ 	int err;
  
--config SND_HDA_DSP_LOADER
--	bool
+-	err = snd_hda_bus_new(chip->card, &bus_core_ops, &bus);
++	err = snd_hda_bus_new(chip->card, &bus_core_ops, chip->io_ops, &bus);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index 15a796c21b9d..d6b090daa7dc 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -125,21 +125,8 @@ struct azx;
+ 
+ /* Functions to read/write to hda registers. */
+ struct hda_controller_ops {
+-	/* Register Access */
+-	void (*reg_writel)(u32 value, u32 __iomem *addr);
+-	u32 (*reg_readl)(u32 __iomem *addr);
+-	void (*reg_writew)(u16 value, u16 __iomem *addr);
+-	u16 (*reg_readw)(u16 __iomem *addr);
+-	void (*reg_writeb)(u8 value, u8 __iomem *addr);
+-	u8 (*reg_readb)(u8 __iomem *addr);
+ 	/* Disable msi if supported, PCI only */
+ 	int (*disable_msi_reset_irq)(struct azx *);
+-	/* Allocation ops */
+-	int (*dma_alloc_pages)(struct azx *chip,
+-			       int type,
+-			       size_t size,
+-			       struct snd_dma_buffer *buf);
+-	void (*dma_free_pages)(struct azx *chip, struct snd_dma_buffer *buf);
+ 	int (*substream_alloc_pages)(struct azx *chip,
+ 				     struct snd_pcm_substream *substream,
+ 				     size_t size);
+@@ -179,6 +166,7 @@ struct azx {
+ 
+ 	/* Register interaction. */
+ 	const struct hda_controller_ops *ops;
++	const struct hdac_io_ops *io_ops;
+ 
+ 	/* position adjustment callbacks */
+ 	azx_get_pos_callback_t get_position[2];
+@@ -239,6 +227,8 @@ struct azx {
+ #endif
+ };
+ 
++#define azx_bus(chip)	(&(chip)->bus->core)
++
+ #ifdef CONFIG_X86
+ #define azx_snoop(chip)		((chip)->snoop)
+ #else
+@@ -250,30 +240,30 @@ struct azx {
+  */
+ 
+ #define azx_writel(chip, reg, value) \
+-	((chip)->ops->reg_writel(value, (chip)->remap_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_writel(value, (chip)->remap_addr + AZX_REG_##reg))
+ #define azx_readl(chip, reg) \
+-	((chip)->ops->reg_readl((chip)->remap_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_readl((chip)->remap_addr + AZX_REG_##reg))
+ #define azx_writew(chip, reg, value) \
+-	((chip)->ops->reg_writew(value, (chip)->remap_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_writew(value, (chip)->remap_addr + AZX_REG_##reg))
+ #define azx_readw(chip, reg) \
+-	((chip)->ops->reg_readw((chip)->remap_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_readw((chip)->remap_addr + AZX_REG_##reg))
+ #define azx_writeb(chip, reg, value) \
+-	((chip)->ops->reg_writeb(value, (chip)->remap_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_writeb(value, (chip)->remap_addr + AZX_REG_##reg))
+ #define azx_readb(chip, reg) \
+-	((chip)->ops->reg_readb((chip)->remap_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_readb((chip)->remap_addr + AZX_REG_##reg))
+ 
+ #define azx_sd_writel(chip, dev, reg, value) \
+-	((chip)->ops->reg_writel(value, (dev)->sd_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_writel(value, (dev)->sd_addr + AZX_REG_##reg))
+ #define azx_sd_readl(chip, dev, reg) \
+-	((chip)->ops->reg_readl((dev)->sd_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_readl((dev)->sd_addr + AZX_REG_##reg))
+ #define azx_sd_writew(chip, dev, reg, value) \
+-	((chip)->ops->reg_writew(value, (dev)->sd_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_writew(value, (dev)->sd_addr + AZX_REG_##reg))
+ #define azx_sd_readw(chip, dev, reg) \
+-	((chip)->ops->reg_readw((dev)->sd_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_readw((dev)->sd_addr + AZX_REG_##reg))
+ #define azx_sd_writeb(chip, dev, reg, value) \
+-	((chip)->ops->reg_writeb(value, (dev)->sd_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_writeb(value, (dev)->sd_addr + AZX_REG_##reg))
+ #define azx_sd_readb(chip, dev, reg) \
+-	((chip)->ops->reg_readb((dev)->sd_addr + AZX_REG_##reg))
++	((chip)->io_ops->reg_readb((dev)->sd_addr + AZX_REG_##reg))
+ 
+ #define azx_has_pm_runtime(chip) \
+ 	(!AZX_DCAPS_PM_RUNTIME || ((chip)->driver_caps & AZX_DCAPS_PM_RUNTIME))
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index e1c210515581..7492d11fd8ff 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1365,9 +1365,11 @@ static void azx_probe_work(struct work_struct *work)
+ /*
+  * constructor
+  */
++static const struct hdac_io_ops pci_hda_io_ops;
++static const struct hda_controller_ops pci_hda_ops;
++
+ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 		      int dev, unsigned int driver_caps,
+-		      const struct hda_controller_ops *hda_ops,
+ 		      struct azx **rchip)
+ {
+ 	static struct snd_device_ops ops = {
+@@ -1394,7 +1396,8 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	mutex_init(&chip->open_mutex);
+ 	chip->card = card;
+ 	chip->pci = pci;
+-	chip->ops = hda_ops;
++	chip->ops = &pci_hda_ops;
++	chip->io_ops = &pci_hda_io_ops;
+ 	chip->irq = -1;
+ 	chip->driver_caps = driver_caps;
+ 	chip->driver_type = driver_caps & 0xff;
+@@ -1681,15 +1684,16 @@ static int disable_msi_reset_irq(struct azx *chip)
+ }
+ 
+ /* DMA page allocation helpers.  */
+-static int dma_alloc_pages(struct azx *chip,
++static int dma_alloc_pages(struct hdac_bus *bus,
+ 			   int type,
+ 			   size_t size,
+ 			   struct snd_dma_buffer *buf)
+ {
++	struct azx *chip = to_hda_bus(bus)->private_data;
+ 	int err;
+ 
+ 	err = snd_dma_alloc_pages(type,
+-				  chip->card->dev,
++				  bus->dev,
+ 				  size, buf);
+ 	if (err < 0)
+ 		return err;
+@@ -1697,8 +1701,10 @@ static int dma_alloc_pages(struct azx *chip,
+ 	return 0;
+ }
+ 
+-static void dma_free_pages(struct azx *chip, struct snd_dma_buffer *buf)
++static void dma_free_pages(struct hdac_bus *bus, struct snd_dma_buffer *buf)
+ {
++	struct azx *chip = to_hda_bus(bus)->private_data;
++
+ 	mark_pages_wc(chip, buf, false);
+ 	snd_dma_free_pages(buf);
+ }
+@@ -1740,16 +1746,19 @@ static void pcm_mmap_prepare(struct snd_pcm_substream *substream,
+ #endif
+ }
+ 
+-static const struct hda_controller_ops pci_hda_ops = {
++static const struct hdac_io_ops pci_hda_io_ops = {
+ 	.reg_writel = pci_azx_writel,
+ 	.reg_readl = pci_azx_readl,
+ 	.reg_writew = pci_azx_writew,
+ 	.reg_readw = pci_azx_readw,
+ 	.reg_writeb = pci_azx_writeb,
+ 	.reg_readb = pci_azx_readb,
+-	.disable_msi_reset_irq = disable_msi_reset_irq,
+ 	.dma_alloc_pages = dma_alloc_pages,
+ 	.dma_free_pages = dma_free_pages,
++};
++
++static const struct hda_controller_ops pci_hda_ops = {
++	.disable_msi_reset_irq = disable_msi_reset_irq,
+ 	.substream_alloc_pages = substream_alloc_pages,
+ 	.substream_free_pages = substream_free_pages,
+ 	.pcm_mmap_prepare = pcm_mmap_prepare,
+@@ -1780,8 +1789,7 @@ static int azx_probe(struct pci_dev *pci,
+ 		return err;
+ 	}
+ 
+-	err = azx_create(card, pci, dev, pci_id->driver_data,
+-			 &pci_hda_ops, &chip);
++	err = azx_create(card, pci, dev, pci_id->driver_data, &chip);
+ 	if (err < 0)
+ 		goto out_free;
+ 	card->private_data = chip;
+@@ -1862,6 +1870,10 @@ static int azx_probe_continue(struct azx *chip)
+ #endif
+ 	}
+ 
++	err = azx_bus_create(chip, model[dev]);
++	if (err < 0)
++		goto out_free;
++
+ 	err = azx_first_init(chip);
+ 	if (err < 0)
+ 		goto out_free;
+@@ -1871,10 +1883,6 @@ static int azx_probe_continue(struct azx *chip)
+ #endif
+ 
+ 	/* create codec instances */
+-	err = azx_bus_create(chip, model[dev]);
+-	if (err < 0)
+-		goto out_free;
 -
- config SND_HDA_PREALLOC_SIZE
- 	int "Pre-allocated buffer size for HD-audio driver"
- 	range 0 32768
+ 	err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+ 	if (err < 0)
+ 		goto out_free;
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 2e4fd5c56d3b..b150cb50961c 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -87,13 +87,13 @@ MODULE_PARM_DESC(power_save,
+ /*
+  * DMA page allocation ops.
+  */
+-static int dma_alloc_pages(struct azx *chip, int type, size_t size,
++static int dma_alloc_pages(struct hdac_bus *bus, int type, size_t size,
+ 			   struct snd_dma_buffer *buf)
+ {
+-	return snd_dma_alloc_pages(type, chip->card->dev, size, buf);
++	return snd_dma_alloc_pages(type, bus->dev, size, buf);
+ }
+ 
+-static void dma_free_pages(struct azx *chip, struct snd_dma_buffer *buf)
++static void dma_free_pages(struct hdac_bus *bus, struct snd_dma_buffer *buf)
+ {
+ 	snd_dma_free_pages(buf);
+ }
+@@ -173,7 +173,7 @@ static u8 hda_tegra_readb(u8 *addr)
+ 	return (v >> shift) & 0xff;
+ }
+ 
+-static const struct hda_controller_ops hda_tegra_ops = {
++static const struct hdac_io_ops hda_tegra_io_ops = {
+ 	.reg_writel = hda_tegra_writel,
+ 	.reg_readl = hda_tegra_readl,
+ 	.reg_writew = hda_tegra_writew,
+@@ -182,6 +182,9 @@ static const struct hda_controller_ops hda_tegra_ops = {
+ 	.reg_readb = hda_tegra_readb,
+ 	.dma_alloc_pages = dma_alloc_pages,
+ 	.dma_free_pages = dma_free_pages,
++};
++
++static const struct hda_controller_ops hda_tegra_ops = {
+ 	.substream_alloc_pages = substream_alloc_pages,
+ 	.substream_free_pages = substream_free_pages,
+ };
+@@ -409,7 +412,6 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
+  */
+ static int hda_tegra_create(struct snd_card *card,
+ 			    unsigned int driver_caps,
+-			    const struct hda_controller_ops *hda_ops,
+ 			    struct hda_tegra *hda)
+ {
+ 	static struct snd_device_ops ops = {
+@@ -423,7 +425,8 @@ static int hda_tegra_create(struct snd_card *card,
+ 	spin_lock_init(&chip->reg_lock);
+ 	mutex_init(&chip->open_mutex);
+ 	chip->card = card;
+-	chip->ops = hda_ops;
++	chip->ops = &hda_tegra_ops;
++	chip->io_ops = &hda_tegra_io_ops;
+ 	chip->irq = -1;
+ 	chip->driver_caps = driver_caps;
+ 	chip->driver_type = driver_caps & 0xff;
+@@ -471,7 +474,11 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
+-	err = hda_tegra_create(card, driver_flags, &hda_tegra_ops, hda);
++	err = azx_bus_create(chip, NULL);
++	if (err < 0)
++		goto out_free;
++
++	err = hda_tegra_create(card, driver_flags, hda);
+ 	if (err < 0)
+ 		goto out_free;
+ 	card->private_data = chip;
+@@ -483,10 +490,6 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		goto out_free;
+ 
+ 	/* create codec instances */
+-	err = azx_bus_create(chip, NULL);
+-	if (err < 0)
+-		goto out_free;
+-
+ 	err = azx_probe_codecs(chip, 0);
+ 	if (err < 0)
+ 		goto out_free;
 -- 
 2.3.5
