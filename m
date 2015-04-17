@@ -1,62 +1,47 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [RFC 9/9] ASoC: hda: Export API to change DSP power
-	state
-Date: Fri, 17 Apr 2015 18:46:07 +0530
-Message-ID: <1429276567-29007-10-git-send-email-vinod.koul@intel.com>
-References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH -next] ASoC: cs35l32: Remove unused including
+ <linux/version.h>
+Date: Fri, 17 Apr 2015 14:26:54 +0100
+Message-ID: <20150417132654.GC10513@sirena.org.uk>
+References: <1429189665-23710-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E8BB2659BC
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 15:21:36 +0200 (CEST)
-In-Reply-To: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ABTtc+pdwF7KHXCz"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1429189665-23710-1-git-send-email-weiyj_lk@163.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: weiyj_lk@163.com
+Cc: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/hda/intel/soc-hda-sst-dsp.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+--ABTtc+pdwF7KHXCz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/hda/intel/soc-hda-sst-dsp.c b/sound/soc/hda/intel/soc-hda-sst-dsp.c
-index b133c63a0c20..4d4d01b496b3 100644
---- a/sound/soc/hda/intel/soc-hda-sst-dsp.c
-+++ b/sound/soc/hda/intel/soc-hda-sst-dsp.c
-@@ -480,6 +480,20 @@ int ssth_dsp_free0(struct ssth_lib *dsp)
- }
- EXPORT_SYMBOL_GPL(ssth_dsp_free0);
- 
-+int ssth_dsp_set_power_state(struct ssth_lib *ctx, int state)
-+{
-+	int ret = 0;
-+
-+	if (state == SST_DSP_POWER_D0)
-+		ret = ctx->ops.set_state_D0(ctx);
-+	else if (state == SST_DSP_POWER_D3)
-+		ret = ctx->ops.set_state_D3(ctx);
-+	else
-+		dev_err(ctx->dev, "Power State=%x not supported", state);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(ssth_dsp_set_power_state);
-+
- bool ssth_dsp_is_running(struct ssth_lib *ctx)
- {
- 	bool ret = 0;
--- 
-1.7.9.5
+On Thu, Apr 16, 2015 at 09:07:45PM +0800, weiyj_lk@163.com wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> Remove including <linux/version.h> that don't need it.
+
+Applied, thanks.
+
+--ABTtc+pdwF7KHXCz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVMQodAAoJECTWi3JdVIfQ7R4H/RvgbVCgXX0H6CLhpH2Sr7mz
++Ovu/i53uMnQVabpSIXYz38oxWexAI7So+16GzwdU06xrEuAdNu5WNqKf+X/6uxw
+07pDM7gumJ0CTPaa9Ho+jq29y1DQxVvdwXml+ISRwcmUfdCGFccVh/Ys8HsVUXoj
+sFBbTvu4477PYx+HoG3wGG8Y+v5AyTW41NT7LD+4MH4fW35H5FH0th25w3OHG8wG
+k8sVDk8I2f2KIGUyiYtOzDjHstqSpakf2F+FzOGz9wQtkA87SgEOCnhE1Jtt84l1
+AvUtE7bs3TWQGvTFRYmWBbdj8CBOTicrYnE0p2fK6hyq3He37yYhuvGggL+PBFU=
+=U+Ao
+-----END PGP SIGNATURE-----
+
+--ABTtc+pdwF7KHXCz--
