@@ -1,58 +1,87 @@
-From: "Jin, Yao" <yao.jin@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH -next] ASoC: Intel: sst_hsw: remove kfree
- for memory allocated with devm_kzalloc
-Date: Fri, 17 Apr 2015 05:34:43 +0800
-Message-ID: <55302AF3.1010901@linux.intel.com>
-References: <1429191978-25839-1-git-send-email-weiyj_lk@163.com> <552FC268.2020503@linux.intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Playback - Overwrite buffer with silence
+Date: Fri, 17 Apr 2015 08:57:17 +0800
+Message-ID: <CAN8cciasebtivM-4pD=G_MpfwvvLtDckeRq1KKwnbCsKHeX+Cw@mail.gmail.com>
+References: <5529421B.7050601@gmail.com> <55297E6E.20302@ladisch.de>
+ <14caac41f10.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
+ <552A0974.1000005@ladisch.de>
+ <14cb33de7e8.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
+ <552D0A01.6050308@ladisch.de>
+ <14cb8fa84c0.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
+ <CAN8ccibpiKiLXDvjTGGUe8ZkdOvp=9N6QoOrJPLnPmkNWZjOhg@mail.gmail.com>
+ <552EBB90.8040707@gmail.com> <552EBEBA.9000108@ladisch.de>
+ <55300038.6010507@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <552FC268.2020503@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>, weiyj_lk@163.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, dan.carpenter@oracle.com, pawel.piskorski@intel.com, yang.jie@intel.com, han.lu@intel.com
-Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
+ [209.85.214.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D5AA260452
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 02:57:19 +0200 (CEST)
+Received: by obbeb7 with SMTP id eb7so56405756obb.3
+ for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 17:57:18 -0700 (PDT)
+In-Reply-To: <55300038.6010507@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nilhcraiv <nilhcraiv@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-For HSW, a patch "[PATCH] ASoC: Intel: Remove invalid kfree of devm
-allocated data" to fix this issue has been applied.
+>>
+>> The allowed values of the hardware parameters depend on the hardware's
+>> capabilities.
+>
+>
+> OK but, overwrite the buffer with silence depend of software, no? Why the
+buffer is not overwrite with silence with this pcm setup? It is as
+documentation.
+>
+> PCM:
+>
+> ALSA <-> PulseAudio PCM I/O Plugin
+> Its setup is:
+>   stream       : PLAYBACK
+>   access       : RW_INTERLEAVED
+>   format       : S16_LE
+>   subformat    : STD
+>   channels     : 1
+>   rate         : 48000
+>   exact rate   : 48000 (48000/1)
+>   msbits       : 16
+>   buffer_size  : 720
+>   period_size  : 240
+>   period_time  : 5000
+>   tstamp_mode  : NONE
+>   period_step  : 1
+>   avail_min    : 240
+>   period_event : 0
+>   start_threshold  : 240
+>   stop_threshold   : 720
+>   silence_threshold: 0
+>   silence_size : 6485183463413514240
+>   boundary     : 6485183463413514240
+>
+>
 
-But yes, we also need a similar patch for Baytrail.
+Pulse plugin 's minimum periods is three.
 
-Thanks
-Jin Yao
+len = decoder(&decoded_data,t_data);
 
-On 2015/4/16 22:08, Jarkko Nikula wrote:
-> On 04/16/2015 04:46 PM, weiyj_lk@163.com wrote:
->> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->>
->> It's not necessary to free memory allocated with devm_kzalloc
->> and using kfree leads to a double free.
->>
->> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->> ---
->>   sound/soc/intel/haswell/sst-haswell-ipc.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c
->> b/sound/soc/intel/haswell/sst-haswell-ipc.c
->> index 344a1e9..324eceb 100644
->> --- a/sound/soc/intel/haswell/sst-haswell-ipc.c
->> +++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
->> @@ -2201,7 +2201,6 @@ dma_err:
->>   dsp_new_err:
->>       sst_ipc_fini(ipc);
->>   ipc_init_err:
->> -    kfree(hsw);
->>       return ret;
->>   }
->>   EXPORT_SYMBOL_GPL(sst_hsw_dsp_init);
->>
-> Similar case than with baytrail. Here introduced by commit 0e7921e9583b
-> ("ASoC: Intel: Use the generic IPC/mailbox APIs in Broadwell")
-> 
-> Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+pcmreturn = snd_pcm_writei(pcm_handle, decoded_data, len);/*In most cases
+there are UNDERRUN...*/
+
+If  len > 720 (buffer_size), you need to write three periods, start
+playback,  receive data, peform decode while waiting for the sound
+card/plugin playback one period and write another period
+
+Pulseaudio is a sound server which mix several playback streams, silence
+size may has no effect since the alsa sink may use different period
+size/buffer size or disable period wakeup when using timer scheduling
