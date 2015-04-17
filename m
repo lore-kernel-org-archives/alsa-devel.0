@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 2/7] ALSA: hda - add generic functions to
-	set hdac stream params
-Date: Fri, 17 Apr 2015 14:43:15 +0530
-Message-ID: <1429262000-21517-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 6/7] ASoC: hda - enable ASoC Skylake HD
+	audio driver
+Date: Fri, 17 Apr 2015 14:43:19 +0530
+Message-ID: <1429262000-21517-7-git-send-email-vinod.koul@intel.com>
 References: <1429262000-21517-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2082226053E
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 11:18:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A568260581
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 11:18:52 +0200 (CEST)
 In-Reply-To: <1429262000-21517-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,72 +27,88 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-This will be used by hda controller driver to
-setup stream params in prepare. This function will
-setup the bdl and periods.
+Add makefile and Kconfig to enable Skylake
+HD audio driver
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio.h |    2 ++
- sound/hda/hdac_stream.c |   31 +++++++++++++++++++++++++++++++
- 2 files changed, 33 insertions(+)
+ sound/soc/Kconfig      |    1 +
+ sound/soc/Makefile     |    1 +
+ sound/soc/hda/Kconfig  |   29 +++++++++++++++++++++++++++++
+ sound/soc/hda/Makefile |    3 +++
+ 4 files changed, 34 insertions(+)
+ create mode 100644 sound/soc/hda/Kconfig
+ create mode 100644 sound/soc/hda/Makefile
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index b871f00bb185..227e71956c35 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -417,6 +417,8 @@ void snd_hdac_stream_release(struct hdac_stream *azx_dev);
- int snd_hdac_stream_setup(struct hdac_stream *azx_dev);
- void snd_hdac_stream_cleanup(struct hdac_stream *azx_dev);
- int snd_hdac_stream_setup_periods(struct hdac_stream *azx_dev);
-+int snd_hdac_stream_set_params(struct hdac_stream *azx_dev,
-+				unsigned int format_val);
- void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start);
- void snd_hdac_stream_clear(struct hdac_stream *azx_dev);
- void snd_hdac_stream_stop(struct hdac_stream *azx_dev);
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index 8bd67a824b5e..618e742f527f 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -393,6 +393,37 @@ int snd_hdac_stream_setup_periods(struct hdac_stream *azx_dev)
- }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_setup_periods);
- 
-+int snd_hdac_stream_set_params(struct hdac_stream *azx_dev,
-+				 unsigned int format_val)
-+{
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 3ba52da18bc6..d3903580cb10 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -40,6 +40,7 @@ source "sound/soc/cirrus/Kconfig"
+ source "sound/soc/davinci/Kconfig"
+ source "sound/soc/dwc/Kconfig"
+ source "sound/soc/fsl/Kconfig"
++source "sound/soc/hda/Kconfig"
+ source "sound/soc/jz4740/Kconfig"
+ source "sound/soc/nuc900/Kconfig"
+ source "sound/soc/omap/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 974ba708b482..8741d6a38bf6 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -21,6 +21,7 @@ obj-$(CONFIG_SND_SOC)	+= cirrus/
+ obj-$(CONFIG_SND_SOC)	+= davinci/
+ obj-$(CONFIG_SND_SOC)	+= dwc/
+ obj-$(CONFIG_SND_SOC)	+= fsl/
++obj-$(CONFIG_SND_SOC)	+= hda/
+ obj-$(CONFIG_SND_SOC)	+= jz4740/
+ obj-$(CONFIG_SND_SOC)	+= intel/
+ obj-$(CONFIG_SND_SOC)	+= mxs/
+diff --git a/sound/soc/hda/Kconfig b/sound/soc/hda/Kconfig
+new file mode 100644
+index 000000000000..f4a7cfa24eb7
+--- /dev/null
++++ b/sound/soc/hda/Kconfig
+@@ -0,0 +1,29 @@
++menu "SKL-HD-Audio"
 +
-+	unsigned int bufsize, period_bytes;
-+	struct snd_pcm_substream *substream = azx_dev->substream;
-+	struct snd_pcm_runtime *runtime;
-+	int err;
++config SND_SOC_HDA
++        tristate
++        select SND_HDA_CORE
 +
-+	if (!substream)
-+		return -EINVAL;
-+	runtime = substream->runtime;
-+	bufsize = snd_pcm_lib_buffer_bytes(substream);
-+	period_bytes = snd_pcm_lib_period_bytes(substream);
++if SND_SOC_HDA
 +
-+	if (bufsize != azx_dev->bufsize ||
-+	    period_bytes != azx_dev->period_bytes ||
-+	    format_val != azx_dev->format_val ||
-+	    runtime->no_period_wakeup != azx_dev->no_period_wakeup) {
-+		azx_dev->bufsize = bufsize;
-+		azx_dev->period_bytes = period_bytes;
-+		azx_dev->format_val = format_val;
-+		azx_dev->no_period_wakeup = runtime->no_period_wakeup;
-+		err = snd_hdac_stream_setup_periods(azx_dev);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_stream_set_params);
++config SND_SOC_HDA_PREALLOC_SIZE
++	int "Pre-allocated buffer size for skylake HD-audio driver"
++	range 0 32768
++	default 64
++	help
++	  Specifies the default pre-allocated buffer-size in kB for the
++	  HD-audio driver.  A larger buffer (e.g. 2048) is preferred
++	  for systems using PulseAudio.  The default 64 is chosen just
++	  for compatibility reasons.
++endif
 +
- static cycle_t azx_cc_read(const struct cyclecounter *cc)
- {
- 	struct hdac_stream *azx_dev = container_of(cc, struct hdac_stream, cc);
++config SND_SOC_HDA_SKL
++	tristate "ASoC Intel HD Audio"
++	select SND_SOC_HDA
++	help
++	Say Y here to include support for ASoC Intel "High Definition
++	Audio" (Azalia) and its compatible devices.
++
++	To compile this driver as a module, choose M here: the module
++	will be called snd-soc-hda-skl.
++endmenu
+diff --git a/sound/soc/hda/Makefile b/sound/soc/hda/Makefile
+new file mode 100644
+index 000000000000..99aee14b85ed
+--- /dev/null
++++ b/sound/soc/hda/Makefile
+@@ -0,0 +1,3 @@
++snd-soc-hda-skl-objs := hda_skl.o hda_skl_pcm.o
++
++obj-$(CONFIG_SND_SOC_HDA_SKL) += snd-soc-hda-skl.o
 -- 
 1.7.9.5
