@@ -1,55 +1,37 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 2/2] mfd: arizona: Update DT binding to
-	support hpdet channel
-Date: Fri, 17 Apr 2015 10:01:56 +0100
-Message-ID: <20150417090156.GD3480@opensource.wolfsonmicro.com>
-References: <1429259579-16563-1-git-send-email-ideal.song@samsung.com> <1429259579-16563-3-git-send-email-ideal.song@samsung.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Support for Synchronous Audio
+Date: Fri, 17 Apr 2015 11:07:58 +0200
+Message-ID: <5530CD6E.4080408@ladisch.de>
+References: <1429258074046.61439@librewireless.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1429259579-16563-3-git-send-email-ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 0F2EE260537
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 11:07:59 +0200 (CEST)
+In-Reply-To: <1429258074046.61439@librewireless.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anoop Rajan <anoop@librewireless.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 17, 2015 at 05:32:59PM +0900, Inha Song wrote:
-> This patch add device tree bindings for the pdata needed to configure
-> the Accessory Detect Mode select when Headphone detection.
-> 
-> Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/mfd/arizona.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-> index 7bd1273..e7cb939 100644
-> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
-> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-> @@ -49,6 +49,10 @@ Optional properties:
->      input singals. If values less than the number of input signals, elements
->      that has not been specifed are set to 0 by default.
->  
-> +  - wlf,hpdet-channel : Headphone detection channel, this filed to be used the
-> +    ACCDET_MODE bits in the ACCESSORY_DETECT_MODE_1 register. The valid values
-> +    are 0 for HPDETL and 1 for HPDETR.
+Anoop Rajan wrote:
+> We have requirements to play synchronous multi-room audio with very
+> minimal node to node latency(<100 us). [...] Though I make sure that
+> I start the PCM  from user layer synchronously
 
-Lets remove the references to the register bits this tends to add some
-confusion to the binding doc review and update to mention the
-defines I suggested adding in the other patch.
+How?  With snd_pcm_link()?
 
-Thanks,
-Charles
+What hardware are you using?
 
-> +
->    - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
->      they are being externally supplied. As covered in
->      Documentation/devicetree/bindings/regulator/regulator.txt
-> -- 
-> 2.0.0.390.gcb682f8
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Regards,
+Clemens
