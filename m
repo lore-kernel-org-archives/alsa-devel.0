@@ -1,19 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Lost Interrput on VIA VT1708S
-Date: Fri, 17 Apr 2015 21:35:18 +0800
-Message-ID: <CAN8cciamohWLD4WNpE3HwSx3H3g=pCm2jgMr4LYRACHC7C8+hw@mail.gmail.com>
-References: <CAN8ccib13GCoT+LW-kYqGTbER3epC6hHty1Rjeveq-rDNpgHGQ@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/2] ALSA: asound.h - use
+	SNDRV_CTL_ELEM_ID_NAME_MAXLEN
+Date: Fri, 17 Apr 2015 22:53:32 +0530
+Message-ID: <1429291413-30668-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
- [209.85.218.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B6E226587C
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 15:35:20 +0200 (CEST)
-Received: by oiko83 with SMTP id o83so75302588oik.1
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 06:35:19 -0700 (PDT)
-In-Reply-To: <CAN8ccib13GCoT+LW-kYqGTbER3epC6hHty1Rjeveq-rDNpgHGQ@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A9E9260600
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 19:28:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,22 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, tiwai@suse.de, rkfg@rkfg.me
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> The second opint is what you have an issue with - see "Lost interrupts"
-in comment #28.
->
->
+we have defined SNDRV_CTL_ELEM_ID_NAME_MAXLEN as size of name array so use
+this define instead of numeric value
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/core/pcm_lib.c?id=f5914908a5b7b2338f210e56827a1ef35585dc6d
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/uapi/sound/asound.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-hwptr tracking was replaced by tracepoint
-
-This seem to be the reason that you only find those Lost Interrput in the
-system log
-
-https://bugs.freedesktop.org/show_bug.cgi?id=49608#c28
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/core/pcm_trace.h
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 46145a5277fe..a45be6bdcf5b 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -864,7 +864,7 @@ struct snd_ctl_elem_id {
+ 	snd_ctl_elem_iface_t iface;	/* interface identifier */
+ 	unsigned int device;		/* device/client number */
+ 	unsigned int subdevice;		/* subdevice (substream) number */
+-	unsigned char name[44];		/* ASCII name of item */
++	unsigned char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];		/* ASCII name of item */
+ 	unsigned int index;		/* index of item */
+ };
+ 
+-- 
+1.7.9.5
