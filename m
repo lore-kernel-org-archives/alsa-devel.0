@@ -1,47 +1,84 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 7/7] ASoC: hda - added Skylake I2S
- machine driver
-Date: Fri, 17 Apr 2015 21:14:13 +0200
-Message-ID: <55315B85.6060008@metafoo.de>
-References: <1429262000-21517-1-git-send-email-vinod.koul@intel.com>
- <1429262000-21517-8-git-send-email-vinod.koul@intel.com>
- <5530D612.4000109@metafoo.de> <20150417190655.GO30624@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-063.synserver.de (smtp-out-063.synserver.de
- [212.40.185.63])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AFE026061E
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 21:14:10 +0200 (CEST)
-In-Reply-To: <20150417190655.GO30624@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, Omair M Abdullah <omair.m.abdullah@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: [PATCH] sound/oss: fix deadlock in sequencer_ioctl(SNDCTL_SEQ_OUTOFBAND)
+Date: Sat, 18 Apr 2015 02:53:25 +0300
+Message-ID: <1429314805-17955-1-git-send-email-khoroshilov@ispras.ru>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org, security@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/17/2015 09:06 PM, Vinod Koul wrote:
-> On Fri, Apr 17, 2015 at 11:44:50AM +0200, Lars-Peter Clausen wrote:
->> On 04/17/2015 11:13 AM, Vinod Koul wrote:
->> [...]
->>> +	/* always connected - check HP for jack detect */
->>> +	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
->>> +	snd_soc_dapm_enable_pin(dapm, "Speaker");
->>> +	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
->>> +	snd_soc_dapm_enable_pin(dapm, "DMIC2");
->>
->> There is no need to do this, all pins are enabled by default.
-> Ah yes, thanks for pointing. With this I should also set full_routed right?
+A deadlock can be initiated by userspace via ioctl(SNDCTL_SEQ_OUTOFBAND)
+on /dev/sequencer with TMR_ECHO midi event.
 
-You don't have to, the two are unrelated. But I'd still recommend setting 
-fully_routed.
+In this case the control flow is:
+sound_ioctl()
+-> case SND_DEV_SEQ:
+   case SND_DEV_SEQ2:
+     sequencer_ioctl()
+     -> case SNDCTL_SEQ_OUTOFBAND:
+          spin_lock_irqsave(&lock,flags);
+          play_event();
+          -> case EV_TIMING:
+               seq_timing_event()
+               -> case TMR_ECHO:
+                    seq_copy_to_input()
+                    -> spin_lock_irqsave(&lock,flags);
 
-- Lars
+It seems that spin_lock_irqsave() around play_event() is not necessary,
+because the only other call location in seq_startplay() makes the call
+without acquiring spinlock.
+
+So, the patch just removes spinlocks around play_event().
+By the way, it removes unreachable code in seq_timing_event(),
+since (seq_mode == SEQ_2) case is handled in the beginning.
+
+Compile tested only.
+
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+---
+ sound/oss/sequencer.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/sound/oss/sequencer.c b/sound/oss/sequencer.c
+index c0eea1dfe90f..f19da4b47c1d 100644
+--- a/sound/oss/sequencer.c
++++ b/sound/oss/sequencer.c
+@@ -681,13 +681,8 @@ static int seq_timing_event(unsigned char *event_rec)
+ 			break;
+ 
+ 		case TMR_ECHO:
+-			if (seq_mode == SEQ_2)
+-				seq_copy_to_input(event_rec, 8);
+-			else
+-			{
+-				parm = (parm << 8 | SEQ_ECHO);
+-				seq_copy_to_input((unsigned char *) &parm, 4);
+-			}
++			parm = (parm << 8 | SEQ_ECHO);
++			seq_copy_to_input((unsigned char *) &parm, 4);
+ 			break;
+ 
+ 		default:;
+@@ -1324,7 +1319,6 @@ int sequencer_ioctl(int dev, struct file *file, unsigned int cmd, void __user *a
+ 	int mode = translate_mode(file);
+ 	struct synth_info inf;
+ 	struct seq_event_rec event_rec;
+-	unsigned long flags;
+ 	int __user *p = arg;
+ 
+ 	orig_dev = dev = dev >> 4;
+@@ -1479,9 +1473,7 @@ int sequencer_ioctl(int dev, struct file *file, unsigned int cmd, void __user *a
+ 		case SNDCTL_SEQ_OUTOFBAND:
+ 			if (copy_from_user(&event_rec, arg, sizeof(event_rec)))
+ 				return -EFAULT;
+-			spin_lock_irqsave(&lock,flags);
+ 			play_event(event_rec.arr);
+-			spin_unlock_irqrestore(&lock,flags);
+ 			return 0;
+ 
+ 		case SNDCTL_MIDI_INFO:
+-- 
+1.9.1
