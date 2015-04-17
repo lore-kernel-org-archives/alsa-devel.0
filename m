@@ -1,27 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Playback - Overwrite buffer with silence
-Date: Fri, 17 Apr 2015 08:57:17 +0800
-Message-ID: <CAN8cciasebtivM-4pD=G_MpfwvvLtDckeRq1KKwnbCsKHeX+Cw@mail.gmail.com>
-References: <5529421B.7050601@gmail.com> <55297E6E.20302@ladisch.de>
- <14caac41f10.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
- <552A0974.1000005@ladisch.de>
- <14cb33de7e8.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
- <552D0A01.6050308@ladisch.de>
- <14cb8fa84c0.2759.f6cded7c48a54b1428bcde82a72ee7d7@gmail.com>
- <CAN8ccibpiKiLXDvjTGGUe8ZkdOvp=9N6QoOrJPLnPmkNWZjOhg@mail.gmail.com>
- <552EBB90.8040707@gmail.com> <552EBEBA.9000108@ladisch.de>
- <55300038.6010507@gmail.com>
+From: Caesar Wang <wxt@rock-chips.com>
+Subject: Re: [PATCH] ASoC: max98090: add shutdown callback for
+	max98090
+Date: Fri, 17 Apr 2015 15:22:22 +0800
+Message-ID: <5530B4AE.9090708@rock-chips.com>
+References: <mailman.2466.1428559383.807.alsa-devel@alsa-project.org>,
+ <CAK7N6vow0D8i6jQdjGbZ5L+VdyOtmSWSFdpyiE5JRH7SGtv=Dw@mail.gmail.com>
+ <B03A893ADFE80748942D13AFAF28451924E3198860@ITSVLEX06.it.maxim-ic.internal>,
+ <55271D74.30300@rock-chips.com>
+ <B03A893ADFE80748942D13AFAF28451924E4BADE53@ITSVLEX06.it.maxim-ic.internal>,
+ <552F1C32.8050407@rock-chips.com>
+ <B03A893ADFE80748942D13AFAF28451924E4BADE55@ITSVLEX06.it.maxim-ic.internal>,
+ <552F2F2E.80106@rock-chips.com>
+ <B03A893ADFE80748942D13AFAF28451924E4BADE57@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
- [209.85.214.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D5AA260452
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 02:57:19 +0200 (CEST)
-Received: by obbeb7 with SMTP id eb7so56405756obb.3
- for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2015 17:57:18 -0700 (PDT)
-In-Reply-To: <55300038.6010507@gmail.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7927260525
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 09:22:39 +0200 (CEST)
+In-Reply-To: <B03A893ADFE80748942D13AFAF28451924E4BADE57@ITSVLEX06.it.maxim-ic.internal>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,57 +29,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nilhcraiv <nilhcraiv@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Anish Kumar <Anish.Kumar@maximintegrated.com>, Jianqun <xjq@rock-chips.com>, Matthew Mowdy <Matthew.Mowdy@maximintegrated.com>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, Nitin Mittal <nitin.mittal@maximintegrated.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
->>
->> The allowed values of the hardware parameters depend on the hardware's
->> capabilities.
->
->
-> OK but, overwrite the buffer with silence depend of software, no? Why the
-buffer is not overwrite with silence with this pcm setup? It is as
-documentation.
->
-> PCM:
->
-> ALSA <-> PulseAudio PCM I/O Plugin
-> Its setup is:
->   stream       : PLAYBACK
->   access       : RW_INTERLEAVED
->   format       : S16_LE
->   subformat    : STD
->   channels     : 1
->   rate         : 48000
->   exact rate   : 48000 (48000/1)
->   msbits       : 16
->   buffer_size  : 720
->   period_size  : 240
->   period_time  : 5000
->   tstamp_mode  : NONE
->   period_step  : 1
->   avail_min    : 240
->   period_event : 0
->   start_threshold  : 240
->   stop_threshold   : 720
->   silence_threshold: 0
->   silence_size : 6485183463413514240
->   boundary     : 6485183463413514240
->
->
-
-Pulse plugin 's minimum periods is three.
-
-len = decoder(&decoded_data,t_data);
-
-pcmreturn = snd_pcm_writei(pcm_handle, decoded_data, len);/*In most cases
-there are UNDERRUN...*/
-
-If  len > 720 (buffer_size), you need to write three periods, start
-playback,  receive data, peform decode while waiting for the sound
-card/plugin playback one period and write another period
-
-Pulseaudio is a sound server which mix several playback streams, silence
-size may has no effect since the alsa sink may use different period
-size/buffer size or disable period wakeup when using timer scheduling
+CgrU2iAyMDE1xOowNNTCMTfI1SAxNToxNCwgQW5pc2ggS3VtYXIg0LS1wDoKPiDU2iAyMDE1xOow
+NNTCMTbI1SAxMDo0MSwgQW5pc2ggS3VtYXIg0LS1wDoKPj4g1NogMjAxNcTqMDTUwjE2yNUgMDU6
+MTQsIEFuaXNoIEt1bWFyINC0tcA6Cj4+PiDU2iAwNC8xMC8yMDE1IDAzOjM4IEFNLCBBbmlzaCBL
+dW1hciDQtLXAOgo+Pj4+PiBUbyBmaXggcG9wIG5vaXNlIHdoZW4gc2h1dGRvd24sdGhlIHBvcCBu
+b2lzZSBkdXJpbmcgc2h1dGRvd24KPj4+Pj4gaXMgdGhlIHBtaWMgY3V0b2ZmIHBvd2VyIG9mIGNv
+ZGVjIHdpdGhvdXQgYW55IG5vdGljZS4KPj4+PiBJcyB0aGUgcG93ZXIgdHVybmVkIG9mZiB3aXRo
+b3V0IGFueSBpbnRpbWF0aW9uIHRvIHRoZSBjb2RlYyBkcml2ZXI/Cj4+Pj4gT3IgaXMgaXQgcGh5
+c2ljYWxseSByZW1vdmVkPyBDYW4geW91IGRlc2NyaWJlIHRoZSBwcm9iZWxtCj4+Pj4gYmV0dGVy
+Pwo+Pj4+IFdoZW4gZGV2aWNlIGlzIHNodXRkb3duIHdpdGggcGxheWluZyBtdXNpYywgdGhlIG9y
+aWdpbiBkcml2ZXIgZG9lcyBub3RoaW5nIGZvciBzaHV0ZG93biBvcGVyYXRpb24sCj4+Pj4gYXMg
+YSByZXN1bHQsIHBtaWMgd2lsbCBjdXQgb2ZmIHRoZSBwb3dlciBvZiBjb2RlYyBJQywgdGh1cyBj
+YXVzZSBhIHBvcCBub2lzZSBmcm9tIHNwZWFrZXIgYW5kIGhlYWRwaG9uZS4KPj4+PiBTbyB0aGUg
+cGF0Y2ggYWRkZWQgYSBzaHV0ZG93biBjYWxsYmFjayBmb3IgZHJpdmVyLCBlbmFibGUgdm9sdW1l
+IHNtb290aGluZyBhbmQgZGlzYWJsZSB6ZXJvIGNyb3NzLAo+Pj4+IHRoaXMgaXMgcmVmZXJlbmNl
+ZCBmcm9tIG1pY19pbnB1dCB3aGljaCBkb2VzIHRoZSBzYW1ldGhpbmcgYmVmb3JlIG1pYyBzd2l0
+Y2guCj4+Pj4gSSdtIHZlcnkgaGFwcHkgaWYgc29tZSBzdWdnZXN0aW9uIGZyb20gbWF4aW1pbnRl
+Z3JhdGUgLiA6LSkKPj4+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB0aGUgcGF0Y2ggd29ya2VkIGZv
+ciB5b3UuCj4+PiBZZXMsIHRoZSBwYXRjaCBjYW4gd29yayBmb3IgbWUuCj4+IEkgaG9wZSB0aGlz
+IHBhdGNoIGlzIHdoYXQgeW91IHRlc3RlZC4KPj4KPj4gK3N0YXRpYyB2b2lkIG1heDk4MDkwX2ky
+Y19zaHV0ZG93bihzdHJ1Y3QgaTJjX2NsaWVudCAqaTJjKQo+PiArewo+PiArICAgICAgIHN0cnVj
+dCBtYXg5ODA5MF9wcml2ICptYXg5ODA5MCA9IGRldl9nZXRfZHJ2ZGF0YSgmaTJjLT5kZXYpOwo+
+PiArCj4+ICsgICAgICAgZGV2X2luZm8oJmkyYy0+ZGV2LCAic2h1dCBkb3duIGRldmljZVxuIik7
+Cj4+ICsKPj4gKyAgICAgICAvKiBlbmFibGUgemVybyBjcm9zc2luZyAqLwo+PiArICAgICAgIHJl
+Z21hcF93cml0ZShtYXg5ODA5MC0+cmVnbWFwLAo+PiArICAgICAgICAgICAgICAgTTk4MDkwX1JF
+R19MRVZFTF9DT05UUk9MLCBNOTgwOTBfWkRFTk5fTUFTSy0xKTsKPj4gKwo+PiArICAgICAgIC8q
+IHR1cm4gZG93biB2b2x1bWUgbGV2ZWxzIGZvciBhbGwgdGhlIG91dHB1dHMgKi8KPj4gKyAgICAg
+ICByZWdtYXBfd3JpdGUobWF4OTgwOTAtPnJlZ21hcCwKPj4gKyAgICAgICAgICAgICAgIE05ODA5
+MF9SRUdfUkNWX0xPVVRMX1ZPTFVNRSwgMHgwMCk7Cj4+ICsgICAgICAgcmVnbWFwX3dyaXRlKG1h
+eDk4MDkwLT5yZWdtYXAsCj4+ICsgICAgICAgICAgICAgICBNOTgwOTBfUkVHX0xPVVRSX1ZPTFVN
+RSwgMHgwMCk7Cj4+ICsgICAgICAgcmVnbWFwX3dyaXRlKG1heDk4MDkwLT5yZWdtYXAsCj4+ICsg
+ICAgICAgICAgICAgICBNOTgwOTBfUkVHX0xFRlRfU1BLX1ZPTFVNRSwgMHgwMCk7Cj4+ICsgICAg
+ICAgcmVnbWFwX3dyaXRlKG1heDk4MDkwLT5yZWdtYXAsCj4+ICsgICAgICAgICAgICAgICBNOTgw
+OTBfUkVHX1JJR0hUX1NQS19WT0xVTUUsIDB4MDApOwo+PiArICAgICAgIHJlZ21hcF93cml0ZSht
+YXg5ODA5MC0+cmVnbWFwLAo+PiArICAgICAgICAgICAgICAgTTk4MDkwX1JFR19MRUZUX0hQX1ZP
+TFVNRSwgMHgwMCk7Cj4+ICsgICAgICAgcmVnbWFwX3dyaXRlKG1heDk4MDkwLT5yZWdtYXAsCj4+
+ICsgICAgICAgICAgICAgICBNOTgwOTBfUkVHX1JJR0hUX0hQX1ZPTFVNRSwgMHgwMCk7Cj4+ICsg
+ICAgICAgcmVnbWFwX3dyaXRlKG1heDk4MDkwLT5yZWdtYXAsCj4+ICsgICAgICAgICAgICAgICBN
+OTgwOTBfUkVHX0RFVklDRV9TSFVURE9XTiwgMHgwMCk7Cj4+ICsgICAgICAgbXNsZWVwKDQwKTsK
+Pj4gK30KPj4gKwo+PiBQbGVhc2UgZ28gYWhlYWQgYW5kIHN1Ym1pdCB0byBNYXJrLgo+IFdpdGgg
+dGhlIGFib3V0IGlzIGFsc28gdXNlZnVsIHRvIHNvbHZlIGl0Lgo+Cj4gQHplbmd4aW5nLCBjb3Vs
+ZCB5b3UgYWxzbyBoZWxwIHZlcmlmeSBpdD8KPiBWZXJpZmllZCA/Cgp6ZW5neGluZywgd2hvIHRv
+bGQgbWUgaXMgdXNlZnVsIHRvIHNvbHZlIGl0LgoKPj4+IFdlIGhhZCB0ZXN0ZWQgb24gY2hyb21p
+dW1vcy4KPj4+PiArc3RhdGljIHZvaWQgbWF4OTgwOTBfaTJjX3NodXRkb3duKHN0cnVjdCBpMmNf
+Y2xpZW50ICppMmMpCj4+Pj4gK3sKPj4+PiArICAgICAgIHN0cnVjdCBtYXg5ODA5MF9wcml2ICpt
+YXg5ODA5MCA9IGRldl9nZXRfZHJ2ZGF0YSgmaTJjLT5kZXYpOwo+Pj4+ICsKPj4+PiArICAgICAg
+IGRldl9pbmZvKCZpMmMtPmRldiwgInNodXQgZG93biBkZXZpY2VcbiIpOwo+Pj4+ICsKPj4+PiAr
+ICAgICAgIC8qIEVuYWJsZSB2b2x1bWUgc21vb3RoaW5nLCBkaXNhYmxlIHplcm8gY3Jvc3MuICBU
+aGlzIHdpbGwgY2F1c2UKPj4+PiArICAgICAgICAqIGEgcXVpY2sgNDBtcyByYW1wIHRvIG11dGUg
+b24gc2h1dGRvd24uCj4+Pj4gKyAgICAgICAgKi8KPj4+PiArICAgICAgIHJlZ21hcF93cml0ZSht
+YXg5ODA5MC0+cmVnbWFwLAo+Pj4+ICsgICAgICAgICAgICAgICBNOTgwOTBfUkVHX0xFVkVMX0NP
+TlRST0wsIE05ODA5MF9WU0VOTl9NQVNLKTsKPj4+PiArICAgICAgIHJlZ21hcF93cml0ZShtYXg5
+ODA5MC0+cmVnbWFwLAo+Pj4+ICsgICAgICAgICAgICAgICBNOTgwOTBfUkVHX0RFVklDRV9TSFVU
+RE9XTiwgMHgwMCk7Cj4+Pj4gKyAgICAgICBtc2xlZXAoNDApOwo+Pj4+ICt9Cj4+Pj4gKwo+Pj4+
+Cj4+Pj4KPj4+Cj4+Pgo+PiAtLQo+PiAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgo+PiDN
+9c/+zNogICAgQ2Flc2FyIFdhbmcKPj4gUHJvZHVjdCBSJkQgRGVwdC5JSUkKPj4gRnV6aG91IFJv
+Y2tjaGlwIEVsZWN0cm9uaWNzIENvLkx0ZAo+PiBBZGRyo7ogIE5PLjE4IEJ1aWxkaW5nLCBBIERp
+c3RyaWN0LCBGdXpob3UgU29mdHdhcmUgUGFyayxHdWxvdSBEaXN0cmljdCxGdXpob3UsIEZ1amlh
+bixDaGluYShGdXpob3UgSGVhZHF1YXJ0ZXJzKQo+PiAgICAgICAgICAgICAgICAgIDIxRixNYWxh
+dGEgQnVpbGRpbmcsS2VqaXpob25neWkgQXZlbnVlLE5hbnNoYW4gRGlzdHJpY3QsU2hlbnpoZW4g
+IChTaGVuemhlbiBPZmZpY2UpCj4+IFRlbKO6Kzg2LTU5MS04Mzk5MTkwNi8wNyAtIDgyMjEKPj4g
+TW9iaWxlOis4NiAxNTA1OTQ1Njc0Mgo+PiBFLW1haWwgOiB3eHRAcm9jay1jaGlwcy5jb20KPj4g
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCj4+ICoqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKgo+PiBJTVBPUlRBTlQgTk9USUNFOiBUaGlzIGVtYWlsIGlzIGZyb20gRnV6aG91IFJv
+Y2tjaGlwIEVsZWN0cm9uaWNzIENvLiwgTHRkIC5UaGUgY29udGVudHMgb2YgdGhpcyBlbWFpbCBh
+bmQgYW55IGF0dGFjaG1lbnRzIG1heQo+PiBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJp
+dmlsZWdlZCwgY29uZmlkZW50aWFsIGFuZC9vciBleGVtcHQgZnJvbSBkaXNjbG9zdXJlIHVuZGVy
+IGFwcGxpY2FibGUgbGF3IGFuZCByZWxldmFudCBOREEuCj4+IElmIHlvdSBhcmUgbm90IHRoZSBp
+bnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55IGRpc2Ns
+b3N1cmUsIGNvcHlpbmcsIGRpc3RyaWJ1dGlvbiwgb3IgdXNlIG9mIHRoZQo+PiBpbmZvcm1hdGlv
+biBpcyBTVFJJQ1RMWSBQUk9ISUJJVEVELiBQbGVhc2UgaW1tZWRpYXRlbHkgY29udGFjdCB0aGUg
+c2VuZGVyIGFzIHNvb24gYXMgcG9zc2libGUgYW5kIGRlc3Ryb3kgdGhlIG1hdGVyaWFsCj4+IGlu
+IGl0cyBlbnRpcmV0eSBpbiBhbnkgZm9ybWF0LiBUaGFuayB5b3UuCj4+ICoqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKgo+Pgo+IC0tCj4gKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioK
+PiDN9c/+zNogICAgQ2Flc2FyIFdhbmcKPiBQcm9kdWN0IFImRCBEZXB0LklJSQo+IEZ1emhvdSBS
+b2NrY2hpcCBFbGVjdHJvbmljcyBDby5MdGQKPiBBZGRyo7ogIE5PLjE4IEJ1aWxkaW5nLCBBIERp
+c3RyaWN0LCBGdXpob3UgU29mdHdhcmUgUGFyayxHdWxvdSBEaXN0cmljdCxGdXpob3UsIEZ1amlh
+bixDaGluYShGdXpob3UgSGVhZHF1YXJ0ZXJzKQo+ICAgICAgICAgICAgICAgICAyMUYsTWFsYXRh
+IEJ1aWxkaW5nLEtlaml6aG9uZ3lpIEF2ZW51ZSxOYW5zaGFuIERpc3RyaWN0LFNoZW56aGVuICAo
+U2hlbnpoZW4gT2ZmaWNlKQo+IFRlbKO6Kzg2LTU5MS04Mzk5MTkwNi8wNyAtIDgyMjEKPiBNb2Jp
+bGU6Kzg2IDE1MDU5NDU2NzQyCj4gRS1tYWlsIDogd3h0QHJvY2stY2hpcHMuY29tCj4gKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqCj4gKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+Cj4gSU1QT1JUQU5UIE5PVElDRTogVGhpcyBlbWFpbCBpcyBmcm9tIEZ1emhvdSBSb2NrY2hpcCBF
+bGVjdHJvbmljcyBDby4sIEx0ZCAuVGhlIGNvbnRlbnRzIG9mIHRoaXMgZW1haWwgYW5kIGFueSBh
+dHRhY2htZW50cyBtYXkKPiBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZCwg
+Y29uZmlkZW50aWFsIGFuZC9vciBleGVtcHQgZnJvbSBkaXNjbG9zdXJlIHVuZGVyIGFwcGxpY2Fi
+bGUgbGF3IGFuZCByZWxldmFudCBOREEuCj4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJl
+Y2lwaWVudCwgeW91IGFyZSBoZXJlYnkgbm90aWZpZWQgdGhhdCBhbnkgZGlzY2xvc3VyZSwgY29w
+eWluZywgZGlzdHJpYnV0aW9uLCBvciB1c2Ugb2YgdGhlCj4gaW5mb3JtYXRpb24gaXMgU1RSSUNU
+TFkgUFJPSElCSVRFRC4gUGxlYXNlIGltbWVkaWF0ZWx5IGNvbnRhY3QgdGhlIHNlbmRlciBhcyBz
+b29uIGFzIHBvc3NpYmxlIGFuZCBkZXN0cm95IHRoZSBtYXRlcmlhbAo+IGluIGl0cyBlbnRpcmV0
+eSBpbiBhbnkgZm9ybWF0LiBUaGFuayB5b3UuCj4gKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqCj4KPgoKLS0gCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCs31z/7M2iAgICBDYWVz
+YXIgV2FuZwpQcm9kdWN0IFImRCBEZXB0LklJSQpGdXpob3UgUm9ja2NoaXAgRWxlY3Ryb25pY3Mg
+Q28uTHRkCkFkZHKjuiAgTk8uMTggQnVpbGRpbmcsIEEgRGlzdHJpY3QsIEZ1emhvdSBTb2Z0d2Fy
+ZSBQYXJrLEd1bG91IERpc3RyaWN0LEZ1emhvdSwgRnVqaWFuLENoaW5hKEZ1emhvdSBIZWFkcXVh
+cnRlcnMpCiAgICAgICAgICAgICAgIDIxRixNYWxhdGEgQnVpbGRpbmcsS2VqaXpob25neWkgQXZl
+bnVlLE5hbnNoYW4gRGlzdHJpY3QsU2hlbnpoZW4gIChTaGVuemhlbiBPZmZpY2UpClRlbKO6Kzg2
+LTU5MS04Mzk5MTkwNi8wNyAtIDgyMjEKTW9iaWxlOis4NiAxNTA1OTQ1Njc0MgpFLW1haWwgOiB3
+eHRAcm9jay1jaGlwcy5jb20KKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKgpJTVBPUlRBTlQgTk9USUNFOiBUaGlzIGVtYWlsIGlzIGZy
+b20gRnV6aG91IFJvY2tjaGlwIEVsZWN0cm9uaWNzIENvLiwgTHRkIC5UaGUgY29udGVudHMgb2Yg
+dGhpcyBlbWFpbCBhbmQgYW55IGF0dGFjaG1lbnRzIG1heQpjb250YWluIGluZm9ybWF0aW9uIHRo
+YXQgaXMgcHJpdmlsZWdlZCwgY29uZmlkZW50aWFsIGFuZC9vciBleGVtcHQgZnJvbSBkaXNjbG9z
+dXJlIHVuZGVyIGFwcGxpY2FibGUgbGF3IGFuZCByZWxldmFudCBOREEuCklmIHlvdSBhcmUgbm90
+IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55
+IGRpc2Nsb3N1cmUsIGNvcHlpbmcsIGRpc3RyaWJ1dGlvbiwgb3IgdXNlIG9mIHRoZQppbmZvcm1h
+dGlvbiBpcyBTVFJJQ1RMWSBQUk9ISUJJVEVELiBQbGVhc2UgaW1tZWRpYXRlbHkgY29udGFjdCB0
+aGUgc2VuZGVyIGFzIHNvb24gYXMgcG9zc2libGUgYW5kIGRlc3Ryb3kgdGhlIG1hdGVyaWFsCmlu
+IGl0cyBlbnRpcmV0eSBpbiBhbnkgZm9ybWF0LiBUaGFuayB5b3UuCioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
