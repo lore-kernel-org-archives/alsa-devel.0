@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [RFC 6/9] ASoC: hda: Add Code Loader DMA support
-Date: Fri, 17 Apr 2015 18:46:04 +0530
-Message-ID: <1429276567-29007-7-git-send-email-vinod.koul@intel.com>
+Subject: [RFC 7/9] ASoC: hda: Add DSP library functions for SKL
+	platform
+Date: Fri, 17 Apr 2015 18:46:05 +0530
+Message-ID: <1429276567-29007-8-git-send-email-vinod.koul@intel.com>
 References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E344260578
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 15:21:28 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 79CCF265964
+ for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 15:21:31 +0200 (CEST)
 In-Reply-To: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,30 +27,110 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-For skylake the code loader dma will be used for fw download, module
-download, and sending mailbox.
+Adding functionality to parse and load fw and DSP power management in SKL.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/soc-hda-sst-cldma.h       |  234 ++++++++++++++++++++++++
- include/sound/soc-hda-sst-dsp.h         |    9 +
- sound/soc/hda/intel/Makefile            |    2 +-
- sound/soc/hda/intel/soc-hda-sst-cldma.c |  297 +++++++++++++++++++++++++++++++
- 4 files changed, 541 insertions(+), 1 deletion(-)
- create mode 100644 include/sound/soc-hda-sst-cldma.h
- create mode 100644 sound/soc/hda/intel/soc-hda-sst-cldma.c
+ include/sound/soc-hda-sst-dsp.h          |   39 ++++
+ sound/soc/hda/intel/Makefile             |    3 +-
+ sound/soc/hda/intel/soc-hda-sst-skl-fw.h |  163 +++++++++++++++++
+ sound/soc/hda/intel/soc-hda-sst-skl.c    |  292 ++++++++++++++++++++++++++++++
+ 4 files changed, 496 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/hda/intel/soc-hda-sst-skl-fw.h
+ create mode 100644 sound/soc/hda/intel/soc-hda-sst-skl.c
 
-diff --git a/include/sound/soc-hda-sst-cldma.h b/include/sound/soc-hda-sst-cldma.h
+diff --git a/include/sound/soc-hda-sst-dsp.h b/include/sound/soc-hda-sst-dsp.h
+index 82ba1c9a68c4..4549d6df2ed2 100644
+--- a/include/sound/soc-hda-sst-dsp.h
++++ b/include/sound/soc-hda-sst-dsp.h
+@@ -99,6 +99,27 @@
+ 
+ #define WINDOW1_SIZE			0x1000
+ 
++#define FW_STATUS_MASK			0xf
++
++#define FW_ROM_INIT			0x0
++#define FW_ROM_INIT_DONE		0x1
++#define FW_ROM_MEM_PWR_DONE		0x2
++#define FW_ROM_MANIFEST_LOADED		0X3
++#define FW_ROM_MANIFEST_VERIFIED	0x4
++#define FW_ROM_FEAT_MASK_VERIFIED	0x5
++#define FW_ROM_BASEFW_FOUND		0x6
++#define FW_ROM_BASEFW_BA_VALID		0x7
++#define FW_ROM_BASEFW_TOTAL_PWR		0x8
++#define FW_ROM_BASEFW_TEXT_LOADED	0x9
++#define FW_ROM_BASEFW_TEXT_HASHED	0xa
++#define FW_ROM_BASEFW_RODA_LOADED	0xb
++#define FW_ROM_BASEFW_LOAD_HASHED	0xc
++#define FW_ROM_BASEFW_HASH_VER		0xd
++#define FW_ROM_BASEFW_START_FOUND	0xe
++#define FW_ROM_BASEFW_ENTERED		0xf
++
++
++
+ #define ADSPIC_IPC                      1
+ #define ADSPIS_IPC			1
+ 
+@@ -160,6 +181,14 @@ struct ssth_dsp_loader_ops {
+ 		struct snd_dma_buffer *dmab);
+ };
+ 
++struct ssth_ops {
++	int (*load_fw)(struct ssth_lib  *ctx);
++	/* FW module parser/loader */
++	int (*parse_fw)(struct ssth_lib *ctx);
++	int (*set_state_D0)(struct ssth_lib *ctx);
++	int (*set_state_D3)(struct ssth_lib *ctx);
++};
++
+ struct ssth_lib {
+ 	struct device *dev;
+ 	struct ssth_ipc *ipc;
+@@ -167,6 +196,7 @@ struct ssth_lib {
+ 	struct ssth_window window;
+ 	int irq;
+ 	struct ssth_dsp_loader_ops  dsp_ops;
++	struct ssth_ops ops;
+ 	struct snd_dma_buffer dsp_fw_buf;
+ 	int sst_state;
+ 	struct mutex sst_lock;
+@@ -223,4 +253,13 @@ void ssth_writel_traced(
+ 	u32 offset,
+ 	u32 val);
+ 
++int ssth_register_poll(struct ssth_lib  *ctx, u32 offset, u32 mask,
++			 u32 expected_value, u32 timeout, char *operation);
++int ssth_boot_dsp(struct ssth_lib *ctx);
++int ssth_dsp_init(struct ssth_lib *ctx);
++int ssth_disable_dsp_core(struct ssth_lib  *ctx);
++bool ssth_dsp_is_running(struct ssth_lib *ctx);
++int ssth_cl_dma_prepare(struct ssth_lib *ctx);
++void ssth_process_cl_dma(struct work_struct *work);
++
+ #endif /*__HDA_SST_DSP_H__*/
+diff --git a/sound/soc/hda/intel/Makefile b/sound/soc/hda/intel/Makefile
+index a31db94b2dde..d37275f13aac 100644
+--- a/sound/soc/hda/intel/Makefile
++++ b/sound/soc/hda/intel/Makefile
+@@ -1,5 +1,6 @@
+ 
+-snd-soc-hda-sst-dsp-objs := soc-hda-sst-ipc.o soc-hda-sst-dsp.o soc-hda-sst-cldma.o
++snd-soc-hda-sst-dsp-objs := soc-hda-sst-ipc.o soc-hda-sst-dsp.o soc-hda-sst-cldma.o \
++	soc-hda-sst-skl.o
+ 
+ # SST DSP Library
+ obj-$(CONFIG_SND_SOC_HDA_SST_DSP) += snd-soc-hda-sst-dsp.o
+diff --git a/sound/soc/hda/intel/soc-hda-sst-skl-fw.h b/sound/soc/hda/intel/soc-hda-sst-skl-fw.h
 new file mode 100644
-index 000000000000..a1e0c48ae5d5
+index 000000000000..b5fd94479e2e
 --- /dev/null
-+++ b/include/sound/soc-hda-sst-cldma.h
-@@ -0,0 +1,234 @@
++++ b/sound/soc/hda/intel/soc-hda-sst-skl-fw.h
+@@ -0,0 +1,163 @@
 +/*
-+ * Intel Code Loader DMA support
++ * Intel SST Firmware Loader
 + *
-+ * Copyright (C) 2015, Intel Corporation. All rights reserved.
++ * Copyright (C) 2013-15, Intel Corporation. All rights reserved.
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of the GNU General Public License version
@@ -62,280 +143,165 @@ index 000000000000..a1e0c48ae5d5
 + *
 + */
 +
-+#define FW_CL_STREAM_NUMBER	0xf
++#ifndef SST_FIRMWARE_SKYLAKE_H_
++#define SST_FIRMWARE_SKYLAKE_H_
 +
-+#define DMA_ADDRESS_128_BITS_ALIGNMENT 7
-+#define BDL_ALIGN(x)	(x >> DMA_ADDRESS_128_BITS_ALIGNMENT)
++#include <linux/types.h>
++#include <linux/bug.h>
 +
-+#define ADSPIC_CL_DMA          0x2
-+#define ADSPIS_CL_DMA          0x2
-+#define CL_DMA_SD_INT_DESC_ERR		0x10	/* Descriptor error interrupt */
-+#define CL_DMA_SD_INT_FIFO_ERR		0x08	/* FIFO error interrupt */
-+#define CL_DMA_SD_INT_COMPLETE	0x04	/* Buffer completion interrupt */
++#define RSA_KEY_DEFAULT_LENGTH 256
++#define RSA_EXPONENT_DEFAULT_LENGTH 4
 +
-+/* Code Loader -
-+ * Stream Registers */
-+#define HDA_ADSP_REG_CL_SD_CTL			(HDA_ADSP_LOADER_BASE + 0x00)
-+#define HDA_ADSP_REG_CL_SD_STS			(HDA_ADSP_LOADER_BASE + 0x03)
-+#define HDA_ADSP_REG_CL_SD_LPIB			(HDA_ADSP_LOADER_BASE + 0x04)
-+#define HDA_ADSP_REG_CL_SD_CBL			(HDA_ADSP_LOADER_BASE + 0x08)
-+#define HDA_ADSP_REG_CL_SD_LVI			(HDA_ADSP_LOADER_BASE + 0x0c)
-+#define HDA_ADSP_REG_CL_SD_FIFOW		(HDA_ADSP_LOADER_BASE + 0x0e)
-+#define HDA_ADSP_REG_CL_SD_FIFOSIZE		(HDA_ADSP_LOADER_BASE + 0x10)
-+#define HDA_ADSP_REG_CL_SD_FORMAT		(HDA_ADSP_LOADER_BASE + 0x12)
-+#define HDA_ADSP_REG_CL_SD_FIFOL		(HDA_ADSP_LOADER_BASE + 0x14)
-+#define HDA_ADSP_REG_CL_SD_BDLPL		(HDA_ADSP_LOADER_BASE + 0x18)
-+#define HDA_ADSP_REG_CL_SD_BDLPU		(HDA_ADSP_LOADER_BASE + 0x1c)
++#define SHA256_HASH_DEFAULT_LENGTH 32
 +
-+/* Code Loader -
-+ * Software Position Based FIFO Capability Registers */
-+#define HDA_ADSP_REG_CL_SPBFIFO				(HDA_ADSP_LOADER_BASE + 0x20)
-+#define HDA_ADSP_REG_CL_SPBFIFO_SPBFCH		(HDA_ADSP_REG_CL_SPBFIFO + 0x0)
-+#define HDA_ADSP_REG_CL_SPBFIFO_SPBFCCTL	(HDA_ADSP_REG_CL_SPBFIFO + 0x4)
-+#define HDA_ADSP_REG_CL_SPBFIFO_SPIB		(HDA_ADSP_REG_CL_SPBFIFO + 0x8)
-+#define HDA_ADSP_REG_CL_SPBFIFO_MAXFIFOS	(HDA_ADSP_REG_CL_SPBFIFO + 0xc)
++#define MODULE_SIGNATURE_DEFAULT_SIZE 256
++#define MODULE_NAME_DEFAULT_LENGTH 8
++#define MODULE_UUID_DEFAULT_LENGTH 4
 +
++struct ssth_segment_flags {
++	uint32_t contents:1;
++	uint32_t alloc:1;
++	uint32_t load:1;
++	uint32_t readonly:1;
++	uint32_t code:1;
++	uint32_t data:1;
++	uint32_t rsvd0:2;
++	uint32_t type:4;
++	uint32_t rsvd1:4;
++	uint32_t length:16;
++} __packed;
 +
-+/* Code Loader -
-+ * Stream Descriptor x Control */
-+/* Stream Reset */
-+#define CL_SD_CTL_SRST_SHIFT	0
-+#define CL_SD_CTL_SRST_MASK		(1 << CL_SD_CTL_SRST_SHIFT)
-+#define CL_SD_CTL_SRST(x) \
-+	((x << CL_SD_CTL_SRST_SHIFT) & CL_SD_CTL_SRST_MASK)
-+
-+/* Stream Run */
-+#define CL_SD_CTL_RUN_SHIFT		1
-+#define CL_SD_CTL_RUN_MASK		(1 << CL_SD_CTL_RUN_SHIFT)
-+#define CL_SD_CTL_RUN(x) \
-+	((x << CL_SD_CTL_RUN_SHIFT) & CL_SD_CTL_RUN_MASK)
-+
-+/* Interrupt On Completion Enable */
-+#define CL_SD_CTL_IOCE_SHIFT	2
-+#define CL_SD_CTL_IOCE_MASK		(1 << CL_SD_CTL_IOCE_SHIFT)
-+#define CL_SD_CTL_IOCE(x) \
-+	((x << CL_SD_CTL_IOCE_SHIFT) & CL_SD_CTL_IOCE_MASK)
-+
-+/* FIFO Error Interrupt Enable */
-+#define CL_SD_CTL_FEIE_SHIFT	3
-+#define CL_SD_CTL_FEIE_MASK		(1 << CL_SD_CTL_FEIE_SHIFT)
-+#define CL_SD_CTL_FEIE(x) \
-+	((x << CL_SD_CTL_FEIE_SHIFT) & CL_SD_CTL_FEIE_MASK)
-+
-+/* Descriptor Error Interrupt Enable */
-+#define CL_SD_CTL_DEIE_SHIFT	4
-+#define CL_SD_CTL_DEIE_MASK		(1 << CL_SD_CTL_DEIE_SHIFT)
-+#define CL_SD_CTL_DEIE(x) \
-+	((x << CL_SD_CTL_DEIE_SHIFT) & CL_SD_CTL_DEIE_MASK)
-+
-+/* FIFO Limit Change */
-+#define CL_SD_CTL_FIFOLC_SHIFT	5
-+#define CL_SD_CTL_FIFOLC_MASK	(1 << CL_SD_CTL_FIFOLC_SHIFT)
-+#define CL_SD_CTL_FIFOLC(x) \
-+	((x << CL_SD_CTL_FIFOLC_SHIFT) & CL_SD_CTL_FIFOLC_MASK)
-+
-+/* Stripe Control */
-+#define CL_SD_CTL_STRIPE_SHIFT	16
-+#define CL_SD_CTL_STRIPE_MASK	(0x3 << CL_SD_CTL_STRIPE_SHIFT)
-+#define CL_SD_CTL_STRIPE(x) \
-+	((x << CL_SD_CTL_STRIPE_SHIFT) & CL_SD_CTL_STRIPE_MASK)
-+
-+/* Traffic Priority */
-+#define CL_SD_CTL_TP_SHIFT		18
-+#define CL_SD_CTL_TP_MASK		(1 << CL_SD_CTL_TP_SHIFT)
-+#define CL_SD_CTL_TP(x) \
-+	((x << CL_SD_CTL_TP_SHIFT) & CL_SD_CTL_TP_MASK)
-+
-+/* Bidirectional Direction Control */
-+#define CL_SD_CTL_DIR_SHIFT		19
-+#define CL_SD_CTL_DIR_MASK		(1 << CL_SD_CTL_DIR_SHIFT)
-+#define CL_SD_CTL_DIR(x) \
-+	((x << CL_SD_CTL_DIR_SHIFT) & CL_SD_CTL_DIR_MASK)
-+
-+/* Stream Number */
-+#define CL_SD_CTL_STRM_SHIFT	20
-+#define CL_SD_CTL_STRM_MASK		(0xf << CL_SD_CTL_STRM_SHIFT)
-+#define CL_SD_CTL_STRM(x) \
-+	((x << CL_SD_CTL_STRM_SHIFT) & CL_SD_CTL_STRM_MASK)
-+
-+
-+/* Code Loader -
-+ * Stream Descriptor x Status */
-+/* Buffer Completion Interrupt Status */
-+#define CL_SD_STS_BCIS(x)		CL_SD_CTL_IOCE(x)
-+
-+/* FIFO Error */
-+#define CL_SD_STS_FIFOE(x)		CL_SD_CTL_FEIE(x)
-+
-+/* Descriptor Error */
-+#define CL_SD_STS_DESE(x)		CL_SD_CTL_DEIE(x)
-+
-+/* FIFO Ready */
-+#define CL_SD_STS_FIFORDY(x)	CL_SD_CTL_FIFOLC(x)
-+
-+
-+/* Code Loader -
-+ * Stream Descriptor x Last Valid Index */
-+#define CL_SD_LVI_SHIFT		0
-+#define CL_SD_LVI_MASK		(0xff << CL_SD_LVI_SHIFT)
-+#define CL_SD_LVI(x)		((x << CL_SD_LVI_SHIFT) & CL_SD_LVI_MASK)
-+
-+
-+/* Code Loader -
-+ * Stream Descriptor x FIFO Eviction Watermark */
-+#define CL_SD_FIFOW_SHIFT	0
-+#define CL_SD_FIFOW_MASK	(0x7 << CL_SD_FIFOW_SHIFT)
-+#define CL_SD_FIFOW(x)		((x << CL_SD_FIFOW_SHIFT) & CL_SD_FIFOW_MASK)
-+
-+
-+/* Code Loader -
-+ * Stream Descriptor x Buffer Descriptor List Pointer Lower Base Address */
-+/* Protect */
-+#define CL_SD_BDLPLBA_PROT_SHIFT	0
-+#define CL_SD_BDLPLBA_PROT_MASK		(1 << CL_SD_BDLPLBA_PROT_SHIFT)
-+#define CL_SD_BDLPLBA_PROT(x) \
-+	((x << CL_SD_BDLPLBA_PROT_SHIFT) & CL_SD_BDLPLBA_PROT_MASK)
-+
-+/* Buffer Descriptor List Lower Base Address */
-+#define CL_SD_BDLPLBA_SHIFT	7
-+#define CL_SD_BDLPLBA_MASK	(0x1ffffff << CL_SD_BDLPLBA_SHIFT)
-+#define CL_SD_BDLPLBA(x) \
-+	((BDL_ALIGN(lower_32_bits(x)) << CL_SD_BDLPLBA_SHIFT) & CL_SD_BDLPLBA_MASK)
-+
-+/* Buffer Descriptor List Upper Base Address */
-+#define CL_SD_BDLPUBA_SHIFT	0
-+#define CL_SD_BDLPUBA_MASK	(0xffffffff << CL_SD_BDLPUBA_SHIFT)
-+#define CL_SD_BDLPUBA(x) \
-+	((upper_32_bits(x) << CL_SD_BDLPUBA_SHIFT) & CL_SD_BDLPUBA_MASK)
-+
-+/* Code Loader - Software Position Based FIFO
-+ * Capability Registers x Software Position Based FIFO Header */
-+
-+/* Next Capability Pointer */
-+#define CL_SPBFIFO_SPBFCH_PTR_SHIFT	0
-+#define CL_SPBFIFO_SPBFCH_PTR_MASK	(0xff << CL_SPBFIFO_SPBFCH_PTR_SHIFT)
-+#define CL_SPBFIFO_SPBFCH_PTR(x) \
-+	((x << CL_SPBFIFO_SPBFCH_PTR_SHIFT) & CL_SPBFIFO_SPBFCH_PTR_MASK)
-+
-+/* Capability Identifier */
-+#define CL_SPBFIFO_SPBFCH_ID_SHIFT	16
-+#define CL_SPBFIFO_SPBFCH_ID_MASK	(0xfff << CL_SPBFIFO_SPBFCH_ID_SHIFT)
-+#define CL_SPBFIFO_SPBFCH_ID(x) \
-+	((x << CL_SPBFIFO_SPBFCH_ID_SHIFT) & CL_SPBFIFO_SPBFCH_ID_MASK)
-+
-+/* Capability Version */
-+#define CL_SPBFIFO_SPBFCH_VER_SHIFT	28
-+#define CL_SPBFIFO_SPBFCH_VER_MASK	(0xf << CL_SPBFIFO_SPBFCH_VER_SHIFT)
-+#define CL_SPBFIFO_SPBFCH_VER(x) \
-+	((x << CL_SPBFIFO_SPBFCH_VER_SHIFT) & CL_SPBFIFO_SPBFCH_VER_MASK)
-+
-+
-+/* Code Loader -
-+   Software Position Based FIFO Control */
-+/* Software Position in Buffer Enable */
-+#define CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT	0
-+#define CL_SPBFIFO_SPBFCCTL_SPIBE_MASK	(1 << CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT)
-+#define CL_SPBFIFO_SPBFCCTL_SPIBE(x) \
-+	((x << CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT) & CL_SPBFIFO_SPBFCCTL_SPIBE_MASK)
-+
-+#define SSTH_WAIT_TIMEOUT		1000	/* 1 sec */
-+#define SSTH_MAX_BUFFER_SIZE		(4 * PAGE_SIZE)
-+
-+enum ssth_cl_dma_wake_states {
-+	SSTH_CL_DMA_STATUS_NONE = 0,
-+	SSTH_CL_DMA_BUF_COMPLETE,
-+	SSTH_CL_DMA_ERR,	/* TODO: Expand the error states */
++enum ssth_segment_type {
++	ST_TEXT,
++	ST_RODATA,
++	ST_BSS
 +};
 +
-+struct ssth_lib;
-+struct ssth_cl_dev_ops {
-+	void (*cl_setup_bdle)(struct snd_dma_buffer *dmab_data,
-+			u32 **bdlp, u32 page_count);
-+	void (*cl_setup_controller)(struct ssth_lib *ctx,
-+			struct snd_dma_buffer *dmab_bdl,
-+			unsigned int max_size, u32 page_count);
-+	void (*cl_setup_spb)(struct ssth_lib  *ctx, unsigned int size);
-+	void (*cl_cleanup_spb)(struct ssth_lib  *ctx);
-+	void (*cl_trigger)(struct ssth_lib  *ctx, bool enable);
-+	void (*cl_cleaup_controller)(struct ssth_lib  *ctx);
-+	int (*cl_copy_to_bdl)(struct ssth_lib *ctx, const void *bin, u32 size);
++struct ssth_segment_desc {
++	struct ssth_segment_flags flags;
++	uint32_t v_base_addr;
++	uint32_t file_offset;
++} __packed;
++
++struct ssth_module_cfg {
++	uint32_t par[4];
++	uint32_t ip_pages;
++	uint32_t cps;
++	uint32_t ibs;
++	uint32_t obs;
++	uint32_t module_flags;
++	uint32_t cpc;
++	uint32_t obls;
++} __packed;
++
++enum ssth_module_type {
++	MT_BUILTIN,
++	MT_LOADABLE
 +};
 +
-+/* Code loader device */
-+struct ssth_cl_dev {
-+	/* TODO: Add for synchroinization mechanism */
-+	struct snd_dma_buffer dmab_data;
-+	struct snd_dma_buffer dmab_bdl;
++struct ssth_module_entry {
++	uint32_t struct_id;
++	uint8_t name[MODULE_NAME_DEFAULT_LENGTH];
++	uint32_t uuid[MODULE_UUID_DEFAULT_LENGTH];
++	enum ssth_module_type type;
++	uint8_t hash[SHA256_HASH_DEFAULT_LENGTH];
++	uint32_t entry_point;
++	uint16_t cfg_offset;
++	uint16_t cfg_count;
++	uint32_t affinity_mask;
++	uint16_t instance_max_count;
++	uint16_t instance_bss_size;
++	struct ssth_segment_desc segments[3];
++} __packed;
 +
-+	unsigned int bufsize;		/* Ring buffer size = period_count * period_size */
-+	unsigned int period_count;
-+	unsigned int period_size;
-+	u32 *curr_pos;			/* Current possition in the blob to transferred */
-+	unsigned int bytes_left;	/* Bytes left to be transferred */
-+	unsigned int curr_spib_pos;	/* Current position in ring buffer */
-+	bool cl_ops;
-+	struct ssth_cl_dev_ops ops;
++struct ssth_adsp_fw_binary_header {
++	uint32_t header_id;
++	uint32_t header_len;
++	uint8_t name[MODULE_NAME_DEFAULT_LENGTH];
++	uint32_t preload_page_count;
++	uint32_t fw_image_size;
++	uint32_t feature_mask;
++	uint16_t major_version;
++	uint16_t minor_version;
++	uint16_t hotfix_version;
++	uint16_t build_version;
++	uint32_t num_module_entries;
++	uint32_t hw_buf_base_addr;
++	uint32_t hw_buf_length;
++} __packed;
 +
-+	wait_queue_head_t wait_queue;
-+	int wake_status;
-+	bool wait_condition;
-+};
-diff --git a/include/sound/soc-hda-sst-dsp.h b/include/sound/soc-hda-sst-dsp.h
-index 3d8b0c065002..82ba1c9a68c4 100644
---- a/include/sound/soc-hda-sst-dsp.h
-+++ b/include/sound/soc-hda-sst-dsp.h
-@@ -19,6 +19,7 @@
- 
- #include <linux/spinlock.h>
- #include <sound/memalloc.h>
-+#include <sound/soc-hda-sst-cldma.h>
- 
- #define ssth_writel_andor(ctx, reg, mask_and, mask_or) \
- 	ssth_writel_traced( \
-@@ -101,6 +102,12 @@
- #define ADSPIC_IPC                      1
- #define ADSPIS_IPC			1
- 
-+#define ADSPIC_CL_DMA          0x2
-+#define ADSPIS_CL_DMA          0x2
-+#define CL_DMA_SD_INT_DESC_ERR		0x10	/* Descriptor error interrupt */
-+#define CL_DMA_SD_INT_FIFO_ERR		0x08	/* FIFO error interrupt */
-+#define CL_DMA_SD_INT_COMPLETE	0x04	/* Buffer completion interrupt */
++struct ssth_adsp_fw_binary_desc {
++	struct ssth_adsp_fw_binary_header header;
++	struct ssth_module_entry module_entries[1];
++	/* address of module_cfg depend on
++	 *  sizeof(struct ssth_module_entry) * header.num_module_entries
++	 */
++	struct ssth_module_cfg module_cfg[1];
++} __packed;
 +
- /* ADSPCS - Audio DSP Control & Status */
- #define DSP_CORES 1
- #define DSP_CORE0_MASK 1
-@@ -168,6 +175,8 @@ struct ssth_lib {
- 
- 	struct workqueue_struct *intr_wq;
- 	struct work_struct ipc_process_msg_work;
-+	struct ssth_cl_dev cl_dev;
-+	struct work_struct cl_dma_process_work;
- };
- 
- enum ssth_states {
-diff --git a/sound/soc/hda/intel/Makefile b/sound/soc/hda/intel/Makefile
-index 77c44428f40d..a31db94b2dde 100644
---- a/sound/soc/hda/intel/Makefile
-+++ b/sound/soc/hda/intel/Makefile
-@@ -1,5 +1,5 @@
- 
--snd-soc-hda-sst-dsp-objs := soc-hda-sst-ipc.o soc-hda-sst-dsp.o
-+snd-soc-hda-sst-dsp-objs := soc-hda-sst-ipc.o soc-hda-sst-dsp.o soc-hda-sst-cldma.o
- 
- # SST DSP Library
- obj-$(CONFIG_SND_SOC_HDA_SST_DSP) += snd-soc-hda-sst-dsp.o
-diff --git a/sound/soc/hda/intel/soc-hda-sst-cldma.c b/sound/soc/hda/intel/soc-hda-sst-cldma.c
++struct ssth_css_module_id {
++	uint32_t _res_ls_bits:31;
++	uint32_t debug_manifest:1;
++} __packed;
++
++struct ssth_css_header {
++	uint32_t module_type;
++	uint32_t header_len;
++	uint32_t header_version;
++	struct ssth_css_module_id module_id;
++	uint32_t module_vendor;
++	uint32_t date;
++	uint32_t size;
++	uint32_t key_size;
++	uint32_t modules_size;
++	uint32_t exponent_size;
++	uint32_t reserved[22];
++} __packed;
++
++struct ssth_manifest_rsa_keys {
++	uint8_t modules[RSA_KEY_DEFAULT_LENGTH];
++	uint8_t exponent[RSA_EXPONENT_DEFAULT_LENGTH];
++} __packed;
++
++struct ssth_manifest_crypto_block {
++	struct ssth_manifest_rsa_keys pub_key;
++	uint8_t signature[MODULE_SIGNATURE_DEFAULT_SIZE];
++} __packed;
++
++struct ssth_fw_image_manifest {
++	struct ssth_css_header header;
++	struct ssth_manifest_crypto_block crypto_block;
++	struct ssth_adsp_fw_binary_desc adsp_fw_bin_desc;
++} __packed;
++
++
++static inline void ssth_fw_structs_check_sizes(void)
++{
++	BUILD_BUG_ON(sizeof(struct ssth_segment_flags) != 4);
++	BUILD_BUG_ON(sizeof(struct ssth_segment_desc) != 12);
++	BUILD_BUG_ON(sizeof(struct ssth_module_cfg) != 44);
++	BUILD_BUG_ON(sizeof(struct ssth_module_entry) != 116);
++	BUILD_BUG_ON(sizeof(struct ssth_adsp_fw_binary_header) != 48);
++	BUILD_BUG_ON(sizeof(struct ssth_adsp_fw_binary_desc) != 208);
++	BUILD_BUG_ON(sizeof(struct ssth_css_module_id) != 4);
++	BUILD_BUG_ON(sizeof(struct ssth_css_header) != 128);
++	BUILD_BUG_ON(sizeof(struct ssth_manifest_rsa_keys) != 260);
++	BUILD_BUG_ON(sizeof(struct ssth_manifest_crypto_block) != 516);
++}
++
++#endif /* HDA_SST_FIRMWARE_H_ */
+diff --git a/sound/soc/hda/intel/soc-hda-sst-skl.c b/sound/soc/hda/intel/soc-hda-sst-skl.c
 new file mode 100644
-index 000000000000..0222ca9f6fdc
+index 000000000000..71add5891c93
 --- /dev/null
-+++ b/sound/soc/hda/intel/soc-hda-sst-cldma.c
-@@ -0,0 +1,297 @@
++++ b/sound/soc/hda/intel/soc-hda-sst-skl.c
+@@ -0,0 +1,292 @@
 +/*
-+ *  soc-hda-sst-cldma.c - Code Loader DMA handler
++ *  soc_hda_sst-skl.c - HDA DSP library functions for SKL platform
 + *
-+ *  Copyright (C) 2015 Intel Corp
-+ *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
++ *  Copyright (C) 2014-15 Intel Corp
++ *  Author:Rafal Redzimski <rafal.f.redzimski@intel.com>
++ *		 Jeeja KP <jeeja.kp@intel.com>
 + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
 + *  This program is free software; you can redistribute it and/or modify
@@ -353,280 +319,274 @@ index 000000000000..0222ca9f6fdc
 +
 +#include <linux/slab.h>
 +#include <linux/delay.h>
++#include <linux/firmware.h>
 +#include <linux/kernel.h>
 +#include <linux/device.h>
-+#include <linux/kthread.h>
-+#include <linux/irqreturn.h>
++#include <sound/soc-hda-sst-ipc.h>
 +#include <sound/soc-hda-sst-dsp.h>
++#include "soc-hda-sst-skl-fw.h"
 +
-+void ssth_cldma_int_enable(struct ssth_lib *ctx)
++#define SKL_FW_ROM_BASEFW_ENTERED_TIMEOUT		300
++#define SKL_ROM_INIT_DONE_TIMEOUT 1000
++#define SKL_FWLOAD_DONE_TIMEOUT 10000
++
++/* Intel HD Audio SRAM Windoww 0*/
++#define SKL_HDA_ADSP_SRAM0_BASE		0x8000
++
++/* Firmware status window */
++#define SKL_HDA_ADSP_REG_FW_STATUS	SKL_HDA_ADSP_SRAM0_BASE
++
++static int ssth_skl_load_base_firmware(struct ssth_lib *ctx);
++static int ssth_skl_set_dsp_D0(struct ssth_lib *ctx);
++static int ssth_skl_set_dsp_D3(struct ssth_lib *ctx);
++
++struct ssth_ops skl_ops = {
++	/*.parse_fw = ssth_skl_parse_fw_image,*/
++	.set_state_D0 = ssth_skl_set_dsp_D0,
++	.set_state_D3 = ssth_skl_set_dsp_D3,
++	.load_fw = ssth_skl_load_base_firmware,
++};
++
++#define INSTANCE_ID 0
++#define BASE_FW_MODULE_ID 0
++
++static int set_dsp_dx_state(struct ssth_ipc *ipc, struct ssth_dxstate_info *dx)
 +{
-+	ssth_updatel_bits(ctx, HDA_ADSP_REG_ADSPIC,
-+			ADSPIC_CL_DMA, 0x2);
-+}
-+void ssth_cldma_int_disable(struct ssth_lib *ctx)
-+{
-+	ssth_updatel_bits(ctx, HDA_ADSP_REG_ADSPIC,
-+			ADSPIC_CL_DMA, 0);
-+}
++	struct ssth_large_config_msg msg;
 +
-+/* Code loader helper APIs */
-+static void ssth_skl_cl_setup_bdle(struct snd_dma_buffer *dmab_data,
-+		u32 **bdlp, u32 count)
-+{
-+	u32 *bdl = *bdlp;
-+	int i = 0;
++	msg.module_id = BASE_FW_MODULE_ID;
++	msg.instance_id = INSTANCE_ID;
++	msg.large_param_id = 2;
++	msg.param_data_size = sizeof(*dx);
 +
-+	for (i = 0; i < count; i++) {
-+		phys_addr_t addr = virt_to_phys(dmab_data->area + i * PAGE_SIZE);
-+
-+		bdl[0] = cpu_to_le32(lower_32_bits(addr));
-+		bdl[1] = cpu_to_le32(upper_32_bits(addr));
-+		bdl[2] = cpu_to_le32(PAGE_SIZE);
-+		bdl[3] = 0;
-+		bdl += 4;
-+	}
-+}
-+
-+/* Setup controller*/
-+static void ssth_skl_cl_setup_controller(struct ssth_lib  *ctx,
-+		struct snd_dma_buffer *dmab_bdl, unsigned int max_size,
-+		u32 count)
-+{
-+	ssth_writel(ctx, CL_SD_BDLPL, CL_SD_BDLPLBA(dmab_bdl->addr));
-+	ssth_writel(ctx, CL_SD_BDLPU, CL_SD_BDLPUBA(dmab_bdl->addr));
-+
-+	ssth_writel(ctx, CL_SD_CBL, max_size);
-+	ssth_writel(ctx, CL_SD_LVI, count - 1);
-+	ssth_updatel(ctx, CL_SD_CTL, IOCE_MASK, CL_SD_CTL_IOCE(1));
-+	ssth_updatel(ctx, CL_SD_CTL, FEIE_MASK, CL_SD_CTL_FEIE(1));
-+	ssth_updatel(ctx, CL_SD_CTL, DEIE_MASK, CL_SD_CTL_DEIE(1));
-+	ssth_updatel(ctx, CL_SD_CTL, STRM_MASK,
-+					CL_SD_CTL_STRM(FW_CL_STREAM_NUMBER));
++	return ssth_ipc_set_large_config(ipc, &msg, (u32 *)dx);
 +}
 +
-+static void ssth_skl_setup_spb(struct ssth_lib  *ctx, unsigned int size)
++static int ssth_skl_set_dsp_D0(struct ssth_lib *ctx)
 +{
-+	ssth_updatel(ctx, CL_SPBFIFO_SPBFCCTL,
-+			SPIBE_MASK, CL_SPBFIFO_SPBFCCTL_SPIBE(1));
-+	ssth_writel(ctx, CL_SPBFIFO_SPIB, size);
-+}
++	int ret;
 +
-+static void ssth_skl_cleanup_spb(struct ssth_lib  *ctx)
-+{
-+	ssth_updatel(ctx, CL_SPBFIFO_SPBFCCTL,
-+			SPIBE_MASK,  CL_SPBFIFO_SPBFCCTL_SPIBE(0));
-+	ssth_writel(ctx, CL_SPBFIFO_SPIB, 0);
-+}
++	dev_dbg(ctx->dev, "In %s:\n", __func__);
 +
-+static void ssth_skl_cl_trigger(struct ssth_lib  *ctx, bool enable)
-+{
-+	if (enable)
-+		ssth_updatel(ctx, CL_SD_CTL, RUN_MASK, CL_SD_CTL_RUN(1));
-+	else
-+		ssth_updatel(ctx, CL_SD_CTL, RUN_MASK, CL_SD_CTL_RUN(0));
-+}
-+
-+static void ssth_skl_cl_cleaup(struct ssth_lib  *ctx)
-+{
-+	ssth_updatel(ctx, CL_SD_CTL, IOCE_MASK, CL_SD_CTL_IOCE(0));
-+	ssth_updatel(ctx, CL_SD_CTL, FEIE_MASK, CL_SD_CTL_FEIE(0));
-+	ssth_updatel(ctx, CL_SD_CTL, DEIE_MASK, CL_SD_CTL_DEIE(0));
-+	ssth_updatel(ctx, CL_SD_CTL, STRM_MASK, CL_SD_CTL_STRM(0));
-+
-+	ssth_writel(ctx, CL_SD_BDLPL, CL_SD_BDLPLBA(0));
-+	ssth_writel(ctx, CL_SD_BDLPU, 0);
-+
-+	ssth_writel(ctx, CL_SD_CBL, 0);
-+	ssth_writel(ctx, CL_SD_LVI, 0);
-+}
-+
-+int ssth_cl_dma_fill_buffer(struct ssth_lib *ctx, unsigned int size,
-+		bool wait, bool int_enable, int buf_pos_index,
-+		bool update_pos, bool trigger)
-+{
-+	unsigned int link_pos = 0;
-+
-+	memcpy((ctx->cl_dev.dmab_data.area + (buf_pos_index * ctx->cl_dev.period_size)),
-+			ctx->cl_dev.curr_pos, size);
-+
-+	if (update_pos) {
-+		ctx->cl_dev.bytes_left = ctx->cl_dev.bytes_left - size;
-+		ctx->cl_dev.curr_pos = ctx->cl_dev.curr_pos + size;
++	ret = ssth_skl_load_base_firmware(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "unable to load firmware\n");
++		return ret;
 +	}
 +
-+	if (wait) {
-+		ctx->cl_dev.wait_condition = false;
-+		ssth_cldma_int_enable(ctx);
++	/* FIXME: wait for sometime so that FW boots. Remove this once FW_BOOT
++	 * notification is implemented */
++	msleep(200);
++
++	ssth_dsp_set_state_locked(ctx, SST_DSP_RUNNING);
++	return ret;
++}
++
++static int ssth_skl_set_dsp_D3(struct ssth_lib *ctx)
++{
++	int ret;
++	struct ssth_dxstate_info dx;
++
++	dev_dbg(ctx->dev, "In %s:\n", __func__);
++	if (!ssth_dsp_is_running(ctx))
++		return 0;
++
++	dx.core_mask = DSP_CORE0_MASK;
++	dx.dx_mask = ADSP_IPC_D3_MASK;
++	ret = set_dsp_dx_state(ctx->ipc, &dx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to set DSP to D3 state\n");
++		return ret;
 +	}
 +
-+	ctx->cl_dev.ops.cl_setup_spb(ctx, ctx->cl_dev.curr_spib_pos);
-+	if (trigger)
-+		ctx->cl_dev.ops.cl_trigger(ctx, true);
-+
-+	if (wait) {
-+		if (wait_event_timeout(ctx->cl_dev.wait_queue,
-+				ctx->cl_dev.wait_condition,
-+				msecs_to_jiffies(SSTH_WAIT_TIMEOUT))) {
-+			dev_dbg(ctx->dev, "%s: Event wake\n", __func__);
-+			if (ctx->cl_dev.wake_status == SSTH_CL_DMA_BUF_COMPLETE) {
-+				ctx->cl_dev.wake_status = SSTH_CL_DMA_STATUS_NONE;
-+				return 0;
-+			} else {
-+				dev_err(ctx->dev, "%s: DMA Error\n", __func__);
-+				/* TODO: Handle DMA error scenario */
-+				return -EIO;
-+			}
-+		} else  {
-+			link_pos = ssth_readl(ctx, CL_SD_LPIB);
-+			dev_err(ctx->dev, "%s: Wait timeout with lpib status: %u\n",
-+					__func__, link_pos);
-+
-+			/* TODO: Handle wait timeout error scenario */
-+			return -EIO;
-+		}
++	ret = ssth_disable_dsp_core(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "disable dsp core failed ret: %d\n", ret);
++		ret = -EIO;
 +	}
++	ssth_dsp_set_state_locked(ctx, SST_DSP_RESET);
++	return ret;
++}
++
++static bool check_fw_status(struct ssth_lib *ctx, u32 status)
++{
++	u32 cur_sts;
++
++	cur_sts = ssth_readl_alt(ctx, SKL_HDA_ADSP_REG_FW_STATUS) & FW_STATUS_MASK;
++	return (cur_sts == status) ? true : false;
++}
++
++static int ssth_ctx_init(struct ssth_lib *ctx)
++{
++	/* TODO: Move common context initialization here */
++	ctx->intr_wq = create_singlethread_workqueue("sst_dsp_interrupt_wq");
++	if (!ctx->intr_wq)
++		return -EBUSY;
++
++	INIT_WORK(&ctx->ipc_process_msg_work, ssth_ipc_process_msg);
++	INIT_WORK(&ctx->cl_dma_process_work, ssth_process_cl_dma);
++	init_waitqueue_head(&ctx->cl_dev.wait_queue);
++
++	return 0;
++}
++int ssth_skl_init(struct device *dev, void __iomem *mmio_base, int irq,
++		struct ssth_dsp_loader_ops dsp_ops, struct ssth_lib **dsp)
++{
++	struct ssth_lib *ctx;
++	int ret = 0;
++
++	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
++	if (ctx == NULL)
++		return -ENOMEM;
++	ctx->mmio_base = mmio_base;
++	ctx->irq = irq;
++	ctx->dev = dev;
++
++	dev_dbg(dev, "mmio_base: 0x%p\n", ctx->mmio_base);
++	ctx->dsp_ops = dsp_ops;
++	ctx->window.w0stat = mmio_base + SKL_HDA_ADSP_SRAM0_BASE;
++	ctx->window.w0up = mmio_base + SKL_HDA_ADSP_SRAM0_BASE + WINDOW0_STAT_SIZE;
++	ctx->window.w1 = mmio_base + HDA_ADSP_SRAM1_BASE;
++	ctx->window.w0stat_size = WINDOW0_STAT_SIZE;
++	ctx->window.w0up_size = WINDOW0_UP_SIZE;
++	ctx->window.w1_size = WINDOW1_SIZE;
++
++	ctx->ops = skl_ops;
++
++	ret = ssth_dsp_init(ctx);
++	if (ret < 0)
++		return ret;
++
++
++	ret = ssth_ctx_init(ctx);
++	if (ret < 0)
++		return ret;
++
++	ctx->ipc->boot_complete = false;
++	ret = ssth_boot_dsp(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Boot dsp core failed ret: %d", ret);
++		return ret;
++	}
++
++	ssth_cl_dma_prepare(ctx);
++
++	ret = ctx->ops.load_fw(ctx);
++	if (ret < 0) {
++		dev_err(dev, "Load base fw failed : %x", ret);
++		return ret;
++	}
++
++	if (dsp)
++		*dsp = ctx;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ssth_skl_init);
++
++void ssth_skl_cleanup(struct device *dev, struct ssth_lib *ctx)
++{
++	ctx->cl_dev.ops.cl_cleaup_controller(ctx);
++}
++EXPORT_SYMBOL_GPL(ssth_skl_cleanup);
++
++static int ssth_skl_transfer_firmware(struct ssth_lib *ctx,
++		const void *basefw, u32 base_fw_size)
++{
++	int ret = 0;
++
++	if (!ctx->cl_dev.cl_ops) {
++		dev_err(ctx->dev, "No cl ops\n");
++		return -EIO;
++	}
++
++	ret = ctx->cl_dev.ops.cl_copy_to_bdl(ctx, basefw, base_fw_size);
++
++	if (ret)
++		return ret;
++
++	mdelay(1000);
++
++	ret = ssth_register_poll(ctx,
++			SKL_HDA_ADSP_REG_FW_STATUS,
++			FW_STATUS_MASK,
++			FW_ROM_BASEFW_ENTERED,
++			SKL_FW_ROM_BASEFW_ENTERED_TIMEOUT,
++			"Firmware boot");
++
 +	return 0;
 +}
 +
-+static int ssth_cl_copy_to_bdl(struct ssth_lib *ctx, const void *bin, u32 size)
++static int ssth_skl_load_base_firmware(struct ssth_lib *ctx)
 +{
-+	unsigned int link_pos = 0;
-+	unsigned int bdl_index = 0;
-+	int ret = 0;
++	int ret = 0, i;
++	const struct firmware *fw = NULL;
++	u32 fw_preload_page_count = 0;
++	u32 base_fw_size = 0;
++	struct ssth_fw_image_manifest *manifest;
++	u32 reg;
 +
-+	if (size <= 0)
-+		return -EINVAL;
-+
-+	ctx->cl_dev.bytes_left = size;
-+	ctx->cl_dev.curr_pos = (u32 *)bin;
-+	ctx->cl_dev.curr_spib_pos = 0;
-+
-+	if (ctx->cl_dev.bytes_left <= ctx->cl_dev.bufsize &&
-+			ctx->cl_dev.bytes_left > ctx->cl_dev.period_size) {
-+
-+		dev_dbg(ctx->dev, "%s: size less than buffer size: %u\n",
-+			       __func__, ctx->cl_dev.bytes_left);
-+		ssth_cldma_int_disable(ctx);
-+		ctx->cl_dev.curr_spib_pos = ctx->cl_dev.bytes_left;
-+		ssth_cl_dma_fill_buffer(ctx, size, false, false, 0, false, true);
-+		do {
-+			mdelay(5);
-+			link_pos = ssth_readl(ctx, CL_SD_LPIB);
-+		} while (link_pos < size);
-+		goto cleanup;
++	ret = request_firmware(&fw, "dsp_fw_release.bin", ctx->dev);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Request firmware failed %d\n", ret);
++		ssth_disable_dsp_core(ctx);
++		return -EIO;
 +	}
 +
-+	dev_dbg(ctx->dev, "%s: Total binary size: %u\n",
-+			       __func__, ctx->cl_dev.bytes_left);
-+	ctx->cl_dev.curr_spib_pos =
-+			ctx->cl_dev.curr_spib_pos + ctx->cl_dev.bufsize;
-+	dev_dbg(ctx->dev, "%s: spib pos: %u\n", __func__, ctx->cl_dev.curr_spib_pos);
-+	ret = ssth_cl_dma_fill_buffer(ctx, ctx->cl_dev.bufsize, true,
-+					true, 0, true, true);
-+	if (ret < 0)
-+		goto cleanup;
++	/*enable Interrupt */
++	ssth_ipc_int_enable(ctx);
++	ssth_ipc_op_int_enable(ctx);
 +
-+	do {
-+		if (ctx->cl_dev.bytes_left > ctx->cl_dev.period_size) {
-+			ctx->cl_dev.curr_spib_pos =
-+				ctx->cl_dev.curr_spib_pos + ctx->cl_dev.period_size;
-+			bdl_index = (ctx->cl_dev.curr_spib_pos / ctx->cl_dev.period_size) - 1;
-+			ret = ssth_cl_dma_fill_buffer(ctx, ctx->cl_dev.period_size, true,
-+					true, bdl_index, true, false);
-+			if (ret < 0)
-+				goto cleanup;
-+		} else {
-+			ctx->cl_dev.curr_spib_pos =
-+				ctx->cl_dev.curr_spib_pos + ctx->cl_dev.bufsize;
-+			bdl_index = ctx->cl_dev.curr_spib_pos / ctx->cl_dev.period_size;
-+			ssth_cl_dma_fill_buffer(ctx, ctx->cl_dev.bytes_left,
-+					false, false, bdl_index, false, false);
-+			do {
-+				mdelay(5);
-+				link_pos = ssth_readl(ctx, CL_SD_LPIB);
-+			} while (link_pos < size);
++	/*check ROM Status */
++	for (i = SKL_ROM_INIT_DONE_TIMEOUT; i > 0; --i) {
++		if (check_fw_status(ctx, FW_ROM_INIT_DONE)) {
++			dev_dbg(ctx->dev, "ROM loaded, we can continue with FW loading\n");
++			break;
 +		}
-+	} while (ctx->cl_dev.bytes_left > 0);
++		mdelay(1);
++	}
++	if (!i) {
++		reg = ssth_readl_alt(ctx, SKL_HDA_ADSP_REG_FW_STATUS);
++		dev_err(ctx->dev, "Timeout waiting for ROM init done, reg:0x%x\n", reg);
++		ret = -EIO;
++		goto sst_load_base_firmware_failed;
++	}
 +
-+cleanup:
-+	ctx->cl_dev.ops.cl_trigger(ctx, false);
-+	ctx->cl_dev.ops.cl_cleanup_spb(ctx);
++	manifest = (struct ssth_fw_image_manifest *)fw->data;
++	fw_preload_page_count =
++		manifest->adsp_fw_bin_desc.header.preload_page_count;
++	base_fw_size = fw_preload_page_count * PAGE_SIZE;
 +
-+	return ret;
-+}
-+void ssth_process_cl_dma(struct work_struct *work)
-+{
-+	u8 cl_dma_intr_status;
-+	struct ssth_lib *ctx = container_of(work,
-+			struct ssth_lib, cl_dma_process_work);
++	if (base_fw_size > fw->size) {
++		dev_err(ctx->dev, "Preloaded base fw size is bigger then whole fw image");
++		ret = -EIO;
++		goto sst_load_base_firmware_failed;
++	}
 +
-+	cl_dma_intr_status = ssth_readb(ctx, CL_SD_STS);
-+
-+	if (!(cl_dma_intr_status & CL_DMA_SD_INT_COMPLETE)) {
-+		/* TODO: Handle error scenarios */
++	ret = ssth_skl_transfer_firmware(ctx, fw->data,
++			base_fw_size);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Transfer firmware failed%d\n", ret);
++		goto sst_load_base_firmware_failed;
 +	} else {
-+		ctx->cl_dev.wake_status = SSTH_CL_DMA_BUF_COMPLETE;
-+		ctx->cl_dev.wait_condition = true;
-+		wake_up(&ctx->cl_dev.wait_queue);
++		dev_dbg(ctx->dev, "Download firmware successful%d\n", ret);
++		/*FIXME - remove once firmware implementation is done
++		ret = wait_event_timeout(ctx->ipc->boot_wait, ctx->ipc->boot_complete,
++						msecs_to_jiffies(IPC_BOOT_MSECS));
++		if (ret == 0) {
++			dev_err(ctx->dev, "DSP boot failed, FW Ready timed-out\n");
++			ret = -EIO;
++			goto sst_load_base_firmware_failed;
++		} */
++		ssth_dsp_set_state_locked(ctx, SST_DSP_RUNNING);
 +	}
-+}
++	release_firmware(fw);
++	return 0;
 +
-+int ssth_cl_dma_prepare(struct ssth_lib *ctx)
-+{
-+	int ret = 0;
-+	u32 *bdl;
-+
-+	ctx->cl_dev.period_size = PAGE_SIZE;
-+	ctx->cl_dev.bufsize = SSTH_MAX_BUFFER_SIZE;
-+
-+	ctx->cl_dev.period_count =
-+		(ctx->cl_dev.bufsize/ctx->cl_dev.period_size);
-+
-+	/* Make sure buffer size is mutliple of period size */
-+	if (ctx->cl_dev.bufsize % ctx->cl_dev.period_size) {
-+		dev_err(ctx->dev, "Buffer size is not mutltiple of Period size\n");
-+		return -EINVAL;
-+	}
-+	dev_dbg(ctx->dev, "%s: buffer size: %u\n", __func__, ctx->cl_dev.bufsize);
-+	dev_dbg(ctx->dev, "%s: period count: %u\n", __func__, ctx->cl_dev.period_count);
-+
-+	/* Allocate cl ops */
-+	ctx->cl_dev.cl_ops = true,
-+	ctx->cl_dev.ops.cl_setup_bdle = ssth_skl_cl_setup_bdle,
-+	ctx->cl_dev.ops.cl_setup_controller = ssth_skl_cl_setup_controller,
-+	ctx->cl_dev.ops.cl_setup_spb = ssth_skl_setup_spb,
-+	ctx->cl_dev.ops.cl_cleanup_spb = ssth_skl_cleanup_spb,
-+	ctx->cl_dev.ops.cl_trigger = ssth_skl_cl_trigger,
-+	ctx->cl_dev.ops.cl_cleaup_controller = ssth_skl_cl_cleaup,
-+	ctx->cl_dev.ops.cl_copy_to_bdl = ssth_cl_copy_to_bdl,
-+
-+	/* Allocate buffer*/
-+	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
-+			&ctx->cl_dev.dmab_data, ctx->cl_dev.bufsize);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Alloc buffer for base fw failed: %x", ret);
-+		return ret;
-+	}
-+	/* Setup CL DMA ring buffer */
-+	/* Allocate bdl */
-+	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
-+			&ctx->cl_dev.dmab_bdl, PAGE_SIZE);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Alloc buffer for blde failed: %x", ret);
-+		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
-+		return ret;
-+	}
-+	bdl = (u32 *)ctx->cl_dev.dmab_bdl.area;
-+
-+	/* Allocate BDLs */
-+	ctx->cl_dev.ops.cl_setup_bdle(&ctx->cl_dev.dmab_data,
-+			&bdl, ctx->cl_dev.period_count);
-+	ctx->cl_dev.ops.cl_setup_controller(ctx, &ctx->cl_dev.dmab_bdl,
-+			ctx->cl_dev.bufsize, ctx->cl_dev.period_count);
-+
++sst_load_base_firmware_failed:
++	ssth_disable_dsp_core(ctx);
++	release_firmware(fw);
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(ssth_cl_dma_prepare);
 -- 
 1.7.9.5
