@@ -1,119 +1,94 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND RFC PATCH 3/3] ASoC: mediatek: Add AFE platform driver
-Date: Sat, 18 Apr 2015 18:51:39 +0100
-Message-ID: <20150418175139.GG26185@sirena.org.uk>
-References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
- <1428653649-38200-4-git-send-email-koro.chen@mediatek.com>
+From: Kevin Cernekee <cernekee@chromium.org>
+Subject: Re: [PATCH 2/3] ASoC: tas571x: New driver for TI TAS571x power amplifiers
+Date: Sat, 18 Apr 2015 13:07:07 -0700
+Message-ID: <CAJzqFtZ97FjzDpgbSJbCkqNGnQx_QiGrzY1v1zV+croAL6_=qw@mail.gmail.com>
+References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
+ <1429134141-17924-2-git-send-email-cernekee@chromium.org> <20150418113632.GE26185@sirena.org.uk>
+ <CAJzqFtYVd+jHesoNnG47ftoK9SWYUmXwDXpf2==s3Rv1ewpsYg@mail.gmail.com> <20150418171137.GY26185@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lqtP4FxvQo6hb6bg"
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1428653649-38200-4-git-send-email-koro.chen@mediatek.com>
+In-Reply-To: <20150418171137.GY26185@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Koro Chen <koro.chen@mediatek.com>
-Cc: robh+dt@kernel.org, matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.de, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, galak@codeaurora.org, lgirdwood@gmail.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Apr 18, 2015 at 10:11 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Sat, Apr 18, 2015 at 09:16:36AM -0700, Kevin Cernekee wrote:
+>> On Sat, Apr 18, 2015 at 4:36 AM, Mark Brown <broonie@kernel.org> wrote:
+>
+>> >> +static int tas571x_set_sysclk(struct snd_soc_dai *dai,
+>> >> +                           int clk_id, unsigned int freq, int dir)
+>
+>> > Remove empty functions, at best they waste space at worst they break
+>> > things.
+>
+>> Without the empty function, we run into problems with drivers that
+>> abort when they get -ENOTSUPP here:
+>
+>> sound/soc/atmel/atmel_wm8904.c: ret =
+>> snd_soc_dai_set_sysclk(codec_dai, WM8904_CLK_FLL,
+>> sound/soc/atmel/atmel_wm8904.c-                 0, SND_SOC_CLOCK_IN);
+>> sound/soc/atmel/atmel_wm8904.c- if (ret < 0) {
+>> sound/soc/atmel/atmel_wm8904.c-         pr_err("%s -failed to set
+>> wm8904 SYSCLK\n", __func__);
+>> sound/soc/atmel/atmel_wm8904.c-         return ret;
+>> sound/soc/atmel/atmel_wm8904.c- }
+>
+> Someone trying to use the atmel_wm8904 driver with something other than
+> a wm8904 shouldn't really be expecting a good experince...
 
---lqtP4FxvQo6hb6bg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The same check shows up in numerous other drivers, including the one
+for the audio controller on my board.
 
-On Fri, Apr 10, 2015 at 04:14:09PM +0800, Koro Chen wrote:
+>> Is there a stub version that I can use instead?  Nothing jumped out at
+>> me when looking at the other codec drivers.
+>
+> No, such a stub would make no sense - why would we put a stub in all the
+> drivers rather than just making the core do the right thing?
 
-> +	if (memif->use_sram) {
-> +		struct snd_dma_buffer *dma_buf = &substream->dma_buffer;
-> +		int size = params_buffer_bytes(params);
-> +
-> +		memif->buffer_size = size;
-> +		memif->phys_buf_addr = afe->sram_phy_address;
-> +
-> +		dma_buf->bytes = size;
-> +		dma_buf->area = (unsigned char *)afe->sram_address;
-> +		dma_buf->addr = afe->sram_phy_address;
-> +		dma_buf->dev.type = SNDRV_DMA_TYPE_DEV;
-> +		dma_buf->dev.dev = substream->pcm->card->dev;
-> +		snd_pcm_set_runtime_buffer(substream, dma_buf);
-> +	} else {
-> +		ret = snd_pcm_lib_malloc_pages(substream,
-> +					       params_buffer_bytes(params));
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		memif->phys_buf_addr = substream->runtime->dma_addr;
-> +		memif->buffer_size = substream->runtime->dma_bytes;
-> +	}
+AFAICT, implementing the set_sysclk callback is mandatory, even if it
+is a no-op on the codec side.  If I delete the stub function, audio
+playback fails.
 
-Ah, so the SRAM is directly memory mappable.  Nice.  But we have a
-limited amount of it so need to allocate it to a device somehow based on
-some factor I guess?
+>> >> +             /*
+>> >> +              * The master volume defaults to 0x3ff (mute), but we ignore
+>> >> +              * (zero) the LSB because the hardware step size is 0.125 dB
+>> >> +              * and TLV_DB_SCALE_ITEM has a resolution of 0.01 dB.
+>> >> +              */
+>> >> +             if (regmap_write(priv->regmap, TAS571X_MVOL_REG, 0x3fe))
+>> >> +                     return -EIO;
+>
+>> > I don't understand this - is the LSB a mute bit or sommething?
+>
+>> The 10-bit master volume field on 5717/5719 works like:
+>
+>> 0x3ff: MUTE (power-on default)
+>> 0x3fe: -103.750 dB
+>> 0x3fd: -103.625 dB
+>> [lots more options, in 0.125 dB increments]
+>> 0x001: 23.875 dB
+>> 0x000: 24.000 dB
+>
+>> Since we only have a resolution of 0.01 dB, the driver forces the LSB
+>> to 0 and uses 0.25 dB increments instead of 0.125 dB.  Mute is handled
+>> through the dedicated per-channel soft mute register bits instead of
+>> the 0x3ff volume setting.
+>
+> It's not entirely clear to me why we need to reset the bit, or why if
+> we're just trying to update that one bit we write the entire register
+> value rather than use _update_bits().  If the goal is just to change
+> that one bit then _update_bits() would be a lot clearer.
 
-> +static int mtk_afe_set_adda_dac_out(struct mtk_afe *afe, uint32_t rate)
-> +{
-> +	u32 audio_i2s_dac = 0;
-> +	u32 con0, con1;
-> +
-> +	/* set dl src2 */
-> +	con0 = (mtk_afe_adda_fs(rate) << 28) | (0x03 << 24) | (0x03 << 11);
-> +
-> +	/* 8k or 16k voice mode */
-> +	if (con0 == 0 || con0 == 3)
-> +		con0 |= 0x01 << 5;
+The default master volume setting on the TAS5717/5719 is 0x3ff (bits
+9:0).  We only ever update bits 9:1 when the volume changes, because
+the driver is only able to work with 0.25 dB resolution rather than
+the hardware's native 0.125 dB resolution.  So this register write
+sets the master volume to an even number, which we know we can handle.
 
-This all looks a bit magic, some defines would not go amiss here.
+Clearing just the LSB would accomplish the same thing, but would be
+less obvious IMO.  It would also require an extra read, and the code
+is less concise.
 
-> +	/* SA suggests to apply -0.3db to audio/speech path */
-> +	con0 = con0 | (0x01 << 1);
-> +	con1 = 0xf74f0000;
-
-More magic numbers!  This also suggests that there is a volume control
-lurking in here which could usefully be exposed to applications?
-
-> +static void mtk_afe_pmic_shutdown(struct mtk_afe *afe,
-> +				  struct snd_pcm_substream *substream)
-> +{
-> +	/* output */
-> +	regmap_update_bits(afe->regmap, AFE_ADDA_DL_SRC2_CON0, 1, 0);
-> +	regmap_update_bits(afe->regmap, AFE_I2S_CON1, 1, 0);
-> +
-> +	/* input */
-> +	regmap_update_bits(afe->regmap, AFE_ADDA_UL_SRC_CON0, 1, 0);
-> +	/* disable ADDA */
-> +	regmap_update_bits(afe->regmap, AFE_ADDA_UL_DL_CON0, 1, false);
-> +}
-
-This is looking like exposing the routing and using DAPM might save a
-bunch of code?  Overall my main thought looking at the code here and
-what the hardware was described as doing is that it'd all be simpler if
-it were a DPCM based thing using DAPM for power.  I think I'd like to
-see a strong reason for not using at least DPCM.
-
-> +		if (rate == MTK_AFE_I2S_RATE_8K)
-> +			voice_mode = 0;
-> +		else if (rate == MTK_AFE_I2S_RATE_16K)
-> +			voice_mode = 1;
-> +		else if (rate == MTK_AFE_I2S_RATE_32K)
-> +			voice_mode = 2;
-> +		else if (rate == MTK_AFE_I2S_RATE_48K)
-> +			voice_mode = 3;
-
-This should be a switch statement.
-
---lqtP4FxvQo6hb6bg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVMpmqAAoJECTWi3JdVIfQxkMIAIOmwoRG6X4SxeJtWoZoEC8J
-e9A2G0l0MdxHVtikI7EvTm4OddGaSM4HkeaVpxkOXo+YiA4soQESsF7Z6wgMdeDd
-u3yJKnvC/4mn2fo2TDkA+ndhPbLw8MRdGfdlU8FFPNujwnDTHC0KTh/LNk9ucYqN
-RUnN1hnjF5jAzb5JuNaDQJt5WYpQs6Ay9RK9dGtV0GLm1GHtt1lRZZKtTVs3Y2u+
-et3NHiHJ/E0yi/kiOGWzFYwqvq0DbgIHIg7E7ZiijVSGbiE0KCYtSbL8j/KdPzp9
-rtXl4SJQmrJ51ZluXJRs2GLGcvALz/xygKjgn1wL6IceNPZN0tPfAUS++GZkPSE=
-=1W03
------END PGP SIGNATURE-----
-
---lqtP4FxvQo6hb6bg--
+Is there a better way to handle this situation?
