@@ -1,18 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Support for Synchronous Audio
-Date: Sat, 18 Apr 2015 12:36:00 +0200
-Message-ID: <55323390.9070407@ladisch.de>
-References: <1429258074046.61439@librewireless.com>,
- <5530CD6E.4080408@ladisch.de>
- <1429266530143.46159@librewireless.com>
+From: Angelo Compagnucci <angelo.compagnucci@gmail.com>
+Subject: Understanding Atmel SSC SND_SOC_DAIFMT_CBS_CFS mode
+Date: Sat, 18 Apr 2015 12:58:59 +0200
+Message-ID: <CA+TH9V=-YrtF8GoE2NQh1T+OMUm9uujDmV3aEGMdHSrxmAZiKQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 33E1B2615F7
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 12:36:30 +0200 (CEST)
-In-Reply-To: <1429266530143.46159@librewireless.com>
+Received: from mail-qk0-f178.google.com (mail-qk0-f178.google.com
+ [209.85.220.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B38E2615F7
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 12:59:40 +0200 (CEST)
+Received: by qku63 with SMTP id 63so167348682qku.3
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 03:59:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,24 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anoop Rajan <anoop@librewireless.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Anoop Rajan wrote:
-> As I told we support synchronous multiroom audio, where in one speaker
-> (master) streams the audio to others nodes(slave) over the network.
-> Master speaker  future timestamps the audio and re-transmits to all
-> other nodes based on a common reference clock maintained. Our stack
-> implements the logic to present the audio synchronously to ALSA
-> monitoring the stamped time.We are not using snd_pcm_link().
+Hi List,
 
-Well, snd_pcm_link() would work only on a single computer.
+I'm looking for a way to understand how to correctly configure the
+Atmel SSC dai on a SAMA5D3 to work in master mode with an I2S codec.
 
-> We use MT-7620 SOC from Mediatek.
+>From this comment:
 
-What sound hardware and driver are you using?
+ /*
+ * I2S format, SSC provides BCLK and LRC clocks.
+ *
+ * The SSC transmit and receive clocks are generated
+ * from the MCK divider, and the BCLK signal
+ * is output on the SSC TK line.
+ */
 
+My question is: should be MCK divider configured manually? If yes how?
 
-Regards,
-Clemens
+Actually I'm trying to poke around in atmel_ssc_dai and found a way to
+generate a stable bit clock, but frame clock is not working as
+expected.
+
+Have you any advice on how to set correctly SSC parameters to generate
+a stable bit clock and frame clock?
+
+Any advice?
+
+Thank you!
+
+-- 
+Profile: http://it.linkedin.com/in/compagnucciangelo
