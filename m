@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [RFC 5/7] ASOC: hda: add DSP platfrom controls widget
-	event handlers
-Date: Sun, 19 Apr 2015 02:27:31 +0530
-Message-ID: <1429390653-8194-6-git-send-email-vinod.koul@intel.com>
+Subject: [RFC 6/7] ASoC: hda: Add support for SSP register
+	settings
+Date: Sun, 19 Apr 2015 02:27:32 +0530
+Message-ID: <1429390653-8194-7-git-send-email-vinod.koul@intel.com>
 References: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 56EF4260881
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 23:02:53 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F8AE26522D
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 23:02:55 +0200 (CEST)
 In-Reply-To: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,47 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-This add widget event handlers for PRE/POST PMU event and PRE/POST PMD
-event. event handlers functions implement the FW sequence to enable path
-from source to sink.
+SSP registers needs to be updated for the SSP copier module. Add support to
+update the registers based on dai configuration.
 
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/hda/Makefile           |    3 +-
- sound/soc/hda/hda_dsp_controls.c |  702 ++++++++++++++++++++++++++++++++++++++
- sound/soc/hda/hda_skl.h          |   17 +
- sound/soc/hda/hda_soc_dsp.c      |    4 +-
- 4 files changed, 723 insertions(+), 3 deletions(-)
- create mode 100644 sound/soc/hda/hda_dsp_controls.c
+ sound/soc/hda/hda_dsp_ssp_config.c |  285 ++++++++++++++++++++++++
+ sound/soc/hda/hda_dsp_ssp_config.h |  423 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 708 insertions(+)
+ create mode 100644 sound/soc/hda/hda_dsp_ssp_config.c
+ create mode 100644 sound/soc/hda/hda_dsp_ssp_config.h
 
-diff --git a/sound/soc/hda/Makefile b/sound/soc/hda/Makefile
-index 2be667dc0724..668c831b196e 100644
---- a/sound/soc/hda/Makefile
-+++ b/sound/soc/hda/Makefile
-@@ -1,4 +1,5 @@
--snd-soc-hda-skl-objs := hda_skl.o hda_skl_pcm.o hda_soc_dsp.o
-+snd-soc-hda-skl-objs := hda_skl.o hda_skl_pcm.o hda_soc_dsp.o \
-+hda_dsp_controls.o
- 
- obj-$(CONFIG_SND_SOC_HDA_SKL) += snd-soc-hda-skl.o
- 
-diff --git a/sound/soc/hda/hda_dsp_controls.c b/sound/soc/hda/hda_dsp_controls.c
+diff --git a/sound/soc/hda/hda_dsp_ssp_config.c b/sound/soc/hda/hda_dsp_ssp_config.c
 new file mode 100644
-index 000000000000..ee53227fa751
+index 000000000000..8b79777fb8be
 --- /dev/null
-+++ b/sound/soc/hda/hda_dsp_controls.c
-@@ -0,0 +1,702 @@
++++ b/sound/soc/hda/hda_dsp_ssp_config.c
+@@ -0,0 +1,285 @@
 +/*
-+ *  hda_dsp_control.c -HD Audio Platform component ALSA controls
++ *  hda_dsp_ssp_config.c - HDA DSP SSP register configuration functionality
 + *
 + *  Copyright (C) 2015 Intel Corp
-+ *  Author: Jeeja KP <jeeja.kp@intel.com>
++ *  Author:  Hardik Shah <hardik.t.shah@intel.com>
++ *
 + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
 + *  This program is free software; you can redistribute it and/or modify
@@ -74,749 +63,702 @@ index 000000000000..ee53227fa751
 + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 + *  General Public License for more details.
 + *
-+ *
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
 + */
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc-hda-sst-dsp.h>
-+#include "hda_dsp_controls.h"
++#include "hda_dsp_ssp_config.h"
 +#include "hda_skl.h"
 +
-+static int is_hda_widget_type(struct snd_soc_dapm_widget *w)
++#define HDA_SSP_MAX_FREQ_192 19200000
++
++struct hda_ssp_regs {
++	u32 hda_ssc0;
++	u32 hda_ssc1;
++	u32 hda_ssto;
++	u32 hda_sspsp;
++	u32 hda_sstsa;
++	u32 hda_ssrsa;
++	u32 hda_ssc2;
++	u32 hda_sspsp2;
++	u32 hda_ssc3;
++	u32 hda_ssioc;
++};
++
++
++static void azx_set_default_ssp_regs_v1(struct hda_ssp_regs *regs)
 +{
-+	return ((w->id == snd_soc_dapm_dai_link) ||
-+		(w->id == snd_soc_dapm_dai_in) ||
-+		(w->id == snd_soc_dapm_aif_in) ||
-+		(w->id == snd_soc_dapm_aif_out) ||
-+		(w->id == snd_soc_dapm_dai_out)) ? 1 : 0;
++	regs->hda_ssc0 = 0;
++	regs->hda_ssc0 = (HDA_SSC0_FRF_DEF_V1 << HDA_SSC0_FRF_SHIFT) |
++			(HDA_SSC0_ECS_DEF_V1 << HDA_SSC0_ECS_SHIFT) |
++			(HDA_SSC0_SSE_DEF_V1 << HDA_SSC0_SSE_SHIFT) |
++			(HDA_SSC0_NCS_DEF_V1 << HDA_SSC0_NCS_SHIFT) |
++			(HDA_SSC0_RIM_DEF_V1 << HDA_SSC0_RIM_SHIFT) |
++			(HDA_SSC0_ACS_DEF_V1 << HDA_SSC0_ACS_SHIFT) |
++			(HDA_SSC0_MOD_DEF_V1 << HDA_SSC0_MOD_SHIFT);
++
++	regs->hda_ssc1 = 0;
++	regs->hda_ssc1 = (HDA_SSC1_RIE_DEF_V1 << HDA_SSC1_RIE_SHIFT) |
++			(HDA_SSC1_TIE_DEF_V1 << HDA_SSC1_TIE_SHIFT) |
++			(HDA_SSC1_LBM_DEF_V1 << HDA_SSC1_LBM_SHIFT) |
++			(HDA_SSC1_SPO_DEF_V1 << HDA_SSC1_SPO_SHIFT) |
++			(HDA_SSC1_SPH_DEF_V1 << HDA_SSC1_SPH_SHIFT) |
++			(HDA_SSC1_MWDS_DEF_V1 << HDA_SSC1_MWDS_SHIFT) |
++			(HDA_SSC1_EFWR_DEF_V1 << HDA_SSC1_EFWR_SHIFT) |
++			(HDA_SSC1_STRF_DEF_V1 << HDA_SSC1_STRF_SHIFT) |
++			(HDA_SSC1_IFS_DEF_V1 << HDA_SSC1_IFS_SHIFT) |
++			(HDA_SSC1_PINTE_DEF_V1 << HDA_SSC1_PINTE_SHIFT) |
++			(HDA_SSC1_TINTE_DEF_V1 << HDA_SSC1_TINTE_SHIFT) |
++			(HDA_SSC1_RSRE_DEF_V1 << HDA_SSC1_RSRE_SHIFT) |
++			(HDA_SSC1_TSRE_DEF_V1 << HDA_SSC1_TSRE_SHIFT) |
++			(HDA_SSC1_TRAIL_DEF_V1 << HDA_SSC1_TRAIL_SHIFT) |
++			(HDA_SSC1_RWOT_DEF_V1 << HDA_SSC1_RWOT_SHIFT) |
++			(HDA_SSC1_ECRB_DEF_V1 << HDA_SSC1_ECRB_SHIFT) |
++			(HDA_SSC1_ECRA_DEF_V1 << HDA_SSC1_ECRA_SHIFT) |
++			(HDA_SSC1_SCFR_DEF_V1 << HDA_SSC1_SCFR_SHIFT) |
++			(HDA_SSC1_EBCEI_DEF_V1 << HDA_SSC1_EBCEI_SHIFT) |
++			(HDA_SSC1_TTE_DEF_V1 << HDA_SSC1_TTE_SHIFT) |
++			(HDA_SSC1_TTELP_DEF_V1 << HDA_SSC1_TTELP_SHIFT);
++
++	regs->hda_ssto = 0;
++	regs->hda_ssto = HDA_SST0_TIMEOUT_DEF_V1 << HDA_SST0_TIMEOUT_SHIFT;
++
++	regs->hda_sspsp = 0;
++	regs->hda_sspsp = (HDA_SSPSP_ETDS_DEF_V1 << HDA_SSPSP_ETDS_SHIFT) |
++			(HDA_SSPSP_STRTDLY_DEF_V1 << HDA_SSPSP_STRTDLY_SHIFT) |
++			(HDA_SSPSP_DMYSTRT_DEF_V1 << HDA_SSPSP_DMYSTRT_SHIFT) |
++			(HDA_SSPSP_SFRMDLY_DEF_V1 << HDA_SSPSP_SFRMDLY_SHIFT) |
++			(HDA_SSPSP_DMYSTOP_DEF_V1 << HDA_SSPSP_DMYSTOP_SHIFT) |
++			(HDA_SSPSP_EDMYSTOP_DEF_V1 << HDA_SSPSP_EDMYSTOP_SHIFT);
++
++	regs->hda_sstsa = 0;
++	regs->hda_sstsa = (HDA_SSTSA_TXEN_DEF_V1 << HDA_SSTSA_TXEN_SHIFT) |
++			(HDA_SSTSA_TTSA_DEF_V1 << HDA_SSTSA_TTSA_SHIFT);
++
++	regs->hda_ssrsa = 0;
++	regs->hda_ssrsa = (HDA_SSRSA_RXEN_DEF_V1 << HDA_SSRSA_RXEN_SHIFT) |
++			(HDA_SSTSA_RTSA_DEF_V1 << HDA_SSRSA_RTSA_SHIFT);
++
++	regs->hda_ssc2 = 0;
++	regs->hda_ssc2 = (HDA_SSC2_TURM0_DEF_V1 << HDA_SSC2_TURM0_SHIFT) |
++		(HDA_SSC2_TURM1_DEF_V1 << HDA_SSC2_TURM1_SHIFT) |
++		(HDA_SSC2_PSPMB2BFMFD_DEF_V1 << HDA_SSC2_PSPMB2BFMFD_SHIFT) |
++		(HDA_SSC2_PSPSRWFDFD_DEF_V1 << HDA_SSC2_PSPSRWFDFD_SHIFT) |
++		(HDA_SSC2_PSPSTWFDFD_DEF_V1 << HDA_SSC2_PSPSTWFDFD_SHIFT) |
++		(HDA_SSC2_PSPMFSRTPFD_DEF_V1 << HDA_SSC2_PSPMFSRTPFD_SHIFT) |
++		(HDA_SSC2_ROFD_DEF_V1 << HDA_SSC2_ROFD_SHIFT) |
++		(HDA_SSC2_C2DFFD_DEF_V1 << HDA_SSC2_C2DFFD_SHIFT) |
++		(HDA_SSC2_TSAFD_DEF_V1 << HDA_SSC2_TSAFD_SHIFT) |
++		(HDA_SSC2_RSAFD_DEF_V1 << HDA_SSC2_RSAFD_SHIFT) |
++		(HDA_SSC2_RMFGFD_DEF_V1 << HDA_SSC2_RMFGFD_SHIFT) |
++		(HDA_SSC2_TURFD_DEF_V1 << HDA_SSC2_TURFD_SHIFT) |
++		(HDA_SSC2_TUDFD_DEF_V1 << HDA_SSC2_TUDFD_SHIFT) |
++		(HDA_SSC2_BCEFD_DEF_V1 << HDA_SSC2_BCEFD_SHIFT) |
++		(HDA_SSC2_SDFD_DEF_V1 << HDA_SSC2_SDFD_SHIFT) |
++		(HDA_SSC2_SDHFD_DEF_V1 << HDA_SSC2_SDHFD_SHIFT) |
++		(HDA_SSC2_SDPM_DEF_V1 << HDA_SSC2_SDPM_SHIFT) |
++		(HDA_SSC2_LJDFD_DEF_V1 << HDA_SSC2_LJDFD_SHIFT) |
++		(HDA_SSC2_MMRATF_DEF_V1 << HDA_SSC2_MMRATF_SHIFT) |
++		(HDA_SSC2_SMTATF_DEF_V1 << HDA_SSC2_SMTATF_SHIFT);
++
++	regs->hda_ssc3 = 0;
++	regs->hda_ssc3 = (HDA_SSC3_TFT_DEF_V1 << HDA_SSC3_TFT_SHIFT) |
++			(HDA_SSC3_RFT_DEF_V1 << HDA_SSC3_RFT_SHIFT);
++
++	regs->hda_ssioc = 0;
++	regs->hda_ssioc = (HDA_SSIOC_RXDPDEB_DEF_V1 << HDA_SSIOC_RXDPDEB_SHIFT) |
++		(HDA_SSIOC_TXDPDEB_DEF_V1 << HDA_SSIOC_TXDPDEB_SHIFT) |
++		(HDA_SSIOC_SFRMPDEB_DEF_V1 << HDA_SSIOC_SFRMPDEB_SHIFT) |
++		(HDA_SSIOC_SCLKPDEB_DEF_V1 << HDA_SSIOC_SCLKPDEB_SHIFT) |
++		(HDA_SSIOC_SFCR_DEF_V1 << HDA_SSIOC_SFCR_SHIFT) |
++		(HDA_SSIOC_SCOE_DEF_V1 << HDA_SSIOC_SCOE_SHIFT);
++
++	regs->hda_sspsp2 = 0;
 +
 +}
 +
-+static int hda_bind_unbind_intra_pipes(struct ssth_module_config *src_module,
-+	struct ssth_module_config *sink_module, struct ssth_lib *ctx,  bool bind)
++static void azx_print_ssp_regs(struct sst_dsp_ctx *ctx,
++						struct hda_ssp_regs *regs)
 +{
-+	int ret = 0;
++	dev_dbg(ctx->dev, "ssc0\t\t %x\n", regs->hda_ssc0);
++	dev_dbg(ctx->dev, "ssc1\t\t %x\n", regs->hda_ssc1);
++	dev_dbg(ctx->dev, "sst0\t\t %x\n", regs->hda_ssto);
++	dev_dbg(ctx->dev, "sspsp\t\t %x\n", regs->hda_sspsp);
++	dev_dbg(ctx->dev, "sstsa\t\t %x\n", regs->hda_sstsa);
++	dev_dbg(ctx->dev, "ssrsa\t\t %x\n", regs->hda_ssrsa);
++	dev_dbg(ctx->dev, "ssc2\t\t %x\n", regs->hda_ssc2);
++	dev_dbg(ctx->dev, "sspsp2\t\t %x\n", regs->hda_sspsp2);
++	dev_dbg(ctx->dev, "ssc3\t\t %x\n", regs->hda_ssc3);
++	dev_dbg(ctx->dev, "ssioc\t\t %x\n", regs->hda_ssioc);
++}
 +
-+	if (!bind) {
-+		ret = ssth_stop_pipe(ctx, src_module->pipe);
-+		if (ret < 0)
-+			return ret;
++static int azx_find_ssp_clk_divisor(struct sst_dsp_ctx *ctx, int fs,
++			int slots, int s_fmt, int *div, int *dummy_bits)
++{
++	int divisor, mod;
++	int found = 0;
++	int req_bclk;
++	int dummy = 0;
++
++	dev_dbg(ctx->dev, "fs = %d, slots = %d s_fmt = %d\n", fs, slots, s_fmt);
++	req_bclk = fs * slots * s_fmt;
++	if (req_bclk == 0) {
++		dev_err(ctx->dev, "Required bit clock = 0\n");
++		return -EINVAL;
 +	}
-+	return ssth_bind_unbind_modules(ctx, src_module, sink_module, bind);
-+}
-+
-+static int  hda_bind_unbind_pipe_src(struct snd_soc_dapm_widget *w,
-+	struct ssth_lib *ctx,  bool bind)
-+{
-+	struct ssth_module_config *sink_module = w->priv;
-+	struct ssth_module_config *src_module = NULL;
-+	struct snd_soc_dapm_path *p = NULL;
-+	struct ssth_pipe *sink_pipe  = sink_module->pipe;
-+	struct ssth_pipe *src_pipe  = NULL;
-+	int ret = 0;
-+
-+	list_for_each_entry(p, &w->sources, list_sink) {
-+		if (p->connected && !p->connected(w, p->source)
-+			&& (p->source->priv == NULL)
-+			&& (is_hda_widget_type(w)))
-+			continue;
-+		dev_dbg(ctx->dev, "%s: sink widget=%s\n", __func__, w->name);
-+		if (p->connect &&
-+			(p->source->priv != NULL) &&
-+			 (!is_hda_widget_type(p->source))) {
-+			src_module = p->source->priv;
-+			src_pipe = src_module->pipe;
-+			dev_dbg(ctx->dev, "src widget=%s\n", p->source->name);
-+			if (sink_pipe->ppl_id != src_pipe->ppl_id)
-+				return hda_bind_unbind_intra_pipes(src_module,
-+					 sink_module, ctx, bind);
++	if (req_bclk > HDA_SSP_MAX_FREQ_192) {
++		dev_err(ctx->dev, "Bit clock is %d, greater than max SSP freq\n", req_bclk);
++		return -EINVAL;
++	}
++	dummy = 0;
++	/* Find the lowest bit clock possible for particular configuration */
++	do {
++		req_bclk = ((s_fmt * fs * slots) + (fs * dummy));
++		mod = HDA_SSP_MAX_FREQ_192 % req_bclk;
++		divisor = HDA_SSP_MAX_FREQ_192 / req_bclk;
++		if (!mod) {
++			found = 1;
++			break;
 +		}
-+	}
-+	return ret;
-+}
-+
-+static int  hda_bind_unbind_pipe_sink(struct snd_soc_dapm_widget *w,
-+	struct ssth_lib *ctx,  bool bind)
-+{
-+	struct ssth_module_config *src_module = w->priv;
-+	struct ssth_module_config *sink_module = NULL;
-+	struct snd_soc_dapm_path *p = NULL;
-+	struct ssth_pipe *src_pipe  = src_module->pipe;
-+	struct ssth_pipe *sink_pipe  = NULL;
-+	int ret = 0;
-+
-+	list_for_each_entry(p, &w->sinks, list_source) {
-+		if (p->connected && !p->connected(w, p->sink)
-+			&& (p->sink->priv == NULL)
-+			&& (is_hda_widget_type(w)))
-+			continue;
-+
-+		dev_dbg(ctx->dev, "%s: src widget=%s\n", __func__, w->name);
-+		if (p->connect  &&
-+			(p->sink->priv != NULL) &&
-+			(!is_hda_widget_type(p->sink))) {
-+			sink_module = p->sink->priv;
-+			sink_pipe = sink_module->pipe;
-+			dev_dbg(ctx->dev, "sink widget=%s\n", p->sink->name);
-+			if (sink_pipe->ppl_id != src_pipe->ppl_id)
-+				return hda_bind_unbind_intra_pipes(src_module,
-+					 sink_module, ctx, bind);
-+		}
-+	}
-+	return ret;
-+}
-+
-+static int hda_sst_bind_unbind_pipes(struct snd_soc_dapm_widget *w,
-+	struct ssth_lib *ctx,  bool bind)
-+{
-+	struct ssth_module_config *sink_module = w->priv;
-+	int ret = 0;
-+
-+	dev_dbg(ctx->dev, "%s: widget = %s conn_type=%d\n", __func__, w->name,
-+				sink_module->hw_conn_type);
-+	ret = hda_bind_unbind_pipe_src(w, ctx, bind);
-+	if (ret < 0)
-+		return ret;
-+	return hda_bind_unbind_pipe_sink(w, ctx, bind);
-+}
-+
-+static bool hda_sst_is_pipe_mem_available(struct hda_platform_info *pinfo,
-+	struct ssth_lib *ctx, struct ssth_module_config *mconfig)
-+{
-+	dev_dbg(ctx->dev, "%s: module_id =%d instance=%d\n", __func__,
-+		 mconfig->id.module_id, mconfig->id.instance_id);
-+	pinfo->resource.mem += mconfig->pipe->memory_pages;
-+
-+	if (pinfo->resource.mem > pinfo->resource.max_mem) {
-+		dev_err(ctx->dev, "exceeds ppl memory available=%d > mem=%d\n",
-+				pinfo->resource.max_mem, pinfo->resource.mem);
-+		/* TODO - handle failure case
-+		 pinfo->resource.mem -= mconfig->pipe->memory_pages;
-+		return false;
-+		*/
-+	}
-+	return true;
-+}
-+
-+static bool hda_sst_is_pipe_mcps_available(struct hda_platform_info *pinfo,
-+	struct ssth_lib *ctx, struct ssth_module_config *mconfig)
-+{
-+	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
-+			mconfig->id.module_id, mconfig->id.instance_id);
-+	pinfo->resource.mcps += mconfig->mcps;
-+
-+	if (pinfo->resource.mcps > pinfo->resource.max_mcps) {
-+		dev_err(ctx->dev, "exceeds ppl memory available=%d > mem=%d\n",
-+				pinfo->resource.max_mcps, pinfo->resource.mcps);
-+		/*TODO - handle failure case
-+		pinfo->resource.mcps -= mconfig->mcps;
-+		return false
-+		*/
-+	}
-+	return true;
-+}
-+
-+static void hda_update_slot_map(struct ssth_lib *ctx,
-+					struct ssth_module_config *m_cfg)
-+{
-+	int slot_map = 0xFFFFFFFF;
-+	int num_slots = 0, i;
-+	int start_slot;
-+
-+	start_slot = m_cfg->formats_config.caps[(1 << (m_cfg->time_slot)) - 1];
-+	start_slot &= 0xF;
-+
-+	if (m_cfg->hw_conn_type == SSTH_CONN_SOURCE)
-+		num_slots = m_cfg->in_fmt.channels;
-+	else
-+		num_slots = m_cfg->out_fmt.channels;
-+
-+	for (i = 0; i < num_slots; i++) {
-+		/*
-+		 * For 2 channels with starting slot as 0, slot map will
-+		 * look like 0xFFFFFF10, for 4 channels with starting slot
-+		 * as 2, slot map will look like 0xFFFF5432
-+		 *
++		/* Dont add odd number of dummy bits, since I2S requires
++		 * dummy bit after each slot/channel
 +		 */
-+		slot_map &= (~(0xF << (4 * i)) | (start_slot << (4 * i)));
-+		start_slot++;
-+	}
-+	dev_dbg(ctx->dev, "slot_map = %x\n", slot_map);
-+	m_cfg->formats_config.caps[(1 << (m_cfg->time_slot)) - 1] = slot_map;
-+}
-+
-+static void hda_update_ch_config(struct ssth_module_config *m_cfg)
-+{
-+	struct ssth_module_format *in_fmt, *out_fmt;
-+
-+	in_fmt = &m_cfg->in_fmt;
-+	out_fmt = &m_cfg->out_fmt;
-+
-+	if (in_fmt->channels == 2) {
-+		in_fmt->channel_config =  SSTH_CHANNEL_CONFIG_STEREO;
-+		if (out_fmt->channels == 1)
-+			out_fmt->channel_config = SSTH_CHANNEL_CONFIG_MONO;
-+		if (out_fmt->channels == 2)
-+			out_fmt->channel_config = SSTH_CHANNEL_CONFIG_STEREO;
-+	} else if (in_fmt->channels == 1) {
-+		in_fmt->channel_config =  SSTH_CHANNEL_CONFIG_MONO;
-+			if (out_fmt->channels == 1)
-+				out_fmt->channel_config = SSTH_CHANNEL_CONFIG_MONO;
-+			if (out_fmt->channels == 2)
-+				out_fmt->channel_config = SSTH_CHANNEL_CONFIG_STEREO;
-+	}
-+
-+}
-+
-+static int hda_sst_get_pipe_widget(struct device *dev,
-+	struct snd_soc_dapm_widget *w, struct ssth_pipe *pipe)
-+{
-+	struct ssth_module_config *src_module = NULL;
-+	struct snd_soc_dapm_path *p = NULL;
-+	struct ssth_pipe_module *p_module = NULL;
-+
-+	dev_dbg(dev, "In%s widget=%s\n", __func__, w->name);
-+
-+	p_module = devm_kzalloc(dev, sizeof(*p_module), GFP_KERNEL);
-+	if (!p_module)
-+		return -ENOMEM;
-+
-+	p_module->w = w;
-+	list_add_tail(&p_module->node, &pipe->w_list);
-+
-+	list_for_each_entry(p, &w->sinks, list_source) {
-+		if ((p->sink->priv == NULL)
-+			&& (is_hda_widget_type(w)))
-+			continue;
-+
-+		if ((p->sink->priv != NULL) && (p->connect)
-+			&& (!is_hda_widget_type(p->sink))) {
-+			src_module = p->sink->priv;
-+			if (pipe->ppl_id == src_module->pipe->ppl_id) {
-+				dev_dbg(dev, "%s: found widget = %s\n", __func__, p->sink->name);
-+				hda_sst_get_pipe_widget(dev, p->sink, pipe);
-+			}
++		dummy += 2;
++		if (dummy > (HDA_SSPSP2_FEP_MASK >> HDA_SSPSP2_FEP_SHIFT)) {
++			dev_err(ctx->dev, "Dummy bit greater than what SSP can support\n");
++			return -EINVAL;
 +		}
-+	}
-+	return 0;
-+}
 +
-+static int hda_init_pipe_modules(struct ssth_lib *ctx,
-+	 struct ssth_pipe *pipe, struct hda_platform_info *pinfo)
++	} while (divisor > 0);
++	if (found) {
++		*div = divisor;
++		*dummy_bits = dummy;
++		return 0;
++	}
++	dev_err(ctx->dev, "Suitable divisor not found for SSP configuration\n");
++
++	return -EINVAL;
++}
++int azx_calculate_ssp_regs(struct sst_dsp_ctx *ctx, struct azx_dai_config *cfg,
++						void *ssp_regs)
 +{
-+	struct ssth_pipe_module *w_module = NULL;
-+	struct snd_soc_dapm_widget *w = NULL;
-+	struct ssth_module_config *mconfig = NULL;
++	struct hda_ssp_regs regs;
 +	int ret = 0;
++	int div, dummy;
++	int dss, edss;
++	int edmystop, dmystop;
++	struct azx_ssp_dai_config *ssp_cfg = &cfg->ssp_dai_config;
 +
-+	dev_dbg(ctx->dev, "%s: pipe=%d\n", __func__, pipe->ppl_id);
-+	list_for_each_entry(w_module, &pipe->w_list, node) {
-+		w = w_module->w;
-+		dev_dbg(ctx->dev, "Pipe Module =%s\n", w->name);
-+		mconfig = w->priv;
-+		/*TODO if loadable module, mconfig->is_loadable, load module */
++	azx_set_default_ssp_regs_v1(&regs);
++	dev_dbg(ctx->dev, "Default value of registers set to:\n");
++	azx_print_ssp_regs(ctx, &regs);
 +
-+		ret = ssth_init_module(ctx, mconfig, NULL);
-+		if (ret < 0)
-+			return ret;
++	if (ssp_cfg->fs_slave)
++		regs.hda_ssc1 |= HDA_SSC1_SFRMDIR_MASK;
++	if (ssp_cfg->bclk_slave)
++		regs.hda_ssc1 |= HDA_SSC1_SCLKDIR_MASK;
++	if (!ssp_cfg->fs_invert)
++		regs.hda_sspsp |= ((0x1 << HDA_SSPSP_SFRMP_SHIFT) &
++				HDA_SSPSP_SFRMP_MASK);
++	if (ssp_cfg->bclk_invert)
++		regs.hda_sspsp |= ((0x1 << HDA_SSPSP_SCMODE_SHIFT) &
++				HDA_SSPSP_SCMODE_MASK);
++
++	if (ssp_cfg->ssp_mode == HDA_SSP_MODE_I2S)
++		/* I2S mode, means 2 slots */
++		ssp_cfg->slots = 2;
++
++	ret = azx_find_ssp_clk_divisor(ctx, cfg->sampling_rate, ssp_cfg->slots,
++					cfg->s_fmt, &div, &dummy);
++	if (ret) {
++		dev_err(ctx->dev, "Clock disior not possible\n");
++		return -EINVAL;
 +	}
-+	return 0;
-+}
++	/* Program dividier */
++	regs.hda_ssc0 |= ((div - 1) << HDA_SSC0_SRC_SHIFT) & HDA_SSC0_SCR_MASK;
 +
-+static int hda_bind_unbind_pipe_modules(struct ssth_lib *ctx,
-+	 struct ssth_pipe *pipe, bool bind)
-+{
-+	struct ssth_pipe_module *w_module = NULL;
-+	struct ssth_module_config *src_module = NULL;
-+	struct ssth_module_config *dst_module = NULL;
-+	int ret = 0;
 +
-+	dev_dbg(ctx->dev, "%s: pipe=%d\n", __func__, pipe->ppl_id);
-+	list_for_each_entry(w_module, &pipe->w_list, node) {
-+		dst_module  = w_module->w->priv;
-+
-+		if (src_module == NULL) {
-+			src_module = dst_module;
-+			continue;
-+		}
-+
-+		ret = ssth_bind_unbind_modules(ctx, src_module, dst_module, bind);
-+		if (ret < 0)
-+			return ret;
-+		src_module = dst_module;
-+	}
-+	return 0;
-+}
-+
-+static int hda_unload_pipe_modules(struct ssth_lib *ctx,
-+	 struct ssth_pipe *pipe)
-+{
-+	struct ssth_pipe_module *w_module = NULL;
-+	struct ssth_module_config *mconfig = NULL;
-+
-+	dev_dbg(ctx->dev, "%s: pipe=%d\n", __func__, pipe->ppl_id);
-+	list_for_each_entry(w_module, &pipe->w_list, node) {
-+		mconfig  = w_module->w->priv;
-+		/*TODO mconfig->is_loadable = 1 , unload module */
-+	}
-+	return 0;
-+}
-+
-+static int hda_sst_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
-+	int w_type, struct ssth_lib *ctx, struct hda_platform_info *pinfo)
-+{
-+	int ret = 0;
-+	struct ssth_module_config *mconfig = w->priv;
-+	struct ssth_pipe *s_pipe = mconfig->pipe;
-+
-+	dev_dbg(ctx->dev, "%s: widget =%s type=%d\n", __func__, w->name, w_type);
-+
-+	/*check resource available */
-+	if (!hda_sst_is_pipe_mcps_available(pinfo, ctx, mconfig))
-+		return -1;
-+
-+	if (w_type == SSTH_WIDGET_VMIXER ||
-+		w_type == SSTH_WIDGET_MIXER) {
-+
-+		if (!hda_sst_is_pipe_mem_available(pinfo, ctx, mconfig))
-+			return -ENOMEM;
-+
-+		ret = ssth_create_pipeline(ctx, mconfig->pipe);
-+		if (ret < 0)
-+			return ret;
-+		if (list_empty(&s_pipe->w_list)) {
-+			ret = hda_sst_get_pipe_widget(ctx->dev, w, s_pipe);
-+			if (ret < 0)
-+				return ret;
-+		}
-+		ret = hda_init_pipe_modules(ctx, s_pipe, pinfo);
-+		if (ret < 0)
-+			return ret;
-+		return hda_bind_unbind_pipe_modules(ctx, s_pipe, true);
-+	}
-+	return 0;
-+}
-+
-+static int hda_sst_dapm_post_pmu_event(struct snd_soc_dapm_widget *w,
-+	int w_type, struct ssth_lib *ctx, struct hda_platform_info *pinfo)
-+{
-+	struct ssth_module_config *mconfig = w->priv;
-+	struct ssth_pipeline *ppl, *__ppl;
-+	int ret = 0;
-+
-+	dev_dbg(ctx->dev, "%s: widget = %s\n", __func__, w->name);
-+
-+	ret =  hda_sst_bind_unbind_pipes(w, ctx, true);
-+	if (ret < 0)
-+		return ret;
-+	if (w_type == SSTH_WIDGET_VMIXER ||
-+		w_type == SSTH_WIDGET_MIXER) {
-+		if (mconfig->pipe->conn_type != SSTH_PIPE_CONN_TYPE_FE) {
-+			/*if module is not a FE then add to ppl_start list,
-+			to send the run pipe when be is reached */
-+			ppl = kzalloc(sizeof(*ppl), GFP_KERNEL);
-+			if (!ppl)
-+				return -ENOMEM;
-+			ppl->pipe = mconfig->pipe;
-+			list_add(&ppl->node, &pinfo->ppl_start_list);
-+		}
++	if (ssp_cfg->slot_width != cfg->s_fmt) {
++		dev_err(ctx->dev, "slot_width must be equal to format bits\n");
++		return -EINVAL;
 +	}
 +
-+	if (w_type == SSTH_WIDGET_PGA) {
-+		list_for_each_entry_safe(ppl, __ppl, &pinfo->ppl_start_list, node) {
-+			list_del(&ppl->node);
-+
-+			dev_dbg(ctx->dev, "%s: set to run pipe_id =%d\n", __func__, ppl->pipe->ppl_id);
-+			ret = ssth_run_pipe(ctx, ppl->pipe);
-+			kfree(ppl);
-+			if (ret < 0)
-+				return ret;
-+		}
-+	}
-+	return ret;
-+}
-+
-+static int hda_sst_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
-+	int w_type, struct ssth_lib *ctx, struct hda_platform_info *pinfo)
-+{
-+	struct ssth_module_config *mconfig = w->priv;
-+	int ret = 0;
-+
-+	dev_dbg(ctx->dev, "%s: widget = %s\n", __func__, w->name);
-+
-+	if (w_type == SSTH_WIDGET_PGA) {
-+		if (mconfig->pipe->conn_type != SSTH_PIPE_CONN_TYPE_FE) {
-+			ret = ssth_stop_pipe(ctx, mconfig->pipe);
-+			if (ret < 0)
-+				return ret;
-+		}
-+	}
-+	return ret;
-+}
-+
-+static int hda_sst_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
-+	int w_type, struct ssth_lib *ctx, struct hda_platform_info *pinfo)
-+{
-+	struct ssth_module_config *mconfig = w->priv;
-+	int ret = 0;
-+	struct ssth_pipe *s_pipe = mconfig->pipe;
-+
-+	dev_dbg(ctx->dev, "%s: widget = %s\n", __func__, w->name);
-+
-+	pinfo->resource.mcps -= mconfig->mcps;
-+
-+	if (w_type == SSTH_WIDGET_VMIXER ||
-+		w_type == SSTH_WIDGET_MIXER) {
-+
-+		ret = hda_bind_unbind_pipe_modules(ctx, s_pipe, false);
-+		if (ret < 0)
-+			return ret;
-+		ret = hda_unload_pipe_modules(ctx, s_pipe);
-+		if (ret < 0)
-+			return ret;
-+		ret = ssth_delete_pipe(ctx, mconfig->pipe);
-+		pinfo->resource.mem -= mconfig->pipe->memory_pages;
-+	}
-+
-+	return ret;
-+}
-+
-+static int hda_sst_event_handler(struct snd_soc_dapm_widget *w,
-+				int event, int w_type)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct hda_soc_bus *hda = dev_get_drvdata(dapm->dev);
-+	struct hda_platform_info *pinfo = hda->pinfo;
-+	struct ssth_lib *ctx = hda->dsp;
-+
-+	dev_dbg(dapm->dev, "%s: widget = %s\n", __func__, w->name);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return hda_sst_dapm_pre_pmu_event(w, w_type, ctx, pinfo);
-+	break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		return hda_sst_dapm_post_pmu_event(w, w_type, ctx, pinfo);
-+	break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		return hda_sst_dapm_pre_pmd_event(w, w_type, ctx, pinfo);
-+	break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		return hda_sst_dapm_post_pmd_event(w, w_type, ctx, pinfo);
-+	break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hda_sst_vmixer_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+
-+	dev_dbg(dapm->dev, "%s: widget = %s\n", __func__, w->name);
-+	return hda_sst_event_handler(w, event, SSTH_WIDGET_VMIXER);
-+}
-+
-+static int hda_sst_mixer_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+
-+	dev_dbg(dapm->dev, "%s: widget = %s\n", __func__, w->name);
-+
-+	return hda_sst_event_handler(w, event, SSTH_WIDGET_MIXER);
-+}
-+
-+static int hda_sst_mux_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+
-+	dev_dbg(dapm->dev, "%s: widget = %s\n", __func__, w->name);
-+
-+	return hda_sst_event_handler(w, event, SSTH_WIDGET_MUX);
-+}
-+
-+static int hda_sst_pga_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *k, int event)
-+
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+
-+	dev_dbg(dapm->dev, "%s: widget = %s\n", __func__, w->name);
-+	return hda_sst_event_handler(w, event, SSTH_WIDGET_PGA);
-+}
-+
-+static struct ssth_module_config *hda_sst_get_module_by_dir(
-+	struct snd_soc_dapm_widget *w, int dir, char *m_type)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_dapm_widget *w1 = NULL;
-+	struct snd_soc_dapm_path *p = NULL;
-+	struct ssth_module_config *mconfig = NULL;
-+
-+	/* get the source modules  dir = 0 source module, dir = 1 sink modules*/
-+	if (dir == 0) {
-+		dev_dbg(dapm->dev, "Stream name=%s\n", w->name);
-+		if (list_empty(&w->sources))
-+			return mconfig;
-+
-+		list_for_each_entry(p, &w->sources, list_sink) {
-+			if (p->connected && !p->connected(w, p->source) &&
-+				!is_hda_widget_type(p->source) &&
-+				(strstr(p->source->name, m_type) == NULL))
-+				continue;
-+
-+			if (p->connect && p->source->priv) {
-+				dev_dbg(dapm->dev, "module widget=%s\n", p->source->name);
-+				return p->source->priv;
-+			}
-+			w1 = p->source;
-+		}
++	if (cfg->s_fmt > 16) {
++		edss = 1;
++		dss = cfg->s_fmt - 16;
 +	} else {
-+		dev_dbg(dapm->dev, "Stream name=%s\n", w->name);
-+		if (list_empty(&w->sinks))
-+			return mconfig;
-+
-+		list_for_each_entry(p, &w->sinks, list_source) {
-+			if (p->connected && !p->connected(w, p->sink) &&
-+				!is_hda_widget_type(p->sink) &&
-+				(strstr(p->sink->name, m_type) == NULL))
-+				continue;
-+
-+			if (p->connect && p->sink->priv) {
-+				dev_dbg(dapm->dev, "module widget=%s\n", p->sink->name);
-+				return p->sink->priv;
-+			}
-+			w1 = p->sink;
-+		}
++		edss = 0;
++		dss = cfg->s_fmt;
 +	}
-+	if (w1 != NULL)
-+		mconfig = hda_sst_get_module_by_dir(w1, dir, m_type);
-+	return mconfig;
-+}
++	dss -= 1;
++	regs.hda_ssc0 |= ((dss << HDA_SSC0_DSS_SHIFT) & HDA_SSC0_DSS_MASK);
++	regs.hda_ssc0 |= ((edss << HDA_SSC0_EDSS_SHIFT) & HDA_SSC0_EDSS_MASK);
 +
-+static struct ssth_module_config *hda_sst_get_module(struct snd_soc_dai *dai,
-+	int stream, bool is_fe, char *m_type)
-+{
-+	struct snd_soc_dapm_widget *w;
-+	int dir = 0;
-+
-+	dev_dbg(dai->dev, "%s: enter, dai-name=%s dir=%d\n", __func__, dai->name, stream);
-+
-+	/* if FE - Playback, then parse sink list , Capture then source list
-+	if BE - Playback, then parse source list , Capture then sink list
-+	*/
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		w = dai->playback_widget;
-+		(is_fe) ? (dir = 1) : (dir = 0);
-+	} else {
-+		w = dai->capture_widget;
-+		(is_fe) ? (dir = 0) : (dir = 1);
-+	}
-+	return hda_sst_get_module_by_dir(w, dir, m_type);
-+}
-+
-+static void hda_set_module_params(struct ssth_module_config *mconfig,
-+	struct snd_pcm_hw_params *params, bool is_in_fmt)
-+{
-+	struct ssth_module_format *format = NULL;
-+
-+	if (is_in_fmt)
-+		format = &mconfig->in_fmt;
-+	else
-+		format = &mconfig->out_fmt;
-+	/*set the hw_params */
-+	format->sampling_freq = params_rate(params);
-+	format->channels = params_channels(params);
-+	format->valid_bit_depth = ssth_get_bit_depth(params);
-+	if (format->valid_bit_depth == SSTH_DEPTH_16BIT)
-+		format->bit_depth = format->valid_bit_depth;
-+	else if (format->valid_bit_depth == SSTH_DEPTH_24BIT)
-+		format->bit_depth = SSTH_DEPTH_32BIT;
-+	if (is_in_fmt) {
-+		mconfig->ibs = (format->sampling_freq / 1000) *
-+				(format->channels) *
-+				(format->bit_depth >> 3);
-+	} else {
-+		mconfig->obs = (format->sampling_freq / 1000) *
-+				(format->channels) *
-+				(format->bit_depth >> 3);
-+	}
-+}
-+
-+void hda_sst_set_copier_hw_params(struct snd_soc_dai *dai,
-+	struct snd_pcm_hw_params *params, int stream, bool is_fe)
-+{
-+	struct ssth_module_config *mconfig = NULL;
-+	bool in_fmt;
-+
-+	dev_dbg(dai->dev,
-+		"%s: enter, dai-name=%s dir=%d\n", __func__, dai->name, stream);
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		in_fmt = true;
-+	else
-+		in_fmt = false;
-+	mconfig = hda_sst_get_module(dai, stream, is_fe, "cpr");
-+	if (mconfig != NULL)
-+		hda_set_module_params(mconfig, params, in_fmt);
-+}
-+
-+void hda_sst_set_copier_dma_id(struct snd_soc_dai *dai, int dma_id, int stream,
-+		bool is_fe)
-+{
-+	struct ssth_module_config *mconfig = NULL;
-+
-+	dev_dbg(dai->dev,
-+		 "%s: enter, dai-name=%s dir=%d\n", __func__,
-+		dai->name, stream);
-+	mconfig = hda_sst_get_module(dai, stream, is_fe, "cpr");
-+	if (mconfig != NULL)
-+		mconfig->dma_id = dma_id;
-+	return;
-+}
-+
-+/*set BE copier I2s,DMIC, SLIMBUS config*/
-+void hda_sst_set_be_copier_caps(struct snd_soc_dai *dai,
-+	struct ssth_specific_config *configs, int stream)
-+{
-+	struct ssth_module_config *mconfig = NULL;
-+
-+	dev_dbg(dai->dev, "%s: enter, dai-name=%s\n", __func__, dai->name);
-+	mconfig = hda_sst_get_module(dai, stream, false, "cpr");
-+	if (mconfig != NULL && configs->caps_size != 0) {
-+		memcpy(mconfig->formats_config.caps,
-+		configs->caps,
-+		configs->caps_size);
-+
-+		mconfig->formats_config.caps_size = configs->caps_size;
-+	}
-+}
-+
-+void hda_sst_set_be_dmic_config(struct snd_soc_dai *dai,
-+	struct snd_pcm_hw_params *params, int stream)
-+{
-+	struct ssth_module_config *mconfig = NULL;
-+	u32 outctrl;
-+
-+	dev_dbg(dai->dev, "%s: enter, dai-name=%s\n", __func__, dai->name);
-+	mconfig = hda_sst_get_module(dai, stream, false, "cpr");
-+	if (mconfig != NULL && mconfig->formats_config.caps_size != 0) {
-+		/*FIXME need to fix based on the FW dmic interface struct.
-+		the parameter to set here should to set the DMIC mode.
-+		currenltly using timeslot
-+		*/
-+		if (strncmp(dai->name, "DMIC23 Pin", strlen(dai->name)) == 0) {
-+			mconfig->time_slot = 1;
-+			outctrl = mconfig->formats_config.caps[3];
-+		} else
-+			outctrl = mconfig->formats_config.caps[2];
-+
-+		if (ssth_get_bit_depth(params)  == SSTH_DEPTH_16BIT)
-+			outctrl &= ~BIT(19);
-+		else if (ssth_get_bit_depth(params) == SSTH_DEPTH_24BIT)
-+			outctrl |= BIT(19);
-+		if (strncmp(dai->name, "DMIC23 Pin", strlen(dai->name)) == 0)
-+			mconfig->formats_config.caps[3] = outctrl;
++	if (ssp_cfg->ssp_mode != HDA_SSP_MODE_I2S) {
++		regs.hda_sspsp2 |= (dummy << HDA_SSPSP2_FEP_SHIFT) &
++							HDA_SSPSP2_FEP_MASK;
++		regs.hda_sspsp |= (0x1 << HDA_SSPSP_SFRMWDTH_SHIFT) &
++					HDA_SSPSP_SFRMWDTH_MASK;
++		if (ssp_cfg->ssp_mode == HDA_SSP_MODE_DSP_A)
++			regs.hda_sspsp |= (0x1 << HDA_SSPSP_FSRT_SHIFT) &
++					HDA_SSPSP_FSRT_MASK;
 +		else
-+			mconfig->formats_config.caps[2] = outctrl;
-+		dev_dbg(dai->dev, "%s: outctrl =%x\n", __func__, outctrl);
-+		hda_set_module_params(mconfig, params, true);
-+
-+		/*FIXME need to fix based on the FW dmic interface struct.
-+		the parameter to set here should to set the DMIC mode.
-+		currenltly using timeslot
-+		*/
-+		if (strncmp(dai->name, "DMIC23 Pin", strlen(dai->name)) == 0)
-+			mconfig->time_slot = 1;
-+
++			regs.hda_sspsp &= ~(HDA_SSPSP_FSRT_MASK);
++	} else {
++		/* Divide dummy bits / 2 */
++		regs.hda_sspsp |= (0x1 << HDA_SSPSP_FSRT_SHIFT) &
++				HDA_SSPSP_FSRT_MASK;
++		dummy = dummy >> 1;
++		dmystop = dummy & 0x3;
++		edmystop = (dummy >> 2);
++		regs.hda_sspsp |= (dmystop << HDA_SSPSP_DMYSTOP_SHIFT) &
++							HDA_SSPSP_DMYSTOP_MASK;
++		regs.hda_sspsp |= (edmystop << HDA_SSPSP_EDMYSTOP_SHIFT) &
++						HDA_SSPSP_EDMYSTOP_MASK;
++		regs.hda_sspsp |= ((cfg->s_fmt + dummy) << HDA_SSPSP_SFRMWDTH_SHIFT) &
++							HDA_SSPSP_SFRMWDTH_MASK;
++		ssp_cfg->slots = 2;
 +	}
-+}
-+
-+int hda_sst_set_fe_pipeline_state(struct snd_soc_dai *dai, bool start,
-+		 int stream)
-+{
-+	struct hda_soc_bus *hda = dev_get_drvdata(dai->dev);
-+	struct ssth_lib *ctx = hda->dsp;
-+
-+	struct ssth_module_config *mconfig = NULL;
-+	int ret = 0;
-+
-+	dev_dbg(dai->dev, "%s: enter, dai-name=%s dir=%d\n", __func__,
-+		 dai->name, stream);
-+	mconfig = hda_sst_get_module(dai, stream, true, "cpr");
-+	if (mconfig != NULL) {
-+		if (start)
-+			ret = ssth_run_pipe(ctx, mconfig->pipe);
-+		else
-+			ret = ssth_stop_pipe(ctx, mconfig->pipe);
++	if (ssp_cfg->slots > HDA_SSP_MAX_SLOTS) {
++		dev_err(ctx->dev, "Max slots = %d\n", HDA_SSP_MAX_SLOTS);
++		return -EINVAL;
 +	}
++	regs.hda_ssc0 |= ((ssp_cfg->slots - 1) << HDA_SSC0_FRDC_SHIFT) &
++			HDA_SSC0_FRDC_MASK;
 +
-+	return ret;
++	memcpy(ssp_regs, &regs, sizeof(struct hda_ssp_regs));
++	dev_dbg(ctx->dev, "Registers updated to\n");
++	azx_print_ssp_regs(ctx, &regs);
++	return 0;
++
 +}
-diff --git a/sound/soc/hda/hda_skl.h b/sound/soc/hda/hda_skl.h
-index 914ea05da6aa..f6d9c629a8e3 100644
---- a/sound/soc/hda/hda_skl.h
-+++ b/sound/soc/hda/hda_skl.h
-@@ -15,7 +15,9 @@ struct hda_soc_bus {
- 
- 	unsigned int init_failed:1; /* delayed init failed */
- 	unsigned int msi:1;
+diff --git a/sound/soc/hda/hda_dsp_ssp_config.h b/sound/soc/hda/hda_dsp_ssp_config.h
+new file mode 100644
+index 000000000000..3d056d2da1ca
+--- /dev/null
++++ b/sound/soc/hda/hda_dsp_ssp_config.h
+@@ -0,0 +1,423 @@
++/*
++ *  hda_dsp_ssp_config.h - HDA DSP SSP register definition file.
++ *
++ *  Copyright (C) 2015 Intel Corp
++ *  Author: Hardik Shah <hardik.t.shah@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ */
 +
- 	struct ssth_lib *dsp; /* ssth lib ctx */
-+	struct hda_platform_info *pinfo; /* platform component info*/
- };
- 
- /*to pass dai dma data */
-@@ -24,6 +26,21 @@ struct soc_hda_dma_params {
- 	u8 stream_tag;
- };
- 
-+struct ssth_dsp_resource {
-+	u32 max_mcps;
-+	u32 max_mem;
-+	u32 mcps;
-+	u32 mem;
-+};
 +
-+struct hda_platform_info {
-+	struct hda_soc_bus schip;
-+	struct device *dev;
-+	struct ssth_dsp_resource resource;
-+	struct list_head ppl_list;
-+	struct list_head ppl_start_list;
-+};
++#ifndef _INTEL_SSP_CONFIG_H_
++#define _INTEL_SSP_CONFIG_H_
 +
- int azx_get_delay_from_lpib(struct hdac_bus *chip,
- 				struct hdac_stream *azx_dev,
- 				unsigned int pos);
-diff --git a/sound/soc/hda/hda_soc_dsp.c b/sound/soc/hda/hda_soc_dsp.c
-index 5f36ebdc0fba..ce1527602e00 100644
---- a/sound/soc/hda/hda_soc_dsp.c
-+++ b/sound/soc/hda/hda_soc_dsp.c
-@@ -652,7 +652,7 @@ int ssth_run_pipe(struct ssth_lib *ctx, struct ssth_pipe *pipe)
- /*
-  * Sets pipe state to PAUSED in FW, stops DMA engines and releases resources
-  */
--int hda_sst_delete_pipe(struct ssth_lib *ctx, struct ssth_pipe *pipe)
-+int ssth_delete_pipe(struct ssth_lib *ctx, struct ssth_pipe *pipe)
- {
- 	int ret = 0;
- 
-@@ -682,7 +682,7 @@ delete_pipe:
- 	return ret;
- }
- 
--int hda_sst_stop_pipe(struct ssth_lib *ctx, struct ssth_pipe *pipe)
-+int ssth_stop_pipe(struct ssth_lib *ctx, struct ssth_pipe *pipe)
- {
- 	int ret = 0;
- 
++#define HDA_SSC0_DSS_MASK                          0xF
++#define HDA_SSC0_DSS_SHIFT                         0
++#define HDA_SSC0_FRF_MASK                          0x30
++#define HDA_SSC0_FRF_SHIFT                         4
++#define HDA_SSC0_ECS_MASK                          0x40
++#define HDA_SSC0_ECS_SHIFT                         6
++#define HDA_SSC0_SSE_MASK                          0x80
++#define HDA_SSC0_SSE_SHIFT                         7
++#define HDA_SSC0_SCR_MASK                          0xFFF00
++#define HDA_SSC0_SRC_SHIFT                         8
++#define HDA_SSC0_EDSS_MASK                         0x100000
++#define HDA_SSC0_EDSS_SHIFT                        20
++#define HDA_SSC0_NCS_MASK                          0x200000
++#define HDA_SSC0_NCS_SHIFT                         21
++#define HDA_SSC0_RIM_MASK                          0x400000
++#define HDA_SSC0_RIM_SHIFT                         22
++#define HDA_SSC0_TIM_MASK                          0x800000
++#define HDA_SSC0_TIM_SHIFT                         23
++#define HDA_SSC0_FRDC_MASK                         0x7000000
++#define HDA_SSC0_FRDC_SHIFT                        24
++#define HDA_SSC0_ACS_MASK                          0x40000000
++#define HDA_SSC0_ACS_SHIFT                         30
++#define HDA_SSC0_MOD_MASK                          0x80000000
++#define HDA_SSC0_MOD_SHIFT                         31
++
++#define HDA_SSC1_RIE_MASK                          0x1
++#define HDA_SSC1_RIE_SHIFT                         0
++#define HDA_SSC1_TIE_MASK                          0x2
++#define HDA_SSC1_TIE_SHIFT                         1
++#define HDA_SSC1_LBM_MASK                          0x4
++#define HDA_SSC1_LBM_SHIFT                         2
++#define HDA_SSC1_SPO_MASK                          0x8
++#define HDA_SSC1_SPO_SHIFT                         3
++#define HDA_SSC1_SPH_MASK                          0x10
++#define HDA_SSC1_SPH_SHIFT                         4
++#define HDA_SSC1_MWDS_MASK                         0x20
++#define HDA_SSC1_MWDS_SHIFT                        5
++#define HDA_SSC1_EFWR_MASK                         0x4000
++#define HDA_SSC1_EFWR_SHIFT                        14
++#define HDA_SSC1_STRF_MASK                         0x8000
++#define HDA_SSC1_STRF_SHIFT                        15
++#define HDA_SSC1_IFS_MASK                          0x10000
++#define HDA_SSC1_IFS_SHIFT                         16
++#define HDA_SSC1_PINTE_MASK                        0x40000
++#define HDA_SSC1_PINTE_SHIFT                       18
++#define HDA_SSC1_TINTE_MASK                        0x80000
++#define HDA_SSC1_TINTE_SHIFT                       19
++#define HDA_SSC1_RSRE_MASK                         0x100000
++#define HDA_SSC1_RSRE_SHIFT                        20
++#define HDA_SSC1_TSRE_MASK                         0x200000
++#define HDA_SSC1_TSRE_SHIFT                        21
++#define HDA_SSC1_TRAIL_MASK                        0x400000
++#define HDA_SSC1_TRAIL_SHIFT                       22
++#define HDA_SSC1_RWOT_MASK                         0x800000
++#define HDA_SSC1_RWOT_SHIFT                        23
++#define HDA_SSC1_SFRMDIR_MASK                      0x1000000
++#define HDA_SSC1_SFRMDIR_SHIFT                     24
++#define HDA_SSC1_SCLKDIR_MASK                      0x2000000
++#define HDA_SSC1_SCLKDIR_SHIFT                     25
++#define HDA_SSC1_ECRB_MASK                         0x4000000
++#define HDA_SSC1_ECRB_SHIFT                        26
++#define HDA_SSC1_ECRA_MASK                         0x8000000
++#define HDA_SSC1_ECRA_SHIFT                        27
++#define HDA_SSC1_SCFR_MASK                         0x10000000
++#define HDA_SSC1_SCFR_SHIFT                        28
++#define HDA_SSC1_EBCEI_MASK                        0x20000000
++#define HDA_SSC1_EBCEI_SHIFT                       29
++#define HDA_SSC1_TTE_MASK                          0x40000000
++#define HDA_SSC1_TTE_SHIFT                         30
++#define HDA_SSC1_TTELP_MASK                        0x80000000
++#define HDA_SSC1_TTELP_SHIFT                       31
++
++#define HDA_SST0_TIMEOUT_MASK                      0xFFFFFF
++#define HDA_SST0_TIMEOUT_SHIFT                     0
++
++#define HDA_SSPSP_SCMODE_MASK                      0x3
++#define HDA_SSPSP_SCMODE_SHIFT                     0
++#define HDA_SSPSP_SFRMP_MASK                       0x4
++#define HDA_SSPSP_SFRMP_SHIFT                      2
++#define HDA_SSPSP_ETDS_MASK                        0x8
++#define HDA_SSPSP_ETDS_SHIFT                       3
++#define HDA_SSPSP_STRTDLY_MASK                     0x70
++#define HDA_SSPSP_STRTDLY_SHIFT                    4
++#define HDA_SSPSP_DMYSTRT_MASK                     0x180
++#define HDA_SSPSP_DMYSTRT_SHIFT                    7
++#define HDA_SSPSP_SFRMDLY_MASK                     0xFE00
++#define HDA_SSPSP_SFRMDLY_SHIFT                    9
++#define HDA_SSPSP_SFRMWDTH_MASK                    0x3F0000
++#define HDA_SSPSP_SFRMWDTH_SHIFT                   16
++#define HDA_SSPSP_DMYSTOP_MASK                     0x1800000
++#define HDA_SSPSP_DMYSTOP_SHIFT                    23
++#define HDA_SSPSP_FSRT_MASK                        0x2000000
++#define HDA_SSPSP_FSRT_SHIFT                       25
++#define HDA_SSPSP_EDMYSTOP_MASK                    0x1C000000
++#define HDA_SSPSP_EDMYSTOP_SHIFT                   26
++
++#define HDA_SSTSA_TTSA_MASK                        0xFF
++#define HDA_SSTSA_TTSA_SHIFT                       0
++#define HDA_SSTSA_TXEN_MASK                        0x100
++#define HDA_SSTSA_TXEN_SHIFT                       8
++
++#define HDA_SSRSA_RTSA_MASK                        0xFF
++#define HDA_SSRSA_RTSA_SHIFT                       0
++#define HDA_SSRSA_RXEN_MASK                        0x100
++#define HDA_SSRSA_RXEN_SHIFT                       8
++
++#define HDA_SSC2_TURM0_MASK                        0x1
++#define HDA_SSC2_TURM0_SHIFT                       0
++#define HDA_SSC2_TURM1_MASK                        0x2
++#define HDA_SSC2_TURM1_SHIFT                       1
++#define HDA_SSC2_PSPMB2BFMFD_MASK                  0x4
++#define HDA_SSC2_PSPMB2BFMFD_SHIFT                 2
++#define HDA_SSC2_PSPSRWFDFD_MASK                   0x8
++#define HDA_SSC2_PSPSRWFDFD_SHIFT                  3
++#define HDA_SSC2_PSPSTWFDFD_MASK                   0x10
++#define HDA_SSC2_PSPSTWFDFD_SHIFT                  4
++#define HDA_SSC2_PSPMFSRTPFD_MASK                  0x20
++#define HDA_SSC2_PSPMFSRTPFD_SHIFT                 5
++#define HDA_SSC2_ROFD_MASK                         0x40
++#define HDA_SSC2_ROFD_SHIFT                        6
++#define HDA_SSC2_C2DFFD_MASK                       0x80
++#define HDA_SSC2_C2DFFD_SHIFT                      7
++#define HDA_SSC2_TSAFD_MASK                        0x100
++#define HDA_SSC2_TSAFD_SHIFT                       8
++#define HDA_SSC2_RSAFD_MASK                        0x200
++#define HDA_SSC2_RSAFD_SHIFT                       9
++#define HDA_SSC2_RMFGFD_MASK                       0x400
++#define HDA_SSC2_RMFGFD_SHIFT                      10
++#define HDA_SSC2_TURFD_MASK                        0x800
++#define HDA_SSC2_TURFD_SHIFT                       11
++#define HDA_SSC2_TUDFD_MASK                        0x1000
++#define HDA_SSC2_TUDFD_SHIFT                       12
++#define HDA_SSC2_BCEFD_MASK                        0x2000
++#define HDA_SSC2_BCEFD_SHIFT                       13
++
++#define HDA_SSC2_SDFD_MASK                         0x4000
++#define HDA_SSC2_SDFD_SHIFT                        14
++#define HDA_SSC2_SDHFD_MASK                        0x8000
++#define HDA_SSC2_SDHFD_SHIFT                       15
++#define HDA_SSC2_SDPM_MASK                         0x10000
++#define HDA_SSC2_SDPM_SHIFT                        16
++#define HDA_SSC2_LJDFD_MASK                        0x20000
++#define HDA_SSC2_LJDFD_SHIFT                       17
++#define HDA_SSC2_MMRATF_MASK                       0x40000
++#define HDA_SSC2_MMRATF_SHIFT                      18
++#define HDA_SSC2_SMTATF_MASK                       0x80000
++#define HDA_SSC2_SMTATF_SHIFT                      19
++
++#define HDA_SSPSP2_FEP_MASK                        0xFF
++#define HDA_SSPSP2_FEP_SHIFT                       0
++
++#define HDA_SSC3_TFL_MASK                          0x3F
++#define HDA_SSC3_TFL_SHIFT                         0
++#define HDA_SSC3_RFL_MASK                          0x3F00
++#define HDA_SSC3_RFL_SHIFT                         8
++#define HDA_SSC3_TFT_MASK                          0x3F0000
++#define HDA_SSC3_TFT_SHIFT                         16
++#define HDA_SSC3_RFT_MASK                          0x3F000000
++#define HDA_SSC3_RFT_SHIFT                         24
++
++#define HDA_SSIOC_RXDPDEB_MASK                     0x1
++#define HDA_SSIOC_RXDPDEB_SHIFT                    0
++#define HDA_SSIOC_TXDPDEB_MASK                     0x2
++#define HDA_SSIOC_TXDPDEB_SHIFT                    1
++#define HDA_SSIOC_SFRMPDEB_MASK                    0x4
++#define HDA_SSIOC_SFRMPDEB_SHIFT                   2
++#define HDA_SSIOC_SCLKPDEB_MASK                    0x8
++#define HDA_SSIOC_SCLKPDEB_SHIFT                   3
++#define HDA_SSIOC_SFCR_MASK                        0x10
++#define HDA_SSIOC_SFCR_SHIFT                       4
++#define HDA_SSIOC_SCOE_MASK                        0x20
++#define HDA_SSIOC_SCOE_SHIFT                       5
++
++
++
++
++
++
++/* Default Frame format is PSP */
++#define HDA_SSC0_FRF_DEF_V1				0x3
++/* On-chip clock used to derive SSP clock */
++#define HDA_SSC0_ECS_DEF_V1				0x0
++/* Modified by firmware */
++#define HDA_SSC0_SSE_DEF_V1				0x0
++/* Local clock use for bclk, instead of network clock */
++#define HDA_SSC0_NCS_DEF_V1					0x0
++/* Interrupt not required by firmware */
++#define HDA_SSC0_RIM_DEF_V1					0x0
++/* Interrupt not required by firmware */
++#define HDA_SSC0_TIM_DEF_V1					0x0
++/* Clock selectiion  by ECS and NCS bit */
++#define HDA_SSC0_ACS_DEF_V1					0x0
++/* SSP in network mode. */
++#define HDA_SSC0_MOD_DEF_V1					0x1
++
++/* Receive FIFO level interrupt is disabled, F/W int not req. */
++#define HDA_SSC1_RIE_DEF_V1					0x0
++/* Transmit FIFO level interrupt is disabled, F/W int not req. */
++#define HDA_SSC1_TIE_DEF_V1					0x0
++/* Normal serial port operation enable */
++#define HDA_SSC1_LBM_DEF_V1					0x0
++/* The inactive or idle state of SCLK is low */
++#define HDA_SSC1_SPO_DEF_V1					0x0
++/* SCLK is inactive one cycle at the start of a
++ * frame and 1/2 cycle at the end of a frame
++ */
++#define HDA_SSC1_SPH_DEF_V1					0x0
++/* 8 bit command words are transmitted */
++#define HDA_SSC1_MWDS_DEF_V1				0x0
++/* FIFO write / read special function is disabled
++ *(normal SSP operational mode)
++ */
++#define HDA_SSC1_EFWR_DEF_V1				0x0
++/* Transmit FIFO is selected for both writes and reads
++ * through the SSP Data register
++ */
++#define HDA_SSC1_STRF_DEF_V1				0x0
++/* Frame polarity is determined by SSP format and PSP polarity */
++#define HDA_SSC1_IFS_DEF_V1					0x0
++/* Peripheral Trailing Byte Interrupts are disabled, F/W int not req. */
++#define HDA_SSC1_PINTE_DEF_V1				0x0
++/* Receiver Time-out interrupts are disabled, F/W int not req. */
++#define HDA_SSC1_TINTE_DEF_V1				0x0
++/* Modified by firmware */
++#define HDA_SSC1_RSRE_DEF_V1				0x1
++/* Modified by firmware */
++#define HDA_SSC1_TSRE_DEF_V1				0x1
++/* DMA based, trailing bytes are handled by DMA. */
++#define HDA_SSC1_TRAIL_DEF_V1				0x1
++/* Transmit / Receive mode. */
++#define HDA_SSC1_RWOT_DEF_V1				0x0
++/* Clock request from other SSP is disabled */
++#define HDA_SSC1_ECRB_DEF_V1				0x0
++/* Clock request from other SSP is disabled */
++#define HDA_SSC1_ECRA_DEF_V1				0x0
++/* Clock input to SCLK is continuously running. (SSP slave mode) */
++#define HDA_SSC1_SCFR_DEF_V1				0x0
++/* Interrupt due to a bit count error is disabled, F/W int not req. */
++#define HDA_SSC1_EBCEI_DEF_V1				0x0
++/* TXD line will be tri-stated when not transmitting data */
++#define HDA_SSC1_TTE_DEF_V1				0x1
++/* TXD line will be tri-stated 1/2 clock edge after TXD is to be flopped */
++#define HDA_SSC1_TTELP_DEF_V1				0x1
++
++/* Value defines the time-out interval given by TIMEOUT/peripheral
++ * clock frequency.
++ */
++#define HDA_SST0_TIMEOUT_DEF_V1				0x0
++
++/* End of Transfer Data State 0: Low 1: Last value */
++#define HDA_SSPSP_ETDS_DEF_V1				0x0
++/* Programmed value sets start delay that is used to set the idle time
++ * of SCLK between transfers
++ */
++#define HDA_SSPSP_STRTDLY_DEF_V1				0x0
++/* Programmed value sets the number of SCLK after STRTDLY is complete
++ * that precede the transmit / receive data.
++ */
++#define HDA_SSPSP_DMYSTRT_DEF_V1				0x0
++/* Programmed value sets the number of half SCLK cycle from TXD / RXD
++ * being driven to SFRM being asserted
++ */
++#define HDA_SSPSP_SFRMDLY_DEF_V1				0x0
++/* With EDMYSTOP as higher order bits, the concatenated programmed value
++ * sets the number of SCLK cycles that follow the transmitted data.
++ * Concatenated dummy stop value of 0 . 31 is allowed.
++ */
++#define HDA_SSPSP_DMYSTOP_DEF_V1				0x0
++/* With EDMYSTOP as higher order bits, the concatenated programmed value
++ * sets the number of SCLK cycles that follow the transmitted data.
++ * Concatenated dummy stop value of 0 . 31 is allowed.
++ */
++#define HDA_SSPSP_EDMYSTOP_DEF_V1				0x0
++
++/* Firmware controls this at correct time */
++#define HDA_SSTSA_TXEN_DEF_V1				0x0
++/* SSP TX Time Slot Active */
++#define HDA_SSTSA_TTSA_DEF_V1				0xf
++
++/* Firmware controls this at correct time */
++#define HDA_SSRSA_RXEN_DEF_V1				0x0
++/* SSP RX Time Slot Active */
++#define HDA_SSTSA_RTSA_DEF_V1				0xf
++
++
++/* Mode 0 of transmit underrun fix.  In this mode, new data will always
++ * start at slot 0.  This function is only applied to SSP and PSP modes.
++ * 0: Disable mode 0.
++ * 1: Enable mode 0.
++ */
++#define HDA_SSC2_TURM0_DEF_V1				0x0
++/* Mode 1 of transmit underrun fix.  In this mode, new data will always
++ * start on the underrun slot.  This function is only applied to SSP
++ * and PSP modes.
++ * 0: Disable mode 1.
++ * 1: Enable mode 1.
++ * If both underrun modes are enabled, mode 1 has higher priority.
++ */
++#define HDA_SSC2_TURM1_DEF_V1				0x1
++/* Set to 1 to disable the fix for PSP master mode back to back frame
++ * assertion masking in network mode.
++ */
++#define HDA_SSC2_PSPMB2BFMFD_DEF_V1				0x0
++/* Set to 1 to disable the fix for PSP slave mode RXD wait for frame
++ * de-assertion before starting the second channel.
++ */
++#define HDA_SSC2_PSPSRWFDFD_DEF_V1				0x0
++/* Set to 1 to disable the fix for PSP slave mode TXD wait for frame
++ * de-assertion before starting the second channel.
++ */
++#define HDA_SSC2_PSPSTWFDFD_DEF_V1				0x0
++/* Set to 1 to disable the fix for PSP master mode FSRT with dummy
++ * stop & frame end padding capability.
++ */
++#define HDA_SSC2_PSPMFSRTPFD_DEF_V1				0x0
++/* When set to 1, new data will always start on the overflow slot when
++ * RX FIFO becomes free again.  When cleared to 0, new data may start
++ * on any slot when RX FIFO becomes free again.
++ * This function is only applied to SSP and PSP modes.
++ */
++#define HDA_SSC2_ROFD_DEF_V1				0x0
++/* Set to 1 to disable the fix for combi -> double flop clock crossing. */
++#define HDA_SSC2_C2DFFD_DEF_V1				0x0
++/* When cleared to 0, TX slot defined in SSTSA.TTSA is only enabled in the
++ * next frame after TX Enable (TXEN) bit set, with the enabled slot.
++ * When set to 1, TX Enable (TXEN) bit has no effect.
++ */
++#define HDA_SSC2_TSAFD_DEF_V1				0x0
++/* When cleared to 0, RX slot defined in SSRSA.RTSA is only enabled in the
++ * next frame after RX Enable (RXEN) bit set.  When set to 1,
++ * RX Enable (RXEN) bit has no effect.
++ */
++#define HDA_SSC2_RSAFD_DEF_V1				0x0
++/* When cleared to 0, SSP starts driving SFRM in master mode if RXEN
++ * is set, to allow RX only half duplex operation in master mode.
++ * When set to 1, RX Enable (RXEN) bit has no effect on the master mode
++ * SFRM generation.
++ */
++#define HDA_SSC2_RMFGFD_DEF_V1				0x0
++/* When cleared to 0, SSP will report an underrun if new data is written
++ * to an empty TX FIFO within 2 link clocks from the transmission of
++ * 1st data bit.  Set to 1 to disable fix.
++ */
++#define HDA_SSC2_TURFD_DEF_V1				0x0
++/* When cleared to 0, TX data will be masked to 0 when SSP underrun in the
++ * case of new data written to empty TX FIFO within 2 link clocks from the
++ * transmission of 1st data bit.  Set to 1 to disable fix.
++ */
++#define HDA_SSC2_TUDFD_DEF_V1				0x0
++/* Set to 1 to disable fix for bit count error bug at the beginning of
++ * SSP enabling.
++ */
++#define HDA_SSC2_BCEFD_DEF_V1				0x0
++/* Disable DMA finish function for SSP.  */
++#define HDA_SSC2_SDFD_DEF_V1				0x1
++/* For DMA HW Handshake fix.
++ * 1 . use original DMA request logic
++ * 0 . enable HW HS
++ */
++#define HDA_SSC2_SDHFD_DEF_V1				0x0
++/* When 1, SSP can be accessed by PIO else DMAC.  */
++#define HDA_SSC2_SDPM_DEF_V1				0x0
++/* Set to 1 to disable the fix for left justified I2S/PCM. */
++#define HDA_SSC2_LJDFD_DEF_V1				0x0
++/* Set to 1 for receive data to be sampled at the opposite clock edge
++ * specified in SSPSP.SCMODE[1:0]
++ */
++#define HDA_SSC2_MMRATF_DEF_V1				0x0
++/* Set to 1 for transmit data to be driven at the opposite clock edge
++ * specified in SSPSP.SCMODE[1:0]
++ */
++#define HDA_SSC2_SMTATF_DEF_V1				0x0
++
++
++/* Sets threshold level at which transmit FIFO asserts interrupt.
++ * This level should be set to the desired threshold value minus 1.
++ */
++#define HDA_SSC3_TFT_DEF_V1					0x7
++/* Sets threshold level at which receive FIFO asserts interrupt.
++ * This level should be set to the desired threshold value minus 1.
++ */
++#define HDA_SSC3_RFT_DEF_V1					0x7
++
++
++/* Clear to 0 to enable pull down on the SSPxRXD I/O buffer. */
++#define HDA_SSIOC_RXDPDEB_DEF_V1				0x0
++/* Clear to 0 to enable pull down on the SSPxTXD I/O buffer. */
++#define HDA_SSIOC_TXDPDEB_DEF_V1				0x0
++/* Clear to 0 to enable pull down on the SSPxSFRM I/O buffer. */
++#define HDA_SSIOC_SFRMPDEB_DEF_V1				0x0
++/* Clear to 0 to enable pull down on the SSPxSCLK I/O buffer. */
++#define HDA_SSIOC_SCLKPDEB_DEF_V1				0x0
++/* External Enable to force SSPSCLK to keep running. */
++#define HDA_SSIOC_SFCR_DEF_V1				0x0
++/* Enable the SSP SCLK I/O buffer output */
++#define HDA_SSIOC_SCOE_DEF_V1				0x1
++
++
++#endif /*_SOC_HDA_SSP_CONFIG_H_*/
 -- 
 1.7.9.5
