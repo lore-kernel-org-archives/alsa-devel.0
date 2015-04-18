@@ -1,101 +1,88 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: tas571x: New driver for TI TAS571x power
- amplifiers
-Date: Sat, 18 Apr 2015 18:11:37 +0100
-Message-ID: <20150418171137.GY26185@sirena.org.uk>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
- <1429134141-17924-2-git-send-email-cernekee@chromium.org>
- <20150418113632.GE26185@sirena.org.uk>
- <CAJzqFtYVd+jHesoNnG47ftoK9SWYUmXwDXpf2==s3Rv1ewpsYg@mail.gmail.com>
+Subject: Re: [PATCH 11/13] ASoC: wm_adsp: Add support for DSP
+	control flags
+Date: Sat, 18 Apr 2015 18:23:06 +0100
+Message-ID: <20150418172306.GA26185@sirena.org.uk>
+References: <1428928085-20250-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1428928085-20250-12-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hkxLWrKAgbGf75mf"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJzqFtYVd+jHesoNnG47ftoK9SWYUmXwDXpf2==s3Rv1ewpsYg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kevin Cernekee <cernekee@chromium.org>
-Cc: lgirdwood@gmail.com, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============7965439787031255747=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 918202617BB
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 19:23:15 +0200 (CEST)
+In-Reply-To: <1428928085-20250-12-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---hkxLWrKAgbGf75mf
-Content-Type: text/plain; charset=us-ascii
+--===============7965439787031255747==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="k1G2Bc0EDIhoSmEt"
 Content-Disposition: inline
 
-On Sat, Apr 18, 2015 at 09:16:36AM -0700, Kevin Cernekee wrote:
-> On Sat, Apr 18, 2015 at 4:36 AM, Mark Brown <broonie@kernel.org> wrote:
 
-> >> +static int tas571x_set_sysclk(struct snd_soc_dai *dai,
-> >> +                           int clk_id, unsigned int freq, int dir)
+--k1G2Bc0EDIhoSmEt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Remove empty functions, at best they waste space at worst they break
-> > things.
+On Mon, Apr 13, 2015 at 01:28:03PM +0100, Charles Keepax wrote:
+> The DSP control information contains various hints about the usage of
+> the controls use these when handling the control.
 
-> Without the empty function, we run into problems with drivers that
-> abort when they get -ENOTSUPP here:
+> @@ -418,6 +419,9 @@ static int wm_coeff_put(struct snd_kcontrol *kcontrol,
+>  	struct wm_coeff_ctl *ctl =3D (struct wm_coeff_ctl *)kcontrol->private_v=
+alue;
+>  	char *p =3D ucontrol->value.bytes.data;
+> =20
+> +	if (ctl->flags && !(ctl->flags & WMFW_CTL_FLAG_WRITEABLE))
+> +		return -EPERM;
+> +
+>  	memcpy(ctl->cache, p, ctl->len);
+> =20
+>  	ctl->set =3D 1;
 
-> sound/soc/atmel/atmel_wm8904.c: ret =
-> snd_soc_dai_set_sysclk(codec_dai, WM8904_CLK_FLL,
-> sound/soc/atmel/atmel_wm8904.c-                 0, SND_SOC_CLOCK_IN);
-> sound/soc/atmel/atmel_wm8904.c- if (ret < 0) {
-> sound/soc/atmel/atmel_wm8904.c-         pr_err("%s -failed to set
-> wm8904 SYSCLK\n", __func__);
-> sound/soc/atmel/atmel_wm8904.c-         return ret;
-> sound/soc/atmel/atmel_wm8904.c- }
+What would be even better for these would be to apply these at control
+creation time so that controls that lack read or write support just
+don't have the relevant operations in the first place.  That would not
+be simpler and would allow the rest of the stack to do the right thing,
+for example setting SNDRV_CTL_ELEM_ACCESS_READ and _WRITE properly.
 
-Someone trying to use the atmel_wm8904 driver with something other than
-a wm8904 shouldn't really be expecting a good experince...
-
-> Is there a stub version that I can use instead?  Nothing jumped out at
-> me when looking at the other codec drivers.
-
-No, such a stub would make no sense - why would we put a stub in all the
-drivers rather than just making the core do the right thing?
-
-> >> +             /*
-> >> +              * The master volume defaults to 0x3ff (mute), but we ignore
-> >> +              * (zero) the LSB because the hardware step size is 0.125 dB
-> >> +              * and TLV_DB_SCALE_ITEM has a resolution of 0.01 dB.
-> >> +              */
-> >> +             if (regmap_write(priv->regmap, TAS571X_MVOL_REG, 0x3fe))
-> >> +                     return -EIO;
-
-> > I don't understand this - is the LSB a mute bit or sommething?
-
-> The 10-bit master volume field on 5717/5719 works like:
-
-> 0x3ff: MUTE (power-on default)
-> 0x3fe: -103.750 dB
-> 0x3fd: -103.625 dB
-> [lots more options, in 0.125 dB increments]
-> 0x001: 23.875 dB
-> 0x000: 24.000 dB
-
-> Since we only have a resolution of 0.01 dB, the driver forces the LSB
-> to 0 and uses 0.25 dB increments instead of 0.125 dB.  Mute is handled
-> through the dedicated per-channel soft mute register bits instead of
-> the 0x3ff volume setting.
-
-It's not entirely clear to me why we need to reset the bit, or why if
-we're just trying to update that one bit we write the entire register
-value rather than use _update_bits().  If the goal is just to change
-that one bit then _update_bits() would be a lot clearer.
-
---hkxLWrKAgbGf75mf
+--k1G2Bc0EDIhoSmEt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVMpBIAAoJECTWi3JdVIfQ5wUH/12ZWuXL78rXmt4t28h8IRPP
-xoOFW9YAKnVdhewJZxWsKmjOyd8bUgXbdXpINNQdU7adLUfEnt9Z0P8+/Jus0aZC
-Xeiz5M59RCd0YqhaCcC99dMfrNrqe+ffJUlofmD1ukkmniuNK14y/eOFvoTZLEhC
-3OX+X+OWjRIbh5TOvo8tv4VmOK09lQyNtgdxEg1eKURA2lMFUbV/RrPUIajfR4Ku
-u8oaZc9NQW5wt95WwmVKcfLAtPXJ8vRfkHdOIHWVkWvFzS7nGOLpVTmjE4LqdwLs
-wz7geTrYafbRpLOsa6RUdEd8gv2Sa7wkVh9aoiHXkjRP51gC6syyM+UU4w2rbys=
-=exjq
+iQEcBAEBCAAGBQJVMpL5AAoJECTWi3JdVIfQ7okH/jiHvRbPrRJQ0gNXtKtMvWO6
+gLDgveM/wvUiw9xx5kchn7PKx+TOLdy08sflDvQTbevTwdmdg+/1uXctPrUREiA8
+up9ET116OSevikGpMmQZvheuzZM0X4NWj0b74qLhztKNKWxs4GElxKjiWgloxYtq
+0O1QwuGJp9MHuFFVJ0DdPmIjfeg4T570rSIr4zQUvAS8Kc9yJzhyJDz/j1ulf9gv
+iUia1FiTU3pbzz6k7mkyqiB9UmwcyLnK7W3sRjafs9ecevjfvvi9vxbiQogfTbnf
+P38aZSPBK7zeFiUYipaoSJ2cM7XSh0NrFq3nQAVT/elCUEA4D7KKTUhJ2X43164=
+=gRkq
 -----END PGP SIGNATURE-----
 
---hkxLWrKAgbGf75mf--
+--k1G2Bc0EDIhoSmEt--
+
+--===============7965439787031255747==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7965439787031255747==--
