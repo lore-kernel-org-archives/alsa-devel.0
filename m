@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: intel - use
-	SNDRV_CTL_ELEM_ID_NAME_MAXLEN
-Date: Sat, 18 Apr 2015 12:59:38 +0100
-Message-ID: <20150418115938.GK26185@sirena.org.uk>
-References: <1429291413-30668-1-git-send-email-vinod.koul@intel.com>
- <1429291413-30668-2-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: fix a compiling issue
+Date: Sat, 18 Apr 2015 13:11:06 +0100
+Message-ID: <20150418121106.GM26185@sirena.org.uk>
+References: <1428893250-21092-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0468926836839213779=="
+Content-Type: multipart/mixed; boundary="===============6761655290676811524=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A796F2619BE
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 13:59:45 +0200 (CEST)
-In-Reply-To: <1429291413-30668-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1706C2619D9
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 14:11:11 +0200 (CEST)
+In-Reply-To: <1428893250-21092-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0468926836839213779==
+--===============6761655290676811524==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aqWxf8ydqYKP8htK"
+	protocol="application/pgp-signature"; boundary="2YJj5f1P6Th4nBRw"
 Content-Disposition: inline
 
 
---aqWxf8ydqYKP8htK
+--2YJj5f1P6Th4nBRw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 17, 2015 at 10:53:33PM +0530, Vinod Koul wrote:
-> we have defined SNDRV_CTL_ELEM_ID_NAME_MAXLEN as size of name array so use
-> this define instead of numeric value
+On Mon, Apr 13, 2015 at 10:47:30AM +0800, Jie Yang wrote:
+> Fix the compiling issue that we don't have snd_soc_suspend/resume()
+> when CONFIG_PM_SLEEP is not defined.
 
-Applied, thanks.
+> +#ifdef CONFIG_PM_SLEEP
+>  	snd_soc_resume(pdata->soc_card->dev);
+> -
+> +#endif
 
---aqWxf8ydqYKP8htK
+Rather than have the ifdefs in the users it seems like it'd be better to
+fix this by providing static inline stub functions in the headers.  That
+way nothing else will run into the same trouble.
+
+--2YJj5f1P6Th4nBRw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVMkcpAAoJECTWi3JdVIfQO9QH/RKLG4ThDb+zDpFbbh/aNxHA
-RHiOHvQkQh0HUKJRAJbPmR8aHzzaNHj+UcTzjerJ14H6RRI2m1ogshbr9Ii+FJ6U
-7QPxoj24MGuxoOYmQWno/mygKQFqdJHgU97ehc3DXQFTHzfei5SyRhB0sXejtLoD
-bNzK+8KEvWqdi1kouP0zu7YG4yHcotc4lAnic1GvmuTyeTvp2QMpwC9FPJycAEnz
-5OwaXEH6wqW6Hr4pG8DPdcTsVEnUZ8IhZyLClUFoBKySADSW/Gvkapkzy6a6p9NK
-ttrJqDNEDrNFDlSJf7rrYqEU7X10xJia58sycgDI9OlZl2huQ3n2Tbl/BfPRgIg=
-=yOxA
+iQEcBAEBCAAGBQJVMknZAAoJECTWi3JdVIfQvdYH/3r/FjwBJHOISl8ewZuObU+e
+c3oadls5pivcQBlrdHuNnshH66Qr7fEtt0+1GT6trdmHdCtbrPWrBgUZ1fFnGCbW
+l90fcnLmTsC/VF3FFNZRB9Xl6YZ+CQc6Ubemdd7d/RmIwAiJF8tqvkqNVYM7EPmR
+UKEXLFmoJWesPuZc1zMhohuyJ9wLdOl53qcLHvQdKp+Os4Ex20zzYZzZrrNzrzR1
+Nl8v6NGbQjESnH5WE2kbkijENjqdaCR9TGGQhriFxAbRZfWNrZJZiUnGaLKuSdQo
+zUxz+/lR+wY+K4RRnsagJ/DjqUtJugcT4xEtAvXhBX0pdr0tUOFQs65y4Lxgc9c=
+=uQ1D
 -----END PGP SIGNATURE-----
 
---aqWxf8ydqYKP8htK--
+--2YJj5f1P6Th4nBRw--
 
---===============0468926836839213779==
+--===============6761655290676811524==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0468926836839213779==--
+--===============6761655290676811524==--
