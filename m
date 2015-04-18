@@ -1,73 +1,67 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 13/13] ASoC: wm_adsp: Warn that firmware
- file format 0 is depreciated
-Date: Sat, 18 Apr 2015 18:26:41 +0100
-Message-ID: <20150418172641.GD26185@sirena.org.uk>
-References: <1428928085-20250-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1428928085-20250-14-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [RESEND RFC PATCH 1/3] ASoC: mediatek: Add binding support for
+ AFE driver
+Date: Sat, 18 Apr 2015 18:34:07 +0100
+Message-ID: <20150418173407.GE26185@sirena.org.uk>
+References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
+ <1428653649-38200-2-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7045614418870273882=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B964026262A
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 19:26:48 +0200 (CEST)
-In-Reply-To: <1428928085-20250-14-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="yUw0eFUXHKnFujKq"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1428653649-38200-2-git-send-email-koro.chen@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Koro Chen <koro.chen@mediatek.com>
+Cc: robh+dt@kernel.org, matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.de, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, galak@codeaurora.org, lgirdwood@gmail.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7045614418870273882==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZNveOOYjKturpEFp"
-Content-Disposition: inline
-
-
---ZNveOOYjKturpEFp
+--yUw0eFUXHKnFujKq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 13, 2015 at 01:28:05PM +0100, Charles Keepax wrote:
-> There are very few version 0 firmwares in the wild and at some point in
-> the future it would be nice to remove support for them from the driver,
-> as they require several work arounds to be present to create controls
-> properly.
+On Fri, Apr 10, 2015 at 04:14:07PM +0800, Koro Chen wrote:
 
-Applied, thanks.
+> +Each external interface (called "IO" in this driver) is presented as a
+> +DAI to ASoC. An IO must be connected via the interconnect to a memif.
+> +The connection paths are configured through the device tree.
 
---ZNveOOYjKturpEFp
+Why are these connection paths configured via device tree?  I would
+expect that either there would be runtime configurability of these
+things (particularly if loopback configurations within the hardware are
+possible) or we'd just allocate memory interfaces to DAIs automatically
+as DAIs come into use.
+
+> +- mem-interface-playback:
+> +  mem-interface-capture: property of memif, format is: <memif irq use_sram>;
+> +	                 memif: which memif to be used
+> +			        (defined in include/dt-bindings/sound/mtk-afe.h)
+> +		         irq: which irq to be used
+> +			      (defined in include/dt-bindings/sound/mtk-afe.h)
+> +		         use_sram: 1 is yes, 0 is no
+
+Again, this looks like stuff we should be able to figure out at runtime
+- the use of SRAM in particular looks like something we might want to
+change depending on use case.  Assuming it adds buffering then for a
+VoIP application we might not want to use SRAM to minimize latency but
+during music playback we might want to enable SRAM to minimize power
+consumption.
+
+--yUw0eFUXHKnFujKq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVMpPRAAoJECTWi3JdVIfQEDcH/i8xYesiYKyedUT6preCAxxl
-AgHIEhGczztRqr7lZ8ey8BWbyEad7Mx/7yDMohdXeCFt6sswrvb+N4Q1lGwC+/Fc
-96U/uz+n9w5t8j4coC73ug4G80Z9Qe8IUiSi+Y6ItqflBbv0WQCPb8OQmmsVuNov
-aYGl9gvgZUjaP8HgSPtfnQTC5H0KM3javSUvDCualhANBMfYvazScz7v6Lx/N2e3
-WfOBIRLiqDp+xx3FEtICHRFWeNSeG9L7qSeVSZUtw2xVvm6vBray0QnV6uk4Zgcz
-grjOpQuGb6eTaOmrg1B2mFnffAljWfS+gUAHeI2UyCn00jqWo15l6GbZf2TcP7c=
-=hLIM
+iQEcBAEBCAAGBQJVMpWOAAoJECTWi3JdVIfQuWwH/08PJh1EXixYY1yYRWtSNW45
+JXWlvj8FAyKmtS7RkFz8osufXvfrNtsfc8J1Q9wHlNZ1eRKqXsj1x6HnfRHnJpF2
+oRU/p4BE0vWDS3tlBSJH+yLs+GXlyn5DYHREq6hSsLguYgvusTYi3zhqcF9fKNDB
+42gO5vVD/ZfN/Wp0qHC5D9ZPZAnPXF6yfih63PraSBSYRkf9EkEL7V30Y1xESO+z
+x645zIeZSecuvsX1J/rtusRzT9Fro/Lzi+rLwscUZNmeIaFksywmwcAmtj3xb7xt
+gLJde1efCvsMcPTx15WIcVzykiBP/iRSRhEmOgkO4AYKdIGXIQrp/ktbH3K8Hno=
+=GAGs
 -----END PGP SIGNATURE-----
 
---ZNveOOYjKturpEFp--
-
---===============7045614418870273882==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7045614418870273882==--
+--yUw0eFUXHKnFujKq--
