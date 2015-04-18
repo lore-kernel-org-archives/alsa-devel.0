@@ -1,108 +1,76 @@
-From: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: Re: [PATCH 2/3] ASoC: tas571x: New driver for TI TAS571x power amplifiers
-Date: Sat, 18 Apr 2015 09:16:36 -0700
-Message-ID: <CAJzqFtYVd+jHesoNnG47ftoK9SWYUmXwDXpf2==s3Rv1ewpsYg@mail.gmail.com>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
- <1429134141-17924-2-git-send-email-cernekee@chromium.org> <20150418113632.GE26185@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: fix a compiling issue
+Date: Sat, 18 Apr 2015 18:03:04 +0100
+Message-ID: <20150418170304.GW26185@sirena.org.uk>
+References: <1428893250-21092-1-git-send-email-yang.jie@intel.com>
+ <20150418121106.GM26185@sirena.org.uk>
+ <CAOf5uw=x2F9AFxoFwGNh-2FbjX-E7sZuki5e6t71JH0amyAb-w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150418113632.GE26185-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Andrew Bresticker <abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============5412933813812479755=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 906D8264F0A
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 19:03:12 +0200 (CEST)
+In-Reply-To: <CAOf5uw=x2F9AFxoFwGNh-2FbjX-E7sZuki5e6t71JH0amyAb-w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 18, 2015 at 4:36 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> On Wed, Apr 15, 2015 at 02:42:20PM -0700, Kevin Cernekee wrote:
->> +static int tas571x_set_sysclk(struct snd_soc_dai *dai,
->> +                           int clk_id, unsigned int freq, int dir)
->> +{
->> +     /*
->> +      * TAS5717 datasheet pg 21: "The DAP can autodetect and set the
->> +      * internal clock-control logic to the appropriate settings for all
->> +      * supported clock rates as defined in the clock control register."
->> +      */
->> +     return 0;
->> +}
->
-> Remove empty functions, at best they waste space at worst they break
-> things.
 
-Without the empty function, we run into problems with drivers that
-abort when they get -ENOTSUPP here:
+--===============5412933813812479755==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bOC9TN0n4iVUZoxs"
+Content-Disposition: inline
 
-sound/soc/atmel/atmel_wm8904.c: ret =
-snd_soc_dai_set_sysclk(codec_dai, WM8904_CLK_FLL,
-sound/soc/atmel/atmel_wm8904.c-                 0, SND_SOC_CLOCK_IN);
-sound/soc/atmel/atmel_wm8904.c- if (ret < 0) {
-sound/soc/atmel/atmel_wm8904.c-         pr_err("%s -failed to set
-wm8904 SYSCLK\n", __func__);
-sound/soc/atmel/atmel_wm8904.c-         return ret;
-sound/soc/atmel/atmel_wm8904.c- }
 
-Is there a stub version that I can use instead?  Nothing jumped out at
-me when looking at the other codec drivers.
+--bOC9TN0n4iVUZoxs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> +static int tas571x_set_shutdown(struct tas571x_private *priv, bool is_shutdown)
->> +{
->> +     return regmap_update_bits(priv->regmap, TAS571X_SYS_CTRL_2_REG,
->> +             TAS571X_SYS_CTRL_2_SDN_MASK,
->> +             is_shutdown ? TAS571X_SYS_CTRL_2_SDN_MASK : 0);
->> +}
->
->> +             ret = tas571x_set_shutdown(priv, false);
->> +             if (ret)
->> +                     return ret;
->> +             break;
->> +     case SND_SOC_BIAS_STANDBY:
->> +             ret = tas571x_set_shutdown(priv, true);
->> +             if (ret)
->> +                     return ret;
->
-> This looks like it'd be clearer just as direct register updates, I'm not
-> sure a function to set a single bit is addinng much.
+On Sat, Apr 18, 2015 at 02:19:37PM +0200, Michael Trimarchi wrote:
+> On Apr 18, 2015 8:11 PM, "Mark Brown" <broonie@kernel.org> wrote:
 
-It might be useful if another tas571x variant put the bit somewhere
-else, but that hasn't happened yet so I can nuke the helper function
-for now.
+> > Rather than have the ifdefs in the users it seems like it'd be better to
+> > fix this by providing static inline stub functions in the headers.  That
+> > way nothing else will run into the same trouble.
 
->> +     case SND_SOC_BIAS_OFF:
->> +             /* Note that this kills I2C accesses. */
->> +             assert_pdn = 1;
->
-> No, the GPIO set associated with it kills I2C access.  I'd also expect
-> to see the regmap being marked cache only before we do this and a resync
-> of the register map when we power back up (assuming that is actually a
-> power down).
+> This was my "English" suggestion
 
-Hmm, not sure if this actually resets the registers back to power-on
-defaults, but I'll check.
+Yeah, I hadn't seen your mail when I wrote the above.
 
->> +             /*
->> +              * The master volume defaults to 0x3ff (mute), but we ignore
->> +              * (zero) the LSB because the hardware step size is 0.125 dB
->> +              * and TLV_DB_SCALE_ITEM has a resolution of 0.01 dB.
->> +              */
->> +             if (regmap_write(priv->regmap, TAS571X_MVOL_REG, 0x3fe))
->> +                     return -EIO;
->
-> I don't understand this - is the LSB a mute bit or sommething?
+--bOC9TN0n4iVUZoxs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-The 10-bit master volume field on 5717/5719 works like:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-0x3ff: MUTE (power-on default)
-0x3fe: -103.750 dB
-0x3fd: -103.625 dB
-[lots more options, in 0.125 dB increments]
-0x001: 23.875 dB
-0x000: 24.000 dB
+iQEcBAEBCAAGBQJVMo5EAAoJECTWi3JdVIfQfWcH/icAds0gAyH3Avz/JSRVfdD2
+AWKHPbXKMnzL/TqdAk0jR36pKXpQp9btmDDQHLr6q7vB+A0U4qqquQ+P+27eKNed
+Vam3GEABOn3H2HBDP/On4TYlhyK2br/2hmSoOtA3hFZwaSNXTTLpqJHvAFfv96CX
+xLxtLsSG9/IUEWXqYiNdrr+Lu1HLlXA4BaFnJxHNqYwl5soC7DuK7g+1y2kpQbK/
+jPM08/XtcVSkfeEwu6TiZrG/F4KpiIp3hkJJWcw4ZUhMmE4ftYciHwszUWADHyp7
+xRG0xz9SD+TeAafv91DD6gqRtAnXih8iXZPJYXJyLwhsXNLT2lZlYRwd2E1W4Q8=
+=+rmg
+-----END PGP SIGNATURE-----
 
-Since we only have a resolution of 0.01 dB, the driver forces the LSB
-to 0 and uses 0.25 dB increments instead of 0.125 dB.  Mute is handled
-through the dedicated per-channel soft mute register bits instead of
-the 0x3ff volume setting.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--bOC9TN0n4iVUZoxs--
+
+--===============5412933813812479755==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5412933813812479755==--
