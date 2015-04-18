@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: sgtl5000: Use specific variable
-	for lo_vag
-Date: Sat, 18 Apr 2015 12:50:44 +0100
-Message-ID: <20150418115044.GH26185@sirena.org.uk>
-References: <1429188717-6841-1-git-send-email-alexander.stein@systec-electronic.com>
+Subject: Re: [PATCH 2/2] ASoC: intel - use
+	SNDRV_CTL_ELEM_ID_NAME_MAXLEN
+Date: Sat, 18 Apr 2015 12:59:38 +0100
+Message-ID: <20150418115938.GK26185@sirena.org.uk>
+References: <1429291413-30668-1-git-send-email-vinod.koul@intel.com>
+ <1429291413-30668-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3582767886643461243=="
+Content-Type: multipart/mixed; boundary="===============0468926836839213779=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F5A7261692
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 13:50:58 +0200 (CEST)
-In-Reply-To: <1429188717-6841-1-git-send-email-alexander.stein@systec-electronic.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A796F2619BE
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 13:59:45 +0200 (CEST)
+In-Reply-To: <1429291413-30668-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3582767886643461243==
+--===============0468926836839213779==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GBDnBH7+ZvLx8QD4"
+	protocol="application/pgp-signature"; boundary="aqWxf8ydqYKP8htK"
 Content-Disposition: inline
 
 
---GBDnBH7+ZvLx8QD4
+--aqWxf8ydqYKP8htK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 16, 2015 at 02:51:56PM +0200, Alexander Stein wrote:
-> This is a preparation for calculating lo_vol which needs both vag
-> and lo_vag.
+On Fri, Apr 17, 2015 at 10:53:33PM +0530, Vinod Koul wrote:
+> we have defined SNDRV_CTL_ELEM_ID_NAME_MAXLEN as size of name array so use
+> this define instead of numeric value
 
-Applied both, thanks.
+Applied, thanks.
 
---GBDnBH7+ZvLx8QD4
+--aqWxf8ydqYKP8htK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVMkUTAAoJECTWi3JdVIfQLZUH/2pJC6a2sGpEcvjwIM2tKL7S
-IaYvZzpYW7ZS+pDepZDj88FUrG2IrQ9V+qcHol/lMHVhm5xQxQ3e5jseakbl6VO1
-59v+PlkeZ9ghDc5na2/RZPXqusMfQ0gdePEKj5qk1eRFR6MFgB/dUBBJ5OS84Q/h
-mmJhMlvpDEspfot/1yQa2uEnmmPo81PcQ7/pAcF8kLghqNQF/Pz4hXHZcRFJd7LS
-lSd2ZfZKJ2zwDcFkgl33rwAiEvzYTidvtX/7P33SSL8RU12ATNO7aOJrbiSod5+c
-bPF+lzqkkg9XBEdFHkLEZSws4ejHG2MQArUbp+adLbaWamBhCPJsu2sY2RnLUlM=
-=/zod
+iQEcBAEBCAAGBQJVMkcpAAoJECTWi3JdVIfQO9QH/RKLG4ThDb+zDpFbbh/aNxHA
+RHiOHvQkQh0HUKJRAJbPmR8aHzzaNHj+UcTzjerJ14H6RRI2m1ogshbr9Ii+FJ6U
+7QPxoj24MGuxoOYmQWno/mygKQFqdJHgU97ehc3DXQFTHzfei5SyRhB0sXejtLoD
+bNzK+8KEvWqdi1kouP0zu7YG4yHcotc4lAnic1GvmuTyeTvp2QMpwC9FPJycAEnz
+5OwaXEH6wqW6Hr4pG8DPdcTsVEnUZ8IhZyLClUFoBKySADSW/Gvkapkzy6a6p9NK
+ttrJqDNEDrNFDlSJf7rrYqEU7X10xJia58sycgDI9OlZl2huQ3n2Tbl/BfPRgIg=
+=yOxA
 -----END PGP SIGNATURE-----
 
---GBDnBH7+ZvLx8QD4--
+--aqWxf8ydqYKP8htK--
 
---===============3582767886643461243==
+--===============0468926836839213779==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3582767886643461243==--
+--===============0468926836839213779==--
