@@ -1,94 +1,184 @@
-From: Kevin Cernekee <cernekee@chromium.org>
-Subject: Re: [PATCH 2/3] ASoC: tas571x: New driver for TI TAS571x power amplifiers
-Date: Sat, 18 Apr 2015 13:07:07 -0700
-Message-ID: <CAJzqFtZ97FjzDpgbSJbCkqNGnQx_QiGrzY1v1zV+croAL6_=qw@mail.gmail.com>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
- <1429134141-17924-2-git-send-email-cernekee@chromium.org> <20150418113632.GE26185@sirena.org.uk>
- <CAJzqFtYVd+jHesoNnG47ftoK9SWYUmXwDXpf2==s3Rv1ewpsYg@mail.gmail.com> <20150418171137.GY26185@sirena.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [RFC 1/7] ASoC: hda: Add skl dsp init and registering
+	with SST IPC lib
+Date: Sun, 19 Apr 2015 02:27:27 +0530
+Message-ID: <1429390653-8194-2-git-send-email-vinod.koul@intel.com>
+References: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150418171137.GY26185@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4FB92612D0
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 23:02:43 +0200 (CEST)
+In-Reply-To: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 18, 2015 at 10:11 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Sat, Apr 18, 2015 at 09:16:36AM -0700, Kevin Cernekee wrote:
->> On Sat, Apr 18, 2015 at 4:36 AM, Mark Brown <broonie@kernel.org> wrote:
->
->> >> +static int tas571x_set_sysclk(struct snd_soc_dai *dai,
->> >> +                           int clk_id, unsigned int freq, int dir)
->
->> > Remove empty functions, at best they waste space at worst they break
->> > things.
->
->> Without the empty function, we run into problems with drivers that
->> abort when they get -ENOTSUPP here:
->
->> sound/soc/atmel/atmel_wm8904.c: ret =
->> snd_soc_dai_set_sysclk(codec_dai, WM8904_CLK_FLL,
->> sound/soc/atmel/atmel_wm8904.c-                 0, SND_SOC_CLOCK_IN);
->> sound/soc/atmel/atmel_wm8904.c- if (ret < 0) {
->> sound/soc/atmel/atmel_wm8904.c-         pr_err("%s -failed to set
->> wm8904 SYSCLK\n", __func__);
->> sound/soc/atmel/atmel_wm8904.c-         return ret;
->> sound/soc/atmel/atmel_wm8904.c- }
->
-> Someone trying to use the atmel_wm8904 driver with something other than
-> a wm8904 shouldn't really be expecting a good experince...
+From: Jeeja KP <jeeja.kp@intel.com>
 
-The same check shows up in numerous other drivers, including the one
-for the audio controller on my board.
+This will be used by the controller to register/unregister
+with the SST IPC lib if processing pipe caps is supported
 
->> Is there a stub version that I can use instead?  Nothing jumped out at
->> me when looking at the other codec drivers.
->
-> No, such a stub would make no sense - why would we put a stub in all the
-> drivers rather than just making the core do the right thing?
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/soc-hda-sst-dsp.h |    3 ++
+ sound/soc/hda/Kconfig           |    1 +
+ sound/soc/hda/Makefile          |    2 +-
+ sound/soc/hda/hda_skl.h         |   16 ++--------
+ sound/soc/hda/hda_soc_dsp.c     |   62 +++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 70 insertions(+), 14 deletions(-)
+ create mode 100644 sound/soc/hda/hda_soc_dsp.c
 
-AFAICT, implementing the set_sysclk callback is mandatory, even if it
-is a no-op on the codec side.  If I delete the stub function, audio
-playback fails.
-
->> >> +             /*
->> >> +              * The master volume defaults to 0x3ff (mute), but we ignore
->> >> +              * (zero) the LSB because the hardware step size is 0.125 dB
->> >> +              * and TLV_DB_SCALE_ITEM has a resolution of 0.01 dB.
->> >> +              */
->> >> +             if (regmap_write(priv->regmap, TAS571X_MVOL_REG, 0x3fe))
->> >> +                     return -EIO;
->
->> > I don't understand this - is the LSB a mute bit or sommething?
->
->> The 10-bit master volume field on 5717/5719 works like:
->
->> 0x3ff: MUTE (power-on default)
->> 0x3fe: -103.750 dB
->> 0x3fd: -103.625 dB
->> [lots more options, in 0.125 dB increments]
->> 0x001: 23.875 dB
->> 0x000: 24.000 dB
->
->> Since we only have a resolution of 0.01 dB, the driver forces the LSB
->> to 0 and uses 0.25 dB increments instead of 0.125 dB.  Mute is handled
->> through the dedicated per-channel soft mute register bits instead of
->> the 0x3ff volume setting.
->
-> It's not entirely clear to me why we need to reset the bit, or why if
-> we're just trying to update that one bit we write the entire register
-> value rather than use _update_bits().  If the goal is just to change
-> that one bit then _update_bits() would be a lot clearer.
-
-The default master volume setting on the TAS5717/5719 is 0x3ff (bits
-9:0).  We only ever update bits 9:1 when the volume changes, because
-the driver is only able to work with 0.25 dB resolution rather than
-the hardware's native 0.125 dB resolution.  So this register write
-sets the master volume to an even number, which we know we can handle.
-
-Clearing just the LSB would accomplish the same thing, but would be
-less obvious IMO.  It would also require an extra read, and the code
-is less concise.
-
-Is there a better way to handle this situation?
+diff --git a/include/sound/soc-hda-sst-dsp.h b/include/sound/soc-hda-sst-dsp.h
+index 9adeb49cf126..a85f95be13c1 100644
+--- a/include/sound/soc-hda-sst-dsp.h
++++ b/include/sound/soc-hda-sst-dsp.h
+@@ -263,4 +263,7 @@ int ssth_cl_dma_prepare(struct ssth_lib *ctx);
+ void ssth_process_cl_dma(struct work_struct *work);
+ void ssth_cldma_int_disable(struct ssth_lib *ctx);
+ 
++int ssth_skl_init(struct device *dev, void __iomem *mmio_base, int irq,
++		struct ssth_dsp_loader_ops dsp_ops, struct ssth_lib **dsp);
++void ssth_skl_cleanup(struct device *dev, struct ssth_lib *ctx);
+ #endif /*__HDA_SST_DSP_H__*/
+diff --git a/sound/soc/hda/Kconfig b/sound/soc/hda/Kconfig
+index 841ea5276fe3..445fa9842127 100644
+--- a/sound/soc/hda/Kconfig
++++ b/sound/soc/hda/Kconfig
+@@ -29,6 +29,7 @@ config SND_SOC_HDA_SKL
+ 
+ config SND_SOC_I2S_SKL_MACH
+         tristate "SOC Machine Audio driver for SKL Onboard I2S"
++	 select SND_HDA_DSP_LOADER
+         select SND_SOC_HDA_SKL
+         select SND_SOC_RT286
+         select SND_SOC_HDMI
+diff --git a/sound/soc/hda/Makefile b/sound/soc/hda/Makefile
+index d318d4acb8a7..2be667dc0724 100644
+--- a/sound/soc/hda/Makefile
++++ b/sound/soc/hda/Makefile
+@@ -1,4 +1,4 @@
+-snd-soc-hda-skl-objs := hda_skl.o hda_skl_pcm.o
++snd-soc-hda-skl-objs := hda_skl.o hda_skl_pcm.o hda_soc_dsp.o
+ 
+ obj-$(CONFIG_SND_SOC_HDA_SKL) += snd-soc-hda-skl.o
+ 
+diff --git a/sound/soc/hda/hda_skl.h b/sound/soc/hda/hda_skl.h
+index 0cc2ac69a9ab..914ea05da6aa 100644
+--- a/sound/soc/hda/hda_skl.h
++++ b/sound/soc/hda/hda_skl.h
+@@ -1,15 +1,3 @@
+-/*
+- *  This program is free software; you can redistribute it and/or modify it
+- *  under the terms of the GNU General Public License as published by the Free
+- *  Software Foundation; either version 2 of the License, or (at your option)
+- *  any later version.
+- *
+- *  This program is distributed in the hope that it will be useful, but WITHOUT
+- *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- *  more details.
+- */
+-
+ #ifndef __SOUND_SOC_HDA_SKL_H
+ #define __SOUND_SOC_HDA_SKL_H
+ 
+@@ -22,13 +10,15 @@
+ 
+ struct hda_soc_bus {
+ 	struct hdac_bus chip;
++	struct device *dev;
+ 	struct pci_dev *pci;
+ 
+ 	unsigned int init_failed:1; /* delayed init failed */
+ 	unsigned int msi:1;
++	struct ssth_lib *dsp; /* ssth lib ctx */
+ };
+ 
+-/* to pass dai dma data */
++/*to pass dai dma data */
+ struct soc_hda_dma_params {
+ 	u32 format;
+ 	u8 stream_tag;
+diff --git a/sound/soc/hda/hda_soc_dsp.c b/sound/soc/hda/hda_soc_dsp.c
+new file mode 100644
+index 000000000000..3fa033ecaa90
+--- /dev/null
++++ b/sound/soc/hda/hda_soc_dsp.c
+@@ -0,0 +1,62 @@
++/*
++ *  hda_soc_dsp.c - HDA DSP interface for FW registration, Pipe and Module
++ *  configurations
++ *
++ *  Copyright (C) 2015 Intel Corp
++ *  Author:Rafal Redzimski <rafal.f.redzimski@intel.com>
++ *	   Jeeja KP <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ */
++
++#include <linux/slab.h>
++#include <linux/pci.h>
++#include <sound/core.h>
++#include <sound/pcm_params.h>
++#include <sound/pcm.h>
++#include <sound/soc-hda-sst-dsp.h>
++#include <sound/soc-hda-sst-ipc.h>
++#include "hda_skl.h"
++
++int ssth_dsp_register(struct hda_soc_bus *schip)
++{
++	void __iomem *mmio_base;
++	int irq = schip->chip.irq;
++	int ret = 0;
++	struct ssth_dsp_loader_ops loader_ops;
++
++	/*TODO assign dsp loader ops */
++
++	/*TODO enable ppcap interrupt */
++	/*read the BAR of the ADSP MMIO */
++	mmio_base = pci_ioremap_bar(schip->pci, 4);
++	if (mmio_base == NULL) {
++		dev_err(schip->dev, "ioremap error\n");
++		return -ENXIO;
++	}
++
++	ret = ssth_skl_init(schip->dev, mmio_base, irq,
++			loader_ops, &schip->dsp);
++
++	dev_dbg(schip->dev, "dsp registeration status=%d\n", ret);
++	return ret;
++}
++
++void ssth_dsp_unregister(struct hda_soc_bus *schip)
++{
++	/*TODO disbale ppcap interrupt */
++	ssth_skl_cleanup(schip->dev, schip->dsp);
++	if (schip->dsp->mmio_base)
++		iounmap(schip->dsp->mmio_base);
++}
+-- 
+1.7.9.5
