@@ -1,19 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Assert in pcm_params.c
-Date: Sat, 18 Apr 2015 16:54:00 +0800
-Message-ID: <CAN8cciYukOJMwfcmnss+QdTCuNN4=4pi11aOSCHNjyaKO-Komw@mail.gmail.com>
-References: <201504180908.47022.gineera@aspect135.co.uk>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH v6 0/6] ALSA: jack: Refactoring for jack kctls
+Date: Sat, 18 Apr 2015 18:04:14 +0800
+Message-ID: <1429351460-15932-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
- [209.85.218.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D3B02614EE
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 10:54:05 +0200 (CEST)
-Received: by oign205 with SMTP id n205so92376090oig.2
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 01:54:02 -0700 (PDT)
-In-Reply-To: <201504180908.47022.gineera@aspect135.co.uk>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8378B261295
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 12:01:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +18,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> Hi,
->
-> The following assert is being hit in pcm_params.c:
->
-> "pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err >= 0'
-failed."
->
-> This is from a developer using Portaudio in his own application; I have
-yet to
-> ascertain full details, but it is trying successive sample rates to see
-which
-> are valid.
->
-> Does this point to a flaw in the configuration or possibly a bug in
-Alsa-lib
-> or can it occur just as a result of misuse of the Alsa API?
->
->
+Currently only hda will create kctls for hda jacks, for asoc, people
+may need create jack kctls in specific driver.
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html
+Here we are introducing kctls for each jack, by creating kctls and add
+them to jack controls list (considering exist of combo jack). At the
+same time, we will report events for each control in the list.
 
-Only snd_pcm_hw_params_test_rate() can be call multiple times,
-Verify if a rate is available inside a configuration space for a PCM.
+With this new implementation, both HDA and soc jack kctls works fine,
+they are compatible for old HDA jack kctls, too.
 
-Those snd_pcm_hw_params_ser_rate*  functions restrict the configuration
-space to one rate and can be called once only
+For soc,
+a. snd_jack_new() with NULL jack_kctl;
+b. for each pin, call snd_jack_add_kctls() to add one kctl(it will
+call snd_ctl_add() to add kctl to card);
+
+For HDA,
+With snd_jack_new(), we can use phantom_jack = true for phantom jack
+creating, and the jack kctl pointer will be filled with the new
+created kcontrol.
+
+Changes in v6:
+1. refine kctl name generating function;
+2. integrate HDA jack kctl more deeply, support phantom jack in
+snd_jack_new();
+3. add documentation for Jack kcontrols to explain how to use it.
+
+Changes in v5:
+1. remove SND_KCTL_JACK config item, we need jack kctl once
+CONFIG_SND_JACK is selected. 
+
+Changes in v4:
+1. use snd_ctl_find_id() to get avaliable index;
+2. add initial kctl for snd_jack_new(compatible for HDA);
+3. add struct snd_jack_kctl * field to struct hda_jack_tbl;
+4. new kctls for soc jack during jack pins creating.
+5. add a patch to remove exporting snd_kctl_jack_new().
+
+Changes in v3:
+1. replace bit index with bit mask in jack_kctl;
+2. add exception for SND_JACK_HEADSET and SND_JACK_AVOUT, only create
+one jack kctl for these two combo jacks, respectively.
+3. add NULL check, mem kfree, and fix some potential risk.
+
+Change in v2:
+1. define jack_kctl struct, and put jack kctl related stuff there;
+2. add a patch to remove the existing controls for HDA jack.
+
+Jie Yang (6):
+  ALSA: jack: create jack kcontrols for every jack input
+  ALSA: jack: extend snd_jack_new to support phantom jack
+  ALSA: hda - Update to use the new jack kctls method
+  ASoC: jack: create kctls according to jack pins info
+  ALSA: jack: remove exporting ctljack functions
+  ALSA: Docs: Add documentation for Jack kcontrols
+
+ Documentation/sound/alsa/Jack-Controls.txt |  48 +++++++
+ include/sound/jack.h                       |  21 +++-
+ sound/core/Kconfig                         |   3 -
+ sound/core/Makefile                        |   3 +-
+ sound/core/ctljack.c                       |   2 -
+ sound/core/jack.c                          | 193 +++++++++++++++++++++++++----
+ sound/pci/hda/Kconfig                      |   1 -
+ sound/pci/hda/hda_jack.c                   |  57 ++++-----
+ sound/pci/hda/hda_jack.h                   |   4 +-
+ sound/pci/oxygen/xonar_wm87x6.c            |   2 +-
+ sound/soc/soc-jack.c                       |   3 +-
+ 11 files changed, 264 insertions(+), 73 deletions(-)
+ create mode 100644 Documentation/sound/alsa/Jack-Controls.txt
+
+-- 
+1.9.1
