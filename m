@@ -1,17 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/7] ASoC: sti: add binding for ASoc driver
-Date: Sat, 18 Apr 2015 14:12:46 +0100
-Message-ID: <20150418131246.GU26185@sirena.org.uk>
-References: <1429018531-29025-1-git-send-email-arnaud.pouliquen@st.com>
- <1429018531-29025-2-git-send-email-arnaud.pouliquen@st.com>
+Subject: Re: [PATCH] ASoC: adau1701: add regulator consumer
+	support
+Date: Sat, 18 Apr 2015 14:23:22 +0100
+Message-ID: <20150418132322.GV26185@sirena.org.uk>
+References: <1429008420-1566-1-git-send-email-pascal.huerst@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1721316365588209052=="
+Content-Type: multipart/mixed; boundary="===============8911532169810920433=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EF93C2619BE
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 15:12:53 +0200 (CEST)
-In-Reply-To: <1429018531-29025-2-git-send-email-arnaud.pouliquen@st.com>
+In-Reply-To: <1429008420-1566-1-git-send-email-pascal.huerst@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,75 +17,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: pascal.huerst@gmail.com
+Cc: patch@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1721316365588209052==
+--===============8911532169810920433==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eNjIDde0W37E3OQP"
+	protocol="application/pgp-signature"; boundary="KxKI/R+N9hudrWbn"
 Content-Disposition: inline
 
 
---eNjIDde0W37E3OQP
+--KxKI/R+N9hudrWbn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 14, 2015 at 03:35:25PM +0200, Arnaud Pouliquen wrote:
+On Tue, Apr 14, 2015 at 12:47:00PM +0200, pascal.huerst@gmail.com wrote:
+> From: Pascal Huerst <pascal.huerst@gmail.com>
+>=20
+> The adau1701 has two power domains, DVDD and AVDD.
+> Enable them both as long as the codec is in use.
+> ---
 
-> Add Asoc driver bindings documentation.
+This looks fine but I can't apply it because you've not signed it off -
+I need a signoff for anything that's going to mainline.  Please see
+Documentation/SubmittingPatches.
 
-ASoC.
-
-> +- cpu-dai: sti-asoc-platform subnode that describes properties for a CPU-DAI instance.
-> +Required properties:
-> +  - dai-name: DAI name that describes the IP.
-> +  - dai-type: DAI functionality.
-> +	"uni-player" for playback.
-> +	"uni-reader" for capture.
-
-It would be more idiomatic to do this with eithe ra commpatible string
-or a specifically named node.
-
-> +Optional properties:
-> +  - standby:  standby mode activation deactivation. this mode is specific to
-> +	      Uni player IP and allows to transmit bus clock and a pattern data
-> +	      while audio stream is stopped or paused.
-
-I'm not entirely sure what the above means but it sounds like some
-software configuration rather than a property of the hardware?  Or do
-some variants of the IP lack this functionality?
-
-> +  - auto-suspend-delay: runtime auto suspend delay (in ms) before deactivating
-> +			stanby mode. Equivalent to the DAPM mechanism but for
-> +			CPU DAI.
-
-DAPM works perfectly well for on SoC components, please use it.
-
---eNjIDde0W37E3OQP
+--KxKI/R+N9hudrWbn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVMlhNAAoJECTWi3JdVIfQvXkH/1xVz0OhIcmvyTz/3YkNbiqq
-xNNr9KX+qWWFboMNJwt3tJ7O4hHm79ag2iz2z9WY+2D/fxjpIapBsALiQcYXL3Ez
-IXPm72c4ZbK4a0lu4KORISe7XlHOfcQcNzLxKs/1x8fU3WE/NA8KSNBSMvFA4KPs
-AzgeDYtNjLS+g7Riee+DFv+NULV6MfV1v5Y6O7XrkdODUL4hd1AQekQTrHnMIUuW
-Mj8zmGrJAxjjr8TXIcqteI+MLMIwbc3hVy9KEzBD5XDR1MGK/GEzJXu8UbTP+C8o
-6366DHLPf5Uvg5VcFvKQouNzJIC4iorhP4dFlTzpRTFSVEnCV7tsggdl/Ug4swE=
-=UFJT
+iQEcBAEBCAAGBQJVMlrFAAoJECTWi3JdVIfQ5zYH/RHmKNs7eNsUSAI3uuPN34hi
+M4fS4TibX3UNztMd4kArdpWxKfK2bJhnowKAhFAJ94owonfhdN6l707toPYMoBgq
+QwfhKIhliHCQXtn//Pq3BKbbYOU/nSr1n2s2DHxeIQpiGQX2XtzRHRatNXaMR4yR
+WMpqtnqVJrn8mDL7cJe0cVrH0Z4WGzdsbHF5yjGh8sZP8KF0W1O6u4ozsvFnRYrl
+ztw8Efm+Tm/JVNTxoP3/+YVuU2MVAhlQmWL2k5O4WJY2luY0yGjg6BBOE+j+0UBs
+KvlSEGkVEztsS0sbkGbh720G9hzmK8mjuUNWwHrZOh7AaXVLFBme2jP+3no8wdY=
+=985j
 -----END PGP SIGNATURE-----
 
---eNjIDde0W37E3OQP--
+--KxKI/R+N9hudrWbn--
 
---===============1721316365588209052==
+--===============8911532169810920433==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1721316365588209052==--
+--===============8911532169810920433==--
