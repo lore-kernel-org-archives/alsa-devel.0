@@ -1,21 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: How to correct params_format on DPCM ?
-Date: Sat, 18 Apr 2015 13:32:22 +0100
-Message-ID: <20150418123222.GP26185@sirena.org.uk>
-References: <87twwsttp5.wl%kuninori.morimoto.gx@renesas.com>
- <20150408180118.GG6023@sirena.org.uk>
- <87a8yg8nko.wl%kuninori.morimoto.gx@renesas.com>
- <20150410154338.GL6023@sirena.org.uk>
- <87twwk7tz4.wl%kuninori.morimoto.gx@renesas.com>
- <87r3ro7hnu.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 7/7] ASoc: Codec: add sti platform codec
+Date: Sat, 18 Apr 2015 14:09:14 +0100
+Message-ID: <20150418130914.GT26185@sirena.org.uk>
+References: <1429018531-29025-1-git-send-email-arnaud.pouliquen@st.com>
+ <1429018531-29025-8-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8155346945523011405=="
+Content-Type: multipart/mixed; boundary="===============1285067345634234983=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B5AC2619BE
- for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 14:32:29 +0200 (CEST)
-In-Reply-To: <87r3ro7hnu.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C1032619BE
+ for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2015 15:09:22 +0200 (CEST)
+In-Reply-To: <1429018531-29025-8-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +21,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8155346945523011405==
+--===============1285067345634234983==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0UhZIN3Sa23/ILEd"
+	protocol="application/pgp-signature"; boundary="u+FGODhbLwgAeSOU"
 Content-Disposition: inline
 
 
---0UhZIN3Sa23/ILEd
+--u+FGODhbLwgAeSOU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 13, 2015 at 04:54:39AM +0000, Kuninori Morimoto wrote:
+On Tue, Apr 14, 2015 at 03:35:31PM +0200, Arnaud Pouliquen wrote:
 
-> If my understanding is correct, the information which userland
-> can get is setuped in .open
+> +struct codec_regfield {
+> +	struct regmap_field  *field;
+> +	const struct reg_field regfield;
+> +};
 
-Yes.
+The fact that you're defining this structure should be settinng off
+alarm bells.  You shouldn't be storing the per device dynamically
+allocated regmap_feild in global static data, you should be storing it
+in the driver data for your device.
 
-> But, DPCM cases, it cares only cpu information. why it doesn't care codec ?
+> +/* specify ops depends on codec version */
+> +struct sti_codec_ops {
+> +	int (*dai_dac_probe)(struct snd_soc_dai *dai);
+> +	int (*mute)(struct snd_soc_dai *dai, int mute);
+> +	int (*startup)(struct snd_soc_dai *);
+> +	void (*shutdown)(struct snd_soc_dai *);
+> +};
 
-Like I said before for most systems that do DPCM (and certainly the ones
-Liam's been working on) there's a DSP in place which rewrites all the
-data between the front end and the back end so the constraints of the
-CODEC aren't visible to the application layer.
+Don't define an abstraction layer within your driver wrapping the core
+abstraction layer, this is just making things harder to follow.  Just
+register different ops with the core if you need to.
 
-> I guess DPCM should be...
+> +	/* init DAC configuration */
+> +	if (data->chipid == CHIPID_STIH407) {
+> +		/* init configuration */
+> +		ret = regmap_field_write(
+> +			dac->regfield[STIH407_DAC_STANDBY].field, 1);
+> +		ret |= regmap_field_write(
+> +			dac->regfield[STIH407_DAC_STANDBY_ANA].field, 1);
+> +		ret |= regmap_field_write(
+> +			dac->regfield[STIH407_DAC_SOFTMUTE].field, 1);
 
->  FE.hw = fe_cpu & fe_codec
->  BE.hw = be_cpu & be_codec
+Don't or multiple return values together, check and return errors
+properly.  That way the error value isn't corrupted if you get different
+errors.
 
-Usually there's nothing "CODEC" visible at the front end for these
-systems.
+> +	} else if (data->chipid == CHIPID_STIH416) {
 
-> And, if no FE constraint, final image will be
+Use switch statements to select among multiple values.
 
->  hw = FE.hw & BE.hw
+> +	dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
+> +	if (IS_ERR(dac->rst)) {
+> +		dev_err(dai->codec->dev,
+> +			"%s: ERROR: DAC reset not declared in DT (%d)!\n",
+> +			__func__, (int)dac->rst);
 
-Well, BE and CODEC but probably.
+That error message might be wrong, it could be some other error.
 
---0UhZIN3Sa23/ILEd
+> +		return -EFAULT;
+
+Don't ignore the error that was returned, use PTR_ERR() - this is broken
+for probe deferral.
+
+> +int stih407_sas_dac_startup(struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct sti_sas_codec_data *drvdata = dev_get_drvdata(codec->dev);
+> +	struct sti_dac_audio *dac = &drvdata->dac;
+> +	int ret;
+> +
+> +	/* mute */
+> +	ret = regmap_field_write(
+> +		dac->regfield[STIH407_DAC_SOFTMUTE].field, 1);
+> +
+> +	/* Enable analog */
+> +	ret |= regmap_field_write(
+> +		dac->regfield[STIH407_DAC_STANDBY_ANA].field, 0);
+> +
+> +	/* Disable standby */
+> +	ret |= regmap_field_write(
+> +		dac->regfield[STIH407_DAC_STANDBY].field, 0);
+
+This looks like at least standby and analogue should be moved to DAPM,
+I'm not clear why the mute is being controlled here...
+
+> +static int sti_sas_hw_params(struct snd_pcm_substream *substream,
+> +			     struct snd_pcm_hw_params *params,
+> +			     struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> +	int ret, div;
+> +
+> +	div = sti_sas_dai_clk_div[dai->id];
+> +	ret = snd_soc_dai_set_clkdiv(cpu_dai, SND_SOC_CLOCK_OUT, div);
+> +	if (ret)
+
+set_clkdiv() is an external API, you shouldn't be calling it within the
+driver - probably you should just not implement it and inline the
+functionality here.
+
+> +static int sti_sas_codec_suspend(struct snd_soc_codec *codec)
+> +{
+> +	/* Nothing done but need to be declared for PM management*/
+> +	return 0;
+> +}
+
+Remove empty functions, the comment is not accurate.
+
+> +	/* Allocate device structure */
+> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct sti_sas_codec_data),
+> +			       GFP_KERNEL);
+> +
+> +	if (!drvdata) {
+> +		dev_err(&pdev->dev, "Failed to allocate device structure");
+
+The memory allocators are already very noisy if they fail.
+
+--u+FGODhbLwgAeSOU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVMk7VAAoJECTWi3JdVIfQz20H/04ALMYAvPVFs0DAiW4MwZOp
-dxplncuH5fH8RPOl9+0QoLALzjTAdkPAh+43vmIj+eLDowB6BoIHPLPXxSyxqvep
-f2TZAx/ptnmLwJDOy4eMFu2HenOczh5NZhWZrj3b8lYuZCYZy2hayD2M+jU3oqYr
-YjMB5aabQlFW2X1VJUcoLvriQGRiMmeO5s21k08g1jC/xs1iv2+qe/1mUBmBfGfc
-G9M0A7D0tQ/bcE+DfNWqW0sDOnnob2v7kjDJbDLgLOUunIQs9tDGk2aibRTLRygX
-GBVxJbLeEDpidsocsAZ+DXykuSTT57f70fHcaDHB0MYQ0I4MGo6WCgOU/s7PR1U=
-=xn9X
+iQEcBAEBCAAGBQJVMld5AAoJECTWi3JdVIfQ9LQH/jYEABDafXSPlcpdek6n/rjq
+48YpSMXz2o+3lmSqXaRJTIMzGSy11Op5QKo4CBuw5BDkTN6Qs4AJgspimgpPiigZ
+0wpYem/u1pHoq4uIsnOQBbJmWR0dhikRX977xbldoYhfMaPyjRJlbJkNqj1Vyuf7
+gDCVib1neK/+7q1qrVNNBMWjB6LYaZEsyxsK81RKMfECfCX9bQb0MBrGK5aKnKJa
+5k1dAAMX/bYa9qx0EoDsxguti+cw3+HtAdEMe+iN07yblrq/CMJBNlIJY63a5e/o
+AlUWp/XDnmFcUcH52hI30uJ/AztfO7RTHphs1eGbIAlF6vp5WuN0il2lmVcy4z4=
+=1H3j
 -----END PGP SIGNATURE-----
 
---0UhZIN3Sa23/ILEd--
+--u+FGODhbLwgAeSOU--
 
---===============8155346945523011405==
+--===============1285067345634234983==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8155346945523011405==--
+--===============1285067345634234983==--
