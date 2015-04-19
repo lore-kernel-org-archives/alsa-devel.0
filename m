@@ -1,15 +1,17 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: add static inline funcs to fix a
-	compiling issue
-Date: Sun, 19 Apr 2015 09:45:48 +0800
-Message-ID: <1429407948-14158-1-git-send-email-yang.jie@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/2] ALSA: asound.h - use
+	SNDRV_CTL_ELEM_ID_NAME_MAXLEN
+Date: Sun, 19 Apr 2015 13:55:46 +0900
+Message-ID: <55333552.9040200@sakamocchi.jp>
+References: <1429291413-30668-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CF9A2612D0
- for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2015 03:42:28 +0200 (CEST)
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67A4E2606BC
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2015 06:55:52 +0200 (CEST)
+In-Reply-To: <1429291413-30668-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,45 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When CONFIG_PM_SLEEP is not selected, calling funcs
-snd_soc_suspend and _resume will generate a compiling
-issue.
+On Apr 18 2015 02:23, Vinod Koul wrote:
+> we have defined SNDRV_CTL_ELEM_ID_NAME_MAXLEN as size of name array so use
+> this define instead of numeric value
+> 
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+>  include/uapi/sound/asound.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+> index 46145a5277fe..a45be6bdcf5b 100644
+> --- a/include/uapi/sound/asound.h
+> +++ b/include/uapi/sound/asound.h
+> @@ -864,7 +864,7 @@ struct snd_ctl_elem_id {
+>  	snd_ctl_elem_iface_t iface;	/* interface identifier */
+>  	unsigned int device;		/* device/client number */
+>  	unsigned int subdevice;		/* subdevice (substream) number */
+> -	unsigned char name[44];		/* ASCII name of item */
+> +	unsigned char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];		/* ASCII name of item */
+>  	unsigned int index;		/* index of item */
+>  };
 
-Here add static inline stub functions to fix it.
+I think it better to post the same patch to alsa-lib when you add some
+changes to ALSA uapi headers because alsa-lib should also have the same
+headers.
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- include/sound/soc.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+# I also realized that recent timestamping improvements are not still
+# included in alsa-lib header.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 2afdd2e..64041f5 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -387,8 +387,20 @@ int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
- int snd_soc_register_card(struct snd_soc_card *card);
- int snd_soc_unregister_card(struct snd_soc_card *card);
- int devm_snd_soc_register_card(struct device *dev, struct snd_soc_card *card);
-+#ifdef CONFIG_PM_SLEEP
- int snd_soc_suspend(struct device *dev);
- int snd_soc_resume(struct device *dev);
-+#else
-+static inline int snd_soc_suspend(struct device *dev)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_soc_resume(struct device *dev)
-+{
-+	return 0;
-+}
-+#endif
- int snd_soc_poweroff(struct device *dev);
- int snd_soc_register_platform(struct device *dev,
- 		const struct snd_soc_platform_driver *platform_drv);
--- 
-1.9.1
+
+Regards
+
+Takashi Sakamoto
