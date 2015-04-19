@@ -1,71 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add static inline funcs to fix a
-	compiling issue
-Date: Sun, 19 Apr 2015 13:22:13 +0100
-Message-ID: <20150419122213.GI6023@sirena.org.uk>
-References: <1429407948-14158-1-git-send-email-yang.jie@intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5113489503551887611=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 89129261A3B
- for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2015 14:22:19 +0200 (CEST)
-In-Reply-To: <1429407948-14158-1-git-send-email-yang.jie@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+From: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+Subject: [PATCH] ALSA: hda - Mute headphone pin on suspend on XPS13 9333
+Date: Sun, 19 Apr 2015 19:00:40 +0200
+Message-ID: <1429462840-24143-1-git-send-email-gabriele.mzt@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gabriele Mazzotta <gabriele.mzt@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Muting the headphone output pin right before the codec suspension
+prevents pop noises when headphones are plugged in (except for a
+barely audible click noise).
+This solution allows to truly save some power when headphones are
+plugged in unlike the previous solution (033b0a7ca9c:
+"ALSA: hda - Pop noises fix for XPS13 9333")
 
---===============5113489503551887611==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n1Uk1UcYPcMfp5mO"
-Content-Disposition: inline
+Signed-off-by: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-
---n1Uk1UcYPcMfp5mO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Apr 19, 2015 at 09:45:48AM +0800, Jie Yang wrote:
-> When CONFIG_PM_SLEEP is not selected, calling funcs
-> snd_soc_suspend and _resume will generate a compiling
-> issue.
-
-Applied, thanks.
-
---n1Uk1UcYPcMfp5mO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVM530AAoJECTWi3JdVIfQ8cwH/16MqoCFim7n+d3GWgsaefbE
-ql87Atn1jdJDTZOsmUTAZGrXeWgCUX0fSnR1hX67zbsmho7byxKI+24aNtPvVctf
-68zofQmUlIW22QvmsAGdF5rgHF3VEvM7zwKwv4fhqvW5/eKPxUG2MpM90cacUCgq
-PR/LXloNz2MTj0W5uNeY4BkzfNLjgfYO9K/1EbaCpDYepVWW9fyPuKHR3iQritcs
-gycN0fJsj+RNsJVedLsnicA73yVgxCAB7j7VWR2sGxc1JcZdXFv3hxwNn3fQzdZm
-72/GpJHcSRBUbp5cM9pZveXvBuNWa59vdvU10yf1Ho2vvFI54b8sT3LqpKku0uk=
-=FsDb
------END PGP SIGNATURE-----
-
---n1Uk1UcYPcMfp5mO--
-
---===============5113489503551887611==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5113489503551887611==--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b18b9c6..231d0e4 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4176,17 +4176,15 @@ static void alc_fixup_disable_aamix(struct hda_codec *codec,
+ 	}
+ }
+ 
+-static unsigned int alc_power_filter_xps13(struct hda_codec *codec,
+-				hda_nid_t nid,
+-				unsigned int power_state)
++static void alc_shutup_dell_xps13(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
++	int hp_pin = spec->gen.autocfg.hp_pins[0];
+ 
+-	/* Avoid pop noises when headphones are plugged in */
+-	if (spec->gen.hp_jack_present)
+-		if (nid == codec->core.afg || nid == 0x02 || nid == 0x15)
+-			return AC_PWRST_D0;
+-	return snd_hda_gen_path_power_filter(codec, nid, power_state);
++	/* Prevent pop noises when headphones are plugged in */
++	snd_hda_codec_write(codec, hp_pin, 0,
++			    AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
++	msleep(20);
+ }
+ 
+ static void alc_fixup_dell_xps13(struct hda_codec *codec,
+@@ -4197,8 +4195,7 @@ static void alc_fixup_dell_xps13(struct hda_codec *codec,
+ 		struct hda_input_mux *imux = &spec->gen.input_mux;
+ 		int i;
+ 
+-		spec->shutup = alc_no_shutup;
+-		codec->power_filter = alc_power_filter_xps13;
++		spec->shutup = alc_shutup_dell_xps13;
+ 
+ 		/* Make the internal mic the default input source. */
+ 		for (i = 0; i < imux->num_items; i++) {
+-- 
+2.1.4
