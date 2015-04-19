@@ -1,62 +1,37 @@
 From: Gabriele Mazzotta <gabriele.mzt@gmail.com>
-Subject: [PATCH] ALSA: hda - Mute headphone pin on suspend on XPS13 9333
-Date: Sun, 19 Apr 2015 19:00:40 +0200
-Message-ID: <1429462840-24143-1-git-send-email-gabriele.mzt@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gabriele Mazzotta <gabriele.mzt@gmail.com>
+Subject: Pop noise on startup when headphones are plugged in
+	(Dell XPS13 9333)
+Date: Sun, 19 Apr 2015 19:26:58 +0200
+Message-ID: <23057263.IjMh4t6SYF@xps13>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f48.google.com (mail-wg0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BD742651CE
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2015 19:27:00 +0200 (CEST)
+Received: by wgyo15 with SMTP id o15so157398914wgy.2
+ for <alsa-devel@alsa-project.org>; Sun, 19 Apr 2015 10:27:00 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Muting the headphone output pin right before the codec suspension
-prevents pop noises when headphones are plugged in (except for a
-barely audible click noise).
-This solution allows to truly save some power when headphones are
-plugged in unlike the previous solution (033b0a7ca9c:
-"ALSA: hda - Pop noises fix for XPS13 9333")
+Hi,
 
-Signed-off-by: Gabriele Mazzotta <gabriele.mzt@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+I've recently found that commit a551d91473 ("ALSA: hda - Use regmap for
+command verb caches, too") is somehow causing a pop noise on startup
+when headphones are plugged in, but I couldn't figure out the exact
+cause. Was this observed on other systems (mine is a Dell XPS13 9333,
+Realtek ALC3661)? Does anyone have any idea of what the cause might be?
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b18b9c6..231d0e4 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4176,17 +4176,15 @@ static void alc_fixup_disable_aamix(struct hda_codec *codec,
- 	}
- }
- 
--static unsigned int alc_power_filter_xps13(struct hda_codec *codec,
--				hda_nid_t nid,
--				unsigned int power_state)
-+static void alc_shutup_dell_xps13(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
-+	int hp_pin = spec->gen.autocfg.hp_pins[0];
- 
--	/* Avoid pop noises when headphones are plugged in */
--	if (spec->gen.hp_jack_present)
--		if (nid == codec->core.afg || nid == 0x02 || nid == 0x15)
--			return AC_PWRST_D0;
--	return snd_hda_gen_path_power_filter(codec, nid, power_state);
-+	/* Prevent pop noises when headphones are plugged in */
-+	snd_hda_codec_write(codec, hp_pin, 0,
-+			    AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+	msleep(20);
- }
- 
- static void alc_fixup_dell_xps13(struct hda_codec *codec,
-@@ -4197,8 +4195,7 @@ static void alc_fixup_dell_xps13(struct hda_codec *codec,
- 		struct hda_input_mux *imux = &spec->gen.input_mux;
- 		int i;
- 
--		spec->shutup = alc_no_shutup;
--		codec->power_filter = alc_power_filter_xps13;
-+		spec->shutup = alc_shutup_dell_xps13;
- 
- 		/* Make the internal mic the default input source. */
- 		for (i = 0; i < imux->num_items; i++) {
--- 
-2.1.4
+Regards,
+Gabriele
