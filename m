@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 4/4] ASoC: topology: Add build support for
-	topology.
-Date: Mon, 20 Apr 2015 22:38:25 +0100
-Message-ID: <20150420213825.GU14892@sirena.org.uk>
-References: <1429217327.7100.22.camel@loki>
+Subject: Re: [RFC 0/4] ASoC DSP topology
+Date: Mon, 20 Apr 2015 22:40:32 +0100
+Message-ID: <20150420214032.GV14892@sirena.org.uk>
+References: <1429217285.7100.18.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3223835436723459731=="
+Content-Type: multipart/mixed; boundary="===============8591117207868106753=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B8AE32654FC
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 23:38:31 +0200 (CEST)
-In-Reply-To: <1429217327.7100.22.camel@loki>
+ by alsa0.perex.cz (Postfix) with ESMTP id CF0CF2654FC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 23:40:36 +0200 (CEST)
+In-Reply-To: <1429217285.7100.18.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +25,54 @@ Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3223835436723459731==
+--===============8591117207868106753==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bxF9Dep5HzwGj9mC"
+	protocol="application/pgp-signature"; boundary="qgEfXXHyyarqcYJd"
 Content-Disposition: inline
 
 
---bxF9Dep5HzwGj9mC
+--qgEfXXHyyarqcYJd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 16, 2015 at 09:48:47PM +0100, Liam Girdwood wrote:
->=20
-> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> ---
->  sound/soc/Makefile | 1 +
->  1 file changed, 1 insertion(+)
+On Thu, Apr 16, 2015 at 09:48:05PM +0100, Liam Girdwood wrote:
+> It's been about 2 years since posting V1 of the ASoC dynamic firmware patches
+> and a lot has changed since then ...
 
-This needs to be 3/4 to prevent bisection issues.
+:)
 
---bxF9Dep5HzwGj9mC
+> Kernel. The kernel core reads in the topology data and builds the driver
+> capabilities and audio topology based on this data. This includes building
+> the DAPM graph, setting PCM and DAI capabilities, registering kcontrols and
+> registering DAPM widgets.
+
+I think the topology code itself looks good, I'll take another pass over
+it though since there's a lot to get through.  The main thing is to make
+sure the ABI makes sense though - we can fix up the kernel later.
+
+--qgEfXXHyyarqcYJd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVNXHRAAoJECTWi3JdVIfQDlsH/2+qIDPzZRBUywfShndUirMr
-HEJqtKyMXE0lkh0BpkuD3Nd/uOOvQRAgfmacXKPD0SL6jrQ++IQ8tx7hI4vNWjFb
-Lso+LjJQ5fp6lsrjyHF2B56PmHnexcgQ13KbVhQTwFB3pCE8Kq7fDdtlx5FsDKfp
-sLK7pA6b2tWq0z/N+XT01CWH1/e3lTLC0nJGzc81eGBDRgMZVZJ2vrJu3cgnNTWc
-wji+wu+UKzn6zpE++Nek01zmHKuSRln+sbOh6TKbQS2fbja5EXVseQzHM9aMM04A
-BZmvoEs/3e51lrvgBF/1RoIV7dmc4dqp/gVW0CccLMB7QFeJNwdO1HtI8JmgfjE=
-=h/es
+iQEcBAEBCAAGBQJVNXJPAAoJECTWi3JdVIfQkcUH/iMgtSGQR5GVtspyIG01QY9j
+kFue8j5+6w6G8lJHb/hZZSKagagqVVOVwNLd+X8qcMnesc4HeY3NtxHbauNGdKoZ
+W/J4y0xnDNAt45/4Xjj4xSPTHbytKnXWD9XK3VYQlazcXPiZkPF2NX1S66DuMALN
+GxpclxTAq131Grq+TIuRCpeR71QKJ44RZp2hOionQRQdaBqyH/GCMim4M43c25gd
+b3ZgE+/TnlSw44GIHlTfwVO3uW8vnrmxOGa1NIgi/KIX1LMboXR19KDeq1U/CzEs
+TZ1CD2ZFkaYXEKX7XlT8vS+K3kpRTPdoK0Ov0j8e1iOQDwoOonPzxekqjP1SYoo=
+=Jksf
 -----END PGP SIGNATURE-----
 
---bxF9Dep5HzwGj9mC--
+--qgEfXXHyyarqcYJd--
 
---===============3223835436723459731==
+--===============8591117207868106753==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3223835436723459731==--
+--===============8591117207868106753==--
