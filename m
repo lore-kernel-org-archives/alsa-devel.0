@@ -1,83 +1,208 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/3] ASoC: tas571x: New driver for TI TAS571x power
- amplifiers
-Date: Mon, 20 Apr 2015 13:21:29 +0100
-Message-ID: <20150420122129.GC14892@sirena.org.uk>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
- <1429134141-17924-2-git-send-email-cernekee@chromium.org>
- <20150418113632.GE26185@sirena.org.uk>
- <CAJzqFtYVd+jHesoNnG47ftoK9SWYUmXwDXpf2==s3Rv1ewpsYg@mail.gmail.com>
- <20150418171137.GY26185@sirena.org.uk>
- <CAJzqFtZ97FjzDpgbSJbCkqNGnQx_QiGrzY1v1zV+croAL6_=qw@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 2/2] ASoC: wm_adsp: Add support for DSP
+	control flags
+Date: Mon, 20 Apr 2015 13:52:45 +0100
+Message-ID: <1429534365-13439-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1429534365-13439-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAJzqFtZ97FjzDpgbSJbCkqNGnQx_QiGrzY1v1zV+croAL6_=qw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Andrew Bresticker <abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3D1F5265867
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 14:59:33 +0200 (CEST)
+In-Reply-To: <1429534365-13439-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, fengguang.wu@intel.com, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+The DSP control information contains various hints about the usage of
+the control use these when handling the control.
 
---mojUlQ0s9EVzWg2t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
 
-On Sat, Apr 18, 2015 at 01:07:07PM -0700, Kevin Cernekee wrote:
-> On Sat, Apr 18, 2015 at 10:11 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+Changes since v1:
+ - Set the actual control access flags rather than implementing that
+   in the get and put callbacks.
 
-> > Someone trying to use the atmel_wm8904 driver with something other than
-> > a wm8904 shouldn't really be expecting a good experince...
+Thanks,
+Charles
 
-> The same check shows up in numerous other drivers, including the one
-> for the audio controller on my board.
+ sound/soc/codecs/wm_adsp.c |   43 +++++++++++++++++++++++++++++++++++--------
+ sound/soc/codecs/wmfw.h    |    5 +++++
+ 2 files changed, 40 insertions(+), 8 deletions(-)
 
-Sounds like either that (undisclosed) driver has a problem or you're
-using it inappropriately.
-
-> >> Is there a stub version that I can use instead?  Nothing jumped out at
-> >> me when looking at the other codec drivers.
-
-> > No, such a stub would make no sense - why would we put a stub in all the
-> > drivers rather than just making the core do the right thing?
-
-> AFAICT, implementing the set_sysclk callback is mandatory, even if it
-> is a no-op on the codec side.  If I delete the stub function, audio
-> playback fails.
-
-For the reasons I mentioned above having a set_sysclk() function is not
-mandatory and your driver will not be merged with a stub such as is
-currently present.  As far as I can tell you are trying to bodge around
-some problem elsewhere in either the code or your usage of it.
-
-> Clearing just the LSB would accomplish the same thing, but would be
-> less obvious IMO.  It would also require an extra read, and the code
-> is less concise.
-
-I don't think anyone is going to care about an extra read on system
-init, and in any case if the driver followed best practice and provided
-register defaults that read would be satisfied from cache.
-
---mojUlQ0s9EVzWg2t
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVNO9JAAoJECTWi3JdVIfQ5DMH/1pMUDSuO9yDgfeD1YsIw2u8
-VBPFkawtdtNzJcwmNwQX1fl7RZFacH/2LD5oqB6u7AGUlwcX0gQI978v7KeDLxNY
-zAWxVZfWAnCKro0Dd2Od1OehilNto+WOW4JGOI10Cpdk/JdD40DoFVGkj93RzpD1
-c1Xtmdo8He00S/7yF3kHklLc1MjAQarmzlIcGHi1X/leMt3l+fbw88Whay0oBYoF
-U7dxbBWOTNJSeH2/YMhpl68SlQXumB+wZfyWF/amyVNwx+D/LQVIB2bUrlKZPWfp
-sCCSFy0CZh0CBVpBtcjN7b4sRG24TpvaVgr6iPME4+yhxYRuM7CUgJ5qpA8NesA=
-=1YpN
------END PGP SIGNATURE-----
-
---mojUlQ0s9EVzWg2t--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 53fc7f8..f6642c1 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -240,6 +240,7 @@ struct wm_coeff_ctl {
+ 	size_t len;
+ 	unsigned int set:1;
+ 	struct snd_kcontrol *kcontrol;
++	unsigned int flags;
+ };
+ 
+ static int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
+@@ -472,7 +473,15 @@ static int wm_coeff_get(struct snd_kcontrol *kcontrol,
+ 	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kcontrol->private_value;
+ 	char *p = ucontrol->value.bytes.data;
+ 
++	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
++		if (ctl->enabled)
++			return wm_coeff_read_control(ctl, p, ctl->len);
++		else
++			return -EPERM;
++	}
++
+ 	memcpy(p, ctl->cache, ctl->len);
++
+ 	return 0;
+ }
+ 
+@@ -501,6 +510,15 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+ 	kcontrol->put = wm_coeff_put;
+ 	kcontrol->private_value = (unsigned long)ctl;
+ 
++	if (ctl->flags) {
++		if (ctl->flags & WMFW_CTL_FLAG_WRITEABLE)
++			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_WRITE;
++		if (ctl->flags & WMFW_CTL_FLAG_READABLE)
++			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_READ;
++		if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
++			kcontrol->access |= SNDRV_CTL_ELEM_ACCESS_VOLATILE;
++	}
++
+ 	ret = snd_soc_add_card_controls(dsp->card,
+ 					kcontrol, 1);
+ 	if (ret < 0)
+@@ -526,6 +544,9 @@ static int wm_coeff_init_control_caches(struct wm_adsp *dsp)
+ 	list_for_each_entry(ctl, &dsp->ctl_list, list) {
+ 		if (!ctl->enabled || ctl->set)
+ 			continue;
++		if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
++			continue;
++
+ 		ret = wm_coeff_read_control(ctl,
+ 					    ctl->cache,
+ 					    ctl->len);
+@@ -544,7 +565,7 @@ static int wm_coeff_sync_controls(struct wm_adsp *dsp)
+ 	list_for_each_entry(ctl, &dsp->ctl_list, list) {
+ 		if (!ctl->enabled)
+ 			continue;
+-		if (ctl->set) {
++		if (ctl->set && !(ctl->flags & WMFW_CTL_FLAG_VOLATILE)) {
+ 			ret = wm_coeff_write_control(ctl,
+ 						     ctl->cache,
+ 						     ctl->len);
+@@ -569,7 +590,8 @@ static void wm_adsp_ctl_work(struct work_struct *work)
+ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 				  const struct wm_adsp_alg_region *alg_region,
+ 				  unsigned int offset, unsigned int len,
+-				  const char *subname, unsigned int subname_len)
++				  const char *subname, unsigned int subname_len,
++				  unsigned int flags)
+ {
+ 	struct wm_coeff_ctl *ctl;
+ 	struct wmfw_ctl_work *ctl_work;
+@@ -577,6 +599,9 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 	char *region_name;
+ 	int ret;
+ 
++	if (flags & WMFW_CTL_FLAG_SYS)
++		return 0;
++
+ 	switch (alg_region->type) {
+ 	case WMFW_ADSP1_PM:
+ 		region_name = "PM";
+@@ -649,6 +674,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 	ctl->ops.xput = wm_coeff_put;
+ 	ctl->dsp = dsp;
+ 
++	ctl->flags = flags;
+ 	ctl->offset = offset;
+ 	if (len > 512) {
+ 		adsp_warn(dsp, "Truncating control %s from %d\n",
+@@ -852,7 +878,8 @@ static int wm_adsp_parse_coeff(struct wm_adsp *dsp,
+ 					     coeff_blk.offset,
+ 					     coeff_blk.len,
+ 					     coeff_blk.name,
+-					     coeff_blk.name_len);
++					     coeff_blk.name_len,
++					     coeff_blk.flags);
+ 		if (ret < 0)
+ 			adsp_err(dsp, "Failed to create control: %.*s, %d\n",
+ 				 coeff_blk.name_len, coeff_blk.name, ret);
+@@ -1237,7 +1264,7 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp1_alg[i].dm);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0);
++						       len, NULL, 0, 0);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region DM with ID %x\n",
+ 					  be32_to_cpu(adsp1_alg[i].alg.id));
+@@ -1257,7 +1284,7 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp1_alg[i].zm);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0);
++						       len, NULL, 0, 0);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region ZM with ID %x\n",
+ 					  be32_to_cpu(adsp1_alg[i].alg.id));
+@@ -1347,7 +1374,7 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp2_alg[i].xm);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0);
++						       len, NULL, 0, 0);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region XM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
+@@ -1367,7 +1394,7 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp2_alg[i].ym);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0);
++						       len, NULL, 0, 0);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region YM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
+@@ -1387,7 +1414,7 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp2_alg[i].zm);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0);
++						       len, NULL, 0, 0);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region ZM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
+diff --git a/sound/soc/codecs/wmfw.h b/sound/soc/codecs/wmfw.h
+index 04690b2..7613d60 100644
+--- a/sound/soc/codecs/wmfw.h
++++ b/sound/soc/codecs/wmfw.h
+@@ -21,6 +21,11 @@
+ #define WMFW_MAX_COEFF_NAME       256
+ #define WMFW_MAX_COEFF_DESCR_NAME 256
+ 
++#define WMFW_CTL_FLAG_SYS         0x8000
++#define WMFW_CTL_FLAG_VOLATILE    0x0004
++#define WMFW_CTL_FLAG_WRITEABLE   0x0002
++#define WMFW_CTL_FLAG_READABLE    0x0001
++
+ struct wmfw_header {
+ 	char magic[4];
+ 	__le32 len;
+-- 
+1.7.2.5
