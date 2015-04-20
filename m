@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 4/6] ASoC: jack: create kctls according
- to jack pins info
-Date: Mon, 20 Apr 2015 22:20:31 +0100
-Message-ID: <20150420212031.GS14892@sirena.org.uk>
-References: <1429351460-15932-1-git-send-email-yang.jie@intel.com>
- <1429351460-15932-5-git-send-email-yang.jie@intel.com>
+Subject: Re: [RFC 1/4] ASoC: topology: Add topology UAPI header.
+Date: Mon, 20 Apr 2015 22:30:48 +0100
+Message-ID: <20150420213048.GT14892@sirena.org.uk>
+References: <1429217295.7100.19.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7484192518782802053=="
+Content-Type: multipart/mixed; boundary="===============6802381355277748385=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F3AFD265CA7
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 23:20:35 +0200 (CEST)
-In-Reply-To: <1429351460-15932-5-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CB5CE2654FC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 23:30:56 +0200 (CEST)
+In-Reply-To: <1429217295.7100.19.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +20,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7484192518782802053==
+--===============6802381355277748385==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6eUvXotnMb6+obQB"
+	protocol="application/pgp-signature"; boundary="CRjAHycgiaTQGSqU"
 Content-Disposition: inline
 
 
---6eUvXotnMb6+obQB
+--CRjAHycgiaTQGSqU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 18, 2015 at 06:04:18PM +0800, Jie Yang wrote:
-> In the new jack kctls design, we can create kctls according to
-> pins info:
->=20
-> 1. during jack creating, snd_jack_new() with NULL jack_kctl;
-> 2. for each pin, call snd_jack_add_kctls() to add one kctl
-> (it will call snd_ctl_add() to add kctl to card);
+On Thu, Apr 16, 2015 at 09:48:15PM +0100, Liam Girdwood wrote:
 
-I'm a little confused why this isn't done by the jack core?
+> +struct snd_soc_tplg_hdr {
+> +	__le32 magic;
+> +	__le32 abi;		/* ABI version */
+> +	__le32 version;		/* optional vendor specific version details */
+> +	__le32 type;		/* SND_SOC_TPLG_ */
+> +	__le32 vendor_type;	/* optional vendor specific type info */
+> +	__le32 size;		/* data bytes, excluding this header */
+> +	__le32 id;		/* identifier for block */
+> +	char reserved[128];
+> +} __attribute__((packed));
 
---6eUvXotnMb6+obQB
+Not got a massively strong opinion here but given that we have ABI
+versioning can we just skip the 128 bytes of reserved space in most of
+the structs?  Doesn't seem to be doing much except making the files
+bigger.
+
+> +/*
+> + * Mixer kcontrol.
+> + */
+> +struct snd_soc_tplg_mixer_control {
+> +	struct snd_soc_tplg_control_hdr hdr;
+> +	__le32 min;
+> +	__le32 max;
+> +	__le32 platform_max;
+> +	__le32 reg;
+> +	__le32 rreg;
+> +	__le32 shift;
+> +	__le32 rshift;
+
+Do we want to convert this into an array of reg/shift tuples for the
+(dobutless forthcoming) 5.1 controls?  Not sure it's worth it.  I do
+think we probably need some explicit documentation for things like what
+to do with the left and right bits, I guess we hope other OSs or
+whatever can make use of the same topology if we're trying to make it
+standard.
+
+--CRjAHycgiaTQGSqU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVNW2fAAoJECTWi3JdVIfQuUAH/j8gxzSzYm85sBIgZ36M50Qf
-CPxPmQt5786/PDByI6OrejIHna65Oe8EeRsd3cQFxYpC719XuD6q05wh5N52moFE
-RRIadRQDPyv6Lamq/1zYdjr31DhZ3cLyhz3dnol6dNkUKKosp7xtTtyX378WA+NR
-SF8WCF6YHfN0bhThDxFG/7oYquwDD3uiFDpPzAZ5J4lQ5wWf1PdFSQtV6BzL3APZ
-dAHpWm4qL8kygmGzYCSjVI/xffguilg5K0Y7dlR48nz99RjA2rGDtTchHVVn2Wzi
-fJTX4Fu51rZJtGGZ2yoOzK8aO7Sh43hB7/PplFRudL/LdakYYEosfNCSKii0dio=
-=UZ70
+iQEcBAEBCAAGBQJVNXAHAAoJECTWi3JdVIfQVsUH/1lG86VDetqCka8eg5dc0PVM
+m66MdN/y4ttW1Q0yyOcyekmpEO3xNZpK84iJGk2tUiM6A2/UaBZ+Yl9bA02/Pejs
+2N0YJ3Ul6v5b0Ujfy+9RVv4qapQ6Km0GTXe5XzOin6gZPWvk5iEGC5GRTH/5LcKp
+9h/OGYhtgBnRKiJRNjtNZnzk+8zrsFEhQr0B71pPYPVZCKgB00Q8cfrZQhRfAhCb
+YhqGhx/EcdDQP+ID7rmLMieRn3vTIqp+/NNaZFeW7myFiSQw9khouqUUywaLZusE
+nM6Ib2F3XcuFiziW0FvwdfYEmctrIQzurLBviMMTAIGNAYEaW0Wpgu/WTyFnX00=
+=ccLY
 -----END PGP SIGNATURE-----
 
---6eUvXotnMb6+obQB--
+--CRjAHycgiaTQGSqU--
 
---===============7484192518782802053==
+--===============6802381355277748385==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7484192518782802053==--
+--===============6802381355277748385==--
