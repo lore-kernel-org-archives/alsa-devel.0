@@ -1,63 +1,83 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Assert in pcm_params.c
-Date: Mon, 20 Apr 2015 12:31:04 +0100
-Message-ID: <201504201231.04341.gineera@aspect135.co.uk>
-References: <201504180908.47022.gineera@aspect135.co.uk>
- <201504181207.26711.gineera@aspect135.co.uk>
- <CAN8cciaDr+0sdLPjOD1evTHjA6mSDMasM_ZgDpCanWE1Dbbd6w@mail.gmail.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/3] ASoC: tas571x: New driver for TI TAS571x power
+ amplifiers
+Date: Mon, 20 Apr 2015 13:21:29 +0100
+Message-ID: <20150420122129.GC14892@sirena.org.uk>
+References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
+ <1429134141-17924-2-git-send-email-cernekee@chromium.org>
+ <20150418113632.GE26185@sirena.org.uk>
+ <CAJzqFtYVd+jHesoNnG47ftoK9SWYUmXwDXpf2==s3Rv1ewpsYg@mail.gmail.com>
+ <20150418171137.GY26185@sirena.org.uk>
+ <CAJzqFtZ97FjzDpgbSJbCkqNGnQx_QiGrzY1v1zV+croAL6_=qw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 3.array2.smtp.34sp.com (3.array2.smtp.34sp.com [46.183.9.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 13DE62654F6
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 13:31:00 +0200 (CEST)
-Received: from smtpauth2.array1.smtp.34sp.com (lvs3.34sp.com [80.82.124.221])
- by 3.array2.smtp.34sp.com (Postfix) with ESMTP id ACA566B955
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 12:30:58 +0100 (BST)
-In-Reply-To: <CAN8cciaDr+0sdLPjOD1evTHjA6mSDMasM_ZgDpCanWE1Dbbd6w@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <CAJzqFtZ97FjzDpgbSJbCkqNGnQx_QiGrzY1v1zV+croAL6_=qw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Andrew Bresticker <abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 20 April 2015 08:08, you wrote:
-> > > > Hi,
-> > > >
-> > > > The following assert is being hit in pcm_params.c:
-> > > >
-> > > > "pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err >= 0'>
-> > > > failed."
-> > > >
-> > > > This is from a developer using Portaudio in his own application; I
-<snip>
-> > > > Does this point to a flaw in the configuration or possibly a bug in
-> > > > Alsa-lib or can it occur just as a result of misuse of the Alsa API?
->
-> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.
-> > >
-> > > Only snd_pcm_hw_params_test_rate() can be call multiple times,
-> > > Verify if a rate is available inside a configuration space for a PCM.
-> > >
-> > > Those snd_pcm_hw_params_ser_rate*  functions restrict the configuration
-> > > space to one rate and can be called once only
-> >
-> > The stream is being opened and closed at each attempt.
->
-> Seem Delta 44 does not support 2,4,6 or 8 channels
 
-This issue is not on Delta44, but an Intel motherboard.  But I would not 
-expect to hit an assert in Alsa-lib whatever we do, surely?
+--mojUlQ0s9EVzWg2t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Regards
+On Sat, Apr 18, 2015 at 01:07:07PM -0700, Kevin Cernekee wrote:
+> On Sat, Apr 18, 2015 at 10:11 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
 
-Alan
+> > Someone trying to use the atmel_wm8904 driver with something other than
+> > a wm8904 shouldn't really be expecting a good experince...
+
+> The same check shows up in numerous other drivers, including the one
+> for the audio controller on my board.
+
+Sounds like either that (undisclosed) driver has a problem or you're
+using it inappropriately.
+
+> >> Is there a stub version that I can use instead?  Nothing jumped out at
+> >> me when looking at the other codec drivers.
+
+> > No, such a stub would make no sense - why would we put a stub in all the
+> > drivers rather than just making the core do the right thing?
+
+> AFAICT, implementing the set_sysclk callback is mandatory, even if it
+> is a no-op on the codec side.  If I delete the stub function, audio
+> playback fails.
+
+For the reasons I mentioned above having a set_sysclk() function is not
+mandatory and your driver will not be merged with a stub such as is
+currently present.  As far as I can tell you are trying to bodge around
+some problem elsewhere in either the code or your usage of it.
+
+> Clearing just the LSB would accomplish the same thing, but would be
+> less obvious IMO.  It would also require an extra read, and the code
+> is less concise.
+
+I don't think anyone is going to care about an extra read on system
+init, and in any case if the driver followed best practice and provided
+register defaults that read would be satisfied from cache.
+
+--mojUlQ0s9EVzWg2t
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVNO9JAAoJECTWi3JdVIfQ5DMH/1pMUDSuO9yDgfeD1YsIw2u8
+VBPFkawtdtNzJcwmNwQX1fl7RZFacH/2LD5oqB6u7AGUlwcX0gQI978v7KeDLxNY
+zAWxVZfWAnCKro0Dd2Od1OehilNto+WOW4JGOI10Cpdk/JdD40DoFVGkj93RzpD1
+c1Xtmdo8He00S/7yF3kHklLc1MjAQarmzlIcGHi1X/leMt3l+fbw88Whay0oBYoF
+U7dxbBWOTNJSeH2/YMhpl68SlQXumB+wZfyWF/amyVNwx+D/LQVIB2bUrlKZPWfp
+sCCSFy0CZh0CBVpBtcjN7b4sRG24TpvaVgr6iPME4+yhxYRuM7CUgJ5qpA8NesA=
+=1YpN
+-----END PGP SIGNATURE-----
+
+--mojUlQ0s9EVzWg2t--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
