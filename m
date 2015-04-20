@@ -1,12 +1,18 @@
-From: pascal.huerst@gmail.com
-Subject: [PATCH resend] ASoC: adau1701: add regulator consumer
-	support
-Date: Mon, 20 Apr 2015 11:12:03 +0200
-Message-ID: <1429521123-12764-1-git-send-email-pascal.huerst@gmail.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH 7/7] ASoc: Codec: add sti platform codec
+Date: Mon, 20 Apr 2015 11:13:27 +0200
+Message-ID: <5534C337.9080009@st.com>
+References: <1429018531-29025-1-git-send-email-arnaud.pouliquen@st.com>
+ <1429018531-29025-8-git-send-email-arnaud.pouliquen@st.com>
+ <20150418130914.GT26185@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 85FA3265487
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 11:13:52 +0200 (CEST)
+In-Reply-To: <20150418130914.GT26185@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,270 +22,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lars@metafoo.de
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, Pascal Huerst <pascal.huerst@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Pascal Huerst <pascal.huerst@gmail.com>
 
-The adau1701 has two power domains, DVDD and AVDD.
-Enable them both as long as the codec is in use.
 
-Signed-off-by: Pascal Huerst <pascal.huerst@gmail.com>
----
- .../devicetree/bindings/sound/adi,adau1701.txt     |   4 +
- sound/soc/codecs/adau1701.c                        | 125 ++++++++++++++++++---
- 2 files changed, 114 insertions(+), 15 deletions(-)
+On 04/18/2015 03:09 PM, Mark Brown wrote:
+> On Tue, Apr 14, 2015 at 03:35:31PM +0200, Arnaud Pouliquen wrote:
+>
+>> +struct codec_regfield {
+>> +	struct regmap_field  *field;
+>> +	const struct reg_field regfield;
+>> +};
+> The fact that you're defining this structure should be settinng off
+> alarm bells.  You shouldn't be storing the per device dynamically
+> allocated regmap_feild in global static data, you should be storing it
+> in the driver data for your device.
+Not clear for me.
+Register definitions are already part of the driver data structure 
+(stih407_data  or stih416_data) .
+Your point is that i should delete this structure?
+And then use  separate regmap_field  tables (dynamically allocated) for 
+for register map
+and declare registers struct like this
+static struct reg_field sti_sas_dac_stih416[STIH416_DAC_MAX_RF] = {
+     /*STIH416_DAC_MODE*/
+     {REG_FIELD(STIH416_AUDIO_DAC_CTRL, 1, 2)},
+...
+}
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,adau1701.txt b/Documentation/devicetree/bindings/sound/adi,adau1701.txt
-index 547a49b..0d1128c 100644
---- a/Documentation/devicetree/bindings/sound/adi,adau1701.txt
-+++ b/Documentation/devicetree/bindings/sound/adi,adau1701.txt
-@@ -20,6 +20,8 @@ Optional properties:
- 			pin configurations as described in the datasheet,
- 			table 53. Note that the value of this property has
- 			to be prefixed with '/bits/ 8'.
-+ - avdd-supply: 	Power supply for AVDD, providing 3.3V
-+ - dvdd-supply: 	Power supply for DVDD, providing 3.3V
-
- Examples:
-
-@@ -28,6 +30,8 @@ Examples:
- 			compatible = "adi,adau1701";
- 			reg = <0x34>;
- 			reset-gpio = <&gpio 23 0>;
-+			avdd-supply = <&vdd_3v3_reg>;
-+			dvdd-supply = <&vdd_3v3_reg>;
- 			adi,pll-mode-gpios = <&gpio 24 0 &gpio 25 0>;
- 			adi,pin-config = /bits/ 8 <0x4 0x7 0x5 0x5 0x4 0x4
-                                                    0x4 0x4 0x4 0x4 0x4 0x4>;
-diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index d4e219b..ca94ae8 100644
---- a/sound/soc/codecs/adau1701.c
-+++ b/sound/soc/codecs/adau1701.c
-@@ -16,6 +16,7 @@
- #include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/of_device.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/regmap.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -101,6 +102,10 @@
-
- #define ADAU1701_FIRMWARE "adau1701.bin"
-
-+static const char * const supply_names[] = {
-+	"dvdd", "avdd"
-+};
-+
- struct adau1701 {
- 	int gpio_nreset;
- 	int gpio_pll_mode[2];
-@@ -112,6 +117,7 @@ struct adau1701 {
- 	u8 pin_config[12];
-
- 	struct sigmadsp *sigmadsp;
-+	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
- };
-
- static const struct snd_kcontrol_new adau1701_controls[] = {
-@@ -669,6 +675,13 @@ static int adau1701_probe(struct snd_soc_codec *codec)
- 	if (ret)
- 		return ret;
-
-+	ret = regulator_bulk_enable(ARRAY_SIZE(adau1701->supplies),
-+				    adau1701->supplies);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
- 	/*
- 	 * Let the pll_clkdiv variable default to something that won't happen
- 	 * at runtime. That way, we can postpone the firmware download from
-@@ -680,7 +693,7 @@ static int adau1701_probe(struct snd_soc_codec *codec)
- 	/* initalize with pre-configured pll mode settings */
- 	ret = adau1701_reset(codec, adau1701->pll_clkdiv, 0);
- 	if (ret < 0)
--		return ret;
-+		goto exit_regulators_disable;
-
- 	/* set up pin config */
- 	val = 0;
-@@ -696,10 +709,60 @@ static int adau1701_probe(struct snd_soc_codec *codec)
- 	regmap_write(adau1701->regmap, ADAU1701_PINCONF_1, val);
-
- 	return 0;
-+
-+exit_regulators_disable:
-+
-+	regulator_bulk_disable(ARRAY_SIZE(adau1701->supplies), adau1701->supplies);
-+	return ret;
- }
-
-+static int adau1701_remove(struct snd_soc_codec *codec)
-+{
-+	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (gpio_is_valid(adau1701->gpio_nreset))
-+		gpio_set_value_cansleep(adau1701->gpio_nreset, 0);
-+
-+	regulator_bulk_disable(ARRAY_SIZE(adau1701->supplies), adau1701->supplies);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int adau1701_suspend(struct snd_soc_codec *codec)
-+{
-+	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
-+
-+	regulator_bulk_disable(ARRAY_SIZE(adau1701->supplies),
-+			       adau1701->supplies);
-+
-+	return 0;
-+}
-+
-+static int adau1701_resume(struct snd_soc_codec *codec)
-+{
-+	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+        ret = regulator_bulk_enable(ARRAY_SIZE(adau1701->supplies),
-+				    adau1701->supplies);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return adau1701_reset(codec, adau1701->pll_clkdiv, 0);
-+}
-+#else
-+#define adau1701_resume 	NULL
-+#define adau1701_suspend 	NULL
-+#endif /* CONFIG_PM */
-+
- static struct snd_soc_codec_driver adau1701_codec_drv = {
- 	.probe			= adau1701_probe,
-+	.remove			= adau1701_remove,
-+	.resume			= adau1701_resume,
-+	.suspend		= adau1701_suspend,
- 	.set_bias_level		= adau1701_set_bias_level,
- 	.idle_bias_off		= true,
-
-@@ -730,32 +793,58 @@ static int adau1701_i2c_probe(struct i2c_client *client,
- 	struct device *dev = &client->dev;
- 	int gpio_nreset = -EINVAL;
- 	int gpio_pll_mode[2] = { -EINVAL, -EINVAL };
--	int ret;
-+	int ret, i;
-
- 	adau1701 = devm_kzalloc(dev, sizeof(*adau1701), GFP_KERNEL);
- 	if (!adau1701)
- 		return -ENOMEM;
-
-+	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
-+		adau1701->supplies[i].supply = supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(adau1701->supplies),
-+			adau1701->supplies);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to get regulators: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(adau1701->supplies),
-+			adau1701->supplies);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
- 	adau1701->client = client;
- 	adau1701->regmap = devm_regmap_init(dev, NULL, client,
- 					    &adau1701_regmap);
--	if (IS_ERR(adau1701->regmap))
--		return PTR_ERR(adau1701->regmap);
-+	if (IS_ERR(adau1701->regmap)) {
-+		ret = PTR_ERR(adau1701->regmap);
-+		goto exit_regulators_disable;
-+	}
-+
-
- 	if (dev->of_node) {
- 		gpio_nreset = of_get_named_gpio(dev->of_node, "reset-gpio", 0);
--		if (gpio_nreset < 0 && gpio_nreset != -ENOENT)
--			return gpio_nreset;
-+		if (gpio_nreset < 0 && gpio_nreset != -ENOENT) {
-+			ret = gpio_nreset;
-+			goto exit_regulators_disable;
-+		}
-
- 		gpio_pll_mode[0] = of_get_named_gpio(dev->of_node,
- 						   "adi,pll-mode-gpios", 0);
--		if (gpio_pll_mode[0] < 0 && gpio_pll_mode[0] != -ENOENT)
--			return gpio_pll_mode[0];
-+		if (gpio_pll_mode[0] < 0 && gpio_pll_mode[0] != -ENOENT) {
-+			ret = gpio_pll_mode[0];
-+			goto exit_regulators_disable;
-+		}
-
- 		gpio_pll_mode[1] = of_get_named_gpio(dev->of_node,
- 						   "adi,pll-mode-gpios", 1);
--		if (gpio_pll_mode[1] < 0 && gpio_pll_mode[1] != -ENOENT)
--			return gpio_pll_mode[1];
-+		if (gpio_pll_mode[1] < 0 && gpio_pll_mode[1] != -ENOENT) {
-+			ret = gpio_pll_mode[1];
-+			goto exit_regulators_disable;
-+		}
-
- 		of_property_read_u32(dev->of_node, "adi,pll-clkdiv",
- 				     &adau1701->pll_clkdiv);
-@@ -769,7 +858,7 @@ static int adau1701_i2c_probe(struct i2c_client *client,
- 		ret = devm_gpio_request_one(dev, gpio_nreset, GPIOF_OUT_INIT_LOW,
- 					    "ADAU1701 Reset");
- 		if (ret < 0)
--			return ret;
-+			goto exit_regulators_disable;
- 	}
-
- 	if (gpio_is_valid(gpio_pll_mode[0]) &&
-@@ -778,13 +867,13 @@ static int adau1701_i2c_probe(struct i2c_client *client,
- 					    GPIOF_OUT_INIT_LOW,
- 					    "ADAU1701 PLL mode 0");
- 		if (ret < 0)
--			return ret;
-+			goto exit_regulators_disable;
-
- 		ret = devm_gpio_request_one(dev, gpio_pll_mode[1],
- 					    GPIOF_OUT_INIT_LOW,
- 					    "ADAU1701 PLL mode 1");
- 		if (ret < 0)
--			return ret;
-+			goto exit_regulators_disable;
- 	}
-
- 	adau1701->gpio_nreset = gpio_nreset;
-@@ -795,11 +884,17 @@ static int adau1701_i2c_probe(struct i2c_client *client,
-
- 	adau1701->sigmadsp = devm_sigmadsp_init_i2c(client,
- 		&adau1701_sigmadsp_ops, ADAU1701_FIRMWARE);
--	if (IS_ERR(adau1701->sigmadsp))
--		return PTR_ERR(adau1701->sigmadsp);
-+	if (IS_ERR(adau1701->sigmadsp)) {
-+		ret = PTR_ERR(adau1701->sigmadsp);
-+		goto exit_regulators_disable;
-+	}
-
- 	ret = snd_soc_register_codec(&client->dev, &adau1701_codec_drv,
- 			&adau1701_dai, 1);
-+
-+exit_regulators_disable:
-+
-+	regulator_bulk_disable(ARRAY_SIZE(adau1701->supplies), adau1701->supplies);
- 	return ret;
- }
-
---
-1.9.3
+>
+>> +/* specify ops depends on codec version */
+>> +struct sti_codec_ops {
+>> +	int (*dai_dac_probe)(struct snd_soc_dai *dai);
+>> +	int (*mute)(struct snd_soc_dai *dai, int mute);
+>> +	int (*startup)(struct snd_soc_dai *);
+>> +	void (*shutdown)(struct snd_soc_dai *);
+>> +};
+> Don't define an abstraction layer within your driver wrapping the core
+> abstraction layer, this is just making things harder to follow.  Just
+> register different ops with the core if you need to.
+>
+>> +	/* init DAC configuration */
+>> +	if (data->chipid == CHIPID_STIH407) {
+>> +		/* init configuration */
+>> +		ret = regmap_field_write(
+>> +			dac->regfield[STIH407_DAC_STANDBY].field, 1);
+>> +		ret |= regmap_field_write(
+>> +			dac->regfield[STIH407_DAC_STANDBY_ANA].field, 1);
+>> +		ret |= regmap_field_write(
+>> +			dac->regfield[STIH407_DAC_SOFTMUTE].field, 1);
+> Don't or multiple return values together, check and return errors
+> properly.  That way the error value isn't corrupted if you get different
+> errors.
+>
+>> +	} else if (data->chipid == CHIPID_STIH416) {
+> Use switch statements to select among multiple values.
+>
+>> +	dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
+>> +	if (IS_ERR(dac->rst)) {
+>> +		dev_err(dai->codec->dev,
+>> +			"%s: ERROR: DAC reset not declared in DT (%d)!\n",
+>> +			__func__, (int)dac->rst);
+> That error message might be wrong, it could be some other error.
+>
+>> +		return -EFAULT;
+> Don't ignore the error that was returned, use PTR_ERR() - this is broken
+> for probe deferral.
+>
+>> +int stih407_sas_dac_startup(struct snd_soc_dai *dai)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +	struct sti_sas_codec_data *drvdata = dev_get_drvdata(codec->dev);
+>> +	struct sti_dac_audio *dac = &drvdata->dac;
+>> +	int ret;
+>> +
+>> +	/* mute */
+>> +	ret = regmap_field_write(
+>> +		dac->regfield[STIH407_DAC_SOFTMUTE].field, 1);
+>> +
+>> +	/* Enable analog */
+>> +	ret |= regmap_field_write(
+>> +		dac->regfield[STIH407_DAC_STANDBY_ANA].field, 0);
+>> +
+>> +	/* Disable standby */
+>> +	ret |= regmap_field_write(
+>> +		dac->regfield[STIH407_DAC_STANDBY].field, 0);
+> This looks like at least standby and analogue should be moved to DAPM,
+> I'm not clear why the mute is being controlled here...
+>
+>> +static int sti_sas_hw_params(struct snd_pcm_substream *substream,
+>> +			     struct snd_pcm_hw_params *params,
+>> +			     struct snd_soc_dai *dai)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>> +	int ret, div;
+>> +
+>> +	div = sti_sas_dai_clk_div[dai->id];
+>> +	ret = snd_soc_dai_set_clkdiv(cpu_dai, SND_SOC_CLOCK_OUT, div);
+>> +	if (ret)
+> set_clkdiv() is an external API, you shouldn't be calling it within the
+> driver - probably you should just not implement it and inline the
+> functionality here.
+how to do it properly?
+My point is that cpu codecs have a constraint on MCLK_FS division.
+So i need to provide it to the CPU_DAI that generates MCLK.
+I checked simple driver
+priv->mclk_fs exists but is only used to set codec dai not CPU dai...
+should i add call in simple card?
+>> +static int sti_sas_codec_suspend(struct snd_soc_codec *codec)
+>> +{
+>> +	/* Nothing done but need to be declared for PM management*/
+>> +	return 0;
+>> +}
+> Remove empty functions, the comment is not accurate.
+>
+>> +	/* Allocate device structure */
+>> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct sti_sas_codec_data),
+>> +			       GFP_KERNEL);
+>> +
+>> +	if (!drvdata) {
+>> +		dev_err(&pdev->dev, "Failed to allocate device structure");
+> The memory allocators are already very noisy if they fail.
