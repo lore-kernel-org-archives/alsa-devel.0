@@ -1,72 +1,66 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: Intel: rt5645_set_jack_detect is
-	changed
-Date: Mon, 20 Apr 2015 21:57:04 +0100
-Message-ID: <20150420205704.GM14892@sirena.org.uk>
-References: <1429497442-13021-1-git-send-email-bardliao@realtek.com>
- <1429497442-13021-2-git-send-email-bardliao@realtek.com>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: tas571x: New driver for TI
+ TAS571x power amplifiers
+Date: Mon, 20 Apr 2015 22:14:26 +0100
+Message-ID: <20150420211426.GN14892@sirena.org.uk>
+References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
+ <1429134141-17924-2-git-send-email-cernekee@chromium.org>
+ <552FB1CD.3040401@metafoo.de>
+ <CAJzqFtbxKJirP9=hzHzQ=6KM=OayPmEDhJfkSx25DH4fu-gVgg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2084072776243501921=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 19BD5265B6D
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 22:57:12 +0200 (CEST)
-In-Reply-To: <1429497442-13021-2-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, yang.a.fang@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, koro.chen@mediatek.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Cqq5NadOW2RfLMJ/"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAJzqFtbxKJirP9=hzHzQ=6KM=OayPmEDhJfkSx25DH4fu-gVgg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kevin Cernekee <cernekee@chromium.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Bresticker <abrestic@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dgreid@chromium.org, Olof Johansson <olofj@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2084072776243501921==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="z9sQuz+HmDh2hVO4"
-Content-Disposition: inline
-
-
---z9sQuz+HmDh2hVO4
+--Cqq5NadOW2RfLMJ/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 20, 2015 at 10:37:22AM +0800, Bard Liao wrote:
-> rt5645_set_jack_detect is changed, so we need to modify the code
-> which is using rt5645_set_jack_detect.
+On Mon, Apr 20, 2015 at 01:56:46PM -0700, Kevin Cernekee wrote:
+> On Thu, Apr 16, 2015 at 5:57 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> > On 04/15/2015 11:42 PM, Kevin Cernekee wrote:
 
-This is all good, but it should have been part of patch 1 - if resending
-then please squash it in.
+> > If you want to make the clock optional use
 
---z9sQuz+HmDh2hVO4
+> >         if (PTR_ERR(priv->mclk) == -ENOENT)
+> >                 return PTR_ERR(priv->mclk);
+
+> > This makes sure that the case where the clock is specified, but there is a
+> > error with the specification (e.g. incorrect DT cells) is handled properly.
+
+> Did you mean:
+
+> >         if (PTR_ERR(priv->mclk) != -ENOENT)
+> >                 return PTR_ERR(priv->mclk);
+
+> I don't see this in other codec drivers, but I do see the explicit
+> EPROBE_DEFER check in max98090, max98095, pcm512x, and wm8960.
+
+That's the most correct way of writing a check for an optional clock,
+best practice on this stuff is evolving over time (as is standardization
+in the clock API).
+
+--Cqq5NadOW2RfLMJ/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVNWgfAAoJECTWi3JdVIfQlvQH/1m39tCgZ0NUyY79DokITdcU
-smYCJu2fMThXpY7p4njbV96aCBG7np7y8TljUxUR+Os7w5D7gf/VlPI+XPvOlbDP
-zaaQCdoGcKIY6JhZH1XpQxhTPIfA6vim2dcrEs9KbUTPqyjBdjinA8dx529Y0zcA
-QjrM0IN7xaDn4/RDyvjP8JNDCTYVsXE00+zc00FRwRKf9xrl7UmbFUwPTUkMNKn2
-AMBJda9LTmt/1jhbfoU8OasfCEC/7eLnrs20IRCAA8NR/0C0kJG5hX6V1Nt7oh/6
-jhxIxLlcbKfv4pAlb7SB4B51LGAl6bIVp9xdp/kc1IQPFMbfSciqkuhgPcTM5cY=
-=j3Au
+iQEcBAEBCAAGBQJVNWwxAAoJECTWi3JdVIfQqgcH/0gtcE/F6ufPuDKs6Zu2uk4C
+4XAeQTM/2M4nLmPaZrp6RIkCk3faCB6yLJuwnt6UTS+ejBgyeW3JNQ6061g2zM2v
+/T6aXQ/rht35al8e7vCZa4HZqIG6MVVWu7+9BZ/VurozZVkDlzK7sHfnalVogkaV
+I4ouUHHN1+rt4HBGXndpl+tPhaeyF3EKXzIC6d1CswUvB4Z5EPoHvKDn+UY31DeA
+id9csyVm1N3cpwNTzcsImX4G50mC7QzA0hDQd3i6m4O6ju4UGL6nohk6m49ETZPv
+g2DLZFTCx2s4BgCQnT2kb8wjNOCG55kOBpchGOp3OVse4aAXyweQpByKL6KAfa8=
+=Z8L5
 -----END PGP SIGNATURE-----
 
---z9sQuz+HmDh2hVO4--
-
---===============2084072776243501921==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2084072776243501921==--
+--Cqq5NadOW2RfLMJ/--
