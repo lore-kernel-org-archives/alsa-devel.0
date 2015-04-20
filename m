@@ -1,56 +1,76 @@
-From: Kevin Cernekee <cernekee@chromium.org>
-Subject: Re: [PATCH 1/3] ASoC: tas571x: Add DT binding document
-Date: Mon, 20 Apr 2015 14:18:56 -0700
-Message-ID: <CAJzqFtYBvNAgwROZ09MGanYOyyF0EXEL7W9ZF4eAhprQVquNcQ@mail.gmail.com>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org> <20150418111622.GD26185@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6 4/6] ASoC: jack: create kctls according
+ to jack pins info
+Date: Mon, 20 Apr 2015 22:20:31 +0100
+Message-ID: <20150420212031.GS14892@sirena.org.uk>
+References: <1429351460-15932-1-git-send-email-yang.jie@intel.com>
+ <1429351460-15932-5-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150418111622.GD26185@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============7484192518782802053=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3AFD265CA7
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 23:20:35 +0200 (CEST)
+In-Reply-To: <1429351460-15932-5-git-send-email-yang.jie@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jie Yang <yang.jie@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Resending from the correct account.
+
+--===============7484192518782802053==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6eUvXotnMb6+obQB"
+Content-Disposition: inline
 
 
-On Sat, Apr 18, 2015 at 4:16 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Apr 15, 2015 at 02:42:19PM -0700, Kevin Cernekee wrote:
->
->> +- VDD-supply: regulator phandle for the AVDD/DVDD/HP_VDD supply
->
-> This is clearly not correct - if there are three separate physical
-> supplies there should be three separate regulators requested.  They may
-> all resolve to one physical regulator on the board you are working with
-> but that might not be true on other boards.
+--6eUvXotnMb6+obQB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In the "simplified diagram," TI shows a single AVDD/DVDD/HP_VDD supply:
+On Sat, Apr 18, 2015 at 06:04:18PM +0800, Jie Yang wrote:
+> In the new jack kctls design, we can create kctls according to
+> pins info:
+>=20
+> 1. during jack creating, snd_jack_new() with NULL jack_kctl;
+> 2. for each pin, call snd_jack_add_kctls() to add one kctl
+> (it will call snd_ctl_add() to add kctl to card);
 
-http://www.ti.com/lit/ds/symlink/tas5717.pdf#2
+I'm a little confused why this isn't done by the jack core?
 
-Page 20 also suggests the use of a single 3.3V supply for AVDD/DVDD/HP_VDD.
+--6eUvXotnMb6+obQB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-But this combines a number of separate pins.  On 5711 we have
-dedicated pins for:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-PVDD_A
-PVDD_B
-PVDD_C
-PVDD_D
-AVDD
-DVDD
+iQEcBAEBCAAGBQJVNW2fAAoJECTWi3JdVIfQuUAH/j8gxzSzYm85sBIgZ36M50Qf
+CPxPmQt5786/PDByI6OrejIHna65Oe8EeRsd3cQFxYpC719XuD6q05wh5N52moFE
+RRIadRQDPyv6Lamq/1zYdjr31DhZ3cLyhz3dnol6dNkUKKosp7xtTtyX378WA+NR
+SF8WCF6YHfN0bhThDxFG/7oYquwDD3uiFDpPzAZ5J4lQ5wWf1PdFSQtV6BzL3APZ
+dAHpWm4qL8kygmGzYCSjVI/xffguilg5K0Y7dlR48nz99RjA2rGDtTchHVVn2Wzi
+fJTX4Fu51rZJtGGZ2yoOzK8aO7Sh43hB7/PplFRudL/LdakYYEosfNCSKii0dio=
+=UZ70
+-----END PGP SIGNATURE-----
 
-On 5717 we have dedicated pins for:
+--6eUvXotnMb6+obQB--
 
-PVDD_AB
-PVDD_CD
-AVDD
-DVDD
-HPVDD
+--===============7484192518782802053==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I didn't see anything in the datasheet suggesting it is OK to have
-different voltages or power states on the various supply pins (other
-than the special voltage on PVDD).
 
-I can add as many regulator entries as appropriate.  What do you recommend?
+--===============7484192518782802053==--
