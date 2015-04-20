@@ -1,66 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: tas571x: New driver for TI
- TAS571x power amplifiers
-Date: Mon, 20 Apr 2015 22:14:26 +0100
-Message-ID: <20150420211426.GN14892@sirena.org.uk>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
- <1429134141-17924-2-git-send-email-cernekee@chromium.org>
- <552FB1CD.3040401@metafoo.de>
- <CAJzqFtbxKJirP9=hzHzQ=6KM=OayPmEDhJfkSx25DH4fu-gVgg@mail.gmail.com>
+From: Kevin Cernekee <cernekee-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH 1/3] ASoC: tas571x: Add DT binding document
+Date: Mon, 20 Apr 2015 14:16:15 -0700
+Message-ID: <CAJzqFtbK+m2hrUn6uydeuMr+hfrzTe3hkMP76xQU8niRY62qWQ@mail.gmail.com>
+References: <1429134141-17924-1-git-send-email-cernekee@chromium.org> <20150418111622.GD26185@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Cqq5NadOW2RfLMJ/"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJzqFtbxKJirP9=hzHzQ=6KM=OayPmEDhJfkSx25DH4fu-gVgg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kevin Cernekee <cernekee@chromium.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Bresticker <abrestic@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dgreid@chromium.org, Olof Johansson <olofj@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150418111622.GD26185-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Andrew Bresticker <abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Apr 18, 2015 at 4:16 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Wed, Apr 15, 2015 at 02:42:19PM -0700, Kevin Cernekee wrote:
+>
+>> +- VDD-supply: regulator phandle for the AVDD/DVDD/HP_VDD supply
+>
+> This is clearly not correct - if there are three separate physical
+> supplies there should be three separate regulators requested.  They may
+> all resolve to one physical regulator on the board you are working with
+> but that might not be true on other boards.
 
---Cqq5NadOW2RfLMJ/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In the "simplified diagram," TI shows a single AVDD/DVDD/HP_VDD supply:
 
-On Mon, Apr 20, 2015 at 01:56:46PM -0700, Kevin Cernekee wrote:
-> On Thu, Apr 16, 2015 at 5:57 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> > On 04/15/2015 11:42 PM, Kevin Cernekee wrote:
+http://www.ti.com/lit/ds/symlink/tas5717.pdf#2
 
-> > If you want to make the clock optional use
+Page 20 also suggests the use of a single 3.3V supply for AVDD/DVDD/HP_VDD.
 
-> >         if (PTR_ERR(priv->mclk) == -ENOENT)
-> >                 return PTR_ERR(priv->mclk);
+But this combines a number of separate pins.  On 5711 we have
+dedicated pins for:
 
-> > This makes sure that the case where the clock is specified, but there is a
-> > error with the specification (e.g. incorrect DT cells) is handled properly.
+PVDD_A
+PVDD_B
+PVDD_C
+PVDD_D
+AVDD
+DVDD
 
-> Did you mean:
+On 5717 we have dedicated pins for:
 
-> >         if (PTR_ERR(priv->mclk) != -ENOENT)
-> >                 return PTR_ERR(priv->mclk);
+PVDD_AB
+PVDD_CD
+AVDD
+DVDD
+HPVDD
 
-> I don't see this in other codec drivers, but I do see the explicit
-> EPROBE_DEFER check in max98090, max98095, pcm512x, and wm8960.
+I didn't see anything in the datasheet suggesting it is OK to have
+different voltages or power states on the various supply pins (other
+than the special voltage on PVDD).
 
-That's the most correct way of writing a check for an optional clock,
-best practice on this stuff is evolving over time (as is standardization
-in the clock API).
-
---Cqq5NadOW2RfLMJ/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVNWwxAAoJECTWi3JdVIfQqgcH/0gtcE/F6ufPuDKs6Zu2uk4C
-4XAeQTM/2M4nLmPaZrp6RIkCk3faCB6yLJuwnt6UTS+ejBgyeW3JNQ6061g2zM2v
-/T6aXQ/rht35al8e7vCZa4HZqIG6MVVWu7+9BZ/VurozZVkDlzK7sHfnalVogkaV
-I4ouUHHN1+rt4HBGXndpl+tPhaeyF3EKXzIC6d1CswUvB4Z5EPoHvKDn+UY31DeA
-id9csyVm1N3cpwNTzcsImX4G50mC7QzA0hDQd3i6m4O6ju4UGL6nohk6m49ETZPv
-g2DLZFTCx2s4BgCQnT2kb8wjNOCG55kOBpchGOp3OVse4aAXyweQpByKL6KAfa8=
-=Z8L5
------END PGP SIGNATURE-----
-
---Cqq5NadOW2RfLMJ/--
+I can add as many regulator entries as appropriate.  What do you recommend?
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
