@@ -1,115 +1,76 @@
-From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: Re: [RESEND RFC PATCH 3/3] ASoC: mediatek: Add AFE platform driver
-Date: Mon, 20 Apr 2015 14:22:24 +0800
-Message-ID: <1429510944.30743.36.camel@mtksdaap41>
-References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
-	 <1428653649-38200-4-git-send-email-koro.chen@mediatek.com>
-	 <20150418175139.GG26185@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Assert in pcm_params.c
+Date: Mon, 20 Apr 2015 15:08:55 +0800
+Message-ID: <CAN8cciaDr+0sdLPjOD1evTHjA6mSDMasM_ZgDpCanWE1Dbbd6w@mail.gmail.com>
+References: <201504180908.47022.gineera@aspect135.co.uk>
+ <CAN8cciYukOJMwfcmnss+QdTCuNN4=4pi11aOSCHNjyaKO-Komw@mail.gmail.com>
+ <201504181207.26711.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150418175139.GG26185-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f170.google.com (mail-ob0-f170.google.com
+ [209.85.214.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EEEC2604FC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 09:08:59 +0200 (CEST)
+Received: by oblw8 with SMTP id w8so112512257obl.0
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 00:08:57 -0700 (PDT)
+In-Reply-To: <201504181207.26711.gineera@aspect135.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2015-04-18 at 18:51 +0100, Mark Brown wrote:
-> On Fri, Apr 10, 2015 at 04:14:09PM +0800, Koro Chen wrote:
-> 
-> > +	if (memif->use_sram) {
-> > +		struct snd_dma_buffer *dma_buf = &substream->dma_buffer;
-> > +		int size = params_buffer_bytes(params);
-> > +
-> > +		memif->buffer_size = size;
-> > +		memif->phys_buf_addr = afe->sram_phy_address;
-> > +
-> > +		dma_buf->bytes = size;
-> > +		dma_buf->area = (unsigned char *)afe->sram_address;
-> > +		dma_buf->addr = afe->sram_phy_address;
-> > +		dma_buf->dev.type = SNDRV_DMA_TYPE_DEV;
-> > +		dma_buf->dev.dev = substream->pcm->card->dev;
-> > +		snd_pcm_set_runtime_buffer(substream, dma_buf);
-> > +	} else {
-> > +		ret = snd_pcm_lib_malloc_pages(substream,
-> > +					       params_buffer_bytes(params));
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		memif->phys_buf_addr = substream->runtime->dma_addr;
-> > +		memif->buffer_size = substream->runtime->dma_bytes;
-> > +	}
-> 
-> Ah, so the SRAM is directly memory mappable.  Nice.  But we have a
-> limited amount of it so need to allocate it to a device somehow based on
-> some factor I guess?
-Yes, actually SRAM is only used for the main playback path (which is
-memif "DL1") to achieve low power in real use case. Maybe you think it's
-better to not describe this in the device tree, but to choose SRAM
-automatically if memif "DL1" is chosen?
-> 
-> > +static int mtk_afe_set_adda_dac_out(struct mtk_afe *afe, uint32_t rate)
-> > +{
-> > +	u32 audio_i2s_dac = 0;
-> > +	u32 con0, con1;
-> > +
-> > +	/* set dl src2 */
-> > +	con0 = (mtk_afe_adda_fs(rate) << 28) | (0x03 << 24) | (0x03 << 11);
-> > +
-> > +	/* 8k or 16k voice mode */
-> > +	if (con0 == 0 || con0 == 3)
-> > +		con0 |= 0x01 << 5;
-> 
-> This all looks a bit magic, some defines would not go amiss here.
-> 
-> > +	/* SA suggests to apply -0.3db to audio/speech path */
-> > +	con0 = con0 | (0x01 << 1);
-> > +	con1 = 0xf74f0000;
-> 
-> More magic numbers!  This also suggests that there is a volume control
-> lurking in here which could usefully be exposed to applications?
-> 
-Sorry, I will fix these magic numbers.
-It is actually not a real volume control and not that suitable for
-application control because it cannot be changed in runtime; its value
-is fixed and was decided off-lined by experiment that can have best
-audio quality when using with our proprietary codec (not for I2S)
+> > > Hi,
+> > >
+> > > The following assert is being hit in pcm_params.c:
+> > >
+> > > "pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err >= 0'>
+> > > failed."
+> >
+> > > This is from a developer using Portaudio in his own application; I
+have
+> > > yet to ascertain full details, but it is trying successive sample
+rates to
+> > > see which are valid.
+> > >
+> > > Does this point to a flaw in the configuration or possibly a bug in
+> > > Alsa-lib or can it occur just as a result of misuse of the Alsa API?
 
-> > +static void mtk_afe_pmic_shutdown(struct mtk_afe *afe,
-> > +				  struct snd_pcm_substream *substream)
-> > +{
-> > +	/* output */
-> > +	regmap_update_bits(afe->regmap, AFE_ADDA_DL_SRC2_CON0, 1, 0);
-> > +	regmap_update_bits(afe->regmap, AFE_I2S_CON1, 1, 0);
-> > +
-> > +	/* input */
-> > +	regmap_update_bits(afe->regmap, AFE_ADDA_UL_SRC_CON0, 1, 0);
-> > +	/* disable ADDA */
-> > +	regmap_update_bits(afe->regmap, AFE_ADDA_UL_DL_CON0, 1, false);
-> > +}
-> 
-> This is looking like exposing the routing and using DAPM might save a
-> bunch of code?  Overall my main thought looking at the code here and
-> what the hardware was described as doing is that it'd all be simpler if
-> it were a DPCM based thing using DAPM for power.  I think I'd like to
-> see a strong reason for not using at least DPCM.
-Thank you very much for mentioning the DPCM. I didn't know much about
-DPCM and I will definitely study and check if it is suitable for our HW.
-> 
-> > +		if (rate == MTK_AFE_I2S_RATE_8K)
-> > +			voice_mode = 0;
-> > +		else if (rate == MTK_AFE_I2S_RATE_16K)
-> > +			voice_mode = 1;
-> > +		else if (rate == MTK_AFE_I2S_RATE_32K)
-> > +			voice_mode = 2;
-> > +		else if (rate == MTK_AFE_I2S_RATE_48K)
-> > +			voice_mode = 3;
-> 
-> This should be a switch statement.
+> >
+> >
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.
+> >html
+> >
+> > Only snd_pcm_hw_params_test_rate() can be call multiple times,
+> > Verify if a rate is available inside a configuration space for a PCM.
+> >
+> > Those snd_pcm_hw_params_ser_rate*  functions restrict the configuration
+> > space to one rate and can be called once only
+>
+> The stream is being opened and closed at each attempt.
 
+Seem Delta 44 does not support 2,4,6 or 8 channels
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+aplay --dump-hw-params -Dhw:CARD=M44 any.wav
+
+Do both channel min and channel max > 8 ?
+
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/pci/ice1712/delta.c
+
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/pci/ice1712/ice1712.c
+
+rates = SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_48000,
+.rate_min = 4000,
+.rate_max = 48000,
+
+If the driver really support any rate between 4000Hz and 48000Hz, the list
+of supported rates has 48000-4000+1 entries
