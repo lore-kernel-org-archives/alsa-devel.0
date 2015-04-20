@@ -1,150 +1,87 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 2/9] ASoC: hda: Add IPC library for SKL
-	platform
-Date: Mon, 20 Apr 2015 22:56:39 +0100
-Message-ID: <20150420215639.GY14892@sirena.org.uk>
-References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
- <1429276567-29007-3-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH 1/3] ASoC: tas571x: Add DT binding document
+Date: Mon, 20 Apr 2015 23:03:38 +0100
+Message-ID: <20150420220338.GZ14892@sirena.org.uk>
+References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
+ <20150418111622.GD26185@sirena.org.uk>
+ <CAJzqFtYBvNAgwROZ09MGanYOyyF0EXEL7W9ZF4eAhprQVquNcQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3491488160884156691=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 417D2265D26
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 23:56:44 +0200 (CEST)
-In-Reply-To: <1429276567-29007-3-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, patches.audio@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="t3Rhqlz/9+3FgEet"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAJzqFtYBvNAgwROZ09MGanYOyyF0EXEL7W9ZF4eAhprQVquNcQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kevin Cernekee <cernekee@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3491488160884156691==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Ca23f2aBZR6YDKM9"
-Content-Disposition: inline
-
-
---Ca23f2aBZR6YDKM9
+--t3Rhqlz/9+3FgEet
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Apr 17, 2015 at 06:46:00PM +0530, Vinod Koul wrote:
+On Mon, Apr 20, 2015 at 02:18:56PM -0700, Kevin Cernekee wrote:
+> On Sat, Apr 18, 2015 at 4:16 AM, Mark Brown <broonie@kernel.org> wrote:
+> > On Wed, Apr 15, 2015 at 02:42:19PM -0700, Kevin Cernekee wrote:
 
-> +
-> +/* IPC data */
-> +struct ssth_ipc {
-> +	struct device *dev;
-> +	struct ssth_lib *dsp;
-> +
-> +/* IPC messaging */
-> +	struct list_head tx_list;
+> >> +- VDD-supply: regulator phandle for the AVDD/DVDD/HP_VDD supply
 
-Lots of odd indentation of comments in this code (well, several examples
-I noticed so far anyway).
+> > This is clearly not correct - if there are three separate physical
+> > supplies there should be three separate regulators requested.  They may
+> > all resolve to one physical regulator on the board you are working with
+> > but that might not be true on other boards.
 
-> +	if (ret == 0)
-> +		ret = -ETIMEDOUT;
-> +	else {
-> +	/* copy the data returned from DSP */
+> In the "simplified diagram," TI shows a single AVDD/DVDD/HP_VDD supply:
 
-Coding style - { } on both sides of the if (and the comments again).
+> http://www.ti.com/lit/ds/symlink/tas5717.pdf#2
 
-> +		if (msg->rx_size) {
-> +			if (rx_data)
-> +				memcpy(rx_data, msg->rx_data, msg->rx_size);
-> +			else
-> +				dev_err(ipc->dev, "error: no output buffer");
-> +		}
-> +		ret = msg->errno;
-> +	}
-> +
-> +	ssth_ipc_msg_put_empty(ipc, msg);
-> +
-> +	spin_unlock_irqrestore(&ipc->ipc_lock, irq_flags);
+> Page 20 also suggests the use of a single 3.3V supply for AVDD/DVDD/HP_VDD.
 
-Can we pop the message off the list, release the lock and then copy?
-That way we can avoid having interrupts disabled while we do the
-memcpy().  In general there seems to be a lot of interrupts disabled
-copying going on (which is there for some of the other drivers too)
-which might be avoidable.
+> But this combines a number of separate pins.  On 5711 we have
+> dedicated pins for:
 
-> +static void ssth_ipc_reply_remove(struct ssth_ipc *ipc, struct ssth_ipc_message *msg)
-> +{
-> +	unsigned long irq_flags;
-> +
-> +	spin_lock_irqsave(&ipc->ipc_lock, irq_flags);
-> +	if (list_empty(&ipc->rx_list)) {
-> +		dev_dbg(ipc->dev, "empty rx list");
-> +		goto out;
-> +	}
-> +	list_del(&msg->list);
-> +
-> +out:
-> +	spin_unlock_irqrestore(&ipc->ipc_lock, irq_flags);
-> +}
+> PVDD_A
+> PVDD_B
+> PVDD_C
+> PVDD_D
+> AVDD
+> DVDD
 
-Are we expecting to not find the message/
+Yes, those are three separate supplies that are typically tied together
+- it looks like PVDD has high current draw so is tied through multiple
+pins.  I'd not be surprised to see systems with AVDD tied to a separate
+pin, analogue supplies often benefit from low noise supplies separate to
+digital ones.  Indeed if you look at the pin descriptions the analogue
+and digital supplies even have separate grounds.
 
-> +	if (IPC_GLB_NOTIFI_MSG_TYPE(header.primary)) {
-> +		switch (IPC_GLB_NOTIFI_TYPE(header.primary)) {
-> +		case IPC_GLB_NOTIFCATION_GLITCH:
-> +			break;
-> +		case IPC_GLB_NOTIFCATION_OVERRUN:
-> +			break;
-> +		case IPC_GLB_NOTIFCATION_UNDERRUN:
-> +			dev_dbg(ipc->dev, "FW UNDERRUN\n");
-> +			break;
-> +		case IPC_GLB_NOTIFCATION_END_STREAM:
-> +			break;
-> +		case IPC_GLB_NOTIFCATION_PHRASE_DETECTED:
-> +			break;
-> +		case IPC_GLB_NOTIFCATION_RESOURCE_EVENT:
-> +			dev_dbg(ipc->dev, "MCPS Budget Violation\n");
-> +			break;
-> +		case IPC_GLB_NOTIFCATION_LOG_BUFFER_STATUS:
-> +			break;
-> +		case IPC_GLB_NOTIFCATION_TIMESTAMP_CAPTURED:
-> +			break;
-> +		case IPC_GLB_NOTIFCATION_FW_READY:
-> +			ipc->boot_complete = true;
-> +			wake_up(&ipc->boot_wait);
-> +			break;
+> I didn't see anything in the datasheet suggesting it is OK to have
+> different voltages or power states on the various supply pins (other
+> than the special voltage on PVDD).
 
-More prints perhaps?  _PHRASE_DETECTED looks interesting, as does
-_OVERRUN.
+That's more likely to go wrong if they're not controlled separately than
+if they are since we will only be able to turn a single supply on or
+off..
 
---Ca23f2aBZR6YDKM9
+> I can add as many regulator entries as appropriate.  What do you recommend?
+
+Have the driver accurately reflect the hardware, request one regulator
+per supply.
+
+--t3Rhqlz/9+3FgEet
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVNXYWAAoJECTWi3JdVIfQ3sMH/3viLie2QY+5rB85j4Jypi0S
-u+jBTBLicNQyQerzkFUm2rOOj1jtVvYLcIhj2KDoreaWAdUBJUm6hp15MZQ3svQP
-Cl3HQT6hLBPaov/OvkROf+CzkKrhFm/pvUxq6glC4hmjg5nKxzVcSD206hKxA+Bx
-M4rMv0VfJRevvGdHcgL+GbMDxVWqnZQ1/ajTGXJvMFWR7/a6d2drTx2IZvHFKzNm
-Pi3qf52P62eNi+fGe1fTlVamvlvinPRLvro8ov7YljYp4zb2w76sAwFQMVOimSSZ
-mHBHWL8+Kv1b1oPFZAt2wusnb1JtQ/wAdVBwLLeH212hAlw3v08sOkSYG5gTLsg=
-=sp4a
+iQEcBAEBCAAGBQJVNXe5AAoJECTWi3JdVIfQJgEH/3XwKBmnmaNw54q05rOQXXjv
+Oce9mCa1X+oRlxKMEVog9KkeumKCEiq2PSsKBk/exNYdG+/NZzK95X3HAJ+IYe6m
+AjYpQeU9L3n0mn7iJxilOIaHD+9Psp+yubK7imMg00FHHQoHQyKcTOamtHd1x9B6
+uzriV9YlyNTGh3qWR6+FYHZEpyqJsTSLpi9VeZ9yjM0zm5G4GXKrmiCnDRdBVEIN
+LVwwRqIleFceqkw8yThh/5C58hyQoB0dlvOYp70jX0JXvt3Lyoqe7G+hUzapb1Bz
+tAyLF46gMJhhR464IiJd/k13nNZ1KXivdbRQV1rCxqwPspRxpKfp1D9XBAgP0Ho=
+=b85K
 -----END PGP SIGNATURE-----
 
---Ca23f2aBZR6YDKM9--
-
---===============3491488160884156691==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3491488160884156691==--
+--t3Rhqlz/9+3FgEet--
