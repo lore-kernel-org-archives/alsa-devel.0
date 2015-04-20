@@ -1,65 +1,56 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 1/2] extcon: arizona: Add support for
-	select accessory detect mode when headphone detection"
-Date: Mon, 20 Apr 2015 09:29:18 +0100
-Message-ID: <20150420082918.GF3480@opensource.wolfsonmicro.com>
-References: <1429259579-16563-1-git-send-email-ideal.song@samsung.com> <1429259579-16563-2-git-send-email-ideal.song@samsung.com> <20150417090047.GC3480@opensource.wolfsonmicro.com> <20150420104514.5820fa93@songinha-Samsung-DeskTop-System>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 11/13] ASoC: wm_adsp: Add support for DSP
+	control flags
+Date: Mon, 20 Apr 2015 09:30:06 +0100
+Message-ID: <20150420083006.GG3480@opensource.wolfsonmicro.com>
+References: <1428928085-20250-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1428928085-20250-12-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20150418172306.GA26185@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 495B126548B
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 10:30:07 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150420104514.5820fa93@songinha-Samsung-DeskTop-System>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+In-Reply-To: <20150418172306.GA26185@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 20, 2015 at 10:45:14AM +0900, Inha Song wrote:
-> Hi,
+On Sat, Apr 18, 2015 at 06:23:06PM +0100, Mark Brown wrote:
+> On Mon, Apr 13, 2015 at 01:28:03PM +0100, Charles Keepax wrote:
+> > The DSP control information contains various hints about the usage of
+> > the controls use these when handling the control.
 > 
-> Thanks for your comments,
+> > @@ -418,6 +419,9 @@ static int wm_coeff_put(struct snd_kcontrol *kcontrol,
+> >  	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kcontrol->private_value;
+> >  	char *p = ucontrol->value.bytes.data;
+> >  
+> > +	if (ctl->flags && !(ctl->flags & WMFW_CTL_FLAG_WRITEABLE))
+> > +		return -EPERM;
+> > +
+> >  	memcpy(ctl->cache, p, ctl->len);
+> >  
+> >  	ctl->set = 1;
 > 
-> 
-> On Fri, 17 Apr 2015 10:00:47 +0100
-> Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
-> 
-> > On Fri, Apr 17, 2015 at 05:32:58PM +0900, Inha Song wrote:
-> > > This patch add support for select accessory detect mode to HPDETL or HPDETR.
-> > > Arizona provides a headphone detection circuit on the HPDETL and HPDETR pins
-> > > to measure the impedance of an external load connected to the headphone.
-> > > 
-> > > Depending on board design, headphone detect pins can change to HPDETR or HPDETL.
-> > > 
-> > > Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> > > ---
-> > 
-> > > +
-> > >  	info->micvdd = devm_regulator_get(&pdev->dev, "MICVDD");
-> > >  	if (IS_ERR(info->micvdd)) {
-> > >  		ret = PTR_ERR(info->micvdd);
-> > > @@ -1338,6 +1359,11 @@ static int arizona_extcon_probe(struct platform_device *pdev)
-> > >  
-> > >  	arizona_extcon_set_mode(info, 0);
-> > >  
-> > > +	if (arizona->pdata.hpdet_channel)
-> > > +		info->hpdet_channel = ARIZONA_ACCDET_MODE_HPR;
-> > > +	else
-> > > +		info->hpdet_channel = ARIZONA_ACCDET_MODE_HPL;
-> > > +
-> > 
-> > Just move the two defines in include/dt-bindings/mfd/arizona.h
-> > and have the pdata get set directly to one of the values.
-> 
-> Ok, I agree. But I have a question.
-> Should I also move ACCDET_MODE_MIC define to dt-bindings header?
-> 
+> What would be even better for these would be to apply these at control
+> creation time so that controls that lack read or write support just
+> don't have the relevant operations in the first place.  That would not
+> be simpler and would allow the rest of the stack to do the right thing,
+> for example setting SNDRV_CTL_ELEM_ACCESS_READ and _WRITE properly.
 
-Yeah I think move that over too, there is a reasonable chance it
-will be need as part of the binding at some point in the future.
+That is indeed much more sensible I will respin this patch.
 
 Thanks,
 Charles
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
