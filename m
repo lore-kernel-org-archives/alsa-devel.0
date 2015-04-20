@@ -1,20 +1,22 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 11/13] ASoC: wm_adsp: Add support for DSP
-	control flags
-Date: Mon, 20 Apr 2015 09:30:06 +0100
-Message-ID: <20150420083006.GG3480@opensource.wolfsonmicro.com>
-References: <1428928085-20250-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1428928085-20250-12-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20150418172306.GA26185@sirena.org.uk>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v6 1/6] ALSA: jack: create jack kcontrols
+ for every jack input
+Date: Mon, 20 Apr 2015 08:38:46 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9055134A3@SHSMSX101.ccr.corp.intel.com>
+References: <1429351460-15932-1-git-send-email-yang.jie@intel.com>
+ <1429351460-15932-2-git-send-email-yang.jie@intel.com>
+ <s5ha8y4wmlq.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90551344F@SHSMSX101.ccr.corp.intel.com>
+ <s5hmw23b4vz.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 495B126548B
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 10:30:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150418172306.GA26185@sirena.org.uk>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6043F265472
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 10:39:04 +0200 (CEST)
+In-Reply-To: <s5hmw23b4vz.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,33 +26,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tanu.kaskinen@linux.intel.com" <tanu.kaskinen@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 18, 2015 at 06:23:06PM +0100, Mark Brown wrote:
-> On Mon, Apr 13, 2015 at 01:28:03PM +0100, Charles Keepax wrote:
-> > The DSP control information contains various hints about the usage of
-> > the controls use these when handling the control.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, April 20, 2015 4:06 PM
+> To: Jie, Yang
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R;
+> tanu.kaskinen@linux.intel.com; Liam Girdwood
+> Subject: Re: [PATCH v6 1/6] ALSA: jack: create jack kcontrols for every jack
+> input
 > 
-> > @@ -418,6 +419,9 @@ static int wm_coeff_put(struct snd_kcontrol *kcontrol,
-> >  	struct wm_coeff_ctl *ctl = (struct wm_coeff_ctl *)kcontrol->private_value;
-> >  	char *p = ucontrol->value.bytes.data;
-> >  
-> > +	if (ctl->flags && !(ctl->flags & WMFW_CTL_FLAG_WRITEABLE))
-> > +		return -EPERM;
-> > +
-> >  	memcpy(ctl->cache, p, ctl->len);
-> >  
-> >  	ctl->set = 1;
+> At Mon, 20 Apr 2015 07:52:20 +0000,
+> Jie, Yang wrote:
+> >
+> > > > @@ -82,10 +84,19 @@ struct snd_jack {
+> > > >  	void (*private_free)(struct snd_jack *);  };
+> > > >
+> > > > +struct snd_jack_kctl {
+> > > > +	struct snd_kcontrol *kctl;
+> > > > +	struct list_head list;		/* list of controls belong to the same
+> > > jack */
+> > > > +	unsigned int mask_bits;	/* one of the corresponding bits of
+> > > status change will report to this kctl */
+> > > > +	void *private_data;
+> > > > +	void (*private_free)(struct snd_jack_kctl *jack_kctl); };
+> > >
+> > > You don't have to expose this.  The hda_jack.c doesn't actually need
+> > > these whole bits, as it supposes 1:1 as jack:kctl mapping.  You can
+> > > get rid of hda_jack->kctl since snd_jack_report() does it already,
+> > > thus the private_data and the destructor can be dropped, too.
+> >
+> > The patch 3/6 removes had_jack->kctl, here I added priate destructor
+> > for HDA jack to reset hda_jack_tbl jacks->nid and jacks->jack to 0.
+> > Seems these are needed for HDA jack logic, otherwise, I can already
+> > dropped them. :(
 > 
-> What would be even better for these would be to apply these at control
-> creation time so that controls that lack read or write support just
-> don't have the relevant operations in the first place.  That would not
-> be simpler and would allow the rest of the stack to do the right thing,
-> for example setting SNDRV_CTL_ELEM_ACCESS_READ and _WRITE properly.
+> It's not needed, as far as I understand your code.
+> 
+> Try to look from from the top-level POV: the hda driver just needs to register
+> a jack object via snd_jack_new(), reports it, and remove it in destructor.  The
+> private_data was needed for tracking the codec-local kctls, but now they are
+> managed in jack object itself, thus we don't have to keep eyes on it.  The
+> private_free is for removing the kctl list, and since this is gone, we don't have
+> to take it, either.  In other words, we don't have to take care of kctls at all in
+> hda driver side.  This would be the ideal situation.
+ 
+Thanks for explaining it. Finally I make clear that jack private_free will call
+hda_free_jack_priv() to reset jacks->nid/jack, so I have no worry now. :)
 
-That is indeed much more sensible I will respin this patch.
+> 
+> (snip)
+> > > snd_kctl_jack_new() itself.  At the same time, the code doing the
+> > > same thing in hda_jack.c can be removed.  Then the index argument of
+> >
+> > A little concern that there may be a little difference here:
+> > hda_jack.c:get_unique_index() check the codec kctl list, but in my
+> > patch we check card kctl list, I am afraid that it may influence the
+> > exist HDA usage, wo just keep what HDA did before for HDA jack.
+> >
+> > Takashi, do you think it's a risk to change from codec kctl list to
+> > card kctl list for HDA part?
+> 
+> No, there shouldn't.  The id must be unique for the whole card, not specific
+> to codecs.  That is, the code looking through
+> snd_ctl_find_id() is even safer than the current version.
+ 
+OK, then I feel reassured to replace it. :)
 
-Thanks,
-Charles
+> 
+> 
+> thanks,
+> 
+> Takashi
