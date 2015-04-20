@@ -1,63 +1,64 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [RESEND RFC PATCH 3/3] ASoC: mediatek: Add AFE platform driver
-Date: Mon, 20 Apr 2015 21:55:11 +0100
-Message-ID: <20150420205511.GL14892@sirena.org.uk>
-References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
- <1428653649-38200-4-git-send-email-koro.chen@mediatek.com>
- <20150418175139.GG26185@sirena.org.uk>
- <1429510944.30743.36.camel@mtksdaap41>
+From: Kevin Cernekee <cernekee@chromium.org>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: tas571x: New driver for TI TAS571x
+ power amplifiers
+Date: Mon, 20 Apr 2015 13:56:46 -0700
+Message-ID: <CAJzqFtbxKJirP9=hzHzQ=6KM=OayPmEDhJfkSx25DH4fu-gVgg@mail.gmail.com>
+References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
+ <1429134141-17924-2-git-send-email-cernekee@chromium.org> <552FB1CD.3040401@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n83H03bbH672hrlY"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1429510944.30743.36.camel@mtksdaap41>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <552FB1CD.3040401@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Bresticker <abrestic@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dgreid@chromium.org, Olof Johansson <olofj@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Apr 16, 2015 at 5:57 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> On 04/15/2015 11:42 PM, Kevin Cernekee wrote:
+>>
+>> Introduce a new codec driver for the Texas Instruments
+>> TAS5711/TAS5717/TAS5719 power amplifier chips.  These chips are typically
+>> used to take an I2S digital audio input and drive 10-20W into a pair of
+>> speakers.
+>>
+>> Signed-off-by: Kevin Cernekee <cernekee@chromium.org>
+>
+>
+> Looks pretty good. Comments inlune.
 
---n83H03bbH672hrlY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for the review.  I'm working on a V2 incorporating the feedback
+from you and Mark.
 
-On Mon, Apr 20, 2015 at 02:22:24PM +0800, Koro Chen wrote:
-> On Sat, 2015-04-18 at 18:51 +0100, Mark Brown wrote:
-> > On Fri, Apr 10, 2015 at 04:14:09PM +0800, Koro Chen wrote:
+>> +static int tas571x_i2c_probe(struct i2c_client *client,
+>> +                            const struct i2c_device_id *id)
+>> +{
+>> +       struct tas571x_private *priv;
+>> +       struct device *dev = &client->dev;
+>> +       int i;
+>> +
+>> +       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+>> +       if (!priv)
+>> +               return -ENOMEM;
+>> +       i2c_set_clientdata(client, priv);
+>> +
+>> +       priv->mclk = devm_clk_get(dev, "mclk");
+>> +       if (PTR_ERR(priv->mclk) == -EPROBE_DEFER)
+>> +               return -EPROBE_DEFER;
+>
+>
+> If you want to make the clock optional use
+>
+>         if (PTR_ERR(priv->mclk) == -ENOENT)
+>                 return PTR_ERR(priv->mclk);
+>
+> This makes sure that the case where the clock is specified, but there is a
+> error with the specification (e.g. incorrect DT cells) is handled properly.
 
-> > Ah, so the SRAM is directly memory mappable.  Nice.  But we have a
-> > limited amount of it so need to allocate it to a device somehow based on
-> > some factor I guess?
+Did you mean:
 
-> Yes, actually SRAM is only used for the main playback path (which is
-> memif "DL1") to achieve low power in real use case. Maybe you think it's
-> better to not describe this in the device tree, but to choose SRAM
-> automatically if memif "DL1" is chosen?
+>         if (PTR_ERR(priv->mclk) != -ENOENT)
+>                 return PTR_ERR(priv->mclk);
 
-Since it's directly memory mappable is there actually any cost in
-latency terms from using the SRAM in low latency cases (or did I misread
-what the code was doing there)?  If it can only be used with one
-interface and there's no downside from using it...
-
---n83H03bbH672hrlY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVNWeuAAoJECTWi3JdVIfQGVoH/1W+8st7XBLSp2QIzItCAppk
-T8Dp5baU7pWKS5zwNwhfGf3i6a+bpb+G+k5ggS5ViiC0Gfic8AH7p6GeJP3I3fYw
-gn+utp5mM/yt2kWUeM47GoNbGv1n6eEup8hiYcm9+KmUlT2i/sMb/OpOdv+BrTWI
-kpclvGExdq/sxK+PYpDxzt+CIdjuye6LpcOu1TqumeZZ2YGcz6w7tz7JUaFihfCT
-5S3JWRRlqnhquRzVHnJIMuWBEe3rSmq5+5qgyKNuFuIRwUVa5JbwOS1KTFmWhInj
-i5H8oUEX2WVsPMYISy/pC88gxLVt3VDpEoe1473OyrjFXv2Bipjn2h8jQ+caztQ=
-=FzKD
------END PGP SIGNATURE-----
-
---n83H03bbH672hrlY--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I don't see this in other codec drivers, but I do see the explicit
+EPROBE_DEFER check in max98090, max98095, pcm512x, and wm8960.
