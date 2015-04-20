@@ -1,17 +1,21 @@
 From: Alan Horstmann <gineera@aspect135.co.uk>
 Subject: Re: Assert in pcm_params.c
-Date: Mon, 20 Apr 2015 12:17:36 +0100
-Message-ID: <201504201217.36477.gineera@aspect135.co.uk>
+Date: Mon, 20 Apr 2015 12:31:04 +0100
+Message-ID: <201504201231.04341.gineera@aspect135.co.uk>
 References: <201504180908.47022.gineera@aspect135.co.uk>
+ <201504181207.26711.gineera@aspect135.co.uk>
+ <CAN8cciaDr+0sdLPjOD1evTHjA6mSDMasM_ZgDpCanWE1Dbbd6w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.ip02ir2.opaltelecom.net (out1.ip02ir2.opaltelecom.net
- [62.24.128.238])
- by alsa0.perex.cz (Postfix) with ESMTP id D0D342657B0
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 13:17:32 +0200 (CEST)
-In-Reply-To: <201504180908.47022.gineera@aspect135.co.uk>
+Received: from 3.array2.smtp.34sp.com (3.array2.smtp.34sp.com [46.183.9.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13DE62654F6
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 13:31:00 +0200 (CEST)
+Received: from smtpauth2.array1.smtp.34sp.com (lvs3.34sp.com [80.82.124.221])
+ by 3.array2.smtp.34sp.com (Postfix) with ESMTP id ACA566B955
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 12:30:58 +0100 (BST)
+In-Reply-To: <CAN8cciaDr+0sdLPjOD1evTHjA6mSDMasM_ZgDpCanWE1Dbbd6w@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,32 +26,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 18 April 2015 09:08, I wrote:
-> The following assert is being hit in pcm_params.c:
+On Monday 20 April 2015 08:08, you wrote:
+> > > > Hi,
+> > > >
+> > > > The following assert is being hit in pcm_params.c:
+> > > >
+> > > > "pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err >= 0'>
+> > > > failed."
+> > > >
+> > > > This is from a developer using Portaudio in his own application; I
+<snip>
+> > > > Does this point to a flaw in the configuration or possibly a bug in
+> > > > Alsa-lib or can it occur just as a result of misuse of the Alsa API?
 >
-> "pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err >= 0' failed."
+> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.
+> > >
+> > > Only snd_pcm_hw_params_test_rate() can be call multiple times,
+> > > Verify if a rate is available inside a configuration space for a PCM.
+> > >
+> > > Those snd_pcm_hw_params_ser_rate*  functions restrict the configuration
+> > > space to one rate and can be called once only
+> >
+> > The stream is being opened and closed at each attempt.
 >
-> This is from a developer using Portaudio in his own application; I have yet
-> to ascertain full details, but it is trying successive sample rates to see
-> which are valid.
+> Seem Delta 44 does not support 2,4,6 or 8 channels
 
-Further info: this occurs with an Intel motherboard/soundcard, attempting to 
-open and config the stream at 44100 using front, surround or hdmi pcm, having 
-previously opened and tried at a lower, not-supported samplerate, and closed.
-AFAIK other pcms work OK.
-
-The assert is hit with all current Debian and Ubuntu distros, for example
-     Debian 8 (jessie) 32 bit:  kernel 3.16.0-4-686-pae (Alsa 1.0.28)
-but is not seen with Fedora 20 or OpenSuse 12.1 (do they have asserts off?).
-
-> Does this point to a flaw in the configuration or possibly a bug in
-> Alsa-lib or can it occur just as a result of misuse of the Alsa API?
-
-I will try to conceive some more tests.  How can we debug this further?
+This issue is not on Delta44, but an Intel motherboard.  But I would not 
+expect to hit an assert in Alsa-lib whatever we do, surely?
 
 Regards
 
