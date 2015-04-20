@@ -1,402 +1,75 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 1/2] ASoC: rt5645: Adds push button support for
-	rt5650
-Date: Mon, 20 Apr 2015 10:37:21 +0800
-Message-ID: <1429497442-13021-1-git-send-email-bardliao@realtek.com>
+From: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [RESEND RFC PATCH 1/3] ASoC: mediatek: Add binding support for
+ AFE driver
+Date: Mon, 20 Apr 2015 06:37:47 +0200
+Message-ID: <20150420043747.GH6325@pengutronix.de>
+References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
+ <1428653649-38200-2-git-send-email-koro.chen@mediatek.com>
+ <20150418173407.GE26185@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id D057B2652AD
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 04:37:45 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, yang.a.fang@intel.com, koro.chen@mediatek.com, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150418173407.GE26185-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-rt5650 support headset button detection. Currently, the button
-detection is only implemented for rt5650 codec.
+On Sat, Apr 18, 2015 at 06:34:07PM +0100, Mark Brown wrote:
+> On Fri, Apr 10, 2015 at 04:14:07PM +0800, Koro Chen wrote:
+> 
+> > +Each external interface (called "IO" in this driver) is presented as a
+> > +DAI to ASoC. An IO must be connected via the interconnect to a memif.
+> > +The connection paths are configured through the device tree.
+> 
+> Why are these connection paths configured via device tree?  I would
+> expect that either there would be runtime configurability of these
+> things (particularly if loopback configurations within the hardware are
+> possible) or we'd just allocate memory interfaces to DAIs automatically
+> as DAIs come into use.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5645.c | 262 +++++++++++++++++++++++++++++++++++++++-------
- sound/soc/codecs/rt5645.h |   8 +-
- 2 files changed, 231 insertions(+), 39 deletions(-)
+There is a crossbar switch between the memory interfaces and the DAIs.
+Not every connection is possible, so not every memory interface can be
+used for every DAI. An algorithm choosing a suitable memory interface
+must be quite clever, complicated and also SoC dependent (the same but
+different hardware is used on MT8135 aswell), so I thought offering a
+static configuration via device tree is a good start. Should there be
+runtime configuration possible later the device tree settings could
+provide a good default.
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 69528ae..7c59f9c 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -198,7 +198,6 @@ static const struct reg_default rt5645_reg[] = {
- 	{ 0xda, 0x0000 },
- 	{ 0xdb, 0x0003 },
- 	{ 0xdc, 0x0049 },
--	{ 0xdd, 0x001b },
- 	{ 0xdf, 0x0008 },
- 	{ 0xe0, 0x4000 },
- 	{ 0xe6, 0x8000 },
-@@ -2368,6 +2367,8 @@ static int rt5645_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- static int rt5645_set_bias_level(struct snd_soc_codec *codec,
- 			enum snd_soc_bias_level level)
- {
-+	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
-+
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
- 		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level) {
-@@ -2398,8 +2399,9 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
- 
- 	case SND_SOC_BIAS_OFF:
- 		snd_soc_write(codec, RT5645_DEPOP_M2, 0x1100);
--		snd_soc_update_bits(codec, RT5645_GEN_CTRL1,
--				RT5645_DIG_GATE_CTRL, 0);
-+		if (!rt5645->en_button_func)
-+			snd_soc_update_bits(codec, RT5645_GEN_CTRL1,
-+					RT5645_DIG_GATE_CTRL, 0);
- 		snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
- 				RT5645_PWR_VREF1 | RT5645_PWR_MB |
- 				RT5645_PWR_BG | RT5645_PWR_VREF2 |
-@@ -2414,28 +2416,71 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
- 
--static int rt5645_jack_detect(struct snd_soc_codec *codec)
-+static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
-+	bool enable)
- {
- 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
--	int gpio_state, jack_type = 0;
--	unsigned int val;
- 
--	if (!gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
--		dev_err(codec->dev, "invalid gpio\n");
--		return -EINVAL;
-+	if (enable) {
-+		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
-+							"ADC L power");
-+		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
-+							"ADC R power");
-+		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
-+							"LDO2");
-+		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
-+							"Mic Det Power");
-+		snd_soc_dapm_sync_unlocked(&codec->dapm);
-+		snd_soc_update_bits(codec,
-+					RT5645_INT_IRQ_ST, 0x8, 0x8);
-+		snd_soc_update_bits(codec,
-+					RT5650_4BTN_IL_CMD2, 0x8000, 0x8000);
-+		snd_soc_read(codec, RT5650_4BTN_IL_CMD1);
-+		pr_debug("%s read %x = %x\n", __func__, RT5650_4BTN_IL_CMD1,
-+			snd_soc_read(codec, RT5650_4BTN_IL_CMD1));
-+	} else {
-+		snd_soc_update_bits(codec, RT5650_4BTN_IL_CMD2, 0x8000, 0x0);
-+		snd_soc_update_bits(codec, RT5645_INT_IRQ_ST, 0x8, 0x0);
-+		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
-+							"ADC L power");
-+		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
-+							"ADC R power");
-+		if (rt5645->pdata.jd_mode == 0)
-+			snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
-+								"LDO2");
-+		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
-+							"Mic Det Power");
-+		snd_soc_dapm_sync_unlocked(&codec->dapm);
- 	}
--	gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
-+}
- 
--	dev_dbg(codec->dev, "gpio = %d(%d)\n", rt5645->pdata.hp_det_gpio,
--		gpio_state);
-+static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
-+{
-+	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int val;
- 
--	if ((rt5645->pdata.gpio_hp_det_active_high && gpio_state) ||
--		(!rt5645->pdata.gpio_hp_det_active_high && !gpio_state)) {
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "micbias1");
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "micbias2");
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "LDO2");
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "Mic Det Power");
--		snd_soc_dapm_sync(&codec->dapm);
-+	if (jack_insert) {
-+		if (codec->component.card->instantiated) {
-+			snd_soc_dapm_force_enable_pin(&codec->dapm,
-+				"micbias1");
-+			snd_soc_dapm_force_enable_pin(&codec->dapm,
-+				"micbias2");
-+			snd_soc_dapm_force_enable_pin(&codec->dapm,
-+				"LDO2");
-+			snd_soc_dapm_force_enable_pin(&codec->dapm,
-+				"Mic Det Power");
-+			snd_soc_dapm_sync(&codec->dapm);
-+		} else {
-+			/* Power up necessary bits for JD if dapm is
-+			   not ready yet */
-+			snd_soc_update_bits(codec, RT5645_PWR_ANLG2,
-+				RT5645_PWR_MB1 | RT5645_PWR_MB2,
-+				RT5645_PWR_MB1 | RT5645_PWR_MB2);
-+			snd_soc_update_bits(codec, RT5645_PWR_MIXER,
-+				RT5645_PWR_LDO2, RT5645_PWR_LDO2);
-+			snd_soc_update_bits(codec, RT5645_PWR_VOL,
-+				RT5645_PWR_MIC_DET, RT5645_PWR_MIC_DET);
-+		}
- 
- 		snd_soc_write(codec, RT5645_IN1_CTRL1, 0x0006);
- 		snd_soc_write(codec, RT5645_JD_CTRL3, 0x00b0);
-@@ -2449,32 +2494,62 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec)
- 		val = snd_soc_read(codec, RT5645_IN1_CTRL3) & 0x7;
- 		dev_dbg(codec->dev, "val = %d\n", val);
- 
--		if (val == 1 || val == 2)
--			jack_type = SND_JACK_HEADSET;
--		else
--			jack_type = SND_JACK_HEADPHONE;
-+		if (codec->component.card->instantiated) {
-+			snd_soc_dapm_disable_pin(&codec->dapm, "micbias1");
-+			snd_soc_dapm_disable_pin(&codec->dapm, "micbias2");
-+			if (rt5645->pdata.jd_mode == 0)
-+				snd_soc_dapm_disable_pin(&codec->dapm, "LDO2");
-+			snd_soc_dapm_disable_pin(&codec->dapm,
-+				"Mic Det Power");
-+			snd_soc_dapm_sync(&codec->dapm);
-+		} else {
-+			snd_soc_update_bits(codec, RT5645_PWR_ANLG2,
-+				RT5645_PWR_MB1 | RT5645_PWR_MB2, 0);
-+			if (rt5645->pdata.jd_mode == 0)
-+				snd_soc_update_bits(codec, RT5645_PWR_MIXER,
-+					RT5645_PWR_LDO2, 0);
-+			snd_soc_update_bits(codec, RT5645_PWR_VOL,
-+				RT5645_PWR_MIC_DET, 0);
-+		}
- 
--		snd_soc_dapm_disable_pin(&codec->dapm, "micbias1");
--		snd_soc_dapm_disable_pin(&codec->dapm, "micbias2");
--		if (rt5645->pdata.jd_mode == 0)
--			snd_soc_dapm_disable_pin(&codec->dapm, "LDO2");
--		snd_soc_dapm_disable_pin(&codec->dapm, "Mic Det Power");
--		snd_soc_dapm_sync(&codec->dapm);
-+		if (val == 1 || val == 2) {
-+			rt5645->jack_type = SND_JACK_HEADSET;
-+			if (rt5645->en_button_func) {
-+				msleep(100);
-+				rt5645_enable_push_button_irq(codec, true);
-+			}
-+		} else {
-+			rt5645->jack_type = SND_JACK_HEADPHONE;
-+		}
-+
-+	} else { /* jack out */
-+		rt5645->jack_type = 0;
-+		if (rt5645->en_button_func)
-+			rt5645_enable_push_button_irq(codec, false);
- 	}
- 
--	snd_soc_jack_report(rt5645->hp_jack, jack_type, SND_JACK_HEADPHONE);
--	snd_soc_jack_report(rt5645->mic_jack, jack_type, SND_JACK_MICROPHONE);
--	return 0;
-+	return rt5645->jack_type;
- }
- 
- int rt5645_set_jack_detect(struct snd_soc_codec *codec,
--	struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack)
-+	struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack,
-+	struct snd_soc_jack *btn_jack)
- {
- 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
- 
- 	rt5645->hp_jack = hp_jack;
- 	rt5645->mic_jack = mic_jack;
--	rt5645_jack_detect(codec);
-+	rt5645->btn_jack = btn_jack;
-+	if (rt5645->btn_jack && rt5645->codec_type == CODEC_TYPE_RT5650) {
-+		rt5645->en_button_func = true;
-+		regmap_update_bits(rt5645->regmap, RT5645_GPIO_CTRL1,
-+				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
-+		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
-+				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
-+		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
-+				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
-+	}
-+	rt5645_irq_detection(rt5645);
- 
- 	return 0;
- }
-@@ -2485,7 +2560,7 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 	struct rt5645_priv *rt5645 =
- 		container_of(work, struct rt5645_priv, jack_detect_work.work);
- 
--	rt5645_jack_detect(rt5645->codec);
-+	rt5645_irq_detection(rt5645);
- }
- 
- static irqreturn_t rt5645_irq(int irq, void *data)
-@@ -2498,6 +2573,120 @@ static irqreturn_t rt5645_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
-+static int rt5645_button_detect(struct snd_soc_codec *codec)
-+{
-+	int btn_type, val;
-+
-+	val = snd_soc_read(codec, RT5650_4BTN_IL_CMD1);
-+	pr_debug("val=0x%x\n", val);
-+	btn_type = val & 0xfff0;
-+	snd_soc_write(codec, RT5650_4BTN_IL_CMD1, val);
-+
-+	return btn_type;
-+}
-+
-+static int rt5645_irq_detection(struct rt5645_priv *rt5645)
-+{
-+	int val, btn_type, gpio_state = 0, report = 0;
-+
-+	switch (rt5645->pdata.jd_mode) {
-+	case 0: /* Not using rt5645 JD */
-+		if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
-+			gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
-+			dev_dbg(rt5645->codec->dev, "gpio = %d(%d)\n",
-+				rt5645->pdata.hp_det_gpio, gpio_state);
-+		}
-+		if ((rt5645->pdata.gpio_hp_det_active_high && gpio_state) ||
-+			(!rt5645->pdata.gpio_hp_det_active_high &&
-+			 !gpio_state)) {
-+			report = rt5645_jack_detect(rt5645->codec, 1);
-+		} else {
-+			report = rt5645_jack_detect(rt5645->codec, 0);
-+		}
-+		snd_soc_jack_report(rt5645->hp_jack,
-+				    report, SND_JACK_HEADPHONE);
-+		snd_soc_jack_report(rt5645->mic_jack,
-+				    report, SND_JACK_MICROPHONE);
-+		return report;
-+	case 1: /* 2 port */
-+		val = snd_soc_read(rt5645->codec, RT5645_A_JD_CTRL1) & 0x0070;
-+		break;
-+	default: /* 1 port */
-+		val = snd_soc_read(rt5645->codec, RT5645_A_JD_CTRL1) & 0x0020;
-+		break;
-+
-+	}
-+
-+	switch (val) {
-+	/* jack in */
-+	case 0x30: /* 2 port */
-+	case 0x0: /* 1 port or 2 port */
-+		if (rt5645->jack_type == 0) {
-+			report = rt5645_jack_detect(rt5645->codec, 1);
-+			/* for push button and jack out */
-+			break;
-+		}
-+		btn_type = 0;
-+		if (snd_soc_read(rt5645->codec, RT5645_INT_IRQ_ST) & 0x4) {
-+			/* button pressed */
-+			report = SND_JACK_HEADSET;
-+			btn_type = rt5645_button_detect(rt5645->codec);
-+			switch (btn_type) {
-+			case 0x8000:
-+			case 0x4000:
-+			case 0x2000:
-+				report |= SND_JACK_BTN_0;
-+				break;
-+			case 0x1000:
-+			case 0x0800:
-+			case 0x0400:
-+				report |= SND_JACK_BTN_1;
-+				break;
-+			case 0x0200:
-+			case 0x0100:
-+			case 0x0080:
-+				report |= SND_JACK_BTN_2;
-+				break;
-+			case 0x0040:
-+			case 0x0020:
-+			case 0x0010:
-+				report |= SND_JACK_BTN_3;
-+				break;
-+			case 0x0000: /* unpressed */
-+				break;
-+			default:
-+				dev_err(rt5645->codec->dev,
-+					"Unexpected button code 0x%04x\n",
-+					btn_type);
-+				break;
-+			}
-+		}
-+		if (btn_type == 0)/* button release */
-+			report =  rt5645->jack_type;
-+
-+		break;
-+	/* jack out */
-+	case 0x70: /* 2 port */
-+	case 0x10: /* 2 port */
-+	case 0x20: /* 1 port */
-+		report = 0;
-+		snd_soc_update_bits(rt5645->codec,
-+				    RT5645_INT_IRQ_ST, 0x1, 0x0);
-+		rt5645_jack_detect(rt5645->codec, 0);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	snd_soc_jack_report(rt5645->hp_jack, report, SND_JACK_HEADPHONE);
-+	snd_soc_jack_report(rt5645->mic_jack, report, SND_JACK_MICROPHONE);
-+	if (rt5645->en_button_func)
-+		snd_soc_jack_report(rt5645->btn_jack,
-+			report, SND_JACK_MICROPHONE);
-+
-+	return report;
-+}
-+
- static int rt5645_probe(struct snd_soc_codec *codec)
- {
- 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
-@@ -2784,8 +2973,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 
- 	if (rt5645->pdata.en_jd_func) {
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL3,
--			RT5645_IRQ_CLK_GATE_CTRL | RT5645_MICINDET_MANU,
--			RT5645_IRQ_CLK_GATE_CTRL | RT5645_MICINDET_MANU);
-+			RT5645_IRQ_CLK_GATE_CTRL, RT5645_IRQ_CLK_GATE_CTRL);
- 		regmap_update_bits(rt5645->regmap, RT5645_IN1_CTRL1,
- 			RT5645_CBJ_BST1_EN, RT5645_CBJ_BST1_EN);
- 		regmap_update_bits(rt5645->regmap, RT5645_JD_CTRL3,
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index db78e94..4473636 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -2184,6 +2184,7 @@ struct rt5645_priv {
- 	struct i2c_client *i2c;
- 	struct snd_soc_jack *hp_jack;
- 	struct snd_soc_jack *mic_jack;
-+	struct snd_soc_jack *btn_jack;
- 	struct delayed_work jack_detect_work;
- 
- 	int codec_type;
-@@ -2196,9 +2197,12 @@ struct rt5645_priv {
- 	int pll_src;
- 	int pll_in;
- 	int pll_out;
-+
-+	int jack_type;
-+	bool en_button_func;
- };
- 
- int rt5645_set_jack_detect(struct snd_soc_codec *codec,
--	struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack);
--
-+	struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack,
-+	struct snd_soc_jack *btn_jack);
- #endif /* __RT5645_H__ */
+> 
+> > +- mem-interface-playback:
+> > +  mem-interface-capture: property of memif, format is: <memif irq use_sram>;
+> > +	                 memif: which memif to be used
+> > +			        (defined in include/dt-bindings/sound/mtk-afe.h)
+> > +		         irq: which irq to be used
+> > +			      (defined in include/dt-bindings/sound/mtk-afe.h)
+> > +		         use_sram: 1 is yes, 0 is no
+> 
+> Again, this looks like stuff we should be able to figure out at runtime
+> - the use of SRAM in particular looks like something we might want to
+> change depending on use case.  Assuming it adds buffering then for a
+> VoIP application we might not want to use SRAM to minimize latency but
+> during music playback we might want to enable SRAM to minimize power
+> consumption.
+
+That's exactly the usecase. How could such a runtime configurability
+look like? sysfs? Or something based on the buffer sizes?
+
+Sascha
+
 -- 
-1.8.1.1.439.g50a6b54
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
