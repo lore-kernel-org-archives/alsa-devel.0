@@ -1,22 +1,15 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v6 1/6] ALSA: jack: create jack kcontrols
- for every jack input
-Date: Mon, 20 Apr 2015 08:38:46 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9055134A3@SHSMSX101.ccr.corp.intel.com>
-References: <1429351460-15932-1-git-send-email-yang.jie@intel.com>
- <1429351460-15932-2-git-send-email-yang.jie@intel.com>
- <s5ha8y4wmlq.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A90551344F@SHSMSX101.ccr.corp.intel.com>
- <s5hmw23b4vz.wl-tiwai@suse.de>
+From: Pascal Huerst <pascal.huerst@gmail.com>
+Subject: Re: [PATCH] ASoC: adau1701: add regulator consumer
+	support
+Date: Mon, 20 Apr 2015 10:49:44 +0200
+Message-ID: <5534BDA8.3070608@gmail.com>
+References: <1429008420-1566-1-git-send-email-pascal.huerst@gmail.com>
+ <20150418132322.GV26185@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 6043F265472
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 10:39:04 +0200 (CEST)
-In-Reply-To: <s5hmw23b4vz.wl-tiwai@suse.de>
-Content-Language: en-US
+In-Reply-To: <20150418132322.GV26185@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,79 +19,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tanu.kaskinen@linux.intel.com" <tanu.kaskinen@linux.intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: patch@alsa-project.org, tiwai@suse.de, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, April 20, 2015 4:06 PM
-> To: Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R;
-> tanu.kaskinen@linux.intel.com; Liam Girdwood
-> Subject: Re: [PATCH v6 1/6] ALSA: jack: create jack kcontrols for every jack
-> input
-> 
-> At Mon, 20 Apr 2015 07:52:20 +0000,
-> Jie, Yang wrote:
-> >
-> > > > @@ -82,10 +84,19 @@ struct snd_jack {
-> > > >  	void (*private_free)(struct snd_jack *);  };
-> > > >
-> > > > +struct snd_jack_kctl {
-> > > > +	struct snd_kcontrol *kctl;
-> > > > +	struct list_head list;		/* list of controls belong to the same
-> > > jack */
-> > > > +	unsigned int mask_bits;	/* one of the corresponding bits of
-> > > status change will report to this kctl */
-> > > > +	void *private_data;
-> > > > +	void (*private_free)(struct snd_jack_kctl *jack_kctl); };
-> > >
-> > > You don't have to expose this.  The hda_jack.c doesn't actually need
-> > > these whole bits, as it supposes 1:1 as jack:kctl mapping.  You can
-> > > get rid of hda_jack->kctl since snd_jack_report() does it already,
-> > > thus the private_data and the destructor can be dropped, too.
-> >
-> > The patch 3/6 removes had_jack->kctl, here I added priate destructor
-> > for HDA jack to reset hda_jack_tbl jacks->nid and jacks->jack to 0.
-> > Seems these are needed for HDA jack logic, otherwise, I can already
-> > dropped them. :(
-> 
-> It's not needed, as far as I understand your code.
-> 
-> Try to look from from the top-level POV: the hda driver just needs to register
-> a jack object via snd_jack_new(), reports it, and remove it in destructor.  The
-> private_data was needed for tracking the codec-local kctls, but now they are
-> managed in jack object itself, thus we don't have to keep eyes on it.  The
-> private_free is for removing the kctl list, and since this is gone, we don't have
-> to take it, either.  In other words, we don't have to take care of kctls at all in
-> hda driver side.  This would be the ideal situation.
- 
-Thanks for explaining it. Finally I make clear that jack private_free will call
-hda_free_jack_priv() to reset jacks->nid/jack, so I have no worry now. :)
 
-> 
-> (snip)
-> > > snd_kctl_jack_new() itself.  At the same time, the code doing the
-> > > same thing in hda_jack.c can be removed.  Then the index argument of
-> >
-> > A little concern that there may be a little difference here:
-> > hda_jack.c:get_unique_index() check the codec kctl list, but in my
-> > patch we check card kctl list, I am afraid that it may influence the
-> > exist HDA usage, wo just keep what HDA did before for HDA jack.
-> >
-> > Takashi, do you think it's a risk to change from codec kctl list to
-> > card kctl list for HDA part?
-> 
-> No, there shouldn't.  The id must be unique for the whole card, not specific
-> to codecs.  That is, the code looking through
-> snd_ctl_find_id() is even safer than the current version.
- 
-OK, then I feel reassured to replace it. :)
 
+On 18.04.2015 15:23, Mark Brown wrote:
+> On Tue, Apr 14, 2015 at 12:47:00PM +0200, pascal.huerst@gmail.com wrote:
+>> From: Pascal Huerst <pascal.huerst@gmail.com>
+>>
+>> The adau1701 has two power domains, DVDD and AVDD.
+>> Enable them both as long as the codec is in use.
+>> ---
 > 
-> 
-> thanks,
-> 
-> Takashi
+> This looks fine but I can't apply it because you've not signed it off -
+> I need a signoff for anything that's going to mainline.  Please see
+> Documentation/SubmittingPatches.
+
+Oh, seems like I missed a '-s', sorry! I'll resend.
