@@ -1,106 +1,100 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: Re: [alsa-devel] [PATCH v2 1/2] extcon: arizona: Add support for
- select accessory detect mode when headphone detection
-Date: Tue, 21 Apr 2015 18:38:10 +0900
-Message-ID: <20150421183810.32826087@songinha-Samsung-DeskTop-System>
-References: <1429589505-11954-1-git-send-email-ideal.song@samsung.com>
- <1429589505-11954-2-git-send-email-ideal.song@samsung.com>
- <20150421092826.GH3480@opensource.wolfsonmicro.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [RFC 1/4] ASoC: topology: Add topology UAPI header.
+Date: Tue, 21 Apr 2015 10:47:53 +0100
+Message-ID: <1429609673.3793.14.camel@loki>
+References: <1429217295.7100.19.camel@loki>
+ <20150420213048.GT14892@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20150421092826.GH3480@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, cw00.choi@samsung.com, broonie@kernel.org, rf@opensource.wolfsonmicro.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9693A26069D
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 11:47:58 +0200 (CEST)
+In-Reply-To: <20150420213048.GT14892@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Thanks for your review :)
-
-On Tue, 21 Apr 2015 10:28:26 +0100
-Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
-
-> On Tue, Apr 21, 2015 at 01:11:44PM +0900, Inha Song wrote:
-> > This patch add support for select accessory detect mode to HPDETL or HPDETR.
-> > Arizona provides a headphone detection circuit on the HPDETL and HPDETR pins
-> > to measure the impedance of an external load connected to the headphone.
-> > 
-> > Depending on board design, headphone detect pins can change to HPDETR or HPDETL.
-> > 
-> > Signed-off-by: Inha Song <ideal.song@samsung.com>
-> > ---
-> >  drivers/extcon/extcon-arizona.c   | 28 ++++++++++++++++++++--------
-> >  include/dt-bindings/mfd/arizona.h |  8 ++++++++
-> >  include/linux/mfd/arizona/pdata.h |  3 +++
-> >  3 files changed, 31 insertions(+), 8 deletions(-)
-> >  create mode 100644 include/dt-bindings/mfd/arizona.h
-> > 
-> > diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-> > index 63f01c4..c827342 100644
-> > --- a/drivers/extcon/extcon-arizona.c
-> > +++ b/drivers/extcon/extcon-arizona.c
-> > @@ -32,13 +32,10 @@
-> >  #include <linux/mfd/arizona/core.h>
-> >  #include <linux/mfd/arizona/pdata.h>
-> >  #include <linux/mfd/arizona/registers.h>
-> > +#include <dt-bindings/mfd/arizona.h>
-> >  
-> >  #define ARIZONA_MAX_MICD_RANGE 8
-> >  
-> > -#define ARIZONA_ACCDET_MODE_MIC 0
-> > -#define ARIZONA_ACCDET_MODE_HPL 1
-> > -#define ARIZONA_ACCDET_MODE_HPR 2
-> > -
-> >  #define ARIZONA_MICD_CLAMP_MODE_JDL      0x4
-> >  #define ARIZONA_MICD_CLAMP_MODE_JDH      0x5
-> >  #define ARIZONA_MICD_CLAMP_MODE_JDL_GP5H 0x9
-> > @@ -653,9 +650,9 @@ static void arizona_identify_headphone(struct arizona_extcon_info *info)
-> >  	ret = regmap_update_bits(arizona->regmap,
-> >  				 ARIZONA_ACCESSORY_DETECT_MODE_1,
-> >  				 ARIZONA_ACCDET_MODE_MASK,
-> > -				 ARIZONA_ACCDET_MODE_HPL);
-> > +				 arizona->pdata.hpdet_channel);
-> >  	if (ret != 0) {
-> > -		dev_err(arizona->dev, "Failed to set HPDETL mode: %d\n", ret);
-> > +		dev_err(arizona->dev, "Failed to set HPDET mode: %d\n", ret);
-> >  		goto err;
-> >  	}
-> >  
-> > @@ -705,9 +702,9 @@ static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
-> >  				 ARIZONA_ACCESSORY_DETECT_MODE_1,
-> >  				 ARIZONA_ACCDET_SRC | ARIZONA_ACCDET_MODE_MASK,
-> >  				 info->micd_modes[0].src |
-> > -				 ARIZONA_ACCDET_MODE_HPL);
-> > +				 arizona->pdata.hpdet_channel);
-> >  	if (ret != 0) {
-> > -		dev_err(arizona->dev, "Failed to set HPDETL mode: %d\n", ret);
-> > +		dev_err(arizona->dev, "Failed to set HPDET mode: %d\n", ret);
-> >  		goto err;
-> >  	}
-> >  
-> > @@ -1103,6 +1100,16 @@ static void arizona_micd_set_level(struct arizona *arizona, int index,
-> >  	regmap_update_bits(arizona->regmap, reg, mask, level);
-> >  }
-> >  
-> > +static int arizona_extcon_of_get_pdata(struct arizona *arizona)
-> > +{
-> > +	struct arizona_pdata *pdata = &arizona->pdata;
-> > +
-> > +	of_property_read_u32(arizona->dev->of_node, "wlf,hpdet-channel",
-> > +			     &pdata->hpdet_channel);
+On Mon, 2015-04-20 at 22:30 +0100, Mark Brown wrote:
+> On Thu, Apr 16, 2015 at 09:48:15PM +0100, Liam Girdwood wrote:
 > 
-> I think we need to verify this is either HPL or HPR and default
-> it to HPL if isn't one of those. Otherwise this looks fine.
+> > +struct snd_soc_tplg_hdr {
+> > +	__le32 magic;
+> > +	__le32 abi;		/* ABI version */
+> > +	__le32 version;		/* optional vendor specific version details */
+> > +	__le32 type;		/* SND_SOC_TPLG_ */
+> > +	__le32 vendor_type;	/* optional vendor specific type info */
+> > +	__le32 size;		/* data bytes, excluding this header */
+> > +	__le32 id;		/* identifier for block */
+> > +	char reserved[128];
+> > +} __attribute__((packed));
 > 
+> Not got a massively strong opinion here but given that we have ABI
+> versioning can we just skip the 128 bytes of reserved space in most of
+> the structs?  Doesn't seem to be doing much except making the files
+> bigger.
 
-Ok, We can check hpdet_channel value to use switch-case in arizona_extcon_of_get_pdata() function.
-I will fix.
+We had a similar discussion in Nuremburg last week, the intention is to
+keep the size of the structures constant so wont dont break older
+kernels with newer userspace ABIs etc.
 
-Best Regards,
-Inha Song.
+> 
+> > +/*
+> > + * Mixer kcontrol.
+> > + */
+> > +struct snd_soc_tplg_mixer_control {
+> > +	struct snd_soc_tplg_control_hdr hdr;
+> > +	__le32 min;
+> > +	__le32 max;
+> > +	__le32 platform_max;
+> > +	__le32 reg;
+> > +	__le32 rreg;
+> > +	__le32 shift;
+> > +	__le32 rshift;
+> 
+> Do we want to convert this into an array of reg/shift tuples for the
+> (dobutless forthcoming) 5.1 controls?  Not sure it's worth it.  I do
+> think we probably need some explicit documentation for things like what
+> to do with the left and right bits, I guess we hope other OSs or
+> whatever can make use of the same topology if we're trying to make it
+> standard.
 
-> Thanks,
-> Charles
+Yeah, that's a good point which we should address :)
+
+What about something like :-
+
+struct snd_soc_mixer_channel {
+	__le32 reg;
+	__le32 shift;
+}
+
+struct snd_soc_tplg_mixer_control {
+	struct snd_soc_tplg_control_hdr hdr;
+	__le32 min;
+	__le32 max;
+	__le32 platform_max;
+	__le32 invert;
+	__le32 num_channels;
+	char reserved[64];
+	struct snd_soc_tplg_mixer_channel channel[0];
+	struct snd_soc_tplg_private priv;
+} __attribute__((packed));
+
+The same could be applied to the other control types too ?
+
+Liam
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
