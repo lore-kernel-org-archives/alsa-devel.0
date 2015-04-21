@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 0/4] ASoC DSP topology
-Date: Tue, 21 Apr 2015 10:28:12 +0100
-Message-ID: <20150421092812.GA22845@sirena.org.uk>
-References: <1429217285.7100.18.camel@loki>
- <5535F513.8030902@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - add AZX_DCAPS_I915_POWERWELL
+ to Baytrail
+Date: Tue, 21 Apr 2015 11:29:47 +0200
+Message-ID: <5536188B.0@canonical.com>
+References: <e8074c2236ff5b224dbc8a92cca40f348ca5032c.1429592999.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8335223626896286539=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A6A626069D
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 11:28:23 +0200 (CEST)
-In-Reply-To: <5535F513.8030902@ti.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B080260A56
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 11:29:52 +0200 (CEST)
+In-Reply-To: <e8074c2236ff5b224dbc8a92cca40f348ca5032c.1429592999.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>
+To: mengdong.lin@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============8335223626896286539==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
-Content-Disposition: inline
+Baytrail is very much released and out there already - should this patch 
+also go to stable?
 
+Are there current problems (like HDMI codec not being detected) that are 
+fixed by this patch?
 
---6TrnltStXW4iwmi0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+// David
 
-On Tue, Apr 21, 2015 at 09:58:27AM +0300, Peter Ujfalusi wrote:
+On 2015-04-21 07:12, mengdong.lin@intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@intel.com>
+>
+> This patch addes AZX_DCAPS_I915_POWERWELL to BYT (Baytrail).
+>
+> Like Braswell and Skylake, the HDMI codec on Bytrail is also in the shared
+> power well with GPU. This power well must be turned on before we reset link
+> to probe the codec, to avoid communication failure with the codec.
+>
+> The side effect is that this power is always ON in S0 because the BYT HDMI
+> codec does not support EPSS or D3ClkStop and so the controller doesn't enter
+> D3 at runtime, and the HDMI codec and analog codec share a single physical
+> HD-A link and so we cannot reset the HD-A link freely when we re-enable the
+> power to use the HDMI codec.
+>
+> Next step is to test if an AGP reset or double AGP reset on BYT HDMI codec is
+> okay to bring the HDMI codec back to a functional state after restoring the
+> power. If okay, we can bind the power on/off with the HDMI codec PM without
+> interrupting the analog audio.
+>
+> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+>
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index e1c2105..34040d2 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -297,6 +297,9 @@ enum {
+>   	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
+>   	 AZX_DCAPS_SNOOP_TYPE(SCH))
+>
+> +#define AZX_DCAPS_INTEL_BAYTRAIL \
+> +	(AZX_DCAPS_INTEL_PCH_NOPM | AZX_DCAPS_I915_POWERWELL)
+> +
+>   #define AZX_DCAPS_INTEL_BRASWELL \
+>   	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_I915_POWERWELL)
+>
+> @@ -1992,7 +1995,7 @@ static const struct pci_device_id azx_ids[] = {
+>   	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
+>   	/* BayTrail */
+>   	{ PCI_DEVICE(0x8086, 0x0f04),
+> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
+> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BAYTRAIL },
+>   	/* Braswell */
+>   	{ PCI_DEVICE(0x8086, 0x2284),
+>   	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BRASWELL },
+>
 
-> It is not entirely clear for me based on the first look, but who is
-> responsible to initiate the topology load? Is it the component or machine
-> driver? We have had issues with deferred probing when the component driver was
-> in charge of loading the firmware. I got around this by initiating the FW load
-> from the machine driver and via callbacks I notified the component driver to
-> take over from that point. This fixed the probe order and I can also handle
-> cases when the filesystem does not have the firmware so I can fall back to
-> 'legacy' mode.
-
-Could you expand on those issues please?  I'd *really* not expect the
-machine driver to be involved in loading firmware for a component driver
-(think how this is going to affect generic drivers) and it's not obvious
-to me what impact this might have on deferred probe either.
-
---6TrnltStXW4iwmi0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVNhgoAAoJECTWi3JdVIfQepEH/2KPMBdAxPlLPFyAC0mPExIZ
-ui1onJtjpa2wKeI6LQZKk0sQ1Kl4jOveobyNCdkmMS2uZnhGneIfblNUQUFk/5ni
-XMx6ZOyIhrAucdQRokSjOnfSpkERz2K0RAN+E6kydvqnffwsmQNtPBqniUMqj5ee
-N9qoE7bhjeAUCU5d+sDfiwGVnVRQ4Ka9HfPjTGhJIeQZDb7MLSF+AYVQD7CC94yR
-drBC0XOGfmqkl2NZew8fsxBXhYEzKOu4zMa2RNA4BwfQyXYD7PC2KAPPTxhpGG8I
-+ih8Cxg8JDEmNeZ1RLm9sgmSzXQ7OJSC6f0MT/yFFbQ3Pc/BoR/w870QSgOd0GA=
-=sKwg
------END PGP SIGNATURE-----
-
---6TrnltStXW4iwmi0--
-
---===============8335223626896286539==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8335223626896286539==--
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
