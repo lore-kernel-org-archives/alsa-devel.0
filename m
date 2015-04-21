@@ -1,19 +1,18 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v6 4/6] ASoC: jack: create kctls according
- to jack pins info
-Date: Tue, 21 Apr 2015 01:16:59 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A905513676@SHSMSX101.ccr.corp.intel.com>
-References: <1429351460-15932-1-git-send-email-yang.jie@intel.com>
- <1429351460-15932-5-git-send-email-yang.jie@intel.com>
- <20150420212031.GS14892@sirena.org.uk>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - only sync BCLK to the display
+ clock for Haswell & Broadwell
+Date: Tue, 21 Apr 2015 01:30:46 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B82B324@SHSMSX101.ccr.corp.intel.com>
+References: <6f881935a29f44b895ae6854bcd40ea62a7364a5.1429517003.git.mengdong.lin@intel.com>
+ <s5hlhhnb4rk.wl-tiwai@suse.de> <s5hiocrb3we.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C2252605EC
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 03:18:33 +0200 (CEST)
-In-Reply-To: <20150420212031.GS14892@sirena.org.uk>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E5532605EC
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 03:31:01 +0200 (CEST)
+In-Reply-To: <s5hiocrb3we.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,39 +23,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tanu.kaskinen@linux.intel.com" <tanu.kaskinen@linux.intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Tuesday, April 21, 2015 5:21 AM
-> To: Jie, Yang
-> Cc: tiwai@suse.de; alsa-devel@alsa-project.org; Girdwood, Liam R;
-> tanu.kaskinen@linux.intel.com
-> Subject: Re: [PATCH v6 4/6] ASoC: jack: create kctls according to jack pins info
-> 
-> On Sat, Apr 18, 2015 at 06:04:18PM +0800, Jie Yang wrote:
-> > In the new jack kctls design, we can create kctls according to pins
-> > info:
-> >
-> > 1. during jack creating, snd_jack_new() with NULL jack_kctl; 2. for
-> > each pin, call snd_jack_add_kctls() to add one kctl (it will call
-> > snd_ctl_add() to add kctl to card);
-> 
-> I'm a little confused why this isn't done by the jack core?
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, April 20, 2015 4:28 PM
  
-The kctl creating and adding to jack is actually done by the jack core(inside
-snd_jack_add_kctls()).
+> At Mon, 20 Apr 2015 10:09:03 +0200,
+> Takashi Iwai wrote:
+> >
+> > At Mon, 20 Apr 2015 16:04:05 +0800,
+> > mengdong.lin@intel.com wrote:
+> > >
+> > > From: Mengdong Lin <mengdong.lin@intel.com>
+> > >
+> > > Only Intel Haswell and Broadwell have a separate HD-A controller
+> > > (PCI device 3) for display audio, which needs to get 24MHz HD-A link
+> > > BCLK from the variable display core clock through vendor specific
+> > > registers EM4 & EM5. Other platforms (Baytrail, Braswell and Skylake) don't
+> have this feature.
+> > >
+> > > So a new driver quirk AZX_DCAPS_I915_SYNC_CLK is defined for the
+> > > HSW/BDW display HD-A controller, to sync clock after the shared display
+> power is restored.
+> > >
+> > > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> > >
+> > > diff --git a/sound/pci/hda/hda_controller.h
+> > > b/sound/pci/hda/hda_controller.h index be1b7de..1729004 100644
+> > > --- a/sound/pci/hda/hda_controller.h
+> > > +++ b/sound/pci/hda/hda_controller.h
+> > > @@ -175,6 +175,7 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2,
+> SDO3 };
+> > >  #define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears
+> itself after reset */
+> > >  #define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
+> > >  #define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and
+> playback use separate stream tag */
+> > > +#define AZX_DCAPS_I915_SYNC_CLK (1 << 31)	/* Need to sync BCLK
+> with display clock */
+> > >
+> > >  enum {
+> > >  	AZX_SNOOP_TYPE_NONE,
+> > > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > > index e1c2105..951263d 100644
+> > > --- a/sound/pci/hda/hda_intel.c
+> > > +++ b/sound/pci/hda/hda_intel.c
+> > > @@ -289,13 +289,13 @@ enum {
+> > >  #define AZX_DCAPS_INTEL_HASWELL \
+> > >  	(/*AZX_DCAPS_ALIGN_BUFSIZE |*/ AZX_DCAPS_COUNT_LPIB_DELAY
+> |\
+> > >  	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
+> > > -	 AZX_DCAPS_SNOOP_TYPE(SCH))
+> > > +	 AZX_DCAPS_I915_SYNC_CLK | AZX_DCAPS_SNOOP_TYPE(SCH))
+> > >
+> > >  /* Broadwell HDMI can't use position buffer reliably, force to use
+> > > LPIB */  #define AZX_DCAPS_INTEL_BROADWELL \
+> > >  	(/*AZX_DCAPS_ALIGN_BUFSIZE |*/ AZX_DCAPS_POSFIX_LPIB |\
+> > >  	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
+> > > -	 AZX_DCAPS_SNOOP_TYPE(SCH))
+> > > +	 AZX_DCAPS_I915_SYNC_CLK | AZX_DCAPS_SNOOP_TYPE(SCH))
+> > >
+> > >  #define AZX_DCAPS_INTEL_BRASWELL \
+> > >  	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_I915_POWERWELL) @@
+> -815,7 +815,8
+> > > @@ static int azx_resume(struct device *dev)
+> > >
+> > >  	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+> > >  		hda_display_power(hda, true);
+> > > -		haswell_set_bclk(hda);
+> > > +		if (chip->driver_caps & AZX_DCAPS_I915_SYNC_CLK)
+> > > +			haswell_set_bclk(hda);
+> >
+> >
+> > The dcaps bits are previous now, and it's pretty specific to i915, so
+> 
+> s/previous/precious/
+> 
+> 
+> Takashi
 
-Mark, do you mean that you prefer doing this inside snd_jack_new()?
+Could you tell me what's the meaning of "previous" here?
+I still see the AZX_DCAPS_xxx in pci/had/hda_controller.h on the for-next branch of the stable sound kernel. Shall I check the unstable sound kernel?
 
-For we may need create multiple kctls for a jack, and I found we can reuse
-the pins' info for those kctls' creating. 
-
-For example, in broadwell.c, the jack broadwell_headset have 2 pins:
-"Mic Jack" and "Headphone Jack", then 2 kctls with same names will be
-created, and they are visible for PA, can be switched on/off by PA separately.
-
-~Keyon
+Thanks
+Mengdong
