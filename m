@@ -1,89 +1,78 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 0/4] ASoC DSP topology
-Date: Tue, 21 Apr 2015 17:39:42 +0100
-Message-ID: <20150421163942.GM22845@sirena.org.uk>
-References: <1429217285.7100.18.camel@loki> <5535F513.8030902@ti.com>
- <20150421092812.GA22845@sirena.org.uk> <553642EC.8010400@ti.com>
- <1429629831.2797.9.camel@loki>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/3] ASoC: tas571x: Add DT binding document
+Date: Tue, 21 Apr 2015 17:45:06 +0100
+Message-ID: <20150421164506.GN22845@sirena.org.uk>
+References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
+ <20150418111622.GD26185@sirena.org.uk>
+ <CAJzqFtYBvNAgwROZ09MGanYOyyF0EXEL7W9ZF4eAhprQVquNcQ@mail.gmail.com>
+ <20150420220338.GZ14892@sirena.org.uk>
+ <CAJzqFtbseDe8c19ZpZjw3y72-+eO1+Zcq7D+DC=0G5_LbimRJg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1422975347773881688=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E6CEB261504
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 18:39:49 +0200 (CEST)
-In-Reply-To: <1429629831.2797.9.camel@loki>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
- Vinod" <vinod.koul@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kUBUi7JBpjcBtem/"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAJzqFtbseDe8c19ZpZjw3y72-+eO1+Zcq7D+DC=0G5_LbimRJg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Andrew Bresticker <abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1422975347773881688==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="sWvRP97dwRHm9fX+"
-Content-Disposition: inline
-
-
---sWvRP97dwRHm9fX+
+--kUBUi7JBpjcBtem/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 21, 2015 at 04:23:51PM +0100, Liam Girdwood wrote:
-> On Tue, 2015-04-21 at 15:30 +0300, Peter Ujfalusi wrote:
+On Mon, Apr 20, 2015 at 03:48:19PM -0700, Kevin Cernekee wrote:
 
-> > We have discussed this with Liam in the past: in my view the DSP topology (or
-> > Dynamic FW) should be represented in the machine level and it would be the
-> > best if the same image could carry card level widgets routes and links. If you
-> > have big enough change in the FW and it's provided widgets/PCMs you would need
-> > separate machine driver or at least a way to have different set of machine
-> > level routes, widgets, links, etc for different DSP topology file.
+> I don't understand the statement: "those are three separate supplies
+> that are typically tied together."  AVDD/DVDD are 3.3v fixed but PVDD
+> is 8V minimum (5711) or 4.5V minimum (5717/5719).  So AVDD/DVDD can
+> never be driven by the same regulator output as PVDD.  Perhaps you
+> were thinking of HPVDD/AVDD/DVDD on 5717/5719?
 
-> The component level allows us to target the physical component devices
-> that may have runtime definable topologies. This would include codecs
-> too, since some vendors are making codecs with built in FW (maybe TI
-> too ?). The machine level more represents the board HW topology and this
-> should be derived from ACPI or DT.
+Yes, all the supplies.  I'd misremembered which ones you were saying
+were tied together on your board.
 
-I tend to agree.  We should let each vendor provide their own topology
-information - if they need to do something with this (which does seem
-unlikely) system integrators should be on an equal footing with silicon
-vendors here, and we shouldn't be encouraging systems where we need
-per-board firmware definitions for the silicon components just because
-the board has differences.
+> The simplified application diagram on page 2 does show that AVDD/DVDD
+> are typically tied together, and that PVDD_* are also typically tied
+> together.  But as you pointed out, there may be situations where that
+> isn't the case, so that leaves us with up to 6 separate supplies on
+> 5711, or 5 on 5717/5719.  The typical case is probably closer to 2 or
+> 3, though.
 
---sWvRP97dwRHm9fX+
+To repeat, the typical case is *not* *relevant*.  All that matters is
+the set of supplies the device has.
+
+> > Have the driver accurately reflect the hardware, request one regulator
+> > per supply.
+
+> So, request one regulator per VDD pin?  Or group all of PVDD_* into a
+> single regulator?
+
+Please group them into supplies as documented in the datasheet.  If they
+are documented as distinct things they should be distinct things, if
+they are just the same supply coming in through multiple pins for power
+reasons they should be one supply.
+
+--kUBUi7JBpjcBtem/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVNn1NAAoJECTWi3JdVIfQubsH/RGpjkrc4EZzb+vNi7K5Ztnh
-76ePxGfVkSTFjkYSz/lmsWRYHtBVICjEGh+DlWJ8e8m4W4gXfvlK/Y0y23UGO89F
-M/NC39wJem2zpJqkIwpw3BxWY7P12OtR7qQ+h5zyFbGfuKSVtlk3nP27tKYYDAHQ
-8aA7NoJUTHF/jAHess7EhjPeXiCGTuEz+a6Xd0WQF2Rx2PZy5sjKsfdlpHOULSVG
-ObCB/B2ltVbEKhNpDRLXgTCMd92YjeHOtI/6gfk1Q0ZVJSe3SPZ18R3M4oZCdZUZ
-CSmvCpWwFRRkH1NnHXCmrXsLLc1Y14lz7xqERglzHT2TIpG/WUedxdiVdgQ7x2A=
-=imuL
+iQEcBAEBCAAGBQJVNn6RAAoJECTWi3JdVIfQBqgH/0tlKVV/Vg0BZm9J/MQHRLmt
+o6GCF3Bju4ChTlYPOn/Tj59gji6lmT8DhG3JcPyUbucuveWkORK2uPBwKXzQsLJN
+y6IEPTx/pQ35RCFE9mUepiZCcCLFWfYZnUR1kmEeT0M4Qm+5UO906IaecqrVM6+Y
+hikrtT3d/Zg1FGxksO8DN/B8vDByU5AoPnpJsdY7tHTpCUocRt2u3gTnRsh/hxNH
+79XGvoSM+TYx1rh9+aIyJCs/UVosEIyq27oRzbOwpX6lClmW8cenX5owjAzkmlH7
+595rM8EPuqSyBvyOLiLApqpaQOxxAfib6OHnrGQgOlfNcxOnQch4BdpTzBcWQCw=
+=+qUs
 -----END PGP SIGNATURE-----
 
---sWvRP97dwRHm9fX+--
-
---===============1422975347773881688==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1422975347773881688==--
+--kUBUi7JBpjcBtem/--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
