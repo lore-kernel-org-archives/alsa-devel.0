@@ -1,86 +1,62 @@
-From: Kevin Cernekee <cernekee@chromium.org>
-Subject: Re: [PATCH 1/3] ASoC: tas571x: Add DT binding document
-Date: Mon, 20 Apr 2015 15:48:19 -0700
-Message-ID: <CAJzqFtbseDe8c19ZpZjw3y72-+eO1+Zcq7D+DC=0G5_LbimRJg@mail.gmail.com>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
- <20150418111622.GD26185@sirena.org.uk> <CAJzqFtYBvNAgwROZ09MGanYOyyF0EXEL7W9ZF4eAhprQVquNcQ@mail.gmail.com>
- <20150420220338.GZ14892@sirena.org.uk>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v6 4/6] ASoC: jack: create kctls according
+ to jack pins info
+Date: Tue, 21 Apr 2015 01:16:59 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A905513676@SHSMSX101.ccr.corp.intel.com>
+References: <1429351460-15932-1-git-send-email-yang.jie@intel.com>
+ <1429351460-15932-5-git-send-email-yang.jie@intel.com>
+ <20150420212031.GS14892@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150420220338.GZ14892@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C2252605EC
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 03:18:33 +0200 (CEST)
+In-Reply-To: <20150420212031.GS14892@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tanu.kaskinen@linux.intel.com" <tanu.kaskinen@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 20, 2015 at 3:03 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Apr 20, 2015 at 02:18:56PM -0700, Kevin Cernekee wrote:
->> On Sat, Apr 18, 2015 at 4:16 AM, Mark Brown <broonie@kernel.org> wrote:
->> > On Wed, Apr 15, 2015 at 02:42:19PM -0700, Kevin Cernekee wrote:
->
->> >> +- VDD-supply: regulator phandle for the AVDD/DVDD/HP_VDD supply
->
->> > This is clearly not correct - if there are three separate physical
->> > supplies there should be three separate regulators requested.  They may
->> > all resolve to one physical regulator on the board you are working with
->> > but that might not be true on other boards.
->
->> In the "simplified diagram," TI shows a single AVDD/DVDD/HP_VDD supply:
->
->> http://www.ti.com/lit/ds/symlink/tas5717.pdf#2
->
->> Page 20 also suggests the use of a single 3.3V supply for AVDD/DVDD/HP_VDD.
->
->> But this combines a number of separate pins.  On 5711 we have
->> dedicated pins for:
->
->> PVDD_A
->> PVDD_B
->> PVDD_C
->> PVDD_D
->> AVDD
->> DVDD
->
-> Yes, those are three separate supplies that are typically tied together
-> - it looks like PVDD has high current draw so is tied through multiple
-> pins.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Tuesday, April 21, 2015 5:21 AM
+> To: Jie, Yang
+> Cc: tiwai@suse.de; alsa-devel@alsa-project.org; Girdwood, Liam R;
+> tanu.kaskinen@linux.intel.com
+> Subject: Re: [PATCH v6 4/6] ASoC: jack: create kctls according to jack pins info
+> 
+> On Sat, Apr 18, 2015 at 06:04:18PM +0800, Jie Yang wrote:
+> > In the new jack kctls design, we can create kctls according to pins
+> > info:
+> >
+> > 1. during jack creating, snd_jack_new() with NULL jack_kctl; 2. for
+> > each pin, call snd_jack_add_kctls() to add one kctl (it will call
+> > snd_ctl_add() to add kctl to card);
+> 
+> I'm a little confused why this isn't done by the jack core?
+ 
+The kctl creating and adding to jack is actually done by the jack core(inside
+snd_jack_add_kctls()).
 
-Each half-bridge output OUT_{A,B,C,D} has its own dedicated
-PVDD_{A,B,C,D} supply on 5711:
+Mark, do you mean that you prefer doing this inside snd_jack_new()?
 
-http://www.ti.com/lit/ds/symlink/tas5711.pdf#7
+For we may need create multiple kctls for a jack, and I found we can reuse
+the pins' info for those kctls' creating. 
 
-I don't understand the statement: "those are three separate supplies
-that are typically tied together."  AVDD/DVDD are 3.3v fixed but PVDD
-is 8V minimum (5711) or 4.5V minimum (5717/5719).  So AVDD/DVDD can
-never be driven by the same regulator output as PVDD.  Perhaps you
-were thinking of HPVDD/AVDD/DVDD on 5717/5719?
+For example, in broadwell.c, the jack broadwell_headset have 2 pins:
+"Mic Jack" and "Headphone Jack", then 2 kctls with same names will be
+created, and they are visible for PA, can be switched on/off by PA separately.
 
-The simplified application diagram on page 2 does show that AVDD/DVDD
-are typically tied together, and that PVDD_* are also typically tied
-together.  But as you pointed out, there may be situations where that
-isn't the case, so that leaves us with up to 6 separate supplies on
-5711, or 5 on 5717/5719.  The typical case is probably closer to 2 or
-3, though.
-
-> I'd not be surprised to see systems with AVDD tied to a separate
-> pin, analogue supplies often benefit from low noise supplies separate to
-> digital ones.  Indeed if you look at the pin descriptions the analogue
-> and digital supplies even have separate grounds.
->
->> I didn't see anything in the datasheet suggesting it is OK to have
->> different voltages or power states on the various supply pins (other
->> than the special voltage on PVDD).
->
-> That's more likely to go wrong if they're not controlled separately than
-> if they are since we will only be able to turn a single supply on or
-> off..
->
->> I can add as many regulator entries as appropriate.  What do you recommend?
->
-> Have the driver accurately reflect the hardware, request one regulator
-> per supply.
-
-So, request one regulator per VDD pin?  Or group all of PVDD_* into a
-single regulator?
+~Keyon
