@@ -1,18 +1,18 @@
-From: Heikki Lindholm <holin@iki.fi>
-Subject: Re: RME MADIFX mainline inclusion
-Date: Fri, 17 Apr 2015 23:56:00 +0300
-Message-ID: <55317360.2020003@iki.fi>
-References: <5522B34B.3090404@drcomp.erfurt.thur.de>
- <s5hd23g9rx4.wl-tiwai@suse.de> <5523BA14.3050904@drcomp.erfurt.thur.de>
+From: Takamichi Horikawa <takamichiho@gmail.com>
+Subject: [PATCH 1/1] usb-audio: Fix audio output on Roland
+	SC-D70 sound module
+Date: Tue, 21 Apr 2015 11:23:57 +0900
+Message-ID: <1429583037-1147-1-git-send-email-takamichiho@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vs17.mail.saunalahti.fi (vs17.mail.saunalahti.fi
- [62.142.117.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D4A27260673
- for <alsa-devel@alsa-project.org>; Fri, 17 Apr 2015 22:56:13 +0200 (CEST)
-In-Reply-To: <5523BA14.3050904@drcomp.erfurt.thur.de>
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 874B5260696
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 04:24:39 +0200 (CEST)
+Received: by pdbnk13 with SMTP id nk13so226576853pdb.0
+ for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 19:24:38 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +22,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Cc: alsa-devel@alsa-project.org, nonus@gmx.net, Takashi Iwai <tiwai@suse.de>, marcinp@uw.edu, Michael.Hentschel@eei.uni-erlangen.de, holeungsing@gmail.com, Moritz.Fiser@joanneum.at, mtzuking@netvigator.com, zmoelnig@umlaeute.mur.at
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Takamichi Horikawa <takamichiho@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-7.4.2015 14.05, Adrian Knoth kirjoitti:
-> On 04/07/15 12:03, Takashi Iwai wrote:
->
->>> Code is here:
->>>
->>> https://github.com/adiknoth/madifx/commits/tokernel
->>>
-> [..]
->>> In its current state, can I send you three patches (Kconfig, madifx.h,
->>> madifx.c) that add said driver to sound/pci/rme9652?
->> Well, I really want some testers whether the merged code actually
->> works.
->
-> The standalone code (above driver) works, I know a couple of people
-> using it.
->
-> Let me CC a few I've found - maybe they can test a merged version or at
-> least testify that what they're using atm actually works.
+Roland SC-D70 reports its device class as vendor specific class and
+the quirk QUIRK_AUDIO_FIXED_ENDPOINT was used for audio output.
 
-We have been using the madifx driver since mid-2013 in production 
-environment and it has served well. Up to now our system has been 
-running with a driver snapshot from July 2013 on ubuntustudio 13.04 
-(kernel 3.8 iirc). We just upgraded to ubuntustudio 14.04 and madifx 
-driver from Adrian's tokernel branch (ubuntu vidid kernel 3.19.0). So 
-far, it appears to work just as well.
+In the quirks table the sampling rate was hard-coded to 44100 Hz
+and therefore not worked when the sound module was in 48000 Hz mode.
 
-So, +1 for mainlining the driver. We can also test the actual patchset, 
-when submitted.
+In this change the quirk is changed to QUIRK_AUDIO_STANDARD_INTERFACE
+but as the sound module reports incorrect bSubframeSize in its
+descriptors, additional change is made in format.c to detect it and
+to override it (which uses the existing code for Edirol SD-90).
 
-Regards,
-Heikki Lindholm
+Tested both when the sound module was in 44100 Hz mode and 48000 Hz
+mode and both audio input and output. MIDI related part of the driver
+is not touched.
+
+Signed-off-by: Takamichi Horikawa <takamichiho@gmail.com>
+---
+ sound/usb/format.c       |  5 ++++-
+ sound/usb/quirks-table.h | 30 ++----------------------------
+ 2 files changed, 6 insertions(+), 29 deletions(-)
+
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 8bcc87c..789d19e 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -79,7 +79,10 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 		format = 1 << UAC_FORMAT_TYPE_I_PCM;
+ 	}
+ 	if (format & (1 << UAC_FORMAT_TYPE_I_PCM)) {
+-		if (chip->usb_id == USB_ID(0x0582, 0x0016) /* Edirol SD-90 */ &&
++		if (((chip->usb_id == USB_ID(0x0582, 0x0016)) ||
++		     /* Edirol SD-90 */
++		     (chip->usb_id == USB_ID(0x0582, 0x000c))) &&
++		     /* Roland SC-D70 */
+ 		    sample_width == 24 && sample_bytes == 2)
+ 			sample_bytes = 3;
+ 		else if (sample_width > sample_bytes * 8) {
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 07f984d..2f6d3e9 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -816,37 +816,11 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.data = (const struct snd_usb_audio_quirk[]) {
+ 			{
+ 				.ifnum = 0,
+-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+-				.data = & (const struct audioformat) {
+-					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
+-					.channels = 2,
+-					.iface = 0,
+-					.altsetting = 1,
+-					.altset_idx = 1,
+-					.attributes = 0,
+-					.endpoint = 0x01,
+-					.ep_attr = 0x01,
+-					.rates = SNDRV_PCM_RATE_CONTINUOUS,
+-					.rate_min = 44100,
+-					.rate_max = 44100,
+-				}
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+ 			},
+ 			{
+ 				.ifnum = 1,
+-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+-				.data = & (const struct audioformat) {
+-					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
+-					.channels = 2,
+-					.iface = 1,
+-					.altsetting = 1,
+-					.altset_idx = 1,
+-					.attributes = 0,
+-					.endpoint = 0x81,
+-					.ep_attr = 0x01,
+-					.rates = SNDRV_PCM_RATE_CONTINUOUS,
+-					.rate_min = 44100,
+-					.rate_max = 44100,
+-				}
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+ 			},
+ 			{
+ 				.ifnum = 2,
+-- 
+2.3.5
