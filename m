@@ -1,87 +1,106 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - add AZX_DCAPS_I915_POWERWELL
- to Baytrail
-Date: Tue, 21 Apr 2015 11:29:47 +0200
-Message-ID: <5536188B.0@canonical.com>
-References: <e8074c2236ff5b224dbc8a92cca40f348ca5032c.1429592999.git.mengdong.lin@intel.com>
+From: Inha Song <ideal.song@samsung.com>
+Subject: Re: [alsa-devel] [PATCH v2 1/2] extcon: arizona: Add support for
+ select accessory detect mode when headphone detection
+Date: Tue, 21 Apr 2015 18:38:10 +0900
+Message-ID: <20150421183810.32826087@songinha-Samsung-DeskTop-System>
+References: <1429589505-11954-1-git-send-email-ideal.song@samsung.com>
+ <1429589505-11954-2-git-send-email-ideal.song@samsung.com>
+ <20150421092826.GH3480@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B080260A56
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 11:29:52 +0200 (CEST)
-In-Reply-To: <e8074c2236ff5b224dbc8a92cca40f348ca5032c.1429592999.git.mengdong.lin@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <20150421092826.GH3480@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: lee.jones@linaro.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, cw00.choi@samsung.com, broonie@kernel.org, rf@opensource.wolfsonmicro.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-Baytrail is very much released and out there already - should this patch 
-also go to stable?
+Thanks for your review :)
 
-Are there current problems (like HDMI codec not being detected) that are 
-fixed by this patch?
+On Tue, 21 Apr 2015 10:28:26 +0100
+Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
 
-// David
+> On Tue, Apr 21, 2015 at 01:11:44PM +0900, Inha Song wrote:
+> > This patch add support for select accessory detect mode to HPDETL or HPDETR.
+> > Arizona provides a headphone detection circuit on the HPDETL and HPDETR pins
+> > to measure the impedance of an external load connected to the headphone.
+> > 
+> > Depending on board design, headphone detect pins can change to HPDETR or HPDETL.
+> > 
+> > Signed-off-by: Inha Song <ideal.song@samsung.com>
+> > ---
+> >  drivers/extcon/extcon-arizona.c   | 28 ++++++++++++++++++++--------
+> >  include/dt-bindings/mfd/arizona.h |  8 ++++++++
+> >  include/linux/mfd/arizona/pdata.h |  3 +++
+> >  3 files changed, 31 insertions(+), 8 deletions(-)
+> >  create mode 100644 include/dt-bindings/mfd/arizona.h
+> > 
+> > diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+> > index 63f01c4..c827342 100644
+> > --- a/drivers/extcon/extcon-arizona.c
+> > +++ b/drivers/extcon/extcon-arizona.c
+> > @@ -32,13 +32,10 @@
+> >  #include <linux/mfd/arizona/core.h>
+> >  #include <linux/mfd/arizona/pdata.h>
+> >  #include <linux/mfd/arizona/registers.h>
+> > +#include <dt-bindings/mfd/arizona.h>
+> >  
+> >  #define ARIZONA_MAX_MICD_RANGE 8
+> >  
+> > -#define ARIZONA_ACCDET_MODE_MIC 0
+> > -#define ARIZONA_ACCDET_MODE_HPL 1
+> > -#define ARIZONA_ACCDET_MODE_HPR 2
+> > -
+> >  #define ARIZONA_MICD_CLAMP_MODE_JDL      0x4
+> >  #define ARIZONA_MICD_CLAMP_MODE_JDH      0x5
+> >  #define ARIZONA_MICD_CLAMP_MODE_JDL_GP5H 0x9
+> > @@ -653,9 +650,9 @@ static void arizona_identify_headphone(struct arizona_extcon_info *info)
+> >  	ret = regmap_update_bits(arizona->regmap,
+> >  				 ARIZONA_ACCESSORY_DETECT_MODE_1,
+> >  				 ARIZONA_ACCDET_MODE_MASK,
+> > -				 ARIZONA_ACCDET_MODE_HPL);
+> > +				 arizona->pdata.hpdet_channel);
+> >  	if (ret != 0) {
+> > -		dev_err(arizona->dev, "Failed to set HPDETL mode: %d\n", ret);
+> > +		dev_err(arizona->dev, "Failed to set HPDET mode: %d\n", ret);
+> >  		goto err;
+> >  	}
+> >  
+> > @@ -705,9 +702,9 @@ static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
+> >  				 ARIZONA_ACCESSORY_DETECT_MODE_1,
+> >  				 ARIZONA_ACCDET_SRC | ARIZONA_ACCDET_MODE_MASK,
+> >  				 info->micd_modes[0].src |
+> > -				 ARIZONA_ACCDET_MODE_HPL);
+> > +				 arizona->pdata.hpdet_channel);
+> >  	if (ret != 0) {
+> > -		dev_err(arizona->dev, "Failed to set HPDETL mode: %d\n", ret);
+> > +		dev_err(arizona->dev, "Failed to set HPDET mode: %d\n", ret);
+> >  		goto err;
+> >  	}
+> >  
+> > @@ -1103,6 +1100,16 @@ static void arizona_micd_set_level(struct arizona *arizona, int index,
+> >  	regmap_update_bits(arizona->regmap, reg, mask, level);
+> >  }
+> >  
+> > +static int arizona_extcon_of_get_pdata(struct arizona *arizona)
+> > +{
+> > +	struct arizona_pdata *pdata = &arizona->pdata;
+> > +
+> > +	of_property_read_u32(arizona->dev->of_node, "wlf,hpdet-channel",
+> > +			     &pdata->hpdet_channel);
+> 
+> I think we need to verify this is either HPL or HPR and default
+> it to HPL if isn't one of those. Otherwise this looks fine.
+> 
 
-On 2015-04-21 07:12, mengdong.lin@intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@intel.com>
->
-> This patch addes AZX_DCAPS_I915_POWERWELL to BYT (Baytrail).
->
-> Like Braswell and Skylake, the HDMI codec on Bytrail is also in the shared
-> power well with GPU. This power well must be turned on before we reset link
-> to probe the codec, to avoid communication failure with the codec.
->
-> The side effect is that this power is always ON in S0 because the BYT HDMI
-> codec does not support EPSS or D3ClkStop and so the controller doesn't enter
-> D3 at runtime, and the HDMI codec and analog codec share a single physical
-> HD-A link and so we cannot reset the HD-A link freely when we re-enable the
-> power to use the HDMI codec.
->
-> Next step is to test if an AGP reset or double AGP reset on BYT HDMI codec is
-> okay to bring the HDMI codec back to a functional state after restoring the
-> power. If okay, we can bind the power on/off with the HDMI codec PM without
-> interrupting the analog audio.
->
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
->
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index e1c2105..34040d2 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -297,6 +297,9 @@ enum {
->   	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
->   	 AZX_DCAPS_SNOOP_TYPE(SCH))
->
-> +#define AZX_DCAPS_INTEL_BAYTRAIL \
-> +	(AZX_DCAPS_INTEL_PCH_NOPM | AZX_DCAPS_I915_POWERWELL)
-> +
->   #define AZX_DCAPS_INTEL_BRASWELL \
->   	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_I915_POWERWELL)
->
-> @@ -1992,7 +1995,7 @@ static const struct pci_device_id azx_ids[] = {
->   	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
->   	/* BayTrail */
->   	{ PCI_DEVICE(0x8086, 0x0f04),
-> -	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
-> +	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BAYTRAIL },
->   	/* Braswell */
->   	{ PCI_DEVICE(0x8086, 0x2284),
->   	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BRASWELL },
->
+Ok, We can check hpdet_channel value to use switch-case in arizona_extcon_of_get_pdata() function.
+I will fix.
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Best Regards,
+Inha Song.
+
+> Thanks,
+> Charles
