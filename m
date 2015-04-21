@@ -1,19 +1,19 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - only sync BCLK to the display
- clock for Haswell & Broadwell
-Date: Tue, 21 Apr 2015 01:30:46 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B82B324@SHSMSX101.ccr.corp.intel.com>
-References: <6f881935a29f44b895ae6854bcd40ea62a7364a5.1429517003.git.mengdong.lin@intel.com>
- <s5hlhhnb4rk.wl-tiwai@suse.de> <s5hiocrb3we.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5645: Adds push button support
+	for rt5650
+Date: Tue, 21 Apr 2015 02:08:18 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D701062B62@RTITMBSV03.realtek.com.tw>
+References: <1429497442-13021-1-git-send-email-bardliao@realtek.com>
+ <20150420204114.GI14892@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E5532605EC
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 03:31:01 +0200 (CEST)
-In-Reply-To: <s5hiocrb3we.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CD58260696
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 04:08:26 +0200 (CEST)
+In-Reply-To: <20150420204114.GI14892@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,90 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, April 20, 2015 4:28 PM
- 
-> At Mon, 20 Apr 2015 10:09:03 +0200,
-> Takashi Iwai wrote:
-> >
-> > At Mon, 20 Apr 2015 16:04:05 +0800,
-> > mengdong.lin@intel.com wrote:
-> > >
-> > > From: Mengdong Lin <mengdong.lin@intel.com>
-> > >
-> > > Only Intel Haswell and Broadwell have a separate HD-A controller
-> > > (PCI device 3) for display audio, which needs to get 24MHz HD-A link
-> > > BCLK from the variable display core clock through vendor specific
-> > > registers EM4 & EM5. Other platforms (Baytrail, Braswell and Skylake) don't
-> have this feature.
-> > >
-> > > So a new driver quirk AZX_DCAPS_I915_SYNC_CLK is defined for the
-> > > HSW/BDW display HD-A controller, to sync clock after the shared display
-> power is restored.
-> > >
-> > > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> > >
-> > > diff --git a/sound/pci/hda/hda_controller.h
-> > > b/sound/pci/hda/hda_controller.h index be1b7de..1729004 100644
-> > > --- a/sound/pci/hda/hda_controller.h
-> > > +++ b/sound/pci/hda/hda_controller.h
-> > > @@ -175,6 +175,7 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2,
-> SDO3 };
-> > >  #define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears
-> itself after reset */
-> > >  #define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
-> > >  #define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and
-> playback use separate stream tag */
-> > > +#define AZX_DCAPS_I915_SYNC_CLK (1 << 31)	/* Need to sync BCLK
-> with display clock */
-> > >
-> > >  enum {
-> > >  	AZX_SNOOP_TYPE_NONE,
-> > > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > > index e1c2105..951263d 100644
-> > > --- a/sound/pci/hda/hda_intel.c
-> > > +++ b/sound/pci/hda/hda_intel.c
-> > > @@ -289,13 +289,13 @@ enum {
-> > >  #define AZX_DCAPS_INTEL_HASWELL \
-> > >  	(/*AZX_DCAPS_ALIGN_BUFSIZE |*/ AZX_DCAPS_COUNT_LPIB_DELAY
-> |\
-> > >  	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
-> > > -	 AZX_DCAPS_SNOOP_TYPE(SCH))
-> > > +	 AZX_DCAPS_I915_SYNC_CLK | AZX_DCAPS_SNOOP_TYPE(SCH))
-> > >
-> > >  /* Broadwell HDMI can't use position buffer reliably, force to use
-> > > LPIB */  #define AZX_DCAPS_INTEL_BROADWELL \
-> > >  	(/*AZX_DCAPS_ALIGN_BUFSIZE |*/ AZX_DCAPS_POSFIX_LPIB |\
-> > >  	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
-> > > -	 AZX_DCAPS_SNOOP_TYPE(SCH))
-> > > +	 AZX_DCAPS_I915_SYNC_CLK | AZX_DCAPS_SNOOP_TYPE(SCH))
-> > >
-> > >  #define AZX_DCAPS_INTEL_BRASWELL \
-> > >  	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_I915_POWERWELL) @@
-> -815,7 +815,8
-> > > @@ static int azx_resume(struct device *dev)
-> > >
-> > >  	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
-> > >  		hda_display_power(hda, true);
-> > > -		haswell_set_bclk(hda);
-> > > +		if (chip->driver_caps & AZX_DCAPS_I915_SYNC_CLK)
-> > > +			haswell_set_bclk(hda);
-> >
-> >
-> > The dcaps bits are previous now, and it's pretty specific to i915, so
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Tuesday, April 21, 2015 4:41 AM
+> To: Bard Liao
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; lars@metafoo.de;
+> Flove; Oder Chiou; John Lin; koro.chen@mediatek.com;
+> yang.a.fang@intel.com; zhengxing@rock-chips.com
+> Subject: Re: [PATCH 1/2] ASoC: rt5645: Adds push button support for
+> rt5650
 > 
-> s/previous/precious/
+> On Mon, Apr 20, 2015 at 10:37:21AM +0800, Bard Liao wrote:
 > 
+> > --- a/sound/soc/codecs/rt5645.c
+> > +++ b/sound/soc/codecs/rt5645.c
+> > @@ -198,7 +198,6 @@ static const struct reg_default rt5645_reg[] = {
+> >  	{ 0xda, 0x0000 },
+> >  	{ 0xdb, 0x0003 },
+> >  	{ 0xdc, 0x0049 },
+> > -	{ 0xdd, 0x001b },
+> >  	{ 0xdf, 0x0008 },
+> >  	{ 0xe0, 0x4000 },
+> >  	{ 0xe6, 0x8000 },
 > 
-> Takashi
+> That's a bit weird, why is this in here?
 
-Could you tell me what's the meaning of "previous" here?
-I still see the AZX_DCAPS_xxx in pci/had/hda_controller.h on the for-next branch of the stable sound kernel. Shall I check the unstable sound kernel?
+The default value of register 0xdd is different between rt5645 and rt5650.
+And it is for button detection configuration. That's why I put it in this
+patch instead of a separate patch.
 
-Thanks
-Mengdong
+
+> 
+> > +	if (rt5645->btn_jack && rt5645->codec_type ==
+> CODEC_TYPE_RT5650) {
+> 
+> Can we have a switch statement for the device type so it's easier to add
+> other devices if there's new derivatives please?
+> 
+> > +			btn_type = rt5645_button_detect(rt5645->codec);
+> > +			switch (btn_type) {
+> > +			case 0x8000:
+> > +			case 0x4000:
+> > +			case 0x2000:
+> > +				report |= SND_JACK_BTN_0;
+> > +				break;
+> 
+> Why do we mash all these values together?
+
+rt5650 can report the action of button (one click, double click or hold).
+That is basically for Windows OS. For linux, we only care about whether
+the button is pressed or released. So all of the three actions are treated
+as button pressed.
+
+> 
+> ------Please consider the environment before printing this e-mail.
