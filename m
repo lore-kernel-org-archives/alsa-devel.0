@@ -1,18 +1,17 @@
-From: Takamichi Horikawa <takamichiho@gmail.com>
-Subject: [PATCH 1/1] usb-audio: Fix audio output on Roland
-	SC-D70 sound module
-Date: Tue, 21 Apr 2015 11:23:57 +0900
-Message-ID: <1429583037-1147-1-git-send-email-takamichiho@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 0/2] Calculate BCLK using TDM slots and
+ remove channels rule
+Date: Tue, 21 Apr 2015 09:30:37 +0300
+Message-ID: <5535EE8D.4030302@ti.com>
+References: <cover.1429537509.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
- [209.85.192.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 874B5260696
- for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 04:24:39 +0200 (CEST)
-Received: by pdbnk13 with SMTP id nk13so226576853pdb.0
- for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2015 19:24:38 -0700 (PDT)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBB58260467
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 08:30:42 +0200 (CEST)
+In-Reply-To: <cover.1429537509.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,90 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Takamichi Horikawa <takamichiho@gmail.com>
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, misael.lopez@ti.com, broonie@kernel.org, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-Roland SC-D70 reports its device class as vendor specific class and
-the quirk QUIRK_AUDIO_FIXED_ENDPOINT was used for audio output.
+On 04/20/2015 04:58 PM, Jyri Sarha wrote:
+> The first patch is a bugfix. I did not have the HW see the problem
+> myself, but reading from the code the problem is evident. This should
+> also fix Dan Carpenter's concern about stack usage in
+> davinci_mcasp_hw_rule_channels(), as the whole function is removed.
+> =
 
-In the quirks table the sampling rate was hard-coded to 44100 Hz
-and therefore not worked when the sound module was in 48000 Hz mode.
+> The second patch is just an optimization of the sample-rate rule. In
+> effect I put in use Takashi Iwai's suggestion for fixing the stack
+> usage issue in the channels rule.
 
-In this change the quirk is changed to QUIRK_AUDIO_STANDARD_INTERFACE
-but as the sound module reports incorrect bSubframeSize in its
-descriptors, additional change is made in format.c to detect it and
-to override it (which uses the existing code for Edirol SD-90).
+Both:
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Tested both when the sound module was in 44100 Hz mode and 48000 Hz
-mode and both audio input and output. MIDI related part of the driver
-is not touched.
+> =
 
-Signed-off-by: Takamichi Horikawa <takamichiho@gmail.com>
----
- sound/usb/format.c       |  5 ++++-
- sound/usb/quirks-table.h | 30 ++----------------------------
- 2 files changed, 6 insertions(+), 29 deletions(-)
+> Jyri Sarha (2):
+>   ASoC: davinci-mcasp: Calculate BCLK using TDM slots and remove
+>     channels rule
+>   ASoC: davinci-macsp: Optimize implicit BLCK sample-rate rule
+> =
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index 8bcc87c..789d19e 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -79,7 +79,10 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
- 		format = 1 << UAC_FORMAT_TYPE_I_PCM;
- 	}
- 	if (format & (1 << UAC_FORMAT_TYPE_I_PCM)) {
--		if (chip->usb_id == USB_ID(0x0582, 0x0016) /* Edirol SD-90 */ &&
-+		if (((chip->usb_id == USB_ID(0x0582, 0x0016)) ||
-+		     /* Edirol SD-90 */
-+		     (chip->usb_id == USB_ID(0x0582, 0x000c))) &&
-+		     /* Roland SC-D70 */
- 		    sample_width == 24 && sample_bytes == 2)
- 			sample_bytes = 3;
- 		else if (sample_width > sample_bytes * 8) {
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 07f984d..2f6d3e9 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -816,37 +816,11 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.data = (const struct snd_usb_audio_quirk[]) {
- 			{
- 				.ifnum = 0,
--				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
--				.data = & (const struct audioformat) {
--					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
--					.channels = 2,
--					.iface = 0,
--					.altsetting = 1,
--					.altset_idx = 1,
--					.attributes = 0,
--					.endpoint = 0x01,
--					.ep_attr = 0x01,
--					.rates = SNDRV_PCM_RATE_CONTINUOUS,
--					.rate_min = 44100,
--					.rate_max = 44100,
--				}
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
- 			},
- 			{
- 				.ifnum = 1,
--				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
--				.data = & (const struct audioformat) {
--					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
--					.channels = 2,
--					.iface = 1,
--					.altsetting = 1,
--					.altset_idx = 1,
--					.attributes = 0,
--					.endpoint = 0x81,
--					.ep_attr = 0x01,
--					.rates = SNDRV_PCM_RATE_CONTINUOUS,
--					.rate_min = 44100,
--					.rate_max = 44100,
--				}
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
- 			},
- 			{
- 				.ifnum = 2,
--- 
-2.3.5
+>  sound/soc/davinci/davinci-mcasp.c | 104 ++++++++++----------------------=
+------
+>  1 file changed, 27 insertions(+), 77 deletions(-)
+> =
+
+
+
+-- =
+
+P=E9ter
