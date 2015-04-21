@@ -1,78 +1,63 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/3] ASoC: tas571x: Add DT binding document
-Date: Tue, 21 Apr 2015 17:45:06 +0100
-Message-ID: <20150421164506.GN22845@sirena.org.uk>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
- <20150418111622.GD26185@sirena.org.uk>
- <CAJzqFtYBvNAgwROZ09MGanYOyyF0EXEL7W9ZF4eAhprQVquNcQ@mail.gmail.com>
- <20150420220338.GZ14892@sirena.org.uk>
- <CAJzqFtbseDe8c19ZpZjw3y72-+eO1+Zcq7D+DC=0G5_LbimRJg@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC 1/4] ASoC: topology: Add topology UAPI header.
+Date: Tue, 21 Apr 2015 18:46:28 +0200
+Message-ID: <55367EE4.5030201@metafoo.de>
+References: <1429217295.7100.19.camel@loki>
+ <20150420213048.GT14892@sirena.org.uk> <1429609673.3793.14.camel@loki>
+ <s5hlhhlztnr.wl-tiwai@suse.de> <1429620227.3793.31.camel@loki>
+ <20150421150342.GJ22845@sirena.org.uk> <s5hy4llmrnr.wl-tiwai@suse.de>
+ <20150421163502.GL22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kUBUi7JBpjcBtem/"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAJzqFtbseDe8c19ZpZjw3y72-+eO1+Zcq7D+DC=0G5_LbimRJg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Andrew Bresticker <abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Olof Johansson <olofj-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-126.synserver.de (smtp-out-126.synserver.de
+ [212.40.185.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6721226149D
+ for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2015 18:46:25 +0200 (CEST)
+In-Reply-To: <20150421163502.GL22845@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 04/21/2015 06:35 PM, Mark Brown wrote:
+> On Tue, Apr 21, 2015 at 05:23:36PM +0200, Takashi Iwai wrote:
+>> Mark Brown wrote:
+>
+>>> That's sounding like an awfully small number if we're trying to be
+>>> infititely future proof (obviously the default value for that is 640k!).
+>>> We'd also need to go through and give *all* the structures padding.  How
+>>> about just adding length fields instead with a rule that if the
+>>> structure is bigger than you know about just ignore anything at the end?
+>
+>> In theory, having only "abi" field should be enough, as we can know
+>> the size predefined for each ABI version.  But I agree that it'd be
+>> friendlier for a parser if the header itself declares its size,
+>> e.g. via a header_size field or embedding the size into some check
+>> field like ioctl.
+>
+> The trouble with the ABI version information is that it tells new
+> kernels how to handle old tables but old kernels will have no idea what
+> to do with new firmwares.
 
---kUBUi7JBpjcBtem/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What I did for the SigmaDSP firmware format (which can hopefully be 
+superseded by this) is to have a header which a block type and the block 
+length for each block for exactly this reason. It allows fully backward and 
+forward compatibility between kernel versions and does not require a change 
+in the ABI each time a new type of block is added. It also keeps the parser 
+simple since it does not have to know the size and also makes support for 
+vendor blocks quite easy, since the processing of those can be offloaded to 
+some vendor callbacks without the core having to be informed what the 
+content or size of those vendor blocks is.
 
-On Mon, Apr 20, 2015 at 03:48:19PM -0700, Kevin Cernekee wrote:
-
-> I don't understand the statement: "those are three separate supplies
-> that are typically tied together."  AVDD/DVDD are 3.3v fixed but PVDD
-> is 8V minimum (5711) or 4.5V minimum (5717/5719).  So AVDD/DVDD can
-> never be driven by the same regulator output as PVDD.  Perhaps you
-> were thinking of HPVDD/AVDD/DVDD on 5717/5719?
-
-Yes, all the supplies.  I'd misremembered which ones you were saying
-were tied together on your board.
-
-> The simplified application diagram on page 2 does show that AVDD/DVDD
-> are typically tied together, and that PVDD_* are also typically tied
-> together.  But as you pointed out, there may be situations where that
-> isn't the case, so that leaves us with up to 6 separate supplies on
-> 5711, or 5 on 5717/5719.  The typical case is probably closer to 2 or
-> 3, though.
-
-To repeat, the typical case is *not* *relevant*.  All that matters is
-the set of supplies the device has.
-
-> > Have the driver accurately reflect the hardware, request one regulator
-> > per supply.
-
-> So, request one regulator per VDD pin?  Or group all of PVDD_* into a
-> single regulator?
-
-Please group them into supplies as documented in the datasheet.  If they
-are documented as distinct things they should be distinct things, if
-they are just the same supply coming in through multiple pins for power
-reasons they should be one supply.
-
---kUBUi7JBpjcBtem/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVNn6RAAoJECTWi3JdVIfQBqgH/0tlKVV/Vg0BZm9J/MQHRLmt
-o6GCF3Bju4ChTlYPOn/Tj59gji6lmT8DhG3JcPyUbucuveWkORK2uPBwKXzQsLJN
-y6IEPTx/pQ35RCFE9mUepiZCcCLFWfYZnUR1kmEeT0M4Qm+5UO906IaecqrVM6+Y
-hikrtT3d/Zg1FGxksO8DN/B8vDByU5AoPnpJsdY7tHTpCUocRt2u3gTnRsh/hxNH
-79XGvoSM+TYx1rh9+aIyJCs/UVosEIyq27oRzbOwpX6lClmW8cenX5owjAzkmlH7
-595rM8EPuqSyBvyOLiLApqpaQOxxAfib6OHnrGQgOlfNcxOnQch4BdpTzBcWQCw=
-=+qUs
------END PGP SIGNATURE-----
-
---kUBUi7JBpjcBtem/--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+- Lars
