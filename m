@@ -1,16 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 0/9] Add SKL ipc handling code
-Date: Wed, 22 Apr 2015 09:30:46 +0530
-Message-ID: <20150422040046.GF2738@intel.com>
-References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
- <20150420214441.GW14892@sirena.org.uk>
+Subject: Re: [RFC 0/4] ASoC DSP topology
+Date: Wed, 22 Apr 2015 09:40:20 +0530
+Message-ID: <20150422041020.GG2738@intel.com>
+References: <1429217285.7100.18.camel@loki> <5535F513.8030902@ti.com>
+ <20150421092812.GA22845@sirena.org.uk> <553642EC.8010400@ti.com>
+ <1429629831.2797.9.camel@loki>
+ <20150421163942.GM22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4371178102032452166=="
+Content-Type: multipart/mixed; boundary="===============0107569141491794550=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 833052604AE
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 06:03:23 +0200 (CEST)
-In-Reply-To: <20150420214441.GW14892@sirena.org.uk>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 180002604AE
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 06:12:58 +0200 (CEST)
+In-Reply-To: <20150421163942.GM22845@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +23,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches.audio@intel.com
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4371178102032452166==
+--===============0107569141491794550==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oj4kGyHlBMXGt3Le"
+	protocol="application/pgp-signature"; boundary="3O1VwFp74L81IIeR"
 Content-Disposition: inline
 
 
---oj4kGyHlBMXGt3Le
+--3O1VwFp74L81IIeR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 20, 2015 at 10:44:41PM +0100, Mark Brown wrote:
-> On Fri, Apr 17, 2015 at 06:45:58PM +0530, Vinod Koul wrote:
-> > This series adds support for managing DSP and posting IPC and processin=
-g IPC
-> > replies.
+On Tue, Apr 21, 2015 at 05:39:42PM +0100, Mark Brown wrote:
+> On Tue, Apr 21, 2015 at 04:23:51PM +0100, Liam Girdwood wrote:
+> > On Tue, 2015-04-21 at 15:30 +0300, Peter Ujfalusi wrote:
 >=20
-> Any dependencies on the generic HDA stuff you've been posting?
-Yes.
+> > > We have discussed this with Liam in the past: in my view the DSP topo=
+logy (or
+> > > Dynamic FW) should be represented in the machine level and it would b=
+e the
+> > > best if the same image could carry card level widgets routes and link=
+s. If you
+> > > have big enough change in the FW and it's provided widgets/PCMs you w=
+ould need
+> > > separate machine driver or at least a way to have different set of ma=
+chine
+> > > level routes, widgets, links, etc for different DSP topology file.
+>=20
+> > The component level allows us to target the physical component devices
+> > that may have runtime definable topologies. This would include codecs
+> > too, since some vendors are making codecs with built in FW (maybe TI
+> > too ?). The machine level more represents the board HW topology and this
+> > should be derived from ACPI or DT.
+>=20
+> I tend to agree.  We should let each vendor provide their own topology
+> information - if they need to do something with this (which does seem
+> unlikely) system integrators should be on an equal footing with silicon
+> vendors here, and we shouldn't be encouraging systems where we need
+> per-board firmware definitions for the silicon components just because
+> the board has differences.
+One case which comes to my mind worth discussing here is PCMs.
 
-So first we need to merge the SKL PCM driver series. Can you please review
-that [1] one as well. Then this series.
-Lastly the SKL aDSP support series [2] which uses the IPC code in this seri=
-es.
+We are trying to move FE dialink PCMs to toplogy as that is SW defined and
+IMO not linked to HW.
+So machine driver will not have dailinks to register at probe so we can't g=
+et
+sound card created (other info like widgets map can get get registered after
+probe though)
 
-One more would be when toplogy is merged, for supporting the dsp toplogy
+I was thinking that in core, a component should register with a toplogy bin
+as well. Core can load (or with a callback) the toplogy binary and then par=
+se it for
+PCMs register them, and create sound card...
 
-Thanks
+thoughts...
+
 --=20
 ~Vinod
 
-[1]:  [PATCH v2 0/7] ASoC: hda - add ASoC Skylake HD audio driver
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-April/090621.html
-
-[2]: [RFC 0/7] ASoC: hda - ASoC DSP widget event handlers
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-April/090710.html
-
---oj4kGyHlBMXGt3Le
+--3O1VwFp74L81IIeR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJVNxzuAAoJEHwUBw8lI4NHFW4QAK9OaeUprRgq6Jdt6f8aFhqa
-xlWSssC7qZfBBnY2K0sR2SYjQ13Aj+7nPq++itnM6LvR8HX1PBxnL1WlLA1VwNHf
-1UkYRVHkxjWjlwE8FDMVdEkklY+UPSM+obVsxNq3ocYtDHZQVMWA91oi82nHLaVw
-nkLk7/WPYqJWPr/1xh0VTzdai8d9KASBrIO1IIFqL6jf2SV46GlSIbxxWbtLYKn4
-Hv9anTetKN0FtCOoddoFrx4gyrEQbm/O0wftL31HYWe5WpN4xeWa2DT5j0vQFfWG
-exDjn7HKwCcY8YNLxMwWk01FXjCRyJBXIcXRaVr3YpJS+2SgJ+gwYWBjixP7Qtil
-5cq5dNQ9/Epa3O4J4Oh6Bhirz6zGrnEUyPJ1uoOGUtF6lRxrt2rfGugs5N7VW5r0
-kvXnvqcuWUMlzBq5y8DKdcQ5ZQxIqt25ZLTZf7KnXTFWu/2eXLWH99dftSqO9Ex0
-Rn2ZguADXy07wxcY0TDbmURY+zAcAmlgb4BPSCGinqt+3Y41/Hq+UKpUEyzV4eox
-jZiNr1kQtTT7VyycQ6brwqliF83G3k5mhDSjGMBeX+woU9/RklkKeUMBxGUJWvux
-T+IvZ67hPvr0r5g/K5bK6DPdYSMkxqlwzEr/Wgci6YLYQmGodjLtwd+Hi1gkZJeQ
-yo379VsSX9bigNcSTZY2
-=EMDC
+iQIcBAEBAgAGBQJVNx8sAAoJEHwUBw8lI4NH9X8P/3sgWJiI3N7YbTVeS6/fjL5f
+IC2W6o1HUm40veboRNGcrLMRDV9pyfBLvcwJBHDiO+DAribsyP5w6ava0cSfHUCU
+cjTzqw0P10hAiAtl0PdDgJZjwt7wOAk/x/e3pIpBfArIHMjO+yMinO9u4PxE8PPq
+rdTcB1W20Tw5T3NpdXbpfoZHu7uzadnzKq8KES+WwmQVdb2VDbkshBg9V65//nmV
+tWNelgeojrVcZC6q+AFN9CCLrwbsdev3FEVUc5tfX2OQPGJNjIIBtxM6jH0Krkm1
+rvtuj4A99OOVMrdjR747wBDfaWl2Sq4RaO2cDDcB1KICiN7BJMzRMoHzK32NdMSc
+YrK56YvDhR8rMaqs0S1Pi1X7TOyisvZSWTFHzhJAJY162FKt+zqapkZjPWZRWJw3
+ZF4Eqbrv3pJyXxiz3pnvL5SJce44HZW9Xy4kuBTYHCxIsHXq7XhIC/X3XPMzCmCt
+YRiOO0Exxl5jxQ7hx1FeNewyPZ1QGUhFpzCerde7h3H/xqiRVuSaJm2fWc4dnjnv
+Ia0cLtt0wk61QjtCGhQyKIAhLfWAQMng34hrw68fZYsCr4h6DZ+1QqCSBqWgvjEH
+bXg9243V9izegXpMH+dzzrhVdrpLo4wboEpLz4o3xQ/324HQfUR4XsmjcdKQmx5X
+/o586O1oJ9AcnhpnbO9z
+=Tl1x
 -----END PGP SIGNATURE-----
 
---oj4kGyHlBMXGt3Le--
+--3O1VwFp74L81IIeR--
 
---===============4371178102032452166==
+--===============0107569141491794550==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4371178102032452166==--
+--===============0107569141491794550==--
