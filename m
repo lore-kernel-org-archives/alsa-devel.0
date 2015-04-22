@@ -1,16 +1,16 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v8 5/7] ASoC: jack: create kctls according to
-	jack pins info
-Date: Wed, 22 Apr 2015 14:03:51 +0800
-Message-ID: <1429682633-10765-6-git-send-email-yang.jie@intel.com>
+Subject: [PATCH v8 6/7] ALSA: jack: remove exporting ctljack
+	functions
+Date: Wed, 22 Apr 2015 14:03:52 +0800
+Message-ID: <1429682633-10765-7-git-send-email-yang.jie@intel.com>
 References: <1429682633-10765-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ACF4265CAB
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 08:00:38 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C6E67265800
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 08:00:39 +0200 (CEST)
 In-Reply-To: <1429682633-10765-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,29 +25,31 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-In the new jack kctls design, we can create kctls according to
-pins info:
-
-1. during jack creating, snd_jack_new() with NULL jack_kctl;
-2. for each pin, call snd_jack_add_kctl() to add one kctl
-(it will call snd_ctl_add() to add kctl to card);
+After created jack embedded kctls and removed hda jack kctls, the funcs
+snd_kctl_jack_new() and snd_kctl_jack_report() are merely internal called,
+so here remove exporting them.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- sound/soc/soc-jack.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/core/ctljack.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 70a9bdd..87ca980 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -197,6 +197,7 @@ int snd_soc_jack_add_pins(struct snd_soc_jack *jack, int count,
+diff --git a/sound/core/ctljack.c b/sound/core/ctljack.c
+index b631996..9ff955c 100644
+--- a/sound/core/ctljack.c
++++ b/sound/core/ctljack.c
+@@ -74,7 +74,6 @@ snd_kctl_jack_new(const char *name, struct snd_card *card)
+ 	kctl->private_value = 0;
+ 	return kctl;
+ }
+-EXPORT_SYMBOL_GPL(snd_kctl_jack_new);
  
- 		INIT_LIST_HEAD(&pins[i].list);
- 		list_add(&(pins[i].list), &jack->pins);
-+		snd_jack_add_new_kctl(jack->jack, pins[i].pin, pins[i].mask);
- 	}
- 
- 	/* Update to reflect the last reported status; canned jack
+ void snd_kctl_jack_report(struct snd_card *card,
+ 			  struct snd_kcontrol *kctl, bool status)
+@@ -84,4 +83,3 @@ void snd_kctl_jack_report(struct snd_card *card,
+ 	kctl->private_value = status;
+ 	snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
+ }
+-EXPORT_SYMBOL_GPL(snd_kctl_jack_report);
 -- 
 1.9.1
