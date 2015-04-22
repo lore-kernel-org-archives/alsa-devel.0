@@ -1,88 +1,88 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 5/7] ASoC: hda - add Skylake HD audio
- driver
-Date: Wed, 22 Apr 2015 08:31:32 +0530
-Message-ID: <20150422030132.GB2738@intel.com>
-References: <1429262000-21517-1-git-send-email-vinod.koul@intel.com>
- <1429262000-21517-6-git-send-email-vinod.koul@intel.com>
- <s5hfv7wwpbe.wl-tiwai@suse.de>
+From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: Re: [RESEND RFC PATCH 1/3] ASoC: mediatek: Add binding support for
+ AFE driver
+Date: Wed, 22 Apr 2015 11:17:20 +0800
+Message-ID: <1429672640.14162.55.camel@mtksdaap41>
+References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
+	 <1428653649-38200-2-git-send-email-koro.chen@mediatek.com>
+	 <20150418173407.GE26185@sirena.org.uk>
+	 <20150420043747.GH6325@pengutronix.de>
+	 <20150420204849.GJ14892@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DF4F26047F
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 05:04:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hfv7wwpbe.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150420204849.GJ14892-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 19, 2015 at 09:27:17AM +0200, Takashi Iwai wrote:
-> At Fri, 17 Apr 2015 14:43:18 +0530,
-> Vinod Koul wrote:
-> > +irqreturn_t azx_interrupt(int irq, void *dev_id)
-> > +{
-> > +	struct hdac_bus *chip = dev_id;
-> > +	u32 status;
-> > +
-> > +#ifdef CONFIG_PM
-> > +	if (!pm_runtime_active(chip->dev))
-> > +		return IRQ_NONE;
-> > +#endif
-> > +
-> > +	spin_lock(&chip->reg_lock);
-> > +
-> > +	status = snd_hdac_chip_readl(chip, INTSTS);
-> > +	if (status == 0 || status == 0xffffffff) {
-> > +		spin_unlock(&chip->reg_lock);
-> > +		return IRQ_NONE;
-> > +	}
-> > +	spin_unlock(&chip->reg_lock);
-> > +
-> > +	return IRQ_WAKE_THREAD;
-> > +}
-> > +
-> > +irqreturn_t azx_threaded_handler(int irq, void *dev_id)
-> > +{
-> > +	struct hdac_bus *chip = dev_id;
-> > +	u32 status;
-> > +	unsigned long cookie;
-> > +
-> > +	status = snd_hdac_chip_readl(chip, INTSTS);
-> > +	spin_lock_irqsave(&chip->reg_lock, cookie);
-> > +
-> > +	snd_hdac_bus_handle_stream_irq(chip, status, &azx_position_check);
-> > +
-> > +	/* clear rirb int */
-> > +	status = snd_hdac_chip_readb(chip, RIRBSTS);
-> > +	if (status & RIRB_INT_MASK) {
-> > +		if (status & RIRB_INT_RESPONSE)
-> > +			snd_hdac_bus_update_rirb(chip);
-> > +		snd_hdac_chip_writeb(chip, RIRBSTS, RIRB_INT_MASK);
-> > +	}
-> > +
-> > +	spin_unlock_irqrestore(&chip->reg_lock, cookie);
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
+On Mon, 2015-04-20 at 21:48 +0100, Mark Brown wrote:
+> On Mon, Apr 20, 2015 at 06:37:47AM +0200, Sascha Hauer wrote:
+> > On Sat, Apr 18, 2015 at 06:34:07PM +0100, Mark Brown wrote:
+> > > On Fri, Apr 10, 2015 at 04:14:07PM +0800, Koro Chen wrote:
 > 
-> BTW, you don't need to use a threaded irq for this task.  Unlike DSP
-> driver, the PCM and CORB/RIRB irq doesn't need a long time to handle.
-For this yes we dont. I can move this up.
+> > > > +Each external interface (called "IO" in this driver) is presented as a
+> > > > +DAI to ASoC. An IO must be connected via the interconnect to a memif.
+> > > > +The connection paths are configured through the device tree.
+> 
+> > > Why are these connection paths configured via device tree?  I would
+> > > expect that either there would be runtime configurability of these
+> > > things (particularly if loopback configurations within the hardware are
+> > > possible) or we'd just allocate memory interfaces to DAIs automatically
+> > > as DAIs come into use.
+> 
+> > There is a crossbar switch between the memory interfaces and the DAIs.
+> > Not every connection is possible, so not every memory interface can be
+> > used for every DAI. An algorithm choosing a suitable memory interface
+> > must be quite clever, complicated and also SoC dependent (the same but
+> > different hardware is used on MT8135 aswell), so I thought offering a
+> > static configuration via device tree is a good start. Should there be
+> > runtime configuration possible later the device tree settings could
+> > provide a good default.
+> 
+> What exactly do the restrictions look like and how often do they vary in
+> practice (can we get away with just doing a single static setup in the
+> driver)?  I'd have thought it should be fairly straightforward to have a
+> table of valid mappings and just pick the first free memory interface?
+> I'd rather not get stuck with the tables in the DT.  It's partly to
+> avoid setting bad precendents, we really don't want everyone coming
+> along hard coding this stuff, and partly because the hardware you
+> described didn't seem that hard to handle.
+> 
+If using DPCM, it seems the most suitable FE DAIs will be memif, and
+external interface like I2S should be BE DAIs. Do you think it is
+suitable for our memif to be FE DAIs? Then which memif to used can be
+described in a machine driver's FE DAIs. But I think this has a problem
+that our memif is one-direction, playback or capture. So the binded pcm
+device cannot have playback and capture capability together. May it
+cause trouble for user space apps that assumes there will be pcmC0D0p,
+pcmC0D0c?
 
-But we still need a threaded handler for DSP ops, but yes no need to wake
-all the time
+> > > > +- mem-interface-playback:
+> > > > +  mem-interface-capture: property of memif, format is: <memif irq use_sram>;
+> > > > +	                 memif: which memif to be used
+> > > > +			        (defined in include/dt-bindings/sound/mtk-afe.h)
+> > > > +		         irq: which irq to be used
+> > > > +			      (defined in include/dt-bindings/sound/mtk-afe.h)
+> > > > +		         use_sram: 1 is yes, 0 is no
+> 
+> > > Again, this looks like stuff we should be able to figure out at runtime
+> > > - the use of SRAM in particular looks like something we might want to
+> > > change depending on use case.  Assuming it adds buffering then for a
+> > > VoIP application we might not want to use SRAM to minimize latency but
+> > > during music playback we might want to enable SRAM to minimize power
+> > > consumption.
+> 
+> > That's exactly the usecase. How could such a runtime configurability
+> > look like? sysfs? Or something based on the buffer sizes?
+> 
+> Yeah, one of those :) but probably an ALSA control is going to be the
+> easiest for applications.
 
--- 
-~Vinod
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
