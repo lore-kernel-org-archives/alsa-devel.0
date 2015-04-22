@@ -1,24 +1,17 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Fw: Using loopback card to Connect GSM two way
-	call	to the real sound card UDA1345TS
-Date: Wed, 22 Apr 2015 06:11:58 +0000
-Message-ID: <1429683117651.11394@tataelxsi.co.in>
-References: <1425878251963.1340@tataelxsi.co.in>
- <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
- <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
- <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
- <551D0F35.6010709@ladisch.de>
- <1427970980529.96067@tataelxsi.co.in>,<551D5B78.60703@ladisch.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH 0/2] Calculate BCLK using TDM slots and
+ remove channels rule
+Date: Wed, 22 Apr 2015 10:44:11 +0300
+Message-ID: <5537514B.1040807@ti.com>
+References: <cover.1429537509.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APAC01-HK1-obe.outbound.protection.outlook.com
- (mail-hk1on0132.outbound.protection.outlook.com [134.170.140.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 844A0265A69
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 08:12:06 +0200 (CEST)
-In-Reply-To: <551D5B78.60703@ladisch.de>
-Content-Language: en-US
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id F16FA260525
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 09:44:17 +0200 (CEST)
+In-Reply-To: <cover.1429537509.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,49 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, misael.lopez@ti.com, broonie@kernel.org, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-Dear Clemens,
+There still something fishy with multi channel multi serializer case, so 
+please don't take these patches yet.
 
-Thanks a lot for your information, It is really understandable for a newbie like me
+Best regards,
+Jyri
 
-As you suggested, could you please provide me some sample application links without using dshare plugin , ie., using the two channels ie., left & right directly
-
-So that I can reduce the CPU consumption drastically
-
-Thanks  a lot for your prompt support w.r.t this thread once again
-
-Kindly do the needful as early as possible
-
-Many Thanks in advance again
-
-
-
-
-________________________________________
-From: Clemens Ladisch <clemens@ladisch.de>
-Sent: Thursday, April 2, 2015 8:38 PM
-To: Srinivasan S
-Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
-Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
-
-Srinivasan S wrote:
-> I didn't understand what is 'two channel devices' does
-
-The two channels are "left" and "right".
-
-> Regarding bindings as you explained"bindings.x y" or "bindings { x y }" maps channel x of this device to
-> channel y of the slave device.
+On 04/20/15 16:58, Jyri Sarha wrote:
+> The first patch is a bugfix. I did not have the HW see the problem
+> myself, but reading from the code the problem is evident. This should
+> also fix Dan Carpenter's concern about stack usage in
+> davinci_mcasp_hw_rule_channels(), as the whole function is removed.
 >
-> I didn't understand channel x of this device means is it the real sound card??? which is the current device ie., channel x of this device means???
+> The second patch is just an optimization of the sample-rate rule. In
+> effect I put in use Takashi Iwai's suggestion for fixing the stack
+> usage issue in the channels rule.
 >
-> I didn't understand channel y of the slave device means??..  ie., which is slave device here????
-
-"This device" is the virtual device that is defined.
-The slave device is the device whose name is specified with "slave.pcm".
-
-
-Regards,
-Clemens
+> Jyri Sarha (2):
+>    ASoC: davinci-mcasp: Calculate BCLK using TDM slots and remove
+>      channels rule
+>    ASoC: davinci-macsp: Optimize implicit BLCK sample-rate rule
+>
+>   sound/soc/davinci/davinci-mcasp.c | 104 ++++++++++----------------------------
+>   1 file changed, 27 insertions(+), 77 deletions(-)
+>
