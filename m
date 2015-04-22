@@ -1,17 +1,24 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v8 7/7] ALSA: Docs: Add documentation for Jack
-	kcontrols
-Date: Wed, 22 Apr 2015 14:03:53 +0800
-Message-ID: <1429682633-10765-8-git-send-email-yang.jie@intel.com>
-References: <1429682633-10765-1-git-send-email-yang.jie@intel.com>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Fw: Using loopback card to Connect GSM two way
+	call	to the real sound card UDA1345TS
+Date: Wed, 22 Apr 2015 06:11:58 +0000
+Message-ID: <1429683117651.11394@tataelxsi.co.in>
+References: <1425878251963.1340@tataelxsi.co.in>
+ <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
+ <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
+ <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
+ <551D0F35.6010709@ladisch.de>
+ <1427970980529.96067@tataelxsi.co.in>,<551D5B78.60703@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A81B7265ADF
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 08:00:42 +0200 (CEST)
-In-Reply-To: <1429682633-10765-1-git-send-email-yang.jie@intel.com>
+Received: from APAC01-HK1-obe.outbound.protection.outlook.com
+ (mail-hk1on0132.outbound.protection.outlook.com [134.170.140.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 844A0265A69
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 08:12:06 +0200 (CEST)
+In-Reply-To: <551D5B78.60703@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,72 +28,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add documentation describing Jack embedded kcontrols, and how to
-use it on HD-Audio and ASoC case.
+Dear Clemens,
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- Documentation/sound/alsa/Jack-Controls.txt | 48 ++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/sound/alsa/Jack-Controls.txt
+Thanks a lot for your information, It is really understandable for a newbie like me
 
-diff --git a/Documentation/sound/alsa/Jack-Controls.txt b/Documentation/sound/alsa/Jack-Controls.txt
-new file mode 100644
-index 0000000..9e93947
---- /dev/null
-+++ b/Documentation/sound/alsa/Jack-Controls.txt
-@@ -0,0 +1,48 @@
-+Why we need kcontrols for Jack?
-+===============================
-+
-+ALSA using kcontrols to export controlling(switch, volume, Mux, ...) to
-+user space, e.g. pulseaudio can switch off headphone and switch on
-+speaker when no heaphone is pluged in.
-+
-+For each physical jack, there may be dynamic pluged in/out status which
-+upper layer may be interested in. Currently the ALSA jack core registers
-+only input devices for each jack registered. These jack input devices
-+are not readable by userspace devices that run as non root.
-+
-+So we create embeded kcontrols for each jack, report jack event via
-+these kcontrols, userspace switch them to ack on these event, to
-+implement what they are wanna to.
-+
-+Combining with ucm machanism, userpace can do fantasic controlling as
-+they want to.
-+
-+Jack and kcontrols
-+==================
-+
-+Each jack will have a kcontrol list, we can create a kcontrol and attach
-+it to the jack, at jack creating stage. Also, we can add kcontrol to an
-+exist jack, at anytime when you are happy.
-+
-+Those kcontrols will be freed automatically when the Jack is freed.
-+
-+How to create kcontrol embedded jack?
-+=====================================
-+
-+To be compatible with previous HD-Audio jack and ASoC jack, we modify
-+snd_jack_new() with adding two params:
-+
-+ - @phantom_jack: for phantom jack, only create needed kctl, won't create
-+	real jack device.
-+ - @jjack_kctl: create kctl if non-NULL pointer passed in, and provide
-+	it to the caller. also add it to the non-phantom jack kctl list.
-+
-+For HDA jack, we can use phantom_jack = true for phantom jack creating,
-+and the jack kctl pointer will be filled with the new created kcontrol.
-+
-+For ASoC jack, usually, we create kcontrols after jack is created, with
-+calling snd_hda_jack_add_kctl() for each jack pins. And, the pin name
-+will be assigned to the corresponding kcontrol name. So, to make
-+userspace understand and recognize it, please assign proper name for
-+each jack pin.
-+
--- 
-1.9.1
+As you suggested, could you please provide me some sample application links without using dshare plugin , ie., using the two channels ie., left & right directly
+
+So that I can reduce the CPU consumption drastically
+
+Thanks  a lot for your prompt support w.r.t this thread once again
+
+Kindly do the needful as early as possible
+
+Many Thanks in advance again
+
+
+
+
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Thursday, April 2, 2015 8:38 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
+
+Srinivasan S wrote:
+> I didn't understand what is 'two channel devices' does
+
+The two channels are "left" and "right".
+
+> Regarding bindings as you explained"bindings.x y" or "bindings { x y }" maps channel x of this device to
+> channel y of the slave device.
+>
+> I didn't understand channel x of this device means is it the real sound card??? which is the current device ie., channel x of this device means???
+>
+> I didn't understand channel y of the slave device means??..  ie., which is slave device here????
+
+"This device" is the virtual device that is defined.
+The slave device is the device whose name is specified with "slave.pcm".
+
+
+Regards,
+Clemens
