@@ -1,74 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: Intel: Add support rt5650 in sst
-	driver
-Date: Wed, 22 Apr 2015 11:32:14 +0100
-Message-ID: <20150422103214.GO22845@sirena.org.uk>
-References: <1429659360-99360-1-git-send-email-yang.a.fang@intel.com>
- <1429659360-99360-2-git-send-email-yang.a.fang@intel.com>
+Subject: Re: [PATCH 7/8] ASoC: wm8998: Initial WM8998 codec driver
+Date: Wed, 22 Apr 2015 12:00:30 +0100
+Message-ID: <20150422110030.GQ22845@sirena.org.uk>
+References: <1429619636-25478-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1429619636-25478-8-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8889235984126773357=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ED69B260566
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 12:32:22 +0200 (CEST)
-In-Reply-To: <1429659360-99360-2-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="l8yJEXo8J9fv7OFY"
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1429619636-25478-8-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: lee.jones@linaro.org, linus.walleij@linaro.org, gnurou@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8889235984126773357==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MmQIYbZiCoQ2kDro"
-Content-Disposition: inline
-
-
---MmQIYbZiCoQ2kDro
+--l8yJEXo8J9fv7OFY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 21, 2015 at 04:36:00PM -0700, yang.a.fang@intel.com wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
->=20
-> Added entry in sst driver to support rt5650 codec
-> for intel Braswell platform.
+On Tue, Apr 21, 2015 at 01:33:55PM +0100, Richard Fitzgerald wrote:
 
-Applied, thanks.
+> +static int wm8998_in1mux_ev(struct snd_soc_dapm_widget *w,
+> +				struct snd_kcontrol *kcontrol,
+> +				int event)
+> +{
+> +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> +	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
+> +	unsigned int left_mux, right_mux, in1mode, old;
+> +
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		/* Validate the mux configuration */
+> +		left_mux = snd_soc_read(codec, ARIZONA_ADC_DIGITAL_VOLUME_1L) &
+> +				  ARIZONA_IN1L_SRC_MASK;
+> +		right_mux = snd_soc_read(codec, ARIZONA_ADC_DIGITAL_VOLUME_1R) &
+> +				  ARIZONA_IN1R_SRC_MASK;
+> +
+> +		/* Only IN1A can be digital, IN1B is always analogue */
+> +		in1mode = (arizona->pdata.inmode[0] & 2)
+> +				<< (ARIZONA_IN1_MODE_SHIFT - 1);
+> +
+> +		if (in1mode != 0) {
+> +			/* if IN1A is digital, the only valid mux configs
+> +			 * are both channels A or both channels B.
+> +			 */
+> +			if (left_mux != right_mux) {
+> +				dev_err(arizona->dev,
+> +					"IN1=DMIC and IN1L Mux != IN1R Mux");
+> +				return -EINVAL;
+> +			}
 
---MmQIYbZiCoQ2kDro
+This (or at least some of it) seems like something we should be doing by
+registering different widgets and routing at device probe time.
+
+> +		old = snd_soc_read(codec, ARIZONA_IN1L_CONTROL) &
+> +					ARIZONA_IN1_MODE_MASK;
+
+> +		if (old != in1mode)
+> +			snd_soc_update_bits(codec, ARIZONA_IN1L_CONTROL,
+> +						ARIZONA_IN1_MODE_MASK, in1mode);
+
+Why bother with the read into old here?  Suppressing redundant updates
+is part of the point of snd_soc_update_bits().
+
+--l8yJEXo8J9fv7OFY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVN3itAAoJECTWi3JdVIfQq58H/Rdac/ZnIVDzwNPxc8iknBcq
-U4RR17LmG8m+FTiDDBlRBJWSddS1s9amyHrv6tezi8tREECcqcpoomNQHWFjOg8H
-e/1ebza/V0LfgQAudrDWkxfywI8EfvTMGNWUOkrlUHPRjCzNFHyZKbE7Zj+9K/Hc
-pQ6riy+YQss4soprRQQf+4uSF7OMDbxK5mIY256xoiTr3kpv6F2qG8ecQuR//syk
-CN5ZWREoxq45dRs/Nm1DFAm3cF5RbOF2siD6mH33vgZQXSrO9HzZAkdd31vYSaBr
-FkF6PUAdbzh7BCvwycMdASPyiNkDEjSGH2qU/X3wwoTxuA54RbN4AbkwhNbVHwY=
-=FgIU
+iQEcBAEBCAAGBQJVN39NAAoJECTWi3JdVIfQQxwH+gO2x+Li17UNOs7ycKZkQDMq
+/FcusjV7wYyqJ8ykafkswXm+tLC9bMIayHlP4QWBcjEEGfHUz+pAaU6tCMwzkvJH
+FpSewRbzPrBxae5IaYvuiT8E/r6lezrEGIpEmcuhuLTvryZfgpywiXssxik2K5Zu
+LupmqcKWLGg6n0xbkz/6yKsSwONdW6wTPhq76rcVipzW5iLXjDcnQe/xoEreNbte
+TI/QasWyOsiwDBtRdsxepNeQkpiQhDEhf0ru3IMg27gR8wGCSauW3qe+ZDyN10jR
+X2hpr07kAl0Ulwr6AXhPqbqd2bKeLahGeCD5RrwDGIy7lhV6LKgxBghCqRtfhF4=
+=8esy
 -----END PGP SIGNATURE-----
 
---MmQIYbZiCoQ2kDro--
-
---===============8889235984126773357==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8889235984126773357==--
+--l8yJEXo8J9fv7OFY--
