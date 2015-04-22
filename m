@@ -1,7 +1,7 @@
 From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH 4/5] ASoC: omap-hdmi-audio: Force channel allocation only for OMAP4
-Date: Wed, 22 Apr 2015 16:23:00 +0300
-Message-ID: <24329adf0076ff2ac004817a602c12db2ccc477d.1429705991.git.jsarha@ti.com>
+Subject: [PATCH 3/5] OMAPDSS: HDMI5: Fix AUDICONF3 bitfield offsets
+Date: Wed, 22 Apr 2015 16:22:59 +0300
+Message-ID: <5f42c5eb8dda56f4351f3e1292841243ee38e3dc.1429705991.git.jsarha@ti.com>
 References: <cover.1429705991.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -14,57 +14,30 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Misael Lopez Cruz <misael.lopez@ti.com>
 
-There is a constraint in the OMAP4 HDMI IP that requires to use
-the 8-channel code when transmitting more than two channels.
-
-The constraint doesn't apply for OMAP5 so don't force the channel
-allocation in the sound driver as it can be done specifically for
-OMAP4 later in the hdmi4 core.
+Downmix inhibit in HDMI_CORE_FC_AUDICONF3 register is in
+bit 4 while CEA861_AUDIO_INFOFRAME_DB5_DM_INH sets bit 7.
 
 Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
 Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
- drivers/video/fbdev/omap2/dss/hdmi4_core.c | 7 +++++++
- sound/soc/omap/omap-hdmi-audio.c           | 6 ++----
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ drivers/video/fbdev/omap2/dss/hdmi5_core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/omap2/dss/hdmi4_core.c b/drivers/video/fbdev/omap2/dss/hdmi4_core.c
-index 2b8bd22..fa72e73 100644
---- a/drivers/video/fbdev/omap2/dss/hdmi4_core.c
-+++ b/drivers/video/fbdev/omap2/dss/hdmi4_core.c
-@@ -654,6 +654,13 @@ static void hdmi_core_audio_infoframe_cfg(struct hdmi_core_data *core,
- 	hdmi_write_reg(av_base, HDMI_CORE_AV_AUD_DBYTE(2), info_aud->db3);
- 	sum += info_aud->db3;
+diff --git a/drivers/video/fbdev/omap2/dss/hdmi5_core.c b/drivers/video/fbdev/omap2/dss/hdmi5_core.c
+index 7a80beb..c3286bd 100644
+--- a/drivers/video/fbdev/omap2/dss/hdmi5_core.c
++++ b/drivers/video/fbdev/omap2/dss/hdmi5_core.c
+@@ -790,7 +790,9 @@ static void hdmi5_core_audio_infoframe_cfg(struct hdmi_core_data *core,
  
-+	/*
-+	 * The OMAP HDMI IP requires to use the 8-channel channel code when
-+	 * transmitting more than two channels.
-+	 */
-+	if (info_aud->db4_ca != 0x00)
-+		info_aud->db4_ca = 0x13;
-+
- 	hdmi_write_reg(av_base, HDMI_CORE_AV_AUD_DBYTE(3), info_aud->db4_ca);
- 	sum += info_aud->db4_ca;
+ 	hdmi_write_reg(base, HDMI_CORE_FC_AUDICONF1, info_aud->db2_sf_ss);
+ 	hdmi_write_reg(base, HDMI_CORE_FC_AUDICONF2, info_aud->db4_ca);
+-	hdmi_write_reg(base, HDMI_CORE_FC_AUDICONF3, info_aud->db5_dminh_lsv);
++	hdmi_write_reg(base, HDMI_CORE_FC_AUDICONF3,
++	  (info_aud->db5_dminh_lsv & CEA861_AUDIO_INFOFRAME_DB5_DM_INH) >> 3 |
++	  (info_aud->db5_dminh_lsv & CEA861_AUDIO_INFOFRAME_DB5_LSV));
+ }
  
-diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
-index 4775da4..8df303f 100644
---- a/sound/soc/omap/omap-hdmi-audio.c
-+++ b/sound/soc/omap/omap-hdmi-audio.c
-@@ -210,12 +210,10 @@ static int hdmi_dai_hw_params(struct snd_pcm_substream *substream,
- 
- 	cea->db3 = 0; /* not used, all zeros */
- 
--	/*
--	 * The OMAP HDMI IP requires to use the 8-channel channel code when
--	 * transmitting more than two channels.
--	 */
- 	if (params_channels(params) == 2)
- 		cea->db4_ca = 0x0;
-+	else if (params_channels(params) == 6)
-+		cea->db4_ca = 0xb;
- 	else
- 		cea->db4_ca = 0x13;
- 
+ int hdmi5_audio_config(struct hdmi_core_data *core, struct hdmi_wp_data *wp,
 -- 
 1.9.1
 
