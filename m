@@ -1,20 +1,19 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v7 4/7] ALSA: hda - Update to use the new
- jack kctls method
-Date: Wed, 22 Apr 2015 04:56:00 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90551DE3D@SHSMSX101.ccr.corp.intel.com>
-References: <1429603545-21063-1-git-send-email-yang.jie@intel.com>
- <1429603545-21063-5-git-send-email-yang.jie@intel.com>
- <s5hmw21zttl.wl-tiwai@suse.de>
+From: Yang Fang <yang.a.fang@intel.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel: Support rt5650 codec for
+ Cherrytrail & Braswell
+Date: Tue, 21 Apr 2015 22:02:47 -0700
+Message-ID: <20150422050247.GA101109@mocha>
+References: <1429659360-99360-1-git-send-email-yang.a.fang@intel.com>
+ <20150422041840.GH2738@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E78F22652D1
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 06:56:09 +0200 (CEST)
-In-Reply-To: <s5hmw21zttl.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DB0F2652D1
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 07:03:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150422041840.GH2738@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +23,268 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, broonie@kernel.org, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, April 21, 2015 5:59 PM
-> To: Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [PATCH v7 4/7] ALSA: hda - Update to use the new jack kctls
-> method
-> 
-> At Tue, 21 Apr 2015 16:05:42 +0800,
-> Jie Yang wrote:
-> >
-> > In the new jack kctls design, snd_kcontrol can be created during
-> > snd_jack_new(), or calling snd_jack_add_new_kctls() to create and
-> > attach to the created jack later.
-> >
-> > Here we create jack kctls at the jack creating stage, for both
-> > phantom/non-phantom jack.
-> >
-> > Signed-off-by: Jie Yang <yang.jie@intel.com>
+On Wed, Apr 22, 2015 at 09:48:40AM +0530, Vinod Koul wrote:
+> On Tue, Apr 21, 2015 at 04:35:59PM -0700, yang.a.fang@intel.com wrote:
+> > From: "Fang, Yang A" <yang.a.fang@intel.com>
+> > 
+> > rt5650 and rt5645 are similar codec so reuse the cht_bsw_rt5645 driver
+> > 
+> > Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
 > > ---
-> >  sound/pci/hda/hda_jack.c | 53
-> > +++++++++++++++++-------------------------------
-> >  sound/pci/hda/hda_jack.h |  4 +---
-> >  2 files changed, 20 insertions(+), 37 deletions(-)
-> >
-> > diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c index
-> > f45c488..3447853 100644
-> > --- a/sound/pci/hda/hda_jack.c
-> > +++ b/sound/pci/hda/hda_jack.c
-> > @@ -132,11 +132,11 @@ void snd_hda_jack_tbl_clear(struct hda_codec
-> > *codec)
-> >
-> >  	for (i = 0; i < codec->jacktbl.used; i++, jack++) {
-> >  		struct hda_jack_callback *cb, *next; -#ifdef
-> > CONFIG_SND_HDA_INPUT_JACK
-> > +
-> >  		/* free jack instances manually when clearing/reconfiguring
-> */
-> >  		if (!codec->bus->shutdown && jack->jack)
-> >  			snd_device_free(codec->bus->card, jack->jack); -
-> #endif
-> > +
-> >  		for (cb = jack->callback; cb; cb = next) {
-> >  			next = cb->next;
-> >  			kfree(cb);
-> > @@ -337,20 +337,16 @@ void snd_hda_jack_report_sync(struct
-> hda_codec *codec)
-> >  	jack = codec->jacktbl.list;
-> >  	for (i = 0; i < codec->jacktbl.used; i++, jack++)
-> >  		if (jack->nid) {
-> > -			if (!jack->kctl || jack->block_report)
-> > +			if (!jack->jack_kctl || jack->block_report)
+> >  sound/soc/intel/Kconfig                 |    7 +-
+> >  sound/soc/intel/boards/cht_bsw_rt5645.c |  108 +++++++++++++++++++++++++------
+> >  2 files changed, 94 insertions(+), 21 deletions(-)
+> > 
+> > diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> > index ee03dbd..63d7659 100644
+> > --- a/sound/soc/intel/Kconfig
+> > +++ b/sound/soc/intel/Kconfig
+> > @@ -112,12 +112,13 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+> >            If unsure select "N".
+> >  
+> >  config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+> > -	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645 codec"
+> > -	depends on X86_INTEL_LPSS
+> > +	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
+> > +	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
+> why this additional depends, it should be selecting SND_SOC_INTEL_SST?
+sure I can try that
 > 
-> The all checks of jack->kctl should be replaced with jack->jack.
-> That is, you don't have to care about kctl any longer in the hdaudio side.
- 
-OK, will change them.
+> > +	select SND_SOC_INTEL_BAYTRAIL
+> >  	select SND_SOC_RT5645
+> >  	select SND_SST_MFLD_PLATFORM
+> >  	select SND_SST_IPC_ACPI
+> >  	help
+> >  	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+> > -	  platforms with RT5645 audio codec.
+> > +	  platforms with RT5645/5650 audio codec.
+> >  	  If unsure select "N".
+> > diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+> > index 20a28b2..8115444 100644
+> > --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
+> > +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+> > @@ -21,6 +21,7 @@
+> >   */
+> >  
+> >  #include <linux/module.h>
+> > +#include <linux/acpi.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/slab.h>
+> >  #include <sound/pcm.h>
+> > @@ -33,9 +34,16 @@
+> >  #define CHT_PLAT_CLK_3_HZ	19200000
+> >  #define CHT_CODEC_DAI	"rt5645-aif1"
+> >  
+> > +struct cht_acpi_card {
+> > +	char *codec_id;
+> > +	int codec_type;
+> > +	struct snd_soc_card *soc_card;
+> > +};
+> > +
+> >  struct cht_mc_private {
+> >  	struct snd_soc_jack hp_jack;
+> >  	struct snd_soc_jack mic_jack;
+> > +	struct cht_acpi_card *acpi_card;
+> >  };
+> >  
+> >  static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
+> > @@ -94,7 +102,7 @@ static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
+> >  			platform_clock_control, SND_SOC_DAPM_POST_PMD),
+> >  };
+> >  
+> > -static const struct snd_soc_dapm_route cht_audio_map[] = {
+> > +static const struct snd_soc_dapm_route cht_5645_audio_map[] = {
+> >  	{"IN1P", NULL, "Headset Mic"},
+> >  	{"IN1N", NULL, "Headset Mic"},
+> >  	{"DMIC L1", NULL, "Int Mic"},
+> > @@ -115,6 +123,27 @@ static const struct snd_soc_dapm_route cht_audio_map[] = {
+> >  	{"Ext Spk", NULL, "Platform Clock"},
+> >  };
+> >  
+> > +static const struct snd_soc_dapm_route cht_5650_audio_map[] = {
+> > +	{"IN1P", NULL, "Headset Mic"},
+> > +	{"IN1N", NULL, "Headset Mic"},
+> > +	{"DMIC L2", NULL, "Int Mic"},
+> > +	{"DMIC R2", NULL, "Int Mic"},
+> > +	{"Headphone", NULL, "HPOL"},
+> > +	{"Headphone", NULL, "HPOR"},
+> > +	{"Ext Spk", NULL, "SPOL"},
+> > +	{"Ext Spk", NULL, "SPOR"},
+> > +	{"AIF1 Playback", NULL, "ssp2 Tx"},
+> > +	{"ssp2 Tx", NULL, "codec_out0"},
+> > +	{"ssp2 Tx", NULL, "codec_out1"},
+> > +	{"codec_in0", NULL, "ssp2 Rx" },
+> > +	{"codec_in1", NULL, "ssp2 Rx" },
+> > +	{"ssp2 Rx", NULL, "AIF1 Capture"},
+> > +	{"Headphone", NULL, "Platform Clock"},
+> > +	{"Headset Mic", NULL, "Platform Clock"},
+> > +	{"Int Mic", NULL, "Platform Clock"},
+> > +	{"Ext Spk", NULL, "Platform Clock"},
+> > +}
+> > +
+> >  static const struct snd_kcontrol_new cht_mc_controls[] = {
+> >  	SOC_DAPM_PIN_SWITCH("Headphone"),
+> >  	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+> > @@ -239,7 +268,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
+> >  		.codec_dai_name = "snd-soc-dummy-dai",
+> >  		.codec_name = "snd-soc-dummy",
+> >  		.platform_name = "sst-mfld-platform",
+> > -		.ignore_suspend = 1,
+> why removing this?
+This is carrying the fix from below commit for rt5672 machine driver
+
+commit 583e58a0f0e996008780fe4df0f7640890a9b69a
+Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Date:   Tue Feb 24 11:39:46 2015 +0530
+
+    ASoC: Intel: Remove ignore suspend support
+
+    In our platform we want platform and codec driver routines to get
+invoked
+    and don't need the machine routines so remove here
+
+    Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+    Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 
 > 
+> > +		.nonatomic = true,
+> Did you test the older device with this flag set
+will test it but expect same result since 5645 and 5650 are similar
+codec
+> >  		.dynamic = 1,
+> >  		.dpcm_playback = 1,
+> >  		.dpcm_capture = 1,
+> > @@ -267,7 +296,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
+> >  					| SND_SOC_DAIFMT_CBS_CFS,
+> >  		.init = cht_codec_init,
+> >  		.be_hw_params_fixup = cht_codec_fixup,
+> > -		.ignore_suspend = 1,
+> > +		.nonatomic = true,
+> >  		.dpcm_playback = 1,
+> >  		.dpcm_capture = 1,
+> >  		.ops = &cht_be_ssp2_ops,
+> > @@ -275,43 +304,86 @@ static struct snd_soc_dai_link cht_dailink[] = {
+> >  };
+> >  
+> >  /* SoC card */
+> > -static struct snd_soc_card snd_soc_card_cht = {
+> > -	.name = "chtrt5645",
+> > -	.dai_link = cht_dailink,
+> > -	.num_links = ARRAY_SIZE(cht_dailink),
+> > -	.dapm_widgets = cht_dapm_widgets,
+> > -	.num_dapm_widgets = ARRAY_SIZE(cht_dapm_widgets),
+> > -	.dapm_routes = cht_audio_map,
+> > -	.num_dapm_routes = ARRAY_SIZE(cht_audio_map),
+> > -	.controls = cht_mc_controls,
+> > -	.num_controls = ARRAY_SIZE(cht_mc_controls),
+> > +static struct snd_soc_card snd_soc_card_cht[] = {
+> > +	{
+> > +		.name = "chtrt5645",
+> > +		.dai_link = cht_dailink,
+> > +		.num_links = ARRAY_SIZE(cht_dailink),
+> > +		.dapm_widgets = cht_dapm_widgets,
+> > +		.num_dapm_widgets = ARRAY_SIZE(cht_dapm_widgets),
+> > +		.dapm_routes = cht_5645_audio_map,
+> > +		.num_dapm_routes = ARRAY_SIZE(cht_5645_audio_map),
+> > +		.controls = cht_mc_controls,
+> > +		.num_controls = ARRAY_SIZE(cht_mc_controls),
+> > +	},
+> > +	{
+> > +		.name = "chtrt5650",
+> > +		.dai_link = cht_dailink,
+> > +		.num_links = ARRAY_SIZE(cht_dailink),
+> > +		.dapm_widgets = cht_dapm_widgets,
+> > +		.num_dapm_widgets = ARRAY_SIZE(cht_dapm_widgets),
+> > +		.dapm_routes = cht_5650_audio_map,
+> > +		.num_dapm_routes = ARRAY_SIZE(cht_5650_audio_map),
+> > +		.controls = cht_mc_controls,
+> > +		.num_controls = ARRAY_SIZE(cht_mc_controls),
+> > +	}
+> >  };
+> I dont find the arrays very userful here, it could have been two different
+> structs too.
+that also can be done.
 > 
-> Takashi
+> >  
+> > +static struct cht_acpi_card snd_soc_cards[] = {
+> > +	{"10EC5645", CODEC_TYPE_RT5645, &snd_soc_card_cht[0]},
+> > +	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_cht[1]},
+> > +};
+> > +
+> > +static acpi_status snd_acpi_codec_match(acpi_handle handle, u32 level,
+> > +				       void *context, void **ret)
+> > +{
+> > +	*(bool *)context = true;
+> > +	return AE_OK;
+> > +}
+> > +
+> >  static int snd_cht_mc_probe(struct platform_device *pdev)
+> >  {
+> >  	int ret_val = 0;
+> > +	int i;
+> >  	struct cht_mc_private *drv;
+> > +	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
+> > +	bool found = false;
+> > +	char codec_name[32];
+> i thought ACPI names we 3 + 4 chars only?
+> 
+the expected name is i2c-10EC5650:00 i could reduce the array size
+potentially.
+
+Thanks,
+Yang
+> -- 
+> ~Vinod
+> 
+> >  
+> >  	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
+> >  	if (!drv)
+> >  		return -ENOMEM;
+> >  
+> > -	snd_soc_card_cht.dev = &pdev->dev;
+> > -	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
+> > -	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
+> > +	for (i = 0; i < ARRAY_SIZE(snd_soc_cards); i++) {
+> > +		if (ACPI_SUCCESS(acpi_get_devices(
+> > +						snd_soc_cards[i].codec_id,
+> > +						snd_acpi_codec_match,
+> > +						&found, NULL)) && found) {
+> > +			dev_dbg(&pdev->dev,
+> > +				"found codec %s\n", snd_soc_cards[i].codec_id);
+> > +			card = snd_soc_cards[i].soc_card;
+> > +			drv->acpi_card = &snd_soc_cards[i];
+> > +			break;
+> > +		}
+> > +	}
+> > +	card->dev = &pdev->dev;
+> > +	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
+> > +	/* set correct codec name */
+> > +	strcpy((char *)card->dai_link[2].codec_name, codec_name);
+> > +	snd_soc_card_set_drvdata(card, drv);
+> > +	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
+> >  	if (ret_val) {
+> >  		dev_err(&pdev->dev,
+> >  			"snd_soc_register_card failed %d\n", ret_val);
+> >  		return ret_val;
+> >  	}
+> > -	platform_set_drvdata(pdev, &snd_soc_card_cht);
+> > +	platform_set_drvdata(pdev, card);
+> >  	return ret_val;
+> >  }
+> >  
+> >  static struct platform_driver snd_cht_mc_driver = {
+> >  	.driver = {
+> >  		.name = "cht-bsw-rt5645",
+> > -		.pm = &snd_soc_pm_ops,
+> >  	},
+> >  	.probe = snd_cht_mc_probe,
+> >  };
+> > -- 
+> > 1.7.9.5
+> > 
+> 
+> -- 
