@@ -1,84 +1,102 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 7/8] ASoC: wm8998: Initial WM8998 codec driver
-Date: Wed, 22 Apr 2015 12:00:30 +0100
-Message-ID: <20150422110030.GQ22845@sirena.org.uk>
-References: <1429619636-25478-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1429619636-25478-8-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5645: Adds push button support
+	for rt5650
+Date: Wed, 22 Apr 2015 12:04:13 +0100
+Message-ID: <20150422110413.GR22845@sirena.org.uk>
+References: <1429497442-13021-1-git-send-email-bardliao@realtek.com>
+ <20150420204114.GI14892@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D701062B62@RTITMBSV03.realtek.com.tw>
+ <20150421104814.GF22845@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D701062EE9@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="l8yJEXo8J9fv7OFY"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1429619636-25478-8-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, linus.walleij@linaro.org, gnurou@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4048357580209525328=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD142260538
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 13:04:22 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701062EE9@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---l8yJEXo8J9fv7OFY
+--===============4048357580209525328==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Ep5m4srWGXPl6O+g"
+Content-Disposition: inline
+
+
+--Ep5m4srWGXPl6O+g
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 21, 2015 at 01:33:55PM +0100, Richard Fitzgerald wrote:
+On Tue, Apr 21, 2015 at 11:41:48AM +0000, Bard Liao wrote:
 
-> +static int wm8998_in1mux_ev(struct snd_soc_dapm_widget *w,
-> +				struct snd_kcontrol *kcontrol,
-> +				int event)
-> +{
-> +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-> +	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
-> +	unsigned int left_mux, right_mux, in1mode, old;
-> +
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		/* Validate the mux configuration */
-> +		left_mux = snd_soc_read(codec, ARIZONA_ADC_DIGITAL_VOLUME_1L) &
-> +				  ARIZONA_IN1L_SRC_MASK;
-> +		right_mux = snd_soc_read(codec, ARIZONA_ADC_DIGITAL_VOLUME_1R) &
-> +				  ARIZONA_IN1R_SRC_MASK;
-> +
-> +		/* Only IN1A can be digital, IN1B is always analogue */
-> +		in1mode = (arizona->pdata.inmode[0] & 2)
-> +				<< (ARIZONA_IN1_MODE_SHIFT - 1);
-> +
-> +		if (in1mode != 0) {
-> +			/* if IN1A is digital, the only valid mux configs
-> +			 * are both channels A or both channels B.
-> +			 */
-> +			if (left_mux != right_mux) {
-> +				dev_err(arizona->dev,
-> +					"IN1=DMIC and IN1L Mux != IN1R Mux");
-> +				return -EINVAL;
-> +			}
+> > OK, you probaly want to move to separate default tables per device.
+> > This is something that should have been called out in the commit log.
 
-This (or at least some of it) seems like something we should be doing by
-registering different widgets and routing at device probe time.
+> Do you mean we need to write it down in the commit log and send
+> another patch to use separate default tables for different device?
 
-> +		old = snd_soc_read(codec, ARIZONA_IN1L_CONTROL) &
-> +					ARIZONA_IN1_MODE_MASK;
+Yes, that's fine.
 
-> +		if (old != in1mode)
-> +			snd_soc_update_bits(codec, ARIZONA_IN1L_CONTROL,
-> +						ARIZONA_IN1_MODE_MASK, in1mode);
+> Regarding the different default tables, do you mean something like:
+> 	case RT5645_DEVICE_ID:
+> 		rt5645->codec_type = CODEC_TYPE_RT5645;
+> 		dev_info(&i2c->dev,	"Codec type is: RT5645\n");
+> +		rt5645_regmap. reg_defaults = rt5645_reg;
+> 		break;
+> 	case RT5650_DEVICE_ID:
+> 		rt5645->codec_type = CODEC_TYPE_RT5650;
+> 		dev_info(&i2c->dev,	"Codec type is: RT5650\n");
+> +		rt5645_regmap. reg_defaults = rt5650_reg;
+> 		break;
 
-Why bother with the read into old here?  Suppressing redundant updates
-is part of the point of snd_soc_update_bits().
+It'd be better to have different regmap_config structures rather than
+changing the register defaults in the one structure but basically yes.
 
---l8yJEXo8J9fv7OFY
+> > OK, can we have a comment for that please?  We might want to extend
+> > this in the future as the userspace ABI grows richer (and depending on
+> > how things get reported we may need to synthesize at least a double press
+> > for userspace).
+
+> Do you mean comment in the source code?
+
+Yes, please.
+
+--Ep5m4srWGXPl6O+g
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVN39NAAoJECTWi3JdVIfQQxwH+gO2x+Li17UNOs7ycKZkQDMq
-/FcusjV7wYyqJ8ykafkswXm+tLC9bMIayHlP4QWBcjEEGfHUz+pAaU6tCMwzkvJH
-FpSewRbzPrBxae5IaYvuiT8E/r6lezrEGIpEmcuhuLTvryZfgpywiXssxik2K5Zu
-LupmqcKWLGg6n0xbkz/6yKsSwONdW6wTPhq76rcVipzW5iLXjDcnQe/xoEreNbte
-TI/QasWyOsiwDBtRdsxepNeQkpiQhDEhf0ru3IMg27gR8wGCSauW3qe+ZDyN10jR
-X2hpr07kAl0Ulwr6AXhPqbqd2bKeLahGeCD5RrwDGIy7lhV6LKgxBghCqRtfhF4=
-=8esy
+iQEcBAEBCAAGBQJVN4AsAAoJECTWi3JdVIfQgNwH/3esK6bxlyS2NWp5U507DApy
+NkAlEZskAWZaydyNIeilRp2Xk0banfBpwgCcfFfNbXsX/PqbcAKL+iDCtnsyC5u9
+7nW+WSdK96qGANIQwCUn61ZcvGxXOUEgdvsW6zKcLqTDEcVG2TCejElpfcZgcy4Z
+x2H9k4HYJquPi0ngiXuQQMT/cbBEdQU3zF5oSZ5RMojUyYvAeDddsswW9z+EAt9Q
+U68Ze5EHlbWfBQASvoOsZRwZa5DI1GkMA92e3QPwREUYnP+iaRg301Wi9W9Haezb
+EZyHI1mgffVptXPhQUL8N/abC1usTbg9PMTUo5piPCTQK77oQKao6i/HXhg60LI=
+=EuM8
 -----END PGP SIGNATURE-----
 
---l8yJEXo8J9fv7OFY--
+--Ep5m4srWGXPl6O+g--
+
+--===============4048357580209525328==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4048357580209525328==--
