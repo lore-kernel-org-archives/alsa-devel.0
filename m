@@ -1,88 +1,94 @@
-From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: Re: [RESEND RFC PATCH 1/3] ASoC: mediatek: Add binding support for
- AFE driver
-Date: Wed, 22 Apr 2015 11:17:20 +0800
-Message-ID: <1429672640.14162.55.camel@mtksdaap41>
-References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
-	 <1428653649-38200-2-git-send-email-koro.chen@mediatek.com>
-	 <20150418173407.GE26185@sirena.org.uk>
-	 <20150420043747.GH6325@pengutronix.de>
-	 <20150420204849.GJ14892@sirena.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC 1/9] ASoC: hda: Add helper to read/write to
+	dsp mmio space
+Date: Wed, 22 Apr 2015 09:20:14 +0530
+Message-ID: <20150422035014.GD2738@intel.com>
+References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
+ <1429276567-29007-2-git-send-email-vinod.koul@intel.com>
+ <20150420214638.GX14892@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150420204849.GJ14892-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============0042091061978517331=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6840226047F
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 05:52:53 +0200 (CEST)
+In-Reply-To: <20150420214638.GX14892@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2015-04-20 at 21:48 +0100, Mark Brown wrote:
-> On Mon, Apr 20, 2015 at 06:37:47AM +0200, Sascha Hauer wrote:
-> > On Sat, Apr 18, 2015 at 06:34:07PM +0100, Mark Brown wrote:
-> > > On Fri, Apr 10, 2015 at 04:14:07PM +0800, Koro Chen wrote:
-> 
-> > > > +Each external interface (called "IO" in this driver) is presented as a
-> > > > +DAI to ASoC. An IO must be connected via the interconnect to a memif.
-> > > > +The connection paths are configured through the device tree.
-> 
-> > > Why are these connection paths configured via device tree?  I would
-> > > expect that either there would be runtime configurability of these
-> > > things (particularly if loopback configurations within the hardware are
-> > > possible) or we'd just allocate memory interfaces to DAIs automatically
-> > > as DAIs come into use.
-> 
-> > There is a crossbar switch between the memory interfaces and the DAIs.
-> > Not every connection is possible, so not every memory interface can be
-> > used for every DAI. An algorithm choosing a suitable memory interface
-> > must be quite clever, complicated and also SoC dependent (the same but
-> > different hardware is used on MT8135 aswell), so I thought offering a
-> > static configuration via device tree is a good start. Should there be
-> > runtime configuration possible later the device tree settings could
-> > provide a good default.
-> 
-> What exactly do the restrictions look like and how often do they vary in
-> practice (can we get away with just doing a single static setup in the
-> driver)?  I'd have thought it should be fairly straightforward to have a
-> table of valid mappings and just pick the first free memory interface?
-> I'd rather not get stuck with the tables in the DT.  It's partly to
-> avoid setting bad precendents, we really don't want everyone coming
-> along hard coding this stuff, and partly because the hardware you
-> described didn't seem that hard to handle.
-> 
-If using DPCM, it seems the most suitable FE DAIs will be memif, and
-external interface like I2S should be BE DAIs. Do you think it is
-suitable for our memif to be FE DAIs? Then which memif to used can be
-described in a machine driver's FE DAIs. But I think this has a problem
-that our memif is one-direction, playback or capture. So the binded pcm
-device cannot have playback and capture capability together. May it
-cause trouble for user space apps that assumes there will be pcmC0D0p,
-pcmC0D0c?
 
-> > > > +- mem-interface-playback:
-> > > > +  mem-interface-capture: property of memif, format is: <memif irq use_sram>;
-> > > > +	                 memif: which memif to be used
-> > > > +			        (defined in include/dt-bindings/sound/mtk-afe.h)
-> > > > +		         irq: which irq to be used
-> > > > +			      (defined in include/dt-bindings/sound/mtk-afe.h)
-> > > > +		         use_sram: 1 is yes, 0 is no
-> 
-> > > Again, this looks like stuff we should be able to figure out at runtime
-> > > - the use of SRAM in particular looks like something we might want to
-> > > change depending on use case.  Assuming it adds buffering then for a
-> > > VoIP application we might not want to use SRAM to minimize latency but
-> > > during music playback we might want to enable SRAM to minimize power
-> > > consumption.
-> 
-> > That's exactly the usecase. How could such a runtime configurability
-> > look like? sysfs? Or something based on the buffer sizes?
-> 
-> Yeah, one of those :) but probably an ALSA control is going to be the
-> easiest for applications.
+--===============0042091061978517331==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
+Content-Disposition: inline
 
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--RASg3xLB4tUQ4RcS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 20, 2015 at 10:46:38PM +0100, Mark Brown wrote:
+> On Fri, Apr 17, 2015 at 06:45:59PM +0530, Vinod Koul wrote:
+>=20
+> > +u8 ssth_readb_traced(struct ssth_lib *dsp, u32 offset)
+> > +{
+> > +	u8 val;
+> > +
+> > +	val =3D readb((dsp)->mmio_base + offset);
+> > +	dev_dbg(dsp->dev, "readb offset=3D%#x val=3D%#x\n", offset, val);
+> > +
+> > +	return val;
+> > +}
+>=20
+> Much of this looks like a MMIO regmap, there's the memcpy() bits too
+> which aren't but otherwise...
+Yes they are. memcpy bits are to copy the IPC mailbox payload data to aDSP
+RAM which can range from few bytes to couple of KBs
+
+Thanks
+--=20
+~Vinod
+
+--RASg3xLB4tUQ4RcS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBAgAGBQJVNxp2AAoJEHwUBw8lI4NHKKQP/1xD5kK5NBNCBPVlVTcWoXfr
+xwh12ogGFaRKEN2OUGoe6NrZ1oJSHf0H1BjP65JaFWx17HzSrTK95Jf52GF3xoOV
+O2HR1KVcV1ELl/wZohyzZbgpslwpfuMkpJJXTgIoyWyI8agVJYf0CedCho9gXlhS
+/jpWPCkocHafJq8oFvBZRJCBqiSgqpeOgKpSdUwGFmhHVtEY3E7hCAyQrSKhWmyO
+AND9So8jRHGGUZ22oW7H42gkNGOQkj/4RUmhBXxaAcHTuW8z/kIFBIO8cDS/CNJl
++r3e+udTljkvcB3MdMGrNDTqsw4WTNYwVIeFDak3utYPH0Qfpmbk76tXh77igVOk
+nuWL5AgcpAbbouKaNUtUU3evA3gC06G31AtL/pxGY8yk0axxU0uFLWtx3gq572w4
+3iJc5Megu+6ojpeza1+W6k5SMjf/yByUeW1mWF2WRBu2UQCNxO4Jjc/HwhLFBcnk
+RFTv9TNFzYexSKU2XQM7MqBJ8VK6822CbxMc180oGZL1MDlHwJVy6BmwwEhXRy7t
+6T3dMOLAml4e05rzqW0qUK4G9mIgFLRfEoOTgHjNGwvepOD6y50h9klI7RjiwAr0
+yew10+mIyE+vhHtWZ28we7oAIqY106D/O+CZXD9eFp2dUF/skVnMVET0ochNEi98
+UG1f/Es5W4AscVPBQIid
+=MlCY
+-----END PGP SIGNATURE-----
+
+--RASg3xLB4tUQ4RcS--
+
+--===============0042091061978517331==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0042091061978517331==--
