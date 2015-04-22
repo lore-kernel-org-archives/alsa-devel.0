@@ -1,36 +1,70 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH 7/8] ASoC: wm8998: Initial WM8998 codec driver
-Date: Wed, 22 Apr 2015 21:46:55 +0200
-Message-ID: <1429732015.9081.38.camel@x220>
-References: <1429619636-25478-1-git-send-email-rf@opensource.wolfsonmicro.com>
-	 <1429619636-25478-8-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: dapm: Enable autodisable on
+ SOC_DAPM_SINGLE_TLV_AUTODISABLE
+Date: Wed, 22 Apr 2015 20:47:16 +0100
+Message-ID: <20150422194716.GK22845@sirena.org.uk>
+References: <1429707527-5998-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1429619636-25478-8-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, myungjoo.ham@samsung.com, cw00.choi@samsung.com, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2240883060817754394=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C544E265556
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 21:47:27 +0200 (CEST)
+In-Reply-To: <1429707527-5998-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-A license mismatch is all I spotted.
 
-On Tue, 2015-04-21 at 13:33 +0100, Richard Fitzgerald wrote:
-> --- /dev/null
-> +++ b/sound/soc/codecs/wm8998.c
-
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-
-This states the license is GPL v2.
-
-> +MODULE_LICENSE("GPL");
-
-And, according to include/linux/module.h, this states the license is GPL
-v2 or later. So I think either the comment at the top of this file or
-the license ident used in the MODULE_LICENSE() macro needs to change.
+--===============2240883060817754394==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bYB/dvygrOI2NuBf"
+Content-Disposition: inline
 
 
-Paul Bolle
+--bYB/dvygrOI2NuBf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Apr 22, 2015 at 01:58:47PM +0100, Charles Keepax wrote:
+> Correct small copy and paste error where autodisable was not being
+> enabled for the SOC_DAPM_SINGLE_TLV_AUTODISABLE control.
+
+Applied, thanks.
+
+--bYB/dvygrOI2NuBf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVN/rDAAoJECTWi3JdVIfQAEQH/096lo07XMUbSr05HNzoS4/n
+Nv4JSAxh/BQc9J0CJBhO5MDuNCc0nnnGLGDOq8MAB13VA4fHfm5oAYSFuoq/ZxhI
+ll/8aU+spVTDKKBmxIb+uvWEPnklNZnxdCZ4MJEwYdCOEB2ODENO4qnP7QIO7t+a
+t0VyfjGBhlg6nfEzUNAh4Lf0q8Dd9zGJrRJWXkZwjbu24u7MLdIk9hXCUsfs8x7r
+FvmyezrqqBobKwtj3XplfdcpCz3cKZrFIHlujpOIFMDLqGwbEbX8wqzvpCkna3N8
+ultR95kWiKXVaCNBitDtAXLSDQqMuwV/88HU2HIv76Xj10AUkiiu0ck+bhuu+qw=
+=8QR8
+-----END PGP SIGNATURE-----
+
+--bYB/dvygrOI2NuBf--
+
+--===============2240883060817754394==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2240883060817754394==--
