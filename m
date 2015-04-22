@@ -1,19 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 0/9] Add SKL ipc handling code
-Date: Wed, 22 Apr 2015 21:23:08 +0530
-Message-ID: <20150422155308.GJ2738@intel.com>
-References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
- <20150420214441.GW14892@sirena.org.uk>
- <20150422040046.GF2738@intel.com> <1429701598.2695.14.camel@loki>
+Subject: Re: [RFC] File format for topology data
+Date: Wed, 22 Apr 2015 21:28:16 +0530
+Message-ID: <20150422155816.GK2738@intel.com>
+References: <1429621606.3793.37.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id AEA2C2605AA
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 17:55:51 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA2622605AA
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 18:00:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1429701598.2695.14.camel@loki>
+In-Reply-To: <1429621606.3793.37.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +22,286 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 22, 2015 at 12:19:58PM +0100, Liam Girdwood wrote:
-> On Wed, 2015-04-22 at 09:30 +0530, Vinod Koul wrote:
-> > On Mon, Apr 20, 2015 at 10:44:41PM +0100, Mark Brown wrote:
-> > > On Fri, Apr 17, 2015 at 06:45:58PM +0530, Vinod Koul wrote:
-> > > > This series adds support for managing DSP and posting IPC and processing IPC
-> > > > replies.
-> > > 
-> > > Any dependencies on the generic HDA stuff you've been posting?
-> > Yes.
-> > 
-> > So first we need to merge the SKL PCM driver series. Can you please review
-> > that [1] one as well. Then this series.
-> > Lastly the SKL aDSP support series [2] which uses the IPC code in this series.
-> > 
-> > One more would be when toplogy is merged, for supporting the dsp toplogy
-> > 
+On Tue, Apr 21, 2015 at 02:06:46PM +0100, Liam Girdwood wrote:
+> I've pasted below the topology data for the broadwell firmware using the
+> text file format being used by UCM. Using the UCM format allows to to
+> share parser code and allows us to also have UCM define topology data.
 > 
-> We also need to port the SKL IPC code to use the converged mailbox code
-> that's now used by BDW and BYT before upstreaming.
-Yes that wil be done for next patch series. If you guys could give comments
-on the other tow series, I will spin them and resubmit as well
+> I've not yet completed the byte or enum controls but the rest of the
+> data is there for comments. I've also included the recent channel
+> changes suggested in the UAPI header comments.
+> 
+> # Firmware Topology Configuration for Broadwell
+> 
+> # TLV scale used by both global and stream volumes
+> SectionTLV."hsw_vol_tlv" {
+> 
+> 	DBScale [
+> 		min "-9000"
+> 		step "300"
+> 		mute "1"
+> 	]
+> }
+So for our DSP we need to pass some private data, how do we go about
+describing it for this and other controls?
+
+> 
+> # Controls from default pipeline
+> SectionControl."Default Pipeline" {
+> 
+> 	Index "1"
+> 
+> 	# Master DSP volume
+> 	Mixer [
+> 		name "Master Playback Volume"
+> 		Channel.0 [
+> 			map "Left"
+> 			reg "0"
+> 			shift "0"
+> 		]
+> 		Channel.1 [
+> 			map "Right"
+> 			reg "0"
+> 			shift "8"
+> 		]
+> 		max "31"
+> 		invert "false"
+> 		get "0"
+> 		put "0"
+what do these two mean?
+
+> 		tlv_array "hsw_vol_tlv"
+> 	]
+> 
+> 	# Offload 0 volume
+> 	Mixer [
+> 		name "Media0 Playback Volume"
+> 		Channel.0 [
+> 			map "Left"
+> 			reg "1"
+> 			shift "0"
+> 		]
+> 		Channel.1 [
+> 			map "Right"
+> 			reg "1"
+> 			shift "8"
+> 		]
+> 		max "31"
+> 		invert "false"
+> 		get "1"
+> 		put "1"
+> 		tlv_array "hsw_vol_tlv"
+> 	]
+> 
+> 	# Enum controls
+> 	Enum [
+> 		...
+> 	]
+> 
+> 	# Byte controls
+> 	Bytes [
+> 		...
+> 	]
+> }
+> 
+> # DAPM Widgets for main pipeline
+> SectionWidget."Pipeline1" {
+> 
+> 	Index "1"
+> 
+> 	AIF_IN [
+> 		name "SSP0 CODEC IN"
+> 		stream_name ""
+> 		slot ""
+> 		reg "0"
+> 		shift "0"
+> 		invert "false"
+> 	]
+> 
+> 	AIF_OUT [
+> 		name "SSP0 CODEC OUT"
+> 		stream_name ""
+> 		slot ""
+> 		reg "0"
+> 		shift "0"
+> 		invert "false"
+> 	]
+> 
+> 	...
+> }
+> 
+> # DAPM Routes
+> SectionGraph."Pipeline 1 Graph" {
+> 
+> 	Index 1
+> 
+> 	Routes [
+> 		"Playback VMixer, , System Playback"
+> 		"Playback VMixer, , Offload0 Playback"
+> 		"Playback VMixer, , Offload1 Playback"
+> 		"SSP0 CODEC OUT, , Playback VMixer"
+> 		"Analog Capture, , SSP0 CODEC IN"
+> 	]
+> }
+> 
+> # PCM Configurations supported by FW
+> SectionPCMConfig."PCM 48k Stereo 24bit" {
+> 
+> 	Playback [
+> 		format "S24_LE"
+> 		rate "48000"
+> 		channels "2"
+> 		tdm_slot "0xf"
+> 	]
+> 
+> 	Capture [
+> 		format "S24_LE"
+> 		rate "48000"
+> 		channels "2"
+> 		tdm_slot "0xf"
+> 
+> 	]
+> }
+> 
+> SectionPCMConfig."PCM 48k Stereo 16bit" {
+> 
+> 	Playback [
+> 		format "S16_LE"
+> 		rate "48000"
+> 		channels "2"
+> 		tdm_slot "0xf"
+> 	]
+> 
+> 	Capture [
+> 		format "S16_LE"
+> 		rate "48000"
+> 		channels "2"
+> 		tdm_slot "0xf"
+> 
+> 	]
+> }
+> 
+> SectionPCMConfig."PCM 48k 2P/4C 16bit" {
+> 
+> 	Playback [
+> 		format "S16_LE"
+> 		rate "48000"
+> 		channels "2"
+> 		tdm_slot "0xf"
+> 	]
+> 
+> 	Capture [
+> 		format "S16_LE"
+> 		rate "48000"
+> 		channels "4"
+> 		tdm_slot "0xf"
+> 
+> 	]
+> }
+> 
+> # PCM capabilities supported by FW
+> SectionPCMCapabilities."System Playback" {
+> 
+> 	Capabilities [
+> 		formats "S24_LE, S16_LE"
+> 		rate_min "48000"
+> 		rate_max "48000"
+> 		channels_min "2"
+> 		channels_max "2"
+> 	]
+> }
+> 
+> SectionPCMCapabilities."Analog Capture" {
+> 
+> 	Capabilities [
+> 		formats "S24_LE, S16_LE"
+> 		rate_min "48000"
+> 		rate_max "48000"
+> 		channels_min "2"
+> 		channels_max "4"
+> 	]
+> }
+> 
+> SectionPCMCapabilities."Offload Pin Playback" {
+> 
+> 	Capabilities [
+> 		formats "S24_LE, S16_LE"
+> 		rate_min "8000"
+> 		rate_max "192000"
+> 		channels_min "2"
+> 		channels_max "2"
+> 	]
+> }
+> 
+> SectionPCMCapabilities."Loopback Capture" {
+> 
+> 	Capabilities [
+> 		formats "S16_LE"
+> 		rate_min "48000"
+> 		rate_max "48000"
+> 		channels_min "2"
+> 		channels_max "2"
+> 	]
+> }
+> 
+> # PCM devices exported by Firmware
+> SectionPCM."System Pin" {
+> 
+> 	Index 1
+> 
+> 	Playback [
+> 		Capabilities "System Playback"
+> 		Config "PCM 48k Stereo 24bit"
+> 		Config "PCM 48k Stereo 16bit"
+> 	]
+> 
+> 	Capture [
+> 		Capabilities "Analog Capture"
+> 		Config "PCM 48k Stereo 24bit"
+> 		Config "PCM 48k Stereo 16bit"
+> 		Config "PCM 48k 2P/4C 16bit"
+> 	]
+> }
+Is this a FE or a BE? How about Dailinks?
 
 -- 
 ~Vinod
+
+> 
+> SectionPCM."Offload Pin 0" {
+> 
+> 	Index 1
+> 
+> 	Playback [
+> 		Capabilities "Offload Pin Playback"
+> 		Config "PCM 48k Stereo 24bit"
+> 		Config "PCM 48k Stereo 16bit"
+> 	]
+> }
+> 
+> SectionPCM."Offload Pin 1" {
+> 
+> 	Index 1
+> 
+> 	Playback [
+> 		Capabilities "Offload Pin Playback"
+> 		Config "PCM 48k Stereo 24bit"
+> 		Config "PCM 48k Stereo 16bit"
+> 	]
+> }
+> 
+> SectionPCM."Loopback Pin" {
+> 
+> 	Index 1
+> 
+> 	Capture [
+> 		Capabilities "Loopback Capture"
+> 		Config "PCM 48k Stereo 16bit"
+> 	]
+> }
+> 
+
+-- 
