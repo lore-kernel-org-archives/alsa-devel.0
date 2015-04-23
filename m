@@ -1,19 +1,17 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ALSA: hda - add AZX_DCAPS_I915_POWERWELL
- to Baytrail
-Date: Thu, 23 Apr 2015 03:01:34 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B83D2E8@SHSMSX101.ccr.corp.intel.com>
-References: <e8074c2236ff5b224dbc8a92cca40f348ca5032c.1429592999.git.mengdong.lin@intel.com>
- <5536188B.0@canonical.com> <s5hr3rdzu9n.wl-tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: alsa-driver-build on kernel 3.13
+Date: Thu, 23 Apr 2015 11:37:56 +0800
+Message-ID: <CAN8ccib4-DuPjAChuwbfNkOeEqXwwHGueScqWCE2AmN4k8yLkA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 95475265A30
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 05:01:44 +0200 (CEST)
-In-Reply-To: <s5hr3rdzu9n.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
+ [209.85.218.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97D2A265ADE
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 05:37:57 +0200 (CEST)
+Received: by oiko83 with SMTP id o83so4772155oik.1
+ for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 20:37:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +21,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> At Tue, 21 Apr 2015 11:29:47 +0200,
-> David Henningsson wrote:
-> >
-> > Hi,
-> >
-> > Baytrail is very much released and out there already - should this
-> > patch also go to stable?
-> 
-> I thought of that, but this patch also has a drawback, thus I hesitated to make
-> it blindly.
+Do  alsa-driver-build still support on kernel 3.13 ?
 
-Hi Takashi and David,
+Some of the modules have been built but not installed on Ubuntu 14.04 LTS
 
-Without this patch, we observed communication dead on Baytrail between the HD-A controller and HDMI codec, with mainline kernel 4.0.
-It's because the i915 driver can disable this power well without sync with audio driver. 
-Please see bug https://bugzilla.kernel.org/show_bug.cgi?id=93881
 
-This fix up is not so power saving and so we're trying improve it.
-
-> > Are there current problems (like HDMI codec not being detected) that
-> > are fixed by this patch?
-> 
-> If there is a known bug (report) and this fixes indeed, it deserves the stable
-> kernel, indeed.
-
-The issue that HDMI codec is not always being detected is only reported on Skylake (although theoretically it can happen on Baytrail/Braswell without power sync but we never observed this).
-SKL HW implementation has some change from its predecessors and need extra fixing up in i915 driver, Libin is working on this and we're close to solve this.
-
-Thanks
-Mengdong
+[    7.547726] snd_hda_codec: Unknown symbol snd_hdac_get_connections (err
+0)
+[    7.547733] snd_hda_codec: Unknown symbol snd_hdac_power_up_pm (err 0)
+[    7.547749] snd_hda_codec: Unknown symbol snd_hdac_regmap_read_raw (err
+0)
+[    7.547762] snd_hda_codec: Unknown symbol snd_hdac_power_down (err 0)
+[    7.547768] snd_hda_codec: Unknown symbol snd_hdac_make_cmd (err 0)
+[    7.547783] snd_hda_codec: Unknown symbol snd_hdac_regmap_init (err 0)
+[    7.547797] snd_hda_codec: Unknown symbol snd_hdac_refresh_widgets (err
+0)
+[    7.547824] snd_hda_codec: Unknown symbol snd_hdac_bus_exit (err 0)
+[    7.547832] snd_hda_codec: Unknown symbol _snd_hdac_read_parm (err 0)
+[    7.547845] snd_hda_codec: Unknown symbol
+snd_hdac_bus_exec_verb_unlocked (err 0)
+[    7.547849] snd_hda_codec: Unknown symbol snd_hdac_override_parm (err 0)
+[    7.547857] snd_hda_codec: Unknown symbol snd_hdac_device_register (err
+0)
+[    7.547862] snd_hda_codec: Unknown symbol snd_hdac_regmap_update_raw
+(err 0)
+[    7.547878] snd_hda_codec: Unknown symbol snd_hdac_bus_init (err 0)
+[    7.547886] snd_hda_codec: Unknown symbol snd_hdac_read_parm_uncached
+(err 0)
+[    7.547892] snd_hda_codec: Unknown symbol snd_hdac_device_unregister
+(err 0)
+[    7.547896] snd_hda_codec: Unknown symbol snd_hdac_device_init (err 0)
+[    7.547908] snd_hda_codec: Unknown symbol snd_hdac_power_down_pm (err 0)
+[    7.547924] snd_hda_codec: Unknown symbol snd_hdac_regmap_write_raw (err
+0)
+[    7.547933] snd_hda_codec: Unknown symbol snd_hdac_regmap_exit (err 0)
+[    7.547943] snd_hda_codec: Unknown symbol snd_hda_bus_type (err 0)
+[    7.547949] snd_hda_codec: Unknown symbol snd_hdac_device_exit (err 0)
+[    7.547956] snd_hda_codec: Unknown symbol snd_hdac_get_sub_nodes (err 0)
+[    7.547964] snd_hda_codec: Unknown symbol snd_hdac_exec_verb (err 0)
+[    7.547973] snd_hda_codec: Unknown symbol snd_array_new (err 0)
+[    7.547981] snd_hda_codec: Unknown symbol snd_array_free (err 0)
+[    7.547994] snd_hda_codec: Unknown symbol snd_hdac_power_up (err 0)
+[    7.548197] snd_hda_codec: Unknown symbol snd_hdac_get_connections (err
+0)
+[    7.548202] snd_hda_codec: Unknown symbol snd_hdac_power_up_pm (err 0)
+[    7.548214] snd_hda_codec: Unknown symbol snd_hdac_regmap_read_raw (err
+0)
+[    7.548225] snd_hda_codec: Unknown symbol snd_hdac_power_down (err 0)
+[    7.548231] snd_hda_codec: Unknown symbol snd_hdac_make_cmd (err 0)
+[    7.548244] snd_hda_codec: Unknown symbol snd_hdac_regmap_init (err 0)
+[    7.548256] snd_hda_codec: Unknown symbol snd_hdac_refresh_widgets (err
+0)
+[    7.548281] snd_hda_codec: Unknown symbol snd_hdac_bus_exit (err 0)
+[    7.548287] snd_hda_codec: Unknown symbol _snd_hdac_read_parm (err 0)
+[    7.548298] snd_hda_codec: Unknown symbol
+snd_hdac_bus_exec_verb_unlocked (err 0)
+[    7.548302] snd_hda_codec: Unknown symbol snd_hdac_override_parm (err 0)
+[    7.548310] snd_hda_codec: Unknown symbol snd_hdac_device_register (err
+0)
+[    7.548315] snd_hda_codec: Unknown symbol snd_hdac_regmap_update_raw
+(err 0)
+[    7.548330] snd_hda_codec: Unknown symbol snd_hdac_bus_init (err 0)
+[    7.548338] snd_hda_codec: Unknown symbol snd_hdac_read_parm_uncached
+(err 0)
+[    7.548343] snd_hda_codec: Unknown symbol snd_hdac_device_unregister
+(err 0)
+[    7.548347] snd_hda_codec: Unknown symbol snd_hdac_device_init (err 0)
+[    7.548357] snd_hda_codec: Unknown symbol snd_hdac_power_down_pm (err 0)
+[    7.548372] snd_hda_codec: Unknown symbol snd_hdac_regmap_write_raw (err
+0)
+[    7.548380] snd_hda_codec: Unknown symbol snd_hdac_regmap_exit (err 0)
+[    7.548389] snd_hda_codec: Unknown symbol snd_hda_bus_type (err 0)
+[    7.548395] snd_hda_codec: Unknown symbol snd_hdac_device_exit (err 0)
+[    7.548402] snd_hda_codec: Unknown symbol snd_hdac_get_sub_nodes (err 0)
+[    7.548410] snd_hda_codec: Unknown symbol snd_hdac_exec_verb (err 0)
+[    7.548418] snd_hda_codec: Unknown symbol snd_array_new (err 0)
+[    7.548426] snd_hda_codec: Unknown symbol snd_array_free (err 0)
+[    7.548438] snd_hda_codec: Unknown symbol snd_hdac_power_up (err 0)
