@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 6/8] ALSA: core: Don't ignore errors at
-	creating proc files
-Date: Thu, 23 Apr 2015 16:49:28 +0200
-Message-ID: <1429800570-10153-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 4/8] ALSA: core: Manage asound root directory
+	with snd_info_entry
+Date: Thu, 23 Apr 2015 16:49:26 +0200
+Message-ID: <1429800570-10153-5-git-send-email-tiwai@suse.de>
 References: <1429800570-10153-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8740D265A55
+ by alsa0.perex.cz (Postfix) with ESMTP id 86DE0265969
  for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 16:49:38 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 273D9AD5A
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 27A78AD6B
  for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 14:49:38 +0000 (UTC)
 In-Reply-To: <1429800570-10153-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,168 +27,145 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We ignore the errors at creating proc files in many places.  But they
-should be rather treated seriously.
-
-Also, by assuring the error handling, we can get rid of superfluous
-snd_info_free_entry() calls as they will be removed by the parent in
-the caller side.
+This makes easier to release the all children.  Further cleanups will
+follow.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/info.c         | 15 ++++++---------
- sound/core/init.c         | 16 +++++++---------
- sound/core/seq/seq_info.c | 17 ++++++++++++++---
- sound/core/sound.c        | 12 ++++--------
- sound/core/sound_oss.c    | 10 ++++------
- 5 files changed, 35 insertions(+), 35 deletions(-)
+ sound/core/info.c | 52 ++++++++++++++--------------------------------------
+ 1 file changed, 14 insertions(+), 38 deletions(-)
 
 diff --git a/sound/core/info.c b/sound/core/info.c
-index 339f90a3aa29..4169062fabf5 100644
+index 96451a130199..55c626eeb061 100644
 --- a/sound/core/info.c
 +++ b/sound/core/info.c
-@@ -482,10 +482,11 @@ int __init snd_info_init(void)
- 	if (!snd_seq_root)
- 		goto error;
- #endif
--	snd_info_version_init();
--	snd_minor_info_init();
--	snd_minor_info_oss_init();
--	snd_card_info_init();
-+	if (snd_info_version_init() < 0 ||
-+	    snd_minor_info_init() < 0 ||
-+	    snd_minor_info_oss_init() < 0 ||
-+	    snd_card_info_init() < 0)
-+		goto error;
- 	return 0;
+@@ -78,14 +78,13 @@ struct snd_info_private_data {
+ };
  
-  error:
-@@ -847,11 +848,7 @@ static int __init snd_info_version_init(void)
- 	if (entry == NULL)
- 		return -ENOMEM;
- 	entry->c.text.read = snd_info_version_read;
--	if (snd_info_register(entry) < 0) {
--		snd_info_free_entry(entry);
--		return -ENOMEM;
--	}
--	return 0;
-+	return snd_info_register(entry); /* freed in error path */
- }
+ static int snd_info_version_init(void);
+-static int snd_info_version_done(void);
+ static void snd_info_disconnect(struct snd_info_entry *entry);
  
- #endif /* CONFIG_PROC_FS */
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 0af34fac0499..769a783757ff 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -853,18 +853,16 @@ int __init snd_card_info_init(void)
- 	if (! entry)
- 		return -ENOMEM;
- 	entry->c.text.read = snd_card_info_read;
--	if (snd_info_register(entry) < 0) {
--		snd_info_free_entry(entry);
--		return -ENOMEM;
--	}
-+	if (snd_info_register(entry) < 0)
-+		return -ENOMEM; /* freed in error path */
+ /*
  
- #ifdef MODULE
- 	entry = snd_info_create_module_entry(THIS_MODULE, "modules", NULL);
--	if (entry) {
--		entry->c.text.read = snd_card_module_info_read;
--		if (snd_info_register(entry) < 0)
--			snd_info_free_entry(entry);
--	}
-+	if (!entry)
-+		return -ENOMEM;
-+	entry->c.text.read = snd_card_module_info_read;
-+	if (snd_info_register(entry) < 0)
-+		return -ENOMEM; /* freed in error path */
- #endif
+  */
  
- 	return 0;
-diff --git a/sound/core/seq/seq_info.c b/sound/core/seq/seq_info.c
-index acf7769419f0..d3c65e780e9e 100644
---- a/sound/core/seq/seq_info.c
-+++ b/sound/core/seq/seq_info.c
-@@ -51,6 +51,13 @@ create_info_entry(char *name, void (*read)(struct snd_info_entry *,
+-static struct proc_dir_entry *snd_proc_root;
++static struct snd_info_entry *snd_proc_root;
+ struct snd_info_entry *snd_seq_root;
+ EXPORT_SYMBOL(snd_seq_root);
+ 
+@@ -462,14 +461,17 @@ static struct snd_info_entry *create_subdir(struct module *mod,
  	return entry;
  }
  
-+static void free_info_entries(void)
-+{
-+	snd_info_free_entry(queues_entry);
-+	snd_info_free_entry(clients_entry);
-+	snd_info_free_entry(timer_entry);
-+}
++static struct snd_info_entry *snd_info_create_entry(const char *name);
 +
- /* create all our /proc entries */
- int __init snd_seq_info_init(void)
+ int __init snd_info_init(void)
  {
-@@ -59,14 +66,18 @@ int __init snd_seq_info_init(void)
- 	clients_entry = create_info_entry("clients",
- 					  snd_seq_info_clients_read);
- 	timer_entry = create_info_entry("timer", snd_seq_info_timer_read);
-+	if (!queues_entry || !clients_entry || !timer_entry)
+-	struct proc_dir_entry *p;
+-
+-	p = proc_mkdir("asound", NULL);
+-	if (p == NULL)
++	snd_proc_root = snd_info_create_entry("asound");
++	if (!snd_proc_root)
+ 		return -ENOMEM;
+-	snd_proc_root = p;
++	snd_proc_root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
++	snd_proc_root->p = proc_mkdir("asound", NULL);
++	if (!snd_proc_root->p)
 +		goto error;
+ #ifdef CONFIG_SND_OSSEMUL
+ 	snd_oss_root = create_subdir(THIS_MODULE, "oss");
+ 	if (!snd_oss_root)
+@@ -487,10 +489,7 @@ int __init snd_info_init(void)
  	return 0;
-+
-+ error:
-+	free_info_entries();
-+	return -ENOMEM;
+ 
+  error:
+-#ifdef CONFIG_SND_OSSEMUL
+-	snd_info_free_entry(snd_oss_root);
+-#endif
+-	proc_remove(snd_proc_root);
++	snd_info_free_entry(snd_proc_root);
+ 	return -ENOMEM;
  }
  
- int __exit snd_seq_info_done(void)
+@@ -499,25 +498,11 @@ int __exit snd_info_done(void)
+ 	snd_card_info_done();
+ 	snd_minor_info_oss_done();
+ 	snd_minor_info_done();
+-	snd_info_version_done();
+-	if (snd_proc_root) {
+-#if IS_ENABLED(CONFIG_SND_SEQUENCER)
+-		snd_info_free_entry(snd_seq_root);
+-#endif
+-#ifdef CONFIG_SND_OSSEMUL
+-		snd_info_free_entry(snd_oss_root);
+-#endif
+-		proc_remove(snd_proc_root);
+-	}
++	snd_info_free_entry(snd_proc_root);
+ 	return 0;
+ }
+ 
+ /*
+-
+- */
+-
+-
+-/*
+  * create a card proc file
+  * called from init.c
+  */
+@@ -551,7 +536,7 @@ int snd_info_card_register(struct snd_card *card)
+ 	if (!strcmp(card->id, card->proc_root->name))
+ 		return 0;
+ 
+-	p = proc_symlink(card->id, snd_proc_root, card->proc_root->name);
++	p = proc_symlink(card->id, snd_proc_root->p, card->proc_root->name);
+ 	if (p == NULL)
+ 		return -ENOMEM;
+ 	card->proc_root_link = p;
+@@ -570,7 +555,7 @@ void snd_info_card_id_change(struct snd_card *card)
+ 	}
+ 	if (strcmp(card->id, card->proc_root->name))
+ 		card->proc_root_link = proc_symlink(card->id,
+-						    snd_proc_root,
++						    snd_proc_root->p,
+ 						    card->proc_root->name);
+ 	mutex_unlock(&info_mutex);
+ }
+@@ -815,7 +800,7 @@ int snd_info_register(struct snd_info_entry * entry)
+ 
+ 	if (snd_BUG_ON(!entry))
+ 		return -ENXIO;
+-	root = entry->parent == NULL ? snd_proc_root : entry->parent->p;
++	root = entry->parent == NULL ? snd_proc_root->p : entry->parent->p;
+ 	mutex_lock(&info_mutex);
+ 	if (S_ISDIR(entry->mode)) {
+ 		p = proc_mkdir_mode(entry->name, entry->mode, root);
+@@ -850,8 +835,6 @@ EXPORT_SYMBOL(snd_info_register);
+ 
+  */
+ 
+-static struct snd_info_entry *snd_info_version_entry;
+-
+ static void snd_info_version_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
  {
--	snd_info_free_entry(queues_entry);
--	snd_info_free_entry(clients_entry);
--	snd_info_free_entry(timer_entry);
-+	free_info_entries();
+ 	snd_iprintf(buffer,
+@@ -871,13 +854,6 @@ static int __init snd_info_version_init(void)
+ 		snd_info_free_entry(entry);
+ 		return -ENOMEM;
+ 	}
+-	snd_info_version_entry = entry;
+-	return 0;
+-}
+-
+-static int __exit snd_info_version_done(void)
+-{
+-	snd_info_free_entry(snd_info_version_entry);
  	return 0;
  }
- #endif
-diff --git a/sound/core/sound.c b/sound/core/sound.c
-index d584944c8fe5..8fc402e4ff35 100644
---- a/sound/core/sound.c
-+++ b/sound/core/sound.c
-@@ -386,14 +386,10 @@ int __init snd_minor_info_init(void)
- 	struct snd_info_entry *entry;
- 
- 	entry = snd_info_create_module_entry(THIS_MODULE, "devices", NULL);
--	if (entry) {
--		entry->c.text.read = snd_minor_info_read;
--		if (snd_info_register(entry) < 0) {
--			snd_info_free_entry(entry);
--			entry = NULL;
--		}
--	}
--	return 0;
-+	if (!entry)
-+		return -ENOMEM;
-+	entry->c.text.read = snd_minor_info_read;
-+	return snd_info_register(entry); /* freed in error path */
- }
- #endif /* CONFIG_PROC_FS */
- 
-diff --git a/sound/core/sound_oss.c b/sound/core/sound_oss.c
-index 5fc3c6534225..56d2f409f1ef 100644
---- a/sound/core/sound_oss.c
-+++ b/sound/core/sound_oss.c
-@@ -260,12 +260,10 @@ int __init snd_minor_info_oss_init(void)
- 	struct snd_info_entry *entry;
- 
- 	entry = snd_info_create_module_entry(THIS_MODULE, "devices", snd_oss_root);
--	if (entry) {
--		entry->c.text.read = snd_minor_info_oss_read;
--		if (snd_info_register(entry) < 0)
--			snd_info_free_entry(entry);
--	}
--	return 0;
-+	if (!entry)
-+		return -ENOMEM;
-+	entry->c.text.read = snd_minor_info_oss_read;
-+	return snd_info_register(entry); /* freed in error path */
- }
- #endif /* CONFIG_PROC_FS */
  
 -- 
 2.3.5
