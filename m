@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 8/8] ALSA: core: Clean up OSS proc file
-	management
-Date: Thu, 23 Apr 2015 16:49:30 +0200
-Message-ID: <1429800570-10153-9-git-send-email-tiwai@suse.de>
+Subject: [PATCH 7/8] ALSA: core: Build conditionally and remove
+	superfluous ifdefs
+Date: Thu, 23 Apr 2015 16:49:29 +0200
+Message-ID: <1429800570-10153-8-git-send-email-tiwai@suse.de>
 References: <1429800570-10153-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C8EE265AA1
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BE9B265A78
  for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 16:49:38 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2EDA9AD76
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 29E6FAD6D
  for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 14:49:38 +0000 (UTC)
 In-Reply-To: <1429800570-10153-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,115 +27,134 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A few minor cleanups:
-- Move the call of snd_info_minor_register() into snd_info_init() so
-  that we can call all proc-related stuff in a shot
-- Add missing __init prefix to snd_info_minor_register()
-- Return an error properly from snd_oss_info_register()
-- Drop snd_info_minor_unregister() that is superfluous now
+Minor cleanups of Makefile to build some codes conditionally so that
+a few ifdefs can be reduced.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/info.h  |  4 +---
- sound/core/info.c     |  3 ++-
- sound/core/info_oss.c | 25 +++++++------------------
- sound/core/sound.c    |  2 --
- 4 files changed, 10 insertions(+), 24 deletions(-)
+ sound/core/Makefile       | 8 ++++++--
+ sound/core/info.c         | 8 --------
+ sound/core/info_oss.c     | 4 ----
+ sound/core/seq/Makefile   | 3 ++-
+ sound/core/seq/seq_info.c | 2 --
+ sound/core/sound_oss.c    | 8 --------
+ 6 files changed, 8 insertions(+), 25 deletions(-)
 
-diff --git a/include/sound/info.h b/include/sound/info.h
-index 3e2fda3c75ee..16269951bafc 100644
---- a/include/sound/info.h
-+++ b/include/sound/info.h
-@@ -94,10 +94,8 @@ struct snd_info_entry {
+diff --git a/sound/core/Makefile b/sound/core/Makefile
+index 4daf2f58261c..ae1d32b084fd 100644
+--- a/sound/core/Makefile
++++ b/sound/core/Makefile
+@@ -3,9 +3,13 @@
+ # Copyright (c) 1999,2001 by Jaroslav Kysela <perex@perex.cz>
+ #
  
- #if defined(CONFIG_SND_OSSEMUL) && defined(CONFIG_PROC_FS)
- int snd_info_minor_register(void);
--int snd_info_minor_unregister(void);
- #else
--#define snd_info_minor_register() /* NOP */
--#define snd_info_minor_unregister() /* NOP */
-+#define snd_info_minor_register()	0
- #endif
- 
- 
+-snd-y     := sound.o init.o memory.o info.o control.o misc.o device.o
++snd-y     := sound.o init.o memory.o control.o misc.o device.o
++ifneq ($(CONFIG_PROC_FS),)
++snd-y += info.o
++snd-$(CONFIG_SND_OSSEMUL) += info_oss.o
++endif
+ snd-$(CONFIG_ISA_DMA_API) += isadma.o
+-snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o info_oss.o
++snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o
+ snd-$(CONFIG_SND_VMASTER) += vmaster.o
+ snd-$(CONFIG_SND_KCTL_JACK) += ctljack.o
+ snd-$(CONFIG_SND_JACK)	  += jack.o
 diff --git a/sound/core/info.c b/sound/core/info.c
-index f8bdd9b6f322..c8a413d6cc9b 100644
+index 4169062fabf5..f8bdd9b6f322 100644
 --- a/sound/core/info.c
 +++ b/sound/core/info.c
-@@ -479,7 +479,8 @@ int __init snd_info_init(void)
- 	if (snd_info_version_init() < 0 ||
- 	    snd_minor_info_init() < 0 ||
- 	    snd_minor_info_oss_init() < 0 ||
--	    snd_card_info_init() < 0)
-+	    snd_card_info_init() < 0 ||
-+	    snd_info_minor_register() < 0)
- 		goto error;
- 	return 0;
+@@ -33,12 +33,6 @@
+ #include <linux/mutex.h>
+ #include <stdarg.h>
  
+-/*
+- *
+- */
+-
+-#ifdef CONFIG_PROC_FS
+-
+ int snd_info_check_reserved_words(const char *str)
+ {
+ 	static char *reserved[] =
+@@ -850,5 +844,3 @@ static int __init snd_info_version_init(void)
+ 	entry->c.text.read = snd_info_version_read;
+ 	return snd_info_register(entry); /* freed in error path */
+ }
+-
+-#endif /* CONFIG_PROC_FS */
 diff --git a/sound/core/info_oss.c b/sound/core/info_oss.c
-index bd4d2c6233c2..1478c8dfd473 100644
+index 83c29dbff9c0..bd4d2c6233c2 100644
 --- a/sound/core/info_oss.c
 +++ b/sound/core/info_oss.c
-@@ -35,7 +35,6 @@
+@@ -29,8 +29,6 @@
+ #include <linux/utsname.h>
+ #include <linux/mutex.h>
  
- static DEFINE_MUTEX(strings);
- static char *snd_sndstat_strings[SNDRV_CARDS][SNDRV_OSS_INFO_DEV_COUNT];
--static struct snd_info_entry *snd_sndstat_proc_entry;
- 
- int snd_oss_info_register(int dev, int num, char *string)
- {
-@@ -110,25 +109,15 @@ static void snd_sndstat_proc_read(struct snd_info_entry *entry,
- 	snd_sndstat_show_strings(buffer, "Mixers", SNDRV_OSS_INFO_DEV_MIXERS);
- }
- 
--int snd_info_minor_register(void)
-+int __init snd_info_minor_register(void)
- {
- 	struct snd_info_entry *entry;
- 
- 	memset(snd_sndstat_strings, 0, sizeof(snd_sndstat_strings));
--	if ((entry = snd_info_create_module_entry(THIS_MODULE, "sndstat", snd_oss_root)) != NULL) {
--		entry->c.text.read = snd_sndstat_proc_read;
--		if (snd_info_register(entry) < 0) {
--			snd_info_free_entry(entry);
--			entry = NULL;
--		}
--	}
--	snd_sndstat_proc_entry = entry;
--	return 0;
--}
+-#if defined(CONFIG_SND_OSSEMUL) && defined(CONFIG_PROC_FS)
 -
--int snd_info_minor_unregister(void)
--{
--	snd_info_free_entry(snd_sndstat_proc_entry);
--	snd_sndstat_proc_entry = NULL;
--	return 0;
-+	entry = snd_info_create_module_entry(THIS_MODULE, "sndstat",
-+					     snd_oss_root);
-+	if (!entry)
-+		return -ENOMEM;
-+	entry->c.text.read = snd_sndstat_proc_read;
-+	return snd_info_register(entry); /* freed in error path */
+ /*
+  *  OSS compatible part
+  */
+@@ -134,5 +132,3 @@ int snd_info_minor_unregister(void)
+ 	snd_sndstat_proc_entry = NULL;
+ 	return 0;
  }
-diff --git a/sound/core/sound.c b/sound/core/sound.c
-index 8fc402e4ff35..e5d37bd7c226 100644
---- a/sound/core/sound.c
-+++ b/sound/core/sound.c
-@@ -409,7 +409,6 @@ static int __init alsa_sound_init(void)
- 		unregister_chrdev(major, "alsa");
- 		return -ENOMEM;
- 	}
--	snd_info_minor_register();
- #ifndef MODULE
- 	pr_info("Advanced Linux Sound Architecture Driver Initialized.\n");
- #endif
-@@ -418,7 +417,6 @@ static int __init alsa_sound_init(void)
+-
+-#endif /* CONFIG_SND_OSSEMUL */
+diff --git a/sound/core/seq/Makefile b/sound/core/seq/Makefile
+index 941f64a853eb..b29ffe835205 100644
+--- a/sound/core/seq/Makefile
++++ b/sound/core/seq/Makefile
+@@ -6,7 +6,8 @@
+ snd-seq-device-objs := seq_device.o
+ snd-seq-objs := seq.o seq_lock.o seq_clientmgr.o seq_memory.o seq_queue.o \
+                 seq_fifo.o seq_prioq.o seq_timer.o \
+-                seq_system.o seq_ports.o seq_info.o
++                seq_system.o seq_ports.o
++snd-seq-$(CONFIG_PROC_FS) += seq_info.o
+ snd-seq-midi-objs := seq_midi.o
+ snd-seq-midi-emul-objs := seq_midi_emul.o
+ snd-seq-midi-event-objs := seq_midi_event.o
+diff --git a/sound/core/seq/seq_info.c b/sound/core/seq/seq_info.c
+index d3c65e780e9e..97015447b9b3 100644
+--- a/sound/core/seq/seq_info.c
++++ b/sound/core/seq/seq_info.c
+@@ -27,7 +27,6 @@
+ #include "seq_clientmgr.h"
+ #include "seq_timer.h"
  
- static void __exit alsa_sound_exit(void)
- {
--	snd_info_minor_unregister();
- 	snd_info_done();
- 	unregister_chrdev(major, "alsa");
+-#ifdef CONFIG_PROC_FS
+ static struct snd_info_entry *queues_entry;
+ static struct snd_info_entry *clients_entry;
+ static struct snd_info_entry *timer_entry;
+@@ -80,4 +79,3 @@ int __exit snd_seq_info_done(void)
+ 	free_info_entries();
+ 	return 0;
  }
+-#endif
+diff --git a/sound/core/sound_oss.c b/sound/core/sound_oss.c
+index 56d2f409f1ef..86e2d91dd375 100644
+--- a/sound/core/sound_oss.c
++++ b/sound/core/sound_oss.c
+@@ -19,12 +19,6 @@
+  *
+  */
+ 
+-#ifdef CONFIG_SND_OSSEMUL
+-
+-#if !IS_ENABLED(CONFIG_SOUND)
+-#error "Enable the OSS soundcore multiplexer (CONFIG_SOUND) in the kernel."
+-#endif
+-
+ #include <linux/init.h>
+ #include <linux/export.h>
+ #include <linux/slab.h>
+@@ -266,5 +260,3 @@ int __init snd_minor_info_oss_init(void)
+ 	return snd_info_register(entry); /* freed in error path */
+ }
+ #endif /* CONFIG_PROC_FS */
+-
+-#endif /* CONFIG_SND_OSSEMUL */
 -- 
 2.3.5
