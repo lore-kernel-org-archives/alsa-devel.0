@@ -1,17 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: alsa-driver-build on kernel 3.13
-Date: Thu, 23 Apr 2015 11:37:56 +0800
-Message-ID: <CAN8ccib4-DuPjAChuwbfNkOeEqXwwHGueScqWCE2AmN4k8yLkA@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC] File format for topology data
+Date: Thu, 23 Apr 2015 09:12:14 +0530
+Message-ID: <20150423034214.GL2738@intel.com>
+References: <1429621606.3793.37.camel@loki> <20150422155816.GK2738@intel.com>
+ <1429751473.2694.23.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
- [209.85.218.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 97D2A265ADE
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 05:37:57 +0200 (CEST)
-Received: by oiko83 with SMTP id o83so4772155oik.1
- for <alsa-devel@alsa-project.org>; Wed, 22 Apr 2015 20:37:56 -0700 (PDT)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F926265ADE
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 05:45:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1429751473.2694.23.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,83 +22,322 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Do  alsa-driver-build still support on kernel 3.13 ?
+On Thu, Apr 23, 2015 at 02:11:13AM +0100, Liam Girdwood wrote:
+> On Wed, 2015-04-22 at 21:28 +0530, Vinod Koul wrote:
+> > On Tue, Apr 21, 2015 at 02:06:46PM +0100, Liam Girdwood wrote:
+> > > I've pasted below the topology data for the broadwell firmware using the
+> > > text file format being used by UCM. Using the UCM format allows to to
+> > > share parser code and allows us to also have UCM define topology data.
+> > > 
+> 
+> Jaroslav, what's your take on the file format. It's using the UCM format
+> you designed with some changes.
+> 
+> > > I've not yet completed the byte or enum controls but the rest of the
+> > > data is there for comments. I've also included the recent channel
+> > > changes suggested in the UAPI header comments.
+> > > 
+> > > # Firmware Topology Configuration for Broadwell
+> > > 
+> > > # TLV scale used by both global and stream volumes
+> > > SectionTLV."hsw_vol_tlv" {
+> > > 
+> > > 	DBScale [
+> > > 		min "-9000"
+> > > 		step "300"
+> > > 		mute "1"
+> > > 	]
+> > > }
+> > So for our DSP we need to pass some private data, how do we go about
+> > describing it for this and other controls?
+> 
+> I'm thinking we should have the same method as UCM here. We could either
+> specify an array of comma separated bytes or a file that contains the
+> data.
+Yes that would be okay. Also I realized later that above is defination of
+gain, so the data should come with instance below as eahc instance will have
+different data set.
 
-Some of the modules have been built but not installed on Ubuntu 14.04 LTS
+Also you should add feild for assigning default values
+> 
+> > 
+> > > 
+> > > # Controls from default pipeline
+> > > SectionControl."Default Pipeline" {
+> > > 
+> > > 	Index "1"
+> > > 
+> > > 	# Master DSP volume
+> > > 	Mixer [
+> > > 		name "Master Playback Volume"
+> > > 		Channel.0 [
+> > > 			map "Left"
+> > > 			reg "0"
+> > > 			shift "0"
+> > > 		]
+> > > 		Channel.1 [
+> > > 			map "Right"
+> > > 			reg "0"
+> > > 			shift "8"
+> > > 		]
+> > > 		max "31"
+> > > 		invert "false"
+> > > 		get "0"
+> > > 		put "0"
+> > what do these two mean?
+> 
+> These are for binding to the info(), get(), put() methods, but I'm not
+> 100% sure of using an ID number here. Maybe we should be using a name
+> that matches the names in the UAPI header. Let me think more about that.
+> 
+> > 
+> > > 		tlv_array "hsw_vol_tlv"
+> > > 	]
+> > > 
+> > > 	# Offload 0 volume
+> > > 	Mixer [
+> > > 		name "Media0 Playback Volume"
+> > > 		Channel.0 [
+> > > 			map "Left"
+> > > 			reg "1"
+> > > 			shift "0"
+> > > 		]
+> > > 		Channel.1 [
+> > > 			map "Right"
+> > > 			reg "1"
+> > > 			shift "8"
+> > > 		]
+> > > 		max "31"
+> > > 		invert "false"
+> > > 		get "1"
+> > > 		put "1"
+> > > 		tlv_array "hsw_vol_tlv"
+> > > 	]
+> > > 
+> > > 	# Enum controls
+> > > 	Enum [
+> > > 		...
+> > > 	]
+> > > 
+> > > 	# Byte controls
+> > > 	Bytes [
+> > > 		...
+> > > 	]
+> > > }
+> > > 
+> > > # DAPM Widgets for main pipeline
+> > > SectionWidget."Pipeline1" {
+> > > 
+> > > 	Index "1"
+> > > 
+> > > 	AIF_IN [
+> > > 		name "SSP0 CODEC IN"
+> > > 		stream_name ""
+> > > 		slot ""
+> > > 		reg "0"
+> > > 		shift "0"
+> > > 		invert "false"
+> > > 	]
+> > > 
+> > > 	AIF_OUT [
+> > > 		name "SSP0 CODEC OUT"
+> > > 		stream_name ""
+> > > 		slot ""
+> > > 		reg "0"
+> > > 		shift "0"
+> > > 		invert "false"
+> > > 	]
+> > > 
+> > > 	...
+> > > }
+> > > 
+> > > # DAPM Routes
+> > > SectionGraph."Pipeline 1 Graph" {
+> > > 
+> > > 	Index 1
+> > > 
+> > > 	Routes [
+> > > 		"Playback VMixer, , System Playback"
+> > > 		"Playback VMixer, , Offload0 Playback"
+> > > 		"Playback VMixer, , Offload1 Playback"
+> > > 		"SSP0 CODEC OUT, , Playback VMixer"
+> > > 		"Analog Capture, , SSP0 CODEC IN"
+> > > 	]
+> > > }
+> > > 
+> > > # PCM Configurations supported by FW
+> > > SectionPCMConfig."PCM 48k Stereo 24bit" {
+> > > 
+> > > 	Playback [
+> > > 		format "S24_LE"
+> > > 		rate "48000"
+> > > 		channels "2"
+> > > 		tdm_slot "0xf"
+> > > 	]
+> > > 
+> > > 	Capture [
+> > > 		format "S24_LE"
+> > > 		rate "48000"
+> > > 		channels "2"
+> > > 		tdm_slot "0xf"
+> > > 
+> > > 	]
+> > > }
+> > > 
+> > > SectionPCMConfig."PCM 48k Stereo 16bit" {
+> > > 
+> > > 	Playback [
+> > > 		format "S16_LE"
+> > > 		rate "48000"
+> > > 		channels "2"
+> > > 		tdm_slot "0xf"
+> > > 	]
+> > > 
+> > > 	Capture [
+> > > 		format "S16_LE"
+> > > 		rate "48000"
+> > > 		channels "2"
+> > > 		tdm_slot "0xf"
+> > > 
+> > > 	]
+> > > }
+> > > 
+> > > SectionPCMConfig."PCM 48k 2P/4C 16bit" {
+> > > 
+> > > 	Playback [
+> > > 		format "S16_LE"
+> > > 		rate "48000"
+> > > 		channels "2"
+> > > 		tdm_slot "0xf"
+> > > 	]
+> > > 
+> > > 	Capture [
+> > > 		format "S16_LE"
+> > > 		rate "48000"
+> > > 		channels "4"
+> > > 		tdm_slot "0xf"
+> > > 
+> > > 	]
+> > > }
+> > > 
+> > > # PCM capabilities supported by FW
+> > > SectionPCMCapabilities."System Playback" {
+> > > 
+> > > 	Capabilities [
+> > > 		formats "S24_LE, S16_LE"
+> > > 		rate_min "48000"
+> > > 		rate_max "48000"
+> > > 		channels_min "2"
+> > > 		channels_max "2"
+> > > 	]
+> > > }
+> > > 
+> > > SectionPCMCapabilities."Analog Capture" {
+> > > 
+> > > 	Capabilities [
+> > > 		formats "S24_LE, S16_LE"
+> > > 		rate_min "48000"
+> > > 		rate_max "48000"
+> > > 		channels_min "2"
+> > > 		channels_max "4"
+> > > 	]
+> > > }
+> > > 
+> > > SectionPCMCapabilities."Offload Pin Playback" {
+> > > 
+> > > 	Capabilities [
+> > > 		formats "S24_LE, S16_LE"
+> > > 		rate_min "8000"
+> > > 		rate_max "192000"
+> > > 		channels_min "2"
+> > > 		channels_max "2"
+> > > 	]
+> > > }
+> > > 
+> > > SectionPCMCapabilities."Loopback Capture" {
+> > > 
+> > > 	Capabilities [
+> > > 		formats "S16_LE"
+> > > 		rate_min "48000"
+> > > 		rate_max "48000"
+> > > 		channels_min "2"
+> > > 		channels_max "2"
+> > > 	]
+> > > }
+> > > 
+> > > # PCM devices exported by Firmware
+> > > SectionPCM."System Pin" {
+> > > 
+> > > 	Index 1
+> > > 
+> > > 	Playback [
+> > > 		Capabilities "System Playback"
+> > > 		Config "PCM 48k Stereo 24bit"
+> > > 		Config "PCM 48k Stereo 16bit"
+> > > 	]
+> > > 
+> > > 	Capture [
+> > > 		Capabilities "Analog Capture"
+> > > 		Config "PCM 48k Stereo 24bit"
+> > > 		Config "PCM 48k Stereo 16bit"
+> > > 		Config "PCM 48k 2P/4C 16bit"
+> > > 	]
+> > > }
+> > Is this a FE or a BE? How about Dailinks?
+> > 
+> 
+> This is PCM FE. I'll give some examples for the codec <-> codec links
+> and BE DAI link shortly with updates to the other questions.
+Okay, that will help
 
+-- 
+~Vinod
 
-[    7.547726] snd_hda_codec: Unknown symbol snd_hdac_get_connections (err
-0)
-[    7.547733] snd_hda_codec: Unknown symbol snd_hdac_power_up_pm (err 0)
-[    7.547749] snd_hda_codec: Unknown symbol snd_hdac_regmap_read_raw (err
-0)
-[    7.547762] snd_hda_codec: Unknown symbol snd_hdac_power_down (err 0)
-[    7.547768] snd_hda_codec: Unknown symbol snd_hdac_make_cmd (err 0)
-[    7.547783] snd_hda_codec: Unknown symbol snd_hdac_regmap_init (err 0)
-[    7.547797] snd_hda_codec: Unknown symbol snd_hdac_refresh_widgets (err
-0)
-[    7.547824] snd_hda_codec: Unknown symbol snd_hdac_bus_exit (err 0)
-[    7.547832] snd_hda_codec: Unknown symbol _snd_hdac_read_parm (err 0)
-[    7.547845] snd_hda_codec: Unknown symbol
-snd_hdac_bus_exec_verb_unlocked (err 0)
-[    7.547849] snd_hda_codec: Unknown symbol snd_hdac_override_parm (err 0)
-[    7.547857] snd_hda_codec: Unknown symbol snd_hdac_device_register (err
-0)
-[    7.547862] snd_hda_codec: Unknown symbol snd_hdac_regmap_update_raw
-(err 0)
-[    7.547878] snd_hda_codec: Unknown symbol snd_hdac_bus_init (err 0)
-[    7.547886] snd_hda_codec: Unknown symbol snd_hdac_read_parm_uncached
-(err 0)
-[    7.547892] snd_hda_codec: Unknown symbol snd_hdac_device_unregister
-(err 0)
-[    7.547896] snd_hda_codec: Unknown symbol snd_hdac_device_init (err 0)
-[    7.547908] snd_hda_codec: Unknown symbol snd_hdac_power_down_pm (err 0)
-[    7.547924] snd_hda_codec: Unknown symbol snd_hdac_regmap_write_raw (err
-0)
-[    7.547933] snd_hda_codec: Unknown symbol snd_hdac_regmap_exit (err 0)
-[    7.547943] snd_hda_codec: Unknown symbol snd_hda_bus_type (err 0)
-[    7.547949] snd_hda_codec: Unknown symbol snd_hdac_device_exit (err 0)
-[    7.547956] snd_hda_codec: Unknown symbol snd_hdac_get_sub_nodes (err 0)
-[    7.547964] snd_hda_codec: Unknown symbol snd_hdac_exec_verb (err 0)
-[    7.547973] snd_hda_codec: Unknown symbol snd_array_new (err 0)
-[    7.547981] snd_hda_codec: Unknown symbol snd_array_free (err 0)
-[    7.547994] snd_hda_codec: Unknown symbol snd_hdac_power_up (err 0)
-[    7.548197] snd_hda_codec: Unknown symbol snd_hdac_get_connections (err
-0)
-[    7.548202] snd_hda_codec: Unknown symbol snd_hdac_power_up_pm (err 0)
-[    7.548214] snd_hda_codec: Unknown symbol snd_hdac_regmap_read_raw (err
-0)
-[    7.548225] snd_hda_codec: Unknown symbol snd_hdac_power_down (err 0)
-[    7.548231] snd_hda_codec: Unknown symbol snd_hdac_make_cmd (err 0)
-[    7.548244] snd_hda_codec: Unknown symbol snd_hdac_regmap_init (err 0)
-[    7.548256] snd_hda_codec: Unknown symbol snd_hdac_refresh_widgets (err
-0)
-[    7.548281] snd_hda_codec: Unknown symbol snd_hdac_bus_exit (err 0)
-[    7.548287] snd_hda_codec: Unknown symbol _snd_hdac_read_parm (err 0)
-[    7.548298] snd_hda_codec: Unknown symbol
-snd_hdac_bus_exec_verb_unlocked (err 0)
-[    7.548302] snd_hda_codec: Unknown symbol snd_hdac_override_parm (err 0)
-[    7.548310] snd_hda_codec: Unknown symbol snd_hdac_device_register (err
-0)
-[    7.548315] snd_hda_codec: Unknown symbol snd_hdac_regmap_update_raw
-(err 0)
-[    7.548330] snd_hda_codec: Unknown symbol snd_hdac_bus_init (err 0)
-[    7.548338] snd_hda_codec: Unknown symbol snd_hdac_read_parm_uncached
-(err 0)
-[    7.548343] snd_hda_codec: Unknown symbol snd_hdac_device_unregister
-(err 0)
-[    7.548347] snd_hda_codec: Unknown symbol snd_hdac_device_init (err 0)
-[    7.548357] snd_hda_codec: Unknown symbol snd_hdac_power_down_pm (err 0)
-[    7.548372] snd_hda_codec: Unknown symbol snd_hdac_regmap_write_raw (err
-0)
-[    7.548380] snd_hda_codec: Unknown symbol snd_hdac_regmap_exit (err 0)
-[    7.548389] snd_hda_codec: Unknown symbol snd_hda_bus_type (err 0)
-[    7.548395] snd_hda_codec: Unknown symbol snd_hdac_device_exit (err 0)
-[    7.548402] snd_hda_codec: Unknown symbol snd_hdac_get_sub_nodes (err 0)
-[    7.548410] snd_hda_codec: Unknown symbol snd_hdac_exec_verb (err 0)
-[    7.548418] snd_hda_codec: Unknown symbol snd_array_new (err 0)
-[    7.548426] snd_hda_codec: Unknown symbol snd_array_free (err 0)
-[    7.548438] snd_hda_codec: Unknown symbol snd_hdac_power_up (err 0)
+> 
+> Liam
+> 
+> > -- 
+> > ~Vinod
+> > 
+> > > 
+> > > SectionPCM."Offload Pin 0" {
+> > > 
+> > > 	Index 1
+> > > 
+> > > 	Playback [
+> > > 		Capabilities "Offload Pin Playback"
+> > > 		Config "PCM 48k Stereo 24bit"
+> > > 		Config "PCM 48k Stereo 16bit"
+> > > 	]
+> > > }
+> > > 
+> > > SectionPCM."Offload Pin 1" {
+> > > 
+> > > 	Index 1
+> > > 
+> > > 	Playback [
+> > > 		Capabilities "Offload Pin Playback"
+> > > 		Config "PCM 48k Stereo 24bit"
+> > > 		Config "PCM 48k Stereo 16bit"
+> > > 	]
+> > > }
+> > > 
+> > > SectionPCM."Loopback Pin" {
+> > > 
+> > > 	Index 1
+> > > 
+> > > 	Capture [
+> > > 		Capabilities "Loopback Capture"
+> > > 		Config "PCM 48k Stereo 16bit"
+> > > 	]
+> > > }
+> > > 
+> > 
+> 
+> 
+
+-- 
