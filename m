@@ -1,17 +1,19 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v9 5/7] ASoC: jack: create kctls according to
-	jack pins info
-Date: Thu, 23 Apr 2015 10:32:44 +0800
-Message-ID: <1429756366-22520-6-git-send-email-yang.jie@intel.com>
-References: <1429756366-22520-1-git-send-email-yang.jie@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - add AZX_DCAPS_I915_POWERWELL
+ to Baytrail
+Date: Thu, 23 Apr 2015 03:01:34 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B83D2E8@SHSMSX101.ccr.corp.intel.com>
+References: <e8074c2236ff5b224dbc8a92cca40f348ca5032c.1429592999.git.mengdong.lin@intel.com>
+ <5536188B.0@canonical.com> <s5hr3rdzu9n.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 114F7265AED
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 04:29:38 +0200 (CEST)
-In-Reply-To: <1429756366-22520-1-git-send-email-yang.jie@intel.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95475265A30
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 05:01:44 +0200 (CEST)
+In-Reply-To: <s5hr3rdzu9n.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
+To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-In the new jack kctls design, we can create kctls according to
-pins info:
+> At Tue, 21 Apr 2015 11:29:47 +0200,
+> David Henningsson wrote:
+> >
+> > Hi,
+> >
+> > Baytrail is very much released and out there already - should this
+> > patch also go to stable?
+> 
+> I thought of that, but this patch also has a drawback, thus I hesitated to make
+> it blindly.
 
-1. during jack creating, snd_jack_new() with NULL jack_kctl;
-2. for each pin, call snd_jack_add_kctl() to add one kctl
-(it will call snd_ctl_add() to add kctl to card);
+Hi Takashi and David,
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/soc/soc-jack.c | 1 +
- 1 file changed, 1 insertion(+)
+Without this patch, we observed communication dead on Baytrail between the HD-A controller and HDMI codec, with mainline kernel 4.0.
+It's because the i915 driver can disable this power well without sync with audio driver. 
+Please see bug https://bugzilla.kernel.org/show_bug.cgi?id=93881
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 70a9bdd..87ca980 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -197,6 +197,7 @@ int snd_soc_jack_add_pins(struct snd_soc_jack *jack, int count,
- 
- 		INIT_LIST_HEAD(&pins[i].list);
- 		list_add(&(pins[i].list), &jack->pins);
-+		snd_jack_add_new_kctl(jack->jack, pins[i].pin, pins[i].mask);
- 	}
- 
- 	/* Update to reflect the last reported status; canned jack
--- 
-1.9.1
+This fix up is not so power saving and so we're trying improve it.
+
+> > Are there current problems (like HDMI codec not being detected) that
+> > are fixed by this patch?
+> 
+> If there is a known bug (report) and this fixes indeed, it deserves the stable
+> kernel, indeed.
+
+The issue that HDMI codec is not always being detected is only reported on Skylake (although theoretically it can happen on Baytrail/Braswell without power sync but we never observed this).
+SKL HW implementation has some change from its predecessors and need extra fixing up in i915 driver, Libin is working on this and we're close to solve this.
+
+Thanks
+Mengdong
