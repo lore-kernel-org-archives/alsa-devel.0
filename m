@@ -1,16 +1,19 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [RFC] File format for topology data
-Date: Thu, 23 Apr 2015 02:11:13 +0100
-Message-ID: <1429751473.2694.23.camel@loki>
-References: <1429621606.3793.37.camel@loki> <20150422155816.GK2738@intel.com>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH 8/8] Documentation: Add WM8998/WM1814
+ device	tree bindings
+Date: Thu, 23 Apr 2015 02:05:18 +0000
+Message-ID: <0D842736-8A6E-4462-9690-C9BD60690A7C@cirrus.com>
+References: <1429619636-25478-1-git-send-email-rf@opensource.wolfsonmicro.com>,
+ <1429619636-25478-9-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id DB16C265A30
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 03:11:18 +0200 (CEST)
-In-Reply-To: <20150422155816.GK2738@intel.com>
+Received: from m0077473.ppops.net (mx0a-001ae601.pphosted.com [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9287265A30
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 04:05:21 +0200 (CEST)
+In-Reply-To: <1429619636-25478-9-git-send-email-rf@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,307 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: "Fitzgerald, Richard" <Richard.Fitzgerald@cirrus.com>
+Cc: "gnurou@gmail.com" <gnurou@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "cw00.choi@samsung.com" <cw00.choi@samsung.com>, "broonie@kernel.org" <broonie@kernel.org>, "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "lee.jones@linaro.org" <lee.jones@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2015-04-22 at 21:28 +0530, Vinod Koul wrote:
-> On Tue, Apr 21, 2015 at 02:06:46PM +0100, Liam Girdwood wrote:
-> > I've pasted below the topology data for the broadwell firmware using the
-> > text file format being used by UCM. Using the UCM format allows to to
-> > share parser code and allows us to also have UCM define topology data.
-> > 
 
-Jaroslav, what's your take on the file format. It's using the UCM format
-you designed with some changes.
 
-> > I've not yet completed the byte or enum controls but the rest of the
-> > data is there for comments. I've also included the recent channel
-> > changes suggested in the UAPI header comments.
-> > 
-> > # Firmware Topology Configuration for Broadwell
-> > 
-> > # TLV scale used by both global and stream volumes
-> > SectionTLV."hsw_vol_tlv" {
-> > 
-> > 	DBScale [
-> > 		min "-9000"
-> > 		step "300"
-> > 		mute "1"
-> > 	]
-> > }
-> So for our DSP we need to pass some private data, how do we go about
-> describing it for this and other controls?
-
-I'm thinking we should have the same method as UCM here. We could either
-specify an array of comma separated bytes or a file that contains the
-data.
-
+> On Apr 21, 2015, at 07:38, Richard Fitzgerald <rf@opensource.wolfsonmicro.com> wrote:
 > 
-> > 
-> > # Controls from default pipeline
-> > SectionControl."Default Pipeline" {
-> > 
-> > 	Index "1"
-> > 
-> > 	# Master DSP volume
-> > 	Mixer [
-> > 		name "Master Playback Volume"
-> > 		Channel.0 [
-> > 			map "Left"
-> > 			reg "0"
-> > 			shift "0"
-> > 		]
-> > 		Channel.1 [
-> > 			map "Right"
-> > 			reg "0"
-> > 			shift "8"
-> > 		]
-> > 		max "31"
-> > 		invert "false"
-> > 		get "0"
-> > 		put "0"
-> what do these two mean?
-
-These are for binding to the info(), get(), put() methods, but I'm not
-100% sure of using an ID number here. Maybe we should be using a name
-that matches the names in the UAPI header. Let me think more about that.
-
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> ---
+> Documentation/devicetree/bindings/mfd/arizona.txt |    3 +++
+> 1 files changed, 3 insertions(+), 0 deletions(-)
 > 
-> > 		tlv_array "hsw_vol_tlv"
-> > 	]
-> > 
-> > 	# Offload 0 volume
-> > 	Mixer [
-> > 		name "Media0 Playback Volume"
-> > 		Channel.0 [
-> > 			map "Left"
-> > 			reg "1"
-> > 			shift "0"
-> > 		]
-> > 		Channel.1 [
-> > 			map "Right"
-> > 			reg "1"
-> > 			shift "8"
-> > 		]
-> > 		max "31"
-> > 		invert "false"
-> > 		get "1"
-> > 		put "1"
-> > 		tlv_array "hsw_vol_tlv"
-> > 	]
-> > 
-> > 	# Enum controls
-> > 	Enum [
-> > 		...
-> > 	]
-> > 
-> > 	# Byte controls
-> > 	Bytes [
-> > 		...
-> > 	]
-> > }
-> > 
-> > # DAPM Widgets for main pipeline
-> > SectionWidget."Pipeline1" {
-> > 
-> > 	Index "1"
-> > 
-> > 	AIF_IN [
-> > 		name "SSP0 CODEC IN"
-> > 		stream_name ""
-> > 		slot ""
-> > 		reg "0"
-> > 		shift "0"
-> > 		invert "false"
-> > 	]
-> > 
-> > 	AIF_OUT [
-> > 		name "SSP0 CODEC OUT"
-> > 		stream_name ""
-> > 		slot ""
-> > 		reg "0"
-> > 		shift "0"
-> > 		invert "false"
-> > 	]
-> > 
-> > 	...
-> > }
-> > 
-> > # DAPM Routes
-> > SectionGraph."Pipeline 1 Graph" {
-> > 
-> > 	Index 1
-> > 
-> > 	Routes [
-> > 		"Playback VMixer, , System Playback"
-> > 		"Playback VMixer, , Offload0 Playback"
-> > 		"Playback VMixer, , Offload1 Playback"
-> > 		"SSP0 CODEC OUT, , Playback VMixer"
-> > 		"Analog Capture, , SSP0 CODEC IN"
-> > 	]
-> > }
-> > 
-> > # PCM Configurations supported by FW
-> > SectionPCMConfig."PCM 48k Stereo 24bit" {
-> > 
-> > 	Playback [
-> > 		format "S24_LE"
-> > 		rate "48000"
-> > 		channels "2"
-> > 		tdm_slot "0xf"
-> > 	]
-> > 
-> > 	Capture [
-> > 		format "S24_LE"
-> > 		rate "48000"
-> > 		channels "2"
-> > 		tdm_slot "0xf"
-> > 
-> > 	]
-> > }
-> > 
-> > SectionPCMConfig."PCM 48k Stereo 16bit" {
-> > 
-> > 	Playback [
-> > 		format "S16_LE"
-> > 		rate "48000"
-> > 		channels "2"
-> > 		tdm_slot "0xf"
-> > 	]
-> > 
-> > 	Capture [
-> > 		format "S16_LE"
-> > 		rate "48000"
-> > 		channels "2"
-> > 		tdm_slot "0xf"
-> > 
-> > 	]
-> > }
-> > 
-> > SectionPCMConfig."PCM 48k 2P/4C 16bit" {
-> > 
-> > 	Playback [
-> > 		format "S16_LE"
-> > 		rate "48000"
-> > 		channels "2"
-> > 		tdm_slot "0xf"
-> > 	]
-> > 
-> > 	Capture [
-> > 		format "S16_LE"
-> > 		rate "48000"
-> > 		channels "4"
-> > 		tdm_slot "0xf"
-> > 
-> > 	]
-> > }
-> > 
-> > # PCM capabilities supported by FW
-> > SectionPCMCapabilities."System Playback" {
-> > 
-> > 	Capabilities [
-> > 		formats "S24_LE, S16_LE"
-> > 		rate_min "48000"
-> > 		rate_max "48000"
-> > 		channels_min "2"
-> > 		channels_max "2"
-> > 	]
-> > }
-> > 
-> > SectionPCMCapabilities."Analog Capture" {
-> > 
-> > 	Capabilities [
-> > 		formats "S24_LE, S16_LE"
-> > 		rate_min "48000"
-> > 		rate_max "48000"
-> > 		channels_min "2"
-> > 		channels_max "4"
-> > 	]
-> > }
-> > 
-> > SectionPCMCapabilities."Offload Pin Playback" {
-> > 
-> > 	Capabilities [
-> > 		formats "S24_LE, S16_LE"
-> > 		rate_min "8000"
-> > 		rate_max "192000"
-> > 		channels_min "2"
-> > 		channels_max "2"
-> > 	]
-> > }
-> > 
-> > SectionPCMCapabilities."Loopback Capture" {
-> > 
-> > 	Capabilities [
-> > 		formats "S16_LE"
-> > 		rate_min "48000"
-> > 		rate_max "48000"
-> > 		channels_min "2"
-> > 		channels_max "2"
-> > 	]
-> > }
-> > 
-> > # PCM devices exported by Firmware
-> > SectionPCM."System Pin" {
-> > 
-> > 	Index 1
-> > 
-> > 	Playback [
-> > 		Capabilities "System Playback"
-> > 		Config "PCM 48k Stereo 24bit"
-> > 		Config "PCM 48k Stereo 16bit"
-> > 	]
-> > 
-> > 	Capture [
-> > 		Capabilities "Analog Capture"
-> > 		Config "PCM 48k Stereo 24bit"
-> > 		Config "PCM 48k Stereo 16bit"
-> > 		Config "PCM 48k 2P/4C 16bit"
-> > 	]
-> > }
-> Is this a FE or a BE? How about Dailinks?
-> 
+> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+> index 7665aa9..a3cb34b 100644
+> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
+> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+> @@ -10,6 +10,9 @@ Required properties:
+>         "wlf,wm5110"
+>         "wlf,wm8280"
+>         "wlf,wm8997"
+> +        "wlf,WM8998"
+> +        "wlf,wm1814"
+> +
+Is there a reason for caps on the 8998? 
 
-This is PCM FE. I'll give some examples for the codec <-> codec links
-and BE DAI link shortly with updates to the other questions.
-
-Liam
-
-> -- 
-> ~Vinod
-> 
-> > 
-> > SectionPCM."Offload Pin 0" {
-> > 
-> > 	Index 1
-> > 
-> > 	Playback [
-> > 		Capabilities "Offload Pin Playback"
-> > 		Config "PCM 48k Stereo 24bit"
-> > 		Config "PCM 48k Stereo 16bit"
-> > 	]
-> > }
-> > 
-> > SectionPCM."Offload Pin 1" {
-> > 
-> > 	Index 1
-> > 
-> > 	Playback [
-> > 		Capabilities "Offload Pin Playback"
-> > 		Config "PCM 48k Stereo 24bit"
-> > 		Config "PCM 48k Stereo 16bit"
-> > 	]
-> > }
-> > 
-> > SectionPCM."Loopback Pin" {
-> > 
-> > 	Index 1
-> > 
-> > 	Capture [
-> > 		Capabilities "Loopback Capture"
-> > 		Config "PCM 48k Stereo 16bit"
-> > 	]
-> > }
-> > 
-> 
+-Brian 
