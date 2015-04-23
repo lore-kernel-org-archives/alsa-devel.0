@@ -1,19 +1,14 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH 8/8] Documentation: Add WM8998/WM1814
- device	tree bindings
-Date: Thu, 23 Apr 2015 02:05:18 +0000
-Message-ID: <0D842736-8A6E-4462-9690-C9BD60690A7C@cirrus.com>
-References: <1429619636-25478-1-git-send-email-rf@opensource.wolfsonmicro.com>,
- <1429619636-25478-9-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH v9 0/7] ALSA: jack: Refactoring for jack kctls
+Date: Thu, 23 Apr 2015 10:32:39 +0800
+Message-ID: <1429756366-22520-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m0077473.ppops.net (mx0a-001ae601.pphosted.com [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A9287265A30
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 04:05:21 +0200 (CEST)
-In-Reply-To: <1429619636-25478-9-git-send-email-rf@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id D609C265A30
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 04:29:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,30 +18,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Fitzgerald, Richard" <Richard.Fitzgerald@cirrus.com>
-Cc: "gnurou@gmail.com" <gnurou@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "cw00.choi@samsung.com" <cw00.choi@samsung.com>, "broonie@kernel.org" <broonie@kernel.org>, "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "lee.jones@linaro.org" <lee.jones@linaro.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Currently only hda will create kctls for hda jacks, for asoc, people
+may need create jack kctls in specific driver.
 
+Here we are introducing kctls for each jack, by creating kctls and add
+them to jack controls list (considering exist of combo jack). At the
+same time, we will report events for each control in the list.
 
-> On Apr 21, 2015, at 07:38, Richard Fitzgerald <rf@opensource.wolfsonmicro.com> wrote:
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
-> Documentation/devicetree/bindings/mfd/arizona.txt |    3 +++
-> 1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-> index 7665aa9..a3cb34b 100644
-> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
-> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-> @@ -10,6 +10,9 @@ Required properties:
->         "wlf,wm5110"
->         "wlf,wm8280"
->         "wlf,wm8997"
-> +        "wlf,WM8998"
-> +        "wlf,wm1814"
-> +
-Is there a reason for caps on the 8998? 
+With this new implementation, both HDA and soc jack kctls works fine,
+they are compatible for old HDA jack kctls, too.
 
--Brian 
+For soc,
+a. snd_jack_new() with NULL jack_kctl;
+b. for each pin, call snd_jack_add_kctls() to add one kctl(it will
+call snd_ctl_add() to add kctl to card);
+
+For HDA,
+With snd_jack_new(), we can use phantom_jack = true for phantom jack
+creating, and the jack kctl pointer will be filled with the new
+created kcontrol.
+
+Changes in v9:
+1. move struct snd_jack_kctl definition to jack.c, to hides the
+internal implementation details;
+2. some small code fixing;
+3. update documentation file.
+
+Changes in v8:
+1. remove snd_jack_kctl from HDA part, change snd_jack_new param
+to use bool for creating kcontrol at jack creating stage;
+2. create jack for phantom jack, with no input device;
+3. remove HDA jack get_unique_index() and index related code.
+
+Changes in v7:
+1. move name generating and index getting part into ctljack.c;
+2. remove exposing private_data and destructor to hda, then jack
+core can handle kctls by itself totally.
+3. some small code fixing.
+
+Changes in v6:
+1. refine kctl name generating function;
+2. integrate HDA jack kctl more deeply, support phantom jack in
+snd_jack_new();
+3. add documentation for Jack kcontrols to explain how to use it.
+
+Changes in v5:
+1. remove SND_KCTL_JACK config item, we need jack kctl once
+CONFIG_SND_JACK is selected.
+
+Changes in v4:
+1. use snd_ctl_find_id() to get avaliable index;
+2. add initial kctl for snd_jack_new(compatible for HDA);
+3. add struct snd_jack_kctl * field to struct hda_jack_tbl;
+4. new kctls for soc jack during jack pins creating.
+5. add a patch to remove exporting snd_kctl_jack_new().
+
+Changes in v3:
+1. replace bit index with bit mask in jack_kctl;
+2. add exception for SND_JACK_HEADSET and SND_JACK_AVOUT, only create
+one jack kctl for these two combo jacks, respectively.
+3. add NULL check, mem kfree, and fix some potential risk.
+
+Change in v2:
+1. define jack_kctl struct, and put jack kctl related stuff there;
+2. add a patch to remove the existing controls for HDA jack.
+
+Jie Yang (7):
+  ALSA: jack: implement kctl creating for jack device
+  ALSA: Jack: handle jack embedded kcontrol creating within ctljack
+  ALSA: jack: extend snd_jack_new to support phantom jack
+  ALSA: hda - Update to use the new jack kctls method
+  ASoC: jack: create kctls according to jack pins info
+  ALSA: jack: remove exporting ctljack functions
+  ALSA: Docs: Add documentation for Jack kcontrols
+
+ Documentation/sound/alsa/Jack-Controls.txt |  49 ++++++++++
+ include/sound/control.h                    |   2 +-
+ include/sound/jack.h                       |  13 ++-
+ sound/core/Kconfig                         |   3 -
+ sound/core/Makefile                        |   3 +-
+ sound/core/ctljack.c                       |  41 ++++++--
+ sound/core/jack.c                          | 152 ++++++++++++++++++++++++++---
+ sound/pci/hda/Kconfig                      |   2 +-
+ sound/pci/hda/hda_jack.c                   |  90 +++++------------
+ sound/pci/hda/hda_jack.h                   |   5 +-
+ sound/pci/hda/patch_hdmi.c                 |   2 +-
+ sound/pci/oxygen/xonar_wm87x6.c            |   2 +-
+ sound/soc/soc-jack.c                       |   3 +-
+ 13 files changed, 266 insertions(+), 101 deletions(-)
+ create mode 100644 Documentation/sound/alsa/Jack-Controls.txt
+
+-- 
+1.9.1
