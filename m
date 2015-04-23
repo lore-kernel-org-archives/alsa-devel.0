@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/8] ALSA: core: Fix possible memory leaks at
-	error path in info.c
-Date: Thu, 23 Apr 2015 16:49:24 +0200
-Message-ID: <1429800570-10153-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 8/8] ALSA: core: Clean up OSS proc file
+	management
+Date: Thu, 23 Apr 2015 16:49:30 +0200
+Message-ID: <1429800570-10153-9-git-send-email-tiwai@suse.de>
 References: <1429800570-10153-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D6C8264F74
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C8EE265AA1
  for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 16:49:38 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 145C6AD28
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 2EDA9AD76
  for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 14:49:38 +0000 (UTC)
 In-Reply-To: <1429800570-10153-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,126 +27,115 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_info_init() just returns an error without releasing the previously
-assigned resources at error path.  The assigned proc and info entries
-have to be released properly.
-
-While we are at it, refactor the code a bit, too.
+A few minor cleanups:
+- Move the call of snd_info_minor_register() into snd_info_init() so
+  that we can call all proc-related stuff in a shot
+- Add missing __init prefix to snd_info_minor_register()
+- Return an error properly from snd_oss_info_register()
+- Drop snd_info_minor_unregister() that is superfluous now
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/info.c | 62 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 31 insertions(+), 31 deletions(-)
+ include/sound/info.h  |  4 +---
+ sound/core/info.c     |  3 ++-
+ sound/core/info_oss.c | 25 +++++++------------------
+ sound/core/sound.c    |  2 --
+ 4 files changed, 10 insertions(+), 24 deletions(-)
 
+diff --git a/include/sound/info.h b/include/sound/info.h
+index 3e2fda3c75ee..16269951bafc 100644
+--- a/include/sound/info.h
++++ b/include/sound/info.h
+@@ -94,10 +94,8 @@ struct snd_info_entry {
+ 
+ #if defined(CONFIG_SND_OSSEMUL) && defined(CONFIG_PROC_FS)
+ int snd_info_minor_register(void);
+-int snd_info_minor_unregister(void);
+ #else
+-#define snd_info_minor_register() /* NOP */
+-#define snd_info_minor_unregister() /* NOP */
++#define snd_info_minor_register()	0
+ #endif
+ 
+ 
 diff --git a/sound/core/info.c b/sound/core/info.c
-index 8c1275f0fcbd..9c6db5c24da7 100644
+index f8bdd9b6f322..c8a413d6cc9b 100644
 --- a/sound/core/info.c
 +++ b/sound/core/info.c
-@@ -446,6 +446,22 @@ static const struct file_operations snd_info_text_entry_ops =
- 	.read =			seq_read,
- };
- 
-+static struct snd_info_entry *create_subdir(struct module *mod,
-+					    const char *name)
-+{
-+	struct snd_info_entry *entry;
-+
-+	entry = snd_info_create_module_entry(mod, name, NULL);
-+	if (!entry)
-+		return NULL;
-+	entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	if (snd_info_register(entry) < 0) {
-+		snd_info_free_entry(entry);
-+		return NULL;
-+	}
-+	return entry;
-+}
-+
- int __init snd_info_init(void)
- {
- 	struct proc_dir_entry *p;
-@@ -455,36 +471,27 @@ int __init snd_info_init(void)
- 		return -ENOMEM;
- 	snd_proc_root = p;
- #ifdef CONFIG_SND_OSSEMUL
--	{
--		struct snd_info_entry *entry;
--		if ((entry = snd_info_create_module_entry(THIS_MODULE, "oss", NULL)) == NULL)
--			return -ENOMEM;
--		entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
--		if (snd_info_register(entry) < 0) {
--			snd_info_free_entry(entry);
--			return -ENOMEM;
--		}
--		snd_oss_root = entry;
--	}
-+	snd_oss_root = create_subdir(THIS_MODULE, "oss");
-+	if (!snd_oss_root)
-+		goto error;
- #endif
- #if IS_ENABLED(CONFIG_SND_SEQUENCER)
--	{
--		struct snd_info_entry *entry;
--		if ((entry = snd_info_create_module_entry(THIS_MODULE, "seq", NULL)) == NULL)
--			return -ENOMEM;
--		entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
--		if (snd_info_register(entry) < 0) {
--			snd_info_free_entry(entry);
--			return -ENOMEM;
--		}
--		snd_seq_root = entry;
--	}
-+	snd_seq_root = create_subdir(THIS_MODULE, "seq");
-+	if (!snd_seq_root)
-+		goto error;
- #endif
- 	snd_info_version_init();
- 	snd_minor_info_init();
- 	snd_minor_info_oss_init();
- 	snd_card_info_init();
+@@ -479,7 +479,8 @@ int __init snd_info_init(void)
+ 	if (snd_info_version_init() < 0 ||
+ 	    snd_minor_info_init() < 0 ||
+ 	    snd_minor_info_oss_init() < 0 ||
+-	    snd_card_info_init() < 0)
++	    snd_card_info_init() < 0 ||
++	    snd_info_minor_register() < 0)
+ 		goto error;
  	return 0;
-+
-+ error:
-+#ifdef CONFIG_SND_OSSEMUL
-+	snd_info_free_entry(snd_oss_root);
-+#endif
-+	proc_remove(snd_proc_root);
-+	return -ENOMEM;
+ 
+diff --git a/sound/core/info_oss.c b/sound/core/info_oss.c
+index bd4d2c6233c2..1478c8dfd473 100644
+--- a/sound/core/info_oss.c
++++ b/sound/core/info_oss.c
+@@ -35,7 +35,6 @@
+ 
+ static DEFINE_MUTEX(strings);
+ static char *snd_sndstat_strings[SNDRV_CARDS][SNDRV_OSS_INFO_DEV_COUNT];
+-static struct snd_info_entry *snd_sndstat_proc_entry;
+ 
+ int snd_oss_info_register(int dev, int num, char *string)
+ {
+@@ -110,25 +109,15 @@ static void snd_sndstat_proc_read(struct snd_info_entry *entry,
+ 	snd_sndstat_show_strings(buffer, "Mixers", SNDRV_OSS_INFO_DEV_MIXERS);
  }
  
- int __exit snd_info_done(void)
-@@ -523,13 +530,9 @@ int snd_info_card_create(struct snd_card *card)
- 		return -ENXIO;
- 
- 	sprintf(str, "card%i", card->number);
--	if ((entry = snd_info_create_module_entry(card->module, str, NULL)) == NULL)
--		return -ENOMEM;
--	entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
--	if (snd_info_register(entry) < 0) {
--		snd_info_free_entry(entry);
-+	entry = create_subdir(card->module, str);
-+	if (!entry)
- 		return -ENOMEM;
--	}
- 	card->proc_root = entry;
- 	return 0;
- }
-@@ -758,7 +761,6 @@ EXPORT_SYMBOL(snd_info_create_card_entry);
- static void snd_info_disconnect(struct snd_info_entry *entry)
+-int snd_info_minor_register(void)
++int __init snd_info_minor_register(void)
  {
- 	struct list_head *p, *n;
--	struct proc_dir_entry *root;
+ 	struct snd_info_entry *entry;
  
- 	list_for_each_safe(p, n, &entry->children) {
- 		snd_info_disconnect(list_entry(p, struct snd_info_entry, list));
-@@ -767,8 +769,6 @@ static void snd_info_disconnect(struct snd_info_entry *entry)
- 	if (! entry->p)
- 		return;
- 	list_del_init(&entry->list);
--	root = entry->parent == NULL ? snd_proc_root : entry->parent->p;
--	snd_BUG_ON(!root);
- 	proc_remove(entry->p);
- 	entry->p = NULL;
+ 	memset(snd_sndstat_strings, 0, sizeof(snd_sndstat_strings));
+-	if ((entry = snd_info_create_module_entry(THIS_MODULE, "sndstat", snd_oss_root)) != NULL) {
+-		entry->c.text.read = snd_sndstat_proc_read;
+-		if (snd_info_register(entry) < 0) {
+-			snd_info_free_entry(entry);
+-			entry = NULL;
+-		}
+-	}
+-	snd_sndstat_proc_entry = entry;
+-	return 0;
+-}
+-
+-int snd_info_minor_unregister(void)
+-{
+-	snd_info_free_entry(snd_sndstat_proc_entry);
+-	snd_sndstat_proc_entry = NULL;
+-	return 0;
++	entry = snd_info_create_module_entry(THIS_MODULE, "sndstat",
++					     snd_oss_root);
++	if (!entry)
++		return -ENOMEM;
++	entry->c.text.read = snd_sndstat_proc_read;
++	return snd_info_register(entry); /* freed in error path */
+ }
+diff --git a/sound/core/sound.c b/sound/core/sound.c
+index 8fc402e4ff35..e5d37bd7c226 100644
+--- a/sound/core/sound.c
++++ b/sound/core/sound.c
+@@ -409,7 +409,6 @@ static int __init alsa_sound_init(void)
+ 		unregister_chrdev(major, "alsa");
+ 		return -ENOMEM;
+ 	}
+-	snd_info_minor_register();
+ #ifndef MODULE
+ 	pr_info("Advanced Linux Sound Architecture Driver Initialized.\n");
+ #endif
+@@ -418,7 +417,6 @@ static int __init alsa_sound_init(void)
+ 
+ static void __exit alsa_sound_exit(void)
+ {
+-	snd_info_minor_unregister();
+ 	snd_info_done();
+ 	unregister_chrdev(major, "alsa");
  }
 -- 
 2.3.5
